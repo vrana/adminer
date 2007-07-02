@@ -31,6 +31,7 @@ if ($_POST) {
 		header("Location: " . $SELF . "select=" . urlencode($_GET["edit"]) . (SID ? "&" . SID : ""));
 		exit;
 	}
+	$error = mysql_error();
 }
 page_header(($_GET["where"] ? lang('Edit') : lang('Insert')) . ": " . htmlspecialchars($_GET["edit"]));
 echo "<h2>" . ($_GET["where"] ? lang('Edit') : lang('Insert')) . ": " . htmlspecialchars($_GET["edit"]) . "</h2>\n";
@@ -47,7 +48,7 @@ if (is_array($_GET["null"])) {
 	}
 }
 if ($_POST) {
-	echo "<p class='error'>" . lang('Error during saving') . ": " . htmlspecialchars(mysql_error()) . "</p>\n";
+	echo "<p class='error'>" . lang('Error during saving') . ": " . htmlspecialchars($error) . "</p>\n";
 	$data = $_POST["fields"];
 	foreach ($_POST["fields"] as $key => $val) {
 		$data[$key] = null;

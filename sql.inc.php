@@ -13,7 +13,7 @@ echo "<h2>" . lang('SQL command') . "</h2>\n";
 
 if ($_POST) {
 	if (!$result) {
-		echo "<p class='error'>" . lang('Error in query') . ": $error</p>\n";
+		echo "<p class='error'>" . lang('Error in query') . ": " . htmlspecialchars($error) . "</p>\n";
 	} else {
 		if (!mysql_num_rows($result)) {
 			echo "<p class='message'>" . lang('No rows.') . "</p>\n";
