@@ -5,7 +5,7 @@ echo "<h2>" . lang('Select') . ": " . htmlspecialchars($_GET["select"]) . "</h2>
 echo '<p><a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '">' . lang('New item') . "</a></p>\n";
 $indexes = indexes($_GET["select"]);
 
-echo "<form action=''><div>\n";
+echo "<form action='' id='form'><div>\n";
 if (strlen($_GET["server"])) {
 	echo '<input type="hidden" name="server" value="' . htmlspecialchars($_GET["server"]) . '" />';
 }
@@ -17,19 +17,22 @@ $columns = array();
 foreach (fields($_GET["select"]) as $name => $field) {
 	$columns[] = $name;
 }
-$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "REGEXP", "IS NULL"); //! IS NULL - hide input by JavaScript
+$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "REGEXP", "IS NULL");
 $i = 0;
 foreach ((array) $_GET["where"] as $val) {
 	if ($val["col"] && in_array($val["op"], $operators)) {
 		$where[] = idf_escape($val["col"]) . " $val[op]" . ($val["op"] != "IS NULL" ? " '" . mysql_real_escape_string($val["val"]) . "'" : "");
 		echo "<select name='where[$i][col]'><option></option>" . optionlist($columns, $val["col"], "not_vals") . "</select>";
-		echo "<select name='where[$i][op]'>" . optionlist($operators, $val["op"], "not_vals") . "</select>";
+		echo "<select name='where[$i][op]' onchange=\"this.form['where[$i][val]'].style.display = (this.value == 'IS NULL' ? 'none' : '');\">" . optionlist($operators, $val["op"], "not_vals") . "</select>";
 		echo "<input name='where[$i][val]' value=\"" . htmlspecialchars($val["val"]) . "\" /><br />\n";
 		$i++;
 	}
 }
+if ($i) {
+	echo "<script type='text/javascript'>for (var i=0; $i > i; i++) document.getElementById('form')['where[' + i + '][op]'].onchange();</script>\n";
+}
 echo "<select name='where[$i][col]'><option></option>" . optionlist($columns, array(), "not_vals") . "</select>";
-echo "<select name='where[$i][op]'>" . optionlist($operators, array(), "not_vals") . "</select>";
+echo "<select name='where[$i][op]' onchange=\"this.form['where[$i][val]'].style.display = (this.value == 'IS NULL' ? 'none' : '');\">" . optionlist($operators, array(), "not_vals") . "</select>";
 echo "<input name='where[$i][val]' /><br />\n"; //! JavaScript for adding next
 //! fulltext search
 
@@ -65,13 +68,15 @@ if (!mysql_num_rows($result)) {
 				$val = "<i>NULL</i>";
 			} else {
 				$val = htmlspecialchars($val);
-				if (count($foreign_keys[$key]) == 1) {
-					$foreign_key = $foreign_keys[$key][0];
-					$val = '">' . "$val</a>";
-					foreach ($foreign_key[2] as $i => $source) {
-						$val = "&amp;where[$i][col]=" . urlencode($foreign_key[3][$i]) . "&amp;where[$i][op]=%3D&amp;where[$i][val]=" . urlencode($row[$source]) . $val;
+				foreach ((array) $foreign_keys[$key] as $foreign_key) {
+					if (count($foreign_keys[$key]) == 1 || count($foreign_key[2]) == 1) {
+						$val = '">' . "$val</a>";
+						foreach ($foreign_key[2] as $i => $source) {
+							$val = "&amp;where[$i][col]=" . urlencode($foreign_key[3][$i]) . "&amp;where[$i][op]=%3D&amp;where[$i][val]=" . urlencode($row[$source]) . $val;
+						}
+						$val = '<a href="' . htmlspecialchars(strlen($foreign_key[0]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key[0]), $SELF) : $SELF) . 'select=' . htmlspecialchars($foreign_key[1]) . $val; // InnoDB support non-UNIQUE keys
+						break;
 					}
-					$val = '<a href="' . htmlspecialchars(strlen($foreign_key[0]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key[0]), $SELF) : $SELF) . 'select=' . htmlspecialchars($foreign_key[1]) . $val; // InnoDB support non-UNIQUE keys //! reference to other database
 				}
 			}
 			echo "<td>$val</td>";
