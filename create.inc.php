@@ -15,8 +15,14 @@ if ($_POST["drop"]) {
 			$fields[] = idf_escape($field["name"]) . " " . $field["type"] . $length . ($field["not_null"] ? " NOT NULL" : "") . ($field["auto_increment"] ? " AUTO_INCREMENT" : "");
 		}
 	}
-	//! alter table
-	if ($fields && mysql_query("CREATE TABLE " . idf_escape($_POST["name"]) . " (" . implode(", ", $fields) . ")" . ($_POST["engine"] ? " ENGINE='" . mysql_real_escape_string($_POST["engine"]) . "'" : "") . ($_POST["collate"] ? " COLLATE '" . mysql_real_escape_string($_POST["collate"]) . "'" : ""))) {
+	$status = ($_POST["engine"] ? " ENGINE='" . mysql_real_escape_string($_POST["engine"]) . "'" : "") . ($_POST["collate"] ? " COLLATE '" . mysql_real_escape_string($_POST["collate"]) . "'" : "");
+	if (strlen($_GET["create"])) {
+		if (mysql_query("ALTER TABLE " . idf_escape($_GET["create"]) . " RENAME TO " . idf_escape($_POST["name"]) . ", $status")) {
+			$_SESSION["message"] = lang('Table has been altered.');
+			header("Location: $SELF" . "table=" . urlencode($_POST["name"]));
+			exit;
+		}
+	} elseif ($fields && mysql_query("CREATE TABLE " . idf_escape($_POST["name"]) . " (" . implode(", ", $fields) . ")$status")) {
 		$_SESSION["message"] = lang('Table has been created.');
 		header("Location: $SELF" . "table=" . urlencode($_POST["name"]));
 		exit;
@@ -26,7 +32,7 @@ page_header(lang('Create table'));
 echo "<h2>" . lang('Create table') . "</h2>\n";
 
 if ($_POST) {
-	echo "<p class='error'>" . lang('Unable to operate table.') . "</p>\n";
+	echo "<p class='error'>" . lang('Unable to operate table.') . "</p>\n"; //! mysql_error
 	$collate = $_POST["collate"];
 	//! prefill fields
 } elseif (strlen($_GET["create"])) {
@@ -55,7 +61,7 @@ if ($_POST) {
 <?php //! JavaScript for next rows ?>
 </table>
 <p>
-<input type="submit" value="<?php echo lang('Create'); ?>" />
+<input type="submit" value="<?php echo lang('Save'); ?>" />
 <?php if (strlen($_GET["create"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>" /><?php } ?>
 </p>
 </form>
