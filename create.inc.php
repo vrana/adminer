@@ -3,7 +3,7 @@ $types = array("int"); //!
 if ($_POST["drop"]) {
 	if (mysql_query("DROP TABLE " . idf_escape($_GET["create"]))) {
 		$_SESSION["message"] = lang('Table has been dropped.');
-		header("Location: " . substr($SELF, 0, -1));
+		header("Location: " . substr($SELF, 0, -1) . (SID ? "&" . SID : ""));
 		exit;
 	}
 } elseif ($_POST) {
@@ -19,21 +19,22 @@ if ($_POST["drop"]) {
 	if (strlen($_GET["create"])) {
 		if (mysql_query("ALTER TABLE " . idf_escape($_GET["create"]) . " RENAME TO " . idf_escape($_POST["name"]) . ", $status")) {
 			$_SESSION["message"] = lang('Table has been altered.');
-			header("Location: $SELF" . "table=" . urlencode($_POST["name"]));
+			header("Location: $SELF" . "table=" . urlencode($_POST["name"]) . (SID ? "&" . SID : ""));
 			exit;
 		}
 	} elseif ($fields && mysql_query("CREATE TABLE " . idf_escape($_POST["name"]) . " (" . implode(", ", $fields) . ")$status")) {
 		$_SESSION["message"] = lang('Table has been created.');
-		header("Location: $SELF" . "table=" . urlencode($_POST["name"]));
+		header("Location: $SELF" . "table=" . urlencode($_POST["name"]) . (SID ? "&" . SID : ""));
 		exit;
 	}
 }
-page_header(lang('Create table'));
-echo "<h2>" . lang('Create table') . "</h2>\n";
+page_header(strlen($_GET["create"]) ? lang('Alter table') . ': ' . htmlspecialchars($_GET["create"]) : lang('Create table'));
+echo "<h2>" . (strlen($_GET["create"]) ? lang('Alter table') . ': ' . htmlspecialchars($_GET["create"]) : lang('Create table')) . "</h2>\n";
 
 if ($_POST) {
-	echo "<p class='error'>" . lang('Unable to operate table.') . "</p>\n"; //! mysql_error
+	echo "<p class='error'>" . lang('Unable to operate table') . ": " . htmlspecialchars(mysql_error()) . "</p>\n";
 	$collate = $_POST["collate"];
+	$engine = $_POST["engine"];
 	//! prefill fields
 } elseif (strlen($_GET["create"])) {
 	$row = mysql_fetch_assoc(mysql_query("SHOW TABLE STATUS LIKE '" . mysql_real_escape_string($_GET["create"]) . "'"));
