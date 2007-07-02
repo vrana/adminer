@@ -2,16 +2,21 @@
 if (isset($_POST["server"])) {
 	$_SESSION["username"] = $_POST["username"];
 	$_SESSION["password"] = $_POST["password"];
-	header("Location: " . ($_GET["server"] == $_POST["server"] ? $_SERVER["REQUEST_URI"] : preg_replace('~^[^?]*/([^?]*).*~', '\\1' . (strlen($_POST["server"]) ? '?server=' . urlencode($_POST["server"]) : '') . (SID ? (strlen($_POST["server"]) ? "&" : "?") . SID : ""), $_SERVER["REQUEST_URI"])));
+	header("Location: " . ((string) $_GET["server"] === $_POST["server"] ? preg_replace('~(\\?)logout=&|[?&]logout=~', '\\1', $_SERVER["REQUEST_URI"]) : preg_replace('~^[^?]*/([^?]*).*~', '\\1' . (strlen($_POST["server"]) ? '?server=' . urlencode($_POST["server"]) : '') . (SID ? (strlen($_POST["server"]) ? "&" : "?") . SID : ""), $_SERVER["REQUEST_URI"])));
 	exit;
+} elseif (isset($_GET["logout"])) {
+	unset($_SESSION["username"]);
+	unset($_SESSION["password"]);
 }
 
-if (!@mysql_connect($_GET["server"], $_SESSION["username"], $_SESSION["password"])) {
+if (isset($_GET["logout"]) || !@mysql_connect($_GET["server"], $_SESSION["username"], $_SESSION["password"])) {
 	page_header(lang('Login'), "auth");
 	?>
 	<h1><?php echo lang('phpMinAdmin'); ?></h1>
 	<?php
-	if (isset($_GET["server"])) {
+	if (isset($_GET["logout"])) {
+		echo "<p class='message'>" . lang('Logout successful.') . "</p>\n";
+	} elseif (isset($_GET["server"])) {
 		echo "<p class='error'>" . lang('Invalid credentials.') . "</p>\n";
 	}
 	?>

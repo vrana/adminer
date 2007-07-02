@@ -23,6 +23,7 @@ if (isset($_GET["sql"])) {
 	include "./view.inc.php";
 } else {
 	page_header(htmlspecialchars($_GET["db"]));
+	//! alter and drop database
 	$result = mysql_query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = '" . mysql_real_escape_string($_GET["db"]) . "'");
 	if (mysql_num_rows($result)) {
 		echo "<h2>" . lang('Routines') . "</h2>\n";
@@ -33,7 +34,7 @@ if (isset($_GET["sql"])) {
 			echo "<th>" . htmlspecialchars($row["ROUTINE_NAME"]) . "</th>"; //! parameters from SHOW CREATE {PROCEDURE|FUNCTION}
 			echo "<td>" . nl2br(htmlspecialchars($row["ROUTINE_DEFINITION"])) . "</td>";
 			echo "</tr>\n";
-			//! drop
+			//! call, drop, replace
 		}
 		echo "</table>\n";
 	}

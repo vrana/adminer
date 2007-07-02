@@ -32,11 +32,12 @@ H2 { font-size: 150%; margin-top: 0; }
 <p>
 <a href="<?php echo htmlspecialchars($SELF); ?>sql="><?php echo lang('SQL command'); ?></a>
 <a href="<?php echo htmlspecialchars($SELF); ?>dump="><?php echo lang('Dump'); ?></a>
+<a href="<?php echo htmlspecialchars($SELF); ?>logout="><?php echo lang('Logout'); ?></a>
 </p>
 <form action="" method="get">
 <p><select name="db" onchange="this.form.submit();"><option value="">(<?php echo lang('database'); ?>)</option>
 <?php
-		//! logout, create database
+		//! create database
 		$result = mysql_query("SHOW DATABASES");
 		while ($row = mysql_fetch_row($result)) {
 			echo "<option" . ($row[0] == $_GET["db"] ? " selected='selected'" : "") . ">" . htmlspecialchars($row[0]) . "</option>\n";
@@ -54,7 +55,7 @@ H2 { font-size: 150%; margin-top: 0; }
 			} else {
 				echo "<p>\n";
 				while ($row = mysql_fetch_row($result)) {
-					echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row[0]) . '">' . lang('select') . '</a> '; //! inline image through style
+					echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row[0]) . '">' . lang('select') . '</a> ';
 					echo '<a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($row[0]) . '">' . htmlspecialchars($row[0]) . "</a><br />\n"; //! views
 				}
 				echo "</p>\n";

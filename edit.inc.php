@@ -27,7 +27,7 @@ if ($_POST) {
 		}
 	}
 	if (mysql_query($query)) {
-		$_SESSION["message"] = $message; //! warnings
+		$_SESSION["message"] = $message;
 		header("Location: " . $SELF . "select=" . urlencode($_GET["edit"]) . (SID ? "&" . SID : ""));
 		exit;
 	}
