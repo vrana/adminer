@@ -9,15 +9,15 @@ function dump($db) {
 			$result = mysql_query("SHOW $routine STATUS");
 			while ($row = mysql_fetch_assoc($result)) {
 				if (!strlen($_GET["db"]) || $row["Db"] === $_GET["db"]) {
-					$routines[$row["Db"]][] = mysql_result(mysql_query("SHOW CREATE $routine " . idf_escape($row["Db"]) . "." . idf_escape($row["Name"])), 0, 2) . ";\n\n";
+					$routines[$row["Db"]][] = mysql_result(mysql_query("SHOW CREATE $routine " . idf_escape($row["Db"]) . "." . idf_escape($row["Name"])), 0, 2) . ";\n\n"; //! delimiter
 				}
 			}
 			mysql_free_result($result);
 		}
 	}
 	
-	//! CREATE DATABASE
-	echo "USE $db;\n";
+	echo "CREATE DATABASE IF NOT EXISTS " . idf_escape($db) . ";\n";
+	echo "USE " . idf_escape($db) . ";\n";
 	echo "SET CHARACTER SET utf8;\n\n";
 	$result = mysql_query("SHOW TABLES");
 	while ($row = mysql_fetch_row($result)) {
@@ -26,7 +26,13 @@ function dump($db) {
 	}
 	mysql_free_result($result);
 	
-	echo implode("", (array) $routines[$db]); //! delimiter
+	$result = mysql_query("SHOW TRIGGERS");
+	while ($row = mysql_fetch_assoc($result)) {
+		echo "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . idf_escape($row["Table"]) . " FOR EACH ROW $row[Statement];\n\n"; //! delimiter
+	}
+	mysql_free_result($result);
+	
+	echo implode("", (array) $routines[$db]);
 }
 
 if (strlen($_GET["db"])) {
