@@ -37,7 +37,6 @@ H2 { font-size: 150%; margin-top: 0; }
 <form action="" method="get">
 <p><select name="db" onchange="this.form.submit();"><option value="">(<?php echo lang('database'); ?>)</option>
 <?php
-		//! create database
 		$result = mysql_query("SHOW DATABASES");
 		while ($row = mysql_fetch_row($result)) {
 			echo "<option" . ($row[0] == $_GET["db"] ? " selected='selected'" : "") . ">" . htmlspecialchars($row[0]) . "</option>\n";
@@ -48,7 +47,7 @@ H2 { font-size: 150%; margin-top: 0; }
 <noscript><p><input type="submit" value="<?php echo lang('Use'); ?>" /></p></noscript>
 </form>
 <?php
-		if ($missing != "db") {
+		if ($missing != "db" && strlen($_GET["db"])) {
 			$result = mysql_query("SHOW TABLES");
 			if (!mysql_num_rows($result)) {
 				echo "<p class='message'>" . lang('No tables.') . "</p>\n";
