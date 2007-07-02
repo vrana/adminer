@@ -1,54 +1,53 @@
 <?php
 $types = array("int"); //!
-if ($_POST["drop"]) {
-	if (mysql_query("DROP TABLE " . idf_escape($_GET["create"]))) {
-		$_SESSION["message"] = lang('Table has been dropped.');
-		header("Location: " . substr($SELF, 0, -1) . (SID ? "&" . SID : ""));
-		exit;
-	}
-} elseif ($_POST) {
-	$fields = array();
-	ksort($_POST["fields"]);
-	foreach ($_POST["fields"] as $key => $field) {
-		if (strlen($field["name"]) && in_array($field["type"], $types)) {
-			$length = ($field["length"] ? "(" . intval($field["length"]) . ")" : ""); //! decimal, enum and set lengths
-			$fields[] = idf_escape($field["name"]) . " " . $field["type"] . $length . ($field["not_null"] ? " NOT NULL" : "") . ($field["auto_increment"] ? " AUTO_INCREMENT" : "");
+if ($_POST) {
+	if ($_POST["drop"]) {
+		$query = "DROP TABLE " . idf_escape($_GET["create"]);
+		$message = lang('Table has been dropped.');
+	} else {
+		$fields = array();
+		ksort($_POST["fields"]);
+		foreach ($_POST["fields"] as $key => $field) {
+			if (strlen($field["name"]) && in_array($field["type"], $types)) {
+				$length = ($field["length"] ? "(" . intval($field["length"]) . ")" : ""); //! decimal, enum and set lengths
+				$fields[] = idf_escape($field["name"]) . " " . $field["type"] . $length . ($field["not_null"] ? " NOT NULL" : "") . ($field["auto_increment"] ? " AUTO_INCREMENT" : "");
+			}
+		}
+		$status = ($_POST["Engine"] ? " ENGINE='" . mysql_real_escape_string($_POST["Engine"]) . "'" : "") . ($_POST["Collation"] ? " COLLATE '" . mysql_real_escape_string($_POST["Collation"]) . "'" : "");
+		if (strlen($_GET["create"])) {
+			$query = "ALTER TABLE " . idf_escape($_GET["create"]) . " RENAME TO " . idf_escape($_POST["name"]) . ", $status";
+			$message = lang('Table has been altered.');
+		} else {
+			$query = "CREATE TABLE " . idf_escape($_POST["name"]) . " (" . implode(", ", $fields) . ")$status";
+			$message = lang('Table has been created.');
 		}
 	}
-	$status = ($_POST["engine"] ? " ENGINE='" . mysql_real_escape_string($_POST["engine"]) . "'" : "") . ($_POST["collate"] ? " COLLATE '" . mysql_real_escape_string($_POST["collate"]) . "'" : "");
-	if (strlen($_GET["create"])) {
-		if (mysql_query("ALTER TABLE " . idf_escape($_GET["create"]) . " RENAME TO " . idf_escape($_POST["name"]) . ", $status")) {
-			$_SESSION["message"] = lang('Table has been altered.');
-			header("Location: $SELF" . "table=" . urlencode($_POST["name"]) . (SID ? "&" . SID : ""));
-			exit;
-		}
-	} elseif ($fields && mysql_query("CREATE TABLE " . idf_escape($_POST["name"]) . " (" . implode(", ", $fields) . ")$status")) {
-		$_SESSION["message"] = lang('Table has been created.');
-		header("Location: $SELF" . "table=" . urlencode($_POST["name"]) . (SID ? "&" . SID : ""));
+	if (mysql_query($query)) {
+		$_SESSION["message"] = $message;
+		header("Location: " . ($_POST["drop"] ? substr($SELF, 0, -1) : $SELF . "table=" . urlencode($_POST["name"])) . (SID ? "&" . SID : ""));
 		exit;
 	}
+	$error = mysql_error();
 }
 page_header(strlen($_GET["create"]) ? lang('Alter table') . ': ' . htmlspecialchars($_GET["create"]) : lang('Create table'));
 echo "<h2>" . (strlen($_GET["create"]) ? lang('Alter table') . ': ' . htmlspecialchars($_GET["create"]) : lang('Create table')) . "</h2>\n";
 
 if ($_POST) {
-	echo "<p class='error'>" . lang('Unable to operate table') . ": " . htmlspecialchars(mysql_error()) . "</p>\n";
-	$collate = $_POST["collate"];
-	$engine = $_POST["engine"];
+	echo "<p class='error'>" . lang('Unable to operate table') . ": " . htmlspecialchars($error) . "</p>\n";
+	$row = $_POST;
 	//! prefill fields
 } elseif (strlen($_GET["create"])) {
 	$row = mysql_fetch_assoc(mysql_query("SHOW TABLE STATUS LIKE '" . mysql_real_escape_string($_GET["create"]) . "'"));
-	$collate = $row["Collation"];
-	$engine = $row["Engine"];
+	$row["name"] = $_GET["create"];
 	//! prefill fields
 }
 //! collate columns, references, indexes, unsigned
 ?>
 <form action="" method="post">
 <p>
-<?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo htmlspecialchars($_GET["create"]); ?>" />
-<select name="engine"><option value="">(<?php echo lang('engine'); ?>)</option><?php echo optionlist(engines(), $engine, "not_vals"); ?></select>
-<select name="collate"><option value="">(<?php echo lang('collate'); ?>)</option><?php echo optionlist(collations(), $collate, "not_vals"); ?></select>
+<?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo htmlspecialchars($row["name"]); ?>" />
+<select name="Engine"><option value="">(<?php echo lang('engine'); ?>)</option><?php echo optionlist(engines(), $row["Engine"], "not_vals"); ?></select>
+<select name="Collation"><option value="">(<?php echo lang('collation'); ?>)</option><?php echo optionlist(collations(), $row["Collation"], "not_vals"); ?></select>
 </p>
 <table border="0" cellspacing="0" cellpadding="2">
 <thead><tr><th><?php echo lang('Name'); ?></th><td><?php echo lang('Type'); ?></td><td><?php echo lang('Length'); ?></td><td><?php echo lang('NOT NULL'); ?></td><td><?php echo lang('AUTO_INCREMENT'); ?></td></tr></thead>
