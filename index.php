@@ -23,7 +23,7 @@ if (isset($_GET["sql"])) {
 	include "./view.inc.php";
 } else {
 	page_header(htmlspecialchars($_GET["db"]));
-	$result = mysql_query("SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = '" . mysql_real_escape_string($_GET["db"]) . "'");
+	$result = mysql_query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = '" . mysql_real_escape_string($_GET["db"]) . "'");
 	if (mysql_num_rows($result)) {
 		echo "<h2>" . lang('Routines') . "</h2>\n";
 		echo "<table border='1' cellspacing='0' cellpadding='2'>\n";

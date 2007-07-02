@@ -61,16 +61,15 @@ function indexes($table) {
 }
 
 function foreign_keys($table) {
-	//! make over to information_schema.key_column_usage
 	static $pattern = '~`((?:[^`]*|``)+)`~';
 	$return = array();
 	$create_table = mysql_result(mysql_query("SHOW CREATE TABLE " . idf_escape($table)), 0, 1);
-	preg_match_all('~FOREIGN KEY \\((.*)\\) REFERENCES (.*) \\((.*)\\)~', $create_table, $matches, PREG_SET_ORDER);
+	preg_match_all('~FOREIGN KEY \\((.+)\\) REFERENCES (?:`(.+)`\\.)?`(.+)` \\((.+)\\)~', $create_table, $matches, PREG_SET_ORDER);
 	foreach ($matches as $match) {
 		preg_match_all($pattern, $match[1], $source);
-		preg_match_all($pattern, $match[3], $target);
+		preg_match_all($pattern, $match[4], $target);
 		foreach ($source[1] as $val) {
-			$return[idf_unescape($val)][] = array(idf_unescape(substr($match[2], 1, -1)), array_map('idf_unescape', $source[1]), array_map('idf_unescape', $target[1]));
+			$return[idf_unescape($val)][] = array(idf_unescape($match[2]), idf_unescape($match[3]), array_map('idf_unescape', $source[1]), array_map('idf_unescape', $target[1]));
 		}
 	}
 	return $return;

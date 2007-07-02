@@ -39,11 +39,20 @@ $limit = 30;
 echo "<input type='submit' value='" . lang('Search') . "' />\n";
 echo "</div></form>\n";
 $result = mysql_query("SELECT SQL_CALC_FOUND_ROWS * FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "") . " LIMIT $limit OFFSET " . ($limit * $_GET["page"]));
-$found_rows = mysql_result(mysql_query(" SELECT FOUND_ROWS()"), 0);
+$found_rows = mysql_result(mysql_query(" SELECT FOUND_ROWS()"), 0); // space for mysql.trace_mode
 if (!mysql_num_rows($result)) {
 	echo "<p class='message'>" . lang('No rows.') . "</p>\n";
 } else {
 	$foreign_keys = foreign_keys($_GET["select"]);
+	$childs = array();
+	$result1 = mysql_query("SELECT * FROM information_schema.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = '" . mysql_real_escape_string($_GET["db"]) . "' AND REFERENCED_TABLE_NAME = '" . mysql_real_escape_string($_GET["select"]) . "' ORDER BY ORDINAL_POSITION");
+	while ($row1 = mysql_fetch_assoc($result1)) {
+		$childs[$row1["CONSTRAINT_NAME"]][0] = $row1["TABLE_SCHEMA"];
+		$childs[$row1["CONSTRAINT_NAME"]][1] = $row1["TABLE_NAME"];
+		$childs[$row1["CONSTRAINT_NAME"]][2][] = $row1["REFERENCED_COLUMN_NAME"];
+		$childs[$row1["CONSTRAINT_NAME"]][3][] = $row1["COLUMN_NAME"];
+	}
+	mysql_free_result($result1);
 	
 	echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
 	for ($j=0; $row = mysql_fetch_assoc($result); $j++) {
@@ -59,16 +68,22 @@ if (!mysql_num_rows($result)) {
 				if (count($foreign_keys[$key]) == 1) {
 					$foreign_key = $foreign_keys[$key][0];
 					$val = '">' . "$val</a>";
-					foreach ($foreign_key[1] as $i => $source) {
-						$val = "&amp;where[$i][col]=" . urlencode($foreign_key[2][$i]) . "&amp;where[$i][op]=%3D&amp;where[$i][val]=" . urlencode($row[$source]) . $val;
+					foreach ($foreign_key[2] as $i => $source) {
+						$val = "&amp;where[$i][col]=" . urlencode($foreign_key[3][$i]) . "&amp;where[$i][op]=%3D&amp;where[$i][val]=" . urlencode($row[$source]) . $val;
 					}
-					$val = '<a href="' . htmlspecialchars($SELF) . 'select=' . htmlspecialchars($foreign_key[0]) . $val; // InnoDB support non-UNIQUE keys //! reference to other database
+					$val = '<a href="' . htmlspecialchars(strlen($foreign_key[0]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key[0]), $SELF) : $SELF) . 'select=' . htmlspecialchars($foreign_key[1]) . $val; // InnoDB support non-UNIQUE keys //! reference to other database
 				}
 			}
 			echo "<td>$val</td>";
 		}
 		echo '<td><a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . implode('&amp;', unique_idf($row, $indexes)) . '">edit</a>'; //! views can be unupdatable
-		//! links to referencing tables - information_schema.key_column_usage - REFERENCED_TABLE_SCHEMA, REFERENCED_TABLE_NAME
+		foreach ($childs as $child) {
+			echo ' <a href="' . htmlspecialchars(strlen($child[0]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($child[0]), $SELF) : $SELF) . 'select=' . urlencode($child[1]);
+			foreach ($child[2] as $i => $source) {
+				echo "&amp;where[$i][col]=" . urlencode($child[3][$i]) . "&amp;where[$i][op]=%3D&amp;where[$i][val]=" . urlencode($row[$source]);
+			}
+			echo '">' . htmlspecialchars($child[1]) . '</a>';
+		}
 		echo "</td>";
 		echo "</tr>\n";
 	}
