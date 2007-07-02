@@ -15,19 +15,22 @@ if ($_POST) {
 	if (!$result) {
 		echo "<p class='error'>" . lang('Error in query') . ": $error</p>\n";
 	} else {
-		//! no rows
-		echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
-		for ($i=0; $row = mysql_fetch_assoc($result); $i++) {
-			if (!$i) {
-				echo "<thead><tr><th>" . implode("</th><th>", array_map('htmlspecialchars', array_keys($row))) . "</th></tr></thead>\n";
+		if (!mysql_num_rows($result)) {
+			echo "<p class='message'>" . lang('No rows.') . "</p>\n";
+		} else {
+			echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
+			for ($i=0; $row = mysql_fetch_assoc($result); $i++) {
+				if (!$i) {
+					echo "<thead><tr><th>" . implode("</th><th>", array_map('htmlspecialchars', array_keys($row))) . "</th></tr></thead>\n";
+				}
+				echo "<tr>";
+				foreach ($row as $val) {
+					echo "<td>" . (isset($val) ? htmlspecialchars($val) : "<i>NULL</i>") . "</td>";
+				}
+				echo "</tr>\n";
 			}
-			echo "<tr>";
-			foreach ($row as $val) {
-				echo "<td>" . (isset($val) ? htmlspecialchars($val) : "<i>NULL</i>") . "</td>";
-			}
-			echo "</tr>\n";
+			echo "</table>\n";
 		}
-		echo "</table>\n";
 		mysql_free_result($result);
 	}
 }
