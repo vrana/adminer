@@ -27,9 +27,7 @@ if ($_POST) {
 		}
 	}
 	if (mysql_query($query)) {
-		$_SESSION["message"] = $message;
-		header("Location: " . $SELF . "select=" . urlencode($_GET["edit"]) . (SID ? "&" . SID : ""));
-		exit;
+		redirect($SELF . "select=" . urlencode($_GET["edit"]), $message);
 	}
 	$error = mysql_error();
 }

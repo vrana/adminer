@@ -2,7 +2,7 @@
 if (isset($_POST["server"])) {
 	$_SESSION["username"] = $_POST["username"];
 	$_SESSION["password"] = $_POST["password"];
-	header("Location: " . ((string) $_GET["server"] === $_POST["server"] ? preg_replace('~(\\?)logout=&|[?&]logout=~', '\\1', $_SERVER["REQUEST_URI"]) : preg_replace('~^[^?]*/([^?]*).*~', '\\1' . (strlen($_POST["server"]) ? '?server=' . urlencode($_POST["server"]) : '') . (SID ? (strlen($_POST["server"]) ? "&" : "?") . SID : ""), $_SERVER["REQUEST_URI"])));
+	header("Location: " . ((string) $_GET["server"] === $_POST["server"] ? preg_replace('~(\\?)logout=&|[?&]logout=~', '\\1', $_SERVER["REQUEST_URI"]) : preg_replace('~^[^?]*/([^?]*).*~', '\\1' . (strlen($_POST["server"]) ? '?server=' . urlencode($_POST["server"]) : '') . (strlen(SID) ? (strlen($_POST["server"]) ? "&" : "?") . SID : ""), $_SERVER["REQUEST_URI"])));
 	exit;
 } elseif (isset($_GET["logout"])) {
 	unset($_SESSION["username"]);

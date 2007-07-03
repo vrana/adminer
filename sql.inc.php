@@ -2,9 +2,7 @@
 if ($_POST) {
 	$result = mysql_query($_POST["query"]); //! multiple commands
 	if ($result === true) {
-		$_SESSION["message"] = sprintf(lang('Query executed OK, %d row(s) affected.'), mysql_affected_rows());
-		header("Location: " . $SELF . "sql=" . (SID ? "&" . SID : ""));
-		exit;
+		redirect($SELF . "sql=", sprintf(lang('Query executed OK, %d row(s) affected.'), mysql_affected_rows()));
 	}
 	$error = mysql_error();
 }

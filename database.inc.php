@@ -2,17 +2,12 @@
 if ($_POST) {
 	if ($_POST["drop"]) {
 		if (mysql_query("DROP DATABASE " . idf_escape($_GET["db"]))) {
-			$_SESSION["message"] = lang('Database has been dropped.');
-			$location = substr(preg_replace('~(\\?)db=[^&]*&|&db=[^&]*~', '\\1', $SELF) . (SID ? SID . "&" : ""), 0, -1);
-			header("Location: " . (strlen($location) ? $location : "."));
-			exit;
+			redirect(substr(preg_replace('~(\\?)db=[^&]*&|&db=[^&]*~', '\\1', $SELF), 0, -1), lang('Database has been dropped.'));
 		}
 	} elseif ($_GET["db"] !== $_POST["name"]) {
 		if (mysql_query("CREATE DATABASE " . idf_escape($_POST["name"]) . ($_POST["collation"] ? " COLLATE '" . mysql_real_escape_string($_POST["collation"]) . "'" : ""))) {
 			if (!strlen($_GET["db"])) {
-				$_SESSION["message"] = lang('Database has been created.');
-				header("Location: " . substr(preg_replace('~(\\?)db=[^&]*&|&db=[^&]*~', '\\1', $SELF) . "db=" . urlencode($_POST["name"]) . "&" . (SID ? SID . "&" : ""), 0, -1));
-				exit;
+				redirect(preg_replace('~(\\?)db=[^&]*&|&db=[^&]*~', '\\1', $SELF) . "db=" . urlencode($_POST["name"]), lang('Database has been created.'));
 			}
 			$result = mysql_query("SHOW TABLES");
 			while ($row = mysql_fetch_row($result)) {
@@ -23,15 +18,11 @@ if ($_POST) {
 			mysql_free_result($result);
 			if (!$row) {
 				mysql_query("DROP DATABASE " . idf_escape($_GET["db"]));
-				$_SESSION["message"] = lang('Database has been renamed.');
-				header("Location: " . substr(preg_replace('~(\\?)db=[^&]*&|&db=[^&]*~', '\\1', $SELF) . "db=" . urlencode($_POST["name"]) . "&" . (SID ? SID . "&" : ""), 0, -1));
-				exit;
+				redirect(preg_replace('~(\\?)db=[^&]*&|&db=[^&]*~', '\\1', $SELF) . "db=" . urlencode($_POST["name"]), lang('Database has been renamed.'));
 			}
 		}
 	} elseif (!$_POST["collation"] || mysql_query("ALTER DATABASE " . idf_escape($_POST["name"]) . " COLLATE '" . mysql_real_escape_string($_POST["collation"]) . "'")) {
-		$_SESSION["message"] = ($_POST["collation"] ? lang('Database has been altered.') : '');
-		header("Location: " . substr($SELF . (SID ? SID . "&" : ""), 0, -1));
-		exit;
+		redirect(substr($SELF, 0, -1), ($_POST["collation"] ? lang('Database has been altered.') : null));
 	}
 	$eror = mysql_error();
 }

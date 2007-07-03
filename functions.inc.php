@@ -119,6 +119,17 @@ function engines() {
 	return $return;
 }
 
+function redirect($location, $message = null) {
+	if (isset($message)) {
+		$_SESSION["message"] = $message;
+	}
+	if (strlen(SID)) {
+		$location .= (strpos($location, "?") === false ? "?" : "&") . SID;
+	}
+	header("Location: " . (strlen($location) ? $location : "."));
+	exit;
+}
+
 if (get_magic_quotes_gpc()) {
     $process = array(&$_GET, &$_POST);
     while (list($key, $val) = each($process)) {

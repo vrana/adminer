@@ -23,9 +23,7 @@ if ($_POST) {
 		}
 	}
 	if (mysql_query($query)) {
-		$_SESSION["message"] = $message;
-		header("Location: " . ($_POST["drop"] ? substr($SELF, 0, -1) : $SELF . "table=" . urlencode($_POST["name"])) . (SID ? "&" . SID : ""));
-		exit;
+		redirect(($_POST["drop"] ? substr($SELF, 0, -1) : $SELF . "table=" . urlencode($_POST["name"])), $message);
 	}
 	$error = mysql_error();
 }
