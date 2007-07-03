@@ -23,16 +23,23 @@ foreach ((array) $_GET["where"] as $val) {
 	if ($val["col"] && in_array($val["op"], $operators)) {
 		$where[] = idf_escape($val["col"]) . " $val[op]" . ($val["op"] != "IS NULL" ? " '" . mysql_real_escape_string($val["val"]) . "'" : "");
 		echo "<select name='where[$i][col]'><option></option>" . optionlist($columns, $val["col"], "not_vals") . "</select>";
-		echo "<select name='where[$i][op]' onchange=\"this.form['where[$i][val]'].style.display = (this.value == 'IS NULL' ? 'none' : '');\">" . optionlist($operators, $val["op"], "not_vals") . "</select>";
+		echo "<select name='where[$i][op]' onchange=\"where_change(this);\">" . optionlist($operators, $val["op"], "not_vals") . "</select>";
 		echo "<input name='where[$i][val]' value=\"" . htmlspecialchars($val["val"]) . "\" /><br />\n";
 		$i++;
 	}
 }
-if ($i) {
-	echo "<script type='text/javascript'>for (var i=0; $i > i; i++) document.getElementById('form')['where[' + i + '][op]'].onchange();</script>\n";
+?>
+<script type="text/javascript">
+function where_change(op) {
+	op.form[op.name.substr(0, op.name.length - 4) + '[val]'].style.display = (op.value == 'IS NULL' ? 'none' : '');
 }
+<?php if ($i) { ?>
+	for (var i=0; <?php echo $i; ?> > i; i++) document.getElementById('form')['where[' + i + '][op]'].onchange();
+<?php } ?>
+</script>
+<?php
 echo "<select name='where[$i][col]'><option></option>" . optionlist($columns, array(), "not_vals") . "</select>";
-echo "<select name='where[$i][op]' onchange=\"this.form['where[$i][val]'].style.display = (this.value == 'IS NULL' ? 'none' : '');\">" . optionlist($operators, array(), "not_vals") . "</select>";
+echo "<select name='where[$i][op]' onchange=\"where_change(this);\">" . optionlist($operators, array(), "not_vals") . "</select>";
 echo "<input name='where[$i][val]' /><br />\n"; //! JavaScript for adding next
 //! fulltext search
 
