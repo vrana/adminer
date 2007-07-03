@@ -36,7 +36,7 @@ if ($_POST) {
 	$collate = $_POST["collate"];
 } else {
 	$name = $_GET["db"];
-	$collate = array(); //! take from SHOW CREATE DATABASE
+	$collate = (strlen($_GET["db"]) ? mysql_result(mysql_query("SELECT DEFAULT_COLLATION_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = '" . mysql_real_escape_string($_GET["db"]) . "'"), 0) : array());
 }
 ?>
 <form action="" method="post"><div>
