@@ -37,12 +37,15 @@ function fields($table) {
 	$return = array();
 	$result = mysql_query("SHOW COLUMNS FROM " . idf_escape($table));
 	while ($row = mysql_fetch_assoc($result)) {
-		preg_match('~^(.*?)(?:\\((.+)\\))?$~', $row["Type"], $match);
+		preg_match('~^([^(]+)(?:\\((.+)\\))?( unsigned)?$~', $row["Type"], $match);
 		$return[$row["Field"]] = array(
+			"field" => $row["Field"],
 			"type" => $match[1],
 			"length" => $match[2],
+			"unsigned" => $match[3],
 			"default" => $row["Default"],
 			"null" => ($row["Null"] != "NO"),
+			"extra" => $row["Extra"],
 		);
 	}
 	mysql_free_result($result);

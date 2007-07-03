@@ -36,16 +36,7 @@ if ($_POST) {
 } elseif (strlen($_GET["create"])) {
 	$row = mysql_fetch_assoc(mysql_query("SHOW TABLE STATUS LIKE '" . mysql_real_escape_string($_GET["create"]) . "'"));
 	$row["name"] = $_GET["create"];
-	$row["fields"] = array();
-	$result1 = mysql_query("SHOW COLUMNS FROM " . idf_escape($_GET["create"]));
-	while ($row1 = mysql_fetch_assoc($result1)) {
-		if (preg_match('~^([^)]*)\\((.*)\\)$~', $row1["Type"], $match)) {
-			$row1["Type"] = $match[1];
-			$row1["Length"] = $match[2];
-		}
-		$row["fields"][] = $row1;
-	}
-	mysql_free_result($result1);
+	$row["fields"] = fields($_GET["create"]);
 } else {
 	$row = array("fields" => array());
 }
@@ -60,29 +51,29 @@ if ($_POST) {
 <table border="0" cellspacing="0" cellpadding="2">
 <thead><tr><th><?php echo lang('Name'); ?></th><td><?php echo lang('Type'); ?></td><td><?php echo lang('Length'); ?></td><td><?php echo lang('NULL'); ?></td><td><?php echo lang('Auto-increment'); ?></td></tr></thead>
 <?php
-$i=-1;
-foreach ($row["fields"] as $i => $field) {
-	if (strlen($field["Field"])) {
+$i=0;
+foreach ($row["fields"] as $field) {
+	if (strlen($field["field"])) {
 		?>
 <tr>
-<th><input name="fields[<?php echo $i; ?>][Field]" value="<?php echo htmlspecialchars($field["Field"]); ?>" maxlength="64" /></th>
-<td><select name="fields[<?php echo $i; ?>][Type]"><?php echo optionlist($types, $field["Type"], "not_vals"); ?></select></td>
-<td><input name="fields[<?php echo $i; ?>][Length]" value="<?php echo htmlspecialchars($field["Length"]); ?>" size="3" /></td>
-<td><input type="checkbox" name="fields[<?php echo $i; ?>][Null]" value="YES"<?php if ($field["Null"] == "YES") { ?> checked="checked"<?php } ?> /></td>
-<td><input type="checkbox" name="fields[<?php echo $i; ?>][Extra]" value="auto_increment"<?php if ($field["Extra"] == "auto_increment") { ?> checked="checked"<?php } ?> /></td>
+<th><input name="fields[<?php echo $i; ?>][field]" value="<?php echo htmlspecialchars($field["field"]); ?>" maxlength="64" /></th>
+<td><select name="fields[<?php echo $i; ?>][type]"><?php echo optionlist($types, $field["type"], "not_vals"); ?></select></td>
+<td><input name="fields[<?php echo $i; ?>][length]" value="<?php echo htmlspecialchars($field["length"]); ?>" size="3" /></td>
+<td><input type="checkbox" name="fields[<?php echo $i; ?>][null]" value="1"<?php if ($field["null"]) { ?> checked="checked"<?php } ?> /></td>
+<td><input type="checkbox" name="fields[<?php echo $i; ?>][extra]" value="auto_increment"<?php if ($field["extra"] == "auto_increment") { ?> checked="checked"<?php } ?> /></td>
 </tr>
 <?php
+		$i++;
 	}
 }
-$i++;
 //! JavaScript for next rows
 ?>
 <tr>
-<th><input name="fields[<?php echo $i; ?>][Field]" maxlength="64" /></th>
-<td><select name="fields[<?php echo $i; ?>][Type]"><?php echo optionlist($types, array(), "not_vals"); ?></select></td>
-<td><input name="fields[<?php echo $i; ?>][Length]" size="3" /></td>
-<td><input type="checkbox" name="fields[<?php echo $i; ?>][Null]" value="YES" /></td>
-<td><input type="checkbox" name="fields[<?php echo $i; ?>][Extra]" value="auto_increment" /></td>
+<th><input name="fields[<?php echo $i; ?>][field]" maxlength="64" /></th>
+<td><select name="fields[<?php echo $i; ?>][type]"><?php echo optionlist($types, array(), "not_vals"); ?></select></td>
+<td><input name="fields[<?php echo $i; ?>][length]" size="3" /></td>
+<td><input type="checkbox" name="fields[<?php echo $i; ?>][null]" value="1" /></td>
+<td><input type="checkbox" name="fields[<?php echo $i; ?>][extra]" value="auto_increment" /></td>
 </tr>
 </table>
 <p>
