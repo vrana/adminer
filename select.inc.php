@@ -74,7 +74,7 @@ if (!mysql_num_rows($result)) {
 			if (!isset($val)) {
 				$val = "<i>NULL</i>";
 			} else {
-				$val = htmlspecialchars($val);
+				$val = (strlen(trim($val)) ? htmlspecialchars($val) : "&nbsp;");
 				foreach ((array) $foreign_keys[$key] as $foreign_key) {
 					if (count($foreign_keys[$key]) == 1 || count($foreign_key[2]) == 1) {
 						$val = '">' . "$val</a>";
