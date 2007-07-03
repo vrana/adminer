@@ -33,13 +33,23 @@ echo "<h2>" . (strlen($_GET["create"]) ? lang('Alter table') . ': ' . htmlspecia
 if ($_POST) {
 	echo "<p class='error'>" . lang('Unable to operate table') . ": " . htmlspecialchars($error) . "</p>\n";
 	$row = $_POST;
-	//! prefill fields
 } elseif (strlen($_GET["create"])) {
 	$row = mysql_fetch_assoc(mysql_query("SHOW TABLE STATUS LIKE '" . mysql_real_escape_string($_GET["create"]) . "'"));
 	$row["name"] = $_GET["create"];
-	//! prefill fields
+	$row["fields"] = array();
+	$result1 = mysql_query("SHOW COLUMNS FROM " . idf_escape($_GET["create"]));
+	while ($row1 = mysql_fetch_assoc($result1)) {
+		if (preg_match('~^([^)]*)\\((.*)\\)$~', $row1["Type"], $match)) {
+			$row1["Type"] = $match[1];
+			$row1["Length"] = $match[2];
+		}
+		$row["fields"][] = $row1;
+	}
+	mysql_free_result($result1);
+} else {
+	$row = array("fields" => array());
 }
-//! collate columns, references, indexes, unsigned
+//! collate columns, references, indexes, unsigned, default
 ?>
 <form action="" method="post">
 <p>
@@ -48,15 +58,32 @@ if ($_POST) {
 <select name="Collation"><option value="">(<?php echo lang('collation'); ?>)</option><?php echo optionlist(collations(), $row["Collation"], "not_vals"); ?></select>
 </p>
 <table border="0" cellspacing="0" cellpadding="2">
-<thead><tr><th><?php echo lang('Name'); ?></th><td><?php echo lang('Type'); ?></td><td><?php echo lang('Length'); ?></td><td><?php echo lang('NOT NULL'); ?></td><td><?php echo lang('AUTO_INCREMENT'); ?></td></tr></thead>
+<thead><tr><th><?php echo lang('Name'); ?></th><td><?php echo lang('Type'); ?></td><td><?php echo lang('Length'); ?></td><td><?php echo lang('NULL'); ?></td><td><?php echo lang('Auto-increment'); ?></td></tr></thead>
+<?php
+$i=-1;
+foreach ($row["fields"] as $i => $field) {
+	if (strlen($field["Field"])) {
+		?>
 <tr>
-<th><input name="fields[0][name]" maxlength="64" /></th>
-<td><select name="fields[0][type]"><?php echo optionlist($types, array(), "not_vals"); ?></select></td>
-<td><input name="fields[0][length]" size="3" /></td>
-<td><input type="checkbox" name="fields[0][not_null]" value="1" /></td>
-<td><input type="checkbox" name="fields[0][auto_increment]" value="1" /></td>
+<th><input name="fields[<?php echo $i; ?>][Field]" value="<?php echo htmlspecialchars($field["Field"]); ?>" maxlength="64" /></th>
+<td><select name="fields[<?php echo $i; ?>][Type]"><?php echo optionlist($types, $field["Type"], "not_vals"); ?></select></td>
+<td><input name="fields[<?php echo $i; ?>][Length]" value="<?php echo htmlspecialchars($field["Length"]); ?>" size="3" /></td>
+<td><input type="checkbox" name="fields[<?php echo $i; ?>][Null]" value="YES"<?php if ($field["Null"] == "YES") { ?> checked="checked"<?php } ?> /></td>
+<td><input type="checkbox" name="fields[<?php echo $i; ?>][Extra]" value="auto_increment"<?php if ($field["Extra"] == "auto_increment") { ?> checked="checked"<?php } ?> /></td>
 </tr>
-<?php //! JavaScript for next rows ?>
+<?php
+	}
+}
+$i++;
+//! JavaScript for next rows
+?>
+<tr>
+<th><input name="fields[<?php echo $i; ?>][Field]" maxlength="64" /></th>
+<td><select name="fields[<?php echo $i; ?>][Type]"><?php echo optionlist($types, array(), "not_vals"); ?></select></td>
+<td><input name="fields[<?php echo $i; ?>][Length]" size="3" /></td>
+<td><input type="checkbox" name="fields[<?php echo $i; ?>][Null]" value="YES" /></td>
+<td><input type="checkbox" name="fields[<?php echo $i; ?>][Extra]" value="auto_increment" /></td>
+</tr>
 </table>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>" />
