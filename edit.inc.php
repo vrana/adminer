@@ -86,12 +86,12 @@ foreach ($fields as $name => $field) {
 		preg_match_all("~'((?:[^']*|'')+)'~", $field["length"], $matches);
 		foreach ($matches[1] as $i => $val) {
 			$id = "$name-" . ($i+1);
-			echo ' <input type="checkbox" name="fields[' . $name . '][]" id="' . $id . '" value="' . pow(2, $i) . '"' . ($value & pow(2, $i) ? ' checked="checked"' : '') . ' /><label for="' . $id . '">' . htmlspecialchars(str_replace("''", "'", $val)) . '</label>';
+			echo ' <input type="checkbox" name="fields[' . $name . '][]" id="' . $id . '" value="' . (1 << $i) . '"' . (($value >> $i) & 1 ? ' checked="checked"' : '') . ' /><label for="' . $id . '">' . htmlspecialchars(str_replace("''", "'", $val)) . '</label>';
 		}
 	} elseif (strpos($field["type"], "text") !== false) {
 		echo '<textarea name="fields[' . $name . ']" cols="50" rows="12">' . htmlspecialchars($value) . '</textarea>';
 	} else { //! numbers, date, binary
-			echo '<input name="fields[' . $name . ']" value="' . htmlspecialchars($value) . '"' . (strlen($field["length"]) ? " maxlength='$field[length]'" : ($types[$field["type"]] ? " maxlength='" . $types[$field["type"]] . "'" : '')) . ' />';
+		echo '<input name="fields[' . $name . ']" value="' . htmlspecialchars($value) . '"' . (strlen($field["length"]) ? " maxlength='$field[length]'" : ($types[$field["type"]] ? " maxlength='" . $types[$field["type"]] . "'" : '')) . ' />';
 	}
 	if ($field["null"] && preg_match('~char|text|set~', $field["type"])) {
 		echo '<input type="checkbox" name="null[' . $name . ']" value="1" id="null-' . $name . '"' . (isset($value) ? '' : ' checked="checked"') . ' /><label for="null-' . $name . '">' . lang('NULL') . '</label>';
