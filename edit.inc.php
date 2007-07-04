@@ -27,7 +27,7 @@ if ($_POST) {
 		}
 	}
 	if (mysql_query($query)) {
-		redirect($SELF . "select=" . urlencode($_GET["edit"]), $message);
+		redirect($SELF . ($_POST["insert"] ? "edit=" : "select=") . urlencode($_GET["edit"]), $message);
 	}
 	$error = mysql_error();
 }
@@ -66,6 +66,7 @@ if ($_POST) {
 <form action="" method="post">
 <table border='1' cellspacing='0' cellpadding='2'>
 <?php
+$types = types();
 foreach ($fields as $name => $field) {
 	echo "<tr><th>" . htmlspecialchars($name) . "</th><td>";
 	$value = ($data ? $data[$name] : $field["default"]);
@@ -90,14 +91,14 @@ foreach ($fields as $name => $field) {
 	} elseif (strpos($field["type"], "text") !== false) {
 		echo '<textarea name="fields[' . $name . ']" cols="50" rows="12">' . htmlspecialchars($value) . '</textarea>';
 	} else { //! numbers, date, binary
-		echo '<input name="fields[' . $name . ']" value="' . htmlspecialchars($value) . '"' . (strlen($field["length"]) ? " maxlength='$field[length]'" : '') . ' />';
+			echo '<input name="fields[' . $name . ']" value="' . htmlspecialchars($value) . '"' . (strlen($field["length"]) ? " maxlength='$field[length]'" : ($types[$field["type"]] ? " maxlength='" . $types[$field["type"]] . "'" : '')) . ' />';
 	}
 	if ($field["null"] && preg_match('~char|text|set~', $field["type"])) {
 		echo '<input type="checkbox" name="null[' . $name . ']" value="1" id="null-' . $name . '"' . (isset($value) ? '' : ' checked="checked"') . ' /><label for="null-' . $name . '">' . lang('NULL') . '</label>';
 	}
 	echo "</td></tr>\n";
 }
-echo "<tr><th></th><td><input type='submit' value='" . lang('Save') . "' />" . ($where ? " <input type='submit' name='delete' value='" . lang('Delete') . "' />" : "") . "</td></tr>\n";
+echo "<tr><th></th><td><input type='submit' value='" . lang('Save') . "' /> <input type='submit' name='insert' value='" . lang('Save and insert') . "' />" . ($where ? " <input type='submit' name='delete' value='" . lang('Delete') . "' />" : "") . "</td></tr>\n";
 ?>
 </table>
 </form>
