@@ -1,5 +1,5 @@
 <?php
-header("Content-Type: text/plain; charset=utf-8"); //! Content-Disposition
+header("Content-Type: text/plain; charset=utf-8");
 
 function dump($db) {
 	static $routines;
@@ -21,8 +21,13 @@ function dump($db) {
 	echo "SET CHARACTER SET utf8;\n\n";
 	$result = mysql_query("SHOW TABLES");
 	while ($row = mysql_fetch_row($result)) {
-		echo mysql_result(mysql_query("SHOW CREATE TABLE " . idf_escape($row[0])), 0, 1) . ";\n\n";
-		//! data except views
+		echo mysql_result(mysql_query("SHOW CREATE TABLE " . idf_escape($row[0])), 0, 1) . ";\n";
+		$result1 = mysql_query("SELECT * FROM " . idf_escape($row[0])); //! except views //! enum and set as numbers
+		while ($row1 = mysql_fetch_row($result1)) {
+			echo "INSERT INTO " . idf_escape($row[0]) . " VALUES ('" . implode("', '", array_map('mysql_real_escape_string', $row1)) . "');\n";
+		}
+		mysql_free_result($result1);
+		echo "\n";
 	}
 	mysql_free_result($result);
 	
