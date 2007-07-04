@@ -43,7 +43,7 @@ if ($_POST) {
 } else {
 	$row = array("fields" => array());
 }
-//! collate columns, references, indexes, unsigned, zerofill, default
+//! collate columns, references, unsigned, zerofill, default
 ?>
 <form action="" method="post">
 <p>

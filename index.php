@@ -17,6 +17,8 @@ if (isset($_GET["sql"])) {
 	include "./edit.inc.php";
 } elseif (isset($_GET["create"])) {
 	include "./create.inc.php";
+} elseif (isset($_GET["indexes"])) {
+	include "./indexes.inc.php";
 } elseif (isset($_GET["dump"])) {
 	include "./dump.inc.php";
 } elseif (isset($_GET["view"])) {

@@ -11,9 +11,9 @@ echo "</table>\n";
 mysql_free_result($result);
 echo '<p><a href="' . htmlspecialchars($SELF) . 'create=' . urlencode($_GET["table"]) . '">' . lang('Alter table') . "</a></p>\n";
 
+echo "<h3>" . lang('Indexes') . "</h3>\n";
 $indexes = indexes($_GET["table"]);
 if ($indexes) {
-	echo "<h3>" . lang('Indexes') . "</h3>\n";
 	echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
 	foreach ($indexes as $type => $index) {
 		foreach ($index as $columns) {
@@ -23,6 +23,7 @@ if ($indexes) {
 	}
 	echo "</table>\n";
 }
+echo '<p><a href="' . htmlspecialchars($SELF) . 'indexes=' . urlencode($_GET["table"]) . '">' . lang('Alter indexes') . "</a></p>\n";
 
 $result = mysql_query("SELECT * FROM information_schema.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = '" . mysql_real_escape_string($_GET["db"]) . "' AND TABLE_NAME = '" . mysql_real_escape_string($_GET["table"]) . "' AND REFERENCED_TABLE_NAME IS NOT NULL ORDER BY ORDINAL_POSITION");
 if (mysql_num_rows($result)) {
