@@ -9,7 +9,7 @@ if ($_POST && !$_POST["add"]) {
 		ksort($_POST["fields"]);
 		foreach ($_POST["fields"] as $key => $field) {
 			if (strlen($field["field"]) && isset($types[$field["type"]])) {
-				$fields[] = (!strlen($_GET["create"]) ? "" : (strlen($field["orig"]) ? "CHANGE " . idf_escape($field["orig"]) . " " : "ADD ")) . idf_escape($field["field"]) . " $field[type]" . ($field["length"] ? "($field[length])" : "") . ($field["not_null"] ? " NOT NULL" : "") . ($field["auto_increment"] ? " AUTO_INCREMENT" : "");
+				$fields[] = (!strlen($_GET["create"]) ? "" : (strlen($field["orig"]) ? "CHANGE " . idf_escape($field["orig"]) . " " : "ADD ")) . idf_escape($field["field"]) . " $field[type]" . ($field["length"] ? "($field[length])" : "") . ($field["null"] ? "" : " NOT NULL") . ($field["extra"] == "auto_increment" ? " AUTO_INCREMENT PRIMARY KEY" : "");
 			} elseif (strlen($field["orig"])) {
 				$fields[] = "DROP " . idf_escape($field["orig"]);
 			}
