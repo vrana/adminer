@@ -133,6 +133,19 @@ function redirect($location, $message = null) {
 	exit;
 }
 
+function types() {
+	return array(
+		"tinyint" => 3, "smallint" => 5, "mediumint" => 8, "int" => 10, "bigint" => 20,
+		"float" => 12, "double" => 21, "decimal" => 66,
+		"date" => 10, "datetime" => 19, "timestamp" => 19, "time" => 10, "year" => 4,
+		"char" => 255, "varchar" => 65535,
+		"binary" => 255, "varbinary" => 65535,
+		"tinytext" => 255, "text" => 65535, "mediumtext" => 16777215, "longtext" => 4294967295,
+		"tinyblob" => 255, "blob" => 65535, "mediumblob" => 16777215, "longblob" => 4294967295,
+		"enum" => 65535, "set" => 64,
+	);
+}
+
 if (get_magic_quotes_gpc()) {
     $process = array(&$_GET, &$_POST);
     while (list($key, $val) = each($process)) {
