@@ -36,7 +36,8 @@ H2 { font-size: 150%; margin-top: 0; }
 <a href="<?php echo htmlspecialchars($SELF); ?>logout="><?php echo lang('Logout'); ?></a>
 </p>
 <form action="" method="get">
-<p><select name="db" onchange="this.form.submit();"><option value="">(<?php echo lang('database'); ?>)</option>
+<p><?php if (strlen($_GET["server"])) { ?><input type="hidden" name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>" /><?php } ?>
+<select name="db" onchange="this.form.submit();"><option value="">(<?php echo lang('database'); ?>)</option>
 <?php
 		$result = mysql_query("SHOW DATABASES");
 		while ($row = mysql_fetch_row($result)) {
