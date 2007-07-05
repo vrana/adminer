@@ -1,10 +1,10 @@
 <?php
 page_header(lang('Table') . ": " . htmlspecialchars($_GET["table"]));
 
-$result = mysql_query("SHOW FULL COLUMNS FROM " . idf_escape($_GET["table"]));
+$result = mysql_query("SHOW COLUMNS FROM " . idf_escape($_GET["table"]));
 echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
 while ($row = mysql_fetch_assoc($result)) {
-	echo "<tr><th>" . htmlspecialchars($row["Field"]) . "</th><td>$row[Type]" . ($row["Null"] == "NO" ? " NOT NULL" : "") . "</td></tr>\n";
+	echo "<tr><th>" . htmlspecialchars($row["Field"]) . "</th><td>$row[Type]" . ($row["Null"] == "NO" ? "" : " <i>NULL</i>") . "</td></tr>\n";
 }
 echo "</table>\n";
 mysql_free_result($result);
