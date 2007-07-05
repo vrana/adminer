@@ -31,17 +31,18 @@ function optionlist($options, $selected = array(), $not_vals = false) {
 
 function fields($table) {
 	$return = array();
-	$result = mysql_query("SHOW COLUMNS FROM " . idf_escape($table));
+	$result = mysql_query("SHOW FULL COLUMNS FROM " . idf_escape($table));
 	while ($row = mysql_fetch_assoc($result)) {
-		preg_match('~^([^(]+)(?:\\((.+)\\))?( unsigned)?$~', $row["Type"], $match);
+		preg_match('~^([^(]+)(?:\\((.+)\\))?( unsigned)?( zerofill)?$~', $row["Type"], $match);
 		$return[$row["Field"]] = array(
 			"field" => $row["Field"],
 			"type" => $match[1],
 			"length" => $match[2],
-			"unsigned" => $match[3],
+			"unsigned" => ltrim($match[3] . $match[4]),
 			"default" => $row["Default"],
 			"null" => ($row["Null"] != "NO"),
 			"extra" => $row["Extra"],
+			"collation" => $row["Collation"],
 		);
 	}
 	mysql_free_result($result);
