@@ -97,7 +97,7 @@ foreach ($fields as $name => $field) {
 	}
 	echo "</td></tr>\n";
 }
-echo "<tr><th></th><td><input type='submit' value='" . lang('Save') . "' /> <input type='submit' name='insert' value='" . lang('Save and insert') . "' />" . ($where ? " <input type='submit' name='delete' value='" . lang('Delete') . "' />" : "") . "</td></tr>\n";
+echo "<tr><th><input type='hidden' name='sent' value='1' /></th><td><input type='submit' value='" . lang('Save') . "' /> <input type='submit' name='insert' value='" . lang('Save and insert') . "' />" . ($where ? " <input type='submit' name='delete' value='" . lang('Delete') . "' />" : "") . "</td></tr>\n";
 ?>
 </table>
 </form>
