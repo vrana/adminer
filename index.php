@@ -2,6 +2,7 @@
 session_start();
 error_reporting(E_ALL & ~E_NOTICE);
 $SELF = preg_replace('~^[^?]*/([^?]*).*~', '\\1?', $_SERVER["REQUEST_URI"]) . (strlen($_GET["server"]) ? 'server=' . urlencode($_GET["server"]) . '&' : '') . (strlen($_GET["db"]) ? 'db=' . urlencode($_GET["db"]) . '&' : '');
+include "./lang.inc.php";
 include "./functions.inc.php";
 include "./design.inc.php";
 include "./auth.inc.php";

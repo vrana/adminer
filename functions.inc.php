@@ -1,8 +1,4 @@
 <?php
-function lang($idf) {
-	return $idf;
-}
-
 function idf_escape($idf) {
 	return "`" . str_replace("`", "``", $idf) . "`";
 }
