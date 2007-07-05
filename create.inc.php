@@ -6,6 +6,20 @@ if ($_POST && !$_POST["add"]) {
 		$query = "DROP TABLE " . idf_escape($_GET["create"]);
 		$message = lang('Table has been dropped.');
 	} else {
+		$auto_increment_index = " PRIMARY KEY";
+		if (strlen($_GET["create"]) && strlen($_POST["fields"][$_POST["auto_increment"]]["orig"])) {
+			foreach (indexes($_GET["create"]) as $index) {
+				foreach ($index["columns"] as $column) {
+					if ($column == $_POST["fields"][$_POST["auto_increment"]]["orig"]) {
+						$auto_increment_index = "";
+						break 2;
+					}
+				}
+				if ($index["type"] == "PRIMARY") {
+					$auto_increment_index = " UNIQUE";
+				}
+			}
+		}
 		$fields = array();
 		ksort($_POST["fields"]);
 		foreach ($_POST["fields"] as $key => $field) {
@@ -16,7 +30,7 @@ if ($_POST && !$_POST["add"]) {
 					. (preg_match('~int|float|double|decimal~', $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
 					. (preg_match('~char|text~', $field["type"]) && $field["collation"] ? " COLLATE '" . mysql_real_escape_string($field["collation"]) . "'" : "")
 					. ($field["null"] ? "" : " NOT NULL")
-					. ($key == $_POST["auto_increment"] ? " AUTO_INCREMENT PRIMARY KEY" : "") //! drop old primary key, can be part of any index
+					. ($key == $_POST["auto_increment"] ? " AUTO_INCREMENT$auto_increment_index" : "")
 				;
 			} elseif (strlen($field["orig"])) {
 				$fields[] = "DROP " . idf_escape($field["orig"]);
