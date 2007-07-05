@@ -1,6 +1,6 @@
 <?php
 function lang($idf = null) {
-	static $translation = array(
+	static $translations = array(
 		'en' => array(),
 		'cs' => array(
 			'Usage: php _compile.php [lang]' => 'Použití: php _compile.php [jazyk]',
@@ -79,21 +79,20 @@ function lang($idf = null) {
 		),
 	);
 	if (!isset($idf)) {
-		return array_keys($translation);
+		return array_keys($translations);
 	}
 	if (strlen($_SESSION["lang"])) {
 		$lang = $_SESSION["lang"];
 	} else {
 		$lang = preg_replace('~[,;].*~', '', $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
-		if (!isset($langs[$lang])) { //! try next languages
+		if (!isset($translations[$lang])) { //! try next languages
 			$lang = preg_replace('~-.*~', '', $lang);
-			if (!isset($langs[$lang])) {
+			if (!isset($translations[$lang])) {
 				$lang = "en";
 			}
 		}
 	}
-	$return = $translation[$lang][$idf];
-	return (strlen($return) ? $return : $idf);
+	return (strlen($translations[$lang][$idf]) ? $translations[$lang][$idf] : $idf);
 }
 
 function switch_lang() {
