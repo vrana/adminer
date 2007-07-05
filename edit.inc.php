@@ -1,5 +1,16 @@
 <?php
 $fields = fields($_GET["edit"]);
+$where = array();
+if (is_array($_GET["where"])) {
+	foreach ($_GET["where"] as $key => $val) {
+		$where[] = idf_escape($key) . " = BINARY '" . mysql_real_escape_string($val) . "'";
+	}
+}
+if (is_array($_GET["null"])) {
+	foreach ($_GET["null"] as $key) {
+		$where[] = idf_escape($key) . " IS NULL";
+	}
+}
 if ($_POST) {
 	if (isset($_POST["delete"])) {
 		$query = "DELETE FROM " . idf_escape($_GET["edit"]) . " WHERE " . implode(" AND ", $where) . " LIMIT 1";
@@ -33,17 +44,6 @@ if ($_POST) {
 }
 page_header(($_GET["where"] ? lang('Edit') : lang('Insert')) . ": " . htmlspecialchars($_GET["edit"]));
 
-$where = array();
-if (is_array($_GET["where"])) {
-	foreach ($_GET["where"] as $key => $val) {
-		$where[] = idf_escape($key) . " = BINARY '" . mysql_real_escape_string($val) . "'";
-	}
-}
-if (is_array($_GET["null"])) {
-	foreach ($_GET["null"] as $key) {
-		$where[] = idf_escape($key) . " IS NULL";
-	}
-}
 if ($_POST) {
 	echo "<p class='error'>" . lang('Error during saving') . ": " . htmlspecialchars($error) . "</p>\n";
 	$data = $_POST["fields"];
