@@ -1,26 +1,26 @@
 <?php
 if (isset($_POST["server"])) {
-	$_SESSION["username"] = $_POST["username"];
-	$_SESSION["password"] = $_POST["password"];
+	$_SESSION["usernames"][$_POST["server"]] = $_POST["username"];
+	$_SESSION["passwords"][$_POST["server"]] = $_POST["password"];
 	header("Location: " . ((string) $_GET["server"] === $_POST["server"] ? preg_replace('~(\\?)logout=&|[?&]logout=~', '\\1', $_SERVER["REQUEST_URI"]) : preg_replace('~^[^?]*/([^?]*).*~', '\\1' . (strlen($_POST["server"]) ? '?server=' . urlencode($_POST["server"]) : '') . (strlen(SID) ? (strlen($_POST["server"]) ? "&" : "?") . SID : ""), $_SERVER["REQUEST_URI"])));
 	exit;
 } elseif (isset($_GET["logout"])) {
-	unset($_SESSION["username"]);
-	unset($_SESSION["password"]);
+	unset($_SESSION["usernames"][$_GET["server"]]);
+	unset($_SESSION["passwords"][$_GET["server"]]);
 }
 
-if (isset($_GET["logout"]) || !@mysql_connect($_GET["server"], $_SESSION["username"], $_SESSION["password"])) {
+if (isset($_GET["logout"]) || !@mysql_connect($_GET["server"], $_SESSION["usernames"][$_GET["server"]], $_SESSION["passwords"][$_GET["server"]])) {
 	page_header(lang('Login'), "auth");
 	if (isset($_GET["logout"])) {
 		echo "<p class='message'>" . lang('Logout successful.') . "</p>\n";
-	} elseif (isset($_SESSION["username"])) {
+	} elseif (isset($_SESSION["usernames"][$_GET["server"]])) {
 		echo "<p class='error'>" . lang('Invalid credentials.') . "</p>\n";
 	}
 	?>
 	<form action="" method="post">
 	<table border="0" cellspacing="0" cellpadding="2">
 	<tr><th><?php echo lang('Server'); ?>:</th><td><input name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>" maxlength="60" /></td></tr>
-	<tr><th><?php echo lang('Username'); ?>:</th><td><input name="username" value="<?php echo htmlspecialchars($_SESSION["username"]); ?>" maxlength="16" /></td></tr>
+	<tr><th><?php echo lang('Username'); ?>:</th><td><input name="username" value="<?php echo htmlspecialchars($_SESSION["usernames"][$_GET["server"]]); ?>" maxlength="16" /></td></tr>
 	<tr><th><?php echo lang('Password'); ?>:</th><td><input type="password" name="password" /></td></tr>
 	<tr><th><?php
 	foreach ($_POST as $key => $val) { // expired session
