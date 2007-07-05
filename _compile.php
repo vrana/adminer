@@ -23,7 +23,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 if ($_SERVER["argc"] > 1) {
 	include "./lang.inc.php";
 	if ($_SERVER["argc"] != 2 || !in_array($_SERVER["argv"][1], lang())) {
-		echo lang('Usage: php _compile.php [lang]') . "\n" . lang('Purpose: Compile phpMinAdmin[-lang].php from index.php.') . "\n";
+		echo "Usage: php _compile.php [lang]\nPurpose: Compile phpMinAdmin[-lang].php from index.php.\n";
 		exit(1);
 	}
 	$_SESSION["lang"] = $_SERVER["argv"][1];
