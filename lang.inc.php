@@ -27,6 +27,7 @@ function lang($idf = null) {
 			'Length' => 'Délka',
 			'NULL' => 'NULL',
 			'Auto-increment' => 'Auto-increment',
+			'Options' => 'Volby',
 			'Add row' => 'Přidat řádek',
 			'Save' => 'Uložit',
 			'Drop' => 'Odstranit',
