@@ -28,7 +28,6 @@ if ($_POST) {
 }
 
 page_header(strlen($_GET["db"]) ? lang('Alter database') . ": " . htmlspecialchars($_GET["db"]) : lang('Create database'));
-echo "<h2>" . (strlen($_GET["db"]) ? lang('Alter database') . ": " . htmlspecialchars($_GET["db"]) : lang('Create database')) . "</h2>\n";
 
 if ($_POST) {
 	echo "<p class='error'>" . lang('Unable to operate database') . ": " . htmlspecialchars($error) . "</p>\n";

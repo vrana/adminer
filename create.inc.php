@@ -29,7 +29,6 @@ if ($_POST && !$_POST["add"]) {
 	$error = mysql_error();
 }
 page_header(strlen($_GET["create"]) ? lang('Alter table') . ': ' . htmlspecialchars($_GET["create"]) : lang('Create table'));
-echo "<h2>" . (strlen($_GET["create"]) ? lang('Alter table') . ': ' . htmlspecialchars($_GET["create"]) : lang('Create table')) . "</h2>\n";
 
 if ($_POST) {
 	if (!$_POST["add"]) {

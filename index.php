@@ -26,7 +26,7 @@ if (isset($_GET["sql"])) {
 } elseif (isset($_GET["database"])) {
 	include "./database.inc.php";
 } else {
-	page_header(htmlspecialchars($_GET["db"]));
+	page_header(htmlspecialchars(lang('Database') . ": " . $_GET["db"]));
 	echo '<p><a href="' . htmlspecialchars($SELF) . 'database=">' . lang('Alter database') . "</a></p>\n";
 	$result = mysql_query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = '" . mysql_real_escape_string($_GET["db"]) . "'");
 	if (mysql_num_rows($result)) {

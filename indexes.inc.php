@@ -34,7 +34,6 @@ if ($_POST) {
 }
 
 page_header(lang('Indexes') . ': ' . htmlspecialchars($_GET["indexes"]));
-echo "<h2>" . lang('Indexes') . ': ' . htmlspecialchars($_GET["indexes"]) . "</h2>\n";
 
 if ($_POST) {
 	echo "<p class='error'>" . lang('Unable to operate indexes') . ": " . htmlspecialchars($error) . "</p>\n";

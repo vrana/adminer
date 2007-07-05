@@ -67,6 +67,7 @@ H2 { font-size: 150%; margin-top: 0; }
 
 <div id="content">
 <?php
+		echo "<h2>$title</h2>\n";
 	}
 	if ($_SESSION["message"]) {
 		echo "<p class='message'>$_SESSION[message]</p>\n";

@@ -7,7 +7,6 @@ if ($_POST) {
 	$error = mysql_error();
 }
 page_header(lang('SQL command'), (strlen($_GET["db"]) ? "" : "db"));
-echo "<h2>" . lang('SQL command') . "</h2>\n";
 
 if ($_POST) {
 	if (!$result) {

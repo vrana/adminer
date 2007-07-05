@@ -1,10 +1,8 @@
 <?php
+$indexes = indexes($_GET["select"]);
 page_header(lang('Select') . ": " . htmlspecialchars($_GET["select"]));
-echo "<h2>" . lang('Select') . ": " . htmlspecialchars($_GET["select"]) . "</h2>\n";
 
 echo '<p><a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '">' . lang('New item') . "</a></p>\n";
-$indexes = indexes($_GET["select"]);
-
 echo "<form action='' id='form'><div>\n";
 if (strlen($_GET["server"])) {
 	echo '<input type="hidden" name="server" value="' . htmlspecialchars($_GET["server"]) . '" />';

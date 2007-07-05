@@ -32,7 +32,6 @@ if ($_POST) {
 	$error = mysql_error();
 }
 page_header(($_GET["where"] ? lang('Edit') : lang('Insert')) . ": " . htmlspecialchars($_GET["edit"]));
-echo "<h2>" . ($_GET["where"] ? lang('Edit') : lang('Insert')) . ": " . htmlspecialchars($_GET["edit"]) . "</h2>\n";
 
 $where = array();
 if (is_array($_GET["where"])) {

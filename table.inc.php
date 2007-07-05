@@ -1,6 +1,5 @@
 <?php
 page_header(lang('Table') . ": " . htmlspecialchars($_GET["table"]));
-echo "<h2>" . lang('Table') . ": " . htmlspecialchars($_GET["table"]) . "</h2>\n";
 
 $result = mysql_query("SHOW FULL COLUMNS FROM " . idf_escape($_GET["table"]));
 echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
