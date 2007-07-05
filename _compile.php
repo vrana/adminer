@@ -6,12 +6,14 @@ function remove_lang($match) {
 
 function put_file($match) {
 	$return = file_get_contents($match[4]);
-	$return = preg_replace("~\\?>?\n?\$~", '', $return);
-	if (substr_count($return, "<?php") - substr_count($return, "?>") <= 0 && !$match[5]) {
+	$return = preg_replace("~\\?>\n?\$~", '', $return);
+	if (substr_count($return, "<?php") <= substr_count($return, "?>") && !$match[5]) {
 		$return .= "<?php\n";
 	}
 	$return = preg_replace('~^<\\?php\\s+~', '', $return, 1, $count);
-	if (!$count && !$match[1]) {
+	if ($count) {
+		$return = "\n$return";
+	} elseif (!$match[1]) {
 		$return = "?>\n$return";
 	}
 	return $return;
@@ -32,7 +34,7 @@ if ($_SESSION["lang"]) {
 	$filename = "phpMinAdmin-$_SESSION[lang].php";
 	$file = str_replace("include \"./lang.inc.php\";\n", "", $file);
 }
-$file = preg_replace_callback('~(<\\?php\\s*)?(include|require)(_once)? "([^"]*)";(\\s*\\?>)?~', 'put_file', $file);
+$file = preg_replace_callback('~(<\\?php)?\\s*(include|require)(_once)? "([^"]*)";(\\s*\\?>)?~', 'put_file', $file);
 if ($_SESSION["lang"]) {
 	$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']*|\\\\.)+)'\\)(;\\s*\\?>)?~s", 'remove_lang', $file);
 	$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
