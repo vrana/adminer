@@ -13,7 +13,6 @@ BODY { color: Black; background-color: White; }
 A { color: Blue; }
 A:visited { color: Navy; }
 H1 { font-size: 150%; margin: 0; }
-H1 A { color: Black; }
 H2 { font-size: 150%; margin-top: 0; }
 .error { color: Red; }
 .message { color: Green; }
@@ -25,7 +24,7 @@ H2 { font-size: 150%; margin-top: 0; }
 <body>
 
 <div id="menu">
-<h1><a href="<?php echo htmlspecialchars(substr($SELF, 0, -1)); ?>"><?php echo lang('phpMinAdmin'); ?></a></h1>
+<h1><a href="<?php echo (strlen($SELF) > 1 ? htmlspecialchars(substr($SELF, 0, -1)) : "."); ?>"><?php echo lang('phpMinAdmin'); ?></a></h1>
 <?php switch_lang(); ?>
 <?php if ($missing != "auth") { ?>
 <p>
