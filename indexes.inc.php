@@ -1,6 +1,36 @@
 <?php
 $index_types = array("PRIMARY", "UNIQUE", "INDEX", "FULLTEXT");
+$indexes = indexes($_GET["indexes"]);
+$fields = array_keys(fields($_GET["indexes"]));
 if ($_POST) {
+	$alter = array();
+	foreach ($_POST["indexes"] as $index) {
+		if (in_array($index["type"], $index_types)) {
+			$columns = array();
+			ksort($index["columns"]);
+			foreach ($index["columns"] as $column) {
+				if (in_array($column, $fields, true)) {
+					$columns[count($columns) + 1] = $column;
+				}
+			}
+			if ($columns) {
+				foreach ($indexes as $name => $existing) {
+					if ($index["type"] == $existing["type"] && $existing["columns"] == $columns) {
+						unset($indexes[$name]);
+						continue 2;
+					}
+				}
+				$alter[] = "ADD $index[type]" . ($index["type"] == "PRIMARY" ? " KEY" : "") . " (" . implode(", ", array_map('idf_escape', $columns)) . ")";
+			}
+		}
+	}
+	foreach ($indexes as $name => $existing) {
+		$alter[] = "DROP INDEX " . idf_escape($name);
+	}
+	if (!$alter || mysql_query("ALTER TABLE " . idf_escape($_GET["indexes"]) . " " . implode(", ", $alter))) {
+		redirect($SELF . "table=" . urlencode($_GET["indexes"]), ($alter ? lang('Indexes has been altered.') : null));
+	}
+	$error = mysql_error();
 }
 
 page_header(lang('Indexes') . ': ' . htmlspecialchars($_GET["indexes"]));
@@ -10,17 +40,16 @@ if ($_POST) {
 	echo "<p class='error'>" . lang('Unable to operate indexes') . ": " . htmlspecialchars($error) . "</p>\n";
 	$row = $_POST;
 } else {
-	$row = array("indexes" => indexes($_GET["indexes"]));
+	$row = array("indexes" => $indexes);
 }
 ?>
 <form action="" method="post">
 <table border="0" cellspacing="0" cellpadding="2">
 <?php
-$fields = array_keys(fields($_GET["indexes"]));
 $j = 0;
 foreach ($row["indexes"] as $index) {
 	echo "<tr><td><select name='indexes[$j][type]'><option></option>" . optionlist($index_types, $index["type"], "not_vals") . "</select></td><td>";
-	sort($index["columns"]);
+	ksort($index["columns"]);
 	foreach ($index["columns"] as $i => $column) {
 		echo "<select name='indexes[$j][columns][$i]'><option></option>" . optionlist($fields, $column, "not_vals") . "</select>";
 	}

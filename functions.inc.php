@@ -23,7 +23,7 @@ function optionlist($options, $selected = array(), $not_vals = false) {
 			$return .= '<optgroup label="' . htmlspecialchars($k) . '">';
 		}
 		foreach ((is_array($v) ? $v : array($k => $v)) as $key => $val) {
-			$checked = in_array(($not_vals ? $val : $key), (array) $selected);
+			$checked = in_array(($not_vals ? $val : $key), (array) $selected, true);
 			$return .= '<option' . ($not_vals ? '' : ' value="' . htmlspecialchars($key) . '"') . ($checked ? ' selected="selected"' : '') . '>' . htmlspecialchars($val) . '</option>';
 		}
 		if (is_array($v)) {

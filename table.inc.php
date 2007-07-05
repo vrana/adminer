@@ -16,7 +16,7 @@ $indexes = indexes($_GET["table"]);
 if ($indexes) {
 	echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
 	foreach ($indexes as $index) {
-		sort($index["columns"]);
+		ksort($index["columns"]);
 		echo "<tr><td>$index[type]</td><td><i>" . implode("</i>, <i>", $index["columns"]) . "</i></td></tr>\n";
 	}
 	echo "</table>\n";
