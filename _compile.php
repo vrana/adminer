@@ -1,7 +1,7 @@
 <?php
 function remove_lang($match) {
-	global $LANG;
-	return lang(strtr($match[2], array("\\'" => "'", "\\\\" => "\\")));
+	$s = lang(strtr($match[2], array("\\'" => "'", "\\\\" => "\\")));
+	return ($match[1] && $match[3] ? $s : "$match[1]'" . addcslashes($s, "\\'") . "'$match[3]");
 }
 
 function put_file($match) {
@@ -18,16 +18,25 @@ function put_file($match) {
 }
 
 error_reporting(E_ALL & ~E_NOTICE);
+if ($_SERVER["argc"] > 1) {
+	include "./lang.inc.php";
+	if ($_SERVER["argc"] != 2 || !in_array($_SERVER["argv"][1], lang())) {
+		echo lang('Usage: php _compile.php [lang]') . "\n" . lang('Purpose: Compile phpMinAdmin[-lang].php from index.php.') . "\n";
+		exit(1);
+	}
+	$_SESSION["lang"] = $_SERVER["argv"][1];
+}
+$filename = "phpMinAdmin.php";
 $file = file_get_contents("index.php");
-$LANG = (strlen($_SERVER["argv"][1]) == 2 ? $_SERVER["argv"][1] : "");
-if ($LANG) {
+if ($_SESSION["lang"]) {
+	$filename = "phpMinAdmin-$_SESSION[lang].php";
 	$file = str_replace("include \"./lang.inc.php\";\n", "", $file);
 }
 $file = preg_replace_callback('~(<\\?php\\s*)?(include|require)(_once)? "([^"]*)";(\\s*\\?>)?~', 'put_file', $file);
-if ($LANG) {
-	include "./lang.inc.php";
-	preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']*|\\\\.)+)'\\)(;\\s*\\?>)?~s", 'remove_lang', $file);
+if ($_SESSION["lang"]) {
+	$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']*|\\\\.)+)'\\)(;\\s*\\?>)?~s", 'remove_lang', $file);
+	$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
 }
 //! remove spaces and comments
-file_put_contents("phpMinAdmin" . ($LANG ? "-$LANG" : "") . ".php", $file);
-echo "phpMinAdmin.php created.\n";
+file_put_contents($filename, $file);
+echo "$filename created.\n";

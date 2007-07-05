@@ -29,6 +29,7 @@ H2 { font-size: 150%; margin-top: 0; }
 		?>
 <div id="menu">
 <h1><a href="<?php echo htmlspecialchars(substr($SELF, 0, -1)); ?>"><?php echo lang('phpMinAdmin'); ?></a></h1>
+<?php switch_lang(); ?>
 <p>
 <a href="<?php echo htmlspecialchars($SELF); ?>sql="><?php echo lang('SQL command'); ?></a>
 <a href="<?php echo htmlspecialchars($SELF); ?>dump="><?php echo lang('Dump'); ?></a>

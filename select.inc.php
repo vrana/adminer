@@ -86,7 +86,7 @@ if (!mysql_num_rows($result)) {
 			}
 			echo "<td>$val</td>";
 		}
-		echo '<td><a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . implode('&amp;', unique_idf($row, $indexes)) . '">edit</a>'; //! views can be unupdatable
+		echo '<td><a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . implode('&amp;', unique_idf($row, $indexes)) . '">' . lang('edit') . '</a>'; //! views can be unupdatable
 		foreach ($childs as $child) {
 			echo ' <a href="' . htmlspecialchars(strlen($child[0]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($child[0]), $SELF) : $SELF) . 'select=' . urlencode($child[1]);
 			foreach ($child[2] as $i => $source) {

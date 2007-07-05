@@ -23,7 +23,7 @@ if (isset($_GET["logout"]) || !@mysql_connect($_GET["server"], $_SESSION["userna
 	<form action="" method="post">
 	<table border="0" cellspacing="0" cellpadding="2">
 	<tr><th><?php echo lang('Server'); ?>:</th><td><input name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>" maxlength="60" /></td></tr>
-	<tr><th><?php echo lang('Login'); ?>:</th><td><input name="username" value="<?php echo htmlspecialchars($_SESSION["username"]); ?>" maxlength="16" /></td></tr>
+	<tr><th><?php echo lang('Username'); ?>:</th><td><input name="username" value="<?php echo htmlspecialchars($_SESSION["username"]); ?>" maxlength="16" /></td></tr>
 	<tr><th><?php echo lang('Password'); ?>:</th><td><input type="password" name="password" /></td></tr>
 	<tr><th><?php
 	foreach ($_POST as $key => $val) { // expired session
