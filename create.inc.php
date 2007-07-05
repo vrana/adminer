@@ -78,9 +78,9 @@ foreach ($row["fields"] as $field) {
 <td><input type="checkbox" name="fields[<?php echo $i; ?>][extra]" value="auto_increment" /></td>
 </tr>
 </table>
-<p><input type="submit" name="add" value="<?php echo lang('Add row'); ?>" /></p>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>" />
 <?php if (strlen($_GET["create"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>" /><?php } ?>
 </p>
+<p><input type="submit" name="add" value="<?php echo lang('Add row'); ?>" /></p>
 </form>

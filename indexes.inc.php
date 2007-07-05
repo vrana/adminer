@@ -2,7 +2,7 @@
 $index_types = array("PRIMARY", "UNIQUE", "INDEX", "FULLTEXT");
 $indexes = indexes($_GET["indexes"]);
 $fields = array_keys(fields($_GET["indexes"]));
-if ($_POST) {
+if ($_POST && !$_POST["add"]) {
 	$alter = array();
 	foreach ($_POST["indexes"] as $index) {
 		if (in_array($index["type"], $index_types)) {
@@ -36,7 +36,9 @@ if ($_POST) {
 page_header(lang('Indexes') . ': ' . htmlspecialchars($_GET["indexes"]));
 
 if ($_POST) {
-	echo "<p class='error'>" . lang('Unable to operate indexes') . ": " . htmlspecialchars($error) . "</p>\n";
+	if (!$_POST["add"]) {
+		echo "<p class='error'>" . lang('Unable to operate indexes') . ": " . htmlspecialchars($error) . "</p>\n";
+	}
 	$row = $_POST;
 } else {
 	$row = array("indexes" => $indexes);
@@ -47,18 +49,23 @@ if ($_POST) {
 <?php
 $j = 0;
 foreach ($row["indexes"] as $index) {
-	echo "<tr><td><select name='indexes[$j][type]'><option></option>" . optionlist($index_types, $index["type"], "not_vals") . "</select></td><td>";
-	ksort($index["columns"]);
-	foreach ($index["columns"] as $i => $column) {
-		echo "<select name='indexes[$j][columns][$i]'><option></option>" . optionlist($fields, $column, "not_vals") . "</select>";
+	if ($index["type"] || array_filter($index["columns"], 'strlen')) {
+		echo "<tr><td><select name='indexes[$j][type]'><option></option>" . optionlist($index_types, $index["type"], "not_vals") . "</select></td><td>";
+		ksort($index["columns"]);
+		foreach ($index["columns"] as $i => $column) {
+			if (strlen($column)) {
+				echo "<select name='indexes[$j][columns][$i]'><option></option>" . optionlist($fields, $column, "not_vals") . "</select>";
+			}
+		}
+		echo "<select name='indexes[$j][columns][" . ($i+1) . "]'><option></option>" . optionlist($fields, array(), "not_vals") . "</select>";
+		echo "</td></tr>\n";
+		$j++;
 	}
-	echo "<select name='indexes[$j][columns][" . ($i+1) . "]'><option></option>" . optionlist($fields, array(), "not_vals") . "</select>";
-	echo "</td></tr>\n";
-	$j++;
 }
 //! JavaScript for adding more indexes and columns
 ?>
 <tr><td><select name="indexes[<?php echo $j; ?>][type]"><option></option><?php echo optionlist($index_types, array(), "not_vals"); ?></select></td><td><select name="indexes[<?php echo $j; ?>][columns][1]"><option></option><?php echo optionlist($fields, array(), "not_vals"); ?></select></td></tr>
 </table>
 <p><input type="submit" value="<?php echo lang('Alter indexes'); ?>" /></p>
+<p><input type="submit" name="add" value="<?php echo lang('Add next'); ?>" /></p>
 </form>

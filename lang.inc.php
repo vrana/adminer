@@ -61,6 +61,7 @@ function lang($idf = null) {
 			'Indexes' => 'Indexy',
 			'Unable to operate indexes' => 'Nepodařilo se zpracovat indexy',
 			'Alter indexes' => 'Změnit indexy',
+			'Add next' => 'Přidat další',
 			'Language' => 'Jazyk',
 			'Select' => 'Vypsat',
 			'New item' => 'Nová položka',
