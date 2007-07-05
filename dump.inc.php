@@ -53,6 +53,3 @@ if (strlen($_GET["db"])) {
 	}
 	mysql_free_result($result);
 }
-
-
-exit;
