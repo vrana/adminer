@@ -56,8 +56,8 @@ function indexes($table) {
 	$return = array();
 	$result = mysql_query("SHOW INDEX FROM " . idf_escape($table));
 	while ($row = mysql_fetch_assoc($result)) {
-		$type = ($row["Key_name"] == "PRIMARY" ? "PRIMARY" : ($row["Index_type"] == "FULLTEXT" ? "FULLTEXT" : ($row["Non_unique"] ? "INDEX" : "UNIQUE")));
-		$return[$type][$row["Key_name"]][$row["Seq_in_index"]] = $row["Column_name"];
+		$return[$row["Key_name"]]["type"] = ($row["Key_name"] == "PRIMARY" ? "PRIMARY" : ($row["Index_type"] == "FULLTEXT" ? "FULLTEXT" : ($row["Non_unique"] ? "INDEX" : "UNIQUE")));
+		$return[$row["Key_name"]]["columns"][$row["Seq_in_index"]] = $row["Column_name"];
 	}
 	mysql_free_result($result);
 	return $return;
@@ -79,18 +79,16 @@ function foreign_keys($table) {
 }
 
 function unique_idf($row, $indexes) {
-	foreach ($indexes as $type => $index) {
-		if ($type == "PRIMARY" || $type == "UNIQUE") {
-			foreach ($index as $columns) {
-				$return = array();
-				foreach ($columns as $key) {
-					if (!isset($row[$key])) {
-						continue 2;
-					}
-					$return[] = urlencode("where[$key]") . "=" . urlencode($row[$key]);
+	foreach ($indexes as $index) {
+		if ($index["type"] == "PRIMARY" || $index["type"] == "UNIQUE") {
+			$return = array();
+			foreach ($index["columns"] as $key) {
+				if (!isset($row[$key])) {
+					continue 2;
 				}
-				return $return;
+				$return[] = urlencode("where[$key]") . "=" . urlencode($row[$key]);
 			}
+			return $return;
 		}
 	}
 	$return = array();

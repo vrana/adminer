@@ -18,17 +18,15 @@ if ($_POST) {
 <?php
 $fields = array_keys(fields($_GET["indexes"]));
 $j = 0;
-foreach ($row["indexes"] as $type => $index) {
-	foreach ($index as $columns) {
-		echo "<tr><td><select name='indexes[$j][type]'><option></option>" . optionlist($index_types, $type, "not_vals") . "</select></td><td>";
-		sort($columns);
-		foreach ($columns as $i => $column) {
-			echo "<select name='indexes[$j][columns][$i]'><option></option>" . optionlist($fields, $column, "not_vals") . "</select>";
-		}
-		echo "<select name='indexes[$j][columns][" . ($i+1) . "]'><option></option>" . optionlist($fields, array(), "not_vals") . "</select>";
-		echo "</td></tr>\n";
-		$j++;
+foreach ($row["indexes"] as $index) {
+	echo "<tr><td><select name='indexes[$j][type]'><option></option>" . optionlist($index_types, $index["type"], "not_vals") . "</select></td><td>";
+	sort($index["columns"]);
+	foreach ($index["columns"] as $i => $column) {
+		echo "<select name='indexes[$j][columns][$i]'><option></option>" . optionlist($fields, $column, "not_vals") . "</select>";
 	}
+	echo "<select name='indexes[$j][columns][" . ($i+1) . "]'><option></option>" . optionlist($fields, array(), "not_vals") . "</select>";
+	echo "</td></tr>\n";
+	$j++;
 }
 //! JavaScript for adding more indexes and columns
 ?>

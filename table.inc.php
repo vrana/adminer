@@ -15,11 +15,9 @@ echo "<h3>" . lang('Indexes') . "</h3>\n";
 $indexes = indexes($_GET["table"]);
 if ($indexes) {
 	echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
-	foreach ($indexes as $type => $index) {
-		foreach ($index as $columns) {
-			sort($columns);
-			echo "<tr><td>$type</td><td><i>" . implode("</i>, <i>", $columns) . "</i></td></tr>\n";
-		}
+	foreach ($indexes as $index) {
+		sort($index["columns"]);
+		echo "<tr><td>$index[type]</td><td><i>" . implode("</i>, <i>", $index["columns"]) . "</i></td></tr>\n";
 	}
 	echo "</table>\n";
 }
