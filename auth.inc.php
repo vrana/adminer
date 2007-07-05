@@ -11,12 +11,9 @@ if (isset($_POST["server"])) {
 
 if (isset($_GET["logout"]) || !@mysql_connect($_GET["server"], $_SESSION["username"], $_SESSION["password"])) {
 	page_header(lang('Login'), "auth");
-	?>
-	<h1><?php echo lang('phpMinAdmin'); ?></h1>
-	<?php
 	if (isset($_GET["logout"])) {
 		echo "<p class='message'>" . lang('Logout successful.') . "</p>\n";
-	} elseif (isset($_GET["server"])) {
+	} elseif (isset($_SESSION["username"])) {
 		echo "<p class='error'>" . lang('Invalid credentials.') . "</p>\n";
 	}
 	?>

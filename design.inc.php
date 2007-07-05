@@ -12,24 +12,22 @@ function page_header($title, $missing = false) {
 BODY { color: Black; background-color: White; }
 A { color: Blue; }
 A:visited { color: Navy; }
+H1 { font-size: 150%; margin: 0; }
+H1 A { color: Black; }
 H2 { font-size: 150%; margin-top: 0; }
 .error { color: Red; }
 .message { color: Green; }
 #menu { float: left; width: 15em; overflow: auto; white-space: nowrap; }
-#menu H1 { font-size: 150%; margin: 0; }
-#menu H1 A { color: Black; }
 #content { margin-left: 16em; }
 </style>
 </head>
 
 <body>
 
-<?php 
-	if ($missing != "auth") {
-		?>
 <div id="menu">
 <h1><a href="<?php echo htmlspecialchars(substr($SELF, 0, -1)); ?>"><?php echo lang('phpMinAdmin'); ?></a></h1>
 <?php switch_lang(); ?>
+<?php if ($missing != "auth") { ?>
 <p>
 <a href="<?php echo htmlspecialchars($SELF); ?>sql="><?php echo lang('SQL command'); ?></a>
 <a href="<?php echo htmlspecialchars($SELF); ?>dump="><?php echo lang('Dump'); ?></a>
@@ -64,22 +62,23 @@ H2 { font-size: 150%; margin-top: 0; }
 			echo '<p><a href="' . htmlspecialchars($SELF) . 'create=">' . lang('Create new table') . "</a></p>\n"; //! rights
 			mysql_free_result($result);
 		}
-		?>
+	}
+	?>
 </div>
 
 <div id="content">
 <?php
-		echo "<h2>$title</h2>\n";
-	}
+	echo "<h2>$title</h2>\n";
 	if ($_SESSION["message"]) {
 		echo "<p class='message'>$_SESSION[message]</p>\n";
 		$_SESSION["message"] = "";
 	}
 }
 
-function page_footer($missing = false) {
-	echo "\n" . ($missing ? "" : "</div>\n");
+function page_footer() {
 ?>
+
+</div>
 </body>
 </html>
 <?php
