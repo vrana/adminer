@@ -78,7 +78,7 @@ $collations = collations();
 <?php
 $i=1;
 foreach ($row["fields"] as $field) {
-	if (strlen($field["field"])) {
+	if (strlen($field["field"]) || strlen($field["orig"])) {
 		?>
 <tr>
 <th><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo htmlspecialchars($field[($_POST ? "orig" : "field")]); ?>" /><input name="fields[<?php echo $i; ?>][field]" value="<?php echo htmlspecialchars($field["field"]); ?>" maxlength="64" /></th>
