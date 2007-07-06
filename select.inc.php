@@ -25,7 +25,7 @@ if (!$columns) {
 	$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "REGEXP", "IS NULL");
 	$i = 0;
 	foreach ((array) $_GET["where"] as $val) {
-		if ($val["col"] && in_array($val["op"], $operators)) {
+		if (strlen($val["col"]) && in_array($val["op"], $operators)) {
 			$where[] = idf_escape($val["col"]) . " $val[op]" . ($val["op"] != "IS NULL" ? " '" . mysql_real_escape_string($val["val"]) . "'" : "");
 			echo "<div><select name='where[$i][col]'><option></option>" . optionlist($columns, $val["col"], "not_vals") . "</select>";
 			echo "<select name='where[$i][op]' onchange=\"where_change(this);\">" . optionlist($operators, $val["op"], "not_vals") . "</select>";
@@ -64,7 +64,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 		}
 	}
 	echo "<div><select name='order[$i]'><option></option>" . optionlist($columns, array(), "not_vals") . "</select>";
-	echo "<input type='checkbox' name='desc[$i]' value='1' id='desc-$i' /><label for='desc-$i'>" . lang('DESC') . "</label></div>\n";
+	echo "<input type='checkbox' name='desc[]' value='$i' id='desc-$i' /><label for='desc-$i'>" . lang('DESC') . "</label></div>\n";
 	echo "</fieldset>\n";
 	
 	echo "<fieldset><legend>" . lang('Limit') . "</legend>\n";
@@ -88,7 +88,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 				$foreign_keys[$val][] = $foreign_key;
 			}
 		}
-		$childs = array();
+		$childs = array(); //! use foreign_keys() in MySQL < 5
 		$result1 = mysql_query("SELECT * FROM information_schema.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = '" . mysql_real_escape_string($_GET["db"]) . "' AND REFERENCED_TABLE_NAME = '" . mysql_real_escape_string($_GET["select"]) . "' ORDER BY ORDINAL_POSITION");
 		while ($row1 = mysql_fetch_assoc($result1)) {
 			$childs[$row1["CONSTRAINT_NAME"]][0] = $row1["TABLE_SCHEMA"];
