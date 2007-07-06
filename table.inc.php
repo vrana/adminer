@@ -7,7 +7,7 @@ if (!$result) {
 } else {
 	echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
 	while ($row = mysql_fetch_assoc($result)) {
-		echo "<tr><th>" . htmlspecialchars($row["Field"]) . "</th><td>$row[Type]" . ($row["Null"] == "NO" ? "" : " <i>NULL</i>") . "</td></tr>\n";
+		echo "<tr><th>" . htmlspecialchars($row["Field"]) . "</th><td>$row[Type]" . ($row["Null"] == "YES" ? " <i>NULL</i>" : "") . "</td></tr>\n";
 	}
 	echo "</table>\n";
 	mysql_free_result($result);

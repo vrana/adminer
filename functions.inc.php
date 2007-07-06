@@ -41,7 +41,7 @@ function fields($table) {
 				"length" => $match[2],
 				"unsigned" => ltrim($match[3] . $match[4]),
 				"default" => $row["Default"],
-				"null" => ($row["Null"] != "NO"),
+				"null" => ($row["Null"] == "YES"),
 				"extra" => $row["Extra"],
 				"collation" => $row["Collation"],
 				"privileges" => explode(",", $row["Privileges"]),
