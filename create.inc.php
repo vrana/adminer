@@ -81,7 +81,7 @@ foreach ($row["fields"] as $field) {
 	if (strlen($field["field"])) {
 		?>
 <tr>
-<th><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo htmlspecialchars($field["field"]); ?>" /><input name="fields[<?php echo $i; ?>][field]" value="<?php echo htmlspecialchars($field["field"]); ?>" maxlength="64" /></th>
+<th><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo htmlspecialchars($field[($_POST ? "orig" : "field")]); ?>" /><input name="fields[<?php echo $i; ?>][field]" value="<?php echo htmlspecialchars($field["field"]); ?>" maxlength="64" /></th>
 <td><select name="fields[<?php echo $i; ?>][type]" onchange="type_change(this);"><?php echo optionlist(array_keys($types), $field["type"], "not_vals"); ?></select></td>
 <td><input name="fields[<?php echo $i; ?>][length]" value="<?php echo htmlspecialchars($field["length"]); ?>" size="3" /></td>
 <td><select name="fields[<?php echo $i; ?>][collation]"><option value="">(<?php echo lang('collation'); ?>)</option><?php echo optionlist($collations, $field["collation"], "not_vals"); ?></select> <select name="fields[<?php echo $i; ?>][unsigned]"><?php echo optionlist($unsigned, $field["unsigned"], "not_vals"); ?></select></td>
