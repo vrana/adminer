@@ -6,7 +6,7 @@ if ($_POST) {
 	}
 	$error = mysql_error();
 }
-page_header(lang('SQL command'), (strlen($_GET["db"]) ? "" : "db"));
+page_header(lang('SQL command'));
 
 if ($_POST) {
 	if (!$result) {
@@ -22,7 +22,7 @@ if ($_POST) {
 				}
 				echo "<tr>";
 				foreach ($row as $val) {
-					echo "<td>" . (isset($val) ? htmlspecialchars($val) : "<i>NULL</i>") . "</td>";
+					echo "<td>" . (isset($val) ? nl2br(htmlspecialchars($val)) : "<i>NULL</i>") . "</td>";
 				}
 				echo "</tr>\n";
 			}
