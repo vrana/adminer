@@ -42,7 +42,7 @@ echo "<input name='where[$i][val]' /></div>\n"; //! JavaScript for adding next
 //! fulltext search
 echo "</fieldset>\n";
 
-echo "<fieldset><legend>" . lang('Order by') . "</legend>\n";
+echo "<fieldset><legend>" . lang('Sort') . "</legend>\n";
 $order = array();
 $i = 0;
 foreach ((array) $_GET["order"] as $key => $val) {
