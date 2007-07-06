@@ -24,7 +24,7 @@ if ($_POST) {
 	} elseif (!$_POST["collation"] || mysql_query("ALTER DATABASE " . idf_escape($_POST["name"]) . " COLLATE '" . mysql_real_escape_string($_POST["collation"]) . "'")) {
 		redirect(substr($SELF, 0, -1), ($_POST["collation"] ? lang('Database has been altered.') : null));
 	}
-	$eror = mysql_error();
+	$error = mysql_error();
 }
 
 page_header(strlen($_GET["db"]) ? lang('Alter database') . ": " . htmlspecialchars($_GET["db"]) : lang('Create database'));
@@ -32,10 +32,16 @@ page_header(strlen($_GET["db"]) ? lang('Alter database') . ": " . htmlspecialcha
 if ($_POST) {
 	echo "<p class='error'>" . lang('Unable to operate database') . ": " . htmlspecialchars($error) . "</p>\n";
 	$name = $_POST["name"];
-	$collate = $_POST["collate"];
+	$collate = $_POST["collation"];
 } else {
 	$name = $_GET["db"];
-	$collate = (strlen($_GET["db"]) && preg_match('~ COLLATE ([^ ]+)~', mysql_result(mysql_query("SHOW CREATE DATABASE " . idf_escape($_GET["db"])), 0, 1), $match) ? $match[1] : array());
+	$collate = array();
+	if (strlen($_GET["db"]) && ($result = mysql_query("SHOW CREATE DATABASE " . idf_escape($_GET["db"])))) {
+		if (preg_match('~ COLLATE ([^ ]+)~', mysql_result($result, 0, 1), $match)) {
+			$collate = $match[1];
+		}
+		mysql_free_result($result);
+	}
 }
 ?>
 <form action="" method="post"><div>
