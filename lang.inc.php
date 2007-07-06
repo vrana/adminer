@@ -65,6 +65,9 @@ function lang($idf = null) {
 			'Select' => 'Vypsat',
 			'New item' => 'Nová položka',
 			'Search' => 'Vyhledat',
+			'Order by' => 'Setřídit',
+			'DESC' => 'sestupně',
+			'Limit' => 'Limit',
 			'No rows.' => 'Žádné řádky.',
 			'Action' => 'Akce',
 			'edit' => 'upravit',
@@ -97,7 +100,7 @@ function lang($idf = null) {
 
 function switch_lang() {
 	echo "<p>" . lang('Language') . ":";
-	$base = preg_replace('~(\\?)lang=[^&]*&|[&?]lang=[^&]*~', '', $_SERVER["REQUEST_URI"]);
+	$base = preg_replace('~(\\?)lang=[^&]*&|[&?]lang=[^&]*~', '\\1', $_SERVER["REQUEST_URI"]);
 	foreach (lang() as $lang) {
 		echo ' <a href="' . htmlspecialchars($base . (strpos($base, "?") !== false ? "&" : "?")) . "lang=$lang\">$lang</a>";
 	}
