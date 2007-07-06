@@ -14,6 +14,7 @@ A:visited { color: Navy; }
 H1 { font-size: 150%; margin: 0; }
 H2 { font-size: 150%; margin-top: 0; }
 FIELDSET { float: left; padding: .5em; margin: 0; }
+PRE { margin: 0; font-family: serif; }
 .error { color: Red; }
 .message { color: Green; }
 #menu { position: absolute; top: 8px; left: 8px; width: 15em; overflow: auto; white-space: nowrap; }
