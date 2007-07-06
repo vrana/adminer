@@ -54,3 +54,4 @@ if (isset($_GET["logout"]) || !@mysql_connect(
 	page_footer("auth");
 	exit;
 }
+mysql_query("SET SQL_QUOTE_SHOW_CREATE=1");
