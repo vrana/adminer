@@ -10,7 +10,7 @@ if (isset($_POST["server"])) {
 }
 
 if (isset($_GET["logout"]) || !@mysql_connect($_GET["server"], $_SESSION["usernames"][$_GET["server"]], $_SESSION["passwords"][$_GET["server"]])) {
-	page_header(lang('Login'), "auth");
+	page_header(lang('Login'));
 	if (isset($_GET["logout"])) {
 		echo "<p class='message'>" . lang('Logout successful.') . "</p>\n";
 	} elseif (isset($_SESSION["usernames"][$_GET["server"]])) {

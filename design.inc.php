@@ -1,12 +1,11 @@
 <?php
-function page_header($title, $missing = false) {
-	global $SELF;
+function page_header($title) {
 	header("Content-Type: text/html; charset=utf-8");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="cs">
 <head>
-<title><?php echo lang('phpMinAdmin') . ($title ? " - $title" : ""); ?></title>
+<title><?php echo lang('phpMinAdmin') . " - $title"; ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <style type="text/css">
 BODY { color: Black; background-color: White; }
@@ -14,14 +13,31 @@ A { color: Blue; }
 A:visited { color: Navy; }
 H1 { font-size: 150%; margin: 0; }
 H2 { font-size: 150%; margin-top: 0; }
+FIELDSET { float: left; padding: .5em; margin: 0; }
 .error { color: Red; }
 .message { color: Green; }
-#menu { float: left; width: 15em; overflow: auto; white-space: nowrap; }
+#menu { position: absolute; top: 8px; left: 8px; width: 15em; overflow: auto; white-space: nowrap; }
 #content { margin-left: 16em; }
 </style>
 </head>
 
 <body>
+
+<div id="content">
+<?php
+	echo "<h2>$title</h2>\n";
+	if ($_SESSION["message"]) {
+		echo "<p class='message'>$_SESSION[message]</p>\n";
+		$_SESSION["message"] = "";
+	}
+}
+
+function page_footer($missing = false) {
+	global $SELF;
+	ob_flush();
+	flush();
+?>
+</div>
 
 <div id="menu">
 <h1><a href="<?php echo (strlen($SELF) > 1 ? htmlspecialchars(substr($SELF, 0, -1)) : "."); ?>"><?php echo lang('phpMinAdmin'); ?></a></h1>
@@ -36,6 +52,7 @@ H2 { font-size: 150%; margin-top: 0; }
 <p><?php if (strlen($_GET["server"])) { ?><input type="hidden" name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>" /><?php } ?>
 <select name="db" onchange="this.form.submit();"><option value="">(<?php echo lang('database'); ?>)</option>
 <?php
+		flush();
 		$result = mysql_query("SHOW DATABASES");
 		while ($row = mysql_fetch_row($result)) {
 			echo "<option" . ($row[0] == $_GET["db"] ? " selected='selected'" : "") . ">" . htmlspecialchars($row[0]) . "</option>\n";
@@ -65,19 +82,6 @@ H2 { font-size: 150%; margin-top: 0; }
 	?>
 </div>
 
-<div id="content">
-<?php
-	echo "<h2>$title</h2>\n";
-	if ($_SESSION["message"]) {
-		echo "<p class='message'>$_SESSION[message]</p>\n";
-		$_SESSION["message"] = "";
-	}
-}
-
-function page_footer() {
-?>
-
-</div>
 </body>
 </html>
 <?php
