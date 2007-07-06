@@ -1,5 +1,6 @@
 <?php
 if (isset($_POST["server"])) {
+	session_regenerate_id();
 	$_SESSION["usernames"][$_POST["server"]] = $_POST["username"];
 	$_SESSION["passwords"][$_POST["server"]] = $_POST["password"];
 	if (count($_POST) == 3) {
