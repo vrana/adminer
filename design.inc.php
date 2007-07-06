@@ -35,8 +35,6 @@ PRE { margin: 0; font-family: serif; }
 
 function page_footer($missing = false) {
 	global $SELF;
-	ob_flush();
-	flush();
 ?>
 </div>
 
