@@ -79,6 +79,8 @@ function lang($idf = null) {
 			'Foreign keys' => 'Cizí klíče',
 			'Triggers' => 'Spouště',
 			'View' => 'Pohled',
+			'Unable to select the table' => 'Nepodařilo se vypsat tabulku',
+			'Unable to show the table definition' => 'Nepodařilo se získat strukturu tabulky',
 		),
 	);
 	if (!isset($idf)) {
