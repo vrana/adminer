@@ -32,20 +32,23 @@ function optionlist($options, $selected = array(), $not_vals = false) {
 function fields($table) {
 	$return = array();
 	$result = mysql_query("SHOW FULL COLUMNS FROM " . idf_escape($table));
-	while ($row = mysql_fetch_assoc($result)) {
-		preg_match('~^([^(]+)(?:\\((.+)\\))?( unsigned)?( zerofill)?$~', $row["Type"], $match);
-		$return[$row["Field"]] = array(
-			"field" => $row["Field"],
-			"type" => $match[1],
-			"length" => $match[2],
-			"unsigned" => ltrim($match[3] . $match[4]),
-			"default" => $row["Default"],
-			"null" => ($row["Null"] != "NO"),
-			"extra" => $row["Extra"],
-			"collation" => $row["Collation"],
-		);
+	if ($result) {
+		while ($row = mysql_fetch_assoc($result)) {
+			preg_match('~^([^(]+)(?:\\((.+)\\))?( unsigned)?( zerofill)?$~', $row["Type"], $match);
+			$return[$row["Field"]] = array(
+				"field" => $row["Field"],
+				"type" => $match[1],
+				"length" => $match[2],
+				"unsigned" => ltrim($match[3] . $match[4]),
+				"default" => $row["Default"],
+				"null" => ($row["Null"] != "NO"),
+				"extra" => $row["Extra"],
+				"collation" => $row["Collation"],
+				"privileges" => explode(",", $row["Privileges"]),
+			);
+		}
+		mysql_free_result($result);
 	}
-	mysql_free_result($result);
 	return $return;
 }
 
@@ -63,12 +66,16 @@ function indexes($table) {
 function foreign_keys($table) {
 	static $pattern = '~`((?:[^`]*|``)+)`~';
 	$return = array();
-	$create_table = mysql_result(mysql_query("SHOW CREATE TABLE " . idf_escape($table)), 0, 1);
-	preg_match_all('~FOREIGN KEY \\((.+)\\) REFERENCES (?:`(.+)`\\.)?`(.+)` \\((.+)\\)~', $create_table, $matches, PREG_SET_ORDER);
-	foreach ($matches as $match) {
-		preg_match_all($pattern, $match[1], $source);
-		preg_match_all($pattern, $match[4], $target);
-		$return[] = array(idf_unescape($match[2]), idf_unescape($match[3]), array_map('idf_unescape', $source[1]), array_map('idf_unescape', $target[1]));
+	$result = mysql_query("SHOW CREATE TABLE " . idf_escape($table));
+	if ($result) {
+		$create_table = mysql_result($result, 0, 1);
+		mysql_free_result($result);
+		preg_match_all('~FOREIGN KEY \\((.+)\\) REFERENCES (?:`(.+)`\\.)?`(.+)` \\((.+)\\)~', $create_table, $matches, PREG_SET_ORDER);
+		foreach ($matches as $match) {
+			preg_match_all($pattern, $match[1], $source);
+			preg_match_all($pattern, $match[4], $target);
+			$return[] = array(idf_unescape($match[2]), idf_unescape($match[3]), array_map('idf_unescape', $source[1]), array_map('idf_unescape', $target[1]));
+		}
 	}
 	return $return;
 }
