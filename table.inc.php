@@ -32,13 +32,15 @@ if ($foreign_keys) {
 	echo "</table>\n";
 }
 
-$result = mysql_query("SHOW TRIGGERS LIKE '" . mysql_real_escape_string($_GET["table"]) . "'");
-if (mysql_num_rows($result)) {
-	echo "<h3>" . lang('Triggers') . "</h3>\n";
-	echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
-	while ($row = mysql_fetch_assoc($result)) {
-		echo "<tr><th>$row[Timing]</th><th>$row[Event]</th><td>" . htmlspecialchars($row["Statement"]) . "</td></tr>\n";
+if (mysql_get_server_info() >= 5) {
+	$result = mysql_query("SHOW TRIGGERS LIKE '" . mysql_real_escape_string($_GET["table"]) . "'");
+	if (mysql_num_rows($result)) {
+		echo "<h3>" . lang('Triggers') . "</h3>\n";
+		echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
+		while ($row = mysql_fetch_assoc($result)) {
+			echo "<tr><th>$row[Timing]</th><th>$row[Event]</th><td>" . htmlspecialchars($row["Statement"]) . "</td></tr>\n";
+		}
+		echo "</table>\n";
 	}
-	echo "</table>\n";
+	mysql_free_result($result);
 }
-mysql_free_result($result);

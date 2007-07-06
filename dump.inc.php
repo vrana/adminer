@@ -45,7 +45,7 @@ if (strlen($_GET["db"])) {
 } else {
 	$result = mysql_query("SHOW DATABASES");
 	while ($row = mysql_fetch_assoc($result)) {
-		if ($row["Database"] != "information_schema") {
+		if ($row["Database"] != "information_schema" || mysql_get_server_info() < 5) {
 			if (mysql_select_db($row["Database"])) {
 				dump($row["Database"]);
 			}
