@@ -3,22 +3,26 @@ header("Content-Type: text/plain; charset=utf-8");
 
 function dump($db) {
 	static $routines;
+	static $version;
 	if (!isset($routines)) {
+		$version = mysql_get_server_info();
 		$routines = array();
-		foreach (array("FUNCTION", "PROCEDURE") as $routine) {
-			$result = mysql_query("SHOW $routine STATUS");
-			while ($row = mysql_fetch_assoc($result)) {
-				if (!strlen($_GET["db"]) || $row["Db"] === $_GET["db"]) {
-					$routines[$row["Db"]][] = mysql_result(mysql_query("SHOW CREATE $routine " . idf_escape($row["Db"]) . "." . idf_escape($row["Name"])), 0, 2) . ";\n\n"; //! delimiter
+		if ($version >= 5) {
+			foreach (array("FUNCTION", "PROCEDURE") as $routine) {
+				$result = mysql_query("SHOW $routine STATUS");
+				while ($row = mysql_fetch_assoc($result)) {
+					if (!strlen($_GET["db"]) || $row["Db"] === $_GET["db"]) {
+						$routines[$row["Db"]][] = mysql_result(mysql_query("SHOW CREATE $routine " . idf_escape($row["Db"]) . "." . idf_escape($row["Name"])), 0, 2) . ";;\n\n";
+					}
 				}
+				mysql_free_result($result);
 			}
-			mysql_free_result($result);
 		}
 	}
 	
 	$result = mysql_query("SHOW CREATE DATABASE " . idf_escape($db));
 	if ($result) {
-		echo mysql_result($result, 0) . ";\n";
+		echo mysql_result($result, 0, 1) . ";\n";
 		mysql_free_result($result);
 	}
 	echo "USE " . idf_escape($db) . ";\n";
@@ -41,14 +45,23 @@ function dump($db) {
 	}
 	mysql_free_result($result);
 	
-	$result = mysql_query("SHOW TRIGGERS");
-	while ($row = mysql_fetch_assoc($result)) {
-		echo "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . idf_escape($row["Table"]) . " FOR EACH ROW $row[Statement];\n\n"; //! delimiter
+	if ($version >= 5) {
+		$result = mysql_query("SHOW TRIGGERS");
+		$triggers = mysql_num_rows($result);
+		if ($triggers || $routines[$db]) {
+			echo "DELIMITER ;;\n\n";
+		}
+		while ($row = mysql_fetch_assoc($result)) {
+			echo "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . idf_escape($row["Table"]) . " FOR EACH ROW $row[Statement];;\n\n";
+		}
+		mysql_free_result($result);
+		echo implode("", (array) $routines[$db]);
+		if ($triggers || $routines[$db]) {
+			echo "DELIMITER ;\n\n";
+		}
 	}
-	mysql_free_result($result);
-	echo "\n\n";
 	
-	echo implode("", (array) $routines[$db]);
+	echo "\n\n";
 }
 
 if (strlen($_GET["db"])) {
