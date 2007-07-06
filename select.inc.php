@@ -72,7 +72,12 @@ $found_rows = mysql_result(mysql_query(" SELECT FOUND_ROWS()"), 0); // space for
 if (!mysql_num_rows($result)) {
 	echo "<p class='message'>" . lang('No rows.') . "</p>\n";
 } else {
-	$foreign_keys = foreign_keys($_GET["select"]);
+	$foreign_keys = array();
+	foreach (foreign_keys($_GET["select"]) as $foreign_key) {
+		foreach ($foreign_key[2] as $val) {
+			$foreign_keys[$val][] = $foreign_key;
+		}
+	}
 	$childs = array();
 	$result1 = mysql_query("SELECT * FROM information_schema.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = '" . mysql_real_escape_string($_GET["db"]) . "' AND REFERENCED_TABLE_NAME = '" . mysql_real_escape_string($_GET["select"]) . "' ORDER BY ORDINAL_POSITION");
 	while ($row1 = mysql_fetch_assoc($result1)) {

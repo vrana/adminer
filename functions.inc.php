@@ -68,9 +68,7 @@ function foreign_keys($table) {
 	foreach ($matches as $match) {
 		preg_match_all($pattern, $match[1], $source);
 		preg_match_all($pattern, $match[4], $target);
-		foreach ($source[1] as $val) {
-			$return[idf_unescape($val)][] = array(idf_unescape($match[2]), idf_unescape($match[3]), array_map('idf_unescape', $source[1]), array_map('idf_unescape', $target[1]));
-		}
+		$return[] = array(idf_unescape($match[2]), idf_unescape($match[3]), array_map('idf_unescape', $source[1]), array_map('idf_unescape', $target[1]));
 	}
 	return $return;
 }

@@ -22,23 +22,15 @@ if ($indexes) {
 }
 echo '<p><a href="' . htmlspecialchars($SELF) . 'indexes=' . urlencode($_GET["table"]) . '">' . lang('Alter indexes') . "</a></p>\n";
 
-$result = mysql_query("SELECT * FROM information_schema.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = '" . mysql_real_escape_string($_GET["db"]) . "' AND TABLE_NAME = '" . mysql_real_escape_string($_GET["table"]) . "' AND REFERENCED_TABLE_NAME IS NOT NULL ORDER BY ORDINAL_POSITION");
-if (mysql_num_rows($result)) {
-	$foreign_keys = array();
-	while ($row = mysql_fetch_assoc($result)) {
-		$foreign_keys[$row["CONSTRAINT_NAME"]][0] = $row["REFERENCED_TABLE_SCHEMA"];
-		$foreign_keys[$row["CONSTRAINT_NAME"]][1] = $row["REFERENCED_TABLE_NAME"];
-		$foreign_keys[$row["CONSTRAINT_NAME"]][2][] = htmlspecialchars($row["COLUMN_NAME"]);
-		$foreign_keys[$row["CONSTRAINT_NAME"]][3][] = htmlspecialchars($row["REFERENCED_COLUMN_NAME"]);
-	}
+$foreign_keys = foreign_keys($_GET["table"]);
+if ($foreign_keys) {
 	echo "<h3>" . lang('Foreign keys') . "</h3>\n";
 	echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
 	foreach ($foreign_keys as $foreign_key) {
-		echo "<tr><td><em>" . implode("</em>, <em>", $foreign_key[2]) . "</em></td><td>" . (strlen($foreign_key[0]) && $foreign_key[0] !== $_GET["db"] ? "<strong>" . htmlspecialchars($foreign_key[0]) . "</strong>." : "") . "<strong>" . htmlspecialchars($foreign_key[1]) . "</strong>(<em>" . implode("</em>, <em>", $foreign_key[3]) . "</em>)</td></tr>\n";
+		echo "<tr><td><em>" . implode("</em>, <em>", $foreign_key[2]) . "</em></td><td>" . (strlen($foreign_key[0]) && $foreign_key[0] !== $_GET["db"] ? "<strong>" . htmlspecialchars($foreign_key[0]) . "</strong>." : "") . htmlspecialchars($foreign_key[1]) . "(<em>" . implode("</em>, <em>", $foreign_key[3]) . "</em>)</td></tr>\n";
 	}
 	echo "</table>\n";
 }
-mysql_free_result($result);
 
 $result = mysql_query("SHOW TRIGGERS LIKE '" . mysql_real_escape_string($_GET["table"]) . "'");
 if (mysql_num_rows($result)) {
