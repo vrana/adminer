@@ -1,15 +1,11 @@
 <?php
 $fields = fields($_GET["edit"]);
 $where = array();
-if (is_array($_GET["where"])) {
-	foreach ($_GET["where"] as $key => $val) {
-		$where[] = idf_escape($key) . " = BINARY '" . mysql_real_escape_string($val) . "'";
-	}
+foreach ((array) $_GET["where"] as $key => $val) {
+	$where[] = idf_escape($key) . " = BINARY '" . mysql_real_escape_string($val) . "'"; //! enum and set
 }
-if (is_array($_GET["null"])) {
-	foreach ($_GET["null"] as $key) {
-		$where[] = idf_escape($key) . " IS NULL";
-	}
+foreach ((array) $_GET["null"] as $key) {
+	$where[] = idf_escape($key) . " IS NULL";
 }
 if ($_POST) {
 	if (isset($_POST["delete"])) {
@@ -17,17 +13,19 @@ if ($_POST) {
 		$message = lang('Item has been deleted.');
 	} else {
 		$set = array();
-		foreach ($fields as $key => $field) {
-			if (preg_match('~char|text|set~', $field["type"]) ? $_POST["null"][$key] : !strlen($_POST["fields"][$key])) {
-				$value = "NULL";
+		foreach ($_POST["fields"] as $key => $val) {
+			$name = bracket_escape($key, "back");
+			$field = $fields[$name];
+			if (preg_match('~char|text|set~', $field["type"]) ? $_POST["null"][$key] : !strlen($val)) {
+				$val = "NULL";
 			} elseif ($field["type"] == "enum") {
-				$value = intval($_POST["fields"][$key]);
+				$val = intval($val);
 			} elseif ($field["type"] == "set") {
-				$value = array_sum((array) $_POST["fields"][$key]);
+				$val = array_sum((array) $val);
 			} else {
-				$value = "'" . mysql_real_escape_string($_POST["fields"][$key]) . "'";
+				$val = "'" . mysql_real_escape_string($val) . "'";
 			}
-			$set[] = idf_escape(bracket_escape($key, "back")) . " = $value";
+			$set[] = idf_escape($name) . " = $val";
 		}
 		if ($where) {
 			$query = "UPDATE " . idf_escape($_GET["edit"]) . " SET " . implode(", ", $set) . " WHERE " . implode(" AND ", $where) . " LIMIT 1";
@@ -47,57 +45,59 @@ page_header(($_GET["where"] ? lang('Edit') : lang('Insert')) . ": " . htmlspecia
 if ($_POST) {
 	echo "<p class='error'>" . lang('Error during saving') . ": " . htmlspecialchars($error) . "</p>\n";
 	$data = $_POST["fields"];
-	foreach ($_POST["fields"] as $key => $val) {
+	foreach ($_POST["null"] as $key => $val) {
 		$data[$key] = null;
 	}
 } elseif ($where) {
-	$select = array("*");
+	$select = array();
 	foreach ($fields as $name => $field) {
-		if ($field["type"] == "enum" || $field["type"] == "set") {
-			$select[] = "1*" . idf_escape($name) . " AS " . idf_escape($name);
+		if (in_array("select", $field["privileges"]) && in_array(($where ? "update" : "insert"), $field["privileges"])) {
+			$select[] = ($field["type"] == "enum" || $field["type"] == "set" ? "1*" . idf_escape($name) . " AS " : "") . idf_escape($name);
 		}
 	}
-	$data = mysql_fetch_assoc(mysql_query("SELECT " . implode(", ", $select) . " FROM " . idf_escape($_GET["edit"]) . " WHERE " . implode(" AND ", $where) . " LIMIT 1"));
+	$data = ($select ? mysql_fetch_assoc(mysql_query("SELECT " . implode(", ", $select) . " FROM " . idf_escape($_GET["edit"]) . " WHERE " . implode(" AND ", $where) . " LIMIT 1")) : array());
 } else {
 	$data = array();
 }
 ?>
 <form action="" method="post">
-<table border='1' cellspacing='0' cellpadding='2'>
+<table border="0" cellspacing="0" cellpadding="2">
 <?php
 $types = types();
 foreach ($fields as $name => $field) {
-	echo "<tr><th>" . htmlspecialchars($name) . "</th><td>";
-	$value = ($data ? $data[$name] : $field["default"]);
-	$name = htmlspecialchars(bracket_escape($name));
-	if ($field["type"] == "enum") {
-		echo '<input type="radio" name="fields[' . $name . ']" value="0"' . ($value == "0" ? ' checked="checked"' : '') . ' />';
-		preg_match_all("~'((?:[^']*|'')+)'~", $field["length"], $matches);
-		foreach ($matches[1] as $i => $val) {
-			$id = "field-$name-" . ($i+1);
-			echo ' <input type="radio" name="fields[' . $name . ']" id="' . $id . '" value="' . ($i+1) . '"' . ($value == $i+1 ? ' checked="checked"' : '') . ' /><label for="' . $id . '">' . htmlspecialchars(str_replace("''", "'", $val)) . '</label>';
+	if (in_array(($where ? "update" : "insert"), $field["privileges"])) {
+		echo "<tr><th>" . htmlspecialchars($name) . "</th><td>";
+		$value = ($data ? $data[$name] : $field["default"]);
+		$name = htmlspecialchars(bracket_escape($name));
+		if ($field["type"] == "enum") {
+			echo '<input type="radio" name="fields[' . $name . ']" value="0"' . ($value == "0" ? ' checked="checked"' : '') . ' />';
+			preg_match_all("~'((?:[^']*|'')+)'~", $field["length"], $matches);
+			foreach ($matches[1] as $i => $val) {
+				$id = "field-$name-" . ($i+1);
+				echo ' <input type="radio" name="fields[' . $name . ']" id="' . $id . '" value="' . ($i+1) . '"' . ($value == $i+1 ? ' checked="checked"' : '') . ' /><label for="' . $id . '">' . htmlspecialchars(str_replace("''", "'", $val)) . '</label>';
+			}
+			if ($field["null"]) {
+				$id = "field-$name-";
+				echo '<input type="radio" name="fields[' . $name . ']" id="' . $id . '" value=""' . (strlen($value) ? '' : ' checked="checked"') . ' /><label for="' . $id . '">' . lang('NULL') . '</label> ';
+			}
+		} elseif ($field["type"] == "set") { //! 64 bits
+			preg_match_all("~'((?:[^']*|'')+)'~", $field["length"], $matches);
+			foreach ($matches[1] as $i => $val) {
+				$id = "$name-" . ($i+1);
+				echo ' <input type="checkbox" name="fields[' . $name . '][]" id="' . $id . '" value="' . (1 << $i) . '"' . (($value >> $i) & 1 ? ' checked="checked"' : '') . ' /><label for="' . $id . '">' . htmlspecialchars(str_replace("''", "'", $val)) . '</label>';
+			}
+		} elseif (strpos($field["type"], "text") !== false) {
+			echo '<textarea name="fields[' . $name . ']" cols="50" rows="12">' . htmlspecialchars($value) . '</textarea>';
+		} else { //! binary
+			echo '<input name="fields[' . $name . ']" value="' . htmlspecialchars($value) . '"' . (strlen($field["length"]) ? " maxlength='$field[length]'" : ($types[$field["type"]] ? " maxlength='" . $types[$field["type"]] . "'" : '')) . ' />';
 		}
-		if ($field["null"]) {
-			$id = "field-$name-";
-			echo '<input type="radio" name="fields[' . $name . ']" id="' . $id . '" value=""' . (strlen($value) ? '' : ' checked="checked"') . ' /><label for="' . $id . '">' . lang('NULL') . '</label> ';
+		if ($field["null"] && preg_match('~char|text|set~', $field["type"])) {
+			echo '<input type="checkbox" name="null[' . $name . ']" value="1" id="null-' . $name . '"' . (isset($value) ? '' : ' checked="checked"') . ' /><label for="null-' . $name . '">' . lang('NULL') . '</label>';
 		}
-	} elseif ($field["type"] == "set") { //! 64 bits
-		preg_match_all("~'((?:[^']*|'')+)'~", $field["length"], $matches);
-		foreach ($matches[1] as $i => $val) {
-			$id = "$name-" . ($i+1);
-			echo ' <input type="checkbox" name="fields[' . $name . '][]" id="' . $id . '" value="' . (1 << $i) . '"' . (($value >> $i) & 1 ? ' checked="checked"' : '') . ' /><label for="' . $id . '">' . htmlspecialchars(str_replace("''", "'", $val)) . '</label>';
-		}
-	} elseif (strpos($field["type"], "text") !== false) {
-		echo '<textarea name="fields[' . $name . ']" cols="50" rows="12">' . htmlspecialchars($value) . '</textarea>';
-	} else { //! numbers, date, binary
-		echo '<input name="fields[' . $name . ']" value="' . htmlspecialchars($value) . '"' . (strlen($field["length"]) ? " maxlength='$field[length]'" : ($types[$field["type"]] ? " maxlength='" . $types[$field["type"]] . "'" : '')) . ' />';
+		echo "</td></tr>\n";
 	}
-	if ($field["null"] && preg_match('~char|text|set~', $field["type"])) {
-		echo '<input type="checkbox" name="null[' . $name . ']" value="1" id="null-' . $name . '"' . (isset($value) ? '' : ' checked="checked"') . ' /><label for="null-' . $name . '">' . lang('NULL') . '</label>';
-	}
-	echo "</td></tr>\n";
 }
-echo "<tr><th><input type='hidden' name='sent' value='1' /></th><td><input type='submit' value='" . lang('Save') . "' /> <input type='submit' name='insert' value='" . lang('Save and insert') . "' />" . ($where ? " <input type='submit' name='delete' value='" . lang('Delete') . "' />" : "") . "</td></tr>\n";
 ?>
 </table>
+<p><input type="hidden" name="sent" value="1" /></th><td><input type="submit" value="<?php echo lang('Save'); ?>" /> <input type="submit" name="insert" value="<?php echo lang('Save and insert'); ?>" /><?php if ($where) { ?> <input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" /><?php } ?></p>
 </form>
