@@ -13,10 +13,11 @@ if (isset($_POST["server"])) {
 }
 
 $username = $_SESSION["usernames"][$_GET["server"]];
+$password = $_SESSION["passwords"][$_GET["server"]];
 if (isset($_GET["logout"]) || !@mysql_connect(
 	(strlen($_GET["server"]) ? $_GET["server"] : ini_get("mysql.default_host")),
 	(strlen("$_GET[server]$username") ? $username : ini_get("mysql.default_user")),
-	(strlen("$_GET[server]$username") ? $_SESSION["passwords"][$_GET["server"]] : ini_get("mysql.default_password")))
+	(strlen("$_GET[server]$username$password") ? $password : ini_get("mysql.default_password")))
 ) {
 	page_header(lang('Login'));
 	if (isset($_GET["logout"])) {
