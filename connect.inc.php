@@ -10,3 +10,4 @@ if (!(strlen($_GET["db"]) ? mysql_select_db($_GET["db"]) : isset($_GET["sql"]) |
 	exit;
 }
 mysql_query("SET CHARACTER SET utf8");
+mysql_query("SET SQL_QUOTE_SHOW_CREATE=1");
