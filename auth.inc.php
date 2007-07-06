@@ -2,14 +2,22 @@
 if (isset($_POST["server"])) {
 	$_SESSION["usernames"][$_POST["server"]] = $_POST["username"];
 	$_SESSION["passwords"][$_POST["server"]] = $_POST["password"];
-	header("Location: " . ((string) $_GET["server"] === $_POST["server"] ? preg_replace('~(\\?)logout=&|[?&]logout=~', '\\1', $_SERVER["REQUEST_URI"]) : preg_replace('~^[^?]*/([^?]*).*~', '\\1' . (strlen($_POST["server"]) ? '?server=' . urlencode($_POST["server"]) : '') . (strlen(SID) ? (strlen($_POST["server"]) ? "&" : "?") . SID : ""), $_SERVER["REQUEST_URI"])));
-	exit;
+	if (count($_POST) == 3) {
+		header("Location: " . ((string) $_GET["server"] === $_POST["server"] ? preg_replace('~(\\?)logout=&|[?&]logout=~', '\\1', $_SERVER["REQUEST_URI"]) : preg_replace('~^[^?]*/([^?]*).*~', '\\1' . (strlen($_POST["server"]) ? '?server=' . urlencode($_POST["server"]) : '') . (strlen(SID) ? (strlen($_POST["server"]) ? "&" : "?") . SID : ""), $_SERVER["REQUEST_URI"])));
+		exit;
+	}
+	$_GET["server"] = $_POST["server"];
 } elseif (isset($_GET["logout"])) {
 	unset($_SESSION["usernames"][$_GET["server"]]);
 	unset($_SESSION["passwords"][$_GET["server"]]);
 }
 
-if (isset($_GET["logout"]) || !@mysql_connect($_GET["server"], $_SESSION["usernames"][$_GET["server"]], $_SESSION["passwords"][$_GET["server"]])) {
+$username = $_SESSION["usernames"][$_GET["server"]];
+if (isset($_GET["logout"]) || !@mysql_connect(
+	(strlen($_GET["server"]) ? $_GET["server"] : ini_get("mysql.default_host")),
+	(strlen("$_GET[server]$username") ? $username : ini_get("mysql.default_user")),
+	(strlen("$_GET[server]$username") ? $_SESSION["passwords"][$_GET["server"]] : ini_get("mysql.default_password")))
+) {
 	page_header(lang('Login'));
 	if (isset($_GET["logout"])) {
 		echo "<p class='message'>" . lang('Logout successful.') . "</p>\n";
@@ -24,9 +32,7 @@ if (isset($_GET["logout"]) || !@mysql_connect($_GET["server"], $_SESSION["userna
 	<tr><th><?php echo lang('Password'); ?>:</th><td><input type="password" name="password" /></td></tr>
 	<tr><th><?php
 	foreach ($_POST as $key => $val) { // expired session
-		if (!is_array($val)) {
-			echo '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($val) . '" />';
-		} else {
+		if (is_array($val)) {
 			foreach ($val as $key2 => $val2) {
 				if (!is_array($val2)) {
 					echo '<input type="hidden" name="' . htmlspecialchars($key . "[$key2]") . ' value="' . htmlspecialchars($val2) . '" />';
@@ -36,10 +42,11 @@ if (isset($_GET["logout"]) || !@mysql_connect($_GET["server"], $_SESSION["userna
 					}
 				}
 			}
+		} elseif ($key != "server" && $key != "username" && $key != "password") {
+			echo '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($val) . '" />';
 		}
 	}
-	?>
-	</th><td><input type="submit" value="<?php echo lang('Login'); ?>" /></td></tr>
+	?></th><td><input type="submit" value="<?php echo lang('Login'); ?>" /></td></tr>
 	</table>
 	</form>
 	<?php
