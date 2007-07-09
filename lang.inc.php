@@ -1,24 +1,11 @@
 <?php
-function get_lang() {
-	if (strlen($_SESSION["lang"])) {
-		return $_SESSION["lang"];
-	}
-	$langs = lang();
-	$return = preg_replace('~[,;].*~', '', $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
-	if (!in_array($return, $langs)) { //! try next languages
-		$return = preg_replace('~-.*~', '', $return);
-		if (!in_array($return, $langs)) {
-			$return = "en";
-		}
-	}
-	return $return;
-}
-
-function lang($idf = null) {
+function lang($idf = null, $number = null) {
+	global $LANG;
 	static $translations = array(
 		'en' => array(
 			'Query executed OK, %d row(s) affected.' => array('Query executed OK, %d row affected.', 'Query executed OK, %d rows affected.'),
 			'%d byte(s)' => array('%d byte', '%d bytes'),
+			'Routine has been called, %d row(s) affected.' => array('Routine has been called, %d row affected.', 'Routine has been called, %d rows affected.'),
 		),
 		'cs' => array(
 			'Login' => 'Přihlásit se',
@@ -110,22 +97,29 @@ function lang($idf = null) {
 			'Unable to upload a file.' => 'Nepodařilo se nahrát soubor.',
 			'File upload' => 'Nahrání souboru',
 			'File uploads are disabled.' => 'Nahrávání souborů není povoleno.',
+			'Routine has been called, %d row(s) affected.' => array('Procedura byla zavolána, byl změněn %d záznam.', 'Procedura byla zavolána, byly změněny %d záznamy.', 'Procedura byla zavolána, bylo změněno %d záznamů.'),
+			'Call' => 'Zavolat',
+			'Error during calling' => 'Chyba při volání',
 		),
 	);
 	if (!isset($idf)) {
 		return array_keys($translations);
 	}
-	$lang = get_lang();
-	$translation = $translations[$lang][$idf];
+	$translation = $translations[$LANG][$idf];
+	if ($number === false && $translation) {
+		return $translation; // used in _compile.php
+	}
 	$args = func_get_args();
-	if (is_array($translation)) {
-		switch ($lang) {
-			case 'cs': $pos = ($args[1] == 1 ? 0 : (!$args[1] || $args[1] >= 5 ? 2 : 1)); break;
-			default: $pos = ($args[1] == 1 ? 0 : 1);
+	if (is_array($translation) && $translation) {
+		switch ($LANG) {
+			case 'cs': $pos = ($number == 1 ? 0 : (!$number || $number >= 5 ? 2 : 1)); break;
+			default: $pos = ($number == 1 ? 0 : 1);
 		}
 		$translation = $translation[$pos];
 	}
-	$args[0] = (strlen($translation) ? $translation : $idf);
+	if ($translation) {
+		$args[0] = $translation;
+	}
 	return call_user_func_array('sprintf', $args);
 }
 
@@ -140,4 +134,17 @@ function switch_lang() {
 
 if (isset($_GET["lang"])) {
 	$_SESSION["lang"] = $_GET["lang"];
+}
+
+if (strlen($_SESSION["lang"])) {
+	$LANG = $_SESSION["lang"];
+} else {
+	$langs = lang();
+	$LANG = preg_replace('~[,;].*~', '', $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
+	if (!in_array($LANG, $langs)) { //! try next languages
+		$LANG = preg_replace('~-.*~', '', $LANG);
+		if (!in_array($LANG, $langs)) {
+			$LANG = "en";
+		}
+	}
 }

@@ -1,9 +1,10 @@
 <?php
 function page_header($title) {
+	global $LANG;
 	header("Content-Type: text/html; charset=utf-8");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="<?php echo get_lang(); ?>">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="<?php echo $LANG; ?>">
 <head>
 <title><?php echo lang('phpMinAdmin') . " - $title"; ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />

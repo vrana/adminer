@@ -7,8 +7,9 @@ if ($_SERVER["argc"] > 1) {
 $messages_all = array();
 foreach (glob("*.php") as $filename) {
 	$file = file_get_contents($filename);
-	preg_match_all("~lang\\(('(?:[^\\\\']*|\\\\.)+')[),]~s", $file, $matches);
-	$messages_all += array_flip($matches[1]);
+	if (preg_match_all("~lang\\(('(?:[^\\\\']*|\\\\.)+')([),])~", $file, $matches)) {
+		$messages_all += array_combine($matches[1], $matches[2]);
+	}
 }
 
 $file = file_get_contents("lang.inc.php");
@@ -25,9 +26,11 @@ foreach (array_reverse($translations[2], true) as $key => $translation) {
 			$s .= "$match[1]// $match[2],\n";
 		}
 	}
-	if ($translations[1][$key][0] != 'en') {
-		foreach($messages as $key => $val) {
-			$s .= "\t\t\t$key => '',\n";
+	foreach($messages as $idf => $val) {
+		if ($val == ",") {
+			$s .= "\t\t\t$idf => array(),\n";
+		} elseif ($translations[1][$key][0] != 'en') {
+			$s .= "\t\t\t$idf => '',\n";
 		}
 	}
 	$file = substr_replace($file, $s, $translation[1], strlen($translation[0]));

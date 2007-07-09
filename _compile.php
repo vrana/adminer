@@ -1,11 +1,25 @@
 <?php
+function add_apo_slashes($s) {
+	return addcslashes($s, "\\'");
+}
+
 function remove_lang($match) {
-	$s = lang(strtr($match[2], array("\\'" => "'", "\\\\" => "\\")));
-	return ($match[1] && $match[3] ? $s : "$match[1]'" . addcslashes($s, "\\'") . "'$match[3]");
+	$s = lang(strtr($match[2], array("\\'" => "'", "\\\\" => "\\")), false);
+	if ($match[3] == ",") {
+		return "$match[1]" . (is_array($s) ? "lang(array('" . implode("', '", array_map('add_apo_slashes', $s)) . "')," : "sprintf('" . add_apo_slashes($s) . "',");
+	}
+	return ($match[1] && $match[4] ? $s : "$match[1]'" . add_apo_slashes($s) . "'$match[4]");
 }
 
 function put_file($match) {
 	$return = file_get_contents($match[4]);
+	if ($match[4] == "./lang.inc.php") {
+		if (!$_SESSION["lang"]) {
+			$return = str_replace("\tif (\$number === false && \$translation) {\n\t\treturn \$translation; // used in _compile.php\n\t}\n", "", $return);
+		} elseif (preg_match("~case '$_SESSION[lang]': (.*) break;~", $return, $match) || preg_match("~default: (.*)~", $return, $match)) {
+			return "$match[1]\nfunction lang(\$ar, \$number) {\n\t$match[1]\n\treturn \$ar[\$pos];\n}\n$match[5]";
+		}
+	}
 	$return = preg_replace("~\\?>\n?\$~", '', $return);
 	if (substr_count($return, "<?php") <= substr_count($return, "?>") && !$match[5]) {
 		$return .= "<?php\n";
@@ -32,11 +46,10 @@ $filename = "phpMinAdmin.php";
 $file = file_get_contents("index.php");
 if ($_SESSION["lang"]) {
 	$filename = "phpMinAdmin-$_SESSION[lang].php";
-	$file = str_replace("include \"./lang.inc.php\";\n", "", $file);
 }
 $file = preg_replace_callback('~(<\\?php)?\\s*(include|require)(_once)? "([^"]*)";(\\s*\\?>)?~', 'put_file', $file);
 if ($_SESSION["lang"]) {
-	$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']*|\\\\.)+)'\\)(;\\s*\\?>)?~s", 'remove_lang', $file);
+	$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']*|\\\\.)+)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
 	$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
 	$file = str_replace("<?php echo get_lang(); ?>", $_SESSION["lang"], $file);
 }
