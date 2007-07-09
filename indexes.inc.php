@@ -44,6 +44,7 @@ if ($_POST) {
 	$row = array("indexes" => $indexes);
 }
 ?>
+
 <form action="" method="post">
 <table border="0" cellspacing="0" cellpadding="2">
 <?php

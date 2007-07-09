@@ -76,6 +76,7 @@ if (!$_POST || $_POST["add"]) {
 }
 $collations = collations();
 ?>
+
 <form action="" method="post" id="form">
 <p>
 <?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo htmlspecialchars($row["name"]); ?>" />

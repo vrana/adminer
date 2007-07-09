@@ -44,6 +44,7 @@ if ($_POST) {
 	}
 }
 ?>
+
 <form action="" method="post"><div>
 <input name="name" value="<?php echo htmlspecialchars($name); ?>" maxlength="64" />
 <select name="collation"><option value="">(<?php echo lang('collation'); ?>)</option><?php echo optionlist(collations(), $collate, "not_vals"); ?></select>
