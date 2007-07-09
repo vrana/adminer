@@ -123,7 +123,7 @@ for (var i=1; <?php echo count($row["fields"]); ?> >= i; i++) {
 	document.getElementById('form')['fields[' + i + '][type]'].onchange();
 }
 
-document.write('<input type="checkbox" id="column_comments"<?php if ($column_comments) { ?> checked="checked"<?php } ?> onclick="column_comments_click(this.checked);" /><label for="column_comments"><?php echo lang('Show column comments'); ?></label>');
+document.write('<label for="column_comments"><input type="checkbox" id="column_comments"<?php if ($column_comments) { ?> checked="checked"<?php } ?> onclick="column_comments_click(this.checked);" /><?php echo lang('Show column comments'); ?></label>');
 function column_comments_click(checked) {
 	for (var i=0; <?php echo count($row["fields"]); ?> >= i; i++) {
 		document.getElementById('comment-' + i).style.display = (checked ? '' : 'none');

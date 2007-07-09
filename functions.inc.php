@@ -251,19 +251,19 @@ function input($name, $field, $value) {
 		}
 		preg_match_all("~'((?:[^']*|'')+)'~", $field["length"], $matches);
 		foreach ($matches[1] as $i => $val) {
-			$val = str_replace("''", "'", $val);
+			$val = stripcslashes(str_replace("''", "'", $val));
 			$id = "field-$name-" . ($i+1);
 			$checked = (is_int($value) ? $value == $i+1 : $value === $val); //! '' collide with NULL in $_GET["default"]
-			echo ' <input type="radio" name="fields[' . $name . ']" id="' . $id . '" value="' . (isset($_GET["default"]) ? htmlspecialchars($val) : $i+1) . '"' . ($checked ? ' checked="checked"' : '') . ' /><label for="' . $id . '">' . htmlspecialchars($val) . '</label>';
+			echo ' <label for="' . $id . '"><input type="radio" name="fields[' . $name . ']" id="' . $id . '" value="' . (isset($_GET["default"]) ? htmlspecialchars($val) : $i+1) . '"' . ($checked ? ' checked="checked"' : '') . ' />' . htmlspecialchars($val) . '</label>';
 		}
 		if ($field["null"]) {
 			$id = "field-$name-";
-			echo '<input type="radio" name="fields[' . $name . ']" id="' . $id . '" value=""' . (strlen($value) ? '' : ' checked="checked"') . ' /><label for="' . $id . '">' . lang('NULL') . '</label> ';
+			echo ' <label for="' . $id . '"><input type="radio" name="fields[' . $name . ']" id="' . $id . '" value=""' . (strlen($value) ? '' : ' checked="checked"') . ' />' . lang('NULL') . '</label>';
 		}
 	} elseif ($field["type"] == "set") { //! 64 bits
 		preg_match_all("~'((?:[^']*|'')+)'~", $field["length"], $matches);
 		foreach ($matches[1] as $i => $val) {
-			$val = str_replace("''", "'", $val);
+			$val = stripcslashes(str_replace("''", "'", $val));
 			$id = "field-$name-" . ($i+1);
 			$checked = (is_int($value) ? ($value >> $i) & 1 : in_array($val, explode(",", $value), true));
 			echo ' <input type="checkbox" name="fields[' . $name . '][' . $i . ']" id="' . $id . '" value="' . (isset($_GET["default"]) ? htmlspecialchars($val) : 1 << $i) . '"' . ($checked ? ' checked="checked"' : '') . ' /><label for="' . $id . '">' . htmlspecialchars($val) . '</label>';
@@ -277,7 +277,7 @@ function input($name, $field, $value) {
 	}
 	if ($field["null"] && preg_match('~char|text|set|binary|blob~', $field["type"])) {
 		$id = "null-$name";
-		echo '<input type="checkbox" name="null[' . $name . ']" value="1" id="' . $id . '"' . (isset($value) ? '' : ' checked="checked"') . ' /><label for="' . $id . '">' . lang('NULL') . '</label>';
+		echo '<label for="' . $id . '"><input type="checkbox" name="null[' . $name . ']" value="1" id="' . $id . '"' . (isset($value) ? '' : ' checked="checked"') . ' />' . lang('NULL') . '</label>';
 	}
 }
 

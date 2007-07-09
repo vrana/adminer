@@ -34,7 +34,7 @@ if (!$columns) {
 			}
 			echo "(<i>" . implode("</i>, <i>", $index["columns"]) . "</i>) AGAINST";
 			echo ' <input name="fulltext[' . $i . ']" value="' . htmlspecialchars($_GET["fulltext"][$i]) . '" />';
-			echo "<input type='checkbox' name='boolean[$i]' value='1' id='boolean-$i'" . (isset($_GET["boolean"][$i]) ? " checked='checked'" : "") . " /><label for='boolean-$i'>" . lang('BOOL') . "</label>";
+			echo "<label for='boolean-$i'><input type='checkbox' name='boolean[$i]' value='1' id='boolean-$i'" . (isset($_GET["boolean"][$i]) ? " checked='checked'" : "") . " />" . lang('BOOL') . "</label>";
 			echo "<br />\n";
 		}
 	}
@@ -73,12 +73,12 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 		if (in_array($val, $columns, true)) {
 			$order[] = idf_escape($val) . (isset($_GET["desc"][$key]) ? " DESC" : "");
 			echo "<div><select name='order[$i]'><option></option>" . optionlist($columns, $val, "not_vals") . "</select>";
-			echo "<input type='checkbox' name='desc[$i]' value='1' id='desc-$i'" . (isset($_GET["desc"][$key]) ? " checked='checked'" : "") . " /><label for='desc-$i'>" . lang('DESC') . "</label></div>\n";
+			echo "<label for='desc-$i'><input type='checkbox' name='desc[$i]' value='1' id='desc-$i'" . (isset($_GET["desc"][$key]) ? " checked='checked'" : "") . " />" . lang('DESC') . "</label></div>\n";
 			$i++;
 		}
 	}
 	echo "<div><select name='order[$i]'><option></option>" . optionlist($columns, array(), "not_vals") . "</select>";
-	echo "<input type='checkbox' name='desc[$i]' value='1' id='desc-$i' /><label for='desc-$i'>" . lang('DESC') . "</label></div>\n";
+	echo "<label for='desc-$i'><input type='checkbox' name='desc[$i]' value='1' id='desc-$i' />" . lang('DESC') . "</label></div>\n";
 	echo "</fieldset>\n";
 	
 	echo "<fieldset><legend>" . lang('Limit') . "</legend>\n";
