@@ -14,33 +14,10 @@ if ($_POST && !$error) {
 	} else {
 		$set = array();
 		foreach ($fields as $name => $field) {
-			$key = bracket_escape($name);
-			$val = $_POST["fields"][$key];
-			if (preg_match('~char|text|set|binary|blob~', $field["type"]) ? $_POST["null"][$key] : !strlen($val)) {
-				$val = "NULL";
-			} elseif ($field["type"] == "enum") {
-				$val = (isset($_GET["default"]) && preg_match_all("~'((?:[^']*|'')+)'~", $field["length"], $matches) ? "'" . $matches[1][$val-1] . "'" : intval($val));
-			} elseif ($field["type"] == "set") {
-				if (!isset($_GET["default"])) {
-					$val = array_sum((array) $val);
-				} else {
-					preg_match_all("~'((?:[^']*|'')+)'~", $field["length"], $matches);
-					$value = array();
-					foreach ((array) $val as $key => $v) {
-						$value[] = $matches[1][$key];
-					}
-					$val = "'" . implode(",", $value) . "'";
-				}
-			} elseif (preg_match('~binary|blob~', $field["type"])) {
-				$file = get_file($key);
-				if (!is_string($file) && !$field["null"]) {
-					continue; //! report errors, also empty $_POST - not only because of file upload
-				}
-				$val = "_binary'" . (is_string($file) ? mysql_real_escape_string($file) : "") . "'";
-			} else {
-				$val = "'" . mysql_real_escape_string($val) . "'";
+			$val = process_input($name, $field);
+			if ($val !== false) {
+				$set[] = idf_escape($name) . (isset($_GET["default"]) ? ($val == "NULL" ? " DROP DEFAULT" : " SET DEFAULT $val") : " = $val");
 			}
-			$set[] = idf_escape($name) . (isset($_GET["default"]) ? ($val == "NULL" ? " DROP DEFAULT" : " SET DEFAULT $val") : " = $val");
 		}
 		if (isset($_GET["default"])) {
 			$query = "ALTER TABLE " . idf_escape($_GET["edit"]) . " ALTER " . implode(", ALTER ", $set);
@@ -78,54 +55,27 @@ if ($_POST) {
 	unset($data);
 }
 ?>
+
 <form action="" method="post" enctype="multipart/form-data">
-<table border="0" cellspacing="0" cellpadding="2">
 <?php
-$types = types();
-$save_possible = false;
+echo ($fields ? "<table border='0' cellspacing='0' cellpadding='2'>\n" : "");
 foreach ($fields as $name => $field) {
-	$save_possible = true;
 	echo "<tr><th>" . htmlspecialchars($name) . "</th><td>";
-	$value = (isset($data) ? $data[$name] : $field["default"]);
-	$name = htmlspecialchars($_POST ? $name : bracket_escape($name));
-	if ($field["type"] == "enum") {
-		if (!isset($_GET["default"])) {
-			echo '<input type="radio" name="fields[' . $name . ']" value="0"' . ($value == "0" ? ' checked="checked"' : '') . ' />';
-		}
-		preg_match_all("~'((?:[^']*|'')+)'~", $field["length"], $matches);
-		foreach ($matches[1] as $i => $val) {
-			$id = "field-$name-" . ($i+1);
-			$checked = (isset($data) ? $value == $i+1 : $val === $field["default"]);
-			echo ' <input type="radio" name="fields[' . $name . ']" id="' . $id . '" value="' . ($i+1) . '"' . ($checked ? ' checked="checked"' : '') . ' /><label for="' . $id . '">' . htmlspecialchars(str_replace("''", "'", $val)) . '</label>';
-		}
-		if ($field["null"]) {
-			$id = "field-$name-";
-			echo '<input type="radio" name="fields[' . $name . ']" id="' . $id . '" value=""' . (strlen($value) ? '' : ' checked="checked"') . ' /><label for="' . $id . '">' . lang('NULL') . '</label> ';
-		}
-	} elseif ($field["type"] == "set") { //! 64 bits
-		preg_match_all("~'((?:[^']*|'')+)'~", $field["length"], $matches);
-		foreach ($matches[1] as $i => $val) {
-			$id = "$name-" . ($i+1);
-			$checked = (isset($data) ? ($value >> $i) & 1 : in_array(str_replace("''", "'", $val), explode(",", $field["default"]), true));
-			echo ' <input type="checkbox" name="fields[' . $name . '][' . $i . ']" id="' . $id . '" value="' . (1 << $i) . '"' . ($checked ? ' checked="checked"' : '') . ' /><label for="' . $id . '">' . htmlspecialchars(str_replace("''", "'", $val)) . '</label>';
-		}
-	} elseif (strpos($field["type"], "text") !== false) {
-		echo '<textarea name="fields[' . $name . ']" cols="50" rows="12">' . htmlspecialchars($value) . '</textarea>';
-	} elseif (preg_match('~binary|blob~', $field["type"])) {
-		echo (ini_get("file_uploads") ? '<input type="file" name="' . $name . '" />' : lang('File uploads are disabled.') . ' ');
-	} else { //! binary
-		echo '<input name="fields[' . $name . ']" value="' . htmlspecialchars($value) . '"' . (strlen($field["length"]) ? " maxlength='$field[length]'" : ($types[$field["type"]] ? " maxlength='" . $types[$field["type"]] . "'" : '')) . ' />';
+	if (!isset($data)) {
+		$value = $field["default"];
+	} elseif (strlen($data[$name]) && ($field["type"] == "enum" || $field["type"] == "set")) {
+		$value = intval($data[$name]);
+	} else {
+		$value = $data[$name];
 	}
-	if ($field["null"] && preg_match('~char|text|set|binary|blob~', $field["type"])) {
-		echo '<input type="checkbox" name="null[' . $name . ']" value="1" id="null-' . $name . '"' . (isset($value) ? '' : ' checked="checked"') . ' /><label for="null-' . $name . '">' . lang('NULL') . '</label>';
-	}
+	input($name, $field, $value);
 	echo "</td></tr>\n";
 }
+echo ($fields ? "</table>\n" : "");
 ?>
-</table>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
-<?php if ($save_possible) { ?>
+<?php if ($fields) { ?>
 <input type="submit" value="<?php echo lang('Save'); ?>" />
 <?php if (!isset($_GET["default"])) { ?><input type="submit" name="insert" value="<?php echo lang('Save and insert'); ?>" /><?php } ?>
 <?php } ?>

@@ -24,13 +24,14 @@ if ($_POST && $error) {
 				if (!$result) {
 					echo "<p class='error'>" . lang('Error in query') . ": " . htmlspecialchars(mysql_error()) . "</p>\n";
 				} elseif ($result === true) {
-					//~ if (token_delete()) {
-						//~ $token = token();
-					//~ }
+					/* more secure but less user-friendly
+					if (token_delete()) {
+						$token = token();
+					}
+					*/
 					echo "<p class='message'>" . lang('Query executed OK, %d row(s) affected.', mysql_affected_rows()) . "</p>\n";
 				} else {
 					select($result);
-					mysql_free_result($result);
 				}
 			}
 		}
@@ -42,6 +43,7 @@ if ($_POST && $error) {
 	echo "<p class='error'>" . lang('Unable to upload a file.') . "</p>\n";
 }
 ?>
+
 <form action="<?php echo htmlspecialchars($SELF); ?>sql=" method="post">
 <p><textarea name="query" rows="20" cols="80"><?php echo htmlspecialchars($_POST["query"]); ?></textarea></p>
 <p><input type="hidden" name="token" value="<?php echo $token; ?>" /><input type="submit" value="<?php echo lang('Execute'); ?>" /></p>

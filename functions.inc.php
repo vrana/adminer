@@ -8,7 +8,7 @@ function idf_unescape($idf) {
 }
 
 function bracket_escape($idf, $back = false) {
-	static $trans = array(':' => ':1', ']' => ':2');
+	static $trans = array(':' => ':1', ']' => ':2', '[' => ':3');
 	return strtr($idf, ($back ? array_flip($trans) : $trans));
 }
 
@@ -236,6 +236,70 @@ function select($result) {
 		}
 		echo "</table>\n";
 	}
+	mysql_free_result($result);
+}
+
+function input($name, $field, $value) {
+	static $types;
+	if (!isset($types)) {
+		$types = types();
+	}
+	$name = htmlspecialchars(bracket_escape($name));
+	if ($field["type"] == "enum") {
+		if (!isset($_GET["default"])) {
+			echo '<input type="radio" name="fields[' . $name . ']" value="0"' . ($value === 0 ? ' checked="checked"' : '') . ' />';
+		}
+		preg_match_all("~'((?:[^']*|'')+)'~", $field["length"], $matches);
+		foreach ($matches[1] as $i => $val) {
+			$val = str_replace("''", "'", $val);
+			$id = "field-$name-" . ($i+1);
+			$checked = (is_int($value) ? $value == $i+1 : $value === $val); //! '' collide with NULL in $_GET["default"]
+			echo ' <input type="radio" name="fields[' . $name . ']" id="' . $id . '" value="' . (isset($_GET["default"]) ? htmlspecialchars($val) : $i+1) . '"' . ($checked ? ' checked="checked"' : '') . ' /><label for="' . $id . '">' . htmlspecialchars($val) . '</label>';
+		}
+		if ($field["null"]) {
+			$id = "field-$name-";
+			echo '<input type="radio" name="fields[' . $name . ']" id="' . $id . '" value=""' . (strlen($value) ? '' : ' checked="checked"') . ' /><label for="' . $id . '">' . lang('NULL') . '</label> ';
+		}
+	} elseif ($field["type"] == "set") { //! 64 bits
+		preg_match_all("~'((?:[^']*|'')+)'~", $field["length"], $matches);
+		foreach ($matches[1] as $i => $val) {
+			$val = str_replace("''", "'", $val);
+			$id = "field-$name-" . ($i+1);
+			$checked = (is_int($value) ? ($value >> $i) & 1 : in_array($val, explode(",", $value), true));
+			echo ' <input type="checkbox" name="fields[' . $name . '][' . $i . ']" id="' . $id . '" value="' . (isset($_GET["default"]) ? htmlspecialchars($val) : 1 << $i) . '"' . ($checked ? ' checked="checked"' : '') . ' /><label for="' . $id . '">' . htmlspecialchars($val) . '</label>';
+		}
+	} elseif (strpos($field["type"], "text") !== false) {
+		echo '<textarea name="fields[' . $name . ']" cols="50" rows="12">' . htmlspecialchars($value) . '</textarea>';
+	} elseif (preg_match('~binary|blob~', $field["type"])) {
+		echo (ini_get("file_uploads") ? '<input type="file" name="' . $name . '" />' : lang('File uploads are disabled.') . ' ');
+	} else {
+		echo '<input name="fields[' . $name . ']" value="' . htmlspecialchars($value) . '"' . (strlen($field["length"]) ? " maxlength='$field[length]'" : ($types[$field["type"]] ? " maxlength='" . $types[$field["type"]] . "'" : '')) . ' />';
+	}
+	if ($field["null"] && preg_match('~char|text|set|binary|blob~', $field["type"])) {
+		$id = "null-$name";
+		echo '<input type="checkbox" name="null[' . $name . ']" value="1" id="' . $id . '"' . (isset($value) ? '' : ' checked="checked"') . ' /><label for="' . $id . '">' . lang('NULL') . '</label>';
+	}
+}
+
+function process_input($name, $field) {
+	$name = bracket_escape($name);
+	$return = $_POST["fields"][$name];
+	if (preg_match('~char|text|set|binary|blob~', $field["type"]) ? $_POST["null"][$name] : !strlen($return)) {
+		$return = "NULL";
+	} elseif ($field["type"] == "enum") {
+		$return = (isset($_GET["default"]) ? "'" . mysql_real_escape_string($return) . "'" : intval($return));
+	} elseif ($field["type"] == "set") {
+		$return = (isset($_GET["default"]) ? "'" . implode(",", array_map('mysql_real_escape_string', (array) $return)) . "'" : array_sum((array) $return));
+	} elseif (preg_match('~binary|blob~', $field["type"])) {
+		$file = get_file($name);
+		if (!is_string($file) && !$field["null"]) {
+			return false; //! report errors, also empty $_POST (too big POST data, not only FILES)
+		}
+		$return = "_binary'" . (is_string($file) ? mysql_real_escape_string($file) : "") . "'";
+	} else {
+		$return = "'" . mysql_real_escape_string($return) . "'";
+	}
+	return $return;
 }
 
 if (get_magic_quotes_gpc()) {
