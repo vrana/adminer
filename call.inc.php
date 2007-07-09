@@ -55,9 +55,11 @@ if ($_POST) {
 			echo "<p class='message'>$message</p>\n";
 		} else {
 			select($result);
+			echo "<br />\n";
 		}
 		if ($out) {
 			select(mysql_query("SELECT " . implode(", ", $out)));
+			echo "<br />\n";
 		}
 	}
 }
