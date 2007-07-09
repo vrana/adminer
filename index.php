@@ -1,5 +1,5 @@
 <?php
-// Copyright 2007 Jakub Vrana http://phpminadmin.sourceforge.net, licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
+// Copyright 2007 Jakub Vrana http://phpminadmin.sourceforge.net, licensed under the Apache License, Version 2.0 (the 'License'); you may not use this file except in compliance with the License.
 
 session_start();
 error_reporting(E_ALL & ~E_NOTICE);
@@ -27,6 +27,12 @@ if (isset($_GET["dump"])) {
 			$error = (in_array($_POST["token"], (array) $TOKENS) ? "" : lang('Invalid CSRF token. Send the form again.'));
 		}
 		$token = ($_POST && !$error ? $_POST["token"] : token());
+		if (isset($_GET["default"])) {
+			$_GET["edit"] = $_GET["default"];
+		}
+		if (isset($_GET["callf"])) {
+			$_GET["call"] = $_GET["callf"];
+		}
 		if (isset($_GET["sql"])) {
 			include "./sql.inc.php";
 		} elseif (isset($_GET["edit"])) {
@@ -51,7 +57,7 @@ if (isset($_GET["dump"])) {
 					while ($row = mysql_fetch_assoc($result)) {
 						echo "<tr valign='top'>";
 						echo "<th>" . htmlspecialchars($row["ROUTINE_TYPE"]) . "</th>";
-						echo '<td><a href="' . htmlspecialchars($SELF) . 'call=' . urlencode($row["ROUTINE_NAME"]) . ($row["ROUTINE_TYPE"] == "FUNCTION" ? '&amp;type=FUNCTION' : '') . '">' . htmlspecialchars($row["ROUTINE_NAME"]) . '</a></td>';
+						echo '<td><a href="' . htmlspecialchars($SELF) . ($row["ROUTINE_TYPE"] == "FUNCTION" ? 'callf' : 'call') . '=' . urlencode($row["ROUTINE_NAME"]) . '">' . htmlspecialchars($row["ROUTINE_NAME"]) . '</a></td>';
 						echo "<td><pre>" . htmlspecialchars($row["ROUTINE_DEFINITION"]) . "</pre></td>";
 						echo "</tr>\n";
 					}
