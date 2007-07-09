@@ -1,16 +1,47 @@
 <?php
-mysql_result(mysql_query("SHOW CREATE " . ($_GET["type"] == "FUNCTION" ? "FUNCTION" : "PROCEDURE")), 0, 2);
-if ($_POST) {
-	if (isset($_GET["function"])) {
-		
-	} else {
-		
+$length = '(?:[^\'")]*|\'(?:[^\\\\\']*|\\.)+\'|"(?:[^\\\\\"]*|\\.)+")+';
+$pattern = "\\s*(IN|OUT|INOUT)?(?:\\s*`((?:[^`]*|``)+)`\\s*|\\s+(\\S+)\\s+)([a-z]+)(?:\\s*\\(($length)\\))?\\s*(?:zerofill\\s+)?(unsigned)?";
+$create = mysql_result(mysql_query("SHOW CREATE " . (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE") . " " . idf_escape($_GET["call"])), 0, 2);
+preg_match("~\\($pattern(?:\\s*,$pattern)*~is", $create, $match);
+$in = array();
+$out = array();
+$params = array();
+preg_match_all("~$pattern~is", $match[0], $matches, PREG_SET_ORDER);
+foreach ($matches as $i => $match) {
+	$field = array(
+		"field" => str_replace("``", "`", $match[2]) . $match[3],
+		"type" => $match[4], //! type aliases
+		"length" => $match[5], //! replace \' by '', replace "" by ''
+		"unsigned" => ($match[6] ? "unsigned" : ""), // zerofill ignored
+		"null" => true,
+	);
+	if (strcasecmp("out", substr($match[1], -3)) == 0) {
+		$out[$i] = "@" . idf_escape($field["field"]) . " AS " . idf_escape($field["field"]);
 	}
-	$result = mysql_query("CALL " . idf_escape($_GET["call"])); //! params
-	if ($result === true) {
-		redirect(substr($SELF, 0, -1), lang('Routine has been called, %d row(s) affected.', mysql_affected_rows()));
-	} elseif (!$result) {
+	if (!$match[1] || strcasecmp("in", substr($match[1], 0, 2)) == 0) {
+		$in[] = $i;
+	}
+	$params[$i] = $field;
+}
+if ($_POST) {
+	$call = array();
+	foreach ($params as $key => $field) {
+		if (in_array($key, $in)) {
+			$val = process_input($key, $field);
+			if (isset($out[$key])) {
+				mysql_query("SET @" . idf_escape($field["field"]) . " = " . $val);
+			}
+		}
+		$call[] = (isset($out[$key]) ? "@" . idf_escape($field["field"]) : $val);
+	}
+	$result = mysql_query((isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . idf_escape($_GET["call"]) . "(" . implode(", ", $call) . ")");
+	if (!$result) {
 		$error = mysql_error();
+	} elseif ($result === true) {
+		$message = lang('Routine has been called, %d row(s) affected.', mysql_affected_rows());
+		if (!$out) {
+			redirect(substr($SELF, 0, -1), $message);
+		}
 	}
 }
 
@@ -20,16 +51,31 @@ if ($_POST) {
 	if (!$result) {
 		echo "<p class='error'>" . lang('Error during calling') . ": " . htmlspecialchars($error) . "</p>\n";
 	} else {
-		select($result);
+		if ($result == true) {
+			echo "<p class='message'>$message</p>\n";
+		} else {
+			select($result);
+		}
+		if ($out) {
+			select(mysql_query("SELECT " . implode(", ", $out)));
+		}
 	}
 }
 ?>
+
 <form action="" method="post">
 <?php
-if ($params) {
+if ($in) {
 	echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
-	foreach ($params as $key => $val) {
-		echo "<tr><th>" . htmlspecialchars($key) . "</th><td>" . input("param[]", $val["type"]) . "</td></tr>\n";
+	foreach ($in as $key) {
+		$field = $params[$key];
+		echo "<tr><th>" . htmlspecialchars($field["field"]) . "</th><td>";
+		$value = $_POST["fields"][$key];
+		if (strlen($value) && ($field["type"] == "enum" || $field["type"] == "set")) {
+			$value = intval($value);
+		}
+		input($key, $field, $value); // param name can be empty
+		echo "</td></tr>\n";
 	}
 	echo "</table>\n";
 }
