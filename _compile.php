@@ -16,8 +16,8 @@ function put_file($match) {
 	if ($match[4] == "./lang.inc.php") {
 		if (!$_SESSION["lang"]) {
 			$return = str_replace("\tif (\$number === false && \$translation) {\n\t\treturn \$translation; // used in _compile.php\n\t}\n", "", $return);
-		} elseif (preg_match("~case '$_SESSION[lang]': (.*) break;~", $return, $match) || preg_match("~default: (.*)~", $return, $match)) {
-			return "$match[1]\nfunction lang(\$ar, \$number) {\n\t$match[1]\n\treturn \$ar[\$pos];\n}\n$match[5]";
+		} elseif (preg_match("~case '$_SESSION[lang]': (.*) break;~", $return, $match2) || preg_match("~default: (.*)~", $return, $match2)) {
+			return "$match[1]\nfunction lang(\$ar, \$number) {\n\t$match2[1]\n\treturn \$ar[\$pos];\n}\n$match[5]";
 		}
 	}
 	$return = preg_replace("~\\?>\n?\$~", '', $return);
@@ -35,12 +35,12 @@ function put_file($match) {
 
 error_reporting(E_ALL & ~E_NOTICE);
 if ($_SERVER["argc"] > 1) {
+	$_SESSION["lang"] = $_SERVER["argv"][1];
 	include "./lang.inc.php";
 	if ($_SERVER["argc"] != 2 || !in_array($_SERVER["argv"][1], lang())) {
 		echo "Usage: php _compile.php [lang]\nPurpose: Compile phpMinAdmin[-lang].php from index.php.\n";
 		exit(1);
 	}
-	$_SESSION["lang"] = $_SERVER["argv"][1];
 }
 $filename = "phpMinAdmin.php";
 $file = file_get_contents("index.php");
