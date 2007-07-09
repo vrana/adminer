@@ -31,6 +31,7 @@ PRE { margin: 0; margin: .12em 0; }
 		echo "<p class='message'>$_SESSION[message]</p>\n";
 		$_SESSION["message"] = "";
 	}
+	session_write_close();
 }
 
 function page_footer($missing = false) {
