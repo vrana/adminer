@@ -40,6 +40,5 @@ if ($_SESSION["lang"]) {
 	$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
 	$file = str_replace("<?php echo get_lang(); ?>", $_SESSION["lang"], $file);
 }
-//! remove spaces and comments
 file_put_contents($filename, $file);
 echo "$filename created.\n";
