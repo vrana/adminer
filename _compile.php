@@ -38,6 +38,7 @@ $file = preg_replace_callback('~(<\\?php)?\\s*(include|require)(_once)? "([^"]*)
 if ($_SESSION["lang"]) {
 	$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']*|\\\\.)+)'\\)(;\\s*\\?>)?~s", 'remove_lang', $file);
 	$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
+	$file = str_replace("<?php echo get_lang(); ?>", $_SESSION["lang"], $file);
 }
 //! remove spaces and comments
 file_put_contents($filename, $file);

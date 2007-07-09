@@ -4,6 +4,7 @@
 session_start();
 error_reporting(E_ALL & ~E_NOTICE);
 $SELF = preg_replace('~^[^?]*/([^?]*).*~', '\\1?', $_SERVER["REQUEST_URI"]) . (strlen($_GET["server"]) ? 'server=' . urlencode($_GET["server"]) . '&' : '') . (strlen($_GET["db"]) ? 'db=' . urlencode($_GET["db"]) . '&' : '');
+$TOKENS = &$_SESSION["tokens"][$_GET["server"]][preg_replace('~([?&]sql=)upload~', '\\1', $_SERVER["REQUEST_URI"])];
 include "./lang.inc.php";
 include "./functions.inc.php";
 include "./design.inc.php";
@@ -12,6 +13,8 @@ include "./connect.inc.php";
 
 if (isset($_GET["dump"])) {
 	include "./dump.inc.php";
+} elseif (isset($_GET["download"])) {
+	include "./download.inc.php";
 } else {
 	if (isset($_GET["table"])) {
 		include "./table.inc.php";
@@ -20,16 +23,10 @@ if (isset($_GET["dump"])) {
 	} elseif (isset($_GET["view"])) {
 		include "./view.inc.php";
 	} else {
-		$params = preg_replace('~.*\\?~', '', $_SERVER["REQUEST_URI"]);
 		if ($_POST) {
-			$error = (in_array($_POST["token"], (array) $_SESSION["tokens"][$params]) ? "" : lang('Invalid CSRF token.'));
+			$error = (in_array($_POST["token"], (array) $TOKENS) ? "" : lang('Invalid CSRF token. Send the form again.'));
 		}
-		if ($_POST && !$error) {
-			$token = $_POST["token"];
-		} else {
-			$token = rand(1, 1e6);
-			$_SESSION["tokens"][$params][] = $token;
-		}
+		$token = ($_POST && !$error ? $_POST["token"] : token());
 		if (isset($_GET["sql"])) {
 			include "./sql.inc.php";
 		} elseif (isset($_GET["edit"])) {
@@ -41,7 +38,7 @@ if (isset($_GET["dump"])) {
 		} elseif (isset($_GET["database"])) {
 			include "./database.inc.php";
 		} else {
-			unset($_SESSION["tokens"][$params]);
+			$TOKENS = array();
 			page_header(htmlspecialchars(lang('Database') . ": " . $_GET["db"]));
 			echo '<p><a href="' . htmlspecialchars($SELF) . 'database=">' . lang('Alter database') . "</a></p>\n";
 			if (mysql_get_server_info() >= 5) {
@@ -52,7 +49,7 @@ if (isset($_GET["dump"])) {
 					while ($row = mysql_fetch_assoc($result)) {
 						echo "<tr valign='top'>";
 						echo "<th>" . htmlspecialchars($row["ROUTINE_TYPE"]) . "</th>";
-						echo "<th>" . htmlspecialchars($row["ROUTINE_NAME"]) . "</th>"; //! parameters from SHOW CREATE {PROCEDURE|FUNCTION}
+						echo "<td>" . htmlspecialchars($row["ROUTINE_NAME"]) . "</td>"; //! parameters from SHOW CREATE {PROCEDURE|FUNCTION}
 						echo "<td><pre>" . htmlspecialchars($row["ROUTINE_DEFINITION"]) . "</pre></td>";
 						echo "</tr>\n";
 					}

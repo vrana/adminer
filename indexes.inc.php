@@ -2,7 +2,7 @@
 $index_types = array("PRIMARY", "UNIQUE", "INDEX", "FULLTEXT");
 $indexes = indexes($_GET["indexes"]);
 $fields = array_keys(fields($_GET["indexes"]));
-if ($_POST && !$_POST["add"]) {
+if ($_POST && !$error && !$_POST["add"]) {
 	$alter = array();
 	foreach ($_POST["indexes"] as $index) {
 		if (in_array($index["type"], $index_types)) {
@@ -66,6 +66,6 @@ foreach ($row["indexes"] as $index) {
 ?>
 <tr><td><select name="indexes[<?php echo $j; ?>][type]"><option></option><?php echo optionlist($index_types, array(), "not_vals"); ?></select></td><td><select name="indexes[<?php echo $j; ?>][columns][1]"><option></option><?php echo optionlist($fields, array(), "not_vals"); ?></select></td></tr>
 </table>
-<p><input type="submit" value="<?php echo lang('Alter indexes'); ?>" /></p>
+<p><input type="hidden" name="token" value="<?php echo $token; ?>" /><input type="submit" value="<?php echo lang('Alter indexes'); ?>" /></p>
 <p><input type="submit" name="add" value="<?php echo lang('Add next'); ?>" /></p>
 </form>

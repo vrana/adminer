@@ -1,5 +1,5 @@
 <?php
-if ($_POST) {
+if ($_POST && !$error) {
 	if ($_POST["drop"]) {
 		if (mysql_query("DROP DATABASE " . idf_escape($_GET["db"]))) {
 			redirect(substr(preg_replace('~(\\?)db=[^&]*&|&db=[^&]*~', '\\1', $SELF), 0, -1), lang('Database has been dropped.'));
@@ -47,6 +47,7 @@ if ($_POST) {
 <form action="" method="post"><div>
 <input name="name" value="<?php echo htmlspecialchars($name); ?>" maxlength="64" />
 <select name="collation"><option value="">(<?php echo lang('collation'); ?>)</option><?php echo optionlist(collations(), $collate, "not_vals"); ?></select>
+<input type="hidden" name="token" value="<?php echo $token; ?>" />
 <input type="submit" value="<?php echo lang('Save'); ?>" />
 <?php if (strlen($_GET["db"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>" /><?php } ?>
 </div></form>

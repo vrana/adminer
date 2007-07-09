@@ -27,18 +27,20 @@ function dump($db) {
 	}
 	echo "USE " . idf_escape($db) . ";\n";
 	echo "SET CHARACTER SET utf8;\n\n";
-	$result = mysql_query("SHOW TABLES");
-	while ($row = mysql_fetch_row($result)) {
-		$result1 = mysql_query("SHOW CREATE TABLE " . idf_escape($row[0]));
+	$result = mysql_query("SHOW TABLE STATUS");
+	while ($row = mysql_fetch_assoc($result)) {
+		$result1 = mysql_query("SHOW CREATE TABLE " . idf_escape($row["Name"]));
 		if ($result1) {
 			echo mysql_result($result1, 0, 1) . ";\n";
 			mysql_free_result($result1);
-			$result1 = mysql_query("SELECT * FROM " . idf_escape($row[0])); //! except views //! enum and set as numbers
-			if ($result1) {
-				while ($row1 = mysql_fetch_row($result1)) {
-					echo "INSERT INTO " . idf_escape($row[0]) . " VALUES ('" . implode("', '", array_map('mysql_real_escape_string', $row1)) . "');\n";
+			if (isset($row["Engine"])) {
+				$result1 = mysql_query("SELECT * FROM " . idf_escape($row["Name"])); //! enum and set as numbers
+				if ($result1) {
+					while ($row1 = mysql_fetch_row($result1)) {
+						echo "INSERT INTO " . idf_escape($row["Name"]) . " VALUES ('" . implode("', '", array_map('mysql_real_escape_string', $row1)) . "');\n";
+					}
+					mysql_free_result($result1);
 				}
-				mysql_free_result($result1);
 			}
 			echo "\n";
 		}

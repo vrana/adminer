@@ -3,7 +3,7 @@ function page_header($title) {
 	header("Content-Type: text/html; charset=utf-8");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="cs">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="<?php echo get_lang(); ?>">
 <head>
 <title><?php echo lang('phpMinAdmin') . " - $title"; ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -14,7 +14,7 @@ A:visited { color: Navy; }
 H1 { font-size: 150%; margin: 0; }
 H2 { font-size: 150%; margin-top: 0; }
 FIELDSET { float: left; padding: .5em; margin: 0; }
-PRE { margin: 0; font-family: serif; }
+PRE { margin: 0; margin: .12em 0; }
 .error { color: Red; }
 .message { color: Green; }
 #menu { position: absolute; top: 8px; left: 8px; width: 15em; overflow: auto; white-space: nowrap; }
@@ -63,18 +63,18 @@ function page_footer($missing = false) {
 </form>
 <?php
 		if ($missing != "db" && strlen($_GET["db"])) {
-			$result = mysql_query("SHOW TABLES");
+			$result = mysql_query("SHOW TABLE STATUS");
 			if (!mysql_num_rows($result)) {
 				echo "<p class='message'>" . lang('No tables.') . "</p>\n";
 			} else {
 				echo "<p>\n";
-				while ($row = mysql_fetch_row($result)) {
-					echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row[0]) . '">' . lang('select') . '</a> ';
-					echo '<a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($row[0]) . '">' . htmlspecialchars($row[0]) . "</a><br />\n"; //! views
+				while ($row = mysql_fetch_assoc($result)) {
+					echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row["Name"]) . '">' . lang('select') . '</a> ';
+					echo '<a href="' . htmlspecialchars($SELF) . (isset($row["Engine"]) ? 'table' : 'view') . '=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . "</a><br />\n";
 				}
 				echo "</p>\n";
 			}
-			echo '<p><a href="' . htmlspecialchars($SELF) . 'create=">' . lang('Create new table') . "</a></p>\n"; //! rights
+			echo '<p><a href="' . htmlspecialchars($SELF) . 'create=">' . lang('Create new table') . "</a></p>\n";
 			mysql_free_result($result);
 		}
 	}

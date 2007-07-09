@@ -11,6 +11,7 @@ if (isset($_POST["server"])) {
 } elseif (isset($_GET["logout"])) {
 	unset($_SESSION["usernames"][$_GET["server"]]);
 	unset($_SESSION["passwords"][$_GET["server"]]);
+	$_SESSION["tokens"][$_GET["server"]] = array();
 }
 
 $username = $_SESSION["usernames"][$_GET["server"]];
@@ -18,8 +19,9 @@ $password = $_SESSION["passwords"][$_GET["server"]];
 if (isset($_GET["logout"]) || !@mysql_connect(
 	(strlen($_GET["server"]) ? $_GET["server"] : ini_get("mysql.default_host")),
 	(strlen("$_GET[server]$username") ? $username : ini_get("mysql.default_user")),
-	(strlen("$_GET[server]$username$password") ? $password : ini_get("mysql.default_password")))
-) {
+	(strlen("$_GET[server]$username$password") ? $password : ini_get("mysql.default_password")),
+	false, 131072 // CLIENT_MULTI_RESULTS for CALL
+)) {
 	page_header(lang('Login'));
 	if (isset($_GET["logout"])) {
 		echo "<p class='message'>" . lang('Logout successful.') . "</p>\n";
@@ -30,23 +32,26 @@ if (isset($_GET["logout"]) || !@mysql_connect(
 	<form action="" method="post">
 	<table border="0" cellspacing="0" cellpadding="2">
 	<tr><th><?php echo lang('Server'); ?>:</th><td><input name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>" maxlength="60" /></td></tr>
-	<tr><th><?php echo lang('Username'); ?>:</th><td><input name="username" value="<?php echo htmlspecialchars($_SESSION["usernames"][$_GET["server"]]); ?>" maxlength="16" /></td></tr>
+	<tr><th><?php echo lang('Username'); ?>:</th><td><input name="username" value="<?php echo htmlspecialchars($username); ?>" maxlength="16" /></td></tr>
 	<tr><th><?php echo lang('Password'); ?>:</th><td><input type="password" name="password" /></td></tr>
 	<tr><th><?php
 	foreach ($_POST as $key => $val) { // expired session
 		if (is_array($val)) {
 			foreach ($val as $key2 => $val2) {
 				if (!is_array($val2)) {
-					echo '<input type="hidden" name="' . htmlspecialchars($key . "[$key2]") . ' value="' . htmlspecialchars($val2) . '" />';
+					echo '<input type="hidden" name="' . htmlspecialchars($key . "[$key2]") . '" value="' . htmlspecialchars($val2) . '" />';
 				} else {
 					foreach ($val2 as $key3 => $val3) {
-						echo '<input type="hidden" name="' . htmlspecialchars($key . "[$key2][$key3]") . ' value="' . htmlspecialchars($val3) . '" />';
+						echo '<input type="hidden" name="' . htmlspecialchars($key . "[$key2][$key3]") . '" value="' . htmlspecialchars($val3) . '" />';
 					}
 				}
 			}
 		} elseif ($key != "server" && $key != "username" && $key != "password") {
 			echo '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($val) . '" />';
 		}
+	}
+	foreach ($_FILES as $key => $val) {
+		echo '<input type="hidden" name="files[' . htmlspecialchars($key) . ']" value="' . ($val["error"] ? $val["error"] : base64_encode(file_get_contents($val["tmp_name"]))) . '" />';
 	}
 	?></th><td><input type="submit" value="<?php echo lang('Login'); ?>" /></td></tr>
 	</table>

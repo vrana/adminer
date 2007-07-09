@@ -42,9 +42,10 @@ function fields($table) {
 				"unsigned" => ltrim($match[3] . $match[4]),
 				"default" => $row["Default"],
 				"null" => ($row["Null"] == "YES"),
-				"extra" => $row["Extra"],
+				"auto_increment" => ($row["Extra"] == "auto_increment"),
 				"collation" => $row["Collation"],
-				"privileges" => explode(",", $row["Privileges"]),
+				"privileges" => array_flip(explode(",", $row["Privileges"])),
+				"comment" => $row["Comment"],
 			);
 		}
 		mysql_free_result($result);
@@ -88,14 +89,25 @@ function unique_idf($row, $indexes) {
 				if (!isset($row[$key])) {
 					continue 2;
 				}
-				$return[] = urlencode("where[$key]") . "=" . urlencode($row[$key]);
+				$return[] = urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($row[$key]);
 			}
 			return $return;
 		}
 	}
 	$return = array();
 	foreach ($row as $key => $val) {
-		$return[] = (isset($val) ? urlencode("where[$key]") . "=" . urlencode($val) : "null%5B%5D=" . urlencode($key));
+		$return[] = (isset($val) ? urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($val) : "null%5B%5D=" . urlencode($key));
+	}
+	return $return;
+}
+
+function where() {
+	$return = array();
+	foreach ((array) $_GET["where"] as $key => $val) {
+		$return[] = idf_escape(bracket_escape($key, "back")) . " = BINARY '" . mysql_real_escape_string($val) . "'"; //! enum and set
+	}
+	foreach ((array) $_GET["null"] as $key) {
+		$return[] = idf_escape(bracket_escape($key, "back")) . " IS NULL";
 	}
 	return $return;
 }
@@ -122,17 +134,6 @@ function engines() {
 	return $return;
 }
 
-function redirect($location, $message = null) {
-	if (isset($message)) {
-		$_SESSION["message"] = $message;
-	}
-	if (strlen(SID)) {
-		$location .= (strpos($location, "?") === false ? "?" : "&") . SID;
-	}
-	header("Location: " . (strlen($location) ? $location : "."));
-	exit;
-}
-
 function types() {
 	return array(
 		"tinyint" => 3, "smallint" => 5, "mediumint" => 8, "int" => 10, "bigint" => 20,
@@ -144,6 +145,97 @@ function types() {
 		"tinyblob" => 255, "blob" => 65535, "mediumblob" => 16777215, "longblob" => 4294967295,
 		"enum" => 65535, "set" => 64,
 	);
+}
+
+function token() {
+	return ($GLOBALS["TOKENS"][] = rand(1, 1e6));
+}
+
+function token_delete() {
+	if ($_POST["token"] && ($pos = array_search($_POST["token"], (array) $GLOBALS["TOKENS"])) !== false) {
+		unset($GLOBALS["TOKENS"][$pos]);
+		return true;
+	}
+	return false;
+}
+
+function redirect($location, $message = null) {
+	if (isset($message)) {
+		$_SESSION["message"] = $message;
+	}
+	token_delete();
+	if (strlen(SID)) {
+		$location .= (strpos($location, "?") === false ? "?" : "&") . SID;
+	}
+	header("Location: " . (strlen($location) ? $location : "."));
+	exit;
+}
+
+function get_file($key) {
+	if (isset($_POST["files"][$key])) {
+		$length = strlen($_POST["files"][$key]);
+		return ($length & $length < 4 ? intval($_POST["files"][$key]) : base64_decode($_POST["files"][$key]));
+	}
+	return (!$_FILES[$key] || $_FILES[$key]["error"] ? $_FILES[$key]["error"] : file_get_contents($_FILES[$key]["tmp_name"]));
+}
+
+function select($result) {
+	if (!mysql_num_rows($result)) {
+		echo "<p class='message'>" . lang('No rows.') . "</p>\n";
+	} else {
+		echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
+		for ($i=0; $row = mysql_fetch_row($result); $i++) {
+			if (!$i) {
+				echo "<thead><tr>";
+				$links = array();
+				$indexes = array();
+				$columns = array();
+				$blobs = array();
+				for ($j=0; $j < count($row); $j++) {
+					$field = mysql_fetch_field($result, $j);
+					if (strlen($field->table) && $field->primary_key) {
+						$links[$j] = $field->table;
+						if (!isset($indexes[$field->table])) {
+							$indexes[$field->table] = array();
+							foreach (indexes($field->table) as $index) {
+								if ($index["type"] == "PRIMARY") {
+									$indexes[$field->table] = array_flip($index["columns"]);
+									break;
+								}
+							}
+							$columns[$field->table] = $indexes[$field->table];
+						}
+						unset($columns[$field->table][$field->name]);
+						$indexes[$field->table][$field->name] = $j;
+						$links[$j] = $field->table;
+					}
+					if ($field->blob) {
+						$blobs[$j] = true;
+					}
+					echo "<th>" . htmlspecialchars($field->name) . "</th>";
+				}
+				echo "</tr></thead>\n";
+			}
+			echo "<tr>";
+			foreach ($row as $key => $val) {
+				if (!isset($val)) {
+					$val = "<i>NULL</i>";
+				} else {
+					$val = ($blobs[$key] && preg_match('~[\\x80-\\xFF]~', $val) ? "<i>" . lang('%d byte(s)', strlen($val)) . "</i>" : (trim($val) ? nl2br(htmlspecialchars($val)) : "&nbsp;"));
+					if (isset($links[$key]) && !$columns[$links[$key]]) {
+						$link = "edit=" . urlencode($links[$key]);
+						foreach ($indexes[$links[$key]] as $col => $j) {
+							$link .= "&amp;where" . urlencode("[" . bracket_escape($col) . "]") . "=" . urlencode($row[$j]);
+						}
+						$val = '<a href="' . htmlspecialchars($SELF) . $link . '">' . $val . '</a>';
+					}
+				}
+				echo "<td>$val</td>";
+			}
+			echo "</tr>\n";
+		}
+		echo "</table>\n";
+	}
 }
 
 if (get_magic_quotes_gpc()) {

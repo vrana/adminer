@@ -1,7 +1,25 @@
 <?php
+function get_lang() {
+	if (strlen($_SESSION["lang"])) {
+		return $_SESSION["lang"];
+	}
+	$langs = lang();
+	$return = preg_replace('~[,;].*~', '', $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
+	if (!in_array($return, $langs)) { //! try next languages
+		$return = preg_replace('~-.*~', '', $return);
+		if (!in_array($return, $langs)) {
+			$return = "en";
+		}
+	}
+	return $return;
+}
+
 function lang($idf = null) {
 	static $translations = array(
-		'en' => array(),
+		'en' => array(
+			'Query executed OK, %d row(s) affected.' => array('Query executed OK, %d row affected.', 'Query executed OK, %d rows affected.'),
+			'%d byte(s)' => array('%d byte', '%d bytes'),
+		),
 		'cs' => array(
 			'Login' => 'Přihlásit se',
 			'phpMinAdmin' => 'phpMinAdmin',
@@ -26,7 +44,7 @@ function lang($idf = null) {
 			'Type' => 'Typ',
 			'Length' => 'Délka',
 			'NULL' => 'NULL',
-			'Auto-increment' => 'Auto-increment',
+			'Auto Increment' => 'Auto Increment',
 			'Options' => 'Volby',
 			'Add row' => 'Přidat řádek',
 			'Save' => 'Uložit',
@@ -72,7 +90,7 @@ function lang($idf = null) {
 			'Action' => 'Akce',
 			'edit' => 'upravit',
 			'Page' => 'Stránka',
-			'Query executed OK, %d row(s) affected.' => 'Příkaz proběhl v pořádku, bylo změněno %d záznam(ů).',
+			'Query executed OK, %d row(s) affected.' => array('Příkaz proběhl v pořádku, byl změněn %d záznam.', 'Příkaz proběhl v pořádku, byly změněny %d záznamy.', 'Příkaz proběhl v pořádku, bylo změněno %d záznamů.'),
 			'Error in query' => 'Chyba v dotazu',
 			'Execute' => 'Provést',
 			'Table' => 'Tabulka',
@@ -81,23 +99,34 @@ function lang($idf = null) {
 			'View' => 'Pohled',
 			'Unable to select the table' => 'Nepodařilo se vypsat tabulku',
 			'Unable to show the table definition' => 'Nepodařilo se získat strukturu tabulky',
+			'Invalid CSRF token. Send the form again.' => 'Neplatný token CSRF. Odešlete formulář znovu.',
+			'Comment' => 'Komentář',
+			'Default values has been set.' => 'Výchozí hodnoty byly nastaveny.',
+			'Default values' => 'Výchozí hodnoty',
+			'BOOL' => 'BOOL',
+			'Show column comments' => 'Zobrazit komentáře sloupců',
+			'%d byte(s)' => array('%d bajt', '%d bajty', '%d bajtů'),
+			'No commands to execute.' => 'Žádné příkazy k vykonání.',
+			'Unable to upload a file.' => 'Nepodařilo se nahrát soubor.',
+			'File upload' => 'Nahrání souboru',
+			'File uploads are disabled.' => 'Nahrávání souborů není povoleno.',
 		),
 	);
 	if (!isset($idf)) {
 		return array_keys($translations);
 	}
-	if (strlen($_SESSION["lang"])) {
-		$lang = $_SESSION["lang"];
-	} else {
-		$lang = preg_replace('~[,;].*~', '', $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
-		if (!isset($translations[$lang])) { //! try next languages
-			$lang = preg_replace('~-.*~', '', $lang);
-			if (!isset($translations[$lang])) {
-				$lang = "en";
-			}
+	$lang = get_lang();
+	$translation = $translations[$lang][$idf];
+	$args = func_get_args();
+	if (is_array($translation)) {
+		switch ($lang) {
+			case 'cs': $pos = ($args[1] == 1 ? 0 : (!$args[1] || $args[1] >= 5 ? 2 : 1)); break;
+			default: $pos = ($args[1] == 1 ? 0 : 1);
 		}
+		$translation = $translation[$pos];
 	}
-	return (strlen($translations[$lang][$idf]) ? $translations[$lang][$idf] : $idf);
+	$args[0] = (strlen($translation) ? $translation : $idf);
+	return call_user_func_array('sprintf', $args);
 }
 
 function switch_lang() {
