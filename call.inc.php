@@ -1,6 +1,6 @@
 <?php
 $length = '(?:[^\'")]*|\'(?:[^\\\\\']*|\\.)+\'|"(?:[^\\\\\"]*|\\.)+")+';
-$pattern = "\\s*(IN|OUT|INOUT)?(?:\\s*`((?:[^`]*|``)+)`\\s*|\\s+(\\S+)\\s+)([a-z]+)(?:\\s*\\(($length)\\))?\\s*(?:zerofill\\s+)?(unsigned)?";
+$pattern = "\\s*(IN|OUT|INOUT)?\\s*(?:`((?:[^`]*|``)+)`\\s*|\\b(\\S+)\\s+)([a-z]+)(?:\\s*\\(($length)\\))?\\s*(?:zerofill\\s+)?(unsigned)?";
 $create = mysql_result(mysql_query("SHOW CREATE " . (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE") . " " . idf_escape($_GET["call"])), 0, 2);
 preg_match("~\\($pattern(?:\\s*,$pattern)*~is", $create, $match);
 $in = array();
