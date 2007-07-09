@@ -22,6 +22,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 		}
 		$fields = array();
 		ksort($_POST["fields"]);
+		$after = "FIRST";
 		foreach ($_POST["fields"] as $key => $field) {
 			if (strlen($field["field"]) && isset($types[$field["type"]])) {
 				$fields[] = (!strlen($_GET["create"]) ? "" : (strlen($field["orig"]) ? "CHANGE " . idf_escape($field["orig"]) . " " : "ADD "))
@@ -32,7 +33,9 @@ if ($_POST && !$error && !$_POST["add"]) {
 					. ($field["null"] ? "" : " NOT NULL")
 					. ($key == $_POST["auto_increment"] ? " AUTO_INCREMENT$auto_increment_index" : "")
 					. " COMMENT '" . mysql_real_escape_string($field["comment"]) . "'"
+					. (strlen($_GET["create"]) && !strlen($field["orig"]) ? $after : "")
 				;
+				$after = "AFTER " . idf_escape($field["field"]);
 			} elseif (strlen($field["orig"])) {
 				$fields[] = "DROP " . idf_escape($field["orig"]);
 			}
@@ -57,22 +60,23 @@ if ($_POST && !$error && !$_POST["add"]) {
 page_header(strlen($_GET["create"]) ? lang('Alter table') . ': ' . htmlspecialchars($_GET["create"]) : lang('Create table'));
 
 if ($_POST) {
+	$row = $_POST;
+	ksort($row["fields"]);
 	if (!$_POST["add"]) {
 		echo "<p class='error'>" . lang('Unable to operate table') . ": " . htmlspecialchars($error) . "</p>\n";
+		$row["fields"] = array_values($row["fields"]);
+	} else {
+		array_splice($row["fields"], key($_POST["add"]), 0, array(array()));
 	}
-	$row = $_POST;
 	if ($row["auto_increment"]) {
 		$row["fields"][$row["auto_increment"]]["auto_increment"] = true;
 	}
 } elseif (strlen($_GET["create"])) {
 	$row = mysql_fetch_assoc(mysql_query("SHOW TABLE STATUS LIKE '" . mysql_real_escape_string($_GET["create"]) . "'"));
 	$row["name"] = $_GET["create"];
-	$row["fields"] = fields($_GET["create"]);
+	$row["fields"] = array_values(fields($_GET["create"]));
 } else {
-	$row = array("fields" => array());
-}
-if (!$_POST || $_POST["add"]) {
-	$row["fields"][] = array();
+	$row = array("fields" => array(array()));
 }
 $collations = collations();
 ?>
@@ -84,11 +88,11 @@ $collations = collations();
 <select name="Collation"><option value="">(<?php echo lang('collation'); ?>)</option><?php echo optionlist($collations, $row["Collation"], "not_vals"); ?></select>
 </p>
 <table border="0" cellspacing="0" cellpadding="2">
-<thead><tr><th><?php echo lang('Name'); ?></th><td><?php echo lang('Type'); ?></td><td><?php echo lang('Length'); ?></td><td><?php echo lang('Options'); ?></td><td><?php echo lang('NULL'); ?></td><td><input type="radio" name="auto_increment" value="" /><?php echo lang('Auto Increment'); ?></td><td id="comment-0"><?php echo lang('Comment'); ?></td></tr></thead>
+<thead><tr><th><?php echo lang('Name'); ?></th><td><?php echo lang('Type'); ?></td><td><?php echo lang('Length'); ?></td><td><?php echo lang('Options'); ?></td><td><?php echo lang('NULL'); ?></td><td><input type="radio" name="auto_increment" value="" /><?php echo lang('Auto Increment'); ?></td><td id="comment-0"><?php echo lang('Comment'); ?></td><td><input type="submit" name="add[0]" value="<?php echo lang('Add row'); ?>" /></td></tr></thead>
 <?php
-$i=1;
 $column_comments = false;
-foreach ($row["fields"] as $field) {
+foreach ($row["fields"] as $i => $field) {
+	$i++;
 	?>
 <tr>
 <th><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo htmlspecialchars($field[($_POST ? "orig" : "field")]); ?>" /><input name="fields[<?php echo $i; ?>][field]" value="<?php echo htmlspecialchars($field["field"]); ?>" maxlength="64" /></th>
@@ -98,12 +102,12 @@ foreach ($row["fields"] as $field) {
 <td><input type="checkbox" name="fields[<?php echo $i; ?>][null]" value="1"<?php if ($field["null"]) { ?> checked="checked"<?php } ?> /></td>
 <td><input type="radio" name="auto_increment" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked="checked"<?php } ?> /></td>
 <td id="comment-<?php echo $i; ?>"><input name="fields[<?php echo $i; ?>][comment]" value="<?php echo htmlspecialchars($field["comment"]); ?>" maxlength="255" /></td>
+<td><input type="submit" name="add[<?php echo $i; ?>]" value="<?php echo lang('Add row'); ?>" /></td>
 </tr>
 <?php
 	if (strlen($field["comment"])) {
 		$column_comments = true;
 	}
-	$i++;
 }
 //! JavaScript for next rows
 ?>
@@ -115,13 +119,13 @@ function type_change(type) {
 	type.form[name + '[collation]'].style.display = (/char|text|enum|set/.test(type.form[name + '[type]'].value) ? '' : 'none');
 	type.form[name + '[unsigned]'].style.display = (/int|float|double|decimal/.test(type.form[name + '[type]'].value) ? '' : 'none');
 }
-for (var i=1; <?php echo $i; ?> > i; i++) {
+for (var i=1; <?php echo count($row["fields"]); ?> >= i; i++) {
 	document.getElementById('form')['fields[' + i + '][type]'].onchange();
 }
 
 document.write('<input type="checkbox" id="column_comments"<?php if ($column_comments) { ?> checked="checked"<?php } ?> onclick="column_comments_click(this.checked);" /><label for="column_comments"><?php echo lang('Show column comments'); ?></label>');
 function column_comments_click(checked) {
-	for (var i=0; <?php echo $i; ?> > i; i++) {
+	for (var i=0; <?php echo count($row["fields"]); ?> >= i; i++) {
 		document.getElementById('comment-' + i).style.display = (checked ? '' : 'none');
 	}
 }
@@ -134,5 +138,4 @@ function column_comments_click(checked) {
 <input type="submit" value="<?php echo lang('Save'); ?>" />
 <?php if (strlen($_GET["create"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>" /><?php } ?>
 </p>
-<p><input type="submit" name="add" value="<?php echo lang('Add row'); ?>" /></p>
 </form>
