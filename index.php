@@ -37,6 +37,8 @@ if (isset($_GET["dump"])) {
 			include "./indexes.inc.php";
 		} elseif (isset($_GET["database"])) {
 			include "./database.inc.php";
+		} elseif (isset($_GET["call"])) {
+			include "./call.inc.php";
 		} else {
 			$TOKENS = array();
 			page_header(htmlspecialchars(lang('Database') . ": " . $_GET["db"]));
@@ -49,7 +51,7 @@ if (isset($_GET["dump"])) {
 					while ($row = mysql_fetch_assoc($result)) {
 						echo "<tr valign='top'>";
 						echo "<th>" . htmlspecialchars($row["ROUTINE_TYPE"]) . "</th>";
-						echo "<td>" . htmlspecialchars($row["ROUTINE_NAME"]) . "</td>"; //! parameters from SHOW CREATE {PROCEDURE|FUNCTION}
+						echo '<td><a href="' . htmlspecialchars($SELF) . 'call=' . urlencode($row["ROUTINE_NAME"]) . ($row["ROUTINE_TYPE"] == "FUNCTION" ? '&amp;type=FUNCTION' : '') . '">' . htmlspecialchars($row["ROUTINE_NAME"]) . '</a></td>';
 						echo "<td><pre>" . htmlspecialchars($row["ROUTINE_DEFINITION"]) . "</pre></td>";
 						echo "</tr>\n";
 					}
