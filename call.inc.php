@@ -51,7 +51,7 @@ if ($_POST) {
 	if (!$result) {
 		echo "<p class='error'>" . lang('Error during calling') . ": " . htmlspecialchars($error) . "</p>\n";
 	} else {
-		if ($result == true) {
+		if ($result === true) {
 			echo "<p class='message'>$message</p>\n";
 		} else {
 			select($result);
