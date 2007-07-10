@@ -6,7 +6,7 @@ if (extension_loaded("mysqli")) {
 		}
 		
 		function connect($server, $username, $password) {
-			return $this->real_connect(
+			return @$this->real_connect(
 				(strlen($server) ? $server : ini_get("mysqli.default_host")),
 				(strlen("$server$username") ? $username : ini_get("mysqli.default_user")),
 				(strlen("$server$username$password") ? $password : ini_get("mysqli.default_pw"))
