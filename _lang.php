@@ -27,7 +27,7 @@ foreach (array_reverse($translations[2], true) as $key => $translation) {
 		}
 	}
 	foreach($messages as $idf => $val) {
-		if ($val == ",") {
+		if ($val == "," && strpos($idf, "%d")) {
 			$s .= "\t\t\t$idf => array(),\n";
 		} elseif ($translations[1][$key][0] != 'en') {
 			$s .= "\t\t\t$idf => '',\n";
