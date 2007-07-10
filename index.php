@@ -28,6 +28,7 @@ if (isset($_GET["dump"])) {
 			$error = (in_array($_POST["token"], (array) $TOKENS) ? "" : lang('Invalid CSRF token. Send the form again.'));
 		}
 		$token = ($_POST && !$error ? $_POST["token"] : token());
+		$enum_length = '\'(?:\'\'|[^\'\\\\]+|\\\\.)*\'|"(?:""|[^"\\\\]+|\\\\.)*"';
 		if (isset($_GET["default"])) {
 			$_GET["edit"] = $_GET["default"];
 		}

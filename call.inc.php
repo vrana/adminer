@@ -5,8 +5,7 @@ function normalize_enum($match) {
 	return "'" . str_replace("'", "''", addcslashes(stripcslashes(str_replace($match[0]{0} . $match[0]{0}, $match[0]{0}, substr($match[0], 1, -1))), '\\')) . "'";
 }
 
-$length = '\'(?:\'\'|[^\'\\\\]*|\\\\.)+\'|"(?:""|[^"\\\\]*|\\\\.)+"';
-$pattern = "\\s*(IN|OUT|INOUT)?\\s*(?:`((?:[^`]*|``)+)`\\s*|\\b(\\S+)\\s+)([a-z]+)(?:\\s*\\(((?:[^'\")]*|$length)+)\\))?\\s*(?:zerofill\\s+)?(unsigned)?";
+$pattern = "\\s*(IN|OUT|INOUT)?\\s*(?:`((?:[^`]+|``)*)`\\s*|\\b(\\S+)\\s+)([a-z]+)(?:\\s*\\(((?:[^'\")]*|$enum_length)+)\\))?\\s*(?:zerofill\\s+)?(unsigned)?";
 $create = $mysql->result($mysql->query("SHOW CREATE " . (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE") . " " . idf_escape($_GET["call"])), 0, 2);
 preg_match("~\\($pattern(?:\\s*,$pattern)*~is", $create, $match);
 $in = array();
@@ -17,7 +16,7 @@ foreach ($matches as $i => $match) {
 	$field = array(
 		"field" => str_replace("``", "`", $match[2]) . $match[3],
 		"type" => $match[4], //! type aliases
-		"length" => preg_replace_callback("~$length~s", 'normalize_enum', $match[5]),
+		"length" => preg_replace_callback("~$enum_length~s", 'normalize_enum', $match[5]),
 		"unsigned" => ($match[6] ? "unsigned" : ""), // zerofill ignored
 		"null" => true,
 	);

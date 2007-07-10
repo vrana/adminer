@@ -49,7 +49,7 @@ if ($_SESSION["lang"]) {
 }
 $file = preg_replace_callback('~(<\\?php)?\\s*(include|require)(_once)? "([^"]*)";(\\s*\\?>)?~', 'put_file', $file);
 if ($_SESSION["lang"]) {
-	$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']*|\\\\.)+)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
+	$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
 	$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
 	$file = str_replace("<?php echo get_lang(); ?>", $_SESSION["lang"], $file);
 }

@@ -13,7 +13,7 @@ if ($_POST && $error) {
 			$query = substr($query, strlen($match[0]));
 		} elseif (preg_match("~$delimiter|['`\"]|\$~", $query, $match, PREG_OFFSET_CAPTURE, $offset)) {
 			if ($match[0][0] && $match[0][0] != $delimiter) {
-				preg_match('~\\G([^\\\\' . $match[0][0] . ']*|\\\\.)+(' . $match[0][0] . '|$)~s', $query, $match, PREG_OFFSET_CAPTURE, $match[0][1] + 1);
+				preg_match('~\\G([^\\\\' . $match[0][0] . ']+|\\\\.)*(' . $match[0][0] . '|$)~s', $query, $match, PREG_OFFSET_CAPTURE, $match[0][1] + 1);
 				$offset = $match[0][1] + strlen($match[0][0]);
 			} else {
 				$empty = false;

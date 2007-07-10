@@ -7,7 +7,7 @@ if ($_SERVER["argc"] > 1) {
 $messages_all = array();
 foreach (glob("*.php") as $filename) {
 	$file = file_get_contents($filename);
-	if (preg_match_all("~lang\\(('(?:[^\\\\']*|\\\\.)+')([),])~", $file, $matches)) {
+	if (preg_match_all("~lang\\(('(?:[^\\\\']+|\\\\.)*')([),])~", $file, $matches)) {
 		$messages_all += array_combine($matches[1], $matches[2]);
 	}
 }
@@ -16,7 +16,7 @@ $file = file_get_contents("lang.inc.php");
 preg_match_all("~\n\t\t'(.*)' => array\\(\n(.*\n)\t\t\\)~sU", $file, $translations, PREG_OFFSET_CAPTURE);
 foreach (array_reverse($translations[2], true) as $key => $translation) {
 	$messages = $messages_all;
-	preg_match_all("~^(\\s*)(?:// )?(('(?:[^\\\\']*|\\\\.)+') => .*[^,\n]),?~m", $translation[0], $matches, PREG_SET_ORDER);
+	preg_match_all("~^(\\s*)(?:// )?(('(?:[^\\\\']+|\\\\.)*') => .*[^,\n]),?~m", $translation[0], $matches, PREG_SET_ORDER);
 	$s = "";
 	foreach ($matches as $match) {
 		if (isset($messages[$match[3]])) {

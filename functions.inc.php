@@ -68,7 +68,7 @@ function indexes($table) {
 
 function foreign_keys($table) {
 	global $mysql;
-	static $pattern = '~`((?:[^`]*|``)+)`~';
+	static $pattern = '~`((?:[^`]+|``)*)`~';
 	$return = array();
 	$result = $mysql->query("SHOW CREATE TABLE " . idf_escape($table));
 	if ($result) {
@@ -255,7 +255,7 @@ function input($name, $field, $value) {
 		if (!isset($_GET["default"])) {
 			echo '<input type="radio" name="fields[' . $name . ']" value="0"' . ($value === 0 ? ' checked="checked"' : '') . ' />';
 		}
-		preg_match_all("~'((?:[^']*|'')+)'~", $field["length"], $matches);
+		preg_match_all("~'((?:[^']+|'')*)'~", $field["length"], $matches);
 		foreach ($matches[1] as $i => $val) {
 			$val = stripcslashes(str_replace("''", "'", $val));
 			$id = "field-$name-" . ($i+1);
@@ -267,7 +267,7 @@ function input($name, $field, $value) {
 			echo ' <label for="' . $id . '"><input type="radio" name="fields[' . $name . ']" id="' . $id . '" value=""' . (strlen($value) ? '' : ' checked="checked"') . ' />' . lang('NULL') . '</label>';
 		}
 	} elseif ($field["type"] == "set") { //! 64 bits
-		preg_match_all("~'((?:[^']*|'')+)'~", $field["length"], $matches);
+		preg_match_all("~'((?:[^']+|'')*)'~", $field["length"], $matches);
 		foreach ($matches[1] as $i => $val) {
 			$val = stripcslashes(str_replace("''", "'", $val));
 			$id = "field-$name-" . ($i+1);
