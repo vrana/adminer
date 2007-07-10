@@ -5,7 +5,7 @@ function normalize_enum($match) {
 	return "'" . str_replace("'", "''", addcslashes(stripcslashes(str_replace($match[0]{0} . $match[0]{0}, $match[0]{0}, substr($match[0], 1, -1))), '\\')) . "'";
 }
 
-$length = '\'(?:[^\'\\\\]*|\\\\.)+\'|"(?:[^"\\\\]*|\\\\.)+"';
+$length = '\'(?:\'\'|[^\'\\\\]*|\\\\.)+\'|"(?:""|[^"\\\\]*|\\\\.)+"';
 $pattern = "\\s*(IN|OUT|INOUT)?\\s*(?:`((?:[^`]*|``)+)`\\s*|\\b(\\S+)\\s+)([a-z]+)(?:\\s*\\(((?:[^'\")]*|$length)+)\\))?\\s*(?:zerofill\\s+)?(unsigned)?";
 $create = $mysql->result($mysql->query("SHOW CREATE " . (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE") . " " . idf_escape($_GET["call"])), 0, 2);
 preg_match("~\\($pattern(?:\\s*,$pattern)*~is", $create, $match);

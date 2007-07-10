@@ -23,11 +23,12 @@ if ($_POST && !$error && !$_POST["add"]) {
 		$fields = array();
 		ksort($_POST["fields"]);
 		$after = "FIRST";
+		$length = '\'(?:\'\'|[^\'\\\\]*|\\\\.)+\'|"(?:""|[^"\\\\]*|\\\\.)+"';
 		foreach ($_POST["fields"] as $key => $field) {
 			if (strlen($field["field"]) && isset($types[$field["type"]])) {
 				$fields[] = (!strlen($_GET["create"]) ? "" : (strlen($field["orig"]) ? "CHANGE " . idf_escape($field["orig"]) . " " : "ADD "))
 					. idf_escape($field["field"]) . " $field[type]"
-					. ($field["length"] ? "($field[length])" : "")
+					. ($field["length"] ? "(" . (preg_match("~^\\s*(?:$length)(?:\\s*,\\s*(?:$length))*\\s*\$~", $field["length"]) && preg_match_all("~$length~", $field["length"], $matches) ? implode(",", $matches[0]) : intval($field["length"])) . ")" : "")
 					. (preg_match('~int|float|double|decimal~', $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
 					. (preg_match('~char|text|enum|set~', $field["type"]) && $field["collation"] ? " COLLATE '" . $mysql->real_escape_string($field["collation"]) . "'" : "")
 					. ($field["null"] ? "" : " NOT NULL")
