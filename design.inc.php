@@ -14,6 +14,7 @@ A { color: Blue; }
 A:visited { color: Navy; }
 H1 { font-size: 150%; margin: 0; }
 H2 { font-size: 150%; margin: 0; }
+H3 { margin: 0; }
 FIELDSET { float: left; padding: .5em; margin: 0; }
 PRE { margin: .12em 0; }
 TABLE { margin-top: 1em; }
