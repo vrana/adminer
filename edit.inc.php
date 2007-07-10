@@ -63,20 +63,22 @@ if ($_POST) {
 
 <form action="" method="post" enctype="multipart/form-data">
 <?php
-echo ($fields ? "<table border='0' cellspacing='0' cellpadding='2'>\n" : "");
-foreach ($fields as $name => $field) {
-	echo "<tr><th>" . htmlspecialchars($name) . "</th><td>";
-	if (!isset($data)) {
-		$value = $field["default"];
-	} elseif (strlen($data[$name]) && ($field["type"] == "enum" || $field["type"] == "set")) {
-		$value = intval($data[$name]);
-	} else {
-		$value = $data[$name];
+if ($fields) {
+	echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
+	foreach ($fields as $name => $field) {
+		echo "<tr><th>" . htmlspecialchars($name) . "</th><td>";
+		if (!isset($data)) {
+			$value = $field["default"];
+		} elseif (strlen($data[$name]) && ($field["type"] == "enum" || $field["type"] == "set")) {
+			$value = intval($data[$name]);
+		} else {
+			$value = $data[$name];
+		}
+		input($name, $field, $value);
+		echo "</td></tr>\n";
 	}
-	input($name, $field, $value);
-	echo "</td></tr>\n";
+	echo "</table>\n";
 }
-echo ($fields ? "</table>\n" : "");
 ?>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
