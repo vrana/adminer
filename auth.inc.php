@@ -1,25 +1,36 @@
 <?php
 if (isset($_POST["server"])) {
-	session_regenerate_id();
-	$_SESSION["usernames"][$_POST["server"]] = $_POST["username"];
-	$_SESSION["passwords"][$_POST["server"]] = $_POST["password"];
-	if (count($_POST) == 3) {
-		header("Location: " . ((string) $_GET["server"] === $_POST["server"] ? preg_replace('~(\\?)logout=&|[?&]logout=~', '\\1', $_SERVER["REQUEST_URI"]) : preg_replace('~^[^?]*/([^?]*).*~', '\\1' . (strlen($_POST["server"]) ? '?server=' . urlencode($_POST["server"]) : '') . (strlen(SID) ? (strlen($_POST["server"]) ? "&" : "?") . SID : ""), $_SERVER["REQUEST_URI"])));
-		exit;
+	if (isset($_REQUEST[session_name()])) {
+		session_regenerate_id();
+		$_SESSION["usernames"][$_POST["server"]] = $_POST["username"];
+		$_SESSION["passwords"][$_POST["server"]] = $_POST["password"];
+		if (count($_POST) == ($_POST[session_name()] ? 4 : 3)) {
+			if ((string) $_GET["server"] === $_POST["server"]) {
+				$location = preg_replace('~(\\?)' . urlencode(session_name()) . '=[^&]*&|[?&]' . urlencode(session_name()) . '=[^&]*~', '\\1', $_SERVER["REQUEST_URI"]);
+			} else {
+				$location = preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . (strlen($_POST["server"]) ? '?server=' . urlencode($_POST["server"]) : '');
+			}
+			if (strlen(SID)) {
+				$location .= (strpos($location, "?") === false ? "?" : "&") . SID;
+			}
+			header("Location: " . (strlen($location) ? $location : "."));
+			exit;
+		}
 	}
 	$_GET["server"] = $_POST["server"];
 } elseif (isset($_GET["logout"])) {
 	unset($_SESSION["usernames"][$_GET["server"]]);
 	unset($_SESSION["passwords"][$_GET["server"]]);
 	$_SESSION["tokens"][$_GET["server"]] = array();
+	redirect(substr($SELF, 0, -1), lang('Logout successful.'));
 }
 
-if (isset($_GET["logout"]) || !$mysql->connect($_GET["server"], $_SESSION["usernames"][$_GET["server"]], $_SESSION["passwords"][$_GET["server"]])) {
+if (!isset($_SESSION["usernames"][$_GET["server"]]) || !$mysql->connect($_GET["server"], $_SESSION["usernames"][$_GET["server"]], $_SESSION["passwords"][$_GET["server"]])) {
 	page_header(lang('Login'));
-	if (isset($_GET["logout"])) {
-		echo "<p class='message'>" . lang('Logout successful.') . "</p>\n";
-	} elseif (isset($_SESSION["usernames"][$_GET["server"]])) {
+	if (isset($_SESSION["usernames"][$_GET["server"]])) {
 		echo "<p class='error'>" . lang('Invalid credentials.') . "</p>\n";
+	} elseif (isset($_POST["server"])) {
+		echo "<p class='error'>" . lang('Sessions must be enabled.') . "</p>\n";
 	}
 	?>
 	<form action="" method="post">
