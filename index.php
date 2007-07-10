@@ -5,8 +5,8 @@ session_start();
 error_reporting(E_ALL & ~E_NOTICE);
 $SELF = preg_replace('~^[^?]*/([^?]*).*~', '\\1?', $_SERVER["REQUEST_URI"]) . (strlen($_GET["server"]) ? 'server=' . urlencode($_GET["server"]) . '&' : '') . (strlen($_GET["db"]) ? 'db=' . urlencode($_GET["db"]) . '&' : '');
 $TOKENS = &$_SESSION["tokens"][$_GET["server"]][preg_replace('~([?&]sql=)upload~', '\\1', $_SERVER["REQUEST_URI"])];
-include "./lang.inc.php";
 include "./functions.inc.php";
+include "./lang.inc.php";
 include "./design.inc.php";
 include "./auth.inc.php";
 include "./connect.inc.php";
@@ -58,7 +58,7 @@ if (isset($_GET["dump"])) {
 						echo "<tr valign='top'>";
 						echo "<th>" . htmlspecialchars($row["ROUTINE_TYPE"]) . "</th>";
 						echo '<td><a href="' . htmlspecialchars($SELF) . ($row["ROUTINE_TYPE"] == "FUNCTION" ? 'callf' : 'call') . '=' . urlencode($row["ROUTINE_NAME"]) . '">' . htmlspecialchars($row["ROUTINE_NAME"]) . '</a></td>';
-						echo "<td><pre>" . htmlspecialchars($row["ROUTINE_DEFINITION"]) . "</pre></td>";
+						echo "<td><pre class='jush-sql'>" . htmlspecialchars($row["ROUTINE_DEFINITION"]) . "</pre></td>";
 						echo "</tr>\n";
 					}
 					echo "</table>\n";

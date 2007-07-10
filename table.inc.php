@@ -50,7 +50,7 @@ if (mysql_get_server_info() >= 5) {
 		echo "<h3>" . lang('Triggers') . "</h3>\n";
 		echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
 		while ($row = mysql_fetch_assoc($result)) {
-			echo "<tr valign='top'><th>$row[Timing]</th><th>$row[Event]</th><td><pre>" . htmlspecialchars($row["Statement"]) . "</pre></td></tr>\n";
+			echo "<tr valign='top'><th>$row[Timing]</th><th>$row[Event]</th><td><pre class='jush-sql'>" . htmlspecialchars($row["Statement"]) . "</pre></td></tr>\n";
 		}
 		echo "</table>\n";
 	}

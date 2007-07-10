@@ -17,7 +17,7 @@ if ($_POST && $error) {
 				$offset = $match[0][1] + strlen($match[0][0]);
 			} else {
 				$empty = false;
-				echo "<pre>" . htmlspecialchars(substr($query, 0, $match[0][1])) . "</pre>\n";
+				echo "<pre class='jush-sql'>" . htmlspecialchars(substr($query, 0, $match[0][1])) . "</pre>\n";
 				$result = mysql_query(substr($query, 0, $match[0][1]));
 				$query = substr($query, $match[0][1] + strlen($match[0][0]));
 				$offset = 0;

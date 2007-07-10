@@ -193,6 +193,7 @@ function select($result) {
 				$blobs = array();
 				for ($j=0; $j < count($row); $j++) {
 					$field = mysql_fetch_field($result, $j);
+					//! table and column aliases
 					if (strlen($field->table) && $field->primary_key) {
 						$links[$j] = $field->table;
 						if (!isset($indexes[$field->table])) {

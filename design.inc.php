@@ -21,9 +21,11 @@ PRE { margin: 0; margin: .12em 0; }
 #menu { position: absolute; top: 8px; left: 8px; width: 15em; overflow: auto; white-space: nowrap; }
 #content { margin-left: 16em; }
 </style>
+<style type="text/css">@import url(http://jush.info/jush.css);</style>
+<script type="text/javascript" src="http://jush.info/jush.js" defer="defer"></script>
 </head>
 
-<body>
+<body onload="jush.highlight_tag('pre');">
 
 <div id="content">
 <?php
