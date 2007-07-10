@@ -38,12 +38,12 @@ if ($_POST && $error) {
 	if ($empty) {
 		echo "<p class='message'>" . lang('No commands to execute.') . "</p>\n";
 	}
-} elseif ($_GET["sql"] == "upload") {
+} elseif ($_POST) {
 	echo "<p class='error'>" . lang('Unable to upload a file.') . "</p>\n";
 }
 ?>
 
-<form action="<?php echo htmlspecialchars($SELF); ?>sql=" method="post">
+<form action="" method="post">
 <p><textarea name="query" rows="20" cols="80"><?php echo htmlspecialchars($_POST["query"]); ?></textarea></p>
 <p><input type="hidden" name="token" value="<?php echo $token; ?>" /><input type="submit" value="<?php echo lang('Execute'); ?>" /></p>
 </form>
@@ -52,7 +52,7 @@ if ($_POST && $error) {
 if (!ini_get("file_uploads")) {
 	echo "<p>" . lang('File uploads are disabled.') . "</p>\n";
 } else { ?>
-<form action="<?php echo htmlspecialchars($SELF); ?>sql=upload" method="post" enctype="multipart/form-data">
+<form action="" method="post" enctype="multipart/form-data">
 <p>
 <?php echo lang('File upload'); ?>: <input type="file" name="sql_file" />
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
