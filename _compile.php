@@ -15,7 +15,7 @@ function put_file($match) {
 	$return = file_get_contents($match[4]);
 	if ($match[4] == "./lang.inc.php") {
 		if (!$_SESSION["lang"]) {
-			$return = str_replace("\tif (\$number === false && \$translation) {\n\t\treturn \$translation; // used in _compile.php\n\t}\n", "", $return);
+			$return = str_replace("\tif (\$number === false) { // used in _compile.php\n\t\treturn (\$translation ? \$translation : \$idf);\n\t}\n", "", $return);
 		} elseif (preg_match("~case '$_SESSION[lang]': (.*) break;~", $return, $match2) || preg_match("~default: (.*)~", $return, $match2)) {
 			return "$match[1]\nfunction lang(\$ar, \$number) {\n\t$match2[1]\n\treturn \$ar[\$pos];\n}\n$match[5]";
 		}

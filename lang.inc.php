@@ -108,8 +108,8 @@ function lang($idf = null, $number = null) {
 		return array_keys($translations);
 	}
 	$translation = $translations[$LANG][$idf];
-	if ($number === false && $translation) {
-		return $translation; // used in _compile.php
+	if ($number === false) { // used in _compile.php
+		return ($translation ? $translation : $idf);
 	}
 	$args = func_get_args();
 	if (is_array($translation) && $translation) {
