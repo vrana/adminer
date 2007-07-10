@@ -58,11 +58,13 @@ function indexes($table) {
 	global $mysql;
 	$return = array();
 	$result = $mysql->query("SHOW INDEX FROM " . idf_escape($table));
-	while ($row = $result->fetch_assoc()) {
-		$return[$row["Key_name"]]["type"] = ($row["Key_name"] == "PRIMARY" ? "PRIMARY" : ($row["Index_type"] == "FULLTEXT" ? "FULLTEXT" : ($row["Non_unique"] ? "INDEX" : "UNIQUE")));
-		$return[$row["Key_name"]]["columns"][$row["Seq_in_index"]] = $row["Column_name"];
+	if ($result) {
+		while ($row = $result->fetch_assoc()) {
+			$return[$row["Key_name"]]["type"] = ($row["Key_name"] == "PRIMARY" ? "PRIMARY" : ($row["Index_type"] == "FULLTEXT" ? "FULLTEXT" : ($row["Non_unique"] ? "INDEX" : "UNIQUE")));
+			$return[$row["Key_name"]]["columns"][$row["Seq_in_index"]] = $row["Column_name"];
+		}
+		$result->free();
 	}
-	$result->free();
 	return $return;
 }
 
@@ -186,6 +188,7 @@ function get_file($key) {
 }
 
 function select($result) {
+	global $SELF;
 	if (!$result->num_rows) {
 		echo "<p class='message'>" . lang('No rows.') . "</p>\n";
 	} else {
@@ -199,8 +202,7 @@ function select($result) {
 				$blobs = array();
 				for ($j=0; $j < count($row); $j++) {
 					$field = $result->fetch_field();
-					if (strlen($field->orgtable) && $field->primary_key) {
-						$links[$j] = $field->orgtable;
+					if (strlen($field->orgtable) && $field->flags & 2) {
 						if (!isset($indexes[$field->orgtable])) {
 							$indexes[$field->orgtable] = array();
 							foreach (indexes($field->orgtable) as $index) {
@@ -211,9 +213,11 @@ function select($result) {
 							}
 							$columns[$field->orgtable] = $indexes[$field->orgtable];
 						}
-						unset($columns[$field->orgtable][$field->orgname]);
-						$indexes[$field->orgtable][$field->orgname] = $j;
-						$links[$j] = $field->orgtable;
+						if (isset($columns[$field->orgtable][$field->orgname])) {
+							unset($columns[$field->orgtable][$field->orgname]);
+							$indexes[$field->orgtable][$field->orgname] = $j;
+							$links[$j] = $field->orgtable;
+						}
 					}
 					if ($field->charsetnr == 63) {
 						$blobs[$j] = true;

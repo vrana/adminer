@@ -98,6 +98,7 @@ if (extension_loaded("mysqli")) {
 			$row->orgtable = $row->table;
 			$row->orgname = $row->name;
 			$row->charsetnr = ($row->blob ? 63 : 0);
+			$row->flags = ($row->primary_key ? 2 : 0);
 			return $row;
 		}
 		
