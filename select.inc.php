@@ -15,7 +15,7 @@ if (isset($rights["insert"])) {
 }
 
 if (!$columns) {
-	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "" : ": " . mysql_error()) . ".</p>\n";
+	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "" : ": " . $mysql->error) . ".</p>\n";
 } else {
 	$indexes = indexes($_GET["select"]);
 	echo "<form action='' id='form'>\n<fieldset><legend>" . lang('Search') . "</legend>\n";
@@ -30,7 +30,7 @@ if (!$columns) {
 	foreach ($indexes as $i => $index) {
 		if ($index["type"] == "FULLTEXT") {
 			if (strlen($_GET["fulltext"][$i])) {
-				$where[] = "MATCH (" . implode(", ", array_map('idf_escape', $index["columns"])) . ") AGAINST ('" . mysql_real_escape_string($_GET["fulltext"][$i]) . "'" . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
+				$where[] = "MATCH (" . implode(", ", array_map('idf_escape', $index["columns"])) . ") AGAINST ('" . $mysql->real_escape_string($_GET["fulltext"][$i]) . "'" . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
 			}
 			echo "(<i>" . implode("</i>, <i>", $index["columns"]) . "</i>) AGAINST";
 			echo ' <input name="fulltext[' . $i . ']" value="' . htmlspecialchars($_GET["fulltext"][$i]) . '" />';
@@ -42,7 +42,7 @@ if (!$columns) {
 	$i = 0;
 	foreach ((array) $_GET["where"] as $val) {
 		if (strlen($val["col"]) && in_array($val["op"], $operators)) {
-			$where[] = idf_escape($val["col"]) . " $val[op]" . ($val["op"] != "IS NULL" ? " '" . mysql_real_escape_string($val["val"]) . "'" : "");
+			$where[] = idf_escape($val["col"]) . " $val[op]" . ($val["op"] != "IS NULL" ? " '" . $mysql->real_escape_string($val["val"]) . "'" : "");
 			echo "<div><select name='where[$i][col]'><option></option>" . optionlist($columns, $val["col"], "not_vals") . "</select>";
 			echo "<select name='where[$i][op]' onchange=\"where_change(this);\">" . optionlist($operators, $val["op"], "not_vals") . "</select>";
 			echo "<input name='where[$i][val]' value=\"" . htmlspecialchars($val["val"]) . "\" /></div>\n";
@@ -90,11 +90,11 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 	echo "</form>\n";
 	echo "<div style='clear: left; margin-bottom: 1em;'></div>\n";
 	
-	$result = mysql_query("SELECT SQL_CALC_FOUND_ROWS " . implode(", ", array_map('idf_escape', $columns)) . " FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "") . ($order ? " ORDER BY " . implode(", ", $order) : "") . (strlen($limit) ? " LIMIT " . intval($limit) . " OFFSET " . ($limit * $_GET["page"]) : ""));
-	if (!mysql_num_rows($result)) {
+	$result = $mysql->query("SELECT SQL_CALC_FOUND_ROWS " . implode(", ", array_map('idf_escape', $columns)) . " FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "") . ($order ? " ORDER BY " . implode(", ", $order) : "") . (strlen($limit) ? " LIMIT " . intval($limit) . " OFFSET " . ($limit * $_GET["page"]) : ""));
+	if (!$result->num_rows) {
 		echo "<p class='message'>" . lang('No rows.') . "</p>\n";
 	} else {
-		$found_rows = mysql_result(mysql_query(" SELECT FOUND_ROWS()"), 0); // space for mysql.trace_mode
+		$found_rows = $mysql->result($mysql->query(" SELECT FOUND_ROWS()"), 0); // space for mysql.trace_mode
 		$foreign_keys = array();
 		foreach (foreign_keys($_GET["select"]) as $foreign_key) {
 			foreach ($foreign_key[2] as $val) {
@@ -102,20 +102,20 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 			}
 		}
 		$childs = array();
-		if (mysql_get_server_info() >= 5) {
+		if ($mysql->server_info >= 5) {
 			// would be possible in earlier versions too, but only by examining all tables (in all databases)
-			$result1 = mysql_query("SELECT * FROM information_schema.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = '" . mysql_real_escape_string($_GET["db"]) . "' AND REFERENCED_TABLE_NAME = '" . mysql_real_escape_string($_GET["select"]) . "' ORDER BY ORDINAL_POSITION");
-			while ($row1 = mysql_fetch_assoc($result1)) {
+			$result1 = $mysql->query("SELECT * FROM information_schema.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = '" . $mysql->real_escape_string($_GET["db"]) . "' AND REFERENCED_TABLE_NAME = '" . $mysql->real_escape_string($_GET["select"]) . "' ORDER BY ORDINAL_POSITION");
+			while ($row1 = $result1->fetch_assoc()) {
 				$childs[$row1["CONSTRAINT_NAME"]][0] = $row1["TABLE_SCHEMA"];
 				$childs[$row1["CONSTRAINT_NAME"]][1] = $row1["TABLE_NAME"];
 				$childs[$row1["CONSTRAINT_NAME"]][2][] = $row1["REFERENCED_COLUMN_NAME"];
 				$childs[$row1["CONSTRAINT_NAME"]][3][] = $row1["COLUMN_NAME"];
 			}
-			mysql_free_result($result1);
+			$result1->free();
 		}
 		
 		echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
-		for ($j=0; $row = mysql_fetch_assoc($result); $j++) {
+		for ($j=0; $row = $result->fetch_assoc(); $j++) {
 			if (!$j) {
 				echo "<thead><tr><th>" . implode("</th><th>", array_map('htmlspecialchars', array_keys($row))) . "</th><th>" . lang('Action') . "</th></tr></thead>\n";
 			}
@@ -161,5 +161,5 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 			echo "</p>\n";
 		}
 	}
-	mysql_free_result($result);
+	$result->free();
 }

@@ -16,6 +16,7 @@ H1 { font-size: 150%; margin: 0; }
 H2 { font-size: 150%; margin-top: 0; }
 FIELDSET { float: left; padding: .5em; margin: 0; }
 PRE { margin: 0; margin: .12em 0; }
+TABLE { margin-bottom: 1em; }
 .error { color: Red; }
 .message { color: Green; }
 #menu { position: absolute; top: 8px; left: 8px; width: 15em; overflow: auto; white-space: nowrap; }
@@ -38,7 +39,7 @@ PRE { margin: 0; margin: .12em 0; }
 }
 
 function page_footer($missing = false) {
-	global $SELF;
+	global $SELF, $mysql;
 ?>
 </div>
 
@@ -56,30 +57,30 @@ function page_footer($missing = false) {
 <select name="db" onchange="this.form.submit();"><option value="">(<?php echo lang('database'); ?>)</option>
 <?php
 		flush();
-		$result = mysql_query("SHOW DATABASES");
-		while ($row = mysql_fetch_row($result)) {
+		$result = $mysql->query("SHOW DATABASES");
+		while ($row = $result->fetch_row()) {
 			echo "<option" . ($row[0] == $_GET["db"] ? " selected='selected'" : "") . ">" . htmlspecialchars($row[0]) . "</option>\n";
 		}
-		mysql_free_result($result);
+		$result->free();
 		?>
 </select><?php if (isset($_GET["sql"])) { ?><input type="hidden" name="sql" value="" /><?php } ?></p>
 <noscript><p><input type="submit" value="<?php echo lang('Use'); ?>" /></p></noscript>
 </form>
 <?php
 		if ($missing != "db" && strlen($_GET["db"])) {
-			$result = mysql_query("SHOW TABLE STATUS");
-			if (!mysql_num_rows($result)) {
+			$result = $mysql->query("SHOW TABLE STATUS");
+			if (!$result->num_rows) {
 				echo "<p class='message'>" . lang('No tables.') . "</p>\n";
 			} else {
 				echo "<p>\n";
-				while ($row = mysql_fetch_assoc($result)) {
+				while ($row = $result->fetch_assoc()) {
 					echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row["Name"]) . '">' . lang('select') . '</a> ';
 					echo '<a href="' . htmlspecialchars($SELF) . (isset($row["Engine"]) ? 'table' : 'view') . '=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . "</a><br />\n";
 				}
 				echo "</p>\n";
 			}
 			echo '<p><a href="' . htmlspecialchars($SELF) . 'create=">' . lang('Create new table') . "</a></p>\n";
-			mysql_free_result($result);
+			$result->free();
 		}
 	}
 	?>

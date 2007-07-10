@@ -1,5 +1,5 @@
 <?php
-if (!(strlen($_GET["db"]) ? mysql_select_db($_GET["db"]) : isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]))) {
+if (!(strlen($_GET["db"]) ? $mysql->select_db($_GET["db"]) : isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]))) {
 	page_header(lang('Select database'));
 	if (strlen($_GET["db"])) {
 		echo "<p class='error'>" . lang('Invalid database.') . "</p>\n";
@@ -9,4 +9,4 @@ if (!(strlen($_GET["db"]) ? mysql_select_db($_GET["db"]) : isset($_GET["sql"]) |
 	page_footer("db");
 	exit;
 }
-mysql_query("SET CHARACTER SET utf8");
+$mysql->query("SET CHARACTER SET utf8");

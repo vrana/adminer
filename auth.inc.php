@@ -14,14 +14,7 @@ if (isset($_POST["server"])) {
 	$_SESSION["tokens"][$_GET["server"]] = array();
 }
 
-$username = $_SESSION["usernames"][$_GET["server"]];
-$password = $_SESSION["passwords"][$_GET["server"]];
-if (isset($_GET["logout"]) || !@mysql_connect(
-	(strlen($_GET["server"]) ? $_GET["server"] : ini_get("mysql.default_host")),
-	(strlen("$_GET[server]$username") ? $username : ini_get("mysql.default_user")),
-	(strlen("$_GET[server]$username$password") ? $password : ini_get("mysql.default_password")),
-	false, 131072 // CLIENT_MULTI_RESULTS for CALL
-)) {
+if (isset($_GET["logout"]) || !$mysql->connect($_GET["server"], $_SESSION["usernames"][$_GET["server"]], $_SESSION["passwords"][$_GET["server"]])) {
 	page_header(lang('Login'));
 	if (isset($_GET["logout"])) {
 		echo "<p class='message'>" . lang('Logout successful.') . "</p>\n";
@@ -32,7 +25,7 @@ if (isset($_GET["logout"]) || !@mysql_connect(
 	<form action="" method="post">
 	<table border="0" cellspacing="0" cellpadding="2">
 	<tr><th><?php echo lang('Server'); ?>:</th><td><input name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>" maxlength="60" /></td></tr>
-	<tr><th><?php echo lang('Username'); ?>:</th><td><input name="username" value="<?php echo htmlspecialchars($username); ?>" maxlength="16" /></td></tr>
+	<tr><th><?php echo lang('Username'); ?>:</th><td><input name="username" value="<?php echo htmlspecialchars($_SESSION["usernames"][$_GET["server"]]); ?>" maxlength="16" /></td></tr>
 	<tr><th><?php echo lang('Password'); ?>:</th><td><input type="password" name="password" /></td></tr>
 	<tr><th><?php
 	foreach ($_POST as $key => $val) { // expired session
@@ -60,4 +53,4 @@ if (isset($_GET["logout"]) || !@mysql_connect(
 	page_footer("auth");
 	exit;
 }
-mysql_query("SET SQL_QUOTE_SHOW_CREATE=1");
+$mysql->query("SET SQL_QUOTE_SHOW_CREATE=1");

@@ -100,6 +100,8 @@ function lang($idf = null, $number = null) {
 			'Routine has been called, %d row(s) affected.' => array('Procedura byla zavolána, byl změněn %d záznam.', 'Procedura byla zavolána, byly změněny %d záznamy.', 'Procedura byla zavolána, bylo změněno %d záznamů.'),
 			'Call' => 'Zavolat',
 			'Error during calling' => 'Chyba při volání',
+			'No MySQL extension' => 'Žádná MySQL extenze',
+			'None of supported PHP extensions (%s) are available.' => 'Není dostupná žádná z podporovaných PHP extenzí (%s).',
 		),
 	);
 	if (!isset($idf)) {

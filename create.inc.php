@@ -29,10 +29,10 @@ if ($_POST && !$error && !$_POST["add"]) {
 					. idf_escape($field["field"]) . " $field[type]"
 					. ($field["length"] ? "($field[length])" : "")
 					. (preg_match('~int|float|double|decimal~', $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
-					. (preg_match('~char|text|enum|set~', $field["type"]) && $field["collation"] ? " COLLATE '" . mysql_real_escape_string($field["collation"]) . "'" : "")
+					. (preg_match('~char|text|enum|set~', $field["type"]) && $field["collation"] ? " COLLATE '" . $mysql->real_escape_string($field["collation"]) . "'" : "")
 					. ($field["null"] ? "" : " NOT NULL")
 					. ($key == $_POST["auto_increment"] ? " AUTO_INCREMENT$auto_increment_index" : "")
-					. " COMMENT '" . mysql_real_escape_string($field["comment"]) . "'"
+					. " COMMENT '" . $mysql->real_escape_string($field["comment"]) . "'"
 					. (strlen($_GET["create"]) && !strlen($field["orig"]) ? $after : "")
 				;
 				$after = "AFTER " . idf_escape($field["field"]);
@@ -40,9 +40,9 @@ if ($_POST && !$error && !$_POST["add"]) {
 				$fields[] = "DROP " . idf_escape($field["orig"]);
 			}
 		}
-		$status = ($_POST["Engine"] ? " ENGINE='" . mysql_real_escape_string($_POST["Engine"]) . "'" : "")
-			. ($_POST["Collation"] ? " COLLATE '" . mysql_real_escape_string($_POST["Collation"]) . "'" : "")
-			. " COMMENT='" . mysql_real_escape_string($_POST["Comment"]) . "'"
+		$status = ($_POST["Engine"] ? " ENGINE='" . $mysql->real_escape_string($_POST["Engine"]) . "'" : "")
+			. ($_POST["Collation"] ? " COLLATE '" . $mysql->real_escape_string($_POST["Collation"]) . "'" : "")
+			. " COMMENT='" . $mysql->real_escape_string($_POST["Comment"]) . "'"
 		;
 		if (strlen($_GET["create"])) {
 			$query = "ALTER TABLE " . idf_escape($_GET["create"]) . " " . implode(", ", $fields) . ", RENAME TO " . idf_escape($_POST["name"]) . ", $status";
@@ -52,10 +52,10 @@ if ($_POST && !$error && !$_POST["add"]) {
 			$message = lang('Table has been created.');
 		}
 	}
-	if (mysql_query($query)) {
+	if ($mysql->query($query)) {
 		redirect(($_POST["drop"] ? substr($SELF, 0, -1) : $SELF . "table=" . urlencode($_POST["name"])), $message);
 	}
-	$error = mysql_error();
+	$error = $mysql->error;
 }
 page_header(strlen($_GET["create"]) ? lang('Alter table') . ': ' . htmlspecialchars($_GET["create"]) : lang('Create table'));
 
@@ -72,7 +72,8 @@ if ($_POST) {
 		$row["fields"][$row["auto_increment"]]["auto_increment"] = true;
 	}
 } elseif (strlen($_GET["create"])) {
-	$row = mysql_fetch_assoc(mysql_query("SHOW TABLE STATUS LIKE '" . mysql_real_escape_string($_GET["create"]) . "'"));
+	$result = $mysql->query("SHOW TABLE STATUS LIKE '" . $mysql->real_escape_string($_GET["create"]) . "'");
+	$row = $result->fetch_assoc();
 	$row["name"] = $_GET["create"];
 	$row["fields"] = array_values(fields($_GET["create"]));
 } else {

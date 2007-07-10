@@ -18,21 +18,20 @@ if ($_POST && $error) {
 			} else {
 				$empty = false;
 				echo "<pre class='jush-sql'>" . htmlspecialchars(substr($query, 0, $match[0][1])) . "</pre>\n";
-				$result = mysql_query(substr($query, 0, $match[0][1]));
+				if (!$mysql->multi_query(substr($query, 0, $match[0][1]))) {
+					echo "<p class='error'>" . lang('Error in query') . ": " . htmlspecialchars($mysql->error) . "</p>\n";
+				} else{
+					do {
+						$result = $mysql->store_result();
+						if (is_object($result)) {
+							select($result);
+						} else {
+							echo "<p class='message'>" . lang('Query executed OK, %d row(s) affected.', $mysql->affected_rows) . "</p>\n";
+						}
+					} while ($mysql->next_result());
+				}
 				$query = substr($query, $match[0][1] + strlen($match[0][0]));
 				$offset = 0;
-				if (!$result) {
-					echo "<p class='error'>" . lang('Error in query') . ": " . htmlspecialchars(mysql_error()) . "</p>\n";
-				} elseif ($result === true) {
-					/* more secure but less user-friendly
-					if (token_delete()) {
-						$token = token();
-					}
-					*/
-					echo "<p class='message'>" . lang('Query executed OK, %d row(s) affected.', mysql_affected_rows()) . "</p>\n";
-				} else {
-					select($result);
-				}
 			}
 		}
 	}

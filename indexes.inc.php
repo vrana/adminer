@@ -27,10 +27,10 @@ if ($_POST && !$error && !$_POST["add"]) {
 	foreach ($indexes as $name => $existing) {
 		$alter[] = "DROP INDEX " . idf_escape($name);
 	}
-	if (!$alter || mysql_query("ALTER TABLE " . idf_escape($_GET["indexes"]) . " " . implode(", ", $alter))) {
+	if (!$alter || $mysql->query("ALTER TABLE " . idf_escape($_GET["indexes"]) . " " . implode(", ", $alter))) {
 		redirect($SELF . "table=" . urlencode($_GET["indexes"]), ($alter ? lang('Indexes has been altered.') : null));
 	}
-	$error = mysql_error();
+	$error = $mysql->error;
 }
 
 page_header(lang('Indexes') . ': ' . htmlspecialchars($_GET["indexes"]));

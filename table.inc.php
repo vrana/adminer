@@ -1,20 +1,20 @@
 <?php
 page_header(lang('Table') . ": " . htmlspecialchars($_GET["table"]));
 
-$result = mysql_query("SHOW COLUMNS FROM " . idf_escape($_GET["table"]));
+$result = $mysql->query("SHOW COLUMNS FROM " . idf_escape($_GET["table"]));
 if (!$result) {
-	echo "<p class='error'>" . lang('Unable to show the table definition') . ": " . mysql_error() . ".</p>\n";
+	echo "<p class='error'>" . lang('Unable to show the table definition') . ": " . $mysql->error . ".</p>\n";
 } else {
 	$auto_increment_only = true;
 	echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
-	while ($row = mysql_fetch_assoc($result)) {
+	while ($row = $result->fetch_assoc()) {
 		if (!$row["auto_increment"]) {
 			$auto_increment_only = false;
 		}
 		echo "<tr><th>" . htmlspecialchars($row["Field"]) . "</th><td>$row[Type]" . ($row["Null"] == "YES" ? " <i>NULL</i>" : "") . "</td></tr>\n";
 	}
 	echo "</table>\n";
-	mysql_free_result($result);
+	$result->free();
 	
 	echo "<p>";
 	echo '<a href="' . htmlspecialchars($SELF) . 'create=' . urlencode($_GET["table"]) . '">' . lang('Alter table') . '</a>';
@@ -44,15 +44,15 @@ if (!$result) {
 	}
 }
 
-if (mysql_get_server_info() >= 5) {
-	$result = mysql_query("SHOW TRIGGERS LIKE '" . mysql_real_escape_string($_GET["table"]) . "'");
-	if (mysql_num_rows($result)) {
+if ($mysql->server_info >= 5) {
+	$result = $mysql->query("SHOW TRIGGERS LIKE '" . $mysql->real_escape_string($_GET["table"]) . "'");
+	if ($result->num_rows) {
 		echo "<h3>" . lang('Triggers') . "</h3>\n";
 		echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
-		while ($row = mysql_fetch_assoc($result)) {
+		while ($row = $result->fetch_assoc()) {
 			echo "<tr valign='top'><th>$row[Timing]</th><th>$row[Event]</th><td><pre class='jush-sql'>" . htmlspecialchars($row["Statement"]) . "</pre></td></tr>\n";
 		}
 		echo "</table>\n";
 	}
-	mysql_free_result($result);
+	$result->free();
 }

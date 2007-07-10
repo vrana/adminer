@@ -30,10 +30,10 @@ if ($_POST && !$error) {
 			$message = lang('Item has been inserted.');
 		}
 	}
-	if (!$set || mysql_query($query)) {
+	if (!$set || $mysql->query($query)) {
 		redirect($SELF . (isset($_GET["default"]) ? "table=" : ($_POST["insert"] ? "edit=" : "select=")) . urlencode($_GET["edit"]), ($set ? $message : null));
 	}
-	$error = mysql_error();
+	$error = $mysql->error;
 }
 page_header((isset($_GET["default"]) ? lang('Default values') : ($_GET["where"] ? lang('Edit') : lang('Insert'))) . ": " . htmlspecialchars($_GET["edit"]));
 
@@ -50,7 +50,12 @@ if ($_POST) {
 			$select[] = ($field["type"] == "enum" || $field["type"] == "set" ? "1*" . idf_escape($name) . " AS " : "") . idf_escape($name);
 		}
 	}
-	$data = ($select ? mysql_fetch_assoc(mysql_query("SELECT " . implode(", ", $select) . " FROM " . idf_escape($_GET["edit"]) . " WHERE " . implode(" AND ", $where) . " LIMIT 1")) : array());
+	if ($select) {
+		$result = $mysql->query("SELECT " . implode(", ", $select) . " FROM " . idf_escape($_GET["edit"]) . " WHERE " . implode(" AND ", $where) . " LIMIT 1");
+		$data = $result->fetch_assoc();
+	} else {
+		$data = array();
+	}
 } else {
 	unset($data);
 }

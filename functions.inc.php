@@ -30,10 +30,11 @@ function optionlist($options, $selected = array(), $not_vals = false) {
 }
 
 function fields($table) {
+	global $mysql;
 	$return = array();
-	$result = mysql_query("SHOW FULL COLUMNS FROM " . idf_escape($table));
+	$result = $mysql->query("SHOW FULL COLUMNS FROM " . idf_escape($table));
 	if ($result) {
-		while ($row = mysql_fetch_assoc($result)) {
+		while ($row = $result->fetch_assoc()) {
 			preg_match('~^([^(]+)(?:\\((.+)\\))?( unsigned)?( zerofill)?$~', $row["Type"], $match);
 			$return[$row["Field"]] = array(
 				"field" => $row["Field"],
@@ -48,29 +49,31 @@ function fields($table) {
 				"comment" => $row["Comment"],
 			);
 		}
-		mysql_free_result($result);
+		$result->free();
 	}
 	return $return;
 }
 
 function indexes($table) {
+	global $mysql;
 	$return = array();
-	$result = mysql_query("SHOW INDEX FROM " . idf_escape($table));
-	while ($row = mysql_fetch_assoc($result)) {
+	$result = $mysql->query("SHOW INDEX FROM " . idf_escape($table));
+	while ($row = $result->fetch_assoc()) {
 		$return[$row["Key_name"]]["type"] = ($row["Key_name"] == "PRIMARY" ? "PRIMARY" : ($row["Index_type"] == "FULLTEXT" ? "FULLTEXT" : ($row["Non_unique"] ? "INDEX" : "UNIQUE")));
 		$return[$row["Key_name"]]["columns"][$row["Seq_in_index"]] = $row["Column_name"];
 	}
-	mysql_free_result($result);
+	$result->free();
 	return $return;
 }
 
 function foreign_keys($table) {
+	global $mysql;
 	static $pattern = '~`((?:[^`]*|``)+)`~';
 	$return = array();
-	$result = mysql_query("SHOW CREATE TABLE " . idf_escape($table));
+	$result = $mysql->query("SHOW CREATE TABLE " . idf_escape($table));
 	if ($result) {
-		$create_table = mysql_result($result, 0, 1);
-		mysql_free_result($result);
+		$create_table = $mysql->result($result, 0, 1);
+		$result->free();
 		preg_match_all('~FOREIGN KEY \\((.+)\\) REFERENCES (?:`(.+)`\\.)?`(.+)` \\((.+)\\)~', $create_table, $matches, PREG_SET_ORDER);
 		foreach ($matches as $match) {
 			preg_match_all($pattern, $match[1], $source);
@@ -102,9 +105,10 @@ function unique_idf($row, $indexes) {
 }
 
 function where() {
+	global $mysql;
 	$return = array();
 	foreach ((array) $_GET["where"] as $key => $val) {
-		$return[] = idf_escape(bracket_escape($key, "back")) . " = BINARY '" . mysql_real_escape_string($val) . "'"; //! enum and set
+		$return[] = idf_escape(bracket_escape($key, "back")) . " = BINARY '" . $mysql->real_escape_string($val) . "'"; //! enum and set
 	}
 	foreach ((array) $_GET["null"] as $key) {
 		$return[] = idf_escape(bracket_escape($key, "back")) . " IS NULL";
@@ -113,24 +117,26 @@ function where() {
 }
 
 function collations() {
+	global $mysql;
 	$return = array();
-	$result = mysql_query("SHOW COLLATION");
-	while ($row = mysql_fetch_assoc($result)) {
+	$result = $mysql->query("SHOW COLLATION");
+	while ($row = $result->fetch_assoc()) {
 		$return[$row["Charset"]][] = $row["Collation"];
 	}
-	mysql_free_result($result);
+	$result->free();
 	return $return;
 }
 
 function engines() {
+	global $mysql;
 	$return = array();
-	$result = mysql_query("SHOW ENGINES");
-	while ($row = mysql_fetch_assoc($result)) {
+	$result = $mysql->query("SHOW ENGINES");
+	while ($row = $result->fetch_assoc()) {
 		if ($row["Support"] == "YES" || $row["Support"] == "DEFAULT") {
 			$return[] = $row["Engine"];
 		}
 	}
-	mysql_free_result($result);
+	$result->free();
 	return $return;
 }
 
@@ -180,11 +186,11 @@ function get_file($key) {
 }
 
 function select($result) {
-	if (!mysql_num_rows($result)) {
+	if (!$result->num_rows) {
 		echo "<p class='message'>" . lang('No rows.') . "</p>\n";
 	} else {
 		echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
-		for ($i=0; $row = mysql_fetch_row($result); $i++) {
+		for ($i=0; $row = $result->fetch_row(); $i++) {
 			if (!$i) {
 				echo "<thead><tr>";
 				$links = array();
@@ -192,25 +198,24 @@ function select($result) {
 				$columns = array();
 				$blobs = array();
 				for ($j=0; $j < count($row); $j++) {
-					$field = mysql_fetch_field($result, $j);
-					//! table and column aliases
-					if (strlen($field->table) && $field->primary_key) {
-						$links[$j] = $field->table;
-						if (!isset($indexes[$field->table])) {
-							$indexes[$field->table] = array();
-							foreach (indexes($field->table) as $index) {
+					$field = $result->fetch_field();
+					if (strlen($field->orgtable) && $field->primary_key) {
+						$links[$j] = $field->orgtable;
+						if (!isset($indexes[$field->orgtable])) {
+							$indexes[$field->orgtable] = array();
+							foreach (indexes($field->orgtable) as $index) {
 								if ($index["type"] == "PRIMARY") {
-									$indexes[$field->table] = array_flip($index["columns"]);
+									$indexes[$field->orgtable] = array_flip($index["columns"]);
 									break;
 								}
 							}
-							$columns[$field->table] = $indexes[$field->table];
+							$columns[$field->orgtable] = $indexes[$field->orgtable];
 						}
-						unset($columns[$field->table][$field->name]);
-						$indexes[$field->table][$field->name] = $j;
-						$links[$j] = $field->table;
+						unset($columns[$field->orgtable][$field->orgname]);
+						$indexes[$field->orgtable][$field->orgname] = $j;
+						$links[$j] = $field->orgtable;
 					}
-					if ($field->blob) {
+					if ($field->charsetnr == 63) {
 						$blobs[$j] = true;
 					}
 					echo "<th>" . htmlspecialchars($field->name) . "</th>";
@@ -237,7 +242,7 @@ function select($result) {
 		}
 		echo "</table>\n";
 	}
-	mysql_free_result($result);
+	$result->free();
 }
 
 function input($name, $field, $value) {
@@ -283,22 +288,23 @@ function input($name, $field, $value) {
 }
 
 function process_input($name, $field) {
+	global $mysql;
 	$name = bracket_escape($name);
 	$return = $_POST["fields"][$name];
 	if (preg_match('~char|text|set|binary|blob~', $field["type"]) ? $_POST["null"][$name] : !strlen($return)) {
 		$return = "NULL";
 	} elseif ($field["type"] == "enum") {
-		$return = (isset($_GET["default"]) ? "'" . mysql_real_escape_string($return) . "'" : intval($return));
+		$return = (isset($_GET["default"]) ? "'" . $mysql->real_escape_string($return) . "'" : intval($return));
 	} elseif ($field["type"] == "set") {
-		$return = (isset($_GET["default"]) ? "'" . implode(",", array_map('mysql_real_escape_string', (array) $return)) . "'" : array_sum((array) $return));
+		$return = (isset($_GET["default"]) ? "'" . implode(",", array_map(array($mysql, 'real_escape_string'), (array) $return)) . "'" : array_sum((array) $return));
 	} elseif (preg_match('~binary|blob~', $field["type"])) {
 		$file = get_file($name);
 		if (!is_string($file) && !$field["null"]) {
 			return false; //! report errors, also empty $_POST (too big POST data, not only FILES)
 		}
-		$return = "_binary'" . (is_string($file) ? mysql_real_escape_string($file) : "") . "'";
+		$return = "_binary'" . (is_string($file) ? $mysql->real_escape_string($file) : "") . "'";
 	} else {
-		$return = "'" . mysql_real_escape_string($return) . "'";
+		$return = "'" . $mysql->real_escape_string($return) . "'";
 	}
 	return $return;
 }

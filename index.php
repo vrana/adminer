@@ -8,6 +8,7 @@ $TOKENS = &$_SESSION["tokens"][$_GET["server"]][preg_replace('~([?&]sql=)upload~
 include "./functions.inc.php";
 include "./lang.inc.php";
 include "./design.inc.php";
+include "./abstraction.inc.php";
 include "./auth.inc.php";
 include "./connect.inc.php";
 
@@ -49,12 +50,12 @@ if (isset($_GET["dump"])) {
 			$TOKENS = array();
 			page_header(htmlspecialchars(lang('Database') . ": " . $_GET["db"]));
 			echo '<p><a href="' . htmlspecialchars($SELF) . 'database=">' . lang('Alter database') . "</a></p>\n";
-			if (mysql_get_server_info() >= 5) {
-				$result = mysql_query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = '" . mysql_real_escape_string($_GET["db"]) . "'");
-				if (mysql_num_rows($result)) {
+			if ($mysql->server_info >= 5) {
+				$result = $mysql->query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = '" . $mysql->real_escape_string($_GET["db"]) . "'");
+				if ($result->num_rows) {
 					echo "<h2>" . lang('Routines') . "</h2>\n";
 					echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
-					while ($row = mysql_fetch_assoc($result)) {
+					while ($row = $result->fetch_assoc()) {
 						echo "<tr valign='top'>";
 						echo "<th>" . htmlspecialchars($row["ROUTINE_TYPE"]) . "</th>";
 						echo '<td><a href="' . htmlspecialchars($SELF) . ($row["ROUTINE_TYPE"] == "FUNCTION" ? 'callf' : 'call') . '=' . urlencode($row["ROUTINE_NAME"]) . '">' . htmlspecialchars($row["ROUTINE_NAME"]) . '</a></td>';
@@ -63,7 +64,7 @@ if (isset($_GET["dump"])) {
 					}
 					echo "</table>\n";
 				}
-				mysql_free_result($result);
+				$result->free();
 			}
 		}
 	}

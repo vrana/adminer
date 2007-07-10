@@ -1,10 +1,13 @@
 <?php
+page_header(lang('Call') . ": " . htmlspecialchars($_GET["call"]));
+
 function normalize_enum($match) {
 	return "'" . str_replace("'", "''", addcslashes(stripcslashes(str_replace($match[0]{0} . $match[0]{0}, $match[0]{0}, substr($match[0], 1, -1))), '\\')) . "'";
 }
+
 $length = '\'(?:[^\'\\\\]*|\\\\.)+\'|"(?:[^"\\\\]*|\\\\.)+"';
 $pattern = "\\s*(IN|OUT|INOUT)?\\s*(?:`((?:[^`]*|``)+)`\\s*|\\b(\\S+)\\s+)([a-z]+)(?:\\s*\\(((?:[^'\")]*|$length)+)\\))?\\s*(?:zerofill\\s+)?(unsigned)?";
-$create = mysql_result(mysql_query("SHOW CREATE " . (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE") . " " . idf_escape($_GET["call"])), 0, 2);
+$create = $mysql->result($mysql->query("SHOW CREATE " . (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE") . " " . idf_escape($_GET["call"])), 0, 2);
 preg_match("~\\($pattern(?:\\s*,$pattern)*~is", $create, $match);
 $in = array();
 $out = array();
@@ -26,43 +29,32 @@ foreach ($matches as $i => $match) {
 	}
 	$params[$i] = $field;
 }
+
 if ($_POST) {
 	$call = array();
 	foreach ($params as $key => $field) {
 		if (in_array($key, $in)) {
 			$val = process_input($key, $field);
 			if (isset($out[$key])) {
-				mysql_query("SET @" . idf_escape($field["field"]) . " = " . $val);
+				$mysql->query("SET @" . idf_escape($field["field"]) . " = " . $val);
 			}
 		}
 		$call[] = (isset($out[$key]) ? "@" . idf_escape($field["field"]) : $val);
 	}
-	$result = mysql_query((isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . idf_escape($_GET["call"]) . "(" . implode(", ", $call) . ")");
+	$result = $mysql->multi_query((isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . idf_escape($_GET["call"]) . "(" . implode(", ", $call) . ")");
 	if (!$result) {
-		$error = mysql_error();
-	} elseif ($result === true) {
-		$message = lang('Routine has been called, %d row(s) affected.', mysql_affected_rows());
-		if (!$out) {
-			redirect(substr($SELF, 0, -1), $message);
-		}
-	}
-}
-
-page_header(lang('Call') . ": " . htmlspecialchars($_GET["call"]));
-
-if ($_POST) {
-	if (!$result) {
-		echo "<p class='error'>" . lang('Error during calling') . ": " . htmlspecialchars($error) . "</p>\n";
+		echo "<p class='error'>" . lang('Error during calling') . ": " . htmlspecialchars($mysql->error) . "</p>\n";
 	} else {
-		if ($result === true) {
-			echo "<p class='message'>$message</p>\n";
-		} else {
-			select($result);
-			echo "<br />\n";
-		}
+		do {
+			$result = $mysql->store_result();
+			if (is_object($result)) {
+				select($result);
+			} else {
+				echo "<p class='message'>" . lang('Routine has been called, %d row(s) affected.', $mysql->affected_rows) . "</p>\n";
+			}
+		} while ($mysql->next_result());
 		if ($out) {
-			select(mysql_query("SELECT " . implode(", ", $out)));
-			echo "<br />\n";
+			select($mysql->query("SELECT " . implode(", ", $out)));
 		}
 	}
 }
