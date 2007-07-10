@@ -30,10 +30,10 @@ if ($_POST && !$error && !$_POST["add"]) {
 					. idf_escape($field["field"]) . " $field[type]"
 					. ($field["length"] ? "(" . (preg_match("~^\\s*(?:$length)(?:\\s*,\\s*(?:$length))*\\s*\$~", $field["length"]) && preg_match_all("~$length~", $field["length"], $matches) ? implode(",", $matches[0]) : intval($field["length"])) . ")" : "")
 					. (preg_match('~int|float|double|decimal~', $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
-					. (preg_match('~char|text|enum|set~', $field["type"]) && $field["collation"] ? " COLLATE '" . $mysql->real_escape_string($field["collation"]) . "'" : "")
+					. (preg_match('~char|text|enum|set~', $field["type"]) && $field["collation"] ? " COLLATE '" . $mysql->escape_string($field["collation"]) . "'" : "")
 					. ($field["null"] ? "" : " NOT NULL")
 					. ($key == $_POST["auto_increment"] ? " AUTO_INCREMENT$auto_increment_index" : "")
-					. " COMMENT '" . $mysql->real_escape_string($field["comment"]) . "'"
+					. " COMMENT '" . $mysql->escape_string($field["comment"]) . "'"
 					. (strlen($_GET["create"]) && !strlen($field["orig"]) ? $after : "")
 				;
 				$after = "AFTER " . idf_escape($field["field"]);
@@ -41,9 +41,9 @@ if ($_POST && !$error && !$_POST["add"]) {
 				$fields[] = "DROP " . idf_escape($field["orig"]);
 			}
 		}
-		$status = ($_POST["Engine"] ? " ENGINE='" . $mysql->real_escape_string($_POST["Engine"]) . "'" : "")
-			. ($_POST["Collation"] ? " COLLATE '" . $mysql->real_escape_string($_POST["Collation"]) . "'" : "")
-			. " COMMENT='" . $mysql->real_escape_string($_POST["Comment"]) . "'"
+		$status = ($_POST["Engine"] ? " ENGINE='" . $mysql->escape_string($_POST["Engine"]) . "'" : "")
+			. ($_POST["Collation"] ? " COLLATE '" . $mysql->escape_string($_POST["Collation"]) . "'" : "")
+			. " COMMENT='" . $mysql->escape_string($_POST["Comment"]) . "'"
 		;
 		if (strlen($_GET["create"])) {
 			$query = "ALTER TABLE " . idf_escape($_GET["create"]) . " " . implode(", ", $fields) . ", RENAME TO " . idf_escape($_POST["name"]) . ", $status";
@@ -73,7 +73,7 @@ if ($_POST) {
 		$row["fields"][$row["auto_increment"]]["auto_increment"] = true;
 	}
 } elseif (strlen($_GET["create"])) {
-	$result = $mysql->query("SHOW TABLE STATUS LIKE '" . $mysql->real_escape_string($_GET["create"]) . "'");
+	$result = $mysql->query("SHOW TABLE STATUS LIKE '" . $mysql->escape_string($_GET["create"]) . "'");
 	$row = $result->fetch_assoc();
 	$row["name"] = $_GET["create"];
 	$row["fields"] = array_values(fields($_GET["create"]));

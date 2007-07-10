@@ -30,7 +30,7 @@ if (!$columns) {
 	foreach ($indexes as $i => $index) {
 		if ($index["type"] == "FULLTEXT") {
 			if (strlen($_GET["fulltext"][$i])) {
-				$where[] = "MATCH (" . implode(", ", array_map('idf_escape', $index["columns"])) . ") AGAINST ('" . $mysql->real_escape_string($_GET["fulltext"][$i]) . "'" . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
+				$where[] = "MATCH (" . implode(", ", array_map('idf_escape', $index["columns"])) . ") AGAINST ('" . $mysql->escape_string($_GET["fulltext"][$i]) . "'" . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
 			}
 			echo "(<i>" . implode("</i>, <i>", $index["columns"]) . "</i>) AGAINST";
 			echo ' <input name="fulltext[' . $i . ']" value="' . htmlspecialchars($_GET["fulltext"][$i]) . '" />';
@@ -42,7 +42,7 @@ if (!$columns) {
 	$i = 0;
 	foreach ((array) $_GET["where"] as $val) {
 		if (strlen($val["col"]) && in_array($val["op"], $operators)) {
-			$where[] = idf_escape($val["col"]) . " $val[op]" . ($val["op"] != "IS NULL" ? " '" . $mysql->real_escape_string($val["val"]) . "'" : "");
+			$where[] = idf_escape($val["col"]) . " $val[op]" . ($val["op"] != "IS NULL" ? " '" . $mysql->escape_string($val["val"]) . "'" : "");
 			echo "<div><select name='where[$i][col]'><option></option>" . optionlist($columns, $val["col"], "not_vals") . "</select>";
 			echo "<select name='where[$i][op]' onchange=\"where_change(this);\">" . optionlist($operators, $val["op"], "not_vals") . "</select>";
 			echo "<input name='where[$i][val]' value=\"" . htmlspecialchars($val["val"]) . "\" /></div>\n";
@@ -104,7 +104,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 		$childs = array();
 		if ($mysql->server_info >= 5) {
 			// would be possible in earlier versions too, but only by examining all tables (in all databases)
-			$result1 = $mysql->query("SELECT * FROM information_schema.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = '" . $mysql->real_escape_string($_GET["db"]) . "' AND REFERENCED_TABLE_NAME = '" . $mysql->real_escape_string($_GET["select"]) . "' ORDER BY ORDINAL_POSITION");
+			$result1 = $mysql->query("SELECT * FROM information_schema.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = '" . $mysql->escape_string($_GET["db"]) . "' AND REFERENCED_TABLE_NAME = '" . $mysql->escape_string($_GET["select"]) . "' ORDER BY ORDINAL_POSITION");
 			while ($row1 = $result1->fetch_assoc()) {
 				$childs[$row1["CONSTRAINT_NAME"]][0] = $row1["TABLE_SCHEMA"];
 				$childs[$row1["CONSTRAINT_NAME"]][1] = $row1["TABLE_NAME"];

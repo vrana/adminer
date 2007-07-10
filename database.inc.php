@@ -5,7 +5,7 @@ if ($_POST && !$error) {
 			redirect(substr(preg_replace('~(\\?)db=[^&]*&|&db=[^&]*~', '\\1', $SELF), 0, -1), lang('Database has been dropped.'));
 		}
 	} elseif ($_GET["db"] !== $_POST["name"]) {
-		if ($mysql->query("CREATE DATABASE " . idf_escape($_POST["name"]) . ($_POST["collation"] ? " COLLATE '" . $mysql->real_escape_string($_POST["collation"]) . "'" : ""))) {
+		if ($mysql->query("CREATE DATABASE " . idf_escape($_POST["name"]) . ($_POST["collation"] ? " COLLATE '" . $mysql->escape_string($_POST["collation"]) . "'" : ""))) {
 			if (!strlen($_GET["db"])) {
 				redirect(preg_replace('~(\\?)db=[^&]*&|&db=[^&]*~', '\\1', $SELF) . "db=" . urlencode($_POST["name"]), lang('Database has been created.'));
 			}
@@ -21,7 +21,7 @@ if ($_POST && !$error) {
 				redirect(preg_replace('~(\\?)db=[^&]*&|&db=[^&]*~', '\\1', $SELF) . "db=" . urlencode($_POST["name"]), lang('Database has been renamed.'));
 			}
 		}
-	} elseif (!$_POST["collation"] || $mysql->query("ALTER DATABASE " . idf_escape($_POST["name"]) . " COLLATE '" . $mysql->real_escape_string($_POST["collation"]) . "'")) {
+	} elseif (!$_POST["collation"] || $mysql->query("ALTER DATABASE " . idf_escape($_POST["name"]) . " COLLATE '" . $mysql->escape_string($_POST["collation"]) . "'")) {
 		redirect(substr($SELF, 0, -1), ($_POST["collation"] ? lang('Database has been altered.') : null));
 	}
 	$error = $mysql->error;

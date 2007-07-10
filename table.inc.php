@@ -45,7 +45,7 @@ if (!$result) {
 }
 
 if ($mysql->server_info >= 5) {
-	$result = $mysql->query("SHOW TRIGGERS LIKE '" . $mysql->real_escape_string($_GET["table"]) . "'");
+	$result = $mysql->query("SHOW TRIGGERS LIKE '" . $mysql->escape_string($_GET["table"]) . "'");
 	if ($result->num_rows) {
 		echo "<h3>" . lang('Triggers') . "</h3>\n";
 		echo "<table border='0' cellspacing='0' cellpadding='2'>\n";

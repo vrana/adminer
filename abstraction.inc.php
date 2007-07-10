@@ -71,7 +71,7 @@ if (extension_loaded("mysqli")) {
 			return mysql_select_db($database, $this->_link);
 		}
 		
-		function real_escape_string($string) {
+		function escape_string($string) {
 			return mysql_real_escape_string($string, $this->_link);
 		}
 	}

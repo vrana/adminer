@@ -51,7 +51,7 @@ if (isset($_GET["dump"])) {
 			page_header(htmlspecialchars(lang('Database') . ": " . $_GET["db"]));
 			echo '<p><a href="' . htmlspecialchars($SELF) . 'database=">' . lang('Alter database') . "</a></p>\n";
 			if ($mysql->server_info >= 5) {
-				$result = $mysql->query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = '" . $mysql->real_escape_string($_GET["db"]) . "'");
+				$result = $mysql->query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = '" . $mysql->escape_string($_GET["db"]) . "'");
 				if ($result->num_rows) {
 					echo "<h2>" . lang('Routines') . "</h2>\n";
 					echo "<table border='0' cellspacing='0' cellpadding='2'>\n";

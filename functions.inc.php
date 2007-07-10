@@ -108,7 +108,7 @@ function where() {
 	global $mysql;
 	$return = array();
 	foreach ((array) $_GET["where"] as $key => $val) {
-		$return[] = idf_escape(bracket_escape($key, "back")) . " = BINARY '" . $mysql->real_escape_string($val) . "'"; //! enum and set
+		$return[] = idf_escape(bracket_escape($key, "back")) . " = BINARY '" . $mysql->escape_string($val) . "'"; //! enum and set
 	}
 	foreach ((array) $_GET["null"] as $key) {
 		$return[] = idf_escape(bracket_escape($key, "back")) . " IS NULL";
@@ -294,7 +294,7 @@ function process_input($name, $field) {
 	if (preg_match('~char|text|set|binary|blob~', $field["type"]) ? $_POST["null"][$name] : !strlen($return)) {
 		$return = "NULL";
 	} elseif ($field["type"] == "enum") {
-		$return = (isset($_GET["default"]) ? "'" . $mysql->real_escape_string($return) . "'" : intval($return));
+		$return = (isset($_GET["default"]) ? "'" . $mysql->escape_string($return) . "'" : intval($return));
 	} elseif ($field["type"] == "set") {
 		$return = (isset($_GET["default"]) ? "'" . implode(",", array_map(array($mysql, 'real_escape_string'), (array) $return)) . "'" : array_sum((array) $return));
 	} elseif (preg_match('~binary|blob~', $field["type"])) {
@@ -302,9 +302,9 @@ function process_input($name, $field) {
 		if (!is_string($file) && !$field["null"]) {
 			return false; //! report errors, also empty $_POST (too big POST data, not only FILES)
 		}
-		$return = "_binary'" . (is_string($file) ? $mysql->real_escape_string($file) : "") . "'";
+		$return = "_binary'" . (is_string($file) ? $mysql->escape_string($file) : "") . "'";
 	} else {
-		$return = "'" . $mysql->real_escape_string($return) . "'";
+		$return = "'" . $mysql->escape_string($return) . "'";
 	}
 	return $return;
 }
