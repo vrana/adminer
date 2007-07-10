@@ -88,7 +88,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 	
 	echo "<fieldset><legend>" . lang('Action') . "</legend><div><input type='submit' value='" . lang('Select') . "' /></div></fieldset>\n";
 	echo "</form>\n";
-	echo "<div style='clear: left; margin-bottom: 1em;'></div>\n";
+	echo "<div style='clear: left;'></div>\n";
 	
 	$result = $mysql->query("SELECT SQL_CALC_FOUND_ROWS " . implode(", ", array_map('idf_escape', $columns)) . " FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "") . ($order ? " ORDER BY " . implode(", ", $order) : "") . (strlen($limit) ? " LIMIT " . intval($limit) . " OFFSET " . ($limit * $_GET["page"]) : ""));
 	if (!$result->num_rows) {
