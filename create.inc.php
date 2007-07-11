@@ -69,7 +69,7 @@ if ($_POST) {
 		array_splice($row["fields"], key($_POST["add"]), 0, array(array()));
 	}
 	if ($row["auto_increment"]) {
-		$row["fields"][$row["auto_increment"]]["auto_increment"] = true;
+		$row["fields"][$row["auto_increment"] - 1]["auto_increment"] = true;
 	}
 } elseif (strlen($_GET["create"])) {
 	$result = $mysql->query("SHOW TABLE STATUS LIKE '" . $mysql->escape_string($_GET["create"]) . "'");
