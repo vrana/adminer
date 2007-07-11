@@ -294,23 +294,22 @@ function input($name, $field, $value) {
 function process_input($name, $field) {
 	global $mysql;
 	$name = bracket_escape($name);
-	$return = $_POST["fields"][$name];
-	if (preg_match('~char|text|set|binary|blob~', $field["type"]) ? $_POST["null"][$name] : !strlen($return)) {
-		$return = "NULL";
+	$value = $_POST["fields"][$name];
+	if (preg_match('~char|text|set|binary|blob~', $field["type"]) ? $_POST["null"][$name] : !strlen($value)) {
+		return "NULL";
 	} elseif ($field["type"] == "enum") {
-		$return = (isset($_GET["default"]) ? "'" . $mysql->escape_string($return) . "'" : intval($return));
+		return (isset($_GET["default"]) ? "'" . $mysql->escape_string($value) . "'" : intval($value));
 	} elseif ($field["type"] == "set") {
-		$return = (isset($_GET["default"]) ? "'" . implode(",", array_map(array($mysql, 'real_escape_string'), (array) $return)) . "'" : array_sum((array) $return));
+		return (isset($_GET["default"]) ? "'" . implode(",", array_map(array($mysql, 'real_escape_string'), (array) $value)) . "'" : array_sum((array) $value));
 	} elseif (preg_match('~binary|blob~', $field["type"])) {
 		$file = get_file($name);
 		if (!is_string($file) && !$field["null"]) {
 			return false; //! report errors, also empty $_POST (too big POST data, not only FILES)
 		}
-		$return = "_binary'" . (is_string($file) ? $mysql->escape_string($file) : "") . "'";
+		return "_binary'" . (is_string($file) ? $mysql->escape_string($file) : "") . "'";
 	} else {
-		$return = "'" . $mysql->escape_string($return) . "'";
+		return "'" . $mysql->escape_string($value) . "'";
 	}
-	return $return;
 }
 
 if (get_magic_quotes_gpc()) {
