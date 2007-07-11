@@ -43,8 +43,8 @@ if (!$columns) {
 	foreach ((array) $_GET["where"] as $val) {
 		if (strlen($val["col"]) && in_array($val["op"], $operators)) {
 			$where[] = idf_escape($val["col"]) . " $val[op]" . ($val["op"] != "IS NULL" ? " '" . $mysql->escape_string($val["val"]) . "'" : "");
-			echo "<div><select name='where[$i][col]'><option></option>" . optionlist($columns, $val["col"], "not_vals") . "</select>";
-			echo "<select name='where[$i][op]' onchange=\"where_change(this);\">" . optionlist($operators, $val["op"], "not_vals") . "</select>";
+			echo "<div><select name='where[$i][col]'><option></option>" . optionlist($columns, $val["col"]) . "</select>";
+			echo "<select name='where[$i][op]' onchange=\"where_change(this);\">" . optionlist($operators, $val["op"]) . "</select>";
 			echo "<input name='where[$i][val]' value=\"" . htmlspecialchars($val["val"]) . "\" /></div>\n";
 			$i++;
 		}
@@ -61,8 +61,8 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 <?php } ?>
 </script>
 <?php
-	echo "<div><select name='where[$i][col]'><option></option>" . optionlist($columns, array(), "not_vals") . "</select>";
-	echo "<select name='where[$i][op]' onchange=\"where_change(this);\">" . optionlist($operators, array(), "not_vals") . "</select>";
+	echo "<div><select name='where[$i][col]'><option></option>" . optionlist($columns, array()) . "</select>";
+	echo "<select name='where[$i][op]' onchange=\"where_change(this);\">" . optionlist($operators, array()) . "</select>";
 	echo "<input name='where[$i][val]' /></div>\n"; //! JavaScript for adding next
 	echo "</fieldset>\n";
 	
@@ -72,12 +72,12 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 	foreach ((array) $_GET["order"] as $key => $val) {
 		if (in_array($val, $columns, true)) {
 			$order[] = idf_escape($val) . (isset($_GET["desc"][$key]) ? " DESC" : "");
-			echo "<div><select name='order[$i]'><option></option>" . optionlist($columns, $val, "not_vals") . "</select>";
+			echo "<div><select name='order[$i]'><option></option>" . optionlist($columns, $val) . "</select>";
 			echo "<label for='desc-$i'><input type='checkbox' name='desc[$i]' value='1' id='desc-$i'" . (isset($_GET["desc"][$key]) ? " checked='checked'" : "") . " />" . lang('DESC') . "</label></div>\n";
 			$i++;
 		}
 	}
-	echo "<div><select name='order[$i]'><option></option>" . optionlist($columns, array(), "not_vals") . "</select>";
+	echo "<div><select name='order[$i]'><option></option>" . optionlist($columns, array()) . "</select>";
 	echo "<label for='desc-$i'><input type='checkbox' name='desc[$i]' value='1' id='desc-$i' />" . lang('DESC') . "</label></div>\n";
 	echo "</fieldset>\n";
 	

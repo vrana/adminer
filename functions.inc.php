@@ -12,15 +12,15 @@ function bracket_escape($idf, $back = false) {
 	return strtr($idf, ($back ? array_flip($trans) : $trans));
 }
 
-function optionlist($options, $selected = array(), $not_vals = false) {
+function optionlist($options, $selected = array()) {
 	$return = "";
 	foreach ($options as $k => $v) {
 		if (is_array($v)) {
 			$return .= '<optgroup label="' . htmlspecialchars($k) . '">';
 		}
 		foreach ((is_array($v) ? $v : array($k => $v)) as $key => $val) {
-			$checked = in_array(($not_vals ? $val : $key), (array) $selected, true);
-			$return .= '<option' . ($not_vals ? '' : ' value="' . htmlspecialchars($key) . '"') . ($checked ? ' selected="selected"' : '') . '>' . htmlspecialchars($val) . '</option>';
+			$checked = in_array($val, (array) $selected, true);
+			$return .= '<option' . ($checked ? ' selected="selected"' : '') . '>' . htmlspecialchars($val) . '</option>';
 		}
 		if (is_array($v)) {
 			$return .= '</optgroup>';

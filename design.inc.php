@@ -49,7 +49,7 @@ function page_footer($missing = false) {
 <select name="db" onchange="this.form.submit();"><option value="">(<?php echo lang('database'); ?>)</option>
 <?php
 		flush();
-		echo optionlist(get_vals("SHOW DATABASES"), $_GET["db"], "not_vals");
+		echo optionlist(get_vals("SHOW DATABASES"), $_GET["db"]);
 		?>
 </select><?php if (isset($_GET["sql"])) { ?><input type="hidden" name="sql" value="" /><?php } ?></p>
 <noscript><p><input type="submit" value="<?php echo lang('Use'); ?>" /></p></noscript>

@@ -50,14 +50,14 @@ if ($_POST) {
 $j = 0;
 foreach ($row["indexes"] as $index) {
 	if ($index["type"] || array_filter($index["columns"], 'strlen')) {
-		echo "<tr><td><select name='indexes[$j][type]'><option></option>" . optionlist($index_types, $index["type"], "not_vals") . "</select></td><td>";
+		echo "<tr><td><select name='indexes[$j][type]'><option></option>" . optionlist($index_types, $index["type"]) . "</select></td><td>";
 		ksort($index["columns"]);
 		foreach ($index["columns"] as $i => $column) {
 			if (strlen($column)) {
-				echo "<select name='indexes[$j][columns][$i]'><option></option>" . optionlist($fields, $column, "not_vals") . "</select>";
+				echo "<select name='indexes[$j][columns][$i]'><option></option>" . optionlist($fields, $column) . "</select>";
 			}
 		}
-		echo "<select name='indexes[$j][columns][" . ($i+1) . "]'><option></option>" . optionlist($fields, array(), "not_vals") . "</select>";
+		echo "<select name='indexes[$j][columns][" . ($i+1) . "]'><option></option>" . optionlist($fields, array()) . "</select>";
 		//! indexes from substring
 		echo "</td></tr>\n";
 		$j++;
@@ -65,7 +65,7 @@ foreach ($row["indexes"] as $index) {
 }
 //! JavaScript for adding more indexes and columns
 ?>
-<tr><td><select name="indexes[<?php echo $j; ?>][type]"><option></option><?php echo optionlist($index_types, array(), "not_vals"); ?></select></td><td><select name="indexes[<?php echo $j; ?>][columns][1]"><option></option><?php echo optionlist($fields, array(), "not_vals"); ?></select></td></tr>
+<tr><td><select name="indexes[<?php echo $j; ?>][type]"><option></option><?php echo optionlist($index_types, array()); ?></select></td><td><select name="indexes[<?php echo $j; ?>][columns][1]"><option></option><?php echo optionlist($fields, array()); ?></select></td></tr>
 </table>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
