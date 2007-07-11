@@ -300,7 +300,7 @@ function process_input($name, $field) {
 	} elseif ($field["type"] == "enum") {
 		return (isset($_GET["default"]) ? "'" . $mysql->escape_string($value) . "'" : intval($value));
 	} elseif ($field["type"] == "set") {
-		return (isset($_GET["default"]) ? "'" . implode(",", array_map(array($mysql, 'real_escape_string'), (array) $value)) . "'" : array_sum((array) $value));
+		return (isset($_GET["default"]) ? "'" . implode(",", array_map(array($mysql, 'escape_string'), (array) $value)) . "'" : array_sum((array) $value));
 	} elseif (preg_match('~binary|blob~', $field["type"])) {
 		$file = get_file($name);
 		if (!is_string($file) && !$field["null"]) {

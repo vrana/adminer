@@ -36,7 +36,7 @@ function dump($db) {
 				$result1 = $mysql->query("SELECT * FROM " . idf_escape($row["Name"])); //! enum and set as numbers
 				if ($result1) {
 					while ($row1 = $result1->fetch_row()) {
-						echo "INSERT INTO " . idf_escape($row["Name"]) . " VALUES ('" . implode("', '", array_map(array($mysql, 'real_escape_string'), $row1)) . "');\n";
+						echo "INSERT INTO " . idf_escape($row["Name"]) . " VALUES ('" . implode("', '", array_map(array($mysql, 'escape_string'), $row1)) . "');\n";
 					}
 					$result1->free();
 				}
