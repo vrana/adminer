@@ -107,6 +107,18 @@ function lang($idf = null, $number = null) {
 			'Text length' => 'Délka textů',
 			'Syntax highlighting' => 'Zvýrazňování syntaxe',
 			'phpMinAdmin homepage' => 'Domácí stránka phpMinAdmin',
+			'Foreign key has been dropped.' => 'Cizí klíč byl odstraněn.',
+			'Foreign key has been altered.' => 'Cizí klíč byl změněn.',
+			'Foreign key has been created.' => 'Cizí klíč byl vytvořen.',
+			'Foreign key' => 'Cizí klíč',
+			'Unable to operate foreign keys' => 'Nepodařilo se zpracovat cizí klíče',
+			'Target table' => 'Cílová tabulka',
+			'Change' => 'Změnit',
+			'Source' => 'Zdroj',
+			'Target' => 'Cíl',
+			'Add column' => 'Přidat sloupec',
+			'Alter' => 'Změnit',
+			'Add foreign key' => 'Přidat cizí klíč',
 		),
 	);
 	if (!isset($idf)) {
