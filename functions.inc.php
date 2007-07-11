@@ -29,6 +29,17 @@ function optionlist($options, $selected = array(), $not_vals = false) {
 	return $return;
 }
 
+function get_vals($query) {
+	global $mysql;
+	$result = $mysql->query($query);
+	$return = array();
+	while ($row = $result->fetch_row()) {
+		$return[] = $row[0];
+	}
+	$result->free();
+	return $return;
+}
+
 function fields($table) {
 	global $mysql;
 	$return = array();
