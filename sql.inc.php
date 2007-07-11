@@ -1,4 +1,8 @@
 <?php
+if (isset($_POST["query"])) {
+	$_SESSION["highlight"] = $_POST["highlight"];
+}
+
 page_header(lang('SQL command'));
 
 if ($_POST && $error) {
@@ -45,7 +49,13 @@ if ($_POST && $error) {
 
 <form action="" method="post">
 <p><textarea name="query" rows="20" cols="80"><?php echo htmlspecialchars($_POST["query"]); ?></textarea></p>
-<p><input type="hidden" name="token" value="<?php echo $token; ?>" /><input type="submit" value="<?php echo lang('Execute'); ?>" /></p>
+<p>
+<input type="hidden" name="token" value="<?php echo $token; ?>" />
+<input type="submit" value="<?php echo lang('Execute'); ?>" />
+<script type="text/javascript">
+document.write('<label for="highlight"><input type="checkbox" name="highlight" id="highlight" value="jush"<?php echo ($_SESSION["highlight"] == "jush" ? ' checked="checked"' : ''); ?> /><?php echo addcslashes(lang('Syntax highlighting'), "\r\n'\\"); ?></label>');
+</script>
+</p>
 </form>
 
 <?php

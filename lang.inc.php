@@ -104,6 +104,8 @@ function lang($idf = null, $number = null) {
 			'None of supported PHP extensions (%s) are available.' => 'Není dostupná žádná z podporovaných PHP extenzí (%s).',
 			'Sessions must be enabled.' => 'Session proměnné musí být povolené.',
 			'Session expired, please login again.' => 'Session vypršela, přihlašte se prosím znovu.',
+			'Text length' => 'Délka textů',
+			'Syntax highlighting' => 'Zvýrazňování syntaxe',
 		),
 	);
 	if (!isset($idf)) {
