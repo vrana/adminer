@@ -24,6 +24,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 		ksort($_POST["fields"]);
 		$after = "FIRST";
 		foreach ($_POST["fields"] as $key => $field) {
+			//! detect changes
 			if (strlen($field["field"]) && isset($types[$field["type"]])) {
 				$fields[] = (!strlen($_GET["create"]) ? "" : (strlen($field["orig"]) ? "CHANGE " . idf_escape($field["orig"]) . " " : "ADD "))
 					. idf_escape($field["field"]) . " $field[type]"
