@@ -88,9 +88,10 @@ $collations = collations();
 <?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo htmlspecialchars($row["name"]); ?>" />
 <select name="Engine"><option value="">(<?php echo lang('engine'); ?>)</option><?php echo optionlist(engines(), $row["Engine"], "not_vals"); ?></select>
 <select name="Collation"><option value="">(<?php echo lang('collation'); ?>)</option><?php echo optionlist($collations, $row["Collation"], "not_vals"); ?></select>
+<input type="submit" value="<?php echo lang('Save'); ?>" />
 </p>
 <table border="0" cellspacing="0" cellpadding="2">
-<thead><tr><th><?php echo lang('Name'); ?></th><td><?php echo lang('Type'); ?></td><td><?php echo lang('Length'); ?></td><td><?php echo lang('Options'); ?></td><td><?php echo lang('NULL'); ?></td><td><input type="radio" name="auto_increment" value="" /><?php echo lang('Auto Increment'); ?></td><td id="comment-0"><?php echo lang('Comment'); ?></td><td><input type="submit" name="add[0]" value="<?php echo lang('Add row'); ?>" /></td></tr></thead>
+<thead><tr><th><?php echo lang('Column name'); ?></th><td><?php echo lang('Type'); ?></td><td><?php echo lang('Length'); ?></td><td><?php echo lang('Options'); ?></td><td><?php echo lang('NULL'); ?></td><td><input type="radio" name="auto_increment" value="" /><?php echo lang('Auto Increment'); ?></td><td id="comment-0"><?php echo lang('Comment'); ?></td><td><input type="submit" name="add[0]" value="<?php echo lang('Add row'); ?>" /></td></tr></thead>
 <?php
 $column_comments = false;
 foreach ($row["fields"] as $i => $field) {
