@@ -22,9 +22,10 @@ if ($_POST && $error) {
 			} else {
 				$empty = false;
 				echo "<pre class='jush-sql'>" . htmlspecialchars(substr($query, 0, $match[0][1])) . "</pre>\n";
+				//! don't allow changing of character_set_results, convert encoding of displayed query
 				if (!$mysql->multi_query(substr($query, 0, $match[0][1]))) {
 					echo "<p class='error'>" . lang('Error in query') . ": " . htmlspecialchars($mysql->error) . "</p>\n";
-				} else{
+				} else {
 					do {
 						$result = $mysql->store_result();
 						if (is_object($result)) {
