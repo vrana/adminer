@@ -137,6 +137,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 			}
 			echo "<tr>";
 			$unique_idf = '&amp;' . implode('&amp;', unique_idf($row, $indexes));
+			//! multiple delete by checkboxes
 			foreach ($row as $key => $val) {
 				if (!isset($val)) {
 					$val = "<i>NULL</i>";
