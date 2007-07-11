@@ -106,6 +106,7 @@ function lang($idf = null, $number = null) {
 			'Session expired, please login again.' => 'Session vypršela, přihlašte se prosím znovu.',
 			'Text length' => 'Délka textů',
 			'Syntax highlighting' => 'Zvýrazňování syntaxe',
+			'phpMinAdmin homepage' => 'Domácí stránka phpMinAdmin',
 		),
 	);
 	if (!isset($idf)) {

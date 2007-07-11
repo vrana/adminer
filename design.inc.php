@@ -74,6 +74,8 @@ function page_footer($missing = false) {
 			echo '<p><a href="' . htmlspecialchars($SELF) . 'create=">' . lang('Create new table') . "</a></p>\n";
 			$result->free();
 		}
+	} else {
+		echo "<p><a href='http://phpminadmin.sourceforge.net'>" . lang('phpMinAdmin homepage') . "</a></p>\n";
 	}
 	?>
 </div>
