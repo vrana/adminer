@@ -30,6 +30,9 @@ if (isset($_POST["server"])) {
 }
 
 if (!isset($_SESSION["usernames"][$_GET["server"]]) || !$mysql->connect($_GET["server"], $_SESSION["usernames"][$_GET["server"]], $_SESSION["passwords"][$_GET["server"]])) {
+	if ($_POST["token"]) {
+		$_POST["token"] = token();
+	}
 	page_header(lang('Login'));
 	if (isset($_SESSION["usernames"][$_GET["server"]])) {
 		echo "<p class='error'>" . lang('Invalid credentials.') . "</p>\n";
@@ -56,8 +59,6 @@ if (!isset($_SESSION["usernames"][$_GET["server"]]) || !$mysql->connect($_GET["s
 					}
 				}
 			}
-		} elseif ($key == "token") {
-			echo '<input type="hidden" name="token" value="' . token() . '" />';
 		} elseif (!in_array($key, $ignore)) {
 			echo '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($val) . '" />';
 		}
