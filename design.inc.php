@@ -23,11 +23,14 @@ TABLE { margin-top: 1em; }
 #menu { position: absolute; top: 8px; left: 8px; width: 15em; overflow: auto; white-space: nowrap; }
 #content { margin-left: 16em; }
 </style>
+<?php if ($_SESSION["highlight"] == "jush") { ?>
 <style type="text/css">@import url(http://jush.info/jush.css);</style>
 <script type="text/javascript" src="http://jush.info/jush.js" defer="defer"></script>
+<script type="text/javascript">body.onload = function () { jush.highlight_tag('pre'); }</script>
+<?php } ?>
 </head>
 
-<body onload="jush.highlight_tag('pre');">
+<body>
 
 <div id="content">
 <?php
