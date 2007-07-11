@@ -89,11 +89,14 @@ function foreign_keys($table) {
 		$result->free();
 		preg_match_all("~CONSTRAINT `($pattern)` FOREIGN KEY \\(((?:`$pattern`,? ?)+)\\) REFERENCES `($pattern)`(?:\\.`($pattern)`)? \\(((?:`$pattern`,? ?)+)\\)~", $create_table, $matches, PREG_SET_ORDER);
 		foreach ($matches as $match) {
-			$db = idf_unescape(strlen($match[4]) ? $match[3] : $match[4]);
-			$table = idf_unescape(strlen($match[4]) ? $match[4] : $match[3]);
 			preg_match_all("~`($pattern)`~", $match[2], $source);
 			preg_match_all("~`($pattern)`~", $match[5], $target);
-			$return[$match[1]] = array($db, $table, array_map('idf_unescape', $source[1]), array_map('idf_unescape', $target[1]));
+			$return[$match[1]] = array(
+				"db" => idf_unescape(strlen($match[4]) ? $match[3] : $match[4]),
+				"table" => idf_unescape(strlen($match[4]) ? $match[4] : $match[3]),
+				"source" => array_map('idf_unescape', $source[1]),
+				"target" => array_map('idf_unescape', $target[1]),
+			);
 		}
 	}
 	return $return;

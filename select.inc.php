@@ -113,7 +113,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 		$found_rows = $mysql->result($mysql->query(" SELECT FOUND_ROWS()")); // space for mysql.trace_mode
 		$foreign_keys = array();
 		foreach (foreign_keys($_GET["select"]) as $foreign_key) {
-			foreach ($foreign_key[2] as $val) {
+			foreach ($foreign_key["source"] as $val) {
 				$foreign_keys[$val][] = $foreign_key;
 			}
 		}
@@ -122,10 +122,10 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 			// would be possible in earlier versions too, but only by examining all tables (in all databases)
 			$result1 = $mysql->query("SELECT * FROM information_schema.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = '" . $mysql->escape_string($_GET["db"]) . "' AND REFERENCED_TABLE_NAME = '" . $mysql->escape_string($_GET["select"]) . "' ORDER BY ORDINAL_POSITION");
 			while ($row1 = $result1->fetch_assoc()) {
-				$childs[$row1["CONSTRAINT_NAME"]][0] = $row1["TABLE_SCHEMA"];
-				$childs[$row1["CONSTRAINT_NAME"]][1] = $row1["TABLE_NAME"];
-				$childs[$row1["CONSTRAINT_NAME"]][2][] = $row1["REFERENCED_COLUMN_NAME"];
-				$childs[$row1["CONSTRAINT_NAME"]][3][] = $row1["COLUMN_NAME"];
+				$childs[$row1["CONSTRAINT_NAME"]]["db"] = $row1["TABLE_SCHEMA"];
+				$childs[$row1["CONSTRAINT_NAME"]]["table"] = $row1["TABLE_NAME"];
+				$childs[$row1["CONSTRAINT_NAME"]]["source"][] = $row1["REFERENCED_COLUMN_NAME"];
+				$childs[$row1["CONSTRAINT_NAME"]]["target"][] = $row1["COLUMN_NAME"];
 			}
 			$result1->free();
 		}
@@ -146,12 +146,12 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 				} else {
 					$val = (strlen(trim($val)) ? nl2br(htmlspecialchars($val)) : "&nbsp;");
 					foreach ((array) $foreign_keys[$key] as $foreign_key) {
-						if (count($foreign_keys[$key]) == 1 || count($foreign_key[2]) == 1) {
+						if (count($foreign_keys[$key]) == 1 || count($foreign_key["source"]) == 1) {
 							$val = '">' . "$val</a>";
-							foreach ($foreign_key[2] as $i => $source) {
-								$val = "&amp;where%5B$i%5D%5Bcol%5D=" . urlencode($foreign_key[3][$i]) . "&amp;where%5B$i%5D%5Bop%5D=%3D&amp;where%5B$i%5D%5Bval%5D=" . urlencode($row[$source]) . $val;
+							foreach ($foreign_key["source"] as $i => $source) {
+								$val = "&amp;where%5B$i%5D%5Bcol%5D=" . urlencode($foreign_key["target"][$i]) . "&amp;where%5B$i%5D%5Bop%5D=%3D&amp;where%5B$i%5D%5Bval%5D=" . urlencode($row[$source]) . $val;
 							}
-							$val = '<a href="' . htmlspecialchars(strlen($foreign_key[0]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key[0]), $SELF) : $SELF) . 'select=' . htmlspecialchars($foreign_key[1]) . $val; // InnoDB support non-UNIQUE keys
+							$val = '<a href="' . htmlspecialchars(strlen($foreign_key["db"]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), $SELF) : $SELF) . 'select=' . htmlspecialchars($foreign_key["table"]) . $val; // InnoDB support non-UNIQUE keys
 							break;
 						}
 					}
@@ -160,11 +160,11 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 			}
 			echo '<td><a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . $unique_idf . '">' . lang('edit') . '</a>';
 			foreach ($childs as $child) {
-				echo ' <a href="' . htmlspecialchars(strlen($child[0]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($child[0]), $SELF) : $SELF) . 'select=' . urlencode($child[1]);
-				foreach ($child[2] as $i => $source) {
-					echo "&amp;where[$i][col]=" . urlencode($child[3][$i]) . "&amp;where[$i][op]=%3D&amp;where[$i][val]=" . urlencode($row[$source]);
+				echo ' <a href="' . htmlspecialchars(strlen($child["db"]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($child["db"]), $SELF) : $SELF) . 'select=' . urlencode($child["table"]);
+				foreach ($child["source"] as $i => $source) {
+					echo "&amp;where[$i][col]=" . urlencode($child["target"][$i]) . "&amp;where[$i][op]=%3D&amp;where[$i][val]=" . urlencode($row[$source]);
 				}
-				echo '">' . htmlspecialchars($child[1]) . '</a>';
+				echo '">' . htmlspecialchars($child["table"]) . '</a>';
 			}
 			echo '</td>';
 			echo "</tr>\n";
