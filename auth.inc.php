@@ -30,7 +30,7 @@ if (isset($_POST["server"])) {
 }
 
 if (!isset($_SESSION["usernames"][$_GET["server"]]) || !$mysql->connect($_GET["server"], $_SESSION["usernames"][$_GET["server"]], $_SESSION["passwords"][$_GET["server"]])) {
-	if ($_POST["token"]) {
+	if ($_POST["token"] && !isset($_SESSION["usernames"][$_GET["server"]])) {
 		$_POST["token"] = token();
 	}
 	page_header(lang('Login'));
