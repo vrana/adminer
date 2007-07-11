@@ -28,7 +28,7 @@ TABLE { margin-top: 1em; }
 <?php if ($_SESSION["highlight"] == "jush") { ?>
 <style type="text/css">@import url(http://jush.info/jush.css);</style>
 <script type="text/javascript" src="http://jush.info/jush.js" defer="defer"></script>
-<script type="text/javascript">body.onload = function () { jush.highlight_tag('pre'); }</script>
+<script type="text/javascript">window.onload = function () { jush.highlight_tag('pre'); }</script>
 <?php } ?>
 </head>
 
