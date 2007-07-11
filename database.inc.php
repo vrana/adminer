@@ -37,7 +37,7 @@ if ($_POST) {
 	$name = $_GET["db"];
 	$collate = array();
 	if (strlen($_GET["db"]) && ($result = $mysql->query("SHOW CREATE DATABASE " . idf_escape($_GET["db"])))) {
-		if (preg_match('~ COLLATE ([^ ]+)~', $mysql->result($result, 0, 1), $match)) {
+		if (preg_match('~ COLLATE ([^ ]+)~', $mysql->result($result, 1), $match)) {
 			$collate = $match[1];
 		}
 		$result->free();

@@ -74,7 +74,7 @@ function foreign_keys($table) {
 	$return = array();
 	$result = $mysql->query("SHOW CREATE TABLE " . idf_escape($table));
 	if ($result) {
-		$create_table = $mysql->result($result, 0, 1);
+		$create_table = $mysql->result($result, 1);
 		$result->free();
 		preg_match_all('~FOREIGN KEY \\((.+)\\) REFERENCES (?:`(.+)`\\.)?`(.+)` \\((.+)\\)~', $create_table, $matches, PREG_SET_ORDER);
 		foreach ($matches as $match) {

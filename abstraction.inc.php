@@ -13,8 +13,7 @@ if (extension_loaded("mysqli")) {
 			);
 		}
 		
-		function result($result, $offset, $field = 0) {
-			$result->data_seek($offset);
+		function result($result, $field = 0) {
 			$row = $result->fetch_array();
 			return $row[$field];
 		}
@@ -63,8 +62,8 @@ if (extension_loaded("mysqli")) {
 			return false;
 		}
 
-		function result($result, $offset, $field = 0) {
-			return mysql_result($result->_result, $offset, $field);
+		function result($result, $field = 0) {
+			return mysql_result($result->_result, 0, $field);
 		}
 		
 		function select_db($database) {

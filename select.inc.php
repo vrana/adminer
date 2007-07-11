@@ -94,7 +94,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 	if (!$result->num_rows) {
 		echo "<p class='message'>" . lang('No rows.') . "</p>\n";
 	} else {
-		$found_rows = $mysql->result($mysql->query(" SELECT FOUND_ROWS()"), 0); // space for mysql.trace_mode
+		$found_rows = $mysql->result($mysql->query(" SELECT FOUND_ROWS()")); // space for mysql.trace_mode
 		$foreign_keys = array();
 		foreach (foreign_keys($_GET["select"]) as $foreign_key) {
 			foreach ($foreign_key[2] as $val) {

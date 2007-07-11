@@ -6,7 +6,7 @@ function normalize_enum($match) {
 }
 
 $pattern = "\\s*(IN|OUT|INOUT)?\\s*(?:`((?:[^`]+|``)*)`\\s*|\\b(\\S+)\\s+)([a-z]+)(?:\\s*\\(((?:[^'\")]*|$enum_length)+)\\))?\\s*(?:zerofill\\s+)?(unsigned)?";
-$create = $mysql->result($mysql->query("SHOW CREATE " . (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE") . " " . idf_escape($_GET["call"])), 0, 2);
+$create = $mysql->result($mysql->query("SHOW CREATE " . (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE") . " " . idf_escape($_GET["call"])), 2);
 preg_match("~\\($pattern(?:\\s*,$pattern)*~is", $create, $match);
 $in = array();
 $out = array();
