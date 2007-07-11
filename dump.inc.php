@@ -1,6 +1,25 @@
 <?php
 header("Content-Type: text/plain; charset=utf-8");
 
+function dump_table($table, $data = true) {
+	global $mysql;
+	$result = $mysql->query("SHOW CREATE TABLE " . idf_escape($table));
+	if ($result) {
+		echo $mysql->result($result, 1) . ";\n";
+		$result->free();
+		if ($data) {
+			$result = $mysql->query("SELECT * FROM " . idf_escape($table)); //! enum and set as numbers
+			if ($result) {
+				while ($row = $result->fetch_row()) {
+					echo "INSERT INTO " . idf_escape($table) . " VALUES ('" . implode("', '", array_map(array($mysql, 'escape_string'), $row)) . "');\n";
+				}
+				$result->free();
+			}
+		}
+		echo "\n";
+	}
+}
+
 function dump($db) {
 	global $mysql;
 	static $routines;
@@ -28,21 +47,7 @@ function dump($db) {
 	echo "SET CHARACTER SET utf8;\n\n";
 	$result = $mysql->query("SHOW TABLE STATUS");
 	while ($row = $result->fetch_assoc()) {
-		$result1 = $mysql->query("SHOW CREATE TABLE " . idf_escape($row["Name"]));
-		if ($result1) {
-			echo $mysql->result($result1, 1) . ";\n";
-			$result1->free();
-			if (isset($row["Engine"])) {
-				$result1 = $mysql->query("SELECT * FROM " . idf_escape($row["Name"])); //! enum and set as numbers
-				if ($result1) {
-					while ($row1 = $result1->fetch_row()) {
-						echo "INSERT INTO " . idf_escape($row["Name"]) . " VALUES ('" . implode("', '", array_map(array($mysql, 'escape_string'), $row1)) . "');\n";
-					}
-					$result1->free();
-				}
-			}
-			echo "\n";
-		}
+		dump_table($row["Name"], isset($row["Engine"]));
 	}
 	$result->free();
 	
@@ -64,9 +69,7 @@ function dump($db) {
 	echo "\n\n";
 }
 
-if (strlen($_GET["db"])) {
-	dump($_GET["db"]);
-} else {
+if (!strlen($_GET["db"])) {
 	$result = $mysql->query("SHOW DATABASES");
 	while ($row = $result->fetch_assoc()) {
 		if ($row["Database"] != "information_schema" || $mysql->server_info < 5) {
@@ -76,4 +79,8 @@ if (strlen($_GET["db"])) {
 		}
 	}
 	$result->free();
+} elseif (strlen($_GET["dump"])) {
+	dump_table($_GET["dump"]);
+} else {
+	dump($_GET["db"]);
 }
