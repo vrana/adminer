@@ -54,5 +54,6 @@ if ($_SESSION["lang"]) {
 	$file = str_replace("<?php echo get_lang(); ?>", $_SESSION["lang"], $file);
 }
 $file = str_replace("favicon.ico", "data:image/x-icon;base64," . base64_encode(file_get_contents("favicon.ico")), $file);
+$file = str_replace('<link rel="stylesheet" type="text/css" href="default.css" />', "<style type='text/css'>\n" . file_get_contents("default.css") . "</style>", $file);
 file_put_contents($filename, $file);
 echo "$filename created.\n";

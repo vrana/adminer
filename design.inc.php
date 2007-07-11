@@ -10,21 +10,7 @@ function page_header($title) {
 <meta name="robots" content="noindex" />
 <title><?php echo lang('phpMinAdmin') . " - $title"; ?></title>
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-<style type="text/css">
-BODY { color: Black; background-color: White; }
-A { color: Blue; }
-A:visited { color: Navy; }
-H1 { font-size: 150%; margin: 0; }
-H2 { font-size: 150%; margin: 0; }
-H3 { margin: 0; }
-FIELDSET { float: left; padding: .5em; margin: 0; }
-PRE { margin: .12em 0; }
-TABLE { margin-top: 1em; }
-.error { color: Red; }
-.message { color: Green; }
-#menu { position: absolute; top: 8px; left: 8px; width: 15em; overflow: auto; white-space: nowrap; }
-#content { margin-left: 16em; }
-</style>
+<link rel="stylesheet" type="text/css" href="default.css" />
 <?php if ($_SESSION["highlight"] == "jush") { ?>
 <style type="text/css">@import url(http://jush.info/jush.css);</style>
 <script type="text/javascript" src="http://jush.info/jush.js" defer="defer"></script>
