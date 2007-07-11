@@ -44,7 +44,7 @@ function page_footer($missing = false) {
 <a href="<?php echo htmlspecialchars($SELF); ?>dump="><?php echo lang('Dump'); ?></a>
 <a href="<?php echo htmlspecialchars(preg_replace('~db=[^&]*&~', '', $SELF)); ?>logout="><?php echo lang('Logout'); ?></a>
 </p>
-<form action="" method="get">
+<form action="">
 <p><?php if (strlen($_GET["server"])) { ?><input type="hidden" name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>" /><?php } ?>
 <select name="db" onchange="this.form.submit();"><option value="">(<?php echo lang('database'); ?>)</option>
 <?php
