@@ -86,11 +86,27 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 	echo '<div><input name="limit" size="3" value="' . htmlspecialchars($limit) . '" /></div>';
 	echo "</fieldset>\n";
 	
+	$select = array();
+	unset($text_length);
+	foreach ($columns as $column) {
+		if (preg_match('~text|blob~', $fields[$column]["type"])) {
+			$text_length = (isset($_GET["text_length"]) ? $_GET["text_length"] : "100");
+			$select[] = (intval($text_length) ? "LEFT(" . idf_escape($column) . ", " . intval($text_length) . ") AS " : "") . idf_escape($column);
+		} else {
+			$select[] = idf_escape($column);
+		}
+	}
+	if (isset($text_length)) {
+		echo "<fieldset><legend>" . lang('Text length') . "</legend>\n";
+		echo '<div><input name="text_length" size="3" value="' . htmlspecialchars($text_length) . '" /></div>';
+		echo "</fieldset>\n";
+	}
+	
 	echo "<fieldset><legend>" . lang('Action') . "</legend><div><input type='submit' value='" . lang('Select') . "' /></div></fieldset>\n";
 	echo "</form>\n";
 	echo "<div style='clear: left;'></div>\n";
 	
-	$result = $mysql->query("SELECT SQL_CALC_FOUND_ROWS " . implode(", ", array_map('idf_escape', $columns)) . " FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "") . ($order ? " ORDER BY " . implode(", ", $order) : "") . (strlen($limit) ? " LIMIT " . intval($limit) . " OFFSET " . ($limit * $_GET["page"]) : ""));
+	$result = $mysql->query("SELECT SQL_CALC_FOUND_ROWS " . implode(", ", $select) . " FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "") . ($order ? " ORDER BY " . implode(", ", $order) : "") . (strlen($limit) ? " LIMIT " . intval($limit) . " OFFSET " . ($limit * $_GET["page"]) : ""));
 	if (!$result->num_rows) {
 		echo "<p class='message'>" . lang('No rows.') . "</p>\n";
 	} else {

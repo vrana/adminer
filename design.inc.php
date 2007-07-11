@@ -22,7 +22,6 @@ PRE { margin: .12em 0; }
 TABLE { margin-top: 1em; }
 .error { color: Red; }
 .message { color: Green; }
-.select TD { max-height: 3em; overflow: auto; }
 #menu { position: absolute; top: 8px; left: 8px; width: 15em; overflow: auto; white-space: nowrap; }
 #content { margin-left: 16em; }
 </style>
