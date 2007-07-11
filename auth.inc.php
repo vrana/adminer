@@ -1,12 +1,16 @@
 <?php
+$ignore = array("server", "username", "password");
+if (ini_get("session.use_trans_sid") && isset($_POST[session_name()])) {
+	$ignore[] = session_name();
+}
 if (isset($_POST["server"])) {
 	if (isset($_REQUEST[session_name()])) {
 		session_regenerate_id();
 		$_SESSION["usernames"][$_POST["server"]] = $_POST["username"];
 		$_SESSION["passwords"][$_POST["server"]] = $_POST["password"];
-		if (count($_POST) == ($_POST[session_name()] ? 4 : 3)) {
+		if (count($_POST) == count($ignore)) {
 			if ((string) $_GET["server"] === $_POST["server"]) {
-				$location = preg_replace('~(\\?)' . urlencode(session_name()) . '=[^&]*&|[?&]' . urlencode(session_name()) . '=[^&]*~', '\\1', $_SERVER["REQUEST_URI"]);
+				$location = preg_replace('~(\\?)' . urlencode(session_name()) . '=[^&]*&|[&?]' . urlencode(session_name()) . '=[^&]*~', '\\1', $_SERVER["REQUEST_URI"]);
 			} else {
 				$location = preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . (strlen($_POST["server"]) ? '?server=' . urlencode($_POST["server"]) : '');
 			}
@@ -50,7 +54,7 @@ if (!isset($_SESSION["usernames"][$_GET["server"]]) || !$mysql->connect($_GET["s
 					}
 				}
 			}
-		} elseif ($key != "server" && $key != "username" && $key != "password") {
+		} elseif (!in_array($key, $ignore)) {
 			echo '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($val) . '" />';
 		}
 	}
