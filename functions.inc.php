@@ -70,17 +70,19 @@ function indexes($table) {
 
 function foreign_keys($table) {
 	global $mysql;
-	static $pattern = '~`((?:[^`]+|``)*)`~';
+	static $pattern = '(?:[^`]+|``)+';
 	$return = array();
 	$result = $mysql->query("SHOW CREATE TABLE " . idf_escape($table));
 	if ($result) {
 		$create_table = $mysql->result($result, 1);
 		$result->free();
-		preg_match_all('~FOREIGN KEY \\((.+)\\) REFERENCES (?:`(.+)`\\.)?`(.+)` \\((.+)\\)~', $create_table, $matches, PREG_SET_ORDER);
+		preg_match_all("~FOREIGN KEY \\(((?:`$pattern`,? ?)+)\\) REFERENCES `($pattern)`(?:\\.`($pattern)`)? \\(((?:`$pattern`,? ?)+)\\)~", $create_table, $matches, PREG_SET_ORDER);
 		foreach ($matches as $match) {
-			preg_match_all($pattern, $match[1], $source);
-			preg_match_all($pattern, $match[4], $target);
-			$return[] = array(idf_unescape($match[2]), idf_unescape($match[3]), array_map('idf_unescape', $source[1]), array_map('idf_unescape', $target[1]));
+			$db = idf_unescape(strlen($match[3]) ? $match[2] : $match[3]);
+			$table = idf_unescape(strlen($match[3]) ? $match[3] : $match[2]);
+			preg_match_all("~`($pattern)`~", $match[1], $source);
+			preg_match_all("~`($pattern)`~", $match[4], $target);
+			$return[] = array($db, $table, array_map('idf_unescape', $source[1]), array_map('idf_unescape', $target[1]));
 		}
 	}
 	return $return;
