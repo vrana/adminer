@@ -9,7 +9,7 @@ function page_header($title) {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="robots" content="noindex" />
 <title><?php echo lang('phpMinAdmin') . " - $title"; ?></title>
-<link rel="shortcut icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////AAAA/wBhTgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEQAAAAAAERExAAAAARERExEAABERMREzMQABExMRERMRAAExMRETMRAAATERERMRAAABExERExAAAAETERExEAAAATERETERERARMRETESESEBMTETESEREQExEzESEREhETMxEREhERIREREAARISIRAAAAAAERERD/4z8A/wM/APgDAADAAwAAgAMAAIAHAACADwAAgB8AAIAfAACAAQAAAAEAAAABAAAAAAAAAAAAAAcAAAD/gQAA" />
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 <style type="text/css">
 BODY { color: Black; background-color: White; }
 A { color: Blue; }
@@ -22,6 +22,7 @@ PRE { margin: .12em 0; }
 TABLE { margin-top: 1em; }
 .error { color: Red; }
 .message { color: Green; }
+.select TD { max-height: 3em; overflow: auto; }
 #menu { position: absolute; top: 8px; left: 8px; width: 15em; overflow: auto; white-space: nowrap; }
 #content { margin-left: 16em; }
 </style>
