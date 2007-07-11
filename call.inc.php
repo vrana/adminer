@@ -34,6 +34,9 @@ if ($_POST) {
 	foreach ($params as $key => $field) {
 		if (in_array($key, $in)) {
 			$val = process_input($key, $field);
+			if ($val === false) {
+				$val = "''";
+			}
 			if (isset($out[$key])) {
 				$mysql->query("SET @" . idf_escape($field["field"]) . " = " . $val);
 			}
