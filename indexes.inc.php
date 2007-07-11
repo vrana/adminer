@@ -58,6 +58,7 @@ foreach ($row["indexes"] as $index) {
 			}
 		}
 		echo "<select name='indexes[$j][columns][" . ($i+1) . "]'><option></option>" . optionlist($fields, array(), "not_vals") . "</select>";
+		//! indexes from substring
 		echo "</td></tr>\n";
 		$j++;
 	}
