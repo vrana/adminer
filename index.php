@@ -47,6 +47,8 @@ if (isset($_GET["dump"])) {
 			include "./database.inc.php";
 		} elseif (isset($_GET["call"])) {
 			include "./call.inc.php";
+		} elseif (isset($_GET["foreign"])) {
+			include "./foreign.inc.php";
 		} else {
 			$TOKENS = array();
 			page_header(htmlspecialchars(lang('Database') . ": " . $_GET["db"]));
