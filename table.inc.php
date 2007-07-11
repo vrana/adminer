@@ -40,7 +40,7 @@ if (!$result) {
 		foreach ($foreign_keys as $name => $foreign_key) {
 			echo "<tr>";
 			echo "<td><i>" . implode("</i>, <i>", $foreign_key[2]) . "</i></td>";
-			$link = (strlen($foreign_key[0]) && $foreign_key[0] !== $_GET["db"] ? "<strong>" . htmlspecialchars($foreign_key[0]) . "</strong>." : "") . htmlspecialchars($foreign_key[1]);
+			$link = (strlen($foreign_key[0]) ? "<strong>" . htmlspecialchars($foreign_key[0]) . "</strong>." : "") . htmlspecialchars($foreign_key[1]);
 			echo '<td><a href="' . htmlspecialchars(strlen($foreign_key[0]) ? preg_replace('~db=[^&]*~', "db=" . urlencode($foreign_key[0]), $SELF) : $SELF) . "table=" . urlencode($foreign_key[1]) . "\">$link</a>(<em>" . implode("</em>, <em>", $foreign_key[3]) . "</em>)</td>";
 			echo '<td><a href="' . htmlspecialchars($SELF) . 'foreign=' . urlencode($_GET["table"]) . '&amp;name=' . urlencode($name) . '">' . lang('Alter') . "</a></td>";
 			echo "</tr>\n";
