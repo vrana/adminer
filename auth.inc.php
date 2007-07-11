@@ -35,6 +35,8 @@ if (!isset($_SESSION["usernames"][$_GET["server"]]) || !$mysql->connect($_GET["s
 		echo "<p class='error'>" . lang('Invalid credentials.') . "</p>\n";
 	} elseif (isset($_POST["server"])) {
 		echo "<p class='error'>" . lang('Sessions must be enabled.') . "</p>\n";
+	} elseif ($_POST) {
+		echo "<p class='error'>" . lang('Session expired, please login again.') . "</p>\n";
 	}
 	?>
 	<form action="" method="post">
@@ -54,6 +56,8 @@ if (!isset($_SESSION["usernames"][$_GET["server"]]) || !$mysql->connect($_GET["s
 					}
 				}
 			}
+		} elseif ($key == "token") {
+			echo '<input type="hidden" name="token" value="' . token() . '" />';
 		} elseif (!in_array($key, $ignore)) {
 			echo '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($val) . '" />';
 		}
