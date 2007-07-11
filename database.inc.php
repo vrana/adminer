@@ -45,10 +45,12 @@ if ($_POST) {
 }
 ?>
 
-<form action="" method="post"><p>
+<form action="" method="post">
+<p>
 <input name="name" value="<?php echo htmlspecialchars($name); ?>" maxlength="64" />
 <select name="collation"><option value="">(<?php echo lang('collation'); ?>)</option><?php echo optionlist(collations(), $collate, "not_vals"); ?></select>
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
 <input type="submit" value="<?php echo lang('Save'); ?>" />
 <?php if (strlen($_GET["db"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>" /><?php } ?>
-</p></form>
+</p>
+</form>

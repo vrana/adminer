@@ -67,7 +67,8 @@ foreach ($row["indexes"] as $index) {
 <tr><td><select name="indexes[<?php echo $j; ?>][type]"><option></option><?php echo optionlist($index_types, array(), "not_vals"); ?></select></td><td><select name="indexes[<?php echo $j; ?>][columns][1]"><option></option><?php echo optionlist($fields, array(), "not_vals"); ?></select></td></tr>
 </table>
 <p>
-<input type="hidden" name="token" value="<?php echo $token; ?>" /><input type="submit" value="<?php echo lang('Alter indexes'); ?>" />
+<input type="hidden" name="token" value="<?php echo $token; ?>" />
+<input type="submit" value="<?php echo lang('Alter indexes'); ?>" />
 <input type="submit" name="add" value="<?php echo lang('Add next'); ?>" />
 </p>
 </form>

@@ -79,5 +79,8 @@ if ($in) {
 	echo "</table>\n";
 }
 ?>
-<p><input type="hidden" name="token" value="<?php echo $token; ?>" /><input type="submit" value="<?php echo lang('Call'); ?>" /></p>
+<p>
+<input type="hidden" name="token" value="<?php echo $token; ?>" />
+<input type="submit" value="<?php echo lang('Call'); ?>" />
+</p>
 </form>
