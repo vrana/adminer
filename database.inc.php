@@ -2,10 +2,12 @@
 if ($_POST && !$error) {
 	if ($_POST["drop"]) {
 		if ($mysql->query("DROP DATABASE " . idf_escape($_GET["db"]))) {
+			unset($_SESSION["databases"]);
 			redirect(substr(preg_replace('~db=[^&]*&~', '', $SELF), 0, -1), lang('Database has been dropped.'));
 		}
 	} elseif ($_GET["db"] !== $_POST["name"]) {
 		if ($mysql->query("CREATE DATABASE " . idf_escape($_POST["name"]) . ($_POST["collation"] ? " COLLATE '" . $mysql->escape_string($_POST["collation"]) . "'" : ""))) {
+			unset($_SESSION["databases"]);
 			if (!strlen($_GET["db"])) {
 				redirect(preg_replace('~db=[^&]*&~', '', $SELF) . "db=" . urlencode($_POST["name"]), lang('Database has been created.'));
 			}
