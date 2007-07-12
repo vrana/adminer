@@ -2,7 +2,7 @@
 function page_header($title) {
 	global $LANG;
 	header("Content-Type: text/html; charset=utf-8");
-?>
+	?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="<?php echo $LANG; ?>">
 <head>
@@ -27,12 +27,14 @@ function page_header($title) {
 		echo "<p class='message'>$_SESSION[message]</p>\n";
 		$_SESSION["message"] = "";
 	}
-	session_write_close();
+	if (isset($_SESSION["databases"])) {
+		session_write_close();
+	}
 }
 
 function page_footer($missing = false) {
 	global $SELF, $mysql;
-?>
+	?>
 </div>
 
 <div id="menu">
@@ -49,7 +51,10 @@ function page_footer($missing = false) {
 <select name="db" onchange="this.form.submit();"><option value="">(<?php echo lang('database'); ?>)</option>
 <?php
 		flush();
-		echo optionlist(get_vals("SHOW DATABASES"), $_GET["db"]);
+		if (!isset($_SESSION["databases"])) {
+			$_SESSION["databases"] = get_vals("SHOW DATABASES");
+		}
+		echo optionlist($_SESSION["databases"], $_GET["db"]);
 		?>
 </select><?php if (isset($_GET["sql"])) { ?><input type="hidden" name="sql" value="" /><?php } ?></p>
 <noscript><p><input type="submit" value="<?php echo lang('Use'); ?>" /></p></noscript>
