@@ -8,7 +8,7 @@ function dump_table($table, $data = true) {
 		echo $mysql->result($result, 1) . ";\n";
 		$result->free();
 		if ($data) {
-			$result = $mysql->query("SELECT * FROM " . idf_escape($table)); //! enum and set as numbers
+			$result = $mysql->query("SELECT * FROM " . idf_escape($table)); //! enum and set as numbers, binary as _binary
 			if ($result) {
 				while ($row = $result->fetch_row()) {
 					echo "INSERT INTO " . idf_escape($table) . " VALUES ('" . implode("', '", array_map(array($mysql, 'escape_string'), $row)) . "');\n";
