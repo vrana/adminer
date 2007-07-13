@@ -73,7 +73,7 @@ if ($_POST) {
 		$row["fields"][$row["auto_increment"] - 1]["auto_increment"] = true;
 	}
 } elseif (strlen($_GET["create"])) {
-	$result = $mysql->query("SHOW TABLE STATUS LIKE '" . $mysql->escape_string($_GET["create"]) . "'");
+	$result = table_status($_GET["create"]);
 	$row = $result->fetch_assoc();
 	$row["name"] = $_GET["create"];
 	$row["fields"] = array_values(fields($_GET["create"]));
