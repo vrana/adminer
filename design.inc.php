@@ -7,6 +7,7 @@ function page_header($title) {
 <html xmlns="http://www.w3.org/1999/xhtml" lang="<?php echo $LANG; ?>">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
 <meta name="robots" content="noindex" />
 <title><?php echo lang('phpMinAdmin') . " - $title"; ?></title>
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
