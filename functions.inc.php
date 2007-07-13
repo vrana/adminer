@@ -255,7 +255,11 @@ function select($result) {
 				if (!isset($val)) {
 					$val = "<i>NULL</i>";
 				} else {
-					$val = ($blobs[$key] && preg_match('~[\\x80-\\xFF]~', $val) ? "<i>" . lang('%d byte(s)', strlen($val)) . "</i>" : (strlen(trim($val)) ? nl2br(htmlspecialchars($val)) : "&nbsp;"));
+					if ($blobs[$key] && preg_match('~[\\x80-\\xFF]~', $val)) {
+						$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>";
+					} else {
+						$val = (strlen(trim($val)) ? nl2br(htmlspecialchars($val)) : "&nbsp;");
+					}
 					if (isset($links[$key]) && !$columns[$links[$key]]) {
 						$link = "edit=" . urlencode($links[$key]);
 						foreach ($indexes[$links[$key]] as $col => $j) {
