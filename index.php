@@ -17,6 +17,7 @@ if (isset($_GET["dump"])) {
 } elseif (isset($_GET["download"])) {
 	include "./download.inc.php";
 } else {
+	$on_actions = array("RESTRICT", "CASCADE", "SET NULL", "NO ACTION");
 	if (isset($_GET["table"])) {
 		include "./table.inc.php";
 	} elseif (isset($_GET["select"])) {

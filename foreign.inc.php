@@ -16,6 +16,8 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 		(" . implode(", ", array_map('idf_escape', $source)) . ")
 		REFERENCES " . idf_escape($_POST["table"]) . "
 		(" . implode(", ", array_map('idf_escape', $target)) . ")
+		" . (in_array($_POST["on_delete"], $on_actions) ? "ON DELETE $_POST[on_delete]" : "") . "
+		" . (in_array($_POST["on_update"], $on_actions) ? "ON UPDATE $_POST[on_update]" : "") . "
 	")) {
 		redirect($SELF . "table=" . urlencode($_GET["foreign"]), (strlen($_GET["name"]) ? lang('Foreign key has been altered.') : lang('Foreign key has been created.')));
 	}
@@ -60,6 +62,8 @@ foreach ($row["source"] as $key => $val) {
 	echo "</tr>\n";
 }
 ?>
+<tr><th><?php echo lang('ON DELETE'); ?></th><td><select name="on_delete"><option></option><?php echo optionlist($on_actions, $row["on_delete"]); ?></select></td></tr>
+<tr><th><?php echo lang('ON UPDATE'); ?></th><td><select name="on_update"><option></option><?php echo optionlist($on_actions, $row["on_update"]); ?></select></td></tr>
 </table>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>" />

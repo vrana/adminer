@@ -86,14 +86,14 @@ function indexes($table) {
 }
 
 function foreign_keys($table) {
-	global $mysql;
+	global $mysql, $on_actions;
 	static $pattern = '(?:[^`]+|``)+';
 	$return = array();
 	$result = $mysql->query("SHOW CREATE TABLE " . idf_escape($table));
 	if ($result) {
 		$create_table = $mysql->result($result, 1);
 		$result->free();
-		preg_match_all("~CONSTRAINT `($pattern)` FOREIGN KEY \\(((?:`$pattern`,? ?)+)\\) REFERENCES `($pattern)`(?:\\.`($pattern)`)? \\(((?:`$pattern`,? ?)+)\\)~", $create_table, $matches, PREG_SET_ORDER);
+		preg_match_all("~CONSTRAINT `($pattern)` FOREIGN KEY \\(((?:`$pattern`,? ?)+)\\) REFERENCES `($pattern)`(?:\\.`($pattern)`)? \\(((?:`$pattern`,? ?)+)\\)(?: ON DELETE (" . implode("|", $on_actions) . "))?(?: ON UPDATE (" . implode("|", $on_actions) . "))?~", $create_table, $matches, PREG_SET_ORDER);
 		foreach ($matches as $match) {
 			preg_match_all("~`($pattern)`~", $match[2], $source);
 			preg_match_all("~`($pattern)`~", $match[5], $target);
@@ -102,6 +102,8 @@ function foreign_keys($table) {
 				"table" => idf_unescape(strlen($match[4]) ? $match[4] : $match[3]),
 				"source" => array_map('idf_unescape', $source[1]),
 				"target" => array_map('idf_unescape', $target[1]),
+				"on_delete" => $match[6],
+				"on_update" => $match[7],
 			);
 		}
 	}
