@@ -152,11 +152,12 @@ function switch_lang() {
 }
 
 if (isset($_GET["lang"])) {
-	$_SESSION["lang"] = $_GET["lang"];
+	setcookie("lang", $_GET["lang"], strtotime("+1 month"));
+	$_COOKIE["lang"] = $_GET["lang"];
 }
 
-if (strlen($_SESSION["lang"])) {
-	$LANG = $_SESSION["lang"];
+if (strlen($_COOKIE["lang"])) {
+	$LANG = $_COOKIE["lang"];
 } else {
 	$langs = lang();
 	$LANG = preg_replace('~[,;].*~', '', $_SERVER["HTTP_ACCEPT_LANGUAGE"]);

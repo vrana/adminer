@@ -14,9 +14,9 @@ function remove_lang($match) {
 function put_file($match) {
 	$return = file_get_contents($match[4]);
 	if ($match[4] == "./lang.inc.php") {
-		if (!$_SESSION["lang"]) {
+		if (!$_COOKIE["lang"]) {
 			$return = str_replace("\tif (\$number === false) { // used in _compile.php\n\t\treturn (\$translation ? \$translation : \$idf);\n\t}\n", "", $return);
-		} elseif (preg_match("~case '$_SESSION[lang]': (.*) break;~", $return, $match2) || preg_match("~default: (.*)~", $return, $match2)) {
+		} elseif (preg_match("~case '$_COOKIE[lang]': (.*) break;~", $return, $match2) || preg_match("~default: (.*)~", $return, $match2)) {
 			return "$match[1]\nfunction lang(\$ar, \$number) {\n\t$match2[1]\n\treturn \$ar[\$pos];\n}\n$match[5]";
 		}
 	}
@@ -35,7 +35,7 @@ function put_file($match) {
 
 error_reporting(E_ALL & ~E_NOTICE);
 if ($_SERVER["argc"] > 1) {
-	$_SESSION["lang"] = $_SERVER["argv"][1];
+	$_COOKIE["lang"] = $_SERVER["argv"][1];
 	include "./lang.inc.php";
 	if ($_SERVER["argc"] != 2 || !in_array($_SERVER["argv"][1], lang())) {
 		echo "Usage: php _compile.php [lang]\nPurpose: Compile phpMinAdmin[-lang].php from index.php.\n";
@@ -44,14 +44,14 @@ if ($_SERVER["argc"] > 1) {
 }
 $filename = "phpMinAdmin.php";
 $file = file_get_contents("index.php");
-if ($_SESSION["lang"]) {
-	$filename = "phpMinAdmin-$_SESSION[lang].php";
+if ($_COOKIE["lang"]) {
+	$filename = "phpMinAdmin-$_COOKIE[lang].php";
 }
 $file = preg_replace_callback('~(<\\?php)?\\s*(include|require)(_once)? "([^"]*)";(\\s*\\?>)?~', 'put_file', $file);
-if ($_SESSION["lang"]) {
+if ($_COOKIE["lang"]) {
 	$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
 	$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
-	$file = str_replace("<?php echo get_lang(); ?>", $_SESSION["lang"], $file);
+	$file = str_replace("<?php echo get_lang(); ?>", $_COOKIE["lang"], $file);
 }
 $file = str_replace("favicon.ico", "data:image/x-icon;base64," . base64_encode(file_get_contents("favicon.ico")), $file);
 $file = str_replace('<link rel="stylesheet" type="text/css" href="default.css" />', "<style type='text/css'>\n" . file_get_contents("default.css") . "</style>", $file);
