@@ -25,6 +25,7 @@ if (isset($_POST["server"])) {
 } elseif (isset($_GET["logout"])) {
 	unset($_SESSION["usernames"][$_GET["server"]]);
 	unset($_SESSION["passwords"][$_GET["server"]]);
+	unset($_SESSION["databases"][$_GET["server"]]);
 	$_SESSION["tokens"][$_GET["server"]] = array();
 	redirect(substr($SELF, 0, -1), lang('Logout successful.'));
 }

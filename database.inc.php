@@ -6,7 +6,7 @@ if ($_POST && !$error) {
 		}
 	} elseif ($_GET["db"] !== $_POST["name"]) {
 		if ($mysql->query("CREATE DATABASE " . idf_escape($_POST["name"]) . ($_POST["collation"] ? " COLLATE '" . $mysql->escape_string($_POST["collation"]) . "'" : ""))) {
-			unset($_SESSION["databases"]);
+			unset($_SESSION[$_GET["server"]]["databases"]);
 			if (!strlen($_GET["db"])) {
 				redirect(preg_replace('~db=[^&]*&~', '', $SELF) . "db=" . urlencode($_POST["name"]), lang('Database has been created.'));
 			}
