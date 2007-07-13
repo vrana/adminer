@@ -1,6 +1,7 @@
 <?php
 if (isset($_POST["query"])) {
-	$_SESSION["highlight"] = $_POST["highlight"];
+	setcookie("highlight", $_POST["highlight"], strtotime("+1 month"));
+	$_COOKIE["highlight"] = $_POST["highlight"];
 }
 
 page_header(lang('SQL command'));
@@ -54,7 +55,7 @@ if ($_POST && $error) {
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
 <input type="submit" value="<?php echo lang('Execute'); ?>" />
 <script type="text/javascript">
-document.write('<label for="highlight"><input type="checkbox" name="highlight" id="highlight" value="jush"<?php echo ($_SESSION["highlight"] == "jush" ? ' checked="checked"' : ''); ?> /><?php echo addcslashes(lang('Syntax highlighting'), "\r\n'\\"); ?></label>');
+document.write('<label for="highlight"><input type="checkbox" name="highlight" id="highlight" value="jush"<?php echo ($_COOKIE["highlight"] == "jush" ? ' checked="checked"' : ''); ?> /><?php echo addcslashes(lang('Syntax highlighting'), "\r\n'\\"); ?></label>');
 </script>
 </p>
 </form>

@@ -11,7 +11,7 @@ function page_header($title) {
 <title><?php echo lang('phpMinAdmin') . " - $title"; ?></title>
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 <link rel="stylesheet" type="text/css" href="default.css" />
-<?php if ($_SESSION["highlight"] == "jush") { ?>
+<?php if ($_COOKIE["highlight"] == "jush") { ?>
 <style type="text/css">@import url(http://jush.info/jush.css);</style>
 <script type="text/javascript" src="http://jush.info/jush.js" defer="defer"></script>
 <script type="text/javascript">window.onload = function () { jush.highlight_tag('pre'); }</script>
