@@ -73,8 +73,7 @@ if ($_POST) {
 		$row["fields"][$row["auto_increment"] - 1]["auto_increment"] = true;
 	}
 } elseif (strlen($_GET["create"])) {
-	$result = table_status($_GET["create"]);
-	$row = $result->fetch_assoc();
+	$row = table_status($_GET["create"]);
 	$row["name"] = $_GET["create"];
 	$row["fields"] = array_values(fields($_GET["create"]));
 } else {

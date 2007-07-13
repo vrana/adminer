@@ -42,7 +42,8 @@ function get_vals($query) {
 
 function table_status($table) {
 	global $mysql;
-	return $mysql->query("SHOW TABLE STATUS LIKE '" . $mysql->escape_string(addcslashes($table, "%_")) . "'");
+	$result = $mysql->query("SHOW TABLE STATUS LIKE '" . $mysql->escape_string(addcslashes($table, "%_")) . "'");
+	return $result->fetch_assoc();
 }
 
 function fields($table) {

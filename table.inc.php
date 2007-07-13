@@ -5,6 +5,7 @@ $result = $mysql->query("SHOW COLUMNS FROM " . idf_escape($_GET["table"]));
 if (!$result) {
 	echo "<p class='error'>" . lang('Unable to show the table definition') . ": " . $mysql->error . ".</p>\n";
 } else {
+	$table_status = table_status($_GET["table"]);
 	$auto_increment_only = true;
 	echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
 	while ($row = $result->fetch_assoc()) {
@@ -33,21 +34,23 @@ if (!$result) {
 	}
 	echo '<p><a href="' . htmlspecialchars($SELF) . 'indexes=' . urlencode($_GET["table"]) . '">' . lang('Alter indexes') . "</a></p>\n";
 	
-	echo "<h3>" . lang('Foreign keys') . "</h3>\n";
-	$foreign_keys = foreign_keys($_GET["table"]);
-	if ($foreign_keys) {
-		echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
-		foreach ($foreign_keys as $name => $foreign_key) {
-			echo "<tr>";
-			echo "<td><i>" . implode("</i>, <i>", $foreign_key["source"]) . "</i></td>";
-			$link = (strlen($foreign_key["db"]) ? "<strong>" . htmlspecialchars($foreign_key["db"]) . "</strong>." : "") . htmlspecialchars($foreign_key["table"]);
-			echo '<td><a href="' . htmlspecialchars(strlen($foreign_key["db"]) ? preg_replace('~db=[^&]*~', "db=" . urlencode($foreign_key["db"]), $SELF) : $SELF) . "table=" . urlencode($foreign_key["table"]) . "\">$link</a>(<em>" . implode("</em>, <em>", $foreign_key["target"]) . "</em>)</td>";
-			echo '<td>' . (!strlen($foreign_key["db"]) ? '<a href="' . htmlspecialchars($SELF) . 'foreign=' . urlencode($_GET["table"]) . '&amp;name=' . urlencode($name) . '">' . lang('Alter') . '</a>' : '&nbsp;') . '</td>';
-			echo "</tr>\n";
+	if ($table_status["Engine"] == "InnoDB") {
+		echo "<h3>" . lang('Foreign keys') . "</h3>\n";
+		$foreign_keys = foreign_keys($_GET["table"]);
+		if ($foreign_keys) {
+			echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
+			foreach ($foreign_keys as $name => $foreign_key) {
+				echo "<tr>";
+				echo "<td><i>" . implode("</i>, <i>", $foreign_key["source"]) . "</i></td>";
+				$link = (strlen($foreign_key["db"]) ? "<strong>" . htmlspecialchars($foreign_key["db"]) . "</strong>." : "") . htmlspecialchars($foreign_key["table"]);
+				echo '<td><a href="' . htmlspecialchars(strlen($foreign_key["db"]) ? preg_replace('~db=[^&]*~', "db=" . urlencode($foreign_key["db"]), $SELF) : $SELF) . "table=" . urlencode($foreign_key["table"]) . "\">$link</a>(<em>" . implode("</em>, <em>", $foreign_key["target"]) . "</em>)</td>";
+				echo '<td>' . (!strlen($foreign_key["db"]) ? '<a href="' . htmlspecialchars($SELF) . 'foreign=' . urlencode($_GET["table"]) . '&amp;name=' . urlencode($name) . '">' . lang('Alter') . '</a>' : '&nbsp;') . '</td>';
+				echo "</tr>\n";
+			}
+			echo "</table>\n";
 		}
-		echo "</table>\n";
+		echo '<p><a href="' . htmlspecialchars($SELF) . 'foreign=' . urlencode($_GET["table"]) . '">' . lang('Add foreign key') . "</a></p>\n";
 	}
-	echo '<p><a href="' . htmlspecialchars($SELF) . 'foreign=' . urlencode($_GET["table"]) . '">' . lang('Add foreign key') . "</a></p>\n";
 }
 
 if ($mysql->server_info >= 5) {
