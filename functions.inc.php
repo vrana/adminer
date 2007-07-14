@@ -79,6 +79,7 @@ function indexes($table) {
 		while ($row = $result->fetch_assoc()) {
 			$return[$row["Key_name"]]["type"] = ($row["Key_name"] == "PRIMARY" ? "PRIMARY" : ($row["Index_type"] == "FULLTEXT" ? "FULLTEXT" : ($row["Non_unique"] ? "INDEX" : "UNIQUE")));
 			$return[$row["Key_name"]]["columns"][$row["Seq_in_index"]] = $row["Column_name"];
+			$return[$row["Key_name"]]["lengths"][$row["Seq_in_index"]] = $row["Sub_part"];
 		}
 		$result->free();
 	}

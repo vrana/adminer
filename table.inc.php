@@ -28,7 +28,11 @@ if (!$result) {
 		echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
 		foreach ($indexes as $index) {
 			ksort($index["columns"]);
-			echo "<tr><td>$index[type]</td><td><i>" . implode("</i>, <i>", $index["columns"]) . "</i></td></tr>\n";
+			$print = array();
+			foreach ($index["columns"] as $key => $val) {
+				$print[] = "<i>" . htmlspecialchars($val) . "</i>" . ($index["lengths"][$key] ? "(" . $index["lengths"][$key] . ")" : "");
+			}
+			echo "<tr><td>$index[type]</td><td>" . implode(", ", $print) . "</td></tr>\n";
 		}
 		echo "</table>\n";
 	}
@@ -41,9 +45,10 @@ if (!$result) {
 			echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
 			foreach ($foreign_keys as $name => $foreign_key) {
 				echo "<tr>";
-				echo "<td><i>" . implode("</i>, <i>", $foreign_key["source"]) . "</i></td>";
+				echo "<td><i>" . implode("</i>, <i>", array_map('htmlspecialchars', $foreign_key["source"])) . "</i></td>";
 				$link = (strlen($foreign_key["db"]) ? "<strong>" . htmlspecialchars($foreign_key["db"]) . "</strong>." : "") . htmlspecialchars($foreign_key["table"]);
-				echo '<td><a href="' . htmlspecialchars(strlen($foreign_key["db"]) ? preg_replace('~db=[^&]*~', "db=" . urlencode($foreign_key["db"]), $SELF) : $SELF) . "table=" . urlencode($foreign_key["table"]) . "\">$link</a>(<em>" . implode("</em>, <em>", $foreign_key["target"]) . "</em>)</td>";
+				echo '<td><a href="' . htmlspecialchars(strlen($foreign_key["db"]) ? preg_replace('~db=[^&]*~', "db=" . urlencode($foreign_key["db"]), $SELF) : $SELF) . "table=" . urlencode($foreign_key["table"]) . "\">$link</a>";
+				echo "(<em>" . implode("</em>, <em>", array_map('htmlspecialchars', $foreign_key["target"])) . "</em>)</td>";
 				echo '<td>' . (!strlen($foreign_key["db"]) ? '<a href="' . htmlspecialchars($SELF) . 'foreign=' . urlencode($_GET["table"]) . '&amp;name=' . urlencode($name) . '">' . lang('Alter') . '</a>' : '&nbsp;') . '</td>';
 				echo "</tr>\n";
 			}
