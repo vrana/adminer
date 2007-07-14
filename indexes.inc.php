@@ -19,6 +19,8 @@ if ($_POST && !$error && !$_POST["add"]) {
 			}
 			if ($columns) {
 				foreach ($indexes as $name => $existing) {
+					ksort($existing["columns"]);
+					ksort($existing["lengths"]);
 					if ($index["type"] == $existing["type"] && $existing["columns"] === $columns && $existing["lengths"] === $lengths) {
 						unset($indexes[$name]);
 						continue 2;
@@ -50,7 +52,7 @@ if ($_POST) {
 			}
 		}
 		$index = $row["indexes"][count($row["indexes"]) - 1];
-		if ($index["type"] || array_filter($index["columns"], 'strlen') || array_filter($index["columns"], 'length')) {
+		if ($index["type"] || array_filter($index["columns"], 'strlen') || array_filter($index["lengths"], 'strlen')) {
 			$row["indexes"][] = array("columns" => array(1 => ""));
 		}
 	}
