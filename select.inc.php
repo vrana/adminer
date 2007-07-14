@@ -32,7 +32,7 @@ if (!$columns) {
 			if (strlen($_GET["fulltext"][$i])) {
 				$where[] = "MATCH (" . implode(", ", array_map('idf_escape', $index["columns"])) . ") AGAINST ('" . $mysql->escape_string($_GET["fulltext"][$i]) . "'" . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
 			}
-			echo "(<i>" . implode("</i>, <i>", $index["columns"]) . "</i>) AGAINST";
+			echo "(<i>" . implode("</i>, <i>", array_map('htmlspecialchars', $index["columns"])) . "</i>) AGAINST";
 			echo ' <input name="fulltext[' . $i . ']" value="' . htmlspecialchars($_GET["fulltext"][$i]) . '" />';
 			echo "<label for='boolean-$i'><input type='checkbox' name='boolean[$i]' value='1' id='boolean-$i'" . (isset($_GET["boolean"][$i]) ? " checked='checked'" : "") . " />" . lang('BOOL') . "</label>";
 			echo "<br />\n";
