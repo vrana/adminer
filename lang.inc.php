@@ -119,6 +119,10 @@ function lang($idf = null, $number = null) {
 			'Add column' => 'Přidat sloupec',
 			'Alter' => 'Změnit',
 			'Add foreign key' => 'Přidat cizí klíč',
+			'ON DELETE' => 'ON DELETE',
+			'ON UPDATE' => 'ON UPDATE',
+			'Index Type' => 'Typ indexu',
+			'Column (length)' => 'Sloupec (délka)',
 		),
 	);
 	if (!isset($idf)) {
