@@ -31,7 +31,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 		}
 	}
 	foreach ($indexes as $name => $existing) {
-		$alter[] = "DROP INDEX " . idf_escape($name));
+		$alter[] = "DROP INDEX " . idf_escape($name);
 	}
 	if (!$alter || $mysql->query("ALTER TABLE " . idf_escape($_GET["indexes"]) . " " . implode(", ", $alter))) {
 		redirect($SELF . "table=" . urlencode($_GET["indexes"]), ($alter ? lang('Indexes has been altered.') : null));
