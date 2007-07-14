@@ -35,8 +35,6 @@ while ($row = $result->fetch_assoc()) {
 	}
 }
 $result->free();
-$source = get_vals("SHOW COLUMNS FROM " . idf_escape($_GET["foreign"])); //! no text and blob
-$target = ($_GET["foreign"] === $row["table"] ? $source : get_vals("SHOW COLUMNS FROM " . idf_escape($row["table"])));
 
 if ($_POST) {
 	$row = $_POST;
@@ -54,6 +52,9 @@ if ($_POST) {
 } else {
 	$row = array("table" => $_GET["foreign"], "source" => array(""));
 }
+
+$source = get_vals("SHOW COLUMNS FROM " . idf_escape($_GET["foreign"])); //! no text and blob
+$target = ($_GET["foreign"] === $row["table"] ? $source : get_vals("SHOW COLUMNS FROM " . idf_escape($row["table"])));
 ?>
 <form action="" method="post">
 <p>
