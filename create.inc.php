@@ -74,6 +74,9 @@ if ($_POST) {
 	}
 } elseif (strlen($_GET["create"])) {
 	$row = table_status($_GET["create"]);
+	if ($row["Engine"] == "InnoDB") {
+		$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["Comment"]);
+	}
 	$row["name"] = $_GET["create"];
 	$row["fields"] = array_values(fields($_GET["create"]));
 } else {
