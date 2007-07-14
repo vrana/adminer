@@ -13,6 +13,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 	}
 	if ($mysql->query("
 		ALTER TABLE " . idf_escape($_GET["foreign"]) . " ADD FOREIGN KEY
+		" . (strlen($_GET["name"]) ? idf_escape($_GET["name"]) : "") . "
 		(" . implode(", ", array_map('idf_escape', $source)) . ")
 		REFERENCES " . idf_escape($_POST["table"]) . "
 		(" . implode(", ", array_map('idf_escape', $target)) . ")
@@ -25,6 +26,17 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 }
 
 page_header(lang('Foreign key') . ": " . htmlspecialchars($_GET["foreign"]));
+
+$tables = array();
+$result = $mysql->query("SHOW TABLE STATUS");
+while ($row = $result->fetch_assoc()) {
+	if ($row["Engine"] == "InnoDB") {
+		$tables[] = $row["Name"];
+	}
+}
+$result->free();
+$source = get_vals("SHOW COLUMNS FROM " . idf_escape($_GET["foreign"])); //! no text and blob
+$target = ($_GET["foreign"] === $row["table"] ? $source : get_vals("SHOW COLUMNS FROM " . idf_escape($row["table"])));
 
 if ($_POST) {
 	$row = $_POST;
@@ -46,15 +58,13 @@ if ($_POST) {
 <form action="" method="post">
 <p>
 <?php echo lang('Target table'); ?>:
-<select name="table" onchange="this.form['change-js'].value = '1'; this.form.submit();"><?php echo optionlist(get_vals("SHOW TABLES"), $row["table"]); ?></select>
+<select name="table" onchange="this.form['change-js'].value = '1'; this.form.submit();"><?php echo optionlist($tables, $row["table"]); ?></select>
 <input type="hidden" name="change-js" value="" />
 </p>
 <noscript><p><input type="submit" name="change" value="<?php echo lang('Change'); ?>" /></p></noscript>
 <table border="0" cellspacing="0" cellpadding="2">
 <thead><tr><th><?php echo lang('Source'); ?></th><th><?php echo lang('Target'); ?></th></tr></thead>
 <?php
-$source = get_vals("SHOW COLUMNS FROM " . idf_escape($_GET["foreign"]));
-$target = ($_GET["foreign"] === $row["table"] ? $source : get_vals("SHOW COLUMNS FROM " . idf_escape($row["table"])));
 foreach ($row["source"] as $key => $val) {
 	echo "<tr>";
 	echo "<td><select name='source[" . intval($key) . "]'><option></option>" . optionlist($source, $val) . "</select></td>";
