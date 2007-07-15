@@ -212,6 +212,7 @@ function select($result) {
 				$indexes = array();
 				$columns = array();
 				$blobs = array();
+				$types = array();
 				for ($j=0; $j < count($row); $j++) {
 					$field = $result->fetch_field();
 					if (strlen($field->orgtable) && $field->flags & 2) {
@@ -234,6 +235,7 @@ function select($result) {
 					if ($field->charsetnr == 63) {
 						$blobs[$j] = true;
 					}
+					$types[$j] = $field->type;
 					echo "<th>" . htmlspecialchars($field->name) . "</th>";
 				}
 				echo "</tr></thead>\n";
@@ -247,6 +249,9 @@ function select($result) {
 						$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>";
 					} else {
 						$val = (strlen(trim($val)) ? nl2br(htmlspecialchars($val)) : "&nbsp;");
+						if ($types[$key] == 254) {
+							$val = "<code>$val</code>";
+						}
 					}
 					if (isset($links[$key]) && !$columns[$links[$key]]) {
 						$link = "edit=" . urlencode($links[$key]);

@@ -147,6 +147,9 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 					$val = '<a href="' . htmlspecialchars($SELF) . 'download=' . urlencode($_GET["select"]) . '&amp;field=' . urlencode($key) . $unique_idf . '">' . lang('%d byte(s)', strlen($val)) . '</a>';
 				} else {
 					$val = (strlen(trim($val)) ? nl2br(htmlspecialchars($val)) : "&nbsp;");
+					if ($fields[$key]["type"] == "char") {
+						$val = "<code>$val</code>";
+					}
 					foreach ((array) $foreign_keys[$key] as $foreign_key) {
 						if (count($foreign_keys[$key]) == 1 || count($foreign_key["source"]) == 1) {
 							$val = '">' . "$val</a>";
