@@ -36,3 +36,4 @@ foreach (array_reverse($translations[2], true) as $key => $translation) {
 	$file = substr_replace($file, $s, $translation[1], strlen($translation[0]));
 }
 file_put_contents("lang.inc.php", $file);
+echo "lang.inc.php modified.\n";
