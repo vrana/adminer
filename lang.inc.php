@@ -33,7 +33,6 @@ function lang($idf = null, $number = null) {
 			'NULL' => 'NULL',
 			'Auto Increment' => 'Auto Increment',
 			'Options' => 'Volby',
-			'Add row' => 'Přidat řádek',
 			'Save' => 'Uložit',
 			'Drop' => 'Odstranit',
 			'Database has been dropped.' => 'Databáze byla odstraněna.',
