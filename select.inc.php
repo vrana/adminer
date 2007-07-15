@@ -11,6 +11,7 @@ foreach ($fields as $key => $field) {
 }
 
 if (isset($rights["insert"])) {
+	//! pass search values forth and back
 	echo '<p><a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '">' . lang('New item') . "</a></p>\n";
 }
 
@@ -118,6 +119,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 			}
 		}
 		$childs = array();
+		//! possible slow-down, get only for InnoDB
 		if ($mysql->server_info >= 5) {
 			// would be possible in earlier versions too, but only by examining all tables (in all databases)
 			$result1 = $mysql->query("SELECT * FROM information_schema.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = '" . $mysql->escape_string($_GET["db"]) . "' AND REFERENCED_TABLE_NAME = '" . $mysql->escape_string($_GET["select"]) . "' ORDER BY ORDINAL_POSITION");
