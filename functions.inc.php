@@ -167,19 +167,6 @@ function engines() {
 	return $return;
 }
 
-function types() {
-	return array(
-		"tinyint" => 3, "smallint" => 5, "mediumint" => 8, "int" => 10, "bigint" => 20,
-		"float" => 12, "double" => 21, "decimal" => 66,
-		"date" => 10, "datetime" => 19, "timestamp" => 19, "time" => 10, "year" => 4,
-		"char" => 255, "varchar" => 65535,
-		"binary" => 255, "varbinary" => 65535,
-		"tinytext" => 255, "text" => 65535, "mediumtext" => 16777215, "longtext" => 4294967295,
-		"tinyblob" => 255, "blob" => 65535, "mediumblob" => 16777215, "longblob" => 4294967295,
-		"enum" => 65535, "set" => 64,
-	);
-}
-
 function token() {
 	return ($GLOBALS["TOKENS"][] = rand(1, 1e6));
 }
@@ -279,10 +266,7 @@ function select($result) {
 }
 
 function input($name, $field, $value) {
-	static $types;
-	if (!isset($types)) {
-		$types = types();
-	}
+	global $types;
 	$name = htmlspecialchars(bracket_escape($name));
 	if ($field["type"] == "enum") {
 		if (!isset($_GET["default"])) {
@@ -339,6 +323,61 @@ function process_input($name, $field) {
 	} else {
 		return "'" . $mysql->escape_string($value) . "'";
 	}
+}
+
+function edit_fields($fields, $type = "table") {
+	global $types, $collations, $unsigned;
+?>
+<table border="0" cellspacing="0" cellpadding="2">
+<thead><tr>
+<th><?php echo lang('Column name'); ?></th>
+<td><?php echo lang('Type'); ?></td>
+<td><?php echo lang('Length'); ?></td>
+<td><?php echo lang('Options'); ?></td>
+<?php if ($type == "table") { ?>
+<td><?php echo lang('NULL'); ?></td>
+<td><input type="radio" name="auto_increment" value="" /><?php echo lang('Auto Increment'); ?></td>
+<td id="comment-0"><?php echo lang('Comment'); ?></td>
+<?php } ?>
+<td><input type="submit" name="add[0]" value="<?php echo lang('Add next'); ?>" /></td>
+</tr></thead>
+<?php
+$column_comments = false;
+foreach ($fields as $i => $field) {
+	$i++;
+	?>
+<tr>
+<th><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo htmlspecialchars($field[($_POST ? "orig" : "field")]); ?>" /><input name="fields[<?php echo $i; ?>][field]" value="<?php echo htmlspecialchars($field["field"]); ?>" maxlength="64" /></th>
+<td><select name="fields[<?php echo $i; ?>][type]" onchange="type_change(this);"><?php echo optionlist(array_keys($types), $field["type"]); ?></select></td>
+<td><input name="fields[<?php echo $i; ?>][length]" value="<?php echo htmlspecialchars($field["length"]); ?>" size="3" /></td>
+<td><select name="fields[<?php echo $i; ?>][collation]"><option value="">(<?php echo lang('collation'); ?>)</option><?php echo optionlist($collations, $field["collation"]); ?></select> <select name="fields[<?php echo $i; ?>][unsigned]"><?php echo optionlist($unsigned, $field["unsigned"]); ?></select></td>
+<?php if ($type == "table") { ?>
+<td><input type="checkbox" name="fields[<?php echo $i; ?>][null]" value="1"<?php if ($field["null"]) { ?> checked="checked"<?php } ?> /></td>
+<td><input type="radio" name="auto_increment" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked="checked"<?php } ?> /></td>
+<td id="comment-<?php echo $i; ?>"><input name="fields[<?php echo $i; ?>][comment]" value="<?php echo htmlspecialchars($field["comment"]); ?>" maxlength="255" /></td>
+<?php } ?>
+<td><input type="submit" name="add[<?php echo $i; ?>]" value="<?php echo lang('Add next'); ?>" /></td>
+</tr>
+<?php
+	if (strlen($field["comment"])) {
+		$column_comments = true;
+	}
+}
+//! JavaScript for next rows
+?>
+</table>
+<script type="text/javascript">
+function type_change(type) {
+	var name = type.name.substr(0, type.name.length - 6);
+	type.form[name + '[collation]'].style.display = (/char|text|enum|set/.test(type.form[name + '[type]'].value) ? '' : 'none');
+	type.form[name + '[unsigned]'].style.display = (/int|float|double|decimal/.test(type.form[name + '[type]'].value) ? '' : 'none');
+}
+for (var i=1; <?php echo count($fields); ?> >= i; i++) {
+	document.getElementById('form')['fields[' + i + '][type]'].onchange();
+}
+</script>
+<?php
+	return $column_comments;
 }
 
 if (get_magic_quotes_gpc()) {
