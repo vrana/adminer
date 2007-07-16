@@ -15,7 +15,7 @@ if ($_POST) {
 	$row = $_POST;
 	echo "<p class='error'>" . lang('Unable to operate view') . ": " . htmlspecialchars($error) . "</p>\n";
 } elseif (strlen($_GET["createv"])) {
-	$row = array("name" => $_GET["createv"], "select" => preg_replace('~^.* AS ~U', '', $mysql->result($mysql->query("SHOW CREATE VIEW " . idf_escape($_GET["createv"])), 1)));
+	$row = view($_GET["createv"]);
 } else {
 	$row = array();
 }

@@ -111,6 +111,11 @@ function foreign_keys($table) {
 	return $return;
 }
 
+function view($name) {
+	global $mysql;
+	return array("name" => $name, "select" => preg_replace('~^(?:[^`]+|`[^`]*`)* AS ~U', '', $mysql->result($mysql->query("SHOW CREATE VIEW " . idf_escape($name)), 1)));
+}
+
 function unique_idf($row, $indexes) {
 	foreach ($indexes as $index) {
 		if ($index["type"] == "PRIMARY" || $index["type"] == "UNIQUE") {
