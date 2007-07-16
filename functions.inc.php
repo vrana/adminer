@@ -120,7 +120,7 @@ function normalize_enum($match) {
 	return "'" . str_replace("'", "''", addcslashes(stripcslashes(str_replace($match[0]{0} . $match[0]{0}, $match[0]{0}, substr($match[0], 1, -1))), '\\')) . "'";
 }
 
-function routine($name, $type = "PROCEDURE") {
+function routine($name, $type) {
 	global $mysql, $enum_length;
 	$pattern = "\\s*(IN|OUT|INOUT)?\\s*(?:`((?:[^`]+|``)*)`\\s*|\\b(\\S+)\\s+)([a-z]+)(?:\\s*\\(((?:[^'\")]*|$enum_length)+)\\))?\\s*(zerofill\\s+)?(unsigned(?:\\s+zerofill)?)?";
 	$create = $mysql->result($mysql->query("SHOW CREATE $type " . idf_escape($name)), 2);
