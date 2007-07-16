@@ -5,22 +5,24 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 			redirect($SELF . "table=" . urlencode($_GET["foreign"]), lang('Foreign key has been dropped.'));
 		}
 	}
-	$source = array_filter($_POST["source"], 'strlen');
-	ksort($source);
-	$target = array();
-	foreach ($source as $key => $val) {
-		$target[$key] = $_POST["target"][$key];
-	}
-	if ($mysql->query("
-		ALTER TABLE " . idf_escape($_GET["foreign"]) . " ADD FOREIGN KEY
-		" . (strlen($_GET["name"]) ? idf_escape($_GET["name"]) : "") . "
-		(" . implode(", ", array_map('idf_escape', $source)) . ")
-		REFERENCES " . idf_escape($_POST["table"]) . "
-		(" . implode(", ", array_map('idf_escape', $target)) . ")
-		" . (in_array($_POST["on_delete"], $on_actions) ? "ON DELETE $_POST[on_delete]" : "") . "
-		" . (in_array($_POST["on_update"], $on_actions) ? "ON UPDATE $_POST[on_update]" : "") . "
-	")) {
-		redirect($SELF . "table=" . urlencode($_GET["foreign"]), (strlen($_GET["name"]) ? lang('Foreign key has been altered.') : lang('Foreign key has been created.')));
+	if (!$_POST["drop"]) {
+		$source = array_filter($_POST["source"], 'strlen');
+		ksort($source);
+		$target = array();
+		foreach ($source as $key => $val) {
+			$target[$key] = $_POST["target"][$key];
+		}
+		if ($mysql->query("
+			ALTER TABLE " . idf_escape($_GET["foreign"]) . " ADD FOREIGN KEY
+			" . (strlen($_GET["name"]) ? idf_escape($_GET["name"]) : "") . "
+			(" . implode(", ", array_map('idf_escape', $source)) . ")
+			REFERENCES " . idf_escape($_POST["table"]) . "
+			(" . implode(", ", array_map('idf_escape', $target)) . ")
+			" . (in_array($_POST["on_delete"], $on_actions) ? "ON DELETE $_POST[on_delete]" : "") . "
+			" . (in_array($_POST["on_update"], $on_actions) ? "ON UPDATE $_POST[on_update]" : "") . "
+		")) {
+			redirect($SELF . "table=" . urlencode($_GET["foreign"]), (strlen($_GET["name"]) ? lang('Foreign key has been altered.') : lang('Foreign key has been created.')));
+		}
 	}
 	$error = $mysql->error;
 }
