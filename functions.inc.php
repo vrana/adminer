@@ -116,6 +116,31 @@ function view($name) {
 	return array("name" => $name, "select" => preg_replace('~^(?:[^`]+|`[^`]*`)* AS ~U', '', $mysql->result($mysql->query("SHOW CREATE VIEW " . idf_escape($name)), 1)));
 }
 
+function normalize_enum($match) {
+	return "'" . str_replace("'", "''", addcslashes(stripcslashes(str_replace($match[0]{0} . $match[0]{0}, $match[0]{0}, substr($match[0], 1, -1))), '\\')) . "'";
+}
+
+function routine($name, $type = "PROCEDURE") {
+	global $mysql, $enum_length;
+	$pattern = "\\s*(IN|OUT|INOUT)?\\s*(?:`((?:[^`]+|``)*)`\\s*|\\b(\\S+)\\s+)([a-z]+)(?:\\s*\\(((?:[^'\")]*|$enum_length)+)\\))?\\s*(zerofill\\s+)?(unsigned(?:\\s+zerofill)?)?";
+	$create = $mysql->result($mysql->query("SHOW CREATE $type " . idf_escape($name)), 2);
+	preg_match("~\\($pattern(?:\\s*,$pattern)*~is", $create, $match);
+	$params = array();
+	preg_match_all("~$pattern~is", $match[0], $matches, PREG_SET_ORDER);
+	foreach ($matches as $i => $match) {
+		$field = array(
+			"field" => str_replace("``", "`", $match[2]) . $match[3],
+			"type" => $match[4], //! type aliases
+			"length" => preg_replace_callback("~$enum_length~s", 'normalize_enum', $match[5]),
+			"unsigned" => strtolower(preg_replace('~\\s+~', ' ', trim("$match[7] $match[6]"))),
+			"null" => true,
+			"inout" => $match[1],
+		);
+		$params[$i] = $field;
+	}
+	return array("fields" => $params);
+}
+
 function unique_idf($row, $indexes) {
 	foreach ($indexes as $index) {
 		if ($index["type"] == "PRIMARY" || $index["type"] == "UNIQUE") {

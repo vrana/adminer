@@ -1,37 +1,21 @@
 <?php
 page_header(lang('Call') . ": " . htmlspecialchars($_GET["call"]));
 
-function normalize_enum($match) {
-	return "'" . str_replace("'", "''", addcslashes(stripcslashes(str_replace($match[0]{0} . $match[0]{0}, $match[0]{0}, substr($match[0], 1, -1))), '\\')) . "'";
-}
-
-$pattern = "\\s*(IN|OUT|INOUT)?\\s*(?:`((?:[^`]+|``)*)`\\s*|\\b(\\S+)\\s+)([a-z]+)(?:\\s*\\(((?:[^'\")]*|$enum_length)+)\\))?\\s*(?:zerofill\\s+)?(unsigned)?";
-$create = $mysql->result($mysql->query("SHOW CREATE " . (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE") . " " . idf_escape($_GET["call"])), 2);
-preg_match("~\\($pattern(?:\\s*,$pattern)*~is", $create, $match);
+$routine = routine($_GET["call"], (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE"));
 $in = array();
 $out = array();
-$params = array();
-preg_match_all("~$pattern~is", $match[0], $matches, PREG_SET_ORDER);
-foreach ($matches as $i => $match) {
-	$field = array(
-		"field" => str_replace("``", "`", $match[2]) . $match[3],
-		"type" => $match[4], //! type aliases
-		"length" => preg_replace_callback("~$enum_length~s", 'normalize_enum', $match[5]),
-		"unsigned" => ($match[6] ? "unsigned" : ""), // zerofill ignored
-		"null" => true,
-	);
-	if (strcasecmp("out", substr($match[1], -3)) == 0) {
+foreach ($routine["fields"] as $i => $field) {
+	if (strcasecmp("out", substr($field["inout"], -3)) == 0) {
 		$out[$i] = "@" . idf_escape($field["field"]) . " AS " . idf_escape($field["field"]);
 	}
-	if (!$match[1] || strcasecmp("in", substr($match[1], 0, 2)) == 0) {
+	if (!$match[1] || strcasecmp("in", substr($field["inout"], 0, 2)) == 0) {
 		$in[] = $i;
 	}
-	$params[$i] = $field;
 }
 
 if ($_POST) {
 	$call = array();
-	foreach ($params as $key => $field) {
+	foreach ($routine["fields"] as $key => $field) {
 		if (in_array($key, $in)) {
 			$val = process_input($key, $field);
 			if ($val === false) {
@@ -67,7 +51,7 @@ if ($_POST) {
 if ($in) {
 	echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
 	foreach ($in as $key) {
-		$field = $params[$key];
+		$field = $routine["fields"][$key];
 		echo "<tr><th>" . htmlspecialchars($field["field"]) . "</th><td>";
 		$value = $_POST["fields"][$key];
 		if (strlen($value) && ($field["type"] == "enum" || $field["type"] == "set")) {
