@@ -32,6 +32,7 @@ if ($_POST && $error) {
 						if (is_object($result)) {
 							select($result);
 						} else {
+							//! flush $_SESSION["databases"] in case of database operations
 							echo "<p class='message'>" . lang('Query executed OK, %d row(s) affected.', $mysql->affected_rows) . "</p>\n";
 						}
 					} while ($mysql->next_result());
