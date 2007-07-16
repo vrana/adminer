@@ -51,8 +51,8 @@ function page_footer($missing = false) {
 <p><?php if (strlen($_GET["server"])) { ?><input type="hidden" name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>" /><?php } ?>
 <select name="db" onchange="this.form.submit();"><option value="">(<?php echo lang('database'); ?>)</option>
 <?php
-		flush();
 		if (!isset($_SESSION["databases"][$_GET["server"]])) {
+			flush();
 			$_SESSION["databases"][$_GET["server"]] = get_vals("SHOW DATABASES");
 		}
 		echo optionlist($_SESSION["databases"][$_GET["server"]], $_GET["db"]);
