@@ -121,7 +121,7 @@ function normalize_enum($match) {
 }
 
 function routine($name, $type) {
-	global $mysql, $enum_length;
+	global $mysql, $enum_length, $inout;
 	$pattern = "\\s*(" . implode("|", $inout) . ")?\\s*(?:`((?:[^`]+|``)*)`\\s*|\\b(\\S+)\\s+)([a-z]+)(?:\\s*\\(((?:[^'\")]*|$enum_length)+)\\))?\\s*(zerofill\\s+)?(unsigned(?:\\s+zerofill)?)?";
 	$create = $mysql->result($mysql->query("SHOW CREATE $type " . idf_escape($name)), 2);
 	preg_match("~\\($pattern(?:\\s*,$pattern)*~is", $create, $match);
