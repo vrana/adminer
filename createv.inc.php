@@ -22,7 +22,7 @@ if ($_POST) {
 ?>
 
 <form action="" method="post">
-<p><textarea name="select" rows="10" cols="80" style="width: 100%;"><?php echo htmlspecialchars($row["select"]); ?></textarea></p>
+<p><textarea name="select" rows="10" cols="80" style="width: 98%;"><?php echo htmlspecialchars($row["select"]); ?></textarea></p>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
 <?php echo lang('Name'); ?>: <input name="name" value="<?php echo htmlspecialchars($row["name"]); ?>" maxlength="64" />
