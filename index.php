@@ -62,6 +62,8 @@ if (isset($_GET["dump"])) {
 			include "./call.inc.php";
 		} elseif (isset($_GET["foreign"])) {
 			include "./foreign.inc.php";
+		} elseif (isset($_GET["createv"])) {
+			include "./createv.inc.php";
 		} else {
 			$TOKENS = array();
 			page_header(htmlspecialchars(lang('Database') . ": " . $_GET["db"]));
@@ -81,6 +83,7 @@ if (isset($_GET["dump"])) {
 					echo "</table>\n";
 				}
 				$result->free();
+				echo '<p><a href="' . htmlspecialchars($SELF) . 'createv=">' . lang('Create view') . "</a></p>\n";
 			}
 		}
 	}

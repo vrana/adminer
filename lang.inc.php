@@ -122,6 +122,13 @@ function lang($idf = null, $number = null) {
 			'ON UPDATE' => 'ON UPDATE',
 			'Index Type' => 'Typ indexu',
 			'Column (length)' => 'Sloupec (délka)',
+			'View has been dropped.' => 'Pohled byl odstraněn.',
+			'View has been altered.' => 'Pohled byl změněn.',
+			'View has been created.' => 'Pohled byl vytvořen.',
+			'Alter view' => 'Pozměnit pohled',
+			'Create view' => 'Vytvořit pohled',
+			'Unable to operate view' => 'Nepodařilo se zpracovat pohled',
+			'Name' => 'Název',
 		),
 	);
 	if (!isset($idf)) {
