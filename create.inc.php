@@ -90,7 +90,7 @@ $collations = collations();
 <select name="Collation"><option value="">(<?php echo lang('collation'); ?>)</option><?php echo optionlist($collations, $row["Collation"]); ?></select>
 <input type="submit" value="<?php echo lang('Save'); ?>" />
 </p>
-<?php $column_comments = edit_fields($row["fields"]); ?>
+<?php $column_comments = edit_fields($row["fields"], $collations); ?>
 <p><?php echo lang('Comment'); ?>: <input name="Comment" value="<?php echo htmlspecialchars($row["Comment"]); ?>" maxlength="60" />
 <script type="text/javascript">
 document.write('<label for="column_comments"><input type="checkbox" id="column_comments"<?php if ($column_comments) { ?> checked="checked"<?php } ?> onclick="column_comments_click(this.checked);" /><?php echo lang('Show column comments'); ?></label>');
