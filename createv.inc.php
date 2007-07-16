@@ -16,6 +16,7 @@ if ($_POST) {
 	echo "<p class='error'>" . lang('Unable to operate view') . ": " . htmlspecialchars($error) . "</p>\n";
 } elseif (strlen($_GET["createv"])) {
 	$row = view($_GET["createv"]);
+	$row["name"] = $_GET["createv"];
 } else {
 	$row = array();
 }

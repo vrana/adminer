@@ -39,6 +39,7 @@ if (isset($_GET["dump"])) {
 	} elseif (isset($_GET["view"])) {
 		include "./view.inc.php";
 	} else { // uses CSRF token
+		include "./editing.inc.php";
 		if ($_POST) {
 			$error = (in_array($_POST["token"], (array) $TOKENS) ? "" : lang('Invalid CSRF token. Send the form again.'));
 		}
@@ -49,8 +50,8 @@ if (isset($_GET["dump"])) {
 		if (isset($_GET["callf"])) {
 			$_GET["call"] = $_GET["callf"];
 		}
-		if (isset($_GET["createf"])) {
-			$_GET["createp"] = $_GET["createf"];
+		if (isset($_GET["function"])) {
+			$_GET["procedure"] = $_GET["function"];
 		}
 		if (isset($_GET["sql"])) {
 			include "./sql.inc.php";
@@ -68,8 +69,8 @@ if (isset($_GET["dump"])) {
 			include "./foreign.inc.php";
 		} elseif (isset($_GET["createv"])) {
 			include "./createv.inc.php";
-		} elseif (isset($_GET["createp"])) {
-			include "./createp.inc.php";
+		} elseif (isset($_GET["procedure"])) {
+			include "./procedure.inc.php";
 		} elseif (isset($_GET["processlist"])) {
 			include "./processlist.inc.php";
 		} else {
@@ -85,14 +86,14 @@ if (isset($_GET["dump"])) {
 						echo "<tr>";
 						echo "<th>" . htmlspecialchars($row["ROUTINE_TYPE"]) . "</th>";
 						echo '<td><a href="' . htmlspecialchars($SELF) . ($row["ROUTINE_TYPE"] == "FUNCTION" ? 'callf' : 'call') . '=' . urlencode($row["ROUTINE_NAME"]) . '">' . htmlspecialchars($row["ROUTINE_NAME"]) . '</a></td>';
-						echo '<td><a href="' . htmlspecialchars($SELF) . ($row["ROUTINE_TYPE"] == "FUNCTION" ? 'createf' : 'createp') . '=' . urlencode($row["ROUTINE_NAME"]) . '">' . lang('Alter') . "</a></td>\n";
+						echo '<td><a href="' . htmlspecialchars($SELF) . ($row["ROUTINE_TYPE"] == "FUNCTION" ? 'function' : 'procedure') . '=' . urlencode($row["ROUTINE_NAME"]) . '">' . lang('Alter') . "</a></td>\n";
 						echo "</tr>\n";
 					}
 					echo "</table>\n";
 				}
 				$result->free();
-				echo '<p><a href="' . htmlspecialchars($SELF) . 'createp=">' . lang('Create procedure') . '</a> <a href="' . htmlspecialchars($SELF) . 'createf=">' . lang('Create function') . "</a></p>\n";
-				echo '<p><a href="' . htmlspecialchars($SELF) . 'createv=">' . lang('Create view') . "</a></p>\n";
+				echo '<p><a href="' . htmlspecialchars($SELF) . 'function=">' . lang('Create procedure') . '</a> <a href="' . htmlspecialchars($SELF) . 'createf=">' . lang('Create function') . "</a></p>\n";
+				echo '<p><a href="' . htmlspecialchars($SELF) . 'procedure=">' . lang('Create view') . "</a></p>\n";
 			}
 		}
 	}

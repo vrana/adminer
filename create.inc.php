@@ -25,10 +25,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 			//! detect changes
 			if (strlen($field["field"]) && isset($types[$field["type"]])) {
 				$fields[] = (!strlen($_GET["create"]) ? "" : (strlen($field["orig"]) ? "CHANGE " . idf_escape($field["orig"]) . " " : "ADD "))
-					. idf_escape($field["field"]) . " $field[type]"
-					. ($field["length"] ? "(" . (preg_match("~^\\s*(?:$enum_length)(?:\\s*,\\s*(?:$enum_length))*\\s*\$~", $field["length"]) && preg_match_all("~$enum_length~", $field["length"], $matches) ? implode(",", $matches[0]) : intval($field["length"])) . ")" : "")
-					. (preg_match('~int|float|double|decimal~', $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
-					. (preg_match('~char|text|enum|set~', $field["type"]) && $field["collation"] ? " COLLATE '" . $mysql->escape_string($field["collation"]) . "'" : "")
+					. idf_escape($field["field"]) . process_type($field)
 					. ($field["null"] ? "" : " NOT NULL")
 					. ($key == $_POST["auto_increment"] ? " AUTO_INCREMENT$auto_increment_index" : "")
 					. " COMMENT '" . $mysql->escape_string($field["comment"]) . "'"
@@ -58,6 +55,15 @@ if ($_POST && !$error && !$_POST["add"]) {
 }
 page_header(strlen($_GET["create"]) ? lang('Alter table') . ': ' . htmlspecialchars($_GET["create"]) : lang('Create table'));
 
+$engines = array();
+$result = $mysql->query("SHOW ENGINES");
+while ($row = $result->fetch_assoc()) {
+	if ($row["Support"] == "YES" || $row["Support"] == "DEFAULT") {
+		$engines[] = $row["Engine"];
+	}
+}
+$result->free();
+
 if ($_POST) {
 	$row = $_POST;
 	ksort($row["fields"]);
@@ -86,7 +92,7 @@ $collations = collations();
 <form action="" method="post" id="form">
 <p>
 <?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo htmlspecialchars($row["name"]); ?>" />
-<select name="Engine"><option value="">(<?php echo lang('engine'); ?>)</option><?php echo optionlist(engines(), $row["Engine"]); ?></select>
+<select name="Engine"><option value="">(<?php echo lang('engine'); ?>)</option><?php echo optionlist($engines, $row["Engine"]); ?></select>
 <select name="Collation"><option value="">(<?php echo lang('collation'); ?>)</option><?php echo optionlist($collations, $row["Collation"]); ?></select>
 <input type="submit" value="<?php echo lang('Save'); ?>" />
 </p>
