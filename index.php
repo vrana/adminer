@@ -30,6 +30,7 @@ if (isset($_GET["dump"])) {
 	);
 	$unsigned = array("", "unsigned", "zerofill", "unsigned zerofill");
 	$enum_length = '\'(?:\'\'|[^\'\\\\]+|\\\\.)*\'|"(?:""|[^"\\\\]+|\\\\.)*"';
+	$inout = array("IN", "OUT", "INOUT");
 	
 	if (isset($_GET["table"])) {
 		include "./table.inc.php";

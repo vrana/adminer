@@ -5,10 +5,10 @@ $routine = routine($_GET["call"], (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDU
 $in = array();
 $out = array();
 foreach ($routine["fields"] as $i => $field) {
-	if (strcasecmp("out", substr($field["inout"], -3)) == 0) {
+	if (substr($field["inout"], -3) == "OUT") {
 		$out[$i] = "@" . idf_escape($field["field"]) . " AS " . idf_escape($field["field"]);
 	}
-	if (!$match[1] || strcasecmp("in", substr($field["inout"], 0, 2)) == 0) {
+	if (!$field["inout"] || substr($field["inout"], 0, 2) == "IN") {
 		$in[] = $i;
 	}
 }

@@ -122,7 +122,7 @@ function normalize_enum($match) {
 
 function routine($name, $type) {
 	global $mysql, $enum_length;
-	$pattern = "\\s*(IN|OUT|INOUT)?\\s*(?:`((?:[^`]+|``)*)`\\s*|\\b(\\S+)\\s+)([a-z]+)(?:\\s*\\(((?:[^'\")]*|$enum_length)+)\\))?\\s*(zerofill\\s+)?(unsigned(?:\\s+zerofill)?)?";
+	$pattern = "\\s*(" . implode("|", $inout) . ")?\\s*(?:`((?:[^`]+|``)*)`\\s*|\\b(\\S+)\\s+)([a-z]+)(?:\\s*\\(((?:[^'\")]*|$enum_length)+)\\))?\\s*(zerofill\\s+)?(unsigned(?:\\s+zerofill)?)?";
 	$create = $mysql->result($mysql->query("SHOW CREATE $type " . idf_escape($name)), 2);
 	preg_match("~\\($pattern(?:\\s*,$pattern)*~is", $create, $match);
 	$params = array();
@@ -134,7 +134,7 @@ function routine($name, $type) {
 			"length" => preg_replace_callback("~$enum_length~s", 'normalize_enum', $match[5]),
 			"unsigned" => strtolower(preg_replace('~\\s+~', ' ', trim("$match[7] $match[6]"))),
 			"null" => true,
-			"inout" => $match[1],
+			"inout" => strtoupper($match[1]),
 		);
 		$params[$i] = $field;
 	}
