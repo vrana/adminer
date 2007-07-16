@@ -39,9 +39,9 @@ page_header((isset($_GET["default"]) ? lang('Default values') : ($_GET["where"] 
 
 if ($_POST) {
 	echo "<p class='error'>" . lang('Error during saving') . ": " . htmlspecialchars($error) . "</p>\n";
-	$data = (array) $_POST["fields"];
+	$row = (array) $_POST["fields"];
 	foreach ((array) $_POST["null"] as $key => $val) {
-		$data[$key] = null;
+		$row[$key] = null;
 	}
 } elseif ($where) {
 	$select = array();
@@ -52,12 +52,12 @@ if ($_POST) {
 	}
 	if ($select) {
 		$result = $mysql->query("SELECT " . implode(", ", $select) . " FROM " . idf_escape($_GET["edit"]) . " WHERE " . implode(" AND ", $where) . " LIMIT 1");
-		$data = $result->fetch_assoc();
+		$row = $result->fetch_assoc();
 	} else {
-		$data = array();
+		$row = array();
 	}
 } else {
-	unset($data);
+	unset($row);
 }
 ?>
 
@@ -67,12 +67,12 @@ if ($fields) {
 	echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
 	foreach ($fields as $name => $field) {
 		echo "<tr><th>" . htmlspecialchars($name) . "</th><td>";
-		if (!isset($data)) {
+		if (!isset($row)) {
 			$value = $field["default"];
-		} elseif (strlen($data[$name]) && ($field["type"] == "enum" || $field["type"] == "set")) {
-			$value = intval($data[$name]);
+		} elseif (strlen($row[$name]) && ($field["type"] == "enum" || $field["type"] == "set")) {
+			$value = intval($row[$name]);
 		} else {
-			$value = $data[$name];
+			$value = $row[$name];
 		}
 		input($name, $field, $value);
 		echo "</td></tr>\n";
