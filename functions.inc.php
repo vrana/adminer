@@ -330,8 +330,8 @@ function process_input($name, $field) {
 	}
 }
 
-function edit_fields($fields, $type = "table") {
-	global $types, $collations, $unsigned;
+function edit_fields($fields, $collations, $type = "table") {
+	global $types, $unsigned;
 ?>
 <table border="0" cellspacing="0" cellpadding="2">
 <thead><tr>
