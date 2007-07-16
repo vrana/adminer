@@ -49,6 +49,9 @@ if (isset($_GET["dump"])) {
 		if (isset($_GET["callf"])) {
 			$_GET["call"] = $_GET["callf"];
 		}
+		if (isset($_GET["createf"])) {
+			$_GET["createp"] = $_GET["createf"];
+		}
 		if (isset($_GET["sql"])) {
 			include "./sql.inc.php";
 		} elseif (isset($_GET["edit"])) {
@@ -65,6 +68,8 @@ if (isset($_GET["dump"])) {
 			include "./foreign.inc.php";
 		} elseif (isset($_GET["createv"])) {
 			include "./createv.inc.php";
+		} elseif (isset($_GET["createp"])) {
+			include "./createp.inc.php";
 		} elseif (isset($_GET["processlist"])) {
 			include "./processlist.inc.php";
 		} else {
@@ -72,20 +77,21 @@ if (isset($_GET["dump"])) {
 			page_header(htmlspecialchars(lang('Database') . ": " . $_GET["db"]));
 			echo '<p><a href="' . htmlspecialchars($SELF) . 'database=">' . lang('Alter database') . "</a></p>\n";
 			if ($mysql->server_info >= 5) {
+				echo "<h2>" . lang('Routines') . "</h2>\n";
 				$result = $mysql->query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = '" . $mysql->escape_string($_GET["db"]) . "'");
 				if ($result->num_rows) {
-					echo "<h2>" . lang('Routines') . "</h2>\n";
 					echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
 					while ($row = $result->fetch_assoc()) {
-						echo "<tr valign='top'>";
+						echo "<tr>";
 						echo "<th>" . htmlspecialchars($row["ROUTINE_TYPE"]) . "</th>";
 						echo '<td><a href="' . htmlspecialchars($SELF) . ($row["ROUTINE_TYPE"] == "FUNCTION" ? 'callf' : 'call') . '=' . urlencode($row["ROUTINE_NAME"]) . '">' . htmlspecialchars($row["ROUTINE_NAME"]) . '</a></td>';
-						echo "<td><pre class='jush-sql'>" . htmlspecialchars($row["ROUTINE_DEFINITION"]) . "</pre></td>";
+						echo '<td><a href="' . htmlspecialchars($SELF) . ($row["ROUTINE_TYPE"] == "FUNCTION" ? 'createf' : 'createp') . '=' . urlencode($row["ROUTINE_NAME"]) . '">' . lang('Alter') . "</a></td>\n";
 						echo "</tr>\n";
 					}
 					echo "</table>\n";
 				}
 				$result->free();
+				echo '<p><a href="' . htmlspecialchars($SELF) . 'createp=">' . lang('Create procedure') . '</a> <a href="' . htmlspecialchars($SELF) . 'createf=">' . lang('Create function') . "</a></p>\n";
 				echo '<p><a href="' . htmlspecialchars($SELF) . 'createv=">' . lang('Create view') . "</a></p>\n";
 			}
 		}

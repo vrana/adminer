@@ -135,6 +135,7 @@ function routine($name, $type) {
 			"unsigned" => strtolower(preg_replace('~\\s+~', ' ', trim("$match[7] $match[6]"))),
 			"null" => true,
 			"inout" => strtoupper($match[1]),
+			//! detect character set
 		);
 		$params[$i] = $field;
 	}
@@ -360,16 +361,17 @@ function process_input($name, $field) {
 	}
 }
 
-function edit_fields($fields, $collations, $type = "table") {
-	global $types, $unsigned;
+function edit_fields($fields, $collations, $type = "TABLE") {
+	global $types, $unsigned, $inout;
 ?>
 <table border="0" cellspacing="0" cellpadding="2">
 <thead><tr>
+<?php if ($type == "PROCEDURE") { ?><td><?php echo lang('In-Out'); ?></td><?php } ?>
 <th><?php echo lang('Column name'); ?></th>
 <td><?php echo lang('Type'); ?></td>
 <td><?php echo lang('Length'); ?></td>
 <td><?php echo lang('Options'); ?></td>
-<?php if ($type == "table") { ?>
+<?php if ($type == "TABLE") { ?>
 <td><?php echo lang('NULL'); ?></td>
 <td><input type="radio" name="auto_increment" value="" /><?php echo lang('Auto Increment'); ?></td>
 <td id="comment-0"><?php echo lang('Comment'); ?></td>
@@ -382,11 +384,12 @@ foreach ($fields as $i => $field) {
 	$i++;
 	?>
 <tr>
+<?php if ($type == "PROCEDURE") { ?><td><select name="inout"><?php echo optionlist($inout, $field["inout"]); ?></select></td><?php } ?>
 <th><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo htmlspecialchars($field[($_POST ? "orig" : "field")]); ?>" /><input name="fields[<?php echo $i; ?>][field]" value="<?php echo htmlspecialchars($field["field"]); ?>" maxlength="64" /></th>
 <td><select name="fields[<?php echo $i; ?>][type]" onchange="type_change(this);"><?php echo optionlist(array_keys($types), $field["type"]); ?></select></td>
 <td><input name="fields[<?php echo $i; ?>][length]" value="<?php echo htmlspecialchars($field["length"]); ?>" size="3" /></td>
 <td><select name="fields[<?php echo $i; ?>][collation]"><option value="">(<?php echo lang('collation'); ?>)</option><?php echo optionlist($collations, $field["collation"]); ?></select> <select name="fields[<?php echo $i; ?>][unsigned]"><?php echo optionlist($unsigned, $field["unsigned"]); ?></select></td>
-<?php if ($type == "table") { ?>
+<?php if ($type == "TABLE") { ?>
 <td><input type="checkbox" name="fields[<?php echo $i; ?>][null]" value="1"<?php if ($field["null"]) { ?> checked="checked"<?php } ?> /></td>
 <td><input type="radio" name="auto_increment" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked="checked"<?php } ?> /></td>
 <td id="comment-<?php echo $i; ?>"><input name="fields[<?php echo $i; ?>][comment]" value="<?php echo htmlspecialchars($field["comment"]); ?>" maxlength="255" /></td>
