@@ -16,7 +16,7 @@ if (isset($_GET["dump"])) {
 	include "./dump.inc.php";
 } elseif (isset($_GET["download"])) {
 	include "./download.inc.php";
-} else {
+} else { // outputs footer
 	$on_actions = array("RESTRICT", "CASCADE", "SET NULL", "NO ACTION");
 	$types = array(
 		"tinyint" => 3, "smallint" => 5, "mediumint" => 8, "int" => 10, "bigint" => 20,
@@ -36,7 +36,7 @@ if (isset($_GET["dump"])) {
 		include "./select.inc.php";
 	} elseif (isset($_GET["view"])) {
 		include "./view.inc.php";
-	} else {
+	} else { // uses CSRF token
 		if ($_POST) {
 			$error = (in_array($_POST["token"], (array) $TOKENS) ? "" : lang('Invalid CSRF token. Send the form again.'));
 		}
