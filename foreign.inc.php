@@ -1,9 +1,7 @@
 <?php
 if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-js"]) {
-	if (strlen($_GET["name"])) {
-		if ($mysql->query("ALTER TABLE " . idf_escape($_GET["foreign"]) . " DROP FOREIGN KEY " . idf_escape($_GET["name"])) && $_POST["drop"]) {
-			redirect($SELF . "table=" . urlencode($_GET["foreign"]), lang('Foreign key has been dropped.'));
-		}
+	if (strlen($_GET["name"]) && $mysql->query("ALTER TABLE " . idf_escape($_GET["foreign"]) . " DROP FOREIGN KEY " . idf_escape($_GET["name"])) && $_POST["drop"]) {
+		redirect($SELF . "table=" . urlencode($_GET["foreign"]), lang('Foreign key has been dropped.'));
 	}
 	if (!$_POST["drop"]) {
 		$source = array_filter($_POST["source"], 'strlen');
