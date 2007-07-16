@@ -64,6 +64,8 @@ if (isset($_GET["dump"])) {
 			include "./foreign.inc.php";
 		} elseif (isset($_GET["createv"])) {
 			include "./createv.inc.php";
+		} elseif (isset($_GET["processlist"])) {
+			include "./processlist.inc.php";
 		} else {
 			$TOKENS = array();
 			page_header(htmlspecialchars(lang('Database') . ": " . $_GET["db"]));
