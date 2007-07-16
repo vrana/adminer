@@ -80,7 +80,6 @@ function process_type($field) {
 function edit_fields($fields, $collations, $type = "TABLE") {
 	global $inout;
 ?>
-<table border="0" cellspacing="0" cellpadding="2">
 <thead><tr>
 <?php if ($type == "PROCEDURE") { ?><td><?php echo lang('In-Out'); ?></td><?php } ?>
 <th><?php echo lang('Column name'); ?></th>
@@ -95,10 +94,10 @@ function edit_fields($fields, $collations, $type = "TABLE") {
 <td><input type="submit" name="add[0]" value="<?php echo lang('Add next'); ?>" /></td>
 </tr></thead>
 <?php
-$column_comments = false;
-foreach ($fields as $i => $field) {
-	$i++;
-	?>
+	$column_comments = false;
+	foreach ($fields as $i => $field) {
+		$i++;
+		?>
 <tr>
 <?php if ($type == "PROCEDURE") { ?><td><select name="inout"><?php echo optionlist($inout, $field["inout"]); ?></select></td><?php } ?>
 <th><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo htmlspecialchars($field[($_POST ? "orig" : "field")]); ?>" /><input name="fields[<?php echo $i; ?>][field]" value="<?php echo htmlspecialchars($field["field"]); ?>" maxlength="64" /></th>
@@ -111,25 +110,27 @@ foreach ($fields as $i => $field) {
 <td><input type="submit" name="add[<?php echo $i; ?>]" value="<?php echo lang('Add next'); ?>" /></td>
 </tr>
 <?php
-	if (strlen($field["comment"])) {
-		$column_comments = true;
+		if (strlen($field["comment"])) {
+			$column_comments = true;
+		}
 	}
+	//! JavaScript for next rows
+	return $column_comments;
 }
-//! JavaScript for next rows
+
+function type_change($count) {
 ?>
-</table>
 <script type="text/javascript">
 function type_change(type) {
 	var name = type.name.substr(0, type.name.length - 6);
 	type.form[name + '[collation]'].style.display = (/char|text|enum|set/.test(type.form[name + '[type]'].value) ? '' : 'none');
 	type.form[name + '[unsigned]'].style.display = (/int|float|double|decimal/.test(type.form[name + '[type]'].value) ? '' : 'none');
 }
-for (var i=1; <?php echo count($fields); ?> >= i; i++) {
+for (var i=1; <?php echo $count; ?> >= i; i++) {
 	document.getElementById('form')['fields[' + i + '][type]'].onchange();
 }
 </script>
 <?php
-	return $column_comments;
 }
 
 function routine($name, $type) {
