@@ -10,5 +10,5 @@ TABLE { margin-bottom: 1em; }
 P { margin-top: 0; }
 .error { color: Red; }
 .message { color: Green; }
-#menu { position: absolute; top: 8px; left: 8px; width: 15em; overflow: auto; white-space: nowrap; }
+#menu { position: absolute; top: 8px; left: 8px; width: 15em; overflow: auto; overflow-y: hidden; white-space: nowrap; }
 #content { margin-left: 16em; }
