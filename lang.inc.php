@@ -134,6 +134,18 @@ function lang($idf = null, $number = null) {
 			'%d process(es) has been killed.' => array('Byl ukončen %d proces.', 'Byly ukončeny %d procesy.', 'Bylo ukončeno %d procesů.'),
 			'Unable to kill process' => 'Nepodařilo se ukončit proces.',
 			'Kill' => 'Ukončit',
+			'IN-OUT' => 'IN-OUT',
+			'Parameter name' => 'Název parametru',
+			'Database schema' => 'Schéma databáze',
+			'Create procedure' => 'Vytvořit proceduru',
+			'Create function' => 'Vytvořit funkci',
+			'Routine has been dropped.' => 'Procedura byla odstraněna.',
+			'Routine has been altered.' => 'Procedura byla změněna.',
+			'Routine has been created.' => 'Procedura byla vytvořena.',
+			'Alter function' => 'Změnit funkci',
+			'Alter procedure' => 'Změnit proceduru',
+			'Unable to operate routine' => 'Nepořadilo se zpracovat proceduru',
+			'Return type' => 'Návratový typ',
 		),
 	);
 	if (!isset($idf)) {
