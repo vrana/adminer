@@ -68,12 +68,12 @@ function edit_type($key, $field, $collations) {
 <?php
 }
 
-function process_type($field) {
+function process_type($field, $collate = "COLLATE") {
 	global $mysql, $enum_length, $unsigned;
 	return " $field[type]"
 		. ($field["length"] ? "(" . (preg_match("~^\\s*(?:$enum_length)(?:\\s*,\\s*(?:$enum_length))*\\s*\$~", $field["length"]) && preg_match_all("~$enum_length~", $field["length"], $matches) ? implode(",", $matches[0]) : intval($field["length"])) . ")" : "")
 		. (preg_match('~int|float|double|decimal~', $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
-		. (preg_match('~char|text|enum|set~', $field["type"]) && $field["collation"] ? " COLLATE '" . $mysql->escape_string($field["collation"]) . "'" : "")
+		. (preg_match('~char|text|enum|set~', $field["type"]) && $field["collation"] ? " $collate '" . $mysql->escape_string($field["collation"]) . "'" : "")
 	;
 }
 
