@@ -82,7 +82,7 @@ function edit_fields($fields, $collations, $type = "TABLE") {
 ?>
 <thead><tr>
 <?php if ($type == "PROCEDURE") { ?><td><?php echo lang('In-Out'); ?></td><?php } ?>
-<th><?php echo lang('Column name'); ?></th>
+<th><?php echo ($type == "TABLE" ? lang('Column name') : lang('Parameter name')); ?></th>
 <td><?php echo lang('Type'); ?></td>
 <td><?php echo lang('Length'); ?></td>
 <td><?php echo lang('Options'); ?></td>
