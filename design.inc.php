@@ -28,7 +28,7 @@ function page_header($title) {
 		echo "<p class='message'>$_SESSION[message]</p>\n";
 		$_SESSION["message"] = "";
 	}
-	if (isset($_SESSION["databases"][$_GET["server"]])) {
+	if (isset($_SESSION["databases"][$_GET["server"]]) && !isset($_GET["sql"])) {
 		session_write_close();
 	}
 }
