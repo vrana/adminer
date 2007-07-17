@@ -39,7 +39,7 @@ function page_footer($missing = false) {
 </div>
 
 <div id="menu">
-<h1><a href="<?php echo (strlen($SELF) > 1 ? htmlspecialchars(substr($SELF, 0, -1)) : "."); ?>"><?php echo lang('phpMinAdmin'); ?></a></h1>
+<h1><a href="<?php echo ($missing == "auth" ? "http://phpminadmin.sourceforge.net" : (strlen($SELF) > 1 ? htmlspecialchars(substr($SELF, 0, -1)) : ".")); ?>"><?php echo lang('phpMinAdmin'); ?></a></h1>
 <?php switch_lang(); ?>
 <?php if ($missing != "auth") { ?>
 <p>
@@ -79,8 +79,6 @@ function page_footer($missing = false) {
 			echo '<p><a href="' . htmlspecialchars($SELF) . 'create=">' . lang('Create new table') . "</a></p>\n";
 			$result->free();
 		}
-	} else {
-		echo "<p><a href='http://phpminadmin.sourceforge.net'>" . lang('phpMinAdmin homepage') . "</a></p>\n";
 	}
 	?>
 </div>

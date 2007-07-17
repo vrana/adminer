@@ -106,7 +106,6 @@ function lang($idf = null, $number = null) {
 			'Session expired, please login again.' => 'Session vypršela, přihlašte se prosím znovu.',
 			'Text length' => 'Délka textů',
 			'Syntax highlighting' => 'Zvýrazňování syntaxe',
-			'phpMinAdmin homepage' => 'Domácí stránka phpMinAdmin',
 			'Foreign key has been dropped.' => 'Cizí klíč byl odstraněn.',
 			'Foreign key has been altered.' => 'Cizí klíč byl změněn.',
 			'Foreign key has been created.' => 'Cizí klíč byl vytvořen.',
