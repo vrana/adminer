@@ -9,12 +9,12 @@ if ($_POST && !$error) {
 		$set = array();
 		ksort($_POST["fields"]);
 		foreach ($_POST["fields"] as $field) {
-			$set[] = idf_escape($field["field"]) . process_type($field);
+			$set[] = idf_escape($field["field"]) . process_type($field, "CHARACTER SET");
 		}
 		if ($mysql->query(
 			"CREATE $routine " . idf_escape($_POST["name"])
 			. " (" . implode(", ", $set) . ")"
-			. (isset($_GET["function"]) ? " RETURNS" . process_type($_POST["returns"]) : "") . "
+			. (isset($_GET["function"]) ? " RETURNS" . process_type($_POST["returns"], "CHARACTER SET") : "") . "
 			$_POST[definition]"
 		)) {
 			redirect(substr($SELF, 0, -1), (strlen($_GET["createp"]) ? lang('Routine has been altered.') : lang('Routine has been created.')));
