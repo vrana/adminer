@@ -11,7 +11,7 @@ while ($row = $result->fetch_assoc()) {
 	if ($row["Engine"] == "InnoDB") {
 		foreach (foreign_keys($row["Name"]) as $val) {
 			if (!$val["db"]) {
-				$schema[$val["table"]]["referenced"][$row["Name"]][] = array_combine($val["target"], $val["source"]);
+				$schema[$row["Name"]]["references"][$val["table"]][] = array_combine($val["source"], $val["target"]);
 			}
 		}
 	}
@@ -45,7 +45,7 @@ foreach ($schema as $name => $table) {
 }
 $left = 46;
 foreach ($schema as $name => $table) {
-	foreach ((array) $table["referenced"] as $target_name => $refs) {
+	foreach ((array) $table["references"] as $target_name => $refs) {
 		foreach ($refs as $ref) {
 			$min_pos = $top;
 			$max_pos = 0;
@@ -54,8 +54,8 @@ foreach ($schema as $name => $table) {
 				$pos2 = $positions[$target_name][$target];
 				$min_pos = min($min_pos, $pos1, $pos2);
 				$max_pos = max($max_pos, $pos1, $pos2);
-				echo "<div style='left: " . ($left+1) . "px; top: $pos1" . "em;'><img src='arrow.gif' width='12' height='9' alt='' /></div>\n";
-				echo "<div style='left: " . ($left+1) . "px; top: $pos2" . "em;'><img src='hline.gif' width='12' height='7' alt='' /></div>\n";
+				echo "<div style='left: " . ($left+1) . "px; top: $pos1" . "em;'><img src='hline.gif' width='12' height='7' alt='' /></div>\n";
+				echo "<div style='left: " . ($left+1) . "px; top: $pos2" . "em;'><img src='arrow.gif' width='12' height='9' alt='' /></div>\n";
 			}
 			echo "<div style='left: $left" . "px; top: $min_pos" . "em;'><img src='vline.gif' width='1' height='12' alt='' style='padding: .5em 0; height: " . ($max_pos - $min_pos) . "em;' /></div>\n";
 			$left -= 2;
