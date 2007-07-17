@@ -30,12 +30,14 @@ if (isset($_POST["server"])) {
 	redirect(substr($SELF, 0, -1), lang('Logout successful.'));
 }
 
-if (!isset($_SESSION["usernames"][$_GET["server"]]) || !$mysql->connect($_GET["server"], $_SESSION["usernames"][$_GET["server"]], $_SESSION["passwords"][$_GET["server"]])) {
-	if ($_POST["token"] && !isset($_SESSION["usernames"][$_GET["server"]])) {
+$username = $_SESSION["usernames"][$_GET["server"]];
+if (!isset($username) || !$mysql->connect($_GET["server"], $username, $_SESSION["passwords"][$_GET["server"]])) {
+	if ($_POST["token"] && !isset($username)) {
 		$_POST["token"] = token();
 	}
+	unset($_SESSION["usernames"][$_GET["server"]]);
 	page_header(lang('Login'));
-	if (isset($_SESSION["usernames"][$_GET["server"]])) {
+	if (isset($username)) {
 		echo "<p class='error'>" . lang('Invalid credentials.') . "</p>\n";
 	} elseif (isset($_POST["server"])) {
 		echo "<p class='error'>" . lang('Sessions must be enabled.') . "</p>\n";
@@ -46,7 +48,7 @@ if (!isset($_SESSION["usernames"][$_GET["server"]]) || !$mysql->connect($_GET["s
 	<form action="" method="post">
 	<table border="0" cellspacing="0" cellpadding="2">
 	<tr><th><?php echo lang('Server'); ?>:</th><td><input name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>" maxlength="60" /></td></tr>
-	<tr><th><?php echo lang('Username'); ?>:</th><td><input name="username" value="<?php echo htmlspecialchars($_SESSION["usernames"][$_GET["server"]]); ?>" maxlength="16" /></td></tr>
+	<tr><th><?php echo lang('Username'); ?>:</th><td><input name="username" value="<?php echo htmlspecialchars($username); ?>" maxlength="16" /></td></tr>
 	<tr><th><?php echo lang('Password'); ?>:</th><td><input type="password" name="password" /></td></tr>
 	<tr><th><?php
 	foreach ($_POST as $key => $val) { // expired session
