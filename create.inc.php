@@ -94,6 +94,7 @@ $collations = collations();
 <?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo htmlspecialchars($row["name"]); ?>" />
 <select name="Engine"><option value="">(<?php echo lang('engine'); ?>)</option><?php echo optionlist($engines, $row["Engine"]); ?></select>
 <select name="Collation"><option value="">(<?php echo lang('collation'); ?>)</option><?php echo optionlist($collations, $row["Collation"]); ?></select>
+<?php //! $row["Auto_increment"] ?>
 <input type="submit" value="<?php echo lang('Save'); ?>" />
 </p>
 <table border="0" cellspacing="0" cellpadding="2">
