@@ -107,7 +107,7 @@ function edit_fields($fields, $collations, $type = "TABLE") {
 <td><input type="radio" name="auto_increment" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked="checked"<?php } ?> /></td>
 <td><input name="fields[<?php echo $i; ?>][comment]" value="<?php echo htmlspecialchars($field["comment"]); ?>" maxlength="255" /></td>
 <?php } ?>
-<td><input type="submit" name="add[<?php echo $i; ?>]" value="<?php echo lang('Add next'); ?>" onclick="return !add_row(this.parentNode.parentNode);" /></td>
+<td><input type="submit" name="add[<?php echo $i; ?>]" value="<?php echo lang('Add next'); ?>" onclick="return !add_row(this);" /></td>
 </tr>
 <?php
 		if (strlen($field["comment"])) {
@@ -121,15 +121,16 @@ function type_change($count) {
 ?>
 <script type="text/javascript">
 var added = '.';
-function add_row(row) {
+function add_row(button) {
+	var match = /([0-9]+)(\.[0-9]+)?/.exec(button.name)
+	var x = match[0] + (match[2] ? added.substr(match[2].length) : added) + '1';
+	var row = button.parentNode.parentNode;
 	row.parentNode.insertBefore(row.cloneNode(true), row);
 	var tags = row.getElementsByTagName('*');
-	var match, x;
 	for (var i=0; i < tags.length; i++) {
 		if (tags[i].name == 'auto_increment') {
 			tags[i].value = x;
-		} else if (tags[i].name && (x || (match = /([0-9]+)(\.[0-9]+)?/.exec(tags[i].name)))) {
-			x = x || match[0] + (match[2] ? added.substr(match[2].length) : added) + '1';
+		} else if (tags[i].name) {
 			tags[i].name = tags[i].name.replace(/([0-9.]+)/, x);
 			if (/\[(orig|field|comment)/.test(tags[i].name)) {
 				tags[i].value = '';
