@@ -8,6 +8,7 @@ FIELDSET { float: left; padding: .5em; margin: 0; }
 PRE { margin: .12em 0 1em; }
 TABLE { margin-bottom: 1em; }
 P { margin-top: 0; }
+IMG { vertical-align: middle; }
 .error { color: Red; }
 .message { color: Green; }
 .char { color: #007F00; }
@@ -17,4 +18,5 @@ P { margin-top: 0; }
 #menu { position: absolute; top: 8px; left: 8px; width: 15em; overflow: auto; overflow-y: hidden; white-space: nowrap; }
 #content { margin-left: 16em; }
 #schema { position: relative; }
-#schema DIV { position: absolute; border: 1px solid Silver; line-height: 1.25em; padding: 0 2px; }
+#schema DIV { position: absolute; }
+#schema .table { left: 60px; border: 1px solid Silver; line-height: 1.25em; padding: 0 2px; }
