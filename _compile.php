@@ -54,7 +54,8 @@ if ($_COOKIE["lang"]) {
 	$file = str_replace("<?php echo get_lang(); ?>", $_COOKIE["lang"], $file);
 }
 $file = str_replace("favicon.ico", '<?php echo preg_replace("~\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?favicon="; ?>', $file);
-$file = str_replace('session_start();', "if (isset(\$_GET['favicon'])) {\n\theader('Content-Type: image/x-icon');\n\techo base64_decode('" . base64_encode(file_get_contents("favicon.ico")) . "');\n\texit;\n}\nsession_start();", $file);
+$file = str_replace("arrow.gif", '" . preg_replace("~\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?gif=arrow', $file);
+$file = str_replace('session_start();', "if (isset(\$_GET['favicon'])) {\n\theader('Content-Type: image/x-icon');\n\techo base64_decode('" . base64_encode(file_get_contents("favicon.ico")) . "');\n\texit;\n} elseif (isset(\$_GET['gif'])) {\n\theader('Content-Type: image/gif');\n\techo base64_decode('" . base64_encode(file_get_contents("arrow.gif")) . "');\n\texit;\n}\n\nsession_start();", $file);
 $file = str_replace('<link rel="stylesheet" type="text/css" href="default.css" />', "<style type='text/css'>\n" . file_get_contents("default.css") . "</style>", $file);
 file_put_contents($filename, $file);
 echo "$filename created.\n";

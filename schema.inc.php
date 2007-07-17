@@ -43,7 +43,7 @@ foreach ($schema as $name => $table) {
 	echo "</div>\n";
 	$top += 2.5;
 }
-$left = 46;
+$left = -14;
 foreach ($schema as $name => $table) {
 	foreach ((array) $table["references"] as $target_name => $refs) {
 		foreach ($refs as $ref) {
@@ -54,10 +54,10 @@ foreach ($schema as $name => $table) {
 				$pos2 = $positions[$target_name][$target];
 				$min_pos = min($min_pos, $pos1, $pos2);
 				$max_pos = max($max_pos, $pos1, $pos2);
-				echo "<div style='left: " . ($left+1) . "px; top: $pos1" . "em;'><img src='hline.gif' width='12' height='7' alt='' /></div>\n";
-				echo "<div style='left: " . ($left+1) . "px; top: $pos2" . "em;'><img src='arrow.gif' width='12' height='9' alt='' /></div>\n";
+				echo "<div style='left: " . ($left+1) . "px; top: $pos1" . "em; padding-top: .5em;'><div style='border-top: 1px solid Black; width: 12px;'></div></div>\n";
+				echo "<div style='left: " . ($left+1) . "px; top: $pos2" . "em;'><img src='arrow.gif' width='12' height='10' alt='' /></div>\n";
 			}
-			echo "<div style='left: $left" . "px; top: $min_pos" . "em;'><img src='vline.gif' width='1' height='12' alt='' style='padding: .5em 0; height: " . ($max_pos - $min_pos) . "em;' /></div>\n";
+			echo "<div style='left: $left" . "px; top: $min_pos" . "em; padding: .5em 0;' /><div style='border-right: 1px solid Black; height: " . ($max_pos - $min_pos) . "em;'></div></div>\n";
 			$left -= 2;
 		}
 	}

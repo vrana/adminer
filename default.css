@@ -17,6 +17,6 @@ IMG { vertical-align: middle; }
 .binary { color: Red; }
 #menu { position: absolute; top: 8px; left: 8px; width: 15em; overflow: auto; overflow-y: hidden; white-space: nowrap; }
 #content { margin-left: 16em; }
-#schema { position: relative; }
+#schema { margin-left: 60px; position: relative; }
 #schema DIV { position: absolute; }
-#schema .table { left: 60px; border: 1px solid Silver; line-height: 1.25em; padding: 0 2px; }
+#schema .table { border: 1px solid Silver; line-height: 1.25em; padding: 0 2px; }
