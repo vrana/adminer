@@ -13,7 +13,7 @@ foreach (glob("*.php") as $filename) {
 }
 
 $file = file_get_contents("lang.inc.php");
-preg_match_all("~\n\t\t'(.*)' => array\\(\n(.*\n)\t\t\\)~sU", $file, $translations, PREG_OFFSET_CAPTURE);
+preg_match_all("~\n\t'(.*)' => array\\(\n(.*\n)\t\\)~sU", $file, $translations, PREG_OFFSET_CAPTURE);
 foreach (array_reverse($translations[2], true) as $key => $translation) {
 	$messages = $messages_all;
 	preg_match_all("~^(\\s*)(?:// )?(('(?:[^\\\\']+|\\\\.)*') => .*[^,\n]),?~m", $translation[0], $matches, PREG_SET_ORDER);
@@ -28,9 +28,9 @@ foreach (array_reverse($translations[2], true) as $key => $translation) {
 	}
 	foreach($messages as $idf => $val) {
 		if ($val == "," && strpos($idf, "%d")) {
-			$s .= "\t\t\t$idf => array(),\n";
+			$s .= "\t\t$idf => array(),\n";
 		} elseif ($translations[1][$key][0] != 'en') {
-			$s .= "\t\t\t$idf => '',\n";
+			$s .= "\t\t$idf => '',\n";
 		}
 	}
 	$file = substr_replace($file, $s, $translation[1], strlen($translation[0]));

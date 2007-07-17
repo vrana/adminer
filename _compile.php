@@ -37,7 +37,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 if ($_SERVER["argc"] > 1) {
 	$_COOKIE["lang"] = $_SERVER["argv"][1];
 	include "./lang.inc.php";
-	if ($_SERVER["argc"] != 2 || !in_array($_SERVER["argv"][1], lang())) {
+	if ($_SERVER["argc"] != 2 || !isset($translations[$_COOKIE["lang"]])) {
 		echo "Usage: php _compile.php [lang]\nPurpose: Compile phpMinAdmin[-lang].php from index.php.\n";
 		exit(1);
 	}
@@ -51,7 +51,7 @@ $file = preg_replace_callback('~(<\\?php)?\\s*(include|require)(_once)? "([^"]*)
 if ($_COOKIE["lang"]) {
 	$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
 	$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
-	$file = str_replace("<?php echo get_lang(); ?>", $_COOKIE["lang"], $file);
+	$file = str_replace('<?php echo $LANG; ?>', $_COOKIE["lang"], $file);
 }
 $file = str_replace("favicon.ico", '<?php echo preg_replace("~\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?favicon="; ?>', $file);
 $file = str_replace("arrow.gif", '" . preg_replace("~\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?gif=arrow', $file);
