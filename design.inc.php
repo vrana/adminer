@@ -57,7 +57,10 @@ function page_footer($missing = false) {
 		}
 		echo optionlist($_SESSION["databases"][$_GET["server"]], $_GET["db"]);
 		?>
-</select><?php if (isset($_GET["sql"])) { ?><input type="hidden" name="sql" value="" /><?php } ?></p>
+</select>
+<?php if (isset($_GET["sql"])) { ?><input type="hidden" name="sql" value="" /><?php } ?>
+<?php if (isset($_GET["schema"])) { ?><input type="hidden" name="schema" value="" /><?php } ?>
+</p>
 <noscript><p><input type="submit" value="<?php echo lang('Use'); ?>" /></p></noscript>
 </form>
 <?php

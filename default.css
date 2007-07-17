@@ -10,5 +10,11 @@ TABLE { margin-bottom: 1em; }
 P { margin-top: 0; }
 .error { color: Red; }
 .message { color: Green; }
+.char { color: #007F00; }
+.date { color: #7F007F; }
+.enum { color: #007F7F; }
+.binary { color: Red; }
 #menu { position: absolute; top: 8px; left: 8px; width: 15em; overflow: auto; overflow-y: hidden; white-space: nowrap; }
 #content { margin-left: 16em; }
+#schema { position: relative; }
+#schema DIV { position: absolute; border: 1px solid Silver; line-height: 1.25em; padding: 0 2px; }

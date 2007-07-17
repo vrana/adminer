@@ -38,6 +38,8 @@ if (isset($_GET["dump"])) {
 		include "./select.inc.php";
 	} elseif (isset($_GET["view"])) {
 		include "./view.inc.php";
+	} elseif (isset($_GET["schema"])) {
+		include "./schema.inc.php";
 	} else { // uses CSRF token
 		include "./editing.inc.php";
 		if ($_POST) {
@@ -77,8 +79,10 @@ if (isset($_GET["dump"])) {
 			$TOKENS = array();
 			page_header(htmlspecialchars(lang('Database') . ": " . $_GET["db"]));
 			echo '<p><a href="' . htmlspecialchars($SELF) . 'database=">' . lang('Alter database') . "</a></p>\n";
+			echo '<p><a href="' . htmlspecialchars($SELF) . 'schema=">' . lang('Database schema') . "</a></p>\n";
 			if ($mysql->server_info >= 5) {
-				echo "<h2>" . lang('Routines') . "</h2>\n";
+				echo '<p><a href="' . htmlspecialchars($SELF) . 'procedure=">' . lang('Create view') . "</a></p>\n";
+				echo "<h3>" . lang('Routines') . "</h3>\n";
 				$result = $mysql->query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = '" . $mysql->escape_string($_GET["db"]) . "'");
 				if ($result->num_rows) {
 					echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
@@ -93,7 +97,6 @@ if (isset($_GET["dump"])) {
 				}
 				$result->free();
 				echo '<p><a href="' . htmlspecialchars($SELF) . 'function=">' . lang('Create procedure') . '</a> <a href="' . htmlspecialchars($SELF) . 'createf=">' . lang('Create function') . "</a></p>\n";
-				echo '<p><a href="' . htmlspecialchars($SELF) . 'procedure=">' . lang('Create view') . "</a></p>\n";
 			}
 		}
 	}

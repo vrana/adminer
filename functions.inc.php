@@ -64,6 +64,7 @@ function fields($table) {
 				"collation" => $row["Collation"],
 				"privileges" => array_flip(explode(",", $row["Privileges"])),
 				"comment" => $row["Comment"],
+				"primary" => ($row["Key"] == "PRI"),
 			);
 		}
 		$result->free();
