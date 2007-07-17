@@ -96,7 +96,7 @@ if (isset($_GET["dump"])) {
 					echo "</table>\n";
 				}
 				$result->free();
-				echo '<p><a href="' . htmlspecialchars($SELF) . 'function=">' . lang('Create procedure') . '</a> <a href="' . htmlspecialchars($SELF) . 'createf=">' . lang('Create function') . "</a></p>\n";
+				echo '<p><a href="' . htmlspecialchars($SELF) . 'procedure=">' . lang('Create procedure') . '</a> <a href="' . htmlspecialchars($SELF) . 'function=">' . lang('Create function') . "</a></p>\n";
 			}
 		}
 	}

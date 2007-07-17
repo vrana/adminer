@@ -81,7 +81,7 @@ function edit_fields($fields, $collations, $type = "TABLE") {
 	global $inout;
 ?>
 <thead><tr>
-<?php if ($type == "PROCEDURE") { ?><td><?php echo lang('In-Out'); ?></td><?php } ?>
+<?php if ($type == "PROCEDURE") { ?><td><?php echo lang('IN-OUT'); ?></td><?php } ?>
 <th><?php echo ($type == "TABLE" ? lang('Column name') : lang('Parameter name')); ?></th>
 <td><?php echo lang('Type'); ?></td>
 <td><?php echo lang('Length'); ?></td>
@@ -99,7 +99,7 @@ function edit_fields($fields, $collations, $type = "TABLE") {
 		$i++;
 		?>
 <tr>
-<?php if ($type == "PROCEDURE") { ?><td><select name="inout"><?php echo optionlist($inout, $field["inout"]); ?></select></td><?php } ?>
+<?php if ($type == "PROCEDURE") { ?><td><select name="fields[<?php echo $i; ?>][inout]"><?php echo optionlist($inout, $field["inout"]); ?></select></td><?php } ?>
 <th><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo htmlspecialchars($field[($_POST ? "orig" : "field")]); ?>" /><input name="fields[<?php echo $i; ?>][field]" value="<?php echo htmlspecialchars($field["field"]); ?>" maxlength="64" /></th>
 <?php edit_type("fields[$i]", $field, $collations); ?>
 <?php if ($type == "TABLE") { ?>
@@ -133,32 +133,31 @@ for (var i=1; <?php echo $count; ?> >= i; i++) {
 <?php
 }
 
+function normalize_enum($match) {
+	return "'" . str_replace("'", "''", addcslashes(stripcslashes(str_replace($match[0]{0} . $match[0]{0}, $match[0]{0}, substr($match[0], 1, -1))), '\\')) . "'";
+}
+
 function routine($name, $type) {
 	global $mysql, $enum_length, $inout;
-	$type_pattern = "([a-z]+)(?:\\s*\\(((?:[^'\")]*|$enum_length)+)\\))?\\s*(zerofill\\s*)?(unsigned(?:\\s+zerofill)?)?";
+	$type_pattern = "([a-z]+)(?:\\s*\\(((?:[^'\")]*|$enum_length)+)\\))?\\s*(zerofill\\s*)?(unsigned(?:\\s+zerofill)?)?(?:\\s*(?:CHARSET|CHARACTER\\s+SET)\\s*['\"]?([^'\"\\s]+)['\"]?)?";
 	$pattern = "\\s*(" . ($type == "FUNCTION" ? "" : implode("|", $inout)) . ")?\\s*(?:`((?:[^`]+|``)*)`\\s*|\\b(\\S+)\\s+)$type_pattern";
 	$create = $mysql->result($mysql->query("SHOW CREATE $type " . idf_escape($name)), 2);
-	preg_match("~\\(($pattern(?:\\s*,$pattern)*)\\)" . ($type == "FUNCTION" ? "\\s*RETURNS\\s+$type_pattern" : "") . "\\s*(.*)~is", $create, $match);
+	preg_match("~\\(((?:$pattern\\s*,?)*)\\)" . ($type == "FUNCTION" ? "\\s*RETURNS\\s+$type_pattern" : "") . "\\s*(.*)~is", $create, $match);
 	$fields = array();
-	preg_match_all("~$pattern~is", $match[1], $matches, PREG_SET_ORDER);
+	preg_match_all("~$pattern\\s*,?~is", $match[1], $matches, PREG_SET_ORDER);
 	foreach ($matches as $i => $param) {
 		$fields[$i] = array(
 			"field" => str_replace("``", "`", $param[2]) . $param[3],
-			"type" => $param[4], //! type aliases
+			"type" => strtolower($param[4]), //! type aliases
 			"length" => preg_replace_callback("~$enum_length~s", 'normalize_enum', $param[5]),
 			"unsigned" => strtolower(preg_replace('~\\s+~', ' ', trim("$param[7] $param[6]"))),
-			"null" => true,
 			"inout" => strtoupper($param[1]),
-			//! detect character set
+			"collation" => strtolower($param[8]),
 		);
 	}
 	if ($type != "FUNCTION") {
-		return array("fields" => $fields, "definition" => $match[16]);
+		return array("fields" => $fields, "definition" => $match[10]);
 	}
-	$returns = array(
-		"type" => $match[16],
-		"length" => preg_replace_callback("~$enum_length~s", 'normalize_enum', $match[17]),
-		"unsigned" => strtolower(preg_replace('~\\s+~', ' ', trim("$match[19] $match[18]"))),
-	);
-	return array("fields" => $fields, "returns" => $returns, "definition" => $match[20]);
+	$returns = array("type" => $match[10], "length" => $match[11], "unsigned" => $match[13], "collation" => $match[14]);
+	return array("fields" => $fields, "returns" => $returns, "definition" => $match[15]);
 }

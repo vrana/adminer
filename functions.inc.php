@@ -117,10 +117,6 @@ function view($name) {
 	return array("select" => preg_replace('~^(?:[^`]+|`[^`]*`)* AS ~U', '', $mysql->result($mysql->query("SHOW CREATE VIEW " . idf_escape($name)), 1)));
 }
 
-function normalize_enum($match) {
-	return "'" . str_replace("'", "''", addcslashes(stripcslashes(str_replace($match[0]{0} . $match[0]{0}, $match[0]{0}, substr($match[0], 1, -1))), '\\')) . "'";
-}
-
 function unique_idf($row, $indexes) {
 	foreach ($indexes as $index) {
 		if ($index["type"] == "PRIMARY" || $index["type"] == "UNIQUE") {
