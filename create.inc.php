@@ -8,7 +8,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 		if (strlen($_GET["create"]) && strlen($_POST["fields"][$_POST["auto_increment"]]["orig"])) {
 			foreach (indexes($_GET["create"]) as $index) {
 				foreach ($index["columns"] as $column) {
-					if ($column == $_POST["fields"][$_POST["auto_increment"]]["orig"]) {
+					if ($column === $_POST["fields"][$_POST["auto_increment"]]["orig"]) {
 						$auto_increment_index = "";
 						break 2;
 					}
@@ -104,8 +104,9 @@ $collations = collations();
 <script type="text/javascript">
 document.write('<label for="column_comments"><input type="checkbox" id="column_comments"<?php if ($column_comments) { ?> checked="checked"<?php } ?> onclick="column_comments_click(this.checked);" /><?php echo lang('Show column comments'); ?></label>');
 function column_comments_click(checked) {
-	for (var i=0; <?php echo count($row["fields"]); ?> >= i; i++) {
-		document.getElementById('comment-' + i).style.display = (checked ? '' : 'none');
+	var trs = document.getElementsByTagName('tr');
+	for (var i=0; i < trs.length; i++) {
+		trs[i].getElementsByTagName('td')[5].style.display = (checked ? '' : 'none');
 	}
 }
 <?php if (!$column_comments) { ?>column_comments_click(false);<?php } ?>

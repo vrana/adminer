@@ -89,7 +89,7 @@ function edit_fields($fields, $collations, $type = "TABLE") {
 <?php if ($type == "TABLE") { ?>
 <td><?php echo lang('NULL'); ?></td>
 <td><input type="radio" name="auto_increment" value="" /><?php echo lang('Auto Increment'); ?></td>
-<td id="comment-0"><?php echo lang('Comment'); ?></td>
+<td><?php echo lang('Comment'); ?></td>
 <?php } ?>
 <td><input type="submit" name="add[0]" value="<?php echo lang('Add next'); ?>" /></td>
 </tr></thead>
@@ -105,22 +105,40 @@ function edit_fields($fields, $collations, $type = "TABLE") {
 <?php if ($type == "TABLE") { ?>
 <td><input type="checkbox" name="fields[<?php echo $i; ?>][null]" value="1"<?php if ($field["null"]) { ?> checked="checked"<?php } ?> /></td>
 <td><input type="radio" name="auto_increment" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked="checked"<?php } ?> /></td>
-<td id="comment-<?php echo $i; ?>"><input name="fields[<?php echo $i; ?>][comment]" value="<?php echo htmlspecialchars($field["comment"]); ?>" maxlength="255" /></td>
+<td><input name="fields[<?php echo $i; ?>][comment]" value="<?php echo htmlspecialchars($field["comment"]); ?>" maxlength="255" /></td>
 <?php } ?>
-<td><input type="submit" name="add[<?php echo $i; ?>]" value="<?php echo lang('Add next'); ?>" /></td>
+<td><input type="submit" name="add[<?php echo $i; ?>]" value="<?php echo lang('Add next'); ?>" onclick="return !add_row(this.parentNode.parentNode);" /></td>
 </tr>
 <?php
 		if (strlen($field["comment"])) {
 			$column_comments = true;
 		}
 	}
-	//! JavaScript for next rows
 	return $column_comments;
 }
 
 function type_change($count) {
 ?>
 <script type="text/javascript">
+var added = '.';
+function add_row(row) {
+	row.parentNode.insertBefore(row.cloneNode(true), row);
+	var tags = row.getElementsByTagName('*');
+	var match, x;
+	for (var i=0; i < tags.length; i++) {
+		if (tags[i].name == 'auto_increment') {
+			tags[i].value = x;
+		} else if (tags[i].name && (x || (match = /([0-9]+)(\.[0-9]+)?/.exec(tags[i].name)))) {
+			x = x || match[0] + (match[2] ? added.substr(match[2].length) : added) + '1';
+			tags[i].name = tags[i].name.replace(/([0-9.]+)/, x);
+			if (/\[(orig|field|comment)/.test(tags[i].name)) {
+				tags[i].value = '';
+			}
+		}
+	}
+	added += '0';
+	return true;
+}
 function type_change(type) {
 	var name = type.name.substr(0, type.name.length - 6);
 	type.form[name + '[collation]'].style.display = (/char|text|enum|set/.test(type.form[name + '[type]'].value) ? '' : 'none');
