@@ -54,8 +54,8 @@ foreach ($schema as $name => $table) {
 				$pos2 = $positions[$target_name][$target];
 				$min_pos = min($min_pos, $pos1, $pos2);
 				$max_pos = max($max_pos, $pos1, $pos2);
-				echo "<div style='left: " . ($left+1) . "px; top: $pos1" . "em; padding-top: .5em;'><div style='border-top: 1px solid Black; width: 12px;'></div></div>\n";
-				echo "<div style='left: " . ($left+1) . "px; top: $pos2" . "em;'><img src='arrow.gif' width='12' height='10' alt='' /></div>\n";
+				echo "<div style='left: " . ($left+1) . "px; top: $pos1" . "em; padding-top: .5em;'><div style='border-top: 1px solid Black; width: " . (-$left-2) . "px;'></div></div>\n";
+				echo "<div style='left: " . ($left+1) . "px; top: $pos2" . "em; width: " . (-$left-2) . "px; height: 1.25em; background: url(arrow.gif) no-repeat right center;'><div style='height: .5em; border-bottom: 1px solid Black; width: " . (-$left-14) . "px;'></div></div>\n";
 			}
 			echo "<div style='left: $left" . "px; top: $min_pos" . "em; padding: .5em 0;' /><div style='border-right: 1px solid Black; height: " . ($max_pos - $min_pos) . "em;'></div></div>\n";
 			$left -= 2;
