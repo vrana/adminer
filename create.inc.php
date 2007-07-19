@@ -5,10 +5,10 @@ if ($_POST && !$error && !$_POST["add"]) {
 		$message = lang('Table has been dropped.');
 	} else {
 		$auto_increment_index = " PRIMARY KEY";
-		if (strlen($_GET["create"]) && strlen($_POST["fields"][$_POST["auto_increment"]]["orig"])) {
+		if (strlen($_GET["create"]) && strlen($_POST["fields"][$_POST["auto_increment_col"]]["orig"])) {
 			foreach (indexes($_GET["create"]) as $index) {
 				foreach ($index["columns"] as $column) {
-					if ($column === $_POST["fields"][$_POST["auto_increment"]]["orig"]) {
+					if ($column === $_POST["fields"][$_POST["auto_increment_col"]]["orig"]) {
 						$auto_increment_index = "";
 						break 2;
 					}
@@ -27,7 +27,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 				$fields[] = (!strlen($_GET["create"]) ? "" : (strlen($field["orig"]) ? "CHANGE " . idf_escape($field["orig"]) . " " : "ADD "))
 					. idf_escape($field["field"]) . process_type($field)
 					. ($field["null"] ? "" : " NOT NULL")
-					. ($key == $_POST["auto_increment"] ? " AUTO_INCREMENT$auto_increment_index" : "")
+					. ($key == $_POST["auto_increment_col"] ? " AUTO_INCREMENT$auto_increment_index" : "")
 					. " COMMENT '" . $mysql->escape_string($field["comment"]) . "'"
 					. (strlen($_GET["create"]) && !strlen($field["orig"]) ? $after : "")
 				;
@@ -38,6 +38,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 		}
 		$status = ($_POST["Engine"] ? " ENGINE='" . $mysql->escape_string($_POST["Engine"]) . "'" : "")
 			. ($_POST["Collation"] ? " COLLATE '" . $mysql->escape_string($_POST["Collation"]) . "'" : "")
+			. (strlen($_POST["Auto_increment"]) ? " AUTO_INCREMENT=" . intval($_POST["Auto_increment"]) : "")
 			. " COMMENT='" . $mysql->escape_string($_POST["Comment"]) . "'"
 		;
 		if (strlen($_GET["create"])) {
@@ -73,8 +74,8 @@ if ($_POST) {
 	} else {
 		array_splice($row["fields"], key($_POST["add"]), 0, array(array()));
 	}
-	if ($row["auto_increment"]) {
-		$row["fields"][$row["auto_increment"] - 1]["auto_increment"] = true;
+	if ($row["auto_increment_col"]) {
+		$row["fields"][$row["auto_increment_col"] - 1]["auto_increment"] = true;
 	}
 } elseif (strlen($_GET["create"])) {
 	$row = table_status($_GET["create"]);
@@ -94,14 +95,15 @@ $collations = collations();
 <?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo htmlspecialchars($row["name"]); ?>" />
 <select name="Engine"><option value="">(<?php echo lang('engine'); ?>)</option><?php echo optionlist($engines, $row["Engine"]); ?></select>
 <select name="Collation"><option value="">(<?php echo lang('collation'); ?>)</option><?php echo optionlist($collations, $row["Collation"]); ?></select>
-<?php //! $row["Auto_increment"] ?>
 <input type="submit" value="<?php echo lang('Save'); ?>" />
 </p>
 <table border="0" cellspacing="0" cellpadding="2">
 <?php $column_comments = edit_fields($row["fields"], $collations); ?>
 </table>
 <?php echo type_change(count($row["fields"])); ?>
-<p><?php echo lang('Comment'); ?>: <input name="Comment" value="<?php echo htmlspecialchars($row["Comment"]); ?>" maxlength="60" />
+<p>
+<?php echo lang('Auto Increment'); ?>: <input name="Auto_increment" size="4" value="<?php echo intval($row["Auto_increment"]); ?>" />
+<?php echo lang('Comment'); ?>: <input name="Comment" value="<?php echo htmlspecialchars($row["Comment"]); ?>" maxlength="60" />
 <script type="text/javascript">
 document.write('<label for="column_comments"><input type="checkbox" id="column_comments"<?php if ($column_comments) { ?> checked="checked"<?php } ?> onclick="column_comments_click(this.checked);" /><?php echo lang('Show column comments'); ?></label>');
 function column_comments_click(checked) {

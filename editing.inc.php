@@ -88,7 +88,7 @@ function edit_fields($fields, $collations, $type = "TABLE") {
 <td><?php echo lang('Options'); ?></td>
 <?php if ($type == "TABLE") { ?>
 <td><?php echo lang('NULL'); ?></td>
-<td><input type="radio" name="auto_increment" value="" /><?php echo lang('Auto Increment'); ?></td>
+<td><input type="radio" name="auto_increment_col" value="" /><?php echo lang('Auto Increment'); ?></td>
 <td><?php echo lang('Comment'); ?></td>
 <?php } ?>
 <td><input type="submit" name="add[0]" value="<?php echo lang('Add next'); ?>" /></td>
@@ -104,7 +104,7 @@ function edit_fields($fields, $collations, $type = "TABLE") {
 <?php edit_type("fields[$i]", $field, $collations); ?>
 <?php if ($type == "TABLE") { ?>
 <td><input type="checkbox" name="fields[<?php echo $i; ?>][null]" value="1"<?php if ($field["null"]) { ?> checked="checked"<?php } ?> /></td>
-<td><input type="radio" name="auto_increment" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked="checked"<?php } ?> /></td>
+<td><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked="checked"<?php } ?> /></td>
 <td><input name="fields[<?php echo $i; ?>][comment]" value="<?php echo htmlspecialchars($field["comment"]); ?>" maxlength="255" /></td>
 <?php } ?>
 <td><input type="submit" name="add[<?php echo $i; ?>]" value="<?php echo lang('Add next'); ?>" onclick="return !add_row(this);" /></td>
@@ -128,7 +128,7 @@ function add_row(button) {
 	row.parentNode.insertBefore(row.cloneNode(true), row);
 	var tags = row.getElementsByTagName('*');
 	for (var i=0; i < tags.length; i++) {
-		if (tags[i].name == 'auto_increment') {
+		if (tags[i].name == 'auto_increment_col') {
 			tags[i].value = x;
 		} else if (tags[i].name) {
 			tags[i].name = tags[i].name.replace(/([0-9.]+)/, x);
