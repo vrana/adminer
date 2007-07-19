@@ -119,7 +119,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 			}
 		}
 		$childs = array();
-		//! possible slow-down, get only for InnoDB
+		/* slow-down
 		if ($mysql->server_info >= 5) {
 			// would be possible in earlier versions too, but only by examining all tables (in all databases)
 			$result1 = $mysql->query("SELECT * FROM information_schema.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = '" . $mysql->escape_string($_GET["db"]) . "' AND REFERENCED_TABLE_NAME = '" . $mysql->escape_string($_GET["select"]) . "' ORDER BY ORDINAL_POSITION");
@@ -131,6 +131,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 			}
 			$result1->free();
 		}
+		*/
 		
 		echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
 		for ($j=0; $row = $result->fetch_assoc(); $j++) {
