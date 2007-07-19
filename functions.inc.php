@@ -208,7 +208,7 @@ function select($result) {
 				$types = array();
 				for ($j=0; $j < count($row); $j++) {
 					$field = $result->fetch_field();
-					if (strlen($field->orgtable) && $field->flags & 2) {
+					if (strlen($field->orgtable)) {
 						if (!isset($indexes[$field->orgtable])) {
 							$indexes[$field->orgtable] = array();
 							foreach (indexes($field->orgtable) as $index) {
