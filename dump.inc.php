@@ -1,5 +1,7 @@
 <?php
 header("Content-Type: text/plain; charset=utf-8");
+$filename = (strlen($_GET["db"]) ? preg_replace('~[^a-z0-9_]~i', '-', (strlen($_GET["dump"]) ? $_GET["dump"] : $_GET["db"])) : "dump");
+header("Content-Disposition: inline; filename=$filename.sql");
 
 function dump_table($table, $data = true) {
 	global $mysql;
