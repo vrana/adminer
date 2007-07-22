@@ -33,7 +33,7 @@ if ($_POST && $error) {
 						if (is_object($result)) {
 							select($result);
 						} else {
-							if (preg_match('~^\\s*(CREATE|DROP)\\s*DATABASE\\b~', $query)) {
+							if (preg_match("~^\\s*(CREATE|DROP)(\\s+|/\\*.*\\*/|-- [^\n]*\n)+DATABASE\\b~sU", $query)) {
 								unset($_SESSION["databases"][$_GET["server"]]);
 							}
 							echo "<p class='message'>" . lang('Query executed OK, %d row(s) affected.', $mysql->affected_rows) . "</p>\n";
