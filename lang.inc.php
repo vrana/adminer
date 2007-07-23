@@ -24,7 +24,7 @@ static $translations = array(
 		'Create table' => 'Vytvořit tabulku',
 		'Unable to operate table' => 'Nepodařilo se zpracovat tabulku',
 		'Table name' => 'Název tabulky',
-		'engine' => 'typ tabulky',
+		'engine' => 'úložiště',
 		'collation' => 'porovnávání',
 		'Column name' => 'Název sloupce',
 		'Type' => 'Typ',
@@ -142,7 +142,7 @@ static $translations = array(
 		'Alter function' => 'Změnit funkci',
 		'Alter procedure' => 'Změnit proceduru',
 		'Unable to operate routine' => 'Nepořadilo se zpracovat proceduru',
-		'Return type' => '',
+		'Return type' => 'Návratový typ',
 	),
 );
 
