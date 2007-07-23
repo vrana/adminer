@@ -51,7 +51,7 @@ if ($_POST) {
 <form action="" method="post" id="form">
 <table border="0" cellspacing="0" cellpadding="2">
 <?php edit_fields($row["fields"], get_vals("SHOW CHARACTER SET"), $routine); ?>
-<?php if (isset($_GET["function"])) { ?><tr><td><?php echo lang('Return type'); ?></th><?php echo edit_type("returns", $row["returns"], $collations); ?></tr><?php } ?>
+<?php if (isset($_GET["function"])) { ?><tr><td><?php echo lang('Return type'); ?></td><?php echo edit_type("returns", $row["returns"], $collations); ?></tr><?php } ?>
 </table>
 <?php echo type_change(count($row["fields"])); ?>
 <?php if (isset($_GET["function"])) { ?>
