@@ -30,8 +30,8 @@ if (isset($_POST["server"])) {
 	redirect(substr($SELF, 0, -1), lang('Logout successful.'));
 }
 
-$username = $_SESSION["usernames"][$_GET["server"]];
-if (!isset($username) || !$mysql->connect($_GET["server"], $username, $_SESSION["passwords"][$_GET["server"]])) {
+function auth_error() {
+	$username = $_SESSION["usernames"][$_GET["server"]];
 	if ($_POST["token"] && !isset($username)) {
 		$_POST["token"] = token();
 	}
@@ -74,6 +74,11 @@ if (!isset($username) || !$mysql->connect($_GET["server"], $username, $_SESSION[
 	</form>
 	<?php
 	page_footer("auth");
+}
+
+$username = $_SESSION["usernames"][$_GET["server"]];
+if (!isset($username) || !$mysql->connect($_GET["server"], $username, $_SESSION["passwords"][$_GET["server"]])) {
+	auth_error();
 	exit;
 }
 $mysql->query("SET SQL_QUOTE_SHOW_CREATE=1");

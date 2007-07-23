@@ -38,6 +38,10 @@ if (extension_loaded("mysqli")) {
 			return (bool) $this->_link;
 		}
 		
+		function select_db($database) {
+			return mysql_select_db($database, $this->_link);
+		}
+		
 		function query($query) {
 			$result = mysql_query($query, $this->_link);
 			if (!$result) {
@@ -61,13 +65,9 @@ if (extension_loaded("mysqli")) {
 		function next_result() {
 			return false;
 		}
-
+		
 		function result($result, $field = 0) {
 			return mysql_result($result->_result, 0, $field);
-		}
-		
-		function select_db($database) {
-			return mysql_select_db($database, $this->_link);
 		}
 		
 		function escape_string($string) {
@@ -76,11 +76,10 @@ if (extension_loaded("mysqli")) {
 	}
 	
 	class Min_MySQLResult {
-		var $_result, $_offset, $num_rows;
+		var $_result, $_offset = 0, $num_rows;
 		
 		function Min_MySQLResult($result) {
 			$this->_result = $result;
-			$this->_offset = 0;
 			$this->num_rows = mysql_num_rows($result);
 		}
 		
@@ -97,7 +96,6 @@ if (extension_loaded("mysqli")) {
 			$row->orgtable = $row->table;
 			$row->orgname = $row->name;
 			$row->charsetnr = ($row->blob ? 63 : 0);
-			$row->flags = ($row->primary_key ? 2 : 0);
 			return $row;
 		}
 		
@@ -108,9 +106,95 @@ if (extension_loaded("mysqli")) {
 	
 	$mysql = new Min_MySQL;
 
+} elseif (extension_loaded("pdo_mysql")) {
+	class Min_PDO_MySQL extends PDO {
+		var $_dsn, $_username, $_password, $_result, $server_info, $affected_rows, $error;
+		
+		function __construct() {
+		}
+		
+		function connect($server, $username, $password) {
+			$this->_dsn = "mysql:host=$server";
+			$this->_username = $username;
+			$this->_password = $password;
+			set_exception_handler('auth_error'); // try/catch is not compatible with PHP 4
+			parent::__construct($this->_dsn, $username, $password);
+			restore_exception_handler();
+			$this->setAttribute(13, array('Min_PDOStatement')); // PDO::ATTR_STATEMENT_CLASS
+			$this->server_info = $this->result($this->query("SELECT VERSION()"));
+			return true;
+		}
+		
+		function select_db($database) {
+			parent::__construct("$this->_dsn;dbname=$database", $this->_username, $this->_password); // semicolon in $database is not allowed by PDO
+			return $this;
+		}
+		
+		function query($query) {
+			$result = parent::query($query);
+			if (!$result) {
+				$errorInfo = $this->errorInfo();
+				$this->error = $errorInfo[2];
+				return false;
+			}
+			$this->_result = $result;
+			if (!$result->columnCount()) {
+				$this->affected_rows = $result->rowCount();
+				return true;
+			}
+			$result->num_rows = $result->rowCount();
+			return $result;
+		}
+		
+		function multi_query($query) {
+			return $this->query($query);
+		}
+		
+		function store_result() {
+			return ($this->_result->columnCount() ? $this->_result : true);
+		}
+		
+		function next_result() {
+			return $this->_result->nextRowset();
+		}
+		
+		function result($result, $field = 0) {
+			$row = $result->fetch();
+			return $row[$field];
+		}
+		
+		function escape_string($string) {
+			return substr($this->quote($string), 1, -1);
+		}
+	}
+	
+	class Min_PDOStatement extends PDOStatement {
+		var $_offset = 0, $num_rows;
+		
+		function fetch_assoc() {
+			return $this->fetch(2); // PDO::FETCH_ASSOC
+		}
+		
+		function fetch_row() {
+			return $this->fetch(3); // PDO::FETCH_NUM
+		}
+		
+		function fetch_field() {
+			$row = (object) $this->getColumnMeta($this->_offset++);
+			// table and charset is not available
+			return $row;
+		}
+		
+		function free() {
+			// $this->__destruct() is not callable
+		}
+	}
+	
+	$mysql = new Min_PDO_MySQL;
+
 } else {
 	page_header(lang('No MySQL extension'));
-	echo "<p class='error'>" . lang('None of supported PHP extensions (%s) are available.', 'mysqli, mysql') . "</p>\n";
+	echo "<p class='error'>" . lang('None of supported PHP extensions (%s) are available.', 'mysqli, mysql, pdo') . "</p>\n";
 	page_footer("auth");
 	exit;
 }
