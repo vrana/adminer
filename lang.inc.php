@@ -143,6 +143,15 @@ static $translations = array(
 		'Alter procedure' => 'Změnit proceduru',
 		'Unable to operate routine' => 'Nepořadilo se zpracovat proceduru',
 		'Return type' => 'Návratový typ',
+		'Add trigger' => 'Přidat spoušť',
+		'Trigger has been dropped.' => 'Spoušť byla odstraněna.',
+		'Trigger has been altered.' => 'Spoušť byla změněna.',
+		'Trigger has been created.' => 'Spoušť byla vytvořena.',
+		'Alter trigger' => 'Změnit spoušť',
+		'Create trigger' => 'Vytvořit spoušť',
+		'Unable to operate trigger' => 'Nepořadilo se zpracovat spoušť',
+		'Time' => 'Čas',
+		'Event' => 'Událost',
 	),
 );
 

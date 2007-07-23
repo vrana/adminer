@@ -73,6 +73,8 @@ if (isset($_GET["dump"])) {
 			include "./createv.inc.php";
 		} elseif (isset($_GET["procedure"])) {
 			include "./procedure.inc.php";
+		} elseif (isset($_GET["trigger"])) {
+			include "./trigger.inc.php";
 		} elseif (isset($_GET["processlist"])) {
 			include "./processlist.inc.php";
 		} else {

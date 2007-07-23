@@ -59,14 +59,15 @@ if (!$result) {
 }
 
 if ($mysql->server_info >= 5) {
+	echo "<h3>" . lang('Triggers') . "</h3>\n";
 	$result = $mysql->query("SHOW TRIGGERS LIKE '" . $mysql->escape_string(addcslashes($_GET["table"], "%_")) . "'");
 	if ($result->num_rows) {
-		echo "<h3>" . lang('Triggers') . "</h3>\n";
 		echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
 		while ($row = $result->fetch_assoc()) {
-			echo "<tr valign='top'><th>$row[Timing]</th><th>$row[Event]</th><td><pre class='jush-sql'>" . htmlspecialchars($row["Statement"]) . "</pre></td></tr>\n";
+			echo "<tr valign='top'><th>$row[Timing]</th><th>$row[Event]</th><td>" . htmlspecialchars($row["Trigger"]) . "</td><td><a href=\"" . htmlspecialchars($SELF) . 'trigger=' . urlencode($_GET["table"]) . '&amp;name=' . urlencode($row["Trigger"]) . '">' . lang('Alter') . "</a></td></tr>\n";
 		}
 		echo "</table>\n";
 	}
 	$result->free();
+	echo '<p><a href="' . htmlspecialchars($SELF) . 'trigger=' . urlencode($_GET["table"]) . '">' . lang('Add trigger') . "</a></p>\n";
 }
