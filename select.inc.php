@@ -136,7 +136,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 		echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
 		for ($j=0; $row = $result->fetch_assoc(); $j++) {
 			if (!$j) {
-				echo "<thead><tr><th>" . implode("</th><th>", array_map('htmlspecialchars', array_keys($row))) . "</th><th>" . lang('Action') . "</th></tr></thead>\n";
+				echo "<thead><tr><th>" . implode("</th><th>", array_map('htmlspecialchars', array_keys($row))) . "</th><th>&nbsp;</th></tr></thead>\n";
 			}
 			echo "<tr>";
 			$unique_idf = '&amp;' . implode('&amp;', unique_idf($row, $indexes));
