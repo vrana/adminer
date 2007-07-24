@@ -108,17 +108,14 @@ if (extension_loaded("mysqli")) {
 
 } elseif (extension_loaded("pdo_mysql")) {
 	class Min_PDO_MySQL extends PDO {
-		var $_dsn, $_username, $_password, $_result, $server_info, $affected_rows, $error;
+		var $_result, $server_info, $affected_rows, $error;
 		
 		function __construct() {
 		}
 		
 		function connect($server, $username, $password) {
-			$this->_dsn = "mysql:host=$server";
-			$this->_username = $username;
-			$this->_password = $password;
 			set_exception_handler('auth_error'); // try/catch is not compatible with PHP 4
-			parent::__construct($this->_dsn, $username, $password);
+			parent::__construct("mysql:host=$server", $username, $password);
 			restore_exception_handler();
 			$this->setAttribute(13, array('Min_PDOStatement')); // PDO::ATTR_STATEMENT_CLASS
 			$this->server_info = $this->result($this->query("SELECT VERSION()"));
@@ -126,8 +123,7 @@ if (extension_loaded("mysqli")) {
 		}
 		
 		function select_db($database) {
-			parent::__construct("$this->_dsn;dbname=$database", $this->_username, $this->_password); // semicolon in $database is not allowed by PDO
-			return $this;
+			return $this->query("USE " . idf_escape($database));
 		}
 		
 		function query($query) {
