@@ -125,25 +125,31 @@ function add_row(button) {
 	var match = /([0-9]+)(\.[0-9]+)?/.exec(button.name)
 	var x = match[0] + (match[2] ? added.substr(match[2].length) : added) + '1';
 	var row = button.parentNode.parentNode;
-	row.parentNode.insertBefore(row.cloneNode(true), row);
-	var tags = row.getElementsByTagName('*');
+	var row2 = row.cloneNode(true);
+	var tags = row.getElementsByTagName('SELECT');
+	var tags2 = row2.getElementsByTagName('SELECT');
+	for (var i=0; i < tags.length; i++) {
+		tags[i].name = tags[i].name.replace(/([0-9.]+)/, x);
+		tags2[i].selectedIndex = tags[i].selectedIndex;
+	}
+	tags = row.getElementsByTagName('INPUT');
 	for (var i=0; i < tags.length; i++) {
 		if (tags[i].name == 'auto_increment_col') {
 			tags[i].value = x;
-		} else if (tags[i].name) {
-			tags[i].name = tags[i].name.replace(/([0-9.]+)/, x);
-			if (/\[(orig|field|comment)/.test(tags[i].name)) {
-				tags[i].value = '';
-			}
+		}
+		tags[i].name = tags[i].name.replace(/([0-9.]+)/, x);
+		if (/\[(orig|field|comment)/.test(tags[i].name)) {
+			tags[i].value = '';
 		}
 	}
+	row.parentNode.insertBefore(row2, row);
 	added += '0';
 	return true;
 }
 function type_change(type) {
 	var name = type.name.substr(0, type.name.length - 6);
-	type.form[name + '[collation]'].style.display = (/char|text|enum|set/.test(type.form[name + '[type]'].value) ? '' : 'none');
-	type.form[name + '[unsigned]'].style.display = (/int|float|double|decimal/.test(type.form[name + '[type]'].value) ? '' : 'none');
+	type.form[name + '[collation]'].style.display = (/char|text|enum|set/.test(type.options[type.selectedIndex].text) ? '' : 'none');
+	type.form[name + '[unsigned]'].style.display = (/int|float|double|decimal/.test(type.options[type.selectedIndex].text) ? '' : 'none');
 }
 for (var i=1; <?php echo $count; ?> >= i; i++) {
 	document.getElementById('form')['fields[' + i + '][type]'].onchange();
