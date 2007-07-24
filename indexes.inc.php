@@ -108,7 +108,6 @@ foreach ($row["indexes"] as $index) {
 	echo "</td></tr>\n";
 	$j++;
 }
-//! JavaScript for adding more indexes and columns
 ?>
 </table>
 <p>
