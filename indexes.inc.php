@@ -65,17 +65,45 @@ if ($_POST) {
 }
 ?>
 
+<script type="text/javascript">
+function add_row(field) {
+	var row = field.parentNode.parentNode.cloneNode(true);
+	var spans = row.getElementsByTagName('span');
+	row.getElementsByTagName('td')[1].innerHTML = '<span>' + spans[spans.length - 1].innerHTML + '</span>';
+	var selects = row.getElementsByTagName('select');
+	for (var i=0; i < selects.length; i++) {
+		selects[i].name = selects[i].name.replace(/indexes\[[0-9]+/, '$&1');
+	}
+	var input = row.getElementsByTagName('input')[0];
+	input.name = input.name.replace(/indexes\[[0-9]+/, '$&1');
+	input.value = '';
+	field.parentNode.parentNode.parentNode.appendChild(row);
+	field.onchange = function () { };
+}
+
+function add_column(field) {
+	var column = field.parentNode.cloneNode(true);
+	var select = column.getElementsByTagName('select')[0];
+	select.name = select.name.replace(/\]\[[0-9]+/, '$&1');
+	var input = column.getElementsByTagName('input')[0];
+	input.name = input.name.replace(/\]\[[0-9]+/, '$&1');
+	input.value = '';
+	field.parentNode.parentNode.appendChild(column);
+	field.onchange = function () { };
+}
+</script>
+
 <form action="" method="post">
 <table border="0" cellspacing="0" cellpadding="2">
 <thead><tr><th><?php echo lang('Index Type'); ?></th><td><?php echo lang('Column (length)'); ?></td></tr></thead>
 <?php
 $j = 0;
 foreach ($row["indexes"] as $index) {
-	echo "<tr><td><select name='indexes[$j][type]'><option></option>" . optionlist($index_types, $index["type"]) . "</select></td><td>";
+	echo "<tr><td><select name='indexes[$j][type]'" . ($j == count($row["indexes"]) - 1 ? " onchange='add_row(this);'" : "") . "><option></option>" . optionlist($index_types, $index["type"]) . "</select></td><td>\n";
 	ksort($index["columns"]);
 	foreach ($index["columns"] as $i => $column) {
-		echo "<select name='indexes[$j][columns][$i]'><option></option>" . optionlist($fields, $column) . "</select>";
-		echo "<input name='indexes[$j][lengths][$i]' size='2' value=\"" . htmlspecialchars($index["lengths"][$i]) . "\" />\n";
+		echo "<span><select name='indexes[$j][columns][$i]'" . ($i == count($index["columns"]) ? " onchange='add_column(this);'" : "") . "><option></option>" . optionlist($fields, $column) . "</select>";
+		echo "<input name='indexes[$j][lengths][$i]' size='2' value=\"" . htmlspecialchars($index["lengths"][$i]) . "\" /></span>\n";
 	}
 	echo "</td></tr>\n";
 	$j++;
