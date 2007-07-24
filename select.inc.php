@@ -60,11 +60,24 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 	document.getElementById('form')['where[' + i + '][op]'].onchange();
 }
 <?php } ?>
+
+function add_row(field) {
+	var row = field.parentNode.cloneNode(true);
+	var selects = row.getElementsByTagName('select');
+	for (var i=0; i < selects.length; i++) {
+		selects[i].name = selects[i].name.replace(/[a-z]\[[0-9]+/, '$&1');
+	}
+	var input = row.getElementsByTagName('input')[0];
+	input.name = input.name.replace(/[a-z]\[[0-9]+/, '$&1');
+	input.value = '';
+	field.parentNode.parentNode.appendChild(row);
+	field.onchange = function () { };
+}
 </script>
 <?php
-	echo "<div><select name='where[$i][col]'><option></option>" . optionlist($columns, array()) . "</select>";
+	echo "<div><select name='where[$i][col]' onchange='add_row(this);'><option></option>" . optionlist($columns, array()) . "</select>";
 	echo "<select name='where[$i][op]' onchange=\"where_change(this);\">" . optionlist($operators, array()) . "</select>";
-	echo "<input name='where[$i][val]' /></div>\n"; //! JavaScript for adding next
+	echo "<input name='where[$i][val]' /></div>\n";
 	echo "</fieldset>\n";
 	
 	echo "<fieldset><legend>" . lang('Sort') . "</legend>\n";
@@ -74,12 +87,12 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 		if (in_array($val, $columns, true)) {
 			$order[] = idf_escape($val) . (isset($_GET["desc"][$key]) ? " DESC" : "");
 			echo "<div><select name='order[$i]'><option></option>" . optionlist($columns, $val) . "</select>";
-			echo "<label for='desc-$i'><input type='checkbox' name='desc[$i]' value='1' id='desc-$i'" . (isset($_GET["desc"][$key]) ? " checked='checked'" : "") . " />" . lang('DESC') . "</label></div>\n";
+			echo "<label><input type='checkbox' name='desc[$i]' value='1'" . (isset($_GET["desc"][$key]) ? " checked='checked'" : "") . " />" . lang('DESC') . "</label></div>\n";
 			$i++;
 		}
 	}
-	echo "<div><select name='order[$i]'><option></option>" . optionlist($columns, array()) . "</select>";
-	echo "<label for='desc-$i'><input type='checkbox' name='desc[$i]' value='1' id='desc-$i' />" . lang('DESC') . "</label></div>\n";
+	echo "<div><select name='order[$i]' onchange='add_row(this);'><option></option>" . optionlist($columns, array()) . "</select>";
+	echo "<label><input type='checkbox' name='desc[$i]' value='1' />" . lang('DESC') . "</label></div>\n";
 	echo "</fieldset>\n";
 	
 	echo "<fieldset><legend>" . lang('Limit') . "</legend>\n";
