@@ -39,11 +39,17 @@ if (!$columns) {
 			echo "<br />\n";
 		}
 	}
-	$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "REGEXP", "IS NULL");
+	$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "REGEXP", "IN", "IS NULL");
 	$i = 0;
 	foreach ((array) $_GET["where"] as $val) {
 		if (strlen($val["col"]) && in_array($val["op"], $operators)) {
-			$where[] = idf_escape($val["col"]) . " $val[op]" . ($val["op"] != "IS NULL" ? " '" . $mysql->escape_string($val["val"]) . "'" : "");
+			if ($val["op"] == "IN") {
+				$in = process_length($val["val"]);
+				if (!strlen($in)) {
+					$in = "NULL";
+				}
+			}
+			$where[] = idf_escape($val["col"]) . " $val[op]" . ($val["op"] == "IS NULL" ? "" : ($val["op"] == "IN" ? " ($in)" : " '" . $mysql->escape_string($val["val"]) . "'"));
 			echo "<div><select name='where[$i][col]'><option></option>" . optionlist($columns, $val["col"]) . "</select>";
 			echo "<select name='where[$i][op]' onchange=\"where_change(this);\">" . optionlist($operators, $val["op"]) . "</select>";
 			echo "<input name='where[$i][val]' value=\"" . htmlspecialchars($val["val"]) . "\" /></div>\n";
