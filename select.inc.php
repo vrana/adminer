@@ -174,10 +174,22 @@ function add_row(field) {
 		}
 		echo "</table>\n";
 		if (intval($limit) && $found_rows > $limit) {
-			echo "<p>" . lang('Page') . ":\n";
-			for ($i=0; $i < $found_rows / $limit; $i++) {
-				echo ($i == $_GET["page"] ? $i + 1 : '<a href="' . htmlspecialchars(preg_replace('~(\\?)page=[^&]*&|&page=[^&]*~', '\\1', $_SERVER["REQUEST_URI"]) . ($i ? "&page=$i" : "")) . '">' . ($i + 1) . "</a>") . "\n";
+			$max_page = floor($found_rows / $limit);
+			function print_page($page) {
+				echo " " . ($page == $_GET["page"] ? $page + 1 : '<a href="' . htmlspecialchars(preg_replace('~(\\?)page=[^&]*&|&page=[^&]*~', '\\1', $_SERVER["REQUEST_URI"]) . ($page ? "&page=$page" : "")) . '">' . ($page + 1) . "</a>");
 			}
+			echo "<p>" . lang('Page') . ":";
+			print_page(0);
+			if ($_GET["page"] > 3) {
+				echo " ...";
+			}
+			for ($i = max(1, $_GET["page"] - 2); $i < min($max_page, $_GET["page"] + 3); $i++) {
+				print_page($i);
+			}
+			if ($_GET["page"] + 3 < $max_page) {
+				echo " ...";
+			}
+			print_page($max_page);
 			echo "</p>\n";
 		}
 	}
