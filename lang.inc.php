@@ -152,6 +152,8 @@ static $translations = array(
 		'Unable to operate trigger' => 'Nepořadilo se zpracovat spoušť',
 		'Time' => 'Čas',
 		'Event' => 'Událost',
+		'MySQL version' => 'Verze MySQL',
+		'through PHP extension' => 'přes PHP extenzi',
 	),
 );
 
