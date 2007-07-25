@@ -54,6 +54,8 @@ function process_input($name, $field) {
 			return false; //! report errors, also empty $_POST (too big POST data, not only FILES)
 		}
 		return "_binary'" . (is_string($file) ? $mysql->escape_string($file) : "") . "'";
+	} elseif ($field["type"] == "timestamp" && $value == "CURRENT_TIMESTAMP") {
+		return $value;
 	} else {
 		return "'" . $mysql->escape_string($value) . "'";
 	}
