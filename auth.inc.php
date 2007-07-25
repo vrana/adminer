@@ -31,6 +31,7 @@ if (isset($_POST["server"])) {
 }
 
 function auth_error() {
+	global $ignore;
 	$username = $_SESSION["usernames"][$_GET["server"]];
 	if ($_POST["token"] && !isset($username)) {
 		$_POST["token"] = token();
