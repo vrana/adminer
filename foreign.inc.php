@@ -73,9 +73,11 @@ foreach ($row["source"] as $key => $val) {
 	echo "</tr>\n";
 }
 ?>
-<tr><th><?php echo lang('ON DELETE'); ?></th><td><select name="on_delete"><option></option><?php echo optionlist($on_actions, $row["on_delete"]); ?></select></td></tr>
-<tr><th><?php echo lang('ON UPDATE'); ?></th><td><select name="on_update"><option></option><?php echo optionlist($on_actions, $row["on_update"]); ?></select></td></tr>
 </table>
+<p>
+<?php echo lang('ON DELETE'); ?>: <select name="on_delete"><option></option><?php echo optionlist($on_actions, $row["on_delete"]); ?></select>
+<?php echo lang('ON UPDATE'); ?>: <select name="on_update"><option></option><?php echo optionlist($on_actions, $row["on_update"]); ?></select>
+</p>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
 <input type="submit" value="<?php echo lang('Save'); ?>" />
