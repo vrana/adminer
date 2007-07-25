@@ -19,7 +19,7 @@ if ($_POST && !$error) {
 				if (!isset($_GET["default"])) {
 					$set[] = idf_escape($name) . " = $val";
 				} elseif ($field["type"] == "timestamp") {
-					$set[] = " MODIFY " . idf_escape($name) . " timestamp" . ($field["null"] ? " NULL" : "") . " DEFAULT $val"; //! ON UPDATE
+					$set[] = " MODIFY " . idf_escape($name) . " timestamp" . ($field["null"] ? " NULL" : "") . " DEFAULT $val" . ($_POST["on_update"][bracket_escape($name)] ? " ON UPDATE CURRENT_TIMESTAMP" : "");
 				} else {
 					$set[] = " ALTER " . idf_escape($name) . ($val == "NULL" ? " DROP DEFAULT" : " SET DEFAULT $val");
 				}
@@ -70,6 +70,7 @@ if ($_POST) {
 <form action="" method="post" enctype="multipart/form-data">
 <?php
 if ($fields) {
+	unset($create);
 	echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
 	foreach ($fields as $name => $field) {
 		echo "<tr><th>" . htmlspecialchars($name) . "</th><td>";
@@ -81,6 +82,14 @@ if ($fields) {
 			$value = $row[$name];
 		}
 		input($name, $field, $value);
+		if (isset($_GET["default"]) && $field["type"] == "timestamp") {
+			$id = htmlspecialchars("on_update-$name");
+			if (!isset($create) && !$_POST) {
+				$create = $mysql->result($mysql->query("SHOW CREATE TABLE " . idf_escape($_GET["edit"])), 1);
+			}
+			$checked = ($_POST ? $_POST["on_update"][bracket_escape($name)] : preg_match("~\n\\s*" . preg_quote(idf_escape($name), '~') . " timestamp.* on update CURRENT_TIMESTAMP~i", $create));
+			echo '<label for="' . $id . '"><input type="checkbox" name="on_update[' . htmlspecialchars(bracket_escape($name)) . ']" id="' . $id . '" value="1"' . ($checked ? ' checked="checked"' : '') . ' />' . lang('ON UPDATE CURRENT_TIMESTAMP') . '</label>';
+		}
 		echo "</td></tr>\n";
 	}
 	echo "</table>\n";

@@ -117,8 +117,8 @@ static $translations = array(
 		'Add column' => 'Přidat sloupec',
 		'Alter' => 'Změnit',
 		'Add foreign key' => 'Přidat cizí klíč',
-		'ON DELETE' => 'ON DELETE',
-		'ON UPDATE' => 'ON UPDATE',
+		'ON DELETE' => 'Při smazání',
+		'ON UPDATE' => 'Při změně',
 		'Index Type' => 'Typ indexu',
 		'Column (length)' => 'Sloupec (délka)',
 		'View has been dropped.' => 'Pohled byl odstraněn.',
@@ -156,6 +156,7 @@ static $translations = array(
 		'MySQL version' => 'Verze MySQL',
 		'through PHP extension' => 'přes PHP extenzi',
 		'%d row(s)' => array('%d řádek', '%d řádky', '%d řádků'),
+		'ON UPDATE CURRENT_TIMESTAMP' => 'Při změně aktuální čas',
 	),
 );
 
