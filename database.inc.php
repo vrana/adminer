@@ -2,6 +2,7 @@
 if ($_POST && !$error) {
 	if ($_POST["drop"]) {
 		if ($mysql->query("DROP DATABASE " . idf_escape($_GET["db"]))) {
+			unset($_SESSION["databases"][$_GET["server"]]);
 			redirect(substr(preg_replace('~db=[^&]*&~', '', $SELF), 0, -1), lang('Database has been dropped.'));
 		}
 	} elseif ($_GET["db"] !== $_POST["name"]) {
