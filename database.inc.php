@@ -30,6 +30,7 @@ if ($_POST && !$error) {
 }
 
 page_header(strlen($_GET["db"]) ? lang('Alter database') . ": " . htmlspecialchars($_GET["db"]) : lang('Create database'));
+$collations = collations();
 
 if ($_POST) {
 	echo "<p class='error'>" . lang('Unable to operate database') . ": " . htmlspecialchars($error) . "</p>\n";
@@ -39,8 +40,11 @@ if ($_POST) {
 	$name = $_GET["db"];
 	$collate = array();
 	if (strlen($_GET["db"]) && ($result = $mysql->query("SHOW CREATE DATABASE " . idf_escape($_GET["db"])))) {
-		if (preg_match('~ COLLATE ([^ ]+)~', $mysql->result($result, 1), $match)) {
+		$create = $mysql->result($result, 1);
+		if (preg_match('~ COLLATE ([^ ]+)~', $create, $match)) {
 			$collate = $match[1];
+		} elseif (preg_match('~ CHARACTER SET ([^ ]+)~', $create, $match)) {
+			$collate = $collations[$match[1]][0];
 		}
 		$result->free();
 	}
@@ -50,7 +54,7 @@ if ($_POST) {
 <form action="" method="post">
 <p>
 <input name="name" value="<?php echo htmlspecialchars($name); ?>" maxlength="64" />
-<select name="collation"><option value="">(<?php echo lang('collation'); ?>)</option><?php echo optionlist(collations(), $collate); ?></select>
+<select name="collation"><option value="">(<?php echo lang('collation'); ?>)</option><?php echo optionlist($collations, $collate); ?></select>
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
 <input type="submit" value="<?php echo lang('Save'); ?>" />
 <?php if (strlen($_GET["db"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>" /><?php } ?>
