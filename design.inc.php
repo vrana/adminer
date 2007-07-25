@@ -71,7 +71,7 @@ function page_footer($missing = false) {
 			} else {
 				echo "<p>\n";
 				while ($row = $result->fetch_assoc()) {
-					echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row["Name"]) . '">' . lang('select') . '</a> ';
+					echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row["Name"]) . '" title="' . lang('%d row(s)', $row["Rows"]) . '">' . lang('select') . '</a> ';
 					echo '<a href="' . htmlspecialchars($SELF) . (isset($row["Engine"]) ? 'table' : 'view') . '=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . "</a><br />\n";
 				}
 				echo "</p>\n";
