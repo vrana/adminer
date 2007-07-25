@@ -26,7 +26,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 			if (strlen($field["field"]) && isset($types[$field["type"]])) {
 				$fields[] = (!strlen($_GET["create"]) ? "" : (strlen($field["orig"]) ? "CHANGE " . idf_escape($field["orig"]) . " " : "ADD "))
 					. idf_escape($field["field"]) . process_type($field)
-					. ($field["null"] ? "" : " NOT NULL")
+					. ($field["null"] ? " NULL" : " NOT NULL") // NULL for timestamp
 					. ($key == $_POST["auto_increment_col"] ? " AUTO_INCREMENT$auto_increment_index" : "")
 					. " COMMENT '" . $mysql->escape_string($field["comment"]) . "'"
 					. (strlen($_GET["create"]) && !strlen($field["orig"]) ? $after : "")

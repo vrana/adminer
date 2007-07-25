@@ -1,9 +1,9 @@
 <?php
 $where = where();
-$fields = array();
-foreach (fields($_GET["edit"]) as $name => $field) {
-	if (isset($_GET["default"]) ? !$field["auto_increment"] : isset($field["privileges"][$where ? "update" : "insert"])) {
-		$fields[$name] = $field;
+$fields = fields($_GET["edit"]);
+foreach ($fields as $name => $field) {
+	if (isset($_GET["default"]) ? $field["auto_increment"] : !isset($field["privileges"][$where ? "update" : "insert"])) {
+		unset($fields[$name]);
 	}
 }
 if ($_POST && !$error) {
@@ -16,11 +16,17 @@ if ($_POST && !$error) {
 		foreach ($fields as $name => $field) {
 			$val = process_input($name, $field);
 			if ($val !== false) {
-				$set[] = idf_escape($name) . (isset($_GET["default"]) ? ($val == "NULL" ? " DROP DEFAULT" : " SET DEFAULT $val") : " = $val");
+				if (!isset($_GET["default"])) {
+					$set[] = idf_escape($name) . " = $val";
+				} elseif ($field["type"] == "timestamp") {
+					$set[] = " MODIFY " . idf_escape($name) . " timestamp" . ($field["null"] ? " NULL" : "") . " DEFAULT $val"; //! ON UPDATE
+				} else {
+					$set[] = " ALTER " . idf_escape($name) . ($val == "NULL" ? " DROP DEFAULT" : " SET DEFAULT $val");
+				}
 			}
 		}
 		if (isset($_GET["default"])) {
-			$query = "ALTER TABLE " . idf_escape($_GET["edit"]) . " ALTER " . implode(", ALTER ", $set);
+			$query = "ALTER TABLE " . idf_escape($_GET["edit"]) . implode(",", $set);
 			$message = lang('Default values has been set.');
 		} elseif ($where) {
 			$query = "UPDATE " . idf_escape($_GET["edit"]) . " SET " . implode(", ", $set) . " WHERE " . implode(" AND ", $where) . " LIMIT 1";
