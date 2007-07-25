@@ -161,7 +161,6 @@ function lang($idf, $number = null) {
 	if ($number === false) { // used in _compile.php
 		return ($translation ? $translation : $idf);
 	}
-	$args = func_get_args();
 	if (is_array($translation) && $translation) {
 		switch ($LANG) {
 			case 'cs': $pos = ($number == 1 ? 0 : (!$number || $number >= 5 ? 2 : 1)); break;
@@ -169,10 +168,9 @@ function lang($idf, $number = null) {
 		}
 		$translation = $translation[$pos];
 	}
-	if ($translation) {
-		$args[0] = $translation;
-	}
-	return call_user_func_array('sprintf', $args);
+	$args = func_get_args();
+	array_shift($args);
+	return vsprintf(($translation ? $translation : $idf), $args);
 }
 
 function switch_lang() {
