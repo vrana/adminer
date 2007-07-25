@@ -193,11 +193,22 @@ if (isset($_GET["lang"])) {
 if (strlen($_COOKIE["lang"])) {
 	$LANG = $_COOKIE["lang"];
 } else {
-	$LANG = preg_replace('~[,;].*~', '', $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
-	if (!isset($translations[$LANG])) { //! try next languages
-		$LANG = preg_replace('~-.*~', '', $LANG);
-		if (!isset($translations[$LANG])) {
-			$LANG = "en";
+	$accept_language = array();
+	preg_match_all('~([-a-z]+)(;q=([0-9.]+))?~', $_SERVER["HTTP_ACCEPT_LANGUAGE"], $matches, PREG_SET_ORDER);
+	foreach ($matches as $match) {
+		$accept_language[$match[1]] = ($match[3] ? $match[3] : 1);
+	}
+	arsort($accept_language);
+	$LANG = "en";
+	foreach ($accept_language as $lang => $q) {
+		if (isset($translations[$lang])) {
+			$LANG = $lang;
+			break;
+		}
+		$lang = preg_replace('~-.*~', '', $LANG);
+		if (!isset($accept_language[$lang]) && isset($translations[$lang])) {
+			$LANG = $lang;
+			break;
 		}
 	}
 }
