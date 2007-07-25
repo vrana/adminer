@@ -131,20 +131,6 @@ function add_row(field) {
 				$foreign_keys[$val][] = $foreign_key;
 			}
 		}
-		$childs = array();
-		/* slow-down
-		if ($mysql->server_info >= 5) {
-			// would be possible in earlier versions too, but only by examining all tables (in all databases)
-			$result1 = $mysql->query("SELECT * FROM information_schema.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = '" . $mysql->escape_string($_GET["db"]) . "' AND REFERENCED_TABLE_NAME = '" . $mysql->escape_string($_GET["select"]) . "' ORDER BY ORDINAL_POSITION");
-			while ($row1 = $result1->fetch_assoc()) {
-				$childs[$row1["CONSTRAINT_NAME"]]["db"] = $row1["TABLE_SCHEMA"];
-				$childs[$row1["CONSTRAINT_NAME"]]["table"] = $row1["TABLE_NAME"];
-				$childs[$row1["CONSTRAINT_NAME"]]["source"][] = $row1["REFERENCED_COLUMN_NAME"];
-				$childs[$row1["CONSTRAINT_NAME"]]["target"][] = $row1["COLUMN_NAME"];
-			}
-			$result1->free();
-		}
-		*/
 		
 		echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
 		for ($j=0; $row = $result->fetch_assoc(); $j++) {
@@ -177,15 +163,7 @@ function add_row(field) {
 				}
 				echo "<td>$val</td>";
 			}
-			echo '<td><a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . $unique_idf . '">' . lang('edit') . '</a>';
-			foreach ($childs as $child) {
-				echo ' <a href="' . htmlspecialchars(strlen($child["db"]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($child["db"]), $SELF) : $SELF) . 'select=' . urlencode($child["table"]);
-				foreach ($child["source"] as $i => $source) {
-					echo "&amp;where[$i][col]=" . urlencode($child["target"][$i]) . "&amp;where[$i][op]=%3D&amp;where[$i][val]=" . urlencode($row[$source]);
-				}
-				echo '">' . htmlspecialchars($child["table"]) . '</a>';
-			}
-			echo '</td>';
+			echo '<td><a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . $unique_idf . '">' . lang('edit') . '</a></td>';
 			echo "</tr>\n";
 		}
 		echo "</table>\n";
