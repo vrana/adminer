@@ -40,12 +40,6 @@ function dump($db) {
 		}
 	}
 	
-	$result = $mysql->query("SHOW CREATE DATABASE " . idf_escape($db));
-	if ($result) {
-		echo $mysql->result($result, 1) . ";\n";
-		$result->free();
-	}
-	echo "USE " . idf_escape($db) . ";\n";
 	echo "SET CHARACTER SET utf8;\n\n";
 	$result = $mysql->query("SHOW TABLE STATUS");
 	while ($row = $result->fetch_assoc()) {
@@ -76,6 +70,12 @@ if (!strlen($_GET["db"])) {
 	while ($row = $result->fetch_assoc()) {
 		if ($row["Database"] != "information_schema" || $mysql->server_info < 5) {
 			if ($mysql->select_db($row["Database"])) {
+				$result = $mysql->query("SHOW CREATE DATABASE " . idf_escape($db));
+				if ($result) {
+					echo $mysql->result($result, 1) . ";\n";
+					$result->free();
+				}
+				echo "USE " . idf_escape($db) . ";\n";
 				dump($row["Database"]);
 			}
 		}
