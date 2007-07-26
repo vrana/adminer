@@ -4,7 +4,9 @@ function add_apo_slashes($s) {
 }
 
 function remove_lang($match) {
-	$s = lang(strtr($match[2], array("\\'" => "'", "\\\\" => "\\")), false);
+	global $LANG, $translations;
+	$idf = strtr($match[2], array("\\'" => "'", "\\\\" => "\\"));
+	$s = ($translations[$LANG][$idf] ? $translations[$LANG][$idf] : $idf);
 	if ($match[3] == ",") {
 		return "$match[1]" . (is_array($s) ? "lang(array('" . implode("', '", array_map('add_apo_slashes', $s)) . "')," : "sprintf('" . add_apo_slashes($s) . "',");
 	}
@@ -12,13 +14,19 @@ function remove_lang($match) {
 }
 
 function put_file($match) {
-	$return = file_get_contents($match[4]);
-	if ($match[4] == "./lang.inc.php") {
+	if ($match[4] == './lang/$LANG.inc.php') {
+		$return = "";
 		if (!$_COOKIE["lang"]) {
-			$return = str_replace("\tif (\$number === false) { // used in _compile.php\n\t\treturn (\$translation ? \$translation : \$idf);\n\t}\n", "", $return);
-		} elseif (preg_match("~case '$_COOKIE[lang]': (.*) break;~", $return, $match2) || preg_match("~default: (.*)~", $return, $match2)) {
-			return "$match[1]\nfunction lang(\$ar, \$number) {\n\t$match2[1]\n\treturn \$ar[\$pos];\n}\n$match[5]";
+			foreach (glob("./lang/*.inc.php") as $filename) {
+				$match[4] = $filename;
+				$return .= put_file($match);
+			}
 		}
+		return $return;
+	}
+	$return = file_get_contents($match[4]);
+	if ($match[4] == "./lang.inc.php" && $_COOKIE["lang"] && (preg_match("~case '$_COOKIE[lang]': (.*) break;~", $return, $match2) || preg_match("~default: (.*)~", $return, $match2))) {
+		return "$match[1]\nfunction lang(\$ar, \$number) {\n\t$match2[1]\n\treturn sprintf(\$ar[\$pos], \$number);\n}\n$match[5]";
 	}
 	$return = preg_replace("~\\?>\n?\$~", '', $return);
 	if (substr_count($return, "<?php") <= substr_count($return, "?>") && !$match[5]) {
@@ -41,6 +49,7 @@ if ($_SERVER["argc"] > 1) {
 		echo "Usage: php _compile.php [lang]\nPurpose: Compile phpMinAdmin[-lang].php from index.php.\n";
 		exit(1);
 	}
+	include "./lang/$_COOKIE[lang].inc.php";
 }
 $filename = "phpMinAdmin.php";
 $file = file_get_contents("index.php");
@@ -53,8 +62,8 @@ if ($_COOKIE["lang"]) {
 	$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
 	$file = str_replace('<?php echo $LANG; ?>', $_COOKIE["lang"], $file);
 }
-$file = str_replace("favicon.ico", '<?php echo preg_replace("~\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?favicon="; ?>', $file);
-$file = str_replace("arrow.gif", '" . preg_replace("~\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?gif=arrow', $file);
+$file = str_replace("favicon.ico", '<?php echo preg_replace("~\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?favicon="; ?>', $file);
+$file = str_replace("arrow.gif", '" . preg_replace("~\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?gif=arrow', $file);
 $file = str_replace('session_start();', "if (isset(\$_GET['favicon'])) {\n\theader('Content-Type: image/x-icon');\n\techo base64_decode('" . base64_encode(file_get_contents("favicon.ico")) . "');\n\texit;\n} elseif (isset(\$_GET['gif'])) {\n\theader('Content-Type: image/gif');\n\techo base64_decode('" . base64_encode(file_get_contents("arrow.gif")) . "');\n\texit;\n}\n\nsession_start();", $file);
 $file = str_replace('<link rel="stylesheet" type="text/css" href="default.css" />', "<style type='text/css'>\n" . file_get_contents("default.css") . "</style>", $file);
 file_put_contents($filename, $file);

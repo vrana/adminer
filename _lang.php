@@ -1,7 +1,11 @@
 <?php
 if ($_SERVER["argc"] > 1) {
-	echo "Usage: php _lang.php\nPurpose: Update lang.inc.php from source code messages.\n";
-	exit(1);
+	$_COOKIE["lang"] = $_SERVER["argv"][1];
+	include "./lang.inc.php";
+	if ($_SERVER["argc"] != 2 || !isset($translations[$_COOKIE["lang"]])) {
+		echo "Usage: php _lang.php [lang]\nPurpose: Update lang.inc.php from source code messages.\n";
+		exit(1);
+	}
 }
 
 $messages_all = array();
@@ -12,12 +16,10 @@ foreach (glob("*.php") as $filename) {
 	}
 }
 
-$file = file_get_contents("lang.inc.php");
-preg_match_all("~\n\t'(.*)' => array\\(\n(.*\n)\t\\)~sU", $file, $translations, PREG_OFFSET_CAPTURE);
-foreach (array_reverse($translations[2], true) as $key => $translation) {
+foreach (($_COOKIE["lang"] ? array("lang/$_COOKIE[lang].inc.php") : glob("lang/*.inc.php")) as $filename) {
 	$messages = $messages_all;
-	preg_match_all("~^(\\s*)(?:// )?(('(?:[^\\\\']+|\\\\.)*') => .*[^,\n]),?~m", $translation[0], $matches, PREG_SET_ORDER);
-	$s = "";
+	preg_match_all("~^(\\s*)(?:// )?(('(?:[^\\\\']+|\\\\.)*') => .*[^,\n]),?~m", file_get_contents($filename), $matches, PREG_SET_ORDER);
+	$s = "<?php\n\$translations['" . basename($filename, ".inc.php") . "'] = array(\n";
 	foreach ($matches as $match) {
 		if (isset($messages[$match[3]])) {
 			$s .= "$match[1]$match[2],\n";
@@ -28,12 +30,11 @@ foreach (array_reverse($translations[2], true) as $key => $translation) {
 	}
 	foreach($messages as $idf => $val) {
 		if ($val == "," && strpos($idf, "%d")) {
-			$s .= "\t\t$idf => array(),\n";
-		} elseif ($translations[1][$key][0] != 'en') {
-			$s .= "\t\t$idf => '',\n";
+			$s .= "\t$idf => array(),\n";
+		} elseif ($filename != "lang/en.inc.php") {
+			$s .= "\t$idf => '',\n";
 		}
 	}
-	$file = substr_replace($file, $s, $translation[1], strlen($translation[0]));
+	file_put_contents($filename, "$s);\n");
+	echo "$filename modified.\n";
 }
-file_put_contents("lang.inc.php", $file);
-echo "lang.inc.php modified.\n";

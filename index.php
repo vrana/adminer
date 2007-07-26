@@ -7,6 +7,7 @@ $SELF = preg_replace('~^[^?]*/([^?]*).*~', '\\1?', $_SERVER["REQUEST_URI"]) . (s
 $TOKENS = &$_SESSION["tokens"][$_GET["server"]][$_SERVER["REQUEST_URI"]];
 include "./functions.inc.php";
 include "./lang.inc.php";
+include "./lang/$LANG.inc.php";
 include "./design.inc.php";
 include "./abstraction.inc.php";
 include "./auth.inc.php";
