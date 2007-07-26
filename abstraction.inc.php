@@ -189,7 +189,7 @@ if (extension_loaded("mysqli")) {
 	$mysql = new Min_PDO_MySQL;
 
 } else {
-	page_header(lang('No MySQL extension'));
+	page_header(lang('No MySQL extension'), null);
 	echo "<p class='error'>" . lang('None of supported PHP extensions (%s) are available.', 'mysqli, mysql, pdo') . "</p>\n";
 	page_footer("auth");
 	exit;

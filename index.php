@@ -79,11 +79,11 @@ if (isset($_GET["dump"])) {
 			include "./processlist.inc.php";
 		} else {
 			$TOKENS = array();
-			page_header(htmlspecialchars(lang('Database') . ": " . $_GET["db"]));
+			page_header(lang('Database') . ": " . htmlspecialchars($_GET["db"]), false);
 			echo '<p><a href="' . htmlspecialchars($SELF) . 'database=">' . lang('Alter database') . "</a></p>\n";
 			echo '<p><a href="' . htmlspecialchars($SELF) . 'schema=">' . lang('Database schema') . "</a></p>\n";
 			if ($mysql->server_info >= 5) {
-				echo '<p><a href="' . htmlspecialchars($SELF) . 'procedure=">' . lang('Create view') . "</a></p>\n";
+				echo '<p><a href="' . htmlspecialchars($SELF) . 'createv=">' . lang('Create view') . "</a></p>\n";
 				echo "<h3>" . lang('Routines') . "</h3>\n";
 				$result = $mysql->query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = '" . $mysql->escape_string($_GET["db"]) . "'");
 				if ($result->num_rows) {

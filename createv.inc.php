@@ -9,7 +9,7 @@ if ($_POST && !$error) {
 	$error = $mysql->error;
 }
 
-page_header(strlen($_GET["createv"]) ? lang('Alter view') . ": " . htmlspecialchars($_GET["createv"]) : lang('Create view'));
+page_header(strlen($_GET["createv"]) ? lang('Alter view') : lang('Create view'), array("view" => $_GET["createv"]), $_GET["createv"]);
 
 if ($_POST) {
 	$row = $_POST;

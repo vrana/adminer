@@ -1,5 +1,5 @@
 <?php
-page_header(lang('Database schema') . ": " . htmlspecialchars($_GET["db"]));
+page_header(lang('Database schema'), array(), $_GET["db"]);
 
 $schema = array();
 $result = $mysql->query("SHOW TABLE STATUS");

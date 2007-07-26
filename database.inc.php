@@ -29,7 +29,7 @@ if ($_POST && !$error) {
 	$error = $mysql->error;
 }
 
-page_header(strlen($_GET["db"]) ? lang('Alter database') . ": " . htmlspecialchars($_GET["db"]) : lang('Create database'));
+page_header(strlen($_GET["db"]) ? lang('Alter database') : lang('Create database'), array(), $_GET["db"]);
 $collations = collations();
 
 if ($_POST) {

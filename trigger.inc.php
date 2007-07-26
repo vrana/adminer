@@ -16,7 +16,7 @@ if ($_POST && !$error) {
 	$error = $mysql->error;
 }
 
-page_header(strlen($_GET["name"]) ? lang('Alter trigger') . ": " . htmlspecialchars($_GET["name"]) : lang('Create trigger'));
+page_header(strlen($_GET["name"]) ? lang('Alter trigger') . ": " . htmlspecialchars($_GET["name"]) : lang('Create trigger'), array("table" => $_GET["trigger"]));
 
 if ($_POST) {
 	$row = $_POST;

@@ -37,7 +37,7 @@ function auth_error() {
 		$_POST["token"] = token();
 	}
 	unset($_SESSION["usernames"][$_GET["server"]]);
-	page_header(lang('Login'));
+	page_header(lang('Login'), null);
 	if (isset($username)) {
 		echo "<p class='error'>" . lang('Invalid credentials.') . "</p>\n";
 	} elseif (isset($_POST["server"])) {

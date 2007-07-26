@@ -3,7 +3,7 @@ if (!(strlen($_GET["db"]) ? $mysql->select_db($_GET["db"]) : isset($_GET["sql"])
 	if (strlen($_GET["db"])) {
 		unset($_SESSION["databases"][$_GET["server"]]);
 	}
-	page_header(lang('Select database'));
+	page_header(lang('Select database'), (strlen($_GET["db"]) ? false : null));
 	if (strlen($_GET["db"])) {
 		echo "<p class='error'>" . lang('Invalid database.') . "</p>\n";
 	} else {

@@ -1,6 +1,6 @@
 <?php
-function page_header($title) {
-	global $LANG;
+function page_header($title, $breadcrumb = array(), $title2 = "") {
+	global $SELF, $LANG;
 	header("Content-Type: text/html; charset=utf-8");
 	?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -9,7 +9,7 @@ function page_header($title) {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <meta name="robots" content="noindex" />
-<title><?php echo lang('phpMinAdmin') . " - $title"; ?></title>
+<title><?php echo lang('phpMinAdmin') . " - $title" . (strlen($title2) ? ": " . htmlspecialchars($title2) : ""); ?></title>
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 <link rel="stylesheet" type="text/css" href="default.css" />
 <?php if ($_COOKIE["highlight"] == "jush") { ?>
@@ -23,7 +23,22 @@ function page_header($title) {
 
 <div id="content">
 <?php
-	echo "<h2>$title</h2>\n";
+	if (isset($breadcrumb)) {
+		$link = substr(preg_replace('~db=[^&]*&~', '', $SELF), 0, -1);
+		echo '<p><a href="' . (strlen($link) ? htmlspecialchars($link) : ".") . '">' . (isset($_GET["server"]) ? htmlspecialchars($_GET["server"]) : lang('Server')) . '</a> &gt; ';
+		if (is_array($breadcrumb)) {
+			if (strlen($_GET["db"])) {
+				echo '<a href="' . substr($SELF, 0, -1) . '">' . htmlspecialchars($_GET["db"]) . '</a> &gt; ';
+			}
+			foreach ($breadcrumb as $key => $val) {
+				if (strlen($val)) {
+					echo '<a href="' . htmlspecialchars($SELF) . "$key=" . urlencode($val) . '">' . htmlspecialchars($val) . '</a> &gt; ';
+				}
+			}
+		}
+		echo "$title</p>\n";
+	}
+	echo "<h2>$title" . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . "</h2>\n";
 	if ($_SESSION["message"]) {
 		echo "<p class='message'>$_SESSION[message]</p>\n";
 		$_SESSION["message"] = "";
@@ -39,7 +54,7 @@ function page_footer($missing = false) {
 </div>
 
 <div id="menu">
-<h1><a href="<?php echo ($missing == "auth" ? "http://phpminadmin.sourceforge.net" : (strlen($SELF) > 1 ? htmlspecialchars(substr($SELF, 0, -1)) : ".")); ?>"><?php echo lang('phpMinAdmin'); ?></a></h1>
+<h1><a href="http://phpminadmin.sourceforge.net"><?php echo lang('phpMinAdmin'); ?></a></h1>
 <?php switch_lang(); ?>
 <?php if ($missing != "auth") { ?>
 <p>

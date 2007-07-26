@@ -25,7 +25,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 	$error = $mysql->error;
 }
 
-page_header(lang('Foreign key') . ": " . htmlspecialchars($_GET["foreign"]));
+page_header(lang('Foreign key'), array("table" => $_GET["foreign"]), $_GET["foreign"]);
 
 $tables = array();
 $result = $mysql->query("SHOW TABLE STATUS");

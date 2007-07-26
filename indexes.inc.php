@@ -38,7 +38,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 	}
 	$error = $mysql->error;
 }
-page_header(lang('Indexes') . ': ' . htmlspecialchars($_GET["indexes"]));
+page_header(lang('Indexes'), array("table" => $_GET["indexes"]), $_GET["indexes"]);
 
 $fields = array_keys(fields($_GET["indexes"]));
 if ($_POST) {

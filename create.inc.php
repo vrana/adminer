@@ -54,7 +54,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 	}
 	$error = $mysql->error;
 }
-page_header(strlen($_GET["create"]) ? lang('Alter table') . ': ' . htmlspecialchars($_GET["create"]) : lang('Create table'));
+page_header(strlen($_GET["create"]) ? lang('Alter table') : lang('Create table'), array("table" => $_GET["create"]), $_GET["create"]);
 
 $engines = array();
 $result = $mysql->query("SHOW ENGINES");
