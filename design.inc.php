@@ -25,7 +25,7 @@ function page_header($title, $breadcrumb = array(), $title2 = "") {
 <?php
 	if (isset($breadcrumb)) {
 		$link = substr(preg_replace('~db=[^&]*&~', '', $SELF), 0, -1);
-		echo '<p><a href="' . (strlen($link) ? htmlspecialchars($link) : ".") . '">' . (isset($_GET["server"]) ? htmlspecialchars($_GET["server"]) : lang('Server')) . '</a> &gt; ';
+		echo '<p id="breadcrumb"><a href="' . (strlen($link) ? htmlspecialchars($link) : ".") . '">' . (isset($_GET["server"]) ? htmlspecialchars($_GET["server"]) : lang('Server')) . '</a> &gt; ';
 		if (is_array($breadcrumb)) {
 			if (strlen($_GET["db"])) {
 				echo '<a href="' . substr($SELF, 0, -1) . '">' . htmlspecialchars($_GET["db"]) . '</a> &gt; ';

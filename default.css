@@ -1,4 +1,4 @@
-BODY { color: Black; background-color: White; }
+BODY { color: Black; background-color: White; line-height: 1.25em; }
 A { color: Blue; }
 A:visited { color: Navy; }
 H1 { font-size: 150%; margin-top: 0; }
@@ -18,5 +18,5 @@ IMG { vertical-align: middle; }
 #menu { position: absolute; top: 8px; left: 8px; width: 15em; overflow: auto; overflow-y: hidden; white-space: nowrap; }
 #content { margin-left: 16em; }
 #schema { margin-left: 60px; position: relative; }
-#schema DIV { position: absolute; }
-#schema .table { border: 1px solid Silver; line-height: 1.25em; padding: 0 2px; }
+#schema .table { border: 1px solid Silver; padding: 0 2px; cursor: move; position: absolute; }
+#schema .references { position: absolute; }
