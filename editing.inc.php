@@ -32,7 +32,7 @@ function input($name, $field, $value) {
 	} else {
 		echo '<input name="fields[' . $name . ']" value="' . htmlspecialchars($value) . '"' . (strlen($field["length"]) ? " maxlength='$field[length]'" : ($types[$field["type"]] ? " maxlength='" . $types[$field["type"]] . "'" : '')) . ' />';
 	}
-	if ($field["null"] && preg_match('~char|text|set|binary|blob~', $field["type"])) {
+	if ($field["null"] && $field["type"] != "enum") {
 		$id = "null-$name";
 		echo '<label for="' . $id . '"><input type="checkbox" name="null[' . $name . ']" value="1" id="' . $id . '"' . (isset($value) ? '' : ' checked="checked"') . ' />' . lang('NULL') . '</label>';
 	}
@@ -42,7 +42,7 @@ function process_input($name, $field) {
 	global $mysql;
 	$name = bracket_escape($name);
 	$value = $_POST["fields"][$name];
-	if (preg_match('~char|text|set|binary|blob~', $field["type"]) ? $_POST["null"][$name] : !strlen($value)) {
+	if ($field["type"] != "enum" ? $_POST["null"][$name] : !strlen($value)) {
 		return "NULL";
 	} elseif ($field["type"] == "enum") {
 		return (isset($_GET["default"]) ? "'" . $mysql->escape_string($value) . "'" : intval($value));
