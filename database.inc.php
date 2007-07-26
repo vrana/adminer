@@ -39,7 +39,16 @@ if ($_POST) {
 } else {
 	$name = $_GET["db"];
 	$collate = array();
-	if (strlen($_GET["db"]) && ($result = $mysql->query("SHOW CREATE DATABASE " . idf_escape($_GET["db"])))) {
+	if (!strlen($_GET["db"])) {
+		$result = $mysql->query("SHOW GRANTS");
+		while ($row = $result->fetch_row()) {
+			if (preg_match('~ ON (`(([^\\\\`]+|``|\\\\.)*)%`\\.\\*)?~', $row[0], $match) && $match[1]) {
+				$name = stripcslashes(idf_unescape($match[2]));
+				break;
+			}
+		}
+		$result->free();
+	} elseif (($result = $mysql->query("SHOW CREATE DATABASE " . idf_escape($_GET["db"])))) {
 		$create = $mysql->result($result, 1);
 		if (preg_match('~ COLLATE ([^ ]+)~', $create, $match)) {
 			$collate = $match[1];
