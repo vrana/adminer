@@ -102,14 +102,14 @@ function edit_fields($fields, $collations, $type = "TABLE") {
 		?>
 <tr>
 <?php if ($type == "PROCEDURE") { ?><td><select name="fields[<?php echo $i; ?>][inout]"><?php echo optionlist($inout, $field["inout"]); ?></select></td><?php } ?>
-<th><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo htmlspecialchars($field[($_POST ? "orig" : "field")]); ?>" /><input name="fields[<?php echo $i; ?>][field]" value="<?php echo htmlspecialchars($field["field"]); ?>" maxlength="64" /></th>
+<th><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo htmlspecialchars($field[($_POST ? "orig" : "field")]); ?>" /><input name="fields[<?php echo $i; ?>][field]" value="<?php echo ($_POST["drop_col"][$i] ? "" : htmlspecialchars($field["field"])); ?>" maxlength="64" /></th>
 <?php edit_type("fields[$i]", $field, $collations); ?>
 <?php if ($type == "TABLE") { ?>
 <td><input type="checkbox" name="fields[<?php echo $i; ?>][null]" value="1"<?php if ($field["null"]) { ?> checked="checked"<?php } ?> /></td>
 <td><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked="checked"<?php } ?> /></td>
 <td><input name="fields[<?php echo $i; ?>][comment]" value="<?php echo htmlspecialchars($field["comment"]); ?>" maxlength="255" /></td>
 <?php } ?>
-<td><input type="submit" name="add[<?php echo $i; ?>]" value="<?php echo lang('Add next'); ?>" onclick="return !add_row(this);" /></td>
+<td><input type="submit" name="add[<?php echo $i; ?>]" value="<?php echo lang('Add next'); ?>" onclick="return !add_row(this);" /> <input type="submit" name="drop_col[<?php echo $i; ?>]" value="<?php echo lang('Remove'); ?>" onclick="return !remove_row(this);" /></td>
 </tr>
 <?php
 		if (strlen($field["comment"])) {
@@ -146,6 +146,11 @@ function add_row(button) {
 	}
 	row.parentNode.insertBefore(row2, row);
 	added += '0';
+	return true;
+}
+function remove_row(button) {
+	button.form[button.name.replace(/drop_col(.+)/, 'fields$1[field]')].value = '';
+	button.parentNode.parentNode.style.display = 'none';
 	return true;
 }
 function type_change(type) {

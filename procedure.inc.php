@@ -1,7 +1,7 @@
 <?php
 $routine = (isset($_GET["function"]) ? "FUNCTION" : "PROCEDURE");
 
-if ($_POST && !$error && !$_POST["add"]) {
+if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 	if (strlen($_GET["procedure"]) && $mysql->query("DROP $routine " . idf_escape($_GET["procedure"])) && $_POST["drop"]) {
 		redirect(substr($SELF, 0, -1), lang('Routine has been dropped.'));
 	}
@@ -34,11 +34,11 @@ if ($_POST) {
 	$row = $_POST;
 	$row["fields"] = (array) $row["fields"];
 	ksort($row["fields"]);
-	if (!$_POST["add"]) {
-		echo "<p class='error'>" . lang('Unable to operate routine') . ": " . htmlspecialchars($error) . "</p>\n";
-		$row["fields"] = array_values($row["fields"]);
-	} else {
+	$row["fields"] = array_values($row["fields"]);
+	if ($_POST["add"]) {
 		array_splice($row["fields"], key($_POST["add"]), 0, array(array()));
+	} elseif (!$_POST["drop_col"]) {
+		echo "<p class='error'>" . lang('Unable to operate routine') . ": " . htmlspecialchars($error) . "</p>\n";
 	}
 } elseif (strlen($_GET["procedure"])) {
 	$row = routine($_GET["procedure"], $routine);

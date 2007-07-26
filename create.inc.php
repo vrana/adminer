@@ -1,5 +1,5 @@
 <?php
-if ($_POST && !$error && !$_POST["add"]) {
+if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 	if ($_POST["drop"]) {
 		$query = "DROP TABLE " . idf_escape($_GET["create"]);
 		$message = lang('Table has been dropped.');
@@ -68,11 +68,11 @@ $result->free();
 if ($_POST) {
 	$row = $_POST;
 	ksort($row["fields"]);
-	if (!$_POST["add"]) {
-		echo "<p class='error'>" . lang('Unable to operate table') . ": " . htmlspecialchars($error) . "</p>\n";
-		$row["fields"] = array_values($row["fields"]);
-	} else {
+	$row["fields"] = array_values($row["fields"]);
+	if ($_POST["add"]) {
 		array_splice($row["fields"], key($_POST["add"]), 0, array(array()));
+	} elseif (!$_POST["drop_col"]) {
+		echo "<p class='error'>" . lang('Unable to operate table') . ": " . htmlspecialchars($error) . "</p>\n";
 	}
 	if ($row["auto_increment_col"]) {
 		$row["fields"][$row["auto_increment_col"] - 1]["auto_increment"] = true;
