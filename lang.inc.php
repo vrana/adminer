@@ -157,6 +157,7 @@ static $translations = array(
 		'through PHP extension' => 'přes PHP extenzi',
 		'%d row(s)' => array('%d řádek', '%d řádky', '%d řádků'),
 		'ON UPDATE CURRENT_TIMESTAMP' => 'Při změně aktuální čas',
+		'Remove' => 'Odebrat',
 	),
 );
 
