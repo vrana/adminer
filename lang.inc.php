@@ -43,9 +43,9 @@ if (isset($translations[$_COOKIE["lang"]])) {
 	$LANG = $_SESSION["lang"];
 } else {
 	$accept_language = array();
-	preg_match_all('~([-a-z]+)(;q=([0-9.]+))?~', $_SERVER["HTTP_ACCEPT_LANGUAGE"], $matches, PREG_SET_ORDER);
+	preg_match_all('~([-a-z]+)(;q=([0-9.]+))?~', strtolower($_SERVER["HTTP_ACCEPT_LANGUAGE"]), $matches, PREG_SET_ORDER);
 	foreach ($matches as $match) {
-		$accept_language[$match[1]] = ($match[3] ? $match[3] : 1);
+		$accept_language[$match[1]] = (isset($match[3]) ? $match[3] : 1);
 	}
 	arsort($accept_language);
 	$LANG = "en";
