@@ -1,6 +1,6 @@
 <?php
 if (isset($_POST["query"])) {
-	setcookie("highlight", $_POST["highlight"], strtotime("+1 month"));
+	setcookie("highlight", $_POST["highlight"], strtotime("+1 month"), preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]));
 	$_COOKIE["highlight"] = $_POST["highlight"];
 }
 

@@ -32,7 +32,7 @@ function switch_lang() {
 }
 
 if (isset($_GET["lang"])) {
-	setcookie("lang", $_GET["lang"], strtotime("+1 month"));
+	setcookie("lang", $_GET["lang"], strtotime("+1 month"), preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]));
 	$_COOKIE["lang"] = $_GET["lang"];
 }
 
