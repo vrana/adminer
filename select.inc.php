@@ -141,9 +141,9 @@ function add_row(field) {
 		echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
 		for ($j=0; $row = $result->fetch_assoc(); $j++) {
 			if (!$j) {
-				echo "<thead><tr><th>" . implode("</th><th>", array_map('htmlspecialchars', array_keys($row))) . "</th><th>&nbsp;</th></tr></thead>\n";
+				echo "<thead><tr><th>&nbsp;</th><th>" . implode("</th><th>", array_map('htmlspecialchars', array_keys($row))) . "</th></tr></thead>\n";
 			}
-			echo "<tr>";
+			echo '<tr><td><a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . $unique_idf . '">' . lang('edit') . "</a></td>";
 			$unique_idf = '&amp;' . implode('&amp;', unique_idf($row, $indexes));
 			//! multiple delete by checkboxes
 			foreach ($row as $key => $val) {
@@ -162,14 +162,13 @@ function add_row(field) {
 							foreach ($foreign_key["source"] as $i => $source) {
 								$val = "&amp;where%5B$i%5D%5Bcol%5D=" . urlencode($foreign_key["target"][$i]) . "&amp;where%5B$i%5D%5Bop%5D=%3D&amp;where%5B$i%5D%5Bval%5D=" . urlencode($row[$source]) . $val;
 							}
-							$val = '<a href="' . htmlspecialchars(strlen($foreign_key["db"]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), $SELF) : $SELF) . 'select=' . htmlspecialchars($foreign_key["table"]) . $val; // InnoDB support non-UNIQUE keys
+							$val = '<a href="' . htmlspecialchars(strlen($foreign_key["db"]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), $SELF) : $SELF) . 'select=' . htmlspecialchars($foreign_key["table"]) . $val; // InnoDB supports non-UNIQUE keys
 							break;
 						}
 					}
 				}
 				echo "<td>$val</td>";
 			}
-			echo '<td><a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . $unique_idf . '">' . lang('edit') . '</a></td>';
 			echo "</tr>\n";
 		}
 		echo "</table>\n";
