@@ -1,7 +1,8 @@
 <?php
 static $translations = array(
 	'en' => array(),
-	'cs' => array(),
+	'cs' => array(), // Jakub Vrána - http://php.vrana.cz
+	'sk' => array(), // Ivan Suchy - http://www.ivansuchy.com
 );
 
 function lang($idf, $number = null) {
@@ -10,6 +11,7 @@ function lang($idf, $number = null) {
 	if (is_array($translation) && $translation) {
 		switch ($LANG) {
 			case 'cs': $pos = ($number == 1 ? 0 : (!$number || $number >= 5 ? 2 : 1)); break;
+			case 'sk': $pos = ($number == 1 ? 0 : (!$number || $number >= 5 ? 2 : 1)); break;
 			default: $pos = ($number == 1 ? 0 : 1);
 		}
 		$translation = $translation[$pos];
