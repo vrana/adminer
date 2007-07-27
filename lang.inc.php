@@ -34,10 +34,13 @@ function switch_lang() {
 if (isset($_GET["lang"])) {
 	setcookie("lang", $_GET["lang"], strtotime("+1 month"), preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]));
 	$_COOKIE["lang"] = $_GET["lang"];
+	$_SESSION["lang"] = $_GET["lang"];
 }
 
-if (strlen($_COOKIE["lang"]) && isset($translations[$_COOKIE["lang"]])) {
+if (isset($translations[$_COOKIE["lang"]])) {
 	$LANG = $_COOKIE["lang"];
+} elseif (isset($translations[$_SESSION["lang"]])) {
+	$LANG = $_SESSION["lang"];
 } else {
 	$accept_language = array();
 	preg_match_all('~([-a-z]+)(;q=([0-9.]+))?~', $_SERVER["HTTP_ACCEPT_LANGUAGE"], $matches, PREG_SET_ORDER);
