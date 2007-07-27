@@ -145,4 +145,10 @@ $translations['sk'] = array(
 	'Unable to operate trigger' => 'Trigger sa nepodarilo spracovať',
 	'Time' => 'Čas',
 	'Event' => 'Udalosť',
+	'MySQL version' => 'Verzia MySQL',
+	'through PHP extension' => 'cez PHP rozšírenie',
+	'%d row(s)' => array('%d riadok', '%d riadky', '%d riadkov'),
+	'ON UPDATE CURRENT_TIMESTAMP' => 'Pri zmene aktuálny čas',
+	'Remove' => 'Odobrať',
+	'Are you sure?' => 'Naozaj?',
 );
