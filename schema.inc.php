@@ -35,6 +35,9 @@ while ($row = $result->fetch_assoc()) {
 					$left = $base_left;
 					$base_left -= .1;
 				}
+				while ($schema[$row["Name"]]["references"][$val["table"]][10000 * $left] || $referenced[$val["table"]][10000 * $left]) {
+					$left -= .0001;
+				}
 				$schema[$row["Name"]]["references"][$val["table"]][10000 * $left] = array_combine($val["source"], $val["target"]);
 				$referenced[$val["table"]][10000 * $left] = $val["target"];
 			}
