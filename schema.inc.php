@@ -55,16 +55,18 @@ function mousedown(el, event) {
 	x = event.clientX - el.offsetLeft;
 	y = event.clientY - el.offsetTop;
 }
-function mousemove(event) {
+document.onmousemove = function (ev) {
 	if (that !== undefined) {
-		that.style.left = (event.clientX - x) / em + 'em';
-		that.style.top = (event.clientY - y) / em + 'em';
+		ev = ev || event;
+		that.style.left = (ev.clientX - x) / em + 'em';
+		that.style.top = (ev.clientY - y) / em + 'em';
 		//! drag lines
 	}
 }
-function mouseup(event) {
+document.onmouseup = function (ev) {
 	if (that !== undefined) {
-		table_pos[that.firstChild.firstChild.firstChild.data] = [ (event.clientY - y) / em, (event.clientX - x) / em ];
+		ev = ev || event;
+		table_pos[that.firstChild.firstChild.firstChild.data] = [ (ev.clientY - y) / em, (ev.clientX - x) / em ];
 		that = undefined;
 		var date = new Date();
 		date.setMonth(date.getMonth() + 1);
@@ -77,7 +79,7 @@ function mouseup(event) {
 }
 </script>
 
-<div id="schema" style="height: <?php echo $top; ?>em;" onmousemove="mousemove(event);" onmouseup="mouseup(event);">
+<div id="schema" style="height: <?php echo $top; ?>em;">
 <?php
 foreach ($schema as $name => $table) {
 	echo "<div class='table' style='top: " . $table["pos"][0] . "em; left: " . $table["pos"][1] . "em;' onmousedown='mousedown(this, event);'>";
@@ -99,14 +101,14 @@ foreach ($schema as $name => $table) {
 		foreach ($refs as $left => $columns) {
 			$left = $left / 10000 - $table_pos[$name][1];
 			foreach ($columns as $source => $target) {
-				echo "<div class='references' style='left: $left" . "em; top: " . $table["fields"][$source]["pos"] . "em; padding-top: .5em;'><div style='border-top: 1px solid Black; width: " . (-$left) . "em;'></div></div>\n";
+				echo "<div class='references' style='left: $left" . "em; top: " . $table["fields"][$source]["pos"] . "em; padding-top: .5em;'><div style='border-top: 1px solid Gray; width: " . (-$left) . "em;'></div></div>\n";
 			}
 		}
 	}
 	foreach ((array) $referenced[$name] as $left => $columns) {
 		$left = $left / 10000 - $table_pos[$name][1];
 		foreach ($columns as $target) {
-			echo "<div class='references' style='left: $left" . "em; top: " . $table["fields"][$target]["pos"] . "em; width: " . (-$left) . "em; height: 1.25em; background: url(arrow.gif) no-repeat right center;'><div style='height: .5em; border-bottom: 1px solid Black; width: " . (-$left) . "em;'></div></div>\n";
+			echo "<div class='references' style='left: $left" . "em; top: " . $table["fields"][$target]["pos"] . "em; width: " . (-$left) . "em; height: 1.25em; background: url(arrow.gif) no-repeat right center;'><div style='height: .5em; border-bottom: 1px solid Gray; width: " . (-$left) . "em;'></div></div>\n";
 		}
 	}
 	echo "</div>\n";
@@ -123,7 +125,7 @@ foreach ($schema as $name => $table) {
 				$min_pos = min($min_pos, $pos1, $pos2);
 				$max_pos = max($max_pos, $pos1, $pos2);
 			}
-			echo "<div class='references' style='left: $left" . "em; top: $min_pos" . "em; padding: .5em 0;' /><div style='border-right: 1px solid Black; height: " . ($max_pos - $min_pos) . "em;'></div></div>\n";
+			echo "<div class='references' style='left: $left" . "em; top: $min_pos" . "em; padding: .5em 0;' /><div style='border-right: 1px solid Gray; height: " . ($max_pos - $min_pos) . "em;'></div></div>\n";
 		}
 	}
 }
