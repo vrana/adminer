@@ -10,7 +10,7 @@ if (isset($_POST["server"])) {
 		$_SESSION["passwords"][$_POST["server"]] = $_POST["password"];
 		if (count($_POST) == count($ignore)) {
 			if ((string) $_GET["server"] === $_POST["server"]) {
-				$location = preg_replace('~(\\?)' . urlencode(session_name()) . '=[^&]*&|[&?]' . urlencode(session_name()) . '=[^&]*~', '\\1', $_SERVER["REQUEST_URI"]);
+				$location = remove_from_uri();
 			} else {
 				$location = preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . (strlen($_POST["server"]) ? '?server=' . urlencode($_POST["server"]) : '');
 			}

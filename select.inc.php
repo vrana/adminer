@@ -176,7 +176,7 @@ function add_row(field) {
 		if (intval($limit) && $found_rows > $limit) {
 			$max_page = floor($found_rows / $limit);
 			function print_page($page) {
-				echo " " . ($page == $_GET["page"] ? $page + 1 : '<a href="' . htmlspecialchars(preg_replace('~(\\?)page=[^&]*&|&page=[^&]*~', '\\1', $_SERVER["REQUEST_URI"]) . ($page ? "&page=$page" : "")) . '">' . ($page + 1) . "</a>");
+				echo " " . ($page == $_GET["page"] ? $page + 1 : '<a href="' . htmlspecialchars(remove_from_uri("page") . ($page ? "&page=$page" : "")) . '">' . ($page + 1) . "</a>");
 			}
 			echo "<p>" . lang('Page') . ":";
 			print_page(0);

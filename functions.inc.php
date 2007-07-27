@@ -193,6 +193,13 @@ function redirect($location, $message = null) {
 	exit;
 }
 
+function remove_from_uri($param = "") {
+	if (!isset($_COOKIE[session_name()])) {
+		$param = "($param|" . session_name() . ")";
+	}
+	return preg_replace("~\\?$param=[^&]*&~", '?', preg_replace("~\\?$param=[^&]*\$|&$param=[^&]*~", '', $_SERVER["REQUEST_URI"]));
+}
+
 function get_file($key) {
 	if (isset($_POST["files"][$key])) {
 		$length = strlen($_POST["files"][$key]);

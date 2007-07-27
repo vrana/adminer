@@ -9,7 +9,7 @@ if ($_POST && !$error) {
 		if ($mysql->query("CREATE DATABASE " . idf_escape($_POST["name"]) . ($_POST["collation"] ? " COLLATE '" . $mysql->escape_string($_POST["collation"]) . "'" : ""))) {
 			unset($_SESSION["databases"][$_GET["server"]]);
 			if (!strlen($_GET["db"])) {
-				redirect(preg_replace('~db=[^&]*&~', '', $SELF) . "db=" . urlencode($_POST["name"]), lang('Database has been created.'));
+				redirect($SELF . "db=" . urlencode($_POST["name"]), lang('Database has been created.'));
 			}
 			$result = $mysql->query("SHOW TABLES");
 			while ($row = $result->fetch_row()) {

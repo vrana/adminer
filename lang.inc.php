@@ -24,7 +24,7 @@ function lang($idf, $number = null) {
 function switch_lang() {
 	global $translations;
 	echo "<p>" . lang('Language') . ":";
-	$base = preg_replace('~(\\?)lang=[^&]*&|[&?]lang=[^&]*~', '\\1', $_SERVER["REQUEST_URI"]);
+	$base = remove_from_uri("lang");
 	foreach ($translations as $lang => $val) {
 		echo ' <a href="' . htmlspecialchars($base . (strpos($base, "?") !== false ? "&" : "?")) . "lang=$lang\">$lang</a>";
 	}
