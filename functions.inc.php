@@ -194,9 +194,7 @@ function redirect($location, $message = null) {
 }
 
 function remove_from_uri($param = "") {
-	if (!isset($_COOKIE[session_name()])) {
-		$param = "($param|" . session_name() . ")";
-	}
+	$param = "($param|" . session_name() . ")";
 	return preg_replace("~\\?$param=[^&]*&~", '?', preg_replace("~\\?$param=[^&]*\$|&$param=[^&]*~", '', $_SERVER["REQUEST_URI"]));
 }
 
