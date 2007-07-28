@@ -70,12 +70,12 @@ if (!strlen($_GET["db"])) {
 	while ($row = $result->fetch_assoc()) {
 		if ($row["Database"] != "information_schema" || $mysql->server_info < 5) {
 			if ($mysql->select_db($row["Database"])) {
-				$result = $mysql->query("SHOW CREATE DATABASE " . idf_escape($db));
-				if ($result) {
-					echo $mysql->result($result, 1) . ";\n";
-					$result->free();
+				$result1 = $mysql->query("SHOW CREATE DATABASE " . idf_escape($row["Database"]));
+				if ($result1) {
+					echo $mysql->result($result1, 1) . ";\n";
+					$result1->free();
 				}
-				echo "USE " . idf_escape($db) . ";\n";
+				echo "USE " . idf_escape($row["Database"]) . ";\n";
 				dump($row["Database"]);
 			}
 		}
