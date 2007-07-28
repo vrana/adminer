@@ -14,7 +14,7 @@ if (isset($_POST["server"])) {
 			} else {
 				$location = preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . (strlen($_POST["server"]) ? '?server=' . urlencode($_POST["server"]) : '');
 			}
-			if (strlen(SID)) {
+			if (!isset($_COOKIE[session_name()])) {
 				$location .= (strpos($location, "?") === false ? "?" : "&") . SID;
 			}
 			header("Location: " . (strlen($location) ? $location : "."));
