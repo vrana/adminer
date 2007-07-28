@@ -10,7 +10,7 @@ foreach ($matches as $i => $match) {
 }
 
 $top = 0;
-$base_left = -.9;
+$base_left = -1;
 $schema = array();
 $referenced = array();
 $result = $mysql->query("SHOW TABLE STATUS");
@@ -30,16 +30,16 @@ while ($row = $result->fetch_assoc()) {
 		foreach (foreign_keys($row["Name"]) as $val) {
 			if (!$val["db"]) {
 				if ($table_pos[$row["Name"]][1] || $table_pos[$row["Name"]][1]) {
-					$left = min($table_pos[$row["Name"]][1], $table_pos[$val["table"]][1]) - .9;
+					$left = min($table_pos[$row["Name"]][1], $table_pos[$val["table"]][1]) - 1;
 				} else {
 					$left = $base_left;
 					$base_left -= .1;
 				}
-				while ($schema[$row["Name"]]["references"][$val["table"]][10000 * $left] || $referenced[$val["table"]][10000 * $left]) {
+				while ($schema[$row["Name"]]["references"][$val["table"]][10000 * $left] || $referenced[$val["table"]][$row["Name"]][10000 * $left]) {
 					$left -= .0001;
 				}
 				$schema[$row["Name"]]["references"][$val["table"]][10000 * $left] = array_combine($val["source"], $val["target"]);
-				$referenced[$val["table"]][10000 * $left] = $val["target"];
+				$referenced[$val["table"]][$row["Name"]][10000 * $left] = $val["target"];
 			}
 		}
 	}
@@ -61,9 +61,18 @@ function mousedown(el, event) {
 document.onmousemove = function (ev) {
 	if (that !== undefined) {
 		ev = ev || event;
-		that.style.left = (ev.clientX - x) / em + 'em';
-		that.style.top = (ev.clientY - y) / em + 'em';
-		//! drag lines
+		var left = (ev.clientX - x) / em;
+		var top = (ev.clientY - y) / em;
+		that.style.left = left + 'em';
+		that.style.top = top + 'em';
+		var divs = document.getElementsByTagName('div');
+		for (var i=0; i < divs.length; i++) {
+			if (divs[i].className == 'references') {
+				var left1 = Math.min(left, (table_pos[divs[i].title] ? table_pos[divs[i].title][1] : 0)) - 1;
+				divs[i].style.left = left1;
+				divs[i].style.width = left - left1;
+			}
+		}
 	}
 }
 document.onmouseup = function (ev) {
@@ -104,14 +113,16 @@ foreach ($schema as $name => $table) {
 		foreach ($refs as $left => $columns) {
 			$left = $left / 10000 - $table_pos[$name][1];
 			foreach ($columns as $source => $target) {
-				echo "<div class='references' style='left: $left" . "em; top: " . $table["fields"][$source]["pos"] . "em; padding-top: .5em;'><div style='border-top: 1px solid Gray; width: " . (-$left) . "em;'></div></div>\n";
+				echo '<div class="references" title="' . htmlspecialchars($target_name) . "\" style='left: $left" . "em; top: " . $table["fields"][$source]["pos"] . "em; padding-top: .5em;'><div style='border-top: 1px solid Gray; width: " . (-$left) . "em;'></div></div>\n";
 			}
 		}
 	}
-	foreach ((array) $referenced[$name] as $left => $columns) {
-		$left = $left / 10000 - $table_pos[$name][1];
-		foreach ($columns as $target) {
-			echo "<div class='references' style='left: $left" . "em; top: " . $table["fields"][$target]["pos"] . "em; width: " . (-$left) . "em; height: 1.25em; background: url(arrow.gif) no-repeat right center;'><div style='height: .5em; border-bottom: 1px solid Gray; width: " . (-$left) . "em;'></div></div>\n";
+	foreach ((array) $referenced[$name] as $target_name => $refs) {
+		foreach ($refs as $left => $columns) {
+			$left = $left / 10000 - $table_pos[$name][1];
+			foreach ($columns as $target) {
+				echo '<div class="references" title="' . htmlspecialchars($target_name) . "\" style='left: $left" . "em; top: " . $table["fields"][$target]["pos"] . "em; width: " . (-$left) . "em; height: 1.25em; background: url(arrow.gif) no-repeat right center;'><div style='height: .5em; border-bottom: 1px solid Gray; width: " . (-$left) . "em;'></div></div>\n";
+			}
 		}
 	}
 	echo "</div>\n";
