@@ -7,7 +7,7 @@ function dump_table($table, $data = true) {
 	global $mysql;
 	$result = $mysql->query("SHOW CREATE TABLE " . idf_escape($table));
 	if ($result) {
-		echo $mysql->result($result, 1) . ";\n";
+		echo $mysql->result($result, 1) . ";\n\n";
 		$result->free();
 		if ($data) {
 			$result = $mysql->query("SELECT * FROM " . idf_escape($table)); //! enum and set as numbers, binary as _binary
@@ -19,6 +19,17 @@ function dump_table($table, $data = true) {
 			}
 		}
 		echo "\n";
+	}
+	if ($mysql->server_info >= 5) {
+		$result = $mysql->query("SHOW TRIGGERS LIKE '" . $mysql->escape_string(addcslashes($table, "%_")) . "'");
+		if ($result->num_rows) {
+			echo "DELIMITER ;;\n\n";
+			while ($row = $result->fetch_assoc()) {
+				echo "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . idf_escape($row["Table"]) . " FOR EACH ROW $row[Statement];;\n\n";
+			}
+			echo "DELIMITER ;\n\n";
+		}
+		$result->free();
 	}
 }
 
@@ -47,19 +58,8 @@ function dump($db) {
 	}
 	$result->free();
 	
-	if ($mysql->server_info >= 5) {
-		$result = $mysql->query("SHOW TRIGGERS");
-		if ($result->num_rows || $routines[$db]) {
-			echo "DELIMITER ;;\n\n";
-		}
-		while ($row = $result->fetch_assoc()) {
-			echo "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . idf_escape($row["Table"]) . " FOR EACH ROW $row[Statement];;\n\n";
-		}
-		echo implode("", (array) $routines[$db]);
-		if ($result->num_rows || $routines[$db]) {
-			echo "DELIMITER ;\n\n";
-		}
-		$result->free();
+	if ($routines[$db]) {
+		echo "DELIMITER ;;\n\n" . implode("", $routines[$db]) . "DELIMITER ;\n\n";
 	}
 	
 	echo "\n\n";
