@@ -7,7 +7,7 @@ function dump_table($table, $data = true) {
 	global $mysql;
 	$result = $mysql->query("SHOW CREATE TABLE " . idf_escape($table));
 	if ($result) {
-		echo $mysql->result($result, 1) . ";\n\n";
+		echo $mysql->result($result, 1) . ";\n\n"; //! export foreign keys after table definitions
 		$result->free();
 		if ($data) {
 			$result = $mysql->query("SELECT * FROM " . idf_escape($table)); //! enum and set as numbers, binary as _binary
@@ -52,11 +52,19 @@ function dump($db) {
 	}
 	
 	echo "SET CHARACTER SET utf8;\n\n";
+	$views = array();
 	$result = $mysql->query("SHOW TABLE STATUS");
 	while ($row = $result->fetch_assoc()) {
-		dump_table($row["Name"], isset($row["Engine"]));
+		if (isset($row["Engine"])) {
+			dump_table($row["Name"]);
+		} else {
+			$views[] = $row["Name"];
+		}
 	}
 	$result->free();
+	foreach ($views as $view) {
+		dump_table($view, false);
+	}
 	
 	if ($routines[$db]) {
 		echo "DELIMITER ;;\n\n" . implode("", $routines[$db]) . "DELIMITER ;\n\n";
