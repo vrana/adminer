@@ -143,8 +143,8 @@ function add_row(field) {
 			if (!$j) {
 				echo "<thead><tr><th>&nbsp;</th><th>" . implode("</th><th>", array_map('htmlspecialchars', array_keys($row))) . "</th></tr></thead>\n";
 			}
-			echo '<tr><td><a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . $unique_idf . '">' . lang('edit') . "</a></td>";
 			$unique_idf = '&amp;' . implode('&amp;', unique_idf($row, $indexes));
+			echo '<tr><td><a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . $unique_idf . '">' . lang('edit') . "</a></td>";
 			//! multiple delete by checkboxes
 			foreach ($row as $key => $val) {
 				if (!isset($val)) {
