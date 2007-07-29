@@ -63,16 +63,30 @@ document.onmousemove = function (ev) {
 		ev = ev || event;
 		var left = (ev.clientX - x) / em;
 		var top = (ev.clientY - y) / em;
-		that.style.left = left + 'em';
-		that.style.top = top + 'em';
-		var divs = document.getElementsByTagName('div');
+		var divs = that.getElementsByTagName('div');
 		for (var i=0; i < divs.length; i++) {
 			if (divs[i].className == 'references') {
-				var left1 = Math.min(left, (table_pos[divs[i].title] ? table_pos[divs[i].title][1] : 0)) - 1;
-				divs[i].style.left = left1;
-				divs[i].style.width = left - left1;
+				var ref = (table_pos[divs[i].title] ? table_pos[divs[i].title] : [ 0, 0 ]);
+				var left1 = Math.min(0, ref[1] - left) - 1;
+				divs[i].style.left = left1 + 'em';
+				divs[i].getElementsByTagName('div')[0].style.width = -left1 + 'em';
+				var div2 = document.getElementById((divs[i].id.substr(0, 4) == 'refs' ? 'refd' : 'refs') + divs[i].id.substr(4));
+				var left2 = Math.min(0, left - ref[1]) - 1;
+				div2.style.left = left2 + 'em';
+				div2.getElementsByTagName('div')[0].style.width = -left2 + 'em';
+				var is_top = (divs[i].offsetTop + top * em < div2.offsetTop + ref[0] * em);
+				var div2 = document.getElementById(divs[i].id.replace(/^....(.+)-[0-9]+$/, 'refl$1'));
+				var shift = ev.clientY - y - that.offsetTop;
+				div2.style.left = (left + left1) + 'em';
+				if (is_top) {
+					div2.style.top = (div2.offsetTop + shift) / em + 'em';
+				}
+				div2 = div2.getElementsByTagName('div')[0];
+				div2.style.height = (div2.offsetHeight + (is_top ? -1 : 1) * shift) / em + 'em';
 			}
 		}
+		that.style.left = left + 'em';
+		that.style.top = top + 'em';
 	}
 }
 document.onmouseup = function (ev) {
@@ -111,17 +125,19 @@ foreach ($schema as $name => $table) {
 	}
 	foreach ((array) $table["references"] as $target_name => $refs) {
 		foreach ($refs as $left => $columns) {
-			$left = $left / 10000 - $table_pos[$name][1];
+			$left1 = $left / 10000 - $table_pos[$name][1];
+			$i = 0;
 			foreach ($columns as $source => $target) {
-				echo '<div class="references" title="' . htmlspecialchars($target_name) . "\" style='left: $left" . "em; top: " . $table["fields"][$source]["pos"] . "em; padding-top: .5em;'><div style='border-top: 1px solid Gray; width: " . (-$left) . "em;'></div></div>\n";
+				echo '<div class="references" title="' . htmlspecialchars($target_name) . "\" id='refs$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $table["fields"][$source]["pos"] . "em; padding-top: .5em;'><div style='border-top: 1px solid Gray; width: " . (-$left1) . "em;'></div></div>\n";
 			}
 		}
 	}
 	foreach ((array) $referenced[$name] as $target_name => $refs) {
 		foreach ($refs as $left => $columns) {
-			$left = $left / 10000 - $table_pos[$name][1];
+			$left1 = $left / 10000 - $table_pos[$name][1];
+			$i = 0;
 			foreach ($columns as $target) {
-				echo '<div class="references" title="' . htmlspecialchars($target_name) . "\" style='left: $left" . "em; top: " . $table["fields"][$target]["pos"] . "em; width: " . (-$left) . "em; height: 1.25em; background: url(arrow.gif) no-repeat right center;'><div style='height: .5em; border-bottom: 1px solid Gray; width: " . (-$left) . "em;'></div></div>\n";
+				echo '<div class="references" title="' . htmlspecialchars($target_name) . "\" id='refd$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $table["fields"][$target]["pos"] . "em; width: " . (-$left) . "em; height: 1.25em; background: url(arrow.gif) no-repeat right center;'><div style='height: .5em; border-bottom: 1px solid Gray; width: " . (-$left1) . "em;'></div></div>\n";
 			}
 		}
 	}
@@ -130,7 +146,6 @@ foreach ($schema as $name => $table) {
 foreach ($schema as $name => $table) {
 	foreach ((array) $table["references"] as $target_name => $refs) {
 		foreach ($refs as $left => $ref) {
-			$left /= 10000;
 			$min_pos = $top;
 			$max_pos = -10;
 			foreach ($ref as $source => $target) {
@@ -139,7 +154,7 @@ foreach ($schema as $name => $table) {
 				$min_pos = min($min_pos, $pos1, $pos2);
 				$max_pos = max($max_pos, $pos1, $pos2);
 			}
-			echo "<div class='references' style='left: $left" . "em; top: $min_pos" . "em; padding: .5em 0;' /><div style='border-right: 1px solid Gray; height: " . ($max_pos - $min_pos) . "em;'></div></div>\n";
+			echo "<div class='references' id='refl$left' style='left: " . ($left / 10000) . "" . "em; top: $min_pos" . "em; padding: .5em 0;' /><div style='border-right: 1px solid Gray; height: " . ($max_pos - $min_pos) . "em;'></div></div>\n";
 		}
 	}
 }
