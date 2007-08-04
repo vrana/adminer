@@ -3,10 +3,11 @@ if (!(strlen($_GET["db"]) ? $mysql->select_db($_GET["db"]) : isset($_GET["sql"])
 	if (strlen($_GET["db"])) {
 		unset($_SESSION["databases"][$_GET["server"]]);
 	}
-	page_header(lang('Select database'), (strlen($_GET["db"]) ? false : null));
 	if (strlen($_GET["db"])) {
+		page_header(lang('Database') . ": " . htmlspecialchars($_GET["db"]), false);
 		echo "<p class='error'>" . lang('Invalid database.') . "</p>\n";
 	} else {
+		page_header(lang('Select database'), null);
 		echo '<p><a href="' . htmlspecialchars($SELF) . 'database=">' . lang('Create new database') . "</a></p>\n";
 		echo '<p><a href="' . htmlspecialchars($SELF) . 'processlist=">' . lang('Process list') . "</a></p>\n";
 		echo "<p>" . lang('MySQL version') . ": <b>$mysql->server_info</b> " . lang('through PHP extension') . " <b>" . (extension_loaded("mysqli") ? "MySQLi" : (extension_loaded("mysql") ? "MySQL" : "PDO")) . "</b></p>\n";
