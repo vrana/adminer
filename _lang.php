@@ -1,8 +1,9 @@
 <?php
+error_reporting(E_ALL & ~E_NOTICE);
 if ($_SERVER["argc"] > 1) {
 	$_COOKIE["lang"] = $_SERVER["argv"][1];
 	include "./lang.inc.php";
-	if ($_SERVER["argc"] != 2 || !isset($translations[$_COOKIE["lang"]])) {
+	if ($_SERVER["argc"] != 2 || !isset($langs[$_COOKIE["lang"]])) {
 		echo "Usage: php _lang.php [lang]\nPurpose: Update lang.inc.php from source code messages.\n";
 		exit(1);
 	}
@@ -19,7 +20,7 @@ foreach (glob("*.php") as $filename) {
 foreach (($_COOKIE["lang"] ? array("lang/$_COOKIE[lang].inc.php") : glob("lang/*.inc.php")) as $filename) {
 	$messages = $messages_all;
 	preg_match_all("~^(\\s*)(?:// )?(('(?:[^\\\\']+|\\\\.)*') => .*[^,\n]),?~m", file_get_contents($filename), $matches, PREG_SET_ORDER);
-	$s = "<?php\n\$translations['" . basename($filename, ".inc.php") . "'] = array(\n";
+	$s = "<?php\n\$translations = array(\n";
 	foreach ($matches as $match) {
 		if (isset($messages[$match[3]])) {
 			$s .= "$match[1]$match[2],\n";

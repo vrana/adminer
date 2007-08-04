@@ -1,5 +1,5 @@
 <?php
-$translations['cs'] = array(
+$translations = array(
 	'Login' => 'Přihlásit se',
 	'phpMinAdmin' => 'phpMinAdmin',
 	'Logout successful.' => 'Odhlášení proběhlo v pořádku.',

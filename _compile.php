@@ -4,9 +4,9 @@ function add_apo_slashes($s) {
 }
 
 function remove_lang($match) {
-	global $LANG, $translations;
+	global $translations;
 	$idf = strtr($match[2], array("\\'" => "'", "\\\\" => "\\"));
-	$s = ($translations[$LANG][$idf] ? $translations[$LANG][$idf] : $idf);
+	$s = ($translations[$idf] ? $translations[$idf] : $idf);
 	if ($match[3] == ",") {
 		return "$match[1]" . (is_array($s) ? "lang(array('" . implode("', '", array_map('add_apo_slashes', $s)) . "')," : "sprintf('" . add_apo_slashes($s) . "',");
 	}
@@ -15,14 +15,14 @@ function remove_lang($match) {
 
 function put_file($match) {
 	if ($match[4] == './lang/$LANG.inc.php') {
-		$return = "";
-		if (!$_COOKIE["lang"]) {
-			foreach (glob("./lang/*.inc.php") as $filename) {
-				$match[4] = $filename;
-				$return .= put_file($match);
-			}
+		if ($_COOKIE["lang"]) {
+			return "";
 		}
-		return $return;
+		$return = "switch (\$LANG) {\n";
+		foreach (glob("./lang/*.inc.php") as $filename) {
+			$return .= "case '" . basename($filename, '.inc.php') . "': " . substr(file_get_contents($filename), 6) . "break;\n";
+		}
+		return "$return}\n";
 	}
 	$return = file_get_contents($match[4]);
 	if ($match[4] == "./lang.inc.php" && $_COOKIE["lang"] && (preg_match("~case '$_COOKIE[lang]': (.*) break;~", $return, $match2) || preg_match("~default: (.*)~", $return, $match2))) {
@@ -45,17 +45,15 @@ error_reporting(E_ALL & ~E_NOTICE);
 if ($_SERVER["argc"] > 1) {
 	$_COOKIE["lang"] = $_SERVER["argv"][1];
 	include "./lang.inc.php";
-	if ($_SERVER["argc"] != 2 || !isset($translations[$_COOKIE["lang"]])) {
+	if ($_SERVER["argc"] != 2 || !isset($langs[$_COOKIE["lang"]])) {
 		echo "Usage: php _compile.php [lang]\nPurpose: Compile phpMinAdmin[-lang].php from index.php.\n";
 		exit(1);
 	}
 	include "./lang/$_COOKIE[lang].inc.php";
 }
-$filename = "phpMinAdmin.php";
+
+$filename = "phpMinAdmin" . ($_COOKIE["lang"] ? "-$_COOKIE[lang]" : "") . ".php";
 $file = file_get_contents("index.php");
-if ($_COOKIE["lang"]) {
-	$filename = "phpMinAdmin-$_COOKIE[lang].php";
-}
 $file = preg_replace_callback('~(<\\?php)?\\s*(include|require)(_once)? "([^"]*)";(\\s*\\?>)?~', 'put_file', $file);
 if ($_COOKIE["lang"]) {
 	$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);

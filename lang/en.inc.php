@@ -1,5 +1,5 @@
 <?php
-$translations['en'] = array(
+$translations = array(
 	'Query executed OK, %d row(s) affected.' => array('Query executed OK, %d row affected.', 'Query executed OK, %d rows affected.'),
 	'%d byte(s)' => array('%d byte', '%d bytes'),
 	'Routine has been called, %d row(s) affected.' => array('Routine has been called, %d row affected.', 'Routine has been called, %d rows affected.'),
