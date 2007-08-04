@@ -173,7 +173,7 @@ function add_row(field) {
 		}
 		echo "</table>\n";
 		if (intval($limit) && $found_rows > $limit) {
-			$max_page = floor($found_rows / $limit);
+			$max_page = floor(($found_rows - 1) / $limit);
 			function print_page($page) {
 				echo " " . ($page == $_GET["page"] ? $page + 1 : '<a href="' . htmlspecialchars(remove_from_uri("page") . ($page ? "&page=$page" : "")) . '">' . ($page + 1) . "</a>");
 			}
