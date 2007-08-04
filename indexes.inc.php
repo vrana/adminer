@@ -51,7 +51,7 @@ if ($_POST) {
 				$row["indexes"][$key]["columns"][] = "";
 			}
 		}
-		$index = $row["indexes"][count($row["indexes"]) - 1];
+		$index = end($row["indexes"]);
 		if ($index["type"] || array_filter($index["columns"], 'strlen') || array_filter($index["lengths"], 'strlen')) {
 			$row["indexes"][] = array("columns" => array(1 => ""));
 		}
