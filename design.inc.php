@@ -15,7 +15,7 @@ function page_header($title, $breadcrumb = array(), $title2 = "") {
 <?php if ($_COOKIE["highlight"] == "jush") { ?>
 <style type="text/css">@import url(http://jush.info/jush.css);</style>
 <script type="text/javascript" src="http://jush.info/jush.js" defer="defer"></script>
-<script type="text/javascript">window.onload = function () { if (jush) jush.highlight_tag('pre'); }</script>
+<script type="text/javascript">window.onload = function () { if (typeof jush != 'undefined') jush.highlight_tag('pre'); }</script>
 <?php } ?>
 </head>
 
