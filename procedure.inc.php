@@ -1,9 +1,13 @@
 <?php
 $routine = (isset($_GET["function"]) ? "FUNCTION" : "PROCEDURE");
 
+$dropped = false;
 if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
-	if (strlen($_GET["procedure"]) && $mysql->query("DROP $routine " . idf_escape($_GET["procedure"])) && $_POST["drop"]) {
-		redirect(substr($SELF, 0, -1), lang('Routine has been dropped.'));
+	if ($_POST["dropped"] || $mysql->query("DROP $routine " . idf_escape($_GET["procedure"]))) {
+		if ($_POST["drop"]) {
+			redirect(substr($SELF, 0, -1), lang('Routine has been dropped.'));
+		}
+		$dropped = true;
 	}
 	if (!$_POST["drop"]) {
 		$set = array();
@@ -62,6 +66,7 @@ document.getElementById('form')['returns[type]'].onchange();
 <p><textarea name="definition" rows="10" cols="80" style="width: 98%;"><?php echo htmlspecialchars($row["definition"]); ?></textarea></p>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
+<?php if ($dropped) { ?><input type="hidden" name="dropped" value="1" /><?php } ?>
 <?php echo lang('Name'); ?>: <input name="name" value="<?php echo htmlspecialchars($row["name"]); ?>" maxlength="64" />
 <input type="submit" value="<?php echo lang('Save'); ?>" />
 <?php if (strlen($_GET["procedure"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?>');" /><?php } ?>

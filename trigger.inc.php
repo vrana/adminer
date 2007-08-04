@@ -2,9 +2,13 @@
 $trigger_time = array("BEFORE", "AFTER");
 $trigger_event = array("INSERT", "UPDATE", "DELETE");
 
+$dropped = false;
 if ($_POST && !$error) {
-	if (strlen($_GET["name"]) && $mysql->query("DROP TRIGGER " . idf_escape($_GET["name"])) && $_POST["drop"]) {
-		redirect($SELF . "table=" . urlencode($_GET["trigger"]), lang('Trigger has been dropped.'));
+	if ($_POST["dropped"] || $mysql->query("DROP TRIGGER " . idf_escape($_GET["name"]))) {
+		if ($_POST["drop"]) {
+			redirect($SELF . "table=" . urlencode($_GET["trigger"]), lang('Trigger has been dropped.'));
+		}
+		$dropped = true;
 	}
 	if (!$_POST["drop"]) {
 		if (in_array($_POST["Timing"], $trigger_time) && in_array($_POST["Event"], $trigger_event) && $mysql->query(
@@ -43,6 +47,7 @@ if ($_POST) {
 <p><textarea name="Statement" rows="10" cols="80" style="width: 98%;"><?php echo htmlspecialchars($row["Statement"]); ?></textarea></p>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
+<?php if ($dropped) { ?><input type="hidden" name="dropped" value="1" /><?php } ?>
 <input type="submit" value="<?php echo lang('Save'); ?>" />
 <?php if (strlen($_GET["name"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?>');" /><?php } ?>
 </p>
