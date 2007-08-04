@@ -9,7 +9,7 @@ function page_header($title, $breadcrumb = array(), $title2 = "") {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <meta name="robots" content="noindex" />
-<title><?php echo lang('phpMinAdmin') . " - $title" . (strlen($title2) ? ": " . htmlspecialchars($title2) : ""); ?></title>
+<title><?php echo $title . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . " - " . lang('phpMinAdmin') . " 1.3.2-dev"; ?></title>
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 <link rel="stylesheet" type="text/css" href="default.css" />
 <?php if ($_COOKIE["highlight"] == "jush") { ?>
@@ -87,7 +87,7 @@ function page_footer($missing = false) {
 				echo "<p>\n";
 				while ($row = $result->fetch_assoc()) {
 					echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row["Name"]) . '" title="' . lang('%d row(s)', $row["Rows"]) . '">' . lang('select') . '</a> ';
-					echo '<a href="' . htmlspecialchars($SELF) . (isset($row["Engine"]) ? 'table' : 'view') . '=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . "</a><br />\n";
+					echo '<a href="' . htmlspecialchars($SELF) . (isset($row["Engine"]) ? 'table' : 'view') . '=' . urlencode($row["Name"]) . '" title="' . (isset($row["Engine"]) ? htmlspecialchars($row["Engine"]) : lang('View')) . '">' . htmlspecialchars($row["Name"]) . "</a><br />\n";
 				}
 				echo "</p>\n";
 			}
