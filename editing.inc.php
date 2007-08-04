@@ -102,7 +102,7 @@ function edit_fields($fields, $collations, $type = "TABLE") {
 		?>
 <tr>
 <?php if ($type == "PROCEDURE") { ?><td><select name="fields[<?php echo $i; ?>][inout]"><?php echo optionlist($inout, $field["inout"]); ?></select></td><?php } ?>
-<th><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo htmlspecialchars($field[($_POST ? "orig" : "field")]); ?>" /><input name="fields[<?php echo $i; ?>][field]" value="<?php echo ($_POST["drop_col"][$i] ? "" : htmlspecialchars($field["field"])); ?>" maxlength="64" /></th>
+<th><input name="fields[<?php echo $i; ?>][field]" value="<?php echo ($_POST["drop_col"][$i] ? "" : htmlspecialchars($field["field"])); ?>" maxlength="64" /><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo htmlspecialchars($field[($_POST ? "orig" : "field")]); ?>" /></th>
 <?php edit_type("fields[$i]", $field, $collations); ?>
 <?php if ($type == "TABLE") { ?>
 <td><input type="checkbox" name="fields[<?php echo $i; ?>][null]" value="1"<?php if ($field["null"]) { ?> checked="checked"<?php } ?> /></td>
@@ -145,6 +145,7 @@ function add_row(button) {
 		}
 	}
 	row.parentNode.insertBefore(row2, row);
+	tags[0].focus();
 	added += '0';
 	return true;
 }
