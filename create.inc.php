@@ -1,8 +1,9 @@
 <?php
 if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 	if ($_POST["drop"]) {
-		$query = "DROP TABLE " . idf_escape($_GET["create"]);
-		$message = lang('Table has been dropped.');
+		if ($mysql->query("DROP TABLE " . idf_escape($_GET["create"]))) {
+			redirect(substr($SELF, 0, -1), lang('Table has been dropped.'));
+		}
 	} else {
 		$auto_increment_index = " PRIMARY KEY";
 		if (strlen($_GET["create"]) && strlen($_POST["fields"][$_POST["auto_increment_col"]]["orig"])) {
@@ -22,7 +23,6 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 		ksort($_POST["fields"]);
 		$after = "FIRST";
 		foreach ($_POST["fields"] as $key => $field) {
-			//! detect changes
 			if (strlen($field["field"]) && isset($types[$field["type"]])) {
 				$fields[] = (!strlen($_GET["create"]) ? "" : (strlen($field["orig"]) ? "CHANGE " . idf_escape($field["orig"]) . " " : "ADD "))
 					. idf_escape($field["field"]) . process_type($field)
@@ -48,9 +48,9 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 			$query = "CREATE TABLE " . idf_escape($_POST["name"]) . " (" . implode(", ", $fields) . ")$status";
 			$message = lang('Table has been created.');
 		}
-	}
-	if ($mysql->query($query)) {
-		redirect(($_POST["drop"] ? substr($SELF, 0, -1) : $SELF . "table=" . urlencode($_POST["name"])), $message);
+		if ($mysql->query($query)) {
+			redirect($SELF . "table=" . urlencode($_POST["name"]), $message);
+		}
 	}
 	$error = $mysql->error;
 }
