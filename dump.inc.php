@@ -7,7 +7,7 @@ function dump_table($table, $data = true) {
 	global $mysql;
 	$result = $mysql->query("SHOW CREATE TABLE " . idf_escape($table));
 	if ($result) {
-		echo $mysql->result($result, 1) . ";\n\n"; //! export foreign keys after table definitions
+		echo $mysql->result($result, 1) . ";\n\n";
 		$result->free();
 		if ($data) {
 			$result = $mysql->query("SELECT * FROM " . idf_escape($table)); //! enum and set as numbers, binary as _binary
@@ -17,8 +17,8 @@ function dump_table($table, $data = true) {
 				}
 				$result->free();
 			}
+			echo "\n";
 		}
-		echo "\n";
 	}
 	if ($mysql->server_info >= 5) {
 		$result = $mysql->query("SHOW TRIGGERS LIKE '" . $mysql->escape_string(addcslashes($table, "%_")) . "'");
@@ -72,6 +72,10 @@ function dump($db) {
 	
 	echo "\n\n";
 }
+
+echo "SET FOREIGN_KEY_CHECKS = 0;\n";
+echo "SET TIME_ZONE = '" . $mysql->escape_string($mysql->result($mysql->query("SELECT @@TIME_ZONE"))) . "';\n";
+echo "\n";
 
 if (!strlen($_GET["db"])) {
 	$result = $mysql->query("SHOW DATABASES");
