@@ -1,5 +1,10 @@
 <?php
-// Copyright 2007 Jakub Vrana http://phpminadmin.sourceforge.net, licensed under the Apache License, Version 2.0 (the 'License'); you may not use this file except in compliance with the License.
+/** phpMinAdmin - MySQL management tool
+* @link http://phpminadmin.sourceforge.net
+* @author Jakub Vrana, http://php.vrana.cz
+* @copyright 2007 Jakub Vrana
+* @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
+*/
 
 error_reporting(E_ALL & ~E_NOTICE);
 session_name("PHPSESSID");
