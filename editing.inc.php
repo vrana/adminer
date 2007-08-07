@@ -42,7 +42,7 @@ function process_input($name, $field) {
 	global $mysql;
 	$name = bracket_escape($name);
 	$value = $_POST["fields"][$name];
-	if ($field["type"] != "enum" ? $_POST["null"][$name] : !strlen($value)) {
+	if ($field["type"] != "enum" && !$field["auto_increment"] ? $_POST["null"][$name] : !strlen($value)) {
 		return "NULL";
 	} elseif ($field["type"] == "enum") {
 		return (isset($_GET["default"]) ? "'" . $mysql->escape_string($value) . "'" : intval($value));
