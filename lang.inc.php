@@ -55,7 +55,7 @@ if (isset($langs[$_COOKIE["lang"]])) {
 			$LANG = $lang;
 			break;
 		}
-		$lang = preg_replace('~-.*~', '', $LANG);
+		$lang = preg_replace('~-.*~', '', $lang);
 		if (!isset($accept_language[$lang]) && isset($langs[$lang])) {
 			$LANG = $lang;
 			break;
