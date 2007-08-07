@@ -51,7 +51,6 @@ function dump($db) {
 		}
 	}
 	
-	echo "SET CHARACTER SET utf8;\n\n";
 	$views = array();
 	$result = $mysql->query("SHOW TABLE STATUS");
 	while ($row = $result->fetch_assoc()) {
@@ -73,6 +72,7 @@ function dump($db) {
 	echo "\n\n";
 }
 
+echo "SET NAMES utf8;\n";
 echo "SET FOREIGN_KEY_CHECKS = 0;\n";
 echo "SET TIME_ZONE = '" . $mysql->escape_string($mysql->result($mysql->query("SELECT @@TIME_ZONE"))) . "';\n";
 echo "\n";
