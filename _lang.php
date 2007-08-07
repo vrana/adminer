@@ -20,7 +20,7 @@ foreach (glob("*.php") as $filename) {
 foreach (($_COOKIE["lang"] ? array("lang/$_COOKIE[lang].inc.php") : glob("lang/*.inc.php")) as $filename) {
 	$messages = $messages_all;
 	preg_match_all("~^(\\s*)(?:// )?(('(?:[^\\\\']+|\\\\.)*') => .*[^,\n]),?~m", file_get_contents($filename), $matches, PREG_SET_ORDER);
-	$s = "<?php\n\$translations = array(\n";
+	$s = "";
 	foreach ($matches as $match) {
 		if (isset($messages[$match[3]])) {
 			$s .= "$match[1]$match[2],\n";
@@ -36,6 +36,6 @@ foreach (($_COOKIE["lang"] ? array("lang/$_COOKIE[lang].inc.php") : glob("lang/*
 			$s .= "\t$idf => '',\n";
 		}
 	}
-	file_put_contents($filename, "$s);\n");
-	echo "$filename modified.\n";
+	fwrite(fopen($filename, "w"), "<?php\n\$translations = array(\n$s);\n");
+	echo "$filename updated.\n";
 }

@@ -18,11 +18,11 @@ function put_file($match) {
 		if ($_COOKIE["lang"]) {
 			return "";
 		}
-		$return = "switch (\$LANG) {\n";
+		$return = "";
 		foreach (glob("./lang/*.inc.php") as $filename) {
 			$return .= "case '" . basename($filename, '.inc.php') . "': " . substr(file_get_contents($filename), 6) . "break;\n";
 		}
-		return "$return}\n";
+		return "switch (\$LANG) {\n$return}\n";
 	}
 	$return = file_get_contents($match[4]);
 	if ($match[4] == "./lang.inc.php" && $_COOKIE["lang"] && (preg_match("~case '$_COOKIE[lang]': (.*) break;~", $return, $match2) || preg_match("~default: (.*)~", $return, $match2))) {
@@ -64,5 +64,5 @@ $file = str_replace("favicon.ico", '<?php echo preg_replace("~\\\\?.*~", "", $_S
 $file = str_replace("arrow.gif", '" . preg_replace("~\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?gif=arrow', $file);
 $file = str_replace('error_reporting(E_ALL & ~E_NOTICE);', "error_reporting(E_ALL & ~E_NOTICE);\nif (isset(\$_GET['favicon'])) {\n\theader('Content-Type: image/x-icon');\n\techo base64_decode('" . base64_encode(file_get_contents("favicon.ico")) . "');\n\texit;\n} elseif (isset(\$_GET['gif'])) {\n\theader('Content-Type: image/gif');\n\techo base64_decode('" . base64_encode(file_get_contents("arrow.gif")) . "');\n\texit;\n}", $file);
 $file = str_replace('<link rel="stylesheet" type="text/css" href="default.css" />', "<style type='text/css'>\n" . file_get_contents("default.css") . "</style>", $file);
-file_put_contents($filename, $file);
+fwrite(fopen($filename, "w"), $file);
 echo "$filename created.\n";
