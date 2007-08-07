@@ -3,6 +3,7 @@ static $langs = array(
 	'en' => 'English',
 	'cs' => 'Čeština', // Jakub Vrána - http://php.vrana.cz
 	'sk' => 'Slovenčina', // Ivan Suchy - http://www.ivansuchy.com
+	'nl' => 'Nederlands', // Maarten Balliauw - http://blogs.balliauw.be/blogs/maarten/
 );
 
 function lang($idf, $number = null) {
