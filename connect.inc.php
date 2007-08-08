@@ -1,5 +1,5 @@
 <?php
-if (!(strlen($_GET["db"]) ? $mysql->select_db($_GET["db"]) : isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]) || isset($_GET["processlist"]))) {
+if (!(strlen($_GET["db"]) ? $mysql->select_db($_GET["db"]) : isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]) || isset($_GET["processlist"]) || isset($_GET["privileges"]))) {
 	if (strlen($_GET["db"])) {
 		unset($_SESSION["databases"][$_GET["server"]]);
 	}
@@ -9,6 +9,7 @@ if (!(strlen($_GET["db"]) ? $mysql->select_db($_GET["db"]) : isset($_GET["sql"])
 	} else {
 		page_header(lang('Select database'), null);
 		echo '<p><a href="' . htmlspecialchars($SELF) . 'database=">' . lang('Create new database') . "</a></p>\n";
+		echo '<p><a href="' . htmlspecialchars($SELF) . 'privileges=">' . lang('Privileges') . "</a></p>\n";
 		echo '<p><a href="' . htmlspecialchars($SELF) . 'processlist=">' . lang('Process list') . "</a></p>\n";
 		echo "<p>" . lang('MySQL version') . ": <b>$mysql->server_info</b> " . lang('through PHP extension') . " <b>" . (extension_loaded("mysqli") ? "MySQLi" : (extension_loaded("mysql") ? "MySQL" : "PDO")) . "</b></p>\n";
 	}

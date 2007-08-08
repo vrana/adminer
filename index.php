@@ -83,6 +83,8 @@ if (isset($_GET["dump"])) {
 			include "./procedure.inc.php";
 		} elseif (isset($_GET["trigger"])) {
 			include "./trigger.inc.php";
+		} elseif (isset($_GET["privileges"])) {
+			include "./privileges.inc.php";
 		} elseif (isset($_GET["processlist"])) {
 			include "./processlist.inc.php";
 		} else {
