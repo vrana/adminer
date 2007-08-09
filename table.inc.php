@@ -64,7 +64,7 @@ if ($mysql->server_info >= 5) {
 	if ($result->num_rows) {
 		echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
 		while ($row = $result->fetch_assoc()) {
-			echo "<tr valign='top'><th>$row[Timing]</th><th>$row[Event]</th><td>" . htmlspecialchars($row["Trigger"]) . "</td><td><a href=\"" . htmlspecialchars($SELF) . 'trigger=' . urlencode($_GET["table"]) . '&amp;name=' . urlencode($row["Trigger"]) . '">' . lang('Alter') . "</a></td></tr>\n";
+			echo "<tr valign='top'><td>$row[Timing]</td><td>$row[Event]</td><th>" . htmlspecialchars($row["Trigger"]) . "</th><td><a href=\"" . htmlspecialchars($SELF) . 'trigger=' . urlencode($_GET["table"]) . '&amp;name=' . urlencode($row["Trigger"]) . '">' . lang('Alter') . "</a></td></tr>\n";
 		}
 		echo "</table>\n";
 	}
