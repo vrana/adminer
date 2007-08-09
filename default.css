@@ -1,22 +1,31 @@
-BODY { color: Black; background-color: White; line-height: 1.25em; }
-A { color: Blue; }
-A:visited { color: Navy; }
-H1 { font-size: 150%; margin-top: 0; }
-H2 { font-size: 150%; margin-top: 0; }
-H3 { margin-top: 0; }
-FIELDSET { float: left; padding: .5em; margin: 0; }
-PRE { margin: .12em 0 1em; }
-TABLE { margin-bottom: 1em; }
-P { margin-top: 0; }
-IMG { vertical-align: middle; }
-.error { color: Red; }
-.message { color: Green; }
+body { color: #000; background-color: #fff; line-height: 1.25em; font-family: Verdana, Arial, Helvetica, sans-serif; margin: 0; font-size: 90%; }
+a { color: blue; }
+a:visited { color: navy; }
+a:hover { color: red; }
+h1 { font-size: 150%; margin: 0; padding: .8em 1em; border-bottom: 1px solid #999; font-weight: normal; background: #eee; font-style: italic; }
+h1 a:link, h1 a:visited { color: #777; text-decoration: none; }
+h2 { font-size: 150%; margin: 0 0 20px -18px; padding: .8em 1em; border-bottom: 1px solid #000; color: #000; font-weight: normal; background: #ddf; }
+h3 { font-weight: normal; font-size: 130%; margin: .8em 0; }
+pre { margin: .12em 0 1em; background: #eee; }
+table { margin: 0 20px .8em 0; border: 0; border-top: 1px solid #999; border-left: 1px solid #999; font-size: 90%; }
+td, th { margin-bottom: 1em; border: 0; border-right: 1px solid #999; border-bottom: 1px solid #999; padding: .2em .3em; }
+th { background: #eee; }
+fieldset { float: left; padding: .5em .8em; margin: 0 .5em .5em 0; border: 1px solid #999; }
+legend { padding: .2em .5em; margin: .5em 0 0; border: 1px solid #999; color: #000; background: #eee; margin: 0; }
+p { margin: 0 20px 1em 0; }
+img { vertical-align: middle; }
+.error { color: red; background: #fee; padding: .5em .8em; }
+.message { color: green; background: #efe; padding: .5em .8em; }
 .char { color: #007F00; }
 .date { color: #7F007F; }
 .enum { color: #007F7F; }
-.binary { color: Red; }
-#menu { position: absolute; top: 8px; left: 8px; width: 15em; overflow: auto; overflow-y: hidden; white-space: nowrap; }
-#content { margin-left: 16em; }
+.binary { color: red; }
+#menu { position: absolute; margin: 10px 0 0; padding: 0 0 30px 0; top: 2em; left: 0; width: 18em; overflow: auto; overflow-y: hidden; white-space: nowrap; }
+#menu p { padding: .8em 1em; margin: 0; border-bottom: 1px solid #ccc; }
+#menu form { margin: 0; }
+#content { margin: 2em 0 0 21em; padding: 10px 20px 20px 0; }
+#lang { position: absolute; top: 0; left: 0; line-height: 1.8em; padding: 0 1em; }
+#breadcrumb { position: absolute; top: 0; left: 21em; background: #eee; height: 2em; line-height: 1.8em; padding: 0 1em; margin: 0 0 0 -18px; }
 #schema { margin-left: 60px; position: relative; }
 #schema .table { border: 1px solid Silver; padding: 0 2px; cursor: move; position: absolute; }
 #schema .references { position: absolute; }

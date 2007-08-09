@@ -11,7 +11,7 @@ function page_header($title, $breadcrumb = array(), $title2 = "") {
 <meta name="robots" content="noindex" />
 <title><?php echo $title . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . " - " . lang('phpMinAdmin') . " 1.4.0-dev"; ?></title>
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-<link rel="stylesheet" type="text/css" href="default.css" />
+<link rel="stylesheet" type="text/css" href="default.css" /><?php // Ondrej Valka, http://valka.info ?>
 <?php if ($_COOKIE["highlight"] == "jush") { ?>
 <style type="text/css">@import url(http://jush.info/jush.css);</style>
 <script type="text/javascript" src="http://jush.info/jush.js" defer="defer"></script>
@@ -25,14 +25,14 @@ function page_header($title, $breadcrumb = array(), $title2 = "") {
 <?php
 	if (isset($breadcrumb)) {
 		$link = substr(preg_replace('~db=[^&]*&~', '', $SELF), 0, -1);
-		echo '<p id="breadcrumb"><a href="' . (strlen($link) ? htmlspecialchars($link) : ".") . '">' . (isset($_GET["server"]) ? htmlspecialchars($_GET["server"]) : lang('Server')) . '</a> &gt; ';
+		echo '<p id="breadcrumb"><a href="' . (strlen($link) ? htmlspecialchars($link) : ".") . '">' . (isset($_GET["server"]) ? htmlspecialchars($_GET["server"]) : lang('Server')) . '</a> &raquo; ';
 		if (is_array($breadcrumb)) {
 			if (strlen($_GET["db"])) {
-				echo '<a href="' . substr($SELF, 0, -1) . '">' . htmlspecialchars($_GET["db"]) . '</a> &gt; ';
+				echo '<a href="' . substr($SELF, 0, -1) . '">' . htmlspecialchars($_GET["db"]) . '</a> &raquo; ';
 			}
 			foreach ($breadcrumb as $key => $val) {
 				if (strlen($val)) {
-					echo '<a href="' . htmlspecialchars($SELF) . "$key=" . ($key != "privileges" ? urlencode($val) : "") . '">' . htmlspecialchars($val) . '</a> &gt; ';
+					echo '<a href="' . htmlspecialchars($SELF) . "$key=" . ($key != "privileges" ? urlencode($val) : "") . '">' . htmlspecialchars($val) . '</a> &raquo; ';
 				}
 			}
 		}
@@ -53,9 +53,9 @@ function page_footer($missing = false) {
 	?>
 </div>
 
+<?php switch_lang(); ?>
 <div id="menu">
 <h1><a href="http://phpminadmin.sourceforge.net"><?php echo lang('phpMinAdmin'); ?></a></h1>
-<?php switch_lang(); ?>
 <?php if ($missing != "auth") { ?>
 <p>
 <a href="<?php echo htmlspecialchars($SELF); ?>sql="><?php echo lang('SQL command'); ?></a>
