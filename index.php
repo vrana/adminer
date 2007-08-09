@@ -48,6 +48,8 @@ if (isset($_GET["dump"])) {
 		include "./view.inc.php";
 	} elseif (isset($_GET["schema"])) {
 		include "./schema.inc.php";
+	} elseif (isset($_GET["privileges"])) {
+		include "./privileges.inc.php";
 	} else { // uses CSRF token
 		include "./editing.inc.php";
 		if ($_POST) {
@@ -83,8 +85,8 @@ if (isset($_GET["dump"])) {
 			include "./procedure.inc.php";
 		} elseif (isset($_GET["trigger"])) {
 			include "./trigger.inc.php";
-		} elseif (isset($_GET["privileges"])) {
-			include "./privileges.inc.php";
+		} elseif (isset($_GET["user"])) {
+			include "./user.inc.php";
 		} elseif (isset($_GET["processlist"])) {
 			include "./processlist.inc.php";
 		} else {
@@ -100,8 +102,8 @@ if (isset($_GET["dump"])) {
 					echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
 					while ($row = $result->fetch_assoc()) {
 						echo "<tr>";
-						echo "<th>" . htmlspecialchars($row["ROUTINE_TYPE"]) . "</th>";
-						echo '<td><a href="' . htmlspecialchars($SELF) . ($row["ROUTINE_TYPE"] == "FUNCTION" ? 'callf' : 'call') . '=' . urlencode($row["ROUTINE_NAME"]) . '">' . htmlspecialchars($row["ROUTINE_NAME"]) . '</a></td>';
+						echo "<td>" . htmlspecialchars($row["ROUTINE_TYPE"]) . "</td>";
+						echo '<th><a href="' . htmlspecialchars($SELF) . ($row["ROUTINE_TYPE"] == "FUNCTION" ? 'callf' : 'call') . '=' . urlencode($row["ROUTINE_NAME"]) . '">' . htmlspecialchars($row["ROUTINE_NAME"]) . '</a></th>';
 						echo '<td><a href="' . htmlspecialchars($SELF) . ($row["ROUTINE_TYPE"] == "FUNCTION" ? 'function' : 'procedure') . '=' . urlencode($row["ROUTINE_NAME"]) . '">' . lang('Alter') . "</a></td>\n";
 						echo "</tr>\n";
 					}
