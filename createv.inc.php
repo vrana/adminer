@@ -1,7 +1,7 @@
 <?php
 $dropped = false;
 if ($_POST && !$error) {
-	if ($_POST["dropped"] || $mysql->query("DROP VIEW " . idf_escape($_GET["createv"]))) {
+	if (strlen($_GET["createv"]) && ($_POST["dropped"] || $mysql->query("DROP VIEW " . idf_escape($_GET["createv"])))) {
 		if ($_POST["drop"]) {
 			redirect(substr($SELF, 0, -1), lang('View has been dropped.'));
 		}

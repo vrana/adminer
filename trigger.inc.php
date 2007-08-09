@@ -4,7 +4,7 @@ $trigger_event = array("INSERT", "UPDATE", "DELETE");
 
 $dropped = false;
 if ($_POST && !$error) {
-	if ($_POST["dropped"] || $mysql->query("DROP TRIGGER " . idf_escape($_GET["name"]))) {
+	if (strlen($_GET["name"]) && ($_POST["dropped"] || $mysql->query("DROP TRIGGER " . idf_escape($_GET["name"])))) {
 		if ($_POST["drop"]) {
 			redirect($SELF . "table=" . urlencode($_GET["trigger"]), lang('Trigger has been dropped.'));
 		}

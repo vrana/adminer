@@ -3,7 +3,7 @@ $routine = (isset($_GET["function"]) ? "FUNCTION" : "PROCEDURE");
 
 $dropped = false;
 if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
-	if ($_POST["dropped"] || $mysql->query("DROP $routine " . idf_escape($_GET["procedure"]))) {
+	if (strlen($_GET["procedure"]) && ($_POST["dropped"] || $mysql->query("DROP $routine " . idf_escape($_GET["procedure"])))) {
 		if ($_POST["drop"]) {
 			redirect(substr($SELF, 0, -1), lang('Routine has been dropped.'));
 		}
