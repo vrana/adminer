@@ -151,4 +151,13 @@ $translations = array(
 	'ON UPDATE CURRENT_TIMESTAMP' => 'Při změně aktuální čas',
 	'Remove' => 'Odebrat',
 	'Are you sure?' => 'Opravdu?',
+	'Privileges' => 'Oprávnění',
+	'Create user' => 'Vytvořit uživatele',
+	'User has been dropped.' => 'Uživatel byl odstraněn.',
+	'User has been altered.' => 'Uživatel byl změněn.',
+	'User has been created.' => 'Uživatel byl vytvořen.',
+	'Unable to operate user' => 'Nepodařilo se zpracovat uživatele',
+	'Hashed' => 'Zahašované',
+	'Column' => 'Sloupec',
+	'Routine' => 'Procedura',
 );
