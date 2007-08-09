@@ -3,6 +3,7 @@ page_header(lang('Privileges'));
 echo '<p><a href="' . htmlspecialchars($SELF) . 'user=">' . lang('Create user') . "</a></p>\n";
 $result = $mysql->query("SELECT User, Host FROM mysql.user ORDER BY Host, User");
 if (!$result) {
+	//! Grant and revoke privileges to any users
 	$result = $mysql->query("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1) AS User, SUBSTRING_INDEX(CURRENT_USER, '@', -1) AS Host");
 }
 echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
