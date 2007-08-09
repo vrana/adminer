@@ -101,6 +101,6 @@ if ($fields) {
 <input type="submit" value="<?php echo lang('Save'); ?>" />
 <?php if (!isset($_GET["default"])) { ?><input type="submit" name="insert" value="<?php echo lang('Save and insert next'); ?>" /><?php } ?>
 <?php } ?>
-<?php if ($where) { ?> <input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" /><?php } ?>
+<?php if ($where) { ?> <input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?>');" /><?php } ?>
 </p>
 </form>
