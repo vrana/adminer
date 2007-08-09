@@ -69,8 +69,8 @@ document.onmousemove = function (ev) {
 		var line_set = { };
 		for (var i=0; i < divs.length; i++) {
 			if (divs[i].className == 'references') {
-				var ref = (table_pos[divs[i].title] ? table_pos[divs[i].title] : [ 0, 0 ]);
 				var div2 = document.getElementById((divs[i].id.substr(0, 4) == 'refs' ? 'refd' : 'refs') + divs[i].id.substr(4));
+				var ref = (table_pos[divs[i].title] ? table_pos[divs[i].title] : [ div2.parentNode.offsetTop / em, 0 ]);
 				var left1 = -1;
 				var is_top = true;
 				var id = divs[i].id.replace(/^ref.(.+)-.+/, '$1');
@@ -150,7 +150,7 @@ foreach ($schema as $name => $table) {
 			$left1 = $left - $table_pos[$name][1];
 			$i = 0;
 			foreach ($columns as $target) {
-				echo '<div class="references" title="' . htmlspecialchars($target_name) . "\" id='refd$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $table["fields"][$target]["pos"] . "em; width: " . (-$left) . "em; height: 1.25em; background: url(arrow.gif) no-repeat right center;'><div style='height: .5em; border-bottom: 1px solid Gray; width: " . (-$left1) . "em;'></div></div>\n";
+				echo '<div class="references" title="' . htmlspecialchars($target_name) . "\" id='refd$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $table["fields"][$target]["pos"] . "em; height: 1.25em; background: url(arrow.gif) no-repeat right center;'><div style='height: .5em; border-bottom: 1px solid Gray; width: " . (-$left1) . "em;'></div></div>\n";
 			}
 		}
 	}
