@@ -51,7 +51,9 @@ function auth_error() {
 	<tr><th><?php echo lang('Server'); ?>:</th><td><input name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>" maxlength="60" /></td></tr>
 	<tr><th><?php echo lang('Username'); ?>:</th><td><input name="username" value="<?php echo htmlspecialchars($username); ?>" maxlength="16" /></td></tr>
 	<tr><th><?php echo lang('Password'); ?>:</th><td><input type="password" name="password" /></td></tr>
-	<tr><th><?php
+	</table>
+	<p>
+<?php
 	foreach ($_POST as $key => $val) { // expired session
 		if (is_array($val)) {
 			foreach ($val as $key2 => $val2) {
@@ -70,10 +72,11 @@ function auth_error() {
 	foreach ($_FILES as $key => $val) {
 		echo '<input type="hidden" name="files[' . htmlspecialchars($key) . ']" value="' . ($val["error"] ? $val["error"] : base64_encode(file_get_contents($val["tmp_name"]))) . '" />';
 	}
-	?></th><td><input type="submit" value="<?php echo lang('Login'); ?>" /></td></tr>
-	</table>
+	?>
+	<input type="submit" value="<?php echo lang('Login'); ?>" />
+	</p>
 	</form>
-	<?php
+<?php
 	page_footer("auth");
 }
 
