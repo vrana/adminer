@@ -11,7 +11,6 @@ table { margin: 0 20px .8em 0; border: 0; border-top: 1px solid #999; border-lef
 td, th { margin-bottom: 1em; border: 0; border-right: 1px solid #999; border-bottom: 1px solid #999; padding: .2em .3em; }
 th { background: #eee; }
 fieldset { float: left; padding: .5em .8em; margin: 0 .5em .5em 0; border: 1px solid #999; }
-legend { padding: .2em .5em; margin: .5em 0 0; border: 1px solid #999; color: #000; background: #eee; margin: 0; }
 p { margin: 0 20px 1em 0; }
 img { vertical-align: middle; }
 .error { color: red; background: #fee; padding: .5em .8em; }
@@ -24,7 +23,7 @@ img { vertical-align: middle; }
 #menu p { padding: .8em 1em; margin: 0; border-bottom: 1px solid #ccc; }
 #menu form { margin: 0; }
 #content { margin: 2em 0 0 21em; padding: 10px 20px 20px 0; }
-#lang { position: absolute; top: 0; left: 0; line-height: 1.8em; padding: 0 1em; }
+#lang { position: absolute; top: 0; left: 0; line-height: 1.8em; padding: .3em 1em; }
 #breadcrumb { position: absolute; top: 0; left: 21em; background: #eee; height: 2em; line-height: 1.8em; padding: 0 1em; margin: 0 0 0 -18px; }
 #schema { margin-left: 60px; position: relative; }
 #schema .table { border: 1px solid Silver; padding: 0 2px; cursor: move; position: absolute; }
