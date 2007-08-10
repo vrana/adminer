@@ -1,4 +1,32 @@
 <?php
+$privileges = array();
+$result = $mysql->query("SHOW PRIVILEGES");
+while ($row = $result->fetch_assoc()) {
+	foreach (explode(",", $row["Context"]) as $context) {
+		$privileges[$context][$row["Privilege"]] = $row["Comment"];
+	}
+}
+$result->free();
+$privileges["Server Admin"] += $privileges["File access on server"];
+$privileges["Databases"]["Create routine"] = $privileges["Procedures"]["Create routine"];
+$privileges["Columns"] = array();
+foreach (array("Select", "Insert", "Update", "References") as $val) {
+	$privileges["Columns"][$val] = $privileges["Tables"][$val];
+}
+unset($privileges["Server Admin"]["Usage"]);
+unset($privileges["Procedures"]["Create routine"]);
+foreach ($privileges["Tables"] as $key => $val) {
+	unset($privileges["Databases"][$key]);
+}
+
+function all_privileges(&$grants, $privileges) {
+	foreach ($privileges as $privilege => $val) {
+		if ($privilege != "Grant option") {
+			$grants[strtoupper($privilege)] = true;
+		}
+	}
+}
+
 if ($_POST) {
 	$new_grants = array();
 	foreach ($_POST["objects"] as $key => $val) {
@@ -10,9 +38,19 @@ $old_pass = "";
 if (isset($_GET["host"]) && ($result = $mysql->query("SHOW GRANTS FOR '" . $mysql->escape_string($_GET["user"]) . "'@'" . $mysql->escape_string($_GET["host"]) . "'"))) { //! Use information_schema for MySQL 5 - column names in column privileges are not escaped
 	while ($row = $result->fetch_row()) {
 		if (preg_match('~GRANT (.*) ON (.*) TO ~', $row[0], $match)) { //! escape the part between ON and TO
-			preg_match_all('~ *([^(,]*[^ ,(])( *\\([^)]+\\))?~', $match[1], $matches, PREG_SET_ORDER);
-			foreach ($matches as $val) {
-				$grants["$match[2]$val[2]"][$val[1]] = true;
+			if ($match[1] == "ALL PRIVILEGES") {
+				if ($match[2] == "*.*") {
+					all_privileges($grants[$match[2]], $privileges["Server Admin"]);
+				}
+				if (substr($match[2], -1) == "*") {
+					all_privileges($grants[$match[2]], $privileges["Databases"]);
+					all_privileges($grants[$match[2]], $privileges["Procedures"]);
+				}
+				all_privileges($grants[$match[2]], $privileges["Tables"]);
+			} elseif (preg_match_all('~ *([^(,]*[^ ,(])( *\\([^)]+\\))?~', $match[1], $matches, PREG_SET_ORDER)) {
+				foreach ($matches as $val) {
+					$grants["$match[2]$val[2]"][$val[1]] = true;
+				}
 			}
 		}
 		if (preg_match('~ WITH GRANT OPTION~', $row[0])) { //! don't check inside strings and identifiers
@@ -26,21 +64,26 @@ if (isset($_GET["host"]) && ($result = $mysql->query("SHOW GRANTS FOR '" . $mysq
 }
 
 if ($_POST && !$error) {
-	$old_user = $mysql->escape_string($_GET["user"]) . "'@'" . $mysql->escape_string($_GET["host"]);
-	$new_user = $mysql->escape_string($_POST["user"]) . "'@'" . (strlen($_POST["host"]) ? $mysql->escape_string($_POST["host"]) : "%");
-	$identified = " IDENTIFIED BY" . ($_POST["hashed"] ? " PASSWORD" : "") . " '" . $mysql->escape_string($_POST["pass"]) . "'";
+	$old_user = (isset($_GET["host"]) ? $mysql->escape_string($_GET["user"]) . "'@'" . $mysql->escape_string($_GET["host"]) : "");
+	$new_user = $mysql->escape_string($_POST["user"]) . "'@'" . $mysql->escape_string($_POST["host"]);
+	$pass = $mysql->escape_string($_POST["pass"]);
+	$identified = " IDENTIFIED BY" . ($_POST["hashed"] ? " PASSWORD" : "") . " '$pass'";
 	if ($_POST["drop"]) {
 		if ($mysql->query("DROP USER '$old_user'")) {
 			redirect($SELF . "privileges=", lang('User has been dropped.'));
 		}
 	} elseif ($old_user == $new_user || $mysql->server_info < 5 || $mysql->query("CREATE USER '$new_user'$identified")) {
-		if ($old_user == $new_user || $mysql->server_info < 5) {
-			$mysql->query("GRANT USAGE ON *.* TO '$new_user'$identified");
-		}
+		$mysql->query("GRANT USAGE ON *.* TO '$new_user'$identified");
+		$mysql->query("SET PASSWORD FOR '$new_user' = " . ($_POST["hashed"] ? "'$pass'" : "PASSWORD('$pass')"));
 		$revoke = array();
 		foreach ($new_grants as $object => $grant) {
+			if (isset($_GET["grant"])) {
+				$grant = array_filter($grant);
+			}
 			$grant = array_keys($grant);
-			if ($old_user == $new_user) {
+			if (isset($_GET["grant"])) {
+				$revoke = array_diff(array_keys(array_filter($new_grants[$object], 'strlen')), $grant);
+			} elseif ($old_user == $new_user) {
 				$old_grant = array_keys((array) $grants[$object]);
 				$revoke = array_diff($old_grant, $grant);
 				$grant = array_diff($grant, $old_grant);
@@ -58,9 +101,9 @@ if ($_POST && !$error) {
 			}
 		}
 		if (!$error) {
-			if ($old_user != $new_user) {
+			if (isset($_GET["host"]) && $old_user != $new_user) {
 				$mysql->query("DROP USER '$old_user'");
-			} else {
+			} elseif (!isset($_GET["grant"])) {
 				foreach ($grants as $object => $revoke) {
 					if (preg_match('~^(.+)(\\(.*\\))?$~U', $object, $match)) {
 						$mysql->query("REVOKE " . implode("$match[2], ", $revoke) . "$match[2] ON $match[1] FROM '$new_user'");
@@ -76,33 +119,13 @@ if ($_POST && !$error) {
 }
 
 page_header((isset($_GET["host"]) ? lang('Username') . ": " . htmlspecialchars("$_GET[user]@$_GET[host]") : lang('Create user')), array("privileges" => lang('Privileges')));
-$privileges = array();
-$result = $mysql->query("SHOW PRIVILEGES");
-while ($row = $result->fetch_assoc()) {
-	foreach (explode(",", $row["Context"]) as $context) {
-		$privileges[$context][$row["Privilege"]] = $row["Comment"]; //! translation
-	}
-}
-$result->free();
-$privileges["Server Admin"] += $privileges["File access on server"];
-$privileges["Databases"]["Create routine"] = $privileges["Procedures"]["Create routine"];
-$privileges["Columns"] = array();
-foreach (array("Select", "Insert", "Update", "References") as $val) {
-	$privileges["Columns"][$val] = $privileges["Tables"][$val];
-}
-unset($privileges["Server Admin"]["Usage"]);
-unset($privileges["Procedures"]["Create routine"]);
-foreach ($privileges["Tables"] as $key => $val) {
-	unset($privileges["Databases"][$key]);
-}
-//! JS checkbox for all
 
 if ($_POST) {
 	$row = $_POST;
 	$grants = $new_grants;
 	echo "<p class='error'>" . lang('Unable to operate user') . ": " . htmlspecialchars($error) . "</p>\n";
 } else {
-	$row = $_GET;
+	$row = $_GET + array("host" => "localhost");
 	$row["pass"] = $old_pass;
 	if (strlen($old_pass)) {
 		$row["hashed"] = true;
@@ -132,11 +155,9 @@ foreach (array(
 	if ($privileges[$key]) {
 		echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
 		echo "<thead><tr>";
-		if ($key != "Server Admin") {
-			echo "<th>$val</th>";
-		}
+		echo "<th>$val</th>";
 		foreach ($privileges[$key] as $privilege => $comment) {
-			echo '<td title="' . htmlspecialchars($comment) . '">' . htmlspecialchars($privilege) . '</td>';
+			echo '<td title="' . htmlspecialchars($comment) . '" lang="en">' . htmlspecialchars($privilege) . '</td>';
 		}
 		echo "</tr></thead>\n";
 		foreach ($grants as $object => $grant) {
@@ -146,11 +167,16 @@ foreach (array(
 			: (substr($object, -1) == "*" || $key == "Tables"
 			)))) {
 				echo "<tr align='center'>";
-				if ($key != "Server Admin") {
-					echo '<th><input name="objects[' . $i . ']" value="' . htmlspecialchars($object) . "\" size='10' /></th>"; //! separate db, table, columns, PROCEDURE|FUNCTION, routine
-				}
+				echo '<th>' . ($key != "Server Admin" ? '<input name="objects[' . $i . ']" value="' . htmlspecialchars($object) . '" size="10" />' : '<input type="hidden" name="objects[' . $i . ']" value="*.*" size="10" />*.*') . '</th>'; //! separate db, table, columns, PROCEDURE|FUNCTION, routine
+				//! JS checkbox for all
 				foreach ($privileges[$key] as $privilege => $comment) {
-					echo '<td><input type="checkbox" name="grants[' . $i . '][' . htmlspecialchars(strtoupper($privilege)) . ']" value="1"' . ($grant[strtoupper($privilege)] || ($privilege != "Grant option" && $grant["ALL PRIVILEGES"]) ? " checked='checked'" : "") . " /></td>";
+					$name = '"grants[' . $i . '][' . htmlspecialchars(strtoupper($privilege)) . ']"';
+					$value = $grant[strtoupper($privilege)];
+					if (isset($_GET["grant"])) {
+						echo "<td><select name=$name><option></option><option value='1'" . ($value ? " selected='selected'" : "") . ">" . lang('Grant') . "</option><option value='0'" . ($value == "0" ? " selected='selected'" : "") . ">" . lang('Revoke') . "</option></select></td>";
+					} else {
+						echo "<td><input type='checkbox' name=$name value='1'" . ($value ? " checked='checked'" : "") . " /></td>";
+					}
 				}
 				echo "</tr>\n";
 				$i++;

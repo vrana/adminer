@@ -160,4 +160,6 @@ $translations = array(
 	'Hashed' => 'Zahašované',
 	'Column' => 'Sloupec',
 	'Routine' => 'Procedura',
+	'Grant' => 'Povolit',
+	'Revoke' => 'Zakázat',
 );
