@@ -177,7 +177,9 @@ if (extension_loaded("mysqli")) {
 		
 		function fetch_field() {
 			$row = (object) $this->getColumnMeta($this->_offset++);
-			// table and charset is not available
+			$row->orgtable = $row->table;
+			$row->orgname = $row->name;
+			$row->charsetnr = (in_array("blob", $row->flags) ? 63 : 0);
 			return $row;
 		}
 		
