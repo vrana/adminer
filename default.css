@@ -6,7 +6,6 @@ h1 { font-size: 150%; margin: 0; padding: .8em 1em; border-bottom: 1px solid #99
 h1 a:link, h1 a:visited { color: #777; text-decoration: none; }
 h2 { font-size: 150%; margin: 0 0 20px -18px; padding: .8em 1em; border-bottom: 1px solid #000; color: #000; font-weight: normal; background: #ddf; }
 h3 { font-weight: normal; font-size: 130%; margin: .8em 0; }
-pre { margin: .12em 0 1em; background: #eee; }
 table { margin: 0 20px .8em 0; border: 0; border-top: 1px solid #999; border-left: 1px solid #999; font-size: 90%; }
 td, th { margin-bottom: 1em; border: 0; border-right: 1px solid #999; border-bottom: 1px solid #999; padding: .2em .3em; }
 th { background: #eee; }
