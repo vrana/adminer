@@ -54,16 +54,11 @@ function auth_error() {
 	</table>
 	<p>
 <?php
-	foreach ($_POST as $key => $val) { // expired session
+	$process = $_POST; // expired session
+	while (list($key, $val) = each($process)) {
 		if (is_array($val)) {
-			foreach ($val as $key2 => $val2) {
-				if (!is_array($val2)) {
-					echo '<input type="hidden" name="' . htmlspecialchars($key . "[$key2]") . '" value="' . htmlspecialchars($val2) . '" />';
-				} else {
-					foreach ($val2 as $key3 => $val3) {
-						echo '<input type="hidden" name="' . htmlspecialchars($key . "[$key2][$key3]") . '" value="' . htmlspecialchars($val3) . '" />';
-					}
-				}
+			foreach ($val as $k => $v) {
+				$process[$key . "[$k]"] = $v;
 			}
 		} elseif (!in_array($key, $ignore)) {
 			echo '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($val) . '" />';
