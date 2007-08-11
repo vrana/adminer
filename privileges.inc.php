@@ -12,7 +12,7 @@ if (!$result) {
 	<form action=""><p>
 	<?php if (strlen($_GET["server"])) { ?><input type="hidden" name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>" /><?php } ?>
 	<?php echo lang('Username'); ?>: <input name="user" />
-	<?php echo lang('Server'); ?>: <input name="host" />
+	<?php echo lang('Server'); ?>: <input name="host" value="localhost" />
 	<input type="hidden" name="grant" value="" />
 	<input type="submit" value="<?php echo lang('Edit'); ?>" />
 	</p></form>
