@@ -44,7 +44,7 @@ if (isset($_GET["host"]) && ($result = $mysql->query("SHOW GRANTS FOR '" . $mysq
 				}
 				if (substr($match[2], -1) == "*") {
 					all_privileges($grants[$match[2]], $privileges["Databases"]);
-					all_privileges($grants[$match[2]], $privileges["Procedures"]);
+					all_privileges($grants[$match[2]], (array) $privileges["Procedures"]);
 				}
 				all_privileges($grants[$match[2]], $privileges["Tables"]);
 			} elseif (preg_match_all('~ *([^(,]*[^ ,(])( *\\([^)]+\\))?~', $match[1], $matches, PREG_SET_ORDER)) {
@@ -67,14 +67,14 @@ if ($_POST && !$error) {
 	$old_user = (isset($_GET["host"]) ? $mysql->escape_string($_GET["user"]) . "'@'" . $mysql->escape_string($_GET["host"]) : "");
 	$new_user = $mysql->escape_string($_POST["user"]) . "'@'" . $mysql->escape_string($_POST["host"]);
 	$pass = $mysql->escape_string($_POST["pass"]);
-	$identified = " IDENTIFIED BY" . ($_POST["hashed"] ? " PASSWORD" : "") . " '$pass'";
 	if ($_POST["drop"]) {
 		if ($mysql->query("DROP USER '$old_user'")) {
 			redirect($SELF . "privileges=", lang('User has been dropped.'));
 		}
-	} elseif ($old_user == $new_user || $mysql->server_info < 5 || $mysql->query("CREATE USER '$new_user'$identified")) {
-		$mysql->query("GRANT USAGE ON *.* TO '$new_user'$identified");
-		$mysql->query("SET PASSWORD FOR '$new_user' = " . ($_POST["hashed"] ? "'$pass'" : "PASSWORD('$pass')"));
+	} elseif ($old_user == $new_user || $mysql->query(($mysql->server_info < 5 ? "GRANT USAGE ON *.* TO" : "CREATE USER") . " '$new_user' IDENTIFIED BY" . ($_POST["hashed"] ? " PASSWORD" : "") . " '$pass'")) {
+		if ($old_user == $new_user) {
+			$mysql->query("SET PASSWORD FOR '$new_user' = " . ($_POST["hashed"] ? "'$pass'" : "PASSWORD('$pass')"));
+		}
 		$revoke = array();
 		foreach ($new_grants as $object => $grant) {
 			if (isset($_GET["grant"])) {
@@ -106,7 +106,7 @@ if ($_POST && !$error) {
 			} elseif (!isset($_GET["grant"])) {
 				foreach ($grants as $object => $revoke) {
 					if (preg_match('~^(.+)(\\(.*\\))?$~U', $object, $match)) {
-						$mysql->query("REVOKE " . implode("$match[2], ", $revoke) . "$match[2] ON $match[1] FROM '$new_user'");
+						$mysql->query("REVOKE " . implode("$match[2], ", array_keys($revoke)) . "$match[2] ON $match[1] FROM '$new_user'");
 					}
 				}
 			}
@@ -189,6 +189,6 @@ foreach (array(
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
 <input type="submit" value="<?php echo lang('Save'); ?>" />
-<?php if (isset($_GET["host"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>" /><?php } ?>
+<?php if (isset($_GET["host"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?>');" /><?php } ?>
 </p>
 </form>
