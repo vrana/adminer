@@ -85,6 +85,7 @@ if ($fields) {
 		if (isset($_GET["default"]) && $field["type"] == "timestamp") {
 			$id = htmlspecialchars("on_update-$name");
 			if (!isset($create) && !$_POST) {
+				//! disable sql_mode NO_FIELD_OPTIONS
 				$create = $mysql->result($mysql->query("SHOW CREATE TABLE " . idf_escape($_GET["edit"])), 1);
 			}
 			$checked = ($_POST ? $_POST["on_update"][bracket_escape($name)] : preg_match("~\n\\s*" . preg_quote(idf_escape($name), '~') . " timestamp.* on update CURRENT_TIMESTAMP~i", $create));
