@@ -14,7 +14,9 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 		$fields = array_filter((array) $_POST["fields"], 'strlen');
 		ksort($fields);
 		foreach ($fields as $field) {
-			$set[] = (in_array($field["inout"], $inout) ? "$field[inout] " : "") . idf_escape($field["field"]) . process_type($field, "CHARACTER SET");
+			if (strlen($field["field"])) {
+				$set[] = (in_array($field["inout"], $inout) ? "$field[inout] " : "") . idf_escape($field["field"]) . process_type($field, "CHARACTER SET");
+			}
 		}
 		if ($mysql->query(
 			"CREATE $routine " . idf_escape($_POST["name"])
