@@ -21,7 +21,7 @@ if ($_POST && !$error) {
 				} elseif ($field["type"] == "timestamp") {
 					$set[] = " MODIFY " . idf_escape($name) . " timestamp" . ($field["null"] ? " NULL" : "") . " DEFAULT $val" . ($_POST["on_update"][bracket_escape($name)] ? " ON UPDATE CURRENT_TIMESTAMP" : "");
 				} else {
-					$set[] = " ALTER " . idf_escape($name) . ($val == "NULL" ? " DROP DEFAULT" : " SET DEFAULT $val");
+					$set[] = " ALTER " . idf_escape($name) . ($val == ($field["null"] ? "NULL" : "''") ? " DROP DEFAULT" : " SET DEFAULT $val");
 				}
 			}
 		}
