@@ -111,7 +111,7 @@ function add_row(field) {
 	foreach ($columns as $column) {
 		if (preg_match('~text|blob~', $fields[$column]["type"])) {
 			$text_length = (isset($_GET["text_length"]) ? $_GET["text_length"] : "100");
-			$select[] = (intval($text_length) ? "LEFT(" . idf_escape($column) . ", " . intval($text_length) . ") AS " : "") . idf_escape($column);
+			$select[] = (intval($text_length) ? "CONCAT(LEFT(" . idf_escape($column) . ", " . intval($text_length) . "), IF(CHAR_LENGTH(" . idf_escape($column) . ") > " . intval($text_length) . ", '...', '')) AS " : "") . idf_escape($column);
 		} else {
 			$select[] = idf_escape($column);
 		}
