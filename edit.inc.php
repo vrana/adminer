@@ -41,7 +41,7 @@ if ($_POST && !$error) {
 	}
 	$error = $mysql->error;
 }
-page_header((isset($_GET["default"]) ? lang('Default values') : ($_GET["where"] ? lang('Edit') : lang('Insert'))) . ": " . htmlspecialchars($_GET["edit"]), array((isset($_GET["default"]) ? "table" : "select") => $_GET["edit"]));
+page_header((isset($_GET["default"]) ? lang('Default values') : ($_GET["where"] ? lang('Edit') : lang('Insert'))), array((isset($_GET["default"]) ? "table" : "select") => $_GET["edit"]), $_GET["edit"]);
 
 if ($_POST) {
 	echo "<p class='error'>" . lang('Error during saving') . ": " . htmlspecialchars($error) . "</p>\n";
