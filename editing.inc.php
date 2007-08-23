@@ -128,13 +128,13 @@ function add_row(button) {
 	var x = match[0] + (match[2] ? added.substr(match[2].length) : added) + '1';
 	var row = button.parentNode.parentNode;
 	var row2 = row.cloneNode(true);
-	var tags = row.getElementsByTagName('SELECT');
-	var tags2 = row2.getElementsByTagName('SELECT');
+	var tags = row.getElementsByTagName('select');
+	var tags2 = row2.getElementsByTagName('select');
 	for (var i=0; i < tags.length; i++) {
 		tags[i].name = tags[i].name.replace(/([0-9.]+)/, x);
 		tags2[i].selectedIndex = tags[i].selectedIndex;
 	}
-	tags = row.getElementsByTagName('INPUT');
+	tags = row.getElementsByTagName('input');
 	for (var i=0; i < tags.length; i++) {
 		if (tags[i].name == 'auto_increment_col') {
 			tags[i].value = x;
