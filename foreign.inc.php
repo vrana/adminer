@@ -64,6 +64,7 @@ function add_row(field) {
 	var selects = row.getElementsByTagName('select');
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/\]/, '1$&');
+		selects[i].selectedIndex = 0;
 	}
 	field.parentNode.parentNode.parentNode.appendChild(row);
 	field.onchange = function () { };

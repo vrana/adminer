@@ -73,6 +73,7 @@ function add_row(field) {
 	var selects = row.getElementsByTagName('select');
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/indexes\[[0-9]+/, '$&1');
+		selects[i].selectedIndex = 0;
 	}
 	var input = row.getElementsByTagName('input')[0];
 	input.name = input.name.replace(/indexes\[[0-9]+/, '$&1');
@@ -85,6 +86,7 @@ function add_column(field) {
 	var column = field.parentNode.cloneNode(true);
 	var select = column.getElementsByTagName('select')[0];
 	select.name = select.name.replace(/\]\[[0-9]+/, '$&1');
+	select.selectedIndex = 0;
 	var input = column.getElementsByTagName('input')[0];
 	input.name = input.name.replace(/\]\[[0-9]+/, '$&1');
 	input.value = '';

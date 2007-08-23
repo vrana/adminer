@@ -72,6 +72,7 @@ function add_row(field) {
 	var selects = row.getElementsByTagName('select');
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/[a-z]\[[0-9]+/, '$&1');
+		selects[i].selectedIndex = 0;
 	}
 	var input = row.getElementsByTagName('input')[0];
 	input.name = input.name.replace(/[a-z]\[[0-9]+/, '$&1');
