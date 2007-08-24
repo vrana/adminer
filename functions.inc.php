@@ -277,6 +277,21 @@ function select($result) {
 	$result->free();
 }
 
+function shorten_utf8($string, $length) {
+	for ($i=0; $i < strlen($string); $i++) {
+		if (ord($string[$i]) >= 192) {
+			while (ord($string[$i+1]) >= 128 && ord($string[$i+1]) < 192) {
+				$i++;
+			}
+		}
+		$length--;
+		if ($length == 0) {
+			return nl2br(htmlspecialchars(substr($string, 0, $i+1))) . "<em>...</em>";
+		}
+	}
+	return nl2br(htmlspecialchars($string));
+}
+
 if (get_magic_quotes_gpc()) {
     $process = array(&$_GET, &$_POST);
     while (list($key, $val) = each($process)) {

@@ -3,9 +3,13 @@ page_header(lang('Select') . ": " . htmlspecialchars($_GET["select"]));
 $fields = fields($_GET["select"]);
 $rights = array();
 $columns = array();
+unset($text_length);
 foreach ($fields as $key => $field) {
 	if (isset($field["privileges"]["select"])) {
 		$columns[] = $key;
+		if (preg_match('~text|blob~', $field["type"])) {
+			$text_length = (isset($_GET["text_length"]) ? $_GET["text_length"] : "100");
+		}
 	}
 	$rights += $field["privileges"];
 }
@@ -107,16 +111,6 @@ function add_row(field) {
 	echo '<div><input name="limit" size="3" value="' . htmlspecialchars($limit) . '" /></div>';
 	echo "</fieldset>\n";
 	
-	$select = array();
-	unset($text_length);
-	foreach ($columns as $column) {
-		if (preg_match('~text|blob~', $fields[$column]["type"])) {
-			$text_length = (isset($_GET["text_length"]) ? $_GET["text_length"] : "100");
-			$select[] = (intval($text_length) ? "CONCAT(LEFT(" . idf_escape($column) . ", " . intval($text_length) . "), IF(CHAR_LENGTH(" . idf_escape($column) . ") > " . intval($text_length) . ", '...', '')) AS " : "") . idf_escape($column);
-		} else {
-			$select[] = idf_escape($column);
-		}
-	}
 	if (isset($text_length)) {
 		echo "<fieldset><legend>" . lang('Text length') . "</legend>\n";
 		echo '<div><input name="text_length" size="3" value="' . htmlspecialchars($text_length) . '" /></div>';
@@ -127,7 +121,7 @@ function add_row(field) {
 	echo "</form>\n";
 	echo "<div style='clear: left;'>&nbsp;</div>\n";
 	
-	$result = $mysql->query("SELECT SQL_CALC_FOUND_ROWS " . implode(", ", $select) . " FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "") . ($order ? " ORDER BY " . implode(", ", $order) : "") . (strlen($limit) ? " LIMIT " . intval($limit) . " OFFSET " . ($limit * $_GET["page"]) : ""));
+	$result = $mysql->query("SELECT SQL_CALC_FOUND_ROWS * FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "") . ($order ? " ORDER BY " . implode(", ", $order) : "") . (strlen($limit) ? " LIMIT " . intval($limit) . " OFFSET " . ($limit * $_GET["page"]) : ""));
 	if (!$result->num_rows) {
 		echo "<p class='message'>" . lang('No rows.') . "</p>\n";
 	} else {
@@ -153,13 +147,19 @@ function add_row(field) {
 				} elseif (preg_match('~blob|binary~', $fields[$key]["type"]) && preg_match('~[\\x80-\\xFF]~', $val)) {
 					$val = '<a href="' . htmlspecialchars($SELF) . 'download=' . urlencode($_GET["select"]) . '&amp;field=' . urlencode($key) . $unique_idf . '">' . lang('%d byte(s)', strlen($val)) . '</a>';
 				} else {
-					$val = (strlen(trim($val)) ? nl2br(htmlspecialchars($val)) : "&nbsp;");
-					if ($fields[$key]["type"] == "char") {
-						$val = "<code>$val</code>";
+					if (!strlen(trim($val))) {
+						$val = "&nbsp;";
+					} elseif (intval($text_length) > 0 && preg_match('~blob|text~', $fields[$key]["type"]) && strlen($val) > intval($text_length)) {
+						$val = (preg_match('~blob~', $fields[$key]["type"]) ? nl2br(htmlspecialchars(substr($val, 0, intval($text_length)))) . "<em>...</em>" : shorten_utf8($val, intval($text_length)));
+					} else {
+						$val = nl2br(htmlspecialchars($val));
+						if ($fields[$key]["type"] == "char") {
+							$val = "<code>$val</code>";
+						}
 					}
 					foreach ((array) $foreign_keys[$key] as $foreign_key) {
 						if (count($foreign_keys[$key]) == 1 || count($foreign_key["source"]) == 1) {
-							$val = '">' . "$val</a>";
+							$val = "\">$val</a>";
 							foreach ($foreign_key["source"] as $i => $source) {
 								$val = "&amp;where%5B$i%5D%5Bcol%5D=" . urlencode($foreign_key["target"][$i]) . "&amp;where%5B$i%5D%5Bop%5D=%3D&amp;where%5B$i%5D%5Bval%5D=" . urlencode($row[$source]) . $val;
 							}
