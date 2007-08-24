@@ -13,7 +13,10 @@ function dump_table($table, $data = true) {
 			$result = $mysql->query("SELECT * FROM " . idf_escape($table)); //! enum and set as numbers, binary as _binary
 			if ($result) {
 				while ($row = $result->fetch_row()) {
-					echo "INSERT INTO " . idf_escape($table) . " VALUES ('" . implode("', '", array_map(array($mysql, 'escape_string'), $row)) . "');\n";
+					foreach ($row as $key => $val) {
+						$row[$key] = (isset($val) ? "'" . $mysql->escape_string($val) . "'" : "NULL");
+					}
+					echo "INSERT INTO " . idf_escape($table) . " VALUES (" . implode(", ", $row) . ");\n";
 				}
 				$result->free();
 			}
