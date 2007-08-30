@@ -2,6 +2,7 @@
 function input($name, $field, $value) {
 	global $types;
 	$name = htmlspecialchars(bracket_escape($name));
+	$onchange = ($field["null"] ? ' onchange="this.form[\'null[' . addcslashes($name, "\r\n'\\") . ']\'].checked = false;"' : '');
 	if ($field["type"] == "enum") {
 		if (!isset($_GET["default"])) {
 			echo '<input type="radio" name="fields[' . $name . ']" value="0"' . ($value === 0 ? ' checked="checked"' : '') . ' />';
@@ -23,14 +24,14 @@ function input($name, $field, $value) {
 			$val = stripcslashes(str_replace("''", "'", $val));
 			$id = "field-$name-" . ($i+1);
 			$checked = (is_int($value) ? ($value >> $i) & 1 : in_array($val, explode(",", $value), true));
-			echo ' <input type="checkbox" name="fields[' . $name . '][' . $i . ']" id="' . $id . '" value="' . (isset($_GET["default"]) ? htmlspecialchars($val) : 1 << $i) . '"' . ($checked ? ' checked="checked"' : '') . ' /><label for="' . $id . '">' . htmlspecialchars($val) . '</label>';
+			echo ' <input type="checkbox" name="fields[' . $name . '][' . $i . ']" id="' . $id . '" value="' . (isset($_GET["default"]) ? htmlspecialchars($val) : 1 << $i) . '"' . ($checked ? ' checked="checked"' : '') . $onchange . ' /><label for="' . $id . '">' . htmlspecialchars($val) . '</label>';
 		}
 	} elseif (strpos($field["type"], "text") !== false) {
-		echo '<textarea name="fields[' . $name . ']" cols="50" rows="12">' . htmlspecialchars($value) . '</textarea>';
+		echo '<textarea name="fields[' . $name . ']" cols="50" rows="12"' . $onchange . '>' . htmlspecialchars($value) . '</textarea>';
 	} elseif (preg_match('~binary|blob~', $field["type"])) {
-		echo (ini_get("file_uploads") ? '<input type="file" name="' . $name . '" />' : lang('File uploads are disabled.') . ' ');
+		echo (ini_get("file_uploads") ? '<input type="file" name="' . $name . '"' . $onchange . ' />' : lang('File uploads are disabled.') . ' ');
 	} else {
-		echo '<input name="fields[' . $name . ']" value="' . htmlspecialchars($value) . '"' . (strlen($field["length"]) ? " maxlength='$field[length]'" : ($types[$field["type"]] ? " maxlength='" . $types[$field["type"]] . "'" : '')) . ' />';
+		echo '<input name="fields[' . $name . ']" value="' . htmlspecialchars($value) . '"' . (strlen($field["length"]) ? " maxlength='$field[length]'" : ($types[$field["type"]] ? " maxlength='" . $types[$field["type"]] . "'" : '')) . $onchange . ' />';
 	}
 	if ($field["null"] && $field["type"] != "enum") {
 		$id = "null-$name";
