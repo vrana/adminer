@@ -141,7 +141,7 @@ function where() {
 	global $mysql;
 	$return = array();
 	foreach ((array) $_GET["where"] as $key => $val) {
-		$return[] = idf_escape(bracket_escape($key, "back")) . " = '" . $mysql->escape_string($val) . "' COLLATE utf8_bin"; //! enum and set
+		$return[] = idf_escape(bracket_escape($key, "back")) . " = BINARY '" . $mysql->escape_string($val) . "'"; //! enum and set
 	}
 	foreach ((array) $_GET["null"] as $key) {
 		$return[] = idf_escape(bracket_escape($key, "back")) . " IS NULL";
