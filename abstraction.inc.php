@@ -26,7 +26,7 @@ if (extension_loaded("mysqli")) {
 		var $_link, $_result, $server_info, $affected_rows, $error;
 		
 		function connect($server, $username, $password) {
-			$this->_link = @mysql_pconnect(
+			$this->_link = @mysql_connect(
 				(strlen($server) ? $server : ini_get("mysql.default_host")),
 				(strlen("$server$username") ? $username : ini_get("mysql.default_user")),
 				(strlen("$server$username$password") ? $password : ini_get("mysql.default_password")),
