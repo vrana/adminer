@@ -10,7 +10,7 @@ function dump_table($table, $data = true) {
 		echo $mysql->result($result, 1) . ";\n\n";
 		$result->free();
 		if ($data) {
-			$result = $mysql->query("SELECT * FROM " . idf_escape($table)); //! enum and set as numbers, binary as _binary
+			$result = $mysql->query("SELECT * FROM " . idf_escape($table)); //! enum and set as numbers, binary as _binary, microtime
 			if ($result) {
 				while ($row = $result->fetch_row()) {
 					foreach ($row as $key => $val) {
