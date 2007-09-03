@@ -122,76 +122,80 @@ function add_row(field) {
 	echo "<div style='clear: left;'>&nbsp;</div>\n";
 	
 	$result = $mysql->query("SELECT SQL_CALC_FOUND_ROWS * FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "") . ($order ? " ORDER BY " . implode(", ", $order) : "") . (strlen($limit) ? " LIMIT " . intval($limit) . " OFFSET " . ($limit * $_GET["page"]) : ""));
-	if (!$result->num_rows) {
-		echo "<p class='message'>" . lang('No rows.') . "</p>\n";
+	if (!$result) {
+		echo "<p class='error'>" . lang('Error in query') . ": " . htmlspecialchars($mysql->error) . "</p>\n";
 	} else {
-		$found_rows = $mysql->result($mysql->query(" SELECT FOUND_ROWS()")); // space for mysql.trace_mode
-		$foreign_keys = array();
-		foreach (foreign_keys($_GET["select"]) as $foreign_key) {
-			foreach ($foreign_key["source"] as $val) {
-				$foreign_keys[$val][] = $foreign_key;
-			}
-		}
-		
-		echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
-		for ($j=0; $row = $result->fetch_assoc(); $j++) {
-			if (!$j) {
-				echo "<thead><tr><th>&nbsp;</th><th>" . implode("</th><th>", array_map('htmlspecialchars', array_keys($row))) . "</th></tr></thead>\n";
-			}
-			$unique_idf = '&amp;' . implode('&amp;', unique_idf($row, $indexes));
-			echo '<tr><td><a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . $unique_idf . '">' . lang('edit') . "</a></td>";
-			//! multiple delete by checkboxes
-			foreach ($row as $key => $val) {
-				if (!isset($val)) {
-					$val = "<i>NULL</i>";
-				} elseif (preg_match('~blob|binary~', $fields[$key]["type"]) && preg_match('~[\\x80-\\xFF]~', $val)) {
-					$val = '<a href="' . htmlspecialchars($SELF) . 'download=' . urlencode($_GET["select"]) . '&amp;field=' . urlencode($key) . $unique_idf . '">' . lang('%d byte(s)', strlen($val)) . '</a>';
-				} else {
-					if (!strlen(trim($val))) {
-						$val = "&nbsp;";
-					} elseif (intval($text_length) > 0 && preg_match('~blob|text~', $fields[$key]["type"]) && strlen($val) > intval($text_length)) {
-						$val = (preg_match('~blob~', $fields[$key]["type"]) ? nl2br(htmlspecialchars(substr($val, 0, intval($text_length)))) . "<em>...</em>" : shorten_utf8($val, intval($text_length)));
-					} else {
-						$val = nl2br(htmlspecialchars($val));
-						if ($fields[$key]["type"] == "char") {
-							$val = "<code>$val</code>";
-						}
-					}
-					foreach ((array) $foreign_keys[$key] as $foreign_key) {
-						if (count($foreign_keys[$key]) == 1 || count($foreign_key["source"]) == 1) {
-							$val = "\">$val</a>";
-							foreach ($foreign_key["source"] as $i => $source) {
-								$val = "&amp;where%5B$i%5D%5Bcol%5D=" . urlencode($foreign_key["target"][$i]) . "&amp;where%5B$i%5D%5Bop%5D=%3D&amp;where%5B$i%5D%5Bval%5D=" . urlencode($row[$source]) . $val;
-							}
-							$val = '<a href="' . htmlspecialchars(strlen($foreign_key["db"]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), $SELF) : $SELF) . 'select=' . htmlspecialchars($foreign_key["table"]) . $val; // InnoDB supports non-UNIQUE keys
-							break;
-						}
-					}
+		if (!$result->num_rows) {
+			echo "<p class='message'>" . lang('No rows.') . "</p>\n";
+		} else {
+			$found_rows = $mysql->result($mysql->query(" SELECT FOUND_ROWS()")); // space for mysql.trace_mode
+			$foreign_keys = array();
+			foreach (foreign_keys($_GET["select"]) as $foreign_key) {
+				foreach ($foreign_key["source"] as $val) {
+					$foreign_keys[$val][] = $foreign_key;
 				}
-				echo "<td>$val</td>";
 			}
-			echo "</tr>\n";
+			
+			echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
+			for ($j=0; $row = $result->fetch_assoc(); $j++) {
+				if (!$j) {
+					echo "<thead><tr><th>&nbsp;</th><th>" . implode("</th><th>", array_map('htmlspecialchars', array_keys($row))) . "</th></tr></thead>\n";
+				}
+				$unique_idf = '&amp;' . implode('&amp;', unique_idf($row, $indexes));
+				echo '<tr><td><a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . $unique_idf . '">' . lang('edit') . "</a></td>";
+				//! multiple delete by checkboxes
+				foreach ($row as $key => $val) {
+					if (!isset($val)) {
+						$val = "<i>NULL</i>";
+					} elseif (preg_match('~blob|binary~', $fields[$key]["type"]) && preg_match('~[\\x80-\\xFF]~', $val)) {
+						$val = '<a href="' . htmlspecialchars($SELF) . 'download=' . urlencode($_GET["select"]) . '&amp;field=' . urlencode($key) . $unique_idf . '">' . lang('%d byte(s)', strlen($val)) . '</a>';
+					} else {
+						if (!strlen(trim($val))) {
+							$val = "&nbsp;";
+						} elseif (intval($text_length) > 0 && preg_match('~blob|text~', $fields[$key]["type"]) && strlen($val) > intval($text_length)) {
+							$val = (preg_match('~blob~', $fields[$key]["type"]) ? nl2br(htmlspecialchars(substr($val, 0, intval($text_length)))) . "<em>...</em>" : shorten_utf8($val, intval($text_length)));
+						} else {
+							$val = nl2br(htmlspecialchars($val));
+							if ($fields[$key]["type"] == "char") {
+								$val = "<code>$val</code>";
+							}
+						}
+						foreach ((array) $foreign_keys[$key] as $foreign_key) {
+							if (count($foreign_keys[$key]) == 1 || count($foreign_key["source"]) == 1) {
+								$val = "\">$val</a>";
+								foreach ($foreign_key["source"] as $i => $source) {
+									$val = "&amp;where%5B$i%5D%5Bcol%5D=" . urlencode($foreign_key["target"][$i]) . "&amp;where%5B$i%5D%5Bop%5D=%3D&amp;where%5B$i%5D%5Bval%5D=" . urlencode($row[$source]) . $val;
+								}
+								$val = '<a href="' . htmlspecialchars(strlen($foreign_key["db"]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), $SELF) : $SELF) . 'select=' . htmlspecialchars($foreign_key["table"]) . $val; // InnoDB supports non-UNIQUE keys
+								break;
+							}
+						}
+					}
+					echo "<td>$val</td>";
+				}
+				echo "</tr>\n";
+			}
+			echo "</table>\n";
+			if (intval($limit) && $found_rows > $limit) {
+				$max_page = floor(($found_rows - 1) / $limit);
+				function print_page($page) {
+					echo " " . ($page == $_GET["page"] ? $page + 1 : '<a href="' . htmlspecialchars(remove_from_uri("page") . ($page ? "&page=$page" : "")) . '">' . ($page + 1) . "</a>");
+				}
+				echo "<p>" . lang('Page') . ":";
+				print_page(0);
+				if ($_GET["page"] > 3) {
+					echo " ...";
+				}
+				for ($i = max(1, $_GET["page"] - 2); $i < min($max_page, $_GET["page"] + 3); $i++) {
+					print_page($i);
+				}
+				if ($_GET["page"] + 3 < $max_page) {
+					echo " ...";
+				}
+				print_page($max_page);
+				echo "</p>\n";
+			}
 		}
-		echo "</table>\n";
-		if (intval($limit) && $found_rows > $limit) {
-			$max_page = floor(($found_rows - 1) / $limit);
-			function print_page($page) {
-				echo " " . ($page == $_GET["page"] ? $page + 1 : '<a href="' . htmlspecialchars(remove_from_uri("page") . ($page ? "&page=$page" : "")) . '">' . ($page + 1) . "</a>");
-			}
-			echo "<p>" . lang('Page') . ":";
-			print_page(0);
-			if ($_GET["page"] > 3) {
-				echo " ...";
-			}
-			for ($i = max(1, $_GET["page"] - 2); $i < min($max_page, $_GET["page"] + 3); $i++) {
-				print_page($i);
-			}
-			if ($_GET["page"] + 3 < $max_page) {
-				echo " ...";
-			}
-			print_page($max_page);
-			echo "</p>\n";
-		}
+		$result->free();
 	}
-	$result->free();
 }
