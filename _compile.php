@@ -41,6 +41,28 @@ function put_file($match) {
 	return $return;
 }
 
+// Dgx's PHP shrinker
+function php_shrink($input) {
+	$set = array_flip(preg_split('//', '!"#$&\'()*+,-./:;<=>?@[\]^`{|}'));
+	$space = '';
+	$output = '';
+	foreach (token_get_all($input) as $token) {
+		if (!is_array($token)) {
+			$token = array(0, $token);
+		}
+		if ($token[0] == T_COMMENT || $token[0] == T_WHITESPACE) {
+			$space = "\n";
+		} else {
+			if (isset($set[substr($output, -1)]) || isset($set[$token[1]{0}])) {
+				$space = '';
+			}
+			$output .= $space . $token[1];
+			$space = '';
+		}
+	}
+	return $output;
+}
+
 error_reporting(E_ALL & ~E_NOTICE);
 if ($_SERVER["argc"] > 1) {
 	$_COOKIE["lang"] = $_SERVER["argv"][1];
@@ -64,5 +86,6 @@ $file = str_replace("favicon.ico", '<?php echo preg_replace("~\\\\?.*~", "", $_S
 $file = str_replace("arrow.gif", '" . preg_replace("~\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?gif=arrow', $file);
 $file = str_replace('error_reporting(E_ALL & ~E_NOTICE);', "error_reporting(E_ALL & ~E_NOTICE);\nif (isset(\$_GET['favicon'])) {\n\theader('Content-Type: image/x-icon');\n\techo base64_decode('" . base64_encode(file_get_contents("favicon.ico")) . "');\n\texit;\n} elseif (isset(\$_GET['gif'])) {\n\theader('Content-Type: image/gif');\n\techo base64_decode('" . base64_encode(file_get_contents("arrow.gif")) . "');\n\texit;\n}", $file);
 $file = str_replace('<link rel="stylesheet" type="text/css" href="default.css" />', "<style type='text/css'>\n" . file_get_contents("default.css") . "</style>", $file);
+$file = php_shrink($file);
 fwrite(fopen($filename, "w"), $file);
 echo "$filename created.\n";
