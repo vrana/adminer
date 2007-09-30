@@ -1,5 +1,5 @@
 <?php
-$ignore = array("server", "username", "password");
+$ignore = array("server", "username", "password", "port");
 if (ini_get("session.use_trans_sid") && isset($_POST[session_name()])) {
 	$ignore[] = session_name();
 }
@@ -8,6 +8,7 @@ if (isset($_POST["server"])) {
 		session_regenerate_id();
 		$_SESSION["usernames"][$_POST["server"]] = $_POST["username"];
 		$_SESSION["passwords"][$_POST["server"]] = $_POST["password"];
+		$_SESSION["ports"][$_POST["server"]] = $_POST["port"];
 		if (count($_POST) == count($ignore)) {
 			if ((string) $_GET["server"] === $_POST["server"]) {
 				$location = remove_from_uri();
@@ -25,6 +26,7 @@ if (isset($_POST["server"])) {
 } elseif (isset($_GET["logout"])) {
 	unset($_SESSION["usernames"][$_GET["server"]]);
 	unset($_SESSION["passwords"][$_GET["server"]]);
+	unset($_SESSION["ports"][$_GET["server"]]);
 	unset($_SESSION["databases"][$_GET["server"]]);
 	$_SESSION["tokens"][$_GET["server"]] = array();
 	redirect(substr($SELF, 0, -1), lang('Logout successful.'));
@@ -51,6 +53,7 @@ function auth_error() {
 	<tr><th><?php echo lang('Server'); ?>:</th><td><input name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>" /></td></tr>
 	<tr><th><?php echo lang('Username'); ?>:</th><td><input name="username" value="<?php echo htmlspecialchars($username); ?>" /></td></tr>
 	<tr><th><?php echo lang('Password'); ?>:</th><td><input type="password" name="password" /></td></tr>
+	<tr><th><?php echo lang('Port'); ?>:</th><td><input name="port" size="4" value="<?php echo htmlspecialchars($_SESSION["ports"][$_GET["server"]]); ?>" /></td></tr>
 	</table>
 	<p>
 <?php
@@ -76,7 +79,7 @@ function auth_error() {
 }
 
 $username = $_SESSION["usernames"][$_GET["server"]];
-if (!isset($username) || !$mysql->connect($_GET["server"], $username, $_SESSION["passwords"][$_GET["server"]])) {
+if (!isset($username) || !$mysql->connect($_GET["server"], $username, $_SESSION["passwords"][$_GET["server"]], $_SESSION["ports"][$_GET["server"]])) {
 	auth_error();
 	exit;
 }
