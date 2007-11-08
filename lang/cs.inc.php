@@ -162,5 +162,4 @@ $translations = array(
 	'Routine' => 'Procedura',
 	'Grant' => 'Povolit',
 	'Revoke' => 'Zakázat',
-	'Port' => 'Port',
 );

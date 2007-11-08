@@ -5,9 +5,10 @@ if (extension_loaded("mysqli")) {
 			$this->init();
 		}
 		
-		function connect($server, $username, $password, $port) {
+		function connect($server, $username, $password) {
+			list($host, $port) = explode(":", $server, 2);
 			return @$this->real_connect(
-				(strlen($server) ? $server : ini_get("mysqli.default_host")),
+				(strlen($server) ? $host : ini_get("mysqli.default_host")),
 				(strlen("$server$username") ? $username : ini_get("mysqli.default_user")),
 				(strlen("$server$username$password") ? $password : ini_get("mysqli.default_pw")),
 				null,
@@ -27,9 +28,9 @@ if (extension_loaded("mysqli")) {
 	class Min_MySQL {
 		var $_link, $_result, $server_info, $affected_rows, $error;
 		
-		function connect($server, $username, $password, $port) {
+		function connect($server, $username, $password) {
 			$this->_link = @mysql_connect(
-				(strlen($server) ? $server : ini_get("mysql.default_host")) . (strlen($port) ? ":$port" : ""),
+				(strlen($server) ? $server : ini_get("mysql.default_host")),
 				(strlen("$server$username") ? $username : ini_get("mysql.default_user")),
 				(strlen("$server$username$password") ? $password : ini_get("mysql.default_password")),
 				131072 // CLIENT_MULTI_RESULTS for CALL
@@ -115,9 +116,9 @@ if (extension_loaded("mysqli")) {
 		function __construct() {
 		}
 		
-		function connect($server, $username, $password, $port) {
+		function connect($server, $username, $password) {
 			set_exception_handler('auth_error'); // try/catch is not compatible with PHP 4
-			parent::__construct("mysql:host=$server" . (strlen($port) ? ";port=$port" : ""), $username, $password);
+			parent::__construct("mysql:host=" . str_replace(":", ";port=", $server), $username, $password);
 			restore_exception_handler();
 			$this->setAttribute(13, array('Min_PDOStatement')); // PDO::ATTR_STATEMENT_CLASS
 			$this->server_info = $this->result($this->query("SELECT VERSION()"));
