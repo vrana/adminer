@@ -22,6 +22,7 @@ if (isset($rights["insert"])) {
 if (!$columns) {
 	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "" : ": " . $mysql->error) . ".</p>\n";
 } else {
+	$table_status = table_status($_GET["select"]);
 	$indexes = indexes($_GET["select"]);
 	echo "<form action='' id='form'>\n<fieldset><legend>" . lang('Search') . "</legend>\n";
 	if (strlen($_GET["server"])) {
@@ -44,6 +45,9 @@ if (!$columns) {
 		}
 	}
 	$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "REGEXP", "IN", "IS NULL");
+	if ($table_status["Engine"] == "MyISAM") {
+		$operators[] = "AGAINST";
+	}
 	$i = 0;
 	foreach ((array) $_GET["where"] as $val) {
 		if (strlen($val["col"]) && in_array($val["op"], $operators)) {
@@ -53,7 +57,11 @@ if (!$columns) {
 					$in = "NULL";
 				}
 			}
-			$where[] = idf_escape($val["col"]) . " $val[op]" . ($val["op"] == "IS NULL" ? "" : ($val["op"] == "IN" ? " ($in)" : " '" . $mysql->escape_string($val["val"]) . "'"));
+			if ($val["op"] == "AGAINST") {
+				$where[] = "MATCH (" . idf_escape($val["col"]) . ") $val[op] ('" . $mysql->escape_string($val["val"]) . "' IN BOOLEAN MODE)";
+			} else {
+				$where[] = idf_escape($val["col"]) . " $val[op]" . ($val["op"] == "IS NULL" ? "" : ($val["op"] == "IN" ? " ($in)" : " '" . $mysql->escape_string($val["val"]) . "'"));
+			}
 			echo "<div><select name='where[$i][col]'><option></option>" . optionlist($columns, $val["col"]) . "</select>";
 			echo "<select name='where[$i][op]' onchange=\"where_change(this);\">" . optionlist($operators, $val["op"]) . "</select>";
 			echo "<input name='where[$i][val]' value=\"" . htmlspecialchars($val["val"]) . "\" /></div>\n";
