@@ -74,7 +74,7 @@ function edit_type($key, $field, $collations) {
 function process_type($field, $collate = "COLLATE") {
 	global $mysql, $enum_length, $unsigned;
 	return " $field[type]"
-		. ($field["length"] ? "(" . process_length($field["length"]) . ")" : "")
+		. ($field["length"] && !preg_match('~^date|time$~', $field["type"]) ? "(" . process_length($field["length"]) . ")" : "")
 		. (preg_match('~int|float|double|decimal~', $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
 		. (preg_match('~char|text|enum|set~', $field["type"]) && $field["collation"] ? " $collate '" . $mysql->escape_string($field["collation"]) . "'" : "")
 	;
