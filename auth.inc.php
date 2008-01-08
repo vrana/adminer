@@ -1,5 +1,5 @@
 <?php
-$ignore = array("server", "username", "password", "port");
+$ignore = array("server", "username", "password");
 if (ini_get("session.use_trans_sid") && isset($_POST[session_name()])) {
 	$ignore[] = session_name();
 }
