@@ -42,8 +42,6 @@ if (isset($_GET["dump"])) {
 	
 	if (isset($_GET["table"])) {
 		include "./table.inc.php";
-	} elseif (isset($_GET["select"])) {
-		include "./select.inc.php";
 	} elseif (isset($_GET["view"])) {
 		include "./view.inc.php";
 	} elseif (isset($_GET["schema"])) {
@@ -89,6 +87,8 @@ if (isset($_GET["dump"])) {
 			include "./user.inc.php";
 		} elseif (isset($_GET["processlist"])) {
 			include "./processlist.inc.php";
+		} elseif (isset($_GET["select"])) {
+			include "./select.inc.php";
 		} else {
 			$TOKENS = array();
 			page_header(lang('Database') . ": " . htmlspecialchars($_GET["db"]), false);

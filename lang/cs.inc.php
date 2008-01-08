@@ -162,4 +162,9 @@ $translations = array(
 	'Routine' => 'Procedura',
 	'Grant' => 'Povolit',
 	'Revoke' => 'Zakázat',
+	'Error during deleting' => 'Chyba při mazání',
+	'%d item(s) have been deleted.' => array('Byl smazán %d záznam.', 'Byly smazány %d záznamy.', 'Bylo smazáno %d záznamů.'),
+	'all' => 'vše',
+	'Delete selected' => 'Smazat označené',
+	'Truncate table' => 'Promazat tabulku',
 );

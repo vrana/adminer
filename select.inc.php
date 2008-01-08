@@ -1,5 +1,10 @@
 <?php
-page_header(lang('Select') . ": " . htmlspecialchars($_GET["select"]));
+$table_status = table_status($_GET["select"]);
+$indexes = indexes($_GET["select"]);
+$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "REGEXP", "IN", "IS NULL");
+if ($table_status["Engine"] == "MyISAM") {
+	$operators[] = "AGAINST";
+}
 $fields = fields($_GET["select"]);
 $rights = array();
 $columns = array();
@@ -14,6 +19,76 @@ foreach ($fields as $key => $field) {
 	$rights += $field["privileges"];
 }
 
+$where = array();
+foreach ($indexes as $i => $index) {
+	if ($index["type"] == "FULLTEXT" && strlen($_GET["fulltext"][$i])) {
+		$where[] = "MATCH (" . implode(", ", array_map('idf_escape', $index["columns"])) . ") AGAINST ('" . $mysql->escape_string($_GET["fulltext"][$i]) . "'" . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
+	}
+}
+foreach ((array) $_GET["where"] as $val) {
+	if (strlen($val["col"]) && in_array($val["op"], $operators)) {
+		if ($val["op"] == "IN") {
+			$in = process_length($val["val"]);
+			$where[] = (strlen($in) ? idf_escape($val["col"]) . " IN ($in)" : "0");
+		} elseif ($val["op"] == "AGAINST") {
+			$where[] = "MATCH (" . idf_escape($val["col"]) . ") AGAINST ('" . $mysql->escape_string($val["val"]) . "' IN BOOLEAN MODE)";
+		} else {
+			$where[] = idf_escape($val["col"]) . " $val[op]" . ($val["op"] == "IS NULL" ? "" : " '" . $mysql->escape_string($val["val"]) . "'");
+		}
+	}
+}
+$order = array();
+foreach ((array) $_GET["order"] as $key => $val) {
+	if (in_array($val, $columns, true)) {
+		$order[] = idf_escape($val) . (isset($_GET["desc"][$key]) ? " DESC" : "");
+	}
+}
+$limit = (isset($_GET["limit"]) ? $_GET["limit"] : "30");
+$from = "FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "") . ($order ? " ORDER BY " . implode(", ", $order) : "") . (strlen($limit) ? " LIMIT " . intval($limit) . (intval($_GET["page"]) ? " OFFSET " . ($limit * $_GET["page"]) : "") : "");
+
+if ($_POST && !$error) {
+	$result = true;
+	$deleted = 0;
+	if (isset($_POST["truncate"])) {
+		$result = $mysql->query("TRUNCATE " . idf_escape($_GET["select"]));
+		$deleted = $mysql->affected_rows;
+	} elseif (is_array($_POST["delete"])) {
+		foreach ($_POST["delete"] as $val) {
+			parse_str($val, $delete);
+			$result = $mysql->query("DELETE FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", where($delete)) . " LIMIT 1");
+			if (!$result) {
+				break;
+			}
+			$deleted += $mysql->affected_rows;
+		}
+	} elseif ($_POST["delete_selected"]) {
+		if (!$_GET["page"]) {
+			$result = $mysql->query("DELETE $from");
+			$deleted = $mysql->affected_rows;
+		} else {
+			$result1 = $mysql->query("SELECT * $from");
+			while ($row1 = $result1->fetch_assoc()) {
+				parse_str(implode("&", unique_idf($row1, $indexes)), $delete);
+				$result = $mysql->query("DELETE FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", where($delete)) . " LIMIT 1");
+				if (!$result) {
+					break;
+				}
+				$deleted += $mysql->affected_rows;
+			}
+			$result1->free();
+		}
+	}
+	if ($result) {
+		redirect(remove_from_uri("page"), lang('%d item(s) have been deleted.', $deleted));
+	}
+	$error = $mysql->error;
+}
+
+page_header(lang('Select') . ": " . htmlspecialchars($_GET["select"]));
+if ($_POST) {
+	echo "<p class='error'>" . lang('Error during deleting') . ": " . htmlspecialchars($error) . "</p>\n";
+}
+
 if (isset($rights["insert"])) {
 	//! pass search values forth and back
 	echo '<p><a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '">' . lang('New item') . "</a></p>\n";
@@ -22,8 +97,6 @@ if (isset($rights["insert"])) {
 if (!$columns) {
 	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "" : ": " . $mysql->error) . ".</p>\n";
 } else {
-	$table_status = table_status($_GET["select"]);
-	$indexes = indexes($_GET["select"]);
 	echo "<form action='' id='form'>\n<fieldset><legend>" . lang('Search') . "</legend>\n";
 	if (strlen($_GET["server"])) {
 		echo '<input type="hidden" name="server" value="' . htmlspecialchars($_GET["server"]) . '" />';
@@ -32,36 +105,17 @@ if (!$columns) {
 	echo '<input type="hidden" name="select" value="' . htmlspecialchars($_GET["select"]) . '" />';
 	echo "\n";
 	
-	$where = array();
 	foreach ($indexes as $i => $index) {
 		if ($index["type"] == "FULLTEXT") {
-			if (strlen($_GET["fulltext"][$i])) {
-				$where[] = "MATCH (" . implode(", ", array_map('idf_escape', $index["columns"])) . ") AGAINST ('" . $mysql->escape_string($_GET["fulltext"][$i]) . "'" . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
-			}
 			echo "(<i>" . implode("</i>, <i>", array_map('htmlspecialchars', $index["columns"])) . "</i>) AGAINST";
 			echo ' <input name="fulltext[' . $i . ']" value="' . htmlspecialchars($_GET["fulltext"][$i]) . '" />';
 			echo "<label for='boolean-$i'><input type='checkbox' name='boolean[$i]' value='1' id='boolean-$i'" . (isset($_GET["boolean"][$i]) ? " checked='checked'" : "") . " />" . lang('BOOL') . "</label>";
 			echo "<br />\n";
 		}
 	}
-	$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "REGEXP", "IN", "IS NULL");
-	if ($table_status["Engine"] == "MyISAM") {
-		$operators[] = "AGAINST";
-	}
 	$i = 0;
 	foreach ((array) $_GET["where"] as $val) {
 		if (strlen($val["col"]) && in_array($val["op"], $operators)) {
-			if ($val["op"] == "IN") {
-				$in = process_length($val["val"]);
-				if (!strlen($in)) {
-					$in = "NULL";
-				}
-			}
-			if ($val["op"] == "AGAINST") {
-				$where[] = "MATCH (" . idf_escape($val["col"]) . ") $val[op] ('" . $mysql->escape_string($val["val"]) . "' IN BOOLEAN MODE)";
-			} else {
-				$where[] = idf_escape($val["col"]) . " $val[op]" . ($val["op"] == "IS NULL" ? "" : ($val["op"] == "IN" ? " ($in)" : " '" . $mysql->escape_string($val["val"]) . "'"));
-			}
 			echo "<div><select name='where[$i][col]'><option></option>" . optionlist($columns, $val["col"]) . "</select>";
 			echo "<select name='where[$i][op]' onchange=\"where_change(this);\">" . optionlist($operators, $val["op"]) . "</select>";
 			echo "<input name='where[$i][val]' value=\"" . htmlspecialchars($val["val"]) . "\" /></div>\n";
@@ -100,11 +154,9 @@ function add_row(field) {
 	echo "</fieldset>\n";
 	
 	echo "<fieldset><legend>" . lang('Sort') . "</legend>\n";
-	$order = array();
 	$i = 0;
 	foreach ((array) $_GET["order"] as $key => $val) {
 		if (in_array($val, $columns, true)) {
-			$order[] = idf_escape($val) . (isset($_GET["desc"][$key]) ? " DESC" : "");
 			echo "<div><select name='order[$i]'><option></option>" . optionlist($columns, $val) . "</select>";
 			echo "<label><input type='checkbox' name='desc[$i]' value='1'" . (isset($_GET["desc"][$key]) ? " checked='checked'" : "") . " />" . lang('DESC') . "</label></div>\n";
 			$i++;
@@ -115,7 +167,6 @@ function add_row(field) {
 	echo "</fieldset>\n";
 	
 	echo "<fieldset><legend>" . lang('Limit') . "</legend>\n";
-	$limit = (isset($_GET["limit"]) ? $_GET["limit"] : "30");
 	echo '<div><input name="limit" size="3" value="' . htmlspecialchars($limit) . '" /></div>';
 	echo "</fieldset>\n";
 	
@@ -129,7 +180,7 @@ function add_row(field) {
 	echo "</form>\n";
 	echo "<div style='clear: left;'>&nbsp;</div>\n";
 	
-	$result = $mysql->query("SELECT SQL_CALC_FOUND_ROWS * FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "") . ($order ? " ORDER BY " . implode(", ", $order) : "") . (strlen($limit) ? " LIMIT " . intval($limit) . " OFFSET " . ($limit * $_GET["page"]) : ""));
+	$result = $mysql->query("SELECT SQL_CALC_FOUND_ROWS * $from");
 	if (!$result) {
 		echo "<p class='error'>" . lang('Error in query') . ": " . htmlspecialchars($mysql->error) . "</p>\n";
 	} else {
@@ -144,19 +195,19 @@ function add_row(field) {
 				}
 			}
 			
+			echo "<form action='' method='post'>\n";
 			echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
 			for ($j=0; $row = $result->fetch_assoc(); $j++) {
 				if (!$j) {
-					echo "<thead><tr><th>&nbsp;</th><th>" . implode("</th><th>", array_map('htmlspecialchars', array_keys($row))) . "</th></tr></thead>\n";
+					echo '<thead><tr><td><label><input type="checkbox" name="delete_selected" value="1" onclick="var elems = this.form.elements; for (var i=0; i < elems.length; i++) if (elems[i].name == \'delete[]\') elems[i].checked = this.checked;" />' . lang('all') . '</label></td><th>' . implode("</th><th>", array_map('htmlspecialchars', array_keys($row))) . "</th></tr></thead>\n";
 				}
-				$unique_idf = '&amp;' . implode('&amp;', unique_idf($row, $indexes));
-				echo '<tr><td><a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . $unique_idf . '">' . lang('edit') . "</a></td>";
-				//! multiple delete by checkboxes
+				$unique_idf = implode('&amp;', unique_idf($row, $indexes));
+				echo '<tr><td><input type="checkbox" name="delete[]" value="' . $unique_idf . '" /> <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . "</a></td>";
 				foreach ($row as $key => $val) {
 					if (!isset($val)) {
 						$val = "<i>NULL</i>";
 					} elseif (preg_match('~blob|binary~', $fields[$key]["type"]) && preg_match('~[\\x80-\\xFF]~', $val)) {
-						$val = '<a href="' . htmlspecialchars($SELF) . 'download=' . urlencode($_GET["select"]) . '&amp;field=' . urlencode($key) . $unique_idf . '">' . lang('%d byte(s)', strlen($val)) . '</a>';
+						$val = '<a href="' . htmlspecialchars($SELF) . 'download=' . urlencode($_GET["select"]) . '&amp;field=' . urlencode($key) . '&amp;' . $unique_idf . '">' . lang('%d byte(s)', strlen($val)) . '</a>';
 					} else {
 						if (!strlen(trim($val))) {
 							$val = "&nbsp;";
@@ -184,6 +235,8 @@ function add_row(field) {
 				echo "</tr>\n";
 			}
 			echo "</table>\n";
+			echo "<p><input type='hidden' name='token' value='$token' /><input type='submit' value='" . lang('Delete selected') . "' /> <input type='submit' name='truncate' value='" . lang('Truncate table') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\" /></p>\n";
+			echo "</form>\n";
 			if (intval($limit) && $found_rows > $limit) {
 				$max_page = floor(($found_rows - 1) / $limit);
 				function print_page($page) {

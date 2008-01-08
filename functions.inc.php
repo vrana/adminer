@@ -137,13 +137,16 @@ function unique_idf($row, $indexes) {
 	return $return;
 }
 
-function where() {
+function where($where = null) {
 	global $mysql;
+	if (!isset($where)) {
+		$where = $_GET;
+	}
 	$return = array();
-	foreach ((array) $_GET["where"] as $key => $val) {
+	foreach ((array) $where["where"] as $key => $val) {
 		$return[] = idf_escape(bracket_escape($key, "back")) . " = BINARY '" . $mysql->escape_string($val) . "'"; //! enum and set
 	}
-	foreach ((array) $_GET["null"] as $key) {
+	foreach ((array) $where["null"] as $key) {
 		$return[] = idf_escape(bracket_escape($key, "back")) . " IS NULL";
 	}
 	return $return;
