@@ -162,4 +162,9 @@ $translations = array(
 	'Routine' => 'Routine',
 	'Grant' => 'Toekennen',
 	'Revoke' => 'Intrekken',
+	'Error during deleting' => 'Fout tijdens verwijderen',
+	'%d item(s) have been deleted.' => array('%d item werd verwijderd.', '%d items warden verwijderd.'),
+	'all' => 'alle',
+	'Delete selected' => 'Geselecteerde verwijderen',
+	'Truncate table' => 'Tabel leegmaken',
 );
