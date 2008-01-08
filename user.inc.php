@@ -141,50 +141,43 @@ if ($_POST) {
 <tr><th><?php echo lang('Password'); ?></th><td><input name="pass" value="<?php echo htmlspecialchars($row["pass"]); ?>" /> <label for="hashed"><input type="checkbox" name="hashed" id="hashed" value="1"<?php if ($row["hashed"]) { ?> checked="checked"<?php } ?> /><?php echo lang('Hashed'); ?></label></td></tr>
 </table>
 
-<h3><?php echo lang('Privileges'); ?></h3>
 <?php
 //! MAX_* limits, REQUIRE
+echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
+echo "<thead><tr><th colspan='2'>" . lang('Privileges') . "</th>";
 $i = 0;
+foreach ($grants as $object => $grant) {
+	echo '<th>' . ($object != "*.*" ? '<input name="objects[' . $i . ']" value="' . htmlspecialchars($object) . '" size="10" />' : '<input type="hidden" name="objects[' . $i . ']" value="*.*" size="10" />*.*') . '</th>'; //! separate db, table, columns, PROCEDURE|FUNCTION, routine
+	//! JS checkbox for all
+	$i++;
+}
+echo "</tr></thead>\n";
 foreach (array(
 	"Server Admin" => lang('Server'),
 	"Databases" => lang('Database'),
 	"Tables" => lang('Table'),
 	"Columns" => lang('Column'),
 	"Procedures" => lang('Routine'),
-) as $key => $val) {
-	if ($privileges[$key]) {
-		echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
-		echo "<thead><tr>";
-		echo "<th>$val</th>";
-		foreach ($privileges[$key] as $privilege => $comment) {
-			echo '<td title="' . htmlspecialchars($comment) . '" lang="en">' . htmlspecialchars($privilege) . '</td>';
-		}
-		echo "</tr></thead>\n";
+) as $context => $desc) {
+	foreach ((array) $privileges[$context] as $privilege => $comment) {
+		echo '<tr><td>' . $desc . '</td><td title="' . htmlspecialchars($comment) . '"><i>' . htmlspecialchars($privilege) . '</i></td>';
+		$i = 0;
 		foreach ($grants as $object => $grant) {
-			if ($key == "Server Admin" ? $object == (isset($grants["*.*"]) ? "*.*" : "")
-			: !$object || (substr($object, -1) == ")" || $key == "Columns" ? substr($object, -1) == ")" xor $key != "Columns"
-			: (preg_match('~(PROCEDURE|FUNCTION) ~', $object) ? $key == "Procedures"
-			: (substr($object, -1) == "*" || $key == "Tables"
-			)))) {
-				echo "<tr align='center'>";
-				echo '<th>' . ($key != "Server Admin" ? '<input name="objects[' . $i . ']" value="' . htmlspecialchars($object) . '" size="10" />' : '<input type="hidden" name="objects[' . $i . ']" value="*.*" size="10" />*.*') . '</th>'; //! separate db, table, columns, PROCEDURE|FUNCTION, routine
-				//! JS checkbox for all
-				foreach ($privileges[$key] as $privilege => $comment) {
-					$name = '"grants[' . $i . '][' . htmlspecialchars(strtoupper($privilege)) . ']"';
-					$value = $grant[strtoupper($privilege)];
-					if (isset($_GET["grant"])) {
-						echo "<td><select name=$name><option></option><option value='1'" . ($value ? " selected='selected'" : "") . ">" . lang('Grant') . "</option><option value='0'" . ($value == "0" ? " selected='selected'" : "") . ">" . lang('Revoke') . "</option></select></td>";
-					} else {
-						echo "<td><input type='checkbox' name=$name value='1'" . ($value ? " checked='checked'" : "") . " /></td>";
-					}
-				}
-				echo "</tr>\n";
-				$i++;
+			$name = '"grants[' . $i . '][' . htmlspecialchars(strtoupper($privilege)) . ']"';
+			$value = $grant[strtoupper($privilege)];
+			if ($context == "Server Admin" && $object != (isset($grants["*.*"]) ? "*.*" : "")) {
+				echo "<td>&nbsp;</td>";
+			} elseif (isset($_GET["grant"])) {
+				echo "<td><select name=$name><option></option><option value='1'" . ($value ? " selected='selected'" : "") . ">" . lang('Grant') . "</option><option value='0'" . ($value == "0" ? " selected='selected'" : "") . ">" . lang('Revoke') . "</option></select></td>";
+			} else {
+				echo "<td align='center'><input type='checkbox' name=$name value='1'" . ($value ? " checked='checked'" : "") . " /></td>";
 			}
+			$i++;
 		}
-		echo "</table>\n";
+		echo "</tr>\n";
 	}
 }
+echo "</table>\n";
 ?>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
