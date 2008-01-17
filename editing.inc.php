@@ -139,6 +139,7 @@ function add_row(button) {
 	for (var i=0; i < tags.length; i++) {
 		if (tags[i].name == 'auto_increment_col') {
 			tags[i].value = x;
+			tags[i].checked = false;
 		}
 		tags[i].name = tags[i].name.replace(/([0-9.]+)/, x);
 		if (/\[(orig|field|comment)/.test(tags[i].name)) {
