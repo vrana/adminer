@@ -82,10 +82,32 @@ if ($_COOKIE["lang"]) {
 	$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
 	$file = str_replace('<?php echo $LANG; ?>', $_COOKIE["lang"], $file);
 }
-$file = str_replace("favicon.ico", '<?php echo preg_replace("~\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?favicon="; ?>', $file);
-$file = str_replace("arrow.gif", '" . preg_replace("~\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?gif=arrow', $file);
-$file = str_replace('error_reporting(E_ALL & ~E_NOTICE);', "error_reporting(E_ALL & ~E_NOTICE);\nif (isset(\$_GET['favicon'])) {\n\theader('Content-Type: image/x-icon');\n\techo base64_decode('" . base64_encode(file_get_contents("favicon.ico")) . "');\n\texit;\n} elseif (isset(\$_GET['gif'])) {\n\theader('Content-Type: image/gif');\n\techo base64_decode('" . base64_encode(file_get_contents("arrow.gif")) . "');\n\texit;\n}", $file);
-$file = str_replace('<link rel="stylesheet" type="text/css" href="default.css" />', "<style type='text/css'>\n" . file_get_contents("default.css") . "</style>", $file);
+$file = str_replace("favicon.ico", '<?php echo preg_replace("~\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?file=favicon.ico"; ?>', $file);
+$file = str_replace("default.css", '<?php echo preg_replace("~\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?file=default.css"; ?>', $file);
+$file = str_replace("arrow.gif", '" . preg_replace("~\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?file=arrow.gif', $file);
+$file = str_replace('error_reporting(E_ALL & ~E_NOTICE);', 'error_reporting(E_ALL & ~E_NOTICE);
+if (isset($_GET["file"])) {
+	if ($_SERVER["HTTP_IF_MODIFIED_SINCE"] && ' . time() . ' <= strtotime($_SERVER["HTTP_IF_MODIFIED_SINCE"])) {
+		header("HTTP/1.1 304 Not Modified");
+	} else {
+		header("Last-Modified: " . gmdate("D, d M Y H:i:s", ' . time() . ') . " GMT");
+		switch ($_GET["file"]) {
+			case "favicon.ico":
+				header("Content-Type: image/x-icon");
+				echo base64_decode("' . base64_encode(file_get_contents("favicon.ico")) . '");
+			break;
+			case "default.css":
+				header("Content-Type: text/css");
+				?>' . file_get_contents("default.css") . '<?php
+			break;
+			default:
+				header("Content-Type: image/gif");
+				echo base64_decode("' . base64_encode(file_get_contents("arrow.gif")) . '");
+			break;
+		}
+	}
+	exit;
+}', $file);
 $file = php_shrink($file);
 fwrite(fopen($filename, "w"), $file);
 echo "$filename created.\n";
