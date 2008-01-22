@@ -92,19 +92,15 @@ if (isset($_GET["file"])) {
 		header("HTTP/1.1 304 Not Modified");
 	} else {
 		header("Last-Modified: " . gmdate("D, d M Y H:i:s", $last_modified) . " GMT");
-		switch ($_GET["file"]) {
-			case "favicon.ico":
-				header("Content-Type: image/x-icon");
-				echo base64_decode("' . base64_encode(file_get_contents("favicon.ico")) . '");
-			break;
-			case "default.css":
-				header("Content-Type: text/css");
-				?>' . file_get_contents("default.css") . '<?php
-			break;
-			default:
-				header("Content-Type: image/gif");
-				echo base64_decode("' . base64_encode(file_get_contents("arrow.gif")) . '");
-			break;
+		if ($_GET["file"] == "favicon.ico") {
+			header("Content-Type: image/x-icon");
+			echo base64_decode("' . base64_encode(file_get_contents("favicon.ico")) . '");
+		} elseif ($_GET["file"] == "default.css") {
+			header("Content-Type: text/css");
+			?>' . file_get_contents("default.css") . '<?php
+		} else {
+			header("Content-Type: image/gif");
+			echo base64_decode("' . base64_encode(file_get_contents("arrow.gif")) . '");
 		}
 	}
 	exit;
