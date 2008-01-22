@@ -87,10 +87,11 @@ $file = str_replace("default.css", '<?php echo preg_replace("~\\\\?.*~", "", $_S
 $file = str_replace("arrow.gif", '" . preg_replace("~\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?file=arrow.gif', $file);
 $file = str_replace('error_reporting(E_ALL & ~E_NOTICE);', 'error_reporting(E_ALL & ~E_NOTICE);
 if (isset($_GET["file"])) {
-	if ($_SERVER["HTTP_IF_MODIFIED_SINCE"] && ' . time() . ' <= strtotime($_SERVER["HTTP_IF_MODIFIED_SINCE"])) {
+	$last_modified = filemtime(__FILE__);
+	if ($_SERVER["HTTP_IF_MODIFIED_SINCE"] && $last_modified <= strtotime($_SERVER["HTTP_IF_MODIFIED_SINCE"])) {
 		header("HTTP/1.1 304 Not Modified");
 	} else {
-		header("Last-Modified: " . gmdate("D, d M Y H:i:s", ' . time() . ') . " GMT");
+		header("Last-Modified: " . gmdate("D, d M Y H:i:s", $last_modified) . " GMT");
 		switch ($_GET["file"]) {
 			case "favicon.ico":
 				header("Content-Type: image/x-icon");
