@@ -13,8 +13,8 @@ function page_header($title, $breadcrumb = array(), $title2 = "") {
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 <link rel="stylesheet" type="text/css" href="default.css" /><?php // Ondrej Valka, http://valka.info ?>
 <?php if ($_COOKIE["highlight"] == "jush") { ?>
-<style type="text/css">@import url(http://jush.info/jush.css);</style>
-<script type="text/javascript" src="http://jush.info/jush.js" defer="defer"></script>
+<style type="text/css">@import url(http://jush.sourceforge.net/jush.css);</style>
+<script type="text/javascript" src="http://jush.sourceforge.net/jush.js" defer="defer"></script>
 <script type="text/javascript">window.onload = function () { if (typeof jush != 'undefined') jush.highlight_tag('pre'); }</script>
 <?php } ?>
 </head>
