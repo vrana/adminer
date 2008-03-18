@@ -1,6 +1,8 @@
 <?php
 if (extension_loaded("mysqli")) {
 	class Min_MySQLi extends MySQLi {
+		var $extension = "MySQLi";
+		
 		function Min_MySQLi() {
 			$this->init();
 		}
@@ -26,7 +28,7 @@ if (extension_loaded("mysqli")) {
 
 } elseif (extension_loaded("mysql")) {
 	class Min_MySQL {
-		var $_link, $_result, $server_info, $affected_rows, $error;
+		var $extension = "MySQL", $_link, $_result, $server_info, $affected_rows, $error;
 		
 		function connect($server, $username, $password) {
 			$this->_link = @mysql_connect(
@@ -111,7 +113,7 @@ if (extension_loaded("mysqli")) {
 
 } elseif (extension_loaded("pdo_mysql")) {
 	class Min_PDO_MySQL extends PDO {
-		var $_result, $server_info, $affected_rows, $error;
+		var $extension = "PDO_MySQL", $_result, $server_info, $affected_rows, $error;
 		
 		function __construct() {
 		}

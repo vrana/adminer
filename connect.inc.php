@@ -11,7 +11,7 @@ if (!(strlen($_GET["db"]) ? $mysql->select_db($_GET["db"]) : isset($_GET["sql"])
 		echo '<p><a href="' . htmlspecialchars($SELF) . 'database=">' . lang('Create new database') . "</a></p>\n";
 		echo '<p><a href="' . htmlspecialchars($SELF) . 'privileges=">' . lang('Privileges') . "</a></p>\n";
 		echo '<p><a href="' . htmlspecialchars($SELF) . 'processlist=">' . lang('Process list') . "</a></p>\n";
-		echo "<p>" . lang('MySQL version: %s through PHP extension %s', "<b>$mysql->server_info</b>", "<b>" . (extension_loaded("mysqli") ? "MySQLi" : (extension_loaded("mysql") ? "MySQL" : "PDO")) . "</b>") . "</p>\n";
+		echo "<p>" . lang('MySQL version: %s through PHP extension %s', "<b>$mysql->server_info</b>", "<b>$mysql->extension</b>") . "</p>\n";
 	}
 	page_footer("db");
 	exit;
