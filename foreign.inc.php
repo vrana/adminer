@@ -24,7 +24,6 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 	}
 	$error = $mysql->error;
 }
-
 page_header(lang('Foreign key'), array("table" => $_GET["foreign"]), $_GET["foreign"]);
 
 $tables = array();
@@ -36,6 +35,9 @@ while ($row = $result->fetch_assoc()) {
 }
 $result->free();
 
+if ($error) {
+	echo "<p class='error'>" . lang('Unable to operate foreign keys') . ": " . htmlspecialchars($error) . "</p>\n";
+}
 if ($_POST) {
 	$row = $_POST;
 	ksort($row["source"]);
@@ -43,8 +45,6 @@ if ($_POST) {
 		$row["source"][] = "";
 	} elseif ($_POST["change"] || $_POST["change-js"]) {
 		$row["target"] = array();
-	} else {
-		echo "<p class='error'>" . lang('Unable to operate foreign keys') . ": " . htmlspecialchars($error) . "</p>\n";
 	}
 } elseif (strlen($_GET["name"])) {
 	$foreign_keys = foreign_keys($_GET["foreign"]);

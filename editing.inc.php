@@ -51,8 +51,8 @@ function process_input($name, $field) {
 		return (isset($_GET["default"]) ? "'" . implode(",", array_map(array($mysql, 'escape_string'), (array) $value)) . "'" : array_sum((array) $value));
 	} elseif (preg_match('~binary|blob~', $field["type"])) {
 		$file = get_file($name);
-		if (!is_string($file) && !$field["null"]) {
-			return false; //! report errors, also empty $_POST (too big POST data, not only FILES)
+		if (!is_string($file) && ($file != UPLOAD_ERR_NO_FILE || !$field["null"])) {
+			return false; //! report errors
 		}
 		return "_binary'" . (is_string($file) ? $mysql->escape_string($file) : "") . "'";
 	} elseif ($field["type"] == "timestamp" && $value == "CURRENT_TIMESTAMP") {

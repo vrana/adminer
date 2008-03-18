@@ -83,9 +83,9 @@ if ($_POST && !$error) {
 	}
 	$error = $mysql->error;
 }
-
 page_header(lang('Select') . ": " . htmlspecialchars($_GET["select"]));
-if ($_POST) {
+
+if ($error) {
 	echo "<p class='error'>" . lang('Error during deleting') . ": " . htmlspecialchars($error) . "</p>\n";
 }
 

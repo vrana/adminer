@@ -11,10 +11,9 @@ if ($_POST && !$error) {
 	}
 	$error = $mysql->error;
 }
-
 page_header(lang('Process list'));
 
-if ($_POST) {
+if ($error) {
 	echo "<p class='error'>" . lang('Unable to kill process') . ": " . htmlspecialchars($error) . "</p>\n";
 }
 ?>

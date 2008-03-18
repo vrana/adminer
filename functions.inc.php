@@ -204,7 +204,7 @@ function remove_from_uri($param = "") {
 function get_file($key) {
 	if (isset($_POST["files"][$key])) {
 		$length = strlen($_POST["files"][$key]);
-		return ($length & $length < 4 ? intval($_POST["files"][$key]) : base64_decode($_POST["files"][$key]));
+		return ($length && $length < 4 ? intval($_POST["files"][$key]) : base64_decode($_POST["files"][$key]));
 	}
 	return (!$_FILES[$key] || $_FILES[$key]["error"] ? $_FILES[$key]["error"] : file_get_contents($_FILES[$key]["tmp_name"]));
 }

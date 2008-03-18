@@ -29,12 +29,14 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 	}
 	$error = $mysql->error;
 }
-
 page_header(strlen($_GET["procedure"])
 ? (isset($_GET["function"]) ? lang('Alter function') : lang('Alter procedure')) . ": " . htmlspecialchars($_GET["procedure"])
 : (isset($_GET["function"]) ? lang('Create function') : lang('Create procedure'))
 );
 
+if ($error) {
+	echo "<p class='error'>" . lang('Unable to operate routine') . ": " . htmlspecialchars($error) . "</p>\n";
+}
 $collations = get_vals("SHOW CHARACTER SET");
 if ($_POST) {
 	$row = $_POST;
@@ -43,8 +45,6 @@ if ($_POST) {
 	$row["fields"] = array_values($row["fields"]);
 	if ($_POST["add"]) {
 		array_splice($row["fields"], key($_POST["add"]), 0, array(array()));
-	} elseif (!$_POST["drop_col"]) {
-		echo "<p class='error'>" . lang('Unable to operate routine') . ": " . htmlspecialchars($error) . "</p>\n";
 	}
 } elseif (strlen($_GET["procedure"])) {
 	$row = routine($_GET["procedure"], $routine);

@@ -40,12 +40,13 @@ if ($_POST && !$error && !$_POST["add"]) {
 }
 page_header(lang('Indexes'), array("table" => $_GET["indexes"]), $_GET["indexes"]);
 
+if ($error) {
+	echo "<p class='error'>" . lang('Unable to operate indexes') . ": " . htmlspecialchars($error) . "</p>\n";
+}
 $fields = array_keys(fields($_GET["indexes"]));
 if ($_POST) {
 	$row = $_POST;
-	if (!$_POST["add"]) {
-		echo "<p class='error'>" . lang('Unable to operate indexes') . ": " . htmlspecialchars($error) . "</p>\n";
-	} else {
+	if ($_POST["add"]) {
 		foreach ($row["indexes"] as $key => $index) {
 			if (strlen($index["columns"][count($index["columns"])])) {
 				$row["indexes"][$key]["columns"][] = "";

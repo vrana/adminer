@@ -117,13 +117,14 @@ if ($_POST && !$error) {
 		$error = $mysql->error;
 	}
 }
-
 page_header((isset($_GET["host"]) ? lang('Username') . ": " . htmlspecialchars("$_GET[user]@$_GET[host]") : lang('Create user')), array("privileges" => lang('Privileges')));
 
+if ($error) {
+	echo "<p class='error'>" . lang('Unable to operate user') . ": " . htmlspecialchars($error) . "</p>\n";
+}
 if ($_POST) {
 	$row = $_POST;
 	$grants = $new_grants;
-	echo "<p class='error'>" . lang('Unable to operate user') . ": " . htmlspecialchars($error) . "</p>\n";
 } else {
 	$row = $_GET + array("host" => "localhost");
 	$row["pass"] = $old_pass;

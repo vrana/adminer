@@ -3,11 +3,10 @@ if (isset($_POST["query"])) {
 	setcookie("highlight", $_POST["highlight"], strtotime("+1 month"), preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]));
 	$_COOKIE["highlight"] = $_POST["highlight"];
 }
-
 page_header(lang('SQL command'));
 
-if ($_POST && $error) {
-	echo "<p class='error'>$error</p>\n";
+if ($error) {
+	echo "<p class='error'>" . htmlspecialchars($error) . "</p>\n";
 } elseif ($_POST && is_string($query = (isset($_POST["query"]) ? $_POST["query"] : get_file("sql_file")))) {
 	$delimiter = ";";
 	$offset = 0;

@@ -19,12 +19,13 @@ if ($_POST && !$error) {
 	}
 	$error = $mysql->error;
 }
-
 page_header(strlen($_GET["name"]) ? lang('Alter trigger') . ": " . htmlspecialchars($_GET["name"]) : lang('Create trigger'), array("table" => $_GET["trigger"]));
 
+if ($error) {
+	echo "<p class='error'>" . lang('Unable to operate trigger') . ": " . htmlspecialchars($error) . "</p>\n";
+}
 if ($_POST) {
 	$row = $_POST;
-	echo "<p class='error'>" . lang('Unable to operate trigger') . ": " . htmlspecialchars($error) . "</p>\n";
 } elseif (strlen($_GET["name"])) {
 	$result = $mysql->query("SHOW TRIGGERS LIKE '" . $mysql->escape_string(addcslashes($_GET["trigger"], "%_")) . "'");
 	while ($row = $result->fetch_assoc()) {

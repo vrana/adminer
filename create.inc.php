@@ -65,14 +65,15 @@ while ($row = $result->fetch_assoc()) {
 }
 $result->free();
 
+if ($error) {
+	echo "<p class='error'>" . lang('Unable to operate table') . ": " . htmlspecialchars($error) . "</p>\n";
+}
 if ($_POST) {
 	$row = $_POST;
 	ksort($row["fields"]);
 	$row["fields"] = array_values($row["fields"]);
 	if ($_POST["add"]) {
 		array_splice($row["fields"], key($_POST["add"]), 0, array(array()));
-	} elseif (!$_POST["drop_col"]) {
-		echo "<p class='error'>" . lang('Unable to operate table') . ": " . htmlspecialchars($error) . "</p>\n";
 	}
 	if ($row["auto_increment_col"]) {
 		$row["fields"][$row["auto_increment_col"] - 1]["auto_increment"] = true;

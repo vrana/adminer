@@ -1,5 +1,5 @@
 <?php
-/** phpMinAdmin - MySQL management tool
+/** phpMinAdmin - Compact MySQL management
 * @link http://phpminadmin.sourceforge.net
 * @author Jakub Vrana, http://php.vrana.cz
 * @copyright 2007 Jakub Vrana
@@ -50,8 +50,13 @@ if (isset($_GET["dump"])) {
 		include "./privileges.inc.php";
 	} else { // uses CSRF token
 		include "./editing.inc.php";
+		$error = "";
 		if ($_POST) {
-			$error = (in_array($_POST["token"], (array) $TOKENS) ? "" : lang('Invalid CSRF token. Send the form again.'));
+			if (!in_array($_POST["token"], (array) $TOKENS)) {
+				$error = lang('Invalid CSRF token. Send the form again.');
+			}
+		} elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
+			$error = lang('Too big POST data. Reduce the data or increase the "post_max_size" configuration directive.');
 		}
 		$token = ($_POST && !$error ? $_POST["token"] : token());
 		if (isset($_GET["default"])) {
@@ -90,7 +95,6 @@ if (isset($_GET["dump"])) {
 		} elseif (isset($_GET["select"])) {
 			include "./select.inc.php";
 		} else {
-			$TOKENS = array();
 			page_header(lang('Database') . ": " . htmlspecialchars($_GET["db"]), false);
 			echo '<p><a href="' . htmlspecialchars($SELF) . 'database=">' . lang('Alter database') . "</a></p>\n";
 			echo '<p><a href="' . htmlspecialchars($SELF) . 'schema=">' . lang('Database schema') . "</a></p>\n";

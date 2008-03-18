@@ -13,7 +13,9 @@ foreach ($routine["fields"] as $i => $field) {
 	}
 }
 
-if ($_POST) {
+if ($error) {
+	echo "<p class='error'>" . htmlspecialchars($error) . "</p>\n";
+} elseif ($_POST) {
 	$call = array();
 	foreach ($routine["fields"] as $key => $field) {
 		if (in_array($key, $in)) {
