@@ -1,0 +1,16 @@
+Edit of fields with foreign key as <select> (optional)
+Highlight found fields
+Order of columns in table
+MySQL 5 BIT data type
+Check MySQL server version
+Rename table to other database
+Clone row
+Execution time in sql.inc.php
+Input function results in edit
+Choose tables and data to export
+Order rows by clicking on table heading
+Set max_allowed_packet in dump and use extended insert
+? CSV export
+? Query print
+? Access without login - accept $_GET
+? Save token also to cookie - for session expiration and login in other window
