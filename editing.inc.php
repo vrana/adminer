@@ -64,7 +64,7 @@ function process_input($name, $field) {
 
 function edit_type($key, $field, $collations) {
 	global $types, $unsigned, $inout;
-?>
+	?>
 <td><select name="<?php echo $key; ?>[type]" onchange="type_change(this);"><?php echo optionlist(array_keys($types), $field["type"]); ?></select></td>
 <td><input name="<?php echo $key; ?>[length]" value="<?php echo htmlspecialchars($field["length"]); ?>" size="3" /></td>
 <td><select name="<?php echo $key; ?>[collation]"><option value="">(<?php echo lang('collation'); ?>)</option><?php echo optionlist($collations, $field["collation"]); ?></select> <select name="<?php echo $key; ?>[unsigned]"><?php echo optionlist($unsigned, $field["unsigned"]); ?></select></td>
@@ -82,7 +82,7 @@ function process_type($field, $collate = "COLLATE") {
 
 function edit_fields($fields, $collations, $type = "TABLE") {
 	global $inout;
-?>
+	?>
 <thead><tr>
 <?php if ($type == "PROCEDURE") { ?><td><?php echo lang('IN-OUT'); ?></td><?php } ?>
 <th><?php echo ($type == "TABLE" ? lang('Column name') : lang('Parameter name')); ?></th>
@@ -100,10 +100,11 @@ function edit_fields($fields, $collations, $type = "TABLE") {
 	$column_comments = false;
 	foreach ($fields as $i => $field) {
 		$i++;
+		$display = ($_POST["add"][$i-1] || (isset($field["field"]) && !$_POST["drop_col"][$i]));
 		?>
-<tr>
+<tr<?php echo ($display ? "" : " style='display: none;'"); ?>>
 <?php if ($type == "PROCEDURE") { ?><td><select name="fields[<?php echo $i; ?>][inout]"><?php echo optionlist($inout, $field["inout"]); ?></select></td><?php } ?>
-<th><input name="fields[<?php echo $i; ?>][field]" value="<?php echo ($_POST["drop_col"][$i] ? "" : htmlspecialchars($field["field"])); ?>" maxlength="64" /><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo htmlspecialchars($field[($_POST ? "orig" : "field")]); ?>" /></th>
+<th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo htmlspecialchars($field["field"]); ?>" maxlength="64" /><?php } ?><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo htmlspecialchars($field[($_POST ? "orig" : "field")]); ?>" /></th>
 <?php edit_type("fields[$i]", $field, $collations); ?>
 <?php if ($type == "TABLE") { ?>
 <td><input type="checkbox" name="fields[<?php echo $i; ?>][null]" value="1"<?php if ($field["null"]) { ?> checked="checked"<?php } ?> /></td>
@@ -121,7 +122,7 @@ function edit_fields($fields, $collations, $type = "TABLE") {
 }
 
 function type_change($count) {
-?>
+	?>
 <script type="text/javascript">
 var added = '.';
 function add_row(button) {
@@ -152,7 +153,8 @@ function add_row(button) {
 	return true;
 }
 function remove_row(button) {
-	button.form[button.name.replace(/drop_col(.+)/, 'fields$1[field]')].value = '';
+	var field = button.form[button.name.replace(/drop_col(.+)/, 'fields$1[field]')];
+	field.parentNode.removeChild(field);
 	button.parentNode.parentNode.style.display = 'none';
 	return true;
 }
