@@ -7,7 +7,7 @@
 */
 
 error_reporting(E_ALL & ~E_NOTICE);
-session_name("PHPSESSID");
+session_name("phpMinAdmin_SID");
 session_set_cookie_params(ini_get("session.cookie_lifetime"), preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]));
 session_start();
 $SELF = preg_replace('~^[^?]*/([^?]*).*~', '\\1?', $_SERVER["REQUEST_URI"]) . (strlen($_GET["server"]) ? 'server=' . urlencode($_GET["server"]) . '&' : '') . (strlen($_GET["db"]) ? 'db=' . urlencode($_GET["db"]) . '&' : '');
