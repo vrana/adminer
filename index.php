@@ -95,6 +95,7 @@ if (isset($_GET["dump"])) {
 		} elseif (isset($_GET["select"])) {
 			include "./select.inc.php";
 		} else {
+			unset($_SESSION["tokens"][$_GET["server"]][$_SERVER["REQUEST_URI"]]);
 			page_header(lang('Database') . ": " . htmlspecialchars($_GET["db"]), false);
 			echo '<p><a href="' . htmlspecialchars($SELF) . 'database=">' . lang('Alter database') . "</a></p>\n";
 			echo '<p><a href="' . htmlspecialchars($SELF) . 'schema=">' . lang('Database schema') . "</a></p>\n";
