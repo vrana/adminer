@@ -86,7 +86,7 @@ function page_footer($missing = false) {
 			} else {
 				echo "<p>\n";
 				while ($row = $result->fetch_assoc()) {
-					echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row["Name"]) . '" title="' . lang('%d row(s)', $row["Rows"]) . '">' . lang('select') . '</a> ';
+					echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row["Name"]) . '" title="' . ($row["Engine"] == "MyISAM" ? lang('%d row(s)', $row["Rows"]) : lang('around %d row(s)', $row["Rows"])) . '">' . lang('select') . '</a> ';
 					echo '<a href="' . htmlspecialchars($SELF) . (isset($row["Engine"]) ? 'table' : 'view') . '=' . urlencode($row["Name"]) . '" title="' . (isset($row["Engine"]) ? htmlspecialchars($row["Engine"]) : lang('View')) . '">' . htmlspecialchars($row["Name"]) . "</a><br />\n";
 				}
 				echo "</p>\n";

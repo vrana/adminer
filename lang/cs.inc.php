@@ -147,6 +147,7 @@ $translations = array(
 	'Event' => 'Událost',
 	'MySQL version: %s through PHP extension %s' => 'Verze MySQL: %s přes PHP extenzi %s',
 	'%d row(s)' => array('%d řádek', '%d řádky', '%d řádků'),
+	'around %d row(s)' => array('přibližně %d řádek', 'přibližně %d řádky', 'přibližně %d řádků'),
 	'ON UPDATE CURRENT_TIMESTAMP' => 'Při změně aktuální čas',
 	'Remove' => 'Odebrat',
 	'Are you sure?' => 'Opravdu?',
