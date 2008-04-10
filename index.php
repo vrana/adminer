@@ -19,6 +19,7 @@ include "./design.inc.php";
 include "./abstraction.inc.php";
 include "./auth.inc.php";
 include "./connect.inc.php";
+include "./editing.inc.php";
 
 if (isset($_GET["dump"])) {
 	include "./dump.inc.php";
@@ -49,7 +50,6 @@ if (isset($_GET["dump"])) {
 	} elseif (isset($_GET["privileges"])) {
 		include "./privileges.inc.php";
 	} else { // uses CSRF token
-		include "./editing.inc.php";
 		$error = "";
 		if ($_POST) {
 			if (!in_array($_POST["token"], (array) $TOKENS)) {
