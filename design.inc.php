@@ -60,11 +60,19 @@ function page_footer($missing = false) {
 <div id="menu">
 <h1><a href="http://phpminadmin.sourceforge.net"><?php echo lang('phpMinAdmin'); ?></a></h1>
 <?php if ($missing != "auth") { ?>
+<form action="" method="post">
 <p>
 <a href="<?php echo htmlspecialchars($SELF); ?>sql="><?php echo lang('SQL command'); ?></a>
 <a href="<?php echo htmlspecialchars($SELF); ?>dump=<?php echo urlencode($_GET["table"]); ?>"><?php echo lang('Dump'); ?></a>
-<a href="<?php echo htmlspecialchars(preg_replace('~db=[^&]*&~', '', $SELF)); ?>logout="><?php echo lang('Logout'); ?></a>
+<input type="hidden" name="token" value="<?php
+if (!$_SESSION["tokens"][$_GET["server"]]["?logout"]) {
+	$_SESSION["tokens"][$_GET["server"]]["?logout"] = rand(1, 1e6);
+}
+echo $_SESSION["tokens"][$_GET["server"]]["?logout"];
+?>" />
+<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" />
 </p>
+</form>
 <form action="">
 <p><?php if (strlen($_GET["server"])) { ?><input type="hidden" name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>" /><?php } ?>
 <select name="db" onchange="this.form.submit();"><option value="">(<?php echo lang('database'); ?>)</option>

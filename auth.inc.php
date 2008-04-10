@@ -22,12 +22,18 @@ if (isset($_POST["server"])) {
 		}
 	}
 	$_GET["server"] = $_POST["server"];
-} elseif (isset($_GET["logout"])) {
-	unset($_SESSION["usernames"][$_GET["server"]]);
-	unset($_SESSION["passwords"][$_GET["server"]]);
-	unset($_SESSION["databases"][$_GET["server"]]);
-	$_SESSION["tokens"][$_GET["server"]] = array();
-	redirect(substr($SELF, 0, -1), lang('Logout successful.'));
+} elseif (isset($_POST["logout"])) {
+	if ($_POST["token"] != $_SESSION["tokens"][$_GET["server"]]["?logout"]) {
+		page_header(lang('Logout'), lang('Invalid CSRF token. Send the form again.'));
+		page_footer("db");
+		exit;
+	} else {
+		unset($_SESSION["usernames"][$_GET["server"]]);
+		unset($_SESSION["passwords"][$_GET["server"]]);
+		unset($_SESSION["databases"][$_GET["server"]]);
+		$_SESSION["tokens"][$_GET["server"]] = array();
+		redirect(substr($SELF, 0, -1), lang('Logout successful.'));
+	}
 }
 
 function auth_error() {
