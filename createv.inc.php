@@ -15,9 +15,11 @@ if ($_POST && !$error) {
 
 page_header(strlen($_GET["createv"]) ? lang('Alter view') : lang('Create view'), array("view" => $_GET["createv"]), $_GET["createv"]);
 
+if ($error) {
+	echo "<p class='error'>" . lang('Unable to operate view') . ": " . htmlspecialchars($error) . "</p>\n";
+}
 if ($_POST) {
 	$row = $_POST;
-	echo "<p class='error'>" . lang('Unable to operate view') . ": " . htmlspecialchars($error) . "</p>\n";
 } elseif (strlen($_GET["createv"])) {
 	$row = view($_GET["createv"]);
 	$row["name"] = $_GET["createv"];
