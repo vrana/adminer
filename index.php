@@ -96,7 +96,7 @@ if (isset($_GET["dump"])) {
 			include "./select.inc.php";
 		} else {
 			unset($_SESSION["tokens"][$_GET["server"]][$_SERVER["REQUEST_URI"]]);
-			page_header(lang('Database') . ": " . htmlspecialchars($_GET["db"]), false);
+			page_header(lang('Database') . ": " . htmlspecialchars($_GET["db"]), $error, false);
 			echo '<p><a href="' . htmlspecialchars($SELF) . 'database=">' . lang('Alter database') . "</a></p>\n";
 			echo '<p><a href="' . htmlspecialchars($SELF) . 'schema=">' . lang('Database schema') . "</a></p>\n";
 			if ($mysql->server_info >= 5) {

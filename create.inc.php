@@ -54,7 +54,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 	}
 	$error = $mysql->error;
 }
-page_header(strlen($_GET["create"]) ? lang('Alter table') : lang('Create table'), array("table" => $_GET["create"]), $_GET["create"]);
+page_header((strlen($_GET["create"]) ? lang('Alter table') : lang('Create table')), $error, array("table" => $_GET["create"]), $_GET["create"]);
 
 $engines = array();
 $result = $mysql->query("SHOW ENGINES");
@@ -65,9 +65,6 @@ while ($row = $result->fetch_assoc()) {
 }
 $result->free();
 
-if ($error) {
-	echo "<p class='error'>" . lang('Unable to operate table') . ": " . htmlspecialchars($error) . "</p>\n";
-}
 if ($_POST) {
 	$row = $_POST;
 	ksort($row["fields"]);

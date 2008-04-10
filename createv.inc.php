@@ -13,11 +13,8 @@ if ($_POST && !$error) {
 	$error = $mysql->error;
 }
 
-page_header(strlen($_GET["createv"]) ? lang('Alter view') : lang('Create view'), array("view" => $_GET["createv"]), $_GET["createv"]);
+page_header((strlen($_GET["createv"]) ? lang('Alter view') : lang('Create view')), $error, array("view" => $_GET["createv"]), $_GET["createv"]);
 
-if ($error) {
-	echo "<p class='error'>" . lang('Unable to operate view') . ": " . htmlspecialchars($error) . "</p>\n";
-}
 if ($_POST) {
 	$row = $_POST;
 } elseif (strlen($_GET["createv"])) {

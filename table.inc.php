@@ -1,10 +1,11 @@
 <?php
-page_header(lang('Table') . ": " . htmlspecialchars($_GET["table"]));
-
 $result = $mysql->query("SHOW COLUMNS FROM " . idf_escape($_GET["table"]));
 if (!$result) {
-	echo "<p class='error'>" . lang('Unable to show the table definition') . ": " . $mysql->error . ".</p>\n";
-} else {
+	$error = $mysql->error;
+}
+page_header(lang('Table') . ": " . htmlspecialchars($_GET["table"]), $error);
+
+if ($result) {
 	$table_status = table_status($_GET["table"]);
 	$auto_increment_only = true;
 	echo "<table border='1' cellspacing='0' cellpadding='2'>\n";

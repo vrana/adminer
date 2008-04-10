@@ -1,5 +1,5 @@
 <?php
-page_header(lang('Call') . ": " . htmlspecialchars($_GET["call"]));
+page_header(lang('Call') . ": " . htmlspecialchars($_GET["call"]), $error);
 
 $routine = routine($_GET["call"], (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE"));
 $in = array();
@@ -13,9 +13,7 @@ foreach ($routine["fields"] as $i => $field) {
 	}
 }
 
-if ($error) {
-	echo "<p class='error'>" . htmlspecialchars($error) . "</p>\n";
-} elseif ($_POST) {
+if (!$error && $_POST) {
 	$call = array();
 	foreach ($routine["fields"] as $key => $field) {
 		if (in_array($key, $in)) {
@@ -31,7 +29,7 @@ if ($error) {
 	}
 	$result = $mysql->multi_query((isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . idf_escape($_GET["call"]) . "(" . implode(", ", $call) . ")");
 	if (!$result) {
-		echo "<p class='error'>" . lang('Error during calling') . ": " . htmlspecialchars($mysql->error) . "</p>\n";
+		echo "<p class='error'>" . htmlspecialchars($mysql->error) . "</p>\n";
 	} else {
 		do {
 			$result = $mysql->store_result();

@@ -37,14 +37,7 @@ function auth_error() {
 		$_POST["token"] = token();
 	}
 	unset($_SESSION["usernames"][$_GET["server"]]);
-	page_header(lang('Login'), null);
-	if (isset($username)) {
-		echo "<p class='error'>" . lang('Invalid credentials.') . "</p>\n";
-	} elseif (isset($_POST["server"])) {
-		echo "<p class='error'>" . lang('Sessions must be enabled.') . "</p>\n";
-	} elseif ($_POST) {
-		echo "<p class='error'>" . lang('Session expired, please login again.') . "</p>\n";
-	}
+	page_header(lang('Login'), (isset($username) ? lang('Invalid credentials.') : (isset($_POST["server"]) ? lang('Sessions must be enabled.') : ($_POST ? lang('Session expired, please login again.') : ""))), null);
 	?>
 	<form action="" method="post">
 	<table border="0" cellspacing="0" cellpadding="2">

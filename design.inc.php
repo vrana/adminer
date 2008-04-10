@@ -1,5 +1,5 @@
 <?php
-function page_header($title, $breadcrumb = array(), $title2 = "") {
+function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	global $SELF, $LANG;
 	header("Content-Type: text/html; charset=utf-8");
 	?>
@@ -45,6 +45,9 @@ function page_header($title, $breadcrumb = array(), $title2 = "") {
 	}
 	if (isset($_SESSION["databases"][$_GET["server"]]) && !isset($_GET["sql"])) {
 		session_write_close();
+	}
+	if ($error) {
+		echo "<p class='error'>" . htmlspecialchars($error) . "</p>\n";
 	}
 }
 

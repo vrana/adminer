@@ -83,11 +83,7 @@ if ($_POST && !$error) {
 	}
 	$error = $mysql->error;
 }
-page_header(lang('Select') . ": " . htmlspecialchars($_GET["select"]));
-
-if ($error) {
-	echo "<p class='error'>" . lang('Error during deleting') . ": " . htmlspecialchars($error) . "</p>\n";
-}
+page_header(lang('Select') . ": " . htmlspecialchars($_GET["select"]), ($error ? lang('Error during deleting') . ": $error" : ""));
 
 if (isset($rights["insert"])) {
 	//! pass search values forth and back
@@ -95,7 +91,7 @@ if (isset($rights["insert"])) {
 }
 
 if (!$columns) {
-	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "" : ": " . $mysql->error) . ".</p>\n";
+	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "" : ": " . htmlspecialchars($mysql->error)) . ".</p>\n";
 } else {
 	echo "<form action='' id='form'>\n<fieldset><legend>" . lang('Search') . "</legend>\n";
 	if (strlen($_GET["server"])) {
@@ -182,7 +178,7 @@ function add_row(field) {
 	
 	$result = $mysql->query("SELECT SQL_CALC_FOUND_ROWS * $from");
 	if (!$result) {
-		echo "<p class='error'>" . lang('Error in query') . ": " . htmlspecialchars($mysql->error) . "</p>\n";
+		echo "<p class='error'>" . htmlspecialchars($mysql->error) . "</p>\n";
 	} else {
 		if (!$result->num_rows) {
 			echo "<p class='message'>" . lang('No rows.') . "</p>\n";

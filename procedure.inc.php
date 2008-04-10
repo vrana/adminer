@@ -29,14 +29,8 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 	}
 	$error = $mysql->error;
 }
-page_header(strlen($_GET["procedure"])
-? (isset($_GET["function"]) ? lang('Alter function') : lang('Alter procedure')) . ": " . htmlspecialchars($_GET["procedure"])
-: (isset($_GET["function"]) ? lang('Create function') : lang('Create procedure'))
-);
+page_header((strlen($_GET["procedure"]) ? (isset($_GET["function"]) ? lang('Alter function') : lang('Alter procedure')) . ": " . htmlspecialchars($_GET["procedure"]) : (isset($_GET["function"]) ? lang('Create function') : lang('Create procedure'))), $error);
 
-if ($error) {
-	echo "<p class='error'>" . lang('Unable to operate routine') . ": " . htmlspecialchars($error) . "</p>\n";
-}
 $collations = get_vals("SHOW CHARACTER SET");
 if ($_POST) {
 	$row = $_POST;

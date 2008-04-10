@@ -28,12 +28,9 @@ if ($_POST && !$error) {
 	}
 	$error = $mysql->error;
 }
-page_header(strlen($_GET["db"]) ? lang('Alter database') : lang('Create database'), array(), $_GET["db"]);
+page_header(strlen($_GET["db"]) ? lang('Alter database') : lang('Create database'), $error, array(), $_GET["db"]);
 
 $collations = collations();
-if ($error) {
-	echo "<p class='error'>" . lang('Unable to operate database') . ": " . htmlspecialchars($error) . "</p>\n";
-}
 if ($_POST) {
 	$name = $_POST["name"];
 	$collate = $_POST["collation"];

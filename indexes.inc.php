@@ -38,11 +38,8 @@ if ($_POST && !$error && !$_POST["add"]) {
 	}
 	$error = $mysql->error;
 }
-page_header(lang('Indexes'), array("table" => $_GET["indexes"]), $_GET["indexes"]);
+page_header(lang('Indexes'), $error, array("table" => $_GET["indexes"]), $_GET["indexes"]);
 
-if ($error) {
-	echo "<p class='error'>" . lang('Unable to operate indexes') . ": " . htmlspecialchars($error) . "</p>\n";
-}
 $fields = array_keys(fields($_GET["indexes"]));
 if ($_POST) {
 	$row = $_POST;
