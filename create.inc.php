@@ -83,7 +83,7 @@ if ($_POST) {
 	$row["name"] = $_GET["create"];
 	$row["fields"] = array_values(fields($_GET["create"]));
 } else {
-	$row = array("fields" => array(array()));
+	$row = array("fields" => array(array("field" => "")));
 }
 $collations = collations();
 ?>
