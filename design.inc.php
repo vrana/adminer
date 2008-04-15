@@ -43,6 +43,9 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 		echo "<p class='message'>$_SESSION[message]</p>\n";
 		$_SESSION["message"] = "";
 	}
+	if (!$_SESSION["tokens"][$_GET["server"]]["?logout"]) {
+		$_SESSION["tokens"][$_GET["server"]]["?logout"] = rand(1, 1e6);
+	}
 	if (isset($_SESSION["databases"][$_GET["server"]]) && !isset($_GET["sql"])) {
 		session_write_close();
 	}
@@ -65,9 +68,6 @@ function page_footer($missing = false) {
 <a href="<?php echo htmlspecialchars($SELF); ?>sql="><?php echo lang('SQL command'); ?></a>
 <a href="<?php echo htmlspecialchars($SELF); ?>dump=<?php echo urlencode($_GET["table"]); ?>"><?php echo lang('Dump'); ?></a>
 <input type="hidden" name="token" value="<?php
-if (!$_SESSION["tokens"][$_GET["server"]]["?logout"]) {
-	$_SESSION["tokens"][$_GET["server"]]["?logout"] = rand(1, 1e6);
-}
 echo $_SESSION["tokens"][$_GET["server"]]["?logout"];
 ?>" />
 <input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" />
