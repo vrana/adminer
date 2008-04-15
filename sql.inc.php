@@ -13,9 +13,9 @@ if (!$error && $_POST && is_string($query = (isset($_POST["query"]) ? $_POST["qu
 		if (!$offset && preg_match('~^\\s*DELIMITER\\s+(.+)~i', $query, $match)) {
 			$delimiter = preg_quote($match[1], '~');
 			$query = substr($query, strlen($match[0]));
-		} elseif (preg_match("~$delimiter|['`\"]|/\\*|-- |\$~", $query, $match, PREG_OFFSET_CAPTURE, $offset)) {
+		} elseif (preg_match("~$delimiter|['`\"]|/\\*|-- |#|\$~", $query, $match, PREG_OFFSET_CAPTURE, $offset)) {
 			if ($match[0][0] && $match[0][0] != $delimiter) {
-				$pattern = ($match[0][0] == "-- " ? '~.*~' : ($match[0][0] == "/*" ? '~.*\\*/~sU' : '~\\G([^\\\\' . $match[0][0] . ']+|\\\\.)*(' . $match[0][0] . '|$)~s'));
+				$pattern = ($match[0][0] == "-- " || $match[0][0] == "#" ? '~.*~' : ($match[0][0] == "/*" ? '~.*\\*/~sU' : '~\\G([^\\\\' . $match[0][0] . ']+|\\\\.)*(' . $match[0][0] . '|$)~s'));
 				preg_match($pattern, $query, $match, PREG_OFFSET_CAPTURE, $match[0][1] + 1);
 				$offset = $match[0][1] + strlen($match[0][0]);
 			} else {
@@ -30,7 +30,7 @@ if (!$error && $_POST && is_string($query = (isset($_POST["query"]) ? $_POST["qu
 						if (is_object($result)) {
 							select($result);
 						} else {
-							if (preg_match("~^\\s*(CREATE|DROP)(\\s+|/\\*.*\\*/|-- [^\n]*\n)+DATABASE\\b~sU", $query)) {
+							if (preg_match("~^\\s*(CREATE|DROP)(\\s+|/\\*.*\\*/|(#|-- )[^\n]*\n)+DATABASE\\b~isU", $query)) {
 								unset($_SESSION["databases"][$_GET["server"]]);
 							}
 							echo "<p class='message'>" . lang('Query executed OK, %d row(s) affected.', $mysql->affected_rows) . "</p>\n";
