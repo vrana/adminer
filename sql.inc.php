@@ -30,7 +30,7 @@ if (!$error && $_POST && is_string($query = (isset($_POST["query"]) ? $_POST["qu
 						if (is_object($result)) {
 							select($result);
 						} else {
-							if (preg_match("~^\\s*(CREATE|DROP)(\\s+|/\\*.*\\*/|(#|-- )[^\n]*\n)+DATABASE\\b~isU", $query)) {
+							if (preg_match("~^\\s*(CREATE|DROP)(\\s+|/\\*.*\\*/|(#|-- )[^\n]*\n)+(DATABASE|SCHEMA)\\b~isU", $query)) {
 								unset($_SESSION["databases"][$_GET["server"]]);
 							}
 							echo "<p class='message'>" . lang('Query executed OK, %d row(s) affected.', $mysql->affected_rows) . "</p>\n";
