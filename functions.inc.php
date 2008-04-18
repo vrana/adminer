@@ -186,7 +186,7 @@ function token_delete() {
 
 function redirect($location, $message = null) {
 	if (isset($message)) {
-		$_SESSION["message"] = $message;
+		$_SESSION["messages"][] = $message;
 	}
 	token_delete();
 	if (strlen(SID)) {

@@ -39,9 +39,9 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 		echo "$title</p>\n";
 	}
 	echo "<h2>$title" . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . "</h2>\n";
-	if ($_SESSION["message"]) {
-		echo "<p class='message'>$_SESSION[message]</p>\n";
-		$_SESSION["message"] = "";
+	if ($_SESSION["messages"]) {
+		echo "<p class='message'>" . implode("<br />", $_SESSION["messages"]) . "</p>\n";
+		$_SESSION["messages"] = array();
 	}
 	if (!$_SESSION["tokens"][$_GET["server"]]["?logout"]) {
 		$_SESSION["tokens"][$_GET["server"]]["?logout"] = rand(1, 1e6);
