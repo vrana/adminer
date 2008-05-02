@@ -4,19 +4,47 @@ $filename = (strlen($_GET["db"]) ? preg_replace('~[^a-z0-9_]~i', '-', (strlen($_
 header("Content-Disposition: inline; filename=$filename.sql");
 
 function dump_table($table, $data = true) {
-	global $mysql;
+	global $mysql, $max_packet;
 	$result = $mysql->query("SHOW CREATE TABLE " . idf_escape($table));
 	if ($result) {
 		echo $mysql->result($result, 1) . ";\n\n";
+		if ($max_packet < pow(2, 30)) { // protocol limit
+			$row_size = 21 + strlen(idf_escape($table));
+			foreach (fields($table) as $field) {
+				$type = $types[$field["type"]];
+				$row_size += 5 + ($field["length"] ? $field["length"] : $type) * (preg_match('~char|text|enum~', $field["type"]) ? 3 : 1); // UTF-8 in MySQL uses up to 3 bytes
+			}
+			if ($row_size > $max_packet) {
+				$max_packet = 1024 * ceil($row_size / 1024);
+				echo "SET max_allowed_packet = $max_packet, GLOBAL max_allowed_packet = $max_packet;\n";
+			}
+		}
 		$result->free();
 		if ($data) {
 			$result = $mysql->query("SELECT * FROM " . idf_escape($table)); //! enum and set as numbers, binary as _binary, microtime
 			if ($result) {
-				while ($row = $result->fetch_row()) {
-					foreach ($row as $key => $val) {
-						$row[$key] = (isset($val) ? "'" . $mysql->escape_string($val) . "'" : "NULL");
+				if ($result->num_rows) {
+					$insert = "INSERT INTO " . idf_escape($table) . " VALUES ";
+					$length = 0;
+					while ($row = $result->fetch_row()) {
+						foreach ($row as $key => $val) {
+							$row[$key] = (isset($val) ? "'" . $mysql->escape_string($val) . "'" : "NULL");
+						}
+						$s = "(" . implode(", ", $row) . ")";
+						if (!$length) {
+							echo $insert, $s;
+							$length = strlen($insert) + strlen($s);
+						} else {
+							$length += 2 + strlen($s);
+							if ($length < $max_packet) {
+								echo ", ", $s;
+							} else {
+								echo ";\n", $insert, $s;
+								$length = strlen($insert) + strlen($s);
+							}
+						}
 					}
-					echo "INSERT INTO " . idf_escape($table) . " VALUES (" . implode(", ", $row) . ");\n";
+					echo ";\n";
 				}
 				$result->free();
 			}
@@ -75,9 +103,11 @@ function dump($db) {
 	echo "\n\n";
 }
 
+$max_packet = 16777216;
 echo "SET NAMES utf8;\n";
-echo "SET FOREIGN_KEY_CHECKS = 0;\n";
-echo "SET TIME_ZONE = '" . $mysql->escape_string($mysql->result($mysql->query("SELECT @@TIME_ZONE"))) . "';\n";
+echo "SET foreign_key_checks = 0;\n";
+echo "SET time_zone = '" . $mysql->escape_string($mysql->result($mysql->query("SELECT @@time_zone"))) . "';\n";
+echo "SET max_allowed_packet = $max_packet, GLOBAL max_allowed_packet = $max_packet;\n";
 echo "\n";
 
 if (!strlen($_GET["db"])) {

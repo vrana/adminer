@@ -9,7 +9,6 @@ Execution time in sql.inc.php
 Input function results in edit
 Choose tables and data to export
 Order rows by clicking on table heading
-Set max_allowed_packet in dump and use extended insert
 ? CSV export
 ? Query print
 ? Access without login - accept $_GET
