@@ -8,7 +8,7 @@ function dump_table($table, $data = true) {
 	$result = $mysql->query("SHOW CREATE TABLE " . idf_escape($table));
 	if ($result) {
 		echo $mysql->result($result, 1) . ";\n\n";
-		if ($max_packet < pow(2, 30)) { // protocol limit
+		if ($max_packet < 1073741824) { // protocol limit
 			$row_size = 21 + strlen(idf_escape($table));
 			foreach (fields($table) as $field) {
 				$type = $types[$field["type"]];
