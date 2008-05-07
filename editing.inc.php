@@ -94,7 +94,7 @@ function edit_fields($fields, $collations, $type = "TABLE") {
 <td><input type="radio" name="auto_increment_col" value="" /><?php echo lang('Auto Increment'); ?></td>
 <td><?php echo lang('Comment'); ?></td>
 <?php } ?>
-<td><input type="submit" name="add[0]" value="+" title="<?php echo lang('Add next'); ?>" /></td>
+<td><input type="image" name="add[0]" src="plus.gif" title="<?php echo lang('Add next'); ?>" /></td>
 </tr></thead>
 <?php
 	$column_comments = false;
@@ -111,7 +111,12 @@ function edit_fields($fields, $collations, $type = "TABLE") {
 <td><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked="checked"<?php } ?> /></td>
 <td><input name="fields[<?php echo $i; ?>][comment]" value="<?php echo htmlspecialchars($field["comment"]); ?>" maxlength="255" /></td>
 <?php } ?>
-<td style="white-space: nowrap;"><input type="submit" name="add[<?php echo $i; ?>]" value="+" title="<?php echo lang('Add next'); ?>" onclick="return !add_row(this);" /> <input type="submit" name="drop_col[<?php echo $i; ?>]" value="-" title="<?php echo lang('Remove'); ?>" onclick="return !remove_row(this);" /> <input type="submit" name="up[<?php echo $i; ?>]" value="↑" title="<?php echo lang('Move up'); ?>" /> <input type="submit" name="down[<?php echo $i; ?>]" value="↓" title="<?php echo lang('Move down'); ?>" /></td>
+<td style="white-space: nowrap;">
+<input type="image" name="add[<?php echo $i; ?>]" src="plus.gif" title="<?php echo lang('Add next'); ?>" onclick="return !add_row(this);" />
+<input type="image" name="drop_col[<?php echo $i; ?>]" src="minus.gif" title="<?php echo lang('Remove'); ?>" onclick="return !remove_row(this);" />
+<input type="image" name="up[<?php echo $i; ?>]" src="up.gif" title="<?php echo lang('Move up'); ?>" />
+<input type="image" name="down[<?php echo $i; ?>]" src="down.gif" title="<?php echo lang('Move down'); ?>" />
+</td>
 </tr>
 <?php
 		if (strlen($field["comment"])) {

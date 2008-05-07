@@ -82,8 +82,7 @@ if ($_COOKIE["lang"]) {
 	$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
 	$file = str_replace('<?php echo $LANG; ?>', $_COOKIE["lang"], $file);
 }
-$file = str_replace("favicon.ico", '<?php echo preg_replace("~\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?file=favicon.ico"; ?>', $file);
-$file = str_replace("default.css", '<?php echo preg_replace("~\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?file=default.css"; ?>', $file);
+$file = preg_replace("~favicon\\.ico|default\\.css|(up|down|plus|minus)\\.gif~", '<?php echo preg_replace("~\\\\\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?file=\\0"; ?>', $file);
 $file = str_replace("arrow.gif", '" . preg_replace("~\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?file=arrow.gif', $file);
 $file = str_replace('error_reporting(E_ALL & ~E_NOTICE);', 'error_reporting(E_ALL & ~E_NOTICE);
 if (isset($_GET["file"])) {
@@ -100,7 +99,13 @@ if (isset($_GET["file"])) {
 			?>' . file_get_contents("default.css") . '<?php
 		} else {
 			header("Content-Type: image/gif");
-			echo base64_decode("' . base64_encode(file_get_contents("arrow.gif")) . '");
+			switch ($_GET["file"]) {
+				case "arrow.gif": echo base64_decode("' . base64_encode(file_get_contents("arrow.gif")) . '"); break;
+				case "up.gif": echo base64_decode("' . base64_encode(file_get_contents("up.gif")) . '"); break;
+				case "down.gif": echo base64_decode("' . base64_encode(file_get_contents("down.gif")) . '"); break;
+				case "plus.gif": echo base64_decode("' . base64_encode(file_get_contents("plus.gif")) . '"); break;
+				case "minus.gif": echo base64_decode("' . base64_encode(file_get_contents("minus.gif")) . '"); break;
+			}
 		}
 	}
 	exit;
