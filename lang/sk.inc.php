@@ -155,6 +155,8 @@ $translations = array(
 	'all' => 'všetko',
 	'Delete selected' => 'Zmazať označené',
 	'Truncate table' => 'Vyprázdniť tabuľku',
-	'Logged as: %s' => '',
-	'Too big POST data. Reduce the data or increase the "post_max_size" configuration directive.' => '',
+	'Too big POST data. Reduce the data or increase the "post_max_size" configuration directive.' => 'Príliš veľké POST dáta. Zmenšite dáta alebo zvýšte hodnotu konfiguračej direktívy "post_max_size".',
+	'Logged as: %s' => 'Prihlásený ako: %s',
+	'Move up' => 'Presunúť hore',
+	'Move down' => 'Presunúť dolu',
 );
