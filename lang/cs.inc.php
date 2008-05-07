@@ -157,4 +157,6 @@ $translations = array(
 	'Truncate table' => 'Promazat tabulku',
 	'Too big POST data. Reduce the data or increase the "post_max_size" configuration directive.' => 'Příliš velká POST data. Zmenšete data nebo zvyšte hodnotu konfigurační direktivy "post_max_size".',
 	'Logged as: %s' => 'Přihlášen jako: %s',
+	'Move up' => 'Přesunout nahoru',
+	'Move down' => 'Přesunout dolů',
 );
