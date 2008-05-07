@@ -1,6 +1,5 @@
 Edit of fields with foreign key as <select> (optional)
 Highlight found fields
-Order of columns in table
 MySQL 5 BIT data type
 Check MySQL server version
 Rename table to other database

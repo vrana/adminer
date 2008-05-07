@@ -1,5 +1,5 @@
 <?php
-if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
+if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] && !$_POST["down"]) {
 	if ($_POST["drop"]) {
 		if ($mysql->query("DROP TABLE " . idf_escape($_GET["create"]))) {
 			redirect(substr($SELF, 0, -1), lang('Table has been dropped.'));
@@ -29,7 +29,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 					. ($field["null"] ? " NULL" : " NOT NULL") // NULL for timestamp
 					. ($key == $_POST["auto_increment_col"] ? " AUTO_INCREMENT$auto_increment_index" : "")
 					. " COMMENT '" . $mysql->escape_string($field["comment"]) . "'"
-					. (strlen($_GET["create"]) && !strlen($field["orig"]) ? $after : "")
+					. (strlen($_GET["create"]) ? " $after" : "")
 				;
 				$after = "AFTER " . idf_escape($field["field"]);
 			} elseif (strlen($field["orig"])) {
@@ -67,11 +67,7 @@ $result->free();
 
 if ($_POST) {
 	$row = $_POST;
-	ksort($row["fields"]);
-	$row["fields"] = array_values($row["fields"]);
-	if ($_POST["add"]) {
-		array_splice($row["fields"], key($_POST["add"]), 0, array(array()));
-	}
+	process_fields($row["fields"]);
 	if ($row["auto_increment_col"]) {
 		$row["fields"][$row["auto_increment_col"] - 1]["auto_increment"] = true;
 	}

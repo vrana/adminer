@@ -2,7 +2,7 @@
 $routine = (isset($_GET["function"]) ? "FUNCTION" : "PROCEDURE");
 
 $dropped = false;
-if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
+if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] && !$_POST["down"]) {
 	if (strlen($_GET["procedure"]) && ($_POST["dropped"] || $mysql->query("DROP $routine " . idf_escape($_GET["procedure"])))) {
 		if ($_POST["drop"]) {
 			redirect(substr($SELF, 0, -1), lang('Routine has been dropped.'));
@@ -35,11 +35,7 @@ $collations = get_vals("SHOW CHARACTER SET");
 if ($_POST) {
 	$row = $_POST;
 	$row["fields"] = (array) $row["fields"];
-	ksort($row["fields"]);
-	$row["fields"] = array_values($row["fields"]);
-	if ($_POST["add"]) {
-		array_splice($row["fields"], key($_POST["add"]), 0, array(array()));
-	}
+	process_fields($row["fields"]);
 } elseif (strlen($_GET["procedure"])) {
 	$row = routine($_GET["procedure"], $routine);
 	$row["name"] = $_GET["procedure"];
