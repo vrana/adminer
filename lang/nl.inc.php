@@ -155,6 +155,8 @@ $translations = array(
 	'all' => 'alle',
 	'Delete selected' => 'Geselecteerde verwijderen',
 	'Truncate table' => 'Tabel leegmaken',
-	'Logged as: %s' => '',
-	'Too big POST data. Reduce the data or increase the "post_max_size" configuration directive.' => '',
+	'Logged as: %s' => 'Aangemeld als: %s',
+	'Too big POST data. Reduce the data or increase the "post_max_size" configuration directive.' => 'POST-data is te groot. Verklein de hoeveelheid data of verhoog de "post_max_size" configuratie.',
+	'Move up' => 'Omhoog',
+	'Move down' => 'Omlaag',
 );
