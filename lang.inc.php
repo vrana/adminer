@@ -5,6 +5,7 @@ static $langs = array(
 	'sk' => 'Slovenčina', // Ivan Suchy - http://www.ivansuchy.com
 	'nl' => 'Nederlands', // Maarten Balliauw - http://blog.maartenballiauw.be
 	'es' => 'Español', // Klemens Häckel - http://clickdimension.wordpress.com
+	'de' => 'Deutsch', // Klemens Häckel - http://clickdimension.wordpress.com
 );
 
 function lang($idf, $number = null) {
