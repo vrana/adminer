@@ -14,7 +14,7 @@ function remove_lang($match) {
 }
 
 function put_file($match) {
-	if ($match[4] == './lang/$LANG.inc.php') {
+	if ($match[3] == './lang/$LANG.inc.php') {
 		if ($_COOKIE["lang"]) {
 			return "";
 		}
@@ -24,12 +24,12 @@ function put_file($match) {
 		}
 		return "switch (\$LANG) {\n$return}\n";
 	}
-	$return = file_get_contents($match[4]);
-	if ($match[4] == "./lang.inc.php" && $_COOKIE["lang"] && (preg_match("~case '$_COOKIE[lang]': (.*) break;~", $return, $match2) || preg_match("~default: (.*)~", $return, $match2))) {
-		return "$match[1]\nfunction lang(\$ar, \$number) {\n\t$match2[1]\n\treturn sprintf(\$ar[\$pos], \$number);\n}\n$match[5]";
+	$return = file_get_contents($match[3]);
+	if ($match[3] == "./lang.inc.php" && $_COOKIE["lang"] && (preg_match("~case '$_COOKIE[lang]': (.*) break;~", $return, $match2) || preg_match("~default: (.*)~", $return, $match2))) {
+		return "$match[1]\nfunction lang(\$ar, \$number) {\n\t$match2[1]\n\treturn sprintf(\$ar[\$pos], \$number);\n}\n$match[4]";
 	}
 	$return = preg_replace("~\\?>\n?\$~", '', $return);
-	if (substr_count($return, "<?php") <= substr_count($return, "?>") && !$match[5]) {
+	if (substr_count($return, "<?php") <= substr_count($return, "?>") && !$match[4]) {
 		$return .= "<?php\n";
 	}
 	$return = preg_replace('~^<\\?php\\s+~', '', $return, 1, $count);
@@ -76,7 +76,7 @@ if ($_SERVER["argc"] > 1) {
 
 $filename = "phpMinAdmin" . ($_COOKIE["lang"] ? "-$_COOKIE[lang]" : "") . ".php";
 $file = file_get_contents("index.php");
-$file = preg_replace_callback('~(<\\?php)?\\s*(include|require)(_once)? "([^"]*)";(\\s*\\?>)?~', 'put_file', $file);
+$file = preg_replace_callback('~(<\\?php)?\\s*(include|require) "([^"]*)";(\\s*\\?>)?~', 'put_file', $file);
 if ($_COOKIE["lang"]) {
 	$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
 	$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
