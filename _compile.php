@@ -13,14 +13,37 @@ function remove_lang($match) {
 	return ($match[1] && $match[4] ? $s : "$match[1]'" . add_apo_slashes($s) . "'$match[4]");
 }
 
+$lang_ids = array();
+function lang_ids($match) {
+	global $lang_ids;
+	return 'lang(' . $lang_ids[stripslashes($match[1])] . $match[2];
+}
+
 function put_file($match) {
+	global $lang_ids;
 	if ($match[3] == './lang/$LANG.inc.php') {
 		if ($_COOKIE["lang"]) {
 			return "";
 		}
 		$return = "";
-		foreach (glob("./lang/*.inc.php") as $filename) {
-			$return .= "case '" . basename($filename, '.inc.php') . "': " . substr(file_get_contents($filename), 6) . "break;\n";
+		foreach (glob("lang/*.inc.php") as $filename) {
+			include $filename;
+			
+			foreach ($translations as $key => $val) {
+				if (!isset($lang_ids[$key])) {
+					$lang_ids[$key] = count($lang_ids);
+				}
+			}
+			$translation_ids = array_flip($lang_ids);
+			foreach ($translations as $key => $val) {
+				$translation_ids[$lang_ids[$key]] = $val;
+			}
+
+			$return .= 'case "' . basename($filename, '.inc.php') . '": $translations = array(';
+			foreach ($translation_ids as $val) {
+				$return .= (is_array($val) ? "array('" . implode("', '", array_map('add_apo_slashes', $val)) . "')" : "'" . add_apo_slashes($val) . "'") . ", ";
+			}
+			$return .= "); break;\n";
 		}
 		return "switch (\$LANG) {\n$return}\n";
 	}
@@ -81,6 +104,8 @@ if ($_COOKIE["lang"]) {
 	$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
 	$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
 	$file = str_replace('<?php echo $LANG; ?>', $_COOKIE["lang"], $file);
+} else {
+	$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
 }
 $file = preg_replace("~favicon\\.ico|default\\.css|(up|down|plus|minus)\\.gif~", '<?php echo preg_replace("~\\\\\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?file=\\0"; ?>', $file);
 $file = str_replace("arrow.gif", '" . preg_replace("~\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?file=arrow.gif', $file);
