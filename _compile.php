@@ -86,26 +86,21 @@ $file = preg_replace("~favicon\\.ico|default\\.css|(up|down|plus|minus)\\.gif~",
 $file = str_replace("arrow.gif", '" . preg_replace("~\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?file=arrow.gif', $file);
 $file = str_replace('error_reporting(E_ALL & ~E_NOTICE);', 'error_reporting(E_ALL & ~E_NOTICE);
 if (isset($_GET["file"])) {
-	$last_modified = filemtime(__FILE__);
-	if ($_SERVER["HTTP_IF_MODIFIED_SINCE"] && $last_modified <= strtotime($_SERVER["HTTP_IF_MODIFIED_SINCE"])) {
-		header("HTTP/1.1 304 Not Modified");
+	header("Expires: " . gmdate("D, d M Y H:i:s", filemtime(__FILE__) + 365*24*60*60) . " GMT");
+	if ($_GET["file"] == "favicon.ico") {
+		header("Content-Type: image/x-icon");
+		echo base64_decode("' . base64_encode(file_get_contents("favicon.ico")) . '");
+	} elseif ($_GET["file"] == "default.css") {
+		header("Content-Type: text/css");
+		?>' . file_get_contents("default.css") . '<?php
 	} else {
-		header("Last-Modified: " . gmdate("D, d M Y H:i:s", $last_modified) . " GMT");
-		if ($_GET["file"] == "favicon.ico") {
-			header("Content-Type: image/x-icon");
-			echo base64_decode("' . base64_encode(file_get_contents("favicon.ico")) . '");
-		} elseif ($_GET["file"] == "default.css") {
-			header("Content-Type: text/css");
-			?>' . file_get_contents("default.css") . '<?php
-		} else {
-			header("Content-Type: image/gif");
-			switch ($_GET["file"]) {
-				case "arrow.gif": echo base64_decode("' . base64_encode(file_get_contents("arrow.gif")) . '"); break;
-				case "up.gif": echo base64_decode("' . base64_encode(file_get_contents("up.gif")) . '"); break;
-				case "down.gif": echo base64_decode("' . base64_encode(file_get_contents("down.gif")) . '"); break;
-				case "plus.gif": echo base64_decode("' . base64_encode(file_get_contents("plus.gif")) . '"); break;
-				case "minus.gif": echo base64_decode("' . base64_encode(file_get_contents("minus.gif")) . '"); break;
-			}
+		header("Content-Type: image/gif");
+		switch ($_GET["file"]) {
+			case "arrow.gif": echo base64_decode("' . base64_encode(file_get_contents("arrow.gif")) . '"); break;
+			case "up.gif": echo base64_decode("' . base64_encode(file_get_contents("up.gif")) . '"); break;
+			case "down.gif": echo base64_decode("' . base64_encode(file_get_contents("down.gif")) . '"); break;
+			case "plus.gif": echo base64_decode("' . base64_encode(file_get_contents("plus.gif")) . '"); break;
+			case "minus.gif": echo base64_decode("' . base64_encode(file_get_contents("minus.gif")) . '"); break;
 		}
 	}
 	exit;
