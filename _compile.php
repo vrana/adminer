@@ -28,17 +28,18 @@ function put_file($match) {
 		$return = "";
 		foreach (glob("lang/*.inc.php") as $filename) {
 			include $filename;
-			
 			foreach ($translations as $key => $val) {
 				if (!isset($lang_ids[$key])) {
 					$lang_ids[$key] = count($lang_ids);
 				}
 			}
+		}
+		foreach (glob("lang/*.inc.php") as $filename) {
+			include $filename;
 			$translation_ids = array_flip($lang_ids);
 			foreach ($translations as $key => $val) {
 				$translation_ids[$lang_ids[$key]] = $val;
 			}
-
 			$return .= 'case "' . basename($filename, '.inc.php') . '": $translations = array(';
 			foreach ($translation_ids as $val) {
 				$return .= (is_array($val) ? "array('" . implode("', '", array_map('add_apo_slashes', $val)) . "')" : "'" . add_apo_slashes($val) . "'") . ", ";
