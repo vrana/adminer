@@ -44,7 +44,7 @@ function put_file($match) {
 			foreach ($translation_ids as $val) {
 				$return .= (is_array($val) ? "array('" . implode("', '", array_map('add_apo_slashes', $val)) . "')" : "'" . add_apo_slashes($val) . "'") . ", ";
 			}
-			$return .= "); break;\n";
+			$return = substr($return, 0, -2) . "); break;\n";
 		}
 		return "switch (\$LANG) {\n$return}\n";
 	}
