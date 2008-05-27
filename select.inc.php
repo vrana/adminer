@@ -50,7 +50,7 @@ if ($_POST && !$error) {
 	$result = true;
 	$deleted = 0;
 	if (isset($_POST["truncate"])) {
-		$result = $mysql->query("TRUNCATE " . idf_escape($_GET["select"]));
+		$result = $mysql->query($where ? "DELETE FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", $where) : "TRUNCATE " . idf_escape($_GET["select"]));
 		$deleted = $mysql->affected_rows;
 	} elseif (is_array($_POST["delete"])) {
 		foreach ($_POST["delete"] as $val) {
