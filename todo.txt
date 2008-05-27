@@ -1,4 +1,4 @@
-Edit of fields with foreign key as <select> (optional)
+Add whisperer to fields with foreign key
 Highlight found fields
 MySQL 5 BIT data type
 Check MySQL server version
@@ -7,7 +7,6 @@ Clone row
 Execution time in sql.inc.php
 Input function results in edit
 Choose tables and data to export
-Order rows by clicking on table heading
 ? CSV export
 ? Query print
 ? Access without login - accept $_GET

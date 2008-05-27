@@ -195,7 +195,11 @@ function add_row(field) {
 			echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
 			for ($j=0; $row = $result->fetch_assoc(); $j++) {
 				if (!$j) {
-					echo '<thead><tr><td><label><input type="checkbox" name="delete_selected" value="1" onclick="var elems = this.form.elements; for (var i=0; i < elems.length; i++) if (elems[i].name == \'delete[]\') elems[i].checked = this.checked;" />' . lang('all') . '</label></td><th>' . implode("</th><th>", array_map('htmlspecialchars', array_keys($row))) . "</th></tr></thead>\n";
+					echo '<thead><tr><td><label><input type="checkbox" name="delete_selected" value="1" onclick="var elems = this.form.elements; for (var i=0; i < elems.length; i++) if (elems[i].name == \'delete[]\') elems[i].checked = this.checked;" />' . lang('all') . '</label></td>';
+					foreach ($row as $key => $val) {
+						echo '<th><a href="' . remove_from_uri('(order|desc)[^=]*') . '&amp;order%5B0%5D=' . htmlspecialchars($key) . ($_GET["order"][0] === $key && !$_GET["desc"][0] ? '&amp;desc%5B0%5D=1' : '') . '">' . htmlspecialchars($key) . "</a></th>";
+					}
+					echo "</tr></thead>\n";
 				}
 				$unique_idf = implode('&amp;', unique_idf($row, $indexes));
 				echo '<tr><td><input type="checkbox" name="delete[]" value="' . $unique_idf . '" /> <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . "</a></td>";
