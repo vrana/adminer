@@ -67,10 +67,10 @@ $result->free();
 
 if ($_POST) {
 	$row = $_POST;
-	process_fields($row["fields"]);
 	if ($row["auto_increment_col"]) {
-		$row["fields"][$row["auto_increment_col"] - 1]["auto_increment"] = true;
+		$row["fields"][$row["auto_increment_col"]]["auto_increment"] = true;
 	}
+	process_fields($row["fields"]);
 } elseif (strlen($_GET["create"])) {
 	$row = table_status($_GET["create"]);
 	if ($row["Engine"] == "InnoDB") {
