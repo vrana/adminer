@@ -176,14 +176,14 @@ function add_row(field) {
 	echo "</form>\n";
 	echo "<div style='clear: left;'>&nbsp;</div>\n";
 	
-	$result = $mysql->query("SELECT SQL_CALC_FOUND_ROWS * $from");
+	$result = $mysql->query("SELECT * $from");
 	if (!$result) {
 		echo "<p class='error'>" . htmlspecialchars($mysql->error) . "</p>\n";
 	} else {
 		if (!$result->num_rows) {
 			echo "<p class='message'>" . lang('No rows.') . "</p>\n";
 		} else {
-			$found_rows = $mysql->result($mysql->query(" SELECT FOUND_ROWS()")); // space for mysql.trace_mode
+			$found_rows = (intval($limit) && $result->num_rows > $limit ? $mysql->result($mysql->query("SELECT COUNT(*) $from")) : $result->num_rows);
 			$foreign_keys = array();
 			foreach (foreign_keys($_GET["select"]) as $foreign_key) {
 				foreach ($foreign_key["source"] as $val) {
