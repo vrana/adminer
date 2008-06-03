@@ -183,7 +183,6 @@ function add_row(field) {
 		if (!$result->num_rows) {
 			echo "<p class='message'>" . lang('No rows.') . "</p>\n";
 		} else {
-			$found_rows = (intval($limit) && $result->num_rows > $limit ? $mysql->result($mysql->query("SELECT COUNT(*) $from")) : $result->num_rows);
 			$foreign_keys = array();
 			foreach (foreign_keys($_GET["select"]) as $foreign_key) {
 				foreach ($foreign_key["source"] as $val) {
@@ -237,7 +236,7 @@ function add_row(field) {
 			echo "</table>\n";
 			echo "<p><input type='hidden' name='token' value='$token' /><input type='submit' value='" . lang('Delete selected') . "' /> <input type='submit' name='truncate' value='" . lang('Truncate table') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\" /></p>\n";
 			echo "</form>\n";
-			if (intval($limit) && $found_rows > $limit) {
+			if (intval($limit) && $result->num_rows >= $limit && ($found_rows = $mysql->result($mysql->query("SELECT COUNT(*) $from"))) > $limit) {
 				$max_page = floor(($found_rows - 1) / $limit);
 				function print_page($page) {
 					echo " " . ($page == $_GET["page"] ? $page + 1 : '<a href="' . htmlspecialchars(remove_from_uri("page") . ($page ? "&page=$page" : "")) . '">' . ($page + 1) . "</a>");
