@@ -24,9 +24,7 @@ include "./auth.inc.php";
 include "./connect.inc.php";
 include "./editing.inc.php";
 
-if (isset($_GET["dump"])) {
-	include "./dump.inc.php";
-} elseif (isset($_GET["download"])) {
+if (isset($_GET["download"])) {
 	include "./download.inc.php";
 } else { // outputs footer
 	$on_actions = array("RESTRICT", "CASCADE", "SET NULL", "NO ACTION");
@@ -50,6 +48,8 @@ if (isset($_GET["dump"])) {
 		include "./view.inc.php";
 	} elseif (isset($_GET["schema"])) {
 		include "./schema.inc.php";
+	} elseif (isset($_GET["dump"])) {
+		include "./dump.inc.php";
 	} elseif (isset($_GET["privileges"])) {
 		include "./privileges.inc.php";
 	} else { // uses CSRF token

@@ -9,7 +9,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <meta name="robots" content="noindex" />
-<title><?php echo $title . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . " - " . lang('phpMinAdmin') . " 1.6.2-dev"; ?></title>
+<title><?php echo $title . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . " - " . lang('phpMinAdmin') . " 1.7.0-dev"; ?></title>
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 <link rel="stylesheet" type="text/css" href="default.css" /><?php // Ondrej Valka, http://valka.info ?>
 <?php if ($_COOKIE["highlight"] == "jush") { ?>
@@ -66,10 +66,8 @@ function page_footer($missing = false) {
 <form action="" method="post">
 <p>
 <a href="<?php echo htmlspecialchars($SELF); ?>sql="><?php echo lang('SQL command'); ?></a>
-<a href="<?php echo htmlspecialchars($SELF); ?>dump=<?php echo urlencode($_GET["table"]); ?>"><?php echo lang('Dump'); ?></a>
-<input type="hidden" name="token" value="<?php
-echo $_SESSION["tokens"][$_GET["server"]]["?logout"];
-?>" />
+<a href="<?php echo htmlspecialchars($SELF); ?>dump=<?php echo urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]); ?>"><?php echo lang('Dump'); ?></a>
+<input type="hidden" name="token" value="<?php echo $_SESSION["tokens"][$_GET["server"]]["?logout"]; ?>" />
 <input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" />
 </p>
 </form>
