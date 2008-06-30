@@ -32,15 +32,15 @@ if ($_POST) {
 	}
 	$result->free();
 } else {
-	$row = array();
+	$row = array("Trigger" => "$_GET[trigger]_bi");
 }
 ?>
 
 <form action="" method="post" id="form">
 <table border="0" cellspacing="0" cellpadding="2">
+<tr><th><?php echo lang('Time'); ?></th><td><select name="Timing" onchange="if (/^<?php echo htmlspecialchars(preg_quote($_GET["trigger"], "/")); ?>_[ba][iud]$/.test(this.form['Trigger'].value)) this.form['Trigger'].value = '<?php echo htmlspecialchars(addcslashes($_GET["trigger"], "\r\n'\\")); ?>_' + this.value.charAt(0).toLowerCase() + this.form['Event'].value.charAt(0).toLowerCase();"><?php echo optionlist($trigger_time, $row["Timing"]); ?></select></td></tr>
+<tr><th><?php echo lang('Event'); ?></th><td><select name="Event" onchange="this.form['Timing'].onchange();"><?php echo optionlist($trigger_event, $row["Event"]); ?></select></td></tr>
 <tr><th><?php echo lang('Name'); ?></th><td><input name="Trigger" value="<?php echo htmlspecialchars($row["Trigger"]); ?>" maxlength="64" /></td></tr>
-<tr><th><?php echo lang('Time'); ?></th><td><select name="Timing"><?php echo optionlist($trigger_time, $row["Timing"]); ?></select></td></tr>
-<tr><th><?php echo lang('Event'); ?></th><td><select name="Event"><?php echo optionlist($trigger_event, $row["Event"]); ?></select></td></tr>
 </table>
 <p><textarea name="Statement" rows="10" cols="80" style="width: 98%;"><?php echo htmlspecialchars($row["Statement"]); ?></textarea></p>
 <p>
