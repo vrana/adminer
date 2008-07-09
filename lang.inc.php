@@ -12,10 +12,10 @@ function lang($idf, $number = null) {
 	global $LANG, $translations;
 	$translation = $translations[$idf];
 	if (is_array($translation) && $translation) {
+		$pos = ($number == 1 ? 0 : 1);
 		switch ($LANG) {
 			case 'cs': $pos = ($number == 1 ? 0 : (!$number || $number >= 5 ? 2 : 1)); break;
 			case 'sk': $pos = ($number == 1 ? 0 : (!$number || $number >= 5 ? 2 : 1)); break;
-			default: $pos = ($number == 1 ? 0 : 1);
 		}
 		$translation = $translation[$pos];
 	}
