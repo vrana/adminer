@@ -9,11 +9,7 @@ if (isset($_POST["server"])) {
 		$_SESSION["usernames"][$_POST["server"]] = $_POST["username"];
 		$_SESSION["passwords"][$_POST["server"]] = $_POST["password"];
 		if (count($_POST) == count($ignore)) {
-			if ((string) $_GET["server"] === $_POST["server"]) {
-				$location = remove_from_uri();
-			} else {
-				$location = preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . (strlen($_POST["server"]) ? '?server=' . urlencode($_POST["server"]) : '');
-			}
+			$location = ((string) $_GET["server"] === $_POST["server"] ? remove_from_uri() : preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . (strlen($_POST["server"]) ? '?server=' . urlencode($_POST["server"]) : ''));
 			if (!isset($_COOKIE[session_name()])) {
 				$location .= (strpos($location, "?") === false ? "?" : "&") . SID;
 			}

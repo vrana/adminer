@@ -215,14 +215,14 @@ function select($result) {
 		echo "<p class='message'>" . lang('No rows.') . "</p>\n";
 	} else {
 		echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
+		$links = array();
+		$indexes = array();
+		$columns = array();
+		$blobs = array();
+		$types = array();
 		for ($i=0; $row = $result->fetch_row(); $i++) {
 			if (!$i) {
 				echo "<thead><tr>";
-				$links = array();
-				$indexes = array();
-				$columns = array();
-				$blobs = array();
-				$types = array();
 				for ($j=0; $j < count($row); $j++) {
 					$field = $result->fetch_field();
 					if (strlen($field->orgtable)) {

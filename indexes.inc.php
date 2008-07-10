@@ -41,6 +41,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 page_header(lang('Indexes'), $error, array("table" => $_GET["indexes"]), $_GET["indexes"]);
 
 $fields = array_keys(fields($_GET["indexes"]));
+$row = array("indexes" => $indexes);
 if ($_POST) {
 	$row = $_POST;
 	if ($_POST["add"]) {
@@ -55,7 +56,6 @@ if ($_POST) {
 		}
 	}
 } else {
-	$row = array("indexes" => $indexes);
 	foreach ($row["indexes"] as $key => $index) {
 		$row["indexes"][$key]["columns"][] = "";
 	}

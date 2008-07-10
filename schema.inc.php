@@ -30,10 +30,10 @@ while ($row = $result->fetch_assoc()) {
 	if ($row["Engine"] == "InnoDB") {
 		foreach (foreign_keys($row["Name"]) as $val) {
 			if (!$val["db"]) {
+				$left = $base_left;
 				if ($table_pos[$row["Name"]][1] || $table_pos[$row["Name"]][1]) {
 					$left = min($table_pos[$row["Name"]][1], $table_pos[$val["table"]][1]) - 1;
 				} else {
-					$left = $base_left;
 					$base_left -= .1;
 				}
 				while ($lefts[(string) $left]) {

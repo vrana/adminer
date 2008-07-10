@@ -42,6 +42,7 @@ if (isset($_GET["download"])) {
 	$enum_length = '\'(?:\'\'|[^\'\\\\]+|\\\\.)*\'|"(?:""|[^"\\\\]+|\\\\.)*"';
 	$inout = array("IN", "OUT", "INOUT");
 	
+	$error = "";
 	if (isset($_GET["table"])) {
 		include "./table.inc.php";
 	} elseif (isset($_GET["view"])) {
@@ -53,7 +54,6 @@ if (isset($_GET["download"])) {
 	} elseif (isset($_GET["privileges"])) {
 		include "./privileges.inc.php";
 	} else { // uses CSRF token
-		$error = "";
 		if ($_POST) {
 			if (!in_array($_POST["token"], (array) $TOKENS)) {
 				$error = lang('Invalid CSRF token. Send the form again.');

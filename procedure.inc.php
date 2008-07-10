@@ -32,6 +32,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 page_header((strlen($_GET["procedure"]) ? (isset($_GET["function"]) ? lang('Alter function') : lang('Alter procedure')) . ": " . htmlspecialchars($_GET["procedure"]) : (isset($_GET["function"]) ? lang('Create function') : lang('Create procedure'))), $error);
 
 $collations = get_vals("SHOW CHARACTER SET");
+$row = array("fields" => array());
 if ($_POST) {
 	$row = $_POST;
 	$row["fields"] = (array) $row["fields"];
@@ -39,8 +40,6 @@ if ($_POST) {
 } elseif (strlen($_GET["procedure"])) {
 	$row = routine($_GET["procedure"], $routine);
 	$row["name"] = $_GET["procedure"];
-} else {
-	$row = array("fields" => array());
 }
 ?>
 

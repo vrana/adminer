@@ -7,12 +7,12 @@ foreach ($fields as $name => $field) {
 	}
 }
 if ($_POST && !$error) {
+	$set = array();
 	if (isset($_POST["delete"])) {
 		$set = true;
 		$query = "DELETE FROM " . idf_escape($_GET["edit"]) . " WHERE " . implode(" AND ", $where) . " LIMIT 1";
 		$message = lang('Item has been deleted.');
 	} else {
-		$set = array();
 		foreach ($fields as $name => $field) {
 			$val = process_input($name, $field);
 			if ($val !== false) {
@@ -43,6 +43,7 @@ if ($_POST && !$error) {
 }
 page_header((isset($_GET["default"]) ? lang('Default values') : ($_GET["where"] ? lang('Edit') : lang('Insert'))), $error, array((isset($_GET["default"]) ? "table" : "select") => $_GET["edit"]), $_GET["edit"]);
 
+unset($row);
 if ($_POST) {
 	$row = (array) $_POST["fields"];
 	foreach ((array) $_POST["null"] as $key => $val) {
@@ -61,8 +62,6 @@ if ($_POST) {
 	} else {
 		$row = array();
 	}
-} else {
-	unset($row);
 }
 ?>
 

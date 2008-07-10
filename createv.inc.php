@@ -15,13 +15,12 @@ if ($_POST && !$error) {
 
 page_header((strlen($_GET["createv"]) ? lang('Alter view') : lang('Create view')), $error, array("view" => $_GET["createv"]), $_GET["createv"]);
 
+$row = array();
 if ($_POST) {
 	$row = $_POST;
 } elseif (strlen($_GET["createv"])) {
 	$row = view($_GET["createv"]);
 	$row["name"] = $_GET["createv"];
-} else {
-	$row = array();
 }
 ?>
 

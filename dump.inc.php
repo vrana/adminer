@@ -1,6 +1,6 @@
 <?php
 function dump_table($table, $style) {
-	global $mysql, $max_packet;
+	global $mysql, $max_packet, $types;
 	$result = $mysql->query("SHOW CREATE TABLE " . idf_escape($table));
 	if ($result) {
 		echo $mysql->result($result, 1) . ";\n\n";

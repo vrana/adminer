@@ -31,12 +31,12 @@ if ($_POST && !$error) {
 page_header(strlen($_GET["db"]) ? lang('Alter database') : lang('Create database'), $error, array(), $_GET["db"]);
 
 $collations = collations();
+$name = $_GET["db"];
+$collate = array();
 if ($_POST) {
 	$name = $_POST["name"];
 	$collate = $_POST["collation"];
 } else {
-	$name = $_GET["db"];
-	$collate = array();
 	if (!strlen($_GET["db"])) {
 		$result = $mysql->query("SHOW GRANTS");
 		while ($row = $result->fetch_row()) {

@@ -1,5 +1,5 @@
 <?php
-static $langs = array(
+$langs = array(
 	'en' => 'English',
 	'cs' => 'Čeština', // Jakub Vrána - http://php.vrana.cz
 	'sk' => 'Slovenčina', // Ivan Suchy - http://www.ivansuchy.com
@@ -39,6 +39,7 @@ if (isset($_GET["lang"])) {
 	$_SESSION["lang"] = $_GET["lang"];
 }
 
+$LANG = "en";
 if (isset($langs[$_COOKIE["lang"]])) {
 	setcookie("lang", $_GET["lang"], strtotime("+1 month"), preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]));
 	$LANG = $_COOKIE["lang"];
@@ -51,7 +52,6 @@ if (isset($langs[$_COOKIE["lang"]])) {
 		$accept_language[str_replace("_", "-", $match[1])] = (isset($match[3]) ? $match[3] : 1);
 	}
 	arsort($accept_language);
-	$LANG = "en";
 	foreach ($accept_language as $lang => $q) {
 		if (isset($langs[$lang])) {
 			$LANG = $lang;

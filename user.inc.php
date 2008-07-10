@@ -27,8 +27,8 @@ function all_privileges(&$grants, $privileges) {
 	}
 }
 
+$new_grants = array();
 if ($_POST) {
-	$new_grants = array();
 	foreach ($_POST["objects"] as $key => $val) {
 		$new_grants[$val] = ((array) $new_grants[$val]) + ((array) $_POST["grants"][$key]);
 	}
