@@ -1,4 +1,8 @@
 <?php
+if (strlen($_GET["create"])) {
+	$orig_fields = fields($_GET["create"]);
+}
+
 if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] && !$_POST["down"]) {
 	if ($_POST["drop"]) {
 		if ($mysql->query("DROP TABLE " . idf_escape($_GET["create"]))) {
@@ -27,6 +31,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 				$fields[] = (!strlen($_GET["create"]) ? "" : (strlen($field["orig"]) ? "CHANGE " . idf_escape($field["orig"]) . " " : "ADD "))
 					. idf_escape($field["field"]) . process_type($field)
 					. ($field["null"] ? " NULL" : " NOT NULL") // NULL for timestamp
+					. (strlen($_GET["create"]) && strlen($field["orig"]) && isset($orig_fields[$field["orig"]]["default"]) ? " DEFAULT '" . $mysql->escape_string($orig_fields[$field["orig"]]["default"]) . "'" : "")
 					. ($key == $_POST["auto_increment_col"] ? " AUTO_INCREMENT$auto_increment_index" : "")
 					. " COMMENT '" . $mysql->escape_string($field["comment"]) . "'"
 					. (strlen($_GET["create"]) ? " $after" : "")
@@ -77,7 +82,7 @@ if ($_POST) {
 		$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["Comment"]);
 	}
 	$row["name"] = $_GET["create"];
-	$row["fields"] = array_values(fields($_GET["create"]));
+	$row["fields"] = array_values($orig_fields);
 } else {
 	$row = array("fields" => array(array("field" => "")));
 }
