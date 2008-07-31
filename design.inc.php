@@ -84,6 +84,7 @@ function page_footer($missing = false) {
 </select>
 <?php if (isset($_GET["sql"])) { ?><input type="hidden" name="sql" value="" /><?php } ?>
 <?php if (isset($_GET["schema"])) { ?><input type="hidden" name="schema" value="" /><?php } ?>
+<?php if (isset($_GET["dump"])) { ?><input type="hidden" name="dump" value="" /><?php } ?>
 </p>
 <noscript><p><input type="submit" value="<?php echo lang('Use'); ?>" /></p></noscript>
 </form>
