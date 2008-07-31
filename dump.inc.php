@@ -121,10 +121,26 @@ function dump($db, $style) {
 	echo "\n\n";
 }
 
+function tar_file($filename, $contents) {
+	$return = pack("a100a8a8a8a12a12", $filename, 644, 0, 0, decoct(strlen($contents)), decoct(time()));
+	$checksum = 8*32; // space for checksum itself
+	for ($i=0; $i < strlen($return); $i++) {
+		$checksum += ord($return{$i});
+	}
+	$return .= sprintf("%06o", $checksum) . "\0 ";
+	$return .= str_repeat("\0", 512 - strlen($return));
+	$return .= $contents;
+	if (strlen($contents) % 512) {
+		$return .= str_repeat("\0", 512 - strlen($contents) % 512);
+	}
+	return $return;
+}
+
 if ($_POST) {
 	header("Content-Type: text/plain; charset=utf-8");
 	$filename = (strlen($_GET["db"]) ? preg_replace('~[^a-z0-9_]~i', '-', (strlen($_GET["dump"]) ? $_GET["dump"] : $_GET["db"])) : "dump");
-	header("Content-Disposition: inline; filename=$filename.sql");
+	$filename .= ($_POST["format"] == "sql" ? ".sql" : (!strlen($_GET["db"]) || count(array_filter($_POST["data"])) >= 1 ? ".tar" : ".csv"));
+	header("Content-Disposition: " . ($_POST["output"] == "file" ? "attachment" : "inline") . "; filename=$filename");
 	
 	$max_packet = 16777216;
 	echo "SET NAMES utf8;\n";
@@ -175,14 +191,14 @@ foreach (array('', 'USE', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {
 	echo "<th onclick=\"check(this, /^databases/, '$val');\" style='cursor: pointer;'>" . ($val ? $val : lang('skip')) . "</th>";
 }
 echo "</tr></thead>\n";
-if (!isset($_GET["db"]) && !isset($_SESSION["databases"][$_GET["server"]])) {
+if (!strlen($_GET["db"]) && !isset($_SESSION["databases"][$_GET["server"]])) {
 	$_SESSION["databases"][$_GET["server"]] = get_vals("SHOW DATABASES");
 }
-foreach ((isset($_GET["db"]) ? array($_GET["db"]) : $_SESSION["databases"][$_GET["server"]]) as $db) {
+foreach ((strlen($_GET["db"]) ? array($_GET["db"]) : $_SESSION["databases"][$_GET["server"]]) as $db) {
 	if ($db != "information_schema" || $mysql->server_info < 5) {
 		echo "<tr><td>" . htmlspecialchars($db) . "</td>";
 		foreach (array('', 'USE', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {
-			echo '<td><input type="radio" name="databases[' . htmlspecialchars(bracket_escape($db)) . ']"' . ($val == (isset($_GET["db"]) ? '' : 'CREATE') ? " checked='checked'" : "") . " value='$val' /></td>";
+			echo '<td><input type="radio" name="databases[' . htmlspecialchars(bracket_escape($db)) . ']"' . ($val == (strlen($_GET["db"]) ? '' : 'CREATE') ? " checked='checked'" : "") . " value='$val' /></td>";
 		}
 		echo "</tr>\n";
 	}
@@ -197,15 +213,17 @@ foreach (array('', 'TRUNCATE, INSERT', 'INSERT', 'UPDATE') as $val) {
 	echo "<th onclick=\"check(this, /^data/, '$val');\" style='cursor: pointer;'>" . ($val ? $val : lang('skip')) . "</th>";
 }
 echo "</tr></thead>\n";
-foreach ((isset($_GET["db"]) ? get_vals("SHOW TABLES") : $_SESSION["databases"][$_GET["server"]]) as $table) {
-	echo "<tr><td>" . htmlspecialchars($table) . "</td>";
-	foreach (array('', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {
-		echo '<td><input type="radio" name="tables[' . htmlspecialchars(bracket_escape($table)) . ']"' . ($val == (strlen($_GET["dump"]) && $table != $_GET["dump"] ? '' : 'DROP, CREATE') ? " checked='checked'" : "") . " value='$val' /></td>";
+foreach ((strlen($_GET["db"]) ? get_vals("SHOW TABLES") : $_SESSION["databases"][$_GET["server"]]) as $table) {
+	if (strlen($_GET["db"]) || $table != "information_schema" || $mysql->server_info < 5) {
+		echo "<tr><td>" . htmlspecialchars($table) . "</td>";
+		foreach (array('', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {
+			echo '<td><input type="radio" name="tables[' . htmlspecialchars(bracket_escape($table)) . ']"' . ($val == (strlen($_GET["dump"]) && $table != $_GET["dump"] ? '' : 'DROP, CREATE') ? " checked='checked'" : "") . " value='$val' /></td>";
+		}
+		foreach (array('', 'TRUNCATE, INSERT', 'INSERT', 'UPDATE') as $val) {
+			echo '<td><input type="radio" name="data[' . htmlspecialchars(bracket_escape($table)) . ']"' . ($val == (strlen($_GET["dump"]) && $table != $_GET["dump"] ? '' : 'INSERT') ? " checked='checked'" : "") . " value='$val' /></td>";
+		}
+		echo "</tr>\n";
 	}
-	foreach (array('', 'TRUNCATE, INSERT', 'INSERT', 'UPDATE') as $val) {
-		echo '<td><input type="radio" name="data[' . htmlspecialchars(bracket_escape($table)) . ']"' . ($val == (strlen($_GET["dump"]) && $table != $_GET["dump"] ? '' : 'INSERT') ? " checked='checked'" : "") . " value='$val' /></td>";
-	}
-	echo "</tr>\n";
 }
 echo "</table>\n";
 ?>
