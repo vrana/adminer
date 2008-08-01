@@ -6,6 +6,7 @@ $langs = array(
 	'nl' => 'Nederlands', // Maarten Balliauw - http://blog.maartenballiauw.be
 	'es' => 'Español', // Klemens Häckel - http://clickdimension.wordpress.com
 	'de' => 'Deutsch', // Klemens Häckel - http://clickdimension.wordpress.com
+	'cn' => '简体中文', // Mr. Lodar
 );
 
 function lang($idf, $number = null) {
