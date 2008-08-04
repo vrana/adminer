@@ -144,8 +144,8 @@ function add_row(field) {
 }
 </script>
 <?php
-	echo "<div><select name='where[$i][col]' onchange='add_row(this);'><option></option>" . optionlist($columns, array()) . "</select>";
-	echo "<select name='where[$i][op]' onchange=\"where_change(this);\">" . optionlist($operators, array()) . "</select>";
+	echo "<div><select name='where[$i][col]' onchange='add_row(this);'><option></option>" . optionlist($columns) . "</select>";
+	echo "<select name='where[$i][op]' onchange=\"where_change(this);\">" . optionlist($operators) . "</select>";
 	echo "<input name='where[$i][val]' /></div>\n";
 	echo "</fieldset>\n";
 	
@@ -158,7 +158,7 @@ function add_row(field) {
 			$i++;
 		}
 	}
-	echo "<div><select name='order[$i]' onchange='add_row(this);'><option></option>" . optionlist($columns, array()) . "</select>";
+	echo "<div><select name='order[$i]' onchange='add_row(this);'><option></option>" . optionlist($columns) . "</select>";
 	echo "<label><input type='checkbox' name='desc[$i]' value='1' />" . lang('DESC') . "</label></div>\n";
 	echo "</fieldset>\n";
 	
