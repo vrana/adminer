@@ -201,6 +201,10 @@ function remove_from_uri($param = "") {
 	return preg_replace("~\\?$param=[^&]*&~", '?', preg_replace("~\\?$param=[^&]*\$|&$param=[^&]*~", '', $_SERVER["REQUEST_URI"]));
 }
 
+function print_page($page) {
+	echo " " . ($page == $_GET["page"] ? $page + 1 : '<a href="' . htmlspecialchars(remove_from_uri("page") . ($page ? "&page=$page" : "")) . '">' . ($page + 1) . "</a>");
+}
+
 function get_file($key) {
 	if (isset($_POST["files"][$key])) {
 		$length = strlen($_POST["files"][$key]);

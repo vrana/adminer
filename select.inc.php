@@ -236,11 +236,8 @@ function add_row(field) {
 			echo "</table>\n";
 			echo "<p><input type='hidden' name='token' value='$token' /><input type='submit' value='" . lang('Delete selected') . "' /> <input type='submit' name='truncate' value='" . lang('Truncate table') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\" /></p>\n";
 			echo "</form>\n";
-			if (intval($limit) && $result->num_rows >= $limit && ($found_rows = $mysql->result($mysql->query("SELECT COUNT(*) FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "")))) > $limit) {
+			if (intval($limit) && ($found_rows = $mysql->result($mysql->query("SELECT COUNT(*) FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "")))) > $limit) {
 				$max_page = floor(($found_rows - 1) / $limit);
-				function print_page($page) {
-					echo " " . ($page == $_GET["page"] ? $page + 1 : '<a href="' . htmlspecialchars(remove_from_uri("page") . ($page ? "&page=$page" : "")) . '">' . ($page + 1) . "</a>");
-				}
 				echo "<p>" . lang('Page') . ":";
 				print_page(0);
 				if ($_GET["page"] > 3) {
