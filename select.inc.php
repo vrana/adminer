@@ -19,6 +19,16 @@ foreach ($fields as $key => $field) {
 	$rights += $field["privileges"];
 }
 
+$select = array();
+$group = array();
+foreach ((array) $_GET["columns"] as $key => $val) {
+	if ($val["fun"] == "count" || (in_array($val["col"], $columns, true) && (!$val["fun"] || in_array($val["fun"], $functions) || in_array($val["fun"], $grouping)))) {
+		$select[$key] = (in_array($val["col"], $columns, true) ? (!$val["fun"] ? idf_escape($val["col"]) : ($val["fun"] == "distinct" ? "COUNT(DISTINCT " : strtoupper("$val[fun](")) . idf_escape($val["col"]) . ")") : "COUNT(*)");
+		if (!in_array($val["fun"], $grouping)) {
+			$group[] = $select[$key];
+		}
+	}
+}
 $where = array();
 foreach ($indexes as $i => $index) {
 	if ($index["type"] == "FULLTEXT" && strlen($_GET["fulltext"][$i])) {
@@ -39,12 +49,12 @@ foreach ((array) $_GET["where"] as $val) {
 }
 $order = array();
 foreach ((array) $_GET["order"] as $key => $val) {
-	if (in_array($val, $columns, true)) {
+	if (in_array($val, $columns, true)) { //! respect functions
 		$order[] = idf_escape($val) . (isset($_GET["desc"][$key]) ? " DESC" : "");
 	}
 }
 $limit = (isset($_GET["limit"]) ? $_GET["limit"] : "30");
-$from = "FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "") . ($order ? " ORDER BY " . implode(", ", $order) : "") . (strlen($limit) ? " LIMIT " . intval($limit) . (intval($_GET["page"]) ? " OFFSET " . ($limit * $_GET["page"]) : "") : "");
+$from = "FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "") . ($group && count($group) < count($select) ? " GROUP BY " . implode(", ", $group) : "") . ($order ? " ORDER BY " . implode(", ", $order) : "") . (strlen($limit) ? " LIMIT " . intval($limit) . (intval($_GET["page"]) ? " OFFSET " . ($limit * $_GET["page"]) : "") : "");
 
 if ($_POST && !$error) {
 	$result = true;
@@ -93,14 +103,46 @@ if (isset($rights["insert"])) {
 if (!$columns) {
 	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "" : ": " . htmlspecialchars($mysql->error)) . ".</p>\n";
 } else {
-	echo "<form action='' id='form'>\n<fieldset><legend>" . lang('Search') . "</legend>\n";
+	echo "<form action='' id='form'>\n";
+	?>
+<script type="text/javascript">
+function add_row(field) {
+	var row = field.parentNode.cloneNode(true);
+	var selects = row.getElementsByTagName('select');
+	for (var i=0; i < selects.length; i++) {
+		selects[i].name = selects[i].name.replace(/[a-z]\[[0-9]+/, '$&1');
+		selects[i].selectedIndex = 0;
+	}
+	var inputs = row.getElementsByTagName('input');
+	if (inputs.length) {
+		inputs[0].name = inputs[0].name.replace(/[a-z]\[[0-9]+/, '$&1');
+		inputs[0].value = '';
+	}
+	field.parentNode.parentNode.appendChild(row);
+	field.onchange = function () { };
+}
+</script>
+<?php
+	echo "<fieldset><legend>" . lang('Select') . "</legend>\n";
 	if (strlen($_GET["server"])) {
 		echo '<input type="hidden" name="server" value="' . htmlspecialchars($_GET["server"]) . '" />';
 	}
 	echo '<input type="hidden" name="db" value="' . htmlspecialchars($_GET["db"]) . '" />';
 	echo '<input type="hidden" name="select" value="' . htmlspecialchars($_GET["select"]) . '" />';
 	echo "\n";
+	$i = 0;
+	$fun_group = array(lang('Functions') => $functions, lang('Aggregation') => $grouping);
+	foreach ($select as $key => $val) {
+		$val = $_GET["columns"][$key];
+		echo "<div><select name='columns[$i][fun]'><option></option>" . optionlist($fun_group, $val["fun"]) . "</select>";
+		echo "<select name='columns[$i][col]'><option></option>" . optionlist($columns, $val["col"]) . "</select></div>\n";
+		$i++;
+	}
+	echo "<div><select name='columns[$i][fun]' onchange='this.nextSibling.onchange();'><option></option>" . optionlist($fun_group) . "</select>";
+	echo "<select name='columns[$i][col]' onchange='add_row(this);'><option></option>" . optionlist($columns) . "</select></div>\n";
+	echo "</fieldset>\n";
 	
+	echo "<fieldset><legend>" . lang('Search') . "</legend>\n";
 	foreach ($indexes as $i => $index) {
 		if ($index["type"] == "FULLTEXT") {
 			echo "(<i>" . implode("</i>, <i>", array_map('htmlspecialchars', $index["columns"])) . "</i>) AGAINST";
@@ -128,20 +170,6 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 	document.getElementById('form')['where[' + i + '][op]'].onchange();
 }
 <?php } ?>
-
-function add_row(field) {
-	var row = field.parentNode.cloneNode(true);
-	var selects = row.getElementsByTagName('select');
-	for (var i=0; i < selects.length; i++) {
-		selects[i].name = selects[i].name.replace(/[a-z]\[[0-9]+/, '$&1');
-		selects[i].selectedIndex = 0;
-	}
-	var input = row.getElementsByTagName('input')[0];
-	input.name = input.name.replace(/[a-z]\[[0-9]+/, '$&1');
-	input.value = '';
-	field.parentNode.parentNode.appendChild(row);
-	field.onchange = function () { };
-}
 </script>
 <?php
 	echo "<div><select name='where[$i][col]' onchange='add_row(this);'><option></option>" . optionlist($columns) . "</select>";
@@ -176,7 +204,7 @@ function add_row(field) {
 	echo "</form>\n";
 	echo "<div style='clear: left;'>&nbsp;</div>\n";
 	
-	$result = $mysql->query("SELECT * $from");
+	$result = $mysql->query("SELECT " . ($select ? (count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . implode(", ", $select) : "*") . " $from");
 	if (!$result) {
 		echo "<p class='error'>" . htmlspecialchars($mysql->error) . "</p>\n";
 	} else {
@@ -194,14 +222,14 @@ function add_row(field) {
 			echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
 			for ($j=0; $row = $result->fetch_assoc(); $j++) {
 				if (!$j) {
-					echo '<thead><tr><td><label><input type="checkbox" name="delete_selected" value="1" onclick="var elems = this.form.elements; for (var i=0; i < elems.length; i++) if (elems[i].name == \'delete[]\') elems[i].checked = this.checked;" />' . lang('all') . '</label></td>';
+					echo '<thead><tr>' . (count($select) == count($group) ? '<td><label><input type="checkbox" name="delete_selected" value="1" onclick="var elems = this.form.elements; for (var i=0; i < elems.length; i++) if (elems[i].name == \'delete[]\') elems[i].checked = this.checked;" />' . lang('all') . '</label></td>' : '');
 					foreach ($row as $key => $val) {
 						echo '<th><a href="' . remove_from_uri('(order|desc)[^=]*') . '&amp;order%5B0%5D=' . htmlspecialchars($key) . ($_GET["order"][0] === $key && !$_GET["desc"][0] ? '&amp;desc%5B0%5D=1' : '') . '">' . htmlspecialchars($key) . "</a></th>";
 					}
 					echo "</tr></thead>\n";
 				}
 				$unique_idf = implode('&amp;', unique_idf($row, $indexes));
-				echo '<tr><td><input type="checkbox" name="delete[]" value="' . $unique_idf . '" /> <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . "</a></td>";
+				echo '<tr>' . (count($select) == count($group) ? '<td><input type="checkbox" name="delete[]" value="' . $unique_idf . '" /> <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a></td>' : '');
 				foreach ($row as $key => $val) {
 					if (!isset($val)) {
 						$val = "<i>NULL</i>";
@@ -234,9 +262,9 @@ function add_row(field) {
 				echo "</tr>\n";
 			}
 			echo "</table>\n";
-			echo "<p><input type='hidden' name='token' value='$token' /><input type='submit' value='" . lang('Delete selected') . "' /> <input type='submit' name='truncate' value='" . lang('Truncate table') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\" /></p>\n";
+			echo "<p><input type='hidden' name='token' value='$token' />" . (count($group) == count($select) ? "<input type='submit' value='" . lang('Delete selected') . "' /> " : "") . "<input type='submit' name='truncate' value='" . lang('Truncate result') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\" /></p>\n";
 			echo "</form>\n";
-			if (intval($limit) && ($found_rows = $mysql->result($mysql->query("SELECT COUNT(*) FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "")))) > $limit) {
+			if (intval($limit) && ($found_rows = $mysql->result($mysql->query(count($group) < count($select) ? " SELECT FOUND_ROWS()" : "SELECT COUNT(*) FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "")))) > $limit) {
 				$max_page = floor(($found_rows - 1) / $limit);
 				echo "<p>" . lang('Page') . ":";
 				print_page(0);

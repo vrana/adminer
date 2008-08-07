@@ -154,7 +154,6 @@ $translations = array(
 	'%d item(s) have been deleted.' => array('%d záznam bol zmazaný.', '%d záznamy boli zmazané.', '%d záznamov bolo zmazaných.'),
 	'all' => 'všetko',
 	'Delete selected' => 'Zmazať označené',
-	'Truncate table' => 'Vyprázdniť tabuľku',
 	'Too big POST data. Reduce the data or increase the "post_max_size" configuration directive.' => 'Príliš veľké POST dáta. Zmenšite dáta alebo zvýšte hodnotu konfiguračej direktívy "post_max_size".',
 	'Logged as: %s' => 'Prihlásený ako: %s',
 	'Move up' => 'Presunúť hore',

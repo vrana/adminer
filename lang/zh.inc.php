@@ -154,7 +154,6 @@ $translations = array(
 	'%d item(s) have been deleted.' => '%d 个项目被删除',
 	'all' => '全部',
 	'Delete selected' => '删除选中',
-	'Truncate table' => '截断表',
 	'Logged as: %s' => '登录为: %s',
 	'Too big POST data. Reduce the data or increase the "post_max_size" configuration directive.' => '太大的 POST 数据. 减少数据或者增加 "post_max_size" 配置指令.',
 	'Move up' => '上移',

@@ -41,6 +41,8 @@ if (isset($_GET["download"])) {
 	$unsigned = array("", "unsigned", "zerofill", "unsigned zerofill");
 	$enum_length = '\'(?:\'\'|[^\'\\\\]+|\\\\.)*\'|"(?:""|[^"\\\\]+|\\\\.)*"';
 	$inout = array("IN", "OUT", "INOUT");
+	$functions = array("char_length", "from_unixtime", "hex", "lower", "round", "sec_to_time", "time_to_sec", "unix_timestamp", "upper");
+	$grouping = array("avg", "count", "distinct", "group_concat", "max", "min", "sum");
 	
 	$error = "";
 	if (isset($_GET["table"])) {

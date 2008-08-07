@@ -152,7 +152,6 @@ $translations = array(
 	'%d item(s) have been deleted.' => array('%d item eliminado.', '%d itemes eliminados.'),
 	'all' => 'todos',
 	'Delete selected' => 'Eliminar seleccionados',
-	'Truncate table' => 'Vaciar tabla (truncate)',
 	'MySQL version: %s through PHP extension %s' => 'Versión MySQL: %s a través de extensión PHP %s',
 	'around %d row(s)' => array('acaso %d fila', 'acaso %d filas'),
 	'Logged as: %s' => 'Logeado como: %s',
