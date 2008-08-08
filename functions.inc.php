@@ -141,10 +141,12 @@ function where($where) {
 	global $mysql;
 	$return = array();
 	foreach ((array) $where["where"] as $key => $val) {
-		$return[] = idf_escape(bracket_escape($key, "back")) . " = BINARY '" . $mysql->escape_string($val) . "'"; //! enum and set
+		$key = bracket_escape($key, "back");
+		$return[] = (preg_match('~^[A-Z0-9_]+\\(`(?:[^`]+|``)+`\\)$~', $key) ? $key : idf_escape($key)) . " = BINARY '" . $mysql->escape_string($val) . "'"; //! enum and set, columns looking like functions
 	}
 	foreach ((array) $where["null"] as $key) {
-		$return[] = idf_escape(bracket_escape($key, "back")) . " IS NULL";
+		$key = bracket_escape($key, "back");
+		$return[] = (preg_match('~^[A-Z0-9_]+\\(`(?:[^`]+|``)+`\\)$~', $key) ? $key : idf_escape($key)) . " IS NULL";
 	}
 	return $return;
 }
