@@ -49,8 +49,10 @@ foreach ((array) $_GET["where"] as $val) {
 }
 $order = array();
 foreach ((array) $_GET["order"] as $key => $val) {
-	if (in_array($val, $columns, true)) { //! respect functions
+	if (in_array($val, $columns, true)) {
 		$order[] = idf_escape($val) . (isset($_GET["desc"][$key]) ? " DESC" : "");
+	} elseif (preg_match('(^(' . strtoupper(implode('|', $functions) . '|' . implode('|', $grouping)) . ')\\((' . implode('|', array_map('preg_quote', array_map('idf_escape', $columns))) . ')\\)$)', $val)) {
+		$order[] = $val . (isset($_GET["desc"][$key]) ? " DESC" : "");
 	}
 }
 $limit = (isset($_GET["limit"]) ? $_GET["limit"] : "30");
