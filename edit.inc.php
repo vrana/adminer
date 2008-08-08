@@ -1,5 +1,5 @@
 <?php
-$where = where();
+$where = where($_GET);
 $fields = fields($_GET["edit"]);
 foreach ($fields as $name => $field) {
 	if (isset($_GET["default"]) ? $field["auto_increment"] || preg_match('~text|blob~', $field["type"]) : !isset($field["privileges"][$where ? "update" : "insert"])) {
