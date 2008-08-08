@@ -1,84 +1,108 @@
 <?php
 function dump_table($table, $style) {
 	global $mysql, $max_packet, $types;
-	$result = $mysql->query("SHOW CREATE TABLE " . idf_escape($table));
-	if ($result) {
-		echo $mysql->result($result, 1) . ";\n\n";
-		if ($max_packet < 1073741824) { // protocol limit
-			$row_size = 21 + strlen(idf_escape($table));
-			foreach (fields($table) as $field) {
-				$type = $types[$field["type"]];
-				$row_size += 5 + ($field["length"] ? $field["length"] : $type) * (preg_match('~char|text|enum~', $field["type"]) ? 3 : 1); // UTF-8 in MySQL uses up to 3 bytes
+	if ($style) {
+		$result = $mysql->query("SHOW CREATE TABLE " . idf_escape($table));
+		if ($result) {
+			if ($style == "DROP, CREATE") {
+				echo "DROP TABLE " . idf_escape($table) . ";\n";
 			}
-			if ($row_size > $max_packet) {
-				$max_packet = 1024 * ceil($row_size / 1024);
-				echo "SET max_allowed_packet = $max_packet, GLOBAL max_allowed_packet = $max_packet;\n";
+			$create = $mysql->result($result, 1);
+			echo ($style == "CREATE, ALTER" ? preg_replace('~^CREATE TABLE ~', '\\0IF NOT EXISTS ', $create) : $create) . ";\n\n";
+			if ($max_packet < 1073741824) { // protocol limit
+				$row_size = 21 + strlen(idf_escape($table));
+				foreach (fields($table) as $field) {
+					$type = $types[$field["type"]];
+					$row_size += 5 + ($field["length"] ? $field["length"] : $type) * (preg_match('~char|text|enum~', $field["type"]) ? 3 : 1); // UTF-8 in MySQL uses up to 3 bytes
+				}
+				if ($row_size > $max_packet) {
+					$max_packet = 1024 * ceil($row_size / 1024);
+					echo "SET max_allowed_packet = $max_packet, GLOBAL max_allowed_packet = $max_packet;\n";
+				}
 			}
+			$result->free();
 		}
-		$result->free();
-	}
-	if ($mysql->server_info >= 5) {
-		$result = $mysql->query("SHOW TRIGGERS LIKE '" . $mysql->escape_string(addcslashes($table, "%_")) . "'");
-		if ($result->num_rows) {
-			echo "DELIMITER ;;\n\n";
-			while ($row = $result->fetch_assoc()) {
-				echo "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . idf_escape($row["Table"]) . " FOR EACH ROW $row[Statement];;\n\n";
+		if ($mysql->server_info >= 5) {
+			$result = $mysql->query("SHOW TRIGGERS LIKE '" . $mysql->escape_string(addcslashes($table, "%_")) . "'");
+			if ($result->num_rows) {
+				echo "DELIMITER ;;\n\n";
+				while ($row = $result->fetch_assoc()) {
+					echo "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . idf_escape($row["Table"]) . " FOR EACH ROW $row[Statement];;\n\n";
+				}
+				echo "DELIMITER ;\n\n";
 			}
-			echo "DELIMITER ;\n\n";
+			$result->free();
 		}
-		$result->free();
 	}
 }
 
-function dump_data($table) {
+function dump_data($table, $style) {
 	global $mysql, $max_packet;
-	$result = $mysql->query("SELECT * FROM " . idf_escape($table)); //! enum and set as numbers, binary as _binary, microtime
-	if ($result) {
-		if ($result->num_rows) {
-			$insert = "INSERT INTO " . idf_escape($table) . " VALUES ";
-			$length = 0;
-			while ($row = $result->fetch_row()) {
-				foreach ($row as $key => $val) {
-					$row[$key] = (isset($val) ? "'" . $mysql->escape_string($val) . "'" : "NULL");
+	if ($style) {
+		if ($style == "TRUNCATE, INSERT") {
+			echo "TRUNCATE " . idf_escape($table) . ";\n";
+		}
+		$result = $mysql->query("SELECT * FROM " . idf_escape($table)); //! enum and set as numbers, binary as _binary, microtime
+		if ($result) {
+			if ($style == "UPDATE") {
+				while ($row = $result->fetch_assoc()) {
+					$set = array();
+					foreach ($row as $key => $val) {
+						$row[$key] = (isset($val) ? "'" . $mysql->escape_string($val) . "'" : "NULL");
+						$set[] = idf_escape($key) . " = " . (isset($val) ? "'" . $mysql->escape_string($val) . "'" : "NULL");
+					}
+					echo "INSERT INTO " . idf_escape($table) . " (" . implode(", ", array_map('idf_escape', array_keys($row))) . ") VALUES (" . implode(", ", $row) . ") ON DUPLICATE KEY UPDATE " . implode(", ", $set) . ";\n";
 				}
-				$s = "(" . implode(", ", $row) . ")";
-				if (!$length) {
-					echo $insert, $s;
-					$length = strlen($insert) + strlen($s);
-				} else {
-					$length += 2 + strlen($s);
-					if ($length < $max_packet) {
-						echo ", ", $s;
-					} else {
-						echo ";\n", $insert, $s;
+			} elseif ($result->num_rows) {
+				$insert = "INSERT INTO " . idf_escape($table) . " VALUES ";
+				$length = 0;
+				while ($row = $result->fetch_row()) {
+					foreach ($row as $key => $val) {
+						$row[$key] = (isset($val) ? "'" . $mysql->escape_string($val) . "'" : "NULL");
+					}
+					$s = "(" . implode(", ", $row) . ")";
+					if (!$length) {
+						echo $insert, $s;
 						$length = strlen($insert) + strlen($s);
+					} else {
+						$length += 2 + strlen($s);
+						if ($length < $max_packet) {
+							echo ", ", $s;
+						} else {
+							echo ";\n", $insert, $s;
+							$length = strlen($insert) + strlen($s);
+						}
 					}
 				}
+				echo ";\n";
 			}
-			echo ";\n";
+			$result->free();
 		}
-		$result->free();
+		echo "\n";
 	}
-	echo "\n";
+}
+
+function dump_routines($db) {
+	global $mysql;
+	if ($mysql->server_info >= 5) {
+		$out = "";
+		foreach (array("FUNCTION", "PROCEDURE") as $routine) {
+			$result = $mysql->query("SHOW $routine STATUS WHERE Db = '" . $mysql->escape_string($db) . "'");
+			while ($row = $result->fetch_assoc()) {
+				if (!$out) {
+					echo "DELIMITER ;;\n\n";
+					$out = "DELIMITER ;\n\n";
+				}
+				echo $mysql->result($mysql->query("SHOW CREATE $routine " . idf_escape($row["Db"]) . "." . idf_escape($row["Name"])), 2) . ";;\n\n";
+			}
+			$result->free();
+		}
+		echo $out;
+	}
 }
 
 function dump($db, $style) {
 	global $mysql;
-	static $routines;
-	if (!isset($routines)) {
-		$routines = array();
-		if ($mysql->server_info >= 5) {
-			foreach (array("FUNCTION", "PROCEDURE") as $routine) {
-				$result = $mysql->query("SHOW $routine STATUS");
-				while ($row = $result->fetch_assoc()) {
-					if (!strlen($_GET["db"]) || $row["Db"] === $_GET["db"]) {
-						$routines[$row["Db"]][] = $mysql->result($mysql->query("SHOW CREATE $routine " . idf_escape($row["Db"]) . "." . idf_escape($row["Name"])), 2) . ";;\n\n";
-					}
-				}
-				$result->free();
-			}
-		}
-	}
 	if (in_array($style, array("DROP, CREATE", "CREATE", "CREATE, ALTER")) && ($result = $mysql->query("SHOW CREATE DATABASE " . idf_escape($db)))) {
 		if ($style == "DROP, CREATE") {
 			echo "DROP DATABASE IF EXISTS " . idf_escape($db) . ";\n";
@@ -89,34 +113,23 @@ function dump($db, $style) {
 	}
 	if ($style) {
 		echo "USE " . idf_escape($db) . ";\n";
-	}
-	foreach ($_POST["tables"] as $table => $val) {
-		$table = bracket_escape($table, "back");
-		if ($val) {
-			dump_table($table, $val);
+		if (!strlen($_GET["db"])) {
+			$views = array();
+			$result = $mysql->query("SHOW TABLE STATUS");
+			while ($row = $result->fetch_assoc()) {
+				if (isset($row["Engine"])) {
+					dump_table($row["Name"], $_POST["tables"][0]);
+					dump_data($row["Name"], $_POST["data"][0]);
+				} else {
+					$views[] = $row["Name"];
+				}
+			}
+			$result->free();
+			foreach ($views as $view) {
+				dump_table($view, $_POST["tables"][0]);
+			}
+			dump_routines($db);
 		}
-		if ($_POST["data"][$table]) {
-			dump_data($table, $_POST["data"][$table]);
-		}
-	}
-	/*
-	$views = array();
-	$result = $mysql->query("SHOW TABLE STATUS");
-	while ($row = $result->fetch_assoc()) {
-		if (isset($row["Engine"])) {
-			dump_table($row["Name"]);
-			dump_data($row["Name"]);
-		} else {
-			$views[] = $row["Name"];
-		}
-	}
-	$result->free();
-	foreach ($views as $view) {
-		dump_table($view);
-	}
-	*/
-	if ($routines[$db]) {
-		echo "DELIMITER ;;\n\n" . implode("", $routines[$db]) . "DELIMITER ;\n\n";
 	}
 	echo "\n\n";
 }
@@ -155,13 +168,14 @@ if ($_POST) {
 			dump($db, $style);
 		}
 	}
-	/*
-	} elseif (strlen($_GET["dump"])) {
-		dump_table($_GET["dump"]);
-	} else {
-		dump($_GET["db"]);
+	if (strlen($_GET["db"])) {
+		foreach ($_POST["tables"] as $key => $style) {
+			$table = bracket_escape($key, "back");
+			dump_table($table, $style);
+			dump_data($table, $_POST["data"][$key]);
+		}
+		dump_routines($_GET["db"]);
 	}
-	*/
 	exit;
 }
 
@@ -213,19 +227,23 @@ foreach (array('', 'TRUNCATE, INSERT', 'INSERT', 'UPDATE') as $val) {
 	echo "<th onclick=\"check(this, /^data/, '$val');\" style='cursor: pointer;'>" . ($val ? $val : lang('skip')) . "</th>";
 }
 echo "</tr></thead>\n";
-foreach ((strlen($_GET["db"]) ? get_vals("SHOW TABLES") : $_SESSION["databases"][$_GET["server"]]) as $table) {
-	if (strlen($_GET["db"]) || $table != "information_schema" || $mysql->server_info < 5) {
-		echo "<tr><td>" . htmlspecialchars($table) . "</td>";
-		foreach (array('', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {
-			echo '<td><input type="radio" name="tables[' . htmlspecialchars(bracket_escape($table)) . ']"' . ($val == (strlen($_GET["dump"]) && $table != $_GET["dump"] ? '' : 'DROP, CREATE') ? " checked='checked'" : "") . " value='$val' /></td>";
-		}
+$views = "";
+$result = $mysql->query(strlen($_GET["db"]) ? "SHOW TABLE STATUS" : "SELECT 'Engine'");
+while ($row = $result->fetch_assoc()) {
+	$print = "<tr><td>" . htmlspecialchars($row["Name"]) . "</td>";
+	foreach (array('', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {
+		$print .= '<td><input type="radio" name="tables[' . htmlspecialchars(bracket_escape($row["Name"])) . ']"' . ($val == (strlen($_GET["dump"]) && $row["Name"] != $_GET["dump"] ? '' : 'DROP, CREATE') ? " checked='checked'" : "") . " value='$val' /></td>";
+	}
+	if (!$row["Engine"]) {
+		$views .= "$print</tr>\n";
+	} else {
 		foreach (array('', 'TRUNCATE, INSERT', 'INSERT', 'UPDATE') as $val) {
-			echo '<td><input type="radio" name="data[' . htmlspecialchars(bracket_escape($table)) . ']"' . ($val == (strlen($_GET["dump"]) && $table != $_GET["dump"] ? '' : 'INSERT') ? " checked='checked'" : "") . " value='$val' /></td>";
+			$print .= '<td><input type="radio" name="data[' . htmlspecialchars(bracket_escape($row["Name"])) . ']"' . ($val == ((strlen($_GET["dump"]) && $row["Name"] != $_GET["dump"]) || !$row["Engine"] ? '' : 'INSERT') ? " checked='checked'" : "") . " value='$val' /></td>";
 		}
-		echo "</tr>\n";
+		echo "$print</tr>\n";
 	}
 }
-echo "</table>\n";
+echo "$views</table>\n";
 ?>
 <input type="submit" value="<?php echo lang('Export'); ?>" />
 </form>
