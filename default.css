@@ -9,7 +9,7 @@ h3 { font-weight: normal; font-size: 130%; margin: .8em 0; }
 table { margin: 0 20px .8em 0; border: 0; border-top: 1px solid #999; border-left: 1px solid #999; font-size: 90%; }
 td, th { margin-bottom: 1em; border: 0; border-right: 1px solid #999; border-bottom: 1px solid #999; padding: .2em .3em; }
 th { background: #eee; }
-fieldset { float: left; padding: .5em .8em; margin: 0 .5em .5em 0; border: 1px solid #999; }
+fieldset { display: inline; vertical-align: top; padding: .5em .8em; margin: 0 .5em .5em 0; border: 1px solid #999; }
 p { margin: 0 20px 1em 0; }
 img { vertical-align: middle; }
 .error { color: red; background: #fee; padding: .5em .8em; }
