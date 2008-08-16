@@ -6,8 +6,10 @@ Rename table to other database
 Clone row
 Execution time in sql.inc.php
 Input function results in edit
-Choose tables and data to export
-? CSV export
+Bulk update - leave original, set to value, set to NULL
+Save uploaded files after error to session variable instead of hidden field
+Export transactions
+Export compress
 ? Query print
 ? Access without login - accept $_GET
 ? Save token also to cookie - for session expiration and login in other window
