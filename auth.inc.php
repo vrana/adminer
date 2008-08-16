@@ -75,4 +75,3 @@ if (!isset($username) || !$mysql->connect($_GET["server"], $username, $_SESSION[
 	auth_error();
 	exit;
 }
-$mysql->query("SET SQL_QUOTE_SHOW_CREATE=1");
