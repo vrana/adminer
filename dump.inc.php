@@ -163,10 +163,7 @@ function check(td, name, value) {
 </script>
 
 <form action="" method="post">
-<p>
-<?php echo lang('Output'); ?>: <select name="output"><option value="text"><?php echo lang('open'); ?></option><option value="file"><?php echo lang('save'); ?></option></select>
-<?php echo lang('Format'); ?>: <select name="format"><option value="sql"><?php echo lang('SQL'); ?></option><option value="csv"><?php echo lang('CSV'); ?></option></select>
-</p>
+<p><?php echo lang('Output') . ": <select name='output'><option value='text'>" . lang('open') . "</option><option value='file'>" . lang('save') . "</option></select> " . $dump_options; ?></p>
 
 <?php
 echo "<table border='1' cellspacing='0' cellpadding='2'>\n<thead><tr><th>" . lang('Database') . "</th>";

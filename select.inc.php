@@ -1,4 +1,6 @@
 <?php
+include "./export.inc.php";
+
 $table_status = table_status($_GET["select"]);
 $indexes = indexes($_GET["select"]);
 $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "REGEXP", "IN", "IS NULL");
@@ -61,22 +63,31 @@ $from = "FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" 
 if ($_POST && !$error) {
 	$result = true;
 	$deleted = 0;
+	if ($_POST["export"] || $_POST["export_result"]) {
+		header("Content-Type: text/plain; charset=utf-8");
+		header("Content-Disposition: inline; filename=" . preg_replace('~[^a-z0-9_]~i', '-', $_GET["select"]) . "." . ($_POST["format"] == "sql" ? "sql" : "csv"));
+	}
 	if (isset($_POST["truncate"])) {
 		$result = $mysql->query($where ? "DELETE FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", $where) : "TRUNCATE " . idf_escape($_GET["select"]));
 		$deleted = $mysql->affected_rows;
+	} elseif ($_POST["export_result"]) {
+		dump_data($_GET["select"], "INSERT", ($where ? "FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", $where) : ""));
 	} elseif (is_array($_POST["delete"])) {
 		foreach ($_POST["delete"] as $val) {
 			parse_str($val, $delete);
-			$result = $mysql->query("DELETE FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", where($delete)) . " LIMIT 1");
-			if (!$result) {
-				break;
+			if ($_POST["export"]) {
+				dump_data($_GET["select"], "INSERT", "FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", where($delete)) . " LIMIT 1");
+			} else {
+				$result = $mysql->query("DELETE FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", where($delete)) . " LIMIT 1");
+				if (!$result) {
+					break;
+				}
+				$deleted += $mysql->affected_rows;
 			}
-			$deleted += $mysql->affected_rows;
 		}
 	} elseif ($_POST["delete_selected"]) {
-		if (!$_GET["page"]) {
-			$result = $mysql->query("DELETE $from");
-			$deleted = $mysql->affected_rows;
+		if ($_POST["export"]) {
+			dump_data($_GET["select"], "INSERT", $from);
 		} else {
 			$result1 = $mysql->query("SELECT * $from");
 			while ($row1 = $result1->fetch_assoc()) {
@@ -89,6 +100,9 @@ if ($_POST && !$error) {
 			}
 			$result1->free();
 		}
+	}
+	if ($_POST["export"] || $_POST["export_result"]) {
+		exit;
 	}
 	if ($result) {
 		redirect(remove_from_uri("page"), lang('%d item(s) have been deleted.', $deleted));
@@ -264,7 +278,8 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 				echo "</tr>\n";
 			}
 			echo "</table>\n";
-			echo "<p><input type='hidden' name='token' value='$token' />" . (count($group) == count($select) ? "<input type='submit' value='" . lang('Delete selected') . "' /> " : "") . "<input type='submit' name='truncate' value='" . lang('Truncate result') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\" /></p>\n";
+			echo "<fieldset><legend>" . lang('Delete') . "</legend><input type='hidden' name='token' value='$token' />" . (count($group) == count($select) ? "<input type='submit' value='" . lang('Delete selected') . "' /> " : "") . "<input type='submit' name='truncate' value='" . lang('Truncate result') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\" /></fieldset>\n";
+			echo "<fieldset><legend>" . lang('Export') . "</legend>$dump_options " . (count($group) == count($select) ? "<input type='submit' name='export' value='" . lang('Export selected') . "' /> " : "") . "<input type='submit' name='export_result' value='" . lang('Export result') . "' /></fieldset>\n"; //! output, format
 			echo "</form>\n";
 			if (intval($limit) && ($found_rows = $mysql->result($mysql->query(count($group) < count($select) ? " SELECT FOUND_ROWS()" : "SELECT COUNT(*) FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "")))) > $limit) {
 				$max_page = floor(($found_rows - 1) / $limit);

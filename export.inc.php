@@ -8,13 +8,13 @@ function dump_csv($row) {
 	echo implode(",", $row) . "\n";
 }
 
-function dump_data($table, $style) {
+function dump_data($table, $style, $from = "") {
 	global $mysql, $max_packet;
 	if ($style) {
 		if ($_POST["format"] != "csv" && $style == "TRUNCATE, INSERT") {
 			echo "TRUNCATE " . idf_escape($table) . ";\n";
 		}
-		$result = $mysql->query("SELECT * FROM " . idf_escape($table)); //! enum and set as numbers, binary as _binary, microtime
+		$result = $mysql->query("SELECT * " . ($from ? $from : "FROM " . idf_escape($table))); //! enum and set as numbers, binary as _binary, microtime
 		if ($result) {
 			$insert = "INSERT INTO " . idf_escape($table) . " VALUES ";
 			$length = 0;
@@ -55,3 +55,6 @@ function dump_data($table, $style) {
 		echo "\n";
 	}
 }
+
+$dump_options = lang('Format') . ": <select name='format'><option value='sql'>" . lang('SQL') . "</option><option value='csv'>" . lang('CSV') . "</option></select>";
+$max_packet = 0;
