@@ -7,14 +7,29 @@
 */
 
 error_reporting(E_ALL & ~E_NOTICE);
-
 if (!ini_get("session.auto_start")) {
 	session_name("phpMinAdmin_SID");
 	session_set_cookie_params(ini_get("session.cookie_lifetime"), preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]));
 	session_start();
 }
+if (get_magic_quotes_gpc()) {
+    $process = array(&$_GET, &$_POST);
+    while (list($key, $val) = each($process)) {
+        foreach ($val as $k => $v) {
+            unset($process[$key][$k]);
+            if (is_array($v)) {
+                $process[$key][stripslashes($k)] = $v;
+                $process[] = &$process[$key][stripslashes($k)];
+            } else {
+                $process[$key][stripslashes($k)] = stripslashes($v);
+            }
+        }
+    }
+    unset($process);
+}
 $SELF = preg_replace('~^[^?]*/([^?]*).*~', '\\1?', $_SERVER["REQUEST_URI"]) . (strlen($_GET["server"]) ? 'server=' . urlencode($_GET["server"]) . '&' : '') . (strlen($_GET["db"]) ? 'db=' . urlencode($_GET["db"]) . '&' : '');
 $TOKENS = &$_SESSION["tokens"][$_GET["server"]][$_SERVER["REQUEST_URI"]];
+
 include "./functions.inc.php";
 include "./lang.inc.php";
 include "./lang/$LANG.inc.php";
