@@ -75,22 +75,24 @@ function dump($db, $style) {
 		echo ($_POST["format"] != "csv" ? "USE " . idf_escape($db) . ";\n" : "");
 		if (!strlen($_GET["db"])) {
 			$views = array();
-			$result = $mysql->query("SHOW TABLE STATUS");
-			while ($row = $result->fetch_assoc()) {
-				if (isset($row["Engine"])) {
-					if ($_POST["format"] == "csv") {
-						ob_start();
+			if ($_POST["tables"][0] || $_POST["data"][0]) {
+				$result = $mysql->query("SHOW TABLE STATUS");
+				while ($row = $result->fetch_assoc()) {
+					if (isset($row["Engine"])) {
+						if ($_POST["format"] == "csv") {
+							ob_start();
+						}
+						dump_table($row["Name"], $_POST["tables"][0]);
+						dump_data($row["Name"], $_POST["data"][0]);
+						if ($_POST["format"] == "csv") {
+							echo tar_file("$db/$row[Name].csv", ob_get_clean());
+						}
+					} else {
+						$views[] = $row["Name"];
 					}
-					dump_table($row["Name"], $_POST["tables"][0]);
-					dump_data($row["Name"], $_POST["data"][0]);
-					if ($_POST["format"] == "csv") {
-						echo tar_file("$db/$row[Name].csv", ob_get_clean());
-					}
-				} else {
-					$views[] = $row["Name"];
 				}
+				$result->free();
 			}
-			$result->free();
 			if ($_POST["format"] != "csv") {
 				foreach ($views as $view) {
 					dump_table($view, $_POST["tables"][0]);
@@ -112,10 +114,7 @@ function tar_file($filename, $contents) {
 }
 
 if ($_POST) {
-	$filename = (strlen($_GET["db"]) ? preg_replace('~[^a-z0-9_]~i', '-', (strlen($_GET["dump"]) ? $_GET["dump"] : $_GET["db"])) : "dump");
-	$ext = ($_POST["format"] == "sql" ? "sql" : (!strlen($_GET["db"]) || count(array_filter($_POST["tables"]) + array_filter($_POST["data"])) > 1 ? "tar" : "csv"));
-	header("Content-Type: " . ($ext == "tar" ? "application/x-tar" : ($ext == "sql" || $_POST["output"] != "file" ? "text/plain" : "text/csv")) . "; charset=utf-8");
-	header("Content-Disposition: " . ($_POST["output"] == "file" ? "attachment" : "inline") . "; filename=$filename.$ext");
+	$ext = dump_headers((strlen($_GET["dump"]) ? $_GET["dump"] : $_GET["db"]), (!strlen($_GET["db"]) || count(array_filter($_POST["tables"]) + array_filter($_POST["data"])) > 1));
 	if ($_POST["format"] != "csv") {
 		$max_packet = 16777216;
 		echo "SET NAMES utf8;\n";
@@ -133,14 +132,16 @@ if ($_POST) {
 	}
 	if (strlen($_GET["db"])) {
 		foreach ($_POST["tables"] as $key => $style) {
-			$table = bracket_escape($key, "back");
-			if ($ext == "tar") {
-				ob_start();
-			}
-			dump_table($table, $style);
-			dump_data($table, $_POST["data"][$key]);
-			if ($ext == "tar") {
-				echo tar_file("$table.csv", ob_get_clean());
+			if ($style || $_POST["data"][$key]) {
+				$table = bracket_escape($key, "back");
+				if ($ext == "tar") {
+					ob_start();
+				}
+				dump_table($table, $style);
+				dump_data($table, $_POST["data"][$key]);
+				if ($ext == "tar") {
+					echo tar_file("$table.csv", ob_get_clean());
+				}
 			}
 		}
 		dump_routines($_GET["db"]);
@@ -163,7 +164,7 @@ function check(td, name, value) {
 </script>
 
 <form action="" method="post">
-<p><?php echo lang('Output') . ": <select name='output'><option value='text'>" . lang('open') . "</option><option value='file'>" . lang('save') . "</option></select> " . $dump_options; ?></p>
+<p><?php echo $dump_options; ?></p>
 
 <?php
 echo "<table border='1' cellspacing='0' cellpadding='2'>\n<thead><tr><th>" . lang('Database') . "</th>";

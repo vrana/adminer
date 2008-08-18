@@ -172,4 +172,6 @@ $translations = array(
 	'Tables' => 'Tabulky',
 	'Structure' => 'Struktura',
 	'Data' => 'Data',
+	'Export selected' => 'Exportovat označené',
+	'Export result' => 'Exportovat výsledek',
 );

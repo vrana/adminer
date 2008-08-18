@@ -64,8 +64,7 @@ if ($_POST && !$error) {
 	$result = true;
 	$deleted = 0;
 	if ($_POST["export"] || $_POST["export_result"]) {
-		header("Content-Type: text/plain; charset=utf-8");
-		header("Content-Disposition: inline; filename=" . preg_replace('~[^a-z0-9_]~i', '-', $_GET["select"]) . "." . ($_POST["format"] == "sql" ? "sql" : "csv"));
+		dump_headers($_GET["select"]);
 	}
 	if (isset($_POST["truncate"])) {
 		$result = $mysql->query($where ? "DELETE FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", $where) : "TRUNCATE " . idf_escape($_GET["select"]));

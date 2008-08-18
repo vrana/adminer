@@ -56,5 +56,13 @@ function dump_data($table, $style, $from = "") {
 	}
 }
 
-$dump_options = lang('Format') . ": <select name='format'><option value='sql'>" . lang('SQL') . "</option><option value='csv'>" . lang('CSV') . "</option></select>";
+function dump_headers($identifier, $multi_table = false) {
+	$filename = (strlen($identifier) ? preg_replace('~[^a-z0-9_]~i', '-', $identifier) : "dump");
+	$ext = ($_POST["format"] == "sql" ? "sql" : ($multi_table ? "tar" : "csv"));
+	header("Content-Type: " . ($ext == "tar" ? "application/x-tar" : ($ext == "sql" || $_POST["output"] != "file" ? "text/plain" : "text/csv")) . "; charset=utf-8");
+	header("Content-Disposition: " . ($_POST["output"] == "file" ? "attachment" : "inline") . "; filename=$filename.$ext");
+	return $ext;
+}
+
+$dump_options = lang('Output') . ": <select name='output'><option value='text'>" . lang('open') . "</option><option value='file'>" . lang('save') . "</option></select> " . lang('Format') . ": <select name='format'><option value='sql'>" . lang('SQL') . "</option><option value='csv'>" . lang('CSV') . "</option></select>";
 $max_packet = 0;
