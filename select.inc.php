@@ -65,6 +65,7 @@ if ($_POST && !$error) {
 	$deleted = 0;
 	if ($_POST["export"] || $_POST["export_result"]) {
 		dump_headers($_GET["select"]);
+		dump_table($_GET["select"], "");
 	}
 	if (isset($_POST["truncate"])) {
 		$result = $mysql->query($where ? "DELETE FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", $where) : "TRUNCATE " . idf_escape($_GET["select"]));

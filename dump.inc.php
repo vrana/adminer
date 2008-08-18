@@ -1,50 +1,9 @@
 <?php
 include "./export.inc.php";
 
-function dump_table($table, $style) {
-	global $mysql, $max_packet, $types;
-	if ($style) {
-		if ($_POST["format"] == "csv") {
-			dump_csv(array_keys(fields($table)));
-		} else {
-			$result = $mysql->query("SHOW CREATE TABLE " . idf_escape($table));
-			if ($result) {
-				if ($style == "DROP, CREATE") {
-					echo "DROP TABLE " . idf_escape($table) . ";\n";
-				}
-				$create = $mysql->result($result, 1);
-				echo ($style == "CREATE, ALTER" ? preg_replace('~^CREATE TABLE ~', '\\0IF NOT EXISTS ', $create) : $create) . ";\n\n";
-				if ($max_packet < 1073741824) { // protocol limit
-					$row_size = 21 + strlen(idf_escape($table));
-					foreach (fields($table) as $field) {
-						$type = $types[$field["type"]];
-						$row_size += 5 + ($field["length"] ? $field["length"] : $type) * (preg_match('~char|text|enum~', $field["type"]) ? 3 : 1); // UTF-8 in MySQL uses up to 3 bytes
-					}
-					if ($row_size > $max_packet) {
-						$max_packet = 1024 * ceil($row_size / 1024);
-						echo "SET max_allowed_packet = $max_packet, GLOBAL max_allowed_packet = $max_packet;\n";
-					}
-				}
-				$result->free();
-			}
-			if ($mysql->server_info >= 5) {
-				$result = $mysql->query("SHOW TRIGGERS LIKE '" . $mysql->escape_string(addcslashes($table, "%_")) . "'");
-				if ($result->num_rows) {
-					echo "DELIMITER ;;\n\n";
-					while ($row = $result->fetch_assoc()) {
-						echo "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . idf_escape($row["Table"]) . " FOR EACH ROW $row[Statement];;\n\n";
-					}
-					echo "DELIMITER ;\n\n";
-				}
-				$result->free();
-			}
-		}
-	}
-}
-
 function dump_routines($db) {
 	global $mysql;
-	if ($mysql->server_info >= 5) {
+	if ($_POST["format"] != "csv" && $mysql->server_info >= 5) {
 		$out = "";
 		foreach (array("FUNCTION", "PROCEDURE") as $routine) {
 			$result = $mysql->query("SHOW $routine STATUS WHERE Db = '" . $mysql->escape_string($db) . "'");
@@ -87,18 +46,16 @@ function dump($db, $style) {
 						if ($_POST["format"] == "csv") {
 							echo tar_file("$db/$row[Name].csv", ob_get_clean());
 						}
-					} else {
+					} elseif ($_POST["format"] != "csv") {
 						$views[] = $row["Name"];
 					}
 				}
 				$result->free();
 			}
-			if ($_POST["format"] != "csv") {
-				foreach ($views as $view) {
-					dump_table($view, $_POST["tables"][0]);
-				}
-				dump_routines($db);
+			foreach ($views as $view) {
+				dump_table($view, $_POST["tables"][0]);
 			}
+			dump_routines($db);
 		}
 	}
 }
