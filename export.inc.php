@@ -37,6 +37,83 @@ function dump_table($table, $style, $is_view = false) {
 			}
 		}
 		if ($mysql->server_info >= 5) {
+			if ($style == "CREATE, ALTER" && !$is_view) {
+				$query = "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLLATION_NAME, COLUMN_TYPE, EXTRA, COLUMN_COMMENT FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '" . $mysql->escape_string($table) . "' ORDER BY ORDINAL_POSITION";
+?>
+DELIMITER ;;
+CREATE PROCEDURE phpminadmin_alter () BEGIN
+	DECLARE _column_name, _collation_name, _column_type, after varchar(64) DEFAULT '';
+	DECLARE _column_default longtext;
+	DECLARE _is_nullable char(3);
+	DECLARE _extra varchar(20);
+	DECLARE _column_comment varchar(255);
+	DECLARE done, set_after bool DEFAULT 0;
+	DECLARE add_columns text DEFAULT '<?php
+$fields = array();
+$result = $mysql->query($query);
+$after = "";
+while ($row = $result->fetch_assoc()) {
+	$row["default"] = (isset($row["COLUMN_DEFAULT"]) ? "'" . $mysql->escape_string($row["COLUMN_DEFAULT"]) . "'" : "NULL");
+	$row["after"] = $mysql->escape_string($after); //! rgt AFTER lft, lft AFTER id doesn't work
+	$row["alter"] = $mysql->escape_string(idf_escape($row["COLUMN_NAME"])
+		. " $row[COLUMN_TYPE]"
+		. ($row["COLLATION_NAME"] ? " COLLATE $row[COLLATION_NAME]" : "")
+		. (isset($row["COLUMN_DEFAULT"]) ? " DEFAULT $row[default]" : "")
+		. ($row["IS_NULLABLE"] == "YES" ? "" : " NOT NULL")
+		. ($row["EXTRA"] ? " $row[EXTRA]" : "")
+		. ($row["COLUMN_COMMENT"] ? " COMMENT '" . $mysql->escape_string($row["COLUMN_COMMENT"]) . "'" : "")
+		. ($after ? " AFTER " . idf_escape($after) : " FIRST")
+	);
+	echo ", ADD $row[alter]";
+	$fields[] = $row;
+	$after = $row["COLUMN_NAME"];
+}
+$result->free();
+?>';
+	DECLARE columns CURSOR FOR <?php echo $query; ?>;
+	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+	SET @alter_table = '';
+	OPEN columns;
+	REPEAT
+		FETCH columns INTO _column_name, _column_default, _is_nullable, _collation_name, _column_type, _extra, _column_comment;
+		IF NOT done THEN
+			SET set_after = 1;
+			CASE _column_name<?php
+foreach ($fields as $row) {
+	echo "
+				WHEN '" . $mysql->escape_string($row["COLUMN_NAME"]) . "' THEN
+					SET add_columns = REPLACE(add_columns, ', ADD $row[alter]', '');
+					IF NOT (_column_default <=> $row[default]) OR _is_nullable != '$row[IS_NULLABLE]' OR _collation_name != '$row[COLLATION_NAME]' OR _column_type != '$row[COLUMN_TYPE]' OR _extra != '$row[EXTRA]' OR _column_comment != '" . $mysql->escape_string($row["COLUMN_COMMENT"]) . "' OR after != '$row[after]' THEN
+						SET @alter_table = CONCAT(@alter_table, ', MODIFY $row[alter]');
+					END IF;"; //! don't replace in comment
+}
+?>
+
+				ELSE
+					SET @alter_table = CONCAT(@alter_table, ', DROP ', _column_name);
+					SET set_after = 0;
+			END CASE;
+			IF set_after THEN
+				SET after = _column_name;
+			END IF;
+		END IF;
+	UNTIL done END REPEAT;
+	CLOSE columns;
+	IF @alter_table != '' OR add_columns != '' THEN
+		SET @alter_table = CONCAT('ALTER TABLE <?php echo idf_escape($table); ?>', SUBSTR(CONCAT(add_columns, @alter_table), 2));
+		PREPARE alter_command FROM @alter_table;
+		EXECUTE alter_command;
+		DROP PREPARE alter_command;
+	END IF;
+END;;
+DELIMITER ;
+CALL phpminadmin_alter;
+DROP PROCEDURE phpminadmin_alter;
+
+<?php
+				//! indexes
+			}
+			
 			$result = $mysql->query("SHOW TRIGGERS LIKE '" . $mysql->escape_string(addcslashes($table, "%_")) . "'");
 			if ($result->num_rows) {
 				echo "DELIMITER ;;\n\n";
