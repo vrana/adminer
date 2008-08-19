@@ -1,65 +1,6 @@
 <?php
 include "./export.inc.php";
 
-function dump_routines($db) {
-	global $mysql;
-	if ($_POST["format"] != "csv" && $mysql->server_info >= 5) {
-		$out = "";
-		foreach (array("FUNCTION", "PROCEDURE") as $routine) {
-			$result = $mysql->query("SHOW $routine STATUS WHERE Db = '" . $mysql->escape_string($db) . "'");
-			while ($row = $result->fetch_assoc()) {
-				if (!$out) {
-					echo "DELIMITER ;;\n\n";
-					$out = "DELIMITER ;\n\n";
-				}
-				echo $mysql->result($mysql->query("SHOW CREATE $routine " . idf_escape($row["Db"]) . "." . idf_escape($row["Name"])), 2) . ";;\n\n";
-			}
-			$result->free();
-		}
-		echo $out;
-	}
-}
-
-function dump($db, $style) {
-	global $mysql;
-	if ($_POST["format"] != "csv" && in_array($style, array("DROP, CREATE", "CREATE", "CREATE, ALTER")) && ($result = $mysql->query("SHOW CREATE DATABASE " . idf_escape($db)))) {
-		if ($style == "DROP, CREATE") {
-			echo "DROP DATABASE IF EXISTS " . idf_escape($db) . ";\n";
-		}
-		$create = $mysql->result($result, 1);
-		echo ($style == "CREATE, ALTER" ? preg_replace('~^CREATE DATABASE ~', '\\0IF NOT EXISTS ', $create) : $create) . ";\n";
-		$result->free();
-	}
-	if ($style) {
-		echo ($_POST["format"] != "csv" ? "USE " . idf_escape($db) . ";\n" : "");
-		if (!strlen($_GET["db"])) {
-			$views = array();
-			if ($_POST["tables"][0] || $_POST["data"][0]) {
-				$result = $mysql->query("SHOW TABLE STATUS");
-				while ($row = $result->fetch_assoc()) {
-					if (isset($row["Engine"])) {
-						if ($_POST["format"] == "csv") {
-							ob_start();
-						}
-						dump_table($row["Name"], $_POST["tables"][0]);
-						dump_data($row["Name"], $_POST["data"][0]);
-						if ($_POST["format"] == "csv") {
-							echo tar_file("$db/$row[Name].csv", ob_get_clean());
-						}
-					} elseif ($_POST["format"] != "csv") {
-						$views[] = $row["Name"];
-					}
-				}
-				$result->free();
-			}
-			foreach ($views as $view) {
-				dump_table($view, $_POST["tables"][0]);
-			}
-			dump_routines($db);
-		}
-	}
-}
-
 function tar_file($filename, $contents) {
 	$return = pack("a100a8a8a8a12a12", $filename, 644, 0, 0, decoct(strlen($contents)), decoct(time()));
 	$checksum = 8*32; // space for checksum itself
@@ -84,24 +25,59 @@ if ($_POST) {
 	foreach ($_POST["databases"] as $db => $style) {
 		$db = bracket_escape($db, "back");
 		if ($mysql->select_db($db)) {
-			dump($db, $style);
-		}
-	}
-	if (strlen($_GET["db"])) {
-		foreach ($_POST["tables"] as $key => $style) {
-			if ($style || $_POST["data"][$key]) {
-				$table = bracket_escape($key, "back");
-				if ($ext == "tar") {
-					ob_start();
+			if ($_POST["format"] != "csv" && in_array($style, array("DROP, CREATE", "CREATE", "CREATE, ALTER")) && ($result = $mysql->query("SHOW CREATE DATABASE " . idf_escape($db)))) {
+				if ($style == "DROP, CREATE") {
+					echo "DROP DATABASE IF EXISTS " . idf_escape($db) . ";\n";
 				}
-				dump_table($table, $style);
-				dump_data($table, $_POST["data"][$key]);
-				if ($ext == "tar") {
-					echo tar_file("$table.csv", ob_get_clean());
+				$create = $mysql->result($result, 1);
+				echo ($style == "CREATE, ALTER" ? preg_replace('~^CREATE DATABASE ~', '\\0IF NOT EXISTS ', $create) : $create) . ";\n";
+				$result->free();
+			}
+			if ($style && $_POST["format"] != "csv") {
+				echo "USE " . idf_escape($db) . ";\n";
+				if ($mysql->server_info >= 5) {
+					$out = "";
+					foreach (array("FUNCTION", "PROCEDURE") as $routine) {
+						$result = $mysql->query("SHOW $routine STATUS WHERE Db = '" . $mysql->escape_string($db) . "'");
+						while ($row = $result->fetch_assoc()) {
+							if (!$out) {
+								echo "DELIMITER ;;\n\n";
+								$out = "DELIMITER ;\n\n";
+							}
+							echo $mysql->result($mysql->query("SHOW CREATE $routine " . idf_escape($row["Name"])), 2) . ";;\n\n";
+						}
+						$result->free();
+					}
+					echo $out;
+				}
+			}
+			
+			if (($style || strlen($_GET["db"])) && (array_filter($_POST["tables"]) || array_filter($_POST["data"]))) {
+				$views = array();
+				$result = $mysql->query("SHOW TABLE STATUS");
+				while ($row = $result->fetch_assoc()) {
+					$key = (strlen($_GET["db"]) ? bracket_escape($row["Name"]) : 0);
+					if ($_POST["tables"][$key] || $_POST["data"][$key]) {
+						if (isset($row["Engine"])) {
+							if ($ext == "tar") {
+								ob_start();
+							}
+							dump_table($row["Name"], $_POST["tables"][$key]);
+							dump_data($row["Name"], $_POST["data"][$key]);
+							if ($ext == "tar") {
+								echo tar_file((strlen($_GET["db"]) ? "" : "$db/") . "$row[Name].csv", ob_get_clean());
+							}
+						} elseif ($_POST["format"] != "csv") {
+							$views[$row["Name"]] = $_POST["tables"][$key];
+						}
+					}
+				}
+				$result->free();
+				foreach ($views as $view => $style) {
+					dump_table($view, $style);
 				}
 			}
 		}
-		dump_routines($_GET["db"]);
 	}
 	exit;
 }
