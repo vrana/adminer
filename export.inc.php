@@ -8,7 +8,7 @@ function dump_csv($row) {
 	echo implode(",", $row) . "\n";
 }
 
-function dump_table($table, $style) {
+function dump_table($table, $style, $is_view = false) {
 	global $mysql, $max_packet, $types;
 	if ($_POST["format"] == "csv") {
 		echo "\xef\xbb\xbf";
@@ -19,10 +19,11 @@ function dump_table($table, $style) {
 		$result = $mysql->query("SHOW CREATE TABLE " . idf_escape($table));
 		if ($result) {
 			if ($style == "DROP, CREATE") {
-				echo "DROP TABLE " . idf_escape($table) . ";\n";
+				echo "DROP " . ($is_view ? "VIEW" : "TABLE") . " " . idf_escape($table) . ";\n";
 			}
 			$create = $mysql->result($result, 1);
-			echo ($style == "CREATE, ALTER" ? preg_replace('~^CREATE TABLE ~', '\\0IF NOT EXISTS ', $create) : $create) . ";\n\n";
+			$result->free();
+			echo ($style != "CREATE, ALTER" ? $create : ($is_view ? substr_replace($create, " OR REPLACE", 6, 0) : substr_replace($create, " IF NOT EXISTS", 12, 0))) . ";\n\n";
 			if ($max_packet < 1073741824) { // protocol limit
 				$row_size = 21 + strlen(idf_escape($table));
 				foreach (fields($table) as $field) {
@@ -34,7 +35,6 @@ function dump_table($table, $style) {
 					echo "SET max_allowed_packet = $max_packet, GLOBAL max_allowed_packet = $max_packet;\n";
 				}
 			}
-			$result->free();
 		}
 		if ($mysql->server_info >= 5) {
 			$result = $mysql->query("SHOW TRIGGERS LIKE '" . $mysql->escape_string(addcslashes($table, "%_")) . "'");

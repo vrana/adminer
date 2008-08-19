@@ -73,9 +73,52 @@ if ($_POST) {
 					}
 				}
 				$result->free();
-				foreach ($views as $view => $style) {
-					dump_table($view, $style);
+				foreach ($views as $view => $style1) {
+					dump_table($view, $style1, true);
 				}
+			}
+			
+			if ($mysql->server_info >= 5 && $style == "CREATE, ALTER" && $_POST["format"] != "csv") {
+				$query = "SELECT TABLE_NAME, ENGINE, TABLE_COLLATION, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()";
+?>
+DELIMITER ;;
+CREATE PROCEDURE phpminadmin_drop () BEGIN
+	DECLARE _table_name, _engine, _table_collation varchar(64);
+	DECLARE _table_comment varchar(64);
+	DECLARE done bool DEFAULT 0;
+	DECLARE tables CURSOR FOR <?php echo $query; ?>;
+	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+	OPEN tables;
+	REPEAT
+		FETCH tables INTO _table_name, _engine, _table_collation, _table_comment;
+		IF NOT done THEN
+			CASE _table_name<?php
+$result = $mysql->query($query);
+while ($row = $result->fetch_assoc()) {
+	$comment = $mysql->escape_string($row["ENGINE"] == "InnoDB" ? preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["TABLE_COMMENT"]) : $row["TABLE_COMMENT"]);
+	echo "
+				WHEN '" . $mysql->escape_string($row["TABLE_NAME"]) . "' THEN
+					" . (isset($row["ENGINE"]) ? "IF _engine != '$row[ENGINE]' OR _table_collation != '$row[TABLE_COLLATION]' OR _table_comment != '$comment' THEN
+						ALTER TABLE " . idf_escape($row["TABLE_NAME"]) . " ENGINE=$row[ENGINE] COLLATE=$row[TABLE_COLLATION] COMMENT='$comment';
+					END IF" : "BEGIN END") . ";";
+}
+$result->free();
+?>
+
+				ELSE
+					SET @alter_table = CONCAT('DROP TABLE `', REPLACE(_table_name, '`', '``'), '`');
+					PREPARE alter_command FROM @alter_table;
+					EXECUTE alter_command;
+					DROP PREPARE alter_command;
+			END CASE;
+		END IF;
+	UNTIL done END REPEAT;
+	CLOSE tables;
+END;;
+DELIMITER ;
+CALL phpminadmin_drop;
+DROP PROCEDURE phpminadmin_drop;
+<?php
 			}
 		}
 	}
