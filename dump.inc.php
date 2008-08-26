@@ -1,6 +1,4 @@
 <?php
-include "./export.inc.php";
-
 function tar_file($filename, $contents) {
 	$return = pack("a100a8a8a8a12a12", $filename, 644, 0, 0, decoct(strlen($contents)), decoct(time()));
 	$checksum = 8*32; // space for checksum itself

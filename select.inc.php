@@ -1,6 +1,4 @@
 <?php
-include "./export.inc.php";
-
 $table_status = table_status($_GET["select"]);
 $indexes = indexes($_GET["select"]);
 $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "REGEXP", "IN", "IS NULL");

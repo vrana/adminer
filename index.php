@@ -38,6 +38,7 @@ include "./abstraction.inc.php";
 include "./auth.inc.php";
 include "./connect.inc.php";
 include "./editing.inc.php";
+include "./export.inc.php";
 
 if (isset($_GET["download"])) {
 	include "./download.inc.php";
