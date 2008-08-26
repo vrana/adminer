@@ -171,9 +171,6 @@ function dump_data($table, $style, $from = "") {
 			}
 			$result->free();
 		}
-		if ($_POST["format"] != "csv") {
-			echo "\n";
-		}
 	}
 }
 

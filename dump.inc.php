@@ -32,7 +32,7 @@ if ($_POST) {
 				$result->free();
 			}
 			if ($style && $_POST["format"] != "csv") {
-				echo "USE " . idf_escape($db) . ";\n";
+				echo "USE " . idf_escape($db) . ";\n\n";
 				if ($mysql->server_info >= 5) {
 					$out = "";
 					foreach (array("FUNCTION", "PROCEDURE") as $routine) {
@@ -64,6 +64,8 @@ if ($_POST) {
 							dump_data($row["Name"], $_POST["data"][$key]);
 							if ($ext == "tar") {
 								echo tar_file((strlen($_GET["db"]) ? "" : "$db/") . "$row[Name].csv", ob_get_clean());
+							} elseif ($_POST["format"] != "csv") {
+								echo "\n";
 							}
 						} elseif ($_POST["format"] != "csv") {
 							$views[$row["Name"]] = $_POST["tables"][$key];
