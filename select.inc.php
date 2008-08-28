@@ -204,19 +204,14 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 	echo "<label><input type='checkbox' name='desc[$i]' value='1' />" . lang('DESC') . "</label></div>\n";
 	echo "</fieldset>\n";
 	
-	echo "<fieldset><legend>" . lang('Limit') . "</legend>\n";
-	echo '<div><input name="limit" size="3" value="' . htmlspecialchars($limit) . '" /></div>';
-	echo "</fieldset>\n";
+	echo "<fieldset><legend>" . lang('Limit') . "</legend><input name='limit' size='3' value=\"" . htmlspecialchars($limit) . "\" /></fieldset>\n";
 	
 	if (isset($text_length)) {
-		echo "<fieldset><legend>" . lang('Text length') . "</legend>\n";
-		echo '<div><input name="text_length" size="3" value="' . htmlspecialchars($text_length) . '" /></div>';
-		echo "</fieldset>\n";
+		echo "<fieldset><legend>" . lang('Text length') . "</legend><input name='text_length' size='3' value=\"" . htmlspecialchars($text_length) . "\" /></fieldset>\n";
 	}
 	
-	echo "<fieldset><legend>" . lang('Action') . "</legend><div><input type='submit' value='" . lang('Select') . "' /></div></fieldset>\n";
+	echo "<fieldset><legend>" . lang('Action') . "</legend><input type='submit' value='" . lang('Select') . "' /></fieldset>\n";
 	echo "</form>\n";
-	echo "<div style='clear: left;'>&nbsp;</div>\n";
 	
 	$result = $mysql->query("SELECT " . ($select ? (count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . implode(", ", $select) : "*") . " $from");
 	if (!$result) {
