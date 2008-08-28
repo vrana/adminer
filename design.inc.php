@@ -12,11 +12,6 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <title><?php echo $title . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . " - " . lang('phpMinAdmin') . " 1.7.1-dev"; ?></title>
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 <link rel="stylesheet" type="text/css" href="default.css" /><?php // Ondrej Valka, http://valka.info ?>
-<?php if ($_COOKIE["highlight"] == "jush") { ?>
-<style type="text/css">@import url(http://jush.sourceforge.net/jush.css);</style>
-<script type="text/javascript" src="http://jush.sourceforge.net/jush.js" defer="defer"></script>
-<script type="text/javascript">window.onload = function () { if (typeof jush != 'undefined') jush.highlight_tag('pre'); }</script>
-<?php } ?>
 </head>
 
 <body>
@@ -107,6 +102,16 @@ function page_footer($missing = false) {
 	}
 	?>
 </div>
+
+<?php if ($_COOKIE["highlight"] == "jush") { ?>
+<script type="text/javascript" src="http://jush.sourceforge.net/jush.js"></script>
+<script type="text/javascript">
+if (typeof jush != 'undefined') {
+	jush.style('http://jush.sourceforge.net/jush.css');
+	jush.highlight_tag('pre');
+}
+</script>
+<?php } ?>
 
 </body>
 </html>
