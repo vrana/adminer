@@ -233,7 +233,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 				if (!$j) {
 					echo '<thead><tr>' . (count($select) == count($group) ? '<td><label><input type="checkbox" name="delete_selected" value="1" onclick="var elems = this.form.elements; for (var i=0; i < elems.length; i++) if (elems[i].name == \'delete[]\') elems[i].checked = this.checked;" />' . lang('all') . '</label></td>' : '');
 					foreach ($row as $key => $val) {
-						echo '<th><a href="' . remove_from_uri('(order|desc)[^=]*') . '&amp;order%5B0%5D=' . htmlspecialchars($key) . ($_GET["order"][0] === $key && !$_GET["desc"][0] ? '&amp;desc%5B0%5D=1' : '') . '">' . htmlspecialchars($key) . "</a></th>";
+						echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*')) . '&amp;order%5B0%5D=' . htmlspecialchars($key) . ($_GET["order"][0] === $key && !$_GET["desc"][0] ? '&amp;desc%5B0%5D=1' : '') . '">' . htmlspecialchars($key) . "</a></th>";
 					}
 					echo "</tr></thead>\n";
 				}
