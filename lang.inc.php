@@ -8,7 +8,7 @@ $langs = array(
 	'de' => 'Deutsch', // Klemens Häckel - http://clickdimension.wordpress.com
 	'zh' => '简体中文', // Mr. Lodar
 	'fr' => 'Français', // Francis Gagné
-	'it' => 'Italiano', // SF.net ticket #2082471
+	'it' => 'Italiano', // Alessandro Fiorotto
 );
 
 function lang($idf, $number = null) {
