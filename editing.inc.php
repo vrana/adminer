@@ -11,12 +11,12 @@ function input($name, $field, $value) {
 		foreach ($matches[1] as $i => $val) {
 			$val = stripcslashes(str_replace("''", "'", $val));
 			$id = "field-$name-" . ($i+1);
-			$checked = (is_int($value) ? $value == $i+1 : $value === $val); //! '' collide with NULL in $_GET["default"]
-			echo ' <label for="' . $id . '"><input type="radio" name="fields[' . $name . ']" id="' . $id . '" value="' . (isset($_GET["default"]) ? htmlspecialchars($val) : $i+1) . '"' . ($checked ? ' checked="checked"' : '') . ' />' . htmlspecialchars($val) . '</label>';
+			$checked = (is_int($value) ? $value == $i+1 : $value === $val);
+			echo ' <label for="' . $id . '"><input type="radio" name="fields[' . $name . ']" id="' . $id . '" value="' . (isset($_GET["default"]) ? (strlen($val) ? htmlspecialchars($val) : " ") : $i+1) . '"' . ($checked ? ' checked="checked"' : '') . ' />' . htmlspecialchars($val) . '</label>';
 		}
 		if ($field["null"]) {
 			$id = "field-$name-";
-			echo ' <label for="' . $id . '"><input type="radio" name="fields[' . $name . ']" id="' . $id . '" value=""' . (strlen($value) ? '' : ' checked="checked"') . ' />' . lang('NULL') . '</label>';
+			echo ' <label for="' . $id . '"><input type="radio" name="fields[' . $name . ']" id="' . $id . '" value=""' . (isset($value) ? '' : ' checked="checked"') . ' />' . lang('NULL') . '</label>';
 		}
 	} elseif ($field["type"] == "set") { //! 64 bits
 		preg_match_all("~'((?:[^']+|'')*)'~", $field["length"], $matches);
