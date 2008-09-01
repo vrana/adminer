@@ -213,7 +213,10 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 	echo "<fieldset><legend>" . lang('Action') . "</legend><input type='submit' value='" . lang('Select') . "' /></fieldset>\n";
 	echo "</form>\n";
 	
-	$result = $mysql->query("SELECT " . ($select ? (count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . implode(", ", $select) : "*") . " $from");
+	$query = "SELECT " . ($select ? (count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . implode(", ", $select) : "*") . " $from";
+	echo "<p><code class='jush-sql'>" . htmlspecialchars($query) . "</code> - <a href='" . htmlspecialchars($SELF) . "sql=" . urlencode($query) . "'>" . lang('edit') . "</a></p>\n";
+	
+	$result = $mysql->query($query);
 	if (!$result) {
 		echo "<p class='error'>" . htmlspecialchars($mysql->error) . "</p>\n";
 	} else {
@@ -271,9 +274,6 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 				echo "</tr>\n";
 			}
 			echo "</table>\n";
-			echo "<fieldset><legend>" . lang('Delete') . "</legend><input type='hidden' name='token' value='$token' />" . (count($group) == count($select) ? "<input type='submit' value='" . lang('Delete selected') . "' /> " : "") . "<input type='submit' name='truncate' value='" . lang('Truncate result') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\" /></fieldset>\n";
-			echo "<fieldset><legend>" . lang('Export') . "</legend>$dump_options " . (count($group) == count($select) ? "<input type='submit' name='export' value='" . lang('Export selected') . "' /> " : "") . "<input type='submit' name='export_result' value='" . lang('Export result') . "' /></fieldset>\n"; //! output, format
-			echo "</form>\n";
 			
 			echo "<p>";
 			$found_rows = (intval($limit) ? $mysql->result($mysql->query(count($group) < count($select) ? " SELECT FOUND_ROWS()" : "SELECT COUNT(*) FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : ""))) : $result->num_rows);
@@ -293,6 +293,10 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 				print_page($max_page);
 			}
 			echo " (" . lang('%d row(s)', $found_rows) . ")</p>\n";
+			
+			echo "<fieldset><legend>" . lang('Delete') . "</legend><input type='hidden' name='token' value='$token' />" . (count($group) == count($select) ? "<input type='submit' value='" . lang('Delete selected') . "' /> " : "") . "<input type='submit' name='truncate' value='" . lang('Truncate result') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\" /></fieldset>\n";
+			echo "<fieldset><legend>" . lang('Export') . "</legend>$dump_options " . (count($group) == count($select) ? "<input type='submit' name='export' value='" . lang('Export selected') . "' /> " : "") . "<input type='submit' name='export_result' value='" . lang('Export result') . "' /></fieldset>\n"; //! output, format
+			echo "</form>\n";
 		}
 		$result->free();
 	}

@@ -109,6 +109,7 @@ function page_footer($missing = false) {
 if (typeof jush != 'undefined') {
 	jush.style('http://jush.sourceforge.net/jush.css');
 	jush.highlight_tag('pre');
+	jush.highlight_tag('code');
 }
 </script>
 <?php } ?>

@@ -9,6 +9,7 @@ Bulk update - leave original, set to value, set to NULL
 Save uploaded files after error to session variable instead of hidden field
 Transactions in export
 Compress export and import
-? Query print
+Partitioning (MySQL 5.1)
+Create view options
 ? Execution time in sql.inc.php
 ? Save token also to cookie - for session expiration and login in other window
