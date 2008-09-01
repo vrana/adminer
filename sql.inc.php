@@ -51,7 +51,7 @@ if (!$error && $_POST && is_string($query = (isset($_POST["query"]) ? $_POST["qu
 ?>
 
 <form action="" method="post">
-<p><textarea name="query" rows="20" cols="80" style="width: 98%;"><?php echo htmlspecialchars($_POST["query"]); ?></textarea></p>
+<p><textarea name="query" rows="20" cols="80" style="width: 98%;"><?php echo htmlspecialchars($_POST ? $_POST["query"] : $_GET["sql"]); ?></textarea></p>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
 <input type="submit" value="<?php echo lang('Execute'); ?>" />
