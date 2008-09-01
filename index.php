@@ -105,6 +105,8 @@ if (isset($_GET["download"])) {
 			include "./foreign.inc.php";
 		} elseif (isset($_GET["createv"])) {
 			include "./createv.inc.php";
+		} elseif (isset($_GET["event"])) {
+			include "./event.inc.php";
 		} elseif (isset($_GET["procedure"])) {
 			include "./procedure.inc.php";
 		} elseif (isset($_GET["trigger"])) {
@@ -137,6 +139,24 @@ if (isset($_GET["download"])) {
 				}
 				$result->free();
 				echo '<p><a href="' . htmlspecialchars($SELF) . 'procedure=">' . lang('Create procedure') . '</a> <a href="' . htmlspecialchars($SELF) . 'function=">' . lang('Create function') . "</a></p>\n";
+			}
+			if ($mysql->server_info >= 5.1) {
+				echo "<h3>" . lang('Events') . "</h3>\n";
+				$result = $mysql->query("SHOW EVENTS");
+				if ($result->num_rows) {
+					echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
+					echo "<thead><tr><th>" . lang('Name') . "</th><td>" . lang('Schedule') . "</td><td>" . lang('Start') . "</td><td>" . lang('End') . "</td></tr></thead>\n";
+					while ($row = $result->fetch_assoc()) {
+						echo "<tr>";
+						echo '<th><a href="' . htmlspecialchars($SELF) . 'event=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . "</a></th>";
+						echo "<td>" . ($row["Execute at"] ? lang('At given time') . "</td><td>" . $row["Execute at"] : lang('Every') . " " . $row["Interval value"] . " " . $row["Interval field"] . "</td><td>$row[Starts]") . "</td>";
+						echo "<td>$row[Ends]</td>";
+						echo "</tr>\n";
+					}
+					echo "</table>\n";
+				}
+				$result->free();
+				echo '<p><a href="' . htmlspecialchars($SELF) . 'event=">' . lang('Create event') . "</a></p>\n";
 			}
 		}
 	}

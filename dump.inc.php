@@ -33,21 +33,24 @@ if ($_POST) {
 			}
 			if ($style && $_POST["format"] != "csv") {
 				echo "USE " . idf_escape($db) . ";\n\n";
+				$out = "";
 				if ($mysql->server_info >= 5) {
-					$out = "";
 					foreach (array("FUNCTION", "PROCEDURE") as $routine) {
 						$result = $mysql->query("SHOW $routine STATUS WHERE Db = '" . $mysql->escape_string($db) . "'");
 						while ($row = $result->fetch_assoc()) {
-							if (!$out) {
-								echo "DELIMITER ;;\n\n";
-								$out = "DELIMITER ;\n\n";
-							}
-							echo $mysql->result($mysql->query("SHOW CREATE $routine " . idf_escape($row["Name"])), 2) . ";;\n\n";
+							$out .= $mysql->result($mysql->query("SHOW CREATE $routine " . idf_escape($row["Name"])), 2) . ";;\n\n";
 						}
 						$result->free();
 					}
-					echo $out;
 				}
+				if ($mysql->server_info >= 5.1) {
+					$result = $mysql->query("SHOW EVENTS");
+					while ($row = $result->fetch_assoc()) {
+						$out .= $mysql->result($mysql->query("SHOW CREATE EVENT " . idf_escape($row["Name"])), 1) . ";;\n\n";
+					}
+					$result->free();
+				}
+				echo ($out ? "DELIMITER ;;\n\n$out" . "DELIMITER ;\n\n" : "");
 			}
 			
 			if (($style || strlen($_GET["db"])) && (array_filter($_POST["tables"]) || array_filter($_POST["data"]))) {
