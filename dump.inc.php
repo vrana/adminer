@@ -46,7 +46,7 @@ if ($_POST) {
 				if ($mysql->server_info >= 5.1) {
 					$result = $mysql->query("SHOW EVENTS");
 					while ($row = $result->fetch_assoc()) {
-						$out .= $mysql->result($mysql->query("SHOW CREATE EVENT " . idf_escape($row["Name"])), 1) . ";;\n\n";
+						$out .= $mysql->result($mysql->query("SHOW CREATE EVENT " . idf_escape($row["Name"])), 3) . ";;\n\n";
 					}
 					$result->free();
 				}
