@@ -274,9 +274,12 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 			echo "<fieldset><legend>" . lang('Delete') . "</legend><input type='hidden' name='token' value='$token' />" . (count($group) == count($select) ? "<input type='submit' value='" . lang('Delete selected') . "' /> " : "") . "<input type='submit' name='truncate' value='" . lang('Truncate result') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\" /></fieldset>\n";
 			echo "<fieldset><legend>" . lang('Export') . "</legend>$dump_options " . (count($group) == count($select) ? "<input type='submit' name='export' value='" . lang('Export selected') . "' /> " : "") . "<input type='submit' name='export_result' value='" . lang('Export result') . "' /></fieldset>\n"; //! output, format
 			echo "</form>\n";
-			if (intval($limit) && ($found_rows = $mysql->result($mysql->query(count($group) < count($select) ? " SELECT FOUND_ROWS()" : "SELECT COUNT(*) FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "")))) > $limit) {
+			
+			echo "<p>";
+			$found_rows = (intval($limit) ? $mysql->result($mysql->query(count($group) < count($select) ? " SELECT FOUND_ROWS()" : "SELECT COUNT(*) FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : ""))) : $result->num_rows);
+			if (intval($limit) && $found_rows > $limit) {
 				$max_page = floor(($found_rows - 1) / $limit);
-				echo "<p>" . lang('Page') . ":";
+				echo lang('Page') . ":";
 				print_page(0);
 				if ($_GET["page"] > 3) {
 					echo " ...";
@@ -288,8 +291,8 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 					echo " ...";
 				}
 				print_page($max_page);
-				echo "</p>\n";
 			}
+			echo " (" . lang('%d row(s)', $found_rows) . ")</p>\n";
 		}
 		$result->free();
 	}
