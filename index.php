@@ -132,7 +132,7 @@ if (isset($_GET["download"])) {
 						echo "<tr>";
 						echo "<td>" . htmlspecialchars($row["ROUTINE_TYPE"]) . "</td>";
 						echo '<th><a href="' . htmlspecialchars($SELF) . ($row["ROUTINE_TYPE"] == "FUNCTION" ? 'callf' : 'call') . '=' . urlencode($row["ROUTINE_NAME"]) . '">' . htmlspecialchars($row["ROUTINE_NAME"]) . '</a></th>';
-						echo '<td><a href="' . htmlspecialchars($SELF) . ($row["ROUTINE_TYPE"] == "FUNCTION" ? 'function' : 'procedure') . '=' . urlencode($row["ROUTINE_NAME"]) . '">' . lang('Alter') . "</a></td>\n";
+						echo '<td><a href="' . htmlspecialchars($SELF) . ($row["ROUTINE_TYPE"] == "FUNCTION" ? 'function' : 'procedure') . '=' . urlencode($row["ROUTINE_NAME"]) . '">' . lang('Alter') . "</a></td>";
 						echo "</tr>\n";
 					}
 					echo "</table>\n";
