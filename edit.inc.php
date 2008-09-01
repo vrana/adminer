@@ -59,6 +59,7 @@ if ($_POST) {
 	if ($select) {
 		$result = $mysql->query("SELECT " . implode(", ", $select) . " FROM " . idf_escape($_GET["edit"]) . " WHERE " . implode(" AND ", $where) . " LIMIT 1");
 		$row = $result->fetch_assoc();
+		$result->free();
 	} else {
 		$row = array();
 	}
