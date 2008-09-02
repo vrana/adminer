@@ -5,9 +5,7 @@ if (strlen($_GET["create"])) {
 
 if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] && !$_POST["down"]) {
 	if ($_POST["drop"]) {
-		if ($mysql->query("DROP TABLE " . idf_escape($_GET["create"]))) {
-			redirect(substr($SELF, 0, -1), lang('Table has been dropped.'));
-		}
+		query_redirect("DROP TABLE " . idf_escape($_GET["create"]), substr($SELF, 0, -1), lang('Table has been dropped.'));
 	} else {
 		$auto_increment_index = " PRIMARY KEY";
 		if (strlen($_GET["create"]) && strlen($_POST["fields"][$_POST["auto_increment_col"]]["orig"])) {
@@ -46,18 +44,13 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 			. (strlen($_POST["Auto_increment"]) ? " AUTO_INCREMENT=" . intval($_POST["Auto_increment"]) : "")
 			. " COMMENT='" . $mysql->escape_string($_POST["Comment"]) . "'"
 		;
+		$location = $SELF . "table=" . urlencode($_POST["name"]);
 		if (strlen($_GET["create"])) {
-			$query = "ALTER TABLE " . idf_escape($_GET["create"]) . " " . implode(", ", $fields) . ", RENAME TO " . idf_escape($_POST["name"]) . ", $status";
-			$message = lang('Table has been altered.');
+			query_redirect("ALTER TABLE " . idf_escape($_GET["create"]) . " " . implode(", ", $fields) . ", RENAME TO " . idf_escape($_POST["name"]) . ", $status", $location, lang('Table has been altered.'));
 		} else {
-			$query = "CREATE TABLE " . idf_escape($_POST["name"]) . " (" . implode(", ", $fields) . ")$status";
-			$message = lang('Table has been created.');
-		}
-		if ($mysql->query($query)) {
-			redirect($SELF . "table=" . urlencode($_POST["name"]), $message);
+			query_redirect("CREATE TABLE " . idf_escape($_POST["name"]) . " (" . implode(", ", $fields) . ")$status", $location, lang('Table has been created.'));
 		}
 	}
-	$error = $mysql->error;
 }
 page_header((strlen($_GET["create"]) ? lang('Alter table') : lang('Create table')), $error, array("table" => $_GET["create"]), $_GET["create"]);
 

@@ -11,5 +11,6 @@ Transactions in export
 Compress export and import
 Partitioning (MySQL 5.1)
 Create view options
+Utilize query_redirect - createv, database, procedure, trigger, select
 ? Execution time in sql.inc.php
 ? Save token also to cookie - for session expiration and login in other window

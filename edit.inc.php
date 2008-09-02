@@ -7,12 +7,11 @@ foreach ($fields as $name => $field) {
 	}
 }
 if ($_POST && !$error) {
-	$set = array();
+	$location = $SELF . (isset($_GET["default"]) ? "table=" : ($_POST["insert"] ? "edit=" : "select=")) . urlencode($_GET["edit"]);
 	if (isset($_POST["delete"])) {
-		$set = true;
-		$query = "DELETE FROM " . idf_escape($_GET["edit"]) . " WHERE " . implode(" AND ", $where) . " LIMIT 1";
-		$message = lang('Item has been deleted.');
+		query_redirect("DELETE FROM " . idf_escape($_GET["edit"]) . " WHERE " . implode(" AND ", $where) . " LIMIT 1", $location, lang('Item has been deleted.'));
 	} else {
+		$set = array();
 		foreach ($fields as $name => $field) {
 			$val = process_input($name, $field);
 			if ($val !== false) {
@@ -25,21 +24,17 @@ if ($_POST && !$error) {
 				}
 			}
 		}
+		if (!$set) {
+			redirect($location);
+		}
 		if (isset($_GET["default"])) {
-			$query = "ALTER TABLE " . idf_escape($_GET["edit"]) . implode(",", $set);
-			$message = lang('Default values has been set.');
+			query_redirect("ALTER TABLE " . idf_escape($_GET["edit"]) . implode(",", $set), $location, lang('Default values has been set.'));
 		} elseif ($where) {
-			$query = "UPDATE " . idf_escape($_GET["edit"]) . " SET " . implode(", ", $set) . " WHERE " . implode(" AND ", $where) . " LIMIT 1";
-			$message = lang('Item has been updated.');
+			query_redirect("UPDATE " . idf_escape($_GET["edit"]) . " SET " . implode(", ", $set) . " WHERE " . implode(" AND ", $where) . " LIMIT 1", $location, lang('Item has been updated.'));
 		} else {
-			$query = "INSERT INTO " . idf_escape($_GET["edit"]) . " SET " . implode(", ", $set);
-			$message = lang('Item has been inserted.');
+			query_redirect("INSERT INTO " . idf_escape($_GET["edit"]) . " SET " . implode(", ", $set), $location, lang('Item has been inserted.'));
 		}
 	}
-	if (!$set || $mysql->query($query)) {
-		redirect($SELF . (isset($_GET["default"]) ? "table=" : ($_POST["insert"] ? "edit=" : "select=")) . urlencode($_GET["edit"]), ($set ? $message : null));
-	}
-	$error = $mysql->error;
 }
 page_header((isset($_GET["default"]) ? lang('Default values') : ($_GET["where"] ? lang('Edit') : lang('Insert'))), $error, array((isset($_GET["default"]) ? "table" : "select") => $_GET["edit"]), $_GET["edit"]);
 

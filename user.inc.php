@@ -68,9 +68,7 @@ if ($_POST && !$error) {
 	$new_user = $mysql->escape_string($_POST["user"]) . "'@'" . $mysql->escape_string($_POST["host"]);
 	$pass = $mysql->escape_string($_POST["pass"]);
 	if ($_POST["drop"]) {
-		if ($mysql->query("DROP USER '$old_user'")) {
-			redirect($SELF . "privileges=", lang('User has been dropped.'));
-		}
+		query_redirect("DROP USER '$old_user'", $SELF . "privileges=", lang('User has been dropped.'));
 	} elseif ($old_user == $new_user || $mysql->query(($mysql->server_info < 5 ? "GRANT USAGE ON *.* TO" : "CREATE USER") . " '$new_user' IDENTIFIED BY" . ($_POST["hashed"] ? " PASSWORD" : "") . " '$pass'")) {
 		if ($old_user == $new_user) {
 			$mysql->query("SET PASSWORD FOR '$new_user' = " . ($_POST["hashed"] ? "'$pass'" : "PASSWORD('$pass')"));

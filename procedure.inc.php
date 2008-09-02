@@ -9,6 +9,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 		}
 		$dropped = true;
 	}
+	$error = $mysql->error;
 	if (!$_POST["drop"]) {
 		$set = array();
 		$fields = array_filter((array) $_POST["fields"], 'strlen');
@@ -18,16 +19,12 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 				$set[] = (in_array($field["inout"], $inout) ? "$field[inout] " : "") . idf_escape($field["field"]) . process_type($field, "CHARACTER SET");
 			}
 		}
-		if ($mysql->query(
-			"CREATE $routine " . idf_escape($_POST["name"])
+		query_redirect("CREATE $routine " . idf_escape($_POST["name"])
 			. " (" . implode(", ", $set) . ")"
-			. (isset($_GET["function"]) ? " RETURNS" . process_type($_POST["returns"], "CHARACTER SET") : "") . "
-			$_POST[definition]"
-		)) {
-			redirect(substr($SELF, 0, -1), (strlen($_GET["procedure"]) ? lang('Routine has been altered.') : lang('Routine has been created.')));
-		}
+			. (isset($_GET["function"]) ? " RETURNS" . process_type($_POST["returns"], "CHARACTER SET") : "")
+			. " $_POST[definition]"
+		, substr($SELF, 0, -1), (strlen($_GET["procedure"]) ? lang('Routine has been altered.') : lang('Routine has been created.')));
 	}
-	$error = $mysql->error;
 }
 page_header((strlen($_GET["procedure"]) ? (isset($_GET["function"]) ? lang('Alter function') : lang('Alter procedure')) . ": " . htmlspecialchars($_GET["procedure"]) : (isset($_GET["function"]) ? lang('Create function') : lang('Create procedure'))), $error);
 

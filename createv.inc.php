@@ -7,10 +7,10 @@ if ($_POST && !$error) {
 		}
 		$dropped = true;
 	}
-	if (!$_POST["drop"] && $mysql->query("CREATE VIEW " . idf_escape($_POST["name"]) . " AS " . $_POST["select"])) {
-		redirect($SELF . "view=" . urlencode($_POST["name"]), (strlen($_GET["createv"]) ? lang('View has been altered.') : lang('View has been created.')));
-	}
 	$error = $mysql->error;
+	if (!$_POST["drop"]) {
+		query_redirect("CREATE VIEW " . idf_escape($_POST["name"]) . " AS " . $_POST["select"], $SELF . "view=" . urlencode($_POST["name"]), (strlen($_GET["createv"]) ? lang('View has been altered.') : lang('View has been created.')));
+	}
 }
 
 page_header((strlen($_GET["createv"]) ? lang('Alter view') : lang('Create view')), $error, array("view" => $_GET["createv"]), $_GET["createv"]);

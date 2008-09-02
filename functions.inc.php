@@ -195,6 +195,14 @@ function redirect($location, $message = null) {
 	exit;
 }
 
+function query_redirect($query, $location, $message) {
+	global $mysql, $error, $SELF;
+	if ($mysql->query($query)) {
+		redirect($location, $message . "<br /><code class='jush-sql'>" . htmlspecialchars($query) . '</code> - <a href="' . htmlspecialchars($SELF) . 'sql=' . urlencode($query) . '">' . lang('edit') . '</a>');
+	}
+	$error = $mysql->error;
+}
+
 function remove_from_uri($param = "") {
 	$param = "($param|" . session_name() . ")";
 	return preg_replace("~\\?$param=[^&]*&~", '?', preg_replace("~\\?$param=[^&]*\$|&$param=[^&]*~", '', $_SERVER["REQUEST_URI"]));

@@ -10,14 +10,12 @@ if ($_POST && !$error) {
 		}
 		$dropped = true;
 	}
+	$error = $mysql->error;
 	if (!$_POST["drop"]) {
-		if (in_array($_POST["Timing"], $trigger_time) && in_array($_POST["Event"], $trigger_event) && $mysql->query(
-			"CREATE TRIGGER " . idf_escape($_POST["Trigger"]) . " $_POST[Timing] $_POST[Event] ON " . idf_escape($_GET["trigger"]) . " FOR EACH ROW $_POST[Statement]"
-		)) {
-			redirect($SELF . "table=" . urlencode($_GET["trigger"]), (strlen($_GET["name"]) ? lang('Trigger has been altered.') : lang('Trigger has been created.')));
+		if (in_array($_POST["Timing"], $trigger_time) && in_array($_POST["Event"], $trigger_event)) {
+			query_redirect("CREATE TRIGGER " . idf_escape($_POST["Trigger"]) . " $_POST[Timing] $_POST[Event] ON " . idf_escape($_GET["trigger"]) . " FOR EACH ROW $_POST[Statement]", $SELF . "table=" . urlencode($_GET["trigger"]), (strlen($_GET["name"]) ? lang('Trigger has been altered.') : lang('Trigger has been created.')));
 		}
 	}
-	$error = $mysql->error;
 }
 page_header((strlen($_GET["name"]) ? lang('Alter trigger') . ": " . htmlspecialchars($_GET["name"]) : lang('Create trigger')), $error, array("table" => $_GET["trigger"]));
 
