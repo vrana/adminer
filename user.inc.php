@@ -91,7 +91,7 @@ if ($_POST && !$error) {
 			($grant && !$mysql->query("GRANT " . implode("$match[2], ", $grant) . "$match[2] ON $match[1] TO '$new_user'")) //! SQL injection
 			|| ($revoke && !$mysql->query("REVOKE " . implode("$match[2], ", $revoke) . "$match[2] ON $match[1] FROM '$new_user'"))
 			)) {
-				$error = $mysql->error;
+				$error = htmlspecialchars($mysql->error);
 				if ($old_user != $new_user) {
 					$mysql->query("DROP USER '$new_user'");
 				}
@@ -112,7 +112,7 @@ if ($_POST && !$error) {
 		}
 	}
 	if (!$error) {
-		$error = $mysql->error;
+		$error = htmlspecialchars($mysql->error);
 	}
 }
 page_header((isset($_GET["host"]) ? lang('Username') . ": " . htmlspecialchars("$_GET[user]@$_GET[host]") : lang('Create user')), $error, array("privileges" => lang('Privileges')));

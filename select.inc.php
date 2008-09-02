@@ -105,7 +105,7 @@ if ($_POST && !$error) {
 	if ($result) {
 		redirect(remove_from_uri("page"), lang('%d item(s) have been deleted.', $deleted));
 	}
-	$error = $mysql->error;
+	$error = htmlspecialchars($mysql->error);
 }
 page_header(lang('Select') . ": " . htmlspecialchars($_GET["select"]), ($error ? lang('Error during deleting') . ": $error" : ""));
 

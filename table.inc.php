@@ -1,7 +1,7 @@
 <?php
 $result = $mysql->query("SHOW COLUMNS FROM " . idf_escape($_GET["table"]));
 if (!$result) {
-	$error = $mysql->error;
+	$error = htmlspecialchars($mysql->error);
 }
 page_header(lang('Table') . ": " . htmlspecialchars($_GET["table"]), $error);
 

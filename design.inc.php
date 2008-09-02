@@ -35,7 +35,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	}
 	echo "<h2>$title" . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . "</h2>\n";
 	if ($_SESSION["messages"]) {
-		echo "<p class='message'>" . implode("<br />", $_SESSION["messages"]) . "</p>\n";
+		echo "<p class='message'>" . implode("</p>\n<p class='message'>", $_SESSION["messages"]) . "</p>\n";
 		$_SESSION["messages"] = array();
 	}
 	if (!$_SESSION["tokens"][$_GET["server"]]["?logout"]) {
@@ -45,7 +45,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 		session_write_close();
 	}
 	if ($error) {
-		echo "<p class='error'>" . htmlspecialchars($error) . "</p>\n";
+		echo "<p class='error'>$error</p>\n";
 	}
 }
 

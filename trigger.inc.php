@@ -4,13 +4,9 @@ $trigger_event = array("INSERT", "UPDATE", "DELETE");
 
 $dropped = false;
 if ($_POST && !$error) {
-	if (strlen($_GET["name"]) && ($_POST["dropped"] || $mysql->query("DROP TRIGGER " . idf_escape($_GET["name"])))) {
-		if ($_POST["drop"]) {
-			redirect($SELF . "table=" . urlencode($_GET["trigger"]), lang('Trigger has been dropped.'));
-		}
-		$dropped = true;
+	if (strlen($_GET["name"])) {
+		$dropped = query_redirect("DROP TRIGGER " . idf_escape($_GET["name"]), $SELF . "table=" . urlencode($_GET["trigger"]), lang('Trigger has been dropped.'), $_POST["drop"], !$_POST["dropped"]);
 	}
-	$error = $mysql->error;
 	if (!$_POST["drop"]) {
 		if (in_array($_POST["Timing"], $trigger_time) && in_array($_POST["Event"], $trigger_event)) {
 			query_redirect("CREATE TRIGGER " . idf_escape($_POST["Trigger"]) . " $_POST[Timing] $_POST[Event] ON " . idf_escape($_GET["trigger"]) . " FOR EACH ROW $_POST[Statement]", $SELF . "table=" . urlencode($_GET["trigger"]), (strlen($_GET["name"]) ? lang('Trigger has been altered.') : lang('Trigger has been created.')));

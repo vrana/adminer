@@ -1,13 +1,9 @@
 <?php
 $dropped = false;
 if ($_POST && !$error) {
-	if (strlen($_GET["createv"]) && ($_POST["dropped"] || $mysql->query("DROP VIEW " . idf_escape($_GET["createv"])))) {
-		if ($_POST["drop"]) {
-			redirect(substr($SELF, 0, -1), lang('View has been dropped.'));
-		}
-		$dropped = true;
+	if (strlen($_GET["createv"])) {
+		$dropped = query_redirect("DROP VIEW " . idf_escape($_GET["createv"]), substr($SELF, 0, -1), lang('View has been dropped.'), $_POST["drop"], !$_POST["dropped"]);
 	}
-	$error = $mysql->error;
 	if (!$_POST["drop"]) {
 		query_redirect("CREATE VIEW " . idf_escape($_POST["name"]) . " AS " . $_POST["select"], $SELF . "view=" . urlencode($_POST["name"]), (strlen($_GET["createv"]) ? lang('View has been altered.') : lang('View has been created.')));
 	}

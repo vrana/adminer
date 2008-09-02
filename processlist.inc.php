@@ -9,7 +9,7 @@ if ($_POST && !$error) {
 	if ($killed || !$_POST["kill"]) {
 		redirect($SELF . "processlist=", lang('%d process(es) has been killed.', $killed));
 	}
-	$error = $mysql->error;
+	$error = htmlspecialchars($mysql->error);
 }
 page_header(lang('Process list'), $error);
 ?>
