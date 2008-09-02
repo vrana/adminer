@@ -185,4 +185,6 @@ $translations = array(
 	'Schedule' => 'Plán',
 	'Start' => 'Začátek',
 	'End' => 'Konec',
+	'Status' => 'Stav',
+	'On completion preserve' => 'Po dokončení zachovat',
 );
