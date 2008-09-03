@@ -197,7 +197,8 @@ function redirect($location, $message = null) {
 
 function query_redirect($query, $location, $message, $redirect = true, $execute = true) {
 	global $mysql, $error, $SELF;
-	$sql = ' <a href="' . htmlspecialchars($SELF) . 'sql=' . urlencode($query) . '">' . lang('SQL command') . "</a>";
+	$id = "sql-" . count($_SESSION["messages"]);
+	$sql = " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><span id='$id' class='hidden'><br /><code class='jush-sql'>" . htmlspecialchars($query) . '</code> <a href="' . htmlspecialchars($SELF) . 'sql=' . urlencode($query) . '">' . lang('Edit') . '</a></span>';
 	if ($execute && !$mysql->query($query)) {
 		$error = htmlspecialchars($mysql->error) . $sql;
 		return false;

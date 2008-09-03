@@ -214,7 +214,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 	echo "</form>\n";
 	
 	$query = "SELECT " . ($select ? (count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . implode(", ", $select) : "*") . " $from";
-	echo "<p><code class='jush-sql'>" . htmlspecialchars($query) . "</code> - <a href='" . htmlspecialchars($SELF) . "sql=" . urlencode($query) . "'>" . lang('edit') . "</a></p>\n";
+	echo "<p><code class='jush-sql'>" . htmlspecialchars($query) . "</code> <a href='" . htmlspecialchars($SELF) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a></p>\n";
 	
 	$result = $mysql->query($query);
 	if (!$result) {

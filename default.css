@@ -12,6 +12,8 @@ th { background: #eee; }
 fieldset { display: inline; vertical-align: top; padding: .5em .8em; margin: 0 .5em .5em 0; border: 1px solid #999; }
 p { margin: 0 20px 1em 0; }
 img { vertical-align: middle; }
+code { background-color: #eee; }
+.js .hidden { display: none; }
 .error { color: red; background: #fee; padding: .5em .8em; }
 .message { color: green; background: #efe; padding: .5em .8em; }
 .char { color: #007F00; }
