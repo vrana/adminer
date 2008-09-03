@@ -195,11 +195,14 @@ function redirect($location, $message = null) {
 	exit;
 }
 
-function query_redirect($query, $location, $message, $redirect = true, $execute = true) {
+function query_redirect($query, $location, $message, $redirect = true, $execute = true, $failed = false) {
 	global $mysql, $error, $SELF;
 	$id = "sql-" . count($_SESSION["messages"]);
-	$sql = " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><span id='$id' class='hidden'><br /><code class='jush-sql'>" . htmlspecialchars($query) . '</code> <a href="' . htmlspecialchars($SELF) . 'sql=' . urlencode($query) . '">' . lang('Edit') . '</a></span>';
-	if ($execute && !$mysql->query($query)) {
+	$sql = ($query ? " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><span id='$id' class='hidden'><br /><code class='jush-sql'>" . htmlspecialchars($query) . '</code> <a href="' . htmlspecialchars($SELF) . 'sql=' . urlencode($query) . '">' . lang('Edit') . '</a></span>' : "");
+	if ($execute) {
+		$failed = !$mysql->query($query);
+	}
+	if ($failed) {
 		$error = htmlspecialchars($mysql->error) . $sql;
 		return false;
 	}
@@ -207,6 +210,16 @@ function query_redirect($query, $location, $message, $redirect = true, $execute 
 		redirect($location, $message . $sql);
 	}
 	return true;
+}
+
+function queries($query = null) {
+	global $mysql;
+	static $queries = array();
+	if (!isset($query)) {
+		return implode("\n", $queries);
+	}
+	$queries[] = $query;
+	return $mysql->query($query);
 }
 
 function remove_from_uri($param = "") {

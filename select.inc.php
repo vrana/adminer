@@ -66,7 +66,7 @@ if ($_POST && !$error) {
 		dump_table($_GET["select"], "");
 	}
 	if (isset($_POST["truncate"])) {
-		$result = $mysql->query($where ? "DELETE FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", $where) : "TRUNCATE " . idf_escape($_GET["select"]));
+		$result = queries($where ? "DELETE FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", $where) : "TRUNCATE " . idf_escape($_GET["select"]));
 		$deleted = $mysql->affected_rows;
 	} elseif ($_POST["export_result"]) {
 		dump_data($_GET["select"], "INSERT", ($where ? "FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", $where) : ""));
@@ -76,7 +76,7 @@ if ($_POST && !$error) {
 			if ($_POST["export"]) {
 				dump_data($_GET["select"], "INSERT", "FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", where($delete)) . " LIMIT 1");
 			} else {
-				$result = $mysql->query("DELETE FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", where($delete)) . " LIMIT 1");
+				$result = queries("DELETE FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", where($delete)) . " LIMIT 1");
 				if (!$result) {
 					break;
 				}
@@ -90,7 +90,7 @@ if ($_POST && !$error) {
 			$result1 = $mysql->query("SELECT * $from");
 			while ($row1 = $result1->fetch_assoc()) {
 				parse_str(implode("&", unique_idf($row1, $indexes)), $delete);
-				$result = $mysql->query("DELETE FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", where($delete)) . " LIMIT 1");
+				$result = queries("DELETE FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", where($delete)) . " LIMIT 1");
 				if (!$result) {
 					break;
 				}
@@ -102,10 +102,7 @@ if ($_POST && !$error) {
 	if ($_POST["export"] || $_POST["export_result"]) {
 		exit;
 	}
-	if ($result) {
-		redirect(remove_from_uri("page"), lang('%d item(s) have been deleted.', $deleted));
-	}
-	$error = htmlspecialchars($mysql->error);
+	query_redirect(queries(), remove_from_uri("page"), lang('%d item(s) have been deleted.', $deleted), $result, false, !$result);
 }
 page_header(lang('Select') . ": " . htmlspecialchars($_GET["select"]), ($error ? lang('Error during deleting') . ": $error" : ""));
 

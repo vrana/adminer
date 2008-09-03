@@ -2,14 +2,11 @@
 if ($_POST && !$error) {
 	$killed = 0;
 	foreach ((array) $_POST["kill"] as $val) {
-		if ($mysql->query("KILL " . intval($val))) {
+		if (queries("KILL " . intval($val))) {
 			$killed++;
 		}
 	}
-	if ($killed || !$_POST["kill"]) {
-		redirect($SELF . "processlist=", lang('%d process(es) has been killed.', $killed));
-	}
-	$error = htmlspecialchars($mysql->error);
+	query_redirect(queries(), $SELF . "processlist=", lang('%d process(es) has been killed.', $killed), $killed || !$_POST["kill"], false, !$killed && $_POST["kill"]);
 }
 page_header(lang('Process list'), $error);
 ?>

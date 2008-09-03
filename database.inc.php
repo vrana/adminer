@@ -8,16 +8,15 @@ if ($_POST && !$error) {
 		if (query_redirect("CREATE DATABASE " . idf_escape($_POST["name"]) . ($_POST["collation"] ? " COLLATE '" . $mysql->escape_string($_POST["collation"]) . "'" : ""), $SELF . "db=" . urlencode($_POST["name"]), lang('Database has been created.'), !strlen($_GET["db"]))) {
 			$result = $mysql->query("SHOW TABLES");
 			while ($row = $result->fetch_row()) {
-				if (!$mysql->query("RENAME TABLE " . idf_escape($row[0]) . " TO " . idf_escape($_POST["name"]) . "." . idf_escape($row[0]))) {
+				if (!queries("RENAME TABLE " . idf_escape($row[0]) . " TO " . idf_escape($_POST["name"]) . "." . idf_escape($row[0]))) {
 					break;
 				}
 			}
 			$result->free();
 			if (!$row) {
 				$mysql->query("DROP DATABASE " . idf_escape($_GET["db"]));
-				redirect(preg_replace('~db=[^&]*&~', '', $SELF) . "db=" . urlencode($_POST["name"]), lang('Database has been renamed.'));
 			}
-			$error = htmlspecialchars($mysql->error);
+			query_redirect(queries(), preg_replace('~db=[^&]*&~', '', $SELF) . "db=" . urlencode($_POST["name"]), lang('Database has been renamed.'), !$row, false, $row);
 		}
 	} else {
 		if (!$_POST["collation"]) {
