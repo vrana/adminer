@@ -3,11 +3,6 @@ page_header(lang('Privileges'));
 echo '<p><a href="' . htmlspecialchars($SELF) . 'user=">' . lang('Create user') . "</a></p>";
 $result = $mysql->query("SELECT User, Host FROM mysql.user ORDER BY Host, User");
 if (!$result) {
-	echo "<form action=''><p>\n";
-	if (strlen($_GET["server"])) {
-		echo '<input type="hidden" name="server" value="' . htmlspecialchars($_GET["server"]) . '" />';
-	}
-	echo "</p></form>\n";
 	?>
 	<form action=""><p>
 	<?php if (strlen($_GET["server"])) { ?><input type="hidden" name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>" /><?php } ?>
