@@ -6,11 +6,12 @@ Rename table to other database
 Clone row
 Input function results in edit
 Bulk update - leave original, set to value, set to NULL
-Save uploaded files after error to session variable instead of hidden field
 Transactions in export
 Compress export and import
 Partitioning (MySQL 5.1)
 Create view options
-Utilize query_redirect - select
+Import CSV
+Bulk tables drop
 ? Execution time in sql.inc.php
 ? Save token also to cookie - for session expiration and login in other window
+? Save uploaded files after error to session variable instead of hidden field
