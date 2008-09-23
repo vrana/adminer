@@ -290,7 +290,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 			echo " (" . lang('%d row(s)', $found_rows) . ")</p>\n";
 			
 			echo "<fieldset><legend>" . lang('Delete') . "</legend><input type='hidden' name='token' value='$token' />" . (count($group) == count($select) ? "<input type='submit' value='" . lang('Delete selected') . "' /> " : "") . "<input type='submit' name='truncate' value='" . lang('Truncate result') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\" /></fieldset>\n";
-			echo "<fieldset><legend>" . lang('Export') . "</legend>$dump_options " . (count($group) == count($select) ? "<input type='submit' name='export' value='" . lang('Export selected') . "' /> " : "") . "<input type='submit' name='export_result' value='" . lang('Export result') . "' /></fieldset>\n"; //! output, format
+			echo "<fieldset><legend>" . lang('Export') . "</legend>$dump_options " . (count($group) == count($select) ? "<input type='submit' name='export' value='" . lang('Export selected') . "' /> " : "") . "<input type='submit' name='export_result' value='" . lang('Export result') . "' /></fieldset>\n";
 			echo "</form>\n";
 		}
 		$result->free();
