@@ -170,7 +170,7 @@ foreach (array('', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {
 	echo "<th onclick=\"check(this, /^tables/, '$val');\" style='cursor: pointer;'>" . ($val ? $val : lang('skip')) . "</th>";
 }
 foreach (array('', 'TRUNCATE, INSERT', 'INSERT', 'UPDATE') as $val) {
-	echo "<th onclick=\"check(this, /^data/, '$val');\" style='cursor: pointer;'>" . ($val ? $val : lang('skip')) . "</th>";
+	echo "<th onclick=\"check(this, /^data/, '$val');\" style='cursor: pointer;'" . ($val == 'UPDATE' ? " title='INSERT INTO ... ON DUPLICATE KEY UPDATE'" : "") . ">" . ($val ? $val : lang('skip')) . "</th>";
 }
 echo "</tr></thead>\n";
 $views = "";
