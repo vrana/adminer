@@ -1,7 +1,7 @@
 <?php
 $table_status = table_status($_GET["select"]);
 $indexes = indexes($_GET["select"]);
-$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "REGEXP", "IN", "IS NULL");
+$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "REGEXP", "IN", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL");
 if ($table_status["Engine"] == "MyISAM") {
 	$operators[] = "AGAINST";
 }
@@ -37,13 +37,13 @@ foreach ($indexes as $i => $index) {
 }
 foreach ((array) $_GET["where"] as $val) {
 	if (strlen($val["col"]) && in_array($val["op"], $operators)) {
-		if ($val["op"] == "IN") {
+		if (ereg('IN$', $val["op"])) {
 			$in = process_length($val["val"]);
-			$where[] = (strlen($in) ? idf_escape($val["col"]) . " IN ($in)" : "0");
+			$where[] = (strlen($in) ? idf_escape($val["col"]) . " $val[op] ($in)" : "0");
 		} elseif ($val["op"] == "AGAINST") {
 			$where[] = "MATCH (" . idf_escape($val["col"]) . ") AGAINST ('" . $mysql->escape_string($val["val"]) . "' IN BOOLEAN MODE)";
 		} else {
-			$where[] = idf_escape($val["col"]) . " $val[op]" . ($val["op"] == "IS NULL" ? "" : " '" . $mysql->escape_string($val["val"]) . "'");
+			$where[] = idf_escape($val["col"]) . " $val[op]" . (ereg('NULL$', $val["op"]) ? "" : " '" . $mysql->escape_string($val["val"]) . "'");
 		}
 	}
 }
@@ -172,7 +172,7 @@ function add_row(field) {
 	?>
 <script type="text/javascript">
 function where_change(op) {
-	op.form[op.name.substr(0, op.name.length - 4) + '[val]'].style.display = (op.value == 'IS NULL' ? 'none' : '');
+	op.form[op.name.substr(0, op.name.length - 4) + '[val]'].style.display = (/NULL$/.test(op.value) ? 'none' : '');
 }
 <?php if ($i) { ?>
 for (var i=0; <?php echo $i; ?> > i; i++) {
