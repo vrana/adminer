@@ -83,7 +83,7 @@ function process_type($field, $collate = "COLLATE") {
 function edit_fields($fields, $collations, $type = "TABLE") {
 	global $inout;
 	?>
-<thead><tr>
+<tr>
 <?php if ($type == "PROCEDURE") { ?><td><?php echo lang('IN-OUT'); ?></td><?php } ?>
 <th><?php echo ($type == "TABLE" ? lang('Column name') : lang('Parameter name')); ?></th>
 <td><?php echo lang('Type'); ?></td>
@@ -95,7 +95,7 @@ function edit_fields($fields, $collations, $type = "TABLE") {
 <td><?php echo lang('Comment'); ?></td>
 <?php } ?>
 <td><input type="image" name="add[0]" src="plus.gif" title="<?php echo lang('Add next'); ?>" /></td>
-</tr></thead>
+</tr>
 <?php
 	$column_comments = false;
 	foreach ($fields as $i => $field) {
@@ -174,12 +174,12 @@ function add_row(button) {
 	var row2 = row.cloneNode(true);
 	var tags = row.getElementsByTagName('select');
 	var tags2 = row2.getElementsByTagName('select');
-	for (var i=0; i < tags.length; i++) {
+	for (var i=0; tags.length > i; i++) {
 		tags[i].name = tags[i].name.replace(/([0-9.]+)/, x);
 		tags2[i].selectedIndex = tags[i].selectedIndex;
 	}
 	tags = row.getElementsByTagName('input');
-	for (var i=0; i < tags.length; i++) {
+	for (var i=0; tags.length > i; i++) {
 		if (tags[i].name == 'auto_increment_col') {
 			tags[i].value = x;
 			tags[i].checked = false;

@@ -14,7 +14,6 @@ if (!$result) {
 <?php
 	$result = $mysql->query("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1) AS User, SUBSTRING_INDEX(CURRENT_USER, '@', -1) AS Host");
 }
-echo "</p>\n";
 echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
 echo "<thead><tr><th>&nbsp;</th><th>" . lang('Username') . "</th><th>" . lang('Server') . "</th></tr></thead>\n";
 while ($row = $result->fetch_assoc()) {

@@ -63,7 +63,7 @@ if ($_POST) {
 }
 ?>
 
-<script type="text/javascript">
+<script type="text/javascript">// <![CDATA[
 function add_row(field) {
 	var row = field.parentNode.parentNode.cloneNode(true);
 	var spans = row.getElementsByTagName('span');
@@ -91,7 +91,7 @@ function add_column(field) {
 	field.parentNode.parentNode.appendChild(column);
 	field.onchange = function () { };
 }
-</script>
+// ]]></script>
 
 <form action="" method="post">
 <table border="0" cellspacing="0" cellpadding="2">

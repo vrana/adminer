@@ -48,7 +48,7 @@ $source = get_vals("SHOW COLUMNS FROM " . idf_escape($_GET["foreign"])); //! no 
 $target = ($_GET["foreign"] === $row["table"] ? $source : get_vals("SHOW COLUMNS FROM " . idf_escape($row["table"])));
 ?>
 
-<script type="text/javascript">
+<script type="text/javascript">// <![CDATA[
 function add_row(field) {
 	var row = field.parentNode.parentNode.cloneNode(true);
 	var selects = row.getElementsByTagName('select');
@@ -59,7 +59,7 @@ function add_row(field) {
 	field.parentNode.parentNode.parentNode.appendChild(row);
 	field.onchange = function () { };
 }
-</script>
+// ]]></script>
 
 <form action="" method="post">
 <p>

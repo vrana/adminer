@@ -114,7 +114,7 @@ if (!$columns) {
 } else {
 	echo "<form action='' id='form'>\n";
 	?>
-<script type="text/javascript">
+<script type="text/javascript">// <![CDATA[
 function add_row(field) {
 	var row = field.parentNode.cloneNode(true);
 	var selects = row.getElementsByTagName('select');
@@ -130,7 +130,7 @@ function add_row(field) {
 	field.parentNode.parentNode.appendChild(row);
 	field.onchange = function () { };
 }
-</script>
+// ]]></script>
 <?php
 	echo "<fieldset><legend>" . lang('Select') . "</legend>\n";
 	if (strlen($_GET["server"])) {
@@ -229,7 +229,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 			echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
 			for ($j=0; $row = $result->fetch_assoc(); $j++) {
 				if (!$j) {
-					echo '<thead><tr>' . (count($select) == count($group) ? '<td><label><input type="checkbox" name="delete_selected" value="1" onclick="var elems = this.form.elements; for (var i=0; i < elems.length; i++) if (elems[i].name == \'delete[]\') elems[i].checked = this.checked;" />' . lang('all') . '</label></td>' : '');
+					echo '<thead><tr>' . (count($select) == count($group) ? '<td><label><input type="checkbox" name="delete_selected" value="1" onclick="var elems = this.form.elements; for (var i=0; elems.length > i; i++) if (elems[i].name == \'delete[]\') elems[i].checked = this.checked;" />' . lang('all') . '</label></td>' : '');
 					foreach ($row as $key => $val) {
 						echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*')) . '&amp;order%5B0%5D=' . htmlspecialchars($key) . ($_GET["order"][0] === $key && !$_GET["desc"][0] ? '&amp;desc%5B0%5D=1' : '') . '">' . htmlspecialchars($key) . "</a></th>";
 					}

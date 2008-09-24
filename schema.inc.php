@@ -67,7 +67,7 @@ document.onmousemove = function (ev) {
 		var top = (ev.clientY - y) / em;
 		var divs = that.getElementsByTagName('div');
 		var line_set = { };
-		for (var i=0; i < divs.length; i++) {
+		for (var i=0; divs.length > i; i++) {
 			if (divs[i].className == 'references') {
 				var div2 = document.getElementById((divs[i].id.substr(0, 4) == 'refs' ? 'refd' : 'refs') + divs[i].id.substr(4));
 				var ref = (table_pos[divs[i].title] ? table_pos[divs[i].title] : [ div2.parentNode.offsetTop / em, 0 ]);
@@ -81,7 +81,7 @@ document.onmousemove = function (ev) {
 					var left2 = Math.min(0, left - ref[1]) - 1;
 					div2.style.left = left2 + 'em';
 					div2.getElementsByTagName('div')[0].style.width = -left2 + 'em';
-					is_top = (divs[i].offsetTop + top * em < div2.offsetTop + ref[0] * em);
+					is_top = (div2.offsetTop + ref[0] * em > divs[i].offsetTop + top * em);
 				}
 				if (!line_set[id]) {
 					var line = document.getElementById(divs[i].id.replace(/^....(.+)-[0-9]+$/, 'refl$1'));

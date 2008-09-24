@@ -55,9 +55,9 @@ if (!$error && $_POST && is_string($query = (isset($_POST["query"]) ? $_POST["qu
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
 <input type="submit" value="<?php echo lang('Execute'); ?>" />
-<script type="text/javascript">
+<script type="text/javascript">// <![CDATA[
 document.write('<label for="highlight"><input type="checkbox" name="highlight" id="highlight" value="jush"<?php echo ($_COOKIE["highlight"] == "jush" ? ' checked="checked"' : ''); ?> /><?php echo addcslashes(lang('Syntax highlighting'), "\r\n'\\"); ?></label>');
-</script>
+// ]]></script>
 </p>
 </form>
 

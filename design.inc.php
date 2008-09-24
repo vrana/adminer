@@ -31,7 +31,7 @@ function toggle(id) {
 		echo '<p id="breadcrumb"><a href="' . (strlen($link) ? htmlspecialchars($link) : ".") . '">' . (isset($_GET["server"]) ? htmlspecialchars($_GET["server"]) : lang('Server')) . '</a> &raquo; ';
 		if (is_array($breadcrumb)) {
 			if (strlen($_GET["db"])) {
-				echo '<a href="' . substr($SELF, 0, -1) . '">' . htmlspecialchars($_GET["db"]) . '</a> &raquo; ';
+				echo '<a href="' . htmlspecialchars(substr($SELF, 0, -1)) . '">' . htmlspecialchars($_GET["db"]) . '</a> &raquo; ';
 			}
 			foreach ($breadcrumb as $key => $val) {
 				if (strlen($val)) {

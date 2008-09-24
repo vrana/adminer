@@ -134,7 +134,7 @@ page_header(lang('Export'), "", (strlen($_GET["export"]) ? array("table" => $_GE
 <script type="text/javascript">
 function check(td, name, value) {
 	var inputs = td.parentNode.parentNode.parentNode.getElementsByTagName('input');
-	for (var i=0; i < inputs.length; i++) {
+	for (var i=0; inputs.length > i; i++) {
 		if (name.test(inputs[i].name)) {
 			inputs[i].checked = (inputs[i].value == value);
 		}
@@ -191,5 +191,5 @@ while ($row = $result->fetch_assoc()) {
 }
 echo "$views</table>\n";
 ?>
-<input type="submit" value="<?php echo lang('Export'); ?>" />
+<p><input type="submit" value="<?php echo lang('Export'); ?>" /></p>
 </form>

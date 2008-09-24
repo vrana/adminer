@@ -96,7 +96,7 @@ $collations = collations();
 <p>
 <?php echo lang('Auto Increment'); ?>: <input name="Auto_increment" size="4" value="<?php echo intval($row["Auto_increment"]); ?>" />
 <?php echo lang('Comment'); ?>: <input name="Comment" value="<?php echo htmlspecialchars($row["Comment"]); ?>" maxlength="60" />
-<script type="text/javascript">
+<script type="text/javascript">// <![CDATA[
 document.write('<label for="column_comments"><input type="checkbox" id="column_comments"<?php if ($column_comments) { ?> checked="checked"<?php } ?> onclick="column_comments_click(this.checked);" /><?php echo lang('Show column comments'); ?></label>');
 function column_comments_click(checked) {
 	var trs = document.getElementsByTagName('tr');
@@ -105,8 +105,7 @@ function column_comments_click(checked) {
 	}
 }
 <?php if (!$column_comments) { ?>column_comments_click(false);<?php } ?>
-
-</script>
+// ]]></script>
 </p>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
