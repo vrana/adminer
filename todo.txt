@@ -9,7 +9,7 @@ Bulk update - leave original, set to value, set to NULL
 Transactions in export
 Compress export and import
 Partitioning (MySQL 5.1)
-Create view options
+Create view and routine options
 Import CSV
 Bulk tables drop
 ? Execution time in sql.inc.php
