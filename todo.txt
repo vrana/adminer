@@ -1,7 +1,6 @@
 Add whisperer to fields with foreign key
 Highlight found fields
 MySQL 5 BIT data type
-Check MySQL server version
 Rename table to other database
 Clone row
 Input function results in edit
@@ -11,7 +10,6 @@ Compress export and import
 Partitioning (MySQL 5.1)
 Create view and routine options
 Import CSV
-Bulk tables drop
 ? Execution time in sql.inc.php
 ? Save token also to cookie - for session expiration and login in other window
 ? Save uploaded files after error to session variable instead of hidden field
