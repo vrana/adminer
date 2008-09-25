@@ -118,10 +118,49 @@ if (isset($_GET["download"])) {
 		} elseif (isset($_GET["select"])) {
 			include "./select.inc.php";
 		} else {
-			unset($_SESSION["tokens"][$_GET["server"]][$_SERVER["REQUEST_URI"]]);
+			if ($_POST["tables"] && !$error) {
+				$result = true;
+				$message = "";
+				if (isset($_POST["truncate"])) {
+					foreach ($_POST["tables"] as $table) {
+						if (!queries("TRUNCATE " . idf_escape($table))) {
+							$result = false;
+							break;
+						}
+					}
+					$message = lang('Tables have been truncated.');
+				} else {
+					$result = queries((isset($_POST["optimize"]) ? "OPTIMIZE" : (isset($_POST["check"]) ? "CHECK" : (isset($_POST["repair"]) ? "REPAIR" : (isset($_POST["drop"]) ? "DROP" : "ANALYZE")))) . " TABLE " . implode(", ", array_map('idf_escape', $_POST["tables"])));
+					if ($result) {
+						while ($row = $result->fetch_assoc()) {
+							$message .= htmlspecialchars("$row[Table]: $row[Msg_text]") . "<br />";
+						}
+					}
+				}
+				query_redirect(queries(), substr($SELF, 0, -1), $message, $result, false, !$result);
+			}
+			
 			page_header(lang('Database') . ": " . htmlspecialchars($_GET["db"]), $error, false);
 			echo '<p><a href="' . htmlspecialchars($SELF) . 'database=">' . lang('Alter database') . "</a></p>\n";
 			echo '<p><a href="' . htmlspecialchars($SELF) . 'schema=">' . lang('Database schema') . "</a></p>\n";
+			
+			echo "<h3>" . lang('Tables and views') . "</h3>\n";
+			$result = $mysql->query("SHOW TABLE STATUS");
+			if (!$result->num_rows) {
+				echo "<p class='message'>" . lang('No tables.') . "</p>\n";
+			} else {
+				echo "<form action='' method='post'>\n";
+				echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
+				echo '<thead><tr><th>' . lang('Table') . '</th><td><label><input type="checkbox" onclick="var elems = this.form.elements; for (var i=0; elems.length > i; i++) if (elems[i].name == \'tables[]\') elems[i].checked = this.checked;" /> Engine</label></td><td>' . lang('Data Length') . "</td><td>" . lang('Index Length') . "</td><td>" . lang('Data Free') . "</td><td>" . lang('Collation') . "</td><td>" . lang('Auto Increment') . "</td><td>Rows</td></tr></tdead>\n";
+				while ($row = $result->fetch_assoc()) {
+					echo '<tr><th><a href="' . htmlspecialchars($SELF) . (isset($row["Rows"]) ? 'table' : 'view') . '=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . "</a></th>" . (isset($row["Rows"]) ? '<td><label><input type="checkbox" name="tables[]" value="' . htmlspecialchars($row["Name"]) . '" /> ' . $row["Engine"] . "</label></td><td>$row[Data_length]</td><td>$row[Index_length]</td><td>$row[Data_free]</td><td>$row[Collation]</td><td>$row[Auto_increment]</td><td>" . $mysql->result($mysql->query("SELECT COUNT(*) FROM " . idf_escape($row["Name"]))) : '<td colspan="7">' . lang('View')) . "</td></tr>\n";
+				}
+				echo "</table>\n";
+				echo "<p><input type='hidden' name='token' value='$token' /><input type='submit' value='" . lang('Analyze') . "' /> <input type='submit' name='optimize' value='" . lang('Optimize') . "' /> <input type='submit' name='check' value='" . lang('Check') . "' /> <input type='submit' name='repair' value='" . lang('Repair') . "' /> <input type='submit' name='truncate' value='" . lang('Truncate') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\" /> <input type='submit' name='drop' value='" . lang('Drop') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\" /></p>\n";
+				echo "</form>\n";
+			}
+			$result->free();
+			
 			if ($mysql->server_info >= 5) {
 				echo '<p><a href="' . htmlspecialchars($SELF) . 'createv=">' . lang('Create view') . "</a></p>\n";
 				echo "<h3>" . lang('Routines') . "</h3>\n";
@@ -140,6 +179,7 @@ if (isset($_GET["download"])) {
 				$result->free();
 				echo '<p><a href="' . htmlspecialchars($SELF) . 'procedure=">' . lang('Create procedure') . '</a> <a href="' . htmlspecialchars($SELF) . 'function=">' . lang('Create function') . "</a></p>\n";
 			}
+			
 			if ($mysql->server_info >= 5.1) {
 				echo "<h3>" . lang('Events') . "</h3>\n";
 				$result = $mysql->query("SHOW EVENTS");

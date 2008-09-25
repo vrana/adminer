@@ -216,7 +216,7 @@ function queries($query = null) {
 	global $mysql;
 	static $queries = array();
 	if (!isset($query)) {
-		return implode("\n", $queries);
+		return implode(";\n", $queries);
 	}
 	$queries[] = $query;
 	return $mysql->query($query);
