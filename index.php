@@ -129,6 +129,13 @@ if (isset($_GET["download"])) {
 						}
 					}
 					$message = lang('Tables have been truncated.');
+				} elseif (isset($_POST["move"])) {
+					$rename = array();
+					foreach ($_POST["tables"] as $table) {
+						$rename[] = idf_escape($table) . " TO " . idf_escape($_POST["target"]) . "." . idf_escape($table);
+					}
+					$result = queries("RENAME TABLE " . implode(", ", $rename));
+					$message = lang('Tables have been moved.');
 				} elseif ($result = queries((isset($_POST["optimize"]) ? "OPTIMIZE" : (isset($_POST["check"]) ? "CHECK" : (isset($_POST["repair"]) ? "REPAIR" : (isset($_POST["drop"]) ? "DROP" : "ANALYZE")))) . " TABLE " . implode(", ", array_map('idf_escape', $_POST["tables"])))) {
 					while ($row = $result->fetch_assoc()) {
 						$message .= htmlspecialchars("$row[Table]: $row[Msg_text]") . "<br />";
@@ -148,12 +155,23 @@ if (isset($_GET["download"])) {
 			} else {
 				echo "<form action='' method='post'>\n";
 				echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
-				echo '<thead><tr><th>' . lang('Table') . '</th><td><label><input type="checkbox" onclick="var elems = this.form.elements; for (var i=0; elems.length > i; i++) if (elems[i].name == \'tables[]\') elems[i].checked = this.checked;" /> Engine</label></td><td>' . lang('Data Length') . "</td><td>" . lang('Index Length') . "</td><td>" . lang('Data Free') . "</td><td>" . lang('Collation') . "</td><td>" . lang('Auto Increment') . "</td><td>Rows</td></tr></tdead>\n";
+				echo '<thead><tr><td><input type="checkbox" onclick="var elems = this.form.elements; for (var i=0; elems.length > i; i++) if (elems[i].name == \'tables[]\') elems[i].checked = this.checked;" /></td><th>' . lang('Table') . '</th><td>' . lang('Engine') . '</td><td>' . lang('Collation') . '</td><td>' . lang('Data Length') . '</td><td>' . lang('Index Length') . '</td><td>' . lang('Data Free') . '</td><td>' . lang('Auto Increment') . '</td><td>' . lang('Rows') . "</td></tr></tdead>\n";
 				while ($row = $result->fetch_assoc()) {
-					echo '<tr><th><a href="' . htmlspecialchars($SELF) . (isset($row["Rows"]) ? 'table' : 'view') . '=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . "</a></th>" . (isset($row["Rows"]) ? '<td><label><input type="checkbox" name="tables[]" value="' . htmlspecialchars($row["Name"]) . '" /> ' . $row["Engine"] . "</label></td><td>$row[Data_length]</td><td>$row[Index_length]</td><td>$row[Data_free]</td><td>$row[Collation]</td><td>$row[Auto_increment]</td><td>" . $mysql->result($mysql->query("SELECT COUNT(*) FROM " . idf_escape($row["Name"]))) : '<td colspan="7">' . lang('View')) . "</td></tr>\n";
+					echo '<tr class="nowrap"><td>';
+					if (isset($row["Rows"])) {
+						echo '<input type="checkbox" name="tables[]" value="' . htmlspecialchars($row["Name"]) . '"' . (in_array($row["Name"], (array) $_POST["tables"], true) ? ' checked="checked"' : '') . ' /></td><th><a href="' . htmlspecialchars($SELF) . 'create=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . "</a></th><td align='left'>$row[Engine]</td><td align='left'>$row[Collation]</td>";
+						$row["count"] = $mysql->result($mysql->query("SELECT COUNT(*) FROM " . idf_escape($row["Name"])));
+						foreach (array("Data_length", "Index_length", "Data_free", "Auto_increment", "count") as $val) {
+							echo '<td align="right">' . (strlen($row[$val]) ? number_format($row[$val], 0, '.', lang(',')) : '') . '</td>';
+						}
+					} else {
+						echo '&nbsp;</td><th><a href="' . htmlspecialchars($SELF) . 'createv=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . '</a></th><td colspan="8">' . lang('View');
+					}
+					echo "</td></tr>\n";
 				}
 				echo "</table>\n";
 				echo "<p><input type='hidden' name='token' value='$token' /><input type='submit' value='" . lang('Analyze') . "' /> <input type='submit' name='optimize' value='" . lang('Optimize') . "' /> <input type='submit' name='check' value='" . lang('Check') . "' /> <input type='submit' name='repair' value='" . lang('Repair') . "' /> <input type='submit' name='truncate' value='" . lang('Truncate') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\" /> <input type='submit' name='drop' value='" . lang('Drop') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\" /></p>\n";
+				echo "<p>" . lang('Move to other database') . ": <select name='target'>" . optionlist(get_databases(), (isset($_POST["target"]) ? $_POST["target"] : $_GET["db"])) . "</select> <input type='submit' name='move' value='" . lang('Move') . "' /></p>\n";
 				echo "</form>\n";
 			}
 			$result->free();

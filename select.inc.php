@@ -236,7 +236,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 					echo "</tr></thead>\n";
 				}
 				$unique_idf = implode('&amp;', unique_idf($row, $indexes));
-				echo '<tr style="white-space: nowrap;">' . (count($select) == count($group) ? '<td><input type="checkbox" name="delete[]" value="' . $unique_idf . '" /> <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a></td>' : '');
+				echo '<tr class="nowrap">' . (count($select) == count($group) ? '<td><input type="checkbox" name="delete[]" value="' . $unique_idf . '" /> <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a></td>' : '');
 				foreach ($row as $key => $val) {
 					if (!isset($val)) {
 						$val = "<i>NULL</i>";

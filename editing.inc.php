@@ -111,7 +111,7 @@ function edit_fields($fields, $collations, $type = "TABLE") {
 <td><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked="checked"<?php } ?> /></td>
 <td><input name="fields[<?php echo $i; ?>][comment]" value="<?php echo htmlspecialchars($field["comment"]); ?>" maxlength="255" /></td>
 <?php } ?>
-<td style="white-space: nowrap;">
+<td class="nowrap">
 <input type="image" name="add[<?php echo $i; ?>]" src="plus.gif" title="<?php echo lang('Add next'); ?>" onclick="return !add_row(this);" />
 <input type="image" name="drop_col[<?php echo $i; ?>]" src="minus.gif" title="<?php echo lang('Remove'); ?>" onclick="return !remove_row(this);" />
 <input type="image" name="up[<?php echo $i; ?>]" src="up.gif" title="<?php echo lang('Move up'); ?>" />

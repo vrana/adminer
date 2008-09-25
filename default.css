@@ -14,6 +14,7 @@ p { margin: 0 20px 1em 0; }
 img { vertical-align: middle; }
 code { background-color: #eee; }
 .js .hidden { display: none; }
+.nowrap { white-space: nowrap; }
 .error { color: red; background: #fee; padding: .5em .8em; }
 .message { color: green; background: #efe; padding: .5em .8em; }
 .char { color: #007F00; }

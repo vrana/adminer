@@ -151,10 +151,7 @@ foreach (array('', 'USE', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {
 	echo "<th onclick=\"check(this, /^databases/, '$val');\" style='cursor: pointer;'>" . ($val ? $val : lang('skip')) . "</th>";
 }
 echo "</tr></thead>\n";
-if (!strlen($_GET["db"]) && !isset($_SESSION["databases"][$_GET["server"]])) {
-	$_SESSION["databases"][$_GET["server"]] = get_vals("SHOW DATABASES");
-}
-foreach ((strlen($_GET["db"]) ? array($_GET["db"]) : $_SESSION["databases"][$_GET["server"]]) as $db) {
+foreach ((strlen($_GET["db"]) ? array($_GET["db"]) : get_databases()) as $db) {
 	if ($db != "information_schema" || $mysql->server_info < 5) {
 		echo "<tr><td>" . htmlspecialchars($db) . "</td>";
 		foreach (array('', 'USE', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {

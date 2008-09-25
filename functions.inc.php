@@ -40,6 +40,15 @@ function get_vals($query) {
 	return $return;
 }
 
+function get_databases() {
+	$return = &$_SESSION["databases"][$_GET["server"]];
+	if (!isset($return)) {
+		flush();
+		$return = get_vals("SHOW DATABASES");
+	}
+	return $return;
+}
+
 function table_status($table) {
 	global $mysql;
 	$result = $mysql->query("SHOW TABLE STATUS LIKE '" . $mysql->escape_string(addcslashes($table, "%_")) . "'");
