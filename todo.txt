@@ -1,7 +1,6 @@
 Add whisperer to fields with foreign key
 Highlight found fields
 MySQL 5 BIT data type
-Rename table to other database
 Clone row
 Input function results in edit
 Bulk update - leave original, set to value, set to NULL

@@ -197,4 +197,10 @@ $translations = array(
 	'Repair' => 'Opravit',
 	'Truncate' => 'Promazat',
 	'Tables have been truncated.' => 'Tabulky byly promazány.',
+	'Rows' => 'Řádků',
+	',' => ' ',
+	'Tables have been moved.' => 'Tabulky byly přesunuty',
+	'Move to other database' => 'Přesunout do jiné databáze',
+	'Move' => 'Přesunout',
+	'Engine' => 'Úložiště',
 );
