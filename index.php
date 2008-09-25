@@ -129,12 +129,9 @@ if (isset($_GET["download"])) {
 						}
 					}
 					$message = lang('Tables have been truncated.');
-				} else {
-					$result = queries((isset($_POST["optimize"]) ? "OPTIMIZE" : (isset($_POST["check"]) ? "CHECK" : (isset($_POST["repair"]) ? "REPAIR" : (isset($_POST["drop"]) ? "DROP" : "ANALYZE")))) . " TABLE " . implode(", ", array_map('idf_escape', $_POST["tables"])));
-					if ($result) {
-						while ($row = $result->fetch_assoc()) {
-							$message .= htmlspecialchars("$row[Table]: $row[Msg_text]") . "<br />";
-						}
+				} elseif ($result = queries((isset($_POST["optimize"]) ? "OPTIMIZE" : (isset($_POST["check"]) ? "CHECK" : (isset($_POST["repair"]) ? "REPAIR" : (isset($_POST["drop"]) ? "DROP" : "ANALYZE")))) . " TABLE " . implode(", ", array_map('idf_escape', $_POST["tables"])))) {
+					while ($row = $result->fetch_assoc()) {
+						$message .= htmlspecialchars("$row[Table]: $row[Msg_text]") . "<br />";
 					}
 				}
 				query_redirect(queries(), substr($SELF, 0, -1), $message, $result, false, !$result);
