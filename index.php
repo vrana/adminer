@@ -155,14 +155,14 @@ if (isset($_GET["download"])) {
 			} else {
 				echo "<form action='' method='post'>\n";
 				echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
-				echo '<thead><tr><td><input type="checkbox" onclick="var elems = this.form.elements; for (var i=0; elems.length > i; i++) if (elems[i].name == \'tables[]\') elems[i].checked = this.checked;" /></td><th>' . lang('Table') . '</th><td>' . lang('Engine') . '</td><td>' . lang('Collation') . '</td><td>' . lang('Data Length') . '</td><td>' . lang('Index Length') . '</td><td>' . lang('Data Free') . '</td><td>' . lang('Auto Increment') . '</td><td>' . lang('Rows') . "</td></tr></tdead>\n";
+				echo '<thead><tr><td><input type="checkbox" onclick="var elems = this.form.elements; for (var i=0; elems.length > i; i++) if (elems[i].name == \'tables[]\') elems[i].checked = this.checked;" /></td><th>' . lang('Table') . '</th><td>' . lang('Engine') . '</td><td>' . lang('Collation') . '</td><td>' . lang('Data Length') . '</td><td>' . lang('Index Length') . '</td><td>' . lang('Data Free') . '</td><td>' . lang('Auto Increment') . '</td><td>' . lang('Rows') . "</td></tr></thead>\n";
 				while ($row = $result->fetch_assoc()) {
 					echo '<tr class="nowrap"><td>';
 					if (isset($row["Rows"])) {
-						echo '<input type="checkbox" name="tables[]" value="' . htmlspecialchars($row["Name"]) . '"' . (in_array($row["Name"], (array) $_POST["tables"], true) ? ' checked="checked"' : '') . ' /></td><th><a href="' . htmlspecialchars($SELF) . 'create=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . "</a></th><td align='left'>$row[Engine]</td><td align='left'>$row[Collation]</td>";
+						echo '<input type="checkbox" name="tables[]" value="' . htmlspecialchars($row["Name"]) . '"' . (in_array($row["Name"], (array) $_POST["tables"], true) ? ' checked="checked"' : '') . ' /></td><th><a href="' . htmlspecialchars($SELF) . 'create=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . "</a></th><td align='left'>$row[Engine]</td><td align='left'>$row[Collation]";
 						$row["count"] = $mysql->result($mysql->query("SELECT COUNT(*) FROM " . idf_escape($row["Name"])));
 						foreach (array("Data_length", "Index_length", "Data_free", "Auto_increment", "count") as $val) {
-							echo '<td align="right">' . (strlen($row[$val]) ? number_format($row[$val], 0, '.', lang(',')) : '') . '</td>';
+							echo '</td><td align="right">' . (strlen($row[$val]) ? number_format($row[$val], 0, '.', lang(',')) : '&nbsp;');
 						}
 					} else {
 						echo '&nbsp;</td><th><a href="' . htmlspecialchars($SELF) . 'createv=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . '</a></th><td colspan="8">' . lang('View');
