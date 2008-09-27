@@ -1,8 +1,9 @@
 <?php
 $where = where($_GET);
+$update = ($where && !$_GET["clone"]);
 $fields = fields($_GET["edit"]);
 foreach ($fields as $name => $field) {
-	if (isset($_GET["default"]) ? $field["auto_increment"] || preg_match('~text|blob~', $field["type"]) : !isset($field["privileges"][$where && !$_GET["clone"] ? "update" : "insert"])) {
+	if (isset($_GET["default"]) ? $field["auto_increment"] || preg_match('~text|blob~', $field["type"]) : !isset($field["privileges"][$update ? "update" : "insert"])) {
 		unset($fields[$name]);
 	}
 }
@@ -29,7 +30,7 @@ if ($_POST && !$error) {
 		}
 		if (isset($_GET["default"])) {
 			query_redirect("ALTER TABLE " . idf_escape($_GET["edit"]) . implode(",", $set), $location, lang('Default values has been set.'));
-		} elseif ($where && !$_GET["clone"]) {
+		} elseif ($update) {
 			query_redirect("UPDATE " . idf_escape($_GET["edit"]) . " SET " . implode(", ", $set) . " WHERE " . implode(" AND ", $where) . " LIMIT 1", $location, lang('Item has been updated.'));
 		} else {
 			query_redirect("INSERT INTO " . idf_escape($_GET["edit"]) . " SET " . implode(", ", $set), $location, lang('Item has been inserted.'));
@@ -94,8 +95,8 @@ if ($fields) {
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
 <?php if ($fields) { ?>
 <input type="submit" value="<?php echo lang('Save'); ?>" />
-<?php if (!isset($_GET["default"])) { ?><input type="submit" name="insert" value="<?php echo ($where && !$_GET["clone"] ? lang('Save and continue edit') : lang('Save and insert next')); ?>" /><?php } ?>
+<?php if (!isset($_GET["default"])) { ?><input type="submit" name="insert" value="<?php echo ($update ? lang('Save and continue edit') : lang('Save and insert next')); ?>" /><?php } ?>
 <?php } ?>
-<?php if ($where && !$_GET["clone"]) { ?> <input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?>');" /><?php } ?>
+<?php if ($update) { ?> <input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?>');" /><?php } ?>
 </p>
 </form>

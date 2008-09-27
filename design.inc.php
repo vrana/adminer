@@ -35,7 +35,7 @@ function toggle(id) {
 			}
 			foreach ($breadcrumb as $key => $val) {
 				if (strlen($val)) {
-					echo '<a href="' . htmlspecialchars($SELF) . "$key=" . ($key != "privileges" ? urlencode($val) : "") . '">' . htmlspecialchars($val) . '</a> &raquo; ';
+					echo '<a href="' . htmlspecialchars("$SELF$key=") . ($key != "privileges" ? urlencode($val) : "") . '">' . htmlspecialchars($val) . '</a> &raquo; ';
 				}
 			}
 		}
