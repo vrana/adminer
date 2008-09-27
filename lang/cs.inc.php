@@ -203,4 +203,6 @@ $translations = array(
 	'Move to other database' => 'Přesunout do jiné databáze',
 	'Move' => 'Přesunout',
 	'Engine' => 'Úložiště',
+	'Save and continue edit' => 'Uložit a pokračovat v editaci',
+	'clone' => 'klonovat',
 );

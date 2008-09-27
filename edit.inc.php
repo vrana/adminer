@@ -2,12 +2,12 @@
 $where = where($_GET);
 $fields = fields($_GET["edit"]);
 foreach ($fields as $name => $field) {
-	if (isset($_GET["default"]) ? $field["auto_increment"] || preg_match('~text|blob~', $field["type"]) : !isset($field["privileges"][$where ? "update" : "insert"])) {
+	if (isset($_GET["default"]) ? $field["auto_increment"] || preg_match('~text|blob~', $field["type"]) : !isset($field["privileges"][$where && !$_GET["clone"] ? "update" : "insert"])) {
 		unset($fields[$name]);
 	}
 }
 if ($_POST && !$error) {
-	$location = $SELF . (isset($_GET["default"]) ? "table=" : ($_POST["insert"] ? "edit=" : "select=")) . urlencode($_GET["edit"]);
+	$location = ($_POST["insert"] ? $_SERVER["REQUEST_URI"] : $SELF . (isset($_GET["default"]) ? "table=" : "select=") . urlencode($_GET["edit"]));
 	if (isset($_POST["delete"])) {
 		query_redirect("DELETE FROM " . idf_escape($_GET["edit"]) . " WHERE " . implode(" AND ", $where) . " LIMIT 1", $location, lang('Item has been deleted.'));
 	} else {
@@ -29,7 +29,7 @@ if ($_POST && !$error) {
 		}
 		if (isset($_GET["default"])) {
 			query_redirect("ALTER TABLE " . idf_escape($_GET["edit"]) . implode(",", $set), $location, lang('Default values has been set.'));
-		} elseif ($where) {
+		} elseif ($where && !$_GET["clone"]) {
 			query_redirect("UPDATE " . idf_escape($_GET["edit"]) . " SET " . implode(", ", $set) . " WHERE " . implode(" AND ", $where) . " LIMIT 1", $location, lang('Item has been updated.'));
 		} else {
 			query_redirect("INSERT INTO " . idf_escape($_GET["edit"]) . " SET " . implode(", ", $set), $location, lang('Item has been inserted.'));
@@ -47,7 +47,7 @@ if ($_POST) {
 } elseif ($where) {
 	$select = array();
 	foreach ($fields as $name => $field) {
-		if (isset($field["privileges"]["select"]) && !preg_match('~binary|blob~', $field["type"])) {
+		if (isset($field["privileges"]["select"]) && !preg_match('~binary|blob~', $field["type"]) && (!$_GET["clone"] || !$field["auto_increment"])) {
 			$select[] = ($field["type"] == "enum" || $field["type"] == "set" ? "1*" . idf_escape($name) . " AS " : "") . idf_escape($name);
 		}
 	}
@@ -94,8 +94,8 @@ if ($fields) {
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
 <?php if ($fields) { ?>
 <input type="submit" value="<?php echo lang('Save'); ?>" />
-<?php if (!isset($_GET["default"])) { ?><input type="submit" name="insert" value="<?php echo lang('Save and insert next'); ?>" /><?php } ?>
+<?php if (!isset($_GET["default"])) { ?><input type="submit" name="insert" value="<?php echo ($where && !$_GET["clone"] ? lang('Save and continue edit') : lang('Save and insert next')); ?>" /><?php } ?>
 <?php } ?>
-<?php if ($where) { ?> <input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?>');" /><?php } ?>
+<?php if ($where && !$_GET["clone"]) { ?> <input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?>');" /><?php } ?>
 </p>
 </form>

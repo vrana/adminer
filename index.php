@@ -159,7 +159,7 @@ if (isset($_GET["download"])) {
 				while ($row = $result->fetch_assoc()) {
 					echo '<tr class="nowrap"><td>' . (isset($row["Rows"]) ? '<input type="checkbox" name="tables[]" value="' . htmlspecialchars($row["Name"]) . '"' . (in_array($row["Name"], (array) $_POST["tables"], true) ? ' checked="checked"' : '') . ' /></td><th><a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . "</a></th><td align='left'>$row[Engine]</td><td align='left'>$row[Collation]" : '&nbsp;</td><th><a href="' . htmlspecialchars($SELF) . 'view=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . '</a></th><td colspan="6">' . lang('View'));
 					$row["count"] = $mysql->result($mysql->query("SELECT COUNT(*) FROM " . idf_escape($row["Name"])));
-					foreach ((isset($row["Rows"]) ? array("Data_length" => "create", "Index_length" => "indexes", "Data_free" => "", "Auto_increment" => "", "count" => "select") : array("count" => "select")) as $key => $link) {
+					foreach ((isset($row["Rows"]) ? array("Data_length" => "create", "Index_length" => "indexes", "Data_free" => "", "Auto_increment" => "") : array()) + array("count" => "select") as $key => $link) {
 						$num = (strlen($row[$key]) ? number_format($row[$key], 0, '.', lang(',')) : '&nbsp;');
 						echo '</td><td align="right">' . ($link ? '<a href="' . htmlspecialchars($SELF) . "$link=" . urlencode($row["Name"]) . '">' . "$num</a>" : $num);
 					}
