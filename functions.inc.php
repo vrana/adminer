@@ -31,12 +31,14 @@ function optionlist($options, $selected = array()) {
 
 function get_vals($query) {
 	global $mysql;
-	$result = $mysql->query($query);
 	$return = array();
-	while ($row = $result->fetch_row()) {
-		$return[] = $row[0];
+	$result = $mysql->query($query);
+	if ($result) {
+		while ($row = $result->fetch_row()) {
+			$return[] = $row[0];
+		}
+		$result->free();
 	}
-	$result->free();
 	return $return;
 }
 

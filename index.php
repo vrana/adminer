@@ -166,7 +166,8 @@ if (isset($_GET["download"])) {
 				}
 				echo "</table>\n";
 				echo "<p><input type='hidden' name='token' value='$token' /><input type='submit' value='" . lang('Analyze') . "' /> <input type='submit' name='optimize' value='" . lang('Optimize') . "' /> <input type='submit' name='check' value='" . lang('Check') . "' /> <input type='submit' name='repair' value='" . lang('Repair') . "' /> <input type='submit' name='truncate' value='" . lang('Truncate') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\" /> <input type='submit' name='drop' value='" . lang('Drop') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\" /></p>\n";
-				echo "<p>" . lang('Move to other database') . ": <select name='target'>" . optionlist(get_databases(), (isset($_POST["target"]) ? $_POST["target"] : $_GET["db"])) . "</select> <input type='submit' name='move' value='" . lang('Move') . "' /></p>\n";
+				$db = (isset($_POST["target"]) ? $_POST["target"] : $_GET["db"]);
+				echo "<p>" . lang('Move to other database') . (get_databases() ? ": <select name='target'>" . optionlist(get_databases(), $db) . "</select>" : ': <input name="target" value="' . htmlspecialchars($db) . '" />') . " <input type='submit' name='move' value='" . lang('Move') . "' /></p>\n";
 				echo "</form>\n";
 			}
 			$result->free();
