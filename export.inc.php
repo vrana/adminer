@@ -32,7 +32,7 @@ function dump_table($table, $style, $is_view = false) {
 				}
 				if ($row_size > $max_packet) {
 					$max_packet = min(1073741824, 1024 * ceil($row_size / 1024));
-					echo "SET max_allowed_packet = $max_packet, GLOBAL max_allowed_packet = $max_packet;\n";
+					echo "SET max_allowed_packet = $max_packet;\n";
 				}
 			}
 		}

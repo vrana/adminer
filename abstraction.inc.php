@@ -19,6 +19,9 @@ if (extension_loaded("mysqli")) {
 		}
 		
 		function result($result, $field = 0) {
+			if (!$result) {
+				return false;
+			}
 			$row = $result->fetch_array();
 			return $row[$field];
 		}
@@ -72,6 +75,9 @@ if (extension_loaded("mysqli")) {
 		}
 		
 		function result($result, $field = 0) {
+			if (!$result) {
+				return false;
+			}
 			return mysql_result($result->_result, 0, $field);
 		}
 		
@@ -160,6 +166,9 @@ if (extension_loaded("mysqli")) {
 		}
 		
 		function result($result, $field = 0) {
+			if (!$result) {
+				return false;
+			}
 			$row = $result->fetch();
 			return $row[$field];
 		}
