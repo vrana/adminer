@@ -83,6 +83,9 @@ if (isset($_GET["download"])) {
 		if (isset($_GET["default"])) {
 			$_GET["edit"] = $_GET["default"];
 		}
+		if (isset($_GET["select"]) && $_POST["edit"]) {
+			$_GET["edit"] = $_GET["select"];
+		}
 		if (isset($_GET["callf"])) {
 			$_GET["call"] = $_GET["callf"];
 		}

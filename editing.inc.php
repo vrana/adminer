@@ -2,61 +2,73 @@
 function input($name, $field, $value) {
 	global $types;
 	$name = htmlspecialchars(bracket_escape($name));
-	$onchange = ($field["null"] ? ' onchange="this.form[\'null[' . addcslashes($name, "\r\n'\\") . ']\'].checked = false;"' : '');
 	if ($field["type"] == "enum") {
+		if (isset($_GET["select"])) {
+			echo ' <label><input type="radio" name="fields[' . $name . ']" value="-1" checked="checked" /><em>' . lang('original') . '</em></label>';
+		}
+		if ($field["null"]) {
+			echo ' <label><input type="radio" name="fields[' . $name . ']" value=""' . (isset($value) || isset($_GET["select"]) ? '' : ' checked="checked"') . ' /><em>NULL</em></label>';
+		}
 		if (!isset($_GET["default"])) {
 			echo '<input type="radio" name="fields[' . $name . ']" value="0"' . ($value === 0 ? ' checked="checked"' : '') . ' />';
 		}
 		preg_match_all("~'((?:[^']+|'')*)'~", $field["length"], $matches);
 		foreach ($matches[1] as $i => $val) {
 			$val = stripcslashes(str_replace("''", "'", $val));
-			$id = "field-$name-" . ($i+1);
 			$checked = (is_int($value) ? $value == $i+1 : $value === $val);
-			echo ' <label for="' . $id . '"><input type="radio" name="fields[' . $name . ']" id="' . $id . '" value="' . (isset($_GET["default"]) ? (strlen($val) ? htmlspecialchars($val) : " ") : $i+1) . '"' . ($checked ? ' checked="checked"' : '') . ' />' . htmlspecialchars($val) . '</label>';
+			echo ' <label><input type="radio" name="fields[' . $name . ']" value="' . (isset($_GET["default"]) ? (strlen($val) ? htmlspecialchars($val) : " ") : $i+1) . '"' . ($checked ? ' checked="checked"' : '') . ' />' . htmlspecialchars($val) . '</label>';
 		}
-		if ($field["null"]) {
-			$id = "field-$name-";
-			echo ' <label for="' . $id . '"><input type="radio" name="fields[' . $name . ']" id="' . $id . '" value=""' . (isset($value) ? '' : ' checked="checked"') . ' />' . lang('NULL') . '</label>';
-		}
-	} elseif ($field["type"] == "set") { //! 64 bits
-		preg_match_all("~'((?:[^']+|'')*)'~", $field["length"], $matches);
-		foreach ($matches[1] as $i => $val) {
-			$val = stripcslashes(str_replace("''", "'", $val));
-			$id = "field-$name-" . ($i+1);
-			$checked = (is_int($value) ? ($value >> $i) & 1 : in_array($val, explode(",", $value), true));
-			echo ' <input type="checkbox" name="fields[' . $name . '][' . $i . ']" id="' . $id . '" value="' . (isset($_GET["default"]) ? htmlspecialchars($val) : 1 << $i) . '"' . ($checked ? ' checked="checked"' : '') . $onchange . ' /><label for="' . $id . '">' . htmlspecialchars($val) . '</label>';
-		}
-	} elseif (strpos($field["type"], "text") !== false) {
-		echo '<textarea name="fields[' . $name . ']" cols="50" rows="12"' . $onchange . '>' . htmlspecialchars($value) . '</textarea>';
-	} elseif (preg_match('~binary|blob~', $field["type"])) {
-		echo (ini_get("file_uploads") ? '<input type="file" name="' . $name . '"' . $onchange . ' />' : lang('File uploads are disabled.') . ' ');
 	} else {
-		echo '<input name="fields[' . $name . ']" value="' . htmlspecialchars($value) . '"' . (preg_match('~^([0-9]+)(,([0-9]+))?$~', $field["length"], $match) ? " maxlength='" . ($match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) . "'" : ($types[$field["type"]] ? " maxlength='" . $types[$field["type"]] . "'" : '')) . $onchange . ' />';
-	}
-	if ($field["null"] && $field["type"] != "enum") {
-		$id = "null-$name";
-		echo '<label for="' . $id . '"><input type="checkbox" name="null[' . $name . ']" value="1" id="' . $id . '"' . (isset($value) ? '' : ' checked="checked"') . ' />' . lang('NULL') . '</label>';
+		$first = (isset($_GET["select"]) ? 2 : 1);
+		$onchange = ($field["null"] || isset($_GET["select"]) ? ' onchange="var f = this.form[\'function[' . addcslashes($name, "\r\n'\\") . ']\']; f.selectedIndex = Math.max(f.selectedIndex, ' . $first . ');"' : '');
+		$options = (preg_match('~char~', $field["type"]) ? array("", "md5", "sha1", "password", "uuid") : (preg_match('~date|time~', $field["type"]) ? array("", "now") : array("")));
+		if ($field["null"]) {
+			array_unshift($options, "NULL");
+		}
+		if (count($options) > 1 || isset($_GET["select"])) {
+			echo '<select name="function[' . $name . ']">' . (isset($_GET["select"]) ? '<option value="orig">' . lang('original') . '</option>' : '') . optionlist($options, (isset($value) ? (string) $_POST["function"][$name] : null)) . '</select>';
+		}
+		if ($field["type"] == "set") { //! 64 bits
+			preg_match_all("~'((?:[^']+|'')*)'~", $field["length"], $matches);
+			foreach ($matches[1] as $i => $val) {
+				$val = stripcslashes(str_replace("''", "'", $val));
+				$checked = (is_int($value) ? ($value >> $i) & 1 : in_array($val, explode(",", $value), true));
+				echo ' <label><input type="checkbox" name="fields[' . $name . '][' . $i . ']" value="' . (isset($_GET["default"]) ? htmlspecialchars($val) : 1 << $i) . '"' . ($checked ? ' checked="checked"' : '') . $onchange . ' />' . htmlspecialchars($val) . '</label>';
+			}
+		} elseif (strpos($field["type"], "text") !== false) {
+			echo '<textarea name="fields[' . $name . ']" cols="50" rows="12"' . $onchange . '>' . htmlspecialchars($value) . '</textarea>';
+		} elseif (preg_match('~binary|blob~', $field["type"])) {
+			echo (ini_get("file_uploads") ? '<input type="file" name="' . $name . '"' . $onchange . ' />' : lang('File uploads are disabled.') . ' ');
+		} else {
+			echo '<input name="fields[' . $name . ']" value="' . htmlspecialchars($value) . '"' . (preg_match('~^([0-9]+)(,([0-9]+))?$~', $field["length"], $match) ? " maxlength='" . ($match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) . "'" : ($types[$field["type"]] ? " maxlength='" . $types[$field["type"]] . "'" : '')) . $onchange . ' />';
+		}
 	}
 }
 
 function process_input($name, $field) {
 	global $mysql;
-	$name = bracket_escape($name);
-	$value = $_POST["fields"][$name];
-	if ($field["type"] != "enum" && !$field["auto_increment"] ? $_POST["null"][$name] : !strlen($value)) {
+	$idf = bracket_escape($name);
+	$value = $_POST["fields"][$idf];
+	if ($field["type"] == "enum" ? $value == -1 : $_POST["function"][$idf] == "orig") {
+		return false;
+	} elseif ($field["type"] == "enum" || $field["auto_increment"] ? !strlen($value) : $_POST["function"][$idf] == "NULL") {
 		return "NULL";
 	} elseif ($field["type"] == "enum") {
 		return (isset($_GET["default"]) ? "'" . $mysql->escape_string($value) . "'" : intval($value));
 	} elseif ($field["type"] == "set") {
 		return (isset($_GET["default"]) ? "'" . implode(",", array_map(array($mysql, 'escape_string'), (array) $value)) . "'" : array_sum((array) $value));
 	} elseif (preg_match('~binary|blob~', $field["type"])) {
-		$file = get_file($name);
+		$file = get_file($idf);
 		if (!is_string($file) && ($file != UPLOAD_ERR_NO_FILE || !$field["null"])) {
 			return false; //! report errors
 		}
 		return "_binary'" . (is_string($file) ? $mysql->escape_string($file) : "") . "'";
 	} elseif ($field["type"] == "timestamp" && $value == "CURRENT_TIMESTAMP") {
 		return $value;
+	} elseif (preg_match('~^(now|uuid)$~', $_POST["function"][$idf])) {
+		return $_POST["function"][$idf] . "()";
+	} elseif (preg_match('~^(md5|sha1|password)$~', $_POST["function"][$idf])) {
+		return $_POST["function"][$idf] . "('" . $mysql->escape_string($value) . "')";
 	} else {
 		return "'" . $mysql->escape_string($value) . "'";
 	}

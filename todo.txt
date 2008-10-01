@@ -1,14 +1,12 @@
 Add whisperer to fields with foreign key
 Highlight found fields
 MySQL 5 BIT data type
-Input function results in edit
-Bulk update - leave original, set to value, set to NULL
 Transactions in export
 Compress export and import
 Partitioning (MySQL 5.1)
 Create view and routine options
 Import CSV
-Fix database encoding - http://php.vrana.cz/prevod-kodovani-mysql.php
+Function to fix database encoding - http://php.vrana.cz/prevod-kodovani-mysql.php
 ? Execution time in sql.inc.php
 ? Save token also to cookie - for session expiration and login in other window
 ? Save uploaded files after error to session variable instead of hidden field

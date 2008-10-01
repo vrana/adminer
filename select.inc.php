@@ -58,49 +58,47 @@ $from = "FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" 
 
 if ($_POST && !$error) {
 	$result = true;
-	$deleted = 0;
-	if ($_POST["export"] || $_POST["export_result"]) {
+	$affected = 0;
+	if ($_POST["export"]) {
 		dump_headers($_GET["select"]);
 		dump_table($_GET["select"], "");
-	}
-	if (isset($_POST["truncate"])) {
-		$result = queries($where ? "DELETE FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", $where) : "TRUNCATE " . idf_escape($_GET["select"]));
-		$deleted = $mysql->affected_rows;
-	} elseif ($_POST["export_result"]) {
-		dump_data($_GET["select"], "INSERT", ($where ? "FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", $where) : ""));
-	} elseif (is_array($_POST["delete"])) {
-		foreach ($_POST["delete"] as $val) {
-			parse_str($val, $delete);
-			if ($_POST["export"]) {
-				dump_data($_GET["select"], "INSERT", "FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", where($delete)) . " LIMIT 1");
-			} else {
-				$result = queries("DELETE FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", where($delete)) . " LIMIT 1");
-				if (!$result) {
-					break;
-				}
-				$deleted += $mysql->affected_rows;
-			}
-		}
-	} elseif ($_POST["delete_selected"]) {
-		if ($_POST["export"]) {
-			dump_data($_GET["select"], "INSERT", $from);
+		if ($_POST["all"]) {
+			dump_data($_GET["select"], "INSERT", ($where ? "FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", $where) : ""));
 		} else {
-			$result1 = $mysql->query("SELECT * $from");
-			while ($row1 = $result1->fetch_assoc()) {
-				parse_str(implode("&", unique_idf($row1, $indexes)), $delete);
-				$result = queries("DELETE FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", where($delete)) . " LIMIT 1");
-				if (!$result) {
-					break;
-				}
-				$deleted += $mysql->affected_rows;
+			foreach ((array) $_POST["check"] as $val) {
+				parse_str($val, $check);
+				dump_data($_GET["select"], "INSERT", "FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", where($check)) . " LIMIT 1");
 			}
-			$result1->free();
 		}
-	}
-	if ($_POST["export"] || $_POST["export_result"]) {
 		exit;
 	}
-	query_redirect(queries(), remove_from_uri("page"), lang('%d item(s) have been deleted.', $deleted), $result, false, !$result);
+	$command = ($_POST["delete"] ? ($_POST["all"] && !$where ? "TRUNCATE " : "DELETE FROM ") : "UPDATE ") . idf_escape($_GET["select"]);
+	if (!$_POST["delete"]) {
+		$set = array();
+		foreach ($fields as $name => $field) {
+			$val = process_input($name, $field);
+			if ($val !== false) {
+				$set[] = idf_escape($name) . " = $val";
+			}
+		}
+		$command .= " SET " . implode(", ", $set);
+	}
+	if (!$_POST["delete"] && !$set) {
+		// nothing
+	} elseif ($_POST["all"]) {
+		$result = queries($command . ($where ? " WHERE " . implode(" AND ", $where) : ""));
+		$affected = $mysql->affected_rows;
+	} else {
+		foreach ((array) $_POST["check"] as $val) {
+			parse_str($val, $check);
+			$result = queries($command . " WHERE " . implode(" AND ", where($check)) . " LIMIT 1");
+			if (!$result) {
+				break;
+			}
+			$affected += $mysql->affected_rows;
+		}
+	}
+	query_redirect(queries(), remove_from_uri("page"), lang('%d item(s) have been affected.', $affected), $result, false, !$result);
 }
 page_header(lang('Select') . ": " . htmlspecialchars($_GET["select"]), ($error ? lang('Error during deleting') . ": $error" : ""));
 
@@ -156,7 +154,7 @@ function add_row(field) {
 		if ($index["type"] == "FULLTEXT") {
 			echo "(<i>" . implode("</i>, <i>", array_map('htmlspecialchars', $index["columns"])) . "</i>) AGAINST";
 			echo ' <input name="fulltext[' . $i . ']" value="' . htmlspecialchars($_GET["fulltext"][$i]) . '" />';
-			echo "<label for='boolean-$i'><input type='checkbox' name='boolean[$i]' value='1' id='boolean-$i'" . (isset($_GET["boolean"][$i]) ? " checked='checked'" : "") . " />" . lang('BOOL') . "</label>";
+			echo "<label><input type='checkbox' name='boolean[$i]' value='1'" . (isset($_GET["boolean"][$i]) ? " checked='checked'" : "") . " />" . lang('BOOL') . "</label>";
 			echo "<br />\n";
 		}
 	}
@@ -229,14 +227,14 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 			echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
 			for ($j=0; $row = $result->fetch_assoc(); $j++) {
 				if (!$j) {
-					echo '<thead><tr>' . (count($select) == count($group) ? '<td><label><input type="checkbox" name="delete_selected" value="1" onclick="var elems = this.form.elements; for (var i=0; elems.length > i; i++) if (elems[i].name == \'delete[]\') elems[i].checked = this.checked;" />' . lang('all') . '</label></td>' : '');
+					echo '<thead><tr>' . (count($select) == count($group) ? '<td><label><input type="checkbox" name="all" value="1" />' . lang('whole result') . '</label></td>' : '');
 					foreach ($row as $key => $val) {
 						echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*')) . '&amp;order%5B0%5D=' . htmlspecialchars($key) . ($_GET["order"][0] === $key && !$_GET["desc"][0] ? '&amp;desc%5B0%5D=1' : '') . '">' . htmlspecialchars($key) . "</a></th>";
 					}
 					echo "</tr></thead>\n";
 				}
 				$unique_idf = implode('&amp;', unique_idf($row, $indexes));
-				echo '<tr class="nowrap">' . (count($select) == count($group) ? '<td><input type="checkbox" name="delete[]" value="' . $unique_idf . '" /> <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a> <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '&amp;clone=1">' . lang('clone') . '</a></td>' : '');
+				echo '<tr class="nowrap">' . (count($select) == count($group) ? '<td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false;" /> <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a> <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '&amp;clone=1">' . lang('clone') . '</a></td>' : '');
 				foreach ($row as $key => $val) {
 					if (!isset($val)) {
 						$val = "<i>NULL</i>";
@@ -289,8 +287,8 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 			}
 			echo " (" . lang('%d row(s)', $found_rows) . ")</p>\n";
 			
-			echo "<fieldset><legend>" . lang('Delete') . "</legend><input type='hidden' name='token' value='$token' />" . (count($group) == count($select) ? "<input type='submit' value='" . lang('Delete selected') . "' /> " : "") . "<input type='submit' name='truncate' value='" . lang('Truncate result') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\" /></fieldset>\n";
-			echo "<fieldset><legend>" . lang('Export') . "</legend>$dump_options " . (count($group) == count($select) ? "<input type='submit' name='export' value='" . lang('Export selected') . "' /> " : "") . "<input type='submit' name='export_result' value='" . lang('Export result') . "' /></fieldset>\n";
+			echo "<fieldset><legend>" . lang('Edit') . "</legend><input type='hidden' name='token' value='$token' /><input type='submit' name='edit' value='" . lang('Edit') . "' /> <input type='submit' name='delete' value='" . lang('Delete') . "' onclick=\"return !this.form['all'].checked || confirm('" . lang('Are you sure?') . "');\" /></fieldset>\n";
+			echo "<fieldset><legend>" . lang('Export') . "</legend>$dump_options <input type='submit' name='export' value='" . lang('Export') . "' /></fieldset>\n";
 			echo "</form>\n";
 		}
 		$result->free();

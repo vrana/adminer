@@ -1,5 +1,5 @@
 <?php
-$where = where($_GET);
+$where = (isset($_GET["select"]) ? array() : where($_GET));
 $update = ($where && !$_GET["clone"]);
 $fields = fields($_GET["edit"]);
 foreach ($fields as $name => $field) {
@@ -7,7 +7,7 @@ foreach ($fields as $name => $field) {
 		unset($fields[$name]);
 	}
 }
-if ($_POST && !$error) {
+if ($_POST && !$error && !isset($_GET["select"])) {
 	$location = ($_POST["insert"] ? $_SERVER["REQUEST_URI"] : $SELF . (isset($_GET["default"]) ? "table=" : "select=") . urlencode($_GET["edit"]));
 	if (isset($_POST["delete"])) {
 		query_redirect("DELETE FROM " . idf_escape($_GET["edit"]) . " WHERE " . implode(" AND ", $where) . " LIMIT 1", $location, lang('Item has been deleted.'));
@@ -37,14 +37,11 @@ if ($_POST && !$error) {
 		}
 	}
 }
-page_header((isset($_GET["default"]) ? lang('Default values') : ($_GET["where"] ? lang('Edit') : lang('Insert'))), $error, array((isset($_GET["default"]) ? "table" : "select") => $_GET["edit"]), $_GET["edit"]);
+page_header((isset($_GET["default"]) ? lang('Default values') : ($_GET["where"] || isset($_GET["select"]) ? lang('Edit') : lang('Insert'))), $error, array((isset($_GET["default"]) ? "table" : "select") => $_GET["edit"]), $_GET["edit"]);
 
 unset($row);
 if ($_POST) {
 	$row = (array) $_POST["fields"];
-	foreach ((array) $_POST["null"] as $key => $val) {
-		$row[$key] = null;
-	}
 } elseif ($where) {
 	$select = array();
 	foreach ($fields as $name => $field) {
@@ -78,13 +75,12 @@ if ($fields) {
 		}
 		input($name, $field, $value);
 		if (isset($_GET["default"]) && $field["type"] == "timestamp") {
-			$id = htmlspecialchars("on_update-$name");
 			if (!isset($create) && !$_POST) {
 				//! disable sql_mode NO_FIELD_OPTIONS
 				$create = $mysql->result($mysql->query("SHOW CREATE TABLE " . idf_escape($_GET["edit"])), 1);
 			}
 			$checked = ($_POST ? $_POST["on_update"][bracket_escape($name)] : preg_match("~\n\\s*" . preg_quote(idf_escape($name), '~') . " timestamp.* on update CURRENT_TIMESTAMP~i", $create));
-			echo '<label for="' . $id . '"><input type="checkbox" name="on_update[' . htmlspecialchars(bracket_escape($name)) . ']" id="' . $id . '" value="1"' . ($checked ? ' checked="checked"' : '') . ' />' . lang('ON UPDATE CURRENT_TIMESTAMP') . '</label>';
+			echo '<label><input type="checkbox" name="on_update[' . htmlspecialchars(bracket_escape($name)) . ']" value="1"' . ($checked ? ' checked="checked"' : '') . ' />' . lang('ON UPDATE CURRENT_TIMESTAMP') . '</label>';
 		}
 		echo "</td></tr>\n";
 	}
@@ -93,9 +89,17 @@ if ($fields) {
 ?>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
-<?php if ($fields) { ?>
+<?php
+if (isset($_GET["select"])) {
+	foreach ((array) $_POST["check"] as $val) {
+		echo '<input type="hidden" name="check[]" value="' . htmlspecialchars($val) . '" />';
+	}
+	echo ($_POST["all"] ? "<input type='hidden' name='all' value='1' />\n" : "\n");
+}
+if ($fields) {
+	?>
 <input type="submit" value="<?php echo lang('Save'); ?>" />
-<?php if (!isset($_GET["default"])) { ?><input type="submit" name="insert" value="<?php echo ($update ? lang('Save and continue edit') : lang('Save and insert next')); ?>" /><?php } ?>
+<?php if (!isset($_GET["default"]) && !isset($_GET["select"])) { ?><input type="submit" name="insert" value="<?php echo ($update ? lang('Save and continue edit') : lang('Save and insert next')); ?>" /><?php } ?>
 <?php } ?>
 <?php if ($update) { ?> <input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?>');" /><?php } ?>
 </p>
