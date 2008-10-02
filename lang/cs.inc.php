@@ -204,4 +204,5 @@ $translations = array(
 	'original' => 'původní',
 	'%d item(s) have been affected.' => array('Byl ovlivněn %d záznam.', 'Byly ovlivněny %d záznamy.', 'Bylo ovlivněno %d záznamů.'),
 	'whole result' => 'celý výsledek',
+	'Tables have been dropped.' => 'Tabulky byla odstraněny.',
 );

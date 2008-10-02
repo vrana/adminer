@@ -140,8 +140,12 @@ if (isset($_GET["download"])) {
 					$result = queries("RENAME TABLE " . implode(", ", $rename));
 					$message = lang('Tables have been moved.');
 				} elseif ($result = queries((isset($_POST["optimize"]) ? "OPTIMIZE" : (isset($_POST["check"]) ? "CHECK" : (isset($_POST["repair"]) ? "REPAIR" : (isset($_POST["drop"]) ? "DROP" : "ANALYZE")))) . " TABLE " . implode(", ", array_map('idf_escape', $_POST["tables"])))) {
-					while ($row = $result->fetch_assoc()) {
-						$message .= htmlspecialchars("$row[Table]: $row[Msg_text]") . "<br />";
+					if (isset($_POST["drop"])) {
+						$message = lang('Tables have been dropped.');
+					} else {
+						while ($row = $result->fetch_assoc()) {
+							$message .= htmlspecialchars("$row[Table]: $row[Msg_text]") . "<br />";
+						}
 					}
 				}
 				query_redirect(queries(), substr($SELF, 0, -1), $message, $result, false, !$result);
