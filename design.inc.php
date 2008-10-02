@@ -49,7 +49,11 @@ function toggle(id) {
 	if (!$_SESSION["tokens"][$_GET["server"]]["?logout"]) {
 		$_SESSION["tokens"][$_GET["server"]]["?logout"] = rand(1, 1e6);
 	}
-	if (isset($_SESSION["databases"][$_GET["server"]]) && !isset($_GET["sql"])) {
+	$databases = &$_SESSION["databases"][$_GET["server"]];
+	if (strlen($_GET["db"]) && $databases && !in_array($_GET["db"], $databases, true)) {
+		$databases = null;
+	}
+	if (isset($databases) && !isset($_GET["sql"])) {
 		session_write_close();
 	}
 	if ($error) {
