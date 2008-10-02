@@ -12,6 +12,19 @@ if (!ini_get("session.auto_start")) {
 	session_set_cookie_params(ini_get("session.cookie_lifetime"), preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]));
 	session_start();
 }
+if (isset($_SESSION["coverage"])) {
+	function save_coverage() {
+		foreach (xdebug_get_code_coverage() as $filename => $lines) {
+			foreach ($lines as $l => $val) {
+				if (!$_SESSION["coverage"][$filename][$l] || $val > 0) {
+					$_SESSION["coverage"][$filename][$l] = $val;
+				}
+			}
+		}
+	}
+	xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+	register_shutdown_function('save_coverage');
+}
 if (get_magic_quotes_gpc()) {
     $process = array(&$_GET, &$_POST);
     while (list($key, $val) = each($process)) {

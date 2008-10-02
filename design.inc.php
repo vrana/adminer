@@ -53,7 +53,7 @@ function toggle(id) {
 	if (strlen($_GET["db"]) && $databases && !in_array($_GET["db"], $databases, true)) {
 		$databases = null;
 	}
-	if (isset($databases) && !isset($_GET["sql"])) {
+	if (isset($databases) && !isset($_GET["sql"]) && !isset($_SESSION["coverage"])) {
 		session_write_close();
 	}
 	if ($error) {
