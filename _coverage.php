@@ -19,11 +19,16 @@ function xhtml_open_tags($s) {
 	return $return;
 }
 
+if (!extension_loaded("xdebug")) {
+	echo "<p>Xdebug has to be enabled.</p>\n";
+}
+
 if ($_GET["start"]) {
 	$_SESSION["coverage"] = array();
 	header("Location: .");
 	exit;
-} elseif ($_GET["filename"]) {
+}
+if ($_GET["filename"]) {
 	$filename = basename($_GET["filename"]);
 	$coverage = $_SESSION["coverage"][realpath($filename)];
 	$file = explode("<br />", highlight_file($filename, true));
@@ -52,15 +57,22 @@ if ($_GET["start"]) {
 		}
 		$s .= "$line<br />\n";
 	}
-} elseif (isset($_SESSION["coverage"])) {
-	echo "<ul>\n";
+} else {
+	echo "<table border='0' cellspacing='0' cellpadding='1'>\n";
 	foreach (glob("*.php") as $filename) {
 		if ($filename{0} != "_") {
 			$coverage = $_SESSION["coverage"][realpath($filename)];
-			echo "<li><a href='_coverage.php?filename=$filename'>$filename</a> (" . (isset($coverage) ? "tested" : "untested") . ")</li>\n";
+			echo "<tr><td align='right' style='background-color: ";
+			if (isset($coverage)) {
+				$values = array_count_values($coverage);
+				$ratio = $values[-1] / count($coverage);
+				echo ($ratio ? "Silver" : "#C0FFC0") . ";'>" . round(100 - 100 * $ratio);
+			} else {
+				echo "#FFC0C0;'>0";
+			}
+			echo "%</td><td><a href='_coverage.php?filename=$filename'>$filename</a></td></tr>\n";
 		}
 	}
-	echo "</ul>\n";
+	echo "</table>\n";
+	echo "<p><a href='_coverage.php?start=1'>Start new coverage</a> (requires <a href='http://www.xdebug.org'>Xdebug</a>)</p>\n";
 }
-?>
-<p><a href="_coverage.php?start=1">Start new coverage</a> (requires <a href="http://www.xdebug.org">Xdebug</a>)</p>
