@@ -7,14 +7,16 @@ page_header(lang('SQL command'), $error);
 
 if (!$error && $_POST) {
 	if (is_string($query = (isset($_POST["query"]) ? $_POST["query"] : get_file("sql_file")))) {
+		@set_time_limit(0);
 		$delimiter = ";";
 		$offset = 0;
 		$empty = true;
+		$space = "(\\s+|/\\*.*\\*/|(#|-- )[^\n]*\n|--\n)";
 		while (rtrim($query)) {
 			if (!$offset && preg_match('~^\\s*DELIMITER\\s+(.+)~i', $query, $match)) {
-				$delimiter = preg_quote($match[1], '~');
+				$delimiter = $match[1];
 				$query = substr($query, strlen($match[0]));
-			} elseif (preg_match("~$delimiter|['`\"]|/\\*|-- |#|\$~", $query, $match, PREG_OFFSET_CAPTURE, $offset)) {
+			} elseif (preg_match('(' . preg_quote($delimiter) . '|[\'`"]|/\\*|-- |#|$)', $query, $match, PREG_OFFSET_CAPTURE, $offset)) {
 				if ($match[0][0] && $match[0][0] != $delimiter) {
 					$pattern = ($match[0][0] == "-- " || $match[0][0] == "#" ? '~.*~' : ($match[0][0] == "/*" ? '~.*\\*/~sU' : '~\\G([^\\\\' . $match[0][0] . ']+|\\\\.)*(' . $match[0][0] . '|$)~s'));
 					preg_match($pattern, $query, $match, PREG_OFFSET_CAPTURE, $match[0][1] + 1);
@@ -22,6 +24,7 @@ if (!$error && $_POST) {
 				} else {
 					$empty = false;
 					echo "<pre class='jush-sql'>" . htmlspecialchars(substr($query, 0, $match[0][1])) . "</pre>\n";
+					flush();
 					//! don't allow changing of character_set_results, convert encoding of displayed query
 					if (!$mysql->multi_query(substr($query, 0, $match[0][1]))) {
 						echo "<p class='error'>" . lang('Error in query') . ": " . htmlspecialchars($mysql->error) . "</p>\n";
@@ -31,7 +34,7 @@ if (!$error && $_POST) {
 							if (is_object($result)) {
 								select($result);
 							} else {
-								if (preg_match("~^\\s*(CREATE|DROP)(\\s+|/\\*.*\\*/|(#|-- )[^\n]*\n)+(DATABASE|SCHEMA)\\b~isU", $query)) {
+								if (preg_match("~^$space*(CREATE|DROP)$space+(DATABASE|SCHEMA)\\b~isU", $query)) {
 									unset($_SESSION["databases"][$_GET["server"]]);
 								}
 								echo "<p class='message'>" . lang('Query executed OK, %d row(s) affected.', $mysql->affected_rows) . "</p>\n";
