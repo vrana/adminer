@@ -49,16 +49,7 @@ function auth_error() {
 	</table>
 	<p>
 <?php
-	$process = $_POST; // expired session
-	while (list($key, $val) = each($process)) {
-		if (is_array($val)) {
-			foreach ($val as $k => $v) {
-				$process[$key . "[$k]"] = $v;
-			}
-		} elseif (!in_array($key, $ignore)) {
-			echo '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($val) . '" />';
-		}
-	}
+	hidden_fields($_POST, $ignore); // expired session
 	foreach ($_FILES as $key => $val) {
 		echo '<input type="hidden" name="files[' . htmlspecialchars($key) . ']" value="' . ($val["error"] ? $val["error"] : base64_encode(file_get_contents($val["tmp_name"]))) . '" />';
 	}

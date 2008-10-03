@@ -29,13 +29,14 @@ function lang($idf, $number = null) {
 }
 
 function switch_lang() {
-	global $langs;
-	echo "<p id='lang'>" . lang('Language') . ":";
-	$base = remove_from_uri("lang");
+	global $LANG, $langs;
+	echo "<form action=''>\n<div id='lang'>";
+	hidden_fields($_GET, array('lang'));
+	echo lang('Language') . ": <select name='lang' onchange='this.form.submit();'>";
 	foreach ($langs as $lang => $val) {
-		echo ' <a href="' . htmlspecialchars($base . (strpos($base, "?") !== false ? "&" : "?")) . "lang=$lang\" title='$val'>$lang</a>";
+		echo "<option value='$lang'" . ($LANG == $lang ? " selected='selected'" : "") . ">$val</option>";
 	}
-	echo "</p>\n";
+	echo "</select>\n<noscript><div style='display: inline;'><input type='submit' value='" . lang('Use') . "' /></div></noscript>\n</div>\n</form>\n";
 }
 
 if (isset($_GET["lang"])) {

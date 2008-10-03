@@ -340,3 +340,15 @@ function table_comment(&$row) {
 		$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["Comment"]);
 	}
 }
+
+function hidden_fields($process, $ignore) {
+	while (list($key, $val) = each($process)) {
+		if (is_array($val)) {
+			foreach ($val as $k => $v) {
+				$process[$key . "[$k]"] = $v;
+			}
+		} elseif (!in_array($key, $ignore)) {
+			echo '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($val) . '" />';
+		}
+	}
+}
