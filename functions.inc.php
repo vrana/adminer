@@ -334,3 +334,9 @@ function shorten_utf8($string, $length) {
 	}
 	return nl2br(htmlspecialchars($string));
 }
+
+function table_comment(&$row) {
+	if ($row["Engine"] == "InnoDB") {
+		$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["Comment"]);
+	}
+}
