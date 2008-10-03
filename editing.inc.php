@@ -112,7 +112,7 @@ function edit_fields($fields, $collations, $type = "TABLE") {
 	$column_comments = false;
 	foreach ($fields as $i => $field) {
 		$i++;
-		$display = ($_POST["add"][$i-1] || (isset($field["field"]) && !$_POST["drop_col"][$i]));
+		$display = (isset($_POST["add"][$i-1]) || (isset($field["field"]) && !$_POST["drop_col"][$i]));
 		?>
 <tr<?php echo ($display ? "" : " style='display: none;'"); ?>>
 <?php if ($type == "PROCEDURE") { ?><td><select name="fields[<?php echo $i; ?>][inout]"><?php echo optionlist($inout, $field["inout"]); ?></select></td><?php } ?>
