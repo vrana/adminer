@@ -25,6 +25,8 @@ if (!extension_loaded("xdebug")) {
 
 if ($_GET["start"]) {
 	$_SESSION["coverage"] = array();
+	xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+	include "./index.php";
 	header("Location: .");
 	exit;
 }

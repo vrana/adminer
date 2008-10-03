@@ -24,6 +24,9 @@ if (isset($_SESSION["coverage"])) {
 	}
 	xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
 	register_shutdown_function('save_coverage');
+	if ($_GET["start"]) {
+		return;
+	}
 }
 if (get_magic_quotes_gpc()) {
     $process = array(&$_GET, &$_POST);
