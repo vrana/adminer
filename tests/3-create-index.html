@@ -24,12 +24,27 @@
 <tr>
 	<td>select</td>
 	<td>indexes[1][type]</td>
-	<td>label=INDEX</td>
+	<td>label=PRIMARY</td>
 </tr>
 <tr>
 	<td>select</td>
 	<td>indexes[1][columns][1]</td>
 	<td>label=interpret</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Alter indexes']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Multiple primary key defined</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>indexes[1][type]</td>
+	<td>label=INDEX</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
