@@ -111,7 +111,7 @@ $result->free();
 				ELSE
 					SET @alter_table = CONCAT('DROP TABLE `', REPLACE(_table_name, '`', '``'), '`');
 					PREPARE alter_command FROM @alter_table;
-					EXECUTE alter_command;
+					EXECUTE alter_command; -- returns "can't return a result set in the given context" with MySQL extension
 					DROP PREPARE alter_command;
 			END CASE;
 		END IF;
