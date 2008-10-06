@@ -6,8 +6,8 @@ function input($name, $field, $value) {
 		if (isset($_GET["select"])) {
 			echo ' <label><input type="radio" name="fields[' . $name . ']" value="-1" checked="checked" /><em>' . lang('original') . '</em></label>';
 		}
-		if ($field["null"]) {
-			echo ' <label><input type="radio" name="fields[' . $name . ']" value=""' . (isset($value) || isset($_GET["select"]) ? '' : ' checked="checked"') . ' /><em>NULL</em></label>';
+		if ($field["null"] || isset($_GET["default"])) {
+			echo ' <label><input type="radio" name="fields[' . $name . ']" value=""' . (($field["null"] ? isset($value) : strlen($value)) || isset($_GET["select"]) ? '' : ' checked="checked"') . ' />' . ($field["null"] ? '<em>NULL</em>' : '') . '</label>';
 		}
 		if (!isset($_GET["default"])) {
 			echo '<input type="radio" name="fields[' . $name . ']" value="0"' . ($value === 0 ? ' checked="checked"' : '') . ' />';
@@ -21,7 +21,10 @@ function input($name, $field, $value) {
 	} else {
 		$first = (isset($_GET["select"]) ? 2 : 1);
 		$onchange = ($field["null"] || isset($_GET["select"]) ? ' onchange="var f = this.form[\'function[' . addcslashes($name, "\r\n'\\") . ']\']; f.selectedIndex = Math.max(f.selectedIndex, ' . $first . ');"' : '');
-		$options = (preg_match('~char~', $field["type"]) ? array("", "md5", "sha1", "password", "uuid") : (preg_match('~date|time~', $field["type"]) ? array("", "now") : array("")));
+		$options = array("");
+		if (!isset($_GET["default"]) && preg_match('~char|date|time~', $field["type"])) {
+			$options = (preg_match('~char~', $field["type"]) ? array("", "md5", "sha1", "password", "uuid") : array("", "now"));
+		}
 		if ($field["null"]) {
 			array_unshift($options, "NULL");
 		}
