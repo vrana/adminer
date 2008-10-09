@@ -19,8 +19,8 @@ function input($name, $field, $value) {
 			echo ' <label><input type="radio" name="fields[' . $name . ']" value="' . (isset($_GET["default"]) ? (strlen($val) ? htmlspecialchars($val) : " ") : $i+1) . '"' . ($checked ? ' checked="checked"' : '') . ' />' . htmlspecialchars($val) . '</label>';
 		}
 	} else {
-		$first = (isset($_GET["select"]) ? 2 : 1);
-		$onchange = ($field["null"] || isset($_GET["select"]) ? ' onchange="var f = this.form[\'function[' . addcslashes($name, "\r\n'\\") . ']\']; f.selectedIndex = Math.max(f.selectedIndex, ' . $first . ');"' : '');
+		$first = $field["null"] + isset($_GET["select"]);
+		$onchange = ($first ? ' onchange="var f = this.form[\'function[' . addcslashes($name, "\r\n'\\") . ']\']; if (' . $first . ' > f.selectedIndex) f.selectedIndex = ' . $first . ';"' : '');
 		$options = array("");
 		if (!isset($_GET["default"]) && preg_match('~char|date|time~', $field["type"])) {
 			$options = (preg_match('~char~', $field["type"]) ? array("", "md5", "sha1", "password", "uuid") : array("", "now"));
