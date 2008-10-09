@@ -27,6 +27,6 @@ if ($_POST) {
 <?php if ($dropped) { ?><input type="hidden" name="dropped" value="1" /><?php } ?>
 <?php echo lang('Name'); ?>: <input name="name" value="<?php echo htmlspecialchars($row["name"]); ?>" maxlength="64" />
 <input type="submit" value="<?php echo lang('Save'); ?>" />
-<?php if (strlen($_GET["createv"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?>');" /><?php } ?>
+<?php if (strlen($_GET["createv"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?> /><?php } ?>
 </p>
 </form>

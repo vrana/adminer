@@ -75,6 +75,7 @@ if (isset($_GET["download"])) {
 	$inout = array("IN", "OUT", "INOUT");
 	$functions = array("char_length", "from_unixtime", "hex", "lower", "round", "sec_to_time", "time_to_sec", "unix_timestamp", "upper");
 	$grouping = array("avg", "count", "distinct", "group_concat", "max", "min", "sum");
+	$confirm = " onclick=\"return confirm('" . lang('Are you sure?') . "');\"";
 	
 	$error = "";
 	if (isset($_GET["table"])) {
@@ -192,7 +193,7 @@ if (isset($_GET["download"])) {
 					echo "</td></tr>\n";
 				}
 				echo "</table>\n";
-				echo "<p><input type='hidden' name='token' value='$token' /><input type='submit' value='" . lang('Analyze') . "' /> <input type='submit' name='optimize' value='" . lang('Optimize') . "' /> <input type='submit' name='check' value='" . lang('Check') . "' /> <input type='submit' name='repair' value='" . lang('Repair') . "' /> <input type='submit' name='truncate' value='" . lang('Truncate') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\" /> <input type='submit' name='drop' value='" . lang('Drop') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\" /></p>\n";
+				echo "<p><input type='hidden' name='token' value='$token' /><input type='submit' value='" . lang('Analyze') . "' /> <input type='submit' name='optimize' value='" . lang('Optimize') . "' /> <input type='submit' name='check' value='" . lang('Check') . "' /> <input type='submit' name='repair' value='" . lang('Repair') . "' /> <input type='submit' name='truncate' value='" . lang('Truncate') . "'$confirm /> <input type='submit' name='drop' value='" . lang('Drop') . "'$confirm /></p>\n";
 				$db = (isset($_POST["target"]) ? $_POST["target"] : $_GET["db"]);
 				echo "<p>" . lang('Move to other database') . (get_databases() ? ": <select name='target'>" . optionlist(get_databases(), $db) . "</select>" : ': <input name="target" value="' . htmlspecialchars($db) . '" />') . " <input type='submit' name='move' value='" . lang('Move') . "' /></p>\n";
 				echo "</form>\n";

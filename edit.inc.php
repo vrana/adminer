@@ -96,6 +96,6 @@ if ($fields) {
 <input type="submit" value="<?php echo lang('Save'); ?>" />
 <?php if (!isset($_GET["default"]) && !isset($_GET["select"])) { ?><input type="submit" name="insert" value="<?php echo ($update ? lang('Save and continue edit') : lang('Save and insert next')); ?>" /><?php } ?>
 <?php } ?>
-<?php if ($update) { ?> <input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?>');" /><?php } ?>
+<?php if ($update) { ?> <input type="submit" name="delete" value="<?php echo lang('Delete'); ?>"<?php echo $confirm; ?> /><?php } ?>
 </p>
 </form>

@@ -300,7 +300,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 			}
 			echo " (" . lang('%d row(s)', $found_rows) . ")</p>\n";
 			
-			echo "<fieldset><legend>" . lang('Edit') . "</legend><input type='hidden' name='token' value='$token' /><input type='submit' value='" . lang('Edit') . "' /> <input type='submit' name='clone' value='" . lang('Clone') . "' /> <input type='submit' name='delete' value='" . lang('Delete') . "' onclick=\"return !this.form['all'].checked || confirm('" . lang('Are you sure?') . "');\" /></fieldset>\n";
+			echo "<fieldset><legend>" . lang('Edit') . "</legend><input type='hidden' name='token' value='$token' /><input type='submit' value='" . lang('Edit') . "' /> <input type='submit' name='clone' value='" . lang('Clone') . "' /> <input type='submit' name='delete' value='" . lang('Delete') . "'$confirm /></fieldset>\n";
 			echo "<fieldset><legend>" . lang('Export') . "</legend>$dump_options <input type='submit' name='export' value='" . lang('Export') . "' /></fieldset>\n";
 			echo "</form>\n";
 		}
