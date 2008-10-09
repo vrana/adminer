@@ -244,7 +244,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 					echo "</tr></thead>\n";
 				}
 				$unique_idf = implode('&amp;', unique_idf($row, $indexes));
-				echo '<tr class="nowrap">' . (count($select) == count($group) ? '<td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false;" /> <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a> <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '&amp;clone=1">' . lang('clone') . '</a></td>' : '');
+				echo '<tr class="nowrap">' . (count($select) == count($group) ? '<td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false;" /> <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a> <a href="' . htmlspecialchars($SELF) . 'clone=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('clone') . '</a></td>' : '');
 				foreach ($row as $key => $val) {
 					if (!isset($val)) {
 						$val = "<i>NULL</i>";
