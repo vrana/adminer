@@ -49,12 +49,11 @@ if ($_POST) {
 			$select[] = ($field["type"] == "enum" || $field["type"] == "set" ? "1*" . idf_escape($name) . " AS " : "") . idf_escape($name);
 		}
 	}
+	$row = array();
 	if ($select) {
 		$result = $mysql->query("SELECT " . implode(", ", $select) . " FROM " . idf_escape($_GET["edit"]) . " WHERE " . implode(" AND ", $where) . " LIMIT 1");
 		$row = $result->fetch_assoc();
 		$result->free();
-	} else {
-		$row = array();
 	}
 }
 ?>
@@ -66,13 +65,11 @@ if ($fields) {
 	echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
 	foreach ($fields as $name => $field) {
 		echo "<tr><th>" . htmlspecialchars($name) . "</th><td>";
-		if (!isset($row)) {
-			$value = $field["default"];
-		} elseif (strlen($row[$name]) && ($field["type"] == "enum" || $field["type"] == "set")) {
-			$value = intval($row[$name]);
-		} else {
-			$value = $row[$name];
-		}
+		$value = (!isset($row) ? $field["default"] :
+			(strlen($row[$name]) && ($field["type"] == "enum" || $field["type"] == "set") ? intval($row[$name]) :
+			($_POST["clone"] && $field["auto_increment"] ? "" :
+			$row[$name]
+		)));
 		input($name, $field, $value);
 		if (isset($_GET["default"]) && $field["type"] == "timestamp") {
 			if (!isset($create) && !$_POST) {
@@ -91,10 +88,8 @@ if ($fields) {
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
 <?php
 if (isset($_GET["select"])) {
-	foreach ((array) $_POST["check"] as $val) {
-		echo '<input type="hidden" name="check[]" value="' . htmlspecialchars($val) . '" />';
-	}
-	echo ($_POST["all"] ? "<input type='hidden' name='all' value='1' />\n" : "\n");
+	hidden_fields(array("check" => (array) $_POST["check"], "clone" => $_POST["clone"], "all" => $_POST["all"]));
+	echo "<input type='hidden' name='save' value='1' />\n";
 }
 if ($fields) {
 	?>

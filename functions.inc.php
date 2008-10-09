@@ -341,7 +341,7 @@ function table_comment(&$row) {
 	}
 }
 
-function hidden_fields($process, $ignore) {
+function hidden_fields($process, $ignore = array()) {
 	while (list($key, $val) = each($process)) {
 		if (is_array($val)) {
 			foreach ($val as $k => $v) {

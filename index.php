@@ -99,7 +99,7 @@ if (isset($_GET["download"])) {
 		if (isset($_GET["default"])) {
 			$_GET["edit"] = $_GET["default"];
 		}
-		if (isset($_GET["select"]) && $_POST["edit"]) {
+		if (isset($_GET["select"]) && $_POST && (!$_POST["delete"] && !$_POST["export"] && !$_POST["save"])) {
 			$_GET["edit"] = $_GET["select"];
 		}
 		if (isset($_GET["callf"])) {
@@ -107,6 +107,9 @@ if (isset($_GET["download"])) {
 		}
 		if (isset($_GET["function"])) {
 			$_GET["procedure"] = $_GET["function"];
+		}
+		if (isset($_GET["clone"])) {
+			$_GET["edit"] = $_GET["clone"];
 		}
 		if (isset($_GET["sql"])) {
 			include "./sql.inc.php";

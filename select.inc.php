@@ -67,8 +67,6 @@ $limit = (isset($_GET["limit"]) ? $_GET["limit"] : "30");
 $from = "FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "") . ($group && count($group) < count($select) ? " GROUP BY " . implode(", ", $group) : "") . ($order ? " ORDER BY " . implode(", ", $order) : "") . (strlen($limit) ? " LIMIT " . intval($limit) . (intval($_GET["page"]) ? " OFFSET " . ($limit * $_GET["page"]) : "") : "");
 
 if ($_POST && !$error) {
-	$result = true;
-	$affected = 0;
 	if ($_POST["export"]) {
 		dump_headers($_GET["select"]);
 		dump_table($_GET["select"], "");
@@ -82,16 +80,20 @@ if ($_POST && !$error) {
 		}
 		exit;
 	}
-	$command = ($_POST["delete"] ? ($_POST["all"] && !$where ? "TRUNCATE " : "DELETE FROM ") : "UPDATE ") . idf_escape($_GET["select"]);
+	$result = true;
+	$affected = 0;
+	$command = ($_POST["delete"] ? ($_POST["all"] && !$where ? "TRUNCATE " : "DELETE FROM ") : ($_POST["clone"] ? "INSERT INTO " : "UPDATE ")) . idf_escape($_GET["select"]);
 	if (!$_POST["delete"]) {
 		$set = array();
 		foreach ($fields as $name => $field) {
 			$val = process_input($name, $field);
-			if ($val !== false) {
+			if ($_POST["clone"]) {
+				$set[] = ($val !== false ? $val : idf_escape($name));
+			} elseif ($val !== false) {
 				$set[] = idf_escape($name) . " = $val";
 			}
 		}
-		$command .= " SET " . implode(", ", $set);
+		$command .= ($_POST["clone"] ? " SELECT " . implode(", ", $set) . " FROM " . idf_escape($_GET["select"]) : " SET " . implode(", ", $set));
 	}
 	if (!$_POST["delete"] && !$set) {
 		// nothing
@@ -109,8 +111,9 @@ if ($_POST && !$error) {
 		}
 	}
 	query_redirect(queries(), remove_from_uri("page"), lang('%d item(s) have been affected.', $affected), $result, false, !$result);
+	//! display edit page in case of an error
 }
-page_header(lang('Select') . ": " . htmlspecialchars($_GET["select"]), ($error ? lang('Error during deleting') . ": $error" : ""));
+page_header(lang('Select') . ": " . htmlspecialchars($_GET["select"]), $error);
 
 if (isset($rights["insert"])) {
 	//! pass search values forth and back
@@ -297,7 +300,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 			}
 			echo " (" . lang('%d row(s)', $found_rows) . ")</p>\n";
 			
-			echo "<fieldset><legend>" . lang('Edit') . "</legend><input type='hidden' name='token' value='$token' /><input type='submit' name='edit' value='" . lang('Edit') . "' /> <input type='submit' name='delete' value='" . lang('Delete') . "' onclick=\"return !this.form['all'].checked || confirm('" . lang('Are you sure?') . "');\" /></fieldset>\n";
+			echo "<fieldset><legend>" . lang('Edit') . "</legend><input type='hidden' name='token' value='$token' /><input type='submit' value='" . lang('Edit') . "' /> <input type='submit' name='clone' value='" . lang('Clone') . "' /> <input type='submit' name='delete' value='" . lang('Delete') . "' onclick=\"return !this.form['all'].checked || confirm('" . lang('Are you sure?') . "');\" /></fieldset>\n";
 			echo "<fieldset><legend>" . lang('Export') . "</legend>$dump_options <input type='submit' name='export' value='" . lang('Export') . "' /></fieldset>\n";
 			echo "</form>\n";
 		}
