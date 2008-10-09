@@ -36,14 +36,24 @@ foreach ($indexes as $i => $index) {
 	}
 }
 foreach ((array) $_GET["where"] as $val) {
-	if (strlen($val["col"]) && in_array($val["op"], $operators)) {
-		if (ereg('IN$', $val["op"])) {
-			$in = process_length($val["val"]);
-			$where[] = (strlen($in) ? idf_escape($val["col"]) . " $val[op] ($in)" : "0");
-		} elseif ($val["op"] == "AGAINST") {
+	if (strlen("$val[col]$val[val]") && in_array($val["op"], $operators)) {
+		if ($val["op"] == "AGAINST") {
 			$where[] = "MATCH (" . idf_escape($val["col"]) . ") AGAINST ('" . $mysql->escape_string($val["val"]) . "' IN BOOLEAN MODE)";
+		} elseif (ereg('IN$', $val["op"]) && !strlen($in = process_length($val["val"]))) {
+			$where[] = "0";
 		} else {
-			$where[] = idf_escape($val["col"]) . " $val[op]" . (ereg('NULL$', $val["op"]) ? "" : " '" . $mysql->escape_string($val["val"]) . "'");
+			$cond = " $val[op]" . (ereg('NULL$', $val["op"]) ? "" : (ereg('IN$', $val["op"]) ? " ($in)" : " '" . $mysql->escape_string($val["val"]) . "'")); //! hledá i v číselných hodnotách
+			if (strlen($val["col"])) {
+				$where[] = idf_escape($val["col"]) . $cond;
+			} else {
+				$cols = array();
+				foreach ($fields as $name => $field) {
+					if (is_numeric($val["val"]) || !ereg('int|float|double|decimal', $field["type"])) {
+						$cols[] = $name;
+					}
+				}
+				$where[] = ($cols ? "(" . implode("$cond OR ", array_map('idf_escape', $cols)) . "$cond)" : "0");
+			}
 		}
 	}
 }
@@ -160,7 +170,7 @@ function add_row(field) {
 	}
 	$i = 0;
 	foreach ((array) $_GET["where"] as $val) {
-		if (strlen($val["col"]) && in_array($val["op"], $operators)) {
+		if (strlen("$val[col]$val[val]") && in_array($val["op"], $operators)) {
 			echo "<div><select name='where[$i][col]'><option></option>" . optionlist($columns, $val["col"]) . "</select>";
 			echo "<select name='where[$i][op]' onchange=\"where_change(this);\">" . optionlist($operators, $val["op"]) . "</select>";
 			echo "<input name='where[$i][val]' value=\"" . htmlspecialchars($val["val"]) . "\" /></div>\n";
