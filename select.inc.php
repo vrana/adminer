@@ -210,13 +210,13 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 	echo "<label><input type='checkbox' name='desc[$i]' value='1' />" . lang('DESC') . "</label></div>\n";
 	echo "</fieldset>\n";
 	
-	echo "<fieldset><legend>" . lang('Limit') . "</legend><input name='limit' size='3' value=\"" . htmlspecialchars($limit) . "\" /></fieldset>\n";
+	echo "<fieldset><legend>" . lang('Limit') . "</legend><div><input name='limit' size='3' value=\"" . htmlspecialchars($limit) . "\" /></div></fieldset>\n";
 	
 	if (isset($text_length)) {
-		echo "<fieldset><legend>" . lang('Text length') . "</legend><input name='text_length' size='3' value=\"" . htmlspecialchars($text_length) . "\" /></fieldset>\n";
+		echo "<fieldset><legend>" . lang('Text length') . "</legend><div><input name='text_length' size='3' value=\"" . htmlspecialchars($text_length) . "\" /></div></fieldset>\n";
 	}
 	
-	echo "<fieldset><legend>" . lang('Action') . "</legend><input type='submit' value='" . lang('Select') . "' /></fieldset>\n";
+	echo "<fieldset><legend>" . lang('Action') . "</legend><div><input type='submit' value='" . lang('Select') . "' /></div></fieldset>\n";
 	echo "</form>\n";
 	
 	$query = "SELECT " . ($select ? (count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . implode(", ", $select) : "*") . " $from";
@@ -300,8 +300,8 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 			}
 			echo " (" . lang('%d row(s)', $found_rows) . ")</p>\n";
 			
-			echo "<fieldset><legend>" . lang('Edit') . "</legend><input type='hidden' name='token' value='$token' /><input type='submit' value='" . lang('Edit') . "' /> <input type='submit' name='clone' value='" . lang('Clone') . "' /> <input type='submit' name='delete' value='" . lang('Delete') . "'$confirm /></fieldset>\n";
-			echo "<fieldset><legend>" . lang('Export') . "</legend>$dump_options <input type='submit' name='export' value='" . lang('Export') . "' /></fieldset>\n";
+			echo "<fieldset><legend>" . lang('Edit') . "</legend><div><input type='hidden' name='token' value='$token' /><input type='submit' value='" . lang('Edit') . "' /> <input type='submit' name='clone' value='" . lang('Clone') . "' /> <input type='submit' name='delete' value='" . lang('Delete') . "'$confirm /></div></fieldset>\n";
+			echo "<fieldset><legend>" . lang('Export') . "</legend><div>$dump_options <input type='submit' name='export' value='" . lang('Export') . "' /></div></fieldset>\n";
 			echo "</form>\n";
 		}
 		$result->free();
