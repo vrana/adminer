@@ -23,7 +23,7 @@ if ($_POST) {
 	foreach ($_POST["databases"] as $db => $style) {
 		$db = bracket_escape($db, "back");
 		if ($mysql->select_db($db)) {
-			if ($_POST["format"] != "csv" && in_array($style, array("DROP, CREATE", "CREATE", "CREATE, ALTER")) && ($result = $mysql->query("SHOW CREATE DATABASE " . idf_escape($db)))) {
+			if ($_POST["format"] != "csv" && ereg('CREATE', $style)) && ($result = $mysql->query("SHOW CREATE DATABASE " . idf_escape($db)))) {
 				if ($style == "DROP, CREATE") {
 					echo "DROP DATABASE IF EXISTS " . idf_escape($db) . ";\n";
 				}
