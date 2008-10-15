@@ -2,7 +2,7 @@
 $table_status = table_status($_GET["select"]);
 $indexes = indexes($_GET["select"]);
 $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "REGEXP", "IN", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL");
-if ($table_status["Engine"] == "MyISAM") {
+if (eregi('^(MyISAM|Maria)$', $table_status["Engine"])) {
 	$operators[] = "AGAINST";
 }
 $fields = fields($_GET["select"]);
