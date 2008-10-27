@@ -33,7 +33,7 @@ foreach (($_COOKIE["lang"] ? array("lang/$_COOKIE[lang].inc.php") : glob("lang/*
 		if ($val == "," && strpos($idf, "%d")) {
 			$s .= "\t$idf => array(),\n";
 		} elseif ($filename != "lang/en.inc.php") {
-			$s .= "\t$idf => '',\n";
+			$s .= "\t$idf => null,\n";
 		}
 	}
 	fwrite(fopen($filename, "w"), "<?php\n\$translations = array(\n$s);\n");

@@ -199,7 +199,7 @@ $translations = array(
 	'Truncate' => 'Svuota',
 	'Move to other database' => 'Sposta in altro database',
 	'Move' => 'Sposta',
-	'%d item(s) have been affected.', 'Il risultato consiste in %d elemento(i)', 
+	'%d item(s) have been affected.' => array('Il risultato consiste in %d elemento', 'Il risultato consiste in %d elementi'),
 	'whole result' => 'intero risultato',
 	'clone' => 'clona',
 	'Clone' => 'Clona',
