@@ -22,8 +22,13 @@ function input($name, $field, $value) {
 		$first = $field["null"] + isset($_GET["select"]);
 		$onchange = ($first ? ' onchange="var f = this.form[\'function[' . addcslashes($name, "\r\n'\\") . ']\']; if (' . $first . ' > f.selectedIndex) f.selectedIndex = ' . $first . ';"' : '');
 		$options = array("");
-		if (!isset($_GET["default"]) && preg_match('~char|date|time~', $field["type"])) {
-			$options = (preg_match('~char~', $field["type"]) ? array("", "md5", "sha1", "password", "uuid") : array("", "now"));
+		if (!isset($_GET["default"])) {
+			if (preg_match('~char|date|time~', $field["type"])) {
+				$options = (preg_match('~char~', $field["type"]) ? array("", "md5", "sha1", "password", "uuid") : array("", "now"));
+			}
+			if (!isset($_GET["clone"]) && preg_match('~int|float|double|decimal~', $field["type"])) {
+				$options = array("", "+", "-");
+			}
 		}
 		if ($field["null"]) {
 			array_unshift($options, "NULL");
@@ -51,10 +56,11 @@ function input($name, $field, $value) {
 function process_input($name, $field) {
 	global $mysql;
 	$idf = bracket_escape($name);
+	$function = $_POST["function"][$idf];
 	$value = $_POST["fields"][$idf];
-	if ($field["type"] == "enum" ? $value == -1 : $_POST["function"][$idf] == "orig") {
+	if ($field["type"] == "enum" ? $value == -1 : $function == "orig") {
 		return false;
-	} elseif ($field["type"] == "enum" || $field["auto_increment"] ? !strlen($value) : $_POST["function"][$idf] == "NULL") {
+	} elseif ($field["type"] == "enum" || $field["auto_increment"] ? !strlen($value) : $function == "NULL") {
 		return "NULL";
 	} elseif ($field["type"] == "enum") {
 		return (isset($_GET["default"]) ? "'" . $mysql->escape_string($value) . "'" : intval($value));
@@ -68,10 +74,12 @@ function process_input($name, $field) {
 		return "_binary'" . (is_string($file) ? $mysql->escape_string($file) : "") . "'";
 	} elseif ($field["type"] == "timestamp" && $value == "CURRENT_TIMESTAMP") {
 		return $value;
-	} elseif (preg_match('~^(now|uuid)$~', $_POST["function"][$idf])) {
-		return $_POST["function"][$idf] . "()";
-	} elseif (preg_match('~^(md5|sha1|password)$~', $_POST["function"][$idf])) {
-		return $_POST["function"][$idf] . "('" . $mysql->escape_string($value) . "')";
+	} elseif (preg_match('~^(now|uuid)$~', $function)) {
+		return "$function()";
+	} elseif (preg_match('~^(\\+|-)$~', $function)) {
+		return idf_escape($name) . " $function '" . $mysql->escape_string($value) . "'";
+	} elseif (preg_match('~^(md5|sha1|password)$~', $function)) {
+		return "$function('" . $mysql->escape_string($value) . "')";
 	} else {
 		return "'" . $mysql->escape_string($value) . "'";
 	}
