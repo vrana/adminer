@@ -39,7 +39,7 @@ while ($row = $result->fetch_assoc()) {
 				while ($lefts[(string) $left]) {
 					$left -= .0001;
 				}
-				$schema[$row["Name"]]["references"][$val["table"]][(string) $left] = array_combine($val["source"], $val["target"]);
+				$schema[$row["Name"]]["references"][$val["table"]][(string) $left] = array($val["source"], $val["target"]);
 				$referenced[$val["table"]][$row["Name"]][(string) $left] = $val["target"];
 				$lefts[(string) $left] = true;
 			}
@@ -137,10 +137,10 @@ foreach ($schema as $name => $table) {
 		echo ($field["primary"] ? "<em>$val</em>" : $val) . "<br />\n";
 	}
 	foreach ((array) $table["references"] as $target_name => $refs) {
-		foreach ($refs as $left => $columns) {
+		foreach ($refs as $left => $ref) {
 			$left1 = $left - $table_pos[$name][1];
 			$i = 0;
-			foreach ($columns as $source => $target) {
+			foreach ($ref[0] as $source) {
 				echo '<div class="references" title="' . htmlspecialchars($target_name) . "\" id='refs$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $table["fields"][$source]["pos"] . "em; padding-top: .5em;'><div style='border-top: 1px solid Gray; width: " . (-$left1) . "em;'></div></div>\n";
 			}
 		}
@@ -161,9 +161,9 @@ foreach ($schema as $name => $table) {
 		foreach ($refs as $left => $ref) {
 			$min_pos = $top;
 			$max_pos = -10;
-			foreach ($ref as $source => $target) {
+			foreach ($ref[0] as $key => $source) {
 				$pos1 = $table["pos"][0] + $table["fields"][$source]["pos"];
-				$pos2 = $schema[$target_name]["pos"][0] + $schema[$target_name]["fields"][$target]["pos"];
+				$pos2 = $schema[$target_name]["pos"][0] + $schema[$target_name]["fields"][$ref[1][$key]]["pos"];
 				$min_pos = min($min_pos, $pos1, $pos2);
 				$max_pos = max($max_pos, $pos1, $pos2);
 			}
