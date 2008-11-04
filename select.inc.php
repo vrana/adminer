@@ -237,17 +237,17 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 			}
 			
 			echo "<form action='' method='post'>\n";
-			echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
+			echo "<table border='1' cellspacing='0' cellpadding='2' class='nowrap'>\n";
 			for ($j=0; $row = $result->fetch_assoc(); $j++) {
 				if (!$j) {
-					echo '<thead><tr>' . (count($select) == count($group) ? '<td><label><input type="checkbox" name="all" value="1" />' . lang('whole result') . '</label></td>' : '');
+					echo '<thead><tr><td><label><input type="checkbox" name="all" value="1" />' . lang('whole result') . '</label></td>';
 					foreach ($row as $key => $val) {
 						echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*')) . '&amp;order%5B0%5D=' . htmlspecialchars($key) . ($_GET["order"][0] === $key && !$_GET["desc"][0] ? '&amp;desc%5B0%5D=1' : '') . '">' . htmlspecialchars($key) . "</a></th>";
 					}
 					echo "</tr></thead>\n";
 				}
 				$unique_idf = implode('&amp;', unique_idf($row, $indexes));
-				echo '<tr class="nowrap">' . (count($select) == count($group) ? '<td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false;" /> <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a> <a href="' . htmlspecialchars($SELF) . 'clone=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('clone') . '</a></td>' : '');
+				echo '<tr><td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false;" />' . (count($select) == count($group) && $_GET["db"] != "information_schema" ? ' <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a> <a href="' . htmlspecialchars($SELF) . 'clone=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('clone') . '</a></td>' : '');
 				foreach ($row as $key => $val) {
 					if (!isset($val)) {
 						$val = "<i>NULL</i>";
@@ -300,8 +300,8 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 			}
 			echo " (" . lang('%d row(s)', $found_rows) . ")</p>\n";
 			
-			echo "<fieldset><legend>" . lang('Edit') . "</legend><div><input type='hidden' name='token' value='$token' /><input type='submit' value='" . lang('Edit') . "' /> <input type='submit' name='clone' value='" . lang('Clone') . "' /> <input type='submit' name='delete' value='" . lang('Delete') . "'$confirm /></div></fieldset>\n";
-			echo "<fieldset><legend>" . lang('Export') . "</legend><div>$dump_options <input type='submit' name='export' value='" . lang('Export') . "' /></div></fieldset>\n";
+			echo ($_GET["db"] != "information_schema" ? "<fieldset><legend>" . lang('Edit') . "</legend><div><input type='submit' value='" . lang('Edit') . "' /> <input type='submit' name='clone' value='" . lang('Clone') . "' /> <input type='submit' name='delete' value='" . lang('Delete') . "'$confirm /></div></fieldset>\n" : "");
+			echo "<fieldset><legend>" . lang('Export') . "</legend><div><input type='hidden' name='token' value='$token' />$dump_options <input type='submit' name='export' value='" . lang('Export') . "' /></div></fieldset>\n";
 			echo "</form>\n";
 		}
 		$result->free();
