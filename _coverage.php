@@ -64,15 +64,12 @@ if ($_GET["filename"]) {
 	foreach (glob("*.php") as $filename) {
 		if ($filename{0} != "_") {
 			$coverage = $_SESSION["coverage"][realpath($filename)];
-			echo "<tr><td align='right' style='background-color: ";
+			$ratio = 0;
 			if (isset($coverage)) {
 				$values = array_count_values($coverage);
-				$ratio = $values[-1] / count($coverage);
-				echo ($ratio ? "Silver" : "#C0FFC0") . ";'>" . round(100 - 100 * $ratio);
-			} else {
-				echo "#FFC0C0;'>0";
+				$ratio = round(100 - 100 * $values[-1] / count($coverage));
 			}
-			echo "%</td><td><a href='_coverage.php?filename=$filename'>$filename</a></td></tr>\n";
+			echo "<tr><td align='right' style='background-color: " . ($ratio < 50 ? "Red" : ($ratio < 75 ? "#FFEA20" : "#A7FC9D")) . ";'>$ratio%</td><td><a href='_coverage.php?filename=$filename'>$filename</a></td></tr>\n";
 		}
 	}
 	echo "</table>\n";
