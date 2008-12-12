@@ -203,4 +203,8 @@ $translations = array(
 	'whole result' => 'celý výsledek',
 	'Tables have been dropped.' => 'Tabulky byla odstraněny.',
 	'Clone' => 'Klonovat',
+	'Partition by' => 'Rozdělit podle',
+	'Partitions' => 'Oddílů',
+	'Partition name' => 'Název oddílu',
+	'Values' => 'Hodnoty',
 );

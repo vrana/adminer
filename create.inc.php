@@ -1,4 +1,6 @@
 <?php
+$partition_by = array('HASH', 'LINEAR HASH', 'KEY', 'LINEAR KEY', 'RANGE', 'LIST');
+
 if (strlen($_GET["create"])) {
 	$orig_fields = fields($_GET["create"]);
 }
@@ -44,6 +46,18 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 			. (strlen($_POST["Auto_increment"]) ? " AUTO_INCREMENT=" . intval($_POST["Auto_increment"]) : "")
 			. " COMMENT='" . $mysql->escape_string($_POST["Comment"]) . "'"
 		;
+		if (in_array($_POST["partition_by"], $partition_by)) {
+			$partitions = array();
+			if ($_POST["partition_by"] == 'RANGE' || $_POST["partition_by"] == 'LIST') {
+				foreach (array_filter($_POST["partition_names"]) as $key => $val) {
+					$value = $_POST["partition_values"][$key];
+					$partitions[] = "PARTITION $val VALUES " . ($_POST["partition_by"] == 'RANGE' ? "LESS THAN" : "IN") . (strlen($value) ? " ($value)" : " MAXVALUE"); //! SQL injection
+				}
+			}
+			$status .= " PARTITION BY $_POST[partition_by]($_POST[partition])" . ($partitions ? " (" . implode(", ", $partitions) . ")" : ($_POST["partitions"] ? " PARTITIONS " . intval($_POST["partitions"]) : ""));
+		} elseif ($mysql->server_info >= 5.1 && strlen($_GET["create"])) {
+			$status .= " REMOVE PARTITIONING";
+		}
 		$location = $SELF . "table=" . urlencode($_POST["name"]);
 		if (strlen($_GET["create"])) {
 			query_redirect("ALTER TABLE " . idf_escape($_GET["create"]) . " " . implode(", ", $fields) . ", RENAME TO " . idf_escape($_POST["name"]) . ", $status", $location, lang('Table has been altered.'));
@@ -74,8 +88,22 @@ if ($_POST) {
 	table_comment($row);
 	$row["name"] = $_GET["create"];
 	$row["fields"] = array_values($orig_fields);
+	if ($mysql->server_info >= 5.1) {
+		$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = '" . $mysql->escape_string($_GET["db"]) . "' AND TABLE_NAME = '" . $mysql->escape_string($_GET["create"]) . "'";
+		$result = $mysql->query("SELECT PARTITION_METHOD, PARTITION_ORDINAL_POSITION, PARTITION_EXPRESSION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
+		list($row["partition_by"], $row["partitions"], $row["partition"]) = $result->fetch_row();
+		$result->free();
+		$row["partition_names"] = array();
+		$row["partition_values"] = array();
+		$result = $mysql->query("SELECT PARTITION_NAME, PARTITION_DESCRIPTION $from AND PARTITION_NAME != '' ORDER BY PARTITION_ORDINAL_POSITION");
+		while ($row1 = $result->fetch_assoc()) {
+			$row["partition_names"][] = $row1["PARTITION_NAME"];
+			$row["partition_values"][] = $row1["PARTITION_DESCRIPTION"];
+		}
+		$result->free();
+	}
 } else {
-	$row = array("fields" => array(array("field" => "")));
+	$row = array("fields" => array(array("field" => "")), "partition_names" => array());
 }
 $collations = collations();
 ?>
@@ -110,4 +138,21 @@ function column_comments_click(checked) {
 <input type="submit" value="<?php echo lang('Save'); ?>" />
 <?php if (strlen($_GET["create"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?> /><?php } ?>
 </p>
+<?php if ($mysql->server_info >= 5.1) { ?>
+<p>
+<?php echo lang('Partition by'); ?>: <select name="partition_by"><option></option><?php echo optionlist($partition_by, $row["partition_by"]); ?></select>
+(<input name="partition" value="<?php echo htmlspecialchars($row["partition"]); ?>" />)
+<?php echo lang('Partitions'); ?>: <input name="partitions" size="2" value="<?php echo htmlspecialchars($row["partitions"]); ?>" />
+</p>
+<table border="0" cellspacing="0" cellpadding="2">
+<thead><tr><th><?php echo lang('Partition name'); ?></th><th><?php echo lang('Values'); ?></th></tr></thead>
+<?php
+foreach ($row["partition_names"] as $key => $val) {
+	echo '<tr><td><input name="partition_names[' . intval($key) . ']" value="' . htmlspecialchars($val) . '" /></td><td><input name="partition_values[' . intval($key) . ']" value="' . htmlspecialchars($row["partition_values"][$key]) . "\" /></td></tr>\n";
+}
+//! JS for next row
+?>
+<tr><td><input name="partition_names[<?php echo $key+1; ?>]" value="" /></td><td><input name="partition_values[<?php echo $key+1; ?>]" value="" /></td></tr>
+</table>
+<?php } ?>
 </form>
