@@ -42,7 +42,7 @@ foreach ((array) $_GET["where"] as $val) {
 		} elseif (ereg('IN$', $val["op"]) && !strlen($in = process_length($val["val"]))) {
 			$where[] = "0";
 		} else {
-			$cond = " $val[op]" . (ereg('NULL$', $val["op"]) ? "" : (ereg('IN$', $val["op"]) ? " ($in)" : " '" . $mysql->escape_string($val["val"]) . "'")); //! hledá i v číselných hodnotách
+			$cond = " $val[op]" . (ereg('NULL$', $val["op"]) ? "" : (ereg('IN$', $val["op"]) ? " ($in)" : " '" . $mysql->escape_string($val["val"]) . "'")); //! this searches in numeric values too
 			if (strlen($val["col"])) {
 				$where[] = idf_escape($val["col"]) . $cond;
 			} else {
