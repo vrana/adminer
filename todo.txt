@@ -4,7 +4,6 @@ Highlight found fields
 MySQL 5 BIT data type
 Transactions in export
 Compress export and import
-Partitioning (MySQL 5.1)
 Create view and routine options
 Import CSV
 Function to fix database encoding - http://php.vrana.cz/prevod-kodovani-mysql.php
