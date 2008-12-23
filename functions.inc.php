@@ -62,7 +62,7 @@ function fields($table) {
 	$result = $mysql->query("SHOW FULL COLUMNS FROM " . idf_escape($table));
 	if ($result) {
 		while ($row = $result->fetch_assoc()) {
-			preg_match('~^([^(]+)(?:\\((.+)\\))?( unsigned)?( zerofill)?$~', $row["Type"], $match);
+			preg_match('~^([^( ]+)(?:\\((.+)\\))?( unsigned)?( zerofill)?$~', $row["Type"], $match);
 			$return[$row["Field"]] = array(
 				"field" => $row["Field"],
 				"type" => $match[1],
