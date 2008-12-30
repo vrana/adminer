@@ -207,4 +207,7 @@ $translations = array(
 	'Partitions' => 'Oddílů',
 	'Partition name' => 'Název oddílu',
 	'Values' => 'Hodnoty',
+	'%d row(s) has been imported.' => array('Byl importován %d záznam.', 'Byly importovány %d záznamy.', 'Bylo importováno %d záznamů.'),
+	'CSV Import' => 'Import CSV',
+	'Import' => 'Import',
 );

@@ -6,4 +6,5 @@ $translations = array(
 	'%d process(es) has been killed.' => array('%d process has been killed.', '%d processes have been killed.'),
 	'%d row(s)' => array('%d row', '%d rows'),
 	'%d item(s) have been affected.' => array('%d item have been affected.', '%d items have been affected.'),
+	'%d row(s) has been imported.' => array('%d row has been imported.', '%d rows has been imported.'),
 );

@@ -80,38 +80,54 @@ if ($_POST && !$error) {
 		}
 		exit;
 	}
-	$result = true;
-	$affected = 0;
-	$command = ($_POST["delete"] ? ($_POST["all"] && !$where ? "TRUNCATE " : "DELETE FROM ") : ($_POST["clone"] ? "INSERT INTO " : "UPDATE ")) . idf_escape($_GET["select"]);
-	if (!$_POST["delete"]) {
-		$set = array();
-		foreach ($fields as $name => $field) {
-			$val = process_input($name, $field);
-			if ($_POST["clone"]) {
-				$set[] = ($val !== false ? $val : idf_escape($name));
-			} elseif ($val !== false) {
-				$set[] = idf_escape($name) . " = $val";
+	if ($_POST["import"]) {
+		$file = preg_replace("~^\xEF\xBB\xBF~", '', get_file("csv_file")); //! character set
+		$rows = array(); //! packet size
+		preg_match_all('~("[^"]*"|[^"\\n]+)+~', $file, $matches);
+		foreach ($matches[0] as $val) {
+			$row = array();
+			preg_match_all('~(("[^"]*")+|[^,]*),~', "$val,", $fields);
+			foreach ($fields[1] as $field) {
+				$row[] = "'" . $mysql->escape_string(str_replace('""', '"', preg_replace('~".*"~s', '', $field))) . "'"; //! NULL
 			}
+			$rows[] = "(" . implode(", ", $row) . ")";
 		}
-		$command .= ($_POST["clone"] ? " SELECT " . implode(", ", $set) . " FROM " . idf_escape($_GET["select"]) : " SET " . implode(", ", $set));
-	}
-	if (!$_POST["delete"] && !$set) {
-		// nothing
-	} elseif ($_POST["all"]) {
-		$result = queries($command . ($where ? " WHERE " . implode(" AND ", $where) : ""));
-		$affected = $mysql->affected_rows;
+		$result = queries("INSERT INTO " . idf_escape($_GET["select"]) . " VALUES " . implode(", ", $rows));
+		query_redirect(queries(), remove_from_uri("page"), lang('%d row(s) has been imported.', $mysql->affected_rows), $result, false, !$result);
 	} else {
-		foreach ((array) $_POST["check"] as $val) {
-			parse_str($val, $check);
-			$result = queries($command . " WHERE " . implode(" AND ", where($check)) . " LIMIT 1");
-			if (!$result) {
-				break;
+		$result = true;
+		$affected = 0;
+		$command = ($_POST["delete"] ? ($_POST["all"] && !$where ? "TRUNCATE " : "DELETE FROM ") : ($_POST["clone"] ? "INSERT INTO " : "UPDATE ")) . idf_escape($_GET["select"]);
+		if (!$_POST["delete"]) {
+			$set = array();
+			foreach ($fields as $name => $field) {
+				$val = process_input($name, $field);
+				if ($_POST["clone"]) {
+					$set[] = ($val !== false ? $val : idf_escape($name));
+				} elseif ($val !== false) {
+					$set[] = idf_escape($name) . " = $val";
+				}
 			}
-			$affected += $mysql->affected_rows;
+			$command .= ($_POST["clone"] ? " SELECT " . implode(", ", $set) . " FROM " . idf_escape($_GET["select"]) : " SET " . implode(", ", $set));
 		}
+		if (!$_POST["delete"] && !$set) {
+			// nothing
+		} elseif ($_POST["all"]) {
+			$result = queries($command . ($where ? " WHERE " . implode(" AND ", $where) : ""));
+			$affected = $mysql->affected_rows;
+		} else {
+			foreach ((array) $_POST["check"] as $val) {
+				parse_str($val, $check);
+				$result = queries($command . " WHERE " . implode(" AND ", where($check)) . " LIMIT 1");
+				if (!$result) {
+					break;
+				}
+				$affected += $mysql->affected_rows;
+			}
+		}
+		query_redirect(queries(), remove_from_uri("page"), lang('%d item(s) have been affected.', $affected), $result, false, !$result);
+		//! display edit page in case of an error
 	}
-	query_redirect(queries(), remove_from_uri("page"), lang('%d item(s) have been affected.', $affected), $result, false, !$result);
-	//! display edit page in case of an error
 }
 page_header(lang('Select') . ": " . htmlspecialchars($_GET["select"]), $error);
 
@@ -226,6 +242,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 	if (!$result) {
 		echo "<p class='error'>" . htmlspecialchars($mysql->error) . "</p>\n";
 	} else {
+		echo "<form action='' method='post' enctype='multipart/form-data'>\n";
 		if (!$result->num_rows) {
 			echo "<p class='message'>" . lang('No rows.') . "</p>\n";
 		} else {
@@ -236,7 +253,6 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 				}
 			}
 			
-			echo "<form action='' method='post'>\n";
 			echo "<table border='1' cellspacing='0' cellpadding='2' class='nowrap'>\n";
 			for ($j=0; $row = $result->fetch_assoc(); $j++) {
 				if (!$j) {
@@ -301,9 +317,10 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 			echo " (" . lang('%d row(s)', $found_rows) . ")</p>\n";
 			
 			echo ($_GET["db"] != "information_schema" ? "<fieldset><legend>" . lang('Edit') . "</legend><div><input type='submit' value='" . lang('Edit') . "' /> <input type='submit' name='clone' value='" . lang('Clone') . "' /> <input type='submit' name='delete' value='" . lang('Delete') . "'$confirm /></div></fieldset>\n" : "");
-			echo "<fieldset><legend>" . lang('Export') . "</legend><div><input type='hidden' name='token' value='$token' />$dump_options <input type='submit' name='export' value='" . lang('Export') . "' /></div></fieldset>\n";
-			echo "</form>\n";
+			echo "<fieldset><legend>" . lang('Export') . "</legend><div>$dump_options <input type='submit' name='export' value='" . lang('Export') . "' /></div></fieldset>\n";
 		}
 		$result->free();
+		echo "<fieldset><legend>" . lang('CSV Import') . "</legend><div><input type='hidden' name='token' value='$token' /><input type='file' name='csv_file' /> <input type='submit' name='import' value='" . lang('Import') . "' /></div></fieldset>\n";
+		echo "</form>\n";
 	}
 }
