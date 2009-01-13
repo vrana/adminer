@@ -10,7 +10,7 @@ function tar_file($filename, $contents) {
 }
 
 if ($_POST) {
-	$ext = dump_headers((strlen($_GET["dump"]) ? $_GET["dump"] : $_GET["db"]), (!strlen($_GET["db"]) || count(array_filter($_POST["tables"]) + array_filter($_POST["data"])) > 1));
+	$ext = dump_headers((strlen($_GET["dump"]) ? $_GET["dump"] : $_GET["db"]), (!strlen($_GET["db"]) || count(array_filter((array) $_POST["tables"]) + array_filter((array) $_POST["data"])) > 1));
 	if ($_POST["format"] != "csv") {
 		$max_packet = 16777216;
 		echo "SET NAMES utf8;\n";
@@ -53,7 +53,7 @@ if ($_POST) {
 				echo ($out ? "DELIMITER ;;\n\n$out" . "DELIMITER ;\n\n" : "");
 			}
 			
-			if (($style || strlen($_GET["db"])) && (array_filter($_POST["tables"]) || array_filter($_POST["data"]))) {
+			if (($style || strlen($_GET["db"])) && (array_filter((array) $_POST["tables"]) || array_filter((array) $_POST["data"]))) {
 				$views = array();
 				$result = $mysql->query("SHOW TABLE STATUS");
 				while ($row = $result->fetch_assoc()) {
