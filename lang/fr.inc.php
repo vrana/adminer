@@ -135,6 +135,7 @@ $translations = array(
 	'Time' => 'Temps',
 	'Event' => 'Évènement',
 	'%d row(s)' => array('%d ligne', '%d lignes'),
+	'around %s' => 'autour %s',
 	'ON UPDATE CURRENT_TIMESTAMP' => 'ON UPDATE CURRENT_TIMESTAMP',
 	'Remove' => 'Effacer',
 	'Are you sure?' => 'Êtes-vous certain?',

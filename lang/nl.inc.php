@@ -136,6 +136,7 @@ $translations = array(
 	'Event' => 'Event',
 	'MySQL version: %s through PHP extension %s' => 'MySQL versie: %s met PHP extensie %s',
 	'%d row(s)' => array('%d rij', '%d rijen'),
+	'around %s' => 'ongeveer %s',
 	'ON UPDATE CURRENT_TIMESTAMP' => 'ON UPDATE CURRENT_TIMESTAMP',
 	'Remove' => 'Verwijderen',
 	'Are you sure?' => 'Weet u het zeker?',

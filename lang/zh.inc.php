@@ -136,6 +136,7 @@ $translations = array(
 	'Event' => '事件',
 	'MySQL version: %s through PHP extension %s' => 'MySQL 版本: %s 通过 PHP 扩展 %s',
 	'%d row(s)' => '%d 行',
+	'around %s' => '附近的 %s',
 	'ON UPDATE CURRENT_TIMESTAMP' => 'ON UPDATE CURRENT_TIMESTAMP',
 	'Remove' => '移除',
 	'Are you sure?' => '你确定吗?',
