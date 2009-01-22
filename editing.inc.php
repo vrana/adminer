@@ -225,8 +225,15 @@ function remove_row(button) {
 }
 function type_change(type) {
 	var name = type.name.substr(0, type.name.length - 6);
-	type.form[name + '[collation]'].style.display = (/char|text|enum|set/.test(type.options[type.selectedIndex].text) ? '' : 'none');
-	type.form[name + '[unsigned]'].style.display = (/int|float|double|decimal/.test(type.options[type.selectedIndex].text) ? '' : 'none');
+	for (var i=0; i < type.form.elements.length; i++) {
+		var el = type.form.elements[i];
+		if (el.name == name + '[collation]') {
+			el.style.display = (/char|text|enum|set/.test(type.options[type.selectedIndex].text) ? '' : 'none');
+		}
+		if (el.name == name + '[unsigned]') {
+			el.style.display = (/int|float|double|decimal/.test(type.options[type.selectedIndex].text) ? '' : 'none');
+		}
+	}
 }
 for (var i=1; <?php echo $count; ?> >= i; i++) {
 	document.getElementById('form')['fields[' + i + '][type]'].onchange();

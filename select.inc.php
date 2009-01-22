@@ -191,7 +191,7 @@ function add_row(field) {
 	foreach ((array) $_GET["where"] as $val) {
 		if (strlen("$val[col]$val[val]") && in_array($val["op"], $operators)) {
 			echo "<div><select name='where[$i][col]'><option></option>" . optionlist($columns, $val["col"]) . "</select>";
-			echo "<select name='where[$i][op]' onchange=\"where_change(this);\">" . optionlist($operators, $val["op"]) . "</select>";
+			echo "<select name='where[$i][op]' onchange='where_change(this);'>" . optionlist($operators, $val["op"]) . "</select>";
 			echo "<input name='where[$i][val]' value=\"" . htmlspecialchars($val["val"]) . "\" /></div>\n";
 			$i++;
 		}
@@ -199,7 +199,12 @@ function add_row(field) {
 	?>
 <script type="text/javascript">
 function where_change(op) {
-	op.form[op.name.substr(0, op.name.length - 4) + '[val]'].style.display = (/NULL$/.test(op.value) ? 'none' : '');
+	for (var i=0; i < op.form.elements.length; i++) {
+		var el = op.form.elements[i];
+		if (el.name == op.name.substr(0, op.name.length - 4) + '[val]') {
+			el.style.display = (/NULL$/.test(op.options[op.selectedIndex].text) ? 'none' : '');
+		}
+	}
 }
 <?php if ($i) { ?>
 for (var i=0; <?php echo $i; ?> > i; i++) {
@@ -209,7 +214,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 </script>
 <?php
 	echo "<div><select name='where[$i][col]' onchange='add_row(this);'><option></option>" . optionlist($columns) . "</select>";
-	echo "<select name='where[$i][op]' onchange=\"where_change(this);\">" . optionlist($operators) . "</select>";
+	echo "<select name='where[$i][op]' onchange='where_change(this);'>" . optionlist($operators) . "</select>";
 	echo "<input name='where[$i][val]' /></div>\n";
 	echo "</fieldset>\n";
 	
