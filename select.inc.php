@@ -131,10 +131,13 @@ if ($_POST && !$error) {
 }
 page_header(lang('Select') . ": " . htmlspecialchars($_GET["select"]), $error);
 
+echo "<p>";
 if (isset($rights["insert"])) {
 	//! pass search values forth and back
-	echo '<p><a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '">' . lang('New item') . "</a></p>\n";
+	echo '<a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '">' . lang('New item') . '</a> ';
 }
+echo '<a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($_GET['select']) . '">' . lang('Table structure') . '</a>';
+echo "</p>\n";
 
 if (!$columns) {
 	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "" : ": " . htmlspecialchars($mysql->error)) . ".</p>\n";
