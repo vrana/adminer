@@ -19,7 +19,7 @@ function dump_table($table, $style, $is_view = false) {
 		$result = $mysql->query("SHOW CREATE TABLE " . idf_escape($table));
 		if ($result) {
 			if ($style == "DROP, CREATE") {
-				echo "DROP " . ($is_view ? "VIEW" : "TABLE") . " " . idf_escape($table) . ";\n";
+				echo "DROP " . ($is_view ? "VIEW" : "TABLE") . " IF EXISTS " . idf_escape($table) . ";\n";
 			}
 			$create = $mysql->result($result, 1);
 			$result->free();
