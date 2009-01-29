@@ -57,14 +57,14 @@ if (isset($langs[$_COOKIE["lang"]])) {
 		$accept_language[str_replace("_", "-", $match[1])] = (isset($match[3]) ? $match[3] : 1);
 	}
 	arsort($accept_language);
-	foreach ($accept_language as $lang => $q) {
-		if (isset($langs[$lang])) {
-			$LANG = $lang;
+	foreach ($accept_language as $key => $q) {
+		if (isset($langs[$key])) {
+			$LANG = $key;
 			break;
 		}
-		$lang = preg_replace('~-.*~', '', $lang);
-		if (!isset($accept_language[$lang]) && isset($langs[$lang])) {
-			$LANG = $lang;
+		$key = preg_replace('~-.*~', '', $key);
+		if (!isset($accept_language[$key]) && isset($langs[$key])) {
+			$LANG = $key;
 			break;
 		}
 	}

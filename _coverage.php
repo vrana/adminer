@@ -32,14 +32,14 @@ if ($_GET["start"]) {
 }
 if ($_GET["filename"]) {
 	$filename = basename($_GET["filename"]);
-	$coverage = $_SESSION["coverage"][realpath($filename)];
+	$cov = $_SESSION["coverage"][realpath($filename)];
 	$file = explode("<br />", highlight_file($filename, true));
 	unset($prev_color);
 	$s = "";
 	for ($l=0; $l <= count($file); $l++) {
 		$line = $file[$l];
 		$color = "#C0FFC0"; // tested
-		switch ($coverage[$l+1]) {
+		switch ($cov[$l+1]) {
 			case -1: $color = "#FFC0C0"; break; // untested
 			case -2: $color = "Silver"; break; // dead code
 			case null: $color = ""; break; // not executable
@@ -63,11 +63,11 @@ if ($_GET["filename"]) {
 	echo "<table border='0' cellspacing='0' cellpadding='1'>\n";
 	foreach (glob("*.php") as $filename) {
 		if ($filename{0} != "_") {
-			$coverage = $_SESSION["coverage"][realpath($filename)];
+			$cov = $_SESSION["coverage"][realpath($filename)];
 			$ratio = 0;
-			if (isset($coverage)) {
-				$values = array_count_values($coverage);
-				$ratio = round(100 - 100 * $values[-1] / count($coverage));
+			if (isset($cov)) {
+				$values = array_count_values($cov);
+				$ratio = round(100 - 100 * $values[-1] / count($cov));
 			}
 			echo "<tr><td align='right' style='background-color: " . ($ratio < 50 ? "Red" : ($ratio < 75 ? "#FFEA20" : "#A7FC9D")) . ";'>$ratio%</td><td><a href='_coverage.php?filename=$filename'>$filename</a></td></tr>\n";
 		}
