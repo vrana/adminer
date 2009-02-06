@@ -323,18 +323,8 @@ function select($result) {
 }
 
 function shorten_utf8($string, $length) {
-	for ($i=0; $i < strlen($string); $i++) {
-		if (ord($string[$i]) >= 192) {
-			while (ord($string[$i+1]) >= 128 && ord($string[$i+1]) < 192) {
-				$i++;
-			}
-		}
-		$length--;
-		if ($length == 0) {
-			return nl2br(htmlspecialchars(substr($string, 0, $i+1))) . "<em>...</em>";
-		}
-	}
-	return nl2br(htmlspecialchars($string));
+	preg_match("~^(.{0,$length})(.?)~su", $string, $match);
+	return nl2br(htmlspecialchars($match[1])) . ($match[2] ? "<em>...</em>" : "");
 }
 
 function table_comment(&$row) {
