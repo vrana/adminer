@@ -8,6 +8,7 @@ page_header(lang('SQL command'), $error);
 if (!$error && $_POST) {
 	if (is_string($query = (isset($_POST["query"]) ? $_POST["query"] : get_file("sql_file")))) {
 		@set_time_limit(0);
+		$query = str_replace("\r", "", $query);
 		$delimiter = ";";
 		$offset = 0;
 		$empty = true;
