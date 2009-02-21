@@ -22,6 +22,7 @@ if ($result) {
 	echo '<a href="' . htmlspecialchars($SELF) . 'create=' . urlencode($_GET["table"]) . '">' . lang('Alter table') . '</a>';
 	echo ($auto_increment_only ? '' : ' <a href="' . htmlspecialchars($SELF) . 'default=' . urlencode($_GET["table"]) . '">' . lang('Default values') . '</a>');
 	echo ' <a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($_GET["table"]) . '">' . lang('Select table') . '</a>';
+	echo ' <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET["table"]) . '">' . lang('New item') . '</a>';
 	echo "</p>\n";
 	
 	echo "<h3>" . lang('Indexes') . "</h3>\n";
