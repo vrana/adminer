@@ -193,7 +193,7 @@ function add_row(field) {
 	$i = 0;
 	foreach ((array) $_GET["where"] as $val) {
 		if (strlen("$val[col]$val[val]") && in_array($val["op"], $operators)) {
-			echo "<div><select name='where[$i][col]'><option></option>" . optionlist($columns, $val["col"]) . "</select>";
+			echo "<div><select name='where[$i][col]'><option value=''>" . lang('(anywhere)') . "</option>" . optionlist($columns, $val["col"]) . "</select>";
 			echo "<select name='where[$i][op]' onchange='where_change(this);'>" . optionlist($operators, $val["op"]) . "</select>";
 			echo "<input name='where[$i][val]' value=\"" . htmlspecialchars($val["val"]) . "\" /></div>\n";
 			$i++;
@@ -216,7 +216,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 <?php } ?>
 </script>
 <?php
-	echo "<div><select name='where[$i][col]' onchange='add_row(this);'><option></option>" . optionlist($columns) . "</select>";
+	echo "<div><select name='where[$i][col]' onchange='add_row(this);'><option value=''>" . lang('(anywhere)') . "</option>" . optionlist($columns) . "</select>";
 	echo "<select name='where[$i][op]' onchange='where_change(this);'>" . optionlist($operators) . "</select>";
 	echo "<input name='where[$i][val]' /></div>\n";
 	echo "</fieldset>\n";
