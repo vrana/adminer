@@ -213,4 +213,5 @@ $translations = array(
 	'Import' => 'Import',
 	'Table structure' => 'Struktura tabulky',
 	'Select table' => 'Vypsat tabulku',
+	'Stop on error' => 'Zastavit při chybě',
 );

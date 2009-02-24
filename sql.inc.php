@@ -29,6 +29,9 @@ if (!$error && $_POST) {
 					//! don't allow changing of character_set_results, convert encoding of displayed query
 					if (!$mysql->multi_query(substr($query, 0, $match[0][1]))) {
 						echo "<p class='error'>" . lang('Error in query') . ": " . htmlspecialchars($mysql->error) . "</p>\n";
+						if ($_POST["error_stops"]) {
+							break;
+						}
 					} else {
 						do {
 							$result = $mysql->store_result();
@@ -64,6 +67,7 @@ if (!$error && $_POST) {
 <script type="text/javascript">// <![CDATA[
 document.write('<label><input type="checkbox" name="highlight" value="jush"<?php echo ($_COOKIE["highlight"] == "jush" ? ' checked="checked"' : ''); ?> /><?php echo addcslashes(lang('Syntax highlighting'), "\r\n'\\"); ?></label>');
 // ]]></script>
+<label><input type="checkbox" name="error_stops" value="1"<?php echo ($_POST["error_stops"] ? " checked='checked'" : ""); ?> /><?php echo lang('Stop on error'); ?></label>
 </p>
 </form>
 
