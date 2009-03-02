@@ -106,6 +106,11 @@ if ($_POST) {
 	$row = array("fields" => array(array("field" => "")), "partition_names" => array());
 }
 $collations = collations();
+
+$suhosin = floor(extension_loaded("suhosin") ? (min(ini_get("suhosin.request.max_vars"), ini_get("suhosin.post.max_vars")) - 13) / 8 : 0);
+if ($suhosin && count($row["fields"]) > $suhosin) {
+	echo "<p class='error'>" . htmlspecialchars(lang('Maximum number of allowed fields exceeded. Please increase %s and %s.', 'suhosin.post.max_vars', 'suhosin.request.max_vars')) . "</p>\n";
+}
 ?>
 
 <form action="" method="post" id="form">
@@ -118,7 +123,7 @@ $collations = collations();
 <table border="0" cellspacing="0" cellpadding="2">
 <?php $column_comments = edit_fields($row["fields"], $collations); ?>
 </table>
-<?php echo type_change(count($row["fields"])); ?>
+<?php echo type_change(count($row["fields"]), $suhosin); ?>
 <p>
 <?php echo lang('Auto Increment'); ?>: <input name="Auto_increment" size="4" value="<?php echo intval($row["Auto_increment"]); ?>" />
 <?php echo lang('Comment'); ?>: <input name="Comment" value="<?php echo htmlspecialchars($row["Comment"]); ?>" maxlength="60" />

@@ -214,4 +214,6 @@ $translations = array(
 	'Table structure' => 'Struktura tabulky',
 	'Select table' => 'Vypsat tabulku',
 	'Stop on error' => 'Zastavit při chybě',
+	'Maximum number of allowed fields exceeded. Please increase %s and %s.' => 'Byl překročen maximální povolený počet polí. Zvyšte prosím %s a %s.',
+	'(anywhere)' => '(kdekoliv)',
 );

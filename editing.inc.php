@@ -90,7 +90,7 @@ function edit_type($key, $field, $collations) {
 	?>
 <td><select name="<?php echo $key; ?>[type]" onchange="type_change(this);"><?php echo optionlist(array_keys($types), $field["type"]); ?></select></td>
 <td><input name="<?php echo $key; ?>[length]" value="<?php echo htmlspecialchars($field["length"]); ?>" size="3" /></td>
-<td><select name="<?php echo $key; ?>[collation]"><option value="">(<?php echo lang('collation'); ?>)</option><?php echo optionlist($collations, $field["collation"]); ?></select> <select name="<?php echo $key; ?>[unsigned]"><?php echo optionlist($unsigned, $field["unsigned"]); ?></select></td>
+<td><select name="<?php echo $key; ?>[collation]"<?php echo (preg_match('~char|text|enum|set~', $field["type"]) ? "" : " class='hidden'"); ?>><option value="">(<?php echo lang('collation'); ?>)</option><?php echo optionlist($collations, $field["collation"]); ?></select> <select name="<?php echo $key; ?>[unsigned]"<?php echo (!$field["type"] || preg_match('~int|float|double|decimal~', $field["type"]) ? "" : " class='hidden'"); ?>><?php echo optionlist($unsigned, $field["unsigned"]); ?></select></td>
 <?php
 }
 
@@ -186,11 +186,15 @@ function process_fields(&$fields) {
 	}
 }
 
-function type_change($count) {
+function type_change($count, $allowed = 0) {
 	?>
-<script type="text/javascript">
+<script type="text/javascript">// <![CDATA[
 var added = '.';
+var row_count = <?php echo $count; ?>;
 function add_row(button) {
+	if (<?php echo $allowed; ?> && row_count >= <?php echo $allowed; ?>) {
+		return false;
+	}
 	var match = /([0-9]+)(\.[0-9]+)?/.exec(button.name)
 	var x = match[0] + (match[2] ? added.substr(match[2].length) : added) + '1';
 	var row = button.parentNode.parentNode;
@@ -215,6 +219,7 @@ function add_row(button) {
 	row.parentNode.insertBefore(row2, row);
 	tags[0].focus();
 	added += '0';
+	row_count++;
 	return true;
 }
 function remove_row(button) {
@@ -235,10 +240,7 @@ function type_change(type) {
 		}
 	}
 }
-for (var i=1; <?php echo $count; ?> >= i; i++) {
-	document.getElementById('form')['fields[' + i + '][type]'].onchange();
-}
-</script>
+// ]]></script>
 <?php
 }
 
