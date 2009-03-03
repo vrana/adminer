@@ -26,7 +26,7 @@ function input($name, $field, $value) {
 			if (preg_match('~char|date|time~', $field["type"])) {
 				$options = (preg_match('~char~', $field["type"]) ? array("", "md5", "sha1", "password", "uuid") : array("", "now"));
 			}
-			if (!isset($_GET["clone"]) && preg_match('~int|float|double|decimal~', $field["type"])) {
+			if (!isset($_GET["clone"]) && !isset($_GET["call"]) && preg_match('~int|float|double|decimal~', $field["type"])) {
 				$options = array("", "+", "-");
 			}
 		}
