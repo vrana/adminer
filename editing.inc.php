@@ -68,7 +68,7 @@ function process_input($name, $field) {
 		return (isset($_GET["default"]) ? "'" . implode(",", array_map(array($mysql, 'escape_string'), (array) $value)) . "'" : array_sum((array) $value));
 	} elseif (preg_match('~binary|blob~', $field["type"])) {
 		$file = get_file($idf);
-		if (!is_string($file) && ($file != UPLOAD_ERR_NO_FILE || !$field["null"])) {
+		if (!is_string($file)) {
 			return false; //! report errors
 		}
 		return "_binary'" . (is_string($file) ? $mysql->escape_string($file) : "") . "'";

@@ -15,10 +15,12 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 		$set = array();
 		foreach ($fields as $name => $field) {
 			$val = process_input($name, $field);
-			if ($val !== false) {
-				if (!isset($_GET["default"])) {
-					$set[] = idf_escape($name) . " = $val";
-				} elseif ($field["type"] == "timestamp") {
+			if (!isset($_GET["default"])) {
+				if ($val !== false || !$update) {
+					$set[] = idf_escape($name) . " = " . ($val !== false ? $val : "''");
+				}
+			} elseif ($val !== false) {
+				if ($field["type"] == "timestamp") {
 					$set[] = " MODIFY " . idf_escape($name) . " timestamp" . ($field["null"] ? " NULL" : "") . " DEFAULT $val" . ($_POST["on_update"][bracket_escape($name)] ? " ON UPDATE CURRENT_TIMESTAMP" : "");
 				} else {
 					$set[] = " ALTER " . idf_escape($name) . ($val == ($field["null"] || $field["type"] == "enum" ? "NULL" : "''") ? " DROP DEFAULT" : " SET DEFAULT $val");
@@ -45,7 +47,7 @@ if ($_POST) {
 } elseif ($where) {
 	$select = array();
 	foreach ($fields as $name => $field) {
-		if (isset($field["privileges"]["select"]) && !preg_match('~binary|blob~', $field["type"]) && (!$_GET["clone"] || !$field["auto_increment"])) {
+		if (isset($field["privileges"]["select"]) && (!$_GET["clone"] || !$field["auto_increment"])) {
 			$select[] = ($field["type"] == "enum" || $field["type"] == "set" ? "1*" . idf_escape($name) . " AS " : "") . idf_escape($name);
 		}
 	}
