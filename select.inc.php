@@ -325,7 +325,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 			echo " (" . lang('%d row(s)', $found_rows) . ")</p>\n";
 			
 			echo ($_GET["db"] != "information_schema" ? "<fieldset><legend>" . lang('Edit') . "</legend><div><input type='submit' value='" . lang('Edit') . "' /> <input type='submit' name='clone' value='" . lang('Clone') . "' /> <input type='submit' name='delete' value='" . lang('Delete') . "'$confirm /></div></fieldset>\n" : "");
-			echo "<fieldset><legend>" . lang('Export') . "</legend><div>$dump_options <input type='submit' name='export' value='" . lang('Export') . "' /></div></fieldset>\n";
+			echo "<fieldset><legend>" . lang('Export selected') . "</legend><div>$dump_options <input type='submit' name='export' value='" . lang('Export') . "' /></div></fieldset>\n";
 		}
 		$result->free();
 		echo "<fieldset><legend>" . lang('CSV Import') . "</legend><div><input type='hidden' name='token' value='$token' /><input type='file' name='csv_file' /> <input type='submit' name='import' value='" . lang('Import') . "' /></div></fieldset>\n";
