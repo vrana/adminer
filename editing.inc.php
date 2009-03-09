@@ -19,7 +19,7 @@ function input($name, $field, $value) {
 			echo ' <label><input type="radio" name="fields[' . $name . ']" value="' . (isset($_GET["default"]) ? (strlen($val) ? htmlspecialchars($val) : " ") : $i+1) . '"' . ($checked ? ' checked="checked"' : '') . ' />' . htmlspecialchars($val) . '</label>';
 		}
 	} else {
-		$first = $field["null"] + isset($_GET["select"]);
+		$first = ($field["null"] || isset($_GET["default"])) + isset($_GET["select"]);
 		$onchange = ($first ? ' onchange="var f = this.form[\'function[' . addcslashes($name, "\r\n'\\") . ']\']; if (' . $first . ' > f.selectedIndex) f.selectedIndex = ' . $first . ';"' : '');
 		$options = array("");
 		if (!isset($_GET["default"])) {
@@ -30,7 +30,7 @@ function input($name, $field, $value) {
 				$options = array("", "+", "-");
 			}
 		}
-		if ($field["null"]) {
+		if ($field["null"] || isset($_GET["default"])) {
 			array_unshift($options, "NULL");
 		}
 		if (count($options) > 1 || isset($_GET["select"])) {

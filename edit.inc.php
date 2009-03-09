@@ -20,10 +20,10 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 					$set[] = idf_escape($name) . " = " . ($val !== false ? $val : "''");
 				}
 			} elseif ($val !== false) {
-				if ($field["type"] == "timestamp") {
+				if ($field["type"] == "timestamp" && $val != "NULL") { //! doesn't allow DEFAULT NULL and no ON UPDATE
 					$set[] = " MODIFY " . idf_escape($name) . " timestamp" . ($field["null"] ? " NULL" : "") . " DEFAULT $val" . ($_POST["on_update"][bracket_escape($name)] ? " ON UPDATE CURRENT_TIMESTAMP" : "");
 				} else {
-					$set[] = " ALTER " . idf_escape($name) . ($val == ($field["null"] || $field["type"] == "enum" ? "NULL" : "''") ? " DROP DEFAULT" : " SET DEFAULT $val");
+					$set[] = " ALTER " . idf_escape($name) . ($val == "NULL" ? " DROP DEFAULT" : " SET DEFAULT $val");
 				}
 			}
 		}
