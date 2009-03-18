@@ -233,10 +233,10 @@ function type_change(type) {
 	for (var i=0; i < type.form.elements.length; i++) {
 		var el = type.form.elements[i];
 		if (el.name == name + '[collation]') {
-			el.style.display = (/char|text|enum|set/.test(type.options[type.selectedIndex].text) ? '' : 'none');
+			el.className = (/char|text|enum|set/.test(type.options[type.selectedIndex].text) ? '' : 'hidden');
 		}
 		if (el.name == name + '[unsigned]') {
-			el.style.display = (/int|float|double|decimal/.test(type.options[type.selectedIndex].text) ? '' : 'none');
+			el.className = (/int|float|double|decimal/.test(type.options[type.selectedIndex].text) ? '' : 'hidden');
 		}
 	}
 }
