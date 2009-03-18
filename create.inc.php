@@ -144,8 +144,9 @@ function column_comments_click(checked) {
 <?php if (strlen($_GET["create"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?> /><?php } ?>
 </p>
 <?php if ($mysql->server_info >= 5.1) { ?>
+<fieldset><legend><?php echo lang('Partition by'); ?></legend>
 <p>
-<?php echo lang('Partition by'); ?>: <select name="partition_by"><option></option><?php echo optionlist($partition_by, $row["partition_by"]); ?></select>
+<select name="partition_by"><option></option><?php echo optionlist($partition_by, $row["partition_by"]); ?></select>
 (<input name="partition" value="<?php echo htmlspecialchars($row["partition"]); ?>" />)
 <?php echo lang('Partitions'); ?>: <input name="partitions" size="2" value="<?php echo htmlspecialchars($row["partitions"]); ?>" />
 </p>
@@ -159,5 +160,6 @@ foreach ($row["partition_names"] as $key => $val) {
 ?>
 <tr><td><input name="partition_names[<?php echo $key+1; ?>]" value="" /></td><td><input name="partition_values[<?php echo $key+1; ?>]" value="" /></td></tr>
 </table>
+</fieldset>
 <?php } ?>
 </form>
