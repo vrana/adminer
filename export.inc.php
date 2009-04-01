@@ -1,7 +1,7 @@
 <?php
 function dump_csv($row) {
 	foreach ($row as $key => $val) {
-		if (preg_match("~[\"\n,]~", $val)) {
+		if (preg_match("~[\"\n,]~", $val) || (isset($val) && !strlen($val))) {
 			$row[$key] = '"' . str_replace('"', '""', $val) . '"';
 		}
 	}

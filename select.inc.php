@@ -70,29 +70,34 @@ if ($_POST && !$error) {
 	if ($_POST["export"]) {
 		dump_headers($_GET["select"]);
 		dump_table($_GET["select"], "");
-		if ($_POST["all"]) {
-			dump_data($_GET["select"], "INSERT", ($where ? "FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", $where) : ""));
-		} else {
-			foreach ((array) $_POST["check"] as $val) {
+		if (is_array($_POST["check"])) {
+			foreach ($_POST["check"] as $val) {
 				parse_str($val, $check);
 				dump_data($_GET["select"], "INSERT", "FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", where($check)) . " LIMIT 1");
 			}
+		} else {
+			dump_data($_GET["select"], "INSERT", ($where ? "FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", $where) : ""));
 		}
 		exit;
 	}
 	if ($_POST["import"]) {
 		$file = preg_replace("~^\xEF\xBB\xBF~", '', get_file("csv_file")); //! character set
+		$cols = "";
 		$rows = array(); //! packet size
 		preg_match_all('~("[^"]*"|[^"\\n]+)+~', $file, $matches);
-		foreach ($matches[0] as $val) {
+		foreach ($matches[0] as $key => $val) {
 			$row = array();
-			preg_match_all('~(("[^"]*")+|[^,]*),~', "$val,", $fields);
-			foreach ($fields[1] as $field) {
-				$row[] = "'" . $mysql->escape_string(str_replace('""', '"', preg_replace('~".*"~s', '', $field))) . "'"; //! NULL
+			preg_match_all('~(("[^"]*")+|[^,]*),~', "$val,", $matches2);
+			if (!$key && !array_diff($matches2[1], array_keys($fields))) { //! doesn't work with column names containing ",\n
+				$cols = " (" . implode(", ", array_map('idf_escape', $matches2[1])) . ")";
+			} else {
+				foreach ($matches2[1] as $col) {
+					$row[] = (!strlen($col) ? "NULL" : "'" . $mysql->escape_string(str_replace('""', '"', preg_replace('~^".*"$~s', '', $col))) . "'");
+				}
+				$rows[] = "(" . implode(", ", $row) . ")";
 			}
-			$rows[] = "(" . implode(", ", $row) . ")";
 		}
-		$result = queries("INSERT INTO " . idf_escape($_GET["select"]) . " VALUES " . implode(", ", $rows));
+		$result = queries("INSERT INTO " . idf_escape($_GET["select"]) . "$cols VALUES " . implode(", ", $rows));
 		query_redirect(queries(), remove_from_uri("page"), lang('%d row(s) has been imported.', $mysql->affected_rows), $result, false, !$result);
 	} else {
 		$result = true;
@@ -325,7 +330,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 			echo " (" . lang('%d row(s)', $found_rows) . ")</p>\n";
 			
 			echo ($_GET["db"] != "information_schema" ? "<fieldset><legend>" . lang('Edit') . "</legend><div><input type='submit' value='" . lang('Edit') . "' /> <input type='submit' name='clone' value='" . lang('Clone') . "' /> <input type='submit' name='delete' value='" . lang('Delete') . "'$confirm /></div></fieldset>\n" : "");
-			echo "<fieldset><legend>" . lang('Export selected') . "</legend><div>$dump_options <input type='submit' name='export' value='" . lang('Export') . "' /></div></fieldset>\n";
+			echo "<fieldset><legend>" . lang('Export') . "</legend><div>$dump_options <input type='submit' name='export' value='" . lang('Export') . "' /></div></fieldset>\n";
 		}
 		$result->free();
 		echo "<fieldset><legend>" . lang('CSV Import') . "</legend><div><input type='hidden' name='token' value='$token' /><input type='file' name='csv_file' /> <input type='submit' name='import' value='" . lang('Import') . "' /></div></fieldset>\n";
