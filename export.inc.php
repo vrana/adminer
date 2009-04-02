@@ -28,7 +28,7 @@ function dump_table($table, $style, $is_view = false) {
 				$row_size = 21 + strlen(idf_escape($table));
 				foreach (fields($table) as $field) {
 					$type = $types[$field["type"]];
-					$row_size += 5 + ($field["length"] ? $field["length"] : $type) * (preg_match('~char|text|enum~', $field["type"]) ? 3 : 1); // UTF-8 in MySQL uses up to 3 bytes
+					$row_size += 5 + ($field["length"] ? (preg_match('~enum|set~', $field["type"]) ? strlen($field["length"]) : $field["length"]) : $type) * (preg_match('~char|text|enum|set~', $field["type"]) ? 3 : 1); // UTF-8 in MySQL uses up to 3 bytes
 				}
 				if ($row_size > $max_packet) {
 					$max_packet = min(1073741824, 1024 * ceil($row_size / 1024));
