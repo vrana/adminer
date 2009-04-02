@@ -9,7 +9,7 @@ function dump_csv($row) {
 }
 
 function dump_table($table, $style, $is_view = false) {
-	global $mysql, $max_packet, $types;
+	global $mysql, $types;
 	if ($_POST["format"] == "csv") {
 		echo "\xef\xbb\xbf";
 		if ($style) {
@@ -24,17 +24,6 @@ function dump_table($table, $style, $is_view = false) {
 			$create = $mysql->result($result, 1);
 			$result->free();
 			echo ($style != "CREATE, ALTER" ? $create : ($is_view ? substr_replace($create, " OR REPLACE", 6, 0) : substr_replace($create, " IF NOT EXISTS", 12, 0))) . ";\n\n";
-			if ($max_packet < 1073741824) { // protocol limit
-				$row_size = 21 + strlen(idf_escape($table));
-				foreach (fields($table) as $field) {
-					$type = $types[$field["type"]];
-					$row_size += 5 + ($field["length"] ? (preg_match('~enum|set~', $field["type"]) ? strlen($field["length"]) : $field["length"]) : $type) * (preg_match('~char|text|enum|set~', $field["type"]) ? 3 : 1); // UTF-8 in MySQL uses up to 3 bytes
-				}
-				if ($row_size > $max_packet) {
-					$max_packet = min(1073741824, 1024 * ceil($row_size / 1024));
-					echo "SET max_allowed_packet = $max_packet;\n";
-				}
-			}
 		}
 		if ($mysql->server_info >= 5) {
 			if ($style == "CREATE, ALTER" && !$is_view) {

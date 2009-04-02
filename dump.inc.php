@@ -12,11 +12,10 @@ function tar_file($filename, $contents) {
 if ($_POST) {
 	$ext = dump_headers((strlen($_GET["dump"]) ? $_GET["dump"] : $_GET["db"]), (!strlen($_GET["db"]) || count(array_filter((array) $_POST["tables"]) + array_filter((array) $_POST["data"])) > 1));
 	if ($_POST["format"] != "csv") {
-		$max_packet = 16777216;
+		$max_packet = 1048576; // default, minimum is 1024
 		echo "SET NAMES utf8;\n";
 		echo "SET foreign_key_checks = 0;\n";
 		echo "SET time_zone = '" . $mysql->escape_string($mysql->result($mysql->query("SELECT @@time_zone"))) . "';\n";
-		echo "SET max_allowed_packet = $max_packet;\n"; // ignored because of MySQL bug #22891
 		echo "\n";
 	}
 	
