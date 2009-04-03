@@ -6,6 +6,7 @@ Option to stop on error in SQL command (thanks to Vaclav Marik)
 Cross links to select and table (bug #2236232), link new item
 Suhosin compatibility (thanks to Klemens Hackel)
 Remove max_allowed_packet from export
+Read style from phpMinAdmin.css if exists
 
 phpMinAdmin 1.9.1:
 Update translations

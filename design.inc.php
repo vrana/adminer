@@ -11,7 +11,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <meta name="robots" content="noindex" />
 <title><?php echo $title . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . " - " . lang('phpMinAdmin') . " 1.10.0-dev"; ?></title>
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-<link rel="stylesheet" type="text/css" href="default.css" /><?php // Ondrej Valka, http://valka.info ?>
+<link rel="stylesheet" type="text/css" href="<?php echo (file_exists("phpMinAdmin.css") ? "phpMinAdmin.css" : "default.css"); // Ondrej Valka, http://valka.info ?>" />
 </head>
 
 <body>

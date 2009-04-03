@@ -109,8 +109,8 @@ if ($_COOKIE["lang"]) {
 } else {
 	$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
 }
-$file = preg_replace("~favicon\\.ico|default\\.css|(up|down|plus|minus)\\.gif~", '<?php echo preg_replace("~\\\\\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?file=\\0"; ?>', $file);
-$file = str_replace("arrow.gif", '" . preg_replace("~\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?file=arrow.gif', $file);
+$file = preg_replace('~favicon\\.ico|(up|down|plus|minus)\\.gif~', '<?php echo preg_replace("~\\\\\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?file=\\0"; ?>', $file);
+$file = preg_replace('~default\\.css|arrow\\.gif~', '" . preg_replace("~\\\\\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?file=\\0', $file);
 $file = str_replace('error_reporting(E_ALL & ~E_NOTICE);', 'error_reporting(E_ALL & ~E_NOTICE);
 if (isset($_GET["file"])) {
 	header("Expires: " . gmdate("D, d M Y H:i:s", filemtime(__FILE__) + 365*24*60*60) . " GMT");
