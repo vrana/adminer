@@ -1,4 +1,6 @@
 <?php
+$functions = array("char_length", "from_unixtime", "hex", "lower", "round", "sec_to_time", "time_to_sec", "unix_timestamp", "upper");
+$grouping = array("avg", "count", "distinct", "group_concat", "max", "min", "sum");
 $table_status = table_status($_GET["select"]);
 $indexes = indexes($_GET["select"]);
 $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "REGEXP", "IN", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL");
