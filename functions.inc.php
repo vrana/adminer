@@ -70,7 +70,7 @@ function fields($table) {
 				"type" => $match[1],
 				"length" => $match[2],
 				"unsigned" => ltrim($match[3] . $match[4]),
-				"default" => $row["Default"],
+				"default" => (strlen($row["Default"]) || ereg("char", $match[1]) ? $row["Default"] : null),
 				"null" => ($row["Null"] == "YES"),
 				"auto_increment" => ($row["Extra"] == "auto_increment"),
 				"collation" => $row["Collation"],
