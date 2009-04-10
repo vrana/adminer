@@ -119,7 +119,7 @@ if (isset($_GET["file"])) {
 		echo base64_decode("' . base64_encode(file_get_contents("favicon.ico")) . '");
 	} elseif ($_GET["file"] == "default.css") {
 		header("Content-Type: text/css");
-		?>' . file_get_contents("default.css") . '<?php
+		?>' . preg_replace('~\\s*([:;{},])\\s+~', '\\1', file_get_contents("default.css")) . '<?php
 	} else {
 		header("Content-Type: image/gif");
 		switch ($_GET["file"]) {
