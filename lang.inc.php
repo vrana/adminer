@@ -8,7 +8,7 @@ $langs = array(
 	'de' => 'Deutsch', // Klemens Häckel - http://clickdimension.wordpress.com
 	'zh' => '简体中文', // Mr. Lodar
 	'fr' => 'Français', // Francis Gagné
-	'it' => 'Italiano', // Alessandro Fiorotto
+	'it' => 'Italiano', // Alessandro Fiorotto, Paolo Asperti
 	'et' => 'Eesti', // Priit Kallas
 );
 
