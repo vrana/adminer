@@ -4,7 +4,7 @@ if (ini_get("session.use_trans_sid") && isset($_POST[session_name()])) {
 	$ignore[] = session_name();
 }
 if (isset($_POST["server"])) {
-	if (isset($_REQUEST[session_name()])) {
+	if (isset($_COOKIE[session_name()]) || isset($_POST[session_name()])) {
 		session_regenerate_id();
 		$_SESSION["usernames"][$_POST["server"]] = $_POST["username"];
 		$_SESSION["passwords"][$_POST["server"]] = $_POST["password"];
