@@ -65,8 +65,22 @@ function put_file($match) {
 	return $return;
 }
 
+function short_variable($number) {
+	$chars = implode("", range('a', 'z')) . '_' . implode("", range('A', 'Z')); // could use also numbers and \x7f-\xff
+	$return = '$';
+	while ($number >= 0) {
+		$return .= $chars{$number % strlen($chars)};
+		$number = floor($number / strlen($chars)) - 1;
+	}
+	return $return;
+}
+
 // Dgx's PHP shrinker
 function php_shrink($input) {
+	$special_variables = array_flip(array('$TOKENS', '$this', '$GLOBALS', '$_GET', '$_POST', '$_FILES', '$_COOKIE', '$_SESSION', '$_SERVER'));
+	static $short_variables = array();
+	$shortening = true;
+	
 	$set = array_flip(preg_split('//', '!"#$&\'()*+,-./:;<=>?@[\]^`{|}'));
 	$space = '';
 	$output = '';
@@ -77,6 +91,18 @@ function php_shrink($input) {
 		if ($token[0] == T_COMMENT || $token[0] == T_WHITESPACE) {
 			$space = "\n";
 		} else {
+			if ($token[0] == T_VAR) {
+				$shortening = false;
+			} elseif (!$shortening) {
+				if ($token[1] == ';') {
+					$shortening = true;
+				}
+			} elseif ($token[0] == T_VARIABLE && !isset($special_variables[$token[1]])) {
+				if (!isset($short_variables[$token[1]])) {
+					$short_variables[$token[1]] = short_variable(count($short_variables));
+				}
+				$token[1] = $short_variables[$token[1]];
+			}
 			if (isset($set[substr($output, -1)]) || isset($set[$token[1]{0}])) {
 				$space = '';
 			}
