@@ -4,12 +4,12 @@ if (extension_loaded("mysqli")) {
 		var $extension = "MySQLi";
 		
 		function Min_MySQLi() {
-			$this->init();
+			parent::init();
 		}
 		
 		function connect($server, $username, $password) {
 			list($host, $port) = explode(":", $server, 2);
-			return @$this->real_connect(
+			return @parent::real_connect(
 				(strlen($server) ? $host : ini_get("mysqli.default_host")),
 				(strlen("$server$username") ? $username : ini_get("mysqli.default_user")),
 				(strlen("$server$username$password") ? $password : ini_get("mysqli.default_pw")),
@@ -22,9 +22,62 @@ if (extension_loaded("mysqli")) {
 			if (!$result) {
 				return false;
 			}
-			$row = $result->fetch_array();
+			$row = $result->_result->fetch_array();
 			return $row[$field];
 		}
+		
+		// minification compatibility start
+		function select_db($database) {
+			return parent::select_db($database);
+		}
+		
+		function query($query) {
+			$result = parent::query($query);
+			return (is_object($result) ? new Min_MySQLiResult($result) : $result);
+		}
+		
+		function multi_query($query) {
+			return parent::multi_query($query);
+		}
+		
+		function store_result() {
+			$result = parent::store_result();
+			return (is_object($result) ? new Min_MySQLiResult($result) : $result);
+		}
+		
+		function next_result() {
+			return parent::next_result();
+		}
+		
+		function escape_string($string) {
+			return parent::escape_string($string);
+		}
+	}
+	
+	class Min_MySQLiResult {
+		var $_result, $num_rows;
+		
+		function __construct($result) {
+			$this->_result = $result;
+			$this->num_rows = $result->num_rows;
+		}
+		
+		function fetch_assoc() {
+			return $this->_result->fetch_assoc();
+		}
+		
+		function fetch_row() {
+			return $this->_result->fetch_row();
+		}
+		
+		function fetch_field() {
+			return $this->_result->fetch_field();
+		}
+		
+		function free() {
+			return $this->_result->free();
+		}
+		// minification compatibility end
 	}
 	
 	$mysql = new Min_MySQLi;
@@ -128,7 +181,7 @@ if (extension_loaded("mysqli")) {
 			set_exception_handler('auth_error'); // try/catch is not compatible with PHP 4
 			parent::__construct("mysql:host=" . str_replace(":", ";port=", $server), $username, $password);
 			restore_exception_handler();
-			$this->setAttribute(13, array('Min_PDOStatement')); // PDO::ATTR_STATEMENT_CLASS
+			parent::setAttribute(13, array('Min_PDOStatement')); // PDO::ATTR_STATEMENT_CLASS
 			$this->server_info = $this->result($this->query("SELECT VERSION()"));
 			return true;
 		}
@@ -138,19 +191,19 @@ if (extension_loaded("mysqli")) {
 		}
 		
 		function query($query) {
-			$result = parent::query($query);
-			if (!$result) {
-				$errorInfo = $this->errorInfo();
+			$_result = parent::query($query);
+			if (!$_result) {
+				$errorInfo = parent::errorInfo();
 				$this->error = $errorInfo[2];
 				return false;
 			}
-			$this->_result = $result;
-			if (!$result->columnCount()) {
-				$this->affected_rows = $result->rowCount();
+			$this->_result = $_result;
+			if (!$_result->columnCount()) {
+				$this->affected_rows = $_result->rowCount();
 				return true;
 			}
-			$result->num_rows = $result->rowCount();
-			return $result;
+			$_result->num_rows = $_result->rowCount();
+			return $_result;
 		}
 		
 		function multi_query($query) {
@@ -165,16 +218,16 @@ if (extension_loaded("mysqli")) {
 			return $this->_result->nextRowset();
 		}
 		
-		function result($result, $field = 0) {
-			if (!$result) {
+		function result($_result, $field = 0) {
+			if (!$_result) {
 				return false;
 			}
-			$row = $result->fetch();
+			$row = $_result->fetch();
 			return $row[$field];
 		}
 		
 		function escape_string($string) {
-			return substr($this->quote($string), 1, -1);
+			return substr(parent::quote($string), 1, -1);
 		}
 	}
 	
@@ -182,15 +235,15 @@ if (extension_loaded("mysqli")) {
 		var $_offset = 0, $num_rows;
 		
 		function fetch_assoc() {
-			return $this->fetch(2); // PDO::FETCH_ASSOC
+			return parent::fetch(2); // PDO::FETCH_ASSOC
 		}
 		
 		function fetch_row() {
-			return $this->fetch(3); // PDO::FETCH_NUM
+			return parent::fetch(3); // PDO::FETCH_NUM
 		}
 		
 		function fetch_field() {
-			$row = (object) $this->getColumnMeta($this->_offset++);
+			$row = (object) parent::getColumnMeta($this->_offset++);
 			$row->orgtable = $row->table;
 			$row->orgname = $row->name;
 			$row->charsetnr = (in_array("blob", $row->flags) ? 63 : 0);

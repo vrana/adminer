@@ -65,9 +65,8 @@ function put_file($match) {
 	return $return;
 }
 
-function short_variable($number) {
-	$chars = implode("", range('a', 'z')) . '_' . implode("", range('A', 'Z')); // could use also numbers and \x7f-\xff
-	$return = '$';
+function short_identifier($number, $chars) {
+	$return = '';
 	while ($number >= 0) {
 		$return .= $chars{$number % strlen($chars)};
 		$number = floor($number / strlen($chars)) - 1;
@@ -75,16 +74,35 @@ function short_variable($number) {
 	return $return;
 }
 
-// Dgx's PHP shrinker
+// Based on Dgx's PHP shrinker
 function php_shrink($input) {
 	$special_variables = array_flip(array('$TOKENS', '$this', '$GLOBALS', '$_GET', '$_POST', '$_FILES', '$_COOKIE', '$_SESSION', '$_SERVER'));
 	static $short_variables = array();
 	$shortening = true;
+	$special_functions = array_flip(array('Min_MySQLi', 'Min_MySQLResult', 'normalize_enum', '__construct'));
+	static $short_functions = array();
+	$tokens = token_get_all($input);
+	
+	foreach ($tokens as $i => $token) {
+		if ($token[0] === T_VARIABLE && !isset($special_variables[$token[1]])) {
+			$short_variables[$token[1]]++;
+		} elseif ($token[0] === T_STRING && $tokens[$i+1] === '(' && !is_callable($token[1]) && !isset($special_functions[$token[1]])) {
+			$short_functions[$token[1]]++;
+		}
+	}
+	arsort($short_variables);
+	foreach (array_keys($short_variables) as $number => $key) {
+		$short_variables[$key] = short_identifier($number, implode("", range('a', 'z')) . '_' . implode("", range('A', 'Z'))); // could use also numbers and \x7f-\xff
+	}
+	arsort($short_functions);
+	foreach (array_keys($short_functions) as $number => $key) {
+		$short_functions[$key] = short_identifier($number, implode("", range('a', 'z')) . '_');
+	}
 	
 	$set = array_flip(preg_split('//', '!"#$&\'()*+,-./:;<=>?@[\]^`{|}'));
 	$space = '';
 	$output = '';
-	foreach (token_get_all($input) as $token) {
+	foreach ($tokens as $i => $token) {
 		if (!is_array($token)) {
 			$token = array(0, $token);
 		}
@@ -97,11 +115,14 @@ function php_shrink($input) {
 				if ($token[1] == ';') {
 					$shortening = true;
 				}
-			} elseif ($token[0] == T_VARIABLE && !isset($special_variables[$token[1]])) {
-				if (!isset($short_variables[$token[1]])) {
-					$short_variables[$token[1]] = short_variable(count($short_variables));
-				}
-				$token[1] = $short_variables[$token[1]];
+			} elseif ($token[0] === T_VARIABLE && !isset($special_variables[$token[1]])) {
+				$token[1] = '$' . $short_variables[$token[1]];
+			} elseif ($token[0] === T_STRING && $tokens[$i+1] === '(' && !is_callable($token[1]) && !isset($special_functions[$token[1]])
+			&& $tokens[$i-1][0] !== T_DOUBLE_COLON && $tokens[$i-2][0] !== T_NEW && !in_array($tokens[$i-2][1], array('_result', '$_result'), true)
+			) {
+				$token[1] = $short_functions[$token[1]];
+			} elseif ($token[0] == T_CONSTANT_ENCAPSED_STRING && $tokens[$i-1] === '(' && in_array($tokens[$i-2][1], array('array_map', 'set_exception_handler'), true) && isset($short_functions[substr($token[1], 1, -1)])) {
+				$token[1] = "'" . $short_functions[substr($token[1], 1, -1)] . "'";
 			}
 			if (isset($set[substr($output, -1)]) || isset($set[$token[1]{0}])) {
 				$space = '';

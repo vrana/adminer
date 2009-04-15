@@ -7,7 +7,7 @@ Cross links to select and table (bug #2236232), link new item
 Suhosin compatibility (thanks to Klemens Hackel)
 Remove max_allowed_packet from export
 Read style from phpMinAdmin.css if exists
-Size reduction by minification of variables
+Size reduction by minification of variables and functions
 
 phpMinAdmin 1.9.1:
 Update translations

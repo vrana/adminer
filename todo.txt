@@ -5,7 +5,7 @@ MySQL 5 BIT data type
 Transactions in export
 Compress export and import
 Create view and routine options
-Import CSV
+SQL queries history - utilize in edit link in .message and .error
 Function to fix database encoding - http://php.vrana.cz/prevod-kodovani-mysql.php
 ? Execution time in sql.inc.php
 ? Save token also to cookie - for session expiration and login in other window
