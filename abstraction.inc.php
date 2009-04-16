@@ -191,19 +191,19 @@ if (extension_loaded("mysqli")) {
 		}
 		
 		function query($query) {
-			$_result = parent::query($query);
-			if (!$_result) {
+			$result = parent::query($query);
+			if (!$result) {
 				$errorInfo = $this->errorInfo();
 				$this->error = $errorInfo[2];
 				return false;
 			}
-			$this->_result = $_result;
-			if (!$_result->columnCount()) {
-				$this->affected_rows = $_result->rowCount();
+			$this->_result = $result;
+			if (!$result->columnCount()) {
+				$this->affected_rows = $result->rowCount();
 				return true;
 			}
-			$_result->num_rows = $_result->rowCount();
-			return $_result;
+			$result->num_rows = $result->rowCount();
+			return $result;
 		}
 		
 		function multi_query($query) {
@@ -218,11 +218,11 @@ if (extension_loaded("mysqli")) {
 			return $this->_result->nextRowset();
 		}
 		
-		function result($_result, $field = 0) {
-			if (!$_result) {
+		function result($result, $field = 0) {
+			if (!$result) {
 				return false;
 			}
-			$row = $_result->fetch();
+			$row = $result->fetch();
 			return $row[$field];
 		}
 		

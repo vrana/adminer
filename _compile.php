@@ -127,7 +127,7 @@ function php_shrink($input) {
 			} elseif ($token[0] === T_VARIABLE && !isset($special_variables[$token[1]])) {
 				$token[1] = '$' . $short_variables[$token[1]];
 			} elseif ($token[0] === T_STRING && $tokens[$i+1] === '(' && isset($defined_functions[$token[1]])
-			&& $tokens[$i-1][0] !== T_DOUBLE_COLON && $tokens[$i-2][0] !== T_NEW && !in_array($tokens[$i-2][1], array('_result', '$_result'), true)
+			&& $tokens[$i-1][0] !== T_DOUBLE_COLON && $tokens[$i-2][0] !== T_NEW && $tokens[$i-2][1] !== '_result'
 			) {
 				$token[1] = $short_functions[$token[1]];
 			} elseif ($token[0] == T_CONSTANT_ENCAPSED_STRING && (($tokens[$i-1] === '(' && in_array($tokens[$i-2][1], array('array_map', 'set_exception_handler'), true)) || $token[1] == "'normalize_enum'") && isset($defined_functions[substr($token[1], 1, -1)])) {
