@@ -82,26 +82,7 @@ if ($_POST && !$error) {
 		}
 		exit;
 	}
-	if ($_POST["import"]) {
-		$file = preg_replace("~^\xEF\xBB\xBF~", '', get_file("csv_file")); //! character set
-		$cols = "";
-		$rows = array(); //! packet size
-		preg_match_all('~("[^"]*"|[^"\\n]+)+~', $file, $matches);
-		foreach ($matches[0] as $key => $val) {
-			$row = array();
-			preg_match_all('~(("[^"]*")+|[^,]*),~', "$val,", $matches2);
-			if (!$key && !array_diff($matches2[1], array_keys($fields))) { //! doesn't work with column names containing ",\n
-				$cols = " (" . implode(", ", array_map('idf_escape', $matches2[1])) . ")";
-			} else {
-				foreach ($matches2[1] as $col) {
-					$row[] = (!strlen($col) ? "NULL" : "'" . $mysql->escape_string(str_replace('""', '"', preg_replace('~^".*"$~s', '', $col))) . "'");
-				}
-				$rows[] = "(" . implode(", ", $row) . ")";
-			}
-		}
-		$result = queries("INSERT INTO " . idf_escape($_GET["select"]) . "$cols VALUES " . implode(", ", $rows));
-		query_redirect(queries(), remove_from_uri("page"), lang('%d row(s) has been imported.', $mysql->affected_rows), $result, false, !$result);
-	} else {
+	if (!$_POST["import"]) { // edit
 		$result = true;
 		$affected = 0;
 		$command = ($_POST["delete"] ? ($_POST["all"] && !$where ? "TRUNCATE " : "DELETE FROM ") : ($_POST["clone"] ? "INSERT INTO " : "UPDATE ")) . idf_escape($_GET["select"]);
@@ -134,6 +115,27 @@ if ($_POST && !$error) {
 		}
 		query_redirect(queries(), remove_from_uri("page"), lang('%d item(s) have been affected.', $affected), $result, false, !$result);
 		//! display edit page in case of an error
+	} elseif (is_string($file = get_file("csv_file"))) {
+		$file = preg_replace("~^\xEF\xBB\xBF~", '', $file); //! character set
+		$cols = "";
+		$rows = array(); //! packet size
+		preg_match_all('~("[^"]*"|[^"\\n]+)+~', $file, $matches);
+		foreach ($matches[0] as $key => $val) {
+			$row = array();
+			preg_match_all('~(("[^"]*")+|[^,]*),~', "$val,", $matches2);
+			if (!$key && !array_diff($matches2[1], array_keys($fields))) { //! doesn't work with column names containing ",\n
+				$cols = " (" . implode(", ", array_map('idf_escape', $matches2[1])) . ")";
+			} else {
+				foreach ($matches2[1] as $col) {
+					$row[] = (!strlen($col) ? "NULL" : "'" . $mysql->escape_string(str_replace('""', '"', preg_replace('~^".*"$~s', '', $col))) . "'");
+				}
+				$rows[] = "(" . implode(", ", $row) . ")";
+			}
+		}
+		$result = queries("INSERT INTO " . idf_escape($_GET["select"]) . "$cols VALUES " . implode(", ", $rows));
+		query_redirect(queries(), remove_from_uri("page"), lang('%d row(s) has been imported.', $mysql->affected_rows), $result, false, !$result);
+	} else {
+		$error = lang('Unable to upload a file.');
 	}
 }
 page_header(lang('Select') . ": " . htmlspecialchars($_GET["select"]), $error);
