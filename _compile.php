@@ -79,24 +79,33 @@ function php_shrink($input) {
 	$special_variables = array_flip(array('$TOKENS', '$this', '$GLOBALS', '$_GET', '$_POST', '$_FILES', '$_COOKIE', '$_SESSION', '$_SERVER'));
 	static $short_variables = array();
 	$shortening = true;
-	$special_functions = array_flip(array('Min_MySQLi', 'Min_MySQLResult', 'normalize_enum', '__construct'));
+	$special_functions = array_flip(array('Min_MySQLi', 'Min_MySQLResult', '__construct'));
+	$defined_functions = array();
 	static $short_functions = array();
 	$tokens = token_get_all($input);
 	
 	foreach ($tokens as $i => $token) {
 		if ($token[0] === T_VARIABLE && !isset($special_variables[$token[1]])) {
 			$short_variables[$token[1]]++;
-		} elseif ($token[0] === T_STRING && $tokens[$i+1] === '(' && !is_callable($token[1]) && !isset($special_functions[$token[1]])) {
+		} elseif ($token[0] === T_STRING && $tokens[$i+1] === '(' && !isset($special_functions[$token[1]])) {
 			$short_functions[$token[1]]++;
+			if ($tokens[$i-2][0] === T_FUNCTION) {
+				$defined_functions[$token[1]] = true;
+			}
 		}
 	}
+	
 	arsort($short_variables);
 	foreach (array_keys($short_variables) as $number => $key) {
 		$short_variables[$key] = short_identifier($number, implode("", range('a', 'z')) . '_' . implode("", range('A', 'Z'))); // could use also numbers and \x7f-\xff
 	}
 	arsort($short_functions);
-	foreach (array_keys($short_functions) as $number => $key) {
-		$short_functions[$key] = short_identifier($number, implode("", range('a', 'z')) . '_');
+	$number = 0;
+	foreach ($short_functions as $key => $val) {
+		if (isset($defined_functions[$key])) {
+			$short_functions[$key] = short_identifier($number, implode("", range('a', 'z')) . '_');
+			$number++;
+		}
 	}
 	
 	$set = array_flip(preg_split('//', '!"#$&\'()*+,-./:;<=>?@[\]^`{|}'));
@@ -117,11 +126,11 @@ function php_shrink($input) {
 				}
 			} elseif ($token[0] === T_VARIABLE && !isset($special_variables[$token[1]])) {
 				$token[1] = '$' . $short_variables[$token[1]];
-			} elseif ($token[0] === T_STRING && $tokens[$i+1] === '(' && !is_callable($token[1]) && !isset($special_functions[$token[1]])
+			} elseif ($token[0] === T_STRING && $tokens[$i+1] === '(' && isset($defined_functions[$token[1]])
 			&& $tokens[$i-1][0] !== T_DOUBLE_COLON && $tokens[$i-2][0] !== T_NEW && !in_array($tokens[$i-2][1], array('_result', '$_result'), true)
 			) {
 				$token[1] = $short_functions[$token[1]];
-			} elseif ($token[0] == T_CONSTANT_ENCAPSED_STRING && $tokens[$i-1] === '(' && in_array($tokens[$i-2][1], array('array_map', 'set_exception_handler'), true) && isset($short_functions[substr($token[1], 1, -1)])) {
+			} elseif ($token[0] == T_CONSTANT_ENCAPSED_STRING && (($tokens[$i-1] === '(' && in_array($tokens[$i-2][1], array('array_map', 'set_exception_handler'), true)) || $token[1] == "'normalize_enum'") && isset($defined_functions[substr($token[1], 1, -1)])) {
 				$token[1] = "'" . $short_functions[substr($token[1], 1, -1)] . "'";
 			}
 			if (isset($set[substr($output, -1)]) || isset($set[$token[1]{0}])) {

@@ -4,12 +4,12 @@ if (extension_loaded("mysqli")) {
 		var $extension = "MySQLi";
 		
 		function Min_MySQLi() {
-			parent::init();
+			$this->init();
 		}
 		
 		function connect($server, $username, $password) {
 			list($host, $port) = explode(":", $server, 2);
-			return @parent::real_connect(
+			return @$this->real_connect(
 				(strlen($server) ? $host : ini_get("mysqli.default_host")),
 				(strlen("$server$username") ? $username : ini_get("mysqli.default_user")),
 				(strlen("$server$username$password") ? $password : ini_get("mysqli.default_pw")),
@@ -181,7 +181,7 @@ if (extension_loaded("mysqli")) {
 			set_exception_handler('auth_error'); // try/catch is not compatible with PHP 4
 			parent::__construct("mysql:host=" . str_replace(":", ";port=", $server), $username, $password);
 			restore_exception_handler();
-			parent::setAttribute(13, array('Min_PDOStatement')); // PDO::ATTR_STATEMENT_CLASS
+			$this->setAttribute(13, array('Min_PDOStatement')); // PDO::ATTR_STATEMENT_CLASS
 			$this->server_info = $this->result($this->query("SELECT VERSION()"));
 			return true;
 		}
@@ -193,7 +193,7 @@ if (extension_loaded("mysqli")) {
 		function query($query) {
 			$_result = parent::query($query);
 			if (!$_result) {
-				$errorInfo = parent::errorInfo();
+				$errorInfo = $this->errorInfo();
 				$this->error = $errorInfo[2];
 				return false;
 			}
@@ -227,7 +227,7 @@ if (extension_loaded("mysqli")) {
 		}
 		
 		function escape_string($string) {
-			return substr(parent::quote($string), 1, -1);
+			return substr($this->quote($string), 1, -1);
 		}
 	}
 	
@@ -235,15 +235,15 @@ if (extension_loaded("mysqli")) {
 		var $_offset = 0, $num_rows;
 		
 		function fetch_assoc() {
-			return parent::fetch(2); // PDO::FETCH_ASSOC
+			return $this->fetch(2); // PDO::FETCH_ASSOC
 		}
 		
 		function fetch_row() {
-			return parent::fetch(3); // PDO::FETCH_NUM
+			return $this->fetch(3); // PDO::FETCH_NUM
 		}
 		
 		function fetch_field() {
-			$row = (object) parent::getColumnMeta($this->_offset++);
+			$row = (object) $this->getColumnMeta($this->_offset++);
 			$row->orgtable = $row->table;
 			$row->orgname = $row->name;
 			$row->charsetnr = (in_array("blob", $row->flags) ? 63 : 0);
