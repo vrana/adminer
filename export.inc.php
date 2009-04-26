@@ -171,5 +171,6 @@ function dump_headers($identifier, $multi_table = false) {
 	return $ext;
 }
 
-$dump_options = lang('Output') . ": <select name='output'><option value='text'>" . lang('open') . "</option><option value='file'>" . lang('save') . "</option></select> " . lang('Format') . ": <select name='format'><option value='sql'>" . lang('SQL') . "</option><option value='csv'>" . lang('CSV') . "</option></select>";
+$dump_output = "<select name='output'><option value='text'>" . lang('open') . "</option><option value='file'>" . lang('save') . "</option></select>";
+$dump_format = "<select name='format'><option value='sql'>" . lang('SQL') . "</option><option value='csv'>" . lang('CSV') . "</option></select>";
 $max_packet = 0;

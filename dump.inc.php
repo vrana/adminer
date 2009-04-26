@@ -142,7 +142,7 @@ function check(td, name, value) {
 </script>
 
 <form action="" method="post">
-<p><?php echo $dump_options; ?></p>
+<p><?php echo lang('Output') . ": $dump_output " . lang('Format') . ": $dump_format"; ?> <input type="submit" value="<?php echo lang('Export'); ?>" /></p>
 
 <?php
 echo "<table border='1' cellspacing='0' cellpadding='2'>\n<thead><tr><th>" . lang('Database') . "</th>";
@@ -187,5 +187,4 @@ while ($row = $result->fetch_assoc()) {
 }
 echo "$views</table>\n";
 ?>
-<p><input type="submit" value="<?php echo lang('Export'); ?>" /></p>
 </form>
