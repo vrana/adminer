@@ -8,6 +8,7 @@ Suhosin compatibility (thanks to Klemens Hackel)
 Remove max_allowed_packet from export
 Read style from phpMinAdmin.css if exists
 Size reduction by minification of variables and functions
+Russian translation
 
 phpMinAdmin 1.9.1:
 Update translations

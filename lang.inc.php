@@ -10,6 +10,7 @@ $langs = array(
 	'fr' => 'Français', // Francis Gagné
 	'it' => 'Italiano', // Alessandro Fiorotto, Paolo Asperti
 	'et' => 'Eesti', // Priit Kallas
+	'ru'=>'Русский язык', // Juraj Hajdúch
 );
 
 function lang($idf, $number = null) {
