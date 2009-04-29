@@ -100,6 +100,8 @@ if ($_POST) {
 			$row["partition_names"][] = $row1["PARTITION_NAME"];
 			$row["partition_values"][] = $row1["PARTITION_DESCRIPTION"];
 		}
+		$row["partition_names"][] = "";
+		$row["partition_values"][] = "";
 		$result->free();
 	}
 } else {
@@ -143,22 +145,23 @@ function column_comments_click(checked) {
 <input type="submit" value="<?php echo lang('Save'); ?>" />
 <?php if (strlen($_GET["create"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?> /><?php } ?>
 </p>
-<?php if ($mysql->server_info >= 5.1) { ?>
+<?php
+if ($mysql->server_info >= 5.1) {
+	$partition_table = ereg('RANGE|LIST', $row["partition_by"]);
+	?>
 <fieldset><legend><?php echo lang('Partition by'); ?></legend>
 <p>
-<select name="partition_by"><option></option><?php echo optionlist($partition_by, $row["partition_by"]); ?></select>
+<select name="partition_by" onchange="var partition_table = /RANGE|LIST/.test(this.options[this.selectedIndex].text); this.form['partitions'].className = (partition_table || !this.selectedIndex ? 'hidden' : ''); document.getElementById('partition-table').className = (partition_table ? '' : 'hidden');"><option></option><?php echo optionlist($partition_by, $row["partition_by"]); ?></select>
 (<input name="partition" value="<?php echo htmlspecialchars($row["partition"]); ?>" />)
-<?php echo lang('Partitions'); ?>: <input name="partitions" size="2" value="<?php echo htmlspecialchars($row["partitions"]); ?>" />
+<?php echo lang('Partitions'); ?>: <input name="partitions" size="2" value="<?php echo htmlspecialchars($row["partitions"]); ?>"<?php echo ($partition_table || !$row["partition_by"] ? " class='hidden'" : ""); ?> />
 </p>
-<table border="0" cellspacing="0" cellpadding="2">
+<table id="partition-table" border="0" cellspacing="0" cellpadding="2"<?php echo ($partition_table ? "" : " class='hidden'"); ?>>
 <thead><tr><th><?php echo lang('Partition name'); ?></th><th><?php echo lang('Values'); ?></th></tr></thead>
 <?php
 foreach ($row["partition_names"] as $key => $val) {
-	echo '<tr><td><input name="partition_names[' . intval($key) . ']" value="' . htmlspecialchars($val) . '" /></td><td><input name="partition_values[' . intval($key) . ']" value="' . htmlspecialchars($row["partition_values"][$key]) . "\" /></td></tr>\n";
+	echo '<tr><td><input name="partition_names[]" value="' . htmlspecialchars($val) . '"' . ($key == count($row["partition_names"]) - 1 ? ' onchange="var row = this.parentNode.parentNode.cloneNode(true); row.firstChild.firstChild.value = \'\'; this.parentNode.parentNode.parentNode.appendChild(row); this.onchange = function () {};"' : '') . ' /></td><td><input name="partition_values[]" value="' . htmlspecialchars($row["partition_values"][$key]) . "\" /></td></tr>\n";
 }
-//! JS for next row
 ?>
-<tr><td><input name="partition_names[<?php echo $key+1; ?>]" value="" /></td><td><input name="partition_values[<?php echo $key+1; ?>]" value="" /></td></tr>
 </table>
 </fieldset>
 <?php } ?>
