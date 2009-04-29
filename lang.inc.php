@@ -1,6 +1,6 @@
 <?php
 $langs = array(
-	'en' => 'English',
+	'en' => 'English', // Jakub Vrána - http://php.vrana.cz
 	'cs' => 'Čeština', // Jakub Vrána - http://php.vrana.cz
 	'sk' => 'Slovenčina', // Ivan Suchy - http://www.ivansuchy.com
 	'nl' => 'Nederlands', // Maarten Balliauw - http://blog.maartenballiauw.be
@@ -10,19 +10,14 @@ $langs = array(
 	'fr' => 'Français', // Francis Gagné
 	'it' => 'Italiano', // Alessandro Fiorotto, Paolo Asperti
 	'et' => 'Eesti', // Priit Kallas
-	'ru'=>'Русский язык', // Juraj Hajdúch
+	'ru' => 'Русский язык', // Juraj Hajdúch
 );
 
 function lang($idf, $number = null) {
 	global $LANG, $translations;
 	$translation = $translations[$idf];
 	if (is_array($translation) && $translation) {
-		$pos = ($number == 1 ? 0 : 1);
-		switch ($LANG) {
-			case 'cs': $pos = ($number == 1 ? 0 : (!$number || $number >= 5 ? 2 : 1)); break;
-			case 'sk': $pos = ($number == 1 ? 0 : (!$number || $number >= 5 ? 2 : 1)); break;
-		}
-		$translation = $translation[$pos];
+		$translation = $translation[($number == 1 ? 0 : ((!$number || $number >= 5) && ereg('cs|sk|ru', $LANG) ? 2 : 1))];
 	}
 	$args = func_get_args();
 	array_shift($args);
