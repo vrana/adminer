@@ -251,6 +251,14 @@ function get_file($key) {
 	return (!$_FILES[$key] || $_FILES[$key]["error"] ? $_FILES[$key]["error"] : file_get_contents($_FILES[$key]["tmp_name"]));
 }
 
+function odd($s = ' class="odd"') {
+	static $i = 0;
+	if (!$s) { // reset counter
+		$i = 0;
+	}
+	return (++$i % 2 ? $s : '');
+}
+
 function select($result) {
 	global $SELF;
 	if (!$result->num_rows) {
@@ -292,7 +300,7 @@ function select($result) {
 				}
 				echo "</tr></thead>\n";
 			}
-			echo "<tr>";
+			echo "<tr" . odd() . ">";
 			foreach ($row as $key => $val) {
 				if (!isset($val)) {
 					$val = "<i>NULL</i>";

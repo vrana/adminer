@@ -95,11 +95,11 @@ function add_column(field) {
 
 <form action="" method="post">
 <table border="0" cellspacing="0" cellpadding="2">
-<thead><tr><th><?php echo lang('Index Type'); ?></th><td><?php echo lang('Column (length)'); ?></td></tr></thead>
+<thead><tr><th><?php echo lang('Index Type'); ?></th><th><?php echo lang('Column (length)'); ?></th></tr></thead>
 <?php
 $j = 0;
 foreach ($row["indexes"] as $index) {
-	echo "<tr><td><select name='indexes[$j][type]'" . ($j == count($row["indexes"]) - 1 ? " onchange='add_row(this);'" : "") . "><option></option>" . optionlist($index_types, $index["type"]) . "</select></td><td>\n";
+	echo "<tr" . odd() . "><td><select name='indexes[$j][type]'" . ($j == count($row["indexes"]) - 1 ? " onchange='add_row(this);'" : "") . "><option></option>" . optionlist($index_types, $index["type"]) . "</select></td><td>\n";
 	ksort($index["columns"]);
 	foreach ($index["columns"] as $i => $column) {
 		echo "<span><select name='indexes[$j][columns][$i]'" . ($i == count($index["columns"]) ? " onchange='add_column(this);'" : "") . "><option></option>" . optionlist($fields, $column) . "</select>";

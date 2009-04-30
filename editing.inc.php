@@ -106,7 +106,7 @@ function process_type($field, $collate = "COLLATE") {
 function edit_fields($fields, $collations, $type = "TABLE") {
 	global $inout;
 	?>
-<tr>
+<thead><tr>
 <?php if ($type == "PROCEDURE") { ?><td><?php echo lang('IN-OUT'); ?></td><?php } ?>
 <th><?php echo ($type == "TABLE" ? lang('Column name') : lang('Parameter name')); ?></th>
 <td><?php echo lang('Type'); ?></td>
@@ -118,14 +118,14 @@ function edit_fields($fields, $collations, $type = "TABLE") {
 <td><?php echo lang('Comment'); ?></td>
 <?php } ?>
 <td><input type="image" name="add[0]" src="plus.gif" title="<?php echo lang('Add next'); ?>" /></td>
-</tr>
+</tr></thead>
 <?php
 	$column_comments = false;
 	foreach ($fields as $i => $field) {
 		$i++;
 		$display = (isset($_POST["add"][$i-1]) || (isset($field["field"]) && !$_POST["drop_col"][$i]));
 		?>
-<tr<?php echo ($display ? "" : " style='display: none;'"); ?>>
+<tr<?php echo ($display ? odd() : " style='display: none;'"); ?>>
 <?php if ($type == "PROCEDURE") { ?><td><select name="fields[<?php echo $i; ?>][inout]"><?php echo optionlist($inout, $field["inout"]); ?></select></td><?php } ?>
 <th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo htmlspecialchars($field["field"]); ?>" maxlength="64" /><?php } ?><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo htmlspecialchars($field[($_POST ? "orig" : "field")]); ?>" /></th>
 <?php edit_type("fields[$i]", $field, $collations); ?>
@@ -191,6 +191,7 @@ function type_change($count, $allowed = 0) {
 <script type="text/javascript">// <![CDATA[
 var added = '.';
 var row_count = <?php echo $count; ?>;
+
 function add_row(button) {
 	if (<?php echo $allowed; ?> && row_count >= <?php echo $allowed; ?>) {
 		return false;
@@ -222,12 +223,15 @@ function add_row(button) {
 	row_count++;
 	return true;
 }
+
 function remove_row(button) {
 	var field = button.form[button.name.replace(/drop_col(.+)/, 'fields$1[field]')];
 	field.parentNode.removeChild(field);
 	button.parentNode.parentNode.style.display = 'none';
+	//! should change class="odd" of next rows
 	return true;
 }
+
 function type_change(type) {
 	var name = type.name.substr(0, type.name.length - 6);
 	for (var i=0; i < type.form.elements.length; i++) {

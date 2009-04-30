@@ -156,7 +156,7 @@ foreach (array(
 	"Procedures" => lang('Routine'),
 ) as $context => $desc) {
 	foreach ((array) $privileges[$context] as $privilege => $comment) {
-		echo '<tr><td>' . $desc . '</td><td title="' . htmlspecialchars($comment) . '"><i>' . htmlspecialchars($privilege) . '</i></td>';
+		echo "<tr" . odd() . "><td>$desc</td><td title=\"" . htmlspecialchars($comment) . '"><i>' . htmlspecialchars($privilege) . '</i></td>';
 		$i = 0;
 		foreach ($grants as $object => $grant) {
 			$name = '"grants[' . $i . '][' . htmlspecialchars(strtoupper($privilege)) . ']"';

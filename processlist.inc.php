@@ -19,7 +19,7 @@ for ($i=0; $row = $result->fetch_assoc(); $i++) {
 	if (!$i) {
 		echo "<thead><tr lang='en'><th>&nbsp;</th><th>" . implode("</th><th>", array_keys($row)) . "</th></tr></thead>\n";
 	}
-	echo "<tr><td><input type='checkbox' name='kill[]' value='$row[Id]' /></td><td>" . implode("</td><td>", $row) . "</td></tr>\n";
+	echo "<tr" . odd() . "><td><input type='checkbox' name='kill[]' value='$row[Id]' /></td><td>" . implode("</td><td>", $row) . "</td></tr>\n";
 }
 $result->free();
 ?>

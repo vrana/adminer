@@ -152,7 +152,7 @@ foreach (array('', 'USE', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {
 echo "</tr></thead>\n";
 foreach ((strlen($_GET["db"]) ? array($_GET["db"]) : get_databases()) as $db) {
 	if ($db != "information_schema" || $mysql->server_info < 5) {
-		echo "<tr><td>" . htmlspecialchars($db) . "</td>";
+		echo "<tr" . odd() . "><td>" . htmlspecialchars($db) . "</td>";
 		foreach (array('', 'USE', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {
 			echo '<td><input type="radio" name="databases[' . htmlspecialchars(bracket_escape($db)) . ']"' . ($val == (strlen($_GET["db"]) ? '' : 'CREATE') ? " checked='checked'" : "") . " value='$val' /></td>";
 		}
@@ -171,8 +171,9 @@ foreach (array('', 'TRUNCATE, INSERT', 'INSERT', 'UPDATE') as $val) {
 echo "</tr></thead>\n";
 $views = "";
 $result = $mysql->query(strlen($_GET["db"]) ? "SHOW TABLE STATUS" : "SELECT 'Engine'");
+odd('');
 while ($row = $result->fetch_assoc()) {
-	$print = "<tr><td>" . htmlspecialchars($row["Name"]) . "</td>";
+	$print = "<tr" . odd() . "><td>" . htmlspecialchars($row["Name"]) . "</td>";
 	foreach (array('', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {
 		$print .= '<td><input type="radio" name="tables[' . htmlspecialchars(bracket_escape($row["Name"])) . ']"' . ($val == (strlen($_GET["dump"]) && $row["Name"] != $_GET["dump"] ? '' : 'DROP, CREATE') ? " checked='checked'" : "") . " value='$val' /></td>";
 	}

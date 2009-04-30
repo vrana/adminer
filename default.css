@@ -1,4 +1,4 @@
-body { color: #000; background-color: #fff; line-height: 1.25em; font-family: Verdana, Arial, Helvetica, sans-serif; margin: 0; font-size: 90%; }
+body { color: #000; background: #fff; line-height: 1.25em; font-family: Verdana, Arial, Helvetica, sans-serif; margin: 0; font-size: 90%; }
 a { color: blue; }
 a:visited { color: navy; }
 a:hover { color: red; }
@@ -12,7 +12,7 @@ th { background: #eee; }
 fieldset { display: inline; vertical-align: top; padding: .5em .8em; margin: 0 .5em .5em 0; border: 1px solid #999; }
 p { margin: 0 20px 1em 0; }
 img { vertical-align: middle; }
-code { background-color: #eee; }
+code { background: #eee; }
 .js .hidden { display: none; }
 .nowrap { white-space: nowrap; }
 .error { color: red; background: #fee; padding: .5em .8em; }
@@ -21,6 +21,9 @@ code { background-color: #eee; }
 .date { color: #7F007F; }
 .enum { color: #007F7F; }
 .binary { color: red; }
+.odd td { background: #F8F8F8; }
+tr:hover td { background: #efe; }
+thead tr:hover td { background: transparent; }
 #menu { position: absolute; margin: 10px 0 0; padding: 0 0 30px 0; top: 2em; left: 0; width: 19em; overflow: auto; overflow-y: hidden; white-space: nowrap; }
 #menu p { padding: .8em 1em; margin: 0; border-bottom: 1px solid #ccc; }
 #menu form { margin: 0; }
