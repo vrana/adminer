@@ -131,7 +131,7 @@ if ($_POST) {
 
 ?>
 <form action="" method="post">
-<table border="0" cellspacing="0" cellpadding="2">
+<table cellspacing="0">
 <tr><th><?php echo lang('Username'); ?></th><td><input name="user" maxlength="16" value="<?php echo htmlspecialchars($row["user"]); ?>" /></td></tr>
 <tr><th><?php echo lang('Server'); ?></th><td><input name="host" maxlength="60" value="<?php echo htmlspecialchars($row["host"]); ?>" /></td></tr>
 <tr><th><?php echo lang('Password'); ?></th><td><input id="pass" name="pass" value="<?php echo htmlspecialchars($row["pass"]); ?>" /><?php if (!$row["hashed"]) { ?><script type="text/javascript">document.getElementById('pass').type = 'password';</script><?php } ?> <label><input type="checkbox" name="hashed" value="1"<?php if ($row["hashed"]) { ?> checked="checked"<?php } ?> onclick="this.form['pass'].type = (this.checked ? 'text' : 'password');" /><?php echo lang('Hashed'); ?></label></td></tr>
@@ -139,7 +139,7 @@ if ($_POST) {
 
 <?php
 //! MAX_* limits, REQUIRE
-echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
+echo "<table cellspacing='0'>\n";
 echo "<thead><tr><th colspan='2'>" . lang('Privileges') . "</th>";
 $i = 0;
 foreach ($grants as $object => $grant) {

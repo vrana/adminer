@@ -8,7 +8,7 @@ page_header(lang('Table') . ": " . htmlspecialchars($_GET["table"]), $error);
 if ($result) {
 	$table_status = table_status($_GET["table"]);
 	$auto_increment_only = true;
-	echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
+	echo "<table cellspacing='0'>\n";
 	while ($row = $result->fetch_assoc()) {
 		if (!$row["auto_increment"]) {
 			$auto_increment_only = false;
@@ -28,7 +28,7 @@ if ($result) {
 	echo "<h3>" . lang('Indexes') . "</h3>\n";
 	$indexes = indexes($_GET["table"]);
 	if ($indexes) {
-		echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
+		echo "<table cellspacing='0'>\n";
 		foreach ($indexes as $index) {
 			ksort($index["columns"]);
 			$print = array();
@@ -45,7 +45,7 @@ if ($result) {
 		echo "<h3>" . lang('Foreign keys') . "</h3>\n";
 		$foreign_keys = foreign_keys($_GET["table"]);
 		if ($foreign_keys) {
-			echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
+			echo "<table cellspacing='0'>\n";
 			foreach ($foreign_keys as $name => $foreign_key) {
 				echo "<tr>";
 				echo "<td><i>" . implode("</i>, <i>", array_map('htmlspecialchars', $foreign_key["source"])) . "</i></td>";
@@ -65,7 +65,7 @@ if ($mysql->server_info >= 5) {
 	echo "<h3>" . lang('Triggers') . "</h3>\n";
 	$result = $mysql->query("SHOW TRIGGERS LIKE '" . $mysql->escape_string(addcslashes($_GET["table"], "%_")) . "'");
 	if ($result->num_rows) {
-		echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
+		echo "<table cellspacing='0'>\n";
 		while ($row = $result->fetch_assoc()) {
 			echo "<tr valign='top'><td>$row[Timing]</td><td>$row[Event]</td><th>" . htmlspecialchars($row["Trigger"]) . "</th><td><a href=\"" . htmlspecialchars($SELF) . 'trigger=' . urlencode($_GET["table"]) . '&amp;name=' . urlencode($row["Trigger"]) . '">' . lang('Alter') . "</a></td></tr>\n";
 		}

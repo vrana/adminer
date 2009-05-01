@@ -270,7 +270,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 				}
 			}
 			
-			echo "<table border='1' cellspacing='0' cellpadding='2' class='nowrap'>\n";
+			echo "<table cellspacing='0' class='nowrap'>\n";
 			for ($j=0; $row = $result->fetch_assoc(); $j++) {
 				if (!$j) {
 					echo '<thead><tr><td><label><input type="checkbox" name="all" value="1" />' . lang('whole result') . '</label></td>';

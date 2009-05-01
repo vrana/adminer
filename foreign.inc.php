@@ -68,7 +68,7 @@ function add_row(field) {
 <input type="hidden" name="change-js" value="" />
 </p>
 <noscript><p><input type="submit" name="change" value="<?php echo lang('Change'); ?>" /></p></noscript>
-<table border="0" cellspacing="0" cellpadding="2">
+<table cellspacing="0">
 <thead><tr><th><?php echo lang('Source'); ?></th><th><?php echo lang('Target'); ?></th></tr></thead>
 <?php
 $j = 0;

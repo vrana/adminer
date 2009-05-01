@@ -49,7 +49,7 @@ if (!$error && $_POST) {
 <form action="" method="post">
 <?php
 if ($in) {
-	echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
+	echo "<table cellspacing='0'>\n";
 	foreach ($in as $key) {
 		$field = $routine["fields"][$key];
 		echo "<tr><th>" . htmlspecialchars($field["field"]) . "</th><td>";

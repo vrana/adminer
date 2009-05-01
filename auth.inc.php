@@ -42,7 +42,7 @@ function auth_error() {
 	page_header(lang('Login'), (isset($username) ? lang('Invalid credentials.') : (isset($_POST["server"]) ? lang('Sessions must be enabled.') : ($_POST ? lang('Session expired, please login again.') : ""))), null);
 	?>
 	<form action="" method="post">
-	<table border="0" cellspacing="0" cellpadding="2">
+	<table cellspacing="0">
 	<tr><th><?php echo lang('Server'); ?></th><td><input name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>" /></td></tr>
 	<tr><th><?php echo lang('Username'); ?></th><td><input name="username" value="<?php echo htmlspecialchars($username); ?>" /></td></tr>
 	<tr><th><?php echo lang('Password'); ?></th><td><input type="password" name="password" /></td></tr>

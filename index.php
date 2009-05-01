@@ -180,7 +180,7 @@ if (isset($_GET["download"])) {
 				echo "<p class='message'>" . lang('No tables.') . "</p>\n";
 			} else {
 				echo "<form action='' method='post'>\n";
-				echo "<table border='1' cellspacing='0' cellpadding='2'>\n";
+				echo "<table cellspacing='0'>\n";
 				echo '<thead><tr><td><input type="checkbox" onclick="var elems = this.form.elements; for (var i=0; elems.length > i; i++) if (elems[i].name == \'tables[]\') elems[i].checked = this.checked;" /></td><th>' . lang('Table') . '</th><td>' . lang('Engine') . '</td><td>' . lang('Comment') . '</td><td>' . lang('Collation') . '</td><td>' . lang('Data Length') . '</td><td>' . lang('Index Length') . '</td><td>' . lang('Data Free') . '</td><td>' . lang('Auto Increment') . '</td><td>' . lang('Rows') . "</td></tr></thead>\n";
 				while ($row = $result->fetch_assoc()) {
 					table_comment($row);
@@ -204,7 +204,7 @@ if (isset($_GET["download"])) {
 				echo "<h3>" . lang('Routines') . "</h3>\n";
 				$result = $mysql->query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = '" . $mysql->escape_string($_GET["db"]) . "'");
 				if ($result->num_rows) {
-					echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
+					echo "<table cellspacing='0'>\n";
 					while ($row = $result->fetch_assoc()) {
 						echo "<tr>";
 						echo "<td>" . htmlspecialchars($row["ROUTINE_TYPE"]) . "</td>";
@@ -221,7 +221,7 @@ if (isset($_GET["download"])) {
 			if ($mysql->server_info >= 5.1 && ($result = $mysql->query("SHOW EVENTS"))) {
 				echo "<h3>" . lang('Events') . "</h3>\n";
 				if ($result->num_rows) {
-					echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
+					echo "<table cellspacing='0'>\n";
 					echo "<thead><tr><th>" . lang('Name') . "</th><td>" . lang('Schedule') . "</td><td>" . lang('Start') . "</td><td>" . lang('End') . "</td></tr></thead>\n";
 					while ($row = $result->fetch_assoc()) {
 						echo "<tr>";

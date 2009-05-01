@@ -36,7 +36,7 @@ if ($_POST) {
 ?>
 
 <form action="" method="post">
-<table border="0" cellspacing="0" cellpadding="2">
+<table cellspacing="0">
 <tr><th><?php echo lang('Name'); ?></th><td><input name="EVENT_NAME" value="<?php echo htmlspecialchars($row["EVENT_NAME"]); ?>" maxlength="64" /></td></tr>
 <tr><th><?php echo lang('Start'); ?></th><td><input name="STARTS" value="<?php echo htmlspecialchars("$row[EXECUTE_AT]$row[STARTS]"); ?>" /></td></tr>
 <tr><th><?php echo lang('End'); ?></th><td><input name="ENDS" value="<?php echo htmlspecialchars($row["ENDS"]); ?>" /></td></tr>

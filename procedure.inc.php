@@ -37,7 +37,7 @@ if ($_POST) {
 ?>
 
 <form action="" method="post" id="form">
-<table border="0" cellspacing="0" cellpadding="2">
+<table cellspacing="0">
 <?php edit_fields($row["fields"], $collations, $routine); ?>
 <?php if (isset($_GET["function"])) { ?><tr><td><?php echo lang('Return type'); ?></td><?php echo edit_type("returns", $row["returns"], $collations); ?></tr><?php } ?>
 </table>

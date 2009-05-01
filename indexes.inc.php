@@ -94,7 +94,7 @@ function add_column(field) {
 // ]]></script>
 
 <form action="" method="post">
-<table border="0" cellspacing="0" cellpadding="2">
+<table cellspacing="0">
 <thead><tr><th><?php echo lang('Index Type'); ?></th><th><?php echo lang('Column (length)'); ?></th></tr></thead>
 <?php
 $j = 0;

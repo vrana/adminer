@@ -64,7 +64,7 @@ if ($_POST) {
 <?php
 if ($fields) {
 	unset($create);
-	echo "<table border='0' cellspacing='0' cellpadding='2'>\n";
+	echo "<table cellspacing='0'>\n";
 	foreach ($fields as $name => $field) {
 		echo "<tr><th>" . htmlspecialchars($name) . "</th><td>";
 		$value = (!isset($row) ? $field["default"] :

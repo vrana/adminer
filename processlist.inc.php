@@ -12,7 +12,7 @@ page_header(lang('Process list'), $error);
 ?>
 
 <form action="" method="post">
-<table border="1" cellspacing="0" cellpadding="2">
+<table cellspacing="0">
 <?php
 $result = $mysql->query("SHOW PROCESSLIST");
 for ($i=0; $row = $result->fetch_assoc(); $i++) {

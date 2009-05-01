@@ -145,7 +145,7 @@ function check(td, name, value) {
 <p><?php echo lang('Output') . ": $dump_output " . lang('Format') . ": $dump_format"; ?> <input type="submit" value="<?php echo lang('Export'); ?>" /></p>
 
 <?php
-echo "<table border='1' cellspacing='0' cellpadding='2'>\n<thead><tr><th>" . lang('Database') . "</th>";
+echo "<table cellspacing='0'>\n<thead><tr><th>" . lang('Database') . "</th>";
 foreach (array('', 'USE', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {
 	echo "<th onclick=\"check(this, /^databases/, '$val');\" style='cursor: pointer;'>" . ($val ? $val : lang('skip')) . "</th>";
 }
@@ -161,7 +161,7 @@ foreach ((strlen($_GET["db"]) ? array($_GET["db"]) : get_databases()) as $db) {
 }
 echo "</table>\n";
 
-echo "<table border='1' cellspacing='0' cellpadding='2'>\n<thead><tr><th rowspan='2'>" . lang('Tables') . "</th><th colspan='4'>" . lang('Structure') . "</th><th colspan='4'>" . lang('Data') . "</th></tr><tr>";
+echo "<table cellspacing='0'>\n<thead><tr><th rowspan='2'>" . lang('Tables') . "</th><th colspan='4'>" . lang('Structure') . "</th><th colspan='4'>" . lang('Data') . "</th></tr><tr>";
 foreach (array('', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {
 	echo "<th onclick=\"check(this, /^tables/, '$val');\" style='cursor: pointer;'>" . ($val ? $val : lang('skip')) . "</th>";
 }

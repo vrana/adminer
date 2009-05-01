@@ -122,7 +122,7 @@ if ($suhosin && count($row["fields"]) > $suhosin) {
 <select name="Collation"><option value="">(<?php echo lang('collation'); ?>)</option><?php echo optionlist($collations, $row["Collation"]); ?></select>
 <input type="submit" value="<?php echo lang('Save'); ?>" />
 </p>
-<table border="0" cellspacing="0" cellpadding="2">
+<table cellspacing="0">
 <?php $column_comments = edit_fields($row["fields"], $collations); ?>
 </table>
 <?php echo type_change(count($row["fields"]), $suhosin); ?>
@@ -155,7 +155,7 @@ if ($mysql->server_info >= 5.1) {
 (<input name="partition" value="<?php echo htmlspecialchars($row["partition"]); ?>" />)
 <?php echo lang('Partitions'); ?>: <input name="partitions" size="2" value="<?php echo htmlspecialchars($row["partitions"]); ?>"<?php echo ($partition_table || !$row["partition_by"] ? " class='hidden'" : ""); ?> />
 </p>
-<table id="partition-table" border="0" cellspacing="0" cellpadding="2"<?php echo ($partition_table ? "" : " class='hidden'"); ?>>
+<table cellspacing="0" id="partition-table"<?php echo ($partition_table ? "" : " class='hidden'"); ?>>
 <thead><tr><th><?php echo lang('Partition name'); ?></th><th><?php echo lang('Values'); ?></th></tr></thead>
 <?php
 foreach ($row["partition_names"] as $key => $val) {
