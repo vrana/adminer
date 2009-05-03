@@ -104,7 +104,7 @@ function php_shrink($input) {
 	foreach ($short_functions as $key => $val) {
 		if (isset($defined_functions[$key])) {
 			do {
-				$short_functions[$key] = short_identifier($number, implode("", range('a', 'z')) . '_');
+				$short_functions[$key] = short_identifier($number, implode("", range('a', 'z')));
 				$number++;
 			} while (isset($short_functions[$short_functions[$key]]));
 		}
