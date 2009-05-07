@@ -99,7 +99,7 @@ function add_column(field) {
 <?php
 $j = 0;
 foreach ($row["indexes"] as $index) {
-	echo "<tr" . odd() . "><td><select name='indexes[$j][type]'" . ($j == count($row["indexes"]) - 1 ? " onchange='add_row(this);'" : "") . "><option></option>" . optionlist($index_types, $index["type"]) . "</select></td><td>\n";
+	echo "<tr><td><select name='indexes[$j][type]'" . ($j == count($row["indexes"]) - 1 ? " onchange='add_row(this);'" : "") . "><option></option>" . optionlist($index_types, $index["type"]) . "</select></td><td>\n";
 	ksort($index["columns"]);
 	foreach ($index["columns"] as $i => $column) {
 		echo "<span><select name='indexes[$j][columns][$i]'" . ($i == count($index["columns"]) ? " onchange='add_column(this);'" : "") . "><option></option>" . optionlist($fields, $column) . "</select>";
