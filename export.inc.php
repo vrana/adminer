@@ -9,7 +9,7 @@ function dump_csv($row) {
 }
 
 function dump_table($table, $style, $is_view = false) {
-	global $mysql, $types;
+	global $mysql;
 	if ($_POST["format"] == "csv") {
 		echo "\xef\xbb\xbf";
 		if ($style) {

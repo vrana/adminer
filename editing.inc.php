@@ -48,7 +48,8 @@ function input($name, $field, $value) {
 		} elseif (preg_match('~binary|blob~', $field["type"])) {
 			echo (ini_get("file_uploads") ? '<input type="file" name="' . $name . '"' . $onchange . ' />' : lang('File uploads are disabled.') . ' ');
 		} else {
-			echo '<input name="fields[' . $name . ']" value="' . htmlspecialchars($value) . '"' . (preg_match('~^([0-9]+)(,([0-9]+))?$~', $field["length"], $match) ? " maxlength='" . ($match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) . "'" : ($types[$field["type"]] ? " maxlength='" . $types[$field["type"]] . "'" : '')) . $onchange . ' />';
+			$maxlength = (!ereg('int', $field["type"]) && preg_match('~^([0-9]+)(,([0-9]+))?$~', $field["length"], $match) ? ($match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) : ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0));
+			echo '<input name="fields[' . $name . ']" value="' . htmlspecialchars($value) . '"' . ($maxlength ? " maxlength='$maxlength'" : "") . $onchange . ' />';
 		}
 	}
 }

@@ -1,6 +1,7 @@
 phpMinAdmin 1.10.1:
 Highlight odd and hover rows
 Partition editing comfort (bug #2783446)
+Allow full length in limited int (thanks to Vlasta Neubauer)
 
 phpMinAdmin 1.10.0:
 Partitioning (MySQL 5.1)
