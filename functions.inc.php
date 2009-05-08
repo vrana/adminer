@@ -41,14 +41,6 @@ function get_vals($query) {
 	return $return;
 }
 
-function table_status($table) {
-	global $dbh;
-	$result = $dbh->query("SHOW TABLE STATUS LIKE '" . $dbh->escape_string(addcslashes($table, "%_")) . "'");
-	$return = $result->fetch_assoc();
-	$result->free();
-	return $return;
-}
-
 function unique_idf($row, $indexes) {
 	foreach ($indexes as $index) {
 		if ($index["type"] == "PRIMARY" || $index["type"] == "UNIQUE") {

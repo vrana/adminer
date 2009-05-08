@@ -284,6 +284,14 @@ function get_databases() {
 	return $return;
 }
 
+function table_status($table) {
+	global $dbh;
+	$result = $dbh->query("SHOW TABLE STATUS LIKE '" . $dbh->escape_string(addcslashes($table, "%_")) . "'");
+	$return = $result->fetch_assoc();
+	$result->free();
+	return $return;
+}
+
 function fields($table) {
 	global $dbh;
 	$return = array();
