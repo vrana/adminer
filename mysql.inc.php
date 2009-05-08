@@ -262,3 +262,116 @@ if (extension_loaded("mysqli")) {
 	page_footer("auth");
 	exit;
 }
+
+$types = array(
+	"tinyint" => 3, "smallint" => 5, "mediumint" => 8, "int" => 10, "bigint" => 20,
+	"float" => 12, "double" => 21, "decimal" => 66,
+	"date" => 10, "datetime" => 19, "timestamp" => 19, "time" => 10, "year" => 4,
+	"char" => 255, "varchar" => 65535,
+	"binary" => 255, "varbinary" => 65535,
+	"tinytext" => 255, "text" => 65535, "mediumtext" => 16777215, "longtext" => 4294967295,
+	"tinyblob" => 255, "blob" => 65535, "mediumblob" => 16777215, "longblob" => 4294967295,
+	"enum" => 65535, "set" => 64,
+);
+$unsigned = array("", "unsigned", "zerofill", "unsigned zerofill");
+
+function get_databases() {
+	$return = &$_SESSION["databases"][$_GET["server"]];
+	if (!isset($return)) {
+		flush();
+		$return = get_vals("SHOW DATABASES");
+	}
+	return $return;
+}
+
+function fields($table) {
+	global $dbh;
+	$return = array();
+	$result = $dbh->query("SHOW FULL COLUMNS FROM " . idf_escape($table));
+	if ($result) {
+		while ($row = $result->fetch_assoc()) {
+			preg_match('~^([^( ]+)(?:\\((.+)\\))?( unsigned)?( zerofill)?$~', $row["Type"], $match);
+			$return[$row["Field"]] = array(
+				"field" => $row["Field"],
+				"type" => $match[1],
+				"length" => $match[2],
+				"unsigned" => ltrim($match[3] . $match[4]),
+				"default" => (strlen($row["Default"]) || ereg("char", $match[1]) ? $row["Default"] : null),
+				"null" => ($row["Null"] == "YES"),
+				"auto_increment" => ($row["Extra"] == "auto_increment"),
+				"collation" => $row["Collation"],
+				"privileges" => array_flip(explode(",", $row["Privileges"])),
+				"comment" => $row["Comment"],
+				"primary" => ($row["Key"] == "PRI"),
+			);
+		}
+		$result->free();
+	}
+	return $return;
+}
+
+function indexes($table) {
+	global $dbh;
+	$return = array();
+	$result = $dbh->query("SHOW INDEX FROM " . idf_escape($table));
+	if ($result) {
+		while ($row = $result->fetch_assoc()) {
+			$return[$row["Key_name"]]["type"] = ($row["Key_name"] == "PRIMARY" ? "PRIMARY" : ($row["Index_type"] == "FULLTEXT" ? "FULLTEXT" : ($row["Non_unique"] ? "INDEX" : "UNIQUE")));
+			$return[$row["Key_name"]]["columns"][$row["Seq_in_index"]] = $row["Column_name"];
+			$return[$row["Key_name"]]["lengths"][$row["Seq_in_index"]] = $row["Sub_part"];
+		}
+		$result->free();
+	}
+	return $return;
+}
+
+function foreign_keys($table) {
+	global $dbh, $on_actions;
+	static $pattern = '(?:[^`]+|``)+';
+	$return = array();
+	$result = $dbh->query("SHOW CREATE TABLE " . idf_escape($table));
+	if ($result) {
+		$create_table = $dbh->result($result, 1);
+		$result->free();
+		preg_match_all("~CONSTRAINT `($pattern)` FOREIGN KEY \\(((?:`$pattern`,? ?)+)\\) REFERENCES `($pattern)`(?:\\.`($pattern)`)? \\(((?:`$pattern`,? ?)+)\\)(?: ON DELETE (" . implode("|", $on_actions) . "))?(?: ON UPDATE (" . implode("|", $on_actions) . "))?~", $create_table, $matches, PREG_SET_ORDER);
+		foreach ($matches as $match) {
+			preg_match_all("~`($pattern)`~", $match[2], $source);
+			preg_match_all("~`($pattern)`~", $match[5], $target);
+			$return[$match[1]] = array(
+				"db" => idf_unescape(strlen($match[4]) ? $match[3] : $match[4]),
+				"table" => idf_unescape(strlen($match[4]) ? $match[4] : $match[3]),
+				"source" => array_map('idf_unescape', $source[1]),
+				"target" => array_map('idf_unescape', $target[1]),
+				"on_delete" => $match[6],
+				"on_update" => $match[7],
+			);
+		}
+	}
+	return $return;
+}
+
+function view($name) {
+	global $dbh;
+	return array("select" => preg_replace('~^(?:[^`]+|`[^`]*`)* AS ~U', '', $dbh->result($dbh->query("SHOW CREATE VIEW " . idf_escape($name)), 1)));
+}
+
+function collations() {
+	global $dbh;
+	$return = array();
+	$result = $dbh->query("SHOW COLLATION");
+	while ($row = $result->fetch_assoc()) {
+		if ($row["Default"] && $return[$row["Charset"]]) {
+			array_unshift($return[$row["Charset"]], $row["Collation"]);
+		} else {
+			$return[$row["Charset"]][] = $row["Collation"];
+		}
+	}
+	$result->free();
+	return $return;
+}
+
+function table_comment(&$row) {
+	if ($row["Engine"] == "InnoDB") {
+		$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["Comment"]);
+	}
+}

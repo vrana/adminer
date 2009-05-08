@@ -41,92 +41,12 @@ function get_vals($query) {
 	return $return;
 }
 
-function get_databases() {
-	$return = &$_SESSION["databases"][$_GET["server"]];
-	if (!isset($return)) {
-		flush();
-		$return = get_vals("SHOW DATABASES");
-	}
-	return $return;
-}
-
 function table_status($table) {
 	global $dbh;
 	$result = $dbh->query("SHOW TABLE STATUS LIKE '" . $dbh->escape_string(addcslashes($table, "%_")) . "'");
 	$return = $result->fetch_assoc();
 	$result->free();
 	return $return;
-}
-
-function fields($table) {
-	global $dbh;
-	$return = array();
-	$result = $dbh->query("SHOW FULL COLUMNS FROM " . idf_escape($table));
-	if ($result) {
-		while ($row = $result->fetch_assoc()) {
-			preg_match('~^([^( ]+)(?:\\((.+)\\))?( unsigned)?( zerofill)?$~', $row["Type"], $match);
-			$return[$row["Field"]] = array(
-				"field" => $row["Field"],
-				"type" => $match[1],
-				"length" => $match[2],
-				"unsigned" => ltrim($match[3] . $match[4]),
-				"default" => (strlen($row["Default"]) || ereg("char", $match[1]) ? $row["Default"] : null),
-				"null" => ($row["Null"] == "YES"),
-				"auto_increment" => ($row["Extra"] == "auto_increment"),
-				"collation" => $row["Collation"],
-				"privileges" => array_flip(explode(",", $row["Privileges"])),
-				"comment" => $row["Comment"],
-				"primary" => ($row["Key"] == "PRI"),
-			);
-		}
-		$result->free();
-	}
-	return $return;
-}
-
-function indexes($table) {
-	global $dbh;
-	$return = array();
-	$result = $dbh->query("SHOW INDEX FROM " . idf_escape($table));
-	if ($result) {
-		while ($row = $result->fetch_assoc()) {
-			$return[$row["Key_name"]]["type"] = ($row["Key_name"] == "PRIMARY" ? "PRIMARY" : ($row["Index_type"] == "FULLTEXT" ? "FULLTEXT" : ($row["Non_unique"] ? "INDEX" : "UNIQUE")));
-			$return[$row["Key_name"]]["columns"][$row["Seq_in_index"]] = $row["Column_name"];
-			$return[$row["Key_name"]]["lengths"][$row["Seq_in_index"]] = $row["Sub_part"];
-		}
-		$result->free();
-	}
-	return $return;
-}
-
-function foreign_keys($table) {
-	global $dbh, $on_actions;
-	static $pattern = '(?:[^`]+|``)+';
-	$return = array();
-	$result = $dbh->query("SHOW CREATE TABLE " . idf_escape($table));
-	if ($result) {
-		$create_table = $dbh->result($result, 1);
-		$result->free();
-		preg_match_all("~CONSTRAINT `($pattern)` FOREIGN KEY \\(((?:`$pattern`,? ?)+)\\) REFERENCES `($pattern)`(?:\\.`($pattern)`)? \\(((?:`$pattern`,? ?)+)\\)(?: ON DELETE (" . implode("|", $on_actions) . "))?(?: ON UPDATE (" . implode("|", $on_actions) . "))?~", $create_table, $matches, PREG_SET_ORDER);
-		foreach ($matches as $match) {
-			preg_match_all("~`($pattern)`~", $match[2], $source);
-			preg_match_all("~`($pattern)`~", $match[5], $target);
-			$return[$match[1]] = array(
-				"db" => idf_unescape(strlen($match[4]) ? $match[3] : $match[4]),
-				"table" => idf_unescape(strlen($match[4]) ? $match[4] : $match[3]),
-				"source" => array_map('idf_unescape', $source[1]),
-				"target" => array_map('idf_unescape', $target[1]),
-				"on_delete" => $match[6],
-				"on_update" => $match[7],
-			);
-		}
-	}
-	return $return;
-}
-
-function view($name) {
-	global $dbh;
-	return array("select" => preg_replace('~^(?:[^`]+|`[^`]*`)* AS ~U', '', $dbh->result($dbh->query("SHOW CREATE VIEW " . idf_escape($name)), 1)));
 }
 
 function unique_idf($row, $indexes) {
@@ -166,21 +86,6 @@ function where($where) {
 function process_length($length) {
 	global $enum_length;
 	return (preg_match("~^\\s*(?:$enum_length)(?:\\s*,\\s*(?:$enum_length))*\\s*\$~", $length) && preg_match_all("~$enum_length~", $length, $matches) ? implode(",", $matches[0]) : preg_replace('~[^0-9,+-]~', '', $length));
-}
-
-function collations() {
-	global $dbh;
-	$return = array();
-	$result = $dbh->query("SHOW COLLATION");
-	while ($row = $result->fetch_assoc()) {
-		if ($row["Default"] && $return[$row["Charset"]]) {
-			array_unshift($return[$row["Charset"]], $row["Collation"]);
-		} else {
-			$return[$row["Charset"]][] = $row["Collation"];
-		}
-	}
-	$result->free();
-	return $return;
 }
 
 function redirect($location, $message = null) {
@@ -320,12 +225,6 @@ function select($result) {
 function shorten_utf8($string, $length) {
 	preg_match("~^(.{0,$length})(.?)~su", $string, $match);
 	return nl2br(htmlspecialchars($match[1])) . ($match[2] ? "<em>...</em>" : "");
-}
-
-function table_comment(&$row) {
-	if ($row["Engine"] == "InnoDB") {
-		$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["Comment"]);
-	}
 }
 
 function hidden_fields($process, $ignore = array()) {

@@ -49,8 +49,8 @@ $SELF = preg_replace('~^[^?]*/([^?]*).*~', '\\1?', $_SERVER["REQUEST_URI"]) . (s
 include "./functions.inc.php";
 include "./lang.inc.php";
 include "./lang/$LANG.inc.php";
+include "./mysql.inc.php";
 include "./design.inc.php";
-include "./abstraction.inc.php";
 include "./auth.inc.php";
 include "./connect.inc.php";
 include "./editing.inc.php";
@@ -60,17 +60,6 @@ if (isset($_GET["download"])) {
 	include "./download.inc.php";
 } else { // outputs footer
 	$on_actions = array("RESTRICT", "CASCADE", "SET NULL", "NO ACTION");
-	$types = array(
-		"tinyint" => 3, "smallint" => 5, "mediumint" => 8, "int" => 10, "bigint" => 20,
-		"float" => 12, "double" => 21, "decimal" => 66,
-		"date" => 10, "datetime" => 19, "timestamp" => 19, "time" => 10, "year" => 4,
-		"char" => 255, "varchar" => 65535,
-		"binary" => 255, "varbinary" => 65535,
-		"tinytext" => 255, "text" => 65535, "mediumtext" => 16777215, "longtext" => 4294967295,
-		"tinyblob" => 255, "blob" => 65535, "mediumblob" => 16777215, "longblob" => 4294967295,
-		"enum" => 65535, "set" => 64,
-	);
-	$unsigned = array("", "unsigned", "zerofill", "unsigned zerofill");
 	$enum_length = '\'(?:\'\'|[^\'\\\\]+|\\\\.)*\'|"(?:""|[^"\\\\]+|\\\\.)*"';
 	$inout = array("IN", "OUT", "INOUT");
 	$confirm = " onclick=\"return confirm('" . lang('Are you sure?') . "');\"";
