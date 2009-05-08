@@ -14,7 +14,7 @@ $base_left = -1;
 $schema = array();
 $referenced = array();
 $lefts = array();
-$result = $mysql->query("SHOW TABLE STATUS");
+$result = $dbh->query("SHOW TABLE STATUS");
 while ($row = $result->fetch_assoc()) {
 	if (!isset($row["Engine"])) { // view
 		continue;

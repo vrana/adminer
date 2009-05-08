@@ -9,25 +9,25 @@ function dump_csv($row) {
 }
 
 function dump_table($table, $style, $is_view = false) {
-	global $mysql;
+	global $dbh;
 	if ($_POST["format"] == "csv") {
 		echo "\xef\xbb\xbf";
 		if ($style) {
 			dump_csv(array_keys(fields($table)));
 		}
 	} elseif ($style) {
-		$result = $mysql->query("SHOW CREATE TABLE " . idf_escape($table));
+		$result = $dbh->query("SHOW CREATE TABLE " . idf_escape($table));
 		if ($result) {
 			if ($style == "DROP, CREATE") {
 				echo "DROP " . ($is_view ? "VIEW" : "TABLE") . " IF EXISTS " . idf_escape($table) . ";\n";
 			}
-			$create = $mysql->result($result, 1);
+			$create = $dbh->result($result, 1);
 			$result->free();
 			echo ($style != "CREATE, ALTER" ? $create : ($is_view ? substr_replace($create, " OR REPLACE", 6, 0) : substr_replace($create, " IF NOT EXISTS", 12, 0))) . ";\n\n";
 		}
-		if ($mysql->server_info >= 5) {
+		if ($dbh->server_info >= 5) {
 			if ($style == "CREATE, ALTER" && !$is_view) {
-				$query = "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLLATION_NAME, COLUMN_TYPE, EXTRA, COLUMN_COMMENT FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '" . $mysql->escape_string($table) . "' ORDER BY ORDINAL_POSITION";
+				$query = "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLLATION_NAME, COLUMN_TYPE, EXTRA, COLUMN_COMMENT FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '" . $dbh->escape_string($table) . "' ORDER BY ORDINAL_POSITION";
 ?>
 DELIMITER ;;
 CREATE PROCEDURE phpminadmin_alter () BEGIN
@@ -39,18 +39,18 @@ CREATE PROCEDURE phpminadmin_alter () BEGIN
 	DECLARE done, set_after bool DEFAULT 0;
 	DECLARE add_columns text DEFAULT '<?php
 $fields = array();
-$result = $mysql->query($query);
+$result = $dbh->query($query);
 $after = "";
 while ($row = $result->fetch_assoc()) {
-	$row["default"] = (isset($row["COLUMN_DEFAULT"]) ? "'" . $mysql->escape_string($row["COLUMN_DEFAULT"]) . "'" : "NULL");
-	$row["after"] = $mysql->escape_string($after); //! rgt AFTER lft, lft AFTER id doesn't work
-	$row["alter"] = $mysql->escape_string(idf_escape($row["COLUMN_NAME"])
+	$row["default"] = (isset($row["COLUMN_DEFAULT"]) ? "'" . $dbh->escape_string($row["COLUMN_DEFAULT"]) . "'" : "NULL");
+	$row["after"] = $dbh->escape_string($after); //! rgt AFTER lft, lft AFTER id doesn't work
+	$row["alter"] = $dbh->escape_string(idf_escape($row["COLUMN_NAME"])
 		. " $row[COLUMN_TYPE]"
 		. ($row["COLLATION_NAME"] ? " COLLATE $row[COLLATION_NAME]" : "")
 		. (isset($row["COLUMN_DEFAULT"]) ? " DEFAULT $row[default]" : "")
 		. ($row["IS_NULLABLE"] == "YES" ? "" : " NOT NULL")
 		. ($row["EXTRA"] ? " $row[EXTRA]" : "")
-		. ($row["COLUMN_COMMENT"] ? " COMMENT '" . $mysql->escape_string($row["COLUMN_COMMENT"]) . "'" : "")
+		. ($row["COLUMN_COMMENT"] ? " COMMENT '" . $dbh->escape_string($row["COLUMN_COMMENT"]) . "'" : "")
 		. ($after ? " AFTER " . idf_escape($after) : " FIRST")
 	);
 	echo ", ADD $row[alter]";
@@ -70,9 +70,9 @@ $result->free();
 			CASE _column_name<?php
 foreach ($fields as $row) {
 	echo "
-				WHEN '" . $mysql->escape_string($row["COLUMN_NAME"]) . "' THEN
+				WHEN '" . $dbh->escape_string($row["COLUMN_NAME"]) . "' THEN
 					SET add_columns = REPLACE(add_columns, ', ADD $row[alter]', '');
-					IF NOT (_column_default <=> $row[default]) OR _is_nullable != '$row[IS_NULLABLE]' OR _collation_name != '$row[COLLATION_NAME]' OR _column_type != '$row[COLUMN_TYPE]' OR _extra != '$row[EXTRA]' OR _column_comment != '" . $mysql->escape_string($row["COLUMN_COMMENT"]) . "' OR after != '$row[after]' THEN
+					IF NOT (_column_default <=> $row[default]) OR _is_nullable != '$row[IS_NULLABLE]' OR _collation_name != '$row[COLLATION_NAME]' OR _column_type != '$row[COLUMN_TYPE]' OR _extra != '$row[EXTRA]' OR _column_comment != '" . $dbh->escape_string($row["COLUMN_COMMENT"]) . "' OR after != '$row[after]' THEN
 						SET @alter_table = CONCAT(@alter_table, ', MODIFY $row[alter]');
 					END IF;"; //! don't replace in comment
 }
@@ -103,7 +103,7 @@ DROP PROCEDURE phpminadmin_alter;
 				//! indexes
 			}
 			
-			$result = $mysql->query("SHOW TRIGGERS LIKE '" . $mysql->escape_string(addcslashes($table, "%_")) . "'");
+			$result = $dbh->query("SHOW TRIGGERS LIKE '" . $dbh->escape_string(addcslashes($table, "%_")) . "'");
 			if ($result->num_rows) {
 				echo "DELIMITER ;;\n\n";
 				while ($row = $result->fetch_assoc()) {
@@ -117,12 +117,12 @@ DROP PROCEDURE phpminadmin_alter;
 }
 
 function dump_data($table, $style, $from = "") {
-	global $mysql, $max_packet;
+	global $dbh, $max_packet;
 	if ($style) {
 		if ($_POST["format"] != "csv" && $style == "TRUNCATE, INSERT") {
 			echo "TRUNCATE " . idf_escape($table) . ";\n";
 		}
-		$result = $mysql->query("SELECT * " . ($from ? $from : "FROM " . idf_escape($table))); //! enum and set as numbers, binary as _binary, microtime
+		$result = $dbh->query("SELECT * " . ($from ? $from : "FROM " . idf_escape($table))); //! enum and set as numbers, binary as _binary, microtime
 		if ($result) {
 			$insert = "INSERT INTO " . idf_escape($table) . " VALUES ";
 			$length = 0;
@@ -132,13 +132,13 @@ function dump_data($table, $style, $from = "") {
 				} elseif ($style == "UPDATE") {
 					$set = array();
 					foreach ($row as $key => $val) {
-						$row[$key] = (isset($val) ? "'" . $mysql->escape_string($val) . "'" : "NULL");
-						$set[] = idf_escape($key) . " = " . (isset($val) ? "'" . $mysql->escape_string($val) . "'" : "NULL");
+						$row[$key] = (isset($val) ? "'" . $dbh->escape_string($val) . "'" : "NULL");
+						$set[] = idf_escape($key) . " = " . (isset($val) ? "'" . $dbh->escape_string($val) . "'" : "NULL");
 					}
 					echo "INSERT INTO " . idf_escape($table) . " (" . implode(", ", array_map('idf_escape', array_keys($row))) . ") VALUES (" . implode(", ", $row) . ") ON DUPLICATE KEY UPDATE " . implode(", ", $set) . ";\n";
 				} else {
 					foreach ($row as $key => $val) {
-						$row[$key] = (isset($val) ? "'" . $mysql->escape_string($val) . "'" : "NULL");
+						$row[$key] = (isset($val) ? "'" . $dbh->escape_string($val) . "'" : "NULL");
 					}
 					$s = "(" . implode(", ", $row) . ")";
 					if (!$length) {

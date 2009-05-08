@@ -34,17 +34,17 @@ foreach ((array) $_GET["columns"] as $key => $val) {
 $where = array();
 foreach ($indexes as $i => $index) {
 	if ($index["type"] == "FULLTEXT" && strlen($_GET["fulltext"][$i])) {
-		$where[] = "MATCH (" . implode(", ", array_map('idf_escape', $index["columns"])) . ") AGAINST ('" . $mysql->escape_string($_GET["fulltext"][$i]) . "'" . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
+		$where[] = "MATCH (" . implode(", ", array_map('idf_escape', $index["columns"])) . ") AGAINST ('" . $dbh->escape_string($_GET["fulltext"][$i]) . "'" . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
 	}
 }
 foreach ((array) $_GET["where"] as $val) {
 	if (strlen("$val[col]$val[val]") && in_array($val["op"], $operators)) {
 		if ($val["op"] == "AGAINST") {
-			$where[] = "MATCH (" . idf_escape($val["col"]) . ") AGAINST ('" . $mysql->escape_string($val["val"]) . "' IN BOOLEAN MODE)";
+			$where[] = "MATCH (" . idf_escape($val["col"]) . ") AGAINST ('" . $dbh->escape_string($val["val"]) . "' IN BOOLEAN MODE)";
 		} elseif (ereg('IN$', $val["op"]) && !strlen($in = process_length($val["val"]))) {
 			$where[] = "0";
 		} else {
-			$cond = " $val[op]" . (ereg('NULL$', $val["op"]) ? "" : (ereg('IN$', $val["op"]) ? " ($in)" : " '" . $mysql->escape_string($val["val"]) . "'")); //! this searches in numeric values too
+			$cond = " $val[op]" . (ereg('NULL$', $val["op"]) ? "" : (ereg('IN$', $val["op"]) ? " ($in)" : " '" . $dbh->escape_string($val["val"]) . "'")); //! this searches in numeric values too
 			if (strlen($val["col"])) {
 				$where[] = idf_escape($val["col"]) . $cond;
 			} else {
@@ -102,7 +102,7 @@ if ($_POST && !$error) {
 			// nothing
 		} elseif ($_POST["all"]) {
 			$result = queries($command . ($where ? " WHERE " . implode(" AND ", $where) : ""));
-			$affected = $mysql->affected_rows;
+			$affected = $dbh->affected_rows;
 		} else {
 			foreach ((array) $_POST["check"] as $val) {
 				parse_str($val, $check);
@@ -110,7 +110,7 @@ if ($_POST && !$error) {
 				if (!$result) {
 					break;
 				}
-				$affected += $mysql->affected_rows;
+				$affected += $dbh->affected_rows;
 			}
 		}
 		query_redirect(queries(), remove_from_uri("page"), lang('%d item(s) have been affected.', $affected), $result, false, !$result);
@@ -127,13 +127,13 @@ if ($_POST && !$error) {
 				$cols = " (" . implode(", ", array_map('idf_escape', $matches2[1])) . ")";
 			} else {
 				foreach ($matches2[1] as $col) {
-					$row[] = (!strlen($col) ? "NULL" : "'" . $mysql->escape_string(str_replace('""', '"', preg_replace('~^".*"$~s', '', $col))) . "'");
+					$row[] = (!strlen($col) ? "NULL" : "'" . $dbh->escape_string(str_replace('""', '"', preg_replace('~^".*"$~s', '', $col))) . "'");
 				}
 				$rows[] = "(" . implode(", ", $row) . ")";
 			}
 		}
 		$result = queries("INSERT INTO " . idf_escape($_GET["select"]) . "$cols VALUES " . implode(", ", $rows));
-		query_redirect(queries(), remove_from_uri("page"), lang('%d row(s) has been imported.', $mysql->affected_rows), $result, false, !$result);
+		query_redirect(queries(), remove_from_uri("page"), lang('%d row(s) has been imported.', $dbh->affected_rows), $result, false, !$result);
 	} else {
 		$error = lang('Unable to upload a file.');
 	}
@@ -149,7 +149,7 @@ echo '<a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($_GET['select'
 echo "</p>\n";
 
 if (!$columns) {
-	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "" : ": " . htmlspecialchars($mysql->error)) . ".</p>\n";
+	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "" : ": " . htmlspecialchars($dbh->error)) . ".</p>\n";
 } else {
 	echo "<form action='' id='form'>\n";
 	?>
@@ -255,9 +255,9 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 	$query = "SELECT " . ($select ? (count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . implode(", ", $select) : "*") . " $from";
 	echo "<p><code class='jush-sql'>" . htmlspecialchars($query) . "</code> <a href='" . htmlspecialchars($SELF) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a></p>\n";
 	
-	$result = $mysql->query($query);
+	$result = $dbh->query($query);
 	if (!$result) {
-		echo "<p class='error'>" . htmlspecialchars($mysql->error) . "</p>\n";
+		echo "<p class='error'>" . htmlspecialchars($dbh->error) . "</p>\n";
 	} else {
 		echo "<form action='' method='post' enctype='multipart/form-data'>\n";
 		if (!$result->num_rows) {
@@ -315,7 +315,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 			echo "</table>\n";
 			
 			echo "<p>";
-			$found_rows = (intval($limit) ? $mysql->result($mysql->query(count($group) < count($select) ? " SELECT FOUND_ROWS()" : "SELECT COUNT(*) FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : ""))) : $result->num_rows);
+			$found_rows = (intval($limit) ? $dbh->result($dbh->query(count($group) < count($select) ? " SELECT FOUND_ROWS()" : "SELECT COUNT(*) FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : ""))) : $result->num_rows);
 			if (intval($limit) && $found_rows > $limit) {
 				$max_page = floor(($found_rows - 1) / $limit);
 				echo lang('Page') . ":";

@@ -174,7 +174,7 @@ if (isset($_GET["download"])) {
 			echo '<p><a href="' . htmlspecialchars($SELF) . 'schema=">' . lang('Database schema') . "</a></p>\n";
 			
 			echo "<h3>" . lang('Tables and views') . "</h3>\n";
-			$result = $mysql->query("SHOW TABLE STATUS");
+			$result = $dbh->query("SHOW TABLE STATUS");
 			if (!$result->num_rows) {
 				echo "<p class='message'>" . lang('No tables.') . "</p>\n";
 			} else {
@@ -198,10 +198,10 @@ if (isset($_GET["download"])) {
 			}
 			$result->free();
 			
-			if ($mysql->server_info >= 5) {
+			if ($dbh->server_info >= 5) {
 				echo '<p><a href="' . htmlspecialchars($SELF) . 'createv=">' . lang('Create view') . "</a></p>\n";
 				echo "<h3>" . lang('Routines') . "</h3>\n";
-				$result = $mysql->query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = '" . $mysql->escape_string($_GET["db"]) . "'");
+				$result = $dbh->query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = '" . $dbh->escape_string($_GET["db"]) . "'");
 				if ($result->num_rows) {
 					echo "<table cellspacing='0'>\n";
 					while ($row = $result->fetch_assoc()) {
@@ -217,7 +217,7 @@ if (isset($_GET["download"])) {
 				echo '<p><a href="' . htmlspecialchars($SELF) . 'procedure=">' . lang('Create procedure') . '</a> <a href="' . htmlspecialchars($SELF) . 'function=">' . lang('Create function') . "</a></p>\n";
 			}
 			
-			if ($mysql->server_info >= 5.1 && ($result = $mysql->query("SHOW EVENTS"))) {
+			if ($dbh->server_info >= 5.1 && ($result = $dbh->query("SHOW EVENTS"))) {
 				echo "<h3>" . lang('Events') . "</h3>\n";
 				if ($result->num_rows) {
 					echo "<table cellspacing='0'>\n";

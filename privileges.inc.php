@@ -1,7 +1,7 @@
 <?php
 page_header(lang('Privileges'));
 echo '<p><a href="' . htmlspecialchars($SELF) . 'user=">' . lang('Create user') . "</a></p>";
-$result = $mysql->query("SELECT User, Host FROM mysql.user ORDER BY Host, User");
+$result = $dbh->query("SELECT User, Host FROM mysql.user ORDER BY Host, User");
 if (!$result) {
 	?>
 	<form action=""><p>
@@ -12,7 +12,7 @@ if (!$result) {
 	<input type="submit" value="<?php echo lang('Edit'); ?>" />
 	</p></form>
 <?php
-	$result = $mysql->query("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1) AS User, SUBSTRING_INDEX(CURRENT_USER, '@', -1) AS Host");
+	$result = $dbh->query("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1) AS User, SUBSTRING_INDEX(CURRENT_USER, '@', -1) AS Host");
 }
 echo "<table cellspacing='0'>\n";
 echo "<thead><tr><th>&nbsp;</th><th>" . lang('Username') . "</th><th>" . lang('Server') . "</th></tr></thead>\n";

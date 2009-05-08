@@ -66,7 +66,7 @@ $username = &$_SESSION["usernames"][$_GET["server"]];
 if (!isset($username)) {
 	$username = $_GET["username"];
 }
-if (!isset($username) || !$mysql->connect($_GET["server"], $username, $_SESSION["passwords"][$_GET["server"]])) {
+if (!isset($username) || !$dbh->connect($_GET["server"], $username, $_SESSION["passwords"][$_GET["server"]])) {
 	auth_error();
 	exit;
 }

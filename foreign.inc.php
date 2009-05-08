@@ -20,7 +20,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 page_header(lang('Foreign key'), $error, array("table" => $_GET["foreign"]), $_GET["foreign"]);
 
 $tables = array();
-$result = $mysql->query("SHOW TABLE STATUS");
+$result = $dbh->query("SHOW TABLE STATUS");
 while ($row = $result->fetch_assoc()) {
 	if ($row["Engine"] == "InnoDB") {
 		$tables[] = $row["Name"];

@@ -19,7 +19,7 @@ $row = array("Trigger" => "$_GET[trigger]_bi");
 if ($_POST) {
 	$row = $_POST;
 } elseif (strlen($_GET["name"])) {
-	$result = $mysql->query("SHOW TRIGGERS LIKE '" . $mysql->escape_string(addcslashes($_GET["trigger"], "%_")) . "'");
+	$result = $dbh->query("SHOW TRIGGERS LIKE '" . $dbh->escape_string(addcslashes($_GET["trigger"], "%_")) . "'");
 	while ($row = $result->fetch_assoc()) {
 		if ($row["Trigger"] === $_GET["name"]) {
 			break;

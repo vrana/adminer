@@ -31,9 +31,9 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 				$fields[] = (!strlen($_GET["create"]) ? "" : (strlen($field["orig"]) ? "CHANGE " . idf_escape($field["orig"]) . " " : "ADD "))
 					. idf_escape($field["field"]) . process_type($field)
 					. ($field["null"] ? " NULL" : " NOT NULL") // NULL for timestamp
-					. (strlen($_GET["create"]) && strlen($field["orig"]) && isset($orig_fields[$field["orig"]]["default"]) && $field["type"] != "timestamp" ? " DEFAULT '" . $mysql->escape_string($orig_fields[$field["orig"]]["default"]) . "'" : "") //! timestamp
+					. (strlen($_GET["create"]) && strlen($field["orig"]) && isset($orig_fields[$field["orig"]]["default"]) && $field["type"] != "timestamp" ? " DEFAULT '" . $dbh->escape_string($orig_fields[$field["orig"]]["default"]) . "'" : "") //! timestamp
 					. ($key == $_POST["auto_increment_col"] ? " AUTO_INCREMENT$auto_increment_index" : "")
-					. " COMMENT '" . $mysql->escape_string($field["comment"]) . "'"
+					. " COMMENT '" . $dbh->escape_string($field["comment"]) . "'"
 					. (strlen($_GET["create"]) ? " $after" : "")
 				;
 				$after = "AFTER " . idf_escape($field["field"]);
@@ -41,10 +41,10 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 				$fields[] = "DROP " . idf_escape($field["orig"]);
 			}
 		}
-		$status = ($_POST["Engine"] ? " ENGINE='" . $mysql->escape_string($_POST["Engine"]) . "'" : "")
-			. ($_POST["Collation"] ? " COLLATE '" . $mysql->escape_string($_POST["Collation"]) . "'" : "")
+		$status = ($_POST["Engine"] ? " ENGINE='" . $dbh->escape_string($_POST["Engine"]) . "'" : "")
+			. ($_POST["Collation"] ? " COLLATE '" . $dbh->escape_string($_POST["Collation"]) . "'" : "")
 			. (strlen($_POST["Auto_increment"]) ? " AUTO_INCREMENT=" . intval($_POST["Auto_increment"]) : "")
-			. " COMMENT='" . $mysql->escape_string($_POST["Comment"]) . "'"
+			. " COMMENT='" . $dbh->escape_string($_POST["Comment"]) . "'"
 		;
 		if (in_array($_POST["partition_by"], $partition_by)) {
 			$partitions = array();
@@ -55,7 +55,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 				}
 			}
 			$status .= " PARTITION BY $_POST[partition_by]($_POST[partition])" . ($partitions ? " (" . implode(", ", $partitions) . ")" : ($_POST["partitions"] ? " PARTITIONS " . intval($_POST["partitions"]) : ""));
-		} elseif ($mysql->server_info >= 5.1 && strlen($_GET["create"])) {
+		} elseif ($dbh->server_info >= 5.1 && strlen($_GET["create"])) {
 			$status .= " REMOVE PARTITIONING";
 		}
 		$location = $SELF . "table=" . urlencode($_POST["name"]);
@@ -69,7 +69,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 page_header((strlen($_GET["create"]) ? lang('Alter table') : lang('Create table')), $error, array("table" => $_GET["create"]), $_GET["create"]);
 
 $engines = array();
-$result = $mysql->query("SHOW ENGINES");
+$result = $dbh->query("SHOW ENGINES");
 while ($row = $result->fetch_assoc()) {
 	if ($row["Support"] == "YES" || $row["Support"] == "DEFAULT") {
 		$engines[] = $row["Engine"];
@@ -88,14 +88,14 @@ if ($_POST) {
 	table_comment($row);
 	$row["name"] = $_GET["create"];
 	$row["fields"] = array_values($orig_fields);
-	if ($mysql->server_info >= 5.1) {
-		$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = '" . $mysql->escape_string($_GET["db"]) . "' AND TABLE_NAME = '" . $mysql->escape_string($_GET["create"]) . "'";
-		$result = $mysql->query("SELECT PARTITION_METHOD, PARTITION_ORDINAL_POSITION, PARTITION_EXPRESSION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
+	if ($dbh->server_info >= 5.1) {
+		$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = '" . $dbh->escape_string($_GET["db"]) . "' AND TABLE_NAME = '" . $dbh->escape_string($_GET["create"]) . "'";
+		$result = $dbh->query("SELECT PARTITION_METHOD, PARTITION_ORDINAL_POSITION, PARTITION_EXPRESSION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
 		list($row["partition_by"], $row["partitions"], $row["partition"]) = $result->fetch_row();
 		$result->free();
 		$row["partition_names"] = array();
 		$row["partition_values"] = array();
-		$result = $mysql->query("SELECT PARTITION_NAME, PARTITION_DESCRIPTION $from AND PARTITION_NAME != '' ORDER BY PARTITION_ORDINAL_POSITION");
+		$result = $dbh->query("SELECT PARTITION_NAME, PARTITION_DESCRIPTION $from AND PARTITION_NAME != '' ORDER BY PARTITION_ORDINAL_POSITION");
 		while ($row1 = $result->fetch_assoc()) {
 			$row["partition_names"][] = $row1["PARTITION_NAME"];
 			$row["partition_values"][] = $row1["PARTITION_DESCRIPTION"];
@@ -146,7 +146,7 @@ function column_comments_click(checked) {
 <?php if (strlen($_GET["create"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?> /><?php } ?>
 </p>
 <?php
-if ($mysql->server_info >= 5.1) {
+if ($dbh->server_info >= 5.1) {
 	$partition_table = ereg('RANGE|LIST', $row["partition_by"]);
 	?>
 <fieldset><legend><?php echo lang('Partition by'); ?></legend>

@@ -1,7 +1,7 @@
 <?php
-$result = $mysql->query("SHOW COLUMNS FROM " . idf_escape($_GET["table"]));
+$result = $dbh->query("SHOW COLUMNS FROM " . idf_escape($_GET["table"]));
 if (!$result) {
-	$error = htmlspecialchars($mysql->error);
+	$error = htmlspecialchars($dbh->error);
 }
 page_header(lang('Table') . ": " . htmlspecialchars($_GET["table"]), $error);
 
@@ -61,9 +61,9 @@ if ($result) {
 	}
 }
 
-if ($mysql->server_info >= 5) {
+if ($dbh->server_info >= 5) {
 	echo "<h3>" . lang('Triggers') . "</h3>\n";
-	$result = $mysql->query("SHOW TRIGGERS LIKE '" . $mysql->escape_string(addcslashes($_GET["table"], "%_")) . "'");
+	$result = $dbh->query("SHOW TRIGGERS LIKE '" . $dbh->escape_string(addcslashes($_GET["table"], "%_")) . "'");
 	if ($result->num_rows) {
 		echo "<table cellspacing='0'>\n";
 		while ($row = $result->fetch_assoc()) {

@@ -27,23 +27,23 @@ if (!$error && $_POST) {
 					echo "<pre class='jush-sql'>" . htmlspecialchars(substr($query, 0, $match[0][1])) . "</pre>\n";
 					flush();
 					//! don't allow changing of character_set_results, convert encoding of displayed query
-					if (!$mysql->multi_query(substr($query, 0, $match[0][1]))) {
-						echo "<p class='error'>" . lang('Error in query') . ": " . htmlspecialchars($mysql->error) . "</p>\n";
+					if (!$dbh->multi_query(substr($query, 0, $match[0][1]))) {
+						echo "<p class='error'>" . lang('Error in query') . ": " . htmlspecialchars($dbh->error) . "</p>\n";
 						if ($_POST["error_stops"]) {
 							break;
 						}
 					} else {
 						do {
-							$result = $mysql->store_result();
+							$result = $dbh->store_result();
 							if (is_object($result)) {
 								select($result);
 							} else {
 								if (preg_match("~^$space*(CREATE|DROP)$space+(DATABASE|SCHEMA)\\b~isU", $query)) {
 									unset($_SESSION["databases"][$_GET["server"]]);
 								}
-								echo "<p class='message'>" . lang('Query executed OK, %d row(s) affected.', $mysql->affected_rows) . "</p>\n";
+								echo "<p class='message'>" . lang('Query executed OK, %d row(s) affected.', $dbh->affected_rows) . "</p>\n";
 							}
-						} while ($mysql->next_result());
+						} while ($dbh->next_result());
 					}
 					$query = substr($query, $match[0][1] + strlen($match[0][0]));
 					$offset = 0;

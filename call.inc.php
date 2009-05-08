@@ -22,25 +22,25 @@ if (!$error && $_POST) {
 				$val = "''";
 			}
 			if (isset($out[$key])) {
-				$mysql->query("SET @" . idf_escape($field["field"]) . " = " . $val);
+				$dbh->query("SET @" . idf_escape($field["field"]) . " = " . $val);
 			}
 		}
 		$call[] = (isset($out[$key]) ? "@" . idf_escape($field["field"]) : $val);
 	}
-	$result = $mysql->multi_query((isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . idf_escape($_GET["call"]) . "(" . implode(", ", $call) . ")");
+	$result = $dbh->multi_query((isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . idf_escape($_GET["call"]) . "(" . implode(", ", $call) . ")");
 	if (!$result) {
-		echo "<p class='error'>" . htmlspecialchars($mysql->error) . "</p>\n";
+		echo "<p class='error'>" . htmlspecialchars($dbh->error) . "</p>\n";
 	} else {
 		do {
-			$result = $mysql->store_result();
+			$result = $dbh->store_result();
 			if (is_object($result)) {
 				select($result);
 			} else {
-				echo "<p class='message'>" . lang('Routine has been called, %d row(s) affected.', $mysql->affected_rows) . "</p>\n";
+				echo "<p class='message'>" . lang('Routine has been called, %d row(s) affected.', $dbh->affected_rows) . "</p>\n";
 			}
-		} while ($mysql->next_result());
+		} while ($dbh->next_result());
 		if ($out) {
-			select($mysql->query("SELECT " . implode(", ", $out)));
+			select($dbh->query("SELECT " . implode(", ", $out)));
 		}
 	}
 }

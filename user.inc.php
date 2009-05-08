@@ -1,6 +1,6 @@
 <?php
 $privileges = array();
-$result = $mysql->query("SHOW PRIVILEGES");
+$result = $dbh->query("SHOW PRIVILEGES");
 while ($row = $result->fetch_assoc()) {
 	foreach (explode(",", $row["Context"]) as $context) {
 		$privileges[$context][$row["Privilege"]] = $row["Comment"];
@@ -35,7 +35,7 @@ if ($_POST) {
 }
 $grants = array();
 $old_pass = "";
-if (isset($_GET["host"]) && ($result = $mysql->query("SHOW GRANTS FOR '" . $mysql->escape_string($_GET["user"]) . "'@'" . $mysql->escape_string($_GET["host"]) . "'"))) { //! Use information_schema for MySQL 5 - column names in column privileges are not escaped
+if (isset($_GET["host"]) && ($result = $dbh->query("SHOW GRANTS FOR '" . $dbh->escape_string($_GET["user"]) . "'@'" . $dbh->escape_string($_GET["host"]) . "'"))) { //! Use information_schema for MySQL 5 - column names in column privileges are not escaped
 	while ($row = $result->fetch_row()) {
 		if (preg_match('~GRANT (.*) ON (.*) TO ~', $row[0], $match)) { //! escape the part between ON and TO
 			if ($match[1] == "ALL PRIVILEGES") {
@@ -64,14 +64,14 @@ if (isset($_GET["host"]) && ($result = $mysql->query("SHOW GRANTS FOR '" . $mysq
 }
 
 if ($_POST && !$error) {
-	$old_user = (isset($_GET["host"]) ? $mysql->escape_string($_GET["user"]) . "'@'" . $mysql->escape_string($_GET["host"]) : "");
-	$new_user = $mysql->escape_string($_POST["user"]) . "'@'" . $mysql->escape_string($_POST["host"]);
-	$pass = $mysql->escape_string($_POST["pass"]);
+	$old_user = (isset($_GET["host"]) ? $dbh->escape_string($_GET["user"]) . "'@'" . $dbh->escape_string($_GET["host"]) : "");
+	$new_user = $dbh->escape_string($_POST["user"]) . "'@'" . $dbh->escape_string($_POST["host"]);
+	$pass = $dbh->escape_string($_POST["pass"]);
 	if ($_POST["drop"]) {
 		query_redirect("DROP USER '$old_user'", $SELF . "privileges=", lang('User has been dropped.'));
-	} elseif ($old_user == $new_user || $mysql->query(($mysql->server_info < 5 ? "GRANT USAGE ON *.* TO" : "CREATE USER") . " '$new_user' IDENTIFIED BY" . ($_POST["hashed"] ? " PASSWORD" : "") . " '$pass'")) {
+	} elseif ($old_user == $new_user || $dbh->query(($dbh->server_info < 5 ? "GRANT USAGE ON *.* TO" : "CREATE USER") . " '$new_user' IDENTIFIED BY" . ($_POST["hashed"] ? " PASSWORD" : "") . " '$pass'")) {
 		if ($old_user == $new_user) {
-			$mysql->query("SET PASSWORD FOR '$new_user' = " . ($_POST["hashed"] ? "'$pass'" : "PASSWORD('$pass')"));
+			$dbh->query("SET PASSWORD FOR '$new_user' = " . ($_POST["hashed"] ? "'$pass'" : "PASSWORD('$pass')"));
 		}
 		$revoke = array();
 		foreach ($new_grants as $object => $grant) {
@@ -88,23 +88,23 @@ if ($_POST && !$error) {
 				unset($grants[$object]);
 			}
 			if (preg_match('~^(.+)(\\(.*\\))?$~U', $object, $match) && (
-			($grant && !$mysql->query("GRANT " . implode("$match[2], ", $grant) . "$match[2] ON $match[1] TO '$new_user'")) //! SQL injection
-			|| ($revoke && !$mysql->query("REVOKE " . implode("$match[2], ", $revoke) . "$match[2] ON $match[1] FROM '$new_user'"))
+			($grant && !$dbh->query("GRANT " . implode("$match[2], ", $grant) . "$match[2] ON $match[1] TO '$new_user'")) //! SQL injection
+			|| ($revoke && !$dbh->query("REVOKE " . implode("$match[2], ", $revoke) . "$match[2] ON $match[1] FROM '$new_user'"))
 			)) {
-				$error = htmlspecialchars($mysql->error);
+				$error = htmlspecialchars($dbh->error);
 				if ($old_user != $new_user) {
-					$mysql->query("DROP USER '$new_user'");
+					$dbh->query("DROP USER '$new_user'");
 				}
 				break;
 			}
 		}
 		if (!$error) {
 			if (isset($_GET["host"]) && $old_user != $new_user) {
-				$mysql->query("DROP USER '$old_user'");
+				$dbh->query("DROP USER '$old_user'");
 			} elseif (!isset($_GET["grant"])) {
 				foreach ($grants as $object => $revoke) {
 					if (preg_match('~^(.+)(\\(.*\\))?$~U', $object, $match)) {
-						$mysql->query("REVOKE " . implode("$match[2], ", array_keys($revoke)) . "$match[2] ON $match[1] FROM '$new_user'");
+						$dbh->query("REVOKE " . implode("$match[2], ", array_keys($revoke)) . "$match[2] ON $match[1] FROM '$new_user'");
 					}
 				}
 			}
@@ -112,7 +112,7 @@ if ($_POST && !$error) {
 		}
 	}
 	if (!$error) {
-		$error = htmlspecialchars($mysql->error);
+		$error = htmlspecialchars($dbh->error);
 	}
 }
 page_header((isset($_GET["host"]) ? lang('Username') . ": " . htmlspecialchars("$_GET[user]@$_GET[host]") : lang('Create user')), $error, array("privileges" => lang('Privileges')));

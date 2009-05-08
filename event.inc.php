@@ -7,17 +7,17 @@ if ($_POST && !$error) {
 		query_redirect("DROP EVENT " . idf_escape($_GET["event"]), substr($SELF, 0, -1), lang('Event has been dropped.'));
 	} elseif (in_array($_POST["INTERVAL_FIELD"], $intervals) && in_array($_POST["STATUS"], $statuses)) {
 		$schedule = " ON SCHEDULE " . ($_POST["INTERVAL_VALUE"]
-			? "EVERY '" . $mysql->escape_string($_POST["INTERVAL_VALUE"]) . "' $_POST[INTERVAL_FIELD]"
-			. ($_POST["STARTS"] ? " STARTS '" . $mysql->escape_string($_POST["STARTS"]) . "'" : "")
-			. ($_POST["ENDS"] ? " ENDS '" . $mysql->escape_string($_POST["ENDS"]) . "'" : "") //! ALTER EVENT doesn't drop ENDS - MySQL bug #39173
-			: "AT '" . $mysql->escape_string($_POST["STARTS"]) . "'"
+			? "EVERY '" . $dbh->escape_string($_POST["INTERVAL_VALUE"]) . "' $_POST[INTERVAL_FIELD]"
+			. ($_POST["STARTS"] ? " STARTS '" . $dbh->escape_string($_POST["STARTS"]) . "'" : "")
+			. ($_POST["ENDS"] ? " ENDS '" . $dbh->escape_string($_POST["ENDS"]) . "'" : "") //! ALTER EVENT doesn't drop ENDS - MySQL bug #39173
+			: "AT '" . $dbh->escape_string($_POST["STARTS"]) . "'"
 			) . " ON COMPLETION" . ($_POST["ON_COMPLETION"] ? "" : " NOT") . " PRESERVE"
 		;
 		query_redirect((strlen($_GET["event"])
 			? "ALTER EVENT " . idf_escape($_GET["event"]) . $schedule
 			. ($_GET["event"] != $_POST["EVENT_NAME"] ? " RENAME TO " . idf_escape($_POST["EVENT_NAME"]) : "")
 			: "CREATE EVENT " . idf_escape($_POST["EVENT_NAME"]) . $schedule
-			) . " $_POST[STATUS] COMMENT '" . $mysql->escape_string($_POST["EVENT_COMMENT"])
+			) . " $_POST[STATUS] COMMENT '" . $dbh->escape_string($_POST["EVENT_COMMENT"])
 			. "' DO $_POST[EVENT_DEFINITION]"
 		, substr($SELF, 0, -1), (strlen($_GET["event"]) ? lang('Event has been altered.') : lang('Event has been created.')));
 	}
@@ -28,7 +28,7 @@ $row = array();
 if ($_POST) {
 	$row = $_POST;
 } elseif (strlen($_GET["event"])) {
-	$result = $mysql->query("SELECT * FROM information_schema.EVENTS WHERE EVENT_SCHEMA = '" . $mysql->escape_string($_GET["db"]) . "' AND EVENT_NAME = '" . $mysql->escape_string($_GET["event"]) . "'");
+	$result = $dbh->query("SELECT * FROM information_schema.EVENTS WHERE EVENT_SCHEMA = '" . $dbh->escape_string($_GET["db"]) . "' AND EVENT_NAME = '" . $dbh->escape_string($_GET["event"]) . "'");
 	$row = $result->fetch_assoc();
 	$row["STATUS"] = $statuses[$row["STATUS"]];
 	$result->free();

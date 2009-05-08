@@ -1,6 +1,6 @@
 <?php
-$mysql->query("SET SQL_QUOTE_SHOW_CREATE=1");
-if (!(strlen($_GET["db"]) ? $mysql->select_db($_GET["db"]) : isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]) || isset($_GET["processlist"]) || isset($_GET["privileges"]) || isset($_GET["user"]))) {
+$dbh->query("SET SQL_QUOTE_SHOW_CREATE=1");
+if (!(strlen($_GET["db"]) ? $dbh->select_db($_GET["db"]) : isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]) || isset($_GET["processlist"]) || isset($_GET["privileges"]) || isset($_GET["user"]))) {
 	if (strlen($_GET["db"])) {
 		unset($_SESSION["databases"][$_GET["server"]]);
 	}
@@ -11,10 +11,10 @@ if (!(strlen($_GET["db"]) ? $mysql->select_db($_GET["db"]) : isset($_GET["sql"])
 		echo '<p><a href="' . htmlspecialchars($SELF) . 'database=">' . lang('Create new database') . "</a></p>\n";
 		echo '<p><a href="' . htmlspecialchars($SELF) . 'privileges=">' . lang('Privileges') . "</a></p>\n";
 		echo '<p><a href="' . htmlspecialchars($SELF) . 'processlist=">' . lang('Process list') . "</a></p>\n";
-		echo "<p>" . lang('MySQL version: %s through PHP extension %s', "<b" . ($mysql->server_info < 4.1 ? " class='binary'" : "") . ">$mysql->server_info</b>", "<b>$mysql->extension</b>") . "</p>\n";
-		echo "<p>" . lang('Logged as: %s', "<b>" . htmlspecialchars($mysql->result($mysql->query("SELECT USER()"))) . "</b>") . "</p>\n";
+		echo "<p>" . lang('MySQL version: %s through PHP extension %s', "<b" . ($dbh->server_info < 4.1 ? " class='binary'" : "") . ">$dbh->server_info</b>", "<b>$dbh->extension</b>") . "</p>\n";
+		echo "<p>" . lang('Logged as: %s', "<b>" . htmlspecialchars($dbh->result($dbh->query("SELECT USER()"))) . "</b>") . "</p>\n";
 	}
 	page_footer("db");
 	exit;
 }
-$mysql->query("SET CHARACTER SET utf8");
+$dbh->query("SET CHARACTER SET utf8");

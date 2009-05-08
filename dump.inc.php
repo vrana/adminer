@@ -15,37 +15,37 @@ if ($_POST) {
 		$max_packet = 1048576; // default, minimum is 1024
 		echo "SET NAMES utf8;\n";
 		echo "SET foreign_key_checks = 0;\n";
-		echo "SET time_zone = '" . $mysql->escape_string($mysql->result($mysql->query("SELECT @@time_zone"))) . "';\n";
+		echo "SET time_zone = '" . $dbh->escape_string($dbh->result($dbh->query("SELECT @@time_zone"))) . "';\n";
 		echo "\n";
 	}
 	
 	foreach ($_POST["databases"] as $db => $style) {
 		$db = bracket_escape($db, "back");
-		if ($mysql->select_db($db)) {
-			if ($_POST["format"] != "csv" && ereg('CREATE', $style) && ($result = $mysql->query("SHOW CREATE DATABASE " . idf_escape($db)))) {
+		if ($dbh->select_db($db)) {
+			if ($_POST["format"] != "csv" && ereg('CREATE', $style) && ($result = $dbh->query("SHOW CREATE DATABASE " . idf_escape($db)))) {
 				if ($style == "DROP, CREATE") {
 					echo "DROP DATABASE IF EXISTS " . idf_escape($db) . ";\n";
 				}
-				$create = $mysql->result($result, 1);
+				$create = $dbh->result($result, 1);
 				echo ($style == "CREATE, ALTER" ? preg_replace('~^CREATE DATABASE ~', '\\0IF NOT EXISTS ', $create) : $create) . ";\n";
 				$result->free();
 			}
 			if ($style && $_POST["format"] != "csv") {
 				echo "USE " . idf_escape($db) . ";\n\n";
 				$out = "";
-				if ($mysql->server_info >= 5) {
+				if ($dbh->server_info >= 5) {
 					foreach (array("FUNCTION", "PROCEDURE") as $routine) {
-						$result = $mysql->query("SHOW $routine STATUS WHERE Db = '" . $mysql->escape_string($db) . "'");
+						$result = $dbh->query("SHOW $routine STATUS WHERE Db = '" . $dbh->escape_string($db) . "'");
 						while ($row = $result->fetch_assoc()) {
-							$out .= $mysql->result($mysql->query("SHOW CREATE $routine " . idf_escape($row["Name"])), 2) . ";;\n\n";
+							$out .= $dbh->result($dbh->query("SHOW CREATE $routine " . idf_escape($row["Name"])), 2) . ";;\n\n";
 						}
 						$result->free();
 					}
 				}
-				if ($mysql->server_info >= 5.1) {
-					$result = $mysql->query("SHOW EVENTS");
+				if ($dbh->server_info >= 5.1) {
+					$result = $dbh->query("SHOW EVENTS");
 					while ($row = $result->fetch_assoc()) {
-						$out .= $mysql->result($mysql->query("SHOW CREATE EVENT " . idf_escape($row["Name"])), 3) . ";;\n\n";
+						$out .= $dbh->result($dbh->query("SHOW CREATE EVENT " . idf_escape($row["Name"])), 3) . ";;\n\n";
 					}
 					$result->free();
 				}
@@ -54,7 +54,7 @@ if ($_POST) {
 			
 			if (($style || strlen($_GET["db"])) && (array_filter((array) $_POST["tables"]) || array_filter((array) $_POST["data"]))) {
 				$views = array();
-				$result = $mysql->query("SHOW TABLE STATUS");
+				$result = $dbh->query("SHOW TABLE STATUS");
 				while ($row = $result->fetch_assoc()) {
 					$key = (strlen($_GET["db"]) ? bracket_escape($row["Name"]) : 0);
 					if ($_POST["tables"][$key] || $_POST["data"][$key]) {
@@ -80,7 +80,7 @@ if ($_POST) {
 				}
 			}
 			
-			if ($mysql->server_info >= 5 && $style == "CREATE, ALTER" && $_POST["format"] != "csv") {
+			if ($dbh->server_info >= 5 && $style == "CREATE, ALTER" && $_POST["format"] != "csv") {
 				$query = "SELECT TABLE_NAME, ENGINE, TABLE_COLLATION, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()";
 ?>
 DELIMITER ;;
@@ -95,11 +95,11 @@ CREATE PROCEDURE phpminadmin_drop () BEGIN
 		FETCH tables INTO _table_name, _engine, _table_collation, _table_comment;
 		IF NOT done THEN
 			CASE _table_name<?php
-$result = $mysql->query($query);
+$result = $dbh->query($query);
 while ($row = $result->fetch_assoc()) {
-	$comment = $mysql->escape_string($row["ENGINE"] == "InnoDB" ? preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["TABLE_COMMENT"]) : $row["TABLE_COMMENT"]);
+	$comment = $dbh->escape_string($row["ENGINE"] == "InnoDB" ? preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["TABLE_COMMENT"]) : $row["TABLE_COMMENT"]);
 	echo "
-				WHEN '" . $mysql->escape_string($row["TABLE_NAME"]) . "' THEN
+				WHEN '" . $dbh->escape_string($row["TABLE_NAME"]) . "' THEN
 					" . (isset($row["ENGINE"]) ? "IF _engine != '$row[ENGINE]' OR _table_collation != '$row[TABLE_COLLATION]' OR _table_comment != '$comment' THEN
 						ALTER TABLE " . idf_escape($row["TABLE_NAME"]) . " ENGINE=$row[ENGINE] COLLATE=$row[TABLE_COLLATION] COMMENT='$comment';
 					END IF" : "BEGIN END") . ";";
@@ -151,7 +151,7 @@ foreach (array('', 'USE', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {
 }
 echo "</tr></thead>\n";
 foreach ((strlen($_GET["db"]) ? array($_GET["db"]) : get_databases()) as $db) {
-	if ($db != "information_schema" || $mysql->server_info < 5) {
+	if ($db != "information_schema" || $dbh->server_info < 5) {
 		echo "<tr" . odd() . "><td>" . htmlspecialchars($db) . "</td>";
 		foreach (array('', 'USE', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {
 			echo '<td><input type="radio" name="databases[' . htmlspecialchars(bracket_escape($db)) . ']"' . ($val == (strlen($_GET["db"]) ? '' : 'CREATE') ? " checked='checked'" : "") . " value='$val' /></td>";
@@ -170,7 +170,7 @@ foreach (array('', 'TRUNCATE, INSERT', 'INSERT', 'UPDATE') as $val) {
 }
 echo "</tr></thead>\n";
 $views = "";
-$result = $mysql->query(strlen($_GET["db"]) ? "SHOW TABLE STATUS" : "SELECT 'Engine'");
+$result = $dbh->query(strlen($_GET["db"]) ? "SHOW TABLE STATUS" : "SELECT 'Engine'");
 odd('');
 while ($row = $result->fetch_assoc()) {
 	$print = "<tr" . odd() . "><td>" . htmlspecialchars($row["Name"]) . "</td>";

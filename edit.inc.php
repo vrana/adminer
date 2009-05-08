@@ -53,7 +53,7 @@ if ($_POST) {
 	}
 	$row = array();
 	if ($select) {
-		$result = $mysql->query("SELECT " . implode(", ", $select) . " FROM " . idf_escape($_GET["edit"]) . " WHERE " . implode(" AND ", $where) . " LIMIT 1");
+		$result = $dbh->query("SELECT " . implode(", ", $select) . " FROM " . idf_escape($_GET["edit"]) . " WHERE " . implode(" AND ", $where) . " LIMIT 1");
 		$row = $result->fetch_assoc();
 		$result->free();
 	}
@@ -76,7 +76,7 @@ if ($fields) {
 		if (isset($_GET["default"]) && $field["type"] == "timestamp") {
 			if (!isset($create) && !$_POST) {
 				//! disable sql_mode NO_FIELD_OPTIONS
-				$create = $mysql->result($mysql->query("SHOW CREATE TABLE " . idf_escape($_GET["edit"])), 1);
+				$create = $dbh->result($dbh->query("SHOW CREATE TABLE " . idf_escape($_GET["edit"])), 1);
 			}
 			$checked = ($_POST ? $_POST["on_update"][bracket_escape($name)] : preg_match("~\n\\s*" . preg_quote(idf_escape($name), '~') . " timestamp.* on update CURRENT_TIMESTAMP~i", $create));
 			echo '<label><input type="checkbox" name="on_update[' . htmlspecialchars(bracket_escape($name)) . ']" value="1"' . ($checked ? ' checked="checked"' : '') . ' />' . lang('ON UPDATE CURRENT_TIMESTAMP') . '</label>';

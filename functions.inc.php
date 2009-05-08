@@ -29,9 +29,9 @@ function optionlist($options, $selected = null) {
 }
 
 function get_vals($query) {
-	global $mysql;
+	global $dbh;
 	$return = array();
-	$result = $mysql->query($query);
+	$result = $dbh->query($query);
 	if ($result) {
 		while ($row = $result->fetch_row()) {
 			$return[] = $row[0];
@@ -51,17 +51,17 @@ function get_databases() {
 }
 
 function table_status($table) {
-	global $mysql;
-	$result = $mysql->query("SHOW TABLE STATUS LIKE '" . $mysql->escape_string(addcslashes($table, "%_")) . "'");
+	global $dbh;
+	$result = $dbh->query("SHOW TABLE STATUS LIKE '" . $dbh->escape_string(addcslashes($table, "%_")) . "'");
 	$return = $result->fetch_assoc();
 	$result->free();
 	return $return;
 }
 
 function fields($table) {
-	global $mysql;
+	global $dbh;
 	$return = array();
-	$result = $mysql->query("SHOW FULL COLUMNS FROM " . idf_escape($table));
+	$result = $dbh->query("SHOW FULL COLUMNS FROM " . idf_escape($table));
 	if ($result) {
 		while ($row = $result->fetch_assoc()) {
 			preg_match('~^([^( ]+)(?:\\((.+)\\))?( unsigned)?( zerofill)?$~', $row["Type"], $match);
@@ -85,9 +85,9 @@ function fields($table) {
 }
 
 function indexes($table) {
-	global $mysql;
+	global $dbh;
 	$return = array();
-	$result = $mysql->query("SHOW INDEX FROM " . idf_escape($table));
+	$result = $dbh->query("SHOW INDEX FROM " . idf_escape($table));
 	if ($result) {
 		while ($row = $result->fetch_assoc()) {
 			$return[$row["Key_name"]]["type"] = ($row["Key_name"] == "PRIMARY" ? "PRIMARY" : ($row["Index_type"] == "FULLTEXT" ? "FULLTEXT" : ($row["Non_unique"] ? "INDEX" : "UNIQUE")));
@@ -100,12 +100,12 @@ function indexes($table) {
 }
 
 function foreign_keys($table) {
-	global $mysql, $on_actions;
+	global $dbh, $on_actions;
 	static $pattern = '(?:[^`]+|``)+';
 	$return = array();
-	$result = $mysql->query("SHOW CREATE TABLE " . idf_escape($table));
+	$result = $dbh->query("SHOW CREATE TABLE " . idf_escape($table));
 	if ($result) {
-		$create_table = $mysql->result($result, 1);
+		$create_table = $dbh->result($result, 1);
 		$result->free();
 		preg_match_all("~CONSTRAINT `($pattern)` FOREIGN KEY \\(((?:`$pattern`,? ?)+)\\) REFERENCES `($pattern)`(?:\\.`($pattern)`)? \\(((?:`$pattern`,? ?)+)\\)(?: ON DELETE (" . implode("|", $on_actions) . "))?(?: ON UPDATE (" . implode("|", $on_actions) . "))?~", $create_table, $matches, PREG_SET_ORDER);
 		foreach ($matches as $match) {
@@ -125,8 +125,8 @@ function foreign_keys($table) {
 }
 
 function view($name) {
-	global $mysql;
-	return array("select" => preg_replace('~^(?:[^`]+|`[^`]*`)* AS ~U', '', $mysql->result($mysql->query("SHOW CREATE VIEW " . idf_escape($name)), 1)));
+	global $dbh;
+	return array("select" => preg_replace('~^(?:[^`]+|`[^`]*`)* AS ~U', '', $dbh->result($dbh->query("SHOW CREATE VIEW " . idf_escape($name)), 1)));
 }
 
 function unique_idf($row, $indexes) {
@@ -150,11 +150,11 @@ function unique_idf($row, $indexes) {
 }
 
 function where($where) {
-	global $mysql;
+	global $dbh;
 	$return = array();
 	foreach ((array) $where["where"] as $key => $val) {
 		$key = bracket_escape($key, "back");
-		$return[] = (preg_match('~^[A-Z0-9_]+\\(`(?:[^`]+|``)+`\\)$~', $key) ? $key : idf_escape($key)) . " = BINARY '" . $mysql->escape_string($val) . "'"; //! enum and set, columns looking like functions
+		$return[] = (preg_match('~^[A-Z0-9_]+\\(`(?:[^`]+|``)+`\\)$~', $key) ? $key : idf_escape($key)) . " = BINARY '" . $dbh->escape_string($val) . "'"; //! enum and set, columns looking like functions
 	}
 	foreach ((array) $where["null"] as $key) {
 		$key = bracket_escape($key, "back");
@@ -169,9 +169,9 @@ function process_length($length) {
 }
 
 function collations() {
-	global $mysql;
+	global $dbh;
 	$return = array();
-	$result = $mysql->query("SHOW COLLATION");
+	$result = $dbh->query("SHOW COLLATION");
 	while ($row = $result->fetch_assoc()) {
 		if ($row["Default"] && $return[$row["Charset"]]) {
 			array_unshift($return[$row["Charset"]], $row["Collation"]);
@@ -195,14 +195,14 @@ function redirect($location, $message = null) {
 }
 
 function query_redirect($query, $location, $message, $redirect = true, $execute = true, $failed = false) {
-	global $mysql, $error, $SELF;
+	global $dbh, $error, $SELF;
 	$id = "sql-" . count($_SESSION["messages"]);
 	$sql = ($query ? " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><span id='$id' class='hidden'><br /><code class='jush-sql'>" . htmlspecialchars($query) . '</code> <a href="' . htmlspecialchars($SELF) . 'sql=' . urlencode($query) . '">' . lang('Edit') . '</a></span>' : "");
 	if ($execute) {
-		$failed = !$mysql->query($query);
+		$failed = !$dbh->query($query);
 	}
 	if ($failed) {
-		$error = htmlspecialchars($mysql->error) . $sql;
+		$error = htmlspecialchars($dbh->error) . $sql;
 		return false;
 	}
 	if ($redirect) {
@@ -212,13 +212,13 @@ function query_redirect($query, $location, $message, $redirect = true, $execute 
 }
 
 function queries($query = null) {
-	global $mysql;
+	global $dbh;
 	static $queries = array();
 	if (!isset($query)) {
 		return implode(";\n", $queries);
 	}
 	$queries[] = $query;
-	return $mysql->query($query);
+	return $dbh->query($query);
 }
 
 function remove_from_uri($param = "") {

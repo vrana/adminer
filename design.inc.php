@@ -59,7 +59,7 @@ function toggle(id) {
 }
 
 function page_footer($missing = false) {
-	global $SELF, $mysql;
+	global $SELF, $dbh;
 	?>
 </div>
 
@@ -92,7 +92,7 @@ function page_footer($missing = false) {
 </form>
 <?php
 		if ($missing != "db" && strlen($_GET["db"])) {
-			$result = $mysql->query("SHOW TABLE STATUS");
+			$result = $dbh->query("SHOW TABLE STATUS");
 			if (!$result->num_rows) {
 				echo "<p class='message'>" . lang('No tables.') . "</p>\n";
 			} else {

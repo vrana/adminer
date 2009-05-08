@@ -55,7 +55,7 @@ function input($name, $field, $value) {
 }
 
 function process_input($name, $field) {
-	global $mysql;
+	global $dbh;
 	$idf = bracket_escape($name);
 	$function = $_POST["function"][$idf];
 	$value = $_POST["fields"][$idf];
@@ -64,25 +64,25 @@ function process_input($name, $field) {
 	} elseif ($field["type"] == "enum" || $field["auto_increment"] ? !strlen($value) : $function == "NULL") {
 		return "NULL";
 	} elseif ($field["type"] == "enum") {
-		return (isset($_GET["default"]) ? "'" . $mysql->escape_string($value) . "'" : intval($value));
+		return (isset($_GET["default"]) ? "'" . $dbh->escape_string($value) . "'" : intval($value));
 	} elseif ($field["type"] == "set") {
-		return (isset($_GET["default"]) ? "'" . implode(",", array_map(array($mysql, 'escape_string'), (array) $value)) . "'" : array_sum((array) $value));
+		return (isset($_GET["default"]) ? "'" . implode(",", array_map(array($dbh, 'escape_string'), (array) $value)) . "'" : array_sum((array) $value));
 	} elseif (preg_match('~binary|blob~', $field["type"])) {
 		$file = get_file($idf);
 		if (!is_string($file)) {
 			return false; //! report errors
 		}
-		return "_binary'" . (is_string($file) ? $mysql->escape_string($file) : "") . "'";
+		return "_binary'" . (is_string($file) ? $dbh->escape_string($file) : "") . "'";
 	} elseif ($field["type"] == "timestamp" && $value == "CURRENT_TIMESTAMP") {
 		return $value;
 	} elseif (preg_match('~^(now|uuid)$~', $function)) {
 		return "$function()";
 	} elseif (preg_match('~^(\\+|-)$~', $function)) {
-		return idf_escape($name) . " $function '" . $mysql->escape_string($value) . "'";
+		return idf_escape($name) . " $function '" . $dbh->escape_string($value) . "'";
 	} elseif (preg_match('~^(md5|sha1|password)$~', $function)) {
-		return "$function('" . $mysql->escape_string($value) . "')";
+		return "$function('" . $dbh->escape_string($value) . "')";
 	} else {
-		return "'" . $mysql->escape_string($value) . "'";
+		return "'" . $dbh->escape_string($value) . "'";
 	}
 }
 
@@ -96,11 +96,11 @@ function edit_type($key, $field, $collations) {
 }
 
 function process_type($field, $collate = "COLLATE") {
-	global $mysql, $enum_length, $unsigned;
+	global $dbh, $enum_length, $unsigned;
 	return " $field[type]"
 		. ($field["length"] && !preg_match('~^date|time$~', $field["type"]) ? "(" . process_length($field["length"]) . ")" : "")
 		. (preg_match('~int|float|double|decimal~', $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
-		. (preg_match('~char|text|enum|set~', $field["type"]) && $field["collation"] ? " $collate '" . $mysql->escape_string($field["collation"]) . "'" : "")
+		. (preg_match('~char|text|enum|set~', $field["type"]) && $field["collation"] ? " $collate '" . $dbh->escape_string($field["collation"]) . "'" : "")
 	;
 }
 
@@ -254,11 +254,11 @@ function normalize_enum($match) {
 }
 
 function routine($name, $type) {
-	global $mysql, $enum_length, $inout;
+	global $dbh, $enum_length, $inout;
 	$aliases = array("bit" => "tinyint", "bool" => "tinyint", "boolean" => "tinyint", "integer" => "int", "double precision" => "float", "real" => "float", "dec" => "decimal", "numeric" => "decimal", "fixed" => "decimal", "national char" => "char", "national varchar" => "varchar");
 	$type_pattern = "([a-z]+)(?:\\s*\\(((?:[^'\")]*|$enum_length)+)\\))?\\s*(zerofill\\s*)?(unsigned(?:\\s+zerofill)?)?(?:\\s*(?:CHARSET|CHARACTER\\s+SET)\\s*['\"]?([^'\"\\s]+)['\"]?)?";
 	$pattern = "\\s*(" . ($type == "FUNCTION" ? "" : implode("|", $inout)) . ")?\\s*(?:`((?:[^`]+|``)*)`\\s*|\\b(\\S+)\\s+)$type_pattern";
-	$create = $mysql->result($mysql->query("SHOW CREATE $type " . idf_escape($name)), 2);
+	$create = $dbh->result($dbh->query("SHOW CREATE $type " . idf_escape($name)), 2);
 	preg_match("~\\(((?:$pattern\\s*,?)*)\\)" . ($type == "FUNCTION" ? "\\s*RETURNS\\s+$type_pattern" : "") . "\\s*(.*)~is", $create, $match);
 	$fields = array();
 	preg_match_all("~$pattern\\s*,?~is", $match[1], $matches, PREG_SET_ORDER);

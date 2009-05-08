@@ -80,7 +80,7 @@ if (extension_loaded("mysqli")) {
 		// minification compatibility end
 	}
 	
-	$mysql = new Min_MySQLi;
+	$dbh = new Min_MySQLi;
 
 } elseif (extension_loaded("mysql")) {
 	class Min_MySQL {
@@ -168,7 +168,7 @@ if (extension_loaded("mysqli")) {
 		}
 	}
 	
-	$mysql = new Min_MySQL;
+	$dbh = new Min_MySQL;
 
 } elseif (extension_loaded("pdo_mysql")) {
 	class Min_PDO_MySQL extends PDO {
@@ -255,7 +255,7 @@ if (extension_loaded("mysqli")) {
 		}
 	}
 	
-	$mysql = new Min_PDO_MySQL;
+	$dbh = new Min_PDO_MySQL;
 
 } else {
 	page_header(lang('No MySQL extension'), lang('None of supported PHP extensions (%s) are available.', 'MySQLi, MySQL, PDO_MySQL'), null);
