@@ -49,6 +49,7 @@ $SELF = preg_replace('~^[^?]*/([^?]*).*~', '\\1?', $_SERVER["REQUEST_URI"]) . (s
 include "./functions.inc.php";
 include "./lang.inc.php";
 include "./lang/$LANG.inc.php";
+include "./pdo.inc.php";
 include "./mysql.inc.php";
 include "./design.inc.php";
 include "./auth.inc.php";

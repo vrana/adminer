@@ -74,7 +74,7 @@ function short_identifier($number, $chars) {
 	return $return;
 }
 
-// Based on Dgx's PHP shrinker
+// based on Dgx's PHP shrinker
 function php_shrink($input) {
 	$special_variables = array_flip(array('$this', '$GLOBALS', '$_GET', '$_POST', '$_FILES', '$_COOKIE', '$_SESSION', '$_SERVER'));
 	static $short_variables = array();

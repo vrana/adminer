@@ -171,87 +171,13 @@ if (extension_loaded("mysqli")) {
 	$dbh = new Min_MySQL;
 
 } elseif (extension_loaded("pdo_mysql")) {
-	class Min_PDO_MySQL extends PDO {
-		var $extension = "PDO_MySQL", $_result, $server_info, $affected_rows, $error;
-		
-		function __construct() {
-		}
+	class Min_PDO_MySQL extends Min_PDO {
+		var $extension = "PDO_MySQL";
 		
 		function connect($server, $username, $password) {
-			set_exception_handler('auth_error'); // try/catch is not compatible with PHP 4
-			parent::__construct("mysql:host=" . str_replace(":", ";port=", $server), $username, $password);
-			restore_exception_handler();
-			$this->setAttribute(13, array('Min_PDOStatement')); // PDO::ATTR_STATEMENT_CLASS
+			$this->dsn("mysql:host=" . str_replace(":", ";port=", $server), $username, $password);
 			$this->server_info = $this->result($this->query("SELECT VERSION()"));
 			return true;
-		}
-		
-		function select_db($database) {
-			return $this->query("USE " . idf_escape($database));
-		}
-		
-		function query($query) {
-			$result = parent::query($query);
-			if (!$result) {
-				$errorInfo = $this->errorInfo();
-				$this->error = $errorInfo[2];
-				return false;
-			}
-			$this->_result = $result;
-			if (!$result->columnCount()) {
-				$this->affected_rows = $result->rowCount();
-				return true;
-			}
-			$result->num_rows = $result->rowCount();
-			return $result;
-		}
-		
-		function multi_query($query) {
-			return $this->query($query);
-		}
-		
-		function store_result() {
-			return ($this->_result->columnCount() ? $this->_result : true);
-		}
-		
-		function next_result() {
-			return $this->_result->nextRowset();
-		}
-		
-		function result($result, $field = 0) {
-			if (!$result) {
-				return false;
-			}
-			$row = $result->fetch();
-			return $row[$field];
-		}
-		
-		function escape_string($string) {
-			return substr($this->quote($string), 1, -1);
-		}
-	}
-	
-	class Min_PDOStatement extends PDOStatement {
-		var $_offset = 0, $num_rows;
-		
-		function fetch_assoc() {
-			return $this->fetch(2); // PDO::FETCH_ASSOC
-		}
-		
-		function fetch_row() {
-			return $this->fetch(3); // PDO::FETCH_NUM
-		}
-		
-		function fetch_field() {
-			$row = (object) $this->getColumnMeta($this->_offset++);
-			$row->orgtable = $row->table;
-			$row->orgname = $row->name;
-			$row->charsetnr = (in_array("blob", $row->flags) ? 63 : 0);
-			return $row;
-		}
-		
-		function free() {
-			// $this->__destruct() is not callable
 		}
 	}
 	
