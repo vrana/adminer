@@ -45,7 +45,6 @@ if (get_magic_quotes_gpc()) {
 }
 set_magic_quotes_runtime(false);
 $SELF = preg_replace('~^[^?]*/([^?]*).*~', '\\1?', $_SERVER["REQUEST_URI"]) . (strlen($_GET["server"]) ? 'server=' . urlencode($_GET["server"]) . '&' : '') . (strlen($_GET["db"]) ? 'db=' . urlencode($_GET["db"]) . '&' : '');
-$TOKENS = &$_SESSION["tokens"][$_GET["server"]][$_SERVER["REQUEST_URI"]];
 
 include "./functions.inc.php";
 include "./lang.inc.php";
@@ -88,14 +87,14 @@ if (isset($_GET["download"])) {
 	} elseif (isset($_GET["privileges"])) {
 		include "./privileges.inc.php";
 	} else { // uses CSRF token
+		$token = $_SESSION["tokens"][$_GET["server"]];
 		if ($_POST) {
-			if (!in_array($_POST["token"], (array) $TOKENS)) {
+			if ($_POST["token"] != $token) {
 				$error = lang('Invalid CSRF token. Send the form again.');
 			}
 		} elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
 			$error = lang('Too big POST data. Reduce the data or increase the "post_max_size" configuration directive.');
 		}
-		$token = ($_POST && !$error ? $_POST["token"] : token());
 		if (isset($_GET["default"])) {
 			$_GET["edit"] = $_GET["default"];
 		}

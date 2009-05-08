@@ -183,23 +183,10 @@ function collations() {
 	return $return;
 }
 
-function token() {
-	return ($GLOBALS["TOKENS"][] = rand(1, 1e6));
-}
-
-function token_delete() {
-	if ($_POST["token"] && ($pos = array_search($_POST["token"], (array) $GLOBALS["TOKENS"])) !== false) {
-		unset($GLOBALS["TOKENS"][$pos]);
-		return true;
-	}
-	return false;
-}
-
 function redirect($location, $message = null) {
 	if (isset($message)) {
 		$_SESSION["messages"][] = $message;
 	}
-	token_delete();
 	if (strlen(SID)) {
 		$location .= (strpos($location, "?") === false ? "?" : "&") . SID;
 	}

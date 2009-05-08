@@ -76,7 +76,7 @@ function short_identifier($number, $chars) {
 
 // Based on Dgx's PHP shrinker
 function php_shrink($input) {
-	$special_variables = array_flip(array('$TOKENS', '$this', '$GLOBALS', '$_GET', '$_POST', '$_FILES', '$_COOKIE', '$_SESSION', '$_SERVER'));
+	$special_variables = array_flip(array('$this', '$GLOBALS', '$_GET', '$_POST', '$_FILES', '$_COOKIE', '$_SESSION', '$_SERVER'));
 	static $short_variables = array();
 	$shortening = true;
 	$special_functions = array_flip(array('Min_MySQLi', 'Min_MySQLResult', '__construct'));

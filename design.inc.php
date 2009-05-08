@@ -9,7 +9,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <meta name="robots" content="noindex" />
-<title><?php echo $title . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . " - " . lang('phpMinAdmin') . " 1.10.1-dev"; ?></title>
+<title><?php echo $title . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . " - " . lang('phpMinAdmin') . " 1.10.2-dev"; ?></title>
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 <link rel="stylesheet" type="text/css" href="<?php echo (file_exists("phpMinAdmin.css") ? "phpMinAdmin.css" : "default.css"); // Ondrej Valka, http://valka.info ?>" />
 </head>
@@ -46,9 +46,6 @@ function toggle(id) {
 		echo "<p class='message'>" . implode("</p>\n<p class='message'>", $_SESSION["messages"]) . "</p>\n";
 		$_SESSION["messages"] = array();
 	}
-	if (!$_SESSION["tokens"][$_GET["server"]]["?logout"]) {
-		$_SESSION["tokens"][$_GET["server"]]["?logout"] = rand(1, 1e6);
-	}
 	$databases = &$_SESSION["databases"][$_GET["server"]];
 	if (strlen($_GET["db"]) && $databases && !in_array($_GET["db"], $databases, true)) {
 		$databases = null;
@@ -74,7 +71,7 @@ function page_footer($missing = false) {
 <p>
 <a href="<?php echo htmlspecialchars($SELF); ?>sql="><?php echo lang('SQL command'); ?></a>
 <a href="<?php echo htmlspecialchars($SELF); ?>dump=<?php echo urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]); ?>"><?php echo lang('Dump'); ?></a>
-<input type="hidden" name="token" value="<?php echo $_SESSION["tokens"][$_GET["server"]]["?logout"]; ?>" />
+<input type="hidden" name="token" value="<?php echo $_SESSION["tokens"][$_GET["server"]]; ?>" />
 <input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" />
 </p>
 </form>

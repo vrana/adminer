@@ -8,6 +8,7 @@ if (isset($_POST["server"])) {
 		session_regenerate_id();
 		$_SESSION["usernames"][$_POST["server"]] = $_POST["username"];
 		$_SESSION["passwords"][$_POST["server"]] = $_POST["password"];
+		$_SESSION["tokens"][$_POST["server"]] = rand(1, 1e6);
 		if (count($_POST) == count($ignore)) {
 			$location = ((string) $_GET["server"] === $_POST["server"] ? remove_from_uri() : preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . (strlen($_POST["server"]) ? '?server=' . urlencode($_POST["server"]) : ''));
 			if (!isset($_COOKIE[session_name()])) {
@@ -16,10 +17,13 @@ if (isset($_POST["server"])) {
 			header("Location: " . (strlen($location) ? $location : "."));
 			exit;
 		}
+		if ($_POST["token"]) {
+			$_POST["token"] = $_SESSION["tokens"][$_POST["server"]];
+		}
 	}
 	$_GET["server"] = $_POST["server"];
 } elseif (isset($_POST["logout"])) {
-	if ($_POST["token"] != $_SESSION["tokens"][$_GET["server"]]["?logout"]) {
+	if ($_POST["token"] != $_SESSION["tokens"][$_GET["server"]]) {
 		page_header(lang('Logout'), lang('Invalid CSRF token. Send the form again.'));
 		page_footer("db");
 		exit;
@@ -27,7 +31,7 @@ if (isset($_POST["server"])) {
 		unset($_SESSION["usernames"][$_GET["server"]]);
 		unset($_SESSION["passwords"][$_GET["server"]]);
 		unset($_SESSION["databases"][$_GET["server"]]);
-		$_SESSION["tokens"][$_GET["server"]] = array();
+		unset($_SESSION["tokens"][$_GET["server"]]);
 		redirect(substr($SELF, 0, -1), lang('Logout successful.'));
 	}
 }
@@ -35,9 +39,6 @@ if (isset($_POST["server"])) {
 function auth_error() {
 	global $ignore;
 	$username = $_SESSION["usernames"][$_GET["server"]];
-	if ($_POST["token"] && !isset($username)) {
-		$_POST["token"] = token();
-	}
 	unset($_SESSION["usernames"][$_GET["server"]]);
 	page_header(lang('Login'), (isset($username) ? lang('Invalid credentials.') : (isset($_POST["server"]) ? lang('Sessions must be enabled.') : ($_POST ? lang('Session expired, please login again.') : ""))), null);
 	?>
