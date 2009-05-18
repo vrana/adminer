@@ -138,9 +138,9 @@ function get_file($key) {
 function odd($s = ' class="odd"') {
 	static $i = 0;
 	if (!$s) { // reset counter
-		$i = 0;
+		$i = -1;
 	}
-	return (++$i % 2 ? $s : '');
+	return ($i++ % 2 ? $s : '');
 }
 
 function select($result) {
@@ -154,6 +154,7 @@ function select($result) {
 		$columns = array();
 		$blobs = array();
 		$types = array();
+		odd('');
 		for ($i=0; $row = $result->fetch_row(); $i++) {
 			if (!$i) {
 				echo "<thead><tr>";
