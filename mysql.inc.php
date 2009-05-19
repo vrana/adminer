@@ -14,7 +14,8 @@ if (extension_loaded("mysqli")) {
 				(strlen("$server$username") ? $username : ini_get("mysqli.default_user")),
 				(strlen("$server$username$password") ? $password : ini_get("mysqli.default_pw")),
 				null,
-				(strlen($port) ? $port : ini_get("mysqli.default_port"))
+				(is_numeric($port) ? $port : ini_get("mysqli.default_port")),
+				(!is_numeric($port) ? $port : null)
 			);
 		}
 		
@@ -175,7 +176,7 @@ if (extension_loaded("mysqli")) {
 		var $extension = "PDO_MySQL";
 		
 		function connect($server, $username, $password) {
-			$this->dsn("mysql:host=" . str_replace(":", ";port=", $server), $username, $password);
+			$this->dsn("mysql:host=" . str_replace(":", ";unix_socket=", preg_replace('~:([0-9])~', ';port=\\1', $server)), $username, $password);
 			$this->server_info = $this->result($this->query("SELECT VERSION()"));
 			return true;
 		}
