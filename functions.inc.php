@@ -28,13 +28,13 @@ function optionlist($options, $selected = null) {
 	return $return;
 }
 
-function get_vals($query) {
+function get_vals($query, $column = 0) {
 	global $dbh;
 	$return = array();
 	$result = $dbh->query($query);
 	if ($result) {
 		while ($row = $result->fetch_row()) {
-			$return[] = $row[0];
+			$return[] = $row[$column];
 		}
 		$result->free();
 	}
