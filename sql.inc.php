@@ -26,6 +26,7 @@ if (!$error && $_POST) {
 					$empty = false;
 					echo "<pre class='jush-sql'>" . htmlspecialchars(substr($query, 0, $match[0][1])) . "</pre>\n";
 					flush();
+					$start = explode(" ", microtime());
 					//! don't allow changing of character_set_results, convert encoding of displayed query
 					if (!$dbh->multi_query(substr($query, 0, $match[0][1]))) {
 						echo "<p class='error'>" . lang('Error in query') . ": " . htmlspecialchars($dbh->error) . "</p>\n";
@@ -33,6 +34,8 @@ if (!$error && $_POST) {
 							break;
 						}
 					} else {
+						$end = explode(" ", microtime());
+						echo "<p class='time'>" . lang('%.3f s', max(0, $end[0] - $start[0] + $end[1] - $start[1])) . "</p>\n";
 						do {
 							$result = $dbh->store_result();
 							if (is_object($result)) {

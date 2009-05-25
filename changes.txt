@@ -1,5 +1,6 @@
 phpMinAdmin 1.10.2:
 Connection through socket by server :/path/to/socket
+Display execution time in SQL query
 
 phpMinAdmin 1.10.1:
 Highlight odd and hover rows

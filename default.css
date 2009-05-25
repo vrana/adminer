@@ -22,6 +22,7 @@ code { background: #eee; }
 .enum { color: #007F7F; }
 .binary { color: red; }
 .odd td { background: #F5F5F5; }
+.time { color: Silver; font-size: 70%; float: right; margin-top: -3em; }
 tr:hover td { background: #ddf; }
 thead tr:hover td { background: transparent; }
 #menu { position: absolute; margin: 10px 0 0; padding: 0 0 30px 0; top: 2em; left: 0; width: 19em; overflow: auto; overflow-y: hidden; white-space: nowrap; }
