@@ -176,7 +176,7 @@ if (isset($_GET["download"])) {
 					echo '<tr class="nowrap' . odd(' odd') . '"><td>' . (isset($row["Rows"]) ? '<input type="checkbox" name="tables[]" value="' . htmlspecialchars($row["Name"]) . '"' . (in_array($row["Name"], (array) $_POST["tables"], true) ? ' checked="checked"' : '') . ' /></td><th><a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . "</a></th><td>$row[Engine]</td><td>" . (strlen(trim($row["Comment"])) ? htmlspecialchars($row["Comment"]) : "&nbsp;") . "</td><td>$row[Collation]" : '&nbsp;</td><th><a href="' . htmlspecialchars($SELF) . 'view=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . '</a></th><td colspan="8"><a href="' . htmlspecialchars($SELF) . "select=" . urlencode($row["Name"]) . '">' . lang('View') . '</a>');
 					foreach ((isset($row["Rows"]) ? array("Data_length" => "create", "Index_length" => "indexes", "Data_free" => "edit", "Auto_increment" => "create", "Rows" => "select") : array()) as $key => $link) {
 						$val = number_format($row[$key], 0, '.', lang(','));
-						echo '</td><td align="right">' . (strlen($row[$key]) ? '<a href="' . htmlspecialchars("$SELF$link=") . urlencode($row["Name"]) . '">' . ($key == "Rows" && $row["Engine"] == "InnoDB" && $val ? lang('around %s', $val) : $val) . '</a>' : '&nbsp;');
+						echo '</td><td align="right">' . (strlen($row[$key]) ? '<a href="' . htmlspecialchars("$SELF$link=") . urlencode($row["Name"]) . '">' . ($key == "Rows" && $row["Engine"] == "InnoDB" && $val ? lang('~ %s', $val) : $val) . '</a>' : '&nbsp;');
 					}
 					echo "</td></tr>\n";
 				}
