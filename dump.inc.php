@@ -188,4 +188,5 @@ while ($row = $result->fetch_assoc()) {
 }
 echo "$views</table>\n";
 ?>
+<p><input type="submit" value="<?php echo lang('Export'); ?>" /></p>
 </form>
