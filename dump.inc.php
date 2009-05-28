@@ -9,6 +9,18 @@ function tar_file($filename, $contents) {
 	return $return . str_repeat("\0", 512 - strlen($return)) . $contents . str_repeat("\0", 511 - (strlen($contents) + 511) % 512);
 }
 
+function dump_link($type, $name, $val, $attrs = "") {
+	global $SELF;
+	$check = $_GET;
+	$check[$type] = $val;
+	return '<a href="' . htmlspecialchars($SELF) . "dump=" . urlencode($_GET["dump"])
+		. (isset($check["db_check"]) ? "&amp;db_check=" . urlencode($check["db_check"]) : "")
+		. (isset($check["table_check"]) ? "&amp;table_check=" . urlencode($check["table_check"]) : "")
+		. (isset($check["data_check"]) ? "&amp;data_check=" . urlencode($check["data_check"]) : "")
+		. "\" onclick=\"return !check(this, /^$name/, '$val');\"$attrs>" . ($val ? $val : lang('skip')) . "</a>"
+	;
+}
+
 if ($_POST) {
 	$ext = dump_headers((strlen($_GET["dump"]) ? $_GET["dump"] : $_GET["db"]), (!strlen($_GET["db"]) || count(array_filter((array) $_POST["tables"]) + array_filter((array) $_POST["data"])) > 1));
 	if ($_POST["format"] != "csv") {
@@ -131,13 +143,14 @@ page_header(lang('Export'), "", (strlen($_GET["export"]) ? array("table" => $_GE
 ?>
 
 <script type="text/javascript">
-function check(td, name, value) {
-	var inputs = td.parentNode.parentNode.parentNode.getElementsByTagName('input');
+function check(a, name, value) {
+	var inputs = a.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('input');
 	for (var i=0; inputs.length > i; i++) {
 		if (name.test(inputs[i].name)) {
 			inputs[i].checked = (inputs[i].value == value);
 		}
 	}
+	return true;
 }
 </script>
 
@@ -147,14 +160,14 @@ function check(td, name, value) {
 <?php
 echo "<table cellspacing='0'>\n<thead><tr><th>" . lang('Database') . "</th>";
 foreach (array('', 'USE', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {
-	echo "<th onclick=\"check(this, /^databases/, '$val');\" style='cursor: pointer;'>" . ($val ? $val : lang('skip')) . "</th>";
+	echo '<th>' . dump_link("db_check", "databases", $val) . '</th>';
 }
 echo "</tr></thead>\n";
 foreach ((strlen($_GET["db"]) ? array($_GET["db"]) : get_databases()) as $db) {
 	if ($db != "information_schema" || $dbh->server_info < 5) {
 		echo "<tr" . odd() . "><td>" . htmlspecialchars($db) . "</td>";
 		foreach (array('', 'USE', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {
-			echo '<td><input type="radio" name="databases[' . htmlspecialchars(bracket_escape($db)) . ']"' . ($val == (strlen($_GET["db"]) ? '' : 'CREATE') ? " checked='checked'" : "") . " value='$val' /></td>";
+			echo '<td><input type="radio" name="databases[' . htmlspecialchars(bracket_escape($db)) . ']"' . ($val == (isset($_GET["db_check"]) ? $_GET["db_check"] : (strlen($_GET["db"]) ? '' : 'CREATE')) ? " checked='checked'" : "") . " value='$val' /></td>";
 		}
 		echo "</tr>\n";
 	}
@@ -163,10 +176,10 @@ echo "</table>\n";
 
 echo "<table cellspacing='0'>\n<thead><tr><th rowspan='2'>" . lang('Tables') . "</th><th colspan='4'>" . lang('Structure') . "</th><th colspan='4'>" . lang('Data') . "</th></tr><tr>";
 foreach (array('', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {
-	echo "<th onclick=\"check(this, /^tables/, '$val');\" style='cursor: pointer;'>" . ($val ? $val : lang('skip')) . "</th>";
+	echo '<th>' . dump_link("table_check", "tables", $val) . '</th>';
 }
 foreach (array('', 'TRUNCATE, INSERT', 'INSERT', 'UPDATE') as $val) {
-	echo "<th onclick=\"check(this, /^data/, '$val');\" style='cursor: pointer;'" . ($val == 'UPDATE' ? " title='INSERT INTO ... ON DUPLICATE KEY UPDATE'" : "") . ">" . ($val ? $val : lang('skip')) . "</th>";
+	echo '<th>' . dump_link("data_check", "data", $val, ($val == 'UPDATE' ? " title='INSERT INTO ... ON DUPLICATE KEY UPDATE'" : "")) . '</th>';
 }
 echo "</tr></thead>\n";
 $views = "";
@@ -175,13 +188,13 @@ odd('');
 while ($row = $result->fetch_assoc()) {
 	$print = "<tr" . odd() . "><td>" . htmlspecialchars($row["Name"]) . "</td>";
 	foreach (array('', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {
-		$print .= '<td><input type="radio" name="tables[' . htmlspecialchars(bracket_escape($row["Name"])) . ']"' . ($val == (strlen($_GET["dump"]) && $row["Name"] != $_GET["dump"] ? '' : 'DROP, CREATE') ? " checked='checked'" : "") . " value='$val' /></td>";
+		$print .= '<td><input type="radio" name="tables[' . htmlspecialchars(bracket_escape($row["Name"])) . ']"' . ($val == (isset($_GET["table_check"]) ? $_GET["table_check"] : (strlen($_GET["dump"]) && $row["Name"] != $_GET["dump"] ? '' : 'DROP, CREATE')) ? " checked='checked'" : "") . " value='$val' /></td>";
 	}
 	if (!$row["Engine"]) {
 		$views .= "$print</tr>\n";
 	} else {
 		foreach (array('', 'TRUNCATE, INSERT', 'INSERT', 'UPDATE') as $val) {
-			$print .= '<td><input type="radio" name="data[' . htmlspecialchars(bracket_escape($row["Name"])) . ']"' . ($val == ((strlen($_GET["dump"]) && $row["Name"] != $_GET["dump"]) || !$row["Engine"] ? '' : 'INSERT') ? " checked='checked'" : "") . " value='$val' /></td>";
+			$print .= '<td><input type="radio" name="data[' . htmlspecialchars(bracket_escape($row["Name"])) . ']"' . ($val == (isset($_GET["data_check"]) ? $_GET["data_check"] : ((strlen($_GET["dump"]) && $row["Name"] != $_GET["dump"]) || !$row["Engine"] ? '' : 'INSERT')) ? " checked='checked'" : "") . " value='$val' /></td>";
 		}
 		echo "$print</tr>\n";
 	}
