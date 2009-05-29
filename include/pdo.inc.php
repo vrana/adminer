@@ -6,7 +6,7 @@ if (extension_loaded('pdo')) {
 		function __construct() {
 		}
 		
-		function dsn($dsn, $username = "", $password = "") {
+		function dsn($dsn, $username, $password) {
 			set_exception_handler('auth_error'); // try/catch is not compatible with PHP 4
 			parent::__construct($dsn, $username, $password);
 			restore_exception_handler();
