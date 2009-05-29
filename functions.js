@@ -1,3 +1,5 @@
+document.body.className = 'js';
+
 function toggle(id) {
 	var el = document.getElementById(id);
 	el.className = (el.className == 'hidden' ? '' : 'hidden');
@@ -19,6 +21,8 @@ function tables_check(el) {
 		}
 	}
 }
+
+
 
 function where_change(op) {
 	for (var i=0; i < op.form.elements.length; i++) {
@@ -46,11 +50,15 @@ function select_add_row(field) {
 	field.onchange = function () { };
 }
 
+
+
+var added = '.', row_count;
+
 function editing_add_row(button, allowed) {
 	if (allowed && row_count >= allowed) {
 		return false;
 	}
-	var match = /([0-9]+)(\.[0-9]+)?/.exec(button.name)
+	var match = /([0-9]+)(\.[0-9]+)?/.exec(button.name);
 	var x = match[0] + (match[2] ? added.substr(match[2].length) : added) + '1';
 	var row = button.parentNode.parentNode;
 	var row2 = row.cloneNode(true);
@@ -119,6 +127,8 @@ function partition_name_change(el) {
 	el.onchange = function () {};
 }
 
+
+
 function foreign_add_row(field) {
 	var row = field.parentNode.parentNode.cloneNode(true);
 	var selects = row.getElementsByTagName('select');
@@ -129,6 +139,8 @@ function foreign_add_row(field) {
 	field.parentNode.parentNode.parentNode.appendChild(row);
 	field.onchange = function () { };
 }
+
+
 
 function indexes_add_row(field) {
 	var row = field.parentNode.parentNode.cloneNode(true);
@@ -158,9 +170,12 @@ function indexes_add_column(field) {
 	field.onchange = function () { };
 }
 
-function schema_mousedown(el, event, top) {
+
+
+var that, x, y, em, table_pos;
+
+function schema_mousedown(el, event) {
 	that = el;
-	em = document.getElementById('schema').offsetHeight / top;
 	x = event.clientX - el.offsetLeft;
 	y = event.clientY - el.offsetTop;
 }
@@ -223,6 +238,8 @@ function schema_mouseup(ev) {
 	}
 }
 
+
+
 function dump_check(a, name, value) {
 	var inputs = a.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('input');
 	for (var i=0; i < inputs.length; i++) {
@@ -232,5 +249,3 @@ function dump_check(a, name, value) {
 	}
 	return true;
 }
-
-document.body.className = 'js';

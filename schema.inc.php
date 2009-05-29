@@ -50,17 +50,16 @@ while ($row = $result->fetch_assoc()) {
 $result->free();
 
 ?>
+<div id="schema" style="height: <?php echo $top; ?>em;">
 <script type="text/javascript">
-var that, x, y, em;
-var table_pos = {<?php echo implode(",", $table_pos_js) . "\n"; ?>};
+table_pos = {<?php echo implode(",", $table_pos_js) . "\n"; ?>};
+em = document.getElementById('schema').offsetHeight / <?php echo $top; ?>;
 document.onmousemove = schema_mousemove;
 document.onmouseup = schema_mouseup;
 </script>
-
-<div id="schema" style="height: <?php echo $top; ?>em;">
 <?php
 foreach ($schema as $name => $table) {
-	echo "<div class='table' style='top: " . $table["pos"][0] . "em; left: " . $table["pos"][1] . "em;' onmousedown='schema_mousedown(this, event, $top);'>";
+	echo "<div class='table' style='top: " . $table["pos"][0] . "em; left: " . $table["pos"][1] . "em;' onmousedown='schema_mousedown(this, event);'>";
 	echo '<a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($name) . '"><strong>' . htmlspecialchars($name) . "</strong></a><br />\n";
 	foreach ($table["fields"] as $field) {
 		$val = htmlspecialchars($field["field"]);

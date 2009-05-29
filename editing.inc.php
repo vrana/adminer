@@ -124,12 +124,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0) {
 <td><input type="radio" name="auto_increment_col" value="" /><?php echo lang('Auto Increment'); ?></td>
 <td<?php echo ($column_comments ? "" : " class='hidden'"); ?>><?php echo lang('Comment'); ?></td>
 <?php } ?>
-<td><input type="image" name="add[0]" src="plus.gif" title="<?php echo lang('Add next'); ?>" />
-<script type="text/javascript">
-var added = '.';
-var row_count = <?php echo count($fields); ?>;
-</script>
-</td>
+<td><input type="image" name="add[0]" src="plus.gif" title="<?php echo lang('Add next'); ?>" /><script type="text/javascript">row_count = <?php echo count($fields); ?>;</script></td>
 </tr></thead>
 <?php
 	foreach ($fields as $i => $field) {
