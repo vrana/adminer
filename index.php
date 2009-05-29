@@ -46,17 +46,17 @@ if (get_magic_quotes_gpc()) {
 set_magic_quotes_runtime(false);
 $SELF = preg_replace('~^[^?]*/([^?]*).*~', '\\1?', $_SERVER["REQUEST_URI"]) . (strlen($_GET["server"]) ? 'server=' . urlencode($_GET["server"]) . '&' : '') . (strlen($_GET["db"]) ? 'db=' . urlencode($_GET["db"]) . '&' : '');
 
-include "./version.inc.php";
-include "./functions.inc.php";
-include "./lang.inc.php";
+include "./include/version.inc.php";
+include "./include/functions.inc.php";
+include "./include/lang.inc.php";
 include "./lang/$LANG.inc.php";
-include "./pdo.inc.php";
-include "./mysql.inc.php";
-include "./design.inc.php";
-include "./auth.inc.php";
-include "./connect.inc.php";
-include "./editing.inc.php";
-include "./export.inc.php";
+include "./include/pdo.inc.php";
+include "./include/mysql.inc.php";
+include "./include/design.inc.php";
+include "./include/auth.inc.php";
+include "./include/connect.inc.php";
+include "./include/editing.inc.php";
+include "./include/export.inc.php";
 
 if (isset($_GET["download"])) {
 	include "./download.inc.php";
