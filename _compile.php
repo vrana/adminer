@@ -173,6 +173,7 @@ if ($_COOKIE["lang"]) {
 $replace = 'preg_replace("~\\\\\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?file=\\0&amp;version=' . $VERSION;
 $file = preg_replace('~default\\.css|functions\\.js|favicon\\.ico|(up|down|plus|minus)\\.gif~', '<?php echo ' . $replace . '"; ?>', $file);
 $file = preg_replace('~arrow\\.gif~', '" . ' . $replace, $file);
+$file = str_replace("externals/jush/", "http://jush.sourceforge.net/", $file);
 $file = str_replace('error_reporting(E_ALL & ~E_NOTICE);', 'error_reporting(E_ALL & ~E_NOTICE);
 if (isset($_GET["file"])) {
 	header("Expires: " . gmdate("D, d M Y H:i:s", time() + 365*24*60*60) . " GMT");

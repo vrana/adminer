@@ -107,10 +107,10 @@ function page_footer($missing = false) {
 </div>
 
 <?php if ($_COOKIE["highlight"] == "jush") { ?>
-<script type="text/javascript" src="http://jush.sourceforge.net/jush.js"></script>
+<script type="text/javascript" src="externals/jush/jush.js"></script>
 <script type="text/javascript">
 if (typeof jush != 'undefined') {
-	jush.style('http://jush.sourceforge.net/jush.css');
+	jush.style('externals/jush/jush.css');
 	jush.highlight_tag('pre');
 	jush.highlight_tag('code');
 }
