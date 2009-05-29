@@ -1,5 +1,6 @@
 <?php
 include dirname(__FILE__) . "/version.inc.php";
+include dirname(__FILE__) . "/externals/jsmin-php/jsmin.php";
 
 function add_apo_slashes($s) {
 	return addcslashes($s, "\\'");
@@ -183,7 +184,7 @@ if (isset($_GET["file"])) {
 		?>' . preg_replace('~\\s*([:;{},])\\s*~', '\\1', file_get_contents(dirname(__FILE__) . "/default.css")) . '<?php
 	} elseif ($_GET["file"] == "functions.js") {
 		header("Content-Type: text/javascript");
-		?>' . file_get_contents(dirname(__FILE__) . "/functions.js") . '<?php
+		?>' . JSMin::minify(file_get_contents(dirname(__FILE__) . "/functions.js")) . '<?php
 	} else {
 		header("Content-Type: image/gif");
 		switch ($_GET["file"]) {
