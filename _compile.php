@@ -1,5 +1,5 @@
 <?php
-include "./version.inc.php";
+include dirname(__FILE__) . "/version.inc.php";
 
 function add_apo_slashes($s) {
 	return addcslashes($s, "\\'");
@@ -28,7 +28,7 @@ function put_file($match) {
 			return "";
 		}
 		$return = "";
-		foreach (glob("lang/*.inc.php") as $filename) {
+		foreach (glob(dirname(__FILE__) . "/lang/*.inc.php") as $filename) {
 			include $filename;
 			foreach ($translations as $key => $val) {
 				if (!isset($lang_ids[$key])) {
@@ -36,7 +36,7 @@ function put_file($match) {
 				}
 			}
 		}
-		foreach (glob("lang/*.inc.php") as $filename) {
+		foreach (glob(dirname(__FILE__) . "/lang/*.inc.php") as $filename) {
 			include $filename;
 			$translation_ids = array_flip($lang_ids);
 			foreach ($translations as $key => $val) {
@@ -50,7 +50,7 @@ function put_file($match) {
 		}
 		return "switch (\$LANG) {\n$return}\n";
 	}
-	$return = file_get_contents($match[3]);
+	$return = file_get_contents(dirname(__FILE__) . "/$match[3]");
 	if ($match[3] == "./lang.inc.php" && $_COOKIE["lang"] && (preg_match("~case '$_COOKIE[lang]': (.*) break;~", $return, $match2) || preg_match("~default: (.*)~", $return, $match2))) {
 		return "$match[1]\nfunction lang(\$ar, \$number) {\n\t$match2[1]\n\treturn sprintf(\$ar[\$pos], \$number);\n}\n$match[4]";
 	}
@@ -150,16 +150,16 @@ function php_shrink($input) {
 error_reporting(E_ALL & ~E_NOTICE);
 if ($_SERVER["argc"] > 1) {
 	$_COOKIE["lang"] = $_SERVER["argv"][1];
-	include "./lang.inc.php";
+	include dirname(__FILE__) . "/lang.inc.php";
 	if ($_SERVER["argc"] != 2 || !isset($langs[$_COOKIE["lang"]])) {
 		echo "Usage: php _compile.php [lang]\nPurpose: Compile phpMinAdmin[-lang].php from index.php.\n";
 		exit(1);
 	}
-	include "./lang/$_COOKIE[lang].inc.php";
+	include dirname(__FILE__) . "/lang/$_COOKIE[lang].inc.php";
 }
 
 $filename = "phpMinAdmin" . ($_COOKIE["lang"] ? "-$_COOKIE[lang]" : "") . ".php";
-$file = file_get_contents("index.php");
+$file = file_get_contents(dirname(__FILE__) . "/index.php");
 $file = preg_replace_callback('~(<\\?php)?\\s*(include|require) "([^"]*)";(\\s*\\?>)?~', 'put_file', $file);
 $file = preg_replace("~if \\(isset\\(\\\$_SESSION\\[\"coverage.*\n}\n| && !isset\\(\\\$_SESSION\\[\"coverage\"\\]\\)~sU", '', $file);
 if ($_COOKIE["lang"]) {
@@ -177,21 +177,21 @@ if (isset($_GET["file"])) {
 	header("Expires: " . gmdate("D, d M Y H:i:s", time() + 365*24*60*60) . " GMT");
 	if ($_GET["file"] == "favicon.ico") {
 		header("Content-Type: image/x-icon");
-		echo base64_decode("' . base64_encode(file_get_contents("favicon.ico")) . '");
+		echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/favicon.ico")) . '");
 	} elseif ($_GET["file"] == "default.css") {
 		header("Content-Type: text/css");
-		?>' . preg_replace('~\\s*([:;{},])\\s*~', '\\1', file_get_contents("default.css")) . '<?php
+		?>' . preg_replace('~\\s*([:;{},])\\s*~', '\\1', file_get_contents(dirname(__FILE__) . "/default.css")) . '<?php
 	} elseif ($_GET["file"] == "functions.js") {
 		header("Content-Type: text/javascript");
-		?>' . file_get_contents("functions.js") . '<?php
+		?>' . file_get_contents(dirname(__FILE__) . "/functions.js") . '<?php
 	} else {
 		header("Content-Type: image/gif");
 		switch ($_GET["file"]) {
-			case "arrow.gif": echo base64_decode("' . base64_encode(file_get_contents("arrow.gif")) . '"); break;
-			case "up.gif": echo base64_decode("' . base64_encode(file_get_contents("up.gif")) . '"); break;
-			case "down.gif": echo base64_decode("' . base64_encode(file_get_contents("down.gif")) . '"); break;
-			case "plus.gif": echo base64_decode("' . base64_encode(file_get_contents("plus.gif")) . '"); break;
-			case "minus.gif": echo base64_decode("' . base64_encode(file_get_contents("minus.gif")) . '"); break;
+			case "arrow.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/arrow.gif")) . '"); break;
+			case "up.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/up.gif")) . '"); break;
+			case "down.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/down.gif")) . '"); break;
+			case "plus.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/plus.gif")) . '"); break;
+			case "minus.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/minus.gif")) . '"); break;
 		}
 	}
 	exit;
