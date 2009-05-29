@@ -1,6 +1,6 @@
 <?php
 function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
-	global $SELF, $LANG;
+	global $SELF, $LANG, $VERSION;
 	header("Content-Type: text/html; charset=utf-8");
 	?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -9,9 +9,12 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <meta name="robots" content="noindex" />
-<title><?php echo $title . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . " - " . lang('phpMinAdmin') . " 1.10.2-dev"; ?></title>
+<title><?php echo $title . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . " - " . lang('phpMinAdmin') . " $VERSION"; ?></title>
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-<link rel="stylesheet" type="text/css" href="<?php echo (file_exists("phpMinAdmin.css") ? "phpMinAdmin.css" : "default.css"); // Ondrej Valka, http://valka.info ?>" />
+<link rel="stylesheet" type="text/css" href="default.css<?php // Ondrej Valka, http://valka.info ?>" />
+<?php if (file_exists("phpMinAdmin.css")) { ?>
+<link rel="stylesheet" type="text/css" href="phpMinAdmin.css" />
+<?php } ?>
 </head>
 
 <body>

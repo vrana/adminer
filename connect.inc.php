@@ -12,6 +12,19 @@ if (!(strlen($_GET["db"]) ? $dbh->select_db($_GET["db"]) : isset($_GET["sql"]) |
 		echo '<p><a href="' . htmlspecialchars($SELF) . 'privileges=">' . lang('Privileges') . "</a></p>\n";
 		echo '<p><a href="' . htmlspecialchars($SELF) . 'processlist=">' . lang('Process list') . "</a></p>\n";
 		echo "<p>" . lang('MySQL version: %s through PHP extension %s', "<b" . ($dbh->server_info < 4.1 ? " class='binary'" : "") . ">$dbh->server_info</b>", "<b>$dbh->extension</b>") . "</p>\n";
+		echo "<p>" . lang('phpMinAdmin version: %s', "<b>$VERSION</b>") . ", <a href='http://phpminadmin.sourceforge.net/'>" . lang('current version') . "<span id='version'>" . (version_compare($VERSION, $_COOKIE["phpMinAdmin_version"]) < 0 ? ": <b>" . htmlspecialchars($_COOKIE["phpMinAdmin_version"]) . "</b>" : "") . "</span></a></p>\n";
+		if (!isset($_COOKIE["phpMinAdmin_version"])) {
+			?>
+<script type="text/javascript">
+onload = function () {
+	document.cookie = 'phpMinAdmin_version=0';
+	var script = document.createElement('script');
+	script.src = 'http://phpminadmin.sourceforge.net/version.php?version=<?php echo $VERSION; ?>';
+	document.body.appendChild(script);
+};
+</script>
+<?php
+		}
 		echo "<p>" . lang('Logged as: %s', "<b>" . htmlspecialchars($dbh->result($dbh->query("SELECT USER()"))) . "</b>") . "</p>\n";
 	}
 	page_footer("db");

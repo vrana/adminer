@@ -46,6 +46,7 @@ if (get_magic_quotes_gpc()) {
 set_magic_quotes_runtime(false);
 $SELF = preg_replace('~^[^?]*/([^?]*).*~', '\\1?', $_SERVER["REQUEST_URI"]) . (strlen($_GET["server"]) ? 'server=' . urlencode($_GET["server"]) . '&' : '') . (strlen($_GET["db"]) ? 'db=' . urlencode($_GET["db"]) . '&' : '');
 
+include "./version.inc.php";
 include "./functions.inc.php";
 include "./lang.inc.php";
 include "./lang/$LANG.inc.php";

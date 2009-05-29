@@ -1,4 +1,6 @@
 <?php
+include "./version.inc.php";
+
 function add_apo_slashes($s) {
 	return addcslashes($s, "\\'");
 }
@@ -167,17 +169,18 @@ if ($_COOKIE["lang"]) {
 } else {
 	$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
 }
-$file = preg_replace('~favicon\\.ico|(up|down|plus|minus)\\.gif~', '<?php echo preg_replace("~\\\\\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?file=\\0"; ?>', $file);
-$file = preg_replace('~default\\.css|arrow\\.gif~', '" . preg_replace("~\\\\\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?file=\\0', $file);
+$replace = 'preg_replace("~\\\\\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?file=\\0&amp;version=' . $VERSION;
+$file = preg_replace('~default\\.css|favicon\\.ico|(up|down|plus|minus)\\.gif~', '<?php echo ' . $replace . '"; ?>', $file);
+$file = preg_replace('~arrow\\.gif~', '" . ' . $replace, $file);
 $file = str_replace('error_reporting(E_ALL & ~E_NOTICE);', 'error_reporting(E_ALL & ~E_NOTICE);
 if (isset($_GET["file"])) {
-	header("Expires: " . gmdate("D, d M Y H:i:s", filemtime(__FILE__) + 365*24*60*60) . " GMT");
+	header("Expires: " . gmdate("D, d M Y H:i:s", time() + 365*24*60*60) . " GMT");
 	if ($_GET["file"] == "favicon.ico") {
 		header("Content-Type: image/x-icon");
 		echo base64_decode("' . base64_encode(file_get_contents("favicon.ico")) . '");
 	} elseif ($_GET["file"] == "default.css") {
 		header("Content-Type: text/css");
-		?>' . preg_replace('~\\s*([:;{},])\\s+~', '\\1', file_get_contents("default.css")) . '<?php
+		?>' . preg_replace('~\\s*([:;{},])\\s*~', '\\1', file_get_contents("default.css")) . '<?php
 	} else {
 		header("Content-Type: image/gif");
 		switch ($_GET["file"]) {

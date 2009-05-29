@@ -217,4 +217,6 @@ $translations = array(
 	'Maximum number of allowed fields exceeded. Please increase %s and %s.' => 'Byl překročen maximální povolený počet polí. Zvyšte prosím %s a %s.',
 	'(anywhere)' => '(kdekoliv)',
 	'%.3f s' => '%.3f s',
+	'phpMinAdmin version: %s' => 'Verze phpMinAdmin: %s',
+	'current version' => 'aktuální verze',
 );
