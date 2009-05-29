@@ -48,19 +48,6 @@ $source = get_vals("SHOW COLUMNS FROM " . idf_escape($_GET["foreign"])); //! no 
 $target = ($_GET["foreign"] === $row["table"] ? $source : get_vals("SHOW COLUMNS FROM " . idf_escape($row["table"])));
 ?>
 
-<script type="text/javascript">// <![CDATA[
-function add_row(field) {
-	var row = field.parentNode.parentNode.cloneNode(true);
-	var selects = row.getElementsByTagName('select');
-	for (var i=0; i < selects.length; i++) {
-		selects[i].name = selects[i].name.replace(/\]/, '1$&');
-		selects[i].selectedIndex = 0;
-	}
-	field.parentNode.parentNode.parentNode.appendChild(row);
-	field.onchange = function () { };
-}
-// ]]></script>
-
 <form action="" method="post">
 <p>
 <?php echo lang('Target table'); ?>:
@@ -74,7 +61,7 @@ function add_row(field) {
 $j = 0;
 foreach ($row["source"] as $key => $val) {
 	echo "<tr>";
-	echo "<td><select name='source[" . intval($key) . "]'" . ($j == count($row["source"]) - 1 ? " onchange='add_row(this);'" : "") . "><option></option>" . optionlist($source, $val) . "</select></td>";
+	echo "<td><select name='source[" . intval($key) . "]'" . ($j == count($row["source"]) - 1 ? " onchange='foreign_add_row(this);'" : "") . "><option></option>" . optionlist($source, $val) . "</select></td>";
 	echo "<td><select name='target[" . intval($key) . "]'>" . optionlist($target, $row["target"][$key]) . "</select></td>";
 	echo "</tr>\n";
 	$j++;

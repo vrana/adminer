@@ -170,7 +170,7 @@ if ($_COOKIE["lang"]) {
 	$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
 }
 $replace = 'preg_replace("~\\\\\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?file=\\0&amp;version=' . $VERSION;
-$file = preg_replace('~default\\.css|favicon\\.ico|(up|down|plus|minus)\\.gif~', '<?php echo ' . $replace . '"; ?>', $file);
+$file = preg_replace('~default\\.css|functions\\.js|favicon\\.ico|(up|down|plus|minus)\\.gif~', '<?php echo ' . $replace . '"; ?>', $file);
 $file = preg_replace('~arrow\\.gif~', '" . ' . $replace, $file);
 $file = str_replace('error_reporting(E_ALL & ~E_NOTICE);', 'error_reporting(E_ALL & ~E_NOTICE);
 if (isset($_GET["file"])) {
@@ -181,6 +181,9 @@ if (isset($_GET["file"])) {
 	} elseif ($_GET["file"] == "default.css") {
 		header("Content-Type: text/css");
 		?>' . preg_replace('~\\s*([:;{},])\\s*~', '\\1', file_get_contents("default.css")) . '<?php
+	} elseif ($_GET["file"] == "functions.js") {
+		header("Content-Type: text/javascript");
+		?>' . file_get_contents("functions.js") . '<?php
 	} else {
 		header("Content-Type: image/gif");
 		switch ($_GET["file"]) {

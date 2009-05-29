@@ -53,75 +53,14 @@ $result->free();
 <script type="text/javascript">
 var that, x, y, em;
 var table_pos = {<?php echo implode(",", $table_pos_js) . "\n"; ?>};
-
-function mousedown(el, event) {
-	that = el;
-	em = document.getElementById('schema').offsetHeight / <?php echo $top; ?>;
-	x = event.clientX - el.offsetLeft;
-	y = event.clientY - el.offsetTop;
-}
-document.onmousemove = function (ev) {
-	if (that !== undefined) {
-		ev = ev || event;
-		var left = (ev.clientX - x) / em;
-		var top = (ev.clientY - y) / em;
-		var divs = that.getElementsByTagName('div');
-		var line_set = { };
-		for (var i=0; divs.length > i; i++) {
-			if (divs[i].className == 'references') {
-				var div2 = document.getElementById((divs[i].id.substr(0, 4) == 'refs' ? 'refd' : 'refs') + divs[i].id.substr(4));
-				var ref = (table_pos[divs[i].title] ? table_pos[divs[i].title] : [ div2.parentNode.offsetTop / em, 0 ]);
-				var left1 = -1;
-				var is_top = true;
-				var id = divs[i].id.replace(/^ref.(.+)-.+/, '$1');
-				if (divs[i].parentNode != div2.parentNode) {
-					left1 = Math.min(0, ref[1] - left) - 1;
-					divs[i].style.left = left1 + 'em';
-					divs[i].getElementsByTagName('div')[0].style.width = -left1 + 'em';
-					var left2 = Math.min(0, left - ref[1]) - 1;
-					div2.style.left = left2 + 'em';
-					div2.getElementsByTagName('div')[0].style.width = -left2 + 'em';
-					is_top = (div2.offsetTop + ref[0] * em > divs[i].offsetTop + top * em);
-				}
-				if (!line_set[id]) {
-					var line = document.getElementById(divs[i].id.replace(/^....(.+)-[0-9]+$/, 'refl$1'));
-					var shift = ev.clientY - y - that.offsetTop;
-					line.style.left = (left + left1) + 'em';
-					if (is_top) {
-						line.style.top = (line.offsetTop + shift) / em + 'em';
-					}
-					if (divs[i].parentNode != div2.parentNode) {
-						line = line.getElementsByTagName('div')[0];
-						line.style.height = (line.offsetHeight + (is_top ? -1 : 1) * shift) / em + 'em';
-					}
-					line_set[id] = true;
-				}
-			}
-		}
-		that.style.left = left + 'em';
-		that.style.top = top + 'em';
-	}
-}
-document.onmouseup = function (ev) {
-	if (that !== undefined) {
-		ev = ev || event;
-		table_pos[that.firstChild.firstChild.firstChild.data] = [ (ev.clientY - y) / em, (ev.clientX - x) / em ];
-		that = undefined;
-		var date = new Date();
-		date.setMonth(date.getMonth() + 1);
-		var s = '';
-		for (var key in table_pos) {
-			s += '_' + key + ':' + Math.round(table_pos[key][0] * 10000) / 10000 + 'x' + Math.round(table_pos[key][1] * 10000) / 10000;
-		}
-		document.cookie = 'schema=' + encodeURIComponent(s.substr(1)) + '; expires=' + date + '; path=' + location.pathname + location.search;
-	}
-}
+document.onmousemove = schema_mousemove;
+document.onmouseup = schema_mouseup;
 </script>
 
 <div id="schema" style="height: <?php echo $top; ?>em;">
 <?php
 foreach ($schema as $name => $table) {
-	echo "<div class='table' style='top: " . $table["pos"][0] . "em; left: " . $table["pos"][1] . "em;' onmousedown='mousedown(this, event);'>";
+	echo "<div class='table' style='top: " . $table["pos"][0] . "em; left: " . $table["pos"][1] . "em;' onmousedown='schema_mousedown(this, event, $top);'>";
 	echo '<a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($name) . '"><strong>' . htmlspecialchars($name) . "</strong></a><br />\n";
 	foreach ($table["fields"] as $field) {
 		$val = htmlspecialchars($field["field"]);

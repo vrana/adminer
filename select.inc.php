@@ -152,25 +152,6 @@ if (!$columns) {
 	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "" : ": " . htmlspecialchars($dbh->error)) . ".</p>\n";
 } else {
 	echo "<form action='' id='form'>\n";
-	?>
-<script type="text/javascript">// <![CDATA[
-function add_row(field) {
-	var row = field.parentNode.cloneNode(true);
-	var selects = row.getElementsByTagName('select');
-	for (var i=0; i < selects.length; i++) {
-		selects[i].name = selects[i].name.replace(/[a-z]\[[0-9]+/, '$&1');
-		selects[i].selectedIndex = 0;
-	}
-	var inputs = row.getElementsByTagName('input');
-	if (inputs.length) {
-		inputs[0].name = inputs[0].name.replace(/[a-z]\[[0-9]+/, '$&1');
-		inputs[0].value = '';
-	}
-	field.parentNode.parentNode.appendChild(row);
-	field.onchange = function () { };
-}
-// ]]></script>
-<?php
 	echo "<fieldset><legend>" . lang('Select') . "</legend>\n";
 	if (strlen($_GET["server"])) {
 		echo '<input type="hidden" name="server" value="' . htmlspecialchars($_GET["server"]) . '" />';
@@ -187,7 +168,7 @@ function add_row(field) {
 		$i++;
 	}
 	echo "<div><select name='columns[$i][fun]' onchange='this.nextSibling.onchange();'><option></option>" . optionlist($fun_group) . "</select>";
-	echo "<select name='columns[$i][col]' onchange='add_row(this);'><option></option>" . optionlist($columns) . "</select></div>\n";
+	echo "<select name='columns[$i][col]' onchange='select_add_row(this);'><option></option>" . optionlist($columns) . "</select></div>\n";
 	echo "</fieldset>\n";
 	
 	echo "<fieldset><legend>" . lang('Search') . "</legend>\n";
@@ -204,28 +185,11 @@ function add_row(field) {
 		if (strlen("$val[col]$val[val]") && in_array($val["op"], $operators)) {
 			echo "<div><select name='where[$i][col]'><option value=''>" . lang('(anywhere)') . "</option>" . optionlist($columns, $val["col"]) . "</select>";
 			echo "<select name='where[$i][op]' onchange='where_change(this);'>" . optionlist($operators, $val["op"]) . "</select>";
-			echo "<input name='where[$i][val]' value=\"" . htmlspecialchars($val["val"]) . "\" /></div>\n";
+			echo "<input name='where[$i][val]' value=\"" . htmlspecialchars($val["val"]) . '"' . (ereg('NULL$', $val["op"]) ? " class='hidden'" : "") . " /></div>\n";
 			$i++;
 		}
 	}
-	?>
-<script type="text/javascript">
-function where_change(op) {
-	for (var i=0; i < op.form.elements.length; i++) {
-		var el = op.form.elements[i];
-		if (el.name == op.name.substr(0, op.name.length - 4) + '[val]') {
-			el.style.display = (/NULL$/.test(op.options[op.selectedIndex].text) ? 'none' : '');
-		}
-	}
-}
-<?php if ($i) { ?>
-for (var i=0; <?php echo $i; ?> > i; i++) {
-	document.getElementById('form')['where[' + i + '][op]'].onchange();
-}
-<?php } ?>
-</script>
-<?php
-	echo "<div><select name='where[$i][col]' onchange='add_row(this);'><option value=''>" . lang('(anywhere)') . "</option>" . optionlist($columns) . "</select>";
+	echo "<div><select name='where[$i][col]' onchange='select_add_row(this);'><option value=''>" . lang('(anywhere)') . "</option>" . optionlist($columns) . "</select>";
 	echo "<select name='where[$i][op]' onchange='where_change(this);'>" . optionlist($operators) . "</select>";
 	echo "<input name='where[$i][val]' /></div>\n";
 	echo "</fieldset>\n";
@@ -239,7 +203,7 @@ for (var i=0; <?php echo $i; ?> > i; i++) {
 			$i++;
 		}
 	}
-	echo "<div><select name='order[$i]' onchange='add_row(this);'><option></option>" . optionlist($columns) . "</select>";
+	echo "<div><select name='order[$i]' onchange='select_add_row(this);'><option></option>" . optionlist($columns) . "</select>";
 	echo "<label><input type='checkbox' name='desc[$i]' value='1' />" . lang('DESC') . "</label></div>\n";
 	echo "</fieldset>\n";
 	

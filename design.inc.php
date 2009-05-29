@@ -18,14 +18,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 </head>
 
 <body>
-<script type="text/javascript">
-document.body.className = 'js';
-function toggle(id) {
-	var el = document.getElementById(id);
-	el.className = (el.className == 'hidden' ? '' : 'hidden');
-	return true;
-}
-</script>
+<script type="text/javascript" src="functions.js"></script>
 
 <div id="content">
 <?php

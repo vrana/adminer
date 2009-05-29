@@ -41,12 +41,6 @@ if ($_POST) {
 <?php edit_fields($row["fields"], $collations, $routine); ?>
 <?php if (isset($_GET["function"])) { ?><tr><td><?php echo lang('Return type'); ?></td><?php echo edit_type("returns", $row["returns"], $collations); ?></tr><?php } ?>
 </table>
-<?php echo type_change(count($row["fields"])); ?>
-<?php if (isset($_GET["function"])) { ?>
-<script type="text/javascript">
-document.getElementById('form')['returns[type]'].onchange();
-</script>
-<?php } ?>
 <p><textarea name="definition" rows="10" cols="80" style="width: 98%;"><?php echo htmlspecialchars($row["definition"]); ?></textarea></p>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>" />

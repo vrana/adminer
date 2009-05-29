@@ -89,7 +89,7 @@ function process_input($name, $field) {
 function edit_type($key, $field, $collations) {
 	global $types, $unsigned, $inout;
 	?>
-<td><select name="<?php echo $key; ?>[type]" onchange="type_change(this);"><?php echo optionlist(array_keys($types), $field["type"]); ?></select></td>
+<td><select name="<?php echo $key; ?>[type]" onchange="editing_type_change(this);"><?php echo optionlist(array_keys($types), $field["type"]); ?></select></td>
 <td><input name="<?php echo $key; ?>[length]" value="<?php echo htmlspecialchars($field["length"]); ?>" size="3" /></td>
 <td><?php echo "<select name=\"$key" . '[collation]"' . (preg_match('~char|text|enum|set~', $field["type"]) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')</option>' . optionlist($collations, $field["collation"]) . '</select>' . ($unsigned ? " <select name=\"$key" . '[unsigned]"' . (!$field["type"] || preg_match('~int|float|double|decimal~', $field["type"]) ? "" : " class='hidden'") . '>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : ''); ?></td>
 <?php
@@ -104,8 +104,14 @@ function process_type($field, $collate = "COLLATE") {
 	;
 }
 
-function edit_fields($fields, $collations, $type = "TABLE") {
+function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0) {
 	global $inout;
+	$column_comments = false;
+	foreach ($fields as $field) {
+		if (strlen($field["comment"])) {
+			$column_comments = true;
+		}
+	}
 	?>
 <thead><tr>
 <?php if ($type == "PROCEDURE") { ?><td><?php echo lang('IN-OUT'); ?></td><?php } ?>
@@ -116,12 +122,16 @@ function edit_fields($fields, $collations, $type = "TABLE") {
 <?php if ($type == "TABLE") { ?>
 <td><?php echo lang('NULL'); ?></td>
 <td><input type="radio" name="auto_increment_col" value="" /><?php echo lang('Auto Increment'); ?></td>
-<td><?php echo lang('Comment'); ?></td>
+<td<?php echo ($column_comments ? "" : " class='hidden'"); ?>><?php echo lang('Comment'); ?></td>
 <?php } ?>
-<td><input type="image" name="add[0]" src="plus.gif" title="<?php echo lang('Add next'); ?>" /></td>
+<td><input type="image" name="add[0]" src="plus.gif" title="<?php echo lang('Add next'); ?>" />
+<script type="text/javascript">
+var added = '.';
+var row_count = <?php echo count($fields); ?>;
+</script>
+</td>
 </tr></thead>
 <?php
-	$column_comments = false;
 	foreach ($fields as $i => $field) {
 		$i++;
 		$display = (isset($_POST["add"][$i-1]) || (isset($field["field"]) && !$_POST["drop_col"][$i]));
@@ -133,19 +143,16 @@ function edit_fields($fields, $collations, $type = "TABLE") {
 <?php if ($type == "TABLE") { ?>
 <td><input type="checkbox" name="fields[<?php echo $i; ?>][null]" value="1"<?php if ($field["null"]) { ?> checked="checked"<?php } ?> /></td>
 <td><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked="checked"<?php } ?> /></td>
-<td><input name="fields[<?php echo $i; ?>][comment]" value="<?php echo htmlspecialchars($field["comment"]); ?>" maxlength="255" /></td>
+<td<?php echo ($column_comments ? "" : " class='hidden'"); ?>><input name="fields[<?php echo $i; ?>][comment]" value="<?php echo htmlspecialchars($field["comment"]); ?>" maxlength="255" /></td>
 <?php } ?>
 <td class="nowrap">
-<input type="image" name="add[<?php echo $i; ?>]" src="plus.gif" title="<?php echo lang('Add next'); ?>" onclick="return !add_row(this);" />
-<input type="image" name="drop_col[<?php echo $i; ?>]" src="minus.gif" title="<?php echo lang('Remove'); ?>" onclick="return !remove_row(this);" />
+<input type="image" name="add[<?php echo $i; ?>]" src="plus.gif" title="<?php echo lang('Add next'); ?>" onclick="return !editing_add_row(this, <?php echo $allowed; ?>);" />
+<input type="image" name="drop_col[<?php echo $i; ?>]" src="minus.gif" title="<?php echo lang('Remove'); ?>" onclick="return !editing_remove_row(this);" />
 <input type="image" name="up[<?php echo $i; ?>]" src="up.gif" title="<?php echo lang('Move up'); ?>" />
 <input type="image" name="down[<?php echo $i; ?>]" src="down.gif" title="<?php echo lang('Move down'); ?>" />
 </td>
 </tr>
 <?php
-		if (strlen($field["comment"])) {
-			$column_comments = true;
-		}
 	}
 	return $column_comments;
 }
@@ -185,68 +192,6 @@ function process_fields(&$fields) {
 	if ($_POST["add"]) {
 		array_splice($fields, key($_POST["add"]), 0, array(array()));
 	}
-}
-
-function type_change($count, $allowed = 0) {
-	?>
-<script type="text/javascript">// <![CDATA[
-var added = '.';
-var row_count = <?php echo $count; ?>;
-
-function add_row(button) {
-	if (<?php echo $allowed; ?> && row_count >= <?php echo $allowed; ?>) {
-		return false;
-	}
-	var match = /([0-9]+)(\.[0-9]+)?/.exec(button.name)
-	var x = match[0] + (match[2] ? added.substr(match[2].length) : added) + '1';
-	var row = button.parentNode.parentNode;
-	var row2 = row.cloneNode(true);
-	var tags = row.getElementsByTagName('select');
-	var tags2 = row2.getElementsByTagName('select');
-	for (var i=0; tags.length > i; i++) {
-		tags[i].name = tags[i].name.replace(/([0-9.]+)/, x);
-		tags2[i].selectedIndex = tags[i].selectedIndex;
-	}
-	tags = row.getElementsByTagName('input');
-	for (var i=0; tags.length > i; i++) {
-		if (tags[i].name == 'auto_increment_col') {
-			tags[i].value = x;
-			tags[i].checked = false;
-		}
-		tags[i].name = tags[i].name.replace(/([0-9.]+)/, x);
-		if (/\[(orig|field|comment)/.test(tags[i].name)) {
-			tags[i].value = '';
-		}
-	}
-	row.parentNode.insertBefore(row2, row);
-	tags[0].focus();
-	added += '0';
-	row_count++;
-	return true;
-}
-
-function remove_row(button) {
-	var field = button.form[button.name.replace(/drop_col(.+)/, 'fields$1[field]')];
-	field.parentNode.removeChild(field);
-	button.parentNode.parentNode.style.display = 'none';
-	//! should change class="odd" of next rows
-	return true;
-}
-
-function type_change(type) {
-	var name = type.name.substr(0, type.name.length - 6);
-	for (var i=0; i < type.form.elements.length; i++) {
-		var el = type.form.elements[i];
-		if (el.name == name + '[collation]') {
-			el.className = (/char|text|enum|set/.test(type.options[type.selectedIndex].text) ? '' : 'hidden');
-		}
-		if (el.name == name + '[unsigned]') {
-			el.className = (/int|float|double|decimal/.test(type.options[type.selectedIndex].text) ? '' : 'hidden');
-		}
-	}
-}
-// ]]></script>
-<?php
 }
 
 function normalize_enum($match) {

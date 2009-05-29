@@ -17,10 +17,7 @@ if (!(strlen($_GET["db"]) ? $dbh->select_db($_GET["db"]) : isset($_GET["sql"]) |
 			?>
 <script type="text/javascript">
 onload = function () {
-	document.cookie = 'phpMinAdmin_version=0';
-	var script = document.createElement('script');
-	script.src = 'http://phpminadmin.sourceforge.net/version.php?version=<?php echo $VERSION; ?>';
-	document.body.appendChild(script);
+	check_version('<?php echo $VERSION; ?>');
 };
 </script>
 <?php

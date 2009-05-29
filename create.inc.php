@@ -122,22 +122,14 @@ if ($suhosin && count($row["fields"]) > $suhosin) {
 <select name="Collation"><option value="">(<?php echo lang('collation'); ?>)</option><?php echo optionlist($collations, $row["Collation"]); ?></select>
 <input type="submit" value="<?php echo lang('Save'); ?>" />
 </p>
-<table cellspacing="0">
-<?php $column_comments = edit_fields($row["fields"], $collations); ?>
+<table cellspacing="0" id="edit-fields">
+<?php $column_comments = edit_fields($row["fields"], $collations, "TABLE", $suhosin); ?>
 </table>
-<?php echo type_change(count($row["fields"]), $suhosin); ?>
 <p>
 <?php echo lang('Auto Increment'); ?>: <input name="Auto_increment" size="4" value="<?php echo intval($row["Auto_increment"]); ?>" />
 <?php echo lang('Comment'); ?>: <input name="Comment" value="<?php echo htmlspecialchars($row["Comment"]); ?>" maxlength="60" />
 <script type="text/javascript">// <![CDATA[
 document.write('<label><input type="checkbox"<?php if ($column_comments) { ?> checked="checked"<?php } ?> onclick="column_comments_click(this.checked);" /><?php echo lang('Show column comments'); ?></label>');
-function column_comments_click(checked) {
-	var trs = document.getElementsByTagName('tr');
-	for (var i=0; i < trs.length; i++) {
-		trs[i].getElementsByTagName('td')[5].style.display = (checked ? '' : 'none');
-	}
-}
-<?php if (!$column_comments) { ?>column_comments_click(false);<?php } ?>
 // ]]></script>
 </p>
 <p>
@@ -151,7 +143,7 @@ if ($dbh->server_info >= 5.1) {
 	?>
 <fieldset><legend><?php echo lang('Partition by'); ?></legend>
 <p>
-<select name="partition_by" onchange="var partition_table = /RANGE|LIST/.test(this.options[this.selectedIndex].text); this.form['partitions'].className = (partition_table || !this.selectedIndex ? 'hidden' : ''); document.getElementById('partition-table').className = (partition_table ? '' : 'hidden');"><option></option><?php echo optionlist($partition_by, $row["partition_by"]); ?></select>
+<select name="partition_by" onchange="partition_by_change(this);"><option></option><?php echo optionlist($partition_by, $row["partition_by"]); ?></select>
 (<input name="partition" value="<?php echo htmlspecialchars($row["partition"]); ?>" />)
 <?php echo lang('Partitions'); ?>: <input name="partitions" size="2" value="<?php echo htmlspecialchars($row["partitions"]); ?>"<?php echo ($partition_table || !$row["partition_by"] ? " class='hidden'" : ""); ?> />
 </p>
@@ -159,7 +151,7 @@ if ($dbh->server_info >= 5.1) {
 <thead><tr><th><?php echo lang('Partition name'); ?></th><th><?php echo lang('Values'); ?></th></tr></thead>
 <?php
 foreach ($row["partition_names"] as $key => $val) {
-	echo '<tr><td><input name="partition_names[]" value="' . htmlspecialchars($val) . '"' . ($key == count($row["partition_names"]) - 1 ? ' onchange="var row = this.parentNode.parentNode.cloneNode(true); row.firstChild.firstChild.value = \'\'; this.parentNode.parentNode.parentNode.appendChild(row); this.onchange = function () {};"' : '') . ' /></td><td><input name="partition_values[]" value="' . htmlspecialchars($row["partition_values"][$key]) . "\" /></td></tr>\n";
+	echo '<tr><td><input name="partition_names[]" value="' . htmlspecialchars($val) . '"' . ($key == count($row["partition_names"]) - 1 ? ' onchange="partition_name_change(this);"' : '') . ' /></td><td><input name="partition_values[]" value="' . htmlspecialchars($row["partition_values"][$key]) . "\" /></td></tr>\n";
 }
 ?>
 </table>

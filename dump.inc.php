@@ -17,7 +17,7 @@ function dump_link($type, $name, $val, $attrs = "") {
 		. (isset($check["db_check"]) ? "&amp;db_check=" . urlencode($check["db_check"]) : "")
 		. (isset($check["table_check"]) ? "&amp;table_check=" . urlencode($check["table_check"]) : "")
 		. (isset($check["data_check"]) ? "&amp;data_check=" . urlencode($check["data_check"]) : "")
-		. "\" onclick=\"return !check(this, /^$name/, '$val');\"$attrs>" . ($val ? $val : lang('skip')) . "</a>"
+		. "\" onclick=\"return !dump_check(this, /^$name/, '$val');\"$attrs>" . ($val ? $val : lang('skip')) . "</a>"
 	;
 }
 
@@ -141,18 +141,6 @@ DROP PROCEDURE phpminadmin_drop;
 
 page_header(lang('Export'), "", (strlen($_GET["export"]) ? array("table" => $_GET["export"]) : array()), $_GET["db"]);
 ?>
-
-<script type="text/javascript">
-function check(a, name, value) {
-	var inputs = a.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('input');
-	for (var i=0; inputs.length > i; i++) {
-		if (name.test(inputs[i].name)) {
-			inputs[i].checked = (inputs[i].value == value);
-		}
-	}
-	return true;
-}
-</script>
 
 <form action="" method="post">
 <p><?php echo lang('Output') . ": $dump_output " . lang('Format') . ": $dump_format"; ?> <input type="submit" value="<?php echo lang('Export'); ?>" /></p>
