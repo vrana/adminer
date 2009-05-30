@@ -61,7 +61,7 @@ function page_footer($missing = false) {
 
 <?php switch_lang(); ?>
 <div id="menu">
-<h1><a href="http://phpminadmin.sourceforge.net"><?php echo lang('phpMinAdmin'); ?></a></h1>
+<h1><a href="http://www.phpminadmin.net/"><?php echo lang('phpMinAdmin'); ?></a></h1>
 <?php if ($missing != "auth") { ?>
 <form action="" method="post">
 <p>

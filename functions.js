@@ -9,7 +9,7 @@ function toggle(id) {
 function check_version(version) {
 	document.cookie = 'phpMinAdmin_version=0';
 	var script = document.createElement('script');
-	script.src = 'http://phpminadmin.sourceforge.net/version.php?version=' + version;
+	script.src = 'http://www.phpminadmin.net/version.php?version=' + version;
 	document.body.appendChild(script);
 }
 
