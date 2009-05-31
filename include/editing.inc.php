@@ -1,11 +1,10 @@
 <?php
-function input($name, $field, $value) {
+function input($name, $field, $value, $separator = "</td><td>") { //! pass empty separator if there are no functions in the whole table
 	global $types;
 	$name = htmlspecialchars(bracket_escape($name));
+	echo "<td" . ($separator ? " class='function'" : "") . ">";
 	if ($field["type"] == "enum") {
-		if (isset($_GET["select"])) {
-			echo ' <label><input type="radio" name="fields[' . $name . ']" value="-1" checked="checked" /><em>' . lang('original') . '</em></label>';
-		}
+		echo $separator . (isset($_GET["select"]) ? ' <label><input type="radio" name="fields[' . $name . ']" value="-1" checked="checked" /><em>' . lang('original') . '</em></label>' : "");
 		if ($field["null"] || isset($_GET["default"])) {
 			echo ' <label><input type="radio" name="fields[' . $name . ']" value=""' . (($field["null"] ? isset($value) : strlen($value)) || isset($_GET["select"]) ? '' : ' checked="checked"') . ' />' . ($field["null"] ? '<em>NULL</em>' : '') . '</label>';
 		}
@@ -33,9 +32,7 @@ function input($name, $field, $value) {
 		if ($field["null"] || isset($_GET["default"])) {
 			array_unshift($options, "NULL");
 		}
-		if (count($options) > 1 || isset($_GET["select"])) {
-			echo '<select name="function[' . $name . ']">' . (isset($_GET["select"]) ? '<option value="orig">' . lang('original') . '</option>' : '') . optionlist($options, (isset($value) ? (string) $_POST["function"][$name] : null)) . '</select>';
-		}
+		echo (count($options) > 1 || isset($_GET["select"]) ? '<select name="function[' . $name . ']" tabindex="1">' . (isset($_GET["select"]) ? '<option value="orig">' . lang('original') . '</option>' : '') . optionlist($options, (isset($value) ? (string) $_POST["function"][$name] : null)) . '</select>' : "") . $separator;
 		if ($field["type"] == "set") { //! 64 bits
 			preg_match_all("~'((?:[^']+|'')*)'~", $field["length"], $matches);
 			foreach ($matches[1] as $i => $val) {

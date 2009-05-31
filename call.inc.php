@@ -52,7 +52,7 @@ if ($in) {
 	echo "<table cellspacing='0'>\n";
 	foreach ($in as $key) {
 		$field = $routine["fields"][$key];
-		echo "<tr><th>" . htmlspecialchars($field["field"]) . "</th><td>";
+		echo "<tr><th>" . htmlspecialchars($field["field"]) . "</th>";
 		$value = $_POST["fields"][$key];
 		if (strlen($value) && ($field["type"] == "enum" || $field["type"] == "set")) {
 			$value = intval($value);
