@@ -1,7 +1,7 @@
 <?php
 /** phpMinAdmin - Compact MySQL management
-* @link http://phpminadmin.sourceforge.net
-* @author Jakub Vrana, http://php.vrana.cz
+* @link http://www.phpminadmin.net/
+* @author Jakub Vrana, http://php.vrana.cz/
 * @copyright 2007 Jakub Vrana
 * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 */
