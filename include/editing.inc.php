@@ -25,14 +25,24 @@ function input($name, $field, $value, $separator = "</td><td>") { //! pass empty
 			if (preg_match('~char|date|time~', $field["type"])) {
 				$options = (preg_match('~char~', $field["type"]) ? array("", "md5", "sha1", "password", "uuid") : array("", "now"));
 			}
-			if (!isset($_GET["clone"]) && !isset($_GET["call"]) && preg_match('~int|float|double|decimal~', $field["type"])) {
-				$options = array("", "+", "-");
+			if (!isset($_GET["clone"]) && !isset($_GET["call"])) {
+				if (preg_match('~int|float|double|decimal~', $field["type"])) {
+					$options = array("", "+", "-");
+				}
+				if (preg_match('~date~', $field["type"])) {
+					$options[] = "+ interval";
+					$options[] = "- interval";
+				}
+				if (preg_match('~time~', $field["type"])) {
+					$options[] = "addtime";
+					$options[] = "subtime";
+				}
 			}
 		}
 		if ($field["null"] || isset($_GET["default"])) {
 			array_unshift($options, "NULL");
 		}
-		echo (count($options) > 1 || isset($_GET["select"]) ? '<select name="function[' . $name . ']" tabindex="1">' . (isset($_GET["select"]) ? '<option value="orig">' . lang('original') . '</option>' : '') . optionlist($options, (isset($value) ? (string) $_POST["function"][$name] : null)) . '</select>' : "") . $separator;
+		echo (count($options) > 1 || isset($_GET["select"]) ? '<select name="function[' . $name . ']">' . (isset($_GET["select"]) ? '<option value="orig">' . lang('original') . '</option>' : '') . optionlist($options, (isset($value) ? (string) $_POST["function"][$name] : null)) . '</select>' : "") . $separator;
 		if ($field["type"] == "set") { //! 64 bits
 			preg_match_all("~'((?:[^']+|'')*)'~", $field["length"], $matches);
 			foreach ($matches[1] as $i => $val) {
@@ -74,8 +84,12 @@ function process_input($name, $field) {
 		return $value;
 	} elseif (preg_match('~^(now|uuid)$~', $function)) {
 		return "$function()";
-	} elseif (preg_match('~^(\\+|-)$~', $function)) {
+	} elseif (preg_match('~^[+-]$~', $function)) {
 		return idf_escape($name) . " $function '" . $dbh->escape_string($value) . "'";
+	} elseif (preg_match('~^[+-] interval$~', $function)) {
+		return idf_escape($name) . " $function " . (preg_match("~^([0-9]+|'[0-9.: -]') [A-Z_]+$~i", $value) ? $value : "'" . $dbh->escape_string($value) . "'") . "";
+	} elseif (preg_match('~^(addtime|subtime)$~', $function)) {
+		return "$function(" . idf_escape($name) . ", '" . $dbh->escape_string($value) . "')";
 	} elseif (preg_match('~^(md5|sha1|password)$~', $function)) {
 		return "$function('" . $dbh->escape_string($value) . "')";
 	} else {

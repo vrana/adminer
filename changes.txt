@@ -1,6 +1,7 @@
 phpMinAdmin 1.11.0:
 Connection through socket by server :/path/to/socket
 Display execution time in SQL query
+Relative date and time functions
 Version checker
 Separate JavaScript functions
 Always use the default style before the external one
