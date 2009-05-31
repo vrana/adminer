@@ -106,15 +106,8 @@ function page_footer($missing = false) {
 	?>
 </div>
 
-<?php if ($_COOKIE["highlight"] == "jush") { ?>
-<script type="text/javascript" src="externals/jush/jush.js"></script>
-<script type="text/javascript">
-if (typeof jush != 'undefined') {
-	jush.style('externals/jush/jush.css');
-	jush.highlight_tag('pre');
-	jush.highlight_tag('code');
-}
-</script>
+<?php if (!$missing) { ?>
+<script type="text/javascript">onload = load_jush;</script>
 <?php } ?>
 
 </body>

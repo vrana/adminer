@@ -67,9 +67,6 @@ if (!$error && $_POST) {
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
 <input type="submit" value="<?php echo lang('Execute'); ?>" />
-<script type="text/javascript">// <![CDATA[
-document.write('<label><input type="checkbox" name="highlight" value="jush"<?php echo ($_COOKIE["highlight"] == "jush" ? ' checked="checked"' : ''); ?> /><?php echo addcslashes(lang('Syntax highlighting'), "\r\n'\\"); ?></label>');
-// ]]></script>
 <label><input type="checkbox" name="error_stops" value="1"<?php echo ($_POST["error_stops"] ? " checked='checked'" : ""); ?> /><?php echo lang('Stop on error'); ?></label>
 </p>
 </form>
