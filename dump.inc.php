@@ -9,18 +9,6 @@ function tar_file($filename, $contents) {
 	return $return . str_repeat("\0", 512 - strlen($return)) . $contents . str_repeat("\0", 511 - (strlen($contents) + 511) % 512);
 }
 
-function dump_link($type, $name, $val, $attrs = "") {
-	global $SELF;
-	$check = $_GET;
-	$check[$type] = $val;
-	return '<a href="' . htmlspecialchars($SELF) . "dump=" . urlencode($_GET["dump"])
-		. (isset($check["db_check"]) ? "&amp;db_check=" . urlencode($check["db_check"]) : "")
-		. (isset($check["table_check"]) ? "&amp;table_check=" . urlencode($check["table_check"]) : "")
-		. (isset($check["data_check"]) ? "&amp;data_check=" . urlencode($check["data_check"]) : "")
-		. "\" onclick=\"return !dump_check(this, /^$name/, '$val');\"$attrs>" . ($val ? $val : lang('skip')) . "</a>"
-	;
-}
-
 if ($_POST) {
 	$ext = dump_headers((strlen($_GET["dump"]) ? $_GET["dump"] : $_GET["db"]), (!strlen($_GET["db"]) || count(array_filter((array) $_POST["tables"]) + array_filter((array) $_POST["data"])) > 1));
 	if ($_POST["format"] != "csv") {
@@ -143,51 +131,47 @@ page_header(lang('Export'), "", (strlen($_GET["export"]) ? array("table" => $_GE
 ?>
 
 <form action="" method="post">
-<p><?php echo lang('Output') . ": $dump_output " . lang('Format') . ": $dump_format"; ?> <input type="submit" value="<?php echo lang('Export'); ?>" /></p>
+<table border="0">
+<?php
+echo "<tr><th>" . lang('Output') . "</th><td>$dump_output</td></tr>\n";
+echo "<tr><th>" . lang('Format') . "</th><td>$dump_format</td></tr>\n";
+echo "<tr><th>" . lang('Database') . "</th><td><select name=''><option></option>" . optionlist(array('USE', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER'), (strlen($_GET["db"]) ? '' : 'CREATE')) . "</select></td></tr>\n";
+echo "<tr><th>" . lang('Tables') . "</th><td><select name=''><option></option>" . optionlist(array('DROP, CREATE', 'CREATE', 'CREATE, ALTER'), 'DROP, CREATE') . "</select></td></tr>\n";
+echo "<tr><th>" . lang('Data') . "</th><td><select name=''><option></option>" . optionlist(array('TRUNCATE, INSERT', 'INSERT', 'UPDATE'), 'INSERT') . "</select></td></tr>\n"; // INSERT INTO ... ON DUPLICATE KEY UPDATE
+?>
+</table>
+<p><input type="submit" value="<?php echo lang('Export'); ?>" /></p>
 
 <?php
-echo "<table cellspacing='0'>\n<thead><tr><th>" . lang('Database') . "</th>";
-foreach (array('', 'USE', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {
-	echo '<th>' . dump_link("db_check", "databases", $val) . '</th>';
-}
-echo "</tr></thead>\n";
-foreach ((strlen($_GET["db"]) ? array($_GET["db"]) : get_databases()) as $db) {
-	if ($db != "information_schema" || $dbh->server_info < 5) {
-		echo "<tr" . odd() . "><td>" . htmlspecialchars($db) . "</td>";
-		foreach (array('', 'USE', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {
-			echo '<td><input type="radio" name="databases[' . htmlspecialchars(bracket_escape($db)) . ']"' . ($val == (isset($_GET["db_check"]) ? $_GET["db_check"] : (strlen($_GET["db"]) ? '' : 'CREATE')) ? " checked='checked'" : "") . " value='$val' /></td>";
+if (!strlen($_GET["db"])) {
+	echo "<table cellspacing='0'>\n<thead><tr><th><input type='checkbox' id='check-databases' onclick='dump_check(this, /^databases\\[/);' checked='checked' />" . lang('Database') . "</th></tr></thead>\n";
+	foreach (get_databases() as $db) {
+		if ($db != "information_schema" || $dbh->server_info < 5) {
+			echo '<tr><td><label><input type="checkbox" name="databases[' . htmlspecialchars(bracket_escape($db)) . ']" checked="checked" value="1" onclick="dump_uncheck(\'check-databases\');" />' . htmlspecialchars($db) . "</label></td></tr>\n"; //! uncheck all
 		}
-		echo "</tr>\n";
 	}
+	echo "</table>\n";
 }
-echo "</table>\n";
 
-echo "<table cellspacing='0'>\n<thead><tr><th rowspan='2'>" . lang('Tables') . "</th><th colspan='4'>" . lang('Structure') . "</th><th colspan='4'>" . lang('Data') . "</th></tr><tr>";
-foreach (array('', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {
-	echo '<th>' . dump_link("table_check", "tables", $val) . '</th>';
-}
-foreach (array('', 'TRUNCATE, INSERT', 'INSERT', 'UPDATE') as $val) {
-	echo '<th>' . dump_link("data_check", "data", $val, ($val == 'UPDATE' ? " title='INSERT INTO ... ON DUPLICATE KEY UPDATE'" : "")) . '</th>';
-}
-echo "</tr></thead>\n";
-$views = "";
-$result = $dbh->query(strlen($_GET["db"]) ? "SHOW TABLE STATUS" : "SELECT 'Engine'");
-odd('');
-while ($row = $result->fetch_assoc()) {
-	$print = "<tr" . odd() . "><td>" . htmlspecialchars($row["Name"]) . "</td>";
-	foreach (array('', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER') as $val) {
-		$print .= '<td><input type="radio" name="tables[' . htmlspecialchars(bracket_escape($row["Name"])) . ']"' . ($val == (isset($_GET["table_check"]) ? $_GET["table_check"] : (strlen($_GET["dump"]) && $row["Name"] != $_GET["dump"] ? '' : 'DROP, CREATE')) ? " checked='checked'" : "") . " value='$val' /></td>";
-	}
-	if (!$row["Engine"]) {
-		$views .= "$print</tr>\n";
-	} else {
-		foreach (array('', 'TRUNCATE, INSERT', 'INSERT', 'UPDATE') as $val) {
-			$print .= '<td><input type="radio" name="data[' . htmlspecialchars(bracket_escape($row["Name"])) . ']"' . ($val == (isset($_GET["data_check"]) ? $_GET["data_check"] : ((strlen($_GET["dump"]) && $row["Name"] != $_GET["dump"]) || !$row["Engine"] ? '' : 'INSERT')) ? " checked='checked'" : "") . " value='$val' /></td>";
+if (strlen($_GET["db"])) {
+	$checked = (strlen($_GET["dump"]) ? "" : " checked='checked'");
+	echo "<table cellspacing='0'>\n<thead><tr>";
+	echo "<th style='text-align: left;'><label><input type='checkbox' id='check-tables' onclick='dump_check(this, /^tables\\[/);'$checked />" . lang('Tables') . "</label></th>";
+	echo "<th><label><input type='checkbox' id='check-data' onclick='dump_check(this, /^data\\[/);'$checked />" . lang('Data') . "</label></th>";
+	echo "</tr></thead>\n";
+	$views = "";
+	$result = $dbh->query("SHOW TABLE STATUS");
+	while ($row = $result->fetch_assoc()) {
+		$checked = (strlen($_GET["dump"]) && $row["Name"] != $_GET["dump"] ? '' : " checked='checked'");
+		$print = '<tr><td><label><input type="checkbox" name="tables[' . htmlspecialchars(bracket_escape($row["Name"])) . "]\"$checked value='1' onclick=\"dump_uncheck('check-tables');\" />" . htmlspecialchars($row["Name"]) . "</label></td>"; //! uncheck all
+		if (!$row["Engine"]) {
+			$views .= "$print</tr>\n";
+		} else {
+			echo $print . '<td><input type="checkbox" name="data[' . htmlspecialchars(bracket_escape($row["Name"])) . "]\"$checked value='1' onclick=\"dump_uncheck('check-data');\" /></td></tr>\n";
 		}
-		echo "$print</tr>\n";
 	}
+	echo "$views</table>\n";
 }
-echo "$views</table>\n";
 ?>
 <p><input type="submit" value="<?php echo lang('Export'); ?>" /></p>
 </form>

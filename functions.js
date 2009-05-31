@@ -256,12 +256,16 @@ function schema_mouseup(ev) {
 
 
 
-function dump_check(a, name, value) {
-	var inputs = a.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('input');
+function dump_check(el, name) {
+	var inputs = el.form.getElementsByTagName('input');
 	for (var i=0; i < inputs.length; i++) {
 		if (name.test(inputs[i].name)) {
-			inputs[i].checked = (inputs[i].value == value);
+			inputs[i].checked = el.checked;
 		}
 	}
 	return true;
+}
+
+function dump_uncheck(id) {
+	document.getElementById(id).checked = false;
 }
