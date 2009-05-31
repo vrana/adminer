@@ -100,12 +100,11 @@ if ($_POST) {
 			$row["partition_names"][] = $row1["PARTITION_NAME"];
 			$row["partition_values"][] = $row1["PARTITION_DESCRIPTION"];
 		}
-		$row["partition_names"][] = "";
-		$row["partition_values"][] = "";
 		$result->free();
+		$row["partition_names"][] = "";
 	}
 } else {
-	$row = array("fields" => array(array("field" => "")), "partition_names" => array());
+	$row = array("fields" => array(array("field" => "")), "partition_names" => array(""));
 }
 $collations = collations();
 
