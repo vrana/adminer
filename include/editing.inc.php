@@ -142,7 +142,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0) {
 <?php } ?>
 <td class="nowrap">
 <input type="image" name="add[<?php echo $i; ?>]" src="plus.gif" title="<?php echo lang('Add next'); ?>" onclick="return !editing_add_row(this, <?php echo $allowed; ?>);" />
-<input type="image" name="drop_col[<?php echo $i; ?>]" src="minus.gif" title="<?php echo lang('Remove'); ?>" onclick="return !editing_remove_row(this);" />
+<input type="image" name="drop_col[<?php echo $i; ?>]" src="cross.gif" title="<?php echo lang('Remove'); ?>" onclick="return !editing_remove_row(this);" />
 <input type="image" name="up[<?php echo $i; ?>]" src="up.gif" title="<?php echo lang('Move up'); ?>" />
 <input type="image" name="down[<?php echo $i; ?>]" src="down.gif" title="<?php echo lang('Move down'); ?>" />
 </td>

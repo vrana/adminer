@@ -171,7 +171,7 @@ if ($_COOKIE["lang"]) {
 	$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
 }
 $replace = 'preg_replace("~\\\\\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?file=\\0&amp;version=' . $VERSION;
-$file = preg_replace('~default\\.css|functions\\.js|favicon\\.ico|(up|down|plus|minus)\\.gif~', '<?php echo ' . $replace . '"; ?>', $file);
+$file = preg_replace('~default\\.css|functions\\.js|favicon\\.ico|(up|down|plus|cross)\\.gif~', '<?php echo ' . $replace . '"; ?>', $file);
 $file = preg_replace('~arrow\\.gif~', '" . ' . $replace, $file);
 $file = str_replace('error_reporting(E_ALL & ~E_NOTICE);', 'error_reporting(E_ALL & ~E_NOTICE);
 if (isset($_GET["file"])) {
@@ -191,8 +191,8 @@ if (isset($_GET["file"])) {
 			case "arrow.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/arrow.gif")) . '"); break;
 			case "up.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/up.gif")) . '"); break;
 			case "down.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/down.gif")) . '"); break;
-			case "plus.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/plus.gif")) . '"); break;
-			case "minus.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/minus.gif")) . '"); break;
+			case "plus.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/add.gif")) . '"); break;
+			case "cross.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/cross.gif")) . '"); break;
 		}
 	}
 	exit;
