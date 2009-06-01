@@ -24,7 +24,7 @@ function lang_ids($match) {
 
 function put_file($match) {
 	global $lang_ids;
-	if ($match[3] == './lang/$LANG.inc.php') {
+	if ($match[2] == './lang/$LANG.inc.php') {
 		if ($_COOKIE["lang"]) {
 			return "";
 		}
@@ -51,25 +51,15 @@ function put_file($match) {
 		}
 		return "switch (\$LANG) {\n$return}\n";
 	}
-	$return = file_get_contents(dirname(__FILE__) . "/$match[3]");
-	if ($match[3] == "./include/lang.inc.php" && $_COOKIE["lang"]) {
-		if (preg_match('~\\s*(\\$pos = .*)~', $return, $match2)) {
-			return "$match[1]\nfunction lang(\$translation, \$number) {\n\t" . str_replace('$LANG', "'$_COOKIE[lang]'", $match2[1]) . "\n\treturn sprintf(\$translation[\$pos], \$number);\n}\n$match[4]";
-		} else {
-			echo "lang() not found\n";
-		}
+	$return = file_get_contents(dirname(__FILE__) . "/$match[2]");
+	if ($match[2] != "./include/lang.inc.php" || !$_COOKIE["lang"]) {
+		$tokens = token_get_all($return);
+		return "?>\n$return" . (in_array($tokens[count($tokens) - 1][0], array(T_CLOSE_TAG, T_INLINE_HTML), true) ? "<?php" : "");
+	} elseif (preg_match('~\\s*(\\$pos = .*)~', $return, $match2)) {
+		return "function lang(\$translation, \$number) {\n\t" . str_replace('$LANG', "'$_COOKIE[lang]'", $match2[1]) . "\n\treturn sprintf(\$translation[\$pos], \$number);\n}\n";
+	} else {
+		echo "lang() not found\n";
 	}
-	$return = preg_replace("~\\?>\n?\$~", '', $return);
-	if (substr_count($return, "<?php") <= substr_count($return, "?>") && !$match[4]) {
-		$return .= "<?php\n";
-	}
-	$return = preg_replace('~^<\\?php\\s+~', '', $return, 1, $count);
-	if ($count) {
-		$return = "\n$return";
-	} elseif (!$match[1]) {
-		$return = "?>\n$return";
-	}
-	return $return;
 }
 
 function short_identifier($number, $chars) {
@@ -165,7 +155,8 @@ if ($_SERVER["argc"] > 1) {
 
 $filename = "phpMinAdmin" . ($_COOKIE["lang"] ? "-$_COOKIE[lang]" : "") . ".php";
 $file = file_get_contents(dirname(__FILE__) . "/index.php");
-$file = preg_replace_callback('~(<\\?php)?\\s*(include|require) "([^"]*)";(\\s*\\?>)?~', 'put_file', $file);
+$file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file);
+$file = preg_replace("~<\\?php\\s*\\?>|\\?>\n?<\\?php~", '', $file);
 $file = preg_replace("~if \\(isset\\(\\\$_SESSION\\[\"coverage.*\n}\n| && !isset\\(\\\$_SESSION\\[\"coverage\"\\]\\)~sU", '', $file);
 if ($_COOKIE["lang"]) {
 	$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
