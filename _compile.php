@@ -110,7 +110,8 @@ function php_shrink($input) {
 	$set = array_flip(preg_split('//', '!"#$&\'()*+,-./:;<=>?@[\]^`{|}'));
 	$space = '';
 	$output = '';
-	foreach ($tokens as $i => $token) {
+	$in_echo = false;
+	for (reset($tokens); list($i, $token) = each($tokens); ) {
 		if (!is_array($token)) {
 			$token = array(0, $token);
 		}
@@ -122,6 +123,15 @@ function php_shrink($input) {
 			} elseif (!$shortening) {
 				if ($token[1] == ';') {
 					$shortening = true;
+				}
+			} elseif ($token[0] == T_ECHO) {
+				$in_echo = true;
+			} elseif ($token[1] == ';' && $in_echo) {
+				$in_echo = false;
+				if ($tokens[$i+1][0] === T_WHITESPACE && $tokens[$i+2][0] === T_ECHO) {
+					next($tokens);
+					next($tokens);
+					$token[1] = '.'; //! join ''.'' and "".""
 				}
 			} elseif ($token[0] === T_VARIABLE && !isset($special_variables[$token[1]])) {
 				$token[1] = '$' . $short_variables[$token[1]];
