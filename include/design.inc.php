@@ -1,6 +1,6 @@
 <?php
 function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
-	global $SELF, $LANG, $VERSION;
+	global $SELF, $LANG;
 	header("Content-Type: text/html; charset=utf-8");
 	?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -9,7 +9,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <meta name="robots" content="noindex" />
-<title><?php echo $title . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . " - " . lang('phpMinAdmin') . " $VERSION"; ?></title>
+<title><?php echo $title . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . " - " . lang('phpMinAdmin'); ?></title>
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 <link rel="stylesheet" type="text/css" href="default.css<?php // Ondrej Valka, http://valka.info ?>" />
 <?php if (file_exists("phpMinAdmin.css")) { ?>
@@ -55,13 +55,13 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 }
 
 function page_footer($missing = false) {
-	global $SELF, $dbh;
+	global $SELF, $dbh, $VERSION;
 	?>
 </div>
 
 <?php switch_lang(); ?>
 <div id="menu">
-<h1><a href="http://www.phpminadmin.net/"><?php echo lang('phpMinAdmin'); ?></a></h1>
+<h1><a href="http://www.phpminadmin.net/"><?php echo lang('phpMinAdmin'); ?></a> <?php echo $VERSION; ?></h1>
 <?php if ($missing != "auth") { ?>
 <form action="" method="post">
 <p>
