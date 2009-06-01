@@ -17,7 +17,8 @@ function lang($idf, $number = null) {
 	global $LANG, $translations;
 	$translation = $translations[$idf];
 	if (is_array($translation) && $translation) {
-		$translation = $translation[($number == 1 ? 0 : ((!$number || $number >= 5) && ereg('cs|sk|ru', $LANG) ? 2 : 1))];
+		$pos = ($number == 1 ? 0 : ((!$number || $number >= 5) && ereg('cs|sk|ru', $LANG) ? 2 : 1));
+		$translation = $translation[$pos];
 	}
 	$args = func_get_args();
 	array_shift($args);

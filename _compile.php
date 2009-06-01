@@ -52,8 +52,12 @@ function put_file($match) {
 		return "switch (\$LANG) {\n$return}\n";
 	}
 	$return = file_get_contents(dirname(__FILE__) . "/$match[3]");
-	if ($match[3] == "./include/lang.inc.php" && $_COOKIE["lang"] && (preg_match("~case '$_COOKIE[lang]': (.*) break;~", $return, $match2) || preg_match("~default: (.*)~", $return, $match2))) {
-		return "$match[1]\nfunction lang(\$ar, \$number) {\n\t$match2[1]\n\treturn sprintf(\$ar[\$pos], \$number);\n}\n$match[4]";
+	if ($match[3] == "./include/lang.inc.php" && $_COOKIE["lang"]) {
+		if (preg_match('~\\s*(\\$pos = .*)~', $return, $match2)) {
+			return "$match[1]\nfunction lang(\$translation, \$number) {\n\t" . str_replace('$LANG', "'$_COOKIE[lang]'", $match2[1]) . "\n\treturn sprintf(\$translation[\$pos], \$number);\n}\n$match[4]";
+		} else {
+			echo "lang() not found\n";
+		}
 	}
 	$return = preg_replace("~\\?>\n?\$~", '', $return);
 	if (substr_count($return, "<?php") <= substr_count($return, "?>") && !$match[4]) {
@@ -191,7 +195,7 @@ if (isset($_GET["file"])) {
 			case "arrow.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/arrow.gif")) . '"); break;
 			case "up.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/up.gif")) . '"); break;
 			case "down.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/down.gif")) . '"); break;
-			case "plus.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/add.gif")) . '"); break;
+			case "plus.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/plus.gif")) . '"); break;
 			case "cross.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/cross.gif")) . '"); break;
 		}
 	}

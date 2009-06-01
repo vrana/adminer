@@ -6,6 +6,7 @@ Relative date and time functions
 Version checker
 Separate JavaScript functions
 Always use the default style before the external one
+Always try to use the syntax highlighter
 
 phpMinAdmin 1.10.1:
 Highlight odd and hover rows
