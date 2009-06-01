@@ -1,6 +1,6 @@
 <?php
 function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
-	global $SELF, $LANG;
+	global $SELF, $LANG, $VERSION;
 	header("Content-Type: text/html; charset=utf-8");
 	?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -17,7 +17,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <?php } ?>
 </head>
 
-<body>
+<body onload="load_jush();<?php echo (isset($_COOKIE["phpMinAdmin_version"]) ? "" : " verify_version('$VERSION');"); ?>">
 <script type="text/javascript" src="functions.js"></script>
 
 <div id="content">
@@ -62,6 +62,7 @@ function page_footer($missing = false) {
 <?php switch_lang(); ?>
 <div id="menu">
 <h1><a href="http://www.phpminadmin.net/"><?php echo lang('phpMinAdmin'); ?></a> <?php echo $VERSION; ?></h1>
+<div class="version"><a href='http://www.phpminadmin.net/#download' id="version"><?php echo (version_compare($VERSION, $_COOKIE["phpMinAdmin_version"]) < 0 ? htmlspecialchars($_COOKIE["phpMinAdmin_version"]) : ""); ?></a></div>
 <?php if ($missing != "auth") { ?>
 <form action="" method="post">
 <p>
@@ -105,10 +106,6 @@ function page_footer($missing = false) {
 	}
 	?>
 </div>
-
-<?php if (!$missing) { ?>
-<script type="text/javascript">onload = load_jush;</script>
-<?php } ?>
 
 </body>
 </html>
