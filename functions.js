@@ -6,7 +6,7 @@ function toggle(id) {
 	return true;
 }
 
-function check_version(version) {
+function verify_version(version) {
 	document.cookie = 'phpMinAdmin_version=0';
 	var script = document.createElement('script');
 	script.src = 'http://www.phpminadmin.net/version.php?version=' + version;
@@ -29,13 +29,17 @@ function load_jush() {
 	document.body.appendChild(script);
 }
 
-function tables_check(el) {
+function form_check(el, name) {
 	var elems = el.form.elements;
 	for (var i=0; i < elems.length; i++) {
-		if (elems[i].name == 'tables[]') {
+		if (name.test(elems[i].name)) {
 			elems[i].checked = el.checked;
 		}
 	}
+}
+
+function form_uncheck(id) {
+	document.getElementById(id).checked = false;
 }
 
 
@@ -252,20 +256,4 @@ function schema_mouseup(ev) {
 		}
 		document.cookie = 'schema=' + encodeURIComponent(s.substr(1)) + '; expires=' + date + '; path=' + location.pathname + location.search;
 	}
-}
-
-
-
-function dump_check(el, name) {
-	var inputs = el.form.getElementsByTagName('input');
-	for (var i=0; i < inputs.length; i++) {
-		if (name.test(inputs[i].name)) {
-			inputs[i].checked = el.checked;
-		}
-	}
-	return true;
-}
-
-function dump_uncheck(id) {
-	document.getElementById(id).checked = false;
 }

@@ -14,7 +14,7 @@ function connect_error() {
 			?>
 <script type="text/javascript">
 onload = function () {
-	check_version('<?php echo $VERSION; ?>');
+	verify_version('<?php echo $VERSION; ?>');
 };
 </script>
 <?php

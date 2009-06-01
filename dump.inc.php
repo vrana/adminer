@@ -154,10 +154,10 @@ echo "<tr><th>" . lang('Data') . "</th><td><select name='data_style'><option></o
 
 <?php
 if (!strlen($_GET["db"])) {
-	echo "<table cellspacing='0'>\n<thead><tr><th align='left'><label><input type='checkbox' id='check-databases' checked='checked' onclick='dump_check(this, /^databases\\[/);' />" . lang('Database') . "</label></th></tr></thead>\n";
+	echo "<table cellspacing='0'>\n<thead><tr><th align='left'><label><input type='checkbox' id='check-databases' checked='checked' onclick='form_check(this, /^databases\\[/);' />" . lang('Database') . "</label></th></tr></thead>\n";
 	foreach (get_databases() as $db) {
 		if ($db != "information_schema" || $dbh->server_info < 5) {
-			echo '<tr><td><label><input type="checkbox" name="databases[]" value="' . htmlspecialchars($db) . '" checked="checked" onclick="dump_uncheck(\'check-databases\');" />' . htmlspecialchars($db) . "</label></td></tr>\n";
+			echo '<tr><td><label><input type="checkbox" name="databases[]" value="' . htmlspecialchars($db) . '" checked="checked" onclick="form_uncheck(\'check-databases\');" />' . htmlspecialchars($db) . "</label></td></tr>\n";
 		}
 	}
 	echo "</table>\n";
@@ -166,18 +166,18 @@ if (!strlen($_GET["db"])) {
 if (strlen($_GET["db"])) {
 	$checked = (strlen($_GET["dump"]) ? "" : " checked='checked'");
 	echo "<table cellspacing='0'>\n<thead><tr>";
-	echo "<th align='left'><label><input type='checkbox' id='check-tables'$checked onclick='dump_check(this, /^tables\\[/);' />" . lang('Tables') . "</label></th>";
-	echo "<th align='right'><label>" . lang('Data') . "<input type='checkbox' id='check-data'$checked onclick='dump_check(this, /^data\\[/);' /></label></th>";
+	echo "<th align='left'><label><input type='checkbox' id='check-tables'$checked onclick='form_check(this, /^tables\\[/);' />" . lang('Tables') . "</label></th>";
+	echo "<th align='right'><label>" . lang('Data') . "<input type='checkbox' id='check-data'$checked onclick='form_check(this, /^data\\[/);' /></label></th>";
 	echo "</tr></thead>\n";
 	$views = "";
 	$result = $dbh->query("SHOW TABLE STATUS");
 	while ($row = $result->fetch_assoc()) {
 		$checked = (strlen($_GET["dump"]) && $row["Name"] != $_GET["dump"] ? '' : " checked='checked'");
-		$print = '<tr><td><label><input type="checkbox" name="tables[]" value="' . htmlspecialchars($row["Name"]) . "\"$checked onclick=\"dump_uncheck('check-tables');\" />" . htmlspecialchars($row["Name"]) . "</label></td>";
+		$print = '<tr><td><label><input type="checkbox" name="tables[]" value="' . htmlspecialchars($row["Name"]) . "\"$checked onclick=\"form_uncheck('check-tables');\" />" . htmlspecialchars($row["Name"]) . "</label></td>";
 		if (!$row["Engine"]) {
 			$views .= "$print</tr>\n";
 		} else {
-			echo "$print<td align='right'><label>" . ($row["Engine"] == "InnoDB" && $row["Rows"] ? lang('~ %s', $row["Rows"]) : $row["Rows"]) . '<input type="checkbox" name="data[]" value="' . htmlspecialchars($row["Name"]) . "\"$checked onclick=\"dump_uncheck('check-data');\" /></label></td></tr>\n";
+			echo "$print<td align='right'><label>" . ($row["Engine"] == "InnoDB" && $row["Rows"] ? lang('~ %s', $row["Rows"]) : $row["Rows"]) . '<input type="checkbox" name="data[]" value="' . htmlspecialchars($row["Name"]) . "\"$checked onclick=\"form_uncheck('check-data');\" /></label></td></tr>\n";
 		}
 	}
 	echo "$views</table>\n";
