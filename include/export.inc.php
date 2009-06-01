@@ -18,16 +18,15 @@ function dump_table($table, $style, $is_view = false) {
 	} elseif ($style) {
 		$result = $dbh->query("SHOW CREATE TABLE " . idf_escape($table));
 		if ($result) {
-			if ($style == "DROP, CREATE") {
+			if ($style == "DROP+CREATE") {
 				echo "DROP " . ($is_view ? "VIEW" : "TABLE") . " IF EXISTS " . idf_escape($table) . ";\n";
 			}
 			$create = $dbh->result($result, 1);
 			$result->free();
-			echo ($style != "CREATE, ALTER" ? $create : ($is_view ? substr_replace($create, " OR REPLACE", 6, 0) : substr_replace($create, " IF NOT EXISTS", 12, 0))) . ";\n\n";
+			echo ($style != "CREATE+ALTER" ? $create : ($is_view ? substr_replace($create, " OR REPLACE", 6, 0) : substr_replace($create, " IF NOT EXISTS", 12, 0))) . ";\n\n";
 		}
-		if ($dbh->server_info >= 5) {
-			if ($style == "CREATE, ALTER" && !$is_view) {
-				$query = "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLLATION_NAME, COLUMN_TYPE, EXTRA, COLUMN_COMMENT FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '" . $dbh->escape_string($table) . "' ORDER BY ORDINAL_POSITION";
+		if ($style == "CREATE+ALTER" && !$is_view) {
+			$query = "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLLATION_NAME, COLUMN_TYPE, EXTRA, COLUMN_COMMENT FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '" . $dbh->escape_string($table) . "' ORDER BY ORDINAL_POSITION";
 ?>
 DELIMITER ;;
 CREATE PROCEDURE phpminadmin_alter () BEGIN
@@ -100,9 +99,10 @@ CALL phpminadmin_alter;
 DROP PROCEDURE phpminadmin_alter;
 
 <?php
-				//! indexes
-			}
-			
+			//! indexes
+		}
+		
+		if ($dbh->server_info >= 5) {
 			$result = $dbh->query("SHOW TRIGGERS LIKE '" . $dbh->escape_string(addcslashes($table, "%_")) . "'");
 			if ($result->num_rows) {
 				echo "DELIMITER ;;\n\n";
@@ -119,7 +119,7 @@ DROP PROCEDURE phpminadmin_alter;
 function dump_data($table, $style, $from = "") {
 	global $dbh, $max_packet;
 	if ($style) {
-		if ($_POST["format"] != "csv" && $style == "TRUNCATE, INSERT") {
+		if ($_POST["format"] != "csv" && $style == "TRUNCATE+INSERT") {
 			echo "TRUNCATE " . idf_escape($table) . ";\n";
 		}
 		$result = $dbh->query("SELECT * " . ($from ? $from : "FROM " . idf_escape($table))); //! enum and set as numbers, binary as _binary, microtime
@@ -129,7 +129,7 @@ function dump_data($table, $style, $from = "") {
 			while ($row = $result->fetch_assoc()) {
 				if ($_POST["format"] == "csv") {
 					dump_csv($row);
-				} elseif ($style == "UPDATE") {
+				} elseif ($style == "INSERT+UPDATE") {
 					$set = array();
 					foreach ($row as $key => $val) {
 						$row[$key] = (isset($val) ? "'" . $dbh->escape_string($val) . "'" : "NULL");
@@ -155,7 +155,7 @@ function dump_data($table, $style, $from = "") {
 					}
 				}
 			}
-			if ($_POST["format"] != "csv" && $style != "UPDATE" && $result->num_rows) {
+			if ($_POST["format"] != "csv" && $style != "INSERT+UPDATE" && $result->num_rows) {
 				echo ";\n";
 			}
 			$result->free();

@@ -10,7 +10,7 @@ function tar_file($filename, $contents) {
 }
 
 if ($_POST) {
-	$ext = dump_headers((strlen($_GET["dump"]) ? $_GET["dump"] : $_GET["db"]), (!strlen($_GET["db"]) || count(array_filter((array) $_POST["tables"]) + array_filter((array) $_POST["data"])) > 1));
+	$ext = dump_headers((strlen($_GET["dump"]) ? $_GET["dump"] : $_GET["db"]), (!strlen($_GET["db"]) || count((array) $_POST["tables"] + (array) $_POST["data"]) > 1));
 	if ($_POST["format"] != "csv") {
 		$max_packet = 1048576; // default, minimum is 1024
 		echo "SET NAMES utf8;\n";
@@ -19,15 +19,15 @@ if ($_POST) {
 		echo "\n";
 	}
 	
-	foreach ($_POST["databases"] as $db => $style) {
-		$db = bracket_escape($db, "back");
+	$style = $_POST["db_style"];
+	foreach ((strlen($_GET["db"]) ? array($_GET["db"]) : (array) $_POST["databases"]) as $db) {
 		if ($dbh->select_db($db)) {
 			if ($_POST["format"] != "csv" && ereg('CREATE', $style) && ($result = $dbh->query("SHOW CREATE DATABASE " . idf_escape($db)))) {
-				if ($style == "DROP, CREATE") {
+				if ($style == "DROP+CREATE") {
 					echo "DROP DATABASE IF EXISTS " . idf_escape($db) . ";\n";
 				}
 				$create = $dbh->result($result, 1);
-				echo ($style == "CREATE, ALTER" ? preg_replace('~^CREATE DATABASE ~', '\\0IF NOT EXISTS ', $create) : $create) . ";\n";
+				echo ($style == "CREATE+ALTER" ? preg_replace('~^CREATE DATABASE ~', '\\0IF NOT EXISTS ', $create) : $create) . ";\n";
 				$result->free();
 			}
 			if ($style && $_POST["format"] != "csv") {
@@ -52,35 +52,38 @@ if ($_POST) {
 				echo ($out ? "DELIMITER ;;\n\n$out" . "DELIMITER ;\n\n" : "");
 			}
 			
-			if (($style || strlen($_GET["db"])) && (array_filter((array) $_POST["tables"]) || array_filter((array) $_POST["data"]))) {
+			if ($_POST["table_style"] || $_POST["data_style"]) {
 				$views = array();
 				$result = $dbh->query("SHOW TABLE STATUS");
 				while ($row = $result->fetch_assoc()) {
-					$key = (strlen($_GET["db"]) ? bracket_escape($row["Name"]) : 0);
-					if ($_POST["tables"][$key] || $_POST["data"][$key]) {
+					$table = (!strlen($_GET["db"]) || in_array($row["Name"], (array) $_POST["tables"]));
+					$data = (!strlen($_GET["db"]) || in_array($row["Name"], (array) $_POST["data"]));
+					if ($table || $data) {
 						if (isset($row["Engine"])) {
 							if ($ext == "tar") {
 								ob_start();
 							}
-							dump_table($row["Name"], $_POST["tables"][$key]);
-							dump_data($row["Name"], $_POST["data"][$key]);
+							dump_table($row["Name"], ($table ? $_POST["table_style"] : ""));
+							if ($data) {
+								dump_data($row["Name"], $_POST["data_style"]);
+							}
 							if ($ext == "tar") {
 								echo tar_file((strlen($_GET["db"]) ? "" : "$db/") . "$row[Name].csv", ob_get_clean());
 							} elseif ($_POST["format"] != "csv") {
 								echo "\n";
 							}
 						} elseif ($_POST["format"] != "csv") {
-							$views[$row["Name"]] = $_POST["tables"][$key];
+							$views[] = $row["Name"];
 						}
 					}
 				}
 				$result->free();
-				foreach ($views as $view => $style1) {
-					dump_table($view, $style1, true);
+				foreach ($views as $view) {
+					dump_table($view, $_POST["table_style"], true);
 				}
 			}
 			
-			if ($dbh->server_info >= 5 && $style == "CREATE, ALTER" && $_POST["format"] != "csv") {
+			if ($style == "CREATE+ALTER" && $_POST["format"] != "csv") {
 				$query = "SELECT TABLE_NAME, ENGINE, TABLE_COLLATION, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()";
 ?>
 DELIMITER ;;
@@ -131,23 +134,30 @@ page_header(lang('Export'), "", (strlen($_GET["export"]) ? array("table" => $_GE
 ?>
 
 <form action="" method="post">
-<table border="0">
+<table cellspacing="0">
 <?php
+$db_style = array('USE', 'DROP+CREATE', 'CREATE');
+$table_style = array('DROP+CREATE', 'CREATE');
+$data_style = array('TRUNCATE+INSERT', 'INSERT', 'INSERT+UPDATE');
+if ($dbh->server_info >= 5) {
+	$db_style[] = 'CREATE+ALTER';
+	$table_style[] = 'CREATE+ALTER';
+}
 echo "<tr><th>" . lang('Output') . "</th><td>$dump_output</td></tr>\n";
 echo "<tr><th>" . lang('Format') . "</th><td>$dump_format</td></tr>\n";
-echo "<tr><th>" . lang('Database') . "</th><td><select name=''><option></option>" . optionlist(array('USE', 'DROP, CREATE', 'CREATE', 'CREATE, ALTER'), (strlen($_GET["db"]) ? '' : 'CREATE')) . "</select></td></tr>\n";
-echo "<tr><th>" . lang('Tables') . "</th><td><select name=''><option></option>" . optionlist(array('DROP, CREATE', 'CREATE', 'CREATE, ALTER'), 'DROP, CREATE') . "</select></td></tr>\n";
-echo "<tr><th>" . lang('Data') . "</th><td><select name=''><option></option>" . optionlist(array('TRUNCATE, INSERT', 'INSERT', 'UPDATE'), 'INSERT') . "</select></td></tr>\n"; // INSERT INTO ... ON DUPLICATE KEY UPDATE
+echo "<tr><th>" . lang('Database') . "</th><td><select name='db_style'><option></option>" . optionlist($db_style, (strlen($_GET["db"]) ? '' : 'CREATE')) . "</select></td></tr>\n";
+echo "<tr><th>" . lang('Tables') . "</th><td><select name='table_style'><option></option>" . optionlist($table_style, 'DROP+CREATE') . "</select></td></tr>\n";
+echo "<tr><th>" . lang('Data') . "</th><td><select name='data_style'><option></option>" . optionlist($data_style, 'INSERT') . "</select></td></tr>\n";
 ?>
 </table>
 <p><input type="submit" value="<?php echo lang('Export'); ?>" /></p>
 
 <?php
 if (!strlen($_GET["db"])) {
-	echo "<table cellspacing='0'>\n<thead><tr><th><input type='checkbox' id='check-databases' onclick='dump_check(this, /^databases\\[/);' checked='checked' />" . lang('Database') . "</th></tr></thead>\n";
+	echo "<table cellspacing='0'>\n<thead><tr><th align='left'><label><input type='checkbox' id='check-databases' checked='checked' onclick='dump_check(this, /^databases\\[/);' />" . lang('Database') . "</label></th></tr></thead>\n";
 	foreach (get_databases() as $db) {
 		if ($db != "information_schema" || $dbh->server_info < 5) {
-			echo '<tr><td><label><input type="checkbox" name="databases[' . htmlspecialchars(bracket_escape($db)) . ']" checked="checked" value="1" onclick="dump_uncheck(\'check-databases\');" />' . htmlspecialchars($db) . "</label></td></tr>\n"; //! uncheck all
+			echo '<tr><td><label><input type="checkbox" name="databases[]" value="' . htmlspecialchars($db) . '" checked="checked" onclick="dump_uncheck(\'check-databases\');" />' . htmlspecialchars($db) . "</label></td></tr>\n";
 		}
 	}
 	echo "</table>\n";
@@ -156,22 +166,21 @@ if (!strlen($_GET["db"])) {
 if (strlen($_GET["db"])) {
 	$checked = (strlen($_GET["dump"]) ? "" : " checked='checked'");
 	echo "<table cellspacing='0'>\n<thead><tr>";
-	echo "<th style='text-align: left;'><label><input type='checkbox' id='check-tables' onclick='dump_check(this, /^tables\\[/);'$checked />" . lang('Tables') . "</label></th>";
-	echo "<th><label><input type='checkbox' id='check-data' onclick='dump_check(this, /^data\\[/);'$checked />" . lang('Data') . "</label></th>";
+	echo "<th align='left'><label><input type='checkbox' id='check-tables'$checked onclick='dump_check(this, /^tables\\[/);' />" . lang('Tables') . "</label></th>";
+	echo "<th align='right'><label>" . lang('Data') . "<input type='checkbox' id='check-data'$checked onclick='dump_check(this, /^data\\[/);' /></label></th>";
 	echo "</tr></thead>\n";
 	$views = "";
 	$result = $dbh->query("SHOW TABLE STATUS");
 	while ($row = $result->fetch_assoc()) {
 		$checked = (strlen($_GET["dump"]) && $row["Name"] != $_GET["dump"] ? '' : " checked='checked'");
-		$print = '<tr><td><label><input type="checkbox" name="tables[' . htmlspecialchars(bracket_escape($row["Name"])) . "]\"$checked value='1' onclick=\"dump_uncheck('check-tables');\" />" . htmlspecialchars($row["Name"]) . "</label></td>"; //! uncheck all
+		$print = '<tr><td><label><input type="checkbox" name="tables[]" value="' . htmlspecialchars($row["Name"]) . "\"$checked onclick=\"dump_uncheck('check-tables');\" />" . htmlspecialchars($row["Name"]) . "</label></td>";
 		if (!$row["Engine"]) {
 			$views .= "$print</tr>\n";
 		} else {
-			echo $print . '<td><input type="checkbox" name="data[' . htmlspecialchars(bracket_escape($row["Name"])) . "]\"$checked value='1' onclick=\"dump_uncheck('check-data');\" /></td></tr>\n";
+			echo "$print<td align='right'><label>" . ($row["Engine"] == "InnoDB" && $row["Rows"] ? lang('~ %s', $row["Rows"]) : $row["Rows"]) . '<input type="checkbox" name="data[]" value="' . htmlspecialchars($row["Name"]) . "\"$checked onclick=\"dump_uncheck('check-data');\" /></label></td></tr>\n";
 		}
 	}
 	echo "$views</table>\n";
 }
 ?>
-<p><input type="submit" value="<?php echo lang('Export'); ?>" /></p>
 </form>
