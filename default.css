@@ -11,7 +11,7 @@ td, th { margin-bottom: 1em; border: 0; border-right: 1px solid #999; border-bot
 th { background: #eee; }
 fieldset { display: inline; vertical-align: top; padding: .5em .8em; margin: 0 .5em .5em 0; border: 1px solid #999; }
 p { margin: 0 20px 1em 0; }
-img { vertical-align: middle; }
+img { vertical-align: middle; border: 0; }
 code { background: #eee; }
 .js .hidden { display: none; }
 .nowrap { white-space: nowrap; }

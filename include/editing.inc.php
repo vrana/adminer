@@ -135,7 +135,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0) {
 <td><input type="radio" name="auto_increment_col" value="" /><?php echo lang('Auto Increment'); ?></td>
 <td<?php echo ($column_comments ? "" : " class='hidden'"); ?>><?php echo lang('Comment'); ?></td>
 <?php } ?>
-<td><input type="image" name="add[0]" src="plus.gif" title="<?php echo lang('Add next'); ?>" /><script type="text/javascript">row_count = <?php echo count($fields); ?>;</script></td>
+<td><input type="image" name="add[0]" src="plus.gif" alt="+" title="<?php echo lang('Add next'); ?>" /><script type="text/javascript">row_count = <?php echo count($fields); ?>;</script></td>
 </tr></thead>
 <?php
 	foreach ($fields as $i => $field) {
@@ -152,10 +152,10 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0) {
 <td<?php echo ($column_comments ? "" : " class='hidden'"); ?>><input name="fields[<?php echo $i; ?>][comment]" value="<?php echo htmlspecialchars($field["comment"]); ?>" maxlength="255" /></td>
 <?php } ?>
 <td class="nowrap">
-<input type="image" name="add[<?php echo $i; ?>]" src="plus.gif" title="<?php echo lang('Add next'); ?>" onclick="return !editing_add_row(this, <?php echo $allowed; ?>);" />
-<input type="image" name="drop_col[<?php echo $i; ?>]" src="cross.gif" title="<?php echo lang('Remove'); ?>" onclick="return !editing_remove_row(this);" />
-<input type="image" name="up[<?php echo $i; ?>]" src="up.gif" title="<?php echo lang('Move up'); ?>" />
-<input type="image" name="down[<?php echo $i; ?>]" src="down.gif" title="<?php echo lang('Move down'); ?>" />
+<input type="image" name="add[<?php echo $i; ?>]" src="plus.gif" alt="+" title="<?php echo lang('Add next'); ?>" onclick="return !editing_add_row(this, <?php echo $allowed; ?>);" />
+<input type="image" name="drop_col[<?php echo $i; ?>]" src="cross.gif" alt="x" title="<?php echo lang('Remove'); ?>" onclick="return !editing_remove_row(this);" />
+<input type="image" name="up[<?php echo $i; ?>]" src="up.gif" alt="^" title="<?php echo lang('Move up'); ?>" />
+<input type="image" name="down[<?php echo $i; ?>]" src="down.gif" alt="v" title="<?php echo lang('Move down'); ?>" />
 </td>
 </tr>
 <?php
