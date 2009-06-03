@@ -7,6 +7,7 @@ Version checker
 Separate JavaScript functions
 Always use the default style before the external one
 Always try to use the syntax highlighter
+Fix FOUND_ROWS() in SQL command
 Simplify order in select
 
 phpMinAdmin 1.10.1:
