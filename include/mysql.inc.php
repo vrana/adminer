@@ -1,10 +1,10 @@
 <?php
 if (extension_loaded("mysqli")) {
-	class Min_MySQLi extends MySQLi {
+	class Min_DB extends MySQLi {
 		var $extension = "MySQLi";
 		
-		function Min_MySQLi() {
-			$this->init();
+		function Min_DB() {
+			parent::init();
 		}
 		
 		function connect($server, $username, $password) {
@@ -34,7 +34,7 @@ if (extension_loaded("mysqli")) {
 		
 		function query($query) {
 			$result = parent::query($query);
-			return (is_object($result) ? new Min_MySQLiResult($result) : $result);
+			return (is_object($result) ? new Min_Result($result) : $result);
 		}
 		
 		function multi_query($query) {
@@ -43,7 +43,7 @@ if (extension_loaded("mysqli")) {
 		
 		function store_result() {
 			$result = parent::store_result();
-			return (is_object($result) ? new Min_MySQLiResult($result) : $result);
+			return (is_object($result) ? new Min_Result($result) : $result);
 		}
 		
 		function next_result() {
@@ -55,7 +55,7 @@ if (extension_loaded("mysqli")) {
 		}
 	}
 	
-	class Min_MySQLiResult {
+	class Min_Result {
 		var $_result, $num_rows;
 		
 		function __construct($result) {
@@ -81,10 +81,8 @@ if (extension_loaded("mysqli")) {
 		// minification compatibility end
 	}
 	
-	$dbh = new Min_MySQLi;
-
 } elseif (extension_loaded("mysql")) {
-	class Min_MySQL {
+	class Min_DB {
 		var $extension = "MySQL", $_link, $_result, $server_info, $affected_rows, $error;
 		
 		function connect($server, $username, $password) {
@@ -92,10 +90,13 @@ if (extension_loaded("mysqli")) {
 				(strlen($server) ? $server : ini_get("mysql.default_host")),
 				(strlen("$server$username") ? $username : ini_get("mysql.default_user")),
 				(strlen("$server$username$password") ? $password : ini_get("mysql.default_password")),
+				true,
 				131072 // CLIENT_MULTI_RESULTS for CALL
 			);
 			if ($this->_link) {
 				$this->server_info = mysql_get_server_info($this->_link);
+			} else {
+				$this->error = mysql_error();
 			}
 			return (bool) $this->_link;
 		}
@@ -113,7 +114,7 @@ if (extension_loaded("mysqli")) {
 				$this->affected_rows = mysql_affected_rows($this->_link);
 				return true;
 			}
-			return new Min_MySQLResult($result);
+			return new Min_Result($result);
 		}
 		
 		function multi_query($query) {
@@ -140,10 +141,10 @@ if (extension_loaded("mysqli")) {
 		}
 	}
 	
-	class Min_MySQLResult {
+	class Min_Result {
 		var $_result, $_offset = 0, $num_rows;
 		
-		function Min_MySQLResult($result) {
+		function Min_Result($result) {
 			$this->_result = $result;
 			$this->num_rows = mysql_num_rows($result);
 		}
@@ -169,10 +170,8 @@ if (extension_loaded("mysqli")) {
 		}
 	}
 	
-	$dbh = new Min_MySQL;
-
 } elseif (extension_loaded("pdo_mysql")) {
-	class Min_PDO_MySQL extends Min_PDO {
+	class Min_DB extends Min_PDO {
 		var $extension = "PDO_MySQL";
 		
 		function connect($server, $username, $password) {
@@ -182,8 +181,6 @@ if (extension_loaded("mysqli")) {
 		}
 	}
 	
-	$dbh = new Min_PDO_MySQL;
-
 } else {
 	page_header(lang('No MySQL extension'), lang('None of supported PHP extensions (%s) are available.', 'MySQLi, MySQL, PDO_MySQL'), null);
 	page_footer("auth");
@@ -201,6 +198,11 @@ $types = array(
 	"enum" => 65535, "set" => 64,
 );
 $unsigned = array("", "unsigned", "zerofill", "unsigned zerofill");
+
+function connect() {
+	$dbh = new Min_DB;
+	return ($dbh->connect($_GET["server"], $_SESSION["usernames"][$_GET["server"]], $_SESSION["passwords"][$_GET["server"]]) ? $dbh : $dbh->error);
+}
 
 function get_databases() {
 	$return = &$_SESSION["databases"][$_GET["server"]];
@@ -245,10 +247,13 @@ function fields($table) {
 	return $return;
 }
 
-function indexes($table) {
+function indexes($table, $dbh2 = null) {
 	global $dbh;
+	if (!is_object($dbh2)) {
+		$dbh2 = $dbh;
+	}
 	$return = array();
-	$result = $dbh->query("SHOW INDEX FROM " . idf_escape($table));
+	$result = $dbh2->query("SHOW INDEX FROM " . idf_escape($table));
 	if ($result) {
 		while ($row = $result->fetch_assoc()) {
 			$return[$row["Key_name"]]["type"] = ($row["Key_name"] == "PRIMARY" ? "PRIMARY" : ($row["Index_type"] == "FULLTEXT" ? "FULLTEXT" : ($row["Non_unique"] ? "INDEX" : "UNIQUE")));

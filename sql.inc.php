@@ -13,6 +13,10 @@ if (!$error && $_POST) {
 		$offset = 0;
 		$empty = true;
 		$space = "(\\s+|/\\*.*\\*/|(#|-- )[^\n]*\n|--\n)";
+		$dbh2 = (strlen($_GET["db"]) ? connect() : null); // connection for exploring indexes (to not replace FOUND_ROWS()) //! PDO - silent error
+		if (is_object($dbh2)) {
+			$dbh2->select_db($_GET["db"]);
+		}
 		while (rtrim($query)) {
 			if (!$offset && preg_match('~^\\s*DELIMITER\\s+(.+)~i', $query, $match)) {
 				$delimiter = $match[1];
@@ -39,7 +43,7 @@ if (!$error && $_POST) {
 						do {
 							$result = $dbh->store_result();
 							if (is_object($result)) {
-								select($result);
+								select($result, $dbh2);
 							} else {
 								if (preg_match("~^$space*(CREATE|DROP)$space+(DATABASE|SCHEMA)\\b~isU", $query)) {
 									unset($_SESSION["databases"][$_GET["server"]]);

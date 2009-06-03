@@ -76,7 +76,7 @@ function php_shrink($input) {
 	$special_variables = array_flip(array('$this', '$GLOBALS', '$_GET', '$_POST', '$_FILES', '$_COOKIE', '$_SESSION', '$_SERVER'));
 	static $short_variables = array();
 	$shortening = true;
-	$special_functions = array_flip(array('Min_MySQLi', 'Min_MySQLResult', '__construct'));
+	$special_functions = array_flip(array('Min_DB', 'Min_Result', '__construct'));
 	$defined_functions = array();
 	static $short_functions = array();
 	$tokens = token_get_all($input);

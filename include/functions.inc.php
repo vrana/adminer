@@ -143,7 +143,7 @@ function odd($s = ' class="odd"') {
 	return ($i++ % 2 ? $s : '');
 }
 
-function select($result) {
+function select($result, $dbh2 = null) {
 	global $SELF;
 	if (!$result->num_rows) {
 		echo "<p class='message'>" . lang('No rows.') . "</p>\n";
@@ -163,7 +163,7 @@ function select($result) {
 					if (strlen($field->orgtable)) {
 						if (!isset($indexes[$field->orgtable])) {
 							$indexes[$field->orgtable] = array();
-							foreach (indexes($field->orgtable) as $index) {
+							foreach (indexes($field->orgtable, $dbh2) as $index) {
 								if ($index["type"] == "PRIMARY") {
 									$indexes[$field->orgtable] = array_flip($index["columns"]);
 									break;
@@ -193,7 +193,7 @@ function select($result) {
 					if ($blobs[$key] && preg_match('~[\\x80-\\xFF]~', $val)) {
 						$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>";
 					} else {
-						$val = (strlen(trim($val)) ? nl2br(htmlspecialchars($val)) : "&nbsp;");
+						$val = nl2br(htmlspecialchars($val));
 						if ($types[$key] == 254) {
 							$val = "<code>$val</code>";
 						}

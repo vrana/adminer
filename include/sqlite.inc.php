@@ -2,7 +2,7 @@
 if (extension_loaded($_GET["sqlite_version"] == 2 ? "sqlite" : "sqlite3")) {
 	if ($_GET["sqlite_version"] == 2) {
 		
-		class SQLite extends SQLiteDatabase {
+		class Min_SQLite extends SQLiteDatabase {
 			var $extension = "SQLite";
 			
 			function open($filename) {
@@ -18,7 +18,7 @@ if (extension_loaded($_GET["sqlite_version"] == 2 ? "sqlite" : "sqlite3")) {
 					$this->affected_rows = parent::changes();
 					return true;
 				}
-				return new Min_SQLiteResult($result);
+				return new Min_Result($result);
 			}
 			
 			function escape_string($string) {
@@ -34,7 +34,7 @@ if (extension_loaded($_GET["sqlite_version"] == 2 ? "sqlite" : "sqlite3")) {
 			}
 		}
 		
-		class Min_SQLiteResult {
+		class Min_Result {
 			var $_result, $num_rows;
 			
 			function __construct($result) {
@@ -65,7 +65,7 @@ if (extension_loaded($_GET["sqlite_version"] == 2 ? "sqlite" : "sqlite3")) {
 		
 	} else {
 		
-		class SQLite extends SQLite3 {
+		class Min_SQLite extends SQLite3 {
 			var $extension = "SQLite3";
 			
 			function open($filename) {
@@ -81,7 +81,7 @@ if (extension_loaded($_GET["sqlite_version"] == 2 ? "sqlite" : "sqlite3")) {
 					$this->affected_rows = parent::changes();
 					return true;
 				}
-				return new Min_SQLiteResult($result);
+				return new Min_Result($result);
 			}
 			
 			function escape_string($string) {
@@ -97,7 +97,7 @@ if (extension_loaded($_GET["sqlite_version"] == 2 ? "sqlite" : "sqlite3")) {
 			}
 		}
 		
-		class Min_SQLiteResult {
+		class Min_Result {
 			var $_result, $num_rows;
 			
 			function __construct($result) {
@@ -130,12 +130,9 @@ if (extension_loaded($_GET["sqlite_version"] == 2 ? "sqlite" : "sqlite3")) {
 		
 	}
 	
-	class Min_SQLite extends SQLite {
+	class Min_DB extends Min_SQLite {
 		
 		function __construct() {
-		}
-		
-		function connect() {
 		}
 		
 		function select_db($filename) {
@@ -160,11 +157,8 @@ if (extension_loaded($_GET["sqlite_version"] == 2 ? "sqlite" : "sqlite3")) {
 	}
 	
 } elseif (extension_loaded("pdo_sqlite")) {
-	class Min_PDO_MySQL extends Min_PDO {
-		var $extension = "PDO_MySQL";
-		
-		function connect() {
-		}
+	class Min_DB extends Min_PDO {
+		var $extension = "PDO_SQLite";
 		
 		function select_db($filename) {
 			set_exception_handler('connect_error'); // try/catch is not compatible with PHP 4
@@ -176,11 +170,14 @@ if (extension_loaded($_GET["sqlite_version"] == 2 ? "sqlite" : "sqlite3")) {
 		}
 	}
 	
-	$dbh = new Min_PDO_SQLite;
 }
 
 $types = array("text" => 0, "numeric" => 0, "integer" => 0, "real" => 0, "blob" => 0);
 $unsigned = array();
+
+function connect() {
+	return new Min_DB;
+}
 
 function get_databases() {
 	return array();
@@ -212,7 +209,7 @@ function fields($table) {
 	return $return;
 }
 
-function indexes($table) {
+function indexes($table, $dbh2 = null) {
 	global $dbh;
 	$return = array();
 	$result = $dbh->query("PRAGMA index_list(" . idf_escape($table) . ")");
