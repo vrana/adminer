@@ -106,7 +106,7 @@ if (extension_loaded("mysqli")) {
 		}
 		
 		function query($query) {
-			$result = mysql_query($query, $this->_link);
+			$result = @mysql_query($query, $this->_link); // mute mysql.trace_mode
 			if (!$result) {
 				$this->error = mysql_error($this->_link);
 				return false;
