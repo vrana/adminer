@@ -1,17 +1,18 @@
 <?php
 $ignore = array("server", "username", "password");
-if (ini_get("session.use_trans_sid") && isset($_POST[session_name()])) {
-	$ignore[] = session_name();
+$session_name = session_name();
+if (ini_get("session.use_trans_sid") && isset($_POST[$session_name])) {
+	$ignore[] = $session_name;
 }
 if (isset($_POST["server"])) {
-	if (isset($_COOKIE[session_name()]) || isset($_POST[session_name()])) {
+	if (isset($_COOKIE[$session_name]) || isset($_POST[$session_name])) {
 		session_regenerate_id();
 		$_SESSION["usernames"][$_POST["server"]] = $_POST["username"];
 		$_SESSION["passwords"][$_POST["server"]] = $_POST["password"];
 		$_SESSION["tokens"][$_POST["server"]] = rand(1, 1e6);
 		if (count($_POST) == count($ignore)) {
 			$location = ((string) $_GET["server"] === $_POST["server"] ? remove_from_uri() : preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . (strlen($_POST["server"]) ? '?server=' . urlencode($_POST["server"]) : ''));
-			if (!isset($_COOKIE[session_name()])) {
+			if (!isset($_COOKIE[$session_name])) {
 				$location .= (strpos($location, "?") === false ? "?" : "&") . SID;
 			}
 			header("Location: " . (strlen($location) ? $location : "."));
@@ -36,11 +37,11 @@ if (isset($_POST["server"])) {
 	}
 }
 
-function auth_error() {
-	global $ignore;
+function auth_error($exception = null) {
+	global $ignore, $dbh;
 	$username = $_SESSION["usernames"][$_GET["server"]];
 	unset($_SESSION["usernames"][$_GET["server"]]);
-	page_header(lang('Login'), (isset($username) ? lang('Invalid credentials.') : (isset($_POST["server"]) ? lang('Sessions must be enabled.') : ($_POST ? lang('Session expired, please login again.') : ""))), null);
+	page_header(lang('Login'), (isset($username) ? htmlspecialchars($exception ? $exception->getMessage() : ($dbh ? $dbh : lang('Invalid credentials.'))) : (isset($_POST["server"]) ? lang('Sessions must be enabled.') : ($_POST ? lang('Session expired, please login again.') : ""))), null);
 	?>
 	<form action="" method="post">
 	<table cellspacing="0">
@@ -66,8 +67,9 @@ $username = &$_SESSION["usernames"][$_GET["server"]];
 if (!isset($username)) {
 	$username = $_GET["username"];
 }
-if (!isset($username) || !$dbh->connect($_GET["server"], $username, $_SESSION["passwords"][$_GET["server"]])) {
+$dbh = (isset($username) ? connect() : '');
+unset($username);
+if (is_string($dbh)) {
 	auth_error();
 	exit;
 }
-unset($username);
