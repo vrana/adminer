@@ -58,6 +58,7 @@ $translations = array(
 	'New item' => 'Nová položka',
 	'Search' => 'Vyhledat',
 	'Sort' => 'Setřídit',
+	'ASC' => 'vzestupně',
 	'DESC' => 'sestupně',
 	'Limit' => 'Limit',
 	'No rows.' => 'Žádné řádky.',

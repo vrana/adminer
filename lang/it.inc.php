@@ -58,7 +58,6 @@ $translations = array(
 	'New item' => 'Nuovo elemento',
 	'Search' => 'Cerca',
 	'Sort' => 'Ordina',
-	'DESC' => 'DESC',
 	'Limit' => 'Limite',
 	'No rows.' => 'Nessuna riga.',
 	'Action' => 'Azione',

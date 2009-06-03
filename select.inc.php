@@ -194,20 +194,9 @@ if (!$columns) {
 	echo "<input name='where[$i][val]' /></div>\n";
 	echo "</fieldset>\n";
 	
-	echo "<fieldset><legend>" . lang('Sort') . "</legend>\n";
-	$i = 0;
-	foreach ((array) $_GET["order"] as $key => $val) {
-		if (in_array($val, $columns, true)) {
-			echo "<div><select name='order[$i]'><option></option>" . optionlist($columns, $val) . "</select>";
-			echo "<label><input type='checkbox' name='desc[$i]' value='1'" . (isset($_GET["desc"][$key]) ? " checked='checked'" : "") . " />" . lang('DESC') . "</label></div>\n";
-			$i++;
-		}
-	}
-	echo "<div><select name='order[$i]' onchange='select_add_row(this);'><option></option>" . optionlist($columns) . "</select>";
-	echo "<label><input type='checkbox' name='desc[$i]' value='1' />" . lang('DESC') . "</label></div>\n";
-	echo "</fieldset>\n";
-	
-	echo "<fieldset><legend>" . lang('Limit') . "</legend><div><input name='limit' size='3' value=\"" . htmlspecialchars($limit) . "\" /></div></fieldset>\n";
+	echo "<fieldset><legend>" . lang('Limit') . "</legend><div>";
+	echo hidden_fields(array("order" => (array) $_GET["order"], "desc" => (array) $_GET["desc"]));
+	echo "<input name='limit' size='3' value=\"" . htmlspecialchars($limit) . "\" /></div></fieldset>\n";
 	
 	if (isset($text_length)) {
 		echo "<fieldset><legend>" . lang('Text length') . "</legend><div><input name='text_length' size='3' value=\"" . htmlspecialchars($text_length) . "\" /></div></fieldset>\n";
@@ -239,7 +228,16 @@ if (!$columns) {
 				if (!$j) {
 					echo '<thead><tr><td><label><input type="checkbox" name="all" value="1" />' . lang('whole result') . '</label></td>';
 					foreach ($row as $key => $val) {
-						echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*')) . '&amp;order%5B0%5D=' . htmlspecialchars($key) . ($_GET["order"][0] === $key && !$_GET["desc"][0] ? '&amp;desc%5B0%5D=1' : '') . '">' . htmlspecialchars($key) . "</a></th>";
+						$pos = array_search($key, (array) $_GET["order"]);
+						$uri = remove_from_uri($pos !== false ? "(order|desc)%5B$pos%5D" : "");
+						$pos2 = 0;
+						if ($_GET["order"]) {
+							$pos2 = max(array_keys($_GET["order"]));
+							$pos2 += ($pos2 !== $pos ? 1 : 0);
+						}
+						echo '<th onmouseover="popup(this);" onmouseout="popdown(this);"><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"][0] === $key && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . htmlspecialchars($key) . '</a>';
+						echo '<span class="hidden"><a href="' . htmlspecialchars("$uri&order%5B$pos2%5D=" . urlencode($key)) . '"><img src="up.gif" alt="^" title="' . lang('ASC') . '" /></a>';
+						echo '<a href="' . htmlspecialchars("$uri&order%5B$pos2%5D=" . urlencode($key) . "&desc%5B$pos2") . '%5D=1"><img src="down.gif" alt="v" title="' . lang('DESC') . '" /></a></span></th>';
 					}
 					echo "</tr></thead>\n";
 				}
@@ -251,10 +249,8 @@ if (!$columns) {
 					} elseif (preg_match('~blob|binary~', $fields[$key]["type"]) && preg_match('~[\\0-\\x8\\xb\\xc\\xe-\\x1F\\x80-\\xFF]~', $val)) {
 						$val = '<a href="' . htmlspecialchars($SELF) . 'download=' . urlencode($_GET["select"]) . '&amp;field=' . urlencode($key) . '&amp;' . $unique_idf . '">' . lang('%d byte(s)', strlen($val)) . '</a>';
 					} else {
-						if (!strlen(trim($val))) {
-							$val = "&nbsp;";
-						} elseif (intval($text_length) > 0 && preg_match('~blob|text~', $fields[$key]["type"]) && strlen($val) > intval($text_length)) {
-							$val = (preg_match('~blob~', $fields[$key]["type"]) ? nl2br(htmlspecialchars(substr($val, 0, intval($text_length)))) . "<em>...</em>" : shorten_utf8($val, intval($text_length)));
+						if (intval($text_length) > 0 && preg_match('~blob|text~', $fields[$key]["type"])) {
+							$val = shorten_utf8($val, intval($text_length));
 						} else {
 							$val = nl2br(htmlspecialchars($val));
 							if ($fields[$key]["type"] == "char") {
