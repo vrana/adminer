@@ -150,7 +150,10 @@ if ($dbh->server_info >= 5.1) {
 <thead><tr><th><?php echo lang('Partition name'); ?></th><th><?php echo lang('Values'); ?></th></tr></thead>
 <?php
 foreach ($row["partition_names"] as $key => $val) {
-	echo '<tr><td><input name="partition_names[]" value="' . htmlspecialchars($val) . '"' . ($key == count($row["partition_names"]) - 1 ? ' onchange="partition_name_change(this);"' : '') . ' /></td><td><input name="partition_values[]" value="' . htmlspecialchars($row["partition_values"][$key]) . "\" /></td></tr>\n";
+	echo '<tr>';
+	echo '<td><input name="partition_names[]" value="' . htmlspecialchars($val) . '"' . ($key == count($row["partition_names"]) - 1 ? ' onchange="partition_name_change(this);"' : '') . ' /></td>';
+	echo '<td><input name="partition_values[]" value="' . htmlspecialchars($row["partition_values"][$key]) . '" /></td>';
+	echo "</tr>\n";
 }
 ?>
 </table>

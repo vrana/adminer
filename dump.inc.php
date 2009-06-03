@@ -154,7 +154,8 @@ echo "<tr><th>" . lang('Data') . "</th><td><select name='data_style'><option></o
 
 <?php
 if (!strlen($_GET["db"])) {
-	echo "<table cellspacing='0'>\n<thead><tr><th align='left'><label><input type='checkbox' id='check-databases' checked='checked' onclick='form_check(this, /^databases\\[/);' />" . lang('Database') . "</label></th></tr></thead>\n";
+	echo "<table cellspacing='0'>\n";
+	echo "<thead><tr><th align='left'><label><input type='checkbox' id='check-databases' checked='checked' onclick='form_check(this, /^databases\\[/);' />" . lang('Database') . "</label></th></tr></thead>\n";
 	foreach (get_databases() as $db) {
 		if ($db != "information_schema" || $dbh->server_info < 5) {
 			echo '<tr><td><label><input type="checkbox" name="databases[]" value="' . htmlspecialchars($db) . '" checked="checked" onclick="form_uncheck(\'check-databases\');" />' . htmlspecialchars($db) . "</label></td></tr>\n";
@@ -165,7 +166,8 @@ if (!strlen($_GET["db"])) {
 
 if (strlen($_GET["db"])) {
 	$checked = (strlen($_GET["dump"]) ? "" : " checked='checked'");
-	echo "<table cellspacing='0'>\n<thead><tr>";
+	echo "<table cellspacing='0'>\n";
+	echo "<thead><tr>";
 	echo "<th align='left'><label><input type='checkbox' id='check-tables'$checked onclick='form_check(this, /^tables\\[/);' />" . lang('Tables') . "</label></th>";
 	echo "<th align='right'><label>" . lang('Data') . "<input type='checkbox' id='check-data'$checked onclick='form_check(this, /^data\\[/);' /></label></th>";
 	echo "</tr></thead>\n";
