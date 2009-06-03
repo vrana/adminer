@@ -171,15 +171,21 @@ if (isset($_GET["download"])) {
 			} else {
 				echo "<form action='' method='post'>\n";
 				echo "<table cellspacing='0'>\n";
-				echo '<thead><tr><td><input id="check-all" type="checkbox" onclick="form_check(this, /^tables\[/);" /></td><th>' . lang('Table') . '</th><td>' . lang('Engine') . '</td><td>' . lang('Comment') . '</td><td>' . lang('Collation') . '</td><td>' . lang('Data Length') . '</td><td>' . lang('Index Length') . '</td><td>' . lang('Data Free') . '</td><td>' . lang('Auto Increment') . '</td><td>' . lang('Rows') . "</td></tr></thead>\n";
+				echo '<thead><tr><td><input id="check-all" type="checkbox" onclick="form_check(this, /^tables\[/);" /></td><th>' . lang('Table') . '</th><td>' . lang('Engine') . '</td><td>' . lang('Collation') . '</td><td>' . lang('Data Length') . '</td><td>' . lang('Index Length') . '</td><td>' . lang('Data Free') . '</td><td>' . lang('Auto Increment') . '</td><td>' . lang('Rows') . '</td><td>' . lang('Comment') . "</td></tr></thead>\n";
 				while ($row = $result->fetch_assoc()) {
 					table_comment($row);
-					echo '<tr class="nowrap' . odd(' odd') . '"><td>' . (isset($row["Rows"]) ? '<input type="checkbox" name="tables[]" value="' . htmlspecialchars($row["Name"]) . '"' . (in_array($row["Name"], (array) $_POST["tables"], true) ? ' checked="checked"' : '') . ' onclick="form_uncheck(\'check-all\');" /></td><th><a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . "</a></th><td>$row[Engine]</td><td>" . (strlen(trim($row["Comment"])) ? htmlspecialchars($row["Comment"]) : "&nbsp;") . "</td><td>$row[Collation]" : '&nbsp;</td><th><a href="' . htmlspecialchars($SELF) . 'view=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . '</a></th><td colspan="8"><a href="' . htmlspecialchars($SELF) . "select=" . urlencode($row["Name"]) . '">' . lang('View') . '</a>');
-					foreach ((isset($row["Rows"]) ? array("Data_length" => "create", "Index_length" => "indexes", "Data_free" => "edit", "Auto_increment" => "create", "Rows" => "select") : array()) as $key => $link) {
-						$val = number_format($row[$key], 0, '.', lang(','));
-						echo '</td><td align="right">' . (strlen($row[$key]) ? '<a href="' . htmlspecialchars("$SELF$link=") . urlencode($row["Name"]) . '">' . ($key == "Rows" && $row["Engine"] == "InnoDB" && $val ? lang('~ %s', $val) : $val) . '</a>' : '&nbsp;');
+					echo '<tr class="nowrap' . odd(' odd') . '"><td>';
+					if (isset($row["Rows"])) {
+						echo '<input type="checkbox" name="tables[]" value="' . htmlspecialchars($row["Name"]) . '"' . (in_array($row["Name"], (array) $_POST["tables"], true) ? ' checked="checked"' : '') . ' onclick="form_uncheck(\'check-all\');" /></td><th><a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . "</a></th><td>$row[Engine]</td><td>$row[Collation]</td>";
+						foreach (array("Data_length" => "create", "Index_length" => "indexes", "Data_free" => "edit", "Auto_increment" => "create", "Rows" => "select") as $key => $link) {
+							$val = number_format($row[$key], 0, '.', lang(','));
+							echo '<td align="right">' . (strlen($row[$key]) ? '<a href="' . htmlspecialchars("$SELF$link=") . urlencode($row["Name"]) . '">' . ($key == "Rows" && $row["Engine"] == "InnoDB" && $val ? lang('~ %s', $val) : $val) . '</a>' : '') . '</td>';
+						}
+						echo "<td>" . htmlspecialchars($row["Comment"]) . "</td>";
+					} else {
+						echo '<th><a href="' . htmlspecialchars($SELF) . 'view=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . '</a></th><td colspan="8"><a href="' . htmlspecialchars($SELF) . "select=" . urlencode($row["Name"]) . '">' . lang('View') . '</a></td>';
 					}
-					echo "</td></tr>\n";
+					echo "</tr>\n";
 				}
 				echo "</table>\n";
 				echo "<p><input type='hidden' name='token' value='$token' /><input type='submit' value='" . lang('Analyze') . "' /> <input type='submit' name='optimize' value='" . lang('Optimize') . "' /> <input type='submit' name='check' value='" . lang('Check') . "' /> <input type='submit' name='repair' value='" . lang('Repair') . "' /> <input type='submit' name='truncate' value='" . lang('Truncate') . "'$confirm /> <input type='submit' name='drop' value='" . lang('Drop') . "'$confirm /></p>\n";
