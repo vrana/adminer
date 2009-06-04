@@ -16,6 +16,7 @@ code { background: #eee; }
 .js .hidden { display: none; }
 .popup { position: absolute; }
 .nowrap { white-space: nowrap; }
+.wrap { white-space: normal; }
 .error { color: red; background: #fee; padding: .5em .8em; }
 .message { color: green; background: #efe; padding: .5em .8em; }
 .char { color: #007F00; }

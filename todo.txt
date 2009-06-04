@@ -1,3 +1,4 @@
+Join repeated echo in _compile.php
 Bulk database create and drop
 Add whisperer to fields with foreign key
 Highlight found fields
