@@ -67,7 +67,7 @@ if (!$error && $_POST) {
 ?>
 
 <form action="" method="post">
-<p><textarea name="query" rows="20" cols="80" style="width: 98%;"><?php echo htmlspecialchars($_POST ? $_POST["query"] : (strlen($_GET["history"]) ? $_SESSION["history"][$_GET["history"]] : $_GET["sql"])); ?></textarea></p>
+<p><textarea name="query" rows="20" cols="80" style="width: 98%;"><?php echo htmlspecialchars($_POST ? $_POST["query"] : (strlen($_GET["history"]) ? $_SESSION["history"][$_GET["server"]][$_GET["db"]][$_GET["history"]] : $_GET["sql"])); ?></textarea></p>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
 <input type="submit" value="<?php echo lang('Execute'); ?>" />

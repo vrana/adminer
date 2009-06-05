@@ -33,6 +33,7 @@ if (isset($_POST["server"])) {
 		unset($_SESSION["passwords"][$_GET["server"]]);
 		unset($_SESSION["databases"][$_GET["server"]]);
 		unset($_SESSION["tokens"][$_GET["server"]]);
+		unset($_SESSION["history"][$_GET["server"]]);
 		redirect(substr($SELF, 0, -1), lang('Logout successful.'));
 	}
 }
