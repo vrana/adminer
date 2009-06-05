@@ -26,17 +26,17 @@ if ($_POST && !$error && !$_POST["add"]) {
 						continue 2;
 					}
 				}
-				$alter[] = "ADD $index[type]" . ($index["type"] == "PRIMARY" ? " KEY" : "") . " (" . implode(", ", $set) . ")";
+				$alter[] = "\nADD $index[type]" . ($index["type"] == "PRIMARY" ? " KEY" : "") . " (" . implode(", ", $set) . ")";
 			}
 		}
 	}
 	foreach ($indexes as $name => $existing) {
-		$alter[] = "DROP INDEX " . idf_escape($name);
+		$alter[] = "\nDROP INDEX " . idf_escape($name);
 	}
 	if (!$alter) {
 		redirect($SELF . "table=" . urlencode($_GET["indexes"]));
 	}
-	query_redirect("ALTER TABLE " . idf_escape($_GET["indexes"]) . " " . implode(", ", $alter), $SELF . "table=" . urlencode($_GET["indexes"]), lang('Indexes has been altered.'));
+	query_redirect("ALTER TABLE " . idf_escape($_GET["indexes"]) . implode(",", $alter), $SELF . "table=" . urlencode($_GET["indexes"]), lang('Indexes has been altered.'));
 }
 page_header(lang('Indexes'), $error, array("table" => $_GET["indexes"]), $_GET["indexes"]);
 

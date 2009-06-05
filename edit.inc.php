@@ -17,13 +17,13 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 			$val = process_input($name, $field);
 			if (!isset($_GET["default"])) {
 				if ($val !== false || !$update) {
-					$set[] = idf_escape($name) . " = " . ($val !== false ? $val : "''");
+					$set[] = "\n" . idf_escape($name) . " = " . ($val !== false ? $val : "''");
 				}
 			} elseif ($val !== false) {
 				if ($field["type"] == "timestamp" && $val != "NULL") { //! doesn't allow DEFAULT NULL and no ON UPDATE
-					$set[] = " MODIFY " . idf_escape($name) . " timestamp" . ($field["null"] ? " NULL" : "") . " DEFAULT $val" . ($_POST["on_update"][bracket_escape($name)] ? " ON UPDATE CURRENT_TIMESTAMP" : "");
+					$set[] = "\nMODIFY " . idf_escape($name) . " timestamp" . ($field["null"] ? " NULL" : "") . " DEFAULT $val" . ($_POST["on_update"][bracket_escape($name)] ? " ON UPDATE CURRENT_TIMESTAMP" : "");
 				} else {
-					$set[] = " ALTER " . idf_escape($name) . ($val == "NULL" ? " DROP DEFAULT" : " SET DEFAULT $val");
+					$set[] = "\nALTER " . idf_escape($name) . ($val == "NULL" ? " DROP DEFAULT" : " SET DEFAULT $val");
 				}
 			}
 		}
@@ -33,9 +33,9 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 		if (isset($_GET["default"])) {
 			query_redirect("ALTER TABLE " . idf_escape($_GET["edit"]) . implode(",", $set), $location, lang('Default values has been set.'));
 		} elseif ($update) {
-			query_redirect("UPDATE " . idf_escape($_GET["edit"]) . " SET " . implode(", ", $set) . " WHERE " . implode(" AND ", $where) . " LIMIT 1", $location, lang('Item has been updated.'));
+			query_redirect("UPDATE " . idf_escape($_GET["edit"]) . " SET" . implode(",", $set) . "\nWHERE " . implode(" AND ", $where) . " LIMIT 1", $location, lang('Item has been updated.'));
 		} else {
-			query_redirect("INSERT INTO " . idf_escape($_GET["edit"]) . " SET " . implode(", ", $set), $location, lang('Item has been inserted.'));
+			query_redirect("INSERT INTO " . idf_escape($_GET["edit"]) . " SET" . implode(",", $set), $location, lang('Item has been inserted.'));
 		}
 	}
 }

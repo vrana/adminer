@@ -5,7 +5,7 @@ if ($_POST && !$error) {
 		$dropped = query_redirect("DROP VIEW " . idf_escape($_GET["createv"]), substr($SELF, 0, -1), lang('View has been dropped.'), $_POST["drop"], !$_POST["dropped"]);
 	}
 	if (!$_POST["drop"]) {
-		query_redirect("CREATE VIEW " . idf_escape($_POST["name"]) . " AS " . $_POST["select"], $SELF . "view=" . urlencode($_POST["name"]), (strlen($_GET["createv"]) ? lang('View has been altered.') : lang('View has been created.')));
+		query_redirect("CREATE VIEW " . idf_escape($_POST["name"]) . " AS\n$_POST[select]", $SELF . "view=" . urlencode($_POST["name"]), (strlen($_GET["createv"]) ? lang('View has been altered.') : lang('View has been created.')));
 	}
 }
 

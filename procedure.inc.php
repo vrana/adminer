@@ -18,7 +18,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 		query_redirect("CREATE $routine " . idf_escape($_POST["name"])
 			. " (" . implode(", ", $set) . ")"
 			. (isset($_GET["function"]) ? " RETURNS" . process_type($_POST["returns"], "CHARACTER SET") : "")
-			. " $_POST[definition]"
+			. "\n$_POST[definition]"
 		, substr($SELF, 0, -1), (strlen($_GET["procedure"]) ? lang('Routine has been altered.') : lang('Routine has been created.')));
 	}
 }

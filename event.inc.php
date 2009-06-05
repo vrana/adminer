@@ -6,7 +6,7 @@ if ($_POST && !$error) {
 	if ($_POST["drop"]) {
 		query_redirect("DROP EVENT " . idf_escape($_GET["event"]), substr($SELF, 0, -1), lang('Event has been dropped.'));
 	} elseif (in_array($_POST["INTERVAL_FIELD"], $intervals) && in_array($_POST["STATUS"], $statuses)) {
-		$schedule = " ON SCHEDULE " . ($_POST["INTERVAL_VALUE"]
+		$schedule = "\nON SCHEDULE " . ($_POST["INTERVAL_VALUE"]
 			? "EVERY '" . $dbh->escape_string($_POST["INTERVAL_VALUE"]) . "' $_POST[INTERVAL_FIELD]"
 			. ($_POST["STARTS"] ? " STARTS '" . $dbh->escape_string($_POST["STARTS"]) . "'" : "")
 			. ($_POST["ENDS"] ? " ENDS '" . $dbh->escape_string($_POST["ENDS"]) . "'" : "") //! ALTER EVENT doesn't drop ENDS - MySQL bug #39173
@@ -15,10 +15,10 @@ if ($_POST && !$error) {
 		;
 		query_redirect((strlen($_GET["event"])
 			? "ALTER EVENT " . idf_escape($_GET["event"]) . $schedule
-			. ($_GET["event"] != $_POST["EVENT_NAME"] ? " RENAME TO " . idf_escape($_POST["EVENT_NAME"]) : "")
+			. ($_GET["event"] != $_POST["EVENT_NAME"] ? "\nRENAME TO " . idf_escape($_POST["EVENT_NAME"]) : "")
 			: "CREATE EVENT " . idf_escape($_POST["EVENT_NAME"]) . $schedule
-			) . " $_POST[STATUS] COMMENT '" . $dbh->escape_string($_POST["EVENT_COMMENT"])
-			. "' DO $_POST[EVENT_DEFINITION]"
+			) . "\n$_POST[STATUS] COMMENT '" . $dbh->escape_string($_POST["EVENT_COMMENT"])
+			. "' DO\n$_POST[EVENT_DEFINITION]"
 		, substr($SELF, 0, -1), (strlen($_GET["event"]) ? lang('Event has been altered.') : lang('Event has been created.')));
 	}
 }

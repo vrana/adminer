@@ -28,7 +28,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 		$after = "FIRST";
 		foreach ($_POST["fields"] as $key => $field) {
 			if (strlen($field["field"]) && isset($types[$field["type"]])) {
-				$fields[] = (!strlen($_GET["create"]) ? "" : (strlen($field["orig"]) ? "CHANGE " . idf_escape($field["orig"]) . " " : "ADD "))
+				$fields[] = (!strlen($_GET["create"]) ? "\n" : (strlen($field["orig"]) ? "\nCHANGE " . idf_escape($field["orig"]) . " " : "\nADD "))
 					. idf_escape($field["field"]) . process_type($field)
 					. ($field["null"] ? " NULL" : " NOT NULL") // NULL for timestamp
 					. (strlen($_GET["create"]) && strlen($field["orig"]) && isset($orig_fields[$field["orig"]]["default"]) && $field["type"] != "timestamp" ? " DEFAULT '" . $dbh->escape_string($orig_fields[$field["orig"]]["default"]) . "'" : "") //! timestamp
@@ -38,10 +38,10 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 				;
 				$after = "AFTER " . idf_escape($field["field"]);
 			} elseif (strlen($field["orig"])) {
-				$fields[] = "DROP " . idf_escape($field["orig"]);
+				$fields[] = "\nDROP " . idf_escape($field["orig"]);
 			}
 		}
-		$status = ($_POST["Engine"] ? " ENGINE='" . $dbh->escape_string($_POST["Engine"]) . "'" : "")
+		$status = ($_POST["Engine"] ? "ENGINE='" . $dbh->escape_string($_POST["Engine"]) . "'" : "")
 			. ($_POST["Collation"] ? " COLLATE '" . $dbh->escape_string($_POST["Collation"]) . "'" : "")
 			. (strlen($_POST["Auto_increment"]) ? " AUTO_INCREMENT=" . intval($_POST["Auto_increment"]) : "")
 			. " COMMENT='" . $dbh->escape_string($_POST["Comment"]) . "'"
@@ -51,18 +51,18 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 			if ($_POST["partition_by"] == 'RANGE' || $_POST["partition_by"] == 'LIST') {
 				foreach (array_filter($_POST["partition_names"]) as $key => $val) {
 					$value = $_POST["partition_values"][$key];
-					$partitions[] = "PARTITION $val VALUES " . ($_POST["partition_by"] == 'RANGE' ? "LESS THAN" : "IN") . (strlen($value) ? " ($value)" : " MAXVALUE"); //! SQL injection
+					$partitions[] = "\nPARTITION $val VALUES " . ($_POST["partition_by"] == 'RANGE' ? "LESS THAN" : "IN") . (strlen($value) ? " ($value)" : " MAXVALUE"); //! SQL injection
 				}
 			}
-			$status .= " PARTITION BY $_POST[partition_by]($_POST[partition])" . ($partitions ? " (" . implode(", ", $partitions) . ")" : ($_POST["partitions"] ? " PARTITIONS " . intval($_POST["partitions"]) : ""));
+			$status .= "\nPARTITION BY $_POST[partition_by]($_POST[partition])" . ($partitions ? " (" . implode(",", $partitions) . "\n)" : ($_POST["partitions"] ? " PARTITIONS " . intval($_POST["partitions"]) : ""));
 		} elseif ($dbh->server_info >= 5.1 && strlen($_GET["create"])) {
-			$status .= " REMOVE PARTITIONING";
+			$status .= "\nREMOVE PARTITIONING";
 		}
 		$location = $SELF . "table=" . urlencode($_POST["name"]);
 		if (strlen($_GET["create"])) {
-			query_redirect("ALTER TABLE " . idf_escape($_GET["create"]) . " " . implode(", ", $fields) . ", RENAME TO " . idf_escape($_POST["name"]) . ", $status", $location, lang('Table has been altered.'));
+			query_redirect("ALTER TABLE " . idf_escape($_GET["create"]) . implode(",", $fields) . ",\nRENAME TO " . idf_escape($_POST["name"]) . ",\n$status", $location, lang('Table has been altered.'));
 		} else {
-			query_redirect("CREATE TABLE " . idf_escape($_POST["name"]) . " (" . implode(", ", $fields) . ")$status", $location, lang('Table has been created.'));
+			query_redirect("CREATE TABLE " . idf_escape($_POST["name"]) . " (" . implode(",", $fields) . "\n) $status", $location, lang('Table has been created.'));
 		}
 	}
 }
