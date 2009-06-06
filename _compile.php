@@ -166,7 +166,6 @@ if ($_SERVER["argc"] > 1) {
 $filename = "phpMinAdmin" . ($_COOKIE["lang"] ? "-$_COOKIE[lang]" : "") . ".php";
 $file = file_get_contents(dirname(__FILE__) . "/index.php");
 $file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file);
-$file = preg_replace("~<\\?php\\s*\\?>|\\?>\n?<\\?php~", '', $file);
 $file = preg_replace("~if \\(isset\\(\\\$_SESSION\\[\"coverage.*\n}\n| && !isset\\(\\\$_SESSION\\[\"coverage\"\\]\\)~sU", '', $file);
 if ($_COOKIE["lang"]) {
 	$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
@@ -175,7 +174,7 @@ if ($_COOKIE["lang"]) {
 } else {
 	$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
 }
-$replace = 'preg_replace("~\\\\\\\\?.*~", "", $_SERVER["REQUEST_URI"]) . "?file=\\0&amp;version=' . $VERSION;
+$replace = 'htmlspecialchars(preg_replace("~\\\\\\\\?.*~", "", $_SERVER["REQUEST_URI"])) . "?file=\\0&amp;version=' . $VERSION;
 $file = preg_replace('~default\\.css|functions\\.js|favicon\\.ico|(plus|cross)\\.gif~', '<?php echo ' . $replace . '"; ?>', $file);
 $file = preg_replace('~(up|down|arrow)\\.gif~', '" . ' . $replace, $file);
 $file = str_replace('error_reporting(E_ALL & ~E_NOTICE);', 'error_reporting(E_ALL & ~E_NOTICE);
@@ -203,6 +202,7 @@ if (isset($_GET["file"])) {
 	exit;
 }', $file);
 $file = str_replace("externals/jush/", "http://jush.sourceforge.net/", $file);
+$file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
 $file = php_shrink($file);
 fwrite(fopen($filename, "w"), $file);
 echo "$filename created.\n";
