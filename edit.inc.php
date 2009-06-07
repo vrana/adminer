@@ -1,6 +1,6 @@
 <?php
-$where = (isset($_GET["select"]) ? array() : where($_GET));
-$update = ($where && !$_GET["clone"]);
+$where = (isset($_GET["select"]) ? (count($_POST["check"]) == 1 ? where_check($_POST["check"][0]) : array()) : where($_GET));
+$update = ($where && !$_POST["clone"]);
 $fields = fields($_GET["edit"]);
 foreach ($fields as $name => $field) {
 	if (isset($_GET["default"]) ? $field["auto_increment"] || preg_match('~text|blob~', $field["type"]) : !isset($field["privileges"][$update ? "update" : "insert"])) {
@@ -39,15 +39,15 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 		}
 	}
 }
-page_header((isset($_GET["default"]) ? lang('Default values') : ($_GET["where"] || isset($_GET["select"]) ? lang('Edit') : lang('Insert'))), $error, array((isset($_GET["default"]) ? "table" : "select") => $_GET["edit"]), $_GET["edit"]);
+page_header((isset($_GET["default"]) ? lang('Default values') : ($_GET["where"] || (isset($_GET["select"]) && !$_POST["clone"]) ? lang('Edit') : lang('Insert'))), $error, array((isset($_GET["default"]) ? "table" : "select") => $_GET["edit"]), $_GET["edit"]);
 
 unset($row);
-if ($_POST) {
+if ($_POST["save"]) {
 	$row = (array) $_POST["fields"];
 } elseif ($where) {
 	$select = array();
 	foreach ($fields as $name => $field) {
-		if (isset($field["privileges"]["select"]) && (!$_GET["clone"] || !$field["auto_increment"])) {
+		if (isset($field["privileges"]["select"]) && (!$_POST["clone"] || !$field["auto_increment"])) {
 			$select[] = ($field["type"] == "enum" || $field["type"] == "set" ? "1*" . idf_escape($name) . " AS " : "") . idf_escape($name);
 		}
 	}
@@ -67,11 +67,9 @@ if ($fields) {
 	echo "<table cellspacing='0'>\n";
 	foreach ($fields as $name => $field) {
 		echo "<tr><th>" . htmlspecialchars($name) . "</th>";
-		$value = (!isset($row) ? $field["default"] :
-			(strlen($row[$name]) && ($field["type"] == "enum" || $field["type"] == "set") ? intval($row[$name]) :
-			($_POST["clone"] && $field["auto_increment"] ? "" :
-			$row[$name]
-		)));
+		$value = (!isset($row) ? ($_POST["clone"] && $field["auto_increment"] ? "" : $field["default"])
+			: (strlen($row[$name]) && ($field["type"] == "enum" || $field["type"] == "set") ? intval($row[$name]) : $row[$name])
+		);
 		input($name, $field, $value);
 		if (isset($_GET["default"]) && $field["type"] == "timestamp") {
 			if (!isset($create) && !$_POST) {
@@ -88,10 +86,10 @@ if ($fields) {
 ?>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
+<input type="hidden" name="save" value="1" />
 <?php
 if (isset($_GET["select"])) {
 	hidden_fields(array("check" => (array) $_POST["check"], "clone" => $_POST["clone"], "all" => $_POST["all"]));
-	echo "<input type='hidden' name='save' value='1' />\n";
 }
 if ($fields) {
 	echo '<input type="submit" value="' . lang('Save') . '" />';

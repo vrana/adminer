@@ -25,7 +25,7 @@ function input($name, $field, $value, $separator = "</td><td>") { //! pass empty
 			if (preg_match('~char|date|time~', $field["type"])) {
 				$options = (preg_match('~char~', $field["type"]) ? array("", "md5", "sha1", "password", "uuid") : array("", "now"));
 			}
-			if (!isset($_GET["clone"]) && !isset($_GET["call"]) && (isset($_GET["select"]) || where($_GET))) {
+			if (!isset($_GET["call"]) && (isset($_GET["select"]) || where($_GET))) {
 				if (preg_match('~int|float|double|decimal~', $field["type"])) {
 					$options = array("", "+", "-");
 				}

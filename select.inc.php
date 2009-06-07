@@ -74,8 +74,7 @@ if ($_POST && !$error) {
 		dump_table($_GET["select"], "");
 		if (is_array($_POST["check"])) {
 			foreach ($_POST["check"] as $val) {
-				parse_str($val, $check);
-				dump_data($_GET["select"], "INSERT", "FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", where($check)) . " LIMIT 1");
+				dump_data($_GET["select"], "INSERT", "FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", where_check($val)) . " LIMIT 1");
 			}
 		} else {
 			dump_data($_GET["select"], "INSERT", ($where ? "FROM " . idf_escape($_GET["select"]) . " WHERE " . implode(" AND ", $where) : ""));
@@ -93,10 +92,10 @@ if ($_POST && !$error) {
 				if ($_POST["clone"]) {
 					$set[] = ($val !== false ? $val : idf_escape($name));
 				} elseif ($val !== false) {
-					$set[] = idf_escape($name) . " = $val";
+					$set[] = "\n" . idf_escape($name) . " = $val";
 				}
 			}
-			$command .= ($_POST["clone"] ? " SELECT " . implode(", ", $set) . " FROM " . idf_escape($_GET["select"]) : " SET " . implode(", ", $set));
+			$command .= ($_POST["clone"] ? "\nSELECT " . implode(", ", $set) . " FROM " . idf_escape($_GET["select"]) : " SET" . implode(",", $set));
 		}
 		if (!$_POST["delete"] && !$set) {
 			// nothing
@@ -243,7 +242,7 @@ if (!$columns) {
 					echo "</tr></thead>\n";
 				}
 				$unique_idf = implode('&amp;', unique_idf($row, $indexes));
-				echo '<tr' . odd() . '><td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false; form_uncheck(\'all-page\');" />' . (count($select) == count($group) && $_GET["db"] != "information_schema" ? ' <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a> <a href="' . htmlspecialchars($SELF) . 'clone=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('clone') . '</a></td>' : '');
+				echo '<tr' . odd() . '><td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false; form_uncheck(\'all-page\');" />' . (count($select) == count($group) && $_GET["db"] != "information_schema" ? ' <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a></td>' : '');
 				foreach ($row as $key => $val) {
 					if (!isset($val)) {
 						$val = "<i>NULL</i>";

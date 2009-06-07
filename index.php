@@ -98,9 +98,6 @@ if (isset($_GET["download"])) {
 		if (isset($_GET["function"])) {
 			$_GET["procedure"] = $_GET["function"];
 		}
-		if (isset($_GET["clone"])) {
-			$_GET["edit"] = $_GET["clone"];
-		}
 		if (isset($_GET["sql"])) {
 			include "./sql.inc.php";
 		} elseif (isset($_GET["edit"])) {

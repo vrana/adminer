@@ -75,6 +75,11 @@ function where($where) {
 	return $return;
 }
 
+function where_check($val) {
+	parse_str($val, $check);
+	return where($check);
+}
+
 function process_length($length) {
 	global $enum_length;
 	return (preg_match("~^\\s*(?:$enum_length)(?:\\s*,\\s*(?:$enum_length))*\\s*\$~", $length) && preg_match_all("~$enum_length~", $length, $matches) ? implode(",", $matches[0]) : preg_replace('~[^0-9,+-]~', '', $length));
