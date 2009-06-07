@@ -94,10 +94,14 @@ if (isset($_GET["select"])) {
 	echo "<input type='hidden' name='save' value='1' />\n";
 }
 if ($fields) {
-	?>
-<input type="submit" value="<?php echo lang('Save'); ?>" />
-<?php if (!isset($_GET["default"]) && !isset($_GET["select"])) { ?><input type="submit" name="insert" value="<?php echo ($update ? lang('Save and continue edit') : lang('Save and insert next')); ?>" /><?php } ?>
-<?php } ?>
-<?php if ($update) { ?> <input type="submit" name="delete" value="<?php echo lang('Delete'); ?>"<?php echo $confirm; ?> /><?php } ?>
+	echo '<input type="submit" value="' . lang('Save') . '" />';
+	if (!isset($_GET["default"]) && !isset($_GET["select"])) {
+		echo '<input type="submit" name="insert" value="' . ($update ? lang('Save and continue edit') : lang('Save and insert next')) . '" />';
+	}
+}
+if ($update) {
+	echo ' <input type="submit" name="delete" value="' . lang('Delete') . '"' . $confirm . '/>';
+}
+?>
 </p>
 </form>
