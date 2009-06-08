@@ -1,7 +1,7 @@
 <?php
 $translations = array(
 	'Login' => 'Login',
-	'phpMinAdmin' => 'phpMinAdmin',
+	'Adminer' => 'Adminer',
 	'Logout successful.' => 'Abmeldung erfolgreich.',
 	'Invalid credentials.' => 'Ungültige Anmelde-Informationen.',
 	'Server' => 'Server',

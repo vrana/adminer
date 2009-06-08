@@ -1,7 +1,7 @@
 <?php
 error_reporting(E_ALL & ~E_NOTICE);
 if (!ini_get("session.auto_start")) {
-	session_name("phpMinAdmin_SID");
+	session_name("adminer_sid");
 	session_set_cookie_params(ini_get("session.cookie_lifetime"), preg_replace('~_coverage\\.php(\\?.*)?$~', '', $_SERVER["REQUEST_URI"]));
 	session_start();
 }

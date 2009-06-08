@@ -1,6 +1,6 @@
 <?php
-/** phpMinAdmin - Compact MySQL management
-* @link http://www.phpminadmin.net/
+/** Adminer - Compact MySQL management
+* @link http://www.adminer.org/
 * @author Jakub Vrana, http://php.vrana.cz/
 * @copyright 2007 Jakub Vrana
 * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
@@ -8,7 +8,7 @@
 
 error_reporting(E_ALL & ~E_NOTICE);
 if (!ini_get("session.auto_start")) {
-	session_name("phpMinAdmin_SID");
+	session_name("adminer_sid");
 	session_set_cookie_params(0, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]));
 	session_start();
 }

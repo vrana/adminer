@@ -1,7 +1,7 @@
 <?php
 $translations = array(
 	'Login' => 'Записаться',
-	'phpMinAdmin' => 'phpMinAdmin',
+	'Adminer' => 'Adminer',
 	'Logout successful.' => 'Логаут в порядке.',
 	'Invalid credentials.' => 'Недействительное заявительное факты.',
 	'Server' => 'Сервер',

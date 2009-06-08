@@ -9,15 +9,15 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <meta name="robots" content="noindex" />
-<title><?php echo $title . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . " - " . lang('phpMinAdmin'); ?></title>
+<title><?php echo $title . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . " - " . lang('Adminer'); ?></title>
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 <link rel="stylesheet" type="text/css" href="default.css<?php // Ondrej Valka, http://valka.info ?>" />
-<?php if (file_exists("phpMinAdmin.css")) { ?>
-<link rel="stylesheet" type="text/css" href="phpMinAdmin.css" />
+<?php if (file_exists("adminer.css")) { ?>
+<link rel="stylesheet" type="text/css" href="adminer.css" />
 <?php } ?>
 </head>
 
-<body onload="load_jush();<?php echo (isset($_COOKIE["phpMinAdmin_version"]) ? "" : " verify_version('$VERSION');"); ?>">
+<body onload="load_jush();<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verify_version('$VERSION');"); ?>">
 <script type="text/javascript" src="functions.js"></script>
 
 <div id="content">
@@ -61,8 +61,8 @@ function page_footer($missing = false) {
 
 <?php switch_lang(); ?>
 <div id="menu">
-<h1><a href="http://www.phpminadmin.net/"><?php echo lang('phpMinAdmin'); ?></a> <?php echo $VERSION; ?></h1>
-<div class="version"><a href='http://www.phpminadmin.net/#download' id="version"><?php echo (version_compare($VERSION, $_COOKIE["phpMinAdmin_version"]) < 0 ? htmlspecialchars($_COOKIE["phpMinAdmin_version"]) : ""); ?></a></div>
+<h1><a href="http://www.adminer.org/"><?php echo lang('Adminer'); ?></a> <?php echo $VERSION; ?></h1>
+<div class="version"><a href='http://www.adminer.org/#download' id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? htmlspecialchars($_COOKIE["adminer_version"]) : ""); ?></a></div>
 <?php if ($missing != "auth") { ?>
 <form action="" method="post">
 <p>

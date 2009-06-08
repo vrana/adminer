@@ -1,4 +1,4 @@
-phpMinAdmin 1.11.0:
+Adminer 1.11.0:
 Connection through socket by server :/path/to/socket
 Simplify export
 Display execution time in SQL query

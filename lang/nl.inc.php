@@ -1,7 +1,7 @@
 <?php
 $translations = array(
 	'Login' => 'Inloggen',
-	'phpMinAdmin' => 'phpMinAdmin',
+	'Adminer' => 'Adminer',
 	'Logout successful.' => 'Uitloggen geslaagd.',
 	'Invalid credentials.' => 'Ongeldige logingegevens.',
 	'Server' => 'Server',

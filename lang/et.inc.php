@@ -1,7 +1,7 @@
 <?php
 $translations = array(
 	'Login' => 'Logi sisse',
-	'phpMinAdmin' => 'Andmebaasi haldaja',
+	'Adminer' => 'Andmebaasi haldaja',
 	'Logout successful.' => 'Väljalogimine õnnestus.',
 	'Invalid credentials.' => 'Ebasobivad andmed.',
 	'Server' => 'Server',

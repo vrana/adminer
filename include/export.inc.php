@@ -29,7 +29,7 @@ function dump_table($table, $style, $is_view = false) {
 			$query = "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLLATION_NAME, COLUMN_TYPE, EXTRA, COLUMN_COMMENT FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '" . $dbh->escape_string($table) . "' ORDER BY ORDINAL_POSITION";
 ?>
 DELIMITER ;;
-CREATE PROCEDURE phpminadmin_alter () BEGIN
+CREATE PROCEDURE adminer_alter () BEGIN
 	DECLARE _column_name, _collation_name, _column_type, after varchar(64) DEFAULT '';
 	DECLARE _column_default longtext;
 	DECLARE _is_nullable char(3);
@@ -95,8 +95,8 @@ foreach ($fields as $row) {
 	END IF;
 END;;
 DELIMITER ;
-CALL phpminadmin_alter;
-DROP PROCEDURE phpminadmin_alter;
+CALL adminer_alter;
+DROP PROCEDURE adminer_alter;
 
 <?php
 			//! indexes

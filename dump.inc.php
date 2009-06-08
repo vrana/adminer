@@ -87,7 +87,7 @@ if ($_POST) {
 				$query = "SELECT TABLE_NAME, ENGINE, TABLE_COLLATION, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()";
 ?>
 DELIMITER ;;
-CREATE PROCEDURE phpminadmin_drop () BEGIN
+CREATE PROCEDURE adminer_drop () BEGIN
 	DECLARE _table_name, _engine, _table_collation varchar(64);
 	DECLARE _table_comment varchar(64);
 	DECLARE done bool DEFAULT 0;
@@ -121,8 +121,8 @@ $result->free();
 	CLOSE tables;
 END;;
 DELIMITER ;
-CALL phpminadmin_drop;
-DROP PROCEDURE phpminadmin_drop;
+CALL adminer_drop;
+DROP PROCEDURE adminer_drop;
 <?php
 			}
 		}

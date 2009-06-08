@@ -1,7 +1,7 @@
 <?php
 $translations = array(
 	'Login' => '登录',
-	'phpMinAdmin' => 'phpMinAdmin',
+	'Adminer' => 'Adminer',
 	'Logout successful.' => '注销成功。',
 	'Invalid credentials.' => '无效凭据。',
 	'Server' => '服务器',

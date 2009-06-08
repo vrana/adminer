@@ -1,7 +1,7 @@
 <?php
 $translations = array(
 	'Login' => 'Prihlásiť sa',
-	'phpMinAdmin' => 'phpMinAdmin',
+	'Adminer' => 'Adminer',
 	'Logout successful.' => 'Odhlásenie prebehlo v poriadku.',
 	'Invalid credentials.' => 'Neplatné prihlasovacie údaje.',
 	'Server' => 'Server',

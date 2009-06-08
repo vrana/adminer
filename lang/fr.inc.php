@@ -1,7 +1,7 @@
 <?php
 $translations = array(
 	'Login' => 'Authentification',
-	'phpMinAdmin' => 'phpMinAdmin',
+	'Adminer' => 'Adminer',
 	'Logout successful.' => 'Aurevoir!',
 	'Invalid credentials.' => 'Authentification échoué',
 	'Server' => 'Serveur',

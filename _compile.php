@@ -157,13 +157,13 @@ if ($_SERVER["argc"] > 1) {
 	$_COOKIE["lang"] = $_SERVER["argv"][1];
 	include dirname(__FILE__) . "/include/lang.inc.php";
 	if ($_SERVER["argc"] != 2 || !isset($langs[$_COOKIE["lang"]])) {
-		echo "Usage: php _compile.php [lang]\nPurpose: Compile phpMinAdmin[-lang].php from index.php.\n";
+		echo "Usage: php _compile.php [lang]\nPurpose: Compile adminer[-lang].php from index.php.\n";
 		exit(1);
 	}
 	include dirname(__FILE__) . "/lang/$_COOKIE[lang].inc.php";
 }
 
-$filename = "phpMinAdmin" . ($_COOKIE["lang"] ? "-$_COOKIE[lang]" : "") . ".php";
+$filename = "adminer" . ($_COOKIE["lang"] ? "-$_COOKIE[lang]" : "") . ".php";
 $file = file_get_contents(dirname(__FILE__) . "/index.php");
 $file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file);
 $file = preg_replace("~if \\(isset\\(\\\$_SESSION\\[\"coverage.*\n}\n| && !isset\\(\\\$_SESSION\\[\"coverage\"\\]\\)~sU", '', $file);

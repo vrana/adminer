@@ -15,9 +15,9 @@ function popdown(el) {
 }
 
 function verify_version(version) {
-	document.cookie = 'phpMinAdmin_version=0';
+	document.cookie = 'adminer_version=0';
 	var script = document.createElement('script');
-	script.src = 'http://www.phpminadmin.net/version.php?version=' + version;
+	script.src = 'http://www.adminer.org/version.php?version=' + version;
 	document.body.appendChild(script);
 }
 
