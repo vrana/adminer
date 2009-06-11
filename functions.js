@@ -118,7 +118,6 @@ function editing_remove_row(button) {
 	var field = button.form[button.name.replace(/drop_col(.+)/, 'fields$1[field]')];
 	field.parentNode.removeChild(field);
 	button.parentNode.parentNode.style.display = 'none';
-	//! should change class="odd" of next rows
 	return true;
 }
 
