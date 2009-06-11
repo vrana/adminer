@@ -4,6 +4,7 @@ $tables_views = array_merge((array) $_POST["tables"], (array) $_POST["views"]);
 if ($tables_views && !$error) {
 	$result = true;
 	$message = "";
+	$dbh->query("SET foreign_key_checks = 0");
 	if (isset($_POST["truncate"])) {
 		if ($_POST["tables"]) {
 			foreach ($_POST["tables"] as $table) {
