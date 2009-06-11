@@ -5,7 +5,17 @@ if ($_POST && !$error) {
 		query_redirect("DROP DATABASE " . idf_escape($_GET["db"]), substr(preg_replace('~db=[^&]*&~', '', $SELF), 0, -1), lang('Database has been dropped.'));
 	} elseif ($_GET["db"] !== $_POST["name"]) {
 		unset($_SESSION["databases"][$_GET["server"]]);
-		if (query_redirect("CREATE DATABASE " . idf_escape($_POST["name"]) . ($_POST["collation"] ? " COLLATE '" . $dbh->escape_string($_POST["collation"]) . "'" : ""), $SELF . "db=" . urlencode($_POST["name"]), lang('Database has been created.'), !strlen($_GET["db"]))) {
+		$dbs = explode("\n", str_replace("\r", "", $_POST["name"]));
+		$failed = false;
+		foreach ($dbs as $db) {
+			if (count($dbs) == 1 || strlen($db)) {
+				if (!queries("CREATE DATABASE " . idf_escape($db) . ($_POST["collation"] ? " COLLATE '" . $dbh->escape_string($_POST["collation"]) . "'" : ""))) {
+					$failed = true;
+				}
+				$last = $db;
+			}
+		}
+		if (query_redirect(queries(), $SELF . "db=" . urlencode($last), lang('Database has been created.'), !strlen($_GET["db"]), false, $failed)) {
 			$result = $dbh->query("SHOW TABLES");
 			while ($row = $result->fetch_row()) {
 				if (!queries("RENAME TABLE " . idf_escape($row[0]) . " TO " . idf_escape($_POST["name"]) . "." . idf_escape($row[0]))) {
@@ -14,7 +24,7 @@ if ($_POST && !$error) {
 			}
 			$result->free();
 			if (!$row) {
-				$dbh->query("DROP DATABASE " . idf_escape($_GET["db"]));
+				queries("DROP DATABASE " . idf_escape($_GET["db"]));
 			}
 			query_redirect(queries(), preg_replace('~db=[^&]*&~', '', $SELF) . "db=" . urlencode($_POST["name"]), lang('Database has been renamed.'), !$row, false, $row);
 		}
