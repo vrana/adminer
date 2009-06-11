@@ -200,7 +200,7 @@ function select($result, $dbh2 = null) {
 					$val = "<i>NULL</i>";
 				} else {
 					if ($blobs[$key] && !is_utf8($val)) {
-						$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>";
+						$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>"; //! link to download
 					} else {
 						$val = nl2br(htmlspecialchars($val));
 						if ($types[$key] == 254) {
@@ -231,6 +231,10 @@ function is_utf8($val) {
 function shorten_utf8($string, $length) {
 	preg_match("~^(.{0,$length})(.?)~su", $string, $match);
 	return nl2br(htmlspecialchars($match[1])) . ($match[2] ? "<em>...</em>" : "");
+}
+
+function friendly_url($val) {
+	return preg_replace('~[^a-z0-9_]~i', '-', $val);
 }
 
 function hidden_fields($process, $ignore = array()) {
