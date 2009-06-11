@@ -1,23 +1,29 @@
 <?php
-if ($_POST["tables"] && !$error) {
+$tables_views = array_merge((array) $_POST["tables"], (array) $_POST["views"]);
+
+if ($tables_views && !$error) {
 	$result = true;
 	$message = "";
 	if (isset($_POST["truncate"])) {
-		foreach ($_POST["tables"] as $table) {
-			if (!queries("TRUNCATE " . idf_escape($table))) {
-				$result = false;
-				break;
+		if ($_POST["tables"]) {
+			foreach ($_POST["tables"] as $table) {
+				if (!queries("TRUNCATE " . idf_escape($table))) {
+					$result = false;
+					break;
+				}
 			}
+			$message = lang('Tables have been truncated.');
 		}
-		$message = lang('Tables have been truncated.');
 	} elseif (isset($_POST["move"])) {
 		$rename = array();
-		foreach ($_POST["tables"] as $table) {
+		foreach ($tables_views as $table) {
 			$rename[] = idf_escape($table) . " TO " . idf_escape($_POST["target"]) . "." . idf_escape($table);
 		}
 		$result = queries("RENAME TABLE " . implode(", ", $rename));
 		$message = lang('Tables have been moved.');
-	} elseif ($result = queries((isset($_POST["optimize"]) ? "OPTIMIZE" : (isset($_POST["check"]) ? "CHECK" : (isset($_POST["repair"]) ? "REPAIR" : (isset($_POST["drop"]) ? "DROP" : "ANALYZE")))) . " TABLE " . implode(", ", array_map('idf_escape', $_POST["tables"])))) {
+	} elseif ((!isset($_POST["drop"]) || !$_POST["views"] || queries("DROP VIEW " . implode(", ", array_map('idf_escape', $_POST["views"]))))
+	&& (!$_POST["tables"] || ($result = queries((isset($_POST["optimize"]) ? "OPTIMIZE" : (isset($_POST["check"]) ? "CHECK" : (isset($_POST["repair"]) ? "REPAIR" : (isset($_POST["drop"]) ? "DROP" : "ANALYZE")))) . " TABLE " . implode(", ", array_map('idf_escape', $_POST["tables"])))))
+	) {
 		if (isset($_POST["drop"])) {
 			$message = lang('Tables have been dropped.');
 		} else {
@@ -40,19 +46,20 @@ if (!$result->num_rows) {
 } else {
 	echo "<form action='' method='post'>\n";
 	echo "<table cellspacing='0' class='nowrap'>\n";
-	echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="form_check(this, /^tables\[/);" /></td><th>' . lang('Table') . '</th><td>' . lang('Engine') . '</td><td>' . lang('Collation') . '</td><td>' . lang('Data Length') . '</td><td>' . lang('Index Length') . '</td><td>' . lang('Data Free') . '</td><td>' . lang('Auto Increment') . '</td><td>' . lang('Rows') . '</td><td>' . lang('Comment') . "</td></tr></thead>\n";
+	echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="form_check(this, /^(tables|views)\[/);" /></td><th>' . lang('Table') . '</th><td>' . lang('Engine') . '</td><td>' . lang('Collation') . '</td><td>' . lang('Data Length') . '</td><td>' . lang('Index Length') . '</td><td>' . lang('Data Free') . '</td><td>' . lang('Auto Increment') . '</td><td>' . lang('Rows') . '</td><td>' . lang('Comment') . "</td></tr></thead>\n";
 	while ($row = $result->fetch_assoc()) {
+		$name = $row["Name"];
 		table_comment($row);
-		echo '<tr' . odd() . '><td><input type="checkbox" name="tables[]" value="' . htmlspecialchars($row["Name"]) . '"' . (in_array($row["Name"], (array) $_POST["tables"], true) ? ' checked="checked"' : '') . ' onclick="form_uncheck(\'check-all\');" /></td>';
+		echo '<tr' . odd() . '><td><input type="checkbox" name="' . (isset($row["Rows"]) ? 'tables' : 'views') . '[]" value="' . htmlspecialchars($name) . '"' . (in_array($name, $tables_views, true) ? ' checked="checked"' : '') . ' onclick="form_uncheck(\'check-all\');" /></td>';
 		if (isset($row["Rows"])) {
-			echo '<th><a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . "</a></th><td>$row[Engine]</td><td>$row[Collation]</td>";
+			echo '<th><a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($name) . '">' . htmlspecialchars($name) . "</a></th><td>$row[Engine]</td><td>$row[Collation]</td>";
 			foreach (array("Data_length" => "create", "Index_length" => "indexes", "Data_free" => "edit", "Auto_increment" => "create", "Rows" => "select") as $key => $link) {
 				$val = number_format($row[$key], 0, '.', lang(','));
-				echo '<td align="right">' . (strlen($row[$key]) ? '<a href="' . htmlspecialchars("$SELF$link=") . urlencode($row["Name"]) . '">' . ($key == "Rows" && $row["Engine"] == "InnoDB" && $val ? lang('~ %s', $val) : $val) . '</a>' : '&nbsp;') . '</td>';
+				echo '<td align="right">' . (strlen($row[$key]) ? '<a href="' . htmlspecialchars("$SELF$link=") . urlencode($name) . '">' . ($key == "Rows" && $row["Engine"] == "InnoDB" && $val ? lang('~ %s', $val) : $val) . '</a>' : '&nbsp;') . '</td>';
 			}
 			echo "<td>" . (strlen(trim($row["Comment"])) ? htmlspecialchars($row["Comment"]) : "&nbsp;") . "</td>";
 		} else {
-			echo '<th><a href="' . htmlspecialchars($SELF) . 'view=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . '</a></th><td colspan="8"><a href="' . htmlspecialchars($SELF) . "select=" . urlencode($row["Name"]) . '">' . lang('View') . '</a></td>';
+			echo '<th><a href="' . htmlspecialchars($SELF) . 'view=' . urlencode($name) . '">' . htmlspecialchars($name) . '</a></th><td colspan="8"><a href="' . htmlspecialchars($SELF) . "select=" . urlencode($name) . '">' . lang('View') . '</a></td>';
 		}
 		echo "</tr>\n";
 	}
