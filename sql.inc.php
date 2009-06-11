@@ -28,7 +28,7 @@ if (!$error && $_POST) {
 					$offset = $match[0][1] + strlen($match[0][0]);
 				} else {
 					$empty = false;
-					echo "<pre class='jush-sql'>" . htmlspecialchars(substr($query, 0, $match[0][1])) . "</pre>\n";
+					echo "<pre class='jush-sql'>" . htmlspecialchars(trim(substr($query, 0, $match[0][1]))) . "</pre>\n";
 					flush();
 					$start = explode(" ", microtime());
 					//! don't allow changing of character_set_results, convert encoding of displayed query
