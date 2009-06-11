@@ -246,7 +246,7 @@ if (!$columns) {
 				foreach ($row as $key => $val) {
 					if (!isset($val)) {
 						$val = "<i>NULL</i>";
-					} elseif (preg_match('~blob|binary~', $fields[$key]["type"]) && preg_match('~[\\0-\\x8\\xb\\xc\\xe-\\x1F\\x80-\\xFF]~', $val)) {
+					} elseif (preg_match('~blob|binary~', $fields[$key]["type"]) && !is_utf8($val)) {
 						$val = '<a href="' . htmlspecialchars($SELF) . 'download=' . urlencode($_GET["select"]) . '&amp;field=' . urlencode($key) . '&amp;' . $unique_idf . '">' . lang('%d byte(s)', strlen($val)) . '</a>';
 					} else {
 						if (intval($text_length) > 0 && preg_match('~blob|text~', $fields[$key]["type"])) {

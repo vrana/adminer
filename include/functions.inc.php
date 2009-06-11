@@ -199,7 +199,7 @@ function select($result, $dbh2 = null) {
 				if (!isset($val)) {
 					$val = "<i>NULL</i>";
 				} else {
-					if ($blobs[$key] && preg_match('~[\\x80-\\xFF]~', $val)) {
+					if ($blobs[$key] && !is_utf8($val)) {
 						$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>";
 					} else {
 						$val = nl2br(htmlspecialchars($val));
@@ -222,6 +222,10 @@ function select($result, $dbh2 = null) {
 		echo "</table>\n";
 	}
 	$result->free();
+}
+
+function is_utf8($val) {
+	return (preg_match('~~u', $val) && !preg_match('~[\\0-\\x8\\xB\\xC\\xE-\\x1F]~', $val));
 }
 
 function shorten_utf8($string, $length) {
