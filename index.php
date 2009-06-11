@@ -176,11 +176,11 @@ if (isset($_GET["download"])) {
 						echo '<input type="checkbox" name="tables[]" value="' . htmlspecialchars($row["Name"]) . '"' . (in_array($row["Name"], (array) $_POST["tables"], true) ? ' checked="checked"' : '') . ' onclick="form_uncheck(\'check-all\');" /></td><th><a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . "</a></th><td>$row[Engine]</td><td>$row[Collation]</td>";
 						foreach (array("Data_length" => "create", "Index_length" => "indexes", "Data_free" => "edit", "Auto_increment" => "create", "Rows" => "select") as $key => $link) {
 							$val = number_format($row[$key], 0, '.', lang(','));
-							echo '<td align="right">' . (strlen($row[$key]) ? '<a href="' . htmlspecialchars("$SELF$link=") . urlencode($row["Name"]) . '">' . ($key == "Rows" && $row["Engine"] == "InnoDB" && $val ? lang('~ %s', $val) : $val) . '</a>' : '') . '</td>';
+							echo '<td align="right">' . (strlen($row[$key]) ? '<a href="' . htmlspecialchars("$SELF$link=") . urlencode($row["Name"]) . '">' . ($key == "Rows" && $row["Engine"] == "InnoDB" && $val ? lang('~ %s', $val) : $val) . '</a>' : '&nbsp;') . '</td>';
 						}
-						echo "<td>" . htmlspecialchars($row["Comment"]) . "</td>";
+						echo "<td>" . (strlen(trim($row["Comment"])) ? htmlspecialchars($row["Comment"]) : "&nbsp;") . "</td>";
 					} else {
-						echo '<th><a href="' . htmlspecialchars($SELF) . 'view=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . '</a></th><td colspan="8"><a href="' . htmlspecialchars($SELF) . "select=" . urlencode($row["Name"]) . '">' . lang('View') . '</a></td>';
+						echo '&nbsp;</td><th><a href="' . htmlspecialchars($SELF) . 'view=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . '</a></th><td colspan="8"><a href="' . htmlspecialchars($SELF) . "select=" . urlencode($row["Name"]) . '">' . lang('View') . '</a></td>';
 					}
 					echo "</tr>\n";
 				}

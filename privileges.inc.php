@@ -15,7 +15,7 @@ if (!$result) {
 	$result = $dbh->query("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1) AS User, SUBSTRING_INDEX(CURRENT_USER, '@', -1) AS Host");
 }
 echo "<table cellspacing='0'>\n";
-echo "<thead><tr><th></th><th>" . lang('Username') . "</th><th>" . lang('Server') . "</th></tr></thead>\n";
+echo "<thead><tr><th>&nbsp;</th><th>" . lang('Username') . "</th><th>" . lang('Server') . "</th></tr></thead>\n";
 while ($row = $result->fetch_assoc()) {
 	echo '<tr' . odd() . '><td><a href="' . htmlspecialchars($SELF) . 'user=' . urlencode($row["User"]) . '&amp;host=' . urlencode($row["Host"]) . '">' . lang('edit') . '</a></td><td>' . htmlspecialchars($row["User"]) . "</td><td>" . htmlspecialchars($row["Host"]) . "</td></tr>\n";
 }

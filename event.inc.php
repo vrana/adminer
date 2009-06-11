@@ -43,7 +43,7 @@ if ($_POST) {
 <tr><th><?php echo lang('Every'); ?></th><td><input name="INTERVAL_VALUE" value="<?php echo htmlspecialchars($row["INTERVAL_VALUE"]); ?>" size="6" /> <select name="INTERVAL_FIELD"><?php echo optionlist($intervals, $row["INTERVAL_FIELD"]); ?></select></td></tr>
 <tr><th><?php echo lang('Status'); ?></th><td><select name="STATUS"><?php echo optionlist($statuses, $row["STATUS"]); ?></select></td></tr>
 <tr><th><?php echo lang('Comment'); ?></th><td><input name="EVENT_COMMENT" value="<?php echo htmlspecialchars($row["EVENT_COMMENT"]); ?>" maxlength="64" /></td></tr>
-<tr><th></th><td><label><input type="checkbox" name="ON_COMPLETION" value="PRESERVE"<?php echo ($row["ON_COMPLETION"] == "PRESERVE" ? " checked='checked'" : ""); ?> /><?php echo lang('On completion preserve'); ?></label></td></tr>
+<tr><th>&nbsp;</th><td><label><input type="checkbox" name="ON_COMPLETION" value="PRESERVE"<?php echo ($row["ON_COMPLETION"] == "PRESERVE" ? " checked='checked'" : ""); ?> /><?php echo lang('On completion preserve'); ?></label></td></tr>
 </table>
 <p><textarea name="EVENT_DEFINITION" rows="10" cols="80" style="width: 98%;"><?php echo htmlspecialchars($row["EVENT_DEFINITION"]); ?></textarea></p>
 <p>

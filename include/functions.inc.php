@@ -201,6 +201,8 @@ function select($result, $dbh2 = null) {
 				} else {
 					if ($blobs[$key] && !is_utf8($val)) {
 						$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>"; //! link to download
+					} elseif (!strlen(trim($val))) {
+						$val = "&nbsp;";
 					} else {
 						$val = nl2br(htmlspecialchars($val));
 						if ($types[$key] == 254) {
