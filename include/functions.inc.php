@@ -157,7 +157,7 @@ function select($result, $dbh2 = null) {
 	if (!$result->num_rows) {
 		echo "<p class='message'>" . lang('No rows.') . "</p>\n";
 	} else {
-		echo "<table cellspacing='0'>\n";
+		echo "<table cellspacing='0' class='nowrap'>\n";
 		$links = array();
 		$indexes = array();
 		$columns = array();
