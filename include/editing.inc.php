@@ -151,12 +151,11 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0) {
 <td><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked="checked"<?php } ?> /></td>
 <td<?php echo ($column_comments ? "" : " class='hidden'"); ?>><input name="fields[<?php echo $i; ?>][comment]" value="<?php echo htmlspecialchars($field["comment"]); ?>" maxlength="255" /></td>
 <?php } ?>
-<td class="nowrap">
 <?php
-		echo "<input type='image' name='add[$i]' src='plus.gif' alt='+' title='" . lang('Add next') . "' onclick='return !editing_add_row(this, $allowed);' />\n";
-		echo "<input type='image' name='drop_col[$i]' src='cross.gif' alt='x' title='" . lang('Remove') . "' onclick='return !editing_remove_row(this);' />\n";
-		echo "<input type='image' name='up[$i]' src='up.gif' alt='^' title='" . lang('Move up') . "' />\n";
-		echo "<input type='image' name='down[$i]' src='down.gif' alt='v' title='" . lang('Move down') . "' />\n";
+		echo "<td><input type='image' name='add[$i]' src='plus.gif' alt='+' title='" . lang('Add next') . "' onclick='return !editing_add_row(this, $allowed);' />";
+		echo "&nbsp;<input type='image' name='drop_col[$i]' src='cross.gif' alt='x' title='" . lang('Remove') . "' onclick='return !editing_remove_row(this);' />";
+		echo "&nbsp;<input type='image' name='up[$i]' src='up.gif' alt='^' title='" . lang('Move up') . "' />";
+		echo "&nbsp;<input type='image' name='down[$i]' src='down.gif' alt='v' title='" . lang('Move down') . "' />";
 		echo "</td>\n</tr>\n";
 	}
 	return $column_comments;

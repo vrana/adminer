@@ -97,9 +97,11 @@ function editing_add_row(button, allowed) {
 		tags2[i].selectedIndex = tags[i].selectedIndex;
 	}
 	tags = row.getElementsByTagName('input');
+	tags2 = row2.getElementsByTagName('input');
 	for (var i=0; i < tags.length; i++) {
 		if (tags[i].name == 'auto_increment_col') {
 			tags[i].value = x;
+			tags2[i].checked = tags[i].checked;
 			tags[i].checked = false;
 		}
 		tags[i].name = tags[i].name.replace(/([0-9.]+)/, x);

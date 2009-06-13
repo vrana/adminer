@@ -56,7 +56,7 @@ if (!$result->num_rows) {
 			echo '<th><a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($name) . '">' . htmlspecialchars($name) . "</a></th><td>$row[Engine]</td><td>$row[Collation]</td>";
 			foreach (array("Data_length" => "create", "Index_length" => "indexes", "Data_free" => "edit", "Auto_increment" => "create", "Rows" => "select") as $key => $link) {
 				$val = number_format($row[$key], 0, '.', lang(','));
-				echo '<td align="right">' . (strlen($row[$key]) ? '<a href="' . htmlspecialchars("$SELF$link=") . urlencode($name) . '">' . ($key == "Rows" && $row["Engine"] == "InnoDB" && $val ? lang('~ %s', $val) : $val) . '</a>' : '&nbsp;') . '</td>';
+				echo '<td align="right">' . (strlen($row[$key]) ? '<a href="' . htmlspecialchars("$SELF$link=") . urlencode($name) . '">' . str_replace(" ", "&nbsp;", ($key == "Rows" && $row["Engine"] == "InnoDB" && $val ? lang('~ %s', $val) : $val)) . '</a>' : '&nbsp;') . '</td>';
 			}
 			echo "<td>" . (strlen(trim($row["Comment"])) ? htmlspecialchars($row["Comment"]) : "&nbsp;") . "</td>";
 		} else {
