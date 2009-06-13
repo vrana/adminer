@@ -26,12 +26,12 @@ if (!extension_loaded("xdebug")) {
 if ($_GET["start"]) {
 	xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
 	$_SESSION["coverage"] = array();
-	include "./index.php";
+	include "./adminer/index.php";
 	header("Location: .");
 	exit;
 }
-if ($_GET["filename"]) {
-	$filename = basename($_GET["filename"]);
+if (preg_match('~^(include/)?[-_.a-z0-9]+$~i', $_GET["filename"])) {
+	$filename = "adminer/$_GET[filename]";
 	$cov = $_SESSION["coverage"][realpath($filename)];
 	$file = explode("<br />", highlight_file($filename, true));
 	unset($prev_color);
@@ -61,17 +61,16 @@ if ($_GET["filename"]) {
 	}
 } else {
 	echo "<table border='0' cellspacing='0' cellpadding='1'>\n";
-	foreach (glob("*.php") as $filename) {
-		if ($filename{0} != "_") {
-			$cov = $_SESSION["coverage"][realpath($filename)];
-			$ratio = 0;
-			if (isset($cov)) {
-				$values = array_count_values($cov);
-				$ratio = round(100 - 100 * $values[-1] / count($cov));
-			}
-			echo "<tr><td align='right' style='background-color: " . ($ratio < 50 ? "Red" : ($ratio < 75 ? "#FFEA20" : "#A7FC9D")) . ";'>$ratio%</td><td><a href='_coverage.php?filename=$filename'>$filename</a></td></tr>\n";
+	foreach (array_merge(glob("adminer/*.php"), glob("adminer/include/*.php")) as $filename) {
+		$cov = $_SESSION["coverage"][realpath($filename)];
+		$filename = substr($filename, 8);
+		$ratio = 0;
+		if (isset($cov)) {
+			$values = array_count_values($cov);
+			$ratio = round(100 - 100 * $values[-1] / count($cov));
 		}
+		echo "<tr><td align='right' style='background-color: " . ($ratio < 50 ? "Red" : ($ratio < 75 ? "#FFEA20" : "#A7FC9D")) . ";'>$ratio%</td><td><a href='coverage.php?filename=$filename'>$filename</a></td></tr>\n";
 	}
 	echo "</table>\n";
-	echo "<p><a href='_coverage.php?start=1'>Start new coverage</a> (requires <a href='http://www.xdebug.org'>Xdebug</a>)</p>\n";
+	echo "<p><a href='coverage.php?start=1'>Start new coverage</a> (requires <a href='http://www.xdebug.org'>Xdebug</a>)</p>\n";
 }

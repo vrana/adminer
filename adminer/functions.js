@@ -23,9 +23,9 @@ function verify_version(version) {
 
 function load_jush() {
 	var script = document.createElement('script');
-	script.src = 'externals/jush/jush.js';
+	script.src = '../externals/jush/jush.js';
 	script.onload = function () {
-		jush.style('externals/jush/jush.css');
+		jush.style('../externals/jush/jush.css');
 		jush.highlight_tag('pre');
 		jush.highlight_tag('code');
 	}

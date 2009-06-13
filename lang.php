@@ -2,22 +2,22 @@
 error_reporting(E_ALL & ~E_NOTICE);
 if ($_SERVER["argc"] > 1) {
 	$_COOKIE["lang"] = $_SERVER["argv"][1];
-	include dirname(__FILE__) . "/include/lang.inc.php";
+	include dirname(__FILE__) . "/adminer/include/lang.inc.php";
 	if ($_SERVER["argc"] != 2 || !isset($langs[$_COOKIE["lang"]])) {
-		echo "Usage: php _lang.php [lang]\nPurpose: Update lang/*.inc.php from source code messages.\n";
+		echo "Usage: php lang.php [lang]\nPurpose: Update lang/*.inc.php from source code messages.\n";
 		exit(1);
 	}
 }
 
 $messages_all = array();
-foreach (array_merge(glob(dirname(__FILE__) . "/*.php"), glob(dirname(__FILE__) . "/include/*.php")) as $filename) {
+foreach (array_merge(glob(dirname(__FILE__) . "/adminer/*.php"), glob(dirname(__FILE__) . "/adminer/include/*.php")) as $filename) {
 	$file = file_get_contents($filename);
 	if (preg_match_all("~lang\\(('(?:[^\\\\']+|\\\\.)*')([),])~", $file, $matches)) {
 		$messages_all += array_combine($matches[1], $matches[2]);
 	}
 }
 
-foreach (glob(dirname(__FILE__) . "/lang/" . ($_COOKIE["lang"] ? $_COOKIE["lang"] : "*") . ".inc.php") as $filename) {
+foreach (glob(dirname(__FILE__) . "/adminer/lang/" . ($_COOKIE["lang"] ? $_COOKIE["lang"] : "*") . ".inc.php") as $filename) {
 	$messages = $messages_all;
 	preg_match_all("~^(\\s*)(?:// )?(('(?:[^\\\\']+|\\\\.)*') => .*[^,\n]),?~m", file_get_contents($filename), $matches, PREG_SET_ORDER);
 	$s = "";

@@ -1,5 +1,5 @@
 <?php
-include dirname(__FILE__) . "/include/version.inc.php";
+include dirname(__FILE__) . "/adminer/include/version.inc.php";
 include dirname(__FILE__) . "/externals/jsmin-php/jsmin.php";
 
 function add_apo_slashes($s) {
@@ -29,7 +29,7 @@ function put_file($match) {
 			return "";
 		}
 		$return = "";
-		foreach (glob(dirname(__FILE__) . "/lang/*.inc.php") as $filename) {
+		foreach (glob(dirname(__FILE__) . "/adminer/lang/*.inc.php") as $filename) {
 			include $filename;
 			foreach ($translations as $key => $val) {
 				if (!isset($lang_ids[$key])) {
@@ -37,7 +37,7 @@ function put_file($match) {
 				}
 			}
 		}
-		foreach (glob(dirname(__FILE__) . "/lang/*.inc.php") as $filename) {
+		foreach (glob(dirname(__FILE__) . "/adminer/lang/*.inc.php") as $filename) {
 			include $filename;
 			$translation_ids = array_flip($lang_ids);
 			foreach ($translations as $key => $val) {
@@ -51,7 +51,7 @@ function put_file($match) {
 		}
 		return "switch (\$LANG) {\n$return}\n";
 	}
-	$return = file_get_contents(dirname(__FILE__) . "/$match[2]");
+	$return = file_get_contents(dirname(__FILE__) . "/adminer/$match[2]");
 	if ($match[2] != "./include/lang.inc.php" || !$_COOKIE["lang"]) {
 		$tokens = token_get_all($return);
 		return "?>\n$return" . (in_array($tokens[count($tokens) - 1][0], array(T_CLOSE_TAG, T_INLINE_HTML), true) ? "<?php" : "");
@@ -155,16 +155,16 @@ function php_shrink($input) {
 error_reporting(E_ALL & ~E_NOTICE);
 if ($_SERVER["argc"] > 1) {
 	$_COOKIE["lang"] = $_SERVER["argv"][1];
-	include dirname(__FILE__) . "/include/lang.inc.php";
+	include dirname(__FILE__) . "/adminer/include/lang.inc.php";
 	if ($_SERVER["argc"] != 2 || !isset($langs[$_COOKIE["lang"]])) {
-		echo "Usage: php _compile.php [lang]\nPurpose: Compile adminer[-lang].php from index.php.\n";
+		echo "Usage: php compile.php [lang]\nPurpose: Compile adminer[-lang].php from index.php.\n";
 		exit(1);
 	}
-	include dirname(__FILE__) . "/lang/$_COOKIE[lang].inc.php";
+	include dirname(__FILE__) . "/adminer/lang/$_COOKIE[lang].inc.php";
 }
 
 $filename = "adminer" . ($_COOKIE["lang"] ? "-$_COOKIE[lang]" : "") . ".php";
-$file = file_get_contents(dirname(__FILE__) . "/index.php");
+$file = file_get_contents(dirname(__FILE__) . "/adminer/index.php");
 $file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file);
 $file = preg_replace("~if \\(isset\\(\\\$_SESSION\\[\"coverage.*\n}\n| && !isset\\(\\\$_SESSION\\[\"coverage\"\\]\\)~sU", '', $file);
 if ($_COOKIE["lang"]) {
@@ -182,26 +182,26 @@ if (isset($_GET["file"])) {
 	header("Expires: " . gmdate("D, d M Y H:i:s", time() + 365*24*60*60) . " GMT");
 	if ($_GET["file"] == "favicon.ico") {
 		header("Content-Type: image/x-icon");
-		echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/favicon.ico")) . '");
+		echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/adminer/favicon.ico")) . '");
 	} elseif ($_GET["file"] == "default.css") {
 		header("Content-Type: text/css");
-		?>' . preg_replace('~\\s*([:;{},])\\s*~', '\\1', file_get_contents(dirname(__FILE__) . "/default.css")) . '<?php
+		?>' . preg_replace('~\\s*([:;{},])\\s*~', '\\1', file_get_contents(dirname(__FILE__) . "/adminer/default.css")) . '<?php
 	} elseif ($_GET["file"] == "functions.js") {
 		header("Content-Type: text/javascript");
-		?>' . JSMin::minify(file_get_contents(dirname(__FILE__) . "/functions.js")) . '<?php
+		?>' . JSMin::minify(file_get_contents(dirname(__FILE__) . "/adminer/functions.js")) . '<?php
 	} else {
 		header("Content-Type: image/gif");
 		switch ($_GET["file"]) {
-			case "arrow.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/arrow.gif")) . '"); break;
-			case "up.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/up.gif")) . '"); break;
-			case "down.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/down.gif")) . '"); break;
-			case "plus.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/plus.gif")) . '"); break;
-			case "cross.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/cross.gif")) . '"); break;
+			case "arrow.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/adminer/arrow.gif")) . '"); break;
+			case "up.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/adminer/up.gif")) . '"); break;
+			case "down.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/adminer/down.gif")) . '"); break;
+			case "plus.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/adminer/plus.gif")) . '"); break;
+			case "cross.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/adminer/cross.gif")) . '"); break;
 		}
 	}
 	exit;
 }', $file);
-$file = str_replace("externals/jush/", "http://jush.sourceforge.net/", $file);
+$file = str_replace("../externals/jush/", "http://jush.sourceforge.net/", $file);
 $file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
 $file = php_shrink($file);
 fwrite(fopen($filename, "w"), $file);
