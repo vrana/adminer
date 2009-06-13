@@ -116,41 +116,43 @@ DROP PROCEDURE adminer_alter;
 	}
 }
 
-function dump_data($table, $style, $from = "") {
+function dump_data($table, $style, $select = "") {
 	global $dbh, $max_packet;
 	if ($style) {
 		if ($_POST["format"] != "csv" && $style == "TRUNCATE+INSERT") {
 			echo "TRUNCATE " . idf_escape($table) . ";\n";
 		}
-		$result = $dbh->query("SELECT * " . ($from ? $from : "FROM " . idf_escape($table))); //! enum and set as numbers, binary as _binary, microtime
+		$result = $dbh->query(($select ? $select : "SELECT * FROM " . idf_escape($table))); //! enum and set as numbers, binary as _binary, microtime
 		if ($result) {
-			$insert = "INSERT INTO " . idf_escape($table) . " VALUES ";
 			$length = 0;
 			while ($row = $result->fetch_assoc()) {
 				if ($_POST["format"] == "csv") {
 					dump_csv($row);
-				} elseif ($style == "INSERT+UPDATE") {
-					$set = array();
-					foreach ($row as $key => $val) {
-						$row[$key] = (isset($val) ? "'" . $dbh->escape_string($val) . "'" : "NULL");
-						$set[] = idf_escape($key) . " = " . (isset($val) ? "'" . $dbh->escape_string($val) . "'" : "NULL");
-					}
-					echo "INSERT INTO " . idf_escape($table) . " (" . implode(", ", array_map('idf_escape', array_keys($row))) . ") VALUES (" . implode(", ", $row) . ") ON DUPLICATE KEY UPDATE " . implode(", ", $set) . ";\n";
 				} else {
+					$insert = "INSERT INTO " . idf_escape($table) . ($select ? " (" . implode(", ", array_map('idf_escape', array_keys($row))) . ")" : "") . " VALUES ";
+					$row2 = array();
 					foreach ($row as $key => $val) {
-						$row[$key] = (isset($val) ? "'" . $dbh->escape_string($val) . "'" : "NULL");
+						$row2[$key] = (isset($val) ? "'" . $dbh->escape_string($val) . "'" : "NULL");
 					}
-					$s = "(" . implode(", ", $row) . ")";
-					if (!$length) {
-						echo $insert, $s;
-						$length = strlen($insert) + strlen($s);
+					if ($style == "INSERT+UPDATE") {
+						$set = array();
+						foreach ($row as $key => $val) {
+							$set[] = idf_escape($key) . " = " . (isset($val) ? "'" . $dbh->escape_string($val) . "'" : "NULL");
+						}
+						echo "$insert (" . implode(", ", $row2) . ") ON DUPLICATE KEY UPDATE " . implode(", ", $set) . ";\n";
 					} else {
-						$length += 2 + strlen($s);
-						if ($length < $max_packet) {
-							echo ", ", $s;
-						} else {
-							echo ";\n", $insert, $s;
+						$s = "(" . implode(", ", $row2) . ")";
+						if (!$length) {
+							echo $insert, $s;
 							$length = strlen($insert) + strlen($s);
+						} else {
+							$length += 2 + strlen($s);
+							if ($length < $max_packet) {
+								echo ", ", $s;
+							} else {
+								echo ";\n", $insert, $s;
+								$length = strlen($insert) + strlen($s);
+							}
 						}
 					}
 				}
