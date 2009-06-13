@@ -234,7 +234,7 @@ if (!$columns) {
 							$pos2 = max(array_keys($_GET["order"]));
 							$pos2 += ($pos2 !== $pos ? 1 : 0);
 						}
-						echo '<th onmouseover="popup(this);" onmouseout="popdown(this);"><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"][0] === $key && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . htmlspecialchars($key) . '</a><span class="hidden">';
+						echo '<th onmouseover="popup(this);" onmouseout="popdown(this);"><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . htmlspecialchars($key) . '</a><span class="hidden">';
 						echo '<a href="' . htmlspecialchars("$uri&order%5B$pos2%5D=" . urlencode($key)) . "\"><img src='up.gif' alt='^' title='" . lang('ASC') . "' /></a>";
 						echo '<a href="' . htmlspecialchars("$uri&order%5B$pos2%5D=" . urlencode($key) . "&desc%5B$pos2%5D=1") . "\"><img src='down.gif' alt='v' title='" . lang('DESC') . "' /></a>";
 						echo '</span></th>';
