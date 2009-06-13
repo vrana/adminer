@@ -24,6 +24,7 @@ if (!extension_loaded("xdebug")) {
 }
 
 if ($_GET["start"]) {
+	unset($_SESSION["coverage"]);
 	xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
 	$_SESSION["coverage"] = array();
 	include "./adminer/index.php";
