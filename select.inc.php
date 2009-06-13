@@ -72,13 +72,13 @@ if ($_POST && !$error) {
 	if ($_POST["export"]) {
 		dump_headers($_GET["select"]);
 		dump_table($_GET["select"], "");
-		$from = "SELECT " . ($select ? implode(", ", $select) : "*") . " FROM " . idf_escape($_GET["select"]);
+		$query = "SELECT " . ($select ? implode(", ", $select) : "*") . " FROM " . idf_escape($_GET["select"]);
 		if (is_array($_POST["check"])) {
 			foreach ($_POST["check"] as $val) {
-				dump_data($_GET["select"], "INSERT", "$from WHERE " . implode(" AND ", where_check($val)) . " LIMIT 1");
+				dump_data($_GET["select"], "INSERT", "$query WHERE " . implode(" AND ", where_check($val)) . " LIMIT 1");
 			}
 		} else {
-			dump_data($_GET["select"], "INSERT", $from . ($where ? " WHERE " . implode(" AND ", $where) : ""));
+			dump_data($_GET["select"], "INSERT", $query . ($where ? " WHERE " . implode(" AND ", $where) : ""));
 		}
 		exit;
 	}
