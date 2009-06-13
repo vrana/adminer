@@ -47,8 +47,8 @@ if ($_POST["save"]) {
 } elseif ($where) {
 	$select = array();
 	foreach ($fields as $name => $field) {
-		if (isset($field["privileges"]["select"]) && (!$_POST["clone"] || !$field["auto_increment"])) {
-			$select[] = ($field["type"] == "enum" || $field["type"] == "set" ? "1*" . idf_escape($name) . " AS " : "") . idf_escape($name);
+		if (isset($field["privileges"]["select"])) {
+			$select[] = ($_POST["clone"] && $field["auto_increment"] ? "'' AS " : ($field["type"] == "enum" || $field["type"] == "set" ? "1*" . idf_escape($name) . " AS " : "")) . idf_escape($name);
 		}
 	}
 	$row = array();
@@ -67,7 +67,7 @@ if ($fields) {
 	echo "<table cellspacing='0'>\n";
 	foreach ($fields as $name => $field) {
 		echo "<tr><th>" . htmlspecialchars($name) . "</th>";
-		$value = (!isset($row) ? ($_POST["clone"] && $field["auto_increment"] ? "" : $field["default"])
+		$value = (!isset($row) ? ($_POST["clone"] && $field["auto_increment"] ? "" : ($where ? $field["default"] : null))
 			: (strlen($row[$name]) && ($field["type"] == "enum" || $field["type"] == "set") ? intval($row[$name]) : $row[$name])
 		);
 		input($name, $field, $value);
