@@ -61,7 +61,7 @@ foreach ((array) $_GET["where"] as $val) {
 }
 $order = array();
 foreach ((array) $_GET["order"] as $key => $val) {
-	if (in_array($val, $columns, true) || preg_match('(^(COUNT\\(\\*\\)|(' . strtoupper(implode('|', $functions) . '|' . implode('|', $grouping)) . ')\\((' . implode('|', array_map('preg_quote', array_map('idf_escape', $columns))) . ')\\))$)', $val)) {
+	if (in_array($val, $columns, true) || in_array($val, $select, true)) {
 		$order[] = idf_escape($val) . (isset($_GET["desc"][$key]) ? " DESC" : "");
 	}
 }
