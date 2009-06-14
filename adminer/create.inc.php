@@ -62,6 +62,9 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 		if (strlen($_GET["create"])) {
 			query_redirect("ALTER TABLE " . idf_escape($_GET["create"]) . implode(",", $fields) . ",\nRENAME TO " . idf_escape($_POST["name"]) . ",\n$status", $location, lang('Table has been altered.'));
 		} else {
+			$path = preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]);
+			setcookie("Engine", $_POST["Engine"], strtotime("+1 month"), $path);
+			setcookie("Collation", $_POST["Collation"], strtotime("+1 month"), $path);
 			query_redirect("CREATE TABLE " . idf_escape($_POST["name"]) . " (" . implode(",", $fields) . "\n) $status", $location, lang('Table has been created.'));
 		}
 	}
@@ -104,7 +107,12 @@ if ($_POST) {
 		$row["partition_names"][] = "";
 	}
 } else {
-	$row = array("fields" => array(array("field" => "")), "partition_names" => array(""));
+	$row = array(
+		"Engine" => $_COOKIE["Engine"],
+		"Collation" => $_COOKIE["Collation"],
+		"fields" => array(array("field" => "")),
+		"partition_names" => array(""),
+	);
 }
 $collations = collations();
 
