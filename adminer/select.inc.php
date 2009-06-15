@@ -74,9 +74,11 @@ if ($_POST && !$error) {
 		dump_table($_GET["select"], "");
 		$query = "SELECT " . ($select ? implode(", ", $select) : "*") . " FROM " . idf_escape($_GET["select"]);
 		if (is_array($_POST["check"])) {
+			$union = array();
 			foreach ($_POST["check"] as $val) {
-				dump_data($_GET["select"], "INSERT", "$query WHERE " . implode(" AND ", where_check($val)) . " LIMIT 1");
+				$union[] = "($query WHERE " . implode(" AND ", where_check($val)) . " LIMIT 1)";
 			}
+			dump_data($_GET["select"], "INSERT", implode(" UNION ALL ", $union));
 		} else {
 			dump_data($_GET["select"], "INSERT", $query . ($where ? " WHERE " . implode(" AND ", $where) : ""));
 		}

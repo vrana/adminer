@@ -129,7 +129,7 @@ function dump_data($table, $style, $select = "") {
 				if ($_POST["format"] == "csv") {
 					dump_csv($row);
 				} else {
-					$insert = "INSERT INTO " . idf_escape($table) . ($select ? " (" . implode(", ", array_map('idf_escape', array_keys($row))) . ")" : "") . " VALUES ";
+					$insert = "INSERT INTO " . idf_escape($table) . ($select ? " (" . implode(", ", array_map('idf_escape', array_keys($row))) . ")" : "") . " VALUES";
 					$row2 = array();
 					foreach ($row as $key => $val) {
 						$row2[$key] = (isset($val) ? "'" . $dbh->escape_string($val) . "'" : "NULL");
@@ -141,7 +141,7 @@ function dump_data($table, $style, $select = "") {
 						}
 						echo "$insert (" . implode(", ", $row2) . ") ON DUPLICATE KEY UPDATE " . implode(", ", $set) . ";\n";
 					} else {
-						$s = "(" . implode(", ", $row2) . ")";
+						$s = "\n(" . implode(", ", $row2) . ")";
 						if (!$length) {
 							echo $insert, $s;
 							$length = strlen($insert) + strlen($s);
@@ -150,7 +150,7 @@ function dump_data($table, $style, $select = "") {
 							if ($length < $max_packet) {
 								echo ", ", $s;
 							} else {
-								echo ";\n", $insert, $s;
+								echo ";\n$insert", $s;
 								$length = strlen($insert) + strlen($s);
 							}
 						}
@@ -175,4 +175,4 @@ function dump_headers($identifier, $multi_table = false) {
 
 $dump_output = "<select name='output'><option value='text'>" . lang('open') . "</option><option value='file'>" . lang('save') . "</option></select>";
 $dump_format = "<select name='format'><option value='sql'>" . lang('SQL') . "</option><option value='csv'>" . lang('CSV') . "</option></select>";
-$max_packet = 0;
+$max_packet = 1048576; // default, minimum is 1024

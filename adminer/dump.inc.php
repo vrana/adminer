@@ -12,7 +12,6 @@ function tar_file($filename, $contents) {
 if ($_POST) {
 	$ext = dump_headers((strlen($_GET["dump"]) ? $_GET["dump"] : $_GET["db"]), (!strlen($_GET["db"]) || count((array) $_POST["tables"] + (array) $_POST["data"]) > 1));
 	if ($_POST["format"] != "csv") {
-		$max_packet = 1048576; // default, minimum is 1024
 		echo "SET NAMES utf8;\n";
 		echo "SET foreign_key_checks = 0;\n";
 		echo "SET time_zone = '" . $dbh->escape_string($dbh->result($dbh->query("SELECT @@time_zone"))) . "';\n";
