@@ -6,14 +6,6 @@ function toggle(id) {
 	return true;
 }
 
-function popup(el) {
-	el.getElementsByTagName('span')[0].className = 'popup';
-}
-
-function popdown(el) {
-	el.getElementsByTagName('span')[0].className = 'hidden';
-}
-
 function verify_version(version) {
 	document.cookie = 'adminer_version=0';
 	var script = document.createElement('script');

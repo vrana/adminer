@@ -152,7 +152,7 @@ if (!$columns) {
 	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "" : ": " . htmlspecialchars($dbh->error)) . ".</p>\n";
 } else {
 	echo "<form action='' id='form'>\n";
-	echo "<fieldset><legend>" . lang('Select') . "</legend>\n";
+	echo '<fieldset><legend><a href="#fieldset-select" onclick="return !toggle(\'fieldset-select\');">' . lang('Select') . "</a></legend><div id='fieldset-select'" . ($select ? "" : " class='hidden'") . ">\n";
 	if (strlen($_GET["server"])) {
 		echo '<input type="hidden" name="server" value="' . htmlspecialchars($_GET["server"]) . '" />';
 	}
@@ -169,9 +169,9 @@ if (!$columns) {
 	}
 	echo "<div><select name='columns[$i][fun]' onchange='this.nextSibling.onchange();'><option></option>" . optionlist($fun_group) . "</select>";
 	echo "<select name='columns[$i][col]' onchange='select_add_row(this);'><option></option>" . optionlist($columns) . "</select></div>\n";
-	echo "</fieldset>\n";
+	echo "</div></fieldset>\n";
 	
-	echo "<fieldset><legend>" . lang('Search') . "</legend>\n";
+	echo '<fieldset><legend><a href="#fieldset-search" onclick="return !toggle(\'fieldset-search\');">' . lang('Search') . "</a></legend><div id='fieldset-search'" . ($where ? "" : " class='hidden'") . ">\n";
 	foreach ($indexes as $i => $index) {
 		if ($index["type"] == "FULLTEXT") {
 			echo "(<i>" . implode("</i>, <i>", array_map('htmlspecialchars', $index["columns"])) . "</i>) AGAINST";
@@ -192,17 +192,34 @@ if (!$columns) {
 	echo "<div><select name='where[$i][col]' onchange='select_add_row(this);'><option value=''>" . lang('(anywhere)') . "</option>" . optionlist($columns) . "</select>";
 	echo "<select name='where[$i][op]' onchange='where_change(this);'>" . optionlist($operators) . "</select>";
 	echo "<input name='where[$i][val]' /></div>\n";
-	echo "</fieldset>\n";
+	echo "</div></fieldset>\n";
+	
+	echo '<fieldset><legend><a href="#fieldset-sort" onclick="return !toggle(\'fieldset-sort\');">' . lang('Sort') . "</a></legend><div id='fieldset-sort'" . (count($order) > 1 ? "" : " class='hidden'") . ">\n";
+	$i = 0;
+	foreach ((array) $_GET["order"] as $key => $val) {
+		if (in_array($val, $columns, true)) {
+			echo "<div><select name='order[$i]'><option></option>" . optionlist($columns, $val) . "</select>";
+			echo "<label><input type='checkbox' name='desc[$i]' value='1'" . (isset($_GET["desc"][$key]) ? " checked='checked'" : "") . " />" . lang('DESC') . "</label></div>\n";
+			$i++;
+		}
+	}
+	echo "<div><select name='order[$i]' onchange='select_add_row(this);'><option></option>" . optionlist($columns) . "</select>";
+	echo "<label><input type='checkbox' name='desc[$i]' value='1' />" . lang('DESC') . "</label></div>\n";
+	echo "</div></fieldset>\n";
 	
 	echo "<fieldset><legend>" . lang('Limit') . "</legend><div>";
-	echo hidden_fields(array("order" => (array) $_GET["order"], "desc" => (array) $_GET["desc"]));
-	echo "<input name='limit' size='3' value=\"" . htmlspecialchars($limit) . "\" /></div></fieldset>\n";
+	echo "<input name='limit' size='3' value=\"" . htmlspecialchars($limit) . "\" />";
+	echo "</div></fieldset>\n";
 	
 	if (isset($text_length)) {
-		echo "<fieldset><legend>" . lang('Text length') . "</legend><div><input name='text_length' size='3' value=\"" . htmlspecialchars($text_length) . "\" /></div></fieldset>\n";
+		echo "<fieldset><legend>" . lang('Text length') . "</legend><div>";
+		echo "<input name='text_length' size='3' value=\"" . htmlspecialchars($text_length) . "\" />";
+		echo "</div></fieldset>\n";
 	}
 	
-	echo "<fieldset><legend>" . lang('Action') . "</legend><div><input type='submit' value='" . lang('Select') . "' /></div></fieldset>\n";
+	echo "<fieldset><legend>" . lang('Action') . "</legend><div>";
+	echo "<input type='submit' value='" . lang('Select') . "' />";
+	echo "</div></fieldset>\n";
 	echo "</form>\n";
 	
 	$query = "SELECT " . ($select ? (count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . implode(", ", $select) : "*") . " $from";
@@ -228,17 +245,7 @@ if (!$columns) {
 				if (!$j) {
 					echo '<thead><tr><td><input type="checkbox" id="all-page" onclick="form_check(this, /check/);" /></td>';
 					foreach ($row as $key => $val) {
-						$pos = array_search($key, (array) $_GET["order"]);
-						$uri = remove_from_uri($pos !== false ? "(order|desc)%5B$pos%5D" : "");
-						$pos2 = 0;
-						if ($_GET["order"]) {
-							$pos2 = max(array_keys($_GET["order"]));
-							$pos2 += ($pos2 !== $pos ? 1 : 0);
-						}
-						echo '<th onmouseover="popup(this);" onmouseout="popdown(this);"><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . htmlspecialchars($key) . '</a><span class="hidden">';
-						echo '<a href="' . htmlspecialchars("$uri&order%5B$pos2%5D=" . urlencode($key)) . "\"><img src='up.gif' alt='^' title='" . lang('ASC') . "' /></a>";
-						echo '<a href="' . htmlspecialchars("$uri&order%5B$pos2%5D=" . urlencode($key) . "&desc%5B$pos2%5D=1") . "\"><img src='down.gif' alt='v' title='" . lang('DESC') . "' /></a>";
-						echo '</span></th>';
+						echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . htmlspecialchars($key) . '</a></th>';
 					}
 					echo "</tr></thead>\n";
 				}
