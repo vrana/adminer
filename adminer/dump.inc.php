@@ -9,6 +9,21 @@ function tar_file($filename, $contents) {
 	return $return . str_repeat("\0", 512 - strlen($return)) . $contents . str_repeat("\0", 511 - (strlen($contents) + 511) % 512);
 }
 
+function dump_triggers($table, $style) {
+	global $dbh;
+	if ($_POST["format"] != "csv" && $style && $dbh->server_info >= 5) {
+		$result = $dbh->query("SHOW TRIGGERS LIKE '" . $dbh->escape_string(addcslashes($table, "%_")) . "'");
+		if ($result->num_rows) {
+			echo "\nDELIMITER ;;\n";
+			while ($row = $result->fetch_assoc()) {
+				echo "\nCREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . idf_escape($row["Table"]) . " FOR EACH ROW\n$row[Statement];;\n";
+			}
+			echo "\nDELIMITER ;\n";
+		}
+		$result->free();
+	}
+}
+
 if ($_POST) {
 	$ext = dump_headers((strlen($_GET["dump"]) ? $_GET["dump"] : $_GET["db"]), (!strlen($_GET["db"]) || count((array) $_POST["tables"] + (array) $_POST["data"]) > 1));
 	if ($_POST["format"] != "csv") {
@@ -65,6 +80,9 @@ if ($_POST) {
 							dump_table($row["Name"], ($table ? $_POST["table_style"] : ""));
 							if ($data) {
 								dump_data($row["Name"], $_POST["data_style"]);
+							}
+							if ($table) {
+								dump_triggers($row["Name"], $_POST["table_style"]);
 							}
 							if ($ext == "tar") {
 								echo tar_file((strlen($_GET["db"]) ? "" : "$db/") . "$row[Name].csv", ob_get_clean());

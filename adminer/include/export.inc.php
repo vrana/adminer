@@ -101,18 +101,6 @@ DROP PROCEDURE adminer_alter;
 <?php
 			//! indexes
 		}
-		
-		if ($dbh->server_info >= 5) {
-			$result = $dbh->query("SHOW TRIGGERS LIKE '" . $dbh->escape_string(addcslashes($table, "%_")) . "'");
-			if ($result->num_rows) {
-				echo "DELIMITER ;;\n\n";
-				while ($row = $result->fetch_assoc()) {
-					echo "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . idf_escape($row["Table"]) . " FOR EACH ROW $row[Statement];;\n\n";
-				}
-				echo "DELIMITER ;\n\n";
-			}
-			$result->free();
-		}
 	}
 }
 
