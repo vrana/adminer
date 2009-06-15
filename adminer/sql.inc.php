@@ -2,7 +2,7 @@
 page_header(lang('SQL command'), $error);
 
 if (!$error && $_POST) {
-	if (is_string($query = (isset($_POST["query"]) ? $_POST["query"] : get_file("sql_file")))) {
+	if (is_string($query = (isset($_POST["file"]) ? get_file("sql_file") : $_POST["query"]))) {
 		@set_time_limit(0);
 		$query = str_replace("\r", "", $query);
 		$delimiter = ";";
@@ -62,24 +62,22 @@ if (!$error && $_POST) {
 }
 ?>
 
-<form action="" method="post">
+<form action="" method="post" enctype="multipart/form-data">
 <p><textarea name="query" rows="20" cols="80" style="width: 98%;"><?php echo htmlspecialchars($_POST ? $_POST["query"] : (strlen($_GET["history"]) ? $_SESSION["history"][$_GET["server"]][$_GET["db"]][$_GET["history"]] : $_GET["sql"])); ?></textarea></p>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
 <input type="submit" value="<?php echo lang('Execute'); ?>" />
 <label><input type="checkbox" name="error_stops" value="1"<?php echo ($_POST["error_stops"] ? " checked='checked'" : ""); ?> /><?php echo lang('Stop on error'); ?></label>
 </p>
-</form>
 
 <?php
 if (!ini_get("file_uploads")) {
 	echo "<p>" . lang('File uploads are disabled.') . "</p>\n";
 } else { ?>
-<form action="" method="post" enctype="multipart/form-data">
 <p>
 <?php echo lang('File upload'); ?>: <input type="file" name="sql_file" />
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
-<input type="submit" value="<?php echo lang('Execute'); ?>" />
+<input type="submit" name="file" value="<?php echo lang('Execute'); ?>" />
 </p>
 </form>
 <?php } ?>
