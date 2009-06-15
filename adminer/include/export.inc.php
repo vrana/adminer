@@ -169,7 +169,9 @@ function dump_headers($identifier, $multi_table = false) {
 	$filename = (strlen($identifier) ? friendly_url($identifier) : "dump");
 	$ext = ($_POST["format"] == "sql" ? "sql" : ($multi_table ? "tar" : "csv"));
 	header("Content-Type: " . ($ext == "tar" ? "application/x-tar" : ($ext == "sql" || $_POST["output"] != "file" ? "text/plain" : "text/csv")) . "; charset=utf-8");
-	header("Content-Disposition: " . ($_POST["output"] == "file" ? "attachment" : "inline") . "; filename=$filename.$ext");
+	if ($_POST["output"] == "file") {
+		header("Content-Disposition: attachment; filename=$filename.$ext");
+	}
 	return $ext;
 }
 
