@@ -253,7 +253,7 @@ if (!$columns) {
 						if (!strlen(trim($val))) {
 							$val = "&nbsp;";
 						} elseif (intval($text_length) > 0 && preg_match('~blob|text~', $fields[$key]["type"])) {
-							$val = shorten_utf8($val, intval($text_length));
+							$val = nl2br(shorten_utf8($val, intval($text_length)));
 						} else {
 							$val = nl2br(htmlspecialchars($val));
 							if ($fields[$key]["type"] == "char") {

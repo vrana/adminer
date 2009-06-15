@@ -232,7 +232,7 @@ function is_utf8($val) {
 
 function shorten_utf8($string, $length) {
 	preg_match("~^(.{0,$length})(.?)~su", $string, $match);
-	return nl2br(htmlspecialchars($match[1])) . ($match[2] ? "<em>...</em>" : "");
+	return htmlspecialchars($match[1]) . ($match[2] ? "<em>...</em>" : "");
 }
 
 function friendly_url($val) {
