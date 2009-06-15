@@ -152,7 +152,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0) {
 <td<?php echo ($column_comments ? "" : " class='hidden'"); ?>><input name="fields[<?php echo $i; ?>][comment]" value="<?php echo htmlspecialchars($field["comment"]); ?>" maxlength="255" /></td>
 <?php } ?>
 <?php
-		echo "<td><input type='image' name='add[$i]' src='plus.gif' alt='+' title='" . lang('Add next') . "' onclick='return !editing_add_row(this, $allowed);' />";
+		echo "<td class='nowrap'><input type='image' name='add[$i]' src='plus.gif' alt='+' title='" . lang('Add next') . "' onclick='return !editing_add_row(this, $allowed);' />";
 		echo "&nbsp;<input type='image' name='drop_col[$i]' src='cross.gif' alt='x' title='" . lang('Remove') . "' onclick='return !editing_remove_row(this);' />";
 		echo "&nbsp;<input type='image' name='up[$i]' src='up.gif' alt='^' title='" . lang('Move up') . "' />";
 		echo "&nbsp;<input type='image' name='down[$i]' src='down.gif' alt='v' title='" . lang('Move down') . "' />";
