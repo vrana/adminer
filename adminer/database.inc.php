@@ -1,5 +1,5 @@
 <?php
-if ($_POST && !$error) {
+if ($_POST && !$error && !$_POST["add_x"]) {
 	if ($_POST["drop"]) {
 		unset($_SESSION["databases"][$_GET["server"]]);
 		query_redirect("DROP DATABASE " . idf_escape($_GET["db"]), substr(preg_replace('~db=[^&]*&~', '', $SELF), 0, -1), lang('Database has been dropped.'));
@@ -67,10 +67,16 @@ if ($_POST) {
 
 <form action="" method="post">
 <p>
-<input name="name" value="<?php echo htmlspecialchars($name); ?>" maxlength="64" />
+<?php echo ($_POST["add_x"] ? '<textarea name="name" rows="10" cols="40">' . htmlspecialchars($name) . '</textarea>' : '<input name="name" value="' . htmlspecialchars($name) . '" maxlength="64" />') . "\n"; ?>
 <select name="collation"><option value="">(<?php echo lang('collation'); ?>)</option><?php echo optionlist($collations, $collate); ?></select>
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
 <input type="submit" value="<?php echo lang('Save'); ?>" />
-<?php if (strlen($_GET["db"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?> /><?php } ?>
+<?php
+if (strlen($_GET["db"])) {
+	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'$confirm />\n";
+} elseif (!$_POST["add_x"]) {
+	echo "<input type='image' name='add' src='plus.gif' alt='+' title='" . lang('Add next') . "' />\n";
+}
+?>
 </p>
 </form>
