@@ -101,7 +101,7 @@ function query_redirect($query, $location, $message, $redirect = true, $execute 
 	$id = "sql-" . count($_SESSION["messages"]);
 	$sql = "";
 	if ($query) {
-		$sql = " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><span id='$id' class='hidden'><br /><code class='jush-sql'>" . htmlspecialchars($query) . '</code><br /><a href="' . htmlspecialchars($SELF . 'sql=&history=' . count($_SESSION["history"][$_GET["server"]][$_GET["db"]])) . '">' . lang('Edit') . '</a></span>';
+		$sql = " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><span id='$id' class='hidden'><pre class='jush-sql'>" . htmlspecialchars($query) . '</pre><a href="' . htmlspecialchars($SELF . 'sql=&history=' . count($_SESSION["history"][$_GET["server"]][$_GET["db"]])) . '">' . lang('Edit') . '</a></span>';
 		$_SESSION["history"][$_GET["server"]][$_GET["db"]][] = $query;
 	}
 	if ($execute) {

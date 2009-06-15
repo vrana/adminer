@@ -16,8 +16,9 @@ code { background: #eee; }
 .js .hidden { display: none; }
 .nowrap { white-space: nowrap; }
 .wrap { white-space: normal; }
-.error { color: red; background: #fee; padding: .5em .8em; }
-.message { color: green; background: #efe; padding: .5em .8em; }
+.error { color: red; background: #fee; }
+.message { color: green; background: #efe; }
+.error, .message { padding: .5em .8em; margin: 0 20px 1em 0; }
 .char { color: #007F00; }
 .date { color: #7F007F; }
 .enum { color: #007F7F; }

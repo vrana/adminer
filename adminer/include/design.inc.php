@@ -39,7 +39,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	}
 	echo "<h2>$title" . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . "</h2>\n";
 	if ($_SESSION["messages"]) {
-		echo "<p class='message'>" . implode("</p>\n<p class='message'>", $_SESSION["messages"]) . "</p>\n";
+		echo "<div class='message'>" . implode("</p>\n<p class='message'>", $_SESSION["messages"]) . "</div>\n";
 		$_SESSION["messages"] = array();
 	}
 	$databases = &$_SESSION["databases"][$_GET["server"]];
@@ -50,7 +50,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 		session_write_close();
 	}
 	if ($error) {
-		echo "<p class='error'>$error</p>\n";
+		echo "<div class='error'>$error</div>\n";
 	}
 }
 
