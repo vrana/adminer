@@ -101,7 +101,7 @@ function query_redirect($query, $location, $message, $redirect = true, $execute 
 	$id = "sql-" . count($_SESSION["messages"]);
 	$sql = "";
 	if ($query) {
-		$sql = " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><span id='$id' class='hidden'><br /><code class='jush-sql'>" . htmlspecialchars($query) . '</code><br /><a href="' . htmlspecialchars($SELF) . 'sql=&amp;history=' . count($_SESSION["history"][$_GET["server"]][$_GET["db"]]) . '">' . lang('Edit') . '</a></span>';
+		$sql = " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><span id='$id' class='hidden'><br /><code class='jush-sql'>" . htmlspecialchars($query) . '</code><br /><a href="' . htmlspecialchars($SELF . 'sql=&history=' . count($_SESSION["history"][$_GET["server"]][$_GET["db"]])) . '">' . lang('Edit') . '</a></span>';
 		$_SESSION["history"][$_GET["server"]][$_GET["db"]][] = $query;
 	}
 	if ($execute) {
@@ -230,9 +230,9 @@ function is_utf8($val) {
 	return (preg_match('~~u', $val) && !preg_match('~[\\0-\\x8\\xB\\xC\\xE-\\x1F]~', $val));
 }
 
-function shorten_utf8($string, $length) {
+function shorten_utf8($string, $length = 80, $suffix = "") {
 	preg_match("~^(.{0,$length})(.?)~su", $string, $match);
-	return htmlspecialchars($match[1]) . ($match[2] ? "<em>...</em>" : "");
+	return htmlspecialchars($match[1]) . $suffix . ($match[2] ? "<em>...</em>" : "");
 }
 
 function friendly_url($val) {

@@ -4,7 +4,7 @@ Simplify export
 Display execution time in SQL query
 Relative date and time functions
 Version checker
-Save queries to history
+Save queries to history and display it on SQL page
 Ability to select all rows on current page of select
 Separate JavaScript functions
 Always use the default style before the external one

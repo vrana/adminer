@@ -5,7 +5,6 @@ MySQL 5 BIT data type
 Transactions in export
 Compress export and import
 Create view and routine options
-Visualize SQL queries history
 Function to fix database encoding - http://php.vrana.cz/prevod-kodovani-mysql.php
 Utilize information_schema.USER_PRIVILEGES in Privileges
 Highlight SQL textarea - may use external CodePress

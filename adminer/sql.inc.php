@@ -1,10 +1,14 @@
 <?php
 page_header(lang('SQL command'), $error);
+$history = &$_SESSION["history"][$_GET["server"]][$_GET["db"]];
 
 if (!$error && $_POST) {
 	if (is_string($query = (isset($_POST["file"]) ? get_file("sql_file") : $_POST["query"]))) {
 		@set_time_limit(0);
 		$query = str_replace("\r", "", $query);
+		if (strlen($query) && end($history) != $query) {
+			$history[] = $query;
+		}
 		$delimiter = ";";
 		$offset = 0;
 		$empty = true;
@@ -24,7 +28,7 @@ if (!$error && $_POST) {
 					$offset = $match[0][1] + strlen($match[0][0]);
 				} else {
 					$empty = false;
-					echo "<pre class='jush-sql'>" . shorten_utf8(trim(substr($query, 0, $match[0][1])), 100) . "</pre>\n";
+					echo "<pre class='jush-sql'>" . shorten_utf8(trim(substr($query, 0, $match[0][1]))) . "</pre>\n";
 					flush();
 					$start = explode(" ", microtime());
 					//! don't allow changing of character_set_results, convert encoding of displayed query
@@ -79,5 +83,16 @@ if (!ini_get("file_uploads")) {
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
 <input type="submit" name="file" value="<?php echo lang('Execute'); ?>" />
 </p>
+
+<?php
+if ($history) {
+	echo "<fieldset><legend>" . lang('History') . "</legend>\n";
+	foreach ($history as $key => $val) {
+		echo '<a href="' . htmlspecialchars($SELF . "sql=&history=$key") . '">' . lang('Edit') . '</a> <code class="jush-sql">' . shorten_utf8(str_replace("\n", " ", $val), 80, "</code>") . "<br />\n";
+	}
+	echo "</fieldset>\n";
+}
+?>
+
 </form>
 <?php } ?>
