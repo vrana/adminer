@@ -1,4 +1,4 @@
-Bulk database create and drop
+Bulk database drop
 Add whisperer to fields with foreign key
 Highlight found fields
 MySQL 5 BIT data type
@@ -11,6 +11,7 @@ Highlight SQL textarea - may use external CodePress
 Column and table names auto-completition in SQL textarea
 Mass editation of individual rows
 IE6 - <label for>
+Edit default values directly in table creation
 ? Save token also to cookie - for session expiration and login in other window
 ? Save uploaded files after error to session variable instead of hidden field
 ? Aliasing of built-in functions can save 7 KB, substitution of $_GET and friends can save 2 KB, remove of base64_decode() + using chars 127-255 in minification can save 1 KB, JS packer can save 1 KB

@@ -12,6 +12,7 @@ Always try to use the syntax highlighter
 All privileges in user rights
 Fix FOUND_ROWS() in SQL command
 Export only selected columns in select
+Bulk database creation
 Include views in drop and move on database overview
 Hide fieldsets in select
 Use \n in SQL commands
