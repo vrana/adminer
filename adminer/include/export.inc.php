@@ -129,7 +129,7 @@ function dump_data($table, $style, $select = "") {
 				if ($_POST["format"] == "csv") {
 					dump_csv($row);
 				} else {
-					$insert = "INSERT INTO " . idf_escape($table) . ($select ? " (" . implode(", ", array_map('idf_escape', array_keys($row))) . ")" : "") . " VALUES";
+					$insert = "INSERT INTO " . idf_escape($table) . " (" . implode(", ", array_map('idf_escape', array_keys($row))) . ") VALUES";
 					$row2 = array();
 					foreach ($row as $key => $val) {
 						$row2[$key] = (isset($val) ? "'" . $dbh->escape_string($val) . "'" : "NULL");
