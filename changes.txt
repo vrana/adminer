@@ -4,11 +4,17 @@ Simplify export
 Display execution time in SQL query
 Relative date and time functions
 Version checker
+Save queries to history
+Ability to select all rows on current page of select
 Separate JavaScript functions
 Always use the default style before the external one
 Always try to use the syntax highlighter
+All privileges in user rights
 Fix FOUND_ROWS() in SQL command
+Export only selected columns in select
+Include views in drop and move on database overview
 Simplify order in select
+Use \n in SQL commands
 
 phpMinAdmin 1.10.1:
 Highlight odd and hover rows
