@@ -144,7 +144,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0) {
 		?>
 <tr<?php echo ($display ? "" : " style='display: none;'"); ?>>
 <?php if ($type == "PROCEDURE") { ?><td><select name="fields[<?php echo $i; ?>][inout]"><?php echo optionlist($inout, $field["inout"]); ?></select></td><?php } ?>
-<th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo htmlspecialchars($field["field"]); ?>" maxlength="64" /><?php } ?><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo htmlspecialchars($field[($_POST ? "orig" : "field")]); ?>" /></th>
+<th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo htmlspecialchars($field["field"]); ?>"<?php echo (strlen($field["field"]) || count($fields) > 1 ? "" : " onchange='editing_add_row(this, $allowed);'"); ?> maxlength="64" /><?php } ?><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo htmlspecialchars($field[($_POST ? "orig" : "field")]); ?>" /></th>
 <?php edit_type("fields[$i]", $field, $collations); ?>
 <?php if ($type == "TABLE") { ?>
 <td><input type="checkbox" name="fields[<?php echo $i; ?>][null]" value="1"<?php if ($field["null"]) { ?> checked="checked"<?php } ?> /></td>
@@ -152,7 +152,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0) {
 <td<?php echo ($column_comments ? "" : " class='hidden'"); ?>><input name="fields[<?php echo $i; ?>][comment]" value="<?php echo htmlspecialchars($field["comment"]); ?>" maxlength="255" /></td>
 <?php } ?>
 <?php
-		echo "<td class='nowrap'><input type='image' name='add[$i]' src='plus.gif' alt='+' title='" . lang('Add next') . "' onclick='return !editing_add_row(this, $allowed);' />";
+		echo "<td class='nowrap'><input type='image' name='add[$i]' src='plus.gif' alt='+' title='" . lang('Add next') . "' onclick='var x = editing_add_row(this, $allowed); if (x) { x.focus(); x.onchange = function () { }; } return !x;' />";
 		echo "&nbsp;<input type='image' name='drop_col[$i]' src='cross.gif' alt='x' title='" . lang('Remove') . "' onclick='return !editing_remove_row(this);' />";
 		echo "&nbsp;<input type='image' name='up[$i]' src='up.gif' alt='^' title='" . lang('Move up') . "' />";
 		echo "&nbsp;<input type='image' name='down[$i]' src='down.gif' alt='v' title='" . lang('Move down') . "' />";

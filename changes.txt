@@ -15,6 +15,7 @@ Export only selected columns in select
 Bulk database creation
 Include views in drop and move on database overview
 Hide fieldsets in select
+Automatically add new fields in table creation
 Use \n in SQL commands
 
 phpMinAdmin 1.10.1:

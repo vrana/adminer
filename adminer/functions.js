@@ -85,32 +85,26 @@ function editing_add_row(button, allowed) {
 	var tags = row.getElementsByTagName('select');
 	var tags2 = row2.getElementsByTagName('select');
 	for (var i=0; i < tags.length; i++) {
-		tags[i].name = tags[i].name.replace(/([0-9.]+)/, x);
+		tags2[i].name = tags[i].name.replace(/([0-9.]+)/, x);
 		tags2[i].selectedIndex = tags[i].selectedIndex;
 	}
 	tags = row.getElementsByTagName('input');
-	var ai;
+	tags2 = row2.getElementsByTagName('input');
 	for (var i=0; i < tags.length; i++) {
 		if (tags[i].name == 'auto_increment_col') {
-			tags[i].value = x;
-			if (tags[i].checked) {
-				ai = i;
-				tags[i].checked = false;
-			}
+			tags2[i].value = x;
+			tags2[i].checked = false;
 		}
-		tags[i].name = tags[i].name.replace(/([0-9.]+)/, x);
+		tags2[i].name = tags[i].name.replace(/([0-9.]+)/, x);
 		if (/\[(orig|field|comment)/.test(tags[i].name)) {
-			tags[i].value = '';
+			tags2[i].value = '';
 		}
 	}
-	row.parentNode.insertBefore(row2, row);
-	if (ai !== undefined) {
-		row2.getElementsByTagName('input')[ai].checked = true;
-	}
-	tags[0].focus();
+	tags[0].onchange = function () { };
+	row.parentNode.insertBefore(row2, row.nextSibling);
 	added += '0';
 	row_count++;
-	return true;
+	return tags2[0];
 }
 
 function editing_remove_row(button) {
