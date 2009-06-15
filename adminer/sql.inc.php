@@ -6,7 +6,7 @@ if (!$error && $_POST) {
 	if (is_string($query = (isset($_POST["file"]) ? get_file("sql_file") : $_POST["query"]))) {
 		@set_time_limit(0);
 		$query = str_replace("\r", "", $query);
-		if (strlen($query) && end($history) != $query) {
+		if (strlen($query) && $history[count($history) - 1] != $query) {
 			$history[] = $query;
 		}
 		$delimiter = ";";
