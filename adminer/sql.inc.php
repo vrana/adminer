@@ -6,6 +6,7 @@ if (!$error && $_POST) {
 	if (is_string($query = (isset($_POST["file"]) ? get_file("sql_file") : $_POST["query"]))) {
 		@set_time_limit(0);
 		$query = str_replace("\r", "", $query);
+		$query = rtrim($query);
 		if (strlen($query) && $history[count($history) - 1] != $query) {
 			$history[] = $query;
 		}
@@ -17,7 +18,7 @@ if (!$error && $_POST) {
 		if (is_object($dbh2)) {
 			$dbh2->select_db($_GET["db"]);
 		}
-		while (rtrim($query)) {
+		while (strlen($query)) {
 			if (!$offset && preg_match('~^\\s*DELIMITER\\s+(.+)~i', $query, $match)) {
 				$delimiter = $match[1];
 				$query = substr($query, strlen($match[0]));
