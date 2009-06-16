@@ -16,7 +16,8 @@ function dump_triggers($table, $style) {
 		if ($result->num_rows) {
 			echo "\nDELIMITER ;;\n";
 			while ($row = $result->fetch_assoc()) {
-				echo "\nCREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . idf_escape($row["Table"]) . " FOR EACH ROW\n$row[Statement];;\n";
+				echo "\n" . ($style == 'CREATE+ALTER' ? "DROP TRIGGER IF EXISTS " . idf_escape($row["Trigger"]) . ";;\n" : "")
+				. "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . idf_escape($row["Table"]) . " FOR EACH ROW\n$row[Statement];;\n";
 			}
 			echo "\nDELIMITER ;\n";
 		}
@@ -51,7 +52,8 @@ if ($_POST) {
 					foreach (array("FUNCTION", "PROCEDURE") as $routine) {
 						$result = $dbh->query("SHOW $routine STATUS WHERE Db = '" . $dbh->escape_string($db) . "'");
 						while ($row = $result->fetch_assoc()) {
-							$out .= $dbh->result($dbh->query("SHOW CREATE $routine " . idf_escape($row["Name"])), 2) . ";;\n\n";
+							$out .= ($style != 'DROP+CREATE' ? "DROP $routine IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
+							. $dbh->result($dbh->query("SHOW CREATE $routine " . idf_escape($row["Name"])), 2) . ";;\n\n";
 						}
 						$result->free();
 					}
@@ -59,7 +61,8 @@ if ($_POST) {
 				if ($dbh->server_info >= 5.1) {
 					$result = $dbh->query("SHOW EVENTS");
 					while ($row = $result->fetch_assoc()) {
-						$out .= $dbh->result($dbh->query("SHOW CREATE EVENT " . idf_escape($row["Name"])), 3) . ";;\n\n";
+						$out .= ($style != 'DROP+CREATE' ? "DROP EVENT IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
+						. $dbh->result($dbh->query("SHOW CREATE EVENT " . idf_escape($row["Name"])), 3) . ";;\n\n";
 					}
 					$result->free();
 				}
