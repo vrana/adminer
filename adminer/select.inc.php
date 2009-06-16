@@ -201,12 +201,12 @@ if (!$columns) {
 	foreach ((array) $_GET["order"] as $key => $val) {
 		if (in_array($val, $columns, true)) {
 			echo "<div><select name='order[$i]'><option></option>" . optionlist($columns, $val) . "</select>";
-			echo "<label><input type='checkbox' name='desc[$i]' value='1'" . (isset($_GET["desc"][$key]) ? " checked='checked'" : "") . " />" . lang('DESC') . "</label></div>\n";
+			echo "<label><input type='checkbox' name='desc[$i]' value='1'" . (isset($_GET["desc"][$key]) ? " checked='checked'" : "") . " />" . lang('descending') . "</label></div>\n";
 			$i++;
 		}
 	}
 	echo "<div><select name='order[$i]' onchange='select_add_row(this);'><option></option>" . optionlist($columns) . "</select>";
-	echo "<label><input type='checkbox' name='desc[$i]' value='1' />" . lang('DESC') . "</label></div>\n";
+	echo "<label><input type='checkbox' name='desc[$i]' value='1' />" . lang('descending') . "</label></div>\n";
 	echo "</div></fieldset>\n";
 	
 	echo "<fieldset><legend>" . lang('Limit') . "</legend><div>";
