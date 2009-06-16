@@ -126,6 +126,8 @@ if (isset($_GET["download"])) {
 			include "./processlist.inc.php";
 		} elseif (isset($_GET["select"])) {
 			include "./select.inc.php";
+		} elseif (isset($_GET["variables"])) {
+			include "./variables.inc.php";
 		} else {
 			include "./db.inc.php";
 		}
