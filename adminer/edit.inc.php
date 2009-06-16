@@ -92,13 +92,13 @@ if (isset($_GET["select"])) {
 	hidden_fields(array("check" => (array) $_POST["check"], "clone" => $_POST["clone"], "all" => $_POST["all"]));
 }
 if ($fields) {
-	echo '<input type="submit" value="' . lang('Save') . '" />';
+	echo "<input type='submit' value='" . lang('Save') . "' />\n";
 	if (!isset($_GET["default"]) && !isset($_GET["select"])) {
-		echo '<input type="submit" name="insert" value="' . ($update ? lang('Save and continue edit') : lang('Save and insert next')) . '" />';
+		echo "<input type='submit' name='insert' value='" . ($update ? lang('Save and continue edit') : lang('Save and insert next')) . "' />\n";
 	}
 }
 if ($update) {
-	echo ' <input type="submit" name="delete" value="' . lang('Delete') . '"' . $confirm . '/>';
+	echo "<input type='submit' name='delete' value='" . lang('Delete') . "'$confirm />\n";
 }
 ?>
 </p>
