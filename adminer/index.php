@@ -29,7 +29,7 @@ if (isset($_SESSION["coverage"])) {
 	}
 }
 if (get_magic_quotes_gpc()) {
-    $process = array(&$_GET, &$_POST);
+    $process = array(&$_GET, &$_POST, &$_COOKIE);
     while (list($key, $val) = each($process)) {
         foreach ($val as $k => $v) {
             unset($process[$key][$k]);
