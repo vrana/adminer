@@ -8,12 +8,13 @@ Create view and routine options
 Function to fix database encoding - http://php.vrana.cz/prevod-kodovani-mysql.php
 Utilize information_schema.USER_PRIVILEGES in Privileges
 Highlight SQL textarea - may use external CodePress
-Column and table names auto-completition in SQL textarea
 Mass editation of individual rows
 IE6 - <label for>
 Edit default values directly in table creation
 Single column foreign key definition in table creation
-? Ability to select external style - list downloaded by JavaScript
+Offer enum items in search
+Ability to select external style - list downloaded by JavaScript
+? Column and table names auto-completition in SQL textarea
 ? Save token also to cookie - for session expiration and login in other window
 ? Save uploaded files after error to session variable instead of hidden field
 ? Aliasing of built-in functions can save 7 KB, substitution of $_GET and friends can save 2 KB, remove of base64_decode() + using chars 127-255 in minification can save 1 KB, JS packer can save 1 KB
