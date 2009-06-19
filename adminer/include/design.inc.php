@@ -9,7 +9,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <meta name="robots" content="noindex" />
-<title><?php echo $title . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . (strlen($_GET["server"]) ? htmlspecialchars("- $_GET[server]") : "") . " - " . lang('Adminer'); ?></title>
+<title><?php echo $title . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . (strlen($_GET["server"]) && $_GET["server"] != "localhost" ? htmlspecialchars("- $_GET[server]") : "") . " - " . lang('Adminer'); ?></title>
 <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 <link rel="stylesheet" type="text/css" href="default.css<?php // Ondrej Valka, http://valka.info ?>" />
 <?php if (file_exists("adminer.css")) { ?>
