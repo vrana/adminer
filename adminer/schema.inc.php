@@ -63,14 +63,17 @@ foreach ($schema as $name => $table) {
 	echo '<a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($name) . '"><strong>' . htmlspecialchars($name) . "</strong></a><br />\n";
 	foreach ($table["fields"] as $field) {
 		$val = htmlspecialchars($field["field"]);
+		$title = ' title="' . htmlspecialchars($field["Type"] . ($field["null"] ? " " . lang('NULL') : '')) . '"';
 		if (preg_match('~char|text~', $field["type"])) {
-			$val = "<span class='char'>$val</span>";
+			$val = "<span class='char'$title>$val</span>";
 		} elseif (preg_match('~date|time|year~', $field["type"])) {
-			$val = "<span class='date'>$val</span>";
+			$val = "<span class='date'$title>$val</span>";
 		} elseif (preg_match('~binary|blob~', $field["type"])) {
-			$val = "<span class='binary'>$val</span>";
+			$val = "<span class='binary'$title>$val</span>";
 		} elseif (preg_match('~enum|set~', $field["type"])) {
-			$val = "<span class='enum'>$val</span>";
+			$val = "<span class='enum'$title>$val</span>";
+		} else {
+			$val = "<span$title>$val</span>";
 		}
 		echo ($field["primary"] ? "<em>$val</em>" : $val) . "<br />\n";
 	}
