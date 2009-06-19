@@ -82,7 +82,7 @@ foreach ($row["indexes"] as $index) {
 </table>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>" />
-<input type="submit" value="<?php echo lang('Alter indexes'); ?>" />
+<input type="submit" value="<?php echo lang('Save'); ?>" />
 </p>
 <noscript><p><input type="submit" name="add" value="<?php echo lang('Add next'); ?>" /></p></noscript>
 </form>
