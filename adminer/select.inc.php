@@ -287,7 +287,10 @@ if (!$columns) {
 			echo "</table>\n";
 			
 			echo "<p>";
-			$found_rows = (intval($limit) ? $dbh->result($dbh->query(count($group) < count($select) ? " SELECT FOUND_ROWS()" : "SELECT COUNT(*) FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : ""))) : $result->num_rows);
+			$found_rows = (intval($limit) ? $dbh->result($dbh->query(count($group) < count($select)
+				? " SELECT FOUND_ROWS()" // space to allow mysql.trace_mode
+				: "SELECT COUNT(*) FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "")
+			)) : $result->num_rows);
 			if (intval($limit) && $found_rows > $limit) {
 				$max_page = floor(($found_rows - 1) / $limit);
 				echo lang('Page') . ":";
