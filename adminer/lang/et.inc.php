@@ -214,4 +214,5 @@ $translations = array(
 	'Select table' => 'Vali tabel',
 	'%.3f s' => '%.3f s',
 	'History' => 'Ajalugu',
+	'Variables' => 'Muutujad',
 );

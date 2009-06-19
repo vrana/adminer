@@ -214,4 +214,5 @@ $translations = array(
 	'(anywhere)' => '(в любом месте)',
 	'%.3f s' => '%.3f s',
 	'History' => 'История',
+	'Variables' => 'Переменные',
 );

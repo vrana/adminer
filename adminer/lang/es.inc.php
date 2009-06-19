@@ -214,4 +214,5 @@ $translations = array(
 	'Select table' => 'Seleccionar tabla',
 	'%.3f s' => '%.3f s',
 	'History' => 'Historia',
+	'Variables' => 'Variables',
 );

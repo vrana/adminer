@@ -214,4 +214,5 @@ $translations = array(
 	'(anywhere)' => '(kdekoľvek)',
 	'%.3f s' => '%.3f s',
 	'History' => 'História',
+	'Variables' => 'Premenné',
 );
