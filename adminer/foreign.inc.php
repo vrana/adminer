@@ -15,6 +15,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 			. (in_array($_POST["on_delete"], $on_actions) ? " ON DELETE $_POST[on_delete]" : "")
 			. (in_array($_POST["on_update"], $on_actions) ? " ON UPDATE $_POST[on_update]" : "")
 		, $SELF . "table=" . urlencode($_GET["foreign"]), (strlen($_GET["name"]) ? lang('Foreign key has been altered.') : lang('Foreign key has been created.')));
+		$error = lang('Source and target columns must have the same data type and there must be an index on the target columns.') . "<br />$error";
 	}
 }
 page_header(lang('Foreign key'), $error, array("table" => $_GET["foreign"]), $_GET["foreign"]);

@@ -215,4 +215,5 @@ $translations = array(
 	'%.3f s' => '%.3f s',
 	'History' => 'Historie',
 	'Variables' => 'Proměnné',
+	'Source and target columns must have the same data type and there must be an index on the target columns.' => 'Zdrojové a cílové sloupce musí mít stejný datový typ a nad cílovými sloupci musí být definován index.',
 );
