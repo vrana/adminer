@@ -197,7 +197,7 @@ $types = array(
 	"tinyblob" => 255, "blob" => 65535, "mediumblob" => 16777215, "longblob" => 4294967295,
 	"enum" => 65535, "set" => 64,
 );
-$unsigned = array("", "unsigned", "zerofill", "unsigned zerofill");
+$unsigned = array("unsigned", "zerofill", "unsigned zerofill");
 
 function connect() {
 	$dbh = new Min_DB;

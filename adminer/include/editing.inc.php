@@ -102,7 +102,10 @@ function edit_type($key, $field, $collations) {
 	?>
 <td><select name="<?php echo $key; ?>[type]" onchange="editing_type_change(this);"><?php echo optionlist(array_keys($types), $field["type"]); ?></select></td>
 <td><input name="<?php echo $key; ?>[length]" value="<?php echo htmlspecialchars($field["length"]); ?>" size="3" /></td>
-<td><?php echo "<select name=\"$key" . '[collation]"' . (preg_match('~char|text|enum|set~', $field["type"]) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')</option>' . optionlist($collations, $field["collation"]) . '</select>' . ($unsigned ? " <select name=\"$key" . '[unsigned]"' . (!$field["type"] || preg_match('~int|float|double|decimal~', $field["type"]) ? "" : " class='hidden'") . '>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : ''); ?></td>
+<td><?php
+echo "<select name=\"$key" . '[collation]"' . (preg_match('~char|text|enum|set~', $field["type"]) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')</option>' . optionlist($collations, $field["collation"]) . '</select>';
+echo ($unsigned ? " <select name=\"$key" . '[unsigned]"' . (!$field["type"] || preg_match('~int|float|double|decimal~', $field["type"]) ? "" : " class='hidden'") . '><option></option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
+?></td>
 <?php
 }
 
