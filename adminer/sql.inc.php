@@ -7,7 +7,7 @@ if (!$error && $_POST) {
 		@set_time_limit(0); // set_time_limit() can be disabled
 		$query = str_replace("\r", "", $query); // parser looks for \n
 		$query = rtrim($query);
-		if (strlen($query) && $history[count($history)-1] != $query) { // don't add repeated 
+		if (strlen($query) && (!$history || end($history) != $query)) { // don't add repeated 
 			$history[] = $query;
 		}
 		$delimiter = ";";
