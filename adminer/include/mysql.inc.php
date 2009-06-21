@@ -235,7 +235,7 @@ function fields($table) {
 			preg_match('~^([^( ]+)(?:\\((.+)\\))?( unsigned)?( zerofill)?$~', $row["Type"], $match);
 			$return[$row["Field"]] = array(
 				"field" => $row["Field"],
-				"Type" => $row["Type"],
+				"full_type" => $row["Type"],
 				"type" => $match[1],
 				"length" => $match[2],
 				"unsigned" => ltrim($match[3] . $match[4]),

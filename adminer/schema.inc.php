@@ -65,7 +65,7 @@ foreach ($schema as $name => $table) {
 	echo '<a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($name) . '"><strong>' . htmlspecialchars($name) . "</strong></a><br />\n";
 	foreach ($table["fields"] as $field) {
 		$val = htmlspecialchars($field["field"]);
-		$title = ' title="' . htmlspecialchars($field["Type"] . ($field["null"] ? " " . lang('NULL') : '')) . '"';
+		$title = ' title="' . htmlspecialchars($field["full_type"] . ($field["null"] ? " " . lang('NULL') : '')) . '"';
 		if (preg_match('~char|text~', $field["type"])) {
 			$val = "<span class='char'$title>$val</span>";
 		} elseif (preg_match('~date|time|year~', $field["type"])) {
