@@ -301,17 +301,17 @@ if (!$columns) {
 				// display first, previous 3, next 3 and last page
 				$max_page = floor(($found_rows - 1) / $limit);
 				echo lang('Page') . ":";
-				print_page(0);
+				print_pagination(0);
 				if ($_GET["page"] > 3) {
 					echo " ...";
 				}
 				for ($i = max(1, $_GET["page"] - 2); $i < min($max_page, $_GET["page"] + 3); $i++) {
-					print_page($i);
+					print_pagination($i);
 				}
 				if ($_GET["page"] + 3 < $max_page) {
 					echo " ...";
 				}
-				print_page($max_page);
+				print_pagination($max_page);
 			}
 			echo " (" . lang('%d row(s)', $found_rows) . ') <label><input type="checkbox" name="all" value="1" />' . lang('whole result') . "</label></p>\n";
 			
