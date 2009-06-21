@@ -79,15 +79,13 @@ function page_footer($missing = false) {
 <?php if (get_databases()) { ?>
 <select name="db" onchange="this.form.submit();"><option value="">(<?php echo lang('database'); ?>)</option><?php echo optionlist(get_databases(), $_GET["db"]); ?></select>
 <?php } else { ?>
-<input name="db" value="<?php echo htmlspecialchars($_GET["db"]); ?>" /> <input type="submit" value="<?php echo lang('Use'); ?>" />
+<input name="db" value="<?php echo htmlspecialchars($_GET["db"]); ?>" />
 <?php } ?>
 <?php if (isset($_GET["sql"])) { ?><input type="hidden" name="sql" value="" /><?php } ?>
 <?php if (isset($_GET["schema"])) { ?><input type="hidden" name="schema" value="" /><?php } ?>
 <?php if (isset($_GET["dump"])) { ?><input type="hidden" name="dump" value="" /><?php } ?>
+<input type="submit" value="<?php echo lang('Use'); ?>"<?php echo (get_databases() ? " class='hidden'" : ""); ?> />
 </p>
-<?php if (get_databases()) { ?>
-<noscript><p><input type="submit" value="<?php echo lang('Use'); ?>" /></p></noscript>
-<?php } ?>
 </form>
 <?php
 		if ($missing != "db" && strlen($_GET["db"])) {
