@@ -76,14 +76,14 @@ if (!$error && $_POST) {
 <label><input type="checkbox" name="error_stops" value="1"<?php echo ($_POST["error_stops"] ? " checked='checked'" : ""); ?> /><?php echo lang('Stop on error'); ?></label>
 </p>
 
+<p>
 <?php
 if (!ini_get("file_uploads")) {
-	echo "<p>" . lang('File uploads are disabled.') . "</p>\n";
+	echo lang('File uploads are disabled.');
 } else { ?>
-<p>
 <?php echo lang('File upload'); ?>: <input type="file" name="sql_file" />
-<input type="hidden" name="token" value="<?php echo $token; ?>" />
 <input type="submit" name="file" value="<?php echo lang('Execute'); ?>" />
+<?php } ?>
 </p>
 
 <?php
@@ -98,4 +98,3 @@ if ($history) {
 ?>
 
 </form>
-<?php } ?>
