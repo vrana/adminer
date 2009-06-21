@@ -173,21 +173,10 @@ echo "<tr><th>" . lang('Data') . "</th><td><select name='data_style'><option></o
 </table>
 <p><input type="submit" value="<?php echo lang('Export'); ?>" /></p>
 
+<table cellspacing="0">
 <?php
-if (!strlen($_GET["db"])) {
-	echo "<table cellspacing='0'>\n";
-	echo "<thead><tr><th align='left'><label><input type='checkbox' id='check-databases' checked='checked' onclick='form_check(this, /^databases\\[/);' />" . lang('Database') . "</label></th></tr></thead>\n";
-	foreach (get_databases() as $db) {
-		if ($db != "information_schema" || $dbh->server_info < 5) {
-			echo '<tr><td><label><input type="checkbox" name="databases[]" value="' . htmlspecialchars($db) . '" checked="checked" onclick="form_uncheck(\'check-databases\');" />' . htmlspecialchars($db) . "</label></td></tr>\n";
-		}
-	}
-	echo "</table>\n";
-}
-
 if (strlen($_GET["db"])) {
 	$checked = (strlen($_GET["dump"]) ? "" : " checked='checked'");
-	echo "<table cellspacing='0'>\n";
 	echo "<thead><tr>";
 	echo "<th align='left'><label><input type='checkbox' id='check-tables'$checked onclick='form_check(this, /^tables\\[/);' />" . lang('Tables') . "</label></th>";
 	echo "<th align='right'><label>" . lang('Data') . "<input type='checkbox' id='check-data'$checked onclick='form_check(this, /^data\\[/);' /></label></th>";
@@ -203,7 +192,15 @@ if (strlen($_GET["db"])) {
 			echo "$print<td align='right'><label>" . ($row["Engine"] == "InnoDB" && $row["Rows"] ? lang('~ %s', $row["Rows"]) : $row["Rows"]) . '<input type="checkbox" name="data[]" value="' . htmlspecialchars($row["Name"]) . "\"$checked onclick=\"form_uncheck('check-data');\" /></label></td></tr>\n";
 		}
 	}
-	echo "$views</table>\n";
+	echo $views;
+} else {
+	echo "<thead><tr><th align='left'><label><input type='checkbox' id='check-databases' checked='checked' onclick='form_check(this, /^databases\\[/);' />" . lang('Database') . "</label></th></tr></thead>\n";
+	foreach (get_databases() as $db) {
+		if ($db != "information_schema" || $dbh->server_info < 5) {
+			echo '<tr><td><label><input type="checkbox" name="databases[]" value="' . htmlspecialchars($db) . '" checked="checked" onclick="form_uncheck(\'check-databases\');" />' . htmlspecialchars($db) . "</label></td></tr>\n";
+		}
+	}
 }
 ?>
+</table>
 </form>
