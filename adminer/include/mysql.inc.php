@@ -205,7 +205,11 @@ $unsigned = array("unsigned", "zerofill", "unsigned zerofill");
 
 function connect() {
 	$dbh = new Min_DB;
-	return ($dbh->connect($_GET["server"], $_SESSION["usernames"][$_GET["server"]], $_SESSION["passwords"][$_GET["server"]]) ? $dbh : $dbh->error);
+	if ($dbh->connect($_GET["server"], $_SESSION["usernames"][$_GET["server"]], $_SESSION["passwords"][$_GET["server"]])) {
+		$dbh->query("SET SQL_QUOTE_SHOW_CREATE=1");
+		return $dbh;
+	}
+	return $dbh->error;
 }
 
 function get_databases() {
