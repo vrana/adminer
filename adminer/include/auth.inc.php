@@ -29,11 +29,9 @@ if (isset($_POST["server"])) {
 		page_footer("db");
 		exit;
 	} else {
-		unset($_SESSION["usernames"][$_GET["server"]]);
-		unset($_SESSION["passwords"][$_GET["server"]]);
-		unset($_SESSION["databases"][$_GET["server"]]);
-		unset($_SESSION["tokens"][$_GET["server"]]);
-		unset($_SESSION["history"][$_GET["server"]]);
+		foreach (array("usernames", "passwords", "databases", "tokens", "history") as $val) {
+			unset($_SESSION[$val][$_GET["server"]]);
+		}
 		redirect(substr($SELF, 0, -1), lang('Logout successful.'));
 	}
 }
