@@ -39,14 +39,14 @@ function switch_lang() {
 }
 
 if (isset($_GET["lang"])) {
-	$_COOKIE["lang"] = $_GET["lang"];
+	$_COOKIE["adminer_lang"] = $_GET["lang"];
 	$_SESSION["lang"] = $_GET["lang"]; // cookies may be disabled
 }
 
 $LANG = "en";
-if (isset($langs[$_COOKIE["lang"]])) {
-	setcookie("lang", $_GET["lang"], strtotime("+1 month"), preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]));
-	$LANG = $_COOKIE["lang"];
+if (isset($langs[$_COOKIE["adminer_lang"]])) {
+	setcookie("adminer_lang", $_GET["lang"], strtotime("+1 month"), preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]));
+	$LANG = $_COOKIE["adminer_lang"];
 } elseif (isset($langs[$_SESSION["lang"]])) {
 	$LANG = $_SESSION["lang"];
 } else {

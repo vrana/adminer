@@ -25,7 +25,7 @@ function lang_ids($match) {
 function put_file($match) {
 	global $lang_ids;
 	if ($match[2] == './lang/$LANG.inc.php') {
-		if ($_COOKIE["lang"]) {
+		if ($_COOKIE["adminer_lang"]) {
 			return "";
 		}
 		$return = "";
@@ -53,12 +53,12 @@ function put_file($match) {
 		return "switch (\$LANG) {\n$return}\n";
 	}
 	$return = file_get_contents(dirname(__FILE__) . "/adminer/$match[2]");
-	if ($match[2] != "./include/lang.inc.php" || !$_COOKIE["lang"]) {
+	if ($match[2] != "./include/lang.inc.php" || !$_COOKIE["adminer_lang"]) {
 		$tokens = token_get_all($return); // to find out the last token
 		return "?>\n$return" . (in_array($tokens[count($tokens) - 1][0], array(T_CLOSE_TAG, T_INLINE_HTML), true) ? "<?php" : "");
 	} elseif (preg_match('~\\s*(\\$pos = .*)~', $return, $match2)) {
 		// single language lang() is used for plural
-		return "function lang(\$translation, \$number) {\n\t" . str_replace('$LANG', "'$_COOKIE[lang]'", $match2[1]) . "\n\treturn sprintf(\$translation[\$pos], \$number);\n}\n";
+		return "function lang(\$translation, \$number) {\n\t" . str_replace('$LANG', "'$_COOKIE[adminer_lang]'", $match2[1]) . "\n\treturn sprintf(\$translation[\$pos], \$number);\n}\n";
 	} else {
 		echo "lang() not found\n";
 	}
@@ -160,24 +160,24 @@ function php_shrink($input) {
 
 error_reporting(E_ALL & ~E_NOTICE);
 if ($_SERVER["argc"] > 1) {
-	$_COOKIE["lang"] = $_SERVER["argv"][1]; // Adminer functions read language from cookie
+	$_COOKIE["adminer_lang"] = $_SERVER["argv"][1]; // Adminer functions read language from cookie
 	include dirname(__FILE__) . "/adminer/include/lang.inc.php";
-	if ($_SERVER["argc"] != 2 || !isset($langs[$_COOKIE["lang"]])) {
+	if ($_SERVER["argc"] != 2 || !isset($langs[$_COOKIE["adminer_lang"]])) {
 		echo "Usage: php compile.php [lang]\nPurpose: Compile adminer[-lang].php from index.php.\n";
 		exit(1);
 	}
-	include dirname(__FILE__) . "/adminer/lang/$_COOKIE[lang].inc.php";
+	include dirname(__FILE__) . "/adminer/lang/$_COOKIE[adminer_lang].inc.php";
 }
 
-$filename = "adminer" . ($_COOKIE["lang"] ? "-$_COOKIE[lang]" : "") . ".php";
+$filename = "adminer" . ($_COOKIE["adminer_lang"] ? "-$_COOKIE[adminer_lang]" : "") . ".php";
 $file = file_get_contents(dirname(__FILE__) . "/adminer/index.php");
 $file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file);
 $file = preg_replace("~if \\(isset\\(\\\$_SESSION\\[\"coverage.*\n}\n| && !isset\\(\\\$_SESSION\\[\"coverage\"\\]\\)~sU", '', $file);
-if ($_COOKIE["lang"]) {
+if ($_COOKIE["adminer_lang"]) {
 	// single language version
 	$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
 	$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
-	$file = str_replace('<?php echo $LANG; ?>', $_COOKIE["lang"], $file);
+	$file = str_replace('<?php echo $LANG; ?>', $_COOKIE["adminer_lang"], $file);
 } else {
 	$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
 }
