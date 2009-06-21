@@ -5,10 +5,14 @@ function connect_error() {
 		page_header(lang('Database') . ": " . htmlspecialchars($_GET["db"]), lang('Invalid database.'), false);
 	} else {
 		page_header(lang('Select database'), "", null);
-		echo '<p><a href="' . htmlspecialchars($SELF) . 'database=">' . lang('Create new database') . "</a></p>\n";
-		echo '<p><a href="' . htmlspecialchars($SELF) . 'privileges=">' . lang('Privileges') . "</a></p>\n";
-		echo '<p><a href="' . htmlspecialchars($SELF) . 'processlist=">' . lang('Process list') . "</a></p>\n";
-		echo '<p><a href="' . htmlspecialchars($SELF) . 'variables=">' . lang('Variables') . "</a></p>\n";
+		foreach (array(
+			'database' => lang('Create new database'),
+			'privileges' => lang('Privileges'),
+			'processlist' => lang('Process list'),
+			'variables' => lang('Variables'),
+		) as $key => $val) {
+			echo '<p><a href="' . htmlspecialchars($SELF) . "$key=\">$val</a></p>\n";
+		}
 		echo "<p>" . lang('MySQL version: %s through PHP extension %s', "<b" . ($dbh->server_info < 4.1 ? " class='binary'" : "") . ">$dbh->server_info</b>", "<b>$dbh->extension</b>") . "</p>\n";
 		echo "<p>" . lang('Logged as: %s', "<b>" . htmlspecialchars($dbh->result($dbh->query("SELECT USER()"))) . "</b>") . "</p>\n";
 	}
