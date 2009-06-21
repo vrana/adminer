@@ -26,6 +26,7 @@ function input($name, $field, $value, $separator = "</td><td>") { //! pass empty
 				$options = (preg_match('~char~', $field["type"]) ? array("", "md5", "sha1", "password", "uuid") : array("", "now"));
 			}
 			if (!isset($_GET["call"]) && (isset($_GET["select"]) || where($_GET))) {
+				// relative functions
 				if (preg_match('~int|float|double|decimal~', $field["type"])) {
 					$options = array("", "+", "-");
 				}
@@ -55,6 +56,7 @@ function input($name, $field, $value, $separator = "</td><td>") { //! pass empty
 		} elseif (preg_match('~binary|blob~', $field["type"])) {
 			echo (ini_get("file_uploads") ? '<input type="file" name="' . $name . '"' . $onchange . ' />' : lang('File uploads are disabled.') . ' ');
 		} else {
+			// int(3) is only a display hint
 			$maxlength = (!ereg('int', $field["type"]) && preg_match('~^([0-9]+)(,([0-9]+))?$~', $field["length"], $match) ? ($match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) : ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0));
 			echo '<input name="fields[' . $name . ']" value="' . htmlspecialchars($value) . '"' . ($maxlength ? " maxlength='$maxlength'" : "") . $onchange . ' />';
 		}
@@ -87,7 +89,7 @@ function process_input($name, $field) {
 	} elseif (preg_match('~^[+-]$~', $function)) {
 		return idf_escape($name) . " $function '" . $dbh->escape_string($value) . "'";
 	} elseif (preg_match('~^[+-] interval$~', $function)) {
-		return idf_escape($name) . " $function " . (preg_match("~^([0-9]+|'[0-9.: -]') [A-Z_]+$~i", $value) ? $value : "'" . $dbh->escape_string($value) . "'") . "";
+		return idf_escape($name) . " $function " . (preg_match("~^([0-9]+|'[0-9.: -]') [A-Z_]+$~i", $value) ? $value : "'" . $dbh->escape_string($value) . "'");
 	} elseif (preg_match('~^(addtime|subtime)$~', $function)) {
 		return "$function(" . idf_escape($name) . ", '" . $dbh->escape_string($value) . "')";
 	} elseif (preg_match('~^(md5|sha1|password)$~', $function)) {

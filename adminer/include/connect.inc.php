@@ -20,7 +20,7 @@ if (!(strlen($_GET["db"]) ? $dbh->select_db($_GET["db"]) : isset($_GET["sql"]) |
 	if (strlen($_GET["db"])) {
 		unset($_SESSION["databases"][$_GET["server"]]);
 	}
-	connect_error();
+	connect_error(); // separate function to catch SQLite error
 	exit;
 }
 $dbh->query("SET CHARACTER SET utf8");

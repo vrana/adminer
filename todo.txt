@@ -6,7 +6,6 @@ Transactions in export
 Compress export and import
 Create view and routine options
 Function to fix database encoding - http://php.vrana.cz/prevod-kodovani-mysql.php
-Utilize information_schema.USER_PRIVILEGES in Privileges
 Highlight SQL textarea - may use external CodePress
 Mass editation of individual rows
 IE6 - <label for>

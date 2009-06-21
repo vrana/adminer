@@ -11,7 +11,7 @@ function dump_csv($row) {
 function dump_table($table, $style, $is_view = false) {
 	global $dbh;
 	if ($_POST["format"] == "csv") {
-		echo "\xef\xbb\xbf";
+		echo "\xef\xbb\xbf"; // UTF-8 byte order mark
 		if ($style) {
 			dump_csv(array_keys(fields($table)));
 		}
@@ -26,6 +26,7 @@ function dump_table($table, $style, $is_view = false) {
 			echo ($style != "CREATE+ALTER" ? $create : ($is_view ? substr_replace($create, " OR REPLACE", 6, 0) : substr_replace($create, " IF NOT EXISTS", 12, 0))) . ";\n\n";
 		}
 		if ($style == "CREATE+ALTER" && !$is_view) {
+			// create procedure which iterates over original columns and adds new and removes old
 			$query = "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLLATION_NAME, COLUMN_TYPE, EXTRA, COLUMN_COMMENT FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '" . $dbh->escape_string($table) . "' ORDER BY ORDINAL_POSITION";
 ?>
 DELIMITER ;;
@@ -131,7 +132,7 @@ function dump_data($table, $style, $select = "") {
 					} else {
 						$s = "\n(" . implode(", ", $row2) . ")";
 						if (!$length) {
-							echo $insert, $s;
+							echo $insert, $s; // comma used to save memory
 							$length = strlen($insert) + strlen($s);
 						} else {
 							$length += 2 + strlen($s);
@@ -155,7 +156,7 @@ function dump_data($table, $style, $select = "") {
 
 function dump_headers($identifier, $multi_table = false) {
 	$filename = (strlen($identifier) ? friendly_url($identifier) : "dump");
-	$ext = ($_POST["format"] == "sql" ? "sql" : ($multi_table ? "tar" : "csv"));
+	$ext = ($_POST["format"] == "sql" ? "sql" : ($multi_table ? "tar" : "csv")); // multiple CSV packed to TAR
 	header("Content-Type: " . ($ext == "tar" ? "application/x-tar" : ($ext == "sql" || $_POST["output"] != "file" ? "text/plain" : "text/csv")) . "; charset=utf-8");
 	if ($_POST["output"] == "file") {
 		header("Content-Disposition: attachment; filename=$filename.$ext");

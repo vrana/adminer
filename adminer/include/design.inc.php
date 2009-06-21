@@ -47,6 +47,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 		$databases = null;
 	}
 	if (isset($databases) && !isset($_GET["sql"]) && !isset($_SESSION["coverage"])) {
+		// improves concurrency if a user opens several pages at once
 		session_write_close();
 	}
 	if ($error) {
@@ -55,7 +56,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 }
 
 function page_footer($missing = false) {
-	global $SELF, $dbh, $VERSION;
+	global $SELF, $VERSION, $dbh;
 	?>
 </div>
 

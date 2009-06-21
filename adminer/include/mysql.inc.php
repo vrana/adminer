@@ -1,4 +1,5 @@
 <?php
+// MySQLi supports everything, MySQL doesn't support multiple result sets, PDO_MySQL doesn't support orgtable
 if (extension_loaded("mysqli")) {
 	class Min_DB extends MySQLi {
 		var $extension = "MySQLi";
@@ -8,7 +9,7 @@ if (extension_loaded("mysqli")) {
 		}
 		
 		function connect($server, $username, $password) {
-			list($host, $port) = explode(":", $server, 2);
+			list($host, $port) = explode(":", $server, 2); // part after : is used for port or socket
 			return @$this->real_connect(
 				(strlen($server) ? $host : ini_get("mysqli.default_host")),
 				(strlen("$server$username") ? $username : ini_get("mysqli.default_user")),
@@ -33,6 +34,7 @@ if (extension_loaded("mysqli")) {
 		}
 		
 		function query($query) {
+			// result is packed in envelope object to allow minification
 			$result = parent::query($query);
 			return (is_object($result) ? new Min_Result($result) : $result);
 		}
@@ -126,6 +128,7 @@ if (extension_loaded("mysqli")) {
 		}
 		
 		function next_result() {
+			// MySQL extension doesn't support multiple results
 			return false;
 		}
 		
@@ -187,6 +190,7 @@ if (extension_loaded("mysqli")) {
 	exit;
 }
 
+// value means maximum unsigned length
 $types = array(
 	"tinyint" => 3, "smallint" => 5, "mediumint" => 8, "int" => 10, "bigint" => 20,
 	"float" => 12, "double" => 21, "decimal" => 66,
@@ -205,6 +209,7 @@ function connect() {
 }
 
 function get_databases() {
+	// SHOW DATABASES can take very long so it is cached
 	$return = &$_SESSION["databases"][$_GET["server"]];
 	if (!isset($return)) {
 		flush();
@@ -216,7 +221,7 @@ function get_databases() {
 function table_status($table) {
 	global $dbh;
 	$result = $dbh->query("SHOW TABLE STATUS LIKE '" . $dbh->escape_string(addcslashes($table, "%_")) . "'");
-	$return = $result->fetch_assoc();
+	$return = $result->fetch_assoc(); // ()-> is not supported in PHP 4
 	$result->free();
 	return $return;
 }
@@ -250,7 +255,7 @@ function fields($table) {
 
 function indexes($table, $dbh2 = null) {
 	global $dbh;
-	if (!is_object($dbh2)) {
+	if (!is_object($dbh2)) { // use the main connection if the separate connection is unavailable
 		$dbh2 = $dbh;
 	}
 	$return = array();
@@ -313,6 +318,7 @@ function collations() {
 
 function table_comment(&$row) {
 	if ($row["Engine"] == "InnoDB") {
+		// ignore internal comment, unnecessary since MySQL 5.1.21
 		$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["Comment"]);
 	}
 }

@@ -8,6 +8,7 @@ function idf_unescape($idf) {
 }
 
 function bracket_escape($idf, $back = false) {
+	// escape brackets inside name="x[]"
 	static $trans = array(':' => ':1', ']' => ':2', '[' => ':3');
 	return strtr($idf, ($back ? array_flip($trans) : $trans));
 }
@@ -46,7 +47,7 @@ function unique_idf($row, $indexes) {
 		if ($index["type"] == "PRIMARY" || $index["type"] == "UNIQUE") {
 			$return = array();
 			foreach ($index["columns"] as $key) {
-				if (!isset($row[$key])) {
+				if (!isset($row[$key])) { // NULL is ambiguous
 					continue 2;
 				}
 				$return[] = urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($row[$key]);
@@ -90,6 +91,7 @@ function redirect($location, $message = null) {
 		$_SESSION["messages"][] = $message;
 	}
 	if (strlen(SID)) {
+		// append SID if session cookies are disabled
 		$location .= (strpos($location, "?") === false ? "?" : "&") . SID;
 	}
 	header("Location: " . (strlen($location) ? $location : "."));
@@ -121,6 +123,7 @@ function queries($query = null) {
 	global $dbh;
 	static $queries = array();
 	if (!isset($query)) {
+		// return executed queries without parameter
 		return implode(";\n", $queries);
 	}
 	$queries[] = $query;
@@ -137,7 +140,9 @@ function print_page($page) {
 }
 
 function get_file($key) {
+	// returns int for error, string otherwise
 	if (isset($_POST["files"][$key])) {
+		// get the file from hidden field if the user was logged out
 		$length = strlen($_POST["files"][$key]);
 		return ($length && $length < 4 ? intval($_POST["files"][$key]) : base64_decode($_POST["files"][$key]));
 	}
@@ -158,12 +163,12 @@ function select($result, $dbh2 = null) {
 		echo "<p class='message'>" . lang('No rows.') . "</p>\n";
 	} else {
 		echo "<table cellspacing='0' class='nowrap'>\n";
-		$links = array();
-		$indexes = array();
-		$columns = array();
-		$blobs = array();
-		$types = array();
-		odd('');
+		$links = array(); // colno => orgtable - create links from these columns
+		$indexes = array(); // orgtable => array(column => colno) - primary keys
+		$columns = array(); // orgtable => array(column => ) - not selected columns in primary key
+		$blobs = array(); // colno => bool - display bytes for blobs
+		$types = array(); // colno => type - display char in <code>
+		odd(''); // reset odd for each result
 		for ($i=0; $row = $result->fetch_row(); $i++) {
 			if (!$i) {
 				echo "<thead><tr>";
@@ -171,6 +176,7 @@ function select($result, $dbh2 = null) {
 					$field = $result->fetch_field();
 					if (strlen($field->orgtable)) {
 						if (!isset($indexes[$field->orgtable])) {
+							// find primary key in each table
 							$indexes[$field->orgtable] = array();
 							foreach (indexes($field->orgtable, $dbh2) as $index) {
 								if ($index["type"] == "PRIMARY") {
@@ -202,7 +208,7 @@ function select($result, $dbh2 = null) {
 					if ($blobs[$key] && !is_utf8($val)) {
 						$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>"; //! link to download
 					} elseif (!strlen(trim($val))) {
-						$val = "&nbsp;";
+						$val = "&nbsp;"; // some content to print a border
 					} else {
 						$val = nl2br(htmlspecialchars($val));
 						if ($types[$key] == 254) {
@@ -227,6 +233,7 @@ function select($result, $dbh2 = null) {
 }
 
 function is_utf8($val) {
+	// don't print control chars except \t\r\n
 	return (preg_match('~~u', $val) && !preg_match('~[\\0-\\x8\\xB\\xC\\xE-\\x1F]~', $val));
 }
 
@@ -236,6 +243,7 @@ function shorten_utf8($string, $length = 80, $suffix = "") {
 }
 
 function friendly_url($val) {
+	// used for blobs and export
 	return preg_replace('~[^a-z0-9_]~i', '-', $val);
 }
 

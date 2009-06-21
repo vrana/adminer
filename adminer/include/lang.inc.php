@@ -1,4 +1,6 @@
 <?php
+// not used in single language version
+
 $langs = array(
 	'en' => 'English', // Jakub Vrána - http://php.vrana.cz
 	'cs' => 'Čeština', // Jakub Vrána - http://php.vrana.cz
@@ -17,7 +19,7 @@ function lang($idf, $number = null) {
 	global $LANG, $translations;
 	$translation = $translations[$idf];
 	if (is_array($translation) && $translation) {
-		$pos = ($number == 1 ? 0 : ((!$number || $number >= 5) && ereg('cs|sk|ru', $LANG) ? 2 : 1));
+		$pos = ($number == 1 ? 0 : ((!$number || $number >= 5) && ereg('cs|sk|ru', $LANG) ? 2 : 1)); // Slavic languages use different form for 2, 3, 4
 		$translation = $translation[$pos];
 	}
 	$args = func_get_args();
@@ -38,7 +40,7 @@ function switch_lang() {
 
 if (isset($_GET["lang"])) {
 	$_COOKIE["lang"] = $_GET["lang"];
-	$_SESSION["lang"] = $_GET["lang"];
+	$_SESSION["lang"] = $_GET["lang"]; // cookies may be disabled
 }
 
 $LANG = "en";

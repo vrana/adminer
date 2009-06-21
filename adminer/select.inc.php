@@ -1,6 +1,6 @@
 <?php
 $functions = array("char_length", "from_unixtime", "hex", "lower", "round", "sec_to_time", "time_to_sec", "unix_timestamp", "upper");
-$grouping = array("avg", "count", "distinct", "group_concat", "max", "min", "sum");
+$grouping = array("avg", "count", "distinct", "group_concat", "max", "min", "sum"); // distinct is short for COUNT(DISTINCT)
 $table_status = table_status($_GET["select"]);
 $indexes = indexes($_GET["select"]);
 $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "REGEXP", "IN", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL");
@@ -8,8 +8,8 @@ if (eregi('^(MyISAM|Maria)$', $table_status["Engine"])) {
 	$operators[] = "AGAINST";
 }
 $fields = fields($_GET["select"]);
-$rights = array();
-$columns = array();
+$rights = array(); // privilege => 0
+$columns = array(); // selectable columns
 unset($text_length);
 foreach ($fields as $key => $field) {
 	if (isset($field["privileges"]["select"])) {
@@ -21,8 +21,8 @@ foreach ($fields as $key => $field) {
 	$rights += $field["privileges"];
 }
 
-$select = array();
-$group = array();
+$select = array(); // select expressions, empty for *
+$group = array(); // expressions without aggregation - will be used for GROUP BY if an aggregation function is used
 foreach ((array) $_GET["columns"] as $key => $val) {
 	if ($val["fun"] == "count" || (in_array($val["col"], $columns, true) && (!$val["fun"] || in_array($val["fun"], $functions) || in_array($val["fun"], $grouping)))) {
 		$select[$key] = (in_array($val["col"], $columns, true) ? (!$val["fun"] ? idf_escape($val["col"]) : ($val["fun"] == "distinct" ? "COUNT(DISTINCT " : strtoupper("$val[fun](")) . idf_escape($val["col"]) . ")") : "COUNT(*)");
@@ -31,7 +31,7 @@ foreach ((array) $_GET["columns"] as $key => $val) {
 		}
 	}
 }
-$where = array();
+$where = array(); // where expressions - will be joined by AND
 foreach ($indexes as $i => $index) {
 	if ($index["type"] == "FULLTEXT" && strlen($_GET["fulltext"][$i])) {
 		$where[] = "MATCH (" . implode(", ", array_map('idf_escape', $index["columns"])) . ") AGAINST ('" . $dbh->escape_string($_GET["fulltext"][$i]) . "'" . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
@@ -48,6 +48,7 @@ foreach ((array) $_GET["where"] as $val) {
 			if (strlen($val["col"])) {
 				$where[] = idf_escape($val["col"]) . $cond;
 			} else {
+				// find anywhere
 				$cols = array();
 				foreach ($fields as $name => $field) {
 					if (is_numeric($val["val"]) || !ereg('int|float|double|decimal', $field["type"])) {
@@ -59,7 +60,7 @@ foreach ((array) $_GET["where"] as $val) {
 		}
 	}
 }
-$order = array();
+$order = array(); // order expressions - will be joined by comma
 foreach ((array) $_GET["order"] as $key => $val) {
 	if (in_array($val, $columns, true) || in_array($val, $select, true)) {
 		$order[] = idf_escape($val) . (isset($_GET["desc"][$key]) ? " DESC" : "");
@@ -76,6 +77,7 @@ if ($_POST && !$error) {
 		if (is_array($_POST["check"])) {
 			$union = array();
 			foreach ($_POST["check"] as $val) {
+				// where may not be unique so OR can't be used
 				$union[] = "($query WHERE " . implode(" AND ", where_check($val)) . " LIMIT 1)";
 			}
 			dump_data($_GET["select"], "INSERT", implode(" UNION ALL ", $union));
@@ -108,6 +110,7 @@ if ($_POST && !$error) {
 		} else {
 			foreach ((array) $_POST["check"] as $val) {
 				parse_str($val, $check);
+				// where may not be unique so OR can't be used
 				$result = queries($command . " WHERE " . implode(" AND ", where($check)) . " LIMIT 1");
 				if (!$result) {
 					break;
@@ -126,15 +129,16 @@ if ($_POST && !$error) {
 			$row = array();
 			preg_match_all('~(("[^"]*")+|[^,]*),~', "$val,", $matches2);
 			if (!$key && !array_diff($matches2[1], array_keys($fields))) { //! doesn't work with column names containing ",\n
+				// first row corresponds to column names - use it for table structure
 				$cols = " (" . implode(", ", array_map('idf_escape', $matches2[1])) . ")";
 			} else {
 				foreach ($matches2[1] as $col) {
 					$row[] = (!strlen($col) ? "NULL" : "'" . $dbh->escape_string(str_replace('""', '"', preg_replace('~^".*"$~s', '', $col))) . "'");
 				}
-				$rows[] = "(" . implode(", ", $row) . ")";
+				$rows[] = "\n(" . implode(", ", $row) . ")";
 			}
 		}
-		$result = queries("INSERT INTO " . idf_escape($_GET["select"]) . "$cols VALUES " . implode(", ", $rows));
+		$result = queries("INSERT INTO " . idf_escape($_GET["select"]) . "$cols VALUES" . implode(",", $rows));
 		query_redirect(queries(), remove_from_uri("page"), lang('%d row(s) has been imported.', $dbh->affected_rows), $result, false, !$result);
 	} else {
 		$error = lang('Unable to upload a file.');
@@ -209,7 +213,7 @@ if (!$columns) {
 	echo "<label><input type='checkbox' name='desc[$i]' value='1' />" . lang('descending') . "</label></div>\n";
 	echo "</div></fieldset>\n";
 	
-	echo "<fieldset><legend>" . lang('Limit') . "</legend><div>";
+	echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
 	echo "<input name='limit' size='3' value=\"" . htmlspecialchars($limit) . "\" />";
 	echo "</div></fieldset>\n";
 	
@@ -271,6 +275,7 @@ if (!$columns) {
 						}
 						foreach ((array) $foreign_keys[$key] as $foreign_key) {
 							if (count($foreign_keys[$key]) == 1 || count($foreign_key["source"]) == 1) {
+								// link related items
 								$val = "\">$val</a>";
 								foreach ($foreign_key["source"] as $i => $source) {
 									$val = "&amp;where%5B$i%5D%5Bcol%5D=" . urlencode($foreign_key["target"][$i]) . "&amp;where%5B$i%5D%5Bop%5D=%3D&amp;where%5B$i%5D%5Bval%5D=" . urlencode($row[$source]) . $val;
@@ -287,11 +292,13 @@ if (!$columns) {
 			echo "</table>\n";
 			
 			echo "<p>";
+			// use num_rows without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
 			$found_rows = (intval($limit) ? $dbh->result($dbh->query(count($group) < count($select)
 				? " SELECT FOUND_ROWS()" // space to allow mysql.trace_mode
 				: "SELECT COUNT(*) FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "")
 			)) : $result->num_rows);
 			if (intval($limit) && $found_rows > $limit) {
+				// display first, previous 3, next 3 and last page
 				$max_page = floor(($found_rows - 1) / $limit);
 				echo lang('Page') . ":";
 				print_page(0);

@@ -12,13 +12,13 @@ while ($row = $result->fetch_assoc()) {
 }
 $result->free();
 $privileges["Server Admin"] += $privileges["File access on server"];
-$privileges["Databases"]["Create routine"] = $privileges["Procedures"]["Create routine"];
+$privileges["Databases"]["Create routine"] = $privileges["Procedures"]["Create routine"]; // MySQL bug #30305
+unset($privileges["Procedures"]["Create routine"]);
 $privileges["Columns"] = array();
 foreach (array("Select", "Insert", "Update", "References") as $val) {
 	$privileges["Columns"][$val] = $privileges["Tables"][$val];
 }
 unset($privileges["Server Admin"]["Usage"]);
-unset($privileges["Procedures"]["Create routine"]);
 foreach ($privileges["Tables"] as $key => $val) {
 	unset($privileges["Databases"][$key]);
 }
@@ -72,6 +72,7 @@ if ($_POST && !$error) {
 				}
 				$grant = array_keys($grant);
 				if (isset($_GET["grant"])) {
+					// no rights to mysql.user table
 					$revoke = array_diff(array_keys(array_filter($new_grants[$object], 'strlen')), $grant);
 				} elseif ($old_user == $new_user) {
 					$old_grant = array_keys((array) $grants[$object]);
@@ -111,7 +112,7 @@ if ($_POST) {
 	$row = $_POST;
 	$grants = $new_grants;
 } else {
-	$row = $_GET + array("host" => "localhost");
+	$row = $_GET + array("host" => "localhost"); // create user on localhost by default
 	$row["pass"] = $old_pass;
 	if (strlen($old_pass)) {
 		$row["hashed"] = true;
@@ -134,7 +135,6 @@ echo "<thead><tr><th colspan='2'>" . lang('Privileges') . "</th>";
 $i = 0;
 foreach ($grants as $object => $grant) {
 	echo '<th>' . ($object != "*.*" ? '<input name="objects[' . $i . ']" value="' . htmlspecialchars($object) . '" size="10" />' : '<input type="hidden" name="objects[' . $i . ']" value="*.*" size="10" />*.*') . '</th>'; //! separate db, table, columns, PROCEDURE|FUNCTION, routine
-	//! JS checkbox for all
 	$i++;
 }
 echo "</tr></thead>\n";

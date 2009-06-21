@@ -104,6 +104,7 @@ if ($_POST) {
 			}
 			
 			if ($style == "CREATE+ALTER" && $_POST["format"] != "csv") {
+				// drop old tables
 				$query = "SELECT TABLE_NAME, ENGINE, TABLE_COLLATION, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()";
 ?>
 DELIMITER ;;

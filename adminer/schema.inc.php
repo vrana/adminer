@@ -3,6 +3,7 @@ page_header(lang('Database schema'), "", array(), $_GET["db"]);
 
 $table_pos = array();
 $table_pos_js = array();
+// saved in one cookie because there is a limit of 20 cookies per domain
 preg_match_all('~([^:]+):([-0-9.]+)x([-0-9.]+)(_|$)~', $_COOKIE["schema"], $matches, PREG_SET_ORDER); //! ':' in table name
 foreach ($matches as $i => $match) {
 	$table_pos[$match[1]] = array($match[2], $match[3]);
@@ -11,9 +12,9 @@ foreach ($matches as $i => $match) {
 
 $top = 0;
 $base_left = -1;
-$schema = array();
-$referenced = array();
-$lefts = array();
+$schema = array(); // table => array("fields" => array(name => field), "pos" => array(top, left), "references" => array(table => array(left => array(source, target))))
+$referenced = array(); // target_table => array(table => array(left => target_column))
+$lefts = array(); // float => bool
 $result = $dbh->query("SHOW TABLE STATUS");
 while ($row = $result->fetch_assoc()) {
 	if (!isset($row["Engine"])) { // view
@@ -37,6 +38,7 @@ while ($row = $result->fetch_assoc()) {
 					$base_left -= .1;
 				}
 				while ($lefts[(string) $left]) {
+					// find free $left
 					$left -= .0001;
 				}
 				$schema[$row["Name"]]["references"][$val["table"]][(string) $left] = array($val["source"], $val["target"]);

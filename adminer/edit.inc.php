@@ -8,7 +8,7 @@ foreach ($fields as $name => $field) {
 	}
 }
 if ($_POST && !$error && !isset($_GET["select"])) {
-	$location = ($_POST["insert"] ? $_SERVER["REQUEST_URI"] : $SELF . (isset($_GET["default"]) ? "table=" : "select=") . urlencode($_GET["edit"]));
+	$location = ($_POST["insert"] ? $_SERVER["REQUEST_URI"] : $SELF . (isset($_GET["default"]) ? "table=" : "select=") . urlencode($_GET["edit"])); // "insert" to continue edit or insert
 	if (isset($_POST["delete"])) {
 		query_redirect("DELETE FROM " . idf_escape($_GET["edit"]) . " WHERE " . implode(" AND ", $where) . " LIMIT 1", $location, lang('Item has been deleted.'));
 	} else {

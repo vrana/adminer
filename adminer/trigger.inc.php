@@ -21,6 +21,7 @@ if ($_POST) {
 } elseif (strlen($_GET["name"])) {
 	$result = $dbh->query("SHOW TRIGGERS LIKE '" . $dbh->escape_string(addcslashes($_GET["trigger"], "%_")) . "'");
 	while ($row = $result->fetch_assoc()) {
+		// LIKE is used to compare the table name
 		if ($row["Trigger"] === $_GET["name"]) {
 			break;
 		}

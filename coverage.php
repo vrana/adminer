@@ -7,6 +7,7 @@ if (!ini_get("session.auto_start")) {
 }
 
 function xhtml_open_tags($s) {
+	// returns array of opened tags in $s
 	$return = array();
 	preg_match_all('~<([^>]+)~', $s, $matches);
 	foreach ($matches[1] as $val) {
@@ -32,6 +33,7 @@ if ($_GET["start"]) {
 	exit;
 }
 if (preg_match('~^(include/)?[-_.a-z0-9]+$~i', $_GET["filename"])) {
+	// highlight single file
 	$filename = "adminer/$_GET[filename]";
 	$cov = $_SESSION["coverage"][realpath($filename)];
 	$file = explode("<br />", highlight_file($filename, true));
@@ -61,6 +63,7 @@ if (preg_match('~^(include/)?[-_.a-z0-9]+$~i', $_GET["filename"])) {
 		$s .= "$line<br />\n";
 	}
 } else {
+	// display list of files
 	echo "<table border='0' cellspacing='0' cellpadding='1'>\n";
 	foreach (array_merge(glob("adminer/*.php"), glob("adminer/include/*.php")) as $filename) {
 		$cov = $_SESSION["coverage"][realpath($filename)];

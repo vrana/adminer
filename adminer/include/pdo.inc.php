@@ -1,4 +1,5 @@
 <?php
+// PDO can be used in several database drivers
 if (extension_loaded('pdo')) {
 	class Min_PDO extends PDO {
 		var $_result, $server_info, $affected_rows, $error;
@@ -14,6 +15,7 @@ if (extension_loaded('pdo')) {
 		}
 		
 		function select_db($database) {
+			// database selection is separated from the connection so dbname in DSN can't be used
 			return $this->query("USE " . idf_escape($database));
 		}
 		
@@ -29,7 +31,7 @@ if (extension_loaded('pdo')) {
 				$this->affected_rows = $result->rowCount();
 				return true;
 			}
-			$result->num_rows = $result->rowCount();
+			$result->num_rows = $result->rowCount(); // is not guaranteed to work with all drivers
 			return $result;
 		}
 		

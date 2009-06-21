@@ -4,7 +4,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 		query_redirect("ALTER TABLE " . idf_escape($_GET["foreign"]) . "\nDROP FOREIGN KEY " . idf_escape($_GET["name"]), $SELF . "table=" . urlencode($_GET["foreign"]), lang('Foreign key has been dropped.'));
 	} else {
 		$source = array_filter($_POST["source"], 'strlen');
-		ksort($source);
+		ksort($source); // enforce input order
 		$target = array();
 		foreach ($source as $key => $val) {
 			$target[$key] = $_POST["target"][$key];

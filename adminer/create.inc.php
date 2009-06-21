@@ -10,6 +10,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 		query_redirect("DROP TABLE " . idf_escape($_GET["create"]), substr($SELF, 0, -1), lang('Table has been dropped.'));
 	} else {
 		$auto_increment_index = " PRIMARY KEY";
+		// don't overwrite primary key by auto_increment
 		if (strlen($_GET["create"]) && strlen($_POST["fields"][$_POST["auto_increment_col"]]["orig"])) {
 			foreach (indexes($_GET["create"]) as $index) {
 				foreach ($index["columns"] as $column) {

@@ -8,11 +8,13 @@
 
 error_reporting(E_ALL & ~E_NOTICE);
 if (!ini_get("session.auto_start")) {
+	// use specific session name to get own namespace
 	session_name("adminer_sid");
 	session_set_cookie_params(0, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]));
 	session_start();
 }
 if (isset($_SESSION["coverage"])) {
+	// coverage is used in tests and removed in compilation
 	function save_coverage() {
 		foreach (xdebug_get_code_coverage() as $filename => $lines) {
 			foreach ($lines as $l => $val) {
@@ -25,9 +27,11 @@ if (isset($_SESSION["coverage"])) {
 	xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
 	register_shutdown_function('save_coverage');
 	if ($_GET["start"]) {
+		// included from ../coverage.php
 		return;
 	}
 }
+// disable magic quotes to be able to use database escaping function
 if (get_magic_quotes_gpc()) {
     $process = array(&$_GET, &$_POST, &$_COOKIE);
     while (list($key, $val) = each($process)) {
@@ -83,12 +87,15 @@ if (isset($_GET["download"])) {
 			$error = lang('Invalid CSRF token. Send the form again.');
 		}
 	} elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
+		// posted form with no data means exceeded post_max_size because Adminer always sends token at least
 		$error = lang('Too big POST data. Reduce the data or increase the "post_max_size" configuration directive.');
 	}
 	if (isset($_GET["default"])) {
+		// edit form is used for default values and distinguished by checking isset($_GET["default"]) in edit.inc.php
 		$_GET["edit"] = $_GET["default"];
 	}
 	if (isset($_GET["select"]) && $_POST && (!$_POST["delete"] && !$_POST["export"] && !$_POST["import"] && !$_POST["save"])) {
+		// POST form on select page is used to edit or clone data
 		$_GET["edit"] = $_GET["select"];
 	}
 	if (isset($_GET["callf"])) {
@@ -131,4 +138,5 @@ if (isset($_GET["download"])) {
 		include "./db.inc.php";
 	}
 }
+// each page calls its own page_header(), if the footer should not be called then the page exits
 page_footer();
