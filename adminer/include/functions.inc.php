@@ -207,7 +207,7 @@ function select($result, $dbh2 = null) {
 				} else {
 					if ($blobs[$key] && !is_utf8($val)) {
 						$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>"; //! link to download
-					} elseif (!strlen(trim($val))) {
+					} elseif (!strlen(trim($val, " \t"))) {
 						$val = "&nbsp;"; // some content to print a border
 					} else {
 						$val = nl2br(htmlspecialchars($val));

@@ -263,7 +263,7 @@ if (!$columns) {
 					} elseif (preg_match('~blob|binary~', $fields[$key]["type"]) && !is_utf8($val)) {
 						$val = '<a href="' . htmlspecialchars($SELF) . 'download=' . urlencode($_GET["select"]) . '&amp;field=' . urlencode($key) . '&amp;' . $unique_idf . '">' . lang('%d byte(s)', strlen($val)) . '</a>';
 					} else {
-						if (!strlen(trim($val))) {
+						if (!strlen(trim($val, " \t"))) {
 							$val = "&nbsp;";
 						} elseif (intval($text_length) > 0 && preg_match('~blob|text~', $fields[$key]["type"])) {
 							$val = nl2br(shorten_utf8($val, intval($text_length)));
