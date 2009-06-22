@@ -67,22 +67,23 @@ foreach ((array) $_GET["order"] as $key => $val) {
 	}
 }
 $limit = (isset($_GET["limit"]) ? $_GET["limit"] : "30");
-$from = "FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "") . ($group && count($group) < count($select) ? " GROUP BY " . implode(", ", $group) : "") . ($order ? " ORDER BY " . implode(", ", $order) : "") . (strlen($limit) ? " LIMIT " . intval($limit) . (intval($_GET["page"]) ? " OFFSET " . ($limit * $_GET["page"]) : "") : "");
+$from = ($select ? implode(", ", $select) : "*") . " FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "");
+$group_by = ($group && count($group) < count($select) ? " GROUP BY " . implode(", ", $group) : "") . ($order ? " ORDER BY " . implode(", ", $order) : "");
 
 if ($_POST && !$error) {
 	if ($_POST["export"]) {
 		dump_headers($_GET["select"]);
 		dump_table($_GET["select"], "");
-		$query = "SELECT " . ($select ? implode(", ", $select) : "*") . " FROM " . idf_escape($_GET["select"]);
 		if (is_array($_POST["check"])) {
 			$union = array();
 			foreach ($_POST["check"] as $val) {
 				// where may not be unique so OR can't be used
-				$union[] = "($query WHERE " . implode(" AND ", where_check($val)) . " LIMIT 1)";
+				$union[] = "(SELECT $from " . ($where ? "AND " : "WHERE ") . implode(" AND ", where_check($val)) . $group_by . " LIMIT 1)";
 			}
+			print_r($union);
 			dump_data($_GET["select"], "INSERT", implode(" UNION ALL ", $union));
 		} else {
-			dump_data($_GET["select"], "INSERT", $query . ($where ? " WHERE " . implode(" AND ", $where) : ""));
+			dump_data($_GET["select"], "INSERT", "SELECT $from$group_by");
 		}
 		exit;
 	}
@@ -228,7 +229,7 @@ if (!$columns) {
 	echo "</div></fieldset>\n";
 	echo "</form>\n";
 	
-	$query = "SELECT " . ($select ? (count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . implode(", ", $select) : "*") . " $from";
+	$query = "SELECT " . (count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . $from . $group_by . (strlen($limit) ? " LIMIT " . intval($limit) . (intval($_GET["page"]) ? " OFFSET " . ($limit * $_GET["page"]) : "") : "");
 	echo "<p><code class='jush-sql'>" . htmlspecialchars($query) . "</code> <a href='" . htmlspecialchars($SELF) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a></p>\n";
 	
 	$result = $dbh->query($query);
@@ -255,7 +256,7 @@ if (!$columns) {
 					}
 					echo "</tr></thead>\n";
 				}
-				$unique_idf = implode('&amp;', unique_idf($row, $indexes));
+				$unique_idf = implode('&amp;', unique_idf($row, $indexes)); //! don't use aggregation functions
 				echo '<tr' . odd() . '><td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false; form_uncheck(\'all-page\');" />' . (count($select) == count($group) && $_GET["db"] != "information_schema" ? ' <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a></td>' : '');
 				foreach ($row as $key => $val) {
 					if (!isset($val)) {
