@@ -113,7 +113,7 @@ if ($_POST) {
 	$row = $_POST;
 	$grants = $new_grants;
 } else {
-	$row = $_GET + array("host" => "localhost"); // create user on localhost by default
+	$row = $_GET + array("host" => $dbh->result($dbh->query("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', -1)"))); // create user on the same domain by default
 	$row["pass"] = $old_pass;
 	if (strlen($old_pass)) {
 		$row["hashed"] = true;

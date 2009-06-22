@@ -3,7 +3,6 @@ page_header(lang('Privileges'));
 echo '<p><a href="' . htmlspecialchars($SELF) . 'user=">' . lang('Create user') . "</a></p>";
 $result = $dbh->query("SELECT User, Host FROM mysql.user ORDER BY Host, User");
 if (!$result) {
-	//! utilize information_schema.USER_PRIVILEGES in MySQL 5
 	?>
 	<form action=""><p>
 	<?php if (strlen($_GET["server"])) { ?><input type="hidden" name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>" /><?php } ?>
@@ -13,7 +12,7 @@ if (!$result) {
 	<input type="submit" value="<?php echo lang('Edit'); ?>" />
 	</p></form>
 <?php
-	// list logged user
+	// list logged user, information_schema.USER_PRIVILEGES lists just the current user too
 	$result = $dbh->query("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1) AS User, SUBSTRING_INDEX(CURRENT_USER, '@', -1) AS Host");
 }
 echo "<table cellspacing='0'>\n";
