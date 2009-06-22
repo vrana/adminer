@@ -216,6 +216,7 @@ function get_databases() {
 	// SHOW DATABASES can take very long so it is cached
 	$return = &$_SESSION["databases"][$_GET["server"]];
 	if (!isset($return)) {
+		ob_flush();
 		flush();
 		$return = get_vals("SHOW DATABASES");
 	}

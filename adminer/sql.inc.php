@@ -31,6 +31,7 @@ if (!$error && $_POST) {
 				} else {
 					$empty = false;
 					echo "<pre class='jush-sql'>" . shorten_utf8(trim(substr($query, 0, $match[0][1]))) . "</pre>\n";
+					ob_flush();
 					flush(); // can take a long time - show the running query
 					$start = explode(" ", microtime()); // microtime(true) is available since PHP 5
 					//! don't allow changing of character_set_results, convert encoding of displayed query
