@@ -17,6 +17,7 @@ if (!$error && $_POST) {
 		$dbh2 = (strlen($_GET["db"]) ? connect() : null); // connection for exploring indexes (to not replace FOUND_ROWS()) //! PDO - silent error
 		if (is_object($dbh2)) {
 			$dbh2->select_db($_GET["db"]);
+			$dbh2->query("SET CHARACTER SET utf8");
 		}
 		while (strlen($query)) {
 			if (!$offset && preg_match('~^\\s*DELIMITER\\s+(.+)~i', $query, $match)) {
