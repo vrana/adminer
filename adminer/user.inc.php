@@ -54,7 +54,7 @@ if (isset($_GET["host"]) && ($result = $dbh->query("SHOW GRANTS FOR " . $dbh->qu
 
 if ($_POST && !$error) {
 	$old_user = (isset($_GET["host"]) ? $dbh->quote($_GET["user"]) . "@" . $dbh->quote($_GET["host"]) : "''");
-	$new_user = $dbh->quote($_POST["user"]) . "@" . $dbh->quote($_POST["host"]);
+	$new_user = $dbh->quote($_POST["user"]) . "@" . $dbh->quote($_POST["host"]); // if $_GET["host"] is not set then $new_user is always different
 	$pass = $dbh->quote($_POST["pass"]);
 	if ($_POST["drop"]) {
 		query_redirect("DROP USER $old_user", $SELF . "privileges=", lang('User has been dropped.'));
@@ -102,6 +102,7 @@ if ($_POST && !$error) {
 		}
 		query_redirect(queries(), $SELF . "privileges=", (isset($_GET["host"]) ? lang('User has been altered.') : lang('User has been created.')), !$error, false, $error);
 		if ($old_user != $new_user) {
+			// delete new user in case of an error
 			$dbh->query("DROP USER $new_user");
 		}
 	}
