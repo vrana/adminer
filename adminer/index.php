@@ -10,7 +10,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 if (!ini_get("session.auto_start")) {
 	// use specific session name to get own namespace
 	session_name("adminer_sid");
-	session_set_cookie_params(0, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]));
+	session_set_cookie_params(0, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"])); //! use HttpOnly in PHP 5
 	session_start();
 }
 if (isset($_SESSION["coverage"])) {
