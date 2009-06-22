@@ -52,10 +52,10 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 			if ($_POST["partition_by"] == 'RANGE' || $_POST["partition_by"] == 'LIST') {
 				foreach (array_filter($_POST["partition_names"]) as $key => $val) {
 					$value = $_POST["partition_values"][$key];
-					$partitions[] = "\nPARTITION $val VALUES " . ($_POST["partition_by"] == 'RANGE' ? "LESS THAN" : "IN") . (strlen($value) ? " ($value)" : " MAXVALUE"); //! SQL injection
+					$partitions[] = "\nPARTITION " . idf_escape($val) . " VALUES " . ($_POST["partition_by"] == 'RANGE' ? "LESS THAN" : "IN") . (strlen($value) ? " ($value)" : " MAXVALUE"); //! SQL injection
 				}
 			}
-			$status .= "\nPARTITION BY $_POST[partition_by]($_POST[partition])" . ($partitions ? " (" . implode(",", $partitions) . "\n)" : ($_POST["partitions"] ? " PARTITIONS " . intval($_POST["partitions"]) : ""));
+			$status .= "\nPARTITION BY $_POST[partition_by]($_POST[partition])" . ($partitions ? " (" . implode(",", $partitions) . "\n)" : ($_POST["partitions"] ? " PARTITIONS " . intval($_POST["partitions"]) : "")); // $_POST["partition"] can be expression, not only column
 		} elseif ($dbh->server_info >= 5.1 && strlen($_GET["create"])) {
 			$status .= "\nREMOVE PARTITIONING";
 		}
