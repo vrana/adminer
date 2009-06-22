@@ -79,7 +79,6 @@ if ($_POST && !$error) {
 				// where may not be unique so OR can't be used
 				$union[] = "(SELECT $from " . ($where ? "AND " : "WHERE ") . implode(" AND ", where_check($val)) . $group_by . " LIMIT 1)";
 			}
-			print_r($union);
 			dump_data($_GET["select"], "INSERT", implode(" UNION ALL ", $union));
 		} else {
 			dump_data($_GET["select"], "INSERT", "SELECT $from$group_by");
@@ -256,7 +255,7 @@ if (!$columns) {
 					echo "</tr></thead>\n";
 				}
 				$unique_idf = implode('&amp;', unique_idf($row, $indexes)); //! don't use aggregation functions
-				echo '<tr' . odd() . '><td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false; form_uncheck(\'all-page\');" />' . (count($select) == count($group) && $_GET["db"] != "information_schema" ? ' <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a></td>' : '');
+				echo '<tr' . odd() . '><td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false; form_uncheck(\'all-page\');" />' . (count($select) != count($group) || information_schema($_GET["db"]) ? '' : ' <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a>') . '</td>';
 				foreach ($row as $key => $val) {
 					if (!isset($val)) {
 						$val = "<i>NULL</i>";
@@ -315,7 +314,7 @@ if (!$columns) {
 			}
 			echo " (" . lang('%d row(s)', $found_rows) . ') <label><input type="checkbox" name="all" value="1" />' . lang('whole result') . "</label></p>\n";
 			
-			echo ($_GET["db"] != "information_schema" ? "<fieldset><legend>" . lang('Edit') . "</legend><div><input type='submit' value='" . lang('Edit') . "' /> <input type='submit' name='clone' value='" . lang('Clone') . "' /> <input type='submit' name='delete' value='" . lang('Delete') . "'$confirm /></div></fieldset>\n" : "");
+			echo (information_schema($_GET["db"]) ? "" : "<fieldset><legend>" . lang('Edit') . "</legend><div><input type='submit' value='" . lang('Edit') . "' /> <input type='submit' name='clone' value='" . lang('Clone') . "' /> <input type='submit' name='delete' value='" . lang('Delete') . "'$confirm /></div></fieldset>\n");
 			echo "<fieldset><legend>" . lang('Export') . "</legend><div>$dump_output $dump_format <input type='submit' name='export' value='" . lang('Export') . "' /></div></fieldset>\n";
 		}
 		$result->free();

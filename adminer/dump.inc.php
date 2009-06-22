@@ -196,7 +196,7 @@ if (strlen($_GET["db"])) {
 } else {
 	echo "<thead><tr><th align='left'><label><input type='checkbox' id='check-databases' checked='checked' onclick='form_check(this, /^databases\\[/);' />" . lang('Database') . "</label></th></tr></thead>\n";
 	foreach (get_databases() as $db) {
-		if ($db != "information_schema" || $dbh->server_info < 5) {
+		if (!information_schema($db)) {
 			echo '<tr><td><label><input type="checkbox" name="databases[]" value="' . htmlspecialchars($db) . '" checked="checked" onclick="form_uncheck(\'check-databases\');" />' . htmlspecialchars($db) . "</label></td></tr>\n";
 		}
 	}

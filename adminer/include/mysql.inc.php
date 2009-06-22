@@ -331,3 +331,8 @@ function table_comment(&$row) {
 		$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["Comment"]);
 	}
 }
+
+function information_schema($db) {
+	global $dbh;
+	return ($dbh->server_info >= 5 && $db == "information_schema");
+}
