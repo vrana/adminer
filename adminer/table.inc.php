@@ -13,7 +13,7 @@ if ($result) {
 		if (!$row["auto_increment"]) {
 			$auto_increment_only = false;
 		}
-		echo "<tr><th>" . htmlspecialchars($row["Field"]) . "</th><td>$row[Type]" . ($row["Null"] == "YES" ? " <i>NULL</i>" : "") . "</td></tr>\n";
+		echo "<tr><th>" . htmlspecialchars($row["Field"]) . "</th><td>" . htmlspecialchars($row["Type"]) . ($row["Null"] == "YES" ? " <i>NULL</i>" : "") . "</td></tr>\n";
 	}
 	echo "</table>\n";
 	$result->free();
