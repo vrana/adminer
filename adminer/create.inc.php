@@ -32,9 +32,9 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 				$fields[] = "\n" . (!strlen($_GET["create"]) ? "  " : (strlen($field["orig"]) ? "CHANGE " . idf_escape($field["orig"]) . " " : "ADD "))
 					. idf_escape($field["field"]) . process_type($field)
 					. ($field["null"] ? " NULL" : " NOT NULL") // NULL for timestamp
-					. (strlen($_GET["create"]) && strlen($field["orig"]) && isset($orig_fields[$field["orig"]]["default"]) && $field["type"] != "timestamp" ? " DEFAULT '" . $dbh->escape_string($orig_fields[$field["orig"]]["default"]) . "'" : "") //! timestamp
+					. (strlen($_GET["create"]) && strlen($field["orig"]) && isset($orig_fields[$field["orig"]]["default"]) && $field["type"] != "timestamp" ? " DEFAULT " . $dbh->quote($orig_fields[$field["orig"]]["default"]) : "") //! timestamp
 					. ($key == $_POST["auto_increment_col"] ? " AUTO_INCREMENT$auto_increment_index" : "")
-					. " COMMENT '" . $dbh->escape_string($field["comment"]) . "'"
+					. " COMMENT " . $dbh->quote($field["comment"])
 					. (strlen($_GET["create"]) ? " $after" : "")
 				;
 				$after = "AFTER " . idf_escape($field["field"]);
@@ -42,10 +42,10 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 				$fields[] = "\nDROP " . idf_escape($field["orig"]);
 			}
 		}
-		$status = ($_POST["Engine"] ? "ENGINE='" . $dbh->escape_string($_POST["Engine"]) . "'" : "")
-			. ($_POST["Collation"] ? " COLLATE '" . $dbh->escape_string($_POST["Collation"]) . "'" : "")
+		$status = ($_POST["Engine"] ? "ENGINE=" . $dbh->quote($_POST["Engine"]) : "")
+			. ($_POST["Collation"] ? " COLLATE " . $dbh->quote($_POST["Collation"]) : "")
 			. (strlen($_POST["Auto_increment"]) ? " AUTO_INCREMENT=" . intval($_POST["Auto_increment"]) : "")
-			. " COMMENT='" . $dbh->escape_string($_POST["Comment"]) . "'"
+			. " COMMENT=" . $dbh->quote($_POST["Comment"])
 		;
 		if (in_array($_POST["partition_by"], $partition_by)) {
 			$partitions = array();
@@ -92,7 +92,7 @@ if ($_POST) {
 	$row["name"] = $_GET["create"];
 	$row["fields"] = array_values($orig_fields);
 	if ($dbh->server_info >= 5.1) {
-		$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = '" . $dbh->escape_string($_GET["db"]) . "' AND TABLE_NAME = '" . $dbh->escape_string($_GET["create"]) . "'";
+		$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . $dbh->quote($_GET["db"]) . " AND TABLE_NAME = " . $dbh->quote($_GET["create"]);
 		$result = $dbh->query("SELECT PARTITION_METHOD, PARTITION_ORDINAL_POSITION, PARTITION_EXPRESSION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
 		list($row["partition_by"], $row["partitions"], $row["partition"]) = $result->fetch_row();
 		$result->free();

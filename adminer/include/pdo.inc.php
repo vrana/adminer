@@ -55,8 +55,8 @@ if (extension_loaded('pdo')) {
 			return $row[$field];
 		}
 		
-		function escape_string($string) {
-			return substr($this->quote($string), 1, -1);
+		function quote($string) {
+			return parent::quote($string);
 		}
 	}
 	

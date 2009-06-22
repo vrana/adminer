@@ -80,7 +80,7 @@ $result->free();
 if ($dbh->server_info >= 5) {
 	echo '<p><a href="' . htmlspecialchars($SELF) . 'createv=">' . lang('Create view') . "</a></p>\n";
 	echo "<h3>" . lang('Routines') . "</h3>\n";
-	$result = $dbh->query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = '" . $dbh->escape_string($_GET["db"]) . "'");
+	$result = $dbh->query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . $dbh->quote($_GET["db"]));
 	if ($result->num_rows) {
 		echo "<table cellspacing='0'>\n";
 		while ($row = $result->fetch_assoc()) {

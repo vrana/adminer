@@ -63,7 +63,7 @@ if ($result) {
 
 if ($dbh->server_info >= 5) {
 	echo "<h3>" . lang('Triggers') . "</h3>\n";
-	$result = $dbh->query("SHOW TRIGGERS LIKE '" . $dbh->escape_string(addcslashes($_GET["table"], "%_")) . "'");
+	$result = $dbh->query("SHOW TRIGGERS LIKE " . $dbh->quote(addcslashes($_GET["table"], "%_")));
 	if ($result->num_rows) {
 		echo "<table cellspacing='0'>\n";
 		while ($row = $result->fetch_assoc()) {

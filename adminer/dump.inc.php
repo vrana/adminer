@@ -12,7 +12,7 @@ function tar_file($filename, $contents) {
 function dump_triggers($table, $style) {
 	global $dbh;
 	if ($_POST["format"] != "csv" && $style && $dbh->server_info >= 5) {
-		$result = $dbh->query("SHOW TRIGGERS LIKE '" . $dbh->escape_string(addcslashes($table, "%_")) . "'");
+		$result = $dbh->query("SHOW TRIGGERS LIKE " . $dbh->quote(addcslashes($table, "%_")));
 		if ($result->num_rows) {
 			echo "\nDELIMITER ;;\n";
 			while ($row = $result->fetch_assoc()) {
@@ -30,7 +30,7 @@ if ($_POST) {
 	if ($_POST["format"] != "csv") {
 		echo "SET NAMES utf8;\n";
 		echo "SET foreign_key_checks = 0;\n";
-		echo "SET time_zone = '" . $dbh->escape_string($dbh->result($dbh->query("SELECT @@time_zone"))) . "';\n";
+		echo "SET time_zone = " . $dbh->quote($dbh->result($dbh->query("SELECT @@time_zone"))) . ";\n";
 		echo "\n";
 	}
 	
@@ -50,7 +50,7 @@ if ($_POST) {
 				$out = "";
 				if ($dbh->server_info >= 5) {
 					foreach (array("FUNCTION", "PROCEDURE") as $routine) {
-						$result = $dbh->query("SHOW $routine STATUS WHERE Db = '" . $dbh->escape_string($db) . "'");
+						$result = $dbh->query("SHOW $routine STATUS WHERE Db = " . $dbh->quote($db));
 						while ($row = $result->fetch_assoc()) {
 							$out .= ($style != 'DROP+CREATE' ? "DROP $routine IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
 							. $dbh->result($dbh->query("SHOW CREATE $routine " . idf_escape($row["Name"])), 2) . ";;\n\n";
@@ -121,11 +121,11 @@ CREATE PROCEDURE adminer_drop () BEGIN
 			CASE _table_name<?php
 $result = $dbh->query($query);
 while ($row = $result->fetch_assoc()) {
-	$comment = $dbh->escape_string($row["ENGINE"] == "InnoDB" ? preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["TABLE_COMMENT"]) : $row["TABLE_COMMENT"]);
+	$comment = $dbh->quote($row["ENGINE"] == "InnoDB" ? preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["TABLE_COMMENT"]) : $row["TABLE_COMMENT"]);
 	echo "
-				WHEN '" . $dbh->escape_string($row["TABLE_NAME"]) . "' THEN
-					" . (isset($row["ENGINE"]) ? "IF _engine != '$row[ENGINE]' OR _table_collation != '$row[TABLE_COLLATION]' OR _table_comment != '$comment' THEN
-						ALTER TABLE " . idf_escape($row["TABLE_NAME"]) . " ENGINE=$row[ENGINE] COLLATE=$row[TABLE_COLLATION] COMMENT='$comment';
+				WHEN " . $dbh->quote($row["TABLE_NAME"]) . " THEN
+					" . (isset($row["ENGINE"]) ? "IF _engine != '$row[ENGINE]' OR _table_collation != '$row[TABLE_COLLATION]' OR _table_comment != $comment THEN
+						ALTER TABLE " . idf_escape($row["TABLE_NAME"]) . " ENGINE=$row[ENGINE] COLLATE=$row[TABLE_COLLATION] COMMENT=$comment;
 					END IF" : "BEGIN END") . ";";
 }
 $result->free();

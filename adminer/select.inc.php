@@ -34,16 +34,16 @@ foreach ((array) $_GET["columns"] as $key => $val) {
 $where = array(); // where expressions - will be joined by AND
 foreach ($indexes as $i => $index) {
 	if ($index["type"] == "FULLTEXT" && strlen($_GET["fulltext"][$i])) {
-		$where[] = "MATCH (" . implode(", ", array_map('idf_escape', $index["columns"])) . ") AGAINST ('" . $dbh->escape_string($_GET["fulltext"][$i]) . "'" . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
+		$where[] = "MATCH (" . implode(", ", array_map('idf_escape', $index["columns"])) . ") AGAINST (" . $dbh->quote($_GET["fulltext"][$i]) . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
 	}
 }
 foreach ((array) $_GET["where"] as $val) {
 	if (strlen("$val[col]$val[val]") && in_array($val["op"], $operators)) {
 		if ($val["op"] == "AGAINST") {
-			$where[] = "MATCH (" . idf_escape($val["col"]) . ") AGAINST ('" . $dbh->escape_string($val["val"]) . "' IN BOOLEAN MODE)";
+			$where[] = "MATCH (" . idf_escape($val["col"]) . ") AGAINST (" . $dbh->quote($val["val"]) . " IN BOOLEAN MODE)";
 		} else {
 			$in = process_length($val["val"]);
-			$cond = " $val[op]" . (ereg('NULL$', $val["op"]) ? "" : (ereg('IN$', $val["op"]) ? " (" . (strlen($in) ? $in : "NULL") . ")" : " '" . $dbh->escape_string($val["val"]) . "'")); //! this searches in numeric values too
+			$cond = " $val[op]" . (ereg('NULL$', $val["op"]) ? "" : (ereg('IN$', $val["op"]) ? " (" . (strlen($in) ? $in : "NULL") . ")" : " " . $dbh->quote($val["val"]))); //! this searches in numeric values too
 			if (strlen($val["col"])) {
 				$where[] = idf_escape($val["col"]) . $cond;
 			} else {
@@ -133,7 +133,7 @@ if ($_POST && !$error) {
 				$cols = " (" . implode(", ", array_map('idf_escape', $matches2[1])) . ")";
 			} else {
 				foreach ($matches2[1] as $col) {
-					$row[] = (!strlen($col) ? "NULL" : "'" . $dbh->escape_string(str_replace('""', '"', preg_replace('~^".*"$~s', '', $col))) . "'");
+					$row[] = (!strlen($col) ? "NULL" : $dbh->quote(str_replace('""', '"', preg_replace('~^".*"$~s', '', $col))));
 				}
 				$rows[] = "\n(" . implode(", ", $row) . ")";
 			}

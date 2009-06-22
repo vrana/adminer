@@ -28,6 +28,10 @@ if (extension_loaded("mysqli")) {
 			return $row[$field];
 		}
 		
+		function quote($string) {
+			return "'" . parent::escape_string($string) . "'";
+		}
+		
 		// minification compatibility start
 		function select_db($database) {
 			return parent::select_db($database);
@@ -50,10 +54,6 @@ if (extension_loaded("mysqli")) {
 		
 		function next_result() {
 			return parent::next_result();
-		}
-		
-		function escape_string($string) {
-			return parent::escape_string($string);
 		}
 	}
 	
@@ -103,6 +103,10 @@ if (extension_loaded("mysqli")) {
 			return (bool) $this->_link;
 		}
 		
+		function quote($string) {
+			return "'" . mysql_real_escape_string($string, $this->_link) . "'";
+		}
+		
 		function select_db($database) {
 			return mysql_select_db($database, $this->_link);
 		}
@@ -137,10 +141,6 @@ if (extension_loaded("mysqli")) {
 				return false;
 			}
 			return mysql_result($result->_result, 0, $field);
-		}
-		
-		function escape_string($string) {
-			return mysql_real_escape_string($string, $this->_link);
 		}
 	}
 	
@@ -224,7 +224,7 @@ function get_databases() {
 
 function table_status($table) {
 	global $dbh;
-	$result = $dbh->query("SHOW TABLE STATUS LIKE '" . $dbh->escape_string(addcslashes($table, "%_")) . "'");
+	$result = $dbh->query("SHOW TABLE STATUS LIKE " . $dbh->quote(addcslashes($table, "%_")));
 	$return = $result->fetch_assoc(); // ()-> is not supported in PHP 4
 	$result->free();
 	return $return;
@@ -318,6 +318,11 @@ function collations() {
 	}
 	$result->free();
 	return $return;
+}
+
+function escape_string($val) {
+	global $dbh;
+	return substr($dbh->quote($val), 1, -1);
 }
 
 function table_comment(&$row) {

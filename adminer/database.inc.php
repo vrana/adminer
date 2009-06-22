@@ -10,7 +10,7 @@ if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP c
 		$failed = false;
 		foreach ($dbs as $db) {
 			if (count($dbs) == 1 || strlen($db)) { // ignore empty lines but always try to create single database
-				if (!queries("CREATE DATABASE " . idf_escape($db) . ($_POST["collation"] ? " COLLATE '" . $dbh->escape_string($_POST["collation"]) . "'" : ""))) {
+				if (!queries("CREATE DATABASE " . idf_escape($db) . ($_POST["collation"] ? " COLLATE " . $dbh->quote($_POST["collation"]) : ""))) {
 					$failed = true;
 				}
 				$last = $db;
@@ -34,7 +34,7 @@ if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP c
 		if (!$_POST["collation"]) {
 			redirect(substr($SELF, 0, -1));
 		}
-		query_redirect("ALTER DATABASE " . idf_escape($_POST["name"]) . " COLLATE '" . $dbh->escape_string($_POST["collation"]) . "'", substr($SELF, 0, -1), lang('Database has been altered.'));
+		query_redirect("ALTER DATABASE " . idf_escape($_POST["name"]) . " COLLATE " . $dbh->quote($_POST["collation"]), substr($SELF, 0, -1), lang('Database has been altered.'));
 	}
 }
 page_header(strlen($_GET["db"]) ? lang('Alter database') : lang('Create database'), $error, array(), $_GET["db"]);

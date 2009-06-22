@@ -73,29 +73,29 @@ function process_input($name, $field) {
 	} elseif ($field["type"] == "enum" || $field["auto_increment"] ? !strlen($value) : $function == "NULL") {
 		return "NULL";
 	} elseif ($field["type"] == "enum") {
-		return (isset($_GET["default"]) ? "'" . $dbh->escape_string($value) . "'" : intval($value));
+		return (isset($_GET["default"]) ? $dbh->quote($value) : intval($value));
 	} elseif ($field["type"] == "set") {
-		return (isset($_GET["default"]) ? "'" . implode(",", array_map(array($dbh, 'escape_string'), (array) $value)) . "'" : array_sum((array) $value));
+		return (isset($_GET["default"]) ? "'" . implode(",", array_map('escape_string', (array) $value)) . "'" : array_sum((array) $value));
 	} elseif (preg_match('~binary|blob~', $field["type"])) {
 		$file = get_file($idf);
 		if (!is_string($file)) {
 			return false; //! report errors
 		}
-		return "_binary'" . (is_string($file) ? $dbh->escape_string($file) : "") . "'";
+		return "_binary" . (is_string($file) ? $dbh->quote($file) : "");
 	} elseif ($field["type"] == "timestamp" && $value == "CURRENT_TIMESTAMP") {
 		return $value;
 	} elseif (preg_match('~^(now|uuid)$~', $function)) {
 		return "$function()";
 	} elseif (preg_match('~^[+-]$~', $function)) {
-		return idf_escape($name) . " $function '" . $dbh->escape_string($value) . "'";
+		return idf_escape($name) . " $function " . $dbh->quote($value);
 	} elseif (preg_match('~^[+-] interval$~', $function)) {
-		return idf_escape($name) . " $function " . (preg_match("~^([0-9]+|'[0-9.: -]') [A-Z_]+$~i", $value) ? $value : "'" . $dbh->escape_string($value) . "'");
+		return idf_escape($name) . " $function " . (preg_match("~^([0-9]+|'[0-9.: -]') [A-Z_]+$~i", $value) ? $value : $dbh->quote($value));
 	} elseif (preg_match('~^(addtime|subtime)$~', $function)) {
-		return "$function(" . idf_escape($name) . ", '" . $dbh->escape_string($value) . "')";
+		return "$function(" . idf_escape($name) . ", " . $dbh->quote($value) . ")";
 	} elseif (preg_match('~^(md5|sha1|password)$~', $function)) {
-		return "$function('" . $dbh->escape_string($value) . "')";
+		return "$function(" . $dbh->quote($value) . ")";
 	} else {
-		return "'" . $dbh->escape_string($value) . "'";
+		return $dbh->quote($value);
 	}
 }
 
@@ -116,7 +116,7 @@ function process_type($field, $collate = "COLLATE") {
 	return " $field[type]"
 		. ($field["length"] && !preg_match('~^date|time$~', $field["type"]) ? "(" . process_length($field["length"]) . ")" : "")
 		. (preg_match('~int|float|double|decimal~', $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
-		. (preg_match('~char|text|enum|set~', $field["type"]) && $field["collation"] ? " $collate '" . $dbh->escape_string($field["collation"]) . "'" : "")
+		. (preg_match('~char|text|enum|set~', $field["type"]) && $field["collation"] ? " $collate " . $dbh->quote($field["collation"]) : "")
 	;
 }
 

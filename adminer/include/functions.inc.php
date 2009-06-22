@@ -67,7 +67,7 @@ function where($where) {
 	$return = array();
 	foreach ((array) $where["where"] as $key => $val) {
 		$key = bracket_escape($key, "back");
-		$return[] = (preg_match('~^[A-Z0-9_]+\\(`(?:[^`]+|``)+`\\)$~', $key) ? $key : idf_escape($key)) . " = BINARY '" . $dbh->escape_string($val) . "'"; //! enum and set, columns looking like functions
+		$return[] = (preg_match('~^[A-Z0-9_]+\\(`(?:[^`]+|``)+`\\)$~', $key) ? $key : idf_escape($key)) . " = BINARY " . $dbh->quote($val); //! enum and set, columns looking like functions
 	}
 	foreach ((array) $where["null"] as $key) {
 		$key = bracket_escape($key, "back");

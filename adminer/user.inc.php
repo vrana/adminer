@@ -35,7 +35,7 @@ if ($_POST) {
 }
 $grants = array();
 $old_pass = "";
-if (isset($_GET["host"]) && ($result = $dbh->query("SHOW GRANTS FOR '" . $dbh->escape_string($_GET["user"]) . "'@'" . $dbh->escape_string($_GET["host"]) . "'"))) { //! Use information_schema for MySQL 5 - column names in column privileges are not escaped
+if (isset($_GET["host"]) && ($result = $dbh->query("SHOW GRANTS FOR " . $dbh->quote($_GET["user"]) . "@" . $dbh->quote($_GET["host"])))) { //! Use information_schema for MySQL 5 - column names in column privileges are not escaped
 	while ($row = $result->fetch_row()) {
 		if (preg_match('~GRANT (.*) ON (.*) TO ~', $row[0], $match) && preg_match_all('~ *([^(,]*[^ ,(])( *\\([^)]+\\))?~', $match[1], $matches, PREG_SET_ORDER)) { //! escape the part between ON and TO
 			foreach ($matches as $val) {
@@ -53,16 +53,16 @@ if (isset($_GET["host"]) && ($result = $dbh->query("SHOW GRANTS FOR '" . $dbh->e
 }
 
 if ($_POST && !$error) {
-	$old_user = (isset($_GET["host"]) ? $dbh->escape_string($_GET["user"]) . "'@'" . $dbh->escape_string($_GET["host"]) : "");
-	$new_user = $dbh->escape_string($_POST["user"]) . "'@'" . $dbh->escape_string($_POST["host"]);
-	$pass = $dbh->escape_string($_POST["pass"]);
+	$old_user = (isset($_GET["host"]) ? $dbh->quote($_GET["user"]) . "@" . $dbh->quote($_GET["host"]) : "''");
+	$new_user = $dbh->quote($_POST["user"]) . "@" . $dbh->quote($_POST["host"]);
+	$pass = $dbh->quote($_POST["pass"]);
 	if ($_POST["drop"]) {
-		query_redirect("DROP USER '$old_user'", $SELF . "privileges=", lang('User has been dropped.'));
+		query_redirect("DROP USER $old_user", $SELF . "privileges=", lang('User has been dropped.'));
 	} else {
 		if ($old_user == $new_user) {
-			queries("SET PASSWORD FOR '$new_user' = " . ($_POST["hashed"] ? "'$pass'" : "PASSWORD('$pass')"));
+			queries("SET PASSWORD FOR $new_user = " . ($_POST["hashed"] ? $pass : "PASSWORD($pass)"));
 		} else {
-			$error = !queries(($dbh->server_info < 5 ? "GRANT USAGE ON *.* TO" : "CREATE USER") . " '$new_user' IDENTIFIED BY" . ($_POST["hashed"] ? " PASSWORD" : "") . " '$pass'");
+			$error = !queries(($dbh->server_info < 5 ? "GRANT USAGE ON *.* TO" : "CREATE USER") . " $new_user IDENTIFIED BY" . ($_POST["hashed"] ? " PASSWORD" : "") . " $pass");
 		}
 		if (!$error) {
 			$revoke = array();
@@ -81,8 +81,8 @@ if ($_POST && !$error) {
 					unset($grants[$object]);
 				}
 				if (preg_match('~^(.+)\\s*(\\(.*\\))?$~U', $object, $match) && (
-				($grant && !queries("GRANT " . grant($grant, $match[2]) . " ON $match[1] TO '$new_user'")) //! SQL injection
-				|| ($revoke && !queries("REVOKE " . grant($revoke, $match[2]) . " ON $match[1] FROM '$new_user'"))
+				($grant && !queries("GRANT " . grant($grant, $match[2]) . " ON $match[1] TO $new_user")) //! SQL injection
+				|| ($revoke && !queries("REVOKE " . grant($revoke, $match[2]) . " ON $match[1] FROM $new_user"))
 				)) {
 					$error = true;
 					break;
@@ -91,18 +91,18 @@ if ($_POST && !$error) {
 		}
 		if (!$error && isset($_GET["host"])) {
 			if ($old_user != $new_user) {
-				queries("DROP USER '$old_user'");
+				queries("DROP USER $old_user");
 			} elseif (!isset($_GET["grant"])) {
 				foreach ($grants as $object => $revoke) {
 					if (preg_match('~^(.+)(\\(.*\\))?$~U', $object, $match)) {
-						queries("REVOKE " . grant(array_keys($revoke), $match[2]) . " ON $match[1] FROM '$new_user'");
+						queries("REVOKE " . grant(array_keys($revoke), $match[2]) . " ON $match[1] FROM $new_user");
 					}
 				}
 			}
 		}
 		query_redirect(queries(), $SELF . "privileges=", (isset($_GET["host"]) ? lang('User has been altered.') : lang('User has been created.')), !$error, false, $error);
 		if ($old_user != $new_user) {
-			$dbh->query("DROP USER '$new_user'");
+			$dbh->query("DROP USER $new_user");
 		}
 	}
 }

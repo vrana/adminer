@@ -27,7 +27,7 @@ function dump_table($table, $style, $is_view = false) {
 		}
 		if ($style == "CREATE+ALTER" && !$is_view) {
 			// create procedure which iterates over original columns and adds new and removes old
-			$query = "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLLATION_NAME, COLUMN_TYPE, EXTRA, COLUMN_COMMENT FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '" . $dbh->escape_string($table) . "' ORDER BY ORDINAL_POSITION";
+			$query = "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLLATION_NAME, COLUMN_TYPE, EXTRA, COLUMN_COMMENT FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = " . $dbh->quote($table) . " ORDER BY ORDINAL_POSITION";
 ?>
 DELIMITER ;;
 CREATE PROCEDURE adminer_alter () BEGIN
@@ -38,27 +38,27 @@ CREATE PROCEDURE adminer_alter () BEGIN
 	DECLARE _column_comment varchar(255);
 	DECLARE done, set_after bool DEFAULT 0;
 	DECLARE add_columns text DEFAULT '<?php
-$fields = array();
-$result = $dbh->query($query);
-$after = "";
-while ($row = $result->fetch_assoc()) {
-	$row["default"] = (isset($row["COLUMN_DEFAULT"]) ? "'" . $dbh->escape_string($row["COLUMN_DEFAULT"]) . "'" : "NULL");
-	$row["after"] = $dbh->escape_string($after); //! rgt AFTER lft, lft AFTER id doesn't work
-	$row["alter"] = $dbh->escape_string(idf_escape($row["COLUMN_NAME"])
-		. " $row[COLUMN_TYPE]"
-		. ($row["COLLATION_NAME"] ? " COLLATE $row[COLLATION_NAME]" : "")
-		. (isset($row["COLUMN_DEFAULT"]) ? " DEFAULT $row[default]" : "")
-		. ($row["IS_NULLABLE"] == "YES" ? "" : " NOT NULL")
-		. ($row["EXTRA"] ? " $row[EXTRA]" : "")
-		. ($row["COLUMN_COMMENT"] ? " COMMENT '" . $dbh->escape_string($row["COLUMN_COMMENT"]) . "'" : "")
-		. ($after ? " AFTER " . idf_escape($after) : " FIRST")
-	);
-	echo ", ADD $row[alter]";
-	$fields[] = $row;
-	$after = $row["COLUMN_NAME"];
-}
-$result->free();
-?>';
+			$fields = array();
+			$result = $dbh->query($query);
+			$after = "";
+			while ($row = $result->fetch_assoc()) {
+				$row["default"] = (isset($row["COLUMN_DEFAULT"]) ? $dbh->quote($row["COLUMN_DEFAULT"]) : "NULL");
+				$row["after"] = $dbh->quote($after); //! rgt AFTER lft, lft AFTER id doesn't work
+				$row["alter"] = escape_string(idf_escape($row["COLUMN_NAME"])
+					. " $row[COLUMN_TYPE]"
+					. ($row["COLLATION_NAME"] ? " COLLATE $row[COLLATION_NAME]" : "")
+					. (isset($row["COLUMN_DEFAULT"]) ? " DEFAULT $row[default]" : "")
+					. ($row["IS_NULLABLE"] == "YES" ? "" : " NOT NULL")
+					. ($row["EXTRA"] ? " $row[EXTRA]" : "")
+					. ($row["COLUMN_COMMENT"] ? " COMMENT " . $dbh->quote($row["COLUMN_COMMENT"]) : "")
+					. ($after ? " AFTER " . idf_escape($after) : " FIRST")
+				);
+				echo ", ADD $row[alter]";
+				$fields[] = $row;
+				$after = $row["COLUMN_NAME"];
+			}
+			$result->free();
+			?>';
 	DECLARE columns CURSOR FOR <?php echo $query; ?>;
 	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
 	SET @alter_table = '';
@@ -68,15 +68,15 @@ $result->free();
 		IF NOT done THEN
 			SET set_after = 1;
 			CASE _column_name<?php
-foreach ($fields as $row) {
-	echo "
-				WHEN '" . $dbh->escape_string($row["COLUMN_NAME"]) . "' THEN
+			foreach ($fields as $row) {
+				echo "
+				WHEN " . $dbh->quote($row["COLUMN_NAME"]) . " THEN
 					SET add_columns = REPLACE(add_columns, ', ADD $row[alter]', '');
-					IF NOT (_column_default <=> $row[default]) OR _is_nullable != '$row[IS_NULLABLE]' OR _collation_name != '$row[COLLATION_NAME]' OR _column_type != '$row[COLUMN_TYPE]' OR _extra != '$row[EXTRA]' OR _column_comment != '" . $dbh->escape_string($row["COLUMN_COMMENT"]) . "' OR after != '$row[after]' THEN
+					IF NOT (_column_default <=> $row[default]) OR _is_nullable != '$row[IS_NULLABLE]' OR _collation_name != '$row[COLLATION_NAME]' OR _column_type != '$row[COLUMN_TYPE]' OR _extra != '$row[EXTRA]' OR _column_comment != " . $dbh->quote($row["COLUMN_COMMENT"]) . " OR after != $row[after] THEN
 						SET @alter_table = CONCAT(@alter_table, ', MODIFY $row[alter]');
 					END IF;"; //! don't replace in comment
-}
-?>
+			}
+			?>
 
 				ELSE
 					SET @alter_table = CONCAT(@alter_table, ', DROP ', _column_name);
@@ -121,12 +121,12 @@ function dump_data($table, $style, $select = "") {
 					$insert = "INSERT INTO " . idf_escape($table) . " (" . implode(", ", array_map('idf_escape', array_keys($row))) . ") VALUES";
 					$row2 = array();
 					foreach ($row as $key => $val) {
-						$row2[$key] = (isset($val) ? "'" . $dbh->escape_string($val) . "'" : "NULL");
+						$row2[$key] = (isset($val) ? $dbh->quote($val) : "NULL");
 					}
 					if ($style == "INSERT+UPDATE") {
 						$set = array();
 						foreach ($row as $key => $val) {
-							$set[] = idf_escape($key) . " = " . (isset($val) ? "'" . $dbh->escape_string($val) . "'" : "NULL");
+							$set[] = idf_escape($key) . " = " . (isset($val) ? $dbh->quote($val) : "NULL");
 						}
 						echo "$insert (" . implode(", ", $row2) . ") ON DUPLICATE KEY UPDATE " . implode(", ", $set) . ";\n";
 					} else {
