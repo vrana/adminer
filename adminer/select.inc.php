@@ -41,10 +41,9 @@ foreach ((array) $_GET["where"] as $val) {
 	if (strlen("$val[col]$val[val]") && in_array($val["op"], $operators)) {
 		if ($val["op"] == "AGAINST") {
 			$where[] = "MATCH (" . idf_escape($val["col"]) . ") AGAINST ('" . $dbh->escape_string($val["val"]) . "' IN BOOLEAN MODE)";
-		} elseif (ereg('IN$', $val["op"]) && !strlen($in = process_length($val["val"]))) {
-			$where[] = "0";
 		} else {
-			$cond = " $val[op]" . (ereg('NULL$', $val["op"]) ? "" : (ereg('IN$', $val["op"]) ? " ($in)" : " '" . $dbh->escape_string($val["val"]) . "'")); //! this searches in numeric values too
+			$in = process_length($val["val"]);
+			$cond = " $val[op]" . (ereg('NULL$', $val["op"]) ? "" : (ereg('IN$', $val["op"]) ? " (" . (strlen($in) ? $in : "NULL") . ")" : " '" . $dbh->escape_string($val["val"]) . "'")); //! this searches in numeric values too
 			if (strlen($val["col"])) {
 				$where[] = idf_escape($val["col"]) . $cond;
 			} else {
