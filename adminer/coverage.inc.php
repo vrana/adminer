@@ -1,11 +1,4 @@
 <?php
-error_reporting(E_ALL & ~E_NOTICE);
-if (!ini_get("session.auto_start")) {
-	session_name("adminer_sid");
-	session_set_cookie_params(ini_get("session.cookie_lifetime"), preg_replace('~_coverage\\.php(\\?.*)?$~', '', $_SERVER["REQUEST_URI"]));
-	session_start();
-}
-
 function xhtml_open_tags($s) {
 	// returns array of opened tags in $s
 	$return = array();
@@ -20,21 +13,17 @@ function xhtml_open_tags($s) {
 	return $return;
 }
 
-if (!extension_loaded("xdebug")) {
-	echo "<p>Xdebug has to be enabled.</p>\n";
-}
+page_header("Coverage", (extension_loaded("xdebug") ? "" : "Xdebug has to be enabled."));
 
-if ($_GET["start"]) {
-	unset($_SESSION["coverage"]);
-	xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
-	$_SESSION["coverage"] = array();
-	include "./adminer/index.php";
-	header("Location: .");
-	exit;
-}
-if (preg_match('~^(include/)?[-_.a-z0-9]+$~i', $_GET["filename"])) {
+if ($_GET["coverage"] === "0") {
+	unset($_SESSION["coverage"]); // disable coverage if it is not available
+	if (extension_loaded("xdebug")) {
+		$_SESSION["coverage"] = array();
+		echo "<p class='message'>Coverage started.</p>\n";
+	}
+} elseif (preg_match('~^(include/)?[-_.a-z0-9]+$~i', $_GET["coverage"])) {
 	// highlight single file
-	$filename = "adminer/$_GET[filename]";
+	$filename = $_GET["coverage"];
 	$cov = $_SESSION["coverage"][realpath($filename)];
 	$file = explode("<br />", highlight_file($filename, true));
 	unset($prev_color);
@@ -64,17 +53,18 @@ if (preg_match('~^(include/)?[-_.a-z0-9]+$~i', $_GET["filename"])) {
 	}
 } else {
 	// display list of files
-	echo "<table border='0' cellspacing='0' cellpadding='1'>\n";
-	foreach (array_merge(glob("adminer/*.php"), glob("adminer/include/*.php")) as $filename) {
+	echo "<table cellspacing='0'>\n";
+	foreach (array_merge(glob("*.php"), glob("include/*.php")) as $filename) {
 		$cov = $_SESSION["coverage"][realpath($filename)];
-		$filename = substr($filename, 8);
 		$ratio = 0;
 		if (isset($cov)) {
 			$values = array_count_values($cov);
 			$ratio = round(100 - 100 * $values[-1] / count($cov));
 		}
-		echo "<tr><td align='right' style='background-color: " . ($ratio < 50 ? "Red" : ($ratio < 75 ? "#FFEA20" : "#A7FC9D")) . ";'>$ratio%</td><td><a href='coverage.php?filename=$filename'>$filename</a></td></tr>\n";
+		echo "<tr><td align='right' style='background-color: " . ($ratio < 50 ? "Red" : ($ratio < 75 ? "#FFEA20" : "#A7FC9D")) . ";'>$ratio%</td><th><a href=\"" . htmlspecialchars($SELF) . "coverage=$filename\">$filename</a></th></tr>\n";
 	}
 	echo "</table>\n";
-	echo "<p><a href='coverage.php?start=1'>Start new coverage</a> (requires <a href='http://www.xdebug.org'>Xdebug</a>)</p>\n";
+	echo '<p><a href="' . htmlspecialchars($SELF) . 'coverage=0">Start new coverage</a></p>' . "\n";
 }
+page_footer("auth");
+exit;

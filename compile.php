@@ -171,6 +171,7 @@ if ($_SERVER["argc"] > 1) {
 
 $filename = "adminer" . ($_COOKIE["adminer_lang"] ? "-$_COOKIE[adminer_lang]" : "") . ".php";
 $file = file_get_contents(dirname(__FILE__) . "/adminer/index.php");
+$file = preg_replace('(' . str_replace(' ', '\\s*', preg_quote(' if (isset($_GET["coverage"])) { include "./coverage.inc.php"; }')) . ')', '', $file);
 $file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file);
 $file = preg_replace("~if \\(isset\\(\\\$_SESSION\\[\"coverage.*\n}\n| && !isset\\(\\\$_SESSION\\[\"coverage\"\\]\\)~sU", '', $file);
 if ($_COOKIE["adminer_lang"]) {

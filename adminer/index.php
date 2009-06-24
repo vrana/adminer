@@ -26,10 +26,6 @@ if (isset($_SESSION["coverage"])) {
 	}
 	xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
 	register_shutdown_function('save_coverage');
-	if ($_GET["start"]) {
-		// included from ../coverage.php
-		return;
-	}
 }
 // disable magic quotes to be able to use database escaping function
 if (get_magic_quotes_gpc()) {
@@ -55,6 +51,9 @@ include "./include/functions.inc.php";
 include "./include/lang.inc.php";
 include "./lang/$LANG.inc.php";
 include "./include/design.inc.php";
+if (isset($_GET["coverage"])) {
+	include "./coverage.inc.php";
+}
 include "./include/pdo.inc.php";
 include "./include/mysql.inc.php";
 include "./include/auth.inc.php";
