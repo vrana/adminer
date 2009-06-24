@@ -11,7 +11,7 @@ Mass editation of individual rows
 IE6 - <label for>
 Edit default values directly in table creation
 Single column foreign key definition in table creation
-Offer enum items in search
+Offer enum and set items in search - whisperer
 Use event $intervals + microseconds in relative date functions
 Ability to select external style - list downloaded by JavaScript
 ? Column and table names auto-completition in SQL textarea
