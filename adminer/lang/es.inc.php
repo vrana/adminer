@@ -80,7 +80,7 @@ $translations = array(
 	'Show column comments' => 'Mostrar comentario de columnas',
 	'%d byte(s)' => array('%d byte', '%d bytes'),
 	'No commands to execute.' => 'No hay comando a ejecutar.',
-	'Unable to upload a file.' => 'No posible subir archivos.',
+	'Unable to upload a file.' => 'No posible subir archivo.',
 	'File upload' => 'Importar archivo',
 	'File uploads are disabled.' => 'Importación de archivos deshablilitado.',
 	'Routine has been called, %d row(s) affected.' => array('Consulta ejecutada, %d registro afectado.', 'Consulta ejecutada, %d registros afectados.'),
@@ -213,6 +213,7 @@ $translations = array(
 	'Stop on error' => 'Parar en caso de error',
 	'Select table' => 'Seleccionar tabla',
 	'%.3f s' => '%.3f s',
-	'History' => 'Historia',
+	'History' => 'Registro',
 	'Variables' => 'Variables',
+	'Source and target columns must have the same data type and there must be an index on the target columns.' => 'Las columnas de origen y destino deben ser de igual tipo de datos, y debe existir un índice en la tabla destino.',
 );

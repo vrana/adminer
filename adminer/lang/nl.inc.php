@@ -87,7 +87,7 @@ $translations = array(
 	'Call' => 'Uitvoeren',
 	'No MySQL extension' => 'Geen MySQL extensie',
 	'None of supported PHP extensions (%s) are available.' => 'Geen geldige PHP extensies beschikbaar (%s).',
-	'Sessions must be enabled.' => 'Siessies moeten geactiveerd zijn.',
+	'Sessions must be enabled.' => 'Sessies moeten geactiveerd zijn.',
 	'Session expired, please login again.' => 'Uw sessie is verlopen. Gelieve opnieuw in te loggen.',
 	'Text length' => 'Tekst lengte',
 	'Foreign key has been dropped.' => 'Foreign key verwijderd.',
@@ -215,4 +215,5 @@ $translations = array(
 	'%.3f s' => '%.3f s',
 	'History' => 'Geschiedenis',
 	'Variables' => 'Variabelen',
+	'Source and target columns must have the same data type and there must be an index on the target columns.' => 'Bron- en doelkolommen moeten van hetzelfde data type zijn en er moet een index bestaan op de gekozen kolommen.',
 );
