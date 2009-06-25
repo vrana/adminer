@@ -39,7 +39,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	}
 	echo "<h2>$title" . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . "</h2>\n";
 	if ($_SESSION["messages"]) {
-		echo "<div class='message'>" . implode("</p>\n<p class='message'>", $_SESSION["messages"]) . "</div>\n";
+		echo "<div class='message'>" . implode("</div>\n<div class='message'>", $_SESSION["messages"]) . "</div>\n";
 		$_SESSION["messages"] = array();
 	}
 	$databases = &$_SESSION["databases"][$_GET["server"]];
