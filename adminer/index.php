@@ -7,6 +7,32 @@
 */
 
 error_reporting(E_ALL & ~E_NOTICE);
+
+// used only in compiled file
+if (isset($_GET["file"])) {
+	header("Expires: " . gmdate("D, d M Y H:i:s", time() + 365*24*60*60) . " GMT");
+	if ($_GET["file"] == "favicon.ico") {
+		header("Content-Type: image/x-icon");
+		echo base64_decode("compile_file('favicon.ico', 'base64_encode')");
+	} elseif ($_GET["file"] == "default.css") {
+		header("Content-Type: text/css");
+		?>compile_file('default.css', 'minify_css')<?php
+	} elseif ($_GET["file"] == "functions.js") {
+		header("Content-Type: text/javascript");
+		?>compile_file('functions.js', 'JSMin::minify')<?php
+	} else {
+		header("Content-Type: image/gif");
+		switch ($_GET["file"]) {
+			case "plus.gif": echo base64_decode("compile_file('plus.gif', 'base64_encode')"); break;
+			case "cross.gif": echo base64_decode("compile_file('cross.gif', 'base64_encode')"); break;
+			case "up.gif": echo base64_decode("compile_file('up.gif', 'base64_encode')"); break;
+			case "down.gif": echo base64_decode("compile_file('down.gif', 'base64_encode')"); break;
+			case "arrow.gif": echo base64_decode("compile_file('arrow.gif', 'base64_encode')"); break;
+		}
+	}
+	exit;
+}
+
 if (!ini_get("session.auto_start")) {
 	// use specific session name to get own namespace
 	session_name("adminer_sid");

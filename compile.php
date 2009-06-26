@@ -158,6 +158,14 @@ function php_shrink($input) {
 	return $output;
 }
 
+function minify_css($file) {
+	return preg_replace('~\\s*([:;{},])\\s*~', '\\1', $file);
+}
+
+function compile_file($match) {
+	return call_user_func($match[2], file_get_contents(dirname(__FILE__) . "/adminer/$match[1]"));
+}
+
 error_reporting(E_ALL & ~E_NOTICE);
 if ($_SERVER["argc"] > 1) {
 	$_COOKIE["adminer_lang"] = $_SERVER["argv"][1]; // Adminer functions read language from cookie
@@ -182,33 +190,10 @@ if ($_COOKIE["adminer_lang"]) {
 } else {
 	$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
 }
+$file = preg_replace_callback("~compile_file\\('([^']+)', '([^']+)'\\)~", 'compile_file', $file); // integrate static files
 $replace = 'htmlspecialchars(preg_replace("~\\\\\\\\?.*~", "", $_SERVER["REQUEST_URI"])) . "?file=\\0&amp;version=' . $VERSION;
-$file = preg_replace('~default\\.css|functions\\.js|favicon\\.ico~', '<?php echo ' . $replace . '"; ?>', $file);
-$file = preg_replace('~(plus|cross|up|down|arrow)\\.gif~', '" . ' . $replace, $file);
-$file = str_replace('error_reporting(E_ALL & ~E_NOTICE);', 'error_reporting(E_ALL & ~E_NOTICE);
-if (isset($_GET["file"])) {
-	header("Expires: " . gmdate("D, d M Y H:i:s", time() + 365*24*60*60) . " GMT");
-	if ($_GET["file"] == "favicon.ico") {
-		header("Content-Type: image/x-icon");
-		echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/adminer/favicon.ico")) . '");
-	} elseif ($_GET["file"] == "default.css") {
-		header("Content-Type: text/css");
-		?>' . preg_replace('~\\s*([:;{},])\\s*~', '\\1', file_get_contents(dirname(__FILE__) . "/adminer/default.css")) . '<?php
-	} elseif ($_GET["file"] == "functions.js") {
-		header("Content-Type: text/javascript");
-		?>' . JSMin::minify(file_get_contents(dirname(__FILE__) . "/adminer/functions.js")) . '<?php
-	} else {
-		header("Content-Type: image/gif");
-		switch ($_GET["file"]) {
-			case "arrow.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/adminer/arrow.gif")) . '"); break;
-			case "up.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/adminer/up.gif")) . '"); break;
-			case "down.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/adminer/down.gif")) . '"); break;
-			case "plus.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/adminer/plus.gif")) . '"); break;
-			case "cross.gif": echo base64_decode("' . base64_encode(file_get_contents(dirname(__FILE__) . "/adminer/cross.gif")) . '"); break;
-		}
-	}
-	exit;
-}', $file); // integrate static files
+$file = preg_replace('~(?<!== ")(default\\.css|functions\\.js|favicon\\.ico)~', '<?php echo ' . $replace . '"; ?>', $file);
+$file = preg_replace('~(?<!case ")(plus|cross|up|down|arrow)\\.gif~', '" . ' . $replace, $file);
 $file = str_replace("../externals/jush/", "http://jush.sourceforge.net/", $file);
 $file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
 $file = php_shrink($file);
