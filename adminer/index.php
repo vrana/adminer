@@ -8,6 +8,15 @@
 
 error_reporting(E_ALL & ~E_NOTICE);
 
+// disable filter.default
+$filter = (!ereg('^(unsafe_row)?$', ini_get("filter.default")) || ini_get("filter.default_flags"));
+if ($filter) {
+	$_GET = ($_GET ? filter_input_array(INPUT_GET, FILTER_UNSAFE_RAW) : array());
+	$_POST = ($_POST ? filter_input_array(INPUT_POST, FILTER_UNSAFE_RAW) : array());
+	$_COOKIE = ($_COOKIE ? filter_input_array(INPUT_COOKIE, FILTER_UNSAFE_RAW) : array());
+	$_SERVER = ($_SERVER ? filter_input_array(INPUT_SERVER, FILTER_UNSAFE_RAW) : array());
+}
+
 // used only in compiled file
 if (isset($_GET["file"])) {
 	header("Expires: " . gmdate("D, d M Y H:i:s", time() + 365*24*60*60) . " GMT");
@@ -39,6 +48,7 @@ if (!ini_get("session.auto_start")) {
 	session_set_cookie_params(0, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"])); //! use HttpOnly in PHP 5
 	session_start();
 }
+
 if (isset($_SESSION["coverage"])) {
 	// coverage is used in tests and removed in compilation
 	function save_coverage() {
@@ -53,6 +63,7 @@ if (isset($_SESSION["coverage"])) {
 	xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
 	register_shutdown_function('save_coverage');
 }
+
 // disable magic quotes to be able to use database escaping function
 if (get_magic_quotes_gpc()) {
     $process = array(&$_GET, &$_POST, &$_COOKIE);
@@ -63,7 +74,7 @@ if (get_magic_quotes_gpc()) {
                 $process[$key][stripslashes($k)] = $v;
                 $process[] = &$process[$key][stripslashes($k)];
             } else {
-                $process[$key][stripslashes($k)] = stripslashes($v);
+                $process[$key][stripslashes($k)] = ($filter ? $v : stripslashes($v));
             }
         }
     }
@@ -163,5 +174,6 @@ if (isset($_GET["download"])) {
 		include "./db.inc.php";
 	}
 }
+
 // each page calls its own page_header(), if the footer should not be called then the page exits
 page_footer();
