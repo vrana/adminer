@@ -104,13 +104,13 @@ if ($_POST && !$error) {
 		if (!$_POST["delete"] && !$set) {
 			// nothing
 		} elseif ($_POST["all"]) {
-			$result = queries($command . ($where ? " WHERE " . implode(" AND ", $where) : ""));
+			$result = queries($command . ($where ? "\nWHERE " . implode(" AND ", $where) : ""));
 			$affected = $dbh->affected_rows;
 		} else {
 			foreach ((array) $_POST["check"] as $val) {
 				parse_str($val, $check);
 				// where may not be unique so OR can't be used
-				$result = queries($command . " WHERE " . implode(" AND ", where($check)) . " LIMIT 1");
+				$result = queries($command . "\nWHERE " . implode(" AND ", where($check)) . " LIMIT 1");
 				if (!$result) {
 					break;
 				}
