@@ -311,13 +311,13 @@ function collations() {
 	$return = array();
 	$result = $dbh->query("SHOW COLLATION");
 	while ($row = $result->fetch_assoc()) {
-		if ($row["Default"] && $return[$row["Charset"]]) {
-			array_unshift($return[$row["Charset"]], $row["Collation"]);
-		} else {
-			$return[$row["Charset"]][] = $row["Collation"];
-		}
+		$return[$row["Charset"]][] = $row["Collation"];
 	}
 	$result->free();
+	ksort($return);
+	foreach ($return as $key => $val) {
+		sort($return[$key]);
+	}
 	return $return;
 }
 
