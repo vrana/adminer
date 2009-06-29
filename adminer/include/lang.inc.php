@@ -45,7 +45,7 @@ if (isset($_GET["lang"])) {
 
 $LANG = "en";
 if (isset($langs[$_COOKIE["adminer_lang"]])) {
-	setcookie("adminer_lang", $_COOKIE["adminer_lang"], strtotime("+1 month"), preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]));
+	setcookie("adminer_lang", $_COOKIE["adminer_lang"], gmmktime(0, 0, 0, gmdate("n") + 1), preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]));
 	$LANG = $_COOKIE["adminer_lang"];
 } elseif (isset($langs[$_SESSION["lang"]])) {
 	$LANG = $_SESSION["lang"];
