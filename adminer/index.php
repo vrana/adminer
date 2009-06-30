@@ -6,7 +6,7 @@
 * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 */
 
-error_reporting(E_ALL & ~E_NOTICE);
+error_reporting(4343); // errors and warnings
 
 // disable filter.default
 $filter = (!ereg('^(unsafe_row)?$', ini_get("filter.default")) || ini_get("filter.default_flags"));
