@@ -8,7 +8,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 	}
 	if (!$_POST["drop"]) {
 		$set = array();
-		$fields = array_filter((array) $_POST["fields"], 'strlen');
+		$fields = (array) $_POST["fields"];
 		ksort($fields); // enforce fields order
 		foreach ($fields as $field) {
 			if (strlen($field["field"])) {
