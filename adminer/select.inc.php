@@ -101,20 +101,20 @@ if ($_POST && !$error) {
 			}
 			$command .= ($_POST["clone"] ? "\nSELECT " . implode(", ", $set) . " FROM " . idf_escape($_GET["select"]) : " SET" . implode(",", $set));
 		}
-		if (!$_POST["delete"] && !$set) {
-			// nothing
-		} elseif ($_POST["all"]) {
-			$result = queries($command . ($where ? "\nWHERE " . implode(" AND ", $where) : ""));
-			$affected = $dbh->affected_rows;
-		} else {
-			foreach ((array) $_POST["check"] as $val) {
-				parse_str($val, $check);
-				// where may not be unique so OR can't be used
-				$result = queries($command . "\nWHERE " . implode(" AND ", where($check)) . " LIMIT 1");
-				if (!$result) {
-					break;
+		if ($_POST["delete"] || $set) {
+			if ($_POST["all"]) {
+				$result = queries($command . ($where ? "\nWHERE " . implode(" AND ", $where) : ""));
+				$affected = $dbh->affected_rows;
+			} else {
+				foreach ((array) $_POST["check"] as $val) {
+					parse_str($val, $check);
+					// where may not be unique so OR can't be used
+					$result = queries($command . "\nWHERE " . implode(" AND ", where($check)) . " LIMIT 1");
+					if (!$result) {
+						break;
+					}
+					$affected += $dbh->affected_rows;
 				}
-				$affected += $dbh->affected_rows;
 			}
 		}
 		query_redirect(queries(), remove_from_uri("page"), lang('%d item(s) have been affected.', $affected), $result, false, !$result);
