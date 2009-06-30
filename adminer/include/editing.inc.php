@@ -43,7 +43,7 @@ function input($name, $field, $value) {
 		if ($field["null"] || isset($_GET["default"])) {
 			array_unshift($options, "NULL");
 		}
-		echo (count($options) > 1 || isset($_GET["select"]) ? '<select name="function[' . $name . ']">' . (isset($_GET["select"]) ? '<option value="orig">' . lang('original') . '</option>' : '') . optionlist($options, (isset($value) ? (string) $_POST["function"][$name] : null)) . '</select>' : "&nbsp;") . '</td><td>';
+		echo (count($options) > 1 || isset($_GET["select"]) ? '<select name="function[' . $name . ']">' . (isset($_GET["select"]) ? '<option value="orig">' . lang('original') . '</option>' : '') . optionlist($options, ($value === false ? null : (isset($value) ? (string) $_POST["function"][$name] : 'NULL'))) . '</select>' : "&nbsp;") . '</td><td>';
 		if ($field["type"] == "set") { //! 64 bits
 			preg_match_all("~'((?:[^']+|'')*)'~", $field["length"], $matches);
 			foreach ($matches[1] as $i => $val) {

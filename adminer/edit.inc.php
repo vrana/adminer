@@ -67,8 +67,9 @@ if ($fields) {
 	echo "<table cellspacing='0'>\n";
 	foreach ($fields as $name => $field) {
 		echo "<tr><th>" . htmlspecialchars($name) . "</th>";
-		$value = (!isset($row) ? ($_POST["clone"] && $field["auto_increment"] ? "" : ($where ? $field["default"] : null))
-			: (strlen($row[$name]) && ($field["type"] == "enum" || $field["type"] == "set") ? intval($row[$name]) : $row[$name])
+		$value = (isset($row)
+			? (strlen($row[$name]) && ($field["type"] == "enum" || $field["type"] == "set") ? intval($row[$name]) : $row[$name])
+			: ($_POST["clone"] && $field["auto_increment"] ? "" : ($where ? $field["default"] : false))
 		);
 		input($name, $field, $value);
 		if (isset($_GET["default"]) && $field["type"] == "timestamp") {
