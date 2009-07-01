@@ -89,19 +89,18 @@ function page_footer($missing = false) {
 </form>
 <?php
 		if ($missing != "db" && strlen($_GET["db"])) {
-			$result = $dbh->query("SHOW TABLE STATUS");
-			if (!$result->num_rows) {
+			$table_status = table_status();
+			if (!$table_status) {
 				echo "<p class='message'>" . lang('No tables.') . "</p>\n";
 			} else {
 				echo "<p>\n";
-				while ($row = $result->fetch_assoc()) {
+				foreach ($table_status as $row) {
 					echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row["Name"]) . '">' . lang('select') . '</a> ';
 					echo '<a href="' . htmlspecialchars($SELF) . (isset($row["Rows"]) ? 'table' : 'view') . '=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . "</a><br />\n";
 				}
 				echo "</p>\n";
 			}
 			echo '<p><a href="' . htmlspecialchars($SELF) . 'create=">' . lang('Create new table') . "</a></p>\n";
-			$result->free();
 		}
 	}
 	?>

@@ -20,15 +20,6 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 }
 page_header(lang('Foreign key'), $error, array("table" => $_GET["foreign"]), $_GET["foreign"]);
 
-$tables = array();
-$result = $dbh->query("SHOW TABLE STATUS");
-while ($row = $result->fetch_assoc()) {
-	if ($row["Engine"] == "InnoDB") {
-		$tables[] = $row["Name"];
-	}
-}
-$result->free();
-
 if ($_POST) {
 	$row = $_POST;
 	ksort($row["source"]);
@@ -52,7 +43,7 @@ $target = ($_GET["foreign"] === $row["table"] ? $source : get_vals("SHOW COLUMNS
 <form action="" method="post">
 <p>
 <?php echo lang('Target table'); ?>:
-<select name="table" onchange="this.form['change-js'].value = '1'; this.form.submit();"><?php echo optionlist($tables, $row["table"]); ?></select>
+<select name="table" onchange="this.form['change-js'].value = '1'; this.form.submit();"><?php echo optionlist(array_keys(table_status_referencable()), $row["table"]); ?></select>
 <input type="hidden" name="change-js" value="" />
 </p>
 <noscript><p><input type="submit" name="change" value="<?php echo lang('Change'); ?>" /></p></noscript>

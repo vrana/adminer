@@ -43,14 +43,14 @@ echo '<p><a href="' . htmlspecialchars($SELF) . 'database=">' . lang('Alter data
 echo '<p><a href="' . htmlspecialchars($SELF) . 'schema=">' . lang('Database schema') . "</a></p>\n";
 
 echo "<h3>" . lang('Tables and views') . "</h3>\n";
-$result = $dbh->query("SHOW TABLE STATUS");
-if (!$result->num_rows) {
+$table_status = table_status();
+if (!$table_status) {
 	echo "<p class='message'>" . lang('No tables.') . "</p>\n";
 } else {
 	echo "<form action='' method='post'>\n";
 	echo "<table cellspacing='0' class='nowrap'>\n";
 	echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="form_check(this, /^(tables|views)\[/);" /></td><th>' . lang('Table') . '</th><td>' . lang('Engine') . '</td><td>' . lang('Collation') . '</td><td>' . lang('Data Length') . '</td><td>' . lang('Index Length') . '</td><td>' . lang('Data Free') . '</td><td>' . lang('Auto Increment') . '</td><td>' . lang('Rows') . '</td><td>' . lang('Comment') . "</td></tr></thead>\n";
-	while ($row = $result->fetch_assoc()) {
+	foreach ($table_status as $row) {
 		$name = $row["Name"];
 		table_comment($row);
 		echo '<tr' . odd() . '><td><input type="checkbox" name="' . (isset($row["Rows"]) ? 'tables' : 'views') . '[]" value="' . htmlspecialchars($name) . '"' . (in_array($name, $tables_views, true) ? ' checked="checked"' : '') . ' onclick="form_uncheck(\'check-all\');" /></td>';
@@ -75,7 +75,6 @@ if (!$result->num_rows) {
 	}
 	echo "</form>\n";
 }
-$result->free();
 
 if ($dbh->server_info >= 5) {
 	echo '<p><a href="' . htmlspecialchars($SELF) . 'createv=">' . lang('Create view') . "</a></p>\n";

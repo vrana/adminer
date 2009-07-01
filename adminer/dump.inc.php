@@ -71,8 +71,7 @@ if ($_POST) {
 			
 			if ($_POST["table_style"] || $_POST["data_style"]) {
 				$views = array();
-				$result = $dbh->query("SHOW TABLE STATUS");
-				while ($row = $result->fetch_assoc()) {
+				foreach (table_status() as $row) {
 					$table = (!strlen($_GET["db"]) || in_array($row["Name"], (array) $_POST["tables"]));
 					$data = (!strlen($_GET["db"]) || in_array($row["Name"], (array) $_POST["data"]));
 					if ($table || $data) {
@@ -97,7 +96,6 @@ if ($_POST) {
 						}
 					}
 				}
-				$result->free();
 				foreach ($views as $view) {
 					dump_table($view, $_POST["table_style"], true);
 				}
@@ -182,8 +180,7 @@ if (strlen($_GET["db"])) {
 	echo "<th align='right'><label>" . lang('Data') . "<input type='checkbox' id='check-data'$checked onclick='form_check(this, /^data\\[/);' /></label></th>";
 	echo "</tr></thead>\n";
 	$views = "";
-	$result = $dbh->query("SHOW TABLE STATUS");
-	while ($row = $result->fetch_assoc()) {
+	foreach (table_status() as $row) {
 		$checked = (strlen($_GET["dump"]) && $row["Name"] != $_GET["dump"] ? '' : " checked='checked'");
 		$print = '<tr><td><label><input type="checkbox" name="tables[]" value="' . htmlspecialchars($row["Name"]) . "\"$checked onclick=\"form_uncheck('check-tables');\" />" . htmlspecialchars($row["Name"]) . "</label></td>";
 		if (!$row["Engine"]) {

@@ -223,11 +223,24 @@ function get_databases() {
 	return $return;
 }
 
-function table_status($table) {
+function table_status($name = "") {
 	global $dbh;
-	$result = $dbh->query("SHOW TABLE STATUS LIKE " . $dbh->quote(addcslashes($table, "%_")));
-	$return = $result->fetch_assoc(); // ()-> is not supported in PHP 4
+	$return = array();
+	$result = $dbh->query("SHOW TABLE STATUS" . (strlen($name) ? " LIKE " . $dbh->quote(addcslashes($name, "%_")) : ""));
+	while ($row = $result->fetch_assoc()) {
+		$return[$row["Name"]] = $row;
+	}
 	$result->free();
+	return (strlen($name) ? $return[$name] : $return);
+}
+
+function table_status_referencable() {
+	$return = array();
+	foreach (table_status() as $name => $row) {
+		if ($row["Engine"] == "InnoDB") {
+			$return[$name] = $row;
+		}
+	}
 	return $return;
 }
 

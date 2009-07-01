@@ -15,8 +15,7 @@ $base_left = -1;
 $schema = array(); // table => array("fields" => array(name => field), "pos" => array(top, left), "references" => array(table => array(left => array(source, target))))
 $referenced = array(); // target_table => array(table => array(left => target_column))
 $lefts = array(); // float => bool
-$result = $dbh->query("SHOW TABLE STATUS");
-while ($row = $result->fetch_assoc()) {
+foreach (table_status() as $row) {
 	if (!isset($row["Engine"])) { // view
 		continue;
 	}
@@ -49,7 +48,6 @@ while ($row = $result->fetch_assoc()) {
 	}
 	$top = max($top, $schema[$row["Name"]]["pos"][0] + 2.5 + $pos);
 }
-$result->free();
 
 ?>
 <div id="schema" style="height: <?php echo $top; ?>em;">
