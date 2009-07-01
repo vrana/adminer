@@ -23,7 +23,7 @@ function input($name, $field, $value) {
 		$options = array("");
 		if (!isset($_GET["default"])) {
 			if (preg_match('~char|date|time~', $field["type"])) {
-				$options = (preg_match('~char~', $field["type"]) ? array("", "md5", "sha1", "password", "uuid") : array("", "now"));
+				$options = (preg_match('~char~', $field["type"]) ? array("", "md5", "sha1", "password", "uuid") : array("", "now")); //! JavaScript for disabling maxlength
 			}
 			if (!isset($_GET["call"]) && (isset($_GET["select"]) || where($_GET))) {
 				// relative functions
