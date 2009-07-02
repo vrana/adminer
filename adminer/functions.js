@@ -80,7 +80,7 @@ function editing_name_change(field) {
 	var table = re_escape(field.value);
 	var column = '';
 	var match;
-	if (match = /(.+)_(.+)/.exec(table)) { // limited to columns not containing underscores
+	if ((match = /(.+)_(.+)/.exec(table)) || (match = /(.*[a-z])([A-Z].*)/.exec(table))) { // limited to single word columns
 		table = match[1];
 		column = match[2];
 	}
@@ -151,13 +151,14 @@ function editing_remove_row(button) {
 
 function editing_type_change(type) {
 	var name = type.name.substr(0, type.name.length - 6);
+	var text = type.options[type.selectedIndex].text;
 	for (var i=0; i < type.form.elements.length; i++) {
 		var el = type.form.elements[i];
 		if (el.name == name + '[collation]') {
-			el.className = (/char|text|enum|set/.test(type.options[type.selectedIndex].text) ? '' : 'hidden');
+			el.className = (/(char|text|enum|set)$/.test(text) ? '' : 'hidden');
 		}
 		if (el.name == name + '[unsigned]') {
-			el.className = (/int|float|double|decimal/.test(type.options[type.selectedIndex].text) ? '' : 'hidden');
+			el.className = (/(int|float|double|decimal)$/.test(text) ? '' : 'hidden');
 		}
 	}
 }
