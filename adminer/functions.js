@@ -44,15 +44,6 @@ function form_uncheck(id) {
 
 
 
-function where_change(op) {
-	for (var i=0; i < op.form.elements.length; i++) {
-		var el = op.form.elements[i];
-		if (el.name == op.name.substr(0, op.name.length - 4) + '[val]') {
-			el.className = (/NULL$/.test(op.options[op.selectedIndex].text) ? 'hidden' : '');
-		}
-	}
-}
-
 function select_add_row(field) {
 	var row = field.parentNode.cloneNode(true);
 	var selects = row.getElementsByTagName('select');
