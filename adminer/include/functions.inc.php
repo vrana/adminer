@@ -19,8 +19,8 @@ function optionlist($options, $selected = null) {
 		if (is_array($v)) {
 			$return .= '<optgroup label="' . htmlspecialchars($k) . '">';
 		}
-		foreach ((is_array($v) ? $v : array($v)) as $val) {
-			$return .= '<option' . ($val === $selected ? ' selected="selected"' : '') . '>' . htmlspecialchars($val) . '</option>';
+		foreach ((is_array($v) ? $v : array($k => $v)) as $key => $val) {
+			$return .= '<option' . (is_string($key) ? ' value="' . htmlspecialchars($key) . '"' : '') . ((is_string($key) ? $key : $val) === $selected ? ' selected="selected"' : '') . '>' . htmlspecialchars($val) . '</option>';
 		}
 		if (is_array($v)) {
 			$return .= '</optgroup>';

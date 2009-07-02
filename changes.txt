@@ -1,3 +1,6 @@
+Adminer 1.12.0:
+Create single column foreign key in table structure
+
 Adminer 1.11.0:
 Connection through socket by server :/path/to/socket
 Simplify export

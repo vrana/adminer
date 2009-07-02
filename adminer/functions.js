@@ -65,6 +65,48 @@ function select_add_row(field) {
 
 var added = '.', row_count;
 
+function re_escape(s) {
+	return s.replace(/[\[\]\\^$*+?.(){|}]/, '\\$&');
+}
+
+function idf_escape(s) {
+	return '`' + s.replace(/`/, '``') + '`';
+}
+
+function editing_name_change(field) {
+	var name = field.name.substr(0, field.name.length - 7);
+	var type = field.form[name + '[type]'];
+	var opts = type.options;
+	var table = re_escape(field.value);
+	var column = '';
+	var match;
+	if (match = /(.+)_(.+)/.exec(table)) { // limited to columns not containing underscores
+		table = match[1];
+		column = match[2];
+	}
+	var plural = '(?:e?s)?';
+	var tab_col = table + plural + '_?' + column;
+	var re = new RegExp('^' + idf_escape(table + plural) + '\\.' + idf_escape(column) + '$'
+		+ '|^' + idf_escape(tab_col) + '\\.'
+		+ '|\\.' + idf_escape(tab_col) + '$'
+		+ '|^' + idf_escape(column + plural) + '\\.' + idf_escape(table) + '$'
+	, 'i');
+	var candidate; // don't select anything with ambiguous match (like column `id`)
+	for (var i = opts.length; i--; ) {
+		if (re.test(opts[i].value)) {
+			if (candidate) {
+				return false;
+			} else {
+				candidate = i;
+			}
+		}
+	}
+	if (candidate) {
+		opts.selectedIndex = candidate;
+		editing_type_change(type);
+	}
+}
+
 function editing_add_row(button, allowed) {
 	if (allowed && row_count >= allowed) {
 		return false;
@@ -91,7 +133,9 @@ function editing_add_row(button, allowed) {
 			tags2[i].value = '';
 		}
 	}
-	tags[0].onchange = function () { };
+	tags[0].onchange = function () {
+		editing_name_change(tags[0]);
+	};
 	row.parentNode.insertBefore(row2, row.nextSibling);
 	added += '0';
 	row_count++;

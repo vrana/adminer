@@ -5,7 +5,7 @@ $statuses = array("ENABLED" => "ENABLE", "DISABLED" => "DISABLE", "SLAVESIDE_DIS
 if ($_POST && !$error) {
 	if ($_POST["drop"]) {
 		query_redirect("DROP EVENT " . idf_escape($_GET["event"]), substr($SELF, 0, -1), lang('Event has been dropped.'));
-	} elseif (in_array($_POST["INTERVAL_FIELD"], $intervals) && in_array($_POST["STATUS"], $statuses)) {
+	} elseif (in_array($_POST["INTERVAL_FIELD"], $intervals) && isset($statuses[$_POST["STATUS"]])) {
 		$schedule = "\nON SCHEDULE " . ($_POST["INTERVAL_VALUE"]
 			? "EVERY " . $dbh->quote($_POST["INTERVAL_VALUE"]) . " $_POST[INTERVAL_FIELD]"
 			. ($_POST["STARTS"] ? " STARTS " . $dbh->quote($_POST["STARTS"]) : "")
@@ -17,7 +17,7 @@ if ($_POST && !$error) {
 			? "ALTER EVENT " . idf_escape($_GET["event"]) . $schedule
 			. ($_GET["event"] != $_POST["EVENT_NAME"] ? "\nRENAME TO " . idf_escape($_POST["EVENT_NAME"]) : "")
 			: "CREATE EVENT " . idf_escape($_POST["EVENT_NAME"]) . $schedule
-			) . "\n$_POST[STATUS] COMMENT " . $dbh->quote($_POST["EVENT_COMMENT"])
+			) . "\n" . $statuses[$_POST["STATUS"]] . " COMMENT " . $dbh->quote($_POST["EVENT_COMMENT"])
 			. " DO\n$_POST[EVENT_DEFINITION]"
 		, substr($SELF, 0, -1), (strlen($_GET["event"]) ? lang('Event has been altered.') : lang('Event has been created.')));
 	}
@@ -30,7 +30,6 @@ if ($_POST) {
 } elseif (strlen($_GET["event"])) {
 	$result = $dbh->query("SELECT * FROM information_schema.EVENTS WHERE EVENT_SCHEMA = " . $dbh->quote($_GET["db"]) . " AND EVENT_NAME = " . $dbh->quote($_GET["event"]));
 	$row = $result->fetch_assoc();
-	$row["STATUS"] = $statuses[$row["STATUS"]];
 	$result->free();
 }
 ?>

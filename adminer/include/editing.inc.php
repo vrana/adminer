@@ -99,14 +99,32 @@ function process_input($name, $field) {
 	}
 }
 
-function edit_type($key, $field, $collations) {
+function referencable_primary($self) {
+	$return = array(); // table_name => field
+	foreach (table_status_referencable() as $table_name => $table) {
+		if ($table_name != $self) {
+			foreach (fields($table_name) as $field) {
+				if ($field["primary"]) {
+					if ($return[$table_name]) { // multi column primary key
+						unset($return[$table_name]);
+						break;
+					}
+					$return[$table_name] = $field;
+				}
+			}
+		}
+	}
+	return $return;
+}
+
+function edit_type($key, $field, $collations, $foreign_keys = array()) {
 	global $types, $unsigned, $inout;
 	?>
-<td><select name="<?php echo $key; ?>[type]" onchange="editing_type_change(this);"><?php echo optionlist(array_keys($types), $field["type"]); ?></select></td>
+<td><select name="<?php echo $key; ?>[type]" onchange="editing_type_change(this);"><?php echo optionlist(array_keys($types) + ($foreign_keys ? array(lang('Foreign keys') => $foreign_keys) : array()), $field["type"]); ?></select></td>
 <td><input name="<?php echo $key; ?>[length]" value="<?php echo htmlspecialchars($field["length"]); ?>" size="3" /></td>
 <td><?php
-echo "<select name=\"$key" . '[collation]"' . (preg_match('~char|text|enum|set~', $field["type"]) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')</option>' . optionlist($collations, $field["collation"]) . '</select>';
-echo ($unsigned ? " <select name=\"$key" . '[unsigned]"' . (!$field["type"] || preg_match('~int|float|double|decimal~', $field["type"]) ? "" : " class='hidden'") . '><option></option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
+echo "<select name=\"$key" . '[collation]"' . (ereg('~(char|text|enum|set)$~', $field["type"]) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')</option>' . optionlist($collations, $field["collation"]) . '</select>';
+echo ($unsigned ? " <select name=\"$key" . '[unsigned]"' . (!$field["type"] || ereg('~(int|float|double|decimal)$~', $field["type"]) ? "" : " class='hidden'") . '><option></option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
 ?></td>
 <?php
 }
@@ -120,7 +138,7 @@ function process_type($field, $collate = "COLLATE") {
 	;
 }
 
-function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0) {
+function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $foreign_keys = array()) {
 	global $inout;
 	$column_comments = false;
 	foreach ($fields as $field) {
@@ -149,8 +167,8 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0) {
 		?>
 <tr<?php echo ($display ? "" : " style='display: none;'"); ?>>
 <?php if ($type == "PROCEDURE") { ?><td><select name="fields[<?php echo $i; ?>][inout]"><?php echo optionlist($inout, $field["inout"]); ?></select></td><?php } ?>
-<th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo htmlspecialchars($field["field"]); ?>"<?php echo (strlen($field["field"]) || count($fields) > 1 ? "" : " onchange='editing_add_row(this, $allowed);'"); ?> maxlength="64" /><?php } ?><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo htmlspecialchars($field[($_POST ? "orig" : "field")]); ?>" /></th>
-<?php edit_type("fields[$i]", $field, $collations); ?>
+<th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo htmlspecialchars($field["field"]); ?>" onchange="<?php echo (strlen($field["field"]) || count($fields) > 1 ? "" : "editing_add_row(this, $allowed); "); ?>editing_name_change(this);" maxlength="64" /><?php } ?><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo htmlspecialchars($field[($_POST ? "orig" : "field")]); ?>" /></th>
+<?php edit_type("fields[$i]", $field, $collations, $foreign_keys); ?>
 <?php if ($type == "TABLE") { ?>
 <td><input type="checkbox" name="fields[<?php echo $i; ?>][null]" value="1"<?php if ($field["null"]) { ?> checked="checked"<?php } ?> /></td>
 <td><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked="checked"<?php } ?> /></td>
