@@ -1,7 +1,7 @@
 Adminer 1.12.0:
 Create single column foreign key in table structure
 
-Adminer 1.11.0:
+Adminer 1.11.0 (released 2009-07-02):
 Connection through socket by server :/path/to/socket
 Simplify export
 Display execution time in SQL query
@@ -22,12 +22,12 @@ Hide fieldsets in select
 Automatically add new fields in table creation
 Use \n in SQL commands
 
-phpMinAdmin 1.10.1:
+phpMinAdmin 1.10.1 (released 2009-05-07):
 Highlight odd and hover rows
 Partition editing comfort (bug #2783446)
 Allow full length in limited int (thanks to Vlasta Neubauer)
 
-phpMinAdmin 1.10.0:
+phpMinAdmin 1.10.0 (released 2009-04-28):
 Partitioning (MySQL 5.1)
 CSV import
 Plus and minus functions
@@ -39,10 +39,10 @@ Read style from phpMinAdmin.css if exists
 Size reduction by minification of variables and functions
 Russian translation
 
-phpMinAdmin 1.9.1:
+phpMinAdmin 1.9.1 (released 2008-10-27):
 Update translations
 
-phpMinAdmin 1.9.0:
+phpMinAdmin 1.9.0 (released 2008-10-16):
 List of tables and views with maintenance commands
 Clone rows
 Bulk edit and clone
@@ -58,7 +58,7 @@ SHOW DATABASES can be revoked
 Order by function result working also in older MySQL versions
 Tested on IIS (thanks to krasl.cz)
 
-phpMinAdmin 1.8.0:
+phpMinAdmin 1.8.0 (released 2008-09-12):
 Events (MySQL 5.1)
 Access without login - accept ?username=
 Print SQL query in select, messages and warnings
@@ -67,7 +67,7 @@ Don't wrap lines in select table
 Italian and Estonian translation
 Order by COUNT(*)
 
-phpMinAdmin 1.7.0:
+phpMinAdmin 1.7.0 (released 2008-08-26):
 Customizable export (select objects to export, SQL or CSV)
 Ability to alter existing tables and drop old tables in export
 Choose columns in select, aggregation
@@ -81,10 +81,10 @@ Smaller multilingual file
 Cache static files
 Faster checking of number of results
 
-phpMinAdmin 1.6.1:
+phpMinAdmin 1.6.1 (released 2008-05-22):
 Set session parameters only if not session.auto_start
 
-phpMinAdmin 1.6.0:
+phpMinAdmin 1.6.0 (released 2008-05-16):
 Order of columns in table
 Set max_allowed_packet in dump and use extended insert
 Spanish and German translations
@@ -96,7 +96,7 @@ Separate stylesheet
 Last-Modified header for files
 Several bug fixes
 
-phpMinAdmin 1.5.0:
+phpMinAdmin 1.5.0 (released 2008-01-09):
 Mass delete
 Vertical privileges
 Specify connection port by colon in server
@@ -107,14 +107,14 @@ Remove maxlength from server and username
 Uncheck NULL by change
 Mark shortened fields in select
 
-phpMinAdmin 1.4.0:
+phpMinAdmin 1.4.0 (released 2007-08-15):
 Privileges
 New design
 Dutch translation
 Use NULL for auto_increment (bug #1768966)
 Fix dropping procedure parameters
 
-phpMinAdmin 1.3.2:
+phpMinAdmin 1.3.2 (released 2007-08-06):
 Next field by JavaScript in foreign keys
 Set time zone in dump
 Refresh lang cookie
@@ -122,12 +122,12 @@ Remember drop result in case of faulty create
 Move vertical lines in schema properly
 Fix maximum page in select
 
-phpMinAdmin 1.3.1:
+phpMinAdmin 1.3.1 (released 2007-07-31):
 Move references lines in schema
 Fix dump
 Fix update links
 
-phpMinAdmin 1.3.0:
+phpMinAdmin 1.3.0 (released 2007-07-27):
 Breadcrumb navigation
 Operator IN
 Timestamp default values
@@ -137,13 +137,13 @@ Display MySQL version and used PHP extension
 More friendly user interface
 Slovak translation
 
-phpMinAdmin 1.2.0:
+phpMinAdmin 1.2.0 (released 2007-07-25):
 Manipulate triggers
 PDO Abstraction
 Auto_increment value
 JavaScript for adding rows
 
-phpMinAdmin 1.1.0:
+phpMinAdmin 1.1.0 (released 2007-07-19):
 Routines manipulation
 Views manipulation
 Foreign keys manipulation
@@ -153,3 +153,6 @@ Index length
 Dump individual tables
 JavaScript for next rows in table edit
 Cache databases list
+
+phpMinAdmin 1.0.0 (released 2007-07-11):
+First official release
