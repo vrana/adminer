@@ -168,15 +168,15 @@ function compile_file($match) {
 
 error_reporting(E_ALL & ~E_NOTICE);
 $project = "adminer";
-if ($_SERVER["argc"] > 1) {
-	if (file_exists($_SERVER["argv"][1] . "/index.php")) {
-		$project = $_SERVER["argv"][1];
-		array_shift($_SERVER["argv"]);
-	}
+if (file_exists($_SERVER["argv"][1] . "/index.php")) {
+	$project = $_SERVER["argv"][1];
+	array_shift($_SERVER["argv"]);
+}
+if (isset($_SERVER["argv"][1])) {
 	$_COOKIE["adminer_lang"] = $_SERVER["argv"][1]; // Adminer functions read language from cookie
 	include dirname(__FILE__) . "/adminer/include/lang.inc.php";
 	if (isset($_SERVER["argv"][2]) || !isset($langs[$_COOKIE["adminer_lang"]])) {
-		echo "Usage: php compile.php [project] [lang]\nPurpose: Compile adminer[-lang].php from index.php.\n";
+		echo "Usage: php compile.php [adminer] [lang]\nPurpose: Compile adminer[-lang].php from adminer/index.php.\n";
 		exit(1);
 	}
 	include dirname(__FILE__) . "/adminer/lang/$_COOKIE[adminer_lang].inc.php";
