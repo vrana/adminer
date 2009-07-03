@@ -2,12 +2,14 @@
 error_reporting(4343); // errors and warnings
 
 // disable filter.default
-$filter = (!ereg('^(unsafe_row)?$', ini_get("filter.default")) || ini_get("filter.default_flags"));
+$filter = (!ereg('^(unsafe_raw)?$', ini_get("filter.default")) || ini_get("filter.default_flags"));
 if ($filter) {
-	$_GET = ($_GET ? filter_input_array(INPUT_GET, FILTER_UNSAFE_RAW) : array());
-	$_POST = ($_POST ? filter_input_array(INPUT_POST, FILTER_UNSAFE_RAW) : array());
-	$_COOKIE = ($_COOKIE ? filter_input_array(INPUT_COOKIE, FILTER_UNSAFE_RAW) : array());
-	$_SERVER = ($_SERVER ? filter_input_array(INPUT_SERVER, FILTER_UNSAFE_RAW) : array());
+	foreach (array('_GET', '_POST', '_COOKIE', '_SERVER') as $val) {
+		$unsafe = filter_input_array(constant("INPUT$val"), FILTER_UNSAFE_RAW);
+		if ($unsafe) {
+			$$val = $unsafe;
+		}
+	}
 }
 
 // used only in compiled file
