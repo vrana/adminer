@@ -10,7 +10,7 @@ include "../adminer/include/bootstrap.inc.php";
 include "../adminer/include/version.inc.php";
 include "../adminer/include/functions.inc.php";
 include "../adminer/include/lang.inc.php";
-include "../adminer/lang/$LANG.inc.php"; //! subset and superset
+include "./lang/$LANG.inc.php";
 include "./include/adminer.inc.php";
 include "../adminer/include/design.inc.php";
 if (isset($_GET["coverage"])) {

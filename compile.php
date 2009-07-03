@@ -29,7 +29,7 @@ function put_file($match) {
 			return "";
 		}
 		$return = "";
-		foreach (glob(dirname(__FILE__) . "/adminer/lang/*.inc.php") as $filename) {
+		foreach (glob(dirname(__FILE__) . "/$project/lang/*.inc.php") as $filename) {
 			// assign translation numbers
 			include $filename;
 			foreach ($translations as $key => $val) {
@@ -38,7 +38,7 @@ function put_file($match) {
 				}
 			}
 		}
-		foreach (glob(dirname(__FILE__) . "/adminer/lang/*.inc.php") as $filename) {
+		foreach (glob(dirname(__FILE__) . "/$project/lang/*.inc.php") as $filename) {
 			include $filename; // reassign $translations
 			$translation_ids = array_flip($lang_ids);
 			foreach ($translations as $key => $val) {
@@ -179,7 +179,7 @@ if (isset($_SERVER["argv"][1])) {
 		echo "Usage: php compile.php [adminer] [lang]\nPurpose: Compile adminer[-lang].php from adminer/index.php.\n";
 		exit(1);
 	}
-	include dirname(__FILE__) . "/adminer/lang/$_COOKIE[adminer_lang].inc.php";
+	include dirname(__FILE__) . "/$project/lang/$_COOKIE[adminer_lang].inc.php";
 }
 
 $filename = $project . ($_COOKIE["adminer_lang"] ? "-$_COOKIE[adminer_lang]" : "") . ".php";
