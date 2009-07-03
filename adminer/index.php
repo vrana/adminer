@@ -87,6 +87,7 @@ include "./include/version.inc.php";
 include "./include/functions.inc.php";
 include "./include/lang.inc.php";
 include "./lang/$LANG.inc.php";
+include "./include/adminer.inc.php";
 include "./include/design.inc.php";
 if (isset($_GET["coverage"])) {
 	include "./coverage.inc.php";
@@ -98,6 +99,7 @@ include "./include/connect.inc.php";
 include "./include/editing.inc.php";
 include "./include/export.inc.php";
 
+$adminer = (class_exists("Adminer") ? new Adminer : new AdminerBase);
 $on_actions = array("RESTRICT", "CASCADE", "SET NULL", "NO ACTION");
 $enum_length = '\'(?:\'\'|[^\'\\\\]+|\\\\.)*\'|"(?:""|[^"\\\\]+|\\\\.)*"';
 $inout = array("IN", "OUT", "INOUT");

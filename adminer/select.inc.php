@@ -143,7 +143,7 @@ if ($_POST && !$error) {
 		$error = lang('Unable to upload a file.');
 	}
 }
-page_header(lang('Select') . ": " . htmlspecialchars($_GET["select"]), $error);
+page_header(lang('Select') . ": " . $adminer->table_name($table_status), $error);
 
 echo "<p>";
 if (isset($rights["insert"])) {
@@ -250,7 +250,7 @@ if (!$columns) {
 				if (!$j) {
 					echo '<thead><tr><td><input type="checkbox" id="all-page" onclick="form_check(this, /check/);" /></td>';
 					foreach ($row as $key => $val) {
-						echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . htmlspecialchars($key) . '</a></th>';
+						echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . $adminer->field_name($fields, $key) . '</a></th>';
 					}
 					echo "</tr></thead>\n";
 				}

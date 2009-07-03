@@ -56,7 +56,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 }
 
 function page_footer($missing = false) {
-	global $SELF, $VERSION, $dbh;
+	global $SELF, $VERSION, $dbh, $adminer;
 	?>
 </div>
 
@@ -95,8 +95,7 @@ function page_footer($missing = false) {
 			} else {
 				echo "<p>\n";
 				foreach ($table_status as $row) {
-					echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row["Name"]) . '">' . lang('select') . '</a> ';
-					echo '<a href="' . htmlspecialchars($SELF) . (isset($row["Rows"]) ? 'table' : 'view') . '=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . "</a><br />\n";
+					$adminer->table_list($row);
 				}
 				echo "</p>\n";
 			}
