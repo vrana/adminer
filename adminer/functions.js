@@ -86,24 +86,29 @@ function editing_name_change(field) {
 	}
 	var plural = '(?:e?s)?';
 	var tab_col = table + plural + '_?' + column;
-	var re = new RegExp('^' + idf_escape(table + plural) + '\\.' + idf_escape(column) + '$'
-		+ '|^' + idf_escape(tab_col) + '\\.'
-		+ '|\\.' + idf_escape(tab_col) + '$'
-		+ '|^' + idf_escape(column + plural) + '\\.' + idf_escape(table) + '$'
+	var re = new RegExp('(^' + idf_escape(table + plural) + '\\.' + idf_escape(column) + '$' // table_column
+		+ '|^' + idf_escape(tab_col) + '\\.' // table
+		+ '|^' + idf_escape(column + plural) + '\\.' + idf_escape(table) + '$' // column_table
+		+ ')|\\.' + idf_escape(tab_col) + '$' // column
 	, 'i');
 	var candidate; // don't select anything with ambiguous match (like column `id`)
 	for (var i = opts.length; i--; ) {
-		if (re.test(opts[i].value)) {
+		if (opts[i].value.substr(0, 1) != '`') { // common type
+			if (i == opts.length - 2 && candidate && !match[1] && name == 'fields[1]') { // single target table, link to column, first field - probably `id`
+				return false;
+			}
+			break;
+		}
+		if (match = re.exec(opts[i].value)) {
 			if (candidate) {
 				return false;
-			} else {
-				candidate = i;
 			}
+			candidate = i;
 		}
 	}
 	if (candidate) {
 		opts.selectedIndex = candidate;
-		editing_type_change(type);
+		type.onchange();
 	}
 }
 
