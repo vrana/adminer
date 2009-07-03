@@ -66,7 +66,7 @@ if ($fields) {
 	unset($create);
 	echo "<table cellspacing='0'>\n";
 	foreach ($fields as $name => $field) {
-		echo "<tr><th>" . htmlspecialchars($name) . "</th>";
+		echo "<tr><th>" . $adminer->field_name($fields, $name) . "</th>";
 		$value = (isset($row)
 			? (strlen($row[$name]) && ($field["type"] == "enum" || $field["type"] == "set") ? intval($row[$name]) : $row[$name])
 			: ($_POST["clone"] && $field["auto_increment"] ? "" : ($where ? $field["default"] : false))
