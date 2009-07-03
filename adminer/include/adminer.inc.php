@@ -1,6 +1,22 @@
 <?php
 class AdminerBase {
 	
+	function name() {
+		return lang('Adminer');
+	}
+	
+	function server() {
+		return $_GET["server"];
+	}
+	
+	function username() {
+		return $_SESSION["usernames"][$_GET["server"]];
+	}
+	
+	function password() {
+		return $_SESSION["passwords"][$_GET["server"]];
+	}
+	
 	function table_list($row) {
 		global $SELF;
 		echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row["Name"]) . '">' . lang('select') . '</a> ';
@@ -16,3 +32,5 @@ class AdminerBase {
 	}
 	
 }
+
+$adminer = (class_exists("Adminer") ? new Adminer : new AdminerBase);

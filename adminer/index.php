@@ -23,7 +23,6 @@ include "./include/connect.inc.php";
 include "./include/editing.inc.php";
 include "./include/export.inc.php";
 
-$adminer = (class_exists("Adminer") ? new Adminer : new AdminerBase);
 $on_actions = array("RESTRICT", "CASCADE", "SET NULL", "NO ACTION");
 $enum_length = '\'(?:\'\'|[^\'\\\\]+|\\\\.)*\'|"(?:""|[^"\\\\]+|\\\\.)*"';
 $inout = array("IN", "OUT", "INOUT");

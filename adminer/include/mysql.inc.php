@@ -204,8 +204,9 @@ $types = array(
 $unsigned = array("unsigned", "zerofill", "unsigned zerofill");
 
 function connect() {
+	global $adminer;
 	$dbh = new Min_DB;
-	if ($dbh->connect($_GET["server"], $_SESSION["usernames"][$_GET["server"]], $_SESSION["passwords"][$_GET["server"]])) {
+	if ($dbh->connect($adminer->server(), $adminer->username(), $adminer->password())) {
 		$dbh->query("SET SQL_QUOTE_SHOW_CREATE=1");
 		$dbh->query("SET NAMES utf8");
 		return $dbh;

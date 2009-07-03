@@ -77,7 +77,7 @@ if ($_POST) {
 if (strlen($_GET["db"])) {
 	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'$confirm />\n";
 } elseif (!$_POST["add_x"]) {
-	echo "<input type='image' name='add' src='plus.gif' alt='+' title='" . lang('Add next') . "' />\n";
+	echo "<input type='image' name='add' src='../adminer/plus.gif' alt='+' title='" . lang('Add next') . "' />\n";
 }
 ?>
 </p>

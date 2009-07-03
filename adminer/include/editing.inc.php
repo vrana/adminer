@@ -158,7 +158,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 <td><input type="radio" name="auto_increment_col" value="" /><?php echo lang('Auto Increment'); ?></td>
 <td<?php echo ($column_comments ? "" : " class='hidden'"); ?>><?php echo lang('Comment'); ?></td>
 <?php } ?>
-<td><?php echo "<input type='image' name='add[0]' src='plus.gif' alt='+' title='" . lang("Add next") . "' />"; ?><script type="text/javascript">row_count = <?php echo count($fields); ?>;</script></td>
+<td><?php echo "<input type='image' name='add[0]' src='../adminer/plus.gif' alt='+' title='" . lang("Add next") . "' />"; ?><script type="text/javascript">row_count = <?php echo count($fields); ?>;</script></td>
 </tr></thead>
 <?php
 	foreach ($fields as $i => $field) {
@@ -175,10 +175,10 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 <td<?php echo ($column_comments ? "" : " class='hidden'"); ?>><input name="fields[<?php echo $i; ?>][comment]" value="<?php echo htmlspecialchars($field["comment"]); ?>" maxlength="255" /></td>
 <?php } ?>
 <?php
-		echo "<td class='nowrap'><input type='image' name='add[$i]' src='plus.gif' alt='+' title='" . lang('Add next') . "' onclick='var x = editing_add_row(this, $allowed); if (x) { x.focus(); x.onchange = function () { }; } return !x;' />";
-		echo "&nbsp;<input type='image' name='drop_col[$i]' src='cross.gif' alt='x' title='" . lang('Remove') . "' onclick='return !editing_remove_row(this);' />";
-		echo "&nbsp;<input type='image' name='up[$i]' src='up.gif' alt='^' title='" . lang('Move up') . "' />";
-		echo "&nbsp;<input type='image' name='down[$i]' src='down.gif' alt='v' title='" . lang('Move down') . "' />";
+		echo "<td class='nowrap'><input type='image' name='add[$i]' src='../adminer/plus.gif' alt='+' title='" . lang('Add next') . "' onclick='var x = editing_add_row(this, $allowed); if (x) { x.focus(); x.onchange = function () { }; } return !x;' />";
+		echo "&nbsp;<input type='image' name='drop_col[$i]' src='../adminer/cross.gif' alt='x' title='" . lang('Remove') . "' onclick='return !editing_remove_row(this);' />";
+		echo "&nbsp;<input type='image' name='up[$i]' src='../adminer/up.gif' alt='^' title='" . lang('Move up') . "' />";
+		echo "&nbsp;<input type='image' name='down[$i]' src='../adminer/down.gif' alt='v' title='" . lang('Move down') . "' />";
 		echo "</td>\n</tr>\n";
 	}
 	return $column_comments;
