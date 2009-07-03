@@ -1,13 +1,4 @@
 <?php
-function dump_csv($row) {
-	foreach ($row as $key => $val) {
-		if (preg_match("~[\"\n,]~", $val) || (isset($val) && !strlen($val))) {
-			$row[$key] = '"' . str_replace('"', '""', $val) . '"';
-		}
-	}
-	echo implode(",", $row) . "\n";
-}
-
 function dump_table($table, $style, $is_view = false) {
 	global $dbh;
 	if ($_POST["format"] == "csv") {

@@ -20,8 +20,7 @@ include "../adminer/include/pdo.inc.php";
 include "../adminer/include/mysql.inc.php";
 include "./include/auth.inc.php";
 include "./include/connect.inc.php";
-include "../adminer/include/editing.inc.php";
-include "../adminer/include/export.inc.php";
+include "./include/export.inc.php";
 
 $confirm = " onclick=\"return confirm('" . lang('Are you sure?') . "');\"";
 $error = "";
