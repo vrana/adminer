@@ -65,44 +65,7 @@ function page_footer($missing = false) {
 <h1><a href="http://www.adminer.org/" class="h1"><?php echo $adminer->name(); ?></a> &nbsp; <?php echo $VERSION; ?> &nbsp;
 <a href='http://www.adminer.org/#download' id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? htmlspecialchars($_COOKIE["adminer_version"]) : ""); ?></a>
 </h1>
-<?php if ($missing != "auth") { ?>
-<form action="" method="post">
-<p>
-<a href="<?php echo htmlspecialchars($SELF); ?>sql="><?php echo lang('SQL command'); ?></a>
-<a href="<?php echo htmlspecialchars($SELF); ?>dump=<?php echo urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]); ?>"><?php echo lang('Dump'); ?></a>
-<input type="hidden" name="token" value="<?php echo $_SESSION["tokens"][$_GET["server"]]; ?>" />
-<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" />
-</p>
-</form>
-<form action="">
-<p><?php if (strlen($_GET["server"])) { ?><input type="hidden" name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>" /><?php } ?>
-<?php if (get_databases()) { ?>
-<select name="db" onchange="this.form.submit();"><option value="">(<?php echo lang('database'); ?>)</option><?php echo optionlist(get_databases(), $_GET["db"]); ?></select>
-<?php } else { ?>
-<input name="db" value="<?php echo htmlspecialchars($_GET["db"]); ?>" />
-<?php } ?>
-<?php if (isset($_GET["sql"])) { ?><input type="hidden" name="sql" value="" /><?php } ?>
-<?php if (isset($_GET["schema"])) { ?><input type="hidden" name="schema" value="" /><?php } ?>
-<?php if (isset($_GET["dump"])) { ?><input type="hidden" name="dump" value="" /><?php } ?>
-<input type="submit" value="<?php echo lang('Use'); ?>"<?php echo (get_databases() ? " class='hidden'" : ""); ?> />
-</p>
-</form>
-<?php
-		if ($missing != "db" && strlen($_GET["db"])) {
-			$table_status = table_status();
-			if (!$table_status) {
-				echo "<p class='message'>" . lang('No tables.') . "</p>\n";
-			} else {
-				echo "<p>\n";
-				foreach ($table_status as $row) {
-					$adminer->table_list($row);
-				}
-				echo "</p>\n";
-			}
-			echo '<p><a href="' . htmlspecialchars($SELF) . 'create=">' . lang('Create new table') . "</a></p>\n";
-		}
-	}
-	?>
+<?php $adminer->navigation($missing); ?>
 </div>
 
 </body>

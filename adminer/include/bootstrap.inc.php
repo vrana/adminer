@@ -74,4 +74,6 @@ if (get_magic_quotes_gpc()) {
     unset($process);
 }
 set_magic_quotes_runtime(false);
+
 $SELF = preg_replace('~^[^?]*/([^?]*).*~', '\\1?', $_SERVER["REQUEST_URI"]) . (strlen($_GET["server"]) ? 'server=' . urlencode($_GET["server"]) . '&' : '') . (strlen($_GET["db"]) ? 'db=' . urlencode($_GET["db"]) . '&' : '');
+$on_actions = array("RESTRICT", "CASCADE", "SET NULL", "NO ACTION");

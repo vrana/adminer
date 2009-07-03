@@ -23,8 +23,8 @@ function lang_ids($match) {
 }
 
 function put_file($match) {
-	global $lang_ids;
-	if ($match[2] == './lang/$LANG.inc.php') {
+	global $lang_ids, $project;
+	if (basename($match[2]) == '$LANG.inc.php') {
 		if ($_COOKIE["adminer_lang"]) {
 			return "";
 		}
@@ -52,7 +52,7 @@ function put_file($match) {
 		}
 		return "switch (\$LANG) {\n$return}\n";
 	}
-	$return = file_get_contents(dirname(__FILE__) . "/adminer/$match[2]");
+	$return = file_get_contents(dirname(__FILE__) . "/$project/$match[2]");
 	if ($match[2] != "./include/lang.inc.php" || !$_COOKIE["adminer_lang"]) {
 		$tokens = token_get_all($return); // to find out the last token
 		return "?>\n$return" . (in_array($tokens[count($tokens) - 1][0], array(T_CLOSE_TAG, T_INLINE_HTML), true) ? "<?php" : "");
@@ -167,18 +167,23 @@ function compile_file($match) {
 }
 
 error_reporting(E_ALL & ~E_NOTICE);
+$project = "adminer";
 if ($_SERVER["argc"] > 1) {
+	if (file_exists($_SERVER["argv"][1] . "/index.php")) {
+		$project = $_SERVER["argv"][1];
+		array_shift($_SERVER["argv"]);
+	}
 	$_COOKIE["adminer_lang"] = $_SERVER["argv"][1]; // Adminer functions read language from cookie
 	include dirname(__FILE__) . "/adminer/include/lang.inc.php";
-	if ($_SERVER["argc"] != 2 || !isset($langs[$_COOKIE["adminer_lang"]])) {
-		echo "Usage: php compile.php [lang]\nPurpose: Compile adminer[-lang].php from index.php.\n";
+	if (isset($_SERVER["argv"][2]) || !isset($langs[$_COOKIE["adminer_lang"]])) {
+		echo "Usage: php compile.php [project] [lang]\nPurpose: Compile adminer[-lang].php from index.php.\n";
 		exit(1);
 	}
 	include dirname(__FILE__) . "/adminer/lang/$_COOKIE[adminer_lang].inc.php";
 }
 
-$filename = "adminer" . ($_COOKIE["adminer_lang"] ? "-$_COOKIE[adminer_lang]" : "") . ".php";
-$file = file_get_contents(dirname(__FILE__) . "/adminer/index.php");
+$filename = $project . ($_COOKIE["adminer_lang"] ? "-$_COOKIE[adminer_lang]" : "") . ".php";
+$file = file_get_contents(dirname(__FILE__) . "/$project/index.php");
 $file = preg_replace('(' . str_replace(' ', '\\s*', preg_quote(' if (isset($_GET["coverage"])) { include "./coverage.inc.php"; }')) . ')', '', $file);
 $file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file);
 $file = preg_replace("~if \\(isset\\(\\\$_SESSION\\[\"coverage.*\n}\n| && !isset\\(\\\$_SESSION\\[\"coverage\"\\]\\)~sU", '', $file);
@@ -191,9 +196,9 @@ if ($_COOKIE["adminer_lang"]) {
 	$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
 }
 $file = preg_replace_callback("~compile_file\\('([^']+)', '([^']+)'\\)~", 'compile_file', $file); // integrate static files
-$replace = 'htmlspecialchars(preg_replace("~\\\\\\\\?.*~", "", $_SERVER["REQUEST_URI"])) . "?file=\\0&amp;version=' . $VERSION;
-$file = preg_replace('~(?<!== ")(default\\.css|functions\\.js|favicon\\.ico)~', '<?php echo ' . $replace . '"; ?>', $file);
-$file = preg_replace('~(?<!case ")(plus|cross|up|down|arrow)\\.gif~', '" . ' . $replace, $file);
+$replace = 'htmlspecialchars(preg_replace("~\\\\\\\\?.*~", "", $_SERVER["REQUEST_URI"])) . "?file=\\1&amp;version=' . $VERSION;
+$file = preg_replace('~\\.\\./adminer/(default\\.css|functions\\.js|favicon\\.ico)~', '<?php echo ' . $replace . '"; ?>', $file);
+$file = preg_replace('~\\.\\./adminer/((plus|cross|up|down|arrow)\\.gif)~', '" . ' . $replace, $file);
 $file = str_replace("../externals/jush/", "http://jush.sourceforge.net/", $file);
 $file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
 $file = php_shrink($file);
