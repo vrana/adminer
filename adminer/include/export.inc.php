@@ -123,14 +123,14 @@ function dump_data($table, $style, $select = "") {
 					} else {
 						$s = "\n(" . implode(", ", $row2) . ")";
 						if (!$length) {
-							echo $insert, $s; // comma used to save memory
+							echo $insert . $s;
 							$length = strlen($insert) + strlen($s);
 						} else {
-							$length += 2 + strlen($s);
+							$length += 2 + strlen($s); // 2 - separator length
 							if ($length < $max_packet) {
-								echo ", ", $s;
+								echo ", $s";
 							} else {
-								echo ";\n$insert", $s;
+								echo ";\n$insert$s";
 								$length = strlen($insert) + strlen($s);
 							}
 						}
