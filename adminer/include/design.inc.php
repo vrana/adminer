@@ -19,6 +19,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 
 <body onload="load_jush();<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verify_version('$VERSION');"); ?>">
 <script type="text/javascript" src="../adminer/functions.js"></script>
+<script type="text/javascript" src="./editing.js"></script>
 
 <div id="content">
 <?php

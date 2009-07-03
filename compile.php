@@ -197,7 +197,7 @@ if ($_COOKIE["adminer_lang"]) {
 }
 $file = preg_replace_callback("~compile_file\\('([^']+)', '([^']+)'\\)~", 'compile_file', $file); // integrate static files
 $replace = 'htmlspecialchars(preg_replace("~\\\\\\\\?.*~", "", $_SERVER["REQUEST_URI"])) . "?file=\\1&amp;version=' . $VERSION;
-$file = preg_replace('~\\.\\./adminer/(default\\.css|functions\\.js|favicon\\.ico)~', '<?php echo ' . $replace . '"; ?>', $file);
+$file = preg_replace('~(?:\\.\\./adminer/|\\./)(default\\.css|functions\\.js|editing\\.js|favicon\\.ico)~', '<?php echo ' . $replace . '"; ?>', $file);
 $file = preg_replace('~\\.\\./adminer/((plus|cross|up|down|arrow)\\.gif)~', '" . ' . $replace, $file);
 $file = str_replace("../externals/jush/", "http://jush.sourceforge.net/", $file);
 $file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
