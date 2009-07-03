@@ -26,4 +26,3 @@ if (!(strlen($_GET["db"]) ? $dbh->select_db($_GET["db"]) : isset($_GET["sql"]) |
 	connect_error(); // separate function to catch SQLite error
 	exit;
 }
-$dbh->query("SET CHARACTER SET utf8");
