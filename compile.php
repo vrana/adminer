@@ -166,7 +166,7 @@ function compile_file($match) {
 	return call_user_func($match[2], file_get_contents(dirname(__FILE__) . "/adminer/$match[1]"));
 }
 
-error_reporting(E_ALL & ~E_NOTICE);
+error_reporting(4343); // errors and warnings
 $project = "adminer";
 if (file_exists($_SERVER["argv"][1] . "/index.php")) {
 	$project = $_SERVER["argv"][1];
