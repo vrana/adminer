@@ -55,5 +55,4 @@ $translations = array(
 	'(anywhere)' => '(vahet pole)',
 	'CSV Import' => 'Impordi CSV',
 	'Import' => 'Impordi',
-	'Editor' => null,
 );

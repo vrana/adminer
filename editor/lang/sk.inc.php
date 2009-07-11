@@ -55,5 +55,4 @@ $translations = array(
 	'Import' => 'Import',
 	'Table structure' => 'Štruktúra tabuľky',
 	'(anywhere)' => '(kdekoľvek)',
-	'Editor' => null,
 );

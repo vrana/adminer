@@ -55,5 +55,10 @@ $translations = array(
 	'Import' => 'Import',
 	'Table structure' => 'Struktura tabulky',
 	'(anywhere)' => '(kdekoliv)',
-	'Editor' => null,
+	'Editor' => 'Editor',
+	'E-mail' => 'E-mail',
+	'From' => 'Odesílatel',
+	'Subject' => 'Předmět',
+	'Send' => 'Odeslat',
+	'%d e-mail(s) have been sent.' => array('Byl odeslán %d e-mail.', 'Byly odeslány %d e-maily.', 'Bylo odesláno %d e-mailů.'),
 );

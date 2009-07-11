@@ -55,5 +55,4 @@ $translations = array(
 	'(anywhere)' => '(cualquier lugar)',
 	'CSV Import' => 'Importar CSV',
 	'Import' => 'Importar',
-	'Editor' => null,
 );

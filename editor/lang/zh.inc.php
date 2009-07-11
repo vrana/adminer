@@ -55,5 +55,4 @@ $translations = array(
 	'(anywhere)' => '（任意位置）',
 	'CSV Import' => 'CSV 导入',
 	'Import' => '导入',
-	'Editor' => null,
 );

@@ -55,5 +55,4 @@ $translations = array(
 	'Import' => 'Импорт',
 	'Table structure' => 'Структура таблицы',
 	'(anywhere)' => '(в любом месте)',
-	'Editor' => null,
 );
