@@ -25,29 +25,11 @@ function adminer_select_links($table_status) {
 }
 
 function adminer_select_query($query) {
-	$join = "";
-	$i = 1;
-	foreach (foreign_keys($_GET["select"]) as $foreign_key) {
-		$on = array();
-		foreach ($foreign_key["source"] as $key => $val) {
-			$on[] = "`t0`." . idf_escape($val) . " = `t$i`." . idf_escape($foreign_key["target"][$key]);
-		}
-		//~ $join .= "\nLEFT JOIN " . idf_escape($foreign_key["table"]) . " AS `t$i` ON " . implode(" AND ", $on);
-		//! use in select
-		$i++;
-	}
-	$query = preg_replace("~((?:[^'`]*|'(?:[^'\\\\]*|\\\\.)+')+)(`((?:[^`]+|``)*)`)~", '\\1`t0`.\\2', $query); // don't match ` inside ''
-	$query = preg_replace('~ FROM `t0`.(`((?:[^`]+|``)*)`) ?~', "\nFROM \\1 AS `t0`" . addcslashes($join, '\\$') . "\n", $query);
-	$return = call_adminer('select_query', "", $query);
-	if (!$return) {
-		echo "<!-- " . str_replace("--", " --><!-- ", $query) . " -->\n";
-		return $query;
-	}
-	return $return;
+	return call_adminer('select_query', "<!-- " . str_replace("--", "--><!--", $query) . " -->\n", $query);
 }
 
 function adminer_message_query($query) {
-	return call_adminer('message_query', "<!-- " . str_replace("--", " --><!-- ", $query) . " -->", $query);
+	return call_adminer('message_query', "<!-- " . str_replace("--", "--><!--", $query) . " -->", $query);
 }
 
 function adminer_navigation($missing) {

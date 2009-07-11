@@ -47,19 +47,14 @@ function adminer_select_links($table_status) {
 	return call_adminer('select_links', '<a href="' . htmlspecialchars($SELF) . (isset($table_status["Engine"]) ? 'table=' : 'view=') . urlencode($_GET['select']) . '">' . lang('Table structure') . '</a>', $table_status);
 }
 
-/** Process and print select query before execution
+/** Query printed in select before execution
 * @param string query to be executed
 * @return string
 */
 function adminer_select_query($query) {
 	global $SELF;
 	// it would be nice if $query can be passed by reference and printed value would be returned but call_user() doesn't allow reference parameters
-	$return = call_adminer('select_query', "", $query);
-	if (!$return) {
-		echo "<p><code class='jush-sql'>" . htmlspecialchars($query) . "</code> <a href='" . htmlspecialchars($SELF) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a></p>\n";
-		return $query;
-	}
-	return $return;
+	return call_adminer('select_query', "<p><code class='jush-sql'>" . htmlspecialchars($query) . "</code> <a href='" . htmlspecialchars($SELF) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a></p>\n", $query);
 }
 
 /** Query printed after execution in the message
