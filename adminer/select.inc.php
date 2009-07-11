@@ -244,6 +244,7 @@ if (!$columns) {
 	if (!$result) {
 		echo "<p class='error'>" . htmlspecialchars($dbh->error) . "\n";
 	} else {
+		$email_fields = array();
 		echo "<form action='' method='post' enctype='multipart/form-data'>\n";
 		if (!$result->num_rows) {
 			echo "<p class='message'>" . lang('No rows.') . "\n";
@@ -254,8 +255,6 @@ if (!$columns) {
 					$foreign_keys[$val][] = $foreign_key;
 				}
 			}
-			
-			$email_fields = array();
 			
 			echo "<table cellspacing='0' class='nowrap'>\n";
 			for ($j=0; $row = $result->fetch_assoc(); $j++) {
