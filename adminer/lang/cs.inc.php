@@ -216,4 +216,9 @@ $translations = array(
 	'History' => 'Historie',
 	'Variables' => 'Proměnné',
 	'Source and target columns must have the same data type and there must be an index on the target columns.' => 'Zdrojové a cílové sloupce musí mít stejný datový typ a nad cílovými sloupci musí být definován index.',
+	'E-mail' => 'E-mail',
+	'From' => 'Odesílatel',
+	'Subject' => 'Předmět',
+	'Send' => 'Odeslat',
+	'%d e-mail(s) have been sent.' => array('Byl odeslán %d e-mail.', 'Byly odeslány %d e-maily.', 'Bylo odesláno %d e-mailů.'),
 );

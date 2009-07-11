@@ -7,21 +7,6 @@
 */
 
 include "./include/bootstrap.inc.php";
-include "./include/version.inc.php";
-include "./include/functions.inc.php";
-include "./include/lang.inc.php";
-include "./lang/$LANG.inc.php";
-include "./include/adminer.inc.php";
-include "./include/design.inc.php";
-if (isset($_GET["coverage"])) {
-	include "./coverage.inc.php";
-}
-include "./include/pdo.inc.php";
-include "./include/mysql.inc.php";
-include "./include/auth.inc.php";
-include "./include/connect.inc.php";
-include "./include/editing.inc.php";
-include "./include/export.inc.php";
 
 $enum_length = '\'(?:\'\'|[^\'\\\\]+|\\\\.)*\'|"(?:""|[^"\\\\]+|\\\\.)*"';
 $inout = array("IN", "OUT", "INOUT");
@@ -54,7 +39,7 @@ if (isset($_GET["download"])) {
 		// edit form is used for default values and distinguished by checking isset($_GET["default"]) in edit.inc.php
 		$_GET["edit"] = $_GET["default"];
 	}
-	if (isset($_GET["select"]) && $_POST && (!$_POST["delete"] && !$_POST["export"] && !$_POST["import"] && !$_POST["save"])) {
+	if (isset($_GET["select"]) && $_POST && (!$_POST["delete"] && !$_POST["export"] && !$_POST["import"] && !$_POST["save"] && !$_POST["email"])) {
 		// POST form on select page is used to edit or clone data
 		$_GET["edit"] = $_GET["select"];
 	}

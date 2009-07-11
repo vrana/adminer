@@ -1,3 +1,3 @@
 <?php
-$_GET["db"] = "test";
-$dbh->select_db($_GET["db"]);
+$_GET["db"] = ""; // used here and there by Adminer
+$dbh->select_db(adminer_database());

@@ -13,7 +13,7 @@ $columns = array(); // selectable columns
 unset($text_length);
 foreach ($fields as $key => $field) {
 	if (isset($field["privileges"]["select"])) {
-		$columns[] = $key;
+		$columns[$key] = adminer_field_name($fields, $key); //! numeric $key is problematic in optionlist()
 		if (preg_match('~text|blob~', $field["type"])) {
 			$text_length = (isset($_GET["text_length"]) ? $_GET["text_length"] : "100");
 		}
@@ -24,8 +24,8 @@ foreach ($fields as $key => $field) {
 $select = array(); // select expressions, empty for *
 $group = array(); // expressions without aggregation - will be used for GROUP BY if an aggregation function is used
 foreach ((array) $_GET["columns"] as $key => $val) {
-	if ($val["fun"] == "count" || (in_array($val["col"], $columns, true) && (!$val["fun"] || in_array($val["fun"], $functions) || in_array($val["fun"], $grouping)))) {
-		$select[$key] = (in_array($val["col"], $columns, true) ? (!$val["fun"] ? idf_escape($val["col"]) : ($val["fun"] == "distinct" ? "COUNT(DISTINCT " : strtoupper("$val[fun](")) . idf_escape($val["col"]) . ")") : "COUNT(*)");
+	if ($val["fun"] == "count" || (isset($columns[$val["col"]]) && (!$val["fun"] || in_array($val["fun"], $functions) || in_array($val["fun"], $grouping)))) {
+		$select[$key] = (isset($columns[$val["col"]]) ? ($val["fun"] ? ($val["fun"] == "distinct" ? "COUNT(DISTINCT " : strtoupper("$val[fun](")) . idf_escape($val["col"]) . ")" : idf_escape($val["col"])) : "COUNT(*)");
 		if (!in_array($val["fun"], $grouping)) {
 			$group[] = $select[$key];
 		}
@@ -61,7 +61,7 @@ foreach ((array) $_GET["where"] as $val) {
 }
 $order = array(); // order expressions - will be joined by comma
 foreach ((array) $_GET["order"] as $key => $val) {
-	if (in_array($val, $columns, true) || in_array($val, $select, true)) {
+	if (isset($columns[$val]) || in_array($val, $select, true)) {
 		$order[] = idf_escape($val) . (isset($_GET["desc"][$key]) ? " DESC" : "");
 	}
 }
@@ -77,7 +77,7 @@ if ($_POST && !$error) {
 			$union = array();
 			foreach ($_POST["check"] as $val) {
 				// where may not be unique so OR can't be used
-				$union[] = "(SELECT $from " . ($where ? "AND " : "WHERE ") . implode(" AND ", where_check($val)) . $group_by . " LIMIT 1)";
+				$union[] = "(SELECT $from " . ($where ? "AND " : "WHERE ") . where_check($val) . $group_by . " LIMIT 1)";
 			}
 			dump_data($_GET["select"], "INSERT", implode(" UNION ALL ", $union));
 		} else {
@@ -85,7 +85,18 @@ if ($_POST && !$error) {
 		}
 		exit;
 	}
-	if (!$_POST["import"]) { // edit
+	if ($_POST["email"]) {
+		$sent = 0;
+		if ($_POST["all"] || $_POST["check"]) {
+			$field = idf_escape($_POST["email_field"]);
+			$result = $dbh->query("SELECT DISTINCT $field FROM " . idf_escape($_GET["select"]) . " WHERE $field IS NOT NULL AND $field != ''" . ($where ? " AND " . implode(" AND ", $where) : "") . ($_POST["all"] ? "" : " AND ((" . implode(") OR (", array_map('where_check', $_POST["check"])) . "))"));
+			while ($row = $result->fetch_row()) {
+				$sent += mail($row[0], email_header($_POST["email_subject"]), $_POST["email_message"], "MIME-Version: 1.0\nContent-Type: text/plain; charset=utf-8\nContent-Transfer-Encoding: 8bit" . ($_POST["email_from"] ? "\nFrom: " . email_header($_POST["email_from"]) : ""));
+			}
+			$result->free();
+		}
+		redirect(remove_from_uri(), lang('%d e-mail(s) have been sent.', $sent));
+	} elseif (!$_POST["import"]) { // edit
 		$result = true;
 		$affected = 0;
 		$command = ($_POST["delete"] ? ($_POST["all"] && !$where ? "TRUNCATE " : "DELETE FROM ") : ($_POST["clone"] ? "INSERT INTO " : "UPDATE ")) . idf_escape($_GET["select"]);
@@ -107,9 +118,8 @@ if ($_POST && !$error) {
 				$affected = $dbh->affected_rows;
 			} else {
 				foreach ((array) $_POST["check"] as $val) {
-					parse_str($val, $check);
 					// where may not be unique so OR can't be used
-					$result = queries($command . "\nWHERE " . implode(" AND ", where($check)) . " LIMIT 1");
+					$result = queries($command . "\nWHERE " . where_check($val) . " LIMIT 1");
 					if (!$result) {
 						break;
 					}
@@ -143,14 +153,15 @@ if ($_POST && !$error) {
 		$error = lang('Unable to upload a file.');
 	}
 }
-page_header(lang('Select') . ": " . $adminer->table_name($table_status), $error);
+
+page_header(lang('Select') . ": " . adminer_table_name($table_status), $error);
 
 echo "<p>";
 if (isset($rights["insert"])) {
 	//! pass search values forth and back
 	echo '<a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '">' . lang('New item') . '</a> ';
 }
-echo '<a href="' . htmlspecialchars($SELF) . (isset($table_status["Engine"]) ? 'table=' : 'view=') . urlencode($_GET['select']) . '">' . lang('Table structure') . '</a>';
+echo adminer_select_links($table_status);
 echo "</p>\n";
 
 if (!$columns) {
@@ -202,7 +213,7 @@ if (!$columns) {
 	echo '<fieldset><legend><a href="#fieldset-sort" onclick="return !toggle(\'fieldset-sort\');">' . lang('Sort') . "</a></legend><div id='fieldset-sort'" . (count($order) > 1 ? "" : " class='hidden'") . ">\n";
 	$i = 0;
 	foreach ((array) $_GET["order"] as $key => $val) {
-		if (in_array($val, $columns, true)) {
+		if (isset($columns[$val])) {
 			echo "<div><select name='order[$i]'><option></option>" . optionlist($columns, $val) . "</select>";
 			echo "<label><input type='checkbox' name='desc[$i]' value='1'" . (isset($_GET["desc"][$key]) ? " checked='checked'" : "") . " />" . lang('descending') . "</label></div>\n";
 			$i++;
@@ -228,7 +239,7 @@ if (!$columns) {
 	echo "</form>\n";
 	
 	$query = "SELECT " . (count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . $from . $group_by . (strlen($limit) ? " LIMIT " . intval($limit) . (intval($_GET["page"]) ? " OFFSET " . ($limit * $_GET["page"]) : "") : "");
-	echo "<p><code class='jush-sql'>" . htmlspecialchars($query) . "</code> <a href='" . htmlspecialchars($SELF) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a></p>\n";
+	$query = adminer_select_query($query);
 	
 	$result = $dbh->query($query);
 	if (!$result) {
@@ -245,18 +256,23 @@ if (!$columns) {
 				}
 			}
 			
+			$email_fields = array();
+			
 			echo "<table cellspacing='0' class='nowrap'>\n";
 			for ($j=0; $row = $result->fetch_assoc(); $j++) {
 				if (!$j) {
 					echo '<thead><tr><td><input type="checkbox" id="all-page" onclick="form_check(this, /check/);" /></td>';
 					foreach ($row as $key => $val) {
-						echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . $adminer->field_name($fields, $key) . '</a></th>';
+						echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . adminer_field_name($fields, $key) . '</a></th>';
 					}
 					echo "</tr></thead>\n";
 				}
 				$unique_idf = implode('&amp;', unique_idf($row, $indexes)); //! don't use aggregation functions
 				echo '<tr' . odd() . '><td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false; form_uncheck(\'all-page\');" />' . (count($select) != count($group) || information_schema($_GET["db"]) ? '' : ' <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a>') . '</td>';
 				foreach ($row as $key => $val) {
+					if (strlen($val) && (!isset($email_fields[$key]) || $email_fields[$key])) {
+						$email_fields[$key] = is_email($val); //! filled e-mails may be contained on other pages
+					}
 					if (!isset($val)) {
 						$val = "<i>NULL</i>";
 					} elseif (preg_match('~blob|binary~', $fields[$key]["type"]) && !is_utf8($val)) {
@@ -319,6 +335,19 @@ if (!$columns) {
 		}
 		$result->free();
 		echo "<fieldset><legend>" . lang('CSV Import') . "</legend><div><input type='hidden' name='token' value='$token' /><input type='file' name='csv_file' /> <input type='submit' name='import' value='" . lang('Import') . "' /></div></fieldset>\n";
+		
+		//! Editor only
+		$email_fields = array_filter($email_fields);
+		if ($email_fields) {
+			echo '<fieldset><legend><a href="#fieldset-email" onclick="return !toggle(\'fieldset-email\');">' . lang('E-mail') . "</a></legend><div id='fieldset-email' class='hidden'>\n";
+			echo "<p>" . lang('From') . ": <input name='email_from' />\n";
+			echo lang('Subject') . ": <input name='email_subject' /></p>\n";
+			echo "<p><textarea name='email_message' rows='15' cols='60'></textarea></p>\n";
+			echo (count($email_fields) == 1 ? '<input type="hidden" name="email_field" value="' . htmlspecialchars(key($email_fields)) . '" />' : '<select name="email_field">' . optionlist(array_keys($email_fields)) . '</select>');
+			echo "<input type='submit' name='email' value='" . lang('Send') . "'$confirm />\n";
+			echo "</div></fieldset>\n";
+		}
+		
 		echo "</form>\n";
 	}
 }

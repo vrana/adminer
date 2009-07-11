@@ -14,7 +14,7 @@ if (isset($_SERVER["argv"][1])) {
 	}
 }
 
-preg_match_all('~\\b(include|require) "([^"]*)";~', file_get_contents(dirname(__FILE__) . "/$project/index.php"), $matches);
+preg_match_all('~\\b(include|require) "([^"]*)";~', file_get_contents(dirname(__FILE__) . "/$project/index.php") . file_get_contents(dirname(__FILE__) . "/adminer/include/bootstrap.inc.php"), $matches);
 $filenames = $matches[2];
 $filenames[] = "index.php";
 

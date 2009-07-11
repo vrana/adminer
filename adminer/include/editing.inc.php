@@ -58,7 +58,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 <td><input type="radio" name="auto_increment_col" value="" /><?php echo lang('Auto Increment'); ?></td>
 <td<?php echo ($column_comments ? "" : " class='hidden'"); ?>><?php echo lang('Comment'); ?></td>
 <?php } ?>
-<td><?php echo "<input type='image' name='add[0]' src='../adminer/plus.gif' alt='+' title='" . lang("Add next") . "' />"; ?><script type="text/javascript">row_count = <?php echo count($fields); ?>;</script></td>
+<td><?php echo "<input type='image' name='add[0]' src='../adminer/plus.gif' alt='+' title='" . lang('Add next') . "' />"; ?><script type="text/javascript">row_count = <?php echo count($fields); ?>;</script></td>
 </tr></thead>
 <?php
 	foreach ($fields as $i => $field) {

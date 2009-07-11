@@ -13,22 +13,6 @@ function verify_version(version) {
 	document.body.appendChild(script);
 }
 
-function load_jush() {
-	var script = document.createElement('script');
-	script.src = '../externals/jush/jush.js';
-	script.onload = function () {
-		jush.style('../externals/jush/jush.css');
-		jush.highlight_tag('pre');
-		jush.highlight_tag('code');
-	}
-	script.onreadystatechange = function () {
-		if (script.readyState == 'loaded' || script.readyState == 'complete') {
-			script.onload();
-		}
-	}
-	document.body.appendChild(script);
-}
-
 function form_check(el, name) {
 	var elems = el.form.elements;
 	for (var i=0; i < elems.length; i++) {

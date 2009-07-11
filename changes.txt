@@ -1,5 +1,7 @@
 Adminer 1.12.0:
 Editor: User friendly data editor
+Customization: Adminer class
+E-mail sending
 Create single column foreign key in table structure
 
 Adminer 1.11.1 (released 2009-07-03):

@@ -1,6 +1,6 @@
 <?php
 function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
-	global $SELF, $LANG, $VERSION, $adminer;
+	global $SELF, $LANG, $VERSION;
 	header("Content-Type: text/html; charset=utf-8");
 	?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -9,17 +9,17 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <meta name="robots" content="noindex" />
-<title><?php echo $title . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . (strlen($_GET["server"]) && $_GET["server"] != "localhost" ? htmlspecialchars("- $_GET[server]") : "") . " - " . $adminer->name(); ?></title>
-<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+<title><?php echo $title . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . (strlen($_GET["server"]) && $_GET["server"] != "localhost" ? htmlspecialchars("- $_GET[server]") : "") . " - " . adminer_name(); ?></title>
+<link rel="shortcut icon" type="image/x-icon" href="../adminer/favicon.ico" />
 <link rel="stylesheet" type="text/css" href="../adminer/default.css<?php // Ondrej Valka, http://valka.info ?>" />
 <?php if (file_exists("adminer.css")) { ?>
 <link rel="stylesheet" type="text/css" href="adminer.css" />
 <?php } ?>
 </head>
 
-<body onload="load_jush();<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verify_version('$VERSION');"); ?>">
+<body onload="body_load();<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verify_version('$VERSION');"); ?>">
 <script type="text/javascript" src="../adminer/functions.js"></script>
-<script type="text/javascript" src="./editing.js"></script>
+<script type="text/javascript" src="./editing.js<?php // "./" to distinguish from $_GET["file"] ?>"></script>
 
 <div id="content">
 <?php
@@ -31,8 +31,9 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 				echo '<a href="' . htmlspecialchars(substr($SELF, 0, -1)) . '">' . htmlspecialchars($_GET["db"]) . '</a> &raquo; ';
 			}
 			foreach ($breadcrumb as $key => $val) {
-				if (strlen($val)) {
-					echo '<a href="' . htmlspecialchars("$SELF$key=") . ($key != "privileges" ? urlencode($val) : "") . '">' . htmlspecialchars($val) . '</a> &raquo; ';
+				$desc = (is_array($val) ? $val[1] : $val);
+				if (strlen($desc)) {
+					echo '<a href="' . htmlspecialchars("$SELF$key=") . urlencode(is_array($val) ? $val[0] : $val) . '">' . htmlspecialchars($desc) . '</a> &raquo; ';
 				}
 			}
 		}
@@ -57,16 +58,16 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 }
 
 function page_footer($missing = false) {
-	global $SELF, $VERSION, $dbh, $adminer;
+	global $SELF, $VERSION, $dbh;
 	?>
 </div>
 
 <?php switch_lang(); ?>
 <div id="menu">
-<h1><a href="http://www.adminer.org/" class="h1"><?php echo $adminer->name(); ?></a> &nbsp; <?php echo $VERSION; ?> &nbsp;
+<h1><a href="http://www.adminer.org/" class="h1"><?php echo adminer_name(); ?></a> &nbsp; <?php echo $VERSION; ?> &nbsp;
 <a href='http://www.adminer.org/#download' id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? htmlspecialchars($_COOKIE["adminer_version"]) : ""); ?></a>
 </h1>
-<?php $adminer->navigation($missing); ?>
+<?php adminer_navigation($missing); ?>
 </div>
 
 </body>

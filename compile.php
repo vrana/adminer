@@ -17,43 +17,23 @@ function remove_lang($match) {
 }
 
 $lang_ids = array(); // global variable simplifies usage in a callback function
+
 function lang_ids($match) {
 	global $lang_ids;
-	return 'lang(' . $lang_ids[stripslashes($match[1])] . $match[2];
+	$lang_id = &$lang_ids[stripslashes($match[1])];
+	if (!isset($lang_id)) {
+		$lang_id = count($lang_ids) - 1;
+	}
+	return ($_COOKIE["adminer_lang"] ? $match[0] : "lang($lang_id$match[2]");
 }
 
 function put_file($match) {
-	global $lang_ids, $project;
+	global $project;
 	if (basename($match[2]) == '$LANG.inc.php') {
-		if ($_COOKIE["adminer_lang"]) {
-			return "";
-		}
-		$return = "";
-		foreach (glob(dirname(__FILE__) . "/$project/lang/*.inc.php") as $filename) {
-			// assign translation numbers
-			include $filename;
-			foreach ($translations as $key => $val) {
-				if (!isset($lang_ids[$key])) {
-					$lang_ids[$key] = count($lang_ids);
-				}
-			}
-		}
-		foreach (glob(dirname(__FILE__) . "/$project/lang/*.inc.php") as $filename) {
-			include $filename; // reassign $translations
-			$translation_ids = array_flip($lang_ids);
-			foreach ($translations as $key => $val) {
-				$translation_ids[$lang_ids[$key]] = $val;
-			}
-			$return .= 'case "' . basename($filename, '.inc.php') . '": $translations = array(';
-			foreach ($translation_ids as $val) {
-				$return .= (is_array($val) ? "array('" . implode("', '", array_map('add_apo_slashes', $val)) . "')" : "'" . add_apo_slashes($val) . "'") . ", ";
-			}
-			$return = substr($return, 0, -2) . "); break;\n";
-		}
-		return "switch (\$LANG) {\n$return}\n";
+		return $match[0]; // processed later
 	}
 	$return = file_get_contents(dirname(__FILE__) . "/$project/$match[2]");
-	if ($match[2] != "./include/lang.inc.php" || !$_COOKIE["adminer_lang"]) {
+	if (basename($match[2]) != "lang.inc.php" || !$_COOKIE["adminer_lang"]) {
 		$tokens = token_get_all($return); // to find out the last token
 		return "?>\n$return" . (in_array($tokens[count($tokens) - 1][0], array(T_CLOSE_TAG, T_INLINE_HTML), true) ? "<?php" : "");
 	} elseif (preg_match('~\\s*(\\$pos = .*)~', $return, $match2)) {
@@ -62,6 +42,29 @@ function put_file($match) {
 	} else {
 		echo "lang() not found\n";
 	}
+}
+
+function put_file_lang($match) {
+	global $lang_ids, $project;
+	if ($_COOKIE["adminer_lang"]) {
+		return "";
+	}
+	$return = "";
+	foreach (glob(dirname(__FILE__) . "/$project/lang/*.inc.php") as $filename) {
+		include $filename; // assign $translations
+		$translation_ids = array_flip($lang_ids); // default translation
+		foreach ($translations as $key => $val) {
+			if (isset($val)) {
+				$translation_ids[$lang_ids[$key]] = $val;
+			}
+		}
+		$return .= "\tcase \"" . basename($filename, '.inc.php') . '": $translations = array(';
+		foreach ($translation_ids as $val) {
+			$return .= (is_array($val) ? "array('" . implode("', '", array_map('add_apo_slashes', $val)) . "')" : "'" . add_apo_slashes($val) . "'") . ", ";
+		}
+		$return = substr($return, 0, -2) . "); break;\n";
+	}
+	return "switch (\$LANG) {\n$return}\n";
 }
 
 function short_identifier($number, $chars) {
@@ -113,13 +116,17 @@ function php_shrink($input) {
 	$space = '';
 	$output = '';
 	$in_echo = false;
+	$doc_comment = false; // include only first /**
 	for (reset($tokens); list($i, $token) = each($tokens); ) {
 		if (!is_array($token)) {
 			$token = array(0, $token);
 		}
-		if ($token[0] == T_COMMENT || $token[0] == T_WHITESPACE) {
+		if ($token[0] == T_COMMENT || $token[0] == T_WHITESPACE || ($token[0] == T_DOC_COMMENT && $doc_comment)) {
 			$space = "\n";
 		} else {
+			if ($token[0] == T_DOC_COMMENT) {
+				$doc_comment = true;
+			}
 			if ($token[0] == T_VAR) {
 				$shortening = false;
 			} elseif (!$shortening) {
@@ -186,14 +193,15 @@ $filename = $project . ($_COOKIE["adminer_lang"] ? "-$_COOKIE[adminer_lang]" : "
 $file = file_get_contents(dirname(__FILE__) . "/$project/index.php");
 $file = preg_replace('(' . str_replace(' ', '\\s*', preg_quote(' if (isset($_GET["coverage"])) { include "./coverage.inc.php"; }')) . ')', '', $file);
 $file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file);
+$file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file); // bootstrap.inc.php
 $file = preg_replace("~if \\(isset\\(\\\$_SESSION\\[\"coverage.*\n}\n| && !isset\\(\\\$_SESSION\\[\"coverage\"\\]\\)~sU", '', $file);
+$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
+$file = preg_replace_callback('~\\b(include|require) "([^"]*\\$LANG.inc.php)";~', 'put_file_lang', $file);
 if ($_COOKIE["adminer_lang"]) {
 	// single language version
 	$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
 	$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
 	$file = str_replace('<?php echo $LANG; ?>', $_COOKIE["adminer_lang"], $file);
-} else {
-	$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
 }
 $file = preg_replace_callback("~compile_file\\('([^']+)', '([^']+)'\\)~", 'compile_file', $file); // integrate static files
 $replace = 'htmlspecialchars(preg_replace("~\\\\\\\\?.*~", "", $_SERVER["REQUEST_URI"])) . "?file=\\1&amp;version=' . $VERSION;

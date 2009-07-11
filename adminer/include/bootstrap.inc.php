@@ -24,6 +24,9 @@ if (isset($_GET["file"])) {
 	} elseif ($_GET["file"] == "functions.js") {
 		header("Content-Type: text/javascript");
 		?>compile_file('functions.js', 'JSMin::minify')<?php
+	} elseif ($_GET["file"] == "editing.js") {
+		header("Content-Type: text/javascript");
+		?>compile_file('editing.js', 'JSMin::minify')<?php
 	} else {
 		header("Content-Type: image/gif");
 		switch ($_GET["file"]) {
@@ -78,4 +81,20 @@ if (get_magic_quotes_gpc()) {
 set_magic_quotes_runtime(false);
 
 $SELF = (isset($_SERVER["REQUEST_URI"]) ? preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) : $_SERVER["ORIG_PATH_INFO"]) . '?' . (strlen($_GET["server"]) ? 'server=' . urlencode($_GET["server"]) . '&' : '') . (strlen($_GET["db"]) ? 'db=' . urlencode($_GET["db"]) . '&' : '');
-$on_actions = array("RESTRICT", "CASCADE", "SET NULL", "NO ACTION");
+$on_actions = array("RESTRICT", "CASCADE", "SET NULL", "NO ACTION"); // used in foreign_keys()
+
+include "../adminer/include/version.inc.php";
+include "../adminer/include/functions.inc.php";
+include "../adminer/include/lang.inc.php";
+include "./lang/$LANG.inc.php";
+include "./include/adminer.inc.php";
+include "../adminer/include/design.inc.php";
+if (isset($_GET["coverage"])) {
+	include "../adminer/coverage.inc.php";
+}
+include "../adminer/include/pdo.inc.php";
+include "../adminer/include/mysql.inc.php";
+include "./include/auth.inc.php";
+include "./include/connect.inc.php";
+include "./include/editing.inc.php";
+include "./include/export.inc.php";

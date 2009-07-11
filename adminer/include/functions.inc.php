@@ -73,7 +73,7 @@ function where($where) {
 		$key = bracket_escape($key, "back");
 		$return[] = (preg_match('~^[A-Z0-9_]+\\(`(?:[^`]+|``)+`\\)$~', $key) ? $key : idf_escape($key)) . " IS NULL";
 	}
-	return $return;
+	return implode(" AND ", $return);
 }
 
 function where_check($val) {
@@ -100,10 +100,9 @@ function redirect($location, $message = null) {
 
 function query_redirect($query, $location, $message, $redirect = true, $execute = true, $failed = false) {
 	global $dbh, $error, $SELF;
-	$id = "sql-" . count($_SESSION["messages"]);
 	$sql = "";
 	if ($query) {
-		$sql = " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><span id='$id' class='hidden'><pre class='jush-sql'>" . htmlspecialchars($query) . '</pre><a href="' . htmlspecialchars($SELF . 'sql=&history=' . count($_SESSION["history"][$_GET["server"]][$_GET["db"]])) . '">' . lang('Edit') . '</a></span>';
+		$sql = adminer_message_query($query);
 		$_SESSION["history"][$_GET["server"]][$_GET["db"]][] = $query;
 	}
 	if ($execute) {
@@ -366,4 +365,27 @@ function dump_csv($row) {
 		}
 	}
 	echo implode(",", $row) . "\n";
+}
+
+function is_email($email) {
+	$atom = '[-a-z0-9!#$%&\'*+/=?^_`{|}~]'; // characters of local-name
+	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component
+	return eregi("^$atom+(\\.$atom+)*@($domain?\\.)+$domain\$", $email);
+}
+
+function email_header($header) {
+	return chunk_split("=?UTF-8?B?" . base64_encode($header), 67, "\n "); // iconv_mime_encode requires PHP 5, imap_8bit requires IMAP extension
+}
+
+function call_adminer($method, $default, $arg1 = null, $arg2 = null) {
+	static $adminer;
+	if (!isset($adminer)) {
+		$adminer = (class_exists('Adminer') ? new Adminer : false); // user defined class
+	}
+	// maintains original method name in minification
+	if (method_exists($adminer, $method)) {
+		// can use func_get_args() and call_user_func_array()
+		return $adminer->$method($arg1, $arg2);
+	}
+	return $default; //! $default is evaluated even if not neccessary
 }

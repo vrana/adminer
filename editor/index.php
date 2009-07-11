@@ -7,20 +7,6 @@
 */
 
 include "../adminer/include/bootstrap.inc.php";
-include "../adminer/include/version.inc.php";
-include "../adminer/include/functions.inc.php";
-include "../adminer/include/lang.inc.php";
-include "./lang/$LANG.inc.php";
-include "./include/adminer.inc.php";
-include "../adminer/include/design.inc.php";
-if (isset($_GET["coverage"])) {
-	include "../adminer/coverage.inc.php";
-}
-include "../adminer/include/pdo.inc.php";
-include "../adminer/include/mysql.inc.php";
-include "./include/auth.inc.php";
-include "./include/connect.inc.php";
-include "./include/export.inc.php";
 
 $confirm = " onclick=\"return confirm('" . lang('Are you sure?') . "');\"";
 $error = "";
@@ -37,7 +23,7 @@ if (isset($_GET["download"])) {
 		// posted form with no data means exceeded post_max_size because Adminer always sends token at least
 		$error = lang('Too big POST data. Reduce the data or increase the "post_max_size" configuration directive.');
 	}
-	if (isset($_GET["select"]) && $_POST && (!$_POST["delete"] && !$_POST["export"] && !$_POST["import"] && !$_POST["save"])) {
+	if (isset($_GET["select"]) && $_POST && (!$_POST["delete"] && !$_POST["export"] && !$_POST["import"] && !$_POST["save"] && !$_POST["email"])) {
 		// POST form on select page is used to edit or clone data
 		$_GET["edit"] = $_GET["select"];
 	}

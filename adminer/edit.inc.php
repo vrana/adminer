@@ -1,5 +1,5 @@
 <?php
-$where = (isset($_GET["select"]) ? (count($_POST["check"]) == 1 ? where_check($_POST["check"][0]) : array()) : where($_GET));
+$where = (isset($_GET["select"]) ? (count($_POST["check"]) == 1 ? where_check($_POST["check"][0]) : "") : where($_GET));
 $update = ($where && !$_POST["clone"]);
 $fields = fields($_GET["edit"]);
 foreach ($fields as $name => $field) {
@@ -10,7 +10,7 @@ foreach ($fields as $name => $field) {
 if ($_POST && !$error && !isset($_GET["select"])) {
 	$location = ($_POST["insert"] ? $_SERVER["REQUEST_URI"] : $SELF . (isset($_GET["default"]) ? "table=" : "select=") . urlencode($_GET["edit"])); // "insert" to continue edit or insert
 	if (isset($_POST["delete"])) {
-		query_redirect("DELETE FROM " . idf_escape($_GET["edit"]) . " WHERE " . implode(" AND ", $where) . " LIMIT 1", $location, lang('Item has been deleted.'));
+		query_redirect("DELETE FROM " . idf_escape($_GET["edit"]) . " WHERE $where LIMIT 1", $location, lang('Item has been deleted.'));
 	} else {
 		$set = array();
 		foreach ($fields as $name => $field) {
@@ -33,13 +33,20 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 		if (isset($_GET["default"])) {
 			query_redirect("ALTER TABLE " . idf_escape($_GET["edit"]) . implode(",", $set), $location, lang('Default values has been set.'));
 		} elseif ($update) {
-			query_redirect("UPDATE " . idf_escape($_GET["edit"]) . " SET" . implode(",", $set) . "\nWHERE " . implode(" AND ", $where) . " LIMIT 1", $location, lang('Item has been updated.'));
+			query_redirect("UPDATE " . idf_escape($_GET["edit"]) . " SET" . implode(",", $set) . "\nWHERE $where LIMIT 1", $location, lang('Item has been updated.'));
 		} else {
 			query_redirect("INSERT INTO " . idf_escape($_GET["edit"]) . " SET" . implode(",", $set), $location, lang('Item has been inserted.'));
 		}
 	}
 }
-page_header((isset($_GET["default"]) ? lang('Default values') : ($_GET["where"] || (isset($_GET["select"]) && !$_POST["clone"]) ? lang('Edit') : lang('Insert'))), $error, array((isset($_GET["default"]) ? "table" : "select") => $_GET["edit"]), $_GET["edit"]);
+
+$table_name = adminer_table_name(table_status($_GET["edit"]));
+page_header(
+	(isset($_GET["default"]) ? lang('Default values') : ($_GET["where"] || (isset($_GET["select"]) && !$_POST["clone"]) ? lang('Edit') : lang('Insert'))),
+	$error,
+	array((isset($_GET["default"]) ? "table" : "select") => array($_GET["edit"], $table_name)),
+	$table_name
+);
 
 unset($row);
 if ($_POST["save"]) {
@@ -53,7 +60,7 @@ if ($_POST["save"]) {
 	}
 	$row = array();
 	if ($select) {
-		$result = $dbh->query("SELECT " . implode(", ", $select) . " FROM " . idf_escape($_GET["edit"]) . " WHERE " . implode(" AND ", $where) . " LIMIT 1");
+		$result = $dbh->query("SELECT " . implode(", ", $select) . " FROM " . idf_escape($_GET["edit"]) . " WHERE $where LIMIT 1");
 		$row = $result->fetch_assoc();
 		$result->free();
 	}
@@ -66,7 +73,7 @@ if ($fields) {
 	unset($create);
 	echo "<table cellspacing='0'>\n";
 	foreach ($fields as $name => $field) {
-		echo "<tr><th>" . $adminer->field_name($fields, $name) . "</th>";
+		echo "<tr><th>" . adminer_field_name($fields, $name) . "</th>";
 		$value = (isset($row)
 			? (strlen($row[$name]) && ($field["type"] == "enum" || $field["type"] == "set") ? intval($row[$name]) : $row[$name])
 			: ($_POST["clone"] && $field["auto_increment"] ? "" : ($where ? $field["default"] : false))

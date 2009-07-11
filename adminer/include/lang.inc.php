@@ -1,5 +1,5 @@
 <?php
-// not used in single language version
+// not used in a single language version
 
 $langs = array(
 	'en' => 'English', // Jakub Vrána - http://php.vrana.cz

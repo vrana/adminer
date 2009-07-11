@@ -107,7 +107,7 @@ if ($_POST && !$error) {
 		}
 	}
 }
-page_header((isset($_GET["host"]) ? lang('Username') . ": " . htmlspecialchars("$_GET[user]@$_GET[host]") : lang('Create user')), $error, array("privileges" => lang('Privileges')));
+page_header((isset($_GET["host"]) ? lang('Username') . ": " . htmlspecialchars("$_GET[user]@$_GET[host]") : lang('Create user')), $error, array("privileges" => array('', lang('Privileges'))));
 
 if ($_POST) {
 	$row = $_POST;

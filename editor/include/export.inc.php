@@ -24,4 +24,4 @@ function dump_headers($identifier, $multi_table = false) {
 }
 
 $dump_output = "";
-$dump_format = "";
+$dump_format = "CSV";

@@ -1,35 +1,86 @@
 <?php
-class AdminerBase {
-	
-	function name() {
-		return lang('Adminer');
+/** Name in title and navigation
+* @return string
+*/
+function adminer_name() {
+	return call_adminer('name', lang('Adminer'));
+}
+
+/** Connection parameters
+* @return array ($server, $username, $password)
+*/
+function adminer_credentials() {
+	return call_adminer('credentials', array($_GET["server"], $_SESSION["usernames"][$_GET["server"]], $_SESSION["passwords"][$_GET["server"]]));
+}
+
+/** Identifier of selected database
+* @return string
+*/
+function adminer_database() {
+	// should be used everywhere instead of $_GET["db"]
+	return call_adminer('database', $_GET["db"]);
+}
+
+/** Table caption used in navigation and headings
+* @param array result of SHOW TABLE STATUS
+* @return string
+*/
+function adminer_table_name($row) {
+	return call_adminer('table_name', htmlspecialchars($row["Name"]), $row);
+}
+
+/** Field caption used in select and edit
+* @param array all fields in table, result of fields()
+* @param string column identifier, function calls are not contained in $fields 
+* @return string
+*/
+function adminer_field_name($fields, $key) {
+	return call_adminer('field_name', htmlspecialchars($key), $fields, $key);
+}
+
+/** Links after select heading
+* @param array result of SHOW TABLE STATUS
+* @return string
+*/
+function adminer_select_links($table_status) {
+	global $SELF;
+	return call_adminer('select_links', '<a href="' . htmlspecialchars($SELF) . (isset($table_status["Engine"]) ? 'table=' : 'view=') . urlencode($_GET['select']) . '">' . lang('Table structure') . '</a>', $table_status);
+}
+
+/** Process and print select query before execution
+* @param string query to be executed
+* @return string
+*/
+function adminer_select_query($query) {
+	global $SELF;
+	// it would be nice if $query can be passed by reference and printed value would be returned but call_user() doesn't allow reference parameters
+	$return = call_adminer('select_query', "", $query);
+	if (!$return) {
+		echo "<p><code class='jush-sql'>" . htmlspecialchars($query) . "</code> <a href='" . htmlspecialchars($SELF) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a></p>\n";
+		return $query;
 	}
-	
-	function server() {
-		return $_GET["server"];
-	}
-	
-	function username() {
-		return $_SESSION["usernames"][$_GET["server"]];
-	}
-	
-	function password() {
-		return $_SESSION["passwords"][$_GET["server"]];
-	}
-	
-	function table_name($row) {
-		return htmlspecialchars($row["Name"]);
-	}
-	
-	function field_name($fields, $key) {
-		return htmlspecialchars($key);
-	}
-	
-	function navigation($missing) {
-		global $SELF;
-		if ($missing != "auth") {
-			$databases = get_databases();
-			?>
+	return $return;
+}
+
+/** Query printed after execution in the message
+* @param string executed query
+* @return string
+*/
+function adminer_message_query($query) {
+	global $SELF;
+	$id = "sql-" . count($_SESSION["messages"]);
+	return call_adminer('message_query', " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre class='jush-sql'>" . htmlspecialchars($query) . '</pre><a href="' . htmlspecialchars($SELF . 'sql=&history=' . count($_SESSION["history"][$_GET["server"]][$_GET["db"]])) . '">' . lang('Edit') . '</a></div>', $query);
+}
+
+/** Prints navigation after Adminer title
+* @param string can be "auth" if there is no database connection or "db" if there is no database selected
+* @return bool true if default navigation should be printed
+*/
+function adminer_navigation($missing) {
+	global $SELF;
+	if (call_adminer('navigation', true, $missing) && $missing != "auth") {
+		$databases = get_databases();
+		?>
 <form action="" method="post">
 <p>
 <a href="<?php echo htmlspecialchars($SELF); ?>sql="><?php echo lang('SQL command'); ?></a>
@@ -52,22 +103,19 @@ class AdminerBase {
 </p>
 </form>
 <?php
-			if ($missing != "db" && strlen($_GET["db"])) {
-				$table_status = table_status();
-				if (!$table_status) {
-					echo "<p class='message'>" . lang('No tables.') . "</p>\n";
-				} else {
-					echo "<p>\n";
-					foreach ($table_status as $row) {
-						echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row["Name"]) . '">' . lang('select') . '</a> ';
-						echo '<a href="' . htmlspecialchars($SELF) . (isset($row["Rows"]) ? 'table' : 'view') . '=' . urlencode($row["Name"]) . '">' . $this->table_name($row) . "</a><br />\n";
-					}
-					echo "</p>\n";
+		if ($missing != "db" && strlen($_GET["db"])) {
+			$table_status = table_status();
+			if (!$table_status) {
+				echo "<p class='message'>" . lang('No tables.') . "</p>\n";
+			} else {
+				echo "<p>\n";
+				foreach ($table_status as $row) {
+					echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row["Name"]) . '">' . lang('select') . '</a> ';
+					echo '<a href="' . htmlspecialchars($SELF) . (isset($row["Rows"]) ? 'table' : 'view') . '=' . urlencode($row["Name"]) . '">' . adminer_table_name($row) . "</a><br />\n";
 				}
-				echo '<p><a href="' . htmlspecialchars($SELF) . 'create=">' . lang('Create new table') . "</a></p>\n";
+				echo "</p>\n";
 			}
+			echo '<p><a href="' . htmlspecialchars($SELF) . 'create=">' . lang('Create new table') . "</a></p>\n";
 		}
 	}
 }
-
-$adminer = (class_exists("Adminer") ? new Adminer : new AdminerBase);
