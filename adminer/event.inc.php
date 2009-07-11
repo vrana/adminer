@@ -36,18 +36,17 @@ if ($_POST) {
 
 <form action="" method="post">
 <table cellspacing="0">
-<tr><th><?php echo lang('Name'); ?></th><td><input name="EVENT_NAME" value="<?php echo htmlspecialchars($row["EVENT_NAME"]); ?>" maxlength="64" /></td></tr>
-<tr><th><?php echo lang('Start'); ?></th><td><input name="STARTS" value="<?php echo htmlspecialchars("$row[EXECUTE_AT]$row[STARTS]"); ?>" /></td></tr>
-<tr><th><?php echo lang('End'); ?></th><td><input name="ENDS" value="<?php echo htmlspecialchars($row["ENDS"]); ?>" /></td></tr>
-<tr><th><?php echo lang('Every'); ?></th><td><input name="INTERVAL_VALUE" value="<?php echo htmlspecialchars($row["INTERVAL_VALUE"]); ?>" size="6" /> <select name="INTERVAL_FIELD"><?php echo optionlist($intervals, $row["INTERVAL_FIELD"]); ?></select></td></tr>
-<tr><th><?php echo lang('Status'); ?></th><td><select name="STATUS"><?php echo optionlist($statuses, $row["STATUS"]); ?></select></td></tr>
-<tr><th><?php echo lang('Comment'); ?></th><td><input name="EVENT_COMMENT" value="<?php echo htmlspecialchars($row["EVENT_COMMENT"]); ?>" maxlength="64" /></td></tr>
-<tr><th>&nbsp;</th><td><label><input type="checkbox" name="ON_COMPLETION" value="PRESERVE"<?php echo ($row["ON_COMPLETION"] == "PRESERVE" ? " checked='checked'" : ""); ?> /><?php echo lang('On completion preserve'); ?></label></td></tr>
+<tr><th><?php echo lang('Name'); ?><td><input name="EVENT_NAME" value="<?php echo htmlspecialchars($row["EVENT_NAME"]); ?>" maxlength="64">
+<tr><th><?php echo lang('Start'); ?><td><input name="STARTS" value="<?php echo htmlspecialchars("$row[EXECUTE_AT]$row[STARTS]"); ?>">
+<tr><th><?php echo lang('End'); ?><td><input name="ENDS" value="<?php echo htmlspecialchars($row["ENDS"]); ?>">
+<tr><th><?php echo lang('Every'); ?><td><input name="INTERVAL_VALUE" value="<?php echo htmlspecialchars($row["INTERVAL_VALUE"]); ?>" size="6"> <select name="INTERVAL_FIELD"><?php echo optionlist($intervals, $row["INTERVAL_FIELD"]); ?></select>
+<tr><th><?php echo lang('Status'); ?><td><select name="STATUS"><?php echo optionlist($statuses, $row["STATUS"]); ?></select>
+<tr><th><?php echo lang('Comment'); ?><td><input name="EVENT_COMMENT" value="<?php echo htmlspecialchars($row["EVENT_COMMENT"]); ?>" maxlength="64">
+<tr><th>&nbsp;<td><label><input type="checkbox" name="ON_COMPLETION" value="PRESERVE"<?php echo ($row["ON_COMPLETION"] == "PRESERVE" ? " checked='checked'" : ""); ?>><?php echo lang('On completion preserve'); ?></label>
 </table>
-<p><textarea name="EVENT_DEFINITION" rows="10" cols="80" style="width: 98%;"><?php echo htmlspecialchars($row["EVENT_DEFINITION"]); ?></textarea></p>
+<p><textarea name="EVENT_DEFINITION" rows="10" cols="80" style="width: 98%;"><?php echo htmlspecialchars($row["EVENT_DEFINITION"]); ?></textarea>
 <p>
-<input type="hidden" name="token" value="<?php echo $token; ?>" />
-<input type="submit" value="<?php echo lang('Save'); ?>" />
-<?php if (strlen($_GET["event"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?> /><?php } ?>
-</p>
+<input type="hidden" name="token" value="<?php echo $token; ?>">
+<input type="submit" value="<?php echo lang('Save'); ?>">
+<?php if (strlen($_GET["event"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
 </form>

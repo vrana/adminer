@@ -155,6 +155,6 @@ function dump_headers($identifier, $multi_table = false) {
 	return $ext;
 }
 
-$dump_output = "<select name='output'><option value='text'>" . lang('open') . "</option><option value='file'>" . lang('save') . "</option></select>";
-$dump_format = "<select name='format'><option value='sql'>" . lang('SQL') . "</option><option value='csv'>" . lang('CSV') . "</option></select>";
+$dump_output = "<select name='output'><option value='text'>" . lang('open') . "<option value='file'>" . lang('save') . "</select>";
+$dump_format = "<select name='format'><option value='sql'>" . lang('SQL') . "<option value='csv'>" . lang('CSV') . "</select>";
 $max_packet = 1048576; // default, minimum is 1024

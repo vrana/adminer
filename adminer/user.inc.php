@@ -124,21 +124,21 @@ if ($_POST) {
 ?>
 <form action="" method="post">
 <table cellspacing="0">
-<tr><th><?php echo lang('Username'); ?></th><td><input name="user" maxlength="16" value="<?php echo htmlspecialchars($row["user"]); ?>" /></td></tr>
-<tr><th><?php echo lang('Server'); ?></th><td><input name="host" maxlength="60" value="<?php echo htmlspecialchars($row["host"]); ?>" /></td></tr>
-<tr><th><?php echo lang('Password'); ?></th><td><input id="pass" name="pass" value="<?php echo htmlspecialchars($row["pass"]); ?>" /><?php if (!$row["hashed"]) { ?><script type="text/javascript">document.getElementById('pass').type = 'password';</script><?php } ?> <label><input type="checkbox" name="hashed" value="1"<?php if ($row["hashed"]) { ?> checked="checked"<?php } ?> onclick="this.form['pass'].type = (this.checked ? 'text' : 'password');" /><?php echo lang('Hashed'); ?></label></td></tr>
+<tr><th><?php echo lang('Username'); ?><td><input name="user" maxlength="16" value="<?php echo htmlspecialchars($row["user"]); ?>">
+<tr><th><?php echo lang('Server'); ?><td><input name="host" maxlength="60" value="<?php echo htmlspecialchars($row["host"]); ?>">
+<tr><th><?php echo lang('Password'); ?><td><input id="pass" name="pass" value="<?php echo htmlspecialchars($row["pass"]); ?>"><?php if (!$row["hashed"]) { ?><script type="text/javascript">document.getElementById('pass').type = 'password';</script><?php } ?> <label><input type="checkbox" name="hashed" value="1"<?php if ($row["hashed"]) { ?> checked="checked"<?php } ?> onclick="this.form['pass'].type = (this.checked ? 'text' : 'password');"><?php echo lang('Hashed'); ?></label>
 </table>
 
 <?php
 //! MAX_* limits, REQUIRE
 echo "<table cellspacing='0'>\n";
-echo "<thead><tr><th colspan='2'>" . lang('Privileges') . "</th>";
+echo "<thead><tr><th colspan='2'>" . lang('Privileges');
 $i = 0;
 foreach ($grants as $object => $grant) {
-	echo '<th>' . ($object != "*.*" ? '<input name="objects[' . $i . ']" value="' . htmlspecialchars($object) . '" size="10" />' : '<input type="hidden" name="objects[' . $i . ']" value="*.*" size="10" />*.*') . '</th>'; //! separate db, table, columns, PROCEDURE|FUNCTION, routine
+	echo '<th>' . ($object != "*.*" ? '<input name="objects[' . $i . ']" value="' . htmlspecialchars($object) . '" size="10">' : '<input type="hidden" name="objects[' . $i . ']" value="*.*" size="10">*.*'); //! separate db, table, columns, PROCEDURE|FUNCTION, routine
 	$i++;
 }
-echo "</tr></thead>\n";
+echo "</thead>\n";
 foreach (array(
 	"" => "",
 	"Server Admin" => lang('Server'),
@@ -148,28 +148,26 @@ foreach (array(
 	"Procedures" => lang('Routine'),
 ) as $context => $desc) {
 	foreach ((array) $privileges[$context] as $privilege => $comment) {
-		echo "<tr" . odd() . "><td" . ($desc ? ">$desc</td><td" : " colspan='2'") . ' title="' . htmlspecialchars($comment) . '"><i>' . htmlspecialchars($privilege) . "</i></td>";
+		echo "<tr" . odd() . "><td" . ($desc ? ">$desc<td" : " colspan='2'") . ' title="' . htmlspecialchars($comment) . '"><i>' . htmlspecialchars($privilege) . "</i>";
 		$i = 0;
 		foreach ($grants as $object => $grant) {
 			$name = '"grants[' . $i . '][' . htmlspecialchars(strtoupper($privilege)) . ']"';
 			$value = $grant[strtoupper($privilege)];
 			if ($context == "Server Admin" && $object != (isset($grants["*.*"]) ? "*.*" : "")) {
-				echo "<td>&nbsp;</td>";
+				echo "<td>&nbsp;";
 			} elseif (isset($_GET["grant"])) {
-				echo "<td><select name=$name><option></option><option value='1'" . ($value ? " selected='selected'" : "") . ">" . lang('Grant') . "</option><option value='0'" . ($value == "0" ? " selected='selected'" : "") . ">" . lang('Revoke') . "</option></select></td>";
+				echo "<td><select name=$name><option><option value='1'" . ($value ? " selected='selected'" : "") . ">" . lang('Grant') . "<option value='0'" . ($value == "0" ? " selected='selected'" : "") . ">" . lang('Revoke') . "</select>";
 			} else {
-				echo "<td align='center'><input type='checkbox' name=$name value='1'" . ($value ? " checked='checked'" : "") . " /></td>";
+				echo "<td align='center'><input type='checkbox' name=$name value='1'" . ($value ? " checked='checked'" : "") . ">";
 			}
 			$i++;
 		}
-		echo "</tr>\n";
 	}
 }
 echo "</table>\n";
 ?>
 <p>
-<input type="hidden" name="token" value="<?php echo $token; ?>" />
-<input type="submit" value="<?php echo lang('Save'); ?>" />
-<?php if (isset($_GET["host"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?> /><?php } ?>
-</p>
+<input type="hidden" name="token" value="<?php echo $token; ?>">
+<input type="submit" value="<?php echo lang('Save'); ?>">
+<?php if (isset($_GET["host"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
 </form>

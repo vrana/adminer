@@ -44,19 +44,19 @@ function auth_error($exception = null) {
 	?>
 	<form action="" method="post">
 	<table cellspacing="0">
-	<tr><th><?php echo lang('Server'); ?></th><td><input name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>" /></td></tr>
-	<tr><th><?php echo lang('Username'); ?></th><td><input name="username" value="<?php echo htmlspecialchars($username); ?>" /></td></tr>
-	<tr><th><?php echo lang('Password'); ?></th><td><input type="password" name="password" /></td></tr>
+	<tr><th><?php echo lang('Server'); ?><td><input name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>">
+	<tr><th><?php echo lang('Username'); ?><td><input name="username" value="<?php echo htmlspecialchars($username); ?>">
+	<tr><th><?php echo lang('Password'); ?><td><input type="password" name="password">
 	</table>
 	<p>
 <?php
 	hidden_fields($_POST, $ignore); // expired session
 	foreach ($_FILES as $key => $val) {
-		echo '<input type="hidden" name="files[' . htmlspecialchars($key) . ']" value="' . ($val["error"] ? $val["error"] : base64_encode(file_get_contents($val["tmp_name"]))) . '" />';
+		echo '<input type="hidden" name="files[' . htmlspecialchars($key) . ']" value="' . ($val["error"] ? $val["error"] : base64_encode(file_get_contents($val["tmp_name"]))) . '">';
 	}
 	?>
-	<input type="submit" value="<?php echo lang('Login'); ?>" />
-	</p>
+	<input type="submit" value="<?php echo lang('Login'); ?>">
+	
 	</form>
 <?php
 	page_footer("auth");

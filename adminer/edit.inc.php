@@ -73,7 +73,7 @@ if ($fields) {
 	unset($create);
 	echo "<table cellspacing='0'>\n";
 	foreach ($fields as $name => $field) {
-		echo "<tr><th>" . adminer_field_name($fields, $name) . "</th>";
+		echo "<tr><th>" . adminer_field_name($fields, $name);
 		$value = (isset($row)
 			? (strlen($row[$name]) && ($field["type"] == "enum" || $field["type"] == "set") ? intval($row[$name]) : $row[$name])
 			: ($_POST["clone"] && $field["auto_increment"] ? "" : ($where ? $field["default"] : false))
@@ -85,29 +85,28 @@ if ($fields) {
 				$create = $dbh->result($dbh->query("SHOW CREATE TABLE " . idf_escape($_GET["edit"])), 1);
 			}
 			$checked = ($_POST ? $_POST["on_update"][bracket_escape($name)] : preg_match("~\n\\s*" . preg_quote(idf_escape($name), '~') . " timestamp.* on update CURRENT_TIMESTAMP~i", $create));
-			echo '<label><input type="checkbox" name="on_update[' . htmlspecialchars(bracket_escape($name)) . ']" value="1"' . ($checked ? ' checked="checked"' : '') . ' />' . lang('ON UPDATE CURRENT_TIMESTAMP') . '</label>';
+			echo '<label><input type="checkbox" name="on_update[' . htmlspecialchars(bracket_escape($name)) . ']" value="1"' . ($checked ? ' checked="checked"' : '') . '>' . lang('ON UPDATE CURRENT_TIMESTAMP') . '</label>';
 		}
-		echo "</td></tr>\n";
+		echo "\n";
 	}
 	echo "</table>\n";
 }
 ?>
 <p>
-<input type="hidden" name="token" value="<?php echo $token; ?>" />
-<input type="hidden" name="save" value="1" />
+<input type="hidden" name="token" value="<?php echo $token; ?>">
+<input type="hidden" name="save" value="1">
 <?php
 if (isset($_GET["select"])) {
 	hidden_fields(array("check" => (array) $_POST["check"], "clone" => $_POST["clone"], "all" => $_POST["all"]));
 }
 if ($fields) {
-	echo "<input type='submit' value='" . lang('Save') . "' />\n";
+	echo "<input type='submit' value='" . lang('Save') . "'>\n";
 	if (!isset($_GET["default"]) && !isset($_GET["select"])) {
-		echo "<input type='submit' name='insert' value='" . ($update ? lang('Save and continue edit') : lang('Save and insert next')) . "' />\n";
+		echo "<input type='submit' name='insert' value='" . ($update ? lang('Save and continue edit') : lang('Save and insert next')) . "'>\n";
 	}
 }
 if ($update) {
-	echo "<input type='submit' name='delete' value='" . lang('Delete') . "'$confirm />\n";
+	echo "<input type='submit' name='delete' value='" . lang('Delete') . "'$confirm>\n";
 }
 ?>
-</p>
 </form>

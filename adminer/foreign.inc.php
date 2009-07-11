@@ -15,7 +15,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 			. (in_array($_POST["on_delete"], $on_actions) ? " ON DELETE $_POST[on_delete]" : "")
 			. (in_array($_POST["on_update"], $on_actions) ? " ON UPDATE $_POST[on_update]" : "")
 		, $SELF . "table=" . urlencode($_GET["foreign"]), (strlen($_GET["name"]) ? lang('Foreign key has been altered.') : lang('Foreign key has been created.')));
-		$error = lang('Source and target columns must have the same data type and there must be an index on the target columns.') . "<br />$error";
+		$error = lang('Source and target columns must have the same data type and there must be an index on the target columns.') . "<br>$error";
 	}
 }
 page_header(lang('Foreign key'), $error, array("table" => $_GET["foreign"]), $_GET["foreign"]);
@@ -44,30 +44,26 @@ $target = ($_GET["foreign"] === $row["table"] ? $source : get_vals("SHOW COLUMNS
 <p>
 <?php echo lang('Target table'); ?>:
 <select name="table" onchange="this.form['change-js'].value = '1'; this.form.submit();"><?php echo optionlist(array_keys(table_status_referencable()), $row["table"]); ?></select>
-<input type="hidden" name="change-js" value="" />
-</p>
-<noscript><p><input type="submit" name="change" value="<?php echo lang('Change'); ?>" /></p></noscript>
+<input type="hidden" name="change-js" value="">
+<noscript><p><input type="submit" name="change" value="<?php echo lang('Change'); ?>"></noscript>
 <table cellspacing="0">
-<thead><tr><th><?php echo lang('Source'); ?></th><th><?php echo lang('Target'); ?></th></tr></thead>
+<thead><tr><th><?php echo lang('Source'); ?><th><?php echo lang('Target'); ?></thead>
 <?php
 $j = 0;
 foreach ($row["source"] as $key => $val) {
 	echo "<tr>";
-	echo "<td><select name='source[" . intval($key) . "]'" . ($j == count($row["source"]) - 1 ? " onchange='foreign_add_row(this);'" : "") . "><option></option>" . optionlist($source, $val) . "</select></td>";
-	echo "<td><select name='target[" . intval($key) . "]'>" . optionlist($target, $row["target"][$key]) . "</select></td>";
-	echo "</tr>\n";
+	echo "<td><select name='source[" . intval($key) . "]'" . ($j == count($row["source"]) - 1 ? " onchange='foreign_add_row(this);'" : "") . "><option>" . optionlist($source, $val) . "</select>";
+	echo "<td><select name='target[" . intval($key) . "]'>" . optionlist($target, $row["target"][$key]) . "</select>";
 	$j++;
 }
 ?>
 </table>
 <p>
-<?php echo lang('ON DELETE'); ?>: <select name="on_delete"><option></option><?php echo optionlist($on_actions, $row["on_delete"]); ?></select>
-<?php echo lang('ON UPDATE'); ?>: <select name="on_update"><option></option><?php echo optionlist($on_actions, $row["on_update"]); ?></select>
-</p>
+<?php echo lang('ON DELETE'); ?>: <select name="on_delete"><option><?php echo optionlist($on_actions, $row["on_delete"]); ?></select>
+<?php echo lang('ON UPDATE'); ?>: <select name="on_update"><option><?php echo optionlist($on_actions, $row["on_update"]); ?></select>
 <p>
-<input type="hidden" name="token" value="<?php echo $token; ?>" />
-<input type="submit" value="<?php echo lang('Save'); ?>" />
-<?php if (strlen($_GET["name"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?> /><?php } ?>
-</p>
-<noscript><p><input type="submit" name="add" value="<?php echo lang('Add column'); ?>" /></p></noscript>
+<input type="hidden" name="token" value="<?php echo $token; ?>">
+<input type="submit" value="<?php echo lang('Save'); ?>">
+<?php if (strlen($_GET["name"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
+<noscript><p><input type="submit" name="add" value="<?php echo lang('Add column'); ?>"></noscript>
 </form>

@@ -29,14 +29,14 @@ if (!$error && $_POST) {
 	}
 	$result = $dbh->multi_query((isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . idf_escape($_GET["call"]) . "(" . implode(", ", $call) . ")");
 	if (!$result) {
-		echo "<p class='error'>" . htmlspecialchars($dbh->error) . "</p>\n";
+		echo "<p class='error'>" . htmlspecialchars($dbh->error) . "\n";
 	} else {
 		do {
 			$result = $dbh->store_result();
 			if (is_object($result)) {
 				select($result);
 			} else {
-				echo "<p class='message'>" . lang('Routine has been called, %d row(s) affected.', $dbh->affected_rows) . "</p>\n";
+				echo "<p class='message'>" . lang('Routine has been called, %d row(s) affected.', $dbh->affected_rows) . "\n";
 			}
 		} while ($dbh->next_result());
 		if ($out) {
@@ -52,19 +52,18 @@ if ($in) {
 	echo "<table cellspacing='0'>\n";
 	foreach ($in as $key) {
 		$field = $routine["fields"][$key];
-		echo "<tr><th>" . htmlspecialchars($field["field"]) . "</th>";
+		echo "<tr><th>" . htmlspecialchars($field["field"]);
 		$value = $_POST["fields"][$key];
 		if (strlen($value) && ($field["type"] == "enum" || $field["type"] == "set")) {
 			$value = intval($value);
 		}
 		input($key, $field, $value); // param name can be empty
-		echo "</td></tr>\n";
+		echo "\n";
 	}
 	echo "</table>\n";
 }
 ?>
 <p>
-<input type="hidden" name="token" value="<?php echo $token; ?>" />
-<input type="submit" value="<?php echo lang('Call'); ?>" />
-</p>
+<input type="hidden" name="token" value="<?php echo $token; ?>">
+<input type="submit" value="<?php echo lang('Call'); ?>">
 </form>

@@ -3,19 +3,17 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	global $SELF, $LANG, $VERSION;
 	header("Content-Type: text/html; charset=utf-8");
 	?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="<?php echo $LANG; ?>">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="Content-Script-Type" content="text/javascript" />
-<meta name="robots" content="noindex" />
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="<?php echo $LANG; ?>">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta name="robots" content="noindex">
 <title><?php echo $title . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . (strlen($_GET["server"]) && $_GET["server"] != "localhost" ? htmlspecialchars("- $_GET[server]") : "") . " - " . adminer_name(); ?></title>
-<link rel="shortcut icon" type="image/x-icon" href="../adminer/favicon.ico" />
-<link rel="stylesheet" type="text/css" href="../adminer/default.css<?php // Ondrej Valka, http://valka.info ?>" />
+<link rel="shortcut icon" type="image/x-icon" href="../adminer/favicon.ico">
+<link rel="stylesheet" type="text/css" href="../adminer/default.css<?php // Ondrej Valka, http://valka.info ?>">
 <?php if (file_exists("adminer.css")) { ?>
-<link rel="stylesheet" type="text/css" href="adminer.css" />
+<link rel="stylesheet" type="text/css" href="adminer.css">
 <?php } ?>
-</head>
 
 <body onload="body_load();<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verify_version('$VERSION');"); ?>">
 <script type="text/javascript" src="../adminer/functions.js"></script>
@@ -37,7 +35,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 				}
 			}
 		}
-		echo "$title</p>\n";
+		echo "$title\n";
 	}
 	echo "<h2>$title" . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . "</h2>\n";
 	if ($_SESSION["messages"]) {
@@ -69,8 +67,5 @@ function page_footer($missing = false) {
 </h1>
 <?php adminer_navigation($missing); ?>
 </div>
-
-</body>
-</html>
 <?php
 }

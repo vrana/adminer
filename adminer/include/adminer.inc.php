@@ -54,7 +54,7 @@ function adminer_select_links($table_status) {
 function adminer_select_query($query) {
 	global $SELF;
 	// it would be nice if $query can be passed by reference and printed value would be returned but call_user() doesn't allow reference parameters
-	return call_adminer('select_query', "<p><code class='jush-sql'>" . htmlspecialchars($query) . "</code> <a href='" . htmlspecialchars($SELF) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a></p>\n", $query);
+	return call_adminer('select_query', "<p><code class='jush-sql'>" . htmlspecialchars($query) . "</code> <a href='" . htmlspecialchars($SELF) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>\n", $query);
 }
 
 /** Query printed after execution in the message
@@ -80,37 +80,34 @@ function adminer_navigation($missing) {
 <p>
 <a href="<?php echo htmlspecialchars($SELF); ?>sql="><?php echo lang('SQL command'); ?></a>
 <a href="<?php echo htmlspecialchars($SELF); ?>dump=<?php echo urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]); ?>"><?php echo lang('Dump'); ?></a>
-<input type="hidden" name="token" value="<?php echo $_SESSION["tokens"][$_GET["server"]]; ?>" />
-<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" />
-</p>
+<input type="hidden" name="token" value="<?php echo $_SESSION["tokens"][$_GET["server"]]; ?>">
+<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>">
 </form>
 <form action="">
-<p><?php if (strlen($_GET["server"])) { ?><input type="hidden" name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>" /><?php } ?>
+<p><?php if (strlen($_GET["server"])) { ?><input type="hidden" name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>"><?php } ?>
 <?php if ($databases) { ?>
-<select name="db" onchange="this.form.submit();"><option value="">(<?php echo lang('database'); ?>)</option><?php echo optionlist($databases, $_GET["db"]); ?></select>
+<select name="db" onchange="this.form.submit();"><option value="">(<?php echo lang('database'); ?>)<?php echo optionlist($databases, $_GET["db"]); ?></select>
 <?php } else { ?>
-<input name="db" value="<?php echo htmlspecialchars($_GET["db"]); ?>" />
+<input name="db" value="<?php echo htmlspecialchars($_GET["db"]); ?>">
 <?php } ?>
-<?php if (isset($_GET["sql"])) { ?><input type="hidden" name="sql" value="" /><?php } ?>
-<?php if (isset($_GET["schema"])) { ?><input type="hidden" name="schema" value="" /><?php } ?>
-<?php if (isset($_GET["dump"])) { ?><input type="hidden" name="dump" value="" /><?php } ?>
-<input type="submit" value="<?php echo lang('Use'); ?>"<?php echo ($databases ? " class='hidden'" : ""); ?> />
-</p>
+<?php if (isset($_GET["sql"])) { ?><input type="hidden" name="sql" value=""><?php } ?>
+<?php if (isset($_GET["schema"])) { ?><input type="hidden" name="schema" value=""><?php } ?>
+<?php if (isset($_GET["dump"])) { ?><input type="hidden" name="dump" value=""><?php } ?>
+<input type="submit" value="<?php echo lang('Use'); ?>"<?php echo ($databases ? " class='hidden'" : ""); ?>>
 </form>
 <?php
 		if ($missing != "db" && strlen($_GET["db"])) {
 			$table_status = table_status();
 			if (!$table_status) {
-				echo "<p class='message'>" . lang('No tables.') . "</p>\n";
+				echo "<p class='message'>" . lang('No tables.') . "\n";
 			} else {
 				echo "<p>\n";
 				foreach ($table_status as $row) {
 					echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row["Name"]) . '">' . lang('select') . '</a> ';
-					echo '<a href="' . htmlspecialchars($SELF) . (isset($row["Rows"]) ? 'table' : 'view') . '=' . urlencode($row["Name"]) . '">' . adminer_table_name($row) . "</a><br />\n";
+					echo '<a href="' . htmlspecialchars($SELF) . (isset($row["Rows"]) ? 'table' : 'view') . '=' . urlencode($row["Name"]) . '">' . adminer_table_name($row) . "</a><br>\n";
 				}
-				echo "</p>\n";
 			}
-			echo '<p><a href="' . htmlspecialchars($SELF) . 'create=">' . lang('Create new table') . "</a></p>\n";
+			echo '<p><a href="' . htmlspecialchars($SELF) . 'create=">' . lang('Create new table') . "</a>\n";
 		}
 	}
 }

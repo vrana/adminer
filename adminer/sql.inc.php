@@ -36,13 +36,13 @@ if (!$error && $_POST) {
 					$start = explode(" ", microtime()); // microtime(true) is available since PHP 5
 					//! don't allow changing of character_set_results, convert encoding of displayed query
 					if (!$dbh->multi_query(substr($query, 0, $match[0][1]))) {
-						echo "<p class='error'>" . lang('Error in query') . ": " . htmlspecialchars($dbh->error) . "</p>\n";
+						echo "<p class='error'>" . lang('Error in query') . ": " . htmlspecialchars($dbh->error) . "\n";
 						if ($_POST["error_stops"]) {
 							break;
 						}
 					} else {
 						$end = explode(" ", microtime());
-						echo "<p class='time'>" . lang('%.3f s', max(0, $end[0] - $start[0] + $end[1] - $start[1])) . "</p>\n";
+						echo "<p class='time'>" . lang('%.3f s', max(0, $end[0] - $start[0] + $end[1] - $start[1])) . "\n";
 						do {
 							$result = $dbh->store_result();
 							if (is_object($result)) {
@@ -51,7 +51,7 @@ if (!$error && $_POST) {
 								if (preg_match("~^$space*(CREATE|DROP)$space+(DATABASE|SCHEMA)\\b~isU", $query)) {
 									unset($_SESSION["databases"][$_GET["server"]]); // clear cache
 								}
-								echo "<p class='message'>" . lang('Query executed OK, %d row(s) affected.', $dbh->affected_rows) . "</p>\n";
+								echo "<p class='message'>" . lang('Query executed OK, %d row(s) affected.', $dbh->affected_rows) . "\n";
 							}
 						} while ($dbh->next_result());
 					}
@@ -61,38 +61,36 @@ if (!$error && $_POST) {
 			}
 		}
 		if ($empty) {
-			echo "<p class='message'>" . lang('No commands to execute.') . "</p>\n";
+			echo "<p class='message'>" . lang('No commands to execute.') . "\n";
 		}
 	} else {
-		echo "<p class='error'>" . lang('Unable to upload a file.') . "</p>\n";
+		echo "<p class='error'>" . lang('Unable to upload a file.') . "\n";
 	}
 }
 ?>
 
 <form action="" method="post" enctype="multipart/form-data">
-<p><textarea name="query" rows="20" cols="80" style="width: 98%;"><?php echo htmlspecialchars($_POST ? $_POST["query"] : (strlen($_GET["history"]) ? $_SESSION["history"][$_GET["server"]][$_GET["db"]][$_GET["history"]] : $_GET["sql"])); ?></textarea></p>
+<p><textarea name="query" rows="20" cols="80" style="width: 98%;"><?php echo htmlspecialchars($_POST ? $_POST["query"] : (strlen($_GET["history"]) ? $_SESSION["history"][$_GET["server"]][$_GET["db"]][$_GET["history"]] : $_GET["sql"])); ?></textarea>
 <p>
-<input type="hidden" name="token" value="<?php echo $token; ?>" />
-<input type="submit" value="<?php echo lang('Execute'); ?>" />
-<label><input type="checkbox" name="error_stops" value="1"<?php echo ($_POST["error_stops"] ? " checked='checked'" : ""); ?> /><?php echo lang('Stop on error'); ?></label>
-</p>
+<input type="hidden" name="token" value="<?php echo $token; ?>">
+<input type="submit" value="<?php echo lang('Execute'); ?>">
+<label><input type="checkbox" name="error_stops" value="1"<?php echo ($_POST["error_stops"] ? " checked='checked'" : ""); ?>><?php echo lang('Stop on error'); ?></label>
 
 <p>
 <?php
 if (!ini_get("file_uploads")) {
 	echo lang('File uploads are disabled.');
 } else { ?>
-<?php echo lang('File upload'); ?>: <input type="file" name="sql_file" />
-<input type="submit" name="file" value="<?php echo lang('Execute'); ?>" />
+<?php echo lang('File upload'); ?>: <input type="file" name="sql_file">
+<input type="submit" name="file" value="<?php echo lang('Execute'); ?>">
 <?php } ?>
-</p>
 
 <?php
 if ($history) {
 	echo "<fieldset><legend>" . lang('History') . "</legend>\n";
 	foreach ($history as $key => $val) {
 		//! save and display timestamp
-		echo '<a href="' . htmlspecialchars($SELF . "sql=&history=$key") . '">' . lang('Edit') . '</a> <code class="jush-sql">' . shorten_utf8(str_replace("\n", " ", $val), 80, "</code>") . "<br />\n";
+		echo '<a href="' . htmlspecialchars($SELF . "sql=&history=$key") . '">' . lang('Edit') . '</a> <code class="jush-sql">' . shorten_utf8(str_replace("\n", " ", $val), 80, "</code>") . "<br>\n";
 	}
 	echo "</fieldset>\n";
 }

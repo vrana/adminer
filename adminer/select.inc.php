@@ -162,79 +162,78 @@ if (isset($rights["insert"])) {
 	echo '<a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '">' . lang('New item') . '</a> ';
 }
 echo adminer_select_links($table_status);
-echo "</p>\n";
 
 if (!$columns) {
-	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "" : ": " . htmlspecialchars($dbh->error)) . ".</p>\n";
+	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "" : ": " . htmlspecialchars($dbh->error)) . ".\n";
 } else {
 	echo "<form action='' id='form'>\n";
 	echo '<fieldset><legend><a href="#fieldset-select" onclick="return !toggle(\'fieldset-select\');">' . lang('Select') . "</a></legend><div id='fieldset-select'" . ($select ? "" : " class='hidden'") . ">\n";
 	if (strlen($_GET["server"])) {
-		echo '<input type="hidden" name="server" value="' . htmlspecialchars($_GET["server"]) . '" />';
+		echo '<input type="hidden" name="server" value="' . htmlspecialchars($_GET["server"]) . '">';
 	}
-	echo '<input type="hidden" name="db" value="' . htmlspecialchars($_GET["db"]) . '" />';
-	echo '<input type="hidden" name="select" value="' . htmlspecialchars($_GET["select"]) . '" />';
+	echo '<input type="hidden" name="db" value="' . htmlspecialchars($_GET["db"]) . '">';
+	echo '<input type="hidden" name="select" value="' . htmlspecialchars($_GET["select"]) . '">';
 	echo "\n";
 	$i = 0;
 	$fun_group = array(lang('Functions') => $functions, lang('Aggregation') => $grouping);
 	foreach ($select as $key => $val) {
 		$val = $_GET["columns"][$key];
-		echo "<div><select name='columns[$i][fun]'><option></option>" . optionlist($fun_group, $val["fun"]) . "</select>";
-		echo "<select name='columns[$i][col]'><option></option>" . optionlist($columns, $val["col"]) . "</select></div>\n";
+		echo "<div><select name='columns[$i][fun]'><option>" . optionlist($fun_group, $val["fun"]) . "</select>";
+		echo "<select name='columns[$i][col]'><option>" . optionlist($columns, $val["col"]) . "</select></div>\n";
 		$i++;
 	}
-	echo "<div><select name='columns[$i][fun]' onchange='this.nextSibling.onchange();'><option></option>" . optionlist($fun_group) . "</select>";
-	echo "<select name='columns[$i][col]' onchange='select_add_row(this);'><option></option>" . optionlist($columns) . "</select></div>\n";
+	echo "<div><select name='columns[$i][fun]' onchange='this.nextSibling.onchange();'><option>" . optionlist($fun_group) . "</select>";
+	echo "<select name='columns[$i][col]' onchange='select_add_row(this);'><option>" . optionlist($columns) . "</select></div>\n";
 	echo "</div></fieldset>\n";
 	
 	echo '<fieldset><legend><a href="#fieldset-search" onclick="return !toggle(\'fieldset-search\');">' . lang('Search') . "</a></legend><div id='fieldset-search'" . ($where ? "" : " class='hidden'") . ">\n";
 	foreach ($indexes as $i => $index) {
 		if ($index["type"] == "FULLTEXT") {
 			echo "(<i>" . implode("</i>, <i>", array_map('htmlspecialchars', $index["columns"])) . "</i>) AGAINST";
-			echo ' <input name="fulltext[' . $i . ']" value="' . htmlspecialchars($_GET["fulltext"][$i]) . '" />';
-			echo "<label><input type='checkbox' name='boolean[$i]' value='1'" . (isset($_GET["boolean"][$i]) ? " checked='checked'" : "") . " />" . lang('BOOL') . "</label>";
-			echo "<br />\n";
+			echo ' <input name="fulltext[' . $i . ']" value="' . htmlspecialchars($_GET["fulltext"][$i]) . '">';
+			echo "<label><input type='checkbox' name='boolean[$i]' value='1'" . (isset($_GET["boolean"][$i]) ? " checked='checked'" : "") . ">" . lang('BOOL') . "</label>";
+			echo "<br>\n";
 		}
 	}
 	$i = 0;
 	foreach ((array) $_GET["where"] as $val) {
 		if (strlen("$val[col]$val[val]") && in_array($val["op"], $operators)) {
-			echo "<div><select name='where[$i][col]'><option value=''>" . lang('(anywhere)') . "</option>" . optionlist($columns, $val["col"]) . "</select>";
+			echo "<div><select name='where[$i][col]'><option value=''>" . lang('(anywhere)') . optionlist($columns, $val["col"]) . "</select>";
 			echo "<select name='where[$i][op]'>" . optionlist($operators, $val["op"]) . "</select>";
-			echo "<input name='where[$i][val]' value=\"" . htmlspecialchars($val["val"]) . "\" /></div>\n";
+			echo "<input name='where[$i][val]' value=\"" . htmlspecialchars($val["val"]) . "\"></div>\n";
 			$i++;
 		}
 	}
-	echo "<div><select name='where[$i][col]' onchange='select_add_row(this);'><option value=''>" . lang('(anywhere)') . "</option>" . optionlist($columns) . "</select>";
+	echo "<div><select name='where[$i][col]' onchange='select_add_row(this);'><option value=''>" . lang('(anywhere)') . optionlist($columns) . "</select>";
 	echo "<select name='where[$i][op]'>" . optionlist($operators) . "</select>";
-	echo "<input name='where[$i][val]' /></div>\n";
+	echo "<input name='where[$i][val]'></div>\n";
 	echo "</div></fieldset>\n";
 	
 	echo '<fieldset><legend><a href="#fieldset-sort" onclick="return !toggle(\'fieldset-sort\');">' . lang('Sort') . "</a></legend><div id='fieldset-sort'" . (count($order) > 1 ? "" : " class='hidden'") . ">\n";
 	$i = 0;
 	foreach ((array) $_GET["order"] as $key => $val) {
 		if (isset($columns[$val])) {
-			echo "<div><select name='order[$i]'><option></option>" . optionlist($columns, $val) . "</select>";
-			echo "<label><input type='checkbox' name='desc[$i]' value='1'" . (isset($_GET["desc"][$key]) ? " checked='checked'" : "") . " />" . lang('descending') . "</label></div>\n";
+			echo "<div><select name='order[$i]'><option>" . optionlist($columns, $val) . "</select>";
+			echo "<label><input type='checkbox' name='desc[$i]' value='1'" . (isset($_GET["desc"][$key]) ? " checked='checked'" : "") . ">" . lang('descending') . "</label></div>\n";
 			$i++;
 		}
 	}
-	echo "<div><select name='order[$i]' onchange='select_add_row(this);'><option></option>" . optionlist($columns) . "</select>";
-	echo "<label><input type='checkbox' name='desc[$i]' value='1' />" . lang('descending') . "</label></div>\n";
+	echo "<div><select name='order[$i]' onchange='select_add_row(this);'><option>" . optionlist($columns) . "</select>";
+	echo "<label><input type='checkbox' name='desc[$i]' value='1'>" . lang('descending') . "</label></div>\n";
 	echo "</div></fieldset>\n";
 	
 	echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
-	echo "<input name='limit' size='3' value=\"" . htmlspecialchars($limit) . "\" />";
+	echo "<input name='limit' size='3' value=\"" . htmlspecialchars($limit) . "\">";
 	echo "</div></fieldset>\n";
 	
 	if (isset($text_length)) {
 		echo "<fieldset><legend>" . lang('Text length') . "</legend><div>";
-		echo "<input name='text_length' size='3' value=\"" . htmlspecialchars($text_length) . "\" />";
+		echo "<input name='text_length' size='3' value=\"" . htmlspecialchars($text_length) . "\">";
 		echo "</div></fieldset>\n";
 	}
 	
 	echo "<fieldset><legend>" . lang('Action') . "</legend><div>";
-	echo "<input type='submit' value='" . lang('Select') . "' />";
+	echo "<input type='submit' value='" . lang('Select') . "'>";
 	echo "</div></fieldset>\n";
 	echo "</form>\n";
 	
@@ -243,11 +242,11 @@ if (!$columns) {
 	
 	$result = $dbh->query($query);
 	if (!$result) {
-		echo "<p class='error'>" . htmlspecialchars($dbh->error) . "</p>\n";
+		echo "<p class='error'>" . htmlspecialchars($dbh->error) . "\n";
 	} else {
 		echo "<form action='' method='post' enctype='multipart/form-data'>\n";
 		if (!$result->num_rows) {
-			echo "<p class='message'>" . lang('No rows.') . "</p>\n";
+			echo "<p class='message'>" . lang('No rows.') . "\n";
 		} else {
 			$foreign_keys = array();
 			foreach (foreign_keys($_GET["select"]) as $foreign_key) {
@@ -261,14 +260,14 @@ if (!$columns) {
 			echo "<table cellspacing='0' class='nowrap'>\n";
 			for ($j=0; $row = $result->fetch_assoc(); $j++) {
 				if (!$j) {
-					echo '<thead><tr><td><input type="checkbox" id="all-page" onclick="form_check(this, /check/);" /></td>';
+					echo '<thead><tr><td><input type="checkbox" id="all-page" onclick="form_check(this, /check/);">';
 					foreach ($row as $key => $val) {
-						echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . adminer_field_name($fields, $key) . '</a></th>';
+						echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . adminer_field_name($fields, $key) . '</a>';
 					}
-					echo "</tr></thead>\n";
+					echo "</thead>\n";
 				}
 				$unique_idf = implode('&amp;', unique_idf($row, $indexes)); //! don't use aggregation functions
-				echo '<tr' . odd() . '><td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false; form_uncheck(\'all-page\');" />' . (count($select) != count($group) || information_schema($_GET["db"]) ? '' : ' <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a>') . '</td>';
+				echo '<tr' . odd() . '><td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false; form_uncheck(\'all-page\');">' . (count($select) != count($group) || information_schema($_GET["db"]) ? '' : ' <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a>');
 				foreach ($row as $key => $val) {
 					if (strlen($val) && (!isset($email_fields[$key]) || $email_fields[$key])) {
 						$email_fields[$key] = is_email($val); //! filled e-mails may be contained on other pages
@@ -300,9 +299,8 @@ if (!$columns) {
 							}
 						}
 					}
-					echo "<td>$val</td>";
+					echo "<td>$val";
 				}
-				echo "</tr>\n";
 			}
 			echo "</table>\n";
 			
@@ -328,23 +326,23 @@ if (!$columns) {
 				}
 				print_pagination($max_page);
 			}
-			echo " (" . lang('%d row(s)', $found_rows) . ') <label><input type="checkbox" name="all" value="1" />' . lang('whole result') . "</label></p>\n";
+			echo " (" . lang('%d row(s)', $found_rows) . ') <label><input type="checkbox" name="all" value="1">' . lang('whole result') . "</label>\n";
 			
-			echo (information_schema($_GET["db"]) ? "" : "<fieldset><legend>" . lang('Edit') . "</legend><div><input type='submit' value='" . lang('Edit') . "' /> <input type='submit' name='clone' value='" . lang('Clone') . "' /> <input type='submit' name='delete' value='" . lang('Delete') . "'$confirm /></div></fieldset>\n");
-			echo "<fieldset><legend>" . lang('Export') . "</legend><div>$dump_output $dump_format <input type='submit' name='export' value='" . lang('Export') . "' /></div></fieldset>\n";
+			echo (information_schema($_GET["db"]) ? "" : "<fieldset><legend>" . lang('Edit') . "</legend><div><input type='submit' value='" . lang('Edit') . "'> <input type='submit' name='clone' value='" . lang('Clone') . "'> <input type='submit' name='delete' value='" . lang('Delete') . "'$confirm></div></fieldset>\n");
+			echo "<fieldset><legend>" . lang('Export') . "</legend><div>$dump_output $dump_format <input type='submit' name='export' value='" . lang('Export') . "'></div></fieldset>\n";
 		}
 		$result->free();
-		echo "<fieldset><legend>" . lang('CSV Import') . "</legend><div><input type='hidden' name='token' value='$token' /><input type='file' name='csv_file' /> <input type='submit' name='import' value='" . lang('Import') . "' /></div></fieldset>\n";
+		echo "<fieldset><legend>" . lang('CSV Import') . "</legend><div><input type='hidden' name='token' value='$token'><input type='file' name='csv_file'> <input type='submit' name='import' value='" . lang('Import') . "'></div></fieldset>\n";
 		
 		//! Editor only
 		$email_fields = array_filter($email_fields);
 		if ($email_fields) {
 			echo '<fieldset><legend><a href="#fieldset-email" onclick="return !toggle(\'fieldset-email\');">' . lang('E-mail') . "</a></legend><div id='fieldset-email' class='hidden'>\n";
-			echo "<p>" . lang('From') . ": <input name='email_from' />\n";
-			echo lang('Subject') . ": <input name='email_subject' /></p>\n";
-			echo "<p><textarea name='email_message' rows='15' cols='60'></textarea></p>\n";
-			echo (count($email_fields) == 1 ? '<input type="hidden" name="email_field" value="' . htmlspecialchars(key($email_fields)) . '" />' : '<select name="email_field">' . optionlist(array_keys($email_fields)) . '</select>');
-			echo "<input type='submit' name='email' value='" . lang('Send') . "'$confirm />\n";
+			echo "<p>" . lang('From') . ": <input name='email_from'>\n";
+			echo lang('Subject') . ": <input name='email_subject'>\n";
+			echo "<p><textarea name='email_message' rows='15' cols='60'></textarea>\n";
+			echo (count($email_fields) == 1 ? '<input type="hidden" name="email_field" value="' . htmlspecialchars(key($email_fields)) . '">' : '<select name="email_field">' . optionlist(array_keys($email_fields)) . '</select>');
+			echo "<input type='submit' name='email' value='" . lang('Send') . "'$confirm>\n";
 			echo "</div></fieldset>\n";
 		}
 		

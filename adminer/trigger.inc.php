@@ -27,15 +27,14 @@ if ($_POST) {
 
 <form action="" method="post" id="form">
 <table cellspacing="0">
-<tr><th><?php echo lang('Time'); ?></th><td><select name="Timing" onchange="if (/^<?php echo htmlspecialchars(preg_quote($_GET["trigger"], "/")); ?>_[ba][iud]$/.test(this.form['Trigger'].value)) this.form['Trigger'].value = '<?php echo htmlspecialchars(addcslashes($_GET["trigger"], "\r\n'\\")); ?>_' + this.value.charAt(0).toLowerCase() + this.form['Event'].value.charAt(0).toLowerCase();"><?php echo optionlist($trigger_time, $row["Timing"]); ?></select></td></tr>
-<tr><th><?php echo lang('Event'); ?></th><td><select name="Event" onchange="this.form['Timing'].onchange();"><?php echo optionlist($trigger_event, $row["Event"]); ?></select></td></tr>
-<tr><th><?php echo lang('Name'); ?></th><td><input name="Trigger" value="<?php echo htmlspecialchars($row["Trigger"]); ?>" maxlength="64" /></td></tr>
+<tr><th><?php echo lang('Time'); ?><td><select name="Timing" onchange="if (/^<?php echo htmlspecialchars(preg_quote($_GET["trigger"], "/")); ?>_[ba][iud]$/.test(this.form['Trigger'].value)) this.form['Trigger'].value = '<?php echo htmlspecialchars(addcslashes($_GET["trigger"], "\r\n'\\")); ?>_' + this.value.charAt(0).toLowerCase() + this.form['Event'].value.charAt(0).toLowerCase();"><?php echo optionlist($trigger_time, $row["Timing"]); ?></select>
+<tr><th><?php echo lang('Event'); ?><td><select name="Event" onchange="this.form['Timing'].onchange();"><?php echo optionlist($trigger_event, $row["Event"]); ?></select>
+<tr><th><?php echo lang('Name'); ?><td><input name="Trigger" value="<?php echo htmlspecialchars($row["Trigger"]); ?>" maxlength="64">
 </table>
-<p><textarea name="Statement" rows="10" cols="80" style="width: 98%;"><?php echo htmlspecialchars($row["Statement"]); ?></textarea></p>
+<p><textarea name="Statement" rows="10" cols="80" style="width: 98%;"><?php echo htmlspecialchars($row["Statement"]); ?></textarea>
 <p>
-<input type="hidden" name="token" value="<?php echo $token; ?>" />
-<?php if ($dropped) { ?><input type="hidden" name="dropped" value="1" /><?php } ?>
-<input type="submit" value="<?php echo lang('Save'); ?>" />
-<?php if (strlen($_GET["name"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?> /><?php } ?>
-</p>
+<input type="hidden" name="token" value="<?php echo $token; ?>">
+<?php if ($dropped) { ?><input type="hidden" name="dropped" value="1"><?php } ?>
+<input type="submit" value="<?php echo lang('Save'); ?>">
+<?php if (strlen($_GET["name"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
 </form>

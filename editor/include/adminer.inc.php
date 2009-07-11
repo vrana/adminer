@@ -38,23 +38,21 @@ function adminer_navigation($missing) {
 		?>
 <form action="" method="post">
 <p>
-<input type="hidden" name="token" value="<?php echo $_SESSION["tokens"][$_GET["server"]]; ?>" />
-<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" />
-</p>
+<input type="hidden" name="token" value="<?php echo $_SESSION["tokens"][$_GET["server"]]; ?>">
+<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>">
 </form>
 <?php
 		if ($missing != "db") {
 			$table_status = table_status();
 			if (!$table_status) {
-				echo "<p class='message'>" . lang('No tables.') . "</p>\n";
+				echo "<p class='message'>" . lang('No tables.') . "\n";
 			} else {
 				echo "<p>\n";
 				foreach ($table_status as $row) {
 					if (isset($row["Engine"])) { // ignore views
-						echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row["Name"]) . '">' . adminer_table_name($row) . "</a><br />\n";
+						echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row["Name"]) . '">' . adminer_table_name($row) . "</a><br>\n";
 					}
 				}
-				echo "</p>\n";
 			}
 		}
 	}

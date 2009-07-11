@@ -19,7 +19,7 @@ if ($_GET["coverage"] === "0") {
 	unset($_SESSION["coverage"]); // disable coverage if it is not available
 	if (extension_loaded("xdebug")) {
 		$_SESSION["coverage"] = array();
-		echo "<p class='message'>Coverage started.</p>\n";
+		echo "<p class='message'>Coverage started.\n";
 	}
 } elseif (preg_match('~^(include/)?[-_.a-z0-9]+$~i', $_GET["coverage"])) {
 	// highlight single file
@@ -49,7 +49,7 @@ if ($_GET["coverage"] === "0") {
 			$s = ($open_tags ? "<" . implode("><", $open_tags) . ">" : "");
 			$prev_color = $color;
 		}
-		$s .= "$line<br />\n";
+		$s .= "$line<br>\n";
 	}
 } else {
 	// display list of files
@@ -61,10 +61,10 @@ if ($_GET["coverage"] === "0") {
 			$values = array_count_values($cov);
 			$ratio = round(100 - 100 * $values[-1] / count($cov));
 		}
-		echo "<tr><td align='right' style='background-color: " . ($ratio < 50 ? "Red" : ($ratio < 75 ? "#FFEA20" : "#A7FC9D")) . ";'>$ratio%</td><th><a href=\"" . htmlspecialchars($SELF) . "coverage=$filename\">$filename</a></th></tr>\n";
+		echo "<tr><td align='right' style='background-color: " . ($ratio < 50 ? "Red" : ($ratio < 75 ? "#FFEA20" : "#A7FC9D")) . ";'>$ratio%<th><a href=\"" . htmlspecialchars($SELF) . "coverage=$filename\">$filename</a>\n";
 	}
 	echo "</table>\n";
-	echo '<p><a href="' . htmlspecialchars($SELF) . 'coverage=0">Start new coverage</a></p>' . "\n";
+	echo '<p><a href="' . htmlspecialchars($SELF) . 'coverage=0">Start new coverage</a>' . "\n";
 }
 page_footer("auth");
 exit;

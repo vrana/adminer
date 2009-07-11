@@ -65,24 +65,23 @@ if ($_POST) {
 
 <form action="" method="post">
 <table cellspacing="0">
-<thead><tr><th><?php echo lang('Index Type'); ?></th><th><?php echo lang('Column (length)'); ?></th></tr></thead>
+<thead><tr><th><?php echo lang('Index Type'); ?><th><?php echo lang('Column (length)'); ?></thead>
 <?php
 $j = 0;
 foreach ($row["indexes"] as $index) {
-	echo "<tr><td><select name='indexes[$j][type]'" . ($j == count($row["indexes"]) - 1 ? " onchange='indexes_add_row(this);'" : "") . "><option></option>" . optionlist($index_types, $index["type"]) . "</select></td><td>\n";
+	echo "<tr><td><select name='indexes[$j][type]'" . ($j == count($row["indexes"]) - 1 ? " onchange='indexes_add_row(this);'" : "") . "><option>" . optionlist($index_types, $index["type"]) . "</select><td>\n";
 	ksort($index["columns"]);
 	foreach ($index["columns"] as $i => $column) {
-		echo "<span><select name='indexes[$j][columns][$i]'" . ($i == count($index["columns"]) ? " onchange='indexes_add_column(this);'" : "") . "><option></option>" . optionlist($fields, $column) . "</select>";
-		echo "<input name='indexes[$j][lengths][$i]' size='2' value=\"" . htmlspecialchars($index["lengths"][$i]) . "\" /> </span>\n";
+		echo "<span><select name='indexes[$j][columns][$i]'" . ($i == count($index["columns"]) ? " onchange='indexes_add_column(this);'" : "") . "><option>" . optionlist($fields, $column) . "</select>";
+		echo "<input name='indexes[$j][lengths][$i]' size='2' value=\"" . htmlspecialchars($index["lengths"][$i]) . "\"> </span>\n";
 	}
-	echo "</td></tr>\n";
+	echo "\n";
 	$j++;
 }
 ?>
 </table>
 <p>
-<input type="hidden" name="token" value="<?php echo $token; ?>" />
-<input type="submit" value="<?php echo lang('Save'); ?>" />
-</p>
-<noscript><p><input type="submit" name="add" value="<?php echo lang('Add next'); ?>" /></p></noscript>
+<input type="hidden" name="token" value="<?php echo $token; ?>">
+<input type="submit" value="<?php echo lang('Save'); ?>">
+<noscript><p><input type="submit" name="add" value="<?php echo lang('Add next'); ?>"></noscript>
 </form>

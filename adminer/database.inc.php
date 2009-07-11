@@ -69,16 +69,15 @@ if ($_POST) {
 
 <form action="" method="post">
 <p>
-<?php echo ($_POST["add_x"] ? '<textarea name="name" rows="10" cols="40">' . htmlspecialchars($name) . '</textarea><br />' : '<input name="name" value="' . htmlspecialchars($name) . '" maxlength="64" />') . "\n"; ?>
-<select name="collation"><option value="">(<?php echo lang('collation'); ?>)</option><?php echo optionlist($collations, $collate); ?></select>
-<input type="hidden" name="token" value="<?php echo $token; ?>" />
-<input type="submit" value="<?php echo lang('Save'); ?>" />
+<?php echo ($_POST["add_x"] ? '<textarea name="name" rows="10" cols="40">' . htmlspecialchars($name) . '</textarea><br>' : '<input name="name" value="' . htmlspecialchars($name) . '" maxlength="64">') . "\n"; ?>
+<select name="collation"><option value="">(<?php echo lang('collation'); ?>)<?php echo optionlist($collations, $collate); ?></select>
+<input type="hidden" name="token" value="<?php echo $token; ?>">
+<input type="submit" value="<?php echo lang('Save'); ?>">
 <?php
 if (strlen($_GET["db"])) {
-	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'$confirm />\n";
+	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'$confirm>\n";
 } elseif (!$_POST["add_x"]) {
-	echo "<input type='image' name='add' src='../adminer/plus.gif' alt='+' title='" . lang('Add next') . "' />\n";
+	echo "<input type='image' name='add' src='../adminer/plus.gif' alt='+' title='" . lang('Add next') . "'>\n";
 }
 ?>
-</p>
 </form>
