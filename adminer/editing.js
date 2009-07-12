@@ -83,6 +83,7 @@ function editing_add_row(button, allowed) {
 	}
 	tags = row.getElementsByTagName('input');
 	tags2 = row2.getElementsByTagName('input');
+	var ret = tags2[0]; // IE loose tags2 after insertBefore()
 	for (var i=0; i < tags.length; i++) {
 		if (tags[i].name == 'auto_increment_col') {
 			tags2[i].value = x;
@@ -99,7 +100,7 @@ function editing_add_row(button, allowed) {
 	row.parentNode.insertBefore(row2, row.nextSibling);
 	added += '0';
 	row_count++;
-	return tags2[0];
+	return ret;
 }
 
 function editing_remove_row(button) {
