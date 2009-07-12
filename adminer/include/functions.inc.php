@@ -373,7 +373,8 @@ function is_email($email) {
 }
 
 function email_header($header) {
-	return chunk_split("=?UTF-8?B?" . base64_encode($header), 67, "\n "); // iconv_mime_encode requires PHP 5, imap_8bit requires IMAP extension
+	// iconv_mime_encode requires PHP 5, imap_8bit requires IMAP extension
+	return "=?UTF-8?B?" . base64_encode($header) . "?="; //! split long lines
 }
 
 function call_adminer($method, $default, $arg1 = null, $arg2 = null) {
