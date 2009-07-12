@@ -273,13 +273,13 @@ if (!$columns) {
 					}
 					if (!isset($val)) {
 						$val = "<i>NULL</i>";
-					} elseif (preg_match('~blob|binary~', $fields[$key]["type"]) && !is_utf8($val)) {
+					} elseif (preg_match('~blob|binary~', $fields[$key]["type"]) && !is_utf8($val)) { //! download link may be printed even with is_utf8
 						$val = '<a href="' . htmlspecialchars($SELF) . 'download=' . urlencode($_GET["select"]) . '&amp;field=' . urlencode($key) . '&amp;' . $unique_idf . '">' . lang('%d byte(s)', strlen($val)) . '</a>';
 					} else {
 						if (!strlen(trim($val, " \t"))) {
 							$val = "&nbsp;";
 						} elseif (intval($text_length) > 0 && preg_match('~blob|text~', $fields[$key]["type"])) {
-							$val = nl2br(shorten_utf8($val, intval($text_length)));
+							$val = nl2br(shorten_utf8($val, intval($text_length))); // usage of LEFT() would reduce traffic but complicates query
 						} else {
 							$val = nl2br(htmlspecialchars($val));
 							if ($fields[$key]["type"] == "char") {
