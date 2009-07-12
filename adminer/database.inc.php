@@ -8,6 +8,7 @@ if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP c
 		unset($_SESSION["databases"][$_GET["server"]]); // clear cache
 		$dbs = explode("\n", str_replace("\r", "", $_POST["name"]));
 		$failed = false;
+		$last = "";
 		foreach ($dbs as $db) {
 			if (count($dbs) == 1 || strlen($db)) { // ignore empty lines but always try to create single database
 				if (!queries("CREATE DATABASE " . idf_escape($db) . ($_POST["collation"] ? " COLLATE " . $dbh->quote($_POST["collation"]) : ""))) {
