@@ -377,14 +377,10 @@ function email_header($header) {
 }
 
 function call_adminer($method, $default, $arg1 = null, $arg2 = null) {
-	static $adminer;
-	if (!isset($adminer)) {
-		$adminer = (class_exists('Adminer') ? new Adminer : false); // user defined class
-	}
 	// maintains original method name in minification
-	if (method_exists($adminer, $method)) {
+	if (method_exists('Adminer', $method)) { // user defined class
 		// can use func_get_args() and call_user_func_array()
-		return $adminer->$method($arg1, $arg2);
+		return Adminer::$method($arg1, $arg2);
 	}
 	return $default; //! $default is evaluated even if not neccessary
 }
