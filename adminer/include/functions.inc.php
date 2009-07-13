@@ -280,19 +280,19 @@ function input($name, $field, $value) {
 		$onchange = ($first ? ' onchange="var f = this.form[\'function[' . addcslashes($name, "\r\n'\\") . ']\']; if (' . $first . ' > f.selectedIndex) f.selectedIndex = ' . $first . ';"' : '');
 		$options = array("");
 		if (!isset($_GET["default"])) {
-			if (preg_match('~char|date|time~', $field["type"])) {
-				$options = (preg_match('~char~', $field["type"]) ? array("", "md5", "sha1", "password", "uuid") : array("", "now")); //! JavaScript for disabling maxlength
+			if (ereg('char|date|time', $field["type"])) {
+				$options = (ereg('char', $field["type"]) ? array("", "md5", "sha1", "password", "uuid") : array("", "now")); //! JavaScript for disabling maxlength
 			}
 			if (!isset($_GET["call"]) && (isset($_GET["select"]) || where($_GET))) {
 				// relative functions
-				if (preg_match('~int|float|double|decimal~', $field["type"])) {
+				if (ereg('int|float|double|decimal', $field["type"])) {
 					$options = array("", "+", "-");
 				}
-				if (preg_match('~date~', $field["type"])) {
+				if (ereg('date', $field["type"])) {
 					$options[] = "+ interval";
 					$options[] = "- interval";
 				}
-				if (preg_match('~time~', $field["type"])) {
+				if (ereg('time', $field["type"])) {
 					$options[] = "addtime";
 					$options[] = "subtime";
 				}
@@ -311,7 +311,7 @@ function input($name, $field, $value) {
 			}
 		} elseif (strpos($field["type"], "text") !== false) {
 			echo '<textarea name="fields[' . $name . ']" cols="50" rows="12"' . $onchange . '>' . htmlspecialchars($value) . '</textarea>';
-		} elseif (preg_match('~binary|blob~', $field["type"])) {
+		} elseif (ereg('binary|blob', $field["type"])) {
 			echo (ini_get("file_uploads") ? '<input type="file" name="' . $name . '"' . $onchange . '>' : lang('File uploads are disabled.') . ' ');
 		} else {
 			// int(3) is only a display hint
@@ -334,7 +334,7 @@ function process_input($name, $field) {
 		return (isset($_GET["default"]) ? $dbh->quote($value) : intval($value));
 	} elseif ($field["type"] == "set") {
 		return (isset($_GET["default"]) ? "'" . implode(",", array_map('escape_string', (array) $value)) . "'" : array_sum((array) $value));
-	} elseif (preg_match('~binary|blob~', $field["type"])) {
+	} elseif (ereg('binary|blob', $field["type"])) {
 		$file = get_file($idf);
 		if (!is_string($file)) {
 			return false; //! report errors

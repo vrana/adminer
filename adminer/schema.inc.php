@@ -64,13 +64,13 @@ foreach ($schema as $name => $table) {
 	foreach ($table["fields"] as $field) {
 		$val = htmlspecialchars($field["field"]);
 		$title = ' title="' . htmlspecialchars($field["full_type"] . ($field["null"] ? " " . lang('NULL') : '')) . '"';
-		if (preg_match('~char|text~', $field["type"])) {
+		if (ereg('char|text', $field["type"])) {
 			$val = "<span class='char'$title>$val</span>";
-		} elseif (preg_match('~date|time|year~', $field["type"])) {
+		} elseif (ereg('date|time|year', $field["type"])) {
 			$val = "<span class='date'$title>$val</span>";
-		} elseif (preg_match('~binary|blob~', $field["type"])) {
+		} elseif (ereg('binary|blob', $field["type"])) {
 			$val = "<span class='binary'$title>$val</span>";
-		} elseif (preg_match('~enum|set~', $field["type"])) {
+		} elseif (ereg('enum|set', $field["type"])) {
 			$val = "<span class='enum'$title>$val</span>";
 		} else {
 			$val = "<span$title>$val</span>";

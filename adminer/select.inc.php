@@ -14,7 +14,7 @@ unset($text_length);
 foreach ($fields as $key => $field) {
 	if (isset($field["privileges"]["select"])) {
 		$columns[$key] = strip_tags(adminer_field_name($fields, $key)); //! numeric $key is problematic in optionlist()
-		if (preg_match('~text|blob~', $field["type"])) {
+		if (ereg('text|blob', $field["type"])) {
 			$text_length = (isset($_GET["text_length"]) ? $_GET["text_length"] : "100");
 		}
 	}
@@ -273,12 +273,12 @@ if (!$columns) {
 					}
 					if (!isset($val)) {
 						$val = "<i>NULL</i>";
-					} elseif (preg_match('~blob|binary~', $fields[$key]["type"]) && !is_utf8($val)) { //! download link may be printed even with is_utf8
+					} elseif (ereg('blob|binary', $fields[$key]["type"]) && !is_utf8($val)) { //! download link may be printed even with is_utf8
 						$val = '<a href="' . htmlspecialchars($SELF) . 'download=' . urlencode($_GET["select"]) . '&amp;field=' . urlencode($key) . '&amp;' . $unique_idf . '">' . lang('%d byte(s)', strlen($val)) . '</a>';
 					} else {
 						if (!strlen(trim($val, " \t"))) {
 							$val = "&nbsp;";
-						} elseif (intval($text_length) > 0 && preg_match('~blob|text~', $fields[$key]["type"])) {
+						} elseif (intval($text_length) > 0 && ereg('blob|text', $fields[$key]["type"])) {
 							$val = nl2br(shorten_utf8($val, intval($text_length))); // usage of LEFT() would reduce traffic but complicates query
 						} else {
 							$val = nl2br(htmlspecialchars($val));

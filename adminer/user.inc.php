@@ -40,7 +40,7 @@ if (isset($_GET["host"]) && ($result = $dbh->query("SHOW GRANTS FOR " . $dbh->qu
 		if (preg_match('~GRANT (.*) ON (.*) TO ~', $row[0], $match) && preg_match_all('~ *([^(,]*[^ ,(])( *\\([^)]+\\))?~', $match[1], $matches, PREG_SET_ORDER)) { //! escape the part between ON and TO
 			foreach ($matches as $val) {
 				$grants["$match[2]$val[2]"][$val[1]] = true;
-				if (preg_match('~ WITH GRANT OPTION~', $row[0])) { //! don't check inside strings and identifiers
+				if (ereg(' WITH GRANT OPTION', $row[0])) { //! don't check inside strings and identifiers
 					$grants["$match[2]$val[2]"]["GRANT OPTION"] = true;
 				}
 			}

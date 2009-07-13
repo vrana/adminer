@@ -32,9 +32,9 @@ echo ($unsigned ? " <select name=\"$key" . '[unsigned]"' . (!$field["type"] || e
 function process_type($field, $collate = "COLLATE") {
 	global $dbh, $enum_length, $unsigned;
 	return " $field[type]"
-		. ($field["length"] && !preg_match('~^date|time$~', $field["type"]) ? "(" . process_length($field["length"]) . ")" : "")
-		. (preg_match('~int|float|double|decimal~', $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
-		. (preg_match('~char|text|enum|set~', $field["type"]) && $field["collation"] ? " $collate " . $dbh->quote($field["collation"]) : "")
+		. ($field["length"] && !ereg('^date|time$', $field["type"]) ? "(" . process_length($field["length"]) . ")" : "")
+		. (ereg('int|float|double|decimal', $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
+		. (ereg('char|text|enum|set', $field["type"]) && $field["collation"] ? " $collate " . $dbh->quote($field["collation"]) : "")
 	;
 }
 
