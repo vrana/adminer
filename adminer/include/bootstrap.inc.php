@@ -17,24 +17,21 @@ if (isset($_GET["file"])) {
 	header("Expires: " . gmdate("D, d M Y H:i:s", time() + 365*24*60*60) . " GMT");
 	if ($_GET["file"] == "favicon.ico") {
 		header("Content-Type: image/x-icon");
-		echo base64_decode("compile_file('favicon.ico', 'base64_encode')");
+		echo base64_decode("compile_file('../adminer/favicon.ico', 'base64_encode');");
 	} elseif ($_GET["file"] == "default.css") {
 		header("Content-Type: text/css");
-		?>compile_file('default.css', 'minify_css')<?php
+		?>compile_file('../adminer/default.css', 'minify_css');<?php
 	} elseif ($_GET["file"] == "functions.js") {
 		header("Content-Type: text/javascript");
-		?>compile_file('functions.js', 'JSMin::minify')<?php
-	} elseif ($_GET["file"] == "editing.js") {
-		header("Content-Type: text/javascript");
-		?>compile_file('editing.js', 'JSMin::minify')<?php
+		?>compile_file('../adminer/functions.js', 'JSMin::minify');compile_file('editing.js', 'JSMin::minify');<?php
 	} else {
 		header("Content-Type: image/gif");
 		switch ($_GET["file"]) {
-			case "plus.gif": echo base64_decode("compile_file('plus.gif', 'base64_encode')"); break;
-			case "cross.gif": echo base64_decode("compile_file('cross.gif', 'base64_encode')"); break;
-			case "up.gif": echo base64_decode("compile_file('up.gif', 'base64_encode')"); break;
-			case "down.gif": echo base64_decode("compile_file('down.gif', 'base64_encode')"); break;
-			case "arrow.gif": echo base64_decode("compile_file('arrow.gif', 'base64_encode')"); break;
+			case "plus.gif": echo base64_decode("compile_file('../adminer/plus.gif', 'base64_encode');"); break;
+			case "cross.gif": echo base64_decode("compile_file('../adminer/cross.gif', 'base64_encode');"); break;
+			case "up.gif": echo base64_decode("compile_file('../adminer/up.gif', 'base64_encode');"); break;
+			case "down.gif": echo base64_decode("compile_file('../adminer/down.gif', 'base64_encode');"); break;
+			case "arrow.gif": echo base64_decode("compile_file('../adminer/arrow.gif', 'base64_encode');"); break;
 		}
 	}
 	exit;

@@ -170,7 +170,8 @@ function minify_css($file) {
 }
 
 function compile_file($match) {
-	return call_user_func($match[2], file_get_contents(dirname(__FILE__) . "/adminer/$match[1]"));
+	global $project;
+	return call_user_func($match[2], file_get_contents(dirname(__FILE__) . "/$project/$match[1]"));
 }
 
 error_reporting(4343); // errors and warnings
@@ -203,9 +204,10 @@ if ($_COOKIE["adminer_lang"]) {
 	$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
 	$file = str_replace('<?php echo $LANG; ?>', $_COOKIE["adminer_lang"], $file);
 }
-$file = preg_replace_callback("~compile_file\\('([^']+)', '([^']+)'\\)~", 'compile_file', $file); // integrate static files
+$file = str_replace('<script type="text/javascript" src="editing.js"></script>' . "\n", "", $file);
+$file = preg_replace_callback("~compile_file\\('([^']+)', '([^']+)'\\);~", 'compile_file', $file); // integrate static files
 $replace = 'htmlspecialchars(preg_replace("~\\\\\\\\?.*~", "", $_SERVER["REQUEST_URI"])) . "?file=\\1&amp;version=' . $VERSION;
-$file = preg_replace('~(?:\\.\\./adminer/|\\./)(default\\.css|functions\\.js|editing\\.js|favicon\\.ico)~', '<?php echo ' . $replace . '"; ?>', $file);
+$file = preg_replace('~(?:\\.\\./adminer/|\\./)(default\\.css|functions\\.js|favicon\\.ico)~', '<?php echo ' . $replace . '"; ?>', $file);
 $file = preg_replace('~\\.\\./adminer/((plus|cross|up|down|arrow)\\.gif)~', '" . ' . $replace, $file);
 $file = str_replace("../externals/jush/", "http://jush.sourceforge.net/", $file);
 $file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
