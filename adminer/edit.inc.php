@@ -33,7 +33,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 		if (isset($_GET["default"])) {
 			query_redirect("ALTER TABLE " . idf_escape($_GET["edit"]) . implode(",", $set), $location, lang('Default values has been set.'));
 		} elseif ($update) {
-			query_redirect("UPDATE " . idf_escape($_GET["edit"]) . " SET" . implode(",", $set) . "\nWHERE $where LIMIT 1", $location, lang('Item has been updated.'));
+			query_redirect("UPDATE " . idf_escape($_GET["edit"]) . " SET" . implode(",", $set) . "\nWHERE $where\nLIMIT 1", $location, lang('Item has been updated.'));
 		} else {
 			query_redirect("INSERT INTO " . idf_escape($_GET["edit"]) . " SET" . implode(",", $set), $location, lang('Item has been inserted.'));
 		}

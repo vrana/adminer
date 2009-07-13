@@ -107,10 +107,10 @@ if ($_POST && !$error) {
 				if ($_POST["clone"]) {
 					$set[] = ($val !== false ? $val : idf_escape($name));
 				} elseif ($val !== false) {
-					$set[] = "\n" . idf_escape($name) . " = $val";
+					$set[] = idf_escape($name) . " = $val";
 				}
 			}
-			$command .= ($_POST["clone"] ? "\nSELECT " . implode(", ", $set) . " FROM " . idf_escape($_GET["select"]) : " SET" . implode(",", $set));
+			$command .= ($_POST["clone"] ? "\nSELECT " . implode(", ", $set) . "\nFROM " . idf_escape($_GET["select"]) : " SET\n" . implode(",\n", $set));
 		}
 		if ($_POST["delete"] || $set) {
 			if ($_POST["all"]) {
@@ -119,7 +119,7 @@ if ($_POST && !$error) {
 			} else {
 				foreach ((array) $_POST["check"] as $val) {
 					// where may not be unique so OR can't be used
-					$result = queries($command . "\nWHERE " . where_check($val) . " LIMIT 1");
+					$result = queries($command . "\nWHERE " . where_check($val) . "\nLIMIT 1");
 					if (!$result) {
 						break;
 					}
