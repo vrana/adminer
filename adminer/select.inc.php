@@ -13,7 +13,7 @@ $columns = array(); // selectable columns
 unset($text_length);
 foreach ($fields as $key => $field) {
 	if (isset($field["privileges"]["select"])) {
-		$columns[$key] = adminer_field_name($fields, $key); //! numeric $key is problematic in optionlist()
+		$columns[$key] = strip_tags(adminer_field_name($fields, $key)); //! numeric $key is problematic in optionlist()
 		if (preg_match('~text|blob~', $field["type"])) {
 			$text_length = (isset($_GET["text_length"]) ? $_GET["text_length"] : "100");
 		}

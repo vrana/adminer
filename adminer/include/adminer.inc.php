@@ -35,7 +35,7 @@ function adminer_table_name($row) {
 * @return string
 */
 function adminer_field_name($fields, $key) {
-	return call_adminer('field_name', htmlspecialchars($key), $fields, $key);
+	return call_adminer('field_name', '<span title="' . htmlspecialchars($fields[$key]["full_type"]) . '">' . htmlspecialchars($key) . '</span>', $fields, $key);
 }
 
 /** Links after select heading
