@@ -141,7 +141,7 @@ if ($suhosin && count($row["fields"]) > $suhosin) {
 <?php $column_comments = edit_fields($row["fields"], $collations, "TABLE", $suhosin, $foreign_keys); ?>
 </table>
 <p>
-<?php echo lang('Auto Increment'); ?>: <input name="Auto_increment" size="4" value="<?php echo intval($row["Auto_increment"]); ?>">
+<?php echo lang('Auto Increment'); ?>: <input name="Auto_increment" size="6" value="<?php echo intval($row["Auto_increment"]); ?>">
 <?php echo lang('Comment'); ?>: <input name="Comment" value="<?php echo htmlspecialchars($row["Comment"]); ?>" maxlength="60">
 <script type="text/javascript">// <![CDATA[
 document.write('<label><input type="checkbox"<?php if ($column_comments) { ?> checked="checked"<?php } ?> onclick="column_comments_click(this.checked);"><?php echo lang('Show column comments'); ?></label>');
