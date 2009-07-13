@@ -142,7 +142,7 @@ if ($_POST && !$error) {
 				$cols = " (" . implode(", ", array_map('idf_escape', $matches2[1])) . ")";
 			} else {
 				foreach ($matches2[1] as $col) {
-					$row[] = (!strlen($col) ? "NULL" : $dbh->quote(str_replace('""', '"', preg_replace('~^"(.*)"$~s', '\\1', $col))));
+					$row[] = (!strlen($col) ? "NULL" : $dbh->quote(str_replace('""', '"', preg_replace('~^"|"$~', '', $col))));
 				}
 				$rows[] = "\n(" . implode(", ", $row) . ")";
 			}
