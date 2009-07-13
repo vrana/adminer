@@ -78,7 +78,8 @@ if ($fields) {
 			? (strlen($row[$name]) && ($field["type"] == "enum" || $field["type"] == "set") ? intval($row[$name]) : $row[$name])
 			: ($_POST["clone"] && $field["auto_increment"] ? "" : ($where ? $field["default"] : false))
 		);
-		input($name, $field, $value);
+		$function = ($_POST["save"] ? (string) $_POST["function"][$name] : ($field[($where ? "on_update" : "default")] == "CURRENT_TIMESTAMP" ? "now" : ($value === false ? null : (isset($value) ? '' : 'NULL'))));
+		input($name, $field, $value, $function);
 		if (isset($_GET["default"]) && $field["type"] == "timestamp") {
 			if (!isset($create) && !$_POST) {
 				//! disable sql_mode NO_FIELD_OPTIONS

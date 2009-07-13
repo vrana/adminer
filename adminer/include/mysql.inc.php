@@ -262,6 +262,7 @@ function fields($table) {
 				"default" => (strlen($row["Default"]) || ereg("char", $match[1]) ? $row["Default"] : null),
 				"null" => ($row["Null"] == "YES"),
 				"auto_increment" => ($row["Extra"] == "auto_increment"),
+				"on_update" => (preg_match('~^on update (.+)~', $row["Extra"], $match) ? $match[1] : ""),
 				"collation" => $row["Collation"],
 				"privileges" => array_flip(explode(",", $row["Privileges"])),
 				"comment" => $row["Comment"],

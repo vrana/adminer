@@ -57,7 +57,7 @@ if ($in) {
 		if (strlen($value) && ($field["type"] == "enum" || $field["type"] == "set")) {
 			$value = intval($value);
 		}
-		input($key, $field, $value); // param name can be empty
+		input($key, $field, $value, (string) $_POST["function"][$name]); // param name can be empty
 		echo "\n";
 	}
 	echo "</table>\n";
