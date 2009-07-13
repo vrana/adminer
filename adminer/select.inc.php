@@ -3,6 +3,12 @@ $functions = array("char_length", "from_unixtime", "hex", "lower", "round", "sec
 $grouping = array("avg", "count", "distinct", "group_concat", "max", "min", "sum"); // distinct is short for COUNT(DISTINCT)
 $table_status = table_status($_GET["select"]);
 $indexes = indexes($_GET["select"]);
+$primary = null; // empty array means that all primary fields are selected
+foreach ($indexes as $index) {
+	if ($index["type"] == "PRIMARY") {
+		$primary = array_flip($index["columns"]);
+	}
+}
 $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "REGEXP", "IN", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL");
 if (eregi('^(MyISAM|Maria)$', $table_status["Engine"])) {
 	$operators[] = "AGAINST";
@@ -17,6 +23,9 @@ foreach ($fields as $key => $field) {
 		if (ereg('text|blob', $field["type"])) {
 			$text_length = (isset($_GET["text_length"]) ? $_GET["text_length"] : "100");
 		}
+		if (!$_GET["columns"]) {
+			unset($primary[$key]);
+		}
 	}
 	$rights += $field["privileges"];
 }
@@ -29,8 +38,12 @@ foreach ((array) $_GET["columns"] as $key => $val) {
 		if (!in_array($val["fun"], $grouping)) {
 			$group[] = $select[$key];
 		}
+		if (!$val["fun"]) {
+			unset($primary[$val["col"]]);
+		}
 	}
 }
+
 $where = array(); // where expressions - will be joined by AND
 foreach ($indexes as $i => $index) {
 	if ($index["type"] == "FULLTEXT" && strlen($_GET["fulltext"][$i])) {
@@ -59,29 +72,32 @@ foreach ((array) $_GET["where"] as $val) {
 		}
 	}
 }
+
 $order = array(); // order expressions - will be joined by comma
 foreach ((array) $_GET["order"] as $key => $val) {
 	if (isset($columns[$val]) || in_array($val, $select, true)) {
 		$order[] = idf_escape($val) . (isset($_GET["desc"][$key]) ? " DESC" : "");
 	}
 }
+
 $limit = (isset($_GET["limit"]) ? $_GET["limit"] : "30");
 $from = ($select ? implode(", ", $select) : "*") . " FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "");
 $group_by = ($group && count($group) < count($select) ? " GROUP BY " . implode(", ", $group) : "") . ($order ? " ORDER BY " . implode(", ", $order) : "");
 
 if ($_POST && !$error) {
+	$where_check = "(" . implode(") OR (", array_map('where_check', $_POST["check"])) . ")";
 	if ($_POST["export"]) {
 		dump_headers($_GET["select"]);
 		dump_table($_GET["select"], "");
-		if (is_array($_POST["check"])) {
+		if (!is_array($_POST["check"]) || $primary === array()) {
+			dump_data($_GET["select"], "INSERT", "SELECT $from" . (is_array($_POST["check"]) ? ($where ? " AND " : " WHERE ") . "($where_check)" : "") . $group_by);
+		} else {
 			$union = array();
 			foreach ($_POST["check"] as $val) {
-				// where may not be unique so OR can't be used
+				// where is not unique so OR can't be used
 				$union[] = "(SELECT $from " . ($where ? "AND " : "WHERE ") . where_check($val) . $group_by . " LIMIT 1)";
 			}
 			dump_data($_GET["select"], "INSERT", implode(" UNION ALL ", $union));
-		} else {
-			dump_data($_GET["select"], "INSERT", "SELECT $from$group_by");
 		}
 		exit;
 	}
@@ -89,7 +105,7 @@ if ($_POST && !$error) {
 		$sent = 0;
 		if ($_POST["all"] || $_POST["check"]) {
 			$field = idf_escape($_POST["email_field"]);
-			$result = $dbh->query("SELECT DISTINCT $field FROM " . idf_escape($_GET["select"]) . " WHERE $field IS NOT NULL AND $field != ''" . ($where ? " AND " . implode(" AND ", $where) : "") . ($_POST["all"] ? "" : " AND ((" . implode(") OR (", array_map('where_check', $_POST["check"])) . "))"));
+			$result = $dbh->query("SELECT DISTINCT $field FROM " . idf_escape($_GET["select"]) . " WHERE $field IS NOT NULL AND $field != ''" . ($where ? " AND " . implode(" AND ", $where) : "") . ($_POST["all"] ? "" : " AND ($where_check)"));
 			while ($row = $result->fetch_row()) {
 				$sent += mail($row[0], email_header($_POST["email_subject"]), $_POST["email_message"], "MIME-Version: 1.0\nContent-Type: text/plain; charset=utf-8\nContent-Transfer-Encoding: 8bit" . ($_POST["email_from"] ? "\nFrom: " . email_header($_POST["email_from"]) : ""));
 			}
@@ -113,12 +129,12 @@ if ($_POST && !$error) {
 			$command .= ($_POST["clone"] ? "\nSELECT " . implode(", ", $set) . "\nFROM " . idf_escape($_GET["select"]) : " SET\n" . implode(",\n", $set));
 		}
 		if ($_POST["delete"] || $set) {
-			if ($_POST["all"]) {
-				$result = queries($command . ($where ? "\nWHERE " . implode(" AND ", $where) : ""));
+			if ($_POST["all"] || ($primary === array() && $_POST["check"])) {
+				$result = queries($command . ($_POST["all"] ? ($where ? "\nWHERE " . implode(" AND ", $where) : "") : "\nWHERE $where_check"));
 				$affected = $dbh->affected_rows;
 			} else {
 				foreach ((array) $_POST["check"] as $val) {
-					// where may not be unique so OR can't be used
+					// where is not unique so OR can't be used
 					$result = queries($command . "\nWHERE " . where_check($val) . "\nLIMIT 1");
 					if (!$result) {
 						break;
