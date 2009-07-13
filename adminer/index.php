@@ -39,8 +39,7 @@ if (isset($_GET["download"])) {
 		// edit form is used for default values and distinguished by checking isset($_GET["default"]) in edit.inc.php
 		$_GET["edit"] = $_GET["default"];
 	}
-	if (isset($_GET["select"]) && $_POST && (!$_POST["delete"] && !$_POST["export"] && !$_POST["import"] && !$_POST["save"] && !$_POST["email"])) {
-		// POST form on select page is used to edit or clone data
+	if (isset($_GET["select"]) && ($_POST["edit"] || $_POST["clone"]) && !$_POST["save"]) {
 		$_GET["edit"] = $_GET["select"];
 	}
 	if (isset($_GET["callf"])) {

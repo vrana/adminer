@@ -23,8 +23,7 @@ if (isset($_GET["download"])) {
 		// posted form with no data means exceeded post_max_size because Adminer always sends token at least
 		$error = lang('Too big POST data. Reduce the data or increase the "post_max_size" configuration directive.');
 	}
-	if (isset($_GET["select"]) && $_POST && (!$_POST["delete"] && !$_POST["export"] && !$_POST["import"] && !$_POST["save"] && !$_POST["email"])) {
-		// POST form on select page is used to edit or clone data
+	if (isset($_GET["select"]) && ($_POST["edit"] || $_POST["clone"]) && !$_POST["save"]) {
 		$_GET["edit"] = $_GET["select"];
 	}
 	if (isset($_GET["edit"])) {
