@@ -2,12 +2,8 @@
 $privileges = array("" => array("All privileges" => ""));
 $result = $dbh->query("SHOW PRIVILEGES");
 while ($row = $result->fetch_assoc()) {
-	if ($row["Privilege"] == "Grant option") {
-		$privileges[""]["Grant option"] = $row["Comment"];
-	} else {
-		foreach (explode(",", $row["Context"]) as $context) {
-			$privileges[$context][$row["Privilege"]] = $row["Comment"];
-		}
+	foreach (explode(",", ($row["Privilege"] == "Grant option" ? "" : $row["Context"])) as $context) {
+		$privileges[$context][$row["Privilege"]] = $row["Comment"];
 	}
 }
 $result->free();
@@ -23,8 +19,18 @@ foreach ($privileges["Tables"] as $key => $val) {
 	unset($privileges["Databases"][$key]);
 }
 
-function grant($grant, $columns) {
-	return preg_replace('~(GRANT OPTION)\\([^)]*\\)~', '\\1', implode("$columns, ", $grant) . $columns);
+function grant($grant, $privileges, $columns, $on) {
+	if (!$privileges) {
+		return true;
+	}
+	if ($privileges == array("ALL PRIVILEGES", "GRANT OPTION")) {
+		// can't be granted or revoked together
+		return ($grant == "GRANT"
+		? queries("$grant ALL PRIVILEGES$on WITH GRANT OPTION")
+		: queries("$grant ALL PRIVILEGES$on") && queries("$grant GRANT OPTION$on")
+		);
+	}
+	return queries("$grant " . preg_replace('~(GRANT OPTION)\\([^)]*\\)~', '\\1', implode("$columns, ", $privileges) . $columns) . $on);
 }
 
 $new_grants = array();
@@ -81,8 +87,8 @@ if ($_POST && !$error) {
 					unset($grants[$object]);
 				}
 				if (preg_match('~^(.+)\\s*(\\(.*\\))?$~U', $object, $match) && (
-				($grant && !queries("GRANT " . grant($grant, $match[2]) . " ON $match[1] TO $new_user")) //! SQL injection
-				|| ($revoke && !queries("REVOKE " . grant($revoke, $match[2]) . " ON $match[1] FROM $new_user"))
+				!grant("REVOKE", $revoke, $match[2], " ON $match[1] FROM $new_user") //! SQL injection
+				|| !grant("GRANT", $grant, $match[2], " ON $match[1] TO $new_user")
 				)) {
 					$error = true;
 					break;
@@ -148,7 +154,7 @@ foreach (array(
 	"Procedures" => lang('Routine'),
 ) as $context => $desc) {
 	foreach ((array) $privileges[$context] as $privilege => $comment) {
-		echo "<tr" . odd() . "><td" . ($desc ? ">$desc<td" : " colspan='2'") . ' title="' . htmlspecialchars($comment) . '"><i>' . htmlspecialchars($privilege) . "</i>";
+		echo "<tr" . odd() . "><td" . ($desc ? ">$desc<td" : " colspan='2'") . ' lang="en" title="' . htmlspecialchars($comment) . '">' . htmlspecialchars($privilege);
 		$i = 0;
 		foreach ($grants as $object => $grant) {
 			$name = '"grants[' . $i . '][' . htmlspecialchars(strtoupper($privilege)) . ']"';
@@ -158,7 +164,7 @@ foreach (array(
 			} elseif (isset($_GET["grant"])) {
 				echo "<td><select name=$name><option><option value='1'" . ($value ? " selected='selected'" : "") . ">" . lang('Grant') . "<option value='0'" . ($value == "0" ? " selected='selected'" : "") . ">" . lang('Revoke') . "</select>";
 			} else {
-				echo "<td align='center'><input type='checkbox' name=$name value='1'" . ($value ? " checked='checked'" : "") . ">";
+				echo "<td align='center'><input type='checkbox' name=$name value='1'" . ($value ? " checked='checked'" : "") . ($privilege == "All privileges" ? " id='grants-$i-all'" : ($privilege == "Grant option" ? "" : " onclick=\"if (this.checked) form_uncheck('grants-$i-all');\"")) . ">"; //! uncheck all except grant if all is checked
 			}
 			$i++;
 		}
