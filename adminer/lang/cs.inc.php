@@ -221,4 +221,5 @@ $translations = array(
 	'Subject' => 'Předmět',
 	'Send' => 'Odeslat',
 	'%d e-mail(s) have been sent.' => array('Byl odeslán %d e-mail.', 'Byly odeslány %d e-maily.', 'Bylo odesláno %d e-mailů.'),
+	'Run file' => 'Spustit soubor',
 );

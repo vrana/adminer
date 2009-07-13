@@ -82,7 +82,7 @@ if (!ini_get("file_uploads")) {
 	echo lang('File uploads are disabled.');
 } else { ?>
 <?php echo lang('File upload'); ?>: <input type="file" name="sql_file">
-<input type="submit" name="file" value="<?php echo lang('Execute'); ?>">
+<input type="submit" name="file" value="<?php echo lang('Run file'); ?>">
 <?php } ?>
 
 <?php
