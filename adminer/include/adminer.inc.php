@@ -57,6 +57,14 @@ function adminer_select_query($query) {
 	return call_adminer('select_query', "<p><code class='jush-sql'>" . htmlspecialchars($query) . "</code> <a href='" . htmlspecialchars($SELF) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>\n", $query);
 }
 
+/** Value printed in select table
+* @param string escaped value to print
+* @return string link to foreign key
+*/
+function adminer_select_val($val, $link) {
+	return call_adminer('select_val', ($link ? '<a href="' . $link . '">' . $val . '</a>' : $val), $val, $link);
+}
+
 /** Query printed after execution in the message
 * @param string executed query
 * @return string

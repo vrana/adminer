@@ -28,6 +28,10 @@ function adminer_select_query($query) {
 	return call_adminer('select_query', "<!-- " . str_replace("--", "--><!--", $query) . " -->\n", $query);
 }
 
+function adminer_select_val($val, $link) {
+	return call_adminer('select_val', ($link ? '<a href="' . $link . '">' . $val . '</a>' : $val), $val, $link);
+}
+
 function adminer_message_query($query) {
 	return call_adminer('message_query', "<!-- " . str_replace("--", "--><!--", $query) . " -->", $query);
 }

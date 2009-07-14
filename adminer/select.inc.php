@@ -265,6 +265,12 @@ if (!$columns) {
 		if (!$result->num_rows) {
 			echo "<p class='message'>" . lang('No rows.') . "\n";
 		} else {
+			$rows = array();
+			while ($row = $result->fetch_assoc()) {
+				$rows[] = $row;
+			}
+			$result->free();
+			
 			$foreign_keys = array();
 			foreach (foreign_keys($_GET["select"]) as $foreign_key) {
 				foreach ($foreign_key["source"] as $val) {
@@ -273,14 +279,12 @@ if (!$columns) {
 			}
 			
 			echo "<table cellspacing='0' class='nowrap'>\n";
-			for ($j=0; $row = $result->fetch_assoc(); $j++) {
-				if (!$j) {
-					echo '<thead><tr><td><input type="checkbox" id="all-page" onclick="form_check(this, /check/);">';
-					foreach ($row as $key => $val) {
-						echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . adminer_field_name($fields, $key) . '</a>';
-					}
-					echo "</thead>\n";
-				}
+			echo "<thead><tr><td><input type='checkbox' id='all-page' onclick='form_check(this, /check/);'>";
+			foreach ($rows[0] as $key => $val) {
+				echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . adminer_field_name($fields, $key) . '</a>';
+			}
+			echo "</thead>\n";
+			foreach ($rows as $row) {
 				$unique_idf = implode('&amp;', unique_idf($row, $indexes)); //! don't use aggregation functions
 				echo '<tr' . odd() . '><td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false; form_uncheck(\'all-page\');">' . (count($select) != count($group) || information_schema($_GET["db"]) ? '' : ' <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a>');
 				foreach ($row as $key => $val) {
@@ -302,29 +306,32 @@ if (!$columns) {
 								$val = "<code>$val</code>";
 							}
 						}
+						
+						// link related items
+						$link = "";
 						foreach ((array) $foreign_keys[$key] as $foreign_key) {
 							if (count($foreign_keys[$key]) == 1 || count($foreign_key["source"]) == 1) {
-								// link related items
-								$val = "\">$val</a>";
 								foreach ($foreign_key["source"] as $i => $source) {
-									$val = "&amp;where%5B$i%5D%5Bcol%5D=" . urlencode($foreign_key["target"][$i]) . "&amp;where%5B$i%5D%5Bop%5D=%3D&amp;where%5B$i%5D%5Bval%5D=" . urlencode($row[$source]) . $val;
+									$link .= "&where%5B$i%5D%5Bcol%5D=" . urlencode($foreign_key["target"][$i]) . "&where%5B$i%5D%5Bop%5D=%3D&where%5B$i%5D%5Bval%5D=" . urlencode($row[$source]);
 								}
-								$val = '<a href="' . htmlspecialchars(strlen($foreign_key["db"]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), $SELF) : $SELF) . 'select=' . htmlspecialchars($foreign_key["table"]) . $val; // InnoDB supports non-UNIQUE keys
+								$link = htmlspecialchars((strlen($foreign_key["db"]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), $SELF) : $SELF) . 'select=' . urlencode($foreign_key["table"]) . $link); // InnoDB supports non-UNIQUE keys
 								break;
 							}
 						}
+						$val = adminer_select_val($val, $link);
 					}
 					echo "<td>$val";
 				}
+				echo "\n";
 			}
 			echo "</table>\n";
 			
 			echo "<p>";
-			// use num_rows without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
+			// use count($rows) without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
 			$found_rows = (intval($limit) ? $dbh->result($dbh->query(count($group) < count($select)
 				? " SELECT FOUND_ROWS()" // space to allow mysql.trace_mode
 				: "SELECT COUNT(*) FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "")
-			)) : $result->num_rows);
+			)) : count($rows));
 			if (intval($limit) && $found_rows > $limit) {
 				// display first, previous 3, next 3 and last page
 				$max_page = floor(($found_rows - 1) / $limit);
@@ -346,7 +353,6 @@ if (!$columns) {
 			echo (information_schema($_GET["db"]) ? "" : "<fieldset><legend>" . lang('Edit') . "</legend><div><input type='submit' name='edit' value='" . lang('Edit') . "'> <input type='submit' name='clone' value='" . lang('Clone') . "'> <input type='submit' name='delete' value='" . lang('Delete') . "'$confirm></div></fieldset>\n");
 			echo "<fieldset><legend>" . lang('Export') . "</legend><div>$dump_output $dump_format <input type='submit' name='export' value='" . lang('Export') . "'></div></fieldset>\n";
 		}
-		$result->free();
 		echo "<fieldset><legend>" . lang('CSV Import') . "</legend><div><input type='hidden' name='token' value='$token'><input type='file' name='csv_file'> <input type='submit' name='import' value='" . lang('Import') . "'></div></fieldset>\n";
 		
 		//! Editor only
