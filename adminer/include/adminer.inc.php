@@ -90,6 +90,7 @@ function adminer_navigation($missing) {
 <a href="<?php echo htmlspecialchars($SELF); ?>dump=<?php echo urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]); ?>"><?php echo lang('Dump'); ?></a>
 <input type="hidden" name="token" value="<?php echo $_SESSION["tokens"][$_GET["server"]]; ?>">
 <input type="submit" name="logout" value="<?php echo lang('Logout'); ?>">
+</p>
 </form>
 <form action="">
 <p><?php if (strlen($_GET["server"])) { ?><input type="hidden" name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>"><?php } ?>
@@ -102,6 +103,7 @@ function adminer_navigation($missing) {
 <?php if (isset($_GET["schema"])) { ?><input type="hidden" name="schema" value=""><?php } ?>
 <?php if (isset($_GET["dump"])) { ?><input type="hidden" name="dump" value=""><?php } ?>
 <input type="submit" value="<?php echo lang('Use'); ?>"<?php echo ($databases ? " class='hidden'" : ""); ?>>
+</p>
 </form>
 <?php
 		if ($missing != "db" && strlen($_GET["db"])) {

@@ -44,6 +44,7 @@ function adminer_navigation($missing) {
 <p>
 <input type="hidden" name="token" value="<?php echo $_SESSION["tokens"][$_GET["server"]]; ?>">
 <input type="submit" name="logout" value="<?php echo lang('Logout'); ?>">
+</p>
 </form>
 <?php
 		if ($missing != "db") {
