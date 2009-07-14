@@ -38,6 +38,18 @@ function process_type($field, $collate = "COLLATE") {
 	;
 }
 
+function type_class($type) {
+	if (ereg('char|text', $type)) {
+		return " class='char'";
+	} elseif (ereg('date|time|year', $type)) {
+		return " class='date'";
+	} elseif (ereg('binary|blob', $type)) {
+		return " class='binary'";
+	} elseif (ereg('enum|set', $type)) {
+		return " class='enum'";
+	}
+}
+
 function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $foreign_keys = array()) {
 	global $inout;
 	$column_comments = false;

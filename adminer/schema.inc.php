@@ -62,19 +62,7 @@ foreach ($schema as $name => $table) {
 	echo "<div class='table' style='top: " . $table["pos"][0] . "em; left: " . $table["pos"][1] . "em;' onmousedown='schema_mousedown(this, event);'>";
 	echo '<a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($name) . '"><strong>' . htmlspecialchars($name) . "</strong></a><br>\n";
 	foreach ($table["fields"] as $field) {
-		$val = htmlspecialchars($field["field"]);
-		$title = ' title="' . htmlspecialchars($field["full_type"] . ($field["null"] ? " " . lang('NULL') : '')) . '"';
-		if (ereg('char|text', $field["type"])) {
-			$val = "<span class='char'$title>$val</span>";
-		} elseif (ereg('date|time|year', $field["type"])) {
-			$val = "<span class='date'$title>$val</span>";
-		} elseif (ereg('binary|blob', $field["type"])) {
-			$val = "<span class='binary'$title>$val</span>";
-		} elseif (ereg('enum|set', $field["type"])) {
-			$val = "<span class='enum'$title>$val</span>";
-		} else {
-			$val = "<span$title>$val</span>";
-		}
+		$val = '<span' . type_class($field["type"]) . ' title="' . htmlspecialchars($field["full_type"] . ($field["null"] ? " " . lang('NULL') : '')) . '">' . htmlspecialchars($field["field"]) . '</span>';
 		echo ($field["primary"] ? "<em>$val</em>" : $val) . "<br>\n";
 	}
 	foreach ((array) $table["references"] as $target_name => $refs) {
