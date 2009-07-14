@@ -222,4 +222,9 @@ $translations = array(
 	'Send' => 'Odeslat',
 	'%d e-mail(s) have been sent.' => array('Byl odeslán %d e-mail.', 'Byly odeslány %d e-maily.', 'Bylo odesláno %d e-mailů.'),
 	'Run file' => 'Spustit soubor',
+	'Numbers' => 'Čísla',
+	'Date and time' => 'Datum a čas',
+	'Strings' => 'Řetězce',
+	'Binary' => 'Binární',
+	'Lists' => 'Seznamy',
 );
