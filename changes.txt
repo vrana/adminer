@@ -8,8 +8,9 @@ Show type in field name title (thanks to Jakub Sochor)
 Preselect now() for timestamp columns (thanks to paranoiq)
 Faster multiple update, clone and delete
 Use HTML Strict instead of XHTML
-Fixed grant ALL PRIVILEGES with GRANT OPTION
-Fixed CSV import
+Fix grant ALL PRIVILEGES with GRANT OPTION
+Fix CSV import
+Fix work with default values (thanks to Jiri Pospisil)
 
 Adminer 1.11.1 (released 2009-07-03):
 Fix problem with enabled Filter extension
