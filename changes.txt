@@ -1,4 +1,4 @@
-Adminer 1.12.0:
+Adminer 2.0.0:
 Editor: User friendly data editor
 Customization: Adminer class
 E-mail sending
