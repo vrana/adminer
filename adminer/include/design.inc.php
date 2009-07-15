@@ -3,7 +3,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	global $SELF, $LANG, $VERSION;
 	header("Content-Type: text/html; charset=utf-8");
 	?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html lang="<?php echo $LANG; ?>">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Script-Type" content="text/javascript">
