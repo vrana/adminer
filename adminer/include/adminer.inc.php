@@ -59,7 +59,8 @@ function adminer_select_query($query) {
 
 /** Value printed in select table
 * @param string escaped value to print
-* @return string link to foreign key
+* @param string link to foreign key
+* @return string
 */
 function adminer_select_val($val, $link) {
 	return call_adminer('select_val', ($link ? '<a href="' . $link . '">' . $val . '</a>' : $val), $val, $link);
