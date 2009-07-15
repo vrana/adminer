@@ -2,6 +2,7 @@ Adminer 2.0.0:
 Editor: User friendly data editor
 Customization: Adminer class
 E-mail sending
+Table relations
 Create single column foreign key in table structure
 Separate types to groups in table creation
 Show type in field name title (thanks to Jakub Sochor)

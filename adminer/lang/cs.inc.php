@@ -227,4 +227,5 @@ $translations = array(
 	'Strings' => 'Řetězce',
 	'Binary' => 'Binární',
 	'Lists' => 'Seznamy',
+	'Relations' => 'Vztahy',
 );

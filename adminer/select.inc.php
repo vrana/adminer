@@ -278,12 +278,29 @@ if (!$columns) {
 				}
 			}
 			
+			//! Editor only
+			$backward_keys = array();
+			$result = $dbh->query("
+				SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME
+				FROM information_schema.KEY_COLUMN_USAGE
+				WHERE TABLE_SCHEMA = " . $dbh->quote($_GET["db"]) . "
+				AND REFERENCED_TABLE_SCHEMA = " . $dbh->quote($_GET["db"]) . "
+				AND REFERENCED_TABLE_NAME = " . $dbh->quote($_GET["select"]) . "
+				ORDER BY ORDINAL_POSITION
+			");
+			if ($result) {
+				while ($row = $result->fetch_assoc()) {
+					$backward_keys[$row["TABLE_NAME"]][$row["CONSTRAINT_NAME"]][$row["COLUMN_NAME"]] = $row["REFERENCED_COLUMN_NAME"];
+				}
+				$result->free();
+			}
+			
 			echo "<table cellspacing='0' class='nowrap'>\n";
 			echo "<thead><tr><td><input type='checkbox' id='all-page' onclick='form_check(this, /check/);'>";
 			foreach ($rows[0] as $key => $val) {
 				echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . adminer_field_name($fields, $key) . '</a>';
 			}
-			echo "</thead>\n";
+			echo ($backward_keys ? "<th>" . lang('Relations') : "") . "</thead>\n";
 			foreach ($rows as $row) {
 				$unique_idf = implode('&amp;', unique_idf($row, $indexes)); //! don't use aggregation functions
 				echo '<tr' . odd() . '><td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false; form_uncheck(\'all-page\');">' . (count($select) != count($group) || information_schema($_GET["db"]) ? '' : ' <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a>');
@@ -312,15 +329,29 @@ if (!$columns) {
 						foreach ((array) $foreign_keys[$key] as $foreign_key) {
 							if (count($foreign_keys[$key]) == 1 || count($foreign_key["source"]) == 1) {
 								foreach ($foreign_key["source"] as $i => $source) {
-									$link .= "&where%5B$i%5D%5Bcol%5D=" . urlencode($foreign_key["target"][$i]) . "&where%5B$i%5D%5Bop%5D=%3D&where%5B$i%5D%5Bval%5D=" . urlencode($row[$source]);
+									$link .= where_link($i, $foreign_key["target"][$i], $row[$source]);
 								}
-								$link = htmlspecialchars((strlen($foreign_key["db"]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), $SELF) : $SELF) . 'select=' . urlencode($foreign_key["table"]) . $link); // InnoDB supports non-UNIQUE keys
+								$link = htmlspecialchars((strlen($foreign_key["db"]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), $SELF) : $SELF) . 'select=' . urlencode($foreign_key["table"])) . $link; // InnoDB supports non-UNIQUE keys
 								break;
 							}
 						}
 						$val = adminer_select_val($val, $link);
 					}
 					echo "<td>$val";
+				}
+				if ($backward_keys) {
+					echo "<td>";
+					foreach ($backward_keys as $table => $keys) {
+						foreach ($keys as $columns) {
+							echo ' <a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($table);
+							$i = 0;
+							foreach ($columns as $column => $val) {
+								echo where_link($i, $column, $row[$val]);
+								$i++;
+							}
+							echo '">' . htmlspecialchars($table) . '</a>'; //! adminer_table_name()
+						}
+					}
 				}
 				echo "\n";
 			}
