@@ -76,7 +76,7 @@ if ($fields) {
 		echo "<tr><th>" . adminer_field_name($fields, $name);
 		$value = (isset($row)
 			? (strlen($row[$name]) && ($field["type"] == "enum" || $field["type"] == "set") ? intval($row[$name]) : $row[$name])
-			: ($_POST["clone"] && $field["auto_increment"] ? "" : ($where ? $field["default"] : false))
+			: ($_POST["clone"] && $field["auto_increment"] ? "" : (isset($_GET["select"]) ? false : $field["default"]))
 		);
 		$function = ($_POST["save"] ? (string) $_POST["function"][$name] : ($field[($where ? "on_update" : "default")] == "CURRENT_TIMESTAMP" ? "now" : ($value === false ? null : (isset($value) ? '' : 'NULL'))));
 		input($name, $field, $value, $function);
