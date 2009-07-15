@@ -339,18 +339,18 @@ function process_input($name, $field) {
 		if (!is_string($file)) {
 			return false; //! report errors
 		}
-		return "_binary" . (is_string($file) ? $dbh->quote($file) : "");
+		return "_binary" . $dbh->quote($file);
 	} elseif ($field["type"] == "timestamp" && $value == "CURRENT_TIMESTAMP") {
 		return $value;
-	} elseif (preg_match('~^(now|uuid)$~', $function)) {
+	} elseif (ereg('^(now|uuid)$', $function)) {
 		return "$function()";
-	} elseif (preg_match('~^[+-]$~', $function)) {
+	} elseif (ereg('^[+-]$', $function)) {
 		return idf_escape($name) . " $function " . $dbh->quote($value);
-	} elseif (preg_match('~^[+-] interval$~', $function)) {
+	} elseif (ereg('^[+-] interval$', $function)) {
 		return idf_escape($name) . " $function " . (preg_match("~^([0-9]+|'[0-9.: -]') [A-Z_]+$~i", $value) ? $value : $dbh->quote($value));
-	} elseif (preg_match('~^(addtime|subtime)$~', $function)) {
+	} elseif (ereg('^(addtime|subtime)$', $function)) {
 		return "$function(" . idf_escape($name) . ", " . $dbh->quote($value) . ")";
-	} elseif (preg_match('~^(md5|sha1|password)$~', $function)) {
+	} elseif (ereg('^(md5|sha1|password)$', $function)) {
 		return "$function(" . $dbh->quote($value) . ")";
 	} else {
 		return $dbh->quote($value);
