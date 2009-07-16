@@ -3,7 +3,8 @@ page_header(lang('SQL command'), $error);
 $history = &$_SESSION["history"][$_GET["server"]][$_GET["db"]];
 
 if (!$error && $_POST) {
-	if (is_string($query = (isset($_POST["file"]) ? get_file("sql_file") : $_POST["query"]))) { // get_file() returns error as number
+	$query = (isset($_POST["file"]) ? get_file("sql_file") : $_POST["query"]);
+	if (is_string($query)) { // get_file() returns error as number
 		@set_time_limit(0); // set_time_limit() can be disabled
 		$query = str_replace("\r", "", $query); // parser looks for \n
 		$query = rtrim($query);
@@ -64,7 +65,7 @@ if (!$error && $_POST) {
 			echo "<p class='message'>" . lang('No commands to execute.') . "\n";
 		}
 	} else {
-		echo "<p class='error'>" . lang('Unable to upload a file.') . "\n";
+		echo "<p class='error'>" . upload_error($query) . "\n";
 	}
 }
 ?>

@@ -166,7 +166,7 @@ if ($_POST && !$error) {
 		$result = queries("INSERT INTO " . idf_escape($_GET["select"]) . "$cols VALUES" . implode(",", $rows));
 		query_redirect(queries(), remove_from_uri("page"), lang('%d row(s) has been imported.', $dbh->affected_rows), $result, false, !$result);
 	} else {
-		$error = lang('Unable to upload a file.');
+		$error = upload_error($file);
 	}
 }
 

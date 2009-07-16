@@ -151,6 +151,11 @@ function get_file($key) {
 	return (!$_FILES[$key] || $_FILES[$key]["error"] ? $_FILES[$key]["error"] : file_get_contents($_FILES[$key]["tmp_name"]));
 }
 
+function upload_error($error) {
+	$max_size = ($error == UPLOAD_ERR_INI_SIZE ? ini_get("upload_max_filesize") : null); // post_max_size is checked in index.php
+	return lang('Unable to upload a file.') . ($max_size ? " " . lang('Maximum allowed file size is %sB.', $max_size) : "");
+}
+
 function odd($s = ' class="odd"') {
 	static $i = 0;
 	if (!$s) { // reset counter

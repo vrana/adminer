@@ -228,4 +228,5 @@ $translations = array(
 	'Binary' => 'Binární',
 	'Lists' => 'Seznamy',
 	'Relations' => 'Vztahy',
+	'Maximum allowed file size is %sB.' => 'Maximální povolená velikost souboru je %sB.',
 );
