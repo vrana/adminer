@@ -176,8 +176,8 @@ echo "<tr><th>" . lang('Data') . "<td><select name='data_style'><option>" . opti
 if (strlen($_GET["db"])) {
 	$checked = (strlen($_GET["dump"]) ? "" : " checked='checked'");
 	echo "<thead><tr>";
-	echo "<th align='left'><label><input type='checkbox' id='check-tables'$checked onclick='form_check(this, /^tables\\[/);'>" . lang('Tables') . "</label>";
-	echo "<th align='right'><label>" . lang('Data') . "<input type='checkbox' id='check-data'$checked onclick='form_check(this, /^data\\[/);'></label>";
+	echo "<th style='text-align: left;'><label><input type='checkbox' id='check-tables'$checked onclick='form_check(this, /^tables\\[/);'>" . lang('Tables') . "</label>";
+	echo "<th style='text-align: right;'><label>" . lang('Data') . "<input type='checkbox' id='check-data'$checked onclick='form_check(this, /^data\\[/);'></label>";
 	echo "</thead>\n";
 	$views = "";
 	foreach (table_status() as $row) {
