@@ -191,7 +191,7 @@ if (strlen($_GET["db"])) {
 	}
 	echo $views;
 } else {
-	echo "<thead><tr><th align='left'><label><input type='checkbox' id='check-databases' checked='checked' onclick='form_check(this, /^databases\\[/);'>" . lang('Database') . "</label></thead>\n";
+	echo "<thead><tr><th style='text-align: left;'><label><input type='checkbox' id='check-databases' checked='checked' onclick='form_check(this, /^databases\\[/);'>" . lang('Database') . "</label></thead>\n";
 	foreach (get_databases() as $db) {
 		if (!information_schema($db)) {
 			echo '<tr><td><label><input type="checkbox" name="databases[]" value="' . htmlspecialchars($db) . '" checked="checked" onclick="form_uncheck(\'check-databases\');">' . htmlspecialchars($db) . "</label>\n";
