@@ -85,7 +85,7 @@ $from = ($select ? implode(", ", $select) : "*") . " FROM " . idf_escape($_GET["
 $group_by = ($group && count($group) < count($select) ? " GROUP BY " . implode(", ", $group) : "") . ($order ? " ORDER BY " . implode(", ", $order) : "");
 
 if ($_POST && !$error) {
-	$where_check = "(" . implode(") OR (", array_map('where_check', $_POST["check"])) . ")";
+	$where_check = "(" . implode(") OR (", array_map('where_check', (array) $_POST["check"])) . ")";
 	if ($_POST["export"]) {
 		dump_headers($_GET["select"]);
 		dump_table($_GET["select"], "");
