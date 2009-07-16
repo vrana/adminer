@@ -8,21 +8,9 @@
 
 include "../adminer/include/bootstrap.inc.php";
 
-$confirm = " onclick=\"return confirm('" . lang('Are you sure?') . "');\"";
-$error = "";
-
 if (isset($_GET["download"])) {
 	include "../adminer/download.inc.php";
-} else { // uses CSRF token
-	$token = $_SESSION["tokens"][$_GET["server"]];
-	if ($_POST) {
-		if ($_POST["token"] != $token) {
-			$error = lang('Invalid CSRF token. Send the form again.');
-		}
-	} elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
-		// posted form with no data means exceeded post_max_size because Adminer always sends token at least
-		$error = lang('Too big POST data. Reduce the data or increase the "post_max_size" configuration directive.');
-	}
+} else {
 	if (isset($_GET["select"]) && ($_POST["edit"] || $_POST["clone"]) && !$_POST["save"]) {
 		$_GET["edit"] = $_GET["select"];
 	}

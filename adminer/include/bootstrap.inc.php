@@ -95,3 +95,10 @@ include "./include/auth.inc.php";
 include "./include/connect.inc.php";
 include "./include/editing.inc.php";
 include "./include/export.inc.php";
+
+$confirm = " onclick=\"return confirm('" . lang('Are you sure?') . "');\"";
+$token = $_SESSION["tokens"][$_GET["server"]];
+$error = ($_POST
+	? ($_POST["token"] == $token || isset($_GET["dump"]) ? "" : lang('Invalid CSRF token. Send the form again.'))
+	: ($_SERVER["REQUEST_METHOD"] != "POST" ? "" : lang('Too big POST data. Reduce the data or increase the "post_max_size" configuration directive.')) // posted form with no data means that post_max_size exceeded because Adminer always sends token at least
+);

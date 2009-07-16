@@ -10,8 +10,6 @@ include "./include/bootstrap.inc.php";
 
 $enum_length = '\'(?:\'\'|[^\'\\\\]+|\\\\.)*\'|"(?:""|[^"\\\\]+|\\\\.)*"';
 $inout = array("IN", "OUT", "INOUT");
-$confirm = " onclick=\"return confirm('" . lang('Are you sure?') . "');\"";
-$error = "";
 
 if (isset($_GET["download"])) {
 	include "./download.inc.php";
@@ -25,16 +23,7 @@ if (isset($_GET["download"])) {
 	include "./dump.inc.php";
 } elseif (isset($_GET["privileges"])) {
 	include "./privileges.inc.php";
-} else { // uses CSRF token
-	$token = $_SESSION["tokens"][$_GET["server"]];
-	if ($_POST) {
-		if ($_POST["token"] != $token) {
-			$error = lang('Invalid CSRF token. Send the form again.');
-		}
-	} elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
-		// posted form with no data means exceeded post_max_size because Adminer always sends token at least
-		$error = lang('Too big POST data. Reduce the data or increase the "post_max_size" configuration directive.');
-	}
+} else {
 	if (isset($_GET["default"])) {
 		// edit form is used for default values and distinguished by checking isset($_GET["default"]) in edit.inc.php
 		$_GET["edit"] = $_GET["default"];
