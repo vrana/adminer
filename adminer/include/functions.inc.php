@@ -107,7 +107,6 @@ function query_redirect($query, $location, $message, $redirect = true, $execute 
 	$sql = "";
 	if ($query) {
 		$sql = adminer_message_query($query);
-		$_SESSION["history"][$_GET["server"]][$_GET["db"]][] = $query;
 	}
 	if ($execute) {
 		$failed = !$dbh->query($query);

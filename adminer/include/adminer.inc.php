@@ -73,7 +73,8 @@ function adminer_select_val($val, $link) {
 function adminer_message_query($query) {
 	global $SELF;
 	$id = "sql-" . count($_SESSION["messages"]);
-	return call_adminer('message_query', " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre class='jush-sql'>" . htmlspecialchars($query) . '</pre><a href="' . htmlspecialchars($SELF . 'sql=&history=' . count($_SESSION["history"][$_GET["server"]][$_GET["db"]])) . '">' . lang('Edit') . '</a></div>', $query);
+	$_SESSION["history"][$_GET["server"]][$_GET["db"]][] = $query;
+	return call_adminer('message_query', " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre class='jush-sql'>" . htmlspecialchars($query) . '</pre><a href="' . htmlspecialchars($SELF . 'sql=&history=' . (count($_SESSION["history"][$_GET["server"]][$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a></div>', $query);
 }
 
 /** Prints navigation after Adminer title
