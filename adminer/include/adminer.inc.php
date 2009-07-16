@@ -84,6 +84,8 @@ function adminer_message_query($query) {
 function adminer_navigation($missing) {
 	global $SELF;
 	if (call_adminer('navigation', true, $missing) && $missing != "auth") {
+		ob_flush();
+		flush();
 		$databases = get_databases();
 		?>
 <form action="" method="post">
