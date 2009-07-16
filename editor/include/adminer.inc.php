@@ -8,7 +8,7 @@ function adminer_credentials() {
 }
 
 function adminer_database() {
-	$dbs = get_databases();
+	$dbs = get_databases(false);
 	return call_adminer('database', (count($dbs) == 1 ? $dbs[0] : (count($dbs) == 2 && information_schema($dbs[0]) ? $dbs[1] : 'test')));
 }
 

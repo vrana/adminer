@@ -201,12 +201,14 @@ function connect() {
 	return $dbh->error;
 }
 
-function get_databases() {
-	// SHOW DATABASES can take very long so it is cached
+function get_databases($flush = true) {
+	// SHOW DATABASES can take a very long time so it is cached
 	$return = &$_SESSION["databases"][$_GET["server"]];
 	if (!isset($return)) {
-		ob_flush();
-		flush();
+		if ($flush) {
+			ob_flush();
+			flush();
+		}
 		$return = get_vals("SHOW DATABASES");
 	}
 	return $return;
