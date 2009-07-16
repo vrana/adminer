@@ -270,6 +270,11 @@ if (!$columns) {
 				$rows[] = $row;
 			}
 			$result->free();
+			// use count($rows) without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
+			$found_rows = (intval($limit) && count($group) < count($select)
+				? $dbh->result($dbh->query(" SELECT FOUND_ROWS()")) // space to allow mysql.trace_mode
+				: count($rows)
+			);
 			
 			$foreign_keys = array();
 			foreach (foreign_keys($_GET["select"]) as $foreign_key) {
@@ -357,12 +362,13 @@ if (!$columns) {
 			}
 			echo "</table>\n";
 			
+			if (intval($limit) && count($group) >= count($select)) {
+				// slow with big tables
+				ob_flush();
+				flush();
+				$found_rows = $dbh->result($dbh->query("SELECT COUNT(*) FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "")));
+			}
 			echo "<p>";
-			// use count($rows) without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
-			$found_rows = (intval($limit) ? $dbh->result($dbh->query(count($group) < count($select)
-				? " SELECT FOUND_ROWS()" // space to allow mysql.trace_mode
-				: "SELECT COUNT(*) FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "")
-			)) : count($rows));
 			if (intval($limit) && $found_rows > $limit) {
 				// display first, previous 3, next 3 and last page
 				$max_page = floor(($found_rows - 1) / $limit);
