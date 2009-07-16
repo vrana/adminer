@@ -13,6 +13,7 @@ function adminer_database() {
 }
 
 function adminer_table_name($row) {
+	table_comment($row);
 	return call_adminer('table_name', htmlspecialchars(strlen($row["Comment"]) ? $row["Comment"] : $row["Name"]), $row);
 }
 
