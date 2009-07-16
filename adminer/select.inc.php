@@ -283,8 +283,8 @@ if (!$columns) {
 			$result = $dbh->query("
 				SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME
 				FROM information_schema.KEY_COLUMN_USAGE
-				WHERE TABLE_SCHEMA = " . $dbh->quote($_GET["db"]) . "
-				AND REFERENCED_TABLE_SCHEMA = " . $dbh->quote($_GET["db"]) . "
+				WHERE TABLE_SCHEMA = " . $dbh->quote(adminer_database()) . "
+				AND REFERENCED_TABLE_SCHEMA = " . $dbh->quote(adminer_database()) . "
 				AND REFERENCED_TABLE_NAME = " . $dbh->quote($_GET["select"]) . "
 				ORDER BY ORDINAL_POSITION
 			");
