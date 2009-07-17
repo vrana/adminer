@@ -348,8 +348,6 @@ function process_input($name, $field) {
 			return false; //! report errors
 		}
 		return "_binary" . $dbh->quote($file);
-	} elseif ($field["type"] == "timestamp" && $value == "CURRENT_TIMESTAMP") {
-		return $value;
 	} elseif (ereg('^(now|uuid)$', $function)) {
 		return "$function()";
 	} elseif (ereg('^[+-]$', $function)) {
@@ -360,6 +358,8 @@ function process_input($name, $field) {
 		return "$function(" . idf_escape($name) . ", " . $dbh->quote($value) . ")";
 	} elseif (ereg('^(md5|sha1|password)$', $function)) {
 		return "$function(" . $dbh->quote($value) . ")";
+	} elseif ($field["type"] == "timestamp" && $value == "CURRENT_TIMESTAMP") {
+		return $value;
 	} else {
 		return $dbh->quote($value);
 	}

@@ -7,6 +7,7 @@ Create single column foreign key in table structure
 Separate types to groups in table creation
 Show type in field name title (thanks to Jakub Sochor)
 Preselect now() for timestamp columns (thanks to paranoiq)
+Clear history (thanks to paranoiq)
 Faster multiple update, clone and delete
 Use HTML Strict instead of XHTML
 Fix grant ALL PRIVILEGES with GRANT OPTION
