@@ -1,6 +1,11 @@
 <?php
-page_header(lang('SQL command'), $error);
 $history = &$_SESSION["history"][$_GET["server"]][$_GET["db"]];
+if (!$error && $_POST["clear"]) {
+	$history = array();
+	redirect(remove_from_uri("history"));
+}
+
+page_header(lang('SQL command'), $error);
 
 if (!$error && $_POST) {
 	$query = (isset($_POST["file"]) ? get_file("sql_file") : $_POST["query"]);
@@ -93,6 +98,7 @@ if ($history) {
 		//! save and display timestamp
 		echo '<a href="' . htmlspecialchars($SELF . "sql=&history=$key") . '">' . lang('Edit') . '</a> <code class="jush-sql">' . shorten_utf8(str_replace("\n", " ", $val), 80, "</code>") . "<br>\n";
 	}
+	echo "<input type='submit' name='clear' value='" . lang('Clear') . "'>\n";
 	echo "</fieldset>\n";
 }
 ?>
