@@ -176,7 +176,7 @@ function compile_file($match) {
 
 error_reporting(4343); // errors and warnings
 $project = "adminer";
-if (file_exists($_SERVER["argv"][1] . "/index.php")) {
+if (file_exists(dirname(__FILE__) . "/" . $_SERVER["argv"][1] . "/index.php")) {
 	$project = $_SERVER["argv"][1];
 	array_shift($_SERVER["argv"]);
 }
@@ -190,7 +190,6 @@ if (isset($_SERVER["argv"][1])) {
 	include dirname(__FILE__) . "/$project/lang/$_COOKIE[adminer_lang].inc.php";
 }
 
-$filename = $project . ($_COOKIE["adminer_lang"] ? "-$_COOKIE[adminer_lang]" : "") . ".php";
 $file = file_get_contents(dirname(__FILE__) . "/$project/index.php");
 $file = preg_replace('(' . str_replace(' ', '\\s*', preg_quote(' if (isset($_GET["coverage"])) { include "./coverage.inc.php"; }')) . ')', '', $file);
 $file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file);
@@ -212,5 +211,5 @@ $file = preg_replace('~\\.\\./adminer/((plus|cross|up|down|arrow)\\.gif)~', '" .
 $file = str_replace("../externals/jush/", "http://jush.sourceforge.net/", $file);
 $file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
 $file = php_shrink($file);
-fwrite(fopen($filename, "w"), $file); // file_put_contents() since PHP 5
+fwrite(fopen($project . ($_COOKIE["adminer_lang"] ? "-$_COOKIE[adminer_lang]" : "") . ".php", "w"), $file); // file_put_contents() since PHP 5
 echo "$filename created.\n";
