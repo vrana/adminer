@@ -162,7 +162,7 @@ if ($dbh->server_info >= 5) {
 	$db_style[] = 'CREATE+ALTER';
 	$table_style[] = 'CREATE+ALTER';
 }
-echo "<tr><th>" . lang('Output') . "<td>$dump_output\n";
+echo "<tr><th>" . lang('Output') . "<td><input type='hidden' name='token' value='$token'>$dump_output\n";
 echo "<tr><th>" . lang('Format') . "<td>$dump_format\n";
 echo "<tr><th>" . lang('Database') . "<td><select name='db_style'><option>" . optionlist($db_style, (strlen($_GET["db"]) ? '' : 'CREATE')) . "</select>\n";
 echo "<tr><th>" . lang('Tables') . "<td><select name='table_style'><option>" . optionlist($table_style, 'DROP+CREATE') . "</select>\n";
