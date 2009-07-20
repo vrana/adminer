@@ -4,8 +4,8 @@ $tables_views = array_merge((array) $_POST["tables"], (array) $_POST["views"]);
 if ($tables_views && !$error) {
 	$result = true;
 	$message = "";
-	if (count((array) $_POST["tables"]) > 1) {
-		$dbh->query("SET foreign_key_checks = 0"); // allows to truncate or drop several tables at once
+	if (count($_POST["tables"]) > 1) {
+		queries("SET foreign_key_checks = 0"); // allows to truncate or drop several tables at once
 	}
 	if (isset($_POST["truncate"])) {
 		if ($_POST["tables"]) {
