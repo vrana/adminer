@@ -29,6 +29,44 @@ function adminer_select_query($query) {
 	return call_adminer('select_query', "<!-- " . str_replace("--", "--><!--", $query) . " -->\n", $query);
 }
 
+function adminer_row_descriptions($rows, $foreign_keys) {
+	global $dbh;
+	$return = $rows;
+	foreach ($rows[0] as $key => $val) {
+		foreach ((array) $foreign_keys[$key] as $foreign_key) {
+			if (count($foreign_key["source"]) == 1) {
+				$id = idf_escape($foreign_key["target"][0]);
+				// find out the description column - first varchar
+				$name = $id;
+				foreach (fields($foreign_key["table"]) as $field) {
+					if ($field["type"] == "varchar") {
+						$name = idf_escape($field["field"]);
+						break;
+					}
+				}
+				// find all used ids
+				$ids = array();
+				foreach ($rows as $row) {
+					$ids[$row[$key]] = $dbh->quote($row[$key]);
+				}
+				// select all descriptions
+				$descriptions = array();
+				$result = $dbh->query("SELECT $id, $name FROM " . idf_escape($foreign_key["table"]) . " WHERE $id IN (" . implode(", ", $ids) . ")");
+				while ($row = $result->fetch_row()) {
+					$descriptions[$row[0]] = $row[1];
+				}
+				$result->free();
+				// use the descriptions
+				foreach ($rows as $n => $row) {
+					$return[$n][$key] = $descriptions[$row[$key]];
+				}
+				break;
+			}
+		}
+	}
+	return call_adminer('row_descriptions', $return, $rows, $foreign_keys);
+}
+
 function adminer_select_val($val, $link) {
 	return call_adminer('select_val', ($link ? '<a href="' . $link . '">' . $val . '</a>' : $val), $val, $link);
 }

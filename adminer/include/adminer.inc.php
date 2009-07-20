@@ -57,6 +57,15 @@ function adminer_select_query($query) {
 	return call_adminer('select_query', "<p><code class='jush-sql'>" . htmlspecialchars($query) . "</code> <a href='" . htmlspecialchars($SELF) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>\n", $query);
 }
 
+/** Descriptions of selected data
+* @param array all data to print
+* @param array foreign keys
+* @return array
+*/
+function adminer_row_descriptions($rows, $foreign_keys) {
+	return call_adminer('row_descriptions', $rows, $rows, $foreign_keys);
+}
+
 /** Value printed in select table
 * @param string escaped value to print
 * @param string link to foreign key

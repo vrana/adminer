@@ -282,6 +282,7 @@ if (!$columns) {
 					$foreign_keys[$val][] = $foreign_key;
 				}
 			}
+			$descriptions = adminer_row_descriptions($rows, $foreign_keys);
 			
 			//! Editor only
 			$backward_keys = array();
@@ -306,7 +307,7 @@ if (!$columns) {
 				echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . adminer_field_name($fields, $key) . '</a>';
 			}
 			echo ($backward_keys ? "<th>" . lang('Relations') : "") . "</thead>\n";
-			foreach ($rows as $row) {
+			foreach ($descriptions as $n => $row) {
 				$unique_idf = implode('&amp;', unique_idf($row, $indexes)); //! don't use aggregation functions
 				echo '<tr' . odd() . '><td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false; form_uncheck(\'all-page\');">' . (count($select) != count($group) || information_schema($_GET["db"]) ? '' : ' <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a>');
 				foreach ($row as $key => $val) {
@@ -334,7 +335,7 @@ if (!$columns) {
 						foreach ((array) $foreign_keys[$key] as $foreign_key) {
 							if (count($foreign_keys[$key]) == 1 || count($foreign_key["source"]) == 1) {
 								foreach ($foreign_key["source"] as $i => $source) {
-									$link .= where_link($i, $foreign_key["target"][$i], $row[$source]);
+									$link .= where_link($i, $foreign_key["target"][$i], $rows[$n][$source]);
 								}
 								$link = htmlspecialchars((strlen($foreign_key["db"]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), $SELF) : $SELF) . 'select=' . urlencode($foreign_key["table"])) . $link; // InnoDB supports non-UNIQUE keys
 								break;
@@ -351,7 +352,7 @@ if (!$columns) {
 							echo ' <a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($table);
 							$i = 0;
 							foreach ($columns as $column => $val) {
-								echo where_link($i, $column, $row[$val]);
+								echo where_link($i, $column, $rows[$n][$val]);
 								$i++;
 							}
 							echo '">' . htmlspecialchars($table) . '</a>'; //! adminer_table_name()
