@@ -211,5 +211,7 @@ $file = preg_replace('~\\.\\./adminer/((plus|cross|up|down|arrow)\\.gif)~', '" .
 $file = str_replace("../externals/jush/", "http://jush.sourceforge.net/", $file);
 $file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
 $file = php_shrink($file);
-fwrite(fopen($project . ($_COOKIE["adminer_lang"] ? "-$_COOKIE[adminer_lang]" : "") . ".php", "w"), $file); // file_put_contents() since PHP 5
+
+$filename = $project . ($_COOKIE["adminer_lang"] ? "-$_COOKIE[adminer_lang]" : "") . ".php";
+fwrite(fopen($filename, "w"), $file); // file_put_contents() since PHP 5
 echo "$filename created.\n";
