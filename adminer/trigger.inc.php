@@ -13,6 +13,7 @@ if ($_POST && !$error) {
 		}
 	}
 }
+
 page_header((strlen($_GET["name"]) ? lang('Alter trigger') . ": " . htmlspecialchars($_GET["name"]) : lang('Create trigger')), $error, array("table" => $_GET["trigger"]));
 
 $row = array("Trigger" => "$_GET[trigger]_bi");

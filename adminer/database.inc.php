@@ -38,6 +38,7 @@ if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP c
 		query_redirect("ALTER DATABASE " . idf_escape($_POST["name"]) . " COLLATE " . $dbh->quote($_POST["collation"]), substr($SELF, 0, -1), lang('Database has been altered.'));
 	}
 }
+
 page_header(strlen($_GET["db"]) ? lang('Alter database') : lang('Create database'), $error, array(), $_GET["db"]);
 
 $collations = collations();
@@ -70,7 +71,10 @@ if ($_POST) {
 
 <form action="" method="post">
 <p>
-<?php echo ($_POST["add_x"] ? '<textarea name="name" rows="10" cols="40">' . htmlspecialchars($name) . '</textarea><br>' : '<input name="name" value="' . htmlspecialchars($name) . '" maxlength="64">') . "\n"; ?>
+<?php echo ($_POST["add_x"]
+	? '<textarea name="name" rows="10" cols="40">' . htmlspecialchars($name) . '</textarea><br>'
+	: '<input name="name" value="' . htmlspecialchars($name) . '" maxlength="64">'
+) . "\n"; ?>
 <select name="collation"><option value="">(<?php echo lang('collation'); ?>)<?php echo optionlist($collations, $collate); ?></select>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Save'); ?>">

@@ -22,6 +22,7 @@ if ($_POST && !$error) {
 		, substr($SELF, 0, -1), (strlen($_GET["event"]) ? lang('Event has been altered.') : lang('Event has been created.')));
 	}
 }
+
 page_header((strlen($_GET["event"]) ? lang('Alter event') . ": " . htmlspecialchars($_GET["event"]) : lang('Create event')), $error);
 
 $row = array();

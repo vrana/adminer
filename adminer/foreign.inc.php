@@ -18,6 +18,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 		$error = lang('Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exists.') . "<br>$error";
 	}
 }
+
 page_header(lang('Foreign key'), $error, array("table" => $_GET["foreign"]), $_GET["foreign"]);
 
 if ($_POST) {

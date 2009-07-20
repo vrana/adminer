@@ -1,6 +1,7 @@
 <?php
 page_header(lang('Privileges'));
 echo '<p><a href="' . htmlspecialchars($SELF) . 'user=">' . lang('Create user') . "</a>";
+
 $result = $dbh->query("SELECT User, Host FROM mysql.user ORDER BY Host, User");
 if (!$result) {
 	?>

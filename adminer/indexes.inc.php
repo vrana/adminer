@@ -38,6 +38,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 	}
 	query_redirect("ALTER TABLE " . idf_escape($_GET["indexes"]) . implode(",", $alter), $SELF . "table=" . urlencode($_GET["indexes"]), lang('Indexes has been altered.'));
 }
+
 page_header(lang('Indexes'), $error, array("table" => $_GET["indexes"]), $_GET["indexes"]);
 
 $fields = array_keys(fields($_GET["indexes"]));

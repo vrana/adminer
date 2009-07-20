@@ -26,8 +26,8 @@ function grant($grant, $privileges, $columns, $on) {
 	if ($privileges == array("ALL PRIVILEGES", "GRANT OPTION")) {
 		// can't be granted or revoked together
 		return ($grant == "GRANT"
-		? queries("$grant ALL PRIVILEGES$on WITH GRANT OPTION")
-		: queries("$grant ALL PRIVILEGES$on") && queries("$grant GRANT OPTION$on")
+			? queries("$grant ALL PRIVILEGES$on WITH GRANT OPTION")
+			: queries("$grant ALL PRIVILEGES$on") && queries("$grant GRANT OPTION$on")
 		);
 	}
 	return queries("$grant " . preg_replace('~(GRANT OPTION)\\([^)]*\\)~', '\\1', implode("$columns, ", $privileges) . $columns) . $on);
@@ -113,6 +113,7 @@ if ($_POST && !$error) {
 		}
 	}
 }
+
 page_header((isset($_GET["host"]) ? lang('Username') . ": " . htmlspecialchars("$_GET[user]@$_GET[host]") : lang('Create user')), $error, array("privileges" => array('', lang('Privileges'))));
 
 if ($_POST) {

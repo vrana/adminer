@@ -65,7 +65,10 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 					$partitions[] = "\nPARTITION " . idf_escape($val) . " VALUES " . ($_POST["partition_by"] == 'RANGE' ? "LESS THAN" : "IN") . (strlen($value) ? " ($value)" : " MAXVALUE"); //! SQL injection
 				}
 			}
-			$status .= "\nPARTITION BY $_POST[partition_by]($_POST[partition])" . ($partitions ? " (" . implode(",", $partitions) . "\n)" : ($_POST["partitions"] ? " PARTITIONS " . intval($_POST["partitions"]) : "")); // $_POST["partition"] can be expression, not only column
+			$status .= "\nPARTITION BY $_POST[partition_by]($_POST[partition])" . ($partitions // $_POST["partition"] can be expression, not only column
+				? " (" . implode(",", $partitions) . "\n)"
+				: ($_POST["partitions"] ? " PARTITIONS " . intval($_POST["partitions"]) : "")
+			);
 		} elseif ($dbh->server_info >= 5.1 && strlen($_GET["create"])) {
 			$status .= "\nREMOVE PARTITIONING";
 		}
@@ -79,6 +82,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 		}
 	}
 }
+
 page_header((strlen($_GET["create"]) ? lang('Alter table') : lang('Create table')), $error, array("table" => $_GET["create"]), $_GET["create"]);
 
 $engines = array();

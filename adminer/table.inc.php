@@ -3,6 +3,7 @@ $result = $dbh->query("SHOW COLUMNS FROM " . idf_escape($_GET["table"]));
 if (!$result) {
 	$error = htmlspecialchars($dbh->error);
 }
+
 page_header(lang('Table') . ": " . htmlspecialchars($_GET["table"]), $error);
 
 if ($result) {
