@@ -20,7 +20,7 @@ function referencable_primary($self) {
 function edit_type($key, $field, $collations, $foreign_keys = array()) {
 	global $structured_types, $unsigned, $inout;
 	?>
-<td><select name="<?php echo $key; ?>[type]" onchange="editing_type_change(this);"><?php echo optionlist($structured_types + ($foreign_keys ? array(lang('Foreign keys') => $foreign_keys) : array()), $field["type"]); ?></select>
+<td><select name="<?php echo $key; ?>[type]" onchange="editing_type_change(this);"><?php echo optionlist(array_combine(array(lang('Numbers'), lang('Date and time'), lang('Strings'), lang('Binary'), lang('Lists')), array_map('array_keys', $structured_types)) + ($foreign_keys ? array(lang('Foreign keys') => $foreign_keys) : array()), $field["type"]); ?></select>
 <td><input name="<?php echo $key; ?>[length]" value="<?php echo htmlspecialchars($field["length"]); ?>" size="3">
 <td><?php
 echo "<select name=\"$key" . '[collation]"' . (ereg('(char|text|enum|set)$', $field["type"]) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>';
