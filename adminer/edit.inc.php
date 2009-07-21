@@ -3,7 +3,7 @@ $where = (isset($_GET["select"]) ? (count($_POST["check"]) == 1 ? where_check($_
 $update = ($where && !$_POST["clone"]);
 $fields = fields($_GET["edit"]);
 foreach ($fields as $name => $field) {
-	if (isset($_GET["default"]) ? $field["auto_increment"] || ereg('text|blob', $field["type"]) : !isset($field["privileges"][$update ? "update" : "insert"])) {
+	if ((isset($_GET["default"]) ? $field["auto_increment"] || ereg('text|blob', $field["type"]) : !isset($field["privileges"][$update ? "update" : "insert"])) || !strlen(adminer_field_name($fields, $name))) {
 		unset($fields[$name]);
 	}
 }

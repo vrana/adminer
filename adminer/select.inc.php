@@ -18,8 +18,9 @@ $rights = array(); // privilege => 0
 $columns = array(); // selectable columns
 unset($text_length);
 foreach ($fields as $key => $field) {
-	if (isset($field["privileges"]["select"])) {
-		$columns[$key] = html_entity_decode(strip_tags(adminer_field_name($fields, $key))); //! numeric $key is problematic in optionlist()
+	$name = adminer_field_name($fields, $key);
+	if (isset($field["privileges"]["select"]) && strlen($name)) {
+		$columns[$key] = html_entity_decode(strip_tags($name)); //! numeric $key is problematic in optionlist()
 		if (ereg('text|blob', $field["type"])) {
 			$text_length = (isset($_GET["text_length"]) ? $_GET["text_length"] : "100");
 		}
@@ -304,46 +305,51 @@ if (!$columns) {
 			echo "<table cellspacing='0' class='nowrap'>\n";
 			echo "<thead><tr><td><input type='checkbox' id='all-page' onclick='form_check(this, /check/);'>";
 			foreach ($rows[0] as $key => $val) {
-				echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . adminer_field_name($fields, $key) . '</a>';
+				$name = adminer_field_name($fields, $key);
+				if (strlen($name)) {
+					echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . "\">$name</a>";
+				}
 			}
 			echo ($backward_keys ? "<th>" . lang('Relations') : "") . "</thead>\n";
 			foreach ($descriptions as $n => $row) {
 				$unique_idf = implode('&amp;', unique_idf($row, $indexes)); //! don't use aggregation functions
 				echo '<tr' . odd() . '><td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false; form_uncheck(\'all-page\');">' . (count($select) != count($group) || information_schema($_GET["db"]) ? '' : ' <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a>');
 				foreach ($row as $key => $val) {
-					if (strlen($val) && (!isset($email_fields[$key]) || $email_fields[$key])) {
-						$email_fields[$key] = is_email($val); //! filled e-mails may be contained on other pages
-					}
-					if (!isset($val)) {
-						$val = "<i>NULL</i>";
-					} elseif (ereg('blob|binary', $fields[$key]["type"]) && !is_utf8($val)) { //! download link may be printed even with is_utf8
-						$val = '<a href="' . htmlspecialchars($SELF) . 'download=' . urlencode($_GET["select"]) . '&amp;field=' . urlencode($key) . '&amp;' . $unique_idf . '">' . lang('%d byte(s)', strlen($val)) . '</a>';
-					} else {
-						if (!strlen(trim($val, " \t"))) {
-							$val = "&nbsp;";
-						} elseif (intval($text_length) > 0 && ereg('blob|text', $fields[$key]["type"])) {
-							$val = nl2br(shorten_utf8($val, intval($text_length))); // usage of LEFT() would reduce traffic but complicates query
+					if (strlen(adminer_field_name($fields, $key))) {
+						if (strlen($val) && (!isset($email_fields[$key]) || $email_fields[$key])) {
+							$email_fields[$key] = is_email($val); //! filled e-mails may be contained on other pages
+						}
+						if (!isset($val)) {
+							$val = "<i>NULL</i>";
+						} elseif (ereg('blob|binary', $fields[$key]["type"]) && !is_utf8($val)) { //! download link may be printed even with is_utf8
+							$val = '<a href="' . htmlspecialchars($SELF) . 'download=' . urlencode($_GET["select"]) . '&amp;field=' . urlencode($key) . '&amp;' . $unique_idf . '">' . lang('%d byte(s)', strlen($val)) . '</a>';
 						} else {
-							$val = nl2br(htmlspecialchars($val));
-							if ($fields[$key]["type"] == "char") {
-								$val = "<code>$val</code>";
-							}
-						}
-						
-						// link related items
-						$link = "";
-						foreach ((array) $foreign_keys[$key] as $foreign_key) {
-							if (count($foreign_keys[$key]) == 1 || count($foreign_key["source"]) == 1) {
-								foreach ($foreign_key["source"] as $i => $source) {
-									$link .= where_link($i, $foreign_key["target"][$i], $rows[$n][$source]);
+							if (!strlen(trim($val, " \t"))) {
+								$val = "&nbsp;";
+							} elseif (intval($text_length) > 0 && ereg('blob|text', $fields[$key]["type"])) {
+								$val = nl2br(shorten_utf8($val, intval($text_length))); // usage of LEFT() would reduce traffic but complicates query
+							} else {
+								$val = nl2br(htmlspecialchars($val));
+								if ($fields[$key]["type"] == "char") {
+									$val = "<code>$val</code>";
 								}
-								$link = htmlspecialchars((strlen($foreign_key["db"]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), $SELF) : $SELF) . 'select=' . urlencode($foreign_key["table"])) . $link; // InnoDB supports non-UNIQUE keys
-								break;
 							}
+							
+							// link related items
+							$link = "";
+							foreach ((array) $foreign_keys[$key] as $foreign_key) {
+								if (count($foreign_keys[$key]) == 1 || count($foreign_key["source"]) == 1) {
+									foreach ($foreign_key["source"] as $i => $source) {
+										$link .= where_link($i, $foreign_key["target"][$i], $rows[$n][$source]);
+									}
+									$link = htmlspecialchars((strlen($foreign_key["db"]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), $SELF) : $SELF) . 'select=' . urlencode($foreign_key["table"])) . $link; // InnoDB supports non-UNIQUE keys
+									break;
+								}
+							}
+							$val = adminer_select_val($val, $link);
 						}
-						$val = adminer_select_val($val, $link);
+						echo "<td>$val";
 					}
-					echo "<td>$val";
 				}
 				if ($backward_keys) {
 					echo "<td>";

@@ -108,8 +108,9 @@ function adminer_navigation($missing) {
 			} else {
 				echo "<p>\n";
 				foreach ($table_status as $row) {
-					if (isset($row["Engine"])) { // ignore views
-						echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row["Name"]) . '">' . adminer_table_name($row) . "</a><br>\n";
+					$name = adminer_table_name($row);
+					if (isset($row["Engine"]) && strlen($name)) { // ignore views and tables without name
+						echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row["Name"]) . "\">$name</a><br>\n";
 					}
 				}
 			}

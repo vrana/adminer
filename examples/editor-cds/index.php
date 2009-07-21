@@ -23,6 +23,14 @@ class Adminer {
 		return ($login == 'admin');
 	}
 	
+	function table_name($row) {
+		return htmlspecialchars($row["Comment"]);
+	}
+	
+	function field_name($fields, $key) {
+		return htmlspecialchars($fields[$key]["comment"]);
+	}
+	
 }
 
 include "./editor.php";
