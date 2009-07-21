@@ -361,7 +361,7 @@ if (!$columns) {
 								echo where_link($i, $column, $rows[$n][$val]);
 								$i++;
 							}
-							echo '">' . htmlspecialchars($table) . '</a>'; //! adminer_table_name()
+							echo '">' . adminer_table_name(table_status($table)) . '</a>';
 						}
 					}
 				}
