@@ -19,6 +19,10 @@ class Adminer {
 		return 'cds';
 	}
 	
+	function login($login, $password) {
+		return ($login == 'admin');
+	}
+	
 }
 
 include "./editor.php";

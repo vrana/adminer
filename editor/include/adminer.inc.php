@@ -12,6 +12,21 @@ function adminer_database() {
 	return call_adminer('database', (count($dbs) == 1 ? $dbs[0] : (count($dbs) == 2 && information_schema($dbs[0]) ? $dbs[1] : 'test')));
 }
 
+function adminer_login_form($username) {
+	if (call_adminer('login_form', true, $username)) {
+		?>
+		<table cellspacing="0">
+		<tr><th><?php echo lang('Username'); ?><td><input type="hidden" name="server" value="" /><input name="username" value="<?php echo htmlspecialchars($username); ?>">
+		<tr><th><?php echo lang('Password'); ?><td><input type="password" name="password">
+		</table>
+<?php
+	}
+}
+
+function adminer_login($login, $password) {
+	return call_adminer('login', true, $login, $password);
+}
+
 function adminer_table_name($row) {
 	table_comment($row);
 	return call_adminer('table_name', htmlspecialchars(strlen($row["Comment"]) ? $row["Comment"] : $row["Name"]), $row);

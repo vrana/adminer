@@ -21,6 +21,31 @@ function adminer_database() {
 	return call_adminer('database', $_GET["db"]);
 }
 
+/** Print login form
+* @param string
+* @return bool whether to display default login form
+*/
+function adminer_login_form($username) {
+	if (call_adminer('login_form', true, $username)) {
+		?>
+		<table cellspacing="0">
+		<tr><th><?php echo lang('Server'); ?><td><input name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>">
+		<tr><th><?php echo lang('Username'); ?><td><input name="username" value="<?php echo htmlspecialchars($username); ?>">
+		<tr><th><?php echo lang('Password'); ?><td><input type="password" name="password">
+		</table>
+<?php
+	}
+}
+
+/** Authorize the user
+* @param string
+* @param string
+* @return bool
+*/
+function adminer_login($login, $password) {
+	return call_adminer('login', true, $login, $password);
+}
+
 /** Table caption used in navigation and headings
 * @param array result of SHOW TABLE STATUS
 * @return string

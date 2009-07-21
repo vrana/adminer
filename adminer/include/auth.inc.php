@@ -40,16 +40,10 @@ function auth_error($exception = null) {
 	global $ignore, $dbh;
 	$username = $_SESSION["usernames"][$_GET["server"]];
 	unset($_SESSION["usernames"][$_GET["server"]]);
-	page_header(lang('Login'), (isset($username) ? htmlspecialchars($exception ? $exception->getMessage() : ($dbh ? $dbh : lang('Invalid credentials.'))) : (isset($_POST["server"]) ? lang('Sessions must be enabled.') : ($_POST ? lang('Session expired, please login again.') : ""))), null);
-	?>
-	<form action="" method="post">
-	<table cellspacing="0">
-	<tr><th><?php echo lang('Server'); ?><td><input name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>">
-	<tr><th><?php echo lang('Username'); ?><td><input name="username" value="<?php echo htmlspecialchars($username); ?>">
-	<tr><th><?php echo lang('Password'); ?><td><input type="password" name="password">
-	</table>
-	<p>
-<?php
+	page_header(lang('Login'), (isset($username) ? htmlspecialchars($exception ? $exception->getMessage() : (is_string($dbh) ? $dbh : lang('Invalid credentials.'))) : (isset($_POST["server"]) ? lang('Sessions must be enabled.') : ($_POST ? lang('Session expired, please login again.') : ""))), null);
+	echo "<form action='' method='post'>\n";
+	adminer_login_form($login);
+	echo "<p>\n";
 	hidden_fields($_POST, $ignore); // expired session
 	foreach ($_FILES as $key => $val) {
 		echo '<input type="hidden" name="files[' . htmlspecialchars($key) . ']" value="' . ($val["error"] ? $val["error"] : base64_encode(file_get_contents($val["tmp_name"]))) . '">';
@@ -67,8 +61,8 @@ if (!isset($username)) {
 	$username = $_GET["username"]; // default username can be passed in URL
 }
 $dbh = (isset($username) ? connect() : '');
-unset($username);
-if (is_string($dbh)) {
+if (is_string($dbh) || !adminer_login($username, $_SESSION["passwords"][$_GET["server"]])) {
 	auth_error();
 	exit;
 }
+unset($username);
