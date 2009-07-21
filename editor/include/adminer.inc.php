@@ -15,10 +15,10 @@ function adminer_database() {
 function adminer_login_form($username) {
 	if (call_adminer('login_form', true, $username)) {
 		?>
-		<table cellspacing="0">
-		<tr><th><?php echo lang('Username'); ?><td><input type="hidden" name="server" value="" /><input name="username" value="<?php echo htmlspecialchars($username); ?>">
-		<tr><th><?php echo lang('Password'); ?><td><input type="password" name="password">
-		</table>
+<table cellspacing="0">
+<tr><th><?php echo lang('Username'); ?><td><input type="hidden" name="server" value="" /><input name="username" value="<?php echo htmlspecialchars($username); ?>">
+<tr><th><?php echo lang('Password'); ?><td><input type="password" name="password">
+</table>
 <?php
 	}
 }

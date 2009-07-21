@@ -48,11 +48,7 @@ function auth_error($exception = null) {
 	foreach ($_FILES as $key => $val) {
 		echo '<input type="hidden" name="files[' . htmlspecialchars($key) . ']" value="' . ($val["error"] ? $val["error"] : base64_encode(file_get_contents($val["tmp_name"]))) . '">';
 	}
-	?>
-	<input type="submit" value="<?php echo lang('Login'); ?>">
-	
-	</form>
-<?php
+	echo "<input type='submit' value='" . lang('Login') . "'>\n</form>\n";
 	page_footer("auth");
 }
 
