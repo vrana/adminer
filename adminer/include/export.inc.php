@@ -112,7 +112,7 @@ function dump_data($table, $style, $select = "") {
 					$insert = "INSERT INTO " . idf_escape($table) . " (" . implode(", ", array_map('idf_escape', array_keys($row))) . ") VALUES";
 					$row2 = array();
 					foreach ($row as $key => $val) {
-						$row2[$key] = (isset($val) ? (is_numeric($val) ? $val : $dbh->quote($val)) : "NULL");
+						$row2[$key] = (isset($val) ? (ereg('^(0|-?[1-9][0-9]*(\\.[0-9]+)?|0\\.[0-9]+)$', $val) ? $val : $dbh->quote($val)) : "NULL"); // strings -0, -0.0, 1., 01, .5 would translate to 0, 0.0, 1, 1, 0.5
 					}
 					if ($style == "INSERT+UPDATE") {
 						$set = array();
