@@ -301,6 +301,10 @@ if (!$columns) {
 				}
 				$result->free();
 			}
+			$table_names = array_keys($backward_keys);
+			if ($table_names) {
+				$table_names = array_combine($table_names, array_map('adminer_table_name', array_map('table_status', $table_names)));
+			}
 			
 			echo "<table cellspacing='0' class='nowrap'>\n";
 			echo "<thead><tr><td><input type='checkbox' id='all-page' onclick='form_check(this, /check/);'>";
@@ -362,7 +366,7 @@ if (!$columns) {
 								echo where_link($i, $column, $rows[$n][$val]);
 								$i++;
 							}
-							echo '">' . adminer_table_name(table_status($table)) . '</a>';
+							echo "\">$table_names[$table]</a>";
 						}
 					}
 				}
