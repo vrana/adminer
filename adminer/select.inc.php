@@ -319,10 +319,12 @@ if (!$columns) {
 						if (strlen($val) && (!isset($email_fields[$key]) || $email_fields[$key])) {
 							$email_fields[$key] = is_email($val); //! filled e-mails may be contained on other pages
 						}
+						$link = "";
 						if (!isset($val)) {
 							$val = "<i>NULL</i>";
 						} elseif (ereg('blob|binary', $fields[$key]["type"]) && !is_utf8($val)) { //! download link may be printed even with is_utf8
-							$val = '<a href="' . htmlspecialchars($SELF) . 'download=' . urlencode($_GET["select"]) . '&amp;field=' . urlencode($key) . '&amp;' . $unique_idf . '">' . lang('%d byte(s)', strlen($val)) . '</a>';
+							$link = htmlspecialchars($SELF . 'download=' . urlencode($_GET["select"]) . '&field=' . urlencode($key) . '&') . $unique_idf;
+							$val = lang('%d byte(s)', strlen($val));
 						} else {
 							if (!strlen(trim($val, " \t"))) {
 								$val = "&nbsp;";
@@ -336,7 +338,6 @@ if (!$columns) {
 							}
 							
 							// link related items
-							$link = "";
 							foreach ((array) $foreign_keys[$key] as $foreign_key) {
 								if (count($foreign_keys[$key]) == 1 || count($foreign_key["source"]) == 1) {
 									foreach ($foreign_key["source"] as $i => $source) {
@@ -346,8 +347,8 @@ if (!$columns) {
 									break;
 								}
 							}
-							$val = adminer_select_val($val, $link);
 						}
+						$val = adminer_select_val($val, $link);
 						echo "<td>$val";
 					}
 				}
