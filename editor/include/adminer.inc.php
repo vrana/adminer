@@ -43,14 +43,12 @@ function adminer_select_links($table_status) {
 function adminer_backward_keys($table) {
 	global $dbh;
 	$return = array();
-	$result = $dbh->query("
-		SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME
-		FROM information_schema.KEY_COLUMN_USAGE
-		WHERE TABLE_SCHEMA = " . $dbh->quote(adminer_database()) . "
-		AND REFERENCED_TABLE_SCHEMA = " . $dbh->quote(adminer_database()) . "
-		AND REFERENCED_TABLE_NAME = " . $dbh->quote($table) . "
-		ORDER BY ORDINAL_POSITION
-	");
+	$result = $dbh->query("SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME
+FROM information_schema.KEY_COLUMN_USAGE
+WHERE TABLE_SCHEMA = " . $dbh->quote(adminer_database()) . "
+AND REFERENCED_TABLE_SCHEMA = " . $dbh->quote(adminer_database()) . "
+AND REFERENCED_TABLE_NAME = " . $dbh->quote($table) . "
+ORDER BY ORDINAL_POSITION");
 	if ($result) {
 		while ($row = $result->fetch_assoc()) {
 			$return[$row["TABLE_NAME"]][$row["CONSTRAINT_NAME"]][$row["COLUMN_NAME"]] = $row["REFERENCED_COLUMN_NAME"];
