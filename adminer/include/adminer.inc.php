@@ -105,7 +105,7 @@ function adminer_row_descriptions($rows, $foreign_keys) {
 * @return string
 */
 function adminer_select_val($val, $link) {
-	return call_adminer('select_val', ($link ? '<a href="' . $link . '">' . $val . '</a>' : $val), $val, $link);
+	return call_adminer('select_val', ($link ? "<a href=\"$link\">$val</a>" : $val), $val, $link);
 }
 
 /** Query printed after execution in the message
