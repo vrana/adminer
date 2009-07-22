@@ -304,9 +304,10 @@ if (!$columns) {
 				$unique_idf = implode('&amp;', unique_idf($row, $indexes)); //! don't use aggregation functions
 				echo '<tr' . odd() . '><td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false; form_uncheck(\'all-page\');">' . (count($select) != count($group) || information_schema($_GET["db"]) ? '' : ' <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a>');
 				foreach ($row as $key => $val) {
-					if (strlen(adminer_field_name($fields, $key))) {
-						if (strlen($val) && (!isset($email_fields[$key]) || $email_fields[$key])) {
-							$email_fields[$key] = is_email($val); //! filled e-mails may be contained on other pages
+					$name = adminer_field_name($fields, $key);
+					if (strlen($name)) {
+						if (strlen($val) && (!isset($email_fields[$key]) || strlen($email_fields[$key]))) {
+							$email_fields[$key] = (is_email($val) ? $name : ""); //! filled e-mails may be contained on other pages
 						}
 						$link = "";
 						if (!isset($val)) {
@@ -336,6 +337,9 @@ if (!$columns) {
 									break;
 								}
 							}
+						}
+						if (!$link && is_email($val)) {
+							$link = "mailto:$val";
 						}
 						$val = adminer_select_val($val, $link);
 						echo "<td>$val";
@@ -383,13 +387,13 @@ if (!$columns) {
 		echo "<fieldset><legend>" . lang('CSV Import') . "</legend><div><input type='hidden' name='token' value='$token'><input type='file' name='csv_file'> <input type='submit' name='import' value='" . lang('Import') . "'></div></fieldset>\n";
 		
 		//! Editor only
-		$email_fields = array_filter($email_fields);
+		$email_fields = array_filter($email_fields); //! should use strlen but compile.php doesn't support array_filter
 		if ($email_fields) {
 			echo '<fieldset><legend><a href="#fieldset-email" onclick="return !toggle(\'fieldset-email\');">' . lang('E-mail') . "</a></legend><div id='fieldset-email' class='hidden'>\n";
 			echo "<p>" . lang('From') . ": <input name='email_from'>\n";
 			echo lang('Subject') . ": <input name='email_subject'>\n";
 			echo "<p><textarea name='email_message' rows='15' cols='60'></textarea>\n";
-			echo (count($email_fields) == 1 ? '<input type="hidden" name="email_field" value="' . htmlspecialchars(key($email_fields)) . '">' : '<select name="email_field">' . optionlist(array_keys($email_fields)) . '</select>');
+			echo "<p>" . (count($email_fields) == 1 ? '<input type="hidden" name="email_field" value="' . htmlspecialchars(key($email_fields)) . '">' : '<select name="email_field">' . optionlist($email_fields) . '</select> ');
 			echo "<input type='submit' name='email' value='" . lang('Send') . "'$confirm>\n";
 			echo "</div></fieldset>\n";
 		}
