@@ -340,15 +340,16 @@ function information_schema($db) {
 }
 
 // value means maximum unsigned length
-$structured_types = array(
-	array("tinyint" => 3, "smallint" => 5, "mediumint" => 8, "int" => 10, "bigint" => 20, "float" => 12, "double" => 21, "decimal" => 66),
-	array("date" => 10, "datetime" => 19, "timestamp" => 19, "time" => 10, "year" => 4),
-	array("char" => 255, "varchar" => 65535, "tinytext" => 255, "text" => 65535, "mediumtext" => 16777215, "longtext" => 4294967295),
-	array("binary" => 255, "varbinary" => 65535, "tinyblob" => 255, "blob" => 65535, "mediumblob" => 16777215, "longblob" => 4294967295),
-	array("enum" => 65535, "set" => 64),
-);
 $types = array();
-foreach ($structured_types as $val) {
+$structured_types = array();
+foreach (array(
+	lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "mediumint" => 8, "int" => 10, "bigint" => 20, "float" => 12, "double" => 21, "decimal" => 66),
+	lang('Date and time') => array("date" => 10, "datetime" => 19, "timestamp" => 19, "time" => 10, "year" => 4),
+	lang('Strings') => array("char" => 255, "varchar" => 65535, "tinytext" => 255, "text" => 65535, "mediumtext" => 16777215, "longtext" => 4294967295),
+	lang('Binary') => array("binary" => 255, "varbinary" => 65535, "tinyblob" => 255, "blob" => 65535, "mediumblob" => 16777215, "longblob" => 4294967295),
+	lang('Lists') => array("enum" => 65535, "set" => 64),
+) as $key => $val) {
 	$types += $val;
+	$structured_types[$key] = array_keys($val);
 }
 $unsigned = array("unsigned", "zerofill", "unsigned zerofill");
