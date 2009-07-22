@@ -56,7 +56,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 }
 
 function page_footer($missing = false) {
-	global $SELF, $VERSION, $dbh;
+	global $VERSION;
 	?>
 </div>
 
