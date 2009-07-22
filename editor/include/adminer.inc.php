@@ -40,6 +40,26 @@ function adminer_select_links($table_status) {
 	return call_adminer('select_links', "", $table_status);
 }
 
+function adminer_backward_keys($table) {
+	global $dbh;
+	$return = array();
+	$result = $dbh->query("
+		SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME
+		FROM information_schema.KEY_COLUMN_USAGE
+		WHERE TABLE_SCHEMA = " . $dbh->quote(adminer_database()) . "
+		AND REFERENCED_TABLE_SCHEMA = " . $dbh->quote(adminer_database()) . "
+		AND REFERENCED_TABLE_NAME = " . $dbh->quote($table) . "
+		ORDER BY ORDINAL_POSITION
+	");
+	if ($result) {
+		while ($row = $result->fetch_assoc()) {
+			$return[$row["TABLE_NAME"]][$row["CONSTRAINT_NAME"]][$row["COLUMN_NAME"]] = $row["REFERENCED_COLUMN_NAME"];
+		}
+		$result->free();
+	}
+	return call_adminer('backward_keys', $return, $table);
+}
+
 function adminer_select_query($query) {
 	return call_adminer('select_query', "<!-- " . str_replace("--", "--><!--", $query) . " -->\n", $query);
 }
@@ -64,7 +84,7 @@ function adminer_row_descriptions($rows, $foreign_keys) {
 				foreach ($rows as $row) {
 					$ids[$row[$key]] = $dbh->quote($row[$key]);
 				}
-				// select all descriptions
+				// uses constant number of queries to get the descriptions, join would be complex, multiple queries would be slow
 				$descriptions = array();
 				$result = $dbh->query("SELECT $id, $name FROM " . idf_escape($foreign_key["table"]) . " WHERE $id IN (" . implode(", ", $ids) . ")");
 				while ($row = $result->fetch_row()) {
@@ -83,7 +103,7 @@ function adminer_row_descriptions($rows, $foreign_keys) {
 }
 
 function adminer_select_val($val, $link) {
-	return call_adminer('select_val', ($link ? '<a href="' . $link . '">' . $val . '</a>' : ($val == "<i>NULL</i>" ? "" : $val)), $val, $link);
+	return call_adminer('select_val', ($link ? "<a href=\"$link\">$val</a>" : ($val == "<i>NULL</i>" ? "" : $val)), $val, $link);
 }
 
 function adminer_message_query($query) {

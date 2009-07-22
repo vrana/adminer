@@ -72,6 +72,14 @@ function adminer_select_links($table_status) {
 	return call_adminer('select_links', '<a href="' . htmlspecialchars($SELF) . (isset($table_status["Engine"]) ? 'table=' : 'view=') . urlencode($_GET['select']) . '">' . lang('Table structure') . '</a>', $table_status);
 }
 
+/** Find backward keys for table
+* @param string
+* @return array $return[$target_table][$key_name][$target_column] = $source_column;
+*/
+function adminer_backward_keys($table) {
+	return call_adminer('backward_keys', array(), $table);
+}
+
 /** Query printed in select before execution
 * @param string query to be executed
 * @return string

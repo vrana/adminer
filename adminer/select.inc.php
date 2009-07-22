@@ -285,22 +285,7 @@ if (!$columns) {
 			}
 			$descriptions = adminer_row_descriptions($rows, $foreign_keys);
 			
-			//! Editor only
-			$backward_keys = array();
-			$result = $dbh->query("
-				SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME
-				FROM information_schema.KEY_COLUMN_USAGE
-				WHERE TABLE_SCHEMA = " . $dbh->quote(adminer_database()) . "
-				AND REFERENCED_TABLE_SCHEMA = " . $dbh->quote(adminer_database()) . "
-				AND REFERENCED_TABLE_NAME = " . $dbh->quote($_GET["select"]) . "
-				ORDER BY ORDINAL_POSITION
-			");
-			if ($result) {
-				while ($row = $result->fetch_assoc()) {
-					$backward_keys[$row["TABLE_NAME"]][$row["CONSTRAINT_NAME"]][$row["COLUMN_NAME"]] = $row["REFERENCED_COLUMN_NAME"];
-				}
-				$result->free();
-			}
+			$backward_keys = adminer_backward_keys($_GET["select"]);
 			$table_names = array_keys($backward_keys);
 			if ($table_names) {
 				$table_names = array_combine($table_names, array_map('adminer_table_name', array_map('table_status', $table_names)));

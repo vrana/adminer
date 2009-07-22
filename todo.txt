@@ -14,6 +14,7 @@ Offer enum and set items in search - whisperer
 Use event $intervals + microseconds in relative date functions
 Ability to select external style - list downloaded by JavaScript
 Table list cache - SHOW TABLE STATUS is slow with big InnoDB tables
+Download external files (version checker and JUSH) from trusted HTTPS if Adminer runs in HTTPS (mixed-content warning)
 ? Column and table names auto-completition in SQL textarea
 ? Save token also to cookie - for session expiration and login in other window
 ? Save uploaded files after error to session variable instead of hidden field
