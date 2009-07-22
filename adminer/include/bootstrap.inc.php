@@ -83,7 +83,7 @@ $on_actions = array("RESTRICT", "CASCADE", "SET NULL", "NO ACTION"); // used in 
 include "../adminer/include/version.inc.php";
 include "../adminer/include/functions.inc.php";
 include "../adminer/include/lang.inc.php";
-include "./lang/$LANG.inc.php";
+include "../adminer/lang/$LANG.inc.php";
 include "./include/adminer.inc.php";
 include "../adminer/include/design.inc.php";
 if (isset($_GET["coverage"])) {
