@@ -230,4 +230,5 @@ $translations = array(
 	'Relations' => 'Vztahy',
 	'Maximum allowed file size is %sB.' => 'Maximální povolená velikost souboru je %sB.',
 	'Clear' => 'Vyčistit',
+	'Editor' => 'Editor',
 );
