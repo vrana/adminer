@@ -245,7 +245,7 @@ if (!$columns) {
 	
 	if (isset($text_length)) {
 		echo "<fieldset><legend>" . lang('Text length') . "</legend><div>";
-		echo "<input name='text_length' size='3' value=\"" . htmlspecialchars($text_length) . "\">";
+		echo '<input name="text_length" size="3" value="' . htmlspecialchars($text_length) . '">';
 		echo "</div></fieldset>\n";
 	}
 	
@@ -317,8 +317,8 @@ if (!$columns) {
 						} else {
 							if (!strlen(trim($val, " \t"))) {
 								$val = "&nbsp;";
-							} elseif (intval($text_length) > 0 && ereg('blob|text', $fields[$key]["type"])) {
-								$val = nl2br(shorten_utf8($val, intval($text_length))); // usage of LEFT() would reduce traffic but complicates query
+							} elseif (strlen($text_length) && ereg('blob|text', $fields[$key]["type"])) {
+								$val = nl2br(shorten_utf8($val, max(0, intval($text_length)))); // usage of LEFT() would reduce traffic but complicate query
 							} else {
 								$val = nl2br(htmlspecialchars($val));
 								if ($fields[$key]["type"] == "char") {
