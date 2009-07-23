@@ -166,6 +166,33 @@ function adminer_edit_input($table, $field) {
 	return call_adminer('edit_input', false, $table, $field);
 }
 
+/** Process sent input
+* @param string field name
+* @param array single field from fields()
+* @return string expression to use in a query
+*/
+function adminer_process_input($name, $field) {
+	global $dbh;
+	$idf = bracket_escape($name);
+	$function = $_POST["function"][$idf];
+	$value = $_POST["fields"][$idf];
+	$return = $dbh->quote($value);
+	if (ereg('^(now|uuid)$', $function)) {
+		$return = "$function()";
+	} elseif (ereg('^[+-]$', $function)) {
+		$return = idf_escape($name) . " $function $return";
+	} elseif (ereg('^[+-] interval$', $function)) {
+		$return = idf_escape($name) . " $function " . (preg_match("~^([0-9]+|'[0-9.: -]') [A-Z_]+$~i", $value) ? $value : $return);
+	} elseif (ereg('^(addtime|subtime)$', $function)) {
+		$return = "$function(" . idf_escape($name) . ", $return)";
+	} elseif (ereg('^(md5|sha1|password)$', $function)) {
+		$return = "$function($return)";
+	} elseif (ereg('date|time', $field["type"]) && $value == "CURRENT_TIMESTAMP") {
+		$return = $value;
+	}
+	return call_adminer('process_input', $return, $name, $field);
+}
+
 /** Prints navigation after Adminer title
 * @param string can be "auth" if there is no database connection or "db" if there is no database selected
 * @return bool true if default navigation should be printed

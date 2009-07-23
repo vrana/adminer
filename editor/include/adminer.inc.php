@@ -146,6 +146,25 @@ function adminer_edit_input($table, $field) {
 	return call_adminer('edit_input', $return, $table, $field);
 }
 
+/** Process sent input
+* @param string field name
+* @param array single field from fields()
+* @return string expression to use in a query
+*/
+function adminer_process_input($name, $field) {
+	global $dbh;
+	$idf = bracket_escape($name);
+	$function = $_POST["function"][$idf];
+	$value = $_POST["fields"][$idf];
+	$return = $dbh->quote($value);
+	if (!ereg('varchar|text', $field["type"]) && !strlen($value)) {
+		$return = "NULL";
+	} elseif (ereg('date|time', $field["type"]) && $value == "CURRENT_TIMESTAMP") {
+		$return = $value;
+	}
+	return call_adminer('process_input', $return, $name, $field);
+}
+
 function adminer_navigation($missing) {
 	global $SELF;
 	if (call_adminer('navigation', true, $missing) && $missing != "auth") {

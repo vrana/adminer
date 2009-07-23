@@ -339,20 +339,8 @@ function process_input($name, $field) {
 			return false; //! report errors
 		}
 		return "_binary" . $dbh->quote($file);
-	} elseif (ereg('^(now|uuid)$', $function)) {
-		return "$function()";
-	} elseif (ereg('^[+-]$', $function)) {
-		return idf_escape($name) . " $function " . $dbh->quote($value);
-	} elseif (ereg('^[+-] interval$', $function)) {
-		return idf_escape($name) . " $function " . (preg_match("~^([0-9]+|'[0-9.: -]') [A-Z_]+$~i", $value) ? $value : $dbh->quote($value));
-	} elseif (ereg('^(addtime|subtime)$', $function)) {
-		return "$function(" . idf_escape($name) . ", " . $dbh->quote($value) . ")";
-	} elseif (ereg('^(md5|sha1|password)$', $function)) {
-		return "$function(" . $dbh->quote($value) . ")";
-	} elseif ($field["type"] == "timestamp" && $value == "CURRENT_TIMESTAMP") {
-		return $value;
 	} else {
-		return $dbh->quote($value);
+		return adminer_process_input($name, $field);
 	}
 }
 
