@@ -32,9 +32,9 @@ class Adminer {
 		return htmlspecialchars($row["Comment"]);
 	}
 	
-	function field_name($fields, $key) {
+	function field_name($field) {
 		// fields without comments will be ignored
-		return htmlspecialchars($fields[$key]["comment"]);
+		return ($field ? htmlspecialchars($field["comment"]) : "*");
 	}
 	
 }

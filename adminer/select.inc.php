@@ -18,7 +18,7 @@ $rights = array(); // privilege => 0
 $columns = array(); // selectable columns
 unset($text_length);
 foreach ($fields as $key => $field) {
-	$name = adminer_field_name($fields, $key);
+	$name = adminer_field_name($field);
 	if (isset($field["privileges"]["select"]) && strlen($name)) {
 		$columns[$key] = html_entity_decode(strip_tags($name));
 		if (ereg('text|blob', $field["type"])) {
@@ -288,21 +288,25 @@ if (!$columns) {
 			
 			echo "<table cellspacing='0' class='nowrap'>\n";
 			echo "<thead><tr><td><input type='checkbox' id='all-page' onclick='form_check(this, /check/);'>";
+			$names = array();
+			reset($select);
 			foreach ($rows[0] as $key => $val) {
-				$name = adminer_field_name($fields, $key);
+				$val = $_GET["columns"][key($select)];
+				$name = adminer_field_name($fields[$select ? $val["col"] : $key]);
 				if (strlen($name)) {
-					echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . "\">$name</a>";
+					$names[$key] = $name;
+					echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . ($val["fun"] ? strtoupper($val["fun"]) . " $name" : $name) . "</a>";
 				}
+				next($select);
 			}
 			echo ($backward_keys ? "<th>" . lang('Relations') : "") . "</thead>\n";
 			foreach ($descriptions as $n => $row) {
 				$unique_idf = implode('&amp;', unique_idf($row, $indexes)); //! don't use aggregation functions
 				echo '<tr' . odd() . '><td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false; form_uncheck(\'all-page\');">' . (count($select) != count($group) || information_schema($_GET["db"]) ? '' : ' <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a>');
 				foreach ($row as $key => $val) {
-					$name = adminer_field_name($fields, $key);
-					if (strlen($name)) {
+					if (strlen($names[$key])) {
 						if (strlen($val) && (!isset($email_fields[$key]) || strlen($email_fields[$key]))) {
-							$email_fields[$key] = (is_email($val) ? $name : ""); //! filled e-mails may be contained on other pages
+							$email_fields[$key] = (is_email($val) ? $names[$key] : ""); //! filled e-mails may be contained on other pages
 						}
 						$link = "";
 						if (!isset($val)) {

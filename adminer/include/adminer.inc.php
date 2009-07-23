@@ -55,12 +55,11 @@ function adminer_table_name($row) {
 }
 
 /** Field caption used in select and edit
-* @param array all fields in table, result of fields()
-* @param string column identifier, function calls are not contained in $fields 
+* @param array single field returned from fields()
 * @return string
 */
-function adminer_field_name($fields, $key) {
-	return call_adminer('field_name', '<span title="' . htmlspecialchars($fields[$key]["full_type"]) . '">' . htmlspecialchars($key) . '</span>', $fields, $key);
+function adminer_field_name($field) {
+	return call_adminer('field_name', ($field ? '<span title="' . htmlspecialchars($field["full_type"]) . '">' . htmlspecialchars($field["field"]) . '</span>' : "*"), $field);
 }
 
 /** Links after select heading
