@@ -286,29 +286,7 @@ function input($name, $field, $value, $function) {
 	} else {
 		$first = ($field["null"] || isset($_GET["default"])) + isset($_GET["select"]);
 		$onchange = ($first ? ' onchange="var f = this.form[\'function[' . addcslashes($name, "\r\n'\\") . ']\']; if (' . $first . ' > f.selectedIndex) f.selectedIndex = ' . $first . ';"' : '');
-		$options = array("");
-		if (!isset($_GET["default"])) {
-			if (ereg('char|date|time', $field["type"])) {
-				$options = (ereg('char', $field["type"]) ? array("", "md5", "sha1", "password", "uuid") : array("", "now")); //! JavaScript for disabling maxlength
-			}
-			if (!isset($_GET["call"]) && (isset($_GET["select"]) || where($_GET))) {
-				// relative functions
-				if (ereg('int|float|double|decimal', $field["type"])) {
-					$options = array("", "+", "-");
-				}
-				if (ereg('date', $field["type"])) {
-					$options[] = "+ interval";
-					$options[] = "- interval";
-				}
-				if (ereg('time', $field["type"])) {
-					$options[] = "addtime";
-					$options[] = "subtime";
-				}
-			}
-		}
-		if ($field["null"] || isset($_GET["default"])) {
-			array_unshift($options, "NULL");
-		}
+		$options = adminer_edit_functions($field);
 		echo (count($options) > 1 || isset($_GET["select"]) ? '<select name="function[' . $name . ']">' . (isset($_GET["select"]) ? '<option value="orig">' . lang('original') : '') . optionlist($options, $function) . '</select>' : "&nbsp;") . '<td>';
 		if ($field["type"] == "set") { //! 64 bits
 			preg_match_all("~'((?:[^']+|'')*)'~", $field["length"], $matches);

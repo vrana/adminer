@@ -111,6 +111,10 @@ function adminer_message_query($query) {
 	return call_adminer('message_query', "<!-- " . str_replace("--", "--><!--", $query) . " -->", $query);
 }
 
+function adminer_edit_functions($field) {
+	return call_adminer('edit_functions', array(""), $field);
+}
+
 function adminer_navigation($missing) {
 	global $SELF;
 	if (call_adminer('navigation', true, $missing) && $missing != "auth") {

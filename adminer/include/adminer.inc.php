@@ -119,6 +119,37 @@ function adminer_message_query($query) {
 	return call_adminer('message_query', " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre class='jush-sql'>" . htmlspecialchars($query) . '</pre><a href="' . htmlspecialchars($SELF . 'sql=&history=' . (count($_SESSION["history"][$_GET["server"]][$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a></div>', $query);
 }
 
+/** Functions displayed in edit form
+* @param array single field from fields()
+* @return array
+*/
+function adminer_edit_functions($field) {
+	$return = array("");
+	if (!isset($_GET["default"])) {
+		if (ereg('char|date|time', $field["type"])) {
+			$return = (ereg('char', $field["type"]) ? array("", "md5", "sha1", "password", "uuid") : array("", "now")); //! JavaScript for disabling maxlength
+		}
+		if (!isset($_GET["call"]) && (isset($_GET["select"]) || where($_GET))) {
+			// relative functions
+			if (ereg('int|float|double|decimal', $field["type"])) {
+				$return = array("", "+", "-");
+			}
+			if (ereg('date', $field["type"])) {
+				$return[] = "+ interval";
+				$return[] = "- interval";
+			}
+			if (ereg('time', $field["type"])) {
+				$return[] = "addtime";
+				$return[] = "subtime";
+			}
+		}
+	}
+	if ($field["null"] || isset($_GET["default"])) {
+		array_unshift($return, "NULL");
+	}
+	return call_adminer('edit_functions', $return, $field);
+}
+
 /** Prints navigation after Adminer title
 * @param string can be "auth" if there is no database connection or "db" if there is no database selected
 * @return bool true if default navigation should be printed
