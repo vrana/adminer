@@ -9,34 +9,30 @@ foreach ($fields as $name => $field) {
 }
 if ($_POST && !$error && !isset($_GET["select"])) {
 	$location = ($_POST["insert"] ? $_SERVER["REQUEST_URI"] : $SELF . (isset($_GET["default"]) ? "table=" : "select=") . urlencode($_GET["edit"])); // "insert" to continue edit or insert
-	if (isset($_POST["delete"])) {
-		query_redirect("DELETE FROM " . idf_escape($_GET["edit"]) . " WHERE $where LIMIT 1", $location, lang('Item has been deleted.'));
-	} else {
-		$set = array();
-		foreach ($fields as $name => $field) {
-			$val = process_input($name, $field);
-			if (!isset($_GET["default"])) {
-				if ($val !== false || !$update) {
-					$set[] = "\n" . idf_escape($name) . " = " . ($val !== false ? $val : "''");
-				}
-			} elseif ($val !== false) {
-				if ($field["type"] == "timestamp" && $val != "NULL") { //! doesn't allow DEFAULT NULL and no ON UPDATE
-					$set[] = "\nMODIFY " . idf_escape($name) . " timestamp" . ($field["null"] ? " NULL" : "") . " DEFAULT $val" . ($_POST["on_update"][bracket_escape($name)] ? " ON UPDATE CURRENT_TIMESTAMP" : "");
-				} else {
-					$set[] = "\nALTER " . idf_escape($name) . ($val == "NULL" ? " DROP DEFAULT" : " SET DEFAULT $val");
-				}
+	$set = array();
+	foreach ($fields as $name => $field) {
+		$val = process_input($name, $field);
+		if (!isset($_GET["default"])) {
+			if ($val !== false || !$update) {
+				$set[] = "\n" . idf_escape($name) . " = " . ($val !== false ? $val : "''");
+			}
+		} elseif ($val !== false) {
+			if ($field["type"] == "timestamp" && $val != "NULL") { //! doesn't allow DEFAULT NULL and no ON UPDATE
+				$set[] = "\nMODIFY " . idf_escape($name) . " timestamp" . ($field["null"] ? " NULL" : "") . " DEFAULT $val" . ($_POST["on_update"][bracket_escape($name)] ? " ON UPDATE CURRENT_TIMESTAMP" : "");
+			} else {
+				$set[] = "\nALTER " . idf_escape($name) . ($val == "NULL" ? " DROP DEFAULT" : " SET DEFAULT $val");
 			}
 		}
-		if (!$set) {
-			redirect($location);
-		}
-		if (isset($_GET["default"])) {
-			query_redirect("ALTER TABLE " . idf_escape($_GET["edit"]) . implode(",", $set), $location, lang('Default values has been set.'));
-		} elseif ($update) {
-			query_redirect("UPDATE " . idf_escape($_GET["edit"]) . " SET" . implode(",", $set) . "\nWHERE $where\nLIMIT 1", $location, lang('Item has been updated.'));
-		} else {
-			query_redirect("INSERT INTO " . idf_escape($_GET["edit"]) . " SET" . implode(",", $set), $location, lang('Item has been inserted.'));
-		}
+	}
+	if (!$set) {
+		redirect($location);
+	}
+	if (isset($_GET["default"])) {
+		query_redirect("ALTER TABLE " . idf_escape($_GET["edit"]) . implode(",", $set), $location, lang('Default values has been set.'));
+	} elseif ($update) {
+		query_redirect("UPDATE " . idf_escape($_GET["edit"]) . " SET" . implode(",", $set) . "\nWHERE $where\nLIMIT 1", $location, lang('Item has been updated.'));
+	} else {
+		query_redirect("INSERT INTO " . idf_escape($_GET["edit"]) . " SET" . implode(",", $set), $location, lang('Item has been inserted.'));
 	}
 }
 
@@ -105,9 +101,6 @@ if ($fields) {
 	if (!isset($_GET["default"]) && !isset($_GET["select"])) {
 		echo "<input type='submit' name='insert' value='" . ($update ? lang('Save and continue edit') : lang('Save and insert next')) . "'>\n";
 	}
-}
-if ($update) {
-	echo "<input type='submit' name='delete' value='" . lang('Delete') . "'$confirm>\n";
 }
 ?>
 </form>
