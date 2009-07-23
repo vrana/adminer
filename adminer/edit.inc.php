@@ -79,7 +79,7 @@ if ($fields) {
 			: ($_POST["clone"] && $field["auto_increment"] ? "" : (isset($_GET["select"]) ? false : $field["default"]))
 		);
 		$function = ($_POST["save"] ? (string) $_POST["function"][$name] : ($where && $field["on_update"] == "CURRENT_TIMESTAMP" ? "now" : ($value === false ? null : (isset($value) ? '' : 'NULL'))));
-		input($name, $field, $value, $function);
+		input($field, $value, $function);
 		if (isset($_GET["default"]) && $field["type"] == "timestamp") {
 			if (!isset($create) && !$_POST) {
 				//! disable sql_mode NO_FIELD_OPTIONS

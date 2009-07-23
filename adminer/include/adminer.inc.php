@@ -90,9 +90,17 @@ function adminer_select_query($query) {
 	return call_adminer('select_query', "<p><code class='jush-sql'>" . htmlspecialchars($query) . "</code> <a href='" . htmlspecialchars($SELF) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>\n", $query);
 }
 
-/** Descriptions of selected data
+/** Description of a row in a table
+* @param string
+* @return string SQL expression, empty string for no description
+*/
+function adminer_row_description($table) {
+	return call_adminer('row_description', "", $table);
+}
+
+/** Get descriptions of selected data
 * @param array all data to print
-* @param array foreign keys
+* @param array
 * @return array
 */
 function adminer_row_descriptions($rows, $foreign_keys) {
@@ -147,7 +155,16 @@ function adminer_edit_functions($field) {
 	if ($field["null"] || isset($_GET["default"])) {
 		array_unshift($return, "NULL");
 	}
-	return call_adminer('edit_functions', $return, $field);
+	return call_adminer('edit_functions', (isset($_GET["select"]) ? array("orig" => lang('original')) : array()) + $return, $field);
+}
+
+/** Get options to display edit field
+* @param string table name
+* @param array single field from fields()
+* @return array options for <select> or empty to display <input>
+*/
+function adminer_edit_input($table, $field) {
+	return call_adminer('edit_input', false, $table, $field);
 }
 
 /** Prints navigation after Adminer title

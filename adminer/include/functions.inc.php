@@ -13,14 +13,14 @@ function bracket_escape($idf, $back = false) {
 	return strtr($idf, ($back ? array_flip($trans) : $trans));
 }
 
-function optionlist($options, $selected = null) {
+function optionlist($options, $selected = null, $use_keys = false) {
 	$return = "";
 	foreach ($options as $k => $v) {
 		if (is_array($v)) {
 			$return .= '<optgroup label="' . htmlspecialchars($k) . '">';
 		}
 		foreach ((is_array($v) ? $v : array($k => $v)) as $key => $val) {
-			$return .= '<option' . (is_string($key) ? ' value="' . htmlspecialchars($key) . '"' : '') . ((is_string($key) ? $key : $val) === $selected ? ' selected="selected"' : '') . '>' . htmlspecialchars($val);
+			$return .= '<option' . ($use_keys || is_string($key) ? ' value="' . htmlspecialchars($key) . '"' : '') . (($use_keys || is_string($key) ? (string) $key : $val) === $selected ? ' selected="selected"' : '') . '>' . htmlspecialchars($val);
 		}
 		if (is_array($v)) {
 			$return .= '</optgroup>';
@@ -265,9 +265,19 @@ function hidden_fields($process, $ignore = array()) {
 	}
 }
 
-function input($name, $field, $value, $function) {
+function column_foreign_keys($table) {
+	$return = array();
+	foreach (foreign_keys($table) as $foreign_key) {
+		foreach ($foreign_key["source"] as $val) {
+			$return[$val][] = $foreign_key;
+		}
+	}
+	return $return;
+}
+
+function input($field, $value, $function) {
 	global $types;
-	$name = htmlspecialchars(bracket_escape($name));
+	$name = htmlspecialchars(bracket_escape($field["field"]));
 	echo "<td class='function'>";
 	if ($field["type"] == "enum") {
 		echo "&nbsp;<td>" . (isset($_GET["select"]) ? ' <label><input type="radio" name="fields[' . $name . ']" value="-1" checked="checked"><em>' . lang('original') . '</em></label>' : "");
@@ -284,11 +294,14 @@ function input($name, $field, $value, $function) {
 			echo ' <label><input type="radio" name="fields[' . $name . ']" value="' . (isset($_GET["default"]) ? (strlen($val) ? htmlspecialchars($val) : " ") : $i+1) . '"' . ($checked ? ' checked="checked"' : '') . '>' . htmlspecialchars($val) . '</label>';
 		}
 	} else {
-		$first = ($field["null"] || isset($_GET["default"])) + isset($_GET["select"]);
+		$functions = adminer_edit_functions($field);
+		$first = array_search("", $functions);
 		$onchange = ($first ? ' onchange="var f = this.form[\'function[' . addcslashes($name, "\r\n'\\") . ']\']; if (' . $first . ' > f.selectedIndex) f.selectedIndex = ' . $first . ';"' : '');
-		$options = adminer_edit_functions($field);
-		echo (count($options) > 1 || isset($_GET["select"]) ? '<select name="function[' . $name . ']">' . (isset($_GET["select"]) ? '<option value="orig">' . lang('original') : '') . optionlist($options, $function) . '</select>' : "&nbsp;") . '<td>';
-		if ($field["type"] == "set") { //! 64 bits
+		echo (count($functions) > 1 ? '<select name="function[' . $name . ']">' . optionlist($functions, $function) . '</select>' : "&nbsp;") . '<td>';
+		$options = adminer_edit_input($_GET["edit"], $field); // usage in call is without a table
+		if (is_array($options)) {
+			echo '<select name="fields[' . $name . ']"' . $onchange . '>' . optionlist($options, $value, true) . '</select>';
+		} elseif ($field["type"] == "set") { //! 64 bits
 			preg_match_all("~'((?:[^']+|'')*)'~", $field["length"], $matches);
 			foreach ($matches[1] as $i => $val) {
 				$val = stripcslashes(str_replace("''", "'", $val));
@@ -302,7 +315,7 @@ function input($name, $field, $value, $function) {
 		} else {
 			// int(3) is only a display hint
 			$maxlength = (!ereg('int', $field["type"]) && preg_match('~^([0-9]+)(,([0-9]+))?$~', $field["length"], $match) ? ($match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) : ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0));
-			echo '<input name="fields[' . $name . ']" value="' . htmlspecialchars($value) . '"' . ($maxlength ? " maxlength='$maxlength'" : "") . $onchange . '>';
+			echo '<input name="fields[' . $name . ']" value="' . htmlspecialchars($value) . '"' . ($maxlength ? " maxlength='$maxlength'" : "") . "$onchange>";
 		}
 	}
 }

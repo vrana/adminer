@@ -20,7 +20,7 @@ unset($text_length);
 foreach ($fields as $key => $field) {
 	$name = adminer_field_name($fields, $key);
 	if (isset($field["privileges"]["select"]) && strlen($name)) {
-		$columns[$key] = html_entity_decode(strip_tags($name)); //! numeric $key is problematic in optionlist()
+		$columns[$key] = html_entity_decode(strip_tags($name));
 		if (ereg('text|blob', $field["type"])) {
 			$text_length = (isset($_GET["text_length"]) ? $_GET["text_length"] : "100");
 		}
@@ -196,11 +196,11 @@ if (!$columns) {
 	foreach ($select as $key => $val) {
 		$val = $_GET["columns"][$key];
 		echo "<div><select name='columns[$i][fun]'><option>" . optionlist($fun_group, $val["fun"]) . "</select>";
-		echo "<select name='columns[$i][col]'><option>" . optionlist($columns, $val["col"]) . "</select></div>\n";
+		echo "<select name='columns[$i][col]'><option>" . optionlist($columns, $val["col"], true) . "</select></div>\n";
 		$i++;
 	}
 	echo "<div><select name='columns[$i][fun]' onchange='this.nextSibling.onchange();'><option>" . optionlist($fun_group) . "</select>";
-	echo "<select name='columns[$i][col]' onchange='select_add_row(this);'><option>" . optionlist($columns) . "</select></div>\n";
+	echo "<select name='columns[$i][col]' onchange='select_add_row(this);'><option>" . optionlist($columns, null, true) . "</select></div>\n";
 	echo "</div></fieldset>\n";
 	
 	echo '<fieldset><legend><a href="#fieldset-search" onclick="return !toggle(\'fieldset-search\');">' . lang('Search') . "</a></legend><div id='fieldset-search'" . ($where ? "" : " class='hidden'") . ">\n";
@@ -215,13 +215,13 @@ if (!$columns) {
 	$i = 0;
 	foreach ((array) $_GET["where"] as $val) {
 		if (strlen("$val[col]$val[val]") && in_array($val["op"], $operators)) {
-			echo "<div><select name='where[$i][col]'><option value=''>" . lang('(anywhere)') . optionlist($columns, $val["col"]) . "</select>";
+			echo "<div><select name='where[$i][col]'><option value=''>" . lang('(anywhere)') . optionlist($columns, $val["col"], true) . "</select>";
 			echo "<select name='where[$i][op]'>" . optionlist($operators, $val["op"]) . "</select>";
 			echo "<input name='where[$i][val]' value=\"" . htmlspecialchars($val["val"]) . "\"></div>\n";
 			$i++;
 		}
 	}
-	echo "<div><select name='where[$i][col]' onchange='select_add_row(this);'><option value=''>" . lang('(anywhere)') . optionlist($columns) . "</select>";
+	echo "<div><select name='where[$i][col]' onchange='select_add_row(this);'><option value=''>" . lang('(anywhere)') . optionlist($columns, null, true) . "</select>";
 	echo "<select name='where[$i][op]'>" . optionlist($operators) . "</select>";
 	echo "<input name='where[$i][val]'></div>\n";
 	echo "</div></fieldset>\n";
@@ -230,12 +230,12 @@ if (!$columns) {
 	$i = 0;
 	foreach ((array) $_GET["order"] as $key => $val) {
 		if (isset($columns[$val])) {
-			echo "<div><select name='order[$i]'><option>" . optionlist($columns, $val) . "</select>";
+			echo "<div><select name='order[$i]'><option>" . optionlist($columns, $val, true) . "</select>";
 			echo "<label><input type='checkbox' name='desc[$i]' value='1'" . (isset($_GET["desc"][$key]) ? " checked='checked'" : "") . ">" . lang('descending') . "</label></div>\n";
 			$i++;
 		}
 	}
-	echo "<div><select name='order[$i]' onchange='select_add_row(this);'><option>" . optionlist($columns) . "</select>";
+	echo "<div><select name='order[$i]' onchange='select_add_row(this);'><option>" . optionlist($columns, null, true) . "</select>";
 	echo "<label><input type='checkbox' name='desc[$i]' value='1'>" . lang('descending') . "</label></div>\n";
 	echo "</div></fieldset>\n";
 	
@@ -277,12 +277,7 @@ if (!$columns) {
 				: count($rows)
 			);
 			
-			$foreign_keys = array();
-			foreach (foreign_keys($_GET["select"]) as $foreign_key) {
-				foreach ($foreign_key["source"] as $val) {
-					$foreign_keys[$val][] = $foreign_key;
-				}
-			}
+			$foreign_keys = column_foreign_keys($_GET["select"]);
 			$descriptions = adminer_row_descriptions($rows, $foreign_keys);
 			
 			$backward_keys = adminer_backward_keys($_GET["select"]);

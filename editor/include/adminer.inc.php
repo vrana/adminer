@@ -62,6 +62,18 @@ function adminer_select_query($query) {
 	return call_adminer('select_query', "<!-- " . str_replace("--", "--><!--", $query) . " -->\n", $query);
 }
 
+function adminer_row_description($table) {
+	$return = "";
+	// first varchar column
+	foreach (fields($table) as $field) {
+		if ($field["type"] == "varchar") {
+			$return = idf_escape($field["field"]);
+			break;
+		}
+	}
+	return call_adminer('row_description', $return, $table);
+}
+
 function adminer_row_descriptions($rows, $foreign_keys) {
 	global $dbh;
 	$return = $rows;
@@ -69,31 +81,26 @@ function adminer_row_descriptions($rows, $foreign_keys) {
 		foreach ((array) $foreign_keys[$key] as $foreign_key) {
 			if (count($foreign_key["source"]) == 1) {
 				$id = idf_escape($foreign_key["target"][0]);
-				// find out the description column - first varchar
-				$name = $id;
-				foreach (fields($foreign_key["table"]) as $field) {
-					if ($field["type"] == "varchar") {
-						$name = idf_escape($field["field"]);
-						break;
+				$name = adminer_row_description($foreign_key["table"]);
+				if (strlen($name)) {
+					// find all used ids
+					$ids = array();
+					foreach ($rows as $row) {
+						$ids[$row[$key]] = $dbh->quote($row[$key]);
 					}
+					// uses constant number of queries to get the descriptions, join would be complex, multiple queries would be slow
+					$descriptions = array();
+					$result = $dbh->query("SELECT $id, $name FROM " . idf_escape($foreign_key["table"]) . " WHERE $id IN (" . implode(", ", $ids) . ")");
+					while ($row = $result->fetch_row()) {
+						$descriptions[$row[0]] = $row[1];
+					}
+					$result->free();
+					// use the descriptions
+					foreach ($rows as $n => $row) {
+						$return[$n][$key] = $descriptions[$row[$key]];
+					}
+					break;
 				}
-				// find all used ids
-				$ids = array();
-				foreach ($rows as $row) {
-					$ids[$row[$key]] = $dbh->quote($row[$key]);
-				}
-				// uses constant number of queries to get the descriptions, join would be complex, multiple queries would be slow
-				$descriptions = array();
-				$result = $dbh->query("SELECT $id, $name FROM " . idf_escape($foreign_key["table"]) . " WHERE $id IN (" . implode(", ", $ids) . ")");
-				while ($row = $result->fetch_row()) {
-					$descriptions[$row[0]] = $row[1];
-				}
-				$result->free();
-				// use the descriptions
-				foreach ($rows as $n => $row) {
-					$return[$n][$key] = $descriptions[$row[$key]];
-				}
-				break;
 			}
 		}
 	}
@@ -108,11 +115,35 @@ function adminer_select_val($val, $link) {
 }
 
 function adminer_message_query($query) {
-	return call_adminer('message_query', "<!-- " . str_replace("--", "--><!--", $query) . " -->", $query);
+	return call_adminer('message_query', "<!--\n" . str_replace("--", "--><!--", $query) . "\n-->", $query);
 }
 
 function adminer_edit_functions($field) {
-	return call_adminer('edit_functions', array(""), $field);
+	return call_adminer('edit_functions', (isset($_GET["select"]) ? array("orig" => lang('original')) : array()) + array(""), $field);
+}
+
+function adminer_edit_input($table, $field) {
+	global $dbh;
+	$return = null;
+	$foreign_keys = column_foreign_keys($table);
+	foreach ((array) $foreign_keys[$field["field"]] as $foreign_key) {
+		if (count($foreign_key["source"]) == 1) {
+			$id = idf_escape($foreign_key["target"][0]);
+			$name = adminer_row_description($foreign_key["table"]);
+			if (strlen($name) && $dbh->result($dbh->query("SELECT COUNT(*) FROM " . idf_escape($foreign_key["table"]))) <= 1000) { // optionlist with more than 1000 options would be too big
+				if ($field["null"]) {
+					$return[""] = "";
+				}
+				$result = $dbh->query("SELECT $id, $name FROM " . idf_escape($foreign_key["table"]) . " ORDER BY 2");
+				while ($row = $result->fetch_row()) {
+					$return[$row[0]] = $row[1];
+				}
+				$result->free();
+				break;
+			}
+		}
+	}
+	return call_adminer('edit_input', $return, $table, $field);
 }
 
 function adminer_navigation($missing) {
