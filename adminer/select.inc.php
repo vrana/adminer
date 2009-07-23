@@ -301,7 +301,7 @@ if (!$columns) {
 			}
 			echo ($backward_keys ? "<th>" . lang('Relations') : "") . "</thead>\n";
 			foreach ($descriptions as $n => $row) {
-				$unique_idf = implode('&amp;', unique_idf($row, $indexes)); //! don't use aggregation functions
+				$unique_idf = implode('&amp;', unique_idf($rows[$n], $indexes)); //! don't use aggregation functions
 				echo '<tr' . odd() . '><td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false; form_uncheck(\'all-page\');">' . (count($select) != count($group) || information_schema($_GET["db"]) ? '' : ' <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a>');
 				foreach ($row as $key => $val) {
 					if (strlen($names[$key])) {
