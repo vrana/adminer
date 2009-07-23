@@ -332,7 +332,7 @@ function process_input($name, $field) {
 	} elseif ($field["type"] == "enum") {
 		return (isset($_GET["default"]) ? $dbh->quote($value) : intval($value));
 	} elseif ($field["type"] == "set") {
-		return (isset($_GET["default"]) ? "'" . implode(",", array_map('escape_string', (array) $value)) . "'" : array_sum((array) $value));
+		return (isset($_GET["default"]) ? $dbh->quote(implode(",", (array) $value)) : array_sum((array) $value));
 	} elseif (ereg('binary|blob', $field["type"])) {
 		$file = get_file($idf);
 		if (!is_string($file)) {
