@@ -1,6 +1,8 @@
 <?php
 error_reporting(4343); // errors and warnings
 
+include "../adminer/include/coverage.inc.php";
+
 // disable filter.default
 $filter = (!ereg('^(unsafe_raw)?$', ini_get("filter.default")) || ini_get("filter.default_flags"));
 if ($filter) {
@@ -44,21 +46,6 @@ if (!ini_get("session.auto_start")) {
 	session_start();
 }
 
-if (isset($_SESSION["coverage"])) {
-	// coverage is used in tests and removed in compilation
-	function save_coverage() {
-		foreach (xdebug_get_code_coverage() as $filename => $lines) {
-			foreach ($lines as $l => $val) {
-				if (!$_SESSION["coverage"][$filename][$l] || $val > 0) {
-					$_SESSION["coverage"][$filename][$l] = $val;
-				}
-			}
-		}
-	}
-	xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
-	register_shutdown_function('save_coverage');
-}
-
 // disable magic quotes to be able to use database escaping function
 if (get_magic_quotes_gpc()) {
     $process = array(&$_GET, &$_POST, &$_COOKIE);
@@ -86,9 +73,6 @@ include "../adminer/include/lang.inc.php";
 include "../adminer/lang/$LANG.inc.php";
 include "./include/adminer.inc.php";
 include "../adminer/include/design.inc.php";
-if (isset($_GET["coverage"])) {
-	include "../adminer/coverage.inc.php";
-}
 include "../adminer/include/pdo.inc.php";
 include "../adminer/include/mysql.inc.php";
 include "../adminer/include/auth.inc.php";

@@ -192,9 +192,8 @@ if (isset($_SERVER["argv"][1])) {
 
 $file = file_get_contents(dirname(__FILE__) . "/$project/index.php");
 $file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file);
-$file = preg_replace('(' . str_replace(' ', '\\s*', preg_quote(' if (isset($_GET["coverage"])) { include "../adminer/coverage.inc.php"; }')) . ')', '', $file);
+$file = str_replace('include "../adminer/include/coverage.inc.php";', '', $file);
 $file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file); // bootstrap.inc.php
-$file = preg_replace("~if \\(isset\\(\\\$_SESSION\\[\"coverage.*\n}\n| && !isset\\(\\\$_SESSION\\[\"coverage\"\\]\\)~sU", '', $file);
 $file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
 $file = preg_replace_callback('~\\b(include|require) "([^"]*\\$LANG.inc.php)";~', 'put_file_lang', $file);
 if ($_COOKIE["adminer_lang"]) {

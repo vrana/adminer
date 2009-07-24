@@ -46,7 +46,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	if (strlen($_GET["db"]) && $databases && !in_array($_GET["db"], $databases, true)) {
 		$databases = null;
 	}
-	if (isset($databases) && !isset($_GET["sql"]) && !isset($_SESSION["coverage"])) {
+	if (isset($databases) && !isset($_GET["sql"])) {
 		// improves concurrency if a user opens several pages at once
 		session_write_close();
 	}
