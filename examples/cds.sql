@@ -1,5 +1,6 @@
-CREATE DATABASE selenium COLLATE utf8_czech_ci;
-USE selenium;
+DROP DATABASE IF EXISTS adminer_test;
+CREATE DATABASE adminer_test COLLATE utf8_czech_ci;
+USE adminer_test;
 
 CREATE TABLE interprets (
 	id int NOT NULL auto_increment,
@@ -10,7 +11,7 @@ CREATE TABLE interprets (
 CREATE TABLE albums (
 	id int NOT NULL auto_increment,
 	interpret int NOT NULL COMMENT 'Interpret',
-	name varchar(100) NOT NULL COMMENT 'Name',
+	title varchar(100) NOT NULL COMMENT 'Title',
 	FOREIGN KEY (interpret) REFERENCES interprets(id),
 	PRIMARY KEY (id)
 ) ENGINE=InnoDB COMMENT='Albums';

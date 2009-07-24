@@ -13,13 +13,13 @@
 </thead><tbody>
 <tr>
 	<td>open</td>
-	<td>/adminer/adminer/?db=selenium&amp;view=</td>
+	<td>/adminer/adminer/?db=adminer_test&amp;view=</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
 	<td>select</td>
-	<td>SELECT albums.id, albums.album, interprets.interpret<br />FROM albums<br />LEFT JOIN interprets ON albums.interpret = interprets.id</td>
+	<td>SELECT albums.id, albums.title, interprets.name<br />FROM albums<br />LEFT JOIN interprets ON albums.interpret = interprets.id</td>
 </tr>
 <tr>
 	<td>type</td>

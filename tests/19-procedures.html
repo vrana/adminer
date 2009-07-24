@@ -13,7 +13,7 @@
 </thead><tbody>
 <tr>
 	<td>open</td>
-	<td>/adminer/adminer/?db=selenium&amp;procedure=</td>
+	<td>/adminer/adminer/?db=adminer_test&amp;procedure=</td>
 	<td></td>
 </tr>
 <tr>
@@ -39,7 +39,7 @@
 <tr>
 	<td>type</td>
 	<td>fields[1.1][field]</td>
-	<td>album_name</td>
+	<td>album_title</td>
 </tr>
 <tr>
 	<td>select</td>
@@ -54,7 +54,7 @@
 <tr>
 	<td>type</td>
 	<td>definition</td>
-	<td>BEGIN<br />SELECT id INTO @interpret FROM interprets WHERE interpret = interpret_name;<br />IF @interpret IS NULL THEN<br />&nbsp;&nbsp;&nbsp;&nbsp;INSERT INTO interprets (interpret) VALUES (interpret_name);<br />&nbsp;&nbsp;&nbsp;&nbsp;SET @interpret = LAST_INSERT_ID();<br />END IF;<br />INSERT INTO albums (interpret, album) VALUES (@interpret, album_name);<br />END</td>
+	<td>BEGIN<br />SELECT id INTO @interpret FROM interprets WHERE name = interpret_name;<br />IF @interpret IS NULL THEN<br />&nbsp;&nbsp;&nbsp;&nbsp;INSERT INTO interprets (name) VALUES (interpret_name);<br />&nbsp;&nbsp;&nbsp;&nbsp;SET @interpret = LAST_INSERT_ID();<br />END IF;<br />INSERT INTO albums (interpret, title) VALUES (@interpret, album_title);<br />END</td>
 </tr>
 <tr>
 	<td>type</td>
@@ -83,7 +83,7 @@
 </tr>
 <tr>
 	<td>type</td>
-	<td>fields[album_name]</td>
+	<td>fields[album_title]</td>
 	<td>Dangerous</td>
 </tr>
 <tr>
@@ -98,7 +98,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>link=selenium</td>
+	<td>link=adminer_test</td>
 	<td></td>
 </tr>
 <tr>
