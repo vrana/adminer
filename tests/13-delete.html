@@ -4,16 +4,21 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="" />
-<title>13-delete</title>
+<title>Delete</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">13-delete</td></tr>
+<tr><td rowspan="1" colspan="3">Delete</td></tr>
 </thead><tbody>
 <tr>
 	<td>open</td>
-	<td>/adminer/adminer/?db=selenium&amp;edit=albums&amp;where%5Bid%5D=2</td>
+	<td>/adminer/adminer/?db=selenium&amp;select=albums</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@name='check[]' and @value='where%5Bid%5D=2']</td>
 	<td></td>
 </tr>
 <tr>
@@ -22,13 +27,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>assertConfirmation</td>
-	<td>Are you sure?</td>
-	<td></td>
-</tr>
-<tr>
 	<td>verifyTextPresent</td>
-	<td>Item has been deleted.</td>
+	<td>1 item have been affected.</td>
 	<td></td>
 </tr>
 
