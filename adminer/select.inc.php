@@ -261,7 +261,7 @@ if (!$columns) {
 	echo "</div></fieldset>\n";
 	echo "</form>\n";
 	
-	$query = "SELECT " . (count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . $from . $group_by . (strlen($limit) ? " LIMIT " . intval($limit) . (intval($_GET["page"]) ? " OFFSET " . ($limit * $_GET["page"]) : "") : "");
+	$query = "SELECT " . (intval($limit) && count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . $from . $group_by . (strlen($limit) ? " LIMIT " . intval($limit) . (intval($_GET["page"]) ? " OFFSET " . ($limit * $_GET["page"]) : "") : "");
 	echo adminer_select_query($query);
 	
 	$result = $dbh->query($query);
