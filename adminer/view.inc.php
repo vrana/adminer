@@ -2,11 +2,9 @@
 $dropped = false;
 if ($_POST && !$error) {
 	if (strlen($_GET["view"])) {
-		$dropped = query_redirect("DROP VIEW " . idf_escape($_GET["view"]), substr($SELF, 0, -1), lang('View has been dropped.'), $_POST["drop"], !$_POST["dropped"]);
+		$dropped = query_redirect("DROP VIEW " . idf_escape($_GET["view"]), substr($SELF, 0, -1), lang('View has been dropped.'), false, !$_POST["dropped"]);
 	}
-	if (!$_POST["drop"]) {
-		query_redirect("CREATE VIEW " . idf_escape($_POST["name"]) . " AS\n$_POST[select]", $SELF . "table=" . urlencode($_POST["name"]), (strlen($_GET["view"]) ? lang('View has been altered.') : lang('View has been created.')));
-	}
+	query_redirect("CREATE VIEW " . idf_escape($_POST["name"]) . " AS\n$_POST[select]", $SELF . "table=" . urlencode($_POST["name"]), (strlen($_GET["view"]) ? lang('View has been altered.') : lang('View has been created.')));
 }
 
 page_header((strlen($_GET["view"]) ? lang('Alter view') : lang('Create view')), $error, array("table" => $_GET["view"]), $_GET["view"]);
@@ -27,5 +25,4 @@ if ($_POST) {
 <?php if ($dropped) { // old view was dropped but new wasn't created ?><input type="hidden" name="dropped" value="1"><?php } ?>
 <?php echo lang('Name'); ?>: <input name="name" value="<?php echo htmlspecialchars($row["name"]); ?>" maxlength="64">
 <input type="submit" value="<?php echo lang('Save'); ?>">
-<?php if (strlen($_GET["view"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
 </form>
