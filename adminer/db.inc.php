@@ -54,15 +54,16 @@ if (!$table_status) {
 		$name = $row["Name"];
 		table_comment($row);
 		echo '<tr' . odd() . '><td><input type="checkbox" name="' . (isset($row["Rows"]) ? 'tables' : 'views') . '[]" value="' . htmlspecialchars($name) . '"' . (in_array($name, $tables_views, true) ? ' checked="checked"' : '') . ' onclick="form_uncheck(\'check-all\');">';
+		echo '<th><a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($name) . '">' . htmlspecialchars($name) . '</a>';
 		if (isset($row["Rows"])) {
-			echo '<th><a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($name) . '">' . htmlspecialchars($name) . "</a><td>$row[Engine]<td>$row[Collation]";
+			echo "<td>$row[Engine]<td>$row[Collation]";
 			foreach (array("Data_length" => "create", "Index_length" => "indexes", "Data_free" => "edit", "Auto_increment" => "create", "Rows" => "select") as $key => $link) {
 				$val = number_format($row[$key], 0, '.', lang(','));
 				echo '<td align="right">' . (strlen($row[$key]) ? '<a href="' . htmlspecialchars("$SELF$link=") . urlencode($name) . '">' . str_replace(" ", "&nbsp;", ($key == "Rows" && $row["Engine"] == "InnoDB" && $val ? lang('~ %s', $val) : $val)) . '</a>' : '&nbsp;');
 			}
 			echo "<td>" . (strlen(trim($row["Comment"])) ? htmlspecialchars($row["Comment"]) : "&nbsp;");
 		} else {
-			echo '<th><a href="' . htmlspecialchars($SELF) . 'view=' . urlencode($name) . '">' . htmlspecialchars($name) . '</a><td colspan="8"><a href="' . htmlspecialchars($SELF) . "select=" . urlencode($name) . '">' . lang('View') . '</a>';
+			echo '<td colspan="8"><a href="' . htmlspecialchars($SELF) . "select=" . urlencode($name) . '">' . lang('View') . '</a>';
 		}
 	}
 	echo "</table>\n";
@@ -76,7 +77,7 @@ if (!$table_status) {
 }
 
 if ($dbh->server_info >= 5) {
-	echo '<p><a href="' . htmlspecialchars($SELF) . 'createv=">' . lang('Create view') . "</a>\n";
+	echo '<p><a href="' . htmlspecialchars($SELF) . 'view=">' . lang('Create view') . "</a>\n";
 	echo "<h3>" . lang('Routines') . "</h3>\n";
 	$result = $dbh->query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . $dbh->quote($_GET["db"]));
 	if ($result->num_rows) {

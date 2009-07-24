@@ -27,9 +27,9 @@ function adminer_login($login, $password) {
 	return call_adminer('login', true, $login, $password);
 }
 
-function adminer_table_name($row) {
-	table_comment($row);
-	return call_adminer('table_name', htmlspecialchars(strlen($row["Comment"]) ? $row["Comment"] : $row["Name"]), $row);
+function adminer_table_name($table_status) {
+	table_comment($table_status);
+	return call_adminer('table_name', htmlspecialchars(strlen($table_status["Comment"]) ? $table_status["Comment"] : $table_status["Name"]), $table_status);
 }
 
 function adminer_field_name($field) {
@@ -48,7 +48,7 @@ FROM information_schema.KEY_COLUMN_USAGE
 WHERE TABLE_SCHEMA = " . $dbh->quote(adminer_database()) . "
 AND REFERENCED_TABLE_SCHEMA = " . $dbh->quote(adminer_database()) . "
 AND REFERENCED_TABLE_NAME = " . $dbh->quote($table) . "
-ORDER BY ORDINAL_POSITION");
+ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 	if ($result) {
 		while ($row = $result->fetch_assoc()) {
 			$return[$row["TABLE_NAME"]][$row["CONSTRAINT_NAME"]][$row["COLUMN_NAME"]] = $row["REFERENCED_COLUMN_NAME"];

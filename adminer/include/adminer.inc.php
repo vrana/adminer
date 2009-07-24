@@ -50,8 +50,8 @@ function adminer_login($login, $password) {
 * @param array result of SHOW TABLE STATUS
 * @return string
 */
-function adminer_table_name($row) {
-	return call_adminer('table_name', htmlspecialchars($row["Name"]), $row);
+function adminer_table_name($table_status) {
+	return call_adminer('table_name', htmlspecialchars($table_status["Name"]), $table_status);
 }
 
 /** Field caption used in select and edit
@@ -68,7 +68,7 @@ function adminer_field_name($field) {
 */
 function adminer_select_links($table_status) {
 	global $SELF;
-	return call_adminer('select_links', '<a href="' . htmlspecialchars($SELF) . (isset($table_status["Engine"]) ? 'table=' : 'view=') . urlencode($_GET['select']) . '">' . lang('Table structure') . '</a>', $table_status);
+	return call_adminer('select_links', '<a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($_GET['select']) . '">' . lang('Table structure') . '</a>', $table_status);
 }
 
 /** Find backward keys for table
@@ -198,7 +198,7 @@ function adminer_process_input($name, $field) {
 * @return bool true if default navigation should be printed
 */
 function adminer_navigation($missing) {
-	global $SELF;
+	global $SELF, $dbh;
 	if (call_adminer('navigation', true, $missing) && $missing != "auth") {
 		ob_flush();
 		flush();
@@ -227,16 +227,17 @@ function adminer_navigation($missing) {
 </form>
 <?php
 		if ($missing != "db" && strlen($_GET["db"])) {
-			$table_status = table_status();
-			if (!$table_status) {
+			$result = $dbh->query("SHOW TABLES");
+			if (!$result->num_rows) {
 				echo "<p class='message'>" . lang('No tables.') . "\n";
 			} else {
 				echo "<p>\n";
-				foreach ($table_status as $row) {
-					echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row["Name"]) . '">' . lang('select') . '</a> ';
-					echo '<a href="' . htmlspecialchars($SELF) . (isset($row["Rows"]) ? 'table' : 'view') . '=' . urlencode($row["Name"]) . '">' . adminer_table_name($row) . "</a><br>\n";
+				while ($row = $result->fetch_row()) {
+					echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row[0]) . '">' . lang('select') . '</a> ';
+					echo '<a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($row[0]) . '">' . adminer_table_name(array("Name" => $row[0])) . "</a><br>\n"; //! Adminer::table_name may work with full table status
 				}
 			}
+			$result->free();
 			echo '<p><a href="' . htmlspecialchars($SELF) . 'create=">' . lang('Create new table') . "</a>\n";
 		}
 	}

@@ -15,8 +15,6 @@ if (isset($_GET["download"])) {
 	include "./download.inc.php";
 } elseif (isset($_GET["table"])) {
 	include "./table.inc.php";
-} elseif (isset($_GET["view"])) {
-	include "./view.inc.php";
 } elseif (isset($_GET["schema"])) {
 	include "./schema.inc.php";
 } elseif (isset($_GET["dump"])) {
@@ -51,8 +49,8 @@ if (isset($_GET["download"])) {
 		include "./call.inc.php";
 	} elseif (isset($_GET["foreign"])) {
 		include "./foreign.inc.php";
-	} elseif (isset($_GET["createv"])) {
-		include "./createv.inc.php";
+	} elseif (isset($_GET["view"])) {
+		include "./view.inc.php";
 	} elseif (isset($_GET["event"])) {
 		include "./event.inc.php";
 	} elseif (isset($_GET["procedure"])) {
