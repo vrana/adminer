@@ -146,10 +146,11 @@ function routine($name, $type) {
 	preg_match("~\\(((?:$pattern\\s*,?)*)\\)" . ($type == "FUNCTION" ? "\\s*RETURNS\\s+$type_pattern" : "") . "\\s*(.*)~is", $create, $match);
 	$fields = array();
 	preg_match_all("~$pattern\\s*,?~is", $match[1], $matches, PREG_SET_ORDER);
-	foreach ($matches as $i => $param) {
+	foreach ($matches as $param) {
+		$name = str_replace("``", "`", $param[2]) . $param[3];
 		$data_type = strtolower($param[4]);
-		$fields[$i] = array(
-			"field" => str_replace("``", "`", $param[2]) . $param[3],
+		$fields[$name] = array(
+			"field" => $name,
 			"type" => (isset($aliases[$data_type]) ? $aliases[$data_type] : $data_type),
 			"length" => preg_replace_callback("~$enum_length~s", 'normalize_enum', $param[5]),
 			"unsigned" => strtolower(preg_replace('~\\s+~', ' ', trim("$param[7] $param[6]"))),
