@@ -300,7 +300,7 @@ function input($field, $value, $function) {
 		echo (count($functions) > 1 ? '<select name="function[' . $name . ']">' . optionlist($functions, $function) . '</select>' : "&nbsp;") . '<td>';
 		$options = adminer_edit_input($_GET["edit"], $field); // usage in call is without a table
 		if (is_array($options)) {
-			echo '<select name="fields[' . $name . ']"' . $onchange . '>' . optionlist($options, $value, true) . '</select>';
+			echo '<select name="fields[' . $name . ']"' . $onchange . '>' . optionlist(($options ? $options : array("" => "")), $value, true) . '</select>';
 		} elseif ($field["type"] == "set") { //! 64 bits
 			preg_match_all("~'((?:[^']+|'')*)'~", $field["length"], $matches);
 			foreach ($matches[1] as $i => $val) {
