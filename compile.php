@@ -180,8 +180,8 @@ if (file_exists(dirname(__FILE__) . "/" . $_SERVER["argv"][1] . "/index.php")) {
 	$project = $_SERVER["argv"][1];
 	array_shift($_SERVER["argv"]);
 }
+$_COOKIE["adminer_lang"] = $_SERVER["argv"][1]; // Adminer functions read language from cookie
 if (isset($_SERVER["argv"][1])) {
-	$_COOKIE["adminer_lang"] = $_SERVER["argv"][1]; // Adminer functions read language from cookie
 	include dirname(__FILE__) . "/adminer/include/lang.inc.php";
 	if (isset($_SERVER["argv"][2]) || !isset($langs[$_COOKIE["adminer_lang"]])) {
 		echo "Usage: php compile.php [adminer] [lang]\nPurpose: Compile adminer[-lang].php from adminer/index.php.\n";
