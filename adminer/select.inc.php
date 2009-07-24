@@ -312,7 +312,7 @@ if (!$columns) {
 				$unique_idf = implode('&amp;', unique_idf($rows[$n], $indexes)); //! don't use aggregation functions
 				echo '<tr' . odd() . '><td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false; form_uncheck(\'all-page\');">' . (count($select) != count($group) || information_schema($_GET["db"]) ? '' : ' <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a>');
 				foreach ($row as $key => $val) {
-					if (strlen($names[$key])) {
+					if (isset($names[$key])) {
 						if (strlen($val) && (!isset($email_fields[$key]) || strlen($email_fields[$key]))) {
 							$email_fields[$key] = (is_email($val) ? $names[$key] : ""); //! filled e-mails may be contained on other pages
 						}
@@ -329,9 +329,6 @@ if (!$columns) {
 								$val = nl2br(shorten_utf8($val, max(0, intval($text_length)))); // usage of LEFT() would reduce traffic but complicate query
 							} else {
 								$val = nl2br(htmlspecialchars($val));
-								if ($fields[$key]["type"] == "char") {
-									$val = "<code>$val</code>";
-								}
 							}
 							
 							// link related items
@@ -348,7 +345,7 @@ if (!$columns) {
 						if (!$link && is_email($val)) {
 							$link = "mailto:$val";
 						}
-						$val = adminer_select_val($val, $link);
+						$val = adminer_select_val($val, $link, $fields[$key]);
 						echo "<td>$val";
 					}
 				}

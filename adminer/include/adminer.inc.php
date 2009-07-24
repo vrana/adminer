@@ -109,10 +109,12 @@ function adminer_row_descriptions($rows, $foreign_keys) {
 /** Value printed in select table
 * @param string escaped value to print
 * @param string link to foreign key
+* @param array single field returned from fields()
 * @return string
 */
-function adminer_select_val($val, $link) {
-	return call_adminer('select_val', ($link ? "<a href=\"$link\">$val</a>" : $val), $val, $link);
+function adminer_select_val($val, $link, $field) {
+	$return = ($field["type"] == "char" ? "<code>$val</code>" : $val);
+	return call_adminer('select_val', ($link ? "<a href=\"$link\">$return</a>" : $return), $val, $link);
 }
 
 /** Query printed after execution in the message

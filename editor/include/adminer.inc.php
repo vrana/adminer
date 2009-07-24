@@ -107,10 +107,10 @@ function adminer_row_descriptions($rows, $foreign_keys) {
 	return call_adminer('row_descriptions', $return, $rows, $foreign_keys);
 }
 
-function adminer_select_val($val, $link) {
-	return call_adminer('select_val', ($link ?
-		"<a href=\"$link\">$val</a>" :
-		($val == "<i>NULL</i>" ? "&nbsp;" : preg_replace('~^<code>(.*)</code>$~', '\\1', $val))
+function adminer_select_val($val, $link, $field) {
+	return call_adminer('select_val', ($link
+		? "<a href=\"$link\">$val</a>"
+		: ($val == "<i>NULL</i>" ? "&nbsp;" : $val)
 	), $val, $link);
 }
 

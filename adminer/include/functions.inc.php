@@ -364,11 +364,11 @@ function email_header($header) {
 	return "=?UTF-8?B?" . base64_encode($header) . "?="; //! split long lines
 }
 
-function call_adminer($method, $default, $arg1 = null, $arg2 = null) {
+function call_adminer($method, $default, $arg1 = null, $arg2 = null, $arg3 = null) {
 	// maintains original method name in minification
 	if (method_exists('Adminer', $method)) { // user defined class
 		// can use func_get_args() and call_user_func_array()
-		return Adminer::$method($arg1, $arg2);
+		return Adminer::$method($arg1, $arg2, $arg3);
 	}
 	return $default; //! $default is evaluated even if not neccessary
 }
