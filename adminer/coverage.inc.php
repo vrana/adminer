@@ -1,4 +1,6 @@
 <?php
+//! measure Editor
+
 function xhtml_open_tags($s) {
 	// returns array of opened tags in $s
 	$return = array();

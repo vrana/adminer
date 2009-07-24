@@ -1,5 +1,5 @@
-CREATE DATABASE cds COLLATE utf8_czech_ci;
-USE cds;
+CREATE DATABASE selenium COLLATE utf8_czech_ci;
+USE selenium;
 
 CREATE TABLE interprets (
 	id int NOT NULL auto_increment,

@@ -19,7 +19,7 @@ class Adminer {
 	
 	function database() {
 		// will be escaped by Adminer
-		return 'cds';
+		return 'selenium';
 	}
 	
 	function login($login, $password) {
