@@ -1,10 +1,12 @@
 Adminer 2.0.0:
 Editor: User friendly data editor
 Customization: Adminer class
-E-mail sending
-Table relations (Editor)
 Create single column foreign key in table structure
+Table relations (Editor)
+Send e-mails (Editor)
+Display images in blob (Editor)
 Separate types to groups in table creation
+Link e-mails in select
 Show type in field name title (thanks to Jakub Sochor)
 Preselect now() for timestamp columns (thanks to paranoiq)
 Clear history (thanks to paranoiq)

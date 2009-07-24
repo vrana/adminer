@@ -28,4 +28,4 @@ JavaScript data validation
 Joining tables - PRIMARY KEY (table, joining)
 Simplify search - textual, from-to
 Rank, Tree structure
-Treat tinyint(1) as bool
+Treat tinyint(1) as bool, format date

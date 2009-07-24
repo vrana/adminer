@@ -120,6 +120,22 @@ function adminer_select_val($val, $link, $field) {
 	return call_adminer('select_val', ($link ? "<a href=\"$link\">$return</a>" : $return), $val, $link);
 }
 
+/** Print extra text in the end of a select form
+* @param array fields holding e-mails
+* @return bool whether to print default extra
+*/
+function adminer_select_extra_display($email_fields) {
+	call_adminer('select_extra_display', false, $email_fields);
+}
+
+/** Process extras in select form
+* @param array AND conditions
+* @return bool true if processed, false to process other parts of form
+*/
+function adminer_select_extra_process($where) {
+	return call_adminer('select_extra_process', false, $where);
+}
+
 /** Query printed after execution in the message
 * @param string executed query
 * @return string

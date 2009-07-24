@@ -109,72 +109,63 @@ if ($_POST && !$error) {
 		}
 		exit;
 	}
-	if ($_POST["email"]) {
-		$sent = 0;
-		if ($_POST["all"] || $_POST["check"]) {
-			$field = idf_escape($_POST["email_field"]);
-			$result = $dbh->query("SELECT DISTINCT $field FROM " . idf_escape($_GET["select"]) . " WHERE $field IS NOT NULL AND $field != ''" . ($where ? " AND " . implode(" AND ", $where) : "") . ($_POST["all"] ? "" : " AND ($where_check)"));
-			while ($row = $result->fetch_row()) {
-				$sent += mail($row[0], email_header($_POST["email_subject"]), $_POST["email_message"], "MIME-Version: 1.0\nContent-Type: text/plain; charset=utf-8\nContent-Transfer-Encoding: 8bit" . ($_POST["email_from"] ? "\nFrom: " . email_header($_POST["email_from"]) : ""));
-			}
-			$result->free();
-		}
-		redirect(remove_from_uri(), lang('%d e-mail(s) have been sent.', $sent));
-	} elseif (!$_POST["import"]) { // edit
-		$result = true;
-		$affected = 0;
-		$command = ($_POST["delete"] ? ($_POST["all"] && !$where ? "TRUNCATE " : "DELETE FROM ") : ($_POST["clone"] ? "INSERT INTO " : "UPDATE ")) . idf_escape($_GET["select"]);
-		if (!$_POST["delete"]) {
-			$set = array();
-			foreach ($columns as $name => $val) { //! should check also for edit or insert privileges
-				$val = process_input($name, $fields[$name]);
-				if ($_POST["clone"]) {
-					$set[] = ($val !== false ? $val : idf_escape($name));
-				} elseif ($val !== false) {
-					$set[] = idf_escape($name) . " = $val";
-				}
-			}
-			$command .= ($_POST["clone"] ? "\nSELECT " . implode(", ", $set) . "\nFROM " . idf_escape($_GET["select"]) : " SET\n" . implode(",\n", $set));
-		}
-		if ($_POST["delete"] || $set) {
-			if ($_POST["all"] || ($primary === array() && $_POST["check"])) {
-				$result = queries($command . ($_POST["all"] ? ($where ? "\nWHERE " . implode(" AND ", $where) : "") : "\nWHERE $where_check"));
-				$affected = $dbh->affected_rows;
-			} else {
-				foreach ((array) $_POST["check"] as $val) {
-					// where is not unique so OR can't be used
-					$result = queries($command . "\nWHERE " . where_check($val) . "\nLIMIT 1");
-					if (!$result) {
-						break;
+	if (!adminer_select_extra_process($where)) {
+		if (!$_POST["import"]) { // edit
+			$result = true;
+			$affected = 0;
+			$command = ($_POST["delete"] ? ($_POST["all"] && !$where ? "TRUNCATE " : "DELETE FROM ") : ($_POST["clone"] ? "INSERT INTO " : "UPDATE ")) . idf_escape($_GET["select"]);
+			if (!$_POST["delete"]) {
+				$set = array();
+				foreach ($columns as $name => $val) { //! should check also for edit or insert privileges
+					$val = process_input($name, $fields[$name]);
+					if ($_POST["clone"]) {
+						$set[] = ($val !== false ? $val : idf_escape($name));
+					} elseif ($val !== false) {
+						$set[] = idf_escape($name) . " = $val";
 					}
-					$affected += $dbh->affected_rows;
+				}
+				$command .= ($_POST["clone"] ? "\nSELECT " . implode(", ", $set) . "\nFROM " . idf_escape($_GET["select"]) : " SET\n" . implode(",\n", $set));
+			}
+			if ($_POST["delete"] || $set) {
+				if ($_POST["all"] || ($primary === array() && $_POST["check"])) {
+					$result = queries($command . ($_POST["all"] ? ($where ? "\nWHERE " . implode(" AND ", $where) : "") : "\nWHERE $where_check"));
+					$affected = $dbh->affected_rows;
+				} else {
+					foreach ((array) $_POST["check"] as $val) {
+						// where is not unique so OR can't be used
+						$result = queries($command . "\nWHERE " . where_check($val) . "\nLIMIT 1");
+						if (!$result) {
+							break;
+						}
+						$affected += $dbh->affected_rows;
+					}
 				}
 			}
-		}
-		query_redirect(queries(), remove_from_uri("page"), lang('%d item(s) have been affected.', $affected), $result, false, !$result);
-		//! display edit page in case of an error
-	} elseif (is_string($file = get_file("csv_file"))) {
-		$file = preg_replace("~^\xEF\xBB\xBF~", '', $file); //! character set
-		$cols = "";
-		$rows = array(); //! packet size
-		preg_match_all('~("[^"]*"|[^"\\n]+)+~', $file, $matches);
-		foreach ($matches[0] as $key => $val) {
-			$row = array();
-			preg_match_all('~(("[^"]*")+|[^,]*),~', "$val,", $matches2);
-			if (!$key && !array_diff($matches2[1], array_keys($fields))) { //! doesn't work with column names containing ",\n
-				// first row corresponds to column names - use it for table structure
-				$cols = " (" . implode(", ", array_map('idf_escape', $matches2[1])) . ")";
-			} else {
-				foreach ($matches2[1] as $col) {
-					$row[] = (!strlen($col) ? "NULL" : $dbh->quote(str_replace('""', '"', preg_replace('~^"|"$~', '', $col))));
+			query_redirect(queries(), remove_from_uri("page"), lang('%d item(s) have been affected.', $affected), $result, false, !$result);
+			//! display edit page in case of an error
+		} elseif (is_string($file = get_file("csv_file"))) {
+			$file = preg_replace("~^\xEF\xBB\xBF~", '', $file); //! character set
+			$cols = "";
+			$rows = array(); //! packet size
+			preg_match_all('~("[^"]*"|[^"\\n]+)+~', $file, $matches);
+			foreach ($matches[0] as $key => $val) {
+				$row = array();
+				preg_match_all('~(("[^"]*")+|[^,]*),~', "$val,", $matches2);
+				if (!$key && !array_diff($matches2[1], array_keys($fields))) { //! doesn't work with column names containing ",\n
+					// first row corresponds to column names - use it for table structure
+					$cols = " (" . implode(", ", array_map('idf_escape', $matches2[1])) . ")";
+				} else {
+					foreach ($matches2[1] as $col) {
+						$row[] = (!strlen($col) ? "NULL" : $dbh->quote(str_replace('""', '"', preg_replace('~^"|"$~', '', $col))));
+					}
+					$rows[] = "\n(" . implode(", ", $row) . ")";
 				}
-				$rows[] = "\n(" . implode(", ", $row) . ")";
 			}
+			$result = queries("INSERT INTO " . idf_escape($_GET["select"]) . "$cols VALUES" . implode(",", $rows));
+			query_redirect(queries(), remove_from_uri("page"), lang('%d row(s) has been imported.', $dbh->affected_rows), $result, false, !$result);
+		} else {
+			$error = upload_error($file);
 		}
-		$result = queries("INSERT INTO " . idf_escape($_GET["select"]) . "$cols VALUES" . implode(",", $rows));
-		query_redirect(queries(), remove_from_uri("page"), lang('%d row(s) has been imported.', $dbh->affected_rows), $result, false, !$result);
-	} else {
-		$error = upload_error($file);
 	}
 }
 
@@ -390,17 +381,7 @@ if (!$columns) {
 		}
 		echo "<fieldset><legend>" . lang('CSV Import') . "</legend><div><input type='hidden' name='token' value='$token'><input type='file' name='csv_file'> <input type='submit' name='import' value='" . lang('Import') . "'></div></fieldset>\n";
 		
-		//! Editor only
-		$email_fields = array_filter($email_fields); //! should use strlen but compile.php doesn't support array_filter
-		if ($email_fields) {
-			echo '<fieldset><legend><a href="#fieldset-email" onclick="return !toggle(\'fieldset-email\');">' . lang('E-mail') . "</a></legend><div id='fieldset-email' class='hidden'>\n";
-			echo "<p>" . lang('From') . ": <input name='email_from'>\n";
-			echo lang('Subject') . ": <input name='email_subject'>\n";
-			echo "<p><textarea name='email_message' rows='15' cols='60'></textarea>\n";
-			echo "<p>" . (count($email_fields) == 1 ? '<input type="hidden" name="email_field" value="' . htmlspecialchars(key($email_fields)) . '">' : '<select name="email_field">' . optionlist($email_fields) . '</select> ');
-			echo "<input type='submit' name='email' value='" . lang('Send') . "'$confirm>\n";
-			echo "</div></fieldset>\n";
-		}
+		adminer_select_extra_display(array_filter($email_fields)); //! should use strlen but compile.php doesn't support array_filter
 		
 		echo "</form>\n";
 	}

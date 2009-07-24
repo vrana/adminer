@@ -118,6 +118,37 @@ function adminer_select_val($val, $link, $field) {
 	return call_adminer('select_val', ($link ? "<a href=\"$link\">$return</a>" : $return), $val, $link);
 }
 
+function adminer_select_extra_display($email_fields) {
+	global $confirm;
+	if (call_adminer('select_extra_display', true, $email_fields) && $email_fields) {
+		echo '<fieldset><legend><a href="#fieldset-email" onclick="return !toggle(\'fieldset-email\');">' . lang('E-mail') . "</a></legend><div id='fieldset-email' class='hidden'>\n";
+		echo "<p>" . lang('From') . ": <input name='email_from'>\n";
+		echo lang('Subject') . ": <input name='email_subject'>\n";
+		echo "<p><textarea name='email_message' rows='15' cols='60'></textarea>\n";
+		echo "<p>" . (count($email_fields) == 1 ? '<input type="hidden" name="email_field" value="' . htmlspecialchars(key($email_fields)) . '">' : '<select name="email_field">' . optionlist($email_fields) . '</select> ');
+		echo "<input type='submit' name='email' value='" . lang('Send') . "'$confirm>\n";
+		echo "</div></fieldset>\n";
+	}
+}
+
+function adminer_select_extra_process($where) {
+	global $dbh;
+	if ($_POST["email"]) {
+		$sent = 0;
+		if ($_POST["all"] || $_POST["check"]) {
+			$where_check = "(" . implode(") OR (", array_map('where_check', (array) $_POST["check"])) . ")";
+			$field = idf_escape($_POST["email_field"]);
+			$result = $dbh->query("SELECT DISTINCT $field FROM " . idf_escape($_GET["select"]) . " WHERE $field IS NOT NULL AND $field != ''" . ($where ? " AND " . implode(" AND ", $where) : "") . ($_POST["all"] ? "" : " AND ($where_check)"));
+			while ($row = $result->fetch_row()) {
+				$sent += mail($row[0], email_header($_POST["email_subject"]), $_POST["email_message"], "MIME-Version: 1.0\nContent-Type: text/plain; charset=utf-8\nContent-Transfer-Encoding: 8bit" . ($_POST["email_from"] ? "\nFrom: " . email_header($_POST["email_from"]) : ""));
+			}
+			$result->free();
+		}
+		redirect(remove_from_uri(), lang('%d e-mail(s) have been sent.', $sent));
+	}
+	return call_adminer('select_extra_process', false, $where);
+}
+
 function adminer_message_query($query) {
 	return call_adminer('message_query', "<!--\n" . str_replace("--", "--><!--", $query) . "\n-->", $query);
 }
