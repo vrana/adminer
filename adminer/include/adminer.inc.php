@@ -114,6 +114,9 @@ function adminer_row_descriptions($rows, $foreign_keys) {
 */
 function adminer_select_val($val, $link, $field) {
 	$return = ($field["type"] == "char" ? "<code>$val</code>" : $val);
+	if (ereg('blob|binary', $field["type"]) && !is_utf8($val)) {
+		$return = lang('%d byte(s)', strlen($val));
+	}
 	return call_adminer('select_val', ($link ? "<a href=\"$link\">$return</a>" : $return), $val, $link);
 }
 
