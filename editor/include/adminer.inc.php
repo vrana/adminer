@@ -136,11 +136,19 @@ function adminer_select_extra_process($where) {
 	if ($_POST["email"]) {
 		$sent = 0;
 		if ($_POST["all"] || $_POST["check"]) {
-			$where_check = "(" . implode(") OR (", array_map('where_check', (array) $_POST["check"])) . ")";
 			$field = idf_escape($_POST["email_field"]);
-			$result = $dbh->query("SELECT DISTINCT $field FROM " . idf_escape($_GET["select"]) . " WHERE $field IS NOT NULL AND $field != ''" . ($where ? " AND " . implode(" AND ", $where) : "") . ($_POST["all"] ? "" : " AND ($where_check)"));
+			$result = $dbh->query("SELECT DISTINCT $field FROM " . idf_escape($_GET["select"])
+				. " WHERE $field IS NOT NULL AND $field != ''"
+				. ($where ? " AND " . implode(" AND ", $where) : "")
+				. ($_POST["all"] ? "" : " AND ((" . implode(") OR (", array_map('where_check', (array) $_POST["check"])) . "))")
+			);
 			while ($row = $result->fetch_row()) {
-				$sent += mail($row[0], email_header($_POST["email_subject"]), $_POST["email_message"], "MIME-Version: 1.0\nContent-Type: text/plain; charset=utf-8\nContent-Transfer-Encoding: 8bit" . ($_POST["email_from"] ? "\nFrom: " . email_header($_POST["email_from"]) : ""));
+				if (is_email($row[0]) && mail($row[0], email_header($_POST["email_subject"]), $_POST["email_message"],
+					"MIME-Version: 1.0\nContent-Type: text/plain; charset=utf-8\nContent-Transfer-Encoding: 8bit"
+					. (is_email($_POST["email_from"]) ? "\nFrom: $_POST[email_from]" : "") //! should allow address with a name but simple application of email_header() adds the default server domain
+				)) {
+					$sent++;
+				}
 			}
 			$result->free();
 		}
