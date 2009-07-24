@@ -59,7 +59,7 @@ function adminer_table_name($table_status) {
 * @return string
 */
 function adminer_field_name($field) {
-	return call_adminer('field_name', ($field ? '<span title="' . htmlspecialchars($field["full_type"]) . '">' . htmlspecialchars($field["field"]) . '</span>' : "*"), $field);
+	return call_adminer('field_name', '<span title="' . htmlspecialchars($field["full_type"]) . '">' . htmlspecialchars($field["field"]) . '</span>', $field);
 }
 
 /** Links after select heading

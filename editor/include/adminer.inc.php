@@ -33,7 +33,7 @@ function adminer_table_name($table_status) {
 }
 
 function adminer_field_name($field) {
-	return call_adminer('field_name', ($field ? htmlspecialchars(strlen($field["comment"]) ? $field["comment"] : $field["field"]) : "*"), $field);
+	return call_adminer('field_name', htmlspecialchars(strlen($field["comment"]) ? $field["comment"] : $field["field"]), $field);
 }
 
 function adminer_select_links($table_status) {

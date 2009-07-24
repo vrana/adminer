@@ -31,11 +31,18 @@ foreach ($fields as $key => $field) {
 	$rights += $field["privileges"];
 }
 
+function apply_sql_function($function, $column) {
+	return ($function
+		? ($function == "distinct" ? "COUNT(DISTINCT " : strtoupper("$function(") . "$column)")
+		: $column
+	);
+}
+
 $select = array(); // select expressions, empty for *
 $group = array(); // expressions without aggregation - will be used for GROUP BY if an aggregation function is used
 foreach ((array) $_GET["columns"] as $key => $val) {
 	if ($val["fun"] == "count" || (isset($columns[$val["col"]]) && (!$val["fun"] || in_array($val["fun"], $functions) || in_array($val["fun"], $grouping)))) {
-		$select[$key] = (isset($columns[$val["col"]]) ? ($val["fun"] ? ($val["fun"] == "distinct" ? "COUNT(DISTINCT " : strtoupper("$val[fun](")) . idf_escape($val["col"]) . ")" : idf_escape($val["col"])) : "COUNT(*)");
+		$select[$key] = apply_sql_function($val["fun"], (isset($columns[$val["col"]]) ? idf_escape($val["col"]) : "*"));
 		if (!in_array($val["fun"], $grouping)) {
 			$group[] = $select[$key];
 		}
@@ -292,10 +299,11 @@ if (!$columns) {
 			reset($select);
 			foreach ($rows[0] as $key => $val) {
 				$val = $_GET["columns"][key($select)];
-				$name = adminer_field_name($fields[$select ? $val["col"] : $key]);
+				$field = $fields[$select ? $val["col"] : $key];
+				$name = ($field ? adminer_field_name($field) : "*");
 				if (strlen($name)) {
 					$names[$key] = $name;
-					echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . ($val["fun"] ? strtoupper($val["fun"]) . " $name" : $name) . "</a>";
+					echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . apply_sql_function($val["fun"], $name) . "</a>";
 				}
 				next($select);
 			}
