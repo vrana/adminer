@@ -23,14 +23,14 @@ function adminer_object() {
 			return ($login == 'admin');
 		}
 		
-		function tableName($row) {
+		function tableName($tableStatus) {
 			// tables without comments would return empty string and will be ignored by Adminer
-			return htmlspecialchars($row["Comment"]);
+			return htmlspecialchars($tableStatus["Comment"]);
 		}
 		
-		function fieldName($field) {
-			// fields without comments will be ignored
-			return ($field ? htmlspecialchars($field["comment"]) : "*");
+		function fieldName($field, $order = 0) {
+			// only first five columns with comments will be displayed
+			return ($order < 5 ? htmlspecialchars($field["comment"]) : "");
 		}
 		
 	}

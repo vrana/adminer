@@ -22,10 +22,7 @@ Download external files (version checker and JUSH) from trusted HTTPS if Adminer
 ? AJAX editing - select page has all data to display edit form
 
 Editor:
-Choose columns hidden in select
-Restrict column selection in select to aggregation functions by index
 JavaScript data validation
 Joining tables - PRIMARY KEY (table, joining)
-Simplify search - textual, from-to
 Rank, Tree structure
-Treat tinyint(1) as bool, format date
+Treat tinyint(1) as bool

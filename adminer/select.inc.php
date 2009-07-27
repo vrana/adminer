@@ -181,11 +181,13 @@ if (!$columns) {
 			echo "<thead><tr><td><input type='checkbox' id='all-page' onclick='form_check(this, /check/);'>";
 			$names = array();
 			reset($select);
+			$order = 0;
 			foreach ($rows[0] as $key => $val) {
 				$val = $_GET["columns"][key($select)];
 				$field = $fields[$select ? $val["col"] : $key];
-				$name = ($field ? $adminer->fieldName($field) : "*");
+				$name = ($field ? $adminer->fieldName($field, $order) : "*");
 				if (strlen($name)) {
+					$order++;
 					$names[$key] = $name;
 					echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . apply_sql_function($val["fun"], $name) . "</a>";
 				}

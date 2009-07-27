@@ -32,7 +32,7 @@ class Adminer {
 		return htmlspecialchars(strlen($tableStatus["Comment"]) ? $tableStatus["Comment"] : $tableStatus["Name"]);
 	}
 	
-	function fieldName($field) {
+	function fieldName($field, $order = 0) {
 		return htmlspecialchars(strlen($field["comment"]) ? $field["comment"] : $field["field"]);
 	}
 	

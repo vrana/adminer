@@ -59,9 +59,10 @@ class Adminer {
 	
 	/** Field caption used in select and edit
 	* @param array single field returned from fields()
+	* @param int order of column in select
 	* @return string
 	*/
-	function fieldName($field) {
+	function fieldName($field, $order = 0) {
 		return '<span title="' . htmlspecialchars($field["full_type"]) . '">' . htmlspecialchars($field["field"]) . '</span>';
 	}
 	
