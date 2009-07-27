@@ -97,11 +97,6 @@ function where_link($i, $column, $value) {
 	return "&amp;where%5B$i%5D%5Bcol%5D=" . urlencode($column) . "&amp;where%5B$i%5D%5Bop%5D=%3D&amp;where%5B$i%5D%5Bval%5D=" . urlencode($value);
 }
 
-function process_length($length) {
-	global $enum_length;
-	return (preg_match("~^\\s*(?:$enum_length)(?:\\s*,\\s*(?:$enum_length))*\\s*\$~", $length) && preg_match_all("~$enum_length~", $length, $matches) ? implode(",", $matches[0]) : preg_replace('~[^0-9,+-]~', '', $length));
-}
-
 function redirect($location, $message = null) {
 	if (isset($message)) {
 		$_SESSION["messages"][] = $message;

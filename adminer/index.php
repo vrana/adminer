@@ -8,6 +8,7 @@
 
 include "./include/bootstrap.inc.php";
 
+$enum_length = '\'(?:\'\'|[^\'\\\\]+|\\\\.)*\'|"(?:""|[^"\\\\]+|\\\\.)*"';
 $inout = array("IN", "OUT", "INOUT");
 
 if (isset($_GET["download"])) {
