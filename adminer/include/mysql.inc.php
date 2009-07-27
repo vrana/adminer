@@ -24,63 +24,13 @@ if (extension_loaded("mysqli")) {
 			if (!$result) {
 				return false;
 			}
-			$row = $result->_result->fetch_array();
+			$row = $result->fetch_array();
 			return $row[$field];
 		}
 		
 		function quote($string) {
-			return "'" . parent::escape_string($string) . "'";
+			return "'" . $this->escape_string($string) . "'";
 		}
-		
-		// minification compatibility start
-		function select_db($database) {
-			return parent::select_db($database);
-		}
-		
-		function query($query) {
-			// result is packed in envelope object to allow minification
-			$result = parent::query($query);
-			return (is_object($result) ? new Min_Result($result) : $result);
-		}
-		
-		function multi_query($query) {
-			return parent::multi_query($query);
-		}
-		
-		function store_result() {
-			$result = parent::store_result();
-			return (is_object($result) ? new Min_Result($result) : $result);
-		}
-		
-		function next_result() {
-			return parent::next_result();
-		}
-	}
-	
-	class Min_Result {
-		var $_result, $num_rows;
-		
-		function __construct($result) {
-			$this->_result = $result;
-			$this->num_rows = $result->num_rows;
-		}
-		
-		function fetch_assoc() {
-			return $this->_result->fetch_assoc();
-		}
-		
-		function fetch_row() {
-			return $this->_result->fetch_row();
-		}
-		
-		function fetch_field() {
-			return $this->_result->fetch_field();
-		}
-		
-		function free() {
-			return $this->_result->free();
-		}
-		// minification compatibility end
 	}
 	
 } elseif (extension_loaded("mysql")) {

@@ -365,7 +365,6 @@ function email_header($header) {
 }
 
 function call_adminer($method, $default, $arg1 = null, $arg2 = null, $arg3 = null) {
-	// maintains original method name in minification
 	if (method_exists('Adminer', $method)) { // user defined class
 		// can use func_get_args() and call_user_func_array()
 		return Adminer::$method($arg1, $arg2, $arg3);

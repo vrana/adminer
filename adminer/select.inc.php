@@ -381,7 +381,7 @@ if (!$columns) {
 		}
 		echo "<fieldset><legend>" . lang('CSV Import') . "</legend><div><input type='hidden' name='token' value='$token'><input type='file' name='csv_file'> <input type='submit' name='import' value='" . lang('Import') . "'></div></fieldset>\n";
 		
-		adminer_select_extra_display(array_filter($email_fields)); //! should use strlen but compile.php doesn't support array_filter
+		adminer_select_extra_display(array_filter($email_fields, 'strlen'));
 		
 		echo "</form>\n";
 	}
