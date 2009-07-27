@@ -1,5 +1,8 @@
 <?php
 class Adminer {
+	var $functions = array("char_length", "from_unixtime", "hex", "lower", "round", "sec_to_time", "time_to_sec", "unix_timestamp", "upper");
+	var $grouping = array("avg", "count", "distinct", "group_concat", "max", "min", "sum"); // distinct is short for COUNT(DISTINCT)
+	var $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "REGEXP", "IN", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL");
 	
 	/** Name in title and navigation
 	* @return string
@@ -120,11 +123,200 @@ class Adminer {
 		return ($link ? "<a href=\"$link\">$return</a>" : $return);
 	}
 	
+	/** Print columns box in select
+	* @param array result of selectColumnsProcess()
+	* @param array selectable columns
+	* @return null
+	*/
+	function selectColumnsPrint($select, $columns) {
+		echo '<fieldset><legend><a href="#fieldset-select" onclick="return !toggle(\'fieldset-select\');">' . lang('Select') . "</a></legend><div id='fieldset-select'" . ($select ? "" : " class='hidden'") . ">\n";
+		$i = 0;
+		$fun_group = array(lang('Functions') => $this->functions, lang('Aggregation') => $this->grouping);
+		foreach ($select as $key => $val) {
+			$val = $_GET["columns"][$key];
+			echo "<div><select name='columns[$i][fun]'><option>" . optionlist($fun_group, $val["fun"]) . "</select>";
+			echo "<select name='columns[$i][col]'><option>" . optionlist($columns, $val["col"], true) . "</select></div>\n";
+			$i++;
+		}
+		echo "<div><select name='columns[$i][fun]' onchange='this.nextSibling.onchange();'><option>" . optionlist($fun_group) . "</select>";
+		echo "<select name='columns[$i][col]' onchange='select_add_row(this);'><option>" . optionlist($columns, null, true) . "</select></div>\n";
+		echo "</div></fieldset>\n";
+	}
+	
+	/** Print search box in select
+	* @param array result of selectSearchProcess()
+	* @param array selectable columns
+	* @param array
+	* @return null
+	*/
+	function selectSearchPrint($where, $columns, $indexes) {
+		echo '<fieldset><legend><a href="#fieldset-search" onclick="return !toggle(\'fieldset-search\');">' . lang('Search') . "</a></legend><div id='fieldset-search'" . ($where ? "" : " class='hidden'") . ">\n";
+		foreach ($indexes as $i => $index) {
+			if ($index["type"] == "FULLTEXT") {
+				echo "(<i>" . implode("</i>, <i>", array_map('htmlspecialchars', $index["columns"])) . "</i>) AGAINST";
+				echo ' <input name="fulltext[' . $i . ']" value="' . htmlspecialchars($_GET["fulltext"][$i]) . '">';
+				echo "<label><input type='checkbox' name='boolean[$i]' value='1'" . (isset($_GET["boolean"][$i]) ? " checked='checked'" : "") . ">" . lang('BOOL') . "</label>";
+				echo "<br>\n";
+			}
+		}
+		$i = 0;
+		foreach ((array) $_GET["where"] as $val) {
+			if (strlen("$val[col]$val[val]") && in_array($val["op"], $this->operators)) {
+				echo "<div><select name='where[$i][col]'><option value=''>" . lang('(anywhere)') . optionlist($columns, $val["col"], true) . "</select>";
+				echo "<select name='where[$i][op]'>" . optionlist($this->operators, $val["op"]) . "</select>";
+				echo "<input name='where[$i][val]' value=\"" . htmlspecialchars($val["val"]) . "\"></div>\n";
+				$i++;
+			}
+		}
+		echo "<div><select name='where[$i][col]' onchange='select_add_row(this);'><option value=''>" . lang('(anywhere)') . optionlist($columns, null, true) . "</select>";
+		echo "<select name='where[$i][op]'>" . optionlist($this->operators) . "</select>";
+		echo "<input name='where[$i][val]'></div>\n";
+		echo "</div></fieldset>\n";
+	}
+	
+	/** Print order box in select
+	* @param array result of selectOrderProcess()
+	* @param array selectable columns
+	* @param array
+	* @return null
+	*/
+	function selectOrderPrint($order, $columns, $indexes) {
+		echo '<fieldset><legend><a href="#fieldset-sort" onclick="return !toggle(\'fieldset-sort\');">' . lang('Sort') . "</a></legend><div id='fieldset-sort'" . ($order ? "" : " class='hidden'") . ">\n";
+		$i = 0;
+		foreach ((array) $_GET["order"] as $key => $val) {
+			if (isset($columns[$val])) {
+				echo "<div><select name='order[$i]'><option>" . optionlist($columns, $val, true) . "</select>";
+				echo "<label><input type='checkbox' name='desc[$i]' value='1'" . (isset($_GET["desc"][$key]) ? " checked='checked'" : "") . ">" . lang('descending') . "</label></div>\n";
+				$i++;
+			}
+		}
+		echo "<div><select name='order[$i]' onchange='select_add_row(this);'><option>" . optionlist($columns, null, true) . "</select>";
+		echo "<label><input type='checkbox' name='desc[$i]' value='1'>" . lang('descending') . "</label></div>\n";
+		echo "</div></fieldset>\n";
+	}
+	
+	/** Print limit box in select
+	* @param string result of selectLimitProcess()
+	* @return null
+	*/
+	function selectLimitPrint($limit) {
+		echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
+		echo "<input name='limit' size='3' value=\"" . htmlspecialchars($limit) . "\">";
+		echo "</div></fieldset>\n";
+	}
+	
+	/** Print text length box in select
+	* @param string result of selectLengthProcess()
+	* @return null
+	*/
+	function selectLengthPrint($text_length) {
+		if (isset($text_length)) {
+			echo "<fieldset><legend>" . lang('Text length') . "</legend><div>";
+			echo '<input name="text_length" size="3" value="' . htmlspecialchars($text_length) . '">';
+			echo "</div></fieldset>\n";
+		}
+	}
+	
+	/** Print action box in select
+	* @return null
+	*/
+	function selectActionPrint() {
+		echo "<fieldset><legend>" . lang('Action') . "</legend><div>";
+		echo "<input type='submit' value='" . lang('Select') . "'>";
+		echo "</div></fieldset>\n";
+	}
+	
+	/** Process columns box in select
+	* @param array selectable columns
+	* @return array (array(select_expressions), array(group_expressions))
+	*/
+	function selectColumnsProcess($columns, $indexes) {
+		$select = array(); // select expressions, empty for *
+		$group = array(); // expressions without aggregation - will be used for GROUP BY if an aggregation function is used
+		foreach ((array) $_GET["columns"] as $key => $val) {
+			if ($val["fun"] == "count" || (isset($columns[$val["col"]]) && (!$val["fun"] || in_array($val["fun"], $this->functions) || in_array($val["fun"], $this->grouping)))) {
+				$select[$key] = apply_sql_function($val["fun"], (isset($columns[$val["col"]]) ? idf_escape($val["col"]) : "*"));
+				if (!in_array($val["fun"], $this->grouping)) {
+					$group[] = $select[$key];
+				}
+			}
+		}
+		return array($select, $group);
+	}
+	
+	/** Process search box in select
+	* @param array
+	* @param array
+	* @return array expressions to join by AND
+	*/
+	function selectSearchProcess($indexes, $fields) {
+		global $dbh;
+		$return = array();
+		foreach ($indexes as $i => $index) {
+			if ($index["type"] == "FULLTEXT" && strlen($_GET["fulltext"][$i])) {
+				$return[] = "MATCH (" . implode(", ", array_map('idf_escape', $index["columns"])) . ") AGAINST (" . $dbh->quote($_GET["fulltext"][$i]) . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
+			}
+		}
+		foreach ((array) $_GET["where"] as $val) {
+			if (strlen("$val[col]$val[val]") && in_array($val["op"], $this->operators)) {
+				if ($val["op"] == "AGAINST") {
+					$return[] = "MATCH (" . idf_escape($val["col"]) . ") AGAINST (" . $dbh->quote($val["val"]) . " IN BOOLEAN MODE)";
+				} else {
+					$in = process_length($val["val"]);
+					$cond = " $val[op]" . (ereg('NULL$', $val["op"]) ? "" : (ereg('IN$', $val["op"]) ? " (" . (strlen($in) ? $in : "NULL") . ")" : " " . $dbh->quote($val["val"])));
+					if (strlen($val["col"])) {
+						$return[] = idf_escape($val["col"]) . $cond;
+					} else {
+						// find anywhere
+						$cols = array();
+						foreach ($fields as $name => $field) {
+							if (is_numeric($val["val"]) || !ereg('int|float|double|decimal', $field["type"])) {
+								$cols[] = $name;
+							}
+						}
+						$return[] = ($cols ? "(" . implode("$cond OR ", array_map('idf_escape', $cols)) . "$cond)" : "0");
+					}
+				}
+			}
+		}
+		return $return;
+	}
+	
+	/** Process order box in select
+	* @param array
+	* @param array result of selectColumnsProcess()
+	* @param array
+	* @return array expressions to join by comma
+	*/
+	function selectOrderProcess($columns, $select, $indexes) {
+		$return = array();
+		foreach ((array) $_GET["order"] as $key => $val) {
+			if (isset($columns[$val]) || in_array($val, $select, true)) {
+				$return[] = idf_escape($val) . (isset($_GET["desc"][$key]) ? " DESC" : "");
+			}
+		}
+		return $return;
+	}
+	
+	/** Process limit box in select
+	* @return string expression to use in LIMIT, will be escaped
+	*/
+	function selectLimitProcess() {
+		return (isset($_GET["limit"]) ? $_GET["limit"] : "30");
+	}
+	
+	/** Process length box in select
+	* @return string number of characters to shorten texts, will be escaped
+	*/
+	function selectLengthProcess() {
+		return (isset($_GET["text_length"]) ? $_GET["text_length"] : "100");
+	}
+	
 	/** Print extra text in the end of a select form
 	* @param array fields holding e-mails
 	* @return null
 	*/
-	function selectExtraDisplay($emailFields) {
+	function selectExtraPrint($emailFields) {
 	}
 	
 	/** Process extras in select form

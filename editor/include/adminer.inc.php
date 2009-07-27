@@ -118,7 +118,103 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		return ($link ? "<a href=\"$link\">$return</a>" : $return);
 	}
 	
-	function selectExtraDisplay($emailFields) {
+	function selectColumnsPrint($select, $columns) {
+		//! allow grouping functions by indexes
+	}
+	
+	function selectSearchPrint($where, $columns, $indexes) {
+		//! from-to, foreign keys
+		echo '<fieldset><legend>' . lang('Search') . "</legend><div>\n";
+		$i = 0;
+		foreach ((array) $_GET["where"] as $val) {
+			if (strlen("$val[col]$val[val]")) {
+				echo "<div><select name='where[$i][col]'><option value=''>" . lang('(anywhere)') . optionlist($columns, $val["col"], true) . "</select>";
+				echo "<input name='where[$i][val]' value=\"" . htmlspecialchars($val["val"]) . "\"></div>\n";
+				$i++;
+			}
+		}
+		echo "<div><select name='where[$i][col]' onchange='select_add_row(this);'><option value=''>" . lang('(anywhere)') . optionlist($columns, null, true) . "</select>";
+		echo "<input name='where[$i][val]'></div>\n";
+		echo "</div></fieldset>\n";
+	}
+	
+	function selectOrderPrint($order, $columns, $indexes) {
+		//! desc
+		$orders = array();
+		foreach ($indexes as $i => $index) {
+			$order = array();
+			foreach ($index["columns"] as $val) {
+				$order[] = $this->fieldName(array("field" => $val, "comment" => $columns[$val]));
+			}
+			if (count(array_filter($order, 'strlen')) > 1) {
+				$orders[$i] = implode(", ", $order);
+			}
+		}
+		if ($orders) {
+			echo '<fieldset><legend>' . lang('Sort') . "</legend><div>";
+			echo "<select name='index_order'>" . optionlist($orders, $_GET["index_order"], true) . "</select>";
+			echo "</div></fieldset>\n";
+		}
+	}
+	
+	function selectLimitPrint($limit) {
+		echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
+		echo "<select name='limit'>" . optionlist(array("", "30", "100"), $limit) . "</select>";
+		echo "</div></fieldset>\n";
+	}
+	
+	function selectLengthPrint($text_length) {
+	}
+	
+	function selectActionPrint() {
+		echo "<fieldset><legend>" . lang('Action') . "</legend><div>";
+		echo "<input type='submit' value='" . lang('Select') . "'>";
+		echo "</div></fieldset>\n";
+	}
+	
+	function selectColumnsProcess($columns, $indexes) {
+		return array(array(), array());
+	}
+	
+	function selectSearchProcess($indexes, $fields) {
+		global $dbh;
+		$return = array();
+		foreach ((array) $_GET["where"] as $val) {
+			if (strlen("$val[col]$val[val]")) {
+				$cond = " = " . $dbh->quote($val["val"]);
+				if (strlen($val["col"])) {
+					$return[] = idf_escape($val["col"]) . $cond;
+				} else {
+					// find anywhere
+					$cols = array();
+					foreach ($fields as $name => $field) {
+						if (is_numeric($val["val"]) || !ereg('int|float|double|decimal', $field["type"])) {
+							$cols[] = $name;
+						}
+					}
+					$return[] = ($cols ? "(" . implode("$cond OR ", array_map('idf_escape', $cols)) . "$cond)" : "0");
+				}
+			}
+		}
+		return $return;
+	}
+	
+	function selectOrderProcess($columns, $select, $indexes) {
+		return ($_GET["order"]
+			? idf_escape($_GET["order"][0]) . (isset($_GET["desc"][0]) ? " DESC" : "")
+			: $indexes[$_GET["index_order"]]["columns"]
+		);
+	}
+	
+	function selectLimitProcess() {
+		return (isset($_GET["limit"]) ? $_GET["limit"] : "30");
+	}
+	
+	function selectLengthProcess() {
+		return "100";
+	}
+	
+	function selectExtraPrint($emailFields) {
 		global $confirm;
 		if ($emailFields) {
 			echo '<fieldset><legend><a href="#fieldset-email" onclick="return !toggle(\'fieldset-email\');">' . lang('E-mail') . "</a></legend><div id='fieldset-email' class='hidden'>\n";

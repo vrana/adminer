@@ -1,18 +1,6 @@
 <?php
-$functions = array("char_length", "from_unixtime", "hex", "lower", "round", "sec_to_time", "time_to_sec", "unix_timestamp", "upper");
-$grouping = array("avg", "count", "distinct", "group_concat", "max", "min", "sum"); // distinct is short for COUNT(DISTINCT)
 $table_status = table_status($_GET["select"]);
 $indexes = indexes($_GET["select"]);
-$primary = null; // empty array means that all primary fields are selected
-foreach ($indexes as $index) {
-	if ($index["type"] == "PRIMARY") {
-		$primary = array_flip($index["columns"]);
-	}
-}
-$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "REGEXP", "IN", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL");
-if (eregi('^(MyISAM|Maria)$', $table_status["Engine"])) {
-	$operators[] = "AGAINST";
-}
 $fields = fields($_GET["select"]);
 $rights = array(); // privilege => 0
 $columns = array(); // selectable columns
@@ -22,10 +10,7 @@ foreach ($fields as $key => $field) {
 	if (isset($field["privileges"]["select"]) && strlen($name)) {
 		$columns[$key] = html_entity_decode(strip_tags($name));
 		if (ereg('text|blob', $field["type"])) {
-			$text_length = (isset($_GET["text_length"]) ? $_GET["text_length"] : "100");
-		}
-		if (!$_GET["columns"]) {
-			unset($primary[$key]);
+			$text_length = $adminer->selectLengthProcess();
 		}
 	}
 	$rights += $field["privileges"];
@@ -38,62 +23,27 @@ function apply_sql_function($function, $column) {
 	);
 }
 
-$select = array(); // select expressions, empty for *
-$group = array(); // expressions without aggregation - will be used for GROUP BY if an aggregation function is used
-foreach ((array) $_GET["columns"] as $key => $val) {
-	if ($val["fun"] == "count" || (isset($columns[$val["col"]]) && (!$val["fun"] || in_array($val["fun"], $functions) || in_array($val["fun"], $grouping)))) {
-		$select[$key] = apply_sql_function($val["fun"], (isset($columns[$val["col"]]) ? idf_escape($val["col"]) : "*"));
-		if (!in_array($val["fun"], $grouping)) {
-			$group[] = $select[$key];
-		}
-		if (!$val["fun"]) {
-			unset($primary[$val["col"]]);
-		}
-	}
-}
-
-$where = array(); // where expressions - will be joined by AND
-foreach ($indexes as $i => $index) {
-	if ($index["type"] == "FULLTEXT" && strlen($_GET["fulltext"][$i])) {
-		$where[] = "MATCH (" . implode(", ", array_map('idf_escape', $index["columns"])) . ") AGAINST (" . $dbh->quote($_GET["fulltext"][$i]) . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
-	}
-}
-foreach ((array) $_GET["where"] as $val) {
-	if (strlen("$val[col]$val[val]") && in_array($val["op"], $operators)) {
-		if ($val["op"] == "AGAINST") {
-			$where[] = "MATCH (" . idf_escape($val["col"]) . ") AGAINST (" . $dbh->quote($val["val"]) . " IN BOOLEAN MODE)";
-		} else {
-			$in = process_length($val["val"]);
-			$cond = " $val[op]" . (ereg('NULL$', $val["op"]) ? "" : (ereg('IN$', $val["op"]) ? " (" . (strlen($in) ? $in : "NULL") . ")" : " " . $dbh->quote($val["val"])));
-			if (strlen($val["col"])) {
-				$where[] = idf_escape($val["col"]) . $cond;
-			} else {
-				// find anywhere
-				$cols = array();
-				foreach ($fields as $name => $field) {
-					if (is_numeric($val["val"]) || !ereg('int|float|double|decimal', $field["type"])) {
-						$cols[] = $name;
-					}
-				}
-				$where[] = ($cols ? "(" . implode("$cond OR ", array_map('idf_escape', $cols)) . "$cond)" : "0");
-			}
-		}
-	}
-}
-
-$order = array(); // order expressions - will be joined by comma
-foreach ((array) $_GET["order"] as $key => $val) {
-	if (isset($columns[$val]) || in_array($val, $select, true)) {
-		$order[] = idf_escape($val) . (isset($_GET["desc"][$key]) ? " DESC" : "");
-	}
-}
-
-$limit = (isset($_GET["limit"]) ? $_GET["limit"] : "30");
+list($select, $group) = $adminer->selectColumnsProcess($columns, $indexes);
+$where = $adminer->selectSearchProcess($indexes, $fields);
+$order = $adminer->selectOrderProcess($columns, $select, $indexes);
+$limit = $adminer->selectLimitProcess();
 $from = ($select ? implode(", ", $select) : "*") . " FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "");
 $group_by = ($group && count($group) < count($select) ? " GROUP BY " . implode(", ", $group) : "") . ($order ? " ORDER BY " . implode(", ", $order) : "");
 
 if ($_POST && !$error) {
 	$where_check = "(" . implode(") OR (", array_map('where_check', (array) $_POST["check"])) . ")";
+	$primary = null; // empty array means that all primary fields are selected
+	foreach ($indexes as $index) {
+		if ($index["type"] == "PRIMARY") {
+			$primary = ($select ? array_flip($index["columns"]) : array());
+		}
+	}
+	foreach ($select as $key => $val) {
+		$val = $_GET["columns"][$key];
+		if (!$val["fun"]) {
+			unset($primary[$val["col"]]);
+		}
+	}
 	if ($_POST["export"]) {
 		dump_headers($_GET["select"]);
 		dump_table($_GET["select"], "");
@@ -182,74 +132,17 @@ if (!$columns) {
 	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "" : ": " . htmlspecialchars($dbh->error)) . ".\n";
 } else {
 	echo "<form action='' id='form'>\n";
-	echo '<fieldset><legend><a href="#fieldset-select" onclick="return !toggle(\'fieldset-select\');">' . lang('Select') . "</a></legend><div id='fieldset-select'" . ($select ? "" : " class='hidden'") . ">\n";
-	if (strlen($_GET["server"])) {
-		echo '<input type="hidden" name="server" value="' . htmlspecialchars($_GET["server"]) . '">';
-	}
+	echo "<div style='display: none;'>";
+	echo (strlen($_GET["server"]) ? '<input type="hidden" name="server" value="' . htmlspecialchars($_GET["server"]) . '">' : "");
 	echo '<input type="hidden" name="db" value="' . htmlspecialchars($_GET["db"]) . '">';
 	echo '<input type="hidden" name="select" value="' . htmlspecialchars($_GET["select"]) . '">';
-	echo "\n";
-	$i = 0;
-	$fun_group = array(lang('Functions') => $functions, lang('Aggregation') => $grouping);
-	foreach ($select as $key => $val) {
-		$val = $_GET["columns"][$key];
-		echo "<div><select name='columns[$i][fun]'><option>" . optionlist($fun_group, $val["fun"]) . "</select>";
-		echo "<select name='columns[$i][col]'><option>" . optionlist($columns, $val["col"], true) . "</select></div>\n";
-		$i++;
-	}
-	echo "<div><select name='columns[$i][fun]' onchange='this.nextSibling.onchange();'><option>" . optionlist($fun_group) . "</select>";
-	echo "<select name='columns[$i][col]' onchange='select_add_row(this);'><option>" . optionlist($columns, null, true) . "</select></div>\n";
-	echo "</div></fieldset>\n";
-	
-	echo '<fieldset><legend><a href="#fieldset-search" onclick="return !toggle(\'fieldset-search\');">' . lang('Search') . "</a></legend><div id='fieldset-search'" . ($where ? "" : " class='hidden'") . ">\n";
-	foreach ($indexes as $i => $index) {
-		if ($index["type"] == "FULLTEXT") {
-			echo "(<i>" . implode("</i>, <i>", array_map('htmlspecialchars', $index["columns"])) . "</i>) AGAINST";
-			echo ' <input name="fulltext[' . $i . ']" value="' . htmlspecialchars($_GET["fulltext"][$i]) . '">';
-			echo "<label><input type='checkbox' name='boolean[$i]' value='1'" . (isset($_GET["boolean"][$i]) ? " checked='checked'" : "") . ">" . lang('BOOL') . "</label>";
-			echo "<br>\n";
-		}
-	}
-	$i = 0;
-	foreach ((array) $_GET["where"] as $val) {
-		if (strlen("$val[col]$val[val]") && in_array($val["op"], $operators)) {
-			echo "<div><select name='where[$i][col]'><option value=''>" . lang('(anywhere)') . optionlist($columns, $val["col"], true) . "</select>";
-			echo "<select name='where[$i][op]'>" . optionlist($operators, $val["op"]) . "</select>";
-			echo "<input name='where[$i][val]' value=\"" . htmlspecialchars($val["val"]) . "\"></div>\n";
-			$i++;
-		}
-	}
-	echo "<div><select name='where[$i][col]' onchange='select_add_row(this);'><option value=''>" . lang('(anywhere)') . optionlist($columns, null, true) . "</select>";
-	echo "<select name='where[$i][op]'>" . optionlist($operators) . "</select>";
-	echo "<input name='where[$i][val]'></div>\n";
-	echo "</div></fieldset>\n";
-	
-	echo '<fieldset><legend><a href="#fieldset-sort" onclick="return !toggle(\'fieldset-sort\');">' . lang('Sort') . "</a></legend><div id='fieldset-sort'" . (count($order) > 1 ? "" : " class='hidden'") . ">\n";
-	$i = 0;
-	foreach ((array) $_GET["order"] as $key => $val) {
-		if (isset($columns[$val])) {
-			echo "<div><select name='order[$i]'><option>" . optionlist($columns, $val, true) . "</select>";
-			echo "<label><input type='checkbox' name='desc[$i]' value='1'" . (isset($_GET["desc"][$key]) ? " checked='checked'" : "") . ">" . lang('descending') . "</label></div>\n";
-			$i++;
-		}
-	}
-	echo "<div><select name='order[$i]' onchange='select_add_row(this);'><option>" . optionlist($columns, null, true) . "</select>";
-	echo "<label><input type='checkbox' name='desc[$i]' value='1'>" . lang('descending') . "</label></div>\n";
-	echo "</div></fieldset>\n";
-	
-	echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
-	echo "<input name='limit' size='3' value=\"" . htmlspecialchars($limit) . "\">";
-	echo "</div></fieldset>\n";
-	
-	if (isset($text_length)) {
-		echo "<fieldset><legend>" . lang('Text length') . "</legend><div>";
-		echo '<input name="text_length" size="3" value="' . htmlspecialchars($text_length) . '">';
-		echo "</div></fieldset>\n";
-	}
-	
-	echo "<fieldset><legend>" . lang('Action') . "</legend><div>";
-	echo "<input type='submit' value='" . lang('Select') . "'>";
-	echo "</div></fieldset>\n";
+	echo "</div>\n";
+	$adminer->selectColumnsPrint($select, $columns);
+	$adminer->selectSearchPrint($where, $columns, $indexes);
+	$adminer->selectOrderPrint($order, $columns, $indexes);
+	$adminer->selectLimitPrint($limit);
+	$adminer->selectLengthPrint($text_length);
+	$adminer->selectActionPrint($text_length);
 	echo "</form>\n";
 	
 	$query = "SELECT " . (intval($limit) && count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . $from . $group_by . (strlen($limit) ? " LIMIT " . intval($limit) . (intval($_GET["page"]) ? " OFFSET " . ($limit * $_GET["page"]) : "") : "");
@@ -381,7 +274,7 @@ if (!$columns) {
 		}
 		echo "<fieldset><legend>" . lang('CSV Import') . "</legend><div><input type='hidden' name='token' value='$token'><input type='file' name='csv_file'> <input type='submit' name='import' value='" . lang('Import') . "'></div></fieldset>\n";
 		
-		$adminer->selectExtraDisplay(array_filter($email_fields, 'strlen'));
+		$adminer->selectExtraPrint(array_filter($email_fields, 'strlen'));
 		
 		echo "</form>\n";
 	}

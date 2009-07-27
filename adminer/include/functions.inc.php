@@ -1,4 +1,10 @@
 <?php
+function get_self() {
+	// can be used in customization, $SELF is minified
+	global $SELF;
+	return $SELF;
+}
+
 function get_dbh() {
 	// can be used in customization, $dbh is minified
 	global $dbh;
