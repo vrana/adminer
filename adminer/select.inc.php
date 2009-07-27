@@ -18,7 +18,7 @@ $rights = array(); // privilege => 0
 $columns = array(); // selectable columns
 unset($text_length);
 foreach ($fields as $key => $field) {
-	$name = adminer_field_name($field);
+	$name = $adminer->fieldName($field);
 	if (isset($field["privileges"]["select"]) && strlen($name)) {
 		$columns[$key] = html_entity_decode(strip_tags($name));
 		if (ereg('text|blob', $field["type"])) {
@@ -109,7 +109,7 @@ if ($_POST && !$error) {
 		}
 		exit;
 	}
-	if (!adminer_select_extra_process($where)) {
+	if (!$adminer->selectExtraProcess($where)) {
 		if (!$_POST["import"]) { // edit
 			$result = true;
 			$affected = 0;
@@ -169,14 +169,14 @@ if ($_POST && !$error) {
 	}
 }
 
-page_header(lang('Select') . ": " . adminer_table_name($table_status), $error);
+page_header(lang('Select') . ": " . $adminer->tableName($table_status), $error);
 
 echo "<p>";
 if (isset($rights["insert"])) {
 	//! pass search values forth and back
 	echo '<a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '">' . lang('New item') . '</a> ';
 }
-echo adminer_select_links($table_status);
+echo $adminer->selectLinks($table_status);
 
 if (!$columns) {
 	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "" : ": " . htmlspecialchars($dbh->error)) . ".\n";
@@ -253,7 +253,7 @@ if (!$columns) {
 	echo "</form>\n";
 	
 	$query = "SELECT " . (intval($limit) && count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . $from . $group_by . (strlen($limit) ? " LIMIT " . intval($limit) . (intval($_GET["page"]) ? " OFFSET " . ($limit * $_GET["page"]) : "") : "");
-	echo adminer_select_query($query);
+	echo $adminer->selectQuery($query);
 	
 	$result = $dbh->query($query);
 	if (!$result) {
@@ -276,12 +276,12 @@ if (!$columns) {
 			);
 			
 			$foreign_keys = column_foreign_keys($_GET["select"]);
-			$descriptions = adminer_row_descriptions($rows, $foreign_keys);
+			$descriptions = $adminer->rowDescriptions($rows, $foreign_keys);
 			
-			$backward_keys = adminer_backward_keys($_GET["select"]);
+			$backward_keys = $adminer->backwardKeys($_GET["select"]);
 			$table_names = array_keys($backward_keys);
 			if ($table_names) {
-				$table_names = array_combine($table_names, array_map('adminer_table_name', array_map('table_status', $table_names)));
+				$table_names = array_combine($table_names, array_map(array($adminer, 'tableName'), array_map('table_status', $table_names)));
 			}
 			
 			echo "<table cellspacing='0' class='nowrap'>\n";
@@ -291,7 +291,7 @@ if (!$columns) {
 			foreach ($rows[0] as $key => $val) {
 				$val = $_GET["columns"][key($select)];
 				$field = $fields[$select ? $val["col"] : $key];
-				$name = ($field ? adminer_field_name($field) : "*");
+				$name = ($field ? $adminer->fieldName($field) : "*");
 				if (strlen($name)) {
 					$names[$key] = $name;
 					echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . apply_sql_function($val["fun"], $name) . "</a>";
@@ -336,7 +336,7 @@ if (!$columns) {
 						if (!$link && is_email($val)) {
 							$link = "mailto:$val";
 						}
-						$val = adminer_select_val($val, $link, $fields[$key]);
+						$val = $adminer->selectVal($val, $link, $fields[$key]);
 						echo "<td>$val";
 					}
 				}
@@ -381,7 +381,7 @@ if (!$columns) {
 		}
 		echo "<fieldset><legend>" . lang('CSV Import') . "</legend><div><input type='hidden' name='token' value='$token'><input type='file' name='csv_file'> <input type='submit' name='import' value='" . lang('Import') . "'></div></fieldset>\n";
 		
-		adminer_select_extra_display(array_filter($email_fields, 'strlen'));
+		$adminer->selectExtraDisplay(array_filter($email_fields, 'strlen'));
 		
 		echo "</form>\n";
 	}

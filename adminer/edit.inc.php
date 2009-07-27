@@ -3,7 +3,7 @@ $where = (isset($_GET["select"]) ? (count($_POST["check"]) == 1 ? where_check($_
 $update = ($where && !$_POST["clone"]);
 $fields = fields($_GET["edit"]);
 foreach ($fields as $name => $field) {
-	if ((isset($_GET["default"]) ? $field["auto_increment"] || ereg('text|blob', $field["type"]) : !isset($field["privileges"][$update ? "update" : "insert"])) || !strlen(adminer_field_name($field))) {
+	if ((isset($_GET["default"]) ? $field["auto_increment"] || ereg('text|blob', $field["type"]) : !isset($field["privileges"][$update ? "update" : "insert"])) || !strlen($adminer->fieldName($field))) {
 		unset($fields[$name]);
 	}
 }
@@ -36,7 +36,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 	}
 }
 
-$table_name = adminer_table_name(table_status($_GET["edit"]));
+$table_name = $adminer->tableName(table_status($_GET["edit"]));
 page_header(
 	(isset($_GET["default"]) ? lang('Default values') : ($_GET["where"] || (isset($_GET["select"]) && !$_POST["clone"]) ? lang('Edit') : lang('Insert'))),
 	$error,
@@ -69,7 +69,7 @@ if ($fields) {
 	unset($create);
 	echo "<table cellspacing='0'>\n";
 	foreach ($fields as $name => $field) {
-		echo "<tr><th>" . adminer_field_name($field);
+		echo "<tr><th>" . $adminer->fieldName($field);
 		$value = (isset($row)
 			? (strlen($row[$name]) && ($field["type"] == "enum" || $field["type"] == "set") ? intval($row[$name]) : $row[$name])
 			: ($_POST["clone"] && $field["auto_increment"] ? "" : (isset($_GET["select"]) ? false : $field["default"]))

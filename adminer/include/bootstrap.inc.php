@@ -72,6 +72,7 @@ include "../adminer/include/functions.inc.php";
 include "../adminer/include/lang.inc.php";
 include "../adminer/lang/$LANG.inc.php";
 include "./include/adminer.inc.php";
+$adminer = (function_exists('adminer_object') ? adminer_object() : new Adminer);
 include "../adminer/include/design.inc.php";
 include "../adminer/include/pdo.inc.php";
 include "../adminer/include/mysql.inc.php";

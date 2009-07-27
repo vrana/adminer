@@ -141,8 +141,9 @@ if (extension_loaded("mysqli")) {
 }
 
 function connect() {
+	global $adminer;
 	$dbh = new Min_DB;
-	$credentials = adminer_credentials();
+	$credentials = $adminer->credentials();
 	if ($dbh->connect($credentials[0], $credentials[1], $credentials[2])) {
 		$dbh->query("SET SQL_QUOTE_SHOW_CREATE=1");
 		$dbh->query("SET NAMES utf8");

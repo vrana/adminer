@@ -1,4 +1,10 @@
 <?php
+function get_dbh() {
+	// can be used in customization, $dbh is minified
+	global $dbh;
+	return $dbh;
+}
+
 function idf_escape($idf) {
 	return "`" . str_replace("`", "``", $idf) . "`";
 }
@@ -103,10 +109,10 @@ function redirect($location, $message = null) {
 }
 
 function query_redirect($query, $location, $message, $redirect = true, $execute = true, $failed = false) {
-	global $dbh, $error, $SELF;
+	global $dbh, $error, $SELF, $adminer;
 	$sql = "";
 	if ($query) {
-		$sql = adminer_message_query($query);
+		$sql = $adminer->messageQuery($query);
 	}
 	if ($execute) {
 		$failed = !$dbh->query($query);
@@ -276,7 +282,7 @@ function column_foreign_keys($table) {
 }
 
 function input($field, $value, $function) {
-	global $types;
+	global $types, $adminer;
 	$name = htmlspecialchars(bracket_escape($field["field"]));
 	echo "<td class='function'>";
 	if ($field["type"] == "enum") {
@@ -294,11 +300,11 @@ function input($field, $value, $function) {
 			echo ' <label><input type="radio" name="fields[' . $name . ']" value="' . (isset($_GET["default"]) ? (strlen($val) ? htmlspecialchars($val) : " ") : $i+1) . '"' . ($checked ? ' checked="checked"' : '') . '>' . htmlspecialchars($val) . '</label>';
 		}
 	} else {
-		$functions = adminer_edit_functions($field);
+		$functions = $adminer->editFunctions($field);
 		$first = array_search("", $functions);
 		$onchange = ($first ? ' onchange="var f = this.form[\'function[' . addcslashes($name, "\r\n'\\") . ']\']; if (' . $first . ' > f.selectedIndex) f.selectedIndex = ' . $first . ';"' : '');
 		echo (count($functions) > 1 ? '<select name="function[' . $name . ']">' . optionlist($functions, $function) . '</select>' : "&nbsp;") . '<td>';
-		$options = adminer_edit_input($_GET["edit"], $field); // usage in call is without a table
+		$options = $adminer->editInput($_GET["edit"], $field); // usage in call is without a table
 		if (is_array($options)) {
 			echo '<select name="fields[' . $name . ']"' . $onchange . '>' . optionlist(($options ? $options : array("" => "")), $value, true) . '</select>';
 		} elseif ($field["type"] == "set") { //! 64 bits
@@ -321,7 +327,7 @@ function input($field, $value, $function) {
 }
 
 function process_input($name, $field) {
-	global $dbh;
+	global $dbh, $adminer;
 	$idf = bracket_escape($name);
 	$function = $_POST["function"][$idf];
 	$value = $_POST["fields"][$idf];
@@ -340,7 +346,7 @@ function process_input($name, $field) {
 		}
 		return "_binary" . $dbh->quote($file);
 	} else {
-		return adminer_process_input($name, $field);
+		return $adminer->processInput($name, $field);
 	}
 }
 
@@ -362,12 +368,4 @@ function is_email($email) {
 function email_header($header) {
 	// iconv_mime_encode requires PHP 5, imap_8bit requires IMAP extension
 	return "=?UTF-8?B?" . base64_encode($header) . "?="; //! split long lines
-}
-
-function call_adminer($method, $default, $arg1 = null, $arg2 = null, $arg3 = null) {
-	if (method_exists('Adminer', $method)) { // user defined class
-		// can use func_get_args() and call_user_func_array()
-		return Adminer::$method($arg1, $arg2, $arg3);
-	}
-	return $default; //! $default is evaluated even if not neccessary
 }

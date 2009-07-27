@@ -1,6 +1,6 @@
 <?php
 function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
-	global $SELF, $LANG, $VERSION;
+	global $SELF, $LANG, $VERSION, $adminer;
 	header("Content-Type: text/html; charset=utf-8");
 	?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
@@ -8,7 +8,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Script-Type" content="text/javascript">
 <meta name="robots" content="noindex">
-<title><?php echo $title . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . (strlen($_GET["server"]) && $_GET["server"] != "localhost" ? htmlspecialchars("- $_GET[server]") : "") . " - " . adminer_name(); ?></title>
+<title><?php echo $title . (strlen($title2) ? ": " . htmlspecialchars($title2) : "") . (strlen($_GET["server"]) && $_GET["server"] != "localhost" ? htmlspecialchars("- $_GET[server]") : "") . " - " . $adminer->name(); ?></title>
 <link rel="shortcut icon" type="image/x-icon" href="../adminer/favicon.ico">
 <link rel="stylesheet" type="text/css" href="../adminer/default.css<?php // Ondrej Valka, http://valka.info ?>">
 <?php if (file_exists("adminer.css")) { ?>
@@ -56,16 +56,16 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 }
 
 function page_footer($missing = false) {
-	global $VERSION;
+	global $VERSION, $adminer;
 	?>
 </div>
 
 <?php switch_lang(); ?>
 <div id="menu">
-<h1><a href="http://www.adminer.org/" class="h1"><?php echo adminer_name(); ?></a> &nbsp; <?php echo $VERSION; ?> &nbsp;
+<h1><a href="http://www.adminer.org/" class="h1"><?php echo $adminer->name(); ?></a> &nbsp; <?php echo $VERSION; ?> &nbsp;
 <a href='http://www.adminer.org/#download' id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? htmlspecialchars($_COOKIE["adminer_version"]) : ""); ?></a>
 </h1>
-<?php adminer_navigation($missing); ?>
+<?php $adminer->navigation($missing); ?>
 </div>
 <?php
 }
