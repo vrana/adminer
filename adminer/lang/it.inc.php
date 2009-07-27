@@ -211,6 +211,7 @@ $translations = array(
 	'Stop on error' => 'Stop su errore',
 	'Select table' => 'Scegli tabella',
 	'%.3f s' => '%.3f s',
+	'$1-$3-$5' => '$5/$3/$1',
 	'History' => 'Storico',
 	'Variables' => 'Variabili',
 	'Source and target columns must have the same data type and there must be an index on the target columns.' => 'Le colonne sorgente e destinazione devono essere dello stesso tipo e ci deve essere un indice sulla colonna di destinazione.',

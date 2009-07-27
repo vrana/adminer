@@ -211,6 +211,7 @@ $translations = array(
 	'Maximum number of allowed fields exceeded. Please increase %s and %s.' => 'Bol prekročený maximálny počet povolených polí. Zvýšte prosím %s a %s.',
 	'(anywhere)' => '(kdekoľvek)',
 	'%.3f s' => '%.3f s',
+	'$1-$3-$5' => '$6.$4.$1',
 	'History' => 'História',
 	'Variables' => 'Premenné',
 	'Source and target columns must have the same data type and there must be an index on the target columns.' => 'Zdrojové a cieľové stĺpce musia mať rovnaký dátový typ a nad cieľovými stĺpcami musí byť definovaný index.',

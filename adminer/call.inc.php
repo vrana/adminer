@@ -17,7 +17,7 @@ if (!$error && $_POST) {
 	$call = array();
 	foreach ($routine["fields"] as $key => $field) {
 		if (in_array($key, $in)) {
-			$val = process_input($key, $field);
+			$val = process_input($field);
 			if ($val === false) {
 				$val = "''";
 			}

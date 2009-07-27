@@ -110,7 +110,7 @@ class Adminer {
 	}
 	
 	/** Value printed in select table
-	* @param string escaped value to print
+	* @param string HTML-escaped value to print
 	* @param string link to foreign key
 	* @param array single field returned from fields()
 	* @return string
@@ -121,6 +121,15 @@ class Adminer {
 			$return = lang('%d byte(s)', strlen($val));
 		}
 		return ($link ? "<a href=\"$link\">$return</a>" : $return);
+	}
+	
+	/** Value conversion used in select and edit
+	* @param string
+	* @param array single field returned from fields()
+	* @return 
+	*/
+	function editVal($val, $field) {
+		return $val;
 	}
 	
 	/** Print columns box in select
@@ -263,7 +272,7 @@ class Adminer {
 					$return[] = "MATCH (" . idf_escape($val["col"]) . ") AGAINST (" . $dbh->quote($val["val"]) . " IN BOOLEAN MODE)";
 				} else {
 					$in = process_length($val["val"]);
-					$cond = " $val[op]" . (ereg('NULL$', $val["op"]) ? "" : (ereg('IN$', $val["op"]) ? " (" . (strlen($in) ? $in : "NULL") . ")" : " " . $dbh->quote($val["val"])));
+					$cond = " $val[op]" . (ereg('NULL$', $val["op"]) ? "" : (ereg('IN$', $val["op"]) ? " (" . (strlen($in) ? $in : "NULL") . ")" : " " . $this->processInput($fields[$val["col"]], $val["val"])));
 					if (strlen($val["col"])) {
 						$return[] = idf_escape($val["col"]) . $cond;
 					} else {
@@ -379,15 +388,14 @@ class Adminer {
 	}
 	
 	/** Process sent input
-	* @param string field name
 	* @param array single field from fields()
+	* @param string
+	* @param string
 	* @return string expression to use in a query
 	*/
-	function processInput($name, $field) {
+	function processInput($field, $value, $function = "") {
 		global $dbh;
-		$idf = bracket_escape($name);
-		$function = $_POST["function"][$idf];
-		$value = $_POST["fields"][$idf];
+		$name = $field["field"];
 		$return = $dbh->quote($value);
 		if (ereg('^(now|uuid)$', $function)) {
 			$return = "$function()";

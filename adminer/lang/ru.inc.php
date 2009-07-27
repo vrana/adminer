@@ -211,6 +211,7 @@ $translations = array(
 	'Maximum number of allowed fields exceeded. Please increase %s and %s.' => 'Достигнуто максимальное значение количества доступных полей. Увеличьте %s и %s.',
 	'(anywhere)' => '(в любом месте)',
 	'%.3f s' => '%.3f s',
+	'$1-$3-$5' => '$5.$3.$1',
 	'History' => 'История',
 	'Variables' => 'Переменные',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exists.' => 'Колонки должны иметь одинаковые типы данных, в результирующей колонке должен быть индекс, данные для импорта должны существовать.',

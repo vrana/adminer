@@ -11,7 +11,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 	$location = ($_POST["insert"] ? $_SERVER["REQUEST_URI"] : $SELF . (isset($_GET["default"]) ? "table=" : "select=") . urlencode($_GET["edit"])); // "insert" to continue edit or insert
 	$set = array();
 	foreach ($fields as $name => $field) {
-		$val = process_input($name, $field);
+		$val = process_input($field);
 		if (!isset($_GET["default"])) {
 			if ($val !== false || !$update) {
 				$set[] = "\n" . idf_escape($name) . " = " . ($val !== false ? $val : "''");
@@ -74,6 +74,9 @@ if ($fields) {
 			? (strlen($row[$name]) && ($field["type"] == "enum" || $field["type"] == "set") ? intval($row[$name]) : $row[$name])
 			: ($_POST["clone"] && $field["auto_increment"] ? "" : (isset($_GET["select"]) ? false : $field["default"]))
 		);
+		if (!$_POST["save"] && is_string($value)) {
+			$value = $adminer->editVal($value, $field);
+		}
 		$function = ($_POST["save"] ? (string) $_POST["function"][$name] : ($where && $field["on_update"] == "CURRENT_TIMESTAMP" ? "now" : ($value === false ? null : (isset($value) ? '' : 'NULL'))));
 		input($field, $value, $function);
 		if (isset($_GET["default"]) && $field["type"] == "timestamp") {

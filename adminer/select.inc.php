@@ -67,7 +67,7 @@ if ($_POST && !$error) {
 			if (!$_POST["delete"]) {
 				$set = array();
 				foreach ($columns as $name => $val) { //! should check also for edit or insert privileges
-					$val = process_input($name, $fields[$name]);
+					$val = process_input($fields[$name]);
 					if ($_POST["clone"]) {
 						$set[] = ($val !== false ? $val : idf_escape($name));
 					} elseif ($val !== false) {
@@ -201,6 +201,7 @@ if (!$columns) {
 							$email_fields[$key] = (is_email($val) ? $names[$key] : ""); //! filled e-mails may be contained on other pages
 						}
 						$link = "";
+						$val = $adminer->editVal($val, $fields[$key]);
 						if (!isset($val)) {
 							$val = "<i>NULL</i>";
 						} else {

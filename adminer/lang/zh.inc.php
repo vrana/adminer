@@ -211,6 +211,7 @@ $translations = array(
 	'Stop on error' => '出错时停止',
 	'Select table' => '选择表',
 	'%.3f s' => '%.3f 秒',
+	'$1-$3-$5' => '$1.$3.$5',
 	'History' => '历史',
 	'Variables' => '变量',
 	'Source and target columns must have the same data type and there must be an index on the target columns.' => '源列和目标列必须具有相同的数据类型并且在目标列的必须是一个索引',

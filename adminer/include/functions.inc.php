@@ -318,7 +318,7 @@ function input($field, $value, $function) {
 		} elseif (strpos($field["type"], "text") !== false) {
 			echo '<textarea name="fields[' . $name . ']" cols="50" rows="12"' . $onchange . '>' . htmlspecialchars($value) . '</textarea>';
 		} elseif (ereg('binary|blob', $field["type"])) {
-			echo (ini_get("file_uploads") ? '<input type="file" name="' . $name . '"' . $onchange . '>' : lang('File uploads are disabled.') . ' ');
+			echo (ini_get("file_uploads") ? '<input type="file" name="' . $name . '"' . $onchange . '>' : lang('File uploads are disabled.'));
 		} else {
 			// int(3) is only a display hint
 			$maxlength = (!ereg('int', $field["type"]) && preg_match('~^([0-9]+)(,([0-9]+))?$~', $field["length"], $match) ? ($match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) : ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0));
@@ -327,9 +327,9 @@ function input($field, $value, $function) {
 	}
 }
 
-function process_input($name, $field) {
+function process_input($field) {
 	global $dbh, $adminer;
-	$idf = bracket_escape($name);
+	$idf = bracket_escape($field["field"]);
 	$function = $_POST["function"][$idf];
 	$value = $_POST["fields"][$idf];
 	if ($field["type"] == "enum" ? $value == -1 : $function == "orig") {
@@ -347,7 +347,7 @@ function process_input($name, $field) {
 		}
 		return "_binary" . $dbh->quote($file);
 	} else {
-		return $adminer->processInput($name, $field);
+		return $adminer->processInput($field, $value, $function);
 	}
 }
 

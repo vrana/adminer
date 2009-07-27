@@ -211,6 +211,7 @@ $translations = array(
 	'Stop on error' => 'Stoppen bij fout',
 	'Select table' => 'Selecteer tabel',
 	'%.3f s' => '%.3f s',
+	'$1-$3-$5' => '$5-$3-$1',
 	'History' => 'Geschiedenis',
 	'Variables' => 'Variabelen',
 	'Source and target columns must have the same data type and there must be an index on the target columns.' => 'Bron- en doelkolommen moeten van hetzelfde data type zijn en er moet een index bestaan op de gekozen kolommen.',

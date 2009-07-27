@@ -118,6 +118,13 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		return ($link ? "<a href=\"$link\">$return</a>" : $return);
 	}
 	
+	function editVal($val, $field) {
+		if (ereg('date|timestamp', $field["type"])) {
+			return preg_replace('~^([0-9]{2}([0-9]+))-(0?([0-9]+))-(0?([0-9]+))~', lang('$1-$3-$5'), $val);
+		}
+		return $val;
+	}
+	
 	function selectColumnsPrint($select, $columns) {
 		//! allow grouping functions by indexes
 	}
@@ -177,11 +184,11 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 	}
 	
 	function selectSearchProcess($indexes, $fields) {
-		global $dbh;
 		$return = array();
 		foreach ((array) $_GET["where"] as $val) {
 			if (strlen("$val[col]$val[val]")) {
-				$cond = " = " . $dbh->quote($val["val"]);
+				$value = $this->processInput($fields[$val["col"]], $val["val"]);
+				$cond = ($value == "NULL" ? " IS $value" : " = $value");
 				if (strlen($val["col"])) {
 					$return[] = idf_escape($val["col"]) . $cond;
 				} else {
@@ -285,16 +292,9 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		return $return;
 	}
 	
-	/** Process sent input
-	* @param string field name
-	* @param array single field from fields()
-	* @return string expression to use in a query
-	*/
-	function processInput($name, $field) {
+	function processInput($field, $value, $function = "") {
 		global $dbh;
-		$idf = bracket_escape($name);
-		$value = $_POST["fields"][$idf];
-		$return = $dbh->quote($value);
+		$return = $dbh->quote(ereg('date|timestamp', $field["type"]) ? preg_replace_callback('(' . preg_replace('~(\\\\\\$([0-9]))~', '(?P<p\\2>[0-9]+)', preg_quote(lang('$1-$3-$5'))) . ')', 'conversion_date', $value) : $value);
 		if (!ereg('varchar|text', $field["type"]) && !strlen($value)) {
 			$return = "NULL";
 		} elseif (ereg('date|time', $field["type"]) && $value == "CURRENT_TIMESTAMP") {
