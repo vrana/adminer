@@ -82,6 +82,7 @@ include "./include/editing.inc.php";
 include "./include/export.inc.php";
 
 $confirm = " onclick=\"return confirm('" . lang('Are you sure?') . "');\"";
+$enum_length = '\'(?:\'\'|[^\'\\\\]+|\\\\.)*\'|"(?:""|[^"\\\\]+|\\\\.)*"';
 $token = $_SESSION["tokens"][$_GET["server"]];
 $error = ($_POST
 	? ($_POST["token"] == $token ? "" : lang('Invalid CSRF token. Send the form again.'))

@@ -21,6 +21,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 
 page_header(lang('Foreign key'), $error, array("table" => $_GET["foreign"]), $_GET["foreign"]);
 
+$row = array("table" => $_GET["foreign"], "source" => array(""));
 if ($_POST) {
 	$row = $_POST;
 	ksort($row["source"]);
@@ -33,8 +34,6 @@ if ($_POST) {
 	$foreign_keys = foreign_keys($_GET["foreign"]);
 	$row = $foreign_keys[$_GET["name"]];
 	$row["source"][] = "";
-} else {
-	$row = array("table" => $_GET["foreign"], "source" => array(""));
 }
 
 $source = get_vals("SHOW COLUMNS FROM " . idf_escape($_GET["foreign"])); //! no text and blob

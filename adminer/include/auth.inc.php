@@ -42,7 +42,7 @@ function auth_error($exception = null) {
 	unset($_SESSION["usernames"][$_GET["server"]]);
 	page_header(lang('Login'), (isset($username) ? htmlspecialchars($exception ? $exception->getMessage() : (is_string($dbh) ? $dbh : lang('Invalid credentials.'))) : (isset($_POST["server"]) ? lang('Sessions must be enabled.') : ($_POST ? lang('Session expired, please login again.') : ""))), null);
 	echo "<form action='' method='post'>\n";
-	$adminer->loginForm($login);
+	$adminer->loginForm($username);
 	echo "<p>\n";
 	hidden_fields($_POST, $ignore); // expired session
 	foreach ($_FILES as $key => $val) {

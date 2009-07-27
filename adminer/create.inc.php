@@ -90,6 +90,11 @@ while ($row = $result->fetch_assoc()) {
 }
 $result->free();
 
+$row = array(
+	"Engine" => $_COOKIE["adminer_engine"],
+	"fields" => array(array("field" => "")),
+	"partition_names" => array(""),
+);
 if ($_POST) {
 	$row = $_POST;
 	if ($row["auto_increment_col"]) {
@@ -116,12 +121,6 @@ if ($_POST) {
 		$result->free();
 		$row["partition_names"][] = "";
 	}
-} else {
-	$row = array(
-		"Engine" => $_COOKIE["adminer_engine"],
-		"fields" => array(array("field" => "")),
-		"partition_names" => array(""),
-	);
 }
 $collations = collations();
 
