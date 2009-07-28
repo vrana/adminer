@@ -227,29 +227,24 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		if ($_GET["order"]) {
 			return array(idf_escape($_GET["order"][0]) . (isset($_GET["desc"][0]) ? " DESC" : ""));
 		}
-		$index = $indexes[$_GET["index_order"]];
-		if (!strlen($_GET["index_order"])) {
-			foreach ($indexes as $index) {
-				if ($index["type"] == "INDEX") {
-					break;
+		$index_order = $_GET["index_order"];
+		foreach ((strlen($index_order) ? array($indexes[$index_order]) : $indexes) as $index) {
+			if (strlen($index_order) || $index["type"] == "INDEX") {
+				$desc = false;
+				foreach ($index["columns"] as $val) {
+					if (ereg('date|timestamp', $fields[$val]["type"])) {
+						$desc = true;
+						break;
+					}
 				}
+				$return = array();
+				foreach ($index["columns"] as $val) {
+					$return[] = idf_escape($val) . ($desc ? " DESC" : "");
+				}
+				return $return;
 			}
 		}
-		if (!$index) {
-			return array();
-		}
-		$desc = false;
-		foreach ($index["columns"] as $val) {
-			if (ereg('date|timestamp', $fields[$val]["type"])) {
-				$desc = true;
-				break;
-			}
-		}
-		$return = array();
-		foreach ($index["columns"] as $val) {
-			$return[] = idf_escape($val) . ($desc ? " DESC" : "");
-		}
-		return $return;
+		return array();
 	}
 	
 	function selectLimitProcess() {
