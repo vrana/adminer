@@ -127,7 +127,7 @@ class Adminer {
 	/** Value conversion used in select and edit
 	* @param string
 	* @param array single field returned from fields()
-	* @return 
+	* @return string
 	*/
 	function editVal($val, $field) {
 		return $val;

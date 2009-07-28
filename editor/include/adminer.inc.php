@@ -188,7 +188,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		foreach ((array) $_GET["where"] as $val) {
 			if (strlen("$val[col]$val[val]")) {
 				$value = $this->processInput($fields[$val["col"]], $val["val"]);
-				$cond = ($value == "NULL" ? " IS $value" : " = $value");
+				$cond = ($value == "NULL" ? " IS" : ($val["op"] == "=" ? " =" : " LIKE")) . " $value";
 				if (strlen($val["col"])) {
 					$return[] = idf_escape($val["col"]) . $cond;
 				} else {
@@ -208,7 +208,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 	
 	function selectOrderProcess($columns, $select, $indexes) {
 		return ($_GET["order"]
-			? idf_escape($_GET["order"][0]) . (isset($_GET["desc"][0]) ? " DESC" : "")
+			? array(idf_escape($_GET["order"][0]) . (isset($_GET["desc"][0]) ? " DESC" : ""))
 			: $indexes[$_GET["index_order"]]["columns"]
 		);
 	}
