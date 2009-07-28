@@ -23,7 +23,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 	}
 }
 
-page_header((strlen($_GET["procedure"]) ? (isset($_GET["function"]) ? lang('Alter function') : lang('Alter procedure')) . ": " . htmlspecialchars($_GET["procedure"]) : (isset($_GET["function"]) ? lang('Create function') : lang('Create procedure'))), $error);
+page_header((strlen($_GET["procedure"]) ? (isset($_GET["function"]) ? lang('Alter function') : lang('Alter procedure')) . ": " . h($_GET["procedure"]) : (isset($_GET["function"]) ? lang('Create function') : lang('Create procedure'))), $error);
 
 $collations = get_vals("SHOW CHARACTER SET");
 sort($collations);
@@ -43,11 +43,11 @@ if ($_POST) {
 <?php edit_fields($row["fields"], $collations, $routine); ?>
 <?php if (isset($_GET["function"])) { ?><tr><td><?php echo lang('Return type'); ?><?php echo edit_type("returns", $row["returns"], $collations); ?><?php } ?>
 </table>
-<p><textarea name="definition" rows="10" cols="80" style="width: 98%;"><?php echo htmlspecialchars($row["definition"]); ?></textarea>
+<p><textarea name="definition" rows="10" cols="80" style="width: 98%;"><?php echo h($row["definition"]); ?></textarea>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <?php if ($dropped) { ?><input type="hidden" name="dropped" value="1"><?php } ?>
-<?php echo lang('Name'); ?>: <input name="name" value="<?php echo htmlspecialchars($row["name"]); ?>" maxlength="64">
+<?php echo lang('Name'); ?>: <input name="name" value="<?php echo h($row["name"]); ?>" maxlength="64">
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php if (strlen($_GET["procedure"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
 </form>

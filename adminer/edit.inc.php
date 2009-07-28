@@ -85,7 +85,7 @@ if ($fields) {
 				$create = $dbh->result($dbh->query("SHOW CREATE TABLE " . idf_escape($_GET["edit"])), 1);
 			}
 			$checked = ($_POST ? $_POST["on_update"][bracket_escape($name)] : preg_match("~\n\\s*" . preg_quote(idf_escape($name), '~') . " timestamp.* on update CURRENT_TIMESTAMP~i", $create));
-			echo '<label><input type="checkbox" name="on_update[' . htmlspecialchars(bracket_escape($name)) . ']" value="1"' . ($checked ? ' checked="checked"' : '') . '>' . lang('ON UPDATE CURRENT_TIMESTAMP') . '</label>';
+			echo '<label><input type="checkbox" name="on_update[' . h(bracket_escape($name)) . ']" value="1"' . ($checked ? ' checked="checked"' : '') . '>' . lang('ON UPDATE CURRENT_TIMESTAMP') . '</label>';
 		}
 		echo "\n";
 	}

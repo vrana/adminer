@@ -119,18 +119,18 @@ page_header(lang('Select') . ": " . $adminer->tableName($table_status), $error);
 echo "<p>";
 if (isset($rights["insert"])) {
 	//! pass search values forth and back
-	echo '<a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '">' . lang('New item') . '</a> ';
+	echo '<a href="' . h($SELF) . 'edit=' . urlencode($_GET['select']) . '">' . lang('New item') . '</a> ';
 }
 echo $adminer->selectLinks($table_status);
 
 if (!$columns) {
-	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "" : ": " . htmlspecialchars($dbh->error)) . ".\n";
+	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "" : ": " . h($dbh->error)) . ".\n";
 } else {
 	echo "<form action='' id='form'>\n";
 	echo "<div style='display: none;'>";
-	echo (strlen($_GET["server"]) ? '<input type="hidden" name="server" value="' . htmlspecialchars($_GET["server"]) . '">' : "");
-	echo '<input type="hidden" name="db" value="' . htmlspecialchars($_GET["db"]) . '">';
-	echo '<input type="hidden" name="select" value="' . htmlspecialchars($_GET["select"]) . '">';
+	echo (strlen($_GET["server"]) ? '<input type="hidden" name="server" value="' . h($_GET["server"]) . '">' : "");
+	echo '<input type="hidden" name="db" value="' . h($_GET["db"]) . '">';
+	echo '<input type="hidden" name="select" value="' . h($_GET["select"]) . '">';
 	echo "</div>\n";
 	$adminer->selectColumnsPrint($select, $columns);
 	$adminer->selectSearchPrint($where, $columns, $indexes);
@@ -145,7 +145,7 @@ if (!$columns) {
 	
 	$result = $dbh->query($query);
 	if (!$result) {
-		echo "<p class='error'>" . htmlspecialchars($dbh->error) . "\n";
+		echo "<p class='error'>" . h($dbh->error) . "\n";
 	} else {
 		$email_fields = array();
 		echo "<form action='' method='post' enctype='multipart/form-data'>\n";
@@ -184,14 +184,14 @@ if (!$columns) {
 				if (strlen($name)) {
 					$order++;
 					$names[$key] = $name;
-					echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . apply_sql_function($val["fun"], $name) . "</a>"; //! columns looking like functions
+					echo '<th><a href="' . h(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . apply_sql_function($val["fun"], $name) . "</a>"; //! columns looking like functions
 				}
 				next($select);
 			}
 			echo ($table_names ? "<th>" . lang('Relations') : "") . "</thead>\n";
 			foreach ($descriptions as $n => $row) {
 				$unique_idf = implode('&amp;', unique_idf($rows[$n], $indexes));
-				echo '<tr' . odd() . '><td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false; form_uncheck(\'all-page\');">' . (count($select) != count($group) || information_schema($_GET["db"]) ? '' : ' <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a>');
+				echo "<tr" . odd() . "><td><input type='checkbox' name='check[]' value='$unique_idf' onclick=\"this.form['all'].checked = false; form_uncheck('all-page');\">" . (count($select) != count($group) || information_schema($_GET["db"]) ? '' : " <a href='" . h($SELF) . "edit=" . urlencode($_GET['select']) . "&amp;$unique_idf" . "'>" . lang('edit') . "</a>");
 				foreach ($row as $key => $val) {
 					if (isset($names[$key])) {
 						if (strlen($val) && (!isset($email_fields[$key]) || strlen($email_fields[$key]))) {
@@ -203,14 +203,14 @@ if (!$columns) {
 							$val = "<i>NULL</i>";
 						} else {
 							if (ereg('blob|binary', $fields[$key]["type"]) && strlen($val)) {
-								$link = htmlspecialchars($SELF . 'download=' . urlencode($_GET["select"]) . '&field=' . urlencode($key) . '&') . $unique_idf;
+								$link = h($SELF . 'download=' . urlencode($_GET["select"]) . '&field=' . urlencode($key) . '&') . $unique_idf;
 							}
 							if (!strlen(trim($val, " \t"))) {
 								$val = "&nbsp;";
 							} elseif (strlen($text_length) && ereg('blob|text', $fields[$key]["type"]) && is_utf8($val)) {
 								$val = nl2br(shorten_utf8($val, max(0, intval($text_length)))); // usage of LEFT() would reduce traffic but complicate query
 							} else {
-								$val = nl2br(htmlspecialchars($val));
+								$val = nl2br(h($val));
 							}
 							
 							// link related items
@@ -219,7 +219,7 @@ if (!$columns) {
 									foreach ($foreign_key["source"] as $i => $source) {
 										$link .= where_link($i, $foreign_key["target"][$i], $rows[$n][$source]);
 									}
-									$link = htmlspecialchars((strlen($foreign_key["db"]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), $SELF) : $SELF) . 'select=' . urlencode($foreign_key["table"])) . $link; // InnoDB supports non-UNIQUE keys
+									$link = h((strlen($foreign_key["db"]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), $SELF) : $SELF) . 'select=' . urlencode($foreign_key["table"])) . $link; // InnoDB supports non-UNIQUE keys
 									break;
 								}
 							}
@@ -235,13 +235,13 @@ if (!$columns) {
 					echo "<td>";
 					foreach ($table_names as $table => $name) {
 						foreach ($backward_keys[$table] as $columns) {
-							echo ' <a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($table);
+							echo " <a href='" . h($SELF) . 'select=' . urlencode($table);
 							$i = 0;
 							foreach ($columns as $column => $val) {
 								echo where_link($i, $column, $rows[$n][$val]);
 								$i++;
 							}
-							echo "\">$name</a>";
+							echo "'>$name</a>";
 						}
 					}
 				}

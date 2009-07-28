@@ -1,12 +1,12 @@
 <?php
 page_header(lang('Privileges'));
-echo '<p><a href="' . htmlspecialchars($SELF) . 'user=">' . lang('Create user') . "</a>";
+echo '<p><a href="' . h($SELF) . 'user=">' . lang('Create user') . "</a>";
 
 $result = $dbh->query("SELECT User, Host FROM mysql.user ORDER BY Host, User");
 if (!$result) {
 	?>
 	<form action=""><p>
-	<?php if (strlen($_GET["server"])) { ?><input type="hidden" name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>"><?php } ?>
+	<?php if (strlen($_GET["server"])) { ?><input type="hidden" name="server" value="<?php echo h($_GET["server"]); ?>"><?php } ?>
 	<?php echo lang('Username'); ?>: <input name="user">
 	<?php echo lang('Server'); ?>: <input name="host" value="localhost">
 	<input type="hidden" name="grant" value="">
@@ -19,7 +19,7 @@ if (!$result) {
 echo "<table cellspacing='0'>\n";
 echo "<thead><tr><th>&nbsp;<th>" . lang('Username') . "<th>" . lang('Server') . "</thead>\n";
 while ($row = $result->fetch_assoc()) {
-	echo '<tr' . odd() . '><td><a href="' . htmlspecialchars($SELF . 'user=' . urlencode($row["User"]) . '&host=' . urlencode($row["Host"])) . '">' . lang('edit') . '</a><td>' . htmlspecialchars($row["User"]) . "<td>" . htmlspecialchars($row["Host"]) . "\n";
+	echo '<tr' . odd() . '><td><a href="' . h($SELF . 'user=' . urlencode($row["User"]) . '&host=' . urlencode($row["Host"])) . '">' . lang('edit') . '</a><td>' . h($row["User"]) . "<td>" . h($row["Host"]) . "\n";
 }
 echo "</table>\n";
 $result->free();

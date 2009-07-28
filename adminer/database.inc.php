@@ -72,8 +72,8 @@ if ($_POST) {
 <form action="" method="post">
 <p>
 <?php echo ($_POST["add_x"]
-	? '<textarea name="name" rows="10" cols="40">' . htmlspecialchars($name) . '</textarea><br>'
-	: '<input name="name" value="' . htmlspecialchars($name) . '" maxlength="64">'
+	? '<textarea name="name" rows="10" cols="40">' . h($name) . '</textarea><br>'
+	: '<input name="name" value="' . h($name) . '" maxlength="64">'
 ) . "\n"; ?>
 <select name="collation"><option value="">(<?php echo lang('collation'); ?>)<?php echo optionlist($collations, $collate); ?></select>
 <input type="hidden" name="token" value="<?php echo $token; ?>">

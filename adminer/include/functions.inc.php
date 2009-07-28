@@ -25,14 +25,18 @@ function bracket_escape($idf, $back = false) {
 	return strtr($idf, ($back ? array_flip($trans) : $trans));
 }
 
+function h($string) {
+	return htmlspecialchars($string, ENT_QUOTES);
+}
+
 function optionlist($options, $selected = null, $use_keys = false) {
 	$return = "";
 	foreach ($options as $k => $v) {
 		if (is_array($v)) {
-			$return .= '<optgroup label="' . htmlspecialchars($k) . '">';
+			$return .= '<optgroup label="' . h($k) . '">';
 		}
 		foreach ((is_array($v) ? $v : array($k => $v)) as $key => $val) {
-			$return .= '<option' . ($use_keys || is_string($key) ? ' value="' . htmlspecialchars($key) . '"' : '') . (($use_keys || is_string($key) ? (string) $key : $val) === $selected ? ' selected="selected"' : '') . '>' . htmlspecialchars($val);
+			$return .= '<option' . ($use_keys || is_string($key) ? ' value="' . h($key) . '"' : '') . (($use_keys || is_string($key) ? (string) $key : $val) === $selected ? ' selected="selected"' : '') . '>' . h($val);
 		}
 		if (is_array($v)) {
 			$return .= '</optgroup>';
@@ -121,7 +125,7 @@ function query_redirect($query, $location, $message, $redirect = true, $execute 
 		$failed = !$dbh->query($query);
 	}
 	if ($failed) {
-		$error = htmlspecialchars($dbh->error) . $sql;
+		$error = h($dbh->error) . $sql;
 		return false;
 	}
 	if ($redirect) {
@@ -147,7 +151,7 @@ function remove_from_uri($param = "") {
 }
 
 function pagination($page) {
-	return " " . ($page == $_GET["page"] ? $page + 1 : '<a href="' . htmlspecialchars(remove_from_uri("page") . ($page ? "&page=$page" : "")) . '">' . ($page + 1) . "</a>");
+	return " " . ($page == $_GET["page"] ? $page + 1 : '<a href="' . h(remove_from_uri("page") . ($page ? "&page=$page" : "")) . '">' . ($page + 1) . "</a>");
 }
 
 function get_file($key) {
@@ -212,7 +216,7 @@ function select($result, $dbh2 = null) {
 						$blobs[$j] = true;
 					}
 					$types[$j] = $field->type;
-					echo "<th>" . htmlspecialchars($field->name);
+					echo "<th>" . h($field->name);
 				}
 				echo "</thead>\n";
 			}
@@ -226,7 +230,7 @@ function select($result, $dbh2 = null) {
 					} elseif (!strlen(trim($val, " \t"))) {
 						$val = "&nbsp;"; // some content to print a border
 					} else {
-						$val = nl2br(htmlspecialchars($val));
+						$val = nl2br(h($val));
 						if ($types[$key] == 254) {
 							$val = "<code>$val</code>";
 						}
@@ -236,7 +240,7 @@ function select($result, $dbh2 = null) {
 						foreach ($indexes[$links[$key]] as $col => $j) {
 							$link .= "&amp;where" . urlencode("[" . bracket_escape($col) . "]") . "=" . urlencode($row[$j]);
 						}
-						$val = '<a href="' . htmlspecialchars($SELF) . $link . '">' . $val . '</a>';
+						$val = "<a href='" . h($SELF) . "$link'>$val</a>";
 					}
 				}
 				echo "<td>$val";
@@ -254,7 +258,7 @@ function is_utf8($val) {
 
 function shorten_utf8($string, $length = 80, $suffix = "") {
 	preg_match("~^((?:.|\n){0,$length})(.|\n)?~u", $string, $match); // ~s causes trash in $match[2] under some PHP versions
-	return htmlspecialchars($match[1]) . $suffix . ($match[2] ? "<em>...</em>" : "");
+	return h($match[1]) . $suffix . ($match[2] ? "<em>...</em>" : "");
 }
 
 function friendly_url($val) {
@@ -269,7 +273,7 @@ function hidden_fields($process, $ignore = array()) {
 				$process[$key . "[$k]"] = $v;
 			}
 		} elseif (!in_array($key, $ignore)) {
-			echo '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($val) . '">';
+			echo '<input type="hidden" name="' . h($key) . '" value="' . h($val) . '">';
 		}
 	}
 }
@@ -286,28 +290,28 @@ function column_foreign_keys($table) {
 
 function input($field, $value, $function) {
 	global $types, $adminer;
-	$name = htmlspecialchars(bracket_escape($field["field"]));
+	$name = h(bracket_escape($field["field"]));
 	echo "<td class='function'>";
 	if ($field["type"] == "enum") {
-		echo "&nbsp;<td>" . (isset($_GET["select"]) ? ' <label><input type="radio" name="fields[' . $name . ']" value="-1" checked="checked"><em>' . lang('original') . '</em></label>' : "");
+		echo "&nbsp;<td>" . (isset($_GET["select"]) ? " <label><input type='radio' name='fields[$name]' value='-1' checked='checked'><em>" . lang('original') . "</em></label>" : "");
 		if ($field["null"] || isset($_GET["default"])) {
-			echo ' <label><input type="radio" name="fields[' . $name . ']" value=""' . (($field["null"] ? isset($value) : strlen($value)) || isset($_GET["select"]) ? '' : ' checked="checked"') . '>' . ($field["null"] ? '<em>NULL</em>' : '') . '</label>';
+			echo " <label><input type='radio' name='fields[$name]' value=''" . (($field["null"] ? isset($value) : strlen($value)) || isset($_GET["select"]) ? '' : ' checked="checked"') . '>' . ($field["null"] ? '<em>NULL</em>' : '') . '</label>';
 		}
 		if (!isset($_GET["default"])) {
-			echo '<input type="radio" name="fields[' . $name . ']" value="0"' . ($value === 0 ? ' checked="checked"' : '') . '>';
+			echo "<input type='radio' name='fields[$name]' value='0'" . ($value === 0 ? ' checked="checked"' : '') . '>';
 		}
 		preg_match_all("~'((?:[^']+|'')*)'~", $field["length"], $matches);
 		foreach ($matches[1] as $i => $val) {
 			$val = stripcslashes(str_replace("''", "'", $val));
 			$checked = (is_int($value) ? $value == $i+1 : $value === $val);
-			echo ' <label><input type="radio" name="fields[' . $name . ']" value="' . (isset($_GET["default"]) ? (strlen($val) ? htmlspecialchars($val) : " ") : $i+1) . '"' . ($checked ? ' checked="checked"' : '') . '>' . htmlspecialchars($val) . '</label>';
+			echo " <label><input type='radio' name='fields[$name]' value='" . (isset($_GET["default"]) ? (strlen($val) ? h($val) : " ") : $i+1) . "'" . ($checked ? ' checked="checked"' : '') . '>' . h($val) . '</label>';
 		}
 	} else {
 		$functions = (isset($_GET["select"]) ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
 		$first = array_search("", $functions) + (isset($_GET["select"]) ? 1 : 0);
-		$onchange = ($first ? ' onchange="var f = this.form[\'function[' . addcslashes($name, "\r\n'\\") . ']\']; if (' . $first . ' > f.selectedIndex) f.selectedIndex = ' . $first . ';"' : '');
-		echo (count($functions) > 1 ? '<select name="function[' . $name . ']">' . optionlist($functions, $function) . '</select>' : "&nbsp;") . '<td>';
-		$input = $adminer->editInput($_GET["edit"], $field, ' name="fields[' . $name . ']"' . $onchange, $value); // usage in call is without a table
+		$onchange = ($first ? " onchange=\"var f = this.form['function[" . addcslashes($name, "\r\n'\\") . "]']; if ($first > f.selectedIndex) f.selectedIndex = $first;\"" : "");
+		echo (count($functions) > 1 ? "<select name='function[$name]'>" . optionlist($functions, $function) . "</select>" : "&nbsp;") . '<td>';
+		$input = $adminer->editInput($_GET["edit"], $field, " name='fields[$name]'$onchange", $value); // usage in call is without a table
 		if (strlen($input)) {
 			echo $input;
 		} elseif ($field["type"] == "set") { //! 64 bits
@@ -315,16 +319,16 @@ function input($field, $value, $function) {
 			foreach ($matches[1] as $i => $val) {
 				$val = stripcslashes(str_replace("''", "'", $val));
 				$checked = (is_int($value) ? ($value >> $i) & 1 : in_array($val, explode(",", $value), true));
-				echo ' <label><input type="checkbox" name="fields[' . $name . '][' . $i . ']" value="' . (isset($_GET["default"]) ? htmlspecialchars($val) : 1 << $i) . '"' . ($checked ? ' checked="checked"' : '') . "$onchange>" . htmlspecialchars($val) . '</label>';
+				echo " <label><input type='checkbox' name='fields[$name][$i]' value='" . (isset($_GET["default"]) ? h($val) : 1 << $i) . "'" . ($checked ? ' checked="checked"' : '') . "$onchange>" . h($val) . '</label>';
 			}
 		} elseif (strpos($field["type"], "text") !== false) {
-			echo '<textarea name="fields[' . $name . ']" cols="50" rows="12"' . "$onchange>" . htmlspecialchars($value) . '</textarea>';
+			echo "<textarea name='fields[$name]' cols='50' rows='12'$onchange>" . h($value) . '</textarea>';
 		} elseif (ereg('binary|blob', $field["type"])) {
-			echo (ini_get("file_uploads") ? '<input type="file" name="' . $name . '"' . "$onchange>" : lang('File uploads are disabled.'));
+			echo (ini_get("file_uploads") ? "<input type='file' name='$name'$onchange>" : lang('File uploads are disabled.'));
 		} else {
 			// int(3) is only a display hint
 			$maxlength = (!ereg('int', $field["type"]) && preg_match('~^([0-9]+)(,([0-9]+))?$~', $field["length"], $match) ? ($match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) : ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0));
-			echo '<input name="fields[' . $name . ']" value="' . htmlspecialchars($value) . '"' . ($maxlength ? " maxlength='$maxlength'" : "") . "$onchange>";
+			echo "<input name='fields[$name]' value='" . h($value) . "'" . ($maxlength ? " maxlength='$maxlength'" : "") . "$onchange>";
 		}
 	}
 }

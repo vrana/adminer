@@ -182,11 +182,11 @@ if (strlen($_GET["db"])) {
 	$views = "";
 	foreach (table_status() as $row) {
 		$checked = (strlen($_GET["dump"]) && $row["Name"] != $_GET["dump"] ? '' : " checked='checked'");
-		$print = '<tr><td><label><input type="checkbox" name="tables[]" value="' . htmlspecialchars($row["Name"]) . "\"$checked onclick=\"form_uncheck('check-tables');\">" . htmlspecialchars($row["Name"]) . "</label>";
+		$print = "<tr><td><label><input type='checkbox' name='tables[]' value='" . h($row["Name"]) . "'$checked onclick=\"form_uncheck('check-tables');\">" . h($row["Name"]) . "</label>";
 		if (!$row["Engine"]) {
 			$views .= "$print\n";
 		} else {
-			echo "$print<td align='right'><label>" . ($row["Engine"] == "InnoDB" && $row["Rows"] ? lang('~ %s', $row["Rows"]) : $row["Rows"]) . '<input type="checkbox" name="data[]" value="' . htmlspecialchars($row["Name"]) . "\"$checked onclick=\"form_uncheck('check-data');\"></label>\n";
+			echo "$print<td align='right'><label>" . ($row["Engine"] == "InnoDB" && $row["Rows"] ? lang('~ %s', $row["Rows"]) : $row["Rows"]) . "<input type='checkbox' name='data[]' value='" . h($row["Name"]) . "'$checked onclick=\"form_uncheck('check-data');\"></label>\n";
 		}
 	}
 	echo $views;
@@ -194,7 +194,7 @@ if (strlen($_GET["db"])) {
 	echo "<thead><tr><th style='text-align: left;'><label><input type='checkbox' id='check-databases' checked='checked' onclick='form_check(this, /^databases\\[/);'>" . lang('Database') . "</label></thead>\n";
 	foreach (get_databases() as $db) {
 		if (!information_schema($db)) {
-			echo '<tr><td><label><input type="checkbox" name="databases[]" value="' . htmlspecialchars($db) . '" checked="checked" onclick="form_uncheck(\'check-databases\');">' . htmlspecialchars($db) . "</label>\n";
+			echo '<tr><td><label><input type="checkbox" name="databases[]" value="' . h($db) . '" checked="checked" onclick="form_uncheck(\'check-databases\');">' . h($db) . "</label>\n";
 		}
 	}
 }

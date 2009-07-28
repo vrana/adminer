@@ -23,7 +23,7 @@ if ($_POST && !$error) {
 	}
 }
 
-page_header((strlen($_GET["event"]) ? lang('Alter event') . ": " . htmlspecialchars($_GET["event"]) : lang('Create event')), $error);
+page_header((strlen($_GET["event"]) ? lang('Alter event') . ": " . h($_GET["event"]) : lang('Create event')), $error);
 
 $row = array();
 if ($_POST) {
@@ -37,15 +37,15 @@ if ($_POST) {
 
 <form action="" method="post">
 <table cellspacing="0">
-<tr><th><?php echo lang('Name'); ?><td><input name="EVENT_NAME" value="<?php echo htmlspecialchars($row["EVENT_NAME"]); ?>" maxlength="64">
-<tr><th><?php echo lang('Start'); ?><td><input name="STARTS" value="<?php echo htmlspecialchars("$row[EXECUTE_AT]$row[STARTS]"); ?>">
-<tr><th><?php echo lang('End'); ?><td><input name="ENDS" value="<?php echo htmlspecialchars($row["ENDS"]); ?>">
-<tr><th><?php echo lang('Every'); ?><td><input name="INTERVAL_VALUE" value="<?php echo htmlspecialchars($row["INTERVAL_VALUE"]); ?>" size="6"> <select name="INTERVAL_FIELD"><?php echo optionlist($intervals, $row["INTERVAL_FIELD"]); ?></select>
+<tr><th><?php echo lang('Name'); ?><td><input name="EVENT_NAME" value="<?php echo h($row["EVENT_NAME"]); ?>" maxlength="64">
+<tr><th><?php echo lang('Start'); ?><td><input name="STARTS" value="<?php echo h("$row[EXECUTE_AT]$row[STARTS]"); ?>">
+<tr><th><?php echo lang('End'); ?><td><input name="ENDS" value="<?php echo h($row["ENDS"]); ?>">
+<tr><th><?php echo lang('Every'); ?><td><input name="INTERVAL_VALUE" value="<?php echo h($row["INTERVAL_VALUE"]); ?>" size="6"> <select name="INTERVAL_FIELD"><?php echo optionlist($intervals, $row["INTERVAL_FIELD"]); ?></select>
 <tr><th><?php echo lang('Status'); ?><td><select name="STATUS"><?php echo optionlist($statuses, $row["STATUS"]); ?></select>
-<tr><th><?php echo lang('Comment'); ?><td><input name="EVENT_COMMENT" value="<?php echo htmlspecialchars($row["EVENT_COMMENT"]); ?>" maxlength="64">
+<tr><th><?php echo lang('Comment'); ?><td><input name="EVENT_COMMENT" value="<?php echo h($row["EVENT_COMMENT"]); ?>" maxlength="64">
 <tr><th>&nbsp;<td><label><input type="checkbox" name="ON_COMPLETION" value="PRESERVE"<?php echo ($row["ON_COMPLETION"] == "PRESERVE" ? " checked='checked'" : ""); ?>><?php echo lang('On completion preserve'); ?></label>
 </table>
-<p><textarea name="EVENT_DEFINITION" rows="10" cols="80" style="width: 98%;"><?php echo htmlspecialchars($row["EVENT_DEFINITION"]); ?></textarea>
+<p><textarea name="EVENT_DEFINITION" rows="10" cols="80" style="width: 98%;"><?php echo h($row["EVENT_DEFINITION"]); ?></textarea>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Save'); ?>">

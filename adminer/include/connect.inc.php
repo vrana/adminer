@@ -2,7 +2,7 @@
 function connect_error() {
 	global $dbh, $SELF, $VERSION;
 	if (strlen($_GET["db"])) {
-		page_header(lang('Database') . ": " . htmlspecialchars($_GET["db"]), lang('Invalid database.'), false);
+		page_header(lang('Database') . ": " . h($_GET["db"]), lang('Invalid database.'), false);
 	} else {
 		page_header(lang('Select database'), "", null);
 		foreach (array(
@@ -11,10 +11,10 @@ function connect_error() {
 			'processlist' => lang('Process list'),
 			'variables' => lang('Variables'),
 		) as $key => $val) {
-			echo '<p><a href="' . htmlspecialchars($SELF) . "$key=\">$val</a>\n";
+			echo '<p><a href="' . h($SELF) . "$key=\">$val</a>\n";
 		}
 		echo "<p>" . lang('MySQL version: %s through PHP extension %s', "<b" . ($dbh->server_info < 4.1 ? " class='binary'" : "") . ">$dbh->server_info</b>", "<b>$dbh->extension</b>") . "\n";
-		echo "<p>" . lang('Logged as: %s', "<b>" . htmlspecialchars($dbh->result($dbh->query("SELECT USER()"))) . "</b>") . "\n";
+		echo "<p>" . lang('Logged as: %s', "<b>" . h($dbh->result($dbh->query("SELECT USER()"))) . "</b>") . "\n";
 	}
 	page_footer("db");
 }

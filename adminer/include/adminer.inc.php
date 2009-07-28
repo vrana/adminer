@@ -33,8 +33,8 @@ class Adminer {
 	function loginForm($username) {
 		?>
 <table cellspacing="0">
-<tr><th><?php echo lang('Server'); ?><td><input name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>">
-<tr><th><?php echo lang('Username'); ?><td><input name="username" value="<?php echo htmlspecialchars($username); ?>">
+<tr><th><?php echo lang('Server'); ?><td><input name="server" value="<?php echo h($_GET["server"]); ?>">
+<tr><th><?php echo lang('Username'); ?><td><input name="username" value="<?php echo h($username); ?>">
 <tr><th><?php echo lang('Password'); ?><td><input type="password" name="password">
 </table>
 <?php
@@ -54,7 +54,7 @@ class Adminer {
 	* @return string
 	*/
 	function tableName($tableStatus) {
-		return htmlspecialchars($tableStatus["Name"]);
+		return h($tableStatus["Name"]);
 	}
 	
 	/** Field caption used in select and edit
@@ -63,7 +63,7 @@ class Adminer {
 	* @return string
 	*/
 	function fieldName($field, $order = 0) {
-		return '<span title="' . htmlspecialchars($field["full_type"]) . '">' . htmlspecialchars($field["field"]) . '</span>';
+		return '<span title="' . h($field["full_type"]) . '">' . h($field["field"]) . '</span>';
 	}
 	
 	/** Links after select heading
@@ -72,7 +72,7 @@ class Adminer {
 	*/
 	function selectLinks($tableStatus) {
 		global $SELF;
-		return '<a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($_GET['select']) . '">' . lang('Table structure') . '</a>';
+		return '<a href="' . h($SELF) . 'table=' . urlencode($_GET['select']) . '">' . lang('Table structure') . '</a>';
 	}
 	
 	/** Find backward keys for table
@@ -90,7 +90,7 @@ class Adminer {
 	function selectQuery($query) {
 		global $SELF;
 		// it would be nice if $query can be passed by reference and printed value would be returned but call_user() doesn't allow reference parameters
-		return "<p><code class='jush-sql'>" . htmlspecialchars($query) . "</code> <a href='" . htmlspecialchars($SELF) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>\n";
+		return "<p><code class='jush-sql'>" . h($query) . "</code> <a href='" . h($SELF) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>\n";
 	}
 	
 	/** Description of a row in a table
@@ -163,8 +163,8 @@ class Adminer {
 		echo '<fieldset><legend><a href="#fieldset-search" onclick="return !toggle(\'fieldset-search\');">' . lang('Search') . "</a></legend><div id='fieldset-search'" . ($where ? "" : " class='hidden'") . ">\n";
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT") {
-				echo "(<i>" . implode("</i>, <i>", array_map('htmlspecialchars', $index["columns"])) . "</i>) AGAINST";
-				echo ' <input name="fulltext[' . $i . ']" value="' . htmlspecialchars($_GET["fulltext"][$i]) . '">';
+				echo "(<i>" . implode("</i>, <i>", array_map('h', $index["columns"])) . "</i>) AGAINST";
+				echo " <input name='fulltext[$i]' value='" . h($_GET["fulltext"][$i]) . "'>";
 				echo "<label><input type='checkbox' name='boolean[$i]' value='1'" . (isset($_GET["boolean"][$i]) ? " checked='checked'" : "") . ">" . lang('BOOL') . "</label>";
 				echo "<br>\n";
 			}
@@ -174,7 +174,7 @@ class Adminer {
 			if (strlen("$val[col]$val[val]") && in_array($val["op"], $this->operators)) {
 				echo "<div><select name='where[$i][col]'><option value=''>" . lang('(anywhere)') . optionlist($columns, $val["col"], true) . "</select>";
 				echo "<select name='where[$i][op]'>" . optionlist($this->operators, $val["op"]) . "</select>";
-				echo "<input name='where[$i][val]' value=\"" . htmlspecialchars($val["val"]) . "\"></div>\n";
+				echo "<input name='where[$i][val]' value='" . h($val["val"]) . "'></div>\n";
 				$i++;
 			}
 		}
@@ -211,7 +211,7 @@ class Adminer {
 	*/
 	function selectLimitPrint($limit) {
 		echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
-		echo "<input name='limit' size='3' value=\"" . htmlspecialchars($limit) . "\">";
+		echo "<input name='limit' size='3' value='" . h($limit) . "'>";
 		echo "</div></fieldset>\n";
 	}
 	
@@ -222,7 +222,7 @@ class Adminer {
 	function selectLengthPrint($text_length) {
 		if (isset($text_length)) {
 			echo "<fieldset><legend>" . lang('Text length') . "</legend><div>";
-			echo '<input name="text_length" size="3" value="' . htmlspecialchars($text_length) . '">';
+			echo '<input name="text_length" size="3" value="' . h($text_length) . '">';
 			echo "</div></fieldset>\n";
 		}
 	}
@@ -340,7 +340,7 @@ class Adminer {
 		global $SELF;
 		$id = "sql-" . count($_SESSION["messages"]);
 		$_SESSION["history"][$_GET["server"]][$_GET["db"]][] = $query;
-		return " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre class='jush-sql'>" . htmlspecialchars($query) . '</pre><a href="' . htmlspecialchars($SELF . 'sql=&history=' . (count($_SESSION["history"][$_GET["server"]][$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a></div>';
+		return " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre class='jush-sql'>" . h($query) . '</pre><a href="' . h($SELF . 'sql=&history=' . (count($_SESSION["history"][$_GET["server"]][$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a></div>';
 	}
 	
 	/** Functions displayed in edit form
@@ -422,18 +422,18 @@ class Adminer {
 			?>
 <form action="" method="post">
 <p>
-<a href="<?php echo htmlspecialchars($SELF); ?>sql="><?php echo lang('SQL command'); ?></a>
-<a href="<?php echo htmlspecialchars($SELF); ?>dump=<?php echo urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]); ?>"><?php echo lang('Dump'); ?></a>
+<a href="<?php echo h($SELF); ?>sql="><?php echo lang('SQL command'); ?></a>
+<a href="<?php echo h($SELF); ?>dump=<?php echo urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]); ?>"><?php echo lang('Dump'); ?></a>
 <input type="hidden" name="token" value="<?php echo $_SESSION["tokens"][$_GET["server"]]; ?>">
 <input type="submit" name="logout" value="<?php echo lang('Logout'); ?>">
 </p>
 </form>
 <form action="">
-<p><?php if (strlen($_GET["server"])) { ?><input type="hidden" name="server" value="<?php echo htmlspecialchars($_GET["server"]); ?>"><?php } ?>
+<p><?php if (strlen($_GET["server"])) { ?><input type="hidden" name="server" value="<?php echo h($_GET["server"]); ?>"><?php } ?>
 <?php if ($databases) { ?>
 <select name="db" onchange="this.form.submit();"><option value="">(<?php echo lang('database'); ?>)<?php echo optionlist($databases, $_GET["db"]); ?></select>
 <?php } else { ?>
-<input name="db" value="<?php echo htmlspecialchars($_GET["db"]); ?>">
+<input name="db" value="<?php echo h($_GET["db"]); ?>">
 <?php } ?>
 <?php if (isset($_GET["sql"])) { ?><input type="hidden" name="sql" value=""><?php } ?>
 <?php if (isset($_GET["schema"])) { ?><input type="hidden" name="schema" value=""><?php } ?>
@@ -449,12 +449,12 @@ class Adminer {
 				} else {
 					echo "<p>\n";
 					while ($row = $result->fetch_row()) {
-						echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row[0]) . '">' . lang('select') . '</a> ';
-						echo '<a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($row[0]) . '">' . $this->tableName(array("Name" => $row[0])) . "</a><br>\n"; //! Adminer::tableName may work with full table status
+						echo '<a href="' . h($SELF) . 'select=' . urlencode($row[0]) . '">' . lang('select') . '</a> ';
+						echo '<a href="' . h($SELF) . 'table=' . urlencode($row[0]) . '">' . $this->tableName(array("Name" => $row[0])) . "</a><br>\n"; //! Adminer::tableName may work with full table status
 					}
 				}
 				$result->free();
-				echo '<p><a href="' . htmlspecialchars($SELF) . 'create=">' . lang('Create new table') . "</a>\n";
+				echo '<p><a href="' . h($SELF) . 'create=">' . lang('Create new table') . "</a>\n";
 			}
 		}
 	}

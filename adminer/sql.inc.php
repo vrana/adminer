@@ -42,7 +42,7 @@ if (!$error && $_POST) {
 					$start = explode(" ", microtime()); // microtime(true) is available since PHP 5
 					//! don't allow changing of character_set_results, convert encoding of displayed query
 					if (!$dbh->multi_query(substr($query, 0, $match[0][1]))) {
-						echo "<p class='error'>" . lang('Error in query') . ": " . htmlspecialchars($dbh->error) . "\n";
+						echo "<p class='error'>" . lang('Error in query') . ": " . h($dbh->error) . "\n";
 						if ($_POST["error_stops"]) {
 							break;
 						}
@@ -76,7 +76,7 @@ if (!$error && $_POST) {
 ?>
 
 <form action="" method="post" enctype="multipart/form-data">
-<p><textarea name="query" rows="20" cols="80" style="width: 98%;"><?php echo htmlspecialchars($_POST ? $_POST["query"] : (strlen($_GET["history"]) ? $_SESSION["history"][$_GET["server"]][$_GET["db"]][$_GET["history"]] : $_GET["sql"])); ?></textarea>
+<p><textarea name="query" rows="20" cols="80" style="width: 98%;"><?php echo h($_POST ? $_POST["query"] : (strlen($_GET["history"]) ? $_SESSION["history"][$_GET["server"]][$_GET["db"]][$_GET["history"]] : $_GET["sql"])); ?></textarea>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Execute'); ?>">
@@ -96,7 +96,7 @@ if ($history) {
 	echo "<fieldset><legend>" . lang('History') . "</legend>\n";
 	foreach ($history as $key => $val) {
 		//! save and display timestamp
-		echo '<a href="' . htmlspecialchars($SELF . "sql=&history=$key") . '">' . lang('Edit') . '</a> <code class="jush-sql">' . shorten_utf8(ltrim(str_replace("\n", " ", preg_replace('~^(#|-- ).*~m', '', $val))), 80, "</code>") . "<br>\n";
+		echo '<a href="' . h($SELF . "sql=&history=$key") . '">' . lang('Edit') . '</a> <code class="jush-sql">' . shorten_utf8(ltrim(str_replace("\n", " ", preg_replace('~^(#|-- ).*~m', '', $val))), 80, "</code>") . "<br>\n";
 	}
 	echo "<input type='submit' name='clear' value='" . lang('Clear') . "'>\n";
 	echo "</fieldset>\n";

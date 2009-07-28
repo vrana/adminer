@@ -40,13 +40,13 @@ function auth_error($exception = null) {
 	global $ignore, $dbh, $adminer;
 	$username = $_SESSION["usernames"][$_GET["server"]];
 	unset($_SESSION["usernames"][$_GET["server"]]);
-	page_header(lang('Login'), (isset($username) ? htmlspecialchars($exception ? $exception->getMessage() : (is_string($dbh) ? $dbh : lang('Invalid credentials.'))) : (isset($_POST["server"]) ? lang('Sessions must be enabled.') : ($_POST ? lang('Session expired, please login again.') : ""))), null);
+	page_header(lang('Login'), (isset($username) ? h($exception ? $exception->getMessage() : (is_string($dbh) ? $dbh : lang('Invalid credentials.'))) : (isset($_POST["server"]) ? lang('Sessions must be enabled.') : ($_POST ? lang('Session expired, please login again.') : ""))), null);
 	echo "<form action='' method='post'>\n";
 	$adminer->loginForm($username);
 	echo "<p>\n";
 	hidden_fields($_POST, $ignore); // expired session
 	foreach ($_FILES as $key => $val) {
-		echo '<input type="hidden" name="files[' . htmlspecialchars($key) . ']" value="' . ($val["error"] ? $val["error"] : base64_encode(file_get_contents($val["tmp_name"]))) . '">';
+		echo '<input type="hidden" name="files[' . h($key) . ']" value="' . ($val["error"] ? $val["error"] : base64_encode(file_get_contents($val["tmp_name"]))) . '">';
 	}
 	echo "<input type='submit' value='" . lang('Login') . "'>\n</form>\n";
 	page_footer("auth");

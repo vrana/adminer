@@ -60,9 +60,9 @@ document.onmouseup = schema_mouseup;
 <?php
 foreach ($schema as $name => $table) {
 	echo "<div class='table' style='top: " . $table["pos"][0] . "em; left: " . $table["pos"][1] . "em;' onmousedown='schema_mousedown(this, event);'>";
-	echo '<a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($name) . '"><strong>' . htmlspecialchars($name) . "</strong></a><br>\n";
+	echo '<a href="' . h($SELF) . 'table=' . urlencode($name) . '"><strong>' . h($name) . "</strong></a><br>\n";
 	foreach ($table["fields"] as $field) {
-		$val = '<span' . type_class($field["type"]) . ' title="' . htmlspecialchars($field["full_type"] . ($field["null"] ? " " . lang('NULL') : '')) . '">' . htmlspecialchars($field["field"]) . '</span>';
+		$val = '<span' . type_class($field["type"]) . ' title="' . h($field["full_type"] . ($field["null"] ? " " . lang('NULL') : '')) . '">' . h($field["field"]) . '</span>';
 		echo ($field["primary"] ? "<em>$val</em>" : $val) . "<br>\n";
 	}
 	foreach ((array) $table["references"] as $target_name => $refs) {
@@ -70,7 +70,7 @@ foreach ($schema as $name => $table) {
 			$left1 = $left - $table_pos[$name][1];
 			$i = 0;
 			foreach ($ref[0] as $source) {
-				echo '<div class="references" title="' . htmlspecialchars($target_name) . "\" id='refs$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $table["fields"][$source]["pos"] . "em; padding-top: .5em;'><div style='border-top: 1px solid Gray; width: " . (-$left1) . "em;'></div></div>\n";
+				echo "<div class='references' title='" . h($target_name) . "' id='refs$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $table["fields"][$source]["pos"] . "em; padding-top: .5em;'><div style='border-top: 1px solid Gray; width: " . (-$left1) . "em;'></div></div>\n";
 			}
 		}
 	}
@@ -79,7 +79,7 @@ foreach ($schema as $name => $table) {
 			$left1 = $left - $table_pos[$name][1];
 			$i = 0;
 			foreach ($columns as $target) {
-				echo '<div class="references" title="' . htmlspecialchars($target_name) . "\" id='refd$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $table["fields"][$target]["pos"] . "em; height: 1.25em; background: url(../adminer/arrow.gif) no-repeat right center;'><div style='height: .5em; border-bottom: 1px solid Gray; width: " . (-$left1) . "em;'></div></div>\n";
+				echo "<div class='references' title='" . h($target_name) . "' id='refd$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $table["fields"][$target]["pos"] . "em; height: 1.25em; background: url(../adminer/arrow.gif) no-repeat right center;'><div style='height: .5em; border-bottom: 1px solid Gray; width: " . (-$left1) . "em;'></div></div>\n";
 			}
 		}
 	}

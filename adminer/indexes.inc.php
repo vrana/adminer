@@ -74,7 +74,7 @@ foreach ($row["indexes"] as $index) {
 	ksort($index["columns"]);
 	foreach ($index["columns"] as $i => $column) {
 		echo "<span><select name='indexes[$j][columns][$i]'" . ($i == count($index["columns"]) ? " onchange='indexes_add_column(this);'" : "") . "><option>" . optionlist($fields, $column) . "</select>";
-		echo "<input name='indexes[$j][lengths][$i]' size='2' value=\"" . htmlspecialchars($index["lengths"][$i]) . "\"> </span>\n";
+		echo "<input name='indexes[$j][lengths][$i]' size='2' value='" . h($index["lengths"][$i]) . "'> </span>\n";
 	}
 	echo "\n";
 	$j++;

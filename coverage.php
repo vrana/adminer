@@ -47,7 +47,7 @@ if (!extension_loaded("xdebug")) {
 			$prev_color = $color;
 		}
 		if ($prev_color != $color || !isset($line)) {
-			echo "<div" . ($prev_color ? " style='background-color: $prev_color;'" : "") . ">" . $s;
+			echo "<div" . ($prev_color ? " style='background-color: $prev_color;'" : "") . ">$s";
 			$open_tags = xhtml_open_tags($s);
 			foreach (array_reverse($open_tags) as $tag) {
 				echo "</" . preg_replace('~ .*~', '', $tag) . ">";

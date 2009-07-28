@@ -25,12 +25,12 @@ function adminer_object() {
 		
 		function tableName($tableStatus) {
 			// tables without comments would return empty string and will be ignored by Adminer
-			return htmlspecialchars($tableStatus["Comment"]);
+			return h($tableStatus["Comment"]);
 		}
 		
 		function fieldName($field, $order = 0) {
 			// only first five columns with comments will be displayed
-			return ($order < 5 ? htmlspecialchars($field["comment"]) : "");
+			return ($order < 5 ? h($field["comment"]) : "");
 		}
 		
 	}

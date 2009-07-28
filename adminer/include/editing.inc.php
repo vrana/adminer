@@ -21,7 +21,7 @@ function edit_type($key, $field, $collations, $foreign_keys = array()) {
 	global $structured_types, $unsigned, $inout;
 	?>
 <td><select name="<?php echo $key; ?>[type]" onchange="editing_type_change(this);"><?php echo optionlist($structured_types + ($foreign_keys ? array(lang('Foreign keys') => $foreign_keys) : array()), $field["type"]); ?></select>
-<td><input name="<?php echo $key; ?>[length]" value="<?php echo htmlspecialchars($field["length"]); ?>" size="3">
+<td><input name="<?php echo $key; ?>[length]" value="<?php echo h($field["length"]); ?>" size="3">
 <td><?php
 echo "<select name=\"$key" . '[collation]"' . (ereg('(char|text|enum|set)$', $field["type"]) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>';
 echo ($unsigned ? " <select name=\"$key" . '[unsigned]"' . (!$field["type"] || ereg('(int|float|double|decimal)$', $field["type"]) ? "" : " class='hidden'") . '><option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
@@ -84,12 +84,12 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 		?>
 <tr<?php echo ($display ? "" : " style='display: none;'"); ?>>
 <?php if ($type == "PROCEDURE") { ?><td><select name="fields[<?php echo $i; ?>][inout]"><?php echo optionlist($inout, $field["inout"]); ?></select><?php } ?>
-<th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo htmlspecialchars($field["field"]); ?>" onchange="<?php echo (strlen($field["field"]) || count($fields) > 1 ? "" : "editing_add_row(this, $allowed); "); ?>editing_name_change(this);" maxlength="64"><?php } ?><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo htmlspecialchars($field[($_POST ? "orig" : "field")]); ?>">
+<th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo h($field["field"]); ?>" onchange="<?php echo (strlen($field["field"]) || count($fields) > 1 ? "" : "editing_add_row(this, $allowed); "); ?>editing_name_change(this);" maxlength="64"><?php } ?><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo h($field[($_POST ? "orig" : "field")]); ?>">
 <?php edit_type("fields[$i]", $field, $collations, $foreign_keys); ?>
 <?php if ($type == "TABLE") { ?>
 <td><input type="checkbox" name="fields[<?php echo $i; ?>][null]" value="1"<?php if ($field["null"]) { ?> checked="checked"<?php } ?>>
 <td><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked="checked"<?php } ?>>
-<td<?php echo ($column_comments ? "" : " class='hidden'"); ?>><input name="fields[<?php echo $i; ?>][comment]" value="<?php echo htmlspecialchars($field["comment"]); ?>" maxlength="255">
+<td<?php echo ($column_comments ? "" : " class='hidden'"); ?>><input name="fields[<?php echo $i; ?>][comment]" value="<?php echo h($field["comment"]); ?>" maxlength="255">
 <?php } ?>
 <?php
 		echo "<td class='nowrap'><input type='image' name='add[$i]' src='../adminer/plus.gif' alt='+' title='" . lang('Add next') . "' onclick='var x = editing_add_row(this, $allowed); if (x) { x.focus(); x.onchange = function () { }; } return !x;'>";

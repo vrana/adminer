@@ -114,7 +114,7 @@ if ($_POST && !$error) {
 	}
 }
 
-page_header((isset($_GET["host"]) ? lang('Username') . ": " . htmlspecialchars("$_GET[user]@$_GET[host]") : lang('Create user')), $error, array("privileges" => array('', lang('Privileges'))));
+page_header((isset($_GET["host"]) ? lang('Username') . ": " . h("$_GET[user]@$_GET[host]") : lang('Create user')), $error, array("privileges" => array('', lang('Privileges'))));
 
 if ($_POST) {
 	$row = $_POST;
@@ -131,9 +131,9 @@ if ($_POST) {
 ?>
 <form action="" method="post">
 <table cellspacing="0">
-<tr><th><?php echo lang('Username'); ?><td><input name="user" maxlength="16" value="<?php echo htmlspecialchars($row["user"]); ?>">
-<tr><th><?php echo lang('Server'); ?><td><input name="host" maxlength="60" value="<?php echo htmlspecialchars($row["host"]); ?>">
-<tr><th><?php echo lang('Password'); ?><td><input id="pass" name="pass" value="<?php echo htmlspecialchars($row["pass"]); ?>"><?php if (!$row["hashed"]) { ?><script type="text/javascript">document.getElementById('pass').type = 'password';</script><?php } ?> <label><input type="checkbox" name="hashed" value="1"<?php if ($row["hashed"]) { ?> checked="checked"<?php } ?> onclick="this.form['pass'].type = (this.checked ? 'text' : 'password');"><?php echo lang('Hashed'); ?></label>
+<tr><th><?php echo lang('Username'); ?><td><input name="user" maxlength="16" value="<?php echo h($row["user"]); ?>">
+<tr><th><?php echo lang('Server'); ?><td><input name="host" maxlength="60" value="<?php echo h($row["host"]); ?>">
+<tr><th><?php echo lang('Password'); ?><td><input id="pass" name="pass" value="<?php echo h($row["pass"]); ?>"><?php if (!$row["hashed"]) { ?><script type="text/javascript">document.getElementById('pass').type = 'password';</script><?php } ?> <label><input type="checkbox" name="hashed" value="1"<?php if ($row["hashed"]) { ?> checked="checked"<?php } ?> onclick="this.form['pass'].type = (this.checked ? 'text' : 'password');"><?php echo lang('Hashed'); ?></label>
 </table>
 
 <?php
@@ -142,7 +142,7 @@ echo "<table cellspacing='0'>\n";
 echo "<thead><tr><th colspan='2'>" . lang('Privileges');
 $i = 0;
 foreach ($grants as $object => $grant) {
-	echo '<th>' . ($object != "*.*" ? '<input name="objects[' . $i . ']" value="' . htmlspecialchars($object) . '" size="10">' : '<input type="hidden" name="objects[' . $i . ']" value="*.*" size="10">*.*'); //! separate db, table, columns, PROCEDURE|FUNCTION, routine
+	echo '<th>' . ($object != "*.*" ? "<input name='objects[$i]' value='" . h($object) . "' size='10'>" : "<input type='hidden' name='objects[$i]' value='*.*' size='10'>*.*"); //! separate db, table, columns, PROCEDURE|FUNCTION, routine
 	$i++;
 }
 echo "</thead>\n";
@@ -155,10 +155,10 @@ foreach (array(
 	"Procedures" => lang('Routine'),
 ) as $context => $desc) {
 	foreach ((array) $privileges[$context] as $privilege => $comment) {
-		echo "<tr" . odd() . "><td" . ($desc ? ">$desc<td" : " colspan='2'") . ' lang="en" title="' . htmlspecialchars($comment) . '">' . htmlspecialchars($privilege);
+		echo "<tr" . odd() . "><td" . ($desc ? ">$desc<td" : " colspan='2'") . ' lang="en" title="' . h($comment) . '">' . h($privilege);
 		$i = 0;
 		foreach ($grants as $object => $grant) {
-			$name = '"grants[' . $i . '][' . htmlspecialchars(strtoupper($privilege)) . ']"';
+			$name = "'grants[$i][" . h(strtoupper($privilege)) . "]'";
 			$value = $grant[strtoupper($privilege)];
 			if ($context == "Server Admin" && $object != (isset($grants["*.*"]) ? "*.*" : "")) {
 				echo "<td>&nbsp;";

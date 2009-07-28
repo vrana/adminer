@@ -1,5 +1,5 @@
 <?php
-page_header(lang('Call') . ": " . htmlspecialchars($_GET["call"]), $error);
+page_header(lang('Call') . ": " . h($_GET["call"]), $error);
 
 $routine = routine($_GET["call"], (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE"));
 $in = array();
@@ -22,14 +22,14 @@ if (!$error && $_POST) {
 				$val = "''";
 			}
 			if (isset($out[$key])) {
-				$dbh->query("SET @" . idf_escape($field["field"]) . " = " . $val);
+				$dbh->query("SET @" . idf_escape($field["field"]) . " = $val");
 			}
 		}
 		$call[] = (isset($out[$key]) ? "@" . idf_escape($field["field"]) : $val);
 	}
 	$result = $dbh->multi_query((isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . idf_escape($_GET["call"]) . "(" . implode(", ", $call) . ")");
 	if (!$result) {
-		echo "<p class='error'>" . htmlspecialchars($dbh->error) . "\n";
+		echo "<p class='error'>" . h($dbh->error) . "\n";
 	} else {
 		do {
 			$result = $dbh->store_result();
@@ -52,7 +52,7 @@ if ($in) {
 	echo "<table cellspacing='0'>\n";
 	foreach ($in as $key) {
 		$field = $routine["fields"][$key];
-		echo "<tr><th>" . htmlspecialchars($field["field"]);
+		echo "<tr><th>" . h($field["field"]);
 		$value = $_POST["fields"][$key];
 		if (strlen($value) && ($field["type"] == "enum" || $field["type"] == "set")) {
 			$value = intval($value);

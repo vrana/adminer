@@ -126,13 +126,13 @@ $collations = collations();
 
 $suhosin = floor(extension_loaded("suhosin") ? (min(ini_get("suhosin.request.max_vars"), ini_get("suhosin.post.max_vars")) - 13) / 8 : 0);
 if ($suhosin && count($row["fields"]) > $suhosin) {
-	echo "<p class='error'>" . htmlspecialchars(lang('Maximum number of allowed fields exceeded. Please increase %s and %s.', 'suhosin.post.max_vars', 'suhosin.request.max_vars')) . "\n";
+	echo "<p class='error'>" . h(lang('Maximum number of allowed fields exceeded. Please increase %s and %s.', 'suhosin.post.max_vars', 'suhosin.request.max_vars')) . "\n";
 }
 ?>
 
 <form action="" method="post" id="form">
 <p>
-<?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo htmlspecialchars($row["name"]); ?>">
+<?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo h($row["name"]); ?>">
 <select name="Engine"><option value="">(<?php echo lang('engine'); ?>)<?php echo optionlist($engines, $row["Engine"]); ?></select>
 <select name="Collation"><option value="">(<?php echo lang('collation'); ?>)<?php echo optionlist($collations, $row["Collation"]); ?></select>
 <input type="submit" value="<?php echo lang('Save'); ?>">
@@ -141,7 +141,7 @@ if ($suhosin && count($row["fields"]) > $suhosin) {
 </table>
 <p>
 <?php echo lang('Auto Increment'); ?>: <input name="Auto_increment" size="6" value="<?php echo intval($row["Auto_increment"]); ?>">
-<?php echo lang('Comment'); ?>: <input name="Comment" value="<?php echo htmlspecialchars($row["Comment"]); ?>" maxlength="60">
+<?php echo lang('Comment'); ?>: <input name="Comment" value="<?php echo h($row["Comment"]); ?>" maxlength="60">
 <script type="text/javascript">// <![CDATA[
 document.write('<label><input type="checkbox"<?php if ($column_comments) { ?> checked="checked"<?php } ?> onclick="column_comments_click(this.checked);"><?php echo lang('Show column comments'); ?></label>');
 // ]]></script>
@@ -155,15 +155,15 @@ if ($dbh->server_info >= 5.1) {
 <fieldset><legend><?php echo lang('Partition by'); ?></legend>
 <p>
 <select name="partition_by" onchange="partition_by_change(this);"><option><?php echo optionlist($partition_by, $row["partition_by"]); ?></select>
-(<input name="partition" value="<?php echo htmlspecialchars($row["partition"]); ?>">)
-<?php echo lang('Partitions'); ?>: <input name="partitions" size="2" value="<?php echo htmlspecialchars($row["partitions"]); ?>"<?php echo ($partition_table || !$row["partition_by"] ? " class='hidden'" : ""); ?>>
+(<input name="partition" value="<?php echo h($row["partition"]); ?>">)
+<?php echo lang('Partitions'); ?>: <input name="partitions" size="2" value="<?php echo h($row["partitions"]); ?>"<?php echo ($partition_table || !$row["partition_by"] ? " class='hidden'" : ""); ?>>
 <table cellspacing="0" id="partition-table"<?php echo ($partition_table ? "" : " class='hidden'"); ?>>
 <thead><tr><th><?php echo lang('Partition name'); ?><th><?php echo lang('Values'); ?></thead>
 <?php
 foreach ($row["partition_names"] as $key => $val) {
 	echo '<tr>';
-	echo '<td><input name="partition_names[]" value="' . htmlspecialchars($val) . '"' . ($key == count($row["partition_names"]) - 1 ? ' onchange="partition_name_change(this);"' : '') . '>';
-	echo '<td><input name="partition_values[]" value="' . htmlspecialchars($row["partition_values"][$key]) . '">';
+	echo '<td><input name="partition_names[]" value="' . h($val) . '"' . ($key == count($row["partition_names"]) - 1 ? ' onchange="partition_name_change(this);"' : '') . '>';
+	echo '<td><input name="partition_values[]" value="' . h($row["partition_values"][$key]) . '">';
 }
 ?>
 </table>

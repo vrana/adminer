@@ -17,7 +17,7 @@ class Adminer {
 	function loginForm($username) {
 		?>
 <table cellspacing="0">
-<tr><th><?php echo lang('Username'); ?><td><input type="hidden" name="server" value="" /><input name="username" value="<?php echo htmlspecialchars($username); ?>">
+<tr><th><?php echo lang('Username'); ?><td><input type="hidden" name="server" value="" /><input name="username" value="<?php echo h($username); ?>">
 <tr><th><?php echo lang('Password'); ?><td><input type="password" name="password">
 </table>
 <?php
@@ -29,11 +29,11 @@ class Adminer {
 	
 	function tableName($tableStatus) {
 		table_comment($tableStatus);
-		return htmlspecialchars(strlen($tableStatus["Comment"]) ? $tableStatus["Comment"] : $tableStatus["Name"]);
+		return h(strlen($tableStatus["Comment"]) ? $tableStatus["Comment"] : $tableStatus["Name"]);
 	}
 	
 	function fieldName($field, $order = 0) {
-		return htmlspecialchars(strlen($field["comment"]) ? $field["comment"] : $field["field"]);
+		return h(strlen($field["comment"]) ? $field["comment"] : $field["field"]);
 	}
 	
 	function selectLinks($tableStatus) {
@@ -116,7 +116,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 			}
 		}
 		if ($field["full_type"] == "tinyint(1)" && $return != "&nbsp;") { // bool
-			$return = '<img src="' . ($val ? "../adminer/plus.gif" : "../adminer/cross.gif") . '" alt="' . htmlspecialchars($val) . '">';
+			$return = '<img src="' . ($val ? "../adminer/plus.gif" : "../adminer/cross.gif") . '" alt="' . h($val) . '">';
 		}
 		return ($link ? "<a href=\"$link\">$return</a>" : $return);
 	}
@@ -139,7 +139,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		foreach ((array) $_GET["where"] as $val) {
 			if (strlen("$val[col]$val[val]")) {
 				echo "<div><select name='where[$i][col]'><option value=''>" . lang('(anywhere)') . optionlist($columns, $val["col"], true) . "</select>";
-				echo "<input name='where[$i][val]' value=\"" . htmlspecialchars($val["val"]) . "\"></div>\n";
+				echo "<input name='where[$i][val]' value='" . h($val["val"]) . "'></div>\n";
 				$i++;
 			}
 		}
@@ -189,7 +189,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 			echo "<p>" . lang('From') . ": <input name='email_from'>\n";
 			echo lang('Subject') . ": <input name='email_subject'>\n";
 			echo "<p><textarea name='email_message' rows='15' cols='60'></textarea>\n";
-			echo "<p>" . (count($emailFields) == 1 ? '<input type="hidden" name="email_field" value="' . htmlspecialchars(key($emailFields)) . '">' : '<select name="email_field">' . optionlist($emailFields) . '</select> ');
+			echo "<p>" . (count($emailFields) == 1 ? '<input type="hidden" name="email_field" value="' . h(key($emailFields)) . '">' : '<select name="email_field">' . optionlist($emailFields) . '</select> ');
 			echo "<input type='submit' name='email' value='" . lang('Send') . "'$confirm>\n";
 			echo "</div></fieldset>\n";
 		}
@@ -310,7 +310,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 			}
 		}
 		if ($field["full_type"] == "tinyint(1)") { // bool
-			return '<input type="checkbox" value="' . htmlspecialchars($value ? $value : 1) . '"' . ($value ? ' checked="checked"' : '') . "$attrs>";
+			return '<input type="checkbox" value="' . h($value ? $value : 1) . '"' . ($value ? ' checked="checked"' : '') . "$attrs>";
 		}
 		return '';
 	}
@@ -346,7 +346,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 					foreach ($table_status as $row) {
 						$name = $this->tableName($row);
 						if (isset($row["Engine"]) && strlen($name)) { // ignore views and tables without name
-							echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row["Name"]) . "\">$name</a><br>\n";
+							echo "<a href='" . h($SELF) . 'select=' . urlencode($row["Name"]) . "'>$name</a><br>\n";
 						}
 					}
 				}

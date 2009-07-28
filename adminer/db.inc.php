@@ -31,16 +31,16 @@ if ($tables_views && !$error) {
 			$message = lang('Tables have been dropped.');
 		} else {
 			while ($row = $result->fetch_assoc()) {
-				$message .= htmlspecialchars("$row[Table]: $row[Msg_text]") . "<br>";
+				$message .= h("$row[Table]: $row[Msg_text]") . "<br>";
 			}
 		}
 	}
 	query_redirect(queries(), substr($SELF, 0, -1), $message, $result, false, !$result);
 }
 
-page_header(lang('Database') . ": " . htmlspecialchars($_GET["db"]), $error, false);
-echo '<p><a href="' . htmlspecialchars($SELF) . 'database=">' . lang('Alter database') . "</a>\n";
-echo '<p><a href="' . htmlspecialchars($SELF) . 'schema=">' . lang('Database schema') . "</a>\n";
+page_header(lang('Database') . ": " . h($_GET["db"]), $error, false);
+echo '<p><a href="' . h($SELF) . 'database=">' . lang('Alter database') . "</a>\n";
+echo '<p><a href="' . h($SELF) . 'schema=">' . lang('Database schema') . "</a>\n";
 
 echo "<h3>" . lang('Tables and views') . "</h3>\n";
 $table_status = table_status();
@@ -53,17 +53,17 @@ if (!$table_status) {
 	foreach ($table_status as $row) {
 		$name = $row["Name"];
 		table_comment($row);
-		echo '<tr' . odd() . '><td><input type="checkbox" name="' . (isset($row["Rows"]) ? 'tables' : 'views') . '[]" value="' . htmlspecialchars($name) . '"' . (in_array($name, $tables_views, true) ? ' checked="checked"' : '') . ' onclick="form_uncheck(\'check-all\');">';
-		echo '<th><a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($name) . '">' . htmlspecialchars($name) . '</a>';
+		echo '<tr' . odd() . '><td><input type="checkbox" name="' . (isset($row["Rows"]) ? 'tables' : 'views') . '[]" value="' . h($name) . '"' . (in_array($name, $tables_views, true) ? ' checked="checked"' : '') . ' onclick="form_uncheck(\'check-all\');">';
+		echo '<th><a href="' . h($SELF) . 'table=' . urlencode($name) . '">' . h($name) . '</a>';
 		if (isset($row["Rows"])) {
 			echo "<td>$row[Engine]<td>$row[Collation]";
 			foreach (array("Data_length" => "create", "Index_length" => "indexes", "Data_free" => "edit", "Auto_increment" => "create", "Rows" => "select") as $key => $link) {
 				$val = number_format($row[$key], 0, '.', lang(','));
-				echo '<td align="right">' . (strlen($row[$key]) ? '<a href="' . htmlspecialchars("$SELF$link=") . urlencode($name) . '">' . str_replace(" ", "&nbsp;", ($key == "Rows" && $row["Engine"] == "InnoDB" && $val ? lang('~ %s', $val) : $val)) . '</a>' : '&nbsp;');
+				echo '<td align="right">' . (strlen($row[$key]) ? '<a href="' . h("$SELF$link=") . urlencode($name) . '">' . str_replace(" ", "&nbsp;", ($key == "Rows" && $row["Engine"] == "InnoDB" && $val ? lang('~ %s', $val) : $val)) . '</a>' : '&nbsp;');
 			}
-			echo "<td>" . (strlen(trim($row["Comment"])) ? htmlspecialchars($row["Comment"]) : "&nbsp;");
+			echo "<td>" . (strlen(trim($row["Comment"])) ? h($row["Comment"]) : "&nbsp;");
 		} else {
-			echo '<td colspan="8"><a href="' . htmlspecialchars($SELF) . "select=" . urlencode($name) . '">' . lang('View') . '</a>';
+			echo '<td colspan="8"><a href="' . h($SELF) . "select=" . urlencode($name) . '">' . lang('View') . '</a>';
 		}
 	}
 	echo "</table>\n";
@@ -71,27 +71,27 @@ if (!$table_status) {
 	$dbs = get_databases();
 	if (count($dbs) != 1) {
 		$db = (isset($_POST["target"]) ? $_POST["target"] : $_GET["db"]);
-		echo "<p>" . lang('Move to other database') . ($dbs ? ": <select name='target'>" . optionlist($dbs, $db) . "</select>" : ': <input name="target" value="' . htmlspecialchars($db) . '">') . " <input type='submit' name='move' value='" . lang('Move') . "'>\n";
+		echo "<p>" . lang('Move to other database') . ($dbs ? ": <select name='target'>" . optionlist($dbs, $db) . "</select>" : ': <input name="target" value="' . h($db) . '">') . " <input type='submit' name='move' value='" . lang('Move') . "'>\n";
 	}
 	echo "</form>\n";
 }
 
 if ($dbh->server_info >= 5) {
-	echo '<p><a href="' . htmlspecialchars($SELF) . 'view=">' . lang('Create view') . "</a>\n";
+	echo '<p><a href="' . h($SELF) . 'view=">' . lang('Create view') . "</a>\n";
 	echo "<h3>" . lang('Routines') . "</h3>\n";
 	$result = $dbh->query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . $dbh->quote($_GET["db"]));
 	if ($result->num_rows) {
 		echo "<table cellspacing='0'>\n";
 		while ($row = $result->fetch_assoc()) {
 			echo "<tr>";
-			echo "<td>" . htmlspecialchars($row["ROUTINE_TYPE"]);
-			echo '<th><a href="' . htmlspecialchars($SELF) . ($row["ROUTINE_TYPE"] == "FUNCTION" ? 'callf=' : 'call=') . urlencode($row["ROUTINE_NAME"]) . '">' . htmlspecialchars($row["ROUTINE_NAME"]) . '</a>';
-			echo '<td><a href="' . htmlspecialchars($SELF) . ($row["ROUTINE_TYPE"] == "FUNCTION" ? 'function=' : 'procedure=') . urlencode($row["ROUTINE_NAME"]) . '">' . lang('Alter') . "</a>";
+			echo "<td>" . h($row["ROUTINE_TYPE"]);
+			echo '<th><a href="' . h($SELF) . ($row["ROUTINE_TYPE"] == "FUNCTION" ? 'callf=' : 'call=') . urlencode($row["ROUTINE_NAME"]) . '">' . h($row["ROUTINE_NAME"]) . '</a>';
+			echo '<td><a href="' . h($SELF) . ($row["ROUTINE_TYPE"] == "FUNCTION" ? 'function=' : 'procedure=') . urlencode($row["ROUTINE_NAME"]) . '">' . lang('Alter') . "</a>";
 		}
 		echo "</table>\n";
 	}
 	$result->free();
-	echo '<p><a href="' . htmlspecialchars($SELF) . 'procedure=">' . lang('Create procedure') . '</a> <a href="' . htmlspecialchars($SELF) . 'function=">' . lang('Create function') . "</a>\n";
+	echo '<p><a href="' . h($SELF) . 'procedure=">' . lang('Create procedure') . '</a> <a href="' . h($SELF) . 'function=">' . lang('Create function') . "</a>\n";
 }
 
 if ($dbh->server_info >= 5.1 && ($result = $dbh->query("SHOW EVENTS"))) {
@@ -101,12 +101,12 @@ if ($dbh->server_info >= 5.1 && ($result = $dbh->query("SHOW EVENTS"))) {
 		echo "<thead><tr><th>" . lang('Name') . "<td>" . lang('Schedule') . "<td>" . lang('Start') . "<td>" . lang('End') . "</thead>\n";
 		while ($row = $result->fetch_assoc()) {
 			echo "<tr>";
-			echo '<th><a href="' . htmlspecialchars($SELF) . 'event=' . urlencode($row["Name"]) . '">' . htmlspecialchars($row["Name"]) . "</a>";
+			echo '<th><a href="' . h($SELF) . 'event=' . urlencode($row["Name"]) . '">' . h($row["Name"]) . "</a>";
 			echo "<td>" . ($row["Execute at"] ? lang('At given time') . "<td>" . $row["Execute at"] : lang('Every') . " " . $row["Interval value"] . " " . $row["Interval field"] . "<td>$row[Starts]");
 			echo "<td>$row[Ends]";
 		}
 		echo "</table>\n";
 	}
 	$result->free();
-	echo '<p><a href="' . htmlspecialchars($SELF) . 'event=">' . lang('Create event') . "</a>\n";
+	echo '<p><a href="' . h($SELF) . 'event=">' . lang('Create event') . "</a>\n";
 }
