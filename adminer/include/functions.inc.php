@@ -69,7 +69,9 @@ function unique_idf($row, $indexes) {
 	}
 	$return = array();
 	foreach ($row as $key => $val) {
-		$return[] = (isset($val) ? urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($val) : "null%5B%5D=" . urlencode($key));
+		if (!preg_match('~^(COUNT\\((\\*|(DISTINCT )?`(?:[^`]+|``)+`)\\)|(AVG|GROUP_CONCAT|MAX|MIN|SUM)\\(`(?:[^`]+|``)+`\\))$~', $key)) { //! columns looking like functions
+			$return[] = (isset($val) ? urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($val) : "null%5B%5D=" . urlencode($key));
+		}
 	}
 	return $return;
 }

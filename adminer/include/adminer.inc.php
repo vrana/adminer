@@ -455,7 +455,7 @@ class Adminer {
 					echo "<p>\n";
 					while ($row = $result->fetch_row()) {
 						echo '<a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($row[0]) . '">' . lang('select') . '</a> ';
-						echo '<a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($row[0]) . '">' . $this->tableName(array("Name" => $row[0])) . "</a><br>\n"; //! Adminer::table_name may work with full table status
+						echo '<a href="' . htmlspecialchars($SELF) . 'table=' . urlencode($row[0]) . '">' . $this->tableName(array("Name" => $row[0])) . "</a><br>\n"; //! Adminer::tableName may work with full table status
 					}
 				}
 				$result->free();

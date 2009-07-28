@@ -5,7 +5,9 @@ Create single column foreign key in table structure
 Table relations (Editor)
 Send e-mails (Editor)
 Display images in blob (Editor)
-Separate types to groups in table creation
+Localize date (Editor)
+Treat tinyint(1) as bool (Editor)
+Divide types to groups in table creation
 Link e-mails in select
 Show type in field name title (thanks to Jakub Sochor)
 Preselect now() for timestamp columns (thanks to paranoiq)

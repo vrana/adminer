@@ -78,7 +78,7 @@ if ($_POST && !$error) {
 				} else {
 					foreach ((array) $_POST["check"] as $val) {
 						// where is not unique so OR can't be used
-						$result = queries($command . "\nWHERE " . where_check($val) . "\nLIMIT 1");
+						$result = queries($command . "\nWHERE " . where_check($val) . (count($group) < count($select) ? "" : "\nLIMIT 1"));
 						if (!$result) {
 							break;
 						}
@@ -184,13 +184,13 @@ if (!$columns) {
 				if (strlen($name)) {
 					$order++;
 					$names[$key] = $name;
-					echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . apply_sql_function($val["fun"], $name) . "</a>"; //! order by function can collide with column name like min(`id`)
+					echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . apply_sql_function($val["fun"], $name) . "</a>"; //! columns looking like functions
 				}
 				next($select);
 			}
 			echo ($backward_keys ? "<th>" . lang('Relations') : "") . "</thead>\n";
 			foreach ($descriptions as $n => $row) {
-				$unique_idf = implode('&amp;', unique_idf($rows[$n], $indexes)); //! don't use aggregation functions
+				$unique_idf = implode('&amp;', unique_idf($rows[$n], $indexes));
 				echo '<tr' . odd() . '><td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false; form_uncheck(\'all-page\');">' . (count($select) != count($group) || information_schema($_GET["db"]) ? '' : ' <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a>');
 				foreach ($row as $key => $val) {
 					if (isset($names[$key])) {

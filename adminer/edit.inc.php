@@ -1,6 +1,6 @@
 <?php
-$where = (isset($_GET["select"]) ? (count($_POST["check"]) == 1 ? where_check($_POST["check"][0]) : "") : where($_GET));
-$update = ($where && !$_POST["clone"]);
+$where = (isset($_GET["select"]) ? "" : where($_GET));
+$update = ($where || $_POST["edit"]);
 $fields = fields($_GET["edit"]);
 foreach ($fields as $name => $field) {
 	if ((isset($_GET["default"]) ? $field["auto_increment"] || ereg('text|blob', $field["type"]) : !isset($field["privileges"][$update ? "update" : "insert"])) || !strlen($adminer->fieldName($field))) {
@@ -38,7 +38,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 
 $table_name = $adminer->tableName(table_status($_GET["edit"]));
 page_header(
-	(isset($_GET["default"]) ? lang('Default values') : ($_GET["where"] || (isset($_GET["select"]) && !$_POST["clone"]) ? lang('Edit') : lang('Insert'))),
+	(isset($_GET["default"]) ? lang('Default values') : ($update ? lang('Edit') : lang('Insert'))),
 	$error,
 	array((isset($_GET["default"]) ? "table" : "select") => array($_GET["edit"], $table_name)),
 	$table_name
