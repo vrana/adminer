@@ -108,12 +108,16 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 	}
 	
 	function selectVal($val, $link, $field) {
+		global $SELF; // used by compiled images
 		$return = ($val == "<i>NULL</i>" ? "&nbsp;" : $val);
 		if (ereg('blob|binary', $field["type"]) && !is_utf8($val)) {
 			$return = lang('%d byte(s)', strlen($val));
 			if (ereg("^(GIF|\xFF\xD8\xFF|\x89\x50\x4E\x47\x0D\x0A\x1A\x0A)", $val)) { // GIF|JPG|PNG, getimagetype() works with filename
 				$return = "<img src=\"$link\" alt='$return'>";
 			}
+		}
+		if ($field["full_type"] == "tinyint(1)" && $return != "&nbsp;") { // bool
+			$return = '<img src="' . ($val ? "../adminer/plus.gif" : "../adminer/cross.gif") . '" alt="' . htmlspecialchars($val) . '">';
 		}
 		return ($link ? "<a href=\"$link\">$return</a>" : $return);
 	}
@@ -268,34 +272,37 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		return (isset($_GET["select"]) ? array("orig" => lang('original')) : array()) + array("");
 	}
 	
-	function editInput($table, $field) {
+	function editInput($table, $field, $attrs, $value) {
 		global $dbh;
-		$return = null;
 		$foreign_keys = column_foreign_keys($table);
 		foreach ((array) $foreign_keys[$field["field"]] as $foreign_key) {
 			if (count($foreign_key["source"]) == 1) {
 				$id = idf_escape($foreign_key["target"][0]);
 				$name = $this->rowDescription($foreign_key["table"]);
 				if (strlen($name) && $dbh->result($dbh->query("SELECT COUNT(*) FROM " . idf_escape($foreign_key["table"]))) <= 1000) { // optionlist with more than 1000 options would be too big
-					if ($field["null"]) {
+					$return = array();
+					$result = $dbh->query("SELECT $id, $name FROM " . idf_escape($foreign_key["table"]) . " ORDER BY 2");
+					if ($field["null"] || !$result->num_rows) { // empty <select> is not HTML-valid
 						$return[""] = "";
 					}
-					$result = $dbh->query("SELECT $id, $name FROM " . idf_escape($foreign_key["table"]) . " ORDER BY 2");
 					while ($row = $result->fetch_row()) {
 						$return[$row[0]] = $row[1];
 					}
 					$result->free();
-					break;
+					return "<select$attrs>" . optionlist($return, $value, true) . "</select>";
 				}
 			}
 		}
-		return $return;
+		if ($field["full_type"] == "tinyint(1)") { // bool
+			return '<input type="checkbox" value="' . htmlspecialchars($value ? $value : 1) . '"' . ($value ? ' checked="checked"' : '') . "$attrs>";
+		}
+		return '';
 	}
 	
 	function processInput($field, $value, $function = "") {
 		global $dbh;
 		$return = $dbh->quote(ereg('date|timestamp', $field["type"]) ? preg_replace_callback('(' . preg_replace('~(\\\\\\$([0-9]))~', '(?P<p\\2>[0-9]+)', preg_quote(lang('$1-$3-$5'))) . ')', 'conversion_date', $value) : $value);
-		if (!ereg('varchar|text', $field["type"]) && !strlen($value)) {
+		if (!ereg('varchar|text', $field["type"]) && $field["full_type"] != "tinyint(1)" && !strlen($value)) {
 			$return = "NULL";
 		} elseif (ereg('date|time', $field["type"]) && $value == "CURRENT_TIMESTAMP") {
 			$return = $value;

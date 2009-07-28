@@ -382,10 +382,12 @@ class Adminer {
 	/** Get options to display edit field
 	* @param string table name
 	* @param array single field from fields()
-	* @return array options for <select> or empty to display <input>
+	* @param string attributes to use inside the tag
+	* @param string
+	* @return string custom input field or empty string for default
 	*/
-	function editInput($table, $field) {
-		return false;
+	function editInput($table, $field, $attrs, $value) {
+		return '';
 	}
 	
 	/** Process sent input

@@ -305,9 +305,9 @@ function input($field, $value, $function) {
 		$first = array_search("", $functions);
 		$onchange = ($first ? ' onchange="var f = this.form[\'function[' . addcslashes($name, "\r\n'\\") . ']\']; if (' . $first . ' > f.selectedIndex) f.selectedIndex = ' . $first . ';"' : '');
 		echo (count($functions) > 1 ? '<select name="function[' . $name . ']">' . optionlist($functions, $function) . '</select>' : "&nbsp;") . '<td>';
-		$options = $adminer->editInput($_GET["edit"], $field); // usage in call is without a table
-		if (is_array($options)) {
-			echo '<select name="fields[' . $name . ']"' . $onchange . '>' . optionlist(($options ? $options : array("" => "")), $value, true) . '</select>';
+		$input = $adminer->editInput($_GET["edit"], $field, ' name="fields[' . $name . ']"' . $onchange, $value); // usage in call is without a table
+		if (strlen($input)) {
+			echo $input;
 		} elseif ($field["type"] == "set") { //! 64 bits
 			preg_match_all("~'((?:[^']+|'')*)'~", $field["length"], $matches);
 			foreach ($matches[1] as $i => $val) {

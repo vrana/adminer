@@ -22,7 +22,6 @@ Download external files (version checker and JUSH) from trusted HTTPS if Adminer
 ? AJAX editing - select page has all data to display edit form
 
 Editor:
-JavaScript data validation
+JavaScript data validation - columns containing word email, url, md5, sha1, ...
 Joining tables - PRIMARY KEY (table, joining)
 Rank, Tree structure
-Treat tinyint(1) as bool

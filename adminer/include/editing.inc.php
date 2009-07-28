@@ -56,7 +56,7 @@ function type_class($type) {
 }
 
 function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $foreign_keys = array()) {
-	global $inout;
+	global $inout, $SELF; // $SELF is used by compiled images
 	$column_comments = false;
 	foreach ($fields as $field) {
 		if (strlen($field["comment"])) {

@@ -14,6 +14,7 @@ Remove Delete button from Edit page - use mass operation for it
 Faster multiple update, clone and delete
 Faster table list in navigation
 Use HTML Strict instead of XHTML
+Remove function minification for performance and customization
 Fix grant ALL PRIVILEGES with GRANT OPTION
 Fix CSV import
 Fix work with default values (thanks to Jiri Pospisil)
