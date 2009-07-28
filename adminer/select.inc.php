@@ -169,7 +169,7 @@ if (!$columns) {
 			$backward_keys = $adminer->backwardKeys($_GET["select"]);
 			$table_names = array_keys($backward_keys);
 			if ($table_names) {
-				$table_names = array_combine($table_names, array_map(array($adminer, 'tableName'), array_map('table_status', $table_names)));
+				$table_names = array_filter(array_combine($table_names, array_map(array($adminer, 'tableName'), array_map('table_status', $table_names))), 'strlen');
 			}
 			
 			echo "<table cellspacing='0' class='nowrap'>\n";
@@ -188,7 +188,7 @@ if (!$columns) {
 				}
 				next($select);
 			}
-			echo ($backward_keys ? "<th>" . lang('Relations') : "") . "</thead>\n";
+			echo ($table_names ? "<th>" . lang('Relations') : "") . "</thead>\n";
 			foreach ($descriptions as $n => $row) {
 				$unique_idf = implode('&amp;', unique_idf($rows[$n], $indexes));
 				echo '<tr' . odd() . '><td><input type="checkbox" name="check[]" value="' . $unique_idf . '" onclick="this.form[\'all\'].checked = false; form_uncheck(\'all-page\');">' . (count($select) != count($group) || information_schema($_GET["db"]) ? '' : ' <a href="' . htmlspecialchars($SELF) . 'edit=' . urlencode($_GET['select']) . '&amp;' . $unique_idf . '">' . lang('edit') . '</a>');
@@ -231,17 +231,17 @@ if (!$columns) {
 						echo "<td>$val";
 					}
 				}
-				if ($backward_keys) {
+				if ($table_names) {
 					echo "<td>";
-					foreach ($backward_keys as $table => $keys) {
-						foreach ($keys as $columns) {
+					foreach ($table_names as $table => $name) {
+						foreach ($backward_keys[$table] as $columns) {
 							echo ' <a href="' . htmlspecialchars($SELF) . 'select=' . urlencode($table);
 							$i = 0;
 							foreach ($columns as $column => $val) {
 								echo where_link($i, $column, $rows[$n][$val]);
 								$i++;
 							}
-							echo "\">$table_names[$table]</a>";
+							echo "\">$name</a>";
 						}
 					}
 				}
