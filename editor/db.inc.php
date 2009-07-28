@@ -1,2 +1,2 @@
 <?php
-page_header(lang('Database'), "", null);
+page_header(lang('Server'), "", null);
