@@ -32,12 +32,7 @@ $group_by = ($group && count($group) < count($select) ? " GROUP BY " . implode("
 
 if ($_POST && !$error) {
 	$where_check = "(" . implode(") OR (", array_map('where_check', (array) $_POST["check"])) . ")";
-	$primary = null; // empty array means that all primary fields are selected
-	foreach ($indexes as $index) {
-		if ($index["type"] == "PRIMARY") {
-			$primary = ($select ? array_flip($index["columns"]) : array());
-		}
-	}
+	$primary = ($indexes["PRIMARY"] ? ($select ? array_flip($indexes["PRIMARY"]["columns"]) : array()) : null); // empty array means that all primary fields are selected
 	foreach ($select as $key => $val) {
 		$val = $_GET["columns"][$key];
 		if (!$val["fun"]) {
@@ -189,7 +184,7 @@ if (!$columns) {
 				if (strlen($name)) {
 					$order++;
 					$names[$key] = $name;
-					echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . apply_sql_function($val["fun"], $name) . "</a>";
+					echo '<th><a href="' . htmlspecialchars(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"] == array($key) && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . apply_sql_function($val["fun"], $name) . "</a>"; //! order by function can collide with column name like min(`id`)
 				}
 				next($select);
 			}

@@ -10,7 +10,7 @@ class Adminer {
 	}
 	
 	function database() {
-		$dbs = get_databases();
+		$dbs = get_databases(false);
 		return (count($dbs) == 1 ? $dbs[0] : (count($dbs) == 2 && information_schema($dbs[0]) ? $dbs[1] : 'test'));
 	}
 	
@@ -211,10 +211,15 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 	}
 	
 	function selectOrderProcess($columns, $select, $indexes) {
-		return ($_GET["order"]
-			? array(idf_escape($_GET["order"][0]) . (isset($_GET["desc"][0]) ? " DESC" : ""))
-			: $indexes[$_GET["index_order"]]["columns"]
-		);
+		if ($_GET["order"]) {
+			return array(idf_escape($_GET["order"][0]) . (isset($_GET["desc"][0]) ? " DESC" : ""));
+		}
+		if ($_GET["index_order"]) {
+			return $indexes[$_GET["index_order"]]["columns"];
+		}
+		unset($indexes["PRIMARY"]);
+		$index = reset($indexes);
+		return ($index ? $index["columns"] : array());
 	}
 	
 	function selectLimitProcess() {

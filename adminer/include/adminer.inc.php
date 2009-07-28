@@ -423,8 +423,6 @@ class Adminer {
 	function navigation($missing) {
 		global $SELF, $dbh;
 		if ($missing != "auth") {
-			ob_flush();
-			flush();
 			$databases = get_databases();
 			?>
 <form action="" method="post">
