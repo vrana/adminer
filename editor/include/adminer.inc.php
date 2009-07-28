@@ -163,7 +163,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		}
 		if ($orders) {
 			echo '<fieldset><legend>' . lang('Sort') . "</legend><div>";
-			echo "<select name='index_order'>" . optionlist($orders, $_GET["index_order"], true) . "</select>";
+			echo "<select name='index_order'>" . optionlist(array("" => "") + $orders, $_GET["index_order"], true) . "</select>";
 			echo "</div></fieldset>\n";
 		}
 	}
