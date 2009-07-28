@@ -142,9 +142,9 @@ if ($suhosin && count($row["fields"]) > $suhosin) {
 <p>
 <?php echo lang('Auto Increment'); ?>: <input name="Auto_increment" size="6" value="<?php echo intval($row["Auto_increment"]); ?>">
 <?php echo lang('Comment'); ?>: <input name="Comment" value="<?php echo h($row["Comment"]); ?>" maxlength="60">
-<script type="text/javascript">// <![CDATA[
-document.write('<label><input type="checkbox"<?php if ($column_comments) { ?> checked<?php } ?> onclick="column_comments_click(this.checked);"><?php echo lang('Show column comments'); ?></label>');
-// ]]></script>
+<script type="text/javascript">
+document.write('<label><input type="checkbox"<?php if ($column_comments) { ?> checked<?php } ?> onclick="column_comments_click(this.checked);"><?php echo lang('Show column comments'); ?><\/label>');
+</script>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Save'); ?>">
