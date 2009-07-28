@@ -108,7 +108,6 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 	}
 	
 	function selectVal($val, $link, $field) {
-		global $SELF; // used by compiled images
 		$return = ($val == "<i>NULL</i>" ? "&nbsp;" : $val);
 		if (ereg('blob|binary', $field["type"]) && !is_utf8($val)) {
 			$return = lang('%d byte(s)', strlen($val));
