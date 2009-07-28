@@ -276,23 +276,19 @@ class Adminer {
 		}
 		foreach ((array) $_GET["where"] as $val) {
 			if (strlen("$val[col]$val[val]") && in_array($val["op"], $this->operators)) {
-				if ($val["op"] == "AGAINST") {
-					$return[] = "MATCH (" . idf_escape($val["col"]) . ") AGAINST (" . $dbh->quote($val["val"]) . " IN BOOLEAN MODE)";
+				$in = process_length($val["val"]);
+				$cond = " $val[op]" . (ereg('NULL$', $val["op"]) ? "" : (ereg('IN$', $val["op"]) ? " (" . (strlen($in) ? $in : "NULL") . ")" : " " . $this->processInput($fields[$val["col"]], $val["val"])));
+				if (strlen($val["col"])) {
+					$return[] = idf_escape($val["col"]) . $cond;
 				} else {
-					$in = process_length($val["val"]);
-					$cond = " $val[op]" . (ereg('NULL$', $val["op"]) ? "" : (ereg('IN$', $val["op"]) ? " (" . (strlen($in) ? $in : "NULL") . ")" : " " . $this->processInput($fields[$val["col"]], $val["val"])));
-					if (strlen($val["col"])) {
-						$return[] = idf_escape($val["col"]) . $cond;
-					} else {
-						// find anywhere
-						$cols = array();
-						foreach ($fields as $name => $field) {
-							if (is_numeric($val["val"]) || !ereg('int|float|double|decimal', $field["type"])) {
-								$cols[] = $name;
-							}
+					// find anywhere
+					$cols = array();
+					foreach ($fields as $name => $field) {
+						if (is_numeric($val["val"]) || !ereg('int|float|double|decimal', $field["type"])) {
+							$cols[] = $name;
 						}
-						$return[] = ($cols ? "(" . implode("$cond OR ", array_map('idf_escape', $cols)) . "$cond)" : "0");
 					}
+					$return[] = ($cols ? "(" . implode("$cond OR ", array_map('idf_escape', $cols)) . "$cond)" : "0");
 				}
 			}
 		}
