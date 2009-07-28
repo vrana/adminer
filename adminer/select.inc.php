@@ -24,8 +24,8 @@ function apply_sql_function($function, $column) {
 }
 
 list($select, $group) = $adminer->selectColumnsProcess($columns, $indexes);
-$where = $adminer->selectSearchProcess($indexes, $fields);
-$order = $adminer->selectOrderProcess($columns, $select, $indexes);
+$where = $adminer->selectSearchProcess($fields, $indexes);
+$order = $adminer->selectOrderProcess($fields, $indexes);
 $limit = $adminer->selectLimitProcess();
 $from = ($select ? implode(", ", $select) : "*") . " FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "");
 $group_by = ($group && count($group) < count($select) ? " GROUP BY " . implode(", ", $group) : "") . ($order ? " ORDER BY " . implode(", ", $order) : "");
@@ -140,7 +140,7 @@ if (!$columns) {
 	$adminer->selectActionPrint($text_length);
 	echo "</form>\n";
 	
-	$query = "SELECT " . (intval($limit) && count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . $from . $group_by . (strlen($limit) ? " LIMIT " . intval($limit) . (intval($_GET["page"]) ? " OFFSET " . ($limit * $_GET["page"]) : "") : "");
+	$query = "SELECT " . (intval($limit) && $group && count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . $from . $group_by . (strlen($limit) ? " LIMIT " . intval($limit) . (intval($_GET["page"]) ? " OFFSET " . ($limit * $_GET["page"]) : "") : "");
 	echo $adminer->selectQuery($query);
 	
 	$result = $dbh->query($query);
@@ -158,7 +158,7 @@ if (!$columns) {
 			}
 			$result->free();
 			// use count($rows) without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
-			$found_rows = (intval($limit) && count($group) < count($select)
+			$found_rows = (intval($limit) && $group && count($group) < count($select)
 				? $dbh->result($dbh->query(" SELECT FOUND_ROWS()")) // space to allow mysql.trace_mode
 				: count($rows)
 			);

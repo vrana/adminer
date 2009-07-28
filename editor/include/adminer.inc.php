@@ -152,13 +152,13 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 	function selectOrderPrint($order, $columns, $indexes) {
 		//! desc
 		$orders = array();
-		foreach ($indexes as $i => $index) {
+		foreach ($indexes as $key => $index) {
 			$order = array();
 			foreach ($index["columns"] as $val) {
 				$order[] = $this->fieldName(array("field" => $val, "comment" => $columns[$val]));
 			}
-			if (count(array_filter($order, 'strlen')) > 1) {
-				$orders[$i] = implode(", ", $order);
+			if (count(array_filter($order, 'strlen')) > 1 && $key != "PRIMARY") {
+				$orders[$key] = implode(", ", $order);
 			}
 		}
 		if ($orders) {
@@ -200,7 +200,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		return array(array(), array());
 	}
 	
-	function selectSearchProcess($indexes, $fields) {
+	function selectSearchProcess($fields, $indexes) {
 		$return = array();
 		foreach ((array) $_GET["where"] as $val) {
 			if (strlen("$val[col]$val[val]")) {
@@ -223,16 +223,33 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		return $return;
 	}
 	
-	function selectOrderProcess($columns, $select, $indexes) {
+	function selectOrderProcess($fields, $indexes) {
 		if ($_GET["order"]) {
 			return array(idf_escape($_GET["order"][0]) . (isset($_GET["desc"][0]) ? " DESC" : ""));
 		}
-		if ($_GET["index_order"]) {
-			return $indexes[$_GET["index_order"]]["columns"];
+		$index = $indexes[$_GET["index_order"]];
+		if (!strlen($_GET["index_order"])) {
+			foreach ($indexes as $index) {
+				if ($index["type"] == "INDEX") {
+					break;
+				}
+			}
 		}
-		unset($indexes["PRIMARY"]);
-		$index = reset($indexes);
-		return ($index ? $index["columns"] : array());
+		if (!$index) {
+			return array();
+		}
+		$desc = false;
+		foreach ($index["columns"] as $val) {
+			if (ereg('date|timestamp', $fields[$val]["type"])) {
+				$desc = true;
+				break;
+			}
+		}
+		$return = array();
+		foreach ($index["columns"] as $val) {
+			$return[] = idf_escape($val) . ($desc ? " DESC" : "");
+		}
+		return $return;
 	}
 	
 	function selectLimitProcess() {

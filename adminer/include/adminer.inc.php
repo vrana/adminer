@@ -266,7 +266,7 @@ class Adminer {
 	* @param array
 	* @return array expressions to join by AND
 	*/
-	function selectSearchProcess($indexes, $fields) {
+	function selectSearchProcess($fields, $indexes) {
 		global $dbh;
 		$return = array();
 		foreach ($indexes as $i => $index) {
@@ -297,14 +297,13 @@ class Adminer {
 	
 	/** Process order box in select
 	* @param array
-	* @param array result of selectColumnsProcess()
 	* @param array
 	* @return array expressions to join by comma
 	*/
-	function selectOrderProcess($columns, $select, $indexes) {
+	function selectOrderProcess($fields, $indexes) {
 		$return = array();
 		foreach ((array) $_GET["order"] as $key => $val) {
-			if (isset($columns[$val]) || in_array($val, $select, true)) {
+			if (isset($fields[$val]) || preg_match('~^[A-Z0-9_]+\\(`(?:[^`]+|``)+`\\)$~', $val)) {
 				$return[] = idf_escape($val) . (isset($_GET["desc"][$key]) ? " DESC" : "");
 			}
 		}
