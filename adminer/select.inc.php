@@ -54,7 +54,7 @@ if ($_POST && !$error) {
 		}
 		exit;
 	}
-	if (!$adminer->selectExtraProcess($where)) {
+	if (!$adminer->selectEmailProcess($where)) {
 		if (!$_POST["import"]) { // edit
 			$result = true;
 			$affected = 0;
@@ -272,7 +272,7 @@ if (!$columns) {
 		}
 		echo "<fieldset><legend>" . lang('CSV Import') . "</legend><div><input type='hidden' name='token' value='$token'><input type='file' name='csv_file'> <input type='submit' name='import' value='" . lang('Import') . "'></div></fieldset>\n";
 		
-		$adminer->selectExtraPrint(array_filter($email_fields, 'strlen'));
+		$adminer->selectEmailPrint(array_filter($email_fields, 'strlen'));
 		
 		echo "</form>\n";
 	}

@@ -183,6 +183,19 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		echo "</div></fieldset>\n";
 	}
 	
+	function selectEmailPrint($emailFields) {
+		global $confirm;
+		if ($emailFields) {
+			echo '<fieldset><legend><a href="#fieldset-email" onclick="return !toggle(\'fieldset-email\');">' . lang('E-mail') . "</a></legend><div id='fieldset-email' class='hidden'>\n";
+			echo "<p>" . lang('From') . ": <input name='email_from'>\n";
+			echo lang('Subject') . ": <input name='email_subject'>\n";
+			echo "<p><textarea name='email_message' rows='15' cols='60'></textarea>\n";
+			echo "<p>" . (count($emailFields) == 1 ? '<input type="hidden" name="email_field" value="' . htmlspecialchars(key($emailFields)) . '">' : '<select name="email_field">' . optionlist($emailFields) . '</select> ');
+			echo "<input type='submit' name='email' value='" . lang('Send') . "'$confirm>\n";
+			echo "</div></fieldset>\n";
+		}
+	}
+	
 	function selectColumnsProcess($columns, $indexes) {
 		return array(array(), array());
 	}
@@ -230,20 +243,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		return "100";
 	}
 	
-	function selectExtraPrint($emailFields) {
-		global $confirm;
-		if ($emailFields) {
-			echo '<fieldset><legend><a href="#fieldset-email" onclick="return !toggle(\'fieldset-email\');">' . lang('E-mail') . "</a></legend><div id='fieldset-email' class='hidden'>\n";
-			echo "<p>" . lang('From') . ": <input name='email_from'>\n";
-			echo lang('Subject') . ": <input name='email_subject'>\n";
-			echo "<p><textarea name='email_message' rows='15' cols='60'></textarea>\n";
-			echo "<p>" . (count($emailFields) == 1 ? '<input type="hidden" name="email_field" value="' . htmlspecialchars(key($emailFields)) . '">' : '<select name="email_field">' . optionlist($emailFields) . '</select> ');
-			echo "<input type='submit' name='email' value='" . lang('Send') . "'$confirm>\n";
-			echo "</div></fieldset>\n";
-		}
-	}
-	
-	function selectExtraProcess($where) {
+	function selectEmailProcess($where) {
 		global $dbh;
 		if ($_POST["email"]) {
 			$sent = 0;

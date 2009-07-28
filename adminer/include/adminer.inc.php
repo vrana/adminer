@@ -236,6 +236,13 @@ class Adminer {
 		echo "</div></fieldset>\n";
 	}
 	
+	/** Print extra text in the end of a select form
+	* @param array fields holding e-mails
+	* @return null
+	*/
+	function selectEmailPrint($emailFields) {
+	}
+	
 	/** Process columns box in select
 	* @param array selectable columns
 	* @return array (array(select_expressions), array(group_expressions))
@@ -322,18 +329,11 @@ class Adminer {
 		return (isset($_GET["text_length"]) ? $_GET["text_length"] : "100");
 	}
 	
-	/** Print extra text in the end of a select form
-	* @param array fields holding e-mails
-	* @return null
-	*/
-	function selectExtraPrint($emailFields) {
-	}
-	
 	/** Process extras in select form
 	* @param array AND conditions
 	* @return bool true if processed, false to process other parts of form
 	*/
-	function selectExtraProcess($where) {
+	function selectEmailProcess($where) {
 		return false;
 	}
 	
