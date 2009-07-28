@@ -285,7 +285,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 	}
 	
 	function editFunctions($field) {
-		return (isset($_GET["select"]) ? array("orig" => lang('original')) : array()) + array("");
+		return array("");
 	}
 	
 	function editInput($table, $field, $attrs, $value) {

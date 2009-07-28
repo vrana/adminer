@@ -371,7 +371,7 @@ class Adminer {
 		if ($field["null"] || isset($_GET["default"])) {
 			array_unshift($return, "NULL");
 		}
-		return (isset($_GET["select"]) ? array("orig" => lang('original')) : array()) + $return;
+		return $return;
 	}
 	
 	/** Get options to display edit field

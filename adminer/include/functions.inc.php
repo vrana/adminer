@@ -303,8 +303,8 @@ function input($field, $value, $function) {
 			echo ' <label><input type="radio" name="fields[' . $name . ']" value="' . (isset($_GET["default"]) ? (strlen($val) ? htmlspecialchars($val) : " ") : $i+1) . '"' . ($checked ? ' checked="checked"' : '') . '>' . htmlspecialchars($val) . '</label>';
 		}
 	} else {
-		$functions = $adminer->editFunctions($field);
-		$first = array_search("", $functions);
+		$functions = (isset($_GET["select"]) ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
+		$first = array_search("", $functions) + (isset($_GET["select"]) ? 1 : 0);
 		$onchange = ($first ? ' onchange="var f = this.form[\'function[' . addcslashes($name, "\r\n'\\") . ']\']; if (' . $first . ' > f.selectedIndex) f.selectedIndex = ' . $first . ';"' : '');
 		echo (count($functions) > 1 ? '<select name="function[' . $name . ']">' . optionlist($functions, $function) . '</select>' : "&nbsp;") . '<td>';
 		$input = $adminer->editInput($_GET["edit"], $field, ' name="fields[' . $name . ']"' . $onchange, $value); // usage in call is without a table
@@ -315,12 +315,12 @@ function input($field, $value, $function) {
 			foreach ($matches[1] as $i => $val) {
 				$val = stripcslashes(str_replace("''", "'", $val));
 				$checked = (is_int($value) ? ($value >> $i) & 1 : in_array($val, explode(",", $value), true));
-				echo ' <label><input type="checkbox" name="fields[' . $name . '][' . $i . ']" value="' . (isset($_GET["default"]) ? htmlspecialchars($val) : 1 << $i) . '"' . ($checked ? ' checked="checked"' : '') . $onchange . '>' . htmlspecialchars($val) . '</label>';
+				echo ' <label><input type="checkbox" name="fields[' . $name . '][' . $i . ']" value="' . (isset($_GET["default"]) ? htmlspecialchars($val) : 1 << $i) . '"' . ($checked ? ' checked="checked"' : '') . "$onchange>" . htmlspecialchars($val) . '</label>';
 			}
 		} elseif (strpos($field["type"], "text") !== false) {
-			echo '<textarea name="fields[' . $name . ']" cols="50" rows="12"' . $onchange . '>' . htmlspecialchars($value) . '</textarea>';
+			echo '<textarea name="fields[' . $name . ']" cols="50" rows="12"' . "$onchange>" . htmlspecialchars($value) . '</textarea>';
 		} elseif (ereg('binary|blob', $field["type"])) {
-			echo (ini_get("file_uploads") ? '<input type="file" name="' . $name . '"' . $onchange . '>' : lang('File uploads are disabled.'));
+			echo (ini_get("file_uploads") ? '<input type="file" name="' . $name . '"' . "$onchange>" : lang('File uploads are disabled.'));
 		} else {
 			// int(3) is only a display hint
 			$maxlength = (!ereg('int', $field["type"]) && preg_match('~^([0-9]+)(,([0-9]+))?$~', $field["length"], $match) ? ($match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) : ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0));
