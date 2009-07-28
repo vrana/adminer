@@ -165,7 +165,7 @@ class Adminer {
 			if ($index["type"] == "FULLTEXT") {
 				echo "(<i>" . implode("</i>, <i>", array_map('h', $index["columns"])) . "</i>) AGAINST";
 				echo " <input name='fulltext[$i]' value='" . h($_GET["fulltext"][$i]) . "'>";
-				echo "<label><input type='checkbox' name='boolean[$i]' value='1'" . (isset($_GET["boolean"][$i]) ? " checked='checked'" : "") . ">" . lang('BOOL') . "</label>";
+				echo "<label><input type='checkbox' name='boolean[$i]' value='1'" . (isset($_GET["boolean"][$i]) ? " checked" : "") . ">" . lang('BOOL') . "</label>";
 				echo "<br>\n";
 			}
 		}
@@ -196,7 +196,7 @@ class Adminer {
 		foreach ((array) $_GET["order"] as $key => $val) {
 			if (isset($columns[$val])) {
 				echo "<div><select name='order[$i]'><option>" . optionlist($columns, $val, true) . "</select>";
-				echo "<label><input type='checkbox' name='desc[$i]' value='1'" . (isset($_GET["desc"][$key]) ? " checked='checked'" : "") . ">" . lang('descending') . "</label></div>\n";
+				echo "<label><input type='checkbox' name='desc[$i]' value='1'" . (isset($_GET["desc"][$key]) ? " checked" : "") . ">" . lang('descending') . "</label></div>\n";
 				$i++;
 			}
 		}

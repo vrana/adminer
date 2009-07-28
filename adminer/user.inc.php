@@ -133,7 +133,7 @@ if ($_POST) {
 <table cellspacing="0">
 <tr><th><?php echo lang('Username'); ?><td><input name="user" maxlength="16" value="<?php echo h($row["user"]); ?>">
 <tr><th><?php echo lang('Server'); ?><td><input name="host" maxlength="60" value="<?php echo h($row["host"]); ?>">
-<tr><th><?php echo lang('Password'); ?><td><input id="pass" name="pass" value="<?php echo h($row["pass"]); ?>"><?php if (!$row["hashed"]) { ?><script type="text/javascript">document.getElementById('pass').type = 'password';</script><?php } ?> <label><input type="checkbox" name="hashed" value="1"<?php if ($row["hashed"]) { ?> checked="checked"<?php } ?> onclick="this.form['pass'].type = (this.checked ? 'text' : 'password');"><?php echo lang('Hashed'); ?></label>
+<tr><th><?php echo lang('Password'); ?><td><input id="pass" name="pass" value="<?php echo h($row["pass"]); ?>"><?php if (!$row["hashed"]) { ?><script type="text/javascript">document.getElementById('pass').type = 'password';</script><?php } ?> <label><input type="checkbox" name="hashed" value="1"<?php if ($row["hashed"]) { ?> checked<?php } ?> onclick="this.form['pass'].type = (this.checked ? 'text' : 'password');"><?php echo lang('Hashed'); ?></label>
 </table>
 
 <?php
@@ -163,9 +163,9 @@ foreach (array(
 			if ($context == "Server Admin" && $object != (isset($grants["*.*"]) ? "*.*" : "")) {
 				echo "<td>&nbsp;";
 			} elseif (isset($_GET["grant"])) {
-				echo "<td><select name=$name><option><option value='1'" . ($value ? " selected='selected'" : "") . ">" . lang('Grant') . "<option value='0'" . ($value == "0" ? " selected='selected'" : "") . ">" . lang('Revoke') . "</select>";
+				echo "<td><select name=$name><option><option value='1'" . ($value ? " selected" : "") . ">" . lang('Grant') . "<option value='0'" . ($value == "0" ? " selected" : "") . ">" . lang('Revoke') . "</select>";
 			} else {
-				echo "<td align='center'><input type='checkbox' name=$name value='1'" . ($value ? " checked='checked'" : "") . ($privilege == "All privileges" ? " id='grants-$i-all'" : ($privilege == "Grant option" ? "" : " onclick=\"if (this.checked) form_uncheck('grants-$i-all');\"")) . ">"; //! uncheck all except grant if all is checked
+				echo "<td align='center'><input type='checkbox' name=$name value='1'" . ($value ? " checked" : "") . ($privilege == "All privileges" ? " id='grants-$i-all'" : ($privilege == "Grant option" ? "" : " onclick=\"if (this.checked) form_uncheck('grants-$i-all');\"")) . ">"; //! uncheck all except grant if all is checked
 			}
 			$i++;
 		}

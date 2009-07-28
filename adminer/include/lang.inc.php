@@ -33,7 +33,7 @@ function switch_lang() {
 	hidden_fields($_GET, array('lang'));
 	echo lang('Language') . ": <select name='lang' onchange='this.form.submit();'>";
 	foreach ($langs as $lang => $val) {
-		echo "<option value='$lang'" . ($LANG == $lang ? " selected='selected'" : "") . ">$val";
+		echo "<option value='$lang'" . ($LANG == $lang ? " selected" : "") . ">$val";
 	}
 	echo "</select>\n<noscript><div style='display: inline;'><input type='submit' value='" . lang('Use') . "'></div></noscript>\n</div>\n</form>\n";
 }

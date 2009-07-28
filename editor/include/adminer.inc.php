@@ -310,7 +310,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 			}
 		}
 		if ($field["full_type"] == "tinyint(1)") { // bool
-			return '<input type="checkbox" value="' . h($value ? $value : 1) . '"' . ($value ? ' checked="checked"' : '') . "$attrs>";
+			return '<input type="checkbox" value="' . h($value ? $value : 1) . '"' . ($value ? ' checked' : '') . "$attrs>";
 		}
 		return '';
 	}

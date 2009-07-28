@@ -53,7 +53,7 @@ if (!$table_status) {
 	foreach ($table_status as $row) {
 		$name = $row["Name"];
 		table_comment($row);
-		echo '<tr' . odd() . '><td><input type="checkbox" name="' . (isset($row["Rows"]) ? 'tables' : 'views') . '[]" value="' . h($name) . '"' . (in_array($name, $tables_views, true) ? ' checked="checked"' : '') . ' onclick="form_uncheck(\'check-all\');">';
+		echo '<tr' . odd() . '><td><input type="checkbox" name="' . (isset($row["Rows"]) ? 'tables' : 'views') . '[]" value="' . h($name) . '"' . (in_array($name, $tables_views, true) ? ' checked' : '') . ' onclick="form_uncheck(\'check-all\');">';
 		echo '<th><a href="' . h($SELF) . 'table=' . urlencode($name) . '">' . h($name) . '</a>';
 		if (isset($row["Rows"])) {
 			echo "<td>$row[Engine]<td>$row[Collation]";

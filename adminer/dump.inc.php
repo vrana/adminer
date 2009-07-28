@@ -174,14 +174,14 @@ echo "<tr><th>" . lang('Data') . "<td><select name='data_style'><option>" . opti
 <table cellspacing="0">
 <?php
 if (strlen($_GET["db"])) {
-	$checked = (strlen($_GET["dump"]) ? "" : " checked='checked'");
+	$checked = (strlen($_GET["dump"]) ? "" : " checked");
 	echo "<thead><tr>";
 	echo "<th style='text-align: left;'><label><input type='checkbox' id='check-tables'$checked onclick='form_check(this, /^tables\\[/);'>" . lang('Tables') . "</label>";
 	echo "<th style='text-align: right;'><label>" . lang('Data') . "<input type='checkbox' id='check-data'$checked onclick='form_check(this, /^data\\[/);'></label>";
 	echo "</thead>\n";
 	$views = "";
 	foreach (table_status() as $row) {
-		$checked = (strlen($_GET["dump"]) && $row["Name"] != $_GET["dump"] ? '' : " checked='checked'");
+		$checked = (strlen($_GET["dump"]) && $row["Name"] != $_GET["dump"] ? '' : " checked");
 		$print = "<tr><td><label><input type='checkbox' name='tables[]' value='" . h($row["Name"]) . "'$checked onclick=\"form_uncheck('check-tables');\">" . h($row["Name"]) . "</label>";
 		if (!$row["Engine"]) {
 			$views .= "$print\n";
@@ -191,10 +191,10 @@ if (strlen($_GET["db"])) {
 	}
 	echo $views;
 } else {
-	echo "<thead><tr><th style='text-align: left;'><label><input type='checkbox' id='check-databases' checked='checked' onclick='form_check(this, /^databases\\[/);'>" . lang('Database') . "</label></thead>\n";
+	echo "<thead><tr><th style='text-align: left;'><label><input type='checkbox' id='check-databases' checked onclick='form_check(this, /^databases\\[/);'>" . lang('Database') . "</label></thead>\n";
 	foreach (get_databases() as $db) {
 		if (!information_schema($db)) {
-			echo '<tr><td><label><input type="checkbox" name="databases[]" value="' . h($db) . '" checked="checked" onclick="form_uncheck(\'check-databases\');">' . h($db) . "</label>\n";
+			echo '<tr><td><label><input type="checkbox" name="databases[]" value="' . h($db) . '" checked onclick="form_uncheck(\'check-databases\');">' . h($db) . "</label>\n";
 		}
 	}
 }

@@ -36,7 +36,7 @@ function optionlist($options, $selected = null, $use_keys = false) {
 			$return .= '<optgroup label="' . h($k) . '">';
 		}
 		foreach ((is_array($v) ? $v : array($k => $v)) as $key => $val) {
-			$return .= '<option' . ($use_keys || is_string($key) ? ' value="' . h($key) . '"' : '') . (($use_keys || is_string($key) ? (string) $key : $val) === $selected ? ' selected="selected"' : '') . '>' . h($val);
+			$return .= '<option' . ($use_keys || is_string($key) ? ' value="' . h($key) . '"' : '') . (($use_keys || is_string($key) ? (string) $key : $val) === $selected ? ' selected' : '') . '>' . h($val);
 		}
 		if (is_array($v)) {
 			$return .= '</optgroup>';
@@ -293,18 +293,18 @@ function input($field, $value, $function) {
 	$name = h(bracket_escape($field["field"]));
 	echo "<td class='function'>";
 	if ($field["type"] == "enum") {
-		echo "&nbsp;<td>" . (isset($_GET["select"]) ? " <label><input type='radio' name='fields[$name]' value='-1' checked='checked'><em>" . lang('original') . "</em></label>" : "");
+		echo "&nbsp;<td>" . (isset($_GET["select"]) ? " <label><input type='radio' name='fields[$name]' value='-1' checked><em>" . lang('original') . "</em></label>" : "");
 		if ($field["null"] || isset($_GET["default"])) {
-			echo " <label><input type='radio' name='fields[$name]' value=''" . (($field["null"] ? isset($value) : strlen($value)) || isset($_GET["select"]) ? '' : ' checked="checked"') . '>' . ($field["null"] ? '<em>NULL</em>' : '') . '</label>';
+			echo " <label><input type='radio' name='fields[$name]' value=''" . (($field["null"] ? isset($value) : strlen($value)) || isset($_GET["select"]) ? '' : ' checked') . '>' . ($field["null"] ? '<em>NULL</em>' : '') . '</label>';
 		}
 		if (!isset($_GET["default"])) {
-			echo "<input type='radio' name='fields[$name]' value='0'" . ($value === 0 ? ' checked="checked"' : '') . '>';
+			echo "<input type='radio' name='fields[$name]' value='0'" . ($value === 0 ? ' checked' : '') . '>';
 		}
 		preg_match_all("~'((?:[^']+|'')*)'~", $field["length"], $matches);
 		foreach ($matches[1] as $i => $val) {
 			$val = stripcslashes(str_replace("''", "'", $val));
 			$checked = (is_int($value) ? $value == $i+1 : $value === $val);
-			echo " <label><input type='radio' name='fields[$name]' value='" . (isset($_GET["default"]) ? (strlen($val) ? h($val) : " ") : $i+1) . "'" . ($checked ? ' checked="checked"' : '') . '>' . h($val) . '</label>';
+			echo " <label><input type='radio' name='fields[$name]' value='" . (isset($_GET["default"]) ? (strlen($val) ? h($val) : " ") : $i+1) . "'" . ($checked ? ' checked' : '') . '>' . h($val) . '</label>';
 		}
 	} else {
 		$functions = (isset($_GET["select"]) ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
@@ -319,7 +319,7 @@ function input($field, $value, $function) {
 			foreach ($matches[1] as $i => $val) {
 				$val = stripcslashes(str_replace("''", "'", $val));
 				$checked = (is_int($value) ? ($value >> $i) & 1 : in_array($val, explode(",", $value), true));
-				echo " <label><input type='checkbox' name='fields[$name][$i]' value='" . (isset($_GET["default"]) ? h($val) : 1 << $i) . "'" . ($checked ? ' checked="checked"' : '') . "$onchange>" . h($val) . '</label>';
+				echo " <label><input type='checkbox' name='fields[$name][$i]' value='" . (isset($_GET["default"]) ? h($val) : 1 << $i) . "'" . ($checked ? ' checked' : '') . "$onchange>" . h($val) . '</label>';
 			}
 		} elseif (strpos($field["type"], "text") !== false) {
 			echo "<textarea name='fields[$name]' cols='50' rows='12'$onchange>" . h($value) . '</textarea>';
