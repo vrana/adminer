@@ -1,19 +1,12 @@
 // Adminer specific functions
 
 function body_load() {
-	var script = document.createElement('script');
-	script.src = '../externals/jush/jush.js';
-	script.onload = function () {
-		jush.style('../externals/jush/jush.css');
+	var jush_root = '../externals/jush/';
+	load_script(jush_root + 'jush.js', function () {
+		jush.style(jush_root + 'jush.css');
 		jush.highlight_tag('pre');
 		jush.highlight_tag('code');
-	}
-	script.onreadystatechange = function () {
-		if (script.readyState == 'loaded' || script.readyState == 'complete') {
-			script.onload();
-		}
-	}
-	document.body.appendChild(script);
+	});
 }
 
 
