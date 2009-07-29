@@ -6,33 +6,11 @@ function toggle(id) {
 	return true;
 }
 
-function load_script(src, onload) {
-	var script = document.createElement('script');
-	script.src = src;
-	script.onload = onload;
-	script.onreadystatechange = function () {
-		if (script.readyState == 'loaded' || script.readyState == 'complete') {
-			onload();
-		}
-	}
-	document.body.appendChild(script);
-}
-
 function verify_version(version) {
 	document.cookie = 'adminer_version=0';
-	load_script('https://adminer.svn.sourceforge.net/svnroot/adminer/released.js', function () {
-		document.cookie = 'adminer_version=' + released;
-		var re = /^([0-9]+)\.([0-9]+)\.([0-9]+)(.*)/;
-		var v1 = re.exec(version);
-		var v2 = re.exec(released);
-		if (v1 && v2 && (+v1[1] < +v2[1]
-			|| (v1[1] == v2[1] && (+v1[2] < +v2[2]
-			|| (v1[2] == v2[2] && (+v1[3] < +v2[3]
-			|| (v1[3] == v2[3] && v1[4]
-		))))))) {
-			document.getElementById('version').innerHTML = released;
-		}
-	});
+	var script = document.createElement('script');
+	script.src = 'https://adminer.svn.sourceforge.net/svnroot/adminer/trunk/released.js';
+	document.body.appendChild(script);
 }
 
 function form_check(el, name) {

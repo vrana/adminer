@@ -1,1 +1,1 @@
-var released = '1.11.1';
+document.cookie = 'adminer_version=1.11.1';
