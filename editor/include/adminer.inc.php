@@ -314,7 +314,10 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 	
 	function processInput($field, $value, $function = "") {
 		global $dbh;
-		$return = $dbh->quote(ereg('date|timestamp', $field["type"]) ? preg_replace_callback('(' . preg_replace('~(\\\\\\$([0-9]))~', '(?P<p\\2>[0-9]+)', preg_quote(lang('$1-$3-$5'))) . ')', 'conversion_date', $value) : $value);
+		$return = $dbh->quote(ereg('date|timestamp', $field["type"]) && preg_match('(^' . preg_replace('~(\\\\\\$([0-9]))~', '(?P<p\\2>[0-9]+)', preg_quote(lang('$1-$3-$5'))) . ')', $value, $match)
+			? ($match["p1"] ? $match["p1"] : ($match["p2"] < 70 ? 20 : 19) . $match["p2"]) . "-$match[p3]$match[p4]-$match[p5]$match[p6]"
+			: $value
+		);
 		if (!ereg('varchar|text', $field["type"]) && $field["full_type"] != "tinyint(1)" && !strlen($value)) {
 			$return = "NULL";
 		} elseif (ereg('date|time', $field["type"]) && $value == "CURRENT_TIMESTAMP") {
