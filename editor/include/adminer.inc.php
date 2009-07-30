@@ -67,15 +67,13 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 	}
 	
 	function rowDescription($table) {
-		$return = "";
 		// first varchar column
 		foreach (fields($table) as $field) {
 			if ($field["type"] == "varchar") {
-				$return = idf_escape($field["field"]);
-				break;
+				return idf_escape($field["field"]);
 			}
 		}
-		return $return;
+		return "";
 	}
 	
 	function rowDescriptions($rows, $foreignKeys) {
