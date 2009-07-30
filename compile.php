@@ -109,6 +109,14 @@ function php_shrink($input) {
 			if ($token[0] == T_DOC_COMMENT) {
 				$doc_comment = true;
 			}
+			if ($token[0] == T_CLOSE_TAG && $tokens[$i+1][0] == T_INLINE_HTML && $tokens[$i+2][0] == T_OPEN_TAG
+			&& strlen(addcslashes($tokens[$i+1][1], "'\\")) < strlen($tokens[$i+1][1]) + 4
+			) {
+				$tokens[$i] = array(T_ECHO, 'echo');
+				$tokens[$i+1] = array(T_CONSTANT_ENCAPSED_STRING, "'" . addcslashes($tokens[$i+1][1], "'\\") . "'");
+				$tokens[$i+2] = array(0, ';');
+				$token = $tokens[$i];
+			}
 			if ($token[0] == T_VAR) {
 				$shortening = false;
 			} elseif (!$shortening) {
@@ -120,8 +128,11 @@ function php_shrink($input) {
 			} elseif ($token[1] == ';' && $in_echo) {
 				$in_echo = false;
 				if ($tokens[$i+1][0] === T_WHITESPACE && $tokens[$i+2][0] === T_ECHO) {
-					// join two consecutive echos
 					next($tokens);
+					$i++;
+				}
+				if ($tokens[$i+1][0] === T_ECHO) {
+					// join two consecutive echos
 					next($tokens);
 					$token[1] = '.'; //! join ''.'' and "".""
 				}

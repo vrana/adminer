@@ -63,7 +63,7 @@ function page_footer($missing = false) {
 <?php switch_lang(); ?>
 <div id="menu">
 <h1><a href="http://www.adminer.org/" class="h1"><?php echo $adminer->name(); ?></a> &nbsp; <?php echo $VERSION; ?> &nbsp;
-<a href='http://www.adminer.org/#download' id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
+<a href="http://www.adminer.org/#download" id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
 </h1>
 <?php $adminer->navigation($missing); ?>
 </div>
