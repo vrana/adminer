@@ -137,7 +137,7 @@ if (!$columns) {
 	echo "<form action='' id='form'>\n";
 	echo "<div style='display: none;'>";
 	echo (strlen($_GET["server"]) ? '<input type="hidden" name="server" value="' . h($_GET["server"]) . '">' : "");
-	echo '<input type="hidden" name="db" value="' . h($_GET["db"]) . '">';
+	echo (strlen($_GET["db"]) ? '<input type="hidden" name="db" value="' . h($_GET["db"]) . '">' : ""); // not used in Editor
 	echo '<input type="hidden" name="select" value="' . h($_GET["select"]) . '">';
 	echo "</div>\n";
 	$adminer->selectColumnsPrint($select, $columns);
