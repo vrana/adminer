@@ -59,8 +59,8 @@ if ($_POST && !$error) {
 			$result = true;
 			$affected = 0;
 			$command = ($_POST["delete"] ? ($_POST["all"] && !$where ? "TRUNCATE " : "DELETE FROM ") : ($_POST["clone"] ? "INSERT INTO " : "UPDATE ")) . idf_escape($_GET["select"]);
+			$set = array();
 			if (!$_POST["delete"]) {
-				$set = array();
 				foreach ($columns as $name => $val) { //! should check also for edit or insert privileges
 					$val = process_input($fields[$name]);
 					if ($_POST["clone"]) {
