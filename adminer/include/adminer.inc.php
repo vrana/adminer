@@ -119,7 +119,7 @@ class Adminer {
 		if (ereg('blob|binary', $field["type"]) && !is_utf8($val)) {
 			$return = lang('%d byte(s)', strlen($val));
 		}
-		return ($link ? "<a href=\"$link\">$return</a>" : $return);
+		return ($link ? "<a href='$link'>$return</a>" : $return);
 	}
 	
 	/** Value conversion used in select and edit

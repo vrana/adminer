@@ -58,7 +58,7 @@ if ($result) {
 					echo "<th><i>" . implode("</i>, <i>", array_map('h', $foreign_key["source"])) . "</i>";
 					echo "<td><a href='" . h(strlen($foreign_key["db"]) ? preg_replace('~db=[^&]*~', "db=" . urlencode($foreign_key["db"]), ME) : ME) . "table=" . urlencode($foreign_key["table"]) . "'>$link</a>";
 					echo "(<em>" . implode("</em>, <em>", array_map('h', $foreign_key["target"])) . "</em>)";
-					echo "<td>" . (!strlen($foreign_key["db"]) ? '<a href="' . h(ME) . 'foreign=' . urlencode($_GET["table"]) . '&amp;name=' . urlencode($name) . '">' . lang('Alter') . '</a>' : '&nbsp;');
+					echo "<td>" . (!strlen($foreign_key["db"]) ? '<a href="' . h(ME . 'foreign=' . urlencode($_GET["table"]) . '&name=' . urlencode($name)) . '">' . lang('Alter') . '</a>' : '&nbsp;');
 				}
 				echo "</table>\n";
 			}
@@ -71,7 +71,7 @@ if ($result) {
 			if ($result->num_rows) {
 				echo "<table cellspacing='0'>\n";
 				while ($row = $result->fetch_assoc()) {
-					echo "<tr valign='top'><td>$row[Timing]<td>$row[Event]<th>" . h($row["Trigger"]) . "<td><a href=\"" . h(ME) . 'trigger=' . urlencode($_GET["table"]) . '&amp;name=' . urlencode($row["Trigger"]) . '">' . lang('Alter') . "</a>\n";
+					echo "<tr valign='top'><td>$row[Timing]<td>$row[Event]<th>" . h($row["Trigger"]) . "<td><a href='" . h(ME . 'trigger=' . urlencode($_GET["table"]) . '&name=' . urlencode($row["Trigger"])) . "'>" . lang('Alter') . "</a>\n";
 				}
 				echo "</table>\n";
 			}

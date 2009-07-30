@@ -116,13 +116,13 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		if (ereg('blob|binary', $field["type"]) && !is_utf8($val)) {
 			$return = lang('%d byte(s)', strlen($val));
 			if (ereg("^(GIF|\xFF\xD8\xFF|\x89\x50\x4E\x47\x0D\x0A\x1A\x0A)", $val)) { // GIF|JPG|PNG, getimagetype() works with filename
-				$return = "<img src=\"$link\" alt='$return'>";
+				$return = "<img src='$link' alt='$return'>";
 			}
 		}
 		if ($field["full_type"] == "tinyint(1)" && $return != "&nbsp;") { // bool
 			$return = '<img src="' . ($val ? "../adminer/plus.gif" : "../adminer/cross.gif") . '" alt="' . h($val) . '">';
 		}
-		return ($link ? "<a href=\"$link\">$return</a>" : $return);
+		return ($link ? "<a href='$link'>$return</a>" : $return);
 	}
 	
 	function editVal($val, $field) {
