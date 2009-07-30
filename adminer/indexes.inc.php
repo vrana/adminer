@@ -34,9 +34,9 @@ if ($_POST && !$error && !$_POST["add"]) {
 		$alter[] = "\nDROP INDEX " . idf_escape($name);
 	}
 	if (!$alter) {
-		redirect($SELF . "table=" . urlencode($_GET["indexes"]));
+		redirect(ME . "table=" . urlencode($_GET["indexes"]));
 	}
-	query_redirect("ALTER TABLE " . idf_escape($_GET["indexes"]) . implode(",", $alter), $SELF . "table=" . urlencode($_GET["indexes"]), lang('Indexes has been altered.'));
+	query_redirect("ALTER TABLE " . idf_escape($_GET["indexes"]) . implode(",", $alter), ME . "table=" . urlencode($_GET["indexes"]), lang('Indexes has been altered.'));
 }
 
 page_header(lang('Indexes'), $error, array("table" => $_GET["indexes"]), $_GET["indexes"]);

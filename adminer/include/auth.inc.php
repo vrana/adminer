@@ -32,7 +32,7 @@ if (isset($_POST["server"])) {
 		foreach (array("usernames", "passwords", "databases", "tokens", "history") as $val) {
 			unset($_SESSION[$val][$_GET["server"]]);
 		}
-		redirect(substr($SELF, 0, -1), lang('Logout successful.'));
+		redirect(substr(ME, 0, -1), lang('Logout successful.'));
 	}
 }
 

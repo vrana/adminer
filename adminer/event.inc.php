@@ -4,7 +4,7 @@ $statuses = array("ENABLED" => "ENABLE", "DISABLED" => "DISABLE", "SLAVESIDE_DIS
 
 if ($_POST && !$error) {
 	if ($_POST["drop"]) {
-		query_redirect("DROP EVENT " . idf_escape($_GET["event"]), substr($SELF, 0, -1), lang('Event has been dropped.'));
+		query_redirect("DROP EVENT " . idf_escape($_GET["event"]), substr(ME, 0, -1), lang('Event has been dropped.'));
 	} elseif (in_array($_POST["INTERVAL_FIELD"], $intervals) && isset($statuses[$_POST["STATUS"]])) {
 		$schedule = "\nON SCHEDULE " . ($_POST["INTERVAL_VALUE"]
 			? "EVERY " . $dbh->quote($_POST["INTERVAL_VALUE"]) . " $_POST[INTERVAL_FIELD]"
@@ -19,7 +19,7 @@ if ($_POST && !$error) {
 			: "CREATE EVENT " . idf_escape($_POST["EVENT_NAME"]) . $schedule
 			) . "\n" . $statuses[$_POST["STATUS"]] . " COMMENT " . $dbh->quote($_POST["EVENT_COMMENT"])
 			. " DO\n$_POST[EVENT_DEFINITION]"
-		, substr($SELF, 0, -1), (strlen($_GET["event"]) ? lang('Event has been altered.') : lang('Event has been created.')));
+		, substr(ME, 0, -1), (strlen($_GET["event"]) ? lang('Event has been altered.') : lang('Event has been created.')));
 	}
 }
 

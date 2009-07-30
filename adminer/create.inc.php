@@ -69,7 +69,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 	} elseif ($dbh->server_info >= 5.1 && strlen($_GET["create"])) {
 		$status .= "\nREMOVE PARTITIONING";
 	}
-	$location = $SELF . "table=" . urlencode($_POST["name"]);
+	$location = ME . "table=" . urlencode($_POST["name"]);
 	if (strlen($_GET["create"])) {
 		query_redirect("ALTER TABLE " . idf_escape($_GET["create"]) . implode(",", $fields) . ",\nRENAME TO " . idf_escape($_POST["name"]) . ",\n$status", $location, lang('Table has been altered.'));
 	} else {

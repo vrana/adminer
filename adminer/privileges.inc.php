@@ -1,6 +1,6 @@
 <?php
 page_header(lang('Privileges'));
-echo '<p><a href="' . h($SELF) . 'user=">' . lang('Create user') . "</a>";
+echo '<p><a href="' . h(ME) . 'user=">' . lang('Create user') . "</a>";
 
 $result = $dbh->query("SELECT User, Host FROM mysql.user ORDER BY Host, User");
 if (!$result) {
@@ -19,7 +19,7 @@ if (!$result) {
 echo "<table cellspacing='0'>\n";
 echo "<thead><tr><th>&nbsp;<th>" . lang('Username') . "<th>" . lang('Server') . "</thead>\n";
 while ($row = $result->fetch_assoc()) {
-	echo '<tr' . odd() . '><td><a href="' . h($SELF . 'user=' . urlencode($row["User"]) . '&host=' . urlencode($row["Host"])) . '">' . lang('edit') . '</a><td>' . h($row["User"]) . "<td>" . h($row["Host"]) . "\n";
+	echo '<tr' . odd() . '><td><a href="' . h(ME . 'user=' . urlencode($row["User"]) . '&host=' . urlencode($row["Host"])) . '">' . lang('edit') . '</a><td>' . h($row["User"]) . "<td>" . h($row["Host"]) . "\n";
 }
 echo "</table>\n";
 $result->free();

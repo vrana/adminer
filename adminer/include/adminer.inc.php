@@ -71,8 +71,7 @@ class Adminer {
 	* @return string
 	*/
 	function selectLinks($tableStatus) {
-		global $SELF;
-		return '<a href="' . h($SELF) . 'table=' . urlencode($_GET['select']) . '">' . lang('Table structure') . '</a>';
+		return '<a href="' . h(ME) . 'table=' . urlencode($_GET['select']) . '">' . lang('Table structure') . '</a>';
 	}
 	
 	/** Find backward keys for table
@@ -88,9 +87,8 @@ class Adminer {
 	* @return string
 	*/
 	function selectQuery($query) {
-		global $SELF;
 		// it would be nice if $query can be passed by reference and printed value would be returned but call_user() doesn't allow reference parameters
-		return "<p><code class='jush-sql'>" . h($query) . "</code> <a href='" . h($SELF) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>\n";
+		return "<p><code class='jush-sql'>" . h($query) . "</code> <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>\n";
 	}
 	
 	/** Description of a row in a table
@@ -337,10 +335,9 @@ class Adminer {
 	* @return string
 	*/
 	function messageQuery($query) {
-		global $SELF;
 		$id = "sql-" . count($_SESSION["messages"]);
 		$_SESSION["history"][$_GET["server"]][$_GET["db"]][] = $query;
-		return " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre class='jush-sql'>" . h($query) . '</pre><a href="' . h($SELF . 'sql=&history=' . (count($_SESSION["history"][$_GET["server"]][$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a></div>';
+		return " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre class='jush-sql'>" . h($query) . '</pre><a href="' . h(ME . 'sql=&history=' . (count($_SESSION["history"][$_GET["server"]][$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a></div>';
 	}
 	
 	/** Functions displayed in edit form
@@ -416,14 +413,14 @@ class Adminer {
 	* @return null
 	*/
 	function navigation($missing) {
-		global $SELF, $dbh;
+		global $dbh;
 		if ($missing != "auth") {
 			$databases = get_databases();
 			?>
 <form action="" method="post">
 <p>
-<a href="<?php echo h($SELF); ?>sql="><?php echo lang('SQL command'); ?></a>
-<a href="<?php echo h($SELF); ?>dump=<?php echo urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]); ?>"><?php echo lang('Dump'); ?></a>
+<a href="<?php echo h(ME); ?>sql="><?php echo lang('SQL command'); ?></a>
+<a href="<?php echo h(ME); ?>dump=<?php echo urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]); ?>"><?php echo lang('Dump'); ?></a>
 <input type="hidden" name="token" value="<?php echo $_SESSION["tokens"][$_GET["server"]]; ?>">
 <input type="submit" name="logout" value="<?php echo lang('Logout'); ?>">
 </p>
@@ -449,12 +446,12 @@ class Adminer {
 				} else {
 					echo "<p>\n";
 					while ($row = $result->fetch_row()) {
-						echo '<a href="' . h($SELF) . 'select=' . urlencode($row[0]) . '">' . lang('select') . '</a> ';
-						echo '<a href="' . h($SELF) . 'table=' . urlencode($row[0]) . '">' . $this->tableName(array("Name" => $row[0])) . "</a><br>\n"; //! Adminer::tableName may work with full table status
+						echo '<a href="' . h(ME) . 'select=' . urlencode($row[0]) . '">' . lang('select') . '</a> ';
+						echo '<a href="' . h(ME) . 'table=' . urlencode($row[0]) . '">' . $this->tableName(array("Name" => $row[0])) . "</a><br>\n"; //! Adminer::tableName may work with full table status
 					}
 				}
 				$result->free();
-				echo '<p><a href="' . h($SELF) . 'create=">' . lang('Create new table') . "</a>\n";
+				echo '<p><a href="' . h(ME) . 'create=">' . lang('Create new table') . "</a>\n";
 			}
 		}
 	}

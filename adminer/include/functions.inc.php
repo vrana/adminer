@@ -1,10 +1,4 @@
 <?php
-function get_self() {
-	// can be used in customization, $SELF is minified
-	global $SELF;
-	return $SELF;
-}
-
 function get_dbh() {
 	// can be used in customization, $dbh is minified
 	global $dbh;
@@ -116,7 +110,7 @@ function redirect($location, $message = null) {
 }
 
 function query_redirect($query, $location, $message, $redirect = true, $execute = true, $failed = false) {
-	global $dbh, $error, $SELF, $adminer;
+	global $dbh, $error, $adminer;
 	$sql = "";
 	if ($query) {
 		$sql = $adminer->messageQuery($query);
@@ -178,7 +172,6 @@ function odd($s = ' class="odd"') {
 }
 
 function select($result, $dbh2 = null) {
-	global $SELF;
 	if (!$result->num_rows) {
 		echo "<p class='message'>" . lang('No rows.') . "\n";
 	} else {
@@ -238,9 +231,9 @@ function select($result, $dbh2 = null) {
 					if (isset($links[$key]) && !$columns[$links[$key]]) {
 						$link = "edit=" . urlencode($links[$key]);
 						foreach ($indexes[$links[$key]] as $col => $j) {
-							$link .= "&amp;where" . urlencode("[" . bracket_escape($col) . "]") . "=" . urlencode($row[$j]);
+							$link .= "&where" . urlencode("[" . bracket_escape($col) . "]") . "=" . urlencode($row[$j]);
 						}
-						$val = "<a href='" . h($SELF) . "$link'>$val</a>";
+						$val = "<a href='" . h(ME . $link) . "'>$val</a>";
 					}
 				}
 				echo "<td>$val";
@@ -310,7 +303,7 @@ function input($field, $value, $function) {
 		$functions = (isset($_GET["select"]) ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
 		$first = array_search("", $functions) + (isset($_GET["select"]) ? 1 : 0);
 		$onchange = ($first ? " onchange=\"var f = this.form['function[" . addcslashes($name, "\r\n'\\") . "]']; if ($first > f.selectedIndex) f.selectedIndex = $first;\"" : "");
-		echo (count($functions) > 1 ? "<select name='function[$name]'>" . optionlist($functions, $function) . "</select>" : "&nbsp;") . '<td>';
+		echo (count($functions) > 1 ? "<select name='function[$name]'>" . optionlist($functions, $function) . "</select>" : (strlen($functions[0]) ? $functions[0] : "&nbsp;")) . '<td>';
 		$input = $adminer->editInput($_GET["edit"], $field, " name='fields[$name]'$onchange", $value); // usage in call is without a table
 		if (strlen($input)) {
 			echo $input;

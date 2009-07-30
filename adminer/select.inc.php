@@ -116,10 +116,18 @@ if ($_POST && !$error) {
 
 page_header(lang('Select') . ": " . $adminer->tableName($table_status), $error);
 
+$foreign_keys = column_foreign_keys($_GET["select"]);
 echo "<p>";
 if (isset($rights["insert"])) {
-	//! pass search values forth and back
-	echo '<a href="' . h($SELF) . 'edit=' . urlencode($_GET['select']) . '">' . lang('New item') . '</a> ';
+	$set = "";
+	foreach ((array) $_GET["where"] as $val) {
+		if (count($foreign_keys[$val["col"]]) == 1 && ($val["op"] == "="
+			|| ($val["op"] == "" && !ereg('[_%]', $val["val"])) // LIKE in Editor
+		)) {
+			$set .= "&set" . urlencode("[" . bracket_escape($val["col"]) . "]") . "=" . urlencode($val["val"]);
+		}
+	}
+	echo '<a href="' . h(ME . 'edit=' . urlencode($_GET['select']) . $set) . '">' . lang('New item') . '</a> ';
 }
 echo $adminer->selectLinks($table_status);
 
@@ -163,7 +171,6 @@ if (!$columns) {
 				: count($rows)
 			);
 			
-			$foreign_keys = column_foreign_keys($_GET["select"]);
 			$descriptions = $adminer->rowDescriptions($rows, $foreign_keys);
 			
 			$backward_keys = $adminer->backwardKeys($_GET["select"]);
@@ -191,7 +198,7 @@ if (!$columns) {
 			echo ($table_names ? "<th>" . lang('Relations') : "") . "</thead>\n";
 			foreach ($descriptions as $n => $row) {
 				$unique_idf = implode('&amp;', unique_idf($rows[$n], $indexes));
-				echo "<tr" . odd() . "><td><input type='checkbox' name='check[]' value='$unique_idf' onclick=\"this.form['all'].checked = false; form_uncheck('all-page');\">" . (count($select) != count($group) || information_schema($_GET["db"]) ? '' : " <a href='" . h($SELF) . "edit=" . urlencode($_GET['select']) . "&amp;$unique_idf" . "'>" . lang('edit') . "</a>");
+				echo "<tr" . odd() . "><td><input type='checkbox' name='check[]' value='$unique_idf' onclick=\"this.form['all'].checked = false; form_uncheck('all-page');\">" . (count($select) != count($group) || information_schema($_GET["db"]) ? '' : " <a href='" . h(ME) . "edit=" . urlencode($_GET['select']) . "&amp;$unique_idf" . "'>" . lang('edit') . "</a>");
 				foreach ($row as $key => $val) {
 					if (isset($names[$key])) {
 						if (strlen($val) && (!isset($email_fields[$key]) || strlen($email_fields[$key]))) {
@@ -203,7 +210,7 @@ if (!$columns) {
 							$val = "<i>NULL</i>";
 						} else {
 							if (ereg('blob|binary', $fields[$key]["type"]) && strlen($val)) {
-								$link = h($SELF . 'download=' . urlencode($_GET["select"]) . '&field=' . urlencode($key) . '&') . $unique_idf;
+								$link = h(ME . 'download=' . urlencode($_GET["select"]) . '&field=' . urlencode($key) . '&') . $unique_idf;
 							}
 							if (!strlen(trim($val, " \t"))) {
 								$val = "&nbsp;";
@@ -219,7 +226,7 @@ if (!$columns) {
 									foreach ($foreign_key["source"] as $i => $source) {
 										$link .= where_link($i, $foreign_key["target"][$i], $rows[$n][$source]);
 									}
-									$link = h((strlen($foreign_key["db"]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), $SELF) : $SELF) . 'select=' . urlencode($foreign_key["table"])) . $link; // InnoDB supports non-UNIQUE keys
+									$link = h((strlen($foreign_key["db"]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), ME) : ME) . 'select=' . urlencode($foreign_key["table"])) . $link; // InnoDB supports non-UNIQUE keys
 									break;
 								}
 							}
@@ -235,7 +242,7 @@ if (!$columns) {
 					echo "<td>";
 					foreach ($table_names as $table => $name) {
 						foreach ($backward_keys[$table] as $columns) {
-							echo " <a href='" . h($SELF) . 'select=' . urlencode($table);
+							echo " <a href='" . h(ME) . 'select=' . urlencode($table);
 							$i = 0;
 							foreach ($columns as $column => $val) {
 								echo where_link($i, $column, $rows[$n][$val]);

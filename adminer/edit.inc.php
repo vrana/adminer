@@ -8,7 +8,10 @@ foreach ($fields as $name => $field) {
 	}
 }
 if ($_POST && !$error && !isset($_GET["select"])) {
-	$location = ($_POST["insert"] ? $_SERVER["REQUEST_URI"] : $SELF . (isset($_GET["default"]) ? "table=" : "select=") . urlencode($_GET["edit"])); // "insert" to continue edit or insert
+	$location = ($_POST["insert"] // continue edit or insert
+		? $_SERVER["REQUEST_URI"]
+		: ME . (isset($_GET["default"]) ? "table=" : "select=") . urlencode($_GET["edit"]) //! append &set converted to &where
+	);
 	$set = array();
 	foreach ($fields as $name => $field) {
 		$val = process_input($field);
@@ -70,9 +73,10 @@ if ($fields) {
 	echo "<table cellspacing='0'>\n";
 	foreach ($fields as $name => $field) {
 		echo "<tr><th>" . $adminer->fieldName($field);
+		$default = $_GET["set"][bracket_escape($name)];
 		$value = (isset($row)
 			? (strlen($row[$name]) && ($field["type"] == "enum" || $field["type"] == "set") ? intval($row[$name]) : $row[$name])
-			: ($_POST["clone"] && $field["auto_increment"] ? "" : (isset($_GET["select"]) ? false : $field["default"]))
+			: ($_POST["clone"] && $field["auto_increment"] ? "" : (isset($_GET["select"]) ? false : (isset($default) ? $default : $field["default"])))
 		);
 		if (!$_POST["save"] && is_string($value)) {
 			$value = $adminer->editVal($value, $field);

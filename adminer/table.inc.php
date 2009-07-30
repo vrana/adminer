@@ -22,13 +22,13 @@ if ($result) {
 	
 	echo "<p>";
 	if ($is_view) {
-		echo '<a href="' . h($SELF) . 'view=' . urlencode($_GET["table"]) . '">' . lang('Alter view') . '</a>';
+		echo '<a href="' . h(ME) . 'view=' . urlencode($_GET["table"]) . '">' . lang('Alter view') . '</a>';
 	} else {
-		echo '<a href="' . h($SELF) . 'create=' . urlencode($_GET["table"]) . '">' . lang('Alter table') . '</a>';
-		echo ($auto_increment_only ? '' : ' <a href="' . h($SELF) . 'default=' . urlencode($_GET["table"]) . '">' . lang('Default values') . '</a>');
+		echo '<a href="' . h(ME) . 'create=' . urlencode($_GET["table"]) . '">' . lang('Alter table') . '</a>';
+		echo ($auto_increment_only ? '' : ' <a href="' . h(ME) . 'default=' . urlencode($_GET["table"]) . '">' . lang('Default values') . '</a>');
 	}
-	echo ' <a href="' . h($SELF) . 'select=' . urlencode($_GET["table"]) . '">' . lang('Select table') . '</a>';
-	echo ' <a href="' . h($SELF) . 'edit=' . urlencode($_GET["table"]) . '">' . lang('New item') . '</a>';
+	echo ' <a href="' . h(ME) . 'select=' . urlencode($_GET["table"]) . '">' . lang('Select table') . '</a>';
+	echo ' <a href="' . h(ME) . 'edit=' . urlencode($_GET["table"]) . '">' . lang('New item') . '</a>';
 	
 	if (!$is_view) {
 		echo "<h3>" . lang('Indexes') . "</h3>\n";
@@ -45,7 +45,7 @@ if ($result) {
 			}
 			echo "</table>\n";
 		}
-		echo '<p><a href="' . h($SELF) . 'indexes=' . urlencode($_GET["table"]) . '">' . lang('Alter indexes') . "</a>\n";
+		echo '<p><a href="' . h(ME) . 'indexes=' . urlencode($_GET["table"]) . '">' . lang('Alter indexes') . "</a>\n";
 		
 		if ($table_status["Engine"] == "InnoDB") {
 			echo "<h3>" . lang('Foreign keys') . "</h3>\n";
@@ -56,13 +56,13 @@ if ($result) {
 					$link = (strlen($foreign_key["db"]) ? "<strong>" . h($foreign_key["db"]) . "</strong>." : "") . h($foreign_key["table"]);
 					echo "<tr>";
 					echo "<th><i>" . implode("</i>, <i>", array_map('h', $foreign_key["source"])) . "</i>";
-					echo "<td><a href='" . h(strlen($foreign_key["db"]) ? preg_replace('~db=[^&]*~', "db=" . urlencode($foreign_key["db"]), $SELF) : $SELF) . "table=" . urlencode($foreign_key["table"]) . "'>$link</a>";
+					echo "<td><a href='" . h(strlen($foreign_key["db"]) ? preg_replace('~db=[^&]*~', "db=" . urlencode($foreign_key["db"]), ME) : ME) . "table=" . urlencode($foreign_key["table"]) . "'>$link</a>";
 					echo "(<em>" . implode("</em>, <em>", array_map('h', $foreign_key["target"])) . "</em>)";
-					echo "<td>" . (!strlen($foreign_key["db"]) ? '<a href="' . h($SELF) . 'foreign=' . urlencode($_GET["table"]) . '&amp;name=' . urlencode($name) . '">' . lang('Alter') . '</a>' : '&nbsp;');
+					echo "<td>" . (!strlen($foreign_key["db"]) ? '<a href="' . h(ME) . 'foreign=' . urlencode($_GET["table"]) . '&amp;name=' . urlencode($name) . '">' . lang('Alter') . '</a>' : '&nbsp;');
 				}
 				echo "</table>\n";
 			}
-			echo '<p><a href="' . h($SELF) . 'foreign=' . urlencode($_GET["table"]) . '">' . lang('Add foreign key') . "</a>\n";
+			echo '<p><a href="' . h(ME) . 'foreign=' . urlencode($_GET["table"]) . '">' . lang('Add foreign key') . "</a>\n";
 		}
 		
 		if ($dbh->server_info >= 5) {
@@ -71,12 +71,12 @@ if ($result) {
 			if ($result->num_rows) {
 				echo "<table cellspacing='0'>\n";
 				while ($row = $result->fetch_assoc()) {
-					echo "<tr valign='top'><td>$row[Timing]<td>$row[Event]<th>" . h($row["Trigger"]) . "<td><a href=\"" . h($SELF) . 'trigger=' . urlencode($_GET["table"]) . '&amp;name=' . urlencode($row["Trigger"]) . '">' . lang('Alter') . "</a>\n";
+					echo "<tr valign='top'><td>$row[Timing]<td>$row[Event]<th>" . h($row["Trigger"]) . "<td><a href=\"" . h(ME) . 'trigger=' . urlencode($_GET["table"]) . '&amp;name=' . urlencode($row["Trigger"]) . '">' . lang('Alter') . "</a>\n";
 				}
 				echo "</table>\n";
 			}
 			$result->free();
-			echo '<p><a href="' . h($SELF) . 'trigger=' . urlencode($_GET["table"]) . '">' . lang('Add trigger') . "</a>\n";
+			echo '<p><a href="' . h(ME) . 'trigger=' . urlencode($_GET["table"]) . '">' . lang('Add trigger') . "</a>\n";
 		}
 	}
 }

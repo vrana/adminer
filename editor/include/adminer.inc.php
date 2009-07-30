@@ -285,7 +285,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 	}
 	
 	function editFunctions($field) {
-		return array("");
+		return array($field["null"] || $field["auto_increment"] ? "" : "*");
 	}
 	
 	function editInput($table, $field, $attrs, $value) {
@@ -296,11 +296,8 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 				$id = idf_escape($foreign_key["target"][0]);
 				$name = $this->rowDescription($foreign_key["table"]);
 				if (strlen($name) && $dbh->result($dbh->query("SELECT COUNT(*) FROM " . idf_escape($foreign_key["table"]))) <= 1000) { // optionlist with more than 1000 options would be too big
-					$return = array();
+					$return = array("" => "");
 					$result = $dbh->query("SELECT $id, $name FROM " . idf_escape($foreign_key["table"]) . " ORDER BY 2");
-					if ($field["null"] || !$result->num_rows) { // empty <select> is not HTML-valid
-						$return[""] = "";
-					}
 					while ($row = $result->fetch_row()) {
 						$return[$row[0]] = $row[1];
 					}
@@ -327,7 +324,6 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 	}
 	
 	function navigation($missing) {
-		global $SELF;
 		if ($missing != "auth") {
 			?>
 <form action="" method="post">
@@ -346,7 +342,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 					foreach ($table_status as $row) {
 						$name = $this->tableName($row);
 						if (isset($row["Engine"]) && strlen($name)) { // ignore views and tables without name
-							echo "<a href='" . h($SELF) . 'select=' . urlencode($row["Name"]) . "'>$name</a><br>\n";
+							echo "<a href='" . h(ME) . 'select=' . urlencode($row["Name"]) . "'>$name</a><br>\n";
 						}
 					}
 				}

@@ -4,7 +4,7 @@ $routine = (isset($_GET["function"]) ? "FUNCTION" : "PROCEDURE");
 $dropped = false;
 if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] && !$_POST["down"]) {
 	if (strlen($_GET["procedure"])) {
-		$dropped = query_redirect("DROP $routine " . idf_escape($_GET["procedure"]), substr($SELF, 0, -1), lang('Routine has been dropped.'), $_POST["drop"], !$_POST["dropped"]);
+		$dropped = query_redirect("DROP $routine " . idf_escape($_GET["procedure"]), substr(ME, 0, -1), lang('Routine has been dropped.'), $_POST["drop"], !$_POST["dropped"]);
 	}
 	if (!$_POST["drop"]) {
 		$set = array();
@@ -19,7 +19,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 			. " (" . implode(", ", $set) . ")"
 			. (isset($_GET["function"]) ? " RETURNS" . process_type($_POST["returns"], "CHARACTER SET") : "")
 			. "\n$_POST[definition]"
-		, substr($SELF, 0, -1), (strlen($_GET["procedure"]) ? lang('Routine has been altered.') : lang('Routine has been created.')));
+		, substr(ME, 0, -1), (strlen($_GET["procedure"]) ? lang('Routine has been altered.') : lang('Routine has been created.')));
 	}
 }
 

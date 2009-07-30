@@ -96,7 +96,7 @@ if ($history) {
 	echo "<fieldset><legend>" . lang('History') . "</legend>\n";
 	foreach ($history as $key => $val) {
 		//! save and display timestamp
-		echo '<a href="' . h($SELF . "sql=&history=$key") . '">' . lang('Edit') . '</a> <code class="jush-sql">' . shorten_utf8(ltrim(str_replace("\n", " ", preg_replace('~^(#|-- ).*~m', '', $val))), 80, "</code>") . "<br>\n";
+		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . '</a> <code class="jush-sql">' . shorten_utf8(ltrim(str_replace("\n", " ", preg_replace('~^(#|-- ).*~m', '', $val))), 80, "</code>") . "<br>\n";
 	}
 	echo "<input type='submit' name='clear' value='" . lang('Clear') . "'>\n";
 	echo "</fieldset>\n";

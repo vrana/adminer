@@ -12,6 +12,7 @@ Link e-mails in select
 Show type in field name title (thanks to Jakub Sochor)
 Preselect now() for timestamp columns (thanks to paranoiq)
 Clear history (thanks to paranoiq)
+Prefill insert by foreign key searches
 Remove Delete button from Edit page - use mass operation for it
 Faster multiple update, clone and delete
 Faster table list in navigation

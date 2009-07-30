@@ -1,7 +1,7 @@
 <?php
 if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-js"]) {
 	if ($_POST["drop"]) {
-		query_redirect("ALTER TABLE " . idf_escape($_GET["foreign"]) . "\nDROP FOREIGN KEY " . idf_escape($_GET["name"]), $SELF . "table=" . urlencode($_GET["foreign"]), lang('Foreign key has been dropped.'));
+		query_redirect("ALTER TABLE " . idf_escape($_GET["foreign"]) . "\nDROP FOREIGN KEY " . idf_escape($_GET["name"]), ME . "table=" . urlencode($_GET["foreign"]), lang('Foreign key has been dropped.'));
 	} else {
 		$source = array_filter($_POST["source"], 'strlen');
 		ksort($source); // enforce input order
@@ -14,7 +14,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 			. "\nADD FOREIGN KEY (" . implode(", ", array_map('idf_escape', $source)) . ") REFERENCES " . idf_escape($_POST["table"]) . " (" . implode(", ", array_map('idf_escape', $target)) . ")"
 			. (in_array($_POST["on_delete"], $on_actions) ? " ON DELETE $_POST[on_delete]" : "")
 			. (in_array($_POST["on_update"], $on_actions) ? " ON UPDATE $_POST[on_update]" : "")
-		, $SELF . "table=" . urlencode($_GET["foreign"]), (strlen($_GET["name"]) ? lang('Foreign key has been altered.') : lang('Foreign key has been created.')));
+		, ME . "table=" . urlencode($_GET["foreign"]), (strlen($_GET["name"]) ? lang('Foreign key has been altered.') : lang('Foreign key has been created.')));
 		$error = lang('Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exists.') . "<br>$error"; //! no partitioning
 	}
 }

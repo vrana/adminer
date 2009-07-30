@@ -2,7 +2,7 @@
 if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP changes add.x to add_x
 	if ($_POST["drop"]) {
 		unset($_SESSION["databases"][$_GET["server"]]);
-		query_redirect("DROP DATABASE " . idf_escape($_GET["db"]), substr(preg_replace('~db=[^&]*&~', '', $SELF), 0, -1), lang('Database has been dropped.'));
+		query_redirect("DROP DATABASE " . idf_escape($_GET["db"]), substr(preg_replace('~db=[^&]*&~', '', ME), 0, -1), lang('Database has been dropped.'));
 	} elseif ($_GET["db"] !== $_POST["name"]) {
 		// create or rename database
 		unset($_SESSION["databases"][$_GET["server"]]); // clear cache
@@ -17,7 +17,7 @@ if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP c
 				$last = $db;
 			}
 		}
-		if (query_redirect(queries(), $SELF . "db=" . urlencode($last), lang('Database has been created.'), !strlen($_GET["db"]), false, $failed)) {
+		if (query_redirect(queries(), ME . "db=" . urlencode($last), lang('Database has been created.'), !strlen($_GET["db"]), false, $failed)) {
 			$result = $dbh->query("SHOW TABLES");
 			while ($row = $result->fetch_row()) {
 				if (!queries("RENAME TABLE " . idf_escape($row[0]) . " TO " . idf_escape($_POST["name"]) . "." . idf_escape($row[0]))) {
@@ -28,14 +28,14 @@ if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP c
 			if (!$row) {
 				queries("DROP DATABASE " . idf_escape($_GET["db"]));
 			}
-			query_redirect(queries(), preg_replace('~db=[^&]*&~', '', $SELF) . "db=" . urlencode($_POST["name"]), lang('Database has been renamed.'), !$row, false, $row);
+			query_redirect(queries(), preg_replace('~db=[^&]*&~', '', ME) . "db=" . urlencode($_POST["name"]), lang('Database has been renamed.'), !$row, false, $row);
 		}
 	} else {
 		// alter database
 		if (!$_POST["collation"]) {
-			redirect(substr($SELF, 0, -1));
+			redirect(substr(ME, 0, -1));
 		}
-		query_redirect("ALTER DATABASE " . idf_escape($_POST["name"]) . " COLLATE " . $dbh->quote($_POST["collation"]), substr($SELF, 0, -1), lang('Database has been altered.'));
+		query_redirect("ALTER DATABASE " . idf_escape($_POST["name"]) . " COLLATE " . $dbh->quote($_POST["collation"]), substr(ME, 0, -1), lang('Database has been altered.'));
 	}
 }
 

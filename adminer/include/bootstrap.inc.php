@@ -39,6 +39,10 @@ if (isset($_GET["file"])) {
 	exit;
 }
 
+if (!isset($_SERVER["REQUEST_URI"])) {
+	$_SERVER["REQUEST_URI"] = $_SERVER["ORIG_PATH_INFO"] . (strlen($_SERVER["QUERY_STRING"]) ? "?$_SERVER[QUERY_STRING]" : "");
+}
+
 if (!ini_get("session.auto_start")) {
 	// use specific session name to get own namespace
 	session_name("adminer_sid");
@@ -64,10 +68,7 @@ if (get_magic_quotes_gpc()) {
 }
 set_magic_quotes_runtime(false);
 
-if (!isset($_SERVER["REQUEST_URI"])) {
-	$_SERVER["REQUEST_URI"] = $_SERVER["ORIG_PATH_INFO"] . (strlen($_SERVER["QUERY_STRING"]) ? "?$_SERVER[QUERY_STRING]" : "");
-}
-$SELF = preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . '?' . (strlen($_GET["server"]) ? 'server=' . urlencode($_GET["server"]) . '&' : '') . (strlen($_GET["db"]) ? 'db=' . urlencode($_GET["db"]) . '&' : '');
+define("ME", preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . '?' . (strlen($_GET["server"]) ? 'server=' . urlencode($_GET["server"]) . '&' : '') . (strlen($_GET["db"]) ? 'db=' . urlencode($_GET["db"]) . '&' : ''));
 $on_actions = array("RESTRICT", "CASCADE", "SET NULL", "NO ACTION"); // used in foreign_keys()
 
 include "../adminer/include/version.inc.php";
