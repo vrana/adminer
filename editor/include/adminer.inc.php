@@ -10,8 +10,12 @@ class Adminer {
 	}
 	
 	function database() {
+		global $dbh;
 		$dbs = get_databases(false);
-		return (count($dbs) == 1 ? $dbs[0] : (count($dbs) == 2 && information_schema($dbs[0]) ? $dbs[1] : 'test'));
+		return (!$dbs
+			? $dbh->result($dbh->query("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1)")) // username without the database list
+			: $dbs[(information_schema($dbs[0]) ? 1 : 0)] // first available database
+		);
 	}
 	
 	function loginForm($username) {
