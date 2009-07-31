@@ -9,7 +9,7 @@ function toggle(id) {
 function verify_version() {
 	document.cookie = 'adminer_version=0';
 	var script = document.createElement('script');
-	script.src = 'https://adminer.svn.sourceforge.net/svnroot/adminer/trunk/released.js';
+	script.src = 'https://adminer.svn.sourceforge.net/svnroot/adminer/trunk/version.js';
 	document.body.appendChild(script);
 }
 
