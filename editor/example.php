@@ -29,8 +29,8 @@ function adminer_object() {
 		}
 		
 		function fieldName($field, $order = 0) {
-			// only first five columns with comments will be displayed
-			return ($order < 5 ? h($field["comment"]) : "");
+			// only columns with comments will be displayed and only the first five in select
+			return ($order <= 5 ? h($field["comment"]) : "");
 		}
 		
 	}

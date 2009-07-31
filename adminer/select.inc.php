@@ -183,7 +183,7 @@ if (!$columns) {
 			echo "<thead><tr><td><input type='checkbox' id='all-page' onclick='form_check(this, /check/);'>";
 			$names = array();
 			reset($select);
-			$order = 0;
+			$order = 1;
 			foreach ($rows[0] as $key => $val) {
 				$val = $_GET["columns"][key($select)];
 				$field = $fields[$select ? $val["col"] : $key];
