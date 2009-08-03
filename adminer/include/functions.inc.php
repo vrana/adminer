@@ -94,7 +94,7 @@ function where_check($val) {
 }
 
 function where_link($i, $column, $value) {
-	return "&amp;where%5B$i%5D%5Bcol%5D=" . urlencode($column) . "&amp;where%5B$i%5D%5Bop%5D=%3D&amp;where%5B$i%5D%5Bval%5D=" . urlencode($value);
+	return "&where%5B$i%5D%5Bcol%5D=" . urlencode($column) . "&where%5B$i%5D%5Bop%5D=%3D&where%5B$i%5D%5Bval%5D=" . urlencode($value);
 }
 
 function redirect($location, $message = null) {

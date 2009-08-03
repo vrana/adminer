@@ -8,10 +8,16 @@ foreach ($fields as $name => $field) {
 	}
 }
 if ($_POST && !$error && !isset($_GET["select"])) {
-	$location = ($_POST["insert"] // continue edit or insert
-		? $_SERVER["REQUEST_URI"]
-		: ME . (isset($_GET["default"]) ? "table=" : "select=") . urlencode($_GET["edit"]) //! append &set converted to &where
-	);
+	$location = $_SERVER["REQUEST_URI"]; // continue edit or insert
+	if (!$_POST["insert"]) {
+		$location = ME . (isset($_GET["default"]) ? "table=" : "select=") . urlencode($_GET["edit"]);
+		$i = 0; // append &set converted to &where
+		foreach ((array) $_GET["set"] as $key => $val) {
+			if ($val == $_POST["fields"][$key]) {
+				$location .= where_link($i++, bracket_escape($key, "back"), $val);
+			}
+		}
+	}
 	$set = array();
 	foreach ($fields as $name => $field) {
 		$val = process_input($field);
