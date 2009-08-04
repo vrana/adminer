@@ -135,7 +135,7 @@ if (extension_loaded("mysqli")) {
 	}
 	
 } else {
-	page_header(lang('No MySQL extension'), lang('None of supported PHP extensions (%s) are available.', 'MySQLi, MySQL, PDO_MySQL'), null);
+	page_header(lang('No MySQL extension'), lang('None of the supported PHP extensions (%s) are available.', 'MySQLi, MySQL, PDO_MySQL'), null);
 	page_footer("auth");
 	exit;
 }

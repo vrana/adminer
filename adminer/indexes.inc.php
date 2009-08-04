@@ -36,7 +36,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 	if (!$alter) {
 		redirect(ME . "table=" . urlencode($_GET["indexes"]));
 	}
-	query_redirect("ALTER TABLE " . idf_escape($_GET["indexes"]) . implode(",", $alter), ME . "table=" . urlencode($_GET["indexes"]), lang('Indexes has been altered.'));
+	query_redirect("ALTER TABLE " . idf_escape($_GET["indexes"]) . implode(",", $alter), ME . "table=" . urlencode($_GET["indexes"]), lang('Indexes have been altered.'));
 }
 
 page_header(lang('Indexes'), $error, array("table" => $_GET["indexes"]), $_GET["indexes"]);
