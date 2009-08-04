@@ -104,6 +104,7 @@ function dump_data($table, $style, $select = "") {
 		}
 		$result = $dbh->query(($select ? $select : "SELECT * FROM " . idf_escape($table))); //! enum and set as numbers, binary as _binary, microtime
 		if ($result) {
+			$fields = fields($table);
 			$length = 0;
 			while ($row = $result->fetch_assoc()) {
 				if ($_POST["format"] == "csv") {
@@ -112,16 +113,17 @@ function dump_data($table, $style, $select = "") {
 					$insert = "INSERT INTO " . idf_escape($table) . " (" . implode(", ", array_map('idf_escape', array_keys($row))) . ") VALUES";
 					$row2 = array();
 					foreach ($row as $key => $val) {
-						$row2[$key] = (isset($val) ? (ereg('^(0|-?[1-9][0-9]*(\\.[0-9]+)?|0\\.[0-9]+)$', $val) ? $val : $dbh->quote($val)) : "NULL"); // strings -0, -0.0, 1., 01, .5 would translate to 0, 0.0, 1, 1, 0.5
+						$row2[$key] = (isset($val) ? (ereg('int|float|double|decimal', $fields[$key]["type"]) ? $val : $dbh->quote($val)) : "NULL"); //! columns looking like functions
 					}
+					$s = implode(",\t", $row2);
 					if ($style == "INSERT+UPDATE") {
 						$set = array();
-						foreach ($row as $key => $val) {
-							$set[] = idf_escape($key) . " = " . (isset($val) ? $dbh->quote($val) : "NULL");
+						foreach ($row2 as $key => $val) {
+							$set[] = idf_escape($key) . " = $val";
 						}
-						echo "$insert (" . implode(", ", $row2) . ") ON DUPLICATE KEY UPDATE " . implode(", ", $set) . ";\n";
+						echo "$insert ($s) ON DUPLICATE KEY UPDATE " . implode(", ", $set) . ";\n";
 					} else {
-						$s = "\n(" . implode(", ", $row2) . ")";
+						$s = "\n($s)";
 						if (!$length) {
 							echo $insert . $s;
 							$length = strlen($insert) + strlen($s);
