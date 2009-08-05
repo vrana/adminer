@@ -51,9 +51,9 @@ if (isset($langs[$_COOKIE["adminer_lang"]])) {
 	$LANG = $_SESSION["lang"];
 } else {
 	$accept_language = array();
-	preg_match_all('~([-a-z_]+)(;q=([0-9.]+))?~', strtolower($_SERVER["HTTP_ACCEPT_LANGUAGE"]), $matches, PREG_SET_ORDER);
+	preg_match_all('~([-a-z]+)(;q=([0-9.]+))?~', str_replace("_", "-", strtolower($_SERVER["HTTP_ACCEPT_LANGUAGE"])), $matches, PREG_SET_ORDER);
 	foreach ($matches as $match) {
-		$accept_language[str_replace("_", "-", $match[1])] = (isset($match[3]) ? $match[3] : 1);
+		$accept_language[$match[1]] = (isset($match[3]) ? $match[3] : 1);
 	}
 	arsort($accept_language);
 	foreach ($accept_language as $key => $q) {
