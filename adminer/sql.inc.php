@@ -48,9 +48,13 @@ if (!$error && $_POST) {
 						}
 					} else {
 						$end = explode(" ", microtime());
-						echo "<p class='time'>" . lang('%.3f s', max(0, $end[0] - $start[0] + $end[1] - $start[1])) . "\n";
+						$i = 0;
 						do {
 							$result = $dbh->store_result();
+							if (!$i) {
+								echo "<p class='time'>" . (is_object($result) ? lang('%d row(s)', $result->num_rows) . ", ": "") . lang('%.3f s', max(0, $end[0] - $start[0] + $end[1] - $start[1])) . "\n";
+								$i++;
+							}
 							if (is_object($result)) {
 								select($result, $dbh2);
 							} else {

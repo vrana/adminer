@@ -13,12 +13,13 @@ Show type in field name title (thanks to Jakub Sochor)
 Preselect now() for timestamp columns (thanks to paranoiq)
 Clear history (thanks to paranoiq)
 Prefill insert by foreign key searches
+Print number of rows in SQL command
 Remove Delete button from Edit page - use mass operation for it
 Faster multiple update, clone and delete
 Faster table list in navigation
 Download version checker and syntax highlighting from HTTPS
 Use HTML Strict instead of XHTML
-Remove function minification for performance and customization
+Remove function minification in favor of performance and customization
 Fix grant ALL PRIVILEGES with GRANT OPTION
 Fix CSV import
 Fix work with default values (thanks to Jiri Pospisil)
