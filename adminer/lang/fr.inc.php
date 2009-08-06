@@ -218,7 +218,7 @@ $translations = array(
 	'Relations' => 'Relations',
 	'Run file' => 'Executer le fichier',
 	'Clear' => 'Effacer',
-	'Maximum allowed file size is %sB.' => 'Taille maximale des fichiers est de %sB',
+	'Maximum allowed file size is %sB.' => 'Taille maximale des fichiers est de %sB.',
 	'Numbers' => 'Nombres',
 	'Date and time' => 'Date et heure',
 	'Strings' => 'Chaînes',
@@ -229,5 +229,5 @@ $translations = array(
 	'From' => 'De',
 	'Subject' => 'Sujet',
 	'Send' => 'Envoyer',
-	'%d e-mail(s) have been sent.' => array('%d message a été envoyé','%d messages ont été envoyés'),
+	'%d e-mail(s) have been sent.' => array('%d message a été envoyé.', '%d messages ont été envoyés.'),
 );
