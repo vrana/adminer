@@ -444,7 +444,7 @@ class Adminer {
 				if (!$result->num_rows) {
 					echo "<p class='message'>" . lang('No tables.') . "\n";
 				} else {
-					echo "<p>\n";
+					echo "<p id='tables'>\n";
 					while ($row = $result->fetch_row()) {
 						echo '<a href="' . h(ME) . 'select=' . urlencode($row[0]) . '">' . lang('select') . '</a> ';
 						echo '<a href="' . h(ME) . 'table=' . urlencode($row[0]) . '">' . $this->tableName(array("Name" => $row[0])) . "</a><br>\n"; //! Adminer::tableName may work with full table status
