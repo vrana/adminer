@@ -1,4 +1,4 @@
-Adminer 2.0.0:
+Adminer 2.0.0 (released 2009-08-06):
 Editor: User friendly data editor
 Customization: Adminer class
 Create single column foreign key in table structure
