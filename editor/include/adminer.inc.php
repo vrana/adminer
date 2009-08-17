@@ -323,7 +323,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		if ($function == "now") {
 			return "$function()";
 		}
-		$return = $dbh->quote(ereg('date|timestamp', $field["type"]) && preg_match('(^' . preg_replace('~(\\\\\\$([0-9]))~', '(?<p\\2>[0-9]+)', preg_quote(lang('$1-$3-$5'))) . '(.*))', $value, $match)
+		$return = $dbh->quote(ereg('date|timestamp', $field["type"]) && preg_match('(^' . preg_replace('~(\\\\\\$([0-9]))~', '(?P<p\\2>[0-9]+)', preg_quote(lang('$1-$3-$5'))) . '(.*))', $value, $match)
 			? ($match["p1"] ? $match["p1"] : ($match["p2"] < 70 ? 20 : 19) . $match["p2"]) . "-$match[p3]$match[p4]-$match[p5]$match[p6]" . end($match)
 			: $value
 		);
