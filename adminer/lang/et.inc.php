@@ -212,6 +212,7 @@ $translations = array(
 	'Select table' => 'Vali tabel',
 	'%.3f s' => '%.3f s',
 	'$1-$3-$5' => '$6.$4.$1',
+	'yyyy-mm-dd' => 'd.m.yyyy',
 	'History' => 'Ajalugu',
 	'Variables' => 'Muutujad',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Lähte- ja sihtveerud peavad eksisteerima ja omama sama andmetüüpi, sihtveergudel peab olema määratud indeks ning viidatud andmed peavad eksisteerima.',

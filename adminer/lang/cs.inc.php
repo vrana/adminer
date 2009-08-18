@@ -212,6 +212,7 @@ $translations = array(
 	'(anywhere)' => '(kdekoliv)',
 	'%.3f s' => '%.3f s',
 	'$1-$3-$5' => '$6.$4.$1',
+	'yyyy-mm-dd' => 'd.m.yyyy',
 	'History' => 'Historie',
 	'Variables' => 'Proměnné',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Zdrojové a cílové sloupce musí mít stejný datový typ, nad cílovými sloupci musí být definován index a odkazovaná data musí existovat.',

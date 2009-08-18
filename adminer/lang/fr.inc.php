@@ -212,6 +212,7 @@ $translations = array(
 	'Select table' => 'Selectionner la table',
 	'%.3f s' => '%.3f s',
 	'$1-$3-$5' => '$5/$3/$1',
+	'yyyy-mm-dd' => 'dd/mm/yyyy',
 	'History' => 'Historique',
 	'Variables' => 'Variables',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Les colonnes selectionnées et les colonnes de destination doivent être du même type, il doit y avoir un index sur les colonnes de destination et les données de référence doivent exister.',

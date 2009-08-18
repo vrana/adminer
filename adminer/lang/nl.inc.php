@@ -212,6 +212,7 @@ $translations = array(
 	'Select table' => 'Selecteer tabel',
 	'%.3f s' => '%.3f s',
 	'$1-$3-$5' => '$5-$3-$1',
+	'yyyy-mm-dd' => 'dd-mm-yyyy',
 	'History' => 'Geschiedenis',
 	'Variables' => 'Variabelen',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Bron- en doelkolommen moeten van hetzelfde data type zijn, er moet een index bestaan op de gekozen kolommen en er moet gerelateerde data bestaan.',

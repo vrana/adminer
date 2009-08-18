@@ -315,6 +315,9 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		if ($field["full_type"] == "tinyint(1)") { // bool
 			return '<input type="checkbox" value="' . h($value ? $value : 1) . '"' . ($value ? ' checked' : '') . "$attrs>";
 		}
+		if (ereg('date|timestamp', $field["type"])) {
+			return "<input value='" . h($value) . "'$attrs> (" . lang('yyyy-mm-dd') . ")"; //! maxlength
+		}
 		return '';
 	}
 	
