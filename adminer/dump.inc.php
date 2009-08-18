@@ -99,6 +99,9 @@ if ($_POST) {
 				foreach ($views as $view) {
 					dump_table($view, $_POST["table_style"], true);
 				}
+				if ($ext == "tar") {
+					echo pack("x512");
+				}
 			}
 			
 			if ($style == "CREATE+ALTER" && $_POST["format"] != "csv") {
