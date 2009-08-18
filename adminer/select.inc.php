@@ -18,7 +18,7 @@ foreach ($fields as $key => $field) {
 
 function apply_sql_function($function, $column) {
 	return ($function
-		? ($function == "distinct" ? "COUNT(DISTINCT " : strtoupper("$function(")) . "$column)"
+		? ($function == "count distinct" ? "COUNT(DISTINCT " : strtoupper("$function(")) . "$column)"
 		: $column
 	);
 }

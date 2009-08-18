@@ -1,7 +1,7 @@
 <?php
 class Adminer {
 	var $functions = array("char_length", "from_unixtime", "hex", "lower", "round", "sec_to_time", "time_to_sec", "unix_timestamp", "upper");
-	var $grouping = array("avg", "count", "distinct", "group_concat", "max", "min", "sum"); // distinct is short for COUNT(DISTINCT)
+	var $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
 	var $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "REGEXP", "IN", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL");
 	
 	/** Name in title and navigation
