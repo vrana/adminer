@@ -16,13 +16,6 @@ foreach ($fields as $key => $field) {
 	$rights += $field["privileges"];
 }
 
-function apply_sql_function($function, $column) {
-	return ($function
-		? ($function == "count distinct" ? "COUNT(DISTINCT " : strtoupper("$function(")) . "$column)"
-		: $column
-	);
-}
-
 list($select, $group) = $adminer->selectColumnsProcess($columns, $indexes);
 $where = $adminer->selectSearchProcess($fields, $indexes);
 $order = $adminer->selectOrderProcess($fields, $indexes);
