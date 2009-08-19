@@ -128,9 +128,9 @@ function dump_data($table, $style, $select = "") {
 							echo $insert . $s;
 							$length = strlen($insert) + strlen($s);
 						} else {
-							$length += 2 + strlen($s); // 2 - separator length
+							$length += 1 + strlen($s); // 1 - separator length
 							if ($length < $max_packet) {
-								echo ", $s";
+								echo ",$s";
 							} else {
 								echo ";\n$insert$s";
 								$length = strlen($insert) + strlen($s);
