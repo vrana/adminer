@@ -67,7 +67,7 @@ function unique_idf($row, $indexes) {
 	}
 	$return = array();
 	foreach ($row as $key => $val) {
-		if (!preg_match('~^(COUNT\\((\\*|(DISTINCT )?`(?:[^`]+|``)+`)\\)|(AVG|GROUP_CONCAT|MAX|MIN|SUM)\\(`(?:[^`]+|``)+`\\))$~', $key)) { //! columns looking like functions
+		if (!preg_match('~^(COUNT\\((\\*|(DISTINCT )?`(?:[^`]|``)+`)\\)|(AVG|GROUP_CONCAT|MAX|MIN|SUM)\\(`(?:[^`]|``)+`\\))$~', $key)) { //! columns looking like functions
 			$return[] = (isset($val) ? urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($val) : "null%5B%5D=" . urlencode($key));
 		}
 	}
@@ -79,11 +79,11 @@ function where($where) {
 	$return = array();
 	foreach ((array) $where["where"] as $key => $val) {
 		$key = bracket_escape($key, "back");
-		$return[] = (preg_match('~^[A-Z0-9_]+\\(`(?:[^`]+|``)+`\\)$~', $key) ? $key : idf_escape($key)) . " = BINARY " . $dbh->quote($val); //! enum and set, columns looking like functions
+		$return[] = (preg_match('~^[A-Z0-9_]+\\(`(?:[^`]|``)+`\\)$~', $key) ? $key : idf_escape($key)) . " = BINARY " . $dbh->quote($val); //! enum and set, columns looking like functions
 	}
 	foreach ((array) $where["null"] as $key) {
 		$key = bracket_escape($key, "back");
-		$return[] = (preg_match('~^[A-Z0-9_]+\\(`(?:[^`]+|``)+`\\)$~', $key) ? $key : idf_escape($key)) . " IS NULL";
+		$return[] = (preg_match('~^[A-Z0-9_]+\\(`(?:[^`]|``)+`\\)$~', $key) ? $key : idf_escape($key)) . " IS NULL";
 	}
 	return implode(" AND ", $return);
 }
@@ -293,7 +293,7 @@ function input($field, $value, $function) {
 		if (!isset($_GET["default"])) {
 			echo "<input type='radio' name='fields[$name]' value='0'" . ($value === 0 ? ' checked' : '') . '>';
 		}
-		preg_match_all("~'((?:[^']+|'')*)'~", $field["length"], $matches);
+		preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
 		foreach ($matches[1] as $i => $val) {
 			$val = stripcslashes(str_replace("''", "'", $val));
 			$checked = (is_int($value) ? $value == $i+1 : $value === $val);
@@ -308,7 +308,7 @@ function input($field, $value, $function) {
 		if (strlen($input)) {
 			echo $input;
 		} elseif ($field["type"] == "set") { //! 64 bits
-			preg_match_all("~'((?:[^']+|'')*)'~", $field["length"], $matches);
+			preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
 			foreach ($matches[1] as $i => $val) {
 				$val = stripcslashes(str_replace("''", "'", $val));
 				$checked = (is_int($value) ? ($value >> $i) & 1 : in_array($val, explode(",", $value), true));

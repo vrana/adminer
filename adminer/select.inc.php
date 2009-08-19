@@ -85,7 +85,7 @@ if ($_POST && !$error) {
 			$file = preg_replace("~^\xEF\xBB\xBF~", '', $file); //! character set
 			$cols = "";
 			$rows = array(); //! packet size
-			preg_match_all('~("[^"]*"|[^"\\n]+)+~', $file, $matches);
+			preg_match_all('~("[^"]*"|[^"\\n])+~', $file, $matches);
 			foreach ($matches[0] as $key => $val) {
 				$row = array();
 				preg_match_all('~(("[^"]*")+|[^,]*),~', "$val,", $matches2);

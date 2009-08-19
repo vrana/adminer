@@ -301,7 +301,7 @@ class Adminer {
 	function selectOrderProcess($fields, $indexes) {
 		$return = array();
 		foreach ((array) $_GET["order"] as $key => $val) {
-			if (isset($fields[$val]) || preg_match('~^[A-Z0-9_]+\\(`(?:[^`]+|``)+`\\)$~', $val)) {
+			if (isset($fields[$val]) || preg_match('~^[A-Z0-9_]+\\(`(?:[^`]|``)+`\\)$~', $val)) {
 				$return[] = idf_escape($val) . (isset($_GET["desc"][$key]) ? " DESC" : "");
 			}
 		}

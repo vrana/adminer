@@ -1,5 +1,7 @@
 Adminer 2.0.1:
+Display column comments in table overview
 Fix Editor date format
+Fix long SQL query crash (bug #2839231)
 
 Adminer 2.0.0 (released 2009-08-06):
 Editor: User friendly data editor

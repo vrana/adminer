@@ -19,7 +19,7 @@ if (!$error && $_POST) {
 		$delimiter = ";";
 		$offset = 0;
 		$empty = true;
-		$space = "(\\s+|/\\*.*\\*/|(#|-- )[^\n]*\n|--\n)";
+		$space = "(\\s|/\\*.*\\*/|(#|-- )[^\n]*\n|--\n)";
 		$dbh2 = (strlen($_GET["db"]) ? connect() : null); // connection for exploring indexes (to not replace FOUND_ROWS()) //! PDO - silent error
 		if (is_object($dbh2)) {
 			$dbh2->select_db($_GET["db"]);
@@ -31,7 +31,7 @@ if (!$error && $_POST) {
 			} elseif (preg_match('(' . preg_quote($delimiter) . '|[\'`"]|/\\*|-- |#|$)', $query, $match, PREG_OFFSET_CAPTURE, $offset)) {
 				if ($match[0][0] && $match[0][0] != $delimiter) {
 					// is not end of a query - find closing part
-					$pattern = ($match[0][0] == "-- " || $match[0][0] == "#" ? '~.*~' : ($match[0][0] == "/*" ? '~.*\\*/~sU' : '~\\G([^\\\\' . $match[0][0] . ']+|\\\\.)*(' . $match[0][0] . '|$)~s'));
+					$pattern = ($match[0][0] == "-- " || $match[0][0] == "#" ? '~.*~' : ($match[0][0] == "/*" ? '~.*\\*/~sU' : '~\\G([^\\\\' . $match[0][0] . ']|\\\\.)*(' . $match[0][0] . '|$)~s')); //! respect sql_mode NO_BACKSLASH_ESCAPES
 					preg_match($pattern, $query, $match, PREG_OFFSET_CAPTURE, $match[0][1] + 1);
 					$offset = $match[0][1] + strlen($match[0][0]);
 				} else {

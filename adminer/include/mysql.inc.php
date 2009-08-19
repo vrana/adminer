@@ -234,7 +234,7 @@ function indexes($table, $dbh2 = null) {
 
 function foreign_keys($table) {
 	global $dbh, $on_actions;
-	static $pattern = '(?:[^`]+|``)+';
+	static $pattern = '(?:[^`]|``)+';
 	$return = array();
 	$result = $dbh->query("SHOW CREATE TABLE " . idf_escape($table));
 	if ($result) {
@@ -259,7 +259,7 @@ function foreign_keys($table) {
 
 function view($name) {
 	global $dbh;
-	return array("select" => preg_replace('~^(?:[^`]+|`[^`]*`)* AS ~U', '', $dbh->result($dbh->query("SHOW CREATE VIEW " . idf_escape($name)), 1)));
+	return array("select" => preg_replace('~^(?:[^`]|`[^`]*`)* AS ~U', '', $dbh->result($dbh->query("SHOW CREATE VIEW " . idf_escape($name)), 1)));
 }
 
 function collations() {
