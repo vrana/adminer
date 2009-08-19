@@ -1,5 +1,5 @@
 <?php
-$result = $dbh->query("SHOW COLUMNS FROM " . idf_escape($_GET["table"]));
+$result = $dbh->query("SHOW FULL COLUMNS FROM " . idf_escape($_GET["table"]));
 if (!$result) {
 	$error = h($dbh->error);
 }
@@ -10,12 +10,23 @@ page_header(($result && $is_view ? lang('View') : lang('Table')) . ": " . h($_GE
 
 if ($result) {
 	$auto_increment_only = true;
-	echo "<table cellspacing='0'>\n";
+	$comments = false;
+	$rows = array();
 	while ($row = $result->fetch_assoc()) {
 		if (!$row["auto_increment"]) {
 			$auto_increment_only = false;
 		}
-		echo "<tr><th>" . h($row["Field"]) . "<td>" . h($row["Type"]) . ($row["Null"] == "YES" ? " <i>NULL</i>" : "") . "\n";
+		if (strlen(trim($row["Comment"]))) {
+			$comments = true;
+		}
+		$rows[] = $row;
+	}
+	echo "<table cellspacing='0'>\n";
+	foreach ($rows as $row) {
+		echo "<tr><th>" . h($row["Field"]);
+		echo "<td>" . h($row["Type"]) . ($row["Null"] == "YES" ? " <i>NULL</i>" : "");
+		echo ($comments ? "<td>" . (strlen(trim($row["Comment"])) ? h($row["Comment"]) : "&nbsp;") : "");
+		echo "\n";
 	}
 	echo "</table>\n";
 	$result->free();
