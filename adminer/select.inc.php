@@ -189,9 +189,14 @@ if (!$columns) {
 			$descriptions = $adminer->rowDescriptions($rows, $foreign_keys);
 			
 			$backward_keys = $adminer->backwardKeys($_GET["select"]);
-			$table_names = array_keys($backward_keys);
-			if ($table_names) {
-				$table_names = array_filter(array_combine($table_names, array_map(array($adminer, 'tableName'), array_map('table_status', $table_names))), 'strlen');
+			$table_names = array();
+			if ($backward_keys) {
+				foreach ($backward_keys as $key => $val) {
+					$val = $adminer->tableName(table_status($key));
+					if (strlen($val)) {
+						$table_names[$key] = $val;
+					}
+				}
 			}
 			
 			echo "<table cellspacing='0' class='nowrap'>\n";
