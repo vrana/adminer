@@ -10,10 +10,13 @@ table { margin: 0 20px .8em 0; border: 0; border-top: 1px solid #999; border-lef
 td, th { margin-bottom: 1em; border: 0; border-right: 1px solid #999; border-bottom: 1px solid #999; padding: .2em .3em; }
 th { background: #eee; text-align: left; }
 thead th { text-align: center; }
+thead td { background: #F5F5F5; }
 fieldset { display: inline; vertical-align: top; padding: .5em .8em; margin: 0 .5em .5em 0; border: 1px solid #999; }
 p { margin: 0 20px 1em 0; }
 img { vertical-align: middle; border: 0; }
 code { background: #eee; }
+tr:hover td { background: #ddf; }
+thead tr:hover td { background: #F5F5F5; }
 .version { float: right; color: #777; margin: 1.5em 1em; text-align: right; }
 .js .hidden { display: none; }
 .nowrap { white-space: nowrap; }
@@ -28,8 +31,6 @@ code { background: #eee; }
 .odd td { background: #F5F5F5; }
 .time { color: Silver; font-size: 70%; float: right; margin-top: -3em; }
 .function { text-align: right; }
-tr:hover td { background: #ddf; }
-thead tr:hover td { background: transparent; }
 #menu { position: absolute; margin: 10px 0 0; padding: 0 0 30px 0; top: 2em; left: 0; width: 19em; overflow: auto; overflow-y: hidden; white-space: nowrap; }
 #menu p { padding: .8em 1em; margin: 0; border-bottom: 1px solid #ccc; }
 #menu form { margin: 0; }
