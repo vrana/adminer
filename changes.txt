@@ -1,5 +1,6 @@
 Adminer 2.0.1:
 Display column comments in table overview
+Respect max_allowed_packet in CSV import
 Fix Editor date format
 Fix long SQL query crash (bug #2839231)
 

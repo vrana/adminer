@@ -83,24 +83,46 @@ if ($_POST && !$error) {
 			//! display edit page in case of an error
 		} elseif (is_string($file = get_file("csv_file"))) {
 			$file = preg_replace("~^\xEF\xBB\xBF~", '', $file); //! character set
-			$cols = "";
-			$rows = array(); //! packet size
-			preg_match_all('~("[^"]*"|[^"\\n])+~U', $file, $matches);
+			$affected = 0;
+			$length = 0;
+			$result = true;
+			$query = "INSERT INTO " . idf_escape($_GET["select"]);
+			$packet_size = $dbh->result($dbh->query("SELECT @@max_allowed_packet"));
+			$rows = array();
+			preg_match_all('~("[^"]*"|[^"\\n])+~', $file, $matches);
 			foreach ($matches[0] as $key => $val) {
 				$row = array();
-				preg_match_all('~(("[^"]*")+|[^,]*),~U', "$val,", $matches2);
+				preg_match_all('~(("[^"]*")+|[^,]*),~', "$val,", $matches2);
 				if (!$key && !array_diff($matches2[1], array_keys($fields))) { //! doesn't work with column names containing ",\n
 					// first row corresponds to column names - use it for table structure
-					$cols = " (" . implode(", ", array_map('idf_escape', $matches2[1])) . ")";
+					$query .= " (" . implode(", ", array_map('idf_escape', $matches2[1])) . ")";
 				} else {
 					foreach ($matches2[1] as $col) {
 						$row[] = (!strlen($col) ? "NULL" : $dbh->quote(str_replace('""', '"', preg_replace('~^"|"$~', '', $col))));
 					}
-					$rows[] = "\n(" . implode(", ", $row) . ")";
+					$s = "\n(" . implode(", ", $row) . ")";
+					$length += 1 + strlen($s); // 1 - separator length
+					if ($rows && $length > $packet_size) {
+						$result = queries($query . implode(",", $rows));
+						if (!$result) {
+							break;
+						}
+						$affected += $dbh->affected_rows;
+						$length = strlen($query);
+						$rows = array();
+					}
+					$rows[] = $s;
+				}
+				if (!$key) {
+					$query .= " VALUES";
+					$length += strlen($query);
 				}
 			}
-			$result = queries("INSERT INTO " . idf_escape($_GET["select"]) . "$cols VALUES" . implode(",", $rows));
-			query_redirect(queries(), remove_from_uri("page"), lang('%d row(s) have been imported.', $dbh->affected_rows), $result, false, !$result);
+			if ($result) {
+				$result = queries($query . implode(",", $rows));
+				$affected += $dbh->affected_rows;
+			}
+			query_redirect(queries(), remove_from_uri("page"), lang('%d row(s) have been imported.', $affected), $result, false, !$result);
 		} else {
 			$error = upload_error($file);
 		}
