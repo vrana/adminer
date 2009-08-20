@@ -10,22 +10,15 @@ page_header(($result && $is_view ? lang('View') : lang('Table')) . ": " . h($_GE
 
 if ($result) {
 	$auto_increment_only = true;
-	$comments = false;
-	$rows = array();
+	echo "<table cellspacing='0'>\n";
+	echo "<thead><tr><th>" . lang('Column') . "<td>" . lang('Type') . "<td>" . lang('Comment') . "</thead>\n";
 	while ($row = $result->fetch_assoc()) {
 		if (!$row["auto_increment"]) {
 			$auto_increment_only = false;
 		}
-		if (strlen(trim($row["Comment"]))) {
-			$comments = true;
-		}
-		$rows[] = $row;
-	}
-	echo "<table cellspacing='0'>\n";
-	foreach ($rows as $row) {
 		echo "<tr><th>" . h($row["Field"]);
 		echo "<td>" . h($row["Type"]) . ($row["Null"] == "YES" ? " <i>NULL</i>" : "");
-		echo ($comments ? "<td>" . (strlen(trim($row["Comment"])) ? h($row["Comment"]) : "&nbsp;") : "");
+		echo "<td>" . (strlen(trim($row["Comment"])) ? h($row["Comment"]) : "&nbsp;");
 		echo "\n";
 	}
 	echo "</table>\n";
