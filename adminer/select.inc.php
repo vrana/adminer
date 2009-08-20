@@ -85,10 +85,10 @@ if ($_POST && !$error) {
 			$file = preg_replace("~^\xEF\xBB\xBF~", '', $file); //! character set
 			$cols = "";
 			$rows = array(); //! packet size
-			preg_match_all('~("[^"]*"|[^"\\n])+~', $file, $matches);
+			preg_match_all('~("[^"]*"|[^"\\n])+~U', $file, $matches);
 			foreach ($matches[0] as $key => $val) {
 				$row = array();
-				preg_match_all('~(("[^"]*")+|[^,]*),~', "$val,", $matches2);
+				preg_match_all('~(("[^"]*")+|[^,]*),~U', "$val,", $matches2);
 				if (!$key && !array_diff($matches2[1], array_keys($fields))) { //! doesn't work with column names containing ",\n
 					// first row corresponds to column names - use it for table structure
 					$cols = " (" . implode(", ", array_map('idf_escape', $matches2[1])) . ")";
