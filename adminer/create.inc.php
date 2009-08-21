@@ -103,7 +103,6 @@ if ($_POST) {
 	process_fields($row["fields"]);
 } elseif (strlen($_GET["create"])) {
 	$row = table_status($_GET["create"]);
-	table_comment($row);
 	$row["name"] = $_GET["create"];
 	$row["fields"] = array();
 	foreach ($orig_fields as $field) {

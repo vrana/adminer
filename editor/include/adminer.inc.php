@@ -32,7 +32,6 @@ class Adminer {
 	}
 	
 	function tableName($tableStatus) {
-		table_comment($tableStatus);
 		return h(strlen($tableStatus["Comment"]) ? $tableStatus["Comment"] : $tableStatus["Name"]);
 	}
 	

@@ -170,6 +170,10 @@ function table_status($name = "") {
 	$return = array();
 	$result = $dbh->query("SHOW TABLE STATUS" . (strlen($name) ? " LIKE " . $dbh->quote(addcslashes($name, "%_")) : ""));
 	while ($row = $result->fetch_assoc()) {
+		if ($row["Engine"] == "InnoDB") {
+			// ignore internal comment, unnecessary since MySQL 5.1.21
+			$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["Comment"]);
+		}
 		$return[$row["Name"]] = $row;
 	}
 	$result->free();
@@ -280,13 +284,6 @@ function collations() {
 function escape_string($val) {
 	global $dbh;
 	return substr($dbh->quote($val), 1, -1);
-}
-
-function table_comment(&$row) {
-	if ($row["Engine"] == "InnoDB") {
-		// ignore internal comment, unnecessary since MySQL 5.1.21
-		$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["Comment"]);
-	}
 }
 
 function information_schema($db) {

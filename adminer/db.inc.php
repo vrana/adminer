@@ -52,7 +52,6 @@ if (!$table_status) {
 	echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="form_check(this, /^(tables|views)\[/);"><th>' . lang('Table') . '<td>' . lang('Engine') . '<td>' . lang('Collation') . '<td>' . lang('Data Length') . '<td>' . lang('Index Length') . '<td>' . lang('Data Free') . '<td>' . lang('Auto Increment') . '<td>' . lang('Rows') . '<td>' . lang('Comment') . "</thead>\n";
 	foreach ($table_status as $row) {
 		$name = $row["Name"];
-		table_comment($row);
 		echo '<tr' . odd() . '><td><input type="checkbox" name="' . (isset($row["Rows"]) ? 'tables' : 'views') . '[]" value="' . h($name) . '"' . (in_array($name, $tables_views, true) ? ' checked' : '') . ' onclick="form_uncheck(\'check-all\');">';
 		echo '<th><a href="' . h(ME) . 'table=' . urlencode($name) . '">' . h($name) . '</a>';
 		if (isset($row["Rows"])) {
