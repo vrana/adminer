@@ -1,4 +1,5 @@
-Adminer 2.0.1:
+Adminer 2.1.0:
+Edit default values directly in table creation
 Display column comments in table overview
 Respect max_allowed_packet in CSV import
 Fix Editor date format

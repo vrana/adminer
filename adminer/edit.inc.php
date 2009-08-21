@@ -3,14 +3,14 @@ $where = (isset($_GET["select"]) ? "" : where($_GET));
 $update = ($where || $_POST["edit"]);
 $fields = fields($_GET["edit"]);
 foreach ($fields as $name => $field) {
-	if ((isset($_GET["default"]) ? $field["auto_increment"] || ereg('text|blob', $field["type"]) : !isset($field["privileges"][$update ? "update" : "insert"])) || !strlen($adminer->fieldName($field))) {
+	if (!isset($field["privileges"][$update ? "update" : "insert"]) || !strlen($adminer->fieldName($field))) {
 		unset($fields[$name]);
 	}
 }
 if ($_POST && !$error && !isset($_GET["select"])) {
 	$location = $_SERVER["REQUEST_URI"]; // continue edit or insert
 	if (!$_POST["insert"]) {
-		$location = ME . (isset($_GET["default"]) ? "table=" : "select=") . urlencode($_GET["edit"]);
+		$location = ME . "select=" . urlencode($_GET["edit"]);
 		$i = 0; // append &set converted to &where
 		foreach ((array) $_GET["set"] as $key => $val) {
 			if ($val == $_POST["fields"][$key]) {
@@ -21,24 +21,14 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 	$set = array();
 	foreach ($fields as $name => $field) {
 		$val = process_input($field);
-		if (!isset($_GET["default"])) {
-			if ($val !== false || !$update) {
-				$set[] = "\n" . idf_escape($name) . " = " . ($val !== false ? $val : "''");
-			}
-		} elseif ($val !== false) {
-			if ($field["type"] == "timestamp" && $val != "NULL") { //! doesn't allow DEFAULT NULL and no ON UPDATE
-				$set[] = "\nMODIFY " . idf_escape($name) . " timestamp" . ($field["null"] ? " NULL" : "") . " DEFAULT $val" . ($_POST["on_update"][bracket_escape($name)] ? " ON UPDATE CURRENT_TIMESTAMP" : "");
-			} else {
-				$set[] = "\nALTER " . idf_escape($name) . ($val == "NULL" ? " DROP DEFAULT" : " SET DEFAULT $val");
-			}
+		if ($val !== false || !$update) {
+			$set[] = "\n" . idf_escape($name) . " = " . ($val !== false ? $val : "''");
 		}
 	}
 	if (!$set) {
 		redirect($location);
 	}
-	if (isset($_GET["default"])) {
-		query_redirect("ALTER TABLE " . idf_escape($_GET["edit"]) . implode(",", $set), $location, lang('Default values have been set.'));
-	} elseif ($update) {
+	if ($update) {
 		query_redirect("UPDATE " . idf_escape($_GET["edit"]) . " SET" . implode(",", $set) . "\nWHERE $where\nLIMIT 1", $location, lang('Item has been updated.'));
 	} else {
 		query_redirect("INSERT INTO " . idf_escape($_GET["edit"]) . " SET" . implode(",", $set), $location, lang('Item has been inserted.'));
@@ -47,9 +37,9 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 
 $table_name = $adminer->tableName(table_status($_GET["edit"]));
 page_header(
-	(isset($_GET["default"]) ? lang('Default values') : ($update ? lang('Edit') : lang('Insert'))),
+	($update ? lang('Edit') : lang('Insert')),
 	$error,
-	array((isset($_GET["default"]) ? "table" : "select") => array($_GET["edit"], $table_name)),
+	array("select" => array($_GET["edit"], $table_name)),
 	$table_name
 );
 
@@ -89,14 +79,6 @@ if ($fields) {
 		}
 		$function = ($_POST["save"] ? (string) $_POST["function"][$name] : ($where && $field["on_update"] == "CURRENT_TIMESTAMP" ? "now" : ($value === false ? null : (isset($value) ? '' : 'NULL'))));
 		input($field, $value, $function);
-		if (isset($_GET["default"]) && $field["type"] == "timestamp") {
-			if (!isset($create) && !$_POST) {
-				//! disable sql_mode NO_FIELD_OPTIONS
-				$create = $dbh->result($dbh->query("SHOW CREATE TABLE " . idf_escape($_GET["edit"])), 1);
-			}
-			$checked = ($_POST ? $_POST["on_update"][bracket_escape($name)] : preg_match("~\n\\s*" . preg_quote(idf_escape($name), '~') . " timestamp.* on update CURRENT_TIMESTAMP~i", $create));
-			echo '<label><input type="checkbox" name="on_update[' . h(bracket_escape($name)) . ']" value="1"' . ($checked ? ' checked' : '') . '>' . lang('ON UPDATE CURRENT_TIMESTAMP') . '</label>';
-		}
 		echo "\n";
 	}
 	echo "</table>\n";
@@ -111,7 +93,7 @@ if (isset($_GET["select"])) {
 }
 if ($fields) {
 	echo "<input type='submit' value='" . lang('Save') . "'>\n";
-	if (!isset($_GET["default"]) && !isset($_GET["select"])) {
+	if (!isset($_GET["select"])) {
 		echo "<input type='submit' name='insert' value='" . ($update ? lang('Save and continue edit') : lang('Save and insert next')) . "'>\n";
 	}
 }

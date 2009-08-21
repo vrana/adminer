@@ -9,7 +9,6 @@ Function to fix database encoding - http://php.vrana.cz/prevod-kodovani-mysql.ph
 Highlight SQL textarea - may use external CodePress
 Mass editation of individual rows
 IE6 - <label for>
-Edit default values directly in table creation
 Offer enum and set items in search - whisperer
 Use event $intervals + microseconds in relative date functions
 Table status cache - SHOW TABLE STATUS is slow with big InnoDB tables

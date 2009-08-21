@@ -9,13 +9,9 @@ $is_view = !isset($table_status["Rows"]);
 page_header(($result && $is_view ? lang('View') : lang('Table')) . ": " . h($_GET["table"]), $error);
 
 if ($result) {
-	$auto_increment_only = true;
 	echo "<table cellspacing='0'>\n";
 	echo "<thead><tr><th>" . lang('Column') . "<td>" . lang('Type') . "<td>" . lang('Comment') . "</thead>\n";
 	while ($row = $result->fetch_assoc()) {
-		if (!$row["auto_increment"]) {
-			$auto_increment_only = false;
-		}
 		echo "<tr><th>" . h($row["Field"]);
 		echo "<td>" . h($row["Type"]) . ($row["Null"] == "YES" ? " <i>NULL</i>" : "");
 		echo "<td>" . (strlen(trim($row["Comment"])) ? h($row["Comment"]) : "&nbsp;");
@@ -29,7 +25,6 @@ if ($result) {
 		echo '<a href="' . h(ME) . 'view=' . urlencode($_GET["table"]) . '">' . lang('Alter view') . '</a>';
 	} else {
 		echo '<a href="' . h(ME) . 'create=' . urlencode($_GET["table"]) . '">' . lang('Alter table') . '</a>';
-		echo ($auto_increment_only ? '' : ' <a href="' . h(ME) . 'default=' . urlencode($_GET["table"]) . '">' . lang('Default values') . '</a>');
 	}
 	echo ' <a href="' . h(ME) . 'select=' . urlencode($_GET["table"]) . '">' . lang('Select table') . '</a>';
 	echo ' <a href="' . h(ME) . 'edit=' . urlencode($_GET["table"]) . '">' . lang('New item') . '</a>';

@@ -125,10 +125,10 @@ function editing_type_change(type) {
 	}
 }
 
-function column_comments_click(checked) {
+function column_show(checked, column) {
 	var trs = document.getElementById('edit-fields').getElementsByTagName('tr');
 	for (var i=0; i < trs.length; i++) {
-		trs[i].getElementsByTagName('td')[5].className = (checked ? '' : 'hidden');
+		trs[i].getElementsByTagName('td')[column].className = (checked ? 'nowrap' : 'hidden');
 	}
 }
 

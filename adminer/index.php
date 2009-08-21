@@ -22,10 +22,6 @@ if (isset($_GET["download"])) {
 } elseif (isset($_GET["privileges"])) {
 	include "./privileges.inc.php";
 } else {
-	if (isset($_GET["default"])) {
-		// edit form is used for default values and distinguished by checking isset($_GET["default"]) in edit.inc.php
-		$_GET["edit"] = $_GET["default"];
-	}
 	if (isset($_GET["select"]) && ($_POST["edit"] || $_POST["clone"]) && !$_POST["save"]) {
 		$_GET["edit"] = $_GET["select"];
 	}

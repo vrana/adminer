@@ -287,17 +287,15 @@ function input($field, $value, $function) {
 	echo "<td class='function'>";
 	if ($field["type"] == "enum") {
 		echo "&nbsp;<td>" . (isset($_GET["select"]) ? " <label><input type='radio' name='fields[$name]' value='-1' checked><em>" . lang('original') . "</em></label>" : "");
-		if ($field["null"] || isset($_GET["default"])) {
+		if ($field["null"]) {
 			echo " <label><input type='radio' name='fields[$name]' value=''" . (($field["null"] ? isset($value) : strlen($value)) || isset($_GET["select"]) ? '' : ' checked') . '>' . ($field["null"] ? '<em>NULL</em>' : '') . '</label>';
 		}
-		if (!isset($_GET["default"])) {
-			echo "<input type='radio' name='fields[$name]' value='0'" . ($value === 0 ? ' checked' : '') . '>';
-		}
+		echo "<input type='radio' name='fields[$name]' value='0'" . ($value === 0 ? ' checked' : '') . '>';
 		preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
 		foreach ($matches[1] as $i => $val) {
 			$val = stripcslashes(str_replace("''", "'", $val));
 			$checked = (is_int($value) ? $value == $i+1 : $value === $val);
-			echo " <label><input type='radio' name='fields[$name]' value='" . (isset($_GET["default"]) ? (strlen($val) ? h($val) : " ") : $i+1) . "'" . ($checked ? ' checked' : '') . '>' . h($val) . '</label>';
+			echo " <label><input type='radio' name='fields[$name]' value='" . ($i+1) . "'" . ($checked ? ' checked' : '') . '>' . h($val) . '</label>';
 		}
 	} else {
 		$functions = (isset($_GET["select"]) ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
@@ -312,7 +310,7 @@ function input($field, $value, $function) {
 			foreach ($matches[1] as $i => $val) {
 				$val = stripcslashes(str_replace("''", "'", $val));
 				$checked = (is_int($value) ? ($value >> $i) & 1 : in_array($val, explode(",", $value), true));
-				echo " <label><input type='checkbox' name='fields[$name][$i]' value='" . (isset($_GET["default"]) ? h($val) : 1 << $i) . "'" . ($checked ? ' checked' : '') . "$onchange>" . h($val) . '</label>';
+				echo " <label><input type='checkbox' name='fields[$name][$i]' value='" . (1 << $i) . "'" . ($checked ? ' checked' : '') . "$onchange>" . h($val) . '</label>';
 			}
 		} elseif (strpos($field["type"], "text") !== false) {
 			echo "<textarea name='fields[$name]' cols='50' rows='12'$onchange>" . h($value) . '</textarea>';
@@ -336,9 +334,9 @@ function process_input($field) {
 	} elseif ($field["type"] == "enum" || $field["auto_increment"] ? !strlen($value) : $function == "NULL") {
 		return "NULL";
 	} elseif ($field["type"] == "enum") {
-		return (isset($_GET["default"]) ? $dbh->quote($value) : intval($value));
+		return intval($value);
 	} elseif ($field["type"] == "set") {
-		return (isset($_GET["default"]) ? $dbh->quote(implode(",", (array) $value)) : array_sum((array) $value));
+		return array_sum((array) $value);
 	} elseif (ereg('binary|blob', $field["type"])) {
 		$file = get_file($idf);
 		if (!is_string($file)) {

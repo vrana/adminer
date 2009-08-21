@@ -36,7 +36,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 			$fields[] = "\n" . (strlen($_GET["create"]) ? (strlen($field["orig"]) ? "CHANGE " . idf_escape($field["orig"]) . " " : "ADD ") : "  ")
 				. idf_escape($field["field"]) . process_type($type_field)
 				. ($field["null"] ? " NULL" : " NOT NULL") // NULL for timestamp
-				. (strlen($_GET["create"]) && strlen($field["orig"]) && isset($orig_fields[$field["orig"]]["default"]) && $field["type"] != "timestamp" ? " DEFAULT " . $dbh->quote($orig_fields[$field["orig"]]["default"]) : "") //! timestamp
+				. (!$field["has_default"] || $field["auto_increment"] || ereg('text|blob', $field["type"]) ? "" : " DEFAULT " . ($field["type"] == "timestamp" && eregi("^CURRENT_TIMESTAMP( on update CURRENT_TIMESTAMP)?$", $field["default"]) ? $field["default"] : $dbh->quote($field["default"])))
 				. ($key == $_POST["auto_increment_col"] ? " AUTO_INCREMENT$auto_increment_index" : "")
 				. " COMMENT " . $dbh->quote($field["comment"])
 				. (strlen($_GET["create"]) ? " $after" : "")
@@ -105,7 +105,14 @@ if ($_POST) {
 	$row = table_status($_GET["create"]);
 	table_comment($row);
 	$row["name"] = $_GET["create"];
-	$row["fields"] = array_values($orig_fields);
+	$row["fields"] = array();
+	foreach ($orig_fields as $field) {
+		$field["has_default"] = isset($field["default"]);
+		if ($field["on_update"]) {
+			$field["default"] .= " ON UPDATE $field[on_update]"; // CURRENT_TIMESTAMP
+		}
+		$row["fields"][] = $field;
+	}
 	if ($dbh->server_info >= 5.1) {
 		$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . $dbh->quote($_GET["db"]) . " AND TABLE_NAME = " . $dbh->quote($_GET["create"]);
 		$result = $dbh->query("SELECT PARTITION_METHOD, PARTITION_ORDINAL_POSITION, PARTITION_EXPRESSION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
@@ -124,7 +131,7 @@ if ($_POST) {
 }
 $collations = collations();
 
-$suhosin = floor(extension_loaded("suhosin") ? (min(ini_get("suhosin.request.max_vars"), ini_get("suhosin.post.max_vars")) - 13) / 8 : 0);
+$suhosin = floor(extension_loaded("suhosin") ? (min(ini_get("suhosin.request.max_vars"), ini_get("suhosin.post.max_vars")) - 13) / 10 : 0); // 10 - number of fields per row, 13 - number of other fields
 if ($suhosin && count($row["fields"]) > $suhosin) {
 	echo "<p class='error'>" . h(lang('Maximum number of allowed fields exceeded. Please increase %s and %s.', 'suhosin.post.max_vars', 'suhosin.request.max_vars')) . "\n";
 }
@@ -143,7 +150,8 @@ if ($suhosin && count($row["fields"]) > $suhosin) {
 <?php echo lang('Auto Increment'); ?>: <input name="Auto_increment" size="6" value="<?php echo intval($row["Auto_increment"]); ?>">
 <?php echo lang('Comment'); ?>: <input name="Comment" value="<?php echo h($row["Comment"]); ?>" maxlength="60">
 <script type="text/javascript">
-document.write('<label><input type="checkbox"<?php if ($column_comments) { ?> checked<?php } ?> onclick="column_comments_click(this.checked);"><?php echo lang('Show column comments'); ?><\/label>');
+document.write('<label><input type="checkbox" onclick="column_show(this.checked, 5);"><?php echo lang('Default values'); ?><\/label>');
+document.write('<label><input type="checkbox"<?php if ($column_comments) { ?> checked<?php } ?> onclick="column_show(this.checked, 6);"><?php echo lang('Show column comments'); ?><\/label>');
 </script>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">

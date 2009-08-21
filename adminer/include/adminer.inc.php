@@ -346,26 +346,24 @@ class Adminer {
 	*/
 	function editFunctions($field) {
 		$return = array("");
-		if (!isset($_GET["default"])) {
-			if (ereg('char|date|time', $field["type"])) {
-				$return = (ereg('char', $field["type"]) ? array("", "md5", "sha1", "password", "uuid") : array("", "now")); //! JavaScript for disabling maxlength
+		if (ereg('char|date|time', $field["type"])) {
+			$return = (ereg('char', $field["type"]) ? array("", "md5", "sha1", "password", "uuid") : array("", "now")); //! JavaScript for disabling maxlength
+		}
+		if (!isset($_GET["call"]) && (isset($_GET["select"]) || where($_GET))) {
+			// relative functions
+			if (ereg('int|float|double|decimal', $field["type"])) {
+				$return = array("", "+", "-");
 			}
-			if (!isset($_GET["call"]) && (isset($_GET["select"]) || where($_GET))) {
-				// relative functions
-				if (ereg('int|float|double|decimal', $field["type"])) {
-					$return = array("", "+", "-");
-				}
-				if (ereg('date', $field["type"])) {
-					$return[] = "+ interval";
-					$return[] = "- interval";
-				}
-				if (ereg('time', $field["type"])) {
-					$return[] = "addtime";
-					$return[] = "subtime";
-				}
+			if (ereg('date', $field["type"])) {
+				$return[] = "+ interval";
+				$return[] = "- interval";
+			}
+			if (ereg('time', $field["type"])) {
+				$return[] = "addtime";
+				$return[] = "subtime";
 			}
 		}
-		if ($field["null"] || isset($_GET["default"])) {
+		if ($field["null"]) {
 			array_unshift($return, "NULL");
 		}
 		return $return;
