@@ -3,6 +3,7 @@ Display column comments in table overview
 Respect max_allowed_packet in CSV import
 Fix Editor date format
 Fix long SQL query crash (bug #2839231)
+Traditional Chinese translation
 
 Adminer 2.0.0 (released 2009-08-06):
 Editor: User friendly data editor

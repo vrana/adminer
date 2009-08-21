@@ -8,11 +8,12 @@ $langs = array(
 	'nl' => 'Nederlands', // Maarten Balliauw - http://blog.maartenballiauw.be
 	'es' => 'Español', // Klemens Häckel - http://clickdimension.wordpress.com
 	'de' => 'Deutsch', // Klemens Häckel - http://clickdimension.wordpress.com
-	'zh' => '简体中文', // Mr. Lodar
 	'fr' => 'Français', // Francis Gagné
 	'it' => 'Italiano', // Alessandro Fiorotto, Paolo Asperti
 	'et' => 'Eesti', // Priit Kallas
 	'ru' => 'Русский язык', // Maksim Izmaylov
+	'zh' => '简体中文', // Mr. Lodar
+	'zh-tw' => '繁體中文', // http://tzangms.com
 );
 
 function lang($idf, $number = null) {
@@ -32,9 +33,7 @@ function switch_lang() {
 	echo "<form action=''>\n<div id='lang'>";
 	hidden_fields($_GET, array('lang'));
 	echo lang('Language') . ": <select name='lang' onchange='this.form.submit();'>";
-	foreach ($langs as $lang => $val) {
-		echo "<option value='$lang'" . ($LANG == $lang ? " selected" : "") . ">$val";
-	}
+	echo optionlist($langs, $LANG);
 	echo "</select>\n<noscript><div style='display: inline;'><input type='submit' value='" . lang('Use') . "'></div></noscript>\n</div>\n</form>\n";
 }
 
