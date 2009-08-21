@@ -400,8 +400,6 @@ class Adminer {
 			$return = "$function(" . idf_escape($name) . ", $return)";
 		} elseif (ereg('^(md5|sha1|password)$', $function)) {
 			$return = "$function($return)";
-		} elseif (ereg('date|time', $field["type"]) && $value == "CURRENT_TIMESTAMP") {
-			$return = $value;
 		}
 		return $return;
 	}

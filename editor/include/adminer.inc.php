@@ -331,8 +331,6 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		);
 		if (!ereg('varchar|text', $field["type"]) && $field["full_type"] != "tinyint(1)" && !strlen($value)) {
 			$return = "NULL";
-		} elseif (ereg('date|time', $field["type"]) && $value == "CURRENT_TIMESTAMP") {
-			$return = $value;
 		}
 		return $return;
 	}
