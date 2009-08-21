@@ -14,8 +14,8 @@ foreach (array_merge(
 	glob(dirname(__FILE__) . "/adminer/*.php"),
 	glob(dirname(__FILE__) . "/adminer/include/*.php"),
 	glob(dirname(__FILE__) . "/editor/*.php"),
-	glob(dirname(__FILE__) . "/editor/include/*.php"),
-array()) as $filename) {
+	glob(dirname(__FILE__) . "/editor/include/*.php")
+) as $filename) {
 	$file = file_get_contents($filename);
 	if (preg_match_all("~lang\\(('(?:[^\\\\']+|\\\\.)*')([),])~", $file, $matches)) { // lang() always uses apostrophes
 		$messages_all += array_combine($matches[1], $matches[2]);
