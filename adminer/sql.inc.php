@@ -28,12 +28,29 @@ if (!$error && $_POST) {
 			if (!$offset && preg_match('~^\\s*DELIMITER\\s+(.+)~i', $query, $match)) {
 				$delimiter = $match[1];
 				$query = substr($query, strlen($match[0]));
-			} elseif (preg_match('(' . preg_quote($delimiter) . '|[\'`"]|/\\*|-- |#|$)', $query, $match, PREG_OFFSET_CAPTURE, $offset)) {
-				if ($match[0][0] && $match[0][0] != $delimiter) {
+			} else {
+				preg_match('(' . preg_quote($delimiter) . '|[\'`"]|/\\*|-- |#|$)', $query, $match, PREG_OFFSET_CAPTURE, $offset); // should always match
+				$found = $match[0][0];
+				$offset = $match[0][1] + strlen($found);
+				if ($found && $found != $delimiter) {
 					// is not end of a query - find closing part
-					$pattern = ($match[0][0] == "-- " || $match[0][0] == "#" ? '~.*~' : ($match[0][0] == "/*" ? '~.*\\*/~sU' : '~\\G([^\\\\' . $match[0][0] . ']|\\\\.)*(' . $match[0][0] . '|$)~sU')); //! respect sql_mode NO_BACKSLASH_ESCAPES
-					preg_match($pattern, $query, $match, PREG_OFFSET_CAPTURE, $match[0][1] + 1);
-					$offset = $match[0][1] + strlen($match[0][0]);
+					if (ereg('-- |#', $found)) {
+						$offset = strpos($query, "\n", $offset);
+					} elseif ($found == "/*") {
+						$offset = strpos($query, "*/", $offset);
+					} else {
+						// find matching quote
+						while (preg_match("~$found|\\\\.|\$~s", $query, $match, PREG_OFFSET_CAPTURE, $offset)) {
+							$s = $match[0][0];
+							$offset = $match[0][1] + strlen($s);
+							if (!$s || $s == $found) {
+								break;
+							}
+						}
+					}
+					if (!$offset) {
+						$offset = strlen($query);
+					}
 				} else {
 					$empty = false;
 					echo "<pre class='jush-sql'>" . shorten_utf8(trim(substr($query, 0, $match[0][1]))) . "</pre>\n";
@@ -65,7 +82,7 @@ if (!$error && $_POST) {
 							}
 						} while ($dbh->next_result());
 					}
-					$query = substr($query, $match[0][1] + strlen($match[0][0]));
+					$query = substr($query, $offset);
 					$offset = 0;
 				}
 			}
