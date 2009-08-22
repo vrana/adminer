@@ -34,10 +34,11 @@ if (!$error && $_POST) {
 				$offset = $match[0][1] + strlen($found);
 				if ($found && $found != $delimiter) {
 					// is not end of a query - find closing part
-					if (ereg('-- |#', $found)) {
-						$offset = strpos($query, "\n", $offset);
-					} elseif ($found == "/*") {
-						$offset = strpos($query, "*/", $offset);
+					if (ereg('/\\*|-- |#', $found)) {
+						$offset = strpos($query, ($found == "/*" ? "*/" : "\n"), $offset);
+						if (!$offset) {
+							$offset = strlen($query);
+						}
 					} else {
 						// find matching quote
 						while (preg_match("~$found|\\\\.|\$~s", $query, $match, PREG_OFFSET_CAPTURE, $offset)) {
@@ -47,9 +48,6 @@ if (!$error && $_POST) {
 								break;
 							}
 						}
-					}
-					if (!$offset) {
-						$offset = strlen($query);
 					}
 				} else {
 					$empty = false;
