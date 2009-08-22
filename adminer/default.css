@@ -3,7 +3,6 @@ a { color: blue; }
 a:visited { color: navy; }
 a:hover { color: red; }
 h1 { font-size: 150%; margin: 0; padding: .8em 1em; border-bottom: 1px solid #999; font-weight: normal; color: #777; background: #eee; }
-h1 a, h1 a:visited { color: #777; text-decoration: none; font-style: italic; }
 h2 { font-size: 150%; margin: 0 0 20px -18px; padding: .8em 1em; border-bottom: 1px solid #000; color: #000; font-weight: normal; background: #ddf; }
 h3 { font-weight: normal; font-size: 130%; margin: .8em 0; }
 table { margin: 0 20px .8em 0; border: 0; border-top: 1px solid #999; border-left: 1px solid #999; font-size: 90%; }
@@ -17,7 +16,7 @@ img { vertical-align: middle; border: 0; }
 code { background: #eee; }
 tr:hover td { background: #ddf; }
 thead tr:hover td { background: #F5F5F5; }
-.version { float: right; color: #777; margin: 1.5em 1em; text-align: right; }
+.version { color: #777; font-size: 67%; }
 .js .hidden { display: none; }
 .nowrap { white-space: nowrap; }
 .wrap { white-space: normal; }
@@ -37,7 +36,8 @@ thead tr:hover td { background: #F5F5F5; }
 #content { margin: 2em 0 0 21em; padding: 10px 20px 20px 0; }
 #lang { position: absolute; top: 0; left: 0; line-height: 1.8em; padding: .3em 1em; }
 #breadcrumb { white-space: nowrap; position: absolute; top: 0; left: 21em; background: #eee; height: 2em; line-height: 1.8em; padding: 0 1em; margin: 0 0 0 -18px; }
-#version { color: red; }
+#h1 { color: #777; text-decoration: none; font-style: italic; }
+#version { font-size: 67%; color: red; }
 #schema { margin-left: 60px; position: relative; }
 #schema .table { border: 1px solid Silver; padding: 0 2px; cursor: move; position: absolute; }
 #schema .references { position: absolute; }
