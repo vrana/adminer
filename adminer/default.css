@@ -8,14 +8,12 @@ h3 { font-weight: normal; font-size: 130%; margin: .8em 0; }
 table { margin: 0 20px .8em 0; border: 0; border-top: 1px solid #999; border-left: 1px solid #999; font-size: 90%; }
 td, th { margin-bottom: 1em; border: 0; border-right: 1px solid #999; border-bottom: 1px solid #999; padding: .2em .3em; }
 th { background: #eee; text-align: left; }
-thead th { text-align: center; }
-thead td { background: #F5F5F5; }
+thead td, thead th { text-align: center; background: #ddf; }
 fieldset { display: inline; vertical-align: top; padding: .5em .8em; margin: 0 .5em .5em 0; border: 1px solid #999; }
 p { margin: 0 20px 1em 0; }
 img { vertical-align: middle; border: 0; }
 code { background: #eee; }
-tr:hover td { background: #ddf; }
-thead tr:hover td { background: #F5F5F5; }
+tr:hover td, tr:hover th { background: #ddf; }
 .version { color: #777; font-size: 67%; }
 .js .hidden { display: none; }
 .nowrap { white-space: nowrap; }
