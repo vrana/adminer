@@ -65,13 +65,13 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 	}
 	?>
 <thead><tr>
-<?php if ($type == "PROCEDURE") { ?><td><?php echo lang('IN-OUT'); ?><?php } ?>
+<?php if ($type == "PROCEDURE") { ?><td>&nbsp;<?php } ?>
 <th><?php echo ($type == "TABLE" ? lang('Column name') : lang('Parameter name')); ?>
 <td><?php echo lang('Type'); ?>
 <td><?php echo lang('Length'); ?>
 <td><?php echo lang('Options'); ?>
 <?php if ($type == "TABLE") { ?>
-<td><?php echo lang('NULL'); ?>
+<td>NULL
 <td><input type="radio" name="auto_increment_col" value=""><?php echo lang('Auto Increment'); ?>
 <td class="hidden"><?php echo lang('Default values'); ?>
 <td<?php echo ($column_comments ? "" : " class='hidden'"); ?>><?php echo lang('Comment'); ?>

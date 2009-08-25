@@ -62,7 +62,7 @@ foreach ($schema as $name => $table) {
 	echo "<div class='table' style='top: " . $table["pos"][0] . "em; left: " . $table["pos"][1] . "em;' onmousedown='schema_mousedown(this, event);'>";
 	echo '<a href="' . h(ME) . 'table=' . urlencode($name) . '"><strong>' . h($name) . "</strong></a><br>\n";
 	foreach ($table["fields"] as $field) {
-		$val = '<span' . type_class($field["type"]) . ' title="' . h($field["full_type"] . ($field["null"] ? " " . lang('NULL') : '')) . '">' . h($field["field"]) . '</span>';
+		$val = '<span' . type_class($field["type"]) . ' title="' . h($field["full_type"] . ($field["null"] ? " NULL" : '')) . '">' . h($field["field"]) . '</span>';
 		echo ($field["primary"] ? "<em>$val</em>" : $val) . "<br>\n";
 	}
 	foreach ((array) $table["references"] as $target_name => $refs) {

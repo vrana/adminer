@@ -8,7 +8,7 @@ class Adminer {
 	* @return string
 	*/
 	function name() {
-		return lang('Adminer');
+		return "Adminer";
 	}
 	
 	/** Connection parameters
@@ -163,7 +163,7 @@ class Adminer {
 			if ($index["type"] == "FULLTEXT") {
 				echo "(<i>" . implode("</i>, <i>", array_map('h', $index["columns"])) . "</i>) AGAINST";
 				echo " <input name='fulltext[$i]' value='" . h($_GET["fulltext"][$i]) . "'>";
-				echo "<label><input type='checkbox' name='boolean[$i]' value='1'" . (isset($_GET["boolean"][$i]) ? " checked" : "") . ">" . lang('BOOL') . "</label>";
+				echo "<label><input type='checkbox' name='boolean[$i]' value='1'" . (isset($_GET["boolean"][$i]) ? " checked" : "") . ">BOOL</label>";
 				echo "<br>\n";
 			}
 		}
