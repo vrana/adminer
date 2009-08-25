@@ -1,6 +1,6 @@
 <?php
-$where = (isset($_GET["select"]) ? "" : where($_GET));
-$update = ($where || $_POST["edit"]);
+$where = (isset($_GET["select"]) ? (count($_POST["check"]) == 1 ? where_check($_POST["check"][0]) : "") : where($_GET));
+$update = (isset($_GET["select"]) ? $_POST["edit"] : $where);
 $fields = fields($_GET["edit"]);
 foreach ($fields as $name => $field) {
 	if (!isset($field["privileges"][$update ? "update" : "insert"]) || !strlen($adminer->fieldName($field))) {
@@ -55,7 +55,7 @@ if ($_POST["save"]) {
 	}
 	$row = array();
 	if ($select) {
-		$result = $dbh->query("SELECT " . implode(", ", $select) . " FROM " . idf_escape($_GET["edit"]) . " WHERE $where LIMIT 1");
+		$result = $dbh->query("SELECT " . implode(", ", $select) . " FROM " . idf_escape($_GET["edit"]) . " WHERE $where " . (isset($_GET["select"]) ? "HAVING COUNT(*) = 1" : "LIMIT 1"));
 		$row = $result->fetch_assoc();
 		$result->free();
 	}
@@ -77,7 +77,7 @@ if ($fields) {
 		if (!$_POST["save"] && is_string($value)) {
 			$value = $adminer->editVal($value, $field);
 		}
-		$function = ($_POST["save"] ? (string) $_POST["function"][$name] : ($where && $field["on_update"] == "CURRENT_TIMESTAMP" ? "now" : ($value === false ? null : (isset($value) ? '' : 'NULL'))));
+		$function = ($_POST["save"] ? (string) $_POST["function"][$name] : ($update && $field["on_update"] == "CURRENT_TIMESTAMP" ? "now" : ($value === false ? null : (isset($value) ? '' : 'NULL'))));
 		if ($field["type"] == "timestamp" && $value == "CURRENT_TIMESTAMP") {
 			$value = "";
 			$function = "now";
