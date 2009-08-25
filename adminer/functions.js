@@ -27,16 +27,16 @@ function form_uncheck(id) {
 }
 
 function table_click(event) {
-	var target = event.target || event.srcElement;
-	while (!/^tr$/i.test(target.tagName)) {
-		if (/^(table|a|input)$/i.test(target.tagName)) {
+	var el = event.el || event.srcElement;
+	while (!/^tr$/i.test(el.tagName)) {
+		if (/^(table|a|input)$/i.test(el.tagName)) {
 			return;
 		}
-		target = target.parentNode;
+		el = el.parentNode;
 	}
-	var input = target.firstChild.firstChild;
-	input.click && input.click();
-	input.onclick && input.onclick();
+	el = el.firstChild.firstChild;
+	el.click && el.click();
+	el.onclick && el.onclick();
 }
 
 
