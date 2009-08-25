@@ -35,6 +35,9 @@ if ($_POST && !$error) {
 	if ($_POST["export"]) {
 		dump_headers($_GET["select"]);
 		dump_table($_GET["select"], "");
+		if ($_POST["format"] != "sql") { // Editor doesn't send format
+			dump_csv($select ? $select : array_keys($fields));
+		}
 		if (!is_array($_POST["check"]) || $primary === array()) {
 			dump_data($_GET["select"], "INSERT", "SELECT $from" . (is_array($_POST["check"]) ? ($where ? " AND " : " WHERE ") . "($where_check)" : "") . $group_by);
 		} else {

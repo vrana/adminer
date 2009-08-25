@@ -1,7 +1,6 @@
 <?php
 function dump_table($table) {
 	echo "\xef\xbb\xbf"; // UTF-8 byte order mark
-	dump_csv(array_keys(fields($table)));
 }
 
 function dump_data($table, $style, $select = "") {
