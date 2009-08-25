@@ -10,7 +10,6 @@ page_header(lang('SQL command'), $error);
 if (!$error && $_POST) {
 	$query = (isset($_POST["file"]) ? get_file("sql_file") : $_POST["query"]);
 	if (is_string($query)) { // get_file() returns error as number
-		@set_time_limit(0); // set_time_limit() can be disabled
 		$query = str_replace("\r", "", $query); // parser looks for \n
 		$query = rtrim($query);
 		if (strlen($query) && (!$history || end($history) != $query)) { // don't add repeated 
