@@ -158,5 +158,5 @@ function dump_headers($identifier, $multi_table = false) {
 }
 
 $dump_output = "<select name='output'>" . optionlist(array('text' => lang('open'), 'file' => lang('save'))) . "</select>"
-	. " <select name='format'>" . optionlist(array('sql' => 'SQL', 'csv' => 'CSV')) . "</select>"
+	. " <select name='format'>" . optionlist(array('sql' => 'SQL', 'csv' => 'CSV')) . "</select>";
 $max_packet = 1048576; // default, minimum is 1024
