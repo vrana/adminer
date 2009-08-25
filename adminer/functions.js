@@ -26,6 +26,19 @@ function form_uncheck(id) {
 	document.getElementById(id).checked = false;
 }
 
+function table_click(event) {
+	var target = event.target || event.srcElement;
+	while (!/^tr$/i.test(target.tagName)) {
+		if (/^(table|a|input)$/i.test(target.tagName)) {
+			return;
+		}
+		target = target.parentNode;
+	}
+	var input = target.firstChild.firstChild;
+	input.click && input.click();
+	input.onclick && input.onclick();
+}
+
 
 
 function select_add_row(field) {

@@ -2,6 +2,7 @@ Adminer 2.1.0:
 Edit default values directly in table creation
 Display column comments in table overview
 Respect max_allowed_packet in CSV import
+Click on row selects it
 Fix Editor date format
 Fix long SQL query crash (bug #2839231)
 Traditional Chinese translation

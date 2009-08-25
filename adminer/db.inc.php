@@ -48,7 +48,7 @@ if (!$table_status) {
 	echo "<p class='message'>" . lang('No tables.') . "\n";
 } else {
 	echo "<form action='' method='post'>\n";
-	echo "<table cellspacing='0' class='nowrap'>\n";
+	echo "<table cellspacing='0' class='nowrap' onclick='table_click(event);'>\n";
 	echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="form_check(this, /^(tables|views)\[/);"><th>' . lang('Table') . '<td>' . lang('Engine') . '<td>' . lang('Collation') . '<td>' . lang('Data Length') . '<td>' . lang('Index Length') . '<td>' . lang('Data Free') . '<td>' . lang('Auto Increment') . '<td>' . lang('Rows') . '<td>' . lang('Comment') . "</thead>\n";
 	foreach ($table_status as $row) {
 		$name = $row["Name"];

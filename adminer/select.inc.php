@@ -199,7 +199,7 @@ if (!$columns) {
 				}
 			}
 			
-			echo "<table cellspacing='0' class='nowrap'>\n";
+			echo "<table cellspacing='0' class='nowrap' onclick='table_click(event);'>\n";
 			echo "<thead><tr><td><input type='checkbox' id='all-page' onclick='form_check(this, /check/);'>";
 			$names = array();
 			reset($select);
