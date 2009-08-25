@@ -1,5 +1,5 @@
 <?php
-function dump_table($table, $style, $is_view = false) {
+function dump_table($table) {
 	echo "\xef\xbb\xbf"; // UTF-8 byte order mark
 	dump_csv(array_keys(fields($table)));
 }
@@ -15,7 +15,7 @@ function dump_data($table, $style, $select = "") {
 	}
 }
 
-function dump_headers($identifier, $multi_table = false) {
+function dump_headers($identifier) {
 	$filename = (strlen($identifier) ? friendly_url($identifier) : "dump");
 	$ext = "csv";
 	header("Content-Type: text/csv; charset=utf-8");
