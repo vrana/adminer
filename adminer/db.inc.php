@@ -60,7 +60,7 @@ if (!$table_status) {
 				$val = number_format($row[$key], 0, '.', lang(','));
 				echo '<td align="right">' . (strlen($row[$key]) ? '<a href="' . h(ME . "$link=") . urlencode($name) . '">' . str_replace(" ", "&nbsp;", ($key == "Rows" && $row["Engine"] == "InnoDB" && $val ? lang('~ %s', $val) : $val)) . '</a>' : '&nbsp;');
 			}
-			echo "<td>" . (strlen(trim($row["Comment"])) ? h($row["Comment"]) : "&nbsp;");
+			echo "<td>" . nbsp($row["Comment"]);
 		} else {
 			echo '<td colspan="8"><a href="' . h(ME) . "select=" . urlencode($name) . '">' . lang('View') . '</a>';
 		}

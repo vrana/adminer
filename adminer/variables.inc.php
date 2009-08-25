@@ -6,7 +6,7 @@ $result = $dbh->query("SHOW VARIABLES");
 while ($row = $result->fetch_assoc()) {
 	echo "<tr>";
 	echo "<th><code class='jush-sqlset'>" . h($row["Variable_name"]) . "</code>";
-	echo "<td>" . (strlen(trim($row["Value"])) ? h($row["Value"]) : "&nbsp;");
+	echo "<td>" . nbsp($row["Value"]);
 }
 $result->free();
 echo "</table>\n";

@@ -14,7 +14,7 @@ if ($result) {
 	while ($row = $result->fetch_assoc()) {
 		echo "<tr><th>" . h($row["Field"]);
 		echo "<td>" . h($row["Type"]) . ($row["Null"] == "YES" ? " <i>NULL</i>" : "");
-		echo "<td>" . (strlen(trim($row["Comment"])) ? h($row["Comment"]) : "&nbsp;");
+		echo "<td>" . nbsp($row["Comment"]);
 		echo "\n";
 	}
 	echo "</table>\n";
