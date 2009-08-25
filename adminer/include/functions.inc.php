@@ -254,7 +254,9 @@ function is_utf8($val) {
 }
 
 function shorten_utf8($string, $length = 80, $suffix = "") {
-	preg_match("~^((?:.|\n){0,$length})(.|\n)?~u", $string, $match); // ~s causes trash in $match[2] under some PHP versions
+	if (!preg_match("~^((?:.|\n){0,$length})(.|\n)?~u", $string, $match)) { // ~s causes trash in $match[2] under some PHP versions
+		preg_match("(^([\t\r\n -~]{0,$length})(.?))s", $string, $match);
+	}
 	return h($match[1]) . $suffix . ($match[2] ? "<em>...</em>" : "");
 }
 
