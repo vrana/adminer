@@ -102,7 +102,7 @@ function dump_data($table, $style, $select = "") {
 		if ($_POST["format"] != "csv" && $style == "TRUNCATE+INSERT") {
 			echo "TRUNCATE " . idf_escape($table) . ";\n";
 		}
-		$result = $dbh->query(($select ? $select : "SELECT * FROM " . idf_escape($table))); //! enum and set as numbers, binary as _binary, microtime
+		$result = $dbh->query(($select ? $select : "SELECT * FROM " . idf_escape($table))); //! enum and set as numbers, microtime
 		if ($result) {
 			$fields = fields($table);
 			$length = 0;
