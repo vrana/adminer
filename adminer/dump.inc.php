@@ -158,18 +158,17 @@ page_header(lang('Export'), "", (strlen($_GET["export"]) ? array("table" => $_GE
 <form action="" method="post">
 <table cellspacing="0">
 <?php
-$db_style = array('USE', 'DROP+CREATE', 'CREATE');
-$table_style = array('DROP+CREATE', 'CREATE');
-$data_style = array('TRUNCATE+INSERT', 'INSERT', 'INSERT+UPDATE');
+$db_style = array('', 'USE', 'DROP+CREATE', 'CREATE');
+$table_style = array('', 'DROP+CREATE', 'CREATE');
+$data_style = array('', 'TRUNCATE+INSERT', 'INSERT', 'INSERT+UPDATE');
 if ($dbh->server_info >= 5) {
 	$db_style[] = 'CREATE+ALTER';
 	$table_style[] = 'CREATE+ALTER';
 }
 echo "<tr><th>" . lang('Output') . "<td><input type='hidden' name='token' value='$token'>$dump_output\n";
-echo "<tr><th>" . lang('Format') . "<td>$dump_format\n";
-echo "<tr><th>" . lang('Database') . "<td><select name='db_style'><option>" . optionlist($db_style, (strlen($_GET["db"]) ? '' : 'CREATE')) . "</select>\n";
-echo "<tr><th>" . lang('Tables') . "<td><select name='table_style'><option>" . optionlist($table_style, 'DROP+CREATE') . "</select>\n";
-echo "<tr><th>" . lang('Data') . "<td><select name='data_style'><option>" . optionlist($data_style, 'INSERT') . "</select>\n";
+echo "<tr><th>" . lang('Database') . "<td><select name='db_style'>" . optionlist($db_style, (strlen($_GET["db"]) ? '' : 'CREATE')) . "</select>\n";
+echo "<tr><th>" . lang('Tables') . "<td><select name='table_style'>" . optionlist($table_style, 'DROP+CREATE') . "</select>\n";
+echo "<tr><th>" . lang('Data') . "<td><select name='data_style'>" . optionlist($data_style, 'INSERT') . "</select>\n";
 ?>
 </table>
 <p><input type="submit" value="<?php echo lang('Export'); ?>">
