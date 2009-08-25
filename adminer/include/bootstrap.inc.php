@@ -1,5 +1,5 @@
 <?php
-error_reporting(4343); // errors and warnings
+error_reporting(6135); // errors and warnings
 
 include "../adminer/include/coverage.inc.php";
 
