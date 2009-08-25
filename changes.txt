@@ -1,5 +1,6 @@
-Adminer 2.1.0:
+Adminer 2.1.0-dev:
 Edit default values directly in table creation
+Execute SQL file stored on server disk
 Display column comments in table overview
 Respect max_allowed_packet in CSV import
 Click on row selects it

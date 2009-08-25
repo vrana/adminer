@@ -8,7 +8,7 @@ if (!$error && $_POST["clear"]) {
 page_header(lang('SQL command'), $error);
 
 if (!$error && $_POST) {
-	$query = (isset($_POST["file"]) ? get_file("sql_file") : $_POST["query"]);
+	$query = ($_POST["webfile"] ? @file_get_contents("adminer.sql") : ($_POST["file"] ? get_file("sql_file") : $_POST["query"]));
 	if (is_string($query)) { // get_file() returns error as number
 		$query = str_replace("\r", "", $query); // parser looks for \n
 		$query = rtrim($query);
@@ -108,6 +108,8 @@ if (!ini_get("file_uploads")) {
 <?php echo lang('File upload'); ?>: <input type="file" name="sql_file">
 <input type="submit" name="file" value="<?php echo lang('Run file'); ?>">
 <?php } ?>
+
+<p><?php echo lang('Webserver file %s', '<code>adminer.sql</code>'); ?> <input type="submit" name="webfile" value="<?php echo lang('Run file'); ?>">
 
 <?php
 if ($history) {
