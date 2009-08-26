@@ -125,7 +125,7 @@ function php_shrink($input) {
 			} elseif ($token[0] == T_ECHO) {
 				$in_echo = true;
 			} elseif ($token[1] == ';' && $in_echo) {
-				if (in_array($tokens[$i+1][0], array(T_WHITESPACE, T_COMMENT)) && $tokens[$i+2][0] === T_ECHO) {
+				if ($tokens[$i+1][0] === T_WHITESPACE && $tokens[$i+2][0] === T_ECHO) {
 					next($tokens);
 					$i++;
 				}
