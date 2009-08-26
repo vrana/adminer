@@ -27,7 +27,7 @@ function form_uncheck(id) {
 }
 
 function table_click(event) {
-	var el = event.el || event.srcElement;
+	var el = event.target || event.srcElement;
 	while (!/^tr$/i.test(el.tagName)) {
 		if (/^(table|a|input)$/i.test(el.tagName)) {
 			return;
