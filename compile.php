@@ -103,19 +103,18 @@ function php_shrink($input) {
 		if (!is_array($token)) {
 			$token = array(0, $token);
 		}
+		if ($tokens[$i+2][0] === T_CLOSE_TAG && $tokens[$i+3][0] === T_INLINE_HTML && $tokens[$i+4][0] === T_OPEN_TAG
+		&& strlen(addcslashes($tokens[$i+3][1], "'\\")) < strlen($tokens[$i+3][1]) + 3
+		) {
+			$tokens[$i+2] = array(T_ECHO, 'echo');
+			$tokens[$i+3] = array(T_CONSTANT_ENCAPSED_STRING, "'" . addcslashes($tokens[$i+3][1], "'\\") . "'");
+			$tokens[$i+4] = array(0, ';');
+		}
 		if ($token[0] == T_COMMENT || $token[0] == T_WHITESPACE || ($token[0] == T_DOC_COMMENT && $doc_comment)) {
 			$space = "\n";
 		} else {
 			if ($token[0] == T_DOC_COMMENT) {
 				$doc_comment = true;
-			}
-			if ($token[0] == T_CLOSE_TAG && $tokens[$i+1][0] == T_INLINE_HTML && $tokens[$i+2][0] == T_OPEN_TAG
-			&& strlen(addcslashes($tokens[$i+1][1], "'\\")) < strlen($tokens[$i+1][1]) + 4
-			) {
-				$tokens[$i] = array(T_ECHO, 'echo');
-				$tokens[$i+1] = array(T_CONSTANT_ENCAPSED_STRING, "'" . addcslashes($tokens[$i+1][1], "'\\") . "'");
-				$tokens[$i+2] = array(0, ';');
-				$token = $tokens[$i];
 			}
 			if ($token[0] == T_VAR) {
 				$shortening = false;
@@ -126,8 +125,7 @@ function php_shrink($input) {
 			} elseif ($token[0] == T_ECHO) {
 				$in_echo = true;
 			} elseif ($token[1] == ';' && $in_echo) {
-				$in_echo = false;
-				if ($tokens[$i+1][0] === T_WHITESPACE && $tokens[$i+2][0] === T_ECHO) {
+				if (in_array($tokens[$i+1][0], array(T_WHITESPACE, T_COMMENT)) && $tokens[$i+2][0] === T_ECHO) {
 					next($tokens);
 					$i++;
 				}
@@ -135,6 +133,8 @@ function php_shrink($input) {
 					// join two consecutive echos
 					next($tokens);
 					$token[1] = '.'; //! join ''.'' and "".""
+				} else {
+					$in_echo = false;
 				}
 			} elseif ($token[0] === T_VARIABLE && !isset($special_variables[$token[1]])) {
 				$token[1] = '$' . $short_variables[$token[1]];
