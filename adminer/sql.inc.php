@@ -15,13 +15,18 @@ if (!$error && $_POST) {
 		$query = get_file("sql_file");
 	}
 	if (is_string($query)) { // get_file() returns error as number, file_get_contents as false
+		$space = "(\\s|/\\*.*\\*/|(#|-- )[^\n]*\n|--\n)";
+		$alter_database = "(CREATE|DROP)$space+(DATABASE|SCHEMA)\\b~isU";
+		$databases = &$_SESSION["databases"][$_GET["server"]];
+		if (isset($databases) && !preg_match("~\\b$alter_database", $query)) { // quick check - may be inside string
+			session_write_close();
+		}
 		if (strlen($query) && (!$history || end($history) != $query)) { // don't add repeated 
 			$history[] = $query;
 		}
 		$delimiter = ";";
 		$offset = 0;
 		$empty = true;
-		$space = "(\\s|/\\*.*\\*/|(#|-- )[^\n]*\n|--\n)";
 		$dbh2 = (strlen($_GET["db"]) ? connect() : null); // connection for exploring indexes (to not replace FOUND_ROWS()) //! PDO - silent error
 		if (is_object($dbh2)) {
 			$dbh2->select_db($_GET["db"]);
@@ -61,8 +66,8 @@ if (!$error && $_POST) {
 							if (is_object($result)) {
 								select($result, $dbh2);
 							} else {
-								if (preg_match("~^$space*(CREATE|DROP)$space+(DATABASE|SCHEMA)\\b~isU", $query)) {
-									unset($_SESSION["databases"][$_GET["server"]]); // clear cache
+								if (preg_match("~^$space*$alter_database", $query)) {
+									$databases = null; // clear cache
 								}
 								echo "<p class='message'>" . lang('Query executed OK, %d row(s) affected.', $dbh->affected_rows) . "\n";
 							}
