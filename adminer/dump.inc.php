@@ -31,6 +31,7 @@ if ($_POST) {
 		echo "SET NAMES utf8;\n";
 		echo "SET foreign_key_checks = 0;\n";
 		echo "SET time_zone = " . $dbh->quote($dbh->result($dbh->query("SELECT @@time_zone"))) . ";\n";
+		echo "SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';\n";
 		echo "\n";
 	}
 	
