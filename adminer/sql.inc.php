@@ -9,8 +9,7 @@ page_header(lang('SQL command'), $error);
 
 if (!$error && $_POST) {
 	$query = ($_POST["webfile"] ? @file_get_contents("adminer.sql") : ($_POST["file"] ? get_file("sql_file") : $_POST["query"]));
-	if (is_string($query)) { // get_file() returns error as number
-		$query = str_replace("\r", "", $query); // parser looks for \n
+	if (is_string($query)) { // get_file() returns error as number, file_get_contents as false
 		$query = rtrim($query);
 		if (strlen($query) && (!$history || end($history) != $query)) { // don't add repeated 
 			$history[] = $query;
