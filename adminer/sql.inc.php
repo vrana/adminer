@@ -8,9 +8,13 @@ if (!$error && $_POST["clear"]) {
 page_header(lang('SQL command'), $error);
 
 if (!$error && $_POST) {
-	$query = ($_POST["webfile"] ? @file_get_contents("adminer.sql") : ($_POST["file"] ? get_file("sql_file") : $_POST["query"]));
+	$query = $_POST["query"];
+	if ($_POST["webfile"]) {
+		$query = @file_get_contents("adminer.sql");
+	} elseif ($_POST["file"]) {
+		$query = get_file("sql_file");
+	}
 	if (is_string($query)) { // get_file() returns error as number, file_get_contents as false
-		$query = rtrim($query);
 		if (strlen($query) && (!$history || end($history) != $query)) { // don't add repeated 
 			$history[] = $query;
 		}
@@ -30,24 +34,10 @@ if (!$error && $_POST) {
 				preg_match('(' . preg_quote($delimiter) . '|[\'`"]|/\\*|-- |#|$)', $query, $match, PREG_OFFSET_CAPTURE, $offset); // should always match
 				$found = $match[0][0];
 				$offset = $match[0][1] + strlen($found);
-				if ($found && $found != $delimiter) {
-					// is not end of a query - find closing part
-					if (ereg('/\\*|-- |#', $found)) {
-						$offset = strpos($query, ($found == "/*" ? "*/" : "\n"), $offset);
-						if (!$offset) {
-							$offset = strlen($query);
-						}
-					} else {
-						// find matching quote
-						while (preg_match("~$found|\\\\.|\$~s", $query, $match, PREG_OFFSET_CAPTURE, $offset)) {
-							$s = $match[0][0];
-							$offset = $match[0][1] + strlen($s);
-							if (!$s || $s == $found) {
-								break;
-							}
-						}
-					}
-				} else {
+				if (!$found && !strlen(rtrim($query))) {
+					break;
+				}
+				if (!$found || $found == $delimiter) { // end of a query
 					$empty = false;
 					echo "<pre class='jush-sql'>" . shorten_utf8(trim(substr($query, 0, $match[0][1]))) . "</pre>\n";
 					ob_flush();
@@ -80,6 +70,19 @@ if (!$error && $_POST) {
 					}
 					$query = substr($query, $offset);
 					$offset = 0;
+				} elseif (ereg('/\\*|-- |#', $found)) { // find closing part
+					$offset = strpos($query, ($found == "/*" ? "*/" : "\n"), $offset);
+					if (!$offset) {
+						$offset = strlen($query);
+					}
+				} else { // find matching quote
+					while (preg_match("~$found|\\\\.|\$~s", $query, $match, PREG_OFFSET_CAPTURE, $offset)) {
+						$s = $match[0][0];
+						$offset = $match[0][1] + strlen($s);
+						if (!$s || $s == $found) {
+							break;
+						}
+					}
 				}
 			}
 		}
@@ -115,7 +118,7 @@ if ($history) {
 	echo "<fieldset><legend>" . lang('History') . "</legend>\n";
 	foreach ($history as $key => $val) {
 		//! save and display timestamp
-		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . '</a> <code class="jush-sql">' . shorten_utf8(ltrim(str_replace("\n", " ", preg_replace('~^(#|-- ).*~m', '', $val))), 80, "</code>") . "<br>\n";
+		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . '</a> <code class="jush-sql">' . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace('~^(#|-- ).*~m', '', $val)))), 80, "</code>") . "<br>\n";
 	}
 	echo "<input type='submit' name='clear' value='" . lang('Clear') . "'>\n";
 	echo "</fieldset>\n";
