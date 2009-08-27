@@ -151,6 +151,7 @@ $translations = array(
 	'Output' => 'Uitvoer',
 	'open' => 'openen',
 	'save' => 'opslaan',
+	'Format' => 'Formaat',
 	'Functions' => 'Functies',
 	'Aggregation' => 'Totalen',
 	'Event has been dropped.' => 'Event werd verwijderd.',

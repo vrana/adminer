@@ -21,4 +21,5 @@ function dump_headers($identifier) {
 	return $ext;
 }
 
-$dump_output = "CSV";
+$dump_output = "";
+$dump_format = "CSV";

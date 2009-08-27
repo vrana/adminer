@@ -151,6 +151,7 @@ $translations = array(
 	'Output' => 'Väljund',
 	'open' => 'näita brauseris',
 	'save' => 'salvesta failina',
+	'Format' => 'Formaat',
 	'Functions' => 'Funktsioonid',
 	'Aggregation' => 'Liitmine',
 	'Event has been dropped.' => 'Sündmus on edukalt kustutatud.',

@@ -151,6 +151,7 @@ $translations = array(
 	'Output' => '輸出',
 	'open' => '打開',
 	'save' => '儲存',
+	'Format' => '格式',
 	'Functions' => '函數',
 	'Aggregation' => '集合',
 	'Event has been dropped.' => '已丟棄事件。',

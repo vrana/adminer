@@ -151,6 +151,7 @@ $translations = array(
 	'Output' => 'Výstup',
 	'open' => 'otvoriť',
 	'save' => 'uložiť',
+	'Format' => 'Formát',
 	'Tables' => 'Tabuľky',
 	'Data' => 'Dáta',
 	'Event has been dropped.' => 'Udalosť bola odstránená.',

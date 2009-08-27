@@ -151,6 +151,7 @@ $translations = array(
 	'Output' => 'Выходные данные',
 	'open' => 'открыть',
 	'save' => 'сохранить',
+	'Format' => 'Формат',
 	'Tables' => 'Таблицы',
 	'Data' => 'Данные',
 	'Event has been dropped.' => 'Событие было удалено.',

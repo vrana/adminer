@@ -151,6 +151,7 @@ $translations = array(
 	'Output' => '输出',
 	'open' => '打开',
 	'save' => '保存',
+	'Format' => '格式',
 	'Functions' => '函数',
 	'Aggregation' => '集合',
 	'Event has been dropped.' => '已丢弃事件。',
