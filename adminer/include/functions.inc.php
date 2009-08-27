@@ -370,8 +370,3 @@ function is_email($email) {
 	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component
 	return eregi("^$atom+(\\.$atom+)*@($domain?\\.)+$domain\$", $email);
 }
-
-function email_header($header) {
-	// iconv_mime_encode requires PHP 5, imap_8bit requires IMAP extension
-	return "=?UTF-8?B?" . base64_encode($header) . "?="; //! split long lines
-}
