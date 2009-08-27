@@ -13,7 +13,6 @@ function dump_table($table, $style, $is_view = false) {
 				echo "DROP " . ($is_view ? "VIEW" : "TABLE") . " IF EXISTS " . idf_escape($table) . ";\n";
 			}
 			$create = $dbh->result($result, 1);
-			$result->free();
 			echo ($style != "CREATE+ALTER" ? $create : ($is_view ? substr_replace($create, " OR REPLACE", 6, 0) : substr_replace($create, " IF NOT EXISTS", 12, 0))) . ";\n\n";
 		}
 		if ($style == "CREATE+ALTER" && !$is_view) {
@@ -48,7 +47,6 @@ CREATE PROCEDURE adminer_alter () BEGIN
 				$fields[] = $row;
 				$after = $row["COLUMN_NAME"];
 			}
-			$result->free();
 			?>';
 	DECLARE columns CURSOR FOR <?php echo $query; ?>;
 	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
@@ -142,7 +140,6 @@ function dump_data($table, $style, $select = "") {
 			if ($_POST["format"] != "csv" && $style != "INSERT+UPDATE" && $result->num_rows) {
 				echo ";\n";
 			}
-			$result->free();
 		}
 	}
 }

@@ -18,7 +18,6 @@ if ($result) {
 		echo "\n";
 	}
 	echo "</table>\n";
-	$result->free();
 	
 	echo "<p>";
 	if ($is_view) {
@@ -74,7 +73,6 @@ if ($result) {
 				}
 				echo "</table>\n";
 			}
-			$result->free();
 			echo '<p><a href="' . h(ME) . 'trigger=' . urlencode($_GET["table"]) . '">' . lang('Add trigger') . "</a>\n";
 		}
 	}

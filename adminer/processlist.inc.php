@@ -22,7 +22,6 @@ for ($i=0; $row = $result->fetch_assoc(); $i++) {
 	}
 	echo "<tr" . odd() . "><td><input type='checkbox' name='kill[]' value='$row[Id]'><td>" . implode("<td>", array_map('nbsp', $row)) . "\n";
 }
-$result->free();
 ?>
 </table>
 <p>

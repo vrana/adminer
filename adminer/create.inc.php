@@ -88,7 +88,6 @@ while ($row = $result->fetch_assoc()) {
 		$engines[] = $row["Engine"];
 	}
 }
-$result->free();
 
 $row = array(
 	"Engine" => $_COOKIE["adminer_engine"],
@@ -116,7 +115,6 @@ if ($_POST) {
 		$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . $dbh->quote($_GET["db"]) . " AND TABLE_NAME = " . $dbh->quote($_GET["create"]);
 		$result = $dbh->query("SELECT PARTITION_METHOD, PARTITION_ORDINAL_POSITION, PARTITION_EXPRESSION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
 		list($row["partition_by"], $row["partitions"], $row["partition"]) = $result->fetch_row();
-		$result->free();
 		$row["partition_names"] = array();
 		$row["partition_values"] = array();
 		$result = $dbh->query("SELECT PARTITION_NAME, PARTITION_DESCRIPTION $from AND PARTITION_NAME != '' ORDER BY PARTITION_ORDINAL_POSITION");
@@ -124,7 +122,6 @@ if ($_POST) {
 			$row["partition_names"][] = $row1["PARTITION_NAME"];
 			$row["partition_values"][] = $row1["PARTITION_DESCRIPTION"];
 		}
-		$result->free();
 		$row["partition_names"][] = "";
 	}
 }

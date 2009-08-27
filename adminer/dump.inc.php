@@ -21,7 +21,6 @@ function dump_triggers($table, $style) {
 			}
 			echo "\nDELIMITER ;\n";
 		}
-		$result->free();
 	}
 }
 
@@ -44,7 +43,6 @@ if ($_POST) {
 				}
 				$create = $dbh->result($result, 1);
 				echo ($style == "CREATE+ALTER" ? preg_replace('~^CREATE DATABASE ~', '\\0IF NOT EXISTS ', $create) : $create) . ";\n";
-				$result->free();
 			}
 			if ($style && $_POST["format"] != "csv") {
 				echo "USE " . idf_escape($db) . ";\n\n";
@@ -56,7 +54,6 @@ if ($_POST) {
 							$out .= ($style != 'DROP+CREATE' ? "DROP $routine IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
 							. $dbh->result($dbh->query("SHOW CREATE $routine " . idf_escape($row["Name"])), 2) . ";;\n\n";
 						}
-						$result->free();
 					}
 				}
 				if ($dbh->server_info >= 5.1) {
@@ -65,7 +62,6 @@ if ($_POST) {
 						$out .= ($style != 'DROP+CREATE' ? "DROP EVENT IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
 						. $dbh->result($dbh->query("SHOW CREATE EVENT " . idf_escape($row["Name"])), 3) . ";;\n\n";
 					}
-					$result->free();
 				}
 				echo ($out ? "DELIMITER ;;\n\n$out" . "DELIMITER ;\n\n" : "");
 			}
@@ -130,7 +126,6 @@ while ($row = $result->fetch_assoc()) {
 						ALTER TABLE " . idf_escape($row["TABLE_NAME"]) . " ENGINE=$row[ENGINE] COLLATE=$row[TABLE_COLLATION] COMMENT=$comment;
 					END IF" : "BEGIN END") . ";";
 }
-$result->free();
 ?>
 
 				ELSE

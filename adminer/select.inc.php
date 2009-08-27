@@ -182,7 +182,6 @@ if (!$columns) {
 			while ($row = $result->fetch_assoc()) {
 				$rows[] = $row;
 			}
-			$result->free();
 			// use count($rows) without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
 			$found_rows = (intval($limit) && $group && count($group) < count($select)
 				? $dbh->result($dbh->query(" SELECT FOUND_ROWS()")) // space to allow mysql.trace_mode

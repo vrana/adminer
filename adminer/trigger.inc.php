@@ -22,7 +22,6 @@ if ($_POST) {
 } elseif (strlen($_GET["name"])) {
 	$result = $dbh->query("SHOW TRIGGERS WHERE `Trigger` = " . $dbh->quote($_GET["name"]));
 	$row = $result->fetch_assoc();
-	$result->free();
 }
 ?>
 

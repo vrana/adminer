@@ -31,7 +31,6 @@ if ($_POST) {
 } elseif (strlen($_GET["event"])) {
 	$result = $dbh->query("SELECT * FROM information_schema.EVENTS WHERE EVENT_SCHEMA = " . $dbh->quote($_GET["db"]) . " AND EVENT_NAME = " . $dbh->quote($_GET["event"]));
 	$row = $result->fetch_assoc();
-	$result->free();
 }
 ?>
 

@@ -22,4 +22,3 @@ while ($row = $result->fetch_assoc()) {
 	echo '<tr' . odd() . '><td><a href="' . h(ME . 'user=' . urlencode($row["User"]) . '&host=' . urlencode($row["Host"])) . '">' . lang('edit') . '</a><td>' . h($row["User"]) . "<td>" . h($row["Host"]) . "\n";
 }
 echo "</table>\n";
-$result->free();

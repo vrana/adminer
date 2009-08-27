@@ -24,7 +24,6 @@ if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP c
 					break;
 				}
 			}
-			$result->free();
 			if (!$row) {
 				queries("DROP DATABASE " . idf_escape($_GET["db"]));
 			}
@@ -56,7 +55,6 @@ if ($_POST) {
 			break;
 		}
 	}
-	$result->free();
 } elseif (($result = $dbh->query("SHOW CREATE DATABASE " . idf_escape($_GET["db"])))) {
 	$create = $dbh->result($result, 1);
 	if (preg_match('~ COLLATE ([^ ]+)~', $create, $match)) {
@@ -65,7 +63,6 @@ if ($_POST) {
 		// default collation
 		$collate = $collations[$match[1]][0];
 	}
-	$result->free();
 }
 ?>
 

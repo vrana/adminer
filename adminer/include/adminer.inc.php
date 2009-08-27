@@ -449,7 +449,6 @@ class Adminer {
 							echo '<a href="' . h(ME) . 'table=' . urlencode($row[0]) . '">' . $this->tableName(array("Name" => $row[0])) . "</a><br>\n"; //! Adminer::tableName may work with full table status
 						}
 					}
-					$result->free();
 				}
 				echo '<p><a href="' . h(ME) . 'create=">' . lang('Create new table') . "</a>\n";
 			}

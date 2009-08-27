@@ -56,7 +56,6 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 			while ($row = $result->fetch_assoc()) {
 				$return[$row["TABLE_NAME"]][$row["CONSTRAINT_NAME"]][$row["COLUMN_NAME"]] = $row["REFERENCED_COLUMN_NAME"];
 			}
-			$result->free();
 		}
 		return $return;
 	}
@@ -95,7 +94,6 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 						while ($row = $result->fetch_row()) {
 							$descriptions[$row[0]] = $row[1];
 						}
-						$result->free();
 						// use the descriptions
 						foreach ($rows as $n => $row) {
 							$return[$n][$key] = $descriptions[$row[$key]];
@@ -274,7 +272,6 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 						$sent++;
 					}
 				}
-				$result->free();
 			}
 			redirect(remove_from_uri(), lang('%d e-mail(s) have been sent.', $sent));
 		}
@@ -306,7 +303,6 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 					while ($row = $result->fetch_row()) {
 						$return[$row[0]] = $row[1];
 					}
-					$result->free();
 					return "<select$attrs>" . optionlist($return, $value, true) . "</select>";
 				}
 			}

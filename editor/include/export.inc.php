@@ -10,7 +10,6 @@ function dump_data($table, $style, $select = "") {
 		while ($row = $result->fetch_assoc()) {
 			dump_csv($row);
 		}
-		$result->free();
 	}
 }
 

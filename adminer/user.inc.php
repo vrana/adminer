@@ -6,7 +6,6 @@ while ($row = $result->fetch_assoc()) {
 		$privileges[$context][$row["Privilege"]] = $row["Comment"];
 	}
 }
-$result->free();
 $privileges["Server Admin"] += $privileges["File access on server"];
 $privileges["Databases"]["Create routine"] = $privileges["Procedures"]["Create routine"]; // MySQL bug #30305
 unset($privileges["Procedures"]["Create routine"]);
@@ -55,7 +54,6 @@ if (isset($_GET["host"]) && ($result = $dbh->query("SHOW GRANTS FOR " . $dbh->qu
 			$old_pass = $match[1];
 		}
 	}
-	$result->free();
 }
 
 if ($_POST && !$error) {

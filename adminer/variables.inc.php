@@ -8,5 +8,4 @@ while ($row = $result->fetch_assoc()) {
 	echo "<th><code class='jush-sqlset'>" . h($row["Variable_name"]) . "</code>";
 	echo "<td>" . nbsp($row["Value"]);
 }
-$result->free();
 echo "</table>\n";

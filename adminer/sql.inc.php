@@ -71,6 +71,7 @@ if (!$error && $_POST) {
 								}
 								echo "<p class='message'>" . lang('Query executed OK, %d row(s) affected.', $dbh->affected_rows) . "\n";
 							}
+							unset($result); // free resultset
 						} while ($dbh->next_result());
 					}
 					$query = substr($query, $offset);

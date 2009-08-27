@@ -51,7 +51,6 @@ function get_vals($query, $column = 0) {
 		while ($row = $result->fetch_row()) {
 			$return[] = $row[$column];
 		}
-		$result->free();
 	}
 	return $return;
 }
@@ -245,7 +244,6 @@ function select($result, $dbh2 = null) {
 		}
 		echo "</table>\n";
 	}
-	$result->free();
 }
 
 function is_utf8($val) {

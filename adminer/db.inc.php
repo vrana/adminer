@@ -89,7 +89,6 @@ if ($dbh->server_info >= 5) {
 		}
 		echo "</table>\n";
 	}
-	$result->free();
 	echo '<p><a href="' . h(ME) . 'procedure=">' . lang('Create procedure') . '</a> <a href="' . h(ME) . 'function=">' . lang('Create function') . "</a>\n";
 }
 
@@ -106,6 +105,5 @@ if ($dbh->server_info >= 5.1 && ($result = $dbh->query("SHOW EVENTS"))) {
 		}
 		echo "</table>\n";
 	}
-	$result->free();
 	echo '<p><a href="' . h(ME) . 'event=">' . lang('Create event') . "</a>\n";
 }

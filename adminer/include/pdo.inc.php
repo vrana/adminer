@@ -78,9 +78,5 @@ if (extension_loaded('pdo')) {
 			$row->charsetnr = (in_array("blob", $row->flags) ? 63 : 0);
 			return $row;
 		}
-		
-		function free() {
-			// $this->__destruct() is not callable
-		}
 	}
 }
