@@ -132,13 +132,9 @@ function php_shrink($input) {
 				if ($tokens[$i+1][0] === T_ECHO) {
 					// join two consecutive echos
 					next($tokens);
-<<<<<<< HEAD:compile.php
-					$token[1] = '.'; //! join ''.'' and "".""
+					$token[1] = ','; // '.' would conflict with "a".1+2 and would use more memory //! remove ',' and ","
 				} else {
 					$in_echo = false;
-=======
-					$token[1] = ','; // '.' would conflict with "a".1+2 and would use more memory //! remove ',' and ","
->>>>>>> Use comma in consecutive echos:compile.php
 				}
 			} elseif ($token[0] === T_VARIABLE && !isset($special_variables[$token[1]])) {
 				$token[1] = '$' . $short_variables[$token[1]];
