@@ -360,9 +360,18 @@ function process_input($field) {
 	}
 }
 
-function dump($string) {
-	if ($_POST["compress"] == "gz") {
-		echo gzencode($string);
+function dump($string = null) { // null $string forces sending of buffer
+	static $buffer = ""; // used to improve compression and to allow GZ archives unpackable in Total Commander
+	if ($_POST["compress"]) {
+		$buffer .= $string;
+		if (!isset($string) || strlen($buffer) > 1e6) {
+			if ($_POST["compress"] == "bz2") {
+				echo bzcompress($buffer); // should not be called repeatedly but it would require whole buffer in memory or temporary file
+			} else {
+				echo gzencode($buffer);
+			}
+			$buffer = "";
+		}
 	} else {
 		echo $string;
 	}

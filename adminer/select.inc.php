@@ -48,6 +48,7 @@ if ($_POST && !$error) {
 			}
 			dump_data($_GET["select"], "INSERT", implode(" UNION ALL ", $union));
 		}
+		dump();
 		exit;
 	}
 	if (!$adminer->selectEmailProcess($where)) {

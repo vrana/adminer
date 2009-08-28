@@ -127,39 +127,47 @@ function dump_data($table, $style, $select = "") {
 						$s = "\n($s)";
 						if (!$buffer) {
 							$buffer = $insert . $s;
+						} elseif (strlen($buffer) + 1 + strlen($s) < $max_packet) { // 1 - separator length
+							$buffer .= ",$s";
 						} else {
-							if (strlen($buffer) + 1 + strlen($s) < $max_packet) { // 1 - separator length
-								$buffer .= ",$s";
-							} else {
-								dump("$buffer;\n");
-								$buffer = $insert . $s;
-							}
+							$buffer .= ";\n";
+							dump($buffer);
+							$buffer = $insert . $s;
 						}
 					}
 				}
 			}
 			if ($_POST["format"] != "csv" && $style != "INSERT+UPDATE" && $buffer) {
-				dump("$buffer;\n");
+				$buffer .= ";\n";
+				dump($buffer);
 			}
 		}
 	}
 }
 
 function dump_headers($identifier, $multi_table = false) {
+	$compress = $_POST["compress"];
 	$filename = (strlen($identifier) ? friendly_url($identifier) : "dump");
 	$ext = ($_POST["format"] == "sql" ? "sql" : ($multi_table ? "tar" : "csv")); // multiple CSV packed to TAR
-	header("Content-Type: " . ($_POST["compress"] == "gz" ? "application/x-gzip" : ($ext == "tar" ? "application/x-tar" : ($ext == "sql" || $_POST["output"] != "file" ? "text/plain" : "text/csv")) . "; charset=utf-8"));
-	if ($_POST["output"] == "file" || $_POST["compress"]) {
-		header("Content-Disposition: attachment; filename=$filename.$ext" . ($_POST["compress"] == "gz" ? ".gz" : ""));
+	header("Content-Type: " .
+		($compress == "bz2" ? "application/x-bzip" :
+		($compress == "gz" ? "application/x-gzip" :
+		($ext == "tar" ? "application/x-tar" :
+		($ext == "sql" || $_POST["output"] != "file" ? "text/plain" : "text/csv") . "; charset=utf-8"
+	))));
+	if ($_POST["output"] == "file" || $compress) {
+		header("Content-Disposition: attachment; filename=$filename.$ext" . (ereg('[0-9a-z]', $compress) ? ".$compress" : ""));
 	}
 	return $ext;
 }
 
 $compress = array();
 if (function_exists('gzencode')) {
-	$compress['gz'] = 'GZIP';
+	$compress['gz'] = 'gzip';
 }
-// bzcompress can't be called repetitively, bzopen requires temporary file
+if (function_exists('bzcompress')) {
+	$compress['bz2'] = 'bzip2';
+}
 // ZipArchive requires temporary file, ZIP can be created by gzcompress - see PEAR File_Archive
 $dump_output = "<select name='output'>" . optionlist(array('text' => lang('open'), 'file' => lang('save'))) . "</select>";
 $dump_format = "<select name='format'>" . optionlist(array('sql' => 'SQL', 'csv' => 'CSV')) . "</select>";

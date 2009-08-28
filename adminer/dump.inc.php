@@ -146,6 +146,7 @@ DROP PROCEDURE adminer_drop;
 			}
 		}
 	}
+	dump();
 	exit;
 }
 
@@ -164,7 +165,7 @@ if ($dbh->server_info >= 5) {
 }
 echo "<tr><th>" . lang('Output') . "<td><input type='hidden' name='token' value='$token'>$dump_output\n"; // token is not needed but checked in bootstrap for all POST data
 echo "<tr><th>" . lang('Format') . "<td>$dump_format\n";
-echo "<tr><th>" . lang('Compression') . "<td>" . ($dump_compress ? $dump_compress : lang('None of the supported PHP extensions (%s) are available.', 'zlib')) . "\n";
+echo "<tr><th>" . lang('Compression') . "<td>" . ($dump_compress ? $dump_compress : lang('None of the supported PHP extensions (%s) are available.', 'zlib, bz2')) . "\n";
 echo "<tr><th>" . lang('Database') . "<td><select name='db_style'>" . optionlist($db_style, (strlen($_GET["db"]) ? '' : 'CREATE')) . "</select>\n";
 echo "<tr><th>" . lang('Tables') . "<td><select name='table_style'>" . optionlist($table_style, 'DROP+CREATE') . "</select>\n";
 echo "<tr><th>" . lang('Data') . "<td><select name='data_style'>" . optionlist($data_style, 'INSERT') . "</select>\n";
