@@ -283,7 +283,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 	}
 	
 	function editFunctions($field) {
-		$return = array($field["null"] || $field["auto_increment"] ? "" : "*");
+		$return = array("" => ($field["null"] || $field["auto_increment"] ? "" : "*"));
 		if (ereg('date|time', $field["type"])) {
 			$return[] = "now";
 		}
