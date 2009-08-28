@@ -119,7 +119,7 @@ if (extension_loaded("mysqli")) {
 		}
 		
 		function __destruct() {
-			mysql_free_result($this->_result);
+			mysql_free_result($this->_result); //! is not called in PHP 4 which is a problem with mysql.trace_mode
 		}
 	}
 	

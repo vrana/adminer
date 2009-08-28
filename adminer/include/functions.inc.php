@@ -151,14 +151,22 @@ function pagination($page) {
 	return " " . ($page == $_GET["page"] ? $page + 1 : '<a href="' . h(remove_from_uri("page") . ($page ? "&page=$page" : "")) . '">' . ($page + 1) . "</a>");
 }
 
-function get_file($key) {
+function get_file($key, $decompress = false) {
 	// returns int for error, string otherwise
-	if (isset($_POST["files"][$key])) {
+	$file = $_POST["files"][$key];
+	if (isset($file)) {
 		// get the file from hidden field if the user was logged out
-		$length = strlen($_POST["files"][$key]);
-		return ($length && $length < 4 ? intval($_POST["files"][$key]) : base64_decode($_POST["files"][$key]));
+		$length = strlen($file);
+		if ($length && $length < 4) {
+			return intval($file);
+		}
+		return base64_decode($file);
 	}
-	return (!$_FILES[$key] || $_FILES[$key]["error"] ? $_FILES[$key]["error"] : file_get_contents($_FILES[$key]["tmp_name"]));
+	$file = $_FILES[$key];
+	if (!$file || $file["error"]) {
+		return $file["error"];
+	}
+	return file_get_contents($decompress && ereg('\\.gz$', $file["name"]) ? "compress.zlib://$file[tmp_name]" : $file["tmp_name"]); //! may not be reachable because of open_basedir
 }
 
 function upload_error($error) {
@@ -352,13 +360,26 @@ function process_input($field) {
 	}
 }
 
+function dump($string = null) { // null $string forces sending of buffer
+	static $buffer = "";
+	if ($_POST["compress"] == "gz") {
+		$buffer .= $string;
+		if (!isset($string) || strlen($buffer) > 1e6) {
+			echo gzencode($buffer);
+			$buffer = "";
+		}
+	} else {
+		echo $string;
+	}
+}
+
 function dump_csv($row) {
 	foreach ($row as $key => $val) {
 		if (preg_match("~[\"\n,]~", $val) || (isset($val) && !strlen($val))) {
 			$row[$key] = '"' . str_replace('"', '""', $val) . '"';
 		}
 	}
-	echo implode(",", $row) . "\n";
+	dump(implode(",", $row) . "\n");
 }
 
 function apply_sql_function($function, $column) {

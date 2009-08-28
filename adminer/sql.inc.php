@@ -10,9 +10,9 @@ page_header(lang('SQL command'), $error);
 if (!$error && $_POST) {
 	$query = $_POST["query"];
 	if ($_POST["webfile"]) {
-		$query = @file_get_contents("adminer.sql");
+		$query = @file_get_contents(file_exists("adminer.sql") ? "adminer.sql" : "compress.zlib://adminer.sql.gz");
 	} elseif ($_POST["file"]) {
-		$query = get_file("sql_file");
+		$query = get_file("sql_file", true);
 	}
 	if (is_string($query)) { // get_file() returns error as number, file_get_contents as false
 		$space = "(\\s|/\\*.*\\*/|(#|-- )[^\n]*\n|--\n)";

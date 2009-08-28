@@ -11,41 +11,42 @@ function tar_file($filename, $contents) {
 
 function dump_triggers($table, $style) {
 	global $dbh;
-	if ($_POST["format"] != "csv" && $style && $dbh->server_info >= 5) {
+	if ($_POST["format"] == "sql" && $style && $dbh->server_info >= 5) {
 		$result = $dbh->query("SHOW TRIGGERS LIKE " . $dbh->quote(addcslashes($table, "%_")));
 		if ($result->num_rows) {
-			echo "\nDELIMITER ;;\n";
+			$s = "\nDELIMITER ;;\n";
 			while ($row = $result->fetch_assoc()) {
-				echo "\n" . ($style == 'CREATE+ALTER' ? "DROP TRIGGER IF EXISTS " . idf_escape($row["Trigger"]) . ";;\n" : "")
+				$s .= "\n" . ($style == 'CREATE+ALTER' ? "DROP TRIGGER IF EXISTS " . idf_escape($row["Trigger"]) . ";;\n" : "")
 				. "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . idf_escape($row["Table"]) . " FOR EACH ROW\n$row[Statement];;\n";
 			}
-			echo "\nDELIMITER ;\n";
+			dump("$s\nDELIMITER ;\n");
 		}
 	}
 }
 
 if ($_POST) {
 	$ext = dump_headers((strlen($_GET["dump"]) ? $_GET["dump"] : $_GET["db"]), (!strlen($_GET["db"]) || count((array) $_POST["tables"] + (array) $_POST["data"]) > 1));
-	if ($_POST["format"] != "csv") {
-		echo "SET NAMES utf8;\n";
-		echo "SET foreign_key_checks = 0;\n";
-		echo "SET time_zone = " . $dbh->quote($dbh->result($dbh->query("SELECT @@time_zone"))) . ";\n";
-		echo "SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';\n";
-		echo "\n";
+	if ($_POST["format"] == "sql") {
+		dump("SET NAMES utf8;
+SET foreign_key_checks = 0;
+SET time_zone = " . $dbh->quote($dbh->result($dbh->query("SELECT @@time_zone"))) . ";
+SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
+
+");
 	}
 	
 	$style = $_POST["db_style"];
 	foreach ((strlen($_GET["db"]) ? array($_GET["db"]) : (array) $_POST["databases"]) as $db) {
 		if ($dbh->select_db($db)) {
-			if ($_POST["format"] != "csv" && ereg('CREATE', $style) && ($result = $dbh->query("SHOW CREATE DATABASE " . idf_escape($db)))) {
+			if ($_POST["format"] == "sql" && ereg('CREATE', $style) && ($result = $dbh->query("SHOW CREATE DATABASE " . idf_escape($db)))) {
 				if ($style == "DROP+CREATE") {
-					echo "DROP DATABASE IF EXISTS " . idf_escape($db) . ";\n";
+					dump("DROP DATABASE IF EXISTS " . idf_escape($db) . ";\n");
 				}
 				$create = $dbh->result($result, 1);
-				echo ($style == "CREATE+ALTER" ? preg_replace('~^CREATE DATABASE ~', '\\0IF NOT EXISTS ', $create) : $create) . ";\n";
+				dump(($style == "CREATE+ALTER" ? preg_replace('~^CREATE DATABASE ~', '\\0IF NOT EXISTS ', $create) : $create) . ";\n");
 			}
-			if ($style && $_POST["format"] != "csv") {
-				echo "USE " . idf_escape($db) . ";\n\n";
+			if ($style && $_POST["format"] == "sql") {
+				dump("USE " . idf_escape($db) . ";\n\n");
 				$out = "";
 				if ($dbh->server_info >= 5) {
 					foreach (array("FUNCTION", "PROCEDURE") as $routine) {
@@ -63,7 +64,9 @@ if ($_POST) {
 						. $dbh->result($dbh->query("SHOW CREATE EVENT " . idf_escape($row["Name"])), 3) . ";;\n\n";
 					}
 				}
-				echo ($out ? "DELIMITER ;;\n\n$out" . "DELIMITER ;\n\n" : "");
+				if ($out) {
+					dump("DELIMITER ;;\n\n$out" . "DELIMITER ;\n\n");
+				}
 			}
 			
 			if ($_POST["table_style"] || $_POST["data_style"]) {
@@ -84,11 +87,11 @@ if ($_POST) {
 								dump_triggers($row["Name"], $_POST["table_style"]);
 							}
 							if ($ext == "tar") {
-								echo tar_file((strlen($_GET["db"]) ? "" : "$db/") . "$row[Name].csv", ob_get_clean());
-							} elseif ($_POST["format"] != "csv") {
-								echo "\n";
+								dump(tar_file((strlen($_GET["db"]) ? "" : "$db/") . "$row[Name].csv", ob_get_clean()));
+							} elseif ($_POST["format"] == "sql") {
+								dump("\n");
 							}
-						} elseif ($_POST["format"] != "csv") {
+						} elseif ($_POST["format"] == "sql") {
 							$views[] = $row["Name"];
 						}
 					}
@@ -97,41 +100,39 @@ if ($_POST) {
 					dump_table($view, $_POST["table_style"], true);
 				}
 				if ($ext == "tar") {
-					echo pack("x512");
+					dump(pack("x512"));
 				}
 			}
 			
-			if ($style == "CREATE+ALTER" && $_POST["format"] != "csv") {
+			if ($style == "CREATE+ALTER" && $_POST["format"] == "sql") {
 				// drop old tables
 				$query = "SELECT TABLE_NAME, ENGINE, TABLE_COLLATION, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()";
-?>
-DELIMITER ;;
+				dump("DELIMITER ;;
 CREATE PROCEDURE adminer_drop () BEGIN
 	DECLARE _table_name, _engine, _table_collation varchar(64);
 	DECLARE _table_comment varchar(64);
 	DECLARE done bool DEFAULT 0;
-	DECLARE tables CURSOR FOR <?php echo $query; ?>;
+	DECLARE tables CURSOR FOR $query;
 	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
 	OPEN tables;
 	REPEAT
 		FETCH tables INTO _table_name, _engine, _table_collation, _table_comment;
 		IF NOT done THEN
-			CASE _table_name<?php
+			CASE _table_name");
 $result = $dbh->query($query);
 while ($row = $result->fetch_assoc()) {
 	$comment = $dbh->quote($row["ENGINE"] == "InnoDB" ? preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["TABLE_COMMENT"]) : $row["TABLE_COMMENT"]);
-	echo "
+	dump("
 				WHEN " . $dbh->quote($row["TABLE_NAME"]) . " THEN
 					" . (isset($row["ENGINE"]) ? "IF _engine != '$row[ENGINE]' OR _table_collation != '$row[TABLE_COLLATION]' OR _table_comment != $comment THEN
 						ALTER TABLE " . idf_escape($row["TABLE_NAME"]) . " ENGINE=$row[ENGINE] COLLATE=$row[TABLE_COLLATION] COMMENT=$comment;
-					END IF" : "BEGIN END") . ";";
+					END IF" : "BEGIN END") . ";");
 }
-?>
-
+dump("
 				ELSE
 					SET @alter_table = CONCAT('DROP TABLE `', REPLACE(_table_name, '`', '``'), '`');
 					PREPARE alter_command FROM @alter_table;
-					EXECUTE alter_command; -- returns "can't return a result set in the given context" with MySQL extension
+					EXECUTE alter_command; -- returns can't return a result set in the given context with MySQL extension
 					DROP PREPARE alter_command;
 			END CASE;
 		END IF;
@@ -141,10 +142,11 @@ END;;
 DELIMITER ;
 CALL adminer_drop;
 DROP PROCEDURE adminer_drop;
-<?php
+");
 			}
 		}
 	}
+	dump();
 	exit;
 }
 
@@ -163,6 +165,7 @@ if ($dbh->server_info >= 5) {
 }
 echo "<tr><th>" . lang('Output') . "<td><input type='hidden' name='token' value='$token'>$dump_output\n"; // token is not needed but checked in bootstrap for all POST data
 echo "<tr><th>" . lang('Format') . "<td>$dump_format\n";
+echo "<tr><th>" . lang('Compression') . "<td>" . ($dump_compress ? $dump_compress : lang('None of the supported PHP extensions (%s) are available.', 'zlib')) . "\n";
 echo "<tr><th>" . lang('Database') . "<td><select name='db_style'>" . optionlist($db_style, (strlen($_GET["db"]) ? '' : 'CREATE')) . "</select>\n";
 echo "<tr><th>" . lang('Tables') . "<td><select name='table_style'>" . optionlist($table_style, 'DROP+CREATE') . "</select>\n";
 echo "<tr><th>" . lang('Data') . "<td><select name='data_style'>" . optionlist($data_style, 'INSERT') . "</select>\n";

@@ -4,7 +4,6 @@ Add whisperer to fields with foreign key
 Highlight found fields
 MySQL 5 BIT data type
 Transactions in export
-Compress export and import
 SQL query and CSV import - read file progressively to save memory
 Create view and routine options
 Function to fix database encoding - http://php.vrana.cz/prevod-kodovani-mysql.php

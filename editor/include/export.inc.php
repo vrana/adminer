@@ -1,6 +1,6 @@
 <?php
 function dump_table($table) {
-	echo "\xef\xbb\xbf"; // UTF-8 byte order mark
+	dump("\xef\xbb\xbf"); // UTF-8 byte order mark
 }
 
 function dump_data($table, $style, $select = "") {
@@ -23,3 +23,4 @@ function dump_headers($identifier) {
 
 $dump_output = "";
 $dump_format = "CSV";
+$dump_compress = "";

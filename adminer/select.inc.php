@@ -48,6 +48,7 @@ if ($_POST && !$error) {
 			}
 			dump_data($_GET["select"], "INSERT", implode(" UNION ALL ", $union));
 		}
+		dump();
 		exit;
 	}
 	if (!$adminer->selectEmailProcess($where)) {
@@ -84,7 +85,7 @@ if ($_POST && !$error) {
 			}
 			query_redirect(queries(), remove_from_uri("page"), lang('%d item(s) have been affected.', $affected), $result, false, !$result);
 			//! display edit page in case of an error
-		} elseif (is_string($file = get_file("csv_file"))) {
+		} elseif (is_string($file = get_file("csv_file", true))) {
 			$file = preg_replace("~^\xEF\xBB\xBF~", '', $file); //! character set
 			$affected = 0;
 			$length = 0;
@@ -297,7 +298,7 @@ if (!$columns) {
 			echo " (" . lang('%d row(s)', $found_rows) . ') <label><input type="checkbox" name="all" value="1">' . lang('whole result') . "</label>\n";
 			
 			echo (information_schema($_GET["db"]) ? "" : "<fieldset><legend>" . lang('Edit') . "</legend><div><input type='submit' name='edit' value='" . lang('Edit') . "'> <input type='submit' name='clone' value='" . lang('Clone') . "'> <input type='submit' name='delete' value='" . lang('Delete') . "'$confirm></div></fieldset>\n");
-			echo "<fieldset><legend>" . lang('Export') . "</legend><div>$dump_output $dump_format <input type='submit' name='export' value='" . lang('Export') . "'></div></fieldset>\n";
+			echo "<fieldset><legend>" . lang('Export') . "</legend><div>$dump_output $dump_format $dump_compress <input type='submit' name='export' value='" . lang('Export') . "'></div></fieldset>\n";
 		}
 		echo "<fieldset><legend>" . lang('CSV Import') . "</legend><div><input type='hidden' name='token' value='$token'><input type='file' name='csv_file'> <input type='submit' name='import' value='" . lang('Import') . "'></div></fieldset>\n";
 		
