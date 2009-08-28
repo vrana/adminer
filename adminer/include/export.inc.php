@@ -1,6 +1,4 @@
 <?php
-//! memory consumption
-
 function dump_table($table, $style, $is_view = false) {
 	global $dbh;
 	if ($_POST["format"] == "csv") {
