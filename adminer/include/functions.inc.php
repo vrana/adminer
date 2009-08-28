@@ -313,7 +313,7 @@ function input($field, $value, $function) {
 		$functions = (isset($_GET["select"]) ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
 		$first = array_search("", $functions) + (isset($_GET["select"]) ? 1 : 0);
 		$onchange = ($first ? " onchange=\"var f = this.form['function[" . addcslashes($name, "\r\n'\\") . "]']; if ($first > f.selectedIndex) f.selectedIndex = $first;\"" : "");
-		echo (count($functions) > 1 ? "<select name='function[$name]'>" . optionlist($functions, $function) . "</select>" : nbsp($functions[0])) . '<td>';
+		echo (count($functions) > 1 ? "<select name='function[$name]'>" . optionlist($functions, in_array($function, $functions) ? $function : "") . "</select>" : nbsp($functions[0])) . '<td>';
 		$input = $adminer->editInput($_GET["edit"], $field, " name='fields[$name]'$onchange", $value); // usage in call is without a table
 		if (strlen($input)) {
 			echo $input;
