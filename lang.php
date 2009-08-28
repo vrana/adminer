@@ -1,5 +1,5 @@
 <?php
-error_reporting(4343); // errors and warnings
+error_reporting(6135); // errors and warnings
 if (isset($_SERVER["argv"][1])) {
 	$_COOKIE["adminer_lang"] = $_SERVER["argv"][1]; // Adminer functions read language from cookie
 	include dirname(__FILE__) . "/adminer/include/lang.inc.php";

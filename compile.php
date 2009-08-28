@@ -1,4 +1,5 @@
 <?php
+error_reporting(6135); // errors and warnings
 include dirname(__FILE__) . "/adminer/include/version.inc.php";
 include dirname(__FILE__) . "/externals/jsmin-php/jsmin.php";
 
@@ -158,7 +159,6 @@ function compile_file($match) {
 	return call_user_func($match[2], file_get_contents(dirname(__FILE__) . "/$project/$match[1]"));
 }
 
-error_reporting(4343); // errors and warnings
 $project = "adminer";
 if (file_exists(dirname(__FILE__) . "/" . $_SERVER["argv"][1] . "/index.php")) {
 	$project = $_SERVER["argv"][1];
