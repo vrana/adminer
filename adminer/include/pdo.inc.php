@@ -19,7 +19,7 @@ if (extension_loaded('pdo')) {
 			return $this->query("USE " . idf_escape($database));
 		}
 		
-		function query($query) {
+		function query($query) { // $unbuffered is not supported
 			$result = parent::query($query);
 			if (!$result) {
 				$errorInfo = $this->errorInfo();

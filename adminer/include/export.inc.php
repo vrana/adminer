@@ -100,7 +100,7 @@ function dump_data($table, $style, $select = "") {
 		if ($_POST["format"] != "csv" && $style == "TRUNCATE+INSERT") {
 			dump("TRUNCATE " . idf_escape($table) . ";\n");
 		}
-		$result = $dbh->query(($select ? $select : "SELECT * FROM " . idf_escape($table))); //! enum and set as numbers, microtime
+		$result = $dbh->query(($select ? $select : "SELECT * FROM " . idf_escape($table)), 1); // 1 - MYSQLI_USE_RESULT //! enum and set as numbers, microtime
 		if ($result) {
 			$fields = fields($table);
 			$insert = "";

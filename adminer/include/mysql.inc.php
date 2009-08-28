@@ -61,8 +61,8 @@ if (extension_loaded("mysqli")) {
 			return mysql_select_db($database, $this->_link);
 		}
 		
-		function query($query) {
-			$result = @mysql_query($query, $this->_link); // mute mysql.trace_mode
+		function query($query, $unbuffered = false) {
+			$result = @($unbuffered ? mysql_unbuffered_query($query, $this->_link) : mysql_query($query, $this->_link)); // @ - mute mysql.trace_mode
 			if (!$result) {
 				$this->error = mysql_error($this->_link);
 				return false;
