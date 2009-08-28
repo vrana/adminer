@@ -362,6 +362,9 @@ class Adminer {
 				$return[] = "addtime";
 				$return[] = "subtime";
 			}
+			if (ereg('char|text', $field["type"])) {
+				$return[] = "concat";
+			}
 		}
 		if ($field["null"]) {
 			array_unshift($return, "NULL");
@@ -396,7 +399,7 @@ class Adminer {
 			$return = idf_escape($name) . " $function $return";
 		} elseif (ereg('^[+-] interval$', $function)) {
 			$return = idf_escape($name) . " $function " . (preg_match("~^([0-9]+|'[0-9.: -]') [A-Z_]+$~i", $value) ? $value : $return);
-		} elseif (ereg('^(addtime|subtime)$', $function)) {
+		} elseif (ereg('^(addtime|subtime|concat)$', $function)) {
 			$return = "$function(" . idf_escape($name) . ", $return)";
 		} elseif (ereg('^(md5|sha1|password)$', $function)) {
 			$return = "$function($return)";
