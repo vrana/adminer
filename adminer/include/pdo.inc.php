@@ -54,10 +54,6 @@ if (extension_loaded('pdo')) {
 			$row = $result->fetch();
 			return $row[$field];
 		}
-		
-		function quote($string) {
-			return parent::quote($string);
-		}
 	}
 	
 	class Min_PDOStatement extends PDOStatement {
