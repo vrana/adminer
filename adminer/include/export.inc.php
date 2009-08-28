@@ -1,5 +1,5 @@
 <?php
-//! memory consumption, speed
+//! memory consumption
 
 function dump_table($table, $style, $is_view = false) {
 	global $dbh;
@@ -103,12 +103,15 @@ function dump_data($table, $style, $select = "") {
 		$result = $dbh->query(($select ? $select : "SELECT * FROM " . idf_escape($table))); //! enum and set as numbers, microtime
 		if ($result) {
 			$fields = fields($table);
-			$length = 0;
+			$insert = "";
+			$buffer = "";
 			while ($row = $result->fetch_assoc()) {
 				if ($_POST["format"] == "csv") {
 					dump_csv($row);
 				} else {
-					$insert = "INSERT INTO " . idf_escape($table) . " (" . implode(", ", array_map('idf_escape', array_keys($row))) . ") VALUES";
+					if (!$insert) {
+						$insert = "INSERT INTO " . idf_escape($table) . " (" . implode(", ", array_map('idf_escape', array_keys($row))) . ") VALUES";
+					}
 					$row2 = array();
 					foreach ($row as $key => $val) {
 						$row2[$key] = (isset($val) ? (ereg('int|float|double|decimal', $fields[$key]["type"]) ? $val : $dbh->quote($val)) : "NULL"); //! columns looking like functions
@@ -122,23 +125,21 @@ function dump_data($table, $style, $select = "") {
 						dump("$insert ($s) ON DUPLICATE KEY UPDATE " . implode(", ", $set) . ";\n");
 					} else {
 						$s = "\n($s)";
-						if (!$length) {
-							dump($insert . $s);
-							$length = strlen($insert) + strlen($s);
+						if (!$buffer) {
+							$buffer = $insert . $s;
 						} else {
-							$length += 1 + strlen($s); // 1 - separator length
-							if ($length < $max_packet) {
-								dump(",$s");
+							if (strlen($buffer) + 1 + strlen($s) < $max_packet) { // 1 - separator length
+								$buffer .= ",$s";
 							} else {
-								dump(";\n$insert$s");
-								$length = strlen($insert) + strlen($s);
+								dump("$buffer;\n");
+								$buffer = $insert . $s;
 							}
 						}
 					}
 				}
 			}
-			if ($_POST["format"] != "csv" && $style != "INSERT+UPDATE" && $result->num_rows) {
-				dump(";\n");
+			if ($_POST["format"] != "csv" && $style != "INSERT+UPDATE" && $buffer) {
+				dump("$buffer;\n");
 			}
 		}
 	}
@@ -151,8 +152,6 @@ function dump_headers($identifier, $multi_table = false) {
 	if ($_POST["output"] == "file" || $_POST["compress"]) {
 		header("Content-Disposition: attachment; filename=$filename.$ext" . ($_POST["compress"] == "gz" ? ".gz" : ""));
 	}
-	ob_flush();
-	flush();
 	return $ext;
 }
 

@@ -360,14 +360,9 @@ function process_input($field) {
 	}
 }
 
-function dump($string = null) { // null $string forces sending of buffer
-	static $buffer = "";
+function dump($string) {
 	if ($_POST["compress"] == "gz") {
-		$buffer .= $string;
-		if (!isset($string) || strlen($buffer) > 1e6) {
-			echo gzencode($buffer);
-			$buffer = "";
-		}
+		echo gzencode($string);
 	} else {
 		echo $string;
 	}

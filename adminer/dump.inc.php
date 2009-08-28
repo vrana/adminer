@@ -146,7 +146,6 @@ DROP PROCEDURE adminer_drop;
 			}
 		}
 	}
-	dump();
 	exit;
 }
 
