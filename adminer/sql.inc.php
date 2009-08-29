@@ -1,5 +1,5 @@
 <?php
-$history = &$_SESSION["history"][$_GET["server"]][$_GET["db"]];
+$history = &$_SESSION["history"][$_GET["server"]][DB];
 if (!$error && $_POST["clear"]) {
 	$history = array();
 	redirect(remove_from_uri("history"));
@@ -30,9 +30,9 @@ if (!$error && $_POST) {
 		$delimiter = ";";
 		$offset = 0;
 		$empty = true;
-		$dbh2 = (strlen($_GET["db"]) ? connect() : null); // connection for exploring indexes (to not replace FOUND_ROWS()) //! PDO - silent error
+		$dbh2 = (strlen(DB) ? connect() : null); // connection for exploring indexes (to not replace FOUND_ROWS()) //! PDO - silent error
 		if (is_object($dbh2)) {
-			$dbh2->select_db($_GET["db"]);
+			$dbh2->select_db(DB);
 		}
 		while (strlen($query)) {
 			if (!$offset && preg_match('~^\\s*DELIMITER\\s+(.+)~i', $query, $match)) {
@@ -105,7 +105,7 @@ if (!$error && $_POST) {
 ?>
 
 <form action="" method="post" enctype="multipart/form-data">
-<p><textarea name="query" rows="20" cols="80" style="width: 98%;"><?php echo h($_POST ? $_POST["query"] : (strlen($_GET["history"]) ? $_SESSION["history"][$_GET["server"]][$_GET["db"]][$_GET["history"]] : $_GET["sql"])); ?></textarea>
+<p><textarea name="query" rows="20" cols="80" style="width: 98%;"><?php echo h($_POST ? $_POST["query"] : (strlen($_GET["history"]) ? $_SESSION["history"][$_GET["server"]][DB][$_GET["history"]] : $_GET["sql"])); ?></textarea>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Execute'); ?>">

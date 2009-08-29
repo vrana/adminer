@@ -22,8 +22,8 @@ class Adminer {
 	* @return string
 	*/
 	function database() {
-		// should be used everywhere instead of $_GET["db"]
-		return $_GET["db"];
+		// should be used everywhere instead of DB
+		return DB;
 	}
 	
 	/** Print login form
@@ -336,8 +336,8 @@ class Adminer {
 	*/
 	function messageQuery($query) {
 		$id = "sql-" . count($_SESSION["messages"]);
-		$_SESSION["history"][$_GET["server"]][$_GET["db"]][] = $query;
-		return " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre class='jush-sql'>" . h($query) . '</pre><a href="' . h(ME . 'sql=&history=' . (count($_SESSION["history"][$_GET["server"]][$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a></div>';
+		$_SESSION["history"][$_GET["server"]][DB][] = $query;
+		return " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre class='jush-sql'>" . h($query) . '</pre><a href="' . h(ME . 'sql=&history=' . (count($_SESSION["history"][$_GET["server"]][DB]) - 1)) . '">' . lang('Edit') . '</a></div>';
 	}
 	
 	/** Functions displayed in edit form
@@ -427,9 +427,9 @@ class Adminer {
 <form action="">
 <p><?php if (strlen($_GET["server"])) { ?><input type="hidden" name="server" value="<?php echo h($_GET["server"]); ?>"><?php } ?>
 <?php if ($databases) { ?>
-<select name="db" onchange="this.form.submit();"><option value="">(<?php echo lang('database'); ?>)<?php echo optionlist($databases, $_GET["db"]); ?></select>
+<select name="db" onchange="this.form.submit();"><option value="">(<?php echo lang('database'); ?>)<?php echo optionlist($databases, DB); ?></select>
 <?php } else { ?>
-<input name="db" value="<?php echo h($_GET["db"]); ?>">
+<input name="db" value="<?php echo h(DB); ?>">
 <?php } ?>
 <?php if (isset($_GET["sql"])) { ?><input type="hidden" name="sql" value=""><?php } ?>
 <?php if (isset($_GET["schema"])) { ?><input type="hidden" name="schema" value=""><?php } ?>
@@ -438,7 +438,7 @@ class Adminer {
 </p>
 </form>
 <?php
-			if ($missing != "db" && strlen($_GET["db"])) {
+			if ($missing != "db" && strlen(DB)) {
 				$result = $dbh->query("SHOW TABLES");
 				if (!$result) {
 					echo "<p class='error'>" . lang('No tables.') . "\n";

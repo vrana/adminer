@@ -1,8 +1,8 @@
 <?php
 function connect_error() {
 	global $dbh, $VERSION;
-	if (strlen($_GET["db"])) {
-		page_header(lang('Database') . ": " . h($_GET["db"]), lang('Invalid database.'), false);
+	if (strlen(DB)) {
+		page_header(lang('Database') . ": " . h(DB), lang('Invalid database.'), false);
 	} else {
 		page_header(lang('Select database'), "", null);
 		foreach (array(
@@ -19,8 +19,8 @@ function connect_error() {
 	page_footer("db");
 }
 
-if (!(strlen($_GET["db"]) ? $dbh->select_db($_GET["db"]) : isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]) || isset($_GET["processlist"]) || isset($_GET["privileges"]) || isset($_GET["user"]) || isset($_GET["variables"]))) {
-	if (strlen($_GET["db"])) {
+if (!(strlen(DB) ? $dbh->select_db(DB) : isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]) || isset($_GET["processlist"]) || isset($_GET["privileges"]) || isset($_GET["user"]) || isset($_GET["variables"]))) {
+	if (strlen(DB)) {
 		unset($_SESSION["databases"][$_GET["server"]]);
 	}
 	connect_error(); // separate function to catch SQLite error

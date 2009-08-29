@@ -38,7 +38,7 @@ if ($tables_views && !$error) {
 	query_redirect(queries(), substr(ME, 0, -1), $message, $result, false, !$result);
 }
 
-page_header(lang('Database') . ": " . h($_GET["db"]), $error, false);
+page_header(lang('Database') . ": " . h(DB), $error, false);
 echo '<p><a href="' . h(ME) . 'database=">' . lang('Alter database') . "</a>\n";
 echo '<p><a href="' . h(ME) . 'schema=">' . lang('Database schema') . "</a>\n";
 
@@ -69,7 +69,7 @@ if (!$table_status) {
 	echo "<p><input type='hidden' name='token' value='$token'><input type='submit' value='" . lang('Analyze') . "'> <input type='submit' name='optimize' value='" . lang('Optimize') . "'> <input type='submit' name='check' value='" . lang('Check') . "'> <input type='submit' name='repair' value='" . lang('Repair') . "'> <input type='submit' name='truncate' value='" . lang('Truncate') . "'$confirm> <input type='submit' name='drop' value='" . lang('Drop') . "'$confirm>\n";
 	$dbs = get_databases();
 	if (count($dbs) != 1) {
-		$db = (isset($_POST["target"]) ? $_POST["target"] : $_GET["db"]);
+		$db = (isset($_POST["target"]) ? $_POST["target"] : DB);
 		echo "<p>" . lang('Move to other database') . ($dbs ? ": <select name='target'>" . optionlist($dbs, $db) . "</select>" : ': <input name="target" value="' . h($db) . '">') . " <input type='submit' name='move' value='" . lang('Move') . "'>\n";
 	}
 	echo "</form>\n";
@@ -78,7 +78,7 @@ if (!$table_status) {
 if ($dbh->server_info >= 5) {
 	echo '<p><a href="' . h(ME) . 'view=">' . lang('Create view') . "</a>\n";
 	echo "<h3>" . lang('Routines') . "</h3>\n";
-	$result = $dbh->query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . $dbh->quote($_GET["db"]));
+	$result = $dbh->query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . $dbh->quote(DB));
 	if ($result->num_rows) {
 		echo "<table cellspacing='0'>\n";
 		while ($row = $result->fetch_assoc()) {

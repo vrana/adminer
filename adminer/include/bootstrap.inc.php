@@ -69,7 +69,8 @@ if (get_magic_quotes_gpc()) {
 set_magic_quotes_runtime(false);
 @set_time_limit(0); // @ - can be disabled
 
-define("ME", preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . '?' . (strlen($_GET["server"]) ? 'server=' . urlencode($_GET["server"]) . '&' : '') . (strlen($_GET["db"]) ? 'db=' . urlencode($_GET["db"]) . '&' : ''));
+define("DB", $_GET["db"]); // for the sake of speed and size
+define("ME", preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . '?' . (strlen($_GET["server"]) ? 'server=' . urlencode($_GET["server"]) . '&' : '') . (strlen(DB) ? 'db=' . urlencode(DB) . '&' : ''));
 $on_actions = array("RESTRICT", "CASCADE", "SET NULL", "NO ACTION"); // used in foreign_keys()
 
 include "../adminer/include/version.inc.php";

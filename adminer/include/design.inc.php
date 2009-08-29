@@ -25,8 +25,8 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 		$link = substr(preg_replace('~db=[^&]*&~', '', ME), 0, -1);
 		echo '<p id="breadcrumb"><a href="' . (strlen($link) ? h($link) : ".") . '">' . (isset($_GET["server"]) ? h($_GET["server"]) : lang('Server')) . '</a> &raquo; ';
 		if (is_array($breadcrumb)) {
-			if (strlen($_GET["db"])) {
-				echo '<a href="' . h(substr(ME, 0, -1)) . '">' . h($_GET["db"]) . '</a> &raquo; ';
+			if (strlen(DB)) {
+				echo '<a href="' . h(substr(ME, 0, -1)) . '">' . h(DB) . '</a> &raquo; ';
 			}
 			foreach ($breadcrumb as $key => $val) {
 				$desc = (is_array($val) ? $val[1] : $val);
@@ -43,7 +43,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 		$_SESSION["messages"] = array();
 	}
 	$databases = &$_SESSION["databases"][$_GET["server"]];
-	if (strlen($_GET["db"]) && $databases && !in_array($_GET["db"], $databases, true)) {
+	if (strlen(DB) && $databases && !in_array(DB, $databases, true)) {
 		$databases = null;
 	}
 	if (isset($databases) && !isset($_GET["sql"])) {

@@ -1,5 +1,5 @@
 <?php
-page_header(lang('Database schema'), "", array(), $_GET["db"]);
+page_header(lang('Database schema'), "", array(), DB);
 
 $table_pos = array();
 $table_pos_js = array();

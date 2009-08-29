@@ -156,7 +156,7 @@ if (!$columns) {
 	echo "<form action='' id='form'>\n";
 	echo "<div style='display: none;'>";
 	echo (strlen($_GET["server"]) ? '<input type="hidden" name="server" value="' . h($_GET["server"]) . '">' : "");
-	echo (strlen($_GET["db"]) ? '<input type="hidden" name="db" value="' . h($_GET["db"]) . '">' : ""); // not used in Editor
+	echo (strlen(DB) ? '<input type="hidden" name="db" value="' . h(DB) . '">' : ""); // not used in Editor
 	echo '<input type="hidden" name="select" value="' . h($_GET["select"]) . '">';
 	echo "</div>\n";
 	$adminer->selectColumnsPrint($select, $columns);
@@ -221,7 +221,7 @@ if (!$columns) {
 			echo ($table_names ? "<th>" . lang('Relations') : "") . "</thead>\n";
 			foreach ($descriptions as $n => $row) {
 				$unique_idf = implode('&amp;', unique_idf($rows[$n], $indexes));
-				echo "<tr" . odd() . "><td><input type='checkbox' name='check[]' value='$unique_idf' onclick=\"this.form['all'].checked = false; form_uncheck('all-page');\">" . (count($select) != count($group) || information_schema($_GET["db"]) ? '' : " <a href='" . h(ME) . "edit=" . urlencode($_GET['select']) . "&amp;$unique_idf'>" . lang('edit') . "</a>");
+				echo "<tr" . odd() . "><td><input type='checkbox' name='check[]' value='$unique_idf' onclick=\"this.form['all'].checked = false; form_uncheck('all-page');\">" . (count($select) != count($group) || information_schema(DB) ? '' : " <a href='" . h(ME) . "edit=" . urlencode($_GET['select']) . "&amp;$unique_idf'>" . lang('edit') . "</a>");
 				foreach ($row as $key => $val) {
 					if (isset($names[$key])) {
 						if (strlen($val) && (!isset($email_fields[$key]) || strlen($email_fields[$key]))) {
@@ -297,7 +297,7 @@ if (!$columns) {
 			}
 			echo " (" . lang('%d row(s)', $found_rows) . ') <label><input type="checkbox" name="all" value="1">' . lang('whole result') . "</label>\n";
 			
-			echo (information_schema($_GET["db"]) ? "" : "<fieldset><legend>" . lang('Edit') . "</legend><div><input type='submit' name='edit' value='" . lang('Edit') . "'> <input type='submit' name='clone' value='" . lang('Clone') . "'> <input type='submit' name='delete' value='" . lang('Delete') . "'$confirm></div></fieldset>\n");
+			echo (information_schema(DB) ? "" : "<fieldset><legend>" . lang('Edit') . "</legend><div><input type='submit' name='edit' value='" . lang('Edit') . "'> <input type='submit' name='clone' value='" . lang('Clone') . "'> <input type='submit' name='delete' value='" . lang('Delete') . "'$confirm></div></fieldset>\n");
 			echo "<fieldset><legend>" . lang('Export') . "</legend><div>$dump_output $dump_format $dump_compress <input type='submit' name='export' value='" . lang('Export') . "'></div></fieldset>\n";
 		}
 		echo "<fieldset><legend>" . lang('CSV Import') . "</legend><div><input type='hidden' name='token' value='$token'><input type='file' name='csv_file'> <input type='submit' name='import' value='" . lang('Import') . "'></div></fieldset>\n";
