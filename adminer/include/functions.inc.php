@@ -166,7 +166,10 @@ function get_file($key, $decompress = false) {
 	if (!$file || $file["error"]) {
 		return $file["error"];
 	}
-	return file_get_contents($decompress && ereg('\\.gz$', $file["name"]) ? "compress.zlib://$file[tmp_name]" : $file["tmp_name"]); //! may not be reachable because of open_basedir
+	return file_get_contents($decompress && ereg('\\.gz$', $file["name"]) ? "compress.zlib://$file[tmp_name]"
+		: ($decompress && ereg('\\.bz2$', $file["name"]) ? "compress.bzip2://$file[tmp_name]"
+		: $file["tmp_name"]
+	)); //! may not be reachable because of open_basedir
 }
 
 function upload_error($error) {

@@ -10,7 +10,10 @@ page_header(lang('SQL command'), $error);
 if (!$error && $_POST) {
 	$query = $_POST["query"];
 	if ($_POST["webfile"]) {
-		$query = @file_get_contents(file_exists("adminer.sql") ? "adminer.sql" : "compress.zlib://adminer.sql.gz");
+		$query = @file_get_contents(file_exists("adminer.sql") ? "adminer.sql"
+			: (file_exists("adminer.sql.gz") ? "compress.zlib://adminer.sql.gz"
+			: "compress.bzip2://adminer.sql.bz2"
+		));
 	} elseif ($_POST["file"]) {
 		$query = get_file("sql_file", true);
 	}
