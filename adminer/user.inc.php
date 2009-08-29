@@ -1,4 +1,5 @@
 <?php
+$USER = $_GET["user"];
 $privileges = array("" => array("All privileges" => ""));
 $result = $dbh->query("SHOW PRIVILEGES");
 while ($row = $result->fetch_assoc()) {
@@ -40,7 +41,7 @@ if ($_POST) {
 }
 $grants = array();
 $old_pass = "";
-if (isset($_GET["host"]) && ($result = $dbh->query("SHOW GRANTS FOR " . $dbh->quote($_GET["user"]) . "@" . $dbh->quote($_GET["host"])))) { //! use information_schema for MySQL 5 - column names in column privileges are not escaped
+if (isset($_GET["host"]) && ($result = $dbh->query("SHOW GRANTS FOR " . $dbh->quote($USER) . "@" . $dbh->quote($_GET["host"])))) { //! use information_schema for MySQL 5 - column names in column privileges are not escaped
 	while ($row = $result->fetch_row()) {
 		if (preg_match('~GRANT (.*) ON (.*) TO ~', $row[0], $match) && preg_match_all('~ *([^(,]*[^ ,(])( *\\([^)]+\\))?~', $match[1], $matches, PREG_SET_ORDER)) { //! escape the part between ON and TO
 			foreach ($matches as $val) {
@@ -57,7 +58,7 @@ if (isset($_GET["host"]) && ($result = $dbh->query("SHOW GRANTS FOR " . $dbh->qu
 }
 
 if ($_POST && !$error) {
-	$old_user = (isset($_GET["host"]) ? $dbh->quote($_GET["user"]) . "@" . $dbh->quote($_GET["host"]) : "''");
+	$old_user = (isset($_GET["host"]) ? $dbh->quote($USER) . "@" . $dbh->quote($_GET["host"]) : "''");
 	$new_user = $dbh->quote($_POST["user"]) . "@" . $dbh->quote($_POST["host"]); // if $_GET["host"] is not set then $new_user is always different
 	$pass = $dbh->quote($_POST["pass"]);
 	if ($_POST["drop"]) {
@@ -112,7 +113,7 @@ if ($_POST && !$error) {
 	}
 }
 
-page_header((isset($_GET["host"]) ? lang('Username') . ": " . h("$_GET[user]@$_GET[host]") : lang('Create user')), $error, array("privileges" => array('', lang('Privileges'))));
+page_header((isset($_GET["host"]) ? lang('Username') . ": " . h("$USER@$_GET[host]") : lang('Create user')), $error, array("privileges" => array('', lang('Privileges'))));
 
 if ($_POST) {
 	$row = $_POST;

@@ -12,7 +12,7 @@ IE6 - <label for>
 Offer enum and set items in search - whisperer
 Use event $intervals + microseconds in relative date functions
 ? Column and table names auto-completition in SQL textarea
-? Aliasing of built-in functions can save 7 KB, function minification can save 7 KB, substitution of $_GET and friends can save 2 KB, remove of base64_decode() + using chars 127-255 in minification can save 1 KB, JS packer can save 1 KB, not enclosing attribute values can save 1.2 KB
+? Aliasing of built-in functions can save 7 KB, function minification can save 7 KB, substitution of repetitive $a["a"] can save 4 KB, substitution of $_GET and friends can save 2 KB, remove of base64_decode() + using chars 127-255 in minification can save 1 KB, JS packer can save 1 KB, not enclosing HTML attribute values can save 1.2 KB
 ? AJAX editing - select page has all data to display edit form
 
 Editor:

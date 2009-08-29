@@ -1,20 +1,21 @@
 <?php
+$TABLE = $_GET["view"];
 $dropped = false;
 if ($_POST && !$error) {
-	if (strlen($_GET["view"])) {
-		$dropped = query_redirect("DROP VIEW " . idf_escape($_GET["view"]), substr(ME, 0, -1), lang('View has been dropped.'), false, !$_POST["dropped"]);
+	if (strlen($TABLE)) {
+		$dropped = query_redirect("DROP VIEW " . idf_escape($TABLE), substr(ME, 0, -1), lang('View has been dropped.'), false, !$_POST["dropped"]);
 	}
-	query_redirect("CREATE VIEW " . idf_escape($_POST["name"]) . " AS\n$_POST[select]", ME . "table=" . urlencode($_POST["name"]), (strlen($_GET["view"]) ? lang('View has been altered.') : lang('View has been created.')));
+	query_redirect("CREATE VIEW " . idf_escape($_POST["name"]) . " AS\n$_POST[select]", ME . "table=" . urlencode($_POST["name"]), (strlen($TABLE) ? lang('View has been altered.') : lang('View has been created.')));
 }
 
-page_header((strlen($_GET["view"]) ? lang('Alter view') : lang('Create view')), $error, array("table" => $_GET["view"]), $_GET["view"]);
+page_header((strlen($TABLE) ? lang('Alter view') : lang('Create view')), $error, array("table" => $TABLE), $TABLE);
 
 $row = array();
 if ($_POST) {
 	$row = $_POST;
-} elseif (strlen($_GET["view"])) {
-	$row = view($_GET["view"]);
-	$row["name"] = $_GET["view"];
+} elseif (strlen($TABLE)) {
+	$row = view($TABLE);
+	$row["name"] = $TABLE;
 }
 ?>
 

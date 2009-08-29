@@ -1,7 +1,8 @@
 <?php
+$TABLE = $_GET["edit"];
 $where = (isset($_GET["select"]) ? (count($_POST["check"]) == 1 ? where_check($_POST["check"][0]) : "") : where($_GET));
 $update = (isset($_GET["select"]) ? $_POST["edit"] : $where);
-$fields = fields($_GET["edit"]);
+$fields = fields($TABLE);
 foreach ($fields as $name => $field) {
 	if (!isset($field["privileges"][$update ? "update" : "insert"]) || !strlen($adminer->fieldName($field))) {
 		unset($fields[$name]);
@@ -10,7 +11,7 @@ foreach ($fields as $name => $field) {
 if ($_POST && !$error && !isset($_GET["select"])) {
 	$location = $_SERVER["REQUEST_URI"]; // continue edit or insert
 	if (!$_POST["insert"]) {
-		$location = ME . "select=" . urlencode($_GET["edit"]);
+		$location = ME . "select=" . urlencode($TABLE);
 		$i = 0; // append &set converted to &where
 		foreach ((array) $_GET["set"] as $key => $val) {
 			if ($val == $_POST["fields"][$key]) {
@@ -29,17 +30,17 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 		redirect($location);
 	}
 	if ($update) {
-		query_redirect("UPDATE " . idf_escape($_GET["edit"]) . " SET" . implode(",", $set) . "\nWHERE $where\nLIMIT 1", $location, lang('Item has been updated.'));
+		query_redirect("UPDATE " . idf_escape($TABLE) . " SET" . implode(",", $set) . "\nWHERE $where\nLIMIT 1", $location, lang('Item has been updated.'));
 	} else {
-		query_redirect("INSERT INTO " . idf_escape($_GET["edit"]) . " SET" . implode(",", $set), $location, lang('Item has been inserted.'));
+		query_redirect("INSERT INTO " . idf_escape($TABLE) . " SET" . implode(",", $set), $location, lang('Item has been inserted.'));
 	}
 }
 
-$table_name = $adminer->tableName(table_status($_GET["edit"]));
+$table_name = $adminer->tableName(table_status($TABLE));
 page_header(
 	($update ? lang('Edit') : lang('Insert')),
 	$error,
-	array("select" => array($_GET["edit"], $table_name)),
+	array("select" => array($TABLE, $table_name)),
 	$table_name
 );
 
@@ -55,7 +56,7 @@ if ($_POST["save"]) {
 	}
 	$row = array();
 	if ($select) {
-		$result = $dbh->query("SELECT " . implode(", ", $select) . " FROM " . idf_escape($_GET["edit"]) . " WHERE $where " . (isset($_GET["select"]) ? "HAVING COUNT(*) = 1" : "LIMIT 1"));
+		$result = $dbh->query("SELECT " . implode(", ", $select) . " FROM " . idf_escape($TABLE) . " WHERE $where " . (isset($_GET["select"]) ? "HAVING COUNT(*) = 1" : "LIMIT 1"));
 		$row = $result->fetch_assoc();
 	}
 }

@@ -1,7 +1,8 @@
 <?php
-$table_status = table_status($_GET["select"]);
-$indexes = indexes($_GET["select"]);
-$fields = fields($_GET["select"]);
+$TABLE = $_GET["select"];
+$table_status = table_status($TABLE);
+$indexes = indexes($TABLE);
+$fields = fields($TABLE);
 $rights = array(); // privilege => 0
 $columns = array(); // selectable columns
 unset($text_length);
@@ -20,7 +21,7 @@ list($select, $group) = $adminer->selectColumnsProcess($columns, $indexes);
 $where = $adminer->selectSearchProcess($fields, $indexes);
 $order = $adminer->selectOrderProcess($fields, $indexes);
 $limit = $adminer->selectLimitProcess();
-$from = ($select ? implode(", ", $select) : "*") . " FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "");
+$from = ($select ? implode(", ", $select) : "*") . " FROM " . idf_escape($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : "");
 $group_by = ($group && count($group) < count($select) ? " GROUP BY " . implode(", ", $group) : "") . ($order ? " ORDER BY " . implode(", ", $order) : "");
 
 if ($_POST && !$error) {
@@ -33,20 +34,20 @@ if ($_POST && !$error) {
 		}
 	}
 	if ($_POST["export"]) {
-		dump_headers($_GET["select"]);
-		dump_table($_GET["select"], "");
+		dump_headers($TABLE);
+		dump_table($TABLE, "");
 		if ($_POST["format"] != "sql") { // Editor doesn't send format
 			dump_csv($select ? $select : array_keys($fields));
 		}
 		if (!is_array($_POST["check"]) || $primary === array()) {
-			dump_data($_GET["select"], "INSERT", "SELECT $from" . (is_array($_POST["check"]) ? ($where ? " AND " : " WHERE ") . "($where_check)" : "") . $group_by);
+			dump_data($TABLE, "INSERT", "SELECT $from" . (is_array($_POST["check"]) ? ($where ? " AND " : " WHERE ") . "($where_check)" : "") . $group_by);
 		} else {
 			$union = array();
 			foreach ($_POST["check"] as $val) {
 				// where is not unique so OR can't be used
 				$union[] = "(SELECT $from " . ($where ? "AND " : "WHERE ") . where_check($val) . $group_by . " LIMIT 1)";
 			}
-			dump_data($_GET["select"], "INSERT", implode(" UNION ALL ", $union));
+			dump_data($TABLE, "INSERT", implode(" UNION ALL ", $union));
 		}
 		dump();
 		exit;
@@ -55,7 +56,7 @@ if ($_POST && !$error) {
 		if (!$_POST["import"]) { // edit
 			$result = true;
 			$affected = 0;
-			$command = ($_POST["delete"] ? ($_POST["all"] && !$where ? "TRUNCATE " : "DELETE FROM ") : ($_POST["clone"] ? "INSERT INTO " : "UPDATE ")) . idf_escape($_GET["select"]);
+			$command = ($_POST["delete"] ? ($_POST["all"] && !$where ? "TRUNCATE " : "DELETE FROM ") : ($_POST["clone"] ? "INSERT INTO " : "UPDATE ")) . idf_escape($TABLE);
 			$set = array();
 			if (!$_POST["delete"]) {
 				foreach ($columns as $name => $val) { //! should check also for edit or insert privileges
@@ -66,7 +67,7 @@ if ($_POST && !$error) {
 						$set[] = idf_escape($name) . " = $val";
 					}
 				}
-				$command .= ($_POST["clone"] ? "\nSELECT " . implode(", ", $set) . "\nFROM " . idf_escape($_GET["select"]) : " SET\n" . implode(",\n", $set));
+				$command .= ($_POST["clone"] ? "\nSELECT " . implode(", ", $set) . "\nFROM " . idf_escape($TABLE) : " SET\n" . implode(",\n", $set));
 			}
 			if ($_POST["delete"] || $set) {
 				if ($_POST["all"] || ($primary === array() && $_POST["check"])) {
@@ -91,7 +92,7 @@ if ($_POST && !$error) {
 			$length = 0;
 			$result = true;
 			$dbh->query("SET foreign_key_checks = 0");
-			$query = "REPLACE " . idf_escape($_GET["select"]); // ON DUPLICATE KEY UPDATE would require one query per record
+			$query = "REPLACE " . idf_escape($TABLE); // ON DUPLICATE KEY UPDATE would require one query per record
 			$packet_size = $dbh->result($dbh->query("SELECT @@max_allowed_packet"));
 			$rows = array();
 			preg_match_all('~("[^"]*"|[^"\\n])+~', $file, $matches);
@@ -136,7 +137,7 @@ if ($_POST && !$error) {
 
 page_header(lang('Select') . ": " . $adminer->tableName($table_status), $error);
 
-$foreign_keys = column_foreign_keys($_GET["select"]);
+$foreign_keys = column_foreign_keys($TABLE);
 echo "<p>";
 if (isset($rights["insert"])) {
 	$set = "";
@@ -147,7 +148,7 @@ if (isset($rights["insert"])) {
 			$set .= "&set" . urlencode("[" . bracket_escape($val["col"]) . "]") . "=" . urlencode($val["val"]);
 		}
 	}
-	echo '<a href="' . h(ME . 'edit=' . urlencode($_GET['select']) . $set) . '">' . lang('New item') . '</a> ';
+	echo '<a href="' . h(ME . 'edit=' . urlencode($TABLE) . $set) . '">' . lang('New item') . '</a> ';
 }
 echo $adminer->selectLinks($table_status);
 
@@ -158,7 +159,7 @@ if (!$columns) {
 	echo "<div style='display: none;'>";
 	echo (strlen($_GET["server"]) ? '<input type="hidden" name="server" value="' . h($_GET["server"]) . '">' : "");
 	echo (strlen(DB) ? '<input type="hidden" name="db" value="' . h(DB) . '">' : ""); // not used in Editor
-	echo '<input type="hidden" name="select" value="' . h($_GET["select"]) . '">';
+	echo '<input type="hidden" name="select" value="' . h($TABLE) . '">';
 	echo "</div>\n";
 	$adminer->selectColumnsPrint($select, $columns);
 	$adminer->selectSearchPrint($where, $columns, $indexes);
@@ -192,7 +193,7 @@ if (!$columns) {
 			
 			$descriptions = $adminer->rowDescriptions($rows, $foreign_keys);
 			
-			$backward_keys = $adminer->backwardKeys($_GET["select"]);
+			$backward_keys = $adminer->backwardKeys($TABLE);
 			$table_names = array();
 			if ($backward_keys) {
 				foreach ($backward_keys as $key => $val) {
@@ -222,7 +223,7 @@ if (!$columns) {
 			echo ($table_names ? "<th>" . lang('Relations') : "") . "</thead>\n";
 			foreach ($descriptions as $n => $row) {
 				$unique_idf = implode('&amp;', unique_idf($rows[$n], $indexes));
-				echo "<tr" . odd() . "><td><input type='checkbox' name='check[]' value='$unique_idf' onclick=\"this.form['all'].checked = false; form_uncheck('all-page');\">" . (count($select) != count($group) || information_schema(DB) ? '' : " <a href='" . h(ME) . "edit=" . urlencode($_GET['select']) . "&amp;$unique_idf'>" . lang('edit') . "</a>");
+				echo "<tr" . odd() . "><td><input type='checkbox' name='check[]' value='$unique_idf' onclick=\"this.form['all'].checked = false; form_uncheck('all-page');\">" . (count($select) != count($group) || information_schema(DB) ? '' : " <a href='" . h(ME) . "edit=" . urlencode($TABLE) . "&amp;$unique_idf'>" . lang('edit') . "</a>");
 				foreach ($row as $key => $val) {
 					if (isset($names[$key])) {
 						if (strlen($val) && (!isset($email_fields[$key]) || strlen($email_fields[$key]))) {
@@ -234,7 +235,7 @@ if (!$columns) {
 							$val = "<i>NULL</i>";
 						} else {
 							if (ereg('blob|binary', $fields[$key]["type"]) && strlen($val)) {
-								$link = h(ME . 'download=' . urlencode($_GET["select"]) . '&field=' . urlencode($key) . '&') . $unique_idf;
+								$link = h(ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . '&') . $unique_idf;
 							}
 							if (!strlen(trim($val, " \t"))) {
 								$val = "&nbsp;";
@@ -284,7 +285,7 @@ if (!$columns) {
 				// slow with big tables
 				ob_flush();
 				flush();
-				$found_rows = $dbh->result($dbh->query("SELECT COUNT(*) FROM " . idf_escape($_GET["select"]) . ($where ? " WHERE " . implode(" AND ", $where) : "")));
+				$found_rows = $dbh->result($dbh->query("SELECT COUNT(*) FROM " . idf_escape($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : "")));
 			}
 			echo "<p>";
 			if (intval($limit) && $found_rows > $limit) {

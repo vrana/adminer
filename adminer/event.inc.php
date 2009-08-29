@@ -1,10 +1,11 @@
 <?php
+$EVENT = $_GET["event"];
 $intervals = array("YEAR", "QUARTER", "MONTH", "DAY", "HOUR", "MINUTE", "WEEK", "SECOND", "YEAR_MONTH", "DAY_HOUR", "DAY_MINUTE", "DAY_SECOND", "HOUR_MINUTE", "HOUR_SECOND", "MINUTE_SECOND");
 $statuses = array("ENABLED" => "ENABLE", "DISABLED" => "DISABLE", "SLAVESIDE_DISABLED" => "DISABLE ON SLAVE");
 
 if ($_POST && !$error) {
 	if ($_POST["drop"]) {
-		query_redirect("DROP EVENT " . idf_escape($_GET["event"]), substr(ME, 0, -1), lang('Event has been dropped.'));
+		query_redirect("DROP EVENT " . idf_escape($EVENT), substr(ME, 0, -1), lang('Event has been dropped.'));
 	} elseif (in_array($_POST["INTERVAL_FIELD"], $intervals) && isset($statuses[$_POST["STATUS"]])) {
 		$schedule = "\nON SCHEDULE " . ($_POST["INTERVAL_VALUE"]
 			? "EVERY " . $dbh->quote($_POST["INTERVAL_VALUE"]) . " $_POST[INTERVAL_FIELD]"
@@ -13,23 +14,23 @@ if ($_POST && !$error) {
 			: "AT " . $dbh->quote($_POST["STARTS"])
 			) . " ON COMPLETION" . ($_POST["ON_COMPLETION"] ? "" : " NOT") . " PRESERVE"
 		;
-		query_redirect((strlen($_GET["event"])
-			? "ALTER EVENT " . idf_escape($_GET["event"]) . $schedule
-			. ($_GET["event"] != $_POST["EVENT_NAME"] ? "\nRENAME TO " . idf_escape($_POST["EVENT_NAME"]) : "")
+		query_redirect((strlen($EVENT)
+			? "ALTER EVENT " . idf_escape($EVENT) . $schedule
+			. ($EVENT != $_POST["EVENT_NAME"] ? "\nRENAME TO " . idf_escape($_POST["EVENT_NAME"]) : "")
 			: "CREATE EVENT " . idf_escape($_POST["EVENT_NAME"]) . $schedule
 			) . "\n" . $statuses[$_POST["STATUS"]] . " COMMENT " . $dbh->quote($_POST["EVENT_COMMENT"])
 			. " DO\n$_POST[EVENT_DEFINITION]"
-		, substr(ME, 0, -1), (strlen($_GET["event"]) ? lang('Event has been altered.') : lang('Event has been created.')));
+		, substr(ME, 0, -1), (strlen($EVENT) ? lang('Event has been altered.') : lang('Event has been created.')));
 	}
 }
 
-page_header((strlen($_GET["event"]) ? lang('Alter event') . ": " . h($_GET["event"]) : lang('Create event')), $error);
+page_header((strlen($EVENT) ? lang('Alter event') . ": " . h($EVENT) : lang('Create event')), $error);
 
 $row = array();
 if ($_POST) {
 	$row = $_POST;
-} elseif (strlen($_GET["event"])) {
-	$result = $dbh->query("SELECT * FROM information_schema.EVENTS WHERE EVENT_SCHEMA = " . $dbh->quote(DB) . " AND EVENT_NAME = " . $dbh->quote($_GET["event"]));
+} elseif (strlen($EVENT)) {
+	$result = $dbh->query("SELECT * FROM information_schema.EVENTS WHERE EVENT_SCHEMA = " . $dbh->quote(DB) . " AND EVENT_NAME = " . $dbh->quote($EVENT));
 	$row = $result->fetch_assoc();
 }
 ?>
@@ -48,5 +49,5 @@ if ($_POST) {
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Save'); ?>">
-<?php if (strlen($_GET["event"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
+<?php if (strlen($EVENT)) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
 </form>

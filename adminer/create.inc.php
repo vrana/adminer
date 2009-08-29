@@ -1,21 +1,22 @@
 <?php
+$TABLE = $_GET["create"];
 $partition_by = array('HASH', 'LINEAR HASH', 'KEY', 'LINEAR KEY', 'RANGE', 'LIST');
 
-$referencable_primary = referencable_primary($_GET["create"]);
+$referencable_primary = referencable_primary($TABLE);
 $foreign_keys = array();
 foreach ($referencable_primary as $table_name => $field) {
 	$foreign_keys[idf_escape($table_name) . "." . idf_escape($field["field"])] = $table_name;
 }
 
-if (strlen($_GET["create"])) {
-	$orig_fields = fields($_GET["create"]);
+if (strlen($TABLE)) {
+	$orig_fields = fields($TABLE);
 }
 
 if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] && !$_POST["down"]) {
 	$auto_increment_index = " PRIMARY KEY";
 	// don't overwrite primary key by auto_increment
-	if (strlen($_GET["create"]) && strlen($_POST["fields"][$_POST["auto_increment_col"]]["orig"])) {
-		foreach (indexes($_GET["create"]) as $index) {
+	if (strlen($TABLE) && strlen($_POST["fields"][$_POST["auto_increment_col"]]["orig"])) {
+		foreach (indexes($TABLE) as $index) {
 			foreach ($index["columns"] as $column) {
 				if ($column === $_POST["fields"][$_POST["auto_increment_col"]]["orig"]) {
 					$auto_increment_index = "";
@@ -33,17 +34,17 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 	foreach ($_POST["fields"] as $key => $field) {
 		$type_field = (isset($types[$field["type"]]) ? $field : $referencable_primary[$foreign_keys[$field["type"]]]);
 		if (strlen($field["field"]) && $type_field) {
-			$fields[] = "\n" . (strlen($_GET["create"]) ? (strlen($field["orig"]) ? "CHANGE " . idf_escape($field["orig"]) . " " : "ADD ") : "  ")
+			$fields[] = "\n" . (strlen($TABLE) ? (strlen($field["orig"]) ? "CHANGE " . idf_escape($field["orig"]) . " " : "ADD ") : "  ")
 				. idf_escape($field["field"]) . process_type($type_field)
 				. ($field["null"] ? " NULL" : " NOT NULL") // NULL for timestamp
 				. (!$field["has_default"] || $field["auto_increment"] || ereg('text|blob', $field["type"]) ? "" : " DEFAULT " . ($field["type"] == "timestamp" && eregi("^CURRENT_TIMESTAMP( on update CURRENT_TIMESTAMP)?$", $field["default"]) ? $field["default"] : $dbh->quote($field["default"])))
 				. ($key == $_POST["auto_increment_col"] ? " AUTO_INCREMENT$auto_increment_index" : "")
 				. " COMMENT " . $dbh->quote($field["comment"])
-				. (strlen($_GET["create"]) ? " $after" : "")
+				. (strlen($TABLE) ? " $after" : "")
 			;
 			$after = "AFTER " . idf_escape($field["field"]);
 			if (!isset($types[$field["type"]])) {
-				$fields[] = (strlen($_GET["create"]) ? " ADD" : "") . " FOREIGN KEY (" . idf_escape($field["field"]) . ") REFERENCES " . idf_escape($foreign_keys[$field["type"]]) . " (" . idf_escape($type_field["field"]) . ")";
+				$fields[] = (strlen($TABLE) ? " ADD" : "") . " FOREIGN KEY (" . idf_escape($field["field"]) . ") REFERENCES " . idf_escape($foreign_keys[$field["type"]]) . " (" . idf_escape($type_field["field"]) . ")";
 			}
 		} elseif (strlen($field["orig"])) {
 			$fields[] = "\nDROP " . idf_escape($field["orig"]);
@@ -66,12 +67,12 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 			? " (" . implode(",", $partitions) . "\n)"
 			: ($_POST["partitions"] ? " PARTITIONS " . intval($_POST["partitions"]) : "")
 		);
-	} elseif ($dbh->server_info >= 5.1 && strlen($_GET["create"])) {
+	} elseif ($dbh->server_info >= 5.1 && strlen($TABLE)) {
 		$status .= "\nREMOVE PARTITIONING";
 	}
 	$location = ME . "table=" . urlencode($_POST["name"]);
-	if (strlen($_GET["create"])) {
-		query_redirect("ALTER TABLE " . idf_escape($_GET["create"]) . implode(",", $fields) . ",\nRENAME TO " . idf_escape($_POST["name"]) . ",\n$status", $location, lang('Table has been altered.'));
+	if (strlen($TABLE)) {
+		query_redirect("ALTER TABLE " . idf_escape($TABLE) . implode(",", $fields) . ",\nRENAME TO " . idf_escape($_POST["name"]) . ",\n$status", $location, lang('Table has been altered.'));
 	} else {
 		$path = preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]);
 		setcookie("adminer_engine", $_POST["Engine"], gmmktime(0, 0, 0, gmdate("n") + 1), $path);
@@ -79,7 +80,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 	}
 }
 
-page_header((strlen($_GET["create"]) ? lang('Alter table') : lang('Create table')), $error, array("table" => $_GET["create"]), $_GET["create"]);
+page_header((strlen($TABLE) ? lang('Alter table') : lang('Create table')), $error, array("table" => $TABLE), $TABLE);
 
 $engines = array();
 $result = $dbh->query("SHOW ENGINES");
@@ -100,9 +101,9 @@ if ($_POST) {
 		$row["fields"][$row["auto_increment_col"]]["auto_increment"] = true;
 	}
 	process_fields($row["fields"]);
-} elseif (strlen($_GET["create"])) {
-	$row = table_status($_GET["create"]);
-	$row["name"] = $_GET["create"];
+} elseif (strlen($TABLE)) {
+	$row = table_status($TABLE);
+	$row["name"] = $TABLE;
 	$row["fields"] = array();
 	foreach ($orig_fields as $field) {
 		$field["has_default"] = isset($field["default"]);
@@ -112,7 +113,7 @@ if ($_POST) {
 		$row["fields"][] = $field;
 	}
 	if ($dbh->server_info >= 5.1) {
-		$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . $dbh->quote(DB) . " AND TABLE_NAME = " . $dbh->quote($_GET["create"]);
+		$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . $dbh->quote(DB) . " AND TABLE_NAME = " . $dbh->quote($TABLE);
 		$result = $dbh->query("SELECT PARTITION_METHOD, PARTITION_ORDINAL_POSITION, PARTITION_EXPRESSION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
 		list($row["partition_by"], $row["partitions"], $row["partition"]) = $result->fetch_row();
 		$row["partition_names"] = array();

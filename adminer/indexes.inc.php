@@ -1,6 +1,7 @@
 <?php
+$TABLE = $_GET["indexes"];
 $index_types = array("PRIMARY", "UNIQUE", "INDEX", "FULLTEXT");
-$indexes = indexes($_GET["indexes"]);
+$indexes = indexes($TABLE);
 if ($_POST && !$error && !$_POST["add"]) {
 	$alter = array();
 	foreach ($_POST["indexes"] as $index) {
@@ -34,14 +35,14 @@ if ($_POST && !$error && !$_POST["add"]) {
 		$alter[] = "\nDROP INDEX " . idf_escape($name);
 	}
 	if (!$alter) {
-		redirect(ME . "table=" . urlencode($_GET["indexes"]));
+		redirect(ME . "table=" . urlencode($TABLE));
 	}
-	query_redirect("ALTER TABLE " . idf_escape($_GET["indexes"]) . implode(",", $alter), ME . "table=" . urlencode($_GET["indexes"]), lang('Indexes have been altered.'));
+	query_redirect("ALTER TABLE " . idf_escape($TABLE) . implode(",", $alter), ME . "table=" . urlencode($TABLE), lang('Indexes have been altered.'));
 }
 
-page_header(lang('Indexes'), $error, array("table" => $_GET["indexes"]), $_GET["indexes"]);
+page_header(lang('Indexes'), $error, array("table" => $TABLE), $TABLE);
 
-$fields = array_keys(fields($_GET["indexes"]));
+$fields = array_keys(fields($TABLE));
 $row = array("indexes" => $indexes);
 if ($_POST) {
 	$row = $_POST;

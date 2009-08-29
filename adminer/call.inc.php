@@ -1,7 +1,8 @@
 <?php
-page_header(lang('Call') . ": " . h($_GET["call"]), $error);
+$PROCEDURE = $_GET["call"];
+page_header(lang('Call') . ": " . h($PROCEDURE), $error);
 
-$routine = routine($_GET["call"], (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE"));
+$routine = routine($PROCEDURE, (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE"));
 $in = array();
 $out = array();
 foreach ($routine["fields"] as $i => $field) {
@@ -27,7 +28,7 @@ if (!$error && $_POST) {
 		}
 		$call[] = (isset($out[$key]) ? "@" . idf_escape($field["field"]) : $val);
 	}
-	$result = $dbh->multi_query((isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . idf_escape($_GET["call"]) . "(" . implode(", ", $call) . ")");
+	$result = $dbh->multi_query((isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . idf_escape($PROCEDURE) . "(" . implode(", ", $call) . ")");
 	if (!$result) {
 		echo "<p class='error'>" . h($dbh->error) . "\n";
 	} else {

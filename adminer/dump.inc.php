@@ -1,4 +1,5 @@
 <?php
+$TABLE = $_GET["dump"];
 function tar_file($filename, $contents) {
 	$return = pack("a100a8a8a8a12a12", $filename, 644, 0, 0, decoct(strlen($contents)), decoct(time()));
 	$checksum = 8*32; // space for checksum itself
@@ -25,7 +26,7 @@ function dump_triggers($table, $style) {
 }
 
 if ($_POST) {
-	$ext = dump_headers((strlen($_GET["dump"]) ? $_GET["dump"] : DB), (!strlen(DB) || count((array) $_POST["tables"] + (array) $_POST["data"]) > 1));
+	$ext = dump_headers((strlen($TABLE) ? $TABLE : DB), (!strlen(DB) || count((array) $_POST["tables"] + (array) $_POST["data"]) > 1));
 	if ($_POST["format"] == "sql") {
 		dump("SET NAMES utf8;
 SET foreign_key_checks = 0;
@@ -176,14 +177,14 @@ echo "<tr><th>" . lang('Data') . "<td><select name='data_style'>" . optionlist($
 <table cellspacing="0">
 <?php
 if (strlen(DB)) {
-	$checked = (strlen($_GET["dump"]) ? "" : " checked");
+	$checked = (strlen($TABLE) ? "" : " checked");
 	echo "<thead><tr>";
 	echo "<th style='text-align: left;'><label><input type='checkbox' id='check-tables'$checked onclick='form_check(this, /^tables\\[/);'>" . lang('Tables') . "</label>";
 	echo "<th style='text-align: right;'><label>" . lang('Data') . "<input type='checkbox' id='check-data'$checked onclick='form_check(this, /^data\\[/);'></label>";
 	echo "</thead>\n";
 	$views = "";
 	foreach (table_status() as $row) {
-		$checked = (strlen($_GET["dump"]) && $row["Name"] != $_GET["dump"] ? '' : " checked");
+		$checked = (strlen($TABLE) && $row["Name"] != $TABLE ? '' : " checked");
 		$print = "<tr><td><label><input type='checkbox' name='tables[]' value='" . h($row["Name"]) . "'$checked onclick=\"form_uncheck('check-tables');\">" . h($row["Name"]) . "</label>";
 		if (!$row["Engine"]) {
 			$views .= "$print\n";

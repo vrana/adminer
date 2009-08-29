@@ -1,10 +1,11 @@
 <?php
+$PROCEDURE = $_GET["procedure"];
 $routine = (isset($_GET["function"]) ? "FUNCTION" : "PROCEDURE");
 
 $dropped = false;
 if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] && !$_POST["down"]) {
-	if (strlen($_GET["procedure"])) {
-		$dropped = query_redirect("DROP $routine " . idf_escape($_GET["procedure"]), substr(ME, 0, -1), lang('Routine has been dropped.'), $_POST["drop"], !$_POST["dropped"]);
+	if (strlen($PROCEDURE)) {
+		$dropped = query_redirect("DROP $routine " . idf_escape($PROCEDURE), substr(ME, 0, -1), lang('Routine has been dropped.'), $_POST["drop"], !$_POST["dropped"]);
 	}
 	if (!$_POST["drop"]) {
 		$set = array();
@@ -19,11 +20,11 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 			. " (" . implode(", ", $set) . ")"
 			. (isset($_GET["function"]) ? " RETURNS" . process_type($_POST["returns"], "CHARACTER SET") : "")
 			. "\n$_POST[definition]"
-		, substr(ME, 0, -1), (strlen($_GET["procedure"]) ? lang('Routine has been altered.') : lang('Routine has been created.')));
+		, substr(ME, 0, -1), (strlen($PROCEDURE) ? lang('Routine has been altered.') : lang('Routine has been created.')));
 	}
 }
 
-page_header((strlen($_GET["procedure"]) ? (isset($_GET["function"]) ? lang('Alter function') : lang('Alter procedure')) . ": " . h($_GET["procedure"]) : (isset($_GET["function"]) ? lang('Create function') : lang('Create procedure'))), $error);
+page_header((strlen($PROCEDURE) ? (isset($_GET["function"]) ? lang('Alter function') : lang('Alter procedure')) . ": " . h($PROCEDURE) : (isset($_GET["function"]) ? lang('Create function') : lang('Create procedure'))), $error);
 
 $collations = get_vals("SHOW CHARACTER SET");
 sort($collations);
@@ -32,9 +33,9 @@ if ($_POST) {
 	$row = $_POST;
 	$row["fields"] = (array) $row["fields"];
 	process_fields($row["fields"]);
-} elseif (strlen($_GET["procedure"])) {
-	$row = routine($_GET["procedure"], $routine);
-	$row["name"] = $_GET["procedure"];
+} elseif (strlen($PROCEDURE)) {
+	$row = routine($PROCEDURE, $routine);
+	$row["name"] = $PROCEDURE;
 }
 ?>
 
@@ -49,5 +50,5 @@ if ($_POST) {
 <?php if ($dropped) { ?><input type="hidden" name="dropped" value="1"><?php } ?>
 <?php echo lang('Name'); ?>: <input name="name" value="<?php echo h($row["name"]); ?>" maxlength="64">
 <input type="submit" value="<?php echo lang('Save'); ?>">
-<?php if (strlen($_GET["procedure"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
+<?php if (strlen($PROCEDURE)) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
 </form>
