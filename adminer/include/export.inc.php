@@ -19,7 +19,7 @@ function dump_table($table, $style, $is_view = false) {
 			// create procedure which iterates over original columns and adds new and removes old
 			$query = "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLLATION_NAME, COLUMN_TYPE, EXTRA, COLUMN_COMMENT FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = " . $dbh->quote($table) . " ORDER BY ORDINAL_POSITION";
 			dump("DELIMITER ;;
-CREATE PROCEDURE adminer_alter () BEGIN
+CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 	DECLARE _column_name, _collation_name, _column_type, after varchar(64) DEFAULT '';
 	DECLARE _column_default longtext;
 	DECLARE _is_nullable char(3);
@@ -76,14 +76,11 @@ CREATE PROCEDURE adminer_alter () BEGIN
 	UNTIL done END REPEAT;
 	CLOSE columns;
 	IF @alter_table != '' OR add_columns != '' THEN
-		SET @alter_table = CONCAT('ALTER TABLE " . idf_escape($table) . "', SUBSTR(CONCAT(add_columns, @alter_table), 2));
-		PREPARE alter_command FROM @alter_table;
-		EXECUTE alter_command;
-		DROP PREPARE alter_command;
+		SET alter_command = CONCAT(alter_command, 'ALTER TABLE " . idf_escape($table) . "', SUBSTR(CONCAT(add_columns, @alter_table), 2), ';\\n');
 	END IF;
 END;;
 DELIMITER ;
-CALL adminer_alter;
+CALL adminer_alter(@adminer_alter);
 DROP PROCEDURE adminer_alter;
 
 ");

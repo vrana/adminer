@@ -1,5 +1,4 @@
 Bulk database drop
-Print CREATE+ALTER export instead of running it
 Add whisperer to fields with foreign key
 Highlight found fields
 MySQL 5 BIT data type

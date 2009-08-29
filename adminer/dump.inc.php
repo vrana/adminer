@@ -46,7 +46,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 				dump(($style == "CREATE+ALTER" ? preg_replace('~^CREATE DATABASE ~', '\\0IF NOT EXISTS ', $create) : $create) . ";\n");
 			}
 			if ($style && $_POST["format"] == "sql") {
-				dump("USE " . idf_escape($db) . ";\n\n");
+				dump(($style == "CREATE+ALTER" ? "SET @adminer_alter = '';\n" : "") . "USE " . idf_escape($db) . ";\n\n");
 				$out = "";
 				if ($dbh->server_info >= 5) {
 					foreach (array("FUNCTION", "PROCEDURE") as $routine) {
@@ -108,7 +108,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 				// drop old tables
 				$query = "SELECT TABLE_NAME, ENGINE, TABLE_COLLATION, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()";
 				dump("DELIMITER ;;
-CREATE PROCEDURE adminer_drop () BEGIN
+CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 	DECLARE _table_name, _engine, _table_collation varchar(64);
 	DECLARE _table_comment varchar(64);
 	DECLARE done bool DEFAULT 0;
@@ -130,19 +130,19 @@ while ($row = $result->fetch_assoc()) {
 }
 dump("
 				ELSE
-					SET @alter_table = CONCAT('DROP TABLE `', REPLACE(_table_name, '`', '``'), '`');
-					PREPARE alter_command FROM @alter_table;
-					EXECUTE alter_command; -- returns can't return a result set in the given context with MySQL extension
-					DROP PREPARE alter_command;
+					SET alter_command = CONCAT(alter_command, 'DROP TABLE `', REPLACE(_table_name, '`', '``'), '`;\\n');
 			END CASE;
 		END IF;
 	UNTIL done END REPEAT;
 	CLOSE tables;
 END;;
 DELIMITER ;
-CALL adminer_drop;
-DROP PROCEDURE adminer_drop;
+CALL adminer_alter(@adminer_alter);
+DROP PROCEDURE adminer_alter;
 ");
+			}
+			if (in_array("CREATE+ALTER", array($style, $_POST["table_style"])) && $_POST["format"] == "sql") {
+				dump("SELECT @adminer_alter;\n");
 			}
 		}
 	}
