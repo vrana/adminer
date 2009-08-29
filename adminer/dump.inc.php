@@ -47,7 +47,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 				dump(($style == "CREATE+ALTER" ? preg_replace('~^CREATE DATABASE ~', '\\0IF NOT EXISTS ', $create) : $create) . ";\n");
 			}
 			if ($style && $_POST["format"] == "sql") {
-				dump(($style == "CREATE+ALTER" ? "SET @adminer_alter = '';\n" : "") . "USE " . idf_escape($db) . ";\n\n");
+				dump("USE " . idf_escape($db) . ";\n" . ($style == "CREATE+ALTER" ? "SET @adminer_alter = '';\n" : "") . "\n");
 				$out = "";
 				if ($dbh->server_info >= 5) {
 					foreach (array("FUNCTION", "PROCEDURE") as $routine) {
@@ -120,16 +120,16 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 		FETCH tables INTO _table_name, _engine, _table_collation, _table_comment;
 		IF NOT done THEN
 			CASE _table_name");
-$result = $dbh->query($query);
-while ($row = $result->fetch_assoc()) {
-	$comment = $dbh->quote($row["ENGINE"] == "InnoDB" ? preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["TABLE_COMMENT"]) : $row["TABLE_COMMENT"]);
-	dump("
+				$result = $dbh->query($query);
+				while ($row = $result->fetch_assoc()) {
+					$comment = $dbh->quote($row["ENGINE"] == "InnoDB" ? preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["TABLE_COMMENT"]) : $row["TABLE_COMMENT"]);
+					dump("
 				WHEN " . $dbh->quote($row["TABLE_NAME"]) . " THEN
 					" . (isset($row["ENGINE"]) ? "IF _engine != '$row[ENGINE]' OR _table_collation != '$row[TABLE_COLLATION]' OR _table_comment != $comment THEN
 						ALTER TABLE " . idf_escape($row["TABLE_NAME"]) . " ENGINE=$row[ENGINE] COLLATE=$row[TABLE_COLLATION] COMMENT=$comment;
 					END IF" : "BEGIN END") . ";");
-}
-dump("
+				}
+				dump("
 				ELSE
 					SET alter_command = CONCAT(alter_command, 'DROP TABLE `', REPLACE(_table_name, '`', '``'), '`;\\n');
 			END CASE;
