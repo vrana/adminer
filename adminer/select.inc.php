@@ -90,7 +90,8 @@ if ($_POST && !$error) {
 			$affected = 0;
 			$length = 0;
 			$result = true;
-			$query = "INSERT INTO " . idf_escape($_GET["select"]);
+			$dbh->query("SET foreign_key_checks = 0");
+			$query = "REPLACE " . idf_escape($_GET["select"]); // ON DUPLICATE KEY UPDATE would require one query per record
 			$packet_size = $dbh->result($dbh->query("SELECT @@max_allowed_packet"));
 			$rows = array();
 			preg_match_all('~("[^"]*"|[^"\\n])+~', $file, $matches);
@@ -111,7 +112,7 @@ if ($_POST && !$error) {
 						if (!$result) {
 							break;
 						}
-						$affected += $dbh->affected_rows;
+						$affected += count($rows);
 						$length = strlen($query);
 						$rows = array();
 					}
@@ -124,7 +125,7 @@ if ($_POST && !$error) {
 			}
 			if ($result) {
 				$result = queries($query . implode(",", $rows));
-				$affected += $dbh->affected_rows;
+				$affected += count($rows);
 			}
 			query_redirect(queries(), remove_from_uri("page"), lang('%d row(s) have been imported.', $affected), $result, false, !$result);
 		} else {
