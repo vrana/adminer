@@ -104,10 +104,6 @@ function redirect($location, $message = null) {
 	if (isset($message)) {
 		$_SESSION["messages"][] = $message;
 	}
-	if (strlen(SID)) {
-		// append SID if session cookies are disabled
-		$location .= (strpos($location, "?") === false ? "?" : "&") . SID;
-	}
 	header("Location: " . (strlen($location) ? $location : "."));
 	exit;
 }

@@ -1,26 +1,21 @@
 <?php
 $ignore = array("server", "username", "password");
 $session_name = session_name();
-if (ini_get("session.use_trans_sid") && isset($_POST[$session_name])) {
-	$ignore[] = $session_name;
-}
 if (isset($_POST["server"])) {
-	if (isset($_COOKIE[$session_name]) || isset($_POST[$session_name])) {
-		session_regenerate_id(); // defense against session fixation
-		$_SESSION["usernames"][$_POST["server"]] = $_POST["username"];
-		$_SESSION["passwords"][$_POST["server"]] = $_POST["password"];
-		$_SESSION["tokens"][$_POST["server"]] = rand(1, 1e6); // defense against cross-site request forgery
-		if (count($_POST) == count($ignore)) {
-			$location = ((string) $_GET["server"] === $_POST["server"] ? remove_from_uri() : preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . (strlen($_POST["server"]) ? '?server=' . urlencode($_POST["server"]) : ''));
-			if (!isset($_COOKIE[$session_name])) {
-				$location .= (strpos($location, "?") === false ? "?" : "&") . SID;
-			}
-			header("Location: " . (strlen($location) ? $location : "."));
-			exit;
+	session_regenerate_id(); // defense against session fixation
+	$_SESSION["usernames"][$_POST["server"]] = $_POST["username"];
+	$_SESSION["passwords"][$_POST["server"]] = $_POST["password"];
+	$_SESSION["tokens"][$_POST["server"]] = rand(1, 1e6); // defense against cross-site request forgery
+	if (count($_POST) == count($ignore)) {
+		$location = ((string) $_GET["server"] === $_POST["server"] ? remove_from_uri() : preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . (strlen($_POST["server"]) ? '?server=' . urlencode($_POST["server"]) : ''));
+		if (!isset($_COOKIE[$session_name])) {
+			$location .= (strpos($location, "?") === false ? "?" : "&") . SID;
 		}
-		if ($_POST["token"]) {
-			$_POST["token"] = $_SESSION["tokens"][$_POST["server"]];
-		}
+		header("Location: " . (strlen($location) ? $location : "."));
+		exit;
+	}
+	if ($_POST["token"]) {
+		$_POST["token"] = $_SESSION["tokens"][$_POST["server"]];
 	}
 	$_GET["server"] = $_POST["server"];
 } elseif (isset($_POST["logout"])) {

@@ -45,6 +45,7 @@ if (!isset($_SERVER["REQUEST_URI"])) {
 
 if (!ini_get("session.auto_start")) {
 	// use specific session name to get own namespace
+	@ini_set("session.use_trans_sid", false); // @ - may be disabled
 	session_name("adminer_sid");
 	session_set_cookie_params(0, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"])); //! use HttpOnly in PHP 5
 	session_start();
@@ -70,7 +71,7 @@ set_magic_quotes_runtime(false);
 @set_time_limit(0); // @ - can be disabled
 
 define("DB", $_GET["db"]); // for the sake of speed and size
-define("ME", preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . '?' . (strlen($_GET["server"]) ? 'server=' . urlencode($_GET["server"]) . '&' : '') . (strlen(DB) ? 'db=' . urlencode(DB) . '&' : ''));
+define("ME", preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . '?' . (SID ? SID . '&' : '') . (strlen($_GET["server"]) ? 'server=' . urlencode($_GET["server"]) . '&' : '') . (strlen(DB) ? 'db=' . urlencode(DB) . '&' : ''));
 $on_actions = array("RESTRICT", "CASCADE", "SET NULL", "NO ACTION"); // used in foreign_keys()
 
 include "../adminer/include/version.inc.php";
