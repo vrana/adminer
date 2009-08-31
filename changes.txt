@@ -3,8 +3,7 @@ Edit default values directly in table creation
 Execute SQL file stored on server disk
 Compress export and import
 Display column comments in table overview
-Respect max_allowed_packet in CSV import
-Print ALTER command instead of running it in export
+Use ON DUPLICATE KEY UPDATE for CSV import
 Click on row selects it
 Fix Editor date format
 Fix long SQL query crash (bug #2839231)
