@@ -85,7 +85,7 @@ if (!$error && $_POST) {
 						$offset = strlen($query);
 					}
 				} else { // find matching quote
-					while (preg_match("~$found|\\\\.|\$~s", $query, $match, PREG_OFFSET_CAPTURE, $offset)) {
+					while (preg_match("~$found|\\\\.|\$~s", $query, $match, PREG_OFFSET_CAPTURE, $offset)) { //! respect sql_mode NO_BACKSLASH_ESCAPES
 						$s = $match[0][0];
 						$offset = $match[0][1] + strlen($s);
 						if (!$s || $s == $found) {

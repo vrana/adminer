@@ -140,6 +140,9 @@ if (extension_loaded("mysqli")) {
 	exit;
 }
 
+/** Connect to the database
+* @return mixed Min_DB or string for error
+*/
 function connect() {
 	global $adminer;
 	$dbh = new Min_DB;
@@ -152,6 +155,10 @@ function connect() {
 	return $dbh->error;
 }
 
+/** Get cached list of databases
+* @param bool
+* @return array
+*/
 function get_databases($flush = true) {
 	// SHOW DATABASES can take a very long time so it is cached
 	$return = &$_SESSION["databases"][$_GET["server"]];
@@ -165,6 +172,10 @@ function get_databases($flush = true) {
 	return $return;
 }
 
+/** Get table status
+* @param string
+* @return array
+*/
 function table_status($name = "") {
 	global $dbh;
 	$return = array();
@@ -179,6 +190,9 @@ function table_status($name = "") {
 	return (strlen($name) ? $return[$name] : $return);
 }
 
+/** Get status of referencable tables
+* @return array
+*/
 function table_status_referencable() {
 	$return = array();
 	foreach (table_status() as $name => $row) {
@@ -189,6 +203,10 @@ function table_status_referencable() {
 	return $return;
 }
 
+/** Get information about fields
+* @param string
+* @return array array($name => array("field" => , "full_type" => , "type" => , "length" => , "unsigned" => , "default" => , "null" => , "auto_increment" => , "on_update" => , "collation" => , "privileges" => , "comment" => , "primary" => ))
+*/
 function fields($table) {
 	global $dbh;
 	$return = array();
@@ -216,6 +234,11 @@ function fields($table) {
 	return $return;
 }
 
+/** Get table indexes
+* @param string
+* @param string Min_DB to use
+* @return array array($key_name => array("type" => , "columns" => array(), "lengths" => array()))
+*/
 function indexes($table, $dbh2 = null) {
 	global $dbh;
 	if (!is_object($dbh2)) { // use the main connection if the separate connection is unavailable
@@ -233,6 +256,10 @@ function indexes($table, $dbh2 = null) {
 	return $return;
 }
 
+/** Get foreign keys in table
+* @param string
+* @return array array($name => array("db" => , "table" => , "source" => array(), "target" => array(), "on_delete" => , "on_update" => ))
+*/
 function foreign_keys($table) {
 	global $dbh, $on_actions;
 	static $pattern = '(?:[^`]|``)+';
@@ -257,11 +284,18 @@ function foreign_keys($table) {
 	return $return;
 }
 
+/** Get view SELECT
+* @param string
+* @return array array("select" => )
+*/
 function view($name) {
 	global $dbh;
 	return array("select" => preg_replace('~^(?:[^`]|`[^`]*`)* AS ~U', '', $dbh->result($dbh->query("SHOW CREATE VIEW " . idf_escape($name)), 1)));
 }
 
+/** Get sorted grouped list of collations
+* @return array
+*/
 function collations() {
 	global $dbh;
 	$return = array();
@@ -276,11 +310,19 @@ function collations() {
 	return $return;
 }
 
+/** Escape string to use inside ''
+* @param string
+* @return string
+*/
 function escape_string($val) {
 	global $dbh;
 	return substr($dbh->quote($val), 1, -1);
 }
 
+/** Find out if database is information_schema
+* @param string
+* @return bool
+*/
 function information_schema($db) {
 	global $dbh;
 	return ($dbh->server_info >= 5 && $db == "information_schema");

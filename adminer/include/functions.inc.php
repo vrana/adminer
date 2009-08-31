@@ -1,32 +1,62 @@
 <?php
+/** Get database connection
+* @return Min_DB
+*/
 function get_dbh() {
 	// can be used in customization, $dbh is minified
 	global $dbh;
 	return $dbh;
 }
 
+/** Escape database identifier
+* @param string
+* @return string
+*/
 function idf_escape($idf) {
 	return "`" . str_replace("`", "``", $idf) . "`";
 }
 
+/** Unescape database identifier
+* @param string text inside ``
+* @return string
+*/
 function idf_unescape($idf) {
 	return str_replace("``", "`", $idf);
 }
 
+/** Escape or unescape string to use inside form []
+* @param string
+* @param bool
+* @return string
+*/
 function bracket_escape($idf, $back = false) {
 	// escape brackets inside name="x[]"
 	static $trans = array(':' => ':1', ']' => ':2', '[' => ':3');
 	return strtr($idf, ($back ? array_flip($trans) : $trans));
 }
 
+/** Escape for HTML
+* @param string
+* @return string
+*/
 function h($string) {
 	return htmlspecialchars($string, ENT_QUOTES);
 }
 
+/** Escape for TD
+* @param string
+* @return string
+*/
 function nbsp($string) {
 	return (strlen(trim($string)) ? h($string) : "&nbsp;");
 }
 
+/** Generate list of HTML options
+* @param array array of strings or arrays (creates optgroup)
+* @param mixed
+* @param bool always use array keys for value="", otherwise only string keys are used
+* @return string
+*/
 function optionlist($options, $selected = null, $use_keys = false) {
 	$return = "";
 	foreach ($options as $k => $v) {
@@ -43,6 +73,11 @@ function optionlist($options, $selected = null, $use_keys = false) {
 	return $return;
 }
 
+/** Get list of values from database
+* @param string
+* @param mixed
+* @return array
+*/
 function get_vals($query, $column = 0) {
 	global $dbh;
 	$return = array();
@@ -55,6 +90,11 @@ function get_vals($query, $column = 0) {
 	return $return;
 }
 
+/** Find unique identifier of a row
+* @param array
+* @param array result of indexes()
+* @return string query string
+*/
 function unique_idf($row, $indexes) {
 	foreach ($indexes as $index) {
 		if ($index["type"] == "PRIMARY" || $index["type"] == "UNIQUE") {
@@ -77,6 +117,10 @@ function unique_idf($row, $indexes) {
 	return $return;
 }
 
+/** Create SQL condition from parsed query string
+* @param array parsed query string
+* @return string
+*/
 function where($where) {
 	global $dbh;
 	$return = array();
@@ -91,15 +135,30 @@ function where($where) {
 	return implode(" AND ", $return);
 }
 
+/** Create SQL condition from query string
+* @param string
+* @return string
+*/
 function where_check($val) {
 	parse_str($val, $check);
 	return where($check);
 }
 
+/** Create query string where condition from value
+* @param int condition order
+* @param string column identifier
+* @param string
+* @return string
+*/
 function where_link($i, $column, $value) {
 	return "&where%5B$i%5D%5Bcol%5D=" . urlencode($column) . "&where%5B$i%5D%5Bop%5D=%3D&where%5B$i%5D%5Bval%5D=" . urlencode($value);
 }
 
+/** Send Location header and exit
+* @param string
+* @param string
+* @return null
+*/
 function redirect($location, $message = null) {
 	if (isset($message)) {
 		$_SESSION["messages"][] = $message;
@@ -108,6 +167,15 @@ function redirect($location, $message = null) {
 	exit;
 }
 
+/** Execute query and redirect if successful
+* @param string
+* @param string
+* @param string
+* @param bool
+* @param bool
+* @param bool
+* @return bool
+*/
 function query_redirect($query, $location, $message, $redirect = true, $execute = true, $failed = false) {
 	global $dbh, $error, $adminer;
 	$sql = "";
@@ -127,6 +195,10 @@ function query_redirect($query, $location, $message, $redirect = true, $execute 
 	return true;
 }
 
+/** Execute and remember query
+* @param string null to return remembered queries
+* @return Min_Result
+*/
 function queries($query = null) {
 	global $dbh;
 	static $queries = array();
@@ -138,15 +210,28 @@ function queries($query = null) {
 	return $dbh->query($query);
 }
 
+/** Remove parameter from query string
+* @param string
+* @return string
+*/
 function remove_from_uri($param = "") {
 	$param = "($param|" . session_name() . ")";
 	return preg_replace("~\\?$param=[^&]*&~", '?', preg_replace("~\\?$param=[^&]*\$|&$param=[^&]*~", '', $_SERVER["REQUEST_URI"]));
 }
 
+/** Generate page number for pagination
+* @param int
+* @return string
+*/
 function pagination($page) {
 	return " " . ($page == $_GET["page"] ? $page + 1 : '<a href="' . h(remove_from_uri("page") . ($page ? "&page=$page" : "")) . '">' . ($page + 1) . "</a>");
 }
 
+/** Get file contents from $_FILES or $_POST["files"]
+* @param string
+* @param bool
+* @return string
+*/
 function get_file($key, $decompress = false) {
 	// returns int for error, string otherwise
 	$file = $_POST["files"][$key];
@@ -168,19 +253,32 @@ function get_file($key, $decompress = false) {
 	)); //! may not be reachable because of open_basedir
 }
 
+/** Determine upload error
+* @param int
+* @return string
+*/
 function upload_error($error) {
 	$max_size = ($error == UPLOAD_ERR_INI_SIZE ? ini_get("upload_max_filesize") : null); // post_max_size is checked in index.php
 	return ($error ? lang('Unable to upload a file.') . ($max_size ? " " . lang('Maximum allowed file size is %sB.', $max_size) : "") : lang('File does not exist.'));
 }
 
-function odd($s = ' class="odd"') {
+/** Generate class for odd rows
+* @param string return this for odd rows, empty to reset counter
+* @return string
+*/
+function odd($return = ' class="odd"') {
 	static $i = 0;
-	if (!$s) { // reset counter
+	if (!$return) { // reset counter
 		$i = -1;
 	}
-	return ($i++ % 2 ? $s : '');
+	return ($i++ % 2 ? $return : '');
 }
 
+/** Print select result
+* @param Min_Result
+* @param Min_DB connection to examine indexes
+* @return null
+*/
 function select($result, $dbh2 = null) {
 	if (!$result->num_rows) {
 		echo "<p class='message'>" . lang('No rows.') . "\n";
@@ -253,11 +351,21 @@ function select($result, $dbh2 = null) {
 	}
 }
 
+/** Check whether the string is in UTF-8
+* @param string
+* @return bool
+*/
 function is_utf8($val) {
 	// don't print control chars except \t\r\n
 	return (preg_match('~~u', $val) && !preg_match('~[\\0-\\x8\\xB\\xC\\xE-\\x1F]~', $val));
 }
 
+/** Shorten UTF-8 string
+* @param string
+* @param int
+* @param string
+* @return string escaped string with appended ...
+*/
 function shorten_utf8($string, $length = 80, $suffix = "") {
 	if (!preg_match("~^((?:.|\n){0,$length})(.|\n)?~u", $string, $match)) { // ~s causes trash in $match[2] under some PHP versions
 		preg_match("(^([\t\r\n -~]{0,$length})(.?))s", $string, $match);
@@ -265,11 +373,20 @@ function shorten_utf8($string, $length = 80, $suffix = "") {
 	return h($match[1]) . $suffix . ($match[2] ? "<em>...</em>" : "");
 }
 
+/** Generate friendly URL
+* @param string
+* @return string
+*/
 function friendly_url($val) {
 	// used for blobs and export
 	return preg_replace('~[^a-z0-9_]~i', '-', $val);
 }
 
+/** Print hidden fields
+* @param array
+* @param array
+* @return null
+*/
 function hidden_fields($process, $ignore = array()) {
 	while (list($key, $val) = each($process)) {
 		if (is_array($val)) {
@@ -282,6 +399,10 @@ function hidden_fields($process, $ignore = array()) {
 	}
 }
 
+/** Find out foreign keys for each column
+* @param string
+* @return array array($col => array())
+*/
 function column_foreign_keys($table) {
 	$return = array();
 	foreach (foreign_keys($table) as $foreign_key) {
@@ -292,6 +413,12 @@ function column_foreign_keys($table) {
 	return $return;
 }
 
+/** Print edit input field
+* @param array one field from fields()
+* @param mixed
+* @param string
+* @return null
+*/
 function input($field, $value, $function) {
 	global $types, $adminer;
 	$name = h(bracket_escape($field["field"]));
@@ -335,6 +462,10 @@ function input($field, $value, $function) {
 	}
 }
 
+/** Process edit input field
+* @param one field from fields()
+* @return string
+*/
 function process_input($field) {
 	global $dbh, $adminer;
 	$idf = bracket_escape($field["field"]);
@@ -359,6 +490,10 @@ function process_input($field) {
 	}
 }
 
+/** Print data with optional compression
+* @param string null to force output
+* @return null
+*/
 function dump($string = null) { // null $string forces sending of buffer
 	static $buffer = ""; // used to improve compression and to allow GZ archives unpackable in Total Commander
 	if ($_POST["compress"]) {
@@ -376,6 +511,10 @@ function dump($string = null) { // null $string forces sending of buffer
 	}
 }
 
+/** Print CSV row
+* @param array
+* @return null
+*/
 function dump_csv($row) {
 	foreach ($row as $key => $val) {
 		if (preg_match("~[\"\n,]~", $val) || (isset($val) && !strlen($val))) {
@@ -385,10 +524,19 @@ function dump_csv($row) {
 	dump(implode(",", $row) . "\n");
 }
 
+/** Apply SQL function
+* @param string
+* @param string escaped column identifier
+* @return string
+*/
 function apply_sql_function($function, $column) {
 	return ($function ? ($function == "count distinct" ? "COUNT(DISTINCT " : strtoupper("$function(")) . "$column)" : $column);
 }
 
+/** Check whether the string is e-mail address
+* @param string
+* @return bool
+*/
 function is_email($email) {
 	$atom = '[-a-z0-9!#$%&\'*+/=?^_`{|}~]'; // characters of local-name
 	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component
