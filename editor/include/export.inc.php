@@ -18,6 +18,7 @@ function dump_headers($identifier) {
 	$ext = "csv";
 	header("Content-Type: text/csv; charset=utf-8");
 	header("Content-Disposition: attachment; filename=$filename.$ext");
+	session_write_close();
 	return $ext;
 }
 

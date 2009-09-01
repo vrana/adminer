@@ -153,6 +153,7 @@ function dump_headers($identifier, $multi_table = false) {
 	if ($_POST["output"] == "file" || $compress) {
 		header("Content-Disposition: attachment; filename=$filename.$ext" . (ereg('[0-9a-z]', $compress) ? ".$compress" : ""));
 	}
+	session_write_close();
 	return $ext;
 }
 
