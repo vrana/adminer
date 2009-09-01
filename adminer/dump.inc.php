@@ -1,5 +1,6 @@
 <?php
 $TABLE = $_GET["dump"];
+
 function tar_file($filename, $contents) {
 	$return = pack("a100a8a8a8a12a12", $filename, 644, 0, 0, decoct(strlen($contents)), decoct(time()));
 	$checksum = 8*32; // space for checksum itself
@@ -28,7 +29,8 @@ function dump_triggers($table, $style) {
 if ($_POST) {
 	$ext = dump_headers((strlen($TABLE) ? $TABLE : DB), (!strlen(DB) || count((array) $_POST["tables"] + (array) $_POST["data"]) > 1));
 	if ($_POST["format"] == "sql") {
-		dump("SET NAMES utf8;
+		dump("-- Adminer $VERSION dump
+SET NAMES utf8;
 SET foreign_key_checks = 0;
 SET time_zone = " . $dbh->quote($dbh->result($dbh->query("SELECT @@time_zone"))) . ";
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
