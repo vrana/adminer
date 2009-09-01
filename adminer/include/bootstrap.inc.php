@@ -44,10 +44,13 @@ if (!isset($_SERVER["REQUEST_URI"])) {
 }
 
 if (!ini_get("session.auto_start")) {
-	// use specific session name to get own namespace
-	@ini_set("session.use_trans_sid", false); // @ - may be disabled
-	session_name("adminer_sid");
-	session_set_cookie_params(0, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"])); //! use HttpOnly in PHP 5
+	@ini_set("session.use_trans_sid", false); // protect links in export, @ - may be disabled
+	session_name("adminer_sid"); // use specific session name to get own namespace
+	$params = array(0, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]), "", $_SERVER["HTTPS"]);
+	if (version_compare(PHP_VERSION, '5.2.0') >= 0) {
+		$params[] = true; // HttpOnly
+	}
+	call_user_func_array('session_set_cookie_params', $params);
 	session_start();
 }
 
