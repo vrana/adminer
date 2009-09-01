@@ -201,21 +201,17 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 	function selectSearchProcess($fields, $indexes) {
 		$return = array();
 		foreach ((array) $_GET["where"] as $val) {
-			if (strlen("$val[col]$val[val]")) {
-				$value = $this->processInput($fields[$val["col"]], $val["val"]);
-				$cond = ($value == "NULL" ? " IS" : ($val["op"] == "=" ? " =" : " LIKE")) . " $value";
-				if (strlen($val["col"])) {
-					$return[] = idf_escape($val["col"]) . $cond;
-				} else {
-					// find anywhere
-					$cols = array();
-					foreach ($fields as $name => $field) {
-						if (is_numeric($val["val"]) || !ereg('int|float|double|decimal', $field["type"])) {
-							$cols[] = $name;
-						}
+			$col = $val["col"];
+			if (strlen("$col$val[val]")) {
+				$conds = array();
+				foreach ((strlen($col) ? array($col => $fields[$col]) : $fields) as $name => $field) {
+					if (strlen($col) || is_numeric($val["val"]) || !ereg('int|float|double|decimal', $field["type"])) {
+						$text_type = ereg('char|text|enum|set', $field["type"]);
+						$value = $this->processInput($field, (strlen($val["val"]) && $text_type && strpos($val["val"], "%") === false ? "%$val[val]%" : $val["val"]));
+						$conds[] = idf_escape($name) . ($value == "NULL" ? " IS" : ($val["op"] != "=" && $text_type ? " LIKE" : " =")) . " $value";
 					}
-					$return[] = ($cols ? "(" . implode("$cond OR ", array_map('idf_escape', $cols)) . "$cond)" : "0");
 				}
+				$return[] = ($conds ? "(" . implode(" OR ", $conds) . ")" : "0");
 			}
 		}
 		return $return;
