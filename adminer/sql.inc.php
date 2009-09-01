@@ -8,23 +8,26 @@ if (!$error && $_POST["clear"]) {
 page_header(lang('SQL command'), $error);
 
 if (!$error && $_POST) {
+	$fp = false;
 	$query = $_POST["query"];
 	if ($_POST["webfile"]) {
-		$query = @file_get_contents(file_exists("adminer.sql") ? "adminer.sql"
+		$fp = @fopen((file_exists("adminer.sql") ? "adminer.sql"
 			: (file_exists("adminer.sql.gz") ? "compress.zlib://adminer.sql.gz"
 			: "compress.bzip2://adminer.sql.bz2"
-		));
+		)), "rb");
+		$query = ($fp ? fread($fp, 1e6) : false);
 	} elseif ($_POST["file"]) {
 		$query = get_file("sql_file", true);
 	}
-	if (is_string($query)) { // get_file() returns error as number, file_get_contents as false
+	if (is_string($query)) { // get_file() returns error as number, fread() as false
 		$space = "(\\s|/\\*.*\\*/|(#|-- )[^\n]*\n|--\n)";
 		$alter_database = "(CREATE|DROP)$space+(DATABASE|SCHEMA)\\b~isU";
 		$databases = &$_SESSION["databases"][$_GET["server"]];
 		if (isset($databases) && !preg_match("~\\b$alter_database", $query)) { // quick check - may be inside string
+			//! false positive with $fp
 			session_write_close();
 		}
-		if (strlen($query) && (!$history || end($history) != $query)) { // don't add repeated 
+		if (!$fp && strlen($query) && (!$history || end($history) != $query)) { // don't add repeated 
 			$history[] = $query;
 		}
 		$delimiter = ";";
@@ -42,54 +45,55 @@ if (!$error && $_POST) {
 				preg_match('(' . preg_quote($delimiter) . '|[\'`"]|/\\*|-- |#|$)', $query, $match, PREG_OFFSET_CAPTURE, $offset); // should always match
 				$found = $match[0][0];
 				$offset = $match[0][1] + strlen($found);
-				if (!$found && !strlen(rtrim($query))) {
-					break;
-				}
-				if (!$found || $found == $delimiter) { // end of a query
-					$empty = false;
-					echo "<pre class='jush-sql'>" . shorten_utf8(trim(substr($query, 0, $match[0][1]))) . "</pre>\n";
-					ob_flush();
-					flush(); // can take a long time - show the running query
-					$start = explode(" ", microtime()); // microtime(true) is available since PHP 5
-					//! don't allow changing of character_set_results, convert encoding of displayed query
-					if (!$dbh->multi_query(substr($query, 0, $match[0][1]))) {
-						echo "<p class='error'>" . lang('Error in query') . ": " . h($dbh->error) . "\n";
-						if ($_POST["error_stops"]) {
-							break;
-						}
-					} else {
-						$end = explode(" ", microtime());
-						$i = 0;
-						do {
-							$result = $dbh->store_result();
-							if (!$i) {
-								echo "<p class='time'>" . (is_object($result) ? lang('%d row(s)', $result->num_rows) . ", ": "") . lang('%.3f s', max(0, $end[0] - $start[0] + $end[1] - $start[1])) . "\n";
-								$i++;
+				if (!$found && $fp && !feof($fp)) {
+					$query .= fread($fp, 1e6);
+				} else {
+					if (!$found && !strlen(rtrim($query))) {
+						break;
+					}
+					if (!$found || $found == $delimiter) { // end of a query
+						$empty = false;
+						echo "<pre class='jush-sql'>" . shorten_utf8(trim(substr($query, 0, $match[0][1]))) . "</pre>\n";
+						ob_flush();
+						flush(); // can take a long time - show the running query
+						$start = explode(" ", microtime()); // microtime(true) is available since PHP 5
+						//! don't allow changing of character_set_results, convert encoding of displayed query
+						if (!$dbh->multi_query(substr($query, 0, $match[0][1]))) {
+							echo "<p class='error'>" . lang('Error in query') . ": " . h($dbh->error) . "\n";
+							if ($_POST["error_stops"]) {
+								break;
 							}
-							if (is_object($result)) {
-								select($result, $dbh2);
-							} else {
-								if (preg_match("~^$space*$alter_database", $query)) {
-									$databases = null; // clear cache
+						} else {
+							$end = explode(" ", microtime());
+							$i = 0;
+							do {
+								$result = $dbh->store_result();
+								if (!$i) {
+									echo "<p class='time'>" . (is_object($result) ? lang('%d row(s)', $result->num_rows) . ", ": "") . lang('%.3f s', max(0, $end[0] - $start[0] + $end[1] - $start[1])) . "\n";
+									$i++;
 								}
-								echo "<p class='message'>" . lang('Query executed OK, %d row(s) affected.', $dbh->affected_rows) . "\n";
+								if (is_object($result)) {
+									select($result, $dbh2);
+								} else {
+									if (preg_match("~^$space*$alter_database", $query)) {
+										$databases = null; // clear cache
+									}
+									echo "<p class='message'>" . lang('Query executed OK, %d row(s) affected.', $dbh->affected_rows) . "\n";
+								}
+								unset($result); // free resultset
+							} while ($dbh->next_result());
+						}
+						$query = substr($query, $offset);
+						$offset = 0;
+					} else { // find matching quote or comment end
+						while (preg_match('~' . ($found == '/*' ? '\\*/' : (ereg('-- |#', $found) ? "\n" : "$found|\\\\.")) . '|$~s', $query, $match, PREG_OFFSET_CAPTURE, $offset)) { //! respect sql_mode NO_BACKSLASH_ESCAPES
+							$s = $match[0][0];
+							$offset = $match[0][1] + strlen($s);
+							if (!$s && $fp && !feof($fp)) {
+								$query .= fread($fp, 1e6);
+							} elseif ($s[0] != "\\") {
+								break;
 							}
-							unset($result); // free resultset
-						} while ($dbh->next_result());
-					}
-					$query = substr($query, $offset);
-					$offset = 0;
-				} elseif (ereg('/\\*|-- |#', $found)) { // find closing part
-					$offset = strpos($query, ($found == "/*" ? "*/" : "\n"), $offset);
-					if (!$offset) {
-						$offset = strlen($query);
-					}
-				} else { // find matching quote
-					while (preg_match("~$found|\\\\.|\$~s", $query, $match, PREG_OFFSET_CAPTURE, $offset)) { //! respect sql_mode NO_BACKSLASH_ESCAPES
-						$s = $match[0][0];
-						$offset = $match[0][1] + strlen($s);
-						if (!$s || $s == $found) {
-							break;
 						}
 					}
 				}
