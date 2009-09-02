@@ -90,7 +90,7 @@ if ($_POST && !$error) {
 			$file = preg_replace("~^\xEF\xBB\xBF~", '', $file); //! character set
 			$result = true;
 			$cols = array_keys($fields);
-			preg_match_all('~("[^"]*"|[^"\\n])+~', $file, $matches);
+			preg_match_all('~("[^"]*"|[^"\\r\\n])+~', $file, $matches);
 			$affected = count($matches[0]);
 			foreach ($matches[0] as $key => $val) {
 				preg_match_all('~(("[^"]*")+|[^,]*),~', "$val,", $matches2);
@@ -101,7 +101,7 @@ if ($_POST && !$error) {
 				} else {
 					$set = "";
 					foreach ($matches2[1] as $i => $col) {
-						$set .= ", " . idf_escape($cols[$i]) . " = " . (!strlen($col) ? "NULL" : $dbh->quote(str_replace('""', '"', preg_replace('~^"|"$~', '', $col))));
+						$set .= ", " . idf_escape($cols[$i]) . " = " . (!strlen($col) && $fields[$cols[$i]]["null"] ? "NULL" : $dbh->quote(str_replace('""', '"', preg_replace('~^"|"$~', '', $col))));
 					}
 					$set = substr($set, 2);
 					$result = queries("INSERT INTO " . idf_escape($_GET["select"]) . " SET $set ON DUPLICATE KEY UPDATE $set");
