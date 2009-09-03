@@ -225,5 +225,5 @@ $translations = array(
 	'%d e-mail(s) have been sent.' => array('Saadetud kirju: %d.', 'Saadetud kirju: %d.'),
 	'Compression' => 'Kokkupakkimine',
 	'Webserver file %s' => 'Fail serveris: %s',
-	'File does not exist.' => 'Faili ei leitud',
+	'File does not exist.' => 'Faili ei leitud.',
 );

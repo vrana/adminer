@@ -225,5 +225,5 @@ $translations = array(
 	'Editor' => 'Editor',
 	'Compression' => 'Kompresia',
 	'Webserver file %s' => 'Súbor %s na webovom serveri',
-	'File does not exist.' => 'Súbor neexistuje',
+	'File does not exist.' => 'Súbor neexistuje.',
 );
