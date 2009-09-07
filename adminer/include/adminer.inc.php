@@ -440,19 +440,15 @@ class Adminer {
 </p>
 </form>
 <?php
-			if ($missing != "db" && strlen(DB)) {
+			if ($missing != "db" && strlen(DB) && $dbh->select_db(DB)) {
 				$result = $dbh->query("SHOW TABLES");
-				if (!$result) {
-					echo "<p class='error'>" . lang('No tables.') . "\n";
+				if (!$result->num_rows) {
+					echo "<p class='message'>" . lang('No tables.') . "\n";
 				} else {
-					if (!$result->num_rows) {
-						echo "<p class='message'>" . lang('No tables.') . "\n";
-					} else {
-						echo "<p id='tables'>\n";
-						while ($row = $result->fetch_row()) {
-							echo '<a href="' . h(ME) . 'select=' . urlencode($row[0]) . '">' . lang('select') . '</a> ';
-							echo '<a href="' . h(ME) . 'table=' . urlencode($row[0]) . '">' . $this->tableName(array("Name" => $row[0])) . "</a><br>\n"; //! Adminer::tableName may work with full table status
-						}
+					echo "<p id='tables'>\n";
+					while ($row = $result->fetch_row()) {
+						echo '<a href="' . h(ME) . 'select=' . urlencode($row[0]) . '">' . lang('select') . '</a> ';
+						echo '<a href="' . h(ME) . 'table=' . urlencode($row[0]) . '">' . $this->tableName(array("Name" => $row[0])) . "</a><br>\n"; //! Adminer::tableName may work with full table status
 					}
 				}
 				echo '<p><a href="' . h(ME) . 'create=">' . lang('Create new table') . "</a>\n";
