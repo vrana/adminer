@@ -223,4 +223,7 @@ $translations = array(
 	'Subject' => '主题',
 	'Send' => '发送',
 	'%d e-mail(s) have been sent.' => '%d 封邮件已发送。',
+	'Compression' => '压缩',
+	'Webserver file %s' => 'Web服务器文件 %s',
+	'File does not exist.' => '文件不存在',
 );
