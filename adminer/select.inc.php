@@ -62,12 +62,12 @@ if ($_POST && !$error) {
 				foreach ($columns as $name => $val) { //! should check also for edit or insert privileges
 					$val = process_input($fields[$name]);
 					if ($_POST["clone"]) {
-						$set[] = ($val !== false ? $val : idf_escape($name));
+						$set[idf_escape($name)] = ($val !== false ? $val : idf_escape($name));
 					} elseif ($val !== false) {
 						$set[] = idf_escape($name) . " = $val";
 					}
 				}
-				$command .= ($_POST["clone"] ? "\nSELECT " . implode(", ", $set) . "\nFROM " . idf_escape($TABLE) : " SET\n" . implode(",\n", $set));
+				$command .= ($_POST["clone"] ? " (" . implode(", ", array_keys($set)) . ")\nSELECT " . implode(", ", $set) . "\nFROM " . idf_escape($TABLE) : " SET\n" . implode(",\n", $set));
 			}
 			if ($_POST["delete"] || $set) {
 				if ($_POST["all"] || ($primary === array() && $_POST["check"])) {
