@@ -117,7 +117,8 @@ if ($_POST && !$error) {
 	}
 }
 
-page_header(lang('Select') . ": " . $adminer->tableName($table_status), $error);
+$table_name = $adminer->tableName($table_status);
+page_header(lang('Select') . ": $table_name", $error);
 
 $foreign_keys = column_foreign_keys($TABLE);
 echo "<p>";
@@ -181,7 +182,7 @@ if (!$columns) {
 				foreach ($backward_keys as $key => $val) {
 					$val = $adminer->tableName(table_status($key));
 					if (strlen($val)) {
-						$table_names[$key] = $val;
+						$table_names[$key] = (preg_match('(^' . preg_quote($table_name) . '(:|\\s*-)?\\s+(.+))', $val, $match) ? $match[2] : $val);
 					}
 				}
 			}
