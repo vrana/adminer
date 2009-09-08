@@ -445,7 +445,7 @@ function input($field, $value, $function) {
 			$first++;
 		}
 		$onchange = ($first ? " onchange=\"var f = this.form['function[" . addcslashes($name, "\r\n'\\") . "]']; if ($first > f.selectedIndex) f.selectedIndex = $first;\"" : "");
-		echo (count($functions) > 1 ? "<select name='function[$name]'>" . optionlist($functions, !isset($function) || in_array($function, $functions) ? $function : "") . "</select>" : nbsp($functions[0])) . '<td>';
+		echo (count($functions) > 1 ? "<select name='function[$name]'>" . optionlist($functions, !isset($function) || in_array($function, $functions) ? $function : "") . "</select>" : nbsp(reset($functions))) . '<td>';
 		$input = $adminer->editInput($_GET["edit"], $field, " name='fields[$name]'$onchange", $value); // usage in call is without a table
 		if (strlen($input)) {
 			echo $input;
