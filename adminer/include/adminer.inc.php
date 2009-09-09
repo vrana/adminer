@@ -324,9 +324,10 @@ class Adminer {
 	
 	/** Process extras in select form
 	* @param array AND conditions
+	* @param array
 	* @return bool true if processed, false to process other parts of form
 	*/
-	function selectEmailProcess($where) {
+	function selectEmailProcess($where, $foreignKeys) {
 		return false;
 	}
 	

@@ -3,6 +3,8 @@ $TABLE = $_GET["select"];
 $table_status = table_status($TABLE);
 $indexes = indexes($TABLE);
 $fields = fields($TABLE);
+$foreign_keys = column_foreign_keys($TABLE);
+
 $rights = array(); // privilege => 0
 $columns = array(); // selectable columns
 unset($text_length);
@@ -52,7 +54,7 @@ if ($_POST && !$error) {
 		dump();
 		exit;
 	}
-	if (!$adminer->selectEmailProcess($where)) {
+	if (!$adminer->selectEmailProcess($where, $foreign_keys)) {
 		if (!$_POST["import"]) { // edit
 			$result = true;
 			$affected = 0;
@@ -120,7 +122,6 @@ if ($_POST && !$error) {
 $table_name = $adminer->tableName($table_status);
 page_header(lang('Select') . ": $table_name", $error);
 
-$foreign_keys = column_foreign_keys($TABLE);
 echo "<p>";
 if (isset($rights["insert"])) {
 	$set = "";
@@ -174,8 +175,6 @@ if (!$columns) {
 				: count($rows)
 			);
 			
-			$descriptions = $adminer->rowDescriptions($rows, $foreign_keys);
-			
 			$backward_keys = $adminer->backwardKeys($TABLE);
 			$table_names = array();
 			if ($backward_keys) {
@@ -204,7 +203,7 @@ if (!$columns) {
 				next($select);
 			}
 			echo ($table_names ? "<th>" . lang('Relations') : "") . "</thead>\n";
-			foreach ($descriptions as $n => $row) {
+			foreach ($adminer->rowDescriptions($rows, $foreign_keys) as $n => $row) {
 				$unique_idf = implode('&amp;', unique_idf($rows[$n], $indexes));
 				echo "<tr" . odd() . "><td><input type='checkbox' name='check[]' value='$unique_idf' onclick=\"this.form['all'].checked = false; form_uncheck('all-page');\">" . (count($select) != count($group) || information_schema(DB) ? '' : " <a href='" . h(ME) . "edit=" . urlencode($TABLE) . "&amp;$unique_idf'>" . lang('edit') . "</a>");
 				foreach ($row as $key => $val) {

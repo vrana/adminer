@@ -188,6 +188,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 			echo "<p>" . lang('From') . ": <input name='email_from'>\n";
 			echo lang('Subject') . ": <input name='email_subject'>\n";
 			echo "<p><textarea name='email_message' rows='15' cols='60'></textarea>\n";
+			//! add UI for {$name} fields
 			echo "<p>" . (count($emailFields) == 1 ? '<input type="hidden" name="email_field" value="' . h(key($emailFields)) . '">' : '<select name="email_field">' . optionlist($emailFields) . '</select> ');
 			echo "<input type='submit' name='email' value='" . lang('Send') . "'$confirm>\n";
 			echo "</div></fieldset>\n";
@@ -249,7 +250,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		return "100";
 	}
 	
-	function selectEmailProcess($where) {
+	function selectEmailProcess($where, $foreignKeys) {
 		global $dbh;
 		if ($_POST["email"]) {
 			$sent = 0;
@@ -263,10 +264,14 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 					. ($where ? " AND " . implode(" AND ", $where) : "")
 					. ($_POST["all"] ? "" : " AND ((" . implode(") OR (", array_map('where_check', (array) $_POST["check"])) . "))")
 				);
+				$rows = array();
 				while ($row = $result->fetch_assoc()) {
+					$rows[] = $row;
+				}
+				foreach ($this->rowDescriptions($rows, $foreignKeys) as $row) {
 					$replace = array();
 					foreach ($matches[1] as $val) {
-						$replace['{$' . "$val}"] = $row[$val]; //! substitute foreign keys
+						$replace['{$' . "$val}"] = $row[$val];
 					}
 					$email = $row[$_POST["email_field"]];
 					if (is_email($email) && mail($email, email_header(strtr($subject, $replace)), strtr($message, $replace),
