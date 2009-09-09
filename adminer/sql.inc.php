@@ -23,12 +23,12 @@ if (!$error && $_POST) {
 		$space = "(\\s|/\\*.*\\*/|(#|-- )[^\n]*\n|--\n)";
 		$alter_database = "(CREATE|DROP)$space+(DATABASE|SCHEMA)\\b~isU";
 		$databases = &$_SESSION["databases"][$_GET["server"]];
+		if (!$fp && strlen($query) && (!$history || end($history) != $query)) { // don't add repeated 
+			$history[] = $query;
+		}
 		if (isset($databases) && !preg_match("~\\b$alter_database", $query)) { // quick check - may be inside string
 			//! false positive with $fp
 			session_write_close();
-		}
-		if (!$fp && strlen($query) && (!$history || end($history) != $query)) { // don't add repeated 
-			$history[] = $query;
 		}
 		$delimiter = ";";
 		$offset = 0;
@@ -109,7 +109,7 @@ if (!$error && $_POST) {
 ?>
 
 <form action="" method="post" enctype="multipart/form-data">
-<p><textarea name="query" rows="20" cols="80" style="width: 98%;"><?php echo h($_POST ? $_POST["query"] : (strlen($_GET["history"]) ? $_SESSION["history"][$_GET["server"]][DB][$_GET["history"]] : $_GET["sql"])); ?></textarea>
+<p><textarea name="query" rows="20" cols="80" style="width: 98%;"><?php echo h($_POST ? $_POST["query"] : (strlen($_GET["history"]) ? $history[$_GET["history"]] : $_GET["sql"])); ?></textarea>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Execute'); ?>">
