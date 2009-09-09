@@ -1,4 +1,29 @@
 <?php
+function tar_file($filename, $contents) {
+	$return = pack("a100a8a8a8a12a12", $filename, 644, 0, 0, decoct(strlen($contents)), decoct(time()));
+	$checksum = 8*32; // space for checksum itself
+	for ($i=0; $i < strlen($return); $i++) {
+		$checksum += ord($return{$i});
+	}
+	$return .= sprintf("%06o", $checksum) . "\0 ";
+	return $return . str_repeat("\0", 512 - strlen($return)) . $contents . str_repeat("\0", 511 - (strlen($contents) + 511) % 512);
+}
+
+function dump_triggers($table, $style) {
+	global $dbh;
+	if ($_POST["format"] == "sql" && $style && $dbh->server_info >= 5) {
+		$result = $dbh->query("SHOW TRIGGERS LIKE " . $dbh->quote(addcslashes($table, "%_")));
+		if ($result->num_rows) {
+			$s = "\nDELIMITER ;;\n";
+			while ($row = $result->fetch_assoc()) {
+				$s .= "\n" . ($style == 'CREATE+ALTER' ? "DROP TRIGGER IF EXISTS " . idf_escape($row["Trigger"]) . ";;\n" : "")
+				. "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . idf_escape($row["Table"]) . " FOR EACH ROW\n$row[Statement];;\n";
+			}
+			dump("$s\nDELIMITER ;\n");
+		}
+	}
+}
+
 function dump_table($table, $style, $is_view = false) {
 	global $dbh;
 	if ($_POST["format"] == "csv") {

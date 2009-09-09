@@ -355,3 +355,5 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 	}
 	
 }
+
+$adminer = (function_exists('adminer_object') ? adminer_object() : new Adminer);

@@ -20,7 +20,7 @@ function referencable_primary($self) {
 function edit_type($key, $field, $collations, $foreign_keys = array()) {
 	global $structured_types, $unsigned, $inout;
 	?>
-<td><select name="<?php echo $key; ?>[type]" onchange="editing_type_change(this);"><?php echo optionlist($structured_types + ($foreign_keys ? array(lang('Foreign keys') => $foreign_keys) : array()), $field["type"]); ?></select>
+<td><select name="<?php echo $key; ?>[type]" onchange="editing_type_change(this);"><?php echo optionlist($structured_types + ($foreign_keys ? array(lang('Foreign keys') => $foreign_keys) : array()), $field["type"]); // foreign keys can be wide but style="width: 15ex;" narrows expanded optionlist in IE too ?></select>
 <td><input name="<?php echo $key; ?>[length]" value="<?php echo h($field["length"]); ?>" size="3">
 <td><?php
 echo "<select name='$key" . "[collation]'" . (ereg('(char|text|enum|set)$', $field["type"]) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>';
@@ -170,4 +170,18 @@ function routine($name, $type) {
 	}
 	$returns = array("type" => $match[10], "length" => $match[11], "unsigned" => $match[13], "collation" => $match[14]);
 	return array("fields" => $fields, "returns" => $returns, "definition" => $match[15]);
+}
+
+function grant($grant, $privileges, $columns, $on) {
+	if (!$privileges) {
+		return true;
+	}
+	if ($privileges == array("ALL PRIVILEGES", "GRANT OPTION")) {
+		// can't be granted or revoked together
+		return ($grant == "GRANT"
+			? queries("$grant ALL PRIVILEGES$on WITH GRANT OPTION")
+			: queries("$grant ALL PRIVILEGES$on") && queries("$grant GRANT OPTION$on")
+		);
+	}
+	return queries("$grant " . preg_replace('~(GRANT OPTION)\\([^)]*\\)~', '\\1', implode("$columns, ", $privileges) . $columns) . $on);
 }

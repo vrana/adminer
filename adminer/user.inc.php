@@ -19,20 +19,6 @@ foreach ($privileges["Tables"] as $key => $val) {
 	unset($privileges["Databases"][$key]);
 }
 
-function grant($grant, $privileges, $columns, $on) {
-	if (!$privileges) {
-		return true;
-	}
-	if ($privileges == array("ALL PRIVILEGES", "GRANT OPTION")) {
-		// can't be granted or revoked together
-		return ($grant == "GRANT"
-			? queries("$grant ALL PRIVILEGES$on WITH GRANT OPTION")
-			: queries("$grant ALL PRIVILEGES$on") && queries("$grant GRANT OPTION$on")
-		);
-	}
-	return queries("$grant " . preg_replace('~(GRANT OPTION)\\([^)]*\\)~', '\\1', implode("$columns, ", $privileges) . $columns) . $on);
-}
-
 $new_grants = array();
 if ($_POST) {
 	foreach ($_POST["objects"] as $key => $val) {

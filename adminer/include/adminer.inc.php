@@ -457,3 +457,5 @@ class Adminer {
 	}
 	
 }
+
+$adminer = (function_exists('adminer_object') ? adminer_object() : new Adminer);
