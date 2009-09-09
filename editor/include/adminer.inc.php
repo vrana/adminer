@@ -21,7 +21,7 @@ class Adminer {
 	function loginForm($username) {
 		?>
 <table cellspacing="0">
-<tr><th><?php echo lang('Username'); ?><td><input type="hidden" name="server" value="" /><input name="username" value="<?php echo h($username); ?>">
+<tr><th><?php echo lang('Username'); ?><td><input type="hidden" name="server" value=""><input name="username" value="<?php echo h($username); ?>">
 <tr><th><?php echo lang('Password'); ?><td><input type="password" name="password">
 </table>
 <?php
@@ -181,14 +181,14 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		echo "</div></fieldset>\n";
 	}
 	
-	function selectEmailPrint($emailFields) {
+	function selectEmailPrint($emailFields, $columns) {
 		global $confirm;
 		if ($emailFields) {
-			echo '<fieldset><legend><a href="#fieldset-email" onclick="return !toggle(\'fieldset-email\');">' . lang('E-mail') . "</a></legend><div id='fieldset-email' class='hidden'>\n";
-			echo "<p>" . lang('From') . ": <input name='email_from'>\n";
-			echo lang('Subject') . ": <input name='email_subject'>\n";
-			echo "<p><textarea name='email_message' rows='15' cols='60'></textarea>\n";
-			//! add UI for {$name} fields
+			echo '<fieldset><legend><a href="#fieldset-email" onclick="return !toggle(\'fieldset-email\');">' . lang('E-mail') . "</a></legend><div id='fieldset-email'" . ($_POST["email_append"] ? "" : " class='hidden'") . ">\n";
+			echo "<p>" . lang('From') . ": <input name='email_from' value='" . h($_POST["email_from"]) . "'>\n";
+			echo lang('Subject') . ": <input name='email_subject' value='" . h($_POST["email_subject"]) . "'>\n";
+			echo "<p><textarea name='email_message' rows='15' cols='60'>" . h($_POST["email_message"] . ($_POST["email_append"] ? '{$' . "$_POST[email_addition]}" : "")) . "</textarea><br>\n";
+			echo "<select name='email_addition'>" . optionlist($columns, $_POST["email_addition"]) . "</select> <input type='submit' name='email_append' value='" . lang('Insert') . "'>\n"; //! JavaScript
 			echo "<p>" . (count($emailFields) == 1 ? '<input type="hidden" name="email_field" value="' . h(key($emailFields)) . '">' : '<select name="email_field">' . optionlist($emailFields) . '</select> ');
 			echo "<input type='submit' name='email' value='" . lang('Send') . "'$confirm>\n";
 			echo "</div></fieldset>\n";
@@ -252,6 +252,9 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 	
 	function selectEmailProcess($where, $foreignKeys) {
 		global $dbh;
+		if ($_POST["email_append"]) {
+			return true;
+		}
 		if ($_POST["email"]) {
 			$sent = 0;
 			if ($_POST["all"] || $_POST["check"]) {

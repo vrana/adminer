@@ -236,13 +236,15 @@ class Adminer {
 	
 	/** Print extra text in the end of a select form
 	* @param array fields holding e-mails
+	* @param array selectable columns
 	* @return null
 	*/
-	function selectEmailPrint($emailFields) {
+	function selectEmailPrint($emailFields, $columns) {
 	}
 	
 	/** Process columns box in select
 	* @param array selectable columns
+	* @param array
 	* @return array (array(select_expressions), array(group_expressions))
 	*/
 	function selectColumnsProcess($columns, $indexes) {
