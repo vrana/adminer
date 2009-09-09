@@ -185,7 +185,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		global $confirm;
 		if ($emailFields) {
 			echo '<fieldset><legend><a href="#fieldset-email" onclick="return !toggle(\'fieldset-email\');">' . lang('E-mail') . "</a></legend><div id='fieldset-email'" . ($_POST["email_append"] ? "" : " class='hidden'") . ">\n";
-			echo "<p>" . lang('From') . ": <input name='email_from' value='" . h($_POST["email_from"]) . "'>\n";
+			echo "<p>" . lang('From') . ": <input name='email_from' value='" . h($_POST ? $_POST["email_from"] : $_COOKIE["adminer_email"]) . "'>\n";
 			echo lang('Subject') . ": <input name='email_subject' value='" . h($_POST["email_subject"]) . "'>\n";
 			echo "<p><textarea name='email_message' rows='15' cols='60'>" . h($_POST["email_message"] . ($_POST["email_append"] ? '{$' . "$_POST[email_addition]}" : "")) . "</textarea><br>\n";
 			echo "<select name='email_addition'>" . optionlist($columns, $_POST["email_addition"]) . "</select> <input type='submit' name='email_append' value='" . lang('Insert') . "'>\n"; //! JavaScript
@@ -274,7 +274,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 				foreach ($this->rowDescriptions($rows, $foreignKeys) as $row) {
 					$replace = array();
 					foreach ($matches[1] as $val) {
-						$replace['{$' . "$val}"] = $row[$val];
+						$replace['{$' . "$val}"] = $row[$val]; //! allow literal {$name}
 					}
 					$email = $row[$_POST["email_field"]];
 					if (is_email($email) && mail($email, email_header(strtr($subject, $replace)), strtr($message, $replace),
@@ -285,6 +285,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 					}
 				}
 			}
+			cookie("adminer_email", $_POST["email_from"]);
 			redirect(remove_from_uri(), lang('%d e-mail(s) have been sent.', $sent));
 		}
 		return false;

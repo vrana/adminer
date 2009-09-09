@@ -82,8 +82,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 	if (strlen($TABLE)) {
 		query_redirect("ALTER TABLE " . idf_escape($TABLE) . "$fields\nRENAME TO " . idf_escape($_POST["name"]) . ",\n$status", $location, lang('Table has been altered.'));
 	} else {
-		$path = preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]);
-		setcookie("adminer_engine", $_POST["Engine"], gmmktime(0, 0, 0, gmdate("n") + 1), $path);
+		cookie("adminer_engine", $_POST["Engine"]);
 		query_redirect("CREATE TABLE " . idf_escape($_POST["name"]) . " (" . substr($fields, 0, -1) . "\n) $status", $location, lang('Table has been created.'));
 	}
 }
