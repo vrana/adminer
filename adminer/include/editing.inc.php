@@ -43,6 +43,15 @@ function process_type($field, $collate = "COLLATE") {
 	;
 }
 
+function process_field($field, $type_field) {
+	global $dbh;
+	return idf_escape($field["field"]) . process_type($type_field)
+		. ($field["null"] ? " NULL" : " NOT NULL") // NULL for timestamp
+		. (!$field["has_default"] || $field["auto_increment"] || ereg('text|blob', $field["type"]) ? "" : " DEFAULT " . ($field["type"] == "timestamp" && eregi("^CURRENT_TIMESTAMP( on update CURRENT_TIMESTAMP)?$", $field["default"]) ? $field["default"] : $dbh->quote($field["default"])))
+		. " COMMENT " . $dbh->quote($field["comment"])
+	;
+}
+
 function type_class($type) {
 	if (ereg('char|text', $type)) {
 		return " class='char'";

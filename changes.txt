@@ -8,6 +8,7 @@ Click on row selects it
 Print ALTER export instead of executing it
 Fix Editor date format
 Fix long SQL query crash (bug #2839231)
+Speedup of simple alter table
 Traditional Chinese translation
 
 Adminer 2.0.0 (released 2009-08-06):

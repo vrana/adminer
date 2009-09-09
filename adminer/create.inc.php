@@ -8,8 +8,11 @@ foreach ($referencable_primary as $table_name => $field) {
 	$foreign_keys[idf_escape($table_name) . "." . idf_escape($field["field"])] = $table_name;
 }
 
+$orig_fields = array();
+$orig_status = array();
 if (strlen($TABLE)) {
 	$orig_fields = fields($TABLE);
+	$orig_status = table_status($TABLE);
 }
 
 if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] && !$_POST["down"]) {
@@ -28,32 +31,37 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 			}
 		}
 	}
-	$fields = array();
+	$fields = "";
 	ksort($_POST["fields"]);
+	$orig_field = reset($orig_fields);
 	$after = "FIRST";
 	foreach ($_POST["fields"] as $key => $field) {
 		$type_field = (isset($types[$field["type"]]) ? $field : $referencable_primary[$foreign_keys[$field["type"]]]);
-		if (strlen($field["field"]) && $type_field) {
-			$fields[] = "\n" . (strlen($TABLE) ? (strlen($field["orig"]) ? "CHANGE " . idf_escape($field["orig"]) . " " : "ADD ") : "  ")
-				. idf_escape($field["field"]) . process_type($type_field)
-				. ($field["null"] ? " NULL" : " NOT NULL") // NULL for timestamp
-				. (!$field["has_default"] || $field["auto_increment"] || ereg('text|blob', $field["type"]) ? "" : " DEFAULT " . ($field["type"] == "timestamp" && eregi("^CURRENT_TIMESTAMP( on update CURRENT_TIMESTAMP)?$", $field["default"]) ? $field["default"] : $dbh->quote($field["default"])))
-				. ($key == $_POST["auto_increment_col"] ? " AUTO_INCREMENT$auto_increment_index" : "")
-				. " COMMENT " . $dbh->quote($field["comment"])
-				. (strlen($TABLE) ? " $after" : "")
-			;
-			$after = "AFTER " . idf_escape($field["field"]);
-			if (!isset($types[$field["type"]])) {
-				$fields[] = (strlen($TABLE) ? " ADD" : "") . " FOREIGN KEY (" . idf_escape($field["field"]) . ") REFERENCES " . idf_escape($foreign_keys[$field["type"]]) . " (" . idf_escape($type_field["field"]) . ")";
+		if (strlen($field["field"])) {
+			$process_field = process_field($field, $type_field);
+			$auto_increment = ($key == $_POST["auto_increment_col"]);
+			if ($type_field && ($process_field != process_field($orig_field, $orig_field) || $orig_field["auto_increment"] != $auto_increment)) {
+				$fields .= "\n" . (strlen($TABLE) ? (strlen($field["orig"]) ? "CHANGE " . idf_escape($field["orig"]) : "ADD") : " ")
+					. " $process_field"
+					. ($auto_increment ? " AUTO_INCREMENT$auto_increment_index" : "")
+					. (strlen($TABLE) ? " $after" : "") . ","
+				;
+				if (!isset($types[$field["type"]])) {
+					$fields .= (strlen($TABLE) ? " ADD" : "") . " FOREIGN KEY (" . idf_escape($field["field"]) . ") REFERENCES " . idf_escape($foreign_keys[$field["type"]]) . " (" . idf_escape($type_field["field"]) . "),";
+				}
 			}
+			$after = "AFTER " . idf_escape($field["field"]);
 		} elseif (strlen($field["orig"])) {
-			$fields[] = "\nDROP " . idf_escape($field["orig"]);
+			$fields .= "\nDROP " . idf_escape($field["orig"]) . ",";
+		}
+		if (strlen($field["orig"])) {
+			$orig_field = next($orig_fields);
 		}
 	}
-	$status = ($_POST["Engine"] ? "ENGINE=" . $dbh->quote($_POST["Engine"]) : "")
-		. ($_POST["Collation"] ? " COLLATE " . $dbh->quote($_POST["Collation"]) : "")
-		. (strlen($_POST["Auto_increment"]) ? " AUTO_INCREMENT=" . intval($_POST["Auto_increment"]) : "")
-		. " COMMENT=" . $dbh->quote($_POST["Comment"])
+	$status = "COMMENT=" . $dbh->quote($_POST["Comment"])
+		. ($_POST["Engine"] && $_POST["Engine"] != $orig_status["Engine"] ? " ENGINE=" . $dbh->quote($_POST["Engine"]) : "")
+		. ($_POST["Collation"] && $_POST["Collation"] != $orig_status["Collation"] ? " COLLATE " . $dbh->quote($_POST["Collation"]) : "")
+		. (strlen($_POST["auto_increment"]) ? " AUTO_INCREMENT=" . intval($_POST["auto_increment"]) : "")
 	;
 	if (in_array($_POST["partition_by"], $partition_by)) {
 		$partitions = array();
@@ -72,11 +80,11 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 	}
 	$location = ME . "table=" . urlencode($_POST["name"]);
 	if (strlen($TABLE)) {
-		query_redirect("ALTER TABLE " . idf_escape($TABLE) . implode(",", $fields) . ",\nRENAME TO " . idf_escape($_POST["name"]) . ",\n$status", $location, lang('Table has been altered.'));
+		query_redirect("ALTER TABLE " . idf_escape($TABLE) . "$fields\nRENAME TO " . idf_escape($_POST["name"]) . ",\n$status", $location, lang('Table has been altered.'));
 	} else {
 		$path = preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]);
 		setcookie("adminer_engine", $_POST["Engine"], gmmktime(0, 0, 0, gmdate("n") + 1), $path);
-		query_redirect("CREATE TABLE " . idf_escape($_POST["name"]) . " (" . implode(",", $fields) . "\n) $status", $location, lang('Table has been created.'));
+		query_redirect("CREATE TABLE " . idf_escape($_POST["name"]) . " (" . substr($fields, 0, -1) . "\n) $status", $location, lang('Table has been created.'));
 	}
 }
 
@@ -102,7 +110,7 @@ if ($_POST) {
 	}
 	process_fields($row["fields"]);
 } elseif (strlen($TABLE)) {
-	$row = table_status($TABLE);
+	$row = $orig_status;
 	$row["name"] = $TABLE;
 	$row["fields"] = array();
 	foreach ($orig_fields as $field) {
@@ -144,7 +152,7 @@ if ($suhosin && count($row["fields"]) > $suhosin) {
 <?php $column_comments = edit_fields($row["fields"], $collations, "TABLE", $suhosin, $foreign_keys); ?>
 </table>
 <p>
-<?php echo lang('Auto Increment'); ?>: <input name="Auto_increment" size="6" value="<?php echo intval($row["Auto_increment"]); ?>">
+<?php echo lang('Auto Increment'); ?>: <input name="auto_increment" size="6" value="<?php echo h($row["auto_increment"]); // don't prefill by original Auto_increment for the sake of performance and not reusing deleted ids ?>">
 <?php echo lang('Comment'); ?>: <input name="Comment" value="<?php echo h($row["Comment"]); ?>" maxlength="60">
 <script type="text/javascript">
 document.write('<label><input type="checkbox" onclick="column_show(this.checked, 5);"><?php echo lang('Default values'); ?><\/label>');
