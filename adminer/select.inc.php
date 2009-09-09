@@ -105,8 +105,8 @@ if ($_POST && !$error) {
 					foreach ($matches2[1] as $i => $col) {
 						$set .= ", " . idf_escape($cols[$i]) . " = " . (!strlen($col) && $fields[$cols[$i]]["null"] ? "NULL" : $dbh->quote(str_replace('""', '"', preg_replace('~^"|"$~', '', $col))));
 					}
-					$set = substr($set, 2);
-					$result = queries("INSERT INTO " . idf_escape($_GET["select"]) . " SET $set ON DUPLICATE KEY UPDATE $set");
+					$set = substr($set, 1);
+					$result = queries("INSERT INTO " . idf_escape($_GET["select"]) . " SET$set ON DUPLICATE KEY UPDATE$set");
 					if (!$result) {
 						break;
 					}
