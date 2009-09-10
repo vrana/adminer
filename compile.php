@@ -25,7 +25,7 @@ function lang_ids($match) {
 	if (!isset($lang_id)) {
 		$lang_id = count($lang_ids) - 1;
 	}
-	return ($_COOKIE["adminer_lang"] ? $match[0] : "lang($lang_id$match[2]");
+	return ($_SESSION["lang"] ? $match[0] : "lang($lang_id$match[2]");
 }
 
 function put_file($match) {
@@ -34,12 +34,12 @@ function put_file($match) {
 		return $match[0]; // processed later
 	}
 	$return = file_get_contents(dirname(__FILE__) . "/$project/$match[2]");
-	if (basename($match[2]) != "lang.inc.php" || !$_COOKIE["adminer_lang"]) {
+	if (basename($match[2]) != "lang.inc.php" || !$_SESSION["lang"]) {
 		$tokens = token_get_all($return); // to find out the last token
 		return "?>\n$return" . (in_array($tokens[count($tokens) - 1][0], array(T_CLOSE_TAG, T_INLINE_HTML), true) ? "<?php" : "");
 	} elseif (preg_match('~\\s*(\\$pos = .*)~', $return, $match2)) {
 		// single language lang() is used for plural
-		return "function lang(\$translation, \$number) {\n\t" . str_replace('$LANG', "'$_COOKIE[adminer_lang]'", $match2[1]) . "\n\treturn sprintf(\$translation[\$pos], \$number);\n}\n";
+		return "function lang(\$translation, \$number) {\n\t" . str_replace('$LANG', "'$_SESSION[lang]'", $match2[1]) . "\n\treturn sprintf(\$translation[\$pos], \$number);\n}\n";
 	} else {
 		echo "lang() not found\n";
 	}
@@ -47,7 +47,7 @@ function put_file($match) {
 
 function put_file_lang($match) {
 	global $lang_ids, $project;
-	if ($_COOKIE["adminer_lang"]) {
+	if ($_SESSION["lang"]) {
 		return "";
 	}
 	$return = "";
@@ -164,14 +164,15 @@ if (file_exists(dirname(__FILE__) . "/" . $_SERVER["argv"][1] . "/index.php")) {
 	$project = $_SERVER["argv"][1];
 	array_shift($_SERVER["argv"]);
 }
-$_COOKIE["adminer_lang"] = $_SERVER["argv"][1]; // Adminer functions read language from cookie
-if (isset($_SERVER["argv"][1])) {
+unset($_COOKIE["adminer_lang"]);
+$_SESSION["lang"] = $_SERVER["argv"][1]; // Adminer functions read language from session
+if (isset($_SESSION["lang"])) {
 	include dirname(__FILE__) . "/adminer/include/lang.inc.php";
-	if (isset($_SERVER["argv"][2]) || !isset($langs[$_COOKIE["adminer_lang"]])) {
+	if (isset($_SERVER["argv"][2]) || !isset($langs[$_SESSION["lang"]])) {
 		echo "Usage: php compile.php [adminer] [lang]\nPurpose: Compile adminer[-lang].php from adminer/index.php.\n";
 		exit(1);
 	}
-	include dirname(__FILE__) . "/adminer/lang/$_COOKIE[adminer_lang].inc.php";
+	include dirname(__FILE__) . "/adminer/lang/$_SESSION[lang].inc.php";
 }
 
 $file = file_get_contents(dirname(__FILE__) . "/$project/index.php");
@@ -180,11 +181,11 @@ $file = str_replace('include "../adminer/include/coverage.inc.php";', '', $file)
 $file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file); // bootstrap.inc.php
 $file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
 $file = preg_replace_callback('~\\b(include|require) "([^"]*\\$LANG.inc.php)";~', 'put_file_lang', $file);
-if ($_COOKIE["adminer_lang"]) {
+if ($_SESSION["lang"]) {
 	// single language version
 	$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
 	$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
-	$file = str_replace('<?php echo $LANG; ?>', $_COOKIE["adminer_lang"], $file);
+	$file = str_replace('<?php echo $LANG; ?>', $_SESSION["lang"], $file);
 }
 $file = str_replace('<script type="text/javascript" src="editing.js"></script>' . "\n", "", $file);
 $file = preg_replace_callback("~compile_file\\('([^']+)', '([^']+)'\\);~", 'compile_file', $file); // integrate static files
@@ -195,6 +196,6 @@ $file = str_replace("../externals/jush/", "https://jush.svn.sourceforge.net/svnr
 $file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
 $file = php_shrink($file);
 
-$filename = $project . ($_COOKIE["adminer_lang"] ? "-$_COOKIE[adminer_lang]" : "") . ".php";
+$filename = $project . ($_SESSION["lang"] ? "-$_SESSION[lang]" : "") . ".php";
 fwrite(fopen($filename, "w"), $file); // file_put_contents() since PHP 5
 echo "$filename created.\n";
