@@ -91,8 +91,11 @@ function editing_add_row(button, allowed) {
 			tags2[i].checked = false;
 		}
 		tags2[i].name = tags[i].name.replace(/([0-9.]+)/, x);
-		if (/\[(orig|field|comment)/.test(tags[i].name)) {
+		if (/\[(orig|field|comment|default)/.test(tags[i].name)) {
 			tags2[i].value = '';
+		}
+		if (/\[(has_default)/.test(tags[i].name)) {
+			tags2[i].checked = false;
 		}
 	}
 	tags[0].onchange = function () {
