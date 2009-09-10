@@ -18,13 +18,11 @@ if (strlen($TABLE)) {
 if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] && !$_POST["down"]) {
 	$auto_increment_index = " PRIMARY KEY";
 	// don't overwrite primary key by auto_increment
-	if (strlen($TABLE) && strlen($_POST["fields"][$_POST["auto_increment_col"]]["orig"])) {
+	if (strlen($TABLE) && $_POST["auto_increment_col"]) {
 		foreach (indexes($TABLE) as $index) {
-			foreach ($index["columns"] as $column) {
-				if ($column === $_POST["fields"][$_POST["auto_increment_col"]]["orig"]) {
-					$auto_increment_index = "";
-					break 2;
-				}
+			if (in_array($_POST["fields"][$_POST["auto_increment_col"]]["orig"], $index["columns"], true)) {
+				$auto_increment_index = "";
+				break;
 			}
 			if ($index["type"] == "PRIMARY") {
 				$auto_increment_index = " UNIQUE";
@@ -51,6 +49,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 				}
 			}
 			$after = "AFTER " . idf_escape($field["field"]);
+			//! drop and create foreign keys with renamed columns
 		} elseif (strlen($field["orig"])) {
 			$fields .= "\nDROP " . idf_escape($field["orig"]) . ",";
 		}
