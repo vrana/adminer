@@ -136,7 +136,7 @@ class Adminer {
 	* @return null
 	*/
 	function selectColumnsPrint($select, $columns) {
-		echo '<fieldset><legend><a href="#fieldset-select" onclick="return !toggle(\'fieldset-select\');">' . lang('Select') . "</a></legend><div id='fieldset-select'" . ($select ? "" : " class='hidden'") . ">\n";
+		print_fieldset("select", lang('Select'), $select);
 		$i = 0;
 		$fun_group = array(lang('Functions') => $this->functions, lang('Aggregation') => $this->grouping);
 		foreach ($select as $key => $val) {
@@ -157,7 +157,7 @@ class Adminer {
 	* @return null
 	*/
 	function selectSearchPrint($where, $columns, $indexes) {
-		echo '<fieldset><legend><a href="#fieldset-search" onclick="return !toggle(\'fieldset-search\');">' . lang('Search') . "</a></legend><div id='fieldset-search'" . ($where ? "" : " class='hidden'") . ">\n";
+		print_fieldset("search", lang('Search'), $where);
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT") {
 				echo "(<i>" . implode("</i>, <i>", array_map('h', $index["columns"])) . "</i>) AGAINST";
@@ -188,7 +188,7 @@ class Adminer {
 	* @return null
 	*/
 	function selectOrderPrint($order, $columns, $indexes) {
-		echo '<fieldset><legend><a href="#fieldset-sort" onclick="return !toggle(\'fieldset-sort\');">' . lang('Sort') . "</a></legend><div id='fieldset-sort'" . ($order ? "" : " class='hidden'") . ">\n";
+		print_fieldset("sort", lang('Sort'), $order);
 		$i = 0;
 		foreach ((array) $_GET["order"] as $key => $val) {
 			if (isset($columns[$val])) {

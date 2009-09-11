@@ -282,9 +282,13 @@ if (!$columns) {
 			echo " (" . lang('%d row(s)', $found_rows) . ') <label><input type="checkbox" name="all" value="1">' . lang('whole result') . "</label>\n";
 			
 			echo (information_schema(DB) ? "" : "<fieldset><legend>" . lang('Edit') . "</legend><div><input type='submit' name='edit' value='" . lang('Edit') . "'> <input type='submit' name='clone' value='" . lang('Clone') . "'> <input type='submit' name='delete' value='" . lang('Delete') . "'$confirm></div></fieldset>\n");
-			echo "<fieldset><legend>" . lang('Export') . "</legend><div>$dump_output $dump_format $dump_compress <input type='submit' name='export' value='" . lang('Export') . "'></div></fieldset>\n";
+			print_fieldset("export", lang('Export'));
+			echo "$dump_output $dump_format $dump_compress <input type='submit' name='export' value='" . lang('Export') . "'>\n";
+			echo "</div></fieldset>\n";
 		}
-		echo "<fieldset><legend>" . lang('CSV Import') . "</legend><div><input type='hidden' name='token' value='$token'><input type='file' name='csv_file'> <input type='submit' name='import' value='" . lang('Import') . "'></div></fieldset>\n";
+		print_fieldset("import", lang('CSV Import'), !$result->num_rows);
+		echo "<input type='hidden' name='token' value='$token'><input type='file' name='csv_file'> <input type='submit' name='import' value='" . lang('Import') . "'>\n";
+		echo "</div></fieldset>\n";
 		
 		$adminer->selectEmailPrint(array_filter($email_fields, 'strlen'), $columns);
 		

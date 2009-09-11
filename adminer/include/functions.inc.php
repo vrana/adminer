@@ -557,3 +557,13 @@ function is_email($email) {
 	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component
 	return eregi("^$atom+(\\.$atom+)*@($domain?\\.)+$domain\$", $email);
 }
+
+/** Print header for hidden fieldset (close by </div></fieldset>)
+* @param string
+* @param string
+* @param bool
+* @return null
+*/
+function print_fieldset($id, $legend, $visible = false) {
+	echo "<fieldset><legend><a href='#fieldset-$id' onclick=\"return !toggle('fieldset-$id');\">$legend</a></legend><div id='fieldset-$id'" . ($visible ? "" : " class='hidden'") . ">\n";
+}
