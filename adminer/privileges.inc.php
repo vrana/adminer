@@ -1,6 +1,5 @@
 <?php
 page_header(lang('Privileges'));
-echo '<p><a href="' . h(ME) . 'user=">' . lang('Create user') . "</a>";
 
 $result = $dbh->query("SELECT User, Host FROM mysql.user ORDER BY Host, User");
 if (!$result) {
@@ -23,3 +22,5 @@ while ($row = $result->fetch_assoc()) {
 	echo '<tr' . odd() . '><td><a href="' . h(ME . 'user=' . urlencode($row["User"]) . '&host=' . urlencode($row["Host"])) . '">' . lang('edit') . '</a><td>' . h($row["User"]) . "<td>" . h($row["Host"]) . "\n";
 }
 echo "</table>\n";
+
+echo '<p><a href="' . h(ME) . 'user=">' . lang('Create user') . "</a>";
