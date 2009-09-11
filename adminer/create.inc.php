@@ -36,14 +36,16 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 	foreach ($_POST["fields"] as $key => $field) {
 		$type_field = (isset($types[$field["type"]]) ? $field : $referencable_primary[$foreign_keys[$field["type"]]]);
 		if (strlen($field["field"])) {
-			$process_field = process_field($field, $type_field);
-			$auto_increment = ($key == $_POST["auto_increment_col"]);
-			if ($type_field && ($process_field != process_field($orig_field, $orig_field) || $orig_field["auto_increment"] != $auto_increment)) {
-				$fields .= "\n" . (strlen($TABLE) ? (strlen($field["orig"]) ? "CHANGE " . idf_escape($field["orig"]) : "ADD") : " ")
-					. " $process_field"
-					. ($auto_increment ? " AUTO_INCREMENT$auto_increment_index" : "")
-					. (strlen($TABLE) ? " $after" : "") . ","
-				;
+			if ($type_field) {
+				$process_field = process_field($field, $type_field);
+				$auto_increment = ($key == $_POST["auto_increment_col"]);
+				if ($process_field != process_field($orig_field, $orig_field) || $orig_field["auto_increment"] != $auto_increment) {
+					$fields .= "\n" . (strlen($TABLE) ? (strlen($field["orig"]) ? "CHANGE " . idf_escape($field["orig"]) : "ADD") : " ")
+						. " $process_field"
+						. ($auto_increment ? " AUTO_INCREMENT$auto_increment_index" : "")
+						. (strlen($TABLE) ? " $after" : "") . ","
+					;
+				}
 				if (!isset($types[$field["type"]])) {
 					$fields .= (strlen($TABLE) ? " ADD" : "") . " FOREIGN KEY (" . idf_escape($field["field"]) . ") REFERENCES " . idf_escape($foreign_keys[$field["type"]]) . " (" . idf_escape($type_field["field"]) . "),";
 				}
