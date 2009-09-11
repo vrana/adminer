@@ -120,9 +120,9 @@ function dump_data($table, $style, $select = "") {
 		if ($_POST["format"] != "csv" && $style == "TRUNCATE+INSERT") {
 			dump("TRUNCATE " . idf_escape($table) . ";\n");
 		}
+		$fields = fields($table);
 		$result = $dbh->query(($select ? $select : "SELECT * FROM " . idf_escape($table)), 1); // 1 - MYSQLI_USE_RESULT //! enum and set as numbers, microtime
 		if ($result) {
-			$fields = fields($table);
 			$insert = "";
 			$buffer = "";
 			while ($row = $result->fetch_assoc()) {
@@ -132,14 +132,13 @@ function dump_data($table, $style, $select = "") {
 					if (!$insert) {
 						$insert = "INSERT INTO " . idf_escape($table) . " (" . implode(", ", array_map('idf_escape', array_keys($row))) . ") VALUES";
 					}
-					$row2 = array();
 					foreach ($row as $key => $val) {
-						$row2[$key] = (isset($val) ? (ereg('int|float|double|decimal', $fields[$key]["type"]) ? $val : $dbh->quote($val)) : "NULL"); //! columns looking like functions
+						$row[$key] = (isset($val) ? (ereg('int|float|double|decimal', $fields[$key]["type"]) ? $val : $dbh->quote($val)) : "NULL"); //! columns looking like functions
 					}
-					$s = implode(",\t", $row2);
+					$s = implode(",\t", $row);
 					if ($style == "INSERT+UPDATE") {
 						$set = array();
-						foreach ($row2 as $key => $val) {
+						foreach ($row as $key => $val) {
 							$set[] = idf_escape($key) . " = $val";
 						}
 						dump("$insert ($s) ON DUPLICATE KEY UPDATE " . implode(", ", $set) . ";\n");
