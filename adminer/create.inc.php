@@ -146,6 +146,7 @@ if ($suhosin && count($row["fields"]) > $suhosin) {
 <select name="Engine"><option value="">(<?php echo lang('engine'); ?>)<?php echo optionlist($engines, $row["Engine"]); ?></select>
 <select name="Collation"><option value="">(<?php echo lang('collation'); ?>)<?php echo optionlist($collations, $row["Collation"]); ?></select>
 <input type="submit" value="<?php echo lang('Save'); ?>">
+</p>
 <table cellspacing="0" id="edit-fields">
 <?php $column_comments = edit_fields($row["fields"], $collations, "TABLE", $suhosin, $foreign_keys); ?>
 </table>

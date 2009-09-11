@@ -46,6 +46,7 @@ $target = ($TABLE === $row["table"] ? $source : get_vals("SHOW COLUMNS FROM " . 
 <?php echo lang('Target table'); ?>:
 <select name="table" onchange="this.form['change-js'].value = '1'; this.form.submit();"><?php echo optionlist(array_keys(table_status_referencable()), $row["table"]); ?></select>
 <input type="hidden" name="change-js" value="">
+</p>
 <noscript><p><input type="submit" name="change" value="<?php echo lang('Change'); ?>"></noscript>
 <table cellspacing="0">
 <thead><tr><th><?php echo lang('Source'); ?><th><?php echo lang('Target'); ?></thead>

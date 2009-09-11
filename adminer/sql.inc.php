@@ -69,7 +69,7 @@ if (!$error && $_POST) {
 							do {
 								$result = $dbh->store_result();
 								if (!$i) {
-									echo "<p class='time'>" . (is_object($result) ? lang('%d row(s)', $result->num_rows) . ", ": "") . lang('%.3f s', max(0, $end[0] - $start[0] + $end[1] - $start[1])) . "</p>\n"; // </p> required by IE
+									echo "<p class='time'>" . (is_object($result) ? lang('%d row(s)', $result->num_rows) . ", ": "") . lang('%.3f s', max(0, $end[0] - $start[0] + $end[1] - $start[1])) . "</p>\n";
 									$i++;
 								}
 								if (is_object($result)) {

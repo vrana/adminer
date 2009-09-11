@@ -19,6 +19,27 @@ function body_load() {
 
 
 
+function select_value(select) {
+	return select.options[select.selectedIndex].text;
+}
+
+function form_field(form, name) {
+	for (var i=0; i < form.length; i++) {
+		if (form[i].name == name) {
+			return form[i];
+		}
+	}
+}
+
+function type_password(el, disable) {
+	try {
+		el.type = (disable ? 'text' : 'password');
+	} catch (e) {
+	}
+}
+
+
+
 var added = '.', row_count;
 
 function re_escape(s) {
@@ -31,7 +52,7 @@ function idf_escape(s) {
 
 function editing_name_change(field) {
 	var name = field.name.substr(0, field.name.length - 7);
-	var type = field.form[name + '[type]'];
+	var type = form_field(field.form, name + '[type]');
 	var opts = type.options;
 	var table = re_escape(field.value);
 	var column = '';
@@ -63,7 +84,7 @@ function editing_name_change(field) {
 		}
 	}
 	if (candidate) {
-		opts.selectedIndex = candidate;
+		type.selectedIndex = candidate;
 		type.onchange();
 	}
 }
@@ -108,7 +129,7 @@ function editing_add_row(button, allowed) {
 }
 
 function editing_remove_row(button) {
-	var field = button.form[button.name.replace(/drop_col(.+)/, 'fields$1[field]')];
+	var field = form_field(button.form, button.name.replace(/drop_col(.+)/, 'fields$1[field]'));
 	field.parentNode.removeChild(field);
 	button.parentNode.parentNode.style.display = 'none';
 	return true;
@@ -116,7 +137,7 @@ function editing_remove_row(button) {
 
 function editing_type_change(type) {
 	var name = type.name.substr(0, type.name.length - 6);
-	var text = type.options[type.selectedIndex].text;
+	var text = select_value(type);
 	for (var i=0; i < type.form.elements.length; i++) {
 		var el = type.form.elements[i];
 		if (el.name == name + '[collation]') {
@@ -136,7 +157,7 @@ function column_show(checked, column) {
 }
 
 function partition_by_change(el) {
-	var partition_table = /RANGE|LIST/.test(el.options[el.selectedIndex].text);
+	var partition_table = /RANGE|LIST/.test(select_value(el));
 	el.form['partitions'].className = (partition_table || !el.selectedIndex ? 'hidden' : '');
 	document.getElementById('partition-table').className = (partition_table ? '' : 'hidden');
 }
@@ -166,7 +187,9 @@ function foreign_add_row(field) {
 function indexes_add_row(field) {
 	var row = field.parentNode.parentNode.cloneNode(true);
 	var spans = row.getElementsByTagName('span');
-	row.getElementsByTagName('td')[1].innerHTML = '<span>' + spans[spans.length - 1].innerHTML + '</span>';
+	for (var i=0; i < spans.length - 1; i++) {
+		row.removeChild(spans[i]);
+	}
 	var selects = row.getElementsByTagName('select');
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/indexes\[[0-9]+/, '$&1');

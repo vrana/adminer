@@ -28,7 +28,7 @@ if ($_POST) {
 
 <form action="" method="post" id="form">
 <table cellspacing="0">
-<tr><th><?php echo lang('Time'); ?><td><select name="Timing" onchange="if (/^<?php echo h(preg_quote($TABLE, "/")); ?>_[ba][iud]$/.test(this.form['Trigger'].value)) this.form['Trigger'].value = '<?php echo h(addcslashes($TABLE, "\r\n'\\")); ?>_' + this.value.charAt(0).toLowerCase() + this.form['Event'].value.charAt(0).toLowerCase();"><?php echo optionlist($trigger_time, $row["Timing"]); ?></select>
+<tr><th><?php echo lang('Time'); ?><td><select name="Timing" onchange="if (/^<?php echo h(preg_quote($TABLE, "/")); ?>_[ba][iud]$/.test(this.form['Trigger'].value)) this.form['Trigger'].value = '<?php echo h(addcslashes($TABLE, "\r\n'\\")); ?>_' + select_value(this).charAt(0).toLowerCase() + select_value(this.form['Event']).charAt(0).toLowerCase();"><?php echo optionlist($trigger_time, $row["Timing"]); ?></select>
 <tr><th><?php echo lang('Event'); ?><td><select name="Event" onchange="this.form['Timing'].onchange();"><?php echo optionlist($trigger_event, $row["Event"]); ?></select>
 <tr><th><?php echo lang('Name'); ?><td><input name="Trigger" value="<?php echo h($row["Trigger"]); ?>" maxlength="64">
 </table>

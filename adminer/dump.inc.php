@@ -149,7 +149,7 @@ echo "<tr><th>" . lang('Tables') . "<td><select name='table_style'>" . optionlis
 echo "<tr><th>" . lang('Data') . "<td><select name='data_style'>" . optionlist($data_style, 'INSERT') . "</select>\n";
 ?>
 </table>
-<p><input type="submit" value="<?php echo lang('Export'); ?>">
+<p><input type="submit" value="<?php echo lang('Export'); ?>"></p>
 
 <table cellspacing="0">
 <?php
