@@ -40,3 +40,9 @@ tr:hover td, tr:hover th { background: #ddf; }
 #schema { margin-left: 60px; position: relative; }
 #schema .table { border: 1px solid Silver; padding: 0 2px; cursor: move; position: absolute; }
 #schema .references { position: absolute; }
+
+@media print {
+	#lang, #menu { display: none; }
+	#content { margin-left: 1em; }
+	#breadcrumb { left: 1em; }
+}
