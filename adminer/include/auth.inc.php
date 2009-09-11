@@ -11,8 +11,7 @@ if (isset($_POST["server"])) {
 		if (!isset($_COOKIE[$session_name])) {
 			$location .= (strpos($location, "?") === false ? "?" : "&") . SID;
 		}
-		header("Location: " . (strlen($location) ? $location : "."));
-		exit;
+		redirect($location);
 	}
 	if ($_POST["token"]) {
 		$_POST["token"] = $_SESSION["tokens"][$_POST["server"]];
