@@ -5,17 +5,17 @@ function body_load() {
 	var script = document.createElement('script');
 	script.src = jush_root + 'jush.js';
 	script.onload = function () {
-		if (this.jush) { // IE runs in case of an error too
+		if (window.jush) { // IE runs in case of an error too
 			jush.style(jush_root + 'jush.css');
 			jush.highlight_tag('pre');
 			jush.highlight_tag('code');
 		}
-	}
+	};
 	script.onreadystatechange = function () {
 		if (/^(loaded|complete)$/.test(script.readyState)) {
 			script.onload();
 		}
-	}
+	};
 	document.body.appendChild(script);
 }
 
