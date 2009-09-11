@@ -23,6 +23,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 					ksort($existing["columns"]);
 					ksort($existing["lengths"]);
 					if ($index["type"] == $existing["type"] && $existing["columns"] === $columns && $existing["lengths"] === $lengths) {
+						// skip existing index
 						unset($indexes[$name]);
 						continue 2;
 					}
@@ -31,6 +32,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 			}
 		}
 	}
+	// drop removed indexes
 	foreach ($indexes as $name => $existing) {
 		$alter[] = "\nDROP INDEX " . idf_escape($name);
 	}
