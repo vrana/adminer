@@ -5,12 +5,14 @@ function body_load() {
 	var script = document.createElement('script');
 	script.src = jush_root + 'jush.js';
 	script.onload = function () {
-		jush.style(jush_root + 'jush.css');
-		jush.highlight_tag('pre');
-		jush.highlight_tag('code');
+		if (this.jush) { // IE runs in case of an error too
+			jush.style(jush_root + 'jush.css');
+			jush.highlight_tag('pre');
+			jush.highlight_tag('code');
+		}
 	}
 	script.onreadystatechange = function () {
-		if (script.readyState == 'loaded' || script.readyState == 'complete') {
+		if (/^(loaded|complete)$/.test(script.readyState)) {
 			script.onload();
 		}
 	}
