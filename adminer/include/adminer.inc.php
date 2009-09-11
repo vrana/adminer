@@ -88,7 +88,7 @@ class Adminer {
 	*/
 	function selectQuery($query) {
 		// it would be nice if $query can be passed by reference and printed value would be returned but call_user() doesn't allow reference parameters
-		return "<p><code class='jush-sql'>" . h($query) . "</code> <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>\n";
+		return "<p><code class='jush-sql'>" . h($query) . "</code> <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a></p>\n";
 	}
 	
 	/** Description of a row in a table
