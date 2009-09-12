@@ -20,12 +20,12 @@ if (!$error && $_POST) {
 		$query = get_file("sql_file", true);
 	}
 	if (is_string($query)) { // get_file() returns error as number, fread() as false
-		$space = "(\\s|/\\*.*\\*/|(#|-- )[^\n]*\n|--\n)";
-		$alter_database = "(CREATE|DROP)$space+(DATABASE|SCHEMA)\\b~isU";
-		$databases = &$_SESSION["databases"][$_GET["server"]];
 		if (!$fp && strlen($query) && (!$history || end($history) != $query)) { // don't add repeated 
 			$history[] = $query;
 		}
+		$space = "(\\s|/\\*.*\\*/|(#|-- )[^\n]*\n|--\n)";
+		$alter_database = "(CREATE|DROP)$space+(DATABASE|SCHEMA)\\b~isU";
+		$databases = &$_SESSION["databases"][$_GET["server"]];
 		if (isset($databases) && !preg_match("~\\b$alter_database", $query)) { // quick check - may be inside string
 			//! false positive with $fp
 			session_write_close();
@@ -33,10 +33,11 @@ if (!$error && $_POST) {
 		$delimiter = ";";
 		$offset = 0;
 		$empty = true;
-		$dbh2 = (strlen(DB) ? connect() : null); // connection for exploring indexes (to not replace FOUND_ROWS()) //! PDO - silent error
+		$dbh2 = (strlen(DB) ? connect() : null); // connection for exploring indexes and EXPLAIN (to not replace FOUND_ROWS()) //! PDO - silent error
 		if (is_object($dbh2)) {
 			$dbh2->select_db(DB);
 		}
+		$explain = 1;
 		while (strlen($query)) {
 			if (!$offset && preg_match('~^\\s*DELIMITER\\s+(.+)~i', $query, $match)) {
 				$delimiter = $match[1];
@@ -53,27 +54,32 @@ if (!$error && $_POST) {
 					}
 					if (!$found || $found == $delimiter) { // end of a query
 						$empty = false;
-						echo "<pre class='jush-sql'>" . shorten_utf8(trim(substr($query, 0, $match[0][1]))) . "</pre>\n";
+						$q = substr($query, 0, $match[0][1]);
+						echo "<pre class='jush-sql'>" . shorten_utf8(trim($q)) . "</pre>\n";
 						ob_flush();
 						flush(); // can take a long time - show the running query
 						$start = explode(" ", microtime()); // microtime(true) is available since PHP 5
 						//! don't allow changing of character_set_results, convert encoding of displayed query
-						if (!$dbh->multi_query(substr($query, 0, $match[0][1]))) {
+						if (!$dbh->multi_query($q)) {
 							echo "<p class='error'>" . lang('Error in query') . ": " . h($dbh->error) . "\n";
 							if ($_POST["error_stops"]) {
 								break;
 							}
 						} else {
 							$end = explode(" ", microtime());
-							$i = 0;
+							echo "<p class='time'>" . lang('%.3f s', max(0, $end[0] - $start[0] + $end[1] - $start[1])) . "</p>\n";
 							do {
 								$result = $dbh->store_result();
-								if (!$i) {
-									echo "<p class='time'>" . (is_object($result) ? lang('%d row(s)', $result->num_rows) . ", ": "") . lang('%.3f s', max(0, $end[0] - $start[0] + $end[1] - $start[1])) . "</p>\n";
-									$i++;
-								}
 								if (is_object($result)) {
 									select($result, $dbh2);
+									if (preg_match("~^$space*SELECT$space+~isU", $q)) {
+										$id = "explain-$explain";
+										echo "<p>" . lang('%d row(s)', $result->num_rows) . ", <a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>\n";
+										echo "<div id='$id' class='hidden'>\n";
+										select($dbh2->query("EXPLAIN $q"));
+										echo "</div>\n";
+										$explain++;
+									}
 								} else {
 									if (preg_match("~^$space*$alter_database", $query)) {
 										$databases = null; // clear cache

@@ -1,11 +1,12 @@
 Adminer 2.1.0-dev:
 Edit default values directly in table creation
 Execute SQL file stored on server disk
+Display EXPLAIN in SQL query
 Compress export and import
 Display column comments in table overview
 Use ON DUPLICATE KEY UPDATE for CSV import
-Click on row selects it
 Print ALTER export instead of executing it
+Click on row selects it
 Fix Editor date format
 Fix long SQL query crash (bug #2839231)
 Speedup of simple alter table
