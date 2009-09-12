@@ -72,11 +72,12 @@ if (!$error && $_POST) {
 								$result = $dbh->store_result();
 								if (is_object($result)) {
 									select($result, $dbh2);
-									if (preg_match("~^$space*SELECT$space+~isU", $q)) {
+									echo "<p>" . lang('%d row(s)', $result->num_rows);
+									if ($dbh2 && preg_match("~^$space*SELECT$space+~isU", $q)) {
 										$id = "explain-$explain";
-										echo "<p>" . lang('%d row(s)', $result->num_rows) . ", <a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>\n";
+										echo ", <a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>\n";
 										echo "<div id='$id' class='hidden'>\n";
-										select($dbh2->query("EXPLAIN $q"));
+										select($dbh2->query("EXPLAIN $q"), $dbh2);
 										echo "</div>\n";
 										$explain++;
 									}
