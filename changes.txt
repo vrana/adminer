@@ -1,4 +1,4 @@
-Adminer 2.1.0-dev:
+Adminer 2.1.0 (released 2009-09-12):
 Edit default values directly in table creation
 Execute SQL file stored on server disk
 Display EXPLAIN in SQL query
