@@ -14,7 +14,7 @@ if ($result) {
 	echo "<thead><tr><th>" . lang('Column') . "<td>" . lang('Type') . "<td>" . lang('Comment') . "</thead>\n";
 	while ($row = $result->fetch_assoc()) {
 		echo "<tr><th>" . h($row["Field"]);
-		echo "<td>" . h($row["Type"]) . ($row["Null"] == "YES" ? " <i>NULL</i>" : "");
+		echo "<td>" . h($row["Type"]) . ($row["Null"] == "YES" ? " <i>NULL</i>" : "") . ($row["Extra"] == "auto_increment" ? " <i>" . lang('Auto Increment') . "</i>" : "");
 		echo "<td>" . nbsp($row["Comment"]);
 		echo "\n";
 	}
