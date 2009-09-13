@@ -140,6 +140,13 @@ $suhosin = floor(extension_loaded("suhosin") ? (min(ini_get("suhosin.request.max
 if ($suhosin && count($row["fields"]) > $suhosin) {
 	echo "<p class='error'>" . h(lang('Maximum number of allowed fields exceeded. Please increase %s and %s.', 'suhosin.post.max_vars', 'suhosin.request.max_vars')) . "\n";
 }
+// case of engine may differ
+foreach ($engines as $engine) {
+	if (!strcasecmp($engine, $row["Engine"])) {
+		$row["Engine"] = $engine;
+		break;
+	}
+}
 ?>
 
 <form action="" method="post" id="form">
