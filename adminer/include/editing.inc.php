@@ -1,4 +1,81 @@
 <?php
+/** Print select result
+* @param Min_Result
+* @param Min_DB connection to examine indexes
+* @return null
+*/
+function select($result, $dbh2 = null) {
+	if (!$result->num_rows) {
+		echo "<p class='message'>" . lang('No rows.') . "\n";
+	} else {
+		echo "<table cellspacing='0' class='nowrap'>\n";
+		$links = array(); // colno => orgtable - create links from these columns
+		$indexes = array(); // orgtable => array(column => colno) - primary keys
+		$columns = array(); // orgtable => array(column => ) - not selected columns in primary key
+		$blobs = array(); // colno => bool - display bytes for blobs
+		$types = array(); // colno => type - display char in <code>
+		odd(''); // reset odd for each result
+		for ($i=0; $row = $result->fetch_row(); $i++) {
+			if (!$i) {
+				echo "<thead><tr>";
+				for ($j=0; $j < count($row); $j++) {
+					$field = $result->fetch_field();
+					if (strlen($field->orgtable)) {
+						if (!isset($indexes[$field->orgtable])) {
+							// find primary key in each table
+							$indexes[$field->orgtable] = array();
+							foreach (indexes($field->orgtable, $dbh2) as $index) {
+								if ($index["type"] == "PRIMARY") {
+									$indexes[$field->orgtable] = array_flip($index["columns"]);
+									break;
+								}
+							}
+							$columns[$field->orgtable] = $indexes[$field->orgtable];
+						}
+						if (isset($columns[$field->orgtable][$field->orgname])) {
+							unset($columns[$field->orgtable][$field->orgname]);
+							$indexes[$field->orgtable][$field->orgname] = $j;
+							$links[$j] = $field->orgtable;
+						}
+					}
+					if ($field->charsetnr == 63) {
+						$blobs[$j] = true;
+					}
+					$types[$j] = $field->type;
+					echo "<th>" . h($field->name);
+				}
+				echo "</thead>\n";
+			}
+			echo "<tr" . odd() . ">";
+			foreach ($row as $key => $val) {
+				if (!isset($val)) {
+					$val = "<i>NULL</i>";
+				} else {
+					if ($blobs[$key] && !is_utf8($val)) {
+						$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>"; //! link to download
+					} elseif (!strlen(trim($val, " \t"))) {
+						$val = "&nbsp;"; // some content to print a border
+					} else {
+						$val = nl2br(h($val));
+						if ($types[$key] == 254) {
+							$val = "<code>$val</code>";
+						}
+					}
+					if (isset($links[$key]) && !$columns[$links[$key]]) {
+						$link = "edit=" . urlencode($links[$key]);
+						foreach ($indexes[$links[$key]] as $col => $j) {
+							$link .= "&where" . urlencode("[" . bracket_escape($col) . "]") . "=" . urlencode($row[$j]);
+						}
+						$val = "<a href='" . h(ME . $link) . "'>$val</a>";
+					}
+				}
+				echo "<td>$val";
+			}
+		}
+		echo "</table>\n";
+	}
+}
+
 function referencable_primary($self) {
 	$return = array(); // table_name => field
 	foreach (table_status_referencable() as $table_name => $table) {
