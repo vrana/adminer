@@ -37,6 +37,9 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 		$type_field = (isset($types[$field["type"]]) ? $field : $referencable_primary[$foreign_keys[$field["type"]]]);
 		if (strlen($field["field"])) {
 			if ($type_field) {
+				if (!$field["has_default"]) {
+					$field["default"] = null;
+				}
 				$process_field = process_field($field, $type_field);
 				$auto_increment = ($key == $_POST["auto_increment_col"]);
 				if ($process_field != process_field($orig_field, $orig_field) || $orig_field["auto_increment"] != $auto_increment) {
