@@ -70,7 +70,9 @@ if (get_magic_quotes_gpc()) {
     }
     unset($process);
 }
-set_magic_quotes_runtime(false);
+if (function_exists("set_magic_quotes_runtime")) {
+	set_magic_quotes_runtime(false);
+}
 @set_time_limit(0); // @ - can be disabled
 
 define("DB", $_GET["db"]); // for the sake of speed and size
