@@ -68,7 +68,7 @@ if ($_POST) {
 
 <form action="" method="post">
 <p>
-<?php echo ($_POST["add_x"]
+<?php echo ($_POST["add_x"] || strpos($name, "\n")
 	? '<textarea name="name" rows="10" cols="40">' . h($name) . '</textarea><br>'
 	: '<input name="name" value="' . h($name) . '" maxlength="64">'
 ) . "\n"; ?>
