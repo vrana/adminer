@@ -219,12 +219,12 @@ if (!$columns) {
 							if (ereg('blob|binary', $fields[$key]["type"]) && strlen($val)) {
 								$link = h(ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . '&') . $unique_idf;
 							}
-							if (!strlen(trim($val, " \t"))) {
+							if (!strlen($val)) {
 								$val = "&nbsp;";
 							} elseif (strlen($text_length) && ereg('blob|text', $fields[$key]["type"]) && is_utf8($val)) {
-								$val = nl2br(shorten_utf8($val, max(0, intval($text_length)))); // usage of LEFT() would reduce traffic but complicate query
+								$val = whitespace(shorten_utf8($val, max(0, intval($text_length)))); // usage of LEFT() would reduce traffic but complicate query
 							} else {
-								$val = nl2br(h($val));
+								$val = whitespace(h($val));
 							}
 							
 							if (!$link) { // link related items

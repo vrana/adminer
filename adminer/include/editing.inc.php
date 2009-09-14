@@ -53,10 +53,10 @@ function select($result, $dbh2 = null) {
 				} else {
 					if ($blobs[$key] && !is_utf8($val)) {
 						$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>"; //! link to download
-					} elseif (!strlen(trim($val, " \t"))) {
+					} elseif (!strlen($val)) {
 						$val = "&nbsp;"; // some content to print a border
 					} else {
-						$val = nl2br(h($val));
+						$val = whitespace(h($val));
 						if ($types[$key] == 254) {
 							$val = "<code>$val</code>";
 						}
@@ -124,7 +124,7 @@ function process_field($field, $type_field) {
 	global $dbh;
 	return idf_escape($field["field"]) . process_type($type_field)
 		. ($field["null"] ? " NULL" : " NOT NULL") // NULL for timestamp
-		. (!isset($field["default"]) || $field["auto_increment"] || ereg('text|blob', $field["type"]) ? "" : " DEFAULT " . ($field["type"] == "timestamp" && eregi("^CURRENT_TIMESTAMP( on update CURRENT_TIMESTAMP)?$", $field["default"]) ? $field["default"] : $dbh->quote($field["default"])))
+		. (!$field["has_default"] || $field["auto_increment"] || ereg('text|blob', $field["type"]) ? "" : " DEFAULT " . ($field["type"] == "timestamp" && eregi("^CURRENT_TIMESTAMP( on update CURRENT_TIMESTAMP)?$", $field["default"]) ? $field["default"] : $dbh->quote($field["default"])))
 		. " COMMENT " . $dbh->quote($field["comment"])
 	;
 }
