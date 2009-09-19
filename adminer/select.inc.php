@@ -249,10 +249,10 @@ if (!$columns) {
 				if ($table_names) {
 					echo "<td>";
 					foreach ($table_names as $table => $name) {
-						foreach ($backward_keys[$table] as $columns) {
+						foreach ($backward_keys[$table] as $cols) {
 							$link = ME . 'select=' . urlencode($table);
 							$i = 0;
-							foreach ($columns as $column => $val) {
+							foreach ($cols as $column => $val) {
 								$link .= where_link($i++, $column, $rows[$n][$val]);
 							}
 							echo " <a href='" . h($link) . "'>$name</a>";
