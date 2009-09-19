@@ -205,7 +205,7 @@ if (!$columns) {
 			echo ($table_names ? "<th>" . lang('Relations') : "") . "</thead>\n";
 			foreach ($adminer->rowDescriptions($rows, $foreign_keys) as $n => $row) {
 				$unique_idf = implode('&amp;', unique_idf($rows[$n], $indexes));
-				echo "<tr" . odd() . "><td><input type='checkbox' name='check[]' value='$unique_idf' onclick=\"this.form['all'].checked = false; form_uncheck('all-page');\">" . (count($select) != count($group) || information_schema(DB) ? '' : " <a href='" . h(ME) . "edit=" . urlencode($TABLE) . "&amp;$unique_idf'>" . lang('edit') . "</a>");
+				echo "<tr" . odd() . "><td><input type='checkbox' name='check[]' value='$unique_idf'" . (in_array(str_replace("&amp;", "&", $unique_idf), (array) $_POST["check"]) ? " checked" : "") . " onclick=\"this.form['all'].checked = false; form_uncheck('all-page');\">" . (count($select) != count($group) || information_schema(DB) ? '' : " <a href='" . h(ME) . "edit=" . urlencode($TABLE) . "&amp;$unique_idf'>" . lang('edit') . "</a>");
 				foreach ($row as $key => $val) {
 					if (isset($names[$key])) {
 						if (strlen($val) && (!isset($email_fields[$key]) || strlen($email_fields[$key]))) {
