@@ -97,7 +97,7 @@ function referencable_primary($self) {
 function edit_type($key, $field, $collations, $foreign_keys = array()) {
 	global $structured_types, $unsigned, $inout;
 	?>
-<td><select name="<?php echo $key; ?>[type]" onchange="editing_type_change(this);"><?php echo optionlist($structured_types + ($foreign_keys ? array(lang('Foreign keys') => $foreign_keys) : array()), $field["type"]); // foreign keys can be wide but style="width: 15ex;" narrows expanded optionlist in IE too ?></select>
+<td><select name="<?php echo $key; ?>[type]" class="type" onchange="editing_type_change(this);"><?php echo optionlist($structured_types + ($foreign_keys ? array(lang('Foreign keys') => $foreign_keys) : array()), $field["type"]); // foreign keys can be wide but style="width: 15ex;" narrows expanded optionlist in IE too ?></select>
 <td><input name="<?php echo $key; ?>[length]" value="<?php echo h($field["length"]); ?>" size="3">
 <td><?php
 echo "<select name='$key" . "[collation]'" . (ereg('(char|text|enum|set)$', $field["type"]) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>';
