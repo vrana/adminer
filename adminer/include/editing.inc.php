@@ -136,7 +136,7 @@ function type_class($type) {
 		'binary' => 'blob',
 		'enum' => 'set',
 	) as $key => $val) {
-		if (ereg("$key|$val", $type) {
+		if (ereg("$key|$val", $type)) {
 			return " class='$key'";
 		}
 	}
