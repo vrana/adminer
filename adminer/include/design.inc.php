@@ -15,7 +15,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <link rel="stylesheet" type="text/css" href="adminer.css">
 <?php } ?>
 
-<body onload="body_load();<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verify_version();"); ?>">
+<body>
 <script type="text/javascript" src="../adminer/functions.js"></script>
 <script type="text/javascript" src="editing.js"></script>
 
@@ -56,17 +56,12 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 }
 
 function page_footer($missing = false) {
-	global $VERSION, $adminer;
+	global $adminer;
 	?>
 </div>
 
 <?php switch_lang(); ?>
 <div id="menu">
-<h1>
-<a href="http://www.adminer.org/" id="h1"><?php echo $adminer->name(); ?></a>
-<span class="version"><?php echo $VERSION; ?></span>
-<a href="http://www.adminer.org/#download" id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
-</h1>
 <?php $adminer->navigation($missing); ?>
 </div>
 <?php

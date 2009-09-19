@@ -414,7 +414,18 @@ class Adminer {
 	* @return null
 	*/
 	function navigation($missing) {
-		global $dbh;
+		global $VERSION;
+		?>
+<h1>
+<a href="http://www.adminer.org/" id="h1"><?php echo $this->name(); ?></a>
+<span class="version"><?php echo $VERSION; ?></span>
+<a href="http://www.adminer.org/#download" id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
+</h1>
+<script type="text/javascript">
+body_load();
+<?php echo (isset($_COOKIE["adminer_version"]) ? "" : "verify_version();"); ?>
+</script>
+<?php
 		if ($missing != "auth") {
 			$databases = get_databases();
 			?>
@@ -442,19 +453,28 @@ class Adminer {
 </p>
 </form>
 <?php
-			if ($missing != "db" && strlen(DB) && $dbh->select_db(DB)) {
-				$result = $dbh->query("SHOW TABLES");
-				if (!$result->num_rows) {
-					echo "<p class='message'>" . lang('No tables.') . "\n";
-				} else {
-					echo "<p id='tables'>\n";
-					while ($row = $result->fetch_row()) {
-						echo '<a href="' . h(ME) . 'select=' . urlencode($row[0]) . '">' . lang('select') . '</a> ';
-						echo '<a href="' . h(ME) . 'table=' . urlencode($row[0]) . '">' . $this->tableName(array("Name" => $row[0])) . "</a><br>\n"; //! Adminer::tableName may work with full table status
-					}
+			$this->printTables($missing);
+		}
+	}
+	
+	/** Prints table list in menu
+	* @param string can be "db" if there is no database selected
+	* @return null
+	*/
+	function printTables($missing) {
+		global $dbh;
+		if ($missing != "db" && strlen(DB) && $dbh->select_db(DB)) {
+			$result = $dbh->query("SHOW TABLES");
+			if (!$result->num_rows) {
+				echo "<p class='message'>" . lang('No tables.') . "\n";
+			} else {
+				echo "<p id='tables'>\n";
+				while ($row = $result->fetch_row()) {
+					echo '<a href="' . h(ME) . 'select=' . urlencode($row[0]) . '">' . lang('select') . '</a> ';
+					echo '<a href="' . h(ME) . 'table=' . urlencode($row[0]) . '">' . $this->tableName(array("Name" => $row[0])) . "</a><br>\n"; //! Adminer::tableName may work with full table status
 				}
-				echo '<p><a href="' . h(ME) . 'create=">' . lang('Create new table') . "</a>\n";
 			}
+			echo '<p><a href="' . h(ME) . 'create=">' . lang('Create new table') . "</a>\n";
 		}
 	}
 	

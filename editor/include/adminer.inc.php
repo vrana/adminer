@@ -348,6 +348,15 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 	}
 	
 	function navigation($missing) {
+		global $VERSION;
+		?>
+<h1>
+<a href="http://www.adminer.org/" id="h1"><?php echo $this->name(); ?></a>
+<span class="version"><?php echo $VERSION; ?></span>
+<a href="http://www.adminer.org/editor/#download" id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
+</h1>
+<?php
+		echo (isset($_COOKIE["adminer_version"]) ? "" : "<script type='text/javascript'>verify_version();</script>\n");
 		if ($missing != "auth") {
 			?>
 <form action="" method="post">
@@ -357,17 +366,21 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 </p>
 </form>
 <?php
-			if ($missing != "db") {
-				$table_status = table_status();
-				if (!$table_status) {
-					echo "<p class='message'>" . lang('No tables.') . "\n";
-				} else {
-					echo "<p id='tables'>\n";
-					foreach ($table_status as $row) {
-						$name = $this->tableName($row);
-						if (isset($row["Engine"]) && strlen($name)) { // ignore views and tables without name
-							echo "<a href='" . h(ME) . 'select=' . urlencode($row["Name"]) . "'>$name</a><br>\n";
-						}
+			$this->printTables($missing);
+		}
+	}
+	
+	function printTables($missing) {
+		if ($missing != "db") {
+			$table_status = table_status();
+			if (!$table_status) {
+				echo "<p class='message'>" . lang('No tables.') . "\n";
+			} else {
+				echo "<p id='tables'>\n";
+				foreach ($table_status as $row) {
+					$name = $this->tableName($row);
+					if (isset($row["Engine"]) && strlen($name)) { // ignore views and tables without name
+						echo "<a href='" . h(ME) . 'select=' . urlencode($row["Name"]) . "'>$name</a><br>\n";
 					}
 				}
 			}
