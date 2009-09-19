@@ -130,14 +130,15 @@ function process_field($field, $type_field) {
 }
 
 function type_class($type) {
-	if (ereg('char|text', $type)) {
-		return " class='char'";
-	} elseif (ereg('date|time|year', $type)) {
-		return " class='date'";
-	} elseif (ereg('binary|blob', $type)) {
-		return " class='binary'";
-	} elseif (ereg('enum|set', $type)) {
-		return " class='enum'";
+	foreach (array(
+		'char' => 'text',
+		'date' => 'time|year',
+		'binary' => 'blob',
+		'enum' => 'set',
+	) as $key => $val) {
+		if (ereg("$key|$val", $type) {
+			return " class='$key'";
+		}
 	}
 }
 
