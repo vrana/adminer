@@ -66,12 +66,24 @@ class Adminer {
 		return '<span title="' . h($field["full_type"]) . '">' . h($field["field"]) . '</span>';
 	}
 	
-	/** Links after select heading
+	/** Print links after select heading
 	* @param array result of SHOW TABLE STATUS
-	* @return string
+	* @param strin new item options, NULL for no new item
+	* @return null
 	*/
-	function selectLinks($tableStatus) {
-		return '<a href="' . h(ME) . 'table=' . urlencode($_GET['select']) . '">' . lang('Table structure') . '</a>';
+	function selectLinks($tableStatus, $set = "") {
+		$TABLE = $tableStatus["Name"];
+		echo '<p><a href="' . h(ME) . 'select=' . urlencode($TABLE) . '">' . lang('Select table') . '</a>';
+		echo ' <a href="' . h(ME) . 'table=' . urlencode($TABLE) . '">' . lang('Table structure') . '</a>';
+		if (isset($tableStatus["Rows"])) {
+			echo ' <a href="' . h(ME) . 'create=' . urlencode($TABLE) . '">' . lang('Alter table') . '</a>';
+		} else {
+			echo ' <a href="' . h(ME) . 'view=' . urlencode($TABLE) . '">' . lang('Alter view') . '</a>';
+		}
+		if (isset($set)) {
+			echo ' <a href="' . h(ME . 'edit=' . urlencode($TABLE) . $set) . '">' . lang('New item') . '</a>';
+		}
+		echo "\n";
 	}
 	
 	/** Find backward keys for table
@@ -421,10 +433,6 @@ class Adminer {
 <span class="version"><?php echo $VERSION; ?></span>
 <a href="http://www.adminer.org/#download" id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
 </h1>
-<script type="text/javascript">
-body_load();
-<?php echo (isset($_COOKIE["adminer_version"]) ? "" : "verify_version();"); ?>
-</script>
 <?php
 		if ($missing != "auth") {
 			$databases = get_databases();

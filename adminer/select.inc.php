@@ -122,7 +122,7 @@ if ($_POST && !$error) {
 $table_name = $adminer->tableName($table_status);
 page_header(lang('Select') . ": $table_name", $error);
 
-echo "<p>";
+$set = null;
 if (isset($rights["insert"])) {
 	$set = "";
 	foreach ((array) $_GET["where"] as $val) {
@@ -132,9 +132,8 @@ if (isset($rights["insert"])) {
 			$set .= "&set" . urlencode("[" . bracket_escape($val["col"]) . "]") . "=" . urlencode($val["val"]);
 		}
 	}
-	echo '<a href="' . h(ME . 'edit=' . urlencode($TABLE) . $set) . '">' . lang('New item') . '</a> ';
 }
-echo $adminer->selectLinks($table_status);
+$adminer->selectLinks($table_status, $set);
 
 if (!$columns) {
 	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "" : ": " . h($dbh->error)) . ".\n";

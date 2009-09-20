@@ -39,8 +39,11 @@ class Adminer {
 		return h(strlen($field["comment"]) ? $field["comment"] : $field["field"]);
 	}
 	
-	function selectLinks($tableStatus) {
-		return "";
+	function selectLinks($tableStatus, $set = "") {
+		$TABLE = $tableStatus["Name"];
+		if (isset($set)) {
+			echo '<p><a href="' . h(ME . 'edit=' . urlencode($TABLE) . $set) . '">' . lang('New item') . "</a>\n";
+		}
 	}
 	
 	function backwardKeys($table) {
@@ -356,7 +359,6 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 <a href="http://www.adminer.org/editor/#download" id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
 </h1>
 <?php
-		echo (isset($_COOKIE["adminer_version"]) ? "" : "<script type='text/javascript'>verify_version();</script>\n");
 		if ($missing != "auth") {
 			?>
 <form action="" method="post">

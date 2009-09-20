@@ -5,9 +5,9 @@ if (!$result) {
 	$error = h($dbh->error);
 }
 $table_status = ($result ? table_status($TABLE) : array());
-$is_view = !isset($table_status["Rows"]);
 
 page_header(($result && $is_view ? lang('View') : lang('Table')) . ": " . h($TABLE), $error);
+$adminer->selectLinks($table_status);
 
 if ($result) {
 	echo "<table cellspacing='0'>\n";
@@ -20,16 +20,7 @@ if ($result) {
 	}
 	echo "</table>\n";
 	
-	echo "<p>";
-	if ($is_view) {
-		echo '<a href="' . h(ME) . 'view=' . urlencode($TABLE) . '">' . lang('Alter view') . '</a>';
-	} else {
-		echo '<a href="' . h(ME) . 'create=' . urlencode($TABLE) . '">' . lang('Alter table') . '</a>';
-	}
-	echo ' <a href="' . h(ME) . 'select=' . urlencode($TABLE) . '">' . lang('Select table') . '</a>';
-	echo ' <a href="' . h(ME) . 'edit=' . urlencode($TABLE) . '">' . lang('New item') . '</a>';
-	
-	if (!$is_view) {
+	if (isset($table_status["Rows"])) {
 		echo "<h3>" . lang('Indexes') . "</h3>\n";
 		$indexes = indexes($TABLE);
 		if ($indexes) {
