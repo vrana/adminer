@@ -50,7 +50,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 					;
 				}
 				if (!isset($types[$field["type"]])) {
-					$fields .= (strlen($TABLE) ? " ADD" : "") . " FOREIGN KEY (" . idf_escape($field["field"]) . ") REFERENCES " . idf_escape($foreign_keys[$field["type"]]) . " (" . idf_escape($type_field["field"]) . "),";
+					$fields .= (strlen($TABLE) ? "\nADD" : "") . " FOREIGN KEY (" . idf_escape($field["field"]) . ") REFERENCES " . idf_escape($foreign_keys[$field["type"]]) . " (" . idf_escape($type_field["field"]) . "),";
 				}
 			}
 			$after = "AFTER " . idf_escape($field["field"]);
