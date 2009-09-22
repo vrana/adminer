@@ -2,6 +2,7 @@ Adminer 2.1.1-dev:
 Display table links above table structure
 Fix removed default in ALTER
 Display whitespace in texts (bug #2858042)
+E-mail attachments (Editor)
 Move <h1> to $adminer->navigation (customization)
 Rename get_dbh to connection (customization)
 

@@ -192,6 +192,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 			echo lang('Subject') . ": <input name='email_subject' value='" . h($_POST["email_subject"]) . "'>\n";
 			echo "<p><textarea name='email_message' rows='15' cols='60'>" . h($_POST["email_message"] . ($_POST["email_append"] ? '{$' . "$_POST[email_addition]}" : "")) . "</textarea><br>\n";
 			echo "<select name='email_addition'>" . optionlist($columns, $_POST["email_addition"]) . "</select> <input type='submit' name='email_append' value='" . lang('Insert') . "'>\n"; //! JavaScript
+			echo "<p><input type='file' name='email_files[]' onchange=\"var el = this.cloneNode(true); el.value = ''; this.parentNode.appendChild(el);\">";
 			echo "<p>" . (count($emailFields) == 1 ? '<input type="hidden" name="email_field" value="' . h(key($emailFields)) . '">' : '<select name="email_field">' . optionlist($emailFields) . '</select> ');
 			echo "<input type='submit' name='email' value='" . lang('Send') . "'$confirm>\n";
 			echo "</div></fieldset>\n";
@@ -263,9 +264,9 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 			if ($_POST["all"] || $_POST["check"]) {
 				$field = idf_escape($_POST["email_field"]);
 				$subject = $_POST["email_subject"];
-				$message = $_POST["email_message"];
+				$message = "$_POST[email_message]\n";
 				preg_match_all('~\\{\\$([a-z0-9_]+)\\}~i', "$subject.$message", $matches); // allows {$name} in subject or message
-				$result = $connection->query("SELECT DISTINCT $field, " . implode(", ", array_map('idf_escape', array_unique($matches[1]))) . " FROM " . idf_escape($_GET["select"])
+				$result = $connection->query("SELECT DISTINCT $field" . ($matches[1] ? ", " . implode(", ", array_map('idf_escape', array_unique($matches[1]))) : "") . " FROM " . idf_escape($_GET["select"])
 					. " WHERE $field IS NOT NULL AND $field != ''"
 					. ($where ? " AND " . implode(" AND ", $where) : "")
 					. ($_POST["all"] ? "" : " AND ((" . implode(") OR (", array_map('where_check', (array) $_POST["check"])) . "))")
@@ -274,16 +275,34 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 				while ($row = $result->fetch_assoc()) {
 					$rows[] = $row;
 				}
+				$boundary = uniqid("boundary");
+				$attachments = "";
+				$email_files = $_FILES["email_files"];
+				foreach ($email_files["error"] as $key => $val) {
+					if (!$val) {
+						$attachments .= "--$boundary\n"
+							. "Content-Type: " . str_replace("\n", "", $email_files["type"][$key]) . "\n"
+							. "Content-Disposition: attachment; filename=\"" . preg_replace('~["\\n]~', '', $email_files["name"][$key]) . "\"\n"
+							. "Content-Transfer-Encoding: base64\n"
+							. "\n" . chunk_split(base64_encode(file_get_contents($email_files["tmp_name"][$key])), 76, "\n") . "\n"
+						;
+					}
+				}
+				$beginning = "";
+				$headers = "Content-Type: text/plain; charset=utf-8\nContent-Transfer-Encoding: 8bit";
+				if ($attachments) {
+					$attachments .= "--$boundary--\n";
+					$beginning = "--$boundary\n$headers\n\n";
+					$headers = "Content-Type: multipart/mixed; boundary=\"$boundary\"";
+				}
+				$headers .= "\nMIME-Version: 1.0" . ($_POST["email_from"] ? "\nFrom: " . str_replace("\n", "", $_POST["email_from"]) : ""); //! should escape display name
 				foreach ($this->rowDescriptions($rows, $foreignKeys) as $row) {
 					$replace = array();
 					foreach ($matches[1] as $val) {
 						$replace['{$' . "$val}"] = $row[$val]; //! allow literal {$name}
 					}
 					$email = $row[$_POST["email_field"]];
-					if (is_email($email) && mail($email, email_header(strtr($subject, $replace)), strtr($message, $replace),
-						"MIME-Version: 1.0\nContent-Type: text/plain; charset=utf-8\nContent-Transfer-Encoding: 8bit"
-						. (is_email($_POST["email_from"]) ? "\nFrom: $_POST[email_from]" : "") //! should allow address with a name but simple application of email_header() adds the default server domain
-					)) {
+					if (is_email($email) && mail($email, email_header(strtr($subject, $replace)), $beginning . strtr($message, $replace) . $attachments, $headers)) { //! replace \n by \r\n on Windows
 						$sent++;
 					}
 				}
