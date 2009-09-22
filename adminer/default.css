@@ -28,7 +28,7 @@ tr:hover td, tr:hover th { background: #ddf; }
 .enum { color: #007F7F; }
 .binary { color: red; }
 .odd td { background: #F5F5F5; }
-.time { color: Silver; font-size: 70%; float: right; margin-top: -3em; }
+.time { color: silver; font-size: 70%; float: right; margin-top: -3em; }
 .function { text-align: right; }
 .type { width: 15ex; width: auto\9; }
 #menu { position: absolute; margin: 10px 0 0; padding: 0 0 30px 0; top: 2em; left: 0; width: 19em; overflow: auto; overflow-y: hidden; white-space: nowrap; }
@@ -39,7 +39,7 @@ tr:hover td, tr:hover th { background: #ddf; }
 #h1 { color: #777; text-decoration: none; font-style: italic; }
 #version { font-size: 67%; color: red; }
 #schema { margin-left: 60px; position: relative; }
-#schema .table { border: 1px solid Silver; padding: 0 2px; cursor: move; position: absolute; }
+#schema .table { border: 1px solid silver; padding: 0 2px; cursor: move; position: absolute; }
 #schema .references { position: absolute; }
 
 @media print {
