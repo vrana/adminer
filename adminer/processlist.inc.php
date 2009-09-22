@@ -15,7 +15,7 @@ page_header(lang('Process list'), $error);
 <form action="" method="post">
 <table cellspacing="0" onclick="table_click(event);">
 <?php
-$result = $dbh->query("SHOW PROCESSLIST");
+$result = $connection->query("SHOW PROCESSLIST");
 for ($i=0; $row = $result->fetch_assoc(); $i++) {
 	if (!$i) {
 		echo "<thead><tr lang='en'><th>&nbsp;<th>" . implode("<th>", array_keys($row)) . "</thead>\n";

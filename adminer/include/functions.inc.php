@@ -2,10 +2,10 @@
 /** Get database connection
 * @return Min_DB
 */
-function get_dbh() {
-	// can be used in customization, $dbh is minified
-	global $dbh;
-	return $dbh;
+function connection() {
+	// can be used in customization, $connection is minified
+	global $connection;
+	return $connection;
 }
 
 /** Escape database identifier
@@ -87,9 +87,9 @@ function optionlist($options, $selected = null, $use_keys = false) {
 * @return array
 */
 function get_vals($query, $column = 0) {
-	global $dbh;
+	global $connection;
 	$return = array();
-	$result = $dbh->query($query);
+	$result = $connection->query($query);
 	if ($result) {
 		while ($row = $result->fetch_row()) {
 			$return[] = $row[$column];
@@ -130,11 +130,11 @@ function unique_idf($row, $indexes) {
 * @return string
 */
 function where($where) {
-	global $dbh;
+	global $connection;
 	$return = array();
 	foreach ((array) $where["where"] as $key => $val) {
 		$key = bracket_escape($key, "back");
-		$return[] = (preg_match('~^[A-Z0-9_]+\\(`(?:[^`]|``)+`\\)$~', $key) ? $key : idf_escape($key)) . " = BINARY " . $dbh->quote($val); //! enum and set, columns looking like functions
+		$return[] = (preg_match('~^[A-Z0-9_]+\\(`(?:[^`]|``)+`\\)$~', $key) ? $key : idf_escape($key)) . " = BINARY " . $connection->quote($val); //! enum and set, columns looking like functions
 	}
 	foreach ((array) $where["null"] as $key) {
 		$key = bracket_escape($key, "back");
@@ -194,16 +194,16 @@ function redirect($location, $message = null) {
 * @return bool
 */
 function query_redirect($query, $location, $message, $redirect = true, $execute = true, $failed = false) {
-	global $dbh, $error, $adminer;
+	global $connection, $error, $adminer;
 	$sql = "";
 	if ($query) {
 		$sql = $adminer->messageQuery($query);
 	}
 	if ($execute) {
-		$failed = !$dbh->query($query);
+		$failed = !$connection->query($query);
 	}
 	if ($failed) {
-		$error = h($dbh->error) . $sql;
+		$error = h($connection->error) . $sql;
 		return false;
 	}
 	if ($redirect) {
@@ -217,14 +217,14 @@ function query_redirect($query, $location, $message, $redirect = true, $execute 
 * @return Min_Result
 */
 function queries($query = null) {
-	global $dbh;
+	global $connection;
 	static $queries = array();
 	if (!isset($query)) {
 		// return executed queries without parameter
 		return implode(";\n", $queries);
 	}
 	$queries[] = $query;
-	return $dbh->query($query);
+	return $connection->query($query);
 }
 
 /** Remove parameter from query string
@@ -413,7 +413,7 @@ function input($field, $value, $function) {
 * @return string
 */
 function process_input($field) {
-	global $dbh, $adminer;
+	global $connection, $adminer;
 	$idf = bracket_escape($field["field"]);
 	$function = $_POST["function"][$idf];
 	$value = $_POST["fields"][$idf];
@@ -430,7 +430,7 @@ function process_input($field) {
 		if (!is_string($file)) {
 			return false; //! report errors
 		}
-		return "_binary" . $dbh->quote($file);
+		return "_binary" . $connection->quote($file);
 	} else {
 		return $adminer->processInput($field, $value, $function);
 	}

@@ -56,7 +56,7 @@ if ($_POST["save"]) {
 	}
 	$row = array();
 	if ($select) {
-		$result = $dbh->query("SELECT " . implode(", ", $select) . " FROM " . idf_escape($TABLE) . " WHERE $where " . (isset($_GET["select"]) ? "HAVING COUNT(*) = 1" : "LIMIT 1"));
+		$result = $connection->query("SELECT " . implode(", ", $select) . " FROM " . idf_escape($TABLE) . " WHERE $where " . (isset($_GET["select"]) ? "HAVING COUNT(*) = 1" : "LIMIT 1"));
 		$row = $result->fetch_assoc();
 	}
 }

@@ -23,25 +23,25 @@ if (!$error && $_POST) {
 				$val = "''";
 			}
 			if (isset($out[$key])) {
-				$dbh->query("SET @" . idf_escape($field["field"]) . " = $val");
+				$connection->query("SET @" . idf_escape($field["field"]) . " = $val");
 			}
 		}
 		$call[] = (isset($out[$key]) ? "@" . idf_escape($field["field"]) : $val);
 	}
-	$result = $dbh->multi_query((isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . idf_escape($PROCEDURE) . "(" . implode(", ", $call) . ")");
+	$result = $connection->multi_query((isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . idf_escape($PROCEDURE) . "(" . implode(", ", $call) . ")");
 	if (!$result) {
-		echo "<p class='error'>" . h($dbh->error) . "\n";
+		echo "<p class='error'>" . h($connection->error) . "\n";
 	} else {
 		do {
-			$result = $dbh->store_result();
+			$result = $connection->store_result();
 			if (is_object($result)) {
 				select($result);
 			} else {
-				echo "<p class='message'>" . lang('Routine has been called, %d row(s) affected.', $dbh->affected_rows) . "\n";
+				echo "<p class='message'>" . lang('Routine has been called, %d row(s) affected.', $connection->affected_rows) . "\n";
 			}
-		} while ($dbh->next_result());
+		} while ($connection->next_result());
 		if ($out) {
-			select($dbh->query("SELECT " . implode(", ", $out)));
+			select($connection->query("SELECT " . implode(", ", $out)));
 		}
 	}
 }

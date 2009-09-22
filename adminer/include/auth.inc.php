@@ -31,10 +31,10 @@ if (isset($_POST["server"])) {
 }
 
 function auth_error($exception = null) {
-	global $ignore, $dbh, $adminer;
+	global $ignore, $connection, $adminer;
 	$username = $_SESSION["usernames"][$_GET["server"]];
 	unset($_SESSION["usernames"][$_GET["server"]]);
-	page_header(lang('Login'), (isset($username) ? h($exception ? $exception->getMessage() : (is_string($dbh) ? $dbh : lang('Invalid credentials.'))) : (isset($_POST["server"]) ? lang('Session support must be enabled.') : ($_POST ? lang('Session expired, please login again.') : ""))), null);
+	page_header(lang('Login'), (isset($username) ? h($exception ? $exception->getMessage() : (is_string($connection) ? $connection : lang('Invalid credentials.'))) : (isset($_POST["server"]) ? lang('Session support must be enabled.') : ($_POST ? lang('Session expired, please login again.') : ""))), null);
 	echo "<form action='' method='post'>\n";
 	$adminer->loginForm($username);
 	echo "<p>\n";
@@ -50,8 +50,8 @@ $username = &$_SESSION["usernames"][$_GET["server"]];
 if (!isset($username)) {
 	$username = $_GET["username"]; // default username can be passed in URL
 }
-$dbh = (isset($username) ? connect() : '');
-if (is_string($dbh) || !$adminer->login($username, $_SESSION["passwords"][$_GET["server"]])) {
+$connection = (isset($username) ? connect() : '');
+if (is_string($connection) || !$adminer->login($username, $_SESSION["passwords"][$_GET["server"]])) {
 	auth_error();
 	exit;
 }

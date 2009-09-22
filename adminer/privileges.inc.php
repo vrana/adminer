@@ -1,7 +1,7 @@
 <?php
 page_header(lang('Privileges'));
 
-$result = $dbh->query("SELECT User, Host FROM mysql.user ORDER BY Host, User");
+$result = $connection->query("SELECT User, Host FROM mysql.user ORDER BY Host, User");
 if (!$result) {
 	?>
 <form action=""><p>
@@ -14,7 +14,7 @@ if (!$result) {
 </form>
 <?php
 	// list logged user, information_schema.USER_PRIVILEGES lists just the current user too
-	$result = $dbh->query("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1) AS User, SUBSTRING_INDEX(CURRENT_USER, '@', -1) AS Host");
+	$result = $connection->query("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1) AS User, SUBSTRING_INDEX(CURRENT_USER, '@', -1) AS Host");
 }
 echo "<table cellspacing='0'>\n";
 echo "<thead><tr><th>&nbsp;<th>" . lang('Username') . "<th>" . lang('Server') . "</thead>\n";

@@ -1,7 +1,7 @@
 <?php
 $USER = $_GET["user"];
 $privileges = array("" => array("All privileges" => ""));
-$result = $dbh->query("SHOW PRIVILEGES");
+$result = $connection->query("SHOW PRIVILEGES");
 while ($row = $result->fetch_assoc()) {
 	foreach (explode(",", ($row["Privilege"] == "Grant option" ? "" : $row["Context"])) as $context) {
 		$privileges[$context][$row["Privilege"]] = $row["Comment"];
@@ -27,7 +27,7 @@ if ($_POST) {
 }
 $grants = array();
 $old_pass = "";
-if (isset($_GET["host"]) && ($result = $dbh->query("SHOW GRANTS FOR " . $dbh->quote($USER) . "@" . $dbh->quote($_GET["host"])))) { //! use information_schema for MySQL 5 - column names in column privileges are not escaped
+if (isset($_GET["host"]) && ($result = $connection->query("SHOW GRANTS FOR " . $connection->quote($USER) . "@" . $connection->quote($_GET["host"])))) { //! use information_schema for MySQL 5 - column names in column privileges are not escaped
 	while ($row = $result->fetch_row()) {
 		if (preg_match('~GRANT (.*) ON (.*) TO ~', $row[0], $match) && preg_match_all('~ *([^(,]*[^ ,(])( *\\([^)]+\\))?~', $match[1], $matches, PREG_SET_ORDER)) { //! escape the part between ON and TO
 			foreach ($matches as $val) {
@@ -44,16 +44,16 @@ if (isset($_GET["host"]) && ($result = $dbh->query("SHOW GRANTS FOR " . $dbh->qu
 }
 
 if ($_POST && !$error) {
-	$old_user = (isset($_GET["host"]) ? $dbh->quote($USER) . "@" . $dbh->quote($_GET["host"]) : "''");
-	$new_user = $dbh->quote($_POST["user"]) . "@" . $dbh->quote($_POST["host"]); // if $_GET["host"] is not set then $new_user is always different
-	$pass = $dbh->quote($_POST["pass"]);
+	$old_user = (isset($_GET["host"]) ? $connection->quote($USER) . "@" . $connection->quote($_GET["host"]) : "''");
+	$new_user = $connection->quote($_POST["user"]) . "@" . $connection->quote($_POST["host"]); // if $_GET["host"] is not set then $new_user is always different
+	$pass = $connection->quote($_POST["pass"]);
 	if ($_POST["drop"]) {
 		query_redirect("DROP USER $old_user", ME . "privileges=", lang('User has been dropped.'));
 	} else {
 		if ($old_user == $new_user) {
 			queries("SET PASSWORD FOR $new_user = " . ($_POST["hashed"] ? $pass : "PASSWORD($pass)"));
 		} else {
-			$error = !queries(($dbh->server_info < 5 ? "GRANT USAGE ON *.* TO" : "CREATE USER") . " $new_user IDENTIFIED BY" . ($_POST["hashed"] ? " PASSWORD" : "") . " $pass");
+			$error = !queries(($connection->server_info < 5 ? "GRANT USAGE ON *.* TO" : "CREATE USER") . " $new_user IDENTIFIED BY" . ($_POST["hashed"] ? " PASSWORD" : "") . " $pass");
 		}
 		if (!$error) {
 			$revoke = array();
@@ -94,7 +94,7 @@ if ($_POST && !$error) {
 		query_redirect(queries(), ME . "privileges=", (isset($_GET["host"]) ? lang('User has been altered.') : lang('User has been created.')), !$error, false, $error);
 		if ($old_user != $new_user) {
 			// delete new user in case of an error
-			$dbh->query("DROP USER $new_user");
+			$connection->query("DROP USER $new_user");
 		}
 	}
 }
@@ -105,7 +105,7 @@ if ($_POST) {
 	$row = $_POST;
 	$grants = $new_grants;
 } else {
-	$row = $_GET + array("host" => $dbh->result($dbh->query("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', -1)"))); // create user on the same domain by default
+	$row = $_GET + array("host" => $connection->result($connection->query("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', -1)"))); // create user on the same domain by default
 	$row["pass"] = $old_pass;
 	if (strlen($old_pass)) {
 		$row["hashed"] = true;

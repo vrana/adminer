@@ -11,14 +11,14 @@ if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP c
 		$last = "";
 		foreach ($dbs as $db) {
 			if (count($dbs) == 1 || strlen($db)) { // ignore empty lines but always try to create single database
-				if (!queries("CREATE DATABASE " . idf_escape($db) . ($_POST["collation"] ? " COLLATE " . $dbh->quote($_POST["collation"]) : ""))) {
+				if (!queries("CREATE DATABASE " . idf_escape($db) . ($_POST["collation"] ? " COLLATE " . $connection->quote($_POST["collation"]) : ""))) {
 					$failed = true;
 				}
 				$last = $db;
 			}
 		}
 		if (query_redirect(queries(), ME . "db=" . urlencode($last), lang('Database has been created.'), !strlen(DB), false, $failed)) {
-			$result = $dbh->query("SHOW TABLES");
+			$result = $connection->query("SHOW TABLES");
 			while ($row = $result->fetch_row()) {
 				if (!queries("RENAME TABLE " . idf_escape($row[0]) . " TO " . idf_escape($_POST["name"]) . "." . idf_escape($row[0]))) {
 					break;
@@ -34,7 +34,7 @@ if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP c
 		if (!$_POST["collation"]) {
 			redirect(substr(ME, 0, -1));
 		}
-		query_redirect("ALTER DATABASE " . idf_escape($_POST["name"]) . " COLLATE " . $dbh->quote($_POST["collation"]), substr(ME, 0, -1), lang('Database has been altered.'));
+		query_redirect("ALTER DATABASE " . idf_escape($_POST["name"]) . " COLLATE " . $connection->quote($_POST["collation"]), substr(ME, 0, -1), lang('Database has been altered.'));
 	}
 }
 
@@ -48,15 +48,15 @@ if ($_POST) {
 	$collate = $_POST["collation"];
 } elseif (!strlen(DB)) {
 	// propose database name with limited privileges
-	$result = $dbh->query("SHOW GRANTS");
+	$result = $connection->query("SHOW GRANTS");
 	while ($row = $result->fetch_row()) {
 		if (preg_match('~ ON (`(([^\\\\`]|``|\\\\.)*)%`\\.\\*)?~', $row[0], $match) && $match[1]) {
 			$name = stripcslashes(idf_unescape($match[2]));
 			break;
 		}
 	}
-} elseif (($result = $dbh->query("SHOW CREATE DATABASE " . idf_escape(DB)))) {
-	$create = $dbh->result($result, 1);
+} elseif (($result = $connection->query("SHOW CREATE DATABASE " . idf_escape(DB)))) {
+	$create = $connection->result($result, 1);
 	if (preg_match('~ COLLATE ([^ ]+)~', $create, $match)) {
 		$collate = $match[1];
 	} elseif (preg_match('~ CHARACTER SET ([^ ]+)~', $create, $match)) {

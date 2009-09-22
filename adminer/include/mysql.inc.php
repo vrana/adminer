@@ -145,14 +145,14 @@ if (extension_loaded("mysqli")) {
 */
 function connect() {
 	global $adminer;
-	$dbh = new Min_DB;
+	$connection = new Min_DB;
 	$credentials = $adminer->credentials();
-	if ($dbh->connect($credentials[0], $credentials[1], $credentials[2])) {
-		$dbh->query("SET SQL_QUOTE_SHOW_CREATE=1");
-		$dbh->query("SET NAMES utf8");
-		return $dbh;
+	if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
+		$connection->query("SET SQL_QUOTE_SHOW_CREATE=1");
+		$connection->query("SET NAMES utf8");
+		return $connection;
 	}
-	return $dbh->error;
+	return $connection->error;
 }
 
 /** Get cached list of databases
@@ -177,9 +177,9 @@ function get_databases($flush = true) {
 * @return array
 */
 function table_status($name = "") {
-	global $dbh;
+	global $connection;
 	$return = array();
-	$result = $dbh->query("SHOW TABLE STATUS" . (strlen($name) ? " LIKE " . $dbh->quote(addcslashes($name, "%_")) : ""));
+	$result = $connection->query("SHOW TABLE STATUS" . (strlen($name) ? " LIKE " . $connection->quote(addcslashes($name, "%_")) : ""));
 	while ($row = $result->fetch_assoc()) {
 		if ($row["Engine"] == "InnoDB") {
 			// ignore internal comment, unnecessary since MySQL 5.1.21
@@ -208,9 +208,9 @@ function table_status_referencable() {
 * @return array array($name => array("field" => , "full_type" => , "type" => , "length" => , "unsigned" => , "default" => , "null" => , "auto_increment" => , "on_update" => , "collation" => , "privileges" => , "comment" => , "primary" => ))
 */
 function fields($table) {
-	global $dbh;
+	global $connection;
 	$return = array();
-	$result = $dbh->query("SHOW FULL COLUMNS FROM " . idf_escape($table));
+	$result = $connection->query("SHOW FULL COLUMNS FROM " . idf_escape($table));
 	if ($result) {
 		while ($row = $result->fetch_assoc()) {
 			preg_match('~^([^( ]+)(?:\\((.+)\\))?( unsigned)?( zerofill)?$~', $row["Type"], $match);
@@ -239,13 +239,13 @@ function fields($table) {
 * @param string Min_DB to use
 * @return array array($key_name => array("type" => , "columns" => array(), "lengths" => array()))
 */
-function indexes($table, $dbh2 = null) {
-	global $dbh;
-	if (!is_object($dbh2)) { // use the main connection if the separate connection is unavailable
-		$dbh2 = $dbh;
+function indexes($table, $connection2 = null) {
+	global $connection;
+	if (!is_object($connection2)) { // use the main connection if the separate connection is unavailable
+		$connection2 = $connection;
 	}
 	$return = array();
-	$result = $dbh2->query("SHOW INDEX FROM " . idf_escape($table));
+	$result = $connection2->query("SHOW INDEX FROM " . idf_escape($table));
 	if ($result) {
 		while ($row = $result->fetch_assoc()) {
 			$return[$row["Key_name"]]["type"] = ($row["Key_name"] == "PRIMARY" ? "PRIMARY" : ($row["Index_type"] == "FULLTEXT" ? "FULLTEXT" : ($row["Non_unique"] ? "INDEX" : "UNIQUE")));
@@ -261,12 +261,12 @@ function indexes($table, $dbh2 = null) {
 * @return array array($name => array("db" => , "table" => , "source" => array(), "target" => array(), "on_delete" => , "on_update" => ))
 */
 function foreign_keys($table) {
-	global $dbh, $on_actions;
+	global $connection, $on_actions;
 	static $pattern = '(?:[^`]|``)+';
 	$return = array();
-	$result = $dbh->query("SHOW CREATE TABLE " . idf_escape($table));
+	$result = $connection->query("SHOW CREATE TABLE " . idf_escape($table));
 	if ($result) {
-		$create_table = $dbh->result($result, 1);
+		$create_table = $connection->result($result, 1);
 		preg_match_all("~CONSTRAINT `($pattern)` FOREIGN KEY \\(((?:`$pattern`,? ?)+)\\) REFERENCES `($pattern)`(?:\\.`($pattern)`)? \\(((?:`$pattern`,? ?)+)\\)(?: ON DELETE (" . implode("|", $on_actions) . "))?(?: ON UPDATE (" . implode("|", $on_actions) . "))?~", $create_table, $matches, PREG_SET_ORDER);
 		foreach ($matches as $match) {
 			preg_match_all("~`($pattern)`~", $match[2], $source);
@@ -289,17 +289,17 @@ function foreign_keys($table) {
 * @return array array("select" => )
 */
 function view($name) {
-	global $dbh;
-	return array("select" => preg_replace('~^(?:[^`]|`[^`]*`)* AS ~U', '', $dbh->result($dbh->query("SHOW CREATE VIEW " . idf_escape($name)), 1)));
+	global $connection;
+	return array("select" => preg_replace('~^(?:[^`]|`[^`]*`)* AS ~U', '', $connection->result($connection->query("SHOW CREATE VIEW " . idf_escape($name)), 1)));
 }
 
 /** Get sorted grouped list of collations
 * @return array
 */
 function collations() {
-	global $dbh;
+	global $connection;
 	$return = array();
-	$result = $dbh->query("SHOW COLLATION");
+	$result = $connection->query("SHOW COLLATION");
 	while ($row = $result->fetch_assoc()) {
 		$return[$row["Charset"]][] = $row["Collation"];
 	}
@@ -315,8 +315,8 @@ function collations() {
 * @return string
 */
 function escape_string($val) {
-	global $dbh;
-	return substr($dbh->quote($val), 1, -1);
+	global $connection;
+	return substr($connection->quote($val), 1, -1);
 }
 
 /** Find out if database is information_schema
@@ -324,8 +324,8 @@ function escape_string($val) {
 * @return bool
 */
 function information_schema($db) {
-	global $dbh;
-	return ($dbh->server_info >= 5 && $db == "information_schema");
+	global $connection;
+	return ($connection->server_info >= 5 && $db == "information_schema");
 }
 
 // value means maximum unsigned length

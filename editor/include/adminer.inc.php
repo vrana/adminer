@@ -10,10 +10,10 @@ class Adminer {
 	}
 	
 	function database() {
-		global $dbh;
+		global $connection;
 		$dbs = get_databases(false);
 		return (!$dbs
-			? $dbh->result($dbh->query("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1)")) // username without the database list
+			? $connection->result($connection->query("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1)")) // username without the database list
 			: $dbs[(information_schema($dbs[0]) ? 1 : 0)] // first available database
 		);
 	}
@@ -47,13 +47,13 @@ class Adminer {
 	}
 	
 	function backwardKeys($table) {
-		global $dbh;
+		global $connection;
 		$return = array();
-		$result = $dbh->query("SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME
+		$result = $connection->query("SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME
 FROM information_schema.KEY_COLUMN_USAGE
-WHERE TABLE_SCHEMA = " . $dbh->quote($this->database()) . "
-AND REFERENCED_TABLE_SCHEMA = " . $dbh->quote($this->database()) . "
-AND REFERENCED_TABLE_NAME = " . $dbh->quote($table) . "
+WHERE TABLE_SCHEMA = " . $connection->quote($this->database()) . "
+AND REFERENCED_TABLE_SCHEMA = " . $connection->quote($this->database()) . "
+AND REFERENCED_TABLE_NAME = " . $connection->quote($table) . "
 ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		if ($result) {
 			while ($row = $result->fetch_assoc()) {
@@ -78,7 +78,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 	}
 	
 	function rowDescriptions($rows, $foreignKeys) {
-		global $dbh;
+		global $connection;
 		$return = $rows;
 		foreach ($rows[0] as $key => $val) {
 			foreach ((array) $foreignKeys[$key] as $foreignKey) {
@@ -89,11 +89,11 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 						// find all used ids
 						$ids = array();
 						foreach ($rows as $row) {
-							$ids[$row[$key]] = $dbh->quote($row[$key]);
+							$ids[$row[$key]] = $connection->quote($row[$key]);
 						}
 						// uses constant number of queries to get the descriptions, join would be complex, multiple queries would be slow
 						$descriptions = array();
-						$result = $dbh->query("SELECT $id, $name FROM " . idf_escape($foreignKey["table"]) . " WHERE $id IN (" . implode(", ", $ids) . ")");
+						$result = $connection->query("SELECT $id, $name FROM " . idf_escape($foreignKey["table"]) . " WHERE $id IN (" . implode(", ", $ids) . ")");
 						while ($row = $result->fetch_row()) {
 							$descriptions[$row[0]] = $row[1];
 						}
@@ -254,7 +254,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 	}
 	
 	function selectEmailProcess($where, $foreignKeys) {
-		global $dbh;
+		global $connection;
 		if ($_POST["email_append"]) {
 			return true;
 		}
@@ -265,7 +265,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 				$subject = $_POST["email_subject"];
 				$message = $_POST["email_message"];
 				preg_match_all('~\\{\\$([a-z0-9_]+)\\}~i', "$subject.$message", $matches); // allows {$name} in subject or message
-				$result = $dbh->query("SELECT DISTINCT $field, " . implode(", ", array_map('idf_escape', array_unique($matches[1]))) . " FROM " . idf_escape($_GET["select"])
+				$result = $connection->query("SELECT DISTINCT $field, " . implode(", ", array_map('idf_escape', array_unique($matches[1]))) . " FROM " . idf_escape($_GET["select"])
 					. " WHERE $field IS NOT NULL AND $field != ''"
 					. ($where ? " AND " . implode(" AND ", $where) : "")
 					. ($_POST["all"] ? "" : " AND ((" . implode(") OR (", array_map('where_check', (array) $_POST["check"])) . "))")
@@ -310,15 +310,15 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 	}
 	
 	function editInput($table, $field, $attrs, $value) {
-		global $dbh;
+		global $connection;
 		$foreign_keys = column_foreign_keys($table);
 		foreach ((array) $foreign_keys[$field["field"]] as $foreign_key) {
 			if (count($foreign_key["source"]) == 1) {
 				$id = idf_escape($foreign_key["target"][0]);
 				$name = $this->rowDescription($foreign_key["table"]);
-				if (strlen($name) && $dbh->result($dbh->query("SELECT COUNT(*) FROM " . idf_escape($foreign_key["table"]))) <= 1000) { // optionlist with more than 1000 options would be too big
+				if (strlen($name) && $connection->result($connection->query("SELECT COUNT(*) FROM " . idf_escape($foreign_key["table"]))) <= 1000) { // optionlist with more than 1000 options would be too big
 					$return = array("" => "");
-					$result = $dbh->query("SELECT $id, $name FROM " . idf_escape($foreign_key["table"]) . " ORDER BY 2");
+					$result = $connection->query("SELECT $id, $name FROM " . idf_escape($foreign_key["table"]) . " ORDER BY 2");
 					while ($row = $result->fetch_row()) {
 						$return[$row[0]] = $row[1];
 					}
@@ -336,11 +336,11 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 	}
 	
 	function processInput($field, $value, $function = "") {
-		global $dbh;
+		global $connection;
 		if ($function == "now") {
 			return "$function()";
 		}
-		$return = $dbh->quote(ereg('date|timestamp', $field["type"]) && preg_match('(^' . str_replace('\\$1', '(?P<p1>[0-9]+)', preg_replace('~(\\\\\\$([2-6]))~', '(?P<p\\2>[0-9]{1,2})', preg_quote(lang('$1-$3-$5')))) . '(.*))', $value, $match)
+		$return = $connection->quote(ereg('date|timestamp', $field["type"]) && preg_match('(^' . str_replace('\\$1', '(?P<p1>[0-9]+)', preg_replace('~(\\\\\\$([2-6]))~', '(?P<p\\2>[0-9]{1,2})', preg_quote(lang('$1-$3-$5')))) . '(.*))', $value, $match)
 			? ($match["p1"] ? $match["p1"] : ($match["p2"] < 70 ? 20 : 19) . $match["p2"]) . "-$match[p3]$match[p4]-$match[p5]$match[p6]" . end($match)
 			: $value
 		);

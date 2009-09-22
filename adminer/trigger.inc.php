@@ -21,7 +21,7 @@ $row = array("Trigger" => $TABLE . "_bi");
 if ($_POST) {
 	$row = $_POST;
 } elseif (strlen($_GET["name"])) {
-	$result = $dbh->query("SHOW TRIGGERS WHERE `Trigger` = " . $dbh->quote($_GET["name"]));
+	$result = $connection->query("SHOW TRIGGERS WHERE `Trigger` = " . $connection->quote($_GET["name"]));
 	$row = $result->fetch_assoc();
 }
 ?>

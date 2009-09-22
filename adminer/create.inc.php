@@ -62,9 +62,9 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 			$orig_field = next($orig_fields);
 		}
 	}
-	$status = "COMMENT=" . $dbh->quote($_POST["Comment"])
-		. ($_POST["Engine"] && $_POST["Engine"] != $orig_status["Engine"] ? " ENGINE=" . $dbh->quote($_POST["Engine"]) : "")
-		. ($_POST["Collation"] && $_POST["Collation"] != $orig_status["Collation"] ? " COLLATE " . $dbh->quote($_POST["Collation"]) : "")
+	$status = "COMMENT=" . $connection->quote($_POST["Comment"])
+		. ($_POST["Engine"] && $_POST["Engine"] != $orig_status["Engine"] ? " ENGINE=" . $connection->quote($_POST["Engine"]) : "")
+		. ($_POST["Collation"] && $_POST["Collation"] != $orig_status["Collation"] ? " COLLATE " . $connection->quote($_POST["Collation"]) : "")
 		. (strlen($_POST["auto_increment"]) ? " AUTO_INCREMENT=" . intval($_POST["auto_increment"]) : "")
 	;
 	if (in_array($_POST["partition_by"], $partition_by)) {
@@ -79,7 +79,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 			? " (" . implode(",", $partitions) . "\n)"
 			: ($_POST["partitions"] ? " PARTITIONS " . intval($_POST["partitions"]) : "")
 		);
-	} elseif ($dbh->server_info >= 5.1 && strlen($TABLE)) {
+	} elseif ($connection->server_info >= 5.1 && strlen($TABLE)) {
 		$status .= "\nREMOVE PARTITIONING";
 	}
 	$location = ME . "table=" . urlencode($_POST["name"]);
@@ -94,7 +94,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 page_header((strlen($TABLE) ? lang('Alter table') : lang('Create table')), $error, array("table" => $TABLE), $TABLE);
 
 $engines = array();
-$result = $dbh->query("SHOW ENGINES");
+$result = $connection->query("SHOW ENGINES");
 while ($row = $result->fetch_assoc()) {
 	if ($row["Support"] == "YES" || $row["Support"] == "DEFAULT") {
 		$engines[] = $row["Engine"];
@@ -123,13 +123,13 @@ if ($_POST) {
 		}
 		$row["fields"][] = $field;
 	}
-	if ($dbh->server_info >= 5.1) {
-		$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . $dbh->quote(DB) . " AND TABLE_NAME = " . $dbh->quote($TABLE);
-		$result = $dbh->query("SELECT PARTITION_METHOD, PARTITION_ORDINAL_POSITION, PARTITION_EXPRESSION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
+	if ($connection->server_info >= 5.1) {
+		$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . $connection->quote(DB) . " AND TABLE_NAME = " . $connection->quote($TABLE);
+		$result = $connection->query("SELECT PARTITION_METHOD, PARTITION_ORDINAL_POSITION, PARTITION_EXPRESSION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
 		list($row["partition_by"], $row["partitions"], $row["partition"]) = $result->fetch_row();
 		$row["partition_names"] = array();
 		$row["partition_values"] = array();
-		$result = $dbh->query("SELECT PARTITION_NAME, PARTITION_DESCRIPTION $from AND PARTITION_NAME != '' ORDER BY PARTITION_ORDINAL_POSITION");
+		$result = $connection->query("SELECT PARTITION_NAME, PARTITION_DESCRIPTION $from AND PARTITION_NAME != '' ORDER BY PARTITION_ORDINAL_POSITION");
 		while ($row1 = $result->fetch_assoc()) {
 			$row["partition_names"][] = $row1["PARTITION_NAME"];
 			$row["partition_values"][] = $row1["PARTITION_DESCRIPTION"];
@@ -173,7 +173,7 @@ document.write('<label><input type="checkbox"<?php if ($column_comments) { ?> ch
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php
-if ($dbh->server_info >= 5.1) {
+if ($connection->server_info >= 5.1) {
 	$partition_table = ereg('RANGE|LIST', $row["partition_by"]);
 	?>
 <fieldset><legend><?php echo lang('Partition by'); ?></legend>

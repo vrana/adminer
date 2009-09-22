@@ -10,9 +10,9 @@ function tar_file($filename, $contents) {
 }
 
 function dump_triggers($table, $style) {
-	global $dbh;
-	if ($_POST["format"] == "sql" && $style && $dbh->server_info >= 5) {
-		$result = $dbh->query("SHOW TRIGGERS LIKE " . $dbh->quote(addcslashes($table, "%_")));
+	global $connection;
+	if ($_POST["format"] == "sql" && $style && $connection->server_info >= 5) {
+		$result = $connection->query("SHOW TRIGGERS LIKE " . $connection->quote(addcslashes($table, "%_")));
 		if ($result->num_rows) {
 			$s = "\nDELIMITER ;;\n";
 			while ($row = $result->fetch_assoc()) {
@@ -25,24 +25,24 @@ function dump_triggers($table, $style) {
 }
 
 function dump_table($table, $style, $is_view = false) {
-	global $dbh;
+	global $connection;
 	if ($_POST["format"] == "csv") {
 		dump("\xef\xbb\xbf"); // UTF-8 byte order mark
 		if ($style) {
 			dump_csv(array_keys(fields($table)));
 		}
 	} elseif ($style) {
-		$result = $dbh->query("SHOW CREATE TABLE " . idf_escape($table));
+		$result = $connection->query("SHOW CREATE TABLE " . idf_escape($table));
 		if ($result) {
 			if ($style == "DROP+CREATE") {
 				dump("DROP " . ($is_view ? "VIEW" : "TABLE") . " IF EXISTS " . idf_escape($table) . ";\n");
 			}
-			$create = $dbh->result($result, 1);
+			$create = $connection->result($result, 1);
 			dump(($style != "CREATE+ALTER" ? $create : ($is_view ? substr_replace($create, " OR REPLACE", 6, 0) : substr_replace($create, " IF NOT EXISTS", 12, 0))) . ";\n\n");
 		}
 		if ($style == "CREATE+ALTER" && !$is_view) {
 			// create procedure which iterates over original columns and adds new and removes old
-			$query = "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLLATION_NAME, COLUMN_TYPE, EXTRA, COLUMN_COMMENT FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = " . $dbh->quote($table) . " ORDER BY ORDINAL_POSITION";
+			$query = "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLLATION_NAME, COLUMN_TYPE, EXTRA, COLUMN_COMMENT FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = " . $connection->quote($table) . " ORDER BY ORDINAL_POSITION";
 			dump("DELIMITER ;;
 CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 	DECLARE _column_name, _collation_name, _column_type, after varchar(64) DEFAULT '';
@@ -53,18 +53,18 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 	DECLARE done, set_after bool DEFAULT 0;
 	DECLARE add_columns text DEFAULT '");
 			$fields = array();
-			$result = $dbh->query($query);
+			$result = $connection->query($query);
 			$after = "";
 			while ($row = $result->fetch_assoc()) {
-				$row["default"] = (isset($row["COLUMN_DEFAULT"]) ? $dbh->quote($row["COLUMN_DEFAULT"]) : "NULL");
-				$row["after"] = $dbh->quote($after); //! rgt AFTER lft, lft AFTER id doesn't work
+				$row["default"] = (isset($row["COLUMN_DEFAULT"]) ? $connection->quote($row["COLUMN_DEFAULT"]) : "NULL");
+				$row["after"] = $connection->quote($after); //! rgt AFTER lft, lft AFTER id doesn't work
 				$row["alter"] = escape_string(idf_escape($row["COLUMN_NAME"])
 					. " $row[COLUMN_TYPE]"
 					. ($row["COLLATION_NAME"] ? " COLLATE $row[COLLATION_NAME]" : "")
 					. (isset($row["COLUMN_DEFAULT"]) ? " DEFAULT $row[default]" : "")
 					. ($row["IS_NULLABLE"] == "YES" ? "" : " NOT NULL")
 					. ($row["EXTRA"] ? " $row[EXTRA]" : "")
-					. ($row["COLUMN_COMMENT"] ? " COMMENT " . $dbh->quote($row["COLUMN_COMMENT"]) : "")
+					. ($row["COLUMN_COMMENT"] ? " COMMENT " . $connection->quote($row["COLUMN_COMMENT"]) : "")
 					. ($after ? " AFTER " . idf_escape($after) : " FIRST")
 				);
 				dump(", ADD $row[alter]");
@@ -83,9 +83,9 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 			CASE _column_name");
 			foreach ($fields as $row) {
 				dump("
-				WHEN " . $dbh->quote($row["COLUMN_NAME"]) . " THEN
+				WHEN " . $connection->quote($row["COLUMN_NAME"]) . " THEN
 					SET add_columns = REPLACE(add_columns, ', ADD $row[alter]', '');
-					IF NOT (_column_default <=> $row[default]) OR _is_nullable != '$row[IS_NULLABLE]' OR _collation_name != '$row[COLLATION_NAME]' OR _column_type != '$row[COLUMN_TYPE]' OR _extra != '$row[EXTRA]' OR _column_comment != " . $dbh->quote($row["COLUMN_COMMENT"]) . " OR after != $row[after] THEN
+					IF NOT (_column_default <=> $row[default]) OR _is_nullable != '$row[IS_NULLABLE]' OR _collation_name != '$row[COLLATION_NAME]' OR _column_type != '$row[COLUMN_TYPE]' OR _extra != '$row[EXTRA]' OR _column_comment != " . $connection->quote($row["COLUMN_COMMENT"]) . " OR after != $row[after] THEN
 						SET @alter_table = CONCAT(@alter_table, ', MODIFY $row[alter]');
 					END IF;"); //! don't replace in comment
 			}
@@ -115,13 +115,13 @@ DROP PROCEDURE adminer_alter;
 }
 
 function dump_data($table, $style, $select = "") {
-	global $dbh, $max_packet;
+	global $connection, $max_packet;
 	if ($style) {
 		if ($_POST["format"] != "csv" && $style == "TRUNCATE+INSERT") {
 			dump("TRUNCATE " . idf_escape($table) . ";\n");
 		}
 		$fields = fields($table);
-		$result = $dbh->query(($select ? $select : "SELECT * FROM " . idf_escape($table)), 1); // 1 - MYSQLI_USE_RESULT //! enum and set as numbers, microtime
+		$result = $connection->query(($select ? $select : "SELECT * FROM " . idf_escape($table)), 1); // 1 - MYSQLI_USE_RESULT //! enum and set as numbers, microtime
 		if ($result) {
 			$insert = "";
 			$buffer = "";
@@ -133,7 +133,7 @@ function dump_data($table, $style, $select = "") {
 						$insert = "INSERT INTO " . idf_escape($table) . " (" . implode(", ", array_map('idf_escape', array_keys($row))) . ") VALUES";
 					}
 					foreach ($row as $key => $val) {
-						$row[$key] = (isset($val) ? (ereg('int|float|double|decimal', $fields[$key]["type"]) ? $val : $dbh->quote($val)) : "NULL"); //! columns looking like functions
+						$row[$key] = (isset($val) ? (ereg('int|float|double|decimal', $fields[$key]["type"]) ? $val : $connection->quote($val)) : "NULL"); //! columns looking like functions
 					}
 					$s = implode(",\t", $row);
 					if ($style == "INSERT+UPDATE") {

@@ -33,9 +33,9 @@ if (!$error && $_POST) {
 		$delimiter = ";";
 		$offset = 0;
 		$empty = true;
-		$dbh2 = (strlen(DB) ? connect() : null); // connection for exploring indexes and EXPLAIN (to not replace FOUND_ROWS()) //! PDO - silent error
-		if (is_object($dbh2)) {
-			$dbh2->select_db(DB);
+		$connection2 = (strlen(DB) ? connect() : null); // connection for exploring indexes and EXPLAIN (to not replace FOUND_ROWS()) //! PDO - silent error
+		if (is_object($connection2)) {
+			$connection2->select_db(DB);
 		}
 		$explain = 1;
 		while (strlen($query)) {
@@ -60,8 +60,8 @@ if (!$error && $_POST) {
 						flush(); // can take a long time - show the running query
 						$start = explode(" ", microtime()); // microtime(true) is available since PHP 5
 						//! don't allow changing of character_set_results, convert encoding of displayed query
-						if (!$dbh->multi_query($q)) {
-							echo "<p class='error'>" . lang('Error in query') . ": " . h($dbh->error) . "\n";
+						if (!$connection->multi_query($q)) {
+							echo "<p class='error'>" . lang('Error in query') . ": " . h($connection->error) . "\n";
 							if ($_POST["error_stops"]) {
 								break;
 							}
@@ -69,15 +69,15 @@ if (!$error && $_POST) {
 							$end = explode(" ", microtime());
 							echo "<p class='time'>" . lang('%.3f s', max(0, $end[0] - $start[0] + $end[1] - $start[1])) . "</p>\n";
 							do {
-								$result = $dbh->store_result();
+								$result = $connection->store_result();
 								if (is_object($result)) {
-									select($result, $dbh2);
+									select($result, $connection2);
 									echo "<p>" . lang('%d row(s)', $result->num_rows);
-									if ($dbh2 && preg_match("~^$space*SELECT$space+~isU", $q)) {
+									if ($connection2 && preg_match("~^$space*SELECT$space+~isU", $q)) {
 										$id = "explain-$explain";
 										echo ", <a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>\n";
 										echo "<div id='$id' class='hidden'>\n";
-										select($dbh2->query("EXPLAIN $q"), $dbh2);
+										select($connection2->query("EXPLAIN $q"), $connection2);
 										echo "</div>\n";
 										$explain++;
 									}
@@ -85,10 +85,10 @@ if (!$error && $_POST) {
 									if (preg_match("~^$space*$alter_database", $query)) {
 										$databases = null; // clear cache
 									}
-									echo "<p class='message'>" . lang('Query executed OK, %d row(s) affected.', $dbh->affected_rows) . "\n";
+									echo "<p class='message'>" . lang('Query executed OK, %d row(s) affected.', $connection->affected_rows) . "\n";
 								}
 								unset($result); // free resultset
-							} while ($dbh->next_result());
+							} while ($connection->next_result());
 						}
 						$query = substr($query, $offset);
 						$offset = 0;

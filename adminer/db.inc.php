@@ -75,10 +75,10 @@ if (!$table_status) {
 	echo "</form>\n";
 }
 
-if ($dbh->server_info >= 5) {
+if ($connection->server_info >= 5) {
 	echo '<p><a href="' . h(ME) . 'view=">' . lang('Create view') . "</a>\n";
 	echo "<h3>" . lang('Routines') . "</h3>\n";
-	$result = $dbh->query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . $dbh->quote(DB));
+	$result = $connection->query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . $connection->quote(DB));
 	if ($result->num_rows) {
 		echo "<table cellspacing='0'>\n";
 		while ($row = $result->fetch_assoc()) {
@@ -92,7 +92,7 @@ if ($dbh->server_info >= 5) {
 	echo '<p><a href="' . h(ME) . 'procedure=">' . lang('Create procedure') . '</a> <a href="' . h(ME) . 'function=">' . lang('Create function') . "</a>\n";
 }
 
-if ($dbh->server_info >= 5.1 && ($result = $dbh->query("SHOW EVENTS"))) {
+if ($connection->server_info >= 5.1 && ($result = $connection->query("SHOW EVENTS"))) {
 	echo "<h3>" . lang('Events') . "</h3>\n";
 	if ($result->num_rows) {
 		echo "<table cellspacing='0'>\n";

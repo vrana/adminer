@@ -278,11 +278,11 @@ class Adminer {
 	* @return array expressions to join by AND
 	*/
 	function selectSearchProcess($fields, $indexes) {
-		global $dbh;
+		global $connection;
 		$return = array();
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT" && strlen($_GET["fulltext"][$i])) {
-				$return[] = "MATCH (" . implode(", ", array_map('idf_escape', $index["columns"])) . ") AGAINST (" . $dbh->quote($_GET["fulltext"][$i]) . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
+				$return[] = "MATCH (" . implode(", ", array_map('idf_escape', $index["columns"])) . ") AGAINST (" . $connection->quote($_GET["fulltext"][$i]) . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
 			}
 		}
 		foreach ((array) $_GET["where"] as $val) {
@@ -404,9 +404,9 @@ class Adminer {
 	* @return string expression to use in a query
 	*/
 	function processInput($field, $value, $function = "") {
-		global $dbh;
+		global $connection;
 		$name = $field["field"];
-		$return = $dbh->quote($value);
+		$return = $connection->quote($value);
 		if (ereg('^(now|uuid)$', $function)) {
 			$return = "$function()";
 		} elseif (ereg('^[+-]$', $function)) {
@@ -470,9 +470,9 @@ class Adminer {
 	* @return null
 	*/
 	function printTables($missing) {
-		global $dbh;
-		if ($missing != "db" && strlen(DB) && $dbh->select_db(DB)) {
-			$result = $dbh->query("SHOW TABLES");
+		global $connection;
+		if ($missing != "db" && strlen(DB) && $connection->select_db(DB)) {
+			$result = $connection->query("SHOW TABLES");
 			if (!$result->num_rows) {
 				echo "<p class='message'>" . lang('No tables.') . "\n";
 			} else {

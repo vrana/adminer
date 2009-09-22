@@ -4,7 +4,7 @@
 * @param Min_DB connection to examine indexes
 * @return null
 */
-function select($result, $dbh2 = null) {
+function select($result, $connection2 = null) {
 	if (!$result->num_rows) {
 		echo "<p class='message'>" . lang('No rows.') . "\n";
 	} else {
@@ -24,7 +24,7 @@ function select($result, $dbh2 = null) {
 						if (!isset($indexes[$field->orgtable])) {
 							// find primary key in each table
 							$indexes[$field->orgtable] = array();
-							foreach (indexes($field->orgtable, $dbh2) as $index) {
+							foreach (indexes($field->orgtable, $connection2) as $index) {
 								if ($index["type"] == "PRIMARY") {
 									$indexes[$field->orgtable] = array_flip($index["columns"]);
 									break;
@@ -112,21 +112,21 @@ function process_length($length) {
 }
 
 function process_type($field, $collate = "COLLATE") {
-	global $dbh, $enum_length, $unsigned;
+	global $connection, $enum_length, $unsigned;
 	return " $field[type]"
 		. ($field["length"] && !ereg('^date|time$', $field["type"]) ? "(" . process_length($field["length"]) . ")" : "")
 		. (ereg('int|float|double|decimal', $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
-		. (ereg('char|text|enum|set', $field["type"]) && $field["collation"] ? " $collate " . $dbh->quote($field["collation"]) : "")
+		. (ereg('char|text|enum|set', $field["type"]) && $field["collation"] ? " $collate " . $connection->quote($field["collation"]) : "")
 	;
 }
 
 function process_field($field, $type_field) {
-	global $dbh;
+	global $connection;
 	$default = $field["default"] . ($field["on_update"] ? " ON UPDATE $field[on_update]" : "");
 	return idf_escape($field["field"]) . process_type($type_field)
 		. ($field["null"] ? " NULL" : " NOT NULL") // NULL for timestamp
-		. (!isset($field["default"]) || $field["auto_increment"] || ereg('text|blob', $field["type"]) ? "" : " DEFAULT " . ($field["type"] == "timestamp" && eregi("^CURRENT_TIMESTAMP( on update CURRENT_TIMESTAMP)?$", $default) ? $default : $dbh->quote($default)))
-		. " COMMENT " . $dbh->quote($field["comment"])
+		. (!isset($field["default"]) || $field["auto_increment"] || ereg('text|blob', $field["type"]) ? "" : " DEFAULT " . ($field["type"] == "timestamp" && eregi("^CURRENT_TIMESTAMP( on update CURRENT_TIMESTAMP)?$", $default) ? $default : $connection->quote($default)))
+		. " COMMENT " . $connection->quote($field["comment"])
 	;
 }
 
@@ -233,11 +233,11 @@ function normalize_enum($match) {
 }
 
 function routine($name, $type) {
-	global $dbh, $enum_length, $inout, $types;
+	global $connection, $enum_length, $inout, $types;
 	$aliases = array("bit" => "tinyint", "bool" => "tinyint", "boolean" => "tinyint", "integer" => "int", "double precision" => "float", "real" => "float", "dec" => "decimal", "numeric" => "decimal", "fixed" => "decimal", "national char" => "char", "national varchar" => "varchar");
 	$type_pattern = "(" . implode("|", array_keys($types + $aliases)) . ")(?:\\s*\\(((?:[^'\")]*|$enum_length)+)\\))?\\s*(zerofill\\s*)?(unsigned(?:\\s+zerofill)?)?(?:\\s*(?:CHARSET|CHARACTER\\s+SET)\\s*['\"]?([^'\"\\s]+)['\"]?)?";
 	$pattern = "\\s*(" . ($type == "FUNCTION" ? "" : implode("|", $inout)) . ")?\\s*(?:`((?:[^`]|``)*)`\\s*|\\b(\\S+)\\s+)$type_pattern";
-	$create = $dbh->result($dbh->query("SHOW CREATE $type " . idf_escape($name)), 2);
+	$create = $connection->result($connection->query("SHOW CREATE $type " . idf_escape($name)), 2);
 	preg_match("~\\(((?:$pattern\\s*,?)*)\\)" . ($type == "FUNCTION" ? "\\s*RETURNS\\s+$type_pattern" : "") . "\\s*(.*)~is", $create, $match);
 	$fields = array();
 	preg_match_all("~$pattern\\s*,?~is", $match[1], $matches, PREG_SET_ORDER);

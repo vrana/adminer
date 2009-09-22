@@ -7,7 +7,7 @@ if ($_POST) {
 		dump("-- Adminer $VERSION dump
 SET NAMES utf8;
 SET foreign_key_checks = 0;
-SET time_zone = " . $dbh->quote($dbh->result($dbh->query("SELECT @@time_zone"))) . ";
+SET time_zone = " . $connection->quote($connection->result($connection->query("SELECT @@time_zone"))) . ";
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
 ");
@@ -15,31 +15,31 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 	
 	$style = $_POST["db_style"];
 	foreach ((strlen(DB) ? array(DB) : (array) $_POST["databases"]) as $db) {
-		if ($dbh->select_db($db)) {
-			if ($_POST["format"] == "sql" && ereg('CREATE', $style) && ($result = $dbh->query("SHOW CREATE DATABASE " . idf_escape($db)))) {
+		if ($connection->select_db($db)) {
+			if ($_POST["format"] == "sql" && ereg('CREATE', $style) && ($result = $connection->query("SHOW CREATE DATABASE " . idf_escape($db)))) {
 				if ($style == "DROP+CREATE") {
 					dump("DROP DATABASE IF EXISTS " . idf_escape($db) . ";\n");
 				}
-				$create = $dbh->result($result, 1);
+				$create = $connection->result($result, 1);
 				dump(($style == "CREATE+ALTER" ? preg_replace('~^CREATE DATABASE ~', '\\0IF NOT EXISTS ', $create) : $create) . ";\n");
 			}
 			if ($style && $_POST["format"] == "sql") {
 				dump("USE " . idf_escape($db) . ";\n" . ($style == "CREATE+ALTER" ? "SET @adminer_alter = '';\n" : "") . "\n");
 				$out = "";
-				if ($dbh->server_info >= 5) {
+				if ($connection->server_info >= 5) {
 					foreach (array("FUNCTION", "PROCEDURE") as $routine) {
-						$result = $dbh->query("SHOW $routine STATUS WHERE Db = " . $dbh->quote($db));
+						$result = $connection->query("SHOW $routine STATUS WHERE Db = " . $connection->quote($db));
 						while ($row = $result->fetch_assoc()) {
 							$out .= ($style != 'DROP+CREATE' ? "DROP $routine IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
-							. $dbh->result($dbh->query("SHOW CREATE $routine " . idf_escape($row["Name"])), 2) . ";;\n\n";
+							. $connection->result($connection->query("SHOW CREATE $routine " . idf_escape($row["Name"])), 2) . ";;\n\n";
 						}
 					}
 				}
-				if ($dbh->server_info >= 5.1) {
-					$result = $dbh->query("SHOW EVENTS");
+				if ($connection->server_info >= 5.1) {
+					$result = $connection->query("SHOW EVENTS");
 					while ($row = $result->fetch_assoc()) {
 						$out .= ($style != 'DROP+CREATE' ? "DROP EVENT IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
-						. $dbh->result($dbh->query("SHOW CREATE EVENT " . idf_escape($row["Name"])), 3) . ";;\n\n";
+						. $connection->result($connection->query("SHOW CREATE EVENT " . idf_escape($row["Name"])), 3) . ";;\n\n";
 					}
 				}
 				if ($out) {
@@ -97,11 +97,11 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 		FETCH tables INTO _table_name, _engine, _table_collation, _table_comment;
 		IF NOT done THEN
 			CASE _table_name");
-				$result = $dbh->query($query);
+				$result = $connection->query($query);
 				while ($row = $result->fetch_assoc()) {
-					$comment = $dbh->quote($row["ENGINE"] == "InnoDB" ? preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["TABLE_COMMENT"]) : $row["TABLE_COMMENT"]);
+					$comment = $connection->quote($row["ENGINE"] == "InnoDB" ? preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["TABLE_COMMENT"]) : $row["TABLE_COMMENT"]);
 					dump("
-				WHEN " . $dbh->quote($row["TABLE_NAME"]) . " THEN
+				WHEN " . $connection->quote($row["TABLE_NAME"]) . " THEN
 					" . (isset($row["ENGINE"]) ? "IF _engine != '$row[ENGINE]' OR _table_collation != '$row[TABLE_COLLATION]' OR _table_comment != $comment THEN
 						ALTER TABLE " . idf_escape($row["TABLE_NAME"]) . " ENGINE=$row[ENGINE] COLLATE=$row[TABLE_COLLATION] COMMENT=$comment;
 					END IF" : "BEGIN END") . ";");
@@ -137,7 +137,7 @@ page_header(lang('Export'), "", (strlen($_GET["export"]) ? array("table" => $_GE
 $db_style = array('', 'USE', 'DROP+CREATE', 'CREATE');
 $table_style = array('', 'DROP+CREATE', 'CREATE');
 $data_style = array('', 'TRUNCATE+INSERT', 'INSERT', 'INSERT+UPDATE');
-if ($dbh->server_info >= 5) {
+if ($connection->server_info >= 5) {
 	$db_style[] = 'CREATE+ALTER';
 	$table_style[] = 'CREATE+ALTER';
 }

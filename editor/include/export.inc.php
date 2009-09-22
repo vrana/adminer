@@ -4,8 +4,8 @@ function dump_table($table) {
 }
 
 function dump_data($table, $style, $select = "") {
-	global $dbh;
-	$result = $dbh->query(($select ? $select : "SELECT * FROM " . idf_escape($table)));
+	global $connection;
+	$result = $connection->query(($select ? $select : "SELECT * FROM " . idf_escape($table)));
 	if ($result) {
 		while ($row = $result->fetch_assoc()) {
 			dump_csv($row);

@@ -1,8 +1,8 @@
 <?php
 $TABLE = $_GET["table"];
-$result = $dbh->query("SHOW FULL COLUMNS FROM " . idf_escape($TABLE));
+$result = $connection->query("SHOW FULL COLUMNS FROM " . idf_escape($TABLE));
 if (!$result) {
-	$error = h($dbh->error);
+	$error = h($connection->error);
 }
 $table_status = ($result ? table_status($TABLE) : array());
 
@@ -55,9 +55,9 @@ if ($result) {
 			echo '<p><a href="' . h(ME) . 'foreign=' . urlencode($TABLE) . '">' . lang('Add foreign key') . "</a>\n";
 		}
 		
-		if ($dbh->server_info >= 5) {
+		if ($connection->server_info >= 5) {
 			echo "<h3>" . lang('Triggers') . "</h3>\n";
-			$result = $dbh->query("SHOW TRIGGERS LIKE " . $dbh->quote(addcslashes($TABLE, "%_")));
+			$result = $connection->query("SHOW TRIGGERS LIKE " . $connection->quote(addcslashes($TABLE, "%_")));
 			if ($result->num_rows) {
 				echo "<table cellspacing='0'>\n";
 				while ($row = $result->fetch_assoc()) {

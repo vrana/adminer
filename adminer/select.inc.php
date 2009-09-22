@@ -74,7 +74,7 @@ if ($_POST && !$error) {
 			if ($_POST["delete"] || $set) {
 				if ($_POST["all"] || ($primary === array() && $_POST["check"])) {
 					$result = queries($command . ($_POST["all"] ? ($where ? "\nWHERE " . implode(" AND ", $where) : "") : "\nWHERE $where_check"));
-					$affected = $dbh->affected_rows;
+					$affected = $connection->affected_rows;
 				} else {
 					foreach ((array) $_POST["check"] as $val) {
 						// where is not unique so OR can't be used
@@ -82,7 +82,7 @@ if ($_POST && !$error) {
 						if (!$result) {
 							break;
 						}
-						$affected += $dbh->affected_rows;
+						$affected += $connection->affected_rows;
 					}
 				}
 			}
@@ -103,7 +103,7 @@ if ($_POST && !$error) {
 				} else {
 					$set = "";
 					foreach ($matches2[1] as $i => $col) {
-						$set .= ", " . idf_escape($cols[$i]) . " = " . (!strlen($col) && $fields[$cols[$i]]["null"] ? "NULL" : $dbh->quote(str_replace('""', '"', preg_replace('~^"|"$~', '', $col))));
+						$set .= ", " . idf_escape($cols[$i]) . " = " . (!strlen($col) && $fields[$cols[$i]]["null"] ? "NULL" : $connection->quote(str_replace('""', '"', preg_replace('~^"|"$~', '', $col))));
 					}
 					$set = substr($set, 1);
 					$result = queries("INSERT INTO " . idf_escape($_GET["select"]) . " SET$set ON DUPLICATE KEY UPDATE$set");
@@ -136,7 +136,7 @@ if (isset($rights["insert"])) {
 $adminer->selectLinks($table_status, $set);
 
 if (!$columns) {
-	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "" : ": " . h($dbh->error)) . ".\n";
+	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "" : ": " . h($connection->error)) . ".\n";
 } else {
 	echo "<form action='' id='form'>\n";
 	echo "<div style='display: none;'>";
@@ -155,9 +155,9 @@ if (!$columns) {
 	$query = "SELECT " . (intval($limit) && $group && count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . $from . $group_by . (strlen($limit) ? " LIMIT " . intval($limit) . (intval($_GET["page"]) ? " OFFSET " . ($limit * $_GET["page"]) : "") : "");
 	echo $adminer->selectQuery($query);
 	
-	$result = $dbh->query($query);
+	$result = $connection->query($query);
 	if (!$result) {
-		echo "<p class='error'>" . h($dbh->error) . "\n";
+		echo "<p class='error'>" . h($connection->error) . "\n";
 	} else {
 		$email_fields = array();
 		echo "<form action='' method='post' enctype='multipart/form-data'>\n";
@@ -170,7 +170,7 @@ if (!$columns) {
 			}
 			// use count($rows) without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
 			$found_rows = (intval($limit) && $group && count($group) < count($select)
-				? $dbh->result($dbh->query(" SELECT FOUND_ROWS()")) // space to allow mysql.trace_mode
+				? $connection->result($connection->query(" SELECT FOUND_ROWS()")) // space to allow mysql.trace_mode
 				: count($rows)
 			);
 			
@@ -266,7 +266,7 @@ if (!$columns) {
 				// slow with big tables
 				ob_flush();
 				flush();
-				$found_rows = $dbh->result($dbh->query("SELECT COUNT(*) FROM " . idf_escape($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : "")));
+				$found_rows = $connection->result($connection->query("SELECT COUNT(*) FROM " . idf_escape($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : "")));
 			}
 			echo "<p>";
 			if (intval($limit) && $found_rows > $limit) {

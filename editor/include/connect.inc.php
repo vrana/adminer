@@ -1,2 +1,2 @@
 <?php
-$dbh->select_db($adminer->database());
+$connection->select_db($adminer->database());
