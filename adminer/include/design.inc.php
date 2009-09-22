@@ -2,13 +2,14 @@
 function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	global $LANG, $VERSION, $adminer;
 	header("Content-Type: text/html; charset=utf-8");
+	$title_all = $title . (strlen($title2) ? ": " . h($title2) : "");
 	?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html lang="<?php echo $LANG; ?>">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Script-Type" content="text/javascript">
 <meta name="robots" content="noindex">
-<title><?php echo $title . (strlen($title2) ? ": " . h($title2) : "") . (strlen($_GET["server"]) && $_GET["server"] != "localhost" ? h("- $_GET[server]") : "") . " - " . $adminer->name(); ?></title>
+<title><?php echo $title_all . (strlen($_GET["server"]) && $_GET["server"] != "localhost" ? h("- $_GET[server]") : "") . " - " . $adminer->name(); ?></title>
 <link rel="shortcut icon" type="image/x-icon" href="../adminer/favicon.ico">
 <link rel="stylesheet" type="text/css" href="../adminer/default.css<?php // Ondrej Valka, http://valka.info ?>">
 <?php if (file_exists("adminer.css")) { ?>
@@ -37,7 +38,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 		}
 		echo "$title\n";
 	}
-	echo "<h2>$title" . (strlen($title2) ? ": " . h($title2) : "") . "</h2>\n";
+	echo "<h2>$title_all</h2>\n";
 	if ($_SESSION["messages"]) {
 		echo "<div class='message'>" . implode("</div>\n<div class='message'>", $_SESSION["messages"]) . "</div>\n";
 		$_SESSION["messages"] = array();
