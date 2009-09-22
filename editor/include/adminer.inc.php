@@ -124,7 +124,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 	}
 	
 	function editVal($val, $field) {
-		if (ereg('date|timestamp', $field["type"])) {
+		if (ereg('date|timestamp', $field["type"]) && isset($val)) {
 			return preg_replace('~^([0-9]{2}([0-9]+))-(0?([0-9]+))-(0?([0-9]+))~', lang('$1-$3-$5'), $val);
 		}
 		return $val;
