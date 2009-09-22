@@ -303,8 +303,8 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		if (ereg('date|time', $field["type"])) {
 			$return[] = "now";
 		}
-		if (ereg('_(md5|sha1)$', $field["field"], $match)) {
-			$return[] = $match[1];
+		if (eregi('_(md5|sha1)$', $field["field"], $match)) {
+			$return[] = strtolower($match[1]);
 		}
 		return $return;
 	}
