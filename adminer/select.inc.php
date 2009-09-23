@@ -174,16 +174,7 @@ if (!$columns) {
 				: count($rows)
 			);
 			
-			$backward_keys = $adminer->backwardKeys($TABLE);
-			$table_names = array();
-			if ($backward_keys) {
-				foreach ($backward_keys as $key => $val) {
-					$val = $adminer->tableName(table_status($key));
-					if (strlen($val)) {
-						$table_names[$key] = (preg_match('(^' . preg_quote($table_name) . '(:|\\s*-)?\\s+(.+))', $val, $match) ? $match[2] : $val);
-					}
-				}
-			}
+			$backward_keys = $adminer->backwardKeys($TABLE, $table_name);
 			
 			echo "<table cellspacing='0' class='nowrap' onclick='table_click(event);'>\n";
 			echo "<thead><tr><td><input type='checkbox' id='all-page' onclick='form_check(this, /check/);'>";
@@ -201,7 +192,7 @@ if (!$columns) {
 				}
 				next($select);
 			}
-			echo ($table_names ? "<th>" . lang('Relations') : "") . "</thead>\n";
+			echo ($backward_keys ? "<th>" . lang('Relations') : "") . "</thead>\n";
 			foreach ($adminer->rowDescriptions($rows, $foreign_keys) as $n => $row) {
 				$unique_idf = implode('&amp;', unique_idf($rows[$n], $indexes));
 				echo "<tr" . odd() . "><td><input type='checkbox' name='check[]' value='$unique_idf'" . (in_array(str_replace("&amp;", "&", $unique_idf), (array) $_POST["check"]) ? " checked" : "") . " onclick=\"this.form['all'].checked = false; form_uncheck('all-page');\">" . (count($select) != count($group) || information_schema(DB) ? '' : " <a href='" . h(ME) . "edit=" . urlencode($TABLE) . "&amp;$unique_idf'>" . lang('edit') . "</a>");
@@ -245,19 +236,7 @@ if (!$columns) {
 						echo "<td>$val";
 					}
 				}
-				if ($table_names) {
-					echo "<td>";
-					foreach ($table_names as $table => $name) {
-						foreach ($backward_keys[$table] as $cols) {
-							$link = ME . 'select=' . urlencode($table);
-							$i = 0;
-							foreach ($cols as $column => $val) {
-								$link .= where_link($i++, $column, $rows[$n][$val]);
-							}
-							echo " <a href='" . h($link) . "'>$name</a>";
-						}
-					}
-				}
+				$adminer->backwardKeysPrint($backward_keys, $rows[$n]);
 				echo "\n";
 			}
 			echo "</table>\n";

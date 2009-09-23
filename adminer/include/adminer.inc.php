@@ -88,10 +88,19 @@ class Adminer {
 	
 	/** Find backward keys for table
 	* @param string
-	* @return array $return[$target_table][$key_name][$target_column] = $source_column;
+	* @param string
+	* @return array $return[$target_table]["keys"][$key_name][$target_column] = $source_column; $return[$target_table]["name"] = $this->tableName($target_table);
 	*/
-	function backwardKeys($table) {
+	function backwardKeys($table, $tableName) {
 		return array();
+	}
+	
+	/** Print backward keys for row
+	* @param array result of $this->backwardKeys()
+	* @param array
+	* @return null
+	*/
+	function backwardKeysPrint($backwardKeys, $row) {
 	}
 	
 	/** Query printed in select before execution
@@ -461,7 +470,7 @@ class Adminer {
 </p>
 </form>
 <?php
-			$this->printTables($missing);
+			$this->tablesPrint($missing);
 		}
 	}
 	
@@ -469,7 +478,7 @@ class Adminer {
 	* @param string can be "db" if there is no database selected
 	* @return null
 	*/
-	function printTables($missing) {
+	function tablesPrint($missing) {
 		global $connection;
 		if ($missing != "db" && strlen(DB) && $connection->select_db(DB)) {
 			$result = $connection->query("SHOW TABLES");

@@ -46,7 +46,7 @@ class Adminer {
 		}
 	}
 	
-	function backwardKeys($table) {
+	function backwardKeys($table, $tableName) {
 		global $connection;
 		$return = array();
 		$result = $connection->query("SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME
@@ -57,10 +57,36 @@ AND REFERENCED_TABLE_NAME = " . $connection->quote($table) . "
 ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		if ($result) {
 			while ($row = $result->fetch_assoc()) {
-				$return[$row["TABLE_NAME"]][$row["CONSTRAINT_NAME"]][$row["COLUMN_NAME"]] = $row["REFERENCED_COLUMN_NAME"];
+				$return[$row["TABLE_NAME"]]["keys"][$row["CONSTRAINT_NAME"]][$row["COLUMN_NAME"]] = $row["REFERENCED_COLUMN_NAME"];
+			}
+		}
+		foreach ($return as $key => $val) {
+			$name = $this->tableName(table_status($key));
+			if (strlen($name)) {
+				$search = preg_quote($tableName);
+				$separator = "(:|\\s*-)?\\s+";
+				$return[$key]["name"] = (preg_match("(^$search$separator(.+)|^(.+?)$separator$search\$)", $name, $match) ? $match[2] . $match[3] : $name);
+			} else {
+				unset($return[$key]);
 			}
 		}
 		return $return;
+	}
+	
+	function backwardKeysPrint($backwardKeys, $row) {
+		if ($backwardKeys) {
+			echo "<td>";
+			foreach ($backwardKeys as $table => $backwardKey) {
+				foreach ($backwardKey["keys"] as $cols) {
+					$link = ME . 'select=' . urlencode($table);
+					$i = 0;
+					foreach ($cols as $column => $val) {
+						$link .= where_link($i++, $column, $row[$val]);
+					}
+					echo " <a href='" . h($link) . "'>$backwardKey[name]</a>";
+				}
+			}
+		}
 	}
 	
 	function selectQuery($query) {
@@ -389,11 +415,11 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 </p>
 </form>
 <?php
-			$this->printTables($missing);
+			$this->tablesPrint($missing);
 		}
 	}
 	
-	function printTables($missing) {
+	function tablesPrint($missing) {
 		if ($missing != "db") {
 			$table_status = table_status();
 			if (!$table_status) {
