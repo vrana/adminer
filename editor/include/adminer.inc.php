@@ -185,7 +185,6 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 	}
 	
 	function selectEmailPrint($emailFields, $columns) {
-		global $confirm;
 		if ($emailFields) {
 			echo '<fieldset><legend><a href="#fieldset-email" onclick="return !toggle(\'fieldset-email\');">' . lang('E-mail') . "</a></legend><div id='fieldset-email'" . ($_POST["email_append"] ? "" : " class='hidden'") . ">\n";
 			echo "<p>" . lang('From') . ": <input name='email_from' value='" . h($_POST ? $_POST["email_from"] : $_COOKIE["adminer_email"]) . "'>\n";
@@ -194,7 +193,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 			echo "<select name='email_addition'>" . optionlist($columns, $_POST["email_addition"]) . "</select> <input type='submit' name='email_append' value='" . lang('Insert') . "'>\n"; //! JavaScript
 			echo "<p><input type='file' name='email_files[]' onchange=\"var el = this.cloneNode(true); el.value = ''; this.parentNode.appendChild(el);\">";
 			echo "<p>" . (count($emailFields) == 1 ? '<input type="hidden" name="email_field" value="' . h(key($emailFields)) . '">' : '<select name="email_field">' . optionlist($emailFields) . '</select> ');
-			echo "<input type='submit' name='email' value='" . lang('Send') . "'$confirm>\n";
+			echo "<input type='submit' name='email' value='" . lang('Send') . "' onclick=\"return this.form['delete'].onclick();\">\n";
 			echo "</div></fieldset>\n";
 		}
 	}

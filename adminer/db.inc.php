@@ -8,15 +8,13 @@ if ($tables_views && !$error) {
 		queries("SET foreign_key_checks = 0"); // allows to truncate or drop several tables at once
 	}
 	if (isset($_POST["truncate"])) {
-		if ($_POST["tables"]) {
-			foreach ($_POST["tables"] as $table) {
-				if (!queries("TRUNCATE " . idf_escape($table))) {
-					$result = false;
-					break;
-				}
+		foreach ((array) $_POST["tables"] as $table) {
+			if (!queries("TRUNCATE " . idf_escape($table))) {
+				$result = false;
+				break;
 			}
-			$message = lang('Tables have been truncated.');
 		}
+		$message = lang('Tables have been truncated.');
 	} elseif (isset($_POST["move"])) {
 		$rename = array();
 		foreach ($tables_views as $table) {
@@ -66,7 +64,7 @@ if (!$table_status) {
 		}
 	}
 	echo "</table>\n";
-	echo "<p><input type='hidden' name='token' value='$token'><input type='submit' value='" . lang('Analyze') . "'> <input type='submit' name='optimize' value='" . lang('Optimize') . "'> <input type='submit' name='check' value='" . lang('Check') . "'> <input type='submit' name='repair' value='" . lang('Repair') . "'> <input type='submit' name='truncate' value='" . lang('Truncate') . "'$confirm> <input type='submit' name='drop' value='" . lang('Drop') . "'$confirm>\n";
+	echo "<p><input type='hidden' name='token' value='$token'><input type='submit' value='" . lang('Analyze') . "'> <input type='submit' name='optimize' value='" . lang('Optimize') . "'> <input type='submit' name='check' value='" . lang('Check') . "'> <input type='submit' name='repair' value='" . lang('Repair') . "'> <input type='submit' name='truncate' value='" . lang('Truncate') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + form_checked(this, /tables/) + ')');\"> <input type='submit' name='drop' value='" . lang('Drop') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + form_checked(this, /tables|views/) + ')');\">\n";
 	$dbs = get_databases();
 	if (count($dbs) != 1) {
 		$db = (isset($_POST["target"]) ? $_POST["target"] : DB);

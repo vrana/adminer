@@ -26,6 +26,17 @@ function form_uncheck(id) {
 	document.getElementById(id).checked = false;
 }
 
+function form_checked(el, name) {
+	var checked = 0;
+	var elems = el.form.elements;
+	for (var i=0; i < elems.length; i++) {
+		if (name.test(elems[i].name) && elems[i].checked) {
+			checked++;
+		}
+	}
+	return checked;
+}
+
 function table_click(event) {
 	var el = event.target || event.srcElement;
 	while (!/^tr$/i.test(el.tagName)) {
