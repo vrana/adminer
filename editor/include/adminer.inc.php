@@ -89,7 +89,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 						// find all used ids
 						$ids = array();
 						foreach ($rows as $row) {
-							$ids[$row[$key]] = $connection->quote($row[$key]);
+							$ids[$row[$key]] = "BINARY " . $connection->quote($row[$key]);
 						}
 						// uses constant number of queries to get the descriptions, join would be complex, multiple queries would be slow
 						$descriptions = array();
