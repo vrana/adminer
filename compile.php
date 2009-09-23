@@ -133,7 +133,7 @@ function php_shrink($input) {
 				if ($tokens[$i+1][0] === T_ECHO) {
 					// join two consecutive echos
 					next($tokens);
-					$token[1] = ','; // '.' would conflict with "a".1+2 and would use more memory //! remove ',' and ","
+					$token[1] = ','; // '.' would conflict with "a".1+2 and would use more memory //! remove ',' and "," but not $var","
 				} else {
 					$in_echo = false;
 				}

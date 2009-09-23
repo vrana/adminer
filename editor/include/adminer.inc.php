@@ -264,7 +264,8 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 			if ($_POST["all"] || $_POST["check"]) {
 				$field = idf_escape($_POST["email_field"]);
 				$subject = $_POST["email_subject"];
-				$message = "$_POST[email_message]\n";
+				$eol = (strncasecmp(PHP_OS, "win", 3) ? "\n" : "\r\n");
+				$message = str_replace("\n", $eol, str_replace("\r", "", "$_POST[email_message]\n"));
 				preg_match_all('~\\{\\$([a-z0-9_]+)\\}~i', "$subject.$message", $matches); // allows {$name} in subject or message
 				$result = $connection->query("SELECT DISTINCT $field" . ($matches[1] ? ", " . implode(", ", array_map('idf_escape', array_unique($matches[1]))) : "") . " FROM " . idf_escape($_GET["select"])
 					. " WHERE $field IS NOT NULL AND $field != ''"
@@ -280,29 +281,31 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 				$email_files = $_FILES["email_files"];
 				foreach ($email_files["error"] as $key => $val) {
 					if (!$val) {
-						$attachments .= "--$boundary\n"
-							. "Content-Type: " . str_replace("\n", "", $email_files["type"][$key]) . "\n"
-							. "Content-Disposition: attachment; filename=\"" . preg_replace('~["\\n]~', '', $email_files["name"][$key]) . "\"\n"
-							. "Content-Transfer-Encoding: base64\n"
-							. "\n" . chunk_split(base64_encode(file_get_contents($email_files["tmp_name"][$key])), 76, "\n") . "\n"
+						$attachments .= "--$boundary$eol"
+							. "Content-Type: " . str_replace("\n", "", $email_files["type"][$key]) . $eol
+							. "Content-Disposition: attachment; filename=\"" . preg_replace('~["\\n]~', '', $email_files["name"][$key]) . "\"$eol"
+							. "Content-Transfer-Encoding: base64$eol"
+							. $eol . chunk_split(base64_encode(file_get_contents($email_files["tmp_name"][$key])), 76, $eol) . $eol
 						;
 					}
 				}
 				$beginning = "";
-				$headers = "Content-Type: text/plain; charset=utf-8\nContent-Transfer-Encoding: 8bit";
+				$headers = "Content-Type: text/plain; charset=utf-8$eol" . "Content-Transfer-Encoding: 8bit";
 				if ($attachments) {
-					$attachments .= "--$boundary--\n";
-					$beginning = "--$boundary\n$headers\n\n";
+					$attachments .= "--$boundary--$eol";
+					$beginning = "--$boundary$eol$headers$eol$eol";
 					$headers = "Content-Type: multipart/mixed; boundary=\"$boundary\"";
 				}
-				$headers .= "\nMIME-Version: 1.0" . ($_POST["email_from"] ? "\nFrom: " . str_replace("\n", "", $_POST["email_from"]) : ""); //! should escape display name
+				$headers .= $eol . "MIME-Version: 1.0"
+					. ($_POST["email_from"] ? $eol . "From: " . str_replace("\n", "", $_POST["email_from"]) : "") //! should escape display name
+				;
 				foreach ($this->rowDescriptions($rows, $foreignKeys) as $row) {
 					$replace = array();
 					foreach ($matches[1] as $val) {
 						$replace['{$' . "$val}"] = $row[$val]; //! allow literal {$name}
 					}
 					$email = $row[$_POST["email_field"]];
-					if (is_email($email) && mail($email, email_header(strtr($subject, $replace)), $beginning . strtr($message, $replace) . $attachments, $headers)) { //! replace \n by \r\n on Windows
+					if (is_email($email) && mail($email, email_header(strtr($subject, $replace)), $beginning . strtr($message, $replace) . $attachments, $headers)) {
 						$sent++;
 					}
 				}
