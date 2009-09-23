@@ -85,7 +85,7 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 				dump("
 				WHEN " . $connection->quote($row["COLUMN_NAME"]) . " THEN
 					SET add_columns = REPLACE(add_columns, ', ADD $row[alter]', '');
-					IF NOT (_column_default <=> $row[default]) OR _is_nullable != '$row[IS_NULLABLE]' OR _collation_name != '$row[COLLATION_NAME]' OR _column_type != '$row[COLUMN_TYPE]' OR _extra != '$row[EXTRA]' OR _column_comment != " . $connection->quote($row["COLUMN_COMMENT"]) . " OR after != $row[after] THEN
+					IF NOT (_column_default <=> $row[default]) OR _is_nullable != '$row[IS_NULLABLE]' OR _collation_name != '$row[COLLATION_NAME]' OR _column_type != " . $connection->quote($row["COLUMN_TYPE"]) . " OR _extra != '$row[EXTRA]' OR _column_comment != " . $connection->quote($row["COLUMN_COMMENT"]) . " OR after != $row[after] THEN
 						SET @alter_table = CONCAT(@alter_table, ', MODIFY $row[alter]');
 					END IF;"); //! don't replace in comment
 			}
