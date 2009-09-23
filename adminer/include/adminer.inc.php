@@ -435,7 +435,7 @@ class Adminer {
 	* @return null
 	*/
 	function navigation($missing) {
-		global $VERSION;
+		global $VERSION, $connection;
 		?>
 <h1>
 <a href="http://www.adminer.org/" id="h1"><?php echo $this->name(); ?></a>
@@ -470,28 +470,27 @@ class Adminer {
 </p>
 </form>
 <?php
-			$this->tablesPrint($missing);
+			if ($missing != "db" && strlen(DB) && $connection->select_db(DB)) {
+				$tables = get_vals("SHOW TABLES");
+				if (!$tables) {
+					echo "<p class='message'>" . lang('No tables.') . "\n";
+				} else {
+					$this->tablesPrint($tables);
+				}
+				echo '<p><a href="' . h(ME) . 'create=">' . lang('Create new table') . "</a>\n";
+			}
 		}
 	}
 	
 	/** Prints table list in menu
-	* @param string can be "db" if there is no database selected
+	* @param array
 	* @return null
 	*/
-	function tablesPrint($missing) {
-		global $connection;
-		if ($missing != "db" && strlen(DB) && $connection->select_db(DB)) {
-			$result = $connection->query("SHOW TABLES");
-			if (!$result->num_rows) {
-				echo "<p class='message'>" . lang('No tables.') . "\n";
-			} else {
-				echo "<p id='tables'>\n";
-				while ($row = $result->fetch_row()) {
-					echo '<a href="' . h(ME) . 'select=' . urlencode($row[0]) . '">' . lang('select') . '</a> ';
-					echo '<a href="' . h(ME) . 'table=' . urlencode($row[0]) . '">' . $this->tableName(array("Name" => $row[0])) . "</a><br>\n"; //! Adminer::tableName may work with full table status
-				}
-			}
-			echo '<p><a href="' . h(ME) . 'create=">' . lang('Create new table') . "</a>\n";
+	function tablesPrint($tables) {
+		echo "<p id='tables'>\n";
+		foreach ($tables as $table) {
+			echo '<a href="' . h(ME) . 'select=' . urlencode($table) . '">' . lang('select') . '</a> ';
+			echo '<a href="' . h(ME) . 'table=' . urlencode($table) . '">' . $this->tableName(array("Name" => $table)) . "</a><br>\n"; //! Adminer::tableName may work with full table status
 		}
 	}
 	

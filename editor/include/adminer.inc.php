@@ -415,23 +415,23 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 </p>
 </form>
 <?php
-			$this->tablesPrint($missing);
+			if ($missing != "db") {
+				$table_status = table_status();
+				if (!$table_status) {
+					echo "<p class='message'>" . lang('No tables.') . "\n";
+				} else {
+					$this->tablesPrint($table_status);
+				}
+			}
 		}
 	}
 	
-	function tablesPrint($missing) {
-		if ($missing != "db") {
-			$table_status = table_status();
-			if (!$table_status) {
-				echo "<p class='message'>" . lang('No tables.') . "\n";
-			} else {
-				echo "<p id='tables'>\n";
-				foreach ($table_status as $row) {
-					$name = $this->tableName($row);
-					if (isset($row["Engine"]) && strlen($name)) { // ignore views and tables without name
-						echo "<a href='" . h(ME) . 'select=' . urlencode($row["Name"]) . "'>$name</a><br>\n";
-					}
-				}
+	function tablesPrint($tables) {
+		echo "<p id='tables'>\n";
+		foreach ($tables as $row) {
+			$name = $this->tableName($row);
+			if (isset($row["Engine"]) && strlen($name)) { // ignore views and tables without name
+				echo "<a href='" . h(ME) . 'select=' . urlencode($row["Name"]) . "'>$name</a><br>\n";
 			}
 		}
 	}
