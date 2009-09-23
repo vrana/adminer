@@ -118,7 +118,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 			}
 		}
 		if ($field["full_type"] == "tinyint(1)" && $return != "&nbsp;") { // bool
-			$return = '<img src="' . ($val ? "../adminer/plus.gif" : "../adminer/cross.gif") . '" alt="' . h($val) . '">';
+			$return = '<img src="' . ($val ? "../adminer/static/plus.gif" : "../adminer/static/cross.gif") . '" alt="' . h($val) . '">';
 		}
 		return ($link ? "<a href='$link'>$return</a>" : $return);
 	}

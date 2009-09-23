@@ -10,15 +10,15 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <meta http-equiv="Content-Script-Type" content="text/javascript">
 <meta name="robots" content="noindex">
 <title><?php echo $title_all . (strlen($_GET["server"]) && $_GET["server"] != "localhost" ? h("- $_GET[server]") : "") . " - " . $adminer->name(); ?></title>
-<link rel="shortcut icon" type="image/x-icon" href="../adminer/favicon.ico">
-<link rel="stylesheet" type="text/css" href="../adminer/default.css<?php // Ondrej Valka, http://valka.info ?>">
+<link rel="shortcut icon" type="image/x-icon" href="../adminer/static/favicon.ico">
+<link rel="stylesheet" type="text/css" href="../adminer/static/default.css<?php // Ondrej Valka, http://valka.info ?>">
 <?php if (file_exists("adminer.css")) { ?>
 <link rel="stylesheet" type="text/css" href="adminer.css">
 <?php } ?>
 
 <body onload="body_load();<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verify_version();"); ?>">
-<script type="text/javascript" src="../adminer/functions.js"></script>
-<script type="text/javascript" src="editing.js"></script>
+<script type="text/javascript" src="../adminer/static/functions.js"></script>
+<script type="text/javascript" src="static/editing.js"></script>
 
 <div id="content">
 <?php
