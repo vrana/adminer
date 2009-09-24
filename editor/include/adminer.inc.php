@@ -321,7 +321,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 					$beginning = "--$boundary$eol$headers$eol$eol";
 					$headers = "Content-Type: multipart/mixed; boundary=\"$boundary\"";
 				}
-				$headers .= $eol . "MIME-Version: 1.0"
+				$headers .= $eol . "MIME-Version: 1.0$eol" . "X-Mailer: Adminer Editor"
 					. ($_POST["email_from"] ? $eol . "From: " . str_replace("\n", "", $_POST["email_from"]) : "") //! should escape display name
 				;
 				foreach ($this->rowDescriptions($rows, $foreignKeys) as $row) {
