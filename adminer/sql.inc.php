@@ -55,7 +55,7 @@ if (!$error && $_POST) {
 					if (!$found || $found == $delimiter) { // end of a query
 						$empty = false;
 						$q = substr($query, 0, $match[0][1]);
-						echo "<pre class='jush-sql'>" . shorten_utf8(trim($q)) . "</pre>\n";
+						echo "<pre class='jush-sql'>" . shorten_utf8(trim($q), 1000) . "</pre>\n";
 						ob_flush();
 						flush(); // can take a long time - show the running query
 						$start = explode(" ", microtime()); // microtime(true) is available since PHP 5
