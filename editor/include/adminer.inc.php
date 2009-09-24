@@ -377,7 +377,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 			return '<input type="checkbox" value="' . h($value ? $value : 1) . '"' . ($value ? ' checked' : '') . "$attrs>";
 		}
 		if (ereg('date|timestamp', $field["type"])) {
-			return "<input value='" . h($value) . "'$attrs> (" . lang('yyyy-mm-dd') . ")"; //! maxlength
+			return "<input value='" . h($value) . "'$attrs> (" . lang('[yyyy]-mm-dd') . ")"; //! maxlength
 		}
 		return '';
 	}
@@ -387,8 +387,8 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		if ($function == "now") {
 			return "$function()";
 		}
-		$return = $connection->quote(ereg('date|timestamp', $field["type"]) && preg_match('(^' . str_replace('\\$1', '(?P<p1>[0-9]+)', preg_replace('~(\\\\\\$([2-6]))~', '(?P<p\\2>[0-9]{1,2})', preg_quote(lang('$1-$3-$5')))) . '(.*))', $value, $match)
-			? ($match["p1"] ? $match["p1"] : ($match["p2"] < 70 ? 20 : 19) . $match["p2"]) . "-$match[p3]$match[p4]-$match[p5]$match[p6]" . end($match)
+		$return = $connection->quote(ereg('date|timestamp', $field["type"]) && preg_match('(^' . str_replace('\\$1', '(?P<p1>[0-9]*)', preg_replace('~(\\\\\\$([2-6]))~', '(?P<p\\2>[0-9]{1,2})', preg_quote(lang('$1-$3-$5')))) . '(.*))', $value, $match)
+			? (strlen($match["p1"]) ? $match["p1"] : (strlen($match["p2"]) ? ($match["p2"] < 70 ? 20 : 19) . $match["p2"] : gmdate("Y"))) . "-$match[p3]$match[p4]-$match[p5]$match[p6]" . end($match)
 			: $value
 		);
 		if (!ereg('varchar|text', $field["type"]) && $field["full_type"] != "tinyint(1)" && !strlen($value)) {
