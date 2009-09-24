@@ -20,7 +20,8 @@ if (!$error && $_POST) {
 		$query = get_file("sql_file", true);
 	}
 	if (is_string($query)) { // get_file() returns error as number, fread() as false
-		if (!$fp && strlen($query) && (!$history || end($history) != $query)) { // don't add repeated 
+		@ini_set("memory_limit", 2 * strlen($query) + memory_get_usage() + 2e6); // @ - may be disabled, 2 - substr and trim, 2e6 - other variables
+		if (strlen($query) && strlen($query) < 1e6 && (!$history || end($history) != $query)) { // don't add repeated and big queries
 			$history[] = $query;
 		}
 		$space = "(\\s|/\\*.*\\*/|(#|-- )[^\n]*\n|--\n)";
@@ -116,7 +117,15 @@ if (!$error && $_POST) {
 ?>
 
 <form action="" method="post" enctype="multipart/form-data">
-<p><textarea name="query" rows="20" cols="80" style="width: 98%;"><?php echo h($_POST ? $_POST["query"] : (strlen($_GET["history"]) ? $history[$_GET["history"]] : $_GET["sql"])); ?></textarea>
+<p><textarea name="query" rows="20" cols="80" style="width: 98%;"><?php
+$q = $_GET["sql"];
+if ($_POST) {
+	$q = $_POST["query"];
+} elseif (strlen($_GET["history"])) {
+	$q = $history[$_GET["history"]];
+}
+echo h($q);
+?></textarea>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Execute'); ?>">
