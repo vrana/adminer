@@ -360,7 +360,7 @@ class Adminer {
 	function messageQuery($query) {
 		$id = "sql-" . count($_SESSION["messages"]);
 		$_SESSION["history"][$_GET["server"]][DB][] = $query;
-		return " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre class='jush-sql'>" . h($query) . '</pre><a href="' . h(ME . 'sql=&history=' . (count($_SESSION["history"][$_GET["server"]][DB]) - 1)) . '">' . lang('Edit') . '</a></div>';
+		return " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre class='jush-sql'>" . shorten_utf8($query, 1000) . '</pre><a href="' . h(ME . 'sql=&history=' . (count($_SESSION["history"][$_GET["server"]][DB]) - 1)) . '">' . lang('Edit') . '</a></div>';
 	}
 	
 	/** Functions displayed in edit form
