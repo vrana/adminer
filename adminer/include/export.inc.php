@@ -146,7 +146,7 @@ function dump_data($table, $style, $select = "") {
 						$s = "\n($s)";
 						if (!$buffer) {
 							$buffer = $insert . $s;
-						} elseif (strlen($buffer) + 1 + strlen($s) < $max_packet) { // 1 - separator length
+						} elseif (strlen($buffer) + 2 + strlen($s) < $max_packet) { // 2 - separator and terminator length
 							$buffer .= ",$s";
 						} else {
 							$buffer .= ";\n";
