@@ -91,7 +91,7 @@ function editing_name_change(field) {
 	}
 }
 
-function editing_add_row(button, allowed) {
+function editing_add_row(button, allowed, focus) {
 	if (allowed && row_count >= allowed) {
 		return false;
 	}
@@ -107,7 +107,7 @@ function editing_add_row(button, allowed) {
 	}
 	tags = row.getElementsByTagName('input');
 	tags2 = row2.getElementsByTagName('input');
-	var ret = tags2[0]; // IE loose tags2 after insertBefore()
+	var input = tags2[0]; // IE loose tags2 after insertBefore()
 	for (var i=0; i < tags.length; i++) {
 		if (tags[i].name == 'auto_increment_col') {
 			tags2[i].value = x;
@@ -125,9 +125,15 @@ function editing_add_row(button, allowed) {
 		editing_name_change(tags[0]);
 	};
 	row.parentNode.insertBefore(row2, row.nextSibling);
+	if (focus) {
+		input.onchange = function () {
+			editing_name_change(input);
+		};
+		input.focus();
+	}
 	added += '0';
 	row_count++;
-	return ret;
+	return true;
 }
 
 function editing_remove_row(button) {
