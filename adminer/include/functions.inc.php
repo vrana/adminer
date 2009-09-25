@@ -168,7 +168,7 @@ function where_link($i, $column, $value) {
 * @return bool
 */
 function cookie($name, $value) {
-	return setcookie($name, $value, gmmktime(0, 0, 0, gmdate("n") + 1), preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]));
+	return setcookie($name, $value, time() + 2592000, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"])); // 2592000 = 30 * 24 * 60 * 60
 }
 
 /** Send Location header and exit
