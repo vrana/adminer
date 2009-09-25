@@ -127,7 +127,7 @@ if (isset($rights["insert"])) {
 	$set = "";
 	foreach ((array) $_GET["where"] as $val) {
 		if (count($foreign_keys[$val["col"]]) == 1 && ($val["op"] == "="
-			|| ($val["op"] == "" && !ereg('[_%]', $val["val"])) // LIKE in Editor
+			|| (!$val["op"] && !ereg('[_%]', $val["val"])) // LIKE in Editor
 		)) {
 			$set .= "&set" . urlencode("[" . bracket_escape($val["col"]) . "]") . "=" . urlencode($val["val"]);
 		}
@@ -198,20 +198,21 @@ if (!$columns) {
 				echo "<tr" . odd() . "><td>" . checkbox("check[]", $unique_idf, in_array($unique_idf, (array) $_POST["check"]), "", "this.form['all'].checked = false; form_uncheck('all-page');") . (count($select) != count($group) || information_schema(DB) ? '' : " <a href='" . h(ME . "edit=" . urlencode($TABLE) . "&$unique_idf") . "'>" . lang('edit') . "</a>");
 				foreach ($row as $key => $val) {
 					if (isset($names[$key])) {
+						$field = $fields[$key];
 						if (strlen($val) && (!isset($email_fields[$key]) || strlen($email_fields[$key]))) {
 							$email_fields[$key] = (is_email($val) ? $names[$key] : ""); //! filled e-mails may be contained on other pages
 						}
 						$link = "";
-						$val = $adminer->editVal($val, $fields[$key]);
+						$val = $adminer->editVal($val, $field);
 						if (!isset($val)) {
 							$val = "<i>NULL</i>";
 						} else {
-							if (ereg('blob|binary', $fields[$key]["type"]) && strlen($val)) {
+							if (ereg('blob|binary', $field["type"]) && strlen($val)) {
 								$link = h(ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . "&$unique_idf");
 							}
 							if (!strlen($val)) {
 								$val = "&nbsp;";
-							} elseif (strlen($text_length) && ereg('blob|text', $fields[$key]["type"]) && is_utf8($val)) {
+							} elseif (strlen($text_length) && ereg('text|blob', $field["type"]) && is_utf8($val)) {
 								$val = whitespace(shorten_utf8($val, max(0, intval($text_length)))); // usage of LEFT() would reduce traffic but complicate query
 							} else {
 								$val = whitespace(h($val));
@@ -232,7 +233,7 @@ if (!$columns) {
 						if (!$link && is_email($val)) {
 							$link = "mailto:$val";
 						}
-						$val = $adminer->selectVal($val, $link, $fields[$key]);
+						$val = $adminer->selectVal($val, $link, $field);
 						echo "<td>$val";
 					}
 				}

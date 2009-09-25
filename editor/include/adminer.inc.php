@@ -147,7 +147,13 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		if ($field["full_type"] == "tinyint(1)" && $return != "&nbsp;") { // bool
 			$return = '<img src="' . ($val ? "../adminer/static/plus.gif" : "../adminer/static/cross.gif") . '" alt="' . h($val) . '">';
 		}
-		return ($link ? "<a href='$link'>$return</a>" : $return);
+		if ($link) {
+			$return = "<a href='$link'>$return</a>";
+		}
+		if (!$link && $field["full_type"] != "tinyint(1)" && ereg('int|float|double|decimal', $field["type"])) {
+			$return = "<div class='number'>$return</div>"; // Firefox doesn't support <colgroup>
+		}
+		return $return;
 	}
 	
 	function editVal($val, $field) {
