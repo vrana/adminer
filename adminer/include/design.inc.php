@@ -2,6 +2,7 @@
 function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	global $LANG, $VERSION, $adminer;
 	header("Content-Type: text/html; charset=utf-8");
+	header("X-Frame-Options: deny"); // ClickJacking protection in IE8, Safari 4, Chrome 2, NoScript plugin
 	$title_all = $title . (strlen($title2) ? ": " . h($title2) : "");
 	?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">

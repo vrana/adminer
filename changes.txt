@@ -3,6 +3,7 @@ Display table links above table structure
 Fix removed default in ALTER
 Display whitespace in texts (bug #2858042)
 Display number of manipulated rows in JS confirm
+ClickJacking protection in modern browsers
 E-mail attachments (Editor)
 Optional year in date (Editor)
 Search operators (Editor)
