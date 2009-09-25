@@ -1,5 +1,6 @@
 <?php
 class Adminer {
+	var $operators = array("<=", ">=");
 	
 	function name() {
 		return lang('Editor');
@@ -167,11 +168,13 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 		foreach ((array) $_GET["where"] as $val) {
 			if (strlen("$val[col]$val[val]")) {
 				echo "<div><select name='where[$i][col]'><option value=''>" . lang('(anywhere)') . optionlist($columns, $val["col"], true) . "</select>";
+				echo "<select name='where[$i][op]'><option>" . optionlist($this->operators, $val["op"]) . "</select>";
 				echo "<input name='where[$i][val]' value='" . h($val["val"]) . "'></div>\n";
 				$i++;
 			}
 		}
 		echo "<div><select name='where[$i][col]' onchange='select_add_row(this);'><option value=''>" . lang('(anywhere)') . optionlist($columns, null, true) . "</select>";
+		echo "<select name='where[$i][op]'><option>" . optionlist($this->operators) . "</select>";
 		echo "<input name='where[$i][val]'></div>\n";
 		echo "</div></fieldset>\n";
 	}
@@ -238,7 +241,7 @@ ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
 					if (strlen($col) || is_numeric($val["val"]) || !ereg('int|float|double|decimal', $field["type"])) {
 						$text_type = ereg('char|text|enum|set', $field["type"]);
 						$value = $this->processInput($field, (strlen($val["val"]) && $text_type && strpos($val["val"], "%") === false ? "%$val[val]%" : $val["val"]));
-						$conds[] = idf_escape($name) . ($value == "NULL" ? " IS" : ($val["op"] != "=" && $text_type ? " LIKE" : " =")) . " $value";
+						$conds[] = idf_escape($name) . (in_array($val["op"], $this->operators) ? " $val[op]" : ($value == "NULL" ? " IS" : ($val["op"] != "=" && $text_type ? " LIKE" : " ="))) . " $value";
 					}
 				}
 				$return[] = ($conds ? "(" . implode(" OR ", $conds) . ")" : "0");
