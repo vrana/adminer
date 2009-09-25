@@ -148,12 +148,10 @@ echo "<tr><th>" . lang('Format') . "<td>$dump_format\n";
 echo "<tr><th>" . lang('Compression') . "<td>" . ($dump_compress ? $dump_compress : lang('None of the supported PHP extensions (%s) are available.', 'zlib, bz2')) . "\n";
 echo "<tr><th>" . lang('Database') . "<td><select name='db_style'>" . optionlist($db_style, (strlen(DB) ? '' : 'CREATE')) . "</select>\n";
 if ($connection->server_info >= 5) {
-	$objects = array('routines' => lang('Routines'));
+	$checked = strlen($_GET["dump"]);
+	checkbox("routines", 1, $checked, lang('Routines'));
 	if ($connection->server_info >= 5.1) {
-		$objects['events'] = lang('Events');
-	}
-	foreach ($objects as $key => $val) {
-		echo " <label><input type='checkbox' name='$key' value='1'" . (strlen($_GET["dump"]) ? "" : " checked") . ">$val</label>";
+		checkbox("events", 1, $checked, lang('Events'));
 	}
 }
 echo "<tr><th>" . lang('Tables') . "<td><select name='table_style'>" . optionlist($table_style, 'DROP+CREATE') . "</select>\n";
@@ -172,12 +170,12 @@ if (strlen(DB)) {
 	echo "</thead>\n";
 	$views = "";
 	foreach (table_status() as $row) {
-		$checked = (strlen($TABLE) && $row["Name"] != $TABLE ? '' : " checked");
-		$print = "<tr><td><label><input type='checkbox' name='tables[]' value='" . h($row["Name"]) . "'$checked onclick=\"form_uncheck('check-tables');\">" . h($row["Name"]) . "</label>";
+		$checked = (strlen($TABLE) && $row["Name"] != $TABLE);
+		$print = "<tr><td>" . checkbox("tables[]", $row["Name"], $checked, $row["Name"], "form_uncheck('check-tables');");
 		if (!$row["Engine"]) {
 			$views .= "$print\n";
 		} else {
-			echo "$print<td align='right'><label>" . ($row["Engine"] == "InnoDB" && $row["Rows"] ? lang('~ %s', $row["Rows"]) : $row["Rows"]) . "<input type='checkbox' name='data[]' value='" . h($row["Name"]) . "'$checked onclick=\"form_uncheck('check-data');\"></label>\n";
+			echo "$print<td align='right'><label>" . ($row["Engine"] == "InnoDB" && $row["Rows"] ? lang('~ %s', $row["Rows"]) : $row["Rows"]) . checkbox("data[]", $row["Name"], $checked, "", "form_uncheck('check-data');") . "</label>\n";
 		}
 	}
 	echo $views;
@@ -185,7 +183,7 @@ if (strlen(DB)) {
 	echo "<thead><tr><th style='text-align: left;'><label><input type='checkbox' id='check-databases' checked onclick='form_check(this, /^databases\\[/);'>" . lang('Database') . "</label></thead>\n";
 	foreach (get_databases() as $db) {
 		if (!information_schema($db)) {
-			echo '<tr><td><label><input type="checkbox" name="databases[]" value="' . h($db) . '" checked onclick="form_uncheck(\'check-databases\');">' . h($db) . "</label>\n";
+			echo "<tr><td>" . checkbox("databases[]", $db, 1, $db, "form_uncheck('check-databases');") . "</label>\n";
 		}
 	}
 }

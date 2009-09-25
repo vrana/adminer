@@ -194,8 +194,8 @@ if (!$columns) {
 			}
 			echo ($backward_keys ? "<th>" . lang('Relations') : "") . "</thead>\n";
 			foreach ($adminer->rowDescriptions($rows, $foreign_keys) as $n => $row) {
-				$unique_idf = implode('&amp;', unique_idf($rows[$n], $indexes));
-				echo "<tr" . odd() . "><td><input type='checkbox' name='check[]' value='$unique_idf'" . (in_array(str_replace("&amp;", "&", $unique_idf), (array) $_POST["check"]) ? " checked" : "") . " onclick=\"this.form['all'].checked = false; form_uncheck('all-page');\">" . (count($select) != count($group) || information_schema(DB) ? '' : " <a href='" . h(ME) . "edit=" . urlencode($TABLE) . "&amp;$unique_idf'>" . lang('edit') . "</a>");
+				$unique_idf = implode('&', unique_idf($rows[$n], $indexes));
+				echo "<tr" . odd() . "><td>" . checkbox("check[]", $unique_idf, in_array($unique_idf, (array) $_POST["check"]), "", "this.form['all'].checked = false; form_uncheck('all-page');") . (count($select) != count($group) || information_schema(DB) ? '' : " <a href='" . h(ME . "edit=" . urlencode($TABLE) . "&$unique_idf") . "'>" . lang('edit') . "</a>");
 				foreach ($row as $key => $val) {
 					if (isset($names[$key])) {
 						if (strlen($val) && (!isset($email_fields[$key]) || strlen($email_fields[$key]))) {
@@ -207,7 +207,7 @@ if (!$columns) {
 							$val = "<i>NULL</i>";
 						} else {
 							if (ereg('blob|binary', $fields[$key]["type"]) && strlen($val)) {
-								$link = h(ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . '&') . $unique_idf;
+								$link = h(ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . "&$unique_idf");
 							}
 							if (!strlen($val)) {
 								$val = "&nbsp;";
@@ -257,7 +257,7 @@ if (!$columns) {
 				}
 				echo ($_GET["page"] + 3 < $max_page ? " ..." : "") . pagination($max_page);
 			}
-			echo " (" . lang('%d row(s)', $found_rows) . ') <label><input type="checkbox" name="all" value="1">' . lang('whole result') . "</label>\n";
+			echo " (" . lang('%d row(s)', $found_rows) . ") " . checkbox("all", 1, 0, lang('whole result')) . "\n";
 			
 			echo (information_schema(DB) ? "" : "<fieldset><legend>" . lang('Edit') . "</legend><div><input type='submit' name='edit' value='" . lang('Edit') . "'> <input type='submit' name='clone' value='" . lang('Clone') . "'> <input type='submit' name='delete' value='" . lang('Delete') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + (this.form['all'].checked ? $found_rows : form_checked(this, /check/)) + ')');\"></div></fieldset>\n");
 			print_fieldset("export", lang('Export'));

@@ -118,7 +118,9 @@ if ($_POST) {
 <table cellspacing="0">
 <tr><th><?php echo lang('Username'); ?><td><input name="user" maxlength="16" value="<?php echo h($row["user"]); ?>">
 <tr><th><?php echo lang('Server'); ?><td><input name="host" maxlength="60" value="<?php echo h($row["host"]); ?>">
-<tr><th><?php echo lang('Password'); ?><td><input id="pass" name="pass" value="<?php echo h($row["pass"]); ?>"><?php if (!$row["hashed"]) { ?><script type="text/javascript">type_password(document.getElementById('pass'));</script><?php } ?> <label><input type="checkbox" name="hashed" value="1"<?php if ($row["hashed"]) { ?> checked<?php } ?> onclick="type_password(this.form['pass'], this.checked);"><?php echo lang('Hashed'); ?></label>
+<tr><th><?php echo lang('Password'); ?><td><input id="pass" name="pass" value="<?php echo h($row["pass"]); ?>">
+<?php if (!$row["hashed"]) { ?><script type="text/javascript">type_password(document.getElementById('pass'));</script><?php } ?>
+<?php echo checkbox("hashed", 1, $row["hashed"], lang('Hashed'), "type_password(this.form['pass'], this.checked);"); ?>
 </table>
 
 <?php

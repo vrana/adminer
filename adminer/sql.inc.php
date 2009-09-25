@@ -129,7 +129,7 @@ echo h($q);
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Execute'); ?>">
-<label><input type="checkbox" name="error_stops" value="1"<?php echo ($_POST["error_stops"] ? " checked" : ""); ?>><?php echo lang('Stop on error'); ?></label>
+<?php echo checkbox("error_stops", 1, $_POST["error_stops"], lang('Stop on error')); ?>
 
 <p>
 <?php

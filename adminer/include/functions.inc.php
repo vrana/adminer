@@ -59,6 +59,19 @@ function nbsp($string) {
 	return (strlen(trim($string)) ? h($string) : "&nbsp;");
 }
 
+/** Generate HTML checkbox
+* @param string
+* @param string
+* @param bool
+* @param string
+* @param string
+* @return string
+*/
+function checkbox($name, $value, $checked, $label = "", $onclick = "") {
+	$return = "<input type='checkbox' name='$name' value='" . h($value) . "'" . ($checked ? " checked" : "") . ($onclick ? " onclick=\"$onclick\"" : "") . ">";
+	return (strlen($label) ? "<label>$return" . h($label) . "</label>" : $return);
+}
+
 /** Generate list of HTML options
 * @param array array of strings or arrays (creates optgroup)
 * @param mixed
