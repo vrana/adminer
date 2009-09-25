@@ -23,10 +23,12 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 				$create = $connection->result($result, 1);
 				dump(($style == "CREATE+ALTER" ? preg_replace('~^CREATE DATABASE ~', '\\0IF NOT EXISTS ', $create) : $create) . ";\n");
 			}
-			if ($style && $_POST["format"] == "sql") {
-				dump("USE " . idf_escape($db) . ";\n" . ($style == "CREATE+ALTER" ? "SET @adminer_alter = '';\n" : "") . "\n");
+			if ($_POST["format"] == "sql") {
+				if ($style) {
+					dump("USE " . idf_escape($db) . ";\n" . ($style == "CREATE+ALTER" ? "SET @adminer_alter = '';\n" : "") . "\n");
+				}
 				$out = "";
-				if ($connection->server_info >= 5) {
+				if ($_POST["routines"]) {
 					foreach (array("FUNCTION", "PROCEDURE") as $routine) {
 						$result = $connection->query("SHOW $routine STATUS WHERE Db = " . $connection->quote($db));
 						while ($row = $result->fetch_assoc()) {
@@ -35,7 +37,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 						}
 					}
 				}
-				if ($connection->server_info >= 5.1) {
+				if ($_POST["events"]) {
 					$result = $connection->query("SHOW EVENTS");
 					while ($row = $result->fetch_assoc()) {
 						$out .= ($style != 'DROP+CREATE' ? "DROP EVENT IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
@@ -145,6 +147,15 @@ echo "<tr><th>" . lang('Output') . "<td><input type='hidden' name='token' value=
 echo "<tr><th>" . lang('Format') . "<td>$dump_format\n";
 echo "<tr><th>" . lang('Compression') . "<td>" . ($dump_compress ? $dump_compress : lang('None of the supported PHP extensions (%s) are available.', 'zlib, bz2')) . "\n";
 echo "<tr><th>" . lang('Database') . "<td><select name='db_style'>" . optionlist($db_style, (strlen(DB) ? '' : 'CREATE')) . "</select>\n";
+if ($connection->server_info >= 5) {
+	$objects = array('routines' => lang('Routines'));
+	if ($connection->server_info >= 5.1) {
+		$objects['events'] = lang('Events');
+	}
+	foreach ($objects as $key => $val) {
+		echo " <label><input type='checkbox' name='$key' value='1'" . (strlen($_GET["dump"]) ? "" : " checked") . ">$val</label>";
+	}
+}
 echo "<tr><th>" . lang('Tables') . "<td><select name='table_style'>" . optionlist($table_style, 'DROP+CREATE') . "</select>\n";
 echo "<tr><th>" . lang('Data') . "<td><select name='data_style'>" . optionlist($data_style, 'INSERT') . "</select>\n";
 ?>
