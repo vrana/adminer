@@ -170,7 +170,7 @@ if (strlen(DB)) {
 	echo "</thead>\n";
 	$views = "";
 	foreach (table_status() as $row) {
-		$checked = (strlen($TABLE) && $row["Name"] != $TABLE);
+		$checked = !strlen($TABLE) || $row["Name"] == $TABLE;
 		$print = "<tr><td>" . checkbox("tables[]", $row["Name"], $checked, $row["Name"], "form_uncheck('check-tables');");
 		if (!$row["Engine"]) {
 			$views .= "$print\n";

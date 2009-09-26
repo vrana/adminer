@@ -7,7 +7,6 @@ Create view and routine options
 Function to fix database encoding - http://php.vrana.cz/prevod-kodovani-mysql.php
 Highlight SQL textarea - may use external CodePress
 Mass editation of individual rows
-IE6 - <label for>
 Offer enum and set items in search - whisperer
 Use event $intervals + microseconds in relative date functions
 ? Column and table names auto-completition in SQL textarea
