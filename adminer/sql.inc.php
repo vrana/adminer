@@ -140,7 +140,15 @@ if (!ini_get("file_uploads")) {
 <input type="submit" name="file" value="<?php echo lang('Run file'); ?>">
 <?php } ?>
 
-<p><?php echo lang('Webserver file %s', '<code>adminer.sql</code>'); ?> <input type="submit" name="webfile" value="<?php echo lang('Run file'); ?>">
+<p><?php
+$compress = array();
+foreach (array("gz" => "zlib", "bz2" => "bzip2") as $key => $val) {
+	if (in_array("compress.$val", stream_get_wrappers())) {
+		$compress[] = ".$key";
+	}
+}
+echo lang('Webserver file %s', "<code>adminer.sql" . ($compress ? "[" . implode("|", $compress) . "]" : "") . "</code>");
+?> <input type="submit" name="webfile" value="<?php echo lang('Run file'); ?>">
 
 <?php
 if ($history) {
