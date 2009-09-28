@@ -50,25 +50,25 @@ class Adminer {
 	function backwardKeys($table, $tableName) {
 		global $connection;
 		$return = array();
-		$result = $connection->query("SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME
+		if ($connection->server_info >= 5) { //! requires MySQL 5
+			$result = $connection->query("SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME
 FROM information_schema.KEY_COLUMN_USAGE
 WHERE TABLE_SCHEMA = " . $connection->quote($this->database()) . "
 AND REFERENCED_TABLE_SCHEMA = " . $connection->quote($this->database()) . "
 AND REFERENCED_TABLE_NAME = " . $connection->quote($table) . "
-ORDER BY ORDINAL_POSITION"); //! requires MySQL 5
-		if ($result) {
+ORDER BY ORDINAL_POSITION");
 			while ($row = $result->fetch_assoc()) {
 				$return[$row["TABLE_NAME"]]["keys"][$row["CONSTRAINT_NAME"]][$row["COLUMN_NAME"]] = $row["REFERENCED_COLUMN_NAME"];
 			}
-		}
-		foreach ($return as $key => $val) {
-			$name = $this->tableName(table_status($key));
-			if (strlen($name)) {
-				$search = preg_quote($tableName);
-				$separator = "(:|\\s*-)?\\s+";
-				$return[$key]["name"] = (preg_match("(^$search$separator(.+)|^(.+?)$separator$search\$)", $name, $match) ? $match[2] . $match[3] : $name);
-			} else {
-				unset($return[$key]);
+			foreach ($return as $key => $val) {
+				$name = $this->tableName(table_status($key));
+				if (strlen($name)) {
+					$search = preg_quote($tableName);
+					$separator = "(:|\\s*-)?\\s+";
+					$return[$key]["name"] = (preg_match("(^$search$separator(.+)|^(.+?)$separator$search\$)", $name, $match) ? $match[2] . $match[3] : $name);
+				} else {
+					unset($return[$key]);
+				}
 			}
 		}
 		return $return;
