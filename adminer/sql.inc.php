@@ -118,7 +118,7 @@ if (!$error && $_POST) {
 
 <form action="" method="post" enctype="multipart/form-data">
 <p><textarea name="query" rows="20" cols="80" style="width: 98%;"><?php
-$q = $_GET["sql"];
+$q = $_GET["sql"]; // overwrite $q from if ($_POST) to save memory
 if ($_POST) {
 	$q = $_POST["query"];
 } elseif (strlen($_GET["history"])) {
