@@ -226,7 +226,7 @@ ORDER BY ORDINAL_POSITION");
 			echo lang('Subject') . ": <input name='email_subject' value='" . h($_POST["email_subject"]) . "'>\n";
 			echo "<p><textarea name='email_message' rows='15' cols='60'>" . h($_POST["email_message"] . ($_POST["email_append"] ? '{$' . "$_POST[email_addition]}" : "")) . "</textarea><br>\n";
 			echo "<select name='email_addition'>" . optionlist($columns, $_POST["email_addition"]) . "</select> <input type='submit' name='email_append' value='" . lang('Insert') . "'>\n"; //! JavaScript
-			echo "<p><input type='file' name='email_files[]' onchange=\"var el = this.cloneNode(true); el.value = ''; this.parentNode.appendChild(el);\">";
+			echo "<p><input type='file' name='email_files[]' onchange=\"var el = this.cloneNode(true); el.value = ''; this.parentNode.appendChild(el); this.onchange = function () { };\">";
 			echo "<p>" . (count($emailFields) == 1 ? '<input type="hidden" name="email_field" value="' . h(key($emailFields)) . '">' : '<select name="email_field">' . optionlist($emailFields) . '</select> ');
 			echo "<input type='submit' name='email' value='" . lang('Send') . "' onclick=\"return this.form['delete'].onclick();\">\n";
 			echo "</div></fieldset>\n";
