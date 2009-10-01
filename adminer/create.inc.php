@@ -65,7 +65,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 	$status = "COMMENT=" . $connection->quote($_POST["Comment"])
 		. ($_POST["Engine"] && $_POST["Engine"] != $orig_status["Engine"] ? " ENGINE=" . $connection->quote($_POST["Engine"]) : "")
 		. ($_POST["Collation"] && $_POST["Collation"] != $orig_status["Collation"] ? " COLLATE " . $connection->quote($_POST["Collation"]) : "")
-		. (strlen($_POST["auto_increment"]) ? " AUTO_INCREMENT=" . intval($_POST["auto_increment"]) : "")
+		. (strlen($_POST["auto_increment"]) ? " AUTO_INCREMENT=" . preg_replace('~[^0-9]+~', '', $_POST["auto_increment"]) : "")
 	;
 	if (in_array($_POST["partition_by"], $partition_by)) {
 		$partitions = array();
