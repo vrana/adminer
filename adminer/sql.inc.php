@@ -73,9 +73,9 @@ if (!$error && $_POST) {
 								$result = $connection->store_result();
 								if (is_object($result)) {
 									select($result, $connection2);
-									echo "<p>" . lang('%d row(s)', $result->num_rows);
 									if ($connection2 && preg_match("~^$space*SELECT$space+~isU", $q)) {
 										$id = "explain-$explain";
+										echo "<p>" . lang('%d row(s)', $result->num_rows);
 										echo ", <a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>\n";
 										echo "<div id='$id' class='hidden'>\n";
 										select($connection2->query("EXPLAIN $q"), $connection2);
