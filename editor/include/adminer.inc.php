@@ -246,7 +246,7 @@ ORDER BY ORDINAL_POSITION");
 				foreach ((strlen($col) ? array($col => $fields[$col]) : $fields) as $name => $field) {
 					if (strlen($col) || is_numeric($val["val"]) || !ereg('int|float|double|decimal', $field["type"])) {
 						$text_type = ereg('char|text|enum|set', $field["type"]);
-						$value = $this->processInput($field, (strlen($val["val"]) && $text_type && strpos($val["val"], "%") === false ? "%$val[val]%" : $val["val"]));
+						$value = $this->processInput($field, ($text_type && ereg('^[^%]+$', $val["val"]) ? "%$val[val]%" : $val["val"]));
 						$conds[] = idf_escape($name) . (in_array($val["op"], $this->operators) ? " $val[op]" : ($value == "NULL" ? " IS" : ($val["op"] != "=" && $text_type ? " LIKE" : " ="))) . " $value";
 					}
 				}
