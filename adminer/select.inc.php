@@ -232,6 +232,9 @@ if (!$columns) {
 						if (!$link && is_email($val)) {
 							$link = "mailto:$val";
 						}
+						if (!$link && is_url($val)) {
+							$link = "http://www.adminer.org/redirect/?url=" . urlencode($val); // intermediate page to hide Referer
+						}
 						$val = $adminer->selectVal($val, $link, $field);
 						echo "<td>$val";
 					}

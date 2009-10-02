@@ -501,6 +501,15 @@ function is_email($email) {
 	return eregi("^$atom+(\\.$atom+)*@($domain?\\.)+$domain\$", $email);
 }
 
+/** Check whether the string is URL address
+* @param string
+* @return bool
+*/
+function is_url($string) {
+	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component
+	return preg_match("~^https?://($domain?\\.)+$domain(:[0-9]+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string); //! restrict path, query and fragment characters
+}
+
 /** Print header for hidden fieldset (close by </div></fieldset>)
 * @param string
 * @param string
