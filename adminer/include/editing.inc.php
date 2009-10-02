@@ -97,7 +97,7 @@ function referencable_primary($self) {
 function edit_type($key, $field, $collations, $foreign_keys = array()) {
 	global $structured_types, $unsigned, $inout;
 	?>
-<td><select name="<?php echo $key; ?>[type]" class="type" onchange="editing_type_change(this);"><?php echo optionlist($structured_types + ($foreign_keys ? array(lang('Foreign keys') => $foreign_keys) : array()), $field["type"]); // foreign keys can be wide but style="width: 15ex;" narrows expanded optionlist in IE too ?></select>
+<td><select name="<?php echo $key; ?>[type]" class="type" onchange="editing_type_change(this);"><?php echo optionlist($structured_types + ($foreign_keys ? array(lang('Foreign keys') => $foreign_keys) : array()), $field["type"]); ?></select>
 <td><input name="<?php echo $key; ?>[length]" value="<?php echo h($field["length"]); ?>" size="3">
 <td><?php
 echo "<select name='$key" . "[collation]'" . (ereg('(char|text|enum|set)$', $field["type"]) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>';
@@ -172,7 +172,11 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 		$display = (isset($_POST["add"][$i-1]) || (isset($field["field"]) && !$_POST["drop_col"][$i]));
 		?>
 <tr<?php echo ($display ? "" : " style='display: none;'"); ?>>
-<?php if ($type == "PROCEDURE") { ?><td><select name="fields[<?php echo $i; ?>][inout]"><?php echo optionlist($inout, $field["inout"]); ?></select><?php } ?>
+<?php
+if ($type == "PROCEDURE") {
+	echo "<td>" . html_select("fields[$i][inout]", $inout, $field["inout"]);
+}
+?>
 <th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo h($field["field"]); ?>" onchange="<?php echo (strlen($field["field"]) || count($fields) > 1 ? "" : "editing_add_row(this, $allowed); "); ?>editing_name_change(this);" maxlength="64"><?php } ?><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo h($field[($_POST ? "orig" : "field")]); ?>">
 <?php edit_type("fields[$i]", $field, $collations, $foreign_keys); ?>
 <?php if ($type == "TABLE") { ?>

@@ -144,16 +144,16 @@ if ($connection->server_info >= 5) {
 }
 echo "<tr><th>" . lang('Output') . "<td><input type='hidden' name='token' value='$token'>" . $adminer->dumpOutput(0) . "\n"; // token is not needed but checked in bootstrap for all POST data
 echo "<tr><th>" . lang('Format') . "<td>" . $adminer->dumpFormat(0) . "\n";
-echo "<tr><th>" . lang('Database') . "<td><select name='db_style'>" . optionlist($db_style, (strlen(DB) ? '' : 'CREATE')) . "</select>\n";
+echo "<tr><th>" . lang('Database') . "<td>" . html_select('db_style', $db_style, (strlen(DB) ? '' : 'CREATE'));
 if ($connection->server_info >= 5) {
 	$checked = strlen($_GET["dump"]);
-	checkbox("routines", 1, $checked, lang('Routines'));
+	echo checkbox("routines", 1, $checked, lang('Routines'));
 	if ($connection->server_info >= 5.1) {
-		checkbox("events", 1, $checked, lang('Events'));
+		echo checkbox("events", 1, $checked, lang('Events'));
 	}
 }
-echo "<tr><th>" . lang('Tables') . "<td><select name='table_style'>" . optionlist($table_style, 'DROP+CREATE') . "</select>\n";
-echo "<tr><th>" . lang('Data') . "<td><select name='data_style'>" . optionlist($data_style, 'INSERT') . "</select>\n";
+echo "<tr><th>" . lang('Tables') . "<td>" . html_select('table_style', $table_style, 'DROP+CREATE');
+echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style, 'INSERT');
 ?>
 </table>
 <p><input type="submit" value="<?php echo lang('Export'); ?>"></p>

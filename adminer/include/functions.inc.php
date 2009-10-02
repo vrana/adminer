@@ -78,12 +78,12 @@ function checkbox($name, $value, $checked, $label = "", $onclick = "") {
 * @param string
 * @param array
 * @param string
-* @param bool generate select (otherwise radio)
+* @param string true for no onchange, false for radio
 * @return string
 */
-function html_select($name, $options, $value, $select = true) {
-	if ($select) {
-		return "<select name='" . h($name) . "'>" . optionlist($options, $value) . "</select>";
+function html_select($name, $options, $value = "", $onchange = true) {
+	if ($onchange) {
+		return "<select name='" . h($name) . "'" . (is_string($onchange) ? " onchange=\"$onchange\"" : "") . ">" . optionlist($options, $value) . "</select>";
 	}
 	$return = "";
 	foreach ($options as $key => $val) {
@@ -418,7 +418,7 @@ function input($field, $value, $function) {
 			$first++;
 		}
 		$onchange = ($first ? " onchange=\"var f = this.form['function[" . addcslashes($name, "\r\n'\\") . "]']; if ($first > f.selectedIndex) f.selectedIndex = $first;\"" : "");
-		echo (count($functions) > 1 ? "<select name='function[$name]'>" . optionlist($functions, !isset($function) || in_array($function, $functions) ? $function : "") . "</select>" : nbsp(reset($functions))) . '<td>';
+		echo (count($functions) > 1 ? html_select("function[$name]", $functions, !isset($function) || in_array($function, $functions) ? $function : "") : nbsp(reset($functions))) . '<td>';
 		$input = $adminer->editInput($_GET["edit"], $field, " name='fields[$name]'$onchange", $value); // usage in call is without a table
 		if (strlen($input)) {
 			echo $input;

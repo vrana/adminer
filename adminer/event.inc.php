@@ -40,8 +40,8 @@ if ($_POST) {
 <tr><th><?php echo lang('Name'); ?><td><input name="EVENT_NAME" value="<?php echo h($row["EVENT_NAME"]); ?>" maxlength="64">
 <tr><th><?php echo lang('Start'); ?><td><input name="STARTS" value="<?php echo h("$row[EXECUTE_AT]$row[STARTS]"); ?>">
 <tr><th><?php echo lang('End'); ?><td><input name="ENDS" value="<?php echo h($row["ENDS"]); ?>">
-<tr><th><?php echo lang('Every'); ?><td><input name="INTERVAL_VALUE" value="<?php echo h($row["INTERVAL_VALUE"]); ?>" size="6"> <select name="INTERVAL_FIELD"><?php echo optionlist($intervals, $row["INTERVAL_FIELD"]); ?></select>
-<tr><th><?php echo lang('Status'); ?><td><select name="STATUS"><?php echo optionlist($statuses, $row["STATUS"]); ?></select>
+<tr><th><?php echo lang('Every'); ?><td><input name="INTERVAL_VALUE" value="<?php echo h($row["INTERVAL_VALUE"]); ?>" size="6"> <?php echo html_select("INTERVAL_FIELD", $intervals, $row["INTERVAL_FIELD"]); ?>
+<tr><th><?php echo lang('Status'); ?><td><?php echo html_select("STATUS", $statuses, $row["STATUS"]); ?>
 <tr><th><?php echo lang('Comment'); ?><td><input name="EVENT_COMMENT" value="<?php echo h($row["EVENT_COMMENT"]); ?>" maxlength="64">
 <tr><th>&nbsp;<td><?php echo checkbox("ON_COMPLETION", "PRESERVE", $row["ON_COMPLETION"] == "PRESERVE", lang('On completion preserve')); ?>
 </table>

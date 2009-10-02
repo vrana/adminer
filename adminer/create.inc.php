@@ -155,8 +155,8 @@ foreach ($engines as $engine) {
 <form action="" method="post" id="form">
 <p>
 <?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo h($row["name"]); ?>">
-<select name="Engine"><option value="">(<?php echo lang('engine'); ?>)<?php echo optionlist($engines, $row["Engine"]); ?></select>
-<select name="Collation"><option value="">(<?php echo lang('collation'); ?>)<?php echo optionlist($collations, $row["Collation"]); ?></select>
+<?php echo html_select("Engine", array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]); ?>
+<?php echo html_select("Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]); ?>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 </p>
 <table cellspacing="0" id="edit-fields">
@@ -178,7 +178,7 @@ if ($connection->server_info >= 5.1) {
 	?>
 <fieldset><legend><?php echo lang('Partition by'); ?></legend>
 <p>
-<select name="partition_by" onchange="partition_by_change(this);"><option><?php echo optionlist($partition_by, $row["partition_by"]); ?></select>
+<?php echo html_select("partition_by", array(-1 => "") + $partition_by, $row["partition_by"], "partition_by_change(this);"); ?>
 (<input name="partition" value="<?php echo h($row["partition"]); ?>">)
 <?php echo lang('Partitions'); ?>: <input name="partitions" size="2" value="<?php echo h($row["partitions"]); ?>"<?php echo ($partition_table || !$row["partition_by"] ? " class='hidden'" : ""); ?>>
 <table cellspacing="0" id="partition-table"<?php echo ($partition_table ? "" : " class='hidden'"); ?>>

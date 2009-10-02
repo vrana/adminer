@@ -44,7 +44,7 @@ $target = ($TABLE === $row["table"] ? $source : get_vals("SHOW COLUMNS FROM " . 
 <form action="" method="post">
 <p>
 <?php echo lang('Target table'); ?>:
-<select name="table" onchange="this.form['change-js'].value = '1'; this.form.submit();"><?php echo optionlist(array_keys(table_status_referencable()), $row["table"]); ?></select>
+<?php echo html_select("table", array_keys(table_status_referencable()), $row["table"], "this.form['change-js'].value = '1'; this.form.submit();"); ?>
 <input type="hidden" name="change-js" value="">
 </p>
 <noscript><p><input type="submit" name="change" value="<?php echo lang('Change'); ?>"></noscript>
@@ -54,15 +54,15 @@ $target = ($TABLE === $row["table"] ? $source : get_vals("SHOW COLUMNS FROM " . 
 $j = 0;
 foreach ($row["source"] as $key => $val) {
 	echo "<tr>";
-	echo "<td><select name='source[" . intval($key) . "]'" . ($j == count($row["source"]) - 1 ? " onchange='foreign_add_row(this);'" : "") . "><option>" . optionlist($source, $val) . "</select>";
-	echo "<td><select name='target[" . intval($key) . "]'>" . optionlist($target, $row["target"][$key]) . "</select>";
+	echo "<td>" . html_select("source[" . intval($key) . "]", array(-1 => "") + $source, $val, ($j == count($row["source"]) - 1 ? "foreign_add_row(this);" : 1));
+	echo "<td>" . html_select("target[" . intval($key) . "]", $target, $row["target"][$key]);
 	$j++;
 }
 ?>
 </table>
 <p>
-<?php echo lang('ON DELETE'); ?>: <select name="on_delete"><option><?php echo optionlist($on_actions, $row["on_delete"]); ?></select>
-<?php echo lang('ON UPDATE'); ?>: <select name="on_update"><option><?php echo optionlist($on_actions, $row["on_update"]); ?></select>
+<?php echo lang('ON DELETE'); ?>: <?php echo html_select("on_delete", array(-1 => "") + $on_actions, $row["on_delete"]); ?>
+ <?php echo lang('ON UPDATE'); ?>: <?php echo html_select("on_update", array(-1 => "") + $on_actions, $row["on_update"]); ?>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Save'); ?>">

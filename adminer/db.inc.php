@@ -68,7 +68,7 @@ if (!$table_status) {
 	$dbs = get_databases();
 	if (count($dbs) != 1) {
 		$db = (isset($_POST["target"]) ? $_POST["target"] : DB);
-		echo "<p>" . lang('Move to other database') . ($dbs ? ": <select name='target'>" . optionlist($dbs, $db) . "</select>" : ': <input name="target" value="' . h($db) . '">') . " <input type='submit' name='move' value='" . lang('Move') . "'>\n";
+		echo "<p>" . lang('Move to other database') . ($dbs ? ": " . html_select("target", $dbs, $db) : ': <input name="target" value="' . h($db) . '">') . " <input type='submit' name='move' value='" . lang('Move') . "'>\n";
 	}
 	echo "</form>\n";
 }

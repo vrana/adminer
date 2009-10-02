@@ -162,11 +162,11 @@ class Adminer {
 		$fun_group = array(lang('Functions') => $this->functions, lang('Aggregation') => $this->grouping);
 		foreach ($select as $key => $val) {
 			$val = $_GET["columns"][$key];
-			echo "<div><select name='columns[$i][fun]'><option>" . optionlist($fun_group, $val["fun"]) . "</select>";
+			echo "<div>" . html_select("columns[$i][fun]", array(-1 => "") + $fun_group, $val["fun"]);
 			echo "<select name='columns[$i][col]'><option>" . optionlist($columns, $val["col"], true) . "</select></div>\n";
 			$i++;
 		}
-		echo "<div><select name='columns[$i][fun]' onchange='this.nextSibling.onchange();'><option>" . optionlist($fun_group) . "</select>";
+		echo "<div>" . html_select("columns[$i][fun]", array(-1 => "") + $fun_group, "", "this.nextSibling.onchange();");
 		echo "<select name='columns[$i][col]' onchange='select_add_row(this);'><option>" . optionlist($columns, null, true) . "</select></div>\n";
 		echo "</div></fieldset>\n";
 	}
@@ -191,13 +191,13 @@ class Adminer {
 		foreach ((array) $_GET["where"] as $val) {
 			if (strlen("$val[col]$val[val]") && in_array($val["op"], $this->operators)) {
 				echo "<div><select name='where[$i][col]'><option value=''>" . lang('(anywhere)') . optionlist($columns, $val["col"], true) . "</select>";
-				echo "<select name='where[$i][op]'>" . optionlist($this->operators, $val["op"]) . "</select>";
+				echo html_select("where[$i][op]", $this->operators, $val["op"]);
 				echo "<input name='where[$i][val]' value='" . h($val["val"]) . "'></div>\n";
 				$i++;
 			}
 		}
 		echo "<div><select name='where[$i][col]' onchange='select_add_row(this);'><option value=''>" . lang('(anywhere)') . optionlist($columns, null, true) . "</select>";
-		echo "<select name='where[$i][op]'>" . optionlist($this->operators) . "</select>";
+		echo html_select("where[$i][op]", $this->operators);
 		echo "<input name='where[$i][val]'></div>\n";
 		echo "</div></fieldset>\n";
 	}
@@ -482,11 +482,7 @@ class Adminer {
 <p>
 <?php if (SID) { ?><input type="hidden" name="<?php echo session_name(); ?>" value="<?php echo h(session_id()); ?>"><?php } ?>
 <?php if (strlen($_GET["server"])) { ?><input type="hidden" name="server" value="<?php echo h($_GET["server"]); ?>"><?php } ?>
-<?php if ($databases) { ?>
-<select name="db" onchange="this.form.submit();"><option value="">(<?php echo lang('database'); ?>)<?php echo optionlist($databases, DB); ?></select>
-<?php } else { ?>
-<input name="db" value="<?php echo h(DB); ?>">
-<?php } ?>
+<?php echo ($databases ? html_select("db", array("" => "(" . lang('database') . ")") + $databases, DB, "this.form.submit();") : '<input name="db" value="' . h(DB) . '">'); ?>
 <?php if (isset($_GET["sql"])) { ?><input type="hidden" name="sql" value=""><?php } ?>
 <?php if (isset($_GET["schema"])) { ?><input type="hidden" name="schema" value=""><?php } ?>
 <?php if (isset($_GET["dump"])) { ?><input type="hidden" name="dump" value=""><?php } ?>

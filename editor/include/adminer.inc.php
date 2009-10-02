@@ -174,13 +174,13 @@ ORDER BY ORDINAL_POSITION");
 		foreach ((array) $_GET["where"] as $val) {
 			if (strlen("$val[col]$val[val]")) {
 				echo "<div><select name='where[$i][col]'><option value=''>" . lang('(anywhere)') . optionlist($columns, $val["col"], true) . "</select>";
-				echo "<select name='where[$i][op]'><option>" . optionlist($this->operators, $val["op"]) . "</select>";
+				echo html_select("where[$i][op]", array(-1 => "") + $this->operators, $val["op"]);
 				echo "<input name='where[$i][val]' value='" . h($val["val"]) . "'></div>\n";
 				$i++;
 			}
 		}
 		echo "<div><select name='where[$i][col]' onchange='select_add_row(this);'><option value=''>" . lang('(anywhere)') . optionlist($columns, null, true) . "</select>";
-		echo "<select name='where[$i][op]'><option>" . optionlist($this->operators) . "</select>";
+		echo html_select("where[$i][op]", array(-1 => "") + $this->operators);
 		echo "<input name='where[$i][val]'></div>\n";
 		echo "</div></fieldset>\n";
 	}
@@ -206,7 +206,7 @@ ORDER BY ORDINAL_POSITION");
 	
 	function selectLimitPrint($limit) {
 		echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
-		echo "<select name='limit'>" . optionlist(array("", "30", "100"), $limit) . "</select>";
+		echo html_select("limit", array("", "30", "100"), $limit);
 		echo "</div></fieldset>\n";
 	}
 	
@@ -225,9 +225,9 @@ ORDER BY ORDINAL_POSITION");
 			echo "<p>" . lang('From') . ": <input name='email_from' value='" . h($_POST ? $_POST["email_from"] : $_COOKIE["adminer_email"]) . "'>\n";
 			echo lang('Subject') . ": <input name='email_subject' value='" . h($_POST["email_subject"]) . "'>\n";
 			echo "<p><textarea name='email_message' rows='15' cols='60'>" . h($_POST["email_message"] . ($_POST["email_append"] ? '{$' . "$_POST[email_addition]}" : "")) . "</textarea><br>\n";
-			echo "<select name='email_addition'>" . optionlist($columns, $_POST["email_addition"]) . "</select> <input type='submit' name='email_append' value='" . lang('Insert') . "'>\n"; //! JavaScript
+			echo html_select("email_addition", $columns, $_POST["email_addition"]) . "<input type='submit' name='email_append' value='" . lang('Insert') . "'>\n"; //! JavaScript
 			echo "<p><input type='file' name='email_files[]' onchange=\"var el = this.cloneNode(true); el.value = ''; this.parentNode.appendChild(el); this.onchange = function () { };\">";
-			echo "<p>" . (count($emailFields) == 1 ? '<input type="hidden" name="email_field" value="' . h(key($emailFields)) . '">' : '<select name="email_field">' . optionlist($emailFields) . '</select> ');
+			echo "<p>" . (count($emailFields) == 1 ? '<input type="hidden" name="email_field" value="' . h(key($emailFields)) . '">' : html_select("email_field", $emailFields));
 			echo "<input type='submit' name='email' value='" . lang('Send') . "' onclick=\"return this.form['delete'].onclick();\">\n";
 			echo "</div></fieldset>\n";
 		}

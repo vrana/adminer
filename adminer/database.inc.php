@@ -72,7 +72,7 @@ if ($_POST) {
 	? '<textarea name="name" rows="10" cols="40">' . h($name) . '</textarea><br>'
 	: '<input name="name" value="' . h($name) . '" maxlength="64">'
 ) . "\n"; ?>
-<select name="collation"><option value="">(<?php echo lang('collation'); ?>)<?php echo optionlist($collations, $collate); ?></select>
+<?php echo html_select("collation", array("" => "(" . lang('collation') . ")") + $collations, $collate); ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php

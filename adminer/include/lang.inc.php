@@ -32,9 +32,9 @@ function switch_lang() {
 	global $LANG, $langs;
 	echo "<form action=''>\n<div id='lang'>";
 	hidden_fields($_GET, array('lang'));
-	echo lang('Language') . ": <select name='lang' onchange='this.form.submit();'>";
-	echo optionlist($langs, $LANG);
-	echo "</select>\n<noscript><div style='display: inline;'><input type='submit' value='" . lang('Use') . "'></div></noscript>\n</div>\n</form>\n";
+	echo lang('Language') . ": " . html_select("lang", $langs, $LANG, "this.form.submit();");
+	echo "<noscript><div style='display: inline;'><input type='submit' value='" . lang('Use') . "'></div></noscript>\n";
+	echo "</div>\n</form>\n";
 }
 
 if (isset($_GET["lang"])) {
