@@ -187,7 +187,7 @@ if ($_SESSION["lang"]) {
 	$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
 	$file = str_replace('<?php echo $LANG; ?>', $_SESSION["lang"], $file);
 }
-$file = str_replace('<script type="text/javascript" src="editing.js"></script>' . "\n", "", $file);
+$file = str_replace('<script type="text/javascript" src="static/editing.js"></script>' . "\n", "", $file);
 $file = preg_replace_callback("~compile_file\\('([^']+)', '([^']+)'\\);~", 'compile_file', $file); // integrate static files
 $replace = 'h(preg_replace("~\\\\\\\\?.*~", "", $_SERVER["REQUEST_URI"])) . "?file=\\1&amp;version=' . $VERSION;
 $file = preg_replace('~\\.\\./adminer/static/(default\\.css|functions\\.js|favicon\\.ico)~', '<?php echo ' . $replace . '"; ?>', $file);
