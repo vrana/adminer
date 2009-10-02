@@ -1,6 +1,6 @@
 <?php
 function dump_table($table) {
-	dump("\xef\xbb\xbf"); // UTF-8 byte order mark
+	echo "\xef\xbb\xbf"; // UTF-8 byte order mark
 }
 
 function dump_data($table, $style, $select = "") {

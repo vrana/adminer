@@ -469,27 +469,6 @@ function process_input($field) {
 	}
 }
 
-/** Print data with optional compression
-* @param string null to force output
-* @return null
-*/
-function dump($string = null) { // null $string forces sending of buffer
-	static $buffer = ""; // used to improve compression and to allow GZ archives unpackable in Total Commander
-	if (!ereg("text|file", $_POST["output"])) {
-		$buffer .= $string;
-		if (!isset($string) || strlen($buffer) > 1e6) {
-			if ($_POST["output"] == "bz2") {
-				echo bzcompress($buffer); // should not be called repeatedly but it would require whole buffer in memory or temporary file
-			} else {
-				echo gzencode($buffer);
-			}
-			$buffer = "";
-		}
-	} else {
-		echo $string;
-	}
-}
-
 /** Print CSV row
 * @param array
 * @return null
@@ -500,7 +479,7 @@ function dump_csv($row) {
 			$row[$key] = '"' . str_replace('"', '""', $val) . '"';
 		}
 	}
-	dump(implode(",", $row) . "\n");
+	echo implode(",", $row) . "\n";
 }
 
 /** Apply SQL function

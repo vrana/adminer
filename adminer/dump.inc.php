@@ -4,13 +4,13 @@ $TABLE = $_GET["dump"];
 if ($_POST) {
 	$ext = dump_headers((strlen($TABLE) ? $TABLE : DB), (!strlen(DB) || count((array) $_POST["tables"] + (array) $_POST["data"]) > 1));
 	if ($_POST["format"] == "sql") {
-		dump("-- Adminer $VERSION dump
+		echo "-- Adminer $VERSION dump
 SET NAMES utf8;
 SET foreign_key_checks = 0;
 SET time_zone = " . $connection->quote($connection->result($connection->query("SELECT @@time_zone"))) . ";
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
-");
+";
 	}
 	
 	$style = $_POST["db_style"];
@@ -18,14 +18,14 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 		if ($connection->select_db($db)) {
 			if ($_POST["format"] == "sql" && ereg('CREATE', $style) && ($result = $connection->query("SHOW CREATE DATABASE " . idf_escape($db)))) {
 				if ($style == "DROP+CREATE") {
-					dump("DROP DATABASE IF EXISTS " . idf_escape($db) . ";\n");
+					echo "DROP DATABASE IF EXISTS " . idf_escape($db) . ";\n";
 				}
 				$create = $connection->result($result, 1);
-				dump(($style == "CREATE+ALTER" ? preg_replace('~^CREATE DATABASE ~', '\\0IF NOT EXISTS ', $create) : $create) . ";\n");
+				echo ($style == "CREATE+ALTER" ? preg_replace('~^CREATE DATABASE ~', '\\0IF NOT EXISTS ', $create) : $create) . ";\n";
 			}
 			if ($_POST["format"] == "sql") {
 				if ($style) {
-					dump("USE " . idf_escape($db) . ";\n" . ($style == "CREATE+ALTER" ? "SET @adminer_alter = '';\n" : "") . "\n");
+					echo "USE " . idf_escape($db) . ";\n" . ($style == "CREATE+ALTER" ? "SET @adminer_alter = '';\n" : "") . "\n";
 				}
 				$out = "";
 				if ($_POST["routines"]) {
@@ -45,7 +45,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 					}
 				}
 				if ($out) {
-					dump("DELIMITER ;;\n\n$out" . "DELIMITER ;\n\n");
+					echo "DELIMITER ;;\n\n$out" . "DELIMITER ;\n\n";
 				}
 			}
 			
@@ -67,9 +67,9 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 								dump_triggers($row["Name"], $_POST["table_style"]);
 							}
 							if ($ext == "tar") {
-								dump(tar_file((strlen(DB) ? "" : "$db/") . "$row[Name].csv", ob_get_clean()));
+								echo tar_file((strlen(DB) ? "" : "$db/") . "$row[Name].csv", ob_get_clean());
 							} elseif ($_POST["format"] == "sql") {
-								dump("\n");
+								echo "\n";
 							}
 						} elseif ($_POST["format"] == "sql") {
 							$views[] = $row["Name"];
@@ -80,14 +80,14 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 					dump_table($view, $_POST["table_style"], true);
 				}
 				if ($ext == "tar") {
-					dump(pack("x512"));
+					echo pack("x512");
 				}
 			}
 			
 			if ($style == "CREATE+ALTER" && $_POST["format"] == "sql") {
 				// drop old tables
 				$query = "SELECT TABLE_NAME, ENGINE, TABLE_COLLATION, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()";
-				dump("DELIMITER ;;
+				echo "DELIMITER ;;
 CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 	DECLARE _table_name, _engine, _table_collation varchar(64);
 	DECLARE _table_comment varchar(64);
@@ -98,17 +98,17 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 	REPEAT
 		FETCH tables INTO _table_name, _engine, _table_collation, _table_comment;
 		IF NOT done THEN
-			CASE _table_name");
+			CASE _table_name";
 				$result = $connection->query($query);
 				while ($row = $result->fetch_assoc()) {
 					$comment = $connection->quote($row["ENGINE"] == "InnoDB" ? preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["TABLE_COMMENT"]) : $row["TABLE_COMMENT"]);
-					dump("
+					echo "
 				WHEN " . $connection->quote($row["TABLE_NAME"]) . " THEN
 					" . (isset($row["ENGINE"]) ? "IF _engine != '$row[ENGINE]' OR _table_collation != '$row[TABLE_COLLATION]' OR _table_comment != $comment THEN
 						ALTER TABLE " . idf_escape($row["TABLE_NAME"]) . " ENGINE=$row[ENGINE] COLLATE=$row[TABLE_COLLATION] COMMENT=$comment;
-					END IF" : "BEGIN END") . ";");
+					END IF" : "BEGIN END") . ";";
 				}
-				dump("
+				echo "
 				ELSE
 					SET alter_command = CONCAT(alter_command, 'DROP TABLE `', REPLACE(_table_name, '`', '``'), '`;\\n');
 			END CASE;
@@ -119,14 +119,13 @@ END;;
 DELIMITER ;
 CALL adminer_alter(@adminer_alter);
 DROP PROCEDURE adminer_alter;
-");
+";
 			}
 			if (in_array("CREATE+ALTER", array($style, $_POST["table_style"])) && $_POST["format"] == "sql") {
-				dump("SELECT @adminer_alter;\n");
+				echo "SELECT @adminer_alter;\n";
 			}
 		}
 	}
-	dump();
 	exit;
 }
 

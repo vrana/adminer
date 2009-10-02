@@ -51,7 +51,6 @@ if ($_POST && !$error) {
 			}
 			dump_data($TABLE, "INSERT", implode(" UNION ALL ", $union));
 		}
-		dump();
 		exit;
 	}
 	if (!$adminer->selectEmailProcess($where, $foreign_keys)) {
