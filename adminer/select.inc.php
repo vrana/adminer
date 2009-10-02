@@ -262,7 +262,8 @@ if (!$columns) {
 			
 			echo (information_schema(DB) ? "" : "<fieldset><legend>" . lang('Edit') . "</legend><div><input type='submit' name='edit' value='" . lang('Edit') . "'> <input type='submit' name='clone' value='" . lang('Clone') . "'> <input type='submit' name='delete' value='" . lang('Delete') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + (this.form['all'].checked ? $found_rows : form_checked(this, /check/)) + ')');\"></div></fieldset>\n");
 			print_fieldset("export", lang('Export'));
-			echo "$dump_output $dump_format $dump_compress <input type='submit' name='export' value='" . lang('Export') . "'>\n";
+			echo $adminer->dumpOutput(1) . " " . $adminer->dumpFormat(1); // 1 - select
+			echo " <input type='submit' name='export' value='" . lang('Export') . "'>\n";
 			echo "</div></fieldset>\n";
 		}
 		print_fieldset("import", lang('CSV Import'), !$result->num_rows);

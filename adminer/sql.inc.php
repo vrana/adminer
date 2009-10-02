@@ -48,7 +48,7 @@ if (!$error && $_POST) {
 				$found = $match[0][0];
 				$offset = $match[0][1] + strlen($found);
 				if (!$found && $fp && !feof($fp)) {
-					$query .= fread($fp, 1e6);
+					$query .= fread($fp, 1e5);
 				} else {
 					if (!$found && !strlen(rtrim($query))) {
 						break;

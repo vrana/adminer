@@ -223,7 +223,6 @@ $translations = array(
 	'Maximum allowed file size is %sB.' => 'Maximálna povolená veľkosť súboru je %sB.',
 	'Clear' => 'Vyčistiť',
 	'Editor' => 'Editor',
-	'Compression' => 'Kompresia',
 	'Webserver file %s' => 'Súbor %s na webovom serveri',
 	'File does not exist.' => 'Súbor neexistuje.',
 );

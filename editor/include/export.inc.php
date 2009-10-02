@@ -5,7 +5,7 @@ function dump_table($table) {
 
 function dump_data($table, $style, $select = "") {
 	global $connection;
-	$result = $connection->query(($select ? $select : "SELECT * FROM " . idf_escape($table)));
+	$result = $connection->query(($select ? $select : "SELECT * FROM " . idf_escape($table)), 1); // 1 - MYSQLI_USE_RESULT
 	if ($result) {
 		while ($row = $result->fetch_assoc()) {
 			dump_csv($row);
@@ -21,7 +21,3 @@ function dump_headers($identifier) {
 	session_write_close();
 	return $ext;
 }
-
-$dump_output = "";
-$dump_format = "CSV";
-$dump_compress = "";

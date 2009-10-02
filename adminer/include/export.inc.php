@@ -115,7 +115,8 @@ DROP PROCEDURE adminer_alter;
 }
 
 function dump_data($table, $style, $select = "") {
-	global $connection, $max_packet;
+	global $connection;
+	$max_packet = 1048576; // default, minimum is 1024
 	if ($style) {
 		if ($_POST["format"] != "csv" && $style == "TRUNCATE+INSERT") {
 			dump("TRUNCATE " . idf_escape($table) . ";\n");
@@ -165,31 +166,18 @@ function dump_data($table, $style, $select = "") {
 }
 
 function dump_headers($identifier, $multi_table = false) {
-	$compress = $_POST["compress"];
 	$filename = (strlen($identifier) ? friendly_url($identifier) : "dump");
+	$output = $_POST["output"];
 	$ext = ($_POST["format"] == "sql" ? "sql" : ($multi_table ? "tar" : "csv")); // multiple CSV packed to TAR
 	header("Content-Type: " .
-		($compress == "bz2" ? "application/x-bzip" :
-		($compress == "gz" ? "application/x-gzip" :
+		($output == "bz2" ? "application/x-bzip" :
+		($output == "gz" ? "application/x-gzip" :
 		($ext == "tar" ? "application/x-tar" :
-		($ext == "sql" || $_POST["output"] != "file" ? "text/plain" : "text/csv") . "; charset=utf-8"
+		($ext == "sql" || $output != "file" ? "text/plain" : "text/csv") . "; charset=utf-8"
 	))));
-	if ($_POST["output"] == "file" || $compress) {
-		header("Content-Disposition: attachment; filename=$filename.$ext" . (ereg('[0-9a-z]', $compress) ? ".$compress" : ""));
+	if ($output != "text") {
+		header("Content-Disposition: attachment; filename=$filename.$ext" . ($output != "file" && !ereg('[^0-9a-z]', $output) ? ".$output" : ""));
 	}
 	session_write_close();
 	return $ext;
 }
-
-$compress = array();
-if (function_exists('gzencode')) {
-	$compress['gz'] = 'gzip';
-}
-if (function_exists('bzcompress')) {
-	$compress['bz2'] = 'bzip2';
-}
-// ZipArchive requires temporary file, ZIP can be created by gzcompress - see PEAR File_Archive
-$dump_output = "<select name='output'>" . optionlist(array('text' => lang('open'), 'file' => lang('save'))) . "</select>";
-$dump_format = "<select name='format'>" . optionlist(array('sql' => 'SQL', 'csv' => 'CSV')) . "</select>";
-$dump_compress = ($compress ? "<select name='compress'><option>" . optionlist($compress) . "</select>" : "");
-$max_packet = 1048576; // default, minimum is 1024

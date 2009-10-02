@@ -74,6 +74,24 @@ function checkbox($name, $value, $checked, $label = "", $onclick = "") {
 	return (strlen($label) ? "<label for='checkbox-$id'>$return" . h($label) . "</label>" : $return);
 }
 
+/** Generate HTML radio list
+* @param string
+* @param array
+* @param string
+* @param bool generate select (otherwise radio)
+* @return string
+*/
+function html_select($name, $options, $value, $select = true) {
+	if ($select) {
+		return "<select name='" . h($name) . "'>" . optionlist($options, $value) . "</select>";
+	}
+	$return = "";
+	foreach ($options as $key => $val) {
+		$return .= "<label><input type='radio' name='" . h($name) . "' value='" . h($key) . "'" . ($key == $value ? " checked" : "") . ">" . h($val) . "</label>";
+	}
+	return $return;
+}
+
 /** Generate list of HTML options
 * @param array array of strings or arrays (creates optgroup)
 * @param mixed
@@ -457,10 +475,10 @@ function process_input($field) {
 */
 function dump($string = null) { // null $string forces sending of buffer
 	static $buffer = ""; // used to improve compression and to allow GZ archives unpackable in Total Commander
-	if ($_POST["compress"]) {
+	if (!ereg("text|file", $_POST["output"])) {
 		$buffer .= $string;
 		if (!isset($string) || strlen($buffer) > 1e6) {
-			if ($_POST["compress"] == "bz2") {
+			if ($_POST["output"] == "bz2") {
 				echo bzcompress($buffer); // should not be called repeatedly but it would require whole buffer in memory or temporary file
 			} else {
 				echo gzencode($buffer);

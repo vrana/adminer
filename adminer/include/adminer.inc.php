@@ -430,6 +430,30 @@ class Adminer {
 		return $return;
 	}
 	
+	/** Returns export output options
+	* @param bool generate select (otherwise radio)
+	* @return string
+	*/
+	function dumpOutput($select) {
+		$return = array('text' => lang('open'), 'file' => lang('save'));
+		if (function_exists('gzencode')) {
+			$return['gz'] = 'gzip';
+		}
+		if (function_exists('bzcompress')) {
+			$return['bz2'] = 'bzip2';
+		}
+		// ZipArchive requires temporary file, ZIP can be created by gzcompress - see PEAR File_Archive
+		return html_select("output", $return, "text", $select);
+	}
+	
+	/** Returns export format options
+	* @param bool generate select (otherwise radio)
+	* @return string
+	*/
+	function dumpFormat($select) {
+		return html_select("format", array('sql' => 'SQL', 'csv' => 'CSV'), "sql", $select);
+	}
+	
 	/** Prints navigation after Adminer title
 	* @param string can be "auth" if there is no database connection or "db" if there is no database selected
 	* @return null

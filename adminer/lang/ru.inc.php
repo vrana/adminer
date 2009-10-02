@@ -223,7 +223,6 @@ $translations = array(
 	'Subject' => 'Кому',
 	'Send' => 'Послать',
 	'%d e-mail(s) have been sent.' => array('Было отправлено %d письмо.', 'Было отправлено %d письма.', 'Было отправлено %d писем.'),
-	'Compression' => 'Сжатие',
 	'Webserver file %s' => 'Файл %s на вебсервере',
 	'File does not exist.' => 'Такого файла не существует.',
 );

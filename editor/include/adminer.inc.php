@@ -406,6 +406,14 @@ ORDER BY ORDINAL_POSITION");
 		return $return;
 	}
 	
+	function dumpOutput($select) {
+		return "";
+	}
+	
+	function dumpFormat($select) {
+		return "CSV";
+	}
+	
 	function navigation($missing) {
 		global $VERSION;
 		?>
