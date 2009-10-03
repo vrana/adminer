@@ -249,7 +249,7 @@ ORDER BY ORDINAL_POSITION");
 					if (strlen($col) || is_numeric($val["val"]) || !ereg('int|float|double|decimal', $field["type"])) {
 						$text_type = ereg('char|text|enum|set', $field["type"]);
 						$value = $this->processInput($field, ($text_type && ereg('^[^%]+$', $val["val"]) ? "%$val[val]%" : $val["val"]));
-						$conds[] = idf_escape($name) . (in_array($val["op"], $this->operators) ? " $val[op]" : ($value == "NULL" ? " IS" : ($val["op"] != "=" && $text_type ? " LIKE" : " ="))) . " $value";
+						$conds[] = idf_escape($name) . ($value == "NULL" ? " IS" . ($val["op"] == ">=" ? " NOT" : "") : (in_array($val["op"], $this->operators) ? " $val[op]" : ($val["op"] != "=" && $text_type ? " LIKE" : " ="))) . " $value";
 					}
 				}
 				$return[] = ($conds ? "(" . implode(" OR ", $conds) . ")" : "0");
