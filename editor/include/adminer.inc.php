@@ -126,7 +126,9 @@ ORDER BY ORDINAL_POSITION");
 						}
 						// use the descriptions
 						foreach ($rows as $n => $row) {
-							$return[$n][$key] = $descriptions[$row[$key]];
+							if (isset($row[$key])) {
+								$return[$n][$key] = (string) $descriptions[$row[$key]];
+							}
 						}
 						break;
 					}
