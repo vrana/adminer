@@ -8,6 +8,8 @@ Function to fix database encoding - http://php.vrana.cz/prevod-kodovani-mysql.ph
 Highlight SQL textarea - may use external CodePress
 Mass editation of individual rows
 Offer enum and set items in search - whisperer
+Textarea for enum and set in Alter table
+Variables editation, especially timezone
 Use event $intervals + microseconds in relative date functions
 ? Column and table names auto-completition in SQL textarea
 ? Aliasing of built-in functions can save 7 KB, function minification can save 7 KB, substitution of repetitive $a["a"] can save 4 KB, substitution of $_GET and friends can save 2 KB, JS packer can save 1 KB, not enclosing HTML attribute values can save 1.2 KB, replacing \\n by \n can save .3 KB
@@ -15,6 +17,6 @@ Use event $intervals + microseconds in relative date functions
 ? AJAX editing - select page has all data to display edit form
 
 Editor:
-JavaScript data validation - columns containing word email, url, md5, sha1, ...
+JavaScript data validation - columns containing word email, url, ...
 Joining tables - PRIMARY KEY (table, joining)
 Rank, Tree structure
