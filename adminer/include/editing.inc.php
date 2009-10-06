@@ -114,7 +114,7 @@ function process_length($length) {
 function process_type($field, $collate = "COLLATE") {
 	global $connection, $enum_length, $unsigned;
 	return " $field[type]"
-		. ($field["length"] && !ereg('^date|time$', $field["type"]) ? "(" . process_length($field["length"]) . ")" : "")
+		. (strlen($field["length"]) && !ereg('^date|time$', $field["type"]) ? "(" . process_length($field["length"]) . ")" : "")
 		. (ereg('int|float|double|decimal', $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
 		. (ereg('char|text|enum|set', $field["type"]) && $field["collation"] ? " $collate " . $connection->quote($field["collation"]) : "")
 	;
