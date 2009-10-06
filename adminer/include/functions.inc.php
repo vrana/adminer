@@ -436,7 +436,7 @@ function input($field, $value, $function) {
 		} else {
 			// int(3) is only a display hint
 			$maxlength = (!ereg('int', $field["type"]) && preg_match('~^([0-9]+)(,([0-9]+))?$~', $field["length"], $match) ? ($match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) : ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0));
-			echo "<input name='fields[$name]' value='" . h($value) . "'" . ($maxlength ? " maxlength='$maxlength'" : "") . "$onchange>";
+			echo "<input name='fields[$name]' value='" . h($value) . "'" . ($maxlength ? " maxlength='$maxlength'" : "") . (ereg('char', $field["type"]) && $field["length"] > 20 ? " size='40'" : "") . "$onchange>";
 		}
 	}
 }
