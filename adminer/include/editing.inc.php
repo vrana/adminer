@@ -100,10 +100,8 @@ function edit_type($key, $field, $collations, $foreign_keys = array()) {
 <td><select name="<?php echo $key; ?>[type]" class="type" onchange="editing_type_change(this);"><?php echo optionlist($structured_types + ($foreign_keys ? array(lang('Foreign keys') => $foreign_keys) : array()), $field["type"]); ?></select>
 <td><input name="<?php echo $key; ?>[length]" value="<?php echo h($field["length"]); ?>" size="3">
 <td><?php
-echo "<select name='$key" . "[collation]'" . (ereg('(char|text|enum|set)$', $field["type"]) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>';
-echo ($unsigned ? " <select name='$key" . "[unsigned]'" . (!$field["type"] || ereg('(int|float|double|decimal)$', $field["type"]) ? "" : " class='hidden'") . '><option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
-?>
-<?php
+	echo "<select name='$key" . "[collation]'" . (ereg('(char|text|enum|set)$', $field["type"]) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>';
+	echo ($unsigned ? " <select name='$key" . "[unsigned]'" . (!$field["type"] || ereg('(int|float|double|decimal)$', $field["type"]) ? "" : " class='hidden'") . '><option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
 }
 
 function process_length($length) {
@@ -112,7 +110,7 @@ function process_length($length) {
 }
 
 function process_type($field, $collate = "COLLATE") {
-	global $connection, $enum_length, $unsigned;
+	global $connection, $unsigned;
 	return " $field[type]"
 		. (strlen($field["length"]) && !ereg('^date|time$', $field["type"]) ? "(" . process_length($field["length"]) . ")" : "")
 		. (ereg('int|float|double|decimal', $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
@@ -122,10 +120,10 @@ function process_type($field, $collate = "COLLATE") {
 
 function process_field($field, $type_field) {
 	global $connection;
-	$default = $field["default"] . ($field["on_update"] ? " ON UPDATE $field[on_update]" : "");
 	return idf_escape($field["field"]) . process_type($type_field)
 		. ($field["null"] ? " NULL" : " NOT NULL") // NULL for timestamp
-		. (!isset($field["default"]) || $field["auto_increment"] || ereg('text|blob', $field["type"]) ? "" : " DEFAULT " . ($field["type"] == "timestamp" && eregi("^CURRENT_TIMESTAMP( on update CURRENT_TIMESTAMP)?$", $default) ? $default : $connection->quote($default)))
+		. (!isset($field["default"]) ? "" : " DEFAULT " . ($field["type"] == "timestamp" && eregi("^CURRENT_TIMESTAMP$", $field["default"]) ? $field["default"] : $connection->quote($field["default"])))
+		. ($field["on_update"] ? " ON UPDATE $field[on_update]" : "")
 		. " COMMENT " . $connection->quote($field["comment"])
 	;
 }
