@@ -44,6 +44,9 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 		echo "<div class='message'>" . implode("</div>\n<div class='message'>", $_SESSION["messages"]) . "</div>\n";
 		$_SESSION["messages"] = array();
 	}
+	if (!$_POST && !isset($_SESSION["passwords"])) { // used in auth
+		$_SESSION["passwords"] = array();
+	}
 	$databases = &$_SESSION["databases"][$_GET["server"]];
 	if (strlen(DB) && $databases && !in_array(DB, $databases, true)) {
 		$databases = null;

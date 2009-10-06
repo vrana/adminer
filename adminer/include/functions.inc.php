@@ -266,7 +266,7 @@ function queries($query = null) {
 */
 function remove_from_uri($param = "") {
 	$param = "($param|" . session_name() . ")";
-	return preg_replace("~\\?$param=[^&]*&~", '?', preg_replace("~\\?$param=[^&]*\$|&$param=[^&]*~", '', $_SERVER["REQUEST_URI"]));
+	return substr(preg_replace("~([?&])$param=[^&]*&~", '\\1', "$_SERVER[REQUEST_URI]&"), 0, -1);
 }
 
 /** Generate page number for pagination

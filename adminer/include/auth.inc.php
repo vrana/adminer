@@ -1,14 +1,13 @@
 <?php
 $ignore = array("server", "username", "password");
-$session_name = session_name();
 if (isset($_POST["server"])) {
 	session_regenerate_id(); // defense against session fixation
 	$_SESSION["usernames"][$_POST["server"]] = $_POST["username"];
 	$_SESSION["passwords"][$_POST["server"]] = $_POST["password"];
 	$_SESSION["tokens"][$_POST["server"]] = rand(1, 1e6); // defense against cross-site request forgery
 	if (count($_POST) == count($ignore)) {
-		$location = ((string) $_GET["server"] === $_POST["server"] ? remove_from_uri() : preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . (strlen($_POST["server"]) ? '?server=' . urlencode($_POST["server"]) : ''));
-		if (!isset($_COOKIE[$session_name])) {
+		$location = ((string) $_GET["server"] === $_POST["server"] ? remove_from_uri() : preg_replace('~^([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . (strlen($_POST["server"]) ? '?server=' . urlencode($_POST["server"]) : ''));
+		if (!isset($_COOKIE[session_name()])) {
 			$location .= (strpos($location, "?") === false ? "?" : "&") . SID;
 		}
 		redirect($location);
@@ -32,9 +31,13 @@ if (isset($_POST["server"])) {
 
 function auth_error($exception = null) {
 	global $ignore, $connection, $adminer;
+	$session_name = session_name();
 	$username = $_SESSION["usernames"][$_GET["server"]];
 	unset($_SESSION["usernames"][$_GET["server"]]);
-	page_header(lang('Login'), (isset($username) ? h($exception ? $exception->getMessage() : (is_string($connection) ? $connection : lang('Invalid credentials.'))) : (isset($_POST["server"]) ? lang('Session support must be enabled.') : ($_POST ? lang('Session expired, please login again.') : ""))), null);
+	page_header(lang('Login'), (isset($username) ? h($exception ? $exception->getMessage() : (is_string($connection) ? $connection : lang('Invalid credentials.')))
+		: (!$_COOKIE[$session_name] && $_GET[$session_name] && ini_get("session.use_only_cookies") ? lang('Session support must be enabled.')
+		: (($_COOKIE[$session_name] || $_GET[$session_name]) && !isset($_SESSION["passwords"]) ? lang('Session expired, please login again.')
+	: ""))), null);
 	echo "<form action='' method='post'>\n";
 	$adminer->loginForm($username);
 	echo "<p>\n";
