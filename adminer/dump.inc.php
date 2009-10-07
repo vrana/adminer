@@ -146,7 +146,7 @@ echo "<tr><th>" . lang('Output') . "<td><input type='hidden' name='token' value=
 echo "<tr><th>" . lang('Format') . "<td>" . $adminer->dumpFormat(0) . "\n";
 echo "<tr><th>" . lang('Database') . "<td>" . html_select('db_style', $db_style, (strlen(DB) ? '' : 'CREATE'));
 if ($connection->server_info >= 5) {
-	$checked = strlen($_GET["dump"]);
+	$checked = !strlen($_GET["dump"]);
 	echo checkbox("routines", 1, $checked, lang('Routines'));
 	if ($connection->server_info >= 5.1) {
 		echo checkbox("events", 1, $checked, lang('Events'));
