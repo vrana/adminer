@@ -151,7 +151,7 @@ if (!$columns) {
 	$adminer->selectActionPrint($text_length);
 	echo "</form>\n";
 	
-	$query = "SELECT " . (intval($limit) && $group && count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . $from . $group_by . (strlen($limit) ? " LIMIT " . intval($limit) . (intval($_GET["page"]) ? " OFFSET " . ($limit * $_GET["page"]) : "") : "");
+	$query = "SELECT " . (intval($limit) && $group && count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . $from . $group_by . (strlen($limit) ? " LIMIT " . intval($limit) . ($_GET["page"] ? " OFFSET " . ($limit * $_GET["page"]) : "") : "");
 	echo $adminer->selectQuery($query);
 	
 	$result = $connection->query($query);
