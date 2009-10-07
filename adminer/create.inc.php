@@ -101,7 +101,7 @@ page_header((strlen($TABLE) ? lang('Alter table') : lang('Create table')), $erro
 $engines = array();
 $result = $connection->query("SHOW ENGINES");
 while ($row = $result->fetch_assoc()) {
-	if ($row["Support"] == "YES" || $row["Support"] == "DEFAULT") {
+	if (ereg("YES|DEFAULT", $row["Support"])) {
 		$engines[] = $row["Engine"];
 	}
 }

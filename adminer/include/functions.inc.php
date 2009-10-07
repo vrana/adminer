@@ -138,7 +138,7 @@ function get_vals($query, $column = 0) {
 */
 function unique_idf($row, $indexes) {
 	foreach ($indexes as $index) {
-		if ($index["type"] == "PRIMARY" || $index["type"] == "UNIQUE") {
+		if (ereg("PRIMARY|UNIQUE", $index["type"])) {
 			$return = array();
 			foreach ($index["columns"] as $key) {
 				if (!isset($row[$key])) { // NULL is ambiguous

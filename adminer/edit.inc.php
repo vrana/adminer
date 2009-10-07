@@ -51,7 +51,7 @@ if ($_POST["save"]) {
 	$select = array();
 	foreach ($fields as $name => $field) {
 		if (isset($field["privileges"]["select"])) {
-			$select[] = ($_POST["clone"] && $field["auto_increment"] ? "'' AS " : ($field["type"] == "enum" || $field["type"] == "set" ? "1*" . idf_escape($name) . " AS " : "")) . idf_escape($name);
+			$select[] = ($_POST["clone"] && $field["auto_increment"] ? "'' AS " : (ereg("enum|set", $field["type"]) ? "1*" . idf_escape($name) . " AS " : "")) . idf_escape($name);
 		}
 	}
 	$row = array();
@@ -71,7 +71,7 @@ if ($fields) {
 		echo "<tr><th>" . $adminer->fieldName($field);
 		$default = $_GET["set"][bracket_escape($name)];
 		$value = (isset($row)
-			? (strlen($row[$name]) && ($field["type"] == "enum" || $field["type"] == "set") ? intval($row[$name]) : $row[$name])
+			? (strlen($row[$name]) && ereg("enum|set", $field["type"]) ? intval($row[$name]) : $row[$name])
 			: ($_POST["clone"] && $field["auto_increment"] ? "" : (isset($_GET["select"]) ? false : (isset($default) ? $default : $field["default"])))
 		);
 		if (!$_POST["save"] && is_string($value)) {
