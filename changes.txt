@@ -2,6 +2,7 @@ Adminer 2.1.1-dev:
 Display table links above table structure
 Link URLs in select
 Display number of manipulated rows in JS confirm
+Set required memory in SQL command
 Fix removed default in ALTER
 Display whitespace in texts (bug #2858042)
 ClickJacking protection in modern browsers
