@@ -396,10 +396,11 @@ function input($field, $value, $function) {
 	global $types, $adminer;
 	$name = h(bracket_escape($field["field"]));
 	echo "<td class='function'>";
+	$functions = (isset($_GET["select"]) ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
 	if ($field["type"] == "enum") {
-		echo "&nbsp;<td>" . (isset($_GET["select"]) ? " <label><input type='radio' name='fields[$name]' value='-1' checked><em>" . lang('original') . "</em></label>" : "");
-		if ($field["null"]) {
-			echo " <label><input type='radio' name='fields[$name]' value=''" . (($field["null"] ? isset($value) : strlen($value)) || isset($_GET["select"]) ? '' : ' checked') . '>' . ($field["null"] ? '<em>NULL</em>' : '') . '</label>';
+		echo "&nbsp;<td>" . ($functions["orig"] ? "<label><input type='radio' name='fields[$name]' value='-1' checked><em>$functions[orig]</em></label> " : "");
+		if (in_array("NULL", $functions)) {
+			echo "<label><input type='radio' name='fields[$name]' value=''" . (isset($value) || $functions["orig"] ? '' : ' checked') . "><em>NULL</em></label> ";
 		}
 		echo "<input type='radio' name='fields[$name]' value='0'" . ($value === 0 ? ' checked' : '') . '>';
 		preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
@@ -409,7 +410,6 @@ function input($field, $value, $function) {
 			echo " <label><input type='radio' name='fields[$name]' value='" . ($i+1) . "'" . ($checked ? ' checked' : '') . '>' . h($val) . '</label>';
 		}
 	} else {
-		$functions = (isset($_GET["select"]) ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
 		$first = 0;
 		foreach ($functions as $key => $val) {
 			if ($key === "" || !$val) {
