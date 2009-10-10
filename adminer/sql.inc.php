@@ -75,8 +75,8 @@ if (!$error && $_POST) {
 									select($result, $connection2);
 									if ($connection2 && preg_match("~^$space*SELECT$space+~isU", $q)) {
 										$id = "explain-$explain";
-										echo "<p>" . lang('%d row(s)', $result->num_rows);
-										echo ", <a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>\n";
+										echo "<p>" . ($result->num_rows ? lang('%d row(s)', $result->num_rows) . ", " : "");
+										echo "<a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>\n";
 										echo "<div id='$id' class='hidden'>\n";
 										select($connection2->query("EXPLAIN $q"), $connection2);
 										echo "</div>\n";
