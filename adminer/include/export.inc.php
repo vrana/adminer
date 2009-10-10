@@ -56,12 +56,13 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 			$result = $connection->query($query);
 			$after = "";
 			while ($row = $result->fetch_assoc()) {
-				$row["default"] = (isset($row["COLUMN_DEFAULT"]) ? $connection->quote($row["COLUMN_DEFAULT"]) : "NULL");
+				$default = $row["COLUMN_DEFAULT"];
+				$row["default"] = (isset($default) ? ($default == "CURRENT_TIMESTAMP" ? $default : $connection->quote($default)) : "NULL");
 				$row["after"] = $connection->quote($after); //! rgt AFTER lft, lft AFTER id doesn't work
 				$row["alter"] = escape_string(idf_escape($row["COLUMN_NAME"])
 					. " $row[COLUMN_TYPE]"
 					. ($row["COLLATION_NAME"] ? " COLLATE $row[COLLATION_NAME]" : "")
-					. (isset($row["COLUMN_DEFAULT"]) ? " DEFAULT $row[default]" : "")
+					. (isset($default) ? " DEFAULT $row[default]" : "")
 					. ($row["IS_NULLABLE"] == "YES" ? "" : " NOT NULL")
 					. ($row["EXTRA"] ? " $row[EXTRA]" : "")
 					. ($row["COLUMN_COMMENT"] ? " COMMENT " . $connection->quote($row["COLUMN_COMMENT"]) : "")
