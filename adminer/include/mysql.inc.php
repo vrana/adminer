@@ -132,6 +132,11 @@ if (extension_loaded("mysqli")) {
 			$this->server_info = $this->result($this->query("SELECT VERSION()"));
 			return true;
 		}
+		
+		function query($query, $unbuffered = false) {
+			$this->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, !$unbuffered);
+			return parent::query($query, $unbuffered);
+		}
 	}
 	
 } else {
