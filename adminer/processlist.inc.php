@@ -6,7 +6,7 @@ if ($_POST && !$error) {
 			$killed++;
 		}
 	}
-	query_redirect(queries(), ME . "processlist=", lang('%d process(es) have been killed.', $killed), $killed || !$_POST["kill"], false, !$killed && $_POST["kill"]);
+	queries_redirect(ME . "processlist=", lang('%d process(es) have been killed.', $killed), $killed || !$_POST["kill"]);
 }
 
 page_header(lang('Process list'), $error);

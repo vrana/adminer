@@ -91,7 +91,7 @@ if ($_POST && !$error) {
 				}
 			}
 		}
-		query_redirect(queries(), ME . "privileges=", (isset($_GET["host"]) ? lang('User has been altered.') : lang('User has been created.')), !$error, false, $error);
+		queries_redirect(ME . "privileges=", (isset($_GET["host"]) ? lang('User has been altered.') : lang('User has been created.')), !$error);
 		if ($old_user != $new_user) {
 			// delete new user in case of an error
 			$connection->query("DROP USER $new_user");

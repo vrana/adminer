@@ -33,7 +33,7 @@ if ($tables_views && !$error) {
 			}
 		}
 	}
-	query_redirect(queries(), substr(ME, 0, -1), $message, $result, false, !$result);
+	queries_redirect(substr(ME, 0, -1), $message, $result);
 }
 
 page_header(lang('Database') . ": " . h(DB), $error, false);

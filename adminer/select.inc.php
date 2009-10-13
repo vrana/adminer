@@ -85,7 +85,7 @@ if ($_POST && !$error) {
 					}
 				}
 			}
-			query_redirect(queries(), remove_from_uri("page"), lang('%d item(s) have been affected.', $affected), $result, false, !$result);
+			queries_redirect(remove_from_uri("page"), lang('%d item(s) have been affected.', $affected), $result);
 			//! display edit page in case of an error
 		} elseif (is_string($file = get_file("csv_file", true))) {
 			$file = preg_replace("~^\xEF\xBB\xBF~", '', $file); //! character set
@@ -111,7 +111,7 @@ if ($_POST && !$error) {
 					}
 				}
 			}
-			query_redirect(queries(), remove_from_uri("page"), lang('%d row(s) have been imported.', $affected), $result, false, !$result);
+			queries_redirect(remove_from_uri("page"), lang('%d row(s) have been imported.', $affected), $result);
 		} else {
 			$error = upload_error($file);
 		}

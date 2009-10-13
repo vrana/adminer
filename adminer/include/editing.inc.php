@@ -282,7 +282,7 @@ function drop_create($drop, $create, $location, $message_drop, $message_alter, $
 	}
 	$dropped = strlen($name) && ($_POST["dropped"] || queries($drop));
 	$created = queries($create);
-	if (!query_redirect(queries(), $location, (strlen($name) ? $message_alter : $message_create), $created, false, !$created) && $dropped) {
+	if (!queries_redirect($location, (strlen($name) ? $message_alter : $message_create), $created) && $dropped) {
 		$_SESSION["messages"][] = $message_drop;
 	}
 	return $dropped;

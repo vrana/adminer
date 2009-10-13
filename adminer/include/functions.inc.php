@@ -252,6 +252,15 @@ function queries($query = null) {
 	return $connection->query($query);
 }
 
+/** Redirect by remembered queries
+* @param string
+* @param string
+* @param bool
+*/
+function queries_redirect($location, $message, $redirect) {
+	return query_redirect(queries(), $location, $message, $redirect, false, !$redirect);
+}
+
 /** Remove parameter from query string
 * @param string
 * @return string
