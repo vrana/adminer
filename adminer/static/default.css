@@ -18,7 +18,7 @@ code { background: #eee; }
 tr:hover td, tr:hover th { background: #ddf; }
 .version { color: #777; font-size: 67%; }
 .js .hidden { display: none; }
-.nowrap { white-space: nowrap; }
+.nowrap { white-space: pre; }
 .wrap { white-space: normal; }
 .error { color: red; background: #fee; }
 .message { color: green; background: #efe; }

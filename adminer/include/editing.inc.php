@@ -56,7 +56,7 @@ function select($result, $connection2 = null) {
 					} elseif (!strlen($val)) {
 						$val = "&nbsp;"; // some content to print a border
 					} else {
-						$val = whitespace(h($val));
+						$val = h($val);
 						if ($types[$key] == 254) {
 							$val = "<code>$val</code>";
 						}
@@ -188,7 +188,7 @@ if ($type == "PROCEDURE") {
 		echo "&nbsp;<input type='image' name='drop_col[$i]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "' onclick='return !editing_remove_row(this);'>";
 		echo "&nbsp;<input type='image' name='up[$i]' src='../adminer/static/up.gif' alt='^' title='" . lang('Move up') . "'>";
 		echo "&nbsp;<input type='image' name='down[$i]' src='../adminer/static/down.gif' alt='v' title='" . lang('Move down') . "'>";
-		echo "\n\n";
+		echo "\n";
 	}
 	return $column_comments;
 }

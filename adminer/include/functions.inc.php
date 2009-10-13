@@ -43,14 +43,6 @@ function h($string) {
 	return htmlspecialchars($string, ENT_QUOTES);
 }
 
-/** Convert text whitespace to HTML
-* @param string
-* @return string
-*/
-function whitespace($string) {
-	return nl2br(preg_replace('~(^| ) ~m', '\\1&nbsp;', str_replace("\t", "    ", $string)));
-}
-
 /** Escape for TD
 * @param string
 * @return string

@@ -212,9 +212,9 @@ if (!$columns) {
 							if (!strlen($val)) {
 								$val = "&nbsp;";
 							} elseif (strlen($text_length) && ereg('text|blob', $field["type"]) && is_utf8($val)) {
-								$val = whitespace(shorten_utf8($val, max(0, intval($text_length)))); // usage of LEFT() would reduce traffic but complicate query
+								$val = shorten_utf8($val, max(0, intval($text_length))); // usage of LEFT() would reduce traffic but complicate query
 							} else {
-								$val = whitespace(h($val));
+								$val = h($val);
 							}
 							
 							if (!$link) { // link related items
