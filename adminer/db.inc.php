@@ -4,7 +4,7 @@ $tables_views = array_merge((array) $_POST["tables"], (array) $_POST["views"]);
 if ($tables_views && !$error) {
 	$result = true;
 	$message = "";
-	if (count($_POST["tables"]) > 1) {
+	if (count($_POST["tables"]) > 1 && ($_POST["drop"] || $_POST["truncate"])) {
 		queries("SET foreign_key_checks = 0"); // allows to truncate or drop several tables at once
 	}
 	if (isset($_POST["truncate"])) {
@@ -21,6 +21,7 @@ if ($tables_views && !$error) {
 			$rename[] = idf_escape($table) . " TO " . idf_escape($_POST["target"]) . "." . idf_escape($table);
 		}
 		$result = queries("RENAME TABLE " . implode(", ", $rename));
+		//! move triggers
 		$message = lang('Tables have been moved.');
 	} elseif ((!isset($_POST["drop"]) || !$_POST["views"] || queries("DROP VIEW " . implode(", ", array_map('idf_escape', $_POST["views"]))))
 	&& (!$_POST["tables"] || ($result = queries((isset($_POST["optimize"]) ? "OPTIMIZE" : (isset($_POST["check"]) ? "CHECK" : (isset($_POST["repair"]) ? "REPAIR" : (isset($_POST["drop"]) ? "DROP" : "ANALYZE")))) . " TABLE " . implode(", ", array_map('idf_escape', $_POST["tables"])))))
