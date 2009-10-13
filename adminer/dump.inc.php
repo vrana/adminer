@@ -25,7 +25,10 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 			}
 			if ($_POST["format"] == "sql") {
 				if ($style) {
-					echo "USE " . idf_escape($db) . ";\n" . ($style == "CREATE+ALTER" ? "SET @adminer_alter = '';\n" : "") . "\n";
+					echo "USE " . idf_escape($db) . ";\n\n";
+				}
+				if (in_array("CREATE+ALTER", array($style, $_POST["table_style"]))) {
+					echo "SET @adminer_alter = '';\n\n";
 				}
 				$out = "";
 				if ($_POST["routines"]) {
