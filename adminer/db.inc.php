@@ -60,7 +60,9 @@ if (!$table_status) {
 			}
 			echo "<td>" . nbsp($row["Comment"]);
 		} else {
-			echo '<td colspan="8"><a href="' . h(ME) . "select=" . urlencode($name) . '">' . lang('View') . '</a>';
+			echo '<td colspan="6"><a href="' . h(ME) . "view=" . urlencode($name) . '">' . lang('View') . '</a>';
+			echo '<td align="right"><a href="' . h(ME) . "select=" . urlencode($name) . '">?</a>';
+			echo '<td>&nbsp;';
 		}
 	}
 	echo "</table>\n";
