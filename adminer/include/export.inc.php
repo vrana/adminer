@@ -45,10 +45,10 @@ function dump_table($table, $style, $is_view = false) {
 			$query = "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLLATION_NAME, COLUMN_TYPE, EXTRA, COLUMN_COMMENT FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = " . $connection->quote($table) . " ORDER BY ORDINAL_POSITION";
 			echo "DELIMITER ;;
 CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
-	DECLARE _column_name, _collation_name, _column_type, after varchar(64) DEFAULT '';
-	DECLARE _column_default longtext;
+	DECLARE _column_name, _collation_name, after varchar(64) DEFAULT '';
+	DECLARE _column_type, _column_default text;
 	DECLARE _is_nullable char(3);
-	DECLARE _extra varchar(20);
+	DECLARE _extra varchar(30);
 	DECLARE _column_comment varchar(255);
 	DECLARE done, set_after bool DEFAULT 0;
 	DECLARE add_columns text DEFAULT '";
@@ -57,12 +57,12 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 			$after = "";
 			while ($row = $result->fetch_assoc()) {
 				$default = $row["COLUMN_DEFAULT"];
-				$row["default"] = (isset($default) ? ($default == "CURRENT_TIMESTAMP" ? $default : $connection->quote($default)) : "NULL");
+				$row["default"] = (isset($default) ? $connection->quote($default) : "NULL");
 				$row["after"] = $connection->quote($after); //! rgt AFTER lft, lft AFTER id doesn't work
 				$row["alter"] = escape_string(idf_escape($row["COLUMN_NAME"])
 					. " $row[COLUMN_TYPE]"
 					. ($row["COLLATION_NAME"] ? " COLLATE $row[COLLATION_NAME]" : "")
-					. (isset($default) ? " DEFAULT $row[default]" : "")
+					. (isset($default) ? " DEFAULT " . ($default == "CURRENT_TIMESTAMP" ? $default : $row["default"]) : "")
 					. ($row["IS_NULLABLE"] == "YES" ? "" : " NOT NULL")
 					. ($row["EXTRA"] ? " $row[EXTRA]" : "")
 					. ($row["COLUMN_COMMENT"] ? " COMMENT " . $connection->quote($row["COLUMN_COMMENT"]) : "")
