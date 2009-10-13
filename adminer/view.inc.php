@@ -2,10 +2,15 @@
 $TABLE = $_GET["view"];
 $dropped = false;
 if ($_POST && !$error) {
-	if (strlen($TABLE)) {
-		$dropped = query_redirect("DROP VIEW " . idf_escape($TABLE), substr(ME, 0, -1), lang('View has been dropped.'), false, !$_POST["dropped"]);
-	}
-	query_redirect("CREATE VIEW " . idf_escape($_POST["name"]) . " AS\n$_POST[select]", ME . "table=" . urlencode($_POST["name"]), (strlen($TABLE) ? lang('View has been altered.') : lang('View has been created.')));
+	$dropped = drop_create(
+		"DROP VIEW " . idf_escape($TABLE),
+		"CREATE VIEW " . idf_escape($_POST["name"]) . " AS\n$_POST[select]",
+		substr(ME, 0, -1),
+		lang('View has been dropped.'),
+		lang('View has been altered.'),
+		lang('View has been created.'),
+		$TABLE
+	);
 }
 
 page_header((strlen($TABLE) ? lang('Alter view') : lang('Create view')), $error, array("table" => $TABLE), $TABLE);

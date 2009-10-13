@@ -4,15 +4,16 @@ $trigger_time = array("BEFORE", "AFTER");
 $trigger_event = array("INSERT", "UPDATE", "DELETE");
 
 $dropped = false;
-if ($_POST && !$error) {
-	if (strlen($_GET["name"])) {
-		$dropped = query_redirect("DROP TRIGGER " . idf_escape($_GET["name"]), ME . "table=" . urlencode($TABLE), lang('Trigger has been dropped.'), $_POST["drop"], !$_POST["dropped"]);
-	}
-	if (!$_POST["drop"]) {
-		if (in_array($_POST["Timing"], $trigger_time) && in_array($_POST["Event"], $trigger_event)) {
-			query_redirect("CREATE TRIGGER " . idf_escape($_POST["Trigger"]) . " $_POST[Timing] $_POST[Event] ON " . idf_escape($TABLE) . " FOR EACH ROW\n$_POST[Statement]", ME . "table=" . urlencode($TABLE), (strlen($_GET["name"]) ? lang('Trigger has been altered.') : lang('Trigger has been created.')));
-		}
-	}
+if ($_POST && !$error && in_array($_POST["Timing"], $trigger_time) && in_array($_POST["Event"], $trigger_event)) {
+	$dropped = drop_create(
+		"DROP TRIGGER " . idf_escape($_GET["name"]),
+		"CREATE TRIGGER " . idf_escape($_POST["Trigger"]) . " $_POST[Timing] $_POST[Event] ON " . idf_escape($TABLE) . " FOR EACH ROW\n$_POST[Statement]",
+		ME . "table=" . urlencode($TABLE),
+		lang('Trigger has been dropped.'),
+		lang('Trigger has been altered.'),
+		lang('Trigger has been created.'),
+		$_GET["name"]
+	);
 }
 
 page_header((strlen($_GET["name"]) ? lang('Alter trigger') . ": " . h($_GET["name"]) : lang('Create trigger')), $error, array("table" => $TABLE));

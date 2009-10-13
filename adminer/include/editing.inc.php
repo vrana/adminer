@@ -275,3 +275,15 @@ function grant($grant, $privileges, $columns, $on) {
 	}
 	return queries("$grant " . preg_replace('~(GRANT OPTION)\\([^)]*\\)~', '\\1', implode("$columns, ", $privileges) . $columns) . $on);
 }
+
+function drop_create($drop, $create, $location, $message_drop, $message_alter, $message_create, $name) {
+	if ($_POST["drop"]) {
+		return query_redirect($drop, $location, $message_drop, true, !$_POST["dropped"]);
+	}
+	$dropped = strlen($name) && ($_POST["dropped"] || queries($drop));
+	$created = queries($create);
+	if (!query_redirect(queries(), $location, (strlen($name) ? $message_alter : $message_create), $created, false, !$created) && $dropped) {
+		$_SESSION["messages"][] = $message_drop;
+	}
+	return $dropped;
+}

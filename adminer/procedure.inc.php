@@ -4,24 +4,23 @@ $routine = (isset($_GET["function"]) ? "FUNCTION" : "PROCEDURE");
 
 $dropped = false;
 if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] && !$_POST["down"]) {
-	if (strlen($PROCEDURE)) {
-		$dropped = query_redirect("DROP $routine " . idf_escape($PROCEDURE), substr(ME, 0, -1), lang('Routine has been dropped.'), $_POST["drop"], !$_POST["dropped"]);
-	}
-	if (!$_POST["drop"]) {
-		$set = array();
-		$fields = (array) $_POST["fields"];
-		ksort($fields); // enforce fields order
-		foreach ($fields as $field) {
-			if (strlen($field["field"])) {
-				$set[] = (in_array($field["inout"], $inout) ? "$field[inout] " : "") . idf_escape($field["field"]) . process_type($field, "CHARACTER SET");
-			}
+	$set = array();
+	$fields = (array) $_POST["fields"];
+	ksort($fields); // enforce fields order
+	foreach ($fields as $field) {
+		if (strlen($field["field"])) {
+			$set[] = (in_array($field["inout"], $inout) ? "$field[inout] " : "") . idf_escape($field["field"]) . process_type($field, "CHARACTER SET");
 		}
-		query_redirect("CREATE $routine " . idf_escape($_POST["name"])
-			. " (" . implode(", ", $set) . ")"
-			. (isset($_GET["function"]) ? " RETURNS" . process_type($_POST["returns"], "CHARACTER SET") : "")
-			. "\n$_POST[definition]"
-		, substr(ME, 0, -1), (strlen($PROCEDURE) ? lang('Routine has been altered.') : lang('Routine has been created.')));
 	}
+	$dropped = drop_create(
+		"DROP $routine " . idf_escape($PROCEDURE),
+		"CREATE $routine " . idf_escape($_POST["name"]) . " (" . implode(", ", $set) . ")" . (isset($_GET["function"]) ? " RETURNS" . process_type($_POST["returns"], "CHARACTER SET") : "") . "\n$_POST[definition]",
+		substr(ME, 0, -1),
+		lang('Routine has been dropped.'),
+		lang('Routine has been altered.'),
+		lang('Routine has been created.'),
+		$PROCEDURE
+	);
 }
 
 page_header((strlen($PROCEDURE) ? (isset($_GET["function"]) ? lang('Alter function') : lang('Alter procedure')) . ": " . h($PROCEDURE) : (isset($_GET["function"]) ? lang('Create function') : lang('Create procedure'))), $error);
@@ -42,7 +41,7 @@ if ($_POST) {
 <form action="" method="post" id="form">
 <table cellspacing="0">
 <?php edit_fields($row["fields"], $collations, $routine); ?>
-<?php if (isset($_GET["function"])) { ?><tr><td><?php echo lang('Return type') . edit_type("returns", $row["returns"], $collations); ?><?php } ?>
+<?php if (isset($_GET["function"])) { ?><tr><td><?php echo lang('Return type'); edit_type("returns", $row["returns"], $collations); ?><?php } ?>
 </table>
 <p><textarea name="definition" rows="10" cols="80" style="width: 98%;"><?php echo h($row["definition"]); ?></textarea>
 <p>
