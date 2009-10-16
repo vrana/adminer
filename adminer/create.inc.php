@@ -98,14 +98,6 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 
 page_header((strlen($TABLE) ? lang('Alter table') : lang('Create table')), $error, array("table" => $TABLE), $TABLE);
 
-$engines = array();
-$result = $connection->query("SHOW ENGINES");
-while ($row = $result->fetch_assoc()) {
-	if (ereg("YES|DEFAULT", $row["Support"])) {
-		$engines[] = $row["Engine"];
-	}
-}
-
 $row = array(
 	"Engine" => $_COOKIE["adminer_engine"],
 	"fields" => array(array("field" => "")),
@@ -148,6 +140,8 @@ $suhosin = floor(extension_loaded("suhosin") ? (min(ini_get("suhosin.request.max
 if ($suhosin && count($row["fields"]) > $suhosin) {
 	echo "<p class='error'>" . h(lang('Maximum number of allowed fields exceeded. Please increase %s and %s.', 'suhosin.post.max_vars', 'suhosin.request.max_vars')) . "\n";
 }
+
+$engines = engines();
 // case of engine may differ
 foreach ($engines as $engine) {
 	if (!strcasecmp($engine, $row["Engine"])) {
@@ -160,7 +154,7 @@ foreach ($engines as $engine) {
 <form action="" method="post" id="form">
 <p>
 <?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo h($row["name"]); ?>">
-<?php echo html_select("Engine", array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]); ?>
+<?php echo ($engines ? html_select("Engine", array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) : ""); ?>
 <?php echo html_select("Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]); ?>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 </p>

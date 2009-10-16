@@ -1,22 +1,22 @@
 <?php
 $TABLE = $_GET["table"];
-$result = $connection->query("SHOW FULL COLUMNS FROM " . idf_escape($TABLE));
-if (!$result) {
+$fields = fields($TABLE);
+if (!$fields) {
 	$error = h($connection->error);
 }
-$table_status = ($result ? table_status($TABLE) : array());
+$table_status = ($fields ? table_status($TABLE) : array());
 $is_view = !isset($table_status["Rows"]);
 
-page_header(($result && $is_view ? lang('View') : lang('Table')) . ": " . h($TABLE), $error);
+page_header(($fields && $is_view ? lang('View') : lang('Table')) . ": " . h($TABLE), $error);
 $adminer->selectLinks($table_status, $is_view ? null : "");
 
-if ($result) {
+if ($fields) {
 	echo "<table cellspacing='0'>\n";
 	echo "<thead><tr><th>" . lang('Column') . "<td>" . lang('Type') . "<td>" . lang('Comment') . "</thead>\n";
-	while ($row = $result->fetch_assoc()) {
-		echo "<tr><th>" . h($row["Field"]);
-		echo "<td>" . h($row["Type"]) . ($row["Null"] == "YES" ? " <i>NULL</i>" : "") . ($row["Extra"] == "auto_increment" ? " <i>" . lang('Auto Increment') . "</i>" : "");
-		echo "<td>" . nbsp($row["Comment"]);
+	foreach ($fields as $field) {
+		echo "<tr><th>" . h($field["field"]);
+		echo "<td>" . h($field["full_type"]) . ($field["null"] ? " <i>NULL</i>" : "") . ($field["auto_increment"] ? " <i>" . lang('Auto Increment') . "</i>" : "");
+		echo "<td>" . nbsp($field["comment"]);
 		echo "\n";
 	}
 	echo "</table>\n";

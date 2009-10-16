@@ -491,7 +491,7 @@ class Adminer {
 </form>
 <?php
 			if ($missing != "db" && strlen(DB) && $connection->select_db(DB)) {
-				$tables = get_vals("SHOW TABLES");
+				$tables = tables_list();
 				if (!$tables) {
 					echo "<p class='message'>" . lang('No tables.') . "\n";
 				} else {

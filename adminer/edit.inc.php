@@ -22,8 +22,10 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 	$set = array();
 	foreach ($fields as $name => $field) {
 		$val = process_input($field);
-		if ($val !== false || !$update) {
-			$set[] = "\n" . idf_escape($name) . " = " . ($val !== false ? $val : "''");
+		if (!$update) {
+			$set[idf_escape($name)] = ($val !== false ? $val : "''");
+		} elseif ($val !== false) {
+			$set[] = "\n" . idf_escape($name) . " = $val";
 		}
 	}
 	if (!$set) {
@@ -32,7 +34,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 	if ($update) {
 		query_redirect("UPDATE " . idf_escape($TABLE) . " SET" . implode(",", $set) . "\nWHERE $where\nLIMIT 1", $location, lang('Item has been updated.'));
 	} else {
-		query_redirect("INSERT INTO " . idf_escape($TABLE) . " SET" . implode(",", $set), $location, lang('Item has been inserted.'));
+		query_redirect("INSERT INTO " . idf_escape($TABLE) . " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")", $location, lang('Item has been inserted.'));
 	}
 }
 

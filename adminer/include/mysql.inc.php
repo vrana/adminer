@@ -177,6 +177,25 @@ function get_databases($flush = true) {
 	return $return;
 }
 
+function engines() {
+	global $connection;
+	$return = array();
+	$result = $connection->query("SHOW ENGINES");
+	while ($row = $result->fetch_assoc()) {
+		if (ereg("YES|DEFAULT", $row["Support"])) {
+			$return[] = $row["Engine"];
+		}
+	}
+	return $return;
+}
+
+/** Get tables list
+* @return array
+*/
+function tables_list() {
+	return get_vals("SHOW TABLES");
+}
+
 /** Get table status
 * @param string
 * @return array
@@ -315,15 +334,6 @@ function collations() {
 	return $return;
 }
 
-/** Escape string to use inside ''
-* @param string
-* @return string
-*/
-function escape_string($val) {
-	global $connection;
-	return substr($connection->quote($val), 1, -1);
-}
-
 /** Find out if database is information_schema
 * @param string
 * @return bool
@@ -331,6 +341,15 @@ function escape_string($val) {
 function information_schema($db) {
 	global $connection;
 	return ($connection->server_info >= 5 && $db == "information_schema");
+}
+
+/** Return expression for binary comparison
+* @param string
+* @return string
+*/
+function exact_value($val) {
+	global $connection;
+	return "BINARY " . $connection->quote($val);
 }
 
 // value means maximum unsigned length

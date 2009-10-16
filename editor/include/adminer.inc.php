@@ -116,7 +116,7 @@ ORDER BY ORDINAL_POSITION");
 						// find all used ids
 						$ids = array();
 						foreach ($rows as $row) {
-							$ids[$row[$key]] = "BINARY " . $connection->quote($row[$key]);
+							$ids[$row[$key]] = exact_value($row[$key]);
 						}
 						// uses constant number of queries to get the descriptions, join would be complex, multiple queries would be slow
 						$descriptions = array();

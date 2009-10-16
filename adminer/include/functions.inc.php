@@ -24,6 +24,15 @@ function idf_unescape($idf) {
 	return str_replace("``", "`", $idf);
 }
 
+/** Escape string to use inside ''
+* @param string
+* @return string
+*/
+function escape_string($val) {
+	global $connection;
+	return substr($connection->quote($val), 1, -1);
+}
+
 /** Escape or unescape string to use inside form []
 * @param string
 * @param bool
@@ -155,11 +164,10 @@ function unique_idf($row, $indexes) {
 * @return string
 */
 function where($where) {
-	global $connection;
 	$return = array();
 	foreach ((array) $where["where"] as $key => $val) {
 		$key = bracket_escape($key, "back");
-		$return[] = (preg_match('~^[A-Z0-9_]+\\(`(?:[^`]|``)+`\\)$~', $key) ? $key : idf_escape($key)) . " = BINARY " . $connection->quote($val); //! enum and set, columns looking like functions
+		$return[] = (preg_match('~^[A-Z0-9_]+\\(`(?:[^`]|``)+`\\)$~', $key) ? $key : idf_escape($key)) . " = " . exact_value($val); //! enum and set, columns looking like functions
 	}
 	foreach ((array) $where["null"] as $key) {
 		$key = bracket_escape($key, "back");

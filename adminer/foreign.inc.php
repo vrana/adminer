@@ -37,8 +37,8 @@ if ($_POST) {
 	$row["source"][] = "";
 }
 
-$source = get_vals("SHOW COLUMNS FROM " . idf_escape($TABLE)); //! no text and blob
-$target = ($TABLE === $row["table"] ? $source : get_vals("SHOW COLUMNS FROM " . idf_escape($row["table"])));
+$source = array_keys(fields($TABLE)); //! no text and blob
+$target = ($TABLE === $row["table"] ? $source : array_keys(fields($row["table"])));
 ?>
 
 <form action="" method="post">
