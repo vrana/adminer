@@ -1,20 +1,50 @@
 <?php
 function connect_error() {
-	global $connection, $VERSION;
+	global $connection, $VERSION, $token, $error;
 	if (strlen(DB)) {
 		page_header(lang('Database') . ": " . h(DB), lang('Invalid database.'), false);
 	} else {
+		if ($_POST["db"] && !$error) {
+			unset($_SESSION["databases"][$_GET["server"]]);
+			foreach ($_POST["db"] as $db) {
+				if (!queries("DROP DATABASE " . idf_escape($db))) {
+					break;
+				}
+			}
+			queries_redirect(substr(ME, 0, -1), lang('Database has been dropped.'), !$connection->error);
+		}
+		
 		page_header(lang('Select database'), "", null);
+		echo "<p>";
 		foreach (array(
 			'database' => lang('Create new database'),
 			'privileges' => lang('Privileges'),
 			'processlist' => lang('Process list'),
 			'variables' => lang('Variables'),
 		) as $key => $val) {
-			echo "<p><a href='" . h(ME) . "$key='>$val</a>\n";
+			echo "<a href='" . h(ME) . "$key='>$val</a>\n";
 		}
 		echo "<p>" . lang('MySQL version: %s through PHP extension %s', "<b" . ($connection->server_info < 4.1 ? " class='binary'" : "") . ">$connection->server_info</b>", "<b>$connection->extension</b>") . "\n";
 		echo "<p>" . lang('Logged as: %s', "<b>" . h($connection->result($connection->query("SELECT USER()"))) . "</b>") . "\n";
+		$databases = get_databases();
+		if ($databases) {
+			$collations = collations();
+			echo "<form action='' method='post'>\n";
+			echo "<table cellspacing='0' onclick='table_click(event);'>\n";
+			echo "<thead><tr><td><input type='hidden' name='token' value='$token'>&nbsp;<th>" . lang('Database') . "<td>" . lang('Collation') . "<td>" . lang('Tables') . "</thead>\n";
+			foreach ($databases as $db) {
+				$root = h(ME) . "db=" . urlencode($db);
+				echo "<tr><td>" . checkbox("db[]", $db, false);
+				echo "<th><a href='$root'>" . h($db) . "</a>";
+				echo "<td><a href='$root&amp;database='>" . nbsp(db_collation($db, $collations)) . "</a>";
+				$result = $connection->query("SHOW TABLES FROM " . idf_escape($db));
+				echo "<td><a href='$root&amp;schema='>$result->num_rows</a>";
+				echo "\n";
+			}
+			echo "</table>\n";
+			echo "<p><input type='submit' name='drop' value='" . lang('Drop') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + form_checked(this, /db/) + ')');\">\n";
+			echo "</form>\n";
+		}
 	}
 	page_footer("db");
 }

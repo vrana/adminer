@@ -177,6 +177,30 @@ function get_databases($flush = true) {
 	return $return;
 }
 
+/** Get database collation
+* @param string
+* @param array result of collations()
+* @return 
+*/
+function db_collation($db, $collations) {
+	global $connection;
+	$return = null;
+	$result = $connection->query("SHOW CREATE DATABASE " . idf_escape($db));
+	if ($result) {
+		$create = $connection->result($result, 1);
+		if (preg_match('~ COLLATE ([^ ]+)~', $create, $match)) {
+			$return = $match[1];
+		} elseif (preg_match('~ CHARACTER SET ([^ ]+)~', $create, $match)) {
+			// default collation
+			$return = $collations[$match[1]][0];
+		}
+	}
+	return $return;
+}
+
+/**Get supported engines 
+* @return array
+*/
 function engines() {
 	global $connection;
 	$return = array();

@@ -39,7 +39,7 @@ if ($tables_views && !$error) {
 
 page_header(lang('Database') . ": " . h(DB), $error, false);
 echo '<p><a href="' . h(ME) . 'database=">' . lang('Alter database') . "</a>\n";
-echo '<p><a href="' . h(ME) . 'schema=">' . lang('Database schema') . "</a>\n";
+echo '<a href="' . h(ME) . 'schema=">' . lang('Database schema') . "</a>\n";
 
 echo "<h3>" . lang('Tables and views') . "</h3>\n";
 $table_status = table_status();
