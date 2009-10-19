@@ -93,6 +93,7 @@ if ($_POST && !$error) {
 			$cols = array_keys($fields);
 			preg_match_all('~("[^"]*"|[^"\\r\\n])+~', $file, $matches);
 			$affected = count($matches[0]);
+			queries("START TRANSACTION");
 			foreach ($matches[0] as $key => $val) {
 				preg_match_all('~(("[^"]*")+|[^,]*),~', "$val,", $matches2);
 				if (!$key && !array_diff($matches2[1], $cols)) { //! doesn't work with column names containing ",\n
@@ -111,6 +112,7 @@ if ($_POST && !$error) {
 					}
 				}
 			}
+			queries("COMMIT");
 			queries_redirect(remove_from_uri("page"), lang('%d row(s) have been imported.', $affected), $result);
 		} else {
 			$error = upload_error($file);
