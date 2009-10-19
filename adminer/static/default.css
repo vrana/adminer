@@ -18,8 +18,8 @@ code { background: #eee; }
 tr:hover td, tr:hover th { background: #ddf; }
 .version { color: #777; font-size: 67%; }
 .js .hidden { display: none; }
-.nowrap { white-space: pre; }
-.wrap { white-space: normal; }
+.nowrap td, .nowrap th, td.nowrap { white-space: pre; }
+.wrap td { white-space: normal; }
 .error { color: red; background: #fee; }
 .message { color: green; background: #efe; }
 .error, .message { padding: .5em .8em; margin: 0 20px 1em 0; }
