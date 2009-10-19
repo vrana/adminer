@@ -34,7 +34,7 @@ function connect_error() {
 			echo "<thead><tr><td><input type='hidden' name='token' value='$token'>&nbsp;<th>" . lang('Database') . "<td>" . lang('Collation') . "<td>" . lang('Tables') . "</thead>\n";
 			foreach ($databases as $db) {
 				$root = h(ME) . "db=" . urlencode($db);
-				echo "<tr><td>" . checkbox("db[]", $db, false);
+				echo "<tr" . odd() . "><td>" . checkbox("db[]", $db, false);
 				echo "<th><a href='$root'>" . h($db) . "</a>";
 				echo "<td><a href='$root&amp;database='>" . nbsp(db_collation($db, $collations)) . "</a>";
 				$result = $connection->query("SHOW TABLES FROM " . idf_escape($db));
