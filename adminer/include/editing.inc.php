@@ -158,7 +158,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 <td><?php echo lang('Options'); ?>
 <?php if ($type == "TABLE") { ?>
 <td>NULL
-<td><input type="radio" name="auto_increment_col" value=""><?php echo lang('Auto Increment'); ?>
+<td><input type="radio" name="auto_increment_col" value=""><acronym title="<?php echo lang('Auto Increment'); ?>">A_I</acronym>
 <td class="hidden"><?php echo lang('Default values'); ?>
 <td<?php echo ($column_comments ? "" : " class='hidden'"); ?>><?php echo lang('Comment'); ?>
 <?php } ?>
