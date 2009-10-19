@@ -157,6 +157,27 @@ function editing_type_change(type) {
 	}
 }
 
+function editing_length_focus(field) {
+	var td = field.parentNode;
+	if (/enum|set/.test(select_value(td.previousSibling.firstChild))) {
+		var edit = document.getElementById('enum-edit');
+		var val = field.value;
+		edit.value = (/^'.+','.+'$/.test(val) ? val.substr(1, val.length - 2).replace(/','/g, "\n").replace(/''/g, "'") : val);
+		td.appendChild(edit);
+		field.style.display = 'none';
+		edit.style.display = 'inline';
+		edit.focus();
+	}
+}
+
+function editing_length_blur(edit) {
+	var field = edit.parentNode.firstChild;
+	var val = edit.value;
+	field.value = (/\n/.test(val) ? "'" + val.replace(/\n+$/, '').replace(/'/g, "''").replace(/\n/g, "','") + "'" : val);
+	field.style.display = 'inline';
+	edit.style.display = 'none';
+}
+
 function column_show(checked, column) {
 	var trs = document.getElementById('edit-fields').getElementsByTagName('tr');
 	for (var i=0; i < trs.length; i++) {

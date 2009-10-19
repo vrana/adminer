@@ -98,7 +98,7 @@ function edit_type($key, $field, $collations, $foreign_keys = array()) {
 	global $structured_types, $unsigned, $inout;
 	?>
 <td><select name="<?php echo $key; ?>[type]" class="type" onchange="editing_type_change(this);"><?php echo optionlist($structured_types + ($foreign_keys ? array(lang('Foreign keys') => $foreign_keys) : array()), $field["type"]); ?></select>
-<td><input name="<?php echo $key; ?>[length]" value="<?php echo h($field["length"]); ?>" size="3">
+<td><input name="<?php echo $key; ?>[length]" value="<?php echo h($field["length"]); ?>" size="3" onfocus="editing_length_focus(this);">
 <td><?php
 	echo "<select name='$key" . "[collation]'" . (ereg('(char|text|enum|set)$', $field["type"]) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>';
 	echo ($unsigned ? " <select name='$key" . "[unsigned]'" . (!$field["type"] || ereg('(int|float|double|decimal)$', $field["type"]) ? "" : " class='hidden'") . '><option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
@@ -153,7 +153,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 <thead><tr>
 <?php if ($type == "PROCEDURE") { ?><td>&nbsp;<?php } ?>
 <th><?php echo ($type == "TABLE" ? lang('Column name') : lang('Parameter name')); ?>
-<td><?php echo lang('Type'); ?>
+<td><?php echo lang('Type'); ?><textarea id="enum-edit" rows="4" cols="10" style="display: none;" onblur="editing_length_blur(this);"></textarea>
 <td><?php echo lang('Length'); ?>
 <td><?php echo lang('Options'); ?>
 <?php if ($type == "TABLE") { ?>

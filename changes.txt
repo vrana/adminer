@@ -1,4 +1,6 @@
-Adminer 2.1.1-dev:
+Adminer 2.2.0-dev:
+Database list - bulk drop, number of tables
+Enlarge field for enum and set definition
 Display table links above table structure
 Link URLs in select
 Display number of manipulated rows in JS confirm
