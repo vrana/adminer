@@ -38,7 +38,7 @@ function connect_error() {
 				echo "<th><a href='$root'>" . h($db) . "</a>";
 				echo "<td><a href='$root&amp;database='>" . nbsp(db_collation($db, $collations)) . "</a>";
 				$result = $connection->query("SHOW TABLES FROM " . idf_escape($db));
-				echo "<td><a href='$root&amp;schema='>$result->num_rows</a>";
+				echo "<td align='right'><a href='$root&amp;schema='>$result->num_rows</a>";
 				echo "\n";
 			}
 			echo "</table>\n";
