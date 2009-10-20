@@ -1,4 +1,4 @@
-Adminer 2.2.0-dev:
+Adminer 2.2.0 (released 2009-10-20):
 Database list - bulk drop, number of tables
 Enlarge field for enum and set definition
 Display table links above table structure
