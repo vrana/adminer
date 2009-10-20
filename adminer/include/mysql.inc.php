@@ -180,7 +180,7 @@ function get_databases($flush = true) {
 /** Get database collation
 * @param string
 * @param array result of collations()
-* @return 
+* @return array
 */
 function db_collation($db, $collations) {
 	global $connection;
