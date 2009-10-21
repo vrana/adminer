@@ -6,6 +6,7 @@ function body_load() {
 	script.src = jush_root + 'jush.js';
 	script.onload = function () {
 		if (window.jush) { // IE runs in case of an error too
+			jush.create_links = ' target="_blank"';
 			jush.style(jush_root + 'jush.css');
 			jush.highlight_tag('pre');
 			jush.highlight_tag('code');
