@@ -85,6 +85,11 @@ ORDER BY ORDINAL_POSITION");
 						$link .= where_link($i++, $column, $row[$val]);
 					}
 					echo " <a href='" . h($link) . "'>$backwardKey[name]</a>";
+					$link = ME . 'edit=' . urlencode($table);
+					foreach ($cols as $column => $val) {
+						$link .= "&set" . urlencode("[" . bracket_escape($column) . "]") . "=" . urlencode($row[$val]);
+					}
+					echo "<a href='" . h($link) . "' title='" . lang('New item') . "'>+</a>";
 				}
 			}
 		}
