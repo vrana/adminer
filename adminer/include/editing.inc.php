@@ -76,6 +76,10 @@ function select($result, $connection2 = null) {
 	}
 }
 
+/** Get referencable tables with single column primary key except self
+* @param string
+* @return array ($table_name => $field)
+*/
 function referencable_primary($self) {
 	$return = array(); // table_name => field
 	foreach (table_status_referencable() as $table_name => $table) {
@@ -94,6 +98,13 @@ function referencable_primary($self) {
 	return $return;
 }
 
+/** Print table columns for type edit
+* @param string
+* @param array
+* @param array
+* @param array returned by referencable_primary()
+* @return null
+*/
 function edit_type($key, $field, $collations, $foreign_keys = array()) {
 	global $structured_types, $unsigned, $inout;
 	?>
@@ -104,11 +115,20 @@ function edit_type($key, $field, $collations, $foreign_keys = array()) {
 	echo ($unsigned ? " <select name='$key" . "[unsigned]'" . (!$field["type"] || ereg('(int|float|double|decimal)$', $field["type"]) ? "" : " class='hidden'") . '><option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
 }
 
+/** Filter length value including enums
+* @param string
+* @return string
+*/
 function process_length($length) {
 	global $enum_length;
 	return (preg_match("~^\\s*(?:$enum_length)(?:\\s*,\\s*(?:$enum_length))*\\s*\$~", $length) && preg_match_all("~$enum_length~", $length, $matches) ? implode(",", $matches[0]) : preg_replace('~[^0-9,+-]~', '', $length));
 }
 
+/** Create SQL string from field type
+* @param array
+* @param string
+* @return string
+*/
 function process_type($field, $collate = "COLLATE") {
 	global $connection, $unsigned;
 	return " $field[type]"
@@ -118,6 +138,11 @@ function process_type($field, $collate = "COLLATE") {
 	;
 }
 
+/** Create SQL string from field
+* @param array basic field information
+* @param array information about field type
+* @return string
+*/
 function process_field($field, $type_field) {
 	global $connection;
 	return idf_escape($field["field"]) . process_type($type_field)
@@ -128,6 +153,10 @@ function process_field($field, $type_field) {
 	;
 }
 
+/** Get type class to use in CSS
+* @param string
+* @return string class=''
+*/
 function type_class($type) {
 	foreach (array(
 		'char' => 'text',
@@ -141,12 +170,21 @@ function type_class($type) {
 	}
 }
 
+/** Print table interior for fields editing
+* @param array
+* @param array
+* @param string TABLE or PROCEDURE
+* @param int number of fields allowed by Suhosin
+* @param array returned by referencable_primary()
+* @return bool column comments used
+*/
 function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $foreign_keys = array()) {
 	global $inout;
 	$column_comments = false;
 	foreach ($fields as $field) {
 		if (strlen($field["comment"])) {
 			$column_comments = true;
+			break;
 		}
 	}
 	?>
@@ -193,6 +231,10 @@ if ($type == "PROCEDURE") {
 	return $column_comments;
 }
 
+/** Move fields up and down or add field
+* @param array
+* @return null
+*/
 function process_fields(&$fields) {
 	ksort($fields);
 	$offset = 0;
@@ -230,10 +272,19 @@ function process_fields(&$fields) {
 	}
 }
 
+/** Callback used in routine()
+* @param array
+* @return string
+*/
 function normalize_enum($match) {
 	return "'" . str_replace("'", "''", addcslashes(stripcslashes(str_replace($match[0]{0} . $match[0]{0}, $match[0]{0}, substr($match[0], 1, -1))), '\\')) . "'";
 }
 
+/** Get information about stored routine
+* @param string
+* @param string FUNCTION or PROCEDURE
+* @return array ("fields" => array("field" => , "type" => , "length" => , "unsigned" => , "inout" => , "collation" => ), "returns" => , "definition" => )
+*/
 function routine($name, $type) {
 	global $connection, $enum_length, $inout, $types;
 	$aliases = array("bit" => "tinyint", "bool" => "tinyint", "boolean" => "tinyint", "integer" => "int", "double precision" => "float", "real" => "float", "dec" => "decimal", "numeric" => "decimal", "fixed" => "decimal", "national char" => "char", "national varchar" => "varchar");
@@ -262,6 +313,13 @@ function routine($name, $type) {
 	return array("fields" => $fields, "returns" => $returns, "definition" => $match[15]);
 }
 
+/** Issue grant or revoke commands
+* @param string GRANT or REVOKE
+* @param array
+* @param string
+* @param string
+* @return 
+*/
 function grant($grant, $privileges, $columns, $on) {
 	if (!$privileges) {
 		return true;
@@ -276,6 +334,16 @@ function grant($grant, $privileges, $columns, $on) {
 	return queries("$grant " . preg_replace('~(GRANT OPTION)\\([^)]*\\)~', '\\1', implode("$columns, ", $privileges) . $columns) . $on);
 }
 
+/** Drop old object and create a new one
+* @param string drop query
+* @param string create query
+* @param string
+* @param string
+* @param string
+* @param string
+* @param string
+* @return bool dropped
+*/
 function drop_create($drop, $create, $location, $message_drop, $message_alter, $message_create, $name) {
 	if ($_POST["drop"]) {
 		return query_redirect($drop, $location, $message_drop, true, !$_POST["dropped"]);
