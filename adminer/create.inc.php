@@ -155,8 +155,8 @@ foreach ($engines as $engine) {
 <p>
 <?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo h($row["name"]); ?>">
 <?php echo ($engines ? html_select("Engine", array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) : ""); ?>
-<?php echo html_select("Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]); ?>
-<input type="submit" value="<?php echo lang('Save'); ?>">
+ <?php echo html_select("Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]); ?>
+ <input type="submit" value="<?php echo lang('Save'); ?>">
 </p>
 <table cellspacing="0" id="edit-fields">
 <?php $column_comments = edit_fields($row["fields"], $collations, "TABLE", $suhosin, $foreign_keys); ?>
