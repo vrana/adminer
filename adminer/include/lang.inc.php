@@ -33,7 +33,7 @@ function switch_lang() {
 	echo "<form action=''>\n<div id='lang'>";
 	hidden_fields($_GET, array('lang'));
 	echo lang('Language') . ": " . html_select("lang", $langs, $LANG, "this.form.submit();");
-	echo "<noscript><div style='display: inline;'><input type='submit' value='" . lang('Use') . "'></div></noscript>\n";
+	echo " <input type='submit' value='" . lang('Use') . "' class='hidden'>\n";
 	echo "</div>\n</form>\n";
 }
 
