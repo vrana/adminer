@@ -14,7 +14,7 @@ if ($fields) {
 	echo "<table cellspacing='0'>\n";
 	echo "<thead><tr><th>" . lang('Column') . "<td>" . lang('Type') . "<td>" . lang('Comment') . "</thead>\n";
 	foreach ($fields as $field) {
-		echo "<tr><th>" . h($field["field"]);
+		echo "<tr" . odd() . "><th>" . h($field["field"]);
 		echo "<td>" . h($field["full_type"]) . ($field["null"] ? " <i>NULL</i>" : "") . ($field["auto_increment"] ? " <i>" . lang('Auto Increment') . "</i>" : "");
 		echo "<td>" . nbsp($field["comment"]);
 		echo "\n";
