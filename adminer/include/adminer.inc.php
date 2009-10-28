@@ -73,7 +73,7 @@ class Adminer {
 	*/
 	function selectLinks($tableStatus, $set = "") {
 		$TABLE = $tableStatus["Name"];
-		echo '<p><a href="' . h(ME) . 'select=' . urlencode($TABLE) . '">' . lang('Select table') . '</a>';
+		echo '<p class="tabs"><a href="' . h(ME) . 'select=' . urlencode($TABLE) . '">' . lang('Select table') . '</a>';
 		echo ' <a href="' . h(ME) . 'table=' . urlencode($TABLE) . '">' . lang('Table structure') . '</a>';
 		if (isset($tableStatus["Rows"])) {
 			echo ' <a href="' . h(ME) . 'create=' . urlencode($TABLE) . '">' . lang('Alter table') . '</a>';
@@ -471,7 +471,7 @@ class Adminer {
 			$databases = get_databases();
 			?>
 <form action="" method="post">
-<p>
+<p class="logout">
 <a href="<?php echo h(ME); ?>sql="><?php echo lang('SQL command'); ?></a>
 <a href="<?php echo h(ME); ?>dump=<?php echo urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]); ?>"><?php echo lang('Dump'); ?></a>
 <input type="hidden" name="token" value="<?php echo $_SESSION["tokens"][$_GET["server"]]; ?>">

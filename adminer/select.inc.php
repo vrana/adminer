@@ -252,7 +252,7 @@ if (!$columns) {
 				flush();
 				$found_rows = $connection->result($connection->query("SELECT COUNT(*) FROM " . idf_escape($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : "")));
 			}
-			echo "<p>";
+			echo "<p class='pages'>";
 			if (intval($limit) && $found_rows > $limit) {
 				// display first, previous 3, next 3 and last page
 				$max_page = floor(($found_rows - 1) / $limit);

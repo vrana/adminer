@@ -43,7 +43,7 @@ class Adminer {
 	function selectLinks($tableStatus, $set = "") {
 		$TABLE = $tableStatus["Name"];
 		if (isset($set)) {
-			echo '<p><a href="' . h(ME . 'edit=' . urlencode($TABLE) . $set) . '">' . lang('New item') . "</a>\n";
+			echo '<p class="tabs"><a href="' . h(ME . 'edit=' . urlencode($TABLE) . $set) . '">' . lang('New item') . "</a>\n";
 		}
 	}
 	
@@ -433,7 +433,7 @@ ORDER BY ORDINAL_POSITION");
 		if ($missing != "auth") {
 			?>
 <form action="" method="post">
-<p>
+<p class="logout">
 <input type="hidden" name="token" value="<?php echo $_SESSION["tokens"][$_GET["server"]]; ?>">
 <input type="submit" name="logout" value="<?php echo lang('Logout'); ?>">
 </p>
