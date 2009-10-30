@@ -31,14 +31,12 @@ function connect_error() {
 			$collations = collations();
 			echo "<form action='' method='post'>\n";
 			echo "<table cellspacing='0' onclick='table_click(event);'>\n";
-			echo "<thead><tr><td><input type='hidden' name='token' value='$token'>&nbsp;<th>" . lang('Database') . "<td>" . lang('Collation') . "<td>" . lang('Tables') . "</thead>\n";
+			echo "<thead><tr><td><input type='hidden' name='token' value='$token'>&nbsp;<th>" . lang('Database') . "<td>" . lang('Collation') . "</thead>\n";
 			foreach ($databases as $db) {
 				$root = h(ME) . "db=" . urlencode($db);
 				echo "<tr" . odd() . "><td>" . checkbox("db[]", $db, false);
 				echo "<th><a href='$root'>" . h($db) . "</a>";
 				echo "<td><a href='$root&amp;database='>" . nbsp(db_collation($db, $collations)) . "</a>";
-				$result = $connection->query("SHOW TABLES FROM " . idf_escape($db));
-				echo "<td align='right'><a href='$root&amp;schema='>$result->num_rows</a>";
 				echo "\n";
 			}
 			echo "</table>\n";

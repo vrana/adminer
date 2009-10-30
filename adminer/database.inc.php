@@ -23,6 +23,7 @@ if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP c
 			}
 			if (!$row) {
 				queries("DROP DATABASE " . idf_escape(DB));
+				//! saved to history of removed database
 			}
 			queries_redirect(preg_replace('~db=[^&]*&~', '', ME) . "db=" . urlencode($_POST["name"]), lang('Database has been renamed.'), !$row);
 		}
