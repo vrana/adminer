@@ -242,7 +242,7 @@ if (!$columns) {
 					}
 				}
 				$adminer->backwardKeysPrint($backward_keys, $rows[$n]);
-				echo "\n";
+				echo "</tr>\n"; // close to allow white-space: pre
 			}
 			echo "</table>\n";
 			
