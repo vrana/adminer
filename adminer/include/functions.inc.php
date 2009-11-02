@@ -204,6 +204,15 @@ function cookie($name, $value) {
 	return setcookie($name, $value, time() + 2592000, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"])); // 2592000 = 30 * 24 * 60 * 60
 }
 
+/** Restart stopped session
+* @return null
+*/
+function restart_session() {
+	if (!ini_get("session.use_cookies")) {
+		session_start();
+	}
+}
+
 /** Send Location header and exit
 * @param string
 * @param string
@@ -211,6 +220,7 @@ function cookie($name, $value) {
 */
 function redirect($location, $message = null) {
 	if (isset($message)) {
+		session_start();
 		$_SESSION["messages"][] = $message;
 	}
 	header("Location: " . (strlen($location) ? $location : "."));
@@ -228,12 +238,12 @@ function redirect($location, $message = null) {
 */
 function query_redirect($query, $location, $message, $redirect = true, $execute = true, $failed = false) {
 	global $connection, $error, $adminer;
+	if ($execute) {
+		$failed = !$connection->query($query);
+	}
 	$sql = "";
 	if ($query) {
 		$sql = $adminer->messageQuery($query);
-	}
-	if ($execute) {
-		$failed = !$connection->query($query);
 	}
 	if ($failed) {
 		$error = h($connection->error) . $sql;

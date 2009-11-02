@@ -27,8 +27,8 @@ if (!$error && $_POST) {
 		$space = "(\\s|/\\*.*\\*/|(#|-- )[^\n]*\n|--\n)";
 		$alter_database = "(CREATE|DROP)$space+(DATABASE|SCHEMA)\\b~isU";
 		$databases = &$_SESSION["databases"][$_GET["server"]];
-		if (isset($databases) && !preg_match("~\\b$alter_database", $query)) { // quick check - may be inside string
-			//! false positive with $fp
+		if ((isset($databases) && !preg_match("~\\b$alter_database", $query)) || !ini_get("session.use_cookies")) { // quick check - may be inside string
+			//! false positive with $fp and disabled ini_set() and enabled session.use_cookies
 			session_write_close();
 		}
 		$delimiter = ";";

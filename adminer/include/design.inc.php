@@ -40,6 +40,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 		echo "$title\n";
 	}
 	echo "<h2>$title_all</h2>\n";
+	restart_session();
 	if ($_SESSION["messages"]) {
 		echo "<div class='message'>" . implode("</div>\n<div class='message'>", $_SESSION["messages"]) . "</div>\n";
 		$_SESSION["messages"] = array();
@@ -51,7 +52,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	if (strlen(DB) && $databases && !in_array(DB, $databases, true)) {
 		$databases = null;
 	}
-	if (isset($databases) && !isset($_GET["sql"])) {
+	if ((isset($databases) && !isset($_GET["sql"])) || !ini_get("session.use_cookies")) {
 		// improves concurrency if a user opens several pages at once
 		session_write_close();
 	}

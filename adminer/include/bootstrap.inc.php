@@ -91,6 +91,11 @@ include "./include/connect.inc.php";
 include "./include/editing.inc.php";
 include "./include/export.inc.php";
 
+session_cache_limiter(""); // to allow restarting session
+if (@ini_set("session.use_cookies", false) !== false) { // @ - may be disabled
+	session_write_close(); // improves concurrency, may be restarted later
+}
+
 $confirm = " onclick=\"return confirm('" . lang('Are you sure?') . "');\"";
 $token = $_SESSION["tokens"][$_GET["server"]];
 $error = ($_POST

@@ -1,4 +1,5 @@
 Adminer 2.2.1-dev:
+Improve concurrency
 Link new item in backward keys (Editor)
 
 Adminer 2.2.0 (released 2009-10-20):
