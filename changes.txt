@@ -1,5 +1,6 @@
 Adminer 2.2.1-dev:
 Improve concurrency
+Move number of tables to DB info (performance)
 Link new item in backward keys (Editor)
 
 Adminer 2.2.0 (released 2009-10-20):
