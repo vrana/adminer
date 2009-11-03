@@ -52,10 +52,6 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	if (strlen(DB) && $databases && !in_array(DB, $databases, true)) {
 		$databases = null;
 	}
-	if ((isset($databases) && !isset($_GET["sql"])) || !ini_get("session.use_cookies")) {
-		// improves concurrency if a user opens several pages at once
-		session_write_close();
-	}
 	if ($error) {
 		echo "<div class='error'>$error</div>\n";
 	}

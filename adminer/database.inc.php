@@ -2,6 +2,7 @@
 if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP changes add.x to add_x
 	if (DB !== $_POST["name"]) {
 		// create or rename database
+		restart_session();
 		unset($_SESSION["databases"][$_GET["server"]]); // clear cache
 		$dbs = explode("\n", str_replace("\r", "", $_POST["name"]));
 		$failed = false;
@@ -15,6 +16,7 @@ if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP c
 			}
 		}
 		if (query_redirect(queries(), ME . "db=" . urlencode($last), lang('Database has been created.'), !strlen(DB), false, $failed)) {
+			//! move triggers
 			$result = $connection->query("SHOW TABLES");
 			while ($row = $result->fetch_row()) {
 				if (!queries("RENAME TABLE " . idf_escape($row[0]) . " TO " . idf_escape($_POST["name"]) . "." . idf_escape($row[0]))) {

@@ -220,7 +220,7 @@ function restart_session() {
 */
 function redirect($location, $message = null) {
 	if (isset($message)) {
-		session_start();
+		restart_session();
 		$_SESSION["messages"][] = $message;
 	}
 	header("Location: " . (strlen($location) ? $location : "."));

@@ -92,8 +92,8 @@ include "./include/editing.inc.php";
 include "./include/export.inc.php";
 
 session_cache_limiter(""); // to allow restarting session
-if (@ini_set("session.use_cookies", false) !== false) { // @ - may be disabled
-	session_write_close(); // improves concurrency, may be restarted later
+if (!ini_get("session.use_cookies") || @ini_set("session.use_cookies", false) !== false) { // @ - may be disabled
+	session_write_close(); // improves concurrency if a user opens several pages at once, may be restarted later
 }
 
 $confirm = " onclick=\"return confirm('" . lang('Are you sure?') . "');\"";
