@@ -134,7 +134,7 @@ if (extension_loaded("mysqli")) {
 		}
 		
 		function query($query, $unbuffered = false) {
-			$this->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, !$unbuffered);
+			$this->setAttribute(1000, !$unbuffered); // 1000 - PDO::MYSQL_ATTR_USE_BUFFERED_QUERY
 			return parent::query($query, $unbuffered);
 		}
 	}
