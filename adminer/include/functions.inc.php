@@ -448,10 +448,10 @@ function input($field, $value, $function) {
 				$checked = (is_int($value) ? ($value >> $i) & 1 : in_array($val, explode(",", $value), true));
 				echo " <label><input type='checkbox' name='fields[$name][$i]' value='" . (1 << $i) . "'" . ($checked ? ' checked' : '') . "$onchange>" . h($val) . '</label>';
 			}
-		} elseif (strpos($field["type"], "text") !== false) {
+		} elseif (ereg('binary|blob', $field["type"]) && ini_get("file_uploads")) {
+			echo "<input type='file' name='$name'$onchange>";
+		} elseif (ereg('text|blob', $field["type"])) {
 			echo "<textarea name='fields[$name]' cols='50' rows='12'$onchange>" . h($value) . '</textarea>';
-		} elseif (ereg('binary|blob', $field["type"])) {
-			echo (ini_get("file_uploads") ? "<input type='file' name='$name'$onchange>" : lang('File uploads are disabled.'));
 		} else {
 			// int(3) is only a display hint
 			$maxlength = (!ereg('int', $field["type"]) && preg_match('~^([0-9]+)(,([0-9]+))?$~', $field["length"], $match) ? ($match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) : ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0));
@@ -477,7 +477,7 @@ function process_input($field) {
 		return intval($value);
 	} elseif ($field["type"] == "set") {
 		return array_sum((array) $value);
-	} elseif (ereg('binary|blob', $field["type"])) {
+	} elseif (ereg('binary|blob', $field["type"]) && ini_get("file_uploads")) {
 		$file = get_file($idf);
 		if (!is_string($file)) {
 			return false; //! report errors
