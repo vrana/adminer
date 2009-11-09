@@ -437,8 +437,9 @@ function input($field, $value, $function) {
 			$first++;
 		}
 		$onchange = ($first ? " onchange=\"var f = this.form['function[" . addcslashes($name, "\r\n'\\") . "]']; if ($first > f.selectedIndex) f.selectedIndex = $first;\"" : "");
+		$attrs = " name='fields[$name]'$onchange";
 		echo (count($functions) > 1 ? html_select("function[$name]", $functions, !isset($function) || in_array($function, $functions) ? $function : "") : nbsp(reset($functions))) . '<td>';
-		$input = $adminer->editInput($_GET["edit"], $field, " name='fields[$name]'$onchange", $value); // usage in call is without a table
+		$input = $adminer->editInput($_GET["edit"], $field, $attrs, $value); // usage in call is without a table
 		if (strlen($input)) {
 			echo $input;
 		} elseif ($field["type"] == "set") { //! 64 bits
@@ -449,13 +450,13 @@ function input($field, $value, $function) {
 				echo " <label><input type='checkbox' name='fields[$name][$i]' value='" . (1 << $i) . "'" . ($checked ? ' checked' : '') . "$onchange>" . h($val) . '</label>';
 			}
 		} elseif (ereg('binary|blob', $field["type"]) && ini_get("file_uploads")) {
-			echo "<input type='file' name='$name'$onchange>";
+			echo "<input type='file' name='fields-$name'$onchange>";
 		} elseif (ereg('text|blob', $field["type"])) {
-			echo "<textarea name='fields[$name]' cols='50' rows='12'$onchange>" . h($value) . '</textarea>';
+			echo "<textarea cols='50' rows='12'$attrs>" . h($value) . '</textarea>';
 		} else {
 			// int(3) is only a display hint
 			$maxlength = (!ereg('int', $field["type"]) && preg_match('~^([0-9]+)(,([0-9]+))?$~', $field["length"], $match) ? ($match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) : ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0));
-			echo "<input name='fields[$name]' value='" . h($value) . "'" . ($maxlength ? " maxlength='$maxlength'" : "") . (ereg('char', $field["type"]) && $field["length"] > 20 ? " size='40'" : "") . "$onchange>";
+			echo "<input value='" . h($value) . "'" . ($maxlength ? " maxlength='$maxlength'" : "") . (ereg('char', $field["type"]) && $field["length"] > 20 ? " size='40'" : "") . "$attrs>";
 		}
 	}
 }
@@ -478,7 +479,7 @@ function process_input($field) {
 	} elseif ($field["type"] == "set") {
 		return array_sum((array) $value);
 	} elseif (ereg('binary|blob', $field["type"]) && ini_get("file_uploads")) {
-		$file = get_file($idf);
+		$file = get_file("fields-$idf");
 		if (!is_string($file)) {
 			return false; //! report errors
 		}
