@@ -75,24 +75,6 @@ function checkbox($name, $value, $checked, $label = "", $onclick = "") {
 	return (strlen($label) ? "<label for='checkbox-$id'>$return" . h($label) . "</label>" : $return);
 }
 
-/** Generate HTML radio list
-* @param string
-* @param array
-* @param string
-* @param string true for no onchange, false for radio
-* @return string
-*/
-function html_select($name, $options, $value = "", $onchange = true) {
-	if ($onchange) {
-		return "<select name='" . h($name) . "'" . (is_string($onchange) ? " onchange=\"$onchange\"" : "") . ">" . optionlist($options, $value) . "</select>";
-	}
-	$return = "";
-	foreach ($options as $key => $val) {
-		$return .= "<label><input type='radio' name='" . h($name) . "' value='" . h($key) . "'" . ($key == $value ? " checked" : "") . ">" . h($val) . "</label>";
-	}
-	return $return;
-}
-
 /** Generate list of HTML options
 * @param array array of strings or arrays (creates optgroup)
 * @param mixed
@@ -111,6 +93,24 @@ function optionlist($options, $selected = null, $use_keys = false) {
 		if (is_array($v)) {
 			$return .= '</optgroup>';
 		}
+	}
+	return $return;
+}
+
+/** Generate HTML radio list
+* @param string
+* @param array
+* @param string
+* @param string true for no onchange, false for radio
+* @return string
+*/
+function html_select($name, $options, $value = "", $onchange = true) {
+	if ($onchange) {
+		return "<select name='" . h($name) . "'" . (is_string($onchange) ? " onchange=\"$onchange\"" : "") . ">" . optionlist($options, $value) . "</select>";
+	}
+	$return = "";
+	foreach ($options as $key => $val) {
+		$return .= "<label><input type='radio' name='" . h($name) . "' value='" . h($key) . "'" . ($key == $value ? " checked" : "") . ">" . h($val) . "</label>";
 	}
 	return $return;
 }
