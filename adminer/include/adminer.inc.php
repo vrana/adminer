@@ -135,7 +135,7 @@ class Adminer {
 	* @return string
 	*/
 	function selectVal($val, $link, $field) {
-		$return = ($field["type"] == "char" ? "<code>$val</code>" : $val);
+		$return = ($val != "<i>NULL</i>" && $field["type"] == "char" ? "<code>$val</code>" : $val);
 		if (ereg('blob|binary', $field["type"]) && !is_utf8($val)) {
 			$return = lang('%d byte(s)', strlen($val));
 		}
