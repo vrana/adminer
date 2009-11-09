@@ -482,7 +482,7 @@ function process_input($field) {
 		if (!is_string($file)) {
 			return false; //! report errors
 		}
-		return "_binary" . $connection->quote($file);
+		return $connection->quote($file);
 	} else {
 		return $adminer->processInput($field, $value, $function);
 	}
