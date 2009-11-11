@@ -175,7 +175,7 @@ ORDER BY ORDINAL_POSITION");
 	}
 	
 	function selectSearchPrint($where, $columns, $indexes) {
-		//! from-to, foreign keys
+		//! foreign keys
 		echo '<fieldset><legend>' . lang('Search') . "</legend><div>\n";
 		$i = 0;
 		foreach ((array) $_GET["where"] as $val) {
@@ -362,7 +362,7 @@ ORDER BY ORDINAL_POSITION");
 	}
 	
 	function editFunctions($field) {
-		$return = array("" => ($field["null"] || $field["auto_increment"] ? "" : "*"));
+		$return = array("" => ($field["null"] || $field["auto_increment"] || $field["full_type"] == "tinyint(1)" ? "" : "*"));
 		if (ereg('date|time', $field["type"])) {
 			$return[] = "now";
 		}
