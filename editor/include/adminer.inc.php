@@ -394,6 +394,9 @@ ORDER BY ORDINAL_POSITION");
 	
 	function editInput($table, $field, $attrs, $value) {
 		global $connection;
+		if ($field["type"] == "enum") {
+			return ($field["null"] ? "<input type='radio'$attrs value=''" . ($value || isset($_GET["select"]) ? "" : " checked") . ">" : "");
+		}
 		$foreignKeys = column_foreign_keys($table);
 		foreach ((array) $foreignKeys[$field["field"]] as $foreignKey) {
 			if (count($foreignKey["source"]) == 1) {

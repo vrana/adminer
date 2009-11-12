@@ -417,11 +417,8 @@ function input($field, $value, $function) {
 	echo "<td class='function'>";
 	$functions = (isset($_GET["select"]) ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
 	if ($field["type"] == "enum") {
-		echo "&nbsp;<td>" . ($functions["orig"] ? "<label><input type='radio' name='fields[$name]' value='-1' checked><em>$functions[orig]</em></label> " : "");
-		if (in_array("NULL", $functions)) {
-			echo "<label><input type='radio' name='fields[$name]' value=''" . (isset($value) || $functions["orig"] ? '' : ' checked') . "><em>NULL</em></label> ";
-		}
-		echo "<input type='radio' name='fields[$name]' value='0'" . ($value === 0 ? ' checked' : '') . '>';
+		echo nbsp($functions[""]) . "<td>" . ($functions["orig"] ? "<label><input type='radio' name='fields[$name]' value='-1' checked><em>$functions[orig]</em></label> " : "");
+		echo $adminer->editInput($_GET["edit"], $field, " name='fields[$name]'", $value);
 		preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
 		foreach ($matches[1] as $i => $val) {
 			$val = stripcslashes(str_replace("''", "'", $val));
