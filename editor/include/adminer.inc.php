@@ -379,13 +379,15 @@ ORDER BY ORDINAL_POSITION");
 			if (count($foreign_key["source"]) == 1) {
 				$id = idf_escape($foreign_key["target"][0]);
 				$name = $this->rowDescription($foreign_key["table"]);
-				if (strlen($name) && $connection->result($connection->query("SELECT COUNT(*) FROM " . idf_escape($foreign_key["table"]))) <= 1000) { // optionlist with more than 1000 options would be too big
-					$return = array("" => "");
-					$result = $connection->query("SELECT $id, $name FROM " . idf_escape($foreign_key["table"]) . " ORDER BY 2");
-					while ($row = $result->fetch_row()) {
-						$return[$row[0]] = $row[1];
+				if (strlen($name)) {
+					$result = $connection->query("SELECT $id, $name FROM " . idf_escape($foreign_key["table"]) . " ORDER BY 2 LIMIT 1001");
+					if ($result->num_rows < 1001) { // optionlist with more than 1000 options would be too big
+						$return = array("" => "");
+						while ($row = $result->fetch_row()) {
+							$return[$row[0]] = $row[1];
+						}
+						return "<select$attrs>" . optionlist($return, $value, true) . "</select>";
 					}
-					return "<select$attrs>" . optionlist($return, $value, true) . "</select>";
 				}
 			}
 		}
@@ -403,10 +405,11 @@ ORDER BY ORDINAL_POSITION");
 		if ($function == "now") {
 			return "$function()";
 		}
-		$return = $connection->quote(ereg('date|timestamp', $field["type"]) && preg_match('(^' . str_replace('\\$1', '(?P<p1>[0-9]*)', preg_replace('~(\\\\\\$([2-6]))~', '(?P<p\\2>[0-9]{1,2})', preg_quote(lang('$1-$3-$5')))) . '(.*))', $value, $match)
-			? (strlen($match["p1"]) ? $match["p1"] : (strlen($match["p2"]) ? ($match["p2"] < 70 ? 20 : 19) . $match["p2"] : gmdate("Y"))) . "-$match[p3]$match[p4]-$match[p5]$match[p6]" . end($match)
-			: $value
-		);
+		$return = $value;
+		if (ereg('date|timestamp', $field["type"]) && preg_match('(^' . str_replace('\\$1', '(?P<p1>[0-9]*)', preg_replace('~(\\\\\\$([2-6]))~', '(?P<p\\2>[0-9]{1,2})', preg_quote(lang('$1-$3-$5')))) . '(.*))', $value, $match)) {
+			$return = (strlen($match["p1"]) ? $match["p1"] : (strlen($match["p2"]) ? ($match["p2"] < 70 ? 20 : 19) . $match["p2"] : gmdate("Y"))) . "-$match[p3]$match[p4]-$match[p5]$match[p6]" . end($match);
+		}
+		$return = $connection->quote($value);
 		if (!ereg('varchar|text', $field["type"]) && $field["full_type"] != "tinyint(1)" && !strlen($value)) {
 			$return = "NULL";
 		}
