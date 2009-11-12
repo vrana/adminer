@@ -1,6 +1,7 @@
 <?php
 class Adminer {
 	var $operators = array("<=", ">=");
+	var $values = array();
 	
 	function name() {
 		return lang('Editor');
@@ -124,10 +125,12 @@ ORDER BY ORDINAL_POSITION");
 							$ids[$row[$key]] = exact_value($row[$key]);
 						}
 						// uses constant number of queries to get the descriptions, join would be complex, multiple queries would be slow
-						$descriptions = array();
-						$result = $connection->query("SELECT $id, $name FROM " . idf_escape($foreignKey["table"]) . " WHERE $id IN (" . implode(", ", $ids) . ")");
-						while ($row = $result->fetch_row()) {
-							$descriptions[$row[0]] = $row[1];
+						$descriptions = $this->values[$foreignKey["table"]];
+						if (!$descriptions) {
+							$result = $connection->query("SELECT $id, $name FROM " . idf_escape($foreignKey["table"]) . " WHERE $id IN (" . implode(", ", $ids) . ")");
+							while ($row = $result->fetch_row()) {
+								$descriptions[$row[0]] = $row[1];
+							}
 						}
 						// use the descriptions
 						foreach ($rows as $n => $row) {
@@ -177,6 +180,23 @@ ORDER BY ORDINAL_POSITION");
 	function selectSearchPrint($where, $columns, $indexes) {
 		//! foreign keys
 		echo '<fieldset><legend>' . lang('Search') . "</legend><div>\n";
+		$keys = array();
+		foreach ((array) $_GET["where"] as $key => $val) {
+			$keys[$val["col"]] = $key;
+		}
+		$i = -1;
+		foreach ($columns as $name => $desc) {
+			$key = $keys[$name];
+			$options = $this->editInput($_GET["select"], array("field" => $name), " name='where[$i][val]'", $_GET["where"][$key]["val"]);
+			if ($options) {
+				unset($columns[$name]);
+				if (isset($key)) {
+					unset($_GET["where"][$key]);
+				}
+				echo "<div>" . h($desc) . "<input type='hidden' name='where[$i][col]' value='" . h($name) . "'><input type='hidden' name='where[$i][op]' value='='>: $options</div>\n";
+				$i--;
+			}
+		}
 		$i = 0;
 		foreach ((array) $_GET["where"] as $val) {
 			if (strlen("$val[col]$val[val]")) {
@@ -246,9 +266,9 @@ ORDER BY ORDINAL_POSITION");
 	
 	function selectSearchProcess($fields, $indexes) {
 		$return = array();
-		foreach ((array) $_GET["where"] as $val) {
+		foreach ((array) $_GET["where"] as $key => $val) {
 			$col = $val["col"];
-			if (strlen("$col$val[val]")) {
+			if (strlen(($key < 0 ? "" : $col) . $val["val"])) {
 				$conds = array();
 				foreach ((strlen($col) ? array($col => $fields[$col]) : $fields) as $name => $field) {
 					if (strlen($col) || is_numeric($val["val"]) || !ereg('int|float|double|decimal', $field["type"])) {
@@ -374,18 +394,24 @@ ORDER BY ORDINAL_POSITION");
 	
 	function editInput($table, $field, $attrs, $value) {
 		global $connection;
-		$foreign_keys = column_foreign_keys($table);
-		foreach ((array) $foreign_keys[$field["field"]] as $foreign_key) {
-			if (count($foreign_key["source"]) == 1) {
-				$id = idf_escape($foreign_key["target"][0]);
-				$name = $this->rowDescription($foreign_key["table"]);
+		$foreignKeys = column_foreign_keys($table);
+		foreach ((array) $foreignKeys[$field["field"]] as $foreignKey) {
+			if (count($foreignKey["source"]) == 1) {
+				$id = idf_escape($foreignKey["target"][0]);
+				$name = $this->rowDescription($foreignKey["table"]);
 				if (strlen($name)) {
-					$result = $connection->query("SELECT $id, $name FROM " . idf_escape($foreign_key["table"]) . " ORDER BY 2 LIMIT 1001");
-					if ($result->num_rows < 1001) { // optionlist with more than 1000 options would be too big
-						$return = array("" => "");
-						while ($row = $result->fetch_row()) {
-							$return[$row[0]] = $row[1];
+					$return = &$this->values[$foreignKey["table"]];
+					if (!isset($return)) {
+						$result = $connection->query("SELECT $id, $name FROM " . idf_escape($foreignKey["table"]) . " ORDER BY 2 LIMIT 1001");
+						$return = array();
+						if ($result->num_rows < 1001) { // optionlist with more than 1000 options would be too big
+							$return[""] = "";
+							while ($row = $result->fetch_row()) {
+								$return[$row[0]] = $row[1];
+							}
 						}
+					}
+					if ($return) {
 						return "<select$attrs>" . optionlist($return, $value, true) . "</select>";
 					}
 				}
