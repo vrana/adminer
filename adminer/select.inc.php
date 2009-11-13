@@ -57,7 +57,7 @@ if ($_POST && !$error) {
 		if (!$_POST["import"]) { // edit
 			$result = true;
 			$affected = 0;
-			$command = ($_POST["delete"] ? ($_POST["all"] && !$where ? "TRUNCATE " : "DELETE FROM ") : ($_POST["clone"] ? "INSERT INTO " : "UPDATE ")) . idf_escape($TABLE);
+			$command = ($_POST["delete"] ? "DELETE FROM " : ($_POST["clone"] ? "INSERT INTO " : "UPDATE ")) . idf_escape($TABLE);
 			$set = array();
 			if (!$_POST["delete"]) {
 				foreach ($columns as $name => $val) { //! should check also for edit or insert privileges
