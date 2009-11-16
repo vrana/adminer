@@ -1,7 +1,7 @@
 <?php
 class Adminer {
 	var $operators = array("<=", ">=");
-	var $values = array();
+	var $values = array(); // protected
 	
 	function name() {
 		return lang('Editor');
@@ -187,14 +187,14 @@ ORDER BY ORDINAL_POSITION");
 		$i = -1;
 		foreach ($columns as $name => $desc) {
 			$key = $keys[$name];
-			$options = $this->editInput($_GET["select"], array("field" => $name), " name='where[$i][val]'", $_GET["where"][$key]["val"]);
+			$options = $this->foreignKeyOptions($_GET["select"], $name);
 			if ($options) {
+				echo "<div>" . h($desc) . "<input type='hidden' name='where[$i][col]' value='" . h($name) . "'><input type='hidden' name='where[$i][op]' value='='>: <select name='where[$i][val]'>" . optionlist($options, $_GET["where"][$key]["val"], true) . "</select></div>\n";
+				$i--;
 				unset($columns[$name]);
 				if (isset($key)) {
 					unset($_GET["where"][$key]);
 				}
-				echo "<div>" . h($desc) . "<input type='hidden' name='where[$i][col]' value='" . h($name) . "'><input type='hidden' name='where[$i][op]' value='='>: $options</div>\n";
-				$i--;
 			}
 		}
 		$i = 0;
@@ -393,32 +393,12 @@ ORDER BY ORDINAL_POSITION");
 	}
 	
 	function editInput($table, $field, $attrs, $value) {
-		global $connection;
 		if ($field["type"] == "enum") {
 			return ($field["null"] ? "<input type='radio'$attrs value=''" . ($value || isset($_GET["select"]) ? "" : " checked") . ">" : "");
 		}
-		$foreignKeys = column_foreign_keys($table);
-		foreach ((array) $foreignKeys[$field["field"]] as $foreignKey) {
-			if (count($foreignKey["source"]) == 1) {
-				$id = idf_escape($foreignKey["target"][0]);
-				$name = $this->rowDescription($foreignKey["table"]);
-				if (strlen($name)) {
-					$return = &$this->values[$foreignKey["table"]];
-					if (!isset($return)) {
-						$result = $connection->query("SELECT $id, $name FROM " . idf_escape($foreignKey["table"]) . " ORDER BY 2 LIMIT 1001");
-						$return = array();
-						if ($result->num_rows < 1001) { // optionlist with more than 1000 options would be too big
-							$return[""] = "";
-							while ($row = $result->fetch_row()) {
-								$return[$row[0]] = $row[1];
-							}
-						}
-					}
-					if ($return) {
-						return "<select$attrs>" . optionlist($return, $value, true) . "</select>";
-					}
-				}
-			}
+		$options = $this->foreignKeyOptions($table, $field["field"]);
+		if ($options) {
+			return "<select$attrs>" . optionlist($options, $value, true) . "</select>";
 		}
 		if ($field["full_type"] == "tinyint(1)") { // bool
 			return '<input type="checkbox" value="' . h($value ? $value : 1) . '"' . ($value ? ' checked' : '') . "$attrs>";
@@ -438,7 +418,7 @@ ORDER BY ORDINAL_POSITION");
 		if (ereg('date|timestamp', $field["type"]) && preg_match('(^' . str_replace('\\$1', '(?P<p1>[0-9]*)', preg_replace('~(\\\\\\$([2-6]))~', '(?P<p\\2>[0-9]{1,2})', preg_quote(lang('$1-$3-$5')))) . '(.*))', $value, $match)) {
 			$return = (strlen($match["p1"]) ? $match["p1"] : (strlen($match["p2"]) ? ($match["p2"] < 70 ? 20 : 19) . $match["p2"] : gmdate("Y"))) . "-$match[p3]$match[p4]-$match[p5]$match[p6]" . end($match);
 		}
-		$return = $connection->quote($value);
+		$return = $connection->quote($return);
 		if (!ereg('varchar|text', $field["type"]) && $field["full_type"] != "tinyint(1)" && !strlen($value)) {
 			$return = "NULL";
 		}
@@ -488,6 +468,31 @@ ORDER BY ORDINAL_POSITION");
 			$name = $this->tableName($row);
 			if (isset($row["Engine"]) && strlen($name)) { // ignore views and tables without name
 				echo "<a href='" . h(ME) . 'select=' . urlencode($row["Name"]) . "'>$name</a><br>\n";
+			}
+		}
+	}
+	
+	function foreignKeyOptions($table, $column) { // protected
+		global $connection;
+		$foreignKeys = column_foreign_keys($table);
+		foreach ((array) $foreignKeys[$column] as $foreignKey) {
+			if (count($foreignKey["source"]) == 1) {
+				$id = idf_escape($foreignKey["target"][0]);
+				$name = $this->rowDescription($foreignKey["table"]);
+				if (strlen($name)) {
+					$return = &$this->values[$foreignKey["table"]];
+					if (!isset($return)) {
+						$result = $connection->query("SELECT $id, $name FROM " . idf_escape($foreignKey["table"]) . " ORDER BY 2 LIMIT 1001");
+						$return = array();
+						if ($result->num_rows < 1001) { // optionlist with more than 1000 options would be too big
+							$return[""] = "";
+							while ($row = $result->fetch_row()) {
+								$return[$row[0]] = $row[1];
+							}
+						}
+					}
+					return $return;
+				}
 			}
 		}
 	}
