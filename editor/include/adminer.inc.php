@@ -127,10 +127,7 @@ ORDER BY ORDINAL_POSITION");
 						// uses constant number of queries to get the descriptions, join would be complex, multiple queries would be slow
 						$descriptions = $this->values[$foreignKey["table"]];
 						if (!$descriptions) {
-							$result = $connection->query("SELECT $id, $name FROM " . idf_escape($foreignKey["table"]) . " WHERE $id IN (" . implode(", ", $ids) . ")");
-							while ($row = $result->fetch_row()) {
-								$descriptions[$row[0]] = $row[1];
-							}
+							$descriptions = get_key_vals("SELECT $id, $name FROM " . idf_escape($foreignKey["table"]) . " WHERE $id IN (" . implode(", ", $ids) . ")");
 						}
 						// use the descriptions
 						foreach ($rows as $n => $row) {
@@ -482,13 +479,9 @@ ORDER BY ORDINAL_POSITION");
 				if (strlen($name)) {
 					$return = &$this->values[$foreignKey["table"]];
 					if (!isset($return)) {
-						$result = $connection->query("SELECT $id, $name FROM " . idf_escape($foreignKey["table"]) . " ORDER BY 2 LIMIT 1001");
-						$return = array();
-						if ($result->num_rows < 1001) { // optionlist with more than 1000 options would be too big
-							$return[""] = "";
-							while ($row = $result->fetch_row()) {
-								$return[$row[0]] = $row[1];
-							}
+						$return = array("" => "") + get_key_vals("SELECT $id, $name FROM " . idf_escape($foreignKey["table"]) . " ORDER BY 2 LIMIT 1001");
+						if (count($return) > 1001) {
+							$return = array();
 						}
 					}
 					return $return;
