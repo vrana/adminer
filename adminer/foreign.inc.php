@@ -43,6 +43,7 @@ $target = ($TABLE === $row["table"] ? $source : array_keys(fields($row["table"])
 
 <form action="" method="post">
 <p>
+<?php if (!strlen($row["db"])) { ?>
 <?php echo lang('Target table'); ?>:
 <?php echo html_select("table", array_keys(table_status_referencable()), $row["table"], "this.form['change-js'].value = '1'; this.form.submit();"); ?>
 <input type="hidden" name="change-js" value="">
@@ -64,8 +65,9 @@ foreach ($row["source"] as $key => $val) {
 <?php echo lang('ON DELETE'); ?>: <?php echo html_select("on_delete", array(-1 => "") + $on_actions, $row["on_delete"]); ?>
  <?php echo lang('ON UPDATE'); ?>: <?php echo html_select("on_update", array(-1 => "") + $on_actions, $row["on_update"]); ?>
 <p>
-<input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Save'); ?>">
-<?php if (strlen($_GET["name"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
 <noscript><p><input type="submit" name="add" value="<?php echo lang('Add column'); ?>"></noscript>
+<?php } ?>
+<?php if (strlen($_GET["name"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
+<input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>
