@@ -159,6 +159,8 @@ ORDER BY ORDINAL_POSITION");
 		}
 		if (!$link && $field["full_type"] != "tinyint(1)" && ereg('int|float|double|decimal', $field["type"])) {
 			$return = "<div class='number'>$return</div>"; // Firefox doesn't support <colgroup>
+		} elseif (ereg('date', $field["type"])) {
+			$return = "<div class='datetime'>$return</div>";
 		}
 		return $return;
 	}
