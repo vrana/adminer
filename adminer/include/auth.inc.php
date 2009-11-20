@@ -1,10 +1,9 @@
 <?php
-$ignore = array("server", "username", "password");
 if (isset($_POST["server"])) {
 	session_regenerate_id(); // defense against session fixation
 	$_SESSION["usernames"][$_POST["server"]] = $_POST["username"];
 	$_SESSION["passwords"][$_POST["server"]] = $_POST["password"];
-	if (count($_POST) == count($ignore)) {
+	if (count($_POST) == 3) { // 3 - count($ignore)
 		$location = ((string) $_GET["server"] === $_POST["server"] ? remove_from_uri() : preg_replace('~^([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . (strlen($_POST["server"]) ? '?server=' . urlencode($_POST["server"]) : ''));
 		if (!isset($_COOKIE[session_name()])) {
 			$location .= (strpos($location, "?") === false ? "?" : "&") . SID;
@@ -30,7 +29,7 @@ if (isset($_POST["server"])) {
 }
 
 function auth_error($exception = null) {
-	global $ignore, $connection, $adminer;
+	global $connection, $adminer;
 	$session_name = session_name();
 	$username = $_SESSION["usernames"][$_GET["server"]];
 	unset($_SESSION["usernames"][$_GET["server"]]);
@@ -41,7 +40,7 @@ function auth_error($exception = null) {
 	echo "<form action='' method='post'>\n";
 	$adminer->loginForm($username);
 	echo "<p>\n";
-	hidden_fields($_POST, $ignore); // expired session
+	hidden_fields($_POST, array("server", "username", "password")); // expired session
 	foreach ($_FILES as $key => $val) {
 		echo '<input type="hidden" name="files[' . h($key) . ']" value="' . ($val["error"] ? $val["error"] : base64_encode(file_get_contents($val["tmp_name"]))) . '">';
 	}
