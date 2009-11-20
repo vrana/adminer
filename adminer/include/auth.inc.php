@@ -48,13 +48,6 @@ function auth_error($exception = null) {
 	page_footer("auth");
 }
 
-if (!$_SESSION["tokens"][$_GET["server"]]) {
-	$_SESSION["tokens"][$_GET["server"]] = rand(1, 1e6); // defense against cross-site request forgery
-	if ($_POST["token"]) {
-		$_POST["token"] = $_SESSION["tokens"][$_GET["server"]];
-	}
-}
-
 $username = &$_SESSION["usernames"][$_GET["server"]];
 if (!isset($username)) {
 	$username = $_GET["username"]; // default username can be passed in URL
@@ -65,3 +58,7 @@ if (is_string($connection) || !$adminer->login($username, $_SESSION["passwords"]
 	exit;
 }
 unset($username);
+
+if (!$_SESSION["tokens"][$_GET["server"]]) {
+	$_SESSION["tokens"][$_GET["server"]] = (isset($_POST["server"]) && $_POST["token"] ? $_POST["token"] : rand(1, 1e6)); // defense against cross-site request forgery
+}
