@@ -60,5 +60,5 @@ if (is_string($connection) || !$adminer->login($username, $_SESSION["passwords"]
 unset($username);
 
 if (!$_SESSION["tokens"][$_GET["server"]]) {
-	$_SESSION["tokens"][$_GET["server"]] = (isset($_POST["server"]) && $_POST["token"] ? $_POST["token"] : rand(1, 1e6)); // defense against cross-site request forgery
+	$_SESSION["tokens"][$_GET["server"]] = rand(1, 1e6); // defense against cross-site request forgery
 }
