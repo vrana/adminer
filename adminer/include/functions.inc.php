@@ -296,22 +296,12 @@ function pagination($page) {
 	return " " . ($page == $_GET["page"] ? $page + 1 : '<a href="' . h(remove_from_uri("page") . ($page ? "&page=$page" : "")) . '">' . ($page + 1) . "</a>");
 }
 
-/** Get file contents from $_FILES or $_POST["files"]
+/** Get file contents from $_FILES
 * @param string
 * @param bool
-* @return string
+* @return mixed int for error, string otherwise
 */
 function get_file($key, $decompress = false) {
-	// returns int for error, string otherwise
-	$file = $_POST["files"][$key];
-	if (isset($file)) {
-		// get the file from hidden field if the user was logged out
-		$length = strlen($file);
-		if ($length && $length < 4) {
-			return intval($file);
-		}
-		return base64_decode($file);
-	}
 	$file = $_FILES[$key];
 	if (!$file || $file["error"]) {
 		return $file["error"];

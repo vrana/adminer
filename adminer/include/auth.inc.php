@@ -41,9 +41,6 @@ function auth_error($exception = null) {
 	$adminer->loginForm($username);
 	echo "<p>\n";
 	hidden_fields($_POST, array("server", "username", "password")); // expired session
-	foreach ($_FILES as $key => $val) {
-		echo '<input type="hidden" name="files[' . h($key) . ']" value="' . ($val["error"] ? $val["error"] : base64_encode(file_get_contents($val["tmp_name"]))) . '">';
-	}
 	echo "<input type='submit' value='" . lang('Login') . "'>\n</form>\n";
 	page_footer("auth");
 }
