@@ -5,10 +5,9 @@ if (!$fields) {
 	$error = h($connection->error);
 }
 $table_status = ($fields ? table_status($TABLE) : array());
-$is_view = !isset($table_status["Rows"]);
 
-page_header(($fields && $is_view ? lang('View') : lang('Table')) . ": " . h($TABLE), $error);
-$adminer->selectLinks($table_status, $is_view ? null : "");
+page_header(($fields && !isset($table_status["Rows"]) ? lang('View') : lang('Table')) . ": " . h($TABLE), $error);
+$adminer->selectLinks($table_status);
 
 if ($fields) {
 	echo "<table cellspacing='0'>\n";

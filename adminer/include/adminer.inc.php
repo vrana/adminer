@@ -68,20 +68,22 @@ class Adminer {
 	
 	/** Print links after select heading
 	* @param array result of SHOW TABLE STATUS
-	* @param strin new item options, NULL for no new item
+	* @param string new item options, NULL for no new item
 	* @return null
 	*/
 	function selectLinks($tableStatus, $set = "") {
-		$TABLE = $tableStatus["Name"];
-		echo '<p class="tabs"><a href="' . h(ME) . 'select=' . urlencode($TABLE) . '">' . lang('Select table') . '</a>';
-		echo ' <a href="' . h(ME) . 'table=' . urlencode($TABLE) . '">' . lang('Table structure') . '</a>';
+		echo '<p class="tabs">';
+		$links = array("select" => lang('Select table'), "table" => lang('Table structure'));
 		if (isset($tableStatus["Rows"])) {
-			echo ' <a href="' . h(ME) . 'create=' . urlencode($TABLE) . '">' . lang('Alter table') . '</a>';
+			$links["create"] = lang('Alter table');
 		} else {
-			echo ' <a href="' . h(ME) . 'view=' . urlencode($TABLE) . '">' . lang('Alter view') . '</a>';
+			$links["view"] = lang('Alter view');
 		}
 		if (isset($set)) {
-			echo ' <a href="' . h(ME . 'edit=' . urlencode($TABLE) . $set) . '">' . lang('New item') . '</a>';
+			$links["edit"] = lang('New item');
+		}
+		foreach ($links as $key => $val) {
+			echo " <a href='" . h(ME) . "$key=" . urlencode($tableStatus["Name"]) . ($key == "edit" ? $set : "") . "'>" . (isset($_GET[$key]) ? "<b>$val</b>" : $val) . "</a>";
 		}
 		echo "\n";
 	}
