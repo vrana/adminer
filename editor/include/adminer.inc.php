@@ -466,7 +466,7 @@ ORDER BY ORDINAL_POSITION");
 		foreach ($tables as $row) {
 			$name = $this->tableName($row);
 			if (isset($row["Engine"]) && strlen($name)) { // ignore views and tables without name
-				echo "<a href='" . h(ME) . 'select=' . urlencode($row["Name"]) . "'>$name</a><br>\n";
+				echo "<a href='" . h(ME) . 'select=' . urlencode($row["Name"]) . "'>" . bold($name, $_GET["select"] == $row["Name"]) . "</a><br>\n";
 			}
 		}
 	}
