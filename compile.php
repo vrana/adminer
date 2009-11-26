@@ -191,7 +191,7 @@ foreach (array("adminer", "editor") as $project) {
 	$file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
 	$file = php_shrink($file);
 
-	$filename = $project . ($_SESSION["lang"] ? "-$_SESSION[lang]" : "") . ".php";
+	$filename = $project . ($_SESSION["lang"] ? "-$_SESSION[lang]" : "") . ".php"; // "$project-$VERSION"
 	fwrite(fopen($filename, "w"), $file); // file_put_contents() since PHP 5
 	echo "$filename created.\n";
 }

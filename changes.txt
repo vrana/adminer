@@ -1,4 +1,4 @@
-Adminer 2.2.1-dev:
+Adminer 2.2.1 (released 2009-11-26):
 Highlight current links
 Improve concurrency
 Move number of tables to DB info (performance)
