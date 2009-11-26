@@ -359,10 +359,11 @@ ORDER BY ORDINAL_POSITION");
 				$headers .= $eol . "MIME-Version: 1.0$eol" . "X-Mailer: Adminer Editor"
 					. ($_POST["email_from"] ? $eol . "From: " . str_replace("\n", "", $_POST["email_from"]) : "") //! should escape display name
 				;
+				$fields = fields($_GET["select"]);
 				foreach ($this->rowDescriptions($rows, $foreignKeys) as $row) {
 					$replace = array();
 					foreach ($matches[1] as $val) {
-						$replace['{$' . "$val}"] = $row[$val]; //! allow literal {$name}
+						$replace['{$' . "$val}"] = $this->editVal($row[$val], $fields[$val]); //! allow literal {$name}
 					}
 					$email = $row[$_POST["email_field"]];
 					if (is_email($email) && mail($email, email_header(strtr($subject, $replace)), $beginning . strtr($message, $replace) . $attachments, $headers)) {
