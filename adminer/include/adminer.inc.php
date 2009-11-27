@@ -73,7 +73,7 @@ class Adminer {
 	*/
 	function selectLinks($tableStatus, $set = "") {
 		echo '<p class="tabs">';
-		$links = array("select" => lang('Select table'), "table" => lang('Table structure'));
+		$links = array("select" => lang('Select data'), "table" => lang('Show structure'));
 		if (isset($tableStatus["Rows"])) {
 			$links["create"] = lang('Alter table');
 		} else {
