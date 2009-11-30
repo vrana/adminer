@@ -39,7 +39,14 @@ if ($_POST && !$error) {
 		dump_headers($TABLE);
 		dump_table($TABLE, "");
 		if ($_POST["format"] != "sql") { // Editor doesn't send format
-			dump_csv($select ? $select : array_keys($fields));
+			$row = array_keys($fields);
+			if ($select) {
+				$row = array();
+				foreach ($select as $val) {
+					$row[] = (ereg('^`(.*)`$', $val, $match) ? idf_unescape($match[1]) : $val); //! columns looking like functions
+				}
+			}
+			dump_csv($row);
 		}
 		if (!is_array($_POST["check"]) || $primary === array()) {
 			dump_data($TABLE, "INSERT", "SELECT $from" . (is_array($_POST["check"]) ? ($where ? " AND " : " WHERE ") . "($where_check)" : "") . $group_by);
