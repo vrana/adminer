@@ -234,9 +234,12 @@ function table_status($name = "") {
 			// ignore internal comment, unnecessary since MySQL 5.1.21
 			$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["Comment"]);
 		}
+		if (strlen($name)) {
+			return $row;
+		}
 		$return[$row["Name"]] = $row;
 	}
-	return (strlen($name) ? $return[$name] : $return);
+	return $return;
 }
 
 /** Get status of referencable tables
