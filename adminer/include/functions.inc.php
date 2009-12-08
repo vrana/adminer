@@ -284,8 +284,7 @@ function queries_redirect($location, $message, $redirect) {
 * @return string
 */
 function remove_from_uri($param = "") {
-	$param = "($param|" . session_name() . ")";
-	return substr(preg_replace("~(?<=[?&])$param=[^&]*&~", '', "$_SERVER[REQUEST_URI]&"), 0, -1);
+	return substr(preg_replace("~(?<=[?&])($param" . (SID ? "" : "|" . session_name()) . ")=[^&]*&~", '', "$_SERVER[REQUEST_URI]&"), 0, -1);
 }
 
 /** Generate page number for pagination
