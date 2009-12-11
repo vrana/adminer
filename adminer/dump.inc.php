@@ -42,9 +42,11 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 				}
 				if ($_POST["events"]) {
 					$result = $connection->query("SHOW EVENTS");
-					while ($row = $result->fetch_assoc()) {
-						$out .= ($style != 'DROP+CREATE' ? "DROP EVENT IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
-						. $connection->result($connection->query("SHOW CREATE EVENT " . idf_escape($row["Name"])), 3) . ";;\n\n";
+					if ($result) {
+						while ($row = $result->fetch_assoc()) {
+							$out .= ($style != 'DROP+CREATE' ? "DROP EVENT IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
+							. $connection->result($connection->query("SHOW CREATE EVENT " . idf_escape($row["Name"])), 3) . ";;\n\n";
+						}
 					}
 				}
 				if ($out) {
