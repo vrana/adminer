@@ -37,6 +37,7 @@ $translations = array(
 	'No tables.' => 'Tabeleid ei leitud.',
 	'select' => 'kuva',
 	'Create new table' => 'Loo uus tabel',
+	'Item has been deleted.' => 'Kustutamine õnnestus.',
 	'Item has been updated.' => 'Uuendamine õnnestus.',
 	'Item has been inserted.' => 'Lisamine õnnestus.',
 	'Edit' => 'Muuda',

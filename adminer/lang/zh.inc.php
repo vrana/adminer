@@ -37,6 +37,7 @@ $translations = array(
 	'No tables.' => '没有表。',
 	'select' => '选择',
 	'Create new table' => '创建新表',
+	'Item has been deleted.' => '已删除项目。',
 	'Item has been updated.' => '已更新项目。',
 	'Item has been inserted.' => '已插入项目。',
 	'Edit' => '编辑',

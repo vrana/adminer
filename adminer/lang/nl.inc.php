@@ -37,6 +37,7 @@ $translations = array(
 	'No tables.' => 'Geen tabellen.',
 	'select' => 'kies',
 	'Create new table' => 'Nieuwe tabel',
+	'Item has been deleted.' => 'Item verwijderd.',
 	'Item has been updated.' => 'Item aangepast.',
 	'Item has been inserted.' => 'Item toegevoegd.',
 	'Edit' => 'Bewerk',

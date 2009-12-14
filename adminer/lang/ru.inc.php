@@ -37,6 +37,7 @@ $translations = array(
 	'No tables.' => 'В базе данных нет таблиц.',
 	'select' => 'выбрать',
 	'Create new table' => 'Создать новую таблицу',
+	'Item has been deleted.' => 'Запись удалена.',
 	'Item has been updated.' => 'Запись обновлена.',
 	'Item has been inserted.' => 'Запись вставлена.',
 	'Edit' => 'Редактировать',

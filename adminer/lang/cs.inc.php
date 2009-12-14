@@ -37,6 +37,7 @@ $translations = array(
 	'No tables.' => 'Žádné tabulky.',
 	'select' => 'vypsat',
 	'Create new table' => 'Vytvořit novou tabulku',
+	'Item has been deleted.' => 'Položka byla smazána.',
 	'Item has been updated.' => 'Položka byla aktualizována.',
 	'Item has been inserted.' => 'Položka byla vložena.',
 	'Edit' => 'Upravit',
