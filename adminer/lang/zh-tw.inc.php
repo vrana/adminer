@@ -225,4 +225,5 @@ $translations = array(
 	'%d e-mail(s) have been sent.' => '已發送 %d 封郵件。',
 	'Webserver file %s' => '網頁伺服器檔案 %s',
 	'File does not exist.' => '檔案不存在',
+	'Item has been deleted.' => '該項目已被刪除',
 );

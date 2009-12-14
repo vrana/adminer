@@ -74,12 +74,12 @@ if (!$error && $_POST) {
 								$result = $connection->store_result();
 								if (is_object($result)) {
 									select($result, $connection2);
-									if ($connection2 && preg_match("~^$space*SELECT$space+~isU", $q)) {
+									if ($connection2 && preg_match("~^($space|\\()*SELECT\\b~isU", $q)) {
 										$id = "explain-$explain";
 										echo "<p>" . ($result->num_rows ? lang('%d row(s)', $result->num_rows) . ", " : "");
 										echo "<a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>\n";
 										echo "<div id='$id' class='hidden'>\n";
-										select($connection2->query("EXPLAIN $q"), $connection2);
+										select($connection2->query("EXPLAIN $q"));
 										echo "</div>\n";
 										$explain++;
 									}
