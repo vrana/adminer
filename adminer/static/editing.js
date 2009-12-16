@@ -1,12 +1,14 @@
 // Adminer specific functions
 
-function body_load() {
+function body_load(version) {
 	var jush_root = '../externals/jush/';
 	var script = document.createElement('script');
 	script.src = jush_root + 'jush.js';
 	script.onload = function () {
 		if (window.jush) { // IE runs in case of an error too
 			jush.create_links = ' target="_blank"';
+			jush.urls.sql[0] = 'http://dev.mysql.com/doc/refman/' + version + '/en/$key';
+			jush.urls.sql[0] = jush.urls.sql[0];
 			jush.style(jush_root + 'jush.css');
 			jush.highlight_tag('pre', 0);
 			jush.highlight_tag('code');

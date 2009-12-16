@@ -1,6 +1,6 @@
 <?php
 function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
-	global $LANG, $VERSION, $adminer;
+	global $LANG, $VERSION, $adminer, $connection;
 	header("Content-Type: text/html; charset=utf-8");
 	header("X-Frame-Options: deny"); // ClickJacking protection in IE8, Safari 4, Chrome 2, NoScript plugin
 	$title_all = $title . (strlen($title2) ? ": " . h($title2) : "");
@@ -17,7 +17,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <link rel="stylesheet" type="text/css" href="adminer.css">
 <?php } ?>
 
-<body onload="body_load();<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verify_version();"); ?>">
+<body onload="body_load(<?php echo substr($connection->server_info, 0, 3); ?>);<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verify_version();"); ?>">
 <script type="text/javascript" src="../adminer/static/functions.js"></script>
 <script type="text/javascript" src="static/editing.js"></script>
 
