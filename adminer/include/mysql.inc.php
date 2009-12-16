@@ -68,6 +68,7 @@ if (extension_loaded("mysqli")) {
 				return false;
 			} elseif ($result === true) {
 				$this->affected_rows = mysql_affected_rows($this->_link);
+				$this->info = mysql_info($this->_link);
 				return true;
 			}
 			return new Min_Result($result);

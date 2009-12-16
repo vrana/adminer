@@ -87,7 +87,7 @@ if (!$error && $_POST) {
 									if (preg_match("~^$space*$alter_database", $query)) {
 										$databases = null; // clear cache
 									}
-									echo "<p class='message'>" . lang('Query executed OK, %d row(s) affected.', $connection->affected_rows) . "\n";
+									echo "<p class='message'>" . lang('Query executed OK, %d row(s) affected.', $connection->affected_rows) . "<br>" . h($connection->info) . "\n";
 								}
 								unset($result); // free resultset
 							} while ($connection->next_result());

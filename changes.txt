@@ -1,5 +1,6 @@
 Adminer 2.2.2-dev:
 Add Delete button to Edit page (regression from 2.0.0)
+Simplify SQL syntax error message
 
 Adminer 2.2.1 (released 2009-11-26):
 Highlight current links
