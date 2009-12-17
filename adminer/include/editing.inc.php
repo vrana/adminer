@@ -297,7 +297,7 @@ function routine($name, $type) {
 	foreach ($matches as $param) {
 		$name = str_replace("``", "`", $param[2]) . $param[3];
 		$data_type = strtolower($param[4]);
-		$fields[$name] = array(
+		$fields[] = array(
 			"field" => $name,
 			"type" => (isset($aliases[$data_type]) ? $aliases[$data_type] : $data_type),
 			"length" => preg_replace_callback("~$enum_length~s", 'normalize_enum', $param[5]),
