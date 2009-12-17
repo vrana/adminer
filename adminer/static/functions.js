@@ -1,11 +1,18 @@
+// to hide elements displayed by JavaScript
 document.body.className = 'js';
 
+/** Toggle visibility
+* @param string
+* @return boolean
+*/
 function toggle(id) {
 	var el = document.getElementById(id);
 	el.className = (el.className == 'hidden' ? '' : 'hidden');
 	return true;
 }
 
+/** Verify current Adminer version
+*/
 function verifyVersion() {
 	document.cookie = 'adminer_version=0';
 	var script = document.createElement('script');
@@ -13,6 +20,10 @@ function verifyVersion() {
 	document.body.appendChild(script);
 }
 
+/** Check all elements matching given name
+* @param HTMLInputElement
+* @param RegExp
+*/
 function formCheck(el, name) {
 	var elems = el.form.elements;
 	for (var i=0; i < elems.length; i++) {
@@ -22,10 +33,18 @@ function formCheck(el, name) {
 	}
 }
 
+/** Uncheck single element
+* @param string
+*/
 function formUncheck(id) {
 	document.getElementById(id).checked = false;
 }
 
+/** Get number of checked elements matching given name
+* @param HTMLInputElement
+* @param RegExp
+* @return number
+*/
 function formChecked(el, name) {
 	var checked = 0;
 	var elems = el.form.elements;
@@ -37,6 +56,9 @@ function formChecked(el, name) {
 	return checked;
 }
 
+/** Select clicked row
+* @param MouseEvent
+*/
 function tableClick(event) {
 	var el = event.target || event.srcElement;
 	while (!/^tr$/i.test(el.tagName)) {
@@ -52,6 +74,9 @@ function tableClick(event) {
 
 
 
+/** Add row in select fieldset
+* @param HTMLSelectElement
+*/
 function selectAddRow(field) {
 	var row = field.parentNode.cloneNode(true);
 	var selects = row.getElementsByTagName('select');

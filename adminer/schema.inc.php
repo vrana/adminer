@@ -52,7 +52,7 @@ foreach (table_status() as $row) {
 ?>
 <div id="schema" style="height: <?php echo $top; ?>em;">
 <script type="text/javascript">
-table_pos = {<?php echo implode(",", $table_pos_js) . "\n"; ?>};
+tablePos = {<?php echo implode(",", $table_pos_js) . "\n"; ?>};
 em = document.getElementById('schema').offsetHeight / <?php echo $top; ?>;
 document.onmousemove = schemaMousemove;
 document.onmouseup = schemaMouseup;

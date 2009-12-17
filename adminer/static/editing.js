@@ -1,5 +1,8 @@
 // Adminer specific functions
 
+/** Load syntax highlighting
+* @param string first three characters of MySQL version
+*/
 function bodyLoad(version) {
 	var jushRoot = '../externals/jush/';
 	var script = document.createElement('script');
@@ -24,10 +27,19 @@ function bodyLoad(version) {
 
 
 
+/** Get value of select
+* @param HTMLSelectElement
+* @return string
+*/
 function selectValue(select) {
 	return select.value || select.options[select.selectedIndex].text;
 }
 
+/** Get value of dynamically created form field
+* @param HTMLFormElement
+* @param string
+* @return HTMLElement
+*/
 function formField(form, name) {
 	for (var i=0; i < form.length; i++) {
 		if (form[i].name == name) {
@@ -36,6 +48,10 @@ function formField(form, name) {
 	}
 }
 
+/** Try to change input type to password or to text
+* @param HTMLInputElement
+* @param boolean
+*/
 function typePassword(el, disable) {
 	try {
 		el.type = (disable ? 'text' : 'password');
@@ -47,14 +63,25 @@ function typePassword(el, disable) {
 
 var added = '.', rowCount;
 
+/** Escape string to use in regular expression
+* @param string
+* @return string
+*/
 function reEscape(s) {
 	return s.replace(/[\[\]\\^$*+?.(){|}]/, '\\$&');
 }
 
+/** Escape string to use as identifier
+* @param string
+* @return string
+*/
 function idfEscape(s) {
 	return '`' + s.replace(/`/, '``') + '`';
 }
 
+/** Detect foreign key
+* @param HTMLInputElement
+*/
 function editingNameChange(field) {
 	var name = field.name.substr(0, field.name.length - 7);
 	var type = formField(field.form, name + '[type]');
@@ -94,6 +121,12 @@ function editingNameChange(field) {
 	}
 }
 
+/** Add table row for next field
+* @param HTMLInputElement
+* @param boolean
+* @param boolean
+* @return boolean
+*/
 function editingAddRow(button, allowed, focus) {
 	if (allowed && rowCount >= allowed) {
 		return false;
@@ -139,6 +172,10 @@ function editingAddRow(button, allowed, focus) {
 	return true;
 }
 
+/** Remove table row for field
+* @param HTMLInputElement
+* @return boolean
+*/
 function editingRemoveRow(button) {
 	var field = formField(button.form, button.name.replace(/drop_col(.+)/, 'fields$1[field]'));
 	field.parentNode.removeChild(field);
@@ -147,6 +184,10 @@ function editingRemoveRow(button) {
 }
 
 var lastType = '';
+
+/** Clear length and hide collation or unsigned
+* @param HTMLSelectElement
+*/
 function editingTypeChange(type) {
 	var name = type.name.substr(0, type.name.length - 6);
 	var text = selectValue(type);
@@ -167,6 +208,9 @@ function editingTypeChange(type) {
 	}
 }
 
+/** Edit enum or set
+* @param HTMLInputElement
+*/
 function editingLengthFocus(field) {
 	var td = field.parentNode;
 	if (/(enum|set)$/.test(selectValue(td.previousSibling.firstChild))) {
@@ -180,6 +224,9 @@ function editingLengthFocus(field) {
 	}
 }
 
+/** Finish editing of enum or set
+* @param HTMLTextAreaElement
+*/
 function editingLengthBlur(edit) {
 	var field = edit.parentNode.firstChild;
 	var val = edit.value;
@@ -188,6 +235,10 @@ function editingLengthBlur(edit) {
 	edit.style.display = 'none';
 }
 
+/** Show or hide selected table column
+* @param boolean
+* @param number
+*/
 function columnShow(checked, column) {
 	var trs = document.getElementById('edit-fields').getElementsByTagName('tr');
 	for (var i=0; i < trs.length; i++) {
@@ -195,12 +246,18 @@ function columnShow(checked, column) {
 	}
 }
 
+/** Display partition options
+* @param HTMLSelectElement
+*/
 function partitionByChange(el) {
 	var partitionTable = /RANGE|LIST/.test(selectValue(el));
 	el.form['partitions'].className = (partitionTable || !el.selectedIndex ? 'hidden' : '');
 	document.getElementById('partition-table').className = (partitionTable ? '' : 'hidden');
 }
 
+/** Add next partition row
+* @param HTMLInputElement
+*/
 function partitionNameChange(el) {
 	var row = el.parentNode.parentNode.cloneNode(true);
 	row.firstChild.firstChild.value = '';
@@ -210,6 +267,9 @@ function partitionNameChange(el) {
 
 
 
+/** Add row for foreign key
+* @param HTMLSelectElement
+*/
 function foreignAddRow(field) {
 	var row = field.parentNode.parentNode.cloneNode(true);
 	var selects = row.getElementsByTagName('select');
@@ -223,6 +283,9 @@ function foreignAddRow(field) {
 
 
 
+/** Add row for indexes
+* @param HTMLSelectElement
+*/
 function indexesAddRow(field) {
 	var row = field.parentNode.parentNode.cloneNode(true);
 	var spans = row.getElementsByTagName('span');
@@ -241,6 +304,9 @@ function indexesAddRow(field) {
 	field.onchange = function () { };
 }
 
+/** Add column for index
+* @param HTMLSelectElement
+*/
 function indexesAddColumn(field) {
 	var column = field.parentNode.cloneNode(true);
 	var select = column.getElementsByTagName('select')[0];
@@ -257,12 +323,19 @@ function indexesAddColumn(field) {
 
 var that, x, y, em, tablePos;
 
+/** Get mouse position
+* @param HTMLElement
+* @param MouseEvent
+*/
 function schemaMousedown(el, event) {
 	that = el;
 	x = event.clientX - el.offsetLeft;
 	y = event.clientY - el.offsetTop;
 }
 
+/** Move object
+* @param MouseEvent
+*/
 function schemaMousemove(ev) {
 	if (that !== undefined) {
 		ev = ev || event;
@@ -306,6 +379,9 @@ function schemaMousemove(ev) {
 	}
 }
 
+/** Finish move
+* @param MouseEvent
+*/
 function schemaMouseup(ev) {
 	if (that !== undefined) {
 		ev = ev || event;
