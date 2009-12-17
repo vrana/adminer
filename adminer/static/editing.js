@@ -25,7 +25,7 @@ function bodyLoad(version) {
 
 
 function selectValue(select) {
-	return select.options[select.selectedIndex].text;
+	return select.value || select.options[select.selectedIndex].text;
 }
 
 function formField(form, name) {
@@ -169,7 +169,7 @@ function editingTypeChange(type) {
 
 function editingLengthFocus(field) {
 	var td = field.parentNode;
-	if (/enum|set/.test(selectValue(td.previousSibling.firstChild))) {
+	if (/(enum|set)$/.test(selectValue(td.previousSibling.firstChild))) {
 		var edit = document.getElementById('enum-edit');
 		var val = field.value;
 		edit.value = (/^'.+','.+'$/.test(val) ? val.substr(1, val.length - 2).replace(/','/g, "\n").replace(/''/g, "'") : val);
