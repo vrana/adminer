@@ -372,6 +372,14 @@ function information_schema($db) {
 	return ($connection->server_info >= 5 && $db == "information_schema");
 }
 
+/** Get escaped error message
+* @return string
+*/
+function error() {
+	global $connection;
+	return h(preg_replace('~^You have an error.*syntax to use~U', "Syntax error", $connection->error));
+}
+
 /** Return expression for binary comparison
 * @param string
 * @return string

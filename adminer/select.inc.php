@@ -144,7 +144,7 @@ if (isset($rights["insert"])) {
 $adminer->selectLinks($table_status, $set);
 
 if (!$columns) {
-	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "" : ": " . h($connection->error)) . ".\n";
+	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "" : ": " . error()) . ".\n";
 } else {
 	echo "<form action='' id='form'>\n";
 	echo "<div style='display: none;'>";
@@ -165,7 +165,7 @@ if (!$columns) {
 	
 	$result = $connection->query($query);
 	if (!$result) {
-		echo "<p class='error'>" . h($connection->error) . "\n";
+		echo "<p class='error'>" . error() . "\n";
 	} else {
 		$email_fields = array();
 		echo "<form action='' method='post' enctype='multipart/form-data'>\n";

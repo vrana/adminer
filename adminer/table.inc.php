@@ -2,7 +2,7 @@
 $TABLE = $_GET["table"];
 $fields = fields($TABLE);
 if (!$fields) {
-	$error = h($connection->error);
+	$error = error();
 }
 $table_status = ($fields ? table_status($TABLE) : array());
 

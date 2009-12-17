@@ -63,7 +63,7 @@ if (!$error && $_POST) {
 						$start = explode(" ", microtime()); // microtime(true) is available since PHP 5
 						//! don't allow changing of character_set_results, convert encoding of displayed query
 						if (!$connection->multi_query($q)) {
-							echo "<p class='error'>" . lang('Error in query') . ": " . h(preg_replace('~^You have an error.*syntax to use~U', "Syntax error", $connection->error)) . "\n";
+							echo "<p class='error'>" . lang('Error in query') . ": " . error() . "\n";
 							if ($_POST["error_stops"]) {
 								break;
 							}

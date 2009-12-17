@@ -30,7 +30,7 @@ if (!$error && $_POST) {
 	}
 	$result = $connection->multi_query((isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . idf_escape($PROCEDURE) . "(" . implode(", ", $call) . ")");
 	if (!$result) {
-		echo "<p class='error'>" . h($connection->error) . "\n";
+		echo "<p class='error'>" . error() . "\n";
 	} else {
 		do {
 			$result = $connection->store_result();

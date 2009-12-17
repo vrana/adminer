@@ -246,7 +246,7 @@ function query_redirect($query, $location, $message, $redirect = true, $execute 
 		$sql = $adminer->messageQuery($query);
 	}
 	if ($failed) {
-		$error = h($connection->error) . $sql;
+		$error = error() . $sql;
 		return false;
 	}
 	if ($redirect) {
