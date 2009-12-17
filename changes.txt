@@ -1,6 +1,8 @@
 Adminer 2.2.2-dev:
 Add Delete button to Edit page (regression from 2.0.0)
 Simplify SQL syntax error message
+Print SQL query info if available
+Delete length when changing type
 
 Adminer 2.2.1 (released 2009-11-26):
 Highlight current links

@@ -146,11 +146,18 @@ function editing_remove_row(button) {
 	return true;
 }
 
+var last_type = '';
 function editing_type_change(type) {
 	var name = type.name.substr(0, type.name.length - 6);
 	var text = select_value(type);
 	for (var i=0; i < type.form.elements.length; i++) {
 		var el = type.form.elements[i];
+		if (el.name == name + '[length]' && !(
+			(/(char|binary)$/.test(last_type) && /(char|binary)$/.test(text))
+			|| (/(enum|set)$/.test(last_type) && /(enum|set)$/.test(text))
+		)) {
+			el.value = '';
+		}
 		if (el.name == name + '[collation]') {
 			el.className = (/(char|text|enum|set)$/.test(text) ? '' : 'hidden');
 		}
