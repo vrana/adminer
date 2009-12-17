@@ -29,7 +29,7 @@ if ($_POST) {
 
 <form action="" method="post" id="form">
 <table cellspacing="0">
-<tr><th><?php echo lang('Time'); ?><td><?php echo html_select("Timing", $trigger_time, $row["Timing"], "if (/^" . h(preg_quote($TABLE, "/")) . "_[ba][iud]$/.test(this.form['Trigger'].value)) this.form['Trigger'].value = '" . h(addcslashes($TABLE, "\r\n'\\")) . "_' + select_value(this).charAt(0).toLowerCase() + select_value(this.form['Event']).charAt(0).toLowerCase();"); ?>
+<tr><th><?php echo lang('Time'); ?><td><?php echo html_select("Timing", $trigger_time, $row["Timing"], "if (/^" . h(preg_quote($TABLE, "/")) . "_[ba][iud]$/.test(this.form['Trigger'].value)) this.form['Trigger'].value = '" . h(addcslashes($TABLE, "\r\n'\\")) . "_' + selectValue(this).charAt(0).toLowerCase() + selectValue(this.form['Event']).charAt(0).toLowerCase();"); ?>
 <tr><th><?php echo lang('Event'); ?><td><?php echo html_select("Event", $trigger_event, $row["Event"], "this.form['Timing'].onchange();"); ?>
 <tr><th><?php echo lang('Name'); ?><td><input name="Trigger" value="<?php echo h($row["Trigger"]); ?>" maxlength="64">
 </table>

@@ -205,7 +205,7 @@ ORDER BY ORDINAL_POSITION");
 				$i++;
 			}
 		}
-		echo "<div><select name='where[$i][col]' onchange='select_add_row(this);'><option value=''>" . lang('(anywhere)') . optionlist($columns, null, true) . "</select>";
+		echo "<div><select name='where[$i][col]' onchange='selectAddRow(this);'><option value=''>" . lang('(anywhere)') . optionlist($columns, null, true) . "</select>";
 		echo html_select("where[$i][op]", array(-1 => "") + $this->operators);
 		echo "<input name='where[$i][val]'></div>\n";
 		echo "</div></fieldset>\n";

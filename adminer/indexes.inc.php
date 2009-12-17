@@ -73,10 +73,10 @@ if ($_POST) {
 <?php
 $j = 0;
 foreach ($row["indexes"] as $index) {
-	echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) - 1 ? "indexes_add_row(this);" : 1)) . "<td>\n";
+	echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) - 1 ? "indexesAddRow(this);" : 1)) . "<td>\n";
 	ksort($index["columns"]);
 	foreach ($index["columns"] as $i => $column) {
-		echo "<span>" . html_select("indexes[$j][columns][$i]", array(-1 => "") + $fields, $column, ($i == count($index["columns"]) ? "indexes_add_column(this);" : 1));
+		echo "<span>" . html_select("indexes[$j][columns][$i]", array(-1 => "") + $fields, $column, ($i == count($index["columns"]) ? "indexesAddColumn(this);" : 1));
 		echo "<input name='indexes[$j][lengths][$i]' size='2' value='" . h($index["lengths"][$i]) . "'> </span>\n";
 	}
 	echo "\n";

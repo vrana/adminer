@@ -6,14 +6,14 @@ function toggle(id) {
 	return true;
 }
 
-function verify_version() {
+function verifyVersion() {
 	document.cookie = 'adminer_version=0';
 	var script = document.createElement('script');
 	script.src = 'https://adminer.svn.sourceforge.net/svnroot/adminer/trunk/version.js';
 	document.body.appendChild(script);
 }
 
-function form_check(el, name) {
+function formCheck(el, name) {
 	var elems = el.form.elements;
 	for (var i=0; i < elems.length; i++) {
 		if (name.test(elems[i].name)) {
@@ -22,11 +22,11 @@ function form_check(el, name) {
 	}
 }
 
-function form_uncheck(id) {
+function formUncheck(id) {
 	document.getElementById(id).checked = false;
 }
 
-function form_checked(el, name) {
+function formChecked(el, name) {
 	var checked = 0;
 	var elems = el.form.elements;
 	for (var i=0; i < elems.length; i++) {
@@ -37,7 +37,7 @@ function form_checked(el, name) {
 	return checked;
 }
 
-function table_click(event) {
+function tableClick(event) {
 	var el = event.target || event.srcElement;
 	while (!/^tr$/i.test(el.tagName)) {
 		if (/^(table|a|input)$/i.test(el.tagName)) {
@@ -52,7 +52,7 @@ function table_click(event) {
 
 
 
-function select_add_row(field) {
+function selectAddRow(field) {
 	var row = field.parentNode.cloneNode(true);
 	var selects = row.getElementsByTagName('select');
 	for (var i=0; i < selects.length; i++) {

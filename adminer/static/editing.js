@@ -1,15 +1,15 @@
 // Adminer specific functions
 
-function body_load(version) {
-	var jush_root = '../externals/jush/';
+function bodyLoad(version) {
+	var jushRoot = '../externals/jush/';
 	var script = document.createElement('script');
-	script.src = jush_root + 'jush.js';
+	script.src = jushRoot + 'jush.js';
 	script.onload = function () {
 		if (window.jush) { // IE runs in case of an error too
 			jush.create_links = ' target="_blank"';
 			jush.urls.sql[0] = 'http://dev.mysql.com/doc/refman/' + version + '/en/$key';
 			jush.urls.sql[0] = jush.urls.sql[0];
-			jush.style(jush_root + 'jush.css');
+			jush.style(jushRoot + 'jush.css');
 			jush.highlight_tag('pre', 0);
 			jush.highlight_tag('code');
 		}
@@ -24,11 +24,11 @@ function body_load(version) {
 
 
 
-function select_value(select) {
+function selectValue(select) {
 	return select.options[select.selectedIndex].text;
 }
 
-function form_field(form, name) {
+function formField(form, name) {
 	for (var i=0; i < form.length; i++) {
 		if (form[i].name == name) {
 			return form[i];
@@ -36,7 +36,7 @@ function form_field(form, name) {
 	}
 }
 
-function type_password(el, disable) {
+function typePassword(el, disable) {
 	try {
 		el.type = (disable ? 'text' : 'password');
 	} catch (e) {
@@ -45,21 +45,21 @@ function type_password(el, disable) {
 
 
 
-var added = '.', row_count;
+var added = '.', rowCount;
 
-function re_escape(s) {
+function reEscape(s) {
 	return s.replace(/[\[\]\\^$*+?.(){|}]/, '\\$&');
 }
 
-function idf_escape(s) {
+function idfEscape(s) {
 	return '`' + s.replace(/`/, '``') + '`';
 }
 
-function editing_name_change(field) {
+function editingNameChange(field) {
 	var name = field.name.substr(0, field.name.length - 7);
-	var type = form_field(field.form, name + '[type]');
+	var type = formField(field.form, name + '[type]');
 	var opts = type.options;
-	var table = re_escape(field.value);
+	var table = reEscape(field.value);
 	var column = '';
 	var match;
 	if ((match = /(.+)_(.+)/.exec(table)) || (match = /(.*[a-z])([A-Z].*)/.exec(table))) { // limited to single word columns
@@ -67,11 +67,11 @@ function editing_name_change(field) {
 		column = match[2];
 	}
 	var plural = '(?:e?s)?';
-	var tab_col = table + plural + '_?' + column;
-	var re = new RegExp('(^' + idf_escape(table + plural) + '\\.' + idf_escape(column) + '$' // table_column
-		+ '|^' + idf_escape(tab_col) + '\\.' // table
-		+ '|^' + idf_escape(column + plural) + '\\.' + idf_escape(table) + '$' // column_table
-		+ ')|\\.' + idf_escape(tab_col) + '$' // column
+	var tabCol = table + plural + '_?' + column;
+	var re = new RegExp('(^' + idfEscape(table + plural) + '\\.' + idfEscape(column) + '$' // table_column
+		+ '|^' + idfEscape(tabCol) + '\\.' // table
+		+ '|^' + idfEscape(column + plural) + '\\.' + idfEscape(table) + '$' // column_table
+		+ ')|\\.' + idfEscape(tabCol) + '$' // column
 	, 'i');
 	var candidate; // don't select anything with ambiguous match (like column `id`)
 	for (var i = opts.length; i--; ) {
@@ -94,8 +94,8 @@ function editing_name_change(field) {
 	}
 }
 
-function editing_add_row(button, allowed, focus) {
-	if (allowed && row_count >= allowed) {
+function editingAddRow(button, allowed, focus) {
+	if (allowed && rowCount >= allowed) {
 		return false;
 	}
 	var match = /([0-9]+)(\.[0-9]+)?/.exec(button.name);
@@ -125,36 +125,36 @@ function editing_add_row(button, allowed, focus) {
 		}
 	}
 	tags[0].onchange = function () {
-		editing_name_change(tags[0]);
+		editingNameChange(tags[0]);
 	};
 	row.parentNode.insertBefore(row2, row.nextSibling);
 	if (focus) {
 		input.onchange = function () {
-			editing_name_change(input);
+			editingNameChange(input);
 		};
 		input.focus();
 	}
 	added += '0';
-	row_count++;
+	rowCount++;
 	return true;
 }
 
-function editing_remove_row(button) {
-	var field = form_field(button.form, button.name.replace(/drop_col(.+)/, 'fields$1[field]'));
+function editingRemoveRow(button) {
+	var field = formField(button.form, button.name.replace(/drop_col(.+)/, 'fields$1[field]'));
 	field.parentNode.removeChild(field);
 	button.parentNode.parentNode.style.display = 'none';
 	return true;
 }
 
-var last_type = '';
-function editing_type_change(type) {
+var lastType = '';
+function editingTypeChange(type) {
 	var name = type.name.substr(0, type.name.length - 6);
-	var text = select_value(type);
+	var text = selectValue(type);
 	for (var i=0; i < type.form.elements.length; i++) {
 		var el = type.form.elements[i];
 		if (el.name == name + '[length]' && !(
-			(/(char|binary)$/.test(last_type) && /(char|binary)$/.test(text))
-			|| (/(enum|set)$/.test(last_type) && /(enum|set)$/.test(text))
+			(/(char|binary)$/.test(lastType) && /(char|binary)$/.test(text))
+			|| (/(enum|set)$/.test(lastType) && /(enum|set)$/.test(text))
 		)) {
 			el.value = '';
 		}
@@ -167,9 +167,9 @@ function editing_type_change(type) {
 	}
 }
 
-function editing_length_focus(field) {
+function editingLengthFocus(field) {
 	var td = field.parentNode;
-	if (/enum|set/.test(select_value(td.previousSibling.firstChild))) {
+	if (/enum|set/.test(selectValue(td.previousSibling.firstChild))) {
 		var edit = document.getElementById('enum-edit');
 		var val = field.value;
 		edit.value = (/^'.+','.+'$/.test(val) ? val.substr(1, val.length - 2).replace(/','/g, "\n").replace(/''/g, "'") : val);
@@ -180,7 +180,7 @@ function editing_length_focus(field) {
 	}
 }
 
-function editing_length_blur(edit) {
+function editingLengthBlur(edit) {
 	var field = edit.parentNode.firstChild;
 	var val = edit.value;
 	field.value = (/\n/.test(val) ? "'" + val.replace(/\n+$/, '').replace(/'/g, "''").replace(/\n/g, "','") + "'" : val);
@@ -188,20 +188,20 @@ function editing_length_blur(edit) {
 	edit.style.display = 'none';
 }
 
-function column_show(checked, column) {
+function columnShow(checked, column) {
 	var trs = document.getElementById('edit-fields').getElementsByTagName('tr');
 	for (var i=0; i < trs.length; i++) {
 		trs[i].getElementsByTagName('td')[column].className = (checked ? 'nowrap' : 'hidden');
 	}
 }
 
-function partition_by_change(el) {
-	var partition_table = /RANGE|LIST/.test(select_value(el));
-	el.form['partitions'].className = (partition_table || !el.selectedIndex ? 'hidden' : '');
-	document.getElementById('partition-table').className = (partition_table ? '' : 'hidden');
+function partitionByChange(el) {
+	var partitionTable = /RANGE|LIST/.test(selectValue(el));
+	el.form['partitions'].className = (partitionTable || !el.selectedIndex ? 'hidden' : '');
+	document.getElementById('partition-table').className = (partitionTable ? '' : 'hidden');
 }
 
-function partition_name_change(el) {
+function partitionNameChange(el) {
 	var row = el.parentNode.parentNode.cloneNode(true);
 	row.firstChild.firstChild.value = '';
 	el.parentNode.parentNode.parentNode.appendChild(row);
@@ -210,7 +210,7 @@ function partition_name_change(el) {
 
 
 
-function foreign_add_row(field) {
+function foreignAddRow(field) {
 	var row = field.parentNode.parentNode.cloneNode(true);
 	var selects = row.getElementsByTagName('select');
 	for (var i=0; i < selects.length; i++) {
@@ -223,7 +223,7 @@ function foreign_add_row(field) {
 
 
 
-function indexes_add_row(field) {
+function indexesAddRow(field) {
 	var row = field.parentNode.parentNode.cloneNode(true);
 	var spans = row.getElementsByTagName('span');
 	for (var i=0; i < spans.length - 1; i++) {
@@ -241,7 +241,7 @@ function indexes_add_row(field) {
 	field.onchange = function () { };
 }
 
-function indexes_add_column(field) {
+function indexesAddColumn(field) {
 	var column = field.parentNode.cloneNode(true);
 	var select = column.getElementsByTagName('select')[0];
 	select.name = select.name.replace(/\]\[[0-9]+/, '$&1');
@@ -255,27 +255,27 @@ function indexes_add_column(field) {
 
 
 
-var that, x, y, em, table_pos;
+var that, x, y, em, tablePos;
 
-function schema_mousedown(el, event) {
+function schemaMousedown(el, event) {
 	that = el;
 	x = event.clientX - el.offsetLeft;
 	y = event.clientY - el.offsetTop;
 }
 
-function schema_mousemove(ev) {
+function schemaMousemove(ev) {
 	if (that !== undefined) {
 		ev = ev || event;
 		var left = (ev.clientX - x) / em;
 		var top = (ev.clientY - y) / em;
 		var divs = that.getElementsByTagName('div');
-		var line_set = { };
+		var lineSet = { };
 		for (var i=0; i < divs.length; i++) {
 			if (divs[i].className == 'references') {
 				var div2 = document.getElementById((divs[i].id.substr(0, 4) == 'refs' ? 'refd' : 'refs') + divs[i].id.substr(4));
-				var ref = (table_pos[divs[i].title] ? table_pos[divs[i].title] : [ div2.parentNode.offsetTop / em, 0 ]);
+				var ref = (tablePos[divs[i].title] ? tablePos[divs[i].title] : [ div2.parentNode.offsetTop / em, 0 ]);
 				var left1 = -1;
-				var is_top = true;
+				var isTop = true;
 				var id = divs[i].id.replace(/^ref.(.+)-.+/, '$1');
 				if (divs[i].parentNode != div2.parentNode) {
 					left1 = Math.min(0, ref[1] - left) - 1;
@@ -284,20 +284,20 @@ function schema_mousemove(ev) {
 					var left2 = Math.min(0, left - ref[1]) - 1;
 					div2.style.left = left2 + 'em';
 					div2.getElementsByTagName('div')[0].style.width = -left2 + 'em';
-					is_top = (div2.offsetTop + ref[0] * em > divs[i].offsetTop + top * em);
+					isTop = (div2.offsetTop + ref[0] * em > divs[i].offsetTop + top * em);
 				}
-				if (!line_set[id]) {
+				if (!lineSet[id]) {
 					var line = document.getElementById(divs[i].id.replace(/^....(.+)-[0-9]+$/, 'refl$1'));
 					var shift = ev.clientY - y - that.offsetTop;
 					line.style.left = (left + left1) + 'em';
-					if (is_top) {
+					if (isTop) {
 						line.style.top = (line.offsetTop + shift) / em + 'em';
 					}
 					if (divs[i].parentNode != div2.parentNode) {
 						line = line.getElementsByTagName('div')[0];
-						line.style.height = (line.offsetHeight + (is_top ? -1 : 1) * shift) / em + 'em';
+						line.style.height = (line.offsetHeight + (isTop ? -1 : 1) * shift) / em + 'em';
 					}
-					line_set[id] = true;
+					lineSet[id] = true;
 				}
 			}
 		}
@@ -306,16 +306,16 @@ function schema_mousemove(ev) {
 	}
 }
 
-function schema_mouseup(ev) {
+function schemaMouseup(ev) {
 	if (that !== undefined) {
 		ev = ev || event;
-		table_pos[that.firstChild.firstChild.firstChild.data] = [ (ev.clientY - y) / em, (ev.clientX - x) / em ];
+		tablePos[that.firstChild.firstChild.firstChild.data] = [ (ev.clientY - y) / em, (ev.clientX - x) / em ];
 		that = undefined;
 		var date = new Date();
 		date.setMonth(date.getMonth() + 1);
 		var s = '';
-		for (var key in table_pos) {
-			s += '_' + key + ':' + Math.round(table_pos[key][0] * 10000) / 10000 + 'x' + Math.round(table_pos[key][1] * 10000) / 10000;
+		for (var key in tablePos) {
+			s += '_' + key + ':' + Math.round(tablePos[key][0] * 10000) / 10000 + 'x' + Math.round(tablePos[key][1] * 10000) / 10000;
 		}
 		document.cookie = 'adminer_schema=' + encodeURIComponent(s.substr(1)) + '; expires=' + date + '; path=' + location.pathname + location.search;
 	}

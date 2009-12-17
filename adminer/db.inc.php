@@ -47,11 +47,11 @@ if (!$table_status) {
 	echo "<p class='message'>" . lang('No tables.') . "\n";
 } else {
 	echo "<form action='' method='post'>\n";
-	echo "<table cellspacing='0' class='nowrap' onclick='table_click(event);'>\n";
-	echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="form_check(this, /^(tables|views)\[/);" title="' . count($table_status) . '"><th>' . lang('Table') . '<td>' . lang('Engine') . '<td>' . lang('Collation') . '<td>' . lang('Data Length') . '<td>' . lang('Index Length') . '<td>' . lang('Data Free') . '<td>' . lang('Auto Increment') . '<td>' . lang('Rows') . '<td>' . lang('Comment') . "</thead>\n";
+	echo "<table cellspacing='0' class='nowrap' onclick='tableClick(event);'>\n";
+	echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck(this, /^(tables|views)\[/);" title="' . count($table_status) . '"><th>' . lang('Table') . '<td>' . lang('Engine') . '<td>' . lang('Collation') . '<td>' . lang('Data Length') . '<td>' . lang('Index Length') . '<td>' . lang('Data Free') . '<td>' . lang('Auto Increment') . '<td>' . lang('Rows') . '<td>' . lang('Comment') . "</thead>\n";
 	foreach ($table_status as $row) {
 		$name = $row["Name"];
-		echo '<tr' . odd() . '><td>' . checkbox((isset($row["Rows"]) ? "tables[]" : "views[]"), $name, in_array($name, $tables_views, true), "", "form_uncheck('check-all');");
+		echo '<tr' . odd() . '><td>' . checkbox((isset($row["Rows"]) ? "tables[]" : "views[]"), $name, in_array($name, $tables_views, true), "", "formUncheck('check-all');");
 		echo '<th><a href="' . h(ME) . 'table=' . urlencode($name) . '">' . h($name) . '</a>';
 		if (isset($row["Rows"])) {
 			echo "<td>$row[Engine]<td>$row[Collation]";
@@ -67,7 +67,7 @@ if (!$table_status) {
 		}
 	}
 	echo "</table>\n";
-	echo "<p><input type='hidden' name='token' value='$token'><input type='submit' value='" . lang('Analyze') . "'> <input type='submit' name='optimize' value='" . lang('Optimize') . "'> <input type='submit' name='check' value='" . lang('Check') . "'> <input type='submit' name='repair' value='" . lang('Repair') . "'> <input type='submit' name='truncate' value='" . lang('Truncate') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + form_checked(this, /tables/) + ')');\"> <input type='submit' name='drop' value='" . lang('Drop') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + form_checked(this, /tables|views/) + ')');\">\n";
+	echo "<p><input type='hidden' name='token' value='$token'><input type='submit' value='" . lang('Analyze') . "'> <input type='submit' name='optimize' value='" . lang('Optimize') . "'> <input type='submit' name='check' value='" . lang('Check') . "'> <input type='submit' name='repair' value='" . lang('Repair') . "'> <input type='submit' name='truncate' value='" . lang('Truncate') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + formChecked(this, /tables/) + ')');\"> <input type='submit' name='drop' value='" . lang('Drop') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + formChecked(this, /tables|views/) + ')');\">\n";
 	$dbs = get_databases();
 	if (count($dbs) != 1) {
 		$db = (isset($_POST["target"]) ? $_POST["target"] : DB);

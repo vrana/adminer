@@ -54,12 +54,12 @@ foreach (table_status() as $row) {
 <script type="text/javascript">
 table_pos = {<?php echo implode(",", $table_pos_js) . "\n"; ?>};
 em = document.getElementById('schema').offsetHeight / <?php echo $top; ?>;
-document.onmousemove = schema_mousemove;
-document.onmouseup = schema_mouseup;
+document.onmousemove = schemaMousemove;
+document.onmouseup = schemaMouseup;
 </script>
 <?php
 foreach ($schema as $name => $table) {
-	echo "<div class='table' style='top: " . $table["pos"][0] . "em; left: " . $table["pos"][1] . "em;' onmousedown='schema_mousedown(this, event);'>";
+	echo "<div class='table' style='top: " . $table["pos"][0] . "em; left: " . $table["pos"][1] . "em;' onmousedown='schemaMousedown(this, event);'>";
 	echo '<a href="' . h(ME) . 'table=' . urlencode($name) . '"><strong>' . h($name) . "</strong></a><br>\n";
 	foreach ($table["fields"] as $field) {
 		$val = '<span' . type_class($field["type"]) . ' title="' . h($field["full_type"] . ($field["null"] ? " NULL" : '')) . '">' . h($field["field"]) . '</span>';

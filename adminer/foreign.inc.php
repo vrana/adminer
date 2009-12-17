@@ -55,7 +55,7 @@ $target = ($TABLE === $row["table"] ? $source : array_keys(fields($row["table"])
 $j = 0;
 foreach ($row["source"] as $key => $val) {
 	echo "<tr>";
-	echo "<td>" . html_select("source[" . intval($key) . "]", array(-1 => "") + $source, $val, ($j == count($row["source"]) - 1 ? "foreign_add_row(this);" : 1));
+	echo "<td>" . html_select("source[" . intval($key) . "]", array(-1 => "") + $source, $val, ($j == count($row["source"]) - 1 ? "foreignAddRow(this);" : 1));
 	echo "<td>" . html_select("target[" . intval($key) . "]", $target, $row["target"][$key]);
 	$j++;
 }

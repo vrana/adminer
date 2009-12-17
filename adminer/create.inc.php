@@ -165,8 +165,8 @@ foreach ($engines as $engine) {
 <?php echo lang('Auto Increment'); ?>: <input name="auto_increment" size="6" value="<?php echo h($row["auto_increment"]); // don't prefill by original Auto_increment for the sake of performance and not reusing deleted ids ?>">
 <?php echo lang('Comment'); ?>: <input name="Comment" value="<?php echo h($row["Comment"]); ?>" maxlength="60">
 <script type="text/javascript">
-document.write('<label><input type="checkbox" onclick="column_show(this.checked, 5);"><?php echo lang('Default values'); ?><\/label>');
-document.write('<label><input type="checkbox"<?php if ($column_comments) { ?> checked<?php } ?> onclick="column_show(this.checked, 6);"><?php echo lang('Show column comments'); ?><\/label>');
+document.write('<label><input type="checkbox" onclick="columnShow(this.checked, 5);"><?php echo lang('Default values'); ?><\/label>');
+document.write('<label><input type="checkbox"<?php if ($column_comments) { ?> checked<?php } ?> onclick="columnShow(this.checked, 6);"><?php echo lang('Show column comments'); ?><\/label>');
 </script>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
@@ -177,7 +177,7 @@ if ($connection->server_info >= 5.1) {
 	?>
 <fieldset><legend><?php echo lang('Partition by'); ?></legend>
 <p>
-<?php echo html_select("partition_by", array(-1 => "") + $partition_by, $row["partition_by"], "partition_by_change(this);"); ?>
+<?php echo html_select("partition_by", array(-1 => "") + $partition_by, $row["partition_by"], "partitionByChange(this);"); ?>
 (<input name="partition" value="<?php echo h($row["partition"]); ?>">)
 <?php echo lang('Partitions'); ?>: <input name="partitions" size="2" value="<?php echo h($row["partitions"]); ?>"<?php echo ($partition_table || !$row["partition_by"] ? " class='hidden'" : ""); ?>>
 <table cellspacing="0" id="partition-table"<?php echo ($partition_table ? "" : " class='hidden'"); ?>>
@@ -185,7 +185,7 @@ if ($connection->server_info >= 5.1) {
 <?php
 foreach ($row["partition_names"] as $key => $val) {
 	echo '<tr>';
-	echo '<td><input name="partition_names[]" value="' . h($val) . '"' . ($key == count($row["partition_names"]) - 1 ? ' onchange="partition_name_change(this);"' : '') . '>';
+	echo '<td><input name="partition_names[]" value="' . h($val) . '"' . ($key == count($row["partition_names"]) - 1 ? ' onchange="partitionNameChange(this);"' : '') . '>';
 	echo '<td><input name="partition_values[]" value="' . h($row["partition_values"][$key]) . '">';
 }
 ?>

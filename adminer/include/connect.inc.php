@@ -30,7 +30,7 @@ function connect_error() {
 		if ($databases) {
 			$collations = collations();
 			echo "<form action='' method='post'>\n";
-			echo "<table cellspacing='0' onclick='table_click(event);'>\n";
+			echo "<table cellspacing='0' onclick='tableClick(event);'>\n";
 			echo "<thead><tr><td><input type='hidden' name='token' value='$token'>&nbsp;<th>" . lang('Database') . "<td>" . lang('Collation') . "</thead>\n";
 			foreach ($databases as $db) {
 				$root = h(ME) . "db=" . urlencode($db);
@@ -40,7 +40,7 @@ function connect_error() {
 				echo "\n";
 			}
 			echo "</table>\n";
-			echo "<p><input type='submit' name='drop' value='" . lang('Drop') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + form_checked(this, /db/) + ')');\">\n";
+			echo "<p><input type='submit' name='drop' value='" . lang('Drop') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + formChecked(this, /db/) + ')');\">\n";
 			echo "</form>\n";
 		}
 	}

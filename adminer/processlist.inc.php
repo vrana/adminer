@@ -13,7 +13,7 @@ page_header(lang('Process list'), $error);
 ?>
 
 <form action="" method="post">
-<table cellspacing="0" onclick="table_click(event);">
+<table cellspacing="0" onclick="tableClick(event);">
 <?php
 $result = $connection->query("SHOW PROCESSLIST");
 for ($i=0; $row = $result->fetch_assoc(); $i++) {

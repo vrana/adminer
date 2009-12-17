@@ -169,7 +169,7 @@ class Adminer {
 			$i++;
 		}
 		echo "<div>" . html_select("columns[$i][fun]", array(-1 => "") + $fun_group, "", "this.nextSibling.onchange();");
-		echo "<select name='columns[$i][col]' onchange='select_add_row(this);'><option>" . optionlist($columns, null, true) . "</select></div>\n";
+		echo "<select name='columns[$i][col]' onchange='selectAddRow(this);'><option>" . optionlist($columns, null, true) . "</select></div>\n";
 		echo "</div></fieldset>\n";
 	}
 	
@@ -198,7 +198,7 @@ class Adminer {
 				$i++;
 			}
 		}
-		echo "<div><select name='where[$i][col]' onchange='select_add_row(this);'><option value=''>" . lang('(anywhere)') . optionlist($columns, null, true) . "</select>";
+		echo "<div><select name='where[$i][col]' onchange='selectAddRow(this);'><option value=''>" . lang('(anywhere)') . optionlist($columns, null, true) . "</select>";
 		echo html_select("where[$i][op]", $this->operators);
 		echo "<input name='where[$i][val]'></div>\n";
 		echo "</div></fieldset>\n";
@@ -220,7 +220,7 @@ class Adminer {
 				$i++;
 			}
 		}
-		echo "<div><select name='order[$i]' onchange='select_add_row(this);'><option>" . optionlist($columns, null, true) . "</select>";
+		echo "<div><select name='order[$i]' onchange='selectAddRow(this);'><option>" . optionlist($columns, null, true) . "</select>";
 		echo checkbox("desc[$i]", 1, 0, lang('descending')) . "</div>\n";
 		echo "</div></fieldset>\n";
 	}

@@ -184,8 +184,8 @@ if (!$columns) {
 			
 			$backward_keys = $adminer->backwardKeys($TABLE, $table_name);
 			
-			echo "<table cellspacing='0' class='nowrap' onclick='table_click(event);'>\n";
-			echo "<thead><tr><td><input type='checkbox' id='all-page' onclick='form_check(this, /check/);'>";
+			echo "<table cellspacing='0' class='nowrap' onclick='tableClick(event);'>\n";
+			echo "<thead><tr><td><input type='checkbox' id='all-page' onclick='formCheck(this, /check/);'>";
 			$names = array();
 			reset($select);
 			$order = 1;
@@ -203,7 +203,7 @@ if (!$columns) {
 			echo ($backward_keys ? "<th>" . lang('Relations') : "") . "</thead>\n";
 			foreach ($adminer->rowDescriptions($rows, $foreign_keys) as $n => $row) {
 				$unique_idf = implode('&', unique_idf($rows[$n], $indexes));
-				echo "<tr" . odd() . "><td>" . checkbox("check[]", $unique_idf, in_array($unique_idf, (array) $_POST["check"]), "", "this.form['all'].checked = false; form_uncheck('all-page');") . (count($select) != count($group) || information_schema(DB) ? '' : " <a href='" . h(ME . "edit=" . urlencode($TABLE) . "&$unique_idf") . "'>" . lang('edit') . "</a>");
+				echo "<tr" . odd() . "><td>" . checkbox("check[]", $unique_idf, in_array($unique_idf, (array) $_POST["check"]), "", "this.form['all'].checked = false; formUncheck('all-page');") . (count($select) != count($group) || information_schema(DB) ? '' : " <a href='" . h(ME . "edit=" . urlencode($TABLE) . "&$unique_idf") . "'>" . lang('edit') . "</a>");
 				foreach ($row as $key => $val) {
 					if (isset($names[$key])) {
 						$field = $fields[$key];
@@ -271,7 +271,7 @@ if (!$columns) {
 			}
 			echo " (" . lang('%d row(s)', $found_rows) . ") " . checkbox("all", 1, 0, lang('whole result')) . "\n";
 			
-			echo (information_schema(DB) ? "" : "<fieldset><legend>" . lang('Edit') . "</legend><div><input type='submit' name='edit' value='" . lang('Edit') . "'> <input type='submit' name='clone' value='" . lang('Clone') . "'> <input type='submit' name='delete' value='" . lang('Delete') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + (this.form['all'].checked ? $found_rows : form_checked(this, /check/)) + ')');\"></div></fieldset>\n");
+			echo (information_schema(DB) ? "" : "<fieldset><legend>" . lang('Edit') . "</legend><div><input type='submit' name='edit' value='" . lang('Edit') . "'> <input type='submit' name='clone' value='" . lang('Clone') . "'> <input type='submit' name='delete' value='" . lang('Delete') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + (this.form['all'].checked ? $found_rows : formChecked(this, /check/)) + ')');\"></div></fieldset>\n");
 			print_fieldset("export", lang('Export'));
 			echo $adminer->dumpOutput(1) . " " . $adminer->dumpFormat(1); // 1 - select
 			echo " <input type='submit' name='export' value='" . lang('Export') . "'>\n";

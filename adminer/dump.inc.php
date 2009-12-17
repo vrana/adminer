@@ -168,25 +168,25 @@ echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style,
 if (strlen(DB)) {
 	$checked = (strlen($TABLE) ? "" : " checked");
 	echo "<thead><tr>";
-	echo "<th style='text-align: left;'><label><input type='checkbox' id='check-tables'$checked onclick='form_check(this, /^tables\\[/);'>" . lang('Tables') . "</label>";
-	echo "<th style='text-align: right;'><label>" . lang('Data') . "<input type='checkbox' id='check-data'$checked onclick='form_check(this, /^data\\[/);'></label>";
+	echo "<th style='text-align: left;'><label><input type='checkbox' id='check-tables'$checked onclick='formCheck(this, /^tables\\[/);'>" . lang('Tables') . "</label>";
+	echo "<th style='text-align: right;'><label>" . lang('Data') . "<input type='checkbox' id='check-data'$checked onclick='formCheck(this, /^data\\[/);'></label>";
 	echo "</thead>\n";
 	$views = "";
 	foreach (table_status() as $row) {
 		$checked = !strlen($TABLE) || $row["Name"] == $TABLE;
-		$print = "<tr><td>" . checkbox("tables[]", $row["Name"], $checked, $row["Name"], "form_uncheck('check-tables');");
+		$print = "<tr><td>" . checkbox("tables[]", $row["Name"], $checked, $row["Name"], "formUncheck('check-tables');");
 		if (!$row["Engine"]) {
 			$views .= "$print\n";
 		} else {
-			echo "$print<td align='right'><label>" . ($row["Engine"] == "InnoDB" && $row["Rows"] ? lang('~ %s', $row["Rows"]) : $row["Rows"]) . checkbox("data[]", $row["Name"], $checked, "", "form_uncheck('check-data');") . "</label>\n";
+			echo "$print<td align='right'><label>" . ($row["Engine"] == "InnoDB" && $row["Rows"] ? lang('~ %s', $row["Rows"]) : $row["Rows"]) . checkbox("data[]", $row["Name"], $checked, "", "formUncheck('check-data');") . "</label>\n";
 		}
 	}
 	echo $views;
 } else {
-	echo "<thead><tr><th style='text-align: left;'><label><input type='checkbox' id='check-databases' checked onclick='form_check(this, /^databases\\[/);'>" . lang('Database') . "</label></thead>\n";
+	echo "<thead><tr><th style='text-align: left;'><label><input type='checkbox' id='check-databases' checked onclick='formCheck(this, /^databases\\[/);'>" . lang('Database') . "</label></thead>\n";
 	foreach (get_databases() as $db) {
 		if (!information_schema($db)) {
-			echo "<tr><td>" . checkbox("databases[]", $db, 1, $db, "form_uncheck('check-databases');") . "</label>\n";
+			echo "<tr><td>" . checkbox("databases[]", $db, 1, $db, "formUncheck('check-databases');") . "</label>\n";
 		}
 	}
 }
