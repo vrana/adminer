@@ -81,9 +81,10 @@ function auth_error($exception = null) {
 	: ""))), null);
 	echo "<form action='' method='post'>\n";
 	$adminer->loginForm($username);
-	echo "<p>\n";
+	echo "<div>";
 	hidden_fields($_POST, array("server", "username", "password")); // expired session
-	echo "<input type='submit' value='" . lang('Login') . "'>\n</form>\n";
+	echo "</div>\n";
+	echo "</form>\n";
 	page_footer("auth");
 }
 

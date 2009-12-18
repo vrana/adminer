@@ -50,8 +50,9 @@ class Adminer {
 <tr><th><?php echo lang('Password'); ?><td><input type="password" name="password">
 </table>
 <?php
+		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
 		if ($this->permanentLogin()) {
-			echo "<p>" . checkbox("permanent", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
+			echo checkbox("permanent", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
 		}
 	}
 	
