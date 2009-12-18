@@ -226,4 +226,5 @@ $translations = array(
 	'Editor' => 'Editor',
 	'Webserver file %s' => 'Soubor %s na webovém serveru',
 	'File does not exist.' => 'Soubor neexistuje.',
+	'Permanent login' => 'Trvalé přihlášení',
 );

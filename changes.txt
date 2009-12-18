@@ -1,4 +1,5 @@
 Adminer 2.2.2-dev:
+Support for permanent login (customization required)
 Add Delete button to Edit page (regression from 2.0.0)
 Simplify SQL syntax error message
 Print SQL query info if available

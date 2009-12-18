@@ -23,6 +23,13 @@ class Adminer {
 		return array($_GET["server"], $_SESSION["usernames"][$_GET["server"]], $_SESSION["passwords"][$_GET["server"]]);
 	}
 	
+	/** Get key used for permanent login
+	* @return string cryptic string which gets combined with password
+	*/
+	function permanentLogin() {
+		return "";
+	}
+	
 	/** Identifier of selected database
 	* @return string
 	*/
@@ -43,6 +50,9 @@ class Adminer {
 <tr><th><?php echo lang('Password'); ?><td><input type="password" name="password">
 </table>
 <?php
+		if ($this->permanentLogin()) {
+			echo "<p>" . checkbox("permanent", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
+		}
 	}
 	
 	/** Authorize the user

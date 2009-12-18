@@ -11,6 +11,10 @@ class Adminer {
 		return array(); // default INI settings
 	}
 	
+	function permanentLogin() {
+		return "";
+	}
+	
 	function database() {
 		global $connection;
 		$dbs = get_databases(false);
@@ -27,6 +31,9 @@ class Adminer {
 <tr><th><?php echo lang('Password'); ?><td><input type="password" name="password">
 </table>
 <?php
+		if ($this->permanentLogin()) {
+			echo "<p>" . checkbox("permanent", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
+		}
 	}
 	
 	function login($login, $password) {
