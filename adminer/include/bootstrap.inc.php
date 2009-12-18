@@ -46,7 +46,7 @@ if (!isset($_SERVER["REQUEST_URI"])) {
 session_write_close(); // disable session.auto_start
 @ini_set("session.use_trans_sid", false); // protect links in export, @ - may be disabled
 session_name("adminer_sid"); // use specific session name to get own namespace
-$params = array(0, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]), "", $_SERVER["HTTPS"]);
+$params = array(0, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]), "", (bool) $_SERVER["HTTPS"]);
 if (version_compare(PHP_VERSION, '5.2.0') >= 0) {
 	$params[] = true; // HttpOnly
 }
