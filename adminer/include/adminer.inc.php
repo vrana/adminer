@@ -1,7 +1,12 @@
 <?php
 class Adminer {
+	/** @var array functions used in select */
 	var $functions = array("char_length", "from_unixtime", "hex", "lower", "round", "sec_to_time", "time_to_sec", "unix_timestamp", "upper");
+	
+	/** @var array grouping functions used in select */
 	var $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
+	
+	/** @var array operators used in select */
 	var $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "REGEXP", "IN", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL");
 	
 	/** Name in title and navigation
