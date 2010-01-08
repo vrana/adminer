@@ -1,9 +1,10 @@
-Adminer 2.2.2-dev:
+Adminer 2.3.0-dev:
 Support for permanent login (customization required)
+Show status variables
 Add Delete button to Edit page (regression from 2.0.0)
 Simplify SQL syntax error message
-Print SQL query info if available
-Delete length when changing type
+Show SQL query info if available
+Delete length when changing type in alter table
 
 Adminer 2.2.1 (released 2009-11-26):
 Highlight current links

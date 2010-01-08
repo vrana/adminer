@@ -85,6 +85,7 @@ include "./include/adminer.inc.php";
 include "../adminer/include/design.inc.php";
 include "../adminer/include/pdo.inc.php";
 include "../adminer/include/mysql.inc.php";
+include "../adminer/include/xxtea.inc.php";
 include "../adminer/include/auth.inc.php";
 include "./include/connect.inc.php";
 include "./include/editing.inc.php";

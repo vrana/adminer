@@ -7,7 +7,7 @@ if (isset($_POST["server"])) {
 		cookie("adminer_permanent",
 			base64_encode($_POST["server"])
 			. ":" . base64_encode($_POST["username"])
-			. ":" . base64_encode(cipher_password($_POST["password"], pack("H*", sha1(str_pad($_POST["username"], 1) . $adminer->permanentLogin())))) // str_pad - to hide original key
+			. ":" . base64_encode(encrypt_string($_POST["password"], $adminer->permanentLogin()))
 		);
 	}
 	if (count($_POST) == 3 + ($_POST["permanent"] ? 1 : 0)) { // 3 - server, username, password
@@ -40,34 +40,11 @@ if (isset($_POST["server"])) {
 	if (!strlen($_GET["server"]) || $server == $_GET["server"]) {
 		session_regenerate_id(); // defense against session fixation
 		$_SESSION["usernames"][$server] = $username;
-		$_SESSION["passwords"][$server] = decipher_password($cipher, pack("H*", sha1(str_pad($username, 1) . $adminer->permanentLogin())));
+		$_SESSION["passwords"][$server] = decrypt_string($cipher, $adminer->permanentLogin());
 		if (!$_POST && $server != $_GET["server"]) {
 			redirect(preg_replace('~^([^?]*).*~', '\\1', ME) . '?server=' . urlencode($server));
 		}
 	}
-}
-
-/** Cipher password
-* @param string plain-text password
-* @param string binary key, should be longer than $password
-* @return string binary cipher
-*/
-function cipher_password($password, $key) {
-	$password2 = strlen($password) . ":" . str_pad($password, 17);
-	$repeat = ceil(strlen($password2) / strlen($key));
-	return $password2 ^ str_repeat($key, $repeat);
-}
-
-/** Decipher password
-* @param string binary cipher
-* @param string binary key
-* @return string plain-text password
-*/
-function decipher_password($cipher, $key) {
-	$repeat = ceil(strlen($cipher) / strlen($key));
-	$password2 = $cipher ^ str_repeat($key, $repeat);
-	list($length, $password) = explode(":", $password2, 2);
-	return substr($password, 0, $length);
 }
 
 function auth_error($exception = null) {
