@@ -21,6 +21,7 @@ function connect_error() {
 			'privileges' => lang('Privileges'),
 			'processlist' => lang('Process list'),
 			'variables' => lang('Variables'),
+			'status' => lang('Status'),
 		) as $key => $val) {
 			echo "<a href='" . h(ME) . "$key='>$val</a>\n";
 		}
@@ -47,6 +48,9 @@ function connect_error() {
 	page_footer("db");
 }
 
+if (isset($_GET["status"])) {
+	$_GET["variables"] = $_GET["status"];
+}
 if (!(strlen(DB) ? $connection->select_db(DB) : isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]) || isset($_GET["processlist"]) || isset($_GET["privileges"]) || isset($_GET["user"]) || isset($_GET["variables"]))) {
 	if (strlen(DB)) {
 		unset($_SESSION["databases"][$_GET["server"]]);

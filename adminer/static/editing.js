@@ -11,7 +11,8 @@ function bodyLoad(version) {
 		if (window.jush) { // IE runs in case of an error too
 			jush.create_links = ' target="_blank"';
 			jush.urls.sql[0] = 'http://dev.mysql.com/doc/refman/' + version + '/en/$key';
-			jush.urls.sql[0] = jush.urls.sql[0];
+			jush.urls.sqlset[0] = jush.urls.sql[0];
+			jush.urls.sqlstatus[0] = jush.urls.sql[0];
 			jush.style(jushRoot + 'jush.css');
 			jush.highlight_tag('pre', 0);
 			jush.highlight_tag('code');
