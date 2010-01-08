@@ -70,7 +70,7 @@ if ($_POST) {
 <input type="hidden" name="token" value="<?php echo $token; ?>">
  <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php
-if (!$_POST["add_x"]) {
+if (!$_POST["add_x"] && !strlen($_GET["db"])) {
 	echo "<input type='image' name='add' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>\n";
 }
 ?>
