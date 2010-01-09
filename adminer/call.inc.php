@@ -55,7 +55,7 @@ if ($in) {
 		$field = $routine["fields"][$key];
 		echo "<tr><th>" . h($field["field"]);
 		$value = $_POST["fields"][$key];
-		if (strlen($value) && ereg("enum|set", $field["type"])) {
+		if ($value != "" && ereg("enum|set", $field["type"])) {
 			$value = intval($value);
 		}
 		input($field, $value, (string) $_POST["function"][$name]); // param name can be empty

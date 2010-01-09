@@ -4,7 +4,7 @@ $where = (isset($_GET["select"]) ? (count($_POST["check"]) == 1 ? where_check($_
 $update = (isset($_GET["select"]) ? $_POST["edit"] : $where);
 $fields = fields($TABLE);
 foreach ($fields as $name => $field) {
-	if (!isset($field["privileges"][$update ? "update" : "insert"]) || !strlen($adminer->fieldName($field))) {
+	if (!isset($field["privileges"][$update ? "update" : "insert"]) || $adminer->fieldName($field) == "") {
 		unset($fields[$name]);
 	}
 }
@@ -77,7 +77,7 @@ if ($fields) {
 		echo "<tr><th>" . $adminer->fieldName($field);
 		$default = $_GET["set"][bracket_escape($name)];
 		$value = (isset($row)
-			? (strlen($row[$name]) && ereg("enum|set", $field["type"]) ? intval($row[$name]) : $row[$name])
+			? ($row[$name] != "" && ereg("enum|set", $field["type"]) ? intval($row[$name]) : $row[$name])
 			: ($_POST["clone"] && $field["auto_increment"] ? "" : (isset($_GET["select"]) ? false : (isset($default) ? $default : $field["default"])))
 		);
 		if (!$_POST["save"] && is_string($value)) {

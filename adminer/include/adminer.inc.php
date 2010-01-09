@@ -207,7 +207,7 @@ class Adminer {
 		}
 		$i = 0;
 		foreach ((array) $_GET["where"] as $val) {
-			if (strlen("$val[col]$val[val]") && in_array($val["op"], $this->operators)) {
+			if ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators)) {
 				echo "<div><select name='where[$i][col]'><option value=''>" . lang('(anywhere)') . optionlist($columns, $val["col"], true) . "</select>";
 				echo html_select("where[$i][op]", $this->operators, $val["op"]);
 				echo "<input name='where[$i][val]' value='" . h($val["val"]) . "'></div>\n";
@@ -308,15 +308,15 @@ class Adminer {
 		global $connection;
 		$return = array();
 		foreach ($indexes as $i => $index) {
-			if ($index["type"] == "FULLTEXT" && strlen($_GET["fulltext"][$i])) {
+			if ($index["type"] == "FULLTEXT" && $_GET["fulltext"][$i] != "") {
 				$return[] = "MATCH (" . implode(", ", array_map('idf_escape', $index["columns"])) . ") AGAINST (" . $connection->quote($_GET["fulltext"][$i]) . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
 			}
 		}
 		foreach ((array) $_GET["where"] as $val) {
-			if (strlen("$val[col]$val[val]") && in_array($val["op"], $this->operators)) {
+			if ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators)) {
 				$in = process_length($val["val"]);
-				$cond = " $val[op]" . (ereg('NULL$', $val["op"]) ? "" : (ereg('IN$', $val["op"]) ? " (" . (strlen($in) ? $in : "NULL") . ")" : " " . $this->processInput($fields[$val["col"]], $val["val"])));
-				if (strlen($val["col"])) {
+				$cond = " $val[op]" . (ereg('NULL$', $val["op"]) ? "" : (ereg('IN$', $val["op"]) ? " (" . ($in != "" ? $in : "NULL") . ")" : " " . $this->processInput($fields[$val["col"]], $val["val"])));
+				if ($val["col"] != "") {
 					$return[] = idf_escape($val["col"]) . $cond;
 				} else {
 					// find anywhere
@@ -505,7 +505,7 @@ class Adminer {
 <form action="">
 <p>
 <?php if (SID) { ?><input type="hidden" name="<?php echo session_name(); ?>" value="<?php echo h(session_id()); ?>"><?php } ?>
-<?php if (strlen($_GET["server"])) { ?><input type="hidden" name="server" value="<?php echo h($_GET["server"]); ?>"><?php } ?>
+<?php if ($_GET["server"] != "") { ?><input type="hidden" name="server" value="<?php echo h($_GET["server"]); ?>"><?php } ?>
 <?php echo ($databases ? html_select("db", array("" => "(" . lang('database') . ")") + $databases, DB, "this.form.submit();") : '<input name="db" value="' . h(DB) . '">'); ?>
 <?php if (isset($_GET["sql"])) { ?><input type="hidden" name="sql" value=""><?php } ?>
 <?php if (isset($_GET["schema"])) { ?><input type="hidden" name="schema" value=""><?php } ?>
@@ -514,7 +514,7 @@ class Adminer {
 </p>
 </form>
 <?php
-			if ($missing != "db" && strlen(DB) && $connection->select_db(DB)) {
+			if ($missing != "db" && DB != "" && $connection->select_db(DB)) {
 				$tables = tables_list();
 				if (!$tables) {
 					echo "<p class='message'>" . lang('No tables.') . "\n";

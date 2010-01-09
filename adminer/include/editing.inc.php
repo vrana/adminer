@@ -20,7 +20,7 @@ function select($result, $connection2 = null) {
 				echo "<thead><tr>";
 				for ($j=0; $j < count($row); $j++) {
 					$field = $result->fetch_field();
-					if (strlen($field->orgtable)) {
+					if ($field->orgtable != "") {
 						if (!isset($indexes[$field->orgtable])) {
 							// find primary key in each table
 							$indexes[$field->orgtable] = array();
@@ -53,7 +53,7 @@ function select($result, $connection2 = null) {
 				} else {
 					if ($blobs[$key] && !is_utf8($val)) {
 						$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>"; //! link to download
-					} elseif (!strlen($val)) {
+					} elseif ($val == "") {
 						$val = "&nbsp;"; // some content to print a border
 					} else {
 						$val = h($val);
@@ -132,7 +132,7 @@ function process_length($length) {
 function process_type($field, $collate = "COLLATE") {
 	global $connection, $unsigned;
 	return " $field[type]"
-		. (strlen($field["length"]) && !ereg('^date|time$', $field["type"]) ? "(" . process_length($field["length"]) . ")" : "")
+		. ($field["length"] != "" && !ereg('^date|time$', $field["type"]) ? "(" . process_length($field["length"]) . ")" : "")
 		. (ereg('int|float|double|decimal', $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
 		. (ereg('char|text|enum|set', $field["type"]) && $field["collation"] ? " $collate " . $connection->quote($field["collation"]) : "")
 	;
@@ -182,7 +182,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 	global $inout;
 	$column_comments = false;
 	foreach ($fields as $field) {
-		if (strlen($field["comment"])) {
+		if ($field["comment"] != "") {
 			$column_comments = true;
 			break;
 		}
@@ -213,7 +213,7 @@ if ($type == "PROCEDURE") {
 	echo "<td>" . html_select("fields[$i][inout]", $inout, $field["inout"]);
 }
 ?>
-<th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo h($field["field"]); ?>" onchange="<?php echo (strlen($field["field"]) || count($fields) > 1 ? "" : "editingAddRow(this, $allowed); "); ?>editingNameChange(this);" maxlength="64"><?php } ?><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo h($field[($_POST ? "orig" : "field")]); ?>">
+<th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo h($field["field"]); ?>" onchange="<?php echo ($field["field"] != "" || count($fields) > 1 ? "" : "editingAddRow(this, $allowed); "); ?>editingNameChange(this);" maxlength="64"><?php } ?><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo h($field[($_POST ? "orig" : "field")]); ?>">
 <?php edit_type("fields[$i]", $field, $collations, $foreign_keys); ?>
 <?php if ($type == "TABLE") { ?>
 <td><?php echo checkbox("fields[$i][null]", 1, $field["null"]); ?>
@@ -348,9 +348,9 @@ function drop_create($drop, $create, $location, $message_drop, $message_alter, $
 	if ($_POST["drop"]) {
 		return query_redirect($drop, $location, $message_drop, true, !$_POST["dropped"]);
 	}
-	$dropped = strlen($name) && ($_POST["dropped"] || queries($drop));
+	$dropped = $name != "" && ($_POST["dropped"] || queries($drop));
 	$created = queries($create);
-	if (!queries_redirect($location, (strlen($name) ? $message_alter : $message_create), $created) && $dropped) {
+	if (!queries_redirect($location, ($name != "" ? $message_alter : $message_create), $created) && $dropped) {
 		restart_session();
 		$_SESSION["messages"][] = $message_drop;
 	}

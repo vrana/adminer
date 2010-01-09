@@ -16,12 +16,12 @@ if ($_POST && !$error && in_array($_POST["Timing"], $trigger_time) && in_array($
 	);
 }
 
-page_header((strlen($_GET["name"]) ? lang('Alter trigger') . ": " . h($_GET["name"]) : lang('Create trigger')), $error, array("table" => $TABLE));
+page_header(($_GET["name"] != "" ? lang('Alter trigger') . ": " . h($_GET["name"]) : lang('Create trigger')), $error, array("table" => $TABLE));
 
 $row = array("Trigger" => $TABLE . "_bi");
 if ($_POST) {
 	$row = $_POST;
-} elseif (strlen($_GET["name"])) {
+} elseif ($_GET["name"] != "") {
 	$result = $connection->query("SHOW TRIGGERS WHERE `Trigger` = " . $connection->quote($_GET["name"]));
 	$row = $result->fetch_assoc();
 }
@@ -38,5 +38,5 @@ if ($_POST) {
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <?php if ($dropped) { ?><input type="hidden" name="dropped" value="1"><?php } ?>
 <input type="submit" value="<?php echo lang('Save'); ?>">
-<?php if (strlen($_GET["name"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
+<?php if ($_GET["name"] != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
 </form>

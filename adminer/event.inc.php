@@ -14,22 +14,22 @@ if ($_POST && !$error) {
 			: "AT " . $connection->quote($_POST["STARTS"])
 			) . " ON COMPLETION" . ($_POST["ON_COMPLETION"] ? "" : " NOT") . " PRESERVE"
 		;
-		query_redirect((strlen($EVENT)
+		query_redirect(($EVENT != ""
 			? "ALTER EVENT " . idf_escape($EVENT) . $schedule
 			. ($EVENT != $_POST["EVENT_NAME"] ? "\nRENAME TO " . idf_escape($_POST["EVENT_NAME"]) : "")
 			: "CREATE EVENT " . idf_escape($_POST["EVENT_NAME"]) . $schedule
 			) . "\n" . $statuses[$_POST["STATUS"]] . " COMMENT " . $connection->quote($_POST["EVENT_COMMENT"])
 			. " DO\n$_POST[EVENT_DEFINITION]"
-		, substr(ME, 0, -1), (strlen($EVENT) ? lang('Event has been altered.') : lang('Event has been created.')));
+		, substr(ME, 0, -1), ($EVENT != "" ? lang('Event has been altered.') : lang('Event has been created.')));
 	}
 }
 
-page_header((strlen($EVENT) ? lang('Alter event') . ": " . h($EVENT) : lang('Create event')), $error);
+page_header(($EVENT != "" ? lang('Alter event') . ": " . h($EVENT) : lang('Create event')), $error);
 
 $row = array();
 if ($_POST) {
 	$row = $_POST;
-} elseif (strlen($EVENT)) {
+} elseif ($EVENT != "") {
 	$result = $connection->query("SELECT * FROM information_schema.EVENTS WHERE EVENT_SCHEMA = " . $connection->quote(DB) . " AND EVENT_NAME = " . $connection->quote($EVENT));
 	$row = $result->fetch_assoc();
 }
@@ -49,5 +49,5 @@ if ($_POST) {
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Save'); ?>">
-<?php if (strlen($EVENT)) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
+<?php if ($EVENT != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
 </form>

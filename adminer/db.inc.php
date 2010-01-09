@@ -57,7 +57,7 @@ if (!$table_status) {
 			echo "<td>$row[Engine]<td>$row[Collation]";
 			foreach (array("Data_length" => "create", "Index_length" => "indexes", "Data_free" => "edit", "Auto_increment" => "create", "Rows" => "select") as $key => $link) {
 				$val = number_format($row[$key], 0, '.', lang(','));
-				echo '<td align="right">' . (strlen($row[$key]) ? '<a href="' . h(ME . "$link=") . urlencode($name) . '">' . str_replace(" ", "&nbsp;", ($key == "Rows" && $row["Engine"] == "InnoDB" && $val ? lang('~ %s', $val) : $val)) . '</a>' : '&nbsp;');
+				echo '<td align="right">' . ($row[$key] != "" ? '<a href="' . h(ME . "$link=") . urlencode($name) . '">' . str_replace(" ", "&nbsp;", ($key == "Rows" && $row["Engine"] == "InnoDB" && $val ? lang('~ %s', $val) : $val)) . '</a>' : '&nbsp;');
 			}
 			echo "<td>" . nbsp($row["Comment"]);
 		} else {

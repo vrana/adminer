@@ -13,12 +13,12 @@ if ($_POST && !$error) {
 	);
 }
 
-page_header((strlen($TABLE) ? lang('Alter view') : lang('Create view')), $error, array("table" => $TABLE), $TABLE);
+page_header(($TABLE != "" ? lang('Alter view') : lang('Create view')), $error, array("table" => $TABLE), $TABLE);
 
 $row = array();
 if ($_POST) {
 	$row = $_POST;
-} elseif (strlen($TABLE)) {
+} elseif ($TABLE != "") {
 	$row = view($TABLE);
 	$row["name"] = $TABLE;
 }

@@ -11,7 +11,7 @@ if (isset($_POST["server"])) {
 		);
 	}
 	if (count($_POST) == 3 + ($_POST["permanent"] ? 1 : 0)) { // 3 - server, username, password
-		$location = ((string) $_GET["server"] === $_POST["server"] ? remove_from_uri(session_name()) : preg_replace('~^([^?]*).*~', '\\1', ME) . (strlen($_POST["server"]) ? '?server=' . urlencode($_POST["server"]) : ''));
+		$location = ((string) $_GET["server"] === $_POST["server"] ? remove_from_uri(session_name()) : preg_replace('~^([^?]*).*~', '\\1', ME) . ($_POST["server"] != "" ? '?server=' . urlencode($_POST["server"]) : ''));
 		if (SID) {
 			$pos = strpos($location, '?');
 			$location = ($pos ? substr_replace($location, SID . "&", $pos + 1, 0) : "$location?" . SID);
@@ -37,7 +37,7 @@ if (isset($_POST["server"])) {
 	}
 } elseif ($_COOKIE["adminer_permanent"] && !isset($_SESSION["usernames"][$_GET["server"]])) {
 	list($server, $username, $cipher) = array_map('base64_decode', explode(":", $_COOKIE["adminer_permanent"]));
-	if (!strlen($_GET["server"]) || $server == $_GET["server"]) {
+	if ($_GET["server"] == "" || $server == $_GET["server"]) {
 		session_regenerate_id(); // defense against session fixation
 		$_SESSION["usernames"][$server] = $username;
 		$_SESSION["passwords"][$server] = decrypt_string($cipher, $adminer->permanentLogin());

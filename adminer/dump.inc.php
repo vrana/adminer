@@ -2,7 +2,7 @@
 $TABLE = $_GET["dump"];
 
 if ($_POST) {
-	$ext = dump_headers((strlen($TABLE) ? $TABLE : DB), (!strlen(DB) || count((array) $_POST["tables"] + (array) $_POST["data"]) > 1));
+	$ext = dump_headers(($TABLE != "" ? $TABLE : DB), (DB == "" || count((array) $_POST["tables"] + (array) $_POST["data"]) > 1));
 	if ($_POST["format"] == "sql") {
 		echo "-- Adminer $VERSION dump
 SET NAMES utf8;
@@ -14,7 +14,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 	}
 	
 	$style = $_POST["db_style"];
-	foreach ((strlen(DB) ? array(DB) : (array) $_POST["databases"]) as $db) {
+	foreach ((DB != "" ? array(DB) : (array) $_POST["databases"]) as $db) {
 		if ($connection->select_db($db)) {
 			if ($_POST["format"] == "sql" && ereg('CREATE', $style) && ($result = $connection->query("SHOW CREATE DATABASE " . idf_escape($db)))) {
 				if ($style == "DROP+CREATE") {
@@ -57,8 +57,8 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 			if ($_POST["table_style"] || $_POST["data_style"]) {
 				$views = array();
 				foreach (table_status() as $row) {
-					$table = (!strlen(DB) || in_array($row["Name"], (array) $_POST["tables"]));
-					$data = (!strlen(DB) || in_array($row["Name"], (array) $_POST["data"]));
+					$table = (DB == "" || in_array($row["Name"], (array) $_POST["tables"]));
+					$data = (DB == "" || in_array($row["Name"], (array) $_POST["data"]));
 					if ($table || $data) {
 						if (isset($row["Engine"])) {
 							if ($ext == "tar") {
@@ -72,7 +72,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 								dump_triggers($row["Name"], $_POST["table_style"]);
 							}
 							if ($ext == "tar") {
-								echo tar_file((strlen(DB) ? "" : "$db/") . "$row[Name].csv", ob_get_clean());
+								echo tar_file((DB != "" ? "" : "$db/") . "$row[Name].csv", ob_get_clean());
 							} elseif ($_POST["format"] == "sql") {
 								echo "\n";
 							}
@@ -134,7 +134,7 @@ DROP PROCEDURE adminer_alter;
 	exit;
 }
 
-page_header(lang('Export'), "", (strlen($_GET["export"]) ? array("table" => $_GET["export"]) : array()), DB);
+page_header(lang('Export'), "", ($_GET["export"] != "" ? array("table" => $_GET["export"]) : array()), DB);
 ?>
 
 <form action="" method="post">
@@ -149,9 +149,9 @@ if ($connection->server_info >= 5) {
 }
 echo "<tr><th>" . lang('Output') . "<td><input type='hidden' name='token' value='$token'>" . $adminer->dumpOutput(0) . "\n"; // token is not needed but checked in bootstrap for all POST data
 echo "<tr><th>" . lang('Format') . "<td>" . $adminer->dumpFormat(0) . "\n";
-echo "<tr><th>" . lang('Database') . "<td>" . html_select('db_style', $db_style, (strlen(DB) ? '' : 'CREATE'));
+echo "<tr><th>" . lang('Database') . "<td>" . html_select('db_style', $db_style, (DB != "" ? '' : 'CREATE'));
 if ($connection->server_info >= 5) {
-	$checked = !strlen($_GET["dump"]);
+	$checked = $_GET["dump"] == "";
 	echo checkbox("routines", 1, $checked, lang('Routines'));
 	if ($connection->server_info >= 5.1) {
 		echo checkbox("events", 1, $checked, lang('Events'));
@@ -165,15 +165,15 @@ echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style,
 
 <table cellspacing="0">
 <?php
-if (strlen(DB)) {
-	$checked = (strlen($TABLE) ? "" : " checked");
+if (DB != "") {
+	$checked = ($TABLE != "" ? "" : " checked");
 	echo "<thead><tr>";
 	echo "<th style='text-align: left;'><label><input type='checkbox' id='check-tables'$checked onclick='formCheck(this, /^tables\\[/);'>" . lang('Tables') . "</label>";
 	echo "<th style='text-align: right;'><label>" . lang('Data') . "<input type='checkbox' id='check-data'$checked onclick='formCheck(this, /^data\\[/);'></label>";
 	echo "</thead>\n";
 	$views = "";
 	foreach (table_status() as $row) {
-		$checked = !strlen($TABLE) || $row["Name"] == $TABLE;
+		$checked = $TABLE == "" || $row["Name"] == $TABLE;
 		$print = "<tr><td>" . checkbox("tables[]", $row["Name"], $checked, $row["Name"], "formUncheck('check-tables');");
 		if (!$row["Engine"]) {
 			$views .= "$print\n";

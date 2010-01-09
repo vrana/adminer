@@ -14,7 +14,7 @@ function dump_data($table, $style, $select = "") {
 }
 
 function dump_headers($identifier) {
-	$filename = (strlen($identifier) ? friendly_url($identifier) : "dump");
+	$filename = ($identifier != "" ? friendly_url($identifier) : "dump");
 	$ext = "csv";
 	header("Content-Type: text/csv; charset=utf-8");
 	header("Content-Disposition: attachment; filename=$filename.$ext");

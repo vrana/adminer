@@ -8,7 +8,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 	$fields = (array) $_POST["fields"];
 	ksort($fields); // enforce fields order
 	foreach ($fields as $field) {
-		if (strlen($field["field"])) {
+		if ($field["field"] != "") {
 			$set[] = (in_array($field["inout"], $inout) ? "$field[inout] " : "") . idf_escape($field["field"]) . process_type($field, "CHARACTER SET");
 		}
 	}
@@ -23,7 +23,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 	);
 }
 
-page_header((strlen($PROCEDURE) ? (isset($_GET["function"]) ? lang('Alter function') : lang('Alter procedure')) . ": " . h($PROCEDURE) : (isset($_GET["function"]) ? lang('Create function') : lang('Create procedure'))), $error);
+page_header(($PROCEDURE != "" ? (isset($_GET["function"]) ? lang('Alter function') : lang('Alter procedure')) . ": " . h($PROCEDURE) : (isset($_GET["function"]) ? lang('Create function') : lang('Create procedure'))), $error);
 
 $collations = get_vals("SHOW CHARACTER SET");
 sort($collations);
@@ -32,7 +32,7 @@ if ($_POST) {
 	$row = $_POST;
 	$row["fields"] = (array) $row["fields"];
 	process_fields($row["fields"]);
-} elseif (strlen($PROCEDURE)) {
+} elseif ($PROCEDURE != "") {
 	$row = routine($PROCEDURE, $routine);
 	$row["name"] = $PROCEDURE;
 }
@@ -49,5 +49,5 @@ if ($_POST) {
 <?php if ($dropped) { ?><input type="hidden" name="dropped" value="1"><?php } ?>
 <?php echo lang('Name'); ?>: <input name="name" value="<?php echo h($row["name"]); ?>" maxlength="64">
 <input type="submit" value="<?php echo lang('Save'); ?>">
-<?php if (strlen($PROCEDURE)) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
+<?php if ($PROCEDURE != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
 </form>

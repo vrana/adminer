@@ -40,7 +40,7 @@ if (isset($_GET["file"])) {
 }
 
 if (!isset($_SERVER["REQUEST_URI"])) {
-	$_SERVER["REQUEST_URI"] = $_SERVER["ORIG_PATH_INFO"] . (strlen($_SERVER["QUERY_STRING"]) ? "?$_SERVER[QUERY_STRING]" : "");
+	$_SERVER["REQUEST_URI"] = $_SERVER["ORIG_PATH_INFO"] . ($_SERVER["QUERY_STRING"] != "" ? "?$_SERVER[QUERY_STRING]" : "");
 }
 
 session_write_close(); // disable session.auto_start
@@ -75,7 +75,7 @@ if (function_exists("set_magic_quotes_runtime")) {
 @set_time_limit(0); // @ - can be disabled
 
 define("DB", $_GET["db"]); // for the sake of speed and size
-define("ME", preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . '?' . (SID ? SID . '&' : '') . (strlen($_GET["server"]) ? 'server=' . urlencode($_GET["server"]) . '&' : '') . (strlen(DB) ? 'db=' . urlencode(DB) . '&' : ''));
+define("ME", preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . '?' . (SID ? SID . '&' : '') . ($_GET["server"] != "" ? 'server=' . urlencode($_GET["server"]) . '&' : '') . (DB != "" ? 'db=' . urlencode(DB) . '&' : ''));
 
 include "../adminer/include/version.inc.php";
 include "../adminer/include/functions.inc.php";

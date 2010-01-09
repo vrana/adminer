@@ -10,7 +10,7 @@ $columns = array(); // selectable columns
 unset($text_length);
 foreach ($fields as $key => $field) {
 	$name = $adminer->fieldName($field);
-	if (isset($field["privileges"]["select"]) && strlen($name)) {
+	if (isset($field["privileges"]["select"]) && $name != "") {
 		$columns[$key] = html_entity_decode(strip_tags($name));
 		if (ereg('text|blob', $field["type"])) {
 			$text_length = $adminer->selectLengthProcess();
@@ -110,7 +110,7 @@ if ($_POST && !$error) {
 				} else {
 					$set = "";
 					foreach ($matches2[1] as $i => $col) {
-						$set .= ", " . idf_escape($cols[$i]) . " = " . (!strlen($col) && $fields[$cols[$i]]["null"] ? "NULL" : $connection->quote(str_replace('""', '"', preg_replace('~^"|"$~', '', $col))));
+						$set .= ", " . idf_escape($cols[$i]) . " = " . ($col == "" && $fields[$cols[$i]]["null"] ? "NULL" : $connection->quote(str_replace('""', '"', preg_replace('~^"|"$~', '', $col))));
 					}
 					$set = substr($set, 1);
 					$result = queries("INSERT INTO " . idf_escape($_GET["select"]) . " SET$set ON DUPLICATE KEY UPDATE$set");
@@ -148,8 +148,8 @@ if (!$columns) {
 } else {
 	echo "<form action='' id='form'>\n";
 	echo "<div style='display: none;'>";
-	echo (strlen($_GET["server"]) ? '<input type="hidden" name="server" value="' . h($_GET["server"]) . '">' : "");
-	echo (strlen(DB) ? '<input type="hidden" name="db" value="' . h(DB) . '">' : ""); // not used in Editor
+	echo ($_GET["server"] != "" ? '<input type="hidden" name="server" value="' . h($_GET["server"]) . '">' : "");
+	echo (DB != "" ? '<input type="hidden" name="db" value="' . h(DB) . '">' : ""); // not used in Editor
 	echo '<input type="hidden" name="select" value="' . h($TABLE) . '">';
 	echo "</div>\n";
 	$adminer->selectColumnsPrint($select, $columns);
@@ -160,7 +160,7 @@ if (!$columns) {
 	$adminer->selectActionPrint($text_length);
 	echo "</form>\n";
 	
-	$query = "SELECT " . (intval($limit) && $group && count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . $from . $group_by . (strlen($limit) ? " LIMIT " . intval($limit) . ($_GET["page"] ? " OFFSET " . ($limit * $_GET["page"]) : "") : "");
+	$query = "SELECT " . (intval($limit) && $group && count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . $from . $group_by . ($limit != "" ? " LIMIT " . intval($limit) . ($_GET["page"] ? " OFFSET " . ($limit * $_GET["page"]) : "") : "");
 	echo $adminer->selectQuery($query);
 	
 	$result = $connection->query($query);
@@ -193,7 +193,7 @@ if (!$columns) {
 				$val = $_GET["columns"][key($select)];
 				$field = $fields[$select ? $val["col"] : $key];
 				$name = ($field ? $adminer->fieldName($field, $order) : "*");
-				if (strlen($name)) {
+				if ($name != "") {
 					$order++;
 					$names[$key] = $name;
 					echo '<th><a href="' . h(remove_from_uri('(order|desc)[^=]*') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"][0] == $key && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . apply_sql_function($val["fun"], $name) . "</a>"; //! columns looking like functions
@@ -207,7 +207,7 @@ if (!$columns) {
 				foreach ($row as $key => $val) {
 					if (isset($names[$key])) {
 						$field = $fields[$key];
-						if (strlen($val) && (!isset($email_fields[$key]) || strlen($email_fields[$key]))) {
+						if ($val != "" && (!isset($email_fields[$key]) || $email_fields[$key] != "")) {
 							$email_fields[$key] = (is_email($val) ? $names[$key] : ""); //! filled e-mails may be contained on other pages
 						}
 						$link = "";
@@ -215,12 +215,12 @@ if (!$columns) {
 						if (!isset($val)) {
 							$val = "<i>NULL</i>";
 						} else {
-							if (ereg('blob|binary', $field["type"]) && strlen($val)) {
+							if (ereg('blob|binary', $field["type"]) && $val != "") {
 								$link = h(ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . "&$unique_idf");
 							}
-							if (!strlen($val)) {
+							if ($val == "") {
 								$val = "&nbsp;";
-							} elseif (strlen($text_length) && ereg('text|blob', $field["type"]) && is_utf8($val)) {
+							} elseif ($text_length != "" && ereg('text|blob', $field["type"]) && is_utf8($val)) {
 								$val = shorten_utf8($val, max(0, intval($text_length))); // usage of LEFT() would reduce traffic but complicate query
 							} else {
 								$val = h($val);
@@ -232,7 +232,7 @@ if (!$columns) {
 										foreach ($foreign_key["source"] as $i => $source) {
 											$link .= where_link($i, $foreign_key["target"][$i], $rows[$n][$source]);
 										}
-										$link = h((strlen($foreign_key["db"]) ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), ME) : ME) . 'select=' . urlencode($foreign_key["table"]) . $link); // InnoDB supports non-UNIQUE keys
+										$link = h(($foreign_key["db"] != "" ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), ME) : ME) . 'select=' . urlencode($foreign_key["table"]) . $link); // InnoDB supports non-UNIQUE keys
 										break;
 									}
 								}

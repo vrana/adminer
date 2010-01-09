@@ -57,7 +57,7 @@ function h($string) {
 * @return string
 */
 function nbsp($string) {
-	return (strlen(trim($string)) ? h($string) : "&nbsp;");
+	return (trim($string) != "" ? h($string) : "&nbsp;");
 }
 
 /** Generate HTML checkbox
@@ -72,7 +72,7 @@ function checkbox($name, $value, $checked, $label = "", $onclick = "") {
 	static $id = 0;
 	$id++;
 	$return = "<input type='checkbox' name='$name' value='" . h($value) . "'" . ($checked ? " checked" : "") . ($onclick ? " onclick=\"$onclick\"" : "") . " id='checkbox-$id'>";
-	return (strlen($label) ? "<label for='checkbox-$id'>$return" . h($label) . "</label>" : $return);
+	return ($label != "" ? "<label for='checkbox-$id'>$return" . h($label) . "</label>" : $return);
 }
 
 /** Generate list of HTML options
@@ -227,7 +227,7 @@ function redirect($location, $message = null) {
 		restart_session();
 		$_SESSION["messages"][] = $message;
 	}
-	header("Location: " . (strlen($location) ? $location : "."));
+	header("Location: " . ($location != "" ? $location : "."));
 	exit;
 }
 
@@ -430,7 +430,7 @@ function input($field, $value, $function) {
 		$attrs = " name='fields[$name]'$onchange";
 		echo (count($functions) > 1 ? html_select("function[$name]", $functions, !isset($function) || in_array($function, $functions) ? $function : "") : nbsp(reset($functions))) . '<td>';
 		$input = $adminer->editInput($_GET["edit"], $field, $attrs, $value); // usage in call is without a table
-		if (strlen($input)) {
+		if ($input != "") {
 			echo $input;
 		} elseif ($field["type"] == "set") { //! 64 bits
 			preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
@@ -462,7 +462,7 @@ function process_input($field) {
 	$value = $_POST["fields"][$idf];
 	if ($field["type"] == "enum" ? $value == -1 : $function == "orig") {
 		return false;
-	} elseif ($field["type"] == "enum" || $field["auto_increment"] ? !strlen($value) : $function == "NULL") {
+	} elseif ($field["type"] == "enum" || $field["auto_increment"] ? $value == "" : $function == "NULL") {
 		return "NULL";
 	} elseif ($field["type"] == "enum") {
 		return intval($value);
@@ -485,7 +485,7 @@ function process_input($field) {
 */
 function dump_csv($row) {
 	foreach ($row as $key => $val) {
-		if (preg_match("~[\"\n,]~", $val) || (isset($val) && !strlen($val))) {
+		if (preg_match("~[\"\n,]~", $val) || $val === "") {
 			$row[$key] = '"' . str_replace('"', '""', $val) . '"';
 		}
 	}

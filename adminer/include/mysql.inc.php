@@ -11,9 +11,9 @@ if (extension_loaded("mysqli")) {
 		function connect($server, $username, $password) {
 			list($host, $port) = explode(":", $server, 2); // part after : is used for port or socket
 			return @$this->real_connect(
-				(strlen($server) ? $host : ini_get("mysqli.default_host")),
-				(strlen("$server$username") ? $username : ini_get("mysqli.default_user")),
-				(strlen("$server$username$password") ? $password : ini_get("mysqli.default_pw")),
+				($server != "" ? $host : ini_get("mysqli.default_host")),
+				("$server$username" != "" ? $username : ini_get("mysqli.default_user")),
+				("$server$username$password" != "" ? $password : ini_get("mysqli.default_pw")),
 				null,
 				(is_numeric($port) ? $port : ini_get("mysqli.default_port")),
 				(!is_numeric($port) ? $port : null)
@@ -39,9 +39,9 @@ if (extension_loaded("mysqli")) {
 		
 		function connect($server, $username, $password) {
 			$this->_link = @mysql_connect(
-				(strlen($server) ? $server : ini_get("mysql.default_host")),
-				(strlen("$server$username") ? $username : ini_get("mysql.default_user")),
-				(strlen("$server$username$password") ? $password : ini_get("mysql.default_password")),
+				($server != "" ? $server : ini_get("mysql.default_host")),
+				("$server$username" != "" ? $username : ini_get("mysql.default_user")),
+				("$server$username$password" != "" ? $password : ini_get("mysql.default_password")),
 				true,
 				131072 // CLIENT_MULTI_RESULTS for CALL
 			);
@@ -229,13 +229,13 @@ function tables_list() {
 function table_status($name = "") {
 	global $connection;
 	$return = array();
-	$result = $connection->query("SHOW TABLE STATUS" . (strlen($name) ? " LIKE " . $connection->quote(addcslashes($name, "%_")) : ""));
+	$result = $connection->query("SHOW TABLE STATUS" . ($name != "" ? " LIKE " . $connection->quote(addcslashes($name, "%_")) : ""));
 	while ($row = $result->fetch_assoc()) {
 		if ($row["Engine"] == "InnoDB") {
 			// ignore internal comment, unnecessary since MySQL 5.1.21
 			$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["Comment"]);
 		}
-		if (strlen($name)) {
+		if ($name != "") {
 			return $row;
 		}
 		$return[$row["Name"]] = $row;
@@ -273,7 +273,7 @@ function fields($table) {
 				"type" => $match[1],
 				"length" => $match[2],
 				"unsigned" => ltrim($match[3] . $match[4]),
-				"default" => (strlen($row["Default"]) || ereg("char", $match[1]) ? $row["Default"] : null),
+				"default" => ($row["Default"] != "" || ereg("char", $match[1]) ? $row["Default"] : null),
 				"null" => ($row["Null"] == "YES"),
 				"auto_increment" => ($row["Extra"] == "auto_increment"),
 				"on_update" => (eregi('^on update (.+)', $row["Extra"], $match) ? $match[1] : ""), //! available since MySQL 5.1.23
@@ -325,8 +325,8 @@ function foreign_keys($table) {
 			preg_match_all("~`($pattern)`~", $match[2], $source);
 			preg_match_all("~`($pattern)`~", $match[5], $target);
 			$return[$match[1]] = array(
-				"db" => idf_unescape(strlen($match[4]) ? $match[3] : $match[4]),
-				"table" => idf_unescape(strlen($match[4]) ? $match[4] : $match[3]),
+				"db" => idf_unescape($match[4] != "" ? $match[3] : $match[4]),
+				"table" => idf_unescape($match[4] != "" ? $match[4] : $match[3]),
 				"source" => array_map('idf_unescape', $source[1]),
 				"target" => array_map('idf_unescape', $target[1]),
 				"on_delete" => $match[6],

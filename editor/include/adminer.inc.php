@@ -42,11 +42,11 @@ class Adminer {
 	}
 	
 	function tableName($tableStatus) {
-		return h(strlen($tableStatus["Comment"]) ? $tableStatus["Comment"] : $tableStatus["Name"]);
+		return h($tableStatus["Comment"] != "" ? $tableStatus["Comment"] : $tableStatus["Name"]);
 	}
 	
 	function fieldName($field, $order = 0) {
-		return h(strlen($field["comment"]) ? $field["comment"] : $field["field"]);
+		return h($field["comment"] != "" ? $field["comment"] : $field["field"]);
 	}
 	
 	function selectLinks($tableStatus, $set = "") {
@@ -71,7 +71,7 @@ ORDER BY ORDINAL_POSITION");
 			}
 			foreach ($return as $key => $val) {
 				$name = $this->tableName(table_status($key));
-				if (strlen($name)) {
+				if ($name != "") {
 					$search = preg_quote($tableName);
 					$separator = "(:|\\s*-)?\\s+";
 					$return[$key]["name"] = (preg_match("(^$search$separator(.+)|^(.+?)$separator$search\$)", $name, $match) ? $match[2] . $match[3] : $name);
@@ -126,7 +126,7 @@ ORDER BY ORDINAL_POSITION");
 				if (count($foreignKey["source"]) == 1) {
 					$id = idf_escape($foreignKey["target"][0]);
 					$name = $this->rowDescription($foreignKey["table"]);
-					if (strlen($name)) {
+					if ($name != "") {
 						// find all used ids
 						$ids = array();
 						foreach ($rows as $row) {
@@ -206,7 +206,7 @@ ORDER BY ORDINAL_POSITION");
 		}
 		$i = 0;
 		foreach ((array) $_GET["where"] as $val) {
-			if (strlen("$val[col]$val[val]")) {
+			if ("$val[col]$val[val]" != "") {
 				echo "<div><select name='where[$i][col]'><option value=''>" . lang('(anywhere)') . optionlist($columns, $val["col"], true) . "</select>";
 				echo html_select("where[$i][op]", array(-1 => "") + $this->operators, $val["op"]);
 				echo "<input name='where[$i][val]' value='" . h($val["val"]) . "'></div>\n";
@@ -275,10 +275,10 @@ ORDER BY ORDINAL_POSITION");
 		$return = array();
 		foreach ((array) $_GET["where"] as $key => $val) {
 			$col = $val["col"];
-			if (strlen(($key < 0 ? "" : $col) . $val["val"])) {
+			if (($key < 0 ? "" : $col) . $val["val"] != "") {
 				$conds = array();
-				foreach ((strlen($col) ? array($col => $fields[$col]) : $fields) as $name => $field) {
-					if (strlen($col) || is_numeric($val["val"]) || !ereg('int|float|double|decimal', $field["type"])) {
+				foreach (($col != "" ? array($col => $fields[$col]) : $fields) as $name => $field) {
+					if ($col != "" || is_numeric($val["val"]) || !ereg('int|float|double|decimal', $field["type"])) {
 						$text_type = ereg('char|text|enum|set', $field["type"]);
 						$value = $this->processInput($field, ($text_type && ereg('^[^%]+$', $val["val"]) ? "%$val[val]%" : $val["val"]));
 						$conds[] = idf_escape($name) . ($value == "NULL" ? " IS" . ($val["op"] == ">=" ? " NOT" : "") : (in_array($val["op"], $this->operators) ? " $val[op]" : ($val["op"] != "=" && $text_type ? " LIKE" : " ="))) . " $value";
@@ -295,8 +295,8 @@ ORDER BY ORDINAL_POSITION");
 			return array(idf_escape($_GET["order"][0]) . (isset($_GET["desc"][0]) ? " DESC" : ""));
 		}
 		$index_order = $_GET["index_order"];
-		foreach ((strlen($index_order) ? array($indexes[$index_order]) : $indexes) as $index) {
-			if (strlen($index_order) || $index["type"] == "INDEX") {
+		foreach (($index_order != "" ? array($indexes[$index_order]) : $indexes) as $index) {
+			if ($index_order != "" || $index["type"] == "INDEX") {
 				$desc = false;
 				foreach ($index["columns"] as $val) {
 					if (ereg('date|timestamp', $fields[$val]["type"])) {
@@ -424,10 +424,10 @@ ORDER BY ORDINAL_POSITION");
 		}
 		$return = $value;
 		if (ereg('date|timestamp', $field["type"]) && preg_match('(^' . str_replace('\\$1', '(?P<p1>[0-9]*)', preg_replace('~(\\\\\\$([2-6]))~', '(?P<p\\2>[0-9]{1,2})', preg_quote(lang('$1-$3-$5')))) . '(.*))', $value, $match)) {
-			$return = (strlen($match["p1"]) ? $match["p1"] : (strlen($match["p2"]) ? ($match["p2"] < 70 ? 20 : 19) . $match["p2"] : gmdate("Y"))) . "-$match[p3]$match[p4]-$match[p5]$match[p6]" . end($match);
+			$return = ($match["p1"] != "" ? $match["p1"] : ($match["p2"] != "" ? ($match["p2"] < 70 ? 20 : 19) . $match["p2"] : gmdate("Y"))) . "-$match[p3]$match[p4]-$match[p5]$match[p6]" . end($match);
 		}
 		$return = $connection->quote($return);
-		if (!ereg('varchar|text', $field["type"]) && $field["full_type"] != "tinyint(1)" && !strlen($value)) {
+		if (!ereg('varchar|text', $field["type"]) && $field["full_type"] != "tinyint(1)" && $value == "") {
 			$return = "NULL";
 		}
 		return $return;
@@ -474,7 +474,7 @@ ORDER BY ORDINAL_POSITION");
 		echo "<p id='tables'>\n";
 		foreach ($tables as $row) {
 			$name = $this->tableName($row);
-			if (isset($row["Engine"]) && strlen($name)) { // ignore views and tables without name
+			if (isset($row["Engine"]) && $name != "") { // ignore views and tables without name
 				echo "<a href='" . h(ME) . 'select=' . urlencode($row["Name"]) . "'>" . bold($name, $_GET["select"] == $row["Name"]) . "</a><br>\n";
 			}
 		}
@@ -487,7 +487,7 @@ ORDER BY ORDINAL_POSITION");
 			if (count($foreignKey["source"]) == 1) {
 				$id = idf_escape($foreignKey["target"][0]);
 				$name = $this->rowDescription($foreignKey["table"]);
-				if (strlen($name)) {
+				if ($name != "") {
 					$return = &$this->values[$foreignKey["table"]];
 					if (!isset($return)) {
 						$return = array("" => "") + get_key_vals("SELECT $id, $name FROM " . idf_escape($foreignKey["table"]) . " ORDER BY 2 LIMIT 1001");

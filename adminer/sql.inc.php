@@ -22,7 +22,7 @@ if (!$error && $_POST) {
 	}
 	if (is_string($query)) { // get_file() returns error as number, fread() as false
 		@ini_set("memory_limit", 2 * strlen($query) + memory_get_usage() + 8e6); // @ - may be disabled, 2 - substr and trim, 8e6 - other variables
-		if (strlen($query) && strlen($query) < 1e6 && (!$history || end($history) != $query)) { // don't add repeated and big queries
+		if ($query != "" && strlen($query) < 1e6 && (!$history || end($history) != $query)) { // don't add repeated and big queries
 			$history[] = $query;
 		}
 		$space = "(\\s|/\\*.*\\*/|(#|-- )[^\n]*\n|--\n)";
@@ -35,12 +35,12 @@ if (!$error && $_POST) {
 		$delimiter = ";";
 		$offset = 0;
 		$empty = true;
-		$connection2 = (strlen(DB) ? connect() : null); // connection for exploring indexes and EXPLAIN (to not replace FOUND_ROWS()) //! PDO - silent error
+		$connection2 = (DB != "" ? connect() : null); // connection for exploring indexes and EXPLAIN (to not replace FOUND_ROWS()) //! PDO - silent error
 		if (is_object($connection2)) {
 			$connection2->select_db(DB);
 		}
 		$explain = 1;
-		while (strlen($query)) {
+		while ($query != "") {
 			if (!$offset && preg_match('~^\\s*DELIMITER\\s+(.+)~i', $query, $match)) {
 				$delimiter = $match[1];
 				$query = substr($query, strlen($match[0]));
@@ -51,7 +51,7 @@ if (!$error && $_POST) {
 				if (!$found && $fp && !feof($fp)) {
 					$query .= fread($fp, 1e5);
 				} else {
-					if (!$found && !strlen(rtrim($query))) {
+					if (!$found && rtrim($query) == "") {
 						break;
 					}
 					if (!$found || $found == $delimiter) { // end of a query
@@ -122,7 +122,7 @@ if (!$error && $_POST) {
 $q = $_GET["sql"]; // overwrite $q from if ($_POST) to save memory
 if ($_POST) {
 	$q = $_POST["query"];
-} elseif (strlen($_GET["history"])) {
+} elseif ($_GET["history"] != "") {
 	$q = $history[$_GET["history"]];
 }
 echo h($q);

@@ -1,7 +1,7 @@
 <?php
 function connect_error() {
 	global $connection, $VERSION, $token, $error;
-	if (strlen(DB)) {
+	if (DB != "") {
 		page_header(lang('Database') . ": " . h(DB), lang('Invalid database.'), false);
 	} else {
 		if ($_POST["db"] && !$error) {
@@ -51,8 +51,8 @@ function connect_error() {
 if (isset($_GET["status"])) {
 	$_GET["variables"] = $_GET["status"];
 }
-if (!(strlen(DB) ? $connection->select_db(DB) : isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]) || isset($_GET["processlist"]) || isset($_GET["privileges"]) || isset($_GET["user"]) || isset($_GET["variables"]))) {
-	if (strlen(DB)) {
+if (!(DB != "" ? $connection->select_db(DB) : isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]) || isset($_GET["processlist"]) || isset($_GET["privileges"]) || isset($_GET["user"]) || isset($_GET["variables"]))) {
+	if (DB != "") {
 		unset($_SESSION["databases"][$_GET["server"]]);
 	}
 	connect_error(); // separate function to catch SQLite error

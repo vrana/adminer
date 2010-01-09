@@ -8,14 +8,14 @@ if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP c
 		$failed = false;
 		$last = "";
 		foreach ($dbs as $db) {
-			if (count($dbs) == 1 || strlen($db)) { // ignore empty lines but always try to create single database
+			if (count($dbs) == 1 || $db != "") { // ignore empty lines but always try to create single database
 				if (!queries("CREATE DATABASE " . idf_escape($db) . ($_POST["collation"] ? " COLLATE " . $connection->quote($_POST["collation"]) : ""))) {
 					$failed = true;
 				}
 				$last = $db;
 			}
 		}
-		if (query_redirect(queries(), ME . "db=" . urlencode($last), lang('Database has been created.'), !strlen(DB), false, $failed)) {
+		if (query_redirect(queries(), ME . "db=" . urlencode($last), lang('Database has been created.'), DB == "", false, $failed)) {
 			//! move triggers
 			$result = $connection->query("SHOW TABLES");
 			while ($row = $result->fetch_row()) {
@@ -38,7 +38,7 @@ if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP c
 	}
 }
 
-page_header(strlen(DB) ? lang('Alter database') : lang('Create database'), $error, array(), DB);
+page_header(DB != "" ? lang('Alter database') : lang('Create database'), $error, array(), DB);
 
 $collations = collations();
 $name = DB;
@@ -46,7 +46,7 @@ $collate = null;
 if ($_POST) {
 	$name = $_POST["name"];
 	$collate = $_POST["collation"];
-} elseif (!strlen(DB)) {
+} elseif (DB == "") {
 	// propose database name with limited privileges
 	$result = $connection->query("SHOW GRANTS");
 	while ($row = $result->fetch_row()) {
@@ -70,7 +70,7 @@ if ($_POST) {
 <input type="hidden" name="token" value="<?php echo $token; ?>">
  <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php
-if (!$_POST["add_x"] && !strlen($_GET["db"])) {
+if (!$_POST["add_x"] && $_GET["db"] == "") {
 	echo "<input type='image' name='add' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>\n";
 }
 ?>

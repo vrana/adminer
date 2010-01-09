@@ -11,7 +11,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 			$set = array();
 			ksort($index["columns"]);
 			foreach ($index["columns"] as $key => $column) {
-				if (strlen($column)) {
+				if ($column != "") {
 					$length = $index["lengths"][$key];
 					$set[] = idf_escape($column) . ($length ? "(" . intval($length) . ")" : "");
 					$columns[count($columns) + 1] = $column;
@@ -50,7 +50,7 @@ if ($_POST) {
 	$row = $_POST;
 	if ($_POST["add"]) {
 		foreach ($row["indexes"] as $key => $index) {
-			if (strlen($index["columns"][count($index["columns"])])) {
+			if ($index["columns"][count($index["columns"])] != "") {
 				$row["indexes"][$key]["columns"][] = "";
 			}
 		}

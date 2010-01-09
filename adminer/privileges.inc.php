@@ -6,7 +6,7 @@ if (!$result) {
 	?>
 <form action=""><p>
 <?php if (SID) { ?><input type="hidden" name="<?php echo session_name(); ?>" value="<?php echo h(session_id()); ?>"><?php } ?>
-<?php if (strlen($_GET["server"])) { ?><input type="hidden" name="server" value="<?php echo h($_GET["server"]); ?>"><?php } ?>
+<?php if ($_GET["server"] != "") { ?><input type="hidden" name="server" value="<?php echo h($_GET["server"]); ?>"><?php } ?>
 <?php echo lang('Username'); ?>: <input name="user">
 <?php echo lang('Server'); ?>: <input name="host" value="localhost">
 <input type="hidden" name="grant" value="">

@@ -43,10 +43,10 @@ if ($fields) {
 			if ($foreign_keys) {
 				echo "<table cellspacing='0'>\n";
 				foreach ($foreign_keys as $name => $foreign_key) {
-					$link = (strlen($foreign_key["db"]) ? "<strong>" . h($foreign_key["db"]) . "</strong>." : "") . h($foreign_key["table"]);
+					$link = ($foreign_key["db"] != "" ? "<strong>" . h($foreign_key["db"]) . "</strong>." : "") . h($foreign_key["table"]);
 					echo "<tr>";
 					echo "<th><i>" . implode("</i>, <i>", array_map('h', $foreign_key["source"])) . "</i>";
-					echo "<td><a href='" . h(strlen($foreign_key["db"]) ? preg_replace('~db=[^&]*~', "db=" . urlencode($foreign_key["db"]), ME) : ME) . "table=" . urlencode($foreign_key["table"]) . "'>$link</a>";
+					echo "<td><a href='" . h($foreign_key["db"] != "" ? preg_replace('~db=[^&]*~', "db=" . urlencode($foreign_key["db"]), ME) : ME) . "table=" . urlencode($foreign_key["table"]) . "'>$link</a>";
 					echo "(<em>" . implode("</em>, <em>", array_map('h', $foreign_key["target"])) . "</em>)";
 					echo '<td><a href="' . h(ME . 'foreign=' . urlencode($TABLE) . '&name=' . urlencode($name)) . '">' . lang('Alter') . '</a>';
 				}

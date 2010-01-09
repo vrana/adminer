@@ -11,11 +11,11 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 			$target[$key] = $_POST["target"][$key];
 		}
 		query_redirect("ALTER TABLE " . idf_escape($TABLE)
-			. (strlen($_GET["name"]) ? "\nDROP FOREIGN KEY " . idf_escape($_GET["name"]) . "," : "")
+			. ($_GET["name"] != "" ? "\nDROP FOREIGN KEY " . idf_escape($_GET["name"]) . "," : "")
 			. "\nADD FOREIGN KEY (" . implode(", ", array_map('idf_escape', $source)) . ") REFERENCES " . idf_escape($_POST["table"]) . " (" . implode(", ", array_map('idf_escape', $target)) . ")"
 			. (in_array($_POST["on_delete"], $on_actions) ? " ON DELETE $_POST[on_delete]" : "")
 			. (in_array($_POST["on_update"], $on_actions) ? " ON UPDATE $_POST[on_update]" : "")
-		, ME . "table=" . urlencode($TABLE), (strlen($_GET["name"]) ? lang('Foreign key has been altered.') : lang('Foreign key has been created.')));
+		, ME . "table=" . urlencode($TABLE), ($_GET["name"] != "" ? lang('Foreign key has been altered.') : lang('Foreign key has been created.')));
 		$error = lang('Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.') . "<br>$error"; //! no partitioning
 	}
 }
@@ -31,7 +31,7 @@ if ($_POST) {
 	} elseif ($_POST["change"] || $_POST["change-js"]) {
 		$row["target"] = array();
 	}
-} elseif (strlen($_GET["name"])) {
+} elseif ($_GET["name"] != "") {
 	$foreign_keys = foreign_keys($TABLE);
 	$row = $foreign_keys[$_GET["name"]];
 	$row["source"][] = "";
@@ -43,7 +43,7 @@ $target = ($TABLE === $row["table"] ? $source : array_keys(fields($row["table"])
 
 <form action="" method="post">
 <p>
-<?php if (!strlen($row["db"])) { ?>
+<?php if ($row["db"] == "") { ?>
 <?php echo lang('Target table'); ?>:
 <?php echo html_select("table", array_keys(table_status_referencable()), $row["table"], "this.form['change-js'].value = '1'; this.form.submit();"); ?>
 <input type="hidden" name="change-js" value="">
@@ -68,6 +68,6 @@ foreach ($row["source"] as $key => $val) {
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <noscript><p><input type="submit" name="add" value="<?php echo lang('Add column'); ?>"></noscript>
 <?php } ?>
-<?php if (strlen($_GET["name"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
+<?php if ($_GET["name"] != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

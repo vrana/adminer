@@ -10,7 +10,7 @@ foreach ($referencable_primary as $table_name => $field) {
 
 $orig_fields = array();
 $orig_status = array();
-if (strlen($TABLE)) {
+if ($TABLE != "") {
 	$orig_fields = fields($TABLE);
 	$orig_status = table_status($TABLE);
 }
@@ -18,7 +18,7 @@ if (strlen($TABLE)) {
 if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] && !$_POST["down"]) {
 	$auto_increment_index = " PRIMARY KEY";
 	// don't overwrite primary key by auto_increment
-	if (strlen($TABLE) && $_POST["auto_increment_col"]) {
+	if ($TABLE != "" && $_POST["auto_increment_col"]) {
 		foreach (indexes($TABLE) as $index) {
 			if (in_array($_POST["fields"][$_POST["auto_increment_col"]]["orig"], $index["columns"], true)) {
 				$auto_increment_index = "";
@@ -35,7 +35,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 	$after = "FIRST";
 	foreach ($_POST["fields"] as $key => $field) {
 		$type_field = (isset($types[$field["type"]]) ? $field : $referencable_primary[$foreign_keys[$field["type"]]]);
-		if (strlen($field["field"])) {
+		if ($field["field"] != "") {
 			if ($type_field) {
 				$default = eregi_replace(" *on update CURRENT_TIMESTAMP", "", $field["default"]);
 				if ($default != $field["default"]) { // preg_replace $count is available since PHP 5.1.0
@@ -48,47 +48,47 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 				$process_field = process_field($field, $type_field);
 				$auto_increment = ($key == $_POST["auto_increment_col"]);
 				if ($process_field != process_field($orig_field, $orig_field) || $orig_field["auto_increment"] != $auto_increment) {
-					$fields .= "\n" . (strlen($TABLE) ? (strlen($field["orig"]) ? "CHANGE " . idf_escape($field["orig"]) : "ADD") : " ")
+					$fields .= "\n" . ($TABLE != "" ? ($field["orig"] != "" ? "CHANGE " . idf_escape($field["orig"]) : "ADD") : " ")
 						. " $process_field"
 						. ($auto_increment ? " AUTO_INCREMENT$auto_increment_index" : "")
-						. (strlen($TABLE) ? " $after" : "") . ","
+						. ($TABLE != "" ? " $after" : "") . ","
 					;
 				}
 				if (!isset($types[$field["type"]])) {
-					$fields .= (strlen($TABLE) ? "\nADD" : "") . " FOREIGN KEY (" . idf_escape($field["field"]) . ") REFERENCES " . idf_escape($foreign_keys[$field["type"]]) . " (" . idf_escape($type_field["field"]) . "),";
+					$fields .= ($TABLE != "" ? "\nADD" : "") . " FOREIGN KEY (" . idf_escape($field["field"]) . ") REFERENCES " . idf_escape($foreign_keys[$field["type"]]) . " (" . idf_escape($type_field["field"]) . "),";
 				}
 			}
 			$after = "AFTER " . idf_escape($field["field"]);
 			//! drop and create foreign keys with renamed columns
-		} elseif (strlen($field["orig"])) {
+		} elseif ($field["orig"] != "") {
 			$fields .= "\nDROP " . idf_escape($field["orig"]) . ",";
 		}
-		if (strlen($field["orig"])) {
+		if ($field["orig"] != "") {
 			$orig_field = next($orig_fields);
 		}
 	}
 	$status = "COMMENT=" . $connection->quote($_POST["Comment"])
 		. ($_POST["Engine"] && $_POST["Engine"] != $orig_status["Engine"] ? " ENGINE=" . $connection->quote($_POST["Engine"]) : "")
 		. ($_POST["Collation"] && $_POST["Collation"] != $orig_status["Collation"] ? " COLLATE " . $connection->quote($_POST["Collation"]) : "")
-		. (strlen($_POST["auto_increment"]) ? " AUTO_INCREMENT=" . preg_replace('~[^0-9]+~', '', $_POST["auto_increment"]) : "")
+		. ($_POST["auto_increment"] != "" ? " AUTO_INCREMENT=" . preg_replace('~[^0-9]+~', '', $_POST["auto_increment"]) : "")
 	;
 	if (in_array($_POST["partition_by"], $partition_by)) {
 		$partitions = array();
 		if ($_POST["partition_by"] == 'RANGE' || $_POST["partition_by"] == 'LIST') {
 			foreach (array_filter($_POST["partition_names"]) as $key => $val) {
 				$value = $_POST["partition_values"][$key];
-				$partitions[] = "\nPARTITION " . idf_escape($val) . " VALUES " . ($_POST["partition_by"] == 'RANGE' ? "LESS THAN" : "IN") . (strlen($value) ? " ($value)" : " MAXVALUE"); //! SQL injection
+				$partitions[] = "\nPARTITION " . idf_escape($val) . " VALUES " . ($_POST["partition_by"] == 'RANGE' ? "LESS THAN" : "IN") . ($value != "" ? " ($value)" : " MAXVALUE"); //! SQL injection
 			}
 		}
 		$status .= "\nPARTITION BY $_POST[partition_by]($_POST[partition])" . ($partitions // $_POST["partition"] can be expression, not only column
 			? " (" . implode(",", $partitions) . "\n)"
 			: ($_POST["partitions"] ? " PARTITIONS " . intval($_POST["partitions"]) : "")
 		);
-	} elseif ($connection->server_info >= 5.1 && strlen($TABLE)) {
+	} elseif ($connection->server_info >= 5.1 && $TABLE != "") {
 		$status .= "\nREMOVE PARTITIONING";
 	}
 	$location = ME . "table=" . urlencode($_POST["name"]);
-	if (strlen($TABLE)) {
+	if ($TABLE != "") {
 		query_redirect("ALTER TABLE " . idf_escape($TABLE) . "$fields\nRENAME TO " . idf_escape($_POST["name"]) . ",\n$status", $location, lang('Table has been altered.'));
 	} else {
 		cookie("adminer_engine", $_POST["Engine"]);
@@ -96,7 +96,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 	}
 }
 
-page_header((strlen($TABLE) ? lang('Alter table') : lang('Create table')), $error, array("table" => $TABLE), $TABLE);
+page_header(($TABLE != "" ? lang('Alter table') : lang('Create table')), $error, array("table" => $TABLE), $TABLE);
 
 $row = array(
 	"Engine" => $_COOKIE["adminer_engine"],
@@ -109,7 +109,7 @@ if ($_POST) {
 		$row["fields"][$row["auto_increment_col"]]["auto_increment"] = true;
 	}
 	process_fields($row["fields"]);
-} elseif (strlen($TABLE)) {
+} elseif ($TABLE != "") {
 	$row = $orig_status;
 	$row["name"] = $TABLE;
 	$row["fields"] = array();
