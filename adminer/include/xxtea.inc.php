@@ -74,6 +74,9 @@ function encrypt_string($str, $key) {
 function decrypt_string($str, $key) {
 	$v = str2long($str, false);
 	$n = count($v) - 1;
+	if (!$n) {
+		return "";
+	}
 	$z = $v[$n];
 	$y = $v[0];
 	$q = floor(6 + 52 / ($n + 1));
