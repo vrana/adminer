@@ -46,6 +46,7 @@ function encrypt_string($str, $key) {
 	if ($str == "") {
 		return "";
 	}
+	$key = array_values(unpack("V*", pack("H*", md5($key))));
 	$v = str2long($str, true);
 	$n = count($v) - 1;
 	$z = $v[$n];
@@ -78,6 +79,7 @@ function decrypt_string($str, $key) {
 	if ($str == "") {
 		return "";
 	}
+	$key = array_values(unpack("V*", pack("H*", md5($key))));
 	$v = str2long($str, false);
 	$n = count($v) - 1;
 	$z = $v[$n];
