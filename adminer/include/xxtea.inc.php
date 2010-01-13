@@ -39,7 +39,7 @@ function xxtea_mx($z, $y, $sum, $k) {
 
 /** Cipher
 * @param string plain-text password
-* @param array 4 integers
+* @param string
 * @return string binary cipher
 */
 function encrypt_string($str, $key) {
@@ -72,7 +72,7 @@ function encrypt_string($str, $key) {
 
 /** Decipher
 * @param string binary cipher
-* @param array 4 integers
+* @param string
 * @return string plain-text password
 */
 function decrypt_string($str, $key) {
