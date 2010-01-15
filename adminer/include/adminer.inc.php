@@ -323,10 +323,11 @@ class Adminer {
 					$cols = array();
 					foreach ($fields as $name => $field) {
 						if (is_numeric($val["val"]) || !ereg('int|float|double|decimal', $field["type"])) {
-							$cols[] = $name;
+							$name = idf_escape($name);
+							$cols[] = (ereg('char|text|enum|set', $field["type"]) && !ereg('^utf8', $field["collation"]) ? "CONVERT($name USING utf8)" : $name);
 						}
 					}
-					$return[] = ($cols ? "(" . implode("$cond OR ", array_map('idf_escape', $cols)) . "$cond)" : "0");
+					$return[] = ($cols ? "(" . implode("$cond OR ", $cols) . "$cond)" : "0");
 				}
 			}
 		}
