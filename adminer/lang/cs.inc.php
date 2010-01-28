@@ -227,4 +227,5 @@ $translations = array(
 	'Webserver file %s' => 'Soubor %s na webovém serveru',
 	'File does not exist.' => 'Soubor neexistuje.',
 	'Permanent login' => 'Trvalé přihlášení',
+	'%d in total' => '%d celkem',
 );

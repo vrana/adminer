@@ -48,7 +48,8 @@ if (!$table_status) {
 } else {
 	echo "<form action='' method='post'>\n";
 	echo "<table cellspacing='0' class='nowrap' onclick='tableClick(event);'>\n";
-	echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck(this, /^(tables|views)\[/);" title="' . count($table_status) . '"><th>' . lang('Table') . '<td>' . lang('Engine') . '<td>' . lang('Collation') . '<td>' . lang('Data Length') . '<td>' . lang('Index Length') . '<td>' . lang('Data Free') . '<td>' . lang('Auto Increment') . '<td>' . lang('Rows') . '<td>' . lang('Comment') . "</thead>\n";
+	echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck(this, /^(tables|views)\[/);"><th>' . lang('Table') . '<td>' . lang('Engine') . '<td>' . lang('Collation') . '<td>' . lang('Data Length') . '<td>' . lang('Index Length') . '<td>' . lang('Data Free') . '<td>' . lang('Auto Increment') . '<td>' . lang('Rows') . '<td>' . lang('Comment') . "</thead>\n";
+	$sums = array();
 	foreach ($table_status as $row) {
 		$name = $row["Name"];
 		echo '<tr' . odd() . '><td>' . checkbox((isset($row["Rows"]) ? "tables[]" : "views[]"), $name, in_array($name, $tables_views, true), "", "formUncheck('check-all');");
@@ -58,6 +59,7 @@ if (!$table_status) {
 			foreach (array("Data_length" => "create", "Index_length" => "indexes", "Data_free" => "edit", "Auto_increment" => "create", "Rows" => "select") as $key => $link) {
 				$val = number_format($row[$key], 0, '.', lang(','));
 				echo '<td align="right">' . ($row[$key] != "" ? '<a href="' . h(ME . "$link=") . urlencode($name) . '">' . str_replace(" ", "&nbsp;", ($key == "Rows" && $row["Engine"] == "InnoDB" && $val ? lang('~ %s', $val) : $val)) . '</a>' : '&nbsp;');
+				$sums[$link] += ($row["Engine"] != "InnoDB" || $link != "edit" ? $row[$key] : 0);
 			}
 			echo "<td>" . nbsp($row["Comment"]);
 		} else {
@@ -65,6 +67,12 @@ if (!$table_status) {
 			echo '<td align="right"><a href="' . h(ME) . "select=" . urlencode($name) . '">?</a>';
 			echo '<td>&nbsp;';
 		}
+	}
+	echo "<tr><td>&nbsp;<th>" . lang('%d in total', count($table_status));
+	echo "<td>" . $connection->result($connection->query("SELECT @@storage_engine"));
+	echo "<td>" . db_collation(DB, collations());
+	foreach (array("create", "indexes", "edit") as $val) {
+		echo "<td align='right'>" . number_format($sums[$val], 0, '.', lang(','));
 	}
 	echo "</table>\n";
 	echo "<p><input type='hidden' name='token' value='$token'><input type='submit' value='" . lang('Analyze') . "'> <input type='submit' name='optimize' value='" . lang('Optimize') . "'> <input type='submit' name='check' value='" . lang('Check') . "'> <input type='submit' name='repair' value='" . lang('Repair') . "'> <input type='submit' name='truncate' value='" . lang('Truncate') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + formChecked(this, /tables/) + ')');\"> <input type='submit' name='drop' value='" . lang('Drop') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + formChecked(this, /tables|views/) + ')');\">\n";
