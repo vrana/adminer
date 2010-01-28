@@ -188,7 +188,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 		}
 	}
 	?>
-<thead><tr>
+<thead><tr class="wrap">
 <?php if ($type == "PROCEDURE") { ?><td>&nbsp;<?php } ?>
 <th><?php echo ($type == "TABLE" ? lang('Column name') : lang('Parameter name')); ?>
 <td><?php echo lang('Type'); ?><textarea id="enum-edit" rows="4" cols="10" style="display: none;" onblur="editingLengthBlur(this);"></textarea>
@@ -218,11 +218,11 @@ if ($type == "PROCEDURE") {
 <?php if ($type == "TABLE") { ?>
 <td><?php echo checkbox("fields[$i][null]", 1, $field["null"]); ?>
 <td><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked<?php } ?>>
-<td class="nowrap hidden"><?php echo checkbox("fields[$i][has_default]", 1, $field["has_default"]); ?><input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["default"]); ?>" onchange="this.previousSibling.checked = true;">
+<td class="hidden"><?php echo checkbox("fields[$i][has_default]", 1, $field["has_default"]); ?><input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["default"]); ?>" onchange="this.previousSibling.checked = true;">
 <td<?php echo ($column_comments ? "" : " class='hidden'"); ?>><input name="fields[<?php echo $i; ?>][comment]" value="<?php echo h($field["comment"]); ?>" maxlength="255">
 <?php } ?>
 <?php
-		echo "<td class='nowrap'><input type='image' name='add[$i]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "' onclick='return !editingAddRow(this, $allowed, 1);'>";
+		echo "<td><input type='image' name='add[$i]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "' onclick='return !editingAddRow(this, $allowed, 1);'>";
 		echo "&nbsp;<input type='image' name='drop_col[$i]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "' onclick='return !editingRemoveRow(this);'>";
 		echo "&nbsp;<input type='image' name='up[$i]' src='../adminer/static/up.gif' alt='^' title='" . lang('Move up') . "'>";
 		echo "&nbsp;<input type='image' name='down[$i]' src='../adminer/static/down.gif' alt='v' title='" . lang('Move down') . "'>";

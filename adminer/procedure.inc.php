@@ -39,9 +39,14 @@ if ($_POST) {
 ?>
 
 <form action="" method="post" id="form">
-<table cellspacing="0">
-<?php edit_fields($row["fields"], $collations, $routine); ?>
-<?php if (isset($_GET["function"])) { ?><tr><td><?php echo lang('Return type'); edit_type("returns", $row["returns"], $collations); ?><?php } ?>
+<table cellspacing="0" class="nowrap">
+<?php
+edit_fields($row["fields"], $collations, $routine);
+if (isset($_GET["function"])) {
+	echo "<tr><td>" . lang('Return type');
+	edit_type("returns", $row["returns"], $collations);
+}
+?>
 </table>
 <p><textarea name="definition" rows="10" cols="80" style="width: 98%;"><?php echo h($row["definition"]); ?></textarea>
 <p>

@@ -243,7 +243,7 @@ function editingLengthBlur(edit) {
 function columnShow(checked, column) {
 	var trs = document.getElementById('edit-fields').getElementsByTagName('tr');
 	for (var i=0; i < trs.length; i++) {
-		trs[i].getElementsByTagName('td')[column].className = (checked ? 'nowrap' : 'hidden');
+		trs[i].getElementsByTagName('td')[column].className = (checked ? '' : 'hidden');
 	}
 }
 
