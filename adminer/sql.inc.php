@@ -39,7 +39,8 @@ if (!$error && $_POST) {
 		if (is_object($connection2)) {
 			$connection2->select_db(DB);
 		}
-		$explain = 1;
+		$queries = 0;
+		$errors = "";
 		while ($query != "") {
 			if (!$offset && preg_match('~^\\s*DELIMITER\\s+(.+)~i', $query, $match)) {
 				$delimiter = $match[1];
@@ -57,13 +58,15 @@ if (!$error && $_POST) {
 					if (!$found || $found == $delimiter) { // end of a query
 						$empty = false;
 						$q = substr($query, 0, $match[0][1]);
-						echo "<pre class='jush-sql'>" . shorten_utf8(trim($q), 1000) . "</pre>\n";
+						$queries++;
+						echo "<pre class='jush-sql' id='sql-$queries'>" . shorten_utf8(trim($q), 1000) . "</pre>\n";
 						ob_flush();
 						flush(); // can take a long time - show the running query
 						$start = explode(" ", microtime()); // microtime(true) is available since PHP 5
 						//! don't allow changing of character_set_results, convert encoding of displayed query
 						if (!$connection->multi_query($q)) {
 							echo "<p class='error'>" . lang('Error in query') . ": " . error() . "\n";
+							$errors .= " <a href='#sql-$queries'>$queries</a>";
 							if ($_POST["error_stops"]) {
 								break;
 							}
@@ -75,13 +78,12 @@ if (!$error && $_POST) {
 								if (is_object($result)) {
 									select($result, $connection2);
 									if ($connection2 && preg_match("~^($space|\\()*SELECT\\b~isU", $q)) {
-										$id = "explain-$explain";
+										$id = "explain-$queries";
 										echo "<p>" . ($result->num_rows ? lang('%d row(s)', $result->num_rows) . ", " : "");
 										echo "<a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>\n";
 										echo "<div id='$id' class='hidden'>\n";
 										select($connection2->query("EXPLAIN $q"));
 										echo "</div>\n";
-										$explain++;
 									}
 								} else {
 									if (preg_match("~^$space*$alter_database", $query)) {
@@ -107,6 +109,9 @@ if (!$error && $_POST) {
 					}
 				}
 			}
+		}
+		if ($errors && $queries > 1) {
+			echo "<p class='error'>" . lang('Error in query') . ": $errors\n";
 		}
 		if ($empty) {
 			echo "<p class='message'>" . lang('No commands to execute.') . "\n";
