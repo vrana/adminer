@@ -1,8 +1,10 @@
 Adminer 2.3.0-dev:
 Support for permanent login (customization required)
+Search in all tables (Editor)
 Show status variables
 Print sums in tables overview
 Add Delete button to Edit page (regression from 2.0.0)
+Print error summary in SQL command
 Simplify SQL syntax error message
 Show SQL query info if available
 Delete length when changing type in alter table
