@@ -394,6 +394,6 @@ function schemaMouseup(ev) {
 		for (var key in tablePos) {
 			s += '_' + key + ':' + Math.round(tablePos[key][0] * 10000) / 10000 + 'x' + Math.round(tablePos[key][1] * 10000) / 10000;
 		}
-		document.cookie = 'adminer_schema=' + encodeURIComponent(s.substr(1)) + '; expires=' + date + '; path=' + location.pathname + location.search;
+		document.cookie = 'adminer_schema=' + encodeURIComponent(s.substr(1)) + '; expires=' + date + '; path="' + location.pathname + location.search + '"';
 	}
 }

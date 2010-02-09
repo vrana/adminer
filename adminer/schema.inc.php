@@ -31,8 +31,8 @@ foreach (table_status() as $row) {
 		foreach (foreign_keys($row["Name"]) as $val) {
 			if (!$val["db"]) {
 				$left = $base_left;
-				if ($table_pos[$row["Name"]][1] || $table_pos[$row["Name"]][1]) {
-					$left = min($table_pos[$row["Name"]][1], $table_pos[$val["table"]][1]) - 1;
+				if ($table_pos[$row["Name"]][1] || $table_pos[$val["table"]][1]) {
+					$left = min(floatval($table_pos[$row["Name"]][1]), floatval($table_pos[$val["table"]][1])) - 1;
 				} else {
 					$base_left -= .1;
 				}
