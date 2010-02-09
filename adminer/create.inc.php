@@ -70,7 +70,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 	$status = "COMMENT=" . $connection->quote($_POST["Comment"])
 		. ($_POST["Engine"] && $_POST["Engine"] != $orig_status["Engine"] ? " ENGINE=" . $connection->quote($_POST["Engine"]) : "")
 		. ($_POST["Collation"] && $_POST["Collation"] != $orig_status["Collation"] ? " COLLATE " . $connection->quote($_POST["Collation"]) : "")
-		. ($_POST["auto_increment"] != "" ? " AUTO_INCREMENT=" . preg_replace('~[^0-9]+~', '', $_POST["auto_increment"]) : "")
+		. ($_POST["Auto_increment"] != "" ? " AUTO_INCREMENT=" . preg_replace('~[^0-9]+~', '', $_POST["Auto_increment"]) : "")
 	;
 	if (in_array($_POST["partition_by"], $partition_by)) {
 		$partitions = array();
@@ -113,6 +113,9 @@ if ($_POST) {
 	$row = $orig_status;
 	$row["name"] = $TABLE;
 	$row["fields"] = array();
+	if (!$_GET["auto_increment"]) { // don't prefill by original Auto_increment for the sake of performance and not reusing deleted ids
+		$row["Auto_increment"] = "";
+	}
 	foreach ($orig_fields as $field) {
 		$field["has_default"] = isset($field["default"]);
 		if ($field["on_update"]) {
@@ -162,7 +165,7 @@ foreach ($engines as $engine) {
 <?php $column_comments = edit_fields($row["fields"], $collations, "TABLE", $suhosin, $foreign_keys); ?>
 </table>
 <p>
-<?php echo lang('Auto Increment'); ?>: <input name="auto_increment" size="6" value="<?php echo h($row["auto_increment"]); // don't prefill by original Auto_increment for the sake of performance and not reusing deleted ids ?>">
+<?php echo lang('Auto Increment'); ?>: <input name="Auto_increment" size="6" value="<?php echo h($row["Auto_increment"]); ?>">
 <?php echo lang('Comment'); ?>: <input name="Comment" value="<?php echo h($row["Comment"]); ?>" maxlength="60">
 <script type="text/javascript">
 document.write('<label><input type="checkbox" onclick="columnShow(this.checked, 5);"><?php echo lang('Default values'); ?><\/label>');

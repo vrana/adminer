@@ -56,7 +56,7 @@ if (!$table_status) {
 		echo '<th><a href="' . h(ME) . 'table=' . urlencode($name) . '">' . h($name) . '</a>';
 		if (isset($row["Rows"])) {
 			echo "<td>$row[Engine]<td>$row[Collation]";
-			foreach (array("Data_length" => "create", "Index_length" => "indexes", "Data_free" => "edit", "Auto_increment" => "create", "Rows" => "select") as $key => $link) {
+			foreach (array("Data_length" => "create", "Index_length" => "indexes", "Data_free" => "edit", "Auto_increment" => "auto_increment=1&create", "Rows" => "select") as $key => $link) {
 				$val = number_format($row[$key], 0, '.', lang(','));
 				echo '<td align="right">' . ($row[$key] != "" ? '<a href="' . h(ME . "$link=") . urlencode($name) . '">' . str_replace(" ", "&nbsp;", ($key == "Rows" && $row["Engine"] == "InnoDB" && $val ? lang('~ %s', $val) : $val)) . '</a>' : '&nbsp;');
 				$sums[$link] += ($row["Engine"] != "InnoDB" || $link != "edit" ? $row[$key] : 0);
