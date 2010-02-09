@@ -148,8 +148,8 @@ if (!ini_get("file_uploads")) {
 
 <p><?php
 $compress = array();
-foreach (array("gz" => "zlib", "bz2" => "bzip2") as $key => $val) {
-	if (in_array("compress.$val", stream_get_wrappers())) {
+foreach (array("gz" => "zlib", "bz2" => "bz2") as $key => $val) {
+	if (extension_loaded($val)) {
 		$compress[] = ".$key";
 	}
 }
