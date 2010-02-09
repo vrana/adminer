@@ -10,9 +10,9 @@ if (isset($_POST["server"])) {
 			. ":" . base64_encode(encrypt_string($_POST["password"], $adminer->permanentLogin()))
 		);
 	}
-	if (count($_POST) == 3 + ($_POST["permanent"] ? 1 : 0)) { // 3 - server, username, password
+	if (count($_POST) == ($_POST["permanent"] ? 4 : 3)) { // 3 - server, username, password
 		$location = ((string) $_GET["server"] === $_POST["server"] ? remove_from_uri(session_name()) : preg_replace('~^([^?]*).*~', '\\1', ME) . ($_POST["server"] != "" ? '?server=' . urlencode($_POST["server"]) : ''));
-		if (SID) {
+		if (SID_FORM) {
 			$pos = strpos($location, '?');
 			$location = ($pos ? substr_replace($location, SID . "&", $pos + 1, 0) : "$location?" . SID);
 		}

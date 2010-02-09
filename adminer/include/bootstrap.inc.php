@@ -46,7 +46,7 @@ if (!isset($_SERVER["REQUEST_URI"])) {
 session_write_close(); // disable session.auto_start
 @ini_set("session.use_trans_sid", false); // protect links in export, @ - may be disabled
 session_name("adminer_sid"); // use specific session name to get own namespace
-$params = array(0, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]), "", (bool) $_SERVER["HTTPS"]);
+$params = array(0, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]), "", $_SERVER["HTTPS"] && $_SERVER["HTTPS"] != "off");
 if (version_compare(PHP_VERSION, '5.2.0') >= 0) {
 	$params[] = true; // HttpOnly
 }
@@ -75,7 +75,8 @@ if (function_exists("set_magic_quotes_runtime")) {
 @set_time_limit(0); // @ - can be disabled
 
 define("DB", $_GET["db"]); // for the sake of speed and size
-define("ME", preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . '?' . (SID ? SID . '&' : '') . ($_GET["server"] != "" ? 'server=' . urlencode($_GET["server"]) . '&' : '') . (DB != "" ? 'db=' . urlencode(DB) . '&' : ''));
+define("SID_FORM", SID && !ini_get("session.use_only_cookies") ? '<input type="hidden" name="' . session_name() . '" value="' . h(session_id()) . '">' : '');
+define("ME", preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . '?' . (SID_FORM ? SID . '&' : '') . ($_GET["server"] != "" ? 'server=' . urlencode($_GET["server"]) . '&' : '') . (DB != "" ? 'db=' . urlencode(DB) . '&' : ''));
 
 include "../adminer/include/version.inc.php";
 include "../adminer/include/functions.inc.php";

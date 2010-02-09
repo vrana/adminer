@@ -201,7 +201,7 @@ function where_link($i, $column, $value) {
 * @return bool
 */
 function cookie($name, $value) {
-	$params = array($name, $value, time() + 2592000, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]), "", (bool) $_SERVER["HTTPS"]); // 2592000 = 30 * 24 * 60 * 60
+	$params = array($name, $value, time() + 2592000, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]), "", $_SERVER["HTTPS"] && $_SERVER["HTTPS"] != "off"); // 2592000 = 30 * 24 * 60 * 60
 	if (version_compare(PHP_VERSION, '5.2.0') >= 0) {
 		$params[] = true; // HttpOnly
 	}

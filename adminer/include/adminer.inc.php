@@ -505,7 +505,7 @@ class Adminer {
 </form>
 <form action="">
 <p>
-<?php if (SID) { ?><input type="hidden" name="<?php echo session_name(); ?>" value="<?php echo h(session_id()); ?>"><?php } ?>
+<?php echo SID_FORM; ?>
 <?php if ($_GET["server"] != "") { ?><input type="hidden" name="server" value="<?php echo h($_GET["server"]); ?>"><?php } ?>
 <?php echo ($databases ? html_select("db", array("" => "(" . lang('database') . ")") + $databases, DB, "this.form.submit();") : '<input name="db" value="' . h(DB) . '">'); ?>
 <?php if (isset($_GET["sql"])) { ?><input type="hidden" name="sql" value=""><?php } ?>

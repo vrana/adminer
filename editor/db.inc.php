@@ -3,7 +3,7 @@ page_header(lang('Server'), "", null);
 
 ?>
 <form action=""><p>
-<?php if (SID) { ?><input type="hidden" name="<?php echo session_name(); ?>" value="<?php echo h(session_id()); ?>"><?php } ?>
+<?php echo SID_FORM; ?>
 <input name="where[][val]" value="<?php echo h($_GET["where"][0]["val"]); ?>">
 <input type="submit" value="<?php echo lang('Search'); ?>" />
 </form>
