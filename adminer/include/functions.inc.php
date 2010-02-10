@@ -167,7 +167,7 @@ function where($where) {
 	$return = array();
 	foreach ((array) $where["where"] as $key => $val) {
 		$key = bracket_escape($key, "back");
-		$return[] = (preg_match('~^[A-Z0-9_]+\\(`(?:[^`]|``)+`\\)$~', $key) ? $key : idf_escape($key)) . " LIKE " . exact_value(addcslashes($val, "%_")); // LIKE because of floats //! enum and set, columns looking like functions
+		$return[] = (preg_match('~^[A-Z0-9_]+\\(`(?:[^`]|``)+`\\)$~', $key) ? $key : idf_escape($key)) . (ereg('\\.', $val) ? " LIKE " . exact_value(addcslashes($val, "%_")) : " = " . exact_value($val)); // LIKE because of floats, but slow with ints //! enum and set, columns looking like functions
 	}
 	foreach ((array) $where["null"] as $key) {
 		$key = bracket_escape($key, "back");
