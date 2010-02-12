@@ -25,13 +25,13 @@ if ($fields) {
 		$indexes = indexes($TABLE);
 		if ($indexes) {
 			echo "<table cellspacing='0'>\n";
-			foreach ($indexes as $index) {
+			foreach ($indexes as $name => $index) {
 				ksort($index["columns"]); // enforce correct columns order
 				$print = array();
 				foreach ($index["columns"] as $key => $val) {
 					$print[] = "<i>" . h($val) . "</i>" . ($index["lengths"][$key] ? "(" . $index["lengths"][$key] . ")" : "");
 				}
-				echo "<tr><th>$index[type]<td>" . implode(", ", $print) . "\n";
+				echo "<tr title='" . h($name) . "'><th>$index[type]<td>" . implode(", ", $print) . "\n";
 			}
 			echo "</table>\n";
 		}
