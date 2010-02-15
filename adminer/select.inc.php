@@ -221,7 +221,7 @@ if (!$columns) {
 							if ($val == "") {
 								$val = "&nbsp;";
 							} elseif ($text_length != "" && ereg('text|blob', $field["type"]) && is_utf8($val)) {
-								$val = shorten_utf8($val, max(0, intval($text_length))); // usage of LEFT() would reduce traffic but complicate query
+								$val = shorten_utf8($val, max(0, intval($text_length))); // usage of LEFT() would reduce traffic but complicate query - expected average speedup: .001 s VS .01 s on local network
 							} else {
 								$val = h($val);
 							}

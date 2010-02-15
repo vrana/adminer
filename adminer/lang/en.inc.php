@@ -8,4 +8,5 @@ $translations = array(
 	'%d item(s) have been affected.' => array('%d item has been affected.', '%d items have been affected.'),
 	'%d row(s) have been imported.' => array('%d row has been imported.', '%d rows have been imported.'),
 	'%d e-mail(s) have been sent.' => array('%d e-mail has been sent.', '%d e-mails have been sent.'),
+	'%d in total' => '%d in total',
 );
