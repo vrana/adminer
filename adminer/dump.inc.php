@@ -147,7 +147,7 @@ if ($connection->server_info >= 5) {
 	$db_style[] = 'CREATE+ALTER';
 	$table_style[] = 'CREATE+ALTER';
 }
-echo "<tr><th>" . lang('Output') . "<td><input type='hidden' name='token' value='$token'>" . $adminer->dumpOutput(0) . "\n"; // token is not needed but checked in bootstrap for all POST data
+echo "<tr><th>" . lang('Output') . "<td><input type='hidden' name='token' value='$token'>" . $adminer->dumpOutput(0) . "\n"; // token is not needed but checked in bootstrap for all POST data //! read from cookie
 echo "<tr><th>" . lang('Format') . "<td>" . $adminer->dumpFormat(0) . "\n";
 echo "<tr><th>" . lang('Database') . "<td>" . html_select('db_style', $db_style, (DB != "" ? '' : 'CREATE'));
 if ($connection->server_info >= 5) {

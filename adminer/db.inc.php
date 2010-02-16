@@ -1,7 +1,7 @@
 <?php
 $tables_views = array_merge((array) $_POST["tables"], (array) $_POST["views"]);
 
-if ($tables_views && !$error) {
+if ($tables_views && !$error && !$_POST["search"]) {
 	$result = true;
 	$message = "";
 	if (count($_POST["tables"]) > 1 && ($_POST["drop"] || $_POST["truncate"])) {
@@ -47,6 +47,12 @@ if (!$table_status) {
 	echo "<p class='message'>" . lang('No tables.') . "\n";
 } else {
 	echo "<form action='' method='post'>\n";
+	echo "<p><input name='query' value='" . h($_POST["query"]) . "'> <input type='submit' name='search' value='" . lang('Search') . "'>\n";
+	if ($_POST["search"] && $_POST["query"] != "") {
+		$_GET["where"][0]["op"] = "LIKE";
+		$_GET["where"][0]["val"] = "%$_POST[query]%";
+		search_tables();
+	}
 	echo "<table cellspacing='0' class='nowrap' onclick='tableClick(event);'>\n";
 	echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck(this, /^(tables|views)\[/);"><th>' . lang('Table') . '<td>' . lang('Engine') . '<td>' . lang('Collation') . '<td>' . lang('Data Length') . '<td>' . lang('Index Length') . '<td>' . lang('Data Free') . '<td>' . lang('Auto Increment') . '<td>' . lang('Rows') . '<td>' . lang('Comment') . "</thead>\n";
 	$sums = array();

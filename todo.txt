@@ -1,7 +1,6 @@
 MySQL 5 BIT data type
 Transactions in export
 Create view and routine options
-Function to fix database encoding - http://php.vrana.cz/prevod-kodovani-mysql.php
 Highlight SQL textarea - may use external CodePress
 Mass editation of individual rows
 Offer enum and set items in search - whisperer
@@ -9,6 +8,7 @@ Variables editation, especially timezone
 Use event $intervals + microseconds in relative date functions
 Optionally check IP address
 Disable spell checking in SQL textareas - spellcheck="false"
+Accept Tab in SQL textareas, Ctrl+Enter to send form
 Blob download and image display in edit form (important for Editor with hidden fields in select)
 Add title to Logout, edit (in select) and select (in menu) in style "hever"
 ? Column and table names auto-completition in SQL textarea

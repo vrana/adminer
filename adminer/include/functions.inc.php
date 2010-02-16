@@ -479,6 +479,30 @@ function process_input($field) {
 	}
 }
 
+/** Print results of search in all tables
+* @uses $_GET["where"][0]
+* @uses $_POST["tables"]
+* @return null
+*/
+function search_tables() {
+	global $adminer, $connection;
+	$found = false;
+	foreach (table_status() as $table => $table_status) {
+		$name = $adminer->tableName($table_status);
+		if (isset($table_status["Engine"]) && $name != "" && (!$_POST["tables"] || in_array($table, $_POST["tables"]))) {
+			$result = $connection->query($q = "SELECT 1 FROM " . idf_escape($table) . " WHERE " . implode(" AND ", $adminer->selectSearchProcess(fields($table), array())) . " LIMIT 1");
+			if ($result->num_rows) {
+				if (!$found) {
+					echo "<ul>\n";
+					$found = true;
+				}
+				echo "<li><a href='" . h(ME . "select=" . urlencode($table) . "&where[0][op]=" . urlencode($_GET["where"][0]["op"]) . "&where[0][val]=" . urlencode($_GET["where"][0]["val"])) . "'>" . h($name) . "</a>\n";
+			}
+		}
+	}
+	echo ($found ? "</ul>" : "<p class='message'>" . lang('No tables.')) . "\n";
+}
+
 /** Print CSV row
 * @param array
 * @return null

@@ -1,6 +1,6 @@
 Adminer 2.3.0-dev:
 Support for permanent login (customization required)
-Search in all tables (Editor)
+Search in all tables
 Show status variables
 Print sums in tables overview
 Add Delete button to Edit page (regression from 2.0.0)
