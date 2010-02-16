@@ -8,6 +8,7 @@ Print error summary in SQL command
 Simplify SQL syntax error message
 Show SQL query info if available
 Delete length when changing type in alter table
+Ability to check table prefix in export
 
 Adminer 2.2.1 (released 2009-11-26):
 Highlight current links

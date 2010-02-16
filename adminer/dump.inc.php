@@ -165,6 +165,7 @@ echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style,
 
 <table cellspacing="0">
 <?php
+$prefixes = array();
 if (DB != "") {
 	$checked = ($TABLE != "" ? "" : " checked");
 	echo "<thead><tr>";
@@ -173,23 +174,36 @@ if (DB != "") {
 	echo "</thead>\n";
 	$views = "";
 	foreach (table_status() as $row) {
-		$checked = $TABLE == "" || $row["Name"] == $TABLE;
-		$print = "<tr><td>" . checkbox("tables[]", $row["Name"], $checked, $row["Name"], "formUncheck('check-tables');");
+		$name = $row["Name"];
+		$prefix = ereg_replace("_.*", "", $name);
+		$checked = ($TABLE == "" || $TABLE == (substr($TABLE, -1) == "%" ? "$prefix%" : $name)); //! % may be part of table name
+		$print = "<tr><td>" . checkbox("tables[]", $name, $checked, $name, "formUncheck('check-tables');");
 		if (!$row["Engine"]) {
 			$views .= "$print\n";
 		} else {
-			echo "$print<td align='right'><label>" . ($row["Engine"] == "InnoDB" && $row["Rows"] ? lang('~ %s', $row["Rows"]) : $row["Rows"]) . checkbox("data[]", $row["Name"], $checked, "", "formUncheck('check-data');") . "</label>\n";
+			echo "$print<td align='right'><label>" . ($row["Engine"] == "InnoDB" && $row["Rows"] ? lang('~ %s', $row["Rows"]) : $row["Rows"]) . checkbox("data[]", $name, $checked, "", "formUncheck('check-data');") . "</label>\n";
 		}
+		$prefixes[$prefix]++;
 	}
 	echo $views;
 } else {
-	echo "<thead><tr><th style='text-align: left;'><label><input type='checkbox' id='check-databases' checked onclick='formCheck(this, /^databases\\[/);'>" . lang('Database') . "</label></thead>\n";
+	echo "<thead><tr><th style='text-align: left;'><label><input type='checkbox' id='check-databases'" . ($TABLE == "" ? " checked" : "") . " onclick='formCheck(this, /^databases\\[/);'>" . lang('Database') . "</label></thead>\n";
 	foreach (get_databases() as $db) {
 		if (!information_schema($db)) {
-			echo "<tr><td>" . checkbox("databases[]", $db, 1, $db, "formUncheck('check-databases');") . "</label>\n";
+			$prefix = ereg_replace("_.*", "", $db);
+			echo "<tr><td>" . checkbox("databases[]", $db, $TABLE == "" || $TABLE == "$prefix%", $db, "formUncheck('check-databases');") . "</label>\n";
+			$prefixes[$prefix]++;
 		}
 	}
 }
 ?>
 </table>
 </form>
+<?php
+$first = true;
+foreach ($prefixes as $key => $val) {
+	if ($key != "" && $val > 1) {
+		echo ($first ? "<p>" : " ") . "<a href='" . h(ME) . "dump=" . urlencode("$key%") . "'>" . h($key) . "</a>";
+		$first = false;
+	}
+}
