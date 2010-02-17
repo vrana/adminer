@@ -167,7 +167,7 @@ function dump_data($table, $style, $select = "") {
 }
 
 function dump_headers($identifier, $multi_table = false) {
-	$filename = ($identifier != "" ? friendly_url($identifier) : "dump");
+	$filename = ($identifier != "" ? friendly_url($identifier) : "adminer");
 	$output = $_POST["output"];
 	$ext = ($_POST["format"] == "sql" ? "sql" : ($multi_table ? "tar" : "csv")); // multiple CSV packed to TAR
 	header("Content-Type: " .

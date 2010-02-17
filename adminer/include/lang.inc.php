@@ -4,7 +4,7 @@
 $langs = array(
 	'en' => 'English', // Jakub Vrána - http://php.vrana.cz
 	'cs' => 'Čeština', // Jakub Vrána - http://php.vrana.cz
-	'sk' => 'Slovenčina', // Ivan Suchy - http://www.ivansuchy.com
+	'sk' => 'Slovenčina', // Ivan Suchy - http://www.ivansuchy.com, Juraj Krivda - http://www.jstudio.cz
 	'nl' => 'Nederlands', // Maarten Balliauw - http://blog.maartenballiauw.be
 	'es' => 'Español', // Klemens Häckel - http://clickdimension.wordpress.com
 	'de' => 'Deutsch', // Klemens Häckel - http://clickdimension.wordpress.com

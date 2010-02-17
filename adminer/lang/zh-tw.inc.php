@@ -226,4 +226,6 @@ $translations = array(
 	'Webserver file %s' => '網頁伺服器檔案 %s',
 	'File does not exist.' => '檔案不存在',
 	'Item has been deleted.' => '該項目已被刪除',
+	'%d in total' => '總共 %d 個',
+	'Permanent login' => '永久登入',
 );

@@ -226,4 +226,6 @@ $translations = array(
 	'%d e-mail(s) have been sent.' => array('%d e-mail verzonden.', '%d e-mails verzonden.'),
 	'Webserver file %s' => 'Webserver bestand %s',
 	'File does not exist.' => 'Bestand niet gevonden.',
+	'%d in total' => '%d in totaal',
+	'Permanent login' => 'Blijf aangemeld',
 );

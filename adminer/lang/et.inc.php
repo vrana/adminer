@@ -226,4 +226,6 @@ $translations = array(
 	'%d e-mail(s) have been sent.' => array('Saadetud kirju: %d.', 'Saadetud kirju: %d.'),
 	'Webserver file %s' => 'Fail serveris: %s',
 	'File does not exist.' => 'Faili ei leitud.',
+	'%d in total' => 'Kokku: %d',
+	'Permanent login' => 'Jäta mind meelde',
 );

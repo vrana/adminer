@@ -490,7 +490,7 @@ function search_tables() {
 	foreach (table_status() as $table => $table_status) {
 		$name = $adminer->tableName($table_status);
 		if (isset($table_status["Engine"]) && $name != "" && (!$_POST["tables"] || in_array($table, $_POST["tables"]))) {
-			$result = $connection->query($q = "SELECT 1 FROM " . idf_escape($table) . " WHERE " . implode(" AND ", $adminer->selectSearchProcess(fields($table), array())) . " LIMIT 1");
+			$result = $connection->query("SELECT 1 FROM " . idf_escape($table) . " WHERE " . implode(" AND ", $adminer->selectSearchProcess(fields($table), array())) . " LIMIT 1");
 			if ($result->num_rows) {
 				if (!$found) {
 					echo "<ul>\n";
