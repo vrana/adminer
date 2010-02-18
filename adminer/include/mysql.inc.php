@@ -66,7 +66,8 @@ if (extension_loaded("mysqli")) {
 			if (!$result) {
 				$this->error = mysql_error($this->_link);
 				return false;
-			} elseif ($result === true) {
+			}
+			if ($result === true) {
 				$this->affected_rows = mysql_affected_rows($this->_link);
 				$this->info = mysql_info($this->_link);
 				return true;
