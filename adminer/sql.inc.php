@@ -27,9 +27,7 @@ if (!$error && $_POST) {
 		}
 		$space = "(\\s|/\\*.*\\*/|(#|-- )[^\n]*\n|--\n)";
 		$alter_database = "(CREATE|DROP)$space+(DATABASE|SCHEMA)\\b~isU";
-		$databases = &$_SESSION["databases"][$_GET["server"]];
-		if (!ini_get("session.use_cookies") || (isset($databases) && !preg_match("~\\b$alter_database", $query))) { // quick check - may be inside string
-			//! false positive with $fp and disabled ini_set() and enabled session.use_cookies
+		if (!ini_get("session.use_cookies")) {
 			session_write_close();
 		}
 		$delimiter = ";";
@@ -87,7 +85,9 @@ if (!$error && $_POST) {
 									}
 								} else {
 									if (preg_match("~^$space*$alter_database", $query)) {
-										$databases = null; // clear cache
+										restart_session();
+										$_SESSION["databases"][$_GET["server"]] = null; // clear cache
+										session_write_close();
 									}
 									echo "<p class='message' title='" . h($connection->info) . "'>" . lang('Query executed OK, %d row(s) affected.', $connection->affected_rows) . "\n";
 								}
