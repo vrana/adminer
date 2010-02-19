@@ -20,32 +20,30 @@ if (extension_loaded('pdo')) {
 		}
 		
 		function query($query, $unbuffered = false) {
-			$return = parent::query($query);
-			if (!$return) {
+			$result = parent::query($query);
+			if (!$result) {
 				$errorInfo = $this->errorInfo();
 				$this->error = $errorInfo[2];
 				return false;
 			}
-			if ($return->columnCount()) {
-				$this->affected_rows = $return->rowCount();
-			} else {
-				$return->num_rows = $return->rowCount(); // is not guaranteed to work with all drivers
-			}
-			return $return;
+			$this->store_result($result);
+			return $result;
 		}
 		
 		function multi_query($query) {
 			return $this->_result = $this->query($query);
 		}
 		
-		function store_result() {
-			$return = &$this->_result;
-			if ($return->columnCount()) {
-				$this->affected_rows = $return->rowCount();
-				return true;
+		function store_result($result = null) {
+			if (!$result) {
+				$result = $this->_result;
 			}
-			$return->num_rows = $return->rowCount();
-			return $return;
+			if ($result->columnCount()) {
+				$result->num_rows = $result->rowCount(); // is not guaranteed to work with all drivers
+				return $result;
+			}
+			$this->affected_rows = $result->rowCount();
+			return true;
 		}
 		
 		function next_result() {
