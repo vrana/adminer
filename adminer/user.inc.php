@@ -50,10 +50,10 @@ if ($_POST && !$error) {
 	if ($_POST["drop"]) {
 		query_redirect("DROP USER $old_user", ME . "privileges=", lang('User has been dropped.'));
 	} else {
-		if ($old_user == $new_user) {
-			queries("SET PASSWORD FOR $new_user = " . ($_POST["hashed"] ? $pass : "PASSWORD($pass)"));
-		} else {
+		if ($old_user != $new_user) {
 			$error = !queries(($connection->server_info < 5 ? "GRANT USAGE ON *.* TO" : "CREATE USER") . " $new_user IDENTIFIED BY" . ($_POST["hashed"] ? " PASSWORD" : "") . " $pass");
+		} elseif ($_POST["pass"] != $old_pass || !$_POST["hashed"]) {
+			queries("SET PASSWORD FOR $new_user = " . ($_POST["hashed"] ? $pass : "PASSWORD($pass)"));
 		}
 		if (!$error) {
 			$revoke = array();
@@ -107,9 +107,7 @@ if ($_POST) {
 } else {
 	$row = $_GET + array("host" => $connection->result($connection->query("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', -1)"))); // create user on the same domain by default
 	$row["pass"] = $old_pass;
-	if ($old_pass != "") {
-		$row["hashed"] = true;
-	}
+	$row["hashed"] = true;
 	$grants[""] = true;
 }
 
