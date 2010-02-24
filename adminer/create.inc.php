@@ -177,8 +177,8 @@ document.write('<label><input type="checkbox"<?php if ($column_comments) { ?> ch
 <?php
 if ($connection->server_info >= 5.1) {
 	$partition_table = ereg('RANGE|LIST', $row["partition_by"]);
+	print_fieldset("partition", lang('Partition by'), $row["partition_by"]);
 	?>
-<fieldset><legend><?php echo lang('Partition by'); ?></legend>
 <p>
 <?php echo html_select("partition_by", array(-1 => "") + $partition_by, $row["partition_by"], "partitionByChange(this);"); ?>
 (<input name="partition" value="<?php echo h($row["partition"]); ?>">)
@@ -193,6 +193,6 @@ foreach ($row["partition_names"] as $key => $val) {
 }
 ?>
 </table>
-</fieldset>
+</div></fieldset>
 <?php } ?>
 </form>
