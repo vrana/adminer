@@ -379,7 +379,7 @@ class Adminer {
 	function messageQuery($query) {
 		restart_session();
 		$id = "sql-" . count($_SESSION["messages"]);
-		$_SESSION["history"][$_GET["server"]][DB][] = $query;
+		$_SESSION["history"][$_GET["server"]][DB][] = (strlen($query) > 1e6 ? ereg_replace('[\x80-\xFF]+$', '', substr($query, 0, 1e6)) . "\n..." : $query); // [\x80-\xFF] - valid UTF-8, \n - can end by one-line comment
 		return " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre class='jush-sql'>" . shorten_utf8($query, 1000) . '</pre><a href="' . h(ME . 'sql=&history=' . (count($_SESSION["history"][$_GET["server"]][DB]) - 1)) . '">' . lang('Edit') . '</a></div>';
 	}
 	
