@@ -18,7 +18,7 @@ if (isset($_POST["server"])) {
 		}
 		redirect($location);
 	}
-	$_GET["server"] = $_POST["server"];
+	$_GET["server"] = $_POST["server"]; //! used also in ME
 } elseif ($_POST["logout"]) {
 	$token = $_SESSION["tokens"][$_GET["server"]];
 	if ($token && $_POST["token"] != $token) {
@@ -37,11 +37,11 @@ if (isset($_POST["server"])) {
 	}
 } elseif ($_COOKIE["adminer_permanent"] && !isset($_SESSION["usernames"][$_GET["server"]])) {
 	list($server, $username, $cipher) = array_map('base64_decode', explode(":", $_COOKIE["adminer_permanent"]));
-	if ($_GET["server"] == "" || $server == $_GET["server"]) {
+	if (($_GET["server"] == "" && !$_POST) || $server == $_GET["server"]) {
 		session_regenerate_id(); // defense against session fixation
 		$_SESSION["usernames"][$server] = $username;
 		$_SESSION["passwords"][$server] = decrypt_string($cipher, $adminer->permanentLogin());
-		if (!$_POST && $server != $_GET["server"]) {
+		if ($server != $_GET["server"]) {
 			redirect(preg_replace('~^([^?]*).*~', '\\1', ME) . '?server=' . urlencode($server));
 		}
 	}
@@ -78,4 +78,7 @@ unset($username);
 
 if (!$_SESSION["tokens"][$_GET["server"]]) {
 	$_SESSION["tokens"][$_GET["server"]] = rand(1, 1e6); // defense against cross-site request forgery
+}
+if (isset($_POST["server"]) && $_POST["token"]) {
+	$_POST["token"] = $_SESSION["tokens"][$_GET["server"]];
 }
