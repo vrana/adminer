@@ -21,7 +21,9 @@ if (!$error && $_POST) {
 		$query = get_file("sql_file", true);
 	}
 	if (is_string($query)) { // get_file() returns error as number, fread() as false
-		@ini_set("memory_limit", 2 * strlen($query) + memory_get_usage() + 8e6); // @ - may be disabled, 2 - substr and trim, 8e6 - other variables
+		if (function_exists('memory_get_usage')) {
+			@ini_set("memory_limit", 2 * strlen($query) + memory_get_usage() + 8e6); // @ - may be disabled, 2 - substr and trim, 8e6 - other variables
+		}
 		if ($query != "" && strlen($query) < 1e6 && (!$history || end($history) != $query)) { // don't add repeated and big queries
 			$history[] = $query;
 		}
