@@ -98,7 +98,7 @@ if ($_POST && !$error) {
 			$file = preg_replace("~^\xEF\xBB\xBF~", '', $file); //! character set
 			$result = true;
 			$cols = array_keys($fields);
-			preg_match_all('~("[^"]*"|[^"\\r\\n])+~', $file, $matches);
+			preg_match_all('~(?>"[^"]*"|[^"\\r\\n]+)+~', $file, $matches);
 			$affected = count($matches[0]);
 			queries("START TRANSACTION");
 			foreach ($matches[0] as $key => $val) {
