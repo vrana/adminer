@@ -119,8 +119,11 @@ if ($_POST && !$error) {
 					}
 				}
 			}
-			queries("COMMIT");
+			if ($result) {
+				queries("COMMIT");
+			}
 			queries_redirect(remove_from_uri("page"), lang('%d row(s) have been imported.', $affected), $result);
+			queries("ROLLBACK");
 		} else {
 			$error = upload_error($file);
 		}
