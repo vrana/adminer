@@ -1,4 +1,4 @@
-Adminer 2.3.0-dev:
+Adminer 2.3.0 (released 2010-02-26):
 Support for permanent login (customization required)
 Search in all tables
 Show status variables
