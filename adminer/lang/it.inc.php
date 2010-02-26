@@ -226,4 +226,6 @@ $translations = array(
 	'%d e-mail(s) have been sent.' => array('%d e-mail inviata.','%d e-mail inviate.'),
 	'Webserver file %s' => 'Webserver file %s',
 	'File does not exist.' => 'Il file non esiste.',
+	'%d in total' => '%d in totale',
+	'Permanent login' => 'Login permanente',
 );

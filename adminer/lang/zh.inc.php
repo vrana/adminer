@@ -30,7 +30,7 @@ $translations = array(
 	'Alter database' => '更改数据库',
 	'Create database' => '创建数据库',
 	'SQL command' => 'SQL命令',
-	'Dump' => '导入/导出',
+	'Dump' => '导出',
 	'Logout' => '注销',
 	'database' => '数据库',
 	'Use' => '使用',
@@ -226,4 +226,6 @@ $translations = array(
 	'%d e-mail(s) have been sent.' => '%d 封邮件已发送。',
 	'Webserver file %s' => 'Web服务器文件 %s',
 	'File does not exist.' => '文件不存在',
+	'%d in total' => '共计 %d',
+	'Permanent login' => '保持登录',
 );

@@ -68,7 +68,7 @@ if ($_POST) {
 ) . "\n"; ?>
 <?php echo html_select("collation", array("" => "(" . lang('collation') . ")") + $collations, $collate); ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
- <input type="submit" value="<?php echo lang('Save'); ?>">
+<input type="submit" value="<?php echo lang('Save'); ?>">
 <?php
 if (!$_POST["add_x"] && $_GET["db"] == "") {
 	echo "<input type='image' name='add' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>\n";
