@@ -14,7 +14,7 @@ function connect_error() {
 			queries_redirect(substr(ME, 0, -1), lang('Database has been dropped.'), !$connection->error);
 		}
 		
-		page_header(lang('Select database'), "", null);
+		page_header(lang('Select database'), $error, null);
 		echo "<p>";
 		foreach (array(
 			'database' => lang('Create new database'),
@@ -35,7 +35,7 @@ function connect_error() {
 			echo "<thead><tr><td><input type='hidden' name='token' value='$token'>&nbsp;<th>" . lang('Database') . "<td>" . lang('Collation') . "</thead>\n";
 			foreach ($databases as $db) {
 				$root = h(ME) . "db=" . urlencode($db);
-				echo "<tr" . odd() . "><td>" . checkbox("db[]", $db, false);
+				echo "<tr" . odd() . "><td>" . checkbox("db[]", $db, in_array($db, (array) $_POST["db"]));
 				echo "<th><a href='$root'>" . h($db) . "</a>";
 				echo "<td><a href='$root&amp;database='>" . nbsp(db_collation($db, $collations)) . "</a>";
 				echo "\n";

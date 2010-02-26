@@ -82,3 +82,8 @@ if (!$_SESSION["tokens"][$_GET["server"]]) {
 if (isset($_POST["server"]) && $_POST["token"]) {
 	$_POST["token"] = $_SESSION["tokens"][$_GET["server"]];
 }
+$token = $_SESSION["tokens"][$_GET["server"]]; ///< @var string CSRF protection
+$error = ($_POST ///< @var string
+	? ($_POST["token"] == $token ? "" : lang('Invalid CSRF token. Send the form again.'))
+	: ($_SERVER["REQUEST_METHOD"] != "POST" ? "" : lang('Too big POST data. Reduce the data or increase the %s configuration directive.', '"post_max_size"')) // posted form with no data means that post_max_size exceeded because Adminer always sends token at least
+);

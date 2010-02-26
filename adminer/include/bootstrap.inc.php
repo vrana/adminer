@@ -100,9 +100,3 @@ if (!ini_get("session.use_cookies") || @ini_set("session.use_cookies", false) !=
 
 $on_actions = array("RESTRICT", "CASCADE", "SET NULL", "NO ACTION"); ///< @var array used in foreign_keys()
 $confirm = " onclick=\"return confirm('" . lang('Are you sure?') . "');\""; ///< @var string
-$token = $_SESSION["tokens"][$_GET["server"]]; ///< @var string CSRF protection
-/** @var string */
-$error = ($_POST
-	? ($_POST["token"] == $token ? "" : lang('Invalid CSRF token. Send the form again.'))
-	: ($_SERVER["REQUEST_METHOD"] != "POST" ? "" : lang('Too big POST data. Reduce the data or increase the %s configuration directive.', '"post_max_size"')) // posted form with no data means that post_max_size exceeded because Adminer always sends token at least
-);
