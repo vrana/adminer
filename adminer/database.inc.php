@@ -1,8 +1,11 @@
 <?php
 if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP changes add.x to add_x
-	if (DB !== $_POST["name"]) {
+	restart_session();
+	if ($_POST["drop"]) {
+		unset($_SESSION["databases"][$_GET["server"]]);
+		query_redirect("DROP DATABASE " . idf_escape(DB), remove_from_uri("db|database"), lang('Database has been dropped.'));
+	} elseif (DB !== $_POST["name"]) {
 		// create or rename database
-		restart_session();
 		unset($_SESSION["databases"][$_GET["server"]]); // clear cache
 		$dbs = explode("\n", str_replace("\r", "", $_POST["name"]));
 		$failed = false;
@@ -70,7 +73,9 @@ if ($_POST) {
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php
-if (!$_POST["add_x"] && $_GET["db"] == "") {
+if (strlen(DB)) {
+	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'$confirm>\n";
+} elseif (!$_POST["add_x"] && $_GET["db"] == "") {
 	echo "<input type='image' name='add' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>\n";
 }
 ?>

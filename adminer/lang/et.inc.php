@@ -9,6 +9,7 @@ $translations = array(
 	'Select database' => 'Vali andmebaas',
 	'Invalid database.' => 'Tundmatu andmebaas.',
 	'Create new database' => 'Loo uus andmebaas',
+	'Table has been dropped.' => 'Tabel on edukalt kustutatud.',
 	'Table has been altered.' => 'Tabeli andmed on edukalt muudetud.',
 	'Table has been created.' => 'Tabel on edukalt loodud.',
 	'Alter table' => 'Muuda tabeli struktuuri',

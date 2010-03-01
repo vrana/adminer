@@ -9,6 +9,7 @@ $translations = array(
 	'Select database' => 'Seleccionar Base de datos',
 	'Invalid database.' => 'Base de datos inválida.',
 	'Create new database' => 'Nueva Base de datos',
+	'Table has been dropped.' => 'Tabla eliminada.',
 	'Table has been altered.' => 'Tabla modificada.',
 	'Table has been created.' => 'Tabla creada.',
 	'Alter table' => 'Modificar Estructura',
