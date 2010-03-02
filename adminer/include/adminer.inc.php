@@ -126,7 +126,7 @@ class Adminer {
 	* @return string
 	*/
 	function selectQuery($query) {
-		return "<p><code class='jush-sql'>" . h($query) . "</code> <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a></p>\n";
+		return "<p><code class='jush-sql'>" . h($query) . "</code> <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>\n";
 	}
 	
 	/** Description of a row in a table

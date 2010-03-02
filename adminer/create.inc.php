@@ -164,7 +164,6 @@ foreach ($engines as $engine) {
 <?php echo ($engines ? html_select("Engine", array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) : ""); ?>
  <?php echo html_select("Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]); ?>
  <input type="submit" value="<?php echo lang('Save'); ?>">
-</p>
 <table cellspacing="0" id="edit-fields" class="nowrap">
 <?php $column_comments = edit_fields($row["fields"], $collations, "TABLE", $suhosin, $foreign_keys); ?>
 </table>

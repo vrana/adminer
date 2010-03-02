@@ -47,7 +47,6 @@ $target = ($TABLE === $row["table"] ? $source : array_keys(fields($row["table"])
 <?php echo lang('Target table'); ?>:
 <?php echo html_select("table", array_keys(table_status_referencable()), $row["table"], "this.form['change-js'].value = '1'; this.form.submit();"); ?>
 <input type="hidden" name="change-js" value="">
-</p>
 <noscript><p><input type="submit" name="change" value="<?php echo lang('Change'); ?>"></noscript>
 <table cellspacing="0">
 <thead><tr><th><?php echo lang('Source'); ?><th><?php echo lang('Target'); ?></thead>
