@@ -81,11 +81,13 @@ if (!$table_status) {
 		echo "<td align='right'>" . number_format($sums[$val], 0, '.', lang(','));
 	}
 	echo "</table>\n";
-	echo "<p><input type='hidden' name='token' value='$token'><input type='submit' value='" . lang('Analyze') . "'> <input type='submit' name='optimize' value='" . lang('Optimize') . "'> <input type='submit' name='check' value='" . lang('Check') . "'> <input type='submit' name='repair' value='" . lang('Repair') . "'> <input type='submit' name='truncate' value='" . lang('Truncate') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + formChecked(this, /tables/) + ')');\"> <input type='submit' name='drop' value='" . lang('Drop') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + formChecked(this, /tables|views/) + ')');\">\n";
-	$dbs = get_databases();
-	if (count($dbs) != 1) {
-		$db = (isset($_POST["target"]) ? $_POST["target"] : DB);
-		echo "<p>" . lang('Move to other database') . ($dbs ? ": " . html_select("target", $dbs, $db) : ': <input name="target" value="' . h($db) . '">') . " <input type='submit' name='move' value='" . lang('Move') . "'>\n";
+	if (!information_schema(DB)) {
+		echo "<p><input type='hidden' name='token' value='$token'><input type='submit' value='" . lang('Analyze') . "'> <input type='submit' name='optimize' value='" . lang('Optimize') . "'> <input type='submit' name='check' value='" . lang('Check') . "'> <input type='submit' name='repair' value='" . lang('Repair') . "'> <input type='submit' name='truncate' value='" . lang('Truncate') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + formChecked(this, /tables/) + ')');\"> <input type='submit' name='drop' value='" . lang('Drop') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + formChecked(this, /tables|views/) + ')');\">\n";
+		$dbs = get_databases();
+		if (count($dbs) != 1) {
+			$db = (isset($_POST["target"]) ? $_POST["target"] : DB);
+			echo "<p>" . lang('Move to other database') . ($dbs ? ": " . html_select("target", $dbs, $db) : ': <input name="target" value="' . h($db) . '">') . " <input type='submit' name='move' value='" . lang('Move') . "'>\n";
+		}
 	}
 	echo "</form>\n";
 }
