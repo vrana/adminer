@@ -11,10 +11,21 @@ function toggle(id) {
 	return true;
 }
 
+/** Set permanent cookie
+* @param string
+* @param number
+* @param string optional
+*/
+function cookie(assign, days, params) {
+	var date = new Date();
+	date.setDate(date.getDate() + days);
+	document.cookie = assign + '; expires=' + date + (params || '');
+}
+
 /** Verify current Adminer version
 */
 function verifyVersion() {
-	document.cookie = 'adminer_version=0';
+	cookie('adminer_version=0', 1);
 	var script = document.createElement('script');
 	script.src = 'https://adminer.svn.sourceforge.net/svnroot/adminer/trunk/version.js';
 	document.body.appendChild(script);

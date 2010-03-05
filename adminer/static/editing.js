@@ -388,12 +388,10 @@ function schemaMouseup(ev) {
 		ev = ev || event;
 		tablePos[that.firstChild.firstChild.firstChild.data] = [ (ev.clientY - y) / em, (ev.clientX - x) / em ];
 		that = undefined;
-		var date = new Date();
-		date.setMonth(date.getMonth() + 1);
 		var s = '';
 		for (var key in tablePos) {
 			s += '_' + key + ':' + Math.round(tablePos[key][0] * 10000) / 10000 + 'x' + Math.round(tablePos[key][1] * 10000) / 10000;
 		}
-		document.cookie = 'adminer_schema=' + encodeURIComponent(s.substr(1)) + '; expires=' + date + '; path="' + location.pathname + location.search + '"';
+		cookie('adminer_schema=' + encodeURIComponent(s.substr(1)), 30, '; path="' + location.pathname + location.search + '"');
 	}
 }
