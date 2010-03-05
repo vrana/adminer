@@ -1,3 +1,7 @@
+Adminer 2.3.1-dev:
+Add Drop button to Alter pages (regression from 2.0.0)
+Return to referer after edit
+
 Adminer 2.3.0 (released 2010-02-26):
 Support for permanent login (customization required)
 Search in all tables

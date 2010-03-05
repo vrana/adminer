@@ -28,8 +28,7 @@ if (!$error && $_POST) {
 		}
 		$call[] = (isset($out[$key]) ? "@" . idf_escape($field["field"]) : $val);
 	}
-	$result = $connection->multi_query((isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . idf_escape($PROCEDURE) . "(" . implode(", ", $call) . ")");
-	if (!$result) {
+	if (!$connection->multi_query((isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . idf_escape($PROCEDURE) . "(" . implode(", ", $call) . ")")) {
 		echo "<p class='error'>" . error() . "\n";
 	} else {
 		do {

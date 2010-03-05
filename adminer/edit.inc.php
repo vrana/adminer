@@ -9,8 +9,10 @@ foreach ($fields as $name => $field) {
 	}
 }
 if ($_POST && !$error && !isset($_GET["select"])) {
-	$location = $_SERVER["REQUEST_URI"]; // continue edit or insert
-	if (!$_POST["insert"]) {
+	$location = $_POST["referer"];
+	if ($_POST["insert"]) { // continue edit or insert
+		$location = $_SERVER["REQUEST_URI"]; //! doesn't work with change in &where field
+	} elseif (!ereg('^.+&select=.+$', $location)) {
 		$location = ME . "select=" . urlencode($TABLE);
 		$i = 0; // append &set converted to &where
 		foreach ((array) $_GET["set"] as $key => $val) {
@@ -96,6 +98,7 @@ if ($fields) {
 ?>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
+<input type="hidden" name="referer" value="<?php echo h(isset($_POST["referer"]) ? $_POST["referer"] : $_SERVER["HTTP_REFERER"]); ?>">
 <input type="hidden" name="save" value="1">
 <?php
 if (isset($_GET["select"])) {
