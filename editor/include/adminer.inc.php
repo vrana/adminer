@@ -105,7 +105,7 @@ ORDER BY ORDINAL_POSITION");
 	}
 	
 	function selectQuery($query) {
-		return "<!-- " . str_replace("--", "--><!--", $query) . " -->\n";
+		return "<!--\n" . str_replace("--", "--><!--", $query) . "\n-->\n";
 	}
 	
 	function rowDescription($table) {

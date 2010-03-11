@@ -23,8 +23,8 @@ list($select, $group) = $adminer->selectColumnsProcess($columns, $indexes);
 $where = $adminer->selectSearchProcess($fields, $indexes);
 $order = $adminer->selectOrderProcess($fields, $indexes);
 $limit = $adminer->selectLimitProcess();
-$from = ($select ? implode(", ", $select) : "*") . " FROM " . idf_escape($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : "");
-$group_by = ($group && count($group) < count($select) ? " GROUP BY " . implode(", ", $group) : "") . ($order ? " ORDER BY " . implode(", ", $order) : "");
+$from = ($select ? implode(", ", $select) : "*") . "\nFROM " . idf_escape($TABLE) . ($where ? "\nWHERE " . implode(" AND ", $where) : "");
+$group_by = ($group && count($group) < count($select) ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : "");
 
 if ($_POST && !$error) {
 	$where_check = "(" . implode(") OR (", array_map('where_check', (array) $_POST["check"])) . ")";
@@ -163,7 +163,7 @@ if (!$columns) {
 	$adminer->selectActionPrint($text_length);
 	echo "</form>\n";
 	
-	$query = "SELECT " . (intval($limit) && $group && count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . $from . $group_by . ($limit != "" ? " LIMIT " . intval($limit) . ($_GET["page"] ? " OFFSET " . ($limit * $_GET["page"]) : "") : "");
+	$query = "SELECT " . (intval($limit) && $group && count($group) < count($select) ? "SQL_CALC_FOUND_ROWS " : "") . $from . $group_by . ($limit != "" ? "\nLIMIT " . intval($limit) . ($_GET["page"] ? " OFFSET " . ($limit * $_GET["page"]) : "") : "");
 	echo $adminer->selectQuery($query);
 	
 	$result = $connection->query($query);
