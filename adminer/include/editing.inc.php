@@ -20,29 +20,31 @@ function select($result, $connection2 = null) {
 				echo "<thead><tr>";
 				for ($j=0; $j < count($row); $j++) {
 					$field = $result->fetch_field();
-					if ($field->orgtable != "") {
-						if (!isset($indexes[$field->orgtable])) {
+					$orgtable = $field->orgtable;
+					$orgname = $field->orgname;
+					if ($orgtable != "") {
+						if (!isset($indexes[$orgtable])) {
 							// find primary key in each table
-							$indexes[$field->orgtable] = array();
-							foreach (indexes($field->orgtable, $connection2) as $index) {
+							$indexes[$orgtable] = array();
+							foreach (indexes($orgtable, $connection2) as $index) {
 								if ($index["type"] == "PRIMARY") {
-									$indexes[$field->orgtable] = array_flip($index["columns"]);
+									$indexes[$orgtable] = array_flip($index["columns"]);
 									break;
 								}
 							}
-							$columns[$field->orgtable] = $indexes[$field->orgtable];
+							$columns[$orgtable] = $indexes[$orgtable];
 						}
-						if (isset($columns[$field->orgtable][$field->orgname])) {
-							unset($columns[$field->orgtable][$field->orgname]);
-							$indexes[$field->orgtable][$field->orgname] = $j;
-							$links[$j] = $field->orgtable;
+						if (isset($columns[$orgtable][$orgname])) {
+							unset($columns[$orgtable][$orgname]);
+							$indexes[$orgtable][$orgname] = $j;
+							$links[$j] = $orgtable;
 						}
 					}
 					if ($field->charsetnr == 63) {
 						$blobs[$j] = true;
 					}
 					$types[$j] = $field->type;
-					echo "<th>" . h($field->name);
+					echo "<th" . ($orgtable != "" || $field->name != $orgname ? " title='" . h(($orgtable != "" ? "$orgtable." : "") . $orgname) . "'" : "") . ">" . h($field->name);
 				}
 				echo "</thead>\n";
 			}
