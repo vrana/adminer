@@ -390,7 +390,7 @@ class Adminer {
 	function editFunctions($field) {
 		$return = array("");
 		if (ereg('char|date|time', $field["type"])) {
-			$return = (ereg('char', $field["type"]) ? array("", "md5", "sha1", "password", "uuid") : array("", "now")); //! JavaScript for disabling maxlength
+			$return = (ereg('char', $field["type"]) ? array("", "md5", "sha1", "password", "encrypt", "uuid") : array("", "now")); //! JavaScript for disabling maxlength
 		}
 		if (!isset($_GET["call"]) && (isset($_GET["select"]) || where($_GET))) {
 			// relative functions
@@ -449,7 +449,7 @@ class Adminer {
 			$return = idf_escape($name) . " $function " . (preg_match("~^([0-9]+|'[0-9.: -]') [A-Z_]+$~i", $value) ? $value : $return);
 		} elseif (ereg('^(addtime|subtime|concat)$', $function)) {
 			$return = "$function(" . idf_escape($name) . ", $return)";
-		} elseif (ereg('^(md5|sha1|password)$', $function)) {
+		} elseif (ereg('^(md5|sha1|password|encrypt)$', $function)) {
 			$return = "$function($return)";
 		}
 		return $return;
