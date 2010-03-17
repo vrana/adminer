@@ -14,6 +14,7 @@ thead td, thead th { background: #ddf; }
 fieldset { display: inline; vertical-align: top; padding: .5em .8em; margin: 0 .5em .5em 0; border: 1px solid #999; }
 p { margin: 0 20px 1em 0; }
 img { vertical-align: middle; border: 0; }
+td img { max-width: 200px; max-height: 200px; }
 code { background: #eee; }
 tr:hover td, tr:hover th { background: #ddf; }
 .version { color: #777; font-size: 67%; }
