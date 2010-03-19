@@ -22,7 +22,7 @@ foreach ($privileges["Tables"] as $key => $val) {
 $new_grants = array();
 if ($_POST) {
 	foreach ($_POST["objects"] as $key => $val) {
-		$new_grants[$val] = ((array) $new_grants[$val]) + ((array) $_POST["grants"][$key]);
+		$new_grants[$val] = (array) $new_grants[$val] + (array) $_POST["grants"][$key];
 	}
 }
 $grants = array();
@@ -31,7 +31,9 @@ if (isset($_GET["host"]) && ($result = $connection->query("SHOW GRANTS FOR " . $
 	while ($row = $result->fetch_row()) {
 		if (preg_match('~GRANT (.*) ON (.*) TO ~', $row[0], $match) && preg_match_all('~ *([^(,]*[^ ,(])( *\\([^)]+\\))?~', $match[1], $matches, PREG_SET_ORDER)) { //! escape the part between ON and TO
 			foreach ($matches as $val) {
-				$grants["$match[2]$val[2]"][$val[1]] = true;
+				if ($val[1] != "USAGE") {
+					$grants["$match[2]$val[2]"][$val[1]] = true;
+				}
 				if (ereg(' WITH GRANT OPTION', $row[0])) { //! don't check inside strings and identifiers
 					$grants["$match[2]$val[2]"]["GRANT OPTION"] = true;
 				}
@@ -86,7 +88,7 @@ if ($_POST && !$error) {
 			} elseif (!isset($_GET["grant"])) {
 				foreach ($grants as $object => $revoke) {
 					if (preg_match('~^(.+)(\\(.*\\))?$~U', $object, $match)) {
-						queries("REVOKE " . grant(array_keys($revoke), $match[2]) . " ON $match[1] FROM $new_user");
+						grant("REVOKE", array_keys($revoke), $match[2], " ON $match[1] FROM $new_user");
 					}
 				}
 			}
@@ -124,7 +126,7 @@ if ($_POST) {
 <?php
 //! MAX_* limits, REQUIRE
 echo "<table cellspacing='0'>\n";
-echo "<thead><tr><th colspan='2'>" . lang('Privileges');
+echo "<thead><tr><th colspan='2'><a href='http://dev.mysql.com/doc/refman/" . substr($connection->server_info, 0, 3) . "/en/grant.html'>" . lang('Privileges') . "</a>";
 $i = 0;
 foreach ($grants as $object => $grant) {
 	echo '<th>' . ($object != "*.*" ? "<input name='objects[$i]' value='" . h($object) . "' size='10'>" : "<input type='hidden' name='objects[$i]' value='*.*' size='10'>*.*"); //! separate db, table, columns, PROCEDURE|FUNCTION, routine
