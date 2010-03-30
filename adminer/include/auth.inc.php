@@ -33,7 +33,7 @@ if (isset($_POST["server"])) {
 			$_SESSION["passwords"] = array();
 		}
 		cookie("adminer_permanent", "");
-		redirect(substr(ME, 0, -1), lang('Logout successful.'));
+		redirect(substr(preg_replace('~db=[^&]*&~', '', ME), 0, -1), lang('Logout successful.'));
 	}
 } elseif ($_COOKIE["adminer_permanent"] && !isset($_SESSION["usernames"][$_GET["server"]])) {
 	list($server, $username, $cipher) = array_map('base64_decode', explode(":", $_COOKIE["adminer_permanent"]));
