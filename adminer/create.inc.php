@@ -40,13 +40,13 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 			$type_field = (isset($types[$field["type"]]) ? $field : $referencable_primary[$foreign_keys[$field["type"]]]);
 			if ($field["field"] != "") {
 				if ($type_field) {
+					if (!$field["has_default"]) {
+						$field["default"] = null;
+					}
 					$default = eregi_replace(" *on update CURRENT_TIMESTAMP", "", $field["default"]);
 					if ($default != $field["default"]) { // preg_replace $count is available since PHP 5.1.0
 						$field["on_update"] = "CURRENT_TIMESTAMP";
 						$field["default"] = $default;
-					}
-					if (!$field["has_default"]) {
-						$field["default"] = null;
 					}
 					$process_field = process_field($field, $type_field);
 					$auto_increment = ($key == $_POST["auto_increment_col"]);

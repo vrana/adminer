@@ -200,6 +200,9 @@ function editingTypeChange(type) {
 		)) {
 			el.value = '';
 		}
+		if (lastType == 'timestamp' && el.name == name + '[has_default]' && /timestamp/i.test(formField(type.form, name + '[default]').value)) {
+			el.checked = false;
+		}
 		if (el.name == name + '[collation]') {
 			el.className = (/(char|text|enum|set)$/.test(text) ? '' : 'hidden');
 		}
