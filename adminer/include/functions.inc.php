@@ -135,9 +135,9 @@ function get_vals($query, $column = 0) {
 /** Find unique identifier of a row
 * @param array
 * @param array result of indexes()
-* @return string query string
+* @return array
 */
-function unique_idf($row, $indexes) {
+function unique_array($row, $indexes) {
 	foreach ($indexes as $index) {
 		if (ereg("PRIMARY|UNIQUE", $index["type"])) {
 			$return = array();
@@ -145,7 +145,7 @@ function unique_idf($row, $indexes) {
 				if (!isset($row[$key])) { // NULL is ambiguous
 					continue 2;
 				}
-				$return[] = urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($row[$key]);
+				$return[$key] = $row[$key];
 			}
 			return $return;
 		}
@@ -153,7 +153,7 @@ function unique_idf($row, $indexes) {
 	$return = array();
 	foreach ($row as $key => $val) {
 		if (!preg_match('~^(COUNT\\((\\*|(DISTINCT )?`(?:[^`]|``)+`)\\)|(AVG|GROUP_CONCAT|MAX|MIN|SUM)\\(`(?:[^`]|``)+`\\))$~', $key)) { //! columns looking like functions
-			$return[] = (isset($val) ? urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($val) : "null%5B%5D=" . urlencode($key));
+			$return[$key] = $val;
 		}
 	}
 	return $return;
