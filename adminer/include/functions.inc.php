@@ -159,6 +159,19 @@ function unique_array($row, $indexes) {
 	return $return;
 }
 
+/** Get query string for unique identifier of a row
+* @param array
+* @param array result of indexes()
+* @return string
+*/
+function unique_idf($row, $indexes) {
+	$return = "";
+	foreach (unique_array($row, $indexes) as $key => $val) {
+		$return .= "&" . (isset($val) ? urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($val) : "null%5B%5D=" . urlencode($key));
+	}
+	return $return;
+}
+
 /** Create SQL condition from parsed query string
 * @param array parsed query string
 * @return string

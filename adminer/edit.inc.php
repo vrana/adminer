@@ -11,7 +11,7 @@ foreach ($fields as $name => $field) {
 if ($_POST && !$error && !isset($_GET["select"])) {
 	$location = $_POST["referer"];
 	if ($_POST["insert"]) { // continue edit or insert
-		$location = $_SERVER["REQUEST_URI"]; //! doesn't work with change in &where field
+		$location = ($update ? ME . "&edit=" . urlencode($TABLE) . unique_idf($_POST["fields"], indexes($TABLE)) : $_SERVER["REQUEST_URI"]); //! doesn't work with functions
 	} elseif (!ereg('^.+&select=.+$', $location)) {
 		$location = ME . "select=" . urlencode($TABLE);
 		$i = 0; // append &set converted to &where
