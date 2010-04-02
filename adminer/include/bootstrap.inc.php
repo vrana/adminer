@@ -43,15 +43,16 @@ if (!isset($_SERVER["REQUEST_URI"])) {
 	$_SERVER["REQUEST_URI"] = $_SERVER["ORIG_PATH_INFO"] . ($_SERVER["QUERY_STRING"] != "" ? "?$_SERVER[QUERY_STRING]" : "");
 }
 
-session_write_close(); // disable session.auto_start
 @ini_set("session.use_trans_sid", false); // protect links in export, @ - may be disabled
-session_name("adminer_sid"); // use specific session name to get own namespace
-$params = array(0, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]), "", $_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off"));
-if (version_compare(PHP_VERSION, '5.2.0') >= 0) {
-	$params[] = true; // HttpOnly
+if (!ini_get("session.auto_start")) {
+	session_name("adminer_sid"); // use specific session name to get own namespace
+	$params = array(0, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]), "", $_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off"));
+	if (version_compare(PHP_VERSION, '5.2.0') >= 0) {
+		$params[] = true; // HttpOnly
+	}
+	call_user_func_array('session_set_cookie_params', $params); // ini_set() may be disabled
+	session_start();
 }
-call_user_func_array('session_set_cookie_params', $params); // ini_set() may be disabled
-session_start();
 
 // disable magic quotes to be able to use database escaping function
 if (get_magic_quotes_gpc()) {
