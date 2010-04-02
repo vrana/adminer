@@ -29,7 +29,7 @@ tr:hover td, tr:hover th { background: #ddf; }
 .enum { color: #007F7F; }
 .binary { color: red; }
 .odd td { background: #F5F5F5; }
-.time { color: silver; font-size: 70%; float: right; margin-top: -3em; }
+.time { color: silver; font-size: 70%; }
 .function { text-align: right; }
 .number { text-align: right; }
 .datetime { text-align: right; }

@@ -71,16 +71,16 @@ if (!$error && $_POST) {
 								break;
 							}
 						} else {
-							$end = explode(" ", microtime());
-							echo "<p class='time'>" . lang('%.3f s', max(0, $end[0] - $start[0] + $end[1] - $start[1])) . "</p>\n";
 							do {
 								$result = $connection->store_result();
+								$end = explode(" ", microtime());
+								$time = " <span class='time'>(" . lang('%.3f s', max(0, $end[0] - $start[0] + $end[1] - $start[1])) . ")</span>";
 								if (is_object($result)) {
 									select($result, $connection2);
+									echo "<p>" . ($result->num_rows ? lang('%d row(s)', $result->num_rows) : "") . $time;
 									if ($connection2 && preg_match("~^($space|\\()*SELECT\\b~isU", $q)) {
 										$id = "explain-$queries";
-										echo "<p>" . ($result->num_rows ? lang('%d row(s)', $result->num_rows) . ", " : "");
-										echo "<a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>\n";
+										echo ", <a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>\n";
 										echo "<div id='$id' class='hidden'>\n";
 										select($connection2->query("EXPLAIN $q"));
 										echo "</div>\n";
@@ -91,9 +91,10 @@ if (!$error && $_POST) {
 										$_SESSION["databases"][$_GET["server"]] = null; // clear cache
 										session_write_close();
 									}
-									echo "<p class='message' title='" . h($connection->info) . "'>" . lang('Query executed OK, %d row(s) affected.', $connection->affected_rows) . "\n";
+									echo "<p class='message' title='" . h($connection->info) . "'>" . lang('Query executed OK, %d row(s) affected.', $connection->affected_rows) . "$time\n";
 								}
 								unset($result); // free resultset
+								$start = $end;
 							} while ($connection->next_result());
 						}
 						$query = substr($query, $offset);
