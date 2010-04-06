@@ -228,4 +228,5 @@ $translations = array(
 	'Item has been deleted.' => '該項目已被刪除',
 	'%d in total' => '總共 %d 個',
 	'Permanent login' => '永久登入',
+	'Table has been dropped.' => '已經刪除資料表。',
 );

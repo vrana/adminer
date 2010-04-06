@@ -94,7 +94,7 @@ if (!$table_status) {
 
 echo '<p><a href="' . h(ME) . 'create=">' . lang('Create table') . "</a>\n";
 if ($connection->server_info >= 5) {
-	echo ' <a href="' . h(ME) . 'view=">' . lang('Create view') . "</a>\n";
+	echo '<a href="' . h(ME) . 'view=">' . lang('Create view') . "</a>\n";
 	echo "<h3>" . lang('Routines') . "</h3>\n";
 	$result = $connection->query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . $connection->quote(DB));
 	if ($result->num_rows) {
