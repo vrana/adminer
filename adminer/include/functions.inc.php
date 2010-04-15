@@ -217,7 +217,7 @@ function restart_session() {
 }
 
 /** Send Location header and exit
-* @param string
+* @param string null to only set a message
 * @param string
 * @return null
 */
@@ -226,8 +226,10 @@ function redirect($location, $message = null) {
 		restart_session();
 		$_SESSION["messages"][] = $message;
 	}
-	header("Location: " . ($location != "" ? $location : "."));
-	exit;
+	if (isset($location)) {
+		header("Location: " . ($location != "" ? $location : "."));
+		exit;
+	}
 }
 
 /** Execute query and redirect if successful
