@@ -205,7 +205,11 @@ if (!$columns) {
 			}
 			echo ($backward_keys ? "<th>" . lang('Relations') : "") . "</thead>\n";
 			foreach ($adminer->rowDescriptions($rows, $foreign_keys) as $n => $row) {
-				$unique_idf = unique_idf($row, $indexes);
+				$unique_array = unique_array($row, $indexes);
+				$unique_idf = "";
+				foreach ($unique_array as $key => $val) {
+					$unique_idf .= "&" . (isset($val) ? urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($val) : "null%5B%5D=" . urlencode($key));
+				}
 				echo "<tr" . odd() . "><td>" . checkbox("check[]", substr($unique_idf, 1), in_array(substr($unique_idf, 1), (array) $_POST["check"]), "", "this.form['all'].checked = false; formUncheck('all-page');") . (count($select) != count($group) || information_schema(DB) ? '' : " <a href='" . h(ME . "edit=" . urlencode($TABLE) . $unique_idf) . "'>" . lang('edit') . "</a>");
 				foreach ($row as $key => $val) {
 					if (isset($names[$key])) {
@@ -243,7 +247,13 @@ if (!$columns) {
 							if ($key == "COUNT(*)") { //! columns looking like functions
 								$link = h(ME . "select=" . urlencode($TABLE));
 								$i = 0;
-								foreach (unique_array($row, $indexes) as $k => $v) {
+								foreach ((array) $_GET["where"] as $v) {
+									if (!array_key_exists($v["col"], $unique_array)) {
+										$link .= h("&where[$i][col]=" . urlencode($v["col"]) . "&where[$i][op]=" . urlencode($v["op"]) . "&where[$i][val]=" . urlencode($v["val"]));
+										$i++;
+									}
+								}
+								foreach ($unique_array as $k => $v) {
 									$link .= h("&where[$i][col]=" . urlencode($k) . "&where[$i][op]=" . (isset($v) ? "%3D&where[$i][val]=" . urlencode($v) : "IS+NULL"));
 									$i++;
 								}
