@@ -188,9 +188,10 @@ function where_check($val) {
 * @param string column identifier
 * @param string
 * @return string
+* @return string
 */
-function where_link($i, $column, $value) {
-	return "&where%5B$i%5D%5Bcol%5D=" . urlencode($column) . "&where%5B$i%5D%5Bop%5D=%3D&where%5B$i%5D%5Bval%5D=" . urlencode($value);
+function where_link($i, $column, $value, $operator = "=") {
+	return "&where%5B$i%5D%5Bcol%5D=" . urlencode($column) . "&where%5B$i%5D%5Bop%5D=" . urlencode($operator) . "&where%5B$i%5D%5Bval%5D=" . urlencode($value);
 }
 
 /** Set cookie valid for 1 month

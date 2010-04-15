@@ -249,13 +249,11 @@ if (!$columns) {
 								$i = 0;
 								foreach ((array) $_GET["where"] as $v) {
 									if (!array_key_exists($v["col"], $unique_array)) {
-										$link .= h("&where[$i][col]=" . urlencode($v["col"]) . "&where[$i][op]=" . urlencode($v["op"]) . "&where[$i][val]=" . urlencode($v["val"]));
-										$i++;
+										$link .= h(where_link($i++, $v["col"], $v["val"], urlencode($v["op"])));
 									}
 								}
 								foreach ($unique_array as $k => $v) {
-									$link .= h("&where[$i][col]=" . urlencode($k) . "&where[$i][op]=" . (isset($v) ? "%3D&where[$i][val]=" . urlencode($v) : "IS+NULL"));
-									$i++;
+									$link .= h(where_link($i++, $k, $v, (isset($v) ? "=" : "IS NULL")));
 								}
 							}
 						}
