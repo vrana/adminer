@@ -55,7 +55,7 @@ function select($result, $connection2 = null) {
 				} else {
 					if ($blobs[$key] && !is_utf8($val)) {
 						$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>"; //! link to download
-					} elseif ($val == "") {
+					} elseif (!strlen($val)) { // strlen - SQLite can return int
 						$val = "&nbsp;"; // some content to print a border
 					} else {
 						$val = h($val);

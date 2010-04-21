@@ -44,7 +44,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 				
 				function result($query, $field = 0) {
 					$result = $this->query($query);
-					if (!$result) {
+					if (!is_object($result)) {
 						return false;
 					}
 					$row = $result->_result->fetch();
@@ -89,37 +89,38 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			
 		} else {
 			
-			class Min_SQLite extends SQLite3 {
-				var $extension = "SQLite3", $server_info, $affected_rows, $error;
+			class Min_SQLite {
+				var $extension = "SQLite3", $server_info, $affected_rows, $error, $_connection;
 				
 				function __construct() {
-					$version = $this->version();
+					$this->_connection = new SQLite3(":memory:"); // required to display variables
+					$version = $this->_connection->version();
 					$this->server_info = $version["versionString"];
 				}
 				
 				function open($filename) {
-					parent::__construct($filename);
+					$this->_connection->open($filename);
 				}
 				
 				function query($query) {
-					$result = @parent::query($query);
+					$result = @$this->_connection->query($query);
 					if (!$result) {
-						$this->error = $this->lastErrorMsg();
+						$this->error = $this->_connection->lastErrorMsg();
 						return false;
 					} elseif ($result->numColumns()) {
 						return new Min_Result($result);
 					}
-					$this->affected_rows = $this->changes();
+					$this->affected_rows = $this->_connection->changes();
 					return true;
 				}
 				
 				function quote($string) {
-					return "'" . $this->escapeString($string) . "'";
+					return "'" . $this->_connection->escapeString($string) . "'";
 				}
 				
 				function result($query, $field = 0) {
 					$result = $this->query($query);
-					if (!$result) {
+					if (!is_object($result)) {
 						return false;
 					}
 					$row = $result->_result->fetchArray();
@@ -254,6 +255,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		$return = array();
 		$result = $connection->query("SELECT name AS Name, type AS Engine FROM sqlite_master WHERE type IN ('table', 'view')" . ($name != "" ? " AND name = " . $connection->quote($name) : ""));
 		while ($row = $result->fetch_assoc()) {
+			$row["Auto_increment"] = "";
 			$return[$row["Name"]] = $row;
 		}
 		$result = $connection->query("SELECT * FROM sqlite_sequence");
@@ -456,8 +458,21 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return $connection->result("SELECT sql FROM sqlite_master WHERE name = " . $connection->quote($table));
 	}
 	
+	function show_variables() {
+		global $connection;
+		$return = array();
+		foreach (array("auto_vacuum", "cache_size", "count_changes", "default_cache_size", "empty_result_callbacks", "encoding", "foreign_keys", "full_column_names", "fullfsync", "journal_mode", "journal_size_limit", "legacy_file_format", "locking_mode", "page_size", "max_page_count", "read_uncommitted", "recursive_triggers", "reverse_unordered_selects", "secure_delete", "short_column_names", "synchronous", "temp_store", "temp_store_directory", "schema_version", "compile_options", "integrity_check", "quick_check") as $key) {
+			$return[$key] = $connection->result("PRAGMA $key");
+		}
+		return $return;
+	}
+	
+	function show_status() {
+		// not supported
+	}
+	
 	function support($feature) {
-		return ereg('^(view|trigger)$', $feature);
+		return ereg('^(view|trigger|variables)$', $feature);
 	}
 	
 	$driver = "sqlite";

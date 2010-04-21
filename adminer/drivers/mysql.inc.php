@@ -666,6 +666,14 @@ if (!defined("DRIVER")) {
 		return $connection->result("SHOW CREATE TABLE " . idf_escape($table), 1);
 	}
 	
+	function show_variables() {
+		return get_key_vals("SHOW VARIABLES");
+	}
+	
+	function show_status() {
+		return get_key_vals("SHOW STATUS");
+	}
+	
 	/** Check whether a feature is supported
 	* @param string
 	* @return bool
