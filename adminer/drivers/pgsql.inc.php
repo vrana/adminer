@@ -415,6 +415,10 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 		return $connection->query("EXPLAIN $query");
 	}
 	
+	function use_sql($database) {
+		return "\connect " . idf_escape($database);
+	}
+	
 	function support($feature) {
 		return ereg('^(comment|view|routine|trigger)$', $feature);
 	}

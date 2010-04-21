@@ -462,6 +462,11 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return $connection->result("SELECT sql FROM sqlite_master WHERE name = " . $connection->quote($table));
 	}
 	
+	function use_sql($database) {
+		global $connection;
+		return "ATTACH " . $connection->quote($database) . " AS " . idf_escape($database);
+	}
+	
 	function show_variables() {
 		global $connection;
 		$return = array();

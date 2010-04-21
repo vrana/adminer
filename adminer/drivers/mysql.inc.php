@@ -666,10 +666,24 @@ if (!defined("DRIVER")) {
 		return $connection->result("SHOW CREATE TABLE " . idf_escape($table), 1);
 	}
 	
+	/** Get SQL command to change database
+	* @param string
+	* @return string
+	*/
+	function use_sql($database) {
+		return "USE " . idf_escape($database);
+	}
+	
+	/** Get server variables
+	* @return array ($name => $value)
+	*/
 	function show_variables() {
 		return get_key_vals("SHOW VARIABLES");
 	}
 	
+	/** Get status variables
+	* @return array ($name => $value)
+	*/
 	function show_status() {
 		return get_key_vals("SHOW STATUS");
 	}
