@@ -616,7 +616,8 @@ function apply_sql_function($function, $column) {
 function is_email($email) {
 	$atom = '[-a-z0-9!#$%&\'*+/=?^_`{|}~]'; // characters of local-name
 	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component
-	return preg_match("(^$atom+(\\.$atom+)*@($domain?\\.)+$domain\$)i", $email);
+	$pattern = "$atom+(\\.$atom+)*@($domain?\\.)+$domain";
+	return preg_match("(^$pattern(,\\s*$pattern)*\$)i", $email);
 }
 
 /** Check whether the string is URL address
