@@ -134,7 +134,7 @@ function get_vals($query, $column = 0) {
 	global $connection;
 	$return = array();
 	$result = $connection->query($query);
-	if ($result) {
+	if (is_object($result)) {
 		while ($row = $result->fetch_row()) {
 			$return[] = $row[$column];
 		}

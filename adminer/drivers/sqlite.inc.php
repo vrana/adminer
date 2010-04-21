@@ -470,18 +470,23 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	function show_variables() {
 		global $connection;
 		$return = array();
-		foreach (array("auto_vacuum", "cache_size", "count_changes", "default_cache_size", "empty_result_callbacks", "encoding", "foreign_keys", "full_column_names", "fullfsync", "journal_mode", "journal_size_limit", "legacy_file_format", "locking_mode", "page_size", "max_page_count", "read_uncommitted", "recursive_triggers", "reverse_unordered_selects", "secure_delete", "short_column_names", "synchronous", "temp_store", "temp_store_directory", "schema_version", "compile_options", "integrity_check", "quick_check") as $key) {
+		foreach (array("auto_vacuum", "cache_size", "count_changes", "default_cache_size", "empty_result_callbacks", "encoding", "foreign_keys", "full_column_names", "fullfsync", "journal_mode", "journal_size_limit", "legacy_file_format", "locking_mode", "page_size", "max_page_count", "read_uncommitted", "recursive_triggers", "reverse_unordered_selects", "secure_delete", "short_column_names", "synchronous", "temp_store", "temp_store_directory", "schema_version", "integrity_check", "quick_check") as $key) {
 			$return[$key] = $connection->result("PRAGMA $key");
 		}
 		return $return;
 	}
 	
 	function show_status() {
-		// not supported
+		$return = array();
+		foreach (get_vals("PRAGMA compile_options") as $option) {
+			list($key, $val) = explode("=", $option, 2);
+			$return[$key] = $val;
+		}
+		return $return;
 	}
 	
 	function support($feature) {
-		return ereg('^(view|trigger|variables)$', $feature);
+		return ereg('^(view|trigger|variables|status)$', $feature);
 	}
 	
 	$driver = "sqlite";
