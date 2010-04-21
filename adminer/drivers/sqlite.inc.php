@@ -19,6 +19,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 				
 				function __construct() {
 					$this->server_info = sqlite_libversion();
+					$this->_connection = new SQLiteDatabase(":memory:");
 				}
 				
 				function open($filename) {
@@ -79,9 +80,16 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 				}
 				
 				function fetch_field() {
+					$name = $this->_result->fieldName($this->_offset++);
+					$pattern = '(\\[.*]|"(?:[^"]|"")*"|(.+))';
+					if (preg_match("~^($pattern\\.)?$pattern\$~", $name, $match)) {
+						$table = ($match[3] != "" ? $match[3] : idf_unescape($match[2]));
+						$name = ($match[5] != "" ? $match[5] : idf_unescape($match[4]));
+					}
 					return (object) array(
-						"name" => $this->_result->fieldName($this->_offset++),
-						//! type, orgtable, charsetnr
+						"name" => $name,
+						"orgname" => $name,
+						"orgtable" => $table,
 					);
 				}
 				
@@ -99,7 +107,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 				}
 				
 				function open($filename) {
-					$this->_connection->open($filename);
+					$this->_connection = new SQLite3($filename);
 				}
 				
 				function query($query) {
@@ -146,10 +154,11 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 				
 				function fetch_field() {
 					$column = $this->_offset++;
+					$type = $this->_result->columnType($column);
 					return (object) array(
 						"name" => $this->_result->columnName($column),
-						"type" => $this->_result->columnType($column),
-						//! orgtable, charsetnr
+						"type" => $type,
+						"charsetnr" => ($type == SQLITE3_BLOB ? 63 : 0), // 63 - binary
 					);
 				}
 				
@@ -163,13 +172,8 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		class Min_DB extends Min_SQLite {
 			
 			function select_db($filename) {
-				static $connected = false;
-				if ($connected) {
-					return true;
-				}
 				set_exception_handler('connect_error'); // try/catch is not compatible with PHP 4
 				$this->open($filename);
-				$connected = true;
 				restore_exception_handler();
 				return true;
 			}

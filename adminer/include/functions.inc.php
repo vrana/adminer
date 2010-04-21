@@ -13,7 +13,8 @@ function connection() {
 * @return string
 */
 function idf_unescape($idf) {
-	return str_replace($idf[0] . $idf[0], $idf[0], substr($idf, 1, -1));
+	$last = substr($idf, -1);
+	return str_replace($last . $last, $last, substr($idf, 1, -1));
 }
 
 /** Escape string to use inside ''

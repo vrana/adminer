@@ -40,7 +40,7 @@ function select($result, $connection2 = null) {
 							$links[$j] = $orgtable;
 						}
 					}
-					if ($field->charsetnr == 63) {
+					if ($field->charsetnr == 63) { // 63 - binary
 						$blobs[$j] = true;
 					}
 					$types[$j] = $field->type;
@@ -59,7 +59,7 @@ function select($result, $connection2 = null) {
 						$val = "&nbsp;"; // some content to print a border
 					} else {
 						$val = h($val);
-						if ($types[$key] == 254) {
+						if ($types[$key] == 254) { // 254 - char
 							$val = "<code>$val</code>";
 						}
 					}

@@ -105,11 +105,13 @@ if (isset($_GET["pgsql"])) {
 			function fetch_field() {
 				$column = $this->_offset++;
 				$row = new stdClass;
-				$row->orgtable = pg_field_table($this->_result, $column);
+				if (function_exists('pg_field_table')) {
+					$row->orgtable = pg_field_table($this->_result, $column);
+				}
 				$row->name = pg_field_name($this->_result, $column);
 				$row->orgname = $row->name;
 				$row->type = pg_field_type($this->_result, $column);
-				$row->charsetnr = ($row->type == "bytea" ? 63 : 0);
+				$row->charsetnr = ($row->type == "bytea" ? 63 : 0); // 63 - binary
 				return $row;
 			}
 			
@@ -178,7 +180,7 @@ if (isset($_GET["pgsql"])) {
 	
 	function tables_list() {
 		global $connection;
-		return get_key_vals("SELECT table_name, table_type FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name");
+		return get_key_vals("SELECT table_name, table_type FROM information_schema.tables WHERE table_schema = current_schema() ORDER BY table_name");
 	}
 	
 	function count_tables($databases) {
@@ -188,7 +190,12 @@ if (isset($_GET["pgsql"])) {
 	function table_status($name = "") {
 		global $connection;
 		$return = array();
-		$result = $connection->query("SELECT relname AS \"Name\", CASE relkind WHEN 'r' THEN '' ELSE 'view' END AS \"Engine\", pg_relation_size(oid) AS \"Data_length\", pg_catalog.obj_description(oid, 'pg_class') AS \"Comment\" FROM pg_catalog.pg_class WHERE relkind IN ('r','v') AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'public')" . ($name != "" ? " AND relname = " . $connection->quote($name) : "")); //! Index_length, Auto_increment
+		$result = $connection->query("SELECT relname AS \"Name\", CASE relkind WHEN 'r' THEN '' ELSE 'view' END AS \"Engine\", pg_relation_size(oid) AS \"Data_length\", pg_catalog.obj_description(oid, 'pg_class') AS \"Comment\"
+FROM pg_catalog.pg_class
+WHERE relkind IN ('r','v')
+AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema())"
+			. ($name != "" ? " AND relname = " . $connection->quote($name) : "")
+		); //! Index_length, Auto_increment
 		while ($row = $result->fetch_assoc()) {
 			$return[$row["Name"]] = $row;
 		}
