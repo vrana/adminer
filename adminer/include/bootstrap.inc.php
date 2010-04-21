@@ -39,12 +39,14 @@ if (isset($_GET["file"])) {
 	exit;
 }
 
+include "../adminer/include/functions.inc.php";
+
 if (!isset($_SERVER["REQUEST_URI"])) {
-	$_SERVER["REQUEST_URI"] = $_SERVER["ORIG_PATH_INFO"] . ($_SERVER["QUERY_STRING"] != "" ? "?$_SERVER[QUERY_STRING]" : "");
+	$_SERVER["REQUEST_URI"] = $_SERVER["ORIG_PATH_INFO"] . ($_SERVER["QUERY_STRING"] != "" ? "?$_SERVER[QUERY_STRING]" : ""); // IIS 5 compatibility
 }
 
 @ini_set("session.use_trans_sid", false); // protect links in export, @ - may be disabled
-if (!ini_get("session.auto_start")) {
+if (!ini_bool("session.auto_start")) {
 	session_name("adminer_sid"); // use specific session name to get own namespace
 	$params = array(0, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]), "", $_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off"));
 	if (version_compare(PHP_VERSION, '5.2.0') >= 0) {
@@ -75,19 +77,26 @@ if (function_exists("set_magic_quotes_runtime")) {
 }
 @set_time_limit(0); // @ - can be disabled
 
-include "../adminer/include/version.inc.php";
-include "../adminer/include/functions.inc.php";
-
-define("DB", $_GET["db"]); // for the sake of speed and size
-define("SID_FORM", SID && !ini_get("session.use_only_cookies") ? '<input type="hidden" name="' . session_name() . '" value="' . h(session_id()) . '">' : '');
-define("ME", preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . '?' . (SID_FORM ? SID . '&' : '') . ($_GET["server"] != "" ? 'server=' . urlencode($_GET["server"]) . '&' : '') . (DB != "" ? 'db=' . urlencode(DB) . '&' : ''));
-
 include "../adminer/include/lang.inc.php";
 include "../adminer/lang/$LANG.inc.php";
+include "../adminer/include/pdo.inc.php";
+include "../adminer/drivers/sqlite.inc.php";
+include "../adminer/drivers/pgsql.inc.php";
+include "../adminer/drivers/mssql.inc.php";
+include "../adminer/drivers/mysql.inc.php"; // must be included as last driver
+
+define("SERVER", $_GET[DRIVER]); // read from pgsql=localhost
+define("DB", $_GET["db"]); // for the sake of speed and size
+define("ME", preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . '?'
+	. (SID && !$_COOKIE ? SID . '&' : '') // !$_COOKIE - don't pass SID with permanent login
+	. (SERVER !== null ? DRIVER . "=" . urlencode(SERVER) . '&' : '')
+	. (isset($_GET["username"]) ? "username=" . urlencode($_GET["username"]) . '&' : '')
+	. (DB != "" ? 'db=' . urlencode(DB) . '&' : '')
+);
+
+include "../adminer/include/version.inc.php";
 include "./include/adminer.inc.php";
 include "../adminer/include/design.inc.php";
-include "../adminer/include/pdo.inc.php";
-include "../adminer/include/mysql.inc.php";
 include "../adminer/include/xxtea.inc.php";
 include "../adminer/include/auth.inc.php";
 include "./include/connect.inc.php";
@@ -95,7 +104,7 @@ include "./include/editing.inc.php";
 include "./include/export.inc.php";
 
 session_cache_limiter(""); // to allow restarting session
-if (!ini_get("session.use_cookies") || @ini_set("session.use_cookies", false) !== false) { // @ - may be disabled
+if (!ini_bool("session.use_cookies") || @ini_set("session.use_cookies", false) !== false) { // @ - may be disabled
 	session_write_close(); // improves concurrency if a user opens several pages at once, may be restarted later
 }
 

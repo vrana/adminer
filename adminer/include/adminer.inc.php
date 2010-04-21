@@ -1,13 +1,7 @@
 <?php
 class Adminer {
-	/** @var array functions used in select */
-	var $functions = array("char_length", "from_unixtime", "hex", "lower", "round", "sec_to_time", "time_to_sec", "unix_timestamp", "upper");
-	
-	/** @var array grouping functions used in select */
-	var $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
-	
-	/** @var array operators used in select */
-	var $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "REGEXP", "IN", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL");
+	/** @var array operators used in select, null for all operators */
+	var $operators;
 	
 	/** Name in title and navigation
 	* @return string
@@ -20,7 +14,7 @@ class Adminer {
 	* @return array ($server, $username, $password)
 	*/
 	function credentials() {
-		return array($_GET["server"], $_SESSION["usernames"][$_GET["server"]], $_SESSION["passwords"][$_GET["server"]]);
+		return array(SERVER, $_GET["username"], get_session("passwords"));
 	}
 	
 	/** Get key used for permanent login
@@ -39,14 +33,15 @@ class Adminer {
 	}
 	
 	/** Print login form
-	* @param string
 	* @return null
 	*/
-	function loginForm($username) {
+	function loginForm() {
+		global $drivers, $possible_drivers;
 		?>
 <table cellspacing="0">
-<tr><th><?php echo lang('Server'); ?><td><input name="server" value="<?php echo h($_GET["server"]); ?>">
-<tr><th><?php echo lang('Username'); ?><td><input name="username" value="<?php echo h($username); ?>">
+<tr><th><?php echo lang('System'); ?><td><?php echo (count($possible_drivers) > 3 ? html_select("driver", $drivers, DRIVER) : "<input type='hidden' name='driver' value='" . key($drivers) . "'>" . reset($drivers)); ?></tr>
+<tr><th><?php echo lang('Server'); ?><td><input name="server" value="<?php echo h(SERVER); ?>">
+<tr><th><?php echo lang('Username'); ?><td><input name="username" value="<?php echo h($_GET["username"]); ?>">
 <tr><th><?php echo lang('Password'); ?><td><input type="password" name="password">
 </table>
 <?php
@@ -90,10 +85,10 @@ class Adminer {
 	function selectLinks($tableStatus, $set = "") {
 		echo '<p class="tabs">';
 		$links = array("select" => lang('Select data'), "table" => lang('Show structure'));
-		if (isset($tableStatus["Rows"])) {
-			$links["create"] = lang('Alter table');
-		} else {
+		if (eregi("view", $tableStatus["Engine"])) {
 			$links["view"] = lang('Alter view');
+		} else {
+			$links["create"] = lang('Alter table');
 		}
 		if (isset($set)) {
 			$links["edit"] = lang('New item');
@@ -126,7 +121,8 @@ class Adminer {
 	* @return string
 	*/
 	function selectQuery($query) {
-		return "<p><code class='jush-sql'>" . h(str_replace("\n", " ", $query)) . "</code> <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>\n";
+		global $driver;
+		return "<p><code class='jush-$driver'>" . h(str_replace("\n", " ", $query)) . "</code> <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>\n";
 	}
 	
 	/** Description of a row in a table
@@ -154,7 +150,7 @@ class Adminer {
 	*/
 	function selectVal($val, $link, $field) {
 		$return = ($val != "<i>NULL</i>" && $field["type"] == "char" ? "<code>$val</code>" : $val);
-		if (ereg('blob|binary', $field["type"]) && !is_utf8($val)) {
+		if (ereg('binary|blob|bytea', $field["type"]) && !is_utf8($val)) {
 			$return = lang('%d byte(s)', strlen($val));
 		}
 		return ($link ? "<a href='$link'>$return</a>" : $return);
@@ -175,17 +171,18 @@ class Adminer {
 	* @return null
 	*/
 	function selectColumnsPrint($select, $columns) {
+		global $functions, $grouping;
 		print_fieldset("select", lang('Select'), $select);
 		$i = 0;
-		$fun_group = array(lang('Functions') => $this->functions, lang('Aggregation') => $this->grouping);
+		$fun_group = array(lang('Functions') => $functions, lang('Aggregation') => $grouping);
 		foreach ($select as $key => $val) {
 			$val = $_GET["columns"][$key];
 			echo "<div>" . html_select("columns[$i][fun]", array(-1 => "") + $fun_group, $val["fun"]);
-			echo "<select name='columns[$i][col]'><option>" . optionlist($columns, $val["col"], true) . "</select></div>\n";
+			echo "(<select name='columns[$i][col]'><option>" . optionlist($columns, $val["col"], true) . "</select>)</div>\n";
 			$i++;
 		}
-		echo "<div>" . html_select("columns[$i][fun]", array(-1 => "") + $fun_group, "", "this.nextSibling.onchange();");
-		echo "<select name='columns[$i][col]' onchange='selectAddRow(this);'><option>" . optionlist($columns, null, true) . "</select></div>\n";
+		echo "<div>" . html_select("columns[$i][fun]", array(-1 => "") + $fun_group, "", "this.nextSibling.nextSibling.onchange();");
+		echo "(<select name='columns[$i][col]' onchange='selectAddRow(this);'><option>" . optionlist($columns, null, true) . "</select>)</div>\n";
 		echo "</div></fieldset>\n";
 	}
 	
@@ -208,13 +205,13 @@ class Adminer {
 		$i = 0;
 		foreach ((array) $_GET["where"] as $val) {
 			if ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators)) {
-				echo "<div><select name='where[$i][col]'><option value=''>" . lang('(anywhere)') . optionlist($columns, $val["col"], true) . "</select>";
+				echo "<div><select name='where[$i][col]'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
 				echo html_select("where[$i][op]", $this->operators, $val["op"]);
 				echo "<input name='where[$i][val]' value='" . h($val["val"]) . "'></div>\n";
 				$i++;
 			}
 		}
-		echo "<div><select name='where[$i][col]' onchange='selectAddRow(this);'><option value=''>" . lang('(anywhere)') . optionlist($columns, null, true) . "</select>";
+		echo "<div><select name='where[$i][col]' onchange='selectAddRow(this);'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, null, true) . "</select>";
 		echo html_select("where[$i][op]", $this->operators);
 		echo "<input name='where[$i][val]'></div>\n";
 		echo "</div></fieldset>\n";
@@ -286,12 +283,13 @@ class Adminer {
 	* @return array (array(select_expressions), array(group_expressions))
 	*/
 	function selectColumnsProcess($columns, $indexes) {
+		global $functions, $grouping;
 		$select = array(); // select expressions, empty for *
 		$group = array(); // expressions without aggregation - will be used for GROUP BY if an aggregation function is used
 		foreach ((array) $_GET["columns"] as $key => $val) {
-			if ($val["fun"] == "count" || (isset($columns[$val["col"]]) && (!$val["fun"] || in_array($val["fun"], $this->functions) || in_array($val["fun"], $this->grouping)))) {
+			if ($val["fun"] == "count" || (isset($columns[$val["col"]]) && (!$val["fun"] || in_array($val["fun"], $functions) || in_array($val["fun"], $grouping)))) {
 				$select[$key] = apply_sql_function($val["fun"], (isset($columns[$val["col"]]) ? idf_escape($val["col"]) : "*"));
-				if (!in_array($val["fun"], $this->grouping)) {
+				if (!in_array($val["fun"], $grouping)) {
 					$group[] = $select[$key];
 				}
 			}
@@ -314,8 +312,15 @@ class Adminer {
 		}
 		foreach ((array) $_GET["where"] as $val) {
 			if ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators)) {
-				$in = process_length($val["val"]);
-				$cond = " $val[op]" . (ereg('NULL$', $val["op"]) ? "" : (ereg('IN$', $val["op"]) ? " (" . ($in != "" ? $in : "NULL") . ")" : " " . $this->processInput($fields[$val["col"]], $val["val"])));
+				$cond = " $val[op]";
+				if (ereg('IN$', $val["op"])) {
+					$in = process_length($val["val"]);
+					$cond .= " (" . ($in != "" ? $in : "NULL") . ")";
+				} elseif ($val["op"] == "LIKE %%") {
+					$cond = " LIKE " . $this->processInput($fields[$val["col"]], "%$val[val]%");
+				} elseif (!ereg('NULL$', $val["op"])) {
+					$cond .= " " . $this->processInput($fields[$val["col"]], $val["val"]);
+				}
 				if ($val["col"] != "") {
 					$return[] = idf_escape($val["col"]) . $cond;
 				} else {
@@ -342,8 +347,8 @@ class Adminer {
 	function selectOrderProcess($fields, $indexes) {
 		$return = array();
 		foreach ((array) $_GET["order"] as $key => $val) {
-			if (isset($fields[$val]) || preg_match('~^((COUNT\\(DISTINCT |[A-Z0-9_]+\\()`(?:[^`]|``)+`\\)|COUNT\\(\\*\\))$~', $val)) {
-				$return[] = idf_escape($val) . (isset($_GET["desc"][$key]) ? " DESC" : "");
+			if (isset($fields[$val]) || preg_match('~^((COUNT\\(DISTINCT |[A-Z0-9_]+\\()(`(?:[^`]|``)+`|"(?:[^"]|"")+")\\)|COUNT\\(\\*\\))$~', $val)) { //! MS SQL uses []
+				$return[] = (isset($fields[$val]) ? idf_escape($val) : $val) . (isset($_GET["desc"][$key]) ? " DESC" : "");
 			}
 		}
 		return $return;
@@ -377,10 +382,12 @@ class Adminer {
 	* @return string
 	*/
 	function messageQuery($query) {
+		global $driver;
 		restart_session();
 		$id = "sql-" . count($_SESSION["messages"]);
-		$_SESSION["history"][$_GET["server"]][DB][] = (strlen($query) > 1e6 ? ereg_replace('[\x80-\xFF]+$', '', substr($query, 0, 1e6)) . "\n..." : $query); // [\x80-\xFF] - valid UTF-8, \n - can end by one-line comment
-		return " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre class='jush-sql'>" . shorten_utf8($query, 1000) . '</pre><a href="' . h(ME . 'sql=&history=' . (count($_SESSION["history"][$_GET["server"]][DB]) - 1)) . '">' . lang('Edit') . '</a></div>';
+		$history = &get_session("history");
+		$history[DB][] = (strlen($query) > 1e6 ? ereg_replace('[\x80-\xFF]+$', '', substr($query, 0, 1e6)) . "\n..." : $query); // [\x80-\xFF] - valid UTF-8, \n - can end by one-line comment
+		return " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre class='jush-$driver'>" . shorten_utf8($query, 1000) . '</pre><p><a href="' . h(ME . 'sql=&history=' . (count($history[DB]) - 1)) . '">' . lang('Edit') . '</a></div>';
 	}
 	
 	/** Functions displayed in edit form
@@ -388,31 +395,18 @@ class Adminer {
 	* @return array
 	*/
 	function editFunctions($field) {
-		$return = array("");
-		if (ereg('char|date|time', $field["type"])) {
-			$return = (ereg('char', $field["type"]) ? array("", "md5", "sha1", "password", "encrypt", "uuid") : array("", "now")); //! JavaScript for disabling maxlength
-		}
-		if (!isset($_GET["call"]) && (isset($_GET["select"]) || where($_GET))) {
-			// relative functions
-			if (ereg('int|float|double|decimal', $field["type"])) {
-				$return = array("", "+", "-");
-			}
-			if (ereg('date', $field["type"])) {
-				$return[] = "+ interval";
-				$return[] = "- interval";
-			}
-			if (ereg('time', $field["type"])) {
-				$return[] = "addtime";
-				$return[] = "subtime";
-			}
-			if (ereg('char|text', $field["type"])) {
-				$return[] = "concat";
+		global $edit_functions;
+		$return = ($field["null"] ? "/NULL" : "");
+		foreach ($edit_functions as $key => $functions) {
+			if (!$key || (!isset($_GET["call"]) && (isset($_GET["select"]) || where($_GET)))) { // relative functions
+				foreach ($functions as $pattern => $val) {
+					if (!$pattern || ereg($pattern, $field["type"])) {
+						$return .= "/$val";
+					}
+				}
 			}
 		}
-		if ($field["null"]) {
-			array_unshift($return, "NULL");
-		}
-		return $return;
+		return explode("/", $return);
 	}
 	
 	/** Get options to display edit field
@@ -441,9 +435,9 @@ class Adminer {
 		global $connection;
 		$name = $field["field"];
 		$return = $connection->quote($value);
-		if (ereg('^(now|uuid)$', $function)) {
+		if (ereg('^(now|getdate|uuid)$', $function)) {
 			$return = "$function()";
-		} elseif (ereg('^[+-]$', $function)) {
+		} elseif (ereg('^([+-]|\\|\\|)$', $function)) {
 			$return = idf_escape($name) . " $function $return";
 		} elseif (ereg('^[+-] interval$', $function)) {
 			$return = idf_escape($name) . " $function " . (preg_match("~^([0-9]+|'[0-9.: -]') [A-Z_]+$~i", $value) ? $value : $return);
@@ -457,9 +451,10 @@ class Adminer {
 	
 	/** Returns export output options
 	* @param bool generate select (otherwise radio)
+	* @param string
 	* @return string
 	*/
-	function dumpOutput($select) {
+	function dumpOutput($select, $value = "") {
 		$return = array('text' => lang('open'), 'file' => lang('save'));
 		if (function_exists('gzencode')) {
 			$return['gz'] = 'gzip';
@@ -468,15 +463,16 @@ class Adminer {
 			$return['bz2'] = 'bzip2';
 		}
 		// ZipArchive requires temporary file, ZIP can be created by gzcompress - see PEAR File_Archive
-		return html_select("output", $return, "text", $select);
+		return html_select("output", $return, $value, $select);
 	}
 	
 	/** Returns export format options
 	* @param bool generate select (otherwise radio)
+	* @param string
 	* @return string
 	*/
-	function dumpFormat($select) {
-		return html_select("format", array('sql' => 'SQL', 'csv' => 'CSV'), "sql", $select);
+	function dumpFormat($select, $value = "") {
+		return html_select("format", array('sql' => 'SQL', 'csv' => 'CSV,', 'csv;' => 'CSV;'), $value, $select);
 	}
 	
 	/** Prints navigation after Adminer title
@@ -484,7 +480,7 @@ class Adminer {
 	* @return null
 	*/
 	function navigation($missing) {
-		global $VERSION, $connection;
+		global $VERSION, $connection, $token;
 		?>
 <h1>
 <a href="http://www.adminer.org/" id="h1"><?php echo $this->name(); ?></a>
@@ -499,19 +495,18 @@ class Adminer {
 <p class="logout">
 <a href="<?php echo h(ME); ?>sql="><?php echo bold(lang('SQL command'), isset($_GET["sql"])); ?></a>
 <a href="<?php echo h(ME); ?>dump=<?php echo urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]); ?>"><?php echo bold(lang('Dump'), isset($_GET["dump"])); ?></a>
-<input type="hidden" name="token" value="<?php echo $_SESSION["tokens"][$_GET["server"]]; ?>">
+<input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" name="logout" value="<?php echo lang('Logout'); ?>">
 </p>
 </form>
 <form action="">
 <p>
-<?php echo SID_FORM; ?>
-<?php if ($_GET["server"] != "") { ?><input type="hidden" name="server" value="<?php echo h($_GET["server"]); ?>"><?php } ?>
+<?php hidden_fields_get(); ?>
 <?php echo ($databases ? html_select("db", array("" => "(" . lang('database') . ")") + $databases, DB, "this.form.submit();") : '<input name="db" value="' . h(DB) . '">'); ?>
 <?php if (isset($_GET["sql"])) { ?><input type="hidden" name="sql" value=""><?php } ?>
 <?php if (isset($_GET["schema"])) { ?><input type="hidden" name="schema" value=""><?php } ?>
 <?php if (isset($_GET["dump"])) { ?><input type="hidden" name="dump" value=""><?php } ?>
- <input type="submit" value="<?php echo lang('Use'); ?>"<?php echo ($databases ? " class='hidden'" : ""); ?>>
+<input type="submit" value="<?php echo lang('Use'); ?>"<?php echo ($databases ? " class='hidden'" : ""); ?>>
 </p>
 </form>
 <?php
@@ -533,7 +528,7 @@ class Adminer {
 	*/
 	function tablesPrint($tables) {
 		echo "<p id='tables'>\n";
-		foreach ($tables as $table) {
+		foreach ($tables as $table => $type) {
 			echo '<a href="' . h(ME) . 'select=' . urlencode($table) . '">' . bold(lang('select'), $_GET["select"] == $table) . '</a> ';
 			echo '<a href="' . h(ME) . 'table=' . urlencode($table) . '">' . bold($this->tableName(array("Name" => $table)), $_GET["table"] == $table) . "</a><br>\n"; //! Adminer::tableName may work with full table status
 		}
@@ -542,3 +537,6 @@ class Adminer {
 }
 
 $adminer = (function_exists('adminer_object') ? adminer_object() : new Adminer);
+if (!isset($adminer->operators)) {
+	$adminer->operators = $operators;
+}

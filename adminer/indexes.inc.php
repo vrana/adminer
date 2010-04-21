@@ -1,6 +1,10 @@
 <?php
 $TABLE = $_GET["indexes"];
-$index_types = array("PRIMARY", "UNIQUE", "INDEX", "FULLTEXT");
+$index_types = array("PRIMARY", "UNIQUE", "INDEX");
+$table_status = table_status($TABLE);
+if (ereg("MyISAM|Maria", $table_status["Engine"])) {
+	$index_types[] = "FULLTEXT";
+}
 $indexes = indexes($TABLE);
 if ($_POST && !$error && !$_POST["add"]) {
 	$alter = array();
@@ -14,32 +18,32 @@ if ($_POST && !$error && !$_POST["add"]) {
 				if ($column != "") {
 					$length = $index["lengths"][$key];
 					$set[] = idf_escape($column) . ($length ? "(" . intval($length) . ")" : "");
-					$columns[count($columns) + 1] = $column;
-					$lengths[count($lengths) + 1] = ($length ? $length : null);
+					$columns[] = $column;
+					$lengths[] = ($length ? $length : null);
 				}
 			}
 			if ($columns) {
 				foreach ($indexes as $name => $existing) {
 					ksort($existing["columns"]);
 					ksort($existing["lengths"]);
-					if ($index["type"] == $existing["type"] && $existing["columns"] === $columns && $existing["lengths"] === $lengths) {
+					if ($index["type"] == $existing["type"] && array_values($existing["columns"]) === $columns && (!$existing["lengths"] || array_values($existing["lengths"]) === $lengths)) {
 						// skip existing index
 						unset($indexes[$name]);
 						continue 2;
 					}
 				}
-				$alter[] = "\nADD $index[type]" . ($index["type"] == "PRIMARY" ? " KEY" : "") . " (" . implode(", ", $set) . ")";
+				$alter[] = array($index["type"], "(" . implode(", ", $set) . ")");
 			}
 		}
 	}
 	// drop removed indexes
 	foreach ($indexes as $name => $existing) {
-		$alter[] = "\nDROP INDEX " . idf_escape($name);
+		$alter[] = array($existing["type"], idf_escape($name), "DROP");
 	}
 	if (!$alter) {
 		redirect(ME . "table=" . urlencode($TABLE));
 	}
-	query_redirect("ALTER TABLE " . idf_escape($TABLE) . implode(",", $alter), ME . "table=" . urlencode($TABLE), lang('Indexes have been altered.'));
+	queries_redirect(ME . "table=" . urlencode($TABLE), lang('Indexes have been altered.'), alter_indexes($TABLE, $alter));
 }
 
 page_header(lang('Indexes'), $error, array("table" => $TABLE), $TABLE);
@@ -77,7 +81,7 @@ foreach ($row["indexes"] as $index) {
 	ksort($index["columns"]);
 	foreach ($index["columns"] as $i => $column) {
 		echo "<span>" . html_select("indexes[$j][columns][$i]", array(-1 => "") + $fields, $column, ($i == count($index["columns"]) ? "indexesAddColumn(this);" : 1));
-		echo "<input name='indexes[$j][lengths][$i]' size='2' value='" . h($index["lengths"][$i]) . "'> </span>\n";
+		echo "<input name='indexes[$j][lengths][$i]' size='2' value='" . h($index["lengths"][$i]) . "'> </span>\n"; //! hide for non-MySQL drivers, add ASC|DESC
 	}
 	echo "\n";
 	$j++;

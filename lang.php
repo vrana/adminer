@@ -14,6 +14,7 @@ $messages_all = array();
 foreach (array_merge(
 	glob(dirname(__FILE__) . "/adminer/*.php"),
 	glob(dirname(__FILE__) . "/adminer/include/*.php"),
+	glob(dirname(__FILE__) . "/adminer/drivers/*.php"),
 	glob(dirname(__FILE__) . "/editor/*.php"),
 	glob(dirname(__FILE__) . "/editor/include/*.php")
 ) as $filename) {

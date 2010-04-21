@@ -8,16 +8,38 @@ function email_header($header) {
 	return "=?UTF-8?B?" . base64_encode($header) . "?="; //! split long lines
 }
 
-/** Get keys from first column and values from second
+/** Send e-mail in UTF-8
 * @param string
-* @return array
+* @param string
+* @param string
+* @param string
+* @param array
+* @return 
 */
-function get_key_vals($query) {
-	global $connection;
-	$return = array();
-	$result = $connection->query($query);
-	while ($row = $result->fetch_row()) {
-		$return[$row[0]] = $row[1];
+function send_email($email, $subject, $message, $from = "", $files = array()) {
+	$eol = (strncasecmp(PHP_OS, "win", 3) ? "\n" : "\r\n"); // PHP_EOL available since PHP 4.3.10 and 5.0.2
+	$message = str_replace("\n", $eol, wordwrap(str_replace("\r", "", "$message\n")));
+	$boundary = uniqid("boundary");
+	$attachments = "";
+	foreach ($files["error"] as $key => $val) {
+		if (!$val) {
+			$attachments .= "--$boundary$eol"
+				. "Content-Type: " . str_replace("\n", "", $files["type"][$key]) . $eol
+				. "Content-Disposition: attachment; filename=\"" . preg_replace('~["\\n]~', '', $files["name"][$key]) . "\"$eol"
+				. "Content-Transfer-Encoding: base64$eol$eol"
+				. chunk_split(base64_encode(file_get_contents($files["tmp_name"][$key])), 76, $eol) . $eol
+			;
+		}
 	}
-	return $return;
+	$beginning = "";
+	$headers = "Content-Type: text/plain; charset=utf-8$eol" . "Content-Transfer-Encoding: 8bit";
+	if ($attachments) {
+		$attachments .= "--$boundary--$eol";
+		$beginning = "--$boundary$eol$headers$eol$eol";
+		$headers = "Content-Type: multipart/mixed; boundary=\"$boundary\"";
+	}
+	$headers .= $eol . "MIME-Version: 1.0$eol" . "X-Mailer: Adminer Editor"
+		. ($from ? $eol . "From: " . str_replace("\n", "", $from) : "") //! should escape display name
+	;
+	return mail($email, email_header($subject), $beginning . $message . $attachments, $headers);
 }

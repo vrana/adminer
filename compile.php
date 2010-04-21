@@ -138,7 +138,7 @@ function php_shrink($input) {
 			} elseif ($token[0] === T_VARIABLE && !isset($special_variables[$token[1]])) {
 				$token[1] = '$' . $short_variables[$token[1]];
 			}
-			if (isset($set[substr($output, -1)]) || isset($set[$token[1]{0}])) {
+			if (isset($set[substr($output, -1)]) || isset($set[$token[1][0]])) {
 				$space = '';
 			}
 			$output .= $space . $token[1];
@@ -157,10 +157,16 @@ function compile_file($match) {
 	return call_user_func($match[2], file_get_contents(dirname(__FILE__) . "/$project/$match[1]"));
 }
 
+$DRIVER = "";
+if (file_exists(dirname(__FILE__) . "/adminer/drivers/" . $_SERVER["argv"][1] . ".inc.php")) {
+	$DRIVER = $_SERVER["argv"][1];
+	array_shift($_SERVER["argv"]);
+}
+
 unset($_COOKIE["adminer_lang"]);
 $_SESSION["lang"] = $_SERVER["argv"][1]; // Adminer functions read language from session
+include dirname(__FILE__) . "/adminer/include/lang.inc.php";
 if (isset($_SESSION["lang"])) {
-	include dirname(__FILE__) . "/adminer/include/lang.inc.php";
 	if (isset($_SERVER["argv"][2]) || !isset($langs[$_SESSION["lang"]])) {
 		echo "Usage: php compile.php [lang]\nPurpose: Compile adminer[-lang].php and editor[-lang].php.\n";
 		exit(1);
@@ -168,11 +174,44 @@ if (isset($_SESSION["lang"])) {
 	include dirname(__FILE__) . "/adminer/lang/$_SESSION[lang].inc.php";
 }
 
+// check function definition in drivers
+$filename = dirname(__FILE__) . "/adminer/drivers/mysql.inc.php";
+preg_match_all('~\\bfunction ([^(]+)~', file_get_contents($filename), $matches); //! respect context (extension, class)
+$functions = array_combine($matches[1], $matches[0]);
+unset($functions["__destruct"], $functions["Min_DB"], $functions["Min_Result"]);
+foreach (glob(dirname(__FILE__) . "/adminer/drivers/" . ($DRIVER ? $DRIVER : "*") . ".inc.php") as $filename) {
+	if ($filename != "mysql.inc.php") {
+		$file = file_get_contents($filename);
+		foreach ($functions as $val) {
+			if (!strpos($file, "$val(")) {
+				echo "Missing $val in $filename\n";
+			}
+		}
+	}
+}
+
 foreach (array("adminer", "editor") as $project) {
 	$lang_ids = array(); // global variable simplifies usage in a callback function
 	$file = file_get_contents(dirname(__FILE__) . "/$project/index.php");
+	if ($DRIVER && $DRIVER != "mysql") {
+		$_GET[$DRIVER] = true; // to load the driver
+		include_once dirname(__FILE__) . "/adminer/drivers/$DRIVER.inc.php";
+		foreach (array("view", "event", "privileges", "user", "processlist", "variables", "trigger") as $feature) {
+			if (!support($feature)) {
+				$file = str_replace("} elseif (isset(\$_GET[\"$feature\"])) {\n\tinclude \"./$feature.inc.php\";\n", "", $file);
+			}
+		}
+		if (!support("routine")) {
+			$file = str_replace("} elseif (isset(\$_GET[\"procedure\"])) {\n\tinclude \"./procedure.inc.php\";\n", "", $file);
+			$file = str_replace("} elseif (isset(\$_GET[\"call\"])) {\n\tinclude \"./call.inc.php\";\n", "", $file);
+			$file = str_replace("if (isset(\$_GET[\"callf\"])) {\n\t\$_GET[\"call\"] = \$_GET[\"callf\"];\n}\nif (isset(\$_GET[\"function\"])) {\n\t\$_GET[\"procedure\"] = \$_GET[\"function\"];\n}\n", "", $file);
+		}
+	}
 	$file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file);
 	$file = str_replace('include "../adminer/include/coverage.inc.php";', '', $file);
+	if ($DRIVER) {
+		$file = preg_replace('(include "../adminer/drivers/(?!' . preg_quote($DRIVER) . ').*\\s*)', '', $file);
+	}
 	$file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file); // bootstrap.inc.php
 	$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
 	$file = preg_replace_callback('~\\b(include|require) "([^"]*\\$LANG.inc.php)";~', 'put_file_lang', $file);
@@ -187,11 +226,11 @@ foreach (array("adminer", "editor") as $project) {
 	$replace = 'h(preg_replace("~\\\\\\\\?.*~", "", $_SERVER["REQUEST_URI"])) . "?file=\\1&amp;version=' . $VERSION;
 	$file = preg_replace('~\\.\\./adminer/static/(default\\.css|functions\\.js|favicon\\.ico)~', '<?php echo ' . $replace . '"; ?>', $file);
 	$file = preg_replace('~\\.\\./adminer/static/([^\'"]*)~', '" . ' . $replace, $file);
-	$file = str_replace("../externals/jush/", "https://jush.svn.sourceforge.net/svnroot/jush/trunk/", $file); // mixed-content warning if Adminer runs on HTTPS and external files on HTTP
+	$file = str_replace("../externals/jush/", "https://www.adminer.org/static/", $file);
 	$file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
 	$file = php_shrink($file);
 
-	$filename = $project . ($_SESSION["lang"] ? "-$_SESSION[lang]" : "") . ".php"; // "$project-$VERSION"
+	$filename = $project . ($DRIVER ? "-$DRIVER" : "") . ($_SESSION["lang"] ? "-$_SESSION[lang]" : "") . ".php"; // . "-$VERSION"
 	fwrite(fopen($filename, "w"), $file); // file_put_contents() since PHP 5
-	echo "$filename created.\n";
+	echo "$filename created (" . strlen($file) . " B).\n";
 }

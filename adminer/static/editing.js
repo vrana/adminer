@@ -1,7 +1,7 @@
 // Adminer specific functions
 
 /** Load syntax highlighting
-* @param string first three characters of MySQL version
+* @param string first three characters of database system version
 */
 function bodyLoad(version) {
 	var jushRoot = '../externals/jush/';
@@ -10,6 +10,7 @@ function bodyLoad(version) {
 	script.onload = function () {
 		if (window.jush) { // IE runs in case of an error too
 			jush.create_links = ' target="_blank"';
+			jush.urls.pgsql[0] = 'http://www.postgresql.org/docs/' + version + '/static/$key';
 			jush.urls.sql[0] = 'http://dev.mysql.com/doc/refman/' + version + '/en/$key';
 			jush.urls.sqlset[0] = jush.urls.sql[0];
 			jush.urls.sqlstatus[0] = jush.urls.sql[0];
@@ -25,8 +26,6 @@ function bodyLoad(version) {
 	};
 	document.body.appendChild(script);
 }
-
-
 
 /** Get value of select
 * @param HTMLSelectElement

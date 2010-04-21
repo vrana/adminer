@@ -2,9 +2,7 @@ MySQL 5 BIT data type
 Transactions in export
 Create view and routine options
 Mass editation of individual rows
-Offer enum and set items in search - whisperer
 Variables editation, especially timezone
-Use event $intervals + microseconds in relative date functions
 Optionally check IP address
 Disable spell checking in SQL textareas - spellcheck="false"
 Accept Tab in SQL textareas, Ctrl+Enter to send form
@@ -12,14 +10,40 @@ Highlight SQL textarea, then display query inside textarea in select - may use e
 Blob download and image display in edit form (important for Editor with hidden fields in select)
 Add title to Logout, edit (in select) and select (in menu) in style "hever"
 Shift-click in checkboxes to select range
-? LIKE %% operator
+Export by GET parameters
+Only first part of big BZ2 export is readable
 ? Column and table names auto-completition in SQL textarea
-? Aliasing of built-in functions can save 7 KB, function minification can save 7 KB, substitution of repetitive $a["a"] can save 4 KB, substitution of $_GET and friends can save 2 KB, JS packer can save 1 KB, not enclosing HTML attribute values can save 1.2 KB, replacing \\n by \n can save .3 KB
+? Aliasing of built-in functions can save 7 KB, function minification can save 7 KB, substitution of repetitive $a["a"] can save 4 KB, substitution of $_GET and friends can save 2 KB, aliasing of $connection->query, $connection->result and $connection->quote can save ~ 3 KB, JS packer can save 1 KB, not enclosing HTML attribute values can save 1.2 KB, replacing \\n by \n can save .3 KB
 ? Branch binary_compile: LZW compression of translations can save 30 KB, LZW compression of all texts can save 11 KB, remove of base64_decode() + using chars 127-255 in minification can save 1 KB
 ? AJAX editing - select page has all data to display edit form
+? MySQL geometry support
+Translations - database(s) have been dropped
 
 Editor:
 JavaScript data validation - columns containing word email, url, ...
 Joining tables - PRIMARY KEY (table, joining)
 Rank, Tree structure
 Add whisperer to fields with foreign key to big table
+
+SQLite:
+CREATE DATABASE - PRAGMA encoding = "UTF-8"
+Detecion of non-existing database
+DROP DATABASE by file operations
+CSV import - ON DUPLICATE KEY UPDATE
+Export - views, triggers
+Delimiter in export and SQL command
+
+PostgreSQL:
+Users - SELECT * FROM pg_user
+ORDER BY COUNT(*)
+Table schema
+Export - http://www.postgresql.org/docs/8.4/static/functions-info.html
+Table status - http://www.postgresql.org/docs/8.4/static/functions-admin.html
+Column rights - http://www.postgresql.org/docs/8.4/static/functions-info.html
+Move table - ALTER TABLE SET SCHEMA
+bool in Editor
+
+MS SQL:
+Rename by sp_rename
+Detection of table collation
+PDO driver

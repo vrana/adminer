@@ -8,20 +8,12 @@ function connection() {
 	return $connection;
 }
 
-/** Escape database identifier
-* @param string
-* @return string
-*/
-function idf_escape($idf) {
-	return "`" . str_replace("`", "``", $idf) . "`";
-}
-
 /** Unescape database identifier
 * @param string text inside ``
 * @return string
 */
 function idf_unescape($idf) {
-	return str_replace("``", "`", $idf);
+	return str_replace($idf[0] . $idf[0], $idf[0], substr($idf, 1, -1));
 }
 
 /** Escape string to use inside ''
@@ -60,6 +52,14 @@ function nbsp($string) {
 	return (trim($string) != "" ? h($string) : "&nbsp;");
 }
 
+/** Convert \n to <br>
+* @param string
+* @return string
+*/
+function nl_br($string) {
+	return str_replace("\n", "<br>", $string); // nl2br() uses XHTML before PHP 5.3
+}
+
 /** Generate HTML checkbox
 * @param string
 * @param string
@@ -71,7 +71,7 @@ function nbsp($string) {
 function checkbox($name, $value, $checked, $label = "", $onclick = "") {
 	static $id = 0;
 	$id++;
-	$return = "<input type='checkbox' name='$name' value='" . h($value) . "'" . ($checked ? " checked" : "") . ($onclick ? " onclick=\"$onclick\"" : "") . " id='checkbox-$id'>";
+	$return = "<input type='checkbox'" . ($name ? " name='$name' value='" . h($value) . "'" : "") . ($checked ? " checked" : "") . ($onclick ? " onclick=\"$onclick\"" : "") . " id='checkbox-$id'>";
 	return ($label != "" ? "<label for='checkbox-$id'>$return" . h($label) . "</label>" : $return);
 }
 
@@ -115,6 +115,15 @@ function html_select($name, $options, $value = "", $onchange = true) {
 	return $return;
 }
 
+/** Get INI boolean value
+* @param string
+* @return bool
+*/
+function ini_bool($ini) {
+	$val = ini_get($ini);
+	return (eregi('^(on|true|yes)$', $val) || (int) $val); // boolean values set by php_value are strings
+}
+
 /** Get list of values from database
 * @param string
 * @param mixed
@@ -128,6 +137,24 @@ function get_vals($query, $column = 0) {
 		while ($row = $result->fetch_row()) {
 			$return[] = $row[$column];
 		}
+	}
+	return $return;
+}
+
+/** Get keys from first column and values from second
+* @param string
+* @param Min_DB
+* @return array
+*/
+function get_key_vals($query, $connection2 = null) {
+	global $connection;
+	if (!is_object($connection2)) {
+		$connection2 = $connection;
+	}
+	$return = array();
+	$result = $connection2->query($query);
+	while ($row = $result->fetch_row()) {
+		$return[$row[0]] = $row[1];
 	}
 	return $return;
 }
@@ -200,7 +227,14 @@ function where_link($i, $column, $value, $operator = "=") {
 * @return bool
 */
 function cookie($name, $value) {
-	$params = array($name, $value, time() + 2592000, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]), "", $_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off")); // 2592000 = 30 * 24 * 60 * 60
+	$params = array(
+		$name,
+		(ereg("\n", $value) ? "" : $value), // HTTP Response Splitting protection in PHP < 5.1.2
+		time() + 2592000, // 2592000 - 30 days
+		preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]),
+		"",
+		$_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off")
+	);
 	if (version_compare(PHP_VERSION, '5.2.0') >= 0) {
 		$params[] = true; // HttpOnly
 	}
@@ -211,9 +245,26 @@ function cookie($name, $value) {
 * @return null
 */
 function restart_session() {
-	if (!ini_get("session.use_cookies")) {
+	if (!ini_bool("session.use_cookies")) {
 		session_start();
 	}
+}
+
+/** Get session variable for current server
+* @param string
+* @return mixed
+*/
+function &get_session($key) {
+	return $_SESSION[$key][DRIVER][SERVER][$_GET["username"]];
+}
+
+/** Set session variable for current server
+* @param string
+* @param mixed
+* @return mixed
+*/
+function set_session($key, $val) {
+	$_SESSION[$key][DRIVER][SERVER][$_GET["username"]] = $val; // used also in auth.inc.php
 }
 
 /** Send Location header and exit
@@ -385,6 +436,15 @@ function hidden_fields($process, $ignore = array()) {
 	}
 }
 
+/** Print hidden fields for GET forms
+* @return null
+*/
+function hidden_fields_get() {
+	echo (SID && !$_COOKIE ? '<input type="hidden" name="' . session_name() . '" value="' . h(session_id()) . '">' : '');
+	echo (SERVER !== null ? '<input type="hidden" name="' . DRIVER . '" value="' . h(SERVER) . '">' : "");
+	echo '<input type="hidden" name="username" value="' . h($_GET["username"]) . '">';
+}
+
 /** Find out foreign keys for each column
 * @param string
 * @return array array($col => array())
@@ -399,6 +459,22 @@ function column_foreign_keys($table) {
 	return $return;
 }
 
+/** Print enum input field
+* @param string "radio"|"checkbox"
+* @param string
+* @param array
+* @param mixed int|string|array
+* @return null
+*/
+function enum_input($type, $name, $field, $value) {
+	preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
+	foreach ($matches[1] as $i => $val) {
+		$val = stripcslashes(str_replace("''", "'", $val));
+		$checked = (is_int($value) ? $value == $i+1 : (is_array($value) ? in_array($i+1, $value) : $value === $val));
+		echo " <label><input type='$type' name='$name' value='" . ($i+1) . "'" . ($checked ? ' checked' : '') . '>' . h($val) . '</label>';
+	}
+}
+
 /** Print edit input field
 * @param array one field from fields()
 * @param mixed
@@ -406,19 +482,14 @@ function column_foreign_keys($table) {
 * @return null
 */
 function input($field, $value, $function) {
-	global $types, $adminer;
+	global $types, $adminer, $driver;
 	$name = h(bracket_escape($field["field"]));
 	echo "<td class='function'>";
 	$functions = (isset($_GET["select"]) ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
 	if ($field["type"] == "enum") {
 		echo nbsp($functions[""]) . "<td>" . ($functions["orig"] ? "<label><input type='radio' name='fields[$name]' value='-1' checked><em>$functions[orig]</em></label> " : "");
 		echo $adminer->editInput($_GET["edit"], $field, " name='fields[$name]'", $value);
-		preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
-		foreach ($matches[1] as $i => $val) {
-			$val = stripcslashes(str_replace("''", "'", $val));
-			$checked = (is_int($value) ? $value == $i+1 : $value === $val);
-			echo " <label><input type='radio' name='fields[$name]' value='" . ($i+1) . "'" . ($checked ? ' checked' : '') . '>' . h($val) . '</label>';
-		}
+		enum_input("radio", "fields[$name]", $field, $value);
 	} else {
 		$first = 0;
 		foreach ($functions as $key => $val) {
@@ -440,10 +511,10 @@ function input($field, $value, $function) {
 				$checked = (is_int($value) ? ($value >> $i) & 1 : in_array($val, explode(",", $value), true));
 				echo " <label><input type='checkbox' name='fields[$name][$i]' value='" . (1 << $i) . "'" . ($checked ? ' checked' : '') . "$onchange>" . h($val) . '</label>';
 			}
-		} elseif (ereg('binary|blob', $field["type"]) && ini_get("file_uploads")) {
+		} elseif (ereg('binary|blob|bytea', $field["type"]) && ini_bool("file_uploads")) {
 			echo "<input type='file' name='fields-$name'$onchange>";
 		} elseif (ereg('text|blob', $field["type"])) {
-			echo "<textarea cols='50' rows='12'$attrs>" . h($value) . '</textarea>';
+			echo "<textarea cols='50' rows='" . ($driver != "sqlite" || ereg("\n", $value) ? 12 : 1) . "'$attrs>" . h($value) . '</textarea>';
 		} else {
 			// int(3) is only a display hint
 			$maxlength = (!ereg('int', $field["type"]) && preg_match('~^([0-9]+)(,([0-9]+))?$~', $field["length"], $match) ? ($match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) : ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0));
@@ -461,23 +532,35 @@ function process_input($field) {
 	$idf = bracket_escape($field["field"]);
 	$function = $_POST["function"][$idf];
 	$value = $_POST["fields"][$idf];
-	if ($field["type"] == "enum" ? $value == -1 : $function == "orig") {
-		return false;
-	} elseif ($field["type"] == "enum" || $field["auto_increment"] ? $value == "" : $function == "NULL") {
-		return "NULL";
-	} elseif ($field["type"] == "enum") {
+	if ($field["type"] == "enum") {
+		if ($value == -1) {
+			return false;
+		}
+		if ($value == "") {
+			return "NULL";
+		}
 		return intval($value);
-	} elseif ($field["type"] == "set") {
+	}
+	if ($field["auto_increment"] && $value == "") {
+		return null;
+	}
+	if ($function == "orig") {
+		return false;
+	}
+	if ($function == "NULL") {
+		return "NULL";
+	}
+	if ($field["type"] == "set") {
 		return array_sum((array) $value);
-	} elseif (ereg('binary|blob', $field["type"]) && ini_get("file_uploads")) {
+	}
+	if (ereg('binary|blob|bytea', $field["type"]) && ini_bool("file_uploads")) {
 		$file = get_file("fields-$idf");
 		if (!is_string($file)) {
 			return false; //! report errors
 		}
 		return $connection->quote($file);
-	} else {
-		return $adminer->processInput($field, $value, $function);
 	}
+	return $adminer->processInput($field, $value, $function);
 }
 
 /** Print results of search in all tables
@@ -491,7 +574,7 @@ function search_tables() {
 	foreach (table_status() as $table => $table_status) {
 		$name = $adminer->tableName($table_status);
 		if (isset($table_status["Engine"]) && $name != "" && (!$_POST["tables"] || in_array($table, $_POST["tables"]))) {
-			$result = $connection->query("SELECT 1 FROM " . idf_escape($table) . " WHERE " . implode(" AND ", $adminer->selectSearchProcess(fields($table), array())) . " LIMIT 1");
+			$result = $connection->query("SELECT" . limit("1 FROM " . idf_escape($table) . " WHERE " . implode(" AND ", $adminer->selectSearchProcess(fields($table), array())), 1));
 			if ($result->num_rows) {
 				if (!$found) {
 					echo "<ul>\n";
@@ -510,11 +593,11 @@ function search_tables() {
 */
 function dump_csv($row) {
 	foreach ($row as $key => $val) {
-		if (preg_match("~[\"\n,]~", $val) || $val === "") {
+		if (preg_match("~[\"\n,;]~", $val) || $val === "") {
 			$row[$key] = '"' . str_replace('"', '""', $val) . '"';
 		}
 	}
-	echo implode(",", $row) . "\n";
+	echo implode(($_POST["format"] == "csv;" ? ";" : ","), $row) . "\n";
 }
 
 /** Apply SQL function
@@ -523,7 +606,7 @@ function dump_csv($row) {
 * @return string
 */
 function apply_sql_function($function, $column) {
-	return ($function ? ($function == "count distinct" ? "COUNT(DISTINCT " : strtoupper("$function(")) . "$column)" : $column);
+	return ($function ? ($function == "unixepoch" ? "DATETIME($column, '$function')" : ($function == "count distinct" ? "COUNT(DISTINCT " : strtoupper("$function(")) . "$column)") : $column);
 }
 
 /** Check whether the string is e-mail address

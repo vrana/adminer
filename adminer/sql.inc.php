@@ -1,6 +1,7 @@
 <?php
 restart_session();
-$history = &$_SESSION["history"][$_GET["server"]][DB];
+$history_all = &get_session("history");
+$history = &$history_all[DB];
 if (!$error && $_POST["clear"]) {
 	$history = array();
 	redirect(remove_from_uri("history"));
@@ -28,15 +29,14 @@ if (!$error && $_POST) {
 			$history[] = $query;
 		}
 		$space = "(\\s|/\\*.*\\*/|(#|-- )[^\n]*\n|--\n)";
-		$alter_database = "(CREATE|DROP)$space+(DATABASE|SCHEMA)\\b~isU";
-		if (!ini_get("session.use_cookies")) {
+		if (!ini_bool("session.use_cookies")) {
 			session_write_close();
 		}
 		$delimiter = ";";
 		$offset = 0;
 		$empty = true;
-		$connection2 = (DB != "" ? connect() : null); // connection for exploring indexes and EXPLAIN (to not replace FOUND_ROWS()) //! PDO - silent error
-		if (is_object($connection2)) {
+		$connection2 = connect(); // connection for exploring indexes and EXPLAIN (to not replace FOUND_ROWS()) //! PDO - silent error
+		if (is_object($connection2) && DB != "") {
 			$connection2->select_db(DB);
 		}
 		$queries = 0;
@@ -59,7 +59,7 @@ if (!$error && $_POST) {
 						$empty = false;
 						$q = substr($query, 0, $match[0][1]);
 						$queries++;
-						echo "<pre class='jush-sql' id='sql-$queries'>" . shorten_utf8(trim($q), 1000) . "</pre>\n";
+						echo "<pre class='jush-$driver' id='sql-$queries'>" . shorten_utf8(trim($q), 1000) . "</pre>\n";
 						ob_flush();
 						flush(); // can take a long time - show the running query
 						$start = explode(" ", microtime()); // microtime(true) is available since PHP 5
@@ -71,6 +71,9 @@ if (!$error && $_POST) {
 								break;
 							}
 						} else {
+							if (is_object($connection2) && preg_match("~^$space*(USE)\\b~isU", $q)) {
+								$connection2->query($q);
+							}
 							do {
 								$result = $connection->store_result();
 								$end = explode(" ", microtime());
@@ -82,18 +85,17 @@ if (!$error && $_POST) {
 										$id = "explain-$queries";
 										echo ", <a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>\n";
 										echo "<div id='$id' class='hidden'>\n";
-										select($connection2->query("EXPLAIN $q"));
+										select(explain($connection2, $q));
 										echo "</div>\n";
 									}
 								} else {
-									if (preg_match("~^$space*$alter_database", $query)) {
+									if (preg_match("~^$space*(CREATE|DROP|ALTER)$space+(DATABASE|SCHEMA)\\b~isU", $q)) {
 										restart_session();
-										$_SESSION["databases"][$_GET["server"]] = null; // clear cache
+										set_session("databases", null); // clear cache
 										session_write_close();
 									}
 									echo "<p class='message' title='" . h($connection->info) . "'>" . lang('Query executed OK, %d row(s) affected.', $connection->affected_rows) . "$time\n";
 								}
-								unset($result); // free resultset
 								$start = $end;
 							} while ($connection->next_result());
 						}
@@ -119,6 +121,7 @@ if (!$error && $_POST) {
 		if ($empty) {
 			echo "<p class='message'>" . lang('No commands to execute.') . "\n";
 		}
+		//! MS SQL - SET SHOWPLAN_ALL OFF
 	} else {
 		echo "<p class='error'>" . upload_error($query) . "\n";
 	}
@@ -142,7 +145,7 @@ echo h($q);
 
 <p>
 <?php
-if (!ini_get("file_uploads")) {
+if (!ini_bool("file_uploads")) {
 	echo lang('File uploads are disabled.');
 } else { ?>
 <?php echo lang('File upload'); ?>: <input type="file" name="sql_file">
@@ -164,7 +167,7 @@ if ($history) {
 	print_fieldset("history", lang('History'), $_GET["history"] != "");
 	foreach ($history as $key => $val) {
 		//! save and display timestamp
-		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . '</a> <code class="jush-sql">' . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace('~^(#|-- ).*~m', '', $val)))), 80, "</code>") . "<br>\n";
+		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . "</a> <code class='jush-$driver'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace('~^(#|-- ).*~m', '', $val)))), 80, "</code>") . "<br>\n";
 	}
 	echo "<input type='submit' name='clear' value='" . lang('Clear') . "'>\n";
 	echo "</div></fieldset>\n";

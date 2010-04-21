@@ -4,18 +4,15 @@ $tables_views = array_merge((array) $_POST["tables"], (array) $_POST["views"]);
 if ($tables_views && !$error && !$_POST["search"]) {
 	$result = true;
 	$message = "";
-	if (count($_POST["tables"]) > 1 && ($_POST["drop"] || $_POST["truncate"])) {
+	if ($driver == "sql" && count($_POST["tables"]) > 1 && ($_POST["drop"] || $_POST["truncate"])) {
 		queries("SET foreign_key_checks = 0"); // allows to truncate or drop several tables at once
 	}
-	if (isset($_POST["truncate"])) {
-		foreach ((array) $_POST["tables"] as $table) {
-			if (!queries("TRUNCATE " . idf_escape($table))) {
-				$result = false;
-				break;
-			}
+	if ($_POST["truncate"]) {
+		if ($_POST["tables"]) {
+			$result = truncate_tables($_POST["tables"]);
 		}
 		$message = lang('Tables have been truncated.');
-	} elseif (isset($_POST["move"])) {
+	} elseif ($_POST["move"]) {
 		$rename = array();
 		foreach ($tables_views as $table) {
 			$rename[] = idf_escape($table) . " TO " . idf_escape($_POST["target"]) . "." . idf_escape($table);
@@ -23,66 +20,65 @@ if ($tables_views && !$error && !$_POST["search"]) {
 		$result = queries("RENAME TABLE " . implode(", ", $rename));
 		//! move triggers
 		$message = lang('Tables have been moved.');
-	} elseif ((!isset($_POST["drop"]) || !$_POST["views"] || queries("DROP VIEW " . implode(", ", array_map('idf_escape', $_POST["views"]))))
-		&& (!$_POST["tables"] || ($result = queries((isset($_POST["optimize"]) ? "OPTIMIZE" : (isset($_POST["check"]) ? "CHECK" : (isset($_POST["repair"]) ? "REPAIR" : (isset($_POST["drop"]) ? "DROP" : "ANALYZE")))) . " TABLE " . implode(", ", array_map('idf_escape', $_POST["tables"])))))
-	) {
-		if (isset($_POST["drop"])) {
-			$message = lang('Tables have been dropped.');
-		} else {
-			while ($row = $result->fetch_assoc()) {
-				$message .= h("$row[Table]: $row[Msg_text]") . "<br>";
-			}
+	} elseif ($_POST["drop"]) {
+		if ($_POST["views"]) {
+			$result = drop_views($_POST["views"]);
+		}
+		if ($result && $_POST["tables"]) {
+			$result = drop_tables($_POST["tables"]);
+		}
+		$message = lang('Tables have been dropped.');
+	} elseif ($_POST["tables"] && ($result = queries(($_POST["optimize"] ? "OPTIMIZE" : ($_POST["check"] ? "CHECK" : ($_POST["repair"] ? "REPAIR" : "ANALYZE"))) . " TABLE " . implode(", ", array_map('idf_escape', $_POST["tables"]))))) {
+		while ($row = $result->fetch_assoc()) {
+			$message .= h("$row[Table]: $row[Msg_text]") . "<br>";
 		}
 	}
 	queries_redirect(substr(ME, 0, -1), $message, $result);
 }
 
-page_header(lang('Database') . ": " . h(DB), $error, false);
+page_header(lang('Database') . ": " . h(DB), $error, true);
 echo '<p><a href="' . h(ME) . 'database=">' . lang('Alter database') . "</a>\n";
 echo '<a href="' . h(ME) . 'schema=">' . lang('Database schema') . "</a>\n";
+$sums = array("Data_length" => 0, "Index_length" => 0, "Data_free" => 0);
 
 echo "<h3>" . lang('Tables and views') . "</h3>\n";
-$table_status = table_status();
-if (!$table_status) {
+$tables_list = tables_list();
+if (!$tables_list) {
 	echo "<p class='message'>" . lang('No tables.') . "\n";
 } else {
 	echo "<form action='' method='post'>\n";
 	echo "<p><input name='query' value='" . h($_POST["query"]) . "'> <input type='submit' name='search' value='" . lang('Search') . "'>\n";
 	if ($_POST["search"] && $_POST["query"] != "") {
-		$_GET["where"][0]["op"] = "LIKE";
-		$_GET["where"][0]["val"] = "%$_POST[query]%";
+		$_GET["where"][0]["op"] = "LIKE %%";
+		$_GET["where"][0]["val"] = $_POST["query"];
 		search_tables();
 	}
 	echo "<table cellspacing='0' class='nowrap' onclick='tableClick(event);'>\n";
-	echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck(this, /^(tables|views)\[/);"><th>' . lang('Table') . '<td>' . lang('Engine') . '<td>' . lang('Collation') . '<td>' . lang('Data Length') . '<td>' . lang('Index Length') . '<td>' . lang('Data Free') . '<td>' . lang('Auto Increment') . '<td>' . lang('Rows') . '<td>' . lang('Comment') . "</thead>\n";
-	$sums = array();
-	foreach ($table_status as $row) {
-		$name = $row["Name"];
-		echo '<tr' . odd() . '><td>' . checkbox((isset($row["Rows"]) ? "tables[]" : "views[]"), $name, in_array($name, $tables_views, true), "", "formUncheck('check-all');");
+	echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck(this, /^(tables|views)\[/);"><th>' . lang('Table') . '<td>' . lang('Engine') . '<td>' . lang('Collation') . '<td>' . lang('Data Length') . '<td>' . lang('Index Length') . '<td>' . lang('Data Free') . '<td>' . lang('Auto Increment') . '<td>' . lang('Rows') . (support("comment") ? '<td>' . lang('Comment') : '') . "</thead>\n";
+	foreach ($tables_list as $name => $type) {
+		$view = (isset($type) && !eregi("table", $type));
+		echo '<tr' . odd() . '><td>' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array($name, $tables_views, true), "", "formUncheck('check-all');");
 		echo '<th><a href="' . h(ME) . 'table=' . urlencode($name) . '">' . h($name) . '</a>';
-		if (isset($row["Rows"])) {
-			echo "<td>$row[Engine]<td>$row[Collation]";
-			foreach (array("Data_length" => "create", "Index_length" => "indexes", "Data_free" => "edit", "Auto_increment" => "auto_increment=1&create", "Rows" => "select") as $key => $link) {
-				$val = number_format($row[$key], 0, '.', lang(','));
-				echo '<td align="right">' . ($row[$key] != "" ? '<a href="' . h(ME . "$link=") . urlencode($name) . '">' . str_replace(" ", "&nbsp;", ($key == "Rows" && $row["Engine"] == "InnoDB" && $val ? lang('~ %s', $val) : $val)) . '</a>' : '&nbsp;');
-				$sums[$link] += ($row["Engine"] != "InnoDB" || $link != "edit" ? $row[$key] : 0);
-			}
-			echo "<td>" . nbsp($row["Comment"]);
-		} else {
+		if ($view) {
 			echo '<td colspan="6"><a href="' . h(ME) . "view=" . urlencode($name) . '">' . lang('View') . '</a>';
 			echo '<td align="right"><a href="' . h(ME) . "select=" . urlencode($name) . '">?</a>';
-			echo '<td>&nbsp;';
+		} else {
+			echo "<td id='Engine-" . h($name) . "'>&nbsp;<td id='Collation-" . h($name) . "'>&nbsp;";
+			foreach (array("Data_length" => "create", "Index_length" => "indexes", "Data_free" => "edit", "Auto_increment" => "auto_increment=1&create", "Rows" => "select") as $key => $link) {
+				echo "<td align='right'><a href='" . h(ME . "$link=") . urlencode($name) . "' id='$key-" . h($name) . "'>?</a>";
+			}
 		}
+		echo (support("comment") ? "<td id='Comment-" . h($name) . "'>&nbsp;" : "");
 	}
-	echo "<tr><td>&nbsp;<th>" . lang('%d in total', count($table_status));
-	echo "<td>" . $connection->result($connection->query("SELECT @@storage_engine"));
+	echo "<tr><td>&nbsp;<th>" . lang('%d in total', count($tables_list));
+	echo "<td>" . $connection->result("SELECT @@storage_engine");
 	echo "<td>" . db_collation(DB, collations());
-	foreach (array("create", "indexes", "edit") as $val) {
-		echo "<td align='right'>" . number_format($sums[$val], 0, '.', lang(','));
+	foreach ($sums as $key => $val) {
+		echo "<td align='right' id='sum-$key'>&nbsp;";
 	}
 	echo "</table>\n";
 	if (!information_schema(DB)) {
-		echo "<p><input type='hidden' name='token' value='$token'><input type='submit' value='" . lang('Analyze') . "'> <input type='submit' name='optimize' value='" . lang('Optimize') . "'> <input type='submit' name='check' value='" . lang('Check') . "'> <input type='submit' name='repair' value='" . lang('Repair') . "'> <input type='submit' name='truncate' value='" . lang('Truncate') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + formChecked(this, /tables/) + ')');\"> <input type='submit' name='drop' value='" . lang('Drop') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + formChecked(this, /tables|views/) + ')');\">\n";
+		echo "<p><input type='hidden' name='token' value='$token'>" . ($driver == "sql" ? "<input type='submit' value='" . lang('Analyze') . "'> <input type='submit' name='optimize' value='" . lang('Optimize') . "'> <input type='submit' name='check' value='" . lang('Check') . "'> <input type='submit' name='repair' value='" . lang('Repair') . "'> " : "") . "<input type='submit' name='truncate' value='" . lang('Truncate') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + formChecked(this, /tables/) + ')');\"> <input type='submit' name='drop' value='" . lang('Drop') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + formChecked(this, /tables|views/) + ')');\">\n";
 		$dbs = get_databases();
 		if (count($dbs) != 1) {
 			$db = (isset($_POST["target"]) ? $_POST["target"] : DB);
@@ -93,8 +89,10 @@ if (!$table_status) {
 }
 
 echo '<p><a href="' . h(ME) . 'create=">' . lang('Create table') . "</a>\n";
-if ($connection->server_info >= 5) {
+if (support("view")) {
 	echo '<a href="' . h(ME) . 'view=">' . lang('Create view') . "</a>\n";
+}
+if (support("routine")) {
 	echo "<h3>" . lang('Routines') . "</h3>\n";
 	$result = $connection->query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . $connection->quote(DB));
 	if ($result->num_rows) {
@@ -110,9 +108,10 @@ if ($connection->server_info >= 5) {
 	echo '<p><a href="' . h(ME) . 'procedure=">' . lang('Create procedure') . '</a> <a href="' . h(ME) . 'function=">' . lang('Create function') . "</a>\n";
 }
 
-if ($connection->server_info >= 5.1 && ($result = $connection->query("SHOW EVENTS"))) {
+if (support("event")) {
 	echo "<h3>" . lang('Events') . "</h3>\n";
-	if ($result->num_rows) {
+	$result = $connection->query("SHOW EVENTS");
+	if ($result && $result->num_rows) {
 		echo "<table cellspacing='0'>\n";
 		echo "<thead><tr><th>" . lang('Name') . "<td>" . lang('Schedule') . "<td>" . lang('Start') . "<td>" . lang('End') . "</thead>\n";
 		while ($row = $result->fetch_assoc()) {
@@ -125,3 +124,34 @@ if ($connection->server_info >= 5.1 && ($result = $connection->query("SHOW EVENT
 	}
 	echo '<p><a href="' . h(ME) . 'event=">' . lang('Create event') . "</a>\n";
 }
+
+page_footer();
+$table_status = table_status();
+if ($table_status) {
+	echo "<script type='text/javascript'>\n";
+	foreach ($table_status as $row) {
+		$id = addcslashes($row["Name"], "\\'/");
+		echo "setHtml('Comment-$id', '" . nbsp($row["Comment"]) . "');\n";
+		if (!eregi("view", $row["Engine"])) {
+			foreach (array("Engine", "Collation") as $key) {
+				echo "setHtml('$key-$id', '" . nbsp($row[$key]) . "');\n";
+			}
+			foreach ($sums + array("Auto_increment" => 0, "Rows" => 0) as $key => $val) {
+				if ($row[$key] != "") {
+					$val = number_format($row[$key], 0, '.', lang(','));
+					echo "setHtml('$key-$id', '" . ($key == "Rows" && $row["Engine"] == "InnoDB" && $val ? "~ $val" : $val) . "');\n";
+					if (isset($sums[$key])) {
+						$sums[$key] += ($row["Engine"] != "InnoDB" || $key != "Data_free" ? $row[$key] : 0);
+					}
+				} elseif (array_key_exists($key, $row)) {
+					echo "setHtml('$key-$id');\n";
+				}
+			}
+		}
+	}
+	foreach ($sums as $key => $val) {
+		echo "setHtml('sum-$key', '" . number_format($val, 0, '.', lang(',')) . "');\n";
+	}
+	echo "</script>\n";
+}
+exit; // page_footer() already called

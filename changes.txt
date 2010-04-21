@@ -1,3 +1,13 @@
+Adminer 3.0.0-dev:
+Drivers for MS SQL, SQLite, PostgreSQL
+Show number of tables in server overview
+Allow concurrent logins on the same server
+Operator LIKE %%
+Remember export parameters in cookie
+Allow semicolon as CSV separator
+Defer table information in database overview to JavaScript (performance)
+Big tables optimizations (performance)
+
 Adminer 2.3.2 (released 2010-04-21):
 Fix COUNT(*) link
 Fix Save and continue edit

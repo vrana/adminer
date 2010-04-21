@@ -7,7 +7,7 @@ $table_pos_js = array();
 preg_match_all('~([^:]+):([-0-9.]+)x([-0-9.]+)(_|$)~', $_COOKIE["adminer_schema"], $matches, PREG_SET_ORDER); //! ':' in table name
 foreach ($matches as $i => $match) {
 	$table_pos[$match[1]] = array($match[2], $match[3]);
-	$table_pos_js[] = "\n\t'" . addcslashes($match[1], "\r\n'\\") . "': [ $match[2], $match[3] ]";
+	$table_pos_js[] = "\n\t'" . addcslashes($match[1], "\r\n'\\/") . "': [ $match[2], $match[3] ]";
 }
 
 $top = 0;
@@ -27,7 +27,7 @@ foreach (table_status() as $row) {
 		$schema[$row["Name"]]["fields"][$name] = $field;
 	}
 	$schema[$row["Name"]]["pos"] = ($table_pos[$row["Name"]] ? $table_pos[$row["Name"]] : array($top, 0));
-	if ($row["Engine"] == "InnoDB") {
+	if (fk_support($row)) {
 		foreach (foreign_keys($row["Name"]) as $val) {
 			if (!$val["db"]) {
 				$left = $base_left;

@@ -2,25 +2,37 @@
 $TABLE = $_GET["dump"];
 
 if ($_POST) {
+	$cookie = "";
+	foreach (array("output", "format", "db_style", "table_style", "data_style") as $key) {
+		$cookie .= "&$key=" . urlencode($_POST[$key]);
+	}
+	cookie("adminer_export", substr($cookie, 1));
 	$ext = dump_headers(($TABLE != "" ? $TABLE : DB), (DB == "" || count((array) $_POST["tables"] + (array) $_POST["data"]) > 1));
 	if ($_POST["format"] == "sql") {
-		echo "-- Adminer $VERSION dump
-SET NAMES utf8;
+		echo "-- Adminer $VERSION " . $drivers[DRIVER] . " dump
+
+" . ($driver != "sql" ? "" : "SET NAMES utf8;
 SET foreign_key_checks = 0;
-SET time_zone = " . $connection->quote($connection->result($connection->query("SELECT @@time_zone"))) . ";
+SET time_zone = " . $connection->quote($connection->result("SELECT @@time_zone")) . ";
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
-";
+");
 	}
 	
 	$style = $_POST["db_style"];
-	foreach ((DB != "" ? array(DB) : (array) $_POST["databases"]) as $db) {
+	$databases = array(DB);
+	if (DB == "") {
+		$databases = $_POST["databases"];
+		if (is_string($databases)) {
+			$databases = explode("\n", rtrim(str_replace("\r", "", $databases), "\n"));
+		}
+	}
+	foreach ((array) $databases as $db) {
 		if ($connection->select_db($db)) {
-			if ($_POST["format"] == "sql" && ereg('CREATE', $style) && ($result = $connection->query("SHOW CREATE DATABASE " . idf_escape($db)))) {
+			if ($_POST["format"] == "sql" && ereg('CREATE', $style) && ($create = $connection->result("SHOW CREATE DATABASE " . idf_escape($db), 1))) {
 				if ($style == "DROP+CREATE") {
 					echo "DROP DATABASE IF EXISTS " . idf_escape($db) . ";\n";
 				}
-				$create = $connection->result($result, 1);
 				echo ($style == "CREATE+ALTER" ? preg_replace('~^CREATE DATABASE ~', '\\0IF NOT EXISTS ', $create) : $create) . ";\n";
 			}
 			if ($_POST["format"] == "sql") {
@@ -36,7 +48,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 						$result = $connection->query("SHOW $routine STATUS WHERE Db = " . $connection->quote($db));
 						while ($row = $result->fetch_assoc()) {
 							$out .= ($style != 'DROP+CREATE' ? "DROP $routine IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
-							. $connection->result($connection->query("SHOW CREATE $routine " . idf_escape($row["Name"])), 2) . ";;\n\n";
+							. $connection->result("SHOW CREATE $routine " . idf_escape($row["Name"]), 2) . ";;\n\n";
 						}
 					}
 				}
@@ -45,7 +57,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 					if ($result) {
 						while ($row = $result->fetch_assoc()) {
 							$out .= ($style != 'DROP+CREATE' ? "DROP EVENT IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
-							. $connection->result($connection->query("SHOW CREATE EVENT " . idf_escape($row["Name"])), 3) . ";;\n\n";
+							. $connection->result("SHOW CREATE EVENT " . idf_escape($row["Name"]), 3) . ";;\n\n";
 						}
 					}
 				}
@@ -56,6 +68,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 			
 			if ($_POST["table_style"] || $_POST["data_style"]) {
 				$views = array();
+				//! defer number of rows to JavaScript
 				foreach (table_status() as $row) {
 					$table = (DB == "" || in_array($row["Name"], (array) $_POST["tables"]));
 					$data = (DB == "" || in_array($row["Name"], (array) $_POST["data"]));
@@ -143,22 +156,26 @@ page_header(lang('Export'), "", ($_GET["export"] != "" ? array("table" => $_GET[
 $db_style = array('', 'USE', 'DROP+CREATE', 'CREATE');
 $table_style = array('', 'DROP+CREATE', 'CREATE');
 $data_style = array('', 'TRUNCATE+INSERT', 'INSERT', 'INSERT+UPDATE');
-if ($connection->server_info >= 5) {
+if (support("routine")) {
 	$db_style[] = 'CREATE+ALTER';
 	$table_style[] = 'CREATE+ALTER';
 }
-echo "<tr><th>" . lang('Output') . "<td><input type='hidden' name='token' value='$token'>" . $adminer->dumpOutput(0) . "\n"; // token is not needed but checked in bootstrap for all POST data //! read from cookie
-echo "<tr><th>" . lang('Format') . "<td>" . $adminer->dumpFormat(0) . "\n";
-echo "<tr><th>" . lang('Database') . "<td>" . html_select('db_style', $db_style, (DB != "" ? '' : 'CREATE'));
-if ($connection->server_info >= 5) {
-	$checked = $_GET["dump"] == "";
-	echo checkbox("routines", 1, $checked, lang('Routines'));
-	if ($connection->server_info >= 5.1) {
-		echo checkbox("events", 1, $checked, lang('Events'));
-	}
+parse_str($_COOKIE["adminer_export"], $row);
+if (!$row) {
+	$row = array("output" => "text", "format" => "sql", "db_style" => (DB != "" ? "" : "CREATE"), "table_style" => "DROP+CREATE", "data_style" => "INSERT");
 }
-echo "<tr><th>" . lang('Tables') . "<td>" . html_select('table_style', $table_style, 'DROP+CREATE');
-echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style, 'INSERT');
+echo "<tr><th>" . lang('Output') . "<td>" . $adminer->dumpOutput(0, $row["output"]) . "\n";
+echo "<tr><th>" . lang('Format') . "<td>" . $adminer->dumpFormat(0, $row["format"]) . "\n";
+echo "<tr><th>" . lang('Database') . "<td>" . html_select('db_style', $db_style, $row["db_style"]);
+$checked = ($_GET["dump"] == "");
+if (support("routine")) {
+	echo checkbox("routines", 1, $checked, lang('Routines'));
+}
+if (support("event")) {
+	echo checkbox("events", 1, $checked, lang('Events'));
+}
+echo "<tr><th>" . lang('Tables') . "<td>" . html_select('table_style', $table_style, $row["table_style"]);
+echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style, $row["data_style"]);
 ?>
 </table>
 <p><input type="submit" value="<?php echo lang('Export'); ?>">
@@ -178,22 +195,27 @@ if (DB != "") {
 		$prefix = ereg_replace("_.*", "", $name);
 		$checked = ($TABLE == "" || $TABLE == (substr($TABLE, -1) == "%" ? "$prefix%" : $name)); //! % may be part of table name
 		$print = "<tr><td>" . checkbox("tables[]", $name, $checked, $name, "formUncheck('check-tables');");
-		if (!$row["Engine"]) {
+		if (eregi("view", $row["Engine"])) {
 			$views .= "$print\n";
 		} else {
-			echo "$print<td align='right'><label>" . ($row["Engine"] == "InnoDB" && $row["Rows"] ? lang('~ %s', $row["Rows"]) : $row["Rows"]) . checkbox("data[]", $name, $checked, "", "formUncheck('check-data');") . "</label>\n";
+			echo "$print<td align='right'><label>" . ($row["Engine"] == "InnoDB" && $row["Rows"] ? "~ " : "") . $row["Rows"] . checkbox("data[]", $name, $checked, "", "formUncheck('check-data');") . "</label>\n";
 		}
 		$prefixes[$prefix]++;
 	}
 	echo $views;
 } else {
 	echo "<thead><tr><th style='text-align: left;'><label><input type='checkbox' id='check-databases'" . ($TABLE == "" ? " checked" : "") . " onclick='formCheck(this, /^databases\\[/);'>" . lang('Database') . "</label></thead>\n";
-	foreach (get_databases() as $db) {
-		if (!information_schema($db)) {
-			$prefix = ereg_replace("_.*", "", $db);
-			echo "<tr><td>" . checkbox("databases[]", $db, $TABLE == "" || $TABLE == "$prefix%", $db, "formUncheck('check-databases');") . "</label>\n";
-			$prefixes[$prefix]++;
+	$databases = get_databases();
+	if ($databases) {
+		foreach ($databases as $db) {
+			if (!information_schema($db)) {
+				$prefix = ereg_replace("_.*", "", $db);
+				echo "<tr><td>" . checkbox("databases[]", $db, $TABLE == "" || $TABLE == "$prefix%", $db, "formUncheck('check-databases');") . "</label>\n";
+				$prefixes[$prefix]++;
+			}
 		}
+	} else {
+		echo "<tr><td><textarea name='databases' rows='10' cols='20'></textarea>";
 	}
 }
 ?>

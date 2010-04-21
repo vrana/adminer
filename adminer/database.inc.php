@@ -2,35 +2,26 @@
 if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP changes add.x to add_x
 	restart_session();
 	if ($_POST["drop"]) {
-		unset($_SESSION["databases"][$_GET["server"]]);
+		set_session("databases", null);
 		query_redirect("DROP DATABASE " . idf_escape(DB), remove_from_uri("db|database"), lang('Database has been dropped.'));
 	} elseif (DB !== $_POST["name"]) {
 		// create or rename database
-		unset($_SESSION["databases"][$_GET["server"]]); // clear cache
-		$dbs = explode("\n", str_replace("\r", "", $_POST["name"]));
-		$failed = false;
-		$last = "";
-		foreach ($dbs as $db) {
-			if (count($dbs) == 1 || $db != "") { // ignore empty lines but always try to create single database
-				if (!queries("CREATE DATABASE " . idf_escape($db) . ($_POST["collation"] ? " COLLATE " . $connection->quote($_POST["collation"]) : ""))) {
-					$failed = true;
-				}
-				$last = $db;
-			}
-		}
-		if (query_redirect(queries(), ME . "db=" . urlencode($last), lang('Database has been created.'), DB == "", false, $failed)) {
-			//! move triggers
-			$result = $connection->query("SHOW TABLES");
-			while ($row = $result->fetch_row()) {
-				if (!queries("RENAME TABLE " . idf_escape($row[0]) . " TO " . idf_escape($_POST["name"]) . "." . idf_escape($row[0]))) {
-					break;
+		set_session("databases", null); // clear cache
+		if (DB != "") {
+			queries_redirect(preg_replace('~db=[^&]*&~', '', ME) . "db=" . urlencode($_POST["name"]), lang('Database has been renamed.'), rename_database($_POST["name"], $_POST["collation"]));
+		} else {
+			$dbs = explode("\n", str_replace("\r", "", $_POST["name"]));
+			$success = true;
+			$last = "";
+			foreach ($dbs as $db) {
+				if (count($dbs) == 1 || $db != "") { // ignore empty lines but always try to create single database
+					if (!queries("CREATE DATABASE " . idf_escape($db) . ($_POST["collation"] ? " COLLATE " . $connection->quote($_POST["collation"]) : ""))) {
+						$success = false;
+					}
+					$last = $db;
 				}
 			}
-			if (!$row) {
-				queries("DROP DATABASE " . idf_escape(DB));
-				//! saved to history of removed database
-			}
-			queries_redirect(preg_replace('~db=[^&]*&~', '', ME) . "db=" . urlencode($_POST["name"]), lang('Database has been renamed.'), !$row);
+			queries_redirect(ME . "db=" . urlencode($last), lang('Database has been created.'), $success);
 		}
 	} else {
 		// alter database
@@ -49,17 +40,16 @@ $collate = null;
 if ($_POST) {
 	$name = $_POST["name"];
 	$collate = $_POST["collation"];
-} elseif (DB == "") {
+} elseif (DB != "") {
+	$collate = db_collation(DB, $collations);
+} elseif ($driver == "sql") {
 	// propose database name with limited privileges
-	$result = $connection->query("SHOW GRANTS");
-	while ($row = $result->fetch_row()) {
-		if (preg_match('~ ON (`(([^\\\\`]|``|\\\\.)*)%`\\.\\*)?~', $row[0], $match) && $match[1]) {
-			$name = stripcslashes(idf_unescape($match[2]));
+	foreach (get_vals("SHOW GRANTS") as $grant) {
+		if (preg_match('~ ON (`(([^\\\\`]|``|\\\\.)*)%`\\.\\*)?~', $grant, $match) && $match[1]) {
+			$name = stripcslashes(idf_unescape("`$match[2]`"));
 			break;
 		}
 	}
-} else {
-	$collate = db_collation(DB, $collations);
 }
 ?>
 

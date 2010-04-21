@@ -14,30 +14,22 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 		$location = ($update ? null : $_SERVER["REQUEST_URI"]);
 	} elseif (!ereg('^.+&select=.+$', $location)) {
 		$location = ME . "select=" . urlencode($TABLE);
-		$i = 0; // append &set converted to &where
-		foreach ((array) $_GET["set"] as $key => $val) {
-			if ($val == $_POST["fields"][$key]) {
-				$location .= where_link($i++, bracket_escape($key, "back"), $val);
-			}
-		}
 	}
 	if (isset($_POST["delete"])) {
-		query_redirect("DELETE FROM " . idf_escape($_GET["edit"]) . " WHERE $where LIMIT 1", $location, lang('Item has been deleted.'));
+		query_redirect("DELETE" . limit1("FROM " . idf_escape($_GET["edit"]) . "\nWHERE $where"), $location, lang('Item has been deleted.'));
 	} else {
 		$set = array();
 		foreach ($fields as $name => $field) {
 			$val = process_input($field);
-			if (!$update) {
-				$set[idf_escape($name)] = ($val !== false ? $val : "''");
-			} elseif ($val !== false) {
-				$set[] = "\n" . idf_escape($name) . " = $val";
+			if ($val !== false && $val !== null) {
+				$set[idf_escape($name)] = ($update ? "\n" . idf_escape($name) . " = $val" : $val);
 			}
 		}
-		if (!$set) {
-			redirect($location);
-		}
 		if ($update) {
-			query_redirect("UPDATE " . idf_escape($TABLE) . " SET" . implode(",", $set) . "\nWHERE $where\nLIMIT 1", $location, lang('Item has been updated.'));
+			if (!$set) {
+				redirect($location);
+			}
+			query_redirect("UPDATE" . limit1(idf_escape($TABLE) . " SET" . implode(",", $set) . "\nWHERE $where"), $location, lang('Item has been updated.'));
 		} else {
 			query_redirect("INSERT INTO " . idf_escape($TABLE) . " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")", $location, lang('Item has been inserted.'));
 		}
@@ -64,8 +56,11 @@ if ($_POST["save"]) {
 	}
 	$row = array();
 	if ($select) {
-		$result = $connection->query("SELECT " . implode(", ", $select) . " FROM " . idf_escape($TABLE) . " WHERE $where " . (isset($_GET["select"]) ? "HAVING COUNT(*) = 1" : "LIMIT 1"));
+		$result = $connection->query("SELECT" . limit(implode(", ", $select) . " FROM " . idf_escape($TABLE) . " WHERE $where", (isset($_GET["select"]) ? 2 : 1)));
 		$row = $result->fetch_assoc();
+		if (isset($_GET["select"]) && $result->fetch_assoc()) {
+			$row = false;
+		}
 	}
 }
 ?>
@@ -80,7 +75,7 @@ if ($fields) {
 		$default = $_GET["set"][bracket_escape($name)];
 		$value = (isset($row)
 			? ($row[$name] != "" && ereg("enum|set", $field["type"]) ? intval($row[$name]) : $row[$name])
-			: ($_POST["clone"] && $field["auto_increment"] ? "" : (isset($_GET["select"]) ? false : (isset($default) ? $default : $field["default"])))
+			: (!$update && $field["auto_increment"] ? "" : (isset($_GET["select"]) ? false : (isset($default) ? $default : $field["default"])))
 		);
 		if (!$_POST["save"] && is_string($value)) {
 			$value = $adminer->editVal($value, $field);

@@ -5,8 +5,7 @@ $result = $connection->query("SELECT User, Host FROM mysql.user ORDER BY Host, U
 if (!$result) {
 	?>
 <form action=""><p>
-<?php echo SID_FORM; ?>
-<?php if ($_GET["server"] != "") { ?><input type="hidden" name="server" value="<?php echo h($_GET["server"]); ?>"><?php } ?>
+<?php hidden_fields_get(); ?>
 <?php echo lang('Username'); ?>: <input name="user">
 <?php echo lang('Server'); ?>: <input name="host" value="localhost">
 <input type="hidden" name="grant" value="">

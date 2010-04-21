@@ -13,7 +13,7 @@ function xhtml_open_tags($s) {
 	$return = array();
 	preg_match_all('~<([^>]+)~', $s, $matches);
 	foreach ($matches[1] as $val) {
-		if ($val{0} == "/") {
+		if ($val[0] == "/") {
 			array_pop($return);
 		} elseif (substr($val, -1) != "/") {
 			$return[] = $val;

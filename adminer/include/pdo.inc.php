@@ -1,23 +1,21 @@
 <?php
 // PDO can be used in several database drivers
 if (extension_loaded('pdo')) {
-	class Min_PDO extends PDO {
+	/*abstract */class Min_PDO extends PDO {
 		var $_result, $server_info, $affected_rows, $error;
 		
 		function __construct() {
 		}
 		
-		function dsn($dsn, $username, $password) {
-			set_exception_handler('auth_error'); // try/catch is not compatible with PHP 4
+		function dsn($dsn, $username, $password, $exception_handler = 'auth_error') {
+			set_exception_handler($exception_handler); // try/catch is not compatible with PHP 4
 			parent::__construct($dsn, $username, $password);
 			restore_exception_handler();
-			$this->setAttribute(13, array('Min_PDOStatement')); // PDO::ATTR_STATEMENT_CLASS
+			$this->setAttribute(13, array('Min_PDOStatement')); // 13 - PDO::ATTR_STATEMENT_CLASS
+			$this->server_info = $this->getAttribute(4); // 4 - PDO::ATTR_SERVER_VERSION
 		}
 		
-		function select_db($database) {
-			// database selection is separated from the connection so dbname in DSN can't be used
-			return $this->query("USE " . idf_escape($database));
-		}
+		/*abstract function select_db($database);*/
 		
 		function query($query, $unbuffered = false) {
 			$result = parent::query($query);
@@ -50,7 +48,8 @@ if (extension_loaded('pdo')) {
 			return $this->_result->nextRowset();
 		}
 		
-		function result($result, $field = 0) {
+		function result($query, $field = 0) {
+			$result = $this->query($query);
 			if (!$result) {
 				return false;
 			}
@@ -79,3 +78,6 @@ if (extension_loaded('pdo')) {
 		}
 	}
 }
+
+$possible_drivers = array();
+$drivers = array();

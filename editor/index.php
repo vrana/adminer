@@ -1,5 +1,5 @@
 <?php
-/** Adminer Editor - Compact MySQL editor
+/** Adminer Editor - Compact database editor
 * @link http://www.adminer.org/
 * @author Jakub Vrana, http://php.vrana.cz/
 * @copyright 2009 Jakub Vrana
@@ -7,6 +7,7 @@
 */
 
 include "../adminer/include/bootstrap.inc.php";
+$drivers[DRIVER] = lang('Login');
 
 if (isset($_GET["select"]) && ($_POST["edit"] || $_POST["clone"]) && !$_POST["save"]) {
 	$_GET["edit"] = $_GET["select"];

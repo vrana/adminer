@@ -6,21 +6,21 @@ if (!$fields) {
 }
 $table_status = ($fields ? table_status($TABLE) : array());
 
-page_header(($fields && !isset($table_status["Rows"]) ? lang('View') : lang('Table')) . ": " . h($TABLE), $error);
+page_header(($fields && $table_status["Engine"] == "VIEW" ? lang('View') : lang('Table')) . ": " . h($TABLE), $error);
 $adminer->selectLinks($table_status);
 
 if ($fields) {
 	echo "<table cellspacing='0'>\n";
-	echo "<thead><tr><th>" . lang('Column') . "<td>" . lang('Type') . "<td>" . lang('Comment') . "</thead>\n";
+	echo "<thead><tr><th>" . lang('Column') . "<td>" . lang('Type') . (support("comment") ? "<td>" . lang('Comment') : "") . "</thead>\n";
 	foreach ($fields as $field) {
 		echo "<tr" . odd() . "><th>" . h($field["field"]);
 		echo "<td>" . h($field["full_type"]) . ($field["null"] ? " <i>NULL</i>" : "") . ($field["auto_increment"] ? " <i>" . lang('Auto Increment') . "</i>" : "");
-		echo "<td>" . nbsp($field["comment"]);
+		echo (support("comment") ? "<td>" . nbsp($field["comment"]) : "");
 		echo "\n";
 	}
 	echo "</table>\n";
 	
-	if (isset($table_status["Rows"])) {
+	if ($table_status["Engine"] != "VIEW") {
 		echo "<h3>" . lang('Indexes') . "</h3>\n";
 		$indexes = indexes($TABLE);
 		if ($indexes) {
@@ -37,7 +37,7 @@ if ($fields) {
 		}
 		echo '<p><a href="' . h(ME) . 'indexes=' . urlencode($TABLE) . '">' . lang('Alter indexes') . "</a>\n";
 		
-		if ($table_status["Engine"] == "InnoDB") {
+		if (fk_support($table_status)) {
 			echo "<h3>" . lang('Foreign keys') . "</h3>\n";
 			$foreign_keys = foreign_keys($TABLE);
 			if ($foreign_keys) {
@@ -52,16 +52,18 @@ if ($fields) {
 				}
 				echo "</table>\n";
 			}
-			echo '<p><a href="' . h(ME) . 'foreign=' . urlencode($TABLE) . '">' . lang('Add foreign key') . "</a>\n";
+			if ($driver != "sqlite") {
+				echo '<p><a href="' . h(ME) . 'foreign=' . urlencode($TABLE) . '">' . lang('Add foreign key') . "</a>\n";
+			}
 		}
 		
-		if ($connection->server_info >= 5) {
+		if (support("trigger")) {
 			echo "<h3>" . lang('Triggers') . "</h3>\n";
-			$result = $connection->query("SHOW TRIGGERS LIKE " . $connection->quote(addcslashes($TABLE, "%_")));
-			if ($result->num_rows) {
+			$triggers = triggers($TABLE);
+			if ($triggers) {
 				echo "<table cellspacing='0'>\n";
-				while ($row = $result->fetch_assoc()) {
-					echo "<tr valign='top'><td>$row[Timing]<td>$row[Event]<th>" . h($row["Trigger"]) . "<td><a href='" . h(ME . 'trigger=' . urlencode($TABLE) . '&name=' . urlencode($row["Trigger"])) . "'>" . lang('Alter') . "</a>\n";
+				foreach ($triggers as $key => $val) {
+					echo "<tr valign='top'><td>$val[0]<td>$val[1]<th>" . h($key) . "<td><a href='" . h(ME . 'trigger=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "'>" . lang('Alter') . "</a>\n";
 				}
 				echo "</table>\n";
 			}

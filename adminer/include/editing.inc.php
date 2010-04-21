@@ -84,8 +84,8 @@ function select($result, $connection2 = null) {
 */
 function referencable_primary($self) {
 	$return = array(); // table_name => field
-	foreach (table_status_referencable() as $table_name => $table) {
-		if ($table_name != $self) {
+	foreach (table_status() as $table_name => $table) {
+		if ($table_name != $self && fk_support($table)) {
 			foreach (fields($table_name) as $field) {
 				if ($field["primary"]) {
 					if ($return[$table_name]) { // multi column primary key
@@ -142,16 +142,19 @@ function process_type($field, $collate = "COLLATE") {
 /** Create SQL string from field
 * @param array basic field information
 * @param array information about field type
-* @return string
+* @return array array("field", "type", "NULL", "DEFAULT", "ON UPDATE", "COMMENT", "AUTO_INCREMENT")
 */
 function process_field($field, $type_field) {
 	global $connection;
-	return idf_escape($field["field"]) . process_type($type_field)
-		. ($field["null"] ? " NULL" : " NOT NULL") // NULL for timestamp
-		. (!isset($field["default"]) ? "" : " DEFAULT " . ($field["type"] == "timestamp" && eregi("^CURRENT_TIMESTAMP$", $field["default"]) ? $field["default"] : $connection->quote($field["default"])))
-		. ($field["on_update"] ? " ON UPDATE $field[on_update]" : "")
-		. " COMMENT " . $connection->quote($field["comment"])
-	;
+	return array(
+		idf_escape($field["field"]),
+		process_type($type_field),
+		($field["null"] ? " NULL" : " NOT NULL"), // NULL for timestamp
+		(isset($field["default"]) ? " DEFAULT " . ($field["type"] == "timestamp" && eregi("^CURRENT_TIMESTAMP$", $field["default"]) ? $field["default"] : $connection->quote($field["default"])) : ""),
+		($field["on_update"] ? " ON UPDATE $field[on_update]" : ""),
+		(support("comment") && $field["comment"] != "" ? " COMMENT " . $connection->quote($field["comment"]) : ""),
+		($field["auto_increment"] ? auto_increment() : ""),
+	);
 }
 
 /** Get type class to use in CSS
@@ -179,12 +182,11 @@ function type_class($type) {
 * @param array returned by referencable_primary()
 * @return bool column comments used
 */
-function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $foreign_keys = array()) {
+function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $foreign_keys = array(), $comments = false) {
 	global $inout;
-	$column_comments = false;
 	foreach ($fields as $field) {
 		if ($field["comment"] != "") {
-			$column_comments = true;
+			$comments = true;
 			break;
 		}
 	}
@@ -197,9 +199,9 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 <td><?php echo lang('Options'); ?>
 <?php if ($type == "TABLE") { ?>
 <td>NULL
-<td><input type="radio" name="auto_increment_col" value=""><acronym title="<?php echo lang('Auto Increment'); ?>">A_I</acronym>
+<td><input type="radio" name="auto_increment_col" value=""><acronym title="<?php echo lang('Auto Increment'); ?>">AI</acronym>
 <td class="hidden"><?php echo lang('Default values'); ?>
-<td<?php echo ($column_comments ? "" : " class='hidden'"); ?>><?php echo lang('Comment'); ?>
+<?php echo (support("comment") ? "<td" . ($comments ? "" : " class='hidden'") . ">" . lang('Comment') : ""); ?>
 <?php } ?>
 <td><?php echo "<input type='image' name='add[0]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>"; ?><script type="text/javascript">row_count = <?php echo count($fields); ?>;</script>
 </thead>
@@ -209,27 +211,24 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 		$display = (isset($_POST["add"][$i-1]) || (isset($field["field"]) && !$_POST["drop_col"][$i]));
 		?>
 <tr<?php echo ($display ? "" : " style='display: none;'"); ?>>
-<?php
-if ($type == "PROCEDURE") {
-	echo "<td>" . html_select("fields[$i][inout]", $inout, $field["inout"]);
-}
-?>
+<?php echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", $inout, $field["inout"]) : ""); ?>
 <th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo h($field["field"]); ?>" onchange="<?php echo ($field["field"] != "" || count($fields) > 1 ? "" : "editingAddRow(this, $allowed); "); ?>editingNameChange(this);" maxlength="64"><?php } ?><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo h($field[($_POST ? "orig" : "field")]); ?>">
 <?php edit_type("fields[$i]", $field, $collations, $foreign_keys); ?>
 <?php if ($type == "TABLE") { ?>
 <td><?php echo checkbox("fields[$i][null]", 1, $field["null"]); ?>
 <td><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked<?php } ?>>
 <td class="hidden"><?php echo checkbox("fields[$i][has_default]", 1, $field["has_default"]); ?><input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["default"]); ?>" onchange="this.previousSibling.checked = true;">
-<td<?php echo ($column_comments ? "" : " class='hidden'"); ?>><input name="fields[<?php echo $i; ?>][comment]" value="<?php echo h($field["comment"]); ?>" maxlength="255">
+<?php echo (support("comment") ? "<td" . ($comments ? "" : " class='hidden'") . "><input name='fields[$i][comment]' value='" . h($field["comment"]) . "' maxlength='255'>" : ""); ?>
 <?php } ?>
 <?php
+		//! hide operations not supported by the driver - column change, adding column not at the end, drop column, ...
 		echo "<td><input type='image' name='add[$i]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "' onclick='return !editingAddRow(this, $allowed, 1);'>";
 		echo "&nbsp;<input type='image' name='drop_col[$i]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "' onclick='return !editingRemoveRow(this);'>";
 		echo "&nbsp;<input type='image' name='up[$i]' src='../adminer/static/up.gif' alt='^' title='" . lang('Move up') . "'>";
 		echo "&nbsp;<input type='image' name='down[$i]' src='../adminer/static/down.gif' alt='v' title='" . lang('Move down') . "'>";
 		echo "\n";
 	}
-	return $column_comments;
+	return $comments;
 }
 
 /** Move fields up and down or add field
@@ -278,7 +277,7 @@ function process_fields(&$fields) {
 * @return string
 */
 function normalize_enum($match) {
-	return "'" . str_replace("'", "''", addcslashes(stripcslashes(str_replace($match[0]{0} . $match[0]{0}, $match[0]{0}, substr($match[0], 1, -1))), '\\')) . "'";
+	return "'" . str_replace("'", "''", addcslashes(stripcslashes(str_replace($match[0][0] . $match[0][0], $match[0][0], substr($match[0], 1, -1))), '\\')) . "'";
 }
 
 /** Get information about stored routine
@@ -291,7 +290,7 @@ function routine($name, $type) {
 	$aliases = array("bit" => "tinyint", "bool" => "tinyint", "boolean" => "tinyint", "integer" => "int", "double precision" => "float", "real" => "float", "dec" => "decimal", "numeric" => "decimal", "fixed" => "decimal", "national char" => "char", "national varchar" => "varchar");
 	$type_pattern = "(" . implode("|", array_keys($types + $aliases)) . ")(?:\\s*\\(((?:[^'\")]*|$enum_length)+)\\))?\\s*(zerofill\\s*)?(unsigned(?:\\s+zerofill)?)?(?:\\s*(?:CHARSET|CHARACTER\\s+SET)\\s*['\"]?([^'\"\\s]+)['\"]?)?";
 	$pattern = "\\s*(" . ($type == "FUNCTION" ? "" : implode("|", $inout)) . ")?\\s*(?:`((?:[^`]|``)*)`\\s*|\\b(\\S+)\\s+)$type_pattern";
-	$create = $connection->result($connection->query("SHOW CREATE $type " . idf_escape($name)), 2);
+	$create = $connection->result("SHOW CREATE $type " . idf_escape($name), 2);
 	preg_match("~\\(((?:$pattern\\s*,?)*)\\)" . ($type == "FUNCTION" ? "\\s*RETURNS\\s+$type_pattern" : "") . "\\s*(.*)~is", $create, $match);
 	$fields = array();
 	preg_match_all("~$pattern\\s*,?~is", $match[1], $matches, PREG_SET_ORDER);

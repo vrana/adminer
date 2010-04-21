@@ -28,7 +28,9 @@ if (!$error && $_POST) {
 		}
 		$call[] = (isset($out[$key]) ? "@" . idf_escape($field["field"]) : $val);
 	}
-	if (!$connection->multi_query((isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . idf_escape($PROCEDURE) . "(" . implode(", ", $call) . ")")) {
+	$query = (isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . idf_escape($PROCEDURE) . "(" . implode(", ", $call) . ")";
+	echo "<p><code class='jush-$driver'>" . h($query) . "</code> <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>\n";
+	if (!$connection->multi_query($query)) {
 		echo "<p class='error'>" . error() . "\n";
 	} else {
 		do {
@@ -52,8 +54,9 @@ if ($in) {
 	echo "<table cellspacing='0'>\n";
 	foreach ($in as $key) {
 		$field = $routine["fields"][$key];
-		echo "<tr><th>" . h($field["field"]);
-		$value = $_POST["fields"][$key];
+		$name = $field["field"];
+		echo "<tr><th>" . h($name);
+		$value = $_POST["fields"][$name];
 		if ($value != "" && ereg("enum|set", $field["type"])) {
 			$value = intval($value);
 		}

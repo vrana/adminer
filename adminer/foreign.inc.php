@@ -2,7 +2,7 @@
 $TABLE = $_GET["foreign"];
 if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-js"]) {
 	if ($_POST["drop"]) {
-		query_redirect("ALTER TABLE " . idf_escape($TABLE) . "\nDROP FOREIGN KEY " . idf_escape($_GET["name"]), ME . "table=" . urlencode($TABLE), lang('Foreign key has been dropped.'));
+		query_redirect("ALTER TABLE " . idf_escape($TABLE) . "\nDROP " . ($driver == "sql" ? "FOREIGN KEY " : "CONSTRAINT ") . idf_escape($_GET["name"]), ME . "table=" . urlencode($TABLE), lang('Foreign key has been dropped.'));
 	} else {
 		$source = array_filter($_POST["source"], 'strlen');
 		ksort($source); // enforce input order
@@ -39,13 +39,19 @@ if ($_POST) {
 
 $source = array_keys(fields($TABLE)); //! no text and blob
 $target = ($TABLE === $row["table"] ? $source : array_keys(fields($row["table"])));
+$referencable = array();
+foreach (table_status() as $name => $table_status) {
+	if (fk_support($table_status)) {
+		$referencable[] = $name;
+	}
+}
 ?>
 
 <form action="" method="post">
 <p>
 <?php if ($row["db"] == "") { ?>
 <?php echo lang('Target table'); ?>:
-<?php echo html_select("table", array_keys(table_status_referencable()), $row["table"], "this.form['change-js'].value = '1'; this.form.submit();"); ?>
+<?php echo html_select("table", $referencable, $row["table"], "this.form['change-js'].value = '1'; this.form.submit();"); ?>
 <input type="hidden" name="change-js" value="">
 <noscript><p><input type="submit" name="change" value="<?php echo lang('Change'); ?>"></noscript>
 <table cellspacing="0">

@@ -6,8 +6,8 @@ $trigger_event = array("INSERT", "UPDATE", "DELETE");
 $dropped = false;
 if ($_POST && !$error && in_array($_POST["Timing"], $trigger_time) && in_array($_POST["Event"], $trigger_event)) {
 	$dropped = drop_create(
-		"DROP TRIGGER " . idf_escape($_GET["name"]),
-		"CREATE TRIGGER " . idf_escape($_POST["Trigger"]) . " $_POST[Timing] $_POST[Event] ON " . idf_escape($TABLE) . " FOR EACH ROW\n$_POST[Statement]",
+		"DROP TRIGGER " . idf_escape($_GET["name"]) . ($driver == "pgsql" ? " ON " . idf_escape($TABLE) : ""),
+		"CREATE TRIGGER " . idf_escape($_POST["Trigger"]) . " $_POST[Timing] $_POST[Event] ON " . idf_escape($TABLE) . " FOR EACH ROW\n$_POST[Statement]", //! FOR EACH STATEMENT
 		ME . "table=" . urlencode($TABLE),
 		lang('Trigger has been dropped.'),
 		lang('Trigger has been altered.'),
@@ -22,8 +22,7 @@ $row = array("Trigger" => $TABLE . "_bi");
 if ($_POST) {
 	$row = $_POST;
 } elseif ($_GET["name"] != "") {
-	$result = $connection->query("SHOW TRIGGERS WHERE `Trigger` = " . $connection->quote($_GET["name"]));
-	$row = $result->fetch_assoc();
+	$row = trigger($_GET["name"]);
 }
 ?>
 

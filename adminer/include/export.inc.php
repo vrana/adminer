@@ -11,7 +11,7 @@ function tar_file($filename, $contents) {
 
 function dump_triggers($table, $style) {
 	global $connection;
-	if ($_POST["format"] == "sql" && $style && $connection->server_info >= 5) {
+	if ($_POST["format"] == "sql" && $style && support("trigger")) {
 		$result = $connection->query("SHOW TRIGGERS LIKE " . $connection->quote(addcslashes($table, "%_")));
 		if ($result->num_rows) {
 			$s = "\nDELIMITER ;;\n";
@@ -26,18 +26,17 @@ function dump_triggers($table, $style) {
 
 function dump_table($table, $style, $is_view = false) {
 	global $connection;
-	if ($_POST["format"] == "csv") {
+	if ($_POST["format"] != "sql") {
 		echo "\xef\xbb\xbf"; // UTF-8 byte order mark
 		if ($style) {
 			dump_csv(array_keys(fields($table)));
 		}
 	} elseif ($style) {
-		$result = $connection->query("SHOW CREATE TABLE " . idf_escape($table));
-		if ($result) {
+		$create = create_sql($table);
+		if ($create) {
 			if ($style == "DROP+CREATE") {
 				echo "DROP " . ($is_view ? "VIEW" : "TABLE") . " IF EXISTS " . idf_escape($table) . ";\n";
 			}
-			$create = $connection->result($result, 1);
 			echo ($style != "CREATE+ALTER" ? $create : ($is_view ? substr_replace($create, " OR REPLACE", 6, 0) : substr_replace($create, " IF NOT EXISTS", 12, 0))) . ";\n\n";
 		}
 		if ($style == "CREATE+ALTER" && !$is_view) {
@@ -116,10 +115,10 @@ DROP PROCEDURE adminer_alter;
 }
 
 function dump_data($table, $style, $select = "") {
-	global $connection;
-	$max_packet = 1048576; // default, minimum is 1024
+	global $connection, $driver;
+	$max_packet = ($driver == "sqlite" ? 0 : 1048576); // default, minimum is 1024
 	if ($style) {
-		if ($_POST["format"] != "csv" && $style == "TRUNCATE+INSERT") {
+		if ($_POST["format"] == "sql" && $style == "TRUNCATE+INSERT") {
 			echo "TRUNCATE " . idf_escape($table) . ";\n";
 		}
 		$fields = fields($table);
@@ -128,7 +127,7 @@ function dump_data($table, $style, $select = "") {
 			$insert = "";
 			$buffer = "";
 			while ($row = $result->fetch_assoc()) {
-				if ($_POST["format"] == "csv") {
+				if ($_POST["format"] != "sql") {
 					dump_csv($row);
 				} else {
 					if (!$insert) {
@@ -145,7 +144,7 @@ function dump_data($table, $style, $select = "") {
 						}
 						echo "$insert ($s) ON DUPLICATE KEY UPDATE " . implode(", ", $set) . ";\n";
 					} else {
-						$s = "\n($s)";
+						$s = ($max_packet ? "\n" : " ") . "($s)";
 						if (!$buffer) {
 							$buffer = $insert . $s;
 						} elseif (strlen($buffer) + 2 + strlen($s) < $max_packet) { // 2 - separator and terminator length
@@ -158,7 +157,7 @@ function dump_data($table, $style, $select = "") {
 					}
 				}
 			}
-			if ($_POST["format"] != "csv" && $style != "INSERT+UPDATE" && $buffer) {
+			if ($_POST["format"] == "sql" && $style != "INSERT+UPDATE" && $buffer) {
 				$buffer .= ";\n";
 				echo $buffer;
 			}

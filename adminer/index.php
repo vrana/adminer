@@ -1,5 +1,5 @@
 <?php
-/** Adminer - Compact MySQL management
+/** Adminer - Compact database management
 * @link http://www.adminer.org/
 * @author Jakub Vrana, http://php.vrana.cz/
 * @copyright 2007 Jakub Vrana

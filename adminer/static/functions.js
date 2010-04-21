@@ -27,7 +27,7 @@ function cookie(assign, days, params) {
 function verifyVersion() {
 	cookie('adminer_version=0', 1);
 	var script = document.createElement('script');
-	script.src = 'https://adminer.svn.sourceforge.net/svnroot/adminer/trunk/version.js';
+	script.src = 'https://www.adminer.org/version.php';
 	document.body.appendChild(script);
 }
 
@@ -81,6 +81,21 @@ function tableClick(event) {
 	el = el.firstChild.firstChild;
 	el.click && el.click();
 	el.onclick && el.onclick();
+}
+
+/** Set HTML code of an element
+* @param string
+* @param string undefined to set parentNode to &nbsp;
+*/
+function setHtml(id, html) {
+	var el = document.getElementById(id);
+	if (el) {
+		if (html == undefined) {
+			el.parentNode.innerHTML = '&nbsp;';
+		} else {
+			el.innerHTML = html;
+		}
+	}
 }
 
 

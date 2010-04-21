@@ -19,20 +19,8 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 	if ($_POST["drop"]) {
 		query_redirect("DROP TABLE " . idf_escape($_GET["create"]), substr(ME, 0, -1), lang('Table has been dropped.'));
 	} else {
-		$auto_increment_index = " PRIMARY KEY";
-		// don't overwrite primary key by auto_increment
-		if ($TABLE != "" && $_POST["auto_increment_col"]) {
-			foreach (indexes($TABLE) as $index) {
-				if (in_array($_POST["fields"][$_POST["auto_increment_col"]]["orig"], $index["columns"], true)) {
-					$auto_increment_index = "";
-					break;
-				}
-				if ($index["type"] == "PRIMARY") {
-					$auto_increment_index = " UNIQUE";
-				}
-			}
-		}
-		$fields = "";
+		$fields = array();
+		$foreign = array();
 		ksort($_POST["fields"]);
 		$orig_field = reset($orig_fields);
 		$after = "FIRST";
@@ -48,33 +36,26 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 						$field["on_update"] = "CURRENT_TIMESTAMP";
 						$field["default"] = $default;
 					}
+					if ($key == $_POST["auto_increment_col"]) {
+						$field["auto_increment"] = true;
+					}
 					$process_field = process_field($field, $type_field);
-					$auto_increment = ($key == $_POST["auto_increment_col"]);
-					if ($process_field != process_field($orig_field, $orig_field) || $orig_field["auto_increment"] != $auto_increment) {
-						$fields .= "\n" . ($TABLE != "" ? ($field["orig"] != "" ? "CHANGE " . idf_escape($field["orig"]) : "ADD") : " ")
-							. " $process_field"
-							. ($auto_increment ? " AUTO_INCREMENT$auto_increment_index" : "")
-							. ($TABLE != "" ? " $after" : "") . ","
-						;
+					if ($process_field != process_field($orig_field, $orig_field)) {
+						$fields[] = array($field["orig"], $process_field, $after);
 					}
 					if (!isset($types[$field["type"]])) {
-						$fields .= ($TABLE != "" ? "\nADD" : "") . " FOREIGN KEY (" . idf_escape($field["field"]) . ") REFERENCES " . idf_escape($foreign_keys[$field["type"]]) . " (" . idf_escape($type_field["field"]) . "),";
+						$foreign[] = ($TABLE != "" ? "ADD " : "  ") . "FOREIGN KEY (" . idf_escape($field["field"]) . ") REFERENCES " . idf_escape($foreign_keys[$field["type"]]) . " (" . idf_escape($type_field["field"]) . ")";
 					}
 				}
 				$after = "AFTER " . idf_escape($field["field"]);
-				//! drop and create foreign keys with renamed columns
 			} elseif ($field["orig"] != "") {
-				$fields .= "\nDROP " . idf_escape($field["orig"]) . ",";
+				$fields[] = array($field["orig"]);
 			}
 			if ($field["orig"] != "") {
 				$orig_field = next($orig_fields);
 			}
 		}
-		$status = "COMMENT=" . $connection->quote($_POST["Comment"])
-			. ($_POST["Engine"] && $_POST["Engine"] != $orig_status["Engine"] ? " ENGINE=" . $connection->quote($_POST["Engine"]) : "")
-			. ($_POST["Collation"] && $_POST["Collation"] != $orig_status["Collation"] ? " COLLATE " . $connection->quote($_POST["Collation"]) : "")
-			. ($_POST["Auto_increment"] != "" ? " AUTO_INCREMENT=" . preg_replace('~[^0-9]+~', '', $_POST["Auto_increment"]) : "")
-		;
+		$partitioning = "";
 		if (in_array($_POST["partition_by"], $partition_by)) {
 			$partitions = array();
 			if ($_POST["partition_by"] == 'RANGE' || $_POST["partition_by"] == 'LIST') {
@@ -83,20 +64,29 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 					$partitions[] = "\nPARTITION " . idf_escape($val) . " VALUES " . ($_POST["partition_by"] == 'RANGE' ? "LESS THAN" : "IN") . ($value != "" ? " ($value)" : " MAXVALUE"); //! SQL injection
 				}
 			}
-			$status .= "\nPARTITION BY $_POST[partition_by]($_POST[partition])" . ($partitions // $_POST["partition"] can be expression, not only column
+			$partitioning .= "\nPARTITION BY $_POST[partition_by]($_POST[partition])" . ($partitions // $_POST["partition"] can be expression, not only column
 				? " (" . implode(",", $partitions) . "\n)"
 				: ($_POST["partitions"] ? " PARTITIONS " . intval($_POST["partitions"]) : "")
 			);
-		} elseif ($connection->server_info >= 5.1 && $TABLE != "") {
-			$status .= "\nREMOVE PARTITIONING";
+		} elseif ($TABLE != "") {
+			$partitioning .= "\nREMOVE PARTITIONING";
 		}
-		$location = ME . "table=" . urlencode($_POST["name"]);
-		if ($TABLE != "") {
-			query_redirect("ALTER TABLE " . idf_escape($TABLE) . "$fields\nRENAME TO " . idf_escape($_POST["name"]) . ",\n$status", $location, lang('Table has been altered.'));
-		} else {
+		$message = lang('Table has been altered.');
+		if ($TABLE == "") {
 			cookie("adminer_engine", $_POST["Engine"]);
-			query_redirect("CREATE TABLE " . idf_escape($_POST["name"]) . " (" . substr($fields, 0, -1) . "\n) $status", $location, lang('Table has been created.'));
+			$message = lang('Table has been created.');
 		}
+		queries_redirect(ME . "table=" . urlencode($_POST["name"]), $message, alter_table(
+			$TABLE,
+			$_POST["name"],
+			$fields,
+			$foreign,
+			$_POST["Comment"],
+			($_POST["Engine"] && $_POST["Engine"] != $orig_status["Engine"] ? $_POST["Engine"] : ""),
+			($_POST["Collation"] && $_POST["Collation"] != $orig_status["Collation"] ? $_POST["Collation"] : ""),
+			($_POST["Auto_increment"] != "" ? preg_replace('~[^0-9]+~', '', $_POST["Auto_increment"]) : ""),
+			$partitioning
+		));
 	}
 }
 
@@ -127,9 +117,9 @@ if ($_POST) {
 		}
 		$row["fields"][] = $field;
 	}
-	if ($connection->server_info >= 5.1) {
+	if (support("partitioning")) {
 		$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . $connection->quote(DB) . " AND TABLE_NAME = " . $connection->quote($TABLE);
-		$result = $connection->query("SELECT PARTITION_METHOD, PARTITION_ORDINAL_POSITION, PARTITION_EXPRESSION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
+		$result = $connection->query("SELECT" . limit("PARTITION_METHOD, PARTITION_ORDINAL_POSITION, PARTITION_EXPRESSION $from ORDER BY PARTITION_ORDINAL_POSITION", 1));
 		list($row["partition_by"], $row["partitions"], $row["partition"]) = $result->fetch_row();
 		$row["partition_names"] = array();
 		$row["partition_values"] = array();
@@ -162,24 +152,23 @@ foreach ($engines as $engine) {
 <p>
 <?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo h($row["name"]); ?>">
 <?php echo ($engines ? html_select("Engine", array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) : ""); ?>
- <?php echo html_select("Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]); ?>
+ <?php echo ($collations ? html_select("Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]) : ""); ?>
  <input type="submit" value="<?php echo lang('Save'); ?>">
 <table cellspacing="0" id="edit-fields" class="nowrap">
-<?php $column_comments = edit_fields($row["fields"], $collations, "TABLE", $suhosin, $foreign_keys); ?>
+<?php $comments = edit_fields($row["fields"], $collations, "TABLE", $suhosin, $foreign_keys, $row["Comment"] != ""); ?>
 </table>
 <p>
 <?php echo lang('Auto Increment'); ?>: <input name="Auto_increment" size="6" value="<?php echo h($row["Auto_increment"]); ?>">
-<?php echo lang('Comment'); ?>: <input name="Comment" value="<?php echo h($row["Comment"]); ?>" maxlength="60">
 <script type="text/javascript">
 document.write('<label><input type="checkbox" onclick="columnShow(this.checked, 5);"><?php echo lang('Default values'); ?><\/label>');
-document.write('<label><input type="checkbox"<?php if ($column_comments) { ?> checked<?php } ?> onclick="columnShow(this.checked, 6);"><?php echo lang('Show column comments'); ?><\/label>');
 </script>
+<?php echo (support("comment") ? checkbox("", "", $comments, lang('Comment'), "columnShow(this.checked, 6); toggle('Comment');") . ' <input id="Comment" name="Comment" value="' . h($row["Comment"]) . '" maxlength="60"' . ($comments ? '' : ' class="hidden"') . '>' : ''); ?>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php if (strlen($_GET["create"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
 <?php
-if ($connection->server_info >= 5.1) {
+if (support("partitioning")) {
 	$partition_table = ereg('RANGE|LIST', $row["partition_by"]);
 	print_fieldset("partition", lang('Partition by'), $row["partition_by"]);
 	?>
