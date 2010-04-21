@@ -239,7 +239,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 
 	function logged_user() {
-		return ""; //! OS user
+		return get_current_user(); // should return effective user
 	}
 
 	function tables_list() {
