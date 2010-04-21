@@ -1,3 +1,7 @@
+Adminer 2.3.2 (released 2010-04-21):
+Fix COUNT(*) link
+Fix Save and continue edit
+
 Adminer 2.3.1 (released 2010-04-06):
 Add Drop button to Alter pages (regression from 2.0.0)
 Link COUNT(*) result to listing
