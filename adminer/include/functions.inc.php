@@ -348,8 +348,8 @@ function remove_from_uri($param = "") {
 * @param int
 * @return string
 */
-function pagination($page) {
-	return " " . ($page == $_GET["page"] ? $page + 1 : '<a href="' . h(remove_from_uri("page") . ($page ? "&page=$page" : "")) . '">' . ($page + 1) . "</a>");
+function pagination($page, $current) {
+	return " " . ($page == $current ? $page + 1 : '<a href="' . h(remove_from_uri("page") . ($page ? "&page=$page" : "")) . '">' . ($page + 1) . "</a>");
 }
 
 /** Get file contents from $_FILES

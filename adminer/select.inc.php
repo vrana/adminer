@@ -26,12 +26,6 @@ $limit = $adminer->selectLimitProcess();
 $from = ($select ? implode(", ", $select) : "*") . "\nFROM " . idf_escape($TABLE) . ($where ? "\nWHERE " . implode(" AND ", $where) : "");
 $group_by = ($group && count($group) < count($select) ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : "");
 
-if ($_GET["page"] == "last") {
-	session_write_close();
-	$found_rows = $connection->result("SELECT COUNT(*) FROM " . idf_escape($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : ""));
-	redirect(remove_from_uri("page") . ($found_rows > $limit ? "&page=" . floor(($found_rows - 1) / $limit) : ""));
-}
-
 if ($_POST && !$error) {
 	$where_check = "(" . implode(") OR (", array_map('where_check', (array) $_POST["check"])) . ")";
 	$primary = ($indexes["PRIMARY"] ? ($select ? array_flip($indexes["PRIMARY"]["columns"]) : array()) : null); // empty array means that all primary fields are selected
@@ -181,7 +175,14 @@ if (!$columns) {
 	$adminer->selectActionPrint($text_length);
 	echo "</form>\n";
 	
-	$query = "SELECT" . limit((intval($limit) && $group && count($group) < count($select) && $driver == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . $from . $group_by, ($limit != "" ? intval($limit) : null), ($_GET["page"] ? $limit * $_GET["page"] : 0));
+	$page = $_GET["page"];
+	if ($page == "last") {
+		session_write_close();
+		$found_rows = $connection->result("SELECT COUNT(*) FROM " . idf_escape($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : ""));
+		$page = floor(($found_rows - 1) / $limit);
+	}
+
+	$query = "SELECT" . limit((intval($limit) && $group && count($group) < count($select) && $driver == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . $from . $group_by, ($limit != "" ? intval($limit) : null), ($page ? $limit * $page : 0));
 	echo $adminer->selectQuery($query);
 	
 	$result = $connection->query($query);
@@ -293,11 +294,11 @@ if (!$columns) {
 		
 		parse_str($_COOKIE["adminer_export"], $adminer_export);
 		
-		if ($rows || $_GET["page"]) {
+		if ($rows || $page) {
 			$exact_count = true;
-			if (intval($limit) && count($group) >= count($select) && ($found_rows >= $limit || $_GET["page"])) {
+			if (intval($limit) && count($group) >= count($select) && ($found_rows >= $limit || $page)) {
 				$found_rows = $table_status["Rows"];
-				if (!isset($found_rows) || $where || $_GET["page"] * $limit * 2 > $found_rows || ($table_status["Engine"] == "InnoDB" && $found_rows < 1e5)) {
+				if (!isset($found_rows) || $where || 2 * $page * $limit > $found_rows || ($table_status["Engine"] == "InnoDB" && $found_rows < 1e4)) {
 					// slow with big tables
 					ob_flush();
 					flush();
@@ -308,13 +309,13 @@ if (!$columns) {
 			}
 			echo "<p class='pages'>";
 			if (intval($limit) && $found_rows > $limit) {
-				// display first, previous 5, next 5 and last page
+				// display first, previous 4, next 4 and last page
 				$max_page = floor(($found_rows - 1) / $limit);
-				echo lang('Page') . ":" . pagination(0) . ($_GET["page"] > 5 ? " ..." : "");
-				for ($i = max(1, $_GET["page"] - 2); $i < min($max_page, $_GET["page"] + 5); $i++) {
-					echo pagination($i);
+				echo lang('Page') . ":" . pagination(0, $page) . ($page > 5 ? " ..." : "");
+				for ($i = max(1, $page - 4); $i < min($max_page, $page + 5); $i++) {
+					echo pagination($i, $page);
 				}
-				echo ($_GET["page"] + 5 < $max_page ? " ..." : "") . ($exact_count ? pagination($max_page) : ' <a href="' . h(remove_from_uri() . "&page=last") . '">' . lang('last') . "</a>");
+				echo ($page + 5 < $max_page ? " ..." : "") . ($exact_count ? pagination($max_page, $page) : ' <a href="' . h(remove_from_uri() . "&page=last") . '">' . lang('last') . "</a>");
 			}
 			echo " (" . ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) . ") " . checkbox("all", 1, 0, lang('whole result')) . "\n";
 			
