@@ -412,12 +412,14 @@ WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table)
 		$result = $connection->query("SELECT s.name [Trigger],
 CASE WHEN OBJECTPROPERTY(s.id, 'ExecIsInsertTrigger') = 1 THEN 'INSERT' WHEN OBJECTPROPERTY(s.id, 'ExecIsUpdateTrigger') = 1 THEN 'UPDATE' WHEN OBJECTPROPERTY(s.id, 'ExecIsDeleteTrigger') = 1 THEN 'DELETE' END [Event],
 CASE WHEN OBJECTPROPERTY(s.id, 'ExecIsInsteadOfTrigger') = 1 THEN 'INSTEAD OF' ELSE 'AFTER' END [Timing],
-c.text [Statement]
+c.text
 FROM sysobjects s
 JOIN syscomments c ON s.id = c.id
 WHERE s.xtype = 'TR' AND s.name = " . $connection->quote($name)
 		);
-		return $result->fetch_assoc();
+		$row = $result->fetch_assoc();
+		$row["Statement"] = preg_replace('~^.+\\s+AS\\s+~isU', '', $row["text"]); //! identifiers, comments
+		return $row;
 	}
 	
 	function triggers($table) {
@@ -434,6 +436,13 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . $connection->quote($table)
 			$return[$row["name"]] = array($row["Timing"], $row["Event"]);
 		}
 		return $return;
+	}
+	
+	function trigger_options() {
+		return array(
+			"Timing" => array("AFTER", "INSTEAD OF"),
+			"Type" => array("AS"),
+		);
 	}
 	
 	function support($feature) {

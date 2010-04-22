@@ -454,7 +454,7 @@ if (!defined("DRIVER")) {
 	*/
 	function view($name) {
 		global $connection;
-		return array("select" => preg_replace('~^(?:[^`]|`[^`]*`)* AS ~U', '', $connection->result("SHOW CREATE VIEW " . idf_escape($name), 1)));
+		return array("select" => preg_replace('~^(?:[^`]|`[^`]*`)*\\s+AS\\s+~isU', '', $connection->result("SHOW CREATE VIEW " . idf_escape($name), 1)));
 	}
 
 	/** Get sorted grouped list of collations
@@ -646,6 +646,14 @@ if (!defined("DRIVER")) {
 			$return[$row["Trigger"]] = array($row["Timing"], $row["Event"]);
 		}
 		return $return;
+	}
+	
+	function trigger_options() {
+		return array(
+			"Timing" => array("BEFORE", "AFTER"),
+			// Event is always INSERT, UPDATE, DELETE
+			"Type" => array("FOR EACH ROW"),
+		);
 	}
 	
 	/** Explain select

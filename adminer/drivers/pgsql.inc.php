@@ -397,7 +397,7 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 	
 	function trigger($name) {
 		global $connection;
-		$result = $connection->query('SELECT trigger_name AS "Trigger", condition_timing AS "Timing", event_manipulation AS "Event", action_statement AS "Statement" FROM information_schema.triggers WHERE event_object_table = ' . $connection->quote($_GET["trigger"]) . ' AND trigger_name = ' . $connection->quote($name));
+		$result = $connection->query('SELECT trigger_name AS "Trigger", condition_timing AS "Timing", event_manipulation AS "Event", action_statement AS "Statement" FROM information_schema.triggers WHERE event_object_table = ' . $connection->quote($_GET["trigger"]) . ' AND trigger_name = ' . $connection->quote($name)); //! detect Type
 		return $result->fetch_assoc();
 	}
 	
@@ -409,6 +409,13 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 			$return[$row["trigger_name"]] = array($row["condition_timing"], $row["event_manipulation"]);
 		}
 		return $return;
+	}
+	
+	function trigger_options() {
+		return array(
+			"Timing" => array("BEFORE", "AFTER"),
+			"Type" => array("FOR EACH STATEMENT", "FOR EACH ROW"),
+		);
 	}
 	
 	function explain($connection, $query) {

@@ -453,6 +453,13 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return $return;
 	}
 	
+	function trigger_options() {
+		return array(
+			"Timing" => array("BEFORE", "AFTER", "INSTEAD OF"),
+			"Type" => array("FOR EACH ROW"),
+		);
+	}
+	
 	function explain($connection, $query) {
 		return $connection->query("EXPLAIN $query");
 	}
