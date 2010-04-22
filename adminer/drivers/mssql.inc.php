@@ -325,10 +325,12 @@ if (isset($_GET["mssql"])) {
 FROM sys.indexes
 INNER JOIN sys.index_columns ON indexes.object_id = index_columns.object_id AND indexes.index_id = index_columns.index_id
 INNER JOIN sys.columns ON index_columns.object_id = columns.object_id AND index_columns.column_id = columns.column_id
-WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table));
+WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table)
+		);
 		if ($result) {
 			while ($row = $result->fetch_assoc()) {
 				$return[$row["name"]]["type"] = ($row["is_primary_key"] ? "PRIMARY" : ($row["is_unique"] ? "UNIQUE" : "INDEX"));
+				$return[$row["name"]]["lengths"] = array();
 				$return[$row["name"]]["columns"][$row["key_ordinal"]] = $row["column_name"];
 			}
 		}
@@ -349,7 +351,7 @@ WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table));
 
 	function error() {
 		global $connection;
-		return nl_br(h(ereg_replace("^(\\[[^]]*])+", "", $connection->error)));
+		return nl_br(h(preg_replace('~^(\\[[^]]*])+~m', '', $connection->error)));
 	}
 	
 	function exact_value($val) {
@@ -372,6 +374,65 @@ WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table));
 		$connection->query("SET SHOWPLAN_ALL ON");
 		$return = $connection->query($query);
 		$connection->query("SET SHOWPLAN_ALL OFF"); // connection is used also for indexes
+		return $return;
+	}
+	
+	function foreign_keys($table) {
+		global $connection;
+		$result = $connection->query("EXEC sp_fkeys @fktable_name = " . $connection->quote($table));
+		$return = array();
+		while ($row = $result->fetch_assoc()) {
+			$foreign_key = &$return[$row["FK_NAME"]];
+			$foreign_key["table"] = $row["PKTABLE_NAME"];
+			$foreign_key["source"][] = $row["FKCOLUMN_NAME"];
+			$foreign_key["target"][] = $row["PKCOLUMN_NAME"];
+		}
+		return $return;
+	}
+
+	function truncate_tables($tables) {
+		foreach ($tables as $table) {
+			if (!queries("TRUNCATE TABLE " . idf_escape($table))) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	function drop_views($views) {
+		return queries("DROP VIEW " . implode(", ", array_map('idf_escape', $views)));
+	}
+
+	function drop_tables($tables) {
+		return queries("DROP TABLE " . implode(", ", array_map('idf_escape', $tables)));
+	}
+
+	function trigger($name) {
+		global $connection;
+		$result = $connection->query("SELECT s.name [Trigger],
+CASE WHEN OBJECTPROPERTY(s.id, 'ExecIsInsertTrigger') = 1 THEN 'INSERT' WHEN OBJECTPROPERTY(s.id, 'ExecIsUpdateTrigger') = 1 THEN 'UPDATE' WHEN OBJECTPROPERTY(s.id, 'ExecIsDeleteTrigger') = 1 THEN 'DELETE' END [Event],
+CASE WHEN OBJECTPROPERTY(s.id, 'ExecIsInsteadOfTrigger') = 1 THEN 'INSTEAD OF' ELSE 'AFTER' END [Timing],
+c.text [Statement]
+FROM sysobjects s
+JOIN syscomments c ON s.id = c.id
+WHERE s.xtype = 'TR' AND s.name = " . $connection->quote($name)
+		);
+		return $result->fetch_assoc();
+	}
+	
+	function triggers($table) {
+		global $connection;
+		$return = array();
+		$result = $connection->query("SELECT sys1.name,
+CASE WHEN OBJECTPROPERTY(sys1.id, 'ExecIsInsertTrigger') = 1 THEN 'INSERT' WHEN OBJECTPROPERTY(sys1.id, 'ExecIsUpdateTrigger') = 1 THEN 'UPDATE' WHEN OBJECTPROPERTY(sys1.id, 'ExecIsDeleteTrigger') = 1 THEN 'DELETE' END [Event],
+CASE WHEN OBJECTPROPERTY(sys1.id, 'ExecIsInsteadOfTrigger') = 1 THEN 'INSTEAD OF' ELSE 'AFTER' END [Timing]
+FROM sysobjects sys1
+JOIN sysobjects sys2 ON sys1.parent_obj = sys2.id
+WHERE sys1.xtype = 'TR' AND sys2.name = " . $connection->quote($table)
+		);
+		while ($row = $result->fetch_assoc()) {
+			$return[$row["name"]] = array($row["Timing"], $row["Event"]);
+		}
 		return $return;
 	}
 	
