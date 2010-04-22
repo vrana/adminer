@@ -52,6 +52,10 @@ if (isset($_GET["pgsql"])) {
 				return $link;
 			}
 			
+			function close() {
+				$this->_link = @pg_connect($this->_string);
+			}
+			
 			function query($query, $unbuffered = false) {
 				$result = @pg_query($this->_link, $query);
 				if (!$result) {
@@ -133,6 +137,9 @@ if (isset($_GET["pgsql"])) {
 			
 			function select_db($database) {
 				return (DB == $database);
+			}
+			
+			function close() {
 			}
 		}
 		
@@ -299,6 +306,21 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 	function exact_value($val) {
 		global $connection;
 		return $connection->quote($val);
+	}
+	
+	function create_database($db, $collation) {
+		return queries("CREATE DATABASE " . idf_escape($db) . ($collation ? " ENCODING " . idf_escape($collation) : ""));
+	}
+	
+	function drop_databases($databases) {
+		global $connection;
+		$connection->close();
+		foreach ($databases as $db) {
+			if (!queries("DROP DATABASE " . idf_escape($db))) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	function rename_database($name, $collation) {

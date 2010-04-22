@@ -3,7 +3,7 @@ if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP c
 	restart_session();
 	if ($_POST["drop"]) {
 		set_session("databases", null);
-		query_redirect("DROP DATABASE " . idf_escape(DB), remove_from_uri("db|database"), lang('Database has been dropped.'));
+		queries_redirect(remove_from_uri("db|database"), lang('Database has been dropped.'), drop_databases(array(DB)));
 	} elseif (DB !== $_POST["name"]) {
 		// create or rename database
 		set_session("databases", null); // clear cache
@@ -15,7 +15,7 @@ if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP c
 			$last = "";
 			foreach ($dbs as $db) {
 				if (count($dbs) == 1 || $db != "") { // ignore empty lines but always try to create single database
-					if (!queries("CREATE DATABASE " . idf_escape($db) . ($_POST["collation"] ? " COLLATE " . $connection->quote($_POST["collation"]) : ""))) {
+					if (!create_database($db, $_POST["collation"])) {
 						$success = false;
 					}
 					$last = $db;
@@ -55,11 +55,15 @@ if ($_POST) {
 
 <form action="" method="post">
 <p>
-<?php echo ($_POST["add_x"] || strpos($name, "\n")
+<?php
+echo ($_POST["add_x"] || strpos($name, "\n")
 	? '<textarea name="name" rows="10" cols="40">' . h($name) . '</textarea><br>'
 	: '<input name="name" value="' . h($name) . '" maxlength="64">'
-) . "\n"; ?>
-<?php echo html_select("collation", array("" => "(" . lang('collation') . ")") + $collations, $collate); ?>
+) . "\n";
+if ($collations) {
+	html_select("collation", array("" => "(" . lang('collation') . ")") + $collations, $collate);
+}
+?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php

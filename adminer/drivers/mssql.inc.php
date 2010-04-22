@@ -359,6 +359,14 @@ WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table)
 		return $connection->quote($val);
 	}
 
+	function create_database($db, $collation) {
+		return queries("CREATE DATABASE " . idf_escape($db) . ($collation ? " COLLATE " . idf_escape($collation) : ""));
+	}
+	
+	function drop_databases($databases) {
+		return queries("DROP DATABASE " . implode(", ", array_map('idf_escape', $databases)));
+	}
+	
 	function rename_database($name, $collation) {
 		if ($collation) {
 			queries("ALTER DATABASE " . idf_escape(DB) . " COLLATE " . idf_escape($collation));

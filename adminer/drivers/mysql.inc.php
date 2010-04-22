@@ -500,6 +500,27 @@ if (!defined("DRIVER")) {
 		return "BINARY " . $connection->quote($val);
 	}
 
+	/** Create database
+	* @param string
+	* @return string
+	*/
+	function create_database($db, $collation) {
+		return queries("CREATE DATABASE " . idf_escape($db) . ($collation ? " COLLATE " . $connection->quote($collation) : ""));
+	}
+	
+	/** Drop databases
+	* @param array
+	* @return bool
+	*/
+	function drop_databases($databases) {
+		foreach ($databases as $db) {
+			if (!queries("DROP DATABASE " . idf_escape($db))) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	/** Rename database from DB
 	* @param string new name
 	* @return string
@@ -508,7 +529,7 @@ if (!defined("DRIVER")) {
 	function rename_database($name, $collation) {
 		global $connection;
 		$return = false;
-		if (queries("CREATE DATABASE " . idf_escape($name) . ($collation ? " COLLATE " . $connection->quote($collation) : ""))) {
+		if (create_database($name, $collation)) {
 			//! move triggers
 			$return = true; // table list may by empty
 			foreach (tables_list() as $table) {
@@ -648,6 +669,9 @@ if (!defined("DRIVER")) {
 		return $return;
 	}
 	
+	/** Get trigger options
+	* @return array ("Timing" => array(), "Type" => array())
+	*/
 	function trigger_options() {
 		return array(
 			"Timing" => array("BEFORE", "AFTER"),
