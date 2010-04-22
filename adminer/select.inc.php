@@ -7,7 +7,7 @@ $foreign_keys = column_foreign_keys($TABLE);
 
 $rights = array(); // privilege => 0
 $columns = array(); // selectable columns
-unset($text_length);
+$text_length = null;
 foreach ($fields as $key => $field) {
 	$name = $adminer->fieldName($field);
 	if (isset($field["privileges"]["select"]) && $name != "") {

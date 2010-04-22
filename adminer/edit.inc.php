@@ -44,7 +44,7 @@ page_header(
 	$table_name
 );
 
-unset($row);
+$row = null;
 if ($_POST["save"]) {
 	$row = (array) $_POST["fields"];
 } elseif ($where) {
@@ -59,7 +59,7 @@ if ($_POST["save"]) {
 		$result = $connection->query("SELECT" . limit(implode(", ", $select) . " FROM " . idf_escape($TABLE) . " WHERE $where", (isset($_GET["select"]) ? 2 : 1)));
 		$row = $result->fetch_assoc();
 		if (isset($_GET["select"]) && $result->fetch_assoc()) {
-			$row = false;
+			$row = null;
 		}
 	}
 }
@@ -68,7 +68,6 @@ if ($_POST["save"]) {
 <form action="" method="post" enctype="multipart/form-data">
 <?php
 if ($fields) {
-	unset($create);
 	echo "<table cellspacing='0'>\n";
 	foreach ($fields as $name => $field) {
 		echo "<tr><th>" . $adminer->fieldName($field);
