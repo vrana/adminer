@@ -396,7 +396,7 @@ class Adminer {
 	*/
 	function editFunctions($field) {
 		global $edit_functions;
-		$return = ($field["null"] ? "/NULL" : "");
+		$return = ($field["null"] ? "NULL/" : "");
 		foreach ($edit_functions as $key => $functions) {
 			if (!$key || (!isset($_GET["call"]) && (isset($_GET["select"]) || where($_GET)))) { // relative functions
 				foreach ($functions as $pattern => $val) {
