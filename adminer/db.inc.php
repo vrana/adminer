@@ -30,7 +30,7 @@ if ($tables_views && !$error && !$_POST["search"]) {
 		$message = lang('Tables have been dropped.');
 	} elseif ($_POST["tables"] && ($result = queries(($_POST["optimize"] ? "OPTIMIZE" : ($_POST["check"] ? "CHECK" : ($_POST["repair"] ? "REPAIR" : "ANALYZE"))) . " TABLE " . implode(", ", array_map('idf_escape', $_POST["tables"]))))) {
 		while ($row = $result->fetch_assoc()) {
-			$message .= h("$row[Table]: $row[Msg_text]") . "<br>";
+			$message .= "<b>" . h($row["Table"]) . "</b>: " . h($row["Msg_text"]) . "<br>";
 		}
 	}
 	queries_redirect(substr(ME, 0, -1), $message, $result);
