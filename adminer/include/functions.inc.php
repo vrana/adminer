@@ -598,7 +598,7 @@ function dump_csv($row) {
 			$row[$key] = '"' . str_replace('"', '""', $val) . '"';
 		}
 	}
-	echo implode(($_POST["format"] == "csv;" ? ";" : ","), $row) . "\n";
+	echo implode(($_POST["format"] == "csv" ? "," : ";"), $row) . "\n";
 }
 
 /** Apply SQL function

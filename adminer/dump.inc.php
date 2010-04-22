@@ -156,7 +156,7 @@ page_header(lang('Export'), "", ($_GET["export"] != "" ? array("table" => $_GET[
 $db_style = array('', 'USE', 'DROP+CREATE', 'CREATE');
 $table_style = array('', 'DROP+CREATE', 'CREATE');
 $data_style = array('', 'TRUNCATE+INSERT', 'INSERT', 'INSERT+UPDATE');
-if (support("routine")) {
+if ($driver == "sql") {
 	$db_style[] = 'CREATE+ALTER';
 	$table_style[] = 'CREATE+ALTER';
 }
