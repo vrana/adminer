@@ -15,20 +15,24 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		if (isset($_GET["sqlite2"])) {
 			
 			class Min_SQLite {
-				var $extension = "SQLite", $server_info, $affected_rows, $error, $_connection;
+				var $extension = "SQLite", $server_info, $affected_rows, $error, $_link;
 				
 				function __construct() {
 					$this->server_info = sqlite_libversion();
-					$this->_connection = new SQLiteDatabase(":memory:");
+					$this->_link = new SQLiteDatabase(":memory:");
 				}
 				
 				function open($filename) {
-					$this->_connection = new SQLiteDatabase($filename);
+					$this->_link = new SQLiteDatabase($filename);
+				}
+				
+				function close() {
+					$this->_link = null;
 				}
 				
 				function query($query, $unbuffered = false) {
 					$method = ($unbuffered ? "unbufferedQuery" : "query");
-					$result = @$this->_connection->$method($query, SQLITE_BOTH, $error);
+					$result = @$this->_link->$method($query, SQLITE_BOTH, $error);
 					if (!$result) {
 						$this->error = $error;
 						return false;
@@ -98,32 +102,36 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		} else {
 			
 			class Min_SQLite {
-				var $extension = "SQLite3", $server_info, $affected_rows, $error, $_connection;
+				var $extension = "SQLite3", $server_info, $affected_rows, $error, $_link;
 				
 				function __construct() {
-					$this->_connection = new SQLite3(":memory:"); // required to display variables
-					$version = $this->_connection->version();
+					$this->_link = new SQLite3(":memory:"); // required to display variables
+					$version = $this->_link->version();
 					$this->server_info = $version["versionString"];
 				}
 				
 				function open($filename) {
-					$this->_connection = new SQLite3($filename);
+					$this->_link = new SQLite3($filename);
+				}
+				
+				function close() {
+					$this->_link->close();
 				}
 				
 				function query($query) {
-					$result = @$this->_connection->query($query);
+					$result = @$this->_link->query($query);
 					if (!$result) {
-						$this->error = $this->_connection->lastErrorMsg();
+						$this->error = $this->_link->lastErrorMsg();
 						return false;
 					} elseif ($result->numColumns()) {
 						return new Min_Result($result);
 					}
-					$this->affected_rows = $this->_connection->changes();
+					$this->affected_rows = $this->_link->changes();
 					return true;
 				}
 				
 				function quote($string) {
-					return "'" . $this->_connection->escapeString($string) . "'";
+					return "'" . $this->_link->escapeString($string) . "'";
 				}
 				
 				function result($query, $field = 0) {
@@ -169,46 +177,56 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			
 		}
 		
-		class Min_DB extends Min_SQLite {
-			
-			function select_db($filename) {
-				set_exception_handler('connect_error'); // try/catch is not compatible with PHP 4
-				$this->open($filename);
-				restore_exception_handler();
-				return true;
-			}
-			
-			function multi_query($query) {
-				return $this->_result = $this->query($query);
-			}
-			
-			function store_result() {
-				return $this->_result;
-			}
-			
-			function next_result() {
-				return false;
-			}
-		}
-		
 	} elseif (extension_loaded("pdo_sqlite")) {
-		class Min_DB extends Min_PDO {
+		class Min_SQLite extends Min_PDO {
 			var $extension = "PDO_SQLite";
 			
-			function select_db($filename) {
+			function __construct() {
+				$this->dsn(DRIVER . "::memory:", "", "");
+			}
+			
+			function open($filename) {
 				static $connected = false;
 				if ($connected) {
 					return true;
 				}
 				$connected = true;
-				$this->dsn(DRIVER . ":$filename", "", "", "connect_error");
-				//! $this->server_info needs to be filled in __construct()
+				$this->dsn(DRIVER . ":$filename", "", "");
 				return true;
+			}
+			
+			function close() {
+				// no known way
 			}
 		}
 		
 	}
 
+	class Min_DB extends Min_SQLite {
+		
+		function select_db($filename) {
+			if (!is_readable($filename)) { //! verify database format
+				return false;
+			}
+			set_exception_handler('connect_error'); // try/catch is not compatible with PHP 4
+			$this->open($filename);
+			restore_exception_handler();
+			return true;
+		}
+		
+		function multi_query($query) {
+			return $this->_result = $this->query($query);
+		}
+		
+		function store_result() {
+			return $this->_result;
+		}
+		
+		function next_result() {
+			return false;
+		}
+	}
+	
 	function idf_escape($idf) {
 		return '"' . str_replace('"', '""', $idf) . '"';
 	}
@@ -235,7 +253,8 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 
 	function db_collation($db, $collations) {
-		return null;
+		global $connection;
+		return $connection->result("PRAGMA encoding"); // there is no database list so $db == DB
 	}
 
 	function engines() {
@@ -332,6 +351,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		if (is_object($result)) {
 			while ($row = $result->fetch_assoc()) {
 				$foreign_key = &$return[$row["id"]];
+				//! idf_unescape in SQLite2
 				if (!$foreign_key) {
 					$foreign_key = $row;
 				}
@@ -348,7 +368,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 
 	function collations() {
-		return get_vals("PRAGMA collation_list", 1);
+		return (isset($_GET["create"]) ? get_vals("PRAGMA collation_list", 1) : array());
 	}
 
 	function information_schema($db) {
@@ -365,9 +385,31 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return $connection->quote($val);
 	}
 
+	function create_database($db, $collation) {
+		global $connection;
+		// SQLITE3_OPEN_CREATE is not respected
+		// PRAGMA encoding = "UTF-8" is not respected
+		if (!file_exists($db) && touch($db)) {
+			return true;
+		}
+		$connection->error = lang('File can not be created.');
+		return false;
+	}
+	
+	function drop_databases($databases) {
+		global $connection;
+		$connection->close();
+		foreach ($databases as $db) {
+			if (!unlink($db)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	function rename_database($name, $collation) {
 		global $connection;
-		$connection->close(); //! not available with all extensions
+		$connection->close();
 		return rename(DB, $name);
 	}
 	
@@ -395,7 +437,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			return false;
 		}
 		if ($auto_increment) {
-			return queries("UPDATE sqlite_sequence SET seq = $auto_increment WHERE name = " . $connection->quote($name) . "");
+			queries("UPDATE sqlite_sequence SET seq = $auto_increment WHERE name = " . $connection->quote($name)); // ignores error
 		}
 		return true;
 	}

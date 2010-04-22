@@ -26,11 +26,9 @@ Rank, Tree structure
 Add whisperer to fields with foreign key to big table
 
 SQLite:
-CREATE DATABASE - PRAGMA encoding = "UTF-8"
-Detecion of non-existing database
-DROP DATABASE by file operations
 CSV import - ON DUPLICATE KEY UPDATE
-Export - views, triggers
+Use ATTACH for select_db
+Export - triggers, CREATE DATABASE
 Delimiter in export and SQL command
 
 PostgreSQL:
@@ -40,8 +38,10 @@ Table schema
 Export - http://www.postgresql.org/docs/8.4/static/functions-info.html
 Table status - http://www.postgresql.org/docs/8.4/static/functions-admin.html
 Column rights - http://www.postgresql.org/docs/8.4/static/functions-info.html
+Dollar terminated string in SQL command
 Move table - ALTER TABLE SET SCHEMA
 bool in Editor
+Check PDO driver
 
 MS SQL:
 Rename by sp_rename
