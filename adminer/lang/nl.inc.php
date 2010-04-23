@@ -73,7 +73,6 @@ $translations = array(
 	'Invalid CSRF token. Send the form again.' => 'Ongeldig CSRF token. Verstuur het formulier opnieuw.',
 	'Comment' => 'Commentaar',
 	'Default values' => 'Standaard waarden',
-	'Show column comments' => 'Kolomcommentaar weergeven',
 	'%d byte(s)' => array('%d byte', '%d bytes'),
 	'No commands to execute.' => 'Geen opdrachten uit te voeren.',
 	'Unable to upload a file.' => 'Onmogelijk bestand te uploaden.',

@@ -71,7 +71,6 @@ $translations = array(
 	'Invalid CSRF token. Send the form again.' => '無效的 CSRF token。請重新發送表單。',
 	'Comment' => '註解',
 	'Default values' => '預設值',
-	'Show column comments' => '顯示列註解',
 	'%d byte(s)' => '%d byte(s)',
 	'No commands to execute.' => '沒有命令可執行。',
 	'Unable to upload a file.' => '無法上傳檔案。',

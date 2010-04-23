@@ -73,7 +73,6 @@ $translations = array(
 	'Invalid CSRF token. Send the form again.' => 'Neplatný token CSRF. Odošlite formulár znova.',
 	'Comment' => 'Komentár',
 	'Default values' => 'Východzie hodnoty',
-	'Show column comments' => 'Zobraziť komentáre stĺpcov',
 	'%d byte(s)' => array('%d bajt', '%d bajty', '%d bajtov'),
 	'No commands to execute.' => 'Žiadne príkazy na vykonanie.',
 	'Unable to upload a file.' => 'Súbor sa nepodarilo nahrať.',

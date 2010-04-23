@@ -73,7 +73,6 @@ $translations = array(
 	'Invalid CSRF token. Send the form again.' => 'CSRF Token ungültig. Bitte die Formulardaten erneut abschicken.',
 	'Comment' => 'Kommentar',
 	'Default values' => 'Vorgabewerte festlegen',
-	'Show column comments' => 'Spaltenkommentare zeigen',
 	'%d byte(s)' => array('%d Byte', '%d Bytes'),
 	'No commands to execute.' => 'Kein Kommando vorhanden.',
 	'Unable to upload a file.' => 'Hochladen von Datei fehlgeschlagen.',

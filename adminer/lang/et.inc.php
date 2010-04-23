@@ -73,7 +73,6 @@ $translations = array(
 	'Invalid CSRF token. Send the form again.' => 'Sobimatu CSRF, palun postitage vorm uuesti.',
 	'Comment' => 'Kommentaar',
 	'Default values' => 'Vaikimisi väärtused',
-	'Show column comments' => 'Kuva veeru kommentaarid',
 	'%d byte(s)' => array('%d bait', '%d baiti'),
 	'No commands to execute.' => 'Käsk puudub.',
 	'Unable to upload a file.' => 'Faili üleslaadimine pole võimalik.',

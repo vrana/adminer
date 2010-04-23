@@ -73,7 +73,6 @@ $translations = array(
 	'Invalid CSRF token. Send the form again.' => 'Neplatný token CSRF. Odešlete formulář znovu.',
 	'Comment' => 'Komentář',
 	'Default values' => 'Výchozí hodnoty',
-	'Show column comments' => 'Zobrazit komentáře sloupců',
 	'%d byte(s)' => array('%d bajt', '%d bajty', '%d bajtů'),
 	'No commands to execute.' => 'Žádné příkazy k vykonání.',
 	'Unable to upload a file.' => 'Nepodařilo se nahrát soubor.',
@@ -233,4 +232,7 @@ $translations = array(
 	'last' => 'poslední',
 	'Network' => 'Síť',
 	'Geometry' => 'Geometrie',
+	'Double click on a field to edit it.' => 'Dvojklikněte na políčko, které chcete editovat.',
+	'Databases have been dropped.' => 'Databáze byly odstraněny.',
+	'File exists.' => 'Soubor existuje.',
 );

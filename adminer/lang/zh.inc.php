@@ -73,7 +73,6 @@ $translations = array(
 	'Invalid CSRF token. Send the form again.' => '无效 CSRF 令牌。重新发送表单。',
 	'Comment' => '注释',
 	'Default values' => '默认值',
-	'Show column comments' => '显示列注释',
 	'%d byte(s)' => '%d 字节',
 	'No commands to execute.' => '没有命令执行。',
 	'Unable to upload a file.' => '不能上传文件。',
