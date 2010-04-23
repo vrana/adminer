@@ -27,7 +27,6 @@ Add whisperer to fields with foreign key to big table
 
 SQLite:
 CSV import - ON DUPLICATE KEY UPDATE
-Use ATTACH for select_db
 Export - triggers, CREATE DATABASE
 Delimiter in export and SQL command
 
