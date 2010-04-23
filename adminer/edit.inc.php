@@ -31,7 +31,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 			}
 			query_redirect("UPDATE" . limit1(idf_escape($TABLE) . " SET" . implode(",", $set) . "\nWHERE $where"), $location, lang('Item has been updated.'));
 		} else {
-			query_redirect("INSERT INTO " . idf_escape($TABLE) . " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")", $location, lang('Item has been inserted.'));
+			queries_redirect($location, lang('Item has been inserted.'), insert_into($TABLE, $set));
 		}
 	}
 }

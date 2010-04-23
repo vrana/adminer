@@ -474,6 +474,10 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		);
 	}
 	
+	function insert_into($table, $set) {
+		return queries("INSERT INTO " . idf_escape($table) . ($set ? " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")" : "DEFAULT VALUES"));
+	}
+	
 	function explain($connection, $query) {
 		return $connection->query("EXPLAIN $query");
 	}

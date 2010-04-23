@@ -680,6 +680,15 @@ if (!defined("DRIVER")) {
 		);
 	}
 	
+	/** Insert data into table
+	* @param string
+	* @param array
+	* @return bool
+	*/
+	function insert_into($table, $set) {
+		return queries("INSERT INTO " . idf_escape($table) . " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")");
+	}
+	
 	/** Explain select
 	* @param Min_DB
 	* @param string

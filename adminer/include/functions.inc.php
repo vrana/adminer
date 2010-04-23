@@ -193,11 +193,11 @@ function unique_array($row, $indexes) {
 */
 function where($where) {
 	$return = array();
-	foreach (array("where", "null") as $type) {
-		foreach ((array) $where[$type] as $key => $val) {
-			$key = bracket_escape($key, "back");
-			$return[] = (preg_match('~^[A-Z0-9_]+\\(`(?:[^`]|``)+`\\)$~', $key) ? $key : idf_escape($key)) . ($type == "null" ? " IS NULL" : (ereg('\\.', $val) ? " LIKE " . exact_value(addcslashes($val, "%_")) : " = " . exact_value($val))); // LIKE because of floats, but slow with ints //! enum and set, columns looking like functions
-		}
+	foreach ((array) $where["where"] as $key => $val) {
+		$return[] = idf_escape($key) . (ereg('\\.', $val) ? " LIKE " . exact_value(addcslashes($val, "%_")) : " = " . exact_value($val)); // LIKE because of floats, but slow with ints //! enum and set
+	}
+	foreach ((array) $where["null"] as $key) {
+		$return[] = idf_escape($key) . " IS NULL";
 	}
 	return implode(" AND ", $return);
 }
