@@ -126,7 +126,7 @@ if ($_POST && !$error) {
 			$cols = array_keys($fields);
 			preg_match_all('~(?>"[^"]*"|[^"\\r\\n]+)+~', $file, $matches);
 			$affected = count($matches[0]);
-			queries("START TRANSACTION");
+			begin();
 			$separator = ($_POST["separator"] == "csv" ? "," : ";");
 			foreach ($matches[0] as $key => $val) {
 				preg_match_all("~((\"[^\"]*\")+|[^$separator]*)$separator~", $val . $separator, $matches2);
@@ -313,7 +313,7 @@ if (!$columns) {
 						$id = h("val[$unique_idf][" . bracket_escape($key) . "]");
 						$value = $_POST["val"][$unique_idf][bracket_escape($key)];
 						$h_value = h(isset($value) ? $value : $row[$key]);
-						$editable = is_utf8($val) && !strpos($val, "<em>...</em>");
+						$editable = is_utf8($val) && !strpos($val, "<em>...</em>"); //! function results, not unique key
 						$text = ereg('text|blob', $field["type"]);
 						echo (($_GET["modify"] && $editable) || isset($value)
 							? "<td>" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>")

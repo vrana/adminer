@@ -440,6 +440,10 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 		);
 	}
 	
+	function begin() {
+		return queries("BEGIN");
+	}
+	
 	function insert_into($table, $set) {
 		return queries("INSERT INTO " . idf_escape($table) . ($set ? " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")" : "DEFAULT VALUES"));
 	}

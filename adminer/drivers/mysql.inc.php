@@ -680,6 +680,13 @@ if (!defined("DRIVER")) {
 		);
 	}
 	
+	/** Begin transaction
+	* @return bool
+	*/
+	function begin() {
+		return queries("BEGIN");
+	}
+	
 	/** Insert data into table
 	* @param string
 	* @param array

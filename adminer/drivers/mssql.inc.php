@@ -394,6 +394,10 @@ WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table)
 		return " IDENTITY";
 	}
 	
+	function begin() {
+		return queries("BEGIN TRANSACTION");
+	}
+	
 	function insert_into($table, $set) {
 		return queries("INSERT INTO " . idf_escape($table) . ($set ? " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")" : "DEFAULT VALUES"));
 	}
