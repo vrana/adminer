@@ -189,6 +189,9 @@ if (!$columns) {
 	if (!$result) {
 		echo "<p class='error'>" . error() . "\n";
 	} else {
+		if ($driver == "mssql") {
+			$result->seek($limit * $page);
+		}
 		$email_fields = array();
 		echo "<form action='' method='post' enctype='multipart/form-data'>\n";
 		$rows = array();
@@ -196,10 +199,12 @@ if (!$columns) {
 			$rows[] = $row;
 		}
 		// use count($rows) without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
-		$found_rows = (intval($limit) && $group && count($group) < count($select)
-			? ($driver == "sql" ? $connection->result(" SELECT FOUND_ROWS()") : $connection->result("SELECT COUNT(*) FROM ($query) x")) // space to allow mysql.trace_mode
-			: count($rows)
-		);
+		if ($_GET["page"] != "last") {
+			$found_rows = (intval($limit) && $group && count($group) < count($select)
+				? ($driver == "sql" ? $connection->result(" SELECT FOUND_ROWS()") : $connection->result("SELECT COUNT(*) FROM ($query) x")) // space to allow mysql.trace_mode
+				: count($rows)
+			);
+		}
 		
 		if (!$rows) {
 			echo "<p class='message'>" . lang('No rows.') . "\n";
@@ -296,7 +301,7 @@ if (!$columns) {
 		
 		if ($rows || $page) {
 			$exact_count = true;
-			if (intval($limit) && count($group) >= count($select) && ($found_rows >= $limit || $page)) {
+			if ($_GET["page"] != "last" && intval($limit) && count($group) >= count($select) && ($found_rows >= $limit || $page)) {
 				$found_rows = $table_status["Rows"];
 				if (!isset($found_rows) || $where || 2 * $page * $limit > $found_rows || ($table_status["Engine"] == "InnoDB" && $found_rows < 1e4)) {
 					// slow with big tables

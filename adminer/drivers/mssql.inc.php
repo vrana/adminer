@@ -125,6 +125,12 @@ if (isset($_GET["mssql"])) {
 				$return->type = ($field["Type"] == 1 ? 254 : 0);
 				return $return;
 			}
+			
+			function seek($offset) {
+				for ($i=0; $i < $offset; $i++) {
+					sqlsrv_fetch($this->_result); // SQLSRV_SCROLL_ABSOLUTE added in sqlsrv 1.1
+				}
+			}
 
 			function __destruct() {
 				sqlsrv_free_stmt($this->_result);
@@ -216,6 +222,10 @@ if (isset($_GET["mssql"])) {
 				return $return;
 			}
 
+			function seek($offset) {
+				mssql_data_seek($this->_result, $offset);
+			}
+			
 			function __destruct() {
 				mssql_free_result($this->_result);
 			}
@@ -242,10 +252,10 @@ if (isset($_GET["mssql"])) {
 	}
 
 	function limit($query, $limit, $offset = 0) {
-		return (isset($limit) ? " TOP ($limit)" : "") . " $query"; //! offset
+		return (isset($limit) ? " TOP (" . ($limit + $offset) . ")" : "") . " $query"; // seek later
 	}
 
-	function limit1($query, $limit, $offset = 0) {
+	function limit1($query) {
 		return limit($query, 1);
 	}
 
@@ -297,7 +307,11 @@ if (isset($_GET["mssql"])) {
 	function fields($table) {
 		global $connection;
 		$return = array();
-		$result = $connection->query("SELECT * FROM information_schema.COLUMNS WHERE TABLE_NAME = " . $connection->quote($table));
+		$result = $connection->query("SELECT i.*, c.is_identity
+FROM information_schema.COLUMNS i
+JOIN sys.columns c ON OBJECT_NAME(c.object_id) = i.TABLE_NAME AND c.name = i.COLUMN_NAME
+WHERE i.TABLE_NAME = " . $connection->quote($table)
+		);
 		while ($row = $result->fetch_assoc()) {
 			$return[$row["COLUMN_NAME"]] = array(
 				"field" => $row["COLUMN_NAME"],
@@ -306,9 +320,10 @@ if (isset($_GET["mssql"])) {
 				"length" => $row["CHARACTER_MAXIMUM_LENGTH"], //! NUMERIC_, DATETIME_?
 				"default" => $row["COLUMN_DEFAULT"],
 				"null" => ($row["IS_NULLABLE"] == "YES"),
+				"auto_increment" => $row["is_identity"],
 				"collation" => $row["COLLATION_NAME"],
 				"privileges" => array("insert" => 1, "select" => 1, "update" => 1),
-				//! primary - is_identity in sys.columns
+				"primary" => $row["is_identity"], //! or indexes.is_primary_key
 			);
 		}
 		return $return;
@@ -371,11 +386,16 @@ WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table)
 		if ($collation) {
 			queries("ALTER DATABASE " . idf_escape(DB) . " COLLATE " . idf_escape($collation));
 		}
-		return queries("ALTER DATABASE " . idf_escape(DB) . " MODIFY NAME = " . idf_escape($name)); //! false negative "The database name 'test2' has been set."
+		queries("ALTER DATABASE " . idf_escape(DB) . " MODIFY NAME = " . idf_escape($name));
+		return true; //! false negative "The database name 'test2' has been set."
 	}
 
 	function auto_increment() {
 		return " IDENTITY";
+	}
+	
+	function insert_into($table, $set) {
+		return queries("INSERT INTO " . idf_escape($table) . ($set ? " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")" : "DEFAULT VALUES"));
 	}
 	
 	function explain($connection, $query) {
