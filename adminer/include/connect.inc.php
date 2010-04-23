@@ -7,7 +7,7 @@ function connect_error() {
 	} else {
 		if ($_POST["db"] && !$error) {
 			set_session("databases", null);
-			queries_redirect(substr(ME, 0, -1), lang('Database has been dropped.'), drop_databases($_POST["db"]));
+			queries_redirect(substr(ME, 0, -1), lang('Databases have been dropped.'), drop_databases($_POST["db"]));
 		}
 		
 		page_header(lang('Select database'), $error, false);

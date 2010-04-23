@@ -1,4 +1,3 @@
-MySQL 5 BIT data type
 Transactions in export
 Create view and routine options
 Mass editation of individual rows
@@ -16,14 +15,16 @@ Only first part of big BZ2 export is readable
 ? Aliasing of built-in functions can save 7 KB, function minification can save 7 KB, substitution of repetitive $a["a"] can save 4 KB, substitution of $_GET and friends can save 2 KB, aliasing of $connection->query, $connection->result and $connection->quote can save ~ 3 KB, JS packer can save 1 KB, not enclosing HTML attribute values can save 1.2 KB, replacing \\n by \n can save .3 KB
 ? Branch binary_compile: LZW compression of translations can save 30 KB, LZW compression of all texts can save 11 KB, remove of base64_decode() + using chars 127-255 in minification can save 1 KB
 ? AJAX editing - select page has all data to display edit form
-? MySQL geometry support
-Translations - database(s) have been dropped
 
 Editor:
 JavaScript data validation - columns containing word email, url, ...
 Joining tables - PRIMARY KEY (table, joining)
 Rank, Tree structure
 Add whisperer to fields with foreign key to big table
+
+MySQL:
+MySQL 5 BIT data type
+? Geometry support
 
 SQLite:
 CSV import - ON DUPLICATE KEY UPDATE
@@ -45,4 +46,4 @@ Check PDO driver
 MS SQL:
 Rename by sp_rename
 Detection of table collation
-PDO driver
+PDO driver with seek
