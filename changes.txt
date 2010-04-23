@@ -1,7 +1,8 @@
 Adminer 3.0.0-dev:
 Drivers for MS SQL, SQLite, PostgreSQL
-Show number of tables in server overview
 Allow concurrent logins on the same server
+In-place editation in select
+Show number of tables in server overview
 Operator LIKE %%
 Remember export parameters in cookie
 Allow semicolon as CSV separator

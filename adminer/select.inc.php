@@ -61,7 +61,7 @@ if ($_POST && !$error) {
 		exit;
 	}
 	if (!$adminer->selectEmailProcess($where, $foreign_keys)) {
-		if (!$_POST["import"]) { // edit
+		if ($_POST["save"]) { // edit
 			$result = true;
 			$affected = 0;
 			$query = idf_escape($TABLE);
@@ -105,6 +105,21 @@ if ($_POST && !$error) {
 			}
 			queries_redirect(remove_from_uri("page"), lang('%d item(s) have been affected.', $affected), $result);
 			//! display edit page in case of an error
+		} elseif (!$_POST["import"]) { // modify
+			$result = true;
+			$affected = 0;
+			foreach ($_POST["val"] as $unique_idf => $row) {
+				$set = array();
+				foreach ($row as $key => $val) {
+					$set[] = idf_escape(bracket_escape($key, 1)) . " = " . $connection->quote($val); // 1 - back //! $adminer->editVal($val)
+				}
+				$result = queries("UPDATE " . idf_escape($TABLE) . " SET " . implode(", ", $set) . " WHERE " . where_check($unique_idf));
+				if (!$result) {
+					break;
+				}
+				$affected += $connection->affected_rows;
+			}
+			queries_redirect(remove_from_uri(), lang('%d item(s) have been affected.', $affected), $result);
 		} elseif (is_string($file = get_file("csv_file", true))) {
 			$file = preg_replace("~^\xEF\xBB\xBF~", '', $file); //! character set
 			$result = true;
@@ -144,6 +159,7 @@ if ($_POST && !$error) {
 
 $table_name = $adminer->tableName($table_status);
 page_header(lang('Select') . ": $table_name", $error);
+session_write_close();
 
 $set = null;
 if (isset($rights["insert"])) {
@@ -177,7 +193,6 @@ if (!$columns) {
 	
 	$page = $_GET["page"];
 	if ($page == "last") {
-		session_write_close();
 		$found_rows = $connection->result("SELECT COUNT(*) FROM " . idf_escape($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : ""));
 		$page = floor(($found_rows - 1) / $limit);
 	}
@@ -212,7 +227,7 @@ if (!$columns) {
 			$backward_keys = $adminer->backwardKeys($TABLE, $table_name);
 			
 			echo "<table cellspacing='0' class='nowrap' onclick='tableClick(event);'>\n";
-			echo "<thead><tr><td><input type='checkbox' id='all-page' onclick='formCheck(this, /check/);'>";
+			echo "<thead><tr><td><input type='checkbox' id='all-page' onclick='formCheck(this, /check/);'> <a href='" . h($_GET["modify"] ? remove_from_uri("modify") : $_SERVER["REQUEST_URI"] . "&modify=1") . "'>" . lang('edit') . "</a>";
 			$names = array();
 			reset($select);
 			$order = 1;
@@ -227,6 +242,14 @@ if (!$columns) {
 				}
 				next($select);
 			}
+			$lengths = array();
+			if ($_GET["modify"]) {
+				foreach ($rows as $row) {
+					foreach ($row as $key => $val) {
+						$lengths[$key] = max($lengths[$key], min(40, strlen(utf8_decode($val))));
+					}
+				}
+			}
 			echo ($backward_keys ? "<th>" . lang('Relations') : "") . "</thead>\n";
 			foreach ($adminer->rowDescriptions($rows, $foreign_keys) as $n => $row) {
 				$unique_array = unique_array($rows[$n], $indexes);
@@ -239,7 +262,7 @@ if (!$columns) {
 					if (isset($names[$key])) {
 						$field = $fields[$key];
 						if ($val != "" && (!isset($email_fields[$key]) || $email_fields[$key] != "")) {
-							$email_fields[$key] = (is_email($val) ? $names[$key] : ""); //! filled e-mails may be contained on other pages
+							$email_fields[$key] = (is_email($val) ? $names[$key] : ""); //! filled e-mails can be contained on other pages
 						}
 						$link = "";
 						$val = $adminer->editVal($val, $field);
@@ -285,10 +308,17 @@ if (!$columns) {
 							$link = "mailto:$val";
 						}
 						if (!$link && is_url($row[$key])) {
-							$link = "http://www.adminer.org/redirect/?url=" . urlencode($row[$key]); // intermediate page to hide Referer
+							$link = "http://www.adminer.org/redirect/?url=" . urlencode($row[$key]); // intermediate page to hide Referer, may be changed to rel="noreferrer" in HTML5
 						}
-						$val = $adminer->selectVal($val, $link, $field);
-						echo "<td>$val";
+						$id = h("val[$unique_idf][" . bracket_escape($key) . "]");
+						$value = $_POST["val"][$unique_idf][bracket_escape($key)];
+						$h_value = h(isset($value) ? $value : $row[$key]);
+						$editable = is_utf8($val) && !strpos($val, "<em>...</em>");
+						$text = ereg('text|blob', $field["type"]);
+						echo (($_GET["modify"] && $editable) || isset($value)
+							? "<td>" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>")
+							: "<td id='$id'" . ($editable ? " ondblclick='selectDblClick(this, event" . ($text ? ", 1" : "") . ");'" : "") . ">" . $adminer->selectVal($val, $link, $field)
+						);
 					}
 				}
 				$adminer->backwardKeysPrint($backward_keys, $rows[$n]);
@@ -324,7 +354,16 @@ if (!$columns) {
 			}
 			echo " (" . ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) . ") " . checkbox("all", 1, 0, lang('whole result')) . "\n";
 			
-			echo (information_schema(DB) ? "" : "<fieldset><legend>" . lang('Edit') . "</legend><div><input type='submit' name='edit' value='" . lang('Edit') . "'> <input type='submit' name='clone' value='" . lang('Clone') . "'> <input type='submit' name='delete' value='" . lang('Delete') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + (this.form['all'].checked ? $found_rows : formChecked(this, /check/)) + ')');\"></div></fieldset>\n");
+			if (!information_schema(DB)) {
+				?>
+<fieldset><legend><?php echo lang('Edit'); ?></legend><div>
+<input type="submit" value="<?php echo lang('Save'); ?>"<?php if (!$_GET["modify"] && !$_POST["val"]) { ?> onclick="if (!selectDblClicked) { alert('<?php echo lang('Double click on a field to edit it.'); ?>'); return false; };"<?php } ?>>
+<input type="submit" name="edit" value="<?php echo lang('Edit'); ?>">
+<input type="submit" name="clone" value="<?php echo lang('Clone'); ?>">
+<input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?> (' + (this.form['all'].checked ? <?php echo $found_rows; ?> : formChecked(this, /check/)) + ')');">
+</div></fieldset>
+<?php
+			}
 			print_fieldset("export", lang('Export'));
 			echo $adminer->dumpOutput(1, $adminer_export["output"]) . " " . $adminer->dumpFormat(1, $adminer_export["format"]); // 1 - select
 			echo " <input type='submit' name='export' value='" . lang('Export') . "'>\n";

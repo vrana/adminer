@@ -119,3 +119,40 @@ function selectAddRow(field) {
 	field.parentNode.parentNode.appendChild(row);
 	field.onchange = function () { };
 }
+
+var selectDblClicked = false;
+function selectDblClick(td, event, text) {
+	selectDblClicked = true;
+	var pos = event.rangeOffset;
+	var value = (td.firstChild.firstChild ? td.firstChild.firstChild.data : td.firstChild.data);
+	var input = document.createElement(text ? 'textarea' : 'input');
+	input.name = td.id;
+	input.value = (value == '\u00A0' || td.getElementsByTagName('i').length ? '' : value); // &nbsp; or i - NULL
+	input.style.width = (td.clientWidth - 14) + 'px'; // 14 = 2 * (td.border + td.padding + input.border)
+	if (text) {
+		var rows = 1;
+		value.replace(/\n/g, function () {
+			rows++;
+		});
+		input.rows = rows;
+	}
+	if (document.selection) {
+		var range = document.selection.createRange();
+		range.moveToPoint(event.x, event.y);
+		var range2 = range.duplicate();
+		range2.moveToElementText(td);
+		range2.setEndPoint('EndToEnd', range);
+		pos = range2.text.length;
+	}
+	td.innerHTML = '';
+	td.appendChild(input);
+	input.focus();
+	input.selectionStart = pos;
+	input.selectionEnd = pos;
+	if (document.selection) {
+		var range = document.selection.createRange();
+		range.moveStart('character', pos);
+		range.select();
+	}
+	td.ondblclick = function () { };
+}
