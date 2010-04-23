@@ -230,7 +230,7 @@ foreach (array("adminer", "editor") as $project) {
 	$file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
 	$file = php_shrink($file);
 
-	$filename = $project . ($DRIVER ? "-$DRIVER" : "") . ($_SESSION["lang"] ? "-$_SESSION[lang]" : "") . ".php"; // . "-$VERSION"
+	$filename = $project . (preg_match('~-dev$~', $VERSION) ? "" : "-$VERSION") . ($DRIVER ? "-$DRIVER" : "") . ($_SESSION["lang"] ? "-$_SESSION[lang]" : "") . ".php";
 	fwrite(fopen($filename, "w"), $file); // file_put_contents() since PHP 5
 	echo "$filename created (" . strlen($file) . " B).\n";
 }
