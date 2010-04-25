@@ -6,6 +6,7 @@ Show number of tables in server overview
 Operator LIKE %%
 Remember export parameters in cookie
 Allow semicolon as CSV separator
+Japanese translation
 Defer table information in database overview to JavaScript (performance)
 Big tables optimizations (performance)
 

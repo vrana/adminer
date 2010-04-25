@@ -14,6 +14,7 @@ $langs = array(
 	'ru' => 'Русский язык', // Maksim Izmaylov
 	'zh' => '简体中文', // Mr. Lodar
 	'zh-tw' => '繁體中文', // http://tzangms.com
+	'ja' => '日本語', // Hitoshi Ozawa - http://sourceforge.jp/projects/oss-ja-jpn/releases/
 );
 
 function lang($idf, $number = null) {
