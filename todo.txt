@@ -1,7 +1,6 @@
 Transactions in export
 Create view and routine options
 Variables editation, especially timezone
-Disable spell checking in SQL textareas - spellcheck="false"
 Accept Tab in SQL textareas, Ctrl+Enter to send form
 Highlight SQL textarea, then display query inside textarea in select - may use external CodePress
 Blob download and image display in edit form (important for Editor with hidden fields in select)
@@ -11,6 +10,7 @@ Export by GET parameters
 Only first part of big BZ2 export is readable
 Auto-refresh processlist (thanks to Jan Garaj)
 Show pagination above and under the table in select
+? Filter by value in row under <thead> in select
 ? Column and table names auto-completition in SQL textarea
 ? Aliasing of built-in functions can save 7 KB, function minification can save 7 KB, substitution of repetitive $a["a"] can save 4 KB, substitution of $_GET and friends can save 2 KB, aliasing of $connection->query, $connection->result and $connection->quote can save ~ 3 KB, JS packer can save 1 KB, not enclosing HTML attribute values can save 1.2 KB, replacing \\n by \n can save .3 KB
 ? Branch binary_compile: LZW compression of translations can save 30 KB, LZW compression of all texts can save 11 KB, remove of base64_decode() + using chars 127-255 in minification can save 1 KB
@@ -30,6 +30,7 @@ SQLite:
 CSV import - ON DUPLICATE KEY UPDATE
 Export - triggers, CREATE DATABASE
 Delimiter in export and SQL command
+Backward keys in Editor
 
 PostgreSQL:
 Users - SELECT * FROM pg_user

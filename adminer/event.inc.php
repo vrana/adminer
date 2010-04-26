@@ -45,7 +45,7 @@ if ($_POST) {
 <tr><th><?php echo lang('Comment'); ?><td><input name="EVENT_COMMENT" value="<?php echo h($row["EVENT_COMMENT"]); ?>" maxlength="64">
 <tr><th>&nbsp;<td><?php echo checkbox("ON_COMPLETION", "PRESERVE", $row["ON_COMPLETION"] == "PRESERVE", lang('On completion preserve')); ?>
 </table>
-<p><textarea name="EVENT_DEFINITION" rows="10" cols="80" style="width: 98%;"><?php echo h($row["EVENT_DEFINITION"]); ?></textarea>
+<p><?php textarea("EVENT_DEFINITION", $row["EVENT_DEFINITION"]); ?>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Save'); ?>">

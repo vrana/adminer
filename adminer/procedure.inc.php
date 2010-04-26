@@ -48,7 +48,7 @@ if (isset($_GET["function"])) {
 }
 ?>
 </table>
-<p><textarea name="definition" rows="10" cols="80" style="width: 98%;"><?php echo h($row["definition"]); ?></textarea>
+<p><?php textarea("definition", $row["definition"]); ?>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <?php if ($dropped) { ?><input type="hidden" name="dropped" value="1"><?php } ?>

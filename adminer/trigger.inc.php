@@ -34,7 +34,7 @@ if ($_POST) {
 <tr><th><?php echo lang('Event'); ?><td><?php echo html_select("Event", $trigger_event, $row["Event"], "this.form['Timing'].onchange();"); ?>
 <tr><th><?php echo lang('Type'); ?><td><?php echo html_select("Type", $trigger_options["Type"], $row["Type"]); ?>
 </table>
-<p><textarea name="Statement" rows="10" cols="80" style="width: 98%;"><?php echo h($row["Statement"]); ?></textarea>
+<p><?php textarea("Statement", $row["Statement"]); ?>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <?php if ($dropped) { ?><input type="hidden" name="dropped" value="1"><?php } ?>

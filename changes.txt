@@ -6,6 +6,8 @@ Show number of tables in server overview
 Operator LIKE %%
 Remember export parameters in cookie
 Allow semicolon as CSV separator
+Autofocus username in login form
+Disable spellchecking in SQL textareas
 Japanese translation
 Defer table information in database overview to JavaScript (performance)
 Big tables optimizations (performance)

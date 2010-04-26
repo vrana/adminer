@@ -129,15 +129,15 @@ if (!$error && $_POST) {
 ?>
 
 <form action="" method="post" enctype="multipart/form-data">
-<p><textarea name="query" rows="20" cols="80" style="width: 98%;"><?php
+<p><?php
 $q = $_GET["sql"]; // overwrite $q from if ($_POST) to save memory
 if ($_POST) {
 	$q = $_POST["query"];
 } elseif ($_GET["history"] != "") {
 	$q = $history[$_GET["history"]];
 }
-echo h($q);
-?></textarea>
+textarea("query", $q, 20);
+?>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Execute'); ?>">
