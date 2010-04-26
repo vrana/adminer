@@ -73,7 +73,7 @@ function formChecked(el, name) {
 function tableClick(event) {
 	var el = event.target || event.srcElement;
 	while (!/^tr$/i.test(el.tagName)) {
-		if (/^(table|a|input)$/i.test(el.tagName)) {
+		if (/^(table|a|input|textarea)$/i.test(el.tagName)) {
 			return;
 		}
 		el = el.parentNode;
@@ -120,7 +120,15 @@ function selectAddRow(field) {
 	field.onchange = function () { };
 }
 
+
+
 var selectDblClicked = false;
+
+/** Display edit field
+* @param HTMLElement
+* @param MouseEvent
+* @param boolean display textarea instead of input
+*/
 function selectDblClick(td, event, text) {
 	selectDblClicked = true;
 	var pos = event.rangeOffset;
