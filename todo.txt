@@ -35,12 +35,13 @@ Backward keys in Editor
 PostgreSQL:
 Users - SELECT * FROM pg_user
 ORDER BY COUNT(*)
-Table schema
+Table schema - SELECT * FROM pg_namespace, CREATE|ALTER|DROP SCHEMA, SET default_tablespace
 Export - http://www.postgresql.org/docs/8.4/static/functions-info.html
 Table status - http://www.postgresql.org/docs/8.4/static/functions-admin.html
 Column rights - http://www.postgresql.org/docs/8.4/static/functions-info.html
 Dollar terminated string in SQL command
 Move table - ALTER TABLE SET SCHEMA
+Sequences
 bool in Editor
 Check PDO driver
 
