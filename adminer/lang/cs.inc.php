@@ -232,7 +232,9 @@ $translations = array(
 	'last' => 'poslední',
 	'Network' => 'Síť',
 	'Geometry' => 'Geometrie',
-	'Double click on a field to edit it.' => 'Dvojklikněte na políčko, které chcete editovat.',
 	'Databases have been dropped.' => 'Databáze byly odstraněny.',
 	'File exists.' => 'Soubor existuje.',
+	'Double click on a value to modify it.' => 'Dvojklikněte na políčko, které chcete změnit.',
+	'Increase text length to modify this value.' => 'Ke změně této hodnoty zvyšte délku textů.',
+	'Use edit link to modify this value.' => 'Ke změně této hodnoty použijte odkaz upravit.',
 );

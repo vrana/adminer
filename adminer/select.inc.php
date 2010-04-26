@@ -111,9 +111,10 @@ if ($_POST && !$error) {
 			foreach ($_POST["val"] as $unique_idf => $row) {
 				$set = array();
 				foreach ($row as $key => $val) {
-					$set[] = idf_escape(bracket_escape($key, 1)) . " = " . $connection->quote($val); // 1 - back //! $adminer->editVal($val)
+					$key = bracket_escape($key, 1);
+					$set[] = idf_escape($key) . " = " . $connection->quote($adminer->editVal($val, $fields[$key])); // 1 - back
 				}
-				$result = queries("UPDATE " . idf_escape($TABLE) . " SET " . implode(", ", $set) . " WHERE " . where_check($unique_idf));
+				$result = queries("UPDATE" . limit1(idf_escape($TABLE) . " SET " . implode(", ", $set) . " WHERE " . where_check($unique_idf) . ($where ? " AND " . implode(" AND ", $where) : ""))); // can change row on a different page without unique key
 				if (!$result) {
 					break;
 				}
@@ -229,6 +230,7 @@ if (!$columns) {
 			echo "<table cellspacing='0' class='nowrap' onclick='tableClick(event);'>\n";
 			echo "<thead><tr><td><input type='checkbox' id='all-page' onclick='formCheck(this, /check/);'> <a href='" . h($_GET["modify"] ? remove_from_uri("modify") : $_SERVER["REQUEST_URI"] . "&modify=1") . "'>" . lang('edit') . "</a>";
 			$names = array();
+			$functions = array();
 			reset($select);
 			$order = 1;
 			foreach ($rows[0] as $key => $val) {
@@ -240,6 +242,7 @@ if (!$columns) {
 					$names[$key] = $name;
 					echo '<th><a href="' . h(remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"][0] == $key && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . apply_sql_function($val["fun"], $name) . "</a>"; //! columns looking like functions
 				}
+				$functions[$key] = $val["fun"];
 				next($select);
 			}
 			$lengths = array();
@@ -313,11 +316,12 @@ if (!$columns) {
 						$id = h("val[$unique_idf][" . bracket_escape($key) . "]");
 						$value = $_POST["val"][$unique_idf][bracket_escape($key)];
 						$h_value = h(isset($value) ? $value : $row[$key]);
-						$editable = is_utf8($val) && !strpos($val, "<em>...</em>"); //! function results, not unique key
+						$long = strpos($val, "<em>...</em>");
+						$editable = is_utf8($val) && !$long && $rows[$n][$key] == $row[$key] && !$functions[$key];
 						$text = ereg('text|blob', $field["type"]);
 						echo (($_GET["modify"] && $editable) || isset($value)
 							? "<td>" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>")
-							: "<td id='$id'" . ($editable ? " ondblclick='selectDblClick(this, event" . ($text ? ", 1" : "") . ");'" : "") . ">" . $adminer->selectVal($val, $link, $field)
+							: "<td id='$id' ondblclick=\"" . ($editable ? "selectDblClick(this, event" . ($text ? ", 1" : "") . ")" : "alert('" . ($long ? lang('Increase text length to modify this value.') : lang('Use edit link to modify this value.')) . "')") . ";\">" . $adminer->selectVal($val, $link, $field)
 						);
 					}
 				}
@@ -357,7 +361,7 @@ if (!$columns) {
 			if (!information_schema(DB)) {
 				?>
 <fieldset><legend><?php echo lang('Edit'); ?></legend><div>
-<input type="submit" value="<?php echo lang('Save'); ?>"<?php if (!$_GET["modify"] && !$_POST["val"]) { ?> onclick="if (!selectDblClicked) { alert('<?php echo lang('Double click on a field to edit it.'); ?>'); return false; };"<?php } ?>>
+<input type="submit" value="<?php echo lang('Save'); ?>"<?php if (!$_GET["modify"] && !$_POST["val"]) { ?> onclick="if (!selectDblClicked) { alert('<?php echo lang('Double click on a value to modify it.'); ?>'); return false; };"<?php } ?>>
 <input type="submit" name="edit" value="<?php echo lang('Edit'); ?>">
 <input type="submit" name="clone" value="<?php echo lang('Clone'); ?>">
 <input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?> (' + (this.form['all'].checked ? <?php echo $found_rows; ?> : formChecked(this, /check/)) + ')');">
