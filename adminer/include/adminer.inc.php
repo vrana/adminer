@@ -41,9 +41,12 @@ class Adminer {
 <table cellspacing="0">
 <tr><th><?php echo lang('System'); ?><td><?php echo (count($possible_drivers) > 3 ? html_select("driver", $drivers, DRIVER) : "<input type='hidden' name='driver' value='" . key($drivers) . "'>" . reset($drivers)); ?></tr>
 <tr><th><?php echo lang('Server'); ?><td><input name="server" value="<?php echo h(SERVER); ?>">
-<tr><th><?php echo lang('Username'); ?><td><input name="username" value="<?php echo h($_GET["username"]); ?>">
+<tr><th><?php echo lang('Username'); ?><td><input id="username" name="username" value="<?php echo h($_GET["username"]); ?>">
 <tr><th><?php echo lang('Password'); ?><td><input type="password" name="password">
 </table>
+<script type="text/javascript">
+document.getElementById('username').focus();
+</script>
 <?php
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
 		if ($this->permanentLogin()) {
