@@ -211,8 +211,8 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return array();
 	}
 
-	function limit($query, $limit, $offset = 0) {
-		return " $query" . (isset($limit) ? "\nLIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
+	function limit($query, $limit, $offset = 0, $separator = " ") {
+		return " $query" . (isset($limit) ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
 	}
 
 	function limit1($query) {

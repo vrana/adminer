@@ -260,10 +260,11 @@ if (!defined("DRIVER")) {
 	* @param string everything after SELECT
 	* @param int
 	* @param int
+	* @param string
 	* @return string
 	*/
-	function limit($query, $limit, $offset = 0) {
-		return " $query" . (isset($limit) ? "\nLIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
+	function limit($query, $limit, $offset = 0, $separator = " ") {
+		return " $query" . (isset($limit) ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
 	}
 
 	/** Formulate SQL modification query with limit 1

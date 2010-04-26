@@ -197,7 +197,7 @@ if (!$columns) {
 		$page = floor(($found_rows - 1) / $limit);
 	}
 
-	$query = "SELECT" . limit((intval($limit) && $group && count($group) < count($select) && $driver == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . $from . $group_by, ($limit != "" ? intval($limit) : null), ($page ? $limit * $page : 0));
+	$query = "SELECT" . limit((intval($limit) && $group && count($group) < count($select) && $driver == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . $from . $group_by, ($limit != "" ? intval($limit) : null), ($page ? $limit * $page : 0), "\n");
 	echo $adminer->selectQuery($query);
 	
 	$result = $connection->query($query);

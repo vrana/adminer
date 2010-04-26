@@ -251,7 +251,7 @@ if (isset($_GET["mssql"])) {
 		return get_vals("EXEC sp_databases");
 	}
 
-	function limit($query, $limit, $offset = 0) {
+	function limit($query, $limit, $offset = 0, $separator = " ") {
 		return (isset($limit) ? " TOP (" . ($limit + $offset) . ")" : "") . " $query"; // seek later
 	}
 
