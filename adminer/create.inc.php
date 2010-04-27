@@ -68,7 +68,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 				? " (" . implode(",", $partitions) . "\n)"
 				: ($_POST["partitions"] ? " PARTITIONS " . intval($_POST["partitions"]) : "")
 			);
-		} elseif ($TABLE != "") {
+		} elseif ($TABLE != "" && support("partitioning")) {
 			$partitioning .= "\nREMOVE PARTITIONING";
 		}
 		$message = lang('Table has been altered.');
