@@ -61,7 +61,7 @@ if ($_POST && !$error) {
 		exit;
 	}
 	if (!$adminer->selectEmailProcess($where, $foreign_keys)) {
-		if ($_POST["save"]) { // edit
+		if ($_POST["save"] || $_POST["delete"]) { // edit
 			$result = true;
 			$affected = 0;
 			$query = idf_escape($TABLE);
