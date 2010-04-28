@@ -94,12 +94,12 @@ if (support("view")) {
 }
 if (support("routine")) {
 	echo "<h3>" . lang('Routines') . "</h3>\n";
-	$result = $connection->query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . $connection->quote(DB));
-	if ($result->num_rows) {
-		odd('');
+	$routines = routines();
+	if ($routines) {
 		echo "<table cellspacing='0'>\n";
 		echo '<thead><tr><th>' . lang('Name') . '<td>' . lang('Type') . '<td>' . lang('Return type') . "<td>&nbsp;</thead>\n";
-		while ($row = $result->fetch_assoc()) {
+		odd('');
+		foreach ($routines as $row) {
 			echo '<tr' . odd() . '>';
 			echo '<th><a href="' . h(ME) . ($row["ROUTINE_TYPE"] == "FUNCTION" ? 'callf=' : 'call=') . urlencode($row["ROUTINE_NAME"]) . '">' . h($row["ROUTINE_NAME"]) . '</a>';
 			echo '<td>' . h($row["ROUTINE_TYPE"]);

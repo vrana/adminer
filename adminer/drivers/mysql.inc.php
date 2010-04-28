@@ -681,6 +681,53 @@ if (!defined("DRIVER")) {
 		);
 	}
 	
+	/** Get information about stored routine
+	* @param string
+	* @param string FUNCTION or PROCEDURE
+	* @return array ("fields" => array("field" => , "type" => , "length" => , "unsigned" => , "inout" => , "collation" => ), "returns" => , "definition" => )
+	*/
+	function routine($name, $type) {
+		global $connection, $enum_length, $inout, $types;
+		$aliases = array("bit" => "tinyint", "bool" => "tinyint", "boolean" => "tinyint", "integer" => "int", "double precision" => "float", "real" => "float", "dec" => "decimal", "numeric" => "decimal", "fixed" => "decimal", "national char" => "char", "national varchar" => "varchar");
+		$type_pattern = "((" . implode("|", array_keys($types + $aliases)) . ")(?:\\s*\\(((?:[^'\")]*|$enum_length)+)\\))?\\s*(zerofill\\s*)?(unsigned(?:\\s+zerofill)?)?)(?:\\s*(?:CHARSET|CHARACTER\\s+SET)\\s*['\"]?([^'\"\\s]+)['\"]?)?";
+		$pattern = "\\s*(" . ($type == "FUNCTION" ? "" : implode("|", $inout)) . ")?\\s*(?:`((?:[^`]|``)*)`\\s*|\\b(\\S+)\\s+)$type_pattern";
+		$create = $connection->result("SHOW CREATE $type " . idf_escape($name), 2);
+		preg_match("~\\(((?:$pattern\\s*,?)*)\\)" . ($type == "FUNCTION" ? "\\s*RETURNS\\s+$type_pattern" : "") . "\\s*(.*)~is", $create, $match);
+		$fields = array();
+		preg_match_all("~$pattern\\s*,?~is", $match[1], $matches, PREG_SET_ORDER);
+		foreach ($matches as $param) {
+			$name = str_replace("``", "`", $param[2]) . $param[3];
+			$data_type = strtolower($param[5]);
+			$fields[] = array(
+				"field" => $name,
+				"type" => (isset($aliases[$data_type]) ? $aliases[$data_type] : $data_type),
+				"length" => preg_replace_callback("~$enum_length~s", 'normalize_enum', $param[6]),
+				"unsigned" => strtolower(preg_replace('~\\s+~', ' ', trim("$param[8] $param[7]"))),
+				"full_type" => $param[4],
+				"inout" => strtoupper($param[1]),
+				"collation" => strtolower($param[9]),
+			);
+		}
+		if ($type != "FUNCTION") {
+			return array("fields" => $fields, "definition" => $match[11]);
+		}
+		return array(
+			"fields" => $fields,
+			"returns" => array("type" => $match[12], "length" => $match[13], "unsigned" => $match[15], "collation" => $match[16]),
+			"definition" => $match[17],
+		);
+	}
+	
+	function routines() {
+		global $connection;
+		$return = array();
+		$result = $connection->query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . $connection->quote(DB));
+		while ($row = $result->fetch_assoc()) {
+			$return[] = $row;
+		}
+		return $return;
+	}
+	
 	/** Begin transaction
 	* @return bool
 	*/
