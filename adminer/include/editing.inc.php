@@ -288,7 +288,7 @@ function normalize_enum($match) {
 function routine($name, $type) {
 	global $connection, $enum_length, $inout, $types;
 	$aliases = array("bit" => "tinyint", "bool" => "tinyint", "boolean" => "tinyint", "integer" => "int", "double precision" => "float", "real" => "float", "dec" => "decimal", "numeric" => "decimal", "fixed" => "decimal", "national char" => "char", "national varchar" => "varchar");
-	$type_pattern = "(" . implode("|", array_keys($types + $aliases)) . ")(?:\\s*\\(((?:[^'\")]*|$enum_length)+)\\))?\\s*(zerofill\\s*)?(unsigned(?:\\s+zerofill)?)?(?:\\s*(?:CHARSET|CHARACTER\\s+SET)\\s*['\"]?([^'\"\\s]+)['\"]?)?";
+	$type_pattern = "((" . implode("|", array_keys($types + $aliases)) . ")(?:\\s*\\(((?:[^'\")]*|$enum_length)+)\\))?\\s*(zerofill\\s*)?(unsigned(?:\\s+zerofill)?)?)(?:\\s*(?:CHARSET|CHARACTER\\s+SET)\\s*['\"]?([^'\"\\s]+)['\"]?)?";
 	$pattern = "\\s*(" . ($type == "FUNCTION" ? "" : implode("|", $inout)) . ")?\\s*(?:`((?:[^`]|``)*)`\\s*|\\b(\\S+)\\s+)$type_pattern";
 	$create = $connection->result("SHOW CREATE $type " . idf_escape($name), 2);
 	preg_match("~\\(((?:$pattern\\s*,?)*)\\)" . ($type == "FUNCTION" ? "\\s*RETURNS\\s+$type_pattern" : "") . "\\s*(.*)~is", $create, $match);
@@ -296,21 +296,25 @@ function routine($name, $type) {
 	preg_match_all("~$pattern\\s*,?~is", $match[1], $matches, PREG_SET_ORDER);
 	foreach ($matches as $param) {
 		$name = str_replace("``", "`", $param[2]) . $param[3];
-		$data_type = strtolower($param[4]);
+		$data_type = strtolower($param[5]);
 		$fields[] = array(
 			"field" => $name,
 			"type" => (isset($aliases[$data_type]) ? $aliases[$data_type] : $data_type),
-			"length" => preg_replace_callback("~$enum_length~s", 'normalize_enum', $param[5]),
-			"unsigned" => strtolower(preg_replace('~\\s+~', ' ', trim("$param[7] $param[6]"))),
+			"length" => preg_replace_callback("~$enum_length~s", 'normalize_enum', $param[6]),
+			"unsigned" => strtolower(preg_replace('~\\s+~', ' ', trim("$param[8] $param[7]"))),
+			"full_type" => $param[4],
 			"inout" => strtoupper($param[1]),
-			"collation" => strtolower($param[8]),
+			"collation" => strtolower($param[9]),
 		);
 	}
 	if ($type != "FUNCTION") {
-		return array("fields" => $fields, "definition" => $match[10]);
+		return array("fields" => $fields, "definition" => $match[11]);
 	}
-	$returns = array("type" => $match[10], "length" => $match[11], "unsigned" => $match[13], "collation" => $match[14]);
-	return array("fields" => $fields, "returns" => $returns, "definition" => $match[15]);
+	return array(
+		"fields" => $fields,
+		"returns" => array("type" => $match[12], "length" => $match[13], "unsigned" => $match[15], "collation" => $match[16]),
+		"definition" => $match[17],
+	);
 }
 
 /** Issue grant or revoke commands

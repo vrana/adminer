@@ -55,7 +55,7 @@ if ($in) {
 	foreach ($in as $key) {
 		$field = $routine["fields"][$key];
 		$name = $field["field"];
-		echo "<tr><th>" . h($name);
+		echo "<tr><th>" . $adminer->fieldName($field);
 		$value = $_POST["fields"][$name];
 		if ($value != "" && ereg("enum|set", $field["type"])) {
 			$value = intval($value);
