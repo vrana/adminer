@@ -498,7 +498,7 @@ if (!defined("DRIVER")) {
 	*/
 	function exact_value($val) {
 		global $connection;
-		return "BINARY " . $connection->quote($val);
+		return $connection->quote($val) . " COLLATE utf8_bin";
 	}
 
 	/** Create database
