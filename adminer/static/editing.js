@@ -15,6 +15,9 @@ function bodyLoad(version) {
 			jush.urls.sqlset[0] = jush.urls.sql[0];
 			jush.urls.sqlstatus[0] = jush.urls.sql[0];
 			jush.style(jushRoot + 'jush.css');
+			if (window.jushLinks) {
+				jush.custom_links = jushLinks;
+			}
 			jush.highlight_tag('pre', 0);
 			jush.highlight_tag('code');
 		}

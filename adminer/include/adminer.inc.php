@@ -483,7 +483,7 @@ document.getElementById('username').focus();
 	* @return null
 	*/
 	function navigation($missing) {
-		global $VERSION, $connection, $token;
+		global $VERSION, $connection, $token, $driver;
 		?>
 <h1>
 <a href="http://www.adminer.org/" id="h1"><?php echo $this->name(); ?></a>
@@ -519,6 +519,17 @@ document.getElementById('username').focus();
 					echo "<p class='message'>" . lang('No tables.') . "\n";
 				} else {
 					$this->tablesPrint($tables);
+					$links = array();
+					foreach ($tables as $table => $type) {
+						$links[] = preg_quote($table, '/');
+					}
+					echo "<script type='text/javascript'>\n";
+					echo "var jushLinks = { $driver: [ '" . addcslashes(h(ME), "\\'/") . "table=\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
+					echo "jushLinks.bac = jushLinks.$driver;\n";
+					echo "jushLinks.bra = jushLinks.$driver;\n";
+					echo "jushLinks.mssql_bra = jushLinks.$driver;\n";
+					echo "jushLinks.sqlite_quo = jushLinks.$driver;\n";
+					echo "</script>\n";
 				}
 				echo '<p><a href="' . h(ME) . 'create=">' . bold(lang('Create new table'), $_GET["create"] === "") . "</a>\n";
 			}

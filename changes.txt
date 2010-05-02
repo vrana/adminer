@@ -9,6 +9,7 @@ Allow semicolon as CSV separator
 Autofocus username in login form
 Disable spellchecking in SQL textareas
 Japanese translation
+Link table names in SQL queries
 Defer table information in database overview to JavaScript (performance)
 Big tables optimizations (performance)
 
