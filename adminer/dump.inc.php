@@ -68,7 +68,6 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 			
 			if ($_POST["table_style"] || $_POST["data_style"]) {
 				$views = array();
-				//! defer number of rows to JavaScript
 				foreach (table_status() as $row) {
 					$table = (DB == "" || in_array($row["Name"], (array) $_POST["tables"]));
 					$data = (DB == "" || in_array($row["Name"], (array) $_POST["data"]));
@@ -81,7 +80,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 							if ($data) {
 								dump_data($row["Name"], $_POST["data_style"]);
 							}
-							if ($table) {
+							if ($_POST["triggers"]) {
 								dump_triggers($row["Name"], $_POST["table_style"]);
 							}
 							if ($ext == "tar") {
@@ -164,17 +163,16 @@ parse_str($_COOKIE["adminer_export"], $row);
 if (!$row) {
 	$row = array("output" => "text", "format" => "sql", "db_style" => (DB != "" ? "" : "CREATE"), "table_style" => "DROP+CREATE", "data_style" => "INSERT");
 }
+$checked = ($_GET["dump"] == "");
 echo "<tr><th>" . lang('Output') . "<td>" . $adminer->dumpOutput(0, $row["output"]) . "\n";
 echo "<tr><th>" . lang('Format') . "<td>" . $adminer->dumpFormat(0, $row["format"]) . "\n";
-echo "<tr><th>" . lang('Database') . "<td>" . html_select('db_style', $db_style, $row["db_style"]);
-$checked = ($_GET["dump"] == "");
-if (support("routine")) {
-	echo checkbox("routines", 1, $checked, lang('Routines'));
-}
-if (support("event")) {
-	echo checkbox("events", 1, $checked, lang('Events'));
-}
-echo "<tr><th>" . lang('Tables') . "<td>" . html_select('table_style', $table_style, $row["table_style"]);
+echo "<tr><th>" . lang('Database') . "<td>" . html_select('db_style', $db_style, $row["db_style"])
+	. (support("routine") ? checkbox("routines", 1, $checked, lang('Routines')) : "")
+	. (support("event") ? checkbox("events", 1, $checked, lang('Events')) : "")
+;
+echo "<tr><th>" . lang('Tables') . "<td>" . html_select('table_style', $table_style, $row["table_style"])
+	. (support("trigger") ? checkbox("triggers", 1, $row["table_style"], lang('Triggers')) : "")
+;
 echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style, $row["data_style"]);
 ?>
 </table>
@@ -190,6 +188,7 @@ if (DB != "") {
 	echo "<th style='text-align: right;'><label>" . lang('Data') . "<input type='checkbox' id='check-data'$checked onclick='formCheck(this, /^data\\[/);'></label>";
 	echo "</thead>\n";
 	$views = "";
+	//! defer number of rows to JavaScript
 	foreach (table_status() as $row) {
 		$name = $row["Name"];
 		$prefix = ereg_replace("_.*", "", $name);
