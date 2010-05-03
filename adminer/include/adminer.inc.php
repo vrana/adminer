@@ -525,10 +525,9 @@ document.getElementById('username').focus();
 					}
 					echo "<script type='text/javascript'>\n";
 					echo "var jushLinks = { $driver: [ '" . addcslashes(h(ME), "\\'/") . "table=\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
-					echo "jushLinks.bac = jushLinks.$driver;\n";
-					echo "jushLinks.bra = jushLinks.$driver;\n";
-					echo "jushLinks.mssql_bra = jushLinks.$driver;\n";
-					echo "jushLinks.sqlite_quo = jushLinks.$driver;\n";
+					foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
+						echo "jushLinks.$val = jushLinks.$driver;\n";
+					}
 					echo "</script>\n";
 				}
 				echo '<p><a href="' . h(ME) . 'create=">' . bold(lang('Create new table'), $_GET["create"] === "") . "</a>\n";
