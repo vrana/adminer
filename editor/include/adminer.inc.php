@@ -479,7 +479,6 @@ ORDER BY ORDINAL_POSITION");
 	
 	function _foreignKeyOptions($table, $column) {
 		global $connection;
-		$table_status = table_status($table);
 		$foreignKeys = column_foreign_keys($table);
 		foreach ((array) $foreignKeys[$column] as $foreignKey) {
 			if (count($foreignKey["source"]) == 1) {
@@ -488,6 +487,7 @@ ORDER BY ORDINAL_POSITION");
 				if ($name != "") {
 					$return = &$this->_values[$foreignKey["table"]];
 					if (!isset($return)) {
+						$table_status = table_status($foreignKey["table"]);
 						$return = ($table_status["Rows"] > 1000 ? array() : array("" => "") + get_key_vals("SELECT $id, $name FROM " . idf_escape($foreignKey["table"]) . " ORDER BY 2"));
 					}
 					return $return;
