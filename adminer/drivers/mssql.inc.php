@@ -477,8 +477,20 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . $connection->quote($table)
 		);
 	}
 	
+	function use_sql($database) {
+		return "USE " . idf_escape($database);
+	}
+	
+	function show_variables() {
+		return array();
+	}
+	
+	function show_status() {
+		return array();
+	}
+
 	function support($feature) {
-		return ereg('^(view|routine|trigger)$', $feature);
+		return ereg('^(trigger)$', $feature); //! view|routine|
 	}
 	
 	$driver = "mssql";
