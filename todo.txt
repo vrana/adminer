@@ -38,7 +38,6 @@ ORDER BY COUNT(*)
 Export - http://www.postgresql.org/docs/8.4/static/functions-info.html
 Column rights - http://www.postgresql.org/docs/8.4/static/functions-info.html
 Dollar terminated string in SQL command
-Sequences
 bool in Editor
 Check PDO driver
 

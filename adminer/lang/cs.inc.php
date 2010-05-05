@@ -244,4 +244,10 @@ $translations = array(
 	'Schema has been altered.' => 'Schéma bylo změněno.',
 	'schema' => 'schéma',
 	'Schema' => 'Schéma',
+	'Sequences' => 'Sekvence',
+	'Create sequence' => 'Vytvořit sekvenci',
+	'Sequence has been dropped.' => 'Sekvence byla odstraněna.',
+	'Sequence has been created.' => 'Sekvence byla vytvořena.',
+	'Sequence has been altered.' => 'Sekvence byla změněna.',
+	'Alter sequence' => 'Pozměnit sekvenci',
 );

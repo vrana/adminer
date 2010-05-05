@@ -89,6 +89,7 @@ if ($_GET["ns"] !== "") {
 	if (support("view")) {
 		echo '<a href="' . h(ME) . 'view=">' . lang('Create view') . "</a>\n";
 	}
+
 	if (support("routine")) {
 		echo "<h3>" . lang('Routines') . "</h3>\n";
 		$routines = routines();
@@ -106,6 +107,21 @@ if ($_GET["ns"] !== "") {
 			echo "</table>\n";
 		}
 		echo '<p><a href="' . h(ME) . 'procedure=">' . lang('Create procedure') . '</a> <a href="' . h(ME) . 'function=">' . lang('Create function') . "</a>\n";
+	}
+	
+	if (support("sequence")) {
+		echo "<h3>" . lang('Sequences') . "</h3>\n";
+		$sequences = get_vals("SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = current_schema()");
+		if ($sequences) {
+			echo "<table cellspacing='0'>\n";
+			echo "<thead><tr><th>" . lang('Name') . "</thead>\n";
+			odd('');
+			foreach ($sequences as $val) {
+				echo "<tr" . odd() . "><th><a href='" . h(ME) . "sequence=" . urlencode($val) . "'>" . h($val) . "</a>\n";
+			}
+			echo "</table>\n";
+		}
+		echo "<p><a href='" . h(ME) . "sequence='>" . lang('Create sequence') . "</a>\n";
 	}
 	
 	if (support("event")) {

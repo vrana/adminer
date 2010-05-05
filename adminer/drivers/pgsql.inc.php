@@ -489,7 +489,7 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 	}
 	
 	function support($feature) {
-		return ereg('^(comment|view|scheme|trigger|variables|drop_col)$', $feature); //! routine|sequence|
+		return ereg('^(comment|view|scheme|sequence|trigger|variables|drop_col)$', $feature); //! routine|
 	}
 	
 	$driver = "pgsql";

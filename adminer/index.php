@@ -52,6 +52,8 @@ if (isset($_GET["download"])) {
 	include "./event.inc.php";
 } elseif (isset($_GET["procedure"])) {
 	include "./procedure.inc.php";
+} elseif (isset($_GET["sequence"])) {
+	include "./sequence.inc.php";
 } elseif (isset($_GET["trigger"])) {
 	include "./trigger.inc.php";
 } elseif (isset($_GET["user"])) {
