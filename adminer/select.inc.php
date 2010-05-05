@@ -112,7 +112,7 @@ if ($_POST && !$error) {
 				$set = array();
 				foreach ($row as $key => $val) {
 					$key = bracket_escape($key, 1); // 1 - back
-					$set[] = idf_escape($key) . " = " . $connection->quote($adminer->editVal($val, $fields[$key]));
+					$set[] = idf_escape($key) . " = " . $adminer->processInput($fields[$key], $val);
 				}
 				$result = queries("UPDATE" . limit1(idf_escape($TABLE) . " SET " . implode(", ", $set) . " WHERE " . where_check($unique_idf) . ($where ? " AND " . implode(" AND ", $where) : ""))); // can change row on a different page without unique key
 				if (!$result) {
