@@ -490,7 +490,7 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . $connection->quote($table)
 	}
 
 	function support($feature) {
-		return ereg('^(trigger)$', $feature); //! view|routine|
+		return ereg('^(trigger|drop_col)$', $feature); //! view|routine|
 	}
 	
 	$driver = "mssql";

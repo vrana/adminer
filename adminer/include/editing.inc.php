@@ -203,16 +203,17 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 <td class="hidden"><?php echo lang('Default values'); ?>
 <?php echo (support("comment") ? "<td" . ($comments ? "" : " class='hidden'") . ">" . lang('Comment') : ""); ?>
 <?php } ?>
-<td><?php echo "<input type='image' name='add[0]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>"; ?><script type="text/javascript">row_count = <?php echo count($fields); ?>;</script>
+<td><?php echo "<input type='image' name='add[" . (support("move_col") ? 0 : count($fields)) . "]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>"; ?><script type="text/javascript">row_count = <?php echo count($fields); ?>;</script>
 </thead>
 <?php
 	foreach ($fields as $i => $field) {
 		$i++;
-		$display = (isset($_POST["add"][$i-1]) || (isset($field["field"]) && !$_POST["drop_col"][$i]));
+		$orig = $field[($_POST ? "orig" : "field")];
+		$display = (isset($_POST["add"][$i-1]) || (isset($field["field"]) && !$_POST["drop_col"][$i])) && (support("drop_col") || $orig == "");
 		?>
 <tr<?php echo ($display ? "" : " style='display: none;'"); ?>>
 <?php echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", $inout, $field["inout"]) : ""); ?>
-<th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo h($field["field"]); ?>" onchange="<?php echo ($field["field"] != "" || count($fields) > 1 ? "" : "editingAddRow(this, $allowed); "); ?>editingNameChange(this);" maxlength="64"><?php } ?><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo h($field[($_POST ? "orig" : "field")]); ?>">
+<th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo h($field["field"]); ?>" onchange="<?php echo ($field["field"] != "" || count($fields) > 1 ? "" : "editingAddRow(this, $allowed); "); ?>editingNameChange(this);" maxlength="64"><?php } ?><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo h($orig); ?>">
 <?php edit_type("fields[$i]", $field, $collations, $foreign_keys); ?>
 <?php if ($type == "TABLE") { ?>
 <td><?php echo checkbox("fields[$i][null]", 1, $field["null"]); ?>
@@ -221,11 +222,13 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 <?php echo (support("comment") ? "<td" . ($comments ? "" : " class='hidden'") . "><input name='fields[$i][comment]' value='" . h($field["comment"]) . "' maxlength='255'>" : ""); ?>
 <?php } ?>
 <?php
-		//! hide operations not supported by the driver - column change, adding column not at the end, drop column, ...
-		echo "<td><input type='image' name='add[$i]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "' onclick='return !editingAddRow(this, $allowed, 1);'>";
-		echo "&nbsp;<input type='image' name='drop_col[$i]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "' onclick='return !editingRemoveRow(this);'>";
-		echo "&nbsp;<input type='image' name='up[$i]' src='../adminer/static/up.gif' alt='^' title='" . lang('Move up') . "'>";
-		echo "&nbsp;<input type='image' name='down[$i]' src='../adminer/static/down.gif' alt='v' title='" . lang('Move down') . "'>";
+		echo "<td>";
+		echo (support("move_col") ?
+			"<input type='image' name='add[$i]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "' onclick='return !editingAddRow(this, $allowed, 1);'>&nbsp;"
+			. "<input type='image' name='up[$i]' src='../adminer/static/up.gif' alt='^' title='" . lang('Move up') . "'>&nbsp;"
+			. "<input type='image' name='down[$i]' src='../adminer/static/down.gif' alt='v' title='" . lang('Move down') . "'>&nbsp;"
+		: "");
+		echo ($orig == "" || support("drop_col") ? "<input type='image' name='drop_col[$i]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "' onclick='return !editingRemoveRow(this);'>" : "");
 		echo "\n";
 	}
 	return $comments;

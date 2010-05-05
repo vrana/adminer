@@ -197,7 +197,7 @@ if (isset($_GET["pgsql"])) {
 	function table_status($name = "") {
 		global $connection;
 		$return = array();
-		$result = $connection->query("SELECT relname AS \"Name\", CASE relkind WHEN 'r' THEN '' ELSE 'view' END AS \"Engine\", pg_relation_size(oid) AS \"Data_length\", pg_catalog.obj_description(oid, 'pg_class') AS \"Comment\"
+		$result = $connection->query("SELECT relname AS \"Name\", CASE relkind WHEN 'r' THEN '' ELSE 'view' END AS \"Engine\", pg_relation_size(oid) AS \"Data_length\", pg_total_relation_size(oid) - pg_relation_size(oid) AS \"Index_length\", pg_catalog.obj_description(oid, 'pg_class') AS \"Comment\"
 FROM pg_catalog.pg_class
 WHERE relkind IN ('r','v')
 AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema())"
@@ -457,7 +457,7 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 	}
 	
 	function support($feature) {
-		return ereg('^(comment|view|routine|trigger)$', $feature);
+		return ereg('^(comment|view|trigger|drop_col)$', $feature); //! routine|
 	}
 	
 	$driver = "pgsql";

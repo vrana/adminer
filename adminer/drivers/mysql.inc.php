@@ -790,14 +790,7 @@ if (!defined("DRIVER")) {
 	*/
 	function support($feature) {
 		global $connection;
-		$features = array(
-			"view" => ($connection->server_info >= 5),
-			"routine" => ($connection->server_info >= 5),
-			"trigger" => ($connection->server_info >= 5),
-			"event" => ($connection->server_info >= 5.1),
-			"partitioning" => ($connection->server_info >= 5.1),
-		);
-		return (isset($features[$feature]) ? $features[$feature] : true);
+		return ($connection->server_info >= 5.1 || ($connection->server_info >= 5 && !ereg("event|partitioning")) || !ereg("view|routine|trigger"));
 	}
 
 	$driver = "sql"; ///< @var string JUSH identifier

@@ -393,7 +393,9 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		global $connection;
 		$alter = array();
 		foreach ($fields as $field) {
-			$alter[] = ($table != "" && $field[0] == "" ? "ADD " : "  ") . implode("", $field[1]);
+			if ($field[1]) {
+				$alter[] = ($table != "" && $field[0] == "" ? "ADD " : "  ") . implode("", $field[1]);
+			}
 		}
 		$alter = array_merge($alter, $foreign);
 		if ($table != "") {
