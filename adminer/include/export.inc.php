@@ -9,21 +9,6 @@ function tar_file($filename, $contents) {
 	return $return . str_repeat("\0", 512 - strlen($return)) . $contents . str_repeat("\0", 511 - (strlen($contents) + 511) % 512);
 }
 
-function dump_triggers($table, $style) {
-	global $connection;
-	if ($_POST["format"] == "sql" && $style && support("trigger")) {
-		$result = $connection->query("SHOW TRIGGERS LIKE " . $connection->quote(addcslashes($table, "%_")));
-		if ($result->num_rows) {
-			$s = "\nDELIMITER ;;\n";
-			while ($row = $result->fetch_assoc()) {
-				$s .= "\n" . ($style == 'CREATE+ALTER' ? "DROP TRIGGER IF EXISTS " . idf_escape($row["Trigger"]) . ";;\n" : "")
-				. "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . idf_escape($row["Table"]) . " FOR EACH ROW\n$row[Statement];;\n";
-			}
-			echo "$s\nDELIMITER ;\n";
-		}
-	}
-}
-
 function dump_table($table, $style, $is_view = false) {
 	global $connection;
 	if ($_POST["format"] != "sql") {

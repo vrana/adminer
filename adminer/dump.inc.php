@@ -80,8 +80,11 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 							if ($data) {
 								dump_data($row["Name"], $_POST["data_style"]);
 							}
-							if ($_POST["triggers"]) {
-								dump_triggers($row["Name"], $_POST["table_style"]);
+							if ($_POST["format"] == "sql" && $_POST["triggers"]) {
+								$triggers = trigger_sql($row["Name"], $_POST["table_style"]);
+								if ($triggers) {
+									echo "\nDELIMITER ;;\n$triggers\nDELIMITER ;\n";
+								}
 							}
 							if ($ext == "tar") {
 								echo tar_file((DB != "" ? "" : "$db/") . "$row[Name].csv", ob_get_clean());

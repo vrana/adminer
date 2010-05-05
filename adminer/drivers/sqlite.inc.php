@@ -498,12 +498,17 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	
 	function create_sql($table) {
 		global $connection;
-		return $connection->result("SELECT sql FROM sqlite_master WHERE name = " . $connection->quote($table));
+		return $connection->result("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . $connection->quote($table));
 	}
 	
 	function use_sql($database) {
 		global $connection;
 		return "ATTACH " . $connection->quote($database) . " AS " . idf_escape($database);
+	}
+	
+	function trigger_sql($table, $style) {
+		global $connection;
+		return implode("", get_vals("SELECT sql || ';;\n' FROM sqlite_master WHERE type = 'trigger' AND name = " . $connection->quote($table)));
 	}
 	
 	function show_variables() {

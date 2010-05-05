@@ -770,6 +770,24 @@ if (!defined("DRIVER")) {
 		return "USE " . idf_escape($database);
 	}
 	
+	/** Get SQL commands to create triggers
+	* @param string
+	* @param string
+	* @return string
+	*/
+	function trigger_sql($table, $style) {
+		global $connection;
+		$result = $connection->query("SHOW TRIGGERS LIKE " . $connection->quote(addcslashes($table, "%_")));
+		$return = "";
+		if ($result->num_rows) {
+			while ($row = $result->fetch_assoc()) {
+				$return .= "\n" . ($style == 'CREATE+ALTER' ? "DROP TRIGGER IF EXISTS " . idf_escape($row["Trigger"]) . ";;\n" : "")
+				. "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . idf_escape($row["Table"]) . " FOR EACH ROW\n$row[Statement];;\n";
+			}
+		}
+		return $return;
+	}
+	
 	/** Get server variables
 	* @return array ($name => $value)
 	*/

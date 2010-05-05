@@ -28,7 +28,7 @@ Saving of MySQL 5 BIT data type - don't use quote()
 
 SQLite:
 CSV import - ON DUPLICATE KEY UPDATE
-Export - triggers, CREATE DATABASE
+Export - CREATE DATABASE
 Delimiter in export and SQL command
 Backward keys in Editor
 
