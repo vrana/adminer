@@ -20,7 +20,6 @@ JavaScript data validation - columns containing word email, url, ...
 Joining tables - PRIMARY KEY (table, joining)
 Rank, Tree structure
 Add whisperer to fields with foreign key to big table
-In-place editation of foreign keys and date
 
 MySQL:
 Saving of MySQL 5 BIT data type - don't use quote()
@@ -39,7 +38,6 @@ Export - http://www.postgresql.org/docs/8.4/static/functions-info.html
 Column rights - http://www.postgresql.org/docs/8.4/static/functions-info.html
 Dollar terminated string in SQL command
 bool in Editor
-Check PDO driver
 
 MS SQL:
 Rename by sp_rename
