@@ -470,8 +470,12 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 		return "\connect " . idf_escape($database);
 	}
 	
+	function show_variables() {
+		return get_key_vals("SHOW ALL");
+	}
+	
 	function support($feature) {
-		return ereg('^(comment|view|scheme|trigger|drop_col)$', $feature); //! routine|sequence|
+		return ereg('^(comment|view|scheme|trigger|variables|drop_col)$', $feature); //! routine|sequence|
 	}
 	
 	$driver = "pgsql";
