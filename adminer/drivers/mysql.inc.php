@@ -506,6 +506,7 @@ if (!defined("DRIVER")) {
 	* @return string
 	*/
 	function create_database($db, $collation) {
+		set_session("databases", null);
 		return queries("CREATE DATABASE " . idf_escape($db) . ($collation ? " COLLATE " . $connection->quote($collation) : ""));
 	}
 	
@@ -514,6 +515,7 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function drop_databases($databases) {
+		set_session("databases", null);
 		foreach ($databases as $db) {
 			if (!queries("DROP DATABASE " . idf_escape($db))) {
 				return false;
