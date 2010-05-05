@@ -46,7 +46,7 @@ if (isset($_POST["server"])) {
 			set_session($key, null);
 		}
 		cookie("adminer_permanent", "");
-		redirect(substr(preg_replace('~(username|db)=[^&]*&~', '', ME), 0, -1), lang('Logout successful.'));
+		redirect(substr(preg_replace('~(username|db|ns)=[^&]*&~', '', ME), 0, -1), lang('Logout successful.'));
 	}
 } elseif ($_COOKIE["adminer_permanent"]) {
 	list($server, $username, $cipher, $system) = array_map('base64_decode', explode(":", $_COOKIE["adminer_permanent"])); // $driver is a global variable

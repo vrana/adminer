@@ -452,12 +452,26 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 		return $connection->query("EXPLAIN $query");
 	}
 	
+	function schemas() {
+		return get_vals("SELECT nspname FROM pg_namespace");
+	}
+	
+	function get_schema() {
+		global $connection;
+		return $connection->result("SELECT current_schema()");
+	}
+	
+	function set_schema($schema) {
+		global $connection;
+		return $connection->query("SET search_path TO " . idf_escape($schema));
+	}
+	
 	function use_sql($database) {
 		return "\connect " . idf_escape($database);
 	}
 	
 	function support($feature) {
-		return ereg('^(comment|view|trigger|drop_col)$', $feature); //! routine|
+		return ereg('^(comment|view|scheme|trigger|drop_col)$', $feature); //! routine|sequence|
 	}
 	
 	$driver = "pgsql";

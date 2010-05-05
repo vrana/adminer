@@ -496,6 +496,18 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return $connection->query("EXPLAIN $query");
 	}
 	
+	function schemas() {
+		return array();
+	}
+	
+	function get_schema() {
+		return "";
+	}
+	
+	function set_schema($scheme) {
+		return true;
+	}
+	
 	function create_sql($table) {
 		global $connection;
 		return $connection->result("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . $connection->quote($table));

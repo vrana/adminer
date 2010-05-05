@@ -31,17 +31,20 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <div id="content">
 <?php
 	if (isset($breadcrumb)) {
-		$link = substr(preg_replace('~(username|db)=[^&]*&~', '', ME), 0, -1);
+		$link = substr(preg_replace('~(username|db|ns)=[^&]*&~', '', ME), 0, -1);
 		echo '<p id="breadcrumb"><a href="' . ($link ? h($link) : ".") . '">' . $drivers[DRIVER] . '</a> &raquo; ';
-		$link = substr(preg_replace('~db=[^&]*&~', '', ME), 0, -1);
+		$link = substr(preg_replace('~(db|ns)=[^&]*&~', '', ME), 0, -1);
 		$server = (SERVER != "" ? h(SERVER) : lang('Server'));
 		if ($breadcrumb === false) {
 			echo "$server\n";
 		} else {
 			echo "<a href='" . ($link ? h($link) : ".") . "'>$server</a> &raquo; ";
+			if ($_GET["ns"] != "" || (DB != "" && is_array($breadcrumb))) {
+				echo '<a href="' . h($link . "&db=" . urlencode(DB) . (support("scheme") ? "&ns=" : "")) . '">' . h(DB) . '</a> &raquo; ';
+			}
 			if (is_array($breadcrumb)) {
-				if (DB != "") {
-					echo '<a href="' . h(substr(ME, 0, -1)) . '">' . h(DB) . '</a> &raquo; ';
+				if ($_GET["ns"] != "") {
+					echo '<a href="' . h(substr(ME, 0, -1)) . '">' . h($_GET["ns"]) . '</a> &raquo; ';
 				}
 				foreach ($breadcrumb as $key => $val) {
 					$desc = (is_array($val) ? $val[1] : $val);

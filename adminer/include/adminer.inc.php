@@ -506,32 +506,40 @@ document.getElementById('username').focus();
 <p>
 <?php hidden_fields_get(); ?>
 <?php echo ($databases ? html_select("db", array("" => "(" . lang('database') . ")") + $databases, DB, "this.form.submit();") : '<input name="db" value="' . h(DB) . '">'); ?>
-<?php if (isset($_GET["sql"])) { ?><input type="hidden" name="sql" value=""><?php } ?>
-<?php if (isset($_GET["schema"])) { ?><input type="hidden" name="schema" value=""><?php } ?>
-<?php if (isset($_GET["dump"])) { ?><input type="hidden" name="dump" value=""><?php } ?>
 <input type="submit" value="<?php echo lang('Use'); ?>"<?php echo ($databases ? " class='hidden'" : ""); ?>>
-</p>
-</form>
 <?php
 			if ($missing != "db" && DB != "" && $connection->select_db(DB)) {
-				$tables = tables_list();
-				if (!$tables) {
-					echo "<p class='message'>" . lang('No tables.') . "\n";
-				} else {
-					$this->tablesPrint($tables);
-					$links = array();
-					foreach ($tables as $table => $type) {
-						$links[] = preg_quote($table, '/');
+				if (support("scheme")) {
+					echo "<br>" . html_select("ns", array("" => "(" . lang('schema') . ")") + schemas(), $_GET["ns"], "this.form.submit();");
+					if ($_GET["ns"] != "") {
+						set_schema($_GET["ns"]);
 					}
-					echo "<script type='text/javascript'>\n";
-					echo "var jushLinks = { $driver: [ '" . addcslashes(h(ME), "\\'/") . "table=\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
-					foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
-						echo "jushLinks.$val = jushLinks.$driver;\n";
-					}
-					echo "</script>\n";
 				}
-				echo '<p><a href="' . h(ME) . 'create=">' . bold(lang('Create new table'), $_GET["create"] === "") . "</a>\n";
+				if ($_GET["ns"] !== "") {
+					$tables = tables_list();
+					if (!$tables) {
+						echo "<p class='message'>" . lang('No tables.') . "\n";
+					} else {
+						$this->tablesPrint($tables);
+						$links = array();
+						foreach ($tables as $table => $type) {
+							$links[] = preg_quote($table, '/');
+						}
+						echo "<script type='text/javascript'>\n";
+						echo "var jushLinks = { $driver: [ '" . addcslashes(h(ME), "\\'/") . "table=\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
+						foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
+							echo "jushLinks.$val = jushLinks.$driver;\n";
+						}
+						echo "</script>\n";
+					}
+					echo '<p><a href="' . h(ME) . 'create=">' . bold(lang('Create new table'), $_GET["create"] === "") . "</a>\n";
+				}
 			}
+			echo (isset($_GET["sql"]) ? '<input type="hidden" name="sql" value="">'
+				: (isset($_GET["schema"]) ? '<input type="hidden" name="schema" value="">'
+				: (isset($_GET["dump"]) ? '<input type="hidden" name="dump" value="">'
+			: "")));
+			echo "</form>\n";
 		}
 	}
 	

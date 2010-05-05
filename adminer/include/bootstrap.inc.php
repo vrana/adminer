@@ -71,7 +71,7 @@ define("ME", preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) 
 	. (SID && !$_COOKIE ? SID . '&' : '') // !$_COOKIE - don't pass SID with permanent login
 	. (SERVER !== null ? DRIVER . "=" . urlencode(SERVER) . '&' : '')
 	. (isset($_GET["username"]) ? "username=" . urlencode($_GET["username"]) . '&' : '')
-	. (DB != "" ? 'db=' . urlencode(DB) . '&' : '')
+	. (DB != "" ? 'db=' . urlencode(DB) . '&' . (isset($_GET["ns"]) ? "ns=" . urlencode($_GET["ns"]) . "&" : "") : '')
 );
 
 include "../adminer/include/version.inc.php";

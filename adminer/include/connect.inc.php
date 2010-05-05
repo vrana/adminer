@@ -61,3 +61,7 @@ if (!(DB != "" ? $connection->select_db(DB) : isset($_GET["sql"]) || isset($_GET
 	connect_error(); // separate function to catch SQLite error
 	exit;
 }
+
+if (support("scheme") && DB != "" && $_GET["ns"] !== "" && (!isset($_GET["ns"]) || !set_schema($_GET["ns"]))) {
+	redirect(preg_replace('~ns=[^&]*&~', '', ME) . "ns=" . get_schema());
+}

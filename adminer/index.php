@@ -40,6 +40,8 @@ if (isset($_GET["download"])) {
 	include "./indexes.inc.php";
 } elseif (isset($_GET["database"])) {
 	include "./database.inc.php";
+} elseif (isset($_GET["scheme"])) {
+	include "./scheme.inc.php";
 } elseif (isset($_GET["call"])) {
 	include "./call.inc.php";
 } elseif (isset($_GET["foreign"])) {

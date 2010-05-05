@@ -237,4 +237,11 @@ $translations = array(
 	'Double click on a value to modify it.' => 'Dvojklikněte na políčko, které chcete změnit.',
 	'Increase text length to modify this value.' => 'Ke změně této hodnoty zvyšte délku textů.',
 	'Use edit link to modify this value.' => 'Ke změně této hodnoty použijte odkaz upravit.',
+	'Alter schema' => 'Pozměnit schéma',
+	'Create schema' => 'Vytvořit schéma',
+	'Schema has been dropped.' => 'Schéma bylo odstraněno.',
+	'Schema has been created.' => 'Schéma bylo vytvořeno.',
+	'Schema has been altered.' => 'Schéma bylo změněno.',
+	'schema' => 'schéma',
+	'Schema' => 'Schéma',
 );

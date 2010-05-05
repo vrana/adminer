@@ -190,13 +190,15 @@ foreach (glob(dirname(__FILE__) . "/adminer/drivers/" . ($DRIVER ? $DRIVER : "*"
 	}
 }
 
+$drivers = array();
 foreach (array("adminer", "editor") as $project) {
 	$lang_ids = array(); // global variable simplifies usage in a callback function
 	$file = file_get_contents(dirname(__FILE__) . "/$project/index.php");
-	if ($DRIVER && $DRIVER != "mysql") {
+	if ($DRIVER) {
+		$connection = (object) array("server_info" => 5.1); // MySQL support is version specific
 		$_GET[$DRIVER] = true; // to load the driver
 		include_once dirname(__FILE__) . "/adminer/drivers/$DRIVER.inc.php";
-		foreach (array("view", "event", "privileges", "user", "processlist", "variables", "trigger") as $feature) {
+		foreach (array("view", "event", "privileges", "user", "processlist", "variables", "trigger", "scheme") as $feature) {
 			if (!support($feature)) {
 				$file = str_replace("} elseif (isset(\$_GET[\"$feature\"])) {\n\tinclude \"./$feature.inc.php\";\n", "", $file);
 			}

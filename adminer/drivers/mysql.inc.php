@@ -755,6 +755,28 @@ if (!defined("DRIVER")) {
 		return $connection->query("EXPLAIN $query");
 	}
 	
+	/** Get existing schemas
+	* @return array
+	*/
+	function schemas() {
+		return array();
+	}
+	
+	/** Get current schema
+	* @return string
+	*/
+	function get_schema() {
+		return "";
+	}
+	
+	/** Set current schema
+	* @param string
+	* @return bool
+	*/
+	function set_schema($schema) {
+		return true;
+	}
+	
 	/** Get SQL command to create table
 	* @param string
 	* @return string
@@ -810,7 +832,7 @@ if (!defined("DRIVER")) {
 	*/
 	function support($feature) {
 		global $connection;
-		return ($connection->server_info >= 5.1 || ($connection->server_info >= 5 && !ereg("event|partitioning")) || !ereg("view|routine|trigger"));
+		return !ereg("scheme" . ($connection->server_info < 5.1 ? "|event|partitioning" . ($connection->server_info < 5 ? "|view|routine|trigger" : "") : ""), $feature);
 	}
 
 	$driver = "sql"; ///< @var string JUSH identifier
