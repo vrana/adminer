@@ -329,7 +329,7 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 	}
 	
 	function auto_increment() {
-		return true;
+		return "";
 	}
 	
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
@@ -344,8 +344,8 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 			} else {
 				$val5 = $val[5];
 				unset($val[5]);
-				if ($val[6]) { // auto_increment
-					$val = array($val[0], ($val[1] == "bigint" ? "big" : "") . "serial");
+				if (isset($val[6]) && $field[0] == "") { // auto_increment
+					$val[1] = ($val[1] == "bigint" ? " big" : " ") . "serial";
 				}
 				if ($field[0] == "") {
 					$alter[] = ($table != "" ? "ADD " : "  ") . implode("", $val);
@@ -353,14 +353,14 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 					if ($column != $val[0]) {
 						$queries[] = "ALTER TABLE " . idf_escape($table) . " RENAME $column TO $val[0]";
 					}
-					$alter[] = "ALTER $column TYPE $val[1]";
+					$alter[] = "ALTER $column TYPE$val[1]";
 					if (!$val[6]) {
-						$alter[] = "ALTER $column" . ($val[3] ? " SET$val[3]" : " DROP DEFAULT"); //! quoting
+						$alter[] = "ALTER $column " . ($val[3] ? "SET$val[3]" : "DROP DEFAULT"); //! quoting
 						$alter[] = "ALTER $column " . ($val[2] == " NULL" ? "DROP NOT" : "SET") . $val[2];
 					}
 				}
-				if ($table != "" || $val5 != "") {
-					$queries[] = "COMMENT ON COLUMN " . idf_escape($table) . ".$val[0] IS " . substr($val5, 9);
+				if ($field[0] != "" || $val5 != "") {
+					$queries[] = "COMMENT ON COLUMN " . idf_escape($table) . ".$val[0] IS " . ($val5 != "" ? substr($val5, 9) : "''");
 				}
 			}
 		}

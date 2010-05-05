@@ -153,7 +153,7 @@ function process_field($field, $type_field) {
 		(isset($field["default"]) ? " DEFAULT " . ($field["type"] == "timestamp" && eregi("^CURRENT_TIMESTAMP$", $field["default"]) ? $field["default"] : $connection->quote($field["default"])) : ""),
 		($field["on_update"] ? " ON UPDATE $field[on_update]" : ""),
 		(support("comment") && $field["comment"] != "" ? " COMMENT " . $connection->quote($field["comment"]) : ""),
-		($field["auto_increment"] ? auto_increment() : ""),
+		($field["auto_increment"] ? auto_increment() : null),
 	);
 }
 
