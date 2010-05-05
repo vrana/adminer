@@ -452,6 +452,10 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return true;
 	}
 	
+	function move_tables($tables, $views, $target) {
+		return false;
+	}
+	
 	function trigger($name) {
 		global $connection;
 		preg_match('~^CREATE\\s+TRIGGER\\s*(?:[^`"\\s]+|`[^`]*`|"[^"]*")+\\s*([a-z]+)\\s+([a-z]+)\\s+ON\\s*(?:[^`"\\s]+|`[^`]*`|"[^"]*")+\\s*(?:FOR\\s*EACH\\s*ROW\\s)?(.*)~is', $connection->result("SELECT sql FROM sqlite_master WHERE name = " . $connection->quote($name)), $match);

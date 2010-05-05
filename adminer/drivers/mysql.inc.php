@@ -648,6 +648,20 @@ if (!defined("DRIVER")) {
 		return queries("DROP TABLE " . implode(", ", array_map('idf_escape', $tables)));
 	}
 	
+	/** Move tables to other schema
+	* @param array
+	* @param string
+	* @return bool
+	*/
+	function move_tables($tables, $views, $target) {
+		$rename = array();
+		foreach (array_merge($tables, $views) as $table) { // views will report SQL error
+			$rename[] = idf_escape($table) . " TO " . idf_escape($target) . "." . idf_escape($table);
+		}
+		return queries("RENAME TABLE " . implode(", ", $rename));
+		//! move triggers
+	}
+	
 	/** Get information about trigger
 	* @param string trigger name
 	* @return array array("Trigger" => , "Timing" => , "Event" => , "Statement" => )

@@ -13,12 +13,7 @@ if ($tables_views && !$error && !$_POST["search"]) {
 		}
 		$message = lang('Tables have been truncated.');
 	} elseif ($_POST["move"]) {
-		$rename = array();
-		foreach ($tables_views as $table) {
-			$rename[] = idf_escape($table) . " TO " . idf_escape($_POST["target"]) . "." . idf_escape($table);
-		}
-		$result = queries("RENAME TABLE " . implode(", ", $rename));
-		//! move triggers
+		$result = move_tables((array) $_POST["tables"], (array) $_POST["views"], $_POST["target"]);
 		$message = lang('Tables have been moved.');
 	} elseif ($_POST["drop"]) {
 		if ($_POST["views"]) {
@@ -81,9 +76,9 @@ if ($_GET["ns"] !== "") {
 		echo "</table>\n";
 		if (!information_schema(DB)) {
 			echo "<p><input type='hidden' name='token' value='$token'>" . ($driver == "sql" ? "<input type='submit' value='" . lang('Analyze') . "'> <input type='submit' name='optimize' value='" . lang('Optimize') . "'> <input type='submit' name='check' value='" . lang('Check') . "'> <input type='submit' name='repair' value='" . lang('Repair') . "'> " : "") . "<input type='submit' name='truncate' value='" . lang('Truncate') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + formChecked(this, /tables/) + ')');\"> <input type='submit' name='drop' value='" . lang('Drop') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + formChecked(this, /tables|views/) + ')');\">\n";
-			$dbs = get_databases();
-			if (count($dbs) != 1) {
-				$db = (isset($_POST["target"]) ? $_POST["target"] : DB);
+			$dbs = (support("scheme") ? schemas() : get_databases());
+			if (count($dbs) != 1 && $driver != "sqlite") {
+				$db = (isset($_POST["target"]) ? $_POST["target"] : (support("scheme") ? $_GET["ns"] : DB));
 				echo "<p>" . lang('Move to other database') . ($dbs ? ": " . html_select("target", $dbs, $db) : ': <input name="target" value="' . h($db) . '">') . " <input type='submit' name='move' value='" . lang('Move') . "'>\n";
 			}
 		}

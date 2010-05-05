@@ -417,6 +417,20 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 		return queries("DROP TABLE " . implode(", ", array_map('idf_escape', $tables)));
 	}
 	
+	function move_tables($tables, $views, $target) {
+		foreach ($tables as $table) {
+			if (!queries("ALTER TABLE " . idf_escape($table) . " SET SCHEMA " . idf_escape($target))) {
+				return false;
+			}
+		}
+		foreach ($views as $table) {
+			if (!queries("ALTER VIEW " . idf_escape($table) . " SET SCHEMA " . idf_escape($target))) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	function trigger($name) {
 		global $connection;
 		$result = $connection->query('SELECT trigger_name AS "Trigger", condition_timing AS "Timing", event_manipulation AS "Event", \'FOR EACH \' || action_orientation AS "Type", action_statement AS "Statement" FROM information_schema.triggers WHERE event_object_table = ' . $connection->quote($_GET["trigger"]) . ' AND trigger_name = ' . $connection->quote($name));
