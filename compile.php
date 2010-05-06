@@ -3,6 +3,22 @@ error_reporting(6135); // errors and warnings
 include dirname(__FILE__) . "/adminer/include/version.inc.php";
 include dirname(__FILE__) . "/externals/jsmin-php/jsmin.php";
 
+if (!class_exists("JSMin")) {
+	/** Simple JS minifier without full support for regex literals
+	* @link http://pastebin.com/2Jc2swSr
+	*/
+	class JSMin {
+		/*private static*/ function callback($match) {
+			$s = trim($match[0]);
+			return ($s === "" ? "\n" : ($s[0] === "/" && ($s[1] === "*" || $s[1] === "/") ? "" : $s));
+		}
+		
+		/*static*/ function minify($input) {
+			return preg_replace_callback('~//[^\n]*|/\*.*?\*/|/(?!\s)(?:\\\\.|[^/\\\\])*/|\'(?:\\\\.|[^\'\\\\])*\'|"(?:\\\\.|[^"\\\\])*"|\s*[^0-9a-z_$\'"/\s]\s*|\s+~si', array('JSMin', 'callback'), $input);
+		}
+	}
+}
+
 function add_apo_slashes($s) {
 	return addcslashes($s, "\\'");
 }
