@@ -250,4 +250,5 @@ $translations = array(
 	'Sequence has been created.' => 'Sekvence byla vytvořena.',
 	'Sequence has been altered.' => 'Sekvence byla změněna.',
 	'Alter sequence' => 'Pozměnit sekvenci',
+	'Search data in tables' => 'Vyhledat data v tabulkách',
 );
