@@ -644,6 +644,37 @@ function apply_sql_function($function, $column) {
 	return ($function ? ($function == "unixepoch" ? "DATETIME($column, '$function')" : ($function == "count distinct" ? "COUNT(DISTINCT " : strtoupper("$function(")) . "$column)") : $column);
 }
 
+/** Read password from file adminer.key in temporary directory or create one
+* @return string or false if the file can not be created
+*/
+function password_file() {
+	$dir = ini_get("upload_tmp_dir"); // session_save_path() may contain other storage path
+	if (!$dir) {
+		if (function_exists('sys_get_temp_dir')) {
+			$dir = sys_get_temp_dir();
+		} else {
+			$filename = @tempnam("", ""); // @ - temp directory can be disabled by open_basedir
+			if (!$filename) {
+				return false;
+			}
+			$dir = dirname($filename);
+			unlink($filename);
+		}
+	}
+	$filename = "$dir/adminer.key";
+	$return = @file_get_contents($filename); // @ - can not exist
+	if ($return) {
+		return $return;
+	}
+	$fp = @fopen($filename, "w"); // @ - can have insufficient rights //! is not atomic
+	if ($fp) {
+		$return = md5(uniqid(mt_rand(), true));
+		fwrite($fp, $return);
+		fclose($fp);
+	}
+	return $return;
+}
+
 /** Check whether the string is e-mail address
 * @param string
 * @return bool

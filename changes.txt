@@ -1,6 +1,7 @@
 Adminer 3.0.0-dev:
 Drivers for MS SQL, SQLite, PostgreSQL
 Allow concurrent logins on the same server
+Allow permanent login without customization
 In-place editation in select
 Show number of tables in server overview
 Operator LIKE %%

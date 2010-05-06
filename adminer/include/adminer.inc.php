@@ -21,7 +21,7 @@ class Adminer {
 	* @return string cryptic string which gets combined with password
 	*/
 	function permanentLogin() {
-		return "";
+		return password_file();
 	}
 	
 	/** Identifier of selected database
@@ -49,9 +49,7 @@ document.getElementById('username').focus();
 </script>
 <?php
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
-		if ($this->permanentLogin()) {
-			echo checkbox("permanent", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
-		}
+		echo checkbox("permanent", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
 	}
 	
 	/** Authorize the user

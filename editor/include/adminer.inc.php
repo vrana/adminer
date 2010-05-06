@@ -7,14 +7,14 @@ class Adminer {
 		return lang('Editor');
 	}
 	
-	//! driver
+	//! driver, ns
 	
 	function credentials() {
 		return array(); // default INI settings
 	}
 	
 	function permanentLogin() {
-		return "";
+		return password_file();
 	}
 	
 	function database() {
@@ -37,9 +37,7 @@ document.getElementById('username').focus();
 </script>
 <?php
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
-		if ($this->permanentLogin()) {
-			echo checkbox("permanent", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
-		}
+		echo checkbox("permanent", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
 	}
 	
 	function login($login, $password) {
