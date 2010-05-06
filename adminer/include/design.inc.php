@@ -11,6 +11,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	header("Content-Type: text/html; charset=utf-8");
 	header("X-Frame-Options: deny"); // ClickJacking protection in IE8, Safari 4, Chrome 2, Firefox NoScript plugin
 	$title_all = $title . ($title2 != "" ? ": " . h($title2) : "");
+	$protocol = ($_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off") ? "https" : "http");
 	?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html lang="<?php echo $LANG; ?>">
@@ -24,7 +25,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <link rel="stylesheet" type="text/css" href="adminer.css">
 <?php } ?>
 
-<body onload="bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 0, 3) : ""); ?>');<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verifyVersion();"); ?>">
+<body onload="bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 0, 3) : ""); ?>', '<?php echo $protocol; ?>');<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verifyVersion('$protocol');"); ?>">
 <script type="text/javascript" src="../adminer/static/functions.js"></script>
 <script type="text/javascript" src="static/editing.js"></script>
 

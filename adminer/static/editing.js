@@ -2,8 +2,9 @@
 
 /** Load syntax highlighting
 * @param string first three characters of database system version
+* @param string 'http' or 'https' - used after compilation
 */
-function bodyLoad(version) {
+function bodyLoad(version, protocol) {
 	var jushRoot = '../externals/jush/';
 	var script = document.createElement('script');
 	script.src = jushRoot + 'jush.js';
