@@ -483,7 +483,7 @@ document.getElementById('username').focus();
 	* @return null
 	*/
 	function navigation($missing) {
-		global $VERSION, $connection, $token, $driver;
+		global $VERSION, $connection, $token, $driver, $drivers;
 		?>
 <h1>
 <a href="http://www.adminer.org/" id="h1"><?php echo $this->name(); ?></a>
@@ -491,7 +491,22 @@ document.getElementById('username').focus();
 <a href="http://www.adminer.org/#download" id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
 </h1>
 <?php
-		if ($missing != "auth") {
+		if ($missing == "auth") {
+			$first = true;
+			foreach ((array) $_SESSION["passwords"] as $key => $servers) { // $driver is global variable
+				foreach ($servers as $server => $usernames) {
+					foreach ($usernames as $username => $password) {
+						if (isset($password)) {
+							if ($first) {
+								echo "<p>\n";
+								$first = false;
+							}
+							echo "<a href='" . h(auth_url($key, $server, $username)) . "'>($drivers[$key]) " . h($username . ($server != "" ? "@$server" : "")) . "</a><br>\n";
+						}
+					}
+				}
+			}
+		} else {
 			$databases = get_databases();
 			?>
 <form action="" method="post">

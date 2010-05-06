@@ -447,7 +447,18 @@ ORDER BY ORDINAL_POSITION");
 <a href="http://www.adminer.org/editor/#download" id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
 </h1>
 <?php
-		if ($missing != "auth") {
+		if ($missing == "auth") {
+			$first = true;
+			foreach ((array) $_SESSION["passwords"]["server"][""] as $username => $password) {
+				if (isset($password)) {
+					if ($first) {
+						echo "<p>\n";
+						$first = false;
+					}
+					echo "<a href='" . h(auth_url("server", "", $username)) . "'>" . h($username) . "</a><br>\n";
+				}
+			}
+		} else {
 			?>
 <form action="" method="post">
 <p class="logout">
