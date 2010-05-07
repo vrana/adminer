@@ -1,0 +1,6 @@
+[submodule "jush"]
+	path = externals/jush
+	url = git://jush.git.sourceforge.net/gitroot/jush/jush
+[submodule "jsmin-php"]
+	path = externals/jsmin-php
+	url = git://github.com/rgrove/jsmin-php.git
