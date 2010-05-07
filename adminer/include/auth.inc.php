@@ -12,16 +12,22 @@ if (!$_SESSION["token"]) {
 	$_SESSION["token"] = rand(1, 1e6); // defense against cross-site request forgery
 }
 
+$permanent = array();
+if ($_COOKIE["adminer_permanent"]) {
+	foreach (explode(" ", $_COOKIE["adminer_permanent"]) as $val) {
+		list($key) = explode(":", $val);
+		$permanent[$key] = $val;
+	}
+}
+
 if (isset($_POST["server"])) {
 	session_regenerate_id(); // defense against session fixation
 	$_SESSION["passwords"][$_POST["driver"]][$_POST["server"]][$_POST["username"]] = $_POST["password"];
-	if ($_POST["permanent"] && ($key = $adminer->permanentLogin())) {
-		cookie("adminer_permanent", //! store separately for each driver, server and username to allow several permanent logins
-			base64_encode($_POST["server"])
-			. ":" . base64_encode($_POST["username"])
-			. ":" . base64_encode(encrypt_string($_POST["password"], $key))
-			. ":" . base64_encode($_POST["driver"])
-		);
+	if ($_POST["permanent"]) {
+		$key = base64_encode($_POST["driver"]) . "-" . base64_encode($_POST["server"]) . "-" . base64_encode($_POST["username"]);
+		$private = $adminer->permanentLogin();
+		$permanent[$key] = "$key:" . base64_encode($private ? encrypt_string($_POST["password"], $private) : "");
+		cookie("adminer_permanent", implode(" ", $permanent));
 	}
 	if (count($_POST) == ($_POST["permanent"] ? 5 : 4) // 4 - driver, server, username, password
 		|| DRIVER != $_POST["driver"]
@@ -39,14 +45,20 @@ if (isset($_POST["server"])) {
 		foreach (array("passwords", "databases", "history") as $key) {
 			set_session($key, null);
 		}
-		cookie("adminer_permanent", "");
+		$key = base64_encode(DRIVER) . "-" . base64_encode(SERVER) . "-" . base64_encode($_GET["username"]);
+		if ($permanent[$key]) {
+			unset($permanent[$key]);
+			cookie("adminer_permanent", implode(" ", $permanent));
+		}
 		redirect(substr(preg_replace('~(username|db|ns)=[^&]*&~', '', ME), 0, -1), lang('Logout successful.'));
 	}
-} elseif ($_COOKIE["adminer_permanent"]) {
-	list($server, $username, $cipher, $driver) = array_map('base64_decode', explode(":", $_COOKIE["adminer_permanent"]));
-	if ($server == SERVER && $username === $_GET["username"] && $driver == DRIVER) {
-		session_regenerate_id(); // defense against session fixation
-		set_session("passwords", decrypt_string($cipher, $adminer->permanentLogin()));
+} elseif ($permanent && !$_SESSION["passwords"]) {
+	session_regenerate_id();
+	$private = $adminer->permanentLogin(); // try to decode even if not set
+	foreach ($permanent as $key => $val) {
+		list(, $cipher) = explode(":", $val);
+		list($driver, $server, $username) = array_map('base64_decode', explode("-", $key));
+		$_SESSION["passwords"][$driver][$server][$username] = decrypt_string($cipher, $private);
 	}
 }
 

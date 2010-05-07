@@ -295,7 +295,7 @@ function auth_url($driver, $server, $username) {
 	global $drivers;
 	preg_match('~([^?]*)\\??(.*)~', remove_from_uri(implode("|", array_keys($drivers)) . "|username|" . session_name()), $match);
 	return "$match[1]?"
-		. (SID ? SID . "&" : "")
+		. (SID && !$_COOKIE ? SID . "&" : "")
 		. ($driver != "server" || $server != "" ? urlencode($driver) . "=" . urlencode($server) . "&" : "")
 		. "username=" . urlencode($username)
 		. ($match[2] ? "&$match[2]" : "")
