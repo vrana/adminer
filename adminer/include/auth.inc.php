@@ -15,11 +15,11 @@ if (!$_SESSION["token"]) {
 if (isset($_POST["server"])) {
 	session_regenerate_id(); // defense against session fixation
 	$_SESSION["passwords"][$_POST["driver"]][$_POST["server"]][$_POST["username"]] = $_POST["password"];
-	if ($_POST["permanent"]) {
+	if ($_POST["permanent"] && ($key = $adminer->permanentLogin())) {
 		cookie("adminer_permanent", //! store separately for each driver, server and username to allow several permanent logins
 			base64_encode($_POST["server"])
 			. ":" . base64_encode($_POST["username"])
-			. ":" . base64_encode(encrypt_string($_POST["password"], $adminer->permanentLogin()))
+			. ":" . base64_encode(encrypt_string($_POST["password"], $key))
 			. ":" . base64_encode($_POST["driver"])
 		);
 	}
@@ -48,7 +48,6 @@ if (isset($_POST["server"])) {
 		session_regenerate_id(); // defense against session fixation
 		set_session("passwords", decrypt_string($cipher, $adminer->permanentLogin()));
 	}
-	//! redirect ?select=tab
 }
 
 function auth_error($exception = null) {
