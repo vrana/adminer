@@ -106,21 +106,25 @@ if ($_POST && !$error) {
 			queries_redirect(remove_from_uri("page"), lang('%d item(s) have been affected.', $affected), $result);
 			//! display edit page in case of an error
 		} elseif (!$_POST["import"]) { // modify
-			$result = true;
-			$affected = 0;
-			foreach ($_POST["val"] as $unique_idf => $row) {
-				$set = array();
-				foreach ($row as $key => $val) {
-					$key = bracket_escape($key, 1); // 1 - back
-					$set[] = idf_escape($key) . " = " . $adminer->processInput($fields[$key], $val);
+			if (!$_POST["val"]) {
+				$error = lang('Double click on a value to modify it.');
+			} else {
+				$result = true;
+				$affected = 0;
+				foreach ($_POST["val"] as $unique_idf => $row) {
+					$set = array();
+					foreach ($row as $key => $val) {
+						$key = bracket_escape($key, 1); // 1 - back
+						$set[] = idf_escape($key) . " = " . $adminer->processInput($fields[$key], $val);
+					}
+					$result = queries("UPDATE" . limit1(idf_escape($TABLE) . " SET " . implode(", ", $set) . " WHERE " . where_check($unique_idf) . ($where ? " AND " . implode(" AND ", $where) : ""))); // can change row on a different page without unique key
+					if (!$result) {
+						break;
+					}
+					$affected += $connection->affected_rows;
 				}
-				$result = queries("UPDATE" . limit1(idf_escape($TABLE) . " SET " . implode(", ", $set) . " WHERE " . where_check($unique_idf) . ($where ? " AND " . implode(" AND ", $where) : ""))); // can change row on a different page without unique key
-				if (!$result) {
-					break;
-				}
-				$affected += $connection->affected_rows;
+				queries_redirect(remove_from_uri(), lang('%d item(s) have been affected.', $affected), $result);
 			}
-			queries_redirect(remove_from_uri(), lang('%d item(s) have been affected.', $affected), $result);
 		} elseif (is_string($file = get_file("csv_file", true))) {
 			$file = preg_replace("~^\xEF\xBB\xBF~", '', $file); //! character set
 			$result = true;
@@ -361,7 +365,7 @@ if (!$columns) {
 			if (!information_schema(DB)) {
 				?>
 <fieldset><legend><?php echo lang('Edit'); ?></legend><div>
-<input type="submit" value="<?php echo lang('Save'); ?>"<?php if (!$_GET["modify"] && !$_POST["val"]) { ?> onclick="if (!selectDblClicked) { alert('<?php echo lang('Double click on a value to modify it.'); ?>'); return false; };"<?php } ?>>
+<input type="submit" value="<?php echo lang('Save'); ?>" title="<?php echo lang('Double click on a value to modify it.'); ?>">
 <input type="submit" name="edit" value="<?php echo lang('Edit'); ?>">
 <input type="submit" name="clone" value="<?php echo lang('Clone'); ?>">
 <input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?> (' + (this.form['all'].checked ? <?php echo $found_rows; ?> : formChecked(this, /check/)) + ')');">

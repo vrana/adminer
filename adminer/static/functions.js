@@ -123,15 +123,12 @@ function selectAddRow(field) {
 
 
 
-var selectDblClicked = false;
-
 /** Display edit field
 * @param HTMLElement
 * @param MouseEvent
 * @param boolean display textarea instead of input
 */
 function selectDblClick(td, event, text) {
-	selectDblClicked = true;
 	var pos = event.rangeOffset;
 	var value = (td.firstChild.firstChild ? td.firstChild.firstChild.data : td.firstChild.data);
 	var input = document.createElement(text ? 'textarea' : 'input');
