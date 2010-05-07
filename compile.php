@@ -106,7 +106,7 @@ function php_shrink($input) {
 	
 	arsort($short_variables);
 	foreach (array_keys($short_variables) as $number => $key) {
-		$short_variables[$key] = short_identifier($number, implode("", range('a', 'z')) . '_' . implode("", range('A', 'Z'))); // could use also numbers and \x7f-\xff
+		$short_variables[$key] = short_identifier($number, implode(range('a', 'z')) . '_' . implode(range('A', 'Z'))); // could use also numbers and \x7f-\xff
 	}
 	
 	$set = array_flip(preg_split('//', '!"#$&\'()*+,-./:;<=>?@[\]^`{|}'));

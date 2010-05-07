@@ -394,7 +394,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		$alter = array();
 		foreach ($fields as $field) {
 			if ($field[1]) {
-				$alter[] = ($table != "" && $field[0] == "" ? "ADD " : "  ") . implode("", $field[1]);
+				$alter[] = ($table != "" && $field[0] == "" ? "ADD " : "  ") . implode($field[1]);
 			}
 		}
 		$alter = array_merge($alter, $foreign);
@@ -524,7 +524,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	
 	function trigger_sql($table, $style) {
 		global $connection;
-		return implode("", get_vals("SELECT sql || ';;\n' FROM sqlite_master WHERE type = 'trigger' AND name = " . $connection->quote($table)));
+		return implode(get_vals("SELECT sql || ';;\n' FROM sqlite_master WHERE type = 'trigger' AND name = " . $connection->quote($table)));
 	}
 	
 	function show_variables() {

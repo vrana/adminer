@@ -348,7 +348,7 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 					$val[1] = ($val[1] == "bigint" ? " big" : " ") . "serial";
 				}
 				if ($field[0] == "") {
-					$alter[] = ($table != "" ? "ADD " : "  ") . implode("", $val);
+					$alter[] = ($table != "" ? "ADD " : "  ") . implode($val);
 				} else {
 					if ($column != $val[0]) {
 						$queries[] = "ALTER TABLE " . idf_escape($table) . " RENAME $column TO $val[0]";
