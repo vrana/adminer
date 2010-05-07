@@ -43,8 +43,8 @@ if (isset($_POST["server"])) {
 		redirect(substr(preg_replace('~(username|db|ns)=[^&]*&~', '', ME), 0, -1), lang('Logout successful.'));
 	}
 } elseif ($_COOKIE["adminer_permanent"]) {
-	list($server, $username, $cipher, $system) = array_map('base64_decode', explode(":", $_COOKIE["adminer_permanent"])); // $driver is a global variable
-	if ($server == SERVER && $username === $_GET["username"] && $system == DRIVER) {
+	list($server, $username, $cipher, $driver) = array_map('base64_decode', explode(":", $_COOKIE["adminer_permanent"]));
+	if ($server == SERVER && $username === $_GET["username"] && $driver == DRIVER) {
 		session_regenerate_id(); // defense against session fixation
 		set_session("passwords", decrypt_string($cipher, $adminer->permanentLogin()));
 	}

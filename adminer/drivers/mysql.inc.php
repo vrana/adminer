@@ -849,7 +849,7 @@ if (!defined("DRIVER")) {
 		return !ereg("scheme|sequence" . ($connection->server_info < 5.1 ? "|event|partitioning" . ($connection->server_info < 5 ? "|view|routine|trigger" : "") : ""), $feature);
 	}
 
-	$driver = "sql"; ///< @var string JUSH identifier
+	$jush = "sql"; ///< @var string JUSH identifier
 	$types = array(); ///< @var array ($type => $maximum_unsigned_length, ...)
 	$structured_types = array(); ///< @var array ($description => array($type, ...), ...)
 	foreach (array(

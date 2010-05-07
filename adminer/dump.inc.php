@@ -11,7 +11,7 @@ if ($_POST) {
 	if ($_POST["format"] == "sql") {
 		echo "-- Adminer $VERSION " . $drivers[DRIVER] . " dump
 
-" . ($driver != "sql" ? "" : "SET NAMES utf8;
+" . ($jush != "sql" ? "" : "SET NAMES utf8;
 SET foreign_key_checks = 0;
 SET time_zone = " . $connection->quote($connection->result("SELECT @@time_zone")) . ";
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
@@ -158,7 +158,7 @@ page_header(lang('Export'), "", ($_GET["export"] != "" ? array("table" => $_GET[
 $db_style = array('', 'USE', 'DROP+CREATE', 'CREATE');
 $table_style = array('', 'DROP+CREATE', 'CREATE');
 $data_style = array('', 'TRUNCATE+INSERT', 'INSERT', 'INSERT+UPDATE');
-if ($driver == "sql") {
+if ($jush == "sql") {
 	$db_style[] = 'CREATE+ALTER';
 	$table_style[] = 'CREATE+ALTER';
 }

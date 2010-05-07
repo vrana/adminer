@@ -40,7 +40,7 @@ if ($_POST) {
 	$collate = $_POST["collation"];
 } elseif (DB != "") {
 	$collate = db_collation(DB, $collations);
-} elseif ($driver == "sql") {
+} elseif ($jush == "sql") {
 	// propose database name with limited privileges
 	foreach (get_vals("SHOW GRANTS") as $grant) {
 		if (preg_match('~ ON (`(([^\\\\`]|``|\\\\.)*)%`\\.\\*)?~', $grant, $match) && $match[1]) {

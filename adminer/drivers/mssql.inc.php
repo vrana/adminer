@@ -493,7 +493,7 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . $connection->quote($table)
 		return ereg('^(trigger|drop_col)$', $feature); //! view|routine|scheme|
 	}
 	
-	$driver = "mssql";
+	$jush = "mssql";
 	$types = array();
 	$structured_types = array();
 	foreach (array(

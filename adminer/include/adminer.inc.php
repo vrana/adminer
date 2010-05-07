@@ -122,8 +122,8 @@ document.getElementById('username').focus();
 	* @return string
 	*/
 	function selectQuery($query) {
-		global $driver;
-		return "<p><code class='jush-$driver'>" . h(str_replace("\n", " ", $query)) . "</code> <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>\n";
+		global $jush;
+		return "<p><code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code> <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>\n";
 	}
 	
 	/** Description of a row in a table
@@ -383,12 +383,12 @@ document.getElementById('username').focus();
 	* @return string
 	*/
 	function messageQuery($query) {
-		global $driver;
+		global $jush;
 		restart_session();
 		$id = "sql-" . count($_SESSION["messages"]);
 		$history = &get_session("history");
 		$history[DB][] = (strlen($query) > 1e6 ? ereg_replace('[\x80-\xFF]+$', '', substr($query, 0, 1e6)) . "\n..." : $query); // [\x80-\xFF] - valid UTF-8, \n - can end by one-line comment
-		return " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre class='jush-$driver'>" . shorten_utf8($query, 1000) . '</pre><p><a href="' . h(ME . 'sql=&history=' . (count($history[DB]) - 1)) . '">' . lang('Edit') . '</a></div>';
+		return " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre class='jush-$jush'>" . shorten_utf8($query, 1000) . '</pre><p><a href="' . h(ME . 'sql=&history=' . (count($history[DB]) - 1)) . '">' . lang('Edit') . '</a></div>';
 	}
 	
 	/** Functions displayed in edit form
@@ -481,7 +481,7 @@ document.getElementById('username').focus();
 	* @return null
 	*/
 	function navigation($missing) {
-		global $VERSION, $connection, $token, $driver, $drivers;
+		global $VERSION, $connection, $token, $jush, $drivers;
 		?>
 <h1>
 <a href="http://www.adminer.org/" id="h1"><?php echo $this->name(); ?></a>
@@ -491,7 +491,7 @@ document.getElementById('username').focus();
 <?php
 		if ($missing == "auth") {
 			$first = true;
-			foreach ((array) $_SESSION["passwords"] as $key => $servers) { // $driver is global variable
+			foreach ((array) $_SESSION["passwords"] as $driver => $servers) {
 				foreach ($servers as $server => $usernames) {
 					foreach ($usernames as $username => $password) {
 						if (isset($password)) {
@@ -499,7 +499,7 @@ document.getElementById('username').focus();
 								echo "<p>\n";
 								$first = false;
 							}
-							echo "<a href='" . h(auth_url($key, $server, $username)) . "'>($drivers[$key]) " . h($username . ($server != "" ? "@$server" : "")) . "</a><br>\n";
+							echo "<a href='" . h(auth_url($driver, $server, $username)) . "'>($drivers[$driver]) " . h($username . ($server != "" ? "@$server" : "")) . "</a><br>\n";
 						}
 					}
 				}
@@ -539,9 +539,9 @@ document.getElementById('username').focus();
 							$links[] = preg_quote($table, '/');
 						}
 						echo "<script type='text/javascript'>\n";
-						echo "var jushLinks = { $driver: [ '" . addcslashes(h(ME), "\\'/") . "table=\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
+						echo "var jushLinks = { $jush: [ '" . addcslashes(h(ME), "\\'/") . "table=\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
 						foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
-							echo "jushLinks.$val = jushLinks.$driver;\n";
+							echo "jushLinks.$val = jushLinks.$jush;\n";
 						}
 						echo "</script>\n";
 					}

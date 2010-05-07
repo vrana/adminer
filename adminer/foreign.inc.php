@@ -2,7 +2,7 @@
 $TABLE = $_GET["foreign"];
 if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-js"]) {
 	if ($_POST["drop"]) {
-		query_redirect("ALTER TABLE " . idf_escape($TABLE) . "\nDROP " . ($driver == "sql" ? "FOREIGN KEY " : "CONSTRAINT ") . idf_escape($_GET["name"]), ME . "table=" . urlencode($TABLE), lang('Foreign key has been dropped.'));
+		query_redirect("ALTER TABLE " . idf_escape($TABLE) . "\nDROP " . ($jush == "sql" ? "FOREIGN KEY " : "CONSTRAINT ") . idf_escape($_GET["name"]), ME . "table=" . urlencode($TABLE), lang('Foreign key has been dropped.'));
 	} else {
 		$source = array_filter($_POST["source"], 'strlen');
 		ksort($source); // enforce input order

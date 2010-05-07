@@ -198,14 +198,14 @@ if (!$columns) {
 		$page = floor(($found_rows - 1) / $limit);
 	}
 
-	$query = "SELECT" . limit((intval($limit) && $group && count($group) < count($select) && $driver == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . $from . $group_by, ($limit != "" ? intval($limit) : null), ($page ? $limit * $page : 0), "\n");
+	$query = "SELECT" . limit((intval($limit) && $group && count($group) < count($select) && $jush == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . $from . $group_by, ($limit != "" ? intval($limit) : null), ($page ? $limit * $page : 0), "\n");
 	echo $adminer->selectQuery($query);
 	
 	$result = $connection->query($query);
 	if (!$result) {
 		echo "<p class='error'>" . error() . "\n";
 	} else {
-		if ($driver == "mssql") {
+		if ($jush == "mssql") {
 			$result->seek($limit * $page);
 		}
 		$email_fields = array();
@@ -217,7 +217,7 @@ if (!$columns) {
 		// use count($rows) without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
 		if ($_GET["page"] != "last") {
 			$found_rows = (intval($limit) && $group && count($group) < count($select)
-				? ($driver == "sql" ? $connection->result(" SELECT FOUND_ROWS()") : $connection->result("SELECT COUNT(*) FROM ($query) x")) // space to allow mysql.trace_mode
+				? ($jush == "sql" ? $connection->result(" SELECT FOUND_ROWS()") : $connection->result("SELECT COUNT(*) FROM ($query) x")) // space to allow mysql.trace_mode
 				: count($rows)
 			);
 		}

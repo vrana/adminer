@@ -8,8 +8,8 @@ if ($_POST && !$error && in_array($_POST["Timing"], $trigger_options["Timing"]) 
 	$timing_event = " $_POST[Timing] $_POST[Event]";
 	$on = " ON " . idf_escape($TABLE);
 	$dropped = drop_create(
-		"DROP TRIGGER " . idf_escape($_GET["name"]) . ($driver == "pgsql" ? " ON " . idf_escape($TABLE) : ""),
-		"CREATE TRIGGER " . idf_escape($_POST["Trigger"]) . ($driver == "mssql" ? $on . $timing_event : $timing_event . $on) . " $_POST[Type]\n$_POST[Statement]",
+		"DROP TRIGGER " . idf_escape($_GET["name"]) . ($jush == "pgsql" ? " ON " . idf_escape($TABLE) : ""),
+		"CREATE TRIGGER " . idf_escape($_POST["Trigger"]) . ($jush == "mssql" ? $on . $timing_event : $timing_event . $on) . " $_POST[Type]\n$_POST[Statement]",
 		ME . "table=" . urlencode($TABLE),
 		lang('Trigger has been dropped.'),
 		lang('Trigger has been altered.'),

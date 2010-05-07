@@ -517,7 +517,7 @@ function enum_input($type, $name, $field, $value) {
 * @return null
 */
 function input($field, $value, $function) {
-	global $types, $adminer, $driver;
+	global $types, $adminer, $jush;
 	$name = h(bracket_escape($field["field"]));
 	echo "<td class='function'>";
 	$functions = (isset($_GET["select"]) ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
@@ -549,7 +549,7 @@ function input($field, $value, $function) {
 		} elseif (ereg('binary|blob|bytea', $field["type"]) && ini_bool("file_uploads")) {
 			echo "<input type='file' name='fields-$name'$onchange>";
 		} elseif (ereg('text|blob', $field["type"])) {
-			echo "<textarea " . ($driver != "sqlite" || ereg("\n", $value) ? "cols='50' rows='12'" : "cols='30' rows='1' style='height: 1.2em;'") . "$attrs>" . h($value) . '</textarea>'; // 1.2em - line-height
+			echo "<textarea " . ($jush != "sqlite" || ereg("\n", $value) ? "cols='50' rows='12'" : "cols='30' rows='1' style='height: 1.2em;'") . "$attrs>" . h($value) . '</textarea>'; // 1.2em - line-height
 		} else {
 			// int(3) is only a display hint
 			$maxlength = (!ereg('int', $field["type"]) && preg_match('~^([0-9]+)(,([0-9]+))?$~', $field["length"], $match) ? ($match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) : ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0));

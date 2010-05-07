@@ -59,7 +59,7 @@ if (!$error && $_POST) {
 						$empty = false;
 						$q = substr($query, 0, $match[0][1]);
 						$queries++;
-						echo "<pre class='jush-$driver' id='sql-$queries'>" . shorten_utf8(trim($q), 1000) . "</pre>\n";
+						echo "<pre class='jush-$jush' id='sql-$queries'>" . shorten_utf8(trim($q), 1000) . "</pre>\n";
 						ob_flush();
 						flush(); // can take a long time - show the running query
 						$start = explode(" ", microtime()); // microtime(true) is available since PHP 5
@@ -167,7 +167,7 @@ if ($history) {
 	print_fieldset("history", lang('History'), $_GET["history"] != "");
 	foreach ($history as $key => $val) {
 		//! save and display timestamp
-		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . "</a> <code class='jush-$driver'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace('~^(#|-- ).*~m', '', $val)))), 80, "</code>") . "<br>\n";
+		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . "</a> <code class='jush-$jush'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace('~^(#|-- ).*~m', '', $val)))), 80, "</code>") . "<br>\n";
 	}
 	echo "<input type='submit' name='clear' value='" . lang('Clear') . "'>\n";
 	echo "</div></fieldset>\n";

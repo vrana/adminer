@@ -173,9 +173,9 @@ function compile_file($match) {
 	return call_user_func($match[2], file_get_contents(dirname(__FILE__) . "/$project/$match[1]"));
 }
 
-$DRIVER = "";
+$driver = "";
 if (file_exists(dirname(__FILE__) . "/adminer/drivers/" . $_SERVER["argv"][1] . ".inc.php")) {
-	$DRIVER = $_SERVER["argv"][1];
+	$driver = $_SERVER["argv"][1];
 	array_shift($_SERVER["argv"]);
 }
 
@@ -195,7 +195,7 @@ $filename = dirname(__FILE__) . "/adminer/drivers/mysql.inc.php";
 preg_match_all('~\\bfunction ([^(]+)~', file_get_contents($filename), $matches); //! respect context (extension, class)
 $functions = array_combine($matches[1], $matches[0]);
 unset($functions["__destruct"], $functions["Min_DB"], $functions["Min_Result"]);
-foreach (glob(dirname(__FILE__) . "/adminer/drivers/" . ($DRIVER ? $DRIVER : "*") . ".inc.php") as $filename) {
+foreach (glob(dirname(__FILE__) . "/adminer/drivers/" . ($driver ? $driver : "*") . ".inc.php") as $filename) {
 	if ($filename != "mysql.inc.php") {
 		$file = file_get_contents($filename);
 		foreach ($functions as $val) {
@@ -206,14 +206,14 @@ foreach (glob(dirname(__FILE__) . "/adminer/drivers/" . ($DRIVER ? $DRIVER : "*"
 	}
 }
 
-$drivers = array();
+include dirname(__FILE__) . "/adminer/include/pdo.inc.php";
 foreach (array("adminer", "editor") as $project) {
 	$lang_ids = array(); // global variable simplifies usage in a callback function
 	$file = file_get_contents(dirname(__FILE__) . "/$project/index.php");
-	if ($DRIVER) {
+	if ($driver) {
 		$connection = (object) array("server_info" => 5.1); // MySQL support is version specific
-		$_GET[$DRIVER] = true; // to load the driver
-		include_once dirname(__FILE__) . "/adminer/drivers/$DRIVER.inc.php";
+		$_GET[$driver] = true; // to load the driver
+		include_once dirname(__FILE__) . "/adminer/drivers/$driver.inc.php";
 		foreach (array("view", "event", "privileges", "user", "processlist", "variables", "trigger", "scheme") as $feature) {
 			if (!support($feature)) {
 				$file = str_replace("} elseif (isset(\$_GET[\"$feature\"])) {\n\tinclude \"./$feature.inc.php\";\n", "", $file);
@@ -227,8 +227,8 @@ foreach (array("adminer", "editor") as $project) {
 	}
 	$file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file);
 	$file = str_replace('include "../adminer/include/coverage.inc.php";', '', $file);
-	if ($DRIVER) {
-		$file = preg_replace('(include "../adminer/drivers/(?!' . preg_quote($DRIVER) . ').*\\s*)', '', $file);
+	if ($driver) {
+		$file = preg_replace('(include "../adminer/drivers/(?!' . preg_quote($driver) . ').*\\s*)', '', $file);
 	}
 	$file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file); // bootstrap.inc.php
 	$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
@@ -248,7 +248,7 @@ foreach (array("adminer", "editor") as $project) {
 	$file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
 	$file = php_shrink($file);
 
-	$filename = $project . (preg_match('~-dev$~', $VERSION) ? "" : "-$VERSION") . ($DRIVER ? "-$DRIVER" : "") . ($_SESSION["lang"] ? "-$_SESSION[lang]" : "") . ".php";
+	$filename = $project . (preg_match('~-dev$~', $VERSION) ? "" : "-$VERSION") . ($driver ? "-$driver" : "") . ($_SESSION["lang"] ? "-$_SESSION[lang]" : "") . ".php";
 	fwrite(fopen($filename, "w"), $file); // file_put_contents() since PHP 5
 	echo "$filename created (" . strlen($file) . " B).\n";
 }

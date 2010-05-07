@@ -9,7 +9,7 @@ if (!$variables) {
 	echo "<table cellspacing='0'>\n";
 	foreach ($variables as $key => $val) {
 		echo "<tr>";
-		echo "<th><code class='jush-" . $driver . ($status ? "status" : "set") . "'>" . h($key) . "</code>";
+		echo "<th><code class='jush-" . $jush . ($status ? "status" : "set") . "'>" . h($key) . "</code>";
 		echo "<td>" . nbsp($val);
 	}
 	echo "</table>\n";

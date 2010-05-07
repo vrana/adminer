@@ -549,7 +549,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return ereg('^(view|trigger|variables|status)$', $feature);
 	}
 	
-	$driver = "sqlite";
+	$jush = "sqlite";
 	$types = array("integer" => 0, "real" => 0, "numeric" => 0, "text" => 0, "blob" => 0);
 	$structured_types = array_keys($types);
 	$unsigned = array();

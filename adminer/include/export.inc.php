@@ -100,8 +100,8 @@ DROP PROCEDURE adminer_alter;
 }
 
 function dump_data($table, $style, $select = "") {
-	global $connection, $driver;
-	$max_packet = ($driver == "sqlite" ? 0 : 1048576); // default, minimum is 1024
+	global $connection, $jush;
+	$max_packet = ($jush == "sqlite" ? 0 : 1048576); // default, minimum is 1024
 	if ($style) {
 		if ($_POST["format"] == "sql" && $style == "TRUNCATE+INSERT") {
 			echo "TRUNCATE " . idf_escape($table) . ";\n";
