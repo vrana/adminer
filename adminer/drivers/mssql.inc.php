@@ -279,12 +279,7 @@ if (isset($_GET["mssql"])) {
 
 	function tables_list() {
 		global $connection;
-		/* no means for sys views discovery
-		if ($_GET["ns"] == "sys" || $_GET["ns"] == "INFORMATION_SCHEMA") {
-			return get_key_vals("SELECT name, type_desc FROM sys.system_objects WHERE type = 'V' AND schema_id = SCHEMA_ID('$_GET[ns]')");
-		}
-		*/
-		return get_key_vals("SELECT TABLE_NAME, TABLE_TYPE FROM information_schema.TABLES WHERE TABLE_SCHEMA = " . $connection->quote(get_schema()));
+		return get_key_vals("SELECT name, type_desc FROM sys.all_objects WHERE schema_id = SCHEMA_ID(" . $connection->quote(get_schema()) . ") AND type IN ('S', 'U', 'V') ORDER BY name");
 	}
 
 	function count_tables($databases) {
@@ -300,7 +295,7 @@ if (isset($_GET["mssql"])) {
 	function table_status($name = "") {
 		global $connection;
 		$return = array();
-		$result = $connection->query("SELECT TABLE_NAME AS Name, TABLE_TYPE AS Engine FROM information_schema.TABLES WHERE TABLE_SCHEMA = " . $connection->quote(get_schema()) . ($name != "" ? " AND TABLE_NAME = " . $connection->quote($name) : ""));
+		$result = $connection->query("SELECT name AS Name, type_desc AS Engine FROM sys.all_objects WHERE schema_id = SCHEMA_ID(" . $connection->quote(get_schema()) . ") AND type IN ('S', 'U', 'V')" . ($name != "" ? " AND name = " . $connection->quote($name) : ""));
 		while ($row = $result->fetch_assoc()) {
 			if ($name != "") {
 				return $row;
@@ -317,21 +312,23 @@ if (isset($_GET["mssql"])) {
 	function fields($table) {
 		global $connection;
 		$return = array();
-		$result = $connection->query("SELECT i.*, c.is_identity
-FROM information_schema.COLUMNS i
-JOIN sys.columns c ON OBJECT_NAME(c.object_id) = i.TABLE_NAME AND c.name = i.COLUMN_NAME
-WHERE i.TABLE_SCHEMA = " . $connection->quote(get_schema()) . " AND i.TABLE_NAME = " . $connection->quote($table)
+		$result = $connection->query("SELECT c.*, t.name type, d.definition [default]
+FROM sys.all_columns c
+JOIN sys.all_objects o ON c.object_id = o.object_id
+JOIN sys.types t ON c.user_type_id = t.user_type_id
+LEFT JOIN sys.default_constraints d ON c.default_object_id = d.parent_column_id
+WHERE o.schema_id = SCHEMA_ID(" . $connection->quote(get_schema()) . ") AND o.type IN ('S', 'U', 'V') AND o.name = " . $connection->quote($table)
 		);
 		while ($row = $result->fetch_assoc()) {
-			$return[$row["COLUMN_NAME"]] = array(
-				"field" => $row["COLUMN_NAME"],
-				"full_type" => $row["DATA_TYPE"],
-				"type" => $row["DATA_TYPE"],
-				"length" => $row["CHARACTER_MAXIMUM_LENGTH"], //! NUMERIC_, DATETIME_?
-				"default" => $row["COLUMN_DEFAULT"],
-				"null" => ($row["IS_NULLABLE"] == "YES"),
+			$return[$row["name"]] = array(
+				"field" => $row["name"],
+				"full_type" => $row["type"],
+				"type" => $row["type"],
+				"length" => $row["max_length"], //! precision, scale
+				"default" => $row["default"],
+				"null" => $row["is_nullable"],
 				"auto_increment" => $row["is_identity"],
-				"collation" => $row["COLLATION_NAME"],
+				"collation" => $row["collation_name"],
 				"privileges" => array("insert" => 1, "select" => 1, "update" => 1),
 				"primary" => $row["is_identity"], //! or indexes.is_primary_key
 			);
@@ -531,7 +528,7 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . $connection->quote($table)
 	$jush = "mssql";
 	$types = array();
 	$structured_types = array();
-	foreach (array(
+	foreach (array( //! use sys.types
 		lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "int" => 10, "bigint" => 20, "bit" => 1, "decimal" => 0, "real" => 12, "float" => 53, "smallmoney" => 10, "money" => 20),
 		lang('Date and time') => array("date" => 10, "smalldatetime" => 19, "datetime" => 19, "datetime2" => 19, "time" => 8, "datetimeoffset" => 10),
 		lang('Strings') => array("char" => 8000, "varchar" => 8000, "text" => 2147483647, "nchar" => 4000, "nvarchar" => 4000, "ntext" => 1073741823),
