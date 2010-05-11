@@ -6,9 +6,9 @@ $trigger_event = array("INSERT", "UPDATE", "DELETE");
 $dropped = false;
 if ($_POST && !$error && in_array($_POST["Timing"], $trigger_options["Timing"]) && in_array($_POST["Event"], $trigger_event) && in_array($_POST["Type"], $trigger_options["Type"])) {
 	$timing_event = " $_POST[Timing] $_POST[Event]";
-	$on = " ON " . idf_escape($TABLE);
+	$on = " ON " . table($TABLE);
 	$dropped = drop_create(
-		"DROP TRIGGER " . idf_escape($_GET["name"]) . ($jush == "pgsql" ? " ON " . idf_escape($TABLE) : ""),
+		"DROP TRIGGER " . idf_escape($_GET["name"]) . ($jush == "pgsql" ? $on : ""),
 		"CREATE TRIGGER " . idf_escape($_POST["Trigger"]) . ($jush == "mssql" ? $on . $timing_event : $timing_event . $on) . " $_POST[Type]\n$_POST[Statement]",
 		ME . "table=" . urlencode($TABLE),
 		lang('Trigger has been dropped.'),

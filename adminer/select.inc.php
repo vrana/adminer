@@ -23,7 +23,7 @@ list($select, $group) = $adminer->selectColumnsProcess($columns, $indexes);
 $where = $adminer->selectSearchProcess($fields, $indexes);
 $order = $adminer->selectOrderProcess($fields, $indexes);
 $limit = $adminer->selectLimitProcess();
-$from = ($select ? implode(", ", $select) : "*") . "\nFROM " . idf_escape($TABLE) . ($where ? "\nWHERE " . implode(" AND ", $where) : "");
+$from = ($select ? implode(", ", $select) : "*") . "\nFROM " . table($TABLE) . ($where ? "\nWHERE " . implode(" AND ", $where) : "");
 $group_by = ($group && count($group) < count($select) ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : "");
 
 if ($_POST && !$error) {
@@ -64,7 +64,7 @@ if ($_POST && !$error) {
 		if ($_POST["save"] || $_POST["delete"]) { // edit
 			$result = true;
 			$affected = 0;
-			$query = idf_escape($TABLE);
+			$query = table($TABLE);
 			$set = array();
 			if (!$_POST["delete"]) {
 				foreach ($columns as $name => $val) { //! should check also for edit or insert privileges
@@ -77,7 +77,7 @@ if ($_POST && !$error) {
 						}
 					}
 				}
-				$query .= ($_POST["clone"] ? " (" . implode(", ", array_keys($set)) . ")\nSELECT " . implode(", ", $set) . "\nFROM " . idf_escape($TABLE) : " SET\n" . implode(",\n", $set));
+				$query .= ($_POST["clone"] ? " (" . implode(", ", array_keys($set)) . ")\nSELECT " . implode(", ", $set) . "\nFROM " . table($TABLE) : " SET\n" . implode(",\n", $set));
 			}
 			if ($_POST["delete"] || $set) {
 				$command = "UPDATE";
@@ -117,7 +117,7 @@ if ($_POST && !$error) {
 						$key = bracket_escape($key, 1); // 1 - back
 						$set[] = idf_escape($key) . " = " . $adminer->processInput($fields[$key], $val);
 					}
-					$result = queries("UPDATE" . limit1(idf_escape($TABLE) . " SET " . implode(", ", $set) . " WHERE " . where_check($unique_idf) . ($where ? " AND " . implode(" AND ", $where) : ""))); // can change row on a different page without unique key
+					$result = queries("UPDATE" . limit1(table($TABLE) . " SET " . implode(", ", $set) . " WHERE " . where_check($unique_idf) . ($where ? " AND " . implode(" AND ", $where) : ""))); // can change row on a different page without unique key
 					if (!$result) {
 						break;
 					}
@@ -145,7 +145,7 @@ if ($_POST && !$error) {
 						$set .= ", " . idf_escape($cols[$i]) . " = " . ($col == "" && $fields[$cols[$i]]["null"] ? "NULL" : $connection->quote(str_replace('""', '"', preg_replace('~^"|"$~', '', $col))));
 					}
 					$set = substr($set, 1);
-					$result = queries("INSERT INTO " . idf_escape($_GET["select"]) . " SET$set ON DUPLICATE KEY UPDATE$set");
+					$result = queries("INSERT INTO " . table($TABLE) . " SET$set ON DUPLICATE KEY UPDATE$set");
 					if (!$result) {
 						break;
 					}
@@ -198,7 +198,7 @@ if (!$columns) {
 	
 	$page = $_GET["page"];
 	if ($page == "last") {
-		$found_rows = $connection->result("SELECT COUNT(*) FROM " . idf_escape($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : ""));
+		$found_rows = $connection->result("SELECT COUNT(*) FROM " . table($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : ""));
 		$page = floor(($found_rows - 1) / $limit);
 	}
 
@@ -345,7 +345,7 @@ if (!$columns) {
 					// slow with big tables
 					ob_flush();
 					flush();
-					$found_rows = $connection->result("SELECT COUNT(*) FROM " . idf_escape($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : ""));
+					$found_rows = $connection->result("SELECT COUNT(*) FROM " . table($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : ""));
 				} else {
 					$exact_count = false;
 				}

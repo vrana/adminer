@@ -3,8 +3,8 @@ $TABLE = $_GET["view"];
 $dropped = false;
 if ($_POST && !$error) {
 	$dropped = drop_create(
-		"DROP VIEW " . idf_escape($TABLE),
-		"CREATE VIEW " . idf_escape($_POST["name"]) . " AS\n$_POST[select]",
+		"DROP VIEW " . table($TABLE),
+		"CREATE VIEW " . table($_POST["name"]) . " AS\n$_POST[select]",
 		($_POST["drop"] ? substr(ME, 0, -1) : ME . "table=" . urlencode($_POST["name"])),
 		lang('View has been dropped.'),
 		lang('View has been altered.'),

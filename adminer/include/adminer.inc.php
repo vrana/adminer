@@ -552,7 +552,7 @@ document.getElementById('username').focus();
 				: (isset($_GET["schema"]) ? '<input type="hidden" name="schema" value="">'
 				: (isset($_GET["dump"]) ? '<input type="hidden" name="dump" value="">'
 			: "")));
-			echo "</form>\n";
+			echo "</p></form>\n";
 		}
 	}
 	

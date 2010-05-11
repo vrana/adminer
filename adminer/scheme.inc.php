@@ -8,7 +8,7 @@ if ($_POST && !$error) {
 		if ($_GET["ns"] == "") {
 			query_redirect("CREATE SCHEMA " . idf_escape($_POST["name"]), $link, lang('Schema has been created.'));
 		} elseif ($_GET["ns"] != $_POST["name"]) {
-			query_redirect("ALTER SCHEMA " . idf_escape($_GET["ns"]) . " RENAME TO " . idf_escape($_POST["name"]), $link, lang('Schema has been altered.'));
+			query_redirect("ALTER SCHEMA " . idf_escape($_GET["ns"]) . " RENAME TO " . idf_escape($_POST["name"]), $link, lang('Schema has been altered.')); //! sp_rename in MS SQL
 		} else {
 			redirect($link);
 		}

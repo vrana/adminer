@@ -2,7 +2,7 @@
 $TABLE = $_GET["foreign"];
 if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-js"]) {
 	if ($_POST["drop"]) {
-		query_redirect("ALTER TABLE " . idf_escape($TABLE) . "\nDROP " . ($jush == "sql" ? "FOREIGN KEY " : "CONSTRAINT ") . idf_escape($_GET["name"]), ME . "table=" . urlencode($TABLE), lang('Foreign key has been dropped.'));
+		query_redirect("ALTER TABLE " . table($TABLE) . "\nDROP " . ($jush == "sql" ? "FOREIGN KEY " : "CONSTRAINT ") . idf_escape($_GET["name"]), ME . "table=" . urlencode($TABLE), lang('Foreign key has been dropped.'));
 	} else {
 		$source = array_filter($_POST["source"], 'strlen');
 		ksort($source); // enforce input order
@@ -10,9 +10,9 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 		foreach ($source as $key => $val) {
 			$target[$key] = $_POST["target"][$key];
 		}
-		query_redirect("ALTER TABLE " . idf_escape($TABLE)
+		query_redirect("ALTER TABLE " . table($TABLE)
 			. ($_GET["name"] != "" ? "\nDROP FOREIGN KEY " . idf_escape($_GET["name"]) . "," : "")
-			. "\nADD FOREIGN KEY (" . implode(", ", array_map('idf_escape', $source)) . ") REFERENCES " . idf_escape($_POST["table"]) . " (" . implode(", ", array_map('idf_escape', $target)) . ")"
+			. "\nADD FOREIGN KEY (" . implode(", ", array_map('idf_escape', $source)) . ") REFERENCES " . table($_POST["table"]) . " (" . implode(", ", array_map('idf_escape', $target)) . ")"
 			. (in_array($_POST["on_delete"], $on_actions) ? " ON DELETE $_POST[on_delete]" : "")
 			. (in_array($_POST["on_update"], $on_actions) ? " ON UPDATE $_POST[on_update]" : "")
 		, ME . "table=" . urlencode($TABLE), ($_GET["name"] != "" ? lang('Foreign key has been altered.') : lang('Foreign key has been created.')));

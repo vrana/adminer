@@ -237,6 +237,10 @@ if (isset($_GET["mssql"])) {
 		return "[" . str_replace("]", "]]", $idf) . "]";
 	}
 
+	function table($idf) {
+		return ($_GET["ns"] != "" ? idf_escape($_GET["ns"]) . "." : "") . idf_escape($idf);
+	}
+
 	function connect() {
 		global $adminer;
 		$connection = new Min_DB;
@@ -274,7 +278,13 @@ if (isset($_GET["mssql"])) {
 	}
 
 	function tables_list() {
-		return get_key_vals("SELECT TABLE_NAME, TABLE_TYPE FROM information_schema.TABLES");
+		global $connection;
+		/* no means for sys views discovery
+		if ($_GET["ns"] == "sys" || $_GET["ns"] == "INFORMATION_SCHEMA") {
+			return get_key_vals("SELECT name, type_desc FROM sys.system_objects WHERE type = 'V' AND schema_id = SCHEMA_ID('$_GET[ns]')");
+		}
+		*/
+		return get_key_vals("SELECT TABLE_NAME, TABLE_TYPE FROM information_schema.TABLES WHERE TABLE_SCHEMA = " . $connection->quote(get_schema()));
 	}
 
 	function count_tables($databases) {
@@ -290,7 +300,7 @@ if (isset($_GET["mssql"])) {
 	function table_status($name = "") {
 		global $connection;
 		$return = array();
-		$result = $connection->query("SELECT TABLE_NAME AS Name, TABLE_TYPE AS Engine FROM information_schema.TABLES" . ($name != "" ? " WHERE TABLE_NAME = " . $connection->quote($name) : ""));
+		$result = $connection->query("SELECT TABLE_NAME AS Name, TABLE_TYPE AS Engine FROM information_schema.TABLES WHERE TABLE_SCHEMA = " . $connection->quote(get_schema()) . ($name != "" ? " AND TABLE_NAME = " . $connection->quote($name) : ""));
 		while ($row = $result->fetch_assoc()) {
 			if ($name != "") {
 				return $row;
@@ -310,7 +320,7 @@ if (isset($_GET["mssql"])) {
 		$result = $connection->query("SELECT i.*, c.is_identity
 FROM information_schema.COLUMNS i
 JOIN sys.columns c ON OBJECT_NAME(c.object_id) = i.TABLE_NAME AND c.name = i.COLUMN_NAME
-WHERE i.TABLE_NAME = " . $connection->quote($table)
+WHERE i.TABLE_SCHEMA = " . $connection->quote(get_schema()) . " AND i.TABLE_NAME = " . $connection->quote($table)
 		);
 		while ($row = $result->fetch_assoc()) {
 			$return[$row["COLUMN_NAME"]] = array(
@@ -399,7 +409,7 @@ WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table)
 	}
 	
 	function insert_into($table, $set) {
-		return queries("INSERT INTO " . idf_escape($table) . ($set ? " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")" : "DEFAULT VALUES"));
+		return queries("INSERT INTO " . table($table) . ($set ? " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")" : "DEFAULT VALUES"));
 	}
 	
 	function explain($connection, $query) {
@@ -424,7 +434,7 @@ WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table)
 
 	function truncate_tables($tables) {
 		foreach ($tables as $table) {
-			if (!queries("TRUNCATE TABLE " . idf_escape($table))) {
+			if (!queries("TRUNCATE TABLE " . table($table))) {
 				return false;
 			}
 		}
@@ -432,13 +442,22 @@ WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table)
 	}
 
 	function drop_views($views) {
-		return queries("DROP VIEW " . implode(", ", array_map('idf_escape', $views)));
+		return queries("DROP VIEW " . implode(", ", array_map('table', $views)));
 	}
 
 	function drop_tables($tables) {
-		return queries("DROP TABLE " . implode(", ", array_map('idf_escape', $tables)));
+		return queries("DROP TABLE " . implode(", ", array_map('table', $tables)));
 	}
 
+	function move_tables($tables, $views, $target) {
+		foreach (array_merge($tables, $views) as $table) {
+			if (!queries("ALTER SCHEMA " . idf_escape($target) . " TRANSFER " . table($table))) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	function trigger($name) {
 		global $connection;
 		$result = $connection->query("SELECT s.name [Trigger],
@@ -448,7 +467,7 @@ c.text
 FROM sysobjects s
 JOIN syscomments c ON s.id = c.id
 WHERE s.xtype = 'TR' AND s.name = " . $connection->quote($name)
-		);
+		); // triggers are not schema-scoped
 		$row = $result->fetch_assoc();
 		$row["Statement"] = preg_replace('~^.+\\s+AS\\s+~isU', '', $row["text"]); //! identifiers, comments
 		return $row;
@@ -463,7 +482,7 @@ CASE WHEN OBJECTPROPERTY(sys1.id, 'ExecIsInsteadOfTrigger') = 1 THEN 'INSTEAD OF
 FROM sysobjects sys1
 JOIN sysobjects sys2 ON sys1.parent_obj = sys2.id
 WHERE sys1.xtype = 'TR' AND sys2.name = " . $connection->quote($table)
-		);
+		); // triggers are not schema-scoped
 		while ($row = $result->fetch_assoc()) {
 			$return[$row["name"]] = array($row["Timing"], $row["Event"]);
 		}
@@ -475,6 +494,22 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . $connection->quote($table)
 			"Timing" => array("AFTER", "INSTEAD OF"),
 			"Type" => array("AS"),
 		);
+	}
+	
+	function schemas() {
+		return get_vals("SELECT name FROM sys.schemas");
+	}
+	
+	function get_schema() {
+		global $connection;
+		if ($_GET["ns"] != "") {
+			return $_GET["ns"];
+		}
+		return $connection->result("SELECT SCHEMA_NAME()");
+	}
+	
+	function set_schema($schema) {
+		return true; // ALTER USER is permanent
 	}
 	
 	function use_sql($database) {
@@ -490,7 +525,7 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . $connection->quote($table)
 	}
 
 	function support($feature) {
-		return ereg('^(trigger|drop_col)$', $feature); //! view|routine|scheme|
+		return ereg('^(scheme|trigger|drop_col)$', $feature); //! view|routine|
 	}
 	
 	$jush = "mssql";

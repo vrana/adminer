@@ -223,6 +223,14 @@ if (!defined("DRIVER")) {
 		return "`" . str_replace("`", "``", $idf) . "`";
 	}
 
+	/** Get escaped table name
+	* @param string
+	* @return string
+	*/
+	function table($idf) {
+		return idf_escape($idf);
+	}
+
 	/** Connect to the database
 	* @return mixed Min_DB or string for error
 	*/
@@ -376,7 +384,7 @@ if (!defined("DRIVER")) {
 	function fields($table) {
 		global $connection;
 		$return = array();
-		$result = $connection->query("SHOW FULL COLUMNS FROM " . idf_escape($table));
+		$result = $connection->query("SHOW FULL COLUMNS FROM " . table($table));
 		if ($result) {
 			while ($row = $result->fetch_assoc()) {
 				preg_match('~^([^( ]+)(?:\\((.+)\\))?( unsigned)?( zerofill)?$~', $row["Type"], $match);
@@ -411,7 +419,7 @@ if (!defined("DRIVER")) {
 			$connection2 = $connection;
 		}
 		$return = array();
-		$result = $connection2->query("SHOW INDEX FROM " . idf_escape($table));
+		$result = $connection2->query("SHOW INDEX FROM " . table($table));
 		if ($result) {
 			while ($row = $result->fetch_assoc()) {
 				$return[$row["Key_name"]]["type"] = ($row["Key_name"] == "PRIMARY" ? "PRIMARY" : ($row["Index_type"] == "FULLTEXT" ? "FULLTEXT" : ($row["Non_unique"] ? "INDEX" : "UNIQUE")));
@@ -430,7 +438,7 @@ if (!defined("DRIVER")) {
 		global $connection, $on_actions;
 		static $pattern = '`(?:[^`]|``)+`';
 		$return = array();
-		$create_table = $connection->result("SHOW CREATE TABLE " . idf_escape($table), 1);
+		$create_table = $connection->result("SHOW CREATE TABLE " . table($table), 1);
 		if ($create_table) {
 			preg_match_all("~CONSTRAINT ($pattern) FOREIGN KEY \\(((?:$pattern,? ?)+)\\) REFERENCES ($pattern)(?:\\.($pattern))? \\(((?:$pattern,? ?)+)\\)(?: ON DELETE (" . implode("|", $on_actions) . "))?(?: ON UPDATE (" . implode("|", $on_actions) . "))?~", $create_table, $matches, PREG_SET_ORDER);
 			foreach ($matches as $match) {
@@ -455,7 +463,7 @@ if (!defined("DRIVER")) {
 	*/
 	function view($name) {
 		global $connection;
-		return array("select" => preg_replace('~^(?:[^`]|`[^`]*`)*\\s+AS\\s+~isU', '', $connection->result("SHOW CREATE VIEW " . idf_escape($name), 1)));
+		return array("select" => preg_replace('~^(?:[^`]|`[^`]*`)*\\s+AS\\s+~isU', '', $connection->result("SHOW CREATE VIEW " . table($name), 1)));
 	}
 
 	/** Get sorted grouped list of collations
@@ -536,7 +544,7 @@ if (!defined("DRIVER")) {
 			//! move triggers
 			$return = true; // table list may by empty
 			foreach (tables_list() as $table) {
-				if (!queries("RENAME TABLE " . idf_escape($table) . " TO " . idf_escape($name) . "." . idf_escape($table))) {
+				if (!queries("RENAME TABLE " . table($table) . " TO " . idf_escape($name) . "." . table($table))) {
 					$return = false;
 					break;
 				}
@@ -598,13 +606,13 @@ if (!defined("DRIVER")) {
 			. $partitioning
 		;
 		if ($table == "") {
-			return queries("CREATE TABLE " . idf_escape($name) . " (\n" . implode(",\n", $alter) . "\n) $status");
+			return queries("CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n) $status");
 		}
 		if ($table != $name) {
-			$alter[] = "RENAME TO " . idf_escape($name);
+			$alter[] = "RENAME TO " . table($name);
 		}
 		$alter[] = $status;
-		return queries("ALTER TABLE " . idf_escape($table) . "\n" . implode(",\n", $alter));
+		return queries("ALTER TABLE " . table($table) . "\n" . implode(",\n", $alter));
 	}
 	
 	/** Run commands to alter indexes
@@ -616,7 +624,7 @@ if (!defined("DRIVER")) {
 		foreach ($alter as $key => $val) {
 			$alter[$key] = ($val[2] ? "\nDROP INDEX " : "\nADD $val[0] " . ($val[0] == "PRIMARY" ? "KEY " : "")) . $val[1];
 		}
-		return queries("ALTER TABLE " . idf_escape($table) . implode(",", $alter));
+		return queries("ALTER TABLE " . table($table) . implode(",", $alter));
 	}
 	
 	/** Run commands to truncate tables
@@ -625,7 +633,7 @@ if (!defined("DRIVER")) {
 	*/
 	function truncate_tables($tables) {
 		foreach ($tables as $table) {
-			if (!queries("TRUNCATE TABLE " . idf_escape($table))) {
+			if (!queries("TRUNCATE TABLE " . table($table))) {
 				return false;
 			}
 		}
@@ -637,7 +645,7 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function drop_views($views) {
-		return queries("DROP VIEW " . implode(", ", array_map('idf_escape', $views)));
+		return queries("DROP VIEW " . implode(", ", array_map('table', $views)));
 	}
 	
 	/** Drop tables
@@ -645,7 +653,7 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function drop_tables($tables) {
-		return queries("DROP TABLE " . implode(", ", array_map('idf_escape', $tables)));
+		return queries("DROP TABLE " . implode(", ", array_map('table', $tables)));
 	}
 	
 	/** Move tables to other schema
@@ -656,7 +664,7 @@ if (!defined("DRIVER")) {
 	function move_tables($tables, $views, $target) {
 		$rename = array();
 		foreach (array_merge($tables, $views) as $table) { // views will report SQL error
-			$rename[] = idf_escape($table) . " TO " . idf_escape($target) . "." . idf_escape($table);
+			$rename[] = table($table) . " TO " . idf_escape($target) . "." . table($table);
 		}
 		return queries("RENAME TABLE " . implode(", ", $rename));
 		//! move triggers
@@ -757,7 +765,7 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function insert_into($table, $set) {
-		return queries("INSERT INTO " . idf_escape($table) . " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")");
+		return queries("INSERT INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")");
 	}
 	
 	/** Explain select
@@ -797,7 +805,7 @@ if (!defined("DRIVER")) {
 	*/
 	function create_sql($table) {
 		global $connection;
-		return $connection->result("SHOW CREATE TABLE " . idf_escape($table), 1);
+		return $connection->result("SHOW CREATE TABLE " . table($table), 1);
 	}
 	
 	/** Get SQL command to change database
@@ -820,7 +828,7 @@ if (!defined("DRIVER")) {
 		if ($result->num_rows) {
 			while ($row = $result->fetch_assoc()) {
 				$return .= "\n" . ($style == 'CREATE+ALTER' ? "DROP TRIGGER IF EXISTS " . idf_escape($row["Trigger"]) . ";;\n" : "")
-				. "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . idf_escape($row["Table"]) . " FOR EACH ROW\n$row[Statement];;\n";
+				. "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . table($row["Table"]) . " FOR EACH ROW\n$row[Statement];;\n";
 			}
 		}
 		return $return;

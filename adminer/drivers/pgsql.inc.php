@@ -149,6 +149,10 @@ if (isset($_GET["pgsql"])) {
 		return '"' . str_replace('"', '""', $idf) . '"';
 	}
 
+	function table($idf) {
+		return idf_escape($idf);
+	}
+
 	function connect() {
 		global $adminer;
 		$connection = new Min_DB;
@@ -351,7 +355,7 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 					$alter[] = ($table != "" ? "ADD " : "  ") . implode($val);
 				} else {
 					if ($column != $val[0]) {
-						$queries[] = "ALTER TABLE " . idf_escape($table) . " RENAME $column TO $val[0]";
+						$queries[] = "ALTER TABLE " . table($table) . " RENAME $column TO $val[0]";
 					}
 					$alter[] = "ALTER $column TYPE$val[1]";
 					if (!$val[6]) {
@@ -360,21 +364,21 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 					}
 				}
 				if ($field[0] != "" || $val5 != "") {
-					$queries[] = "COMMENT ON COLUMN " . idf_escape($table) . ".$val[0] IS " . ($val5 != "" ? substr($val5, 9) : "''");
+					$queries[] = "COMMENT ON COLUMN " . table($table) . ".$val[0] IS " . ($val5 != "" ? substr($val5, 9) : "''");
 				}
 			}
 		}
 		$alter = array_merge($alter, $foreign);
 		if ($table == "") {
-			array_unshift($queries, "CREATE TABLE " . idf_escape($name) . " (\n" . implode(",\n", $alter) . "\n)");
+			array_unshift($queries, "CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)");
 		} elseif ($alter) {
-			array_unshift($queries, "ALTER TABLE " . idf_escape($table) . "\n" . implode(",\n", $alter));
+			array_unshift($queries, "ALTER TABLE " . table($table) . "\n" . implode(",\n", $alter));
 		}
 		if ($table != "" && $table != $name) {
-			$queries[] = "ALTER TABLE " . idf_escape($table) . " RENAME TO " . idf_escape($name);
+			$queries[] = "ALTER TABLE " . table($table) . " RENAME TO " . table($name);
 		}
 		if ($table != "" || $comment != "") {
-			$queries[] = "COMMENT ON TABLE " . idf_escape($name) . " IS " . $connection->quote($comment);
+			$queries[] = "COMMENT ON TABLE " . table($name) . " IS " . $connection->quote($comment);
 		}
 		if ($auto_increment != "") {
 			//! $queries[] = "SELECT setval(pg_get_serial_sequence(" . $connection->quote($name) . ", ), $auto_increment)";
@@ -395,36 +399,36 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 				$create[] = ($val[2] ? "\nDROP CONSTRAINT " : "\nADD $val[0] " . ($val[0] == "PRIMARY" ? "KEY " : "")) . $val[1];
 			} elseif ($val[2]) {
 				$drop[] = $val[1];
-			} elseif (!queries("CREATE INDEX " . idf_escape(uniqid($table . "_")) . " ON " . idf_escape($table) . " $val[1]")) {
+			} elseif (!queries("CREATE INDEX " . idf_escape(uniqid($table . "_")) . " ON " . table($table) . " $val[1]")) {
 				return false;
 			}
 		}
-		return ((!$create || queries("ALTER TABLE " . idf_escape($table) . implode(",", $create)))
+		return ((!$create || queries("ALTER TABLE " . table($table) . implode(",", $create)))
 			&& (!$drop || queries("DROP INDEX " . implode(", ", $drop)))
 		);
 	}
 	
 	function truncate_tables($tables) {
-		return queries("TRUNCATE " . implode(", ", array_map('idf_escape', $tables)));
+		return queries("TRUNCATE " . implode(", ", array_map('table', $tables)));
 		return true;
 	}
 	
 	function drop_views($views) {
-		return queries("DROP VIEW " . implode(", ", array_map('idf_escape', $views)));
+		return queries("DROP VIEW " . implode(", ", array_map('table', $views)));
 	}
 	
 	function drop_tables($tables) {
-		return queries("DROP TABLE " . implode(", ", array_map('idf_escape', $tables)));
+		return queries("DROP TABLE " . implode(", ", array_map('table', $tables)));
 	}
 	
 	function move_tables($tables, $views, $target) {
 		foreach ($tables as $table) {
-			if (!queries("ALTER TABLE " . idf_escape($table) . " SET SCHEMA " . idf_escape($target))) {
+			if (!queries("ALTER TABLE " . table($table) . " SET SCHEMA " . idf_escape($target))) {
 				return false;
 			}
 		}
 		foreach ($views as $table) {
-			if (!queries("ALTER VIEW " . idf_escape($table) . " SET SCHEMA " . idf_escape($target))) {
+			if (!queries("ALTER VIEW " . table($table) . " SET SCHEMA " . idf_escape($target))) {
 				return false;
 			}
 		}
@@ -459,7 +463,7 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 	}
 	
 	function insert_into($table, $set) {
-		return queries("INSERT INTO " . idf_escape($table) . ($set ? " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")" : "DEFAULT VALUES"));
+		return queries("INSERT INTO " . table($table) . ($set ? " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")" : "DEFAULT VALUES"));
 	}
 	
 	function explain($connection, $query) {

@@ -16,7 +16,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 		$location = ME . "select=" . urlencode($TABLE);
 	}
 	if (isset($_POST["delete"])) {
-		query_redirect("DELETE" . limit1("FROM " . idf_escape($_GET["edit"]) . "\nWHERE $where"), $location, lang('Item has been deleted.'));
+		query_redirect("DELETE" . limit1("FROM " . table($TABLE) . "\nWHERE $where"), $location, lang('Item has been deleted.'));
 	} else {
 		$set = array();
 		foreach ($fields as $name => $field) {
@@ -29,7 +29,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 			if (!$set) {
 				redirect($location);
 			}
-			query_redirect("UPDATE" . limit1(idf_escape($TABLE) . " SET" . implode(",", $set) . "\nWHERE $where"), $location, lang('Item has been updated.'));
+			query_redirect("UPDATE" . limit1(table($TABLE) . " SET" . implode(",", $set) . "\nWHERE $where"), $location, lang('Item has been updated.'));
 		} else {
 			queries_redirect($location, lang('Item has been inserted.'), insert_into($TABLE, $set));
 		}
@@ -56,7 +56,7 @@ if ($_POST["save"]) {
 	}
 	$row = array();
 	if ($select) {
-		$result = $connection->query("SELECT" . limit(implode(", ", $select) . " FROM " . idf_escape($TABLE) . " WHERE $where", (isset($_GET["select"]) ? 2 : 1)));
+		$result = $connection->query("SELECT" . limit(implode(", ", $select) . " FROM " . table($TABLE) . " WHERE $where", (isset($_GET["select"]) ? 2 : 1)));
 		$row = $result->fetch_assoc();
 		if (isset($_GET["select"]) && $result->fetch_assoc()) {
 			$row = null;

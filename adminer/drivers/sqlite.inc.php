@@ -203,6 +203,10 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return '"' . str_replace('"', '""', $idf) . '"';
 	}
 
+	function table($idf) {
+		return idf_escape($idf);
+	}
+
 	function connect() {
 		return new Min_DB;
 	}
@@ -266,7 +270,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	function fields($table) {
 		global $connection;
 		$return = array();
-		$result = $connection->query("PRAGMA table_info(" . idf_escape($table) . ")");
+		$result = $connection->query("PRAGMA table_info(" . table($table) . ")");
 		if (is_object($result)) {
 			while ($row = $result->fetch_assoc()) {
 				$type = strtolower($row["type"]);
@@ -298,7 +302,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		if ($primary) {
 			$return[""] = array("type" => "PRIMARY", "columns" => $primary, "lengths" => array());
 		}
-		$result = $connection->query("PRAGMA index_list(" . idf_escape($table) . ")");
+		$result = $connection->query("PRAGMA index_list(" . table($table) . ")");
 		if (is_object($result)) {
 			while ($row = $result->fetch_assoc()) {
 				$return[$row["name"]]["type"] = ($row["unique"] ? "UNIQUE" : "INDEX");
@@ -315,7 +319,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	function foreign_keys($table) {
 		global $connection;
 		$return = array();
-		$result = $connection->query("PRAGMA foreign_key_list(" . idf_escape($table) . ")");
+		$result = $connection->query("PRAGMA foreign_key_list(" . table($table) . ")");
 		if (is_object($result)) {
 			while ($row = $result->fetch_assoc()) {
 				$foreign_key = &$return[$row["id"]];
@@ -400,14 +404,14 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		$alter = array_merge($alter, $foreign);
 		if ($table != "") {
 			foreach ($alter as $val) {
-				if (!queries("ALTER TABLE " . idf_escape($table) . " $val")) {
+				if (!queries("ALTER TABLE " . table($table) . " $val")) {
 					return false;
 				}
 			}
-			if ($table != $name && !queries("ALTER TABLE " . idf_escape($table) . " RENAME TO " . idf_escape($name))) {
+			if ($table != $name && !queries("ALTER TABLE " . table($table) . " RENAME TO " . table($name))) {
 				return false;
 			}
-		} elseif (!queries("CREATE TABLE " . idf_escape($name) . " (\n" . implode(",\n", $alter) . "\n)")) {
+		} elseif (!queries("CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)")) {
 			return false;
 		}
 		if ($auto_increment) {
@@ -418,7 +422,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	
 	function alter_indexes($table, $alter) {
 		foreach ($alter as $val) {
-			if (!queries(($val[2] ? "DROP INDEX" : "CREATE" . ($val[0] != "INDEX" ? " UNIQUE" : "") . " INDEX " . idf_escape(uniqid($table . "_")) . " ON " . idf_escape($table)) . " $val[1]")) { //! primary key must be created in CREATE TABLE
+			if (!queries(($val[2] ? "DROP INDEX" : "CREATE" . ($val[0] != "INDEX" ? " UNIQUE" : "") . " INDEX " . idf_escape(uniqid($table . "_")) . " ON " . table($table)) . " $val[1]")) { //! primary key must be created in CREATE TABLE
 				return false;
 			}
 		}
@@ -427,7 +431,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	
 	function truncate_tables($tables) {
 		foreach ($tables as $table) {
-			if (!queries("DELETE FROM " . idf_escape($table))) {
+			if (!queries("DELETE FROM " . table($table))) {
 				return false;
 			}
 		}
@@ -436,7 +440,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	
 	function drop_views($views) {
 		foreach ($views as $view) {
-			if (!queries("DROP VIEW " . idf_escape($view))) {
+			if (!queries("DROP VIEW " . table($view))) {
 				return false;
 			}
 		}
@@ -445,7 +449,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	
 	function drop_tables($tables) {
 		foreach ($tables as $table) {
-			if (!queries("DROP TABLE " . idf_escape($table))) {
+			if (!queries("DROP TABLE " . table($table))) {
 				return false;
 			}
 		}
@@ -493,7 +497,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 	
 	function insert_into($table, $set) {
-		return queries("INSERT INTO " . idf_escape($table) . ($set ? " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")" : "DEFAULT VALUES"));
+		return queries("INSERT INTO " . table($table) . ($set ? " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")" : "DEFAULT VALUES"));
 	}
 	
 	function explain($connection, $query) {
