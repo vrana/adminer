@@ -214,7 +214,7 @@ foreach (array("adminer", "editor") as $project) {
 		$connection = (object) array("server_info" => 5.1); // MySQL support is version specific
 		$_GET[$driver] = true; // to load the driver
 		include_once dirname(__FILE__) . "/adminer/drivers/$driver.inc.php";
-		foreach (array("view", "event", "privileges", "user", "processlist", "variables", "trigger", "scheme") as $feature) {
+		foreach (array("view", "event", "privileges", "user", "processlist", "variables", "trigger", "scheme", "sequence") as $feature) {
 			if (!support($feature)) {
 				$file = str_replace("} elseif (isset(\$_GET[\"$feature\"])) {\n\tinclude \"./$feature.inc.php\";\n", "", $file);
 			}
