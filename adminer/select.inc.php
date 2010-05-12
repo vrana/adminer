@@ -303,7 +303,7 @@ if (!$columns) {
 								$i = 0;
 								foreach ((array) $_GET["where"] as $v) {
 									if (!array_key_exists($v["col"], $unique_array)) {
-										$link .= h(where_link($i++, $v["col"], $v["val"], urlencode($v["op"])));
+										$link .= h(where_link($i++, $v["col"], $v["val"], $v["op"]));
 									}
 								}
 								foreach ($unique_array as $k => $v) {
