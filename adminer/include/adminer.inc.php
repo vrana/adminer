@@ -387,8 +387,11 @@ document.getElementById('username').focus();
 		restart_session();
 		$id = "sql-" . count($_SESSION["messages"]);
 		$history = &get_session("history");
-		$history[DB][] = (strlen($query) > 1e6 ? ereg_replace('[\x80-\xFF]+$', '', substr($query, 0, 1e6)) . "\n..." : $query); // [\x80-\xFF] - valid UTF-8, \n - can end by one-line comment
-		return " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre class='jush-$jush'>" . shorten_utf8($query, 1000) . '</pre><p><a href="' . h(ME . 'sql=&history=' . (count($history[DB]) - 1)) . '">' . lang('Edit') . '</a></div>';
+		$history[$_GET["db"]][] = (strlen($query) > 1e6 // not DB - reset in drop database
+			? ereg_replace('[\x80-\xFF]+$', '', substr($query, 0, 1e6)) . "\n..." // [\x80-\xFF] - valid UTF-8, \n - can end by one-line comment
+			: $query
+		); //! respect $_GET["ns"]
+		return " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre class='jush-$jush'>" . shorten_utf8($query, 1000) . '</pre><p><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a></div>';
 	}
 	
 	/** Functions displayed in edit form

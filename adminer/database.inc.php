@@ -2,10 +2,12 @@
 if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP changes add.x to add_x
 	restart_session();
 	if ($_POST["drop"]) {
+		$_GET["db"] = ""; // to save in global history
 		queries_redirect(remove_from_uri("db|database"), lang('Database has been dropped.'), drop_databases(array(DB)));
 	} elseif (DB !== $_POST["name"]) {
 		// create or rename database
 		if (DB != "") {
+			$_GET["db"] = $_POST["name"];
 			queries_redirect(preg_replace('~db=[^&]*&~', '', ME) . "db=" . urlencode($_POST["name"]), lang('Database has been renamed.'), rename_database($_POST["name"], $_POST["collation"]));
 		} else {
 			$dbs = explode("\n", str_replace("\r", "", $_POST["name"]));
