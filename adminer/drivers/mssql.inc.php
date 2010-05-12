@@ -409,6 +409,11 @@ WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table)
 		return queries("INSERT INTO " . table($table) . ($set ? " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")" : "DEFAULT VALUES"));
 	}
 	
+	function last_id() {
+		global $connection;
+		return $connection->result("SELECT SCOPE_IDENTITY()"); // @@IDENTITY can return trigger INSERT
+	}
+	
 	function explain($connection, $query) {
 		$connection->query("SET SHOWPLAN_ALL ON");
 		$return = $connection->query($query);

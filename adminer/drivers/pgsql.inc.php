@@ -466,6 +466,10 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 		return queries("INSERT INTO " . table($table) . ($set ? " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")" : "DEFAULT VALUES"));
 	}
 	
+	function last_id() {
+		return 0; // there can be several sequences
+	}
+	
 	function explain($connection, $query) {
 		return $connection->query("EXPLAIN $query");
 	}

@@ -769,6 +769,14 @@ if (!defined("DRIVER")) {
 		return queries("INSERT INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")");
 	}
 	
+	/** Get last auto increment ID
+	* @return string
+	*/
+	function last_id() {
+		global $connection;
+		return $connection->result("SELECT LAST_INSERT_ID()"); // mysql_insert_id() truncates bigint
+	}
+	
 	/** Explain select
 	* @param Min_DB
 	* @param string

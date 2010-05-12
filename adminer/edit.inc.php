@@ -31,7 +31,9 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 			}
 			query_redirect("UPDATE" . limit1(table($TABLE) . " SET" . implode(",", $set) . "\nWHERE $where"), $location, lang('Item has been updated.'));
 		} else {
-			queries_redirect($location, lang('Item has been inserted.'), insert_into($TABLE, $set));
+			$result = insert_into($TABLE, $set);
+			$last_id = ($result ? last_id() : 0);
+			queries_redirect($location, lang('Item%s has been inserted.', ($last_id ? " $last_id" : "")), $result); //! link
 		}
 	}
 }
