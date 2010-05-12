@@ -57,10 +57,7 @@ if ($_POST) {
 echo ($_POST["add_x"] || strpos($name, "\n")
 	? '<textarea name="name" rows="10" cols="40">' . h($name) . '</textarea><br>'
 	: '<input name="name" value="' . h($name) . '" maxlength="64">'
-) . "\n";
-if ($collations) {
-	html_select("collation", array("" => "(" . lang('collation') . ")") + $collations, $collate);
-}
+) . "\n" . ($collations ? html_select("collation", array("" => "(" . lang('collation') . ")") + $collations, $collate) : "");
 ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Save'); ?>">

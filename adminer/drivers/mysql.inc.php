@@ -514,6 +514,7 @@ if (!defined("DRIVER")) {
 	* @return string
 	*/
 	function create_database($db, $collation) {
+		global $connection;
 		set_session("databases", null);
 		return queries("CREATE DATABASE " . idf_escape($db) . ($collation ? " COLLATE " . $connection->quote($collation) : ""));
 	}
