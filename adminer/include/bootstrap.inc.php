@@ -62,6 +62,7 @@ include "../adminer/lang/$LANG.inc.php";
 include "../adminer/include/pdo.inc.php";
 include "../adminer/drivers/sqlite.inc.php";
 include "../adminer/drivers/pgsql.inc.php";
+include "../adminer/drivers/oracle.inc.php";
 include "../adminer/drivers/mssql.inc.php";
 include "../adminer/drivers/mysql.inc.php"; // must be included as last driver
 

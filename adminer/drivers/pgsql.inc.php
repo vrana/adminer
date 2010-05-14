@@ -233,7 +233,6 @@ AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema(
 					"default" => $row["column_default"],
 					"null" => ($row["is_nullable"] == "YES"),
 					"auto_increment" => eregi("^nextval\\(", $row["column_default"]),
-					"on_update" => "", //!
 					"collation" => $row["collation_name"],
 					"privileges" => array("insert" => 1, "select" => 1, "update" => 1), //! is_updatable
 					"primary" => false, //!

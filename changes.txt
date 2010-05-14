@@ -1,5 +1,5 @@
 Adminer 3.0.0-dev:
-Drivers for MS SQL, SQLite, PostgreSQL
+Drivers for MS SQL, SQLite, PostgreSQL, Oracle
 Allow concurrent logins on the same server
 Allow permanent login without customization
 In-place editation in select
