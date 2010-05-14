@@ -266,21 +266,22 @@ if (!defined("DRIVER")) {
 
 	/** Formulate SQL query with limit
 	* @param string everything after SELECT
+	* @param string including WHERE
 	* @param int
 	* @param int
 	* @param string
 	* @return string
 	*/
-	function limit($query, $limit, $offset = 0, $separator = " ") {
-		return " $query" . (isset($limit) ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
+	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
+		return " $query$where" . (isset($limit) ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
 	}
 
 	/** Formulate SQL modification query with limit 1
 	* @param string everything after UPDATE or DELETE
 	* @return string
 	*/
-	function limit1($query) {
-		return limit($query, 1);
+	function limit1($query, $where) {
+		return limit($query, $where, 1);
 	}
 
 	/** Get database collation

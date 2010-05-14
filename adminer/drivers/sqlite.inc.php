@@ -215,13 +215,13 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return array();
 	}
 
-	function limit($query, $limit, $offset = 0, $separator = " ") {
-		return " $query" . (isset($limit) ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
+	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
+		return " $query$where" . (isset($limit) ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
 	}
 
-	function limit1($query) {
+	function limit1($query, $where) {
 		global $connection;
-		return ($connection->result("SELECT sqlite_compileoption_used('ENABLE_UPDATE_DELETE_LIMIT')") ? limit($query, 1) : " $query");
+		return ($connection->result("SELECT sqlite_compileoption_used('ENABLE_UPDATE_DELETE_LIMIT')") ? limit($query, $where, 1) : " $query$where");
 	}
 
 	function db_collation($db, $collations) {

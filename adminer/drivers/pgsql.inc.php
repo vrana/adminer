@@ -45,11 +45,11 @@ if (isset($_GET["pgsql"])) {
 				if ($database == DB) {
 					return $this->_database;
 				}
-				$link = @pg_connect($this->_connection . " dbname='" . addcslashes($database, "'\\") . "'", PGSQL_CONNECT_FORCE_NEW);
-				if ($link) {
-					$this->_link = $link;
+				$return = @pg_connect($this->_connection . " dbname='" . addcslashes($database, "'\\") . "'", PGSQL_CONNECT_FORCE_NEW);
+				if ($return) {
+					$this->_link = $return;
 				}
-				return $link;
+				return $return;
 			}
 			
 			function close() {
@@ -108,15 +108,15 @@ if (isset($_GET["pgsql"])) {
 			
 			function fetch_field() {
 				$column = $this->_offset++;
-				$row = new stdClass;
+				$return = new stdClass;
 				if (function_exists('pg_field_table')) {
-					$row->orgtable = pg_field_table($this->_result, $column);
+					$return->orgtable = pg_field_table($this->_result, $column);
 				}
-				$row->name = pg_field_name($this->_result, $column);
-				$row->orgname = $row->name;
-				$row->type = pg_field_type($this->_result, $column);
-				$row->charsetnr = ($row->type == "bytea" ? 63 : 0); // 63 - binary
-				return $row;
+				$return->name = pg_field_name($this->_result, $column);
+				$return->orgname = $return->name;
+				$return->type = pg_field_type($this->_result, $column);
+				$return->charsetnr = ($return->type == "bytea" ? 63 : 0); // 63 - binary
+				return $return;
 			}
 			
 			function __destruct() {
@@ -167,12 +167,12 @@ if (isset($_GET["pgsql"])) {
 		return get_vals("SELECT datname FROM pg_database");
 	}
 	
-	function limit($query, $limit, $offset = 0, $separator = " ") {
-		return " $query" . (isset($limit) ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
+	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
+		return " $query$where" . (isset($limit) ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
 	}
 
-	function limit1($query) {
-		return " $query";
+	function limit1($query, $where) {
+		return " $query$where";
 	}
 	
 	function db_collation($db, $collations) {

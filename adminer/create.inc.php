@@ -119,7 +119,7 @@ if ($_POST) {
 	}
 	if (support("partitioning")) {
 		$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . $connection->quote(DB) . " AND TABLE_NAME = " . $connection->quote($TABLE);
-		$result = $connection->query("SELECT" . limit("PARTITION_METHOD, PARTITION_ORDINAL_POSITION, PARTITION_EXPRESSION $from ORDER BY PARTITION_ORDINAL_POSITION", 1));
+		$result = $connection->query("SELECT PARTITION_METHOD, PARTITION_ORDINAL_POSITION, PARTITION_EXPRESSION $from ORDER BY PARTITION_ORDINAL_POSITION LIMIT 1");
 		list($row["partition_by"], $row["partitions"], $row["partition"]) = $result->fetch_row();
 		$row["partition_names"] = array();
 		$row["partition_values"] = array();

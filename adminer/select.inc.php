@@ -23,7 +23,7 @@ list($select, $group) = $adminer->selectColumnsProcess($columns, $indexes);
 $where = $adminer->selectSearchProcess($fields, $indexes);
 $order = $adminer->selectOrderProcess($fields, $indexes);
 $limit = $adminer->selectLimitProcess();
-$from = ($select ? implode(", ", $select) : "*") . "\nFROM " . table($TABLE) . ($where ? "\nWHERE " . implode(" AND ", $where) : "");
+$from = ($select ? implode(", ", $select) : "*") . "\nFROM " . table($TABLE);
 $group_by = ($group && count($group) < count($select) ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : "");
 
 if ($_POST && !$error) {
@@ -49,12 +49,16 @@ if ($_POST && !$error) {
 			dump_csv($row);
 		}
 		if (!is_array($_POST["check"]) || $primary === array()) {
-			dump_data($TABLE, "INSERT", "SELECT $from" . (is_array($_POST["check"]) ? ($where ? " AND " : " WHERE ") . "($where_check)" : "") . $group_by);
+			$where2 = $where;
+			if (is_array($_POST["check"])) {
+				$where2[] = "($where_check)";
+			}
+			dump_data($TABLE, "INSERT", "SELECT $from" . ($where2 ? "\nWHERE " . implode(" AND ", $where2) : "") . $group_by);
 		} else {
 			$union = array();
 			foreach ($_POST["check"] as $val) {
 				// where is not unique so OR can't be used
-				$union[] = "(SELECT" . limit("$from " . ($where ? "AND " : "WHERE ") . where_check($val) . $group_by, 1) . ")";
+				$union[] = "(SELECT" . limit($from, "\nWHERE " . ($where ? implode(" AND ", $where) . " AND " : "") . where_check($val) . $group_by, 1) . ")";
 			}
 			dump_data($TABLE, "INSERT", implode(" UNION ALL ", $union));
 		}
@@ -95,7 +99,7 @@ if ($_POST && !$error) {
 				} else {
 					foreach ((array) $_POST["check"] as $val) {
 						// where is not unique so OR can't be used
-						$result = queries($command . limit1($query . "\nWHERE " . where_check($val)));
+						$result = queries($command . limit1($query, "\nWHERE " . where_check($val)));
 						if (!$result) {
 							break;
 						}
@@ -117,7 +121,7 @@ if ($_POST && !$error) {
 						$key = bracket_escape($key, 1); // 1 - back
 						$set[] = idf_escape($key) . " = " . $adminer->processInput($fields[$key], $val);
 					}
-					$result = queries("UPDATE" . limit1(table($TABLE) . " SET " . implode(", ", $set) . " WHERE " . where_check($unique_idf) . ($where ? " AND " . implode(" AND ", $where) : ""))); // can change row on a different page without unique key
+					$result = queries("UPDATE" . limit1(table($TABLE) . " SET " . implode(", ", $set), " WHERE " . where_check($unique_idf) . ($where ? " AND " . implode(" AND ", $where) : ""))); // can change row on a different page without unique key
 					if (!$result) {
 						break;
 					}
@@ -202,7 +206,7 @@ if (!$columns) {
 		$page = floor(($found_rows - 1) / $limit);
 	}
 
-	$query = "SELECT" . limit((intval($limit) && $group && count($group) < count($select) && $jush == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . $from . $group_by, ($limit != "" ? intval($limit) : null), ($page ? $limit * $page : 0), "\n");
+	$query = "SELECT" . limit((intval($limit) && $group && count($group) < count($select) && $jush == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . $from, ($where ? "\nWHERE " . implode(" AND ", $where) : "") . $group_by, ($limit != "" ? intval($limit) : null), ($page ? $limit * $page : 0), "\n");
 	echo $adminer->selectQuery($query);
 	
 	$result = $connection->query($query);

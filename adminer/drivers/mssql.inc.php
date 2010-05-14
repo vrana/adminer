@@ -44,7 +44,6 @@ if (isset($_GET["mssql"])) {
 				return $this->query("USE $database");
 			}
 
-
 			function query($query, $unbuffered = false) {
 				$result = sqlsrv_query($this->_link, $query); //! , array(), ($unbuffered ? array() : array("Scrollable" => "keyset"))
 				if (!$result) {
@@ -255,12 +254,12 @@ if (isset($_GET["mssql"])) {
 		return get_vals("EXEC sp_databases");
 	}
 
-	function limit($query, $limit, $offset = 0, $separator = " ") {
-		return (isset($limit) ? " TOP (" . ($limit + $offset) . ")" : "") . " $query"; // seek later
+	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
+		return (isset($limit) ? " TOP (" . ($limit + $offset) . ")" : "") . " $query$where"; // seek later
 	}
 
-	function limit1($query) {
-		return limit($query, 1);
+	function limit1($query, $where) {
+		return limit($query, $where, 1);
 	}
 
 	function db_collation($db, $collations) {

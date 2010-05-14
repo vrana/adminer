@@ -40,6 +40,7 @@ Dollar terminated string in SQL command
 bool in Editor
 
 MS SQL:
+Non UTF-8 character sets
 Rename by sp_rename
 Detection of table collation
 PDO driver with seek
