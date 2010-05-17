@@ -441,6 +441,8 @@ document.getElementById('username').focus();
 		$return = $connection->quote($value);
 		if (ereg('^(now|getdate|uuid)$', $function)) {
 			$return = "$function()";
+		} elseif (ereg('^current_(date|timestamp)$', $function)) {
+			$return = $function;
 		} elseif (ereg('^([+-]|\\|\\|)$', $function)) {
 			$return = idf_escape($name) . " $function $return";
 		} elseif (ereg('^[+-] interval$', $function)) {
