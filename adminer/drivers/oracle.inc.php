@@ -153,7 +153,8 @@ if (isset($_GET["oracle"])) {
 	}
 
 	function db_collation($db, $collations) {
-		//!
+		global $connection;
+		return $connection->result("SELECT value FROM nls_database_parameters WHERE parameter = 'NLS_CHARACTERSET'"); //! respect $db
 	}
 
 	function engines() {
@@ -188,7 +189,7 @@ if (isset($_GET["oracle"])) {
 	}
 
 	function fk_support($table_status) {
-		return true;
+		return false; //!
 	}
 
 	function fields($table) {
@@ -205,12 +206,12 @@ if (isset($_GET["oracle"])) {
 				$return[$row["COLUMN_NAME"]] = array(
 					"field" => $row["COLUMN_NAME"],
 					"full_type" => $type . ($length ? "($length)" : ""),
-					"type" => $type,
+					"type" => strtolower($type),
 					"length" => $length,
 					"default" => $row["DATA_DEFAULT"],
 					"null" => ($row["NULLABLE"] == "Y"),
 					//! "auto_increment" => false,
-					"collation" => $row["CHARACTER_SET_NAME"],
+					//! "collation" => $row["CHARACTER_SET_NAME"],
 					"privileges" => array("insert" => 1, "select" => 1, "update" => 1),
 					//! "comment" => $row["Comment"],
 					//! "primary" => ($row["Key"] == "PRI"),
@@ -246,10 +247,27 @@ if (isset($_GET["oracle"])) {
 		//!
 	}
 	
-	function foreign_keys($table) {
-		return array(); //!
+	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
+		$alter = $drop = array();
+		foreach ($fields as $field) {
+			$val = $field[1];
+			if ($val && $field[0] != "" && idf_escape($field[0]) != $val[0]) {
+				queries("ALTER TABLE " . table($name) . " RENAME COLUMN " . idf_escape($field[0]) . " TO $val[0]");
+			}
+			if ($val) {
+				$alter[] = ($table != "" ? ($field[0] != "" ? "MODIFY (" : "ADD (") : "  ") . implode($val) . ($table != "" ? ")" : ""); //! error with name change only
+			} else {
+				$drop[] = idf_escape($field[0]);
+			}
+		}
+		if ($table == "") {
+			return queries("CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)");
+		}
+		return (!$alter || queries("ALTER TABLE " . table($name) . "\n" . implode("\n", $alter)))
+			&& (!$drop || queries("ALTER TABLE " . table($name) . " DROP (" . implode(", ", $drop) . ")"))
+		;
 	}
-
+	
 	function truncate_tables($tables) {
 		foreach ($tables as $table) {
 			if (!queries("TRUNCATE TABLE " . table($table))) {
@@ -302,7 +320,7 @@ if (isset($_GET["oracle"])) {
 	}
 	
 	function support($feature) {
-		return false; //!
+		return ereg("drop_col", $feature); //!
 	}
 	
 	$jush = "oracle";
@@ -310,7 +328,7 @@ if (isset($_GET["oracle"])) {
 	$structured_types = array();
 	foreach (array(
 		lang('Numbers') => array("number" => 38, "binary_float" => 12, "binary_double" => 21),
-		lang('Date and time') => array("date" => 10, "timestamp" => 29, "interval year to month" => 12, "interval day to second" => 28), //! year(), day() to second()
+		lang('Date and time') => array("date" => 10, "timestamp" => 29, "interval year" => 12, "interval day" => 28), //! year(), day() to second()
 		lang('Strings') => array("char" => 2000, "varchar2" => 4000, "nchar" => 2000, "nvarchar2" => 4000, "clob" => 4294967295, "nclob" => 4294967295),
 		lang('Binary') => array("raw" => 2000, "long raw" => 2147483648, "blob" => 4294967295, "bfile" => 4294967296),
 	) as $key => $val) {
