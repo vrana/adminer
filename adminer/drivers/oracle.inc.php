@@ -269,30 +269,15 @@ if (isset($_GET["oracle"])) {
 	}
 	
 	function truncate_tables($tables) {
-		foreach ($tables as $table) {
-			if (!queries("TRUNCATE TABLE " . table($table))) {
-				return false;
-			}
-		}
-		return true;
+		return apply_queries("TRUNCATE TABLE", $tables);
 	}
 
 	function drop_views($views) {
-		foreach ($views as $table) {
-			if (!queries("DROP VIEW " . table($table))) {
-				return false;
-			}
-		}
-		return true;
+		return apply_queries("DROP VIEW", $views);
 	}
 
 	function drop_tables($tables) {
-		foreach ($tables as $table) {
-			if (!queries("DROP TABLE " . table($table))) {
-				return false;
-			}
-		}
-		return true;
+		return apply_queries("DROP TABLE", $tables);
 	}
 
 	function begin() {

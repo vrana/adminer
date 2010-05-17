@@ -361,6 +361,21 @@ function queries($query = null) {
 	return $connection->query($query);
 }
 
+/** Apply command to all array items
+* @param string
+* @param array
+* @param callback
+* @return bool
+*/
+function apply_queries($query, $tables, $escape = 'table') {
+	foreach ($tables as $table) {
+		if (!queries("$query " . $escape($table))) {
+			return false;
+		}
+	}
+	return true;
+}
+
 /** Redirect by remembered queries
 * @param string
 * @param string

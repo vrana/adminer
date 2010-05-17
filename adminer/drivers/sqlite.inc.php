@@ -430,30 +430,15 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 	
 	function truncate_tables($tables) {
-		foreach ($tables as $table) {
-			if (!queries("DELETE FROM " . table($table))) {
-				return false;
-			}
-		}
-		return true;
+		return apply_queries("DELETE FROM", $tables);
 	}
 	
 	function drop_views($views) {
-		foreach ($views as $view) {
-			if (!queries("DROP VIEW " . table($view))) {
-				return false;
-			}
-		}
-		return true;
+		return apply_queries("DROP VIEW", $views);
 	}
 	
 	function drop_tables($tables) {
-		foreach ($tables as $table) {
-			if (!queries("DROP TABLE " . table($table))) {
-				return false;
-			}
-		}
-		return true;
+		return apply_queries("DROP TABLE", $tables);
 	}
 	
 	function move_tables($tables, $views, $target) {

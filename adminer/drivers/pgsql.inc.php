@@ -318,12 +318,7 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 	function drop_databases($databases) {
 		global $connection;
 		$connection->close();
-		foreach ($databases as $db) {
-			if (!queries("DROP DATABASE " . idf_escape($db))) {
-				return false;
-			}
-		}
-		return true;
+		return apply_queries("DROP DATABASE", $databases, 'idf_escape');
 	}
 	
 	function rename_database($name, $collation) {

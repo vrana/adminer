@@ -435,12 +435,7 @@ WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table)
 	}
 
 	function truncate_tables($tables) {
-		foreach ($tables as $table) {
-			if (!queries("TRUNCATE TABLE " . table($table))) {
-				return false;
-			}
-		}
-		return true;
+		return apply_queries("TRUNCATE TABLE", $tables);
 	}
 
 	function drop_views($views) {
@@ -452,12 +447,7 @@ WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table)
 	}
 
 	function move_tables($tables, $views, $target) {
-		foreach (array_merge($tables, $views) as $table) {
-			if (!queries("ALTER SCHEMA " . idf_escape($target) . " TRANSFER " . table($table))) {
-				return false;
-			}
-		}
-		return true;
+		return apply_queries("ALTER SCHEMA " . idf_escape($target) . " TRANSFER", array_merge($tables, $views));
 	}
 	
 	function trigger($name) {

@@ -526,12 +526,7 @@ if (!defined("DRIVER")) {
 	*/
 	function drop_databases($databases) {
 		set_session("databases", null);
-		foreach ($databases as $db) {
-			if (!queries("DROP DATABASE " . idf_escape($db))) {
-				return false;
-			}
-		}
-		return true;
+		return apply_queries("DROP DATABASE", $db, 'idf_escape');
 	}
 	
 	/** Rename database from DB
@@ -634,12 +629,7 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function truncate_tables($tables) {
-		foreach ($tables as $table) {
-			if (!queries("TRUNCATE TABLE " . table($table))) {
-				return false;
-			}
-		}
-		return true;
+		return apply_queries("TRUNCATE TABLE", $tables);
 	}
 	
 	/** Drop views
