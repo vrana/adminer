@@ -256,4 +256,5 @@ $translations = array(
 	'Type has been created.' => 'Typ byl vytvořen.',
 	'Alter type' => 'Pozměnit typ',
 	'Search data in tables' => 'Vyhledat data v tabulkách',
+	'From server' => 'Ze serveru',
 );

@@ -18,7 +18,7 @@ if (!$error && $_POST) {
 			: "compress.bzip2://adminer.sql.bz2"
 		)), "rb");
 		$query = ($fp ? fread($fp, 1e6) : false);
-	} elseif ($_POST["file"]) {
+	} elseif ($_FILES["sql_file"]["error"] != 4) { // 4 - UPLOAD_ERR_NO_FILE
 		$query = get_file("sql_file", true);
 	}
 	if (is_string($query)) { // get_file() returns error as number, fread() as false
@@ -143,16 +143,10 @@ textarea("query", $q, 20);
 <input type="submit" value="<?php echo lang('Execute'); ?>">
 <?php echo checkbox("error_stops", 1, $_POST["error_stops"], lang('Stop on error')); ?>
 
-<p>
 <?php
-if (!ini_bool("file_uploads")) {
-	echo lang('File uploads are disabled.');
-} else { ?>
-<?php echo lang('File upload'); ?>: <input type="file" name="sql_file">
-<input type="submit" name="file" value="<?php echo lang('Run file'); ?>">
-<?php } ?>
+echo "<p>" . (ini_bool("file_uploads") ? lang('File upload') . ': <input type="file" name="sql_file">' : lang('File uploads are disabled.'));
 
-<p><?php
+print_fieldset("webfile", lang('From server'), $_POST["webfile"]);
 $compress = array();
 foreach (array("gz" => "zlib", "bz2" => "bz2") as $key => $val) {
 	if (extension_loaded($val)) {
@@ -160,9 +154,9 @@ foreach (array("gz" => "zlib", "bz2" => "bz2") as $key => $val) {
 	}
 }
 echo lang('Webserver file %s', "<code>adminer.sql" . ($compress ? "[" . implode("|", $compress) . "]" : "") . "</code>");
-?> <input type="submit" name="webfile" value="<?php echo lang('Run file'); ?>">
+echo ' <input type="submit" name="webfile" value="' . lang('Run file') . '">';
+echo "</div></fieldset>\n";
 
-<?php
 if ($history) {
 	print_fieldset("history", lang('History'), $_GET["history"] != "");
 	foreach ($history as $key => $val) {
