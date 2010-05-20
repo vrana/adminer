@@ -5,7 +5,7 @@ $partition_by = array('HASH', 'LINEAR HASH', 'KEY', 'LINEAR KEY', 'RANGE', 'LIST
 $referencable_primary = referencable_primary($TABLE);
 $foreign_keys = array();
 foreach ($referencable_primary as $table_name => $field) {
-	$foreign_keys[idf_escape($table_name) . "." . idf_escape($field["field"])] = $table_name;
+	$foreign_keys[str_replace("`", "``", $table_name) . "`" . str_replace("`", "``", $field["field"])] = $table_name; // not idf_escape() - used in JS
 }
 
 $orig_fields = array();
@@ -44,7 +44,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 					$fields[] = array($field["orig"], $process_field, $after);
 				}
 				if (isset($foreign_key)) {
-					$foreign[] = ($TABLE != "" ? "ADD" : " ") . " FOREIGN KEY (" . idf_escape($field["field"]) . ") REFERENCES " . idf_escape($foreign_key) . " (" . idf_escape($type_field["field"]) . ")";
+						$foreign[] = ($TABLE != "" ? "ADD" : " ") . " FOREIGN KEY (" . idf_escape($field["field"]) . ") REFERENCES " . idf_escape($foreign_keys[$field["type"]]) . " (" . idf_escape($type_field["field"]) . ")" . (in_array($field["on_delete"], $on_actions) ? " ON DELETE $field[on_delete]" : "");
 				}
 				$after = "AFTER " . idf_escape($field["field"]);
 			} elseif ($field["orig"] != "") {
@@ -178,12 +178,12 @@ if (support("partitioning")) {
 <table cellspacing="0" id="partition-table"<?php echo ($partition_table ? "" : " class='hidden'"); ?>>
 <thead><tr><th><?php echo lang('Partition name'); ?><th><?php echo lang('Values'); ?></thead>
 <?php
-	foreach ($row["partition_names"] as $key => $val) {
-		echo '<tr>';
-		echo '<td><input name="partition_names[]" value="' . h($val) . '"' . ($key == count($row["partition_names"]) - 1 ? ' onchange="partitionNameChange(this);"' : '') . '>';
-		echo '<td><input name="partition_values[]" value="' . h($row["partition_values"][$key]) . '">';
-	}
-	?>
+foreach ($row["partition_names"] as $key => $val) {
+	echo '<tr>';
+	echo '<td><input name="partition_names[]" value="' . h($val) . '"' . ($key == count($row["partition_names"]) - 1 ? ' onchange="partitionNameChange(this);"' : '') . '>';
+	echo '<td><input name="partition_values[]" value="' . h($row["partition_values"][$key]) . '">';
+}
+?>
 </table>
 </div></fieldset>
 <?php

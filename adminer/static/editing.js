@@ -83,7 +83,7 @@ function reEscape(s) {
 * @return string
 */
 function idfEscape(s) {
-	return '`' + s.replace(/`/, '``') + '`';
+	return s.replace(/`/, '``');
 }
 
 /** Detect foreign key
@@ -102,14 +102,14 @@ function editingNameChange(field) {
 	}
 	var plural = '(?:e?s)?';
 	var tabCol = table + plural + '_?' + column;
-	var re = new RegExp('(^' + idfEscape(table + plural) + '\\.' + idfEscape(column) + '$' // table_column
-		+ '|^' + idfEscape(tabCol) + '\\.' // table
-		+ '|^' + idfEscape(column + plural) + '\\.' + idfEscape(table) + '$' // column_table
-		+ ')|\\.' + idfEscape(tabCol) + '$' // column
+	var re = new RegExp('(^' + idfEscape(table + plural) + '`' + idfEscape(column) + '$' // table_column
+		+ '|^' + idfEscape(tabCol) + '`' // table
+		+ '|^' + idfEscape(column + plural) + '`' + idfEscape(table) + '$' // column_table
+		+ ')|`' + idfEscape(tabCol) + '$' // column
 	, 'i');
 	var candidate; // don't select anything with ambiguous match (like column `id`)
 	for (var i = opts.length; i--; ) {
-		if (opts[i].value.substr(0, 1) != '`') { // common type
+		if (!/`/.test(opts[i].value)) { // common type
 			if (i == opts.length - 2 && candidate && !match[1] && name == 'fields[1]') { // single target table, link to column, first field - probably `id`
 				return false;
 			}
@@ -214,6 +214,9 @@ function editingTypeChange(type) {
 		}
 		if (el.name == name + '[unsigned]') {
 			el.className = (/(int|float|double|decimal)$/.test(text) ? '' : 'hidden');
+		}
+		if (el.name == name + '[on_delete]') {
+			el.className = (/`/.test(text) ? '' : 'hidden');
 		}
 	}
 }
