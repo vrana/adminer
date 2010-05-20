@@ -86,12 +86,21 @@ if (isset($_GET["oracle"])) {
 				$this->num_rows = -1; // all results unbuffered
 			}
 
+			function _convert($row) {
+				foreach ((array) $row as $key => $val) {
+					if (is_a($val, 'OCI-Lob')) {
+						$row[$key] = $val->load();
+					}
+				}
+				return $row;
+			}
+			
 			function fetch_assoc() {
-				return oci_fetch_assoc($this->_result);
+				return $this->_convert(oci_fetch_assoc($this->_result));
 			}
 
 			function fetch_row() {
-				return oci_fetch_row($this->_result);
+				return $this->_convert(oci_fetch_row($this->_result));
 			}
 
 			function fetch_field() {
@@ -189,7 +198,7 @@ if (isset($_GET["oracle"])) {
 	}
 
 	function fk_support($table_status) {
-		return false; //!
+		return true;
 	}
 
 	function fields($table) {
@@ -252,7 +261,7 @@ if (isset($_GET["oracle"])) {
 		foreach ($fields as $field) {
 			$val = $field[1];
 			if ($val && $field[0] != "" && idf_escape($field[0]) != $val[0]) {
-				queries("ALTER TABLE " . table($name) . " RENAME COLUMN " . idf_escape($field[0]) . " TO $val[0]");
+				queries("ALTER TABLE " . table($table) . " RENAME COLUMN " . idf_escape($field[0]) . " TO $val[0]");
 			}
 			if ($val) {
 				$alter[] = ($table != "" ? ($field[0] != "" ? "MODIFY (" : "ADD (") : "  ") . implode($val) . ($table != "" ? ")" : ""); //! error with name change only
@@ -263,9 +272,14 @@ if (isset($_GET["oracle"])) {
 		if ($table == "") {
 			return queries("CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)");
 		}
-		return (!$alter || queries("ALTER TABLE " . table($name) . "\n" . implode("\n", $alter)))
-			&& (!$drop || queries("ALTER TABLE " . table($name) . " DROP (" . implode(", ", $drop) . ")"))
+		return (!$alter || queries("ALTER TABLE " . table($table) . "\n" . implode("\n", $alter)))
+			&& (!$drop || queries("ALTER TABLE " . table($table) . " DROP (" . implode(", ", $drop) . ")"))
+			&& ($table == $name || queries("ALTER TABLE " . table($table) . " RENAME TO " . table($name)))
 		;
+	}
+	
+	function foreign_keys($table) {
+		return array(); //!
 	}
 	
 	function truncate_tables($tables) {
