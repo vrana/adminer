@@ -257,4 +257,5 @@ $translations = array(
 	'Alter type' => 'Pozměnit typ',
 	'Search data in tables' => 'Vyhledat data v tabulkách',
 	'From server' => 'Ze serveru',
+	'empty' => 'prázdné',
 );
