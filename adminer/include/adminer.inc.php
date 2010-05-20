@@ -566,11 +566,18 @@ document.getElementById('username').focus();
 	* @return null
 	*/
 	function tablesPrint($tables) {
-		echo "<p id='tables'>\n";
+		echo "<ul id='tables'>\n";
+		$i = 1;
 		foreach ($tables as $table => $type) {
-			echo '<a href="' . h(ME) . 'select=' . urlencode($table) . '">' . bold(lang('select'), $_GET["select"] == $table) . '</a> ';
-			echo '<a href="' . h(ME) . 'table=' . urlencode($table) . '">' . bold($this->tableName(array("Name" => $table)), $_GET["table"] == $table) . "</a><br>\n"; //! Adminer::tableName may work with full table status
+			echo "<li onmouseover=\"toggle('table-$i');\" onmouseout=\"toggle('table-$i');\"><a href='" . h(ME) . "table=" . urlencode($table) . "'>" . bold($this->tableName(array("Name" => $table)), $_GET["table"] == $table) . "</a>"; //! Adminer::tableName may work with full table status
+			echo "<span id='table-$i' class='hidden'>";
+			echo ' <a href="' . h(ME) . 'select=' . urlencode($table) . '">' . bold(lang('select'), $_GET["select"] == $table) . '</a>';
+			echo ' <a href="' . h(ME) . 'create=' . urlencode($table) . '">' . bold(lang('alter'), $_GET["create"] == $table) . '</a>';
+			echo ' <a href="' . h(ME) . 'edit=' . urlencode($table) . '">' . bold(lang('insert'), $_GET["edit"] == $table) . '</a>';
+			echo "</span>\n";
+			$i++;
 		}
+		echo "</ul>\n";
 	}
 	
 }

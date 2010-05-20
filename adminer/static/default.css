@@ -18,6 +18,7 @@ td img { max-width: 200px; max-height: 200px; }
 code { background: #eee; }
 tr:hover td, tr:hover th { background: #ddf; }
 pre { margin: 1em 0 0; }
+ul { margin: 1em 0 0; }
 .version { color: #777; font-size: 67%; }
 .js .hidden { display: none; }
 .nowrap td, .nowrap th, td.nowrap { white-space: pre; }
@@ -38,6 +39,8 @@ pre { margin: 1em 0 0; }
 .type { width: 15ex; width: auto\9; }
 #menu { position: absolute; margin: 10px 0 0; padding: 0 0 30px 0; top: 2em; left: 0; width: 19em; overflow: auto; overflow-y: hidden; white-space: nowrap; }
 #menu p { padding: .8em 1em; margin: 0; border-bottom: 1px solid #ccc; }
+#tables { padding: 0 0 0 1em; }
+#tables li { list-style-type: none; }
 #content { margin: 2em 0 0 21em; padding: 10px 20px 20px 0; }
 #lang { position: absolute; top: 0; left: 0; line-height: 1.8em; padding: .3em 1em; }
 #breadcrumb { white-space: nowrap; position: absolute; top: 0; left: 21em; background: #eee; height: 2em; line-height: 1.8em; padding: 0 1em; margin: 0 0 0 -18px; }
