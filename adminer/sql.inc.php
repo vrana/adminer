@@ -137,6 +137,7 @@ if ($_POST) {
 	$q = $history[$_GET["history"]];
 }
 textarea("query", $q, 20);
+echo ($_POST ? "" : "<script type='text/javascript'>document.getElementsByTagName('textarea')[0].focus();</script>\n");
 ?>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
