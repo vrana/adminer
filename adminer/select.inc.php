@@ -324,7 +324,7 @@ if (!$columns) {
 						$id = h("val[$unique_idf][" . bracket_escape($key) . "]");
 						$value = $_POST["val"][$unique_idf][bracket_escape($key)];
 						$h_value = h(isset($value) ? $value : $row[$key]);
-						$long = strpos($val, "<em>...</em>");
+						$long = strpos($val, "<i>...</i>");
 						$editable = is_utf8($val) && !$long && $rows[$n][$key] == $row[$key] && !$functions[$key];
 						$text = ereg('text|blob', $field["type"]);
 						echo (($_GET["modify"] && $editable) || isset($value)

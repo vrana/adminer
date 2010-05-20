@@ -457,7 +457,7 @@ function shorten_utf8($string, $length = 80, $suffix = "") {
 	if (!preg_match("(^([\t\r\n -\x{FFFF}]{0,$length})($)?)u", $string, $match)) { // ~s causes trash in $match[2] under some PHP versions, (.|\n) is slow
 		preg_match("(^([\t\r\n -~]{0,$length})($)?)", $string, $match);
 	}
-	return h($match[1]) . $suffix . (isset($match[2]) ? "" : "<em>...</em>");
+	return h($match[1]) . $suffix . (isset($match[2]) ? "" : "<i>...</i>");
 }
 
 /** Generate friendly URL
@@ -537,7 +537,7 @@ function input($field, $value, $function) {
 	echo "<td class='function'>";
 	$functions = (isset($_GET["select"]) ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
 	if ($field["type"] == "enum") {
-		echo nbsp($functions[""]) . "<td>" . ($functions["orig"] ? "<label><input type='radio' name='fields[$name]' value='-1' checked><em>$functions[orig]</em></label> " : "");
+		echo nbsp($functions[""]) . "<td>" . ($functions["orig"] ? "<label><input type='radio' name='fields[$name]' value='-1' checked><i>$functions[orig]</i></label> " : "");
 		echo $adminer->editInput($_GET["edit"], $field, " name='fields[$name]'", $value);
 		enum_input("radio", "fields[$name]", $field, $value);
 	} else {
