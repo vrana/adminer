@@ -25,27 +25,26 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 		$orig_field = reset($orig_fields);
 		$after = "FIRST";
 		foreach ($_POST["fields"] as $key => $field) {
-			$type_field = (isset($types[$field["type"]]) ? $field : $referencable_primary[$foreign_keys[$field["type"]]]);
+			$foreign_key = $foreign_keys[$field["type"]];
+			$type_field = (isset($foreign_key) ? $referencable_primary[$foreign_key] : $field); //! can collide with user defined type
 			if ($field["field"] != "") {
-				if ($type_field) {
-					if (!$field["has_default"]) {
-						$field["default"] = null;
-					}
-					$default = eregi_replace(" *on update CURRENT_TIMESTAMP", "", $field["default"]);
-					if ($default != $field["default"]) { // preg_replace $count is available since PHP 5.1.0
-						$field["on_update"] = "CURRENT_TIMESTAMP";
-						$field["default"] = $default;
-					}
-					if ($key == $_POST["auto_increment_col"]) {
-						$field["auto_increment"] = true;
-					}
-					$process_field = process_field($field, $type_field);
-					if ($process_field != process_field($orig_field, $orig_field)) {
-						$fields[] = array($field["orig"], $process_field, $after);
-					}
-					if (!isset($types[$field["type"]])) {
-						$foreign[] = ($TABLE != "" ? "ADD " : "  ") . "FOREIGN KEY (" . idf_escape($field["field"]) . ") REFERENCES " . idf_escape($foreign_keys[$field["type"]]) . " (" . idf_escape($type_field["field"]) . ")";
-					}
+				if (!$field["has_default"]) {
+					$field["default"] = null;
+				}
+				$default = eregi_replace(" *on update CURRENT_TIMESTAMP", "", $field["default"]);
+				if ($default != $field["default"]) { // preg_replace $count is available since PHP 5.1.0
+					$field["on_update"] = "CURRENT_TIMESTAMP";
+					$field["default"] = $default;
+				}
+				if ($key == $_POST["auto_increment_col"]) {
+					$field["auto_increment"] = true;
+				}
+				$process_field = process_field($field, $type_field);
+				if ($process_field != process_field($orig_field, $orig_field)) {
+					$fields[] = array($field["orig"], $process_field, $after);
+				}
+				if (isset($foreign_key)) {
+					$foreign[] = ($TABLE != "" ? "ADD" : " ") . " FOREIGN KEY (" . idf_escape($field["field"]) . ") REFERENCES " . idf_escape($foreign_key) . " (" . idf_escape($type_field["field"]) . ")";
 				}
 				$after = "AFTER " . idf_escape($field["field"]);
 			} elseif ($field["orig"] != "") {

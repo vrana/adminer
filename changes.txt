@@ -3,10 +3,12 @@ Drivers for MS SQL, SQLite, PostgreSQL, Oracle
 Allow concurrent logins on the same server
 Allow permanent login without customization
 In-place editation in select
+Foreign key options in Table creation
 Show number of tables in server overview
 Operator LIKE %%
 Remember export parameters in cookie
 Allow semicolon as CSV separator
+Schema and sequences support (PostgreSQL)
 Autofocus username in login form
 Disable spellchecking in SQL textareas
 Display auto_increment value of inserted item

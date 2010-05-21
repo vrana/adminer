@@ -201,8 +201,8 @@ if (isset($_GET["pgsql"])) {
 	function table_status($name = "") {
 		global $connection;
 		$return = array();
-		$result = $connection->query("SELECT relname AS \"Name\", CASE relkind WHEN 'r' THEN '' ELSE 'view' END AS \"Engine\", pg_relation_size(oid) AS \"Data_length\", pg_total_relation_size(oid) - pg_relation_size(oid) AS \"Index_length\", pg_catalog.obj_description(oid, 'pg_class') AS \"Comment\"
-FROM pg_catalog.pg_class
+		$result = $connection->query("SELECT relname AS \"Name\", CASE relkind WHEN 'r' THEN '' ELSE 'view' END AS \"Engine\", pg_relation_size(oid) AS \"Data_length\", pg_total_relation_size(oid) - pg_relation_size(oid) AS \"Index_length\", obj_description(oid, 'pg_class') AS \"Comment\"
+FROM pg_class
 WHERE relkind IN ('r','v')
 AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema())"
 			. ($name != "" ? " AND relname = " . $connection->quote($name) : "")
@@ -220,24 +220,25 @@ AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema(
 	function fields($table) {
 		global $connection;
 		$return = array();
-		$table_oid = $connection->result("SELECT oid FROM pg_class WHERE relname = " . $connection->quote($table));
-		$result = $connection->query("SELECT *, col_description($table_oid, ordinal_position) AS comment FROM information_schema.columns WHERE table_name = " . $connection->quote($table) . " ORDER BY ordinal_position");
+		$result = $connection->query("SELECT a.attname AS field, format_type(a.atttypid, a.atttypmod) AS full_type, d.adsrc AS default, a.attnotnull, col_description(c.oid, a.attnum) AS comment
+FROM pg_class c
+JOIN pg_namespace n ON c.relnamespace = n.oid
+JOIN pg_attribute a ON c.oid = a.attrelid
+LEFT JOIN pg_attrdef d ON c.oid = d.adrelid AND a.attnum = d.adnum
+WHERE c.relname = " . $connection->quote($table) . "
+AND n.nspname = current_schema()
+AND a.attnum > 0
+ORDER BY a.attnum");
 		if ($result) {
 			while ($row = $result->fetch_assoc()) {
-				$length = $row["character_maximum_length"];
-				$return[$row["column_name"]] = array(
-					"field" => $row["column_name"],
-					"full_type" => $row["data_type"] . ($length ? "($length)" : ""),
-					"type" => $row["data_type"],
-					"length" => $length,
-					"default" => $row["column_default"],
-					"null" => ($row["is_nullable"] == "YES"),
-					"auto_increment" => eregi("^nextval\\(", $row["column_default"]),
-					"collation" => $row["collation_name"],
-					"privileges" => array("insert" => 1, "select" => 1, "update" => 1), //! is_updatable
-					"primary" => false, //!
-					"comment" => $row["comment"],
-				);
+				//! collation, primary
+				ereg('(.*)(\\((.*)\\))?', $row["full_type"], $match);
+				list(, $row["type"], , $row["length"]) = $match;
+				$row["full_type"] = $row["type"] . ($row["length"] ? "($row[length])" : "");
+				$row["null"] = ($row["attnotnull"] == "f");
+				$row["auto_increment"] = eregi("^nextval\\(", $row["default"]);
+				$row["privileges"] = array("insert" => 1, "select" => 1, "update" => 1);
+				$return[$row["field"]] = $row;
 			}
 		}
 		return $return;
@@ -478,7 +479,18 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 	}
 	
 	function set_schema($schema) {
-		global $connection;
+		global $connection, $types, $structured_types;
+		foreach (get_vals("SELECT typname
+FROM pg_type
+WHERE typnamespace = (SELECT oid FROM pg_namespace WHERE nspname = " . $connection->quote($schema) . ")
+AND typtype IN ('b','d','e')
+AND typelem = 0"
+		) as $type) { //! get types from current_schemas('t')
+			if (!isset($types[$type])) {
+				$types[$type] = 0;
+				$structured_types[lang('User types')][] = $type;
+			}
+		}
 		return $connection->query("SET search_path TO " . idf_escape($schema));
 	}
 	
@@ -504,7 +516,7 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 		lang('Binary') => array("bit" => 0, "bit varying" => 0, "bytea" => 0),
 		lang('Network') => array("cidr" => 43, "inet" => 43, "macaddr" => 17, "txid_snapshot" => 0),
 		lang('Geometry') => array("box" => 0, "circle" => 0, "line" => 0, "lseg" => 0, "path" => 0, "point" => 0, "polygon" => 0),
-	) as $key => $val) {
+	) as $key => $val) { //! can be retrieved from pg_type
 		$types += $val;
 		$structured_types[$key] = array_keys($val);
 	}

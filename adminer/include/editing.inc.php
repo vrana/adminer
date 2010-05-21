@@ -131,9 +131,10 @@ function process_length($length) {
 * @return string
 */
 function process_type($field, $collate = "COLLATE") {
-	global $connection, $unsigned;
-	return " $field[type]"
-		. ($field["length"] != "" && !ereg('^date|time$', $field["type"]) ? "(" . process_length($field["length"]) . ")" : "")
+	global $types, $connection, $unsigned;
+	$type = $field["type"];
+	return " " . (isset($types[$type]) ? $type : idf_escape($type))
+		. ($field["length"] != "" ? "(" . process_length($field["length"]) . ")" : "")
 		. (ereg('int|float|double|decimal', $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
 		. (ereg('char|text|enum|set', $field["type"]) && $field["collation"] ? " $collate " . $connection->quote($field["collation"]) : "")
 	;
