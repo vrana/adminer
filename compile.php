@@ -207,6 +207,7 @@ foreach (glob(dirname(__FILE__) . "/adminer/drivers/" . ($driver ? $driver : "*"
 }
 
 include dirname(__FILE__) . "/adminer/include/pdo.inc.php";
+$features = array("view", "event", "privileges", "user", "processlist", "variables", "trigger", "scheme", "sequence");
 foreach (array("adminer", "editor") as $project) {
 	$lang_ids = array(); // global variable simplifies usage in a callback function
 	$file = file_get_contents(dirname(__FILE__) . "/$project/index.php");
@@ -214,7 +215,7 @@ foreach (array("adminer", "editor") as $project) {
 		$connection = (object) array("server_info" => 5.1); // MySQL support is version specific
 		$_GET[$driver] = true; // to load the driver
 		include_once dirname(__FILE__) . "/adminer/drivers/$driver.inc.php";
-		foreach (array("view", "event", "privileges", "user", "processlist", "variables", "trigger", "scheme", "sequence") as $feature) {
+		foreach ($features as $feature) {
 			if (!support($feature)) {
 				$file = str_replace("} elseif (isset(\$_GET[\"$feature\"])) {\n\tinclude \"./$feature.inc.php\";\n", "", $file);
 			}
@@ -231,6 +232,13 @@ foreach (array("adminer", "editor") as $project) {
 		$file = preg_replace('(include "../adminer/drivers/(?!' . preg_quote($driver) . ').*\\s*)', '', $file);
 	}
 	$file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file); // bootstrap.inc.php
+	if ($driver) {
+		foreach ($features as $feature) {
+			if (!support($feature)) {
+				$file = preg_replace("((\t*)" . preg_quote('if (support("' . $feature . '")') . ".*\n\\1\\})sU", '', $file);
+			}
+		}
+	}
 	$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
 	$file = preg_replace_callback('~\\b(include|require) "([^"]*\\$LANG.inc.php)";~', 'put_file_lang', $file);
 	if ($_SESSION["lang"]) {

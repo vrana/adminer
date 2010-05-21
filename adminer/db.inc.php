@@ -33,7 +33,9 @@ if ($tables_views && !$error && !$_POST["search"]) {
 
 page_header(($_GET["ns"] == "" ? lang('Database') . ": " . h(DB) : lang('Schema') . ": " . h($_GET["ns"])), $error, true);
 echo '<p>' . ($_GET["ns"] == "" ? '<a href="' . h(ME) . 'database=">' . lang('Alter database') . "</a>\n" : "");
-echo (support("scheme") ? "<a href='" . h(ME) . "scheme='>" . ($_GET["ns"] != "" ? lang('Alter schema') : lang('Create schema')) . "</a>\n" : "");
+if (support("scheme")) {
+	echo "<a href='" . h(ME) . "scheme='>" . ($_GET["ns"] != "" ? lang('Alter schema') : lang('Create schema')) . "</a>\n";
+}
 if ($_GET["ns"] !== "") {
 	echo '<a href="' . h(ME) . 'schema=">' . lang('Database schema') . "</a>\n";
 	$sums = array("Data_length" => 0, "Index_length" => 0, "Data_free" => 0);

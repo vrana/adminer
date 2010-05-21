@@ -178,13 +178,15 @@ if (support("partitioning")) {
 <table cellspacing="0" id="partition-table"<?php echo ($partition_table ? "" : " class='hidden'"); ?>>
 <thead><tr><th><?php echo lang('Partition name'); ?><th><?php echo lang('Values'); ?></thead>
 <?php
-foreach ($row["partition_names"] as $key => $val) {
-	echo '<tr>';
-	echo '<td><input name="partition_names[]" value="' . h($val) . '"' . ($key == count($row["partition_names"]) - 1 ? ' onchange="partitionNameChange(this);"' : '') . '>';
-	echo '<td><input name="partition_values[]" value="' . h($row["partition_values"][$key]) . '">';
-}
-?>
+	foreach ($row["partition_names"] as $key => $val) {
+		echo '<tr>';
+		echo '<td><input name="partition_names[]" value="' . h($val) . '"' . ($key == count($row["partition_names"]) - 1 ? ' onchange="partitionNameChange(this);"' : '') . '>';
+		echo '<td><input name="partition_values[]" value="' . h($row["partition_values"][$key]) . '">';
+	}
+	?>
 </table>
 </div></fieldset>
-<?php } ?>
+<?php
+}
+?>
 </form>
