@@ -308,7 +308,7 @@ if (isset($_GET["mssql"])) {
 		return true;
 	}
 
-	function fields($table) {
+	function fields($table, $hidden = false) {
 		global $connection;
 		$return = array();
 		$result = $connection->query("SELECT c.*, t.name type, d.definition [default]

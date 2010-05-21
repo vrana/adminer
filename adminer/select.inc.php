@@ -2,7 +2,7 @@
 $TABLE = $_GET["select"];
 $table_status = table_status($TABLE);
 $indexes = indexes($TABLE);
-$fields = fields($TABLE);
+$fields = fields($TABLE, 1); // 1 - hidden
 $foreign_keys = column_foreign_keys($TABLE);
 
 $rights = array(); // privilege => 0
@@ -12,7 +12,7 @@ foreach ($fields as $key => $field) {
 	$name = $adminer->fieldName($field);
 	if (isset($field["privileges"]["select"]) && $name != "") {
 		$columns[$key] = html_entity_decode(strip_tags($name));
-		if (ereg('text|blob', $field["type"])) {
+		if (ereg('text|clob|blob', $field["type"])) {
 			$text_length = $adminer->selectLengthProcess();
 		}
 	}

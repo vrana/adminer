@@ -380,9 +380,10 @@ if (!defined("DRIVER")) {
 
 	/** Get information about fields
 	* @param string
+	* @param bool display hidden table columns
 	* @return array array($name => array("field" => , "full_type" => , "type" => , "length" => , "unsigned" => , "default" => , "null" => , "auto_increment" => , "on_update" => , "collation" => , "privileges" => , "comment" => , "primary" => ))
 	*/
-	function fields($table) {
+	function fields($table, $hidden = false) {
 		global $connection;
 		$return = array();
 		$result = $connection->query("SHOW FULL COLUMNS FROM " . table($table));

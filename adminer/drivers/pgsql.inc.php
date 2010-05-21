@@ -217,7 +217,7 @@ AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema(
 		return true;
 	}
 	
-	function fields($table) {
+	function fields($table, $hidden = false) {
 		global $connection;
 		$return = array();
 		$result = $connection->query("SELECT a.attname AS field, format_type(a.atttypid, a.atttypmod) AS full_type, d.adsrc AS default, a.attnotnull, col_description(c.oid, a.attnum) AS comment
@@ -227,8 +227,10 @@ JOIN pg_attribute a ON c.oid = a.attrelid
 LEFT JOIN pg_attrdef d ON c.oid = d.adrelid AND a.attnum = d.adnum
 WHERE c.relname = " . $connection->quote($table) . "
 AND n.nspname = current_schema()
-AND a.attnum > 0
-ORDER BY a.attnum");
+AND NOT a.attisdropped
+" . ($hidden ? "" : "AND a.attnum > 0") . "
+ORDER BY a.attnum < 0, a.attnum"
+		);
 		if ($result) {
 			while ($row = $result->fetch_assoc()) {
 				//! collation, primary

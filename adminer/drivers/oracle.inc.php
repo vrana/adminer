@@ -201,7 +201,7 @@ if (isset($_GET["oracle"])) {
 		return true;
 	}
 
-	function fields($table) {
+	function fields($table, $hidden = false) {
 		global $connection;
 		$return = array();
 		$result = $connection->query("SELECT * FROM all_tab_columns WHERE table_name = " . $connection->quote($table) . " ORDER BY column_id");
