@@ -777,6 +777,13 @@ if (!defined("DRIVER")) {
 		return $connection->query("EXPLAIN $query");
 	}
 	
+	/** Get user defined types
+	* @return array
+	*/
+	function types() {
+		return array();
+	}
+	
 	/** Get existing schemas
 	* @return array
 	*/
@@ -854,7 +861,7 @@ if (!defined("DRIVER")) {
 	*/
 	function support($feature) {
 		global $connection;
-		return !ereg("scheme|sequence" . ($connection->server_info < 5.1 ? "|event|partitioning" . ($connection->server_info < 5 ? "|view|routine|trigger" : "") : ""), $feature);
+		return !ereg("scheme|sequence|type" . ($connection->server_info < 5.1 ? "|event|partitioning" . ($connection->server_info < 5 ? "|view|routine|trigger" : "") : ""), $feature);
 	}
 
 	$jush = "sql"; ///< @var string JUSH identifier

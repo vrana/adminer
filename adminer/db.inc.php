@@ -126,6 +126,21 @@ if ($_GET["ns"] !== "") {
 		echo "<p><a href='" . h(ME) . "sequence='>" . lang('Create sequence') . "</a>\n";
 	}
 	
+	if (support("type")) {
+		echo "<h3>" . lang('User types') . "</h3>\n";
+		$types = types();
+		if ($types) {
+			echo "<table cellspacing='0'>\n";
+			echo "<thead><tr><th>" . lang('Name') . "</thead>\n";
+			odd('');
+			foreach ($types as $val) {
+				echo "<tr" . odd() . "><th><a href='" . h(ME) . "type=" . urlencode($val) . "'>" . h($val) . "</a>\n";
+			}
+			echo "</table>\n";
+		}
+		echo "<p><a href='" . h(ME) . "type='>" . lang('Create type') . "</a>\n";
+	}
+	
 	if (support("event")) {
 		echo "<h3>" . lang('Events') . "</h3>\n";
 		$result = $connection->query("SHOW EVENTS");

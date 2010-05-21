@@ -8,7 +8,7 @@ Show number of tables in server overview
 Operator LIKE %%
 Remember export parameters in cookie
 Allow semicolon as CSV separator
-Schema and sequences support (PostgreSQL)
+Schemas, sequences and types support (PostgreSQL)
 Autofocus username in login form
 Disable spellchecking in SQL textareas
 Display auto_increment value of inserted item

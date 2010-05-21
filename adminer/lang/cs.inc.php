@@ -251,5 +251,9 @@ $translations = array(
 	'Sequence has been altered.' => 'Sekvence byla změněna.',
 	'Alter sequence' => 'Pozměnit sekvenci',
 	'User types' => 'Uživatelské typy',
+	'Create type' => 'Vytvořit typ',
+	'Type has been dropped.' => 'Typ byl odstraněn.',
+	'Type has been created.' => 'Typ byl vytvořen.',
+	'Alter type' => 'Pozměnit typ',
 	'Search data in tables' => 'Vyhledat data v tabulkách',
 );

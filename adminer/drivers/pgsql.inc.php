@@ -469,6 +469,15 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 		return $connection->query("EXPLAIN $query");
 	}
 	
+	function types() {
+		return get_vals("SELECT typname
+FROM pg_type
+WHERE typnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema())
+AND typtype IN ('b','d','e')
+AND typelem = 0"
+		);
+	}
+	
 	function schemas() {
 		return get_vals("SELECT nspname FROM pg_namespace");
 	}
@@ -480,18 +489,14 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 	
 	function set_schema($schema) {
 		global $connection, $types, $structured_types;
-		foreach (get_vals("SELECT typname
-FROM pg_type
-WHERE typnamespace = (SELECT oid FROM pg_namespace WHERE nspname = " . $connection->quote($schema) . ")
-AND typtype IN ('b','d','e')
-AND typelem = 0"
-		) as $type) { //! get types from current_schemas('t')
+		$return = $connection->query("SET search_path TO " . idf_escape($schema));
+		foreach (types() as $type) { //! get types from current_schemas('t')
 			if (!isset($types[$type])) {
 				$types[$type] = 0;
 				$structured_types[lang('User types')][] = $type;
 			}
 		}
-		return $connection->query("SET search_path TO " . idf_escape($schema));
+		return $return;
 	}
 	
 	function use_sql($database) {
@@ -503,7 +508,7 @@ AND typelem = 0"
 	}
 	
 	function support($feature) {
-		return ereg('^(comment|view|scheme|sequence|trigger|variables|drop_col)$', $feature); //! routine|
+		return ereg('^(comment|view|scheme|sequence|trigger|type|variables|drop_col)$', $feature); //! routine|
 	}
 	
 	$jush = "pgsql";
