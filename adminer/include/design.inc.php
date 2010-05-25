@@ -7,11 +7,11 @@
 * @return null
 */
 function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
-	global $LANG, $VERSION, $adminer, $connection, $drivers;
+	global $LANG, $VERSION, $HTTPS, $adminer, $connection, $drivers;
 	header("Content-Type: text/html; charset=utf-8");
 	header("X-Frame-Options: deny"); // ClickJacking protection in IE8, Safari 4, Chrome 2, Firefox NoScript plugin
 	$title_all = $title . ($title2 != "" ? ": " . h($title2) : "");
-	$protocol = ($_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off") ? "https" : "http");
+	$protocol = ($HTTPS ? "https" : "http");
 	?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html lang="<?php echo $LANG; ?>">

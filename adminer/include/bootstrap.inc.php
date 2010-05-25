@@ -24,11 +24,12 @@ include "../adminer/include/functions.inc.php";
 if (!isset($_SERVER["REQUEST_URI"])) {
 	$_SERVER["REQUEST_URI"] = $_SERVER["ORIG_PATH_INFO"] . ($_SERVER["QUERY_STRING"] != "" ? "?$_SERVER[QUERY_STRING]" : ""); // IIS 5 compatibility
 }
+$HTTPS = $_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off");
 
 @ini_set("session.use_trans_sid", false); // protect links in export, @ - may be disabled
 if (!ini_bool("session.auto_start")) {
 	session_name("adminer_sid"); // use specific session name to get own namespace
-	$params = array(0, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]), "", $_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off"));
+	$params = array(0, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]), "", $HTTPS);
 	if (version_compare(PHP_VERSION, '5.2.0') >= 0) {
 		$params[] = true; // HttpOnly
 	}

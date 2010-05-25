@@ -315,11 +315,16 @@ if (!$columns) {
 								}
 							}
 						}
-						if (!$link && is_email($val)) {
-							$link = "mailto:$val";
-						}
-						if (!$link && is_url($row[$key])) {
-							$link = "http://www.adminer.org/redirect/?url=" . urlencode($row[$key]); // intermediate page to hide Referer, may be changed to rel="noreferrer" in HTML5
+						if (!$link) {
+							if (is_email($val)) {
+								$link = "mailto:$val";
+							}
+							if ($protocol = is_url($row[$key])) {
+								$link = ($protocol == "http" && $HTTPS
+									? $row[$key] // HTTP links from HTTPS pages don't receive Referer automatically
+									: "$protocol://www.adminer.org/redirect/?url=" . urlencode($row[$key]) // intermediate page to hide Referer, may be changed to rel="noreferrer" in HTML5
+								);
+							}
 						}
 						$id = h("val[$unique_idf][" . bracket_escape($key) . "]");
 						$value = $_POST["val"][$unique_idf][bracket_escape($key)];

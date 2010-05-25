@@ -245,13 +245,14 @@ function where_link($i, $column, $value, $operator = "=") {
 * @return bool
 */
 function cookie($name, $value) {
+	global $HTTPS;
 	$params = array(
 		$name,
 		(ereg("\n", $value) ? "" : $value), // HTTP Response Splitting protection in PHP < 5.1.2
 		time() + 2592000, // 2592000 - 30 days
 		preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]),
 		"",
-		$_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off")
+		$HTTPS
 	);
 	if (version_compare(PHP_VERSION, '5.2.0') >= 0) {
 		$params[] = true; // HttpOnly
@@ -703,11 +704,11 @@ function is_email($email) {
 
 /** Check whether the string is URL address
 * @param string
-* @return bool
+* @return string "http", "https" or ""
 */
 function is_url($string) {
-	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component
-	return preg_match("~^https?://($domain?\\.)+$domain(:[0-9]+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string); //! restrict path, query and fragment characters
+	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component //! IDN
+	return (preg_match("~^(https?)://($domain?\\.)+$domain(:[0-9]+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string, $match) ? strtolower($match[1]) : ""); //! restrict path, query and fragment characters
 }
 
 /** Print header for hidden fieldset (close by </div></fieldset>)
