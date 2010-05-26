@@ -151,7 +151,7 @@ document.getElementById('username').focus();
 	*/
 	function selectVal($val, $link, $field) {
 		$return = ($val != "<i>NULL</i>" && $field["type"] == "char" ? "<code>$val</code>" : $val);
-		if (ereg('binary|blob|bytea', $field["type"]) && !is_utf8($val)) {
+		if (ereg('binary|blob|bytea|raw|file', $field["type"]) && !is_utf8($val)) {
 			$return = lang('%d byte(s)', strlen($val));
 		}
 		return ($link ? "<a href='$link'>$return</a>" : $return);

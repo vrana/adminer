@@ -12,7 +12,7 @@ foreach ($fields as $key => $field) {
 	$name = $adminer->fieldName($field);
 	if (isset($field["privileges"]["select"]) && $name != "") {
 		$columns[$key] = html_entity_decode(strip_tags($name));
-		if (ereg('text|clob|blob', $field["type"])) {
+		if (ereg('text|lob', $field["type"])) {
 			$text_length = $adminer->selectLengthProcess();
 		}
 	}
@@ -280,7 +280,7 @@ if (!$columns) {
 						if (!isset($val)) {
 							$val = "<i>NULL</i>";
 						} else {
-							if (ereg('binary|blob|bytea', $field["type"]) && $val != "") {
+							if (ereg('binary|blob|bytea|raw|file', $field["type"]) && $val != "") {
 								$link = h(ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . $unique_idf);
 							}
 							if ($val == "") {
@@ -331,7 +331,7 @@ if (!$columns) {
 						$h_value = h(isset($value) ? $value : $row[$key]);
 						$long = strpos($val, "<i>...</i>");
 						$editable = is_utf8($val) && !$long && $rows[$n][$key] == $row[$key] && !$functions[$key];
-						$text = ereg('text|blob', $field["type"]);
+						$text = ereg('text|lob', $field["type"]);
 						echo (($_GET["modify"] && $editable) || isset($value)
 							? "<td>" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>")
 							: "<td id='$id' ondblclick=\"" . ($editable ? "selectDblClick(this, event" . ($text ? ", 1" : "") . ")" : "alert('" . ($long ? lang('Increase text length to modify this value.') : lang('Use edit link to modify this value.')) . "')") . ";\">" . $adminer->selectVal($val, $link, $field)

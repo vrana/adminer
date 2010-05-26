@@ -562,9 +562,9 @@ function input($field, $value, $function) {
 				$checked = (is_int($value) ? ($value >> $i) & 1 : in_array($val, explode(",", $value), true));
 				echo " <label><input type='checkbox' name='fields[$name][$i]' value='" . (1 << $i) . "'" . ($checked ? ' checked' : '') . "$onchange>" . h($val) . '</label>';
 			}
-		} elseif (ereg('binary|blob|bytea', $field["type"]) && ini_bool("file_uploads")) {
+		} elseif (ereg('binary|blob|bytea|raw|file', $field["type"]) && ini_bool("file_uploads")) {
 			echo "<input type='file' name='fields-$name'$onchange>";
-		} elseif (ereg('text|blob', $field["type"])) {
+		} elseif (ereg('text|lob', $field["type"])) {
 			echo "<textarea " . ($jush != "sqlite" || ereg("\n", $value) ? "cols='50' rows='12'" : "cols='30' rows='1' style='height: 1.2em;'") . "$attrs>" . h($value) . '</textarea>'; // 1.2em - line-height
 		} else {
 			// int(3) is only a display hint
@@ -604,7 +604,7 @@ function process_input($field) {
 	if ($field["type"] == "set") {
 		return array_sum((array) $value);
 	}
-	if (ereg('binary|blob|bytea', $field["type"]) && ini_bool("file_uploads")) {
+	if (ereg('binary|blob|bytea|raw|file', $field["type"]) && ini_bool("file_uploads")) {
 		$file = get_file("fields-$idf");
 		if (!is_string($file)) {
 			return false; //! report errors
