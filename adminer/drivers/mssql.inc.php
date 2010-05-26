@@ -145,7 +145,7 @@ if (isset($_GET["mssql"])) {
 				if ($this->_link) {
 					$result = $this->query("SELECT SERVERPROPERTY('ProductLevel'), SERVERPROPERTY('Edition')");
 					$row = $result->fetch_row();
-					$this->server_info = $this->result("sp_server_info 2", 2)." [$row[0]] $row[1]";
+					$this->server_info = $this->result("sp_server_info 2", 2) . " [$row[0]] $row[1]";
 				} else {
 					$this->error = mssql_get_last_message();
 				}
@@ -398,7 +398,42 @@ WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table)
 	}
 
 	function auto_increment() {
-		return " IDENTITY";
+		return " IDENTITY" . ($_POST["Auto_increment"] != "" ? "(" . preg_replace('~\\D+~', '', $_POST["Auto_increment"]) . ",1)" : "");
+	}
+	
+	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
+		global $connection;
+		$alter = array();
+		foreach ($fields as $field) {
+			$column = idf_escape($field[0]);
+			$val = $field[1];
+			if (!$val) {
+				$alter["DROP"][] = " COLUMN $field[0]";
+			} else {
+				$val[1] = preg_replace("~( COLLATE )'(\\w+)'~", "\\1\\2", $val[1]);
+				if ($field[0] == "") {
+					$alter["ADD"][] = "\n  " . implode("", $val);
+				} else {
+					unset($val[6]); //! identity can't be removed
+					if ($column != $val[0]) {
+						queries("EXEC sp_rename " . $connection->quote(table($table) . ".$column") . ", " . $connection->quote(idf_unescape($val[0])) . ", 'COLUMN'");
+					}
+					$alter["ALTER COLUMN " . implode("", $val)][] = "";
+				}
+			}
+		}
+		if ($table == "") {
+			return queries("CREATE TABLE " . table($name) . " (" . implode(",", (array) $alter["ADD"]) . "\n)");
+		}
+		if ($table != $name) {
+			queries("EXEC sp_rename " . $connection->quote(table($table)) . ", " . $connection->quote($name));
+		}
+		foreach ($alter as $key => $val) {
+			if (!queries("ALTER TABLE " . idf_escape($name) . " $key" . implode(",", $val))) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	function begin() {

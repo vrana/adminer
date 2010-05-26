@@ -144,7 +144,7 @@ function process_type($field, $collate = "COLLATE") {
 /** Create SQL string from field
 * @param array basic field information
 * @param array information about field type
-* @return array array("field", "type", "NULL", "DEFAULT", "ON UPDATE", "COMMENT", "AUTO_INCREMENT")
+* @return array array("field", " type", " NULL", " DEFAULT", " ON UPDATE", " COMMENT", " AUTO_INCREMENT")
 */
 function process_field($field, $type_field) {
 	global $connection;
