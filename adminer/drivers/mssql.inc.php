@@ -319,11 +319,12 @@ LEFT JOIN sys.default_constraints d ON c.default_object_id = d.parent_column_id
 WHERE o.schema_id = SCHEMA_ID(" . $connection->quote(get_schema()) . ") AND o.type IN ('S', 'U', 'V') AND o.name = " . $connection->quote($table)
 		);
 		while ($row = $result->fetch_assoc()) {
-			$length = $row["max_length"]; //! precision, scale
+			$type = $row["type"];
+			$length = (ereg("char|binary", $type) ? $row["max_length"] : ($type == "decimal" ? "$row[precision],$row[scale]" : ""));
 			$return[$row["name"]] = array(
 				"field" => $row["name"],
-				"full_type" => $row["type"] . ($length ? "($length)" : ""),
-				"type" => $row["type"],
+				"full_type" => $type . ($length ? "($length)" : ""),
+				"type" => $type,
 				"length" => $length,
 				"default" => $row["default"],
 				"null" => $row["is_nullable"],
