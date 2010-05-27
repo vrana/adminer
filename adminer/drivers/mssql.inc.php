@@ -360,6 +360,11 @@ WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table)
 		return $return;
 	}
 
+	function view($name) {
+		global $connection;
+		return array("select" => preg_replace('~^(?:[^`]|`[^`]*`)*\\s+AS\\s+~isU', '', $connection->result("SELECT view_definition FROM information_schema.views WHERE table_schema = SCHEMA_NAME() AND table_name = " . $connection->quote($name))));
+	}
+	
 	function collations() {
 		$return = array();
 		foreach (get_vals("SELECT name FROM fn_helpcollations()") as $collation) {
@@ -553,7 +558,7 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . $connection->quote($table)
 	}
 
 	function support($feature) {
-		return ereg('^(scheme|trigger|drop_col)$', $feature); //! view|routine|
+		return ereg('^(scheme|trigger|view|drop_col)$', $feature); //! routine|
 	}
 	
 	$jush = "mssql";
