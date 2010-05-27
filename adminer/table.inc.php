@@ -20,7 +20,7 @@ if ($fields) {
 	}
 	echo "</table>\n";
 	
-	if (is_view($table_status)) {
+	if (!is_view($table_status)) {
 		echo "<h3>" . lang('Indexes') . "</h3>\n";
 		$indexes = indexes($TABLE);
 		if ($indexes) {
