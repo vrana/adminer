@@ -1,7 +1,7 @@
 <?php
 // PDO can be used in several database drivers
 if (extension_loaded('pdo')) {
-	/*abstract */class Min_PDO extends PDO {
+	/*abstract*/ class Min_PDO extends PDO {
 		var $_result, $server_info, $affected_rows, $error;
 		
 		function __construct() {

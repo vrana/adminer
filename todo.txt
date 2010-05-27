@@ -7,7 +7,7 @@ Blob download and image display in edit form (important for Editor with hidden f
 Add title to Logout, edit (in select) and select (in menu) in style "hever"
 Shift-click in checkboxes to select range
 Export by GET parameters
-Only first part of big BZ2 export is readable
+Only first part of big BZ2 export is readable, files are missing in TAR
 Auto-refresh processlist (thanks to Jan Garaj)
 Show pagination above and under the table in select
 ? Filter by value in row under <thead> in select
