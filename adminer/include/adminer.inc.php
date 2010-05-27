@@ -86,7 +86,7 @@ document.getElementById('username').focus();
 	function selectLinks($tableStatus, $set = "") {
 		echo '<p class="tabs">';
 		$links = array("select" => lang('Select data'), "table" => lang('Show structure'));
-		if (eregi("view", $tableStatus["Engine"])) {
+		if (is_view($tableStatus)) {
 			$links["view"] = lang('Alter view');
 		} else {
 			$links["create"] = lang('Alter table');

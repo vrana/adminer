@@ -165,7 +165,7 @@ if ($_GET["ns"] !== "") {
 		foreach ($table_status as $row) {
 			$id = addcslashes($row["Name"], "\\'/");
 			echo "setHtml('Comment-$id', '" . nbsp($row["Comment"]) . "');\n";
-			if (!eregi("view", $row["Engine"])) {
+			if (!is_view($row)) {
 				foreach (array("Engine", "Collation") as $key) {
 					echo "setHtml('$key-$id', '" . nbsp($row[$key]) . "');\n";
 				}

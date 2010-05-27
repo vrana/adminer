@@ -72,7 +72,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 					$table = (DB == "" || in_array($row["Name"], (array) $_POST["tables"]));
 					$data = (DB == "" || in_array($row["Name"], (array) $_POST["data"]));
 					if ($table || $data) {
-						if (isset($row["Engine"])) {
+						if (!is_view($row)) {
 							if ($ext == "tar") {
 								ob_start();
 							}
@@ -197,7 +197,7 @@ if (DB != "") {
 		$prefix = ereg_replace("_.*", "", $name);
 		$checked = ($TABLE == "" || $TABLE == (substr($TABLE, -1) == "%" ? "$prefix%" : $name)); //! % may be part of table name
 		$print = "<tr><td>" . checkbox("tables[]", $name, $checked, $name, "formUncheck('check-tables');");
-		if (eregi("view", $row["Engine"])) {
+		if (is_view($row)) {
 			$views .= "$print\n";
 		} else {
 			echo "$print<td align='right'><label>" . ($row["Engine"] == "InnoDB" && $row["Rows"] ? "~ " : "") . $row["Rows"] . checkbox("data[]", $name, $checked, "", "formUncheck('check-data');") . "</label>\n";

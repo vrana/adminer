@@ -304,6 +304,10 @@ if (isset($_GET["mssql"])) {
 		return $return;
 	}
 
+	function is_view($table_status) {
+		return $table_status["Engine"] == "VIEW";
+	}
+	
 	function fk_support($table_status) {
 		return true;
 	}

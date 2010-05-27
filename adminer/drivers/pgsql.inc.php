@@ -213,6 +213,10 @@ AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema(
 		return ($name != "" ? $return[$name] : $return);
 	}
 	
+	function is_view($table_status) {
+		return $table_status["Engine"] == "view";
+	}
+	
 	function fk_support($table_status) {
 		return true;
 	}

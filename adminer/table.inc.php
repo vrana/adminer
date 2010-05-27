@@ -6,7 +6,7 @@ if (!$fields) {
 }
 $table_status = ($fields ? table_status($TABLE) : array());
 
-page_header(($fields && $table_status["Engine"] == "VIEW" ? lang('View') : lang('Table')) . ": " . h($TABLE), $error);
+page_header(($fields && is_view($table_status) ? lang('View') : lang('Table')) . ": " . h($TABLE), $error);
 $adminer->selectLinks($table_status);
 
 if ($fields) {
@@ -20,7 +20,7 @@ if ($fields) {
 	}
 	echo "</table>\n";
 	
-	if ($table_status["Engine"] != "VIEW") {
+	if (is_view($table_status)) {
 		echo "<h3>" . lang('Indexes') . "</h3>\n";
 		$indexes = indexes($TABLE);
 		if ($indexes) {

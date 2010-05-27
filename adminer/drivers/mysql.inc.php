@@ -359,7 +359,6 @@ if (!defined("DRIVER")) {
 				$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["Comment"]);
 			}
 			if (!isset($row["Rows"])) {
-				$row["Engine"] = "VIEW";
 				$row["Comment"] = "";
 			}
 			if ($name != "") {
@@ -368,6 +367,14 @@ if (!defined("DRIVER")) {
 			$return[$row["Name"]] = $row;
 		}
 		return $return;
+	}
+
+	/** Find out whether the identifier is view
+	* @param array
+	* @return bool
+	*/
+	function is_view($table_status) {
+		return !isset($table_status["Rows"]);
 	}
 
 	/** Check if table supports foreign keys

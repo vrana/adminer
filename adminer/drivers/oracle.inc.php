@@ -202,6 +202,10 @@ UNION SELECT view_name, 'view' FROM user_views" . ($name != "" ? " WHERE view_na
 		return $return;
 	}
 
+	function is_view($table_status) {
+		return $table_status["Engine"] == "view";
+	}
+	
 	function fk_support($table_status) {
 		return true;
 	}

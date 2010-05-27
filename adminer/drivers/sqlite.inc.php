@@ -262,6 +262,10 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return ($name != "" ? $return[$name] : $return);
 	}
 
+	function is_view($table_status) {
+		return $table_status["Engine"] == "view";
+	}
+	
 	function fk_support($table_status) {
 		global $connection;
 		return !$connection->result("SELECT sqlite_compileoption_used('OMIT_FOREIGN_KEY')");
