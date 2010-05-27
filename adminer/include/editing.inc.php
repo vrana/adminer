@@ -5,77 +5,73 @@
 * @return null
 */
 function select($result, $connection2 = null) {
-	if (!$result->num_rows) {
-		echo "<p class='message'>" . lang('No rows.') . "\n";
-	} else {
-		echo "<table cellspacing='0' class='nowrap'>\n";
-		$links = array(); // colno => orgtable - create links from these columns
-		$indexes = array(); // orgtable => array(column => colno) - primary keys
-		$columns = array(); // orgtable => array(column => ) - not selected columns in primary key
-		$blobs = array(); // colno => bool - display bytes for blobs
-		$types = array(); // colno => type - display char in <code>
-		odd(''); // reset odd for each result
-		for ($i=0; $row = $result->fetch_row(); $i++) {
-			if (!$i) {
-				echo "<thead><tr>";
-				for ($j=0; $j < count($row); $j++) {
-					$field = $result->fetch_field();
-					$orgtable = $field->orgtable;
-					$orgname = $field->orgname;
-					if ($orgtable != "") {
-						if (!isset($indexes[$orgtable])) {
-							// find primary key in each table
-							$indexes[$orgtable] = array();
-							foreach (indexes($orgtable, $connection2) as $index) {
-								if ($index["type"] == "PRIMARY") {
-									$indexes[$orgtable] = array_flip($index["columns"]);
-									break;
-								}
+	$links = array(); // colno => orgtable - create links from these columns
+	$indexes = array(); // orgtable => array(column => colno) - primary keys
+	$columns = array(); // orgtable => array(column => ) - not selected columns in primary key
+	$blobs = array(); // colno => bool - display bytes for blobs
+	$types = array(); // colno => type - display char in <code>
+	odd(''); // reset odd for each result
+	for ($i=0; $row = $result->fetch_row(); $i++) {
+		if (!$i) {
+			echo "<table cellspacing='0' class='nowrap'>\n";
+			echo "<thead><tr>";
+			for ($j=0; $j < count($row); $j++) {
+				$field = $result->fetch_field();
+				$orgtable = $field->orgtable;
+				$orgname = $field->orgname;
+				if ($orgtable != "") {
+					if (!isset($indexes[$orgtable])) {
+						// find primary key in each table
+						$indexes[$orgtable] = array();
+						foreach (indexes($orgtable, $connection2) as $index) {
+							if ($index["type"] == "PRIMARY") {
+								$indexes[$orgtable] = array_flip($index["columns"]);
+								break;
 							}
-							$columns[$orgtable] = $indexes[$orgtable];
 						}
-						if (isset($columns[$orgtable][$orgname])) {
-							unset($columns[$orgtable][$orgname]);
-							$indexes[$orgtable][$orgname] = $j;
-							$links[$j] = $orgtable;
-						}
+						$columns[$orgtable] = $indexes[$orgtable];
 					}
-					if ($field->charsetnr == 63) { // 63 - binary
-						$blobs[$j] = true;
-					}
-					$types[$j] = $field->type;
-					echo "<th" . ($orgtable != "" || $field->name != $orgname ? " title='" . h(($orgtable != "" ? "$orgtable." : "") . $orgname) . "'" : "") . ">" . h($field->name);
-				}
-				echo "</thead>\n";
-			}
-			echo "<tr" . odd() . ">";
-			foreach ($row as $key => $val) {
-				if (!isset($val)) {
-					$val = "<i>NULL</i>";
-				} else {
-					if ($blobs[$key] && !is_utf8($val)) {
-						$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>"; //! link to download
-					} elseif (!strlen($val)) { // strlen - SQLite can return int
-						$val = "&nbsp;"; // some content to print a border
-					} else {
-						$val = h($val);
-						if ($types[$key] == 254) { // 254 - char
-							$val = "<code>$val</code>";
-						}
-					}
-					if (isset($links[$key]) && !$columns[$links[$key]]) {
-						$link = "edit=" . urlencode($links[$key]);
-						foreach ($indexes[$links[$key]] as $col => $j) {
-							$link .= "&where" . urlencode("[" . bracket_escape($col) . "]") . "=" . urlencode($row[$j]);
-						}
-						$val = "<a href='" . h(ME . $link) . "'>$val</a>";
+					if (isset($columns[$orgtable][$orgname])) {
+						unset($columns[$orgtable][$orgname]);
+						$indexes[$orgtable][$orgname] = $j;
+						$links[$j] = $orgtable;
 					}
 				}
-				echo "<td>$val";
+				if ($field->charsetnr == 63) { // 63 - binary
+					$blobs[$j] = true;
+				}
+				$types[$j] = $field->type;
+				echo "<th" . ($orgtable != "" || $field->name != $orgname ? " title='" . h(($orgtable != "" ? "$orgtable." : "") . $orgname) . "'" : "") . ">" . h($field->name);
 			}
+			echo "</thead>\n";
 		}
-		echo "</table>\n";
+		echo "<tr" . odd() . ">";
+		foreach ($row as $key => $val) {
+			if (!isset($val)) {
+				$val = "<i>NULL</i>";
+			} else {
+				if ($blobs[$key] && !is_utf8($val)) {
+					$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>"; //! link to download
+				} elseif (!strlen($val)) { // strlen - SQLite can return int
+					$val = "&nbsp;"; // some content to print a border
+				} else {
+					$val = h($val);
+					if ($types[$key] == 254) { // 254 - char
+						$val = "<code>$val</code>";
+					}
+				}
+				if (isset($links[$key]) && !$columns[$links[$key]]) {
+					$link = "edit=" . urlencode($links[$key]);
+					foreach ($indexes[$links[$key]] as $col => $j) {
+						$link .= "&where" . urlencode("[" . bracket_escape($col) . "]") . "=" . urlencode($row[$j]);
+					}
+					$val = "<a href='" . h(ME . $link) . "'>$val</a>";
+				}
+			}
+			echo "<td>$val";
+		}
 	}
+	echo ($i ? "</table>" : "<p class='message'>" . lang('No rows.')) . "\n";
 }
 
 /** Get referencable tables with single column primary key except self

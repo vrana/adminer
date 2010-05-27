@@ -20,7 +20,7 @@ function dump_table($table, $style, $is_view = false) {
 		$create = create_sql($table);
 		if ($create) {
 			if ($style == "DROP+CREATE") {
-				echo "DROP " . ($is_view ? "VIEW" : "TABLE") . " IF EXISTS " . idf_escape($table) . ";\n";
+				echo "DROP " . ($is_view ? "VIEW" : "TABLE") . " IF EXISTS " . table($table) . ";\n";
 			}
 			echo ($style != "CREATE+ALTER" ? $create : ($is_view ? substr_replace($create, " OR REPLACE", 6, 0) : substr_replace($create, " IF NOT EXISTS", 12, 0))) . ";\n\n";
 		}
@@ -86,7 +86,7 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 	UNTIL done END REPEAT;
 	CLOSE columns;
 	IF @alter_table != '' OR add_columns != '' THEN
-		SET alter_command = CONCAT(alter_command, 'ALTER TABLE " . idf_escape($table) . "', SUBSTR(CONCAT(add_columns, @alter_table), 2), ';\\n');
+		SET alter_command = CONCAT(alter_command, 'ALTER TABLE " . table($table) . "', SUBSTR(CONCAT(add_columns, @alter_table), 2), ';\\n');
 	END IF;
 END;;
 DELIMITER ;
@@ -104,10 +104,10 @@ function dump_data($table, $style, $select = "") {
 	$max_packet = ($jush == "sqlite" ? 0 : 1048576); // default, minimum is 1024
 	if ($style) {
 		if ($_POST["format"] == "sql" && $style == "TRUNCATE+INSERT") {
-			echo "TRUNCATE " . idf_escape($table) . ";\n";
+			echo truncate_sql($table) . ";\n";
 		}
 		$fields = fields($table);
-		$result = $connection->query(($select ? $select : "SELECT * FROM " . idf_escape($table)), 1); // 1 - MYSQLI_USE_RESULT //! enum and set as numbers, microtime
+		$result = $connection->query(($select ? $select : "SELECT * FROM " . table($table)), 1); // 1 - MYSQLI_USE_RESULT //! enum and set as numbers, microtime
 		if ($result) {
 			$insert = "";
 			$buffer = "";
@@ -116,7 +116,7 @@ function dump_data($table, $style, $select = "") {
 					dump_csv($row);
 				} else {
 					if (!$insert) {
-						$insert = "INSERT INTO " . idf_escape($table) . " (" . implode(", ", array_map('idf_escape', array_keys($row))) . ") VALUES";
+						$insert = "INSERT INTO " . table($table) . " (" . implode(", ", array_map('idf_escape', array_keys($row))) . ") VALUES";
 					}
 					foreach ($row as $key => $val) {
 						$row[$key] = (isset($val) ? (ereg('int|float|double|decimal', $fields[$key]["type"]) ? $val : $connection->quote($val)) : "NULL"); //! columns looking like functions

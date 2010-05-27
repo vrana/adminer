@@ -626,7 +626,7 @@ function search_tables() {
 		$name = $adminer->tableName($table_status);
 		if (isset($table_status["Engine"]) && $name != "" && (!$_POST["tables"] || in_array($table, $_POST["tables"]))) {
 			$result = $connection->query("SELECT" . limit("1 FROM " . table($table), " WHERE " . implode(" AND ", $adminer->selectSearchProcess(fields($table), array())), 1));
-			if ($result->num_rows) {
+			if ($result->fetch_row()) {
 				if (!$found) {
 					echo "<ul>\n";
 					$found = true;

@@ -92,7 +92,7 @@ if (isset($_GET["mssql"])) {
 
 			function Min_Result($result) {
 				$this->_result = $result;
-				$this->num_rows = sqlsrv_has_rows($result); //! sqlsrv_num_rows($result)
+				// $this->num_rows = sqlsrv_num_rows($result); // available only in scrollable results
 			}
 
 			function _convert($row) {

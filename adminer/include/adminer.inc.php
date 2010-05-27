@@ -304,7 +304,7 @@ document.getElementById('username').focus();
 	* @return array expressions to join by AND
 	*/
 	function selectSearchProcess($fields, $indexes) {
-		global $connection;
+		global $connection, $jush;
 		$return = array();
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT" && $_GET["fulltext"][$i] != "") {
@@ -330,7 +330,7 @@ document.getElementById('username').focus();
 					foreach ($fields as $name => $field) {
 						if (is_numeric($val["val"]) || !ereg('int|float|double|decimal', $field["type"])) {
 							$name = idf_escape($name);
-							$cols[] = (ereg('char|text|enum|set', $field["type"]) && !ereg('^utf8', $field["collation"]) ? "CONVERT($name USING utf8)" : $name);
+							$cols[] = ($jush == "sql" && ereg('char|text|enum|set', $field["type"]) && !ereg('^utf8', $field["collation"]) ? "CONVERT($name USING utf8)" : $name);
 						}
 					}
 					$return[] = ($cols ? "(" . implode("$cond OR ", $cols) . "$cond)" : "0");

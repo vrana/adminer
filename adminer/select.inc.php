@@ -144,12 +144,11 @@ if ($_POST && !$error) {
 					$cols = $matches2[1];
 					$affected--;
 				} else {
-					$set = "";
+					$set = array();
 					foreach ($matches2[1] as $i => $col) {
-						$set .= ", " . idf_escape($cols[$i]) . " = " . ($col == "" && $fields[$cols[$i]]["null"] ? "NULL" : $connection->quote(str_replace('""', '"', preg_replace('~^"|"$~', '', $col))));
+						$set[idf_escape($cols[$i])] = ($col == "" && $fields[$cols[$i]]["null"] ? "NULL" : $connection->quote(str_replace('""', '"', preg_replace('~^"|"$~', '', $col))));
 					}
-					$set = substr($set, 1);
-					$result = queries("INSERT INTO " . table($TABLE) . " SET$set ON DUPLICATE KEY UPDATE$set");
+					$result = insert_update($TABLE, $set);
 					if (!$result) {
 						break;
 					}
@@ -159,7 +158,7 @@ if ($_POST && !$error) {
 				queries("COMMIT");
 			}
 			queries_redirect(remove_from_uri("page"), lang('%d row(s) have been imported.', $affected), $result);
-			queries("ROLLBACK");
+			queries("ROLLBACK"); // after queries_redirect() to not overwrite error
 		} else {
 			$error = upload_error($file);
 		}

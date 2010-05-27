@@ -83,7 +83,6 @@ if (isset($_GET["oracle"])) {
 
 			function Min_Result($result) {
 				$this->_result = $result;
-				$this->num_rows = -1; // all results unbuffered
 			}
 
 			function _convert($row) {

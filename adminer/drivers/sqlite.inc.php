@@ -39,6 +39,10 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 					return "'" . sqlite_escape_string($string) . "'";
 				}
 				
+				function store_result() {
+					return $this->_result;
+				}
+				
 				function result($query, $field = 0) {
 					$result = $this->query($query);
 					if (!is_object($result)) {
@@ -118,6 +122,10 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 					return "'" . $this->_link->escapeString($string) . "'";
 				}
 				
+				function store_result() {
+					return $this->_result;
+				}
+				
 				function result($query, $field = 0) {
 					$result = $this->query($query);
 					if (!is_object($result)) {
@@ -133,7 +141,6 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 				
 				function Min_Result($result) {
 					$this->_result = $result;
-					$this->num_rows = 1; //!
 				}
 				
 				function fetch_assoc() {
@@ -190,10 +197,6 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			return $this->_result = $this->query($query);
 		}
 		
-		function store_result() {
-			return $this->_result;
-		}
-		
 		function next_result() {
 			return false;
 		}
@@ -238,7 +241,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 
 	function tables_list() {
-		return get_key_vals("SELECT name, type FROM sqlite_master WHERE type IN ('table', 'view')", 1);
+		return get_key_vals("SELECT name, type FROM sqlite_master WHERE type IN ('table', 'view') ORDER BY (name = 'sqlite_sequence'), name", 1);
 	}
 
 	function count_tables($databases) {
@@ -278,14 +281,14 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		if (is_object($result)) {
 			while ($row = $result->fetch_assoc()) {
 				$type = strtolower($row["type"]);
+				$default = $row["dflt_value"];
 				$return[$row["name"]] = array(
 					"field" => $row["name"],
 					"type" => (eregi("int", $type) ? "integer" : (eregi("char|clob|text", $type) ? "text" : (eregi("blob", $type) ? "blob" : (eregi("real|floa|doub", $type) ? "real" : "numeric")))),
 					"full_type" => $type,
-					"default" => $row["dflt_value"],
+					"default" => (ereg("'(.*)'", $default, $match) ? str_replace("''", "'", $match[1]) : ($default == "NULL" ? null : $default)),
 					"null" => !$row["notnull"],
 					"auto_increment" => eregi('^integer$', $type) && $row["pk"], //! possible false positive
-					"collation" => null, //!
 					"privileges" => array("select" => 1, "insert" => 1, "update" => 1),
 					"primary" => $row["pk"],
 				);
@@ -489,6 +492,10 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return queries("INSERT INTO " . table($table) . ($set ? " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")" : "DEFAULT VALUES"));
 	}
 	
+	function insert_update($table, $set) {
+		return queries("REPLACE INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ")");
+	}
+	
 	function last_id() {
 		global $connection;
 		return $connection->result("SELECT LAST_INSERT_ROWID()");
@@ -496,6 +503,10 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	
 	function explain($connection, $query) {
 		return $connection->query("EXPLAIN $query");
+	}
+	
+	function types() {
+		return array();
 	}
 	
 	function schemas() {
@@ -515,9 +526,11 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return $connection->result("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . $connection->quote($table));
 	}
 	
+	function truncate_sql($table) {
+		return "DELETE FROM " . table($table);
+	}
+	
 	function use_sql($database) {
-		global $connection;
-		return "ATTACH " . $connection->quote($database) . " AS " . idf_escape($database);
 	}
 	
 	function trigger_sql($table, $style) {

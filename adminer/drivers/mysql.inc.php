@@ -767,6 +767,19 @@ if (!defined("DRIVER")) {
 		return queries("INSERT INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")");
 	}
 	
+	/** Insert or update data in the table
+	* @param string
+	* @param array
+	* @return bool
+	*/
+	function insert_update($table, $set) {
+		foreach ($set as $key => $val) {
+			$set[$key] = "$key = $val";
+		}
+		$update = implode(", ", $set);
+		return queries("INSERT INTO " . table($table) . " SET $update ON DUPLICATE KEY UPDATE $update");
+	}
+	
 	/** Get last auto increment ID
 	* @return string
 	*/
@@ -820,6 +833,14 @@ if (!defined("DRIVER")) {
 	function create_sql($table) {
 		global $connection;
 		return $connection->result("SHOW CREATE TABLE " . table($table), 1);
+	}
+	
+	/** Get SQL command to truncate table
+	* @param string
+	* @return string
+	*/
+	function truncate_sql($table) {
+		return "TRUNCATE " . table($table);
 	}
 	
 	/** Get SQL command to change database
