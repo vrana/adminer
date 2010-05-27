@@ -177,7 +177,9 @@ if (isset($_GET["oracle"])) {
 
 	function tables_list() {
 		global $connection;
-		return get_key_vals("SELECT table_name FROM all_tables WHERE tablespace_name = " . $connection->quote(DB)); //! views
+		return get_key_vals("SELECT table_name, 'table' FROM all_tables WHERE tablespace_name = " . $connection->quote(DB) . "
+UNION SELECT view_name, 'view' FROM user_views"
+		); //! views don't have schema
 	}
 
 	function count_tables($databases) {
@@ -187,7 +189,10 @@ if (isset($_GET["oracle"])) {
 	function table_status($name = "") {
 		global $connection;
 		$return = array();
-		$result = $connection->query('SELECT table_name "Name" FROM all_tables' . ($name != "" ? ' WHERE table_name = ' . $connection->quote($name) : ''));
+		$search = $connection->quote($name);
+		$result = $connection->query('SELECT table_name "Name", \'table\' "Engine" FROM all_tables WHERE tablespace_name = ' . $connection->quote(DB) . ($name != "" ? " AND table_name = $search" : "") . "
+UNION SELECT view_name, 'view' FROM user_views" . ($name != "" ? " WHERE view_name = $search" : "")
+		);
 		while ($row = $result->fetch_assoc()) {
 			if ($name != "") {
 				return $row;
@@ -234,6 +239,12 @@ if (isset($_GET["oracle"])) {
 		return array(); //!
 	}
 
+	function view($name) {
+		global $connection;
+		$result = $connection->query('SELECT text "select" FROM user_views WHERE view_name = ' . $connection->quote($name));
+		return $result->fetch_assoc();
+	}
+	
 	function collations() {
 		return array(); //!
 	}
@@ -319,7 +330,7 @@ if (isset($_GET["oracle"])) {
 	}
 	
 	function support($feature) {
-		return ereg("drop_col", $feature); //!
+		return ereg("view|drop_col", $feature); //!
 	}
 	
 	$jush = "oracle";
