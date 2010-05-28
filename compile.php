@@ -238,6 +238,9 @@ foreach (array("adminer", "editor") as $project) {
 				$file = preg_replace("((\t*)" . preg_quote('if (support("' . $feature . '")') . ".*\n\\1\\})sU", '', $file);
 			}
 		}
+		if (count($drivers) == 1) {
+			$file = str_replace('<?php echo html_select("driver", $drivers, DRIVER); ?>', "<input type='hidden' name='driver' value='$driver'>" . reset($drivers), $file);
+		}
 	}
 	$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
 	$file = preg_replace_callback('~\\b(include|require) "([^"]*\\$LANG.inc.php)";~', 'put_file_lang', $file);
