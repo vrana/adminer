@@ -534,7 +534,7 @@ if (!defined("DRIVER")) {
 	*/
 	function drop_databases($databases) {
 		set_session("databases", null);
-		return apply_queries("DROP DATABASE", $db, 'idf_escape');
+		return apply_queries("DROP DATABASE", $databases, 'idf_escape');
 	}
 	
 	/** Rename database from DB
