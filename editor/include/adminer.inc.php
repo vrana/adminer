@@ -216,7 +216,7 @@ ORDER BY ORDINAL_POSITION");
 		}
 		$i = 0;
 		foreach ($where as $val) {
-			if ($columns[$val["col"]] && "$val[col]$val[val]" != "") {
+			if (($val["col"] == "" || $columns[$val["col"]]) && "$val[col]$val[val]" != "") {
 				echo "<div><select name='where[$i][col]'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
 				echo html_select("where[$i][op]", array(-1 => "") + $this->operators, $val["op"]);
 				echo "<input name='where[$i][val]' value='" . h($val["val"]) . "'></div>\n";
