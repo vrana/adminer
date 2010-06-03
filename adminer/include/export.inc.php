@@ -17,7 +17,7 @@ function dump_table($table, $style, $is_view = false) {
 			dump_csv(array_keys(fields($table)));
 		}
 	} elseif ($style) {
-		$create = create_sql($table);
+		$create = create_sql($table, $_POST["auto_increment"]);
 		if ($create) {
 			if ($style == "DROP+CREATE") {
 				echo "DROP " . ($is_view ? "VIEW" : "TABLE") . " IF EXISTS " . table($table) . ";\n";

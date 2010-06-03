@@ -175,6 +175,7 @@ echo ($jush == "sqlite" ? "" : "<tr><th>" . lang('Database') . "<td>" . html_sel
 	. (support("event") ? checkbox("events", 1, $checked, lang('Events')) : "")
 );
 echo "<tr><th>" . lang('Tables') . "<td>" . html_select('table_style', $table_style, $row["table_style"])
+	. checkbox("auto_increment", 1, $row["table_style"], lang('Auto Increment'))
 	. (support("trigger") ? checkbox("triggers", 1, $row["table_style"], lang('Triggers')) : "")
 ;
 echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style, $row["data_style"]);

@@ -828,11 +828,16 @@ if (!defined("DRIVER")) {
 	
 	/** Get SQL command to create table
 	* @param string
+	* @param bool
 	* @return string
 	*/
-	function create_sql($table) {
+	function create_sql($table, $auto_increment) {
 		global $connection;
-		return $connection->result("SHOW CREATE TABLE " . table($table), 1);
+		$return = $connection->result("SHOW CREATE TABLE " . table($table), 1);
+		if (!$auto_increment) {
+			$return = preg_replace('~ AUTO_INCREMENT=[0-9]+~', '', $return); //! skip comments
+		}
+		return $return;
 	}
 	
 	/** Get SQL command to truncate table
