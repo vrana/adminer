@@ -523,10 +523,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	
 	function create_sql($table, $auto_increment) {
 		global $connection;
-		return ($auto_increment || $table != "sqlite_sequence" //! remove also INSERT
-			? $connection->result("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . $connection->quote($table))
-			: ""
-		);
+		return $connection->result("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . $connection->quote($table));
 	}
 	
 	function truncate_sql($table) {
