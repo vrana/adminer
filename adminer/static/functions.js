@@ -130,7 +130,7 @@ function selectAddRow(field) {
 */
 function selectDblClick(td, event, text) {
 	var pos = event.rangeOffset;
-	var value = (td.firstChild.firstChild ? td.firstChild.firstChild.data : td.firstChild.data);
+	var value = (td.firstChild.firstChild ? td.firstChild.firstChild.data : (td.firstChild.alt ? td.firstChild.alt : td.firstChild.data));
 	var input = document.createElement(text ? 'textarea' : 'input');
 	input.name = td.id;
 	input.value = (value == '\u00A0' || td.getElementsByTagName('i').length ? '' : value); // &nbsp; or i - NULL
