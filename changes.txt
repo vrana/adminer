@@ -13,6 +13,7 @@ Autofocus username in login form
 Disable spellchecking in SQL textareas
 Display auto_increment value of inserted item
 Allow disabling auto_increment value export
+Link last page above data in select
 Link table names in SQL queries
 Japanese translation
 Defer table information in database overview to JavaScript (performance)
