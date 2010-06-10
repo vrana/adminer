@@ -16,7 +16,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 		$location = ME . "select=" . urlencode($TABLE);
 	}
 	if (isset($_POST["delete"])) {
-		query_redirect("DELETE" . limit1("FROM " . table($TABLE), $where), $location, lang('Item has been deleted.'));
+		query_redirect("DELETE" . limit1("FROM " . table($TABLE), " WHERE $where"), $location, lang('Item has been deleted.'));
 	} else {
 		$set = array();
 		foreach ($fields as $name => $field) {
