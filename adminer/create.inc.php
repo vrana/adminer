@@ -161,7 +161,7 @@ foreach ($engines as $engine) {
 <script type="text/javascript">
 document.write('<label><input type="checkbox" onclick="columnShow(this.checked, 5);"><?php echo lang('Default values'); ?><\/label>');
 </script>
-<?php echo (support("comment") ? checkbox("", "", $comments, lang('Comment'), "columnShow(this.checked, 6); toggle('Comment');") . ' <input id="Comment" name="Comment" value="' . h($row["Comment"]) . '" maxlength="60"' . ($comments ? '' : ' class="hidden"') . '>' : ''); ?>
+<?php echo (support("comment") ? checkbox("", "", $comments, lang('Comment'), "columnShow(this.checked, 6); toggle('Comment'); if (this.checked) this.form['Comment'].focus();") . ' <input id="Comment" name="Comment" value="' . h($row["Comment"]) . '" maxlength="60"' . ($comments ? '' : ' class="hidden"') . '>' : ''); ?>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Save'); ?>">
