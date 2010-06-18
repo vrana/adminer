@@ -258,4 +258,5 @@ $translations = array(
 	'Search data in tables' => 'Vyhledat data v tabulkách',
 	'From server' => 'Ze serveru',
 	'empty' => 'prázdné',
+	'now' => 'teď',
 );

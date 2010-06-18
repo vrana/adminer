@@ -386,7 +386,7 @@ ORDER BY ORDINAL_POSITION");
 		$return = array("" => ($field["null"] || $field["auto_increment"] || $field["full_type"] == "tinyint(1)" ? "" : "*"));
 		//! respect driver
 		if (ereg('date|time', $field["type"])) {
-			$return[] = "now";
+			$return["now"] = lang('now');
 		}
 		if (eregi('_(md5|sha1)$', $field["field"], $match)) {
 			$return[] = strtolower($match[1]);
