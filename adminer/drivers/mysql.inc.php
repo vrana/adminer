@@ -544,22 +544,18 @@ if (!defined("DRIVER")) {
 	*/
 	function rename_database($name, $collation) {
 		global $connection;
-		$return = false;
 		if (create_database($name, $collation)) {
 			//! move triggers
-			$return = true; // table list may by empty
-			foreach (tables_list() as $table) {
-				if (!queries("RENAME TABLE " . table($table) . " TO " . idf_escape($name) . "." . table($table))) {
-					$return = false;
-					break;
-				}
+			$rename = array();
+			foreach (tables_list() as $table => $type) {
+				$rename[] = table($table) . " TO " . idf_escape($name) . "." . table($table);
 			}
-			if ($return) {
+			if (!$rename || queries("RENAME TABLE " . implode(", ", $rename))) {
 				queries("DROP DATABASE " . idf_escape(DB));
-				//! saved to history of removed database
+				return true;
 			}
 		}
-		return $return;
+		return false;
 	}
 	
 	/** Generate modifier for auto increment column
