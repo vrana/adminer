@@ -362,7 +362,7 @@ if (!$columns) {
 			if (intval($limit) && $found_rows > $limit) {
 				// display first, previous 4, next 4 and last page
 				$max_page = floor(($found_rows - 1) / $limit);
-				echo lang('Page') . ":" . pagination(0, $page) . ($page > 5 ? " ..." : "");
+				echo '<a href="' . h(remove_from_uri("page")) . "\" onclick=\"var page = +prompt('" . lang('Page') . "', '" . ($page + 1) . "'); if (!isNaN(page) &amp;&amp; page) location.href = this.href + (page != 1 ? '&amp;page=' + (page - 1) : ''); return false;\">" . lang('Page') . "</a>:" . pagination(0, $page) . ($page > 5 ? " ..." : "");
 				for ($i = max(1, $page - 4); $i < min($max_page, $page + 5); $i++) {
 					echo pagination($i, $page);
 				}
