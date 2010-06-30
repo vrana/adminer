@@ -72,18 +72,19 @@ if ($_POST) {
 ?>
 
 <form action="" method="post">
-<table cellspacing="0">
+<table cellspacing="0" class="nowrap">
 <thead><tr><th><?php echo lang('Index Type'); ?><th><?php echo lang('Column (length)'); ?></thead>
 <?php
-$j = 0;
+$j = 1;
 foreach ($row["indexes"] as $index) {
-	echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) - 1 ? "indexesAddRow(this);" : 1)) . "<td>\n";
+	echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) ? "indexesAddRow(this);" : 1)) . "<td>";
 	ksort($index["columns"]);
-	foreach ($index["columns"] as $i => $column) {
+	$i = 1;
+	foreach ($index["columns"] as $column) {
 		echo "<span>" . html_select("indexes[$j][columns][$i]", array(-1 => "") + $fields, $column, ($i == count($index["columns"]) ? "indexesAddColumn(this);" : 1));
-		echo "<input name='indexes[$j][lengths][$i]' size='2' value='" . h($index["lengths"][$i]) . "'> </span>\n"; //! hide for non-MySQL drivers, add ASC|DESC
+		echo "<input name='indexes[$j][lengths][$i]' size='2' value='" . h($index["lengths"][$i]) . "'> </span>"; //! hide for non-MySQL drivers, add ASC|DESC
+		$i++;
 	}
-	echo "\n";
 	$j++;
 }
 ?>
