@@ -235,7 +235,7 @@ if (!$columns) {
 			$backward_keys = $adminer->backwardKeys($TABLE, $table_name);
 			
 			echo "<table cellspacing='0' class='nowrap' onclick='tableClick(event);'>\n";
-			echo "<thead><tr><td><input type='checkbox' id='all-page' onclick='formCheck(this, /check/);'> <a href='" . h($_GET["modify"] ? remove_from_uri("modify") : $_SERVER["REQUEST_URI"] . "&modify=1") . "'>" . lang('edit') . "</a>";
+			echo "<thead><tr>" . (!$group && $select ? "" : "<td><input type='checkbox' id='all-page' onclick='formCheck(this, /check/);'> <a href='" . h($_GET["modify"] ? remove_from_uri("modify") : $_SERVER["REQUEST_URI"] . "&modify=1") . "'>" . lang('edit') . "</a>");
 			$names = array();
 			$functions = array();
 			reset($select);
@@ -267,7 +267,7 @@ if (!$columns) {
 				foreach ($unique_array as $key => $val) {
 					$unique_idf .= "&" . (isset($val) ? urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($val) : "null%5B%5D=" . urlencode($key));
 				}
-				echo "<tr" . odd() . "><td>" . checkbox("check[]", substr($unique_idf, 1), in_array(substr($unique_idf, 1), (array) $_POST["check"]), "", "this.form['all'].checked = false; formUncheck('all-page');") . (count($select) != count($group) || information_schema(DB) ? '' : " <a href='" . h(ME . "edit=" . urlencode($TABLE) . $unique_idf) . "'>" . lang('edit') . "</a>");
+				echo "<tr" . odd() . ">" . (!$group && $select ? "" : "<td>" . checkbox("check[]", substr($unique_idf, 1), in_array(substr($unique_idf, 1), (array) $_POST["check"]), "", "this.form['all'].checked = false; formUncheck('all-page');") . (count($group) < count($select) || information_schema(DB) ? "" : " <a href='" . h(ME . "edit=" . urlencode($TABLE) . $unique_idf) . "'>" . lang('edit') . "</a>"));
 				foreach ($row as $key => $val) {
 					if (isset($names[$key])) {
 						$field = $fields[$key];
