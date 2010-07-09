@@ -70,8 +70,8 @@ if ($_GET["ns"] !== "") {
 			echo (support("comment") ? "<td id='Comment-" . h($name) . "'>&nbsp;" : "");
 		}
 		echo "<tr><td>&nbsp;<th>" . lang('%d in total', count($tables_list));
-		echo "<td>" . $connection->result("SELECT @@storage_engine");
-		echo "<td>" . db_collation(DB, collations());
+		echo "<td>" . nbsp($connection->result("SELECT @@storage_engine"));
+		echo "<td>" . nbsp(db_collation(DB, collations()));
 		foreach ($sums as $key => $val) {
 			echo "<td align='right' id='sum-$key'>&nbsp;";
 		}
