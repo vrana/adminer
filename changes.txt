@@ -10,6 +10,7 @@ Remember export parameters in cookie
 Allow semicolon as CSV separator
 Schemas, sequences and types support (PostgreSQL)
 Autofocus username in login form
+Allow to insert Tab in SQL textareas and send the form by Ctrl+Enter
 Disable spellchecking in SQL textareas
 Display auto_increment value of inserted item
 Allow disabling auto_increment value export

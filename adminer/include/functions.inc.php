@@ -124,7 +124,7 @@ function html_select($name, $options, $value = "", $onchange = true) {
 * @return null
 */
 function textarea($name, $value, $rows = 10, $cols = 80) {
-	echo "<textarea name='$name' rows='$rows' cols='$cols' style='width: 98%;' spellcheck='false'>" . h($value) . "</textarea>"; // spellcheck - not valid before HTML5
+	echo "<textarea name='$name' rows='$rows' cols='$cols' style='width: 98%;' spellcheck='false' onkeydown='return textareaKeydown(this, event);'>" . h($value) . "</textarea>"; // spellcheck - not valid before HTML5
 }
 
 

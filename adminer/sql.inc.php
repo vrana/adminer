@@ -138,14 +138,14 @@ if ($_POST) {
 }
 textarea("query", $q, 20);
 echo ($_POST ? "" : "<script type='text/javascript'>document.getElementsByTagName('textarea')[0].focus();</script>\n");
+echo "<p>" . (ini_bool("file_uploads") ? lang('File upload') . ': <input type="file" name="sql_file">' : lang('File uploads are disabled.'));
+
 ?>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Execute'); ?>">
-<?php echo checkbox("error_stops", 1, $_POST["error_stops"], lang('Stop on error')); ?>
-
 <?php
-echo "<p>" . (ini_bool("file_uploads") ? lang('File upload') . ': <input type="file" name="sql_file">' : lang('File uploads are disabled.'));
+echo checkbox("error_stops", 1, $_POST["error_stops"], lang('Stop on error'));
 
 print_fieldset("webfile", lang('From server'), $_POST["webfile"]);
 $compress = array();
