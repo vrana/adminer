@@ -420,7 +420,7 @@ function textareaKeydown(target, event) {
 			var start = target.selectionStart;
 			target.value = target.value.substr(0, start) + '\t' + target.value.substr(target.selectionEnd);
 			target.setSelectionRange(start + 1, start + 1);
-			return false;
+			return false; //! still loses focus in Opera, can be solved by handling onblur
 		} else if (target.createTextRange) {
 			document.selection.createRange().text = '\t';
 			return false;
