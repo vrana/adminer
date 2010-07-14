@@ -446,6 +446,28 @@ WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table)
 		return true;
 	}
 	
+	function alter_indexes($table, $alter) {
+		$index = array();
+		$drop = array();
+		foreach ($alter as $val) {
+			if ($val[2]) {
+				if ($val[0] == "PRIMARY") { //! sometimes used also for UNIQUE
+					$drop[] = $val[1];
+				} else {
+					$index[] = "$val[1] ON " . table($table);
+				}
+			} elseif (!queries(($val[0] != "PRIMARY"
+				? "CREATE" . ($val[0] != "INDEX" ? " UNIQUE" : "") . " INDEX " . idf_escape(uniqid($table . "_")) . " ON " . table($table)
+				: "ALTER TABLE " . table($table) . " ADD PRIMARY KEY"
+			) . " $val[1]")) {
+				return false;
+			}
+		}
+		return (!$index || queries("DROP INDEX " . implode(", ", $index)))
+			&& (!$drop || queries("ALTER TABLE " . table($table) . " DROP " . implode(", ", $drop)))
+		;
+	}
+	
 	function begin() {
 		return queries("BEGIN TRANSACTION");
 	}
