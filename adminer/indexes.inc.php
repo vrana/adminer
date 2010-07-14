@@ -6,6 +6,10 @@ if (ereg("MyISAM|Maria", $table_status["Engine"])) {
 	$index_types[] = "FULLTEXT";
 }
 $indexes = indexes($TABLE);
+if ($jush == "sqlite") { // doesn't support primary key
+	unset($index_types[0]);
+	unset($indexes[""]);
+}
 if ($_POST && !$error && !$_POST["add"]) {
 	$alter = array();
 	foreach ($_POST["indexes"] as $index) {

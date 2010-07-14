@@ -26,6 +26,7 @@ Saving of MySQL 5 BIT data type - don't use quote()
 ? Geometry support
 
 SQLite:
+ASC and DESC instead of text length in index
 Delimiter in export and SQL command
 Backward keys in Editor
 
