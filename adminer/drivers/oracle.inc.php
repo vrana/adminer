@@ -267,7 +267,8 @@ UNION SELECT view_name, 'view' FROM user_views" . ($name != "" ? " WHERE view_na
 	}
 	
 	function explain($connection, $query) {
-		//!
+		$connection->query("EXPLAIN PLAN FOR $query");
+		return $connection->query("SELECT * FROM plan_table");
 	}
 	
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
