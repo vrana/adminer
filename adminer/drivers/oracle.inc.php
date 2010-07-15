@@ -332,8 +332,22 @@ UNION SELECT view_name, 'view' FROM user_views" . ($name != "" ? " WHERE view_na
 		return true;
 	}
 	
+	function show_variables() {
+		return get_key_vals('SELECT name, display_value FROM v$parameter');
+	}
+	
+	function show_status() {
+		global $connection;
+		$return = array();
+		$result = $connection->query('SELECT * FROM v$instance');
+		foreach ($result->fetch_assoc() as $key => $val) {
+			$return[$key] = $val;
+		}
+		return $return;
+	}
+	
 	function support($feature) {
-		return ereg("view|drop_col", $feature); //!
+		return ereg("view|drop_col|variables|status", $feature); //!
 	}
 	
 	$jush = "oracle";
