@@ -148,7 +148,7 @@ if ($_POST && !$error) {
 					foreach ($matches2[1] as $i => $col) {
 						$set[idf_escape($cols[$i])] = ($col == "" && $fields[$cols[$i]]["null"] ? "NULL" : $connection->quote(str_replace('""', '"', preg_replace('~^"|"$~', '', $col))));
 					}
-					$result = insert_update($TABLE, $set);
+					$result = insert_update($TABLE, $set, $indexes);
 					if (!$result) {
 						break;
 					}

@@ -467,6 +467,28 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 		return queries("INSERT INTO " . table($table) . ($set ? " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")" : "DEFAULT VALUES"));
 	}
 	
+	function insert_update($table, $set, $indexes) {
+		global $connection;
+		$primary = array();
+		foreach ($indexes as $index) {
+			if ($index["type"] == "PRIMARY") {
+				$primary = array_map("idf_escape", $index["columns"]);
+				break;
+			}
+		}
+		$update = array();
+		$where = array();
+		foreach ($set as $key => $val) {
+			$update[] = "$key = $val";
+			if (in_array($key, $primary)) {
+				$where[] = "$key = $val";
+			}
+		}
+		return ($where && queries("UPDATE " . table($table) . " SET " . implode(", ", $update) . " WHERE " . implode(" AND ", $where)) && $connection->affected_rows)
+			|| queries("INSERT INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ")")
+		;
+	}
+	
 	function last_id() {
 		return 0; // there can be several sequences
 	}
