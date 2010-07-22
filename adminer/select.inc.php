@@ -28,7 +28,13 @@ $group_by = ($group && count($group) < count($select) ? "\nGROUP BY " . implode(
 
 if ($_POST && !$error) {
 	$where_check = "(" . implode(") OR (", array_map('where_check', (array) $_POST["check"])) . ")";
-	$primary = ($indexes["PRIMARY"] ? ($select ? array_flip($indexes["PRIMARY"]["columns"]) : array()) : null); // empty array means that all primary fields are selected
+	$primary = null;
+	foreach ($indexes as $index) {
+		if ($index["type"] == "PRIMARY") {
+			$primary = ($select ? array_flip($index["columns"]) : array()); // empty array means that all primary fields are selected
+			break;
+		}
+	}
 	foreach ($select as $key => $val) {
 		$val = $_GET["columns"][$key];
 		if (!$val["fun"]) {
