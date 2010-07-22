@@ -467,20 +467,13 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 		return queries("INSERT INTO " . table($table) . ($set ? " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")" : "DEFAULT VALUES"));
 	}
 	
-	function insert_update($table, $set, $indexes) {
+	function insert_update($table, $set, $primary) {
 		global $connection;
-		$primary = array();
-		foreach ($indexes as $index) {
-			if ($index["type"] == "PRIMARY") {
-				$primary = array_map("idf_escape", $index["columns"]);
-				break;
-			}
-		}
 		$update = array();
 		$where = array();
 		foreach ($set as $key => $val) {
 			$update[] = "$key = $val";
-			if (in_array($key, $primary)) {
+			if (isset($primary[$key])) {
 				$where[] = "$key = $val";
 			}
 		}

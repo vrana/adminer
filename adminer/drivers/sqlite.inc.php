@@ -492,7 +492,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return queries("INSERT INTO " . table($table) . ($set ? " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")" : "DEFAULT VALUES"));
 	}
 	
-	function insert_update($table, $set, $indexes) {
+	function insert_update($table, $set, $primary) {
 		return queries("REPLACE INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ")");
 	}
 	

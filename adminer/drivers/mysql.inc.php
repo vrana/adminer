@@ -767,10 +767,10 @@ if (!defined("DRIVER")) {
 	/** Insert or update data in the table
 	* @param string
 	* @param array
-	* @param array
+	* @param array columns in keys
 	* @return bool
 	*/
-	function insert_update($table, $set, $indexes) {
+	function insert_update($table, $set, $primary) {
 		foreach ($set as $key => $val) {
 			$set[$key] = "$key = $val";
 		}

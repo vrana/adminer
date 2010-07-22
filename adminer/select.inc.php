@@ -28,17 +28,18 @@ $group_by = ($group && count($group) < count($select) ? "\nGROUP BY " . implode(
 
 if ($_POST && !$error) {
 	$where_check = "(" . implode(") OR (", array_map('where_check', (array) $_POST["check"])) . ")";
-	$primary = null;
+	$primary = $unselected = null;
 	foreach ($indexes as $index) {
 		if ($index["type"] == "PRIMARY") {
-			$primary = ($select ? array_flip($index["columns"]) : array()); // empty array means that all primary fields are selected
+			$primary = array_flip($index["columns"]);
+			$unselected = ($select ? $primary : array());
 			break;
 		}
 	}
 	foreach ($select as $key => $val) {
 		$val = $_GET["columns"][$key];
 		if (!$val["fun"]) {
-			unset($primary[$val["col"]]);
+			unset($unselected[$val["col"]]);
 		}
 	}
 	if ($_POST["export"]) {
@@ -54,7 +55,7 @@ if ($_POST && !$error) {
 			}
 			dump_csv($row);
 		}
-		if (!is_array($_POST["check"]) || $primary === array()) {
+		if (!is_array($_POST["check"]) || $unselected === array()) {
 			$where2 = $where;
 			if (is_array($_POST["check"])) {
 				$where2[] = "($where_check)";
@@ -99,7 +100,7 @@ if ($_POST && !$error) {
 					$command = "INSERT";
 					$query = "INTO $query";
 				}
-				if ($_POST["all"] || ($primary === array() && $_POST["check"]) || count($group) < count($select)) {
+				if ($_POST["all"] || ($unselected === array() && $_POST["check"]) || count($group) < count($select)) {
 					$result = queries($command . " $query" . ($_POST["all"] ? ($where ? "\nWHERE " . implode(" AND ", $where) : "") : "\nWHERE $where_check"));
 					$affected = $connection->affected_rows;
 				} else {
@@ -154,7 +155,7 @@ if ($_POST && !$error) {
 					foreach ($matches2[1] as $i => $col) {
 						$set[idf_escape($cols[$i])] = ($col == "" && $fields[$cols[$i]]["null"] ? "NULL" : $connection->quote(str_replace('""', '"', preg_replace('~^"|"$~', '', $col))));
 					}
-					$result = insert_update($TABLE, $set, $indexes);
+					$result = insert_update($TABLE, $set, $primary);
 					if (!$result) {
 						break;
 					}
