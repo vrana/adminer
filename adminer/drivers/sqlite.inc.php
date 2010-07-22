@@ -557,7 +557,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 	
 	function support($feature) {
-		return ereg('^(view|trigger|variables|status)$', $feature);
+		return ereg('^(view|trigger|variables|status|dump)$', $feature);
 	}
 	
 	$jush = "sqlite";

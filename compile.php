@@ -207,7 +207,7 @@ foreach (glob(dirname(__FILE__) . "/adminer/drivers/" . ($driver ? $driver : "*"
 }
 
 include dirname(__FILE__) . "/adminer/include/pdo.inc.php";
-$features = array("view", "event", "privileges", "user", "processlist", "variables", "trigger", "scheme", "sequence");
+$features = array("view", "event", "privileges", "user", "processlist", "variables", "trigger", "scheme", "sequence", "dump");
 foreach (array("adminer", "editor") as $project) {
 	$lang_ids = array(); // global variable simplifies usage in a callback function
 	$file = file_get_contents(dirname(__FILE__) . "/$project/index.php");

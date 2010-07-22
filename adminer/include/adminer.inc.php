@@ -515,7 +515,9 @@ document.getElementById('username').focus();
 <form action="" method="post">
 <p class="logout">
 <a href="<?php echo h(ME); ?>sql="><?php echo bold(lang('SQL command'), isset($_GET["sql"])); ?></a>
+<?php if (support("dump")) { ?>
 <a href="<?php echo h(ME); ?>dump=<?php echo urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]); ?>"><?php echo bold(lang('Dump'), isset($_GET["dump"])); ?></a>
+<?php } ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" name="logout" value="<?php echo lang('Logout'); ?>">
 </p>
