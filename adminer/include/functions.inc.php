@@ -26,6 +26,26 @@ function escape_string($val) {
 	return substr($connection->quote($val), 1, -1);
 }
 
+/** Disable magic_quotes_gpc
+* @param array e.g. (&$_GET, &$_POST, &$_COOKIE)
+* @return null modified in place
+*/
+function remove_slashes($process) {
+	if (get_magic_quotes_gpc()) {
+		while (list($key, $val) = each($process)) {
+			foreach ($val as $k => $v) {
+				unset($process[$key][$k]);
+				if (is_array($v)) {
+					$process[$key][stripslashes($k)] = $v;
+					$process[] = &$process[$key][stripslashes($k)];
+				} else {
+					$process[$key][stripslashes($k)] = ($filter ? $v : stripslashes($v));
+				}
+			}
+		}
+	}
+}
+
 /** Escape or unescape string to use inside form []
 * @param string
 * @param bool
@@ -214,6 +234,7 @@ function where($where) {
 */
 function where_check($val) {
 	parse_str($val, $check);
+	remove_slashes(array(&$check));
 	return where($check);
 }
 
