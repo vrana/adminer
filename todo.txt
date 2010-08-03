@@ -1,7 +1,6 @@
 Transactions in export
 Create view and routine options
 Variables editation, especially timezone
-Accept Tab in SQL textareas, Ctrl+Enter to send form
 Highlight SQL textarea, then display query inside textarea in select - may use external CodePress
 Blob download and image display in edit form (important for Editor with hidden fields in select)
 Add title to Logout, edit (in select) and select (in menu) in style "hever"
@@ -9,17 +8,20 @@ Shift-click in checkboxes to select range
 Export by GET parameters
 Only first part of big BZ2 export is readable, files are missing in TAR
 Auto-refresh processlist (thanks to Jan Garaj)
-Show pagination above and under the table in select
+Save schema layout to #hash in URL
+Double click in select - Esc to abort editation
 ? Filter by value in row under <thead> in select
 ? Column and table names auto-completition in SQL textarea
 ? Aliasing of built-in functions can save 7 KB, function minification can save 7 KB, substitution of repetitive $a["a"] can save 4 KB, substitution of $_GET and friends can save 2 KB, aliasing of $connection->query, $connection->result and $connection->quote can save ~ 3 KB, JS packer can save 1 KB, not enclosing HTML attribute values can save 1.2 KB, replacing \\n by \n can save .3 KB
 ? Branch binary_compile: LZW compression of translations can save 30 KB, LZW compression of all texts can save 11 KB, remove of base64_decode() + using chars 127-255 in minification can save 1 KB
 
 Editor:
+Checkbox for boolean searches
 JavaScript data validation - columns containing word email, url, ...
 Joining tables - PRIMARY KEY (table, joining)
 Rank, Tree structure
 Add whisperer to fields with foreign key to big table
+JS calendar for date fields
 
 MySQL:
 Saving of MySQL 5 BIT data type - don't use quote()
@@ -31,7 +33,6 @@ Delimiter in export and SQL command
 Backward keys in Editor
 
 PostgreSQL:
-user types
 Users - SELECT * FROM pg_user
 ORDER BY COUNT(*)
 Export - http://www.postgresql.org/docs/8.4/static/functions-info.html
@@ -41,7 +42,6 @@ bool in Editor
 
 MS SQL:
 Non UTF-8 character sets
-Rename by sp_rename
 Detection of table collation
 PDO driver with seek
 
