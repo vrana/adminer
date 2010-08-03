@@ -10,7 +10,7 @@ class Adminer {
 	//! driver, ns
 	
 	function credentials() {
-		return array(); // default INI settings
+		return array(SERVER, $_GET["username"], get_session("passwords"));
 	}
 	
 	function permanentLogin() {
