@@ -45,7 +45,7 @@ if (isset($_GET["pgsql"])) {
 				if ($database == DB) {
 					return $this->_database;
 				}
-				$return = @pg_connect($this->_connection . " dbname='" . addcslashes($database, "'\\") . "'", PGSQL_CONNECT_FORCE_NEW);
+				$return = @pg_connect("$this->_string dbname='" . addcslashes($database, "'\\") . "'", PGSQL_CONNECT_FORCE_NEW);
 				if ($return) {
 					$this->_link = $return;
 				}
