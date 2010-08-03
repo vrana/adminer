@@ -528,6 +528,9 @@ AND typelem = 0"
 		return get_key_vals("SHOW ALL");
 	}
 	
+	function show_status() {
+	}
+	
 	function support($feature) {
 		return ereg('^(comment|view|scheme|sequence|trigger|type|variables|drop_col)$', $feature); //! routine|
 	}
