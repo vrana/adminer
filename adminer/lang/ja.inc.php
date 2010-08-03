@@ -40,7 +40,6 @@ $translations = array(
 	'Create new table' => 'テーブルを作成',
 	'Item has been deleted.' => '項目を削除しました',
 	'Item has been updated.' => '項目を更新しました',
-	'Item has been inserted.' => '項目を挿入しました',
 	'Edit' => '編集',
 	'Insert' => '挿入',
 	'Save and insert next' => '保存／追加',
@@ -73,7 +72,6 @@ $translations = array(
 	'Invalid CSRF token. Send the form again.' => '不正なCSRFトークン。再送信してください',
 	'Comment' => 'コメント',
 	'Default values' => '規定値',
-	'Show column comments' => '列コメントを表示',
 	'%d byte(s)' => '%d バイト',
 	'No commands to execute.' => '実行するコマンドがありません',
 	'Unable to upload a file.' => 'ファイルをアップロードできません',
@@ -228,4 +226,69 @@ $translations = array(
 	'File does not exist.' => 'ファイルは存在しません',
 	'%d in total' => '合計 %d',
 	'Permanent login' => '永続的にログイン',
+	
+	// it is possible to drop several databases at once
+	'Databases have been dropped.' => null,
+	'Database has been dropped.' => '已丢弃数据库。',
+	
+	// label for search in whole database
+	'Search data in tables' => null,
+	
+	// PostgreSQL and MS SQL schema support
+	'schema' => null,
+	'Schema' => null,
+	'Alter schema' => null,
+	'Create schema' => null,
+	'Schema has been dropped.' => null,
+	'Schema has been created.' => null,
+	'Schema has been altered.' => null,
+	
+	// PostgreSQL sequences support
+	'Sequences' => null,
+	'Create sequence' => null,
+	'Alter sequence' => null,
+	'Sequence has been dropped.' => null,
+	'Sequence has been created.' => null,
+	'Sequence has been altered.' => null,
+	
+	// PostgreSQL user types support
+	'User types' => null,
+	'Create type' => null,
+	'Alter type' => null,
+	'Type has been dropped.' => null,
+	'Type has been created.' => null,
+	
+	// selects now support in-place editing
+	'Double click on a value to modify it.' => null,
+	'Increase text length to modify this value.' => null,
+	'Use edit link to modify this value.' => null,
+	
+	// link to last page if exact number is unknown
+	'last' => null,
+	
+	// label for box with "Run webserver file adminer.sql"
+	'From server' => null,
+	
+	// label for database system selection (MySQL, SQLite, ...)
+	'System' => null,
+	
+	// label for value '' in enum data type
+	'empty' => null,
+	
+	// new data type categories
+	'Network' => null,
+	'Geometry' => null,
+	
+	// general SQLite error in create, drop or rename database
+	'File exists.' => null,
+	
+	// label for e-mail attachments in Adminer Editor
+	'Attachments' => null,
+	
+	// %s can contain auto-increment value
+	'Item%s has been inserted.' => null,
+	//~ 'Item has been inserted.' => '項目を挿入しました',
+	
+	// function translation used in Editor
+	'now' => null,
 );
