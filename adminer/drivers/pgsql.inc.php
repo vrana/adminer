@@ -473,7 +473,7 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 		$where = array();
 		foreach ($set as $key => $val) {
 			$update[] = "$key = $val";
-			if (isset($primary[$key])) {
+			if (isset($primary[idf_unescape($key)])) {
 				$where[] = "$key = $val";
 			}
 		}

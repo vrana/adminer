@@ -476,6 +476,22 @@ WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table)
 		return queries("INSERT INTO " . table($table) . ($set ? " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")" : "DEFAULT VALUES"));
 	}
 	
+	function insert_update($table, $set, $primary) {
+		$update = array();
+		$where = array();
+		foreach ($set as $key => $val) {
+			$update[] = "$key = $val";
+			if (isset($primary[idf_unescape($key)])) {
+				$where[] = "$key = $val";
+			}
+		}
+		// can use only one query for all rows with different API
+		return queries("MERGE " . table($table) . " USING (VALUES(" . implode(", ", $set) . ")) AS source (c" . implode(", c", range(1, count($set))) . ") ON " . implode(" AND ", $where) //! source, c1 - possible conflict
+			. " WHEN MATCHED THEN UPDATE SET " . implode(", ", $update)
+			. " WHEN NOT MATCHED THEN INSERT (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ");" // ; is mandatory
+		);
+	}
+	
 	function last_id() {
 		global $connection;
 		return $connection->result("SELECT SCOPE_IDENTITY()"); // @@IDENTITY can return trigger INSERT
