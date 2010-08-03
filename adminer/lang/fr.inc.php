@@ -1,7 +1,7 @@
 <?php
 $translations = array(
 	'Login' => 'Authentification',
-	'Logout successful.' => 'Aurevoir!',
+	'Logout successful.' => 'Au revoir!',
 	'Invalid credentials.' => 'Authentification échouée.',
 	'Server' => 'Serveur',
 	'Username' => 'Utilisateur',
@@ -24,7 +24,6 @@ $translations = array(
 	'Options' => 'Options',
 	'Save' => 'Sauvegarder',
 	'Drop' => 'Effacer',
-	'Database has been dropped.' => 'Base de données effacée.',
 	'Database has been created.' => 'Base de données créée.',
 	'Database has been renamed.' => 'Base de données renommée.',
 	'Database has been altered.' => 'Base de données modifiée.',
@@ -40,7 +39,6 @@ $translations = array(
 	'Create new table' => 'Créer une table',
 	'Item has been deleted.' => 'Élément supprimé.',
 	'Item has been updated.' => 'Élément modifié.',
-	'Item has been inserted.' => 'Élément inseré.',
 	'Edit' => 'Modifier',
 	'Insert' => 'Insérer',
 	'Save and insert next' => 'Sauvegarder et insérer le prochain',
@@ -178,7 +176,7 @@ $translations = array(
 	'Data Length' => 'Longeur des données',
 	'Index Length' => 'Longeur de l\'index',
 	'Data Free' => 'Vide',
-	'Rows' => 'Rangés',
+	'Rows' => 'Lignes',
 	',' => ',',
 	'Analyze' => 'Analyser',
 	'Optimize' => 'Opitimiser',
@@ -225,4 +223,73 @@ $translations = array(
 	'File does not exist.' => 'Le fichier est introuvable.',
 	'%d in total' => '%d au total',
 	'Permanent login' => 'Authentification permanente',
+	
+	// it is possible to drop several databases at once
+	'Databases have been dropped.' => null,
+	'Database has been dropped.' => 'Base de données effacée.',
+	
+	// label for search in whole database
+	'Search data in tables' => null,
+	
+	// PostgreSQL and MS SQL schema support
+	'schema' => null,
+	'Schema' => null,
+	'Alter schema' => null,
+	'Create schema' => null,
+	'Schema has been dropped.' => null,
+	'Schema has been created.' => null,
+	'Schema has been altered.' => null,
+	
+	// PostgreSQL sequences support
+	'Sequences' => null,
+	'Create sequence' => null,
+	'Alter sequence' => null,
+	'Sequence has been dropped.' => null,
+	'Sequence has been created.' => null,
+	'Sequence has been altered.' => null,
+	
+	// PostgreSQL user types support
+	'User types' => null,
+	'Create type' => null,
+	'Alter type' => null,
+	'Type has been dropped.' => null,
+	'Type has been created.' => null,
+	
+	// selects now support in-place editing
+	'Double click on a value to modify it.' => null,
+	'Increase text length to modify this value.' => null,
+	'Use edit link to modify this value.' => null,
+	
+	// link to last page if exact number is unknown
+	'last' => null,
+	
+	// label for box with "Run webserver file adminer.sql"
+	'From server' => null,
+	
+	// label for database system selection (MySQL, SQLite, ...)
+	'System' => null,
+	
+	// links in table detail
+	'Select data' => null,
+	'Show structure' => null,
+	
+	// label for value '' in enum data type
+	'empty' => null,
+	
+	// new data type categories
+	'Network' => null,
+	'Geometry' => null,
+	
+	// general SQLite error in create, drop or rename database
+	'File exists.' => null,
+	
+	// label for e-mail attachments in Adminer Editor
+	'Attachments' => null,
+	
+	// %s can contain auto-increment value
+	'Item%s has been inserted.' => null,
+	//~ 'Item has been inserted.' => 'Élément inseré.',
+	
+	// function translation used in Editor
+	'now' => null,
 );
