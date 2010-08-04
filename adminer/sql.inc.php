@@ -143,7 +143,7 @@ echo "<p>" . (ini_bool("file_uploads") ? lang('File upload') . ': <input type="f
 ?>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
-<input type="submit" value="<?php echo lang('Execute'); ?>">
+<input type="submit" value="<?php echo lang('Execute'); ?>" title="Ctrl+Enter">
 <?php
 echo checkbox("error_stops", 1, $_POST["error_stops"], lang('Stop on error'));
 
