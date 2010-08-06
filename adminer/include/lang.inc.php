@@ -21,7 +21,7 @@ function lang($idf, $number = null) {
 	global $LANG, $translations;
 	$translation = $translations[$idf];
 	if (is_array($translation) && $translation) {
-		$pos = ($number == 1 ? 0 : ((!$number || $number >= 5) && ereg('cs|sk|ru', $LANG) ? 2 : 1)); // Slavic languages use different form for 2, 3, 4
+		$pos = ($number == 1 || (!$number && $LANG == 'fr') ? 0 : ((!$number || $number >= 5) && ereg('cs|sk|ru', $LANG) ? 2 : 1)); // French treat zero as singular, Slavic languages use different form for 2, 3, 4
 		$translation = $translation[$pos];
 	}
 	$args = func_get_args();
