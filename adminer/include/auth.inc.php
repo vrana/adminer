@@ -58,7 +58,7 @@ if (isset($_POST["server"])) {
 	foreach ($permanent as $key => $val) {
 		list(, $cipher) = explode(":", $val);
 		list($driver, $server, $username) = array_map('base64_decode', explode("-", $key));
-		$_SESSION["passwords"][$driver][$server][$username] = decrypt_string($cipher, $private);
+		$_SESSION["passwords"][$driver][$server][$username] = decrypt_string(base64_decode($cipher), $private);
 	}
 }
 
