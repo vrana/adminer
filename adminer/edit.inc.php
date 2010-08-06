@@ -103,7 +103,7 @@ if (isset($_GET["select"])) {
 if ($fields) {
 	echo "<input type='submit' value='" . lang('Save') . "'>\n";
 	if (!isset($_GET["select"])) {
-		echo "<input type='submit' name='insert' value='" . ($update ? lang('Save and continue edit') : lang('Save and insert next')) . "'>\n";
+		echo '<input type="submit" name="insert" value="' . ($update ? lang('Save and continue edit') : lang('Save and insert next')) . "\">\n";
 	}
 }
 if ($update) {
