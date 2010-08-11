@@ -22,6 +22,10 @@ function dump_table($table, $style, $is_view = false) {
 			if ($style == "DROP+CREATE") {
 				echo "DROP " . ($is_view ? "VIEW" : "TABLE") . " IF EXISTS " . table($table) . ";\n";
 			}
+			if ($is_view) {
+				// remove DEFINER with current user
+				$create = preg_replace('~^([A-Z =]+) DEFINER=`' . str_replace("@", "`@`", logged_user()) . '`~', '\\1', $create); //! proper escaping of user
+			}
 			echo ($style != "CREATE+ALTER" ? $create : ($is_view ? substr_replace($create, " OR REPLACE", 6, 0) : substr_replace($create, " IF NOT EXISTS", 12, 0))) . ";\n\n";
 		}
 		if ($style == "CREATE+ALTER" && !$is_view) {
