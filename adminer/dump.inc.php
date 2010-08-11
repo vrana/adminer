@@ -46,9 +46,13 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 				if ($_POST["routines"]) {
 					foreach (array("FUNCTION", "PROCEDURE") as $routine) {
 						$result = $connection->query("SHOW $routine STATUS WHERE Db = " . $connection->quote($db));
-						while ($row = $result->fetch_assoc()) {
-							$out .= ($style != 'DROP+CREATE' ? "DROP $routine IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
-							. $connection->result("SHOW CREATE $routine " . idf_escape($row["Name"]), 2) . ";;\n\n";
+						if ($result) {
+							while ($row = $result->fetch_assoc()) {
+								$out .= ($style != 'DROP+CREATE' ? "DROP $routine IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
+								. $connection->result("SHOW CREATE $routine " . idf_escape($row["Name"]), 2) . ";;\n\n";
+							}
+						} else {
+							echo "-- $connection->error\n\n";
 						}
 					}
 				}
@@ -59,6 +63,8 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 							$out .= ($style != 'DROP+CREATE' ? "DROP EVENT IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
 							. $connection->result("SHOW CREATE EVENT " . idf_escape($row["Name"]), 3) . ";;\n\n";
 						}
+					} else {
+						echo "-- $connection->error\n\n";
 					}
 				}
 				if ($out) {
