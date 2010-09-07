@@ -379,7 +379,7 @@ ORDER BY ORDINAL_POSITION");
 	}
 	
 	function messageQuery($query) {
-		return "<!--\n" . str_replace("--", "--><!--", $query) . "\n-->";
+		return "<!--\n" . str_replace("--", "--><!-- ", $query) . "\n-->";
 	}
 	
 	function editFunctions($field) {
