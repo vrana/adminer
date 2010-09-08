@@ -15,7 +15,8 @@ Disable spellchecking in SQL textareas
 Display auto_increment value of inserted item
 Allow disabling auto_increment value export
 Prefill auto_increment column name
-Ability to jump to any page by JavaScript
+Ability to jump to any page in select by JavaScript
+Display comment in table overview
 Link last page above data in select
 Link table names in SQL queries
 Japanese translation

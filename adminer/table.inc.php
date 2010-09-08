@@ -8,6 +8,10 @@ $table_status = ($fields ? table_status($TABLE) : array());
 
 page_header(($fields && is_view($table_status) ? lang('View') : lang('Table')) . ": " . h($TABLE), $error);
 $adminer->selectLinks($table_status);
+$comment = $table_status["Comment"];
+if ($comment != "") {
+	echo "<p>" . lang('Comment') . ": " . h($comment) . "\n";
+}
 
 if ($fields) {
 	echo "<table cellspacing='0'>\n";
