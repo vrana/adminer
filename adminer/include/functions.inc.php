@@ -527,12 +527,12 @@ function column_foreign_keys($table) {
 * @param mixed int|string|array
 * @return null
 */
-function enum_input($type, $name, $field, $value) {
+function enum_input($type, $attrs, $field, $value) {
 	preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
 	foreach ($matches[1] as $i => $val) {
 		$val = stripcslashes(str_replace("''", "'", $val));
 		$checked = (is_int($value) ? $value == $i+1 : (is_array($value) ? in_array($i+1, $value) : $value === $val));
-		echo " <label><input type='$type' name='$name' value='" . ($i+1) . "'" . ($checked ? ' checked' : '') . '>' . h($val) . '</label>';
+		echo " <label><input type='$type'$attrs value='" . ($i+1) . "'" . ($checked ? ' checked' : '') . '>' . h($val) . '</label>';
 	}
 }
 
@@ -547,10 +547,11 @@ function input($field, $value, $function) {
 	$name = h(bracket_escape($field["field"]));
 	echo "<td class='function'>";
 	$functions = (isset($_GET["select"]) ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
+	$attrs = " name='fields[$name]'";
 	if ($field["type"] == "enum") {
-		echo nbsp($functions[""]) . "<td>" . ($functions["orig"] ? "<label><input type='radio' name='fields[$name]' value='-1' checked><i>$functions[orig]</i></label> " : "");
-		echo $adminer->editInput($_GET["edit"], $field, " name='fields[$name]'", $value);
-		enum_input("radio", "fields[$name]", $field, $value);
+		echo nbsp($functions[""]) . "<td>" . ($functions["orig"] ? "<label><input type='radio'$attrs value='-1' checked><i>$functions[orig]</i></label> " : "");
+		echo $adminer->editInput($_GET["edit"], $field, $attrs, $value);
+		enum_input("radio", $attrs, $field, $value);
 	} else {
 		$first = 0;
 		foreach ($functions as $key => $val) {
@@ -560,7 +561,7 @@ function input($field, $value, $function) {
 			$first++;
 		}
 		$onchange = ($first ? " onchange=\"var f = this.form['function[" . addcslashes($name, "\r\n'\\") . "]']; if ($first > f.selectedIndex) f.selectedIndex = $first;\"" : "");
-		$attrs = " name='fields[$name]'$onchange";
+		$attrs .= $onchange;
 		echo (count($functions) > 1 ? html_select("function[$name]", $functions, !isset($function) || in_array($function, $functions) || isset($functions[$function]) ? $function : "") : nbsp(reset($functions))) . '<td>';
 		$input = $adminer->editInput($_GET["edit"], $field, $attrs, $value); // usage in call is without a table
 		if ($input != "") {

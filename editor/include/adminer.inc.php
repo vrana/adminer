@@ -201,7 +201,7 @@ ORDER BY ORDINAL_POSITION");
 				$key = $keys[$name];
 				$i--;
 				echo "<div>" . h($desc) . "<input type='hidden' name='where[$i][col]' value='" . h($name) . "'>:";
-				enum_input("checkbox", "where[$i][val][]", $field, (array) $where[$key]["val"]); //! impossible to search for NULL
+				enum_input("checkbox", " name='where[$i][val][]'", $field, (array) $where[$key]["val"]); //! impossible to search for NULL
 				echo "</div>\n";
 				unset($columns[$name]);
 			}
