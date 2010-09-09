@@ -18,7 +18,7 @@ if (!defined("DRIVER")) {
 			}
 			
 			function connect($server, $username, $password) {
-				mysqli_report(MYSQLI_REPORT_OFF); // stays between requests
+				mysqli_report(MYSQLI_REPORT_OFF); // stays between requests, not required since PHP 5.3.4
 				list($host, $port) = explode(":", $server, 2); // part after : is used for port or socket
 				return @$this->real_connect(
 					($server != "" ? $host : ini_get("mysqli.default_host")),
