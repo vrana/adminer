@@ -123,7 +123,7 @@ document.getElementById('username').focus();
 	*/
 	function selectQuery($query) {
 		global $jush;
-		return "<p><a href='" . h(remove_from_uri("page")) . "&amp;page=last' title='" . lang('last') . "'>&gt;&gt;</a> <code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code> <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>\n";
+		return "<p><a href='" . h(remove_from_uri("page")) . "&amp;page=last' title='" . lang('Page') . ": " . lang('last') . "'>&gt;&gt;</a> <code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code> <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>\n";
 	}
 	
 	/** Description of a row in a table
