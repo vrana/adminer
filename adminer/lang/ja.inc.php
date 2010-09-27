@@ -35,7 +35,7 @@ $translations = array(
 	'Logout' => 'ログアウト',
 	'database' => 'データベース',
 	'Use' => '使用',
-	'No tables.' => 'テーブルがありません没有表。',
+	'No tables.' => 'テーブルがありません。',
 	'select' => '選択',
 	'Create new table' => 'テーブルを作成',
 	'Item has been deleted.' => '項目を削除しました',
@@ -109,7 +109,7 @@ $translations = array(
 	'%d process(es) have been killed.' => '%d プロセスを強制終了しました',
 	'Kill' => '強制終了',
 	'Parameter name' => '参数名',
-	'Database schema' => '数据?概要',
+	'Database schema' => '構造',
 	'Create procedure' => 'プロシージャの作成',
 	'Create function' => '関数の作成',
 	'Routine has been dropped.' => 'ルーチンを作成',
@@ -226,69 +226,37 @@ $translations = array(
 	'File does not exist.' => 'ファイルは存在しません',
 	'%d in total' => '合計 %d',
 	'Permanent login' => '永続的にログイン',
-	
-	// it is possible to drop several databases at once
-	'Databases have been dropped.' => null,
-	'Database has been dropped.' => '已丢弃数据库。',
-	
-	// label for search in whole database
-	'Search data in tables' => null,
-	
-	// PostgreSQL and MS SQL schema support
-	'schema' => null,
-	'Schema' => null,
-	'Alter schema' => null,
-	'Create schema' => null,
-	'Schema has been dropped.' => null,
-	'Schema has been created.' => null,
-	'Schema has been altered.' => null,
-	
-	// PostgreSQL sequences support
-	'Sequences' => null,
-	'Create sequence' => null,
-	'Alter sequence' => null,
-	'Sequence has been dropped.' => null,
-	'Sequence has been created.' => null,
-	'Sequence has been altered.' => null,
-	
-	// PostgreSQL user types support
-	'User types' => null,
-	'Create type' => null,
-	'Alter type' => null,
-	'Type has been dropped.' => null,
-	'Type has been created.' => null,
-	
-	// selects now support in-place editing
-	'Double click on a value to modify it.' => null,
-	'Increase text length to modify this value.' => null,
-	'Use edit link to modify this value.' => null,
-	
-	// link to last page if exact number is unknown
-	'last' => null,
-	
-	// label for box with "Run webserver file adminer.sql"
-	'From server' => null,
-	
-	// label for database system selection (MySQL, SQLite, ...)
-	'System' => null,
-	
-	// label for value '' in enum data type
-	'empty' => null,
-	
-	// new data type categories
-	'Network' => null,
-	'Geometry' => null,
-	
-	// general SQLite error in create, drop or rename database
-	'File exists.' => null,
-	
-	// label for e-mail attachments in Adminer Editor
-	'Attachments' => null,
-	
-	// %s can contain auto-increment value
-	'Item%s has been inserted.' => null,
-	//~ 'Item has been inserted.' => '項目を挿入しました',
-	
-	// function translation used in Editor
-	'now' => null,
+	'Databases have been dropped.' => 'データベースを削除しました',
+	'Search data in tables' => 'データを検索する',
+	'schema' => 'スキーマ',
+	'Schema' => 'スキーマ',
+	'Alter schema' => 'スキーマ変更',
+	'Create schema' => 'スキーマ追加',
+	'Schema has been dropped.' => 'スキーマを削除しました',
+	'Schema has been created.' => 'スキーマを追加しました',
+	'Schema has been altered.' => 'スキーマを変更しました',
+	'Sequences' => 'シーケンス',
+	'Create sequence' => 'シーケンス作成',
+	'Alter sequence' => 'シーケンス変更',
+	'Sequence has been dropped.' => 'シーケンスを削除しました',
+	'Sequence has been created.' => 'シーケンスを追加しました',
+	'Sequence has been altered.' => 'シーケンスを変更しました',
+	'User types' => 'ユーザー定義型',
+	'Create type' => 'ユーザー定義型作成',
+	'Alter type' => 'ユーザー定義型変更',
+	'Type has been dropped.' => 'ユーザー定義型を削除しました',
+	'Type has been created.' => 'ユーザー定義型を追加しました',
+	'Double click on a value to modify it.' => 'ダブルクリックして編集',
+	'Increase text length to modify this value.' => '編集枠を広げる',
+	'Use edit link to modify this value.' => 'リンクを編集する',
+	'last' => '最終',
+	'From server' => 'サーバーから実行',
+	'System' => 'データベース種類',
+	'empty' => '空',
+	'Network' => 'ネットワーク型',
+	'Geometry' => 'ジオメトリ型',
+	'File exists.' => 'ファイルが既に存在します',
+	'Attachments' => '添付ファイル',
+	'Item%s has been inserted.' => '%s項目を挿入しました',
+	'now' => '現在の日時',
 );
