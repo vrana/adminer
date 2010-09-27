@@ -109,7 +109,7 @@ ORDER BY ORDINAL_POSITION");
 	}
 	
 	function selectQuery($query) {
-		return "<!--\n" . str_replace("--", "--><!--", $query) . "\n-->\n";
+		return "<!--\n" . str_replace("--", "--><!-- ", $query) . "\n-->\n";
 	}
 	
 	function rowDescription($table) {
