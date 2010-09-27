@@ -15,6 +15,7 @@ $langs = array(
 	'zh' => '简体中文', // Mr. Lodar
 	'zh-tw' => '繁體中文', // http://tzangms.com
 	'ja' => '日本語', // Hitoshi Ozawa - http://sourceforge.jp/projects/oss-ja-jpn/releases/
+	'ta' => 'த‌மிழ்', // G. Sampath Kumar, Chennai, India, sampathkumar11@gmail.com
 );
 
 function lang($idf, $number = null) {
