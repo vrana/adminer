@@ -4,6 +4,7 @@ Allow concurrent logins on the same server
 Allow permanent login without customization
 In-place editation in select
 Foreign key options in Table creation
+Treat binary type as hex
 Show number of tables in server overview
 Operator LIKE %%
 Remember export parameters in cookie
@@ -19,7 +20,7 @@ Ability to jump to any page in select by JavaScript
 Display comment in table overview
 Link last page above data in select
 Link table names in SQL queries
-Japanese translation
+Japanese and Tamil translation
 Defer table information in database overview to JavaScript (performance)
 Big tables optimizations (performance)
 

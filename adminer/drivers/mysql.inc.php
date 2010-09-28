@@ -915,6 +915,7 @@ if (!defined("DRIVER")) {
 	$edit_functions = array( ///< @var array of array("$type|$type2" => "$function/$function2") functions used in editing, [0] - edit and insert, [1] - edit only
 		array(
 			"char" => "md5/sha1/password/encrypt/uuid", //! JavaScript for disabling maxlength
+			"binary" => "md5/sha1/hex",
 			"date|time" => "now",
 		), array(
 			"int|float|double|decimal" => "+/-",

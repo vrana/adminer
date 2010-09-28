@@ -286,7 +286,7 @@ if (!$columns) {
 						if (!isset($val)) {
 							$val = "<i>NULL</i>";
 						} else {
-							if (ereg('binary|blob|bytea|raw|file', $field["type"]) && $val != "") {
+							if (ereg('blob|bytea|raw|file', $field["type"]) && $val != "") {
 								$link = h(ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . $unique_idf);
 							}
 							if ($val == "") {

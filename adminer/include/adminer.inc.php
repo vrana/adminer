@@ -150,8 +150,8 @@ document.getElementById('username').focus();
 	* @return string
 	*/
 	function selectVal($val, $link, $field) {
-		$return = ($val != "<i>NULL</i>" && $field["type"] == "char" ? "<code>$val</code>" : $val);
-		if (ereg('binary|blob|bytea|raw|file', $field["type"]) && !is_utf8($val)) {
+		$return = ($val != "<i>NULL</i>" && ereg("^char|binary", $field["type"]) ? "<code>$val</code>" : $val);
+		if (ereg('blob|bytea|raw|file', $field["type"]) && !is_utf8($val)) {
 			$return = lang('%d byte(s)', strlen(html_entity_decode($val, ENT_QUOTES)));
 		}
 		return ($link ? "<a href='$link'>$return</a>" : $return);
@@ -163,7 +163,7 @@ document.getElementById('username').focus();
 	* @return string
 	*/
 	function editVal($val, $field) {
-		return $val;
+		return (ereg("binary", $field["type"]) ? reset(unpack("H*", $val)) : $val);
 	}
 	
 	/** Print columns box in select
@@ -449,8 +449,11 @@ document.getElementById('username').focus();
 			$return = idf_escape($name) . " $function " . (preg_match("~^([0-9]+|'[0-9.: -]') [A-Z_]+$~i", $value) ? $value : $return);
 		} elseif (ereg('^(addtime|subtime|concat)$', $function)) {
 			$return = "$function(" . idf_escape($name) . ", $return)";
-		} elseif (ereg('^(md5|sha1|password|encrypt)$', $function)) {
+		} elseif (ereg('^(md5|sha1|password|encrypt|hex)$', $function)) {
 			$return = "$function($return)";
+		}
+		if (ereg("binary", $field["type"])) {
+			$return = "unhex($return)";
 		}
 		return $return;
 	}
