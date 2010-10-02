@@ -156,7 +156,7 @@ ORDER BY ORDINAL_POSITION");
 	
 	function selectVal($val, $link, $field) {
 		$return = ($val == "<i>NULL</i>" ? "&nbsp;" : $val);
-		if (ereg('binary|blob|bytea', $field["type"]) && !is_utf8($val)) {
+		if (ereg('blob|bytea', $field["type"]) && !is_utf8($val)) {
 			$return = lang('%d byte(s)', strlen($val));
 			if (ereg("^(GIF|\xFF\xD8\xFF|\x89\x50\x4E\x47\x0D\x0A\x1A\x0A)", $val)) { // GIF|JPG|PNG, getimagetype() works with filename
 				$return = "<img src='$link' alt='$return'>";
@@ -180,7 +180,7 @@ ORDER BY ORDINAL_POSITION");
 		if (ereg('date|timestamp', $field["type"]) && isset($val)) {
 			return preg_replace('~^([0-9]{2}([0-9]+))-(0?([0-9]+))-(0?([0-9]+))~', lang('$1-$3-$5'), $val);
 		}
-		return $val;
+		return (ereg("binary", $field["type"]) ? reset(unpack("H*", $val)) : $val);
 	}
 	
 	function selectColumnsPrint($select, $columns) {
@@ -425,6 +425,9 @@ ORDER BY ORDINAL_POSITION");
 			$return = "NULL";
 		} elseif (ereg('^(md5|sha1)$', $function)) {
 			$return = "$function($return)";
+		}
+		if (ereg("binary", $field["type"])) {
+			$return = "unhex($return)";
 		}
 		return $return;
 	}
