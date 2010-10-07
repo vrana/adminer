@@ -111,7 +111,7 @@ function dump_data($table, $style, $select = "") {
 			echo truncate_sql($table) . ";\n";
 		}
 		$fields = fields($table);
-		$result = $connection->query(($select ? $select : "SELECT * FROM " . table($table)), 1); // 1 - MYSQLI_USE_RESULT //! enum and set as numbers, microtime
+		$result = $connection->query(($select ? $select : "SELECT * FROM " . table($table)), 1); // 1 - MYSQLI_USE_RESULT //! enum and set as numbers
 		if ($result) {
 			$insert = "";
 			$buffer = "";
