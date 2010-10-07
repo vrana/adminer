@@ -632,6 +632,8 @@ function process_input($field) {
 */
 function search_tables() {
 	global $adminer, $connection;
+	$_GET["where"][0]["op"] = "LIKE %%";
+	$_GET["where"][0]["val"] = $_POST["query"];
 	$found = false;
 	foreach (table_status() as $table => $table_status) {
 		$name = $adminer->tableName($table_status);

@@ -48,8 +48,6 @@ if ($_GET["ns"] !== "") {
 		echo "<form action='' method='post'>\n";
 		echo "<p>" . lang('Search data in tables') . ": <input name='query' value='" . h($_POST["query"]) . "'> <input type='submit' name='search' value='" . lang('Search') . "'>\n";
 		if ($_POST["search"] && $_POST["query"] != "") {
-			$_GET["where"][0]["op"] = "LIKE %%";
-			$_GET["where"][0]["val"] = $_POST["query"];
 			search_tables();
 		}
 		echo "<table cellspacing='0' class='nowrap' onclick='tableClick(event);'>\n";
