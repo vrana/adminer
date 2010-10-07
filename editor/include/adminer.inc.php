@@ -457,7 +457,7 @@ ORDER BY ORDINAL_POSITION");
 						echo "<p>\n";
 						$first = false;
 					}
-					echo "<a href='" . h(auth_url("server", "", $username)) . "'>" . h($username) . "</a><br>\n";
+					echo "<a href='" . h(auth_url("server", "", $username)) . "'>" . ($username != "" ? h($username) : "<i>" . lang('empty') . "</i>") . "</a><br>\n";
 				}
 			}
 		} else {
