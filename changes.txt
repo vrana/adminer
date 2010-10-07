@@ -20,7 +20,7 @@ Ability to jump to any page in select by JavaScript
 Display comment in table overview
 Link last page above data in select
 Link table names in SQL queries
-Japanese and Tamil translation
+Hungarian, Japanese and Tamil translation
 Defer table information in database overview to JavaScript (performance)
 Big tables optimizations (performance)
 

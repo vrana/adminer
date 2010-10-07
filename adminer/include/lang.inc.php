@@ -11,6 +11,7 @@ $langs = array(
 	'fr' => 'Français', // Francis Gagné, Aurélien Royer
 	'it' => 'Italiano', // Alessandro Fiorotto, Paolo Asperti
 	'et' => 'Eesti', // Priit Kallas
+	'hu' => 'Magyar', // Borsos Szilárd (Borsosfi) - http://www.borsosfi.hu, info@borsosfi.hu
 	'ru' => 'Русский язык', // Maksim Izmaylov
 	'zh' => '简体中文', // Mr. Lodar
 	'zh-tw' => '繁體中文', // http://tzangms.com
