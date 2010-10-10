@@ -20,7 +20,7 @@ if (!defined("DRIVER")) {
 			function connect($server, $username, $password) {
 				mysqli_report(MYSQLI_REPORT_OFF); // stays between requests, not required since PHP 5.3.4
 				list($host, $port) = explode(":", $server, 2); // part after : is used for port or socket
-				return @$this->real_connect(
+				$return = @$this->real_connect(
 					($server != "" ? $host : ini_get("mysqli.default_host")),
 					("$server$username" != "" ? $username : ini_get("mysqli.default_user")),
 					("$server$username$password" != "" ? $password : ini_get("mysqli.default_pw")),
@@ -28,6 +28,14 @@ if (!defined("DRIVER")) {
 					(is_numeric($port) ? $port : ini_get("mysqli.default_port")),
 					(!is_numeric($port) ? $port : null)
 				);
+				if ($return) {
+					if (method_exists($this, 'set_charset')) {
+						$this->set_charset("utf8");
+					} else {
+						$this->query("SET NAMES utf8");
+					}
+				}
+				return $return;
 			}
 			
 			function result($query, $field = 0) {
@@ -70,6 +78,11 @@ if (!defined("DRIVER")) {
 				);
 				if ($this->_link) {
 					$this->server_info = mysql_get_server_info($this->_link);
+					if (function_exists('mysql_set_charset')) {
+						mysql_set_charset("utf8", $this->_link);
+					} else {
+						$this->query("SET NAMES utf8");
+					}
 				} else {
 					$this->error = mysql_error();
 				}
@@ -200,6 +213,7 @@ if (!defined("DRIVER")) {
 			
 			function connect($server, $username, $password) {
 				$this->dsn("mysql:host=" . str_replace(":", ";unix_socket=", preg_replace('~:([0-9])~', ';port=\\1', $server)), $username, $password);
+				$this->query("SET NAMES utf8"); // charset in DSN is ignored
 				return true;
 			}
 			
@@ -241,7 +255,6 @@ if (!defined("DRIVER")) {
 		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
 			$connection->query("SET SQL_QUOTE_SHOW_CREATE=1");
-			$connection->query("SET NAMES utf8");
 			return $connection;
 		}
 		return $connection->error;
