@@ -34,11 +34,11 @@ if ($_POST) {
 <tr><th><?php echo lang('Event'); ?><td><?php echo html_select("Event", $trigger_event, $row["Event"], "this.form['Timing'].onchange();"); ?>
 <tr><th><?php echo lang('Type'); ?><td><?php echo html_select("Type", $trigger_options["Type"], $row["Type"]); ?>
 </table>
+<p><?php echo lang('Name'); ?>: <input name="Trigger" value="<?php echo h($row["Trigger"]); ?>" maxlength="64">
 <p><?php textarea("Statement", $row["Statement"]); ?>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <?php if ($dropped) { ?><input type="hidden" name="dropped" value="1"><?php } ?>
-<?php echo lang('Name'); ?>: <input name="Trigger" value="<?php echo h($row["Trigger"]); ?>" maxlength="64">
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php if ($_GET["name"] != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
 </form>

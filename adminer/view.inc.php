@@ -25,10 +25,10 @@ if ($_POST) {
 ?>
 
 <form action="" method="post">
+<p><?php echo lang('Name'); ?>: <input name="name" value="<?php echo h($row["name"]); ?>" maxlength="64">
 <p><?php textarea("select", $row["select"]); ?>
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <?php if ($dropped) { // old view was dropped but new wasn't created ?><input type="hidden" name="dropped" value="1"><?php } ?>
-<?php echo lang('Name'); ?>: <input name="name" value="<?php echo h($row["name"]); ?>" maxlength="64">
 <input type="submit" value="<?php echo lang('Save'); ?>">
 </form>

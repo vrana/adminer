@@ -39,6 +39,7 @@ if ($_POST) {
 ?>
 
 <form action="" method="post" id="form">
+<p><?php echo lang('Name'); ?>: <input name="name" value="<?php echo h($row["name"]); ?>" maxlength="64">
 <table cellspacing="0" class="nowrap">
 <?php
 edit_fields($row["fields"], $collations, $routine);
@@ -52,7 +53,6 @@ if (isset($_GET["function"])) {
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <?php if ($dropped) { ?><input type="hidden" name="dropped" value="1"><?php } ?>
-<?php echo lang('Name'); ?>: <input name="name" value="<?php echo h($row["name"]); ?>" maxlength="64">
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php if ($PROCEDURE != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
 </form>
