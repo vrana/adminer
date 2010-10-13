@@ -198,13 +198,12 @@ if (isset($_GET["pgsql"])) {
 	}
 
 	function table_status($name = "") {
-		global $connection;
 		$return = array();
 		foreach (get_rows("SELECT relname AS \"Name\", CASE relkind WHEN 'r' THEN '' ELSE 'view' END AS \"Engine\", pg_relation_size(oid) AS \"Data_length\", pg_total_relation_size(oid) - pg_relation_size(oid) AS \"Index_length\", obj_description(oid, 'pg_class') AS \"Comment\"
 FROM pg_class
 WHERE relkind IN ('r','v')
 AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema())"
-			. ($name != "" ? " AND relname = " . $connection->quote($name) : "")
+			. ($name != "" ? " AND relname = " . q($name) : "")
 		) as $row) { //! Index_length, Auto_increment
 			$return[$row["Name"]] = $row;
 		}
@@ -220,14 +219,13 @@ AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema(
 	}
 	
 	function fields($table, $hidden = false) {
-		global $connection;
 		$return = array();
 		foreach (get_rows("SELECT a.attname AS field, format_type(a.atttypid, a.atttypmod) AS full_type, d.adsrc AS default, a.attnotnull, col_description(c.oid, a.attnum) AS comment
 FROM pg_class c
 JOIN pg_namespace n ON c.relnamespace = n.oid
 JOIN pg_attribute a ON c.oid = a.attrelid
 LEFT JOIN pg_attrdef d ON c.oid = d.adrelid AND a.attnum = d.adnum
-WHERE c.relname = " . $connection->quote($table) . "
+WHERE c.relname = " . q($table) . "
 AND n.nspname = current_schema()
 AND NOT a.attisdropped
 " . ($hidden ? "" : "AND a.attnum > 0") . "
@@ -251,7 +249,7 @@ ORDER BY a.attnum < 0, a.attnum"
 			$connection2 = $connection;
 		}
 		$return = array();
-		$table_oid = $connection2->result("SELECT oid FROM pg_class WHERE relname = " . $connection2->quote($table));
+		$table_oid = $connection2->result("SELECT oid FROM pg_class WHERE relname = " . q($table));
 		$columns = get_key_vals("SELECT attnum, attname FROM pg_attribute WHERE attrelid = $table_oid AND attnum > 0", $connection2);
 		foreach (get_rows("SELECT relname, indisunique, indisprimary, indkey FROM pg_index i, pg_class ci WHERE i.indrelid = $table_oid AND ci.oid = i.indexrelid") as $row) {
 			$return[$row["relname"]]["type"] = ($row["indisprimary"] == "t" ? "PRIMARY" : ($row["indisunique"] == "t" ? "UNIQUE" : "INDEX"));
@@ -265,14 +263,13 @@ ORDER BY a.attnum < 0, a.attnum"
 	}
 	
 	function foreign_keys($table) {
-		global $connection;
 		$return = array();
 		foreach (get_rows("SELECT tc.constraint_name, kcu.column_name, rc.update_rule AS on_update, rc.delete_rule AS on_delete, ccu.table_name AS table, ccu.column_name AS ref
 FROM information_schema.table_constraints tc
 LEFT JOIN information_schema.key_column_usage kcu USING (constraint_catalog, constraint_schema, constraint_name)
 LEFT JOIN information_schema.referential_constraints rc USING (constraint_catalog, constraint_schema, constraint_name)
 LEFT JOIN information_schema.constraint_column_usage ccu ON rc.unique_constraint_catalog = ccu.constraint_catalog AND rc.unique_constraint_schema = ccu.constraint_schema AND rc.unique_constraint_name = ccu.constraint_name
-WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->quote($table)) as $row) { //! there can be more unique_constraint_name
+WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . q($table)) as $row) { //! there can be more unique_constraint_name
 			$foreign_key = &$return[$row["constraint_name"]];
 			if (!$foreign_key) {
 				$foreign_key = $row;
@@ -285,7 +282,7 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 	
 	function view($name) {
 		global $connection;
-		return array("select" => $connection->result("SELECT pg_get_viewdef(" . $connection->quote($name) . ")"));
+		return array("select" => $connection->result("SELECT pg_get_viewdef(" . q($name) . ")"));
 	}
 	
 	function collations() {
@@ -307,8 +304,7 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 	}
 	
 	function exact_value($val) {
-		global $connection;
-		return $connection->quote($val);
+		return q($val);
 	}
 	
 	function create_database($db, $collation) {
@@ -331,7 +327,6 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 	}
 	
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
-		global $connection;
 		$alter = array();
 		$queries = array();
 		foreach ($fields as $field) {
@@ -372,10 +367,10 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 			$queries[] = "ALTER TABLE " . table($table) . " RENAME TO " . table($name);
 		}
 		if ($table != "" || $comment != "") {
-			$queries[] = "COMMENT ON TABLE " . table($name) . " IS " . $connection->quote($comment);
+			$queries[] = "COMMENT ON TABLE " . table($name) . " IS " . q($comment);
 		}
 		if ($auto_increment != "") {
-			//! $queries[] = "SELECT setval(pg_get_serial_sequence(" . $connection->quote($name) . ", ), $auto_increment)";
+			//! $queries[] = "SELECT setval(pg_get_serial_sequence(" . q($name) . ", ), $auto_increment)";
 		}
 		foreach ($queries as $query) {
 			if (!queries($query)) {
@@ -430,15 +425,13 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 	}
 	
 	function trigger($name) {
-		global $connection;
-		$rows = get_rows('SELECT trigger_name AS "Trigger", condition_timing AS "Timing", event_manipulation AS "Event", \'FOR EACH \' || action_orientation AS "Type", action_statement AS "Statement" FROM information_schema.triggers WHERE event_object_table = ' . $connection->quote($_GET["trigger"]) . ' AND trigger_name = ' . $connection->quote($name));
+		$rows = get_rows('SELECT trigger_name AS "Trigger", condition_timing AS "Timing", event_manipulation AS "Event", \'FOR EACH \' || action_orientation AS "Type", action_statement AS "Statement" FROM information_schema.triggers WHERE event_object_table = ' . q($_GET["trigger"]) . ' AND trigger_name = ' . q($name));
 		return reset($rows);
 	}
 	
 	function triggers($table) {
-		global $connection;
 		$return = array();
-		foreach (get_rows("SELECT * FROM information_schema.triggers WHERE event_object_table = " . $connection->quote($table)) as $row) {
+		foreach (get_rows("SELECT * FROM information_schema.triggers WHERE event_object_table = " . q($table)) as $row) {
 			$return[$row["trigger_name"]] = array($row["condition_timing"], $row["event_manipulation"]);
 		}
 		return $return;

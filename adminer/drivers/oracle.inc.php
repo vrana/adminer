@@ -175,8 +175,7 @@ if (isset($_GET["oracle"])) {
 	}
 
 	function tables_list() {
-		global $connection;
-		return get_key_vals("SELECT table_name, 'table' FROM all_tables WHERE tablespace_name = " . $connection->quote(DB) . "
+		return get_key_vals("SELECT table_name, 'table' FROM all_tables WHERE tablespace_name = " . q(DB) . "
 UNION SELECT view_name, 'view' FROM user_views"
 		); //! views don't have schema
 	}
@@ -186,10 +185,9 @@ UNION SELECT view_name, 'view' FROM user_views"
 	}
 	
 	function table_status($name = "") {
-		global $connection;
 		$return = array();
-		$search = $connection->quote($name);
-		foreach (get_rows('SELECT table_name "Name", \'table\' "Engine" FROM all_tables WHERE tablespace_name = ' . $connection->quote(DB) . ($name != "" ? " AND table_name = $search" : "") . "
+		$search = q($name);
+		foreach (get_rows('SELECT table_name "Name", \'table\' "Engine" FROM all_tables WHERE tablespace_name = ' . q(DB) . ($name != "" ? " AND table_name = $search" : "") . "
 UNION SELECT view_name, 'view' FROM user_views" . ($name != "" ? " WHERE view_name = $search" : "")
 		) as $row) {
 			if ($name != "") {
@@ -209,9 +207,8 @@ UNION SELECT view_name, 'view' FROM user_views" . ($name != "" ? " WHERE view_na
 	}
 
 	function fields($table, $hidden = false) {
-		global $connection;
 		$return = array();
-		foreach (get_rows("SELECT * FROM all_tab_columns WHERE table_name = " . $connection->quote($table) . " ORDER BY column_id") as $row) {
+		foreach (get_rows("SELECT * FROM all_tab_columns WHERE table_name = " . q($table) . " ORDER BY column_id") as $row) {
 			$type = $row["DATA_TYPE"];
 			$length = "$row[DATA_PRECISION],$row[DATA_SCALE]";
 			if ($length == ",") {
@@ -239,8 +236,7 @@ UNION SELECT view_name, 'view' FROM user_views" . ($name != "" ? " WHERE view_na
 	}
 
 	function view($name) {
-		global $connection;
-		$rows = get_rows('SELECT text "select" FROM user_views WHERE view_name = ' . $connection->quote($name));
+		$rows = get_rows('SELECT text "select" FROM user_views WHERE view_name = ' . q($name));
 		return reset($rows);
 	}
 	
@@ -258,8 +254,7 @@ UNION SELECT view_name, 'view' FROM user_views" . ($name != "" ? " WHERE view_na
 	}
 	
 	function exact_value($val) {
-		global $connection;
-		return $connection->quote($val);
+		return q($val);
 	}
 	
 	function explain($connection, $query) {

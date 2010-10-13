@@ -26,7 +26,7 @@ if ($_POST) {
 }
 $grants = array();
 $old_pass = "";
-if (isset($_GET["host"]) && ($result = $connection->query("SHOW GRANTS FOR " . $connection->quote($USER) . "@" . $connection->quote($_GET["host"])))) { //! use information_schema for MySQL 5 - column names in column privileges are not escaped
+if (isset($_GET["host"]) && ($result = $connection->query("SHOW GRANTS FOR " . q($USER) . "@" . q($_GET["host"])))) { //! use information_schema for MySQL 5 - column names in column privileges are not escaped
 	while ($row = $result->fetch_row()) {
 		if (preg_match('~GRANT (.*) ON (.*) TO ~', $row[0], $match) && preg_match_all('~ *([^(,]*[^ ,(])( *\\([^)]+\\))?~', $match[1], $matches, PREG_SET_ORDER)) { //! escape the part between ON and TO
 			foreach ($matches as $val) {
@@ -45,9 +45,9 @@ if (isset($_GET["host"]) && ($result = $connection->query("SHOW GRANTS FOR " . $
 }
 
 if ($_POST && !$error) {
-	$old_user = (isset($_GET["host"]) ? $connection->quote($USER) . "@" . $connection->quote($_GET["host"]) : "''");
-	$new_user = $connection->quote($_POST["user"]) . "@" . $connection->quote($_POST["host"]); // if $_GET["host"] is not set then $new_user is always different
-	$pass = $connection->quote($_POST["pass"]);
+	$old_user = (isset($_GET["host"]) ? q($USER) . "@" . q($_GET["host"]) : "''");
+	$new_user = q($_POST["user"]) . "@" . q($_POST["host"]); // if $_GET["host"] is not set then $new_user is always different
+	$pass = q($_POST["pass"]);
 	if ($_POST["drop"]) {
 		query_redirect("DROP USER $old_user", ME . "privileges=", lang('User has been dropped.'));
 	} else {

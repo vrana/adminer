@@ -139,11 +139,11 @@ function process_length($length) {
 * @return string
 */
 function process_type($field, $collate = "COLLATE") {
-	global $connection, $unsigned;
+	global $unsigned;
 	return " $field[type]"
 		. ($field["length"] != "" ? "(" . process_length($field["length"]) . ")" : "")
 		. (ereg('int|float|double|decimal', $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
-		. (ereg('char|text|enum|set', $field["type"]) && $field["collation"] ? " $collate " . $connection->quote($field["collation"]) : "")
+		. (ereg('char|text|enum|set', $field["type"]) && $field["collation"] ? " $collate " . q($field["collation"]) : "")
 	;
 }
 
@@ -153,14 +153,13 @@ function process_type($field, $collate = "COLLATE") {
 * @return array array("field", "type", "NULL", "DEFAULT", "ON UPDATE", "COMMENT", "AUTO_INCREMENT")
 */
 function process_field($field, $type_field) {
-	global $connection;
 	return array(
 		idf_escape($field["field"]),
 		process_type($type_field),
 		($field["null"] ? " NULL" : " NOT NULL"), // NULL for timestamp
-		(isset($field["default"]) ? " DEFAULT " . ($field["type"] == "timestamp" && eregi("^CURRENT_TIMESTAMP$", $field["default"]) ? $field["default"] : $connection->quote($field["default"])) : ""),
+		(isset($field["default"]) ? " DEFAULT " . ($field["type"] == "timestamp" && eregi("^CURRENT_TIMESTAMP$", $field["default"]) ? $field["default"] : q($field["default"])) : ""),
 		($field["on_update"] ? " ON UPDATE $field[on_update]" : ""),
-		(support("comment") && $field["comment"] != "" ? " COMMENT " . $connection->quote($field["comment"]) : ""),
+		(support("comment") && $field["comment"] != "" ? " COMMENT " . q($field["comment"]) : ""),
 		($field["auto_increment"] ? auto_increment() : null),
 	);
 }

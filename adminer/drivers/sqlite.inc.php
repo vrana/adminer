@@ -249,9 +249,8 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 
 	function table_status($name = "") {
-		global $connection;
 		$return = array();
-		foreach (get_rows("SELECT name AS Name, type AS Engine FROM sqlite_master WHERE type IN ('table', 'view')" . ($name != "" ? " AND name = " . $connection->quote($name) : "")) as $row) {
+		foreach (get_rows("SELECT name AS Name, type AS Engine FROM sqlite_master WHERE type IN ('table', 'view')" . ($name != "" ? " AND name = " . q($name) : "")) as $row) {
 			$row["Auto_increment"] = "";
 			$return[$row["Name"]] = $row;
 		}
@@ -326,7 +325,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 
 	function view($name) {
 		global $connection;
-		return array("select" => preg_replace('~^(?:[^`"[]+|`[^`]*`|"[^"]*")* AS\\s+~iU', '', $connection->result("SELECT sql FROM sqlite_master WHERE name = " . $connection->quote($name)))); //! identifiers may be inside []
+		return array("select" => preg_replace('~^(?:[^`"[]+|`[^`]*`|"[^"]*")* AS\\s+~iU', '', $connection->result("SELECT sql FROM sqlite_master WHERE name = " . q($name)))); //! identifiers may be inside []
 	}
 
 	function collations() {
@@ -343,8 +342,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 	
 	function exact_value($val) {
-		global $connection;
-		return $connection->quote($val);
+		return q($val);
 	}
 
 	function create_database($db, $collation) {
@@ -384,7 +382,6 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 	
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
-		global $connection;
 		$alter = array();
 		foreach ($fields as $field) {
 			if ($field[1]) {
@@ -405,7 +402,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			return false;
 		}
 		if ($auto_increment) {
-			queries("UPDATE sqlite_sequence SET seq = $auto_increment WHERE name = " . $connection->quote($name)); // ignores error
+			queries("UPDATE sqlite_sequence SET seq = $auto_increment WHERE name = " . q($name)); // ignores error
 		}
 		return true;
 	}
@@ -437,14 +434,13 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	
 	function trigger($name) {
 		global $connection;
-		preg_match('~^CREATE\\s+TRIGGER\\s*(?:[^`"\\s]+|`[^`]*`|"[^"]*")+\\s*([a-z]+)\\s+([a-z]+)\\s+ON\\s*(?:[^`"\\s]+|`[^`]*`|"[^"]*")+\\s*(?:FOR\\s*EACH\\s*ROW\\s)?(.*)~is', $connection->result("SELECT sql FROM sqlite_master WHERE name = " . $connection->quote($name)), $match);
+		preg_match('~^CREATE\\s+TRIGGER\\s*(?:[^`"\\s]+|`[^`]*`|"[^"]*")+\\s*([a-z]+)\\s+([a-z]+)\\s+ON\\s*(?:[^`"\\s]+|`[^`]*`|"[^"]*")+\\s*(?:FOR\\s*EACH\\s*ROW\\s)?(.*)~is', $connection->result("SELECT sql FROM sqlite_master WHERE name = " . q($name)), $match);
 		return array("Timing" => strtoupper($match[1]), "Event" => strtoupper($match[2]), "Trigger" => $name, "Statement" => $match[3]);
 	}
 	
 	function triggers($table) {
-		global $connection;
 		$return = array();
-		foreach (get_rows("SELECT * FROM sqlite_master WHERE type = 'trigger' AND tbl_name = " . $connection->quote($table)) as $row) {
+		foreach (get_rows("SELECT * FROM sqlite_master WHERE type = 'trigger' AND tbl_name = " . q($table)) as $row) {
 			preg_match('~^CREATE\\s+TRIGGER\\s*(?:[^`"\\s]+|`[^`]*`|"[^"]*")+\\s*([a-z]+)\\s*([a-z]+)~i', $row["sql"], $match);
 			$return[$row["name"]] = array($match[1], $match[2]);
 		}
@@ -505,7 +501,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	
 	function create_sql($table, $auto_increment) {
 		global $connection;
-		return $connection->result("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . $connection->quote($table));
+		return $connection->result("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table));
 	}
 	
 	function truncate_sql($table) {
@@ -516,8 +512,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 	
 	function trigger_sql($table, $style) {
-		global $connection;
-		return implode(get_vals("SELECT sql || ';;\n' FROM sqlite_master WHERE type = 'trigger' AND name = " . $connection->quote($table)));
+		return implode(get_vals("SELECT sql || ';;\n' FROM sqlite_master WHERE type = 'trigger' AND name = " . q($table)));
 	}
 	
 	function show_variables() {

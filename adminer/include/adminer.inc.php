@@ -304,11 +304,11 @@ document.getElementById('username').focus();
 	* @return array expressions to join by AND
 	*/
 	function selectSearchProcess($fields, $indexes) {
-		global $connection, $jush;
+		global $jush;
 		$return = array();
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT" && $_GET["fulltext"][$i] != "") {
-				$return[] = "MATCH (" . implode(", ", array_map('idf_escape', $index["columns"])) . ") AGAINST (" . $connection->quote($_GET["fulltext"][$i]) . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
+				$return[] = "MATCH (" . implode(", ", array_map('idf_escape', $index["columns"])) . ") AGAINST (" . q($_GET["fulltext"][$i]) . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
 			}
 		}
 		foreach ((array) $_GET["where"] as $val) {
@@ -436,9 +436,8 @@ document.getElementById('username').focus();
 	* @return string expression to use in a query
 	*/
 	function processInput($field, $value, $function = "") {
-		global $connection;
 		$name = $field["field"];
-		$return = $connection->quote($value);
+		$return = q($value);
 		if (ereg('^(now|getdate|uuid)$', $function)) {
 			$return = "$function()";
 		} elseif (ereg('^current_(date|timestamp)$', $function)) {

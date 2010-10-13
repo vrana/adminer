@@ -61,13 +61,12 @@ document.getElementById('username').focus();
 	}
 	
 	function backwardKeys($table, $tableName) {
-		global $connection;
 		$return = array();
 		foreach (get_rows("SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME
 FROM information_schema.KEY_COLUMN_USAGE
-WHERE TABLE_SCHEMA = " . $connection->quote($this->database()) . "
-AND REFERENCED_TABLE_SCHEMA = " . $connection->quote($this->database()) . "
-AND REFERENCED_TABLE_NAME = " . $connection->quote($table) . "
+WHERE TABLE_SCHEMA = " . q($this->database()) . "
+AND REFERENCED_TABLE_SCHEMA = " . q($this->database()) . "
+AND REFERENCED_TABLE_NAME = " . q($table) . "
 ORDER BY ORDINAL_POSITION") as $row) { //! requires MySQL 5
 			$return[$row["TABLE_NAME"]]["keys"][$row["CONSTRAINT_NAME"]][$row["COLUMN_NAME"]] = $row["REFERENCED_COLUMN_NAME"];
 		}
@@ -404,7 +403,6 @@ ORDER BY ORDINAL_POSITION") as $row) { //! requires MySQL 5
 	}
 	
 	function processInput($field, $value, $function = "") {
-		global $connection;
 		if ($function == "now") {
 			return "$function()";
 		}
@@ -412,7 +410,7 @@ ORDER BY ORDINAL_POSITION") as $row) { //! requires MySQL 5
 		if (ereg('date|timestamp', $field["type"]) && preg_match('(^' . str_replace('\\$1', '(?P<p1>[0-9]*)', preg_replace('~(\\\\\\$([2-6]))~', '(?P<p\\2>[0-9]{1,2})', preg_quote(lang('$1-$3-$5')))) . '(.*))', $value, $match)) {
 			$return = ($match["p1"] != "" ? $match["p1"] : ($match["p2"] != "" ? ($match["p2"] < 70 ? 20 : 19) . $match["p2"] : gmdate("Y"))) . "-$match[p3]$match[p4]-$match[p5]$match[p6]" . end($match);
 		}
-		$return = $connection->quote($return);
+		$return = q($return);
 		if (!ereg('varchar|text', $field["type"]) && $field["full_type"] != "tinyint(1)" && $value == "") {
 			$return = "NULL";
 		} elseif (ereg('^(md5|sha1)$', $function)) {

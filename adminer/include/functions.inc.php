@@ -22,8 +22,7 @@ function idf_unescape($idf) {
 * @return string
 */
 function escape_string($val) {
-	global $connection;
-	return substr($connection->quote($val), 1, -1);
+	return substr(q($val), 1, -1);
 }
 
 /** Disable magic_quotes_gpc
@@ -147,6 +146,11 @@ function html_select($name, $options, $value = "", $onchange = true) {
 function ini_bool($ini) {
 	$val = ini_get($ini);
 	return (eregi('^(on|true|yes)$', $val) || (int) $val); // boolean values set by php_value are strings
+}
+
+function q($string) {
+	global $connection;
+	return $connection->quote($string);
 }
 
 /** Get list of values from database
@@ -609,7 +613,7 @@ function input($field, $value, $function) {
 * @return string
 */
 function process_input($field) {
-	global $connection, $adminer;
+	global $adminer;
 	$idf = bracket_escape($field["field"]);
 	$function = $_POST["function"][$idf];
 	$value = $_POST["fields"][$idf];
@@ -639,7 +643,7 @@ function process_input($field) {
 		if (!is_string($file)) {
 			return false; //! report errors
 		}
-		return $connection->quote($file);
+		return q($file);
 	}
 	return $adminer->processInput($field, $value, $function);
 }

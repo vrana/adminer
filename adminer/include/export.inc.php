@@ -10,7 +10,6 @@ function tar_file($filename, $contents) {
 }
 
 function dump_table($table, $style, $is_view = false) {
-	global $connection;
 	if ($_POST["format"] != "sql") {
 		echo "\xef\xbb\xbf"; // UTF-8 byte order mark
 		if ($style) {
@@ -30,7 +29,7 @@ function dump_table($table, $style, $is_view = false) {
 		}
 		if ($style == "CREATE+ALTER" && !$is_view) {
 			// create procedure which iterates over original columns and adds new and removes old
-			$query = "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLLATION_NAME, COLUMN_TYPE, EXTRA, COLUMN_COMMENT FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = " . $connection->quote($table) . " ORDER BY ORDINAL_POSITION";
+			$query = "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLLATION_NAME, COLUMN_TYPE, EXTRA, COLUMN_COMMENT FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = " . q($table) . " ORDER BY ORDINAL_POSITION";
 			echo "DELIMITER ;;
 CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 	DECLARE _column_name, _collation_name, after varchar(64) DEFAULT '';
@@ -44,15 +43,15 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 			$after = "";
 			foreach (get_rows($query) as $row) {
 				$default = $row["COLUMN_DEFAULT"];
-				$row["default"] = (isset($default) ? $connection->quote($default) : "NULL");
-				$row["after"] = $connection->quote($after); //! rgt AFTER lft, lft AFTER id doesn't work
+				$row["default"] = (isset($default) ? q($default) : "NULL");
+				$row["after"] = q($after); //! rgt AFTER lft, lft AFTER id doesn't work
 				$row["alter"] = escape_string(idf_escape($row["COLUMN_NAME"])
 					. " $row[COLUMN_TYPE]"
 					. ($row["COLLATION_NAME"] ? " COLLATE $row[COLLATION_NAME]" : "")
 					. (isset($default) ? " DEFAULT " . ($default == "CURRENT_TIMESTAMP" ? $default : $row["default"]) : "")
 					. ($row["IS_NULLABLE"] == "YES" ? "" : " NOT NULL")
 					. ($row["EXTRA"] ? " $row[EXTRA]" : "")
-					. ($row["COLUMN_COMMENT"] ? " COMMENT " . $connection->quote($row["COLUMN_COMMENT"]) : "")
+					. ($row["COLUMN_COMMENT"] ? " COMMENT " . q($row["COLUMN_COMMENT"]) : "")
 					. ($after ? " AFTER " . idf_escape($after) : " FIRST")
 				);
 				echo ", ADD $row[alter]";
@@ -71,9 +70,9 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 			CASE _column_name";
 			foreach ($fields as $row) {
 				echo "
-				WHEN " . $connection->quote($row["COLUMN_NAME"]) . " THEN
+				WHEN " . q($row["COLUMN_NAME"]) . " THEN
 					SET add_columns = REPLACE(add_columns, ', ADD $row[alter]', '');
-					IF NOT (_column_default <=> $row[default]) OR _is_nullable != '$row[IS_NULLABLE]' OR _collation_name != '$row[COLLATION_NAME]' OR _column_type != " . $connection->quote($row["COLUMN_TYPE"]) . " OR _extra != '$row[EXTRA]' OR _column_comment != " . $connection->quote($row["COLUMN_COMMENT"]) . " OR after != $row[after] THEN
+					IF NOT (_column_default <=> $row[default]) OR _is_nullable != '$row[IS_NULLABLE]' OR _collation_name != '$row[COLLATION_NAME]' OR _column_type != " . q($row["COLUMN_TYPE"]) . " OR _extra != '$row[EXTRA]' OR _column_comment != " . q($row["COLUMN_COMMENT"]) . " OR after != $row[after] THEN
 						SET @alter_table = CONCAT(@alter_table, ', MODIFY $row[alter]');
 					END IF;"; //! don't replace in comment
 			}
@@ -122,7 +121,7 @@ function dump_data($table, $style, $select = "") {
 						$insert = "INSERT INTO " . table($table) . " (" . implode(", ", array_map('idf_escape', array_keys($row))) . ") VALUES";
 					}
 					foreach ($row as $key => $val) {
-						$row[$key] = (isset($val) ? (ereg('int|float|double|decimal', $fields[$key]["type"]) ? $val : $connection->quote($val)) : "NULL"); //! columns looking like functions
+						$row[$key] = (isset($val) ? (ereg('int|float|double|decimal', $fields[$key]["type"]) ? $val : q($val)) : "NULL"); //! columns looking like functions
 					}
 					$s = implode(",\t", $row);
 					if ($style == "INSERT+UPDATE") {

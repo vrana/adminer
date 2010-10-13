@@ -13,7 +13,7 @@ if ($_POST) {
 
 " . ($jush != "sql" ? "" : "SET NAMES utf8;
 SET foreign_key_checks = 0;
-SET time_zone = " . $connection->quote($connection->result("SELECT @@time_zone")) . ";
+SET time_zone = " . q($connection->result("SELECT @@time_zone")) . ";
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
 ");
@@ -45,7 +45,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 				$out = "";
 				if ($_POST["routines"]) {
 					foreach (array("FUNCTION", "PROCEDURE") as $routine) {
-						$result = $connection->query("SHOW $routine STATUS WHERE Db = " . $connection->quote($db));
+						$result = $connection->query("SHOW $routine STATUS WHERE Db = " . q($db));
 						if ($result) {
 							while ($row = $result->fetch_assoc()) {
 								$out .= ($style != 'DROP+CREATE' ? "DROP $routine IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
@@ -126,9 +126,9 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 		IF NOT done THEN
 			CASE _table_name";
 				foreach (get_rows($query) as $row) {
-					$comment = $connection->quote($row["ENGINE"] == "InnoDB" ? preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["TABLE_COMMENT"]) : $row["TABLE_COMMENT"]);
+					$comment = q($row["ENGINE"] == "InnoDB" ? preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["TABLE_COMMENT"]) : $row["TABLE_COMMENT"]);
 					echo "
-				WHEN " . $connection->quote($row["TABLE_NAME"]) . " THEN
+				WHEN " . q($row["TABLE_NAME"]) . " THEN
 					" . (isset($row["ENGINE"]) ? "IF _engine != '$row[ENGINE]' OR _table_collation != '$row[TABLE_COLLATION]' OR _table_comment != $comment THEN
 						ALTER TABLE " . idf_escape($row["TABLE_NAME"]) . " ENGINE=$row[ENGINE] COLLATE=$row[TABLE_COLLATION] COMMENT=$comment;
 					END IF" : "BEGIN END") . ";";

@@ -8,17 +8,17 @@ if ($_POST && !$error) {
 		query_redirect("DROP EVENT " . idf_escape($EVENT), substr(ME, 0, -1), lang('Event has been dropped.'));
 	} elseif (in_array($_POST["INTERVAL_FIELD"], $intervals) && isset($statuses[$_POST["STATUS"]])) {
 		$schedule = "\nON SCHEDULE " . ($_POST["INTERVAL_VALUE"]
-			? "EVERY " . $connection->quote($_POST["INTERVAL_VALUE"]) . " $_POST[INTERVAL_FIELD]"
-			. ($_POST["STARTS"] ? " STARTS " . $connection->quote($_POST["STARTS"]) : "")
-			. ($_POST["ENDS"] ? " ENDS " . $connection->quote($_POST["ENDS"]) : "") //! ALTER EVENT doesn't drop ENDS - MySQL bug #39173
-			: "AT " . $connection->quote($_POST["STARTS"])
+			? "EVERY " . q($_POST["INTERVAL_VALUE"]) . " $_POST[INTERVAL_FIELD]"
+			. ($_POST["STARTS"] ? " STARTS " . q($_POST["STARTS"]) : "")
+			. ($_POST["ENDS"] ? " ENDS " . q($_POST["ENDS"]) : "") //! ALTER EVENT doesn't drop ENDS - MySQL bug #39173
+			: "AT " . q($_POST["STARTS"])
 			) . " ON COMPLETION" . ($_POST["ON_COMPLETION"] ? "" : " NOT") . " PRESERVE"
 		;
 		query_redirect(($EVENT != ""
 			? "ALTER EVENT " . idf_escape($EVENT) . $schedule
 			. ($EVENT != $_POST["EVENT_NAME"] ? "\nRENAME TO " . idf_escape($_POST["EVENT_NAME"]) : "")
 			: "CREATE EVENT " . idf_escape($_POST["EVENT_NAME"]) . $schedule
-			) . "\n" . $statuses[$_POST["STATUS"]] . " COMMENT " . $connection->quote($_POST["EVENT_COMMENT"])
+			) . "\n" . $statuses[$_POST["STATUS"]] . " COMMENT " . q($_POST["EVENT_COMMENT"])
 			. " DO\n$_POST[EVENT_DEFINITION]"
 		, substr(ME, 0, -1), ($EVENT != "" ? lang('Event has been altered.') : lang('Event has been created.')));
 	}
@@ -30,7 +30,7 @@ $row = array();
 if ($_POST) {
 	$row = $_POST;
 } elseif ($EVENT != "") {
-	$rows = get_rows("SELECT * FROM information_schema.EVENTS WHERE EVENT_SCHEMA = " . $connection->quote(DB) . " AND EVENT_NAME = " . $connection->quote($EVENT));
+	$rows = get_rows("SELECT * FROM information_schema.EVENTS WHERE EVENT_SCHEMA = " . q(DB) . " AND EVENT_NAME = " . q($EVENT));
 	$row = reset($rows);
 }
 ?>

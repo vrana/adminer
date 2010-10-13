@@ -264,7 +264,7 @@ if (isset($_GET["mssql"])) {
 
 	function db_collation($db, $collations) {
 		global $connection;
-		return $connection->result("SELECT collation_name FROM sys.databases WHERE name =  " . $connection->quote($db));
+		return $connection->result("SELECT collation_name FROM sys.databases WHERE name =  " . q($db));
 	}
 
 	function engines() {
@@ -277,8 +277,7 @@ if (isset($_GET["mssql"])) {
 	}
 
 	function tables_list() {
-		global $connection;
-		return get_key_vals("SELECT name, type_desc FROM sys.all_objects WHERE schema_id = SCHEMA_ID(" . $connection->quote(get_schema()) . ") AND type IN ('S', 'U', 'V') ORDER BY name");
+		return get_key_vals("SELECT name, type_desc FROM sys.all_objects WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V') ORDER BY name");
 	}
 
 	function count_tables($databases) {
@@ -292,9 +291,8 @@ if (isset($_GET["mssql"])) {
 	}
 	
 	function table_status($name = "") {
-		global $connection;
 		$return = array();
-		foreach (get_rows("SELECT name AS Name, type_desc AS Engine FROM sys.all_objects WHERE schema_id = SCHEMA_ID(" . $connection->quote(get_schema()) . ") AND type IN ('S', 'U', 'V')" . ($name != "" ? " AND name = " . $connection->quote($name) : "")) as $row) {
+		foreach (get_rows("SELECT name AS Name, type_desc AS Engine FROM sys.all_objects WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V')" . ($name != "" ? " AND name = " . q($name) : "")) as $row) {
 			if ($name != "") {
 				return $row;
 			}
@@ -312,14 +310,13 @@ if (isset($_GET["mssql"])) {
 	}
 
 	function fields($table, $hidden = false) {
-		global $connection;
 		$return = array();
 		foreach (get_rows("SELECT c.*, t.name type, d.definition [default]
 FROM sys.all_columns c
 JOIN sys.all_objects o ON c.object_id = o.object_id
 JOIN sys.types t ON c.user_type_id = t.user_type_id
 LEFT JOIN sys.default_constraints d ON c.default_object_id = d.parent_column_id
-WHERE o.schema_id = SCHEMA_ID(" . $connection->quote(get_schema()) . ") AND o.type IN ('S', 'U', 'V') AND o.name = " . $connection->quote($table)
+WHERE o.schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND o.type IN ('S', 'U', 'V') AND o.name = " . q($table)
 		) as $row) {
 			$type = $row["type"];
 			$length = (ereg("char|binary", $type) ? $row["max_length"] : ($type == "decimal" ? "$row[precision],$row[scale]" : ""));
@@ -350,7 +347,7 @@ WHERE o.schema_id = SCHEMA_ID(" . $connection->quote(get_schema()) . ") AND o.ty
 FROM sys.indexes
 INNER JOIN sys.index_columns ON indexes.object_id = index_columns.object_id AND indexes.index_id = index_columns.index_id
 INNER JOIN sys.columns ON index_columns.object_id = columns.object_id AND index_columns.column_id = columns.column_id
-WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table)
+WHERE OBJECT_NAME(indexes.object_id) = " . q($table)
 		);
 		if ($result) {
 			while ($row = $result->fetch_assoc()) {
@@ -364,7 +361,7 @@ WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table)
 
 	function view($name) {
 		global $connection;
-		return array("select" => preg_replace('~^(?:[^`]|`[^`]*`)*\\s+AS\\s+~isU', '', $connection->result("SELECT view_definition FROM information_schema.views WHERE table_schema = SCHEMA_NAME() AND table_name = " . $connection->quote($name))));
+		return array("select" => preg_replace('~^(?:[^`]|`[^`]*`)*\\s+AS\\s+~isU', '', $connection->result("SELECT view_definition FROM information_schema.views WHERE table_schema = SCHEMA_NAME() AND table_name = " . q($name))));
 	}
 	
 	function collations() {
@@ -385,8 +382,7 @@ WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table)
 	}
 	
 	function exact_value($val) {
-		global $connection;
-		return $connection->quote($val);
+		return q($val);
 	}
 
 	function create_database($db, $collation) {
@@ -410,7 +406,6 @@ WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table)
 	}
 	
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
-		global $connection;
 		$alter = array();
 		foreach ($fields as $field) {
 			$column = idf_escape($field[0]);
@@ -424,7 +419,7 @@ WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table)
 				} else {
 					unset($val[6]); //! identity can't be removed
 					if ($column != $val[0]) {
-						queries("EXEC sp_rename " . $connection->quote(table($table) . ".$column") . ", " . $connection->quote(idf_unescape($val[0])) . ", 'COLUMN'");
+						queries("EXEC sp_rename " . q(table($table) . ".$column") . ", " . q(idf_unescape($val[0])) . ", 'COLUMN'");
 					}
 					$alter["ALTER COLUMN " . implode("", $val)][] = "";
 				}
@@ -434,7 +429,7 @@ WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table)
 			return queries("CREATE TABLE " . table($name) . " (" . implode(",", (array) $alter["ADD"]) . "\n)");
 		}
 		if ($table != $name) {
-			queries("EXEC sp_rename " . $connection->quote(table($table)) . ", " . $connection->quote($name));
+			queries("EXEC sp_rename " . q(table($table)) . ", " . q($name));
 		}
 		foreach ($alter as $key => $val) {
 			if (!queries("ALTER TABLE " . idf_escape($name) . " $key" . implode(",", $val))) {
@@ -503,9 +498,8 @@ WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table)
 	}
 	
 	function foreign_keys($table) {
-		global $connection;
 		$return = array();
-		foreach (get_rows("EXEC sp_fkeys @fktable_name = " . $connection->quote($table)) as $row) {
+		foreach (get_rows("EXEC sp_fkeys @fktable_name = " . q($table)) as $row) {
 			$foreign_key = &$return[$row["FK_NAME"]];
 			$foreign_key["table"] = $row["PKTABLE_NAME"];
 			$foreign_key["source"][] = $row["FKCOLUMN_NAME"];
@@ -531,14 +525,13 @@ WHERE OBJECT_NAME(indexes.object_id) = " . $connection2->quote($table)
 	}
 	
 	function trigger($name) {
-		global $connection;
 		$rows = get_rows("SELECT s.name [Trigger],
 CASE WHEN OBJECTPROPERTY(s.id, 'ExecIsInsertTrigger') = 1 THEN 'INSERT' WHEN OBJECTPROPERTY(s.id, 'ExecIsUpdateTrigger') = 1 THEN 'UPDATE' WHEN OBJECTPROPERTY(s.id, 'ExecIsDeleteTrigger') = 1 THEN 'DELETE' END [Event],
 CASE WHEN OBJECTPROPERTY(s.id, 'ExecIsInsteadOfTrigger') = 1 THEN 'INSTEAD OF' ELSE 'AFTER' END [Timing],
 c.text
 FROM sysobjects s
 JOIN syscomments c ON s.id = c.id
-WHERE s.xtype = 'TR' AND s.name = " . $connection->quote($name)
+WHERE s.xtype = 'TR' AND s.name = " . q($name)
 		); // triggers are not schema-scoped
 		$return = reset($rows);
 		if ($return) {
@@ -548,14 +541,13 @@ WHERE s.xtype = 'TR' AND s.name = " . $connection->quote($name)
 	}
 	
 	function triggers($table) {
-		global $connection;
 		$return = array();
 		foreach (get_rows("SELECT sys1.name,
 CASE WHEN OBJECTPROPERTY(sys1.id, 'ExecIsInsertTrigger') = 1 THEN 'INSERT' WHEN OBJECTPROPERTY(sys1.id, 'ExecIsUpdateTrigger') = 1 THEN 'UPDATE' WHEN OBJECTPROPERTY(sys1.id, 'ExecIsDeleteTrigger') = 1 THEN 'DELETE' END [Event],
 CASE WHEN OBJECTPROPERTY(sys1.id, 'ExecIsInsteadOfTrigger') = 1 THEN 'INSTEAD OF' ELSE 'AFTER' END [Timing]
 FROM sysobjects sys1
 JOIN sysobjects sys2 ON sys1.parent_obj = sys2.id
-WHERE sys1.xtype = 'TR' AND sys2.name = " . $connection->quote($table)
+WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)
 		) as $row) { // triggers are not schema-scoped
 			$return[$row["name"]] = array($row["Timing"], $row["Event"]);
 		}

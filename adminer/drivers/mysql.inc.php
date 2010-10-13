@@ -349,9 +349,8 @@ if (!defined("DRIVER")) {
 	* @return array
 	*/
 	function table_status($name = "") {
-		global $connection;
 		$return = array();
-		foreach (get_rows("SHOW TABLE STATUS" . ($name != "" ? " LIKE " . $connection->quote(addcslashes($name, "%_")) : "")) as $row) {
+		foreach (get_rows("SHOW TABLE STATUS" . ($name != "" ? " LIKE " . q(addcslashes($name, "%_")) : "")) as $row) {
 			if ($row["Engine"] == "InnoDB") {
 				// ignore internal comment, unnecessary since MySQL 5.1.21
 				$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["Comment"]);
@@ -503,8 +502,7 @@ if (!defined("DRIVER")) {
 	* @return string
 	*/
 	function exact_value($val) {
-		global $connection;
-		return $connection->quote($val) . " COLLATE utf8_bin";
+		return q($val) . " COLLATE utf8_bin";
 	}
 
 	/** Create database
@@ -512,9 +510,8 @@ if (!defined("DRIVER")) {
 	* @return string
 	*/
 	function create_database($db, $collation) {
-		global $connection;
 		set_session("databases", null);
-		return queries("CREATE DATABASE " . idf_escape($db) . ($collation ? " COLLATE " . $connection->quote($collation) : ""));
+		return queries("CREATE DATABASE " . idf_escape($db) . ($collation ? " COLLATE " . q($collation) : ""));
 	}
 	
 	/** Drop databases
@@ -579,7 +576,6 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
-		global $connection;
 		$alter = array();
 		foreach ($fields as $field) {
 			$alter[] = ($field[1]
@@ -588,9 +584,9 @@ if (!defined("DRIVER")) {
 			);
 		}
 		$alter = array_merge($alter, $foreign);
-		$status = "COMMENT=" . $connection->quote($comment)
-			. ($engine ? " ENGINE=" . $connection->quote($engine) : "")
-			. ($collation ? " COLLATE " . $connection->quote($collation) : "")
+		$status = "COMMENT=" . q($comment)
+			. ($engine ? " ENGINE=" . q($engine) : "")
+			. ($collation ? " COLLATE " . q($collation) : "")
 			. ($auto_increment != "" ? " AUTO_INCREMENT=$auto_increment" : "")
 			. $partitioning
 		;
@@ -659,8 +655,7 @@ if (!defined("DRIVER")) {
 	* @return array array("Trigger" => , "Timing" => , "Event" => , "Statement" => )
 	*/
 	function trigger($name) {
-		global $connection;
-		$rows = get_rows("SHOW TRIGGERS WHERE `Trigger` = " . $connection->quote($name));
+		$rows = get_rows("SHOW TRIGGERS WHERE `Trigger` = " . q($name));
 		return reset($rows);
 	}
 	
@@ -669,9 +664,8 @@ if (!defined("DRIVER")) {
 	* @return array array($name => array($timing, $event))
 	*/
 	function triggers($table) {
-		global $connection;
 		$return = array();
-		foreach (get_rows("SHOW TRIGGERS LIKE " . $connection->quote(addcslashes($table, "%_"))) as $row) {
+		foreach (get_rows("SHOW TRIGGERS LIKE " . q(addcslashes($table, "%_"))) as $row) {
 			$return[$row["Trigger"]] = array($row["Timing"], $row["Event"]);
 		}
 		return $return;
@@ -725,8 +719,7 @@ if (!defined("DRIVER")) {
 	}
 	
 	function routines() {
-		global $connection;
-		return get_rows("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . $connection->quote(DB));
+		return get_rows("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . q(DB));
 	}
 	
 	/** Begin transaction
@@ -841,9 +834,8 @@ if (!defined("DRIVER")) {
 	* @return string
 	*/
 	function trigger_sql($table, $style) {
-		global $connection;
 		$return = "";
-		foreach (get_rows("SHOW TRIGGERS LIKE " . $connection->quote(addcslashes($table, "%_"))) as $row) {
+		foreach (get_rows("SHOW TRIGGERS LIKE " . q(addcslashes($table, "%_"))) as $row) {
 			$return .= "\n" . ($style == 'CREATE+ALTER' ? "DROP TRIGGER IF EXISTS " . idf_escape($row["Trigger"]) . ";;\n" : "")
 			. "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . table($row["Table"]) . " FOR EACH ROW\n$row[Statement];;\n";
 		}
