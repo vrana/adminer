@@ -45,26 +45,16 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 				$out = "";
 				if ($_POST["routines"]) {
 					foreach (array("FUNCTION", "PROCEDURE") as $routine) {
-						$result = $connection->query("SHOW $routine STATUS WHERE Db = " . q($db));
-						if ($result) {
-							while ($row = $result->fetch_assoc()) {
-								$out .= ($style != 'DROP+CREATE' ? "DROP $routine IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
-								. $connection->result("SHOW CREATE $routine " . idf_escape($row["Name"]), 2) . ";;\n\n";
-							}
-						} else {
-							echo "-- $connection->error\n\n";
+						foreach (get_rows("SHOW $routine STATUS WHERE Db = " . q($db), null, "-- ") as $row) {
+							$out .= ($style != 'DROP+CREATE' ? "DROP $routine IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
+							. $connection->result("SHOW CREATE $routine " . idf_escape($row["Name"]), 2) . ";;\n\n";
 						}
 					}
 				}
 				if ($_POST["events"]) {
-					$result = $connection->query("SHOW EVENTS");
-					if ($result) {
-						while ($row = $result->fetch_assoc()) {
-							$out .= ($style != 'DROP+CREATE' ? "DROP EVENT IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
-							. $connection->result("SHOW CREATE EVENT " . idf_escape($row["Name"]), 3) . ";;\n\n";
-						}
-					} else {
-						echo "-- $connection->error\n\n";
+					foreach (get_rows("SHOW EVENTS", null, "-- ") as $row) {
+						$out .= ($style != 'DROP+CREATE' ? "DROP EVENT IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
+						. $connection->result("SHOW CREATE EVENT " . idf_escape($row["Name"]), 3) . ";;\n\n";
 					}
 				}
 				if ($out) {

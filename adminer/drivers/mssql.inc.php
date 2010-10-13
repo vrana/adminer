@@ -343,18 +343,15 @@ WHERE o.schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND o.type IN ('S', 'U', 
 		}
 		$return = array();
 		// sp_statistics doesn't return information about primary key
-		$result = $connection2->query("SELECT indexes.name, key_ordinal, is_unique, is_primary_key, columns.name AS column_name
+		foreach (get_rows("SELECT indexes.name, key_ordinal, is_unique, is_primary_key, columns.name AS column_name
 FROM sys.indexes
 INNER JOIN sys.index_columns ON indexes.object_id = index_columns.object_id AND indexes.index_id = index_columns.index_id
 INNER JOIN sys.columns ON index_columns.object_id = columns.object_id AND index_columns.column_id = columns.column_id
 WHERE OBJECT_NAME(indexes.object_id) = " . q($table)
-		);
-		if ($result) {
-			while ($row = $result->fetch_assoc()) {
-				$return[$row["name"]]["type"] = ($row["is_primary_key"] ? "PRIMARY" : ($row["is_unique"] ? "UNIQUE" : "INDEX"));
-				$return[$row["name"]]["lengths"] = array();
-				$return[$row["name"]]["columns"][$row["key_ordinal"]] = $row["column_name"];
-			}
+		, $connection2) as $row) {
+			$return[$row["name"]]["type"] = ($row["is_primary_key"] ? "PRIMARY" : ($row["is_unique"] ? "UNIQUE" : "INDEX"));
+			$return[$row["name"]]["lengths"] = array();
+			$return[$row["name"]]["columns"][$row["key_ordinal"]] = $row["column_name"];
 		}
 		return $return;
 	}

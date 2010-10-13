@@ -135,10 +135,6 @@ function html_select($name, $options, $value = "", $onchange = true) {
 	return $return;
 }
 
-
-
-// other functions
-
 /** Get INI boolean value
 * @param string
 * @return bool
@@ -192,7 +188,7 @@ function get_key_vals($query, $connection2 = null) {
 * @param string
 * @return array associative
 */
-function get_rows($query, $connection2 = null) {
+function get_rows($query, $connection2 = null, $error = "<p class='error'>") {
 	global $connection;
 	if (!is_object($connection2)) {
 		$connection2 = $connection;
@@ -203,6 +199,8 @@ function get_rows($query, $connection2 = null) {
 		while ($row = $result->fetch_assoc()) {
 			$return[] = $row;
 		}
+	} elseif ($error && (headers_sent() || ob_get_level())) {
+		echo $error . error() . "\n";
 	}
 	return $return;
 }

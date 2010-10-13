@@ -251,7 +251,7 @@ ORDER BY a.attnum < 0, a.attnum"
 		$return = array();
 		$table_oid = $connection2->result("SELECT oid FROM pg_class WHERE relname = " . q($table));
 		$columns = get_key_vals("SELECT attnum, attname FROM pg_attribute WHERE attrelid = $table_oid AND attnum > 0", $connection2);
-		foreach (get_rows("SELECT relname, indisunique, indisprimary, indkey FROM pg_index i, pg_class ci WHERE i.indrelid = $table_oid AND ci.oid = i.indexrelid") as $row) {
+		foreach (get_rows("SELECT relname, indisunique, indisprimary, indkey FROM pg_index i, pg_class ci WHERE i.indrelid = $table_oid AND ci.oid = i.indexrelid", $connection2) as $row) {
 			$return[$row["relname"]]["type"] = ($row["indisprimary"] == "t" ? "PRIMARY" : ($row["indisunique"] == "t" ? "UNIQUE" : "INDEX"));
 			$return[$row["relname"]]["columns"] = array();
 			foreach (explode(" ", $row["indkey"]) as $indkey) {
@@ -269,7 +269,8 @@ FROM information_schema.table_constraints tc
 LEFT JOIN information_schema.key_column_usage kcu USING (constraint_catalog, constraint_schema, constraint_name)
 LEFT JOIN information_schema.referential_constraints rc USING (constraint_catalog, constraint_schema, constraint_name)
 LEFT JOIN information_schema.constraint_column_usage ccu ON rc.unique_constraint_catalog = ccu.constraint_catalog AND rc.unique_constraint_schema = ccu.constraint_schema AND rc.unique_constraint_name = ccu.constraint_name
-WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . q($table)) as $row) { //! there can be more unique_constraint_name
+WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . q($table) //! there can be more unique_constraint_name
+			) as $row) {
 			$foreign_key = &$return[$row["constraint_name"]];
 			if (!$foreign_key) {
 				$foreign_key = $row;

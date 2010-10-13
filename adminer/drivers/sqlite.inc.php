@@ -254,7 +254,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			$row["Auto_increment"] = "";
 			$return[$row["Name"]] = $row;
 		}
-		foreach (get_rows("SELECT * FROM sqlite_sequence") as $row) {
+		foreach (get_rows("SELECT * FROM sqlite_sequence", null, "") as $row) {
 			$return[$row["name"]]["Auto_increment"] = $row["seq"];
 		}
 		return ($name != "" ? $return[$name] : $return);
