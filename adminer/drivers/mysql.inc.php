@@ -307,10 +307,8 @@ if (!defined("DRIVER")) {
 	* @return array
 	*/
 	function engines() {
-		global $connection;
 		$return = array();
-		$result = $connection->query("SHOW ENGINES");
-		while ($row = $result->fetch_assoc()) {
+		foreach (get_rows("SHOW ENGINES") as $row) {
 			if (ereg("YES|DEFAULT", $row["Support"])) {
 				$return[] = $row["Engine"];
 			}
@@ -353,8 +351,7 @@ if (!defined("DRIVER")) {
 	function table_status($name = "") {
 		global $connection;
 		$return = array();
-		$result = $connection->query("SHOW TABLE STATUS" . ($name != "" ? " LIKE " . $connection->quote(addcslashes($name, "%_")) : ""));
-		while ($row = $result->fetch_assoc()) {
+		foreach (get_rows("SHOW TABLE STATUS" . ($name != "" ? " LIKE " . $connection->quote(addcslashes($name, "%_")) : "")) as $row) {
 			if ($row["Engine"] == "InnoDB") {
 				// ignore internal comment, unnecessary since MySQL 5.1.21
 				$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["Comment"]);
@@ -392,28 +389,24 @@ if (!defined("DRIVER")) {
 	* @return array array($name => array("field" => , "full_type" => , "type" => , "length" => , "unsigned" => , "default" => , "null" => , "auto_increment" => , "on_update" => , "collation" => , "privileges" => , "comment" => , "primary" => ))
 	*/
 	function fields($table, $hidden = false) {
-		global $connection;
 		$return = array();
-		$result = $connection->query("SHOW FULL COLUMNS FROM " . table($table));
-		if ($result) {
-			while ($row = $result->fetch_assoc()) {
-				preg_match('~^([^( ]+)(?:\\((.+)\\))?( unsigned)?( zerofill)?$~', $row["Type"], $match);
-				$return[$row["Field"]] = array(
-					"field" => $row["Field"],
-					"full_type" => $row["Type"],
-					"type" => $match[1],
-					"length" => $match[2],
-					"unsigned" => ltrim($match[3] . $match[4]),
-					"default" => ($row["Default"] != "" || ereg("char", $match[1]) ? $row["Default"] : null),
-					"null" => ($row["Null"] == "YES"),
-					"auto_increment" => ($row["Extra"] == "auto_increment"),
-					"on_update" => (eregi('^on update (.+)', $row["Extra"], $match) ? $match[1] : ""), //! available since MySQL 5.1.23
-					"collation" => $row["Collation"],
-					"privileges" => array_flip(explode(",", $row["Privileges"])),
-					"comment" => $row["Comment"],
-					"primary" => ($row["Key"] == "PRI"),
-				);
-			}
+		foreach (get_rows("SHOW FULL COLUMNS FROM " . table($table)) as $row) {
+			preg_match('~^([^( ]+)(?:\\((.+)\\))?( unsigned)?( zerofill)?$~', $row["Type"], $match);
+			$return[$row["Field"]] = array(
+				"field" => $row["Field"],
+				"full_type" => $row["Type"],
+				"type" => $match[1],
+				"length" => $match[2],
+				"unsigned" => ltrim($match[3] . $match[4]),
+				"default" => ($row["Default"] != "" || ereg("char", $match[1]) ? $row["Default"] : null),
+				"null" => ($row["Null"] == "YES"),
+				"auto_increment" => ($row["Extra"] == "auto_increment"),
+				"on_update" => (eregi('^on update (.+)', $row["Extra"], $match) ? $match[1] : ""), //! available since MySQL 5.1.23
+				"collation" => $row["Collation"],
+				"privileges" => array_flip(explode(",", $row["Privileges"])),
+				"comment" => $row["Comment"],
+				"primary" => ($row["Key"] == "PRI"),
+			);
 		}
 		return $return;
 	}
@@ -429,13 +422,10 @@ if (!defined("DRIVER")) {
 			$connection2 = $connection;
 		}
 		$return = array();
-		$result = $connection2->query("SHOW INDEX FROM " . table($table));
-		if ($result) {
-			while ($row = $result->fetch_assoc()) {
-				$return[$row["Key_name"]]["type"] = ($row["Key_name"] == "PRIMARY" ? "PRIMARY" : ($row["Index_type"] == "FULLTEXT" ? "FULLTEXT" : ($row["Non_unique"] ? "INDEX" : "UNIQUE")));
-				$return[$row["Key_name"]]["columns"][] = $row["Column_name"];
-				$return[$row["Key_name"]]["lengths"][] = $row["Sub_part"];
-			}
+		foreach (get_rows("SHOW INDEX FROM " . table($table), $connection2) as $row) {
+			$return[$row["Key_name"]]["type"] = ($row["Key_name"] == "PRIMARY" ? "PRIMARY" : ($row["Index_type"] == "FULLTEXT" ? "FULLTEXT" : ($row["Non_unique"] ? "INDEX" : "UNIQUE")));
+			$return[$row["Key_name"]]["columns"][] = $row["Column_name"];
+			$return[$row["Key_name"]]["lengths"][] = $row["Sub_part"];
 		}
 		return $return;
 	}
@@ -480,10 +470,8 @@ if (!defined("DRIVER")) {
 	* @return array
 	*/
 	function collations() {
-		global $connection;
 		$return = array();
-		$result = $connection->query("SHOW COLLATION");
-		while ($row = $result->fetch_assoc()) {
+		foreach (get_rows("SHOW COLLATION") as $row) {
 			$return[$row["Charset"]][] = $row["Collation"];
 		}
 		ksort($return);
@@ -544,7 +532,6 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function rename_database($name, $collation) {
-		global $connection;
 		if (create_database($name, $collation)) {
 			//! move triggers
 			$rename = array();
@@ -673,8 +660,8 @@ if (!defined("DRIVER")) {
 	*/
 	function trigger($name) {
 		global $connection;
-		$result = $connection->query("SHOW TRIGGERS WHERE `Trigger` = " . $connection->quote($name));
-		return $result->fetch_assoc();
+		$rows = get_rows("SHOW TRIGGERS WHERE `Trigger` = " . $connection->quote($name));
+		return reset($rows);
 	}
 	
 	/** Get defined triggers
@@ -684,8 +671,7 @@ if (!defined("DRIVER")) {
 	function triggers($table) {
 		global $connection;
 		$return = array();
-		$result = $connection->query("SHOW TRIGGERS LIKE " . $connection->quote(addcslashes($table, "%_")));
-		while ($row = $result->fetch_assoc()) {
+		foreach (get_rows("SHOW TRIGGERS LIKE " . $connection->quote(addcslashes($table, "%_"))) as $row) {
 			$return[$row["Trigger"]] = array($row["Timing"], $row["Event"]);
 		}
 		return $return;
@@ -740,12 +726,7 @@ if (!defined("DRIVER")) {
 	
 	function routines() {
 		global $connection;
-		$return = array();
-		$result = $connection->query("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . $connection->quote(DB));
-		while ($row = $result->fetch_assoc()) {
-			$return[] = $row;
-		}
-		return $return;
+		return get_rows("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . $connection->quote(DB));
 	}
 	
 	/** Begin transaction
@@ -861,13 +842,10 @@ if (!defined("DRIVER")) {
 	*/
 	function trigger_sql($table, $style) {
 		global $connection;
-		$result = $connection->query("SHOW TRIGGERS LIKE " . $connection->quote(addcslashes($table, "%_")));
 		$return = "";
-		if ($result->num_rows) {
-			while ($row = $result->fetch_assoc()) {
-				$return .= "\n" . ($style == 'CREATE+ALTER' ? "DROP TRIGGER IF EXISTS " . idf_escape($row["Trigger"]) . ";;\n" : "")
-				. "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . table($row["Table"]) . " FOR EACH ROW\n$row[Statement];;\n";
-			}
+		foreach (get_rows("SHOW TRIGGERS LIKE " . $connection->quote(addcslashes($table, "%_"))) as $row) {
+			$return .= "\n" . ($style == 'CREATE+ALTER' ? "DROP TRIGGER IF EXISTS " . idf_escape($row["Trigger"]) . ";;\n" : "")
+			. "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . table($row["Table"]) . " FOR EACH ROW\n$row[Statement];;\n";
 		}
 		return $return;
 	}

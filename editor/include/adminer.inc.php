@@ -63,25 +63,22 @@ document.getElementById('username').focus();
 	function backwardKeys($table, $tableName) {
 		global $connection;
 		$return = array();
-		$result = $connection->query("SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME
+		foreach (get_rows("SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME
 FROM information_schema.KEY_COLUMN_USAGE
 WHERE TABLE_SCHEMA = " . $connection->quote($this->database()) . "
 AND REFERENCED_TABLE_SCHEMA = " . $connection->quote($this->database()) . "
 AND REFERENCED_TABLE_NAME = " . $connection->quote($table) . "
-ORDER BY ORDINAL_POSITION");
-		if ($result) { //! requires MySQL 5
-			while ($row = $result->fetch_assoc()) {
-				$return[$row["TABLE_NAME"]]["keys"][$row["CONSTRAINT_NAME"]][$row["COLUMN_NAME"]] = $row["REFERENCED_COLUMN_NAME"];
-			}
-			foreach ($return as $key => $val) {
-				$name = $this->tableName(table_status($key));
-				if ($name != "") {
-					$search = preg_quote($tableName);
-					$separator = "(:|\\s*-)?\\s+";
-					$return[$key]["name"] = (preg_match("(^$search$separator(.+)|^(.+?)$separator$search\$)", $name, $match) ? $match[2] . $match[3] : $name);
-				} else {
-					unset($return[$key]);
-				}
+ORDER BY ORDINAL_POSITION") as $row) { //! requires MySQL 5
+			$return[$row["TABLE_NAME"]]["keys"][$row["CONSTRAINT_NAME"]][$row["COLUMN_NAME"]] = $row["REFERENCED_COLUMN_NAME"];
+		}
+		foreach ($return as $key => $val) {
+			$name = $this->tableName(table_status($key));
+			if ($name != "") {
+				$search = preg_quote($tableName);
+				$separator = "(:|\\s*-)?\\s+";
+				$return[$key]["name"] = (preg_match("(^$search$separator(.+)|^(.+?)$separator$search\$)", $name, $match) ? $match[2] . $match[3] : $name);
+			} else {
+				unset($return[$key]);
 			}
 		}
 		return $return;
@@ -340,7 +337,6 @@ ORDER BY ORDINAL_POSITION");
 	}
 	
 	function selectEmailProcess($where, $foreignKeys) {
-		global $connection;
 		if ($_POST["email_append"]) {
 			return true;
 		}
@@ -351,15 +347,11 @@ ORDER BY ORDINAL_POSITION");
 				$subject = $_POST["email_subject"];
 				$message = $_POST["email_message"];
 				preg_match_all('~\\{\\$([a-z0-9_]+)\\}~i', "$subject.$message", $matches); // allows {$name} in subject or message
-				$result = $connection->query("SELECT DISTINCT $field" . ($matches[1] ? ", " . implode(", ", array_map('idf_escape', array_unique($matches[1]))) : "") . " FROM " . idf_escape($_GET["select"])
+				$rows = get_rows("SELECT DISTINCT $field" . ($matches[1] ? ", " . implode(", ", array_map('idf_escape', array_unique($matches[1]))) : "") . " FROM " . idf_escape($_GET["select"])
 					. " WHERE $field IS NOT NULL AND $field != ''"
 					. ($where ? " AND " . implode(" AND ", $where) : "")
 					. ($_POST["all"] ? "" : " AND ((" . implode(") OR (", array_map('where_check', (array) $_POST["check"])) . "))")
 				);
-				$rows = array();
-				while ($row = $result->fetch_assoc()) {
-					$rows[] = $row;
-				}
 				$fields = fields($_GET["select"]);
 				foreach ($this->rowDescriptions($rows, $foreignKeys) as $row) {
 					$replace = array('{\\' => '{'); // allow literal {$name}
@@ -491,7 +483,6 @@ ORDER BY ORDINAL_POSITION");
 	}
 	
 	function _foreignKeyOptions($table, $column) {
-		global $connection;
 		$foreignKeys = column_foreign_keys($table);
 		foreach ((array) $foreignKeys[$column] as $foreignKey) {
 			if (count($foreignKey["source"]) == 1) {

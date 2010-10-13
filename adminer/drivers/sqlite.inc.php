@@ -251,16 +251,12 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	function table_status($name = "") {
 		global $connection;
 		$return = array();
-		$result = $connection->query("SELECT name AS Name, type AS Engine FROM sqlite_master WHERE type IN ('table', 'view')" . ($name != "" ? " AND name = " . $connection->quote($name) : ""));
-		while ($row = $result->fetch_assoc()) {
+		foreach (get_rows("SELECT name AS Name, type AS Engine FROM sqlite_master WHERE type IN ('table', 'view')" . ($name != "" ? " AND name = " . $connection->quote($name) : "")) as $row) {
 			$row["Auto_increment"] = "";
 			$return[$row["Name"]] = $row;
 		}
-		$result = $connection->query("SELECT * FROM sqlite_sequence");
-		if ($result) {
-			while ($row = $result->fetch_assoc()) {
-				$return[$row["name"]]["Auto_increment"] = $row["seq"];
-			}
+		foreach (get_rows("SELECT * FROM sqlite_sequence") as $row) {
+			$return[$row["name"]]["Auto_increment"] = $row["seq"];
 		}
 		return ($name != "" ? $return[$name] : $return);
 	}
@@ -275,30 +271,25 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 
 	function fields($table, $hidden = false) {
-		global $connection;
 		$return = array();
-		$result = $connection->query("PRAGMA table_info(" . table($table) . ")");
-		if (is_object($result)) {
-			while ($row = $result->fetch_assoc()) {
-				$type = strtolower($row["type"]);
-				$default = $row["dflt_value"];
-				$return[$row["name"]] = array(
-					"field" => $row["name"],
-					"type" => (eregi("int", $type) ? "integer" : (eregi("char|clob|text", $type) ? "text" : (eregi("blob", $type) ? "blob" : (eregi("real|floa|doub", $type) ? "real" : "numeric")))),
-					"full_type" => $type,
-					"default" => (ereg("'(.*)'", $default, $match) ? str_replace("''", "'", $match[1]) : ($default == "NULL" ? null : $default)),
-					"null" => !$row["notnull"],
-					"auto_increment" => eregi('^integer$', $type) && $row["pk"], //! possible false positive
-					"privileges" => array("select" => 1, "insert" => 1, "update" => 1),
-					"primary" => $row["pk"],
-				);
-			}
+		foreach (get_rows("PRAGMA table_info(" . table($table) . ")") as $row) {
+			$type = strtolower($row["type"]);
+			$default = $row["dflt_value"];
+			$return[$row["name"]] = array(
+				"field" => $row["name"],
+				"type" => (eregi("int", $type) ? "integer" : (eregi("char|clob|text", $type) ? "text" : (eregi("blob", $type) ? "blob" : (eregi("real|floa|doub", $type) ? "real" : "numeric")))),
+				"full_type" => $type,
+				"default" => (ereg("'(.*)'", $default, $match) ? str_replace("''", "'", $match[1]) : ($default == "NULL" ? null : $default)),
+				"null" => !$row["notnull"],
+				"auto_increment" => eregi('^integer$', $type) && $row["pk"], //! possible false positive
+				"privileges" => array("select" => 1, "insert" => 1, "update" => 1),
+				"primary" => $row["pk"],
+			);
 		}
 		return $return;
 	}
 
 	function indexes($table, $connection2 = null) {
-		global $connection;
 		$return = array();
 		$primary = array();
 		foreach (fields($table) as $field) {
@@ -309,34 +300,26 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		if ($primary) {
 			$return[""] = array("type" => "PRIMARY", "columns" => $primary, "lengths" => array());
 		}
-		$result = $connection->query("PRAGMA index_list(" . table($table) . ")");
-		if (is_object($result)) {
-			while ($row = $result->fetch_assoc()) {
-				$return[$row["name"]]["type"] = ($row["unique"] ? "UNIQUE" : "INDEX");
-				$return[$row["name"]]["lengths"] = array();
-				$result1 = $connection->query("PRAGMA index_info(" . idf_escape($row["name"]) . ")");
-				while ($row1 = $result1->fetch_assoc()) {
-					$return[$row["name"]]["columns"][] = $row1["name"];
-				}
+		foreach (get_rows("PRAGMA index_list(" . table($table) . ")") as $row) {
+			$return[$row["name"]]["type"] = ($row["unique"] ? "UNIQUE" : "INDEX");
+			$return[$row["name"]]["lengths"] = array();
+			foreach (get_rows("PRAGMA index_info(" . idf_escape($row["name"]) . ")") as $row1) {
+				$return[$row["name"]]["columns"][] = $row1["name"];
 			}
 		}
 		return $return;
 	}
 
 	function foreign_keys($table) {
-		global $connection;
 		$return = array();
-		$result = $connection->query("PRAGMA foreign_key_list(" . table($table) . ")");
-		if (is_object($result)) {
-			while ($row = $result->fetch_assoc()) {
-				$foreign_key = &$return[$row["id"]];
-				//! idf_unescape in SQLite2
-				if (!$foreign_key) {
-					$foreign_key = $row;
-				}
-				$foreign_key["source"][] = $row["from"];
-				$foreign_key["target"][] = $row["to"];
+		foreach (get_rows("PRAGMA foreign_key_list(" . table($table) . ")") as $row) {
+			$foreign_key = &$return[$row["id"]];
+			//! idf_unescape in SQLite2
+			if (!$foreign_key) {
+				$foreign_key = $row;
 			}
+			$foreign_key["source"][] = $row["from"];
+			$foreign_key["target"][] = $row["to"];
 		}
 		return $return;
 	}
@@ -461,8 +444,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	function triggers($table) {
 		global $connection;
 		$return = array();
-		$result = $connection->query("SELECT * FROM sqlite_master WHERE type = 'trigger' AND tbl_name = " . $connection->quote($table));
-		while ($row = $result->fetch_assoc()) {
+		foreach (get_rows("SELECT * FROM sqlite_master WHERE type = 'trigger' AND tbl_name = " . $connection->quote($table)) as $row) {
 			preg_match('~^CREATE\\s+TRIGGER\\s*(?:[^`"\\s]+|`[^`]*`|"[^"]*")+\\s*([a-z]+)\\s*([a-z]+)~i', $row["sql"], $match);
 			$return[$row["name"]] = array($match[1], $match[2]);
 		}

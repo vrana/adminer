@@ -30,8 +30,8 @@ $row = array();
 if ($_POST) {
 	$row = $_POST;
 } elseif ($EVENT != "") {
-	$result = $connection->query("SELECT * FROM information_schema.EVENTS WHERE EVENT_SCHEMA = " . $connection->quote(DB) . " AND EVENT_NAME = " . $connection->quote($EVENT));
-	$row = $result->fetch_assoc();
+	$rows = get_rows("SELECT * FROM information_schema.EVENTS WHERE EVENT_SCHEMA = " . $connection->quote(DB) . " AND EVENT_NAME = " . $connection->quote($EVENT));
+	$row = reset($rows);
 }
 ?>
 

@@ -41,9 +41,8 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 	DECLARE done, set_after bool DEFAULT 0;
 	DECLARE add_columns text DEFAULT '";
 			$fields = array();
-			$result = $connection->query($query);
 			$after = "";
-			while ($row = $result->fetch_assoc()) {
+			foreach (get_rows($query) as $row) {
 				$default = $row["COLUMN_DEFAULT"];
 				$row["default"] = (isset($default) ? $connection->quote($default) : "NULL");
 				$row["after"] = $connection->quote($after); //! rgt AFTER lft, lft AFTER id doesn't work

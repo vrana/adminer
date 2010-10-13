@@ -122,8 +122,7 @@ if ($_POST) {
 		list($row["partition_by"], $row["partitions"], $row["partition"]) = $result->fetch_row();
 		$row["partition_names"] = array();
 		$row["partition_values"] = array();
-		$result = $connection->query("SELECT PARTITION_NAME, PARTITION_DESCRIPTION $from AND PARTITION_NAME != '' ORDER BY PARTITION_ORDINAL_POSITION");
-		while ($row1 = $result->fetch_assoc()) {
+		foreach (get_rows("SELECT PARTITION_NAME, PARTITION_DESCRIPTION $from AND PARTITION_NAME != '' ORDER BY PARTITION_ORDINAL_POSITION") as $row1) {
 			$row["partition_names"][] = $row1["PARTITION_NAME"];
 			$row["partition_values"][] = $row1["PARTITION_DESCRIPTION"];
 		}

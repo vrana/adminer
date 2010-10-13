@@ -184,6 +184,25 @@ function get_key_vals($query, $connection2 = null) {
 	return $return;
 }
 
+/** Get all rows of result
+* @param string
+* @return array associative
+*/
+function get_rows($query, $connection2 = null) {
+	global $connection;
+	if (!is_object($connection2)) {
+		$connection2 = $connection;
+	}
+	$return = array();
+	$result = $connection2->query($query);
+	if (is_object($result)) { // can return true
+		while ($row = $result->fetch_assoc()) {
+			$return[] = $row;
+		}
+	}
+	return $return;
+}
+
 /** Find unique identifier of a row
 * @param array
 * @param array result of indexes()

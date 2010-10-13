@@ -141,11 +141,11 @@ if ($_GET["ns"] !== "") {
 	
 	if (support("event")) {
 		echo "<h3>" . lang('Events') . "</h3>\n";
-		$result = $connection->query("SHOW EVENTS");
-		if ($result && $result->num_rows) {
+		$rows = get_rows("SHOW EVENTS");
+		if ($rows) {
 			echo "<table cellspacing='0'>\n";
 			echo "<thead><tr><th>" . lang('Name') . "<td>" . lang('Schedule') . "<td>" . lang('Start') . "<td>" . lang('End') . "</thead>\n";
-			while ($row = $result->fetch_assoc()) {
+			foreach ($rows as $row) {
 				echo "<tr>";
 				echo '<th><a href="' . h(ME) . 'event=' . urlencode($row["Name"]) . '">' . h($row["Name"]) . "</a>";
 				echo "<td>" . ($row["Execute at"] ? lang('At given time') . "<td>" . $row["Execute at"] : lang('Every') . " " . $row["Interval value"] . " " . $row["Interval field"] . "<td>$row[Starts]");

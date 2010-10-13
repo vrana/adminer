@@ -189,10 +189,9 @@ UNION SELECT view_name, 'view' FROM user_views"
 		global $connection;
 		$return = array();
 		$search = $connection->quote($name);
-		$result = $connection->query('SELECT table_name "Name", \'table\' "Engine" FROM all_tables WHERE tablespace_name = ' . $connection->quote(DB) . ($name != "" ? " AND table_name = $search" : "") . "
+		foreach (get_rows('SELECT table_name "Name", \'table\' "Engine" FROM all_tables WHERE tablespace_name = ' . $connection->quote(DB) . ($name != "" ? " AND table_name = $search" : "") . "
 UNION SELECT view_name, 'view' FROM user_views" . ($name != "" ? " WHERE view_name = $search" : "")
-		);
-		while ($row = $result->fetch_assoc()) {
+		) as $row) {
 			if ($name != "") {
 				return $row;
 			}
@@ -212,28 +211,25 @@ UNION SELECT view_name, 'view' FROM user_views" . ($name != "" ? " WHERE view_na
 	function fields($table, $hidden = false) {
 		global $connection;
 		$return = array();
-		$result = $connection->query("SELECT * FROM all_tab_columns WHERE table_name = " . $connection->quote($table) . " ORDER BY column_id");
-		if ($result) {
-			while ($row = $result->fetch_assoc()) {
-				$type = $row["DATA_TYPE"];
-				$length = "$row[DATA_PRECISION],$row[DATA_SCALE]";
-				if ($length == ",") {
-					$length = $row["DATA_LENGTH"];
-				} //! int
-				$return[$row["COLUMN_NAME"]] = array(
-					"field" => $row["COLUMN_NAME"],
-					"full_type" => $type . ($length ? "($length)" : ""),
-					"type" => strtolower($type),
-					"length" => $length,
-					"default" => $row["DATA_DEFAULT"],
-					"null" => ($row["NULLABLE"] == "Y"),
-					//! "auto_increment" => false,
-					//! "collation" => $row["CHARACTER_SET_NAME"],
-					"privileges" => array("insert" => 1, "select" => 1, "update" => 1),
-					//! "comment" => $row["Comment"],
-					//! "primary" => ($row["Key"] == "PRI"),
-				);
-			}
+		foreach (get_rows("SELECT * FROM all_tab_columns WHERE table_name = " . $connection->quote($table) . " ORDER BY column_id") as $row) {
+			$type = $row["DATA_TYPE"];
+			$length = "$row[DATA_PRECISION],$row[DATA_SCALE]";
+			if ($length == ",") {
+				$length = $row["DATA_LENGTH"];
+			} //! int
+			$return[$row["COLUMN_NAME"]] = array(
+				"field" => $row["COLUMN_NAME"],
+				"full_type" => $type . ($length ? "($length)" : ""),
+				"type" => strtolower($type),
+				"length" => $length,
+				"default" => $row["DATA_DEFAULT"],
+				"null" => ($row["NULLABLE"] == "Y"),
+				//! "auto_increment" => false,
+				//! "collation" => $row["CHARACTER_SET_NAME"],
+				"privileges" => array("insert" => 1, "select" => 1, "update" => 1),
+				//! "comment" => $row["Comment"],
+				//! "primary" => ($row["Key"] == "PRI"),
+			);
 		}
 		return $return;
 	}
@@ -244,8 +240,8 @@ UNION SELECT view_name, 'view' FROM user_views" . ($name != "" ? " WHERE view_na
 
 	function view($name) {
 		global $connection;
-		$result = $connection->query('SELECT text "select" FROM user_views WHERE view_name = ' . $connection->quote($name));
-		return $result->fetch_assoc();
+		$rows = get_rows('SELECT text "select" FROM user_views WHERE view_name = ' . $connection->quote($name));
+		return reset($rows);
 	}
 	
 	function collations() {
@@ -338,13 +334,8 @@ UNION SELECT view_name, 'view' FROM user_views" . ($name != "" ? " WHERE view_na
 	}
 	
 	function show_status() {
-		global $connection;
-		$return = array();
-		$result = $connection->query('SELECT * FROM v$instance');
-		foreach ($result->fetch_assoc() as $key => $val) {
-			$return[$key] = $val;
-		}
-		return $return;
+		$rows = get_rows('SELECT * FROM v$instance');
+		return reset($rows);
 	}
 	
 	function support($feature) {

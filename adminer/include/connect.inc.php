@@ -1,6 +1,6 @@
 <?php
 function connect_error() {
-	global $connection, $VERSION, $token, $error, $drivers;
+	global $connection, $token, $error, $drivers;
 	$databases = array();
 	if (DB != "") {
 		page_header(lang('Database') . ": " . h(DB), lang('Invalid database.'), true);

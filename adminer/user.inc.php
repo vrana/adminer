@@ -1,8 +1,7 @@
 <?php
 $USER = $_GET["user"];
 $privileges = array("" => array("All privileges" => ""));
-$result = $connection->query("SHOW PRIVILEGES");
-while ($row = $result->fetch_assoc()) {
+foreach (get_rows("SHOW PRIVILEGES") as $row) {
 	foreach (explode(",", ($row["Privilege"] == "Grant option" ? "" : $row["Context"])) as $context) {
 		$privileges[$context][$row["Privilege"]] = $row["Comment"];
 	}

@@ -58,11 +58,8 @@ if ($_POST["save"]) {
 	}
 	$row = array();
 	if ($select) {
-		$result = $connection->query("SELECT" . limit(implode(", ", $select) . " FROM " . table($TABLE), " WHERE $where", (isset($_GET["select"]) ? 2 : 1)));
-		$row = $result->fetch_assoc();
-		if (isset($_GET["select"]) && $result->fetch_assoc()) {
-			$row = null;
-		}
+		$rows = get_rows("SELECT" . limit(implode(", ", $select) . " FROM " . table($TABLE), " WHERE $where", (isset($_GET["select"]) ? 2 : 1)));
+		$row = (isset($_GET["select"]) && count($rows) != 1 ? null : reset($rows));
 	}
 }
 ?>

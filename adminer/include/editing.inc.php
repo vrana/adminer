@@ -115,7 +115,7 @@ function textarea($name, $value, $rows = 10, $cols = 80) {
 * @return null
 */
 function edit_type($key, $field, $collations, $foreign_keys = array()) {
-	global $structured_types, $types, $unsigned, $inout, $on_actions;
+	global $structured_types, $types, $unsigned, $on_actions;
 	?>
 <td><select name="<?php echo $key; ?>[type]" class="type" onfocus="lastType = selectValue(this);" onchange="editingTypeChange(this);"><?php echo optionlist((!$field["type"] || isset($types[$field["type"]]) ? array() : array($field["type"])) + $structured_types + ($foreign_keys ? array(lang('Foreign keys') => $foreign_keys) : array()), $field["type"]); ?></select>
 <td><input name="<?php echo $key; ?>[length]" value="<?php echo h($field["length"]); ?>" size="3" onfocus="editingLengthFocus(this);"><td><?php

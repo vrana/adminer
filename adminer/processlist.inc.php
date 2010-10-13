@@ -15,8 +15,7 @@ page_header(lang('Process list'), $error);
 <form action="" method="post">
 <table cellspacing="0" onclick="tableClick(event);" class="nowrap">
 <?php
-$result = $connection->query("SHOW FULL PROCESSLIST");
-for ($i=0; $row = $result->fetch_assoc(); $i++) {
+foreach (get_rows("SHOW FULL PROCESSLIST") as $i => $row) {
 	if (!$i) {
 		echo "<thead><tr lang='en'><th>&nbsp;<th>" . implode("<th>", array_keys($row)) . "</thead>\n";
 	}

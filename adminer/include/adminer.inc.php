@@ -36,7 +36,7 @@ class Adminer {
 	* @return null
 	*/
 	function loginForm() {
-		global $drivers, $possible_drivers;
+		global $drivers;
 		?>
 <table cellspacing="0">
 <tr><th><?php echo lang('System'); ?><td><?php echo html_select("driver", $drivers, DRIVER); ?>

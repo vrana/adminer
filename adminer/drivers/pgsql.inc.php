@@ -190,7 +190,6 @@ if (isset($_GET["pgsql"])) {
 	}
 	
 	function tables_list() {
-		global $connection;
 		return get_key_vals("SELECT table_name, table_type FROM information_schema.tables WHERE table_schema = current_schema() ORDER BY table_name");
 	}
 	
@@ -201,13 +200,12 @@ if (isset($_GET["pgsql"])) {
 	function table_status($name = "") {
 		global $connection;
 		$return = array();
-		$result = $connection->query("SELECT relname AS \"Name\", CASE relkind WHEN 'r' THEN '' ELSE 'view' END AS \"Engine\", pg_relation_size(oid) AS \"Data_length\", pg_total_relation_size(oid) - pg_relation_size(oid) AS \"Index_length\", obj_description(oid, 'pg_class') AS \"Comment\"
+		foreach (get_rows("SELECT relname AS \"Name\", CASE relkind WHEN 'r' THEN '' ELSE 'view' END AS \"Engine\", pg_relation_size(oid) AS \"Data_length\", pg_total_relation_size(oid) - pg_relation_size(oid) AS \"Index_length\", obj_description(oid, 'pg_class') AS \"Comment\"
 FROM pg_class
 WHERE relkind IN ('r','v')
 AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema())"
 			. ($name != "" ? " AND relname = " . $connection->quote($name) : "")
-		); //! Index_length, Auto_increment
-		while ($row = $result->fetch_assoc()) {
+		) as $row) { //! Index_length, Auto_increment
 			$return[$row["Name"]] = $row;
 		}
 		return ($name != "" ? $return[$name] : $return);
@@ -224,7 +222,7 @@ AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema(
 	function fields($table, $hidden = false) {
 		global $connection;
 		$return = array();
-		$result = $connection->query("SELECT a.attname AS field, format_type(a.atttypid, a.atttypmod) AS full_type, d.adsrc AS default, a.attnotnull, col_description(c.oid, a.attnum) AS comment
+		foreach (get_rows("SELECT a.attname AS field, format_type(a.atttypid, a.atttypmod) AS full_type, d.adsrc AS default, a.attnotnull, col_description(c.oid, a.attnum) AS comment
 FROM pg_class c
 JOIN pg_namespace n ON c.relnamespace = n.oid
 JOIN pg_attribute a ON c.oid = a.attrelid
@@ -234,18 +232,15 @@ AND n.nspname = current_schema()
 AND NOT a.attisdropped
 " . ($hidden ? "" : "AND a.attnum > 0") . "
 ORDER BY a.attnum < 0, a.attnum"
-		);
-		if ($result) {
-			while ($row = $result->fetch_assoc()) {
-				//! collation, primary
-				ereg('(.*)(\\((.*)\\))?', $row["full_type"], $match);
-				list(, $row["type"], , $row["length"]) = $match;
-				$row["full_type"] = $row["type"] . ($row["length"] ? "($row[length])" : "");
-				$row["null"] = ($row["attnotnull"] == "f");
-				$row["auto_increment"] = eregi("^nextval\\(", $row["default"]);
-				$row["privileges"] = array("insert" => 1, "select" => 1, "update" => 1);
-				$return[$row["field"]] = $row;
-			}
+		) as $row) {
+			//! collation, primary
+			ereg('(.*)(\\((.*)\\))?', $row["full_type"], $match);
+			list(, $row["type"], , $row["length"]) = $match;
+			$row["full_type"] = $row["type"] . ($row["length"] ? "($row[length])" : "");
+			$row["null"] = ($row["attnotnull"] == "f");
+			$row["auto_increment"] = eregi("^nextval\\(", $row["default"]);
+			$row["privileges"] = array("insert" => 1, "select" => 1, "update" => 1);
+			$return[$row["field"]] = $row;
 		}
 		return $return;
 	}
@@ -258,8 +253,7 @@ ORDER BY a.attnum < 0, a.attnum"
 		$return = array();
 		$table_oid = $connection2->result("SELECT oid FROM pg_class WHERE relname = " . $connection2->quote($table));
 		$columns = get_key_vals("SELECT attnum, attname FROM pg_attribute WHERE attrelid = $table_oid AND attnum > 0", $connection2);
-		$result = $connection2->query("SELECT relname, indisunique, indisprimary, indkey FROM pg_index i, pg_class ci WHERE i.indrelid = $table_oid AND ci.oid = i.indexrelid");
-		while ($row = $result->fetch_assoc()) {
+		foreach (get_rows("SELECT relname, indisunique, indisprimary, indkey FROM pg_index i, pg_class ci WHERE i.indrelid = $table_oid AND ci.oid = i.indexrelid") as $row) {
 			$return[$row["relname"]]["type"] = ($row["indisprimary"] == "t" ? "PRIMARY" : ($row["indisunique"] == "t" ? "UNIQUE" : "INDEX"));
 			$return[$row["relname"]]["columns"] = array();
 			foreach (explode(" ", $row["indkey"]) as $indkey) {
@@ -273,13 +267,12 @@ ORDER BY a.attnum < 0, a.attnum"
 	function foreign_keys($table) {
 		global $connection;
 		$return = array();
-		$result = $connection->query("SELECT tc.constraint_name, kcu.column_name, rc.update_rule AS on_update, rc.delete_rule AS on_delete, ccu.table_name AS table, ccu.column_name AS ref
+		foreach (get_rows("SELECT tc.constraint_name, kcu.column_name, rc.update_rule AS on_update, rc.delete_rule AS on_delete, ccu.table_name AS table, ccu.column_name AS ref
 FROM information_schema.table_constraints tc
 LEFT JOIN information_schema.key_column_usage kcu USING (constraint_catalog, constraint_schema, constraint_name)
 LEFT JOIN information_schema.referential_constraints rc USING (constraint_catalog, constraint_schema, constraint_name)
 LEFT JOIN information_schema.constraint_column_usage ccu ON rc.unique_constraint_catalog = ccu.constraint_catalog AND rc.unique_constraint_schema = ccu.constraint_schema AND rc.unique_constraint_name = ccu.constraint_name
-WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->quote($table)); //! there can be more unique_constraint_name
-		while ($row = $result->fetch_assoc()) {
+WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->quote($table)) as $row) { //! there can be more unique_constraint_name
 			$foreign_key = &$return[$row["constraint_name"]];
 			if (!$foreign_key) {
 				$foreign_key = $row;
@@ -438,15 +431,14 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . $connection->qu
 	
 	function trigger($name) {
 		global $connection;
-		$result = $connection->query('SELECT trigger_name AS "Trigger", condition_timing AS "Timing", event_manipulation AS "Event", \'FOR EACH \' || action_orientation AS "Type", action_statement AS "Statement" FROM information_schema.triggers WHERE event_object_table = ' . $connection->quote($_GET["trigger"]) . ' AND trigger_name = ' . $connection->quote($name));
-		return $result->fetch_assoc();
+		$rows = get_rows('SELECT trigger_name AS "Trigger", condition_timing AS "Timing", event_manipulation AS "Event", \'FOR EACH \' || action_orientation AS "Type", action_statement AS "Statement" FROM information_schema.triggers WHERE event_object_table = ' . $connection->quote($_GET["trigger"]) . ' AND trigger_name = ' . $connection->quote($name));
+		return reset($rows);
 	}
 	
 	function triggers($table) {
 		global $connection;
 		$return = array();
-		$result = $connection->query("SELECT * FROM information_schema.triggers WHERE event_object_table = " . $connection->quote($table));
-		while ($row = $result->fetch_assoc()) {
+		foreach (get_rows("SELECT * FROM information_schema.triggers WHERE event_object_table = " . $connection->quote($table)) as $row) {
 			$return[$row["trigger_name"]] = array($row["condition_timing"], $row["event_manipulation"]);
 		}
 		return $return;

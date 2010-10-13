@@ -125,8 +125,7 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 		FETCH tables INTO _table_name, _engine, _table_collation, _table_comment;
 		IF NOT done THEN
 			CASE _table_name";
-				$result = $connection->query($query);
-				while ($row = $result->fetch_assoc()) {
+				foreach (get_rows($query) as $row) {
 					$comment = $connection->quote($row["ENGINE"] == "InnoDB" ? preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["TABLE_COMMENT"]) : $row["TABLE_COMMENT"]);
 					echo "
 				WHEN " . $connection->quote($row["TABLE_NAME"]) . " THEN
