@@ -86,8 +86,4 @@ function page_footer($missing = "") {
 <?php $adminer->navigation($missing); ?>
 </div>
 <?php
-	// don't wait for code after footer
-	session_write_close();
-	ob_flush();
-	flush();
 }

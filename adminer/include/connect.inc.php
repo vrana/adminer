@@ -44,17 +44,13 @@ function connect_error() {
 		}
 	}
 	page_footer("db");
-	echo "<script type='text/javascript'>\n";
-	foreach (count_tables($databases) as $db => $val) {
-		echo "setHtml('tables-" . addcslashes($db, "\\'/") . "', '$val');\n";
-	}
-	echo "</script>\n";
+	echo "<script type='text/javascript' src='" . h(ME) . "script=connect'></script>\n";
 }
 
 if (isset($_GET["status"])) {
 	$_GET["variables"] = $_GET["status"];
 }
-if (!(DB != "" ? $connection->select_db(DB) : isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]) || isset($_GET["processlist"]) || isset($_GET["privileges"]) || isset($_GET["user"]) || isset($_GET["variables"]))) {
+if (!(DB != "" ? $connection->select_db(DB) : isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]) || isset($_GET["processlist"]) || isset($_GET["privileges"]) || isset($_GET["user"]) || isset($_GET["variables"]) || $_GET["script"] == "connect")) {
 	if (DB != "") {
 		set_session("dbs", null);
 	}

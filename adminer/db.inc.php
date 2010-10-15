@@ -38,8 +38,6 @@ if (support("scheme")) {
 }
 if ($_GET["ns"] !== "") {
 	echo '<a href="' . h(ME) . 'schema=">' . lang('Database schema') . "</a>\n";
-	$sums = array("Data_length" => 0, "Index_length" => 0, "Data_free" => 0);
-	
 	echo "<h3>" . lang('Tables and views') . "</h3>\n";
 	$tables_list = tables_list();
 	if (!$tables_list) {
@@ -70,7 +68,7 @@ if ($_GET["ns"] !== "") {
 		echo "<tr><td>&nbsp;<th>" . lang('%d in total', count($tables_list));
 		echo "<td>" . nbsp($connection->result("SELECT @@storage_engine"));
 		echo "<td>" . nbsp(db_collation(DB, collations()));
-		foreach ($sums as $key => $val) {
+		foreach (array("Data_length", "Index_length", "Data_free") as $key) {
 			echo "<td align='right' id='sum-$key'>&nbsp;";
 		}
 		echo "</table>\n";
@@ -157,33 +155,6 @@ if ($_GET["ns"] !== "") {
 	}
 	
 	page_footer();
-	$table_status = table_status();
-	if ($table_status) {
-		echo "<script type='text/javascript'>\n";
-		foreach ($table_status as $row) {
-			$id = addcslashes($row["Name"], "\\'/");
-			echo "setHtml('Comment-$id', '" . nbsp($row["Comment"]) . "');\n";
-			if (!is_view($row)) {
-				foreach (array("Engine", "Collation") as $key) {
-					echo "setHtml('$key-$id', '" . nbsp($row[$key]) . "');\n";
-				}
-				foreach ($sums + array("Auto_increment" => 0, "Rows" => 0) as $key => $val) {
-					if ($row[$key] != "") {
-						$val = number_format($row[$key], 0, '.', lang(','));
-						echo "setHtml('$key-$id', '" . ($key == "Rows" && $row["Engine"] == "InnoDB" && $val ? "~ $val" : $val) . "');\n";
-						if (isset($sums[$key])) {
-							$sums[$key] += ($row["Engine"] != "InnoDB" || $key != "Data_free" ? $row[$key] : 0);
-						}
-					} elseif (array_key_exists($key, $row)) {
-						echo "setHtml('$key-$id');\n";
-					}
-				}
-			}
-		}
-		foreach ($sums as $key => $val) {
-			echo "setHtml('sum-$key', '" . number_format($val, 0, '.', lang(',')) . "');\n";
-		}
-		echo "</script>\n";
-	}
+	echo "<script type='text/javascript' src='" . h(ME) . "script=db'></script>\n";
 	exit; // page_footer() already called
 }

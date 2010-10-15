@@ -66,6 +66,8 @@ if (isset($_GET["download"])) {
 	include "./select.inc.php";
 } elseif (isset($_GET["variables"])) {
 	include "./variables.inc.php";
+} elseif (isset($_GET["script"])) {
+	include "./script.inc.php";
 } else {
 	include "./db.inc.php";
 }
