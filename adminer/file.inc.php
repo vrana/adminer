@@ -1,13 +1,14 @@
 <?php
 header("Expires: " . gmdate("D, d M Y H:i:s", time() + 365*24*60*60) . " GMT");
+
 if ($_GET["file"] == "favicon.ico") {
 	header("Content-Type: image/x-icon");
 	echo base64_decode("compile_file('../adminer/static/favicon.ico', 'base64_encode');");
 } elseif ($_GET["file"] == "default.css") {
-	header("Content-Type: text/css");
+	header("Content-Type: text/css; charset=utf-8");
 	?>compile_file('../adminer/static/default.css', 'minify_css');<?php
 } elseif ($_GET["file"] == "functions.js") {
-	header("Content-Type: text/javascript");
+	header("Content-Type: text/javascript; charset=utf-8");
 	?>compile_file('../adminer/static/functions.js', 'JSMin::minify');compile_file('static/editing.js', 'JSMin::minify');<?php
 } else {
 	header("Content-Type: image/gif");
