@@ -10,11 +10,11 @@ if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP c
 			$_GET["db"] = $_POST["name"];
 			queries_redirect(preg_replace('~db=[^&]*&~', '', ME) . "db=" . urlencode($_POST["name"]), lang('Database has been renamed.'), rename_database($_POST["name"], $_POST["collation"]));
 		} else {
-			$dbs = explode("\n", str_replace("\r", "", $_POST["name"]));
+			$databases = explode("\n", str_replace("\r", "", $_POST["name"]));
 			$success = true;
 			$last = "";
-			foreach ($dbs as $db) {
-				if (count($dbs) == 1 || $db != "") { // ignore empty lines but always try to create single database
+			foreach ($databases as $db) {
+				if (count($databases) == 1 || $db != "") { // ignore empty lines but always try to create single database
 					if (!create_database($db, $_POST["collation"])) {
 						$success = false;
 					}

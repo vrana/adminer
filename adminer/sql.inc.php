@@ -1,6 +1,6 @@
 <?php
 restart_session();
-$history_all = &get_session("history");
+$history_all = &get_session("queries");
 $history = &$history_all[DB];
 if (!$error && $_POST["clear"]) {
 	$history = array();
@@ -39,7 +39,7 @@ if (!$error && $_POST) {
 		if (is_object($connection2) && DB != "") {
 			$connection2->select_db(DB);
 		}
-		$queries = 0;
+		$commands = 0;
 		$errors = "";
 		while ($query != "") {
 			if (!$offset && preg_match('~^\\s*DELIMITER\\s+(.+)~i', $query, $match)) {
@@ -58,15 +58,15 @@ if (!$error && $_POST) {
 					if (!$found || $found == $delimiter) { // end of a query
 						$empty = false;
 						$q = substr($query, 0, $match[0][1]);
-						$queries++;
-						echo "<pre class='jush-$jush' id='sql-$queries'>" . shorten_utf8(trim($q), 1000) . "</pre>\n";
+						$commands++;
+						echo "<pre class='jush-$jush' id='sql-$commands'>" . shorten_utf8(trim($q), 1000) . "</pre>\n";
 						ob_flush();
 						flush(); // can take a long time - show the running query
 						$start = explode(" ", microtime()); // microtime(true) is available since PHP 5
 						//! don't allow changing of character_set_results, convert encoding of displayed query
 						if (!$connection->multi_query($q)) {
 							echo "<p class='error'>" . lang('Error in query') . ": " . error() . "\n";
-							$errors .= " <a href='#sql-$queries'>$queries</a>";
+							$errors .= " <a href='#sql-$commands'>$commands</a>";
 							if ($_POST["error_stops"]) {
 								break;
 							}
@@ -82,7 +82,7 @@ if (!$error && $_POST) {
 									select($result, $connection2);
 									echo "<p>" . ($result->num_rows ? lang('%d row(s)', $result->num_rows) : "") . $time;
 									if ($connection2 && preg_match("~^($space|\\()*SELECT\\b~isU", $q)) {
-										$id = "explain-$queries";
+										$id = "explain-$commands";
 										echo ", <a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>\n";
 										echo "<div id='$id' class='hidden'>\n";
 										select(explain($connection2, $q));
@@ -91,7 +91,7 @@ if (!$error && $_POST) {
 								} else {
 									if (preg_match("~^$space*(CREATE|DROP|ALTER)$space+(DATABASE|SCHEMA)\\b~isU", $q)) {
 										restart_session();
-										set_session("databases", null); // clear cache
+										set_session("dbs", null); // clear cache
 										session_write_close();
 									}
 									echo "<p class='message' title='" . h($connection->info) . "'>" . lang('Query executed OK, %d row(s) affected.', $connection->affected_rows) . "$time\n";
@@ -115,7 +115,7 @@ if (!$error && $_POST) {
 				}
 			}
 		}
-		if ($errors && $queries > 1) {
+		if ($errors && $commands > 1) {
 			echo "<p class='error'>" . lang('Error in query') . ": $errors\n";
 		}
 		if ($empty) {

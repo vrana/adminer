@@ -14,7 +14,7 @@ class Adminer {
 	* @return array ($server, $username, $password)
 	*/
 	function credentials() {
-		return array(SERVER, $_GET["username"], get_session("passwords"));
+		return array(SERVER, $_GET["username"], get_session("pwds"));
 	}
 	
 	/** Get key used for permanent login
@@ -386,7 +386,7 @@ document.getElementById('username').focus();
 		global $jush;
 		restart_session();
 		$id = "sql-" . count($_SESSION["messages"]);
-		$history = &get_session("history");
+		$history = &get_session("queries");
 		$history[$_GET["db"]][] = (strlen($query) > 1e6 // not DB - reset in drop database
 			? ereg_replace('[\x80-\xFF]+$', '', substr($query, 0, 1e6)) . "\n..." // [\x80-\xFF] - valid UTF-8, \n - can end by one-line comment
 			: $query
@@ -498,7 +498,7 @@ document.getElementById('username').focus();
 <?php
 		if ($missing == "auth") {
 			$first = true;
-			foreach ((array) $_SESSION["passwords"] as $driver => $servers) {
+			foreach ((array) $_SESSION["pwds"] as $driver => $servers) {
 				foreach ($servers as $server => $usernames) {
 					foreach ($usernames as $username => $password) {
 						if (isset($password)) {

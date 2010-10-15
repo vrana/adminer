@@ -266,7 +266,7 @@ if (!defined("DRIVER")) {
 	*/
 	function get_databases($flush = true) {
 		// SHOW DATABASES can take a very long time so it is cached
-		$return = &get_session("databases");
+		$return = &get_session("dbs");
 		if (!isset($return)) {
 			if ($flush) {
 				restart_session();
@@ -523,7 +523,7 @@ if (!defined("DRIVER")) {
 	* @return string
 	*/
 	function create_database($db, $collation) {
-		set_session("databases", null);
+		set_session("dbs", null);
 		return queries("CREATE DATABASE " . idf_escape($db) . ($collation ? " COLLATE " . q($collation) : ""));
 	}
 	
@@ -532,7 +532,7 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function drop_databases($databases) {
-		set_session("databases", null);
+		set_session("dbs", null);
 		return apply_queries("DROP DATABASE", $databases, 'idf_escape');
 	}
 	

@@ -10,7 +10,7 @@ class Adminer {
 	//! driver, ns
 	
 	function credentials() {
-		return array(SERVER, $_GET["username"], get_session("passwords"));
+		return array(SERVER, $_GET["username"], get_session("pwds"));
 	}
 	
 	function permanentLogin() {
@@ -19,10 +19,10 @@ class Adminer {
 	
 	function database() {
 		global $connection;
-		$dbs = get_databases(false);
-		return (!$dbs
+		$databases = get_databases(false);
+		return (!$databases
 			? $connection->result("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1)") // username without the database list
-			: $dbs[(information_schema($dbs[0]) ? 1 : 0)] // first available database
+			: $databases[(information_schema($databases[0]) ? 1 : 0)] // first available database
 		);
 	}
 	
@@ -441,7 +441,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 <?php
 		if ($missing == "auth") {
 			$first = true;
-			foreach ((array) $_SESSION["passwords"]["server"][""] as $username => $password) {
+			foreach ((array) $_SESSION["pwds"]["server"][""] as $username => $password) {
 				if (isset($password)) {
 					if ($first) {
 						echo "<p>\n";

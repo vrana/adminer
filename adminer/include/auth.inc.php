@@ -22,7 +22,7 @@ if ($_COOKIE["adminer_permanent"]) {
 
 if (isset($_POST["server"])) {
 	session_regenerate_id(); // defense against session fixation
-	$_SESSION["passwords"][$_POST["driver"]][$_POST["server"]][$_POST["username"]] = $_POST["password"];
+	$_SESSION["pwds"][$_POST["driver"]][$_POST["server"]][$_POST["username"]] = $_POST["password"];
 	if ($_POST["permanent"]) {
 		$key = base64_encode($_POST["driver"]) . "-" . base64_encode($_POST["server"]) . "-" . base64_encode($_POST["username"]);
 		$private = $adminer->permanentLogin();
@@ -42,7 +42,7 @@ if (isset($_POST["server"])) {
 		page_footer("db");
 		exit;
 	} else {
-		foreach (array("passwords", "databases", "history") as $key) {
+		foreach (array("pwds", "dbs", "queries") as $key) {
 			set_session($key, null);
 		}
 		$key = base64_encode(DRIVER) . "-" . base64_encode(SERVER) . "-" . base64_encode($_GET["username"]);
@@ -52,13 +52,13 @@ if (isset($_POST["server"])) {
 		}
 		redirect(substr(preg_replace('~(username|db|ns)=[^&]*&~', '', ME), 0, -1), lang('Logout successful.'));
 	}
-} elseif ($permanent && !$_SESSION["passwords"]) {
+} elseif ($permanent && !$_SESSION["pwds"]) {
 	session_regenerate_id();
 	$private = $adminer->permanentLogin(); // try to decode even if not set
 	foreach ($permanent as $key => $val) {
 		list(, $cipher) = explode(":", $val);
 		list($driver, $server, $username) = array_map('base64_decode', explode("-", $key));
-		$_SESSION["passwords"][$driver][$server][$username] = decrypt_string(base64_decode($cipher), $private);
+		$_SESSION["pwds"][$driver][$server][$username] = decrypt_string(base64_decode($cipher), $private);
 	}
 }
 
@@ -72,7 +72,7 @@ function auth_error($exception = null) {
 		if (($_COOKIE[$session_name] || $_GET[$session_name]) && !$token) {
 			$error = lang('Session expired, please login again.');
 		} else {
-			$password = &get_session("passwords");
+			$password = &get_session("pwds");
 			if (isset($password)) {
 				$error = h($exception ? $exception->getMessage() : (is_string($connection) ? $connection : lang('Invalid credentials.')));
 				$password = null;
@@ -92,7 +92,7 @@ function auth_error($exception = null) {
 if (isset($_GET["username"]) && class_exists("Min_DB")) { // doesn't exists with passing wrong driver
 	$connection = connect();
 }
-if (is_string($connection) || !$adminer->login($_GET["username"], get_session("passwords"))) {
+if (is_string($connection) || !$adminer->login($_GET["username"], get_session("pwds"))) {
 	auth_error();
 	exit;
 }

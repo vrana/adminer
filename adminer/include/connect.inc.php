@@ -6,7 +6,7 @@ function connect_error() {
 		page_header(lang('Database') . ": " . h(DB), lang('Invalid database.'), true);
 	} else {
 		if ($_POST["db"] && !$error) {
-			set_session("databases", null);
+			set_session("dbs", null);
 			queries_redirect(substr(ME, 0, -1), lang('Databases have been dropped.'), drop_databases($_POST["db"]));
 		}
 		
@@ -56,7 +56,7 @@ if (isset($_GET["status"])) {
 }
 if (!(DB != "" ? $connection->select_db(DB) : isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]) || isset($_GET["processlist"]) || isset($_GET["privileges"]) || isset($_GET["user"]) || isset($_GET["variables"]))) {
 	if (DB != "") {
-		set_session("databases", null);
+		set_session("dbs", null);
 	}
 	connect_error(); // separate function to catch SQLite error
 	exit;

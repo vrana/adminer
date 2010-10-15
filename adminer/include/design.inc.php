@@ -63,7 +63,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 		echo "<div class='message'>" . implode("</div>\n<div class='message'>", $_SESSION["messages"]) . "</div>\n";
 		$_SESSION["messages"] = array();
 	}
-	$databases = &get_session("databases");
+	$databases = &get_session("dbs");
 	if (DB != "" && $databases && !in_array(DB, $databases, true)) {
 		$databases = null;
 	}
