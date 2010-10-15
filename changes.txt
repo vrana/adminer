@@ -1,4 +1,4 @@
-Adminer 3.0.0-dev:
+Adminer 3.0.0 (released 2010-10-15):
 Drivers for MS SQL, SQLite, PostgreSQL, Oracle
 Allow concurrent logins on the same server
 Allow permanent login without customization
