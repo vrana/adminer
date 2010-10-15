@@ -199,7 +199,7 @@ function get_rows($query, $connection2 = null, $error = "<p class='error'>") {
 		while ($row = $result->fetch_assoc()) {
 			$return[] = $row;
 		}
-	} elseif ($error && (headers_sent() || ob_get_level())) {
+	} elseif (!$result && $error && (headers_sent() || ob_get_level())) {
 		echo $error . error() . "\n";
 	}
 	return $return;
