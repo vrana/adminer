@@ -412,6 +412,7 @@ function apply_queries($query, $tables, $escape = 'table') {
 * @param string
 * @param string
 * @param bool
+* @return bool
 */
 function queries_redirect($location, $message, $redirect) {
 	return query_redirect(queries(), $location, $message, $redirect, false, !$redirect);
