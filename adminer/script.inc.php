@@ -5,10 +5,10 @@ if ($_GET["script"] == "db") {
 	$sums = array("Data_length" => 0, "Index_length" => 0, "Data_free" => 0);
 	foreach (table_status() as $row) {
 		$id = addcslashes($row["Name"], "\\'/");
-		echo "setHtml('Comment-$id', '" . nbsp($row["Comment"]) . "');\n";
+		echo "setHtml('Comment-$id', '" . addcslashes(nbsp($row["Comment"]), "'\\") . "');\n";
 		if (!is_view($row)) {
 			foreach (array("Engine", "Collation") as $key) {
-				echo "setHtml('$key-$id', '" . nbsp($row[$key]) . "');\n";
+				echo "setHtml('$key-$id', '" . addcslashes(nbsp($row[$key]), "'\\") . "');\n";
 			}
 			foreach ($sums + array("Auto_increment" => 0, "Rows" => 0) as $key => $val) {
 				if ($row[$key] != "") {
