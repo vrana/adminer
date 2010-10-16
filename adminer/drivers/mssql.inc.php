@@ -358,7 +358,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 
 	function view($name) {
 		global $connection;
-		return array("select" => preg_replace('~^(?:[^`]|`[^`]*`)*\\s+AS\\s+~isU', '', $connection->result("SELECT view_definition FROM information_schema.views WHERE table_schema = SCHEMA_NAME() AND table_name = " . q($name))));
+		return array("select" => preg_replace('~^(?:[^[]|\\[[^]]*])*\\s+AS\\s+~isU', '', $connection->result("SELECT view_definition FROM information_schema.views WHERE table_schema = SCHEMA_NAME() AND table_name = " . q($name))));
 	}
 	
 	function collations() {
