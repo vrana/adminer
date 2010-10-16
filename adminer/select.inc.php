@@ -279,7 +279,7 @@ if (!$columns) {
 					if (isset($names[$key])) {
 						$field = $fields[$key];
 						if ($val != "" && (!isset($email_fields[$key]) || $email_fields[$key] != "")) {
-							$email_fields[$key] = (is_email($val) ? $names[$key] : ""); //! filled e-mails can be contained on other pages
+							$email_fields[$key] = (is_mail($val) ? $names[$key] : ""); //! filled e-mails can be contained on other pages
 						}
 						$link = "";
 						$val = $adminer->editVal($val, $field);
@@ -322,7 +322,7 @@ if (!$columns) {
 							}
 						}
 						if (!$link) {
-							if (is_email($val)) {
+							if (is_mail($val)) {
 								$link = "mailto:$val";
 							}
 							if ($protocol = is_url($row[$key])) {

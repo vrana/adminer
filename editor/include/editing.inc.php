@@ -16,7 +16,7 @@ function email_header($header) {
 * @param array
 * @return 
 */
-function send_email($email, $subject, $message, $from = "", $files = array()) {
+function send_mail($email, $subject, $message, $from = "", $files = array()) {
 	$eol = (strncasecmp(PHP_OS, "win", 3) ? "\n" : "\r\n"); // PHP_EOL available since PHP 4.3.10 and 5.0.2
 	$message = str_replace("\n", $eol, wordwrap(str_replace("\r", "", "$message\n")));
 	$boundary = uniqid("boundary");

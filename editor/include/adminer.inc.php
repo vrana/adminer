@@ -358,7 +358,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 						$replace['{$' . "$val}"] = $this->editVal($row[$val], $fields[$val]);
 					}
 					$email = $row[$_POST["email_field"]];
-					if (is_email($email) && send_email($email, strtr($subject, $replace), strtr($message, $replace), $_POST["email_from"], $_FILES["email_files"])) {
+					if (is_mail($email) && send_mail($email, strtr($subject, $replace), strtr($message, $replace), $_POST["email_from"], $_FILES["email_files"])) {
 						$sent++;
 					}
 				}

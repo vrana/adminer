@@ -730,7 +730,7 @@ function password_file() {
 * @param string
 * @return bool
 */
-function is_email($email) {
+function is_mail($email) {
 	$atom = '[-a-z0-9!#$%&\'*+/=?^_`{|}~]'; // characters of local-name
 	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component
 	$pattern = "$atom+(\\.$atom+)*@($domain?\\.)+$domain";
