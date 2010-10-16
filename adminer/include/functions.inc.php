@@ -237,10 +237,11 @@ function unique_array($row, $indexes) {
 * @return string
 */
 function where($where) {
+	global $jush;
 	$return = array();
 	foreach ((array) $where["where"] as $key => $val) {
 		$return[] = idf_escape(bracket_escape($key, 1)) // 1 - back
-			. (ereg('\\.', $val) ? " LIKE " . exact_value(addcslashes($val, "%_")) : " = " . exact_value($val)) // LIKE because of floats, but slow with ints
+			. (ereg('\\.', $val) || $jush == "mssql" ? " LIKE " . exact_value(addcslashes($val, "%_")) : " = " . exact_value($val)) // LIKE because of floats, but slow with ints, in MS SQL because of text
 		; //! enum and set
 	}
 	foreach ((array) $where["null"] as $key) {
