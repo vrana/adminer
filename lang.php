@@ -27,6 +27,7 @@ foreach (array_merge(
 foreach (glob(dirname(__FILE__) . "/adminer/lang/" . ($_SESSION["lang"] ? $_SESSION["lang"] : "*") . ".inc.php") as $filename) {
 	$messages = $messages_all;
 	$file = file_get_contents($filename);
+	$file = str_replace("\r", "", $file);
 	preg_match_all("~^(\\s*)(?:// )?(('(?:[^\\\\']+|\\\\.)*') => .*[^,\n]),?~m", $file, $matches, PREG_SET_ORDER);
 	$s = "";
 	foreach ($matches as $match) {
