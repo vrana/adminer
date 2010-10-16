@@ -18,6 +18,7 @@ if ($_GET["file"] == "favicon.ico") {
 		case "up.gif": echo base64_decode("compile_file('../adminer/static/up.gif', 'base64_encode');"); break;
 		case "down.gif": echo base64_decode("compile_file('../adminer/static/down.gif', 'base64_encode');"); break;
 		case "arrow.gif": echo base64_decode("compile_file('../adminer/static/arrow.gif', 'base64_encode');"); break;
+		case "loader.gif": echo base64_decode("compile_file('../adminer/static/loader.gif', 'base64_encode');"); break;
 	}
 }
 exit;

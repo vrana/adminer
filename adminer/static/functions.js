@@ -32,6 +32,14 @@ function verifyVersion(protocol) {
 	document.body.appendChild(script);
 }
 
+/** Get value of select
+* @param HTMLSelectElement
+* @return string
+*/
+function selectValue(select) {
+	return (select.value !== undefined ? select.value : select.options[select.selectedIndex].text);
+}
+
 /** Check all elements matching given name
 * @param HTMLInputElement
 * @param RegExp
@@ -122,6 +130,57 @@ function selectAddRow(field) {
 }
 
 
+
+var ajaxState = 0;
+var ajaxTimeout;
+
+/** Create AJAX request
+* @param string
+* @return XMLHttpRequest or false in case of an error
+*/
+function ajax(url) {
+	var xmlhttp;
+	if (window.XMLHttpRequest) {
+		xmlhttp = new XMLHttpRequest();
+	} else if (window.ActiveXObject) {
+		xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
+	} else {
+		return false;
+	}
+	var currentState = ++ajaxState;
+	clearTimeout(ajaxTimeout);
+	ajaxTimeout = setTimeout(function () {
+		setHtml('main', '<img src="../adminer/static/loader.gif" alt="">');
+	}, 1000); // defer displaying loader
+	xmlhttp.open('GET', url);
+	xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+	xmlhttp.onreadystatechange = function () {
+		if (xmlhttp.readyState == 4 && currentState == ajaxState) {
+			clearTimeout(ajaxTimeout);
+			setHtml('main', xmlhttp.responseText);
+			if (window.jush) {
+				jush.highlight_tag('code');
+			}
+		}
+	};
+	xmlhttp.send('');
+	return xmlhttp;
+}
+
+/** Send form by AJAX GET
+* @param HTMLFormElement
+* @return XMLHttpRequest or false in case of an error
+*/
+function ajaxForm(form) {
+	var params = [ ];
+	for (var i=0; i < form.elements.length; i++) {
+		var el = form.elements[i];
+		if (el.name && (!/checkbox|radio/i.test(el.type) || el.checked)) {
+			params.push(el.name + '=' + encodeURIComponent(/select/i.test(el.tagName) ? selectValue(el) : el.value));
+		}
+	}
+	return ajax((form.action || location.pathname) + '?' + params.join('&'));
+}
 
 
 

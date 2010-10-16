@@ -192,7 +192,7 @@ $adminer->selectLinks($table_status, $set);
 if (!$columns) {
 	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "." : ": " . error()) . "\n";
 } else {
-	echo "<form action='' id='form'>\n";
+	echo "<form action='' id='form' onsubmit='return !ajaxForm(this);'>\n";
 	echo "<div style='display: none;'>";
 	hidden_fields_get();
 	echo (DB != "" ? '<input type="hidden" name="db" value="' . h(DB) . '">' . (isset($_GET["ns"]) ? '<input type="hidden" name="ns" value="' . h($_GET["ns"]) . '">' : "") : ""); // not used in Editor
@@ -254,7 +254,7 @@ if (!$columns) {
 				if ($name != "") {
 					$order++;
 					$names[$key] = $name;
-					echo '<th><a href="' . h(remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"][0] == $key && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . apply_sql_function($val["fun"], $name) . "</a>"; //! columns looking like functions
+					echo '<th><a href="' . h(remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"][0] == $key && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '" onclick="return !ajax(this.href);">' . apply_sql_function($val["fun"], $name) . "</a>"; //! columns looking like functions
 				}
 				$functions[$key] = $val["fun"];
 				next($select);
