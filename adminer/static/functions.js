@@ -164,7 +164,7 @@ function selectDblClick(td, event, text) {
 	var input = document.createElement(text ? 'textarea' : 'input');
 	input.name = td.id;
 	input.value = (value == '\u00A0' || td.getElementsByTagName('i').length ? '' : value); // &nbsp; or i - NULL
-	input.style.width = (td.clientWidth - 14) + 'px'; // 14 = 2 * (td.border + td.padding + input.border)
+	input.style.width = Math.max(td.clientWidth - 14, 20) + 'px'; // 14 = 2 * (td.border + td.padding + input.border)
 	if (text) {
 		var rows = 1;
 		value.replace(/\n/g, function () {
