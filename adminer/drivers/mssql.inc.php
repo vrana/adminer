@@ -383,7 +383,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 	}
 
 	function create_database($db, $collation) {
-		return queries("CREATE DATABASE " . idf_escape($db) . ($collation ? " COLLATE $collation" : ""));
+		return queries("CREATE DATABASE " . idf_escape($db) . (eregi('^[a-z0-9_]+$', $collation) ? " COLLATE $collation" : ""));
 	}
 	
 	function drop_databases($databases) {
@@ -391,7 +391,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 	}
 	
 	function rename_database($name, $collation) {
-		if ($collation) {
+		if (eregi('^[a-z0-9_]+$', $collation)) {
 			queries("ALTER DATABASE " . idf_escape(DB) . " COLLATE $collation");
 		}
 		queries("ALTER DATABASE " . idf_escape(DB) . " MODIFY NAME = " . idf_escape($name));
