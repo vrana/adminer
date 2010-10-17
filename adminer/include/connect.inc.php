@@ -6,7 +6,6 @@ function connect_error() {
 		page_header(lang('Database') . ": " . h(DB), lang('Invalid database.'), true);
 	} else {
 		if ($_POST["db"] && !$error) {
-			set_session("dbs", null);
 			queries_redirect(substr(ME, 0, -1), lang('Databases have been dropped.'), drop_databases($_POST["db"]));
 		}
 		
