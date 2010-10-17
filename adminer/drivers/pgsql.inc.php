@@ -22,11 +22,11 @@ if (isset($_GET["pgsql"])) {
 			function connect($server, $username, $password) {
 				set_error_handler(array($this, '_error'));
 				$this->_string = "host='" . str_replace(":", "' port='", addcslashes($server, "'\\")) . "' user='" . addcslashes($username, "'\\") . "' password='" . addcslashes($password, "'\\") . "'";
-				$this->_link = @pg_connect($this->_string . (DB != "" ? " dbname='" . addcslashes(DB, "'\\") . "'" : ""), PGSQL_CONNECT_FORCE_NEW);
+				$this->_link = @pg_connect($this->_string . (DB != "" ? " dbname='" . addcslashes(DB, "'\\") . "'" : " dbname='template1'"), PGSQL_CONNECT_FORCE_NEW);
 				if (!$this->_link && DB != "") {
 					// try to connect directly with database for performance
 					$this->_database = false;
-					$this->_link = @pg_connect($this->_string, PGSQL_CONNECT_FORCE_NEW);
+					$this->_link = @pg_connect("$this->_string dbname='template1'", PGSQL_CONNECT_FORCE_NEW);
 				}
 				restore_error_handler();
 				if ($this->_link) {
@@ -53,7 +53,7 @@ if (isset($_GET["pgsql"])) {
 			}
 			
 			function close() {
-				$this->_link = @pg_connect($this->_string);
+				$this->_link = @pg_connect("$this->_string dbname='template1'");
 			}
 			
 			function query($query, $unbuffered = false) {

@@ -2,6 +2,8 @@ Adminer 3.0.1-dev:
 Send the form by Ctrl+Enter in all textareas
 Disable creating SQLite databases with extension other than db, sdb, sqlite
 Catalan translation
+MS SQL 2005 compatibility
+PostgreSQL: connect if the eponymous database does not exist
 
 Adminer 3.0.0 (released 2010-10-15):
 Drivers for MS SQL, SQLite, PostgreSQL, Oracle
