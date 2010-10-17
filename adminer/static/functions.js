@@ -240,7 +240,7 @@ function selectDblClick(td, event, text) {
 		});
 		input.rows = rows;
 		input.onkeydown = function (event) {
-			return textareaKeydown(input, event || window.event);
+			return textareaKeydown(input, event || window.event, false, document.getElementById('save'));
 		};
 	}
 	if (document.selection) {
