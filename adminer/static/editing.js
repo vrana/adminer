@@ -408,27 +408,3 @@ function schemaMouseup(ev) {
 		cookie('adminer_schema=' + encodeURIComponent(s.substr(1)), 30, '; path="' + location.pathname + location.search + '"');
 	}
 }
-
-/** Handle Tab and Ctrl+Enter in textarea
-* @param HTMLTextAreaElement
-* @param KeyboardEvent
-* @return boolean
-*/
-function textareaKeydown(target, event) {
-	if (event.keyCode == 9 && !event.shiftKey && !event.altKey && !event.ctrlKey && !event.metaKey) {
-		// inspired by http://pallieter.org/Projects/insertTab/
-		if (target.setSelectionRange) {
-			var start = target.selectionStart;
-			target.value = target.value.substr(0, start) + '\t' + target.value.substr(target.selectionEnd);
-			target.setSelectionRange(start + 1, start + 1);
-			return false; //! still loses focus in Opera, can be solved by handling onblur
-		} else if (target.createTextRange) {
-			document.selection.createRange().text = '\t';
-			return false;
-		}
-	}
-	if (event.ctrlKey && (event.keyCode == 13 || event.keyCode == 10) && !event.altKey && !event.metaKey) { // shiftKey allowed
-		target.form.submit();
-	}
-	return true;
-}
