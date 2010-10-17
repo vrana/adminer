@@ -32,6 +32,13 @@ class Adminer {
 		return DB;
 	}
 	
+	/** Headers to send before HTML output
+	* @return null
+	*/
+	function headers() {
+		header("X-Frame-Options: deny"); // ClickJacking protection in IE8, Safari 4, Chrome 2, Firefox NoScript plugin
+	}
+	
 	/** Print login form
 	* @return null
 	*/

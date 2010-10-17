@@ -26,6 +26,10 @@ class Adminer {
 		);
 	}
 	
+	function headers() {
+		header("X-Frame-Options: deny");
+	}
+	
 	function loginForm() {
 		?>
 <table cellspacing="0">

@@ -1,6 +1,7 @@
 Adminer 3.0.1-dev:
 Send the form by Ctrl+Enter in all textareas
 Disable creating SQLite databases with extension other than db, sdb, sqlite
+Ability to use Adminer in a frame through customization
 Catalan translation
 MS SQL 2005 compatibility
 PostgreSQL: connect if the eponymous database does not exist
