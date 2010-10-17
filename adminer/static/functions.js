@@ -139,31 +139,26 @@ var ajaxTimeout;
 * @return XMLHttpRequest or false in case of an error
 */
 function ajax(url) {
-	var xmlhttp;
-	if (window.XMLHttpRequest) {
-		xmlhttp = new XMLHttpRequest();
-	} else if (window.ActiveXObject) {
-		xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
-	} else {
-		return false;
-	}
-	var currentState = ++ajaxState;
-	clearTimeout(ajaxTimeout);
-	ajaxTimeout = setTimeout(function () {
-		setHtml('main', '<img src="../adminer/static/loader.gif" alt="">');
-	}, 1000); // defer displaying loader
-	xmlhttp.open('GET', url);
-	xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-	xmlhttp.onreadystatechange = function () {
-		if (xmlhttp.readyState == 4 && currentState == ajaxState) {
-			clearTimeout(ajaxTimeout);
-			setHtml('main', xmlhttp.responseText);
-			if (window.jush) {
-				jush.highlight_tag('code');
+	var xmlhttp = (window.XMLHttpRequest ? new XMLHttpRequest() : (window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') : false));
+	if (xmlhttp) {
+		var currentState = ++ajaxState;
+		clearTimeout(ajaxTimeout);
+		ajaxTimeout = setTimeout(function () {
+			setHtml('main', '<img src="../adminer/static/loader.gif" alt="">');
+		}, 1000); // defer displaying loader
+		xmlhttp.open('GET', url);
+		xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+		xmlhttp.onreadystatechange = function () {
+			if (xmlhttp.readyState == 4 && currentState == ajaxState) {
+				clearTimeout(ajaxTimeout);
+				setHtml('main', xmlhttp.responseText);
+				if (window.jush) {
+					jush.highlight_tag('code');
+				}
 			}
-		}
-	};
-	xmlhttp.send('');
+		};
+		xmlhttp.send('');
+	}
 	return xmlhttp;
 }
 
