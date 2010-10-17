@@ -1,5 +1,6 @@
 Adminer 3.0.1-dev:
 Send the form by Ctrl+Enter in all textareas
+Disable creating SQLite databases with extension other than db, sdb, sqlite
 Catalan translation
 
 Adminer 3.0.0 (released 2010-10-15):

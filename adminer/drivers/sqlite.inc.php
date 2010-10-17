@@ -344,11 +344,25 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	function exact_value($val) {
 		return q($val);
 	}
-
+	
+	function check_sqlite_name($name) {
+		// avoid creating PHP files on unsecured servers
+		global $connection;
+		$extensions = "db|sdb|sqlite";
+		if (!preg_match("~^[^\\0]*\\.($extensions)\$~", $name)) {
+			$connection->error = lang('Please use one of the extensions %s.', str_replace("|", ", ", $extensions));
+			return false;
+		}
+		return true;
+	}
+	
 	function create_database($db, $collation) {
 		global $connection;
 		if (file_exists($db)) {
 			$connection->error = lang('File exists.');
+			return false;
+		}
+		if (!check_sqlite_name($db)) {
 			return false;
 		}
 		$link = new Min_SQLite($db); //! exception handler
@@ -372,6 +386,9 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	
 	function rename_database($name, $collation) {
 		global $connection;
+		if (!check_sqlite_name($name)) {
+			return false;
+		}
 		$connection->Min_SQLite(":memory:");
 		$connection->error = lang('File exists.');
 		return @rename(DB, $name);
