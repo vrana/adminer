@@ -1,6 +1,6 @@
 Transactions in export
 Create view and routine options
-Variables editation, especially timezone
+Variables editation, especially timezone (or set by PHP date.timezone)
 Highlight SQL textarea, then display query inside textarea in select - may use external CodeMirror
 Blob download and image display in edit form (important for Editor with hidden fields in select)
 Add title to Logout, edit (in select) and select (in menu) in style "hever"
@@ -34,6 +34,7 @@ Delimiter in export and SQL command
 Backward keys in Editor
 
 PostgreSQL:
+Display number of schemas in databases overview
 Users - SELECT * FROM pg_user
 ORDER BY COUNT(*)
 Export - http://www.postgresql.org/docs/8.4/static/functions-info.html

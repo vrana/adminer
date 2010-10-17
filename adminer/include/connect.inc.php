@@ -25,6 +25,7 @@ function connect_error() {
 		echo "<p>" . lang('Logged as: %s', "<b>" . h(logged_user()) . "</b>") . "\n";
 		$databases = get_databases();
 		if ($databases) {
+			$scheme = support("scheme");
 			$collations = collations();
 			echo "<form action='' method='post'>\n";
 			echo "<table cellspacing='0' onclick='tableClick(event);'>\n";
@@ -33,7 +34,7 @@ function connect_error() {
 				$root = h(ME) . "db=" . urlencode($db);
 				echo "<tr" . odd() . "><td>" . checkbox("db[]", $db, in_array($db, (array) $_POST["db"]));
 				echo "<th><a href='$root'>" . h($db) . "</a>";
-				echo "<td><a href='$root&amp;database='>" . nbsp(db_collation($db, $collations)) . "</a>";
+				echo "<td><a href='$root" . ($scheme ? "&amp;ns=" : "") . "&amp;database='>" . nbsp(db_collation($db, $collations)) . "</a>";
 				echo "<td align='right'><a href='$root&amp;schema=' id='tables-" . h($db) . "'>?</a>";
 				echo "\n";
 			}
