@@ -168,7 +168,7 @@ var ajaxTimeout;
 
 /** Create AJAX request
 * @param string
-* @param string
+* @param [string]
 * @return XMLHttpRequest or false in case of an error
 */
 function ajax(url, data) {
@@ -202,15 +202,19 @@ function ajax(url, data) {
 
 /** Send form by AJAX GET
 * @param HTMLFormElement
+* @param [string]
 * @return XMLHttpRequest or false in case of an error
 */
-function ajaxForm(form) {
+function ajaxForm(form, data) {
 	var params = [ ];
 	for (var i=0; i < form.elements.length; i++) {
 		var el = form.elements[i];
 		if (el.name && (!/checkbox|radio|submit|file/i.test(el.type) || el.checked)) {
 			params.push(encodeURIComponent(el.name) + '=' + encodeURIComponent(/select/i.test(el.tagName) ? selectValue(el) : el.value));
 		}
+	}
+	if (data) {
+		params.push(data);
 	}
 	if (form.method == 'post') {
 		return ajax(form.action || location.href, params.join('&'));
