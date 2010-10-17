@@ -333,7 +333,7 @@ if (!$columns) {
 							}
 						}
 						$id = h("val[$unique_idf][" . bracket_escape($key) . "]");
-						$value = ($error ? $_POST["val"][$unique_idf][bracket_escape($key)] : null);
+						$value = $_POST["val"][$unique_idf][bracket_escape($key)];
 						$h_value = h(isset($value) ? $value : $row[$key]);
 						$long = strpos($val, "<i>...</i>");
 						$editable = is_utf8($val) && !$long && $rows[$n][$key] == $row[$key] && !$functions[$key];

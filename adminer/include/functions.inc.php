@@ -345,9 +345,12 @@ function redirect($location, $message = null) {
 		restart_session();
 		$_SESSION["messages"][] = $message;
 	}
-	if (isset($location) && $_SERVER["HTTP_X_REQUESTED_WITH"] != "XMLHttpRequest") {
-		header("Location: " . ($location != "" ? $location : "."));
-		exit;
+	if (isset($location)) {
+		if ($_SERVER["HTTP_X_REQUESTED_WITH"] != "XMLHttpRequest") {
+			header("Location: " . ($location != "" ? $location : "."));
+			exit;
+		}
+		$_POST = array();
 	}
 }
 
