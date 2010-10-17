@@ -136,17 +136,22 @@ var ajaxTimeout;
 
 /** Create AJAX request
 * @param string
+* @param string
 * @return XMLHttpRequest or false in case of an error
 */
-function ajax(url) {
+function ajax(url, data) {
 	var xmlhttp = (window.XMLHttpRequest ? new XMLHttpRequest() : (window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') : false));
 	if (xmlhttp) {
 		var currentState = ++ajaxState;
 		clearTimeout(ajaxTimeout);
 		ajaxTimeout = setTimeout(function () {
 			setHtml('main', '<img src="../adminer/static/loader.gif" alt="">');
-		}, 1000); // defer displaying loader
-		xmlhttp.open('GET', url);
+		}, 500); // defer displaying loader
+		var method = (data === undefined ? 'GET' : 'POST');
+		xmlhttp.open(method, url);
+		if (method == 'POST') {
+			xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		}
 		xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 		xmlhttp.onreadystatechange = function () {
 			if (xmlhttp.readyState == 4 && currentState == ajaxState) {
@@ -154,10 +159,11 @@ function ajax(url) {
 				setHtml('main', xmlhttp.responseText);
 				if (window.jush) {
 					jush.highlight_tag('code');
+					jush.highlight_tag('pre', 0);
 				}
 			}
 		};
-		xmlhttp.send('');
+		xmlhttp.send(data);
 	}
 	return xmlhttp;
 }
@@ -170,11 +176,15 @@ function ajaxForm(form) {
 	var params = [ ];
 	for (var i=0; i < form.elements.length; i++) {
 		var el = form.elements[i];
-		if (el.name && (!/checkbox|radio/i.test(el.type) || el.checked)) {
-			params.push(el.name + '=' + encodeURIComponent(/select/i.test(el.tagName) ? selectValue(el) : el.value));
+		if (el.name && (!/checkbox|radio|submit|file/i.test(el.type) || el.checked)) {
+			params.push(encodeURIComponent(el.name) + '=' + encodeURIComponent(/select/i.test(el.tagName) ? selectValue(el) : el.value));
 		}
 	}
-	return ajax((form.action || location.pathname) + '?' + params.join('&'));
+	if (form.method == 'post') {
+		return ajax(form.action || location.href, params.join('&'));
+	} else {
+		return ajax((form.action || location.pathname) + '?' + params.join('&'));
+	}
 }
 
 

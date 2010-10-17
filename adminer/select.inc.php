@@ -333,7 +333,7 @@ if (!$columns) {
 							}
 						}
 						$id = h("val[$unique_idf][" . bracket_escape($key) . "]");
-						$value = $_POST["val"][$unique_idf][bracket_escape($key)];
+						$value = ($error ? $_POST["val"][$unique_idf][bracket_escape($key)] : null);
 						$h_value = h(isset($value) ? $value : $row[$key]);
 						$long = strpos($val, "<i>...</i>");
 						$editable = is_utf8($val) && !$long && $rows[$n][$key] == $row[$key] && !$functions[$key];
@@ -380,7 +380,7 @@ if (!$columns) {
 			if (!information_schema(DB)) {
 				?>
 <fieldset><legend><?php echo lang('Edit'); ?></legend><div>
-<input type="submit" value="<?php echo lang('Save'); ?>" title="<?php echo lang('Double click on a value to modify it.'); ?>">
+<input type="submit" value="<?php echo lang('Save'); ?>" title="<?php echo lang('Double click on a value to modify it.'); ?>" onclick='return !ajaxForm(this.form);'>
 <input type="submit" name="edit" value="<?php echo lang('Edit'); ?>">
 <input type="submit" name="clone" value="<?php echo lang('Clone'); ?>">
 <input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?> (' + (this.form['all'].checked ? <?php echo $found_rows; ?> : formChecked(this, /check/)) + ')');">
