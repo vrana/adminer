@@ -28,7 +28,7 @@ foreach (glob(dirname(__FILE__) . "/adminer/lang/" . ($_SESSION["lang"] ? $_SESS
 	$messages = $messages_all;
 	$file = file_get_contents($filename);
 	$file = str_replace("\r", "", $file);
-	preg_match_all("~^(\\s*)(?:// )?(('(?:[^\\\\']+|\\\\.)*') => .*[^,\n]),?~m", $file, $matches, PREG_SET_ORDER);
+	preg_match_all("~^(\\s*(?:// [^'].*\\s+)?)(?:// )?(('(?:[^\\\\']+|\\\\.)*') => .*[^,\n]),?~m", $file, $matches, PREG_SET_ORDER);
 	$s = "";
 	foreach ($matches as $match) {
 		if (isset($messages[$match[3]])) {
