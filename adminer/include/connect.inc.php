@@ -43,7 +43,7 @@ function connect_error() {
 		}
 	}
 	page_footer("db");
-	echo "<script type='text/javascript' src='" . h(ME) . "script=connect'></script>\n";
+	echo "<script type='text/javascript' src='" . h(ME . "script=connect&token=$token") . "'></script>\n";
 }
 
 if (isset($_GET["status"])) {

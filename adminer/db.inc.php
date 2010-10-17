@@ -155,6 +155,6 @@ if ($_GET["ns"] !== "") {
 	}
 	
 	page_footer();
-	echo "<script type='text/javascript' src='" . h(ME) . "script=db'></script>\n";
+	echo "<script type='text/javascript' src='" . h(ME . "script=db&token=$token") . "'></script>\n";
 	exit; // page_footer() already called
 }

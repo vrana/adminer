@@ -1,5 +1,8 @@
 <?php
 header("Content-Type: text/javascript; charset=utf-8");
+if ($_GET["token"] != $token) { // CSRF protection
+	exit;
+}
 
 if ($_GET["script"] == "db") {
 	$sums = array("Data_length" => 0, "Index_length" => 0, "Data_free" => 0);
