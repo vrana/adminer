@@ -131,6 +131,38 @@ function selectAddRow(field) {
 
 
 
+/** Handle Ctrl+Enter and optionally Tab in textarea
+* @param HTMLTextAreaElement
+* @param KeyboardEvent
+* @param boolean handle also Tab
+* @param HTMLInputElement submit button
+* @return boolean
+*/
+function textareaKeydown(target, event, tab, button) {
+	if (tab && event.keyCode == 9 && !event.shiftKey && !event.altKey && !event.ctrlKey && !event.metaKey) {
+		// inspired by http://pallieter.org/Projects/insertTab/
+		if (target.setSelectionRange) {
+			var start = target.selectionStart;
+			target.value = target.value.substr(0, start) + '\t' + target.value.substr(target.selectionEnd);
+			target.setSelectionRange(start + 1, start + 1);
+			return false; //! still loses focus in Opera, can be solved by handling onblur
+		} else if (target.createTextRange) {
+			document.selection.createRange().text = '\t';
+			return false;
+		}
+	}
+	if (event.ctrlKey && (event.keyCode == 13 || event.keyCode == 10) && !event.altKey && !event.metaKey) { // shiftKey allowed
+		if (button) {
+			button.click();
+		} else {
+			target.form.submit();
+		}
+	}
+	return true;
+}
+
+
+
 var ajaxState = 0;
 var ajaxTimeout;
 
@@ -207,6 +239,9 @@ function selectDblClick(td, event, text) {
 			rows++;
 		});
 		input.rows = rows;
+		input.onkeydown = function (event) {
+			return textareaKeydown(input, event || window.event);
+		};
 	}
 	if (document.selection) {
 		var range = document.selection.createRange();

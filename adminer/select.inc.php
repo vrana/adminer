@@ -339,7 +339,7 @@ if (!$columns) {
 						$editable = is_utf8($val) && !$long && $rows[$n][$key] == $row[$key] && !$functions[$key];
 						$text = ereg('text|lob', $field["type"]);
 						echo (($_GET["modify"] && $editable) || isset($value)
-							? "<td>" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>")
+							? "<td>" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "' onkeydown='return textareaKeydown(this, event);'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>")
 							: "<td id='$id' ondblclick=\"" . ($editable ? "selectDblClick(this, event" . ($text ? ", 1" : "") . ")" : "alert('" . h($long ? lang('Increase text length to modify this value.') : lang('Use edit link to modify this value.')) . "')") . ";\">" . $adminer->selectVal($val, $link, $field)
 						);
 					}

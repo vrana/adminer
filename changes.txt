@@ -1,3 +1,7 @@
+Adminer 3.0.1-dev:
+Send the form by Ctrl+Enter in all textareas
+Catalan translation
+
 Adminer 3.0.0 (released 2010-10-15):
 Drivers for MS SQL, SQLite, PostgreSQL, Oracle
 Allow concurrent logins on the same server

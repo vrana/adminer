@@ -214,7 +214,7 @@ if (DB != "") {
 			}
 		}
 	} else {
-		echo "<tr><td><textarea name='databases' rows='10' cols='20'></textarea>";
+		echo "<tr><td><textarea name='databases' rows='10' cols='20' onkeydown='return textareaKeydown(this, event);'></textarea>";
 	}
 }
 ?>
