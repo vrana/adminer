@@ -209,7 +209,7 @@ if (!$columns) {
 	$page = $_GET["page"];
 	if ($page == "last") {
 		$found_rows = $connection->result("SELECT COUNT(*) FROM " . table($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : ""));
-		$page = floor(($found_rows - 1) / $limit);
+		$page = floor(max(0, ($found_rows - 1) / $limit);
 	}
 
 	$query = "SELECT" . limit((intval($limit) && $group && count($group) < count($select) && $jush == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . $from, ($where ? "\nWHERE " . implode(" AND ", $where) : "") . $group_by, ($limit != "" ? intval($limit) : null), ($page ? $limit * $page : 0), "\n");
