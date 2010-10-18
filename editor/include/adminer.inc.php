@@ -62,7 +62,9 @@ document.getElementById('username').focus();
 			echo '<p class="tabs"><a href="' . h(ME . 'edit=' . urlencode($TABLE) . $set) . '">' . lang('New item') . "</a>\n";
 		}
 		echo "<a href='" . h(remove_from_uri("page")) . "&amp;page=last' title='" . lang('Page') . ": " . lang('last') . "'>&gt;&gt;</a>\n";
-		echo "<a href='" . h($_SERVER["REQUEST_URI"]) . "'>#</a>\n";
+		if (is_ajax()) {
+			echo "<a href='" . h($_SERVER["REQUEST_URI"]) . "'>#</a>\n";
+		}
 	}
 	
 	function backwardKeys($table, $tableName) {

@@ -246,7 +246,6 @@ $translations = array(
 	'Type has been created.' => 'Typ bol vytvorený.',
 	'Alter type' => 'Pozmeniť typ',
 	'Double click on a value to modify it.' => 'Dvojkliknite na políčko, ktoré chcete zmeniť.',
-	'Increase Text length to modify this value.' => 'Pre zmenu tejto hodnoty zvýšte Dĺžku textov.',
 	'Use edit link to modify this value.' => 'Pre zmenu tejto hodnoty použite odkaz upraviť.',
 	'last' => 'posledný',
 	'From server' => 'Zo serveru',

@@ -163,41 +163,54 @@ function textareaKeydown(target, event, tab, button) {
 
 
 
-var ajaxState = 0;
-var ajaxTimeout;
-
 /** Create AJAX request
 * @param string
+* @param function (text)
 * @param [string]
 * @return XMLHttpRequest or false in case of an error
 */
-function ajax(url, data) {
+function ajax(url, callback, data) {
 	var xmlhttp = (window.XMLHttpRequest ? new XMLHttpRequest() : (window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') : false));
 	if (xmlhttp) {
-		var currentState = ++ajaxState;
-		clearTimeout(ajaxTimeout);
-		ajaxTimeout = setTimeout(function () {
-			setHtml('main', '<img src="../adminer/static/loader.gif" alt="">');
-		}, 500); // defer displaying loader
-		var method = (data === undefined ? 'GET' : 'POST');
-		xmlhttp.open(method, url);
-		if (method == 'POST') {
+		xmlhttp.open((data === undefined ? 'GET' : 'POST'), url);
+		if (data) {
 			xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		}
 		xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-		xmlhttp.onreadystatechange = function () {
-			if (xmlhttp.readyState == 4 && currentState == ajaxState) {
-				clearTimeout(ajaxTimeout);
-				setHtml('main', xmlhttp.responseText);
-				if (window.jush) {
-					jush.highlight_tag('code');
-					jush.highlight_tag('pre', 0);
-				}
+		xmlhttp.onreadystatechange = function (text) {
+			if (xmlhttp.readyState == 4) {
+				callback(xmlhttp.responseText);
 			}
 		};
 		xmlhttp.send(data);
 	}
 	return xmlhttp;
+}
+
+var ajaxState = 0;
+var ajaxTimeout;
+
+/** Load content to #main
+* @param string
+* @param [string]
+* @return XMLHttpRequest or false in case of an error
+*/
+function ajaxMain(url, data) {
+	var currentState = ++ajaxState;
+	clearTimeout(ajaxTimeout);
+	ajaxTimeout = setTimeout(function () {
+		setHtml('main', '<img src="../adminer/static/loader.gif" alt="">');
+	}, 500); // defer displaying loader
+	return ajax(url, function (text) {
+		if (currentState == ajaxState) {
+			clearTimeout(ajaxTimeout);
+			setHtml('main', text);
+			if (window.jush) {
+				jush.highlight_tag('code');
+				jush.highlight_tag('pre', 0);
+			}
+		}
+	}, data);
 }
 
 /** Send form by AJAX GET
@@ -217,9 +230,9 @@ function ajaxForm(form, data) {
 		params.push(data);
 	}
 	if (form.method == 'post') {
-		return ajax(form.action || location.href, params.join('&'));
+		return ajaxMain(form.action || location.href, params.join('&'));
 	} else {
-		return ajax((form.action || location.pathname) + '?' + params.join('&'));
+		return ajaxMain((form.action || location.pathname) + '?' + params.join('&'));
 	}
 }
 
@@ -228,14 +241,13 @@ function ajaxForm(form, data) {
 /** Display edit field
 * @param HTMLElement
 * @param MouseEvent
-* @param boolean display textarea instead of input
+* @param number display textarea instead of input, 2 - load long text
 */
 function selectDblClick(td, event, text) {
 	var pos = event.rangeOffset;
 	var value = (td.firstChild.firstChild ? td.firstChild.firstChild.data : (td.firstChild.alt ? td.firstChild.alt : td.firstChild.data));
 	var input = document.createElement(text ? 'textarea' : 'input');
 	input.name = td.id;
-	input.value = (value == '\u00A0' || td.getElementsByTagName('i').length ? '' : value); // &nbsp; or i - NULL
 	input.style.width = Math.max(td.clientWidth - 14, 20) + 'px'; // 14 = 2 * (td.border + td.padding + input.border)
 	if (text) {
 		var rows = 1;
@@ -258,6 +270,12 @@ function selectDblClick(td, event, text) {
 	td.innerHTML = '';
 	td.appendChild(input);
 	input.focus();
+	if (text == 2) { // long text
+		return ajax(location.href + '&' + encodeURIComponent(td.id) + '=', function (text) {
+			input.value = text;
+		});
+	}
+	input.value = (value == '\u00A0' || td.getElementsByTagName('i').length ? '' : value); // &nbsp; or i - NULL
 	input.selectionStart = pos;
 	input.selectionEnd = pos;
 	if (document.selection) {

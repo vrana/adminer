@@ -246,7 +246,6 @@ $translations = array(
 	'Type has been dropped.' => 'Tüüp on edukalt kustutatud.',
 	'Type has been created.' => 'Tüüp on edukalt loodud.',
 	'Double click on a value to modify it.' => 'Väärtuse muutmiseks topelt-kliki sellel.',
-	'Increase Text length to modify this value.' => 'Väärtuse muutmiseks suurenda Tekstiveeru pikkust.',
 	'Use edit link to modify this value.' => 'Väärtuse muutmiseks kasuta muutmislinki.',
 	'last' => 'viimane',
 	'From server' => 'Serverist',

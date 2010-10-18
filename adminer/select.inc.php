@@ -26,6 +26,14 @@ $limit = $adminer->selectLimitProcess();
 $from = ($select ? implode(", ", $select) : "*") . "\nFROM " . table($TABLE);
 $group_by = ($group && count($group) < count($select) ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : "");
 
+if ($_GET["val"] && is_ajax()) {
+	header("Content-Type: text/plain; charset=utf-8");
+	foreach ($_GET["val"] as $unique_idf => $row) {
+		echo $connection->result("SELECT" . limit(idf_escape(key($row)) . " FROM " . table($TABLE), " WHERE " . where_check($unique_idf) . ($where ? " AND " . implode(" AND ", $where) : "") . ($order ? " ORDER BY " . implode(", ", $order) : ""), 1));
+	}
+	exit;
+}
+
 if ($_POST && !$error) {
 	$where_check = "(" . implode(") OR (", array_map('where_check', (array) $_POST["check"])) . ")";
 	$primary = $unselected = null;
@@ -254,7 +262,7 @@ if (!$columns) {
 				if ($name != "") {
 					$order++;
 					$names[$key] = $name;
-					echo '<th><a href="' . h(remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"][0] == $key && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '" onclick="return !ajax(this.href);">' . apply_sql_function($val["fun"], $name) . "</a>"; //! columns looking like functions
+					echo '<th><a href="' . h(remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"][0] == $key && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '" onclick="return !ajaxMain(this.href);">' . apply_sql_function($val["fun"], $name) . "</a>"; //! columns looking like functions
 				}
 				$functions[$key] = $val["fun"];
 				next($select);
@@ -336,11 +344,11 @@ if (!$columns) {
 						$value = $_POST["val"][$unique_idf][bracket_escape($key)];
 						$h_value = h(isset($value) ? $value : $row[$key]);
 						$long = strpos($val, "<i>...</i>");
-						$editable = is_utf8($val) && !$long && $rows[$n][$key] == $row[$key] && !$functions[$key];
+						$editable = is_utf8($val) && $rows[$n][$key] == $row[$key] && !$functions[$key];
 						$text = ereg('text|lob', $field["type"]);
 						echo (($_GET["modify"] && $editable) || isset($value)
 							? "<td>" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "' onkeydown='return textareaKeydown(this, event);'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>")
-							: "<td id='$id' ondblclick=\"" . ($editable ? "selectDblClick(this, event" . ($text ? ", 1" : "") . ")" : "alert('" . h($long ? lang('Increase Text length to modify this value.') : lang('Use edit link to modify this value.')) . "')") . ";\">" . $adminer->selectVal($val, $link, $field)
+							: "<td id='$id' ondblclick=\"" . ($editable ? "selectDblClick(this, event" . ($long ? ", 2" : ($text ? ", 1" : "")) . ")" : "alert('" . h(lang('Use edit link to modify this value.')) . "')") . ";\">" . $adminer->selectVal($val, $link, $field)
 						);
 					}
 				}

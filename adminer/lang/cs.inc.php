@@ -251,7 +251,6 @@ $translations = array(
 	
 	// selects now support in-place editing
 	'Double click on a value to modify it.' => 'Dvojklikněte na políčko, které chcete změnit.',
-	'Increase Text length to modify this value.' => 'Ke změně této hodnoty zvyšte Délku textů.',
 	'Use edit link to modify this value.' => 'Ke změně této hodnoty použijte odkaz upravit.',
 	
 	// PostgreSQL and MS SQL schema support

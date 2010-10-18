@@ -335,6 +335,13 @@ function auth_url($driver, $server, $username) {
 	;
 }
 
+/** Find whether it is an AJAX request
+* @return bool
+*/
+function is_ajax() {
+	return ($_SERVER["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest");
+}
+
 /** Send Location header and exit
 * @param string null to only set a message
 * @param string
@@ -346,7 +353,7 @@ function redirect($location, $message = null) {
 		$_SESSION["messages"][] = $message;
 	}
 	if (isset($location)) {
-		if ($_SERVER["HTTP_X_REQUESTED_WITH"] != "XMLHttpRequest") {
+		if (!is_ajax()) {
 			header("Location: " . ($location != "" ? $location : "."));
 			exit;
 		}

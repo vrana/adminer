@@ -235,7 +235,6 @@ $translations = array(
 	'Databases have been dropped.' => 'S\'han suprimit les bases de dades.',
 	'File exists.' => 'El fitxer ja existeix.',
 	'Double click on a value to modify it.' => 'Fes un doble clic a un valor per modificar-lo.',
-	'Increase Text length to modify this value.' => 'Incrementa la Longitud del text per modificar aquest valor.',
 	'Use edit link to modify this value.' => 'Utilitza l\'enllaç d\'edició per modificar aquest valor.',
 	'Alter schema' => 'Modifica l\'esquema',
 	'Create schema' => 'Crea un esquema',

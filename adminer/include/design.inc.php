@@ -10,7 +10,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	global $LANG, $HTTPS, $adminer, $connection, $drivers;
 	header("Content-Type: text/html; charset=utf-8");
 	$adminer->headers();
-	if ($_SERVER["HTTP_X_REQUESTED_WITH"] != "XMLHttpRequest") {
+	if (!is_ajax()) {
 		$title_all = $title . ($title2 != "" ? ": " . h($title2) : "");
 		$protocol = ($HTTPS ? "https" : "http");
 		?>
@@ -81,7 +81,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 */
 function page_footer($missing = "") {
 	global $adminer;
-	if ($_SERVER["HTTP_X_REQUESTED_WITH"] != "XMLHttpRequest") {
+	if (!is_ajax()) {
 		?>
 </div>
 </div>
