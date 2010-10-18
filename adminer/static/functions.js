@@ -247,7 +247,6 @@ function selectDblClick(td, event, text) {
 	var pos = event.rangeOffset;
 	var value = (td.firstChild.firstChild ? td.firstChild.firstChild.data : (td.firstChild.alt ? td.firstChild.alt : td.firstChild.data));
 	var input = document.createElement(text ? 'textarea' : 'input');
-	input.name = td.id;
 	input.style.width = Math.max(td.clientWidth - 14, 20) + 'px'; // 14 = 2 * (td.border + td.padding + input.border)
 	if (text) {
 		var rows = 1;
@@ -273,9 +272,11 @@ function selectDblClick(td, event, text) {
 	if (text == 2) { // long text
 		return ajax(location.href + '&' + encodeURIComponent(td.id) + '=', function (text) {
 			input.value = text;
+			input.name = td.id;
 		});
 	}
 	input.value = (value == '\u00A0' || td.getElementsByTagName('i').length ? '' : value); // &nbsp; or i - NULL
+	input.name = td.id;
 	input.selectionStart = pos;
 	input.selectionEnd = pos;
 	if (document.selection) {
