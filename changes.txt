@@ -1,4 +1,4 @@
-Adminer 3.0.1-dev:
+Adminer 3.0.1 (released 2010-10-18):
 Send the form by Ctrl+Enter in all textareas
 Disable creating SQLite databases with extension other than db, sdb, sqlite
 Ability to use Adminer in a frame through customization
