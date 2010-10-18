@@ -523,10 +523,14 @@ document.getElementById('username').focus();
 			?>
 <form action="" method="post">
 <p class="logout">
-<a href="<?php echo h(ME); ?>sql="><?php echo bold(lang('SQL command'), isset($_GET["sql"])); ?></a>
-<?php if (support("dump")) { ?>
-<a href="<?php echo h(ME); ?>dump=<?php echo urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]); ?>"><?php echo bold(lang('Dump'), isset($_GET["dump"])); ?></a>
-<?php } ?>
+<?php
+if (DB == "" || !$missing) {
+	echo "<a href='" . h(ME) . "sql='>" . bold(lang('SQL command'), isset($_GET["sql"])) . "</a>\n";
+	if (support("dump")) {
+		echo "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "'>" . bold(lang('Dump'), isset($_GET["dump"])) . "</a>\n";
+	}
+}
+?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" name="logout" value="<?php echo lang('Logout'); ?>">
 </p>
@@ -544,7 +548,7 @@ document.getElementById('username').focus();
 						set_schema($_GET["ns"]);
 					}
 				}
-				if ($_GET["ns"] !== "" && $missing != "ns") {
+				if ($_GET["ns"] !== "" && !$missing) {
 					$tables = tables_list();
 					if (!$tables) {
 						echo "<p class='message'>" . lang('No tables.') . "\n";
