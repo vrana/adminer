@@ -383,7 +383,7 @@ if (!$columns) {
 <input type="submit" value="<?php echo lang('Save'); ?>" title="<?php echo lang('Double click on a value to modify it.'); ?>">
 <input type="submit" name="edit" value="<?php echo lang('Edit'); ?>">
 <input type="submit" name="clone" value="<?php echo lang('Clone'); ?>">
-<input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?> (' + (this.form['all'].checked ? <?php echo $found_rows; ?> : formChecked(this, /check/)) + ')');">
+<input type="submit" name="delete" value="<?php echo lang('Delete'); ?>"<?php echo confirm("(this.form['all'].checked ? $found_rows : formChecked(this, /check/))"); ?>>
 </div></fieldset>
 <?php
 			}

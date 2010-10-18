@@ -104,7 +104,7 @@ if ($fields) {
 	}
 }
 if ($update) {
-	echo "<input type='submit' name='delete' value='" . lang('Delete') . "'$confirm>\n";
+	echo "<input type='submit' name='delete' value='" . lang('Delete') . "'" . confirm() . ">\n";
 }
 ?>
 </form>

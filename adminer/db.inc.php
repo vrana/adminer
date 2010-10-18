@@ -73,7 +73,7 @@ if ($_GET["ns"] !== "") {
 		}
 		echo "</table>\n";
 		if (!information_schema(DB)) {
-			echo "<p><input type='hidden' name='token' value='$token'>" . ($jush == "sql" ? "<input type='submit' value='" . lang('Analyze') . "'> <input type='submit' name='optimize' value='" . lang('Optimize') . "'> <input type='submit' name='check' value='" . lang('Check') . "'> <input type='submit' name='repair' value='" . lang('Repair') . "'> " : "") . "<input type='submit' name='truncate' value='" . lang('Truncate') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + formChecked(this, /tables/) + ')');\"> <input type='submit' name='drop' value='" . lang('Drop') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + formChecked(this, /tables|views/) + ')');\">\n";
+			echo "<p><input type='hidden' name='token' value='$token'>" . ($jush == "sql" ? "<input type='submit' value='" . lang('Analyze') . "'> <input type='submit' name='optimize' value='" . lang('Optimize') . "'> <input type='submit' name='check' value='" . lang('Check') . "'> <input type='submit' name='repair' value='" . lang('Repair') . "'> " : "") . "<input type='submit' name='truncate' value='" . lang('Truncate') . "'" . confirm("formChecked(this, /tables/)") . "> <input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm("formChecked(this, /tables|views/)") . ">\n";
 			$databases = (support("scheme") ? schemas() : get_databases());
 			if (count($databases) != 1 && $jush != "sqlite") {
 				$db = (isset($_POST["target"]) ? $_POST["target"] : (support("scheme") ? $_GET["ns"] : DB));

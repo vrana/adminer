@@ -28,7 +28,7 @@ if ($_POST) {
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php
 if ($SEQUENCE != "") {
-	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'$confirm>\n";
+	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm() . ">\n";
 }
 ?>
 </form>

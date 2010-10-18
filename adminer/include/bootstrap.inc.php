@@ -78,4 +78,3 @@ if (!ini_bool("session.use_cookies") || @ini_set("session.use_cookies", false) !
 }
 
 $on_actions = array("RESTRICT", "CASCADE", "SET NULL", "NO ACTION"); ///< @var array used in foreign_keys()
-$confirm = " onclick=\"return confirm('" . lang('Are you sure?') . "');\""; ///< @var string

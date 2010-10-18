@@ -164,7 +164,7 @@ document.write('<label><input type="checkbox" onclick="columnShow(this.checked, 
 <p>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Save'); ?>">
-<?php if (strlen($_GET["create"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
+<?php if (strlen($_GET["create"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo confirm(); ?>><?php } ?>
 <?php
 if (support("partitioning")) {
 	$partition_table = ereg('RANGE|LIST', $row["partition_by"]);

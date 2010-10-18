@@ -23,7 +23,7 @@ if ($_POST) {
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <?php
 if ($TYPE != "") {
-	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'$confirm>\n";
+	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm() . ">\n";
 } else {
 	echo "<input name='name' value='" . h($row['name']) . "'>\n";
 	textarea("as", $row["as"]);

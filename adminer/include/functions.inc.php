@@ -135,6 +135,14 @@ function html_select($name, $options, $value = "", $onchange = true) {
 	return $return;
 }
 
+/** Get onclick confirmation
+* @param string JavaScript expression
+* @return string
+*/
+function confirm($count = "") {
+	return " onclick=\"return confirm('" . lang('Are you sure?') . ($count ? " (' + $count + ')" : "") . "');\"";
+}
+
 /** Get INI boolean value
 * @param string
 * @return bool

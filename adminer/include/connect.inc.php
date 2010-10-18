@@ -39,7 +39,7 @@ function connect_error() {
 				echo "\n";
 			}
 			echo "</table>\n";
-			echo "<p><input type='submit' name='drop' value='" . lang('Drop') . "' onclick=\"return confirm('" . lang('Are you sure?') . " (' + formChecked(this, /db/) + ')');\">\n";
+			echo "<p><input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm("formChecked(this, /db/)") . ">\n";
 			echo "</form>\n";
 		}
 	}
