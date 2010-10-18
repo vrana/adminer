@@ -377,11 +377,12 @@ if (!$columns) {
 			if (intval($limit) && $found_rows > $limit) {
 				// display first, previous 4, next 4 and last page
 				$max_page = floor(($found_rows - 1) / $limit);
-				echo '<a href="' . h(remove_from_uri("page")) . "\" onclick=\"var page = +prompt('" . lang('Page') . "', '" . ($page + 1) . "'); if (!isNaN(page) &amp;&amp; page) location.href = this.href + (page != 1 ? '&amp;page=' + (page - 1) : ''); return false;\">" . lang('Page') . "</a>:" . pagination(0, $page) . ($page > 5 ? " ..." : "");
+				echo '<a href="' . h(remove_from_uri("page")) . "\" onclick=\"var page = +prompt('" . lang('Page') . "', '" . ($page + 1) . "'); if (!isNaN(page) &amp;&amp; page) ajaxMain(this.href + (page != 1 ? '&amp;page=' + (page - 1) : '')); return false;\">" . lang('Page') . "</a>:";
+				echo pagination(0, $page) . ($page > 5 ? " ..." : "");
 				for ($i = max(1, $page - 4); $i < min($max_page, $page + 5); $i++) {
 					echo pagination($i, $page);
 				}
-				echo ($page + 5 < $max_page ? " ..." : "") . ($exact_count ? pagination($max_page, $page) : ' <a href="' . h(remove_from_uri() . "&page=last") . '">' . lang('last') . "</a>");
+				echo ($page + 5 < $max_page ? " ..." : "") . ($exact_count ? pagination($max_page, $page) : ' <a href="' . h(remove_from_uri() . "&page=last") . '" onclick="return !ajaxMain(this.href);">' . lang('last') . "</a>");
 			}
 			echo " (" . ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) . ") " . checkbox("all", 1, 0, lang('whole result')) . "\n";
 			
