@@ -491,7 +491,7 @@ document.getElementById('username').focus();
 	}
 	
 	/** Prints navigation after Adminer title
-	* @param string can be "auth" if there is no database connection or "db" if there is no database selected
+	* @param string can be "auth" if there is no database connection, "db" if there is no database selected, "ns" with invalid schema
 	* @return null
 	*/
 	function navigation($missing) {
@@ -544,7 +544,7 @@ document.getElementById('username').focus();
 						set_schema($_GET["ns"]);
 					}
 				}
-				if ($_GET["ns"] !== "") {
+				if ($_GET["ns"] !== "" && $missing != "ns") {
 					$tables = tables_list();
 					if (!$tables) {
 						echo "<p class='message'>" . lang('No tables.') . "\n";

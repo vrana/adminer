@@ -463,7 +463,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 </p>
 </form>
 <?php
-			if ($missing != "db") {
+			if ($missing != "db" && $missing != "ns") {
 				$table_status = table_status();
 				if (!$table_status) {
 					echo "<p class='message'>" . lang('No tables.') . "\n";

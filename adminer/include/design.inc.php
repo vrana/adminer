@@ -73,7 +73,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 }
 
 /** Print HTML footer
-* @param string auth|db
+* @param string "auth", "db", "ns"
 * @return null
 */
 function page_footer($missing = "") {

@@ -262,6 +262,7 @@ $translations = array(
 	'Schema has been altered.' => 'Schéma bylo změněno.',
 	'schema' => 'schéma',
 	'Schema' => 'Schéma',
+	'Invalid schema.' => 'Nesprávné schéma.',
 	
 	// PostgreSQL sequences support
 	'Sequences' => 'Sekvence',
