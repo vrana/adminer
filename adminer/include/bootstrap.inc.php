@@ -43,6 +43,7 @@ if (function_exists("set_magic_quotes_runtime")) {
 	set_magic_quotes_runtime(false);
 }
 @set_time_limit(0); // @ - can be disabled
+@ini_set("zend.ze1_compatibility_mode", false); // @ - deprecated
 
 include "../adminer/include/lang.inc.php";
 include "../adminer/lang/$LANG.inc.php";
