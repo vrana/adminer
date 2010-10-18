@@ -2,7 +2,7 @@
 $TABLE = $_GET["indexes"];
 $index_types = array("PRIMARY", "UNIQUE", "INDEX");
 $table_status = table_status($TABLE);
-if (ereg("MyISAM|Maria", $table_status["Engine"])) {
+if (eregi("MyISAM|M?aria", $table_status["Engine"])) {
 	$index_types[] = "FULLTEXT";
 }
 $indexes = indexes($TABLE);
