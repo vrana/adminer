@@ -18,7 +18,7 @@ if (!$error && $_POST) {
 			: "compress.bzip2://adminer.sql.bz2"
 		)), "rb");
 		$query = ($fp ? fread($fp, 1e6) : false);
-	} elseif ($_FILES["sql_file"]["error"] != 4) { // 4 - UPLOAD_ERR_NO_FILE
+	} elseif ($_FILES && $_FILES["sql_file"]["error"] != 4) { // 4 - UPLOAD_ERR_NO_FILE
 		$query = get_file("sql_file", true);
 	}
 	if (is_string($query)) { // get_file() returns error as number, fread() as false
