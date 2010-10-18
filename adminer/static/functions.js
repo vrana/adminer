@@ -105,6 +105,7 @@ function setHtml(id, html) {
 * @param HTMLSelectElement
 */
 function selectAddRow(field) {
+	field.onchange = function () { };
 	var row = field.parentNode.cloneNode(true);
 	var selects = row.getElementsByTagName('select');
 	for (var i=0; i < selects.length; i++) {
@@ -118,7 +119,6 @@ function selectAddRow(field) {
 		inputs[0].className = '';
 	}
 	field.parentNode.parentNode.appendChild(row);
-	field.onchange = function () { };
 }
 
 
@@ -159,6 +159,7 @@ function textareaKeydown(target, event, tab, button) {
 * @param boolean display textarea instead of input
 */
 function selectDblClick(td, event, text) {
+	td.ondblclick = function () { };
 	var pos = event.rangeOffset;
 	var value = (td.firstChild.firstChild ? td.firstChild.firstChild.data : (td.firstChild.alt ? td.firstChild.alt : td.firstChild.data));
 	var input = document.createElement(text ? 'textarea' : 'input');
@@ -193,5 +194,4 @@ function selectDblClick(td, event, text) {
 		range.moveStart('character', pos);
 		range.select();
 	}
-	td.ondblclick = function () { };
 }
