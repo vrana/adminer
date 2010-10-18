@@ -154,7 +154,9 @@ if ($_GET["ns"] !== "") {
 		echo '<p><a href="' . h(ME) . 'event=">' . lang('Create event') . "</a>\n";
 	}
 	
-	page_footer();
-	echo "<script type='text/javascript' src='" . h(ME) . "script=db'></script>\n";
-	exit; // page_footer() already called
+	if ($tables_list) {
+		page_footer();
+		echo "<script type='text/javascript' src='" . h(ME . "script=db&token=$token") . "'></script>\n";
+		exit; // page_footer() already called
+	}
 }

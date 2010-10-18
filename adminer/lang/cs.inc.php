@@ -25,6 +25,7 @@ $translations = array(
 	'Save' => 'Uložit',
 	'Drop' => 'Odstranit',
 	'Database has been dropped.' => 'Databáze byla odstraněna.',
+	'Databases have been dropped.' => 'Databáze byly odstraněny.',
 	'Database has been created.' => 'Databáze byla vytvořena.',
 	'Database has been renamed.' => 'Databáze byla přejmenována.',
 	'Database has been altered.' => 'Databáze byla změněna.',
@@ -40,7 +41,10 @@ $translations = array(
 	'Create new table' => 'Vytvořit novou tabulku',
 	'Item has been deleted.' => 'Položka byla smazána.',
 	'Item has been updated.' => 'Položka byla aktualizována.',
+	
+	// %s can contain auto-increment value
 	'Item%s has been inserted.' => 'Položka%s byla vložena.',
+	
 	'Edit' => 'Upravit',
 	'Insert' => 'Vložit',
 	'Save and insert next' => 'Uložit a vložit další',
@@ -180,7 +184,7 @@ $translations = array(
 	'Tables have been truncated.' => 'Tabulky byly vyprázdněny.',
 	'Rows' => 'Řádků',
 	',' => ' ',
-	'Tables have been moved.' => 'Tabulky byly přesunuty',
+	'Tables have been moved.' => 'Tabulky byly přesunuty.',
 	'Move to other database' => 'Přesunout do jiné databáze',
 	'Move' => 'Přesunout',
 	'Engine' => 'Úložiště',
@@ -227,16 +231,30 @@ $translations = array(
 	'File does not exist.' => 'Soubor neexistuje.',
 	'Permanent login' => 'Trvalé přihlášení',
 	'%d in total' => '%d celkem',
+	
+	// label for e-mail attachments in Adminer Editor
 	'Attachments' => 'Přílohy',
+	
+	// label for database system selection (MySQL, SQLite, ...)
 	'System' => 'Systém',
+	
+	// link to last page if exact number is unknown
 	'last' => 'poslední',
+	
+	// new data type categories
 	'Network' => 'Síť',
 	'Geometry' => 'Geometrie',
-	'Databases have been dropped.' => 'Databáze byly odstraněny.',
+	
+	// general SQLite error in create, drop or rename database
 	'File exists.' => 'Soubor existuje.',
+	'Please use one of the extensions %s.' => 'Prosím použijte jednu z koncovek %s.',
+	
+	// selects now support in-place editing
 	'Double click on a value to modify it.' => 'Dvojklikněte na políčko, které chcete změnit.',
 	'Increase Text length to modify this value.' => 'Ke změně této hodnoty zvyšte Délku textů.',
 	'Use edit link to modify this value.' => 'Ke změně této hodnoty použijte odkaz upravit.',
+	
+	// PostgreSQL and MS SQL schema support
 	'Alter schema' => 'Pozměnit schéma',
 	'Create schema' => 'Vytvořit schéma',
 	'Schema has been dropped.' => 'Schéma bylo odstraněno.',
@@ -244,19 +262,32 @@ $translations = array(
 	'Schema has been altered.' => 'Schéma bylo změněno.',
 	'schema' => 'schéma',
 	'Schema' => 'Schéma',
+	'Invalid schema.' => 'Nesprávné schéma.',
+	
+	// PostgreSQL sequences support
 	'Sequences' => 'Sekvence',
 	'Create sequence' => 'Vytvořit sekvenci',
 	'Sequence has been dropped.' => 'Sekvence byla odstraněna.',
 	'Sequence has been created.' => 'Sekvence byla vytvořena.',
 	'Sequence has been altered.' => 'Sekvence byla změněna.',
 	'Alter sequence' => 'Pozměnit sekvenci',
+	
+	// PostgreSQL user types support
 	'User types' => 'Uživatelské typy',
 	'Create type' => 'Vytvořit typ',
 	'Type has been dropped.' => 'Typ byl odstraněn.',
 	'Type has been created.' => 'Typ byl vytvořen.',
 	'Alter type' => 'Pozměnit typ',
+	
+	// label for search in whole database
 	'Search data in tables' => 'Vyhledat data v tabulkách',
+	
+	// label for box with "Run webserver file adminer.sql"
 	'From server' => 'Ze serveru',
+	
+	// label for value '' in enum data type
 	'empty' => 'prázdné',
+	
+	// function translation used in Editor
 	'now' => 'teď',
 );

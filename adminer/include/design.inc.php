@@ -9,7 +9,7 @@
 function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	global $LANG, $HTTPS, $adminer, $connection, $drivers;
 	header("Content-Type: text/html; charset=utf-8");
-	header("X-Frame-Options: deny"); // ClickJacking protection in IE8, Safari 4, Chrome 2, Firefox NoScript plugin
+	$adminer->headers();
 	if ($_SERVER["HTTP_X_REQUESTED_WITH"] != "XMLHttpRequest") {
 		$title_all = $title . ($title2 != "" ? ": " . h($title2) : "");
 		$protocol = ($HTTPS ? "https" : "http");
@@ -76,7 +76,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 }
 
 /** Print HTML footer
-* @param string auth|db
+* @param string "auth", "db", "ns"
 * @return null
 */
 function page_footer($missing = "") {

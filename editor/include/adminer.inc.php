@@ -26,6 +26,10 @@ class Adminer {
 		);
 	}
 	
+	function headers() {
+		header("X-Frame-Options: deny");
+	}
+	
 	function loginForm() {
 		?>
 <table cellspacing="0">
@@ -412,7 +416,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			$return = ($match["p1"] != "" ? $match["p1"] : ($match["p2"] != "" ? ($match["p2"] < 70 ? 20 : 19) . $match["p2"] : gmdate("Y"))) . "-$match[p3]$match[p4]-$match[p5]$match[p6]" . end($match);
 		}
 		$return = q($return);
-		if (!ereg('varchar|text', $field["type"]) && $field["full_type"] != "tinyint(1)" && $value == "") {
+		if (!ereg('char|text', $field["type"]) && $field["full_type"] != "tinyint(1)" && $value == "") {
 			$return = "NULL";
 		} elseif (ereg('^(md5|sha1)$', $function)) {
 			$return = "$function($return)";
@@ -460,7 +464,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 </p>
 </form>
 <?php
-			if ($missing != "db") {
+			if ($missing != "db" && $missing != "ns") {
 				$table_status = table_status();
 				if (!$table_status) {
 					echo "<p class='message'>" . lang('No tables.') . "\n";
