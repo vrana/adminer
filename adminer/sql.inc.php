@@ -18,7 +18,7 @@ if (!$error && $_POST) {
 			: "compress.bzip2://adminer.sql.bz2"
 		)), "rb");
 		$query = ($fp ? fread($fp, 1e6) : false);
-	} elseif ($_FILES["sql_file"]["error"] != 4) { // 4 - UPLOAD_ERR_NO_FILE
+	} elseif ($_FILES["sql_file"] && $_FILES["sql_file"]["error"] != 4) { // 4 - UPLOAD_ERR_NO_FILE
 		$query = get_file("sql_file", true);
 	}
 	if (is_string($query)) { // get_file() returns error as number, fread() as false
@@ -126,9 +126,11 @@ if (!$error && $_POST) {
 		echo "<p class='error'>" . upload_error($query) . "\n";
 	}
 }
+
+$uploads = ini_bool("file_uploads");
 ?>
 
-<form action="" method="post" enctype="multipart/form-data">
+<form action="" method="post" enctype="multipart/form-data" onsubmit="return <?php echo ($uploads ? "this['sql_file'].value || " : ""); ?>!ajaxForm(this);">
 <p><?php
 $q = $_GET["sql"]; // overwrite $q from if ($_POST) to save memory
 if ($_POST) {
@@ -138,7 +140,7 @@ if ($_POST) {
 }
 textarea("query", $q, 20);
 echo ($_POST ? "" : "<script type='text/javascript'>document.getElementsByTagName('textarea')[0].focus();</script>\n");
-echo "<p>" . (ini_bool("file_uploads") ? lang('File upload') . ': <input type="file" name="sql_file">' : lang('File uploads are disabled.'));
+echo "<p>" . ($uploads ? lang('File upload') . ': <input type="file" name="sql_file">' : lang('File uploads are disabled.'));
 
 ?>
 <p>
@@ -155,7 +157,7 @@ foreach (array("gz" => "zlib", "bz2" => "bz2") as $key => $val) {
 	}
 }
 echo lang('Webserver file %s', "<code>adminer.sql" . ($compress ? "[" . implode("|", $compress) . "]" : "") . "</code>");
-echo ' <input type="submit" name="webfile" value="' . lang('Run file') . '">';
+echo ' <input type="submit" name="webfile" value="' . lang('Run file') . '" onclick="return !ajaxForm(this.form, \'webfile=1\');">';
 echo "</div></fieldset>\n";
 
 if ($history) {

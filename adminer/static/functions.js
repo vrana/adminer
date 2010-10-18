@@ -154,7 +154,7 @@ function textareaKeydown(target, event, tab, button) {
 	if (event.ctrlKey && (event.keyCode == 13 || event.keyCode == 10) && !event.altKey && !event.metaKey) { // shiftKey allowed
 		if (button) {
 			button.click();
-		} else {
+		} else if (!target.form.onsubmit || target.form.onsubmit() !== false) {
 			target.form.submit();
 		}
 	}
