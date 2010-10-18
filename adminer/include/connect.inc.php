@@ -45,7 +45,7 @@ function connect_error() {
 	}
 	page_footer("db");
 	if ($databases) {
-		echo "<script type='text/javascript' src='" . h(ME . "script=connect&token=$token") . "'></script>\n";
+		echo "<script type='text/javascript'>ajaxSetHtml('" . addcslashes(ME, "\\'/") . "script=connect');</script>\n";
 	}
 }
 

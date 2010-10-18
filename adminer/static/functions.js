@@ -187,6 +187,19 @@ function ajax(url, callback, data) {
 	return xmlhttp;
 }
 
+/** Use setHtml(key, value) for JSON response
+* @param string
+* @return XMLHttpRequest or false in case of an error
+*/
+function ajaxSetHtml(url) {
+	return ajax(url, function (text) {
+		var data = eval('(' + text + ')');
+		for (var key in data) {
+			setHtml(key, data[key]);
+		}
+	});
+}
+
 var ajaxState = 0;
 var ajaxTimeout;
 

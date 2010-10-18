@@ -482,6 +482,25 @@ function odd($return = ' class="odd"') {
 	return ($i++ % 2 ? $return : '');
 }
 
+/** Print one row in JSON object
+* @param string or "" to close the object
+* @param string
+* @return null
+*/
+function json_row($key, $val = null) {
+	static $first = true;
+	if ($first) {
+		echo "{";
+	}
+	if ($key != "") {
+		echo ($first ? "" : ",") . "\n\t\"" . addcslashes($key, '\\"') . '": ' . (isset($val) ? '"' . addcslashes($val, '\\"') . '"' : 'undefined');
+		$first = false;
+	} else {
+		echo "\n}\n";
+		$first = true;
+	}
+}
+
 /** Check whether the string is in UTF-8
 * @param string
 * @return bool

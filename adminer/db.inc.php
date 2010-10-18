@@ -155,8 +155,6 @@ if ($_GET["ns"] !== "") {
 	}
 	
 	if ($tables_list) {
-		page_footer();
-		echo "<script type='text/javascript' src='" . h(ME . "script=db&token=$token") . "'></script>\n";
-		exit; // page_footer() already called
+		echo "<script type='text/javascript'>ajaxSetHtml('" . addcslashes(ME, "\\'/") . "script=db');</script>\n";
 	}
 }
