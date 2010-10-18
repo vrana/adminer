@@ -290,4 +290,6 @@ $translations = array(
 	
 	// function translation used in Editor
 	'now' => 'teď',
+	
+	'Cancel' => 'Storno',
 );
