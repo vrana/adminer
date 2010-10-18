@@ -230,7 +230,7 @@ function ajaxForm(form, data) {
 		params.push(data);
 	}
 	if (form.method == 'post') {
-		return ajaxMain(form.action || location.href, params.join('&'));
+		return ajaxMain((/\?/.test(form.action) ? form.action : location.href), params.join('&')); // ? - always part of Adminer URL
 	} else {
 		return ajaxMain((form.action || location.pathname) + '?' + params.join('&'));
 	}
