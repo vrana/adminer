@@ -64,7 +64,7 @@ if ($_POST["save"]) {
 }
 ?>
 
-<form action="" method="post" enctype="multipart/form-data">
+<form action="<?php echo h($_SERVER["REQUEST_URI"]); // required for sending the form after an AJAX request ?>" method="post" enctype="multipart/form-data">
 <?php
 if ($fields) {
 	echo "<table cellspacing='0'>\n";

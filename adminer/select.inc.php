@@ -231,7 +231,7 @@ if (!$columns) {
 			$result->seek($limit * $page);
 		}
 		$email_fields = array();
-		echo "<form action='' method='post' enctype='multipart/form-data'>\n";
+		echo "<form action='" . h($_SERVER["REQUEST_URI"]) . "' method='post' enctype='multipart/form-data'>\n"; // $_SERVER["REQUEST_URI"] is required for sending the form after an AJAX request
 		$rows = array();
 		while ($row = $result->fetch_assoc()) {
 			$rows[] = $row;
