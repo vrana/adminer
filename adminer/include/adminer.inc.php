@@ -524,13 +524,13 @@ document.getElementById('username').focus();
 <form action="" method="post">
 <p class="logout">
 <?php
-if (DB == "" || !$missing) {
-	echo "<a href='" . h(ME) . "sql='>" . bold(lang('SQL command'), isset($_GET["sql"])) . "</a>\n";
-	if (support("dump")) {
-		echo "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "'>" . bold(lang('Dump'), isset($_GET["dump"])) . "</a>\n";
-	}
-}
-?>
+			if (DB == "" || !$missing) {
+				echo "<a href='" . h(ME) . "sql='>" . bold(lang('SQL command'), isset($_GET["sql"])) . "</a>\n";
+				if (support("dump")) {
+					echo "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "'>" . bold(lang('Dump'), isset($_GET["dump"])) . "</a>\n";
+				}
+			}
+			?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" name="logout" value="<?php echo lang('Logout'); ?>">
 </p>
