@@ -107,7 +107,7 @@ if ($update) {
 	echo "<input type='submit' name='delete' value='" . lang('Delete') . "' onclick=\"return confirm('" . lang('Are you sure?') . "')" . (isset($_GET["select"]) ? " &amp;&amp; !ajaxForm(this.form, 'delete=1')" : "") . ";\">\n";
 }
 if (isset($_GET["select"])) {
-	echo "<a href='" . h($_SERVER["REQUEST_URI"]) . "' onclick='return !ajaxMain(this.href);'>" . lang('Cancel') . "</a>\n";
+	echo "<a href='" . h($_SERVER["REQUEST_URI"]) . "' onclick='return !ajaxMain(this.href, undefined, event);'>" . lang('Cancel') . "</a>\n";
 }
 ?>
 </form>

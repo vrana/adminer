@@ -206,9 +206,13 @@ var ajaxTimeout;
 /** Load content to #main
 * @param string
 * @param [string]
+* @param [MouseEvent]
 * @return XMLHttpRequest or false in case of an error
 */
-function ajaxMain(url, data) {
+function ajaxMain(url, data, event) {
+	if (event && event.ctrlKey) {
+		return false;
+	}
 	var currentState = ++ajaxState;
 	clearTimeout(ajaxTimeout);
 	ajaxTimeout = setTimeout(function () {

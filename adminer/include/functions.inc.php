@@ -450,7 +450,7 @@ function remove_from_uri($param = "") {
 * @return string
 */
 function pagination($page, $current) {
-	return " " . ($page == $current ? $page + 1 : '<a href="' . h(remove_from_uri("page") . ($page ? "&page=$page" : "")) . '" onclick="return !ajaxMain(this.href);">' . ($page + 1) . "</a>");
+	return " " . ($page == $current ? $page + 1 : '<a href="' . h(remove_from_uri("page") . ($page ? "&page=$page" : "")) . '" onclick="return !ajaxMain(this.href, undefined, event);">' . ($page + 1) . "</a>");
 }
 
 /** Get file contents from $_FILES
