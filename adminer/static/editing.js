@@ -48,7 +48,7 @@ function selectValue(select) {
 * @return HTMLElement
 */
 function formField(form, name) {
-	// required in old IE, maybe can be rewritten as form.elements[name]
+	// required in IE < 8, form.elements[name] doesn't work
 	for (var i=0; i < form.length; i++) {
 		if (form[i].name == name) {
 			return form[i];
