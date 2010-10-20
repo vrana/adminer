@@ -28,6 +28,7 @@ class Adminer {
 	
 	function headers() {
 		header("X-Frame-Options: deny");
+		header("X-XSS-Protection: 0");
 	}
 	
 	function loginForm() {

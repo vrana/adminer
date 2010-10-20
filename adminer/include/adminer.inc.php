@@ -37,6 +37,7 @@ class Adminer {
 	*/
 	function headers() {
 		header("X-Frame-Options: deny"); // ClickJacking protection in IE8, Safari 4, Chrome 2, Firefox NoScript plugin
+		header("X-XSS-Protection: 0"); // prevents introducing XSS in IE8 by removing safe parts of the page
 	}
 	
 	/** Print login form
