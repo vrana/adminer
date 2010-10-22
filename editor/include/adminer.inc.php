@@ -202,7 +202,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 				$key = $keys[$name];
 				$i--;
 				echo "<div>" . h($desc) . "<input type='hidden' name='where[$i][col]' value='" . h($name) . "'>:";
-				enum_input("checkbox", " name='where[$i][val][]'", $field, (array) $where[$key]["val"]); //! impossible to search for NULL
+				echo enum_input("checkbox", " name='where[$i][val][]'", $field, (array) $where[$key]["val"]); //! impossible to search for NULL
 				echo "</div>\n";
 				unset($columns[$name]);
 			}
@@ -392,7 +392,10 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	
 	function editInput($table, $field, $attrs, $value) {
 		if ($field["type"] == "enum") {
-			return ($field["null"] ? "<input type='radio'$attrs value=''" . ($value || isset($_GET["select"]) ? "" : " checked") . ">" : "");
+			return (isset($_GET["select"]) ? "<label><input type='radio'$attrs value='-1' checked><i>" . lang('original') . "</i></label> " : "")
+				. ($field["null"] ? "<label><input type='radio'$attrs value=''" . ($value || isset($_GET["select"]) ? "" : " checked") . "><i>" . lang('empty') . "</i></label>" : "")
+				. enum_input("radio", $attrs, $field, $value)
+			;
 		}
 		$options = $this->_foreignKeyOptions($table, $field["field"]);
 		if ($options) {

@@ -430,8 +430,10 @@ document.getElementById('username').focus();
 	*/
 	function editInput($table, $field, $attrs, $value) {
 		if ($field["type"] == "enum") {
-			return ($field["null"] ? "<label><input type='radio'$attrs value=''" . (isset($value) || isset($_GET["select"]) ? "" : " checked") . "><i>NULL</i></label> " : "")
+			return (isset($_GET["select"]) ? "<label><input type='radio'$attrs value='-1' checked><i>" . lang('original') . "</i></label> " : "")
+				. ($field["null"] ? "<label><input type='radio'$attrs value=''" . (isset($value) || isset($_GET["select"]) ? "" : " checked") . "><i>NULL</i></label> " : "")
 				. "<label><input type='radio'$attrs value='0'" . ($value === 0 ? " checked" : "") . "><i>" . lang('empty') . "</i></label>"
+				. enum_input("radio", $attrs, $field, $value)
 			;
 		}
 		return "";
