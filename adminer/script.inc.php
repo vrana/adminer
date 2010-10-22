@@ -7,11 +7,11 @@ if ($_GET["token"] != $token) { // CSRF protection
 if ($_GET["script"] == "db") {
 	$sums = array("Data_length" => 0, "Index_length" => 0, "Data_free" => 0);
 	foreach (table_status() as $row) {
-		$id = addcslashes($row["Name"], "\\'/");
-		echo "setHtml('Comment-$id', '" . addcslashes(nbsp($row["Comment"]), "'\\") . "');\n";
+		$id = js_escape($row["Name"]);
+		echo "setHtml('Comment-$id', '" . js_escape(nbsp($row["Comment"])) . "');\n";
 		if (!is_view($row)) {
 			foreach (array("Engine", "Collation") as $key) {
-				echo "setHtml('$key-$id', '" . addcslashes(nbsp($row[$key]), "'\\") . "');\n";
+				echo "setHtml('$key-$id', '" . js_escape(nbsp($row[$key])) . "');\n";
 			}
 			foreach ($sums + array("Auto_increment" => 0, "Rows" => 0) as $key => $val) {
 				if ($row[$key] != "") {
@@ -31,7 +31,7 @@ if ($_GET["script"] == "db") {
 	}
 } else { // connect
 	foreach (count_tables(get_databases()) as $db => $val) {
-		echo "setHtml('tables-" . addcslashes($db, "\\'/") . "', '$val');\n";
+		echo "setHtml('tables-" . js_escape($db) . "', '$val');\n";
 	}
 }
 

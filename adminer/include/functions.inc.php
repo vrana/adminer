@@ -143,6 +143,14 @@ function confirm($count = "") {
 	return " onclick=\"return confirm('" . lang('Are you sure?') . ($count ? " (' + $count + ')" : "") . "');\"";
 }
 
+/** Escape string for JavaScript apostrophes
+* @param string
+* @return string
+*/
+function js_escape($string) {
+	return addcslashes($string, "\r\n'\\/"); // slash for <script>
+}
+
 /** Get INI boolean value
 * @param string
 * @return bool
@@ -591,7 +599,7 @@ function input($field, $value, $function) {
 			}
 			$first++;
 		}
-		$onchange = ($first ? " onchange=\"var f = this.form['function[" . addcslashes($name, "\r\n'\\") . "]']; if ($first > f.selectedIndex) f.selectedIndex = $first;\"" : "");
+		$onchange = ($first ? " onchange=\"var f = this.form['function[" . js_escape($name) . "]']; if ($first > f.selectedIndex) f.selectedIndex = $first;\"" : "");
 		$attrs .= $onchange;
 		echo (count($functions) > 1 ? html_select("function[$name]", $functions, !isset($function) || in_array($function, $functions) || isset($functions[$function]) ? $function : "") : nbsp(reset($functions))) . '<td>';
 		$input = $adminer->editInput($_GET["edit"], $field, $attrs, $value); // usage in call is without a table

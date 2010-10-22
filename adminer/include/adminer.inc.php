@@ -560,7 +560,7 @@ document.getElementById('username').focus();
 							$links[] = preg_quote($table, '/');
 						}
 						echo "<script type='text/javascript'>\n";
-						echo "var jushLinks = { $jush: [ '" . addcslashes(h(ME), "\\'/") . "table=\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
+						echo "var jushLinks = { $jush: [ '" . js_escape(ME) . "table=\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
 						foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
 							echo "jushLinks.$val = jushLinks.$jush;\n";
 						}
