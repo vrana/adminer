@@ -101,7 +101,11 @@ if (!$error && $_POST) {
 									if (!$_POST["only_errors"]) {
 										echo "<p class='message' title='" . h($connection->info) . "'>" . lang('Query executed OK, %d row(s) affected.', $connection->affected_rows) . "$time\n";
 									}
-								} elseif (!$_POST["only_errors"]) {
+								} else {
+									if ($_POST["only_errors"]) {
+										echo $print;
+										$print = "";
+									}
 									select($result, $connection2);
 									echo "<p>" . ($result->num_rows ? lang('%d row(s)', $result->num_rows) : "") . $time;
 									if ($connection2 && preg_match("~^($space|\\()*SELECT\\b~isU", $q)) {
@@ -152,8 +156,8 @@ echo "<p>" . (ini_bool("file_uploads") ? lang('File upload') . ': <input type="f
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Execute'); ?>" title="Ctrl+Enter">
 <?php
-echo checkbox("error_stops", 1, $_POST["error_stops"], lang('Stop on error'));
-echo checkbox("only_errors", 1, $_POST["only_errors"], lang('Show only errors'));
+echo checkbox("error_stops", 1, $_POST["error_stops"], lang('Stop on error')) . "\n";
+echo checkbox("only_errors", 1, $_POST["only_errors"], lang('Show only errors')) . "\n";
 
 print_fieldset("webfile", lang('From server'), $_POST["webfile"]);
 $compress = array();
