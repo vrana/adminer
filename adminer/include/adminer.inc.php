@@ -453,7 +453,7 @@ document.getElementById('username').focus();
 		} elseif (ereg('^([+-]|\\|\\|)$', $function)) {
 			$return = idf_escape($name) . " $function $return";
 		} elseif (ereg('^[+-] interval$', $function)) {
-			$return = idf_escape($name) . " $function " . (preg_match("~^([0-9]+|'[0-9.: -]') [A-Z_]+$~i", $value) ? $value : $return);
+			$return = idf_escape($name) . " $function " . (preg_match("~^(\\d+|'[0-9.: -]') [A-Z_]+$~i", $value) ? $value : $return);
 		} elseif (ereg('^(addtime|subtime|concat)$', $function)) {
 			$return = "$function(" . idf_escape($name) . ", $return)";
 		} elseif (ereg('^(md5|sha1|password|encrypt|hex)$', $function)) {

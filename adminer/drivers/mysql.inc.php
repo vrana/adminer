@@ -212,7 +212,7 @@ if (!defined("DRIVER")) {
 			var $extension = "PDO_MySQL";
 			
 			function connect($server, $username, $password) {
-				$this->dsn("mysql:host=" . str_replace(":", ";unix_socket=", preg_replace('~:([0-9])~', ';port=\\1', $server)), $username, $password);
+				$this->dsn("mysql:host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\\d)~', ';port=\\1', $server)), $username, $password);
 				$this->query("SET NAMES utf8"); // charset in DSN is ignored
 				return true;
 			}
@@ -820,7 +820,7 @@ if (!defined("DRIVER")) {
 		global $connection;
 		$return = $connection->result("SHOW CREATE TABLE " . table($table), 1);
 		if (!$auto_increment) {
-			$return = preg_replace('~ AUTO_INCREMENT=[0-9]+~', '', $return); //! skip comments
+			$return = preg_replace('~ AUTO_INCREMENT=\\d+~', '', $return); //! skip comments
 		}
 		return $return;
 	}

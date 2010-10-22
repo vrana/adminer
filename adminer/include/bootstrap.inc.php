@@ -39,11 +39,12 @@ if (!defined("SID")) {
 
 // disable magic quotes to be able to use database escaping function
 remove_slashes(array(&$_GET, &$_POST, &$_COOKIE));
-if (function_exists("set_magic_quotes_runtime")) {
+if (function_exists("set_magic_quotes_runtime")) { // removed in PHP 6
 	set_magic_quotes_runtime(false);
 }
 @set_time_limit(0); // @ - can be disabled
 @ini_set("zend.ze1_compatibility_mode", false); // @ - deprecated
+@ini_set("precision", 20); // @ - can be disabled
 
 include "../adminer/include/lang.inc.php";
 include "../adminer/lang/$LANG.inc.php";

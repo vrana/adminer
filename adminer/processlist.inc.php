@@ -2,7 +2,7 @@
 if ($_POST && !$error) {
 	$killed = 0;
 	foreach ((array) $_POST["kill"] as $val) {
-		if (queries("KILL " . ereg_replace("[^0-9]+", "", $val))) {
+		if (queries("KILL " . (+$val))) {
 			$killed++;
 		}
 	}

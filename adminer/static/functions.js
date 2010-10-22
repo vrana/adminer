@@ -109,12 +109,12 @@ function selectAddRow(field) {
 	var row = field.parentNode.cloneNode(true);
 	var selects = row.getElementsByTagName('select');
 	for (var i=0; i < selects.length; i++) {
-		selects[i].name = selects[i].name.replace(/[a-z]\[[0-9]+/, '$&1');
+		selects[i].name = selects[i].name.replace(/[a-z]\[\d+/, '$&1');
 		selects[i].selectedIndex = 0;
 	}
 	var inputs = row.getElementsByTagName('input');
 	if (inputs.length) {
-		inputs[0].name = inputs[0].name.replace(/[a-z]\[[0-9]+/, '$&1');
+		inputs[0].name = inputs[0].name.replace(/[a-z]\[\d+/, '$&1');
 		inputs[0].value = '';
 		inputs[0].className = '';
 	}

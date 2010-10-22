@@ -83,7 +83,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 			$_POST["Comment"],
 			($_POST["Engine"] && $_POST["Engine"] != $orig_status["Engine"] ? $_POST["Engine"] : ""),
 			($_POST["Collation"] && $_POST["Collation"] != $orig_status["Collation"] ? $_POST["Collation"] : ""),
-			($_POST["Auto_increment"] != "" ? preg_replace('~\\D+~', '', $_POST["Auto_increment"]) : ""),
+			($_POST["Auto_increment"] != "" ? +$_POST["Auto_increment"] : ""),
 			$partitioning
 		));
 	}
