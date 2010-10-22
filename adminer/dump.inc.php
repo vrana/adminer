@@ -8,7 +8,8 @@ if ($_POST) {
 	}
 	cookie("adminer_export", substr($cookie, 1));
 	$ext = dump_headers(($TABLE != "" ? $TABLE : DB), (DB == "" || count((array) $_POST["tables"] + (array) $_POST["data"]) > 1));
-	if ($_POST["format"] == "sql") {
+	$is_sql = ($_POST["format"] == "sql");
+	if ($is_sql) {
 		echo "-- Adminer $VERSION " . $drivers[DRIVER] . " dump
 
 " . ($jush != "sql" ? "" : "SET NAMES utf8;
@@ -29,13 +30,13 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 	}
 	foreach ((array) $databases as $db) {
 		if ($connection->select_db($db)) {
-			if ($_POST["format"] == "sql" && ereg('CREATE', $style) && ($create = $connection->result("SHOW CREATE DATABASE " . idf_escape($db), 1))) {
+			if ($is_sql && ereg('CREATE', $style) && ($create = $connection->result("SHOW CREATE DATABASE " . idf_escape($db), 1))) {
 				if ($style == "DROP+CREATE") {
 					echo "DROP DATABASE IF EXISTS " . idf_escape($db) . ";\n";
 				}
 				echo ($style == "CREATE+ALTER" ? preg_replace('~^CREATE DATABASE ~', '\\0IF NOT EXISTS ', $create) : $create) . ";\n";
 			}
-			if ($_POST["format"] == "sql") {
+			if ($is_sql) {
 				if ($style) {
 					echo use_sql($db) . ";\n\n";
 				}
@@ -76,7 +77,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 							if ($data) {
 								dump_data($row["Name"], $_POST["data_style"]);
 							}
-							if ($_POST["format"] == "sql" && $_POST["triggers"]) {
+							if ($is_sql && $_POST["triggers"]) {
 								$triggers = trigger_sql($row["Name"], $_POST["table_style"]);
 								if ($triggers) {
 									echo "\nDELIMITER ;;\n$triggers\nDELIMITER ;\n";
@@ -84,10 +85,10 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 							}
 							if ($ext == "tar") {
 								echo tar_file((DB != "" ? "" : "$db/") . "$row[Name].csv", ob_get_clean());
-							} elseif ($_POST["format"] == "sql") {
+							} elseif ($is_sql) {
 								echo "\n";
 							}
-						} elseif ($_POST["format"] == "sql") {
+						} elseif ($is_sql) {
 							$views[] = $row["Name"];
 						}
 					}
@@ -100,7 +101,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 				}
 			}
 			
-			if ($style == "CREATE+ALTER" && $_POST["format"] == "sql") {
+			if ($style == "CREATE+ALTER" && $is_sql) {
 				// drop old tables
 				$query = "SELECT TABLE_NAME, ENGINE, TABLE_COLLATION, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()";
 				echo "DELIMITER ;;
@@ -136,10 +137,13 @@ CALL adminer_alter(@adminer_alter);
 DROP PROCEDURE adminer_alter;
 ";
 			}
-			if (in_array("CREATE+ALTER", array($style, $_POST["table_style"])) && $_POST["format"] == "sql") {
+			if (in_array("CREATE+ALTER", array($style, $_POST["table_style"])) && $is_sql) {
 				echo "SELECT @adminer_alter;\n";
 			}
 		}
+	}
+	if ($is_sql) {
+		echo "-- " . $connection->result("SELECT NOW()") . "\n";
 	}
 	exit;
 }
