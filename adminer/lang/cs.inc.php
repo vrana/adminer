@@ -300,4 +300,7 @@ $translations = array(
 	
 	// function translation used in Editor
 	'now' => 'teď',
+	
+	'%d query(s) executed OK.' => array('%d příkaz proběhl v pořádku.', '%d příkazy proběhly v pořádku.', '%d příkazů proběhlo v pořádku.'),
+	'Show only errors' => 'Zobrazit pouze chyby',
 );
