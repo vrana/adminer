@@ -1,3 +1,10 @@
+Adminer 3.0.2-dev:
+Option to show only errors in SQL command
+Highlight and edit SQL command in processlist
+Disable XSS "protection" of IE8
+Immunity against zend.ze1_compatibility_mode
+Fix last page with empty result set
+
 Adminer 3.0.1 (released 2010-10-18):
 Send the form by Ctrl+Enter in all textareas
 Disable creating SQLite databases with extension other than db, sdb, sqlite
