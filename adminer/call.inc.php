@@ -57,8 +57,13 @@ if ($in) {
 		$name = $field["field"];
 		echo "<tr><th>" . $adminer->fieldName($field);
 		$value = $_POST["fields"][$name];
-		if ($value != "" && ereg("enum|set", $field["type"])) {
-			$value = +$value;
+		if ($value != "") {
+			if ($field["type"] == "enum") {
+				$value = +$value;
+			}
+			if ($field["type"] == "set") {
+				$value = array_sum($value);
+			}
 		}
 		input($field, $value, (string) $_POST["function"][$name]); // param name can be empty
 		echo "\n";
