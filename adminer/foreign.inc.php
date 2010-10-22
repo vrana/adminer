@@ -60,8 +60,8 @@ foreach (table_status() as $name => $table_status) {
 $j = 0;
 foreach ($row["source"] as $key => $val) {
 	echo "<tr>";
-	echo "<td>" . html_select("source[" . intval($key) . "]", array(-1 => "") + $source, $val, ($j == count($row["source"]) - 1 ? "foreignAddRow(this);" : 1));
-	echo "<td>" . html_select("target[" . intval($key) . "]", $target, $row["target"][$key]);
+	echo "<td>" . html_select("source[" . (+$key) . "]", array(-1 => "") + $source, $val, ($j == count($row["source"]) - 1 ? "foreignAddRow(this);" : 1));
+	echo "<td>" . html_select("target[" . (+$key) . "]", $target, $row["target"][$key]);
 	$j++;
 }
 ?>

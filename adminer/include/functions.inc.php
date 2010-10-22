@@ -640,7 +640,7 @@ function process_input($field) {
 		if ($value == "") {
 			return "NULL";
 		}
-		return intval($value);
+		return +$value;
 	}
 	if ($field["auto_increment"] && $value == "") {
 		return null;

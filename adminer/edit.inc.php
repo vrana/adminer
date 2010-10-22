@@ -72,7 +72,7 @@ if ($fields) {
 		echo "<tr><th>" . $adminer->fieldName($field);
 		$default = $_GET["set"][bracket_escape($name)];
 		$value = (isset($row)
-			? ($row[$name] != "" && ereg("enum|set", $field["type"]) ? intval($row[$name]) : $row[$name])
+			? ($row[$name] != "" && ereg("enum|set", $field["type"]) ? +$row[$name] : $row[$name])
 			: (!$update && $field["auto_increment"] ? "" : (isset($_GET["select"]) ? false : (isset($default) ? $default : $field["default"])))
 		);
 		if (!$_POST["save"] && is_string($value)) {

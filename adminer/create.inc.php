@@ -65,7 +65,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 			}
 			$partitioning .= "\nPARTITION BY $_POST[partition_by]($_POST[partition])" . ($partitions // $_POST["partition"] can be expression, not only column
 				? " (" . implode(",", $partitions) . "\n)"
-				: ($_POST["partitions"] ? " PARTITIONS " . intval($_POST["partitions"]) : "")
+				: ($_POST["partitions"] ? " PARTITIONS " . (+$_POST["partitions"]) : "")
 			);
 		} elseif ($TABLE != "" && support("partitioning")) {
 			$partitioning .= "\nREMOVE PARTITIONING";

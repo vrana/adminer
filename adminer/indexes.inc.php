@@ -21,7 +21,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 			foreach ($index["columns"] as $key => $column) {
 				if ($column != "") {
 					$length = $index["lengths"][$key];
-					$set[] = idf_escape($column) . ($length ? "(" . intval($length) . ")" : "");
+					$set[] = idf_escape($column) . ($length ? "(" . (+$length) . ")" : "");
 					$columns[] = $column;
 					$lengths[] = ($length ? $length : null);
 				}

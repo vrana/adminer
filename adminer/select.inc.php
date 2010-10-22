@@ -212,7 +212,7 @@ if (!$columns) {
 		$page = floor(max(0, $found_rows - 1) / $limit);
 	}
 
-	$query = "SELECT" . limit((intval($limit) && $group && count($group) < count($select) && $jush == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . $from, ($where ? "\nWHERE " . implode(" AND ", $where) : "") . $group_by, ($limit != "" ? intval($limit) : null), ($page ? $limit * $page : 0), "\n");
+	$query = "SELECT" . limit((+$limit && $group && count($group) < count($select) && $jush == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . $from, ($where ? "\nWHERE " . implode(" AND ", $where) : "") . $group_by, ($limit != "" ? +$limit : null), ($page ? $limit * $page : 0), "\n");
 	echo $adminer->selectQuery($query);
 	
 	$result = $connection->query($query);
@@ -230,7 +230,7 @@ if (!$columns) {
 		}
 		// use count($rows) without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
 		if ($_GET["page"] != "last") {
-			$found_rows = (intval($limit) && $group && count($group) < count($select)
+			$found_rows = (+$limit && $group && count($group) < count($select)
 				? ($jush == "sql" ? $connection->result(" SELECT FOUND_ROWS()") : $connection->result("SELECT COUNT(*) FROM ($query) x")) // space to allow mysql.trace_mode
 				: count($rows)
 			);
@@ -292,7 +292,7 @@ if (!$columns) {
 							if ($val == "") {
 								$val = "&nbsp;";
 							} elseif ($text_length != "" && ereg('text|blob', $field["type"]) && is_utf8($val)) {
-								$val = shorten_utf8($val, max(0, intval($text_length))); // usage of LEFT() would reduce traffic but complicate query - expected average speedup: .001 s VS .01 s on local network
+								$val = shorten_utf8($val, max(0, +$text_length)); // usage of LEFT() would reduce traffic but complicate query - expected average speedup: .001 s VS .01 s on local network
 							} else {
 								$val = h($val);
 							}
@@ -354,7 +354,7 @@ if (!$columns) {
 		
 		if ($rows || $page) {
 			$exact_count = true;
-			if ($_GET["page"] != "last" && intval($limit) && count($group) >= count($select) && ($found_rows >= $limit || $page)) {
+			if ($_GET["page"] != "last" && +$limit && count($group) >= count($select) && ($found_rows >= $limit || $page)) {
 				$found_rows = $table_status["Rows"];
 				if (!isset($found_rows) || $where || 2 * $page * $limit > $found_rows || ($table_status["Engine"] == "InnoDB" && $found_rows < 1e4)) {
 					// slow with big tables
@@ -366,7 +366,7 @@ if (!$columns) {
 				}
 			}
 			echo "<p class='pages'>";
-			if (intval($limit) && $found_rows > $limit) {
+			if (+$limit && $found_rows > $limit) {
 				// display first, previous 4, next 4 and last page
 				$max_page = floor(($found_rows - 1) / $limit);
 				echo '<a href="' . h(remove_from_uri("page")) . "\" onclick=\"var page = +prompt('" . lang('Page') . "', '" . ($page + 1) . "'); if (!isNaN(page) &amp;&amp; page) location.href = this.href + (page != 1 ? '&amp;page=' + (page - 1) : ''); return false;\">" . lang('Page') . "</a>:" . pagination(0, $page) . ($page > 5 ? " ..." : "");

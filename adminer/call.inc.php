@@ -58,7 +58,7 @@ if ($in) {
 		echo "<tr><th>" . $adminer->fieldName($field);
 		$value = $_POST["fields"][$name];
 		if ($value != "" && ereg("enum|set", $field["type"])) {
-			$value = intval($value);
+			$value = +$value;
 		}
 		input($field, $value, (string) $_POST["function"][$name]); // param name can be empty
 		echo "\n";
