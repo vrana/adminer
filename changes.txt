@@ -3,6 +3,7 @@ Option to show only errors in SQL command
 Highlight and edit SQL command in processlist
 Disable XSS "protection" of IE8
 Timestamp in export
+Link to bookmark SQL command
 Immunity against zend.ze1_compatibility_mode
 Fix last page with empty result set
 
