@@ -41,12 +41,13 @@ if (!$error && $_POST) {
 		}
 		$commands = 0;
 		$errors = array();
+		$parse = '[\'`"]' . ($jush == "pgsql" ? '|\\$.*\\$' : ($jush == "mssql" || $jush == "sqlite" ? '|\\[' : '')) . '|/\\*|-- |#'; //! ` and # not everywhere
 		while ($query != "") {
 			if (!$offset && $jush == "sql" && preg_match('~^\\s*DELIMITER\\s+(.+)~i', $query, $match)) {
 				$delimiter = $match[1];
 				$query = substr($query, strlen($match[0]));
 			} else {
-				preg_match('(' . preg_quote($delimiter) . '|[\'`"]' . ($jush == "pgsql" ? '|\\$.*\\$' : '') . '|/\\*|-- |#|$)', $query, $match, PREG_OFFSET_CAPTURE, $offset); // should always match
+				preg_match('(' . preg_quote($delimiter) . "|$parse|\$)", $query, $match, PREG_OFFSET_CAPTURE, $offset); // should always match
 				$found = $match[0][0];
 				$offset = $match[0][1] + strlen($found);
 				if (!$found && $fp && !feof($fp)) {
@@ -56,7 +57,7 @@ if (!$error && $_POST) {
 						break;
 					}
 					if ($found && $found != $delimiter) { // find matching quote or comment end
-						while (preg_match('(' . ($found == '/*' ? '\\*/' : (ereg('-- |#', $found) ? "\n" : preg_quote($found) . "|\\\\.")) . '|$)s', $query, $match, PREG_OFFSET_CAPTURE, $offset)) { //! respect sql_mode NO_BACKSLASH_ESCAPES
+						while (preg_match('(' . ($found == '/*' ? '\\*/' : ($found == '[' ? ']' : (ereg('^-- |^#', $found) ? "\n" : preg_quote($found) . "|\\\\."))) . '|$)s', $query, $match, PREG_OFFSET_CAPTURE, $offset)) { //! respect sql_mode NO_BACKSLASH_ESCAPES
 							$s = $match[0][0];
 							$offset = $match[0][1] + strlen($s);
 							if (!$s && $fp && !feof($fp)) {
