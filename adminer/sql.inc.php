@@ -42,7 +42,7 @@ if (!$error && $_POST) {
 		$commands = 0;
 		$errors = array();
 		while ($query != "") {
-			if (!$offset && preg_match('~^\\s*DELIMITER\\s+(.+)~i', $query, $match)) {
+			if (!$offset && $jush == "sql" && preg_match('~^\\s*DELIMITER\\s+(.+)~i', $query, $match)) {
 				$delimiter = $match[1];
 				$query = substr($query, strlen($match[0]));
 			} else {
