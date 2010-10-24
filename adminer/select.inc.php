@@ -246,13 +246,13 @@ if (!$columns) {
 			$names = array();
 			$functions = array();
 			reset($select);
-			$order = 1;
+			$rank = 1;
 			foreach ($rows[0] as $key => $val) {
 				$val = $_GET["columns"][key($select)];
 				$field = $fields[$select ? $val["col"] : $key];
-				$name = ($field ? $adminer->fieldName($field, $order) : "*");
+				$name = ($field ? $adminer->fieldName($field, $rank) : "*");
 				if ($name != "") {
-					$order++;
+					$rank++;
 					$names[$key] = $name;
 					echo '<th><a href="' . h(remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"][0] == $key && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '">' . apply_sql_function($val["fun"], $name) . "</a>"; //! columns looking like functions
 				}
