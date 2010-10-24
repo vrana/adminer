@@ -41,7 +41,7 @@ if (!$error && $_POST) {
 		}
 		$commands = 0;
 		$errors = array();
-		$parse = '[\'`"]' . ($jush == "pgsql" ? '|\\$.*\\$' : ($jush == "mssql" || $jush == "sqlite" ? '|\\[' : '')) . '|/\\*|-- |#'; //! ` and # not everywhere
+		$parse = '[\'`"]' . ($jush == "pgsql" ? '|\\$[^$]*\\$' : ($jush == "mssql" || $jush == "sqlite" ? '|\\[' : '')) . '|/\\*|-- |#'; //! ` and # not everywhere
 		while ($query != "") {
 			if (!$offset && $jush == "sql" && preg_match('~^\\s*DELIMITER\\s+(.+)~i', $query, $match)) {
 				$delimiter = $match[1];
