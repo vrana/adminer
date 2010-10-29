@@ -45,7 +45,7 @@ if ($_POST && !$error) {
 	if ($_POST["export"]) {
 		$adminer->dumpHeaders($TABLE);
 		$adminer->dumpTable($TABLE, "");
-		if ($_POST["format"] != "sql") { // Editor doesn't send format
+		if (ereg("csv", $_POST["format"])) {
 			$row = array_keys($fields);
 			if ($select) {
 				$row = array();
