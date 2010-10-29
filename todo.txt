@@ -26,6 +26,7 @@ JS calendar for date fields
 
 MySQL:
 Saving of MySQL 5 BIT data type - don't use quote()
+Data longer than max_allowed_packet can be sent by mysqli_stmt_send_long_data()
 ? Geometry support
 
 SQLite:

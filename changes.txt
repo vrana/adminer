@@ -5,8 +5,9 @@ Support for virtual foreign keys
 Option to show only errors in SQL command
 Link to bookmark SQL command
 Highlight and edit SQL command in processlist
+Recognize $$ strings in SQL command (PostgreSQL)
 Always display all drivers
-Timestamp in export
+Timestamp at the end of export
 Disable XSS "protection" of IE8
 Immunity against zend.ze1_compatibility_mode
 Fix last page with empty result set
