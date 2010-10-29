@@ -5,13 +5,10 @@
 * @author Jakub Vrana
 */
 
-$possible_drivers[] = "SQLSRV";
-$possible_drivers[] = "MSSQL";
-if (extension_loaded("sqlsrv") || extension_loaded("mssql")) {
-	$drivers["mssql"] = "MS SQL";
-}
+$drivers["mssql"] = "MS SQL";
 
 if (isset($_GET["mssql"])) {
+	$possible_drivers = array("SQLSRV", "MSSQL");
 	define("DRIVER", "mssql");
 	if (extension_loaded("sqlsrv")) {
 		class Min_DB {

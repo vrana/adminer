@@ -7,6 +7,7 @@ Link to bookmark SQL command
 Support for virtual foreign keys
 Immunity against zend.ze1_compatibility_mode
 Fix last page with empty result set
+Always display all drivers
 
 Adminer 3.0.1 (released 2010-10-18):
 Send the form by Ctrl+Enter in all textareas

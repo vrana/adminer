@@ -1,11 +1,8 @@
 <?php
-$possible_drivers[] = "PgSQL";
-$possible_drivers[] = "PDO_PgSQL";
-if (extension_loaded("pgsql") || extension_loaded("pdo_pgsql")) {
-	$drivers["pgsql"] = "PostgreSQL";
-}
+$drivers["pgsql"] = "PostgreSQL";
 
 if (isset($_GET["pgsql"])) {
+	$possible_drivers = array("PgSQL", "PDO_PgSQL");
 	define("DRIVER", "pgsql");
 	if (extension_loaded("pgsql")) {
 		class Min_DB {

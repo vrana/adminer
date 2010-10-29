@@ -1,11 +1,8 @@
 <?php
-$possible_drivers[] = "OCI8";
-$possible_drivers[] = "PDO_OCI";
-if (extension_loaded("oci8") || extension_loaded("pdo_oci")) {
-	$drivers["oracle"] = "Oracle";
-}
+$drivers["oracle"] = "Oracle";
 
 if (isset($_GET["oracle"])) {
+	$possible_drivers = array("OCI8", "PDO_OCI");
 	define("DRIVER", "oracle");
 	if (extension_loaded("oci8")) {
 		class Min_DB {

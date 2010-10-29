@@ -79,5 +79,4 @@ if (extension_loaded('pdo')) {
 	}
 }
 
-$possible_drivers = array();
 $drivers = array();

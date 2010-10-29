@@ -1,12 +1,8 @@
 <?php
-$possible_drivers[] = "MySQLi";
-$possible_drivers[] = "MySQL";
-$possible_drivers[] = "PDO_MySQL";
-if (extension_loaded("mysqli") || extension_loaded("mysql") || extension_loaded("pdo_mysql")) {
-	$drivers = array("server" => "MySQL") + $drivers;
-}
+$drivers = array("server" => "MySQL") + $drivers;
 
 if (!defined("DRIVER")) {
+	$possible_drivers = array("MySQLi", "MySQL", "PDO_MySQL");
 	define("DRIVER", "server"); // server - backwards compatibility
 	// MySQLi supports everything, MySQL doesn't support multiple result sets, PDO_MySQL doesn't support orgtable
 	if (extension_loaded("mysqli")) {
