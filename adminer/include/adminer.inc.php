@@ -648,6 +648,8 @@ DROP PROCEDURE adminer_alter;
 					$buffer .= ";\n";
 					echo $buffer;
 				}
+			} elseif ($_POST["format"] == "sql") {
+				echo "-- " . str_replace("\n", " ", $connection->error) . "\n";
 			}
 		}
 	}
