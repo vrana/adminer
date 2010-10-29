@@ -45,7 +45,7 @@ if ($_POST && !$error) {
 	if ($_POST["export"]) {
 		$adminer->dumpHeaders($TABLE);
 		$adminer->dumpTable($TABLE, "");
-		if (ereg("csv", $_POST["format"])) {
+		if (ereg("csv|tsv", $_POST["format"])) {
 			$row = array_keys($fields);
 			if ($select) {
 				$row = array();
@@ -143,7 +143,7 @@ if ($_POST && !$error) {
 			preg_match_all('~(?>"[^"]*"|[^"\\r\\n]+)+~', $file, $matches);
 			$affected = count($matches[0]);
 			begin();
-			$separator = ($_POST["separator"] == "csv" ? "," : ";");
+			$separator = ($_POST["separator"] == "csv" ? "," : ($_POST["separator"] == "tsv" ? "\t" : ";"));
 			foreach ($matches[0] as $key => $val) {
 				preg_match_all("~((\"[^\"]*\")+|[^$separator]*)$separator~", $val . $separator, $matches2);
 				if (!$key && !array_diff($matches2[1], $cols)) { //! doesn't work with column names containing ",\n
@@ -396,7 +396,7 @@ if (!$columns) {
 		}
 		print_fieldset("import", lang('CSV Import'), !$rows);
 		echo "<input type='hidden' name='token' value='$token'><input type='file' name='csv_file'> ";
-		echo html_select("separator", array("csv" => "CSV,", "csv;" => "CSV;"), $adminer_export["format"], 1); // 1 - select
+		echo html_select("separator", array("csv" => "CSV,", "csv;" => "CSV;", "tsv" => "TSV"), $adminer_export["format"], 1); // 1 - select
 		echo " <input type='submit' name='import' value='" . lang('Import') . "'>\n";
 		echo "</div></fieldset>\n";
 		

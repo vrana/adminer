@@ -494,7 +494,7 @@ document.getElementById('username').focus();
 	* @return array
 	*/
 	function dumpFormat() {
-		return array('sql' => 'SQL', 'csv' => 'CSV,', 'csv;' => 'CSV;');
+		return array('sql' => 'SQL', 'csv' => 'CSV,', 'csv;' => 'CSV;', 'tsv' => 'TSV');
 	}
 	
 	/** Export table structure

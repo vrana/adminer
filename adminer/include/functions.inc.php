@@ -697,11 +697,11 @@ function search_tables() {
 */
 function dump_csv($row) {
 	foreach ($row as $key => $val) {
-		if (preg_match("~[\"\n,;]~", $val) || $val === "") {
+		if (preg_match("~[\"\n,;\t]~", $val) || $val === "") {
 			$row[$key] = '"' . str_replace('"', '""', $val) . '"';
 		}
 	}
-	echo implode(($_POST["format"] == "csv" ? "," : ";"), $row) . "\n";
+	echo implode(($_POST["format"] == "csv" ? "," : ($_POST["format"] == "tsv" ? "\t" : ";")), $row) . "\n";
 }
 
 /** Apply SQL function

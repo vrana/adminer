@@ -439,7 +439,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	}
 	
 	function dumpFormat() {
-		return array('csv' => 'CSV,', 'csv;' => 'CSV;');
+		return array('csv' => 'CSV,', 'csv;' => 'CSV;', 'tsv' => 'TSV');
 	}
 	
 	function dumpTable() {
