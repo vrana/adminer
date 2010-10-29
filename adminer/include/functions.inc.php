@@ -550,8 +550,9 @@ function hidden_fields_get() {
 * @return array array($col => array())
 */
 function column_foreign_keys($table) {
+	global $adminer;
 	$return = array();
-	foreach (foreign_keys($table) as $foreign_key) {
+	foreach ($adminer->foreignKeys($table) as $foreign_key) {
 		foreach ($foreign_key["source"] as $val) {
 			$return[$val][] = $foreign_key;
 		}

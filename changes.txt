@@ -4,6 +4,7 @@ Highlight and edit SQL command in processlist
 Disable XSS "protection" of IE8
 Timestamp in export
 Link to bookmark SQL command
+Support for virtual foreign keys
 Immunity against zend.ze1_compatibility_mode
 Fix last page with empty result set
 

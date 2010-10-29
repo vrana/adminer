@@ -65,6 +65,10 @@ document.getElementById('username').focus();
 		echo "<a href='" . h(remove_from_uri("page")) . "&amp;page=last' title='" . lang('Page') . ": " . lang('last') . "'>&gt;&gt;</a>\n";
 	}
 	
+	function foreignKeys($table) {
+		return foreign_keys($table);
+	}
+	
 	function backwardKeys($table, $tableName) {
 		$return = array();
 		foreach (get_rows("SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME

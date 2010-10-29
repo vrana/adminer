@@ -27,23 +27,21 @@ foreach (table_status() as $row) {
 		$schema[$row["Name"]]["fields"][$name] = $field;
 	}
 	$schema[$row["Name"]]["pos"] = ($table_pos[$row["Name"]] ? $table_pos[$row["Name"]] : array($top, 0));
-	if (fk_support($row)) {
-		foreach (foreign_keys($row["Name"]) as $val) {
-			if (!$val["db"]) {
-				$left = $base_left;
-				if ($table_pos[$row["Name"]][1] || $table_pos[$val["table"]][1]) {
-					$left = min(floatval($table_pos[$row["Name"]][1]), floatval($table_pos[$val["table"]][1])) - 1;
-				} else {
-					$base_left -= .1;
-				}
-				while ($lefts[(string) $left]) {
-					// find free $left
-					$left -= .0001;
-				}
-				$schema[$row["Name"]]["references"][$val["table"]][(string) $left] = array($val["source"], $val["target"]);
-				$referenced[$val["table"]][$row["Name"]][(string) $left] = $val["target"];
-				$lefts[(string) $left] = true;
+	foreach ($adminer->foreignKeys($row["Name"]) as $val) {
+		if (!$val["db"]) {
+			$left = $base_left;
+			if ($table_pos[$row["Name"]][1] || $table_pos[$val["table"]][1]) {
+				$left = min(floatval($table_pos[$row["Name"]][1]), floatval($table_pos[$val["table"]][1])) - 1;
+			} else {
+				$base_left -= .1;
 			}
+			while ($lefts[(string) $left]) {
+				// find free $left
+				$left -= .0001;
+			}
+			$schema[$row["Name"]]["references"][$val["table"]][(string) $left] = array($val["source"], $val["target"]);
+			$referenced[$val["table"]][$row["Name"]][(string) $left] = $val["target"];
+			$lefts[(string) $left] = true;
 		}
 	}
 	$top = max($top, $schema[$row["Name"]]["pos"][0] + 2.5 + $pos);
