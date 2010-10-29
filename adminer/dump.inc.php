@@ -75,7 +75,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 							}
 							$adminer->dumpTable($row["Name"], ($table ? $_POST["table_style"] : ""));
 							if ($data) {
-								$adminer->dumpData($row["Name"], $_POST["data_style"]);
+								$adminer->dumpData($row["Name"], $_POST["data_style"], "SELECT * FROM " . table($row["Name"]));
 							}
 							if ($is_sql && $_POST["triggers"]) {
 								$triggers = trigger_sql($row["Name"], $_POST["table_style"]);
@@ -167,8 +167,8 @@ if (!$row) {
 	$row = array("output" => "text", "format" => "sql", "db_style" => (DB != "" ? "" : "CREATE"), "table_style" => "DROP+CREATE", "data_style" => "INSERT");
 }
 $checked = ($_GET["dump"] == "");
-echo "<tr><th>" . lang('Output') . "<td>" . $adminer->dumpOutput(0, $row["output"]) . "\n";
-echo "<tr><th>" . lang('Format') . "<td>" . $adminer->dumpFormat(0, $row["format"]) . "\n";
+echo "<tr><th>" . lang('Output') . "<td>" . html_select("output", $adminer->dumpOutput(), $row["output"], 0) . "\n"; // 0 - radio
+echo "<tr><th>" . lang('Format') . "<td>" . html_select("format", $adminer->dumpFormat(), $row["format"], 0) . "\n"; // 0 - radio
 echo ($jush == "sqlite" ? "" : "<tr><th>" . lang('Database') . "<td>" . html_select('db_style', $db_style, $row["db_style"])
 	. (support("routine") ? checkbox("routines", 1, $checked, lang('Routines')) : "")
 	. (support("event") ? checkbox("events", 1, $checked, lang('Events')) : "")

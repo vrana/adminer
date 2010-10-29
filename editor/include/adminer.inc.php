@@ -434,21 +434,21 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		return $return;
 	}
 	
-	function dumpOutput($select, $value = "") {
-		return "";
+	function dumpOutput() {
+		return array();
 	}
 	
-	function dumpFormat($select, $value = "") {
-		return html_select("format", array('csv' => 'CSV,', 'csv;' => 'CSV;'), $value, $select);
+	function dumpFormat() {
+		return array('csv' => 'CSV,', 'csv;' => 'CSV;');
 	}
 	
 	function dumpTable() {
 		echo "\xef\xbb\xbf"; // UTF-8 byte order mark
 	}
 	
-	function dumpData($table, $style, $select = "") {
+	function dumpData($table, $style, $query) {
 		global $connection;
-		$result = $connection->query(($select ? $select : "SELECT * FROM " . idf_escape($table)), 1); // 1 - MYSQLI_USE_RESULT
+		$result = $connection->query($query, 1); // 1 - MYSQLI_USE_RESULT
 		if ($result) {
 			while ($row = $result->fetch_assoc()) {
 				dump_csv($row);

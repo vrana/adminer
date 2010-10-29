@@ -389,7 +389,8 @@ if (!$columns) {
 <?php
 			}
 			print_fieldset("export", lang('Export'));
-			echo $adminer->dumpOutput(1, $adminer_export["output"]) . " " . $adminer->dumpFormat(1, $adminer_export["format"]); // 1 - select
+			$output = $adminer->dumpOutput();
+			echo ($output ? html_select("output", $output, $adminer_export["output"]) . " " : "") . html_select("format", $adminer->dumpFormat(), $adminer_export["format"]);
 			echo " <input type='submit' name='export' value='" . lang('Export') . "'>\n";
 			echo "</div></fieldset>\n";
 		}

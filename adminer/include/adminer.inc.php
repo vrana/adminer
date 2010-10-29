@@ -476,11 +476,9 @@ document.getElementById('username').focus();
 	}
 	
 	/** Returns export output options
-	* @param bool generate select (otherwise radio)
-	* @param string
-	* @return string
+	* @return array
 	*/
-	function dumpOutput($select, $value = "") {
+	function dumpOutput() {
 		$return = array('text' => lang('open'), 'file' => lang('save'));
 		if (function_exists('gzencode')) {
 			$return['gz'] = 'gzip';
@@ -489,16 +487,14 @@ document.getElementById('username').focus();
 			$return['bz2'] = 'bzip2';
 		}
 		// ZipArchive requires temporary file, ZIP can be created by gzcompress - see PEAR File_Archive
-		return html_select("output", $return, $value, $select);
+		return $return;
 	}
 	
 	/** Returns export format options
-	* @param bool generate select (otherwise radio)
-	* @param string
-	* @return string
+	* @return array
 	*/
-	function dumpFormat($select, $value = "") {
-		return html_select("format", array('sql' => 'SQL', 'csv' => 'CSV,', 'csv;' => 'CSV;'), $value, $select);
+	function dumpFormat() {
+		return array('sql' => 'SQL', 'csv' => 'CSV,', 'csv;' => 'CSV;');
 	}
 	
 	/** Export table structure
@@ -602,10 +598,10 @@ DROP PROCEDURE adminer_alter;
 	/** Export table data
 	* @param string
 	* @param string
-	* @param string query to execute, defaults to SELECT * FROM $table
+	* @param string
 	* @return null prints data
 	*/
-	function dumpData($table, $style, $select = "") {
+	function dumpData($table, $style, $query) {
 		global $connection, $jush;
 		$max_packet = ($jush == "sqlite" ? 0 : 1048576); // default, minimum is 1024
 		if ($style) {
@@ -613,7 +609,7 @@ DROP PROCEDURE adminer_alter;
 				echo truncate_sql($table) . ";\n";
 			}
 			$fields = fields($table);
-			$result = $connection->query(($select ? $select : "SELECT * FROM " . table($table)), 1); // 1 - MYSQLI_USE_RESULT //! enum and set as numbers
+			$result = $connection->query($query, 1); // 1 - MYSQLI_USE_RESULT //! enum and set as numbers
 			if ($result) {
 				$insert = "";
 				$buffer = "";
