@@ -1,13 +1,14 @@
-Adminer 3.0.2-dev:
-Option to show only errors in SQL command
-Highlight and edit SQL command in processlist
-Disable XSS "protection" of IE8
-Timestamp in export
-Link to bookmark SQL command
+Adminer 3.1.0-dev:
+Customizable export
 Support for virtual foreign keys
+Option to show only errors in SQL command
+Link to bookmark SQL command
+Highlight and edit SQL command in processlist
+Always display all drivers
+Timestamp in export
+Disable XSS "protection" of IE8
 Immunity against zend.ze1_compatibility_mode
 Fix last page with empty result set
-Always display all drivers
 
 Adminer 3.0.1 (released 2010-10-18):
 Send the form by Ctrl+Enter in all textareas
