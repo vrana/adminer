@@ -43,8 +43,8 @@ if ($_POST && !$error) {
 		}
 	}
 	if ($_POST["export"]) {
-		dump_headers($TABLE);
-		dump_table($TABLE, "");
+		$adminer->dumpHeaders($TABLE);
+		$adminer->dumpTable($TABLE, "");
 		if ($_POST["format"] != "sql") { // Editor doesn't send format
 			$row = array_keys($fields);
 			if ($select) {
@@ -60,14 +60,14 @@ if ($_POST && !$error) {
 			if (is_array($_POST["check"])) {
 				$where2[] = "($where_check)";
 			}
-			dump_data($TABLE, "INSERT", "SELECT $from" . ($where2 ? "\nWHERE " . implode(" AND ", $where2) : "") . $group_by);
+			$adminer->dumpData($TABLE, "INSERT", "SELECT $from" . ($where2 ? "\nWHERE " . implode(" AND ", $where2) : "") . $group_by);
 		} else {
 			$union = array();
 			foreach ($_POST["check"] as $val) {
 				// where is not unique so OR can't be used
 				$union[] = "(SELECT" . limit($from, "\nWHERE " . ($where ? implode(" AND ", $where) . " AND " : "") . where_check($val) . $group_by, 1) . ")";
 			}
-			dump_data($TABLE, "INSERT", implode(" UNION ALL ", $union));
+			$adminer->dumpData($TABLE, "INSERT", implode(" UNION ALL ", $union));
 		}
 		exit;
 	}

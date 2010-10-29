@@ -7,7 +7,7 @@ if ($_POST) {
 		$cookie .= "&$key=" . urlencode($_POST[$key]);
 	}
 	cookie("adminer_export", substr($cookie, 1));
-	$ext = dump_headers(($TABLE != "" ? $TABLE : DB), (DB == "" || count((array) $_POST["tables"] + (array) $_POST["data"]) > 1));
+	$ext = $adminer->dumpHeaders(($TABLE != "" ? $TABLE : DB), (DB == "" || count((array) $_POST["tables"] + (array) $_POST["data"]) > 1));
 	$is_sql = ($_POST["format"] == "sql");
 	if ($is_sql) {
 		echo "-- Adminer $VERSION " . $drivers[DRIVER] . " dump
@@ -73,9 +73,9 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 							if ($ext == "tar") {
 								ob_start();
 							}
-							dump_table($row["Name"], ($table ? $_POST["table_style"] : ""));
+							$adminer->dumpTable($row["Name"], ($table ? $_POST["table_style"] : ""));
 							if ($data) {
-								dump_data($row["Name"], $_POST["data_style"]);
+								$adminer->dumpData($row["Name"], $_POST["data_style"]);
 							}
 							if ($is_sql && $_POST["triggers"]) {
 								$triggers = trigger_sql($row["Name"], $_POST["table_style"]);
@@ -94,7 +94,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 					}
 				}
 				foreach ($views as $view) {
-					dump_table($view, $_POST["table_style"], true);
+					$adminer->dumpTable($view, $_POST["table_style"], true);
 				}
 				if ($ext == "tar") {
 					echo pack("x512");
