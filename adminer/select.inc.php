@@ -45,7 +45,7 @@ if ($_POST && !$error) {
 	if ($_POST["export"]) {
 		$adminer->dumpHeaders($TABLE);
 		$adminer->dumpTable($TABLE, "");
-		if (ereg("csv|tsv", $_POST["format"])) {
+		if (ereg("[ct]sv", $_POST["format"])) { // CSV or TSV
 			$row = array_keys($fields);
 			if ($select) {
 				$row = array();
