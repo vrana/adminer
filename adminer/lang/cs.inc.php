@@ -221,6 +221,7 @@ $translations = array(
 	'%d row(s)' => array('%d řádek', '%d řádky', '%d řádků'),
 	'Page' => 'Stránka',
 	'last' => 'poslední',
+	'Last page' => 'Poslední stránka',
 	'whole result' => 'celý výsledek',
 	'%d byte(s)' => array('%d bajt', '%d bajty', '%d bajtů'),
 	
