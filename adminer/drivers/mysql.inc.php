@@ -160,7 +160,7 @@ if (!defined("DRIVER")) {
 		class Min_Result {
 			var
 				$num_rows, ///< @var int number of rows in the result
-				$_result ///< @access private
+				$_result, $_offset = 0 ///< @access private
 			;
 			
 			/** Constructor
@@ -189,7 +189,7 @@ if (!defined("DRIVER")) {
 			* @return object properties: name, type, orgtable, orgname, charsetnr
 			*/
 			function fetch_field() {
-				$return = mysql_fetch_field($this->_result);
+				$return = mysql_fetch_field($this->_result, $this->_offset++); // offset required under certain conditions
 				$return->orgtable = $return->table;
 				$return->orgname = $return->name;
 				$return->charsetnr = ($return->blob ? 63 : 0);
