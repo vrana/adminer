@@ -44,7 +44,7 @@ bool in Editor
 MS SQL:
 Non UTF-8 character sets
 Detection of table collation
-PDO driver with seek
+PDO_MSSQL and PDO_SQLSRV driver with seek
 
 Oracle:
 clob comparable with string
