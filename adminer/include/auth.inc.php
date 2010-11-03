@@ -85,7 +85,8 @@ function auth_error($exception = null) {
 
 if (isset($_GET["username"])) {
 	if (!class_exists("Min_DB")) {
-		page_header(lang('No extension'), lang('None of the supported PHP extensions (%s) are available.', implode(", ", $possible_drivers)), null);
+		unset($_SESSION["pwds"][DRIVER]); //! remove also from adminer_permanent
+		page_header(lang('No extension'), lang('None of the supported PHP extensions (%s) are available.', implode(", ", $possible_drivers)), false);
 		page_footer("auth");
 		exit;
 	}
