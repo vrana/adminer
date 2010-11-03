@@ -1,7 +1,7 @@
 Transactions in export
 Create view and routine options
 Variables editation, especially timezone (or set by PHP date.timezone)
-Highlight SQL textarea, then display query inside textarea in select - may use external CodeMirror
+Highlight SQL textarea - may use external CodeMirror
 Blob download and image display in edit form (important for Editor with hidden fields in select)
 Add title to Logout, edit (in select) and select (in menu) in style "hever"
 Shift-click in checkboxes to select range
@@ -10,7 +10,6 @@ Only first part of big BZ2 export is readable, files are missing in TAR
 Auto-refresh processlist (thanks to Jan Garaj)
 Save schema layout to #hash in URL
 Double click in select - Esc to abort editation
-XML export
 ? Filter by value in row under <thead> in select
 ? Column and table names auto-completition in SQL textarea
 ? Aliasing of built-in functions can save 7 KB, function minification can save 7 KB, substitution of repetitive $a["a"] can save 4 KB, substitution of $_GET and friends can save 2 KB, aliasing of $connection->query can save 24 B, JS packer can save 1 KB, not enclosing HTML attribute values can save 1.2 KB, replacing \\n by \n can save .3 KB
@@ -40,7 +39,6 @@ Users - SELECT * FROM pg_user
 ORDER BY COUNT(*)
 Export - http://www.postgresql.org/docs/8.4/static/functions-info.html
 Column rights - http://www.postgresql.org/docs/8.4/static/functions-info.html
-Dollar terminated string in SQL command
 bool in Editor
 
 MS SQL:
