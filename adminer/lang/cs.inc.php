@@ -18,6 +18,7 @@ $translations = array(
 	'Session support must be enabled.' => 'Session proměnné musí být povolené.',
 	'Session expired, please login again.' => 'Session vypršela, přihlašte se prosím znovu.',
 	'%s version: %s through PHP extension %s' => 'Verze %s: %s přes PHP extenzi %s',
+	'Refresh' => 'Obnovit',
 	
 	'Privileges' => 'Oprávnění',
 	'Create user' => 'Vytvořit uživatele',
