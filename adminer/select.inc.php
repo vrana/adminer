@@ -300,12 +300,15 @@ if (!$columns) {
 							
 							if (!$link) { // link related items
 								foreach ((array) $foreign_keys[$key] as $foreign_key) {
-									if (count($foreign_keys[$key]) == 1 || count($foreign_key["source"]) == 1) {
+									if (count($foreign_keys[$key]) == 1 || end($foreign_key["source"]) == $key) {
+										$link = "";
 										foreach ($foreign_key["source"] as $i => $source) {
 											$link .= where_link($i, $foreign_key["target"][$i], $rows[$n][$source]);
 										}
 										$link = h(($foreign_key["db"] != "" ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), ME) : ME) . 'select=' . urlencode($foreign_key["table"]) . $link); // InnoDB supports non-UNIQUE keys
-										break;
+										if (count($foreign_key["source"]) == 1) {
+											break;
+										}
 									}
 								}
 							}
