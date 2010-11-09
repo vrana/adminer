@@ -12,6 +12,7 @@ Support for virtual foreign keys
 Disable XSS "protection" of IE8
 Immunity against zend.ze1_compatibility_mode (bug #3089645)
 Fix last page with empty result set
+Dual licensing: Apache or GPL
 
 Adminer 3.0.1 (released 2010-10-18):
 Send the form by Ctrl+Enter in all textareas
