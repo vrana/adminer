@@ -741,6 +741,7 @@ DROP PROCEDURE adminer_alter;
 					}
 				}
 				if ($_GET["ns"] !== "" && !$missing) {
+					echo '<p><a href="' . h(ME) . 'create=">' . bold(lang('Create new table'), $_GET["create"] === "") . "</a>\n";
 					$tables = tables_list();
 					if (!$tables) {
 						echo "<p class='message'>" . lang('No tables.') . "\n";
@@ -757,7 +758,6 @@ DROP PROCEDURE adminer_alter;
 						}
 						echo "</script>\n";
 					}
-					echo '<p><a href="' . h(ME) . 'create=">' . bold(lang('Create new table'), $_GET["create"] === "") . "</a>\n";
 				}
 			}
 			echo (isset($_GET["sql"]) ? '<input type="hidden" name="sql" value="">'
