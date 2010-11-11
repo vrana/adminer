@@ -306,7 +306,7 @@ if (isset($_GET["mssql"])) {
 		return true;
 	}
 
-	function fields($table, $hidden = false) {
+	function fields($table) {
 		$return = array();
 		foreach (get_rows("SELECT c.*, t.name type, d.definition [default]
 FROM sys.all_columns c

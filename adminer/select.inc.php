@@ -2,7 +2,7 @@
 $TABLE = $_GET["select"];
 $table_status = table_status($TABLE);
 $indexes = indexes($TABLE);
-$fields = fields($TABLE, 1); // 1 - hidden
+$fields = fields($TABLE);
 $foreign_keys = column_foreign_keys($TABLE);
 
 $rights = array(); // privilege => 0

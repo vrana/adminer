@@ -393,10 +393,9 @@ if (!defined("DRIVER")) {
 
 	/** Get information about fields
 	* @param string
-	* @param bool display hidden table columns
 	* @return array array($name => array("field" => , "full_type" => , "type" => , "length" => , "unsigned" => , "default" => , "null" => , "auto_increment" => , "on_update" => , "collation" => , "privileges" => , "comment" => , "primary" => ))
 	*/
-	function fields($table, $hidden = false) {
+	function fields($table) {
 		$return = array();
 		foreach (get_rows("SHOW FULL COLUMNS FROM " . table($table)) as $row) {
 			preg_match('~^([^( ]+)(?:\\((.+)\\))?( unsigned)?( zerofill)?$~', $row["Type"], $match);

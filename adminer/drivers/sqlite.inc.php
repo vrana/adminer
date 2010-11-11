@@ -263,7 +263,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return !$connection->result("SELECT sqlite_compileoption_used('OMIT_FOREIGN_KEY')");
 	}
 
-	function fields($table, $hidden = false) {
+	function fields($table) {
 		$return = array();
 		foreach (get_rows("PRAGMA table_info(" . table($table) . ")") as $row) {
 			$type = strtolower($row["type"]);
