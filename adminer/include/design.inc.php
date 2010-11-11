@@ -14,7 +14,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	$protocol = ($HTTPS ? "https" : "http");
 	?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
-<html lang="<?php echo $LANG; ?>">
+<html lang="<?php echo $LANG; ?>" dir="<?php echo lang('ltr'); ?>">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Script-Type" content="text/javascript">
 <meta name="robots" content="noindex">
@@ -25,7 +25,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <link rel="stylesheet" type="text/css" href="adminer.css">
 <?php } ?>
 
-<body onload="bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 0, 3) : ""); ?>', '<?php echo $protocol; ?>');<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verifyVersion('$protocol');"); ?>">
+<body class="<?php echo lang('ltr'); ?>" onload="bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 0, 3) : ""); ?>', '<?php echo $protocol; ?>');<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verifyVersion('$protocol');"); ?>">
 <script type="text/javascript" src="../adminer/static/functions.js"></script>
 <script type="text/javascript" src="static/editing.js"></script>
 

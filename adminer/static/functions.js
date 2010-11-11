@@ -1,5 +1,5 @@
 // to hide elements displayed by JavaScript
-document.body.className = 'js';
+document.body.className += ' js';
 
 /** Toggle visibility
 * @param string

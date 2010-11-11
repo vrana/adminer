@@ -259,4 +259,5 @@ $translations = array(
 	'Attachments' => 'ملفات مرفقة.',
 	'Item%s has been inserted.' => 'تم إدراج العنصر.',
 	'now' => 'الآن',
+	'ltr' => 'rtl',
 );
