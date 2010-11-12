@@ -64,7 +64,7 @@ if ($_POST["save"]) {
 }
 ?>
 
-<form action="<?php echo h($_SERVER["REQUEST_URI"]); // required for sending the form after an AJAX request ?>" method="post" enctype="multipart/form-data">
+<form action="" method="post" enctype="multipart/form-data">
 <?php
 if ($fields) {
 	echo "<table cellspacing='0'>\n";
@@ -105,9 +105,6 @@ if ($fields) {
 }
 if ($update) {
 	echo "<input type='submit' name='delete' value='" . lang('Delete') . "' onclick=\"return confirm('" . lang('Are you sure?') . "')" . (isset($_GET["select"]) ? " &amp;&amp; !ajaxForm(this.form, 'delete=1')" : "") . ";\">\n";
-}
-if (isset($_GET["select"])) {
-	echo "<a href='" . h($_SERVER["REQUEST_URI"]) . "' onclick='return !ajaxMain(this.href, undefined, event);'>" . lang('Cancel') . "</a>\n";
 }
 ?>
 </form>

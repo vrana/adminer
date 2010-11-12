@@ -361,10 +361,14 @@ function redirect($location, $message = null) {
 		$_SESSION["messages"][] = $message;
 	}
 	if (isset($location)) {
+		if ($location == "") {
+			$location = ".";
+		}
 		if (!is_ajax()) {
-			header("Location: " . ($location != "" ? $location : "."));
+			header("Location: $location");
 			exit;
 		}
+		header("X-AJAX-Redirect: $location");
 		$_POST = array();
 	}
 }

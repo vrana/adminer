@@ -130,7 +130,7 @@ document.getElementById('username').focus();
 	*/
 	function selectQuery($query) {
 		global $jush;
-		return "<p><a href='" . h(remove_from_uri("page")) . "&amp;page=last' title='" . lang('Page') . ": " . lang('last') . "' onclick='return !ajaxMain(this.href, undefined, event);'>&gt;&gt;</a> <code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code> <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>" . (is_ajax() ? " <a href='" . h($_SERVER["REQUEST_URI"]) . "'>#</a>" : "") . "\n";
+		return "<p><a href='" . h(remove_from_uri("page")) . "&amp;page=last' title='" . lang('Page') . ": " . lang('last') . "' onclick='return !ajaxMain(this.href, undefined, event);'>&gt;&gt;</a> <code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code> <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>\n";
 	}
 	
 	/** Description of a row in a table

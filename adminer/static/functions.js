@@ -172,13 +172,17 @@ function textareaKeydown(target, event, tab, button) {
 function ajax(url, callback, data) {
 	var xmlhttp = (window.XMLHttpRequest ? new XMLHttpRequest() : (window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') : false));
 	if (xmlhttp) {
-		xmlhttp.open((data === undefined ? 'GET' : 'POST'), url);
+		xmlhttp.open((data ? 'POST' : 'GET'), url);
 		if (data) {
 			xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		}
 		xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 		xmlhttp.onreadystatechange = function (text) {
 			if (xmlhttp.readyState == 4) {
+				var redirect = xmlhttp.getResponseHeader('X-AJAX-Redirect');
+				if (redirect && history.replaceState) {
+					history.replaceState(null, '', redirect);
+				}
 				callback(xmlhttp.responseText);
 			}
 		};
@@ -203,16 +207,12 @@ function ajaxSetHtml(url) {
 var ajaxState = 0;
 var ajaxTimeout;
 
-/** Load content to #main
+/** Safely load content to #main
 * @param string
 * @param [string]
-* @param [MouseEvent]
 * @return XMLHttpRequest or false in case of an error
 */
-function ajaxMain(url, data, event) {
-	if (event && event.ctrlKey) {
-		return false;
-	}
+function ajaxSend(url, data) {
 	var currentState = ++ajaxState;
 	clearTimeout(ajaxTimeout);
 	ajaxTimeout = setTimeout(function () {
@@ -230,6 +230,29 @@ function ajaxMain(url, data, event) {
 	}, data);
 }
 
+/** Load content to #main
+* @param string
+* @param [string]
+* @param [MouseEvent]
+* @return XMLHttpRequest or false in case of an error
+*/
+function ajaxMain(url, data, event) {
+	if (!history.pushState || (event && event.ctrlKey)) {
+		return false;
+	}
+	history.pushState(data, '', url);
+	return ajaxSend(url, data);
+}
+
+/** Revive page from history
+* @param PopStateEvent
+*/
+window.onpopstate = function (event) {
+	if (ajaxState || event.state) {
+		ajaxSend(location.href, event.state);
+	}
+}
+
 /** Send form by AJAX GET
 * @param HTMLFormElement
 * @param [string]
@@ -239,7 +262,9 @@ function ajaxForm(form, data) {
 	var params = [ ];
 	for (var i=0; i < form.elements.length; i++) {
 		var el = form.elements[i];
-		if (el.name && (!/checkbox|radio|submit|file/i.test(el.type) || el.checked)) {
+		if (/file/i.test(el.type) && el.value) {
+			return false;
+		} else if (el.name && (!/checkbox|radio|submit|file/i.test(el.type) || el.checked)) {
 			params.push(encodeURIComponent(el.name) + '=' + encodeURIComponent(/select/i.test(el.tagName) ? selectValue(el) : el.value));
 		}
 	}
