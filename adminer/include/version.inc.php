@@ -1,2 +1,2 @@
 <?php
-$VERSION = "3.1.0-dev";
+$VERSION = "3.2.0-dev";
