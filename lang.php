@@ -41,7 +41,9 @@ foreach (glob(dirname(__FILE__) . "/adminer/lang/" . ($_SESSION["lang"] ? $_SESS
 		}
 	}
 	if ($messages) {
-		$s .= "\n";
+		if (basename($filename) != "en.inc.php") {
+			$s .= "\n";
+		}
 		foreach ($messages as $idf => $val) {
 			// add new messages
 			if ($val == "," && strpos($idf, "%d")) {
