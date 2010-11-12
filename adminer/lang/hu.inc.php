@@ -259,4 +259,10 @@ $translations = array(
 	'From server' => 'Szerverről',
 	'empty' => 'üres',
 	'now' => 'most',
+	'%d query(s) executed OK.' => '%d sikeres lekérdezés.',
+	'Show only errors' => 'Csak a hibák mutatása',
+	'Last page' => 'Utolsó oldal',
+	'Refresh' => 'Frissítés',
+	'Invalid schema.' => 'Érvénytelen séma.',
+	'Please use one of the extensions %s.' => 'Használja a(z) %s kiterjesztést.',
 );
