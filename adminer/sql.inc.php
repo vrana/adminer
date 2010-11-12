@@ -59,7 +59,7 @@ if (!$error && $_POST) {
 						$empty = false;
 						$q = substr($query, 0, $match[0][1]);
 						$commands++;
-						echo "<pre class='jush-$jush' id='sql-$commands'>" . shorten_utf8(trim($q), 1000) . "</pre>\n";
+						echo "<pre id='sql-$commands'><code class='jush-$jush'>" . shorten_utf8(trim($q), 1000) . "</code></pre>\n";
 						ob_flush();
 						flush(); // can take a long time - show the running query
 						$start = explode(" ", microtime()); // microtime(true) is available since PHP 5

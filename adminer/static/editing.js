@@ -22,8 +22,7 @@ function bodyLoad(version, protocol) {
 			if (window.jushLinks) {
 				jush.custom_links = jushLinks;
 			}
-			jush.highlight_tag('pre', 0);
-			jush.highlight_tag('code');
+			jush.highlight_tag('code', 0);
 		}
 	};
 	script.onreadystatechange = function () {

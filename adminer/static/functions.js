@@ -223,8 +223,7 @@ function ajaxSend(url, data) {
 			clearTimeout(ajaxTimeout);
 			setHtml('main', text);
 			if (window.jush) {
-				jush.highlight_tag('code');
-				jush.highlight_tag('pre', 0);
+				jush.highlight_tag('code', 0);
 			}
 		}
 	}, data);
