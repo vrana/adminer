@@ -2,7 +2,7 @@
 if ($_POST && !$error) {
 	$killed = 0;
 	foreach ((array) $_POST["kill"] as $val) {
-		if (queries("KILL " . ereg_replace("[^0-9]+", "", $val))) {
+		if (queries("KILL " . (+$val))) {
 			$killed++;
 		}
 	}
@@ -19,7 +19,11 @@ foreach (get_rows("SHOW FULL PROCESSLIST") as $i => $row) {
 	if (!$i) {
 		echo "<thead><tr lang='en'><th>&nbsp;<th>" . implode("<th>", array_keys($row)) . "</thead>\n";
 	}
-	echo "<tr" . odd() . "><td>" . checkbox("kill[]", $row["Id"], 0) . "<td>" . implode("<td>", array_map('nbsp', $row)) . "\n";
+	echo "<tr" . odd() . "><td>" . checkbox("kill[]", $row["Id"], 0);
+	foreach ($row as $key => $val) {
+		echo "<td>" . ($key == "Info" && $val != "" ? "<code class='jush-$jush'>" . nbsp($val) . '</code> <a href="' . h(ME . ($row["db"] != "" ? "db=" . urlencode($row["db"]) . "&" : "") . "sql=" . urlencode($val)) . '">' . lang('Edit') . '</a>' : nbsp($val));
+	}
+	echo "\n";
 }
 ?>
 </table>

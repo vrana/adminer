@@ -40,12 +40,15 @@ foreach (glob(dirname(__FILE__) . "/adminer/lang/" . ($_SESSION["lang"] ? $_SESS
 			$s .= "$match[1]// $match[2],\n";
 		}
 	}
-	foreach($messages as $idf => $val) {
-		// add new messages
-		if ($val == "," && strpos($idf, "%d")) {
-			$s .= "\t$idf => array(),\n";
-		} elseif (basename($filename) != "en.inc.php") {
-			$s .= "\t$idf => null,\n";
+	if ($messages) {
+		$s .= "\n";
+		foreach ($messages as $idf => $val) {
+			// add new messages
+			if ($val == "," && strpos($idf, "%d")) {
+				$s .= "\t$idf => array(),\n";
+			} elseif (basename($filename) != "en.inc.php") {
+				$s .= "\t$idf => null,\n";
+			}
 		}
 	}
 	$s = "<?php\n\$translations = array(\n$s);\n";

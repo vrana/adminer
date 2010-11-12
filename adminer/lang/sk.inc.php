@@ -257,4 +257,11 @@ $translations = array(
 	'Geometry' => 'Geometria',
 	'File exists.' => 'Súbor existuje.',
 	'Attachments' => 'Prílohy',
+	'%d query(s) executed OK.' => array('Bol vykonaný %d dotaz.', 'Boli vykonané %d dotazy.', 'Bolo vykonaných %d dotazov.'),
+	'Show only errors' => 'Zobraziť iba chyby',
+	'Last page' => 'Posledná stránka',
+	'Refresh' => 'Obnoviť',
+	'Invalid schema.' => 'Neplatné schéma.',
+	'Please use one of the extensions %s.' => 'Prosím vyberte jednu z koncoviek %s.',
+	'now' => 'teraz',
 );

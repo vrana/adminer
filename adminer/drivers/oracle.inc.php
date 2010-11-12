@@ -1,11 +1,8 @@
 <?php
-$possible_drivers[] = "OCI8";
-$possible_drivers[] = "PDO_OCI";
-if (extension_loaded("oci8") || extension_loaded("pdo_oci")) {
-	$drivers["oracle"] = "Oracle";
-}
+$drivers["oracle"] = "Oracle";
 
 if (isset($_GET["oracle"])) {
+	$possible_drivers = array("OCI8", "PDO_OCI");
 	define("DRIVER", "oracle");
 	if (extension_loaded("oci8")) {
 		class Min_DB {
@@ -206,7 +203,7 @@ UNION SELECT view_name, 'view' FROM user_views" . ($name != "" ? " WHERE view_na
 		return true;
 	}
 
-	function fields($table, $hidden = false) {
+	function fields($table) {
 		$return = array();
 		foreach (get_rows("SELECT * FROM all_tab_columns WHERE table_name = " . q($table) . " ORDER BY column_id") as $row) {
 			$type = $row["DATA_TYPE"];

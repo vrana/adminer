@@ -40,13 +40,14 @@ if (!$error && $_POST) {
 			$connection2->select_db(DB);
 		}
 		$commands = 0;
-		$errors = "";
+		$errors = array();
+		$parse = '[\'`"]' . ($jush == "pgsql" ? '|\\$[^$]*\\$' : ($jush == "mssql" || $jush == "sqlite" ? '|\\[' : '')) . '|/\\*|-- |#'; //! ` and # not everywhere
 		while ($query != "") {
-			if (!$offset && preg_match('~^\\s*DELIMITER\\s+(.+)~i', $query, $match)) {
+			if (!$offset && $jush == "sql" && preg_match('~^\\s*DELIMITER\\s+(.+)~i', $query, $match)) {
 				$delimiter = $match[1];
 				$query = substr($query, strlen($match[0]));
 			} else {
-				preg_match('(' . preg_quote($delimiter) . '|[\'`"]|/\\*|-- |#|$)', $query, $match, PREG_OFFSET_CAPTURE, $offset); // should always match
+				preg_match('(' . preg_quote($delimiter) . "|$parse|\$)", $query, $match, PREG_OFFSET_CAPTURE, $offset); // should always match
 				$found = $match[0][0];
 				$offset = $match[0][1] + strlen($found);
 				if (!$found && $fp && !feof($fp)) {
@@ -55,18 +56,32 @@ if (!$error && $_POST) {
 					if (!$found && rtrim($query) == "") {
 						break;
 					}
-					if (!$found || $found == $delimiter) { // end of a query
+					if ($found && $found != $delimiter) { // find matching quote or comment end
+						while (preg_match('(' . ($found == '/*' ? '\\*/' : ($found == '[' ? ']' : (ereg('^-- |^#', $found) ? "\n" : preg_quote($found) . "|\\\\."))) . '|$)s', $query, $match, PREG_OFFSET_CAPTURE, $offset)) { //! respect sql_mode NO_BACKSLASH_ESCAPES
+							$s = $match[0][0];
+							$offset = $match[0][1] + strlen($s);
+							if (!$s && $fp && !feof($fp)) {
+								$query .= fread($fp, 1e6);
+							} elseif ($s[0] != "\\") {
+								break;
+							}
+						}
+					} else { // end of a query
 						$empty = false;
 						$q = substr($query, 0, $match[0][1]);
 						$commands++;
-						echo "<pre id='sql-$commands'><code class='jush-$jush'>" . shorten_utf8(trim($q), 1000) . "</code></pre>\n";
-						ob_flush();
-						flush(); // can take a long time - show the running query
+						$print = "<pre id='sql-$commands'><code class='jush-$jush'>" . shorten_utf8(trim($q), 1000) . "</code></pre>\n";
+						if (!$_POST["only_errors"]) {
+							echo $print;
+							ob_flush();
+							flush(); // can take a long time - show the running query
+						}
 						$start = explode(" ", microtime()); // microtime(true) is available since PHP 5
 						//! don't allow changing of character_set_results, convert encoding of displayed query
 						if (!$connection->multi_query($q)) {
+							echo ($_POST["only_errors"] ? $print : "");
 							echo "<p class='error'>" . lang('Error in query') . ": " . error() . "\n";
-							$errors .= " <a href='#sql-$commands'>$commands</a>";
+							$errors[] = " <a href='#sql-$commands'>$commands</a>";
 							if ($_POST["error_stops"]) {
 								break;
 							}
@@ -77,8 +92,21 @@ if (!$error && $_POST) {
 							do {
 								$result = $connection->store_result();
 								$end = explode(" ", microtime());
-								$time = " <span class='time'>(" . lang('%.3f s', max(0, $end[0] - $start[0] + $end[1] - $start[1])) . ")</span>";
-								if (is_object($result)) {
+								$time = " <span class='time'>(" . lang('%.3f s', max(0, $end[0] - $start[0] + $end[1] - $start[1])) . ")</span>" . (strlen($q) < 1000 ? " <a href='" . h(ME) . "sql=" . urlencode(trim($q)) . "'>" . lang('Edit') . "</a>" : ""); // 1000 - maximum length of encoded URL in IE is 2083 characters
+								if (!is_object($result)) {
+									if (preg_match("~^$space*(CREATE|DROP|ALTER)$space+(DATABASE|SCHEMA)\\b~isU", $q)) {
+										restart_session();
+										set_session("dbs", null); // clear cache
+										session_write_close();
+									}
+									if (!$_POST["only_errors"]) {
+										echo "<p class='message' title='" . h($connection->info) . "'>" . lang('Query executed OK, %d row(s) affected.', $connection->affected_rows) . "$time\n";
+									}
+								} else {
+									if ($_POST["only_errors"]) {
+										echo $print;
+										$print = "";
+									}
 									select($result, $connection2);
 									echo "<p>" . ($result->num_rows ? lang('%d row(s)', $result->num_rows) : "") . $time;
 									if ($connection2 && preg_match("~^($space|\\()*SELECT\\b~isU", $q)) {
@@ -88,38 +116,22 @@ if (!$error && $_POST) {
 										select(explain($connection2, $q));
 										echo "</div>\n";
 									}
-								} else {
-									if (preg_match("~^$space*(CREATE|DROP|ALTER)$space+(DATABASE|SCHEMA)\\b~isU", $q)) {
-										restart_session();
-										set_session("dbs", null); // clear cache
-										session_write_close();
-									}
-									echo "<p class='message' title='" . h($connection->info) . "'>" . lang('Query executed OK, %d row(s) affected.', $connection->affected_rows) . "$time\n";
 								}
 								$start = $end;
 							} while ($connection->next_result());
 						}
 						$query = substr($query, $offset);
 						$offset = 0;
-					} else { // find matching quote or comment end
-						while (preg_match('~' . ($found == '/*' ? '\\*/' : (ereg('-- |#', $found) ? "\n" : "$found|\\\\.")) . '|$~s', $query, $match, PREG_OFFSET_CAPTURE, $offset)) { //! respect sql_mode NO_BACKSLASH_ESCAPES
-							$s = $match[0][0];
-							$offset = $match[0][1] + strlen($s);
-							if (!$s && $fp && !feof($fp)) {
-								$query .= fread($fp, 1e6);
-							} elseif ($s[0] != "\\") {
-								break;
-							}
-						}
 					}
 				}
 			}
 		}
-		if ($errors && $commands > 1) {
-			echo "<p class='error'>" . lang('Error in query') . ": $errors\n";
-		}
 		if ($empty) {
 			echo "<p class='message'>" . lang('No commands to execute.') . "\n";
+		} elseif ($_POST["only_errors"]) {
+			echo "<p class='message'>" . lang('%d query(s) executed OK.', $commands - count($errors)) . "\n";
+		} elseif ($errors && $commands > 1) {
+			echo "<p class='error'>" . lang('Error in query') . ": " . implode("", $errors) . "\n";
 		}
 		//! MS SQL - SET SHOWPLAN_ALL OFF
 	} else {
@@ -145,7 +157,8 @@ echo "<p>" . (ini_bool("file_uploads") ? lang('File upload') . ': <input type="f
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Execute'); ?>" title="Ctrl+Enter">
 <?php
-echo checkbox("error_stops", 1, $_POST["error_stops"], lang('Stop on error'));
+echo checkbox("error_stops", 1, $_POST["error_stops"], lang('Stop on error')) . "\n";
+echo checkbox("only_errors", 1, $_POST["only_errors"], lang('Show only errors')) . "\n";
 
 print_fieldset("webfile", lang('From server'), $_POST["webfile"]);
 $compress = array();

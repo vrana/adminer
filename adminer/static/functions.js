@@ -1,5 +1,5 @@
 // to hide elements displayed by JavaScript
-document.body.className = 'js';
+document.body.className += ' js';
 
 /** Toggle visibility
 * @param string
@@ -107,6 +107,20 @@ function setHtml(id, html) {
 	}
 }
 
+/** Go to the specified page
+* @param string
+* @param string
+* @param [MouseEvent]
+*/
+function pageClick(href, page, event) {
+	if (!isNaN(page) && page) {
+		href += (page != 1 ? '&page=' + (page - 1) : '');
+		if (!ajaxMain(href, undefined, event)) {
+			location.href = href;
+		}
+	}
+}
+
 
 
 /** Add row in select fieldset
@@ -117,12 +131,12 @@ function selectAddRow(field) {
 	var row = field.parentNode.cloneNode(true);
 	var selects = row.getElementsByTagName('select');
 	for (var i=0; i < selects.length; i++) {
-		selects[i].name = selects[i].name.replace(/[a-z]\[[0-9]+/, '$&1');
+		selects[i].name = selects[i].name.replace(/[a-z]\[\d+/, '$&1');
 		selects[i].selectedIndex = 0;
 	}
 	var inputs = row.getElementsByTagName('input');
 	if (inputs.length) {
-		inputs[0].name = inputs[0].name.replace(/[a-z]\[[0-9]+/, '$&1');
+		inputs[0].name = inputs[0].name.replace(/[a-z]\[\d+/, '$&1');
 		inputs[0].value = '';
 		inputs[0].className = '';
 	}

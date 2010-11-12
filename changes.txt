@@ -1,3 +1,20 @@
+Adminer 3.1.0-dev:
+TSV export and import
+Customizable export
+Option to show only errors in SQL command
+Link to bookmark SQL command
+Recognize $$ strings in SQL command (PostgreSQL)
+Highlight and edit SQL command in processlist
+Always display all drivers
+Timestamp at the end of export
+Link to refresh database cache (bug #3102451)
+Support for virtual foreign keys
+Disable XSS "protection" of IE8
+Immunity against zend.ze1_compatibility_mode (bug #3089645)
+Fix last page with empty result set
+Arabic translation and RTL support
+Dual licensing: Apache or GPL
+
 Adminer 3.0.1 (released 2010-10-18):
 Send the form by Ctrl+Enter in all textareas
 Disable creating SQLite databases with extension other than db, sdb, sqlite

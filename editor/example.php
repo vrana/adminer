@@ -29,8 +29,11 @@ function adminer_object() {
 		}
 		
 		function fieldName($field, $order = 0) {
+			if ($order && ereg('_(md5|sha1)$', $field["field"])) {
+				return ""; // hide hashes in select
+			}
 			// only columns with comments will be displayed and only the first five in select
-			return ($order <= 5 && !ereg('_(md5|sha1)$', $field["field"]) ? h($field["comment"]) : "");
+			return ($order <= 5 ? h($field["comment"]) : "");
 		}
 		
 	}

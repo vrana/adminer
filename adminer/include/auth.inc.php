@@ -1,12 +1,6 @@
 <?php
 $connection = '';
 
-if (!$drivers) {
-	page_header(lang('No extension'), lang('None of the supported PHP extensions (%s) are available.', implode(", ", $possible_drivers)), null);
-	page_footer("auth");
-	exit;
-}
-
 $token = $_SESSION["token"];
 if (!$_SESSION["token"]) {
 	$_SESSION["token"] = rand(1, 1e6); // defense against cross-site request forgery
@@ -89,7 +83,13 @@ function auth_error($exception = null) {
 	page_footer("auth");
 }
 
-if (isset($_GET["username"]) && class_exists("Min_DB")) { // doesn't exists with passing wrong driver
+if (isset($_GET["username"])) {
+	if (!class_exists("Min_DB")) {
+		unset($_SESSION["pwds"][DRIVER]); //! remove also from adminer_permanent
+		page_header(lang('No extension'), lang('None of the supported PHP extensions (%s) are available.', implode(", ", $possible_drivers)), false);
+		page_footer("auth");
+		exit;
+	}
 	$connection = connect();
 }
 if (is_string($connection) || !$adminer->login($_GET["username"], get_session("pwds"))) {

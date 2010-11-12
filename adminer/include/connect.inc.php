@@ -23,6 +23,9 @@ function connect_error() {
 		}
 		echo "<p>" . lang('%s version: %s through PHP extension %s', $drivers[DRIVER], "<b>$connection->server_info</b>", "<b>$connection->extension</b>") . "\n";
 		echo "<p>" . lang('Logged as: %s', "<b>" . h(logged_user()) . "</b>") . "\n";
+		if ($_GET["refresh"]) {
+			set_session("dbs", null);
+		}
 		$databases = get_databases();
 		if ($databases) {
 			$scheme = support("scheme");
@@ -40,6 +43,7 @@ function connect_error() {
 			}
 			echo "</table>\n";
 			echo "<p><input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm("formChecked(this, /db/)") . ">\n";
+			echo "<a href='" . h(ME) . "refresh=1'>" . lang('Refresh') . "</a>\n";
 			echo "</form>\n";
 		}
 	}

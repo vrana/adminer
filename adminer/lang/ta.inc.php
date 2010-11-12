@@ -258,4 +258,10 @@ $translations = array(
 	'File exists.' => 'கோப்பு உள்ள‌து.',
 	'Attachments' => 'இணைப்புக‌ள்',
 	'now' => 'இப்பொழுது',
+	'%d query(s) executed OK.' => array('%d வின‌வ‌ல் செய‌ல்ப‌டுத்த‌ப்ப‌ட்ட‌து.', '%d வின‌வ‌ல்க‌ள் செய‌ல்ப‌டுத்த‌ப்ப‌ட்ட‌ன‌.'),
+	'Show only errors' => 'பிழைக‌ளை ம‌ட்டும் காண்பிக்க‌வும்',
+	'Last page' => 'க‌டைசி ப‌க்க‌ம்',
+	'Refresh' => 'புதுப்பி (Refresh)',
+	'Invalid schema.' => 'அமைப்புமுறை ச‌ரியான‌த‌ல்ல‌ (Invalid Schema).',
+	'Please use one of the extensions %s.' => 'த‌ய‌வு செய்து ஒரு விரிவினை %s (extension) உப‌யோகிக்க‌வும்.',
 );

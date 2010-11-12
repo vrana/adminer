@@ -28,6 +28,7 @@ class Adminer {
 	
 	function headers() {
 		header("X-Frame-Options: deny");
+		header("X-XSS-Protection: 0");
 	}
 	
 	function loginForm() {
@@ -61,10 +62,11 @@ document.getElementById('username').focus();
 		if (isset($set)) {
 			echo '<p class="tabs"><a href="' . h(ME . 'edit=' . urlencode($TABLE) . $set) . '">' . lang('New item') . "</a>\n";
 		}
-		echo "<a href='" . h(remove_from_uri("page")) . "&amp;page=last' title='" . lang('Page') . ": " . lang('last') . "' onclick='return !ajaxMain(this.href, undefined, event);'>&gt;&gt;</a>\n";
-		if (is_ajax()) {
-			echo "<a href='" . h($_SERVER["REQUEST_URI"]) . "'>#</a>\n";
-		}
+		echo "<a href='" . h(remove_from_uri("page")) . "&amp;page=last' title='" . lang('Last page') . "' onclick='return !ajaxMain(this.href, undefined, event);'>&gt;&gt;</a>\n";
+	}
+	
+	function foreignKeys($table) {
+		return foreign_keys($table);
 	}
 	
 	function backwardKeys($table, $tableName) {
@@ -181,7 +183,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	
 	function editVal($val, $field) {
 		if (ereg('date|timestamp', $field["type"]) && isset($val)) {
-			return preg_replace('~^([0-9]{2}([0-9]+))-(0?([0-9]+))-(0?([0-9]+))~', lang('$1-$3-$5'), $val);
+			return preg_replace('~^(\\d{2}(\\d+))-(0?(\\d+))-(0?(\\d+))~', lang('$1-$3-$5'), $val);
 		}
 		return (ereg("binary", $field["type"]) ? reset(unpack("H*", $val)) : $val);
 	}
@@ -204,7 +206,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 				$key = $keys[$name];
 				$i--;
 				echo "<div>" . h($desc) . "<input type='hidden' name='where[$i][col]' value='" . h($name) . "'>:";
-				enum_input("checkbox", " name='where[$i][val][]'", $field, (array) $where[$key]["val"]); //! impossible to search for NULL
+				echo enum_input("checkbox", " name='where[$i][val][]'", $field, (array) $where[$key]["val"]); //! impossible to search for NULL
 				echo "</div>\n";
 				unset($columns[$name]);
 			}
@@ -394,7 +396,10 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	
 	function editInput($table, $field, $attrs, $value) {
 		if ($field["type"] == "enum") {
-			return ($field["null"] ? "<input type='radio'$attrs value=''" . ($value || isset($_GET["select"]) ? "" : " checked") . ">" : "");
+			return (isset($_GET["select"]) ? "<label><input type='radio'$attrs value='-1' checked><i>" . lang('original') . "</i></label> " : "")
+				. ($field["null"] ? "<label><input type='radio'$attrs value=''" . ($value || isset($_GET["select"]) ? "" : " checked") . "><i>" . lang('empty') . "</i></label>" : "")
+				. enum_input("radio", $attrs, $field, $value)
+			;
 		}
 		$options = $this->_foreignKeyOptions($table, $field["field"]);
 		if ($options) {
@@ -414,7 +419,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			return "$function()";
 		}
 		$return = $value;
-		if (ereg('date|timestamp', $field["type"]) && preg_match('(^' . str_replace('\\$1', '(?P<p1>[0-9]*)', preg_replace('~(\\\\\\$([2-6]))~', '(?P<p\\2>[0-9]{1,2})', preg_quote(lang('$1-$3-$5')))) . '(.*))', $value, $match)) {
+		if (ereg('date|timestamp', $field["type"]) && preg_match('(^' . str_replace('\\$1', '(?P<p1>\\d*)', preg_replace('~(\\\\\\$([2-6]))~', '(?P<p\\2>\\d{1,2})', preg_quote(lang('$1-$3-$5')))) . '(.*))', $value, $match)) {
 			$return = ($match["p1"] != "" ? $match["p1"] : ($match["p2"] != "" ? ($match["p2"] < 70 ? 20 : 19) . $match["p2"] : gmdate("Y"))) . "-$match[p3]$match[p4]-$match[p5]$match[p6]" . end($match);
 		}
 		$return = q($return);
@@ -429,12 +434,35 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		return $return;
 	}
 	
-	function dumpOutput($select, $value = "") {
-		return "";
+	function dumpOutput() {
+		return array();
 	}
 	
-	function dumpFormat($select, $value = "") {
-		return html_select("format", array('csv' => 'CSV,', 'csv;' => 'CSV;'), $value, $select);
+	function dumpFormat() {
+		return array('csv' => 'CSV,', 'csv;' => 'CSV;', 'tsv' => 'TSV');
+	}
+	
+	function dumpTable() {
+		echo "\xef\xbb\xbf"; // UTF-8 byte order mark
+	}
+	
+	function dumpData($table, $style, $query) {
+		global $connection;
+		$result = $connection->query($query, 1); // 1 - MYSQLI_USE_RESULT
+		if ($result) {
+			while ($row = $result->fetch_assoc()) {
+				dump_csv($row);
+			}
+		}
+	}
+	
+	function dumpHeaders($identifier) {
+		$filename = ($identifier != "" ? friendly_url($identifier) : "dump");
+		$ext = "csv";
+		header("Content-Type: text/csv; charset=utf-8");
+		header("Content-Disposition: attachment; filename=$filename.$ext");
+		session_write_close();
+		return $ext;
 	}
 	
 	function navigation($missing) {

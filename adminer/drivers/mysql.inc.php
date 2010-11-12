@@ -1,12 +1,8 @@
 <?php
-$possible_drivers[] = "MySQLi";
-$possible_drivers[] = "MySQL";
-$possible_drivers[] = "PDO_MySQL";
-if (extension_loaded("mysqli") || extension_loaded("mysql") || extension_loaded("pdo_mysql")) {
-	$drivers = array("server" => "MySQL") + $drivers;
-}
+$drivers = array("server" => "MySQL") + $drivers;
 
 if (!defined("DRIVER")) {
+	$possible_drivers = array("MySQLi", "MySQL", "PDO_MySQL");
 	define("DRIVER", "server"); // server - backwards compatibility
 	// MySQLi supports everything, MySQL doesn't support multiple result sets, PDO_MySQL doesn't support orgtable
 	if (extension_loaded("mysqli")) {
@@ -164,7 +160,7 @@ if (!defined("DRIVER")) {
 		class Min_Result {
 			var
 				$num_rows, ///< @var int number of rows in the result
-				$_result ///< @access private
+				$_result, $_offset = 0 ///< @access private
 			;
 			
 			/** Constructor
@@ -193,7 +189,7 @@ if (!defined("DRIVER")) {
 			* @return object properties: name, type, orgtable, orgname, charsetnr
 			*/
 			function fetch_field() {
-				$return = mysql_fetch_field($this->_result);
+				$return = mysql_fetch_field($this->_result, $this->_offset++); // offset required under certain conditions
 				$return->orgtable = $return->table;
 				$return->orgname = $return->name;
 				$return->charsetnr = ($return->blob ? 63 : 0);
@@ -212,7 +208,7 @@ if (!defined("DRIVER")) {
 			var $extension = "PDO_MySQL";
 			
 			function connect($server, $username, $password) {
-				$this->dsn("mysql:host=" . str_replace(":", ";unix_socket=", preg_replace('~:([0-9])~', ';port=\\1', $server)), $username, $password);
+				$this->dsn("mysql:host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\\d)~', ';port=\\1', $server)), $username, $password);
 				$this->query("SET NAMES utf8"); // charset in DSN is ignored
 				return true;
 			}
@@ -397,10 +393,9 @@ if (!defined("DRIVER")) {
 
 	/** Get information about fields
 	* @param string
-	* @param bool display hidden table columns
 	* @return array array($name => array("field" => , "full_type" => , "type" => , "length" => , "unsigned" => , "default" => , "null" => , "auto_increment" => , "on_update" => , "collation" => , "privileges" => , "comment" => , "primary" => ))
 	*/
-	function fields($table, $hidden = false) {
+	function fields($table) {
 		$return = array();
 		foreach (get_rows("SHOW FULL COLUMNS FROM " . table($table)) as $row) {
 			preg_match('~^([^( ]+)(?:\\((.+)\\))?( unsigned)?( zerofill)?$~', $row["Type"], $match);
@@ -820,7 +815,7 @@ if (!defined("DRIVER")) {
 		global $connection;
 		$return = $connection->result("SHOW CREATE TABLE " . table($table), 1);
 		if (!$auto_increment) {
-			$return = preg_replace('~ AUTO_INCREMENT=[0-9]+~', '', $return); //! skip comments
+			$return = preg_replace('~ AUTO_INCREMENT=\\d+~', '', $return); //! skip comments
 		}
 		return $return;
 	}

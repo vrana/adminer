@@ -4,7 +4,7 @@ header("Content-Type: text/javascript; charset=utf-8");
 if ($_GET["script"] == "db") {
 	$sums = array("Data_length" => 0, "Index_length" => 0, "Data_free" => 0);
 	foreach (table_status() as $row) {
-		$id = $row["Name"];
+		$id = js_escape($row["Name"]);
 		json_row("Comment-$id", nbsp($row["Comment"]));
 		if (!is_view($row)) {
 			foreach (array("Engine", "Collation") as $key) {
@@ -29,7 +29,7 @@ if ($_GET["script"] == "db") {
 	json_row("");
 } else { // connect
 	foreach (count_tables(get_databases()) as $db => $val) {
-		json_row("tables-$db", $val);
+		json_row("tables-" . js_escape($db), $val);
 	}
 	json_row("");
 }

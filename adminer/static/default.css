@@ -47,6 +47,12 @@ pre { margin: 1em 0 0; }
 #schema .table { border: 1px solid silver; padding: 0 2px; cursor: move; position: absolute; }
 #schema .references { position: absolute; }
 
+.rtl h2 { margin: 0 -18px 20px 0; }
+.rtl p, .rtl table, .rtl .error, .rtl .message { margin: 1em 0 0 20px; }
+.rtl #content { margin: 2em 21em 0 0; padding: 10px 0 20px 20px; }
+.rtl #breadcrumb { left: auto; right: 21em; margin: 0 -18px 0 0; }
+.rtl #lang, .rtl #menu { left: auto; right: 0; }
+
 @media print {
 	#lang, #menu { display: none; }
 	#content { margin-left: 1em; }

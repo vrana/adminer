@@ -1,18 +1,83 @@
 <?php
-$possible_drivers[] = "SQLite";
-$possible_drivers[] = "SQLite3";
-$possible_drivers[] = "PDO_SQLite";
-if (extension_loaded("sqlite3") || extension_loaded("pdo_sqlite")) {
-	$drivers["sqlite"] = "SQLite 3";
-}
-if (extension_loaded("sqlite") || extension_loaded("pdo_sqlite")) {
-	$drivers["sqlite2"] = "SQLite 2";
-}
+$drivers["sqlite"] = "SQLite 3";
+$drivers["sqlite2"] = "SQLite 2";
 
 if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
+	$possible_drivers = array((isset($_GET["sqlite"]) ? "SQLite3" : "SQLite"), "PDO_SQLite");
 	define("DRIVER", (isset($_GET["sqlite"]) ? "sqlite" : "sqlite2"));
-	if (extension_loaded(isset($_GET["sqlite2"]) ? "sqlite" : "sqlite3")) {
-		if (isset($_GET["sqlite2"])) {
+	if (extension_loaded(isset($_GET["sqlite"]) ? "sqlite3" : "sqlite")) {
+		if (isset($_GET["sqlite"])) {
+			
+			class Min_SQLite {
+				var $extension = "SQLite3", $server_info, $affected_rows, $error, $_link;
+				
+				function Min_SQLite($filename) {
+					$this->_link = new SQLite3($filename);
+					$version = $this->_link->version();
+					$this->server_info = $version["versionString"];
+				}
+				
+				function query($query) {
+					$result = @$this->_link->query($query);
+					if (!$result) {
+						$this->error = $this->_link->lastErrorMsg();
+						return false;
+					} elseif ($result->numColumns()) {
+						return new Min_Result($result);
+					}
+					$this->affected_rows = $this->_link->changes();
+					return true;
+				}
+				
+				function quote($string) {
+					return "'" . $this->_link->escapeString($string) . "'";
+				}
+				
+				function store_result() {
+					return $this->_result;
+				}
+				
+				function result($query, $field = 0) {
+					$result = $this->query($query);
+					if (!is_object($result)) {
+						return false;
+					}
+					$row = $result->_result->fetchArray();
+					return $row[$field];
+				}
+			}
+			
+			class Min_Result {
+				var $_result, $_offset = 0, $num_rows;
+				
+				function Min_Result($result) {
+					$this->_result = $result;
+				}
+				
+				function fetch_assoc() {
+					return $this->_result->fetchArray(SQLITE3_ASSOC);
+				}
+				
+				function fetch_row() {
+					return $this->_result->fetchArray(SQLITE3_NUM);
+				}
+				
+				function fetch_field() {
+					$column = $this->_offset++;
+					$type = $this->_result->columnType($column);
+					return (object) array(
+						"name" => $this->_result->columnName($column),
+						"type" => $type,
+						"charsetnr" => ($type == SQLITE3_BLOB ? 63 : 0), // 63 - binary
+					);
+				}
+				
+				function __desctruct() {
+					return $this->_result->finalize();
+				}
+			}
+			
+		} else {
 			
 			class Min_SQLite {
 				var $extension = "SQLite", $server_info, $affected_rows, $error, $_link;
@@ -93,77 +158,6 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 					);
 				}
 				
-			}
-			
-		} else {
-			
-			class Min_SQLite {
-				var $extension = "SQLite3", $server_info, $affected_rows, $error, $_link;
-				
-				function Min_SQLite($filename) {
-					$this->_link = new SQLite3($filename);
-					$version = $this->_link->version();
-					$this->server_info = $version["versionString"];
-				}
-				
-				function query($query) {
-					$result = @$this->_link->query($query);
-					if (!$result) {
-						$this->error = $this->_link->lastErrorMsg();
-						return false;
-					} elseif ($result->numColumns()) {
-						return new Min_Result($result);
-					}
-					$this->affected_rows = $this->_link->changes();
-					return true;
-				}
-				
-				function quote($string) {
-					return "'" . $this->_link->escapeString($string) . "'";
-				}
-				
-				function store_result() {
-					return $this->_result;
-				}
-				
-				function result($query, $field = 0) {
-					$result = $this->query($query);
-					if (!is_object($result)) {
-						return false;
-					}
-					$row = $result->_result->fetchArray();
-					return $row[$field];
-				}
-			}
-			
-			class Min_Result {
-				var $_result, $_offset = 0, $num_rows;
-				
-				function Min_Result($result) {
-					$this->_result = $result;
-				}
-				
-				function fetch_assoc() {
-					return $this->_result->fetchArray(SQLITE3_ASSOC);
-				}
-				
-				function fetch_row() {
-					return $this->_result->fetchArray(SQLITE3_NUM);
-				}
-				
-				function fetch_field() {
-					$column = $this->_offset++;
-					$type = $this->_result->columnType($column);
-					return (object) array(
-						"name" => $this->_result->columnName($column),
-						"type" => $type,
-						"charsetnr" => ($type == SQLITE3_BLOB ? 63 : 0), // 63 - binary
-					);
-				}
-				
-				function __desctruct() {
-					return $this->_result->finalize();
-				}
 			}
 			
 		}
@@ -269,7 +263,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return !$connection->result("SELECT sqlite_compileoption_used('OMIT_FOREIGN_KEY')");
 	}
 
-	function fields($table, $hidden = false) {
+	function fields($table) {
 		$return = array();
 		foreach (get_rows("PRAGMA table_info(" . table($table) . ")") as $row) {
 			$type = strtolower($row["type"]);

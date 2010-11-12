@@ -39,7 +39,7 @@ function bodyLoad(version, protocol) {
 * @return HTMLElement
 */
 function formField(form, name) {
-	// required in old IE, maybe can be rewritten as form.elements[name]
+	// required in IE < 8, form.elements[name] doesn't work
 	for (var i=0; i < form.length; i++) {
 		if (form[i].name == name) {
 			return form[i];
@@ -130,7 +130,7 @@ function editingAddRow(button, allowed, focus) {
 	if (allowed && rowCount >= allowed) {
 		return false;
 	}
-	var match = /([0-9]+)(\.[0-9]+)?/.exec(button.name);
+	var match = /(\d+)(\.\d+)?/.exec(button.name);
 	var x = match[0] + (match[2] ? added.substr(match[2].length) : added) + '1';
 	var row = button.parentNode.parentNode;
 	var row2 = row.cloneNode(true);
@@ -300,11 +300,11 @@ function indexesAddRow(field) {
 	}
 	var selects = row.getElementsByTagName('select');
 	for (var i=0; i < selects.length; i++) {
-		selects[i].name = selects[i].name.replace(/indexes\[[0-9]+/, '$&1');
+		selects[i].name = selects[i].name.replace(/indexes\[\d+/, '$&1');
 		selects[i].selectedIndex = 0;
 	}
 	var input = row.getElementsByTagName('input')[0];
-	input.name = input.name.replace(/indexes\[[0-9]+/, '$&1');
+	input.name = input.name.replace(/indexes\[\d+/, '$&1');
 	input.value = '';
 	field.parentNode.parentNode.parentNode.appendChild(row);
 }
@@ -316,10 +316,10 @@ function indexesAddColumn(field) {
 	field.onchange = function () { };
 	var column = field.parentNode.cloneNode(true);
 	var select = column.getElementsByTagName('select')[0];
-	select.name = select.name.replace(/\]\[[0-9]+/, '$&1');
+	select.name = select.name.replace(/\]\[\d+/, '$&1');
 	select.selectedIndex = 0;
 	var input = column.getElementsByTagName('input')[0];
-	input.name = input.name.replace(/\]\[[0-9]+/, '$&1');
+	input.name = input.name.replace(/\]\[\d+/, '$&1');
 	input.value = '';
 	field.parentNode.parentNode.appendChild(column);
 }
@@ -365,7 +365,7 @@ function schemaMousemove(ev) {
 					isTop = (div2.offsetTop + ref[0] * em > divs[i].offsetTop + top * em);
 				}
 				if (!lineSet[id]) {
-					var line = document.getElementById(divs[i].id.replace(/^....(.+)-[0-9]+$/, 'refl$1'));
+					var line = document.getElementById(divs[i].id.replace(/^....(.+)-\d+$/, 'refl$1'));
 					var shift = ev.clientY - y - that.offsetTop;
 					line.style.left = (left + left1) + 'em';
 					if (isTop) {

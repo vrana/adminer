@@ -1,11 +1,8 @@
 <?php
-$possible_drivers[] = "PgSQL";
-$possible_drivers[] = "PDO_PgSQL";
-if (extension_loaded("pgsql") || extension_loaded("pdo_pgsql")) {
-	$drivers["pgsql"] = "PostgreSQL";
-}
+$drivers["pgsql"] = "PostgreSQL";
 
 if (isset($_GET["pgsql"])) {
+	$possible_drivers = array("PgSQL", "PDO_PgSQL");
 	define("DRIVER", "pgsql");
 	if (extension_loaded("pgsql")) {
 		class Min_DB {
@@ -218,7 +215,7 @@ AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema(
 		return true;
 	}
 	
-	function fields($table, $hidden = false) {
+	function fields($table) {
 		$return = array();
 		foreach (get_rows("SELECT a.attname AS field, format_type(a.atttypid, a.atttypmod) AS full_type, d.adsrc AS default, a.attnotnull, col_description(c.oid, a.attnum) AS comment
 FROM pg_class c
@@ -228,8 +225,8 @@ LEFT JOIN pg_attrdef d ON c.oid = d.adrelid AND a.attnum = d.adnum
 WHERE c.relname = " . q($table) . "
 AND n.nspname = current_schema()
 AND NOT a.attisdropped
-" . ($hidden ? "" : "AND a.attnum > 0") . "
-ORDER BY a.attnum < 0, a.attnum"
+AND a.attnum > 0
+ORDER BY a.attnum"
 		) as $row) {
 			//! collation, primary
 			ereg('(.*)(\\((.*)\\))?', $row["full_type"], $match);

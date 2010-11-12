@@ -5,13 +5,10 @@
 * @author Jakub Vrana
 */
 
-$possible_drivers[] = "SQLSRV";
-$possible_drivers[] = "MSSQL";
-if (extension_loaded("sqlsrv") || extension_loaded("mssql")) {
-	$drivers["mssql"] = "MS SQL";
-}
+$drivers["mssql"] = "MS SQL";
 
 if (isset($_GET["mssql"])) {
+	$possible_drivers = array("SQLSRV", "MSSQL");
 	define("DRIVER", "mssql");
 	if (extension_loaded("sqlsrv")) {
 		class Min_DB {
@@ -309,7 +306,7 @@ if (isset($_GET["mssql"])) {
 		return true;
 	}
 
-	function fields($table, $hidden = false) {
+	function fields($table) {
 		$return = array();
 		foreach (get_rows("SELECT c.*, t.name type, d.definition [default]
 FROM sys.all_columns c
@@ -399,7 +396,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 	}
 
 	function auto_increment() {
-		return " IDENTITY" . ($_POST["Auto_increment"] != "" ? "(" . preg_replace('~\\D+~', '', $_POST["Auto_increment"]) . ",1)" : "");
+		return " IDENTITY" . ($_POST["Auto_increment"] != "" ? "(" . (+$_POST["Auto_increment"]) . ",1)" : "");
 	}
 	
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {

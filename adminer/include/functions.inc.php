@@ -143,6 +143,14 @@ function confirm($count = "") {
 	return " onclick=\"return confirm('" . lang('Are you sure?') . ($count ? " (' + $count + ')" : "") . "');\"";
 }
 
+/** Escape string for JavaScript apostrophes
+* @param string
+* @return string
+*/
+function js_escape($string) {
+	return addcslashes($string, "\r\n'\\/"); // slash for <script>
+}
+
 /** Get INI boolean value
 * @param string
 * @return bool
@@ -575,8 +583,9 @@ function hidden_fields_get() {
 * @return array array($col => array())
 */
 function column_foreign_keys($table) {
+	global $adminer;
 	$return = array();
-	foreach (foreign_keys($table) as $foreign_key) {
+	foreach ($adminer->foreignKeys($table) as $foreign_key) {
 		foreach ($foreign_key["source"] as $val) {
 			$return[$val][] = $foreign_key;
 		}
@@ -593,11 +602,13 @@ function column_foreign_keys($table) {
 */
 function enum_input($type, $attrs, $field, $value) {
 	preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
+	$return = "";
 	foreach ($matches[1] as $i => $val) {
 		$val = stripcslashes(str_replace("''", "'", $val));
 		$checked = (is_int($value) ? $value == $i+1 : (is_array($value) ? in_array($i+1, $value) : $value === $val));
-		echo " <label><input type='$type'$attrs value='" . ($i+1) . "'" . ($checked ? ' checked' : '') . '>' . h($val) . '</label>';
+		$return .= " <label><input type='$type'$attrs value='" . ($i+1) . "'" . ($checked ? ' checked' : '') . '>' . h($val) . '</label>';
 	}
+	return $return;
 }
 
 /** Print edit input field
@@ -613,9 +624,7 @@ function input($field, $value, $function) {
 	$functions = (isset($_GET["select"]) ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
 	$attrs = " name='fields[$name]'";
 	if ($field["type"] == "enum") {
-		echo nbsp($functions[""]) . "<td>" . ($functions["orig"] ? "<label><input type='radio'$attrs value='-1' checked><i>$functions[orig]</i></label> " : "");
-		echo $adminer->editInput($_GET["edit"], $field, $attrs, $value);
-		enum_input("radio", $attrs, $field, $value);
+		echo nbsp($functions[""]) . "<td>" . $adminer->editInput($_GET["edit"], $field, $attrs, $value);
 	} else {
 		$first = 0;
 		foreach ($functions as $key => $val) {
@@ -624,7 +633,7 @@ function input($field, $value, $function) {
 			}
 			$first++;
 		}
-		$onchange = ($first ? " onchange=\"var f = this.form['function[" . addcslashes($name, "\r\n'\\") . "]']; if ($first > f.selectedIndex) f.selectedIndex = $first;\"" : "");
+		$onchange = ($first ? " onchange=\"var f = this.form['function[" . js_escape($name) . "]']; if ($first > f.selectedIndex) f.selectedIndex = $first;\"" : "");
 		$attrs .= $onchange;
 		echo (count($functions) > 1 ? html_select("function[$name]", $functions, !isset($function) || in_array($function, $functions) || isset($functions[$function]) ? $function : "") : nbsp(reset($functions))) . '<td>';
 		$input = $adminer->editInput($_GET["edit"], $field, $attrs, $value); // usage in call is without a table
@@ -643,7 +652,7 @@ function input($field, $value, $function) {
 			echo "<textarea " . ($jush != "sqlite" || ereg("\n", $value) ? "cols='50' rows='12'" : "cols='30' rows='1' style='height: 1.2em;'") . "$attrs onkeydown='return textareaKeydown(this, event);'>" . h($value) . '</textarea>'; // 1.2em - line-height
 		} else {
 			// int(3) is only a display hint
-			$maxlength = (!ereg('int', $field["type"]) && preg_match('~^([0-9]+)(,([0-9]+))?$~', $field["length"], $match) ? ((ereg("binary", $field["type"]) ? 2 : 1) * $match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) : ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0));
+			$maxlength = (!ereg('int', $field["type"]) && preg_match('~^(\\d+)(,(\\d+))?$~', $field["length"], $match) ? ((ereg("binary", $field["type"]) ? 2 : 1) * $match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) : ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0));
 			echo "<input value='" . h($value) . "'" . ($maxlength ? " maxlength='$maxlength'" : "") . (ereg('char|binary', $field["type"]) && $maxlength > 20 ? " size='40'" : "") . "$attrs>";
 		}
 	}
@@ -665,7 +674,7 @@ function process_input($field) {
 		if ($value == "") {
 			return "NULL";
 		}
-		return intval($value);
+		return +$value;
 	}
 	if ($field["auto_increment"] && $value == "") {
 		return null;
@@ -721,11 +730,11 @@ function search_tables() {
 */
 function dump_csv($row) {
 	foreach ($row as $key => $val) {
-		if (preg_match("~[\"\n,;]~", $val) || $val === "") {
+		if (preg_match("~[\"\n,;\t]~", $val) || $val === "") {
 			$row[$key] = '"' . str_replace('"', '""', $val) . '"';
 		}
 	}
-	echo implode(($_POST["format"] == "csv" ? "," : ";"), $row) . "\n";
+	echo implode(($_POST["format"] == "csv" ? "," : ($_POST["format"] == "tsv" ? "\t" : ";")), $row) . "\n";
 }
 
 /** Apply SQL function
@@ -785,7 +794,7 @@ function is_mail($email) {
 */
 function is_url($string) {
 	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component //! IDN
-	return (preg_match("~^(https?)://($domain?\\.)+$domain(:[0-9]+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string, $match) ? strtolower($match[1]) : ""); //! restrict path, query and fragment characters
+	return (preg_match("~^(https?)://($domain?\\.)+$domain(:\\d+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string, $match) ? strtolower($match[1]) : ""); //! restrict path, query and fragment characters
 }
 
 /** Print header for hidden fieldset (close by </div></fieldset>)

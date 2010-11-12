@@ -57,10 +57,11 @@ if ($_POST) {
 <p>
 <?php
 echo ($_POST["add_x"] || strpos($name, "\n")
-	? '<textarea name="name" rows="10" cols="40" onkeydown="return textareaKeydown(this, event);">' . h($name) . '</textarea><br>'
-	: '<input name="name" value="' . h($name) . '" maxlength="64">'
+	? '<textarea id="name" name="name" rows="10" cols="40" onkeydown="return textareaKeydown(this, event);">' . h($name) . '</textarea><br>'
+	: '<input id="name" name="name" value="' . h($name) . '" maxlength="64">'
 ) . "\n" . ($collations ? html_select("collation", array("" => "(" . lang('collation') . ")") + $collations, $collate) : "");
 ?>
+<script type='text/javascript'>document.getElementById('name').focus();</script>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php

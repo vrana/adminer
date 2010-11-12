@@ -2,7 +2,7 @@
 $TABLE = $_GET["select"];
 $table_status = table_status($TABLE);
 $indexes = indexes($TABLE);
-$fields = fields($TABLE, 1); // 1 - hidden
+$fields = fields($TABLE);
 $foreign_keys = column_foreign_keys($TABLE);
 
 $rights = array(); // privilege => 0
@@ -51,9 +51,9 @@ if ($_POST && !$error) {
 		}
 	}
 	if ($_POST["export"]) {
-		dump_headers($TABLE);
-		dump_table($TABLE, "");
-		if ($_POST["format"] != "sql") { // Editor doesn't send format
+		$adminer->dumpHeaders($TABLE);
+		$adminer->dumpTable($TABLE, "");
+		if (ereg("[ct]sv", $_POST["format"])) { // CSV or TSV
 			$row = array_keys($fields);
 			if ($select) {
 				$row = array();
@@ -68,14 +68,14 @@ if ($_POST && !$error) {
 			if (is_array($_POST["check"])) {
 				$where2[] = "($where_check)";
 			}
-			dump_data($TABLE, "INSERT", "SELECT $from" . ($where2 ? "\nWHERE " . implode(" AND ", $where2) : "") . $group_by);
+			$adminer->dumpData($TABLE, "INSERT", "SELECT $from" . ($where2 ? "\nWHERE " . implode(" AND ", $where2) : "") . $group_by);
 		} else {
 			$union = array();
 			foreach ($_POST["check"] as $val) {
 				// where is not unique so OR can't be used
 				$union[] = "(SELECT" . limit($from, "\nWHERE " . ($where ? implode(" AND ", $where) . " AND " : "") . where_check($val) . $group_by, 1) . ")";
 			}
-			dump_data($TABLE, "INSERT", implode(" UNION ALL ", $union));
+			$adminer->dumpData($TABLE, "INSERT", implode(" UNION ALL ", $union));
 		}
 		exit;
 	}
@@ -151,7 +151,7 @@ if ($_POST && !$error) {
 			preg_match_all('~(?>"[^"]*"|[^"\\r\\n]+)+~', $file, $matches);
 			$affected = count($matches[0]);
 			begin();
-			$separator = ($_POST["separator"] == "csv" ? "," : ";");
+			$separator = ($_POST["separator"] == "csv" ? "," : ($_POST["separator"] == "tsv" ? "\t" : ";"));
 			foreach ($matches[0] as $key => $val) {
 				preg_match_all("~((\"[^\"]*\")+|[^$separator]*)$separator~", $val . $separator, $matches2);
 				if (!$key && !array_diff($matches2[1], $cols)) { //! doesn't work with column names containing ",\n
@@ -220,7 +220,7 @@ if (!$columns) {
 		$page = floor(max(0, $found_rows - 1) / $limit);
 	}
 
-	$query = "SELECT" . limit((intval($limit) && $group && count($group) < count($select) && $jush == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . $from, ($where ? "\nWHERE " . implode(" AND ", $where) : "") . $group_by, ($limit != "" ? intval($limit) : null), ($page ? $limit * $page : 0), "\n");
+	$query = "SELECT" . limit((+$limit && $group && count($group) < count($select) && $jush == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . $from, ($where ? "\nWHERE " . implode(" AND ", $where) : "") . $group_by, ($limit != "" ? +$limit : null), ($page ? $limit * $page : 0), "\n");
 	echo $adminer->selectQuery($query);
 	
 	$result = $connection->query($query);
@@ -238,7 +238,7 @@ if (!$columns) {
 		}
 		// use count($rows) without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
 		if ($_GET["page"] != "last") {
-			$found_rows = (intval($limit) && $group && count($group) < count($select)
+			$found_rows = (+$limit && $group && count($group) < count($select)
 				? ($jush == "sql" ? $connection->result(" SELECT FOUND_ROWS()") : $connection->result("SELECT COUNT(*) FROM ($query) x")) // space to allow mysql.trace_mode
 				: count($rows)
 			);
@@ -254,15 +254,16 @@ if (!$columns) {
 			$names = array();
 			$functions = array();
 			reset($select);
-			$order = 1;
+			$rank = 1;
 			foreach ($rows[0] as $key => $val) {
 				$val = $_GET["columns"][key($select)];
 				$field = $fields[$select ? $val["col"] : $key];
-				$name = ($field ? $adminer->fieldName($field, $order) : "*");
+				$name = ($field ? $adminer->fieldName($field, $rank) : "*");
 				if ($name != "") {
-					$order++;
+					$rank++;
 					$names[$key] = $name;
-					echo '<th><a href="' . h(remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key) . ($_GET["order"][0] == $key && !$_GET["desc"][0] ? '&desc%5B0%5D=1' : '')) . '" onclick="return !ajaxMain(this.href, undefined, event);">' . apply_sql_function($val["fun"], $name) . "</a>"; //! columns looking like functions
+					$column = idf_escape($key);
+					echo '<th><a href="' . h(remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key) . ($order[0] == $column || $order[0] == $key || (!$order && $group[0] == $column) ? '&desc%5B0%5D=1' : '')) . '" onclick="return !ajaxMain(this.href, undefined, event);">' . apply_sql_function($val["fun"], $name) . "</a>"; // $order[0] == $key - COUNT(*) //! columns looking like functions
 				}
 				$functions[$key] = $val["fun"];
 				next($select);
@@ -300,19 +301,22 @@ if (!$columns) {
 							if ($val == "") {
 								$val = "&nbsp;";
 							} elseif ($text_length != "" && ereg('text|blob', $field["type"]) && is_utf8($val)) {
-								$val = shorten_utf8($val, max(0, intval($text_length))); // usage of LEFT() would reduce traffic but complicate query - expected average speedup: .001 s VS .01 s on local network
+								$val = shorten_utf8($val, max(0, +$text_length)); // usage of LEFT() would reduce traffic but complicate query - expected average speedup: .001 s VS .01 s on local network
 							} else {
 								$val = h($val);
 							}
 							
 							if (!$link) { // link related items
 								foreach ((array) $foreign_keys[$key] as $foreign_key) {
-									if (count($foreign_keys[$key]) == 1 || count($foreign_key["source"]) == 1) {
+									if (count($foreign_keys[$key]) == 1 || end($foreign_key["source"]) == $key) {
+										$link = "";
 										foreach ($foreign_key["source"] as $i => $source) {
 											$link .= where_link($i, $foreign_key["target"][$i], $rows[$n][$source]);
 										}
 										$link = h(($foreign_key["db"] != "" ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), ME) : ME) . 'select=' . urlencode($foreign_key["table"]) . $link); // InnoDB supports non-UNIQUE keys
-										break;
+										if (count($foreign_key["source"]) == 1) {
+											break;
+										}
 									}
 								}
 							}
@@ -362,7 +366,7 @@ if (!$columns) {
 		
 		if ($rows || $page) {
 			$exact_count = true;
-			if ($_GET["page"] != "last" && intval($limit) && count($group) >= count($select) && ($found_rows >= $limit || $page)) {
+			if ($_GET["page"] != "last" && +$limit && count($group) >= count($select) && ($found_rows >= $limit || $page)) {
 				$found_rows = $table_status["Rows"];
 				if (!isset($found_rows) || $where || 2 * $page * $limit > $found_rows || ($table_status["Engine"] == "InnoDB" && $found_rows < 1e4)) {
 					// slow with big tables
@@ -374,10 +378,10 @@ if (!$columns) {
 				}
 			}
 			echo "<p class='pages'>";
-			if (intval($limit) && $found_rows > $limit) {
+			if (+$limit && $found_rows > $limit) {
 				// display first, previous 4, next 4 and last page
 				$max_page = floor(($found_rows - 1) / $limit);
-				echo '<a href="' . h(remove_from_uri("page")) . "\" onclick=\"var page = +prompt('" . lang('Page') . "', '" . ($page + 1) . "'); if (!isNaN(page) &amp;&amp; page) ajaxMain(this.href + (page != 1 ? '&amp;page=' + (page - 1) : ''), undefined, event); return false;\">" . lang('Page') . "</a>:";
+				echo '<a href="' . h(remove_from_uri("page")) . "\" onclick=\"pageClick(this.href, +prompt('" . lang('Page') . "', '" . ($page + 1) . "'), event); return false;\">" . lang('Page') . "</a>:";
 				echo pagination(0, $page) . ($page > 5 ? " ..." : "");
 				for ($i = max(1, $page - 4); $i < min($max_page, $page + 5); $i++) {
 					echo pagination($i, $page);
@@ -397,13 +401,14 @@ if (!$columns) {
 <?php
 			}
 			print_fieldset("export", lang('Export'));
-			echo $adminer->dumpOutput(1, $adminer_export["output"]) . " " . $adminer->dumpFormat(1, $adminer_export["format"]); // 1 - select
+			$output = $adminer->dumpOutput();
+			echo ($output ? html_select("output", $output, $adminer_export["output"]) . " " : "") . html_select("format", $adminer->dumpFormat(), $adminer_export["format"]);
 			echo " <input type='submit' name='export' value='" . lang('Export') . "'>\n";
 			echo "</div></fieldset>\n";
 		}
 		print_fieldset("import", lang('CSV Import'), !$rows);
 		echo "<input type='hidden' name='token' value='$token'><input type='file' name='csv_file'> ";
-		echo html_select("separator", array("csv" => "CSV,", "csv;" => "CSV;"), $adminer_export["format"], 1); // 1 - select
+		echo html_select("separator", array("csv" => "CSV,", "csv;" => "CSV;", "tsv" => "TSV"), $adminer_export["format"], 1); // 1 - select
 		echo " <input type='submit' name='import' value='" . lang('Import') . "'>\n";
 		echo "</div></fieldset>\n";
 		
