@@ -258,4 +258,11 @@ $translations = array(
 	'Geometry' => '几何图形',
 	'File exists.' => '文件已存在。',
 	'Attachments' => '附件',
+	'%d query(s) executed OK.' => '%d 条查询已成功执行。',
+	'Show only errors' => '仅显示错误',
+	'Last page' => '末页',
+	'Refresh' => '刷新',
+	'Invalid schema.' => '非法模式。',
+	'Please use one of the extensions %s.' => '请使用这些扩展中的一个：%s。',
+	'now' => '现在',
 );
