@@ -265,4 +265,5 @@ $translations = array(
 	'Refresh' => 'リフレッシュ',
 	'Invalid schema.' => '無効なスキーマ',
 	'Please use one of the extensions %s.' => 'いずれかの拡張機能を使ってください %s',
+	'ltr' => 'ltr',
 );

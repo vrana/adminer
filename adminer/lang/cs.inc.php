@@ -20,6 +20,9 @@ $translations = array(
 	'%s version: %s through PHP extension %s' => 'Verze %s: %s přes PHP extenzi %s',
 	'Refresh' => 'Obnovit',
 	
+	// text direction
+	'ltr' => 'ltr',
+	
 	'Privileges' => 'Oprávnění',
 	'Create user' => 'Vytvořit uživatele',
 	'User has been dropped.' => 'Uživatel byl odstraněn.',

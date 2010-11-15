@@ -265,4 +265,5 @@ $translations = array(
 	'Invalid schema.' => 'Ongeldig schema.',
 	'Please use one of the extensions %s.' => 'Gebruik 1 van volgende extensies: %s.',
 	'now' => 'nu',
+	'ltr' => 'ltr',
 );

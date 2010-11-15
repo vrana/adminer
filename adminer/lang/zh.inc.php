@@ -265,4 +265,5 @@ $translations = array(
 	'Invalid schema.' => '非法模式。',
 	'Please use one of the extensions %s.' => '请使用这些扩展中的一个：%s。',
 	'now' => '现在',
+	'ltr' => 'ltr',
 );

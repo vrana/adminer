@@ -265,4 +265,5 @@ $translations = array(
 	'Refresh' => 'Frissítés',
 	'Invalid schema.' => 'Érvénytelen séma.',
 	'Please use one of the extensions %s.' => 'Használja a(z) %s kiterjesztést.',
+	'ltr' => 'ltr',
 );

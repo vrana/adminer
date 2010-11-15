@@ -265,4 +265,5 @@ $translations = array(
 	'Invalid schema.' => '無效的資料表結構。',
 	'Please use one of the extensions %s.' => '請使用下列其中一個 extension %s。',
 	'now' => '現在',
+	'ltr' => 'ltr',
 );

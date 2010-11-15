@@ -265,4 +265,5 @@ $translations = array(
 	'Invalid schema.' => 'Неправильная схема.',
 	'Please use one of the extensions %s.' => 'Используйте одно из этих расширений %s.',
 	'now' => 'сейчас',
+	'ltr' => 'ltr',
 );

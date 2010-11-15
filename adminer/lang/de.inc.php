@@ -265,4 +265,5 @@ $translations = array(
 	'Invalid schema.' => 'Schema nicht gültig.',
 	'Please use one of the extensions %s.' => 'Bitte einen der Dateitypen %s benutzen.',
 	'now' => 'jetzt',
+	'ltr' => 'ltr',
 );

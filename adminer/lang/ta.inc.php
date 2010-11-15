@@ -265,4 +265,5 @@ $translations = array(
 	'Refresh' => 'புதுப்பி (Refresh)',
 	'Invalid schema.' => 'அமைப்புமுறை ச‌ரியான‌த‌ல்ல‌ (Invalid Schema).',
 	'Please use one of the extensions %s.' => 'த‌ய‌வு செய்து ஒரு விரிவினை %s (extension) உப‌யோகிக்க‌வும்.',
+	'ltr' => 'ltr',
 );

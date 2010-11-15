@@ -265,4 +265,5 @@ $translations = array(
 	'Invalid schema.' => 'Neplatné schéma.',
 	'Please use one of the extensions %s.' => 'Prosím vyberte jednu z koncoviek %s.',
 	'now' => 'teraz',
+	'ltr' => 'ltr',
 );

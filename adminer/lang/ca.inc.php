@@ -265,4 +265,5 @@ $translations = array(
 	'Refresh' => 'Refresca',
 	'Invalid schema.' => 'Esquema invàlid.',
 	'Please use one of the extensions %s.' => 'Si us plau, utilitza una de les extensions %s.',
+	'ltr' => 'ltr',
 );

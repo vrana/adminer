@@ -265,4 +265,5 @@ $translations = array(
 	'Invalid schema.' => 'Sobimatu skeema.',
 	'Please use one of the extensions %s.' => 'Palun kasuta üht laiendustest %s.',
 	'now' => 'nüüd',
+	'ltr' => 'ltr',
 );
