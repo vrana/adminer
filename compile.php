@@ -60,20 +60,20 @@ function put_file($match) {
 }
 
 function put_file_lang($match) {
-	global $lang_ids, $project;
+	global $lang_ids, $project, $langs;
 	if ($_SESSION["lang"]) {
 		return "";
 	}
 	$return = "";
-	foreach (glob(dirname(__FILE__) . "/adminer/lang/*.inc.php") as $filename) {
-		include $filename; // assign $translations
+	foreach ($langs as $lang => $val) {
+		include dirname(__FILE__) . "/adminer/lang/$lang.inc.php"; // assign $translations
 		$translation_ids = array_flip($lang_ids); // default translation
 		foreach ($translations as $key => $val) {
 			if (isset($val)) {
 				$translation_ids[$lang_ids[$key]] = $val;
 			}
 		}
-		$return .= "\tcase \"" . basename($filename, '.inc.php') . '": $translations = array(';
+		$return .= "\tcase \"$lang\": \$translations = array(";
 		foreach ($translation_ids as $val) {
 			$return .= (is_array($val) ? "array('" . implode("', '", array_map('add_apo_slashes', $val)) . "')" : "'" . add_apo_slashes($val) . "'") . ", ";
 		}
