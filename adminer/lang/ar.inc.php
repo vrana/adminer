@@ -245,7 +245,6 @@ $translations = array(
 	'Type has been dropped.' => 'تم حذف النوع.',
 	'Type has been created.' => 'تم إنشاء النوع.',
 	'Double click on a value to modify it.' => 'أنقر نقرا مزدوجا على قيمة لتعديلها.',
-	'Increase Text length to modify this value.' => 'قم بزيادة طول النص لتعديل القيمة.',
 	'Use edit link to modify this value.' => 'إستعمل الرابط "تعديل" لتعديل هذه القيمة.',
 	'last' => 'الأخيرة',
 	'From server' => 'من الخادم',

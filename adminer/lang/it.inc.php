@@ -246,7 +246,6 @@ $translations = array(
 	'Type has been dropped.' => 'Tipo definito dall\'utente eliminato.',
 	'Type has been created.' => 'Tipo definito dall\'utente creato.',
 	'Double click on a value to modify it.' => 'Fai doppio click su un valore per modificarlo.',
-	'Increase Text length to modify this value.' => 'Aumenta la Lunghezza del testo per modificare questo valore.',
 	'Use edit link to modify this value.' => 'Usa il link modifica per modificare questo valore.',
 	'last' => 'ultima',
 	'From server' => 'Dal server',

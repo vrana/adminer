@@ -26,6 +26,14 @@ $limit = $adminer->selectLimitProcess();
 $from = ($select ? implode(", ", $select) : "*") . "\nFROM " . table($TABLE);
 $group_by = ($group && count($group) < count($select) ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : "");
 
+if ($_GET["val"] && is_ajax()) {
+	header("Content-Type: text/plain; charset=utf-8");
+	foreach ($_GET["val"] as $unique_idf => $row) {
+		echo $connection->result("SELECT" . limit(idf_escape(key($row)) . " FROM " . table($TABLE), " WHERE " . where_check($unique_idf) . ($where ? " AND " . implode(" AND ", $where) : "") . ($order ? " ORDER BY " . implode(", ", $order) : ""), 1));
+	}
+	exit;
+}
+
 if ($_POST && !$error) {
 	$where_check = "(" . implode(") OR (", array_map('where_check', (array) $_POST["check"])) . ")";
 	$primary = $unselected = null;
@@ -192,7 +200,7 @@ $adminer->selectLinks($table_status, $set);
 if (!$columns) {
 	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "." : ": " . error()) . "\n";
 } else {
-	echo "<form action='' id='form'>\n";
+	echo "<form action='' id='form' onsubmit='return !ajaxForm(this);'>\n";
 	echo "<div style='display: none;'>";
 	hidden_fields_get();
 	echo (DB != "" ? '<input type="hidden" name="db" value="' . h(DB) . '">' . (isset($_GET["ns"]) ? '<input type="hidden" name="ns" value="' . h($_GET["ns"]) . '">' : "") : ""); // not used in Editor
@@ -255,7 +263,7 @@ if (!$columns) {
 					$rank++;
 					$names[$key] = $name;
 					$column = idf_escape($key);
-					echo '<th><a href="' . h(remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key) . ($order[0] == $column || $order[0] == $key || (!$order && $group[0] == $column) ? '&desc%5B0%5D=1' : '')) . '">' . apply_sql_function($val["fun"], $name) . "</a>"; // $order[0] == $key - COUNT(*) //! columns looking like functions
+					echo '<th><a href="' . h(remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key) . ($order[0] == $column || $order[0] == $key || (!$order && $group[0] == $column) ? '&desc%5B0%5D=1' : '')) . '" onclick="return !ajaxMain(this.href, undefined, event);">' . apply_sql_function($val["fun"], $name) . "</a>"; // $order[0] == $key - COUNT(*) //! columns looking like functions
 				}
 				$functions[$key] = $val["fun"];
 				next($select);
@@ -340,11 +348,11 @@ if (!$columns) {
 						$value = $_POST["val"][$unique_idf][bracket_escape($key)];
 						$h_value = h(isset($value) ? $value : $row[$key]);
 						$long = strpos($val, "<i>...</i>");
-						$editable = is_utf8($val) && !$long && $rows[$n][$key] == $row[$key] && !$functions[$key];
+						$editable = is_utf8($val) && $rows[$n][$key] == $row[$key] && !$functions[$key];
 						$text = ereg('text|lob', $field["type"]);
 						echo (($_GET["modify"] && $editable) || isset($value)
 							? "<td>" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "' onkeydown='return textareaKeydown(this, event);'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>")
-							: "<td id='$id' ondblclick=\"" . ($editable ? "selectDblClick(this, event" . ($text ? ", 1" : "") . ")" : "alert('" . h($long ? lang('Increase Text length to modify this value.') : lang('Use edit link to modify this value.')) . "')") . ";\">" . $adminer->selectVal($val, $link, $field)
+							: "<td id='$id' ondblclick=\"" . ($editable ? "selectDblClick(this, event" . ($long ? ", 2" : ($text ? ", 1" : "")) . ")" : "alert('" . h(lang('Use edit link to modify this value.')) . "')") . ";\">" . $adminer->selectVal($val, $link, $field)
 						);
 					}
 				}
@@ -373,21 +381,22 @@ if (!$columns) {
 			if (+$limit && $found_rows > $limit) {
 				// display first, previous 4, next 4 and last page
 				$max_page = floor(($found_rows - 1) / $limit);
-				echo '<a href="' . h(remove_from_uri("page")) . "\" onclick=\"var page = +prompt('" . lang('Page') . "', '" . ($page + 1) . "'); if (!isNaN(page) &amp;&amp; page) location.href = this.href + (page != 1 ? '&amp;page=' + (page - 1) : ''); return false;\">" . lang('Page') . "</a>:" . pagination(0, $page) . ($page > 5 ? " ..." : "");
+				echo '<a href="' . h(remove_from_uri("page")) . "\" onclick=\"pageClick(this.href, +prompt('" . lang('Page') . "', '" . ($page + 1) . "'), event); return false;\">" . lang('Page') . "</a>:";
+				echo pagination(0, $page) . ($page > 5 ? " ..." : "");
 				for ($i = max(1, $page - 4); $i < min($max_page, $page + 5); $i++) {
 					echo pagination($i, $page);
 				}
-				echo ($page + 5 < $max_page ? " ..." : "") . ($exact_count ? pagination($max_page, $page) : ' <a href="' . h(remove_from_uri() . "&page=last") . '">' . lang('last') . "</a>");
+				echo ($page + 5 < $max_page ? " ..." : "") . ($exact_count ? pagination($max_page, $page) : ' <a href="' . h(remove_from_uri() . "&page=last") . '" onclick="return !ajaxMain(this.href, undefined, event);">' . lang('last') . "</a>");
 			}
 			echo " (" . ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) . ") " . checkbox("all", 1, 0, lang('whole result')) . "\n";
 			
 			if (!information_schema(DB)) {
 				?>
 <fieldset><legend><?php echo lang('Edit'); ?></legend><div>
-<input type="submit" value="<?php echo lang('Save'); ?>" title="<?php echo lang('Double click on a value to modify it.'); ?>">
-<input type="submit" name="edit" value="<?php echo lang('Edit'); ?>">
-<input type="submit" name="clone" value="<?php echo lang('Clone'); ?>">
-<input type="submit" name="delete" value="<?php echo lang('Delete'); ?>"<?php echo confirm("(this.form['all'].checked ? $found_rows : formChecked(this, /check/))"); ?>>
+<input type="submit" id="save" value="<?php echo lang('Save'); ?>" title="<?php echo lang('Double click on a value to modify it.'); ?>" onclick="return !ajaxForm(this.form);">
+<input type="submit" name="edit" value="<?php echo lang('Edit'); ?>" onclick="return !ajaxForm(this.form, 'edit=1');">
+<input type="submit" name="clone" value="<?php echo lang('Clone'); ?>" onclick="return !ajaxForm(this.form, 'clone=1');">
+<input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?> (' + (this.form['all'].checked ? <?php echo $found_rows; ?> : formChecked(this, /check/)) + ')') &amp;&amp; !ajaxForm(this.form, 'delete=1');">
 </div></fieldset>
 <?php
 			}

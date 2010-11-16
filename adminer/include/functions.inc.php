@@ -351,6 +351,13 @@ function auth_url($driver, $server, $username) {
 	;
 }
 
+/** Find whether it is an AJAX request
+* @return bool
+*/
+function is_ajax() {
+	return ($_SERVER["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest");
+}
+
 /** Send Location header and exit
 * @param string null to only set a message
 * @param string
@@ -362,8 +369,15 @@ function redirect($location, $message = null) {
 		$_SESSION["messages"][] = $message;
 	}
 	if (isset($location)) {
-		header("Location: " . ($location != "" ? $location : "."));
-		exit;
+		if ($location == "") {
+			$location = ".";
+		}
+		if (!is_ajax()) {
+			header("Location: $location");
+			exit;
+		}
+		header("X-AJAX-Redirect: $location");
+		$_POST = array();
 	}
 }
 
@@ -448,7 +462,7 @@ function remove_from_uri($param = "") {
 * @return string
 */
 function pagination($page, $current) {
-	return " " . ($page == $current ? $page + 1 : '<a href="' . h(remove_from_uri("page") . ($page ? "&page=$page" : "")) . '">' . ($page + 1) . "</a>");
+	return " " . ($page == $current ? $page + 1 : '<a href="' . h(remove_from_uri("page") . ($page ? "&page=$page" : "")) . '" onclick="return !ajaxMain(this.href, undefined, event);">' . ($page + 1) . "</a>");
 }
 
 /** Get file contents from $_FILES
@@ -486,6 +500,25 @@ function odd($return = ' class="odd"') {
 		$i = -1;
 	}
 	return ($i++ % 2 ? $return : '');
+}
+
+/** Print one row in JSON object
+* @param string or "" to close the object
+* @param string
+* @return null
+*/
+function json_row($key, $val = null) {
+	static $first = true;
+	if ($first) {
+		echo "{";
+	}
+	if ($key != "") {
+		echo ($first ? "" : ",") . "\n\t\"" . addcslashes($key, '\\"') . '": ' . (isset($val) ? '"' . addcslashes($val, '\\"') . '"' : 'undefined');
+		$first = false;
+	} else {
+		echo "\n}\n";
+		$first = true;
+	}
 }
 
 /** Check whether the string is in UTF-8

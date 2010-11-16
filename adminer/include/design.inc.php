@@ -10,9 +10,10 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	global $LANG, $HTTPS, $adminer, $connection, $drivers;
 	header("Content-Type: text/html; charset=utf-8");
 	$adminer->headers();
-	$title_all = $title . ($title2 != "" ? ": " . h($title2) : "");
-	$protocol = ($HTTPS ? "https" : "http");
-	?>
+	if (!is_ajax()) {
+		$title_all = $title . ($title2 != "" ? ": " . h($title2) : "");
+		$protocol = ($HTTPS ? "https" : "http");
+		?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html lang="<?php echo $LANG; ?>" dir="<?php echo lang('ltr'); ?>">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -31,33 +32,35 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 
 <div id="content">
 <?php
-	if (isset($breadcrumb)) {
-		$link = substr(preg_replace('~(username|db|ns)=[^&]*&~', '', ME), 0, -1);
-		echo '<p id="breadcrumb"><a href="' . ($link ? h($link) : ".") . '">' . $drivers[DRIVER] . '</a> &raquo; ';
-		$link = substr(preg_replace('~(db|ns)=[^&]*&~', '', ME), 0, -1);
-		$server = (SERVER != "" ? h(SERVER) : lang('Server'));
-		if ($breadcrumb === false) {
-			echo "$server\n";
-		} else {
-			echo "<a href='" . ($link ? h($link) : ".") . "'>$server</a> &raquo; ";
-			if ($_GET["ns"] != "" || (DB != "" && is_array($breadcrumb))) {
-				echo '<a href="' . h($link . "&db=" . urlencode(DB) . (support("scheme") ? "&ns=" : "")) . '">' . h(DB) . '</a> &raquo; ';
-			}
-			if (is_array($breadcrumb)) {
-				if ($_GET["ns"] != "") {
-					echo '<a href="' . h(substr(ME, 0, -1)) . '">' . h($_GET["ns"]) . '</a> &raquo; ';
+		if (isset($breadcrumb)) {
+			$link = substr(preg_replace('~(username|db|ns)=[^&]*&~', '', ME), 0, -1);
+			echo '<p id="breadcrumb"><a href="' . ($link ? h($link) : ".") . '">' . $drivers[DRIVER] . '</a> &raquo; ';
+			$link = substr(preg_replace('~(db|ns)=[^&]*&~', '', ME), 0, -1);
+			$server = (SERVER != "" ? h(SERVER) : lang('Server'));
+			if ($breadcrumb === false) {
+				echo "$server\n";
+			} else {
+				echo "<a href='" . ($link ? h($link) : ".") . "'>$server</a> &raquo; ";
+				if ($_GET["ns"] != "" || (DB != "" && is_array($breadcrumb))) {
+					echo '<a href="' . h($link . "&db=" . urlencode(DB) . (support("scheme") ? "&ns=" : "")) . '">' . h(DB) . '</a> &raquo; ';
 				}
-				foreach ($breadcrumb as $key => $val) {
-					$desc = (is_array($val) ? $val[1] : $val);
-					if ($desc != "") {
-						echo '<a href="' . h(ME . "$key=") . urlencode(is_array($val) ? $val[0] : $val) . '">' . h($desc) . '</a> &raquo; ';
+				if (is_array($breadcrumb)) {
+					if ($_GET["ns"] != "") {
+						echo '<a href="' . h(substr(ME, 0, -1)) . '">' . h($_GET["ns"]) . '</a> &raquo; ';
+					}
+					foreach ($breadcrumb as $key => $val) {
+						$desc = (is_array($val) ? $val[1] : $val);
+						if ($desc != "") {
+							echo '<a href="' . h(ME . "$key=") . urlencode(is_array($val) ? $val[0] : $val) . '">' . h($desc) . '</a> &raquo; ';
+						}
 					}
 				}
+				echo "$title\n";
 			}
-			echo "$title\n";
 		}
+		echo "<h2>$title_all</h2>\n";
+		echo "<div id='main'>\n";
 	}
-	echo "<h2>$title_all</h2>\n";
 	restart_session();
 	if ($_SESSION["messages"]) {
 		echo "<div class='message'>" . implode("</div>\n<div class='message'>", $_SESSION["messages"]) . "</div>\n";
@@ -78,7 +81,9 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 */
 function page_footer($missing = "") {
 	global $adminer;
-	?>
+	if (!is_ajax()) {
+		?>
+</div>
 </div>
 
 <?php switch_lang(); ?>
@@ -86,4 +91,5 @@ function page_footer($missing = "") {
 <?php $adminer->navigation($missing); ?>
 </div>
 <?php
+	}
 }

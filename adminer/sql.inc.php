@@ -70,7 +70,7 @@ if (!$error && $_POST) {
 						$empty = false;
 						$q = substr($query, 0, $match[0][1]);
 						$commands++;
-						$print = "<pre class='jush-$jush' id='sql-$commands'>" . shorten_utf8(trim($q), 1000) . "</pre>\n";
+						$print = "<pre id='sql-$commands'><code class='jush-$jush'>" . shorten_utf8(trim($q), 1000) . "</code></pre>\n";
 						if (!$_POST["only_errors"]) {
 							echo $print;
 							ob_flush();

@@ -22,8 +22,7 @@ function bodyLoad(version, protocol) {
 			if (window.jushLinks) {
 				jush.custom_links = jushLinks;
 			}
-			jush.highlight_tag('pre', 0);
-			jush.highlight_tag('code');
+			jush.highlight_tag('code', 0);
 		}
 	};
 	script.onreadystatechange = function () {
@@ -32,14 +31,6 @@ function bodyLoad(version, protocol) {
 		}
 	};
 	document.body.appendChild(script);
-}
-
-/** Get value of select
-* @param HTMLSelectElement
-* @return string
-*/
-function selectValue(select) {
-	return select.value || select.options[select.selectedIndex].text;
 }
 
 /** Get value of dynamically created form field

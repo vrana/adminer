@@ -246,7 +246,6 @@ $translations = array(
 	'Type has been dropped.' => 'Typ gelöscht.',
 	'Type has been created.' => 'Typ erstellt.',
 	'Double click on a value to modify it.' => 'Doppelklick zum Bearbeiten des Wertes.',
-	'Increase Text length to modify this value.' => 'Vergrössern Sie die Textlänge um den Wert ändern zu können.',
 	'Use edit link to modify this value.' => 'Benutzen Sie den Link zum editieren dieses Wertes.',
 	'last' => 'letzte',
 	'From server' => 'Auf Server',
