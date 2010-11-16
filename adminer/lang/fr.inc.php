@@ -1,7 +1,7 @@
 <?php
 $translations = array(
 	'Login' => 'Authentification',
-	'Logout successful.' => 'Au revoir!',
+	'Logout successful.' => 'Au revoir !',
 	'Invalid credentials.' => 'Authentification échouée.',
 	'Server' => 'Serveur',
 	'Username' => 'Utilisateur',
@@ -139,7 +139,7 @@ $translations = array(
 	'Grant' => 'Grant',
 	'Revoke' => 'Revoke',
 	'%s version: %s through PHP extension %s' => 'Version de %s : %s via l\'extension PHP %s',
-	'Logged as: %s' => 'Authentifié en tant que %s',
+	'Logged as: %s' => 'Authentifié en tant que : %s',
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Données POST trop grandes. Réduisez la taille des données ou augmentez la valeur de %s dans la configuration de PHP.',
 	'Move up' => 'Déplacer vers le haut',
 	'Move down' => 'Déplacer vers le bas',

@@ -258,4 +258,12 @@ $translations = array(
 	'Geometry' => 'Geometria',
 	'File exists.' => 'Il file esiste già.',
 	'Attachments' => 'Allegati',
+	'%d query(s) executed OK.' => array('%d query eseguita con successo.', '%d query eseguite con successo.'),
+	'Show only errors' => 'Mostra solo gli errori',
+	'Last page' => 'Ultima pagina',
+	'Refresh' => 'Aggiorna',
+	'Invalid schema.' => 'Schema non valido.',
+	'Please use one of the extensions %s.' => 'Usa una delle estensioni %s.',
+	'now' => 'adesso',
+	'ltr' => 'ltr',
 );
