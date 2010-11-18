@@ -301,7 +301,7 @@ function ajaxForm(form, data) {
 function selectDblClick(td, event, text) {
 	td.ondblclick = function () { };
 	var pos = event.rangeOffset;
-	var value = (td.firstChild.firstChild ? td.firstChild.firstChild.data : (td.firstChild.alt ? td.firstChild.alt : td.firstChild.data));
+	var value = (td.firstChild.alt ? td.firstChild.alt : (td.textContent ? td.textContent : td.innerText));
 	var input = document.createElement(text ? 'textarea' : 'input');
 	input.style.width = Math.max(td.clientWidth - 14, 20) + 'px'; // 14 = 2 * (td.border + td.padding + input.border)
 	if (text) {
