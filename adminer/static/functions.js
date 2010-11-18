@@ -221,7 +221,7 @@ function ajaxSetHtml(url) {
 var ajaxState = 0;
 var ajaxTimeout;
 
-/** Safely load content to #main
+/** Safely load content to #content
 * @param string
 * @param [string]
 * @return XMLHttpRequest or false in case of an error
@@ -230,12 +230,12 @@ function ajaxSend(url, data) {
 	var currentState = ++ajaxState;
 	clearTimeout(ajaxTimeout);
 	ajaxTimeout = setTimeout(function () {
-		setHtml('main', '<img src="../adminer/static/loader.gif" alt="">');
+		setHtml('content', '<img src="../adminer/static/loader.gif" alt="">');
 	}, 500); // defer displaying loader
 	return ajax(url, function (text) {
 		if (currentState == ajaxState) {
 			clearTimeout(ajaxTimeout);
-			setHtml('main', text);
+			setHtml('content', text);
 			if (window.jush) {
 				jush.highlight_tag('code', 0);
 			}
@@ -243,7 +243,7 @@ function ajaxSend(url, data) {
 	}, data);
 }
 
-/** Load content to #main
+/** Load content to #content
 * @param string
 * @param [string]
 * @param [MouseEvent]
