@@ -337,7 +337,7 @@ function selectDblClick(td, event, text) {
 	input.selectionEnd = pos;
 	if (document.selection) {
 		var range = document.selection.createRange();
-		range.moveStart('character', pos);
+		range.moveEnd('character', -input.value.length + pos);
 		range.select();
 	}
 }
