@@ -152,7 +152,7 @@ function selectAddRow(field) {
 * @param HTMLInputElement submit button
 * @return boolean
 */
-function textareaKeydown(target, event, tab, button) {
+function textareaKeypress(target, event, tab, button) {
 	if (tab && event.keyCode == 9 && !event.shiftKey && !event.altKey && !event.ctrlKey && !event.metaKey) {
 		// inspired by http://pallieter.org/Projects/insertTab/
 		if (target.setSelectionRange) {
@@ -310,8 +310,8 @@ function selectDblClick(td, event, text) {
 			rows++;
 		});
 		input.rows = rows;
-		input.onkeydown = function (event) {
-			return textareaKeydown(input, event || window.event, false, document.getElementById('save'));
+		input.onkeypress = function (event) {
+			return textareaKeypress(input, event || window.event, false, document.getElementById('save'));
 		};
 	}
 	if (document.selection) {
