@@ -119,9 +119,12 @@ if (isset($_GET["oracle"])) {
 			var $extension = "PDO_OCI";
 			
 			function connect($server, $username, $password) {
+				$this->dsn("oci:dbname=//$server", $username, $password);
+				return true;
 			}
 			
 			function select_db($database) {
+				return true;
 			}
 		}
 		
