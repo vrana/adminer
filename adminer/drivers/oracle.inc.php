@@ -17,7 +17,7 @@ if (isset($_GET["oracle"])) {
 			}
 			
 			function connect($server, $username, $password) {
-				$this->_link = @oci_new_connect($username, $password, $server); //! AL32UTF8
+				$this->_link = @oci_new_connect($username, $password, $server, "AL32UTF8");
 				if ($this->_link) {
 					$this->server_info = oci_server_version($this->_link);
 					return true;
@@ -119,7 +119,7 @@ if (isset($_GET["oracle"])) {
 			var $extension = "PDO_OCI";
 			
 			function connect($server, $username, $password) {
-				$this->dsn("oci:dbname=//$server", $username, $password);
+				$this->dsn("oci:dbname=//$server;charset=AL32UTF8", $username, $password);
 				return true;
 			}
 			
