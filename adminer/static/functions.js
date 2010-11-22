@@ -197,6 +197,10 @@ function ajax(url, callback, data) {
 				if (redirect && history.replaceState) {
 					history.replaceState(null, '', redirect);
 				}
+				var title = xmlhttp.getResponseHeader('X-AJAX-Title');
+				if (title) {
+					document.title = decodeURIComponent(title);
+				}
 				callback(xmlhttp.responseText);
 			}
 		};

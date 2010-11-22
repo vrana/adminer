@@ -11,7 +11,10 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	header("Content-Type: text/html; charset=utf-8");
 	$adminer->headers();
 	$title_all = $title . ($title2 != "" ? ": " . h($title2) : "");
-	if (!is_ajax()) {
+	$title_page = $title_all . (SERVER != "" && SERVER != "localhost" ? h(" - " . SERVER) : "") . " - " . $adminer->name();
+	if (is_ajax()) {
+		header("X-AJAX-Title: " . rawurlencode($title_page));
+	} else {
 		$protocol = ($HTTPS ? "https" : "http");
 		?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
@@ -19,7 +22,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Script-Type" content="text/javascript">
 <meta name="robots" content="noindex">
-<title><?php echo $title_all . (SERVER != "" && SERVER != "localhost" ? h(" - " . SERVER) : "") . " - " . $adminer->name(); ?></title>
+<title><?php echo $title_page; ?></title>
 <link rel="shortcut icon" type="image/x-icon" href="../adminer/static/favicon.ico">
 <link rel="stylesheet" type="text/css" href="../adminer/static/default.css<?php // Ondrej Valka, http://valka.info ?>">
 <?php if (file_exists("adminer.css")) { ?>
