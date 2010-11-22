@@ -807,11 +807,10 @@ function print_fieldset($id, $legend, $visible = false) {
 	echo "<fieldset><legend><a href='#fieldset-$id' onclick=\"return !toggle('fieldset-$id');\">$legend</a></legend><div id='fieldset-$id'" . ($visible ? "" : " class='hidden'") . ">\n";
 }
 
-/** Enclose $string to <b> if $bold is true
-* @param string
+/** Return class='active' if $bold is true
 * @param bool
 * @return string
 */
-function bold($string, $bold) {
-	return ($bold ? "<b>$string</b>" : $string);
+function bold($bold) {
+	return ($bold ? " class='active'" : "");
 }

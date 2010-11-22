@@ -103,7 +103,7 @@ document.getElementById('username').focus();
 			$links["edit"] = lang('New item');
 		}
 		foreach ($links as $key => $val) {
-			echo " <a href='" . h(ME) . "$key=" . urlencode($tableStatus["Name"]) . ($key == "edit" ? $set : "") . "'>" . bold($val, isset($_GET[$key])) . "</a>";
+			echo " <a href='" . h(ME) . "$key=" . urlencode($tableStatus["Name"]) . ($key == "edit" ? $set : "") . "'" . bold(isset($_GET[$key])) . ">$val</a>";
 		}
 		echo "\n";
 	}
@@ -717,9 +717,9 @@ DROP PROCEDURE adminer_alter;
 <p class="logout">
 <?php
 			if (DB == "" || !$missing) {
-				echo "<a href='" . h(ME) . "sql='>" . bold(lang('SQL command'), isset($_GET["sql"])) . "</a>\n";
+				echo "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"])) . ">" . lang('SQL command') . "</a>\n";
 				if (support("dump")) {
-					echo "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "'>" . bold(lang('Dump'), isset($_GET["dump"])) . "</a>\n";
+					echo "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "'" . bold(isset($_GET["dump"])) . ">" . lang('Dump') . "</a>\n";
 				}
 			}
 			?>
@@ -741,7 +741,7 @@ DROP PROCEDURE adminer_alter;
 					}
 				}
 				if ($_GET["ns"] !== "" && !$missing) {
-					echo '<p><a href="' . h(ME) . 'create=">' . bold(lang('Create new table'), $_GET["create"] === "") . "</a>\n";
+					echo '<p><a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create new table') . "</a>\n";
 					$tables = tables_list();
 					if (!$tables) {
 						echo "<p class='message'>" . lang('No tables.') . "\n";
@@ -775,8 +775,8 @@ DROP PROCEDURE adminer_alter;
 	function tablesPrint($tables) {
 		echo "<p id='tables'>\n";
 		foreach ($tables as $table => $type) {
-			echo '<a href="' . h(ME) . 'select=' . urlencode($table) . '">' . bold(lang('select'), $_GET["select"] == $table) . '</a> ';
-			echo '<a href="' . h(ME) . 'table=' . urlencode($table) . '">' . bold($this->tableName(array("Name" => $table)), $_GET["table"] == $table) . "</a><br>\n"; //! Adminer::tableName may work with full table status
+			echo '<a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table) . ">" . lang('select') . "</a> ";
+			echo '<a href="' . h(ME) . 'table=' . urlencode($table) . '"' . bold($_GET["table"] == $table) . ">" . $this->tableName(array("Name" => $table)) . "</a><br>\n"; //! Adminer::tableName may work with full table status
 		}
 	}
 	
