@@ -26,7 +26,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <link rel="stylesheet" type="text/css" href="adminer.css">
 <?php } ?>
 
-<body class="<?php echo lang('ltr'); ?>" onload="bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 0, 3) : ""); ?>', '<?php echo $protocol; ?>');<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verifyVersion('$protocol');"); ?>">
+<body class="<?php echo lang('ltr'); ?>" onclick="return bodyClick(event<?php echo (isset($_GET["username"]) ? ", '" . js_escape(DB) . "'" : ""); ?>);" onload="bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 0, 3) : ""); ?>', '<?php echo $protocol; ?>');<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verifyVersion('$protocol');"); ?>">
 <script type="text/javascript" src="../adminer/static/functions.js"></script>
 <script type="text/javascript" src="static/editing.js"></script>
 

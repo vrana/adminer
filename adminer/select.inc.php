@@ -263,7 +263,7 @@ if (!$columns) {
 					$rank++;
 					$names[$key] = $name;
 					$column = idf_escape($key);
-					echo '<th><a href="' . h(remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key) . ($order[0] == $column || $order[0] == $key || (!$order && $group[0] == $column) ? '&desc%5B0%5D=1' : '')) . '" onclick="return !ajaxMain(this.href, undefined, event);">' . apply_sql_function($val["fun"], $name) . "</a>"; // $order[0] == $key - COUNT(*) //! columns looking like functions
+					echo '<th><a href="' . h(remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key) . ($order[0] == $column || $order[0] == $key || (!$order && $group[0] == $column) ? '&desc%5B0%5D=1' : '')) . '">' . apply_sql_function($val["fun"], $name) . "</a>"; // $order[0] == $key - COUNT(*) //! columns looking like functions
 				}
 				$functions[$key] = $val["fun"];
 				next($select);
@@ -386,7 +386,7 @@ if (!$columns) {
 				for ($i = max(1, $page - 4); $i < min($max_page, $page + 5); $i++) {
 					echo pagination($i, $page);
 				}
-				echo ($page + 5 < $max_page ? " ..." : "") . ($exact_count ? pagination($max_page, $page) : ' <a href="' . h(remove_from_uri() . "&page=last") . '" onclick="return !ajaxMain(this.href, undefined, event);">' . lang('last') . "</a>");
+				echo ($page + 5 < $max_page ? " ..." : "") . ($exact_count ? pagination($max_page, $page) : ' <a href="' . h(remove_from_uri() . "&page=last") . '">' . lang('last') . "</a>");
 			}
 			echo " (" . ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) . ") " . checkbox("all", 1, 0, lang('whole result')) . "\n";
 			

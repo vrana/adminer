@@ -115,7 +115,7 @@ function setHtml(id, html) {
 function pageClick(href, page, event) {
 	if (!isNaN(page) && page) {
 		href += (page != 1 ? '&page=' + (page - 1) : '');
-		if (!ajaxMain(href, undefined, event)) {
+		if (!ajaxMain(href, '', event)) {
 			location.href = href;
 		}
 	}
@@ -250,7 +250,7 @@ function ajaxSend(url, data) {
 * @return XMLHttpRequest or false in case of an error
 */
 function ajaxMain(url, data, event) {
-	if (!history.pushState || (event && event.ctrlKey)) {
+	if (!history.pushState || (event && (event.ctrlKey || event.shiftKey || event.metaKey))) {
 		return false;
 	}
 	history.pushState(data, '', url);
@@ -286,9 +286,8 @@ function ajaxForm(form, data) {
 	}
 	if (form.method == 'post') {
 		return ajaxMain((/\?/.test(form.action) ? form.action : location.href), params.join('&')); // ? - always part of Adminer URL
-	} else {
-		return ajaxMain((form.action || location.pathname) + '?' + params.join('&'));
 	}
+	return ajaxMain((form.action || location.pathname) + '?' + params.join('&'));
 }
 
 
@@ -339,5 +338,34 @@ function selectDblClick(td, event, text) {
 		var range = document.selection.createRange();
 		range.moveEnd('character', -input.value.length + pos);
 		range.select();
+	}
+}
+
+
+
+/** Load link by AJAX
+* @param MouseEvent
+* @param [string]
+* @return bool
+*/
+function bodyClick(event, db) {
+	var el = event.target || event.srcElement;
+	if (/^a$/i.test(el.parentNode.tagName)) {
+		el = el.parentNode;
+	}
+	if (/^a$/i.test(el.tagName) && !/^https?:/i.test(el.getAttribute('href')) && !el.onclick && /[&?]username=/.exec(el.href)) {
+		var match = /&db=([^&]*)/.exec(el.href);
+		if (db === (match ? match[1] : '') && ajaxMain(el.href, '', event)) {
+			var as = document.getElementById('menu').getElementsByTagName('a');
+			for (var i=0; i < as.length; i++) {
+				if (as[i].className == 'active') {
+					as[i].className = '';
+				} else if (el.href == as[i].href) {
+					as[i].className = 'active';
+				}
+			}
+			//! modify Export link
+			return false;
+		}
 	}
 }
