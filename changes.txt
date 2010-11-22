@@ -1,6 +1,6 @@
 Adminer 3.2.0-dev:
 Get long texts and slow information by AJAX
-All operations on select page by AJAX in browsers with support for history.pushState
+All links and some forms by AJAX in browsers with support for history.pushState
 
 Adminer 3.1.0 (released 2010-11-16):
 TSV export and import

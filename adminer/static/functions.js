@@ -236,6 +236,14 @@ function ajaxSend(url, data) {
 		if (currentState == ajaxState) {
 			clearTimeout(ajaxTimeout);
 			setHtml('content', text);
+			var content = document.getElementById('content');
+			var scripts = content.getElementsByTagName('script');
+			var length = scripts.length; // required to avoid infinite loop
+			for (var i=0; i < length; i++) {
+				var script = document.createElement('script');
+				script.text = scripts[i].text;
+				content.appendChild(script);
+			}
 			if (window.jush) {
 				jush.highlight_tag('code', 0);
 			}
