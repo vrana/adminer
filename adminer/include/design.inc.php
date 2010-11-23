@@ -14,6 +14,9 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	$title_page = $title_all . (SERVER != "" && SERVER != "localhost" ? h(" - " . SERVER) : "") . " - " . $adminer->name();
 	if (is_ajax()) {
 		header("X-AJAX-Title: " . rawurlencode($title_page));
+		if ($_GET["ajax"]) {
+			header("X-AJAX-Redirect: " . remove_from_uri("ajax"));
+		}
 	} else {
 		$protocol = ($HTTPS ? "https" : "http");
 		?>

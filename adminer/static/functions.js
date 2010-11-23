@@ -248,6 +248,17 @@ function ajaxSend(url, data) {
 				script.text = scripts[i].text;
 				content.appendChild(script);
 			}
+			
+			var as = document.getElementById('menu').getElementsByTagName('a');
+			for (var i=0; i < as.length; i++) {
+				if (as[i].className == 'active') {
+					as[i].className = '';
+				} else if (location.href == as[i].href) {
+					as[i].className = 'active';
+				}
+			}
+			//! modify Export link
+			
 			if (window.jush) {
 				jush.highlight_tag('code', 0);
 			}
@@ -361,23 +372,21 @@ function selectDblClick(td, event, text) {
 * @return bool
 */
 function bodyClick(event, db) {
+	if (event.getPreventDefault ? event.getPreventDefault() : !event.returnValue) {
+		return false;
+	}
 	var el = event.target || event.srcElement;
 	if (/^a$/i.test(el.parentNode.tagName)) {
 		el = el.parentNode;
 	}
-	if (/^a$/i.test(el.tagName) && !/^https?:/i.test(el.getAttribute('href')) && !el.onclick && /[&?]username=/.exec(el.href)) {
+	if (/^a$/i.test(el.tagName) && !/^https?:|#/i.test(el.getAttribute('href')) && /[&?]username=/.exec(el.href)) {
 		var match = /&db=([^&]*)/.exec(el.href);
 		if (db === (match ? match[1] : '') && ajaxMain(el.href, '', event)) {
-			var as = document.getElementById('menu').getElementsByTagName('a');
-			for (var i=0; i < as.length; i++) {
-				if (as[i].className == 'active') {
-					as[i].className = '';
-				} else if (el.href == as[i].href) {
-					as[i].className = 'active';
-				}
-			}
-			//! modify Export link
 			return false;
 		}
 	}
+	if (/^input$/i.test(el.tagName) && /submit|image/.test(el.type) && !/&(database|scheme|create|view|sql|user)=/.test(location.href)) {
+		return !ajaxForm(el.form, (el.name ? encodeURIComponent(el.name) + '=1' : ''));
+	}
+	return true;
 }

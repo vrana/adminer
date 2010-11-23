@@ -98,13 +98,13 @@ if (isset($_GET["select"])) {
 	hidden_fields(array("check" => (array) $_POST["check"], "clone" => $_POST["clone"], "all" => $_POST["all"]));
 }
 if ($fields) {
-	echo "<input type='submit' value='" . lang('Save') . "'" . (isset($_GET["select"]) ? " onclick='return !ajaxForm(this.form);'" : "") . ">\n";
+	echo "<input type='submit' value='" . lang('Save') . "'>\n";
 	if (!isset($_GET["select"])) {
-		echo '<input type="submit" name="insert" value="' . ($update ? lang('Save and continue edit') : lang('Save and insert next')) . "\" onclick=\"return !ajaxForm(this.form, 'insert=1');\">\n";
+		echo '<input type="submit" name="insert" value="' . ($update ? lang('Save and continue edit') : lang('Save and insert next')) . "\">\n";
 	}
 }
 if ($update) {
-	echo "<input type='submit' name='delete' value='" . lang('Delete') . "' onclick=\"return confirm('" . lang('Are you sure?') . "')" . (isset($_GET["select"]) ? " &amp;&amp; !ajaxForm(this.form, 'delete=1')" : "") . ";\">\n";
+	echo "<input type='submit' name='delete' value='" . lang('Delete') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\">\n";
 }
 ?>
 </form>

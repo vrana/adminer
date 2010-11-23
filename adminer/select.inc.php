@@ -200,7 +200,7 @@ $adminer->selectLinks($table_status, $set);
 if (!$columns) {
 	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "." : ": " . error()) . "\n";
 } else {
-	echo "<form action='' id='form' onsubmit='return !ajaxForm(this);'>\n";
+	echo "<form action='' id='form'>\n";
 	echo "<div style='display: none;'>";
 	hidden_fields_get();
 	echo (DB != "" ? '<input type="hidden" name="db" value="' . h(DB) . '">' . (isset($_GET["ns"]) ? '<input type="hidden" name="ns" value="' . h($_GET["ns"]) . '">' : "") : ""); // not used in Editor
@@ -393,10 +393,10 @@ if (!$columns) {
 			if (!information_schema(DB)) {
 				?>
 <fieldset><legend><?php echo lang('Edit'); ?></legend><div>
-<input type="submit" id="save" value="<?php echo lang('Save'); ?>" title="<?php echo lang('Double click on a value to modify it.'); ?>" onclick="return !ajaxForm(this.form);">
-<input type="submit" name="edit" value="<?php echo lang('Edit'); ?>" onclick="return !ajaxForm(this.form, 'edit=1');">
-<input type="submit" name="clone" value="<?php echo lang('Clone'); ?>" onclick="return !ajaxForm(this.form, 'clone=1');">
-<input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?> (' + (this.form['all'].checked ? <?php echo $found_rows; ?> : formChecked(this, /check/)) + ')') &amp;&amp; !ajaxForm(this.form, 'delete=1');">
+<input type="submit" id="save" value="<?php echo lang('Save'); ?>" title="<?php echo lang('Double click on a value to modify it.'); ?>">
+<input type="submit" name="edit" value="<?php echo lang('Edit'); ?>">
+<input type="submit" name="clone" value="<?php echo lang('Clone'); ?>">
+<input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?> (' + (this.form['all'].checked ? <?php echo $found_rows; ?> : formChecked(this, /check/)) + ')');">
 </div></fieldset>
 <?php
 			}

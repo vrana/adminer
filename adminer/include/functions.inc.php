@@ -355,7 +355,7 @@ function auth_url($driver, $server, $username) {
 * @return bool
 */
 function is_ajax() {
-	return ($_SERVER["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest");
+	return ($_SERVER["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest" || $_GET["ajax"]);
 }
 
 /** Send Location header and exit
@@ -372,12 +372,8 @@ function redirect($location, $message = null) {
 		if ($location == "") {
 			$location = ".";
 		}
-		if (!is_ajax()) {
-			header("Location: $location");
-			exit;
-		}
-		header("X-AJAX-Redirect: $location");
-		$_POST = array();
+		header("Location: $location" . (is_ajax() ? (strpos($location, "?") !== false ? "&" : "?") . "ajax=1" : ""));
+		exit;
 	}
 }
 
