@@ -78,6 +78,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	if ($error) {
 		echo "<div class='error'>$error</div>\n";
 	}
+	define("PAGE_HEADER", 1);
 }
 
 /** Print HTML footer
