@@ -109,11 +109,11 @@ if (!$error && $_POST) {
 									}
 									select($result, $connection2);
 									echo "<p>" . ($result->num_rows ? lang('%d row(s)', $result->num_rows) : "") . $time;
-									if ($connection2 && preg_match("~^($space|\\()*SELECT\\b~isU", $q)) {
+									if ($connection2 && preg_match("~^($space|\\()*SELECT\\b~isU", $q) && ($explain = explain($connection2, $q))) {
 										$id = "explain-$commands";
 										echo ", <a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>\n";
 										echo "<div id='$id' class='hidden'>\n";
-										select(explain($connection2, $q));
+										select($explain);
 										echo "</div>\n";
 									}
 								}
