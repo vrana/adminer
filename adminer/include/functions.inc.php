@@ -137,10 +137,11 @@ function html_select($name, $options, $value = "", $onchange = true) {
 
 /** Get onclick confirmation
 * @param string JavaScript expression
+* @param bool stop event propagation
 * @return string
 */
-function confirm($count = "") {
-	return " onclick=\"return confirm('" . lang('Are you sure?') . ($count ? " (' + $count + ')" : "") . "');\"";
+function confirm($count = "", $stop = false) {
+	return " onclick=\"" . ($stop ? "eventStop(event); " : "") . "return confirm('" . lang('Are you sure?') . ($count ? " (' + $count + ')" : "") . "');\"";
 }
 
 /** Escape string for JavaScript apostrophes

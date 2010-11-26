@@ -73,11 +73,11 @@ if ($_GET["ns"] !== "") {
 		}
 		echo "</table>\n";
 		if (!information_schema(DB)) {
-			echo "<p><input type='hidden' name='token' value='$token'>" . ($jush == "sql" ? "<input type='submit' value='" . lang('Analyze') . "'> <input type='submit' name='optimize' value='" . lang('Optimize') . "'> <input type='submit' name='check' value='" . lang('Check') . "'> <input type='submit' name='repair' value='" . lang('Repair') . "'> " : "") . "<input type='submit' name='truncate' value='" . lang('Truncate') . "'" . confirm("formChecked(this, /tables/)") . "> <input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm("formChecked(this, /tables|views/)") . ">\n";
+			echo "<p><input type='hidden' name='token' value='$token'>" . ($jush == "sql" ? "<input type='submit' value='" . lang('Analyze') . "'> <input type='submit' name='optimize' value='" . lang('Optimize') . "'> <input type='submit' name='check' value='" . lang('Check') . "'> <input type='submit' name='repair' value='" . lang('Repair') . "'> " : "") . "<input type='submit' name='truncate' value='" . lang('Truncate') . "'" . confirm("formChecked(this, /tables/)") . "> <input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm("formChecked(this, /tables|views/)", 1) . ">\n"; // 1 - eventStop
 			$databases = (support("scheme") ? schemas() : get_databases());
 			if (count($databases) != 1 && $jush != "sqlite") {
 				$db = (isset($_POST["target"]) ? $_POST["target"] : (support("scheme") ? $_GET["ns"] : DB));
-				echo "<p>" . lang('Move to other database') . ($databases ? ": " . html_select("target", $databases, $db) : ': <input name="target" value="' . h($db) . '">') . " <input type='submit' name='move' value='" . lang('Move') . "'>\n";
+				echo "<p>" . lang('Move to other database') . ($databases ? ": " . html_select("target", $databases, $db) : ': <input name="target" value="' . h($db) . '">') . " <input type='submit' name='move' value='" . lang('Move') . "' onclick='eventStop(event);'>\n";
 			}
 		}
 		echo "</form>\n";

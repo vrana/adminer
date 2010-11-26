@@ -399,3 +399,16 @@ function schemaMouseup(ev) {
 		cookie('adminer_schema=' + encodeURIComponent(s.substr(1)), 30, '; path="' + location.pathname + location.search + '"');
 	}
 }
+
+
+
+/** Stop event propagation
+* @param Event
+*/
+function eventStop(event) {
+	if (event.stopPropagation) {
+		event.stopPropagation();
+	} else {
+		event.cancelBubble = true;
+	}
+}

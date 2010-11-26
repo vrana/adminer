@@ -42,8 +42,8 @@ function connect_error() {
 				echo "\n";
 			}
 			echo "</table>\n";
-			echo "<p><input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm("formChecked(this, /db/)") . ">\n";
-			echo "<a href='" . h(ME) . "refresh=1'>" . lang('Refresh') . "</a>\n";
+			echo "<p><input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm("formChecked(this, /db/)", 1) . ">\n"; // 1 - eventStop
+			echo "<a href='" . h(ME) . "refresh=1' onclick='eventStop(event);'>" . lang('Refresh') . "</a>\n";
 			echo "</form>\n";
 		}
 	}

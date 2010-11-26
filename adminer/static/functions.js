@@ -383,7 +383,7 @@ function bodyClick(event, db) {
 		var match = /&db=([^&]*)/.exec(el.href);
 		return !(db == (match ? match[1] : '') && ajaxMain(el.href, '', event));
 	}
-	if (/^input$/i.test(el.tagName) && /submit|image/.test(el.type) && !/&(database|scheme|create|view|sql|user)=/.test(location.href)) {
+	if (/^input$/i.test(el.tagName) && /submit|image/.test(el.type) && el.name != 'logout' && !/&(database|scheme|create|view|sql|user)=/.test(location.href)) {
 		return !ajaxForm(el.form, (el.name ? encodeURIComponent(el.name) + '=1' : ''));
 	}
 	return true;
