@@ -251,13 +251,13 @@ function ajaxSend(url, data) {
 			
 			var as = document.getElementById('menu').getElementsByTagName('a');
 			for (var i=0; i < as.length; i++) {
-				if (as[i].className == 'active') {
-					as[i].className = '';
-				} else if (location.href == as[i].href) {
+				if (location.href == as[i].href) {
 					as[i].className = 'active';
+				} else if (as[i].className == 'active') {
+					as[i].className = '';
 				}
 			}
-			//! modify Export link
+			//! modify Export link and Change database hidden fields
 			
 			if (window.jush) {
 				jush.highlight_tag('code', 0);
