@@ -49,7 +49,7 @@ function connect_error() {
 	}
 	page_footer("db");
 	if ($databases) {
-		echo "<script type='text/javascript'>ajaxSetHtml('" . addcslashes(ME, "\\'/") . "script=connect');</script>\n";
+		echo "<script type='text/javascript'>ajaxSetHtml('" . js_escape(ME) . "script=connect');</script>\n";
 	}
 }
 

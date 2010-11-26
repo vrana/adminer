@@ -155,6 +155,6 @@ if ($_GET["ns"] !== "") {
 	}
 	
 	if ($tables_list) {
-		echo "<script type='text/javascript'>ajaxSetHtml('" . addcslashes(ME, "\\'/") . "script=db');</script>\n";
+		echo "<script type='text/javascript'>ajaxSetHtml('" . js_escape(ME) . "script=db');</script>\n";
 	}
 }
