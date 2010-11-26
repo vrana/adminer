@@ -73,6 +73,7 @@ function auth_error($exception = null) {
 			}
 		}
 	}
+	unset($_GET["username"]); // checked in page_header() for successful login
 	page_header(lang('Login'), $error, null);
 	echo "<form action='' method='post'>\n";
 	$adminer->loginForm();
