@@ -78,14 +78,7 @@ if (!$error && $_POST) {
 						}
 						$start = explode(" ", microtime()); // microtime(true) is available since PHP 5
 						//! don't allow changing of character_set_results, convert encoding of displayed query
-						if (!$connection->multi_query($q)) {
-							echo ($_POST["only_errors"] ? $print : "");
-							echo "<p class='error'>" . lang('Error in query') . ": " . error() . "\n";
-							$errors[] = " <a href='#sql-$commands'>$commands</a>";
-							if ($_POST["error_stops"]) {
-								break;
-							}
-						} else {
+						if ($connection->multi_query($q)) {
 							if (is_object($connection2) && preg_match("~^$space*(USE)\\b~isU", $q)) {
 								$connection2->query($q);
 							}
@@ -119,6 +112,13 @@ if (!$error && $_POST) {
 								}
 								$start = $end;
 							} while ($connection->next_result());
+						} elseif ($connection->error) {
+							echo ($_POST["only_errors"] ? $print : "");
+							echo "<p class='error'>" . lang('Error in query') . ": " . error() . "\n";
+							$errors[] = " <a href='#sql-$commands'>$commands</a>";
+							if ($_POST["error_stops"]) {
+								break;
+							}
 						}
 						$query = substr($query, $offset);
 						$offset = 0;
