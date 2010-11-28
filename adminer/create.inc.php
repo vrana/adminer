@@ -44,7 +44,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 					$fields[] = array($field["orig"], $process_field, $after);
 				}
 				if (isset($foreign_key)) {
-					$foreign[] = ($TABLE != "" ? "ADD" : " ") . " FOREIGN KEY (" . idf_escape($field["field"]) . ") REFERENCES " . table($foreign_keys[$field["type"]]) . " (" . idf_escape($type_field["field"]) . ")" . (in_array($field["on_delete"], $on_actions) ? " ON DELETE $field[on_delete]" : "");
+					$foreign[idf_escape($field["field"])] = ($TABLE != "" ? "ADD" : " ") . " FOREIGN KEY (" . idf_escape($field["field"]) . ") REFERENCES " . table($foreign_keys[$field["type"]]) . " (" . idf_escape($type_field["field"]) . ")" . (in_array($field["on_delete"], $on_actions) ? " ON DELETE $field[on_delete]" : "");
 				}
 				$after = "AFTER " . idf_escape($field["field"]);
 			} elseif ($field["orig"] != "") {

@@ -405,11 +405,11 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 			$column = idf_escape($field[0]);
 			$val = $field[1];
 			if (!$val) {
-				$alter["DROP"][] = " COLUMN $field[0]";
+				$alter["DROP"][] = " COLUMN $column";
 			} else {
 				$val[1] = preg_replace("~( COLLATE )'(\\w+)'~", "\\1\\2", $val[1]);
 				if ($field[0] == "") {
-					$alter["ADD"][] = "\n  " . implode("", $val);
+					$alter["ADD"][] = "\n  " . implode("", $val) . ($table == "" ? substr($foreign[$val[0]], 16 + strlen($val[0])) : ""); // 16 - strlen("  FOREIGN KEY ()")
 				} else {
 					unset($val[6]); //! identity can't be removed
 					if ($column != $val[0]) {
