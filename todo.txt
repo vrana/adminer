@@ -42,7 +42,6 @@ Column rights - http://www.postgresql.org/docs/8.4/static/functions-info.html
 bool in Editor
 
 MS SQL:
-Edit of AI column
 Non UTF-8 character sets
 Detection of table collation
 PDO_MSSQL and PDO_SQLSRV driver with seek

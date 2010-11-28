@@ -618,7 +618,11 @@ function input($field, $value, $function) {
 	global $types, $adminer, $jush;
 	$name = h(bracket_escape($field["field"]));
 	echo "<td class='function'>";
-	$functions = (isset($_GET["select"]) ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
+	$reset = ($jush == "mssql" && $field["auto_increment"]);
+	if ($reset && !$_POST["save"]) {
+		$function = null;
+	}
+	$functions = (isset($_GET["select"]) || $reset ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
 	$attrs = " name='fields[$name]'";
 	if ($field["type"] == "enum") {
 		echo nbsp($functions[""]) . "<td>" . $adminer->editInput($_GET["edit"], $field, $attrs, $value);
