@@ -396,7 +396,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 	}
 
 	function auto_increment() {
-		return " IDENTITY" . ($_POST["Auto_increment"] != "" ? "(" . (+$_POST["Auto_increment"]) . ",1)" : "");
+		return " IDENTITY" . ($_POST["Auto_increment"] != "" ? "(" . (+$_POST["Auto_increment"]) . ",1)" : "") . " PRIMARY KEY";
 	}
 	
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
