@@ -324,6 +324,9 @@ function selectDblClick(td, event, text) {
 	td.ondblclick = function () { };
 	var pos = event.rangeOffset;
 	var value = (td.firstChild.alt ? td.firstChild.alt : (td.textContent ? td.textContent : td.innerText));
+	if (value == '\u00A0' || td.getElementsByTagName('i').length) { // &nbsp; or i - NULL
+		value = '';
+	}
 	var input = document.createElement(text ? 'textarea' : 'input');
 	input.style.width = Math.max(td.clientWidth - 14, 20) + 'px'; // 14 = 2 * (td.border + td.padding + input.border)
 	if (text) {
@@ -353,7 +356,7 @@ function selectDblClick(td, event, text) {
 			input.name = td.id;
 		});
 	}
-	input.value = (value == '\u00A0' || td.getElementsByTagName('i').length ? '' : value); // &nbsp; or i - NULL
+	input.value = value;
 	input.name = td.id;
 	input.selectionStart = pos;
 	input.selectionEnd = pos;
