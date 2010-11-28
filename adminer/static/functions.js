@@ -372,9 +372,10 @@ function selectDblClick(td, event, text) {
 /** Load link by AJAX
 * @param MouseEvent
 * @param string
+* @param string
 * @return bool
 */
-function bodyClick(event, db) {
+function bodyClick(event, db, ns) {
 	if (event.getPreventDefault ? event.getPreventDefault() : !event.returnValue) {
 		return false;
 	}
@@ -384,7 +385,8 @@ function bodyClick(event, db) {
 	}
 	if (/^a$/i.test(el.tagName) && !/^https?:|#/i.test(el.getAttribute('href')) && /[&?]username=/.exec(el.href)) {
 		var match = /&db=([^&]*)/.exec(el.href);
-		return !(db == (match ? match[1] : '') && ajaxMain(el.href, '', event));
+		var match2 = /&ns=([^&]*)/.exec(el.href);
+		return !(db == (match ? match[1] : '') && scheme == (match2 ? match2[1] : '') && ajaxMain(el.href, '', event));
 	}
 	if (/^input$/i.test(el.tagName) && /submit|image/.test(el.type) && el.name != 'logout' && !/&(database|scheme|create|view|sql|user)=/.test(location.href)) {
 		return !ajaxForm(el.form, (el.name ? encodeURIComponent(el.name) + '=1' : ''));
