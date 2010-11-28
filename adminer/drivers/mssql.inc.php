@@ -425,6 +425,9 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 		if ($table != $name) {
 			queries("EXEC sp_rename " . q(table($table)) . ", " . q($name));
 		}
+		if ($foreign) {
+			$alter[""] = $foreign;
+		}
 		foreach ($alter as $key => $val) {
 			if (!queries("ALTER TABLE " . idf_escape($name) . " $key" . implode(",", $val))) {
 				return false;
