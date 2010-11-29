@@ -136,7 +136,9 @@ if ($_POST && !$error) {
 						$key = bracket_escape($key, 1); // 1 - back
 						$set[] = idf_escape($key) . " = " . (ereg('char|text', $fields[$key]["type"]) || $val != "" ? $adminer->processInput($fields[$key], $val) : "NULL");
 					}
-					$result = queries("UPDATE" . limit1(table($TABLE) . " SET " . implode(", ", $set), " WHERE " . where_check($unique_idf) . ($where ? " AND " . implode(" AND ", $where) : ""))); // can change row on a different page without unique key
+					$query = table($TABLE) . " SET " . implode(", ", $set);
+					$where2 = " WHERE " . where_check($unique_idf) . ($where ? " AND " . implode(" AND ", $where) : "");
+					$result = queries("UPDATE" . (count($group) < count($select) ? " $query$where2" : limit1($query, $where2))); // can change row on a different page without unique key
 					if (!$result) {
 						break;
 					}
@@ -298,7 +300,7 @@ if (!$columns) {
 							if (ereg('blob|bytea|raw|file', $field["type"]) && $val != "") {
 								$link = h(ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . $unique_idf);
 							}
-							if ($val == "") {
+							if ($val === "") { // === - may be int
 								$val = "&nbsp;";
 							} elseif ($text_length != "" && ereg('text|blob', $field["type"]) && is_utf8($val)) {
 								$val = shorten_utf8($val, max(0, +$text_length)); // usage of LEFT() would reduce traffic but complicate query - expected average speedup: .001 s VS .01 s on local network
