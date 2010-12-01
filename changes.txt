@@ -1,6 +1,9 @@
 Adminer 3.2.0-dev:
 Get long texts and slow information by AJAX
 All links and some forms by AJAX in browsers with support for history.pushState
+History: edit all
+MS SQL: auto primary and foreign key
+SQLite: display 0
 
 Adminer 3.1.0 (released 2010-11-16):
 TSV export and import

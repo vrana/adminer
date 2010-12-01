@@ -145,6 +145,8 @@ if (!$error && $_POST) {
 $q = $_GET["sql"]; // overwrite $q from if ($_POST) to save memory
 if ($_POST) {
 	$q = $_POST["query"];
+} elseif ($_GET["history"] == "all") {
+	$q = implode(";\n\n\n", $history);
 } elseif ($_GET["history"] != "") {
 	$q = $history[$_GET["history"]];
 }
@@ -178,6 +180,7 @@ if ($history) {
 		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . "</a> <code class='jush-$jush'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace('~^(#|-- ).*~m', '', $val)))), 80, "</code>") . "<br>\n";
 	}
 	echo "<input type='submit' name='clear' value='" . lang('Clear') . "'>\n";
+	echo "<a href='" . h(ME . "sql=&history=all") . "'>" . lang('Edit') . "</a>\n";
 	echo "</div></fieldset>\n";
 }
 ?>
