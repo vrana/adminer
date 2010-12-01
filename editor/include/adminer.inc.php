@@ -479,7 +479,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			foreach ((array) $_SESSION["pwds"]["server"][""] as $username => $password) {
 				if (isset($password)) {
 					if ($first) {
-						echo "<p>\n";
+						echo "<p onclick='eventStop(event);'>\n";
 						$first = false;
 					}
 					echo "<a href='" . h(auth_url("server", "", $username)) . "'>" . ($username != "" ? h($username) : "<i>" . lang('empty') . "</i>") . "</a><br>\n";

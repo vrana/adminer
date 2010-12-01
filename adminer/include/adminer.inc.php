@@ -702,7 +702,7 @@ DROP PROCEDURE adminer_alter;
 					foreach ($usernames as $username => $password) {
 						if (isset($password)) {
 							if ($first) {
-								echo "<p>\n";
+								echo "<p onclick='eventStop(event);'>\n";
 								$first = false;
 							}
 							echo "<a href='" . h(auth_url($driver, $server, $username)) . "'>($drivers[$driver]) " . h($username . ($server != "" ? "@$server" : "")) . "</a><br>\n";

@@ -73,9 +73,8 @@ function auth_error($exception = null) {
 			}
 		}
 	}
-	unset($_GET["username"]); // checked in page_header() for successful login
 	page_header(lang('Login'), $error, null);
-	echo "<form action='' method='post'>\n";
+	echo "<form action='' method='post' onclick='eventStop(event);'>\n";
 	$adminer->loginForm();
 	echo "<div>";
 	hidden_fields($_POST, array("driver", "server", "username", "password", "permanent")); // expired session

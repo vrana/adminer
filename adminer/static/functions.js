@@ -393,3 +393,14 @@ function bodyClick(event, db, ns) {
 	}
 	return true;
 }
+
+/** Stop event propagation
+* @param Event
+*/
+function eventStop(event) {
+	if (event.stopPropagation) {
+		event.stopPropagation();
+	} else {
+		event.cancelBubble = true;
+	}
+}
