@@ -250,8 +250,9 @@ function ajaxSend(url, data) {
 			}
 			
 			var as = document.getElementById('menu').getElementsByTagName('a');
+			var href = location.href.replace(/(&(sql=|dump=|(select|table)=[^&]*)).*/, '$1');
 			for (var i=0; i < as.length; i++) {
-				if (location.href == as[i].href) {
+				if (href == as[i].href) {
 					as[i].className = 'active';
 				} else if (as[i].className == 'active') {
 					as[i].className = '';
