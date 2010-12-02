@@ -405,7 +405,7 @@ if (!$columns) {
 			print_fieldset("export", lang('Export'));
 			$output = $adminer->dumpOutput();
 			echo ($output ? html_select("output", $output, $adminer_export["output"]) . " " : "") . html_select("format", $adminer->dumpFormat(), $adminer_export["format"]);
-			echo " <input type='submit' name='export' value='" . lang('Export') . "'>\n";
+			echo " <input type='submit' name='export' value='" . lang('Export') . "' onclick='eventStop(event);'>\n";
 			echo "</div></fieldset>\n";
 		}
 		print_fieldset("import", lang('CSV Import'), !$rows);
