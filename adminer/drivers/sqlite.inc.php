@@ -173,26 +173,28 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		
 	}
 
-	class Min_DB extends Min_SQLite {
-		
-		function Min_DB() {
-			$this->Min_SQLite(":memory:");
-		}
-		
-		function select_db($filename) {
-			if (is_readable($filename) && $this->query("ATTACH " . $this->quote(ereg("(^[/\\]|:)", $filename) ? $filename : dirname($_SERVER["SCRIPT_FILENAME"]) . "/$filename") . " AS a")) { // is_readable - SQLite 3
-				$this->Min_SQLite($filename);
-				return true;
+	if (class_exists("Min_SQLite")) {
+		class Min_DB extends Min_SQLite {
+			
+			function Min_DB() {
+				$this->Min_SQLite(":memory:");
 			}
-			return false;
-		}
-		
-		function multi_query($query) {
-			return $this->_result = $this->query($query);
-		}
-		
-		function next_result() {
-			return false;
+			
+			function select_db($filename) {
+				if (is_readable($filename) && $this->query("ATTACH " . $this->quote(ereg("(^[/\\]|:)", $filename) ? $filename : dirname($_SERVER["SCRIPT_FILENAME"]) . "/$filename") . " AS a")) { // is_readable - SQLite 3
+					$this->Min_SQLite($filename);
+					return true;
+				}
+				return false;
+			}
+			
+			function multi_query($query) {
+				return $this->_result = $this->query($query);
+			}
+			
+			function next_result() {
+				return false;
+			}
 		}
 	}
 	
