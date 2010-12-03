@@ -84,9 +84,9 @@ foreach ($row["indexes"] as $index) {
 	echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) ? "indexesAddRow(this);" : 1)) . "<td>";
 	ksort($index["columns"]);
 	$i = 1;
-	foreach ($index["columns"] as $column) {
+	foreach ($index["columns"] as $key => $column) {
 		echo "<span>" . html_select("indexes[$j][columns][$i]", array(-1 => "") + $fields, $column, ($i == count($index["columns"]) ? "indexesAddColumn(this);" : 1));
-		echo "<input name='indexes[$j][lengths][$i]' size='2' value='" . h($index["lengths"][$i]) . "'> </span>"; //! hide for non-MySQL drivers, add ASC|DESC
+		echo "<input name='indexes[$j][lengths][$i]' size='2' value='" . h($index["lengths"][$key]) . "'> </span>"; //! hide for non-MySQL drivers, add ASC|DESC
 		$i++;
 	}
 	$j++;
