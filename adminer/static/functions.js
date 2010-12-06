@@ -384,12 +384,12 @@ function bodyClick(event, db, ns) {
 	if (/^a$/i.test(el.parentNode.tagName)) {
 		el = el.parentNode;
 	}
-	if (/^a$/i.test(el.tagName) && !/^https?:|#/i.test(el.getAttribute('href')) && /[&?]username=/.exec(el.href)) {
+	if (/^a$/i.test(el.tagName) && !/^https?:|#|&download=/i.test(el.getAttribute('href')) && /[&?]username=/.exec(el.href)) {
 		var match = /&db=([^&]*)/.exec(el.href);
 		var match2 = /&ns=([^&]*)/.exec(el.href);
 		return !(db == (match ? match[1] : '') && ns == (match2 ? match2[1] : '') && ajaxMain(el.href, '', event));
 	}
-	if (/^input$/i.test(el.tagName) && /submit|image/.test(el.type) && el.name != 'logout' && !/&(database|scheme|create|view|sql|user)=/.test(location.href)) {
+	if (/^input$/i.test(el.tagName) && /submit|image/.test(el.type) && el.name != 'logout' && !/&(database|scheme|create|view|sql|user|dump)=/.test(location.href)) {
 		return !ajaxForm(el.form, (el.name ? encodeURIComponent(el.name) + '=1' : ''));
 	}
 	return true;
