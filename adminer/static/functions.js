@@ -377,6 +377,9 @@ function selectDblClick(td, event, text) {
 * @return bool
 */
 function bodyClick(event, db, ns) {
+	if (event.button) {
+		return;
+	}
 	if (event.getPreventDefault ? event.getPreventDefault() : event.returnValue === false) {
 		return false;
 	}
