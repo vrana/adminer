@@ -93,7 +93,7 @@ page_header(($TABLE != "" ? lang('Alter table') : lang('Create table')), $error,
 
 $row = array(
 	"Engine" => $_COOKIE["adminer_engine"],
-	"fields" => array(array("field" => "")),
+	"fields" => array(array("field" => "", "type" => (isset($types["int"]) ? "int" : (isset($types["integer"]) ? "integer" : "")))),
 	"partition_names" => array(""),
 );
 if ($_POST) {
