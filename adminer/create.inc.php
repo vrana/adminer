@@ -149,6 +149,7 @@ foreach ($engines as $engine) {
 <form action="" method="post" id="form">
 <p>
 <?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo h($row["name"]); ?>">
+<?php if ($TABLE == "" && !$_POST) { ?><script type='text/javascript'>document.getElementById('form')['name'].focus();</script><?php } ?>
 <?php echo ($engines ? html_select("Engine", array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) : ""); ?>
  <?php echo ($collations && !ereg("sqlite|mssql", $jush) ? html_select("Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]) : ""); ?>
  <input type="submit" value="<?php echo lang('Save'); ?>">
