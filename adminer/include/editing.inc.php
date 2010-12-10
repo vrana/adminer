@@ -4,7 +4,7 @@
 * @param Min_DB connection to examine indexes
 * @return null
 */
-function select($result, $connection2 = null) {
+function select($result, $connection2 = null, $href = "") {
 	$links = array(); // colno => orgtable - create links from these columns
 	$indexes = array(); // orgtable => array(column => colno) - primary keys
 	$columns = array(); // orgtable => array(column => ) - not selected columns in primary key
@@ -41,7 +41,8 @@ function select($result, $connection2 = null) {
 					$blobs[$j] = true;
 				}
 				$types[$j] = $field->type;
-				echo "<th" . ($orgtable != "" || $field->name != $orgname ? " title='" . h(($orgtable != "" ? "$orgtable." : "") . $orgname) . "'" : "") . ">" . h($field->name);
+				$name = h($field->name);
+				echo "<th" . ($orgtable != "" || $field->name != $orgname ? " title='" . h(($orgtable != "" ? "$orgtable." : "") . $orgname) . "'" : "") . ">" . ($href ? "<a href='$href" . strtolower($name) . "' target='_blank'>$name</a>" : $name);
 			}
 			echo "</thead>\n";
 		}
