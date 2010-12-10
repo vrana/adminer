@@ -21,7 +21,7 @@ foreach (get_rows("SHOW FULL PROCESSLIST") as $i => $row) {
 	}
 	echo "<tr" . odd() . "><td>" . checkbox("kill[]", $row["Id"], 0);
 	foreach ($row as $key => $val) {
-		echo "<td>" . ($key == "Info" && $val != "" ? "<code class='jush-$jush'>" . nbsp($val) . '</code> <a href="' . h(ME . ($row["db"] != "" ? "db=" . urlencode($row["db"]) . "&" : "") . "sql=" . urlencode($val)) . '">' . lang('Edit') . '</a>' : nbsp($val));
+		echo "<td>" . ($key == "Info" && $val != "" ? "<code class='jush-$jush'>" . shorten_utf8($val, 100, "</code>") . ' <a href="' . h(ME . ($row["db"] != "" ? "db=" . urlencode($row["db"]) . "&" : "") . "sql=" . urlencode($val)) . '">' . lang('Edit') . '</a>' : nbsp($val));
 	}
 	echo "\n";
 }
