@@ -322,6 +322,10 @@ function indexesAddColumn(field) {
 	input.name = input.name.replace(/\]\[\d+/, '$&1');
 	input.value = '';
 	field.parentNode.parentNode.appendChild(column);
+	select = field.form[field.name.replace(/\].*/, '][type]')];
+	if (!select.selectedIndex) {
+		select.selectedIndex = 3;
+	}
 }
 
 
