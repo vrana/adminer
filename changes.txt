@@ -5,6 +5,7 @@ History: edit all
 MS SQL: auto primary and foreign key
 SQLite: display 0
 Create table default data type: int
+Portuguese translation
 
 Adminer 3.1.0 (released 2010-11-16):
 TSV export and import

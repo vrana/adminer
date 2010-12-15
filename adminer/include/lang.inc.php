@@ -13,6 +13,7 @@ $langs = array(
 	'et' => 'Eesti', // Priit Kallas
 	'hu' => 'Magyar', // Borsos Szilárd (Borsosfi) - http://www.borsosfi.hu, info@borsosfi.hu
 	'ca' => 'Català', // Joan Llosas
+	'pt' => 'Português', // Gian Live - gian@live.com
 	'ru' => 'Русский язык', // Maksim Izmaylov
 	'zh' => '简体中文', // Mr. Lodar
 	'zh-tw' => '繁體中文', // http://tzangms.com
