@@ -510,7 +510,7 @@ function json_row($key, $val = null) {
 		echo "{";
 	}
 	if ($key != "") {
-		echo ($first ? "" : ",") . "\n\t\"" . addcslashes($key, '\\"') . '": ' . (isset($val) ? '"' . addcslashes($val, '\\"') . '"' : 'undefined');
+		echo ($first ? "" : ",") . "\n\t\"" . addcslashes($key, "\r\n\"\\") . '": ' . (isset($val) ? '"' . addcslashes($val, "\r\n\"\\") . '"' : 'undefined');
 		$first = false;
 	} else {
 		echo "\n}\n";
