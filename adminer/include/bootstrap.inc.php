@@ -21,7 +21,7 @@ if (isset($_GET["file"])) {
 
 include "../adminer/include/functions.inc.php";
 
-global $adminer, $connection, $drivers, $edit_functions, $enum_length, $error, $functions, $grouping, $HTTPS, $inout, $jush, $LANG, $langs, $on_actions, $structured_types, $token, $translations, $types, $unsigned, $VERSION;
+global $adminer, $connection, $drivers, $edit_functions, $enum_length, $error, $functions, $grouping, $HTTPS, $inout, $jush, $LANG, $langs, $on_actions, $structured_types, $token, $translations, $types, $unsigned, $VERSION; // allows including Adminer inside a function
 if (!isset($_SERVER["REQUEST_URI"])) {
 	$_SERVER["REQUEST_URI"] = $_SERVER["ORIG_PATH_INFO"] . ($_SERVER["QUERY_STRING"] != "" ? "?$_SERVER[QUERY_STRING]" : ""); // IIS 5 compatibility
 }
