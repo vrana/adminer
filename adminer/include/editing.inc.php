@@ -108,6 +108,15 @@ function textarea($name, $value, $rows = 10, $cols = 80) {
 	echo "<textarea name='$name' rows='$rows' cols='$cols' style='width: 98%;' spellcheck='false' onkeypress='return textareaKeypress(this, event, true);'>" . h($value) . "</textarea>"; // spellcheck - not valid before HTML5
 }
 
+/** Format time difference
+* @param array ($sec, $sec)
+* @param array ($sec, $sec)
+* @return string HTML code
+*/
+function format_time($start, $end) {
+	return " <span class='time'>(" . lang('%.3f s', max(0, $end[0] - $start[0] + $end[1] - $start[1])) . ")</span>";
+}
+
 /** Print table columns for type edit
 * @param string
 * @param array

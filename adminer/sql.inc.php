@@ -42,6 +42,7 @@ if (!$error && $_POST) {
 		$commands = 0;
 		$errors = array();
 		$parse = '[\'`"]' . ($jush == "pgsql" ? '|\\$[^$]*\\$' : ($jush == "mssql" || $jush == "sqlite" ? '|\\[' : '')) . '|/\\*|-- |#'; //! ` and # not everywhere
+		$total_start = explode(" ", microtime());
 		while ($query != "") {
 			if (!$offset && $jush == "sql" && preg_match('~^\\s*DELIMITER\\s+(.+)~i', $query, $match)) {
 				$delimiter = $match[1];
@@ -85,7 +86,7 @@ if (!$error && $_POST) {
 							do {
 								$result = $connection->store_result();
 								$end = explode(" ", microtime());
-								$time = " <span class='time'>(" . lang('%.3f s', max(0, $end[0] - $start[0] + $end[1] - $start[1])) . ")</span>" . (strlen($q) < 1000 ? " <a href='" . h(ME) . "sql=" . urlencode(trim($q)) . "'>" . lang('Edit') . "</a>" : ""); // 1000 - maximum length of encoded URL in IE is 2083 characters
+								$time = format_time($start, $end) . (strlen($q) < 1000 ? " <a href='" . h(ME) . "sql=" . urlencode(trim($q)) . "'>" . lang('Edit') . "</a>" : ""); // 1000 - maximum length of encoded URL in IE is 2083 characters
 								if (!is_object($result)) {
 									if (preg_match("~^$space*(CREATE|DROP|ALTER)$space+(DATABASE|SCHEMA)\\b~isU", $q)) {
 										restart_session();
@@ -129,7 +130,7 @@ if (!$error && $_POST) {
 		if ($empty) {
 			echo "<p class='message'>" . lang('No commands to execute.') . "\n";
 		} elseif ($_POST["only_errors"]) {
-			echo "<p class='message'>" . lang('%d query(s) executed OK.', $commands - count($errors)) . "\n";
+			echo "<p class='message'>" . lang('%d query(s) executed OK.', $commands - count($errors)) . format_time($total_start, explode(" ", microtime())) . "\n";
 		} elseif ($errors && $commands > 1) {
 			echo "<p class='error'>" . lang('Error in query') . ": " . implode("", $errors) . "\n";
 		}
@@ -146,7 +147,7 @@ $q = $_GET["sql"]; // overwrite $q from if ($_POST) to save memory
 if ($_POST) {
 	$q = $_POST["query"];
 } elseif ($_GET["history"] == "all") {
-	$q = implode(";\n\n\n", $history);
+	$q = implode(";\n\n\n", $history); // rtrim(, ';') would possibly damage DELIMITER
 } elseif ($_GET["history"] != "") {
 	$q = $history[$_GET["history"]];
 }
