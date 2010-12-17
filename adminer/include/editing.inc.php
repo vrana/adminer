@@ -2,6 +2,7 @@
 /** Print select result
 * @param Min_Result
 * @param Min_DB connection to examine indexes
+* @param string base link for <th> fields
 * @return null
 */
 function select($result, $connection2 = null, $href = "") {
