@@ -161,6 +161,17 @@ function ini_bool($ini) {
 	return (eregi('^(on|true|yes)$', $val) || (int) $val); // boolean values set by php_value are strings
 }
 
+/** Check if SID is neccessary
+* @return bool
+*/
+function sid() {
+	return (SID && !($_COOKIE && ini_bool("session.use_cookies"))); // $_COOKIE - don't pass SID with permanent login
+}
+
+/** Shortcut for $connection->quote($string)
+* @param string
+* @return string
+*/
 function q($string) {
 	global $connection;
 	return $connection->quote($string);
@@ -345,7 +356,7 @@ function auth_url($driver, $server, $username) {
 	global $drivers;
 	preg_match('~([^?]*)\\??(.*)~', remove_from_uri(implode("|", array_keys($drivers)) . "|username|" . session_name()), $match);
 	return "$match[1]?"
-		. (SID && !$_COOKIE ? SID . "&" : "")
+		. (sid() ? SID . "&" : "")
 		. ($driver != "server" || $server != "" ? urlencode($driver) . "=" . urlencode($server) . "&" : "")
 		. "username=" . urlencode($username)
 		. ($match[2] ? "&$match[2]" : "")
@@ -570,7 +581,7 @@ function hidden_fields($process, $ignore = array()) {
 * @return null
 */
 function hidden_fields_get() {
-	echo (SID && !$_COOKIE ? '<input type="hidden" name="' . session_name() . '" value="' . h(session_id()) . '">' : '');
+	echo (sid() ? '<input type="hidden" name="' . session_name() . '" value="' . h(session_id()) . '">' : '');
 	echo (SERVER !== null ? '<input type="hidden" name="' . DRIVER . '" value="' . h(SERVER) . '">' : "");
 	echo '<input type="hidden" name="username" value="' . h($_GET["username"]) . '">';
 }
