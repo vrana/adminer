@@ -241,7 +241,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		foreach ($indexes as $key => $index) {
 			$order = array();
 			foreach ($index["columns"] as $val) {
-				$order[] = $this->fieldName(array("field" => $val, "comment" => $columns[$val]));
+				$order[] = $columns[$val];
 			}
 			if (count(array_filter($order, 'strlen')) > 1 && $key != "PRIMARY") {
 				$orders[$key] = implode(", ", $order);
