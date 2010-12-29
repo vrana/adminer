@@ -8,8 +8,8 @@ Shift-click in checkboxes to select range
 Export by GET parameters
 Only first part of big BZ2 export is readable, files are missing in TAR
 Auto-refresh processlist (thanks to Jan Garaj)
-Save schema layout to #hash in URL
 Double click in select - Esc to abort editation
+Draggable columns in alter table (thanks to Michal Manak)
 ? Filter by value in row under <thead> in select
 ? Column and table names auto-completition in SQL textarea
 ? Aliasing of built-in functions can save 7 KB, function minification can save 7 KB, substitution of repetitive $a["a"] can save 4 KB, substitution of $_GET and friends can save 2 KB, aliasing of $connection->query can save 24 B, JS Closure compiler can save 2 KB, not enclosing HTML attribute values can save 1.2 KB, replacing \\n by \n can save .3 KB

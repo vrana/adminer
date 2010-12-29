@@ -4,7 +4,7 @@ page_header(lang('Database schema'), "", array(), DB);
 $table_pos = array();
 $table_pos_js = array();
 // saved in one cookie because there is a limit of 20 cookies per domain
-preg_match_all('~([^:]+):([-0-9.]+)x([-0-9.]+)(_|$)~', $_COOKIE["adminer_schema"], $matches, PREG_SET_ORDER); //! ':' in table name
+preg_match_all('~([^:]+):([-0-9.]+)x([-0-9.]+)(_|$)~', ($_GET["schema"] ? $_GET["schema"] : $_COOKIE["adminer_schema"]), $matches, PREG_SET_ORDER); //! ':' in table name
 foreach ($matches as $i => $match) {
 	$table_pos[$match[1]] = array($match[2], $match[3]);
 	$table_pos_js[] = "\n\t'" . js_escape($match[1]) . "': [ $match[2], $match[3] ]";
@@ -100,3 +100,4 @@ foreach ($schema as $name => $table) {
 }
 ?>
 </div>
+<p><a href="<?php echo h($_SERVER["REQUEST_URI"]); ?>" id="schema-link">#</a>
