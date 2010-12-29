@@ -165,7 +165,11 @@ function ini_bool($ini) {
 * @return bool
 */
 function sid() {
-	return (SID && !($_COOKIE && ini_bool("session.use_cookies"))); // $_COOKIE - don't pass SID with permanent login
+	static $return;
+	if (!isset($return)) { // restart_session() defines SID
+		$return = (SID && !($_COOKIE && ini_bool("session.use_cookies"))); // $_COOKIE - don't pass SID with permanent login
+	}
+	return $return;
 }
 
 /** Shortcut for $connection->quote($string)
