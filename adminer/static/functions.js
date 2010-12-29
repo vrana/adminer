@@ -258,7 +258,12 @@ function ajaxSend(url, data) {
 					as[i].className = '';
 				}
 			}
-			//! modify Export link and Change database hidden fields
+			var dump = document.getElementById('dump');
+			if (dump) {
+				var match = /&(select|table)=([^&]+)/.exec(href);
+				dump.href = dump.href.replace(/[^=]+$/, '') + (match ? match[2] : '');
+			}
+			//! modify Change database hidden fields
 			
 			if (window.jush) {
 				jush.highlight_tag('code', 0);
