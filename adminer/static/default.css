@@ -59,4 +59,5 @@ pre { margin: 1em 0 0; }
 	#lang, #menu { display: none; }
 	#content { margin-left: 1em; }
 	#breadcrumb { left: 1em; }
+	.nowrap td, .nowrap th, td.nowrap { white-space: normal; }
 }
