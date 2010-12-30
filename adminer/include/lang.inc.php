@@ -22,6 +22,19 @@ $langs = array(
 	'ar' => 'العربية', // Y.M Amine - Algeria - nbr7@live.fr
 );
 
+/** Get current language
+* @return string
+*/
+function get_lang() {
+	global $LANG;
+	return $LANG;
+}
+
+/** Translate string
+* @param string
+* @param int
+* @return string
+*/
 function lang($idf, $number = null) {
 	global $LANG, $translations;
 	$translation = $translations[$idf];

@@ -53,7 +53,15 @@ function put_file($match) {
 		return "?>\n$return" . (in_array($tokens[count($tokens) - 1][0], array(T_CLOSE_TAG, T_INLINE_HTML), true) ? "<?php" : "");
 	} elseif (preg_match('~\\s*(\\$pos = .*)~', $return, $match2)) {
 		// single language lang() is used for plural
-		return "function lang(\$translation, \$number) {\n\t" . str_replace('$LANG', "'$_SESSION[lang]'", $match2[1]) . "\n\treturn sprintf(\$translation[\$pos], \$number);\n}\n";
+		return "function get_lang() {
+	return '$_SESSION[lang]';
+}
+
+function lang(\$translation, \$number) {
+	" . str_replace('$LANG', "'$_SESSION[lang]'", $match2[1]) . '
+	return sprintf($translation[$pos], $number);
+}
+';
 	} else {
 		echo "lang() not found\n";
 	}
