@@ -51,7 +51,7 @@ function switch_lang() {
 	global $LANG, $langs;
 	echo "<form action=''>\n<div id='lang'>";
 	hidden_fields($_GET, array('lang'));
-	echo lang('Language') . ": " . html_select("lang", $langs, $LANG, "this.form.submit();");
+	echo lang('Language') . ": " . html_select("lang", $langs, $LANG, "var loc = location.search.replace(/[?&]lang=[^&]*/, ''); location.search = loc + (loc ? '&' : '') + 'lang=' + this.value;");
 	echo " <input type='submit' value='" . lang('Use') . "' class='hidden'>\n";
 	echo "</div>\n</form>\n";
 }
