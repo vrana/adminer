@@ -191,7 +191,7 @@ function ajax(url, callback, data) {
 			xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		}
 		xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-		xmlhttp.onreadystatechange = function (text) {
+		xmlhttp.onreadystatechange = function () {
 			if (xmlhttp.readyState == 4) {
 				var redirect = xmlhttp.getResponseHeader('X-AJAX-Redirect');
 				if (redirect && history.replaceState) {
@@ -222,8 +222,7 @@ function ajaxSetHtml(url) {
 	});
 }
 
-var ajaxState = 0;
-var ajaxTimeout;
+var ajaxState = 0, ajaxTimeout;
 
 /** Safely load content to #content
 * @param string
@@ -279,7 +278,7 @@ function ajaxSend(url, data) {
 * @return XMLHttpRequest or false in case of an error
 */
 function ajaxMain(url, data, event) {
-	if (!history.pushState || (event && (event.ctrlKey || event.shiftKey || event.metaKey))) {
+	if (!history.pushState || (event && (event.ctrlKey || event.shiftKey || event.altKey || event.metaKey))) {
 		return false;
 	}
 	history.pushState(data, '', url);
