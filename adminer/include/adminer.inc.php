@@ -682,6 +682,17 @@ DROP PROCEDURE adminer_alter;
 		return $ext;
 	}
 	
+	/** Print homepage
+	* @return bool whether to print default homepage
+	*/
+	function homepage() {
+		echo '<p>' . ($_GET["ns"] == "" ? '<a href="' . h(ME) . 'database=">' . lang('Alter database') . "</a>\n" : "");
+		if (support("scheme")) {
+			echo "<a href='" . h(ME) . "scheme='>" . ($_GET["ns"] != "" ? lang('Alter schema') : lang('Create schema')) . "</a>\n";
+		}
+		return true;
+	}
+	
 	/** Prints navigation after Adminer title
 	* @param string can be "auth" if there is no database connection, "db" if there is no database selected, "ns" with invalid schema
 	* @return null
