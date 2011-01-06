@@ -302,7 +302,11 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 						} else {
 							$text_type = ereg('char|text|enum|set', $field["type"]);
 							$value = $this->processInput($field, ($text_type && ereg('^[^%]+$', $val) ? "%$val%" : $val));
-							$conds[] = idf_escape($name) . ($value == "NULL" ? " IS" . ($op == ">=" ? " NOT" : "") : (in_array($op, $this->operators) ? " $op" : ($op != "=" && $text_type ? " LIKE" : " ="))) . " $value"; //! can issue "Illegal mix of collations" for columns in other character sets - solve by CONVERT($name using utf8)
+							$conds[] = idf_escape($name) . ($value == "NULL" ? " IS" . ($op == ">=" ? " NOT" : "") . " $value"
+								: (in_array($op, $this->operators) || $op == "=" ? " $op $value"
+								: ($text_type ? " LIKE $value"
+								: " IN (" . str_replace(",", "', '", $value) . ")"
+							))); //! can issue "Illegal mix of collations" for columns in other character sets - solve by CONVERT($name using utf8)
 						}
 					}
 				}

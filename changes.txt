@@ -8,6 +8,7 @@ MS SQL: auto primary and foreign key
 SQLite: display 0
 Create table default data type: int
 Homepage customization
+Use IN for search in numeric fields (Editor)
 Work without session.use_cookies (bug #3138640)
 Portuguese translation
 
