@@ -387,7 +387,11 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	}
 	
 	function editFunctions($field) {
-		$return = array("" => ($field["null"] || $field["auto_increment"] || $field["full_type"] == "tinyint(1)" ? "" : "*"));
+		$return = array();
+		if ($field["null"] && ereg('blob', $field["type"])) {
+			$return["NULL"] = lang('empty');
+		}
+		$return[""] = ($field["null"] || $field["auto_increment"] || $field["full_type"] == "tinyint(1)" ? "" : "*");
 		//! respect driver
 		if (ereg('date|time', $field["type"])) {
 			$return["now"] = lang('now');
