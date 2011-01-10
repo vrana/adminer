@@ -542,6 +542,16 @@ function is_utf8($val) {
 	return (preg_match('~~u', $val) && !preg_match('~[\\0-\\x8\\xB\\xC\\xE-\\x1F]~', $val));
 }
 
+/** Create repeat pattern for preg
+* @param string
+* @param int
+* @return string
+*/
+function repeat_pattern($pattern, $length) {
+	// fix for Compilation failed: number too big in {} quantifier
+	return str_repeat("$pattern{0,65535}", $length / 65535) . "$pattern{0," . ($length % 65535) . "}"; // can create {0,0} which is OK
+}
+
 /** Shorten UTF-8 string
 * @param string
 * @param int
@@ -549,8 +559,8 @@ function is_utf8($val) {
 * @return string escaped string with appended ...
 */
 function shorten_utf8($string, $length = 80, $suffix = "") {
-	if (!preg_match("(^([\t\r\n -\x{FFFF}]{0,$length})($)?)u", $string, $match)) { // ~s causes trash in $match[2] under some PHP versions, (.|\n) is slow
-		preg_match("(^([\t\r\n -~]{0,$length})($)?)", $string, $match);
+	if (!preg_match("(^(" . repeat_pattern("[\t\r\n -\x{FFFF}]", $length) . ")($)?)u", $string, $match)) { // ~s causes trash in $match[2] under some PHP versions, (.|\n) is slow
+		preg_match("(^(" . repeat_pattern("[\t\r\n -~]", $length) . ")($)?)", $string, $match);
 	}
 	return h($match[1]) . $suffix . (isset($match[2]) ? "" : "<i>...</i>");
 }
