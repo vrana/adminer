@@ -623,12 +623,13 @@ function column_foreign_keys($table) {
 * @return null
 */
 function enum_input($type, $attrs, $field, $value) {
+	global $adminer;
 	preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
 	$return = "";
 	foreach ($matches[1] as $i => $val) {
 		$val = stripcslashes(str_replace("''", "'", $val));
 		$checked = (is_int($value) ? $value == $i+1 : (is_array($value) ? in_array($i+1, $value) : $value === $val));
-		$return .= " <label><input type='$type'$attrs value='" . ($i+1) . "'" . ($checked ? ' checked' : '') . '>' . h($val) . '</label>';
+		$return .= " <label><input type='$type'$attrs value='" . ($i+1) . "'" . ($checked ? ' checked' : '') . '>' . h($adminer->editVal($val, $field)) . '</label>';
 	}
 	return $return;
 }
