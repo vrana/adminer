@@ -358,6 +358,9 @@ if (!$columns) {
 						);
 					}
 				}
+				if ($backward_keys) {
+					echo "<td>";
+				}
 				$adminer->backwardKeysPrint($backward_keys, $rows[$n]);
 				echo "</tr>\n"; // close to allow white-space: pre
 			}
