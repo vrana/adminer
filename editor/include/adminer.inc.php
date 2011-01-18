@@ -84,7 +84,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			if ($name != "") {
 				$search = preg_quote($tableName);
 				$separator = "(:|\\s*-)?\\s+";
-				$return[$key]["name"] = (preg_match("(^$search$separator(.+)|^(.+?)$separator$search\$)", $name, $match) ? $match[2] . $match[3] : $name);
+				$return[$key]["name"] = (preg_match("(^$search$separator(.+)|^(.+?)$separator$search\$)iu", $name, $match) ? $match[2] . $match[3] : $name);
 			} else {
 				unset($return[$key]);
 			}
