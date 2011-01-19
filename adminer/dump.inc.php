@@ -3,7 +3,7 @@ $TABLE = $_GET["dump"];
 
 if ($_POST) {
 	$cookie = "";
-	foreach (array("output", "format", "db_style", "table_style", "data_style") as $key) {
+	foreach (array("output", "format", "db_style", "routines", "events", "table_style", "auto_increment", "triggers", "data_style") as $key) {
 		$cookie .= "&$key=" . urlencode($_POST[$key]);
 	}
 	cookie("adminer_export", substr($cookie, 1));
@@ -166,16 +166,19 @@ parse_str($_COOKIE["adminer_export"], $row);
 if (!$row) {
 	$row = array("output" => "text", "format" => "sql", "db_style" => (DB != "" ? "" : "CREATE"), "table_style" => "DROP+CREATE", "data_style" => "INSERT");
 }
-$checked = ($_GET["dump"] == "");
+if (!isset($row["events"])) { // backwards compatibility
+	$row["routines"] = $row["events"] = ($_GET["dump"] == "");
+	$row["auto_increment"] = $row["triggers"] = $row["table_style"];
+}
 echo "<tr><th>" . lang('Output') . "<td>" . html_select("output", $adminer->dumpOutput(), $row["output"], 0) . "\n"; // 0 - radio
 echo "<tr><th>" . lang('Format') . "<td>" . html_select("format", $adminer->dumpFormat(), $row["format"], 0) . "\n"; // 0 - radio
 echo ($jush == "sqlite" ? "" : "<tr><th>" . lang('Database') . "<td>" . html_select('db_style', $db_style, $row["db_style"])
-	. (support("routine") ? checkbox("routines", 1, $checked, lang('Routines')) : "")
-	. (support("event") ? checkbox("events", 1, $checked, lang('Events')) : "")
+	. (support("routine") ? checkbox("routines", 1, $row["routines"], lang('Routines')) : "")
+	. (support("event") ? checkbox("events", 1, $row["events"], lang('Events')) : "")
 );
 echo "<tr><th>" . lang('Tables') . "<td>" . html_select('table_style', $table_style, $row["table_style"])
-	. checkbox("auto_increment", 1, $row["table_style"], lang('Auto Increment'))
-	. (support("trigger") ? checkbox("triggers", 1, $row["table_style"], lang('Triggers')) : "")
+	. checkbox("auto_increment", 1, $row["auto_increment"], lang('Auto Increment'))
+	. (support("trigger") ? checkbox("triggers", 1, $row["triggers"], lang('Triggers')) : "")
 ;
 echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style, $row["data_style"]);
 ?>
