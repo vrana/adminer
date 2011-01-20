@@ -106,7 +106,15 @@ function referencable_primary($self) {
 * @return null
 */
 function textarea($name, $value, $rows = 10, $cols = 80) {
-	echo "<textarea name='$name' rows='$rows' cols='$cols' style='width: 98%;' spellcheck='false' onkeypress='return textareaKeypress(this, event, true);'>" . h($value) . "</textarea>"; // spellcheck - not valid before HTML5
+	echo "<textarea name='$name' rows='$rows' cols='$cols' style='width: 98%;' spellcheck='false' onkeypress='return textareaKeypress(this, event, true);'>"; // spellcheck - not valid before HTML5
+	if (is_array($value)) {
+		foreach ($value as $val) { // not implode() to save memory
+			echo h($val) . ";\n\n\n"; // rtrim(, ';') would possibly damage DELIMITER
+		}
+	} else {
+		echo h($value);
+	}
+	echo "</textarea>";
 }
 
 /** Format time difference

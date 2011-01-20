@@ -147,7 +147,7 @@ $q = $_GET["sql"]; // overwrite $q from if ($_POST) to save memory
 if ($_POST) {
 	$q = $_POST["query"];
 } elseif ($_GET["history"] == "all") {
-	$q = implode(";\n\n\n", $history); // rtrim(, ';') would possibly damage DELIMITER
+	$q = $history;
 } elseif ($_GET["history"] != "") {
 	$q = $history[$_GET["history"]];
 }
