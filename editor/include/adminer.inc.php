@@ -203,7 +203,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 				$key = $keys[$name];
 				$i--;
 				echo "<div>" . h($desc) . "<input type='hidden' name='where[$i][col]' value='" . h($name) . "'>:";
-				echo enum_input("checkbox", " name='where[$i][val][]'", $field, (array) $where[$key]["val"]); //! impossible to search for NULL
+				echo enum_input("checkbox", " name='where[$i][val][]'", $field, (array) $where[$key]["val"], ($field["null"] ? 0 : null));
 				echo "</div>\n";
 				unset($columns[$name]);
 			}
@@ -295,7 +295,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 				foreach (($col != "" ? array($col => $fields[$col]) : $fields) as $name => $field) {
 					if ($col != "" || is_numeric($val) || !ereg('int|float|double|decimal', $field["type"])) {
 						if ($col != "" && $field["type"] == "enum") {
-							$conds[] = idf_escape($name) . " IN (" . implode(", ", array_map('intval', $val)) . ")";
+							$conds[] = (in_array(0, $val) ? idf_escape($name) . " IS NULL OR " : "") . idf_escape($name) . " IN (" . implode(", ", array_map('intval', $val)) . ")";
 						} else {
 							$text_type = ereg('char|text|enum|set', $field["type"]);
 							$value = $this->processInput($field, ($text_type && ereg('^[^%]+$', $val) ? "%$val%" : $val));
@@ -402,8 +402,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	function editInput($table, $field, $attrs, $value) {
 		if ($field["type"] == "enum") {
 			return (isset($_GET["select"]) ? "<label><input type='radio'$attrs value='-1' checked><i>" . lang('original') . "</i></label> " : "")
-				. ($field["null"] ? "<label><input type='radio'$attrs value=''" . ($value || isset($_GET["select"]) ? "" : " checked") . "><i>" . lang('empty') . "</i></label>" : "")
-				. enum_input("radio", $attrs, $field, $value)
+				. enum_input("radio", $attrs, $field, ($value || isset($_GET["select"]) ? $value : 0), ($field["null"] ? "" : null))
 			;
 		}
 		$options = $this->_foreignKeyOptions($table, $field["field"]);

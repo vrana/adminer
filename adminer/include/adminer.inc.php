@@ -440,8 +440,7 @@ document.getElementById('username').focus();
 		if ($field["type"] == "enum") {
 			return (isset($_GET["select"]) ? "<label><input type='radio'$attrs value='-1' checked><i>" . lang('original') . "</i></label> " : "")
 				. ($field["null"] ? "<label><input type='radio'$attrs value=''" . (isset($value) || isset($_GET["select"]) ? "" : " checked") . "><i>NULL</i></label> " : "")
-				. "<label><input type='radio'$attrs value='0'" . ($value === 0 ? " checked" : "") . "><i>" . lang('empty') . "</i></label>"
-				. enum_input("radio", $attrs, $field, $value)
+				. enum_input("radio", $attrs, $field, $value, 0) // 0 - empty
 			;
 		}
 		return "";
