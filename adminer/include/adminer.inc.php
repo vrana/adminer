@@ -741,7 +741,7 @@ DROP PROCEDURE adminer_alter;
 <p>
 <?php hidden_fields_get(); ?>
 <?php echo ($databases ? html_select("db", array("" => "(" . lang('database') . ")") + $databases, DB, "this.form.submit();") : '<input name="db" value="' . h(DB) . '">'); ?>
-<input type="submit" value="<?php echo lang('Use'); ?>"<?php echo ($databases ? " class='hidden'" : ""); ?>>
+<input type="submit" value="<?php echo lang('Use'); ?>"<?php echo ($databases ? " class='hidden'" : ""); ?> onclick="this.form.submit(); return false;">
 <?php
 			if ($missing != "db" && DB != "" && $connection->select_db(DB)) {
 				if (support("scheme")) {
