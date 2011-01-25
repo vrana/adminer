@@ -194,8 +194,11 @@ function ajax(url, callback, data) {
 		xmlhttp.onreadystatechange = function () {
 			if (xmlhttp.readyState == 4) {
 				var redirect = xmlhttp.getResponseHeader('X-AJAX-Redirect');
-				if (redirect && history.replaceState) {
-					history.replaceState(null, '', redirect);
+				if (redirect) {
+					if (history.replaceState) {
+						history.replaceState(null, '', redirect);
+					}
+					return ajaxSend(redirect);
 				}
 				var title = xmlhttp.getResponseHeader('X-AJAX-Title');
 				if (title) {
