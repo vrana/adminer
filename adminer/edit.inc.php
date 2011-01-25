@@ -67,7 +67,7 @@ if ($_POST["save"]) {
 <form action="" method="post" enctype="multipart/form-data">
 <?php
 if ($fields) {
-	echo "<table cellspacing='0'>\n";
+	echo "<table cellspacing='0' onkeydown='return editingKeydown(event);'>\n";
 	foreach ($fields as $name => $field) {
 		echo "<tr><th>" . $adminer->fieldName($field);
 		$default = $_GET["set"][bracket_escape($name)];

@@ -107,6 +107,18 @@ function setHtml(id, html) {
 	}
 }
 
+/** Find node position
+* @param Node
+* @return number
+*/
+function nodePosition(el) {
+	var pos = 0;
+	while (el = el.previousSibling) {
+		pos++;
+	}
+	return pos;
+}
+
 /** Go to the specified page
 * @param string
 * @param string
@@ -171,6 +183,25 @@ function textareaKeypress(target, event, tab, button) {
 		} else if (!target.form.onsubmit || target.form.onsubmit() !== false) {
 			target.form.submit();
 		}
+	}
+	return true;
+}
+
+
+
+/** Change focus by Ctrl+Up or Ctrl+Down
+* @param KeyboardEvent
+* @return boolean
+*/
+function editingKeydown(event) {
+	if ((event.keyCode == 40 || event.keyCode == 38) && event.ctrlKey && !event.altKey && !event.metaKey) { // shiftKey allowed
+		var target = event.target || event.srcElement;
+		var sibling = (event.keyCode == 40 ? 'nextSibling' : 'previousSibling');
+		var el = target.parentNode.parentNode[sibling];
+		if (el && (/^tr$/i.test(el.tagName) || (el = el[sibling])) && /^tr$/i.test(el.tagName) && (el = el.childNodes[nodePosition(target.parentNode)]) && (el = el.childNodes[nodePosition(target)])) {
+			el.focus();
+		}
+		return false;
 	}
 	return true;
 }
