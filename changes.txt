@@ -10,6 +10,7 @@ Create table default data type: int
 Create table keyboard shortcuts: Ctrl+Up, Ctrl+Down
 Homepage customization
 Use IN for search in numeric fields (Editor)
+Use password input for _md5 and _sha1 fields (Editor)
 Work without session.use_cookies (bug #3138640)
 Portuguese translation
 

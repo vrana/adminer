@@ -415,6 +415,9 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		if (ereg('date|timestamp', $field["type"])) {
 			return "<input value='" . h($value) . "'$attrs> (" . lang('[yyyy]-mm-dd') . ")"; //! maxlength
 		}
+		if (eregi('_(md5|sha1)$', $field["field"])) {
+			return "<input type='password' value='" . h($value) . "'$attrs>";
+		}
 		return '';
 	}
 	
