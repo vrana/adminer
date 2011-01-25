@@ -7,6 +7,7 @@ History: edit all
 MS SQL: auto primary and foreign key
 SQLite: display 0
 Create table default data type: int
+Create table keyboard shortcuts: Ctrl+Up, Ctrl+Down
 Homepage customization
 Use IN for search in numeric fields (Editor)
 Work without session.use_cookies (bug #3138640)

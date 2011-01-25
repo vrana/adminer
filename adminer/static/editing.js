@@ -240,6 +240,33 @@ function editingLengthBlur(edit) {
 	edit.style.display = 'none';
 }
 
+/** Find node position
+* @param Node
+* @return number
+*/
+function nodePosition(el) {
+	var pos = 0;
+	while (el = el.previousSibling) {
+		pos++;
+	}
+	return pos;
+}
+
+/** Change focus by Ctrl+Up or Down
+* @param KeyboardEvent
+* @return boolean
+*/
+function editingKeydown(event) {
+	var target = event.target || event.srcElement;
+	if ((event.keyCode == 40 || event.keyCode == 38) && event.ctrlKey && !event.altKey && !event.metaKey) { // shiftKey allowed
+		if ((el = target.parentNode.parentNode[(event.keyCode == 40 ? 'nextSibling' : 'previousSibling')]) && (el = el.childNodes[nodePosition(target.parentNode)]) && (el = el.childNodes[nodePosition(target)])) {
+			el.focus();
+		}
+		return false;
+	}
+	return true;
+}
+
 /** Show or hide selected table column
 * @param boolean
 * @param number
