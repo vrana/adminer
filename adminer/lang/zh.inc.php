@@ -197,7 +197,6 @@ $translations = array(
 	'Values' => '值',
 	'%d row(s) have been imported.' => '%d 行已导入。',
 	'anywhere' => '任意位置',
-	'CSV Import' => 'CSV 导入',
 	'Import' => '导入',
 	'Stop on error' => '出错时停止',
 	'%.3f s' => '%.3f 秒',

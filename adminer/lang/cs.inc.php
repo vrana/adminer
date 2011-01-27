@@ -229,7 +229,6 @@ $translations = array(
 	'whole result' => 'celý výsledek',
 	'%d byte(s)' => array('%d bajt', '%d bajty', '%d bajtů'),
 	
-	'CSV Import' => 'Import CSV',
 	'Import' => 'Import',
 	'%d row(s) have been imported.' => array('Byl importován %d záznam.', 'Byly importovány %d záznamy.', 'Bylo importováno %d záznamů.'),
 	

@@ -196,7 +196,6 @@ $translations = array(
 	'Partition name' => 'Nazwa rozdziału',
 	'Values' => 'Wartości',
 	'%d row(s) have been imported.' => array('%d rekord został importowany.', '%d rekordy zostały importowane.', 'Zostało importowanych %d rekordów.'),
-	'CSV Import' => 'Import CSV',
 	'Import' => 'Import',
 	'Show structure' => 'Pokaż całą strukturę',
 	'Select data' => 'Pokaż dane',

@@ -195,7 +195,6 @@ $translations = array(
 	'Partition name' => 'Название раздела',
 	'Values' => 'Параметры',
 	'%d row(s) have been imported.' => array('Импортирована %d строка.', 'Импортировано %d строки.', 'Импортировано %d строк.'),
-	'CSV Import' => 'Импорт CSV',
 	'Import' => 'Импорт',
 	'Stop on error' => 'Остановить при ошибке',
 	'Maximum number of allowed fields exceeded. Please increase %s and %s.' => 'Достигнуто максимальное значение количества доступных полей. Увеличьте %s и %s.',

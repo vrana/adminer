@@ -198,7 +198,6 @@ $translations = array(
 	'Values' => 'Waarden',
 	'%d row(s) have been imported.' => array('%d rij werd geïmporteerd.', '%d rijen werden geïmporteerd.'),
 	'anywhere' => 'overal',
-	'CSV Import' => 'CSV Import',
 	'Import' => 'Importeren',
 	'Stop on error' => 'Stoppen bij fout',
 	'%.3f s' => '%.3f s',

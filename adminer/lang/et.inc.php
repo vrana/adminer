@@ -197,7 +197,6 @@ $translations = array(
 	'Values' => 'Väärtused',
 	'%d row(s) have been imported.' => array('Imporditi %d rida.', 'Imporditi %d rida.'),
 	'anywhere' => 'vahet pole',
-	'CSV Import' => 'Impordi CSV',
 	'Import' => 'Impordi',
 	'Stop on error' => 'Peatuda vea esinemisel',
 	'%.3f s' => '%.3f s',

@@ -197,7 +197,6 @@ $translations = array(
 	'Values' => 'Valores',
 	'%d row(s) have been imported.' => array('%d registro importado.', '%d registros importados.'),
 	'anywhere' => 'qualquer local',
-	'CSV Import' => 'Importar CSV',
 	'Import' => 'Importar',
 	'Stop on error' => 'Parar em caso de erro',
 	'%.3f s' => '%.3f s',

@@ -195,7 +195,6 @@ $translations = array(
 	'Partition name' => 'Nom de la partició',
 	'Values' => 'Valors',
 	'%d row(s) have been imported.' => array('S\'ha importat %d fila.', 'S\'han importat %d files.'),
-	'CSV Import' => 'Importa CSV',
 	'Import' => 'Importa',
 	'Show structure' => 'Mostra l\'estructura',
 	'Select data' => 'Selecciona dades',

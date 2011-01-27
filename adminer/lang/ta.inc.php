@@ -194,7 +194,6 @@ $translations = array(
 	'Values' => 'ம‌திப்புக‌ள்',
 	'%d row(s) have been imported.' => array('%d வ‌ரிசை இற‌க்கும‌தி (Import) செய்ய‌ப்ப‌ட்ட‌து.', '%d வ‌ரிசைக‌ள் இற‌க்கும‌தி (Import) செய்ய‌ப்ப‌ட்டன‌.'),
 	'Show structure' => 'க‌ட்ட‌மைப்பை காண்பிக்க‌வும்',
-	'CSV Import' => 'இம்போர்ட் CSV',
 	'Import' => 'இற‌க்கும‌தி (Import)',
 	'Stop on error' => 'பிழை ஏற்ப‌டின் நிற்க‌',
 	'Select data' => 'த‌க‌வ‌லை தேர்வு செய்',

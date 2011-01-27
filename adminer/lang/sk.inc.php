@@ -196,7 +196,6 @@ $translations = array(
 	'Partition name' => 'Názov oddielu',
 	'Values' => 'Hodnoty',
 	'%d row(s) have been imported.' => array('Bol importovaný %d záznam.', 'Boli importované %d záznamy.', 'Bolo importovaných %d záznamov.'),
-	'CSV Import' => 'Import CSV',
 	'Import' => 'Import',
 	'Stop on error' => 'Zastaviť pri chybe',
 	'Maximum number of allowed fields exceeded. Please increase %s and %s.' => 'Bol prekročený maximálny počet povolených polí. Zvýšte prosím %s a %s.',

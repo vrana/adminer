@@ -195,7 +195,6 @@ $translations = array(
 	'Partition name' => 'Partició neve',
 	'Values' => 'Értékek',
 	'%d row(s) have been imported.' => array('%d sor importálva.', '%d sor importálva.', '%d sor importálva.'),
-	'CSV Import' => 'CSV importálása',
 	'Import' => 'Importálás',
 	'Show structure' => 'Struktúra',
 	'Select data' => 'Tartalom',

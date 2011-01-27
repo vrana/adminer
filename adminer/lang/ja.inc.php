@@ -197,7 +197,6 @@ $translations = array(
 	'%d row(s) have been imported.' => '%d 行をインポートしました',
 	'Show structure' => '構造',
 	'anywhere' => '任意',
-	'CSV Import' => 'CSV インポート',
 	'Import' => 'インポート',
 	'Stop on error' => 'エラーの場合は停止',
 	'Select data' => 'データ',

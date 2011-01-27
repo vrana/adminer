@@ -195,7 +195,6 @@ $translations = array(
 	'Values' => 'القيم',
 	'%d row(s) have been imported.' => 'عدد الأسطر المستوردة هو %d.',
 	'anywhere' => 'في اي مكان',
-	'CSV Import' => 'إستيراد CSV',
 	'Import' => 'إستيراد',
 	'Stop on error' => 'أوقف في حالة حدوث خطأ',
 	'%.3f s' => '%.3f s',
