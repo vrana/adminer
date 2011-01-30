@@ -349,7 +349,7 @@ function drop_create($drop, $create, $location, $message_drop, $message_alter, $
 	$created = queries($create);
 	if (!queries_redirect($location, ($name != "" ? $message_alter : $message_create), $created) && $dropped) {
 		restart_session();
-		$_SESSION["messages"][] = $message_drop;
+		$_SESSION["messages"][preg_replace('~^[^?]*/~', '', $_SERVER["REQUEST_URI"])][] = $message_drop;
 	}
 	return $dropped;
 }

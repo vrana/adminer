@@ -384,7 +384,7 @@ function is_ajax() {
 function redirect($location, $message = null) {
 	if (isset($message)) {
 		restart_session();
-		$_SESSION["messages"][] = $message;
+		$_SESSION["messages"][preg_replace('~^[^?]*/~', '', $location)][] = $message;
 	}
 	if (isset($location)) {
 		if ($location == "") {

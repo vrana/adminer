@@ -64,9 +64,11 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	}
 	echo "<h2>$title_all</h2>\n";
 	restart_session();
-	if ($_SESSION["messages"]) {
-		echo "<div class='message'>" . implode("</div>\n<div class='message'>", $_SESSION["messages"]) . "</div>\n";
-		$_SESSION["messages"] = array();
+	$uri = preg_replace('~^[^?]*/~', '', $_SERVER["REQUEST_URI"]);
+	$messages = $_SESSION["messages"][$uri];
+	if ($messages) {
+		echo "<div class='message'>" . implode("</div>\n<div class='message'>", $messages) . "</div>\n";
+		unset($_SESSION["messages"][$uri]);
 	}
 	$databases = &get_session("dbs");
 	if (DB != "" && $databases && !in_array(DB, $databases, true)) {
