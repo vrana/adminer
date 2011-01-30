@@ -554,7 +554,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	$types = array("integer" => 0, "real" => 0, "numeric" => 0, "text" => 0, "blob" => 0);
 	$structured_types = array_keys($types);
 	$unsigned = array();
-	$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"); // REGEXP can be user defined function
+	$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", ""); // REGEXP can be user defined function
 	$functions = array("hex", "length", "lower", "round", "unixepoch", "upper");
 	$grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
 	$edit_functions = array(

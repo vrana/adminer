@@ -1,6 +1,7 @@
 Adminer 3.2.0-dev:
 Get long texts and slow information by AJAX
 All links and some forms by AJAX in browsers with support for history.pushState
+Ability to search by expression in select
 Permanent link in schema
 Display total time in show only errors mode in SQL command
 History: edit all

@@ -229,7 +229,7 @@ document.getElementById('username').focus();
 			}
 		}
 		echo "<div><select name='where[$i][col]' onchange='selectAddRow(this);'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, null, true) . "</select>";
-		echo html_select("where[$i][op]", $this->operators);
+		echo html_select("where[$i][op]", $this->operators, "=");
 		echo "<input name='where[$i][val]'></div>\n";
 		echo "</div></fieldset>\n";
 	}
@@ -333,6 +333,8 @@ document.getElementById('username').focus();
 				if (ereg('IN$', $val["op"])) {
 					$in = process_length($val["val"]);
 					$cond .= " (" . ($in != "" ? $in : "NULL") . ")";
+				} elseif (!$val["op"]) {
+					$cond .= $val["val"]; // SQL injection
 				} elseif ($val["op"] == "LIKE %%") {
 					$cond = " LIKE " . $this->processInput($fields[$val["col"]], "%$val[val]%");
 				} elseif (!ereg('NULL$', $val["op"])) {
