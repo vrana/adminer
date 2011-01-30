@@ -56,9 +56,8 @@ if ($adminer->homepage()) {
 					echo '<td colspan="6"><a href="' . h(ME) . "view=" . urlencode($name) . '">' . lang('View') . '</a>';
 					echo '<td align="right"><a href="' . h(ME) . "select=" . urlencode($name) . '">?</a>';
 				} else {
-					echo "<td id='Engine-" . h($name) . "'>&nbsp;<td id='Collation-" . h($name) . "'>&nbsp;";
-					foreach (array("Data_length" => "create", "Index_length" => "indexes", "Data_free" => "edit", "Auto_increment" => "auto_increment=1&create", "Rows" => "select") as $key => $link) {
-						echo "<td align='right'><a href='" . h(ME . "$link=") . urlencode($name) . "' id='$key-" . h($name) . "'>?</a>";
+					foreach (array("Engine" => "", "Collation" => "", "Data_length" => "create", "Index_length" => "indexes", "Data_free" => "edit", "Auto_increment" => "auto_increment=1&create", "Rows" => "select") as $key => $link) {
+						echo ($link ? "<td align='right'><a href='" . h(ME . "$link=") . urlencode($name) . "' id='$key-" . h($name) . "'>?</a>" : "<td id='$key-" . h($name) . "'>&nbsp;");
 					}
 				}
 				echo (support("comment") ? "<td id='Comment-" . h($name) . "'>&nbsp;" : "");
