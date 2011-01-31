@@ -58,6 +58,13 @@ function typePassword(el, disable) {
 	}
 }
 
+function loginDriver(driver) {
+	var trs = driver.parentNode.parentNode.parentNode.rows;
+	for (var i=1; i < trs.length; i++) {
+		trs[i].className = (/sqlite/.test(driver.value) ? 'hidden' : '');
+	}
+}
+
 
 
 var added = '.', rowCount;
