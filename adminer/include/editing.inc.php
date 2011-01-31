@@ -43,7 +43,7 @@ function select($result, $connection2 = null, $href = "") {
 				}
 				$types[$j] = $field->type;
 				$name = h($field->name);
-				echo "<th" . ($orgtable != "" || $field->name != $orgname ? " title='" . h(($orgtable != "" ? "$orgtable." : "") . $orgname) . "'" : "") . ">" . ($href ? "<a href='$href" . strtolower($name) . "' target='_blank'>$name</a>" : $name);
+				echo "<th" . ($orgtable != "" || $field->name != $orgname ? " title='" . h(($orgtable != "" ? "$orgtable." : "") . $orgname) . "'" : "") . ">" . ($href ? "<a href='$href" . strtolower($name) . "' target='_blank' rel='noreferrer'>$name</a>" : $name);
 			}
 			echo "</thead>\n";
 		}

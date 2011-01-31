@@ -10,7 +10,7 @@ function bodyLoad(version, protocol) {
 	script.src = jushRoot + 'jush.js';
 	script.onload = function () {
 		if (window.jush) { // IE runs in case of an error too
-			jush.create_links = ' target="_blank"';
+			jush.create_links = ' target="_blank" rel="noreferrer"';
 			jush.urls.sql[0] = 'http://dev.mysql.com/doc/refman/' + version + '/en/$key';
 			jush.urls.sql_sqlset = jush.urls.sql[0];
 			jush.urls.sqlset[0] = jush.urls.sql[0];
