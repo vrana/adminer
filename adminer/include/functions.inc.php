@@ -210,8 +210,10 @@ function get_key_vals($query, $connection2 = null) {
 	}
 	$return = array();
 	$result = $connection2->query($query);
-	while ($row = $result->fetch_row()) {
-		$return[$row[0]] = $row[1];
+	if (is_object($result)) {
+		while ($row = $result->fetch_row()) {
+			$return[$row[0]] = $row[1];
+		}
 	}
 	return $return;
 }
