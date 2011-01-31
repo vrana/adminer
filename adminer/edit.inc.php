@@ -64,7 +64,7 @@ if ($_POST["save"]) {
 }
 ?>
 
-<form action="" method="post" enctype="multipart/form-data">
+<form action="" method="post" enctype="multipart/form-data" id="form">
 <?php
 if ($fields) {
 	echo "<table cellspacing='0' onkeydown='return editingKeydown(event);'>\n";
@@ -103,8 +103,9 @@ if ($fields) {
 		echo '<input type="submit" name="insert" value="' . ($update ? lang('Save and continue edit') : lang('Save and insert next')) . "\">\n";
 	}
 }
-if ($update) {
-	echo "<input type='submit' name='delete' value='" . lang('Delete') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\">\n";
-}
+echo ($update
+	? "<input type='submit' name='delete' value='" . lang('Delete') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\">\n"
+	: "<script type='text/javascript'>document.getElementById('form').elements[0].focus();</script>\n"
+);
 ?>
 </form>
