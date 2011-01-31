@@ -736,14 +736,14 @@ DROP PROCEDURE adminer_alter;
 			}
 			?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
-<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>">
+<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" onclick="eventStop(event);">
 </p>
 </form>
 <form action="">
 <p>
 <?php hidden_fields_get(); ?>
 <?php echo ($databases ? html_select("db", array("" => "(" . lang('database') . ")") + $databases, DB, "this.form.submit();") : '<input name="db" value="' . h(DB) . '">'); ?>
-<input type="submit" value="<?php echo lang('Use'); ?>"<?php echo ($databases ? " class='hidden'" : ""); ?> onclick="this.form.submit(); return false;">
+<input type="submit" value="<?php echo lang('Use'); ?>"<?php echo ($databases ? " class='hidden'" : ""); ?> onclick="eventStop(event);">
 <?php
 			if ($missing != "db" && DB != "" && $connection->select_db(DB)) {
 				if (support("scheme")) {

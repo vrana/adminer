@@ -430,7 +430,7 @@ function bodyClick(event, db, ns) {
 		var match2 = /&ns=([^&]*)/.exec(el.href);
 		return !(db == (match ? match[1] : '') && ns == (match2 ? match2[1] : '') && ajaxMain(el.href, '', event));
 	}
-	if (/^input$/i.test(el.tagName) && (el.type == 'image' || (el.type == 'submit' && el.name != 'logout' && !/&(database|scheme|create|view|sql|user|dump)=/.test(location.href)))) {
+	if (/^input$/i.test(el.tagName) && (el.type == 'image' || (el.type == 'submit' && !/&(database|scheme|create|view|sql|user|dump)=/.test(location.href)))) {
 		return !ajaxForm(el.form, (el.name ? encodeURIComponent(el.name) + (el.type == 'image' ? '.x' : '') + '=1' : ''));
 	}
 	return true;
