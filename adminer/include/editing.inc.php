@@ -231,7 +231,8 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 <?php } ?>
 <td><?php echo "<input type='image' name='add[" . (support("move_col") ? 0 : count($fields)) . "]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>"; ?><script type="text/javascript">row_count = <?php echo count($fields); ?>;</script>
 </thead>
-<tbody onkeydown="return editingKeydown(event);"><?php // no newline for JavaScript
+<tbody onkeydown="return editingKeydown(event);">
+<?php
 	foreach ($fields as $i => $field) {
 		$i++;
 		$orig = $field[($_POST ? "orig" : "field")];
