@@ -80,7 +80,7 @@ if (isset($_GET["pgsql"])) {
 			
 			function result($query, $field = 0) {
 				$result = $this->query($query);
-				if (!$result) {
+				if (!$result || !$result->num_rows) {
 					return false;
 				}
 				return pg_fetch_result($result->_result, 0, $field);

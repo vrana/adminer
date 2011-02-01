@@ -150,7 +150,7 @@ if (!defined("DRIVER")) {
 			*/
 			function result($query, $field = 0) {
 				$result = $this->query($query);
-				if (!$result) {
+				if (!$result || !$result->num_rows) {
 					return false;
 				}
 				return mysql_result($result->_result, 0, $field);
