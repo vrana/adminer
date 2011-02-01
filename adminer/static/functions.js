@@ -178,6 +178,7 @@ function textareaKeypress(target, event, tab, button) {
 		}
 	}
 	if (event.ctrlKey && (event.keyCode == 13 || event.keyCode == 10) && !event.altKey && !event.metaKey) { // shiftKey allowed
+		target.blur();
 		if (button) {
 			button.click();
 		} else if (!target.form.onsubmit || target.form.onsubmit() !== false) {
