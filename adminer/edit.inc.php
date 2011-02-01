@@ -105,7 +105,7 @@ if ($fields) {
 }
 echo ($update
 	? "<input type='submit' name='delete' value='" . lang('Delete') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\">\n"
-	: "<script type='text/javascript'>document.getElementById('form').elements[0].focus();</script>\n"
+	: "<script type='text/javascript'>document.getElementById('form').getElementsByTagName('td')[1].firstChild.focus();</script>\n"
 );
 ?>
 </form>
