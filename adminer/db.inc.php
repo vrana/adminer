@@ -74,7 +74,9 @@ if ($adminer->homepage()) {
 				$databases = (support("scheme") ? schemas() : get_databases());
 				if (count($databases) != 1 && $jush != "sqlite") {
 					$db = (isset($_POST["target"]) ? $_POST["target"] : (support("scheme") ? $_GET["ns"] : DB));
-					echo "<p>" . lang('Move to other database') . ($databases ? ": " . html_select("target", $databases, $db) : ': <input name="target" value="' . h($db) . '">') . " <input type='submit' name='move' value='" . lang('Move') . "' onclick='eventStop(event);'>\n";
+					echo "<p>" . lang('Move to other database') . ": ";
+					echo ($databases ? html_select("target", $databases, $db) : '<input name="target" value="' . h($db) . '">');
+					echo " <input type='submit' name='move' value='" . lang('Move') . "' onclick='eventStop(event);'>\n";
 				}
 			}
 			echo "</form>\n";
