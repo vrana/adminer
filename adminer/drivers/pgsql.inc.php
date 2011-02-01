@@ -196,7 +196,7 @@ if (isset($_GET["pgsql"])) {
 
 	function table_status($name = "") {
 		$return = array();
-		foreach (get_rows("SELECT relname AS \"Name\", CASE relkind WHEN 'r' THEN '' ELSE 'view' END AS \"Engine\", pg_relation_size(oid) AS \"Data_length\", pg_total_relation_size(oid) - pg_relation_size(oid) AS \"Index_length\", obj_description(oid, 'pg_class') AS \"Comment\"
+		foreach (get_rows("SELECT relname AS \"Name\", CASE relkind WHEN 'r' THEN '' ELSE 'view' END AS \"Engine\", pg_relation_size(oid) AS \"Data_length\", pg_total_relation_size(oid) - pg_relation_size(oid) AS \"Index_length\", obj_description(oid, 'pg_class') AS \"Comment\", relhasoids AS \"Oid\"
 FROM pg_class
 WHERE relkind IN ('r','v')
 AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema())"

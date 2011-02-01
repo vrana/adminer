@@ -4,6 +4,9 @@ $table_status = table_status($TABLE);
 $indexes = indexes($TABLE);
 $fields = fields($TABLE);
 $foreign_keys = column_foreign_keys($TABLE);
+if ($table_status["Oid"] == "t") {
+	$indexes[] = array("type" => "PRIMARY", "columns" => array("oid"));
+}
 
 $rights = array(); // privilege => 0
 $columns = array(); // selectable columns
@@ -23,7 +26,7 @@ list($select, $group) = $adminer->selectColumnsProcess($columns, $indexes);
 $where = $adminer->selectSearchProcess($fields, $indexes);
 $order = $adminer->selectOrderProcess($fields, $indexes);
 $limit = $adminer->selectLimitProcess();
-$from = ($select ? implode(", ", $select) : "*") . "\nFROM " . table($TABLE);
+$from = ($select ? implode(", ", $select) : ($table_status["Oid"] == "t" ? "oid, " : "") . "*") . "\nFROM " . table($TABLE);
 $group_by = ($group && count($group) < count($select) ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : "");
 
 if ($_GET["val"] && is_ajax()) {
@@ -258,17 +261,19 @@ if (!$columns) {
 			reset($select);
 			$rank = 1;
 			foreach ($rows[0] as $key => $val) {
-				$val = $_GET["columns"][key($select)];
-				$field = $fields[$select ? $val["col"] : $key];
-				$name = ($field ? $adminer->fieldName($field, $rank) : "*");
-				if ($name != "") {
-					$rank++;
-					$names[$key] = $name;
-					$column = idf_escape($key);
-					echo '<th><a href="' . h(remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key) . ($order[0] == $column || $order[0] == $key || (!$order && $group[0] == $column) ? '&desc%5B0%5D=1' : '')) . '">' . apply_sql_function($val["fun"], $name) . "</a>"; // $order[0] == $key - COUNT(*) //! columns looking like functions
+				if ($table_status["Oid"] != "t" || $key != "oid") {
+					$val = $_GET["columns"][key($select)];
+					$field = $fields[$select ? $val["col"] : $key];
+					$name = ($field ? $adminer->fieldName($field, $rank) : "*");
+					if ($name != "") {
+						$rank++;
+						$names[$key] = $name;
+						$column = idf_escape($key);
+						echo '<th><a href="' . h(remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key) . ($order[0] == $column || $order[0] == $key || (!$order && $group[0] == $column) ? '&desc%5B0%5D=1' : '')) . '">' . apply_sql_function($val["fun"], $name) . "</a>"; // $order[0] == $key - COUNT(*) //! columns looking like functions
+					}
+					$functions[$key] = $val["fun"];
+					next($select);
 				}
-				$functions[$key] = $val["fun"];
-				next($select);
 			}
 			$lengths = array();
 			if ($_GET["modify"]) {

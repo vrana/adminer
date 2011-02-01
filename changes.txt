@@ -13,6 +13,7 @@ SQLite: display 0
 Create table default data type: int
 Focus upper/lower fields by Ctrl+Up/Ctrl+Down
 Hide credentials for SQLite
+Utilize oids in PostgreSQL
 Homepage customization
 Use IN for search in numeric fields (Editor)
 Use password input for _md5 and _sha1 fields (Editor)
