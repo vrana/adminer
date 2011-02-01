@@ -646,6 +646,7 @@ if (!defined("DRIVER")) {
 	
 	/** Move tables to other schema
 	* @param array
+	* @param array
 	* @param string
 	* @return bool
 	*/
@@ -656,6 +657,34 @@ if (!defined("DRIVER")) {
 		}
 		return queries("RENAME TABLE " . implode(", ", $rename));
 		//! move triggers
+	}
+	
+	/** Copy tables to other schema
+	* @param array
+	* @param array
+	* @param string
+	* @return bool
+	*/
+	function copy_tables($tables, $views, $target) {
+		foreach ($tables as $table) {
+			$name = ($target == DB ? table("copy_$table") : idf_escape($target) . "." . table($table));
+			if (!queries("DROP TABLE IF EXISTS $name")
+				|| !queries("CREATE TABLE $name LIKE " . table($table))
+				|| !queries("INSERT INTO $name SELECT * FROM " . table($table))
+			) {
+				return false;
+			}
+		}
+		foreach ($views as $table) {
+			$name = ($target == DB ? table("copy_$table") : idf_escape($target) . "." . table($table));
+			$view = view($table);
+			if (!queries("DROP VIEW IF EXISTS $name")
+				|| !queries("CREATE VIEW $name AS $view[select]") //! USE to avoid db.table
+			) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	/** Get information about trigger
@@ -865,7 +894,7 @@ if (!defined("DRIVER")) {
 	}
 	
 	/** Check whether a feature is supported
-	* @param string "comment", "drop_col", "dump", "event", "partitioning", "routine", "scheme", "sequence", "status", "trigger", "type", "variables", "view"
+	* @param string "comment", "drop_col", "dump", "event", "partitioning", "routine", "scheme", "sequence", "status", "trigger", "type", "variables", "view", "copy"
 	* @return bool
 	*/
 	function support($feature) {

@@ -105,6 +105,8 @@ $translations = array(
 	'Move to other database' => 'Přesunout do jiné databáze',
 	'Move' => 'Přesunout',
 	'Tables have been moved.' => 'Tabulky byly přesunuty.',
+	'Copy' => 'Zkopírovat',
+	'Tables have been copied.' => 'Tabulky byly zkopírovány.',
 	
 	'Routines' => 'Procedury a funkce',
 	'Routine has been called, %d row(s) affected.' => array('Procedura byla zavolána, byl změněn %d záznam.', 'Procedura byla zavolána, byly změněny %d záznamy.', 'Procedura byla zavolána, bylo změněno %d záznamů.'),

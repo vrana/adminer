@@ -4,7 +4,7 @@ $tables_views = array_merge((array) $_POST["tables"], (array) $_POST["views"]);
 if ($tables_views && !$error && !$_POST["search"]) {
 	$result = true;
 	$message = "";
-	if ($jush == "sql" && count($_POST["tables"]) > 1 && ($_POST["drop"] || $_POST["truncate"])) {
+	if ($jush == "sql" && count($_POST["tables"]) > 1 && ($_POST["drop"] || $_POST["truncate"] || $_POST["copy"])) {
 		queries("SET foreign_key_checks = 0"); // allows to truncate or drop several tables at once
 	}
 	if ($_POST["truncate"]) {
@@ -15,6 +15,9 @@ if ($tables_views && !$error && !$_POST["search"]) {
 	} elseif ($_POST["move"]) {
 		$result = move_tables((array) $_POST["tables"], (array) $_POST["views"], $_POST["target"]);
 		$message = lang('Tables have been moved.');
+	} elseif ($_POST["copy"]) {
+		$result = copy_tables((array) $_POST["tables"], (array) $_POST["views"], $_POST["target"]);
+		$message = lang('Tables have been copied.');
 	} elseif ($_POST["drop"]) {
 		if ($_POST["views"]) {
 			$result = drop_views($_POST["views"]);
@@ -76,7 +79,9 @@ if ($adminer->homepage()) {
 					$db = (isset($_POST["target"]) ? $_POST["target"] : (support("scheme") ? $_GET["ns"] : DB));
 					echo "<p>" . lang('Move to other database') . ": ";
 					echo ($databases ? html_select("target", $databases, $db) : '<input name="target" value="' . h($db) . '">');
-					echo " <input type='submit' name='move' value='" . lang('Move') . "' onclick='eventStop(event);'>\n";
+					echo " <input type='submit' name='move' value='" . lang('Move') . "' onclick='eventStop(event);'>";
+					echo (support("copy") ? " <input type='submit' name='copy' value='" . lang('Copy') . "'>" : "");
+					echo "\n";
 				}
 			}
 			echo "</form>\n";

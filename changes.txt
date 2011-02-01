@@ -1,6 +1,7 @@
 Adminer 3.2.0-dev:
 Get long texts and slow information by AJAX
-All links and some forms by AJAX in browsers with support for history.pushState
+Most links and forms by AJAX in browsers with support for history.pushState
+Copy tables
 Ability to search by expression in select
 Export SQL command result (bug #3116854)
 Focus first field with insert (bug #3126501)
