@@ -14,6 +14,7 @@ $langs = array(
 	'hu' => 'Magyar', // Borsos Szilárd (Borsosfi) - http://www.borsosfi.hu, info@borsosfi.hu
 	'ca' => 'Català', // Joan Llosas
 	'pt' => 'Português', // Gian Live - gian@live.com
+	'sl' => 'Slovenski', // Matej Ferlan - www.itdinamik.com, matej.ferlan@itdinamik.com
 	'ru' => 'Русский язык', // Maksim Izmaylov
 	'zh' => '简体中文', // Mr. Lodar
 	'zh-tw' => '繁體中文', // http://tzangms.com
@@ -39,7 +40,10 @@ function lang($idf, $number = null) {
 	global $LANG, $translations;
 	$translation = $translations[$idf];
 	if (is_array($translation) && $translation) {
-		$pos = ($number == 1 || (!$number && $LANG == 'fr') ? 0 : ((!$number || $number >= 5) && ereg('cs|sk|ru', $LANG) ? 2 : 1)); // French treat zero as singular, Slavic languages use different form for 2, 3, 4
+		$pos = ($number == 1 || (!$number && $LANG == 'fr') ? 0 // French treat zero as singular
+			: ($LANG == 'sl' && (!$number || $number > 2) ? 1 : 0) // Slovenian use different forms for 1, 2, 3-4, other
+			+ ((!$number || $number >= 5) && ereg('cs|sk|ru|sl', $LANG) ? 2 : 1) // Slavic languages use different forms for 1, 2-4, other
+		);
 		$translation = $translation[$pos];
 	}
 	$args = func_get_args();
