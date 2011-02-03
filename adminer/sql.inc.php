@@ -153,7 +153,7 @@ if ($_POST) {
 }
 textarea("query", $q, 20);
 echo ($_POST ? "" : "<script type='text/javascript'>document.getElementsByTagName('textarea')[0].focus();</script>\n");
-echo "<p>" . (ini_bool("file_uploads") ? lang('File upload') . ': <input type="file" name="sql_file">' : lang('File uploads are disabled.'));
+echo "<p>" . (ini_bool("file_uploads") ? lang('File upload') . ': <input type="file" name="sql_file"> (&lt; ' . ini_get("upload_max_filesize") . 'B)' : lang('File uploads are disabled.')); // ignore post_max_size because it is for all form fields together and bytes computing would be necessary
 
 ?>
 <p>
