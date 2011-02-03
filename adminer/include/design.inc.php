@@ -64,7 +64,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	}
 	echo "<h2>$title_all</h2>\n";
 	restart_session();
-	$uri = preg_replace('~^[^?]*/~', '', $_SERVER["REQUEST_URI"]);
+	$uri = preg_replace('~^[^?]*~', '', $_SERVER["REQUEST_URI"]);
 	$messages = $_SESSION["messages"][$uri];
 	if ($messages) {
 		echo "<div class='message'>" . implode("</div>\n<div class='message'>", $messages) . "</div>\n";
