@@ -298,7 +298,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 							$conds[] = (in_array(0, $val) ? idf_escape($name) . " IS NULL OR " : "") . idf_escape($name) . " IN (" . implode(", ", array_map('intval', $val)) . ")";
 						} else {
 							$text_type = ereg('char|text|enum|set', $field["type"]);
-							$value = $this->processInput($field, ($text_type && ereg('^[^%]+$', $val) ? "%$val%" : $val));
+							$value = $this->processInput($field, (!$op && $text_type && ereg('^[^%]+$', $val) ? "%$val%" : $val));
 							$conds[] = idf_escape($name) . ($value == "NULL" ? " IS" . ($op == ">=" ? " NOT" : "") . " $value"
 								: (in_array($op, $this->operators) || $op == "=" ? " $op $value"
 								: ($text_type ? " LIKE $value"
