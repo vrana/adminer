@@ -302,7 +302,7 @@ function where_check($val) {
 * @return string
 */
 function where_link($i, $column, $value, $operator = "=") {
-	return "&where%5B$i%5D%5Bcol%5D=" . urlencode($column) . "&where%5B$i%5D%5Bop%5D=" . urlencode($operator) . "&where%5B$i%5D%5Bval%5D=" . urlencode($value);
+	return "&where%5B$i%5D%5Bcol%5D=" . urlencode($column) . "&where%5B$i%5D%5Bop%5D=" . urlencode((isset($value) ? $operator : "IS NULL")) . "&where%5B$i%5D%5Bval%5D=" . urlencode($value);
 }
 
 /** Set cookie valid for 1 month

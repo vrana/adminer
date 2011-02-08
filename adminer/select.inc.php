@@ -336,7 +336,7 @@ if (!$columns) {
 									}
 								}
 								foreach ($unique_array as $k => $v) {
-									$link .= h(where_link($i++, $k, $v, (isset($v) ? "=" : "IS NULL")));
+									$link .= h(where_link($i++, $k, $v));
 								}
 							}
 						}
