@@ -4,7 +4,8 @@ page_header(lang('Database schema'), "", array(), DB);
 $table_pos = array();
 $table_pos_js = array();
 // saved in one cookie because there is a limit of 20 cookies per domain
-preg_match_all('~([^:]+):([-0-9.]+)x([-0-9.]+)(_|$)~', ($_GET["schema"] ? $_GET["schema"] : $_COOKIE["adminer_schema"]), $matches, PREG_SET_ORDER); //! ':' in table name
+$name = "adminer_schema";
+preg_match_all('~([^:]+):([-0-9.]+)x([-0-9.]+)(_|$)~', ($_GET["schema"] ? $_GET["schema"] : $_COOKIE[($_COOKIE["$name-" . DB] ? "$name-" . DB : $name)]), $matches, PREG_SET_ORDER); // $_COOKIE["adminer_schema"] was used before 3.2.0 //! ':' in table name
 foreach ($matches as $i => $match) {
 	$table_pos[$match[1]] = array($match[2], $match[3]);
 	$table_pos_js[] = "\n\t'" . js_escape($match[1]) . "': [ $match[2], $match[3] ]";
@@ -53,7 +54,9 @@ foreach (table_status() as $row) {
 tablePos = {<?php echo implode(",", $table_pos_js) . "\n"; ?>};
 em = document.getElementById('schema').offsetHeight / <?php echo $top; ?>;
 document.onmousemove = schemaMousemove;
-document.onmouseup = schemaMouseup;
+document.onmouseup = function (ev) {
+	schemaMouseup(ev, '<?php echo js_escape(DB); ?>');
+};
 </script>
 <?php
 foreach ($schema as $name => $table) {

@@ -397,8 +397,9 @@ function schemaMousemove(ev) {
 
 /** Finish move
 * @param MouseEvent
+* @param string
 */
-function schemaMouseup(ev) {
+function schemaMouseup(ev, db) {
 	if (that !== undefined) {
 		ev = ev || event;
 		tablePos[that.firstChild.firstChild.firstChild.data] = [ (ev.clientY - y) / em, (ev.clientX - x) / em ];
@@ -410,6 +411,6 @@ function schemaMouseup(ev) {
 		s = encodeURIComponent(s.substr(1));
 		var link = document.getElementById('schema-link');
 		link.href = link.href.replace(/[^=]+$/, '') + s;
-		cookie('adminer_schema=' + s, 30, '; path="' + location.pathname + location.search + '"');
+		cookie('adminer_schema-' + db + '=' + s, 30); //! special chars in db
 	}
 }

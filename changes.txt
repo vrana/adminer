@@ -18,6 +18,7 @@ Homepage customization
 Use IN for search in numeric fields (Editor)
 Use password input for _md5 and _sha1 fields (Editor)
 Work without session.use_cookies (bug #3138640)
+Fix saving schema to cookie in Opera
 Portuguese, Slovenian and Turkish translation
 
 Adminer 3.1.0 (released 2010-11-16):

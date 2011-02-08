@@ -16,10 +16,10 @@ function toggle(id) {
 * @param number
 * @param string optional
 */
-function cookie(assign, days, params) {
+function cookie(assign, days) {
 	var date = new Date();
 	date.setDate(date.getDate() + days);
-	document.cookie = assign + '; expires=' + date + (params || '');
+	document.cookie = assign + '; expires=' + date;
 }
 
 /** Verify current Adminer version
