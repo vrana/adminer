@@ -1,6 +1,5 @@
 <?php
 $translations = array(
-	// hidden because of poor quality according to author Helmut von Ślask cieszyński
 	'Login' => 'Zalogować się',
 	'Logout successful.' => 'Wylogowanie pomyślne.',
 	'Invalid credentials.' => 'Nieprawidłowe dane.',
@@ -207,7 +206,6 @@ $translations = array(
 	'[yyyy]-mm-dd' => 'd.m.[rrrr]',
 	'History' => 'Historia',
 	'Variables' => 'Zmienne',
-	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Zdrojové a cílové sloupce musí mít stejný datový typ, nad cílovými sloupci musí být definován index a odkazovaná data musí existovat.',
 	'E-mail' => 'E-mail',
 	'From' => 'Nadawca',
 	'Subject' => 'Temat',

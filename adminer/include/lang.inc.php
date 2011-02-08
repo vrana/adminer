@@ -2,8 +2,8 @@
 // not used in a single language version
 
 $langs = array(
-	'en' => 'English', // Jakub Vrána - http://php.vrana.cz
-	'cs' => 'Čeština', // Jakub Vrána - http://php.vrana.cz
+	'en' => 'English', // Jakub Vrána - http://www.vrana.cz
+	'cs' => 'Čeština', // Jakub Vrána - http://www.vrana.cz
 	'sk' => 'Slovenčina', // Ivan Suchy - http://www.ivansuchy.com, Juraj Krivda - http://www.jstudio.cz
 	'nl' => 'Nederlands', // Maarten Balliauw - http://blog.maartenballiauw.be
 	'es' => 'Español', // Klemens Häckel - http://clickdimension.wordpress.com
@@ -12,6 +12,7 @@ $langs = array(
 	'it' => 'Italiano', // Alessandro Fiorotto, Paolo Asperti
 	'et' => 'Eesti', // Priit Kallas
 	'hu' => 'Magyar', // Borsos Szilárd (Borsosfi) - http://www.borsosfi.hu, info@borsosfi.hu
+	// hidden because of poor quality according to author: 'pl' => 'Polski', // Helmut von Ślask cieszyński
 	'ca' => 'Català', // Joan Llosas
 	'pt' => 'Português', // Gian Live - gian@live.com
 	'sl' => 'Slovenski', // Matej Ferlan - www.itdinamik.com, matej.ferlan@itdinamik.com

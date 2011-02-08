@@ -135,7 +135,7 @@ $translations = array(
 	'On completion preserve' => 'Po zaključku ohrani',
 	
 	'Tables' => 'Tabele',
-	'Tables and views' => 'Tabele in poglede',
+	'Tables and views' => 'Tabele in pogledi',
 	'Table' => 'Tabela',
 	'No tables.' => 'Ni tabel.',
 	'Alter table' => 'Spremeni tabelo',
@@ -226,7 +226,7 @@ $translations = array(
 	'No rows.' => 'Ni vrstic.',
 	'%d row(s)' => array('%d vrstica', '%d vrstici', '%d vrstice', '%d vrstic'),
 	'Page' => 'Stran',
-	'last' => 'Zadnji',
+	'last' => 'Zadnja',
 	'Last page' => 'Zadnja stran',
 	'whole result' => 'cel razultat',
 	'%d byte(s)' => array('%d bajt', '%d bajta', '%d bajti', '%d bajtov'),
