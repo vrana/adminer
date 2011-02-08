@@ -15,6 +15,7 @@ $langs = array(
 	'ca' => 'Català', // Joan Llosas
 	'pt' => 'Português', // Gian Live - gian@live.com
 	'sl' => 'Slovenski', // Matej Ferlan - www.itdinamik.com, matej.ferlan@itdinamik.com
+	'tr' => 'Türkçe', // Bilgehan Korkmaz - turktron.com
 	'ru' => 'Русский язык', // Maksim Izmaylov
 	'zh' => '简体中文', // Mr. Lodar
 	'zh-tw' => '繁體中文', // http://tzangms.com
