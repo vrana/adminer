@@ -268,11 +268,13 @@ function ajaxSend(url, data) {
 	var currentState = ++ajaxState;
 	clearTimeout(ajaxTimeout);
 	ajaxTimeout = setTimeout(function () {
+		scrollTo(0, 0);
 		setHtml('content', '<img src="../adminer/static/loader.gif" alt="">');
 	}, 500); // defer displaying loader
 	return ajax(url, function (text) {
 		if (currentState == ajaxState) {
 			clearTimeout(ajaxTimeout);
+			scrollTo(0, 0);
 			setHtml('content', text);
 			var content = document.getElementById('content');
 			var scripts = content.getElementsByTagName('script');
