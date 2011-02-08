@@ -381,7 +381,7 @@ function selectDblClick(td, event, text) {
 	}
 	if (document.selection) {
 		var range = document.selection.createRange();
-		range.moveToPoint(event.x, event.y);
+		range.moveToPoint(event.clientX, event.clientY);
 		var range2 = range.duplicate();
 		range2.moveToElementText(td);
 		range2.setEndPoint('EndToEnd', range);
