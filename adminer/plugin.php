@@ -7,7 +7,13 @@ function adminer_object() {
 	foreach (glob("../plugins/*.php") as $filename) {
 		include_once $filename;
 	}
-
+	
+	/* It is possible to combine customization and plugins:
+	class AdminerCustomization extends AdminerPlugin {
+	}
+	return new AdminerCustomization($plugins);
+	*/
+	
 	return new AdminerPlugin(array(
 		// specify enabled plugins here
 		new AdminerDumpXml,
