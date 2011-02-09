@@ -1,6 +1,6 @@
 <?php
 
-/** Prefill field containg "_slug" with slugified value of a previous field (JavaScript)
+/** Prefill field containing "_slug" with slugified value of a previous field (JavaScript)
 * @author Jakub Vrana, http://www.vrana.cz/
 * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
