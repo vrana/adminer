@@ -17,7 +17,7 @@ class AdminerTinymce {
 	
 	function selectVal(&$val, $link, $field) {
 		if (ereg("_html", $field["field"]) && $val != '&nbsp;') {
-			$val = preg_replace('~<[^>]*$~', '', html_entity_decode($val, ENT_QUOTES, 'utf-8')); //! close all opened tags (text can be shortened)
+			$val = preg_replace('~<[^>]*$~', '', html_entity_decode($val, ENT_QUOTES)); //! close all opened tags (text can be shortened)
 		}
 	}
 	
