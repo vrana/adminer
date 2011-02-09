@@ -80,7 +80,7 @@ if ($adminer->homepage()) {
 					echo "<p>" . lang('Move to other database') . ": ";
 					echo ($databases ? html_select("target", $databases, $db) : '<input name="target" value="' . h($db) . '">');
 					echo " <input type='submit' name='move' value='" . lang('Move') . "' onclick='eventStop(event);'>";
-					echo (support("copy") ? " <input type='submit' name='copy' value='" . lang('Copy') . "'>" : "");
+					echo (support("copy") ? " <input type='submit' name='copy' value='" . lang('Copy') . "' onclick='eventStop(event);'>" : "");
 					echo "\n";
 				}
 			}
