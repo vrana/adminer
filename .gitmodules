@@ -4,3 +4,6 @@
 [submodule "jsmin-php"]
 	path = externals/jsmin-php
 	url = git://github.com/rgrove/jsmin-php.git
+[submodule "tinymce"]
+	path = externals/tinymce
+	url = git://github.com/tinymce/tinymce.git
