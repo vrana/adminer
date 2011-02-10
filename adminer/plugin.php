@@ -22,6 +22,7 @@ function adminer_object() {
 		new AdminerSlugify,
 		new AdminerTranslation,
 		new AdminerForeignSystem,
+		new AdminerEnumOption,
 	));
 }
 
