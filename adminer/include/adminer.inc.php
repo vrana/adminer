@@ -459,7 +459,7 @@ username.form['driver'].onchange();
 	*/
 	function processInput($field, $value, $function = "") {
 		$name = $field["field"];
-		$return = q($value);
+		$return = ($field["type"] == "bit" && ereg('^[0-9]+$', $value) ? $value : q($value));
 		if (ereg('^(now|getdate|uuid)$', $function)) {
 			$return = "$function()";
 		} elseif (ereg('^current_(date|timestamp)$', $function)) {
