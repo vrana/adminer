@@ -19,10 +19,14 @@ class AdminerPlugin extends Adminer {
 	function _applyPlugin($function, $args) {
 		foreach ($this->plugins as $plugin) {
 			if (method_exists($plugin, $function)) {
-				foreach ($args as $key => $val) {
-					$args[$key] = &$args[$key]; // allows modification of parameters
+				switch (count($args)) { // call_user_func_array() doesn't work well with references
+					case 0: $return = $plugin->$function(); break;
+					case 1: $return = $plugin->$function($args[0]); break;
+					case 2: $return = $plugin->$function($args[0], $args[1]); break;
+					case 3: $return = $plugin->$function($args[0], $args[1], $args[2]); break;
+					case 4: $return = $plugin->$function($args[0], $args[1], $args[2], $args[3]); break;
+					default: trigger_error('Too many parameters.', E_USER_WARNING);
 				}
-				$return = call_user_func_array(array($plugin, $function), $args);
 				if (isset($return)) {
 					return $return;
 				}
