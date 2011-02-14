@@ -3,9 +3,9 @@
 CREATE TABLE translation (
 	id int NOT NULL AUTO_INCREMENT, -- optional
 	language_id varchar(5) NOT NULL,
-	idf varchar(100) NOT NULL COLLATE utf8_bin,
+	idf text NOT NULL COLLATE utf8_bin,
 	translation text NOT NULL,
-	UNIQUE (language_id, idf),
+	UNIQUE (language_id, idf(100)),
 	PRIMARY KEY (id)
 );
 */
@@ -17,23 +17,22 @@ CREATE TABLE translation (
 */
 class AdminerTranslation {
 	
-	function _translate($s) {
+	function _translate($idf) {
 		static $translations, $lang;
 		if (!isset($lang)) {
 			$lang = get_lang();
 		}
-		if ($s == "" || $lang == "en") {
-			return $s;
+		if ($idf == "" || $lang == "en") {
+			return $idf;
 		}
 		if (!isset($translations)) {
 			$translations = get_key_vals("SELECT idf, translation FROM translation WHERE language_id = " . q($lang));
 		}
-		$idf = preg_replace('~^(.{100}).*~su', '\\1', $s);
 		$return = &$translations[$idf];
 		if (!isset($return)) {
-			$return = $s;
+			$return = $idf;
 			$connection = connection();
-			$connection->query("INSERT INTO translation (language_id, idf, translation) VALUES (" . q($lang) . ", " . q($idf) . ", " . q($s) . ")");
+			$connection->query("INSERT INTO translation (language_id, idf, translation) VALUES (" . q($lang) . ", " . q($idf) . ", " . q($idf) . ")");
 		}
 		return $return;
 	}
