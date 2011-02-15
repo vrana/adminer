@@ -7,7 +7,7 @@
 * @return null
 */
 function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
-	global $LANG, $HTTPS, $adminer, $connection, $drivers;
+	global $LANG, $adminer, $connection, $drivers;
 	header("Content-Type: text/html; charset=utf-8");
 	$adminer->headers();
 	$title_all = $title . ($title2 != "" ? ": " . h($title2) : "");
@@ -15,7 +15,6 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	if (is_ajax()) {
 		header("X-AJAX-Title: " . rawurlencode($title_page));
 	} else {
-		$protocol = ($HTTPS ? "https" : "http");
 		?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html lang="<?php echo $LANG; ?>" dir="<?php echo lang('ltr'); ?>">
@@ -29,7 +28,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <link rel="stylesheet" type="text/css" href="adminer.css">
 <?php } ?>
 
-<body class="<?php echo lang('ltr'); ?>" onclick="return bodyClick(event, '<?php echo js_escape(DB); ?>', '<?php echo js_escape($_GET["ns"]); ?>');" onload="bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 0, 3) : ""); ?>', '<?php echo $protocol; ?>');<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verifyVersion('$protocol');"); ?>">
+<body class="<?php echo lang('ltr'); ?>" onclick="return bodyClick(event, '<?php echo js_escape(DB); ?>', '<?php echo js_escape($_GET["ns"]); ?>');" onload="bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 0, 3) : ""); ?>');<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verifyVersion('$protocol');"); ?>">
 <script type="text/javascript" src="../adminer/static/functions.js"></script>
 <script type="text/javascript" src="static/editing.js"></script>
 

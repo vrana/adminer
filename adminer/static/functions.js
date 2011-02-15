@@ -23,12 +23,11 @@ function cookie(assign, days) {
 }
 
 /** Verify current Adminer version
-* @param string 'http' or 'https'
 */
-function verifyVersion(protocol) {
+function verifyVersion() {
 	cookie('adminer_version=0', 1);
 	var script = document.createElement('script');
-	script.src = protocol + '://www.adminer.org/version.php';
+	script.src = location.protocol + '//www.adminer.org/version.php';
 	document.body.appendChild(script);
 }
 

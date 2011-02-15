@@ -1,4 +1,4 @@
 // Editor specific functions
 
-function bodyLoad(version, protocol) {
+function bodyLoad(version) {
 }
