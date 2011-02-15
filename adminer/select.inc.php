@@ -56,30 +56,21 @@ if ($_POST && !$error) {
 	if ($_POST["export"]) {
 		$adminer->dumpHeaders($TABLE);
 		$adminer->dumpTable($TABLE, "");
-		if (ereg("[ct]sv", $_POST["format"])) { // CSV or TSV
-			$row = array_keys($fields);
-			if ($select) {
-				$row = array();
-				foreach ($select as $val) {
-					$row[] = (ereg('^`.*`$', $val) ? idf_unescape($val) : $val); //! columns looking like functions
-				}
-			}
-			dump_csv($row);
-		}
 		if (!is_array($_POST["check"]) || $unselected === array()) {
 			$where2 = $where;
 			if (is_array($_POST["check"])) {
 				$where2[] = "($where_check)";
 			}
-			$adminer->dumpData($TABLE, "INSERT", "SELECT $from" . ($where2 ? "\nWHERE " . implode(" AND ", $where2) : "") . $group_by);
+			$query = "SELECT $from" . ($where2 ? "\nWHERE " . implode(" AND ", $where2) : "") . $group_by;
 		} else {
 			$union = array();
 			foreach ($_POST["check"] as $val) {
 				// where is not unique so OR can't be used
 				$union[] = "(SELECT" . limit($from, "\nWHERE " . ($where ? implode(" AND ", $where) . " AND " : "") . where_check($val) . $group_by, 1) . ")";
 			}
-			$adminer->dumpData($TABLE, "INSERT", implode(" UNION ALL ", $union));
+			$query = implode(" UNION ALL ", $union);
 		}
+		$adminer->dumpData($TABLE, "table", $query);
 		exit;
 	}
 	if (!$adminer->selectEmailProcess($where, $foreign_keys)) {

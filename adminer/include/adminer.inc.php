@@ -612,13 +612,19 @@ DROP PROCEDURE adminer_alter;
 			if ($_POST["format"] == "sql" && $style == "TRUNCATE+INSERT") {
 				echo truncate_sql($table) . ";\n";
 			}
-			$fields = fields($table);
+			if ($_POST["format"] == "sql") {
+				$fields = fields($table);
+			}
 			$result = $connection->query($query, 1); // 1 - MYSQLI_USE_RESULT //! enum and set as numbers
 			if ($result) {
 				$insert = "";
 				$buffer = "";
 				while ($row = $result->fetch_assoc()) {
 					if ($_POST["format"] != "sql") {
+						if ($style == "table") {
+							dump_csv(array_keys($row));
+							$style = "INSERT";
+						}
 						dump_csv($row);
 					} else {
 						if (!$insert) {

@@ -1,4 +1,11 @@
 <?php
+if (!$error && $_POST["export"]) {
+	$adminer->dumpHeaders("sql");
+	$adminer->dumpTable("", "");
+	$adminer->dumpData("", "table", $_POST["query"]);
+	exit;
+}
+
 restart_session();
 $history_all = &get_session("queries");
 $history = &$history_all[DB];
@@ -43,6 +50,9 @@ if (!$error && $_POST) {
 		$errors = array();
 		$parse = '[\'`"]' . ($jush == "pgsql" ? '|\\$[^$]*\\$' : ($jush == "mssql" || $jush == "sqlite" ? '|\\[' : '')) . '|/\\*|-- |#'; //! ` and # not everywhere
 		$total_start = explode(" ", microtime());
+		parse_str($_COOKIE["adminer_export"], $adminer_export);
+		$dump_format = $adminer->dumpFormat();
+		unset($dump_format["sql"]);
 		while ($query != "") {
 			if (!$offset && $jush == "sql" && preg_match('~^\\s*DELIMITER\\s+(.+)~i', $query, $match)) {
 				$delimiter = $match[1];
@@ -102,14 +112,26 @@ if (!$error && $_POST) {
 										$print = "";
 									}
 									select($result, $connection2);
+									echo "<form action='' method='post'>\n";
 									echo "<p>" . ($result->num_rows ? lang('%d row(s)', $result->num_rows) : "") . $time;
+									$id = "export-$commands";
+									$export = ", <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('Export') . "</a><span id='$id' class='hidden'>: "
+										. html_select("output", $adminer->dumpOutput(), $adminer_export["output"]) . " "
+										. html_select("format", $dump_format, $adminer_export["format"])
+										. " <input type='hidden' name='query' value='" . h($q) . "' />"
+										. " <input type='hidden' name='token' value='$token' />"
+										. " <input type='submit' name='export' value='" . lang('Export') . "' onclick='eventStop(event);'></span>"
+									;
 									if ($connection2 && preg_match("~^($space|\\()*SELECT\\b~isU", $q) && ($explain = explain($connection2, $q))) {
 										$id = "explain-$commands";
-										echo ", <a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>\n";
+										echo ", <a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>$export\n";
 										echo "<div id='$id' class='hidden'>\n";
 										select($explain, $connection2, ($jush == "sql" ? "http://dev.mysql.com/doc/refman/" . substr($connection->server_info, 0, 3) . "/en/explain-output.html#" : ""));
 										echo "</div>\n";
+									} else {
+										echo "$export\n";
 									}
+									echo "</form>\n";
 								}
 								$start = $end;
 							} while ($connection->next_result());
