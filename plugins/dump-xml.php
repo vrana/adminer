@@ -6,7 +6,6 @@
 * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerDumpXml {
-	var $_database = false;
 	
 	function dumpFormat() {
 		return array('xml' => 'XML');
@@ -23,9 +22,10 @@ class AdminerDumpXml {
 	}
 	
 	function dumpData($table, $style, $query) {
+		static $database = false;
 		if ($_POST["format"] == "xml") {
-			if (!$this->_database) {
-				$this->_database = true;
+			if (!$database) {
+				$database = true;
 				echo "<database name='" . h(DB) . "'>\n";
 				register_shutdown_function(array($this, '_database'));
 			}
