@@ -463,12 +463,9 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		}
 	}
 	
-	function dumpHeaders($identifier) {
-		$filename = ($identifier != "" ? friendly_url($identifier) : "dump");
+	function dumpHeaders($identifier, $multi_table = false) {
 		$ext = "csv";
 		header("Content-Type: text/csv; charset=utf-8");
-		header("Content-Disposition: attachment; filename=$filename.$ext");
-		session_write_close();
 		return $ext;
 	}
 	

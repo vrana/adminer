@@ -7,7 +7,7 @@ if ($_POST) {
 		$cookie .= "&$key=" . urlencode($_POST[$key]);
 	}
 	cookie("adminer_export", substr($cookie, 1));
-	$ext = $adminer->dumpHeaders(($TABLE != "" ? $TABLE : DB), (DB == "" || count((array) $_POST["tables"] + (array) $_POST["data"]) > 1));
+	$ext = dump_headers(($TABLE != "" ? $TABLE : DB), (DB == "" || count((array) $_POST["tables"] + (array) $_POST["data"]) > 1));
 	$is_sql = ($_POST["format"] == "sql");
 	if ($is_sql) {
 		echo "-- Adminer $VERSION " . $drivers[DRIVER] . " dump

@@ -670,7 +670,6 @@ DROP PROCEDURE adminer_alter;
 	* @return string extension
 	*/
 	function dumpHeaders($identifier, $multi_table = false) {
-		$filename = ($identifier != "" ? friendly_url($identifier) : "adminer");
 		$output = $_POST["output"];
 		$ext = ($_POST["format"] == "sql" ? "sql" : ($multi_table ? "tar" : "csv")); // multiple CSV packed to TAR
 		header("Content-Type: " .
@@ -679,14 +678,10 @@ DROP PROCEDURE adminer_alter;
 			($ext == "tar" ? "application/x-tar" :
 			($ext == "sql" || $output != "file" ? "text/plain" : "text/csv") . "; charset=utf-8"
 		))));
-		if ($output != "text") {
-			header("Content-Disposition: attachment; filename=$filename.$ext" . ($output != "file" && !ereg('[^0-9a-z]', $output) ? ".$output" : ""));
-		}
-		session_write_close();
-		if ($_POST["output"] == "bz2") {
+		if ($output == "bz2") {
 			ob_start('bzcompress', 1e6);
 		}
-		if ($_POST["output"] == "gz") {
+		if ($output == "gz") {
 			ob_start('gzencode', 1e6);
 		}
 		return $ext;

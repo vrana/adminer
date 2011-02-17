@@ -54,7 +54,7 @@ if ($_POST && !$error) {
 		}
 	}
 	if ($_POST["export"]) {
-		$adminer->dumpHeaders($TABLE);
+		dump_headers($TABLE);
 		$adminer->dumpTable($TABLE, "");
 		if (!is_array($_POST["check"]) || $unselected === array()) {
 			$where2 = $where;

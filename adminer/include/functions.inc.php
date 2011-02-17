@@ -754,6 +754,22 @@ function search_tables() {
 	echo ($found ? "</ul>" : "<p class='message'>" . lang('No tables.')) . "\n";
 }
 
+/** Send headers for export
+* @param string
+* @param bool
+* @return string extension
+*/
+function dump_headers($identifier, $multi_table = false) {
+	global $adminer;
+	$return = $adminer->dumpHeaders($identifier, $multi_table);
+	$output = $_POST["output"];
+	if ($output != "text") {
+		header("Content-Disposition: attachment; filename=" . ($identifier != "" ? friendly_url($identifier) : "dump") . ".$return" . ($output != "file" && !ereg('[^0-9a-z]', $output) ? ".$output" : ""));
+	}
+	session_write_close();
+	return $return;
+}
+
 /** Print CSV row
 * @param array
 * @return null
