@@ -16,6 +16,7 @@ function adminer_object() {
 	
 	return new AdminerPlugin(array(
 		// specify enabled plugins here
+		new AdminerDumpZip,
 		new AdminerDumpXml,
 		new AdminerTinymce("../externals/tinymce/jscripts/tiny_mce/tiny_mce_dev.js"),
 		new AdminerFileUpload(""),
