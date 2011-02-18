@@ -268,7 +268,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	
 	function selectEmailPrint($emailFields, $columns) {
 		if ($emailFields) {
-			echo '<fieldset><legend><a href="#fieldset-email" onclick="return !toggle(\'fieldset-email\');">' . lang('E-mail') . "</a></legend><div id='fieldset-email'" . ($_POST["email_append"] ? "" : " class='hidden'") . ">\n";
+			print_fieldset("email", lang('E-mail'), $_POST["email_append"]);
 			echo "<p>" . lang('From') . ": <input name='email_from' value='" . h($_POST ? $_POST["email_from"] : $_COOKIE["adminer_email"]) . "'>\n";
 			echo lang('Subject') . ": <input name='email_subject' value='" . h($_POST["email_subject"]) . "'>\n";
 			echo "<p><textarea name='email_message' rows='15' cols='75' onkeypress='return textareaKeypress(this, event, false, this.form.email);'>" . h($_POST["email_message"] . ($_POST["email_append"] ? '{$' . "$_POST[email_addition]}" : "")) . "</textarea><br>\n";
