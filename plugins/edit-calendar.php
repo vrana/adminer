@@ -8,8 +8,7 @@
 * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerEditCalendar {
-	var $prepend;
-	var $langPath;
+	var $prepend, $langPath;
 	
 	/**
 	* @param string text to append before first calendar usage
