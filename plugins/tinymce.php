@@ -1,6 +1,7 @@
 <?php
 
 /** Edit all fields containing "_html" by HTML editor TinyMCE and display the HTML in select
+* @uses TinyMCE, http://tinymce.moxiecode.com/
 * @author Jakub Vrana, http://www.vrana.cz/
 * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
@@ -52,7 +53,7 @@ tinyMCE.init({
 </script>
 <?php
 			}
-			return "<textarea$attrs id='fields-$field[field]' rows='12' cols='50'>" . h($value) . "</textarea><script type='text/javascript'>tinyMCE.execCommand('mceAddControl', true, 'fields-$field[field]');</script>";
+			return "<textarea$attrs id='fields-" . h($field["field"]) . "' rows='12' cols='50'>" . h($value) . "</textarea><script type='text/javascript'>tinyMCE.execCommand('mceAddControl', true, 'fields-" . js_escape($field["field"]) . "');</script>";
 		}
 	}
 	
