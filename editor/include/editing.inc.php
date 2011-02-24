@@ -14,7 +14,7 @@ function email_header($header) {
 * @param string
 * @param string
 * @param array
-* @return 
+* @return bool
 */
 function send_mail($email, $subject, $message, $from = "", $files = array("error" => array())) {
 	$eol = (strncasecmp(PHP_OS, "win", 3) ? "\n" : "\r\n"); // PHP_EOL available since PHP 4.3.10 and 5.0.2

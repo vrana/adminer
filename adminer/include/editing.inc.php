@@ -315,7 +315,7 @@ function normalize_enum($match) {
 * @param array
 * @param string
 * @param string
-* @return 
+* @return bool
 */
 function grant($grant, $privileges, $columns, $on) {
 	if (!$privileges) {
