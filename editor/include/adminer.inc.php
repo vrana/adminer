@@ -140,7 +140,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 						// uses constant number of queries to get the descriptions, join would be complex, multiple queries would be slow
 						$descriptions = $this->_values[$foreignKey["table"]];
 						if (!$descriptions) {
-							$descriptions = get_key_vals("SELECT $id, $name FROM " . idf_escape($foreignKey["table"]) . " WHERE $id IN (" . implode(", ", $ids) . ")");
+							$descriptions = get_key_vals("SELECT $id, $name FROM " . table($foreignKey["table"]) . " WHERE $id IN (" . implode(", ", $ids) . ")");
 						}
 						// use the descriptions
 						foreach ($rows as $n => $row) {
@@ -356,7 +356,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 				$subject = $_POST["email_subject"];
 				$message = $_POST["email_message"];
 				preg_match_all('~\\{\\$([a-z0-9_]+)\\}~i', "$subject.$message", $matches); // allows {$name} in subject or message
-				$rows = get_rows("SELECT DISTINCT $field" . ($matches[1] ? ", " . implode(", ", array_map('idf_escape', array_unique($matches[1]))) : "") . " FROM " . idf_escape($_GET["select"])
+				$rows = get_rows("SELECT DISTINCT $field" . ($matches[1] ? ", " . implode(", ", array_map('idf_escape', array_unique($matches[1]))) : "") . " FROM " . table($_GET["select"])
 					. " WHERE $field IS NOT NULL AND $field != ''"
 					. ($where ? " AND " . implode(" AND ", $where) : "")
 					. ($_POST["all"] ? "" : " AND ((" . implode(") OR (", array_map('where_check', (array) $_POST["check"])) . "))")
@@ -533,7 +533,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 					$return = &$this->_values[$foreignKey["table"]];
 					if (!isset($return)) {
 						$table_status = table_status($foreignKey["table"]);
-						$return = ($table_status["Rows"] > 1000 ? array() : array("" => "") + get_key_vals("SELECT $id, $name FROM " . idf_escape($foreignKey["table"]) . " ORDER BY 2"));
+						$return = ($table_status["Rows"] > 1000 ? array() : array("" => "") + get_key_vals("SELECT $id, $name FROM " . table($foreignKey["table"]) . " ORDER BY 2"));
 					}
 					return $return;
 				}
