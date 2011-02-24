@@ -197,7 +197,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			$keys[$val["col"]] = $key;
 		}
 		$i = 0;
-		foreach (fields($_GET["select"]) as $name => $field) {
+		$fields = fields($_GET["select"]);
+		foreach ($fields as $name => $field) {
 			if (ereg("enum", $field["type"])) { //! set - uses 1 << $i and FIND_IN_SET()
 				$desc = $columns[$name];
 				$key = $keys[$name];
@@ -211,6 +212,9 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		foreach ($columns as $name => $desc) {
 			$options = $this->_foreignKeyOptions($_GET["select"], $name);
 			if ($options) {
+				if ($fields[$name]["null"]) {
+					$options[0] = '(' . lang('empty') . ')';
+				}
 				$key = $keys[$name];
 				$i--;
 				echo "<div>" . h($desc) . "<input type='hidden' name='where[$i][col]' value='" . h($name) . "'><input type='hidden' name='where[$i][op]' value='='>: <select name='where[$i][val]'>" . optionlist($options, $where[$key]["val"], true) . "</select></div>\n";
@@ -294,16 +298,20 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 				$conds = array();
 				foreach (($col != "" ? array($col => $fields[$col]) : $fields) as $name => $field) {
 					if ($col != "" || is_numeric($val) || !ereg('int|float|double|decimal', $field["type"])) {
+						$name = idf_escape($name);
 						if ($col != "" && $field["type"] == "enum") {
-							$conds[] = (in_array(0, $val) ? idf_escape($name) . " IS NULL OR " : "") . idf_escape($name) . " IN (" . implode(", ", array_map('intval', $val)) . ")";
+							$conds[] = (in_array(0, $val) ? "$name IS NULL OR " : "") . "$name IN (" . implode(", ", array_map('intval', $val)) . ")";
 						} else {
 							$text_type = ereg('char|text|enum|set', $field["type"]);
 							$value = $this->processInput($field, (!$op && $text_type && ereg('^[^%]+$', $val) ? "%$val%" : $val));
-							$conds[] = idf_escape($name) . ($value == "NULL" ? " IS" . ($op == ">=" ? " NOT" : "") . " $value"
+							$conds[] = $name . ($value == "NULL" ? " IS" . ($op == ">=" ? " NOT" : "") . " $value"
 								: (in_array($op, $this->operators) || $op == "=" ? " $op $value"
 								: ($text_type ? " LIKE $value"
 								: " IN (" . str_replace(",", "', '", $value) . ")"
 							))); //! can issue "Illegal mix of collations" for columns in other character sets - solve by CONVERT($name using utf8)
+							if ($key < 0 && $val == "0") {
+								$conds[] = "$name IS NULL";
+							}
 						}
 					}
 				}
