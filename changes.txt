@@ -1,4 +1,4 @@
-Adminer 3.2.0-dev:
+Adminer 3.2.0 (released 2011-02-24):
 Get long texts and slow information by AJAX
 Most links and forms by AJAX in browsers with support for history.pushState
 Copy tables
