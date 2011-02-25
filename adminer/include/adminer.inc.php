@@ -253,7 +253,7 @@ username.form['driver'].onchange();
 			}
 		}
 		echo "<div><select name='order[$i]' onchange='selectAddRow(this);'><option>" . optionlist($columns, null, true) . "</select>";
-		echo checkbox("desc[$i]", 1, 0, lang('descending')) . "</div>\n";
+		echo "<label><input type='checkbox' name='desc[$i]' value='1'>" . lang('descending') . "</label></div>\n"; // not checkbox() to allow selectAddRow()
 		echo "</div></fieldset>\n";
 	}
 	
