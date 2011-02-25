@@ -307,7 +307,7 @@ if (!defined("DRIVER")) {
 			$return = $match[1];
 		} elseif (preg_match('~ CHARACTER SET ([^ ]+)~', $create, $match)) {
 			// default collation
-			$return = $collations[$match[1]][0];
+			$return = $collations[$match[1]][-1];
 		}
 		return $return;
 	}
@@ -479,11 +479,15 @@ if (!defined("DRIVER")) {
 	function collations() {
 		$return = array();
 		foreach (get_rows("SHOW COLLATION") as $row) {
-			$return[$row["Charset"]][] = $row["Collation"];
+			if ($row["Default"]) {
+				$return[$row["Charset"]][-1] = $row["Collation"];
+			} else {
+				$return[$row["Charset"]][] = $row["Collation"];
+			}
 		}
 		ksort($return);
 		foreach ($return as $key => $val) {
-			sort($return[$key]);
+			asort($return[$key]);
 		}
 		return $return;
 	}
