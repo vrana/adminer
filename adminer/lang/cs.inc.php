@@ -87,6 +87,9 @@ $translations = array(
 	'Create database' => 'Vytvořit databázi',
 	'Database schema' => 'Schéma databáze',
 	
+	// link to current database schema layout
+	'Permanent link' => 'Trvalý odkaz',
+	
 	// thousands separator - must contain single byte
 	',' => ' ',
 	'Engine' => 'Úložiště',

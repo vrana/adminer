@@ -103,4 +103,4 @@ foreach ($schema as $name => $table) {
 }
 ?>
 </div>
-<p><a href="<?php echo h($_SERVER["REQUEST_URI"]); ?>" id="schema-link">#</a>
+<p><a href="<?php echo h($_SERVER["REQUEST_URI"]); ?>" id="schema-link"><?php echo lang('Permanent link'); ?></a>
