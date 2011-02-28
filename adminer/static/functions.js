@@ -36,7 +36,8 @@ function verifyVersion() {
 * @return string
 */
 function selectValue(select) {
-	return (select.value !== undefined ? select.value : select.options[select.selectedIndex].text);
+	var selected = select.options[select.selectedIndex];
+	return ((selected.attributes.value || {}).specified ? selected.value : selected.text);
 }
 
 /** Check all elements matching given name
