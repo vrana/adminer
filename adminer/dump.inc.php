@@ -77,11 +77,8 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 							if ($data) {
 								$adminer->dumpData($row["Name"], $_POST["data_style"], "SELECT * FROM " . table($row["Name"]));
 							}
-							if ($is_sql && $_POST["triggers"]) {
-								$triggers = trigger_sql($row["Name"], $_POST["table_style"]);
-								if ($triggers) {
-									echo "\nDELIMITER ;;\n$triggers\nDELIMITER ;\n";
-								}
+							if ($is_sql && $_POST["triggers"] && $table && ($triggers = trigger_sql($row["Name"], $_POST["table_style"]))) {
+								echo "\nDELIMITER ;;\n$triggers\nDELIMITER ;\n";
 							}
 							if ($ext == "tar") {
 								echo tar_file((DB != "" ? "" : "$db/") . "$row[Name].csv", ob_get_clean());
