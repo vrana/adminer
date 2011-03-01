@@ -352,7 +352,7 @@ function ajaxForm(form, data) {
 	if (form.method == 'post') {
 		return ajaxMain((/\?/.test(form.action) ? form.action : location.href), params.join('&')); // ? - always part of Adminer URL
 	}
-	return ajaxMain((form.action || location.pathname) + '?' + params.join('&'));
+	return ajaxMain((form.action || location.href).replace(/\?.*/, '') + '?' + params.join('&'));
 }
 
 
