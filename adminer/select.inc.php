@@ -141,7 +141,7 @@ if ($_POST && !$error) {
 				queries_redirect(remove_from_uri(), lang('%d item(s) have been affected.', $affected), $result);
 			}
 		} elseif (is_string($file = get_file("csv_file", true))) {
-			$file = preg_replace("~^\xEF\xBB\xBF~", '', $file); //! character set
+			//! character set
 			$result = true;
 			$cols = array_keys($fields);
 			preg_match_all('~(?>"[^"]*"|[^"\\r\\n]+)+~', $file, $matches);

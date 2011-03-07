@@ -489,10 +489,18 @@ function get_file($key, $decompress = false) {
 	if (!$file || $file["error"]) {
 		return $file["error"];
 	}
-	return file_get_contents($decompress && ereg('\\.gz$', $file["name"]) ? "compress.zlib://$file[tmp_name]"
+	$return = file_get_contents($decompress && ereg('\\.gz$', $file["name"]) ? "compress.zlib://$file[tmp_name]"
 		: ($decompress && ereg('\\.bz2$', $file["name"]) ? "compress.bzip2://$file[tmp_name]"
 		: $file["tmp_name"]
 	)); //! may not be reachable because of open_basedir
+	if ($decompress) {
+		if (function_exists("iconv") && ereg("^\xFE\xFF|^\xFF\xFE", $return, $regs)) {
+			$return = iconv("utf-16", "utf-8", $return);
+		} else { // not ternary operator to save memory
+			$return = ereg_replace("^\xEF\xBB\xBF", "", $return); // UTF-8 BOM
+		}
+	}
+	return $return;
 }
 
 /** Determine upload error
