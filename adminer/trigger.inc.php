@@ -9,7 +9,7 @@ if ($_POST && !$error && in_array($_POST["Timing"], $trigger_options["Timing"]) 
 	$on = " ON " . table($TABLE);
 	$dropped = drop_create(
 		"DROP TRIGGER " . idf_escape($_GET["name"]) . ($jush == "pgsql" ? $on : ""),
-		"CREATE TRIGGER " . idf_escape($_POST["Trigger"]) . ($jush == "mssql" ? $on . $timing_event : $timing_event . $on) . " $_POST[Type]\n$_POST[Statement]",
+		"CREATE TRIGGER " . idf_escape($_POST["Trigger"]) . ($jush == "mssql" ? $on . $timing_event : $timing_event . $on) . rtrim(" $_POST[Type]\n$_POST[Statement]", ";") . ";",
 		ME . "table=" . urlencode($TABLE),
 		lang('Trigger has been dropped.'),
 		lang('Trigger has been altered.'),

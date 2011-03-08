@@ -424,7 +424,7 @@ function query_redirect($query, $location, $message, $redirect = true, $execute 
 }
 
 /** Execute and remember query
-* @param string null to return remembered queries
+* @param string null to return remembered queries, end with ';' to use DELIMITER
 * @return Min_Result
 */
 function queries($query = null) {
@@ -432,9 +432,9 @@ function queries($query = null) {
 	static $queries = array();
 	if (!isset($query)) {
 		// return executed queries without parameter
-		return implode(";\n", $queries);
+		return implode("\n", $queries);
 	}
-	$queries[] = $query;
+	$queries[] = (ereg(';$', $query) ? "DELIMITER ;;\n$query;\nDELIMITER ;" : "$query;");
 	return $connection->query($query);
 }
 

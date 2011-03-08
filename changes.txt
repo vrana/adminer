@@ -5,6 +5,7 @@ Esc to focus next field in Tab textarea (thanks to David Grudl)
 Enum editor and textarea Ctrl+Enter working in IE
 AJAX forms in Google Chrome
 Parse UTF-16 and UTF-8 BOM in all text uploads
+Use DELIMITER in history
 
 Adminer 3.2.0 (released 2011-02-24):
 Get long texts and slow information by AJAX

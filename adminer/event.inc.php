@@ -14,13 +14,13 @@ if ($_POST && !$error) {
 			: "AT " . q($_POST["STARTS"])
 			) . " ON COMPLETION" . ($_POST["ON_COMPLETION"] ? "" : " NOT") . " PRESERVE"
 		;
-		query_redirect(($EVENT != ""
+		queries_redirect(substr(ME, 0, -1), ($EVENT != "" ? lang('Event has been altered.') : lang('Event has been created.')), queries(($EVENT != ""
 			? "ALTER EVENT " . idf_escape($EVENT) . $schedule
 			. ($EVENT != $_POST["EVENT_NAME"] ? "\nRENAME TO " . idf_escape($_POST["EVENT_NAME"]) : "")
 			: "CREATE EVENT " . idf_escape($_POST["EVENT_NAME"]) . $schedule
 			) . "\n" . $statuses[$_POST["STATUS"]] . " COMMENT " . q($_POST["EVENT_COMMENT"])
-			. " DO\n$_POST[EVENT_DEFINITION]"
-		, substr(ME, 0, -1), ($EVENT != "" ? lang('Event has been altered.') : lang('Event has been created.')));
+			. rtrim(" DO\n$_POST[EVENT_DEFINITION]", ";") . ";"
+		));
 	}
 }
 
