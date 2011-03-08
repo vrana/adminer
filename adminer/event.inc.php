@@ -47,7 +47,7 @@ if ($_POST) {
 </table>
 <p><?php textarea("EVENT_DEFINITION", $row["EVENT_DEFINITION"]); ?>
 <p>
-<input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php if ($EVENT != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo confirm(); ?>><?php } ?>
+<input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

@@ -30,6 +30,6 @@ foreach (get_rows("SHOW FULL PROCESSLIST") as $i => $row) {
 </table>
 <p><?php echo ($i + 1) . "/" . lang('%d in total', $connection->result("SELECT @@max_connections")); ?>
 <p>
-<input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Kill'); ?>">
+<input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

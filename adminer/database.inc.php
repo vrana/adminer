@@ -62,7 +62,6 @@ echo ($_POST["add_x"] || strpos($name, "\n")
 ) . "\n" . ($collations ? html_select("collation", array("" => "(" . lang('collation') . ")") + $collations, $collate) : "");
 ?>
 <script type='text/javascript'>document.getElementById('name').focus();</script>
-<input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php
 if (DB != "") {
@@ -71,4 +70,5 @@ if (DB != "") {
 	echo "<input type='image' name='add' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>\n";
 }
 ?>
+<input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

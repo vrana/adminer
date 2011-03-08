@@ -94,7 +94,7 @@ foreach ($row["indexes"] as $index) {
 ?>
 </table>
 <p>
-<input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <noscript><p><input type="submit" name="add" value="<?php echo lang('Add next'); ?>"></noscript>
+<input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

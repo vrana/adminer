@@ -20,7 +20,6 @@ if ($_POST) {
 
 <form action="" method="post">
 <p>
-<input type="hidden" name="token" value="<?php echo $token; ?>">
 <?php
 if ($TYPE != "") {
 	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm() . ">\n";
@@ -30,4 +29,5 @@ if ($TYPE != "") {
 	echo "<p><input type='submit' value='" . lang('Save') . "'>\n";
 }
 ?>
+<input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

@@ -739,8 +739,8 @@ DROP PROCEDURE adminer_alter;
 				}
 			}
 			?>
-<input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" onclick="eventStop(event);">
+<input type="hidden" name="token" value="<?php echo $token; ?>">
 </p>
 </form>
 <form action="">

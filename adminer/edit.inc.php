@@ -90,13 +90,7 @@ if ($fields) {
 }
 ?>
 <p>
-<input type="hidden" name="token" value="<?php echo $token; ?>">
-<input type="hidden" name="referer" value="<?php echo h(isset($_POST["referer"]) ? $_POST["referer"] : $_SERVER["HTTP_REFERER"]); ?>">
-<input type="hidden" name="save" value="1">
 <?php
-if (isset($_GET["select"])) {
-	hidden_fields(array("check" => (array) $_POST["check"], "clone" => $_POST["clone"], "all" => $_POST["all"]));
-}
 if ($fields) {
 	echo "<input type='submit' value='" . lang('Save') . "'>\n";
 	if (!isset($_GET["select"])) {
@@ -106,5 +100,11 @@ if ($fields) {
 echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\">\n"
 	: ($_POST ? "" : "<script type='text/javascript'>document.getElementById('form').getElementsByTagName('td')[1].firstChild.focus();</script>\n")
 );
+if (isset($_GET["select"])) {
+	hidden_fields(array("check" => (array) $_POST["check"], "clone" => $_POST["clone"], "all" => $_POST["all"]));
+}
 ?>
+<input type="hidden" name="referer" value="<?php echo h(isset($_POST["referer"]) ? $_POST["referer"] : $_SERVER["HTTP_REFERER"]); ?>">
+<input type="hidden" name="save" value="1">
+<input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

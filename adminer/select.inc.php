@@ -409,9 +409,10 @@ if (!$columns) {
 			echo "</div></fieldset>\n";
 		}
 		print_fieldset("import", lang('Import'), !$rows);
-		echo "<input type='hidden' name='token' value='$token'><input type='file' name='csv_file'> ";
+		echo "<input type='file' name='csv_file'> ";
 		echo html_select("separator", array("csv" => "CSV,", "csv;" => "CSV;", "tsv" => "TSV"), $adminer_export["format"], 1); // 1 - select
-		echo " <input type='submit' name='import' value='" . lang('Import') . "'>\n";
+		echo " <input type='submit' name='import' value='" . lang('Import') . "'>";
+		echo "<input type='hidden' name='token' value='$token'>\n";
 		echo "</div></fieldset>\n";
 		
 		$adminer->selectEmailPrint(array_filter($email_fields, 'strlen'), $columns);

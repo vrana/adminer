@@ -118,9 +118,8 @@ if (!$error && $_POST) {
 									$export = ", <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('Export') . "</a><span id='$id' class='hidden'>: "
 										. html_select("output", $adminer->dumpOutput(), $adminer_export["output"]) . " "
 										. html_select("format", $dump_format, $adminer_export["format"])
-										. " <input type='hidden' name='query' value='" . h($q) . "' />"
-										. " <input type='hidden' name='token' value='$token' />"
-										. " <input type='submit' name='export' value='" . lang('Export') . "' onclick='eventStop(event);'></span>"
+										. "<input type='hidden' name='query' value='" . h($q) . "'>"
+										. " <input type='submit' name='export' value='" . lang('Export') . "' onclick='eventStop(event);'><input type='hidden' name='token' value='$token'></span>"
 									;
 									if ($connection2 && preg_match("~^($space|\\()*SELECT\\b~isU", $q) && ($explain = explain($connection2, $q))) {
 										$id = "explain-$commands";
@@ -179,8 +178,8 @@ echo "<p>" . (ini_bool("file_uploads") ? lang('File upload') . ': <input type="f
 
 ?>
 <p>
-<input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Execute'); ?>" title="Ctrl+Enter">
+<input type="hidden" name="token" value="<?php echo $token; ?>">
 <?php
 echo checkbox("error_stops", 1, $_POST["error_stops"], lang('Stop on error')) . "\n";
 echo checkbox("only_errors", 1, $_POST["only_errors"], lang('Show only errors')) . "\n";

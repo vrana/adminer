@@ -505,8 +505,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			?>
 <form action="" method="post">
 <p class="logout">
-<input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" onclick="eventStop(event);">
+<input type="hidden" name="token" value="<?php echo $token; ?>">
 </p>
 </form>
 <?php

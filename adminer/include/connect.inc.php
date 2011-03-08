@@ -32,7 +32,7 @@ function connect_error() {
 			$collations = collations();
 			echo "<form action='' method='post'>\n";
 			echo "<table cellspacing='0' onclick='tableClick(event);'>\n";
-			echo "<thead><tr><td><input type='hidden' name='token' value='$token'>&nbsp;<th>" . lang('Database') . "<td>" . lang('Collation') . "<td>" . lang('Tables') . "</thead>\n";
+			echo "<thead><tr><td>&nbsp;<th>" . lang('Database') . "<td>" . lang('Collation') . "<td>" . lang('Tables') . "</thead>\n";
 			foreach ($databases as $db) {
 				$root = h(ME) . "db=" . urlencode($db);
 				echo "<tr" . odd() . "><td>" . checkbox("db[]", $db, in_array($db, (array) $_POST["db"]));
@@ -43,6 +43,7 @@ function connect_error() {
 			}
 			echo "</table>\n";
 			echo "<p><input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm("formChecked(this, /db/)", 1) . ">\n"; // 1 - eventStop
+			echo "<input type='hidden' name='token' value='$token'>\n";
 			echo "<a href='" . h(ME) . "refresh=1' onclick='eventStop(event);'>" . lang('Refresh') . "</a>\n";
 			echo "</form>\n";
 		}
