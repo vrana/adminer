@@ -1,3 +1,11 @@
+Adminer 3.2.1-dev:
+Respect default database collation (bug #3191489)
+Don't export triggers without table (bug #3193489)
+Esc to focus next field in Tab textarea (thanks to David Grudl)
+Enum editor and textarea Ctrl+Enter working in IE
+AJAX forms in Google Chrome
+Parse UTF-16 and UTF-8 BOM in all text uploads
+
 Adminer 3.2.0 (released 2011-02-24):
 Get long texts and slow information by AJAX
 Most links and forms by AJAX in browsers with support for history.pushState
