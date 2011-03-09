@@ -466,6 +466,10 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		$result = $connection->query($query, 1); // 1 - MYSQLI_USE_RESULT
 		if ($result) {
 			while ($row = $result->fetch_assoc()) {
+				if ($style == "table") {
+					dump_csv(array_keys($row));
+					$style = "INSERT";
+				}
 				dump_csv($row);
 			}
 		}
