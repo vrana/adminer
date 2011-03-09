@@ -17,7 +17,7 @@ $translations = array(
 	'None of the supported PHP extensions (%s) are available.' => 'Żadne z rozszerzeń PHP umożliwiających połączenie się z bazą danych (%s) nie jest dostępne.',
 	'Session support must be enabled.' => 'Wymagana jest obsługa sesji w PHP.',
 	'Session expired, please login again.' => 'Sesja wygasła, zaloguj się ponownie.',
-	'%s version: %s through PHP extension %s' => 'Wersja %s: %s przez rozszerzenie PHP %s',
+	'%s version: %s through PHP extension %s' => 'Wersja %s: %s za pomocą %s',
 	'Refresh' => 'Odśwież',
 
 	// text direction
@@ -79,7 +79,7 @@ $translations = array(
 	'Invalid database.' => 'Nie znaleziono bazy danych.',
 	'Create new database' => 'Utwórz nową bazę danych',
 	'Database has been dropped.' => 'Baza danych została usunięta.',
-	'Databases have been dropped.' => 'Baze danych zostały usunięte.',
+	'Databases have been dropped.' => 'Bazy danych zostały usunięte.',
 	'Database has been created.' => 'Baza danych została utworzona.',
 	'Database has been renamed.' => 'Nazwa bazy danych została zmieniona.',
 	'Database has been altered.' => 'Baza danych została zmieniona.',
@@ -142,7 +142,7 @@ $translations = array(
 	'Table' => 'Tabela',
 	'No tables.' => 'Brak tabel.',
 	'Alter table' => 'Zmień tabelę',
-	'Create table' => 'Utwórz nową tabelę',
+	'Create table' => 'Utwórz tabelę',
 	'Create new table' => 'Utwórz nową tabelę',
 	'Table has been dropped.' => 'Tabela została usunięta.',
 	'Tables have been dropped.' => 'Tabele zostały usunięte.',
@@ -160,7 +160,7 @@ $translations = array(
 	'Comment' => 'Komentarz',
 	'Default values' => 'Wartości domyślne',
 	'Drop' => 'Usuń',
-	'Are you sure?' => 'Na pewno usunąć zaznaczone rekordy?',
+	'Are you sure?' => 'Czy jesteś pewien?',
 	'Move up' => 'Przesuń w górę',
 	'Move down' => 'Przesuń w dół',
 	'Remove' => 'Usuń',
@@ -238,7 +238,7 @@ $translations = array(
 	'%d row(s) have been imported.' => array('%d rekord został zaimportowany.', '%d rekordy zostały zaimportowane.', '%d rekordów zostało zaimportowanych.'),
 	
 	// in-place editing in select
-	'Double click on a value to modify it.' => 'Kliknij podwójnie wartość aby ją edytować.',
+	'Double click on a value to modify it.' => 'Kliknij podwójnie wartość, aby ją edytować.',
 	'Use edit link to modify this value.' => 'Użyj linku edycji aby zmienić tę wartość.',
 	
 	// %s can contain auto-increment value
@@ -284,7 +284,7 @@ $translations = array(
 	'now' => 'teraz',
 	
 	// general SQLite error in create, drop or rename database
-	'File exists.' => 'Plik istnieje.',
+	'File exists.' => 'Plik już istnieje.',
 	'Please use one of the extensions %s.' => 'Proszę użyć jednego z rozszerzeń: %s.',
 	
 	// PostgreSQL and MS SQL schema support
