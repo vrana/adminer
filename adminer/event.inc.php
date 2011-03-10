@@ -19,7 +19,7 @@ if ($_POST && !$error) {
 			. ($EVENT != $_POST["EVENT_NAME"] ? "\nRENAME TO " . idf_escape($_POST["EVENT_NAME"]) : "")
 			: "CREATE EVENT " . idf_escape($_POST["EVENT_NAME"]) . $schedule
 			) . "\n" . $statuses[$_POST["STATUS"]] . " COMMENT " . q($_POST["EVENT_COMMENT"])
-			. " DO\n$_POST[EVENT_DEFINITION];"
+			. rtrim(" DO\n$_POST[EVENT_DEFINITION]", ";") . ";"
 		));
 	}
 }
