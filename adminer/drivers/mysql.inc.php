@@ -261,6 +261,7 @@ if (!defined("DRIVER")) {
 	* @return array
 	*/
 	function get_databases($flush = true) {
+		global $connection;
 		// SHOW DATABASES can take a very long time so it is cached
 		$return = &get_session("dbs");
 		if (!isset($return)) {
@@ -269,7 +270,7 @@ if (!defined("DRIVER")) {
 				ob_flush();
 				flush();
 			}
-			$return = get_vals("SHOW DATABASES");
+			$return = get_vals($connection->server_info >= 5 ? "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA" : "SHOW DATABASES"); // SHOW DATABASES can be disabled by skip_show_database
 		}
 		return $return;
 	}
