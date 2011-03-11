@@ -249,11 +249,7 @@ function ajax(url, callback, data) {
 				if (title) {
 					document.title = decodeURIComponent(title);
 				}
-				if (xmlhttp.status) {
-					callback(xmlhttp.responseText);
-				} else {
-					setHtml('loader', '');
-				}
+				callback(xmlhttp.status ? xmlhttp.responseText : undefined);
 			}
 		};
 		xmlhttp.send(data);
@@ -287,38 +283,42 @@ function ajaxSend(url, data, popState) {
 	setHtml('loader', '<img src="../adminer/static/loader.gif" alt="">');
 	return ajax(url, function (text) {
 		if (currentState == ajaxState) {
-			if (!popState) {
-				history.pushState(data, '', url);
-			}
-			scrollTo(0, 0);
-			setHtml('content', text);
-			var content = document.getElementById('content');
-			var scripts = content.getElementsByTagName('script');
-			var length = scripts.length; // required to avoid infinite loop
-			for (var i=0; i < length; i++) {
-				var script = document.createElement('script');
-				script.text = scripts[i].text;
-				content.appendChild(script);
-			}
-			
-			var as = document.getElementById('menu').getElementsByTagName('a');
-			var href = location.href.replace(/(&(sql=|dump=|(select|table)=[^&]*)).*/, '$1');
-			for (var i=0; i < as.length; i++) {
-				if (href == as[i].href) {
-					as[i].className = 'active';
-				} else if (as[i].className == 'active') {
-					as[i].className = '';
+			if (text === undefined) {
+				setHtml('loader', '');
+			} else {
+				if (!popState) {
+					history.pushState(data, '', url);
+					scrollTo(0, 0);
 				}
-			}
-			var dump = document.getElementById('dump');
-			if (dump) {
-				var match = /&(select|table)=([^&]+)/.exec(href);
-				dump.href = dump.href.replace(/[^=]+$/, '') + (match ? match[2] : '');
-			}
-			//! modify Change database hidden fields
-			
-			if (window.jush) {
-				jush.highlight_tag('code', 0);
+				setHtml('content', text);
+				var content = document.getElementById('content');
+				var scripts = content.getElementsByTagName('script');
+				var length = scripts.length; // required to avoid infinite loop
+				for (var i=0; i < length; i++) {
+					var script = document.createElement('script');
+					script.text = scripts[i].text;
+					content.appendChild(script);
+				}
+				
+				var as = document.getElementById('menu').getElementsByTagName('a');
+				var href = location.href.replace(/(&(sql=|dump=|(select|table)=[^&]*)).*/, '$1');
+				for (var i=0; i < as.length; i++) {
+					if (href == as[i].href) {
+						as[i].className = 'active';
+					} else if (as[i].className == 'active') {
+						as[i].className = '';
+					}
+				}
+				var dump = document.getElementById('dump');
+				if (dump) {
+					var match = /&(select|table)=([^&]+)/.exec(href);
+					dump.href = dump.href.replace(/[^=]+$/, '') + (match ? match[2] : '');
+				}
+				//! modify Change database hidden fields
+				
+				if (window.jush) {
+					jush.highlight_tag('code', 0);
+				}
 			}
 		}
 	}, data);
