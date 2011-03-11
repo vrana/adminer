@@ -355,9 +355,7 @@ function ajaxMain(url, data, event) {
 * @param PopStateEvent
 */
 window.onpopstate = function (event) {
-	if (ajaxState || event.state) {
-		ajaxSend(location.href, event.state, 1); // 1 - disable pushState
-	}
+	ajaxSend(location.href, event.state, 1); // 1 - disable pushState
 }
 
 /** Send form by AJAX GET
