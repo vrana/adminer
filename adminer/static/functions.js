@@ -301,7 +301,9 @@ function ajaxSend(url, data, popState) {
 				setHtml('loader', '');
 			} else {
 				if (!popState) {
-					history.pushState(data, '', url);
+					if (data || url != location.href) {
+						history.pushState(data, '', url);
+					}
 					scrollTo(0, 0);
 				}
 				setHtml('content', text);
