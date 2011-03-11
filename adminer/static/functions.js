@@ -270,6 +270,18 @@ function ajaxSetHtml(url) {
 	});
 }
 
+/** Replace favicon
+* @param string
+* @return string original href
+*/
+function replaceFavicon(href) {
+	var favicon = document.getElementById('favicon');
+	var orig = favicon.href;
+	favicon.href = href;
+	favicon.parentNode.appendChild(favicon); // to replace the icon in Firefox
+	return orig;
+}
+
 var ajaxState = 0;
 
 /** Safely load content to #content
@@ -280,9 +292,11 @@ var ajaxState = 0;
 */
 function ajaxSend(url, data, popState) {
 	var currentState = ++ajaxState;
+	var favicon = replaceFavicon('../adminer/static/loader.gif');
 	setHtml('loader', '<img src="../adminer/static/loader.gif" alt="">');
 	return ajax(url, function (text) {
 		if (currentState == ajaxState) {
+			replaceFavicon(favicon);
 			if (text === undefined) {
 				setHtml('loader', '');
 			} else {
