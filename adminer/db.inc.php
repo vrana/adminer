@@ -66,7 +66,7 @@ if ($adminer->homepage()) {
 				echo (support("comment") ? "<td id='Comment-" . h($name) . "'>&nbsp;" : "");
 			}
 			echo "<tr><td>&nbsp;<th>" . lang('%d in total', count($tables_list));
-			echo "<td>" . nbsp($connection->result("SELECT @@storage_engine"));
+			echo "<td>" . nbsp($jush == "sql" ? $connection->result("SELECT @@storage_engine") : "");
 			echo "<td>" . nbsp(db_collation(DB, collations()));
 			foreach (array("Data_length", "Index_length", "Data_free") as $key) {
 				echo "<td align='right' id='sum-$key'>&nbsp;";
