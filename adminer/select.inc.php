@@ -369,9 +369,9 @@ if (!$columns) {
 			$exact_count = true;
 			if ($_GET["page"] != "last" && +$limit && count($group) >= count($select) && ($found_rows >= $limit || $page)) {
 				$found_rows = $table_status["Rows"];
-				if (!isset($found_rows) || $where || 2 * $page * $limit > $found_rows || ($table_status["Engine"] == "InnoDB" && $found_rows < 1e4)) {
+				if (!isset($found_rows) || $where || ($table_status["Engine"] == "InnoDB" && $found_rows < max(1e4, 2 * ($page + 1) * $limit))) {
 					// slow with big tables
-					ob_flush();
+					ob_flush(); //! doesn't work with AJAX
 					flush();
 					$found_rows = $connection->result("SELECT COUNT(*) FROM " . table($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : ""));
 				} else {
