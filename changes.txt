@@ -7,6 +7,7 @@ AJAX forms in Google Chrome
 Parse UTF-16 and UTF-8 BOM in all text uploads
 Use DELIMITER in history
 Show databases even with skip_show_database in MySQL 5 (thanks to Radoslaw Kowalewski)
+Set MySQL time zone by PHP setting
 Polish translation
 
 Adminer 3.2.0 (released 2011-02-24):
