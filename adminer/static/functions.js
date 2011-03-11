@@ -249,7 +249,11 @@ function ajax(url, callback, data) {
 				if (title) {
 					document.title = decodeURIComponent(title);
 				}
-				callback(xmlhttp.responseText);
+				if (xmlhttp.status) {
+					callback(xmlhttp.responseText);
+				} else {
+					setHtml('loader', '');
+				}
 			}
 		};
 		xmlhttp.send(data);
