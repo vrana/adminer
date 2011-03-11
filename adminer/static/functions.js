@@ -283,6 +283,9 @@ function ajaxSend(url, data, popState) {
 	setHtml('loader', '<img src="../adminer/static/loader.gif" alt="">');
 	return ajax(url, function (text) {
 		if (currentState == ajaxState) {
+			if (!popState) {
+				history.pushState(data, '', url);
+			}
 			scrollTo(0, 0);
 			setHtml('content', text);
 			var content = document.getElementById('content');
@@ -327,7 +330,6 @@ function ajaxMain(url, data, event) {
 	if (!history.pushState || (event && (event.ctrlKey || event.shiftKey || event.altKey || event.metaKey))) {
 		return false;
 	}
-	history.pushState(data, '', url);
 	return ajaxSend(url, data);
 }
 
@@ -336,7 +338,7 @@ function ajaxMain(url, data, event) {
 */
 window.onpopstate = function (event) {
 	if (ajaxState || event.state) {
-		ajaxSend(location.href, event.state);
+		ajaxSend(location.href, event.state, 1); // 1 - disable pushState
 	}
 }
 
