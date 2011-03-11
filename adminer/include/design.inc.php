@@ -35,9 +35,10 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <div id="content">
 <?php
 	}
+	echo '<p id="breadcrumb">';
 	if (isset($breadcrumb)) {
 		$link = substr(preg_replace('~(username|db|ns)=[^&]*&~', '', ME), 0, -1);
-		echo '<p id="breadcrumb"><a href="' . ($link ? h($link) : ".") . '">' . $drivers[DRIVER] . '</a> &raquo; ';
+		echo '<a href="' . ($link ? h($link) : ".") . '">' . $drivers[DRIVER] . '</a> &raquo; ';
 		$link = substr(preg_replace('~(db|ns)=[^&]*&~', '', ME), 0, -1);
 		$server = (SERVER != "" ? h(SERVER) : lang('Server'));
 		if ($breadcrumb === false) {
@@ -61,6 +62,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 			echo "$title\n";
 		}
 	}
+	echo "<span id='loader'></span>\n";
 	echo "<h2>$title_all</h2>\n";
 	restart_session();
 	$uri = preg_replace('~^[^?]*~', '', $_SERVER["REQUEST_URI"]);

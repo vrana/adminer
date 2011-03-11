@@ -270,23 +270,19 @@ function ajaxSetHtml(url) {
 	});
 }
 
-var ajaxState = 0, ajaxTimeout;
+var ajaxState = 0;
 
 /** Safely load content to #content
 * @param string
 * @param [string]
+* @param [boolean]
 * @return XMLHttpRequest or false in case of an error
 */
-function ajaxSend(url, data) {
+function ajaxSend(url, data, popState) {
 	var currentState = ++ajaxState;
-	clearTimeout(ajaxTimeout);
-	ajaxTimeout = setTimeout(function () {
-		scrollTo(0, 0);
-		setHtml('content', '<img src="../adminer/static/loader.gif" alt="">');
-	}, 500); // defer displaying loader
+	setHtml('loader', '<img src="../adminer/static/loader.gif" alt="">');
 	return ajax(url, function (text) {
 		if (currentState == ajaxState) {
-			clearTimeout(ajaxTimeout);
 			scrollTo(0, 0);
 			setHtml('content', text);
 			var content = document.getElementById('content');
