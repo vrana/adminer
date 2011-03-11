@@ -224,7 +224,7 @@ function editingKeydown(event) {
 
 /** Create AJAX request
 * @param string
-* @param function (text)
+* @param function (XMLHttpRequest)
 * @param [string]
 * @return XMLHttpRequest or false in case of an error
 */
@@ -238,18 +238,7 @@ function ajax(url, callback, data) {
 		xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 		xmlhttp.onreadystatechange = function () {
 			if (xmlhttp.readyState == 4) {
-				var redirect = xmlhttp.getResponseHeader('X-AJAX-Redirect');
-				if (redirect) {
-					if (history.replaceState) {
-						history.replaceState(null, '', redirect);
-					}
-					return ajaxSend(redirect);
-				}
-				var title = xmlhttp.getResponseHeader('X-AJAX-Title');
-				if (title) {
-					document.title = decodeURIComponent(title);
-				}
-				callback(xmlhttp.status ? xmlhttp.responseText : undefined);
+				callback(xmlhttp);
 			}
 		};
 		xmlhttp.send(data);
@@ -262,10 +251,12 @@ function ajax(url, callback, data) {
 * @return XMLHttpRequest or false in case of an error
 */
 function ajaxSetHtml(url) {
-	return ajax(url, function (text) {
-		var data = eval('(' + text + ')');
-		for (var key in data) {
-			setHtml(key, data[key]);
+	return ajax(url, function (xmlhttp) {
+		if (xmlhttp.status) {
+			var data = eval('(' + xmlhttp.responseText + ')');
+			for (var key in data) {
+				setHtml(key, data[key]);
+			}
 		}
 	});
 }
@@ -294,10 +285,21 @@ function ajaxSend(url, data, popState) {
 	var currentState = ++ajaxState;
 	var favicon = replaceFavicon('../adminer/static/loader.gif');
 	setHtml('loader', '<img src="../adminer/static/loader.gif" alt="">');
-	return ajax(url, function (text) {
+	return ajax(url, function (xmlhttp) {
 		if (currentState == ajaxState) {
+			var title = xmlhttp.getResponseHeader('X-AJAX-Title');
+			if (title) {
+				document.title = decodeURIComponent(title);
+			}
+			var redirect = xmlhttp.getResponseHeader('X-AJAX-Redirect');
+			if (redirect) {
+				if (history.replaceState) {
+					history.replaceState(null, '', redirect);
+				}
+				return ajaxSend(redirect);
+			}
 			replaceFavicon(favicon);
-			if (text === undefined) {
+			if (!xmlhttp.status) {
 				setHtml('loader', '');
 			} else {
 				if (!popState) {
@@ -306,7 +308,7 @@ function ajaxSend(url, data, popState) {
 					}
 					scrollTo(0, 0);
 				}
-				setHtml('content', text);
+				setHtml('content', xmlhttp.responseText);
 				var content = document.getElementById('content');
 				var scripts = content.getElementsByTagName('script');
 				var length = scripts.length; // required to avoid infinite loop
@@ -422,9 +424,11 @@ function selectDblClick(td, event, text) {
 	td.appendChild(input);
 	input.focus();
 	if (text == 2) { // long text
-		return ajax(location.href + '&' + encodeURIComponent(td.id) + '=', function (text) {
-			input.value = text;
-			input.name = td.id;
+		return ajax(location.href + '&' + encodeURIComponent(td.id) + '=', function (xmlhttp) {
+			if (xmlhttp.status) {
+				input.value = xmlhttp.responseText;
+				input.name = td.id;
+			}
 		});
 	}
 	input.value = value;
