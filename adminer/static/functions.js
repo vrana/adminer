@@ -354,7 +354,7 @@ function ajaxMain(url, data, event) {
 }
 
 /** Revive page from history
-* @param PopStateEvent
+* @param PopStateEvent|history
 */
 window.onpopstate = function (event) {
 	ajaxSend(location.href, event.state, 1); // 1 - disable pushState
