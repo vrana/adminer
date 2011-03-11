@@ -44,6 +44,7 @@ pre { margin: 1em 0 0; }
 #content { margin: 2em 0 0 21em; padding: 10px 20px 20px 0; }
 #lang { position: absolute; top: 0; left: 0; line-height: 1.8em; padding: .3em 1em; }
 #breadcrumb { white-space: nowrap; position: absolute; top: 0; left: 21em; background: #eee; height: 2em; line-height: 1.8em; padding: 0 1em; margin: 0 0 0 -18px; }
+#loader { position: fixed; top: 0; left: 18em; }
 #h1 { color: #777; text-decoration: none; font-style: italic; }
 #version { font-size: 67%; color: red; }
 #schema { margin-left: 60px; position: relative; }
