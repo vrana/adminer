@@ -71,12 +71,14 @@ function loginDriver(driver) {
 
 var added = '.', rowCount;
 
-/** Escape string to use in regular expression
+/** Check if val is equal to a-delimiter-b where delimiter is '_', '' or big letter
 * @param string
-* @return string
+* @param string
+* @param string
+* @return boolean
 */
-function reEscape(s) {
-	return s.replace(/[\[\]\\^$*+?.(){|}]/, '\\$&');
+function delimiterEqual(val, a, b) {
+	return (val == a + '_' + b || val == a + b || val == a + b.charAt(0).toUpperCase() + b.substr(1));
 }
 
 /** Escape string to use as identifier
@@ -94,33 +96,28 @@ function editingNameChange(field) {
 	var name = field.name.substr(0, field.name.length - 7);
 	var type = formField(field.form, name + '[type]');
 	var opts = type.options;
-	var table = reEscape(field.value);
-	var column = '';
-	var match;
-	if ((match = /(.+)_(.+)/.exec(table)) || (match = /(.*[a-z])([A-Z].*)/.exec(table))) { // limited to single word columns
-		table = match[1];
-		column = match[2];
-	}
-	var plural = '(?:e?s)?';
-	var tabCol = table + plural + '_?' + column;
-	var re = new RegExp('(^' + idfEscape(table + plural) + '`' + idfEscape(column) + '$' // table_column
-		+ '|^' + idfEscape(tabCol) + '`' // table
-		+ '|^' + idfEscape(column + plural) + '`' + idfEscape(table) + '$' // column_table
-		+ ')|`' + idfEscape(tabCol) + '$' // column
-	, 'i');
 	var candidate; // don't select anything with ambiguous match (like column `id`)
+	var val = field.value;
 	for (var i = opts.length; i--; ) {
-		if (!/`/.test(opts[i].value)) { // common type
-			if (i == opts.length - 2 && candidate && !match[1] && name == 'fields[1]') { // single target table, link to column, first field - probably `id`
-				return false;
+		var match = /(.+)`(.+)/.exec(opts[i].value);
+		if (!match) { // common type
+			if (candidate && i == opts.length - 2 && val == opts[candidate].value.replace(/.+`/, '') && name == 'fields[1]') { // single target table, link to column, first field - probably `id`
+				return;
 			}
 			break;
 		}
-		if (match = re.exec(opts[i].value)) {
-			if (candidate) {
-				return false;
+		var table = match[1];
+		var column = match[2];
+		var tables = [ table, table.replace(/s$/, ''), table.replace(/es$/, '') ];
+		for (var j=0; j < tables.length; j++) {
+			table = tables[j];
+			if (val == column || val == table || delimiterEqual(val, table, column) || delimiterEqual(val, column, table)) {
+				if (candidate) {
+					return;
+				}
+				candidate = i;
+				break;
 			}
-			candidate = i;
 		}
 	}
 	if (candidate) {
