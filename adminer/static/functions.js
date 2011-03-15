@@ -292,9 +292,6 @@ function ajaxSend(url, data, popState) {
 			}
 			var redirect = xmlhttp.getResponseHeader('X-AJAX-Redirect');
 			if (redirect) {
-				if (history.replaceState) {
-					history.replaceState(null, '', redirect);
-				}
 				return ajaxSend(redirect);
 			}
 			onblur = function () { };
