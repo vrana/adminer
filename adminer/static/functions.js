@@ -280,7 +280,9 @@ var ajaxState = 0;
 */
 function ajaxSend(url, data, popState) {
 	var currentState = ++ajaxState;
-	replaceFavicon('../adminer/static/loader.gif');
+	onblur = function () {
+		replaceFavicon('../adminer/static/loader.gif');
+	};
 	setHtml('loader', '<img src="../adminer/static/loader.gif" alt="">');
 	return ajax(url, function (xmlhttp) {
 		if (currentState == ajaxState) {
@@ -295,6 +297,7 @@ function ajaxSend(url, data, popState) {
 				}
 				return ajaxSend(redirect);
 			}
+			onblur = function () { };
 			replaceFavicon('../adminer/static/favicon.ico');
 			if (!xmlhttp.status) {
 				setHtml('loader', '');
@@ -355,7 +358,7 @@ function ajaxMain(url, data, event) {
 /** Revive page from history
 * @param PopStateEvent|history
 */
-window.onpopstate = function (event) {
+onpopstate = function (event) {
 	ajaxSend(location.href, event.state, 1); // 1 - disable pushState
 }
 
