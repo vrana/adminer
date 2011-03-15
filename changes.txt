@@ -1,4 +1,5 @@
 Adminer 3.2.1-dev:
+Ability to save expression in edit
 Respect default database collation (bug #3191489)
 Don't export triggers without table (bug #3193489)
 Esc to focus next field in Tab textarea (thanks to David Grudl)
@@ -9,6 +10,7 @@ Use DELIMITER in history
 Show databases even with skip_show_database in MySQL 5 (thanks to Radoslaw Kowalewski)
 Set MySQL time zone by PHP setting
 Better placement of AJAX icon
+Table header in CSV export (Editor)
 Polish translation
 
 Adminer 3.2.0 (released 2011-02-24):

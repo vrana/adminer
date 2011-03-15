@@ -429,6 +429,9 @@ username.form['driver'].onchange();
 						$return .= "/$val";
 					}
 				}
+				if ($key) {
+					$return .= "/=";
+				}
 			}
 		}
 		return explode("/", $return);
@@ -458,6 +461,9 @@ username.form['driver'].onchange();
 	* @return string expression to use in a query
 	*/
 	function processInput($field, $value, $function = "") {
+		if ($function == "=") {
+			return $value; // SQL injection
+		}
 		$name = $field["field"];
 		$return = ($field["type"] == "bit" && ereg('^[0-9]+$', $value) ? $value : q($value));
 		if (ereg('^(now|getdate|uuid)$', $function)) {
