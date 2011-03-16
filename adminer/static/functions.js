@@ -127,7 +127,7 @@ function nodePosition(el) {
 function pageClick(href, page, event) {
 	if (!isNaN(page) && page) {
 		href += (page != 1 ? '&page=' + (page - 1) : '');
-		if (!ajaxMain(href, '', event)) {
+		if (!ajaxSend(href)) {
 			location.href = href;
 		}
 	}
@@ -279,6 +279,9 @@ var ajaxState = 0;
 * @return XMLHttpRequest or false in case of an error
 */
 function ajaxSend(url, data, popState) {
+	if (!history.pushState) {
+		return false;
+	}
 	var currentState = ++ajaxState;
 	onblur = function () {
 		replaceFavicon('../adminer/static/loader.gif');
@@ -292,7 +295,7 @@ function ajaxSend(url, data, popState) {
 			}
 			var redirect = xmlhttp.getResponseHeader('X-AJAX-Redirect');
 			if (redirect) {
-				return ajaxSend(redirect);
+				return ajaxSend(redirect, '', popState);
 			}
 			onblur = function () { };
 			replaceFavicon('../adminer/static/favicon.ico');
@@ -339,19 +342,6 @@ function ajaxSend(url, data, popState) {
 	}, data);
 }
 
-/** Load content to #content
-* @param string
-* @param [string]
-* @param [MouseEvent]
-* @return XMLHttpRequest or false in case of an error
-*/
-function ajaxMain(url, data, event) {
-	if (!history.pushState || (event && (event.ctrlKey || event.shiftKey || event.altKey || event.metaKey))) {
-		return false;
-	}
-	return ajaxSend(url, data);
-}
-
 /** Revive page from history
 * @param PopStateEvent|history
 */
@@ -380,9 +370,9 @@ function ajaxForm(form, data) {
 		params.push(data);
 	}
 	if (form.method == 'post') {
-		return ajaxMain((/\?/.test(form.action) ? form.action : location.href), params.join('&')); // ? - always part of Adminer URL
+		return ajaxSend((/\?/.test(form.action) ? form.action : location.href), params.join('&')); // ? - always part of Adminer URL
 	}
-	return ajaxMain((form.action || location.href).replace(/\?.*/, '') + '?' + params.join('&'));
+	return ajaxSend((form.action || location.href).replace(/\?.*/, '') + '?' + params.join('&'));
 }
 
 
@@ -450,7 +440,7 @@ function selectDblClick(td, event, text) {
 * @return bool
 */
 function bodyClick(event, db, ns) {
-	if (event.button) {
+	if (event.button || event.ctrlKey || event.shiftKey || event.altKey || event.metaKey) {
 		return;
 	}
 	if (event.getPreventDefault ? event.getPreventDefault() : event.returnValue === false) {
@@ -463,7 +453,7 @@ function bodyClick(event, db, ns) {
 	if (/^a$/i.test(el.tagName) && !/^https?:|#|&download=/i.test(el.getAttribute('href')) && /[&?]username=/.exec(el.href)) {
 		var match = /&db=([^&]*)/.exec(el.href);
 		var match2 = /&ns=([^&]*)/.exec(el.href);
-		return !(db == (match ? match[1] : '') && ns == (match2 ? match2[1] : '') && ajaxMain(el.href, '', event));
+		return !(db == (match ? match[1] : '') && ns == (match2 ? match2[1] : '') && ajaxSend(el.href));
 	}
 	if (/^input$/i.test(el.tagName) && (el.type == 'image' || (el.type == 'submit' && !/&(database|scheme|create|view|sql|user|dump|call)=/.test(location.href)))) {
 		return !ajaxForm(el.form, (el.name ? encodeURIComponent(el.name) + (el.type == 'image' ? '.x' : '') + '=1' : ''));
