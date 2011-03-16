@@ -13,13 +13,10 @@ function bodyLoad(version) {
 	script.onload = function () {
 		if (window.jush) { // IE runs in case of an error too
 			jush.create_links = ' target="_blank" rel="noreferrer"';
-			jush.urls.sql[0] = 'http://dev.mysql.com/doc/refman/' + version + '/en/$key';
-			jush.urls.sql_sqlset = jush.urls.sql[0];
-			jush.urls.sqlset[0] = jush.urls.sql[0];
-			jush.urls.sqlstatus[0] = jush.urls.sql[0];
-			jush.urls.pgsql[0] = 'http://www.postgresql.org/docs/' + version + '/static/$key';
-			jush.urls.pgsql_pgsqlset = jush.urls.pgsql[0];
-			jush.urls.pgsqlset[0] = 'http://www.postgresql.org/docs/' + version + '/static/runtime-config-$key.html#GUC-$1';
+			jush.urls.sql_sqlset = jush.urls.sql[0] = jush.urls.sqlset[0] = jush.urls.sqlstatus[0] = 'http://dev.mysql.com/doc/refman/' + version + '/en/$key';
+			var pgsql = 'http://www.postgresql.org/docs/' + version + '/static/';
+			jush.urls.pgsql_pgsqlset = jush.urls.pgsql[0] = pgsql + '$key';
+			jush.urls.pgsqlset[0] = pgsql + 'runtime-config-$key.html#GUC-$1';
 			jush.style(jushRoot + 'jush.css');
 			if (window.jushLinks) {
 				jush.custom_links = jushLinks;
