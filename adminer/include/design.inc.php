@@ -29,6 +29,9 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <?php } ?>
 
 <body class="<?php echo lang('ltr'); ?>" onclick="return bodyClick(event, '<?php echo js_escape(DB); ?>', '<?php echo js_escape($_GET["ns"]); ?>');" onload="bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 0, 3) : ""); ?>');<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verifyVersion('$protocol');"); ?>">
+<script type="text/javascript">
+var areYouSure = '<?php echo lang('Are you sure?'); ?>';
+</script>
 <script type="text/javascript" src="../adminer/static/functions.js"></script>
 <script type="text/javascript" src="static/editing.js"></script>
 
