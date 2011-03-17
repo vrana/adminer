@@ -98,7 +98,7 @@ if ($fields) {
 	}
 }
 echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\">\n"
-	: ($_POST ? "" : "<script type='text/javascript'>document.getElementById('form').getElementsByTagName('td')[1].firstChild.focus();</script>\n")
+	: ($_POST || !$fields ? "" : "<script type='text/javascript'>document.getElementById('form').getElementsByTagName('td')[1].firstChild.focus();</script>\n")
 );
 if (isset($_GET["select"])) {
 	hidden_fields(array("check" => (array) $_POST["check"], "clone" => $_POST["clone"], "all" => $_POST["all"]));
