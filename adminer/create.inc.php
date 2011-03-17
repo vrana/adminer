@@ -14,6 +14,9 @@ if ($TABLE != "") {
 	$orig_fields = fields($TABLE);
 	$orig_status = table_status($TABLE);
 }
+if ($_POST && !$_POST["fields"]) {
+	$_POST["fields"] = array();
+}
 
 if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] && !$_POST["down"]) {
 	if ($_POST["drop"]) {
