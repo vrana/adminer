@@ -4,9 +4,7 @@
 * @param string first three characters of database system version
 */
 function bodyLoad(version) {
-	if (history.state) { // copied from editor/static/editing.js
-		onpopstate(history);
-	}
+	onpopstate(history); // copied from editor/static/editing.js
 	var jushRoot = '../externals/jush/';
 	var script = document.createElement('script');
 	script.src = jushRoot + 'jush.js';
