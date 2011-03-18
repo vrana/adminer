@@ -281,6 +281,8 @@ $translations = array(
 	'$1-$3-$5' => '$6.$4.$1',
 	// hint for date format - use language equivalents for day, month and year shortcuts
 	'[yyyy]-mm-dd' => 'd.m.[rrrr]',
+	// hint for time format - use language equivalents for hour, minute and second shortcuts
+	'HH:MM:SS' => 'HH:MM:SS',
 	'now' => 'teď',
 	
 	// general SQLite error in create, drop or rename database

@@ -12,6 +12,7 @@ Set MySQL time zone by PHP setting
 Disable maxlength with functions in edit
 Better placement of AJAX icon
 Table header in CSV export (Editor)
+Time format hint (Editor)
 Polish translation
 
 Adminer 3.2.0 (released 2011-02-24):

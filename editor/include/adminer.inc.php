@@ -420,8 +420,15 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		if (ereg("(tinyint|bit)\\(1\\)", $field["full_type"])) { // bool
 			return '<input type="checkbox" value="' . h($value ? $value : 1) . '"' . ($value ? ' checked' : '') . "$attrs>";
 		}
+		$hint = "";
+		if (ereg('time', $field["type"])) {
+			$hint = lang('HH:MM:SS');
+		}
 		if (ereg('date|timestamp', $field["type"])) {
-			return "<input value='" . h($value) . "'$attrs> (" . lang('[yyyy]-mm-dd') . ")"; //! maxlength
+			$hint = lang('[yyyy]-mm-dd') . ($hint ? " [$hint]" : "");
+		}
+		if ($hint) {
+			return "<input value='" . h($value) . "'$attrs> ($hint)"; //! maxlength
 		}
 		if (eregi('_(md5|sha1)$', $field["field"])) {
 			return "<input type='password' value='" . h($value) . "'$attrs>";
