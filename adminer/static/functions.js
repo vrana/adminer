@@ -166,7 +166,7 @@ function selectAddRow(field) {
 */
 function textareaKeydown(target, event, tab, button) {
 	if (tab && !event.shiftKey && !event.altKey && !event.ctrlKey && !event.metaKey) {
-		if (event.keyCode == 9) {
+		if (event.keyCode == 9) { // 9 - Tab
 			// inspired by http://pallieter.org/Projects/insertTab/
 			if (target.setSelectionRange) {
 				var start = target.selectionStart;
@@ -180,7 +180,7 @@ function textareaKeydown(target, event, tab, button) {
 				return false;
 			}
 		}
-		if (event.keyCode == 27) {
+		if (event.keyCode == 27) { // 27 - Esc
 			var els = target.form.elements;
 			for (var i=1; i < els.length; i++) {
 				if (els[i-1] == target) {
@@ -190,7 +190,7 @@ function textareaKeydown(target, event, tab, button) {
 			}
 		}
 	}
-	if (event.ctrlKey && (event.keyCode == 13 || event.keyCode == 10) && !event.altKey && !event.metaKey) { // shiftKey allowed
+	if (event.ctrlKey && (event.keyCode == 13 || event.keyCode == 10) && !event.altKey && !event.metaKey) { // 13|10 - Enter, shiftKey allowed
 		target.blur();
 		if (button) {
 			button.click();
@@ -208,7 +208,7 @@ function textareaKeydown(target, event, tab, button) {
 * @return boolean
 */
 function editingKeydown(event) {
-	if ((event.keyCode == 40 || event.keyCode == 38) && event.ctrlKey && !event.altKey && !event.metaKey) { // shiftKey allowed
+	if ((event.keyCode == 40 || event.keyCode == 38) && event.ctrlKey && !event.altKey && !event.metaKey) { // 40 - Down, 38 - Up, shiftKey allowed
 		var target = event.target || event.srcElement;
 		var sibling = (event.keyCode == 40 ? 'nextSibling' : 'previousSibling');
 		var el = target.parentNode.parentNode[sibling];
