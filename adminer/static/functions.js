@@ -220,6 +220,21 @@ function editingKeydown(event) {
 	return true;
 }
 
+/** Disable maxlength for functions
+* @param HTMLSelectElement
+*/
+function functionChange(select) {
+	var input = select.form[select.name.replace(/^function/, 'fields')];
+	if (selectValue(select)) {
+		if (input.origMaxLength === undefined) {
+			input.origMaxLength = input.maxLength;
+		}
+		input.removeAttribute('maxlength');
+	} else if (input.origMaxLength >= 0) {
+		input.maxLength = input.origMaxLength;
+	}
+}
+
 
 
 /** Create AJAX request

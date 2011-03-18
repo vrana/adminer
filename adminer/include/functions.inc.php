@@ -673,7 +673,7 @@ function input($field, $value, $function) {
 		}
 		$onchange = ($first ? " onchange=\"var f = this.form['function[" . js_escape($name) . "]']; if ($first > f.selectedIndex) f.selectedIndex = $first;\"" : "");
 		$attrs .= $onchange;
-		echo (count($functions) > 1 ? html_select("function[$name]", $functions, !isset($function) || in_array($function, $functions) || isset($functions[$function]) ? $function : "") : nbsp(reset($functions))) . '<td>';
+		echo (count($functions) > 1 ? html_select("function[$name]", $functions, !isset($function) || in_array($function, $functions) || isset($functions[$function]) ? $function : "", "functionChange(this);") : nbsp(reset($functions))) . '<td>';
 		$input = $adminer->editInput($_GET["edit"], $field, $attrs, $value); // usage in call is without a table
 		if ($input != "") {
 			echo $input;
