@@ -201,6 +201,17 @@ function textareaKeydown(target, event, tab, button) {
 	return true;
 }
 
+/** Send form by Enter on <select>
+* @param HTMLFormElement
+* @param KeyboardEvent
+*/
+function searchKeydown(form, event) {
+	var target = event.target || event.srcElement;
+	if (/select/i.test(target.tagName) && (event.keyCode == 13 || event.keyCode == 10)) { // shiftKey and rest allowed
+		form.submit();
+	}
+}
+
 
 
 /** Change focus by Ctrl+Up or Ctrl+Down

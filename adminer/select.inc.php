@@ -196,7 +196,7 @@ $adminer->selectLinks($table_status, $set);
 if (!$columns) {
 	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "." : ": " . error()) . "\n";
 } else {
-	echo "<form action='' id='form'>\n";
+	echo "<form action='' id='form' onkeydown='searchKeydown(this, event);'>\n";
 	echo "<div style='display: none;'>";
 	hidden_fields_get();
 	echo (DB != "" ? '<input type="hidden" name="db" value="' . h(DB) . '">' . (isset($_GET["ns"]) ? '<input type="hidden" name="ns" value="' . h($_GET["ns"]) . '">' : "") : ""); // not used in Editor
