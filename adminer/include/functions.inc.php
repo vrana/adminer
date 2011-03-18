@@ -91,7 +91,7 @@ function nl_br($string) {
 function checkbox($name, $value, $checked, $label = "", $onclick = "") {
 	static $id = 0;
 	$id++;
-	$return = "<input type='checkbox'" . ($name ? " name='$name' value='" . h($value) . "'" : "") . ($checked ? " checked" : "") . ($onclick ? " onclick=\"$onclick\"" : "") . " id='checkbox-$id'>";
+	$return = "<input type='checkbox'" . ($name ? " name='$name' value='" . h($value) . "'" : " class='jsonly'") . ($checked ? " checked" : "") . ($onclick ? " onclick=\"$onclick\"" : "") . " id='checkbox-$id'>";
 	return ($label != "" ? "<label for='checkbox-$id'>$return" . h($label) . "</label>" : $return);
 }
 

@@ -394,7 +394,7 @@ if (!$columns) {
 			if (!information_schema(DB)) {
 				?>
 <fieldset><legend><?php echo lang('Edit'); ?></legend><div>
-<input type="submit" id="save" value="<?php echo lang('Save'); ?>" title="<?php echo lang('Double click on a value to modify it.'); ?>">
+<input type="submit" id="save" value="<?php echo lang('Save'); ?>" title="<?php echo lang('Double click on a value to modify it.'); ?>" class="jsonly">
 <input type="submit" name="edit" value="<?php echo lang('Edit'); ?>">
 <input type="submit" name="clone" value="<?php echo lang('Clone'); ?>">
 <input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?> (' + (this.form['all'].checked ? <?php echo $found_rows; ?> : formChecked(this, /check/)) + ')');">

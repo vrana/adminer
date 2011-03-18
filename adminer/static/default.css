@@ -20,7 +20,7 @@ code { background: #eee; }
 tr:hover td, tr:hover th { background: #ddf; }
 pre { margin: 1em 0 0; }
 .version { color: #777; font-size: 67%; }
-.js .hidden { display: none; }
+.js .hidden, .nojs .jsonly { display: none; }
 .nowrap td, .nowrap th, td.nowrap { white-space: pre; }
 .wrap td { white-space: normal; }
 .error { color: red; background: #fee; }
