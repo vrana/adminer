@@ -250,8 +250,14 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		}
 		if ($orders) {
 			echo '<fieldset><legend>' . lang('Sort') . "</legend><div>";
-			echo "<select name='index_order'>" . optionlist(array("" => "") + $orders, $_GET["index_order"], true) . "</select>";
+			echo "<select name='index_order'>" . optionlist(array("" => "") + $orders, ($_GET["order"][0] != "" ? "" : $_GET["index_order"]), true) . "</select>";
 			echo "</div></fieldset>\n";
+		}
+		if ($_GET["order"]) {
+			echo "<div style='display: none;'>" . hidden_fields(array(
+				"order" => array(1 => reset($_GET["order"])),
+				"desc" => ($_GET["desc"] ? array(1 => 1) : array()),
+			)) . "</div>\n";
 		}
 	}
 	
@@ -322,10 +328,13 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	}
 	
 	function selectOrderProcess($fields, $indexes) {
-		if ($_GET["order"]) {
-			return array(idf_escape($_GET["order"][0]) . (isset($_GET["desc"][0]) ? " DESC" : ""));
-		}
 		$index_order = $_GET["index_order"];
+		if ($index_order != "") {
+			unset($_GET["order"][1]);
+		}
+		if ($_GET["order"]) {
+			return array(idf_escape(reset($_GET["order"])) . ($_GET["desc"] ? " DESC" : ""));
+		}
 		foreach (($index_order != "" ? array($indexes[$index_order]) : $indexes) as $index) {
 			if ($index_order != "" || $index["type"] == "INDEX") {
 				$desc = false;
