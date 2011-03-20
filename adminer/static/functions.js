@@ -207,8 +207,8 @@ function textareaKeydown(target, event, tab, button) {
 */
 function searchKeydown(form, event) {
 	var target = event.target || event.srcElement;
-	if (/select/i.test(target.tagName) && (event.keyCode == 13 || event.keyCode == 10)) { // shiftKey and rest allowed
-		form.submit();
+	if (/select/i.test(target.tagName)) {
+		textareaKeydown(target, event);
 	}
 }
 
