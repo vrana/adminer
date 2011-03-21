@@ -161,7 +161,7 @@ foreach ($engines as $engine) {
 </table>
 <p>
 <?php echo lang('Auto Increment'); ?>: <input name="Auto_increment" size="6" value="<?php echo h($row["Auto_increment"]); ?>">
-<label><input type="checkbox" onclick="columnShow(this.checked, 5);" class="jsonly"><?php echo lang('Default values'); ?></label>
+<label class="jsonly"><input type="checkbox" onclick="columnShow(this.checked, 5);"><?php echo lang('Default values'); ?></label>
 <?php echo (support("comment") ? checkbox("", "", $comments, lang('Comment'), "columnShow(this.checked, 6); toggle('Comment'); if (this.checked) this.form['Comment'].focus();") . ' <input id="Comment" name="Comment" value="' . h($row["Comment"]) . '" maxlength="60"' . ($comments ? '' : ' class="hidden"') . '>' : ''); ?>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
