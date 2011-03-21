@@ -104,10 +104,12 @@ function checkbox($name, $value, $checked, $label = "", $onclick = "") {
 function optionlist($options, $selected = null, $use_keys = false) {
 	$return = "";
 	foreach ($options as $k => $v) {
+		$opts = array($k => $v);
 		if (is_array($v)) {
 			$return .= '<optgroup label="' . h($k) . '">';
+			$opts = $v;
 		}
-		foreach ((is_array($v) ? $v : array($k => $v)) as $key => $val) {
+		foreach ($opts as $key => $val) {
 			$return .= '<option' . ($use_keys || is_string($key) ? ' value="' . h($key) . '"' : '') . (($use_keys || is_string($key) ? (string) $key : $val) === $selected ? ' selected' : '') . '>' . h($val);
 		}
 		if (is_array($v)) {
