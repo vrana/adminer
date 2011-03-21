@@ -194,9 +194,10 @@ function textareaKeydown(target, event, tab, button) {
 		target.blur();
 		if (button) {
 			button.click();
-		} else if (!target.form.onsubmit || target.form.onsubmit() !== false) {
+		} else if ((!target.form.onsubmit || target.form.onsubmit() !== false) && !ajaxForm(target.form)) {
 			target.form.submit();
 		}
+		return false;
 	}
 	return true;
 }
