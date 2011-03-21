@@ -17,6 +17,9 @@ CREATE TABLE login (
 class AdminerLoginTable {
 	var $database;
 	
+	/** Set database of login table
+	* @param string
+	*/
 	function AdminerLoginTable($database) {
 		$this->database = $database;
 	}
