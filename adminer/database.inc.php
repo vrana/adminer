@@ -57,7 +57,7 @@ if ($_POST) {
 <p>
 <?php
 echo ($_POST["add_x"] || strpos($name, "\n")
-	? '<textarea id="name" name="name" rows="10" cols="40" onkeydown="return textareaKeydown(this, event);">' . h($name) . '</textarea><br>'
+	? '<textarea id="name" name="name" rows="10" cols="40">' . h($name) . '</textarea><br>'
 	: '<input id="name" name="name" value="' . h($name) . '" maxlength="64">'
 ) . "\n" . ($collations ? html_select("collation", array("" => "(" . lang('collation') . ")") + $collations, $collate) : "");
 ?>

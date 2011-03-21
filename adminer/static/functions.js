@@ -157,14 +157,13 @@ function selectAddRow(field) {
 
 
 
-/** Handle Ctrl+Enter and optionally Tab in textarea
+/** Handle Tab and Esc in textarea
 * @param HTMLTextAreaElement
 * @param KeyboardEvent
-* @param boolean handle also Tab
 * @return boolean
 */
-function textareaKeydown(target, event, tab) {
-	if (tab && !event.shiftKey && !event.altKey && !event.ctrlKey && !event.metaKey) {
+function textareaKeydown(target, event) {
+	if (!event.shiftKey && !event.altKey && !event.ctrlKey && !event.metaKey) {
 		if (event.keyCode == 9) { // 9 - Tab
 			// inspired by http://pallieter.org/Projects/insertTab/
 			if (target.setSelectionRange) {
@@ -187,6 +186,7 @@ function textareaKeydown(target, event, tab) {
 					break;
 				}
 			}
+			return false;
 		}
 	}
 	return true;
@@ -421,9 +421,6 @@ function selectDblClick(td, event, text) {
 			rows++;
 		});
 		input.rows = rows;
-		input.onkeydown = function (event) {
-			return textareaKeydown(input, event || window.event);
-		};
 	}
 	if (document.selection) {
 		var range = document.selection.createRange();
