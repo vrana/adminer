@@ -196,7 +196,7 @@ $adminer->selectLinks($table_status, $set);
 if (!$columns) {
 	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "." : ": " . error()) . "\n";
 } else {
-	echo "<form action='' id='form' onkeydown='searchKeydown(this, event);'>\n";
+	echo "<form action='' id='form'>\n";
 	echo "<div style='display: none;'>";
 	hidden_fields_get();
 	echo (DB != "" ? '<input type="hidden" name="db" value="' . h(DB) . '">' . (isset($_GET["ns"]) ? '<input type="hidden" name="ns" value="' . h($_GET["ns"]) . '">' : "") : ""); // not used in Editor
@@ -394,7 +394,7 @@ if (!$columns) {
 			if (!information_schema(DB)) {
 				?>
 <fieldset><legend><?php echo lang('Edit'); ?></legend><div>
-<input type="submit" id="save" value="<?php echo lang('Save'); ?>" title="<?php echo lang('Double click on a value to modify it.'); ?>" class="jsonly">
+<input type="submit" value="<?php echo lang('Save'); ?>" title="<?php echo lang('Double click on a value to modify it.'); ?>" class="jsonly">
 <input type="submit" name="edit" value="<?php echo lang('Edit'); ?>">
 <input type="submit" name="clone" value="<?php echo lang('Clone'); ?>">
 <input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?> (' + (this.form['all'].checked ? <?php echo $found_rows; ?> : formChecked(this, /check/)) + ')');">

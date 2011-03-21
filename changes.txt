@@ -3,7 +3,7 @@ Ability to save expression in edit
 Respect default database collation (bug #3191489)
 Don't export triggers without table (bug #3193489)
 Esc to focus next field in Tab textarea (thanks to David Grudl)
-Send select search form by Ctrl+Enter on <select>
+Send forms by Ctrl+Enter on <select>
 Enum editor and textarea Ctrl+Enter working in IE
 AJAX forms in Google Chrome
 Parse UTF-16 and UTF-8 BOM in all text uploads

@@ -161,10 +161,9 @@ function selectAddRow(field) {
 * @param HTMLTextAreaElement
 * @param KeyboardEvent
 * @param boolean handle also Tab
-* @param HTMLInputElement submit button
 * @return boolean
 */
-function textareaKeydown(target, event, tab, button) {
+function textareaKeydown(target, event, tab) {
 	if (tab && !event.shiftKey && !event.altKey && !event.ctrlKey && !event.metaKey) {
 		if (event.keyCode == 9) { // 9 - Tab
 			// inspired by http://pallieter.org/Projects/insertTab/
@@ -190,26 +189,21 @@ function textareaKeydown(target, event, tab, button) {
 			}
 		}
 	}
-	if (event.ctrlKey && (event.keyCode == 13 || event.keyCode == 10) && !event.altKey && !event.metaKey) { // 13|10 - Enter, shiftKey allowed
-		target.blur();
-		if (button) {
-			button.click();
-		} else if ((!target.form.onsubmit || target.form.onsubmit() !== false) && !ajaxForm(target.form)) {
-			target.form.submit();
-		}
-		return false;
-	}
 	return true;
 }
 
 /** Send form by Enter on <select>
-* @param HTMLFormElement
 * @param KeyboardEvent
+* @return boolean
 */
-function searchKeydown(form, event) {
+function bodyKeydown(event) {
 	var target = event.target || event.srcElement;
-	if (/select/i.test(target.tagName)) {
-		textareaKeydown(target, event);
+	if (event.ctrlKey && (event.keyCode == 13 || event.keyCode == 10) && !event.altKey && !event.metaKey && /select|textarea/i.test(target.tagName)) { // 13|10 - Enter, shiftKey allowed
+		target.blur();
+		if ((!target.form.onsubmit || target.form.onsubmit() !== false) && !ajaxForm(target.form)) {
+			target.form.submit();
+		}
+		return false;
 	}
 }
 
@@ -384,6 +378,9 @@ onpopstate = function (event) {
 * @return XMLHttpRequest or false in case of an error
 */
 function ajaxForm(form, data) {
+	if (/&(database|scheme|create|view|sql|user|dump|call)=/.test(location.href) && !/\./.test(data)) { // . - type="image"
+		return false;
+	}
 	var params = [ ];
 	for (var i=0; i < form.elements.length; i++) {
 		var el = form.elements[i];
@@ -425,7 +422,7 @@ function selectDblClick(td, event, text) {
 		});
 		input.rows = rows;
 		input.onkeydown = function (event) {
-			return textareaKeydown(input, event || window.event, false, document.getElementById('save'));
+			return textareaKeydown(input, event || window.event);
 		};
 	}
 	if (document.selection) {
@@ -477,12 +474,12 @@ function bodyClick(event, db, ns) {
 	if (/^a$/i.test(el.parentNode.tagName)) {
 		el = el.parentNode;
 	}
-	if (/^a$/i.test(el.tagName) && !/^https?:|#|&download=/i.test(el.getAttribute('href')) && /[&?]username=/.exec(el.href)) {
+	if (/^a$/i.test(el.tagName) && !/^:|#|&download=/i.test(el.getAttribute('href')) && /[&?]username=/.test(el.href)) {
 		var match = /&db=([^&]*)/.exec(el.href);
 		var match2 = /&ns=([^&]*)/.exec(el.href);
 		return !(db == (match ? match[1] : '') && ns == (match2 ? match2[1] : '') && ajaxSend(el.href));
 	}
-	if (/^input$/i.test(el.tagName) && (el.type == 'image' || (el.type == 'submit' && !/&(database|scheme|create|view|sql|user|dump|call)=/.test(location.href)))) {
+	if (/^input$/i.test(el.tagName) && /image|submit/.test(el.type)) {
 		return !ajaxForm(el.form, (el.name ? encodeURIComponent(el.name) + (el.type == 'image' ? '.x' : '') + '=1' : ''));
 	}
 	return true;
