@@ -429,7 +429,7 @@ username.form['driver'].onchange();
 						$return .= "/$val";
 					}
 				}
-				if ($key) {
+				if ($key && !ereg('set|blob|bytea|raw|file', $field["type"])) {
 					$return .= "/=";
 				}
 			}
