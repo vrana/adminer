@@ -12,6 +12,7 @@ Show databases even with skip_show_database in MySQL 5 (thanks to Radoslaw Kowal
 Set MySQL time zone by PHP setting
 Disable maxlength with functions in edit
 Better placement of AJAX icon
+Display ; in history (thanks to Jan Cerny)
 Table header in CSV export (Editor)
 Time format hint (Editor)
 Respect order after search (Editor)

@@ -413,7 +413,7 @@ function query_redirect($query, $location, $message, $redirect = true, $execute 
 	}
 	$sql = "";
 	if ($query) {
-		$sql = $adminer->messageQuery($query);
+		$sql = $adminer->messageQuery("$query;");
 	}
 	if ($failed) {
 		$error = error() . $sql;
@@ -434,9 +434,9 @@ function queries($query = null) {
 	static $queries = array();
 	if (!isset($query)) {
 		// return executed queries without parameter
-		return implode("\n", $queries);
+		return implode(";\n", $queries);
 	}
-	$queries[] = (ereg(';$', $query) ? "DELIMITER ;;\n$query;\nDELIMITER ;" : "$query;");
+	$queries[] = (ereg(';$', $query) ? "DELIMITER ;;\n$query;\nDELIMITER " : $query);
 	return $connection->query($query);
 }
 

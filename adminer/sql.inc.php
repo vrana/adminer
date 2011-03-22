@@ -32,8 +32,11 @@ if (!$error && $_POST) {
 		if (function_exists('memory_get_usage')) {
 			@ini_set("memory_limit", 2 * strlen($query) + memory_get_usage() + 8e6); // @ - may be disabled, 2 - substr and trim, 8e6 - other variables
 		}
-		if ($query != "" && strlen($query) < 1e6 && (!$history || end($history) != $query)) { // don't add repeated and big queries
-			$history[] = $query;
+		if ($query != "" && strlen($query) < 1e6) { // don't add big queries
+			$q = $query . (ereg(';$', $query) ? "" : ";"); //! doesn't work with DELIMITER |
+			if (!$history || end($history) != $q) { // no repeated queries
+				$history[] = $q;
+			}
 		}
 		$space = "(\\s|/\\*.*\\*/|(#|-- )[^\n]*\n|--\n)";
 		if (!ini_bool("session.use_cookies")) {
