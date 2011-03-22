@@ -408,10 +408,10 @@ username.form['driver'].onchange();
 		restart_session();
 		$id = "sql-" . ($count++);
 		$history = &get_session("queries");
-		$history[$_GET["db"]][] = (strlen($query) > 1e6 // not DB - reset in drop database
-			? ereg_replace('[\x80-\xFF]+$', '', substr($query, 0, 1e6)) . "\n..." // [\x80-\xFF] - valid UTF-8, \n - can end by one-line comment
-			: $query
-		); //! respect $_GET["ns"]
+		if (strlen($query) > 1e6) { // not DB - reset in drop database
+			$query = ereg_replace('[\x80-\xFF]+$', '', substr($query, 0, 1e6)) . "\n..."; // [\x80-\xFF] - valid UTF-8, \n - can end by one-line comment
+		}
+		$history[$_GET["db"]][] = $query; //! respect $_GET["ns"]
 		return " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre><code class='jush-$jush'>" . shorten_utf8($query, 1000) . '</code></pre><p><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a></div>';
 	}
 	
