@@ -20,7 +20,7 @@ $translations = array(
 	'%s version: %s through PHP extension %s' => 'Verze %s: %s přes PHP extenzi %s',
 	'Refresh' => 'Obnovit',
 	
-	// text direction
+	// text direction - 'ltr' or 'rtl'
 	'ltr' => 'ltr',
 	
 	'Privileges' => 'Oprávnění',
@@ -53,6 +53,7 @@ $translations = array(
 	'%.3f s' => '%.3f s',
 	'History' => 'Historie',
 	'Clear' => 'Vyčistit',
+	'Edit all' => 'Upravit vše',
 	
 	'File upload' => 'Nahrání souboru',
 	'From server' => 'Ze serveru',
@@ -275,6 +276,9 @@ $translations = array(
 	'Network' => 'Síť',
 	'Geometry' => 'Geometrie',
 	'Relations' => 'Vztahy',
+	
+	// reload confirmation in AJAX
+	'Resend POST data?' => 'Znovu odeslat POST data?',
 	
 	'Editor' => 'Editor',
 	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d

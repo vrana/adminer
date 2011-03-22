@@ -202,7 +202,7 @@ if ($history) {
 		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . "</a> <code class='jush-$jush'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace('~^(#|-- ).*~m', '', $val)))), 80, "</code>") . "<br>\n";
 	}
 	echo "<input type='submit' name='clear' value='" . lang('Clear') . "'>\n";
-	echo "<a href='" . h(ME . "sql=&history=all") . "'>" . lang('Edit') . "</a>\n";
+	echo "<a href='" . h(ME . "sql=&history=all") . "'>" . lang('Edit all') . "</a>\n";
 	echo "</div></fieldset>\n";
 }
 ?>
