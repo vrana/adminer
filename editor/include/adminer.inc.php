@@ -31,6 +31,10 @@ class Adminer {
 		header("X-XSS-Protection: 0");
 	}
 	
+	function head() {
+		return true;
+	}
+	
 	function loginForm() {
 		?>
 <table cellspacing="0">

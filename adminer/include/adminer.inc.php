@@ -40,6 +40,13 @@ class Adminer {
 		header("X-XSS-Protection: 0"); // prevents introducing XSS in IE8 by removing safe parts of the page
 	}
 	
+	/** Print HTML code inside <head>
+	* @return bool true to link adminer.css if exists
+	*/
+	function head() {
+		return true;
+	}
+	
 	/** Print login form
 	* @return null
 	*/

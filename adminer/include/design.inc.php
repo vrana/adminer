@@ -24,7 +24,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <title><?php echo $title_page; ?></title>
 <link rel="shortcut icon" type="image/x-icon" href="../adminer/static/favicon.ico" id="favicon">
 <link rel="stylesheet" type="text/css" href="../adminer/static/default.css">
-<?php if (file_exists("adminer.css")) { ?>
+<?php if ($adminer->head() && file_exists("adminer.css")) { ?>
 <link rel="stylesheet" type="text/css" href="adminer.css">
 <?php } ?>
 
