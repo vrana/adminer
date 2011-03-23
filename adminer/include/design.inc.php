@@ -1,9 +1,9 @@
 <?php
 /** Print HTML header
-* @param string used in title, breadcrumb and heading
+* @param string used in title, breadcrumb and heading, should be HTML escaped
 * @param string
 * @param mixed array("key" => "link=desc", "key2" => array("link", "desc")), null for nothing, false for driver only, true for driver and server
-* @param string used after colon in title and heading
+* @param string used after colon in title and heading, will be HTML escaped
 * @return null
 */
 function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
@@ -11,7 +11,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	header("Content-Type: text/html; charset=utf-8");
 	$adminer->headers();
 	$title_all = $title . ($title2 != "" ? ": " . h($title2) : "");
-	$title_page = $title_all . (SERVER != "" && SERVER != "localhost" ? h(" - " . SERVER) : "") . " - " . $adminer->name();
+	$title_page = strip_tags($title_all . (SERVER != "" && SERVER != "localhost" ? h(" - " . SERVER) : "") . " - " . $adminer->name());
 	if (is_ajax()) {
 		header("X-AJAX-Title: " . rawurlencode($title_page));
 	} else {
