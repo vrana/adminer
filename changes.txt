@@ -1,4 +1,4 @@
-Adminer 3.2.1-dev:
+Adminer 3.2.1 (released 2011-03-23):
 Ability to save expression in edit
 Respect default database collation (bug #3191489)
 Don't export triggers without table (bug #3193489)
