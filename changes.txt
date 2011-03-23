@@ -10,12 +10,12 @@ Parse UTF-16 and UTF-8 BOM in all text uploads
 Display ; in history (thanks to Jan Cerny)
 Use DELIMITER in history
 Show databases even with skip_show_database in MySQL 5 (thanks to Radoslaw Kowalewski)
-Set MySQL time zone by PHP setting
 Disable maxlength with functions in edit
 Better placement of AJAX icon
 Table header in CSV export (Editor)
 Time format hint (Editor)
 Respect order after search (Editor)
+Set MySQL time zone by PHP setting (Editor)
 Allow own code in <head> (customization)
 Polish translation
 

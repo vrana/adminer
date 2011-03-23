@@ -251,7 +251,6 @@ if (!defined("DRIVER")) {
 		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
 			$connection->query("SET sql_quote_show_create = 1");
-			$connection->query("SET time_zone = " . $connection->quote(substr_replace(@date("O"), ":", -2, 0))); // date("P") available since PHP 5.1.3, @ - requires date.timezone since PHP 5.3.0
 			return $connection;
 		}
 		return $connection->error;
