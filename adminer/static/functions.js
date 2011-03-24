@@ -365,8 +365,8 @@ function ajaxSend(url, data, popState) {
 * @param PopStateEvent|history
 */
 onpopstate = function (event) {
-	if (event.state ? confirm(areYouSure) : ajaxState) {
-		ajaxSend(location.href, event.state, 1); // 1 - disable pushState
+	if (ajaxState || event.state) {
+		ajaxSend(location.href, (event.state && confirm(areYouSure) ? event.state : ''), 1); // 1 - disable pushState
 	} else {
 		ajaxState++;
 	}
