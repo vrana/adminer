@@ -757,7 +757,7 @@ function search_tables() {
 					echo "<ul>\n";
 					$found = true;
 				}
-				echo "<li><a href='" . h(ME . "select=" . urlencode($table) . "&where[0][op]=" . urlencode($_GET["where"][0]["op"]) . "&where[0][val]=" . urlencode($_GET["where"][0]["val"])) . "'>" . h($name) . "</a>\n";
+				echo "<li><a href='" . h(ME . "select=" . urlencode($table) . "&where[0][op]=" . urlencode($_GET["where"][0]["op"]) . "&where[0][val]=" . urlencode($_GET["where"][0]["val"])) . "'>$name</a>\n";
 			}
 		}
 	}

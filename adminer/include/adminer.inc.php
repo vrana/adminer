@@ -80,7 +80,7 @@ username.form['driver'].onchange();
 	
 	/** Table caption used in navigation and headings
 	* @param array result of SHOW TABLE STATUS
-	* @return string
+	* @return string HTML code, "" to ignore table
 	*/
 	function tableName($tableStatus) {
 		return h($tableStatus["Name"]);
@@ -89,7 +89,7 @@ username.form['driver'].onchange();
 	/** Field caption used in select and edit
 	* @param array single field returned from fields()
 	* @param int order of column in select
-	* @return string
+	* @return string HTML code, "" to ignore field
 	*/
 	function fieldName($field, $order = 0) {
 		return '<span title="' . h($field["full_type"]) . '">' . h($field["field"]) . '</span>';
