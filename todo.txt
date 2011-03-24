@@ -1,6 +1,6 @@
 Transactions in export
 Create view and routine options
-Variables editation, especially timezone, or set by PHP date("0")
+Variables editation
 Highlight SQL textarea - may use external CodeMirror
 Blob download and image display in edit form (important for Editor with hidden fields in select and SQL command)
 Add title to Logout, edit (in select) and select (in menu) for style "hever"
@@ -9,18 +9,18 @@ Export by GET parameters
 Only first part of big BZ2 export is readable, files are missing in TAR
 Double click in select - Esc to abort editation
 Draggable columns in alter table (thanks to Michal Manak)
+<option class> for system databases and schemas - information_schema and driver-specific (thanks to Vaclav Novotny)
 ? Filter by value in row under <thead> in select
 ? Column and table names auto-completition in SQL textarea - http://blog.quplo.com/2010/06/css-code-completion-in-your-browser/
 ? Aliasing of built-in functions can save 7 KB, function minification can save 7 KB, substitution of repetitive $a["a"] can save 4 KB, substitution of $_GET and friends can save 2 KB, aliasing of $connection->query can save 24 B, JS Closure compiler can save 2 KB, not enclosing HTML attribute values can save 1.2 KB, replacing \\n by \n can save .3 KB
 ? Branch binary_compile: LZW compression of translations can save 30 KB, LZW compression of all texts can save 11 KB, remove of base64_decode() + using chars 127-255 in minification can save 1 KB
 
 Editor:
-Checkbox for boolean searches
+Three-state checkbox for boolean searches
 JavaScript data validation - columns containing word email, url, ...
 Joining tables - PRIMARY KEY (table, joining)
 Rank, Tree structure
 Add whisperer to fields with foreign key to big table
-JS calendar for date fields
 
 MySQL:
 Data longer than max_allowed_packet can be sent by mysqli_stmt_send_long_data()
