@@ -170,13 +170,13 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 				$return = "<img src='$link' alt='$return'>";
 			}
 		}
-		if (ereg("(tinyint|bit)\\(1\\)", $field["full_type"]) && $return != "&nbsp;") { // bool
+		if (like_bool($field) && $return != "&nbsp;") { // bool
 			$return = '<img src="' . ($val ? "../adminer/static/plus.gif" : "../adminer/static/cross.gif") . '" alt="' . h($val) . '">';
 		}
 		if ($link) {
 			$return = "<a href='$link'>$return</a>";
 		}
-		if (!$link && !ereg("(tinyint|bit)\\(1\\)", $field["full_type"]) && ereg('int|float|double|decimal', $field["type"])) {
+		if (!$link && !like_bool($field) && ereg('int|float|double|decimal', $field["type"])) {
 			$return = "<div class='number'>$return</div>"; // Firefox doesn't support <colgroup>
 		} elseif (ereg('date', $field["type"])) {
 			$return = "<div class='datetime'>$return</div>";
@@ -411,7 +411,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		if ($field["null"] && ereg('blob', $field["type"])) {
 			$return["NULL"] = lang('empty');
 		}
-		$return[""] = ($field["null"] || $field["auto_increment"] || ereg("(tinyint|bit)\\(1\\)", $field["full_type"]) ? "" : "*");
+		$return[""] = ($field["null"] || $field["auto_increment"] || like_bool($field) ? "" : "*");
 		//! respect driver
 		if (ereg('date|time', $field["type"])) {
 			$return["now"] = lang('now');
@@ -432,7 +432,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		if ($options) {
 			return "<select$attrs>" . optionlist($options, $value, true) . "</select>";
 		}
-		if (ereg("(tinyint|bit)\\(1\\)", $field["full_type"])) { // bool
+		if (like_bool($field)) {
 			return '<input type="checkbox" value="' . h($value ? $value : 1) . '"' . ($value ? ' checked' : '') . "$attrs>";
 		}
 		$hint = "";
@@ -460,7 +460,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			$return = ($match["p1"] != "" ? $match["p1"] : ($match["p2"] != "" ? ($match["p2"] < 70 ? 20 : 19) . $match["p2"] : gmdate("Y"))) . "-$match[p3]$match[p4]-$match[p5]$match[p6]" . end($match);
 		}
 		$return = ($field["type"] == "bit" && ereg('^[0-9]+$', $value) ? $return : q($return));
-		if (!ereg('char|text', $field["type"]) && !ereg("(tinyint|bit)\\(1\\)", $field["full_type"]) && $value == "") {
+		if (!ereg('char|text', $field["type"]) && !like_bool($field) && $value == "") {
 			$return = "NULL";
 		} elseif (ereg('^(md5|sha1)$', $function)) {
 			$return = "$function($return)";

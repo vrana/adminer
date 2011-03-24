@@ -38,7 +38,6 @@ Users - SELECT * FROM pg_user
 ORDER BY COUNT(*)
 Export - http://www.postgresql.org/docs/8.4/static/functions-info.html
 Column rights - http://www.postgresql.org/docs/8.4/static/functions-info.html
-bool in Editor
 
 MS SQL:
 Display default value

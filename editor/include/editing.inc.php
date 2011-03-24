@@ -43,3 +43,11 @@ function send_mail($email, $subject, $message, $from = "", $files = array("error
 	;
 	return mail($email, email_header($subject), $beginning . $message . $attachments, $headers);
 }
+
+/** Check whether the column looks like boolean
+* @param array single field returned from fields()
+* @return bool
+*/
+function like_bool($field) {
+	return ereg("bool|(tinyint|bit)\\(1\\)", $field["full_type"]);
+}
