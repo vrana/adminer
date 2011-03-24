@@ -1,5 +1,7 @@
 // Editor specific functions
 
 function bodyLoad(version) {
-	onpopstate(history);
+	if (history.state !== undefined) {
+		onpopstate(history);
+	}
 }

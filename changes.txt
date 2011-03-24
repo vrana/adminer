@@ -1,3 +1,6 @@
+Adminer 3.2.2-dev:
+Fix AJAX history after reload
+
 Adminer 3.2.1 (released 2011-03-23):
 Ability to save expression in edit
 Respect default database collation (bug #3191489)
