@@ -1,5 +1,3 @@
-// to hide elements displayed by JavaScript
-document.body.className = document.body.className.replace(/(^|\s)nojs(\s|$)/, '$1js$2');
 
 /** Toggle visibility
 * @param string

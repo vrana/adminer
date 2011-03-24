@@ -27,13 +27,16 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <?php if ($adminer->head() && file_exists("adminer.css")) { ?>
 <link rel="stylesheet" type="text/css" href="adminer.css">
 <?php } ?>
-
-<body class="<?php echo lang('ltr'); ?> nojs" onclick="return bodyClick(event, '<?php echo js_escape(DB); ?>', '<?php echo js_escape($_GET["ns"]); ?>');" onkeydown="bodyKeydown(event);" onload="bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 0, 3) : ""); ?>');<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verifyVersion('$protocol');"); ?>">
 <script type="text/javascript">
 var areYouSure = '<?php echo lang('Resend POST data?'); ?>';
 </script>
 <script type="text/javascript" src="../adminer/static/functions.js"></script>
 <script type="text/javascript" src="static/editing.js"></script>
+
+<body class="<?php echo lang('ltr'); ?> nojs" onclick="return bodyClick(event, '<?php echo js_escape(DB); ?>', '<?php echo js_escape($_GET["ns"]); ?>');" onkeydown="bodyKeydown(event);" onload="bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 0, 3) : ""); ?>');<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verifyVersion('$protocol');"); ?>">
+<script type="text/javascript">
+document.body.className = document.body.className.replace(/(^|\s)nojs(\s|$)/, '$1js$2');
+</script>
 
 <div id="content">
 <?php
