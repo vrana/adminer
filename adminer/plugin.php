@@ -8,13 +8,7 @@ function adminer_object() {
 		include_once $filename;
 	}
 	
-	/* It is possible to combine customization and plugins:
-	class AdminerCustomization extends AdminerPlugin {
-	}
-	return new AdminerCustomization($plugins);
-	*/
-	
-	return new AdminerPlugin(array(
+	$plugins = array(
 		// specify enabled plugins here
 		new AdminerDumpZip,
 		new AdminerDumpXml,
@@ -25,7 +19,15 @@ function adminer_object() {
 		new AdminerTranslation,
 		new AdminerForeignSystem,
 		new AdminerEnumOption,
-	));
+	);
+	
+	/* It is possible to combine customization and plugins:
+	class AdminerCustomization extends AdminerPlugin {
+	}
+	return new AdminerCustomization($plugins);
+	*/
+	
+	return new AdminerPlugin($plugins);
 }
 
 // include original Adminer or Adminer Editor (usually named adminer.php)

@@ -16,6 +16,17 @@ class AdminerPlugin extends Adminer {
 		// it is possible to use ReflectionObject in PHP 5 to find out which plugins defines which methods at once
 	}
 	
+	function _callParent($function, $args) {
+		switch (count($args)) { // call_user_func_array(array('parent', $function), $args) works since PHP 5
+			case 0: return parent::$function();
+			case 1: return parent::$function($args[0]);
+			case 2: return parent::$function($args[0], $args[1]);
+			case 3: return parent::$function($args[0], $args[1], $args[2]);
+			case 4: return parent::$function($args[0], $args[1], $args[2], $args[3]);
+			default: trigger_error('Too many parameters.', E_USER_WARNING);
+		}
+	}
+	
 	function _applyPlugin($function, $args) {
 		foreach ($this->plugins as $plugin) {
 			if (method_exists($plugin, $function)) {
@@ -32,11 +43,11 @@ class AdminerPlugin extends Adminer {
 				}
 			}
 		}
-		return call_user_func_array(array($this, "parent::$function"), $args);
+		return $this->_callParent($function, $args);
 	}
 	
 	function _appendPlugin($function, $args) {
-		$return = call_user_func_array(array($this, "parent::$function"), $args);
+		$return = $this->_callParent($function, $args);
 		foreach ($this->plugins as $plugin) {
 			if (method_exists($plugin, $function)) {
 				$return += call_user_func_array(array($plugin, $function), $args);
