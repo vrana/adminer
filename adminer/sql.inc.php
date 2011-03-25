@@ -38,7 +38,7 @@ if (!$error && $_POST) {
 				$history[] = $q;
 			}
 		}
-		$space = "(\\s|/\\*.*\\*/|(#|-- )[^\n]*\n|--\n)";
+		$space = "(?:\\s|/\\*.*\\*/|(?:#|-- )[^\n]*\n|--\n)";
 		if (!ini_bool("session.use_cookies")) {
 			session_write_close();
 		}
@@ -57,7 +57,7 @@ if (!$error && $_POST) {
 		$dump_format = $adminer->dumpFormat();
 		unset($dump_format["sql"]);
 		while ($query != "") {
-			if (!$offset && $jush == "sql" && preg_match('~^\\s*DELIMITER\\s+(.+)~i', $query, $match)) {
+			if (!$offset && $jush == "sql" && preg_match("~^$space*DELIMITER\\s+(.+)~i", $query, $match)) {
 				$delimiter = $match[1];
 				$query = substr($query, strlen($match[0]));
 			} else {
@@ -93,7 +93,7 @@ if (!$error && $_POST) {
 						$start = explode(" ", microtime()); // microtime(true) is available since PHP 5
 						//! don't allow changing of character_set_results, convert encoding of displayed query
 						if ($connection->multi_query($q)) {
-							if (is_object($connection2) && preg_match("~^$space*(USE)\\b~isU", $q)) {
+							if (is_object($connection2) && preg_match("~^$space*USE\\b~isU", $q)) {
 								$connection2->query($q);
 							}
 							do {
