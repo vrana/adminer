@@ -496,10 +496,11 @@ function get_file($key, $decompress = false) {
 		: $file["tmp_name"]
 	)); //! may not be reachable because of open_basedir
 	if ($decompress) {
-		if (function_exists("iconv") && ereg("^\xFE\xFF|^\xFF\xFE", $return, $regs)) {
+		$start = substr($return, 0, 3);
+		if (function_exists("iconv") && ereg("^\xFE\xFF|^\xFF\xFE", $start, $regs)) { // not ternary operator to save memory
 			$return = iconv("utf-16", "utf-8", $return);
-		} else { // not ternary operator to save memory
-			$return = ereg_replace("^\xEF\xBB\xBF", "", $return); // UTF-8 BOM
+		} elseif ($start == "\xEF\xBB\xBF") { // UTF-8 BOM
+			$return = substr($return, 3);
 		}
 	}
 	return $return;
