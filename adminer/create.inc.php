@@ -165,7 +165,7 @@ foreach ($engines as $engine) {
 <?php echo (support("comment") ? checkbox("", "", $comments, lang('Comment'), "columnShow(this.checked, 6); toggle('Comment'); if (this.checked) this.form['Comment'].focus();") . ' <input id="Comment" name="Comment" value="' . h($row["Comment"]) . '" maxlength="60"' . ($comments ? '' : ' class="hidden"') . '>' : ''); ?>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
-<?php if (strlen($_GET["create"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo confirm(); ?>><?php } ?>
+<?php if ($_GET["create"] != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo confirm(); ?>><?php } ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 <?php
 if (support("partitioning")) {

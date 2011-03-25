@@ -30,5 +30,6 @@ if ($_POST) {
 <p>
 <?php if ($dropped) { // old view was dropped but new wasn't created ?><input type="hidden" name="dropped" value="1"><?php } ?>
 <input type="submit" value="<?php echo lang('Save'); ?>">
+<?php if ($_GET["view"] != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo confirm(); ?>><?php } ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>
