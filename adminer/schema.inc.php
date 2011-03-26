@@ -5,7 +5,8 @@ $table_pos = array();
 $table_pos_js = array();
 // saved in one cookie because there is a limit of 20 cookies per domain
 $name = "adminer_schema";
-preg_match_all('~([^:]+):([-0-9.]+)x([-0-9.]+)(_|$)~', ($_GET["schema"] ? $_GET["schema"] : $_COOKIE[($_COOKIE["$name-" . DB] ? "$name-" . DB : $name)]), $matches, PREG_SET_ORDER); // $_COOKIE["adminer_schema"] was used before 3.2.0 //! ':' in table name
+$SCHEMA = ($_GET["schema"] ? $_GET["schema"] : $_COOKIE[($_COOKIE["$name-" . DB] ? "$name-" . DB : $name)]); // $_COOKIE["adminer_schema"] was used before 3.2.0 //! ':' in table name
+preg_match_all('~([^:]+):([-0-9.]+)x([-0-9.]+)(_|$)~', $SCHEMA, $matches, PREG_SET_ORDER);
 foreach ($matches as $i => $match) {
 	$table_pos[$match[1]] = array($match[2], $match[3]);
 	$table_pos_js[] = "\n\t'" . js_escape($match[1]) . "': [ $match[2], $match[3] ]";
@@ -103,4 +104,4 @@ foreach ($schema as $name => $table) {
 }
 ?>
 </div>
-<p><a href="<?php echo h($_SERVER["REQUEST_URI"]); ?>" id="schema-link"><?php echo lang('Permanent link'); ?></a>
+<p><a href="<?php echo h(ME . "schema=" . urlencode($SCHEMA)); ?>" id="schema-link"><?php echo lang('Permanent link'); ?></a>
