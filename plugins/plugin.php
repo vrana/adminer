@@ -8,6 +8,13 @@
 class AdminerPlugin extends Adminer {
 	var $plugins;
 	
+	function _findRootClass($class) {
+		do {
+			$return = $class;
+		} while ($class = get_parent_class($class));
+		return $return;
+	}
+	
 	/** Register plugins
 	* @param array object instances or null to register all classes starting by 'Adminer'
 	*/
@@ -15,7 +22,7 @@ class AdminerPlugin extends Adminer {
 		if (!isset($plugins)) {
 			$plugins = array();
 			foreach (get_declared_classes() as $class) {
-				if (preg_match('~^Adminer(?!Plugin|$)~i', $class) && $class != get_class($this)) { // can use interface since PHP 5
+				if (preg_match('~^Adminer.~i', $class) && strcasecmp($this->_findRootClass($class), 'Adminer')) { // can use interface since PHP 5
 					$plugins[$class] = new $class;
 				}
 			}
