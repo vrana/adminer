@@ -1,5 +1,7 @@
 // Adminer specific functions
 
+var jushRoot = '../externals/jush/'; // global variable to allow simple customization
+
 /** Load syntax highlighting
 * @param string first three characters of database system version
 */
@@ -7,29 +9,30 @@ function bodyLoad(version) {
 	if (history.state !== undefined) { // copied from editor/static/editing.js
 		onpopstate(history);
 	}
-	var jushRoot = '../externals/jush/';
-	var script = document.createElement('script');
-	script.src = jushRoot + 'jush.js';
-	script.onload = function () {
-		if (window.jush) { // IE runs in case of an error too
-			jush.create_links = ' target="_blank" rel="noreferrer"';
-			jush.urls.sql_sqlset = jush.urls.sql[0] = jush.urls.sqlset[0] = jush.urls.sqlstatus[0] = 'http://dev.mysql.com/doc/refman/' + version + '/en/$key';
-			var pgsql = 'http://www.postgresql.org/docs/' + version + '/static/';
-			jush.urls.pgsql_pgsqlset = jush.urls.pgsql[0] = pgsql + '$key';
-			jush.urls.pgsqlset[0] = pgsql + 'runtime-config-$key.html#GUC-$1';
-			jush.style(jushRoot + 'jush.css');
-			if (window.jushLinks) {
-				jush.custom_links = jushLinks;
+	if (jushRoot) {
+		var script = document.createElement('script');
+		script.src = jushRoot + 'jush.js';
+		script.onload = function () {
+			if (window.jush) { // IE runs in case of an error too
+				jush.create_links = ' target="_blank" rel="noreferrer"';
+				jush.urls.sql_sqlset = jush.urls.sql[0] = jush.urls.sqlset[0] = jush.urls.sqlstatus[0] = 'http://dev.mysql.com/doc/refman/' + version + '/en/$key';
+				var pgsql = 'http://www.postgresql.org/docs/' + version + '/static/';
+				jush.urls.pgsql_pgsqlset = jush.urls.pgsql[0] = pgsql + '$key';
+				jush.urls.pgsqlset[0] = pgsql + 'runtime-config-$key.html#GUC-$1';
+				jush.style(jushRoot + 'jush.css');
+				if (window.jushLinks) {
+					jush.custom_links = jushLinks;
+				}
+				jush.highlight_tag('code', 0);
 			}
-			jush.highlight_tag('code', 0);
-		}
-	};
-	script.onreadystatechange = function () {
-		if (/^(loaded|complete)$/.test(script.readyState)) {
-			script.onload();
-		}
-	};
-	document.body.appendChild(script);
+		};
+		script.onreadystatechange = function () {
+			if (/^(loaded|complete)$/.test(script.readyState)) {
+				script.onload();
+			}
+		};
+		document.body.appendChild(script);
+	}
 }
 
 /** Get value of dynamically created form field
