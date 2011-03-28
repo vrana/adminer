@@ -1,4 +1,4 @@
-Adminer 3.2.2-dev:
+Adminer 3.2.2 (released 2011-03-28):
 Fix AJAX history after reload
 
 Adminer 3.2.1 (released 2011-03-23):
