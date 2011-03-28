@@ -12,7 +12,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 		}
 		query_redirect("ALTER TABLE " . table($TABLE)
 			. ($_GET["name"] != "" ? "\nDROP FOREIGN KEY " . idf_escape($_GET["name"]) . "," : "")
-			. "\nADD FOREIGN KEY (" . implode(", ", array_map('idf_escape', $source)) . ") REFERENCES " . table($_POST["table"]) . " (" . implode(", ", array_map('idf_escape', $target)) . ")"
+			. "\nADD FOREIGN KEY (" . implode(", ", array_map('idf_escape', $source)) . ") REFERENCES " . table($_POST["table"]) . " (" . implode(", ", array_map('idf_escape', $target)) . ")" //! reuse $_GET["name"] - check in older MySQL versions
 			. (in_array($_POST["on_delete"], $on_actions) ? " ON DELETE $_POST[on_delete]" : "")
 			. (in_array($_POST["on_update"], $on_actions) ? " ON UPDATE $_POST[on_update]" : "")
 		, ME . "table=" . urlencode($TABLE), ($_GET["name"] != "" ? lang('Foreign key has been altered.') : lang('Foreign key has been created.')));
