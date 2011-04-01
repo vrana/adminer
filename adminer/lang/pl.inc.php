@@ -53,6 +53,7 @@ $translations = array(
 	'%.3f s' => '%.3f s',
 	'History' => 'Historia',
 	'Clear' => 'Wyczyść',
+	'Edit all' => 'Edytuj wszystkie',
 	
 	'File upload' => 'Wgranie pliku',
 	'From server' => 'Z serwera',
@@ -276,11 +277,16 @@ $translations = array(
 	'Geometry' => 'Geometria',
 	'Relations' => 'Relacje',
 	
+	// reload confirmation in AJAX
+	'Resend POST data?' => 'Wysłać dane ponownie?',
+	
 	'Editor' => 'Edytor',
 	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
 	'$1-$3-$5' => '$6.$4.$1',
 	// hint for date format - use language equivalents for day, month and year shortcuts
 	'[yyyy]-mm-dd' => 'd.m.[rrrr]',
+	// hint for time format - use language equivalents for hour, minute and second shortcuts
+	'HH:MM:SS' => 'HH:MM:SS',
 	'now' => 'teraz',
 	
 	// general SQLite error in create, drop or rename database
