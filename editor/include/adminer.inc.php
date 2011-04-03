@@ -4,7 +4,7 @@ class Adminer {
 	var $_values = array();
 	
 	function name() {
-		return lang('Editor');
+		return "<a href='http://www.adminer.org/editor/' id='h1'>" . lang('Editor') . "</a>";
 	}
 	
 	//! driver, ns
@@ -511,8 +511,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		global $VERSION, $token;
 		?>
 <h1>
-<a href="http://www.adminer.org/" id="h1"><?php echo $this->name(); ?></a>
-<span class="version"><?php echo $VERSION; ?></span>
+<?php echo $this->name(); ?> <span class="version"><?php echo $VERSION; ?></span>
 <a href="http://www.adminer.org/editor/#download" id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
 </h1>
 <?php

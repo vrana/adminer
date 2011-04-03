@@ -4,10 +4,10 @@ class Adminer {
 	var $operators;
 	
 	/** Name in title and navigation
-	* @return string
+	* @return string HTML code
 	*/
 	function name() {
-		return "Adminer";
+		return "<a href='http://www.adminer.org/' id='h1'>Adminer</a>";
 	}
 	
 	/** Connection parameters
@@ -719,8 +719,7 @@ DROP PROCEDURE adminer_alter;
 		global $VERSION, $connection, $token, $jush, $drivers;
 		?>
 <h1>
-<a href="http://www.adminer.org/" id="h1"><?php echo $this->name(); ?></a>
-<span class="version"><?php echo $VERSION; ?></span>
+<?php echo $this->name(); ?> <span class="version"><?php echo $VERSION; ?></span>
 <a href="http://www.adminer.org/#download" id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
 </h1>
 <?php
