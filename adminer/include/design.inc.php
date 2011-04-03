@@ -22,15 +22,17 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <meta http-equiv="Content-Script-Type" content="text/javascript">
 <meta name="robots" content="noindex">
 <title><?php echo $title_page; ?></title>
-<link rel="shortcut icon" type="image/x-icon" href="../adminer/static/favicon.ico" id="favicon">
 <link rel="stylesheet" type="text/css" href="../adminer/static/default.css">
 <script type="text/javascript">
 var areYouSure = '<?php echo lang('Resend POST data?'); ?>';
 </script>
 <script type="text/javascript" src="../adminer/static/functions.js"></script>
 <script type="text/javascript" src="static/editing.js"></script>
-<?php if ($adminer->head() && file_exists("adminer.css")) { ?>
+<?php if ($adminer->head()) { ?>
+<link rel="shortcut icon" type="image/x-icon" href="../adminer/static/favicon.ico" id="favicon">
+<?php if (file_exists("adminer.css")) { ?>
 <link rel="stylesheet" type="text/css" href="adminer.css">
+<?php } ?>
 <?php } ?>
 
 <body class="<?php echo lang('ltr'); ?> nojs" onclick="return bodyClick(event, '<?php echo js_escape(DB); ?>', '<?php echo js_escape($_GET["ns"]); ?>');" onkeydown="bodyKeydown(event);" onload="bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 0, 3) : ""); ?>');<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verifyVersion();"); ?>">

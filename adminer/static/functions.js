@@ -280,13 +280,17 @@ function ajaxSetHtml(url) {
 	});
 }
 
+var originalFavicon = (document.getElementById('favicon') || {}).href;
+
 /** Replace favicon
 * @param string
 */
 function replaceFavicon(href) {
 	var favicon = document.getElementById('favicon');
-	favicon.href = href;
-	favicon.parentNode.appendChild(favicon); // to replace the icon in Firefox
+	if (favicon) {
+		favicon.href = href;
+		favicon.parentNode.appendChild(favicon); // to replace the icon in Firefox
+	}
 }
 
 var ajaxState = 0;
@@ -317,7 +321,7 @@ function ajaxSend(url, data, popState) {
 				return ajaxSend(redirect, '', popState);
 			}
 			onblur = function () { };
-			replaceFavicon('../adminer/static/favicon.ico');
+			replaceFavicon(originalFavicon);
 			if (!xmlhttp.status) {
 				setHtml('loader', '');
 			} else {
