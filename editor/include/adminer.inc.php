@@ -133,28 +133,21 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	function rowDescriptions($rows, $foreignKeys) {
 		$return = $rows;
 		foreach ($rows[0] as $key => $val) {
-			foreach ((array) $foreignKeys[$key] as $foreignKey) {
-				if (count($foreignKey["source"]) == 1) {
-					$id = idf_escape($foreignKey["target"][0]);
-					$name = $this->rowDescription($foreignKey["table"]);
-					if ($name != "") {
-						// find all used ids
-						$ids = array();
-						foreach ($rows as $row) {
-							$ids[$row[$key]] = exact_value($row[$key]);
-						}
-						// uses constant number of queries to get the descriptions, join would be complex, multiple queries would be slow
-						$descriptions = $this->_values[$foreignKey["table"]];
-						if (!$descriptions) {
-							$descriptions = get_key_vals("SELECT $id, $name FROM " . table($foreignKey["table"]) . " WHERE $id IN (" . implode(", ", $ids) . ")");
-						}
-						// use the descriptions
-						foreach ($rows as $n => $row) {
-							if (isset($row[$key])) {
-								$return[$n][$key] = (string) $descriptions[$row[$key]];
-							}
-						}
-						break;
+			if (list($table, $id, $name) = $this->_foreignColumn($foreignKeys, $key)) {
+				// find all used ids
+				$ids = array();
+				foreach ($rows as $row) {
+					$ids[$row[$key]] = exact_value($row[$key]);
+				}
+				// uses constant number of queries to get the descriptions, join would be complex, multiple queries would be slow
+				$descriptions = $this->_values[$table];
+				if (!$descriptions) {
+					$descriptions = get_key_vals("SELECT $id, $name FROM " . table($table) . " WHERE $id IN (" . implode(", ", $ids) . ")");
+				}
+				// use the descriptions
+				foreach ($rows as $n => $row) {
+					if (isset($row[$key])) {
+						$return[$n][$key] = (string) $descriptions[$row[$key]];
 					}
 				}
 			}
@@ -556,21 +549,26 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		}
 	}
 	
-	function _foreignKeyOptions($table, $column) {
-		$foreignKeys = column_foreign_keys($table);
+	function _foreignColumn($foreignKeys, $column) {
 		foreach ((array) $foreignKeys[$column] as $foreignKey) {
 			if (count($foreignKey["source"]) == 1) {
-				$id = idf_escape($foreignKey["target"][0]);
 				$name = $this->rowDescription($foreignKey["table"]);
 				if ($name != "") {
-					$return = &$this->_values[$foreignKey["table"]];
-					if (!isset($return)) {
-						$table_status = table_status($foreignKey["table"]);
-						$return = ($table_status["Rows"] > 1000 ? array() : array("" => "") + get_key_vals("SELECT $id, $name FROM " . table($foreignKey["table"]) . " ORDER BY 2"));
-					}
-					return $return;
+					$id = idf_escape($foreignKey["target"][0]);
+					return array($foreignKey["table"], $id, $name);
 				}
 			}
+		}
+	}
+	
+	function _foreignKeyOptions($table, $column) {
+		if (list($table, $id, $name) = $this->_foreignColumn(column_foreign_keys($table), $column)) {
+			$return = &$this->_values[$table];
+			if (!isset($return)) {
+				$table_status = table_status($table);
+				$return = ($table_status["Rows"] > 1000 ? array() : array("" => "") + get_key_vals("SELECT $id, $name FROM " . table($table) . " ORDER BY 2"));
+			}
+			return $return;
 		}
 	}
 
