@@ -299,11 +299,8 @@ function foreignAddRow(field) {
 */
 function indexesAddRow(field) {
 	field.onchange = function () { };
-	var row = field.parentNode.parentNode.cloneNode(true);
-	var spans = row.getElementsByTagName('span');
-	for (var i=0; i < spans.length - 1; i++) {
-		row.removeChild(spans[i]);
-	}
+	var parent = field.parentNode.parentNode;
+	var row = parent.cloneNode(true);
 	var selects = row.getElementsByTagName('select');
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/indexes\[\d+/, '$&1');
@@ -312,7 +309,7 @@ function indexesAddRow(field) {
 	var input = row.getElementsByTagName('input')[0];
 	input.name = input.name.replace(/indexes\[\d+/, '$&1');
 	input.value = '';
-	field.parentNode.parentNode.parentNode.appendChild(row);
+	parent.parentNode.appendChild(row);
 }
 
 /** Add column for index
@@ -320,18 +317,19 @@ function indexesAddRow(field) {
 */
 function indexesAddColumn(field) {
 	field.onchange = function () { };
+	var select = field.form[field.name.replace(/\].*/, '][type]')];
+	if (!select.selectedIndex) {
+		select.selectedIndex = 3;
+		select.onchange();
+	}
 	var column = field.parentNode.cloneNode(true);
-	var select = column.getElementsByTagName('select')[0];
+	select = column.getElementsByTagName('select')[0];
 	select.name = select.name.replace(/\]\[\d+/, '$&1');
 	select.selectedIndex = 0;
 	var input = column.getElementsByTagName('input')[0];
 	input.name = input.name.replace(/\]\[\d+/, '$&1');
 	input.value = '';
 	field.parentNode.parentNode.appendChild(column);
-	select = field.form[field.name.replace(/\].*/, '][type]')];
-	if (!select.selectedIndex) {
-		select.selectedIndex = 3;
-	}
 }
 
 
