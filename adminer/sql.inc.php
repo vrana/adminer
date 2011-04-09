@@ -30,7 +30,7 @@ if (!$error && $_POST) {
 	}
 	if (is_string($query)) { // get_file() returns error as number, fread() as false
 		if (function_exists('memory_get_usage')) {
-			@ini_set("memory_limit", 2 * strlen($query) + memory_get_usage() + 8e6); // @ - may be disabled, 2 - substr and trim, 8e6 - other variables
+			@ini_set("memory_limit", max(ini_get("memory_limit"), 2 * strlen($query) + memory_get_usage() + 8e6)); // @ - may be disabled, 2 - substr and trim, 8e6 - other variables
 		}
 		if ($query != "" && strlen($query) < 1e6) { // don't add big queries
 			$q = $query . (ereg(';$', $query) ? "" : ";"); //! doesn't work with DELIMITER |
