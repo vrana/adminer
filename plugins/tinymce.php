@@ -18,7 +18,21 @@ class AdminerTinymce {
 	
 	function selectVal(&$val, $link, $field) {
 		if (ereg("_html", $field["field"]) && $val != '&nbsp;') {
-			$val = preg_replace('~<[^>]*$~', '', html_entity_decode($val, ENT_QUOTES)); //! close all opened tags (text can be shortened)
+			$shortened = (substr($val, -10) == "<i>...</i>");
+			if ($shortened) {
+				$val = substr($val, 0, -10);
+			}
+			//! shorten with regard to HTML tags - http://php.vrana.cz/zkraceni-textu-s-xhtml-znackami.php
+			$val = preg_replace('~<[^>]*$~', '', html_entity_decode($val, ENT_QUOTES)); // remove ending incomplete tag (text can be shortened)
+			if ($shortened) {
+				$val .= "<i>...</i>";
+			}
+			if (class_exists('DOMDocument')) { // close all opened tags
+				$dom = new DOMDocument;
+				if (@$dom->loadHTML("<meta http-equiv='Content-Type' content='text/html; charset=utf-8'></head>$val")) { // @ - $val can contain errors
+					$val = preg_replace('~.*<body[^>]*>(.*)</body>.*~is', '\\1', $dom->saveHTML());
+				}
+			}
 		}
 	}
 	
