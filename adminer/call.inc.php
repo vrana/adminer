@@ -33,10 +33,14 @@ if (!$error && $_POST) {
 	if (!$connection->multi_query($query)) {
 		echo "<p class='error'>" . error() . "\n";
 	} else {
+		$connection2 = connect();
+		if (is_object($connection2)) {
+			$connection2->select_db(DB);
+		}
 		do {
 			$result = $connection->store_result();
 			if (is_object($result)) {
-				select($result);
+				select($result, $connection2);
 			} else {
 				echo "<p class='message'>" . lang('Routine has been called, %d row(s) affected.', $connection->affected_rows) . "\n";
 			}
