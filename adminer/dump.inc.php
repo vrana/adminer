@@ -165,7 +165,7 @@ if (!$row) {
 }
 if (!isset($row["events"])) { // backwards compatibility
 	$row["routines"] = $row["events"] = ($_GET["dump"] == "");
-	$row["auto_increment"] = $row["triggers"] = $row["table_style"];
+	$row["triggers"] = $row["table_style"];
 }
 echo "<tr><th>" . lang('Output') . "<td>" . html_select("output", $adminer->dumpOutput(), $row["output"], 0) . "\n"; // 0 - radio
 echo "<tr><th>" . lang('Format') . "<td>" . html_select("format", $adminer->dumpFormat(), $row["format"], 0) . "\n"; // 0 - radio
