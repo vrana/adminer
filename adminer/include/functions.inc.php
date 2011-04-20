@@ -775,7 +775,7 @@ function dump_headers($identifier, $multi_table = false) {
 	$return = $adminer->dumpHeaders($identifier, $multi_table);
 	$output = $_POST["output"];
 	if ($output != "text") {
-		header("Content-Disposition: attachment; filename=" . ($identifier != "" ? friendly_url($identifier) : "dump") . ".$return" . ($output != "file" && !ereg('[^0-9a-z]', $output) ? ".$output" : ""));
+		header("Content-Disposition: attachment; filename=" . friendly_url($identifier != "" ? $identifier : (SERVER != "" ? SERVER : "localhost")) . ".$return" . ($output != "file" && !ereg('[^0-9a-z]', $output) ? ".$output" : ""));
 	}
 	session_write_close();
 	return $return;
