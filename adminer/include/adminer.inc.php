@@ -582,10 +582,10 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 			foreach ($fields as $row) {
 				echo "
 				WHEN " . q($row["COLUMN_NAME"]) . " THEN
-					SET add_columns = REPLACE(add_columns, ', ADD $row[alter]', '');
-					IF NOT (_column_default <=> $row[default]) OR _is_nullable != '$row[IS_NULLABLE]' OR _collation_name != '$row[COLLATION_NAME]' OR _column_type != " . q($row["COLUMN_TYPE"]) . " OR _extra != '$row[EXTRA]' OR _column_comment != " . q($row["COLUMN_COMMENT"]) . " OR after != $row[after] THEN
-						SET @alter_table = CONCAT(@alter_table, ', MODIFY $row[alter]');
-					END IF;"; //! don't replace in comment
+					SET add_columns = REPLACE(add_columns, ', ADD $row[alter]', IF(
+						_column_default <=> $row[default] AND _is_nullable = '$row[IS_NULLABLE]' AND _collation_name <=> " . (isset($row["COLLATION_NAME"]) ? "'$row[COLLATION_NAME]'" : "NULL") . " AND _column_type = " . q($row["COLUMN_TYPE"]) . " AND _extra = '$row[EXTRA]' AND _column_comment = " . q($row["COLUMN_COMMENT"]) . " AND after = $row[after]
+					, '', ', MODIFY $row[alter]'));"
+				; //! don't replace in comment
 			}
 			echo "
 				ELSE
