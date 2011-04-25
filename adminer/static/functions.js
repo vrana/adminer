@@ -374,12 +374,12 @@ function ajaxSend(url, data, popState) {
 * @param PopStateEvent|history
 */
 onpopstate = function (event) {
-	if (ajaxState || event.state) {
+	if ((ajaxState || event.state) && !/#/.test(location.href)) {
 		ajaxSend(location.href, (event.state && confirm(areYouSure) ? event.state : ''), 1); // 1 - disable pushState
 	} else {
 		ajaxState++;
 	}
-}
+};
 
 /** Send form by AJAX GET
 * @param HTMLFormElement
@@ -480,7 +480,7 @@ function bodyClick(event, db, ns) {
 	if (/^a$/i.test(el.parentNode.tagName)) {
 		el = el.parentNode;
 	}
-	if (/^a$/i.test(el.tagName) && !/^:|#|&download=/i.test(el.getAttribute('href')) && /[&?]username=/.test(el.href)) {
+	if (/^a$/i.test(el.tagName) && !/:|#|&download=/i.test(el.getAttribute('href')) && /[&?]username=/.test(el.href)) {
 		var match = /&db=([^&]*)/.exec(el.href);
 		var match2 = /&ns=([^&]*)/.exec(el.href);
 		return !(db == (match ? match[1] : '') && ns == (match2 ? match2[1] : '') && ajaxSend(el.href));
