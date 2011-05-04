@@ -190,16 +190,21 @@ function textareaKeydown(target, event) {
 	return true;
 }
 
-/** Send form by Enter on <select>
+/** Send form by Ctrl+Enter on <select> and <textarea>
 * @param KeyboardEvent
+* @param [string]
 * @return boolean
 */
-function bodyKeydown(event) {
+function bodyKeydown(event, button) {
 	var target = event.target || event.srcElement;
-	if (event.ctrlKey && (event.keyCode == 13 || event.keyCode == 10) && !event.altKey && !event.metaKey && /select|textarea/i.test(target.tagName)) { // 13|10 - Enter, shiftKey allowed
+	if (event.ctrlKey && (event.keyCode == 13 || event.keyCode == 10) && !event.altKey && !event.metaKey && /select|textarea|input/i.test(target.tagName)) { // 13|10 - Enter, shiftKey allowed
 		target.blur();
-		if ((!target.form.onsubmit || target.form.onsubmit() !== false) && !ajaxForm(target.form)) {
-			target.form.submit();
+		if ((!target.form.onsubmit || target.form.onsubmit() !== false) && !ajaxForm(target.form, (button ? button + '=1' : ''))) {
+			if (button) {
+				target.form[button].click();
+			} else {
+				target.form.submit();
+			}
 		}
 		return false;
 	}

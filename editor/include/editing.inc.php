@@ -16,12 +16,12 @@ function email_header($header) {
 * @param array
 * @return bool
 */
-function send_mail($email, $subject, $message, $from = "", $files = array("error" => array())) {
+function send_mail($email, $subject, $message, $from = "", $files = array()) {
 	$eol = (strncasecmp(PHP_OS, "win", 3) ? "\n" : "\r\n"); // PHP_EOL available since PHP 4.3.10 and 5.0.2
 	$message = str_replace("\n", $eol, wordwrap(str_replace("\r", "", "$message\n")));
 	$boundary = uniqid("boundary");
 	$attachments = "";
-	foreach ($files["error"] as $key => $val) {
+	foreach ((array) $files["error"] as $key => $val) {
 		if (!$val) {
 			$attachments .= "--$boundary$eol"
 				. "Content-Type: " . str_replace("\n", "", $files["type"][$key]) . $eol
