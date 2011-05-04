@@ -1,3 +1,9 @@
+Adminer 3.3.0-dev:
+Append new index with auto index selection (bug #3282127)
+Autocomplete for big foreign keys (Editor)
+Customizable favicon (customization)
+Method name can return a link (customization)
+
 Adminer 3.2.2 (released 2011-03-28):
 Fix AJAX history after reload
 

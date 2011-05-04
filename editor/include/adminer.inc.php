@@ -210,7 +210,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		}
 		foreach ($columns as $name => $desc) {
 			$options = $this->_foreignKeyOptions($_GET["select"], $name);
-			if ($options) {
+			if (is_array($options)) {
 				if ($fields[$name]["null"]) {
 					$options[0] = '(' . lang('empty') . ')';
 				}
@@ -423,9 +423,12 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 				. enum_input("radio", $attrs, $field, ($value || isset($_GET["select"]) ? $value : 0), ($field["null"] ? "" : null))
 			;
 		}
-		$options = $this->_foreignKeyOptions($table, $field["field"]);
-		if ($options) {
-			return "<select$attrs>" . optionlist($options, $value, true) . "</select>";
+		$options = $this->_foreignKeyOptions($table, $field["field"], $value);
+		if (isset($options)) {
+			return (is_array($options)
+				? "<select$attrs>" . optionlist($options, $value, true) . "</select>"
+				:  "<input value='" . h($value) . "'$attrs class='hidden'><input value='" . h($options) . "' class='jsonly' onkeyup=\"whisper('" . h(ME . "script=complete&source=" . urlencode($table) . "&field=" . urlencode($field["field"])) . "&value=', this);\"><div onclick='return whisperClick(event, this.previousSibling);'></div>"
+			);
 		}
 		if (like_bool($field)) {
 			return '<input type="checkbox" value="' . h($value ? $value : 1) . '"' . ($value ? ' checked' : '') . "$attrs>";
@@ -563,12 +566,16 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		}
 	}
 	
-	function _foreignKeyOptions($table, $column) {
+	function _foreignKeyOptions($table, $column, $value = null) {
+		global $connection;
 		if (list($table, $id, $name) = $this->_foreignColumn(column_foreign_keys($table), $column)) {
 			$return = &$this->_values[$table];
 			if (!isset($return)) {
 				$table_status = table_status($table);
-				$return = ($table_status["Rows"] > 1000 ? array() : array("" => "") + get_key_vals("SELECT $id, $name FROM " . table($table) . " ORDER BY 2"));
+				$return = ($table_status["Rows"] > 1000
+					? (isset($value) ? $connection->result("SELECT $name FROM " . table($table) . " WHERE $id = " . q($value)) : "")
+					: array("" => "") + get_key_vals("SELECT $id, $name FROM " . table($table) . " ORDER BY 2")
+				);
 			}
 			return $return;
 		}

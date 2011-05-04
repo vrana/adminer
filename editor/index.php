@@ -19,6 +19,8 @@ if (isset($_GET["download"])) {
 	include "../adminer/edit.inc.php";
 } elseif (isset($_GET["select"])) {
 	include "../adminer/select.inc.php";
+} elseif (isset($_GET["script"])) {
+	include "./script.inc.php";
 } else {
 	include "./db.inc.php";
 }
