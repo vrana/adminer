@@ -572,10 +572,10 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			$return = &$this->_values[$table];
 			if (!isset($return)) {
 				$table_status = table_status($table);
-				$return = ($table_status["Rows"] > 1000
-					? (isset($value) ? $connection->result("SELECT $name FROM " . table($table) . " WHERE $id = " . q($value)) : "")
-					: array("" => "") + get_key_vals("SELECT $id, $name FROM " . table($table) . " ORDER BY 2")
-				);
+				$return = ($table_status["Rows"] > 1000 ? "" : array("" => "") + get_key_vals("SELECT $id, $name FROM " . table($table) . " ORDER BY 2"));
+			}
+			if (!$return && isset($value)) {
+				return $connection->result("SELECT $name FROM " . table($table) . " WHERE $id = " . q($value));
 			}
 			return $return;
 		}
