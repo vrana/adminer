@@ -106,7 +106,7 @@ function referencable_primary($self) {
 * @return null
 */
 function textarea($name, $value, $rows = 10, $cols = 80) {
-	echo "<textarea name='$name' rows='$rows' cols='$cols' class='sqlarea' spellcheck='false' wrap='off' onkeydown='return textareaKeydown(this, event);'>"; // spellcheck, wrap - not valid before HTML5
+	echo "<textarea name='$name' rows='$rows' cols='$cols' class='sqlarea' spellcheck='false' wrap='off'>"; // spellcheck, wrap - not valid before HTML5
 	if (is_array($value)) {
 		foreach ($value as $val) { // not implode() to save memory
 			echo h($val) . "\n\n\n";

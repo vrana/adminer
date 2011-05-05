@@ -1,4 +1,5 @@
 Adminer 3.3.0-dev:
+Highlight SQL code in textarea
 Append new index with auto index selection (bug #3282127)
 Autocomplete for big foreign keys (Editor)
 Customizable favicon (customization)

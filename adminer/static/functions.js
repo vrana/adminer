@@ -155,41 +155,6 @@ function selectAddRow(field) {
 
 
 
-/** Handle Tab and Esc in textarea
-* @param HTMLTextAreaElement
-* @param KeyboardEvent
-* @return boolean
-*/
-function textareaKeydown(target, event) {
-	if (!event.shiftKey && !event.altKey && !event.ctrlKey && !event.metaKey) {
-		if (event.keyCode == 9) { // 9 - Tab
-			// inspired by http://pallieter.org/Projects/insertTab/
-			if (target.setSelectionRange) {
-				var start = target.selectionStart;
-				var scrolled = target.scrollTop;
-				target.value = target.value.substr(0, start) + '\t' + target.value.substr(target.selectionEnd);
-				target.setSelectionRange(start + 1, start + 1);
-				target.scrollTop = scrolled;
-				return false; //! still loses focus in Opera, can be solved by handling onblur
-			} else if (target.createTextRange) {
-				document.selection.createRange().text = '\t';
-				return false;
-			}
-		}
-		if (event.keyCode == 27) { // 27 - Esc
-			var els = target.form.elements;
-			for (var i=1; i < els.length; i++) {
-				if (els[i-1] == target) {
-					els[i].focus();
-					break;
-				}
-			}
-			return false;
-		}
-	}
-	return true;
-}
-
 /** Send form by Ctrl+Enter on <select> and <textarea>
 * @param KeyboardEvent
 * @param [string]
@@ -364,6 +329,9 @@ function ajaxSend(url, data, popState) {
 				
 				if (window.jush) {
 					jush.highlight_tag('code', 0);
+				}
+				if (window.CodeMirror) {
+					codemirrorRun();
 				}
 			}
 		}
