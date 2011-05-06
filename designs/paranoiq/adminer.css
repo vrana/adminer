@@ -1,0 +1,286 @@
+/**
+ * Alternative style for Adminer. Zrobeno 7.4.2011
+ * @author Vlasta Neubauer [@paranoiq]
+ */
+
+/* -- fonts ----------------------------------------------------------------- */
+body {
+    font-size: 11pt; }
+body, select, option, optgroup, button {
+    font-family: Calibri, Arial, Helvetica, sans-serif; } /* IE6 */
+input[type='submit'], input[type='reset'], input[type='button'], input[type='file'], 
+input[name$='[comment]'], input[name='Comment'] {
+    font-family: Calibri, Arial, Helvetica, sans-serif; }
+input, textarea, pre, code, samp, kbd, var {
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 10pt; } /* FF3 */
+
+
+/* -- links ----------------------------------------------------------------- */
+a {
+    color: #007; }
+a:visited {
+    color: #707; }
+a:hover, input[name='logout']:hover {
+    color: #700;
+    text-decoration: none; }
+h1 a:visited {
+    color: #007; }
+input[name='logout'] {
+    position: absolute;
+    bottom: 10px;
+    left: 33%; }
+input[name='logout'] { /* IEx */
+    %position: static;
+    %background: transparent;
+    %text-decoration: underline;
+    %font-weight: bold;
+    %cursor: pointer;
+    %border: none;
+    %margin: 0;
+    %padding: 0;
+    %color: #007;
+}
+
+
+/* -- tables ---------------------------------------------------------------- */
+table {
+    margin: 12px 12px 12px 0;
+    border: 1px #DDD solid;
+    border-collapse: collapse; }
+td, th {
+    background-color: #FFF;
+    padding: 1px 2px;
+    border-left: 1px #DDD dotted;
+    border-width: 1px 0px 0px 1px; }
+th {
+    text-align: left !important; }
+tr:first-child td, tr:first-child th {
+    border-top-width: 0; }
+td:first-child, th:first-child {
+    border-left-width: 0; }
+thead td, thead th {
+    background-color: #EEE;
+    border: none;
+    border-bottom: 1px #DDD solid; }
+.nowrap tr:nth-child(2n) td, .nowrap tr:nth-child(2n) th {
+    background-color: #DEF; }
+.odd td, .odd th {
+    background-color: #DEF; } /* IEx */
+tr.selected td, tr.selected th {
+    background-color: #ABC !important; }
+tr:hover td, tr:hover th {
+    background-color: #BCD !important; } /* WTF? */
+thead tr:hover td, thead tr:hover th {
+    background-color: #EEE !important; }
+
+
+/* -- forms ----------------------------------------------------------------- */
+fieldset {
+    background-color: #DEF;
+    border: none;
+    %padding-left: 8px;
+    %border: 1px #DDD solid; /* IEx */
+    %background-repeat: repeat-x; /* IE8 */
+    %background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAIAAAC0tAIdAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAACJJREFUKFNj/P//PwPxAKiaeMBAvFKQK0ZVY4TAaJhgJgoAj5t2py3lrtoAAAAASUVORK5CYII='); }
+legend {
+    color: #000;
+    background-color: #FFF;
+    %background-color: transparent; /* IEx */
+    padding: 0px 4px; }
+legend a:visited {
+    color: #000; } /* IE6+7 */
+input[name='limit'], input[name*='length'] {
+    width: 3em; }
+input[name='text_length'] {
+    width: 5em; } /* ~FF3 */
+select + input, select + select {
+    margin-left: 2px; }
+input + label input, select + label input {
+    margin-left: 4px; }
+td input[type='checkbox']:first-child, td input[type='radio']:first-child {
+    margin-left: 2px; }
+label:hover {
+    text-decoration: underline; }
+fieldset div {
+    margin-bottom: 2px; }
+input[name='Comment'] { /* !!! */
+    width: 24em; }
+input[name='Auto_increment'] { /* !!! */
+    width: 6em; }
+textarea[name='definition'] {
+    height: 480px; }
+input[name$='[comment]'] {
+    width: 24em; }
+input[type='text'], textarea {
+    border: 1px #DDD solid; }
+input[type='submit'], input[type='reset'], input[type='submit'], button, input[type='checkbox'], label, select, option {
+    cursor: pointer; }
+.minifieldset {
+    display: inline-block;
+    padding: 2px 4px;
+    background-color: #DEF;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; }
+.minifieldset * {
+    margin: 0; }
+
+
+/* -- other ----------------------------------------------------------------- */
+.error {
+    padding: 8px; }
+.message {
+    padding: 8px;
+    color: #000;
+    background: #DDD; }
+.jush-sql {
+    padding: 2px 4px;
+    margin-right: 4px;
+    outline: 1px #BBB dashed;
+    font-size: 9pt; }
+code {
+    background: transparent; }
+.nowrap td i {
+    color: #AAA; }
+
+/* -- structure ------------------------------------------------------------- */
+#content {
+    margin: 28px 0 0 192px;
+    padding: 10px 20px 20px 0; }
+h3 {
+	margin: 20px 0; }
+
+#lang {
+    height: 23px;
+    width: 180px;
+    display: block;
+    padding: 1px 0px;
+    text-align: center;
+    background-color: #EEE;
+    line-height: 1.25em; }
+#lang select {
+    font-size: 8pt; }
+
+#breadcrumb {
+    margin: 0;
+    height: 21px;
+    display: block;
+    left: 192px;
+    background-color: #DDD;
+    padding: 2px 12px;
+    line-height: 1.25em; }
+
+#menu {
+    margin: 0;
+    padding-bottom: 50px;
+    top: 38px;
+    width: 180px;
+    background-color: #DEF; }
+#menu p {
+    padding-left: 8px;
+    font-size: 10pt;
+    border-bottom: none; }
+h1 {
+    margin-top: 8px;
+    color: #000;
+    padding: 5px;
+    text-align: center;
+    font-size: 14pt;
+    border-bottom: none;
+    background: transparent;
+    font-style: italic;
+    text-shadow: #FFF 2px 2px 0px; }
+h1 #h1 {
+    color: #000;
+    font-weight: bold; }
+h1 #h1:hover {
+    text-decoration: underline; }
+h1 #h1:visited {
+    color: #000; }
+
+h2 {
+    margin: 0;
+    margin-bottom: 12px;
+    padding: 6px 18px;
+    background-color: #CDE;
+    border-bottom: none;
+    color: #000;
+    text-shadow: #FFF 0px 0px 4px; }
+
+#schema {
+    margin: 1.5em 0 0 220px; }
+#schema .table {
+    border: 1px solid #DDD;
+    background-color: #DEF;
+    padding: 0 2px; }
+
+
+/* -- GUI adjustments ------------------------------------------------------- */
+.js .hidden {
+    display: inline; }
+.js td.hidden, .js input.hidden {
+    display: none; }
+legend a {
+    color: #000;
+    text-decoration: none;
+    cursor: default; }
+legend a:hover {
+    color: black; }
+
+select[name^="columns"] optgroup:last-child option:nth-child(3)::before {
+    content: "count "; }
+select[name$="[collation]"] {
+    max-width: 120px; }
+
+.logout a:first-child, p a {
+    margin-right: 8px; }
+#tables a, #breadcrumb a, p.pages a, p code + a {
+    margin-right: 0; }
+.logout a::before, p a::before {
+    content: '» '; }
+#tables a::before, #breadcrumb a::before, p.pages a::before, p code + a::before {
+    content: ''; }
+#form + p a:first-child::before {
+    content: ''; }
+
+
+/* -- eye candy ------------------------------------------------------------- */
+fieldset, legend, h2, .error, .message {
+    -moz-border-radius: 5px;
+    border-radius: 5px; }
+#breadcrumb, #lang, #menu {
+    -moz-border-radius-bottomright: 5px;
+    border-bottom-right-radius: 5px; }
+#breadcrumb {
+    -moz-border-radius-bottomleft: 5px;
+    border-bottom-left-radius: 5px; }
+#menu {
+    -moz-border-radius-topright: 5px;
+    border-top-right-radius: 5px; }
+fieldset, h2, .error, #breadcrumb, #lang, #menu, #breadcrumb, #menu {
+    x-moz-box-shadow: 1px 1px 3px #DDD;
+    xbox-shadow: 1px 1px 3px #DDD; }
+fieldset table {
+    x-moz-box-shadow: none;
+    xbox-shadow: none; }
+
+
+/* -- printing -------------------------------------------------------------- */
+@media print {
+	#lang, #menu {
+        display: none; }
+	#content {
+        margin-left: 1em; }
+	#breadcrumb {
+        left: 1em;
+        background: none;
+        border-bottom: 1px silver dashed;
+        box-shadow: none; }
+	h2 {
+        background: none;
+        box-shadow: none; }
+	p.tabs {
+        display: none; }
+}
+
