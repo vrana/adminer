@@ -43,10 +43,15 @@ function lang($idf, $number = null) {
 	global $LANG, $translations;
 	$translation = $translations[$idf];
 	if (is_array($translation) && $translation) {
-		$pos = ($number == 1 || (!$number && $LANG == 'fr') ? 0 // French treat zero as singular
-			: ($LANG == 'sl' && (!$number || $number > 2) ? 1 : 0) // Slovenian use different forms for 1, 2, 3-4, other
-			+ ((!$number || $number >= 5) && ereg('cs|sk|ru|sl|pl|lt', $LANG) ? 2 : 1) // Slavic languages use different forms for 1, 2-4, other
-		);
+		$pos = ($number == 1 ? 0
+			: (ereg('cs|sk', $LANG) ? ($number && $number < 5 ? 1 : 2) // different forms for 1, 2-4, other
+			: ($LANG == 'fr' ? (!$number ? 0 : 1) // 0-1, other
+			: ($LANG == 'pl' ? ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2) // different forms for 1, 2-4, other
+			: ($LANG == 'sl' ? ($number % 100 == 1 ? 0 : ($number % 100 == 2 ? 1 : ($number % 100 == 3 || $number % 100 == 4 ? 2 : 3))) // different forms for 1, 2, 3-4, other
+			: ($LANG == 'lt' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1, 12-19, other
+			: ($LANG == 'ru' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1, 2-4, other
+			: 1
+		))))))); // http://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
 		$translation = $translation[$pos];
 	}
 	$args = func_get_args();
