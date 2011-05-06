@@ -425,10 +425,6 @@ if (!defined("DRIVER")) {
 	* @return array array($key_name => array("type" => , "columns" => array(), "lengths" => array()))
 	*/
 	function indexes($table, $connection2 = null) {
-		global $connection;
-		if (!is_object($connection2)) { // use the main connection if the separate connection is unavailable
-			$connection2 = $connection;
-		}
 		$return = array();
 		foreach (get_rows("SHOW INDEX FROM " . table($table), $connection2) as $row) {
 			$return[$row["Key_name"]]["type"] = ($row["Key_name"] == "PRIMARY" ? "PRIMARY" : ($row["Index_type"] == "FULLTEXT" ? "FULLTEXT" : ($row["Non_unique"] ? "INDEX" : "UNIQUE")));

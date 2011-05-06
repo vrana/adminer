@@ -232,7 +232,17 @@ UNION SELECT view_name, 'view' FROM user_views" . ($name != "" ? " WHERE view_na
 	}
 
 	function indexes($table, $connection2 = null) {
-		return array(); //!
+		$return = array();
+		foreach (get_rows("SELECT uic.*, uc.constraint_type
+FROM user_ind_columns uic
+LEFT JOIN user_constraints uc ON uic.index_name = uc.constraint_name AND uic.table_name = uc.table_name
+WHERE uic.table_name = " . q($table) . "
+ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
+			$return[$row["INDEX_NAME"]]["type"] = ($row["CONSTRAINT_TYPE"] == "P" ? "PRIMARY" : ($row["CONSTRAINT_TYPE"] == "U" ? "UNIQUE" : "INDEX"));
+			$return[$row["INDEX_NAME"]]["columns"][] = $row["COLUMN_NAME"];
+			$return[$row["INDEX_NAME"]]["lengths"][] = ($row["CHAR_LENGTH"] && $row["CHAR_LENGTH"] != $row["COLUMN_LENGTH"] ? $row["CHAR_LENGTH"] : null);
+		}
+		return $return;
 	}
 
 	function view($name) {
