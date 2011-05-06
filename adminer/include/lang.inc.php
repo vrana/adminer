@@ -44,8 +44,8 @@ function lang($idf, $number = null) {
 	$translation = $translations[$idf];
 	if (is_array($translation) && $translation) {
 		$pos = ($number == 1 ? 0
-			: (ereg('cs|sk', $LANG) ? ($number && $number < 5 ? 1 : 2) // different forms for 1, 2-4, other
-			: ($LANG == 'fr' ? (!$number ? 0 : 1) // 0-1, other
+			: ($LANG == 'cs' || $LANG == 'sk' ? ($number && $number < 5 ? 1 : 2) // different forms for 1, 2-4, other
+			: ($LANG == 'fr' ? (!$number ? 0 : 1) // different forms for 0-1, other
 			: ($LANG == 'pl' ? ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2) // different forms for 1, 2-4, other
 			: ($LANG == 'sl' ? ($number % 100 == 1 ? 0 : ($number % 100 == 2 ? 1 : ($number % 100 == 3 || $number % 100 == 4 ? 2 : 3))) // different forms for 1, 2, 3-4, other
 			: ($LANG == 'lt' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1, 12-19, other
