@@ -159,7 +159,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		$return = ($val == "<i>NULL</i>" ? "&nbsp;" : $val);
 		if (ereg('blob|bytea', $field["type"]) && !is_utf8($val)) {
 			$return = lang('%d byte(s)', strlen($val));
-			if (ereg("^(GIF|\xFF\xD8\xFF|\x89\x50\x4E\x47\x0D\x0A\x1A\x0A)", $val)) { // GIF|JPG|PNG, getimagetype() works with filename
+			if (ereg("^(GIF|\xFF\xD8\xFF|\x89PNG\x0D\x0A\x1A\x0A)", $val)) { // GIF|JPG|PNG, getimagetype() works with filename
 				$return = "<img src='$link' alt='$return'>";
 			}
 		}
