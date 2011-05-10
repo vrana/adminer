@@ -49,6 +49,7 @@ if ($adminer->homepage()) {
 			if ($_POST["search"] && $_POST["query"] != "") {
 				search_tables();
 			}
+			echo lang('Live filter') . ': <input type="text" id="table_filter" onkeypress="tableLiveFilter(event);" />';
 			echo "<table cellspacing='0' class='nowrap' onclick='tableClick(event);'>\n";
 			echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck(this, /^(tables|views)\[/);"><th>' . lang('Table') . '<td>' . lang('Engine') . '<td>' . lang('Collation') . '<td>' . lang('Data Length') . '<td>' . lang('Index Length') . '<td>' . lang('Data Free') . '<td>' . lang('Auto Increment') . '<td>' . lang('Rows') . (support("comment") ? '<td>' . lang('Comment') : '') . "</thead>\n";
 			foreach ($tables_list as $name => $type) {
