@@ -492,3 +492,23 @@ function eventStop(event) {
 		event.cancelBubble = true;
 	}
 }
+
+/** Live filter for tables in db view
+ * @param ev
+ */
+function tableLiveFilter(ev) {
+	var inp = ev.target,
+		val = inp.value,
+		tblTables = inp.parentNode.nextSibling,
+		rows = tblTables.tBodies[0].rows;
+
+	if(val != '') {
+		for(var i = 0; i < rows.length; i++) {
+			var name = rows[i].children[1].firstChild.innerHTML;
+			rows[i].style.display = (name.indexOf(val) == -1) ? 'none' : '';
+		}
+	}
+	else {
+		for(var i = 0; i < rows.length; i++) rows[i].style.display = '';
+	}
+}
