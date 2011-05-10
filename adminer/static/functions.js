@@ -384,10 +384,21 @@ function ajaxForm(form, data) {
 * @param number display textarea instead of input, 2 - load long text
 */
 function selectDblClick(td, event, text) {
-	td.ondblclick = function () { };
-	var pos = event.rangeOffset;
-	var value = (td.firstChild.alt ? td.firstChild.alt : (td.textContent ? td.textContent : td.innerText));
+	if (/input|textarea/i.test(td.firstChild.tagName)) {
+		return;
+	}
+	var original = td.innerHTML;
 	var input = document.createElement(text ? 'textarea' : 'input');
+	input.onkeydown = function (event) {
+		if (!event) {
+			event = window.event;
+		}
+		if (event.keyCode == 27 && !(event.ctrlKey || event.shiftKey || event.altKey || event.metaKey)) { // 27 - Esc
+			td.innerHTML = original;
+		}
+	};
+	var pos = event.rangeOffset;
+	var value = td.firstChild.alt || td.textContent || td.innerText;
 	input.style.width = Math.max(td.clientWidth - 14, 20) + 'px'; // 14 = 2 * (td.border + td.padding + input.border)
 	if (text) {
 		var rows = 1;
