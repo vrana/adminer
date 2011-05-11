@@ -902,6 +902,13 @@ if (!defined("DRIVER")) {
 		return get_key_vals("SHOW VARIABLES");
 	}
 	
+	/** Get process list
+	* @return array ($row)
+	*/
+	function process_list() {
+		return get_rows("SHOW FULL PROCESSLIST");
+	}
+	
 	/** Get status variables
 	* @return array ($name => $value)
 	*/
@@ -910,7 +917,7 @@ if (!defined("DRIVER")) {
 	}
 	
 	/** Check whether a feature is supported
-	* @param string "comment", "copy", "drop_col", "dump", "event", "partitioning", "privileges", "procedure", "processlist", "routine", "scheme", "sequence", "status", "trigger", "type", "variables", "view"
+	* @param string "comment", "copy", "drop_col", "dump", "event", "kill", "partitioning", "privileges", "procedure", "processlist", "routine", "scheme", "sequence", "status", "trigger", "type", "variables", "view"
 	* @return bool
 	*/
 	function support($feature) {

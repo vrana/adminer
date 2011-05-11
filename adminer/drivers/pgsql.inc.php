@@ -545,12 +545,16 @@ AND typelem = 0"
 	function show_variables() {
 		return get_key_vals("SHOW ALL");
 	}
+
+	function process_list() {
+		return get_rows("SELECT * FROM pg_stat_activity ORDER BY procpid");
+	}
 	
 	function show_status() {
 	}
 	
 	function support($feature) {
-		return ereg('^(comment|view|scheme|sequence|trigger|type|variables|drop_col)$', $feature); //! routine|
+		return ereg('^(comment|view|scheme|processlist|sequence|trigger|type|variables|drop_col)$', $feature); //! routine|
 	}
 	
 	$jush = "pgsql";
