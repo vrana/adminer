@@ -101,6 +101,7 @@ function short_identifier($number, $chars) {
 
 // based on http://latrine.dgx.cz/jak-zredukovat-php-skripty
 function php_shrink($input) {
+	global $VERSION;
 	$special_variables = array_flip(array('$this', '$GLOBALS', '$_GET', '$_POST', '$_FILES', '$_COOKIE', '$_SESSION', '$_SERVER'));
 	$short_variables = array();
 	$shortening = true;
@@ -138,6 +139,7 @@ function php_shrink($input) {
 		} else {
 			if ($token[0] == T_DOC_COMMENT) {
 				$doc_comment = true;
+				$token[1] = substr_replace($token[1], "* @version $VERSION\n", -2, 0);
 			}
 			if ($token[0] == T_VAR) {
 				$shortening = false;
