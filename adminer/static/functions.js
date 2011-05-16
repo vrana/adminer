@@ -100,7 +100,7 @@ function setHtml(id, html) {
 		if (html == undefined) {
 			el.parentNode.innerHTML = '&nbsp;';
 		} else {
-			el.innerHTML = html.replace(/<noscript>.*<\/noscript>/i, ''); // required for Google Chrome // hopes that there will be only one <noscript> on each line
+			el.innerHTML = html;
 		}
 	}
 }
