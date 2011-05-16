@@ -176,7 +176,7 @@ function process_field($field, $type_field) {
 		idf_escape($field["field"]),
 		process_type($type_field),
 		($field["null"] ? " NULL" : " NOT NULL"), // NULL for timestamp
-		(isset($field["default"]) ? " DEFAULT " . (($field["type"] == "timestamp" && eregi('^CURRENT_TIMESTAMP$', $field["default"])) || ($field["type"] == "bit" && ereg('^[0-9]+$', $field["default"])) ? $field["default"] : q($field["default"])) : ""),
+		(isset($field["default"]) ? " DEFAULT " . (($field["type"] == "timestamp" && eregi('^CURRENT_TIMESTAMP$', $field["default"])) || ($field["type"] == "bit" && ereg("^([0-9]+|b'[0-1]+')\$", $field["default"])) ? $field["default"] : q($field["default"])) : ""),
 		($field["on_update"] ? " ON UPDATE $field[on_update]" : ""),
 		(support("comment") && $field["comment"] != "" ? " COMMENT " . q($field["comment"]) : ""),
 		($field["auto_increment"] ? auto_increment() : null),

@@ -472,7 +472,7 @@ username.form['driver'].onchange();
 			return $value; // SQL injection
 		}
 		$name = $field["field"];
-		$return = ($field["type"] == "bit" && ereg('^[0-9]+$', $value) ? $value : q($value));
+		$return = ($field["type"] == "bit" && ereg("^([0-9]+|b'[0-1]+')\$", $value) ? $value : q($value));
 		if (ereg('^(now|getdate|uuid)$', $function)) {
 			$return = "$function()";
 		} elseif (ereg('^current_(date|timestamp)$', $function)) {
@@ -784,6 +784,7 @@ DROP PROCEDURE adminer_alter;
 						foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
 							echo "jushLinks.$val = jushLinks.$jush;\n";
 						}
+						echo "var cmComplete = [ '" . implode("', '", array_map('js_escape', array_keys($tables))) . "' ];\n";
 						echo "</script>\n";
 					}
 				}
