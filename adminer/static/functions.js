@@ -314,11 +314,7 @@ function ajaxSend(url, data, popState) {
 				var as = document.getElementById('menu').getElementsByTagName('a');
 				var href = location.href.replace(/(&(sql=|dump=|(select|table)=[^&]*)).*/, '$1');
 				for (var i=0; i < as.length; i++) {
-					if (href == as[i].href) {
-						as[i].className = 'active';
-					} else if (as[i].className == 'active') {
-						as[i].className = '';
-					}
+					as[i].className = (href == as[i].href ? 'active' : '');
 				}
 				var dump = document.getElementById('dump');
 				if (dump) {
