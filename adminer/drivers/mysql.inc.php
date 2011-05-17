@@ -389,7 +389,7 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function fk_support($table_status) {
-		return ($table_status["Engine"] == "InnoDB");
+		return eregi("InnoDB|IBMDB2I", $table_status["Engine"]);
 	}
 
 	/** Get information about fields
