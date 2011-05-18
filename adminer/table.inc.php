@@ -72,6 +72,7 @@ if ($fields) {
 				echo "<h3>" . lang('Referencing foreign keys') . "</h3>\n";
 				echo "<table cellspacing='0'>\n";
 				echo "<thead><tr><th>" . lang('Target') . "<td>" . lang('Source') . "<td>" . lang('ON DELETE') . "<td>" . lang('ON UPDATE') . ($jush != "sqlite" ? "<td>&nbsp;" : "") . "</thead>\n";
+				uasort($foreign_keys, function($a, $b) { return strcmp($a['db'], $b['db']) ?: strcmp($a['table'], $b['table']); });
 				foreach ($foreign_keys as $name => $foreign_key) {
 					$link = ($foreign_key["db"] != "" ? "<b>" . h($foreign_key["db"]) . "</b>." : "") . h($foreign_key["table"]);
 					echo "<tr>";
