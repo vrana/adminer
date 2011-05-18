@@ -287,6 +287,25 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.constraint_schema = current_sche
 		return $return;
 	}
 	
+	function foreign_keys_to($table) {
+		$return = array();
+		foreach (get_rows("SELECT tc.constraint_name, ccu.column_name, rc.update_rule AS on_update, rc.delete_rule AS on_delete, tc.table_name AS table, kcu.column_name AS ref
+FROM information_schema.table_constraints tc
+LEFT JOIN information_schema.key_column_usage kcu USING (constraint_catalog, constraint_schema, constraint_name)
+LEFT JOIN information_schema.referential_constraints rc USING (constraint_catalog, constraint_schema, constraint_name)
+LEFT JOIN information_schema.constraint_column_usage ccu ON rc.unique_constraint_catalog = ccu.constraint_catalog AND rc.unique_constraint_schema = ccu.constraint_schema AND rc.unique_constraint_name = ccu.constraint_name
+WHERE tc.constraint_type = 'FOREIGN KEY' AND ccu.table_name = " . q($table) //! there can be more unique_constraint_name
+			) as $row) {
+			$foreign_key = &$return[$row["constraint_name"]];
+			if (!$foreign_key) {
+				$foreign_key = $row;
+			}
+			$foreign_key["source"][] = $row["column_name"];
+			$foreign_key["target"][] = $row["ref"];
+		}
+		return $return;
+	}
+
 	function view($name) {
 		global $connection;
 		return array("select" => $connection->result("SELECT pg_get_viewdef(" . q($name) . ")"));
