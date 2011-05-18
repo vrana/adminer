@@ -241,6 +241,9 @@ ORDER BY a.attnum"
 			$row["null"] = ($row["attnotnull"] == "f");
 			$row["auto_increment"] = eregi("^nextval\\(", $row["default"]);
 			$row["privileges"] = array("insert" => 1, "select" => 1, "update" => 1);
+			if (preg_match('~^(.*)::.+$~', $row["default"], $match)) {
+				$row["default"] = ($match[1][0] == "'" ? idf_unescape($match[1]) : $match[1]);
+			}
 			$return[$row["field"]] = $row;
 		}
 		return $return;
