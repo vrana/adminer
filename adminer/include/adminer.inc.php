@@ -657,11 +657,10 @@ DROP PROCEDURE adminer_alter;
 							$s = ($max_packet ? "\n" : " ") . "($s)";
 							if (!$buffer) {
 								$buffer = $insert . $s;
-							} elseif (strlen($buffer) + 2 + strlen($s) < $max_packet) { // 2 - separator and terminator length
+							} elseif (strlen($buffer) + 4 + strlen($s) < $max_packet) { // 4 - length specification
 								$buffer .= ",$s";
 							} else {
-								$buffer .= ";\n";
-								echo $buffer;
+								echo "$buffer;\n";
 								$buffer = $insert . $s;
 							}
 						}
