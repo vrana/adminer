@@ -123,7 +123,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	function rowDescription($table) {
 		// first varchar column
 		foreach (fields($table) as $field) {
-			if ($field["type"] == "varchar") {
+			if (ereg("varchar|character varying", $field["type"])) {
 				return idf_escape($field["field"]);
 			}
 		}
