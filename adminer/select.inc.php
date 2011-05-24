@@ -47,10 +47,9 @@ if ($_POST && !$error) {
 			break;
 		}
 	}
-	foreach ($select as $key => $val) {
-		$val = $_GET["columns"][$key];
-		if (!$val["fun"]) {
-			unset($unselected[$val["col"]]);
+	foreach ((array) $unselected as $key => $val) {
+		if (in_array(idf_escape($key), $select)) {
+			unset($unselected[$key]);
 		}
 	}
 	if ($_POST["export"]) {
@@ -257,13 +256,15 @@ if (!$columns) {
 			foreach ($rows[0] as $key => $val) {
 				if ($table_status["Oid"] != "t" || $key != "oid") {
 					$val = $_GET["columns"][key($select)];
-					$field = $fields[$select ? $val["col"] : $key];
+					$field = $fields[$select ? ($val ? $val["col"] : current($select)) : $key];
 					$name = ($field ? $adminer->fieldName($field, $rank) : "*");
 					if ($name != "") {
 						$rank++;
 						$names[$key] = $name;
 						$column = idf_escape($key);
-						echo '<th><a href="' . h(remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key) . ($order[0] == $column || $order[0] == $key || (!$order && $group[0] == $column) ? '&desc%5B0%5D=1' : '')) . '">' . apply_sql_function($val["fun"], $name) . "</a>"; // $order[0] == $key - COUNT(*) //! columns looking like functions
+						echo '<th><a href="' . h(remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key)
+							. ($order[0] == $column || $order[0] == $key || (!$order && count($group) < count($select) && $group[0] == $column) ? '&desc%5B0%5D=1' : '') // $order[0] == $key - COUNT(*)
+						) . '">' . (!$select || $val ? apply_sql_function($val["fun"], $name) : h(current($select))) . "</a>"; //! columns looking like functions
 					}
 					$functions[$key] = $val["fun"];
 					next($select);

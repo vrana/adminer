@@ -192,7 +192,7 @@ username.form['driver'].onchange();
 	}
 	
 	/** Print columns box in select
-	* @param array result of selectColumnsProcess()
+	* @param array result of selectColumnsProcess()[0]
 	* @param array selectable columns
 	* @return null
 	*/
