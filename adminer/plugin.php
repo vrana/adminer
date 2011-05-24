@@ -19,6 +19,7 @@ function adminer_object() {
 		new AdminerTranslation,
 		new AdminerForeignSystem,
 		new AdminerEnumOption,
+		new AdminerTablesFilter,
 	);
 	
 	/* It is possible to combine customization and plugins:
