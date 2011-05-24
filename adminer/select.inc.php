@@ -230,6 +230,9 @@ if (!$columns) {
 		echo "<form action='' method='post' enctype='multipart/form-data'>\n";
 		$rows = array();
 		while ($row = $result->fetch_assoc()) {
+			if ($page && $jush == "oracle") {
+				unset($row["RNUM"]);
+			}
 			$rows[] = $row;
 		}
 		// use count($rows) without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)

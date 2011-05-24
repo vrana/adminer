@@ -153,7 +153,10 @@ if (isset($_GET["oracle"])) {
 	}
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
-		return " $query$where" . (isset($limit) ? ($where ? " AND" : $separator . "WHERE") . ($offset ? " rownum > $offset AND" : "") . " rownum <= " . ($limit + $offset) : "");
+		return ($offset ? " * FROM (SELECT t.*, rownum AS rnum FROM (SELECT $query$where) t WHERE rownum <= " . ($limit + $offset) . ") WHERE rnum > $offset"
+			: (isset($limit) ? " * FROM (SELECT $query$where) WHERE rownum <= " . ($limit + $offset)
+			: " $query$where"
+		));
 	}
 
 	function limit1($query, $where) {
