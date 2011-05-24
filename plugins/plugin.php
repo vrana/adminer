@@ -215,6 +215,16 @@ class AdminerPlugin extends Adminer {
 		return $this->_applyPlugin(__FUNCTION__, $args);
 	}
 
+	function selectCommandPrint() {
+		$args = func_get_args();
+		return $this->_applyPlugin(__FUNCTION__, $args);
+	}
+
+	function selectImportPrint() {
+		$args = func_get_args();
+		return $this->_applyPlugin(__FUNCTION__, $args);
+	}
+
 	function selectEmailPrint() {
 		$args = func_get_args();
 		return $this->_applyPlugin(__FUNCTION__, $args);

@@ -1,4 +1,6 @@
 <?php
+// any method change in this file should be transferred to editor/include/adminer.inc.php and plugins/plugin.php
+
 class Adminer {
 	/** @var array operators used in select, null for all operators */
 	var $operators;
@@ -293,6 +295,20 @@ username.form['driver'].onchange();
 		echo "<fieldset><legend>" . lang('Action') . "</legend><div>";
 		echo "<input type='submit' value='" . lang('Select') . "'>";
 		echo "</div></fieldset>\n";
+	}
+	
+	/** Print command box in select
+	* @return bool whether to print default commands
+	*/
+	function selectCommandPrint() {
+		return !information_schema(DB);
+	}
+	
+	/** Print import box in select
+	* @return bool whether to print default import
+	*/
+	function selectImportPrint() {
+		return true;
 	}
 	
 	/** Print extra text in the end of a select form

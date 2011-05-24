@@ -275,6 +275,14 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		echo "</div></fieldset>\n";
 	}
 	
+	function selectCommandPrint() {
+		return true;
+	}
+	
+	function selectImportPrint() {
+		return true;
+	}
+	
 	function selectEmailPrint($emailFields, $columns) {
 		if ($emailFields) {
 			print_fieldset("email", lang('E-mail'), $_POST["email_append"]);
