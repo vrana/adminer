@@ -35,11 +35,10 @@ class Adminer {
 	}
 	
 	/** Headers to send before HTML output
-	* @return null
+	* @return bool true to send security headers
 	*/
 	function headers() {
-		header("X-Frame-Options: deny"); // ClickJacking protection in IE8, Safari 4, Chrome 2, Firefox 3.6.9
-		header("X-XSS-Protection: 0"); // prevents introducing XSS in IE8 by removing safe parts of the page
+		return true;
 	}
 	
 	/** Print HTML code inside <head>

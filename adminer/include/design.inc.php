@@ -9,7 +9,10 @@
 function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	global $LANG, $adminer, $connection, $drivers;
 	header("Content-Type: text/html; charset=utf-8");
-	$adminer->headers();
+	if ($adminer->headers()) {
+		header("X-Frame-Options: deny"); // ClickJacking protection in IE8, Safari 4, Chrome 2, Firefox 3.6.9
+		header("X-XSS-Protection: 0"); // prevents introducing XSS in IE8 by removing safe parts of the page
+	}
 	$title_all = $title . ($title2 != "" ? ": " . h($title2) : "");
 	$title_page = strip_tags($title_all . (SERVER != "" && SERVER != "localhost" ? h(" - " . SERVER) : "") . " - " . $adminer->name());
 	if (is_ajax()) {
