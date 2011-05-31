@@ -756,6 +756,9 @@ if (!defined("DRIVER")) {
 		);
 	}
 	
+	/** Get list of routines
+	* @return array ("ROUTINE_TYPE" => , "ROUTINE_NAME" => , "DTD_IDENTIFIER" => )
+	*/
 	function routines() {
 		return get_rows("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . q(DB));
 	}
