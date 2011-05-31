@@ -16,6 +16,35 @@ class AdminerTinymce {
 		$this->path = $path;
 	}
 	
+	function head() {
+		$lang = "en";
+		if (function_exists('get_lang')) { // since Adminer 3.2.0
+			$lang = get_lang();
+			$lang = ($lang == "zh" ? "zh-cn" : ($lang == "zh-tw" ? "zh" : $lang));
+			if (!file_exists(dirname($this->path) . "/langs/$lang.js")) {
+				$lang = "en";
+			}
+		}
+		?>
+<script type="text/javascript" src="<?php echo h($this->path); ?>"></script>
+<script type="text/javascript">
+tinyMCE.init({
+	mode: 'none',
+	theme: 'advanced',
+	plugins: 'contextmenu,paste,table',
+	entity_encoding: 'raw',
+	theme_advanced_buttons1: 'bold,italic,link,unlink,|,sub,sup,|,bullist,numlist,|,cleanup,code',
+	theme_advanced_buttons2: 'tablecontrols',
+	theme_advanced_buttons3: '',
+	theme_advanced_toolbar_location: 'top',
+	theme_advanced_toolbar_align: 'left',
+	language: '<?php echo $lang; ?>'
+});
+</script>
+<?php
+		return true;
+	}
+	
 	function selectVal(&$val, $link, $field) {
 		if (ereg("_html", $field["field"]) && $val != '&nbsp;') {
 			$shortened = (substr($val, -10) == "<i>...</i>");
@@ -37,36 +66,7 @@ class AdminerTinymce {
 	}
 	
 	function editInput($table, $field, $attrs, $value) {
-		static $tiny_mce = false;
 		if (ereg("text", $field["type"]) && ereg("_html", $field["field"])) {
-			if (!$tiny_mce) {
-				$tiny_mce = true;
-				$lang = "en";
-				if (function_exists('get_lang')) { // since Adminer 3.2.0
-					$lang = get_lang();
-					$lang = ($lang == "zh" ? "zh-cn" : ($lang == "zh-tw" ? "zh" : $lang));
-					if (!file_exists(dirname($this->path) . "/langs/$lang.js")) {
-						$lang = "en";
-					}
-				}
-				?>
-<script type="text/javascript" src="<?php echo h($this->path); ?>"></script>
-<script type="text/javascript">
-tinyMCE.init({
-	mode: 'none',
-	theme: 'advanced',
-	plugins: 'contextmenu,paste,table',
-	entity_encoding: 'raw',
-	theme_advanced_buttons1: 'bold,italic,link,unlink,|,sub,sup,|,bullist,numlist,|,cleanup,code',
-	theme_advanced_buttons2: 'tablecontrols',
-	theme_advanced_buttons3: '',
-	theme_advanced_toolbar_location: 'top',
-	theme_advanced_toolbar_align: 'left',
-	language: '<?php echo $lang; ?>'
-});
-</script>
-<?php
-			}
 			return "<textarea$attrs id='fields-" . h($field["field"]) . "' rows='12' cols='50'>" . h($value) . "</textarea><script type='text/javascript'>tinyMCE.execCommand('mceAddControl', true, 'fields-" . js_escape($field["field"]) . "');</script>";
 		}
 	}
