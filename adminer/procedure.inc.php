@@ -14,7 +14,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 	}
 	$dropped = drop_create(
 		"DROP $routine " . idf_escape($PROCEDURE),
-		"CREATE $routine " . idf_escape($_POST["name"]) . " (" . implode(", ", $set) . ")" . (isset($_GET["function"]) ? " RETURNS" . process_type($_POST["returns"], "CHARACTER SET") : "") . rtrim("\n$_POST[definition]", ";") . ";",
+		"CREATE $routine " . idf_escape($_POST["name"]) . " (" . implode(", ", $set) . ")" . (isset($_GET["function"]) ? " RETURNS" . process_type($_POST["returns"], "CHARACTER SET") : "") . (in_array($_POST["language"], routine_languages()) ? " LANGUAGE $_POST[language]" : "") . rtrim("\n$_POST[definition]", ";") . ";",
 		substr(ME, 0, -1),
 		lang('Routine has been dropped.'),
 		lang('Routine has been altered.'),
@@ -40,6 +40,7 @@ if ($_POST) {
 
 <form action="" method="post" id="form">
 <p><?php echo lang('Name'); ?>: <input name="name" value="<?php echo h($row["name"]); ?>" maxlength="64">
+<?php echo lang('Language'); ?>: <?php echo html_select("language", routine_languages(), $row["language"]); ?>
 <table cellspacing="0" class="nowrap">
 <?php
 edit_fields($row["fields"], $collations, $routine);

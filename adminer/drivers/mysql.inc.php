@@ -722,8 +722,8 @@ if (!defined("DRIVER")) {
 	
 	/** Get information about stored routine
 	* @param string
-	* @param string FUNCTION or PROCEDURE
-	* @return array ("fields" => array("field" => , "type" => , "length" => , "unsigned" => , "inout" => , "collation" => ), "returns" => , "definition" => )
+	* @param string "FUNCTION" or "PROCEDURE"
+	* @return array ("fields" => array("field" => , "type" => , "length" => , "unsigned" => , "inout" => , "collation" => ), "returns" => , "definition" => , "language" => )
 	*/
 	function routine($name, $type) {
 		global $connection, $enum_length, $inout, $types;
@@ -753,6 +753,7 @@ if (!defined("DRIVER")) {
 			"fields" => $fields,
 			"returns" => array("type" => $match[12], "length" => $match[13], "unsigned" => $match[15], "collation" => $match[16]),
 			"definition" => $match[17],
+			"language" => "SQL", // available in information_schema.ROUTINES.PARAMETER_STYLE
 		);
 	}
 	
@@ -761,6 +762,13 @@ if (!defined("DRIVER")) {
 	*/
 	function routines() {
 		return get_rows("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . q(DB));
+	}
+	
+	/** Get list of available routine languages
+	* @return array
+	*/
+	function routine_languages() {
+		return array("SQL");
 	}
 	
 	/** Begin transaction
