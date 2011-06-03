@@ -442,6 +442,32 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . q($table) //! t
 		);
 	}
 	
+	/*
+	function routine($name, $type) {
+		//! there can be more functions with the same name differing only in parameters, it must be also passed to DROP FUNCTION
+		//! no procedures, only functions
+		//! different syntax of CREATE FUNCTION
+		$rows = get_rows('SELECT pg_catalog.format_type(p.prorettype, NULL) AS "returns", p.prosrc AS "definition"
+FROM pg_catalog.pg_namespace n
+JOIN pg_catalog.pg_proc p ON p.pronamespace = n.oid
+WHERE n.nspname = current_schema() AND p.proname = ' . q($name));
+		$rows[0]["fields"] = array(); //!
+		return $rows[0];
+	}
+	*/
+	
+	function routines() {
+		return get_rows('SELECT p.proname AS "ROUTINE_NAME", p.proargtypes AS "ROUTINE_TYPE", pg_catalog.format_type(p.prorettype, NULL) AS "DTD_IDENTIFIER"
+FROM pg_catalog.pg_namespace n
+JOIN pg_catalog.pg_proc p ON p.pronamespace = n.oid
+WHERE n.nspname = current_schema()
+ORDER BY p.proname');
+	}
+	
+	function routine_languages() {
+		return get_vals("SELECT langname FROM pg_catalog.pg_language");
+	}
+	
 	function begin() {
 		return queries("BEGIN");
 	}
