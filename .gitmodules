@@ -13,6 +13,3 @@
 [submodule "jquery-timepicker"]
 	path = externals/jquery-timepicker
 	url = git://github.com/trentrichardson/jQuery-Timepicker-Addon.git
-[submodule "codemirror"]
-	path = externals/codemirror
-	url = http://marijnhaverbeke.nl/git/codemirror2

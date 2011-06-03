@@ -1,6 +1,5 @@
 Adminer 3.3.0-dev:
 Use Esc to disable in-place edit
-Highlight SQL code in textarea
 Shortcut for database privileges
 Append new index with auto index selection (bug #3282127)
 Bit type default value

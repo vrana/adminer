@@ -1,6 +1,7 @@
 Transactions in export
 Create view and routine options
 Variables editation
+Highlight SQL textarea - may use external CodeMirror
 Blob download and image display in edit form (important for Editor with hidden fields in select and SQL command)
 Add title to Logout, edit (in select) and select (in menu) for style "hever"
 Shift-click in checkboxes to select range

@@ -1,37 +1,6 @@
 // Adminer specific functions
 
-// global variables to allow simple customization
-var jushRoot = '../externals/jush/';
-var codemirrorRoot = '../externals/codemirror/';
-
-function appendScript(src, onload) {
-	var script = document.createElement('script');
-	script.src = src;
-	script.onload = onload;
-	script.onreadystatechange = function () {
-		if (/^(loaded|complete)$/.test(script.readyState)) {
-			onload();
-		}
-	};
-	document.body.appendChild(script);
-}
-
-function appendStyle(href) {
-	var link = document.createElement('link');
-	link.rel = 'stylesheet';
-	link.type = 'text/css';
-	link.href = href;
-	document.getElementsByTagName('head')[0].appendChild(link);
-}
-
-function codemirrorRun() {
-	var textareas = document.getElementsByTagName('textarea');
-	for (var i=0; i < textareas.length; i++) {
-		if (textareas[i].className == 'sqlarea') {
-			CodeMirror.fromTextArea(textareas[i], { mode: 'text/x-plsql' });
-		}
-	}
-}
+var jushRoot = '../externals/jush/'; // global variable to allow simple customization
 
 /** Load syntax highlighting
 * @param string first three characters of database system version
@@ -41,7 +10,9 @@ function bodyLoad(version) {
 		onpopstate(history);
 	}
 	if (jushRoot) {
-		appendScript(jushRoot + 'jush.js', function () {
+		var script = document.createElement('script');
+		script.src = jushRoot + 'jush.js';
+		script.onload = function () {
 			if (window.jush) { // IE runs in case of an error too
 				jush.create_links = ' target="_blank" rel="noreferrer"';
 				jush.urls.sql_sqlset = jush.urls.sql[0] = jush.urls.sqlset[0] = jush.urls.sqlstatus[0] = 'http://dev.mysql.com/doc/refman/' + version + '/en/$key';
@@ -54,16 +25,13 @@ function bodyLoad(version) {
 				}
 				jush.highlight_tag('code', 0);
 			}
-		});
-	}
-	if (codemirrorRoot) {
-		appendStyle(codemirrorRoot + 'lib/codemirror.css');
-		appendStyle(codemirrorRoot + 'mode/plsql/plsql.css');
-		appendScript(codemirrorRoot + 'lib/codemirror.js', function () {
-			if (window.CodeMirror) {
-				appendScript(codemirrorRoot + 'mode/plsql/plsql.js', codemirrorRun);
+		};
+		script.onreadystatechange = function () {
+			if (/^(loaded|complete)$/.test(script.readyState)) {
+				script.onload();
 			}
-		});
+		};
+		document.body.appendChild(script);
 	}
 }
 
