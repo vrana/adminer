@@ -19,6 +19,7 @@ td img { max-width: 200px; max-height: 200px; }
 code { background: #eee; }
 tr:hover td, tr:hover th { background: #ddf; }
 pre { margin: 1em 0 0; }
+input[type=image] { vertical-align: middle; }
 .version { color: #777; font-size: 67%; }
 .js .hidden, .nojs .jsonly { display: none; }
 .nowrap td, .nowrap th, td.nowrap { white-space: pre; }
