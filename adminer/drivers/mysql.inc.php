@@ -898,7 +898,7 @@ if (!defined("DRIVER")) {
 	}
 	
 	/** Check whether a feature is supported
-	* @param string "comment", "drop_col", "dump", "event", "partitioning", "routine", "scheme", "sequence", "status", "trigger", "type", "variables", "view", "copy"
+	* @param string "comment", "copy", "drop_col", "dump", "event", "partitioning", "privileges", "processlist", "routine", "scheme", "sequence", "status", "trigger", "type", "variables", "view"
 	* @return bool
 	*/
 	function support($feature) {

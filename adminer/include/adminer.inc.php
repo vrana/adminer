@@ -719,9 +719,8 @@ DROP PROCEDURE adminer_alter;
 	*/
 	function homepage() {
 		echo '<p>' . ($_GET["ns"] == "" ? '<a href="' . h(ME) . 'database=">' . lang('Alter database') . "</a>\n" : "");
-		if (support("scheme")) {
-			echo "<a href='" . h(ME) . "scheme='>" . ($_GET["ns"] != "" ? lang('Alter schema') : lang('Create schema')) . "</a>\n";
-		}
+		echo (support("scheme") ? "<a href='" . h(ME) . "scheme='>" . ($_GET["ns"] != "" ? lang('Alter schema') : lang('Create schema')) . "</a>\n" : "");
+		echo '<a href="' . h(ME) . 'schema=">' . lang('Database schema') . "</a>\n";
 		return true;
 	}
 	

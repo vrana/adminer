@@ -38,7 +38,6 @@ page_header(($_GET["ns"] == "" ? lang('Database') . ": " . h(DB) : lang('Schema'
 
 if ($adminer->homepage()) {
 	if ($_GET["ns"] !== "") {
-		echo '<a href="' . h(ME) . 'schema=">' . lang('Database schema') . "</a>\n";
 		echo "<h3>" . lang('Tables and views') . "</h3>\n";
 		$tables_list = tables_list();
 		if (!$tables_list) {
