@@ -217,7 +217,7 @@ foreach (glob(dirname(__FILE__) . "/adminer/drivers/" . ($driver ? $driver : "*"
 }
 
 include dirname(__FILE__) . "/adminer/include/pdo.inc.php";
-$features = array("view", "event", "privileges", "user", "processlist", "variables", "trigger", "scheme", "sequence", "dump");
+$features = array("call" => "routine", "dump", "event", "privileges", "procedure" => "routine", "processlist", "routine", "scheme", "sequence", "status", "trigger", "type", "user" => "privileges", "variables", "view");
 foreach (array("adminer", "editor") as $project) {
 	$lang_ids = array(); // global variable simplifies usage in a callback function
 	$file = file_get_contents(dirname(__FILE__) . "/$project/index.php");
@@ -225,14 +225,15 @@ foreach (array("adminer", "editor") as $project) {
 		$connection = (object) array("server_info" => 5.1); // MySQL support is version specific
 		$_GET[$driver] = true; // to load the driver
 		include_once dirname(__FILE__) . "/adminer/drivers/$driver.inc.php";
-		foreach ($features as $feature) {
+		foreach ($features as $key => $feature) {
 			if (!support($feature)) {
+				if (!is_int($key)) {
+					$feature = $key;
+				}
 				$file = str_replace("} elseif (isset(\$_GET[\"$feature\"])) {\n\tinclude \"./$feature.inc.php\";\n", "", $file);
 			}
 		}
 		if (!support("routine")) {
-			$file = str_replace("} elseif (isset(\$_GET[\"procedure\"])) {\n\tinclude \"./procedure.inc.php\";\n", "", $file);
-			$file = str_replace("} elseif (isset(\$_GET[\"call\"])) {\n\tinclude \"./call.inc.php\";\n", "", $file);
 			$file = str_replace("if (isset(\$_GET[\"callf\"])) {\n\t\$_GET[\"call\"] = \$_GET[\"callf\"];\n}\nif (isset(\$_GET[\"function\"])) {\n\t\$_GET[\"procedure\"] = \$_GET[\"function\"];\n}\n", "", $file);
 		}
 	}
