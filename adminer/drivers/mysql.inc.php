@@ -768,7 +768,7 @@ if (!defined("DRIVER")) {
 	* @return array
 	*/
 	function routine_languages() {
-		return array("SQL");
+		return array(); // "SQL" not required
 	}
 	
 	/** Begin transaction
