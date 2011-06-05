@@ -17,8 +17,9 @@ if ($fields) {
 	echo "<table cellspacing='0'>\n";
 	echo "<thead><tr><th>" . lang('Column') . "<td>" . lang('Type') . (support("comment") ? "<td>" . lang('Comment') : "") . "</thead>\n";
 	foreach ($fields as $field) {
-		echo "<tr" . odd() . "><th title='" . h($field["default"] !== "" ? $field["default"] : " ") . "'>" . h($field["field"]);
+		echo "<tr" . odd() . "><th>" . h($field["field"]);
 		echo "<td title='" . h($field["collation"]) . "'>" . h($field["full_type"]) . ($field["null"] ? " <i>NULL</i>" : "") . ($field["auto_increment"] ? " <i>" . lang('Auto Increment') . "</i>" : "");
+		echo (isset($field["default"]) ? " [<b>" . h($field["default"]) . "</b>]" : "");
 		echo (support("comment") ? "<td>" . nbsp($field["comment"]) : "");
 		echo "\n";
 	}

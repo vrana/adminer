@@ -4,7 +4,7 @@ Shortcut for database privileges
 Append new index with auto index selection (bug #3282127)
 Bit type default value
 Display foreign key name in tooltip
-Display default column value in tooltip
+Display default column value in table overview
 Display column collation in tooltip
 Pagination support (Oracle)
 Autocomplete for big foreign keys (Editor)
