@@ -6,13 +6,15 @@
 * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerLoginServers {
-	var $servers;
+	var $servers, $driver;
 	
 	/** Set supported servers
 	* @param array array($domain) or array($domain => $description) or array($category => array())
+	* @param string
 	*/
-	function AdminerLoginServers($servers) {
+	function AdminerLoginServers($servers, $driver = "server") {
 		$this->servers = $servers;
+		$this->driver = $driver;
 	}
 	
 	function login($login, $password) {
@@ -34,7 +36,7 @@ class AdminerLoginServers {
 	function loginForm() {
 		?>
 <table cellspacing="0">
-<tr><th><?php echo lang('Server'); ?><td><input type="hidden" name="driver" value="server"><select name="server"><?php echo optionlist($this->servers, SERVER); ?></select>
+<tr><th><?php echo lang('Server'); ?><td><input type="hidden" name="driver" value="<?php echo $this->driver; ?>"><select name="server"><?php echo optionlist($this->servers, SERVER); ?></select>
 <tr><th><?php echo lang('Username'); ?><td><input id="username" name="username" value="<?php echo h($_GET["username"]);  ?>">
 <tr><th><?php echo lang('Password'); ?><td><input type="password" name="password">
 </table>
