@@ -157,12 +157,23 @@ foreach ($engines as $engine) {
  <?php echo ($collations && !ereg("sqlite|mssql", $jush) ? html_select("Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]) : ""); ?>
  <input type="submit" value="<?php echo lang('Save'); ?>">
 <table cellspacing="0" id="edit-fields" class="nowrap">
-<?php $comments = edit_fields($row["fields"], $collations, "TABLE", $suhosin, $foreign_keys, $row["Comment"] != ""); ?>
+<?php
+$comments = ($_POST ? $_POST["comments"] : $row["Comment"] != "");
+if (!$_POST && !$comments) {
+	foreach ($row["fields"] as $field) {
+		if ($field["comment"] != "") {
+			$comments = true;
+			break;
+		}
+	}
+}
+edit_fields($row["fields"], $collations, "TABLE", $suhosin, $foreign_keys, $comments);
+?>
 </table>
 <p>
 <?php echo lang('Auto Increment'); ?>: <input name="Auto_increment" size="6" value="<?php echo h($row["Auto_increment"]); ?>">
-<label class="jsonly"><input type="checkbox" onclick="columnShow(this.checked, 5);"><?php echo lang('Default values'); ?></label>
-<?php echo (support("comment") ? checkbox("", "", $comments, lang('Comment'), "columnShow(this.checked, 6); toggle('Comment'); if (this.checked) this.form['Comment'].focus();") . ' <input id="Comment" name="Comment" value="' . h($row["Comment"]) . '" maxlength="60"' . ($comments ? '' : ' class="hidden"') . '>' : ''); ?>
+<label class="jsonly"><input type="checkbox" name="defaults" value="1"<?php echo ($_POST["defaults"] ? " checked" : ""); ?> onclick="columnShow(this.checked, 5);"><?php echo lang('Default values'); ?></label>
+<?php echo (support("comment") ? checkbox("comments", 1, $comments, lang('Comment'), "columnShow(this.checked, 6); toggle('Comment'); if (this.checked) this.form['Comment'].focus();", true) . ' <input id="Comment" name="Comment" value="' . h($row["Comment"]) . '" maxlength="60"' . ($comments ? '' : ' class="hidden"') . '>' : ''); ?>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php if ($_GET["create"] != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo confirm(); ?>><?php } ?>

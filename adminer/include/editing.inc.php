@@ -206,16 +206,11 @@ function type_class($type) {
 * @param string TABLE or PROCEDURE
 * @param int number of fields allowed by Suhosin
 * @param array returned by referencable_primary()
-* @return bool column comments used
+* @param bool display comments column
+* @return null
 */
 function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $foreign_keys = array(), $comments = false) {
 	global $inout;
-	foreach ($fields as $field) {
-		if ($field["comment"] != "") {
-			$comments = true;
-			break;
-		}
-	}
 	?>
 <thead><tr class="wrap">
 <?php if ($type == "PROCEDURE") { ?><td>&nbsp;<?php } ?>
@@ -226,7 +221,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 <?php if ($type == "TABLE") { ?>
 <td>NULL
 <td><input type="radio" name="auto_increment_col" value=""><acronym title="<?php echo lang('Auto Increment'); ?>">AI</acronym>
-<td class="hidden"><?php echo lang('Default values'); ?>
+<td<?php echo ($_POST["defaults"] ? "" : " class='hidden'"); ?>><?php echo lang('Default values'); ?>
 <?php echo (support("comment") ? "<td" . ($comments ? "" : " class='hidden'") . ">" . lang('Comment') : ""); ?>
 <?php } ?>
 <td><?php echo "<input type='image' name='add[" . (support("move_col") ? 0 : count($fields)) . "]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>"; ?><script type="text/javascript">row_count = <?php echo count($fields); ?>;</script>
@@ -245,7 +240,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 <?php if ($type == "TABLE") { ?>
 <td><?php echo checkbox("fields[$i][null]", 1, $field["null"]); ?>
 <td><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked<?php } ?> onclick="var field = this.form['fields[' + this.value + '][field]']; if (!field.value) { field.value = 'id'; field.onchange(); }">
-<td class="hidden"><?php echo checkbox("fields[$i][has_default]", 1, $field["has_default"]); ?><input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["default"]); ?>" onchange="this.previousSibling.checked = true;">
+<td<?php echo ($_POST["defaults"] ? "" : " class='hidden'"); ?>><?php echo checkbox("fields[$i][has_default]", 1, $field["has_default"]); ?><input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["default"]); ?>" onchange="this.previousSibling.checked = true;">
 <?php echo (support("comment") ? "<td" . ($comments ? "" : " class='hidden'") . "><input name='fields[$i][comment]' value='" . h($field["comment"]) . "' maxlength='255'>" : ""); ?>
 <?php } ?>
 <?php
@@ -258,7 +253,6 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 		echo ($orig == "" || support("drop_col") ? "<input type='image' name='drop_col[$i]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "' onclick='return !editingRemoveRow(this);'>" : "");
 		echo "\n";
 	}
-	return $comments;
 }
 
 /** Move fields up and down or add field

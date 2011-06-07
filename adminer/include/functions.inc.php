@@ -86,12 +86,13 @@ function nl_br($string) {
 * @param bool
 * @param string
 * @param string
+* @param bool
 * @return string
 */
-function checkbox($name, $value, $checked, $label = "", $onclick = "") {
+function checkbox($name, $value, $checked, $label = "", $onclick = "", $jsonly = false) {
 	static $id = 0;
 	$id++;
-	$return = "<input type='checkbox'" . ($name ? " name='$name' value='" . h($value) . "'" : " class='jsonly'") . ($checked ? " checked" : "") . ($onclick ? " onclick=\"$onclick\"" : "") . " id='checkbox-$id'>";
+	$return = "<input type='checkbox' name='$name' value='" . h($value) . "'" . ($checked ? " checked" : "") . ($onclick ? " onclick=\"$onclick\"" : "") . ($jsonly ? " class='jsonly'" : "") . " id='checkbox-$id'>";
 	return ($label != "" ? "<label for='checkbox-$id'>$return" . h($label) . "</label>" : $return);
 }
 
