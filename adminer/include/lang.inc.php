@@ -18,6 +18,7 @@ $langs = array(
 	'sl' => 'Slovenski', // Matej Ferlan - www.itdinamik.com, matej.ferlan@itdinamik.com
 	'lt' => 'Lietuvių', // Paulius Leščinskas - http://www.lescinskas.lt
 	'tr' => 'Türkçe', // Bilgehan Korkmaz - turktron.com
+	'ro' => 'Limba Română', // .nick .messing - dot.nick.dot.messing@gmail.com
 	'ru' => 'Русский язык', // Maksim Izmaylov
 	'zh' => '简体中文', // Mr. Lodar
 	'zh-tw' => '繁體中文', // http://tzangms.com
