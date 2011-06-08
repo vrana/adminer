@@ -722,7 +722,7 @@ function process_input($field) {
 		return null;
 	}
 	if ($function == "orig") {
-		return false;
+		return ($field["on_update"] == "CURRENT_TIMESTAMP" ? idf_escape($field["field"]) : false);
 	}
 	if ($function == "NULL") {
 		return "NULL";

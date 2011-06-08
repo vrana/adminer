@@ -2,6 +2,7 @@ Adminer 3.3.0-dev:
 Use Esc to disable in-place edit
 Shortcut for database privileges
 Append new index with auto index selection (bug #3282127)
+Preserve original timestamp value in multiple update (bug #3312614)
 Bit type default value
 Display foreign key name in tooltip
 Display default column value in table overview
