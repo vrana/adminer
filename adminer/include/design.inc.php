@@ -48,13 +48,13 @@ document.body.className = document.body.className.replace(/(^|\s)nojs(\s|$)/, '$
 	}
 	if (isset($breadcrumb)) {
 		$link = substr(preg_replace('~(username|db|ns)=[^&]*&~', '', ME), 0, -1);
-		echo '<p id="breadcrumb"><a href="' . ($link ? h($link) : ".") . '">' . $drivers[DRIVER] . '</a> &raquo; ';
+		echo '<p id="breadcrumb"><a href="' . h($link ? $link : ".") . '">' . $drivers[DRIVER] . '</a> &raquo; ';
 		$link = substr(preg_replace('~(db|ns)=[^&]*&~', '', ME), 0, -1);
 		$server = (SERVER != "" ? h(SERVER) : lang('Server'));
 		if ($breadcrumb === false) {
 			echo "$server\n";
 		} else {
-			echo "<a href='" . ($link ? h($link) : ".") . "'>$server</a> &raquo; ";
+			echo "<a href='" . ($link ? h($link) : ".") . "' accesskey='1' title='Alt+Shift+1'>$server</a> &raquo; ";
 			if ($_GET["ns"] != "" || (DB != "" && is_array($breadcrumb))) {
 				echo '<a href="' . h($link . "&db=" . urlencode(DB) . (support("scheme") ? "&ns=" : "")) . '">' . h(DB) . '</a> &raquo; ';
 			}
