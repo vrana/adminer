@@ -304,9 +304,10 @@ var ajaxState = 0;
 * @param string
 * @param [string]
 * @param [boolean]
+* @param [boolean]
 * @return XMLHttpRequest or false in case of an error
 */
-function ajaxSend(url, data, popState) {
+function ajaxSend(url, data, popState, noscroll) {
 	if (!history.pushState) {
 		return false;
 	}
@@ -332,8 +333,10 @@ function ajaxSend(url, data, popState) {
 			} else {
 				if (!popState) {
 					if (data || url != location.href) {
-						history.pushState(data, '', url);
+						history.pushState(data, '', url); //! remember window position
 					}
+				}
+				if (!noscroll) {
 					scrollTo(0, 0);
 				}
 				setHtml('content', xmlhttp.responseText);
@@ -380,9 +383,10 @@ onpopstate = function (event) {
 /** Send form by AJAX GET
 * @param HTMLFormElement
 * @param [string]
+* @param [boolean]
 * @return XMLHttpRequest or false in case of an error
 */
-function ajaxForm(form, data) {
+function ajaxForm(form, data, noscroll) {
 	if (/&(database|scheme|create|view|sql|user|dump|call)=/.test(location.href) && !/\./.test(data)) { // . - type="image"
 		return false;
 	}
@@ -399,9 +403,9 @@ function ajaxForm(form, data) {
 		params.push(data);
 	}
 	if (form.method == 'post') {
-		return ajaxSend((/\?/.test(form.action) ? form.action : location.href), params.join('&')); // ? - always part of Adminer URL
+		return ajaxSend((/\?/.test(form.action) ? form.action : location.href), params.join('&'), noscroll); // ? - always part of Adminer URL
 	}
-	return ajaxSend((form.action || location.href).replace(/\?.*/, '') + '?' + params.join('&'));
+	return ajaxSend((form.action || location.href).replace(/\?.*/, '') + '?' + params.join('&'), noscroll);
 }
 
 
@@ -493,7 +497,7 @@ function bodyClick(event, db, ns) {
 		return !(db == (match ? match[1] : '') && ns == (match2 ? match2[1] : '') && ajaxSend(el.href));
 	}
 	if (/^input$/i.test(el.tagName) && /image|submit/.test(el.type)) {
-		return !ajaxForm(el.form, (el.name ? encodeURIComponent(el.name) + (el.type == 'image' ? '.x' : '') + '=1' : ''));
+		return !ajaxForm(el.form, (el.name ? encodeURIComponent(el.name) + (el.type == 'image' ? '.x' : '') + '=1' : ''), el.type == 'image');
 	}
 	return true;
 }
