@@ -264,4 +264,10 @@ $translations = array(
 	'Please use one of the extensions %s.' => 'Folosiți una din următoarele extensii %s.',
 	'now' => 'acum',
 	'ltr' => 'ltr',
+	'Tables have been copied.' => 'Tabelele au fost copiate',
+	'Copy' => 'Copiază',
+	'Permanent link' => 'Adresă permanentă',
+	'Edit all' => 'Editează tot',
+	'Resend POST data?' => 'Retrimite datele POST?',
+	'HH:MM:SS' => 'HH:MM:SS',
 );
