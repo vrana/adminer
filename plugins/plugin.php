@@ -6,6 +6,7 @@
 * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerPlugin extends Adminer {
+	/** @var array @access protected */
 	var $plugins;
 	
 	function _findRootClass($class) { // is_subclass_of(string, string) is available since PHP 5.0.3

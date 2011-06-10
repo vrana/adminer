@@ -6,7 +6,11 @@
 * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerLoginServers {
-	var $servers, $driver;
+	/** @var array @access protected */
+	var $servers;
+	
+	/** @var string @access protected */
+	var $driver;
 	
 	/** Set supported servers
 	* @param array array($domain) or array($domain => $description) or array($category => array())
