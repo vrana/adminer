@@ -43,7 +43,6 @@ tinyMCE.init({
 });
 </script>
 <?php
-		return true;
 	}
 	
 	function selectVal(&$val, $link, $field) {
