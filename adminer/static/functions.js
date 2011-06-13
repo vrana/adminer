@@ -199,14 +199,14 @@ function bodyKeydown(event, button) {
 	var target = event.target || event.srcElement;
 	if (event.ctrlKey && (event.keyCode == 13 || event.keyCode == 10) && !event.altKey && !event.metaKey && /select|textarea|input/i.test(target.tagName)) { // 13|10 - Enter, shiftKey allowed
 		target.blur();
-		if ((!target.form.onsubmit || target.form.onsubmit() !== false) && !ajaxForm(target.form, (button ? button + '=1' : ''))) {
-			if (button) {
-				target.form[button].click();
-			} else {
-				target.form.submit();
-			}
+		if (ajaxForm(target.form, (button ? button + '=1' : ''))) {
+			return false;
 		}
-		return false;
+		if (button) {
+			target.form[button].click();
+		} else {
+			target.form.submit();
+		}
 	}
 }
 
@@ -387,7 +387,7 @@ onpopstate = function (event) {
 * @return XMLHttpRequest or false in case of an error
 */
 function ajaxForm(form, data, noscroll) {
-	if (/&(database|scheme|create|view|sql|user|dump|call)=/.test(location.href) && !/\./.test(data)) { // . - type="image"
+	if ((/&(database|scheme|create|view|sql|user|dump|call)=/.test(location.href) && !/\./.test(data)) || (form.onsubmit && form.onsubmit() === false)) { // . - type="image"
 		return false;
 	}
 	var params = [ ];
