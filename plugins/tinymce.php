@@ -67,7 +67,15 @@ tinyMCE.init({
 	
 	function editInput($table, $field, $attrs, $value) {
 		if (ereg("text", $field["type"]) && ereg("_html", $field["field"])) {
-			return "<textarea$attrs id='fields-" . h($field["field"]) . "' rows='12' cols='50'>" . h($value) . "</textarea><script type='text/javascript'>tinyMCE.execCommand('mceAddControl', true, 'fields-" . js_escape($field["field"]) . "');</script>";
+			return "<textarea$attrs id='fields-" . h($field["field"]) . "' rows='12' cols='50'>" . h($value) . "</textarea><script type='text/javascript'>
+tinyMCE.remove(tinyMCE.get('fields-" . js_escape($field["field"]) . "') || { });
+tinyMCE.execCommand('mceAddControl', true, 'fields-" . js_escape($field["field"]) . "');
+document.getElementById('form').onsubmit = function () {
+	tinyMCE.each(tinyMCE.editors, function (ed) {
+		ed.remove();
+	});
+};
+</script>";
 		}
 	}
 	
