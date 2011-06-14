@@ -7,7 +7,7 @@ Bit type default value
 Display foreign key name in tooltip
 Display default column value in table overview
 Display column collation in tooltip
-Keyboard shortcuts: Alt+Shift+1 for homepage, Alt+Shift+Q for Save and continue edit
+Keyboard shortcuts: Alt+Shift+1 for homepage, Ctrl+Shift+Enter for Save and continue edit
 Pagination support (Oracle)
 Autocomplete for big foreign keys (Editor)
 Display name of the referenced record in PostgreSQL (Editor)

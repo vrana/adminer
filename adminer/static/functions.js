@@ -199,15 +199,16 @@ function bodyKeydown(event, button) {
 	var target = event.target || event.srcElement;
 	if (event.ctrlKey && (event.keyCode == 13 || event.keyCode == 10) && !event.altKey && !event.metaKey && /select|textarea|input/i.test(target.tagName)) { // 13|10 - Enter, shiftKey allowed
 		target.blur();
-		if (ajaxForm(target.form, (button ? button + '=1' : ''))) {
-			return false;
+		if (!ajaxForm(target.form, (button ? button + '=1' : ''))) {
+			if (button) {
+				target.form[button].click();
+			} else {
+				target.form.submit();
+			}
 		}
-		if (button) {
-			target.form[button].click();
-		} else {
-			target.form.submit();
-		}
+		return false;
 	}
+	return true;
 }
 
 
@@ -224,6 +225,10 @@ function editingKeydown(event) {
 		if (el && (/^tr$/i.test(el.tagName) || (el = el[sibling])) && /^tr$/i.test(el.tagName) && (el = el.childNodes[nodePosition(target.parentNode)]) && (el = el.childNodes[nodePosition(target)])) {
 			el.focus();
 		}
+		return false;
+	}
+	if (event.shiftKey && !bodyKeydown(event, 'insert')) {
+		eventStop(event);
 		return false;
 	}
 	return true;
