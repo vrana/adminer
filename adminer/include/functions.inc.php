@@ -859,10 +859,11 @@ function is_url($string) {
 * @param string
 * @param string
 * @param bool
+* @param string
 * @return null
 */
-function print_fieldset($id, $legend, $visible = false) {
-	echo "<fieldset><legend><a href='#fieldset-$id' onclick=\"return !toggle('fieldset-$id');\">$legend</a></legend><div id='fieldset-$id'" . ($visible ? "" : " class='hidden'") . ">\n";
+function print_fieldset($id, $legend, $visible = false, $onclick = "") {
+	echo "<fieldset><legend><a href='#fieldset-$id' onclick=\"$onclick" . "return !toggle('fieldset-$id');\">$legend</a></legend><div id='fieldset-$id'" . ($visible ? "" : " class='hidden'") . ">\n";
 }
 
 /** Return class='active' if $bold is true

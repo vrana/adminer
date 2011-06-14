@@ -161,7 +161,7 @@ if (!$error && $_POST) {
 }
 ?>
 
-<form action="" method="post" enctype="multipart/form-data">
+<form action="" method="post" enctype="multipart/form-data" id="form">
 <p><?php
 $q = $_GET["sql"]; // overwrite $q from if ($_POST) to save memory
 if ($_POST) {
@@ -186,7 +186,7 @@ echo "<p>" . (ini_bool("file_uploads")
 echo checkbox("error_stops", 1, $_POST["error_stops"], lang('Stop on error')) . "\n";
 echo checkbox("only_errors", 1, $_POST["only_errors"], lang('Show only errors')) . "\n";
 
-print_fieldset("webfile", lang('From server'), $_POST["webfile"]);
+print_fieldset("webfile", lang('From server'), $_POST["webfile"], "document.getElementById('form')['only_errors'].checked = true; ");
 $compress = array();
 foreach (array("gz" => "zlib", "bz2" => "bz2") as $key => $val) {
 	if (extension_loaded($val)) {
