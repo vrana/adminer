@@ -92,57 +92,55 @@ if (!$error && $_POST) {
 						}
 						$start = explode(" ", microtime()); // microtime(true) is available since PHP 5
 						//! don't allow changing of character_set_results, convert encoding of displayed query
-						if ($connection->multi_query($q)) {
-							if (is_object($connection2) && preg_match("~^$space*USE\\b~isU", $q)) {
-								$connection2->query($q);
-							}
-							do {
-								$result = $connection->store_result();
-								$end = explode(" ", microtime());
-								$time = format_time($start, $end) . (strlen($q) < 1000 ? " <a href='" . h(ME) . "sql=" . urlencode(trim($q)) . "'>" . lang('Edit') . "</a>" : ""); // 1000 - maximum length of encoded URL in IE is 2083 characters
-								if (!is_object($result)) {
-									if (preg_match("~^$space*(CREATE|DROP|ALTER)$space+(DATABASE|SCHEMA)\\b~isU", $q)) {
-										restart_session();
-										set_session("dbs", null); // clear cache
-										session_write_close();
-									}
-									if (!$_POST["only_errors"]) {
-										echo "<p class='message' title='" . h($connection->info) . "'>" . lang('Query executed OK, %d row(s) affected.', $connection->affected_rows) . "$time\n";
-									}
-								} else {
-									select($result, $connection2);
-									if (!$_POST["only_errors"]) {
-										echo "<form action='' method='post'>\n";
-										echo "<p>" . ($result->num_rows ? lang('%d row(s)', $result->num_rows) : "") . $time;
-										$id = "export-$commands";
-										$export = ", <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('Export') . "</a><span id='$id' class='hidden'>: "
-											. html_select("output", $adminer->dumpOutput(), $adminer_export["output"]) . " "
-											. html_select("format", $dump_format, $adminer_export["format"])
-											. "<input type='hidden' name='query' value='" . h($q) . "'>"
-											. " <input type='submit' name='export' value='" . lang('Export') . "' onclick='eventStop(event);'><input type='hidden' name='token' value='$token'></span>"
-										;
-										if ($connection2 && preg_match("~^($space|\\()*SELECT\\b~isU", $q) && ($explain = explain($connection2, $q))) {
-											$id = "explain-$commands";
-											echo ", <a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>$export\n";
-											echo "<div id='$id' class='hidden'>\n";
-											select($explain, $connection2, ($jush == "sql" ? "http://dev.mysql.com/doc/refman/" . substr($connection->server_info, 0, 3) . "/en/explain-output.html#" : ""));
-											echo "</div>\n";
-										} else {
-											echo "$export\n";
-										}
-										echo "</form>\n";
-									}
-								}
-								$start = $end;
-							} while ($connection->next_result());
-						} elseif ($connection->error) {
-							echo ($_POST["only_errors"] ? $print : "");
-							echo "<p class='error'>" . lang('Error in query') . ": " . error() . "\n";
-							$errors[] = " <a href='#sql-$commands'>$commands</a>";
-							if ($_POST["error_stops"]) {
-								break;
-							}
+						if ($connection->multi_query($q) && is_object($connection2) && preg_match("~^$space*USE\\b~isU", $q)) {
+							$connection2->query($q);
 						}
+						do {
+							$result = $connection->store_result();
+							$end = explode(" ", microtime());
+							$time = format_time($start, $end) . (strlen($q) < 1000 ? " <a href='" . h(ME) . "sql=" . urlencode(trim($q)) . "'>" . lang('Edit') . "</a>" : ""); // 1000 - maximum length of encoded URL in IE is 2083 characters
+							if ($connection->error) {
+								echo ($_POST["only_errors"] ? $print : "");
+								echo "<p class='error'>" . lang('Error in query') . ": " . error() . "\n";
+								$errors[] = " <a href='#sql-$commands'>$commands</a>";
+								if ($_POST["error_stops"]) {
+									break;
+								}
+							} elseif (is_object($result)) {
+								select($result, $connection2);
+								if (!$_POST["only_errors"]) {
+									echo "<form action='' method='post'>\n";
+									echo "<p>" . ($result->num_rows ? lang('%d row(s)', $result->num_rows) : "") . $time;
+									$id = "export-$commands";
+									$export = ", <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('Export') . "</a><span id='$id' class='hidden'>: "
+										. html_select("output", $adminer->dumpOutput(), $adminer_export["output"]) . " "
+										. html_select("format", $dump_format, $adminer_export["format"])
+										. "<input type='hidden' name='query' value='" . h($q) . "'>"
+										. " <input type='submit' name='export' value='" . lang('Export') . "' onclick='eventStop(event);'><input type='hidden' name='token' value='$token'></span>"
+									;
+									if ($connection2 && preg_match("~^($space|\\()*SELECT\\b~isU", $q) && ($explain = explain($connection2, $q))) {
+										$id = "explain-$commands";
+										echo ", <a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>$export\n";
+										echo "<div id='$id' class='hidden'>\n";
+										select($explain, $connection2, ($jush == "sql" ? "http://dev.mysql.com/doc/refman/" . substr($connection->server_info, 0, 3) . "/en/explain-output.html#" : ""));
+										echo "</div>\n";
+									} else {
+										echo "$export\n";
+									}
+									echo "</form>\n";
+								}
+							} else {
+								if (preg_match("~^$space*(CREATE|DROP|ALTER)$space+(DATABASE|SCHEMA)\\b~isU", $q)) {
+									restart_session();
+									set_session("dbs", null); // clear cache
+									session_write_close();
+								}
+								if (!$_POST["only_errors"]) {
+									echo "<p class='message' title='" . h($connection->info) . "'>" . lang('Query executed OK, %d row(s) affected.', $connection->affected_rows) . "$time\n";
+								}
+							}
+							$start = $end;
+						} while ($connection->next_result());
 						$query = substr($query, $offset);
 						$offset = 0;
 					}
