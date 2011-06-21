@@ -35,6 +35,7 @@ Delimiter in export and SQL command
 Backward keys in Editor
 
 PostgreSQL:
+Array data types
 Display number of schemas in databases overview
 Users - SELECT * FROM pg_user
 ORDER BY COUNT(*)
