@@ -18,8 +18,8 @@ if (!defined("DRIVER")) {
 				list($host, $port) = explode(":", $server, 2); // part after : is used for port or socket
 				$return = @$this->real_connect(
 					($server != "" ? $host : ini_get("mysqli.default_host")),
-					("$server$username" != "" ? $username : ini_get("mysqli.default_user")),
-					("$server$username$password" != "" ? $password : ini_get("mysqli.default_pw")),
+					($server . $username != "" ? $username : ini_get("mysqli.default_user")),
+					($server . $username . $password != "" ? $password : ini_get("mysqli.default_pw")),
 					null,
 					(is_numeric($port) ? $port : ini_get("mysqli.default_port")),
 					(!is_numeric($port) ? $port : null)
