@@ -118,12 +118,12 @@ function textarea($name, $value, $rows = 10, $cols = 80) {
 }
 
 /** Format time difference
-* @param array ($sec, $sec)
-* @param array ($sec, $sec)
+* @param string output of microtime()
+* @param string output of microtime()
 * @return string HTML code
 */
 function format_time($start, $end) {
-	return " <span class='time'>(" . lang('%.3f s', max(0, $end[0] - $start[0] + $end[1] - $start[1])) . ")</span>";
+	return " <span class='time'>(" . lang('%.3f s', max(0, array_sum(explode(" ", $end)) - array_sum(explode(" ", $start)))) . ")</span>";
 }
 
 /** Print table columns for type edit

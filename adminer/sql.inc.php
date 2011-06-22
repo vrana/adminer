@@ -52,7 +52,7 @@ if (!$error && $_POST) {
 		$commands = 0;
 		$errors = array();
 		$parse = '[\'`"]' . ($jush == "pgsql" ? '|\\$[^$]*\\$' : ($jush == "mssql" || $jush == "sqlite" ? '|\\[' : '')) . '|/\\*|-- |#'; //! ` and # not everywhere
-		$total_start = explode(" ", microtime());
+		$total_start = microtime();
 		parse_str($_COOKIE["adminer_export"], $adminer_export);
 		$dump_format = $adminer->dumpFormat();
 		unset($dump_format["sql"]);
@@ -90,14 +90,14 @@ if (!$error && $_POST) {
 							ob_flush();
 							flush(); // can take a long time - show the running query
 						}
-						$start = explode(" ", microtime()); // microtime(true) is available since PHP 5
+						$start = microtime(); // microtime(true) is available since PHP 5
 						//! don't allow changing of character_set_results, convert encoding of displayed query
 						if ($connection->multi_query($q) && is_object($connection2) && preg_match("~^$space*USE\\b~isU", $q)) {
 							$connection2->query($q);
 						}
 						do {
 							$result = $connection->store_result();
-							$end = explode(" ", microtime());
+							$end = microtime();
 							$time = format_time($start, $end) . (strlen($q) < 1000 ? " <a href='" . h(ME) . "sql=" . urlencode(trim($q)) . "'>" . lang('Edit') . "</a>" : ""); // 1000 - maximum length of encoded URL in IE is 2083 characters
 							if ($connection->error) {
 								echo ($_POST["only_errors"] ? $print : "");
@@ -150,7 +150,7 @@ if (!$error && $_POST) {
 		if ($empty) {
 			echo "<p class='message'>" . lang('No commands to execute.') . "\n";
 		} elseif ($_POST["only_errors"]) {
-			echo "<p class='message'>" . lang('%d query(s) executed OK.', $commands - count($errors)) . format_time($total_start, explode(" ", microtime())) . "\n";
+			echo "<p class='message'>" . lang('%d query(s) executed OK.', $commands - count($errors)) . format_time($total_start, microtime()) . "\n";
 		} elseif ($errors && $commands > 1) {
 			echo "<p class='error'>" . lang('Error in query') . ": " . implode("", $errors) . "\n";
 		}
