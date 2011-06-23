@@ -264,4 +264,10 @@ $translations = array(
 	'Please use one of the extensions %s.' => 'Prosím vyberte jednu z koncoviek %s.',
 	'now' => 'teraz',
 	'ltr' => 'ltr',
+	'Tables have been copied.' => 'Tabuľky boli skopírované.',
+	'Copy' => 'Kopírovať',
+	'Permanent link' => 'Permanentný odkaz',
+	'Edit all' => 'Upraviť všetko',
+	'Resend POST data?' => 'Znovu poslať POST data?',
+	'HH:MM:SS' => 'HH:MM:SS',
 );

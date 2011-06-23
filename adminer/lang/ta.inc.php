@@ -264,4 +264,10 @@ $translations = array(
 	'Invalid schema.' => 'அமைப்புமுறை ச‌ரியான‌த‌ல்ல‌ (Invalid Schema).',
 	'Please use one of the extensions %s.' => 'த‌ய‌வு செய்து ஒரு விரிவினை %s (extension) உப‌யோகிக்க‌வும்.',
 	'ltr' => 'ltr',
+	'Tables have been copied.' => 'அட்டவணைகள் நகலெடுக்கப் பட்டது.',
+	'Copy' => 'நகல்',
+	'Permanent link' => 'நிரந்தர இணைப்பு',
+	'Edit all' => 'அனைத்தையும் தொகு',
+	'Resend POST data?' => 'POST data வை மீண்டும் அனுப்பவா?',
+	'HH:MM:SS' => 'HH:MM:SS',
 );

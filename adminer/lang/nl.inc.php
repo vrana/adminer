@@ -264,4 +264,10 @@ $translations = array(
 	'Please use one of the extensions %s.' => 'Gebruik 1 van volgende extensies: %s.',
 	'now' => 'nu',
 	'ltr' => 'ltr',
+	'Tables have been copied.' => 'De tabellen zijn gekopieerd.',
+	'Copy' => 'Kopieren',
+	'Permanent link' => 'Permanente link',
+	'Edit all' => 'Alles bewerken',
+	'Resend POST data?' => 'POST data opnieuw verzenden',
+	'HH:MM:SS' => 'HH:MM:SS',
 );

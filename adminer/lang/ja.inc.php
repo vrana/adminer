@@ -264,4 +264,10 @@ $translations = array(
 	'Invalid schema.' => '無効なスキーマ',
 	'Please use one of the extensions %s.' => 'いずれかの拡張機能を使ってください %s',
 	'ltr' => 'ltr',
+	'Tables have been copied.' => 'テーブルをコピーしました',
+	'Copy' => 'コピー',
+	'Permanent link' => 'パーマネントリンク',
+	'Edit all' => 'すべて編集',
+	'Resend POST data?' => '再送信しますか？',
+	'HH:MM:SS' => '時:分:秒',
 );
