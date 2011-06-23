@@ -465,7 +465,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			$return = ($match["p1"] != "" ? $match["p1"] : ($match["p2"] != "" ? ($match["p2"] < 70 ? 20 : 19) . $match["p2"] : gmdate("Y"))) . "-$match[p3]$match[p4]-$match[p5]$match[p6]" . end($match);
 		}
 		$return = ($field["type"] == "bit" && ereg('^[0-9]+$', $value) ? $return : q($return));
-		if (!ereg('char|text', $field["type"]) && !like_bool($field) && $value == "") {
+		if ($value == "" && ($field["null"] || !ereg('char|text', $field["type"])) && !like_bool($field)) {
 			$return = "NULL";
 		} elseif (ereg('^(md5|sha1)$', $function)) {
 			$return = "$function($return)";
