@@ -575,14 +575,14 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	
 	function _foreignKeyOptions($table, $column, $value = null) {
 		global $connection;
-		if (list($table, $id, $name) = $this->_foreignColumn(column_foreign_keys($table), $column)) {
-			$return = &$this->_values[$table];
+		if (list($target, $id, $name) = $this->_foreignColumn(column_foreign_keys($table), $column)) {
+			$return = &$this->_values[$target];
 			if (!isset($return)) {
-				$table_status = table_status($table);
-				$return = ($table_status["Rows"] > 1000 ? "" : array("" => "") + get_key_vals("SELECT $id, $name FROM " . table($table) . " ORDER BY 2"));
+				$table_status = table_status($target);
+				$return = ($table_status["Rows"] > 1000 ? "" : array("" => "") + get_key_vals("SELECT $id, $name FROM " . table($target) . " ORDER BY 2"));
 			}
 			if (!$return && isset($value)) {
-				return $connection->result("SELECT $name FROM " . table($table) . " WHERE $id = " . q($value));
+				return $connection->result("SELECT $name FROM " . table($target) . " WHERE $id = " . q($value));
 			}
 			return $return;
 		}
