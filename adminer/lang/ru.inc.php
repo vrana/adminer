@@ -264,4 +264,10 @@ $translations = array(
 	'Please use one of the extensions %s.' => 'Используйте одно из этих расширений %s.',
 	'now' => 'сейчас',
 	'ltr' => 'ltr',
+	'Tables have been copied.' => 'Таблицы скопированы.',
+	'Copy' => 'Копировать',
+	'Permanent link' => 'Постоянная ссылка',
+	'Edit all' => 'Редактировать всё',
+	'Resend POST data?' => 'Еще раз послать данные POST запроса?',
+	'HH:MM:SS' => 'ЧЧ:ММ:СС',
 );

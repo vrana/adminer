@@ -264,4 +264,10 @@ $translations = array(
 	'Invalid schema.' => 'Esquema invàlid.',
 	'Please use one of the extensions %s.' => 'Si us plau, utilitza una de les extensions %s.',
 	'ltr' => 'ltr',
+	'Tables have been copied.' => 'S\'han copiat les taules.',
+	'Copy' => 'Còpia',
+	'Permanent link' => 'Enllaç permanent',
+	'Edit all' => 'Edita-ho tot',
+	'Resend POST data?' => 'Tornar a enviar dades POST?',
+	'HH:MM:SS' => 'HH:MM:SS',
 );

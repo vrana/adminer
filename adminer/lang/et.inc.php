@@ -264,4 +264,10 @@ $translations = array(
 	'Please use one of the extensions %s.' => 'Palun kasuta üht laiendustest %s.',
 	'now' => 'nüüd',
 	'ltr' => 'ltr',
+	'Tables have been copied.' => 'Tabelid on edukalt kopeeritud.',
+	'Copy' => 'Kopeeri',
+	'Permanent link' => 'Püsilink',
+	'Edit all' => 'Muuda kõiki',
+	'Resend POST data?' => 'Saada POST andmed uuesti?',
+	'HH:MM:SS' => 'HH:MM:SS',
 );
