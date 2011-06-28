@@ -264,4 +264,10 @@ $translations = array(
 	'Please use one of the extensions %s.' => '请使用这些扩展中的一个：%s。',
 	'now' => '现在',
 	'ltr' => 'ltr',
+	'Tables have been copied.' => '表已复制。',
+	'Copy' => '复制',
+	'Permanent link' => '固定链接',
+	'Edit all' => '编辑全部',
+	'Resend POST data?' => '重新发送 POST 数据？',
+	'HH:MM:SS' => 'HH:MM:SS',
 );
