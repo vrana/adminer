@@ -32,8 +32,16 @@ function adminer_object() {
 			if ($order && ereg('_(md5|sha1)$', $field["field"])) {
 				return ""; // hide hashes in select
 			}
-			// only columns with comments will be displayed and only the first five in select
-			return ($order <= 5 ? h($field["comment"]) : "");
+			// display only column with comments, first five of them plus searched columns
+			if ($order < 5) {
+				return h($field["comment"]);
+			}
+			foreach ((array) $_GET["where"] as $key => $where) {
+				if ($where["col"] == $field["field"] && ($key >= 0 || $where["val"] != "")) {
+					return h($field["comment"]);
+				}
+			}
+			return "";
 		}
 		
 	}
