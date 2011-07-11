@@ -51,14 +51,15 @@ function put_file($match) {
 	if (basename($match[2]) != "lang.inc.php" || !$_SESSION["lang"]) {
 		$tokens = token_get_all($return); // to find out the last token
 		return "?>\n$return" . (in_array($tokens[count($tokens) - 1][0], array(T_CLOSE_TAG, T_INLINE_HTML), true) ? "<?php" : "");
-	} elseif (preg_match('~\\s*(\\$pos = .*;)~sU', $return, $match2)) {
+	} elseif (preg_match('~\\s*(\\$pos = (.+\n).+;)~sU', $return, $match2)) {
 		// single language lang() is used for plural
 		return "function get_lang() {
 	return '$_SESSION[lang]';
 }
 
 function lang(\$translation, \$number) {
-	" . str_replace('$LANG', "'$_SESSION[lang]'", $match2[1]) . '
+	\$pos = $match2[2]\t\t: " . (preg_match("~\\\$LANG == '$_SESSION[lang]'.* \\? (.+)\n~U", $match2[1], $match3) ? $match3[1] : "1") . '
+	);
 	return sprintf($translation[$pos], $number);
 }
 ';
