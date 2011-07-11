@@ -43,7 +43,7 @@ function get_lang() {
 function lang($idf, $number = null) {
 	global $LANG, $translations;
 	$translation = $translations[$idf];
-	if (is_array($translation) && $translation) {
+	if (is_array($translation)) {
 		$pos = ($number == 1 ? 0
 			: ($LANG == 'cs' || $LANG == 'sk' ? ($number && $number < 5 ? 1 : 2) // different forms for 1, 2-4, other
 			: ($LANG == 'fr' ? (!$number ? 0 : 1) // different forms for 0-1, other
