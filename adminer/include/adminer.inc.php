@@ -56,7 +56,7 @@ class Adminer {
 		?>
 <table cellspacing="0">
 <tr><th><?php echo lang('System'); ?><td><?php echo html_select("driver", $drivers, DRIVER, "loginDriver(this);"); ?>
-<tr><th><?php echo lang('Server'); ?><td><input name="server" value="<?php echo h(SERVER); ?>">
+<tr><th><?php echo lang('Server'); ?><td><input name="server" value="<?php echo h(SERVER); ?>" title="hostname[:port]">
 <tr><th><?php echo lang('Username'); ?><td><input id="username" name="username" value="<?php echo h($_GET["username"]); ?>">
 <tr><th><?php echo lang('Password'); ?><td><input type="password" name="password">
 </table>
