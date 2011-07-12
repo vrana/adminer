@@ -667,6 +667,7 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function copy_tables($tables, $views, $target) {
+		queries("SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO'");
 		foreach ($tables as $table) {
 			$name = ($target == DB ? table("copy_$table") : idf_escape($target) . "." . table($table));
 			if (!queries("DROP TABLE IF EXISTS $name")
