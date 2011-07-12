@@ -261,13 +261,13 @@ ORDER BY a.attnum"
 	
 	function foreign_keys($table) {
 		$return = array();
-		foreach (get_rows("SELECT tc.constraint_name, kcu.column_name, rc.update_rule AS on_update, rc.delete_rule AS on_delete, ccu.table_name AS table, ccu.column_name AS ref
+		foreach (get_rows("SELECT tc.constraint_name, kcu.column_name, rc.update_rule AS on_update, rc.delete_rule AS on_delete, unique_constraint_schema AS ns, ccu.table_name AS table, ccu.column_name AS ref
 FROM information_schema.table_constraints tc
 LEFT JOIN information_schema.key_column_usage kcu USING (constraint_catalog, constraint_schema, constraint_name)
 LEFT JOIN information_schema.referential_constraints rc USING (constraint_catalog, constraint_schema, constraint_name)
 LEFT JOIN information_schema.constraint_column_usage ccu ON rc.unique_constraint_catalog = ccu.constraint_catalog AND rc.unique_constraint_schema = ccu.constraint_schema AND rc.unique_constraint_name = ccu.constraint_name
-WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.table_name = " . q($table) //! there can be more unique_constraint_name
-			) as $row) {
+WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.constraint_schema = current_schema() AND tc.table_name = " . q($table) //! there can be more unique_constraint_name
+		) as $row) {
 			$foreign_key = &$return[$row["constraint_name"]];
 			if (!$foreign_key) {
 				$foreign_key = $row;

@@ -49,7 +49,7 @@ foreach (table_status() as $name => $table_status) {
 
 <form action="" method="post">
 <p>
-<?php if ($row["db"] == "") { ?>
+<?php if ($row["db"] == "" && $row["ns"] == "") { ?>
 <?php echo lang('Target table'); ?>:
 <?php echo html_select("table", $referencable, $row["table"], "this.form['change-js'].value = '1'; if (!ajaxForm(this.form)) this.form.submit();"); ?>
 <input type="hidden" name="change-js" value="">

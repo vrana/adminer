@@ -436,7 +436,7 @@ if (!defined("DRIVER")) {
 
 	/** Get foreign keys in table
 	* @param string
-	* @return array array($name => array("db" => , "table" => , "source" => array(), "target" => array(), "on_delete" => , "on_update" => ))
+	* @return array array($name => array("db" => , "ns" => , "table" => , "source" => array(), "target" => array(), "on_delete" => , "on_update" => ))
 	*/
 	function foreign_keys($table) {
 		global $connection, $on_actions;
