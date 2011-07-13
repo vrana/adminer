@@ -7,6 +7,7 @@ $foreign_keys = column_foreign_keys($TABLE);
 if ($table_status["Oid"] == "t") {
 	$indexes[] = array("type" => "PRIMARY", "columns" => array("oid"));
 }
+parse_str($_COOKIE["adminer_import"], $adminer_import);
 
 $rights = array(); // privilege => 0
 $columns = array(); // selectable columns
@@ -53,6 +54,7 @@ if ($_POST && !$error) {
 		}
 	}
 	if ($_POST["export"]) {
+		cookie("adminer_import", "output=" . urlencode($_POST["output"]) . "&format=" . urlencode($_POST["format"]));
 		dump_headers($TABLE);
 		$adminer->dumpTable($TABLE, "");
 		if (!is_array($_POST["check"]) || $unselected === array()) {
@@ -141,6 +143,7 @@ if ($_POST && !$error) {
 			}
 		} elseif (is_string($file = get_file("csv_file", true))) {
 			//! character set
+			cookie("adminer_import", "output=" . urlencode($adminer_import["output"]) . "&format=" . urlencode($_POST["separator"]));
 			$result = true;
 			$cols = array_keys($fields);
 			preg_match_all('~(?>"[^"]*"|[^"\\r\\n]+)+~', $file, $matches);
@@ -367,8 +370,6 @@ if (!$columns) {
 			echo "</table>\n";
 		}
 		
-		parse_str($_COOKIE["adminer_export"], $adminer_export);
-		
 		if ($rows || $page) {
 			$exact_count = true;
 			if ($_GET["page"] != "last" && +$limit && count($group) >= count($select) && ($found_rows >= $limit || $page)) {
@@ -407,15 +408,15 @@ if (!$columns) {
 			}
 			print_fieldset("export", lang('Export'));
 			$output = $adminer->dumpOutput();
-			echo ($output ? html_select("output", $output, $adminer_export["output"]) . " " : "");
-			echo html_select("format", $adminer->dumpFormat(), $adminer_export["format"]);
+			echo ($output ? html_select("output", $output, $adminer_import["output"]) . " " : "");
+			echo html_select("format", $adminer->dumpFormat(), $adminer_import["format"]);
 			echo " <input type='submit' name='export' value='" . lang('Export') . "' onclick='eventStop(event);'>\n";
 			echo "</div></fieldset>\n";
 		}
 		if ($adminer->selectImportPrint()) {
 			print_fieldset("import", lang('Import'), !$rows);
 			echo "<input type='file' name='csv_file'> ";
-			echo html_select("separator", array("csv" => "CSV,", "csv;" => "CSV;", "tsv" => "TSV"), $adminer_export["format"], 1); // 1 - select
+			echo html_select("separator", array("csv" => "CSV,", "csv;" => "CSV;", "tsv" => "TSV"), $adminer_import["format"], 1); // 1 - select
 			echo " <input type='submit' name='import' value='" . lang('Import') . "'>";
 			echo "<input type='hidden' name='token' value='$token'>\n";
 			echo "</div></fieldset>\n";
