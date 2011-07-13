@@ -436,16 +436,16 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 		$index = array();
 		$drop = array();
 		foreach ($alter as $val) {
-			if ($val[2]) {
+			if ($val[2] == "DROP") {
 				if ($val[0] == "PRIMARY") { //! sometimes used also for UNIQUE
-					$drop[] = $val[1];
+					$drop[] = idf_escape($val[1]);
 				} else {
-					$index[] = "$val[1] ON " . table($table);
+					$index[] = idf_escape($val[1]) . " ON " . table($table);
 				}
 			} elseif (!queries(($val[0] != "PRIMARY"
-				? "CREATE" . ($val[0] != "INDEX" ? " UNIQUE" : "") . " INDEX " . idf_escape(uniqid($table . "_")) . " ON " . table($table)
+				? "CREATE $val[0] " . ($val[0] != "INDEX" ? "INDEX " : "") . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_")) . " ON " . table($table)
 				: "ALTER TABLE " . table($table) . " ADD PRIMARY KEY"
-			) . " $val[1]")) {
+			) . " $val[2]")) {
 				return false;
 			}
 		}

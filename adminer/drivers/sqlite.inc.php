@@ -422,7 +422,10 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	
 	function alter_indexes($table, $alter) {
 		foreach ($alter as $val) {
-			if (!queries(($val[2] ? "DROP INDEX" : "CREATE" . ($val[0] != "INDEX" ? " UNIQUE" : "") . " INDEX " . idf_escape(uniqid($table . "_")) . " ON " . table($table)) . " $val[1]")) {
+			if (!queries($val[2] == "DROP"
+				? "DROP INDEX " . idf_escape($val[1])
+				: "CREATE $val[0] " . ($val[0] != "INDEX" ? "INDEX " : "") . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_")) . " ON " . table($table) . " $val[2]"
+			)) {
 				return false;
 			}
 		}

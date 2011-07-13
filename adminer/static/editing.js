@@ -343,17 +343,38 @@ function indexesAddRow(field) {
 		selects[i].name = selects[i].name.replace(/indexes\[\d+/, '$&1');
 		selects[i].selectedIndex = 0;
 	}
-	var input = row.getElementsByTagName('input')[0];
-	input.name = input.name.replace(/indexes\[\d+/, '$&1');
-	input.value = '';
+	var inputs = row.getElementsByTagName('input');
+	for (var i=0; i < inputs.length; i++) {
+		inputs[i].name = inputs[i].name.replace(/indexes\[\d+/, '$&1');
+		inputs[i].value = '';
+	}
 	parent.parentNode.appendChild(row);
+}
+
+/** Change column in index
+* @param HTMLSelectElement
+* @param string name prefix
+*/
+function indexesChangeColumn(field, prefix) {
+	var columns = field.parentNode.parentNode.getElementsByTagName('select');
+	var names = [];
+	for (var i=0; i < columns.length; i++) {
+		var value = selectValue(columns[i]);
+		if (value) {
+			names.push(value);
+		}
+	}
+	field.form[field.name.replace(/\].*/, '][name]')].value = prefix + names.join('_');
 }
 
 /** Add column for index
 * @param HTMLSelectElement
+* @param string name prefix
 */
-function indexesAddColumn(field) {
-	field.onchange = function () { };
+function indexesAddColumn(field, prefix) {
+	field.onchange = function () {
+		indexesChangeColumn(field, prefix);
+	};
 	var select = field.form[field.name.replace(/\].*/, '][type]')];
 	if (!select.selectedIndex) {
 		select.selectedIndex = 3;
@@ -367,6 +388,7 @@ function indexesAddColumn(field) {
 	input.name = input.name.replace(/\]\[\d+/, '$&1');
 	input.value = '';
 	field.parentNode.parentNode.appendChild(column);
+	field.onchange();
 }
 
 

@@ -611,12 +611,15 @@ if (!defined("DRIVER")) {
 	
 	/** Run commands to alter indexes
 	* @param string escaped table name
-	* @param array of array("index type", "(columns definition)") or array("index type", "escaped name", "DROP")
+	* @param array of array("index type", "name", "(columns definition)") or array("index type", "name", "DROP")
 	* @return bool
 	*/
 	function alter_indexes($table, $alter) {
 		foreach ($alter as $key => $val) {
-			$alter[$key] = ($val[2] ? "\nDROP INDEX " : "\nADD $val[0] " . ($val[0] == "PRIMARY" ? "KEY " : "")) . $val[1];
+			$alter[$key] = ($val[2] == "DROP"
+				? "\nDROP INDEX " . idf_escape($val[1])
+				: "\nADD $val[0] " . ($val[0] == "PRIMARY" ? "KEY " : "") . ($val[1] != "" ? idf_escape($val[1]) . " " : "") . $val[2]
+			);
 		}
 		return queries("ALTER TABLE " . table($table) . implode(",", $alter));
 	}

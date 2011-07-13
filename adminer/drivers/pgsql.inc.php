@@ -383,10 +383,13 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.constraint_schema = current_sche
 		$drop = array();
 		foreach ($alter as $val) {
 			if ($val[0] != "INDEX") {
-				$create[] = ($val[2] ? "\nDROP CONSTRAINT " : "\nADD $val[0] " . ($val[0] == "PRIMARY" ? "KEY " : "")) . $val[1];
-			} elseif ($val[2]) {
-				$drop[] = $val[1];
-			} elseif (!queries("CREATE INDEX " . idf_escape(uniqid($table . "_")) . " ON " . table($table) . " $val[1]")) {
+				$create[] = ($val[2] == "DROP"
+					? "\nDROP CONSTRAINT " . idf_escape($val[1])
+					: "\nADD $val[0] " . ($val[0] == "PRIMARY" ? "KEY " : "") . $val[2]
+				);
+			} elseif ($val[2] == "DROP") {
+				$drop[] = idf_escape($val[1]);
+			} elseif (!queries("CREATE INDEX " . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_")) . " ON " . table($table) . " $val[2]")) {
 				return false;
 			}
 		}
