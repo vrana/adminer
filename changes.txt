@@ -11,6 +11,7 @@ Display column collation in tooltip
 Keyboard shortcuts: Alt+Shift+1 for homepage, Ctrl+Shift+Enter for Save and continue edit
 Show only errors with Webserver file SQL command
 Remember select export and import options
+Link tables and indexes from SQL command EXPLAIN (MySQL)
 Display error with all wrong SQL commands (MySQL)
 Display foreign keys from other schemas (PostgreSQL)
 Pagination support (Oracle)

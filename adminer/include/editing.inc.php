@@ -18,9 +18,12 @@ function select($result, $connection2 = null, $href = "") {
 			echo "<thead><tr>";
 			for ($j=0; $j < count($row); $j++) {
 				$field = $result->fetch_field();
+				$name = $field->name;
 				$orgtable = $field->orgtable;
 				$orgname = $field->orgname;
-				if ($orgtable != "") {
+				if ($href) { // MySQL EXPLAIN
+					$links[$j] = ($name == "table" ? "table=" : ($name == "possible_keys" ? "indexes=" : null));
+				} elseif ($orgtable != "") {
 					if (!isset($indexes[$orgtable])) {
 						// find primary key in each table
 						$indexes[$orgtable] = array();
@@ -42,7 +45,7 @@ function select($result, $connection2 = null, $href = "") {
 					$blobs[$j] = true;
 				}
 				$types[$j] = $field->type;
-				$name = h($field->name);
+				$name = h($name);
 				echo "<th" . ($orgtable != "" || $field->name != $orgname ? " title='" . h(($orgtable != "" ? "$orgtable." : "") . $orgname) . "'" : "") . ">" . ($href ? "<a href='$href" . strtolower($name) . "' target='_blank' rel='noreferrer'>$name</a>" : $name);
 			}
 			echo "</thead>\n";
@@ -51,24 +54,26 @@ function select($result, $connection2 = null, $href = "") {
 		foreach ($row as $key => $val) {
 			if (!isset($val)) {
 				$val = "<i>NULL</i>";
+			} elseif ($blobs[$key] && !is_utf8($val)) {
+				$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>"; //! link to download
+			} elseif (!strlen($val)) { // strlen - SQLite can return int
+				$val = "&nbsp;"; // some content to print a border
 			} else {
-				if ($blobs[$key] && !is_utf8($val)) {
-					$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>"; //! link to download
-				} elseif (!strlen($val)) { // strlen - SQLite can return int
-					$val = "&nbsp;"; // some content to print a border
-				} else {
-					$val = h($val);
-					if ($types[$key] == 254) { // 254 - char
-						$val = "<code>$val</code>";
-					}
+				$val = h($val);
+				if ($types[$key] == 254) { // 254 - char
+					$val = "<code>$val</code>";
 				}
-				if (isset($links[$key]) && !$columns[$links[$key]]) {
+			}
+			if (isset($links[$key]) && !$columns[$links[$key]]) {
+				if ($href) { // MySQL EXPLAIN
+					$link = $links[$key] . urlencode($row[array_search("table=", $links)]);
+				} else {
 					$link = "edit=" . urlencode($links[$key]);
 					foreach ($indexes[$links[$key]] as $col => $j) {
 						$link .= "&where" . urlencode("[" . bracket_escape($col) . "]") . "=" . urlencode($row[$j]);
 					}
-					$val = "<a href='" . h(ME . $link) . "'>$val</a>";
 				}
+				$val = "<a href='" . h(ME . $link) . "'>$val</a>";
 			}
 			echo "<td>$val";
 		}
