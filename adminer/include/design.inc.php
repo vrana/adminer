@@ -22,13 +22,13 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <meta http-equiv="Content-Script-Type" content="text/javascript">
 <meta name="robots" content="noindex">
 <title><?php echo $title_page; ?></title>
-<link rel="shortcut icon" type="image/x-icon" href="../adminer/static/favicon.ico" id="favicon">
-<link rel="stylesheet" type="text/css" href="../adminer/static/default.css">
+<link rel="shortcut icon" type="image/x-icon" href="<?php dirname($_SERVER['PHP_SELF']); ?>/static/favicon.ico" id="favicon">
+<link rel="stylesheet" type="text/css" href="<?php dirname($_SERVER['PHP_SELF']); ?>/static/default.css">
 <script type="text/javascript">
 var areYouSure = '<?php echo lang('Resend POST data?'); ?>';
 </script>
-<script type="text/javascript" src="../adminer/static/functions.js"></script>
-<script type="text/javascript" src="static/editing.js"></script>
+<script type="text/javascript" src="<?php dirname($_SERVER['PHP_SELF']); ?>/static/functions.js"></script>
+<script type="text/javascript" src="<?php dirname($_SERVER['PHP_SELF']); ?>/static/editing.js"></script>
 <?php if ($adminer->head() && file_exists("adminer.css")) { ?>
 <link rel="stylesheet" type="text/css" href="adminer.css">
 <?php } ?>
