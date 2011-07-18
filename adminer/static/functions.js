@@ -454,7 +454,7 @@ function bodyClick(event, db, ns) {
 	if (event.button || event.ctrlKey || event.shiftKey || event.altKey || event.metaKey) {
 		return;
 	}
-	if (event.getPreventDefault ? event.getPreventDefault() : event.returnValue === false) {
+	if (event.getPreventDefault ? event.getPreventDefault() : event.returnValue === false || event.defaultPrevented) {
 		return false;
 	}
 	var el = event.target || event.srcElement;
