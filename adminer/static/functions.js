@@ -255,7 +255,7 @@ function ajaxSetHtml(url) {
 	});
 }
 
-var originalFavicon = (document.getElementById('favicon') || {}).href;
+var originalFavicon;
 
 /** Replace favicon
 * @param string
@@ -283,6 +283,9 @@ function ajaxSend(url, data, popState, noscroll) {
 	}
 	var currentState = ++ajaxState;
 	onblur = function () {
+		if (!originalFavicon) {
+			originalFavicon = (document.getElementById('favicon') || {}).href;
+		}
 		replaceFavicon('../adminer/static/loader.gif');
 	};
 	setHtml('loader', '<img src="../adminer/static/loader.gif" alt="">');
