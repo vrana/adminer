@@ -26,7 +26,7 @@ Display searched columns (Editor)
 Customizable favicon (customization)
 Method name can return a link (customization)
 Easier sending of default headers (customization)
-Romanian translation
+Lithuanian and Romanian translation
 
 Adminer 3.2.2 (released 2011-03-28):
 Fix AJAX history after reload
