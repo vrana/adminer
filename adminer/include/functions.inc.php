@@ -27,9 +27,10 @@ function escape_string($val) {
 
 /** Disable magic_quotes_gpc
 * @param array e.g. (&$_GET, &$_POST, &$_COOKIE)
+* @param bool whether to leave values as is
 * @return null modified in place
 */
-function remove_slashes($process) {
+function remove_slashes($process, $filter = false) {
 	if (get_magic_quotes_gpc()) {
 		while (list($key, $val) = each($process)) {
 			foreach ($val as $k => $v) {

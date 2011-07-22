@@ -4,8 +4,8 @@ error_reporting(6135); // errors and warnings
 include "../adminer/include/coverage.inc.php";
 
 // disable filter.default
-$filter = (!ereg('^(unsafe_raw)?$', ini_get("filter.default")) || ini_get("filter.default_flags"));
-if ($filter) {
+$filter = (!ereg('^(unsafe_raw)?$', ini_get("filter.default")));
+if ($filter || ini_get("filter.default_flags")) {
 	foreach (array('_GET', '_POST', '_COOKIE', '_SERVER') as $val) {
 		$unsafe = filter_input_array(constant("INPUT$val"), FILTER_UNSAFE_RAW);
 		if ($unsafe) {
@@ -39,7 +39,7 @@ if (!defined("SID")) {
 }
 
 // disable magic quotes to be able to use database escaping function
-remove_slashes(array(&$_GET, &$_POST, &$_COOKIE));
+remove_slashes(array(&$_GET, &$_POST, &$_COOKIE), $filter);
 if (function_exists("set_magic_quotes_runtime")) { // removed in PHP 6
 	set_magic_quotes_runtime(false);
 }
