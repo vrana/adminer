@@ -116,16 +116,16 @@ if (!$error && $_POST) {
 										. html_select("output", $adminer->dumpOutput(), $adminer_export["output"]) . " "
 										. html_select("format", $dump_format, $adminer_export["format"])
 										. "<input type='hidden' name='query' value='" . h($q) . "'>"
-										. " <input type='submit' name='export' value='" . lang('Export') . "' onclick='eventStop(event);'><input type='hidden' name='token' value='$token'></span>"
+										. " <input type='submit' name='export' value='" . lang('Export') . "' onclick='eventStop(event);'><input type='hidden' name='token' value='$token'></span>\n"
 									;
 									if ($connection2 && preg_match("~^($space|\\()*SELECT\\b~isU", $q) && ($explain = explain($connection2, $q))) {
 										$id = "explain-$commands";
-										echo ", <a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>$export\n";
+										echo ", <a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>$export";
 										echo "<div id='$id' class='hidden'>\n";
 										select($explain, $connection2, ($jush == "sql" ? "http://dev.mysql.com/doc/refman/" . substr($connection->server_info, 0, 3) . "/en/explain-output.html#explain_" : ""));
 										echo "</div>\n";
 									} else {
-										echo "$export\n";
+										echo $export;
 									}
 									echo "</form>\n";
 								}
