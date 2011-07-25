@@ -197,8 +197,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		$i = 0;
 		$fields = fields($_GET["select"]);
 		foreach ($fields as $name => $field) {
-			if (ereg("enum", $field["type"])) { //! set - uses 1 << $i and FIND_IN_SET()
-				$desc = $columns[$name];
+			$desc = $columns[$name];
+			if (ereg("enum", $field["type"]) && $desc != "") { //! set - uses 1 << $i and FIND_IN_SET()
 				$key = $keys[$name];
 				$i--;
 				echo "<div>" . h($desc) . "<input type='hidden' name='where[$i][col]' value='" . h($name) . "'>:";
