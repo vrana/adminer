@@ -798,7 +798,6 @@ DROP PROCEDURE adminer_alter;
 						foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
 							echo "jushLinks.$val = jushLinks.$jush;\n";
 						}
-						echo "var cmComplete = [ '" . implode("', '", array_map('js_escape', array_keys($tables))) . "' ];\n";
 						echo "</script>\n";
 					}
 				}
