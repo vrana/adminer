@@ -93,7 +93,7 @@ function nl_br($string) {
 function checkbox($name, $value, $checked, $label = "", $onclick = "", $jsonly = false) {
 	static $id = 0;
 	$id++;
-	$return = "<input type='checkbox' name='$name' value='" . h($value) . "'" . ($checked ? " checked" : "") . ($onclick ? " onclick=\"$onclick\"" : "") . ($jsonly ? " class='jsonly'" : "") . " id='checkbox-$id'>";
+	$return = "<input type='checkbox' name='$name' value='" . h($value) . "'" . ($checked ? " checked" : "") . ($onclick ? ' onclick="' . h($onclick) . '"' : '') . ($jsonly ? " class='jsonly'" : "") . " id='checkbox-$id'>";
 	return ($label != "" ? "<label for='checkbox-$id'>$return" . h($label) . "</label>" : $return);
 }
 
@@ -864,7 +864,7 @@ function is_url($string) {
 * @return null
 */
 function print_fieldset($id, $legend, $visible = false, $onclick = "") {
-	echo "<fieldset><legend><a href='#fieldset-$id' onclick=\"$onclick" . "return !toggle('fieldset-$id');\">$legend</a></legend><div id='fieldset-$id'" . ($visible ? "" : " class='hidden'") . ">\n";
+	echo "<fieldset><legend><a href='#fieldset-$id' onclick=\"" . h($onclick) . "return !toggle('fieldset-$id');\">$legend</a></legend><div id='fieldset-$id'" . ($visible ? "" : " class='hidden'") . ">\n";
 }
 
 /** Return class='active' if $bold is true
