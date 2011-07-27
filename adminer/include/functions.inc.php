@@ -148,12 +148,62 @@ function confirm($count = "", $stop = false) {
 	return " onclick=\"" . ($stop ? "eventStop(event); " : "") . "return confirm('" . lang('Are you sure?') . ($count ? " (' + $count + ')" : "") . "');\"";
 }
 
+/** Print header for hidden fieldset (close by </div></fieldset>)
+* @param string
+* @param string
+* @param bool
+* @param string
+* @return null
+*/
+function print_fieldset($id, $legend, $visible = false, $onclick = "") {
+	echo "<fieldset><legend><a href='#fieldset-$id' onclick=\"" . h($onclick) . "return !toggle('fieldset-$id');\">$legend</a></legend><div id='fieldset-$id'" . ($visible ? "" : " class='hidden'") . ">\n";
+}
+
+/** Return class='active' if $bold is true
+* @param bool
+* @return string
+*/
+function bold($bold) {
+	return ($bold ? " class='active'" : "");
+}
+
+/** Generate class for odd rows
+* @param string return this for odd rows, empty to reset counter
+* @return string
+*/
+function odd($return = ' class="odd"') {
+	static $i = 0;
+	if (!$return) { // reset counter
+		$i = -1;
+	}
+	return ($i++ % 2 ? $return : '');
+}
+
 /** Escape string for JavaScript apostrophes
 * @param string
 * @return string
 */
 function js_escape($string) {
 	return addcslashes($string, "\r\n'\\/"); // slash for <script>
+}
+
+/** Print one row in JSON object
+* @param string or "" to close the object
+* @param string
+* @return null
+*/
+function json_row($key, $val = null) {
+	static $first = true;
+	if ($first) {
+		echo "{";
+	}
+	if ($key != "") {
+		echo ($first ? "" : ",") . "\n\t\"" . addcslashes($key, "\r\n\"\\") . '": ' . (isset($val) ? '"' . addcslashes($val, "\r\n\"\\") . '"' : 'undefined');
+		$first = false;
+	} else {
+		echo "\n}\n";
+		$first = true;
+	}
 }
 
 /** Get INI boolean value
@@ -517,35 +567,14 @@ function upload_error($error) {
 	return ($error ? lang('Unable to upload a file.') . ($max_size ? " " . lang('Maximum allowed file size is %sB.', $max_size) : "") : lang('File does not exist.'));
 }
 
-/** Generate class for odd rows
-* @param string return this for odd rows, empty to reset counter
+/** Create repeat pattern for preg
+* @param string
+* @param int
 * @return string
 */
-function odd($return = ' class="odd"') {
-	static $i = 0;
-	if (!$return) { // reset counter
-		$i = -1;
-	}
-	return ($i++ % 2 ? $return : '');
-}
-
-/** Print one row in JSON object
-* @param string or "" to close the object
-* @param string
-* @return null
-*/
-function json_row($key, $val = null) {
-	static $first = true;
-	if ($first) {
-		echo "{";
-	}
-	if ($key != "") {
-		echo ($first ? "" : ",") . "\n\t\"" . addcslashes($key, "\r\n\"\\") . '": ' . (isset($val) ? '"' . addcslashes($val, "\r\n\"\\") . '"' : 'undefined');
-		$first = false;
-	} else {
-		echo "\n}\n";
-		$first = true;
-	}
+function repeat_pattern($pattern, $length) {
+	// fix for Compilation failed: number too big in {} quantifier
+	return str_repeat("$pattern{0,65535}", $length / 65535) . "$pattern{0," . ($length % 65535) . "}"; // can create {0,0} which is OK
 }
 
 /** Check whether the string is in UTF-8
@@ -555,16 +584,6 @@ function json_row($key, $val = null) {
 function is_utf8($val) {
 	// don't print control chars except \t\r\n
 	return (preg_match('~~u', $val) && !preg_match('~[\\0-\\x8\\xB\\xC\\xE-\\x1F]~', $val));
-}
-
-/** Create repeat pattern for preg
-* @param string
-* @param int
-* @return string
-*/
-function repeat_pattern($pattern, $length) {
-	// fix for Compilation failed: number too big in {} quantifier
-	return str_repeat("$pattern{0,65535}", $length / 65535) . "$pattern{0," . ($length % 65535) . "}"; // can create {0,0} which is OK
 }
 
 /** Shorten UTF-8 string
@@ -854,23 +873,4 @@ function is_mail($email) {
 function is_url($string) {
 	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component //! IDN
 	return (preg_match("~^(https?)://($domain?\\.)+$domain(:\\d+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string, $match) ? strtolower($match[1]) : ""); //! restrict path, query and fragment characters
-}
-
-/** Print header for hidden fieldset (close by </div></fieldset>)
-* @param string
-* @param string
-* @param bool
-* @param string
-* @return null
-*/
-function print_fieldset($id, $legend, $visible = false, $onclick = "") {
-	echo "<fieldset><legend><a href='#fieldset-$id' onclick=\"" . h($onclick) . "return !toggle('fieldset-$id');\">$legend</a></legend><div id='fieldset-$id'" . ($visible ? "" : " class='hidden'") . ">\n";
-}
-
-/** Return class='active' if $bold is true
-* @param bool
-* @return string
-*/
-function bold($bold) {
-	return ($bold ? " class='active'" : "");
 }
