@@ -335,7 +335,7 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Get tables list
-	* @return array
+	* @return array array($name => $type)
 	*/
 	function tables_list() {
 		global $connection;
