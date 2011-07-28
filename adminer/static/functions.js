@@ -309,7 +309,7 @@ function ajaxSend(url, data, popState, noscroll) {
 						history.pushState(data, '', url); //! remember window position
 					}
 				}
-				if (!noscroll) {
+				if (!noscroll && !/&order/.test(url)) {
 					scrollTo(0, 0);
 				}
 				setHtml('content', xmlhttp.responseText);
@@ -376,9 +376,9 @@ function ajaxForm(form, data, noscroll) {
 		params.push(data);
 	}
 	if (form.method == 'post') {
-		return ajaxSend((/\?/.test(form.action) ? form.action : location.href), params.join('&'), noscroll); // ? - always part of Adminer URL
+		return ajaxSend((/\?/.test(form.action) ? form.action : location.href), params.join('&'), false, noscroll); // ? - always part of Adminer URL
 	}
-	return ajaxSend((form.action || location.href).replace(/\?.*/, '') + '?' + params.join('&'), noscroll);
+	return ajaxSend((form.action || location.href).replace(/\?.*/, '') + '?' + params.join('&'), '', false, noscroll);
 }
 
 
