@@ -533,7 +533,7 @@ AND typelem = 0"
 	}
 	
 	function schemas() {
-		return get_vals("SELECT nspname FROM pg_namespace");
+		return get_vals("SELECT nspname FROM pg_namespace ORDER BY nspname");
 	}
 	
 	function get_schema() {

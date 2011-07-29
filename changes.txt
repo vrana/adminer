@@ -1,7 +1,7 @@
 Adminer 3.3.2-dev:
 Don't scroll with AJAX select order and alter move column
 Fast number of rows with big tables (PostgreSQL)
-Sort databases (PostgreSQL)
+Sort databases and schemas (PostgreSQL)
 
 Adminer 3.3.1 (released 2011-07-27):
 Fix XSS introduced in Adminer 3.2.0
