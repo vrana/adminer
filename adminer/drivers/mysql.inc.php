@@ -356,7 +356,7 @@ if (!defined("DRIVER")) {
 
 	/** Get table status
 	* @param string
-	* @return array
+	* @return array array($name => array("Name" => , "Engine" => , "Comment" => , "Oid" => , "Rows" => , "Collation" => , "Auto_increment" => , "Data_length" => , "Index_length" => , "Data_free" => )) or only inner array with $name
 	*/
 	function table_status($name = "") {
 		$return = array();
