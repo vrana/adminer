@@ -167,7 +167,7 @@ if (isset($_GET["pgsql"])) {
 	}
 	
 	function get_databases() {
-		return get_vals("SELECT datname FROM pg_database");
+		return get_vals("SELECT datname FROM pg_database ORDER BY datname");
 	}
 	
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
