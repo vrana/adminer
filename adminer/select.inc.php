@@ -373,8 +373,8 @@ if (!$columns) {
 		if ($rows || $page) {
 			$exact_count = true;
 			if ($_GET["page"] != "last" && +$limit && count($group) >= count($select) && ($found_rows >= $limit || $page)) {
-				$found_rows = $table_status["Rows"];
-				if (!isset($found_rows) || $where || ($table_status["Engine"] == "InnoDB" && $found_rows < max(1e4, 2 * ($page + 1) * $limit))) {
+				$found_rows = found_rows($table_status, $where);
+				if ($found_rows < max(1e4, 2 * ($page + 1) * $limit)) {
 					// slow with big tables
 					ob_flush(); //! doesn't work with AJAX
 					flush();

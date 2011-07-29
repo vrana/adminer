@@ -490,6 +490,10 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 		return $return;
 	}
 	
+	function found_rows($table_status, $where) {
+		return false;
+	}
+	
 	function foreign_keys($table) {
 		$return = array();
 		foreach (get_rows("EXEC sp_fkeys @fktable_name = " . q($table)) as $row) {

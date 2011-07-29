@@ -822,6 +822,15 @@ if (!defined("DRIVER")) {
 		return $connection->query("EXPLAIN $query");
 	}
 	
+	/** Get approximate number of rows
+	* @param array
+	* @param array
+	* @return int or null if approximate number can't be retrieved
+	*/
+	function found_rows($table_status, $where) {
+		return ($where || $table_status["Engine"] != "InnoDB" ? null : $table_status["Rows"]);
+	}
+	
 	/** Get user defined types
 	* @return array
 	*/

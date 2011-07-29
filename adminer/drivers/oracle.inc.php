@@ -275,6 +275,10 @@ ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
 		return $connection->query("SELECT * FROM plan_table");
 	}
 	
+	function found_rows($table_status, $where) {
+		return false;
+	}
+	
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
 		$alter = $drop = array();
 		foreach ($fields as $field) {

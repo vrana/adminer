@@ -511,6 +511,18 @@ ORDER BY p.proname');
 		return $connection->query("EXPLAIN $query");
 	}
 	
+	function found_rows($table_status, $where) {
+		global $connection;
+		if (ereg(
+			" rows=([0-9]+)",
+			$connection->result("EXPLAIN SELECT * FROM " . idf_escape($table_status["Name"]) . ($where ? " WHERE " . implode(" AND ", $where) : "")),
+			$regs
+		)) {
+			return $regs[1];
+		}
+		return false;
+	}
+	
 	function types() {
 		return get_vals("SELECT typname
 FROM pg_type
