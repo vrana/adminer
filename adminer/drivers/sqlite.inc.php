@@ -504,7 +504,6 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 	
 	function found_rows($table_status, $where) {
-		return false;
 	}
 	
 	function types() {

@@ -491,7 +491,6 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 	}
 	
 	function found_rows($table_status, $where) {
-		return false;
 	}
 	
 	function foreign_keys($table) {
