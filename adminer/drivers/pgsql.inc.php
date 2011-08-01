@@ -289,20 +289,28 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.constraint_schema = current_sche
 	
 	function foreign_keys_to($table) {
 		$return = array();
-		foreach (get_rows("SELECT tc.constraint_name, ccu.column_name, rc.update_rule AS on_update, rc.delete_rule AS on_delete, tc.table_name AS table, kcu.column_name AS ref
-FROM information_schema.table_constraints tc
-LEFT JOIN information_schema.key_column_usage kcu USING (constraint_catalog, constraint_schema, constraint_name)
-LEFT JOIN information_schema.referential_constraints rc USING (constraint_catalog, constraint_schema, constraint_name)
-LEFT JOIN information_schema.constraint_column_usage ccu ON rc.unique_constraint_catalog = ccu.constraint_catalog AND rc.unique_constraint_schema = ccu.constraint_schema AND rc.unique_constraint_name = ccu.constraint_name
-WHERE tc.constraint_type = 'FOREIGN KEY' AND ccu.table_name = " . q($table) //! there can be more unique_constraint_name
-			) as $row) {
-			$foreign_key = &$return[$row["constraint_name"]];
-			if (!$foreign_key) {
-				$foreign_key = $row;
+	
+		foreach (get_rows("SELECT pg_constraint.oid, pg_class.relname, conname AS name, (SELECT nspname FROM pg_namespace WHERE oid = connamespace) AS ns, pg_get_constraintdef(pg_constraint.oid) AS definition
+			FROM pg_constraint
+			JOIN pg_class ON pg_class.oid = pg_constraint.conrelid
+			WHERE confrelid = (SELECT oid FROM pg_class WHERE relname = " . q($table) . ")
+			 AND contype = 'f'::char
+			ORDER BY confkey, pg_class.relname, conname"
+		) as $row) {
+			if(preg_match('~FOREIGN KEY\s*\((.+)\)\s*REFERENCES (.+)\((.+)\)(.*)$~iA', $row['definition'], $match)) {
+				$row['source'] = array_map('trim', explode(',', $match[1]));
+				$row['table'] = $row['relname']; 
+				$row['target'] = array_map('trim', explode(',', $match[3]));
+				
+				$row['on_delete'] = (preg_match('~ON DELETE (CASCADE|SET NULL|RESTRICT|NO ACTION)~', $match[4], $match2)) ? $match2[1] : 'NO ACTION';
+				$row['on_update'] = (preg_match('~ON UPDATE (CASCADE|SET NULL|RESTRICT|NO ACTION)~', $match[4], $match2)) ? $match2[1] : 'NO ACTION';
+				
+				$return[] = $row;
+			} else {
+				// error in parsing
 			}
-			$foreign_key["source"][] = $row["column_name"];
-			$foreign_key["target"][] = $row["ref"];
 		}
+		
 		return $return;
 	}
 
