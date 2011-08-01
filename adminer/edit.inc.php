@@ -62,6 +62,10 @@ if ($_POST["save"]) {
 		$row = (isset($_GET["select"]) && count($rows) != 1 ? null : reset($rows));
 	}
 }
+
+if ($row === false) {
+	echo "<p class='error'>" . lang('No rows.') . "\n";
+}
 ?>
 
 <form action="" method="post" enctype="multipart/form-data" id="form">
