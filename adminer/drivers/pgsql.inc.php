@@ -287,6 +287,33 @@ WHERE tc.constraint_type = 'FOREIGN KEY' AND tc.constraint_schema = current_sche
 		return $return;
 	}
 	
+	function foreign_keys_to($table) {
+		$return = array();
+	
+		foreach (get_rows("SELECT pg_constraint.oid, pg_class.relname, conname AS name, (SELECT nspname FROM pg_namespace WHERE oid = connamespace) AS ns, pg_get_constraintdef(pg_constraint.oid) AS definition
+			FROM pg_constraint
+			JOIN pg_class ON pg_class.oid = pg_constraint.conrelid
+			WHERE confrelid = (SELECT oid FROM pg_class WHERE relname = " . q($table) . ")
+			 AND contype = 'f'::char
+			ORDER BY confkey, pg_class.relname, conname"
+		) as $row) {
+			if(preg_match('~FOREIGN KEY\s*\((.+)\)\s*REFERENCES (.+)\((.+)\)(.*)$~iA', $row['definition'], $match)) {
+				$row['source'] = array_map('trim', explode(',', $match[1]));
+				$row['table'] = $row['relname']; 
+				$row['target'] = array_map('trim', explode(',', $match[3]));
+				
+				$row['on_delete'] = (preg_match('~ON DELETE (CASCADE|SET NULL|RESTRICT|NO ACTION)~', $match[4], $match2)) ? $match2[1] : 'NO ACTION';
+				$row['on_update'] = (preg_match('~ON UPDATE (CASCADE|SET NULL|RESTRICT|NO ACTION)~', $match[4], $match2)) ? $match2[1] : 'NO ACTION';
+				
+				$return[] = $row;
+			} else {
+				// error in parsing
+			}
+		}
+		
+		return $return;
+	}
+
 	function view($name) {
 		global $connection;
 		return array("select" => $connection->result("SELECT pg_get_viewdef(" . q($name) . ")"));

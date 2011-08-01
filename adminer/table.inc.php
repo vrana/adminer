@@ -67,6 +67,29 @@ if ($fields) {
 			if ($jush != "sqlite") {
 				echo '<p><a href="' . h(ME) . 'foreign=' . urlencode($TABLE) . '">' . lang('Add foreign key') . "</a>\n";
 			}
+
+			if (function_exists('foreign_keys_to') && ($foreign_keys = foreign_keys_to($TABLE))) {
+				echo "<h3>" . lang('Referencing foreign keys') . "</h3>\n";
+				echo "<table cellspacing='0'>\n";
+				echo "<thead><tr><th>" . lang('Target') . "<td>" . lang('Source') . "<td>" . lang('ON DELETE') . "<td>" . lang('ON UPDATE') . ($jush != "sqlite" ? "<td>&nbsp;" : "") . "</thead>\n";
+				foreach ($foreign_keys as $foreign_key) {
+					$name = $foreign_key['name'];
+					$link = ($foreign_key["db"] != "" ? "<b>" . h($foreign_key["db"]) . "</b>." : "") . h($foreign_key["table"]);
+					echo "<tr title='" . h($name) . "'>";
+					echo "<th><i>" . implode("</i>, <i>", array_map('h', $foreign_key["target"])) . "</i>";
+					echo "<td><a href='" . h($foreign_key["db"] != "" ? preg_replace('~db=[^&]*~', "db=" . urlencode($foreign_key["db"]), ME) : ($foreign_key["ns"] != "" ? preg_replace('~ns=[^&]*~', "ns=" . urlencode($foreign_key["ns"]), ME) : ME)) . "table=" . urlencode($foreign_key["table"]) . "'>"
+						. ($foreign_key["db"] != "" ? "<b>" . h($foreign_key["db"]) . "</b>." : "") . ($foreign_key["ns"] != "" ? "<b>" . h($foreign_key["ns"]) . "</b>." : "") . h($foreign_key["table"])
+						. "</a>"
+					;
+					echo "(<i>" . implode("</i>, <i>", array_map('h', $foreign_key["source"])) . "</i>)";
+					echo "<td>$foreign_key[on_delete]\n";
+					echo "<td>$foreign_key[on_update]\n";
+					if ($jush != "sqlite") {
+						echo '<td><a href="' . h(ME . 'foreign=' . urlencode($foreign_key['table']) . '&name=' . urlencode($name)) . '">' . lang('Alter') . '</a>';
+					}
+				}
+				echo "</table>\n";
+			}
 		}
 		
 		if (support("trigger")) {
