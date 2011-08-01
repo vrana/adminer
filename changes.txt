@@ -1,4 +1,5 @@
 Adminer 3.3.2-dev:
+Display error with non-existent row in edit
 Don't scroll with AJAX select order and alter move column
 Fast number of rows with big tables (PostgreSQL)
 Sort databases and schemas (PostgreSQL)
