@@ -269,6 +269,7 @@ ORDER BY a.attnum"
 	}
 	
 	function foreign_keys($table) {
+		global $on_actions;
 		$return = array();
 		foreach (get_rows("SELECT conname, (SELECT nspname FROM pg_namespace WHERE oid = connamespace) AS ns, pg_get_constraintdef(oid) AS definition
 FROM pg_constraint
@@ -279,8 +280,8 @@ ORDER BY conkey, conname") as $row) {
 				$row['source'] = array_map('trim', explode(',', $match[1]));
 				$row['table'] = $match[2];
 				$row['target'] = array_map('trim', explode(',', $match[3]));
-				$row['on_delete'] = (preg_match('~ON DELETE (CASCADE|SET NULL|RESTRICT|NO ACTION)~', $match[4], $match2) ? $match2[1] : 'NO ACTION');
-				$row['on_update'] = (preg_match('~ON UPDATE (CASCADE|SET NULL|RESTRICT|NO ACTION)~', $match[4], $match2) ? $match2[1] : 'NO ACTION');
+				$row['on_delete'] = (preg_match('~ON DELETE (' . implode('|', $on_actions) . ')~', $match[4], $match2) ? $match2[1] : '');
+				$row['on_update'] = (preg_match('~ON UPDATE (' . implode('|', $on_actions) . ')~', $match[4], $match2) ? $match2[1] : '');
 				$return[$row['conname']] = $row;
 			}
 		}
