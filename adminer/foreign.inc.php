@@ -13,8 +13,8 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 		query_redirect("ALTER TABLE " . table($TABLE)
 			. ($_GET["name"] != "" ? "\nDROP FOREIGN KEY " . idf_escape($_GET["name"]) . "," : "")
 			. "\nADD FOREIGN KEY (" . implode(", ", array_map('idf_escape', $source)) . ") REFERENCES " . table($_POST["table"]) . " (" . implode(", ", array_map('idf_escape', $target)) . ")" //! reuse $_GET["name"] - check in older MySQL versions
-			. (in_array($_POST["on_delete"], $on_actions) ? " ON DELETE $_POST[on_delete]" : "")
-			. (in_array($_POST["on_update"], $on_actions) ? " ON UPDATE $_POST[on_update]" : "")
+			. (ereg("^($on_actions)\$", $_POST["on_delete"]) ? " ON DELETE $_POST[on_delete]" : "")
+			. (ereg("^($on_actions)\$", $_POST["on_update"]) ? " ON UPDATE $_POST[on_update]" : "")
 		, ME . "table=" . urlencode($TABLE), ($_GET["name"] != "" ? lang('Foreign key has been altered.') : lang('Foreign key has been created.')));
 		$error = lang('Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.') . "<br>$error"; //! no partitioning
 	}
@@ -67,8 +67,8 @@ foreach ($row["source"] as $key => $val) {
 ?>
 </table>
 <p>
-<?php echo lang('ON DELETE'); ?>: <?php echo html_select("on_delete", array(-1 => "") + $on_actions, $row["on_delete"]); ?>
- <?php echo lang('ON UPDATE'); ?>: <?php echo html_select("on_update", array(-1 => "") + $on_actions, $row["on_update"]); ?>
+<?php echo lang('ON DELETE'); ?>: <?php echo html_select("on_delete", array(-1 => "") + explode("|", $on_actions), $row["on_delete"]); ?>
+ <?php echo lang('ON UPDATE'); ?>: <?php echo html_select("on_update", array(-1 => "") + explode("|", $on_actions), $row["on_update"]); ?>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <noscript><p><input type="submit" name="add" value="<?php echo lang('Add column'); ?>"></noscript>
