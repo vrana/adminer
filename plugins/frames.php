@@ -21,7 +21,7 @@ class AdminerFrames {
 			header("X-Frame-Options: SameOrigin");
 		}
 		header("X-XSS-Protection: 0");
-		return true;
+		return false;
 	}
 	
 }
