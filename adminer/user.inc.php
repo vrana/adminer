@@ -111,7 +111,7 @@ if ($_POST) {
 	if ($old_pass != "") {
 		$row["hashed"] = true;
 	}
-	$grants[DB != "" && !isset($_GET["host"]) ? idf_escape($_GET["db"]) . ".*" : ""] = array();
+	$grants[DB != "" && !isset($_GET["host"]) ? idf_escape(addcslashes(DB, "%_")) . ".*" : ""] = array();
 }
 
 ?>
