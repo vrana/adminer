@@ -51,7 +51,7 @@ if (!$error && $_POST) {
 		}
 		$commands = 0;
 		$errors = array();
-		$parse = '[\'`"]' . ($jush == "pgsql" ? '|\\$[^$]*\\$' : ($jush == "mssql" || $jush == "sqlite" ? '|\\[' : '')) . '|/\\*|-- |#'; //! ` and # not everywhere
+		$parse = '[\'"' . ($jush == "sql" ? '`#' : ($jush == "sqlite" ? '`[' : ($jush == "mssql" ? '[' : ''))) . ']|/\\*|-- |$' . ($jush == "pgsql" ? '|\\$[^$]*\\$' : '');
 		$total_start = microtime();
 		parse_str($_COOKIE["adminer_export"], $adminer_export);
 		$dump_format = $adminer->dumpFormat();
@@ -61,7 +61,7 @@ if (!$error && $_POST) {
 				$delimiter = $match[1];
 				$query = substr($query, strlen($match[0]));
 			} else {
-				preg_match('(' . preg_quote($delimiter) . "|$parse|\$)", $query, $match, PREG_OFFSET_CAPTURE, $offset); // should always match
+				preg_match('(' . preg_quote($delimiter) . "|$parse)", $query, $match, PREG_OFFSET_CAPTURE, $offset); // should always match
 				$found = $match[0][0];
 				$offset = $match[0][1] + strlen($found);
 				if (!$found && $fp && !feof($fp)) {
