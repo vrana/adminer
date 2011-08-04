@@ -63,19 +63,19 @@ if (!$error && $_POST) {
 			} else {
 				preg_match('(' . preg_quote($delimiter) . "|$parse)", $query, $match, PREG_OFFSET_CAPTURE, $offset); // should always match
 				$found = $match[0][0];
-				$offset = $match[0][1] + strlen($found);
 				if (!$found && $fp && !feof($fp)) {
 					$query .= fread($fp, 1e5);
 				} else {
+					$offset = $match[0][1] + strlen($found);
 					if (!$found && rtrim($query) == "") {
 						break;
 					}
 					if ($found && $found != $delimiter) { // find matching quote or comment end
 						while (preg_match('(' . ($found == '/*' ? '\\*/' : ($found == '[' ? ']' : (ereg('^-- |^#', $found) ? "\n" : preg_quote($found) . "|\\\\."))) . '|$)s', $query, $match, PREG_OFFSET_CAPTURE, $offset)) { //! respect sql_mode NO_BACKSLASH_ESCAPES
 							$s = $match[0][0];
-							$offset = $match[0][1] + strlen($s);
+							$offset = $match[0][1] + ($s ? strlen($s) : -strlen($found)); // strlen($found) is higher than length of longest pattern minus one
 							if (!$s && $fp && !feof($fp)) {
-								$query .= fread($fp, 1e6);
+								$query .= fread($fp, 1e5);
 							} elseif ($s[0] != "\\") {
 								break;
 							}
