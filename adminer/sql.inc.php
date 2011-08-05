@@ -105,7 +105,7 @@ if (!$error && $_POST) {
 								echo "<p class='error'>" . lang('Error in query') . ": " . error() . "\n";
 								$errors[] = " <a href='#sql-$commands'>$commands</a>";
 								if ($_POST["error_stops"]) {
-									break;
+									break 2;
 								}
 							} elseif (is_object($result)) {
 								select($result, $connection2);
