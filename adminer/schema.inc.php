@@ -16,23 +16,23 @@ $base_left = -1;
 $schema = array(); // table => array("fields" => array(name => field), "pos" => array(top, left), "references" => array(table => array(left => array(source, target))))
 $referenced = array(); // target_table => array(table => array(left => target_column))
 $lefts = array(); // float => bool
-foreach (table_status() as $row) {
-	if (!isset($row["Engine"])) { // view
+foreach (table_status() as $table_status) {
+	if (!isset($table_status["Engine"])) { // view
 		continue;
 	}
 	$pos = 0;
-	$schema[$row["Name"]]["fields"] = array();
-	foreach (fields($row["Name"]) as $name => $field) {
+	$schema[$table_status["Name"]]["fields"] = array();
+	foreach (fields($table_status["Name"]) as $name => $field) {
 		$pos += 1.25;
 		$field["pos"] = $pos;
-		$schema[$row["Name"]]["fields"][$name] = $field;
+		$schema[$table_status["Name"]]["fields"][$name] = $field;
 	}
-	$schema[$row["Name"]]["pos"] = ($table_pos[$row["Name"]] ? $table_pos[$row["Name"]] : array($top, 0));
-	foreach ($adminer->foreignKeys($row["Name"]) as $val) {
+	$schema[$table_status["Name"]]["pos"] = ($table_pos[$table_status["Name"]] ? $table_pos[$table_status["Name"]] : array($top, 0));
+	foreach ($adminer->foreignKeys($table_status["Name"]) as $val) {
 		if (!$val["db"]) {
 			$left = $base_left;
-			if ($table_pos[$row["Name"]][1] || $table_pos[$val["table"]][1]) {
-				$left = min(floatval($table_pos[$row["Name"]][1]), floatval($table_pos[$val["table"]][1])) - 1;
+			if ($table_pos[$table_status["Name"]][1] || $table_pos[$val["table"]][1]) {
+				$left = min(floatval($table_pos[$table_status["Name"]][1]), floatval($table_pos[$val["table"]][1])) - 1;
 			} else {
 				$base_left -= .1;
 			}
@@ -40,12 +40,12 @@ foreach (table_status() as $row) {
 				// find free $left
 				$left -= .0001;
 			}
-			$schema[$row["Name"]]["references"][$val["table"]][(string) $left] = array($val["source"], $val["target"]);
-			$referenced[$val["table"]][$row["Name"]][(string) $left] = $val["target"];
+			$schema[$table_status["Name"]]["references"][$val["table"]][(string) $left] = array($val["source"], $val["target"]);
+			$referenced[$val["table"]][$table_status["Name"]][(string) $left] = $val["target"];
 			$lefts[(string) $left] = true;
 		}
 	}
-	$top = max($top, $schema[$row["Name"]]["pos"][0] + 2.5 + $pos);
+	$top = max($top, $schema[$table_status["Name"]]["pos"][0] + 2.5 + $pos);
 }
 
 ?>
