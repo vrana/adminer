@@ -535,7 +535,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 	
 	function trigger_sql($table, $style) {
-		return implode(get_vals("SELECT sql || ';;\n' FROM sqlite_master WHERE type = 'trigger' AND name = " . q($table)));
+		return implode(get_vals("SELECT sql || ';;\n' FROM sqlite_master WHERE type = 'trigger' AND tbl_name = " . q($table)));
 	}
 	
 	function show_variables() {

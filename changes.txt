@@ -1,3 +1,6 @@
+Adminer 3.3.3-dev:
+Fix trigger export (SQLite)
+
 Adminer 3.3.2 (released 2011-08-08):
 Display error with non-existent row in edit
 Fix minor parser bug in SQL command with webserver file
