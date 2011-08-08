@@ -20,11 +20,9 @@ if ($_POST && !$error && in_array($_POST["Timing"], $trigger_options["Timing"]) 
 
 page_header(($_GET["name"] != "" ? lang('Alter trigger') . ": " . h($_GET["name"]) : lang('Create trigger')), $error, array("table" => $TABLE));
 
-$row = array("Trigger" => $TABLE . "_bi");
-if ($_POST) {
-	$row = $_POST;
-} elseif ($_GET["name"] != "") {
-	$row = trigger($_GET["name"]);
+$row = $_POST;
+if (!$row) {
+	$row = trigger($_GET["name"]) + array("Trigger" => $TABLE . "_bi");
 }
 ?>
 

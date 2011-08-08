@@ -697,6 +697,9 @@ if (!defined("DRIVER")) {
 	* @return array array("Trigger" => , "Timing" => , "Event" => , "Statement" => )
 	*/
 	function trigger($name) {
+		if ($name == "") {
+			return array();
+		}
 		$rows = get_rows("SHOW TRIGGERS WHERE `Trigger` = " . q($name));
 		return reset($rows);
 	}

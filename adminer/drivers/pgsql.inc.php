@@ -440,6 +440,9 @@ ORDER BY conkey, conname") as $row) {
 	}
 	
 	function trigger($name) {
+		if ($name == "") {
+			return array("Statement" => "EXECUTE PROCEDURE ()");
+		}
 		$rows = get_rows('SELECT trigger_name AS "Trigger", condition_timing AS "Timing", event_manipulation AS "Event", \'FOR EACH \' || action_orientation AS "Type", action_statement AS "Statement" FROM information_schema.triggers WHERE event_object_table = ' . q($_GET["trigger"]) . ' AND trigger_name = ' . q($name));
 		return reset($rows);
 	}
