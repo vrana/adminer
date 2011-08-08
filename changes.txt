@@ -44,14 +44,14 @@ Adminer 3.2.1 (released 2011-03-23):
 Ability to save expression in edit
 Respect default database collation (bug #3191489)
 Don't export triggers without table (bug #3193489)
-Esc to focus next field in Tab textarea (thanks to David Grudl)
+Esc to focus next field in Tab textarea
 Send forms by Ctrl+Enter on <select>
 Enum editor and textarea Ctrl+Enter working in IE
 AJAX forms in Google Chrome
 Parse UTF-16 and UTF-8 BOM in all text uploads
-Display ; in history (thanks to Jan Cerny)
+Display ; in history
 Use DELIMITER in history
-Show databases even with skip_show_database in MySQL 5 (thanks to Radoslaw Kowalewski)
+Show databases even with skip_show_database in MySQL 5
 Disable maxlength with functions in edit
 Better placement of AJAX icon
 Table header in CSV export (Editor)
@@ -207,9 +207,9 @@ Localize date (Editor)
 Treat tinyint(1) as bool (Editor)
 Divide types to groups in table creation
 Link e-mails in select
-Show type in field name title (thanks to Jakub Sochor)
-Preselect now() for timestamp columns (thanks to paranoiq)
-Clear history (thanks to paranoiq)
+Show type in field name title
+Preselect now() for timestamp columns
+Clear history
 Prefill insert by foreign key searches
 Print number of rows in SQL command
 Remove Delete button from Edit page - use mass operation for it
@@ -220,7 +220,7 @@ Use HTML Strict instead of XHTML
 Remove function minification in favor of performance and customization
 Fix grant ALL PRIVILEGES with GRANT OPTION
 Fix CSV import
-Fix work with default values (thanks to Jiri Pospisil)
+Fix work with default values
 
 Adminer 1.11.1 (released 2009-07-03):
 Fix problem with enabled Filter extension
@@ -249,15 +249,15 @@ Use \n in SQL commands
 phpMinAdmin 1.10.1 (released 2009-05-07):
 Highlight odd and hover rows
 Partition editing comfort (bug #2783446)
-Allow full length in limited int (thanks to Vlasta Neubauer)
+Allow full length in limited int
 
 phpMinAdmin 1.10.0 (released 2009-04-28):
 Partitioning (MySQL 5.1)
 CSV import
 Plus and minus functions
-Option to stop on error in SQL command (thanks to Vaclav Marik)
+Option to stop on error in SQL command
 Cross links to select and table (bug #2236232), link new item
-Suhosin compatibility (thanks to Klemens Hackel)
+Suhosin compatibility
 Remove max_allowed_packet from export
 Read style from phpMinAdmin.css if exists
 Size reduction by minification of variables and functions
@@ -276,11 +276,11 @@ Search without column restriction
 Use type=password for unhashed password
 Only one button for each action in select
 Choose language through option-list
-XHTML syntax errors (thanks to kozotoc)
+XHTML syntax errors
 Don't set global variable in export
 SHOW DATABASES can be revoked
 Order by function result working also in older MySQL versions
-Tested on IIS (thanks to krasl.cz)
+Tested on IIS
 
 phpMinAdmin 1.8.0 (released 2008-09-12):
 Events (MySQL 5.1)
