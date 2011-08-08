@@ -15,10 +15,8 @@ if ($_POST && !$error) {
 
 page_header(($TABLE != "" ? lang('Alter view') : lang('Create view')), $error, array("table" => $TABLE), $TABLE);
 
-$row = array();
-if ($_POST) {
-	$row = $_POST;
-} elseif ($TABLE != "") {
+$row = $_POST;
+if (!$row && $TABLE != "") {
 	$row = view($TABLE);
 	$row["name"] = $TABLE;
 }

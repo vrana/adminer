@@ -12,9 +12,9 @@ if ($_POST && !$error) {
 
 page_header($TYPE != "" ? lang('Alter type') . ": " . h($TYPE) : lang('Create type'), $error);
 
-$row["as"] = "AS ";
-if ($_POST) {
-	$row = $_POST;
+$row = $_POST;
+if (!$row) {
+	$row = array("as" => "AS ");
 }
 ?>
 

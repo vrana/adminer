@@ -16,9 +16,9 @@ if ($_POST && !$error) {
 
 page_header($SEQUENCE != "" ? lang('Alter sequence') . ": " . h($SEQUENCE) : lang('Create sequence'), $error);
 
-$row = array("name" => $SEQUENCE);
-if ($_POST) {
-	$row = $_POST;
+$row = $_POST;
+if (!$row) {
+	$row = array("name" => $SEQUENCE);
 }
 ?>
 

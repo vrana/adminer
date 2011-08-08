@@ -17,9 +17,9 @@ if ($_POST && !$error) {
 
 page_header($_GET["ns"] != "" ? lang('Alter schema') : lang('Create schema'), $error);
 
-$row = array("name" => $_GET["ns"]);
-if ($_POST) {
-	$row = $_POST;
+$row = $_POST;
+if (!$row) {
+	$row = array("name" => $_GET["ns"]);
 }
 ?>
 
