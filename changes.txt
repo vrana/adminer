@@ -1,4 +1,4 @@
-Adminer 3.3.2-dev:
+Adminer 3.3.2 (released 2011-08-08):
 Display error with non-existent row in edit
 Fix minor parser bug in SQL command with webserver file
 Fix SQL command Stop on error
