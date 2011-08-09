@@ -1,6 +1,7 @@
 Adminer 3.3.3-dev:
 Fix trigger export (SQLite)
 Default trigger statement (SQLite, PostgreSQL)
+Remove search by expression (PostgreSQL, MS SQL)
 
 Adminer 3.3.2 (released 2011-08-08):
 Display error with non-existent row in edit
