@@ -818,7 +818,7 @@ DROP PROCEDURE adminer_alter;
 		echo "<p id='tables'>\n";
 		foreach ($tables as $table => $type) {
 			echo '<a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table) . ">" . lang('select') . "</a> ";
-			echo '<a href="' . h(ME) . 'table=' . urlencode($table) . '"' . bold($_GET["table"] == $table) . ">" . $this->tableName(array("Name" => $table)) . "</a><br>\n"; //! Adminer::tableName may work with full table status
+			echo '<a href="' . h(ME) . 'table=' . urlencode($table) . '"' . bold($_GET["table"] == $table) . " title='" . lang('Show structure') . "'>" . $this->tableName(array("Name" => $table)) . "</a><br>\n"; //! Adminer::tableName may work with full table status
 		}
 	}
 	
