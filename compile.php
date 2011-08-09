@@ -115,8 +115,14 @@ function php_shrink($input) {
 	}
 	
 	arsort($short_variables);
+	$chars = implode(range('a', 'z')) . '_' . implode(range('A', 'Z'));
+	// preserve variable names between versions if possible
+	$short_variables2 = array_splice($short_variables, strlen($chars));
+	ksort($short_variables);
+	ksort($short_variables2);
+	$short_variables += $short_variables2;
 	foreach (array_keys($short_variables) as $number => $key) {
-		$short_variables[$key] = short_identifier($number, implode(range('a', 'z')) . '_' . implode(range('A', 'Z'))); // could use also numbers and \x7f-\xff
+		$short_variables[$key] = short_identifier($number, $chars); // could use also numbers and \x7f-\xff
 	}
 	
 	$set = array_flip(preg_split('//', '!"#$&\'()*+,-./:;<=>?@[\]^`{|}'));
