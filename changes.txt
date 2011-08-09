@@ -1,4 +1,5 @@
 Adminer 3.3.3-dev:
+Link titles in database overview
 Fix trigger export (SQLite)
 Default trigger statement (SQLite, PostgreSQL)
 Remove search by expression (PostgreSQL, MS SQL)

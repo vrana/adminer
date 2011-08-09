@@ -49,17 +49,35 @@ if ($adminer->homepage()) {
 				search_tables();
 			}
 			echo "<table cellspacing='0' class='nowrap' onclick='tableClick(event);'>\n";
-			echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck(this, /^(tables|views)\[/);"><th>' . lang('Table') . '<td>' . lang('Engine') . '<td>' . lang('Collation') . '<td>' . lang('Data Length') . '<td>' . lang('Index Length') . '<td>' . lang('Data Free') . '<td>' . lang('Auto Increment') . '<td>' . lang('Rows') . (support("comment") ? '<td>' . lang('Comment') : '') . "</thead>\n";
+			echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck(this, /^(tables|views)\[/);">';
+			echo '<th>' . lang('Table');
+			echo '<td>' . lang('Engine');
+			echo '<td>' . lang('Collation');
+			echo '<td>' . lang('Data Length');
+			echo '<td>' . lang('Index Length');
+			echo '<td>' . lang('Data Free');
+			echo '<td>' . lang('Auto Increment');
+			echo '<td>' . lang('Rows');
+			echo (support("comment") ? '<td>' . lang('Comment') : '');
+			echo "</thead>\n";
 			foreach ($tables_list as $name => $type) {
 				$view = (isset($type) && !eregi("table", $type));
 				echo '<tr' . odd() . '><td>' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array($name, $tables_views, true), "", "formUncheck('check-all');");
-				echo '<th><a href="' . h(ME) . 'table=' . urlencode($name) . '">' . h($name) . '</a>';
+				echo '<th><a href="' . h(ME) . 'table=' . urlencode($name) . '" title="' . lang('Show structure') . '">' . h($name) . '</a>';
 				if ($view) {
-					echo '<td colspan="6"><a href="' . h(ME) . "view=" . urlencode($name) . '">' . lang('View') . '</a>';
-					echo '<td align="right"><a href="' . h(ME) . "select=" . urlencode($name) . '">?</a>';
+					echo '<td colspan="6"><a href="' . h(ME) . "view=" . urlencode($name) . '" title="' . lang('Alter view') . '">' . lang('View') . '</a>';
+					echo '<td align="right"><a href="' . h(ME) . "select=" . urlencode($name) . '" title="' . lang('Select data') . '">?</a>';
 				} else {
-					foreach (array("Engine" => "", "Collation" => "", "Data_length" => "create", "Index_length" => "indexes", "Data_free" => "edit", "Auto_increment" => "auto_increment=1&create", "Rows" => "select") as $key => $link) {
-						echo ($link ? "<td align='right'><a href='" . h(ME . "$link=") . urlencode($name) . "' id='$key-" . h($name) . "'>?</a>" : "<td id='$key-" . h($name) . "'>&nbsp;");
+					foreach (array(
+						"Engine" => array(),
+						"Collation" => array(),
+						"Data_length" => array("create", lang('Alter table')),
+						"Index_length" => array("indexes", lang('Alter indexes')),
+						"Data_free" => array("edit", lang('New item')),
+						"Auto_increment" => array("auto_increment=1&create", lang('Alter table')),
+						"Rows" => array("select", lang('Select data')),
+					) as $key => $link) {
+						echo ($link ? "<td align='right'><a href='" . h(ME . "$link[0]=") . urlencode($name) . "' id='$key-" . h($name) . "' title='$link[1]'>?</a>" : "<td id='$key-" . h($name) . "'>&nbsp;");
 					}
 				}
 				echo (support("comment") ? "<td id='Comment-" . h($name) . "'>&nbsp;" : "");
