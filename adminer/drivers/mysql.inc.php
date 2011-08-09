@@ -253,7 +253,11 @@ if (!defined("DRIVER")) {
 			$connection->query("SET sql_quote_show_create = 1");
 			return $connection;
 		}
-		return $connection->error;
+		$return = $connection->error;
+		if (function_exists('iconv') && !is_utf8($return) && strlen($s = iconv("windows-1250", "utf-8", $return)) > strlen($return)) { // windows-1250 - most common Windows encoding
+			$return = $s;
+		}
+		return $return;
 	}
 
 	/** Get cached list of databases
