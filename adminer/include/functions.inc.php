@@ -8,6 +8,14 @@ function connection() {
 	return $connection;
 }
 
+/** Get Adminer object
+* @return Adminer
+*/
+function adminer() {
+	global $adminer;
+	return $adminer;
+}
+
 /** Unescape database identifier
 * @param string text inside ``
 * @return string

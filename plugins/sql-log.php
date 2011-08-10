@@ -10,13 +10,17 @@ class AdminerSqlLog {
 	var $filename;
 	
 	/**
-	* @param string
+	* @param string defaults to "$database.sql"
 	*/
-	function AdminerSqlLog($filename = "adminer.sql") {
+	function AdminerSqlLog($filename = "") {
 		$this->filename = $filename;
 	}
 	
 	function messageQuery($query) {
+		if ($this->filename == "") {
+			$adminer = adminer();
+			$this->filename = $adminer->database() . ".sql"; // no database goes to ".sql" to avoid collisions
+		}
 		$fp = fopen($this->filename, "a");
 		flock($fp, LOCK_EX);
 		fwrite($fp, $query);
