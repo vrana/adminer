@@ -37,8 +37,8 @@ function connect_error() {
 				$root = h(ME) . "db=" . urlencode($db);
 				echo "<tr" . odd() . "><td>" . checkbox("db[]", $db, in_array($db, (array) $_POST["db"]));
 				echo "<th><a href='$root'>" . h($db) . "</a>";
-				echo "<td><a href='$root" . ($scheme ? "&amp;ns=" : "") . "&amp;database='>" . nbsp(db_collation($db, $collations)) . "</a>";
-				echo "<td align='right'><a href='$root&amp;schema=' id='tables-" . h($db) . "'>?</a>";
+				echo "<td><a href='$root" . ($scheme ? "&amp;ns=" : "") . "&amp;database=' title='" . lang('Alter database') . "'>" . nbsp(db_collation($db, $collations)) . "</a>";
+				echo "<td align='right'><a href='$root&amp;schema=' id='tables-" . h($db) . "' title='" . lang('Database schema') . "'>?</a>";
 				echo "\n";
 			}
 			echo "</table>\n";
