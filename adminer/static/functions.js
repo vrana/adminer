@@ -483,7 +483,7 @@ function selectDblClick(td, event, text) {
 * @param MouseEvent
 * @param string
 * @param string
-* @return bool
+* @return boolean
 */
 function bodyClick(event, db, ns) {
 	if (event.button || event.ctrlKey || event.shiftKey || event.altKey || event.metaKey) {
