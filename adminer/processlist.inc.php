@@ -15,6 +15,7 @@ page_header(lang('Process list'), $error);
 <form action="" method="post">
 <table cellspacing="0" onclick="tableClick(event);" class="nowrap">
 <?php
+// HTML valid because there is always at least one process
 $i = -1;
 foreach (process_list() as $i => $row) {
 	if (!$i) {
