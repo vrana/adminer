@@ -6,7 +6,7 @@
 * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerEmailTable {
-	/** @var string @access protected */
+	/** @access protected */
 	var $table, $id, $title, $subject, $message;
 	
 	/**
