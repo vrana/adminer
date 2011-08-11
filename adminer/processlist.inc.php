@@ -13,7 +13,7 @@ page_header(lang('Process list'), $error);
 ?>
 
 <form action="" method="post">
-<table cellspacing="0" onclick="tableClick(event);" class="nowrap">
+<table cellspacing="0" onclick="tableClick(event);" class="nowrap checkable">
 <?php
 // HTML valid because there is always at least one process
 $i = -1;
@@ -29,6 +29,7 @@ foreach (process_list() as $i => $row) {
 }
 ?>
 </table>
+<script type='text/javascript'>tableCheck();</script>
 <p>
 <?php
 if (support("kill")) {

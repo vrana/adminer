@@ -31,7 +31,7 @@ function connect_error() {
 			$scheme = support("scheme");
 			$collations = collations();
 			echo "<form action='' method='post'>\n";
-			echo "<table cellspacing='0' onclick='tableClick(event);'>\n";
+			echo "<table cellspacing='0' class='checkable' onclick='tableClick(event);'>\n";
 			echo "<thead><tr><td>&nbsp;<th>" . lang('Database') . "<td>" . lang('Collation') . "<td>" . lang('Tables') . "</thead>\n";
 			foreach ($databases as $db) {
 				$root = h(ME) . "db=" . urlencode($db);
@@ -42,6 +42,7 @@ function connect_error() {
 				echo "\n";
 			}
 			echo "</table>\n";
+			echo "<script type='text/javascript'>tableCheck();</script>\n";
 			echo "<p><input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm("formChecked(this, /db/)", 1) . ">\n"; // 1 - eventStop
 			echo "<input type='hidden' name='token' value='$token'>\n";
 			echo "<a href='" . h(ME) . "refresh=1' onclick='eventStop(event);'>" . lang('Refresh') . "</a>\n";

@@ -38,6 +38,14 @@ function selectValue(select) {
 	return ((selected.attributes.value || {}).specified ? selected.value : selected.text);
 }
 
+/** Set checked class
+* @param HTMLInputElement
+*/
+function trCheck(el) {
+	var tr = el.parentNode.parentNode;
+	tr.className = tr.className.replace(/(^|\s)checked(\s|$)/, '$2') + (el.checked ? ' checked' : '');
+}
+
 /** Check all elements matching given name
 * @param HTMLInputElement
 * @param RegExp
@@ -47,6 +55,21 @@ function formCheck(el, name) {
 	for (var i=0; i < elems.length; i++) {
 		if (name.test(elems[i].name)) {
 			elems[i].checked = el.checked;
+			trCheck(elems[i]);
+		}
+	}
+}
+
+/** Check all rows in <table class="checkable">
+*/
+function tableCheck() {
+	var tables = document.getElementsByTagName('table');
+	for (var i=0; i < tables.length; i++) {
+		if (/(^|\s)checkable(\s|$)/.test(tables[i].className)) {
+			var trs = tables[i].getElementsByTagName('tr');
+			for (var j=0; j < trs.length; j++) {
+				trCheck(trs[j].firstChild.firstChild);
+			}
 		}
 	}
 }
@@ -55,7 +78,9 @@ function formCheck(el, name) {
 * @param string
 */
 function formUncheck(id) {
-	document.getElementById(id).checked = false;
+	var el = document.getElementById(id);
+	el.checked = false;
+	trCheck(el);
 }
 
 /** Get number of checked elements matching given name
@@ -78,16 +103,23 @@ function formChecked(el, name) {
 * @param MouseEvent
 */
 function tableClick(event) {
+	var click = true;
 	var el = event.target || event.srcElement;
 	while (!/^tr$/i.test(el.tagName)) {
-		if (/^(table|a|input|textarea)$/i.test(el.tagName)) {
+		if (/^table$/i.test(el.tagName)) {
 			return;
+		}
+		if (/^(a|input|textarea)$/i.test(el.tagName)) {
+			click = false;
 		}
 		el = el.parentNode;
 	}
 	el = el.firstChild.firstChild;
-	el.click && el.click();
-	el.onclick && el.onclick();
+	if (click) {
+		el.click && el.click();
+		el.onclick && el.onclick();
+	}
+	trCheck(el);
 }
 
 /** Set HTML code of an element

@@ -7,7 +7,7 @@ if ($adminer->homepage()) {
 	if ($_POST["query"] != "") {
 		search_tables();
 	}
-	echo "<table cellspacing='0' class='nowrap' onclick='tableClick(event);'>\n";
+	echo "<table cellspacing='0' class='nowrap checkable' onclick='tableClick(event);'>\n";
 	echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck(this, /^tables\[/);"><th>' . lang('Table') . '<td>' . lang('Rows') . "</thead>\n";
 	foreach (table_status() as $table => $row) {
 		$name = $adminer->tableName($row);
@@ -19,5 +19,6 @@ if ($adminer->homepage()) {
 		}
 	}
 	echo "</table>\n";
+	echo "<script type='text/javascript'>tableCheck();</script>\n";
 	echo "</form>\n";
 }

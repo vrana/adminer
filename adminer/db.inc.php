@@ -48,7 +48,7 @@ if ($adminer->homepage()) {
 			if ($_POST["search"] && $_POST["query"] != "") {
 				search_tables();
 			}
-			echo "<table cellspacing='0' class='nowrap' onclick='tableClick(event);'>\n";
+			echo "<table cellspacing='0' class='nowrap checkable' onclick='tableClick(event);'>\n";
 			echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck(this, /^(tables|views)\[/);">';
 			echo '<th>' . lang('Table');
 			echo '<td>' . lang('Engine');
@@ -89,6 +89,7 @@ if ($adminer->homepage()) {
 				echo "<td align='right' id='sum-$key'>&nbsp;";
 			}
 			echo "</table>\n";
+			echo "<script type='text/javascript'>tableCheck();</script>\n";
 			if (!information_schema(DB)) {
 				echo "<p>" . ($jush == "sql" ? "<input type='submit' value='" . lang('Analyze') . "'> <input type='submit' name='optimize' value='" . lang('Optimize') . "'> <input type='submit' name='check' value='" . lang('Check') . "'> <input type='submit' name='repair' value='" . lang('Repair') . "'> " : "") . "<input type='submit' name='truncate' value='" . lang('Truncate') . "'" . confirm("formChecked(this, /tables/)") . "> <input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm("formChecked(this, /tables|views/)", 1) . ">\n"; // 1 - eventStop
 				$databases = (support("scheme") ? schemas() : get_databases());

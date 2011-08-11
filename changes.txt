@@ -1,4 +1,5 @@
 Adminer 3.3.3-dev:
+Highlight checked rows
 Titles of links in database overview and navigation
 Fix trigger export (SQLite)
 Default trigger statement (SQLite, PostgreSQL)

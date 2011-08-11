@@ -17,7 +17,7 @@ p { margin: .8em 20px 0 0; }
 img { vertical-align: middle; border: 0; }
 td img { max-width: 200px; max-height: 200px; }
 code { background: #eee; }
-tr:hover td, tr:hover th { background: #ddf; }
+tbody tr:hover td, tbody tr:hover th { background: #eee; }
 pre { margin: 1em 0 0; }
 input[type=image] { vertical-align: middle; }
 .version { color: #777; font-size: 67%; }
@@ -33,6 +33,7 @@ input[type=image] { vertical-align: middle; }
 .enum { color: #007F7F; }
 .binary { color: red; }
 .odd td { background: #F5F5F5; }
+.js .checked td, .js .checked th { background: #ddf; }
 .time { color: silver; font-size: 70%; }
 .function { text-align: right; }
 .number { text-align: right; }

@@ -250,7 +250,7 @@ if (!$columns) {
 		} else {
 			$backward_keys = $adminer->backwardKeys($TABLE, $table_name);
 			
-			echo "<table cellspacing='0' class='nowrap' onclick='tableClick(event);' onkeydown='return editingKeydown(event);'>\n";
+			echo "<table cellspacing='0' class='nowrap checkable' onclick='tableClick(event);' onkeydown='return editingKeydown(event);'>\n";
 			echo "<thead><tr>" . (!$group && $select ? "" : "<td><input type='checkbox' id='all-page' onclick='formCheck(this, /check/);'> <a href='" . h($_GET["modify"] ? remove_from_uri("modify") : $_SERVER["REQUEST_URI"] . "&modify=1") . "'>" . lang('edit') . "</a>");
 			$names = array();
 			$functions = array();
@@ -368,6 +368,7 @@ if (!$columns) {
 				echo "</tr>\n"; // close to allow white-space: pre
 			}
 			echo "</table>\n";
+			echo (!$group && $select ? "" : "<script type='text/javascript'>tableCheck();</script>\n");
 		}
 		
 		if ($rows || $page) {
