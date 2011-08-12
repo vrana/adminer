@@ -1,7 +1,7 @@
 <?php
 page_header(lang('Privileges'));
 
-$result = $connection->query("SELECT User, Host FROM mysql." . (DB == "" ? "user" : "db WHERE " . q($_GET["db"]) . " LIKE Db") . " ORDER BY Host, User");
+$result = $connection->query("SELECT User, Host FROM mysql." . (DB == "" ? "user" : "db WHERE " . q(DB) . " LIKE Db") . " ORDER BY Host, User");
 if (!$result) {
 	?>
 <form action=""><p>
