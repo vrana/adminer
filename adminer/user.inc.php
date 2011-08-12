@@ -51,8 +51,10 @@ if ($_POST && !$error) {
 	if ($_POST["drop"]) {
 		query_redirect("DROP USER $old_user", ME . "privileges=", lang('User has been dropped.'));
 	} else {
+		$created = false;
 		if ($old_user != $new_user) {
-			$error = !queries(($connection->server_info < 5 ? "GRANT USAGE ON *.* TO" : "CREATE USER") . " $new_user IDENTIFIED BY" . ($_POST["hashed"] ? " PASSWORD" : "") . " $pass");
+			$created = queries(($connection->server_info < 5 ? "GRANT USAGE ON *.* TO" : "CREATE USER") . " $new_user IDENTIFIED BY" . ($_POST["hashed"] ? " PASSWORD" : "") . " $pass");
+			$error = !$created;
 		} elseif ($_POST["pass"] != $old_pass || !$_POST["hashed"]) {
 			queries("SET PASSWORD FOR $new_user = " . ($_POST["hashed"] ? $pass : "PASSWORD($pass)"));
 		}
@@ -93,7 +95,7 @@ if ($_POST && !$error) {
 			}
 		}
 		queries_redirect(ME . "privileges=", (isset($_GET["host"]) ? lang('User has been altered.') : lang('User has been created.')), !$error);
-		if ($old_user != $new_user) {
+		if ($created) {
 			// delete new user in case of an error
 			$connection->query("DROP USER $new_user");
 		}
