@@ -332,7 +332,9 @@ function ajaxSend(url, data, popState, noscroll) {
 				return ajaxSend(redirect, '', popState);
 			}
 			onblur = function () { };
-			replaceFavicon(originalFavicon);
+			if (originalFavicon) {
+				replaceFavicon(originalFavicon);
+			}
 			if (!xmlhttp.status) {
 				setHtml('loader', '');
 			} else {
