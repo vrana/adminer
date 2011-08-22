@@ -32,6 +32,7 @@ if (isset($_GET["pgsql"])) {
 					$version = pg_version($this->_link);
 					$this->server_info = $version["server"];
 					pg_set_client_encoding($this->_link, "UTF8");
+					pg_query($this->_link, "SET application_name = 'Adminer'");
 				}
 				return (bool) $this->_link;
 			}
@@ -133,6 +134,7 @@ if (isset($_GET["pgsql"])) {
 				$db = $adminer->database();
 				$string = "pgsql:host='" . str_replace(":", "' port='", addcslashes($server, "'\\")) . "' options='-c client_encoding=utf8'";
 				$this->dsn($string . ($db != "" ? " dbname='" . addcslashes($db, "'\\") . "'" : ""), $username, $password);
+				$this->query("SET application_name = 'Adminer'");
 				//! connect without DB in case of an error
 				return true;
 			}
