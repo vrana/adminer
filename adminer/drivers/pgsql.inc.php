@@ -21,7 +21,7 @@ if (isset($_GET["pgsql"])) {
 				$db = $adminer->database();
 				set_error_handler(array($this, '_error'));
 				$this->_string = "host='" . str_replace(":", "' port='", addcslashes($server, "'\\")) . "' user='" . addcslashes($username, "'\\") . "' password='" . addcslashes($password, "'\\") . "'";
-				$this->_link = @pg_connect($this->_string . ($db != "" ? " dbname='" . addcslashes($db, "'\\") . "'" : " dbname='template1'"), PGSQL_CONNECT_FORCE_NEW);
+				$this->_link = @pg_connect("$this->_string dbname='" . ($db != "" ? addcslashes($db, "'\\") : "template1") . "'", PGSQL_CONNECT_FORCE_NEW);
 				if (!$this->_link && $db != "") {
 					// try to connect directly with database for performance
 					$this->_database = false;
@@ -132,7 +132,7 @@ if (isset($_GET["pgsql"])) {
 				global $adminer;
 				$db = $adminer->database();
 				$string = "pgsql:host='" . str_replace(":", "' port='", addcslashes($server, "'\\")) . "' options='-c client_encoding=utf8'";
-				$this->dsn($string . ($db != "" ? " dbname='" . addcslashes($db, "'\\") . "'" : ""), $username, $password);
+				$this->dsn("$string dbname='" . ($db != "" ? addcslashes($db, "'\\") : "template1") . "'", $username, $password);
 				//! connect without DB in case of an error
 				return true;
 			}
