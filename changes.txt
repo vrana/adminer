@@ -1,5 +1,6 @@
 Adminer 3.3.4-dev:
 PostgreSQL over PDO: connect if the eponymous database does not exist (bug #3391619)
+Persian translation
 
 Adminer 3.3.3 (released 2011-08-12):
 Highlight checked rows

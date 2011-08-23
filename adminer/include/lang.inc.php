@@ -25,6 +25,7 @@ $langs = array(
 	'ja' => '日本語', // Hitoshi Ozawa - http://sourceforge.jp/projects/oss-ja-jpn/releases/
 	'ta' => 'த‌மிழ்', // G. Sampath Kumar, Chennai, India, sampathkumar11@gmail.com
 	'ar' => 'العربية', // Y.M Amine - Algeria - nbr7@live.fr
+	'fa' => 'فارسی', // mojtaba barghbani - Iran - mbarghbani@gmail.com
 );
 
 /** Get current language
