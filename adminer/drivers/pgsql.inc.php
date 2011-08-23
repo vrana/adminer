@@ -161,6 +161,9 @@ if (isset($_GET["pgsql"])) {
 		$connection = new Min_DB;
 		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
+			if ($connection->server_info >= 9) {
+				$connection->query("SET application_name = 'Adminer'");
+			}
 			return $connection;
 		}
 		return $connection->error;
