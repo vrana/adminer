@@ -288,6 +288,8 @@ $translations = array(
 	// hint for time format - use language equivalents for hour, minute and second shortcuts
 	'HH:MM:SS' => 'HH:MM:SS',
 	'now' => 'teď',
+	'yes' => 'ano',
+	'no' => 'ne',
 	
 	// general SQLite error in create, drop or rename database
 	'File exists.' => 'Soubor existuje.',

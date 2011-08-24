@@ -163,7 +163,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			}
 		}
 		if (like_bool($field) && $return != "&nbsp;") { // bool
-			$return = '<img src="' . ($val ? "../adminer/static/plus.gif" : "../adminer/static/cross.gif") . '" alt="' . h($val) . '">';
+			$return = ($val ? lang('yes') : lang('no'));
 		}
 		if ($link) {
 			$return = "<a href='$link'>$return</a>";
@@ -196,20 +196,16 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		}
 		$i = 0;
 		$fields = fields($_GET["select"]);
-		foreach ($fields as $name => $field) {
-			$desc = $columns[$name];
-			if (ereg("enum", $field["type"]) && $desc != "") { //! set - uses 1 << $i and FIND_IN_SET()
+		foreach ($columns as $name => $desc) {
+			$field = $fields[$name];
+			if (ereg("enum", $field["type"])) { //! set - uses 1 << $i and FIND_IN_SET()
 				$key = $keys[$name];
 				$i--;
 				echo "<div>" . h($desc) . "<input type='hidden' name='where[$i][col]' value='" . h($name) . "'>:";
 				echo enum_input("checkbox", " name='where[$i][val][]'", $field, (array) $where[$key]["val"], ($field["null"] ? 0 : null));
 				echo "</div>\n";
 				unset($columns[$name]);
-			}
-		}
-		foreach ($columns as $name => $desc) {
-			$options = $this->_foreignKeyOptions($_GET["select"], $name);
-			if (is_array($options)) {
+			} elseif (is_array($options = $this->_foreignKeyOptions($_GET["select"], $name))) {
 				if ($fields[$name]["null"]) {
 					$options[0] = '(' . lang('empty') . ')';
 				}
