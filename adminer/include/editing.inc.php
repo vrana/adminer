@@ -366,3 +366,17 @@ function tar_file($filename, $contents) {
 	$return .= sprintf("%06o", $checksum) . "\0 ";
 	return $return . str_repeat("\0", 512 - strlen($return)) . $contents . str_repeat("\0", 511 - (strlen($contents) + 511) % 512);
 }
+
+/** Get INI bytes value
+* @param string
+* @return int
+*/
+function ini_bytes($ini) {
+	$val = ini_get($ini);
+	switch (strtolower(substr($val, -1))) {
+		case 'g': $val *= 1024; // no break
+		case 'm': $val *= 1024; // no break
+		case 'k': $val *= 1024;
+	}
+	return $val;
+}

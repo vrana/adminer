@@ -25,12 +25,12 @@ if (!$error && $_POST) {
 			: "compress.bzip2://adminer.sql.bz2"
 		)), "rb");
 		$query = ($fp ? fread($fp, 1e6) : false);
-	} elseif ($_FILES && $_FILES["sql_file"]["error"] != 4) { // 4 - UPLOAD_ERR_NO_FILE
+	} elseif ($_FILES && $_FILES["sql_file"]["error"] != UPLOAD_ERR_NO_FILE) {
 		$query = get_file("sql_file", true);
 	}
 	if (is_string($query)) { // get_file() returns error as number, fread() as false
 		if (function_exists('memory_get_usage')) {
-			@ini_set("memory_limit", max(ini_get("memory_limit"), 2 * strlen($query) + memory_get_usage() + 8e6)); // @ - may be disabled, 2 - substr and trim, 8e6 - other variables
+			@ini_set("memory_limit", max(ini_bytes("memory_limit"), 2 * strlen($query) + memory_get_usage() + 8e6)); // @ - may be disabled, 2 - substr and trim, 8e6 - other variables
 		}
 		if ($query != "" && strlen($query) < 1e6) { // don't add big queries
 			$q = $query . (ereg(';$', $query) ? "" : ";"); //! doesn't work with DELIMITER |
