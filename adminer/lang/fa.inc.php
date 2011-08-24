@@ -14,10 +14,10 @@ $translations = array(
 	'Language' => 'زبان',
 	'Invalid CSRF token. Send the form again.' => 'نامعتبر است. دوباره سعی کنید Token CSRF',
 	'No extension' => 'پسوند نامعتبر',
-	'None of the supported PHP extensions (%s) are available.' => 'None of the supported PHP extensions (%s) are available.',
+	'None of the supported PHP extensions (%s) are available.' => ' پسوند پی اچ پی در دسترس نیست (%s) تعداد',
 	'Session support must be enabled.' => 'پشتيباني از نشست بايستي فعال گردد',
 	'Session expired, please login again.' => 'نشست پايان يافته، لطفا دوباره وارد شويد',
-	'%s version: %s through PHP extension %s' => '%s version: %s through PHP extension %s',
+	'%s version: %s through PHP extension %s' => 'نسخه %s : %s توسعه پی اچ پی %s',
 	'Refresh' => 'بازيابي',
 	
 	// text direction - 'ltr' or 'rtl'
@@ -35,15 +35,15 @@ $translations = array(
 	'Revoke' => 'لغو كردن',
 	
 	'Process list' => 'ليست فرآيند',
-	'%d process(es) have been killed.' => array(),
+	'%d process(es) have been killed.' => '%d فرآيند متوقف شد',
 	'Kill' => 'حذف فرآيند',
 	
 	'Variables' => 'متغيرها',
 	'Status' => 'وضعيت',
 	
 	'SQL command' => 'دستور اس كيو ال',
-	'%d query(s) executed OK.' => array(),
-	'Query executed OK, %d row(s) affected.' => array(),
+	'%d query(s) executed OK.' => '%d كوئري اجرا شد',
+	'Query executed OK, %d row(s) affected.' => 'كوئري اجرا شد. %d سطر تغيير كرد.',
 	'No commands to execute.' => 'دستوري براي اجرا وجود ندارد',
 	'Error in query' => 'خطا در كوئري',
 	'Execute' => 'اجرا',
@@ -57,13 +57,13 @@ $translations = array(
 	
 	'File upload' => 'بارگذاري فايل',
 	'From server' => 'از سرور',
-	'Webserver file %s' => null,
+	'Webserver file %s' => '%s فايل وب سرور',
 	'Run file' => 'نمايش فايل',
 	'File does not exist.' => 'فايل وجود ندارد',
 	'File uploads are disabled.' => 'بارگذاري غير فعال است',
 	'Unable to upload a file.' => 'قادر به بارگذاري فايل نيستيد',
 	'Maximum allowed file size is %sB.' => ' %sB حداكثر اندازه فايل',
-	'Too big POST data. Reduce the data or increase the %s configuration directive.' => null,
+	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'حجم داده ارسالي برزگ است. حجم داده كاهش دهيد و يا مقدار %s را در پيكربندي افزايش دهيد.',
 	
 	'Export' => 'استخراج',
 	'Dump' => 'خالي كردن',
@@ -120,7 +120,7 @@ $translations = array(
 	'Create function' => 'ایجاد تابع',
 	'Routine has been dropped.' => 'روال حذف شد',
 	'Routine has been altered.' => 'روال ویرایش شد',
-	'Routine has been created.' => 'روال ایجاده شد',
+	'Routine has been created.' => 'روال ایجاد شد',
 	'Alter function' => 'ویرایش تابع',
 	'Alter procedure' => 'ویرایش زیربرنامه',
 	'Return type' => 'برگرداندن نوع',
@@ -136,7 +136,7 @@ $translations = array(
 	'Schedule' => 'زمانبندی',
 	'Start' => 'آغاز',
 	'End' => 'پایان',
-	'On completion preserve' => 'On completion preserve',
+	'On completion preserve' => 'تکمیل حفاظت فعال است',
 	
 	'Tables' => 'جدولها',
 	'Tables and views' => 'جدولها و نمایه ها',
@@ -165,19 +165,19 @@ $translations = array(
 	'Move up' => 'انتقال به بالا',
 	'Move down' => 'انتقال به پایین',
 	'Remove' => 'حذف',
-	'Maximum number of allowed fields exceeded. Please increase %s and %s.' => 'Maximum number of allowed fields exceeded. Please increase %s and %s.',
+	'Maximum number of allowed fields exceeded. Please increase %s and %s.' => 'حداکثر مجاز فیلدهای مجاز اشباع شد. لطفا %s و %s را کاهش دهید',
 	
 	'Partition by' => 'بخشبندی توسط',
 	'Partitions' => 'بخشبندیها',
 	'Partition name' => 'نام بخش',
 	'Values' => 'مقادیر',
 	
-	'View' => 'View',
-	'View has been dropped.' => 'View has been dropped.',
-	'View has been altered.' => 'View has been altered.',
-	'View has been created.' => 'View has been created.',
-	'Alter view' => 'Alter view',
-	'Create view' => 'Create view',
+	'View' => 'نمایش',
+	'View has been dropped.' => 'نمایش حذف شد',
+	'View has been altered.' => 'نمایش ویرایش شد',
+	'View has been created.' => 'نمایش ایجاد شد',
+	'Alter view' => 'حذف نمایش',
+	'Create view' => 'ایجاد نمایش',
 	
 	'Indexes' => 'ایندکسها',
 	'Indexes have been altered.' => 'ایندکسها ویرایش شد',
@@ -235,7 +235,7 @@ $translations = array(
 	'whole result' => 'همه نتایج',
 	'%d byte(s)' => array('%d بایت', '%d بایت'),
 	
-	'Import' => 'Import',
+	'Import' => 'وارد کردن',
 	'%d row(s) have been imported.' => array('%d سطر وارد شد', '%d سطر وارد شد'),
 	
 	// in-place editing in select
@@ -257,7 +257,7 @@ $translations = array(
 	'Save' => 'ذخیره',
 	'Save and continue edit' => 'ذخیره و ادامه ویرایش',
 	'Save and insert next' => 'ذخیره و درج بعدی',
-	'Clone' => 'Clone',
+	'Clone' => 'تکثیر',
 	'Delete' => 'حذف',
 	
 	'E-mail' => 'پست الکترونیک',
