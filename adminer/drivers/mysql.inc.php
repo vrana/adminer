@@ -48,7 +48,7 @@ if (!defined("DRIVER")) {
 			}
 		}
 		
-	} elseif (extension_loaded("mysql")) {
+	} elseif (extension_loaded("mysql") && !(ini_get("sql.safe_mode") && extension_loaded("pdo_mysql"))) {
 		class Min_DB {
 			var
 				$extension = "MySQL", ///< @var string extension name
