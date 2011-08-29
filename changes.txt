@@ -1,4 +1,5 @@
 Adminer 3.3.4-dev:
+PostgreSQL: fix alter foreign key
 PostgreSQL over PDO: connect if the eponymous database does not exist (bug #3391619)
 Boolean search (Editor)
 Persian translation
