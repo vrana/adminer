@@ -457,8 +457,8 @@ if (!defined("DRIVER")) {
 					"table" => idf_unescape($match[4] != "" ? $match[4] : $match[3]),
 					"source" => array_map('idf_unescape', $source[0]),
 					"target" => array_map('idf_unescape', $target[0]),
-					"on_delete" => $match[6],
-					"on_update" => $match[7],
+					"on_delete" => ($match[6] ? $match[6] : "RESTRICT"),
+					"on_update" => ($match[7] ? $match[7] : "RESTRICT"),
 				);
 			}
 		}
