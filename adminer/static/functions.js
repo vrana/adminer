@@ -488,7 +488,7 @@ function selectDblClick(td, event, text) {
 * @return boolean
 */
 function bodyClick(event, db, ns) {
-	if (event.button || event.ctrlKey || event.shiftKey || event.altKey || event.metaKey) {
+	if (event.button || event.shiftKey || event.altKey || event.metaKey) {
 		return;
 	}
 	if (event.getPreventDefault ? event.getPreventDefault() : event.returnValue === false || event.defaultPrevented) {
@@ -498,13 +498,17 @@ function bodyClick(event, db, ns) {
 	if (/^a$/i.test(el.parentNode.tagName)) {
 		el = el.parentNode;
 	}
-	if (/^a$/i.test(el.tagName) && !/:|#|&download=/i.test(el.getAttribute('href')) && /[&?]username=/.test(el.href)) {
+	if (/^a$/i.test(el.tagName) && !/:|#|&download=/i.test(el.getAttribute('href')) && /[&?]username=/.test(el.href) && !event.ctrlKey) {
 		var match = /&db=([^&]*)/.exec(el.href);
 		var match2 = /&ns=([^&]*)/.exec(el.href);
 		return !(db == (match ? match[1] : '') && ns == (match2 ? match2[1] : '') && ajaxSend(el.href));
 	}
 	if (/^input$/i.test(el.tagName) && /image|submit/.test(el.type)) {
-		return !ajaxForm(el.form, (el.name ? encodeURIComponent(el.name) + (el.type == 'image' ? '.x' : '') + '=1' : ''), el.type == 'image');
+		if (event.ctrlKey) {
+			el.form.target = '_blank';
+		} else {
+			return !ajaxForm(el.form, (el.name ? encodeURIComponent(el.name) + (el.type == 'image' ? '.x' : '') + '=1' : ''), el.type == 'image');
+		}
 	}
 	return true;
 }
