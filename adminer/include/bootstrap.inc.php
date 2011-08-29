@@ -78,4 +78,4 @@ if (!ini_bool("session.use_cookies") || @ini_set("session.use_cookies", false) !
 	session_write_close(); // improves concurrency if a user opens several pages at once, may be restarted later
 }
 
-$on_actions = "RESTRICT|CASCADE|SET NULL|NO ACTION"; ///< @var string used in foreign_keys()
+$on_actions = "RESTRICT|NO ACTION|CASCADE|SET NULL|SET DEFAULT"; ///< @var string used in foreign_keys()
