@@ -6,7 +6,7 @@ if ($_POST && !$error) {
 	if ($_POST["drop"]) {
 		query_redirect("DROP TYPE " . idf_escape($TYPE), $link, lang('Type has been dropped.'));
 	} else {
-		query_redirect("CREATE TYPE " . idf_escape($_POST["name"]) . " $_POST[as]", $link, lang('Type has been created.'));
+		query_redirect("CREATE TYPE " . idf_escape(trim($_POST["name"])) . " $_POST[as]", $link, lang('Type has been created.'));
 	}
 }
 

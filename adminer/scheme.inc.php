@@ -4,11 +4,12 @@ if ($_POST && !$error) {
 	if ($_POST["drop"]) {
 		query_redirect("DROP SCHEMA " . idf_escape($_GET["ns"]), $link, lang('Schema has been dropped.'));
 	} else {
-		$link .= urlencode($_POST["name"]);
+		$name = trim($_POST["name"]);
+		$link .= urlencode($name);
 		if ($_GET["ns"] == "") {
-			query_redirect("CREATE SCHEMA " . idf_escape($_POST["name"]), $link, lang('Schema has been created.'));
-		} elseif ($_GET["ns"] != $_POST["name"]) {
-			query_redirect("ALTER SCHEMA " . idf_escape($_GET["ns"]) . " RENAME TO " . idf_escape($_POST["name"]), $link, lang('Schema has been altered.')); //! sp_rename in MS SQL
+			query_redirect("CREATE SCHEMA " . idf_escape($name), $link, lang('Schema has been created.'));
+		} elseif ($_GET["ns"] != $name) {
+			query_redirect("ALTER SCHEMA " . idf_escape($_GET["ns"]) . " RENAME TO " . idf_escape($name), $link, lang('Schema has been altered.')); //! sp_rename in MS SQL
 		} else {
 			redirect($link);
 		}

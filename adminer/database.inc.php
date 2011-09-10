@@ -1,16 +1,17 @@
 <?php
 if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP changes add.x to add_x
 	restart_session();
+	$name = trim($_POST["name"]);
 	if ($_POST["drop"]) {
 		$_GET["db"] = ""; // to save in global history
 		queries_redirect(remove_from_uri("db|database"), lang('Database has been dropped.'), drop_databases(array(DB)));
-	} elseif (DB !== $_POST["name"]) {
+	} elseif (DB !== $name) {
 		// create or rename database
 		if (DB != "") {
-			$_GET["db"] = $_POST["name"];
-			queries_redirect(preg_replace('~db=[^&]*&~', '', ME) . "db=" . urlencode($_POST["name"]), lang('Database has been renamed.'), rename_database($_POST["name"], $_POST["collation"]));
+			$_GET["db"] = $name;
+			queries_redirect(preg_replace('~db=[^&]*&~', '', ME) . "db=" . urlencode($name), lang('Database has been renamed.'), rename_database($name, $_POST["collation"]));
 		} else {
-			$databases = explode("\n", str_replace("\r", "", $_POST["name"]));
+			$databases = explode("\n", str_replace("\r", "", $name));
 			$success = true;
 			$last = "";
 			foreach ($databases as $db) {
@@ -28,7 +29,7 @@ if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP c
 		if (!$_POST["collation"]) {
 			redirect(substr(ME, 0, -1));
 		}
-		query_redirect("ALTER DATABASE " . idf_escape($_POST["name"]) . (eregi('^[a-z0-9_]+$', $_POST["collation"]) ? " COLLATE $_POST[collation]" : ""), substr(ME, 0, -1), lang('Database has been altered.'));
+		query_redirect("ALTER DATABASE " . idf_escape($name) . (eregi('^[a-z0-9_]+$', $_POST["collation"]) ? " COLLATE $_POST[collation]" : ""), substr(ME, 0, -1), lang('Database has been altered.'));
 	}
 }
 

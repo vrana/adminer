@@ -2,8 +2,9 @@ Adminer 3.3.4-dev:
 Foreign keys default actions (bug #3397606)
 Fix minor parser bug in SQL command with webserver file
 Ctrl+click on button opens form to blank window
-PostgreSQL: fix alter foreign key
 SET DEFAULT foreign key action
+Trim table and column names (bug #3405309)
+PostgreSQL: fix alter foreign key
 PostgreSQL over PDO: connect if the eponymous database does not exist (bug #3391619)
 Boolean search (Editor)
 Persian translation

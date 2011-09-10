@@ -178,7 +178,7 @@ function process_type($field, $collate = "COLLATE") {
 */
 function process_field($field, $type_field) {
 	return array(
-		idf_escape($field["field"]),
+		idf_escape(trim($field["field"])),
 		process_type($type_field),
 		($field["null"] ? " NULL" : " NOT NULL"), // NULL for timestamp
 		(isset($field["default"]) ? " DEFAULT " . (($field["type"] == "timestamp" && eregi('^CURRENT_TIMESTAMP$', $field["default"])) || ($field["type"] == "bit" && ereg("^([0-9]+|b'[0-1]+')\$", $field["default"])) ? $field["default"] : q($field["default"])) : ""),

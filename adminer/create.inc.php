@@ -78,9 +78,10 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 			cookie("adminer_engine", $_POST["Engine"]);
 			$message = lang('Table has been created.');
 		}
-		queries_redirect(ME . "table=" . urlencode($_POST["name"]), $message, alter_table(
+		$name = trim($_POST["name"]);
+		queries_redirect(ME . "table=" . urlencode($name), $message, alter_table(
 			$TABLE,
-			$_POST["name"],
+			$name,
 			$fields,
 			$foreign,
 			$_POST["Comment"],
