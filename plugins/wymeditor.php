@@ -55,9 +55,7 @@ class AdminerWymeditor {
 				$lang = ($lang == "zh" || $lang == "zh-tw" ? "zh_cn" : $lang);
 			}
 			return "<textarea$attrs id='fields-" . h($field["field"]) . "' rows='12' cols='50'>" . h($value) . "</textarea><script type='text/javascript'>
-jQuery(function () {
-	jQuery('textarea[name*=\"_html\"]').wymeditor({ updateSelector: '#form [type=\"submit\"]', lang: '$lang'" . ($this->options ? ", $this->options" : "") . " });
-});
+jQuery('#fields-" . js_escape($field["field"]) . "').wymeditor({ updateSelector: '#form [type=\"submit\"]', lang: '$lang'" . ($this->options ? ", $this->options" : "") . " });
 </script>";
 		}
 	}
