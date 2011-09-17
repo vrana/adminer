@@ -335,42 +335,38 @@ function ajaxSend(url, data, popState, noscroll) {
 			if (originalFavicon) {
 				replaceFavicon(originalFavicon);
 			}
-			if (!xmlhttp.status) {
-				setHtml('loader', '');
-			} else {
-				if (!popState) {
-					if (data || url != location.href) {
-						history.pushState(data, '', url); //! remember window position
-					}
+			if (!popState) {
+				if (data || url != location.href) {
+					history.pushState(data, '', url); //! remember window position
 				}
-				if (!noscroll && !/&order/.test(url)) {
-					scrollTo(0, 0);
-				}
-				setHtml('content', xmlhttp.responseText);
-				var content = document.getElementById('content');
-				var scripts = content.getElementsByTagName('script');
-				var length = scripts.length; // required to avoid infinite loop
-				for (var i=0; i < length; i++) {
-					var script = document.createElement('script');
-					script.text = scripts[i].text;
-					content.appendChild(script);
-				}
-				
-				var as = document.getElementById('menu').getElementsByTagName('a');
-				var href = location.href.replace(/(&(sql=|dump=|(select|table)=[^&]*)).*/, '$1');
-				for (var i=0; i < as.length; i++) {
-					as[i].className = (href == as[i].href ? 'active' : '');
-				}
-				var dump = document.getElementById('dump');
-				if (dump) {
-					var match = /&(select|table)=([^&]+)/.exec(href);
-					dump.href = dump.href.replace(/[^=]+$/, '') + (match ? match[2] : '');
-				}
-				//! modify Change database hidden fields
-				
-				if (window.jush) {
-					jush.highlight_tag('code', 0);
-				}
+			}
+			if (!noscroll && !/&order/.test(url)) {
+				scrollTo(0, 0);
+			}
+			setHtml('content', (xmlhttp.status ? xmlhttp.responseText : '<p class="error">' + noResponse));
+			var content = document.getElementById('content');
+			var scripts = content.getElementsByTagName('script');
+			var length = scripts.length; // required to avoid infinite loop
+			for (var i=0; i < length; i++) {
+				var script = document.createElement('script');
+				script.text = scripts[i].text;
+				content.appendChild(script);
+			}
+			
+			var as = document.getElementById('menu').getElementsByTagName('a');
+			var href = location.href.replace(/(&(sql=|dump=|(select|table)=[^&]*)).*/, '$1');
+			for (var i=0; i < as.length; i++) {
+				as[i].className = (href == as[i].href ? 'active' : '');
+			}
+			var dump = document.getElementById('dump');
+			if (dump) {
+				var match = /&(select|table)=([^&]+)/.exec(href);
+				dump.href = dump.href.replace(/[^=]+$/, '') + (match ? match[2] : '');
+			}
+			//! modify Change database hidden fields
+			
+			if (window.jush) {
+				jush.highlight_tag('code', 0);
 			}
 		}
 	}, data);

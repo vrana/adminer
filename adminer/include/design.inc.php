@@ -28,6 +28,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <link rel="stylesheet" type="text/css" href="../adminer/static/default.css">
 <script type="text/javascript">
 var areYouSure = '<?php echo lang('Resend POST data?'); ?>';
+var noResponse = '<?php echo lang('No response from server.'); ?>';
 </script>
 <script type="text/javascript" src="../adminer/static/functions.js"></script>
 <script type="text/javascript" src="static/editing.js"></script>

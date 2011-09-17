@@ -279,6 +279,7 @@ $translations = array(
 	
 	// reload confirmation in AJAX
 	'Resend POST data?' => 'Znovu odeslat POST data?',
+	'No response from server.' => 'Server neodpověděl.',
 	
 	'Editor' => 'Editor',
 	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
