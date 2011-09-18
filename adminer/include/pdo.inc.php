@@ -5,6 +5,11 @@ if (extension_loaded('pdo')) {
 		var $_result, $server_info, $affected_rows, $error;
 		
 		function __construct() {
+			global $adminer;
+			$pos = array_search("", $adminer->operators);
+			if ($pos !== false) {
+				unset($adminer->operators[$pos]);
+			}
 		}
 		
 		function dsn($dsn, $username, $password, $exception_handler = 'auth_error') {
