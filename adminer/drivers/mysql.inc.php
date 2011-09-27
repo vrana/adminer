@@ -250,7 +250,7 @@ if (!defined("DRIVER")) {
 		$connection = new Min_DB;
 		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
-			$connection->query("SET sql_quote_show_create = 1");
+			$connection->query("SET sql_quote_show_create = 1, autocommit = 1");
 			return $connection;
 		}
 		$return = $connection->error;

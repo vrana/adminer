@@ -5,6 +5,7 @@ Ctrl+click on button opens form to blank window
 SET DEFAULT foreign key action
 Trim table and column names (bug #3405309)
 Error message with no response from server in AJAX
+MySQL: set autocommit after connect
 PostgreSQL: fix alter foreign key
 PostgreSQL over PDO: connect if the eponymous database does not exist (bug #3391619)
 Boolean search (Editor)
