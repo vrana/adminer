@@ -194,6 +194,17 @@ function selectAddRow(field) {
 */
 function bodyKeydown(event, button) {
 	var target = event.target || event.srcElement;
+	if (event.keyCode == 27 && !event.shiftKey && !event.ctrlKey && !event.altKey && !event.metaKey) { // 27 - Esc
+		ajaxXmlhttp.aborted = true;
+		if (ajaxXmlhttp.abort) {
+			ajaxXmlhttp.abort();
+		}
+		setHtml('loader', '');
+		onblur = function () { };
+		if (originalFavicon) {
+			replaceFavicon(originalFavicon);
+		}
+	}
 	if (event.ctrlKey && (event.keyCode == 13 || event.keyCode == 10) && !event.altKey && !event.metaKey && /select|textarea|input/i.test(target.tagName)) { // 13|10 - Enter, shiftKey allowed
 		target.blur();
 		if (!ajaxForm(target.form, (button ? button + '=1' : ''))) {
@@ -301,6 +312,7 @@ function replaceFavicon(href) {
 }
 
 var ajaxState = 0;
+var ajaxXmlhttp = {};
 
 /** Safely load content to #content
 * @param string
@@ -313,6 +325,10 @@ function ajaxSend(url, data, popState, noscroll) {
 	if (!history.pushState) {
 		return false;
 	}
+	ajaxXmlhttp.aborted = true;
+	if (ajaxXmlhttp.abort) {
+		ajaxXmlhttp.abort();
+	}
 	var currentState = ++ajaxState;
 	onblur = function () {
 		if (!originalFavicon) {
@@ -321,8 +337,8 @@ function ajaxSend(url, data, popState, noscroll) {
 		replaceFavicon('../adminer/static/loader.gif');
 	};
 	setHtml('loader', '<img src="../adminer/static/loader.gif" alt="">');
-	return ajax(url, function (xmlhttp) {
-		if (currentState == ajaxState) {
+	ajaxXmlhttp = ajax(url, function (xmlhttp) {
+		if (!xmlhttp.aborted && currentState == ajaxState) {
 			var title = xmlhttp.getResponseHeader('X-AJAX-Title');
 			if (title) {
 				document.title = decodeURIComponent(title);
@@ -370,6 +386,7 @@ function ajaxSend(url, data, popState, noscroll) {
 			}
 		}
 	}, data);
+	return ajaxXmlhttp;
 }
 
 /** Revive page from history
