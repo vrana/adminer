@@ -113,7 +113,7 @@ if ($_POST) {
 	if ($old_pass != "") {
 		$row["hashed"] = true;
 	}
-	$grants[DB != "" && !isset($_GET["host"]) ? idf_escape(addcslashes(DB, "%_")) . ".*" : ""] = array();
+	$grants[(DB != "" && !isset($_GET["host"]) ? idf_escape(addcslashes(DB, "%_")) : "") . ".*"] = array();
 }
 
 ?>
@@ -150,7 +150,7 @@ foreach (array(
 		foreach ($grants as $object => $grant) {
 			$name = "'grants[$i][" . h(strtoupper($privilege)) . "]'";
 			$value = $grant[strtoupper($privilege)];
-			if ($context == "Server Admin" && $object != (isset($grants["*.*"]) ? "*.*" : "")) {
+			if ($context == "Server Admin" && $object != (isset($grants["*.*"]) ? "*.*" : ".*")) {
 				echo "<td>&nbsp;";
 			} elseif (isset($_GET["grant"])) {
 				echo "<td><select name=$name><option><option value='1'" . ($value ? " selected" : "") . ">" . lang('Grant') . "<option value='0'" . ($value == "0" ? " selected" : "") . ">" . lang('Revoke') . "</select>";
