@@ -337,7 +337,7 @@ function where($where) {
 	$return = array();
 	foreach ((array) $where["where"] as $key => $val) {
 		$return[] = idf_escape(bracket_escape($key, 1)) // 1 - back
-			. ((ereg('\\.', $val) || $jush == "mssql") && $jush != "pgsql" ? " LIKE " . exact_value(addcslashes($val, "%_\\")) : " = " . exact_value($val)) // LIKE because of floats, but slow with ints, in MS SQL because of text
+			. (($jush == "sql" && ereg('\\.', $val)) || $jush == "mssql" ? " LIKE " . exact_value(addcslashes($val, "%_\\")) : " = " . exact_value($val)) // LIKE because of floats, but slow with ints, in MS SQL because of text
 		; //! enum and set
 	}
 	foreach ((array) $where["null"] as $key) {
