@@ -9,6 +9,7 @@ Esc to cancel AJAX request
 Ability to disable export (customization)
 MySQL: set autocommit after connect
 PostgreSQL: fix alter foreign key
+PostgreSQL: don't use LIKE for numbers
 PostgreSQL over PDO: connect if the eponymous database does not exist (bug #3391619)
 Boolean search (Editor)
 Persian translation
