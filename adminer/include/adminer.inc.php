@@ -523,7 +523,7 @@ username.form['driver'].onchange();
 	}
 	
 	/** Returns export format options
-	* @return array
+	* @return array empty to disable export
 	*/
 	function dumpFormat() {
 		return array('sql' => 'SQL', 'csv' => 'CSV,', 'csv;' => 'CSV;', 'tsv' => 'TSV');

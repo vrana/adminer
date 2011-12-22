@@ -407,12 +407,15 @@ if (!$columns) {
 </div></fieldset>
 <?php
 			}
-			print_fieldset("export", lang('Export'));
-			$output = $adminer->dumpOutput();
-			echo ($output ? html_select("output", $output, $adminer_import["output"]) . " " : "");
-			echo html_select("format", $adminer->dumpFormat(), $adminer_import["format"]);
-			echo " <input type='submit' name='export' value='" . lang('Export') . "' onclick='eventStop(event);'>\n";
-			echo "</div></fieldset>\n";
+			$format = $adminer->dumpFormat();
+			if ($format) {
+				print_fieldset("export", lang('Export'));
+				$output = $adminer->dumpOutput();
+				echo ($output ? html_select("output", $output, $adminer_import["output"]) . " " : "");
+				echo html_select("format", $format, $adminer_import["format"]);
+				echo " <input type='submit' name='export' value='" . lang('Export') . "' onclick='eventStop(event);'>\n";
+				echo "</div></fieldset>\n";
+			}
 		}
 		if ($adminer->selectImportPrint()) {
 			print_fieldset("import", lang('Import'), !$rows);
