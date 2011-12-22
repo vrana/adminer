@@ -276,7 +276,7 @@ ORDER BY a.attnum"
 		$return = array();
 		foreach (get_rows("SELECT conname, pg_get_constraintdef(oid) AS definition
 FROM pg_constraint
-WHERE conrelid = (SELECT oid FROM pg_class WHERE relname = " . q($table) . ")
+WHERE conrelid = (SELECT pc.oid FROM pg_class AS pc INNER JOIN pg_namespace AS pn ON (pn.oid = pc.relnamespace) WHERE pc.relname = " . q($table) . " AND pn.nspname = current_schema())
 AND contype = 'f'::char
 ORDER BY conkey, conname") as $row) {
 			if (preg_match('~FOREIGN KEY\s*\((.+)\)\s*REFERENCES (.+)\((.+)\)(.*)$~iA', $row['definition'], $match)) {
