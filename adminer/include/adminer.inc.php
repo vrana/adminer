@@ -659,7 +659,7 @@ DROP PROCEDURE adminer_alter;
 							$insert = "INSERT INTO " . table($table) . " (" . implode(", ", array_map('idf_escape', array_keys($row))) . ") VALUES";
 						}
 						foreach ($row as $key => $val) {
-							$row[$key] = (isset($val) ? (ereg('int|float|double|decimal', $fields[$key]["type"]) ? $val : q($val)) : "NULL"); //! columns looking like functions
+							$row[$key] = (isset($val) ? (ereg('int|float|double|decimal|bit', $fields[$key]["type"]) ? $val : q($val)) : "NULL"); //! columns looking like functions
 						}
 						$s = implode(",\t", $row);
 						if ($style == "INSERT+UPDATE") {
