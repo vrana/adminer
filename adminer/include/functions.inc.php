@@ -282,20 +282,20 @@ function get_key_vals($query, $connection2 = null) {
 
 /** Get all rows of result
 * @param string
+* @param Min_DB
+* @param string
 * @return array associative
 */
 function get_rows($query, $connection2 = null, $error = "<p class='error'>") {
 	global $connection;
-	if (!is_object($connection2)) {
-		$connection2 = $connection;
-	}
+	$conn = (is_object($connection2) ? $connection2 : $connection);
 	$return = array();
-	$result = $connection2->query($query);
+	$result = $conn->query($query);
 	if (is_object($result)) { // can return true
 		while ($row = $result->fetch_assoc()) {
 			$return[] = $row;
 		}
-	} elseif (!$result && $connection->error && $error && defined("PAGE_HEADER")) {
+	} elseif (!$result && !is_object($connection2) && $error && defined("PAGE_HEADER")) {
 		echo $error . error() . "\n";
 	}
 	return $return;
