@@ -181,7 +181,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			}
 			
 			function select_db($filename) {
-				if (is_readable($filename) && $this->query("ATTACH " . $this->quote(ereg("(^[/\\]|:)", $filename) ? $filename : dirname($_SERVER["SCRIPT_FILENAME"]) . "/$filename") . " AS a")) { // is_readable - SQLite 3
+				if (is_readable($filename) && $this->query("ATTACH " . $this->quote(ereg("(^[/\\\\]|:)", $filename) ? $filename : dirname($_SERVER["SCRIPT_FILENAME"]) . "/$filename") . " AS a")) { // is_readable - SQLite 3
 					$this->Min_SQLite($filename);
 					return true;
 				}
