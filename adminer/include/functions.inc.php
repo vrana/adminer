@@ -901,5 +901,9 @@ function format_size($size) {
 		$size = $size;
 		$unit = 'B';
 	}
-	return number_format($size, 0, '.', lang(',')) . ' ' . $unit;
+	if (round($size) != $size) {
+		return number_format($size, 2, '.', lang(',')) . ' ' . $unit;
+	} else {
+		return number_format($size, 0, '.', lang(',')) . ' ' . $unit;
+	}
 }
