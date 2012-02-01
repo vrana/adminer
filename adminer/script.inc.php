@@ -12,7 +12,11 @@ if ($_GET["script"] == "db") {
 			}
 			foreach ($sums + array("Auto_increment" => 0, "Rows" => 0) as $key => $val) {
 				if ($table_status[$key] != "") {
-					$val = number_format($table_status[$key], 0, '.', lang(','));
+					if (isset($sums[$key])) {
+						$val = format_size($table_status[$key]);
+					} else {
+						$val = number_format($table_status[$key], 0, '.', lang(','));
+					}
 					json_row("$key-$id", ($key == "Rows" && $table_status["Engine"] == "InnoDB" && $val ? "~ $val" : $val));
 					if (isset($sums[$key])) {
 						$sums[$key] += ($table_status["Engine"] != "InnoDB" || $key != "Data_free" ? $table_status[$key] : 0);
@@ -24,7 +28,7 @@ if ($_GET["script"] == "db") {
 		}
 	}
 	foreach ($sums as $key => $val) {
-		json_row("sum-$key", number_format($val, 0, '.', lang(',')));
+		json_row("sum-$key", format_size($val));
 	}
 	json_row("");
 } else { // connect
