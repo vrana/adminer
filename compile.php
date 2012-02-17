@@ -201,7 +201,7 @@ $_SESSION["lang"] = $_SERVER["argv"][1]; // Adminer functions read language from
 include dirname(__FILE__) . "/adminer/include/lang.inc.php";
 if (isset($_SESSION["lang"])) {
 	if (isset($_SERVER["argv"][2]) || !isset($langs[$_SESSION["lang"]])) {
-		echo "Usage: php compile.php [lang]\nPurpose: Compile adminer[-lang].php and editor[-lang].php.\n";
+		echo "Usage: php compile.php [driver] [lang]\nPurpose: Compile adminer[-driver][-lang].php and editor[-driver][-lang].php.\n";
 		exit(1);
 	}
 	include dirname(__FILE__) . "/adminer/lang/$_SESSION[lang].inc.php";
