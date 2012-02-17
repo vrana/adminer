@@ -41,9 +41,10 @@ var noResponse = '<?php echo lang('No response from server.'); ?>';
 
 <body class="<?php echo lang('ltr'); ?> nojs"<?php echo ($_POST ? "" : " onclick=\"return bodyClick(event, '" . h(js_escape(DB) . "', '" . js_escape($_GET["ns"])) . "');\""); // avoid re-post confirmation after refreshing the next page in Google Chrome ?> onkeydown="bodyKeydown(event);" onload="bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 0, 3) : ""); ?>');<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verifyVersion();"); ?>">
 <script type="text/javascript">
-document.body.className = document.body.className.replace(/(^|\s)nojs(\s|$)/, '$1js$2');
+document.body.className = document.body.className.replace(/ nojs/, ' js');
 </script>
 
+<div id="loader"><img src="../adminer/static/loader.gif" alt=""></div>
 <div id="content">
 <?php
 	}
@@ -73,7 +74,6 @@ document.body.className = document.body.className.replace(/(^|\s)nojs(\s|$)/, '$
 			echo "$title\n";
 		}
 	}
-	echo "<span id='loader'></span>\n";
 	echo "<h2>$title_all</h2>\n";
 	restart_session();
 	$uri = preg_replace('~^[^?]*~', '', $_SERVER["REQUEST_URI"]);

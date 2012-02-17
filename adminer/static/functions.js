@@ -199,7 +199,7 @@ function bodyKeydown(event, button) {
 		if (ajaxXmlhttp.abort) {
 			ajaxXmlhttp.abort();
 		}
-		setHtml('loader', '');
+		document.body.className = document.body.className.replace(/ loading/, '');
 		onblur = function () { };
 		if (originalFavicon) {
 			replaceFavicon(originalFavicon);
@@ -334,9 +334,9 @@ function ajaxSend(url, data, popState, noscroll) {
 		if (!originalFavicon) {
 			originalFavicon = (document.getElementById('favicon') || {}).href;
 		}
-		replaceFavicon('../adminer/static/loader.gif');
+		replaceFavicon(document.getElementById('loader').firstChild.src);
 	};
-	setHtml('loader', '<img src="../adminer/static/loader.gif" alt="">');
+	document.body.className += ' loading';
 	ajaxXmlhttp = ajax(url, function (xmlhttp) {
 		if (!xmlhttp.aborted && currentState == ajaxState) {
 			var title = xmlhttp.getResponseHeader('X-AJAX-Title');
@@ -360,6 +360,7 @@ function ajaxSend(url, data, popState, noscroll) {
 				scrollTo(0, 0);
 			}
 			setHtml('content', (xmlhttp.status ? xmlhttp.responseText : '<p class="error">' + noResponse));
+			document.body.className = document.body.className.replace(/ loading/, '');
 			var content = document.getElementById('content');
 			var scripts = content.getElementsByTagName('script');
 			var length = scripts.length; // required to avoid infinite loop
