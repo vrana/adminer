@@ -20,6 +20,8 @@ code { background: #eee; }
 tbody tr:hover td, tbody tr:hover th { background: #eee; }
 pre { margin: 1em 0 0; }
 input[type=image] { vertical-align: middle; }
+.loading { cursor: progress; }
+.loading #loader { display: inline; }
 .version { color: #777; font-size: 67%; }
 .js .hidden, .nojs .jsonly { display: none; }
 .nowrap td, .nowrap th, td.nowrap { white-space: pre; }
@@ -47,7 +49,7 @@ input[type=image] { vertical-align: middle; }
 #content { margin: 2em 0 0 21em; padding: 10px 20px 20px 0; }
 #lang { position: absolute; top: 0; left: 0; line-height: 1.8em; padding: .3em 1em; }
 #breadcrumb { white-space: nowrap; position: absolute; top: 0; left: 21em; background: #eee; height: 2em; line-height: 1.8em; padding: 0 1em; margin: 0 0 0 -18px; }
-#loader { position: fixed; top: 0; left: 18em; z-index: 1; }
+#loader { display: none; position: fixed; top: 2px; right: 2px; z-index: 1; }
 #h1 { color: #777; text-decoration: none; font-style: italic; }
 #version { font-size: 67%; color: red; }
 #schema { margin-left: 60px; position: relative; }
