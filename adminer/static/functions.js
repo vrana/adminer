@@ -515,7 +515,7 @@ function bodyClick(event, db, ns) {
 	if (/^a$/i.test(el.tagName) && !/:|#|&download=/i.test(el.getAttribute('href')) && /[&?]username=/.test(el.href) && !event.ctrlKey) {
 		var match = /&db=([^&]*)/.exec(el.href);
 		var match2 = /&ns=([^&]*)/.exec(el.href);
-		return !(db == (match ? match[1] : '') && ns == (match2 ? match2[1] : '') && ajaxSend(el.href));
+		return !(db == (match ? decodeURIComponent(match[1]) : '') && ns == (match2 ? decodeURIComponent(match2[1]) : '') && ajaxSend(el.href));
 	}
 	if (/^input$/i.test(el.tagName) && /image|submit/.test(el.type)) {
 		if (event.ctrlKey) {
