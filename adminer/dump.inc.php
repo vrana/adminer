@@ -208,7 +208,7 @@ if (DB != "") {
 	echo $views;
 } else {
 	echo "<thead><tr><th style='text-align: left;'><label><input type='checkbox' id='check-databases'" . ($TABLE == "" ? " checked" : "") . " onclick='formCheck(this, /^databases\\[/);'>" . lang('Database') . "</label></thead>\n";
-	$databases = get_databases();
+	$databases = $adminer->databases();
 	if ($databases) {
 		foreach ($databases as $db) {
 			if (!information_schema($db)) {

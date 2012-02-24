@@ -9,6 +9,7 @@ Esc to cancel AJAX request
 Move AJAX loading indicator to the right
 Don't quote bit type in export
 Ability to disable export (customization)
+Extensible list of databases (customization)
 MySQL: set autocommit after connect
 PostgreSQL: fix alter foreign key
 PostgreSQL, SQLite: don't use LIKE for numbers (bug #3420408)
