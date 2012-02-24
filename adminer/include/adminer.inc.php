@@ -34,6 +34,14 @@ class Adminer {
 		return DB;
 	}
 	
+	/** Get cached list of databases
+	* @param bool
+	* @return array
+	*/
+	function databases($flush = true) {
+		return get_databases($flush);
+	}
+	
 	/** Headers to send before HTML output
 	* @return bool true to send security headers
 	*/
@@ -753,7 +761,7 @@ DROP PROCEDURE adminer_alter;
 				}
 			}
 		} else {
-			$databases = get_databases();
+			$databases = $this->databases();
 			?>
 <form action="" method="post">
 <p class="logout">

@@ -92,7 +92,7 @@ if ($adminer->homepage()) {
 			echo "<script type='text/javascript'>tableCheck();</script>\n";
 			if (!information_schema(DB)) {
 				echo "<p>" . ($jush == "sql" ? "<input type='submit' value='" . lang('Analyze') . "'> <input type='submit' name='optimize' value='" . lang('Optimize') . "'> <input type='submit' name='check' value='" . lang('Check') . "'> <input type='submit' name='repair' value='" . lang('Repair') . "'> " : "") . "<input type='submit' name='truncate' value='" . lang('Truncate') . "'" . confirm("formChecked(this, /tables/)") . "> <input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm("formChecked(this, /tables|views/)", 1) . ">\n"; // 1 - eventStop
-				$databases = (support("scheme") ? schemas() : get_databases());
+				$databases = (support("scheme") ? schemas() : $adminer->databases());
 				if (count($databases) != 1 && $jush != "sqlite") {
 					$db = (isset($_POST["target"]) ? $_POST["target"] : (support("scheme") ? $_GET["ns"] : DB));
 					echo "<p>" . lang('Move to other database') . ": ";

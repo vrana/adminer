@@ -1,6 +1,6 @@
 <?php
 function connect_error() {
-	global $connection, $token, $error, $drivers;
+	global $adminer, $connection, $token, $error, $drivers;
 	$databases = array();
 	if (DB != "") {
 		page_header(lang('Database') . ": " . h(DB), lang('Invalid database.'), true);
@@ -26,7 +26,7 @@ function connect_error() {
 		if ($_GET["refresh"]) {
 			set_session("dbs", null);
 		}
-		$databases = get_databases();
+		$databases = $adminer->databases();
 		if ($databases) {
 			$scheme = support("scheme");
 			$collations = collations();

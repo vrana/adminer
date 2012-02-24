@@ -19,11 +19,15 @@ class Adminer {
 	
 	function database() {
 		global $connection;
-		$databases = get_databases(false);
+		$databases = $this->databases(false);
 		return (!$databases
 			? $connection->result("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1)") // username without the database list
 			: $databases[(information_schema($databases[0]) ? 1 : 0)] // first available database
 		);
+	}
+	
+	function databases($flush = true) {
+		return get_databases($flush);
 	}
 	
 	function headers() {
