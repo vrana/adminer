@@ -10,6 +10,7 @@ function adminer_object() {
 	
 	$plugins = array(
 		// specify enabled plugins here
+		new AdminerDatabaseHide(array('information_schema')),
 		new AdminerDumpZip,
 		new AdminerDumpXml,
 		//~ new AdminerSqlLog("past-" . rtrim(`git describe --tags --abbrev=0`) . ".sql"),
