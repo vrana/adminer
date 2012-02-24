@@ -882,3 +882,28 @@ function is_url($string) {
 	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component //! IDN
 	return (preg_match("~^(https?)://($domain?\\.)+$domain(:\\d+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string, $match) ? strtolower($match[1]) : ""); //! restrict path, query and fragment characters
 }
+
+/** Makes size in bytes human readable
+* @param int|float
+* @return string Formated size
+*/
+function format_size($size) {
+	if ($size >= 1073741824) {
+		$size = $size / 1073741824;
+		$unit = 'GB';
+	} else if ($size >= 1048576) {
+		$size = $size / 1048576;
+		$unit = 'MB';
+	} else if ($size >= 1024) {
+		$size = $size / 1024;
+		$unit = 'KB';
+	} else {
+		$size = $size;
+		$unit = 'B';
+	}
+	if (round($size) != $size) {
+		return number_format($size, 2, '.', lang(',')) . ' ' . $unit;
+	} else {
+		return number_format($size, 0, '.', lang(',')) . ' ' . $unit;
+	}
+}
