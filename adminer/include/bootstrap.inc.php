@@ -4,7 +4,7 @@ error_reporting(6135); // errors and warnings
 include "../adminer/include/coverage.inc.php";
 
 // disable filter.default
-$filter = (!ereg('^(unsafe_raw)?$', ini_get("filter.default")));
+$filter = !ereg('^(unsafe_raw)?$', ini_get("filter.default"));
 if ($filter || ini_get("filter.default_flags")) {
 	foreach (array('_GET', '_POST', '_COOKIE', '_SERVER') as $val) {
 		$unsafe = filter_input_array(constant("INPUT$val"), FILTER_UNSAFE_RAW);
