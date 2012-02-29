@@ -199,7 +199,7 @@ function bodyKeydown(event, button) {
 		if (ajaxXmlhttp.abort) {
 			ajaxXmlhttp.abort();
 		}
-		document.body.className = document.body.className.replace(/ loading/, '');
+		document.body.className = document.body.className.replace(/ loading/g, '');
 		onblur = function () { };
 		if (originalFavicon) {
 			replaceFavicon(originalFavicon);
@@ -360,7 +360,7 @@ function ajaxSend(url, data, popState, noscroll) {
 				scrollTo(0, 0);
 			}
 			setHtml('content', (xmlhttp.status ? xmlhttp.responseText : '<p class="error">' + noResponse));
-			document.body.className = document.body.className.replace(/ loading/, '');
+			document.body.className = document.body.className.replace(/ loading/g, '');
 			var content = document.getElementById('content');
 			var scripts = content.getElementsByTagName('script');
 			var length = scripts.length; // required to avoid infinite loop
