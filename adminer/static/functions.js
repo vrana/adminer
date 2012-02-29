@@ -187,18 +187,28 @@ function selectAddRow(field) {
 
 
 
+/** Abort AJAX request
+* @uses ajaxRequest
+*/
+function ajaxAbort() {
+	ajaxRequest.aborted = true;
+	if (ajaxRequest.abort) {
+		ajaxRequest.abort();
+	}
+}
+
+
+
 /** Send form by Ctrl+Enter on <select> and <textarea>
 * @param KeyboardEvent
 * @param [string]
 * @return boolean
+* @uses ajaxRequest
 */
 function bodyKeydown(event, button) {
 	var target = event.target || event.srcElement;
 	if (event.keyCode == 27 && !event.shiftKey && !event.ctrlKey && !event.altKey && !event.metaKey) { // 27 - Esc
-		ajaxRequest.aborted = true;
-		if (ajaxRequest.abort) {
-			ajaxRequest.abort();
-		}
+		ajaxAbort();
 		document.body.className = document.body.className.replace(/ loading/g, '');
 		onblur = function () { };
 		if (originalFavicon) {
@@ -320,15 +330,13 @@ var ajaxRequest = {};
 * @param [boolean]
 * @param [boolean]
 * @return XMLHttpRequest or false in case of an error
+* @uses ajaxState, ajaxRequest
 */
 function ajaxSend(url, data, popState, noscroll) {
 	if (!history.pushState) {
 		return false;
 	}
-	ajaxRequest.aborted = true;
-	if (ajaxRequest.abort) {
-		ajaxRequest.abort();
-	}
+	ajaxAbort();
 	var currentState = ++ajaxState;
 	onblur = function () {
 		if (!originalFavicon) {
@@ -392,6 +400,7 @@ function ajaxSend(url, data, popState, noscroll) {
 
 /** Revive page from history
 * @param PopStateEvent|history
+* @uses ajaxState
 */
 onpopstate = function (event) {
 	if ((ajaxState || event.state) && !/#/.test(location.href)) {
