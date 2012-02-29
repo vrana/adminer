@@ -191,7 +191,7 @@ function selectAddRow(field) {
 * @uses ajaxRequest
 */
 function ajaxAbort() {
-	ajaxRequest.aborted = true;
+	ajaxRequest.onreadystatechange = null;
 	if (ajaxRequest.abort) {
 		ajaxRequest.abort();
 	}
@@ -203,7 +203,6 @@ function ajaxAbort() {
 * @param KeyboardEvent
 * @param [string]
 * @return boolean
-* @uses ajaxRequest
 */
 function bodyKeydown(event, button) {
 	var target = event.target || event.srcElement;
@@ -321,7 +320,6 @@ function replaceFavicon(href) {
 	}
 }
 
-var ajaxState = 0;
 var ajaxRequest = {};
 
 /** Safely load content to #content
@@ -330,14 +328,13 @@ var ajaxRequest = {};
 * @param [boolean]
 * @param [boolean]
 * @return XMLHttpRequest or false in case of an error
-* @uses ajaxState, ajaxRequest
+* @uses ajaxRequest
 */
 function ajaxSend(url, data, popState, noscroll) {
 	if (!history.pushState) {
 		return false;
 	}
 	ajaxAbort();
-	var currentState = ++ajaxState;
 	onblur = function () {
 		if (!originalFavicon) {
 			originalFavicon = (document.getElementById('favicon') || {}).href;
@@ -346,53 +343,51 @@ function ajaxSend(url, data, popState, noscroll) {
 	};
 	document.body.className += ' loading';
 	ajaxRequest = ajax(url, function (request) {
-		if (!request.aborted && currentState == ajaxState) {
-			var title = request.getResponseHeader('X-AJAX-Title');
-			if (title) {
-				document.title = decodeURIComponent(title);
+		var title = request.getResponseHeader('X-AJAX-Title');
+		if (title) {
+			document.title = decodeURIComponent(title);
+		}
+		var redirect = request.getResponseHeader('X-AJAX-Redirect');
+		if (redirect) {
+			return ajaxSend(redirect, '', popState);
+		}
+		onblur = function () { };
+		if (originalFavicon) {
+			replaceFavicon(originalFavicon);
+		}
+		if (!popState) {
+			if (data || url != location.href) {
+				history.pushState(data, '', url); //! remember window position
 			}
-			var redirect = request.getResponseHeader('X-AJAX-Redirect');
-			if (redirect) {
-				return ajaxSend(redirect, '', popState);
-			}
-			onblur = function () { };
-			if (originalFavicon) {
-				replaceFavicon(originalFavicon);
-			}
-			if (!popState) {
-				if (data || url != location.href) {
-					history.pushState(data, '', url); //! remember window position
-				}
-			}
-			if (!noscroll && !/&order/.test(url)) {
-				scrollTo(0, 0);
-			}
-			setHtml('content', (request.status ? request.responseText : '<p class="error">' + noResponse));
-			document.body.className = document.body.className.replace(/ loading/g, '');
-			var content = document.getElementById('content');
-			var scripts = content.getElementsByTagName('script');
-			var length = scripts.length; // required to avoid infinite loop
-			for (var i=0; i < length; i++) {
-				var script = document.createElement('script');
-				script.text = scripts[i].text;
-				content.appendChild(script);
-			}
-			
-			var as = document.getElementById('menu').getElementsByTagName('a');
-			var href = location.href.replace(/(&(sql=|dump=|(select|table)=[^&]*)).*/, '$1');
-			for (var i=0; i < as.length; i++) {
-				as[i].className = (href == as[i].href ? 'active' : '');
-			}
-			var dump = document.getElementById('dump');
-			if (dump) {
-				var match = /&(select|table)=([^&]+)/.exec(href);
-				dump.href = dump.href.replace(/[^=]+$/, '') + (match ? match[2] : '');
-			}
-			//! modify Change database hidden fields
-			
-			if (window.jush) {
-				jush.highlight_tag('code', 0);
-			}
+		}
+		if (!noscroll && !/&order/.test(url)) {
+			scrollTo(0, 0);
+		}
+		setHtml('content', (request.status ? request.responseText : '<p class="error">' + noResponse));
+		document.body.className = document.body.className.replace(/ loading/g, '');
+		var content = document.getElementById('content');
+		var scripts = content.getElementsByTagName('script');
+		var length = scripts.length; // required to avoid infinite loop
+		for (var i=0; i < length; i++) {
+			var script = document.createElement('script');
+			script.text = scripts[i].text;
+			content.appendChild(script);
+		}
+		
+		var as = document.getElementById('menu').getElementsByTagName('a');
+		var href = location.href.replace(/(&(sql=|dump=|(select|table)=[^&]*)).*/, '$1');
+		for (var i=0; i < as.length; i++) {
+			as[i].className = (href == as[i].href ? 'active' : '');
+		}
+		var dump = document.getElementById('dump');
+		if (dump) {
+			var match = /&(select|table)=([^&]+)/.exec(href);
+			dump.href = dump.href.replace(/[^=]+$/, '') + (match ? match[2] : '');
+		}
+		//! modify Change database hidden fields
+		
+		if (window.jush) {
+			jush.highlight_tag('code', 0);
 		}
 	}, data);
 	return ajaxRequest;
@@ -400,13 +395,13 @@ function ajaxSend(url, data, popState, noscroll) {
 
 /** Revive page from history
 * @param PopStateEvent|history
-* @uses ajaxState
+* @uses ajaxRequest
 */
 onpopstate = function (event) {
-	if ((ajaxState || event.state) && !/#/.test(location.href)) {
+	if ((ajaxRequest.send || event.state) && !/#/.test(location.href)) {
 		ajaxSend(location.href, (event.state && confirm(areYouSure) ? event.state : ''), 1); // 1 - disable pushState
 	} else {
-		ajaxState++;
+		ajaxRequest.send = true; // to enable AJAX for next call of this function
 	}
 };
 
