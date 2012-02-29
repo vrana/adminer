@@ -11,6 +11,7 @@ Don't quote bit type in export
 Ability to disable export (customization)
 Extensible list of databases (customization)
 MySQL: set autocommit after connect
+SQLite: vacuum
 PostgreSQL: fix alter foreign key
 PostgreSQL, SQLite: don't use LIKE for numbers (bug #3420408)
 PostgreSQL over PDO: connect if the eponymous database does not exist (bug #3391619)

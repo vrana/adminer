@@ -147,6 +147,7 @@ $translations = array(
 	'Create new table' => 'Vytvořit novou tabulku',
 	'Table has been dropped.' => 'Tabulka byla odstraněna.',
 	'Tables have been dropped.' => 'Tabulky byly odstraněny.',
+	'Tables have been optimized.' => 'Tabulky byly optimalizovány.',
 	'Table has been altered.' => 'Tabulka byla změněna.',
 	'Table has been created.' => 'Tabulka byla vytvořena.',
 	'Table name' => 'Název tabulky',
