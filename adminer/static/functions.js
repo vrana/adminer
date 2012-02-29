@@ -195,9 +195,9 @@ function selectAddRow(field) {
 function bodyKeydown(event, button) {
 	var target = event.target || event.srcElement;
 	if (event.keyCode == 27 && !event.shiftKey && !event.ctrlKey && !event.altKey && !event.metaKey) { // 27 - Esc
-		ajaxXmlhttp.aborted = true;
-		if (ajaxXmlhttp.abort) {
-			ajaxXmlhttp.abort();
+		ajaxRequest.aborted = true;
+		if (ajaxRequest.abort) {
+			ajaxRequest.abort();
 		}
 		document.body.className = document.body.className.replace(/ loading/g, '');
 		onblur = function () { };
@@ -266,21 +266,21 @@ function functionChange(select) {
 * @return XMLHttpRequest or false in case of an error
 */
 function ajax(url, callback, data) {
-	var xmlhttp = (window.XMLHttpRequest ? new XMLHttpRequest() : (window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') : false));
-	if (xmlhttp) {
-		xmlhttp.open((data ? 'POST' : 'GET'), url);
+	var request = (window.XMLHttpRequest ? new XMLHttpRequest() : (window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') : false));
+	if (request) {
+		request.open((data ? 'POST' : 'GET'), url);
 		if (data) {
-			xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+			request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		}
-		xmlhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-		xmlhttp.onreadystatechange = function () {
-			if (xmlhttp.readyState == 4) {
-				callback(xmlhttp);
+		request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+		request.onreadystatechange = function () {
+			if (request.readyState == 4) {
+				callback(request);
 			}
 		};
-		xmlhttp.send(data);
+		request.send(data);
 	}
-	return xmlhttp;
+	return request;
 }
 
 /** Use setHtml(key, value) for JSON response
@@ -288,9 +288,9 @@ function ajax(url, callback, data) {
 * @return XMLHttpRequest or false in case of an error
 */
 function ajaxSetHtml(url) {
-	return ajax(url, function (xmlhttp) {
-		if (xmlhttp.status) {
-			var data = eval('(' + xmlhttp.responseText + ')');
+	return ajax(url, function (request) {
+		if (request.status) {
+			var data = eval('(' + request.responseText + ')');
 			for (var key in data) {
 				setHtml(key, data[key]);
 			}
@@ -312,7 +312,7 @@ function replaceFavicon(href) {
 }
 
 var ajaxState = 0;
-var ajaxXmlhttp = {};
+var ajaxRequest = {};
 
 /** Safely load content to #content
 * @param string
@@ -325,9 +325,9 @@ function ajaxSend(url, data, popState, noscroll) {
 	if (!history.pushState) {
 		return false;
 	}
-	ajaxXmlhttp.aborted = true;
-	if (ajaxXmlhttp.abort) {
-		ajaxXmlhttp.abort();
+	ajaxRequest.aborted = true;
+	if (ajaxRequest.abort) {
+		ajaxRequest.abort();
 	}
 	var currentState = ++ajaxState;
 	onblur = function () {
@@ -337,13 +337,13 @@ function ajaxSend(url, data, popState, noscroll) {
 		replaceFavicon(document.getElementById('loader').firstChild.src);
 	};
 	document.body.className += ' loading';
-	ajaxXmlhttp = ajax(url, function (xmlhttp) {
-		if (!xmlhttp.aborted && currentState == ajaxState) {
-			var title = xmlhttp.getResponseHeader('X-AJAX-Title');
+	ajaxRequest = ajax(url, function (request) {
+		if (!request.aborted && currentState == ajaxState) {
+			var title = request.getResponseHeader('X-AJAX-Title');
 			if (title) {
 				document.title = decodeURIComponent(title);
 			}
-			var redirect = xmlhttp.getResponseHeader('X-AJAX-Redirect');
+			var redirect = request.getResponseHeader('X-AJAX-Redirect');
 			if (redirect) {
 				return ajaxSend(redirect, '', popState);
 			}
@@ -359,7 +359,7 @@ function ajaxSend(url, data, popState, noscroll) {
 			if (!noscroll && !/&order/.test(url)) {
 				scrollTo(0, 0);
 			}
-			setHtml('content', (xmlhttp.status ? xmlhttp.responseText : '<p class="error">' + noResponse));
+			setHtml('content', (request.status ? request.responseText : '<p class="error">' + noResponse));
 			document.body.className = document.body.className.replace(/ loading/g, '');
 			var content = document.getElementById('content');
 			var scripts = content.getElementsByTagName('script');
@@ -387,7 +387,7 @@ function ajaxSend(url, data, popState, noscroll) {
 			}
 		}
 	}, data);
-	return ajaxXmlhttp;
+	return ajaxRequest;
 }
 
 /** Revive page from history
@@ -475,9 +475,9 @@ function selectDblClick(td, event, text) {
 	td.appendChild(input);
 	input.focus();
 	if (text == 2) { // long text
-		return ajax(location.href + '&' + encodeURIComponent(td.id) + '=', function (xmlhttp) {
-			if (xmlhttp.status) {
-				input.value = xmlhttp.responseText;
+		return ajax(location.href + '&' + encodeURIComponent(td.id) + '=', function (request) {
+			if (request.status) {
+				input.value = request.responseText;
 				input.name = td.id;
 			}
 		});
