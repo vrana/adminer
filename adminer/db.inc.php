@@ -26,8 +26,11 @@ if ($tables_views && !$error && !$_POST["search"]) {
 			$result = drop_tables($_POST["tables"]);
 		}
 		$message = lang('Tables have been dropped.');
-	} elseif ($jush == "sqlite") {
-		$result = queries("VACUUM");
+	} elseif ($jush != "sql") {
+		$result = ($jush == "sqlite"
+			? queries("VACUUM")
+			: apply_queries("VACUUM" . ($_POST["optimize"] ? "" : " ANALYZE"), $_POST["tables"])
+		);
 		$message = lang('Tables have been optimized.');
 	} elseif ($_POST["tables"] && ($result = queries(($_POST["optimize"] ? "OPTIMIZE" : ($_POST["check"] ? "CHECK" : ($_POST["repair"] ? "REPAIR" : "ANALYZE"))) . " TABLE " . implode(", ", array_map('idf_escape', $_POST["tables"]))))) {
 		while ($row = $result->fetch_assoc()) {
@@ -94,7 +97,7 @@ if ($adminer->homepage()) {
 			echo "</table>\n";
 			echo "<script type='text/javascript'>tableCheck();</script>\n";
 			if (!information_schema(DB)) {
-				echo "<p>" . (ereg('^(sql|sqlite)$', $jush)
+				echo "<p>" . (ereg('^(sql|sqlite|pgsql)$', $jush)
 					? ($jush != "sqlite" ? "<input type='submit' value='" . lang('Analyze') . "'> " : "")
 					. "<input type='submit' name='optimize' value='" . lang('Optimize') . "'> " : ""
 				) . ($jush == "sql" ? "<input type='submit' name='check' value='" . lang('Check') . "'> <input type='submit' name='repair' value='" . lang('Repair') . "'> " : "") . "<input type='submit' name='truncate' value='" . lang('Truncate') . "'" . confirm("formChecked(this, /tables/)") . "> <input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm("formChecked(this, /tables|views/)", 1) . ">\n"; // 1 - eventStop
