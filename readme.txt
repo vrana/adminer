@@ -11,6 +11,6 @@ editor/index.php - Run development version of Adminer Editor
 editor/example.php - Example customization
 plugins/readme.txt - Plugins for Adminer and Adminer Editor
 adminer/plugin.php - Plugin demo
-compile.php [driver] [lang] - Create a single file version
-lang.php [lang] - Update translations
+compile.php - Create a single file version
+lang.php - Update translations
 tests/selenium.html - Selenium test suite
