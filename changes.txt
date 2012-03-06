@@ -8,6 +8,7 @@ Error message with no response from server in AJAX
 Esc to cancel AJAX request
 Move AJAX loading indicator to the right
 Don't quote bit type in export
+Don't check row while selecting text
 Ability to disable export (customization)
 Extensible list of databases (customization)
 MySQL: set autocommit after connect

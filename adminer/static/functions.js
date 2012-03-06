@@ -103,7 +103,7 @@ function formChecked(el, name) {
 * @param MouseEvent
 */
 function tableClick(event) {
-	var click = true;
+	var click = (!window.getSelection || getSelection().isCollapsed);
 	var el = event.target || event.srcElement;
 	while (!/^tr$/i.test(el.tagName)) {
 		if (/^table$/i.test(el.tagName)) {
