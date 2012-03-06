@@ -400,9 +400,11 @@ var that, x, y; // em and tablePos defined in schema.inc.php
 * @param MouseEvent
 */
 function schemaMousedown(el, event) {
-	that = el;
-	x = event.clientX - el.offsetLeft;
-	y = event.clientY - el.offsetTop;
+	if ((event.which ? event.which : event.button) == 1) {
+		that = el;
+		x = event.clientX - el.offsetLeft;
+		y = event.clientY - el.offsetTop;
+	}
 }
 
 /** Move object
