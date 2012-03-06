@@ -393,7 +393,7 @@ function indexesAddColumn(field, prefix) {
 
 
 
-var that, x, y, em, tablePos;
+var that, x, y; // em and tablePos defined in schema.inc.php
 
 /** Get mouse position
 * @param HTMLElement
