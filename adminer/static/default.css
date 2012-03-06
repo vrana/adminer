@@ -52,7 +52,7 @@ input[type=image] { vertical-align: middle; }
 #loader { display: none; position: fixed; top: 2px; right: 2px; z-index: 1; }
 #h1 { color: #777; text-decoration: none; font-style: italic; }
 #version { font-size: 67%; color: red; }
-#schema { margin-left: 60px; position: relative; }
+#schema { margin-left: 60px; position: relative; -moz-user-select: none; -webkit-user-select: none; }
 #schema .table { border: 1px solid silver; padding: 0 2px; cursor: move; position: absolute; }
 #schema .references { position: absolute; }
 
