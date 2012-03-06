@@ -417,10 +417,9 @@ function schemaMousemove(ev) {
 		var lineSet = { };
 		for (var i=0; i < divs.length; i++) {
 			if (divs[i].className == 'references') {
-				var div2 = document.getElementById((divs[i].id.substr(0, 4) == 'refs' ? 'refd' : 'refs') + divs[i].id.substr(4));
+				var div2 = document.getElementById((/^refs/.test(divs[i].id) ? 'refd' : 'refs') + divs[i].id.substr(4));
 				var ref = (tablePos[divs[i].title] ? tablePos[divs[i].title] : [ div2.parentNode.offsetTop / em, 0 ]);
 				var left1 = -1;
-				var isTop = true;
 				var id = divs[i].id.replace(/^ref.(.+)-.+/, '$1');
 				if (divs[i].parentNode != div2.parentNode) {
 					left1 = Math.min(0, ref[1] - left) - 1;
@@ -429,19 +428,17 @@ function schemaMousemove(ev) {
 					var left2 = Math.min(0, left - ref[1]) - 1;
 					div2.style.left = left2 + 'em';
 					div2.getElementsByTagName('div')[0].style.width = -left2 + 'em';
-					isTop = (div2.offsetTop + ref[0] * em > divs[i].offsetTop + top * em);
 				}
 				if (!lineSet[id]) {
-					var line = document.getElementById(divs[i].id.replace(/^....(.+)-\d+$/, 'refl$1'));
-					var shift = ev.clientY - y - that.offsetTop;
-					line.style.left = (left + left1) + 'em';
-					if (isTop) {
-						line.style.top = (line.offsetTop + shift) / em + 'em';
-					}
+					var line = document.getElementById(divs[i].id.replace(/^....(.+)-.+$/, 'refl$1'));
+					var top1 = top + divs[i].offsetTop / em;
+					var top2 = top + div2.offsetTop / em;
 					if (divs[i].parentNode != div2.parentNode) {
-						line = line.getElementsByTagName('div')[0];
-						line.style.height = (line.offsetHeight + (isTop ? -1 : 1) * shift) / em + 'em';
+						top2 += ref[0] - top;
+						line.getElementsByTagName('div')[0].style.height = Math.abs(top1 - top2) + 'em';
 					}
+					line.style.left = (left + left1) + 'em';
+					line.style.top = Math.min(top1, top2) + 'em';
 					lineSet[id] = true;
 				}
 			}
