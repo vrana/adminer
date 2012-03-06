@@ -61,17 +61,17 @@ document.onmouseup = function (ev) {
 <?php
 foreach ($schema as $name => $table) {
 	echo "<div class='table' style='top: " . $table["pos"][0] . "em; left: " . $table["pos"][1] . "em;' onmousedown='schemaMousedown(this, event);'>";
-	echo '<a href="' . h(ME) . 'table=' . urlencode($name) . '"><b>' . h($name) . "</b></a><br>\n";
+	echo '<a href="' . h(ME) . 'table=' . urlencode($name) . '"><b>' . h($name) . "</b></a>";
 	foreach ($table["fields"] as $field) {
 		$val = '<span' . type_class($field["type"]) . ' title="' . h($field["full_type"] . ($field["null"] ? " NULL" : '')) . '">' . h($field["field"]) . '</span>';
-		echo ($field["primary"] ? "<i>$val</i>" : $val) . "<br>\n";
+		echo "<br>" . ($field["primary"] ? "<i>$val</i>" : $val);
 	}
 	foreach ((array) $table["references"] as $target_name => $refs) {
 		foreach ($refs as $left => $ref) {
 			$left1 = $left - $table_pos[$name][1];
 			$i = 0;
 			foreach ($ref[0] as $source) {
-				echo "<div class='references' title='" . h($target_name) . "' id='refs$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $table["fields"][$source]["pos"] . "em; padding-top: .5em;'><div style='border-top: 1px solid Gray; width: " . (-$left1) . "em;'></div></div>\n";
+				echo "\n<div class='references' title='" . h($target_name) . "' id='refs$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $table["fields"][$source]["pos"] . "em; padding-top: .5em;'><div style='border-top: 1px solid Gray; width: " . (-$left1) . "em;'></div></div>";
 			}
 		}
 	}
@@ -80,11 +80,11 @@ foreach ($schema as $name => $table) {
 			$left1 = $left - $table_pos[$name][1];
 			$i = 0;
 			foreach ($columns as $target) {
-				echo "<div class='references' title='" . h($target_name) . "' id='refd$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $table["fields"][$target]["pos"] . "em; height: 1.25em; background: url(../adminer/static/arrow.gif) no-repeat right center;'><div style='height: .5em; border-bottom: 1px solid Gray; width: " . (-$left1) . "em;'></div></div>\n";
+				echo "\n<div class='references' title='" . h($target_name) . "' id='refd$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $table["fields"][$target]["pos"] . "em; height: 1.25em; background: url(../adminer/static/arrow.gif) no-repeat right center;'><div style='height: .5em; border-bottom: 1px solid Gray; width: " . (-$left1) . "em;'></div></div>";
 			}
 		}
 	}
-	echo "</div>\n";
+	echo "\n</div>\n";
 }
 foreach ($schema as $name => $table) {
 	foreach ((array) $table["references"] as $target_name => $refs) {
