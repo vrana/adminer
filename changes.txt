@@ -1,8 +1,8 @@
-Adminer 3.3.4-dev:
+Adminer 3.3.4 (released 2012-03-07):
 Foreign keys default actions (bug #3397606)
+SET DEFAULT foreign key action
 Fix minor parser bug in SQL command with webserver file
 Ctrl+click on button opens form to a blank window
-SET DEFAULT foreign key action
 Trim table and column names (bug #3405309)
 Error message with no response from server in AJAX
 Esc to cancel AJAX request
@@ -15,8 +15,8 @@ Ability to disable export (customization)
 Extensible list of databases (customization)
 MySQL: set autocommit after connect
 SQLite, PostgreSQL: vacuum
+SQLite, PostgreSQL: don't use LIKE for numbers (bug #3420408)
 PostgreSQL: fix alter foreign key
-PostgreSQL, SQLite: don't use LIKE for numbers (bug #3420408)
 PostgreSQL over PDO: connect if the eponymous database does not exist (bug #3391619)
 Boolean search (Editor)
 Persian translation
