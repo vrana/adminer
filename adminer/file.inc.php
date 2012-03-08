@@ -9,7 +9,7 @@ if ($_GET["file"] == "favicon.ico") {
 	?>compile_file('../adminer/static/default.css', 'minify_css');<?php
 } elseif ($_GET["file"] == "functions.js") {
 	header("Content-Type: text/javascript; charset=utf-8");
-	?>compile_file('../adminer/static/functions.js', 'JSMin::minify');compile_file('static/editing.js', 'JSMin::minify');<?php
+	?>compile_file('../adminer/static/functions.js', 'jsShrink');compile_file('static/editing.js', 'jsShrink');<?php
 } else {
 	header("Content-Type: image/gif");
 	switch ($_GET["file"]) {
