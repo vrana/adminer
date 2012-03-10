@@ -34,8 +34,8 @@ if (!$error && $_POST) {
 		}
 		if ($query != "" && strlen($query) < 1e6) { // don't add big queries
 			$q = $query . (ereg(";[ \t\r\n]*\$", $query) ? "" : ";"); //! doesn't work with DELIMITER |
-			if (!$history || end($history) != $q) { // no repeated queries
-				$history[] = $q;
+			if (!$history || reset(end($history)) != $q) { // no repeated queries
+				$history[] = array($q, time());
 			}
 		}
 		$space = "(?:\\s|/\\*.*\\*/|(?:#|-- )[^\n]*\n|--\n)";
@@ -171,7 +171,7 @@ if ($_POST) {
 } elseif ($_GET["history"] == "all") {
 	$q = $history;
 } elseif ($_GET["history"] != "") {
-	$q = $history[$_GET["history"]];
+	$q = $history[$_GET["history"]][0];
 }
 textarea("query", $q, 20);
 echo ($_POST ? "" : "<script type='text/javascript'>document.getElementsByTagName('textarea')[0].focus();</script>\n");
@@ -202,8 +202,8 @@ echo "</div></fieldset>\n";
 if ($history) {
 	print_fieldset("history", lang('History'), $_GET["history"] != "");
 	foreach ($history as $key => $val) {
-		//! save and display timestamp
-		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . "</a> <code class='jush-$jush'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace('~^(#|-- ).*~m', '', $val)))), 80, "</code>") . "<br>\n";
+		list($q, $time) = $val;
+		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . "</a> <span class='time'>" . @date("H:i:s", $time) . "</span> <code class='jush-$jush'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace('~^(#|-- ).*~m', '', $q)))), 80, "</code>") . "<br>\n"; // @ - time zone may be not set
 	}
 	echo "<input type='submit' name='clear' value='" . lang('Clear') . "'>\n";
 	echo "<a href='" . h(ME . "sql=&history=all") . "'>" . lang('Edit all') . "</a>\n";

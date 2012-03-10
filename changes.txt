@@ -1,4 +1,5 @@
 Adminer 3.4.0-dev:
+Print current time next to executed SQL queries
 Replace JSMin by better JavaScript minifier
 Ukrainian translation
 

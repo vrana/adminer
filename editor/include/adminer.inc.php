@@ -408,7 +408,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	}
 	
 	function messageQuery($query) {
-		return "<!--\n" . str_replace("--", "--><!-- ", $query) . "\n-->";
+		return " <span class='time'>" . @date("H:i:s") . "</span><!--\n" . str_replace("--", "--><!-- ", $query) . "\n-->";
 	}
 	
 	function editFunctions($field) {
