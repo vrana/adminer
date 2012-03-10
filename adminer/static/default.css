@@ -20,7 +20,7 @@ code { background: #eee; }
 tbody tr:hover td, tbody tr:hover th { background: #eee; }
 pre { margin: 1em 0 0; }
 input[type=image] { vertical-align: middle; }
-.loading { cursor: progress; }
+.loading, .loading input { cursor: progress; }
 .loading #loader { display: inline; }
 .version { color: #777; font-size: 67%; }
 .js .hidden, .nojs .jsonly { display: none; }
