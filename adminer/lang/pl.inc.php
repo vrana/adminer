@@ -20,7 +20,7 @@ $translations = array(
 	'%s version: %s through PHP extension %s' => 'Wersja %s: %s za pomocą %s',
 	'Refresh' => 'Odśwież',
 
-	// text direction
+	// text direction - 'ltr' or 'rtl'
 	'ltr' => 'ltr',
 
 	'Privileges' => 'Uprawnienia użytkowników',
@@ -147,6 +147,7 @@ $translations = array(
 	'Create new table' => 'Utwórz nową tabelę',
 	'Table has been dropped.' => 'Tabela została usunięta.',
 	'Tables have been dropped.' => 'Tabele zostały usunięte.',
+	'Tables have been optimized.' => 'Tabele zostały zoptymalizowane.',
 	'Table has been altered.' => 'Tabela została zmieniona.',
 	'Table has been created.' => 'Tabela została utworzona.',
 	'Table name' => 'Nazwa tabeli',
@@ -279,6 +280,7 @@ $translations = array(
 	
 	// reload confirmation in AJAX
 	'Resend POST data?' => 'Wysłać dane ponownie?',
+	'No response from server.' => 'Brak odpowiedzi od serwera.',
 	
 	'Editor' => 'Edytor',
 	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
@@ -288,6 +290,8 @@ $translations = array(
 	// hint for time format - use language equivalents for hour, minute and second shortcuts
 	'HH:MM:SS' => 'HH:MM:SS',
 	'now' => 'teraz',
+	'yes' => 'tak',
+	'no' => 'nie',
 	
 	// general SQLite error in create, drop or rename database
 	'File exists.' => 'Plik już istnieje.',
