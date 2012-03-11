@@ -227,12 +227,15 @@ $translations = array(
 	'Limit' => 'Limit',
 	'Text length' => 'Długość tekstu',
 	'Action' => 'Czynność',
+	'Full table scan' => 'Wymaga pełnego przeskanowania tabeli',
 	'Unable to select the table' => 'Nie udało się pobrać danych z tabeli',
 	'No rows.' => 'Brak rekordów.',
 	'%d row(s)' => array('%d rekord', '%d rekordy', '%d rekordów'),
 	'Page' => 'Strona',
 	'last' => 'ostatni',
 	'Last page' => 'Ostatnia strona',
+	'Load more data' => 'Wczytaj więcej danych',
+	'Loading' => 'Wczytywanie',
 	'whole result' => 'wybierz wszystkie',
 	'%d byte(s)' => array('%d bajt', '%d bajty', '%d bajtów'),
 	
@@ -260,6 +263,7 @@ $translations = array(
 	'Save and insert next' => 'Zapisz i dodaj następny',
 	'Clone' => 'Duplikuj',
 	'Delete' => 'Usuń',
+	'You have no privileges to update this table.' => 'Brak uprawnień do edycji tej tabeli',
 	
 	'E-mail' => 'E-mail',
 	'From' => 'Nadawca',
