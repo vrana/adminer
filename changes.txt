@@ -1,5 +1,6 @@
 Adminer 3.4.0-dev:
 Replace JSMin by better JavaScript minifier
+Ukrainian translation
 
 Adminer 3.3.4 (released 2012-03-07):
 Foreign keys default actions (bug #3397606)

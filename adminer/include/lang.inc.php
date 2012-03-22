@@ -20,6 +20,7 @@ $langs = array(
 	'tr' => 'Türkçe', // Bilgehan Korkmaz - turktron.com
 	'ro' => 'Limba Română', // .nick .messing - dot.nick.dot.messing@gmail.com
 	'ru' => 'Русский язык', // Maksim Izmaylov
+	'uk' => 'Українська', // Valerii Kryzhov
 	'zh' => '简体中文', // Mr. Lodar
 	'zh-tw' => '繁體中文', // http://tzangms.com
 	'ja' => '日本語', // Hitoshi Ozawa - http://sourceforge.jp/projects/oss-ja-jpn/releases/
@@ -48,12 +49,13 @@ function lang($idf, $number = null) {
 		$pos = ($number == 1 ? 0
 			: ($LANG == 'cs' || $LANG == 'sk' ? ($number && $number < 5 ? 1 : 2) // different forms for 1, 2-4, other
 			: ($LANG == 'fr' ? (!$number ? 0 : 1) // different forms for 0-1, other
+			: ($LANG == 'uk' ? ($number == 2 ? 1 : 2) // different forms for 1, 2, other
 			: ($LANG == 'pl' ? ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2) // different forms for 1, 2-4, other
 			: ($LANG == 'sl' ? ($number % 100 == 1 ? 0 : ($number % 100 == 2 ? 1 : ($number % 100 == 3 || $number % 100 == 4 ? 2 : 3))) // different forms for 1, 2, 3-4, other
 			: ($LANG == 'lt' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1, 12-19, other
 			: ($LANG == 'ru' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1, 2-4, other
 			: 1
-		))))))); // http://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
+		)))))))); // http://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
 		$translation = $translation[$pos];
 	}
 	$args = func_get_args();
