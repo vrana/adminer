@@ -1,1 +1,1 @@
-java -jar "C:\Program Files\Selenium\selenium-server.jar" -htmlSuite "*iexplore" http://localhost/adminer/ "%CD%\selenium.html" results.html
+java -jar "C:\Users/i/Soft/selenium-server.jar" -htmlSuite "*firefox" http://localhost/_GIT/adminer/ "%CD%\selenium.html" results.html

@@ -1,0 +1,1752 @@
+<html>
+<head><style type='text/css'>
+body, table {
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 12;
+}
+
+table {
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+}
+
+th, td {
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+}
+
+a {
+    text-decoration: none;
+}
+
+.title {
+    font-style: italic;
+}
+
+.selected {
+    background-color: #ffffcc;
+}
+
+.status_done {
+    background-color: #eeffee;
+}
+
+.status_passed {
+    background-color: #ccffcc;
+}
+
+.status_failed {
+    background-color: #ffcccc;
+}
+
+.breakpoint {
+    background-color: #cccccc;
+    border: 1px solid black;
+}
+</style><title>Test suite results</title></head>
+<body>
+<h1>Test suite results </h1>
+
+<table>
+<tr>
+<td>result:</td>
+<td>passed</td>
+</tr>
+<tr>
+<td>totalTime:</td>
+<td>27</td>
+</tr>
+<tr>
+<td>numTestTotal:</td>
+<td>26</td>
+</tr>
+<tr>
+<td>numTestPasses:</td>
+<td>26</td>
+</tr>
+<tr>
+<td>numTestFailures:</td>
+<td>0</td>
+</tr>
+<tr>
+<td>numCommandPasses:</td>
+<td>45</td>
+</tr>
+<tr>
+<td>numCommandFailures:</td>
+<td>0</td>
+</tr>
+<tr>
+<td>numCommandErrors:</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Selenium Version:</td>
+<td>2.20</td>
+</tr>
+<tr>
+<td>Selenium Revision:</td>
+<td>.0</td>
+</tr>
+<tr>
+<td>
+<table id="suiteTable" class="selenium" border="1" cellpadding="1" cellspacing="1"><tbody>
+<tr class="title status_passed"><td><b>Test Suite</b></td></tr>
+<tr class="  status_passed"><td><a href="#testresult0">Login</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult1">Create database</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult2">Create table</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult3">Create index</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult4">Create table 2</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult5">Partitioning</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult6">Foreign key</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult7">Alter table</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult8">Create trigger</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult9">Create view</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult10">Insert</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult11">Clone</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult12">Explain</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult13">Reference</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult14">Update</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult15">Delete</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult16">Truncate</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult17">Privileges</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult18">Process list</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult19">Export</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult20">Events</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult21">Procedures</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult22">Variables</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult23">History</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult24">Editor</a></td></tr>
+<tr class="  status_passed"><td><a href="#testresult25">Logout</a></td></tr>
+</tbody></table>
+</td>
+<td>&nbsp;</td>
+</tr>
+</table><table><tr>
+<td><a name="testresult0">0-login.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Login</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>coverage.php?coverage=0</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;lang=en</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>Logged as</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>link=SQL command</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>query</td>
+	<td>DROP DATABASE IF EXISTS adminer_test</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Execute']</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>Query executed OK</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult1">1-create-database.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Create database</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>link=Create new database</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>name</td>
+	<td>adminer_test</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>select</td>
+	<td>collation</td>
+	<td>label=utf8_general_ci</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>Database has been created.</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult2">2-create-table.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Create table</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;db=adminer_test</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>link=Create new table</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>name</td>
+	<td>interprets</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>select</td>
+	<td>Engine</td>
+	<td>label=InnoDB</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[1][field]</td>
+	<td>id</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>select</td>
+	<td>fields[1][type]</td>
+	<td>label=int</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>//input[@name='auto_increment_col' and @value='1']</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[1.1][field]</td>
+	<td>name</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>select</td>
+	<td>fields[1.1][type]</td>
+	<td>label=varchar</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[1.1][length]</td>
+	<td>50</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>checkbox-3</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[1.1][comment]</td>
+	<td>Interpret</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>Comment</td>
+	<td>Interprets</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>Table has been created.</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult3">3-create-index.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Create index</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>link=Alter indexes</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>select</td>
+	<td>indexes[2][type]</td>
+	<td>label=PRIMARY</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>select</td>
+	<td>indexes[2][columns][1]</td>
+	<td>label=name</td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyValue</td>
+	<td>name=indexes[2][name]</td>
+	<td>name</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>Multiple primary key defined</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>select</td>
+	<td>indexes[2][type]</td>
+	<td>label=INDEX</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>Indexes have been altered.</td>
+	<td></td>
+</tr>
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult4">4-create-table-2.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Create table 2</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets&amp;lang=en</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>link=Create new table</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>name</td>
+	<td>albums</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[1][field]</td>
+	<td>id</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>select</td>
+	<td>fields[1][type]</td>
+	<td>label=int</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>//input[@name='auto_increment_col' and @value='1']</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[1.1][field]</td>
+	<td>interpret</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>select</td>
+	<td>fields[1.1][type]</td>
+	<td>label=int</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[1.11][field]</td>
+	<td>title</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>select</td>
+	<td>fields[1.11][type]</td>
+	<td>label=varchar</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[1.11][length]</td>
+	<td>50</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>checkbox-3</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[1.1][comment]</td>
+	<td>Interpret</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[1.11][comment]</td>
+	<td>Album</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>Comment</td>
+	<td>Albums</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>Table has been created.</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult5">20-partitioning.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Partitioning</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>link=Alter table</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>select</td>
+	<td>partition_by</td>
+	<td>label=HASH</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>partition</td>
+	<td>id</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>partitions</td>
+	<td>2</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>Table has been altered.</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>link=Alter table</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>select</td>
+	<td>partition_by</td>
+	<td>label=RANGE</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>partition_values[]</td>
+	<td>10</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>Table has been altered.</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>link=Alter table</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>select</td>
+	<td>partition_by</td>
+	<td>label=</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>Table has been altered.</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult6">5-foreign-key.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Foreign key</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;db=adminer_test&amp;table=albums</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>link=Add foreign key</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>selectAndWait</td>
+	<td>table</td>
+	<td>label=interprets</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>select</td>
+	<td>source[0]</td>
+	<td>label=interpret</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>Foreign key has been created.</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult7">6-alter-table.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Alter table</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>link=Alter table</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>add[2]</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[2.1][field]</td>
+	<td>albums</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>select</td>
+	<td>fields[2.1][type]</td>
+	<td>label=int</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[2.1][length]</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>Table has been altered.</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult8">7-create-trigger.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Create trigger</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;db=adminer_test&amp;trigger=albums</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>select</td>
+	<td>Timing</td>
+	<td>label=AFTER</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>Statement</td>
+	<td>UPDATE interprets SET albums = albums + 1 WHERE id = NEW.interpret</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>Trigger has been created.</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult9">8-create-view.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Create view</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;db=adminer_test&amp;view=</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>select</td>
+	<td>SELECT albums.id, albums.title, interprets.name<br>FROM albums<br>LEFT JOIN interprets ON albums.interpret = interprets.id</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>name</td>
+	<td>albums_interprets</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>View has been created.</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult10">9-insert.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Insert</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;db=adminer_test&amp;edit=interprets</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[name]</td>
+	<td>Michael Jackson</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>Item 1 has been inserted.</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;db=adminer_test&amp;edit=albums</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[interpret]</td>
+	<td>1</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[title]</td>
+	<td>Dangerous</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>Item 1 has been inserted.</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult11">10-clone.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Clone</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>check[]</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>clone</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[title]</td>
+	<td>Black and White</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>1 item has been affected.</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult12">24-explain.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Explain</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>link=Edit</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Execute']</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>link=EXPLAIN</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>possible_keys</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult13">11-reference.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Reference</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>link=1</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>Michael Jackson</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult14">12-update.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Update</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;db=adminer_test&amp;edit=albums&amp;where%5Bid%5D=2</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[title]</td>
+	<td>Black or White</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>Item has been updated.</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult15">13-delete.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Delete</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>//input[@name='check[]' and @value='where%5Bid%5D=2']</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>delete</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>assertConfirmation</td>
+	<td>Are you sure? (1)</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>1 item has been affected.</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult16">14-truncate.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Truncate</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>all</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>delete</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>assertConfirmation</td>
+	<td>Are you sure? (1)</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>No rows.</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult17">15-privileges.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Privileges</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;user=</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>user</td>
+	<td>adminer_test</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>objects[0]</td>
+	<td>adminer_test.*</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>grants[0][ALTER]</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>grants[0][CREATE]</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>//input[@name='grants[0][CREATE VIEW]']</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>grants[0][DELETE]</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>grants[0][DROP]</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>grants[0][INDEX]</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>grants[0][INSERT]</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>grants[0][REFERENCES]</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>grants[0][SELECT]</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>//input[@name='grants[0][SHOW VIEW]']</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>grants[0][UPDATE]</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>//input[@name='grants[0][CREATE TEMPORARY TABLES]']</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>//input[@name='grants[0][LOCK TABLES]']</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>//input[@name='grants[0][CREATE ROUTINE]']</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>User has been created.</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//div[@id='content']/form/table/tbody/tr[td[1]='adminer_test']/td[3]/a</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>drop</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>assertConfirmation</td>
+	<td>Are you sure?</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>User has been dropped.</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult18">16-processlist.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Process list</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;processlist=</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>SHOW FULL PROCESSLIST</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult19">17-export.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Export</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;db=adminer_test&amp;dump=</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>output</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>format</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>select</td>
+	<td>table_style</td>
+	<td>label=DROP+CREATE</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>select</td>
+	<td>data_style</td>
+	<td>label=INSERT</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Export']</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>CREATE TABLE `interprets`</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>CREATE TRIGGER `albums_ai`</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>INSERT INTO `interprets`</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>VIEW `albums_interprets`</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult20">18-events.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Events</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;db=adminer_test&amp;event=</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>EVENT_NAME</td>
+	<td>no_albums</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>select</td>
+	<td>INTERVAL_FIELD</td>
+	<td>label=DAY</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>INTERVAL_VALUE</td>
+	<td>1</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>click</td>
+	<td>ON_COMPLETION</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>EVENT_DEFINITION</td>
+	<td>DELETE FROM albums WHERE interprets = 0</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>Event has been created.</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>link=no_albums</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>drop</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>assertConfirmation</td>
+	<td>Are you sure?</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>Event has been dropped.</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult21">19-procedures.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Procedures</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;db=adminer_test&amp;procedure=</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>add[0]</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[1][field]</td>
+	<td>interpret_name</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>select</td>
+	<td>fields[1][type]</td>
+	<td>label=varchar</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[1][length]</td>
+	<td>50</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[1.1][field]</td>
+	<td>album_title</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>select</td>
+	<td>fields[1.1][type]</td>
+	<td>label=varchar</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[1.1][length]</td>
+	<td>50</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>definition</td>
+	<td>BEGIN<br>SELECT id INTO @interpret FROM interprets WHERE name = interpret_name;<br>IF @interpret IS NULL THEN<br>&nbsp;&nbsp;&nbsp;&nbsp;INSERT INTO interprets (name) VALUES (interpret_name);<br>&nbsp;&nbsp;&nbsp;&nbsp;SET @interpret = LAST_INSERT_ID();<br>END IF;<br>INSERT INTO albums (interpret, title) VALUES (@interpret, album_title);<br>END</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>name</td>
+	<td>insert_album</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>Routine has been created.</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>link=insert_album</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[interpret_name]</td>
+	<td>Michael Jackson</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[album_title]</td>
+	<td>Dangerous</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Call']</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>assertTextPresent</td>
+	<td>Routine has been called, 1 row affected.</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>link=adminer_test</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>link=Alter</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>drop</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>assertConfirmation</td>
+	<td>Are you sure?</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>Routine has been dropped.</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult22">21-variables.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Variables</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;variables=</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>basedir</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult23">22-history.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">History</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC&amp;sql=</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>DROP DATABASE IF EXISTS adminer_test</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult24">23-editor.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Editor</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>editor/example.php?lang=en&amp;username=admin</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>link=Interprets</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>link=New item</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[name]</td>
+	<td>Michael Jackson</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//div[@id='content']/form[2]/table/tbody/tr[1]/td[3]/a</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>link=New item</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>type</td>
+	<td>fields[title]</td>
+	<td>Dangerous</td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>Item 4 has been inserted.</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>logout</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr><tr>
+<td><a name="testresult25">logout.html</a><br/><div>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr class="title status_passed"><td rowspan="1" colspan="3">Logout</td></tr>
+</thead><tbody>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>adminer/?username=ODBC</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>clickAndWait</td>
+	<td>logout</td>
+	<td></td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>Logout successful.</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>selectAndWait</td>
+	<td>//select[@name='lang']</td>
+	<td>label=&#268;e?tina</td>
+</tr>
+<tr class="  status_passed" style="cursor: pointer;">
+	<td>verifyTextPresent</td>
+	<td>P&#345;ihlásit se</td>
+	<td></td>
+</tr>
+<tr class="  status_done" style="cursor: pointer;">
+	<td>open</td>
+	<td>coverage.php</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</div></td>
+<td>&nbsp;</td>
+</tr></table><pre>
+info: Starting test /selenium-server/tests/0-login.html
+info: Executing: |open | coverage.php?coverage=0 |  |
+info: Executing: |open | adminer/?username=ODBC&amp;lang=en |  |
+info: Executing: |verifyTextPresent | Logged as |  |
+info: Executing: |clickAndWait | link=SQL command |  |
+info: Executing: |type | query | DROP DATABASE IF EXISTS adminer_test |
+info: Executing: |clickAndWait | //input[@value=&apos;Execute&apos;] |  |
+info: Executing: |verifyTextPresent | Query executed OK |  |
+info: Starting test /selenium-server/tests/1-create-database.html
+info: Executing: |open | adminer/?username=ODBC |  |
+info: Executing: |clickAndWait | link=Create new database |  |
+info: Executing: |type | name | adminer_test |
+info: Executing: |select | collation | label=utf8_general_ci |
+info: Executing: |clickAndWait | //input[@value=&apos;Save&apos;] |  |
+info: Executing: |verifyTextPresent | Database has been created. |  |
+info: Starting test /selenium-server/tests/2-create-table.html
+info: Executing: |open | adminer/?username=ODBC&amp;db=adminer_test |  |
+info: Executing: |clickAndWait | link=Create new table |  |
+info: Executing: |type | name | interprets |
+info: Executing: |select | Engine | label=InnoDB |
+info: Executing: |type | fields[1][field] | id |
+info: Executing: |select | fields[1][type] | label=int |
+info: Executing: |click | //input[@name=&apos;auto_increment_col&apos; and @value=&apos;1&apos;] |  |
+info: Executing: |type | fields[1.1][field] | name |
+info: Executing: |select | fields[1.1][type] | label=varchar |
+info: Executing: |type | fields[1.1][length] | 50 |
+info: Executing: |click | checkbox-3 |  |
+info: Executing: |type | fields[1.1][comment] | Interpret |
+info: Executing: |type | Comment | Interprets |
+info: Executing: |clickAndWait | //input[@value=&apos;Save&apos;] |  |
+info: Executing: |verifyTextPresent | Table has been created. |  |
+info: Starting test /selenium-server/tests/3-create-index.html
+info: Executing: |open | adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets |  |
+info: Executing: |clickAndWait | link=Alter indexes |  |
+info: Executing: |select | indexes[2][type] | label=PRIMARY |
+info: Executing: |select | indexes[2][columns][1] | label=name |
+info: Executing: |verifyValue | name=indexes[2][name] | name |
+info: Executing: |clickAndWait | //input[@value=&apos;Save&apos;] |  |
+info: Executing: |verifyTextPresent | Multiple primary key defined |  |
+info: Executing: |select | indexes[2][type] | label=INDEX |
+info: Executing: |clickAndWait | //input[@value=&apos;Save&apos;] |  |
+info: Executing: |verifyTextPresent | Indexes have been altered. |  |
+info: Starting test /selenium-server/tests/4-create-table-2.html
+info: Executing: |open | adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets&amp;lang=en |  |
+info: Executing: |clickAndWait | link=Create new table |  |
+info: Executing: |type | name | albums |
+info: Executing: |type | fields[1][field] | id |
+info: Executing: |select | fields[1][type] | label=int |
+info: Executing: |click | //input[@name=&apos;auto_increment_col&apos; and @value=&apos;1&apos;] |  |
+info: Executing: |type | fields[1.1][field] | interpret |
+info: Executing: |select | fields[1.1][type] | label=int |
+info: Executing: |type | fields[1.11][field] | title |
+info: Executing: |select | fields[1.11][type] | label=varchar |
+info: Executing: |type | fields[1.11][length] | 50 |
+info: Executing: |click | checkbox-3 |  |
+info: Executing: |type | fields[1.1][comment] | Interpret |
+info: Executing: |type | fields[1.11][comment] | Album |
+info: Executing: |type | Comment | Albums |
+info: Executing: |clickAndWait | //input[@value=&apos;Save&apos;] |  |
+info: Executing: |verifyTextPresent | Table has been created. |  |
+info: Starting test /selenium-server/tests/20-partitioning.html
+info: Executing: |open | adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets |  |
+info: Executing: |clickAndWait | link=Alter table |  |
+info: Executing: |select | partition_by | label=HASH |
+info: Executing: |type | partition | id |
+info: Executing: |type | partitions | 2 |
+info: Executing: |clickAndWait | //input[@value=&apos;Save&apos;] |  |
+info: Executing: |verifyTextPresent | Table has been altered. |  |
+info: Executing: |clickAndWait | link=Alter table |  |
+info: Executing: |select | partition_by | label=RANGE |
+info: Executing: |type | partition_values[] | 10 |
+info: Executing: |clickAndWait | //input[@value=&apos;Save&apos;] |  |
+info: Executing: |verifyTextPresent | Table has been altered. |  |
+info: Executing: |clickAndWait | link=Alter table |  |
+info: Executing: |select | partition_by | label= |
+info: Executing: |clickAndWait | //input[@value=&apos;Save&apos;] |  |
+info: Executing: |verifyTextPresent | Table has been altered. |  |
+info: Starting test /selenium-server/tests/5-foreign-key.html
+info: Executing: |open | adminer/?username=ODBC&amp;db=adminer_test&amp;table=albums |  |
+info: Executing: |clickAndWait | link=Add foreign key |  |
+info: Executing: |selectAndWait | table | label=interprets |
+info: Executing: |select | source[0] | label=interpret |
+info: Executing: |clickAndWait | //input[@value=&apos;Save&apos;] |  |
+info: Executing: |verifyTextPresent | Foreign key has been created. |  |
+info: Starting test /selenium-server/tests/6-alter-table.html
+info: Executing: |open | adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets |  |
+info: Executing: |clickAndWait | link=Alter table |  |
+info: Executing: |click | add[2] |  |
+info: Executing: |type | fields[2.1][field] | albums |
+info: Executing: |select | fields[2.1][type] | label=int |
+info: Executing: |type | fields[2.1][length] |  |
+info: Executing: |clickAndWait | //input[@value=&apos;Save&apos;] |  |
+info: Executing: |verifyTextPresent | Table has been altered. |  |
+info: Starting test /selenium-server/tests/7-create-trigger.html
+info: Executing: |open | adminer/?username=ODBC&amp;db=adminer_test&amp;trigger=albums |  |
+info: Executing: |select | Timing | label=AFTER |
+info: Executing: |type | Statement | UPDATE interprets SET albums = albums + 1 WHERE id = NEW.interpret |
+info: Executing: |clickAndWait | //input[@value=&apos;Save&apos;] |  |
+info: Executing: |verifyTextPresent | Trigger has been created. |  |
+info: Starting test /selenium-server/tests/8-create-view.html
+info: Executing: |open | adminer/?username=ODBC&amp;db=adminer_test&amp;view= |  |
+info: Executing: |type | select | SELECT albums.id, albums.title, interprets.name
+FROM albums
+LEFT JOIN interprets ON albums.interpret = interprets.id |
+info: Executing: |type | name | albums_interprets |
+info: Executing: |clickAndWait | //input[@value=&apos;Save&apos;] |  |
+info: Executing: |verifyTextPresent | View has been created. |  |
+info: Starting test /selenium-server/tests/9-insert.html
+info: Executing: |open | adminer/?username=ODBC&amp;db=adminer_test&amp;edit=interprets |  |
+info: Executing: |type | fields[name] | Michael Jackson |
+info: Executing: |clickAndWait | //input[@value=&apos;Save&apos;] |  |
+info: Executing: |verifyTextPresent | Item 1 has been inserted. |  |
+info: Executing: |open | adminer/?username=ODBC&amp;db=adminer_test&amp;edit=albums |  |
+info: Executing: |type | fields[interpret] | 1 |
+info: Executing: |type | fields[title] | Dangerous |
+info: Executing: |clickAndWait | //input[@value=&apos;Save&apos;] |  |
+info: Executing: |verifyTextPresent | Item 1 has been inserted. |  |
+info: Starting test /selenium-server/tests/10-clone.html
+info: Executing: |open | adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums |  |
+info: Executing: |click | check[] |  |
+info: Executing: |clickAndWait | clone |  |
+info: Executing: |type | fields[title] | Black and White |
+info: Executing: |clickAndWait | //input[@value=&apos;Save&apos;] |  |
+info: Executing: |verifyTextPresent | 1 item has been affected. |  |
+info: Starting test /selenium-server/tests/24-explain.html
+info: Executing: |open | adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums |  |
+info: Executing: |clickAndWait | link=Edit |  |
+info: Executing: |clickAndWait | //input[@value=&apos;Execute&apos;] |  |
+info: Executing: |click | link=EXPLAIN |  |
+info: Executing: |verifyTextPresent | possible_keys |  |
+info: Starting test /selenium-server/tests/11-reference.html
+info: Executing: |open | adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums |  |
+info: Executing: |clickAndWait | link=1 |  |
+info: Executing: |verifyTextPresent | Michael Jackson |  |
+info: Starting test /selenium-server/tests/12-update.html
+info: Executing: |open | adminer/?username=ODBC&amp;db=adminer_test&amp;edit=albums&amp;where%5Bid%5D=2 |  |
+info: Executing: |type | fields[title] | Black or White |
+info: Executing: |clickAndWait | //input[@value=&apos;Save&apos;] |  |
+info: Executing: |verifyTextPresent | Item has been updated. |  |
+info: Starting test /selenium-server/tests/13-delete.html
+info: Executing: |open | adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums |  |
+info: Executing: |click | //input[@name=&apos;check[]&apos; and @value=&apos;where%5Bid%5D=2&apos;] |  |
+info: Executing: |clickAndWait | delete |  |
+info: Executing: |assertConfirmation | Are you sure? (1) |  |
+info: Executing: |verifyTextPresent | 1 item has been affected. |  |
+info: Starting test /selenium-server/tests/14-truncate.html
+info: Executing: |open | adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums |  |
+info: Executing: |click | all |  |
+info: Executing: |clickAndWait | delete |  |
+info: Executing: |assertConfirmation | Are you sure? (1) |  |
+info: Executing: |verifyTextPresent | No rows. |  |
+info: Starting test /selenium-server/tests/15-privileges.html
+info: Executing: |open | adminer/?username=ODBC&amp;user= |  |
+info: Executing: |type | user | adminer_test |
+info: Executing: |type | objects[0] | adminer_test.* |
+info: Executing: |click | grants[0][ALTER] |  |
+info: Executing: |click | grants[0][CREATE] |  |
+info: Executing: |click | //input[@name=&apos;grants[0][CREATE VIEW]&apos;] |  |
+info: Executing: |click | grants[0][DELETE] |  |
+info: Executing: |click | grants[0][DROP] |  |
+info: Executing: |click | grants[0][INDEX] |  |
+info: Executing: |click | grants[0][INSERT] |  |
+info: Executing: |click | grants[0][REFERENCES] |  |
+info: Executing: |click | grants[0][SELECT] |  |
+info: Executing: |click | //input[@name=&apos;grants[0][SHOW VIEW]&apos;] |  |
+info: Executing: |click | grants[0][UPDATE] |  |
+info: Executing: |click | //input[@name=&apos;grants[0][CREATE TEMPORARY TABLES]&apos;] |  |
+info: Executing: |click | //input[@name=&apos;grants[0][LOCK TABLES]&apos;] |  |
+info: Executing: |click | //input[@name=&apos;grants[0][CREATE ROUTINE]&apos;] |  |
+info: Executing: |clickAndWait | //input[@value=&apos;Save&apos;] |  |
+info: Executing: |verifyTextPresent | User has been created. |  |
+info: Executing: |clickAndWait | //div[@id=&apos;content&apos;]/form/table/tbody/tr[td[1]=&apos;adminer_test&apos;]/td[3]/a |  |
+info: Executing: |clickAndWait | drop |  |
+info: Executing: |assertConfirmation | Are you sure? |  |
+info: Executing: |verifyTextPresent | User has been dropped. |  |
+info: Starting test /selenium-server/tests/16-processlist.html
+info: Executing: |open | adminer/?username=ODBC&amp;processlist= |  |
+info: Executing: |verifyTextPresent | SHOW FULL PROCESSLIST |  |
+info: Starting test /selenium-server/tests/17-export.html
+info: Executing: |open | adminer/?username=ODBC&amp;db=adminer_test&amp;dump= |  |
+info: Executing: |click | output |  |
+info: Executing: |click | format |  |
+info: Executing: |select | table_style | label=DROP+CREATE |
+info: Executing: |select | data_style | label=INSERT |
+info: Executing: |clickAndWait | //input[@value=&apos;Export&apos;] |  |
+info: Executing: |verifyTextPresent | CREATE TABLE `interprets` |  |
+info: Executing: |verifyTextPresent | CREATE TRIGGER `albums_ai` |  |
+info: Executing: |verifyTextPresent | INSERT INTO `interprets` |  |
+info: Executing: |verifyTextPresent | VIEW `albums_interprets` |  |
+info: Starting test /selenium-server/tests/18-events.html
+info: Executing: |open | adminer/?username=ODBC&amp;db=adminer_test&amp;event= |  |
+info: Executing: |type | EVENT_NAME | no_albums |
+info: Executing: |select | INTERVAL_FIELD | label=DAY |
+info: Executing: |type | INTERVAL_VALUE | 1 |
+info: Executing: |click | ON_COMPLETION |  |
+info: Executing: |type | EVENT_DEFINITION | DELETE FROM albums WHERE interprets = 0 |
+info: Executing: |clickAndWait | //input[@value=&apos;Save&apos;] |  |
+info: Executing: |verifyTextPresent | Event has been created. |  |
+info: Executing: |clickAndWait | link=no_albums |  |
+info: Executing: |clickAndWait | drop |  |
+info: Executing: |assertConfirmation | Are you sure? |  |
+info: Executing: |verifyTextPresent | Event has been dropped. |  |
+info: Starting test /selenium-server/tests/19-procedures.html
+info: Executing: |open | adminer/?username=ODBC&amp;db=adminer_test&amp;procedure= |  |
+info: Executing: |clickAndWait | add[0] |  |
+info: Executing: |type | fields[1][field] | interpret_name |
+info: Executing: |select | fields[1][type] | label=varchar |
+info: Executing: |type | fields[1][length] | 50 |
+info: Executing: |type | fields[1.1][field] | album_title |
+info: Executing: |select | fields[1.1][type] | label=varchar |
+info: Executing: |type | fields[1.1][length] | 50 |
+info: Executing: |type | definition | BEGIN
+SELECT id INTO @interpret FROM interprets WHERE name = interpret_name;
+IF @interpret IS NULL THEN
+    INSERT INTO interprets (name) VALUES (interpret_name);
+    SET @interpret = LAST_INSERT_ID();
+END IF;
+INSERT INTO albums (interpret, title) VALUES (@interpret, album_title);
+END |
+info: Executing: |type | name | insert_album |
+info: Executing: |clickAndWait | //input[@value=&apos;Save&apos;] |  |
+info: Executing: |verifyTextPresent | Routine has been created. |  |
+info: Executing: |clickAndWait | link=insert_album |  |
+info: Executing: |type | fields[interpret_name] | Michael Jackson |
+info: Executing: |type | fields[album_title] | Dangerous |
+info: Executing: |clickAndWait | //input[@value=&apos;Call&apos;] |  |
+info: Executing: |assertTextPresent | Routine has been called, 1 row affected. |  |
+info: Executing: |clickAndWait | link=adminer_test |  |
+info: Executing: |clickAndWait | link=Alter |  |
+info: Executing: |clickAndWait | drop |  |
+info: Executing: |assertConfirmation | Are you sure? |  |
+info: Executing: |verifyTextPresent | Routine has been dropped. |  |
+info: Starting test /selenium-server/tests/21-variables.html
+info: Executing: |open | adminer/?username=ODBC&amp;variables= |  |
+info: Executing: |verifyTextPresent | basedir |  |
+info: Starting test /selenium-server/tests/22-history.html
+info: Executing: |open | adminer/?username=ODBC&amp;sql= |  |
+info: Executing: |verifyTextPresent | DROP DATABASE IF EXISTS adminer_test |  |
+info: Starting test /selenium-server/tests/23-editor.html
+info: Executing: |open | editor/example.php?lang=en&amp;username=admin |  |
+info: Executing: |clickAndWait | link=Interprets |  |
+info: Executing: |clickAndWait | link=New item |  |
+info: Executing: |type | fields[name] | Michael Jackson |
+info: Executing: |clickAndWait | //input[@value=&apos;Save&apos;] |  |
+info: Executing: |clickAndWait | //div[@id=&apos;content&apos;]/form[2]/table/tbody/tr[1]/td[3]/a |  |
+info: Executing: |clickAndWait | link=New item |  |
+info: Executing: |type | fields[title] | Dangerous |
+info: Executing: |clickAndWait | //input[@value=&apos;Save&apos;] |  |
+info: Executing: |verifyTextPresent | Item 4 has been inserted. |  |
+info: Executing: |clickAndWait | logout |  |
+info: Starting test /selenium-server/tests/logout.html
+info: Executing: |open | adminer/?username=ODBC |  |
+info: Executing: |clickAndWait | logout |  |
+info: Executing: |verifyTextPresent | Logout successful. |  |
+info: Executing: |selectAndWait | //select[@name=&apos;lang&apos;] | label=&amp;#268;e?tina |
+info: Executing: |verifyTextPresent | P&amp;#345;ihlásit se |  |
+info: Executing: |open | coverage.php |  |
+</pre></body></html>
