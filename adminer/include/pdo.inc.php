@@ -50,6 +50,7 @@ if (extension_loaded('pdo')) {
 		}
 		
 		function next_result() {
+			$this->_result->_offset = 0;
 			return $this->_result->nextRowset();
 		}
 		
