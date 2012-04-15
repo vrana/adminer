@@ -3,14 +3,16 @@
 * @param Min_Result
 * @param Min_DB connection to examine indexes
 * @param string base link for <th> fields
+* @param array 
 * @return null
 */
-function select($result, $connection2 = null, $href = "") {
+function select($result, $connection2 = null, $href = "", $orgtables = array()) {
 	$links = array(); // colno => orgtable - create links from these columns
 	$indexes = array(); // orgtable => array(column => colno) - primary keys
 	$columns = array(); // orgtable => array(column => ) - not selected columns in primary key
 	$blobs = array(); // colno => bool - display bytes for blobs
 	$types = array(); // colno => type - display char in <code>
+	$return = array(); // table => orgtable - mapping to use in EXPLAIN
 	odd(''); // reset odd for each result
 	for ($i=0; $row = $result->fetch_row(); $i++) {
 		if (!$i) {
@@ -21,6 +23,7 @@ function select($result, $connection2 = null, $href = "") {
 				$name = $field->name;
 				$orgtable = $field->orgtable;
 				$orgname = $field->orgname;
+				$return[$field->table] = $orgtable;
 				if ($href) { // MySQL EXPLAIN
 					$links[$j] = ($name == "table" ? "table=" : ($name == "possible_keys" ? "indexes=" : null));
 				} elseif ($orgtable != "") {
@@ -66,7 +69,8 @@ function select($result, $connection2 = null, $href = "") {
 			}
 			if (isset($links[$key]) && !$columns[$links[$key]]) {
 				if ($href) { // MySQL EXPLAIN
-					$link = $links[$key] . urlencode($row[array_search("table=", $links)]);
+					$table = $row[array_search("table=", $links)];
+					$link = $links[$key] . urlencode($orgtables[$table] != "" ? $orgtables[$table] : $table);
 				} else {
 					$link = "edit=" . urlencode($links[$key]);
 					foreach ($indexes[$links[$key]] as $col => $j) {
@@ -79,6 +83,7 @@ function select($result, $connection2 = null, $href = "") {
 		}
 	}
 	echo ($i ? "</table>" : "<p class='message'>" . lang('No rows.')) . "\n";
+	return $return;
 }
 
 /** Get referencable tables with single column primary key except self

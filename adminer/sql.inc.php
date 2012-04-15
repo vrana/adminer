@@ -109,7 +109,7 @@ if (!$error && $_POST) {
 									break 2;
 								}
 							} elseif (is_object($result)) {
-								select($result, $connection2);
+								$orgtables = select($result, $connection2);
 								if (!$_POST["only_errors"]) {
 									echo "<form action='' method='post'>\n";
 									echo "<p>" . ($result->num_rows ? lang('%d row(s)', $result->num_rows) : "") . $time;
@@ -124,7 +124,7 @@ if (!$error && $_POST) {
 										$id = "explain-$commands";
 										echo ", <a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>$export";
 										echo "<div id='$id' class='hidden'>\n";
-										select($explain, $connection2, ($jush == "sql" ? "http://dev.mysql.com/doc/refman/" . substr($connection->server_info, 0, 3) . "/en/explain-output.html#explain_" : ""));
+										select($explain, $connection2, ($jush == "sql" ? "http://dev.mysql.com/doc/refman/" . substr($connection->server_info, 0, 3) . "/en/explain-output.html#explain_" : ""), $orgtables);
 										echo "</div>\n";
 									} else {
 										echo $export;
