@@ -67,9 +67,6 @@ if (!$error && $_POST) {
 					$query .= fread($fp, 1e5);
 				} else {
 					$offset = $match[0][1] + strlen($found);
-					if (!$found && rtrim($query) == "") {
-						break;
-					}
 					if ($found && $found != $delimiter) { // find matching quote or comment end
 						while (preg_match('(' . ($found == '/*' ? '\\*/' : ($found == '[' ? ']' : (ereg('^-- |^#', $found) ? "\n" : preg_quote($found) . "|\\\\."))) . '|$)s', $query, $match, PREG_OFFSET_CAPTURE, $offset)) { //! respect sql_mode NO_BACKSLASH_ESCAPES
 							$s = $match[0][0];
