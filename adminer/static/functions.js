@@ -157,9 +157,7 @@ function nodePosition(el) {
 function pageClick(href, page, event) {
 	if (!isNaN(page) && page) {
 		href += (page != 1 ? '&page=' + (page - 1) : '');
-		if (!ajaxSend(href)) {
-			location.href = href;
-		}
+		location.href = href;
 	}
 }
 
@@ -187,16 +185,6 @@ function selectAddRow(field) {
 
 
 
-/** Abort AJAX request
-* @uses ajaxRequest
-*/
-function ajaxAbort() {
-	ajaxRequest.onreadystatechange = null;
-	if (ajaxRequest.abort) {
-		ajaxRequest.abort();
-	}
-}
-
 
 
 /** Send form by Ctrl+Enter on <select> and <textarea>
@@ -206,22 +194,12 @@ function ajaxAbort() {
 */
 function bodyKeydown(event, button) {
 	var target = event.target || event.srcElement;
-	if (event.keyCode == 27 && !event.shiftKey && !event.ctrlKey && !event.altKey && !event.metaKey) { // 27 - Esc
-		ajaxAbort();
-		document.body.className = document.body.className.replace(/ loading/g, '');
-		onblur = function () { };
-		if (originalFavicon) {
-			replaceFavicon(originalFavicon);
-		}
-	}
 	if (event.ctrlKey && (event.keyCode == 13 || event.keyCode == 10) && !event.altKey && !event.metaKey && /select|textarea|input/i.test(target.tagName)) { // 13|10 - Enter, shiftKey allowed
 		target.blur();
-		if (!ajaxForm(target.form, (button ? button + '=1' : ''))) {
-			if (button) {
-				target.form[button].click();
-			} else {
-				target.form.submit();
-			}
+		if (button) {
+			target.form[button].click();
+		} else {
+			target.form.submit();
 		}
 		return false;
 	}
@@ -307,132 +285,6 @@ function ajaxSetHtml(url) {
 	});
 }
 
-var originalFavicon;
-
-/** Replace favicon
-* @param string
-*/
-function replaceFavicon(href) {
-	var favicon = document.getElementById('favicon');
-	if (favicon) {
-		favicon.href = href;
-		favicon.parentNode.appendChild(favicon); // to replace the icon in Firefox
-	}
-}
-
-var ajaxRequest = {};
-
-/** Safely load content to #content
-* @param string
-* @param [string]
-* @param [boolean]
-* @param [boolean]
-* @return XMLHttpRequest or false in case of an error
-* @uses ajaxRequest
-*/
-function ajaxSend(url, data, popState, noscroll) {
-	if (!history.pushState) {
-		return false;
-	}
-	ajaxAbort();
-	onblur = function () {
-		if (!originalFavicon) {
-			originalFavicon = (document.getElementById('favicon') || {}).href;
-		}
-		replaceFavicon(document.getElementById('loader').firstChild.src);
-	};
-	document.body.className += ' loading';
-	ajaxRequest = ajax(url, function (request) {
-		var title = request.getResponseHeader('X-AJAX-Title');
-		if (title) {
-			document.title = decodeURIComponent(title);
-		}
-		var redirect = request.getResponseHeader('X-AJAX-Redirect');
-		if (redirect) {
-			return ajaxSend(redirect, '', popState);
-		}
-		onblur = function () { };
-		if (originalFavicon) {
-			replaceFavicon(originalFavicon);
-		}
-		if (!popState) {
-			if (data || url != location.href) {
-				history.pushState(data, '', url); //! remember window position
-			}
-		}
-		if (!noscroll && !/&order/.test(url)) {
-			scrollTo(0, 0);
-		}
-		setHtml('content', (request.status ? request.responseText : '<p class="error">' + noResponse));
-		document.body.className = document.body.className.replace(/ loading/g, '');
-		var content = document.getElementById('content');
-		var scripts = content.getElementsByTagName('script');
-		var length = scripts.length; // required to avoid infinite loop
-		for (var i=0; i < length; i++) {
-			var script = document.createElement('script');
-			script.text = scripts[i].text;
-			content.appendChild(script);
-		}
-		
-		var as = document.getElementById('menu').getElementsByTagName('a');
-		var href = location.href.replace(/(&(sql=|dump=|(select|table)=[^&]*)).*/, '$1');
-		for (var i=0; i < as.length; i++) {
-			as[i].className = (href == as[i].href ? 'active' : '');
-		}
-		var dump = document.getElementById('dump');
-		if (dump) {
-			var match = /&(select|table)=([^&]+)/.exec(href);
-			dump.href = dump.href.replace(/[^=]+$/, '') + (match ? match[2] : '');
-		}
-		//! modify Change database hidden fields
-		
-		if (window.jush) {
-			jush.highlight_tag('code', 0);
-		}
-	}, data);
-	return ajaxRequest;
-}
-
-/** Revive page from history
-* @param PopStateEvent|history
-* @uses ajaxRequest
-*/
-onpopstate = function (event) {
-	if ((ajaxRequest.send || event.state) && !/#/.test(location.href)) {
-		ajaxSend(location.href, (event.state && confirm(areYouSure) ? event.state : ''), 1); // 1 - disable pushState
-	} else {
-		ajaxRequest.send = true; // to enable AJAX for next call of this function
-	}
-};
-
-/** Send form by AJAX GET
-* @param HTMLFormElement
-* @param [string]
-* @param [boolean]
-* @return XMLHttpRequest or false in case of an error
-*/
-function ajaxForm(form, data, noscroll) {
-	if ((/&(database|scheme|create|view|sql|user|dump|call)=/.test(location.href) && !/\./.test(data)) || (form.onsubmit && form.onsubmit() === false)) { // . - type="image"
-		return false;
-	}
-	var params = [ ];
-	for (var i=0; i < form.elements.length; i++) {
-		var el = form.elements[i];
-		if (/file/i.test(el.type) && el.value) {
-			return false;
-		} else if (el.name && (!/checkbox|radio|submit|file/i.test(el.type) || el.checked)) {
-			params.push(encodeURIComponent(el.name) + '=' + encodeURIComponent(/select/i.test(el.tagName) ? selectValue(el) : el.value));
-		}
-	}
-	if (data) {
-		params.push(data);
-	}
-	if (form.method == 'post') {
-		return ajaxSend((/\?/.test(form.action) ? form.action : location.href), params.join('&'), false, noscroll); // ? - always part of Adminer URL
-	}
-	return ajaxSend((form.action || location.href).replace(/\?.*/, '') + '?' + params.join('&'), '', false, noscroll);
-}
-
 
 
 /** Display edit field
@@ -498,38 +350,6 @@ function selectDblClick(td, event, text) {
 }
 
 
-
-/** Load link by AJAX
-* @param MouseEvent
-* @param string
-* @param string
-* @return boolean
-*/
-function bodyClick(event, db, ns) {
-	if (event.button || event.shiftKey || event.altKey || event.metaKey) {
-		return;
-	}
-	if (event.getPreventDefault ? event.getPreventDefault() : event.returnValue === false || event.defaultPrevented) {
-		return false;
-	}
-	var el = event.target || event.srcElement;
-	if (/^a$/i.test(el.parentNode.tagName)) {
-		el = el.parentNode;
-	}
-	if (/^a$/i.test(el.tagName) && !/:|#|&download=/i.test(el.getAttribute('href')) && /[&?]username=/.test(el.href) && !event.ctrlKey) {
-		var match = /&db=([^&]*)/.exec(el.href);
-		var match2 = /&ns=([^&]*)/.exec(el.href);
-		return !(db == (match ? decodeURIComponent(match[1]) : '') && ns == (match2 ? decodeURIComponent(match2[1]) : '') && ajaxSend(el.href));
-	}
-	if (/^input$/i.test(el.tagName) && /image|submit/.test(el.type)) {
-		if (event.ctrlKey) {
-			el.form.target = '_blank';
-		} else {
-			return !ajaxForm(el.form, (el.name ? encodeURIComponent(el.name) + (el.type == 'image' ? '.x' : '') + '=1' : ''), el.type == 'image');
-		}
-	}
-	return true;
-}
 
 /** Stop event propagation
 * @param Event

@@ -16,10 +16,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "", $
 	}
 	$title_all = $title . ($title2 != "" ? ": " . h($title2) : "");
 	$title_page = strip_tags($title_all . (SERVER != "" && SERVER != "localhost" ? h(" - " . SERVER) : "") . " - " . $adminer->name());
-	if (is_ajax()) {
-		header("X-AJAX-Title: " . rawurlencode($title_page));
-	} else {
-		?>
+	?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html lang="<?php echo $LANG; ?>" dir="<?php echo lang('ltr'); ?>">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -27,10 +24,6 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "", $
 <meta name="robots" content="noindex">
 <title><?php echo $title_page; ?></title>
 <link rel="stylesheet" type="text/css" href="../adminer/static/default.css">
-<script type="text/javascript">
-var areYouSure = '<?php echo lang('Resend POST data?'); ?>';
-var noResponse = '<?php echo lang('No response from server.'); ?>';
-</script>
 <script type="text/javascript" src="../adminer/static/functions.js"></script>
 <script type="text/javascript" src="static/editing.js"></script>
 <?php if ($adminer->head()) { ?>
@@ -41,15 +34,13 @@ var noResponse = '<?php echo lang('No response from server.'); ?>';
 <?php } ?>
 <?php echo $head; ?>
 
-<body class="<?php echo lang('ltr'); ?> nojs"<?php echo ($_POST ? "" : " onclick=\"return bodyClick(event, '" . h(js_escape(DB) . "', '" . js_escape($_GET["ns"])) . "');\""); // avoid re-post confirmation after refreshing the next page in Google Chrome ?> onkeydown="bodyKeydown(event);" onload="bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 0, 3) : ""); ?>');<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verifyVersion();"); ?>">
+<body class="<?php echo lang('ltr'); ?> nojs" onkeydown="bodyKeydown(event);" onload="bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 0, 3) : ""); ?>');<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verifyVersion();"); ?>">
 <script type="text/javascript">
 document.body.className = document.body.className.replace(/ nojs/, ' js');
 </script>
 
-<div id="loader"><img src="../adminer/static/loader.gif" alt=""></div>
 <div id="content">
 <?php
-	}
 	if (isset($breadcrumb)) {
 		$link = substr(preg_replace('~(username|db|ns)=[^&]*&~', '', ME), 0, -1);
 		echo '<p id="breadcrumb"><a href="' . h($link ? $link : ".") . '">' . $drivers[DRIVER] . '</a> &raquo; ';
@@ -100,8 +91,7 @@ document.body.className = document.body.className.replace(/ nojs/, ' js');
 */
 function page_footer($missing = "") {
 	global $adminer;
-	if (!is_ajax()) {
-		?>
+	?>
 </div>
 
 <?php switch_lang(); ?>
@@ -109,5 +99,4 @@ function page_footer($missing = "") {
 <?php $adminer->navigation($missing); ?>
 </div>
 <?php
-	}
 }

@@ -377,7 +377,7 @@ if (!$columns) {
 				$found_rows = found_rows($table_status, $where);
 				if ($found_rows < max(1e4, 2 * ($page + 1) * $limit)) {
 					// slow with big tables
-					ob_flush(); //! doesn't work with AJAX
+					ob_flush();
 					flush();
 					$found_rows = $connection->result("SELECT COUNT(*) FROM " . table($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : ""));
 				} else {

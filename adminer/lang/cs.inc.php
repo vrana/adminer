@@ -278,10 +278,6 @@ $translations = array(
 	'Geometry' => 'Geometrie',
 	'Relations' => 'Vztahy',
 	
-	// reload confirmation in AJAX
-	'Resend POST data?' => 'Znovu odeslat POST data?',
-	'No response from server.' => 'Server neodpověděl.',
-	
 	'Editor' => 'Editor',
 	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
 	'$1-$3-$5' => '$6.$4.$1',

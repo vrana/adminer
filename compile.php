@@ -262,7 +262,7 @@ foreach (array("adminer", "editor") as $project) {
 	$file = str_replace('<script type="text/javascript" src="static/editing.js"></script>' . "\n", "", $file);
 	$file = preg_replace_callback("~compile_file\\('([^']+)', '([^']+)'\\);~", 'compile_file', $file); // integrate static files
 	$replace = 'h(preg_replace("~\\\\\\\\?.*~", "", ME)) . "?file=\\1&amp;version=' . $VERSION;
-	$file = preg_replace('~\\.\\./adminer/static/(default\\.css|functions\\.js|favicon\\.ico|loader\\.gif)~', '<?php echo ' . $replace . '"; ?>', $file);
+	$file = preg_replace('~\\.\\./adminer/static/(default\\.css|functions\\.js|favicon\\.ico)~', '<?php echo ' . $replace . '"; ?>', $file);
 	$file = preg_replace('~\\.\\./adminer/static/([^\'"]*)~', '" . ' . $replace, $file);
 	$file = str_replace("'../externals/jush/'", "location.protocol + '//www.adminer.org/static/'", $file);
 	$file = str_replace('"../externals/CodeMirror2"', '($_SERVER["HTTPS"] ? "https" : "http") . "://www.adminer.org/static/CodeMirror2"', $file);

@@ -452,7 +452,7 @@ function redirect($location, $message = null) {
 		if ($location == "") {
 			$location = ".";
 		}
-		header((is_ajax() ? "X-AJAX-Redirect" : "Location") . ": $location");
+		header("Location: $location");
 		exit;
 	}
 }

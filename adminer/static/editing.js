@@ -6,9 +6,6 @@ var jushRoot = '../externals/jush/'; // global variable to allow simple customiz
 * @param string first three characters of database system version
 */
 function bodyLoad(version) {
-	if (history.state !== undefined) { // copied from editor/static/editing.js
-		onpopstate(history);
-	}
 	if (jushRoot) {
 		var script = document.createElement('script');
 		script.src = jushRoot + 'jush.js';

@@ -268,6 +268,5 @@ $translations = array(
 	'Copy' => 'Kopírovať',
 	'Permanent link' => 'Permanentný odkaz',
 	'Edit all' => 'Upraviť všetko',
-	'Resend POST data?' => 'Znovu poslať POST data?',
 	'HH:MM:SS' => 'HH:MM:SS',
 );
