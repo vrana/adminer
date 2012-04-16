@@ -1,6 +1,6 @@
 Adminer 3.4.0-dev:
 Print current time next to executed SQL queries
-Highlight code in textarea by CodeMirror
+Highlight code in SQL command by CodeMirror
 Link to original table in EXPLAIN of SELECT * FROM table t
 Replace JSMin by better JavaScript minifier
 Don't use AJAX links and forms

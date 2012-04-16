@@ -54,6 +54,8 @@ if (!$error && $_POST) {
 		}
 		$commands = 0;
 		$errors = array();
+		$error_lines = array();
+		$line = 0;
 		$parse = '[\'"' . ($jush == "sql" ? '`#' : ($jush == "sqlite" ? '`[' : ($jush == "mssql" ? '[' : ''))) . ']|/\\*|-- |$' . ($jush == "pgsql" ? '|\\$[^$]*\\$' : '');
 		$total_start = microtime();
 		parse_str($_COOKIE["adminer_export"], $adminer_export);
@@ -64,16 +66,16 @@ if (!$error && $_POST) {
 				$delimiter = $match[1];
 				$query = substr($query, strlen($match[0]));
 			} else {
-				preg_match('(' . preg_quote($delimiter) . "|$parse)", $query, $match, PREG_OFFSET_CAPTURE, $offset); // should always match
-				$found = $match[0][0];
+				preg_match('(' . preg_quote($delimiter) . "\\s*|$parse)", $query, $match, PREG_OFFSET_CAPTURE, $offset); // should always match
+				list($found, $pos) = $match[0];
 				if (!$found && $fp && !feof($fp)) {
 					$query .= fread($fp, 1e5);
 				} else {
-					$offset = $match[0][1] + strlen($found);
+					$offset = $pos + strlen($found);
 					if (!$found && rtrim($query) == "") {
 						break;
 					}
-					if ($found && $found != $delimiter) { // find matching quote or comment end
+					if ($found && rtrim($found) != $delimiter) { // find matching quote or comment end
 						while (preg_match('(' . ($found == '/*' ? '\\*/' : ($found == '[' ? ']' : (ereg('^-- |^#', $found) ? "\n" : preg_quote($found) . "|\\\\."))) . '|$)s', $query, $match, PREG_OFFSET_CAPTURE, $offset)) { //! respect sql_mode NO_BACKSLASH_ESCAPES
 							$s = $match[0][0];
 							if (!$s && $fp && !feof($fp)) {
@@ -87,7 +89,7 @@ if (!$error && $_POST) {
 						}
 					} else { // end of a query
 						$empty = false;
-						$q = substr($query, 0, $match[0][1]);
+						$q = substr($query, 0, $pos);
 						$commands++;
 						$print = "<pre id='sql-$commands'><code class='jush-$jush'>" . shorten_utf8(trim($q), 1000) . "</code></pre>\n";
 						if (!$_POST["only_errors"]) {
@@ -107,6 +109,7 @@ if (!$error && $_POST) {
 							if ($connection->error) {
 								echo ($_POST["only_errors"] ? $print : "");
 								echo "<p class='error'>" . lang('Error in query') . ": " . error() . "\n";
+								$error_lines[] = $line + (function_exists('error_line') ? error_line() : 0);
 								$errors[] = " <a href='#sql-$commands'>$commands</a>";
 								if ($_POST["error_stops"]) {
 									break 2;
@@ -146,6 +149,7 @@ if (!$error && $_POST) {
 							}
 							$start = $end;
 						} while ($connection->next_result());
+						$line += substr_count($q.$found, "\n");
 						$query = substr($query, $offset);
 						$offset = 0;
 					}
@@ -220,6 +224,7 @@ if ($history) {
 <script src="<?php echo "$codemirror_path/mode/$codemirror_mode/$codemirror_mode.js"; ?>"></script>
 <script type="text/javascript">
 if (window.CodeMirror) {
-	CodeMirror.fromTextArea(document.getElementById('query'));
+	var codeMirror = CodeMirror.fromTextArea(document.getElementById('query'));
+	<?php foreach ($error_lines as $line) { ?>codeMirror.setLineClass(<?php echo $line; ?>, '', 'error');<?php } ?>
 }
 </script>

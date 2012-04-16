@@ -60,6 +60,7 @@ input[type=image] { vertical-align: middle; }
 .rtl #lang, .rtl #menu { left: auto; right: 0; }
 
 .CodeMirror { border: 1px inset #777; }
+.CodeMirror .error { background: #fee; }
 
 @media print {
 	#lang, #menu { display: none; }
