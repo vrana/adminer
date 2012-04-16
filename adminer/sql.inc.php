@@ -14,7 +14,10 @@ if (!$error && $_POST["clear"]) {
 	redirect(remove_from_uri("history"));
 }
 
-page_header(lang('SQL command'), $error);
+$codemirror_path = "../externals/CodeMirror2";
+$codemirror_mode = ($jush == "sql" ? "mysql" : "plsql");
+
+page_header(lang('SQL command'), $error, array(), "", "<link rel='stylesheet' href='$codemirror_path/lib/codemirror.css'>");
 
 if (!$error && $_POST) {
 	$fp = false;
@@ -173,8 +176,8 @@ if ($_POST) {
 } elseif ($_GET["history"] != "") {
 	$q = $history[$_GET["history"]][0];
 }
-textarea("query", $q, 20);
-echo ($_POST ? "" : "<script type='text/javascript'>document.getElementsByTagName('textarea')[0].focus();</script>\n");
+textarea("query", $q, 20, 80, "query");
+echo ($_POST ? "" : "<script type='text/javascript'>document.getElementById('query').focus();</script>\n");
 echo "<p>" . (ini_bool("file_uploads")
 	? lang('File upload') . ': <input type="file" name="sql_file"' . ($_FILES && $_FILES["sql_file"]["error"] != 4 ? '' : ' onchange="this.form[\'only_errors\'].checked = true;"') . '> (&lt; ' . ini_get("upload_max_filesize") . 'B)' // ignore post_max_size because it is for all form fields together and bytes computing would be necessary
 	: lang('File uploads are disabled.')
@@ -212,3 +215,11 @@ if ($history) {
 ?>
 
 </form>
+
+<script src="<?php echo $codemirror_path; ?>/lib/codemirror.js"></script>
+<script src="<?php echo "$codemirror_path/mode/$codemirror_mode/$codemirror_mode.js"; ?>"></script>
+<script type="text/javascript">
+if (window.CodeMirror) {
+	CodeMirror.fromTextArea(document.getElementById('query'));
+}
+</script>

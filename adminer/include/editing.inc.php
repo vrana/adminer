@@ -113,10 +113,11 @@ function referencable_primary($self) {
 * @param int
 * @param int
 * @param string
+* @param string
 * @return null
 */
-function textarea($name, $value, $rows = 10, $cols = 80) {
-	echo "<textarea name='$name' rows='$rows' cols='$cols' class='sqlarea' spellcheck='false' wrap='off' onkeydown='return textareaKeydown(this, event);'>"; // spellcheck, wrap - not valid before HTML5
+function textarea($name, $value, $rows = 10, $cols = 80, $id = "") {
+	echo "<textarea name='$name'" . ($id ? " id='$id'" : "") . " rows='$rows' cols='$cols' class='sqlarea' spellcheck='false' wrap='off' onkeydown='return textareaKeydown(this, event);'>"; // spellcheck, wrap - not valid before HTML5
 	if (is_array($value)) {
 		foreach ($value as $val) { // not implode() to save memory
 			echo h($val[0]) . "\n\n\n"; // $val == array($query, $time)
