@@ -5,6 +5,7 @@ Link to original table in EXPLAIN of SELECT * FROM table t
 Replace JSMin by better JavaScript minifier
 Don't use AJAX links and forms
 Ukrainian translation
+Bengali translation
 
 Adminer 3.3.4 (released 2012-03-07):
 Foreign keys default actions (bug #3397606)

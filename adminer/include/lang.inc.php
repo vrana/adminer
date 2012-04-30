@@ -27,6 +27,7 @@ $langs = array(
 	'ta' => 'த‌மிழ்', // G. Sampath Kumar, Chennai, India, sampathkumar11@gmail.com
 	'ar' => 'العربية', // Y.M Amine - Algeria - nbr7@live.fr
 	'fa' => 'فارسی', // mojtaba barghbani - Iran - mbarghbani@gmail.com
+	'bn' => 'বাংলা', // Tanmay Sarkar - calcutta, India - tanmay@kisholoy.org
 );
 
 /** Get current language
