@@ -28,8 +28,13 @@ if (!$error && $_POST) {
 			: "compress.bzip2://adminer.sql.bz2"
 		)), "rb");
 		$query = ($fp ? fread($fp, 1e6) : false);
-	} elseif ($_FILES && $_FILES["sql_file"]["error"] != UPLOAD_ERR_NO_FILE) {
-		$query = get_file("sql_file", true);
+	} elseif ($_FILES AND $_FILES["sql_file"]['error'][0] != UPLOAD_ERR_NO_FILE) {
+		$query = "";
+		foreach ($_FILES["sql_file"]['error'] AS $fKey => $fErr) {
+			if ($fErr != UPLOAD_ERR_NO_FILE) {
+				$query .= get_file("sql_file", true, $fKey);
+			}
+		}
 	}
 	if (is_string($query)) { // get_file() returns error as number, fread() as false
 		if (function_exists('memory_get_usage')) {
@@ -183,7 +188,7 @@ if ($_POST) {
 textarea("query", $q, 20, 80, "query");
 echo ($_POST ? "" : "<script type='text/javascript'>document.getElementById('query').focus();</script>\n");
 echo "<p>" . (ini_bool("file_uploads")
-	? lang('File upload') . ': <input type="file" name="sql_file"' . ($_FILES && $_FILES["sql_file"]["error"] != 4 ? '' : ' onchange="this.form[\'only_errors\'].checked = true;"') . '> (&lt; ' . ini_get("upload_max_filesize") . 'B)' // ignore post_max_size because it is for all form fields together and bytes computing would be necessary
+	? lang('File upload') . ': <input type="file" multiple name="sql_file[]"' . ($_FILES && $_FILES["sql_file"]["error"] != 4 ? '' : ' onchange="this.form[\'only_errors\'].checked = true;"') . '> (&lt; ' . ini_get("upload_max_filesize") . 'B)' // ignore post_max_size because it is for all form fields together and bytes computing would be necessary
 	: lang('File uploads are disabled.')
 );
 

@@ -544,10 +544,18 @@ function pagination($page, $current) {
 /** Get file contents from $_FILES
 * @param string
 * @param bool
+* @param int file-data key in $_FILES array for multiple files upload
 * @return mixed int for error, string otherwise
 */
-function get_file($key, $decompress = false) {
-	$file = $_FILES[$key];
+function get_file($key, $decompress = false, $fileIndex = false) {
+	if ( $fileIndex !== false AND is_array($_FILES[$key]['name']) ) {
+		foreach ($_FILES[$key] AS $dataName => $dataValue) {
+			$file[$dataName] = $_FILES[$key][$dataName][$fileIndex];
+		}
+	}
+	else {
+		$file = $_FILES[$key];
+	}
 	if (!$file || $file["error"]) {
 		return $file["error"];
 	}
