@@ -3,6 +3,7 @@ body { color: #000; background: #fff; font: 90%/1.25 Verdana, Arial, Helvetica, 
 a { color: blue; }
 a:visited { color: navy; }
 a:hover { color: red; }
+a.text { text-decoration: none; }
 h1 { font-size: 150%; margin: 0; padding: .8em 1em; border-bottom: 1px solid #999; font-weight: normal; color: #777; background: #eee; }
 h2 { font-size: 150%; margin: 0 0 20px -18px; padding: .8em 1em; border-bottom: 1px solid #000; color: #000; font-weight: normal; background: #ddf; }
 h3 { font-weight: normal; font-size: 130%; margin: 1em 0 0; }

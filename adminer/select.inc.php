@@ -265,9 +265,9 @@ if (!$columns) {
 						$rank++;
 						$names[$key] = $name;
 						$column = idf_escape($key);
-						echo '<th><a href="' . h(remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key)
-							. ($order[0] == $column || $order[0] == $key || (!$order && count($group) < count($select) && $group[0] == $column) ? '&desc%5B0%5D=1' : '') // $order[0] == $key - COUNT(*)
-						) . '">' . (!$select || $val ? apply_sql_function($val["fun"], $name) : h(current($select))) . "</a>"; //! columns looking like functions
+						$href = remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key);
+						echo '<th><a href="' . h($href) . '">' . (!$select || $val ? apply_sql_function($val["fun"], $name) : h(current($select))) . "</a>"; //! columns looking like functions
+						echo "<a href='" . h("$href&desc%5B0%5D=1") . "' title='" . lang('descending') . "' class='text'> ↓</a>";
 					}
 					$functions[$key] = $val["fun"];
 					next($select);
