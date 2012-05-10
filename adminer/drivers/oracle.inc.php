@@ -329,15 +329,17 @@ ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
 	}
 	
 	function schemas() {
-		return array();
+		return get_vals("SELECT DISTINCT owner FROM dba_segments WHERE owner IN (SELECT username FROM dba_users WHERE default_tablespace NOT IN ('SYSTEM','SYSAUX'))");
 	}
 	
 	function get_schema() {
-		return "";
+		global $connection;
+		return $connection->result("SELECT sys_context('USERENV', 'SESSION_USER') FROM dual");
 	}
 	
 	function set_schema($scheme) {
-		return true;
+		global $connection;
+		return $connection->query("ALTER SESSION SET CURRENT_SCHEMA = " . idf_escape($scheme));
 	}
 	
 	function show_variables() {
@@ -350,7 +352,7 @@ ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
 	}
 	
 	function support($feature) {
-		return ereg("view|drop_col|variables|status", $feature); //!
+		return ereg("view|scheme|drop_col|variables|status", $feature); //!
 	}
 	
 	$jush = "oracle";
