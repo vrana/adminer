@@ -190,8 +190,8 @@ UNION SELECT view_name, 'view' FROM user_views"
 	function table_status($name = "") {
 		$return = array();
 		$search = q($name);
-		foreach (get_rows('SELECT table_name "Name", \'table\' "Engine" FROM all_tables WHERE tablespace_name = ' . q(DB) . ($name != "" ? " AND table_name = $search" : "") . "
-UNION SELECT view_name, 'view' FROM user_views" . ($name != "" ? " WHERE view_name = $search" : "")
+		foreach (get_rows('SELECT table_name "Name", \'table\' "Engine", avg_row_len*num_rows "Data_length", num_rows "Rows" FROM all_tables WHERE tablespace_name = ' . q(DB) . ($name != "" ? " AND table_name = $search" : "") . "
+UNION SELECT view_name, 'view', 0, 0 FROM user_views" . ($name != "" ? " WHERE view_name = $search" : "")
 		) as $row) {
 			if ($name != "") {
 				return $row;
