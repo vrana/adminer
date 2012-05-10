@@ -346,13 +346,22 @@ ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
 		return get_key_vals('SELECT name, display_value FROM v$parameter');
 	}
 	
+	function process_list() {
+		return get_rows('SELECT sess.process AS "process", sess.username AS "user", sess.schemaname AS "schema", sess.status AS "status", sess.wait_class AS "wait_class", sess.seconds_in_wait AS "seconds_in_wait", sql.sql_text AS "sql_text", sess.machine AS "machine", sess.port AS "port"
+FROM v$session sess LEFT OUTER JOIN v$sql sql
+ON sql.sql_id = sess.sql_id
+WHERE sess.type = \'USER\'
+ORDER BY PROCESS
+');
+	}
+	
 	function show_status() {
 		$rows = get_rows('SELECT * FROM v$instance');
 		return reset($rows);
 	}
 	
 	function support($feature) {
-		return ereg("view|scheme|drop_col|variables|status", $feature); //!
+		return ereg("view|scheme|processlist|drop_col|variables|status", $feature); //!
 	}
 	
 	$jush = "oracle";
