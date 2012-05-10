@@ -23,7 +23,18 @@ foreach (process_list() as $i => $row) {
 	}
 	echo "<tr" . odd() . ">" . (support("kill") ? "<td>" . checkbox("kill[]", $row["Id"], 0) : "");
 	foreach ($row as $key => $val) {
-		echo "<td>" . (($jush == "sql" ? $key == "Info" && $val != "" : $key == "current_query" && $val != "<IDLE>") ? "<code class='jush-$jush'>" . shorten_utf8($val, 100, "</code>") . ' <a href="' . h(ME . ($row["db"] != "" ? "db=" . urlencode($row["db"]) . "&" : "") . "sql=" . urlencode($val)) . '">' . lang('Edit') . '</a>' : nbsp($val));
+		echo "<td>";
+		if (
+			($jush == "sql"		&& $key == "Info"		&& $val != "") ||	// MySQL
+			($jush == "pgsql"	&& $key == "current_query"	&& $val != "<IDLE>") ||	// Postgres
+			($jush == "oracle"	&& $key == "sql_text"		&& $val != "")		// Oracle
+		) {
+			echo "<code class='jush-$jush'>";
+			echo shorten_utf8($val, 100, "</code>");
+			echo ' <a href="' . h(ME . ($row["db"] != "" ? "db=" . urlencode($row["db"]) . "&" : "") . "sql=" . urlencode($val)) . '">' . lang('Edit') . '</a>';
+		} else {
+			echo nbsp($val);
+		}
 	}
 	echo "\n";
 }
