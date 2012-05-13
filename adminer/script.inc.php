@@ -13,7 +13,15 @@ if ($_GET["script"] == "db") {
 			foreach ($sums + array("Auto_increment" => 0, "Rows" => 0) as $key => $val) {
 				if ($table_status[$key] != "") {
 					$val = number_format($table_status[$key], 0, '.', lang(','));
-					json_row("$key-$id", ($key == "Rows" && $table_status["Engine"] == "InnoDB" && $val ? "~ $val" : $val));
+					if ($key == "Rows") {
+						if (
+							$table_status["Engine"] == "InnoDB" ||	// MySQL InnoDB
+							$table_status["Engine"] == "table"	// Postgres table reltype
+						) {
+							$val = "~ $val";
+						}
+					}
+					json_row("$key-$id", $val);
 					if (isset($sums[$key])) {
 						$sums[$key] += ($table_status["Engine"] != "InnoDB" || $key != "Data_free" ? $table_status[$key] : 0);
 					}
