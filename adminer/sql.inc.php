@@ -16,6 +16,7 @@ if (!$error && $_POST["clear"]) {
 
 $codemirror_path = "../externals/CodeMirror2";
 $codemirror_mode = ($jush == "sql" ? "mysql" : "plsql");
+$error_lines = array();
 
 page_header(lang('SQL command'), $error, array(), "", "<link rel='stylesheet' href='$codemirror_path/lib/codemirror.css'>");
 
@@ -54,7 +55,6 @@ if (!$error && $_POST) {
 		}
 		$commands = 0;
 		$errors = array();
-		$error_lines = array();
 		$line = 0;
 		$parse = '[\'"' . ($jush == "sql" ? '`#' : ($jush == "sqlite" ? '`[' : ($jush == "mssql" ? '[' : ''))) . ']|/\\*|-- |$' . ($jush == "pgsql" ? '|\\$[^$]*\\$' : '');
 		$total_start = microtime();

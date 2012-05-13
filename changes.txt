@@ -3,6 +3,7 @@ Print current time next to executed SQL queries
 Highlight code in SQL command by CodeMirror
 Link to descending order
 Link to original table in EXPLAIN of SELECT * FROM table t
+Oracle: schema, processlist, table overview numbers
 Replace JSMin by better JavaScript minifier
 Don't use AJAX links and forms
 Ukrainian translation
