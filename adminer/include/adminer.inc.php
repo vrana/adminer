@@ -63,19 +63,19 @@ class Adminer {
 		global $drivers;
 		?>
 <table cellspacing="0">
-<tr><th><?php echo lang('System'); ?><td><?php echo html_select("driver", $drivers, DRIVER, "loginDriver(this);"); ?>
-<tr><th><?php echo lang('Server'); ?><td><input name="server" value="<?php echo h(SERVER); ?>" title="hostname[:port]">
-<tr><th><?php echo lang('Username'); ?><td><input id="username" name="username" value="<?php echo h($_GET["username"]); ?>">
-<tr><th><?php echo lang('Password'); ?><td><input type="password" name="password">
+<tr><th><?php echo lang('System'); ?><td><?php echo html_select("auth[driver]", $drivers, DRIVER, "loginDriver(this);"); ?>
+<tr><th><?php echo lang('Server'); ?><td><input name="auth[server]" value="<?php echo h(SERVER); ?>" title="hostname[:port]">
+<tr><th><?php echo lang('Username'); ?><td><input id="username" name="auth[username]" value="<?php echo h($_GET["username"]); ?>">
+<tr><th><?php echo lang('Password'); ?><td><input type="password" name="auth[password]">
 </table>
 <script type="text/javascript">
 var username = document.getElementById('username');
 username.focus();
-username.form['driver'].onchange();
+username.form['auth[driver]'].onchange();
 </script>
 <?php
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
-		echo checkbox("permanent", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
+		echo checkbox("auth[permanent]", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
 	}
 	
 	/** Authorize the user

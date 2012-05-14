@@ -41,15 +41,15 @@ class Adminer {
 	function loginForm() {
 		?>
 <table cellspacing="0">
-<tr><th><?php echo lang('Username'); ?><td><input type="hidden" name="driver" value="server"><input type="hidden" name="server" value=""><input id="username" name="username" value="<?php echo h($_GET["username"]);  ?>">
-<tr><th><?php echo lang('Password'); ?><td><input type="password" name="password">
+<tr><th><?php echo lang('Username'); ?><td><input type="hidden" name="auth[driver]" value="server"><input id="username" name="auth[username]" value="<?php echo h($_GET["username"]);  ?>">
+<tr><th><?php echo lang('Password'); ?><td><input type="password" name="auth[password]">
 </table>
 <script type="text/javascript">
 document.getElementById('username').focus();
 </script>
 <?php
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
-		echo checkbox("permanent", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
+		echo checkbox("auth[permanent]", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
 	}
 	
 	function login($login, $password) {

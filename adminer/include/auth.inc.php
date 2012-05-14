@@ -14,21 +14,22 @@ if ($_COOKIE["adminer_permanent"]) {
 	}
 }
 
-if (isset($_POST["server"])) {
+$auth = $_POST["auth"];
+if ($auth) {
 	session_regenerate_id(); // defense against session fixation
-	$_SESSION["pwds"][$_POST["driver"]][$_POST["server"]][$_POST["username"]] = $_POST["password"];
-	if ($_POST["permanent"]) {
-		$key = base64_encode($_POST["driver"]) . "-" . base64_encode($_POST["server"]) . "-" . base64_encode($_POST["username"]);
+	$_SESSION["pwds"][$auth["driver"]][$auth["server"]][$auth["username"]] = $auth["password"];
+	if ($auth["permanent"]) {
+		$key = base64_encode($auth["driver"]) . "-" . base64_encode($auth["server"]) . "-" . base64_encode($auth["username"]);
 		$private = $adminer->permanentLogin();
-		$permanent[$key] = "$key:" . base64_encode($private ? encrypt_string($_POST["password"], $private) : "");
+		$permanent[$key] = "$key:" . base64_encode($private ? encrypt_string($auth["password"], $private) : "");
 		cookie("adminer_permanent", implode(" ", $permanent));
 	}
-	if (count($_POST) == ($_POST["permanent"] ? 5 : 4) // 4 - driver, server, username, password
-		|| DRIVER != $_POST["driver"]
-		|| SERVER != $_POST["server"]
-		|| $_GET["username"] !== $_POST["username"] // "0" == "00"
+	if (count($_POST) == 1 // 1 - auth
+		|| DRIVER != $auth["driver"]
+		|| SERVER != $auth["server"]
+		|| $_GET["username"] !== $auth["username"] // "0" == "00"
 	) {
-		redirect(auth_url($_POST["driver"], $_POST["server"], $_POST["username"]));
+		redirect(auth_url($auth["driver"], $auth["server"], $auth["username"]));
 	}
 } elseif ($_POST["logout"]) {
 	if ($token && $_POST["token"] != $token) {
@@ -77,7 +78,7 @@ function auth_error($exception = null) {
 	echo "<form action='' method='post' onclick='eventStop(event);'>\n";
 	$adminer->loginForm();
 	echo "<div>";
-	hidden_fields($_POST, array("driver", "server", "username", "password", "permanent")); // expired session
+	hidden_fields($_POST, array("auth")); // expired session
 	echo "</div>\n";
 	echo "</form>\n";
 	page_footer("auth");
@@ -98,7 +99,7 @@ if (is_string($connection) || !$adminer->login($_GET["username"], get_session("p
 }
 
 $token = $_SESSION["token"]; ///< @var string CSRF protection
-if (isset($_POST["server"]) && $_POST["token"]) {
+if ($auth && $_POST["token"]) {
 	$_POST["token"] = $token; // reset token after explicit login
 }
 $error = ($_POST ///< @var string
