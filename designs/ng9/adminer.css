@@ -173,6 +173,17 @@ tr.odd td {
 	left:0px;
 	width:100%;
 	padding:10px 20px;
+	z-index:1;
+}
+
+#breadcrumb {
+	position:fixed;
+	top:0px;
+	left:300px;
+	background:#f2eee1;
+	z-index:2;
+	width:100%;
+	padding:10px;
 }
 
 #menu {
@@ -186,16 +197,6 @@ tr.odd td {
 	left:0px;
 	width:240px;
 	border-right:5px solid #f2eee1;
-}
-
-#breadcrumb {
-	position:fixed;
-	top:0px;
-	left:0px;
-	background:#f2eee1;
-	z-index:1;
-	width:100%;
-	padding:10px 10px 10px 335px;
 }
 
 #schema .table {
