@@ -224,7 +224,7 @@ if ($history) {
 <script src="<?php echo "$codemirror_path/mode/$codemirror_mode/$codemirror_mode.js"; ?>"></script>
 <script type="text/javascript">
 if (window.CodeMirror) {
-	var codeMirror = CodeMirror.fromTextArea(document.getElementById('query'));
+	var codeMirror = CodeMirror.fromTextArea(document.getElementById('query'), { mode: 'text/x-<?php echo $codemirror_mode; ?>' });
 	<?php foreach ($error_lines as $line) { ?>codeMirror.setLineClass(<?php echo $line; ?>, '', 'error');<?php } ?>
 }
 </script>
