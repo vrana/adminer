@@ -182,6 +182,10 @@ if ($adminer->homepage()) {
 					echo "<td>$row[Ends]";
 				}
 				echo "</table>\n";
+				$event_scheduler = $connection->result("SELECT @@event_scheduler");
+				if ($event_scheduler && $event_scheduler != "ON") {
+					echo "<p class='error'><code class='jush-sqlset'>event_scheduler</code>: " . h($event_scheduler) . "\n";
+				}
 			}
 			echo '<p><a href="' . h(ME) . 'event=">' . lang('Create event') . "</a>\n";
 		}
