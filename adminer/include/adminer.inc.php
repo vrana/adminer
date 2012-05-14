@@ -67,6 +67,7 @@ class Adminer {
 <tr><th><?php echo lang('Server'); ?><td><input name="auth[server]" value="<?php echo h(SERVER); ?>" title="hostname[:port]">
 <tr><th><?php echo lang('Username'); ?><td><input id="username" name="auth[username]" value="<?php echo h($_GET["username"]); ?>">
 <tr><th><?php echo lang('Password'); ?><td><input type="password" name="auth[password]">
+<tr><th><?php echo lang('Database'); ?><td><input name="auth[db]" value="<?php echo h($_GET["db"]); ?>">
 </table>
 <script type="text/javascript">
 var username = document.getElementById('username');

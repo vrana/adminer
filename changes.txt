@@ -2,6 +2,7 @@ Adminer 3.4.0-dev:
 Print current time next to executed SQL queries
 Highlight code in SQL command by CodeMirror
 Link to descending order
+Allow specifying database in login form
 Link to original table in EXPLAIN of SELECT * FROM table t
 MySQL: inform about disabled event_scheduler
 SQLite: support binary data

@@ -28,8 +28,9 @@ if ($auth) {
 		|| DRIVER != $auth["driver"]
 		|| SERVER != $auth["server"]
 		|| $_GET["username"] !== $auth["username"] // "0" == "00"
+		|| DB != $auth["db"]
 	) {
-		redirect(auth_url($auth["driver"], $auth["server"], $auth["username"]));
+		redirect(auth_url($auth["driver"], $auth["server"], $auth["username"], $auth["db"]));
 	}
 } elseif ($_POST["logout"]) {
 	if ($token && $_POST["token"] != $token) {

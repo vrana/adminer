@@ -59,7 +59,7 @@ function typePassword(el, disable) {
 
 function loginDriver(driver) {
 	var trs = driver.parentNode.parentNode.parentNode.rows;
-	for (var i=1; i < trs.length; i++) {
+	for (var i=1; i < trs.length - 1; i++) {
 		trs[i].className = (/sqlite/.test(driver.value) ? 'hidden' : '');
 	}
 }
