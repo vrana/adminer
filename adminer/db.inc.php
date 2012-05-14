@@ -67,7 +67,7 @@ if ($adminer->homepage()) {
 			echo (support("comment") ? '<td>' . lang('Comment') : '');
 			echo "</thead>\n";
 			foreach ($tables_list as $name => $type) {
-				$view = (isset($type) && !eregi("table", $type));
+				$view = ($type !== null && !eregi("table", $type));
 				echo '<tr' . odd() . '><td>' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array($name, $tables_views, true), "", "formUncheck('check-all');");
 				echo '<th><a href="' . h(ME) . 'table=' . urlencode($name) . '" title="' . lang('Show structure') . '">' . h($name) . '</a>';
 				if ($view) {

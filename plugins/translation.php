@@ -19,17 +19,17 @@ class AdminerTranslation {
 	
 	function _translate($idf) {
 		static $translations, $lang;
-		if (!isset($lang)) {
+		if ($lang === null) {
 			$lang = get_lang();
 		}
 		if ($idf == "" || $lang == "en") {
 			return $idf;
 		}
-		if (!isset($translations)) {
+		if ($translations === null) {
 			$translations = get_key_vals("SELECT idf, translation FROM translation WHERE language_id = " . q($lang));
 		}
 		$return = &$translations[$idf];
-		if (!isset($return)) {
+		if ($return === null) {
 			$return = $idf;
 			$connection = connection();
 			$connection->query("INSERT INTO translation (language_id, idf, translation) VALUES (" . q($lang) . ", " . q($idf) . ", " . q($idf) . ")");

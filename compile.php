@@ -26,7 +26,7 @@ function remove_lang($match) {
 function lang_ids($match) {
 	global $lang_ids;
 	$lang_id = &$lang_ids[stripslashes($match[1])];
-	if (!isset($lang_id)) {
+	if ($lang_id === null) {
 		$lang_id = count($lang_ids) - 1;
 	}
 	return ($_SESSION["lang"] ? $match[0] : "lang($lang_id$match[2]");
@@ -68,7 +68,7 @@ function put_file_lang($match) {
 		include dirname(__FILE__) . "/adminer/lang/$lang.inc.php"; // assign $translations
 		$translation_ids = array_flip($lang_ids); // default translation
 		foreach ($translations as $key => $val) {
-			if (isset($val)) {
+			if ($val !== null) {
 				$translation_ids[$lang_ids[$key]] = $val;
 			}
 		}

@@ -68,7 +68,7 @@ document.getElementById('username').focus();
 	
 	function selectLinks($tableStatus, $set = "") {
 		$TABLE = $tableStatus["Name"];
-		if (isset($set)) {
+		if ($set !== null) {
 			echo '<p class="tabs"><a href="' . h(ME . 'edit=' . urlencode($TABLE) . $set) . '">' . lang('New item') . "</a>\n";
 		}
 		echo "<a href='" . h(remove_from_uri("page")) . "&amp;page=last' title='" . lang('Last page') . "'>&gt;&gt;</a>\n";
@@ -181,7 +181,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	}
 	
 	function editVal($val, $field) {
-		if (ereg('date|timestamp', $field["type"]) && isset($val)) {
+		if (ereg('date|timestamp', $field["type"]) && $val !== null) {
 			return preg_replace('~^(\\d{2}(\\d+))-(0?(\\d+))-(0?(\\d+))~', lang('$1-$3-$5'), $val);
 		}
 		return (ereg("binary", $field["type"]) ? reset(unpack("H*", $val)) : $val);
@@ -434,7 +434,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			;
 		}
 		$options = $this->_foreignKeyOptions($table, $field["field"], $value);
-		if (isset($options)) {
+		if ($options !== null) {
 			return (is_array($options)
 				? "<select$attrs>" . optionlist($options, $value, true) . "</select>"
 				:  "<input value='" . h($value) . "'$attrs class='hidden'><input value='" . h($options) . "' class='jsonly' onkeyup=\"whisper('" . h(ME . "script=complete&source=" . urlencode($table) . "&field=" . urlencode($field["field"])) . "&value=', this);\"><div onclick='return whisperClick(event, this.previousSibling);'></div>"
@@ -526,7 +526,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		if ($missing == "auth") {
 			$first = true;
 			foreach ((array) $_SESSION["pwds"]["server"][""] as $username => $password) {
-				if (isset($password)) {
+				if ($password !== null) {
 					if ($first) {
 						echo "<p onclick='eventStop(event);'>\n";
 						$first = false;
@@ -580,11 +580,11 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		global $connection;
 		if (list($target, $id, $name) = $this->_foreignColumn(column_foreign_keys($table), $column)) {
 			$return = &$this->_values[$target];
-			if (!isset($return)) {
+			if ($return === null) {
 				$table_status = table_status($target);
 				$return = ($table_status["Rows"] > 1000 ? "" : array("" => "") + get_key_vals("SELECT $id, $name FROM " . table($target) . " ORDER BY 2"));
 			}
-			if (!$return && isset($value)) {
+			if (!$return && $value !== null) {
 				return $connection->result("SELECT $name FROM " . table($target) . " WHERE $id = " . q($value));
 			}
 			return $return;

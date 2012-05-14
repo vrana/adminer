@@ -11,7 +11,7 @@ class AdminerEditForeign {
 		static $foreignTables = array();
 		static $values = array();
 		$foreignKeys = &$foreignTables[$table];
-		if (!isset($foreignKeys)) {
+		if ($foreignKeys === null) {
 			$foreignKeys = column_foreign_keys($table);
 		}
 		foreach ((array) $foreignKeys[$field["field"]] as $foreignKey) {

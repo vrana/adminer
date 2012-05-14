@@ -55,7 +55,7 @@ function select($result, $connection2 = null, $href = "", $orgtables = array()) 
 		}
 		echo "<tr" . odd() . ">";
 		foreach ($row as $key => $val) {
-			if (!isset($val)) {
+			if ($val === null) {
 				$val = "<i>NULL</i>";
 			} elseif ($blobs[$key] && !is_utf8($val)) {
 				$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>"; //! link to download

@@ -60,7 +60,7 @@ function lang($idf, $number = null) {
 	}
 	$args = func_get_args();
 	array_shift($args);
-	return vsprintf((isset($translation) ? $translation : $idf), $args);
+	return vsprintf(($translation !== null ? $translation : $idf), $args);
 }
 
 function switch_lang() {

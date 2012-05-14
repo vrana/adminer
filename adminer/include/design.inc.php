@@ -41,7 +41,7 @@ document.body.className = document.body.className.replace(/ nojs/, ' js');
 
 <div id="content">
 <?php
-	if (isset($breadcrumb)) {
+	if ($breadcrumb !== null) {
 		$link = substr(preg_replace('~(username|db|ns)=[^&]*&~', '', ME), 0, -1);
 		echo '<p id="breadcrumb"><a href="' . h($link ? $link : ".") . '">' . $drivers[DRIVER] . '</a> &raquo; ';
 		$link = substr(preg_replace('~(db|ns)=[^&]*&~', '', ME), 0, -1);

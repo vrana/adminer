@@ -17,7 +17,7 @@ class AdminerFileUpload {
 	*/
 	function AdminerFileUpload($uploadPath = "../static/data/", $displayPath = null, $extensions = "[a-zA-Z0-9]+") {
 		$this->uploadPath = $uploadPath;
-		$this->displayPath = (isset($displayPath) ? $displayPath : $uploadPath);
+		$this->displayPath = ($displayPath !== null ? $displayPath : $uploadPath);
 		$this->extensions = $extensions;
 	}
 	

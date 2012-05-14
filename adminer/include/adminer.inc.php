@@ -117,7 +117,7 @@ username.form['driver'].onchange();
 		} else {
 			$links["create"] = lang('Alter table');
 		}
-		if (isset($set)) {
+		if ($set !== null) {
 			$links["edit"] = lang('New item');
 		}
 		foreach ($links as $key => $val) {
@@ -288,7 +288,7 @@ username.form['driver'].onchange();
 	* @return null
 	*/
 	function selectLengthPrint($text_length) {
-		if (isset($text_length)) {
+		if ($text_length !== null) {
 			echo "<fieldset><legend>" . lang('Text length') . "</legend><div>";
 			echo '<input name="text_length" size="3" value="' . h($text_length) . '">';
 			echo "</div></fieldset>\n";
@@ -477,7 +477,7 @@ username.form['driver'].onchange();
 	function editInput($table, $field, $attrs, $value) {
 		if ($field["type"] == "enum") {
 			return (isset($_GET["select"]) ? "<label><input type='radio'$attrs value='-1' checked><i>" . lang('original') . "</i></label> " : "")
-				. ($field["null"] ? "<label><input type='radio'$attrs value=''" . (isset($value) || isset($_GET["select"]) ? "" : " checked") . "><i>NULL</i></label> " : "")
+				. ($field["null"] ? "<label><input type='radio'$attrs value=''" . ($value !== null || isset($_GET["select"]) ? "" : " checked") . "><i>NULL</i></label> " : "")
 				. enum_input("radio", $attrs, $field, $value, 0) // 0 - empty
 			;
 		}
@@ -577,12 +577,12 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 				$after = "";
 				foreach (get_rows($query) as $row) {
 					$default = $row["COLUMN_DEFAULT"];
-					$row["default"] = (isset($default) ? q($default) : "NULL");
+					$row["default"] = ($default !== null ? q($default) : "NULL");
 					$row["after"] = q($after); //! rgt AFTER lft, lft AFTER id doesn't work
 					$row["alter"] = escape_string(idf_escape($row["COLUMN_NAME"])
 						. " $row[COLUMN_TYPE]"
 						. ($row["COLLATION_NAME"] ? " COLLATE $row[COLLATION_NAME]" : "")
-						. (isset($default) ? " DEFAULT " . ($default == "CURRENT_TIMESTAMP" ? $default : $row["default"]) : "")
+						. ($default !== null ? " DEFAULT " . ($default == "CURRENT_TIMESTAMP" ? $default : $row["default"]) : "")
 						. ($row["IS_NULLABLE"] == "YES" ? "" : " NOT NULL")
 						. ($row["EXTRA"] ? " $row[EXTRA]" : "")
 						. ($row["COLUMN_COMMENT"] ? " COMMENT " . q($row["COLUMN_COMMENT"]) : "")
@@ -667,7 +667,7 @@ DROP PROCEDURE adminer_alter;
 							$insert = "INSERT INTO " . table($table) . " (" . implode(", ", array_map('idf_escape', array_keys($row))) . ") VALUES";
 						}
 						foreach ($row as $key => $val) {
-							$row[$key] = (isset($val) ? (ereg('int|float|double|decimal|bit', $fields[$key]["type"]) ? $val : q($val)) : "NULL"); //! columns looking like functions
+							$row[$key] = ($val !== null ? (ereg('int|float|double|decimal|bit', $fields[$key]["type"]) ? $val : q($val)) : "NULL"); //! columns looking like functions
 						}
 						$s = implode(",\t", $row);
 						if ($style == "INSERT+UPDATE") {
@@ -750,7 +750,7 @@ DROP PROCEDURE adminer_alter;
 			foreach ((array) $_SESSION["pwds"] as $driver => $servers) {
 				foreach ($servers as $server => $usernames) {
 					foreach ($usernames as $username => $password) {
-						if (isset($password)) {
+						if ($password !== null) {
 							if ($first) {
 								echo "<p onclick='eventStop(event);'>\n";
 								$first = false;
@@ -833,6 +833,6 @@ DROP PROCEDURE adminer_alter;
 }
 
 $adminer = (function_exists('adminer_object') ? adminer_object() : new Adminer);
-if (!isset($adminer->operators)) {
+if ($adminer->operators === null) {
 	$adminer->operators = $operators;
 }

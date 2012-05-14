@@ -16,7 +16,7 @@ class AdminerEnumOption {
 			}
 			if ($field["null"]) {
 				$options[""][""] = "NULL";
-				if (!isset($value) && !isset($_GET["select"])) {
+				if ($value === null && !isset($_GET["select"])) {
 					$selected = "";
 				}
 			}

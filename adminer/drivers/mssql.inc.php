@@ -252,7 +252,7 @@ if (isset($_GET["mssql"])) {
 	}
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
-		return (isset($limit) ? " TOP (" . ($limit + $offset) . ")" : "") . " $query$where"; // seek later
+		return ($limit !== null ? " TOP (" . ($limit + $offset) . ")" : "") . " $query$where"; // seek later
 	}
 
 	function limit1($query, $where) {

@@ -174,7 +174,7 @@ if (isset($_GET["pgsql"])) {
 	}
 	
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
-		return " $query$where" . (isset($limit) ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
+		return " $query$where" . ($limit !== null ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
 	}
 
 	function limit1($query, $where) {

@@ -21,7 +21,7 @@ class AdminerSlugify {
 	function editInput($table, $field, $attrs, $value) {
 		static $slugify;
 		if (!$_GET["select"] && !$_GET["where"]) {
-			if (!isset($slugify)) {
+			if ($slugify === null) {
 				$slugify = array();
 				$prev = null;
 				foreach (fields($table) as $name => $val) {
@@ -32,7 +32,7 @@ class AdminerSlugify {
 				}
 			}
 			$slug = $slugify[$field["field"]];
-			if (isset($slug)) {
+			if ($slug !== null) {
 				return "<input value='" . h($value) . "' maxlength='$field[length]' size='40'$attrs onchange=\"var find = '$this->from'; var repl = '$this->to'; this.form['fields[$slug]'].value = this.value.toLowerCase().replace(new RegExp('[' + find + ']', 'g'), function (str) { return repl[find.indexOf(str)]; }).replace(/[^a-z0-9_]+/g, '-').replace(/^-|-\$/g, '').substr(0, $field[length]);\">";
 			}
 		}

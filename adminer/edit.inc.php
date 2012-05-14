@@ -75,14 +75,14 @@ if ($fields) {
 	foreach ($fields as $name => $field) {
 		echo "<tr><th>" . $adminer->fieldName($field);
 		$default = $_GET["set"][bracket_escape($name)];
-		$value = (isset($row)
+		$value = ($row !== null
 			? ($row[$name] != "" && ereg("enum|set", $field["type"]) ? (is_array($row[$name]) ? array_sum($row[$name]) : +$row[$name]) : $row[$name])
-			: (!$update && $field["auto_increment"] ? "" : (isset($_GET["select"]) ? false : (isset($default) ? $default : $field["default"])))
+			: (!$update && $field["auto_increment"] ? "" : (isset($_GET["select"]) ? false : ($default !== null ? $default : $field["default"])))
 		);
 		if (!$_POST["save"] && is_string($value)) {
 			$value = $adminer->editVal($value, $field);
 		}
-		$function = ($_POST["save"] ? (string) $_POST["function"][$name] : ($update && $field["on_update"] == "CURRENT_TIMESTAMP" ? "now" : ($value === false ? null : (isset($value) ? '' : 'NULL'))));
+		$function = ($_POST["save"] ? (string) $_POST["function"][$name] : ($update && $field["on_update"] == "CURRENT_TIMESTAMP" ? "now" : ($value === false ? null : ($value !== null ? '' : 'NULL'))));
 		if ($field["type"] == "timestamp" && $value == "CURRENT_TIMESTAMP") {
 			$value = "";
 			$function = "now";

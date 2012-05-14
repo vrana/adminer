@@ -268,7 +268,7 @@ if (!defined("DRIVER")) {
 		global $connection;
 		// SHOW DATABASES can take a very long time so it is cached
 		$return = &get_session("dbs");
-		if (!isset($return)) {
+		if ($return === null) {
 			if ($flush) {
 				restart_session();
 				ob_flush();
@@ -288,7 +288,7 @@ if (!defined("DRIVER")) {
 	* @return string
 	*/
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
-		return " $query$where" . (isset($limit) ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
+		return " $query$where" . ($limit !== null ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
 	}
 
 	/** Formulate SQL modification query with limit 1

@@ -286,7 +286,7 @@ if (!$columns) {
 				$unique_array = unique_array($rows[$n], $indexes);
 				$unique_idf = "";
 				foreach ($unique_array as $key => $val) {
-					$unique_idf .= "&" . (isset($val) ? urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($val) : "null%5B%5D=" . urlencode($key));
+					$unique_idf .= "&" . ($val !== null ? urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($val) : "null%5B%5D=" . urlencode($key));
 				}
 				echo "<tr" . odd() . ">" . (!$group && $select ? "" : "<td>" . checkbox("check[]", substr($unique_idf, 1), in_array(substr($unique_idf, 1), (array) $_POST["check"]), "", "this.form['all'].checked = false; formUncheck('all-page');") . (count($group) < count($select) || information_schema(DB) ? "" : " <a href='" . h(ME . "edit=" . urlencode($TABLE) . $unique_idf) . "'>" . lang('edit') . "</a>"));
 				foreach ($row as $key => $val) {
@@ -351,11 +351,11 @@ if (!$columns) {
 						}
 						$id = h("val[$unique_idf][" . bracket_escape($key) . "]");
 						$value = $_POST["val"][$unique_idf][bracket_escape($key)];
-						$h_value = h(isset($value) ? $value : $row[$key]);
+						$h_value = h($value !== null ? $value : $row[$key]);
 						$long = strpos($val, "<i>...</i>");
 						$editable = is_utf8($val) && $rows[$n][$key] == $row[$key] && !$functions[$key];
 						$text = ereg('text|lob', $field["type"]);
-						echo (($_GET["modify"] && $editable) || isset($value)
+						echo (($_GET["modify"] && $editable) || $value !== null
 							? "<td>" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>")
 							: "<td id='$id' ondblclick=\"" . ($editable ? "selectDblClick(this, event" . ($long ? ", 2" : ($text ? ", 1" : "")) . ")" : "alert('" . h(lang('Use edit link to modify this value.')) . "')") . ";\">" . $adminer->selectVal($val, $link, $field)
 						);
