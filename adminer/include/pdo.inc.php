@@ -51,7 +51,7 @@ if (extension_loaded('pdo')) {
 		
 		function next_result() {
 			$this->_result->_offset = 0;
-			return $this->_result->nextRowset();
+			return @$this->_result->nextRowset(); // @ - PDO_PgSQL doesn't support it
 		}
 		
 		function result($query, $field = 0) {
@@ -79,7 +79,7 @@ if (extension_loaded('pdo')) {
 			$row = (object) $this->getColumnMeta($this->_offset++);
 			$row->orgtable = $row->table;
 			$row->orgname = $row->name;
-			$row->charsetnr = (in_array("blob", $row->flags) ? 63 : 0);
+			$row->charsetnr = (in_array("blob", (array) $row->flags) ? 63 : 0);
 			return $row;
 		}
 	}

@@ -6,6 +6,7 @@ Link to original table in EXPLAIN of SELECT * FROM table t
 MySQL: inform about disabled event_scheduler
 SQLite: support binary data
 PostgreSQL: approximate row count in table overview
+PostgreSQL: improve PDO support in SQL command
 Oracle: schema, processlist, table overview numbers
 Simplify work with NULL values (customization)
 Replace JSMin by better JavaScript minifier
