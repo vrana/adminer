@@ -1,16 +1,14 @@
 Transactions in export
 Create view and routine options
 Variables editation
-Highlight SQL textarea - may use external CodeMirror
 Blob download and image display in edit form (important for Editor with hidden fields in select and SQL command)
 Add title to Logout, edit (in select) and select (in menu) for style "hever"
 Shift-click in checkboxes to select range
 Export by GET parameters
 Only first part of big BZ2 export is readable, files are missing in TAR
-Double click in select - Esc to abort editation
 Draggable columns in alter table (thanks to Michal Manak)
 <option class> for system databases and schemas - information_schema and driver-specific (thanks to Vaclav Novotny)
-Define indexes and foreign keys name - http://forum.zdrojak.root.cz/index.php?topic=185.msg1255#msg1255
+Define foreign keys name - http://forum.zdrojak.root.cz/index.php?topic=185.msg1255#msg1255
 Skinnable plus.gif and other images - http://typo3.org/extensions/repository/view/t3adminer/current/
 Selectable <option>(on update)<option>CURRENT_TIMESTAMP for timestamp - https://sourceforge.net/projects/adminer/forums/forum/960418/topic/4568650
 ? Filter by value in row under <thead> in select
