@@ -124,7 +124,7 @@ if (!$error && $_POST) {
 										. html_select("output", $adminer->dumpOutput(), $adminer_export["output"]) . " "
 										. html_select("format", $dump_format, $adminer_export["format"])
 										. "<input type='hidden' name='query' value='" . h($q) . "'>"
-										. " <input type='submit' name='export' value='" . lang('Export') . "' onclick='eventStop(event);'><input type='hidden' name='token' value='$token'></span>\n"
+										. " <input type='submit' name='export' value='" . lang('Export') . "'><input type='hidden' name='token' value='$token'></span>\n"
 									;
 									if ($connection2 && preg_match("~^($space|\\()*SELECT\\b~isU", $q) && ($explain = explain($connection2, $q))) {
 										$id = "explain-$commands";

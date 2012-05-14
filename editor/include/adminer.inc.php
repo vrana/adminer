@@ -291,7 +291,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			echo "<div onkeydown=\"eventStop(event); return bodyKeydown(event, 'email');\">\n";
 			echo "<p>" . lang('From') . ": <input name='email_from' value='" . h($_POST ? $_POST["email_from"] : $_COOKIE["adminer_email"]) . "'>\n";
 			echo lang('Subject') . ": <input name='email_subject' value='" . h($_POST["email_subject"]) . "'>\n";
-			echo "<p><textarea name='email_message' rows='15' cols='75'>" . h($_POST["email_message"] . ($_POST["email_append"] ? '{$' . "$_POST[email_addition]}" : "")) . "</textarea>\n"; //! Ctrl+Enter for this.form.email
+			echo "<p><textarea name='email_message' rows='15' cols='75'>" . h($_POST["email_message"] . ($_POST["email_append"] ? '{$' . "$_POST[email_addition]}" : "")) . "</textarea>\n";
 			echo "<p onkeydown=\"eventStop(event); return bodyKeydown(event, 'email_append');\">" . html_select("email_addition", $columns, $_POST["email_addition"]) . "<input type='submit' name='email_append' value='" . lang('Insert') . "'>\n"; //! JavaScript
 			echo "<p>" . lang('Attachments') . ": <input type='file' name='email_files[]' onchange=\"this.onchange = function () { }; var el = this.cloneNode(true); el.value = ''; this.parentNode.appendChild(el);\">";
 			echo "<p>" . (count($emailFields) == 1 ? '<input type="hidden" name="email_field" value="' . h(key($emailFields)) . '">' : html_select("email_field", $emailFields));
@@ -528,7 +528,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			foreach ((array) $_SESSION["pwds"]["server"][""] as $username => $password) {
 				if ($password !== null) {
 					if ($first) {
-						echo "<p onclick='eventStop(event);'>\n";
+						echo "<p>\n";
 						$first = false;
 					}
 					echo "<a href='" . h(auth_url("server", "", $username)) . "'>" . ($username != "" ? h($username) : "<i>" . lang('empty') . "</i>") . "</a><br>\n";
@@ -538,7 +538,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			?>
 <form action="" method="post">
 <p class="logout">
-<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" onclick="eventStop(event);">
+<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>">
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </p>
 </form>

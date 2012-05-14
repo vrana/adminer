@@ -753,7 +753,7 @@ DROP PROCEDURE adminer_alter;
 					foreach ($usernames as $username => $password) {
 						if ($password !== null) {
 							if ($first) {
-								echo "<p onclick='eventStop(event);'>\n";
+								echo "<p>\n";
 								$first = false;
 							}
 							echo "<a href='" . h(auth_url($driver, $server, $username)) . "'>($drivers[$driver]) " . h($username . ($server != "" ? "@$server" : "")) . "</a><br>\n";
@@ -774,7 +774,7 @@ DROP PROCEDURE adminer_alter;
 				}
 			}
 			?>
-<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" onclick="eventStop(event);">
+<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>">
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </p>
 </form>
@@ -782,7 +782,7 @@ DROP PROCEDURE adminer_alter;
 <p>
 <?php hidden_fields_get(); ?>
 <?php echo ($databases ? html_select("db", array("" => "(" . lang('database') . ")") + $databases, DB, "this.form.submit();") : '<input name="db" value="' . h(DB) . '">'); ?>
-<input type="submit" value="<?php echo lang('Use'); ?>"<?php echo ($databases ? " class='hidden'" : ""); ?> onclick="eventStop(event);">
+<input type="submit" value="<?php echo lang('Use'); ?>"<?php echo ($databases ? " class='hidden'" : ""); ?>>
 <?php
 			if ($missing != "db" && DB != "" && $connection->select_db(DB)) {
 				if (support("scheme")) {

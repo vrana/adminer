@@ -43,9 +43,9 @@ function connect_error() {
 			}
 			echo "</table>\n";
 			echo "<script type='text/javascript'>tableCheck();</script>\n";
-			echo "<p><input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm("formChecked(this, /db/)", 1) . ">\n"; // 1 - eventStop
+			echo "<p><input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm("formChecked(this, /db/)") . ">\n";
 			echo "<input type='hidden' name='token' value='$token'>\n";
-			echo "<a href='" . h(ME) . "refresh=1' onclick='eventStop(event);'>" . lang('Refresh') . "</a>\n";
+			echo "<a href='" . h(ME) . "refresh=1'>" . lang('Refresh') . "</a>\n";
 			echo "</form>\n";
 		}
 	}

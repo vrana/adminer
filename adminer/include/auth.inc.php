@@ -76,7 +76,7 @@ function auth_error($exception = null) {
 		}
 	}
 	page_header(lang('Login'), $error, null);
-	echo "<form action='' method='post' onclick='eventStop(event);'>\n";
+	echo "<form action='' method='post'>\n";
 	$adminer->loginForm();
 	echo "<div>";
 	hidden_fields($_POST, array("auth")); // expired session

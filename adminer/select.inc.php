@@ -413,7 +413,7 @@ if (!$columns) {
 				$output = $adminer->dumpOutput();
 				echo ($output ? html_select("output", $output, $adminer_import["output"]) . " " : "");
 				echo html_select("format", $format, $adminer_import["format"]);
-				echo " <input type='submit' name='export' value='" . lang('Export') . "' onclick='eventStop(event);'>\n";
+				echo " <input type='submit' name='export' value='" . lang('Export') . "'>\n";
 				echo "</div></fieldset>\n";
 			}
 		}

@@ -9,7 +9,6 @@ function whisperClick(event, field) {
 		field.value = el.firstChild.data;
 		field.previousSibling.value = decodeURIComponent(el.href.replace(/.*=/, ''));
 		field.nextSibling.style.display = 'none';
-		eventStop(event);
 		return false;
 	}
 }
