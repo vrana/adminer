@@ -30,7 +30,10 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 				}
 				
 				function quote($string) {
-					return "'" . $this->_link->escapeString($string) . "'";
+					return (is_utf8($string)
+						? "'" . $this->_link->escapeString($string) . "'"
+						: "x'" . reset(unpack('H*', $string)) . "'"
+					);
 				}
 				
 				function store_result() {
