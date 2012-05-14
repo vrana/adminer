@@ -297,18 +297,18 @@ if (!$columns) {
 						}
 						$link = "";
 						$val = $adminer->editVal($val, $field);
-						if (!isset($val)) {
-							$val = "<i>NULL</i>";
-						} else {
+						if ($val !== null) {
 							if (ereg('blob|bytea|raw|file', $field["type"]) && $val != "") {
 								$link = h(ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . $unique_idf);
 							}
 							if ($val === "") { // === - may be int
 								$val = "&nbsp;";
-							} elseif ($text_length != "" && ereg('text|blob', $field["type"]) && is_utf8($val)) {
-								$val = shorten_utf8($val, max(0, +$text_length)); // usage of LEFT() would reduce traffic but complicate query - expected average speedup: .001 s VS .01 s on local network
-							} else {
-								$val = h($val);
+							} elseif (is_utf8($val)) {
+								if ($text_length != "" && ereg('text|blob', $field["type"])) {
+									$val = shorten_utf8($val, max(0, +$text_length)); // usage of LEFT() would reduce traffic but complicate query - expected average speedup: .001 s VS .01 s on local network
+								} else {
+									$val = h($val);
+								}
 							}
 							
 							if (!$link) { // link related items

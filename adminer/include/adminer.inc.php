@@ -184,9 +184,9 @@ username.form['driver'].onchange();
 	* @return string
 	*/
 	function selectVal($val, $link, $field) {
-		$return = ($val != "<i>NULL</i>" && ereg("char|binary", $field["type"]) && !ereg("var", $field["type"]) ? "<code>$val</code>" : $val);
+		$return = ($val === null ? "<i>NULL</i>" : (ereg("char|binary", $field["type"]) && !ereg("var", $field["type"]) ? "<code>$val</code>" : $val));
 		if (ereg('blob|bytea|raw|file', $field["type"]) && !is_utf8($val)) {
-			$return = lang('%d byte(s)', strlen(html_entity_decode($val, ENT_QUOTES)));
+			$return = lang('%d byte(s)', strlen($val));
 		}
 		return ($link ? "<a href='$link'>$return</a>" : $return);
 	}
