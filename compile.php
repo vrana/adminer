@@ -84,7 +84,7 @@ function put_file_lang($match) {
 function short_identifier($number, $chars) {
 	$return = '';
 	while ($number >= 0) {
-		$return .= $chars{$number % strlen($chars)};
+		$return .= $chars[$number % strlen($chars)];
 		$number = floor($number / strlen($chars)) - 1;
 	}
 	return $return;
@@ -97,6 +97,33 @@ function php_shrink($input) {
 	$short_variables = array();
 	$shortening = true;
 	$tokens = token_get_all($input);
+	
+	// remove unnecessary { }
+	//! change also `while () { if () {;} }` to `while () if () ;` but be careful about `if () { if () { } } else { }
+	$shorten = 0;
+	$opening = -1;
+	foreach ($tokens as $i => $token) {
+		if (in_array($token[0], array(T_IF, T_ELSE, T_ELSEIF, T_WHILE, T_DO, T_FOR, T_FOREACH), true)) {
+			$shorten = ($token[0] == T_FOR ? 4 : 2);
+			$opening = -1;
+		} elseif (in_array($token[0], array(T_SWITCH, T_FUNCTION, T_CLASS, T_CLOSE_TAG), true)) {
+			$shorten = 0;
+		} elseif ($token === ';') {
+			$shorten--;
+		} elseif ($token === '{') {
+			if ($opening < 0) {
+				$opening = $i;
+			} elseif ($shorten > 1) {
+				$shorten = 0;
+			}
+		} elseif ($token === '}' && $opening >= 0 && $shorten == 1) {
+			unset($tokens[$opening]);
+			unset($tokens[$i]);
+			$shorten = 0;
+			$opening = -1;
+		}
+	}
+	$tokens = array_values($tokens);
 	
 	foreach ($tokens as $i => $token) {
 		if ($token[0] === T_VARIABLE && !isset($special_variables[$token[1]])) {
