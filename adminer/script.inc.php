@@ -18,6 +18,7 @@ if ($_GET["script"] == "db") {
 						$table_status["Engine"] == "table"	// PostgreSQL table reltype
 					) ? "~ $val" : $val));
 					if (isset($sums[$key])) {
+						// ignore innodb_file_per_table because it is not active for tables created before it was enabled
 						$sums[$key] += ($table_status["Engine"] != "InnoDB" || $key != "Data_free" ? $table_status[$key] : 0);
 					}
 				} elseif (array_key_exists($key, $table_status)) {
