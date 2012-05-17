@@ -167,7 +167,10 @@ function pageClick(href, page, event) {
 * @param HTMLSelectElement
 */
 function selectAddRow(field) {
-	field.onchange = function () { };
+	field.onchange = function () {
+		selectFieldChange(field.form);
+	};
+	field.onchange();
 	var row = field.parentNode.cloneNode(true);
 	var selects = row.getElementsByTagName('select');
 	for (var i=0; i < selects.length; i++) {
@@ -183,7 +186,44 @@ function selectAddRow(field) {
 	field.parentNode.parentNode.appendChild(row);
 }
 
-
+/** Check whether the query will be executed with index
+* @param HTMLFormElement
+*/
+function selectFieldChange(form) {
+	var ok = (function () {
+		var inputs = form.getElementsByTagName('input');
+		for (var i=0; i < inputs.length; i++) {
+			var input = inputs[i];
+			if (/^fulltext/.test(input.name) && input.value) {
+				return true;
+			}
+		}
+		var ok = true;
+		var selects = form.getElementsByTagName('select');
+		for (var i=0; i < selects.length; i++) {
+			var select = selects[i];
+			var col = selectValue(select);
+			var match = /^(where.+)col\]/.exec(select.name);
+			if (match) {
+				var op = selectValue(form[match[1] + 'op]']);
+				var val = form[match[1] + 'val]'].value;
+				if (col in indexColumns && (!/LIKE|REGEXP/.test(op) || (op == 'LIKE' && val.charAt(0) != '%'))) {
+					return true;
+				} else if (col || val) {
+					ok = false;
+				}
+			}
+			if (col && /^order/.test(select.name)) {
+				if (!(col in indexColumns)) {
+					 ok = false;
+				}
+				break;
+			}
+		}
+		return ok;
+	})();
+	setHtml('noindex', (ok ? '' : '!'));
+}
 
 
 

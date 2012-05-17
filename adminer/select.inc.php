@@ -209,7 +209,7 @@ if (!$columns) {
 	$adminer->selectOrderPrint($order, $columns, $indexes);
 	$adminer->selectLimitPrint($limit);
 	$adminer->selectLengthPrint($text_length);
-	$adminer->selectActionPrint();
+	$adminer->selectActionPrint($indexes);
 	echo "</form>\n";
 	
 	$page = $_GET["page"];

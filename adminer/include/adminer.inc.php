@@ -233,23 +233,22 @@ username.form['auth[driver]'].onchange();
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT") {
 				echo "(<i>" . implode("</i>, <i>", array_map('h', $index["columns"])) . "</i>) AGAINST";
-				echo " <input name='fulltext[$i]' value='" . h($_GET["fulltext"][$i]) . "'>";
+				echo " <input name='fulltext[$i]' value='" . h($_GET["fulltext"][$i]) . "' onchange='selectFieldChange(this.form);'>";
 				echo checkbox("boolean[$i]", 1, isset($_GET["boolean"][$i]), "BOOL");
 				echo "<br>\n";
 			}
 		}
-		$i = 0;
-		foreach ((array) $_GET["where"] as $val) {
-			if ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators)) {
-				echo "<div><select name='where[$i][col]'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
-				echo html_select("where[$i][op]", $this->operators, $val["op"]);
-				echo "<input name='where[$i][val]' value='" . h($val["val"]) . "'></div>\n";
-				$i++;
+		$_GET["where"] = (array) $_GET["where"];
+		reset($_GET["where"]);
+		$change_next = "this.nextSibling.onchange();";
+		for ($i = 0; $i <= count($_GET["where"]); $i++) {
+			list(, $val) = each($_GET["where"]);
+			if (!$val || ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators))) {
+				echo "<div><select name='where[$i][col]' onchange='$change_next'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
+				echo html_select("where[$i][op]", $this->operators, $val["op"], $change_next);
+				echo "<input name='where[$i][val]' value='" . h($val["val"]) . "' onchange='" . ($val ? "selectFieldChange(this.form)" : "selectAddRow(this)") . ";'></div>\n";
 			}
 		}
-		echo "<div><select name='where[$i][col]' onchange='this.nextSibling.nextSibling.onchange();'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, null, true) . "</select>";
-		echo html_select("where[$i][op]", $this->operators, "=");
-		echo "<input name='where[$i][val]' onchange='selectAddRow(this);'></div>\n";
 		echo "</div></fieldset>\n";
 	}
 	
@@ -264,7 +263,7 @@ username.form['auth[driver]'].onchange();
 		$i = 0;
 		foreach ((array) $_GET["order"] as $key => $val) {
 			if (isset($columns[$val])) {
-				echo "<div><select name='order[$i]'><option>" . optionlist($columns, $val, true) . "</select>";
+				echo "<div><select name='order[$i]' onchange='selectFieldChange(this.form);'><option>" . optionlist($columns, $val, true) . "</select>";
 				echo checkbox("desc[$i]", 1, isset($_GET["desc"][$key]), lang('descending')) . "</div>\n";
 				$i++;
 			}
@@ -297,11 +296,28 @@ username.form['auth[driver]'].onchange();
 	}
 	
 	/** Print action box in select
+	* @param array
 	* @return null
 	*/
-	function selectActionPrint() {
+	function selectActionPrint($indexes) {
 		echo "<fieldset><legend>" . lang('Action') . "</legend><div>";
 		echo "<input type='submit' value='" . lang('Select') . "'>";
+		echo " <span id='noindex' title='" . lang('Full table scan') . "'></span>";
+		echo "<script type='text/javascript'>\n";
+		echo "var indexColumns = ";
+		$columns = array();
+		foreach ($indexes as $index) {
+			if ($index["type"] != "FULLTEXT") {
+				$columns[reset($index["columns"])] = 1;
+			}
+		}
+		$columns[""] = 1;
+		foreach ($columns as $key => $val) {
+			json_row($key);
+		}
+		echo ";\n";
+		echo "selectFieldChange(document.getElementById('form'));\n";
+		echo "</script>\n";
 		echo "</div></fieldset>\n";
 	}
 	

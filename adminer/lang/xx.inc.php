@@ -227,6 +227,7 @@ $translations = array(
 	'Limit' => 'xx',
 	'Text length' => 'xx',
 	'Action' => 'xx',
+	'Full table scan' => 'xx',
 	'Unable to select the table' => 'xx',
 	'No rows.' => 'xx',
 	'%d row(s)' => array('xx', 'xx'),

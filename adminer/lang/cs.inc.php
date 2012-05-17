@@ -227,6 +227,7 @@ $translations = array(
 	'Limit' => 'Limit',
 	'Text length' => 'Délka textů',
 	'Action' => 'Akce',
+	'Full table scan' => 'Průchod celé tabulky',
 	'Unable to select the table' => 'Nepodařilo se vypsat tabulku',
 	'No rows.' => 'Žádné řádky.',
 	'%d row(s)' => array('%d řádek', '%d řádky', '%d řádků'),
