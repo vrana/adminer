@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 error_reporting(6135); // errors and warnings
 unset($_COOKIE["adminer_lang"]);

@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 error_reporting(6135); // errors and warnings
 include dirname(__FILE__) . "/adminer/include/version.inc.php";
