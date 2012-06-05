@@ -5,6 +5,7 @@ Link to descending order
 Warn about selecting data without index
 Allow specifying database in login form
 Link to original table in EXPLAIN of SELECT * FROM table t
+Format numbers in translations
 MySQL: inform about disabled event_scheduler
 SQLite: support binary data
 PostgreSQL: approximate row count in table overview

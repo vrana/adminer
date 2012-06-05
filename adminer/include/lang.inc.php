@@ -45,7 +45,7 @@ function get_lang() {
 */
 function lang($idf, $number = null) {
 	global $LANG, $translations;
-	$translation = $translations[$idf];
+	$translation = (isset($translations[$idf]) ? $translations[$idf] : $idf);
 	if (is_array($translation)) {
 		$pos = ($number == 1 ? 0
 			: ($LANG == 'cs' || $LANG == 'sk' ? ($number && $number < 5 ? 1 : 2) // different forms for 1, 2-4, other
@@ -60,7 +60,11 @@ function lang($idf, $number = null) {
 	}
 	$args = func_get_args();
 	array_shift($args);
-	return vsprintf(($translation !== null ? $translation : $idf), $args);
+	$format = str_replace("%d", "%s", $translation);
+	if ($format != $translation) {
+		$args[0] = number_format($number, 0, ".", lang(','));
+	}
+	return vsprintf($format, $args);
 }
 
 function switch_lang() {

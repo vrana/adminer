@@ -51,7 +51,9 @@ function put_file($match) {
 function lang(\$translation, \$number) {
 	\$pos = $match2[2]\t\t: " . (preg_match("~\\\$LANG == '$_SESSION[lang]'.* \\? (.+)\n~U", $match2[1], $match3) ? $match3[1] : "1") . '
 	);
-	return sprintf($translation[$pos], $number);
+	$translation = str_replace("%d", "%s", $translation[$pos]);
+	$number = number_format($number, 0, ".", lang(\',\'));
+	return sprintf($translation, $number);
 }
 ';
 	} else {
