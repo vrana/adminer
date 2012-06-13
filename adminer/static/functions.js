@@ -213,6 +213,7 @@ function selectFieldChange(form) {
 					ok = false;
 				}
 			}
+			//! take grouping in select into account
 			if (col && /^order/.test(select.name)) {
 				if (!(col in indexColumns)) {
 					 ok = false;
