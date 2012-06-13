@@ -1,7 +1,8 @@
 Adminer 3.4.0-dev:
-Print current time next to executed SQL queries
 Highlight code in SQL command by CodeMirror
 Link to descending order
+Shift+click on checkbox to select consecutive rows
+Print current time next to executed SQL queries
 Warn about selecting data without index
 Allow specifying database in login form
 Link to original table in EXPLAIN of SELECT * FROM table t

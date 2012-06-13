@@ -106,10 +106,11 @@ function tableClick(event) {
 	var click = (!window.getSelection || getSelection().isCollapsed);
 	var el = event.target || event.srcElement;
 	while (!/^tr$/i.test(el.tagName)) {
-		if (/^table$/i.test(el.tagName)) {
-			return;
-		}
-		if (/^(a|input|textarea)$/i.test(el.tagName)) {
+		if (/^(table|a|input|textarea)$/i.test(el.tagName)) {
+			if (el.type != 'checkbox') {
+				return;
+			}
+			checkboxClick(event, el);
 			click = false;
 		}
 		el = el.parentNode;
@@ -120,6 +121,39 @@ function tableClick(event) {
 		el.onclick && el.onclick();
 	}
 	trCheck(el);
+}
+
+var lastChecked;
+
+/** Shift-click on checkbox for multiple selection.
+ * @param MouseEvent
+ * @param HTMLInputElement
+ */
+function checkboxClick(event, el) {
+	if (!el.name) {
+		return;
+	}
+	if (event.shiftKey && (!lastChecked || lastChecked.name == el.name)) {
+		var checked = (lastChecked ? lastChecked.checked : true);
+		var inputs = el.parentNode.parentNode.parentNode.getElementsByTagName('input');
+		var checking = !lastChecked;
+		for (var i=0; i < inputs.length; i++) {
+			var input = inputs[i];
+			if (input.name === el.name) {
+				if (checking) {
+					input.checked = checked;
+					trCheck(input);
+				}
+				if (input === el || input === lastChecked) {
+					if (checking) {
+						break;
+					}
+					checking = true;
+				}
+			}
+		}
+	}
+	lastChecked = el;
 }
 
 /** Set HTML code of an element
