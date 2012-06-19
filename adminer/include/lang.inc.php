@@ -19,13 +19,14 @@ $langs = array(
 	'lt' => 'Lietuvių', // Paulius Leščinskas - http://www.lescinskas.lt
 	'tr' => 'Türkçe', // Bilgehan Korkmaz - turktron.com
 	'ro' => 'Limba Română', // .nick .messing - dot.nick.dot.messing@gmail.com
+	'id' => 'Bahasa Indonesia', // Ivan Lanin - http://ivan.lanin.org
 	'ru' => 'Русский язык', // Maksim Izmaylov
 	'uk' => 'Українська', // Valerii Kryzhov
 	'zh' => '简体中文', // Mr. Lodar
 	'zh-tw' => '繁體中文', // http://tzangms.com
 	'ja' => '日本語', // Hitoshi Ozawa - http://sourceforge.jp/projects/oss-ja-jpn/releases/
 	'ta' => 'த‌மிழ்', // G. Sampath Kumar, Chennai, India, sampathkumar11@gmail.com
-	'bn' => 'বাংলা', // Tanmay Sarkar - calcutta, India - tanmay@kisholoy.org
+	'bn' => 'বাংলা', // Tanmay Sarkar - calcutta, India - tanmay@kisholoy.org, Dipak Kumar
 	'ar' => 'العربية', // Y.M Amine - Algeria - nbr7@live.fr
 	'fa' => 'فارسی', // mojtaba barghbani - Iran - mbarghbani@gmail.com
 );

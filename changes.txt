@@ -16,6 +16,7 @@ Simplify work with NULL values (customization)
 Use namespace in login form (customization)
 Replace JSMin by better JavaScript minifier
 Don't use AJAX links and forms
+Indonesian translation
 Ukrainian translation
 Bengali translation
 
