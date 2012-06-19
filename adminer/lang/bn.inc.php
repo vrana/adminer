@@ -17,7 +17,7 @@ $translations = array(
 	'None of the supported PHP extensions (%s) are available.' => 'পি.এইচ.পি গৃহীত সম্প্রসারন(%s) নেই',
 	'Session support must be enabled.' => 'সেসন ধারন সক্রিয় করতে হবে।',
 	'Session expired, please login again.' => 'সেসনের সময় অতিবাহিত হয়েছে, পুনরায় প্রবেশ করুন',
-	'%s version: %s through PHP extension %s' => '%s সংস্করণ: %s পি.এইচ.পি সম্প্রসারন %S',
+	'%s version: %s through PHP extension %s' => '%s সংস্করণ: %s পি.এইচ.পি সম্প্রসারন %s',
 	'Refresh' => 'পুনরুজ্জীবিত করুন',
 	
 	// text direction - 'ltr' or 'rtl'
@@ -35,15 +35,15 @@ $translations = array(
 	'Revoke' => 'প্রত্যাহার',
 	
 	'Process list' => 'প্রক্রিয়া সূচি',
-	'%d process(es) have been killed.' => array('%d প্রক্রিয়া (গুলি)', 'বিনষ্ট করা হল'),
+	'%d process(es) have been killed.' => array('%d টি প্রসেস (সমূহ) বিনষ্ট করা হয়েছে।', '%d টি প্রসেস (সমূহ) বিনষ্ট করা হয়েছে।'),
 	'Kill' => 'হত করা',
 	
 	'Variables' => 'পরিবর্তনশীল',
 	'Status' => 'অবস্থা',
 	
 	'SQL command' => 'এস.কিউ.এল র্নিদেশ',
-	'%d query(s) executed OK.' => array('%d টি এস.কিউ.এল ', 'অনুসন্ধান সঠিকভাবে ঘটেছে।'),
-	'Query executed OK, %d row(s) affected.' => array('অনুসন্ধান সম্পূর্ণ হয়েছে,', '%d সারি প্রভাবিত।'),
+	'%d query(s) executed OK.' => array('SQL-কোয়্যারী সফলভাবে সম্পন্ন হয়েছে', '%d SQL-কোয়্যারীসমূহ সফলভাবে সম্পন্ন হয়েছে'),
+	'Query executed OK, %d row(s) affected.' => array('কোয়্যারী সম্পাদন হয়েছে, %d সারি প্রভাবিত হয়েছে।', 'কোয়্যারী সম্পাদন হয়েছে, %d সারি প্রভাবিত হয়েছে।'),
 	'No commands to execute.' => 'সম্পন্ন করার জন্য কোন নির্দেশ নেই।',
 	'Error in query' => 'অনুসন্ধানে ভুল রয়েছে',
 	'Execute' => 'সম্পন্ন',
@@ -57,7 +57,7 @@ $translations = array(
 	
 	'File upload' => 'নথি আপলোড',
 	'From server' => 'ধারনকারী হইতে',
-	'Webserver file %s' => 'ওয়েব ধারনকারী নথি',
+	'Webserver file %s' => 'ওয়েবসার্ভার ফাইল %s',
 	'Run file' => 'নথি দেখা',
 	'File does not exist.' => 'নথি অনুপস্থিত।',
 	'File uploads are disabled.' => 'নথি আপলোড বন্ধ করা আছে।',
@@ -113,7 +113,7 @@ $translations = array(
 	'Tables have been copied.' => 'টেবিলটির অনুলিপি তৈরি করা হল।',
 	
 	'Routines' => 'নিয়মিত',
-	'Routine has been called, %d row(s) affected.' => array('নিয়মিত কাজগুলি কে ডাকা হয়েছে', '%S গুলি সারি প্রভাবিত হয়েছে।'),
+	'Routine has been called, %d row(s) affected.' => array('রুটিন কল করা হয়েছে, %d টি সারি (সমূহ) প্রভাবিত হয়েছে।', 'রুটিন কল করা হয়েছে, %d টি সারি (সমূহ) প্রভাবিত হয়েছে।'),
 	'Call' => 'আহ্বান',
 	'Parameter name' => 'স্থিতিমাপের নাম',
 	'Create procedure' => 'পদ্ধতি তৈরি করুন',
@@ -229,15 +229,15 @@ $translations = array(
 	'Action' => 'কর্ম',
 	'Unable to select the table' => 'টেবিল টিকে নির্বাচন করা জাছে না!',
 	'No rows.' => 'কোনো সারি নেই।',
-	'%d row(s)' => array('%d', 'সারি'),
+	'%d row(s)' => array('%d সারি', '%d সারি সমূহ'),
 	'Page' => 'পৃষ্ঠা',
 	'last' => 'শেষ',
 	'Last page' => 'শেষ পৃষ্ঠা',
 	'whole result' => 'সম্পূর্ণ ফল',
-	'%d byte(s)' => array('%d', 'বাইট'),
+	'%d byte(s)' => array('%d বাইট', '%d বাইটসমূহ'),
 	
 	'Import' => 'আমদানি',
-	'%d row(s) have been imported.' => array('%d টি সারি', 'আমদানি করা হল।'),
+	'%d row(s) have been imported.' => array('%d টি সারি (সমূহ) ইমপোর্ট করা হয়েছে।', '%d টি সারি (সমূহ) ইমপোর্ট করা হয়েছে।'),
 	
 	// in-place editing in select
 	'Double click on a value to modify it.' => 'মানটির উপর ২ বার ক্লিক করুন।',
@@ -247,7 +247,7 @@ $translations = array(
 	'Item%s has been inserted.' => 'অনুচ্ছেদ টিকে প্রবেশ করানো হল।',
 	'Item has been deleted.' => 'অনুচ্ছেদ টিকে বিনষ্ট করা হল।',
 	'Item has been updated.' => 'অনুচ্ছেদ টিকে আধুনিক করা হল।',
-	'%d item(s) have been affected.' => array('%d অনুচ্ছেদ (গুলি)', 'প্রভাবিত হয়েছে।'),
+	'%d item(s) have been affected.' => '%d টি বিষয়বস্তু প্রভাবিত হয়েছে',
 	'New item' => 'নতুন অনুচ্ছেদ',
 	'original' => 'আসল',
 	// label for value '' in enum data type
@@ -266,7 +266,7 @@ $translations = array(
 	'Subject' => 'বিষয়',
 	'Attachments' => 'সংযুক্তি',
 	'Send' => 'পাঠান',
-	'%d e-mail(s) have been sent.' => array('%d বৈদ্যুতিক চিঠ', 'পাঠানো হল।'),
+	'%d e-mail(s) have been sent.' => array('%d ইমেইল (গুলি) পাঠানো হয়েছে।', '%d ইমেইল (গুলি) পাঠানো হয়েছে।'),
 	
 	// data type descriptions
 	'Numbers' => 'সংখ্যা',
@@ -291,7 +291,7 @@ $translations = array(
 	
 	// general SQLite error in create, drop or rename database
 	'File exists.' => 'ফাইল টি বর্তমানে অবস্তিত।',
-	'Please use one of the extensions %s.' => 'উক্ত যেকোন একটি সম্প্রসারন ব্যবহার করুন।',
+	'Please use one of the extensions %s.' => 'কোন একটা এক্সটেনশন %s ব্যবহার করো।',
 	
 	// PostgreSQL and MS SQL schema support
 	'Alter schema' => 'পরিকল্পনা',
