@@ -508,6 +508,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	function dumpHeaders($identifier, $multi_table = false) {
 		$ext = "csv";
 		header("Content-Type: text/csv; charset=utf-8");
+		header("Content-Disposition: attachment; filename=" . friendly_url($identifier) . ".$ext");
 		return $ext;
 	}
 	

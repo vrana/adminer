@@ -14,6 +14,7 @@ PostgreSQL: improve PDO support in SQL command
 Oracle: schema, processlist, table overview numbers
 Simplify work with NULL values (customization)
 Use namespace in login form (customization)
+Customizable export filename (customization)
 Replace JSMin by better JavaScript minifier
 Don't use AJAX links and forms
 Indonesian translation

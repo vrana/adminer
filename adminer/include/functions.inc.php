@@ -803,10 +803,6 @@ function search_tables() {
 function dump_headers($identifier, $multi_table = false) {
 	global $adminer;
 	$return = $adminer->dumpHeaders($identifier, $multi_table);
-	$output = $_POST["output"];
-	if ($output != "text") {
-		header("Content-Disposition: attachment; filename=" . friendly_url($identifier != "" ? $identifier : (SERVER != "" ? SERVER : "localhost")) . ".$return" . ($output != "file" && !ereg('[^0-9a-z]', $output) ? ".$output" : ""));
-	}
 	session_write_close();
 	return $return;
 }
