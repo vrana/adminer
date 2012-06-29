@@ -258,7 +258,7 @@ ORDER BY a.attnum"
 			$connection2 = $connection;
 		}
 		$return = array();
-		$table_oid = $connection2->result("SELECT oid FROM pg_class WHERE relname = " . q($table));
+		$table_oid = $connection2->result("SELECT oid FROM pg_class WHERE relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema()) AND relname = " . q($table));
 		$columns = get_key_vals("SELECT attnum, attname FROM pg_attribute WHERE attrelid = $table_oid AND attnum > 0", $connection2);
 		foreach (get_rows("SELECT relname, indisunique, indisprimary, indkey FROM pg_index i, pg_class ci WHERE i.indrelid = $table_oid AND ci.oid = i.indexrelid", $connection2) as $row) {
 			$return[$row["relname"]]["type"] = ($row["indisprimary"] == "t" ? "PRIMARY" : ($row["indisunique"] == "t" ? "UNIQUE" : "INDEX"));
