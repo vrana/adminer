@@ -7,6 +7,13 @@ var jushRoot = '../externals/jush/'; // global variable to allow simple customiz
 */
 function bodyLoad(version) {
 	if (jushRoot) {
+		// copy of jush.style to load JS and CSS at once
+		var link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = jushRoot + 'jush.css';
+		document.getElementsByTagName('head')[0].appendChild(link);
+		
 		var script = document.createElement('script');
 		script.src = jushRoot + 'jush.js';
 		script.onload = function () {
@@ -16,7 +23,6 @@ function bodyLoad(version) {
 				var pgsql = 'http://www.postgresql.org/docs/' + version + '/static/';
 				jush.urls.pgsql_pgsqlset = jush.urls.pgsql[0] = pgsql + '$key';
 				jush.urls.pgsqlset[0] = pgsql + 'runtime-config-$key.html#GUC-$1';
-				jush.style(jushRoot + 'jush.css');
 				if (window.jushLinks) {
 					jush.custom_links = jushLinks;
 				}
