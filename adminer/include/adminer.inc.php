@@ -716,6 +716,14 @@ DROP PROCEDURE adminer_alter;
 		}
 	}
 	
+	/** Set export filename
+	* @param string
+	* @return string filename without extension
+	*/
+	function dumpFilename($identifier) {
+		return friendly_url($identifier != "" ? $identifier : (SERVER != "" ? SERVER : "localhost"));
+	}
+	
 	/** Send headers for export
 	* @param string
 	* @param bool
@@ -730,9 +738,6 @@ DROP PROCEDURE adminer_alter;
 			($ext == "tar" ? "application/x-tar" :
 			($ext == "sql" || $output != "file" ? "text/plain" : "text/csv") . "; charset=utf-8"
 		))));
-		if ($output != "text") {
-			header("Content-Disposition: attachment; filename=" . friendly_url($identifier != "" ? $identifier : (SERVER != "" ? SERVER : "localhost")) . ".$ext" . ($output != "file" && !ereg('[^0-9a-z]', $output) ? ".$output" : ""));
-		}
 		if ($output == "bz2") {
 			ob_start('bzcompress', 1e6);
 		}
