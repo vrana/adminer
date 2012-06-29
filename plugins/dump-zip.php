@@ -8,7 +8,7 @@
 */
 class AdminerDumpZip {
 	/** @access protected */
-	var $filename;
+	var $filename, $data;
 	
 	function dumpOutput() {
 		if (!class_exists('ZipArchive')) {
@@ -18,13 +18,12 @@ class AdminerDumpZip {
 	}
 	
 	function _zip($string, $state) {
-		static $data = "";
-		$data .= $string;
+		$this->data .= $string;
 		if ($state & PHP_OUTPUT_HANDLER_END) {
 			$zip = new ZipArchive;
 			$zipFile = tempnam("", "zip");
 			$zip->open($zipFile, ZipArchive::OVERWRITE); // php://output is not supported
-			$zip->addFromString($this->filename, $data);
+			$zip->addFromString($this->filename, $this->data);
 			$zip->close();
 			$return = file_get_contents($zipFile);
 			unlink($zipFile);
@@ -37,8 +36,8 @@ class AdminerDumpZip {
 		$this->filename = "$identifier." . ($multi_table && ereg("[ct]sv", $_POST["format"]) ? "tar" : $_POST["format"]);
 		if ($_POST["output"] == "zip") {
 			header("Content-Type: application/zip");
+			ob_start(array($this, '_zip'));
 		}
-		ob_start(array($this, '_zip'));
 	}
 
 }
