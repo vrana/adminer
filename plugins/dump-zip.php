@@ -1,6 +1,7 @@
 <?php
 
 /** Dump to ZIP format
+* @link http://www.adminer.org/plugins/#use
 * @uses ZipArchive, tempnam("")
 * @author Jakub Vrana, http://www.vrana.cz/
 * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
