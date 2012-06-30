@@ -295,7 +295,6 @@ foreach (array("adminer", "editor") as $project) {
 	$file = preg_replace('~\\.\\./adminer/static/(default\\.css|functions\\.js|favicon\\.ico)~', '<?php echo ' . $replace . '"; ?>', $file);
 	$file = preg_replace('~\\.\\./adminer/static/([^\'"]*)~', '" . ' . $replace, $file);
 	$file = str_replace("'../externals/jush/'", "location.protocol + '//www.adminer.org/static/'", $file);
-	$file = str_replace('"../externals/CodeMirror2"', '($_SERVER["HTTPS"] ? "https" : "http") . "://www.adminer.org/static/CodeMirror2"', $file);
 	$file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
 	$file = php_shrink($file);
 

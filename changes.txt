@@ -1,5 +1,4 @@
 Adminer 3.4.0-dev:
-Highlight code in SQL command by CodeMirror
 Link to descending order
 Shift+click on checkbox to select consecutive rows
 Print current time next to executed SQL queries
