@@ -1,4 +1,4 @@
-Adminer 3.4.0-dev:
+Adminer 3.4.0 (released 2012-06-30):
 Link to descending order
 Shift+click on checkbox to select consecutive rows
 Print current time next to executed SQL queries
