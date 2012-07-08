@@ -1,6 +1,7 @@
 <?php
 
 /** Store password's SHA1 to session
+* @link http://www.adminer.org/plugins/#use
 * @author Jakub Vrana, http://www.vrana.cz/
 * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
@@ -18,8 +19,8 @@ class AdminerPasswordSha1 {
 		$this->login = $login;
 		$this->passwordSha1 = $passwordSha1;
 		$this->credentials = $credentials;
-		if (isset($_POST["password"])) {
-			$_POST["password"] = sha1($_POST["password"]);
+		if (isset($_POST["auth"])) {
+			$_POST["auth"]["password"] = sha1($_POST["auth"]["password"]);
 		}
 	}
 	
@@ -32,7 +33,7 @@ class AdminerPasswordSha1 {
 	}
 	
 	function permanentLogin() {
-		//! should save original $_POST["password"] and hash after load
+		//! should save original $_POST["auth"]["password"] and hash after load
 	}
 	
 }

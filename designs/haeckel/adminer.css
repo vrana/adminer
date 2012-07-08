@@ -141,4 +141,3 @@ fieldset, legend, table, .error, .message {-moz-border-radius: 5px; -khtml-borde
 #breadcrumb, #lang, #menu {-moz-border-radius-bottomright: 5px; -khtml-border-bottom-right-radius: 5px; -webkit-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px;}
 #breadcrumb, #lang {-moz-border-radius-bottomleft: 5px; -khtml-border-bottom-left-radius: 5px; -webkit-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px;}
 #menu {-moz-border-radius-topright: 5px; -khtml-border-top-right-radius: 5px; -webkit-border-top-right-radius: 5px; border-bottom-top-radius: 5px;}
-#loader {margin-left: 35px;}

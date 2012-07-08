@@ -268,7 +268,7 @@ if (!defined("DRIVER")) {
 		global $connection;
 		// SHOW DATABASES can take a very long time so it is cached
 		$return = &get_session("dbs");
-		if (!isset($return)) {
+		if ($return === null) {
 			if ($flush) {
 				restart_session();
 				ob_flush();
@@ -288,7 +288,7 @@ if (!defined("DRIVER")) {
 	* @return string
 	*/
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
-		return " $query$where" . (isset($limit) ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
+		return " $query$where" . ($limit !== null ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
 	}
 
 	/** Formulate SQL modification query with limit 1
@@ -508,6 +508,16 @@ if (!defined("DRIVER")) {
 	function error() {
 		global $connection;
 		return h(preg_replace('~^You have an error.*syntax to use~U', "Syntax error", $connection->error));
+	}
+
+	/** Get line of error
+	* @return int 0 for first line
+	*/
+	function error_line() {
+		global $connection;
+		if (ereg(' at line ([0-9]+)$', $connection->error, $regs)) {
+			return $regs[1] - 1;
+		}
 	}
 
 	/** Return expression for binary comparison
@@ -739,10 +749,10 @@ if (!defined("DRIVER")) {
 	function routine($name, $type) {
 		global $connection, $enum_length, $inout, $types;
 		$aliases = array("bool", "boolean", "integer", "double precision", "real", "dec", "numeric", "fixed", "national char", "national varchar");
-		$type_pattern = "((" . implode("|", array_merge(array_keys($types), $aliases)) . ")(?:\\s*\\(((?:[^'\")]*|$enum_length)+)\\))?\\s*(zerofill\\s*)?(unsigned(?:\\s+zerofill)?)?)(?:\\s*(?:CHARSET|CHARACTER\\s+SET)\\s*['\"]?([^'\"\\s]+)['\"]?)?";
+		$type_pattern = "((" . implode("|", array_merge(array_keys($types), $aliases)) . ")\\b(?:\\s*\\(((?:[^'\")]*|$enum_length)+)\\))?\\s*(zerofill\\s*)?(unsigned(?:\\s+zerofill)?)?)(?:\\s*(?:CHARSET|CHARACTER\\s+SET)\\s*['\"]?([^'\"\\s]+)['\"]?)?";
 		$pattern = "\\s*(" . ($type == "FUNCTION" ? "" : $inout) . ")?\\s*(?:`((?:[^`]|``)*)`\\s*|\\b(\\S+)\\s+)$type_pattern";
 		$create = $connection->result("SHOW CREATE $type " . idf_escape($name), 2);
-		preg_match("~\\(((?:$pattern\\s*,?)*)\\)" . ($type == "FUNCTION" ? "\\s*RETURNS\\s+$type_pattern" : "") . "\\s*(.*)~is", $create, $match);
+		preg_match("~\\(((?:$pattern\\s*,?)*)\\)\\s*" . ($type == "FUNCTION" ? "RETURNS\\s+$type_pattern\\s+" : "") . "(.*)~is", $create, $match);
 		$fields = array();
 		preg_match_all("~$pattern\\s*,?~is", $match[1], $matches, PREG_SET_ORDER);
 		foreach ($matches as $param) {

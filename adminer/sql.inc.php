@@ -34,8 +34,8 @@ if (!$error && $_POST) {
 		}
 		if ($query != "" && strlen($query) < 1e6) { // don't add big queries
 			$q = $query . (ereg(";[ \t\r\n]*\$", $query) ? "" : ";"); //! doesn't work with DELIMITER |
-			if (!$history || end($history) != $q) { // no repeated queries
-				$history[] = $q;
+			if (!$history || reset(end($history)) != $q) { // no repeated queries
+				$history[] = array($q, time());
 			}
 		}
 		$space = "(?:\\s|/\\*.*\\*/|(?:#|-- )[^\n]*\n|--\n)";
@@ -51,6 +51,7 @@ if (!$error && $_POST) {
 		}
 		$commands = 0;
 		$errors = array();
+		$line = 0;
 		$parse = '[\'"' . ($jush == "sql" ? '`#' : ($jush == "sqlite" ? '`[' : ($jush == "mssql" ? '[' : ''))) . ']|/\\*|-- |$' . ($jush == "pgsql" ? '|\\$[^$]*\\$' : '');
 		$total_start = microtime();
 		parse_str($_COOKIE["adminer_export"], $adminer_export);
@@ -61,16 +62,16 @@ if (!$error && $_POST) {
 				$delimiter = $match[1];
 				$query = substr($query, strlen($match[0]));
 			} else {
-				preg_match('(' . preg_quote($delimiter) . "|$parse)", $query, $match, PREG_OFFSET_CAPTURE, $offset); // should always match
-				$found = $match[0][0];
+				preg_match('(' . preg_quote($delimiter) . "\\s*|$parse)", $query, $match, PREG_OFFSET_CAPTURE, $offset); // should always match
+				list($found, $pos) = $match[0];
 				if (!$found && $fp && !feof($fp)) {
 					$query .= fread($fp, 1e5);
 				} else {
-					$offset = $match[0][1] + strlen($found);
 					if (!$found && rtrim($query) == "") {
 						break;
 					}
-					if ($found && $found != $delimiter) { // find matching quote or comment end
+					$offset = $pos + strlen($found);
+					if ($found && rtrim($found) != $delimiter) { // find matching quote or comment end
 						while (preg_match('(' . ($found == '/*' ? '\\*/' : ($found == '[' ? ']' : (ereg('^-- |^#', $found) ? "\n" : preg_quote($found) . "|\\\\."))) . '|$)s', $query, $match, PREG_OFFSET_CAPTURE, $offset)) { //! respect sql_mode NO_BACKSLASH_ESCAPES
 							$s = $match[0][0];
 							if (!$s && $fp && !feof($fp)) {
@@ -84,7 +85,7 @@ if (!$error && $_POST) {
 						}
 					} else { // end of a query
 						$empty = false;
-						$q = substr($query, 0, $match[0][1]);
+						$q = substr($query, 0, $pos);
 						$commands++;
 						$print = "<pre id='sql-$commands'><code class='jush-$jush'>" . shorten_utf8(trim($q), 1000) . "</code></pre>\n";
 						if (!$_POST["only_errors"]) {
@@ -109,7 +110,7 @@ if (!$error && $_POST) {
 									break 2;
 								}
 							} elseif (is_object($result)) {
-								select($result, $connection2);
+								$orgtables = select($result, $connection2);
 								if (!$_POST["only_errors"]) {
 									echo "<form action='' method='post'>\n";
 									echo "<p>" . ($result->num_rows ? lang('%d row(s)', $result->num_rows) : "") . $time;
@@ -118,13 +119,13 @@ if (!$error && $_POST) {
 										. html_select("output", $adminer->dumpOutput(), $adminer_export["output"]) . " "
 										. html_select("format", $dump_format, $adminer_export["format"])
 										. "<input type='hidden' name='query' value='" . h($q) . "'>"
-										. " <input type='submit' name='export' value='" . lang('Export') . "' onclick='eventStop(event);'><input type='hidden' name='token' value='$token'></span>\n"
+										. " <input type='submit' name='export' value='" . lang('Export') . "'><input type='hidden' name='token' value='$token'></span>\n"
 									;
 									if ($connection2 && preg_match("~^($space|\\()*SELECT\\b~isU", $q) && ($explain = explain($connection2, $q))) {
 										$id = "explain-$commands";
 										echo ", <a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>$export";
 										echo "<div id='$id' class='hidden'>\n";
-										select($explain, $connection2, ($jush == "sql" ? "http://dev.mysql.com/doc/refman/" . substr($connection->server_info, 0, 3) . "/en/explain-output.html#explain_" : ""));
+										select($explain, $connection2, ($jush == "sql" ? "http://dev.mysql.com/doc/refman/" . substr($connection->server_info, 0, 3) . "/en/explain-output.html#explain_" : ""), $orgtables);
 										echo "</div>\n";
 									} else {
 										echo $export;
@@ -143,6 +144,7 @@ if (!$error && $_POST) {
 							}
 							$start = $end;
 						} while ($connection->next_result());
+						$line += substr_count($q.$found, "\n");
 						$query = substr($query, $offset);
 						$offset = 0;
 					}
@@ -171,7 +173,7 @@ if ($_POST) {
 } elseif ($_GET["history"] == "all") {
 	$q = $history;
 } elseif ($_GET["history"] != "") {
-	$q = $history[$_GET["history"]];
+	$q = $history[$_GET["history"]][0];
 }
 textarea("query", $q, 20);
 echo ($_POST ? "" : "<script type='text/javascript'>document.getElementsByTagName('textarea')[0].focus();</script>\n");
@@ -202,8 +204,8 @@ echo "</div></fieldset>\n";
 if ($history) {
 	print_fieldset("history", lang('History'), $_GET["history"] != "");
 	foreach ($history as $key => $val) {
-		//! save and display timestamp
-		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . "</a> <code class='jush-$jush'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace('~^(#|-- ).*~m', '', $val)))), 80, "</code>") . "<br>\n";
+		list($q, $time) = $val;
+		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . "</a> <span class='time'>" . @date("H:i:s", $time) . "</span> <code class='jush-$jush'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace('~^(#|-- ).*~m', '', $q)))), 80, "</code>") . "<br>\n"; // @ - time zone may be not set
 	}
 	echo "<input type='submit' name='clear' value='" . lang('Clear') . "'>\n";
 	echo "<a href='" . h(ME . "sql=&history=all") . "'>" . lang('Edit all') . "</a>\n";

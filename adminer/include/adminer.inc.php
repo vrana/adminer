@@ -63,19 +63,20 @@ class Adminer {
 		global $drivers;
 		?>
 <table cellspacing="0">
-<tr><th><?php echo lang('System'); ?><td><?php echo html_select("driver", $drivers, DRIVER, "loginDriver(this);"); ?>
-<tr><th><?php echo lang('Server'); ?><td><input name="server" value="<?php echo h(SERVER); ?>" title="hostname[:port]">
-<tr><th><?php echo lang('Username'); ?><td><input id="username" name="username" value="<?php echo h($_GET["username"]); ?>">
-<tr><th><?php echo lang('Password'); ?><td><input type="password" name="password">
+<tr><th><?php echo lang('System'); ?><td><?php echo html_select("auth[driver]", $drivers, DRIVER, "loginDriver(this);"); ?>
+<tr><th><?php echo lang('Server'); ?><td><input name="auth[server]" value="<?php echo h(SERVER); ?>" title="hostname[:port]">
+<tr><th><?php echo lang('Username'); ?><td><input id="username" name="auth[username]" value="<?php echo h($_GET["username"]); ?>">
+<tr><th><?php echo lang('Password'); ?><td><input type="password" name="auth[password]">
+<tr><th><?php echo lang('Database'); ?><td><input name="auth[db]" value="<?php echo h($_GET["db"]); ?>">
 </table>
 <script type="text/javascript">
 var username = document.getElementById('username');
 username.focus();
-username.form['driver'].onchange();
+username.form['auth[driver]'].onchange();
 </script>
 <?php
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
-		echo checkbox("permanent", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
+		echo checkbox("auth[permanent]", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
 	}
 	
 	/** Authorize the user
@@ -117,7 +118,7 @@ username.form['driver'].onchange();
 		} else {
 			$links["create"] = lang('Alter table');
 		}
-		if (isset($set)) {
+		if ($set !== null) {
 			$links["edit"] = lang('New item');
 		}
 		foreach ($links as $key => $val) {
@@ -184,9 +185,9 @@ username.form['driver'].onchange();
 	* @return string
 	*/
 	function selectVal($val, $link, $field) {
-		$return = ($val != "<i>NULL</i>" && ereg("char|binary", $field["type"]) && !ereg("var", $field["type"]) ? "<code>$val</code>" : $val);
+		$return = ($val === null ? "<i>NULL</i>" : (ereg("char|binary", $field["type"]) && !ereg("var", $field["type"]) ? "<code>$val</code>" : $val));
 		if (ereg('blob|bytea|raw|file', $field["type"]) && !is_utf8($val)) {
-			$return = lang('%d byte(s)', strlen(html_entity_decode($val, ENT_QUOTES)));
+			$return = lang('%d byte(s)', strlen($val));
 		}
 		return ($link ? "<a href='$link'>$return</a>" : $return);
 	}
@@ -232,23 +233,22 @@ username.form['driver'].onchange();
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT") {
 				echo "(<i>" . implode("</i>, <i>", array_map('h', $index["columns"])) . "</i>) AGAINST";
-				echo " <input name='fulltext[$i]' value='" . h($_GET["fulltext"][$i]) . "'>";
+				echo " <input name='fulltext[$i]' value='" . h($_GET["fulltext"][$i]) . "' onchange='selectFieldChange(this.form);'>";
 				echo checkbox("boolean[$i]", 1, isset($_GET["boolean"][$i]), "BOOL");
 				echo "<br>\n";
 			}
 		}
-		$i = 0;
-		foreach ((array) $_GET["where"] as $val) {
-			if ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators)) {
-				echo "<div><select name='where[$i][col]'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
-				echo html_select("where[$i][op]", $this->operators, $val["op"]);
-				echo "<input name='where[$i][val]' value='" . h($val["val"]) . "'></div>\n";
-				$i++;
+		$_GET["where"] = (array) $_GET["where"];
+		reset($_GET["where"]);
+		$change_next = "this.nextSibling.onchange();";
+		for ($i = 0; $i <= count($_GET["where"]); $i++) {
+			list(, $val) = each($_GET["where"]);
+			if (!$val || ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators))) {
+				echo "<div><select name='where[$i][col]' onchange='$change_next'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
+				echo html_select("where[$i][op]", $this->operators, $val["op"], $change_next);
+				echo "<input name='where[$i][val]' value='" . h($val["val"]) . "' onchange='" . ($val ? "selectFieldChange(this.form)" : "selectAddRow(this)") . ";'></div>\n";
 			}
 		}
-		echo "<div><select name='where[$i][col]' onchange='this.nextSibling.nextSibling.onchange();'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, null, true) . "</select>";
-		echo html_select("where[$i][op]", $this->operators, "=");
-		echo "<input name='where[$i][val]' onchange='selectAddRow(this);'></div>\n";
 		echo "</div></fieldset>\n";
 	}
 	
@@ -263,7 +263,7 @@ username.form['driver'].onchange();
 		$i = 0;
 		foreach ((array) $_GET["order"] as $key => $val) {
 			if (isset($columns[$val])) {
-				echo "<div><select name='order[$i]'><option>" . optionlist($columns, $val, true) . "</select>";
+				echo "<div><select name='order[$i]' onchange='selectFieldChange(this.form);'><option>" . optionlist($columns, $val, true) . "</select>";
 				echo checkbox("desc[$i]", 1, isset($_GET["desc"][$key]), lang('descending')) . "</div>\n";
 				$i++;
 			}
@@ -288,7 +288,7 @@ username.form['driver'].onchange();
 	* @return null
 	*/
 	function selectLengthPrint($text_length) {
-		if (isset($text_length)) {
+		if ($text_length !== null) {
 			echo "<fieldset><legend>" . lang('Text length') . "</legend><div>";
 			echo '<input name="text_length" size="3" value="' . h($text_length) . '">';
 			echo "</div></fieldset>\n";
@@ -296,11 +296,28 @@ username.form['driver'].onchange();
 	}
 	
 	/** Print action box in select
+	* @param array
 	* @return null
 	*/
-	function selectActionPrint() {
+	function selectActionPrint($indexes) {
 		echo "<fieldset><legend>" . lang('Action') . "</legend><div>";
 		echo "<input type='submit' value='" . lang('Select') . "'>";
+		echo " <span id='noindex' title='" . lang('Full table scan') . "'></span>";
+		echo "<script type='text/javascript'>\n";
+		echo "var indexColumns = ";
+		$columns = array();
+		foreach ($indexes as $index) {
+			if ($index["type"] != "FULLTEXT") {
+				$columns[reset($index["columns"])] = 1;
+			}
+		}
+		$columns[""] = 1;
+		foreach ($columns as $key => $val) {
+			json_row($key);
+		}
+		echo ";\n";
+		echo "selectFieldChange(document.getElementById('form'));\n";
+		echo "</script>\n";
 		echo "</div></fieldset>\n";
 	}
 	
@@ -438,11 +455,11 @@ username.form['driver'].onchange();
 		restart_session();
 		$id = "sql-" . ($count++);
 		$history = &get_session("queries");
-		if (strlen($query) > 1e6) { // not DB - reset in drop database
+		if (strlen($query) > 1e6) {
 			$query = ereg_replace('[\x80-\xFF]+$', '', substr($query, 0, 1e6)) . "\n..."; // [\x80-\xFF] - valid UTF-8, \n - can end by one-line comment
 		}
-		$history[$_GET["db"]][] = $query; // not DB - $_GET["db"] is changed in database.inc.php //! respect $_GET["ns"]
-		return " <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre><code class='jush-$jush'>" . shorten_utf8($query, 1000) . '</code></pre><p><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a></div>';
+		$history[$_GET["db"]][] = array($query, time()); // not DB - $_GET["db"] is changed in database.inc.php //! respect $_GET["ns"]
+		return " <span class='time'>" . @date("H:i:s") . "</span> <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre><code class='jush-$jush'>" . shorten_utf8($query, 1000) . '</code></pre><p><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a></div>'; // @ - time zone may be not set
 	}
 	
 	/** Functions displayed in edit form
@@ -477,7 +494,7 @@ username.form['driver'].onchange();
 	function editInput($table, $field, $attrs, $value) {
 		if ($field["type"] == "enum") {
 			return (isset($_GET["select"]) ? "<label><input type='radio'$attrs value='-1' checked><i>" . lang('original') . "</i></label> " : "")
-				. ($field["null"] ? "<label><input type='radio'$attrs value=''" . (isset($value) || isset($_GET["select"]) ? "" : " checked") . "><i>NULL</i></label> " : "")
+				. ($field["null"] ? "<label><input type='radio'$attrs value=''" . ($value !== null || isset($_GET["select"]) ? "" : " checked") . "><i>NULL</i></label> " : "")
 				. enum_input("radio", $attrs, $field, $value, 0) // 0 - empty
 			;
 		}
@@ -577,12 +594,12 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 				$after = "";
 				foreach (get_rows($query) as $row) {
 					$default = $row["COLUMN_DEFAULT"];
-					$row["default"] = (isset($default) ? q($default) : "NULL");
+					$row["default"] = ($default !== null ? q($default) : "NULL");
 					$row["after"] = q($after); //! rgt AFTER lft, lft AFTER id doesn't work
 					$row["alter"] = escape_string(idf_escape($row["COLUMN_NAME"])
 						. " $row[COLUMN_TYPE]"
 						. ($row["COLLATION_NAME"] ? " COLLATE $row[COLLATION_NAME]" : "")
-						. (isset($default) ? " DEFAULT " . ($default == "CURRENT_TIMESTAMP" ? $default : $row["default"]) : "")
+						. ($default !== null ? " DEFAULT " . ($default == "CURRENT_TIMESTAMP" ? $default : $row["default"]) : "")
 						. ($row["IS_NULLABLE"] == "YES" ? "" : " NOT NULL")
 						. ($row["EXTRA"] ? " $row[EXTRA]" : "")
 						. ($row["COLUMN_COMMENT"] ? " COMMENT " . q($row["COLUMN_COMMENT"]) : "")
@@ -667,7 +684,7 @@ DROP PROCEDURE adminer_alter;
 							$insert = "INSERT INTO " . table($table) . " (" . implode(", ", array_map('idf_escape', array_keys($row))) . ") VALUES";
 						}
 						foreach ($row as $key => $val) {
-							$row[$key] = (isset($val) ? (ereg('int|float|double|decimal|bit', $fields[$key]["type"]) ? $val : q($val)) : "NULL"); //! columns looking like functions
+							$row[$key] = ($val !== null ? (ereg('int|float|double|decimal|bit', $fields[$key]["type"]) ? $val : q($val)) : "NULL"); //! columns looking like functions
 						}
 						$s = implode(",\t", $row);
 						if ($style == "INSERT+UPDATE") {
@@ -697,6 +714,14 @@ DROP PROCEDURE adminer_alter;
 				echo "-- " . str_replace("\n", " ", $connection->error) . "\n";
 			}
 		}
+	}
+	
+	/** Set export filename
+	* @param string
+	* @return string filename without extension
+	*/
+	function dumpFilename($identifier) {
+		return friendly_url($identifier != "" ? $identifier : (SERVER != "" ? SERVER : "localhost"));
 	}
 	
 	/** Send headers for export
@@ -750,9 +775,9 @@ DROP PROCEDURE adminer_alter;
 			foreach ((array) $_SESSION["pwds"] as $driver => $servers) {
 				foreach ($servers as $server => $usernames) {
 					foreach ($usernames as $username => $password) {
-						if (isset($password)) {
+						if ($password !== null) {
 							if ($first) {
-								echo "<p onclick='eventStop(event);'>\n";
+								echo "<p>\n";
 								$first = false;
 							}
 							echo "<a href='" . h(auth_url($driver, $server, $username)) . "'>($drivers[$driver]) " . h($username . ($server != "" ? "@$server" : "")) . "</a><br>\n";
@@ -773,7 +798,7 @@ DROP PROCEDURE adminer_alter;
 				}
 			}
 			?>
-<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" onclick="eventStop(event);">
+<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>">
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </p>
 </form>
@@ -781,7 +806,7 @@ DROP PROCEDURE adminer_alter;
 <p>
 <?php hidden_fields_get(); ?>
 <?php echo ($databases ? html_select("db", array("" => "(" . lang('database') . ")") + $databases, DB, "this.form.submit();") : '<input name="db" value="' . h(DB) . '">'); ?>
-<input type="submit" value="<?php echo lang('Use'); ?>"<?php echo ($databases ? " class='hidden'" : ""); ?> onclick="eventStop(event);">
+<input type="submit" value="<?php echo lang('Use'); ?>"<?php echo ($databases ? " class='hidden'" : ""); ?>>
 <?php
 			if ($missing != "db" && DB != "" && $connection->select_db(DB)) {
 				if (support("scheme")) {
@@ -833,6 +858,6 @@ DROP PROCEDURE adminer_alter;
 }
 
 $adminer = (function_exists('adminer_object') ? adminer_object() : new Adminer);
-if (!isset($adminer->operators)) {
+if ($adminer->operators === null) {
 	$adminer->operators = $operators;
 }

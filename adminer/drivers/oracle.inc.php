@@ -154,7 +154,7 @@ if (isset($_GET["oracle"])) {
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
 		return ($offset ? " * FROM (SELECT t.*, rownum AS rnum FROM (SELECT $query$where) t WHERE rownum <= " . ($limit + $offset) . ") WHERE rnum > $offset"
-			: (isset($limit) ? " * FROM (SELECT $query$where) WHERE rownum <= " . ($limit + $offset)
+			: ($limit !== null ? " * FROM (SELECT $query$where) WHERE rownum <= " . ($limit + $offset)
 			: " $query$where"
 		));
 	}
@@ -190,8 +190,8 @@ UNION SELECT view_name, 'view' FROM user_views"
 	function table_status($name = "") {
 		$return = array();
 		$search = q($name);
-		foreach (get_rows('SELECT table_name "Name", \'table\' "Engine" FROM all_tables WHERE tablespace_name = ' . q(DB) . ($name != "" ? " AND table_name = $search" : "") . "
-UNION SELECT view_name, 'view' FROM user_views" . ($name != "" ? " WHERE view_name = $search" : "")
+		foreach (get_rows('SELECT table_name "Name", \'table\' "Engine", avg_row_len * num_rows "Data_length", num_rows "Rows" FROM all_tables WHERE tablespace_name = ' . q(DB) . ($name != "" ? " AND table_name = $search" : "") . "
+UNION SELECT view_name, 'view', 0, 0 FROM user_views" . ($name != "" ? " WHERE view_name = $search" : "")
 		) as $row) {
 			if ($name != "") {
 				return $row;
@@ -329,19 +329,30 @@ ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
 	}
 	
 	function schemas() {
-		return array();
+		return get_vals("SELECT DISTINCT owner FROM dba_segments WHERE owner IN (SELECT username FROM dba_users WHERE default_tablespace NOT IN ('SYSTEM','SYSAUX'))");
 	}
 	
 	function get_schema() {
-		return "";
+		global $connection;
+		return $connection->result("SELECT sys_context('USERENV', 'SESSION_USER') FROM dual");
 	}
 	
 	function set_schema($scheme) {
-		return true;
+		global $connection;
+		return $connection->query("ALTER SESSION SET CURRENT_SCHEMA = " . idf_escape($scheme));
 	}
 	
 	function show_variables() {
 		return get_key_vals('SELECT name, display_value FROM v$parameter');
+	}
+	
+	function process_list() {
+		return get_rows('SELECT sess.process AS "process", sess.username AS "user", sess.schemaname AS "schema", sess.status AS "status", sess.wait_class AS "wait_class", sess.seconds_in_wait AS "seconds_in_wait", sql.sql_text AS "sql_text", sess.machine AS "machine", sess.port AS "port"
+FROM v$session sess LEFT OUTER JOIN v$sql sql
+ON sql.sql_id = sess.sql_id
+WHERE sess.type = \'USER\'
+ORDER BY PROCESS
+');
 	}
 	
 	function show_status() {
@@ -350,7 +361,7 @@ ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
 	}
 	
 	function support($feature) {
-		return ereg("view|drop_col|variables|status", $feature); //!
+		return ereg("view|scheme|processlist|drop_col|variables|status", $feature); //!
 	}
 	
 	$jush = "oracle";

@@ -268,6 +268,5 @@ $translations = array(
 	'Copy' => 'Kopieren',
 	'Permanent link' => 'Permanente link',
 	'Edit all' => 'Alles bewerken',
-	'Resend POST data?' => 'POST data opnieuw verzenden',
 	'HH:MM:SS' => 'HH:MM:SS',
 );

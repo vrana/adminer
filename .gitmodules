@@ -16,3 +16,6 @@
 [submodule "JsShrink"]
 	path = externals/JsShrink
 	url = git://github.com/vrana/JsShrink.git
+[submodule "CodeMirror2"]
+	path = externals/CodeMirror2
+	url = git://github.com/marijnh/CodeMirror2.git

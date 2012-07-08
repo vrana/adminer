@@ -13,11 +13,11 @@ $translations = array(
 	'Invalid credentials.' => 'Neplatné přihlašovací údaje.',
 	'Language' => 'Jazyk',
 	'Invalid CSRF token. Send the form again.' => 'Neplatný token CSRF. Odešlete formulář znovu.',
-	'No extension' => 'Žádná extenze',
-	'None of the supported PHP extensions (%s) are available.' => 'Není dostupná žádná z podporovaných PHP extenzí (%s).',
+	'No extension' => 'Žádné rozšíření',
+	'None of the supported PHP extensions (%s) are available.' => 'Není dostupné žádné z podporovaných PHP rozšíření (%s).',
 	'Session support must be enabled.' => 'Session proměnné musí být povolené.',
 	'Session expired, please login again.' => 'Session vypršela, přihlašte se prosím znovu.',
-	'%s version: %s through PHP extension %s' => 'Verze %s: %s přes PHP extenzi %s',
+	'%s version: %s through PHP extension %s' => 'Verze %s: %s přes PHP rozšíření %s',
 	'Refresh' => 'Obnovit',
 	
 	// text direction - 'ltr' or 'rtl'
@@ -227,6 +227,7 @@ $translations = array(
 	'Limit' => 'Limit',
 	'Text length' => 'Délka textů',
 	'Action' => 'Akce',
+	'Full table scan' => 'Průchod celé tabulky',
 	'Unable to select the table' => 'Nepodařilo se vypsat tabulku',
 	'No rows.' => 'Žádné řádky.',
 	'%d row(s)' => array('%d řádek', '%d řádky', '%d řádků'),
@@ -277,10 +278,6 @@ $translations = array(
 	'Network' => 'Síť',
 	'Geometry' => 'Geometrie',
 	'Relations' => 'Vztahy',
-	
-	// reload confirmation in AJAX
-	'Resend POST data?' => 'Znovu odeslat POST data?',
-	'No response from server.' => 'Server neodpověděl.',
 	
 	'Editor' => 'Editor',
 	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d

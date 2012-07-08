@@ -268,6 +268,5 @@ $translations = array(
 	'Copy' => 'Kopeeri',
 	'Permanent link' => 'Püsilink',
 	'Edit all' => 'Muuda kõiki',
-	'Resend POST data?' => 'Saada POST andmed uuesti?',
 	'HH:MM:SS' => 'HH:MM:SS',
 );

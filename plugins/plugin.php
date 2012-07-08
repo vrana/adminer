@@ -1,6 +1,7 @@
 <?php
 
 /** Adminer customization allowing usage of plugins
+* @link http://www.adminer.org/plugins/#use
 * @author Jakub Vrana, http://www.vrana.cz/
 * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
@@ -20,7 +21,7 @@ class AdminerPlugin extends Adminer {
 	* @param array object instances or null to register all classes starting by 'Adminer'
 	*/
 	function AdminerPlugin($plugins) {
-		if (!isset($plugins)) {
+		if ($plugins === null) {
 			$plugins = array();
 			foreach (get_declared_classes() as $class) {
 				if (preg_match('~^Adminer.~i', $class) && strcasecmp($this->_findRootClass($class), 'Adminer')) { // can use interface since PHP 5
@@ -54,7 +55,7 @@ class AdminerPlugin extends Adminer {
 					case 4: $return = $plugin->$function($args[0], $args[1], $args[2], $args[3]); break;
 					default: trigger_error('Too many parameters.', E_USER_WARNING);
 				}
-				if (isset($return)) {
+				if ($return !== null) {
 					return $return;
 				}
 			}
@@ -287,6 +288,11 @@ class AdminerPlugin extends Adminer {
 	}
 
 	function dumpData() {
+		$args = func_get_args();
+		return $this->_applyPlugin(__FUNCTION__, $args);
+	}
+
+	function dumpFilename() {
 		$args = func_get_args();
 		return $this->_applyPlugin(__FUNCTION__, $args);
 	}

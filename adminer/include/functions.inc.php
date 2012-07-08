@@ -149,11 +149,10 @@ function html_select($name, $options, $value = "", $onchange = true) {
 
 /** Get onclick confirmation
 * @param string JavaScript expression
-* @param bool stop event propagation
 * @return string
 */
-function confirm($count = "", $stop = false) {
-	return " onclick=\"" . ($stop ? "eventStop(event); " : "") . "return confirm('" . lang('Are you sure?') . ($count ? " (' + $count + ')" : "") . "');\"";
+function confirm($count = "") {
+	return " onclick=\"return confirm('" . lang('Are you sure?') . ($count ? " (' + $count + ')" : "") . "');\"";
 }
 
 /** Print header for hidden fieldset (close by </div></fieldset>)
@@ -206,7 +205,7 @@ function json_row($key, $val = null) {
 		echo "{";
 	}
 	if ($key != "") {
-		echo ($first ? "" : ",") . "\n\t\"" . addcslashes($key, "\r\n\"\\") . '": ' . (isset($val) ? '"' . addcslashes($val, "\r\n\"\\") . '"' : 'undefined');
+		echo ($first ? "" : ",") . "\n\t\"" . addcslashes($key, "\r\n\"\\") . '": ' . ($val !== null ? '"' . addcslashes($val, "\r\n\"\\") . '"' : 'undefined');
 		$first = false;
 	} else {
 		echo "\n}\n";
@@ -228,7 +227,7 @@ function ini_bool($ini) {
 */
 function sid() {
 	static $return;
-	if (!isset($return)) { // restart_session() defines SID
+	if ($return === null) { // restart_session() defines SID
 		$return = (SID && !($_COOKIE && ini_bool("session.use_cookies"))); // $_COOKIE - don't pass SID with permanent login
 	}
 	return $return;
@@ -364,7 +363,7 @@ function where_check($val) {
 * @return string
 */
 function where_link($i, $column, $value, $operator = "=") {
-	return "&where%5B$i%5D%5Bcol%5D=" . urlencode($column) . "&where%5B$i%5D%5Bop%5D=" . urlencode((isset($value) ? $operator : "IS NULL")) . "&where%5B$i%5D%5Bval%5D=" . urlencode($value);
+	return "&where%5B$i%5D%5Bcol%5D=" . urlencode($column) . "&where%5B$i%5D%5Bop%5D=" . urlencode(($value !== null ? $operator : "IS NULL")) . "&where%5B$i%5D%5Bval%5D=" . urlencode($value);
 }
 
 /** Set cookie valid for 1 month
@@ -418,15 +417,17 @@ function set_session($key, $val) {
 * @param string
 * @param string
 * @param string
+* @param string
 * @return string
 */
-function auth_url($driver, $server, $username) {
+function auth_url($driver, $server, $username, $db = null) {
 	global $drivers;
-	preg_match('~([^?]*)\\??(.*)~', remove_from_uri(implode("|", array_keys($drivers)) . "|username|" . session_name()), $match);
+	preg_match('~([^?]*)\\??(.*)~', remove_from_uri(implode("|", array_keys($drivers)) . "|username|" . ($db !== null ? "db|" : "") . session_name()), $match);
 	return "$match[1]?"
 		. (sid() ? SID . "&" : "")
 		. ($driver != "server" || $server != "" ? urlencode($driver) . "=" . urlencode($server) . "&" : "")
 		. "username=" . urlencode($username)
+		. ($db != "" ? "&db=" . urlencode($db) : "")
 		. ($match[2] ? "&$match[2]" : "")
 	;
 }
@@ -444,15 +445,15 @@ function is_ajax() {
 * @return null
 */
 function redirect($location, $message = null) {
-	if (isset($message)) {
+	if ($message !== null) {
 		restart_session();
-		$_SESSION["messages"][preg_replace('~^[^?]*~', '', (isset($location) ? $location : $_SERVER["REQUEST_URI"]))][] = $message;
+		$_SESSION["messages"][preg_replace('~^[^?]*~', '', ($location !== null ? $location : $_SERVER["REQUEST_URI"]))][] = $message;
 	}
-	if (isset($location)) {
+	if ($location !== null) {
 		if ($location == "") {
 			$location = ".";
 		}
-		header((is_ajax() ? "X-AJAX-Redirect" : "Location") . ": $location");
+		header("Location: $location");
 		exit;
 	}
 }
@@ -492,7 +493,7 @@ function query_redirect($query, $location, $message, $redirect = true, $execute 
 function queries($query = null) {
 	global $connection;
 	static $queries = array();
-	if (!isset($query)) {
+	if ($query === null) {
 		// return executed queries without parameter
 		return implode(";\n", $queries);
 	}
@@ -668,7 +669,7 @@ function column_foreign_keys($table) {
 function enum_input($type, $attrs, $field, $value, $empty = null) {
 	global $adminer;
 	preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
-	$return = (isset($empty) ? "<label><input type='$type'$attrs value='$empty'" . ((is_array($value) ? in_array($empty, $value) : $value === 0) ? " checked" : "") . "><i>" . lang('empty') . "</i></label>" : "");
+	$return = ($empty !== null ? "<label><input type='$type'$attrs value='$empty'" . ((is_array($value) ? in_array($empty, $value) : $value === 0) ? " checked" : "") . "><i>" . lang('empty') . "</i></label>" : "");
 	foreach ($matches[1] as $i => $val) {
 		$val = stripcslashes(str_replace("''", "'", $val));
 		$checked = (is_int($value) ? $value == $i+1 : (is_array($value) ? in_array($i+1, $value) : $value === $val));
@@ -705,7 +706,7 @@ function input($field, $value, $function) {
 		}
 		$onchange = ($first ? " onchange=\"var f = this.form['function[" . h(js_escape(bracket_escape($field["field"]))) . "]']; if ($first > f.selectedIndex) f.selectedIndex = $first;\"" : "");
 		$attrs .= $onchange;
-		echo (count($functions) > 1 ? html_select("function[$name]", $functions, !isset($function) || in_array($function, $functions) || isset($functions[$function]) ? $function : "", "functionChange(this);") : nbsp(reset($functions))) . '<td>';
+		echo (count($functions) > 1 ? html_select("function[$name]", $functions, $function === null || in_array($function, $functions) || isset($functions[$function]) ? $function : "", "functionChange(this);") : nbsp(reset($functions))) . '<td>';
 		$input = $adminer->editInput($_GET["edit"], $field, $attrs, $value); // usage in call is without a table
 		if ($input != "") {
 			echo $input;
@@ -804,7 +805,7 @@ function dump_headers($identifier, $multi_table = false) {
 	$return = $adminer->dumpHeaders($identifier, $multi_table);
 	$output = $_POST["output"];
 	if ($output != "text") {
-		header("Content-Disposition: attachment; filename=" . friendly_url($identifier != "" ? $identifier : (SERVER != "" ? SERVER : "localhost")) . ".$return" . ($output != "file" && !ereg('[^0-9a-z]', $output) ? ".$output" : ""));
+		header("Content-Disposition: attachment; filename=" . $adminer->dumpFilename($identifier) . ".$return" . ($output != "file" && !ereg('[^0-9a-z]', $output) ? ".$output" : ""));
 	}
 	session_write_close();
 	return $return;

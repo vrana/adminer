@@ -29,7 +29,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 		$after = "FIRST";
 		foreach ($_POST["fields"] as $key => $field) {
 			$foreign_key = $foreign_keys[$field["type"]];
-			$type_field = (isset($foreign_key) ? $referencable_primary[$foreign_key] : $field); //! can collide with user defined type
+			$type_field = ($foreign_key !== null ? $referencable_primary[$foreign_key] : $field); //! can collide with user defined type
 			if ($field["field"] != "") {
 				if (!$field["has_default"]) {
 					$field["default"] = null;
@@ -46,7 +46,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 				if ($process_field != process_field($orig_field, $orig_field)) {
 					$fields[] = array($field["orig"], $process_field, $after);
 				}
-				if (isset($foreign_key)) {
+				if ($foreign_key !== null) {
 					$foreign[idf_escape($field["field"])] = ($TABLE != "" ? "ADD" : " ") . " FOREIGN KEY (" . idf_escape($field["field"]) . ") REFERENCES " . table($foreign_keys[$field["type"]]) . " (" . idf_escape($type_field["field"]) . ")" . (ereg("^($on_actions)\$", $field["on_delete"]) ? " ON DELETE $field[on_delete]" : "");
 				}
 				$after = "AFTER " . idf_escape($field["field"]);

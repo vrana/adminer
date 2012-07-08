@@ -1,20 +1,16 @@
 <?php
 
-/** Disable version checker
+/** Include current date and time in export filename
 * @link http://www.adminer.org/plugins/#use
 * @author Jakub Vrana, http://www.vrana.cz/
 * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
-class AdminerVersionNoverify {
+class AdminerDumpDate {
 	
-	function navigation($missing) {
-		?>
-<script type="text/javascript">
-verifyVersion = function () {
-};
-</script>
-<?php
+	function dumpFilename($identifier) {
+		$connection = connection();
+		return friendly_url(($identifier != "" ? $identifier : (SERVER != "" ? SERVER : "localhost")) . "-" . $connection->result("SELECT NOW()"));
 	}
-	
+
 }

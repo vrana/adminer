@@ -268,6 +268,5 @@ $translations = array(
 	'Copy' => 'Másolás',
 	'Permanent link' => 'Hivatkozás',
 	'Edit all' => 'Összes szerkesztése',
-	'Resend POST data?' => 'Újraküldi a POST adatokat?',
 	'HH:MM:SS' => 'óó:pp:mm',
 );

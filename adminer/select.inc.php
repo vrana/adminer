@@ -209,7 +209,7 @@ if (!$columns) {
 	$adminer->selectOrderPrint($order, $columns, $indexes);
 	$adminer->selectLimitPrint($limit);
 	$adminer->selectLengthPrint($text_length);
-	$adminer->selectActionPrint();
+	$adminer->selectActionPrint($indexes);
 	echo "</form>\n";
 	
 	$page = $_GET["page"];
@@ -265,9 +265,9 @@ if (!$columns) {
 						$rank++;
 						$names[$key] = $name;
 						$column = idf_escape($key);
-						echo '<th><a href="' . h(remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key)
-							. ($order[0] == $column || $order[0] == $key || (!$order && count($group) < count($select) && $group[0] == $column) ? '&desc%5B0%5D=1' : '') // $order[0] == $key - COUNT(*)
-						) . '">' . (!$select || $val ? apply_sql_function($val["fun"], $name) : h(current($select))) . "</a>"; //! columns looking like functions
+						$href = remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key);
+						echo '<th><a href="' . h($href) . '">' . (!$select || $val ? apply_sql_function($val["fun"], $name) : h(current($select))) . "</a>"; //! columns looking like functions
+						echo "<a href='" . h("$href&desc%5B0%5D=1") . "' title='" . lang('descending') . "' class='text'> ↓</a>";
 					}
 					$functions[$key] = $val["fun"];
 					next($select);
@@ -286,7 +286,7 @@ if (!$columns) {
 				$unique_array = unique_array($rows[$n], $indexes);
 				$unique_idf = "";
 				foreach ($unique_array as $key => $val) {
-					$unique_idf .= "&" . (isset($val) ? urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($val) : "null%5B%5D=" . urlencode($key));
+					$unique_idf .= "&" . ($val !== null ? urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($val) : "null%5B%5D=" . urlencode($key));
 				}
 				echo "<tr" . odd() . ">" . (!$group && $select ? "" : "<td>" . checkbox("check[]", substr($unique_idf, 1), in_array(substr($unique_idf, 1), (array) $_POST["check"]), "", "this.form['all'].checked = false; formUncheck('all-page');") . (count($group) < count($select) || information_schema(DB) ? "" : " <a href='" . h(ME . "edit=" . urlencode($TABLE) . $unique_idf) . "'>" . lang('edit') . "</a>"));
 				foreach ($row as $key => $val) {
@@ -297,18 +297,18 @@ if (!$columns) {
 						}
 						$link = "";
 						$val = $adminer->editVal($val, $field);
-						if (!isset($val)) {
-							$val = "<i>NULL</i>";
-						} else {
+						if ($val !== null) {
 							if (ereg('blob|bytea|raw|file', $field["type"]) && $val != "") {
 								$link = h(ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . $unique_idf);
 							}
 							if ($val === "") { // === - may be int
 								$val = "&nbsp;";
-							} elseif ($text_length != "" && ereg('text|blob', $field["type"]) && is_utf8($val)) {
-								$val = shorten_utf8($val, max(0, +$text_length)); // usage of LEFT() would reduce traffic but complicate query - expected average speedup: .001 s VS .01 s on local network
-							} else {
-								$val = h($val);
+							} elseif (is_utf8($val)) {
+								if ($text_length != "" && ereg('text|blob', $field["type"])) {
+									$val = shorten_utf8($val, max(0, +$text_length)); // usage of LEFT() would reduce traffic but complicate query - expected average speedup: .001 s VS .01 s on local network
+								} else {
+									$val = h($val);
+								}
 							}
 							
 							if (!$link) { // link related items
@@ -351,11 +351,11 @@ if (!$columns) {
 						}
 						$id = h("val[$unique_idf][" . bracket_escape($key) . "]");
 						$value = $_POST["val"][$unique_idf][bracket_escape($key)];
-						$h_value = h(isset($value) ? $value : $row[$key]);
+						$h_value = h($value !== null ? $value : $row[$key]);
 						$long = strpos($val, "<i>...</i>");
 						$editable = is_utf8($val) && $rows[$n][$key] == $row[$key] && !$functions[$key];
 						$text = ereg('text|lob', $field["type"]);
-						echo (($_GET["modify"] && $editable) || isset($value)
+						echo (($_GET["modify"] && $editable) || $value !== null
 							? "<td>" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>")
 							: "<td id='$id' ondblclick=\"" . ($editable ? "selectDblClick(this, event" . ($long ? ", 2" : ($text ? ", 1" : "")) . ")" : "alert('" . h(lang('Use edit link to modify this value.')) . "')") . ";\">" . $adminer->selectVal($val, $link, $field)
 						);
@@ -377,7 +377,7 @@ if (!$columns) {
 				$found_rows = found_rows($table_status, $where);
 				if ($found_rows < max(1e4, 2 * ($page + 1) * $limit)) {
 					// slow with big tables
-					ob_flush(); //! doesn't work with AJAX
+					ob_flush();
 					flush();
 					$found_rows = $connection->result("SELECT COUNT(*) FROM " . table($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : ""));
 				} else {
@@ -413,7 +413,7 @@ if (!$columns) {
 				$output = $adminer->dumpOutput();
 				echo ($output ? html_select("output", $output, $adminer_import["output"]) . " " : "");
 				echo html_select("format", $format, $adminer_import["format"]);
-				echo " <input type='submit' name='export' value='" . lang('Export') . "' onclick='eventStop(event);'>\n";
+				echo " <input type='submit' name='export' value='" . lang('Export') . "'>\n";
 				echo "</div></fieldset>\n";
 			}
 		}

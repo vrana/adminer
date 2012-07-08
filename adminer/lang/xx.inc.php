@@ -227,6 +227,7 @@ $translations = array(
 	'Limit' => 'xx',
 	'Text length' => 'xx',
 	'Action' => 'xx',
+	'Full table scan' => 'xx',
 	'Unable to select the table' => 'xx',
 	'No rows.' => 'xx',
 	'%d row(s)' => array('xx', 'xx'),
@@ -277,10 +278,6 @@ $translations = array(
 	'Network' => 'xx',
 	'Geometry' => 'xx',
 	'Relations' => 'xx',
-	
-	// reload confirmation in AJAX
-	'Resend POST data?' => 'xx',
-	'No response from server.' => 'xx',
 	
 	'Editor' => 'xx',
 	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d

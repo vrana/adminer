@@ -277,9 +277,6 @@ $translations = array(
 	'Geometry' => 'Geometrija',
 	'Relations' => 'Ryšiai',
 	
-	// reload confirmation in AJAX
-	'Resend POST data?' => 'Persiųsti POST duomenis?',
-	
 	'Editor' => 'Redaktorius',
 	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
 	'$1-$3-$5' => '$1-$3-$5',

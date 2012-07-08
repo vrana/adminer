@@ -1,6 +1,7 @@
 <?php
 
 /** Display jQuery UI Timepicker for each date and datetime field
+* @link http://www.adminer.org/plugins/#use
 * @uses jQuery-Timepicker, http://trentrichardson.com/examples/timepicker/
 * @uses jQuery UI: core, widget, mouse, slider, datepicker
 * @author Jakub Vrana, http://www.vrana.cz/

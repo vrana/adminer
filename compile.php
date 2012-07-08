@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 error_reporting(6135); // errors and warnings
 include dirname(__FILE__) . "/adminer/include/version.inc.php";
@@ -26,7 +27,7 @@ function remove_lang($match) {
 function lang_ids($match) {
 	global $lang_ids;
 	$lang_id = &$lang_ids[stripslashes($match[1])];
-	if (!isset($lang_id)) {
+	if ($lang_id === null) {
 		$lang_id = count($lang_ids) - 1;
 	}
 	return ($_SESSION["lang"] ? $match[0] : "lang($lang_id$match[2]");
@@ -50,7 +51,9 @@ function put_file($match) {
 function lang(\$translation, \$number) {
 	\$pos = $match2[2]\t\t: " . (preg_match("~\\\$LANG == '$_SESSION[lang]'.* \\? (.+)\n~U", $match2[1], $match3) ? $match3[1] : "1") . '
 	);
-	return sprintf($translation[$pos], $number);
+	$translation = str_replace("%d", "%s", $translation[$pos]);
+	$number = number_format($number, 0, ".", lang(\',\'));
+	return sprintf($translation, $number);
 }
 ';
 	} else {
@@ -68,7 +71,7 @@ function put_file_lang($match) {
 		include dirname(__FILE__) . "/adminer/lang/$lang.inc.php"; // assign $translations
 		$translation_ids = array_flip($lang_ids); // default translation
 		foreach ($translations as $key => $val) {
-			if (isset($val)) {
+			if ($val !== null) {
 				$translation_ids[$lang_ids[$key]] = $val;
 			}
 		}
@@ -84,7 +87,7 @@ function put_file_lang($match) {
 function short_identifier($number, $chars) {
 	$return = '';
 	while ($number >= 0) {
-		$return .= $chars{$number % strlen($chars)};
+		$return .= $chars[$number % strlen($chars)];
 		$number = floor($number / strlen($chars)) - 1;
 	}
 	return $return;
@@ -97,6 +100,33 @@ function php_shrink($input) {
 	$short_variables = array();
 	$shortening = true;
 	$tokens = token_get_all($input);
+	
+	// remove unnecessary { }
+	//! change also `while () { if () {;} }` to `while () if () ;` but be careful about `if () { if () { } } else { }
+	$shorten = 0;
+	$opening = -1;
+	foreach ($tokens as $i => $token) {
+		if (in_array($token[0], array(T_IF, T_ELSE, T_ELSEIF, T_WHILE, T_DO, T_FOR, T_FOREACH), true)) {
+			$shorten = ($token[0] == T_FOR ? 4 : 2);
+			$opening = -1;
+		} elseif (in_array($token[0], array(T_SWITCH, T_FUNCTION, T_CLASS, T_CLOSE_TAG), true)) {
+			$shorten = 0;
+		} elseif ($token === ';') {
+			$shorten--;
+		} elseif ($token === '{') {
+			if ($opening < 0) {
+				$opening = $i;
+			} elseif ($shorten > 1) {
+				$shorten = 0;
+			}
+		} elseif ($token === '}' && $opening >= 0 && $shorten == 1) {
+			unset($tokens[$opening]);
+			unset($tokens[$i]);
+			$shorten = 0;
+			$opening = -1;
+		}
+	}
+	$tokens = array_values($tokens);
 	
 	foreach ($tokens as $i => $token) {
 		if ($token[0] === T_VARIABLE && !isset($special_variables[$token[1]])) {
@@ -262,7 +292,7 @@ foreach (array("adminer", "editor") as $project) {
 	$file = str_replace('<script type="text/javascript" src="static/editing.js"></script>' . "\n", "", $file);
 	$file = preg_replace_callback("~compile_file\\('([^']+)', '([^']+)'\\);~", 'compile_file', $file); // integrate static files
 	$replace = 'h(preg_replace("~\\\\\\\\?.*~", "", ME)) . "?file=\\1&amp;version=' . $VERSION;
-	$file = preg_replace('~\\.\\./adminer/static/(default\\.css|functions\\.js|favicon\\.ico|loader\\.gif)~', '<?php echo ' . $replace . '"; ?>', $file);
+	$file = preg_replace('~\\.\\./adminer/static/(default\\.css|functions\\.js|favicon\\.ico)~', '<?php echo ' . $replace . '"; ?>', $file);
 	$file = preg_replace('~\\.\\./adminer/static/([^\'"]*)~', '" . ' . $replace, $file);
 	$file = str_replace("'../externals/jush/'", "location.protocol + '//www.adminer.org/static/'", $file);
 	$file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);

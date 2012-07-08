@@ -1,11 +1,14 @@
 <?php
 
 /** Dump to XML format in structure <database name=""><table name=""><column name="">value
+* @link http://www.adminer.org/plugins/#use
 * @author Jakub Vrana, http://www.vrana.cz/
 * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerDumpXml {
+	/** @access protected */
+	var $database = false;
 	
 	function dumpFormat() {
 		return array('xml' => 'XML');
@@ -22,10 +25,9 @@ class AdminerDumpXml {
 	}
 	
 	function dumpData($table, $style, $query) {
-		static $database = false;
 		if ($_POST["format"] == "xml") {
-			if (!$database) {
-				$database = true;
+			if (!$this->database) {
+				$this->database = true;
 				echo "<database name='" . h(DB) . "'>\n";
 				register_shutdown_function(array($this, '_database'));
 			}

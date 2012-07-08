@@ -23,7 +23,7 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function connect($server, $username, $password) {
-				$this->_link = @sqlsrv_connect($server, array("UID" => $username, "PWD" => $password));
+				$this->_link = @sqlsrv_connect($server, array("UID" => $username, "PWD" => $password, "CharacterSet" => "UTF-8"));
 				if ($this->_link) {
 					$info = sqlsrv_server_info($this->_link);
 					$this->server_info = $info['SQLServerVersion'];
@@ -252,7 +252,7 @@ if (isset($_GET["mssql"])) {
 	}
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
-		return (isset($limit) ? " TOP (" . ($limit + $offset) . ")" : "") . " $query$where"; // seek later
+		return ($limit !== null ? " TOP (" . ($limit + $offset) . ")" : "") . " $query$where"; // seek later
 	}
 
 	function limit1($query, $where) {

@@ -3,6 +3,7 @@ body { color: #000; background: #fff; font: 90%/1.25 Verdana, Arial, Helvetica, 
 a { color: blue; }
 a:visited { color: navy; }
 a:hover { color: red; }
+a.text { text-decoration: none; }
 h1 { font-size: 150%; margin: 0; padding: .8em 1em; border-bottom: 1px solid #999; font-weight: normal; color: #777; background: #eee; }
 h2 { font-size: 150%; margin: 0 0 20px -18px; padding: .8em 1em; border-bottom: 1px solid #000; color: #000; font-weight: normal; background: #ddf; }
 h3 { font-weight: normal; font-size: 130%; margin: 1em 0 0; }
@@ -20,8 +21,6 @@ code { background: #eee; }
 tbody tr:hover td, tbody tr:hover th { background: #eee; }
 pre { margin: 1em 0 0; }
 input[type=image] { vertical-align: middle; }
-.loading { cursor: progress; }
-.loading #loader { display: inline; }
 .version { color: #777; font-size: 67%; }
 .js .hidden, .nojs .jsonly { display: none; }
 .nowrap td, .nowrap th, td.nowrap { white-space: pre; }
@@ -44,12 +43,12 @@ input[type=image] { vertical-align: middle; }
 .options select { width: 20ex; width: auto\9; }
 .active { font-weight: bold; }
 .sqlarea { width: 98%; }
+.icon { width: 18px; height: 18px; }
 #menu { position: absolute; margin: 10px 0 0; padding: 0 0 30px 0; top: 2em; left: 0; width: 19em; overflow: auto; overflow-y: hidden; white-space: nowrap; }
 #menu p { padding: .8em 1em; margin: 0; border-bottom: 1px solid #ccc; }
 #content { margin: 2em 0 0 21em; padding: 10px 20px 20px 0; }
 #lang { position: absolute; top: 0; left: 0; line-height: 1.8em; padding: .3em 1em; }
 #breadcrumb { white-space: nowrap; position: absolute; top: 0; left: 21em; background: #eee; height: 2em; line-height: 1.8em; padding: 0 1em; margin: 0 0 0 -18px; }
-#loader { display: none; position: fixed; top: 2px; right: 2px; z-index: 1; }
 #h1 { color: #777; text-decoration: none; font-style: italic; }
 #version { font-size: 67%; color: red; }
 #schema { margin-left: 60px; position: relative; -moz-user-select: none; -webkit-user-select: none; }

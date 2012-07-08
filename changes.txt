@@ -1,5 +1,24 @@
-Adminer 3.4.0-dev:
+Adminer 3.4.0 (released 2012-06-30):
+Link to descending order
+Shift+click on checkbox to select consecutive rows
+Print current time next to executed SQL queries
+Warn about selecting data without index
+Allow specifying database in login form
+Link to original table in EXPLAIN of SELECT * FROM table t
+Format numbers in translations
+MySQL: inform about disabled event_scheduler
+SQLite: support binary data
+PostgreSQL: approximate row count in table overview
+PostgreSQL: improve PDO support in SQL command
+Oracle: schema, processlist, table overview numbers
+Simplify work with NULL values (customization)
+Use namespace in login form (customization)
+Customizable export filename (customization)
 Replace JSMin by better JavaScript minifier
+Don't use AJAX links and forms
+Indonesian translation
+Ukrainian translation
+Bengali translation
 
 Adminer 3.3.4 (released 2012-03-07):
 Foreign keys default actions (bug #3397606)
