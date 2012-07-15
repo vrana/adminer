@@ -43,6 +43,7 @@ if (isset($_GET["mssql"])) {
 
 			function query($query, $unbuffered = false) {
 				$result = sqlsrv_query($this->_link, $query); //! , array(), ($unbuffered ? array() : array("Scrollable" => "keyset"))
+				$this->error = "";
 				if (!$result) {
 					$this->_get_error();
 					return false;
@@ -52,6 +53,7 @@ if (isset($_GET["mssql"])) {
 
 			function multi_query($query) {
 				$this->_result = sqlsrv_query($this->_link, $query);
+				$this->error = "";
 				if (!$this->_result) {
 					$this->_get_error();
 					return false;
@@ -159,6 +161,7 @@ if (isset($_GET["mssql"])) {
 
 			function query($query, $unbuffered = false) {
 				$result = mssql_query($query, $this->_link); //! $unbuffered
+				$this->error = "";
 				if (!$result) {
 					$this->error = mssql_get_last_message();
 					return false;

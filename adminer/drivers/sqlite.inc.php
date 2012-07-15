@@ -19,6 +19,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 				
 				function query($query) {
 					$result = @$this->_link->query($query);
+					$this->error = "";
 					if (!$result) {
 						$this->error = $this->_link->lastErrorMsg();
 						return false;
@@ -93,6 +94,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 				function query($query, $unbuffered = false) {
 					$method = ($unbuffered ? "unbufferedQuery" : "query");
 					$result = @$this->_link->$method($query, SQLITE_BOTH, $error);
+					$this->error = "";
 					if (!$result) {
 						$this->error = $error;
 						return false;

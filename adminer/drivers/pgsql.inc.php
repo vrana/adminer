@@ -58,6 +58,7 @@ if (isset($_GET["pgsql"])) {
 			
 			function query($query, $unbuffered = false) {
 				$result = @pg_query($this->_link, $query);
+				$this->error = "";
 				if (!$result) {
 					$this->error = pg_last_error($this->_link);
 					return false;

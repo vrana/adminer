@@ -37,6 +37,7 @@ if (isset($_GET["oracle"])) {
 
 			function query($query, $unbuffered = false) {
 				$result = oci_parse($this->_link, $query);
+				$this->error = "";
 				if (!$result) {
 					$error = oci_error($this->_link);
 					$this->error = $error["message"];
