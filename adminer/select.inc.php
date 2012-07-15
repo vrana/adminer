@@ -4,8 +4,10 @@ $table_status = table_status($TABLE);
 $indexes = indexes($TABLE);
 $fields = fields($TABLE);
 $foreign_keys = column_foreign_keys($TABLE);
+$oid = "";
 if ($table_status["Oid"] == "t") {
-	$indexes[] = array("type" => "PRIMARY", "columns" => array("oid"));
+	$oid = ($jush == "sqlite" ? "rowid" : "oid");
+	$indexes[] = array("type" => "PRIMARY", "columns" => array($oid));
 }
 parse_str($_COOKIE["adminer_import"], $adminer_import);
 
@@ -27,7 +29,7 @@ list($select, $group) = $adminer->selectColumnsProcess($columns, $indexes);
 $where = $adminer->selectSearchProcess($fields, $indexes);
 $order = $adminer->selectOrderProcess($fields, $indexes);
 $limit = $adminer->selectLimitProcess();
-$from = ($select ? implode(", ", $select) : ($table_status["Oid"] == "t" ? "oid, " : "") . "*") . "\nFROM " . table($TABLE);
+$from = ($select ? implode(", ", $select) : ($oid ? "$oid, " : "") . "*") . "\nFROM " . table($TABLE);
 $group_by = ($group && count($group) < count($select) ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : "");
 
 if ($_GET["val"] && is_ajax()) {
@@ -257,7 +259,7 @@ if (!$columns) {
 			reset($select);
 			$rank = 1;
 			foreach ($rows[0] as $key => $val) {
-				if ($table_status["Oid"] != "t" || $key != "oid") {
+				if ($key != $oid) {
 					$val = $_GET["columns"][key($select)];
 					$field = $fields[$select ? ($val ? $val["col"] : current($select)) : $key];
 					$name = ($field ? $adminer->fieldName($field, $rank) : "*");

@@ -1,5 +1,6 @@
 Adminer 3.4.1-dev:
 SQLite: Full alter table
+SQLite: Better editing in tables without a primary key
 
 Adminer 3.4.0 (released 2012-06-30):
 Link to descending order
