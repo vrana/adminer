@@ -709,7 +709,7 @@ if (!defined("DRIVER")) {
 	
 	/** Get information about trigger
 	* @param string trigger name
-	* @return array array("Trigger" => , "Timing" => , "Event" => , "Statement" => )
+	* @return array array("Trigger" => , "Timing" => , "Event" => , "Type" => , "Statement" => )
 	*/
 	function trigger($name) {
 		if ($name == "") {
