@@ -301,10 +301,12 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			$return[""] = array("type" => "PRIMARY", "columns" => $primary, "lengths" => array());
 		}
 		foreach (get_rows("PRAGMA index_list(" . table($table) . ")") as $row) {
-			$return[$row["name"]]["type"] = ($row["unique"] ? "UNIQUE" : "INDEX");
-			$return[$row["name"]]["lengths"] = array();
-			foreach (get_rows("PRAGMA index_info(" . idf_escape($row["name"]) . ")") as $row1) {
-				$return[$row["name"]]["columns"][] = $row1["name"];
+			if (!ereg("^sqlite_", $row["name"])) {
+				$return[$row["name"]]["type"] = ($row["unique"] ? "UNIQUE" : "INDEX");
+				$return[$row["name"]]["lengths"] = array();
+				foreach (get_rows("PRAGMA index_info(" . idf_escape($row["name"]) . ")") as $row1) {
+					$return[$row["name"]]["columns"][] = $row1["name"];
+				}
 			}
 		}
 		return $return;
