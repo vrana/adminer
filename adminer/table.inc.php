@@ -58,9 +58,7 @@ if ($fields) {
 					echo "(<i>" . implode("</i>, <i>", array_map('h', $foreign_key["target"])) . "</i>)";
 					echo "<td>" . nbsp($foreign_key["on_delete"]) . "\n";
 					echo "<td>" . nbsp($foreign_key["on_update"]) . "\n";
-					if ($jush != "sqlite") {
-						echo '<td><a href="' . h(ME . 'foreign=' . urlencode($TABLE) . '&name=' . urlencode($name)) . '">' . lang('Alter') . '</a>';
-					}
+					echo ($jush == "sqlite" ? "" : '<td><a href="' . h(ME . 'foreign=' . urlencode($TABLE) . '&name=' . urlencode($name)) . '">' . lang('Alter') . '</a>');
 				}
 				echo "</table>\n";
 			}
