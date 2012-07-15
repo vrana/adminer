@@ -603,7 +603,7 @@ if (!defined("DRIVER")) {
 		$alter = array();
 		foreach ($fields as $field) {
 			$alter[] = ($field[1]
-				? ($table != "" ? ($field[0] != "" ? "CHANGE " . idf_escape($field[0]) : "ADD") : " ") . " " . implode($field[1]) . ($table != "" ? " $field[2]" : "")
+				? ($table != "" ? ($field[0] != "" ? "CHANGE " . idf_escape($field[0]) : "ADD") : " ") . " " . implode($field[1]) . ($table != "" ? $field[2] : "")
 				: "DROP " . idf_escape($field[0])
 			);
 		}

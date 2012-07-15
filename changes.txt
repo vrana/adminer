@@ -1,3 +1,6 @@
+Adminer 3.4.1-dev:
+SQLite: Full alter table
+
 Adminer 3.4.0 (released 2012-06-30):
 Link to descending order
 Shift+click on checkbox to select consecutive rows

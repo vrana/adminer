@@ -267,7 +267,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	
 	function fk_support($table_status) {
 		global $connection;
-		return $_GET["create"] == "" && !$connection->result("SELECT sqlite_compileoption_used('OMIT_FOREIGN_KEY')");
+		return !$connection->result("SELECT sqlite_compileoption_used('OMIT_FOREIGN_KEY')");
 	}
 
 	function fields($table) {
@@ -402,14 +402,90 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 	
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
-		$alter = array();
+		$use_all_fields = ($table == "" || $foreign);
 		foreach ($fields as $field) {
-			if ($field[1]) {
-				$alter[] = ($table != "" && $field[0] == "" ? "ADD " : "  ") . implode($field[1]);
+			if ($field[0] != "" || !$field[1] || $field[2]) {
+				$use_all_fields = true;
+				break;
 			}
 		}
-		$alter = array_merge($alter, $foreign);
-		if ($table != "") {
+		$alter = array();
+		$originals = array();
+		$primary_key = false;
+		foreach ($fields as $field) {
+			if ($field[1]) {
+				if ($field[1][6]) {
+					$primary_key = true;
+				}
+				$alter[] = ($use_all_fields ? "  " : "ADD ") . implode($field[1]);
+				if ($field[0] != "") {
+					$originals[$field[0]] = $field[1][0];
+				}
+			}
+		}
+		if ($use_all_fields) {
+			if ($table != "") {
+				queries("BEGIN");
+				foreach (foreign_keys($table) as $foreign_key) {
+					$columns = array();
+					foreach ($foreign_key["source"] as $column) {
+						if (!$originals[$column]) {
+							continue 2;
+						}
+						$columns[] = $originals[$column];
+					}
+					$foreign[] = "  FOREIGN KEY (" . implode(", ", $columns) . ") REFERENCES "
+						. table($foreign_key["table"])
+						. " (" . implode(", ", array_map('idf_escape', $foreign_key["target"]))
+						. ") ON DELETE $foreign_key[on_delete] ON UPDATE $foreign_key[on_update]"
+					;
+				}
+				$indexes = array();
+				foreach (indexes($table) as $key_name => $index) {
+					$columns = array();
+					foreach ($index["columns"] as $column) {
+						if (!$originals[$column]) {
+							continue 2;
+						}
+						$columns[] = $originals[$column];
+					}
+					$columns = "(" . implode(", ", $columns) . ")";
+					if ($index["type"] != "PRIMARY") {
+						$indexes[] = array($index["type"], $key_name, $columns);
+					} elseif (!$primary_key) {
+						$foreign[] = "  PRIMARY KEY $columns";
+					}
+				}
+			}
+			$alter = array_merge($alter, $foreign);
+			if (!queries("CREATE TABLE " . table($table != "" ? "adminer_$name" : $name) . " (\n" . implode(",\n", $alter) . "\n)")) {
+				// implicit ROLLBACK to not overwrite $connection->error
+				return false;
+			}
+			if ($table != "") {
+				if ($originals && !queries("INSERT INTO " . table("adminer_$name") . " (" . implode(", ", $originals) . ") SELECT " . implode(", ", array_map('idf_escape', array_keys($originals))) . " FROM " . table($table))) {
+					return false;
+				}
+				$triggers = array();
+				foreach (triggers($table) as $trigger_name => $timing_event) {
+					$trigger = trigger($trigger_name);
+					$triggers[] = "CREATE TRIGGER " . idf_escape($trigger_name) . " " . implode(" ", $timing_event) . " ON " . table($name) . "\n$trigger[Statement]";
+				}
+				if (!queries("DROP TABLE " . table($table))) { // drop before creating indexes and triggers to allow using old names
+					return false;
+				}
+				queries("ALTER TABLE " . table("adminer_$name") . " RENAME TO " . table($name));
+				if (!alter_indexes($name, $indexes)) {
+					return false;
+				}
+				foreach ($triggers as $trigger) {
+					if (!queries($trigger)) {
+						return false;
+					}
+				}
+				queries("COMMIT");
+			}
+		} else {
 			foreach ($alter as $val) {
 				if (!queries("ALTER TABLE " . table($table) . " $val")) {
 					return false;
@@ -418,8 +494,6 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			if ($table != $name && !queries("ALTER TABLE " . table($table) . " RENAME TO " . table($name))) {
 				return false;
 			}
-		} elseif (!queries("CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)")) {
-			return false;
 		}
 		if ($auto_increment) {
 			queries("UPDATE sqlite_sequence SET seq = $auto_increment WHERE name = " . q($name)); // ignores error
@@ -567,7 +641,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 	
 	function support($feature) {
-		return ereg('^(view|trigger|variables|status|dump)$', $feature);
+		return ereg('^(view|trigger|variables|status|dump|move_col|drop_col)$', $feature);
 	}
 	
 	$jush = "sqlite";
