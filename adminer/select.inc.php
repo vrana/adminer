@@ -106,7 +106,7 @@ if ($_POST && !$error) {
 					$query = "INTO $query";
 				}
 				if ($_POST["all"] || ($unselected === array() && $_POST["check"]) || count($group) < count($select)) {
-					$result = queries($command . " $query" . ($_POST["all"] ? ($where ? "\nWHERE " . implode(" AND ", $where) : "") : "\nWHERE $where_check"));
+					$result = queries("$command $query" . ($_POST["all"] ? ($where ? "\nWHERE " . implode(" AND ", $where) : "") : "\nWHERE $where_check"));
 					$affected = $connection->affected_rows;
 				} else {
 					foreach ((array) $_POST["check"] as $val) {
@@ -119,7 +119,14 @@ if ($_POST && !$error) {
 					}
 				}
 			}
-			queries_redirect(remove_from_uri("page"), lang('%d item(s) have been affected.', $affected), $result);
+			$message = lang('%d item(s) have been affected.', $affected);
+			if ($_POST["clone"] && $result && $affected == 1) {
+				$last_id = last_id();
+				if ($last_id) {
+					$message = lang('Item%s has been inserted.', " $last_id");
+				}
+			}
+			queries_redirect(remove_from_uri("page"), $message, $result);
 			//! display edit page in case of an error
 		} elseif (!$_POST["import"]) { // modify
 			if (!$_POST["val"]) {

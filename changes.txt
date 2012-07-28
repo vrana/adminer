@@ -1,4 +1,5 @@
 Adminer 3.4.1-dev:
+Display assigned auto_increment after clone
 SQLite: Full alter table
 SQLite: Better editing in tables without a primary key
 
