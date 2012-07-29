@@ -279,7 +279,7 @@ username.form['auth[driver]'].onchange();
 	*/
 	function selectLimitPrint($limit) {
 		echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
-		echo "<input name='limit' size='3' value='" . h($limit) . "'>";
+		echo "<input name='limit' size='3' value='" . h($limit) . "' onchange='selectFieldChange(this.form);'>";
 		echo "</div></fieldset>\n";
 	}
 	

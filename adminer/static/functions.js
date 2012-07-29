@@ -231,7 +231,7 @@ function selectFieldChange(form) {
 				return true;
 			}
 		}
-		var ok = true;
+		var ok = form.limit.value;
 		var selects = form.getElementsByTagName('select');
 		var group = false;
 		var columns = {};
