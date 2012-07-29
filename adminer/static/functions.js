@@ -227,8 +227,7 @@ function selectFieldChange(form) {
 	var ok = (function () {
 		var inputs = form.getElementsByTagName('input');
 		for (var i=0; i < inputs.length; i++) {
-			var input = inputs[i];
-			if (/^fulltext/.test(input.name) && input.value) {
+			if (inputs[i].value && /^fulltext/.test(inputs[i].name)) {
 				return true;
 			}
 		}
