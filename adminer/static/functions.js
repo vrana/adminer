@@ -278,6 +278,21 @@ function selectFieldChange(form) {
 
 
 
+/** Toggles column context menu
+ * @param HTMLElement
+ * @param [string] extra class name
+ */
+function columnMouse(el, className) {
+	var spans = el.getElementsByTagName('span');
+	for (var i=0; i < spans.length; i++) {
+		if (/column/.test(spans[i].className)) {
+			spans[i].className = 'column' + (className || '');
+		}
+	}
+}
+
+
+
 /** Fill column in search field
  * @param string
  */
