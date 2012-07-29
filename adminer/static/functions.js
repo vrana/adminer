@@ -233,6 +233,8 @@ function selectFieldChange(form) {
 		}
 		var ok = true;
 		var selects = form.getElementsByTagName('select');
+		var group = false;
+		var columns = {};
 		for (var i=0; i < selects.length; i++) {
 			var select = selects[i];
 			var col = selectValue(select);
@@ -246,12 +248,27 @@ function selectFieldChange(form) {
 					ok = false;
 				}
 			}
-			//! take grouping in select into account
+			if ((match = /^(columns.+)fun\]/.exec(select.name))) {
+				if (/^(avg|count|count distinct|group_concat|max|min|sum)$/.test(col)) {
+					group = true;
+				}
+				var val = selectValue(form[match[1] + 'col]']);
+				if (val) {
+					columns[col && col != 'count' ? '' : val] = 1;
+				}
+			}
 			if (col && /^order/.test(select.name)) {
 				if (!(col in indexColumns)) {
 					 ok = false;
 				}
 				break;
+			}
+		}
+		if (group) {
+			for (var col in columns) {
+				if (!(col in indexColumns)) {
+					ok = false;
+				}
 			}
 		}
 		return ok;

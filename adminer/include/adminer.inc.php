@@ -214,7 +214,7 @@ username.form['auth[driver]'].onchange();
 		foreach ($select as $key => $val) {
 			$val = $_GET["columns"][$key];
 			echo "<div>" . html_select("columns[$i][fun]", array(-1 => "") + $fun_group, $val["fun"]);
-			echo "(<select name='columns[$i][col]'><option>" . optionlist($columns, $val["col"], true) . "</select>)</div>\n";
+			echo "(<select name='columns[$i][col]' onchange='selectFieldChange(this.form);'><option>" . optionlist($columns, $val["col"], true) . "</select>)</div>\n";
 			$i++;
 		}
 		echo "<div>" . html_select("columns[$i][fun]", array(-1 => "") + $fun_group, "", "this.nextSibling.nextSibling.onchange();");
