@@ -803,7 +803,7 @@ DROP PROCEDURE adminer_alter;
 </p>
 </form>
 <form action="">
-<p>
+<p style="overflow: hidden;">
 <?php hidden_fields_get(); ?>
 <?php echo ($databases ? html_select("db", array("" => "(" . lang('database') . ")") + $databases, DB, "this.form.submit();") : '<input name="db" value="' . h(DB) . '">'); ?>
 <input type="submit" value="<?php echo lang('Use'); ?>"<?php echo ($databases ? " class='hidden'" : ""); ?>>
@@ -815,31 +815,31 @@ DROP PROCEDURE adminer_alter;
 						set_schema($_GET["ns"]);
 					}
 				}
-				if ($_GET["ns"] !== "" && !$missing) {
-					echo '<p><a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create new table') . "</a>\n";
-					$tables = tables_list();
-					if (!$tables) {
-						echo "<p class='message'>" . lang('No tables.') . "\n";
-					} else {
-						$this->tablesPrint($tables);
-						$links = array();
-						foreach ($tables as $table => $type) {
-							$links[] = preg_quote($table, '/');
-						}
-						echo "<script type='text/javascript'>\n";
-						echo "var jushLinks = { $jush: [ '" . js_escape(ME) . "table=\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
-						foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
-							echo "jushLinks.$val = jushLinks.$jush;\n";
-						}
-						echo "</script>\n";
-					}
-				}
 			}
 			echo (isset($_GET["sql"]) ? '<input type="hidden" name="sql" value="">'
 				: (isset($_GET["schema"]) ? '<input type="hidden" name="schema" value="">'
 				: (isset($_GET["dump"]) ? '<input type="hidden" name="dump" value="">'
 			: "")));
 			echo "</p></form>\n";
+			if ($_GET["ns"] !== "" && !$missing) {
+				echo '<p><a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create new table') . "</a>\n";
+				$tables = tables_list();
+				if (!$tables) {
+					echo "<p class='message'>" . lang('No tables.') . "\n";
+				} else {
+					$this->tablesPrint($tables);
+					$links = array();
+					foreach ($tables as $table => $type) {
+						$links[] = preg_quote($table, '/');
+					}
+					echo "<script type='text/javascript'>\n";
+					echo "var jushLinks = { $jush: [ '" . js_escape(ME) . "table=\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
+					foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
+						echo "jushLinks.$val = jushLinks.$jush;\n";
+					}
+					echo "</script>\n";
+				}
+			}
 		}
 	}
 	
@@ -848,7 +848,7 @@ DROP PROCEDURE adminer_alter;
 	* @return null
 	*/
 	function tablesPrint($tables) {
-		echo "<p id='tables'>\n";
+		echo '<p id="tables" onmouseover="this.style.overflow = \'visible\';" onmouseout="this.style.overflow = \'auto\';">' . "\n";
 		foreach ($tables as $table => $type) {
 			echo '<a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table) . ">" . lang('select') . "</a> ";
 			echo '<a href="' . h(ME) . 'table=' . urlencode($table) . '"' . bold($_GET["table"] == $table) . " title='" . lang('Show structure') . "'>" . $this->tableName(array("Name" => $table)) . "</a><br>\n"; //! Adminer::tableName may work with full table status

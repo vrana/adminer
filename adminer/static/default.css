@@ -45,8 +45,10 @@ input[type=image] { vertical-align: middle; }
 .active { font-weight: bold; }
 .sqlarea { width: 98%; }
 .icon { width: 18px; height: 18px; }
-#menu { position: absolute; margin: 10px 0 0; padding: 0 0 30px 0; top: 2em; left: 0; width: 19em; overflow: auto; overflow-y: hidden; white-space: nowrap; }
+#menu { position: absolute; margin: 10px 0 0; padding: 0 0 30px 0; top: 2em; left: 0; width: 19em; white-space: nowrap; }
 #menu p { padding: .8em 1em; margin: 0; border-bottom: 1px solid #ccc; }
+#tables { overflow: auto; }
+#tables a { background: #fff; }
 #content { margin: 2em 0 0 21em; padding: 10px 20px 20px 0; }
 #lang { position: absolute; top: 0; left: 0; line-height: 1.8em; padding: .3em 1em; }
 #breadcrumb { white-space: nowrap; position: absolute; top: 0; left: 21em; background: #eee; height: 2em; line-height: 1.8em; padding: 0 1em; margin: 0 0 0 -18px; }

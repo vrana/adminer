@@ -559,7 +559,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	}
 	
 	function tablesPrint($tables) {
-		echo "<p id='tables'>\n";
+		echo '<p id="tables" onmouseover="this.style.overflow = \'visible\';" onmouseout="this.style.overflow = \'auto\';">' . "\n";
 		foreach ($tables as $row) {
 			$name = $this->tableName($row);
 			if (isset($row["Engine"]) && $name != "") { // ignore views and tables without name
