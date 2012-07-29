@@ -262,6 +262,28 @@ function selectFieldChange(form) {
 
 
 
+/** Fill column in search field
+ * @param string
+ */
+function selectSearch(name) {
+	var el = document.getElementById('fieldset-search');
+	el.className = '';
+	var divs = el.getElementsByTagName('div');
+	for (var i=0; i < divs.length; i++) {
+		var div = divs[i];
+		if (selectValue(div.firstChild) == name) {
+			break;
+		}
+	}
+	if (i == divs.length) {
+		div.firstChild.value = name;
+		div.firstChild.onchange();
+	}
+	div.lastChild.focus();
+}
+
+
+
 /** Send form by Ctrl+Enter on <select> and <textarea>
 * @param KeyboardEvent
 * @param [string]

@@ -273,10 +273,12 @@ if (!$columns) {
 					if ($name != "") {
 						$rank++;
 						$names[$key] = $name;
-						$column = idf_escape($key);
 						$href = remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key);
 						echo '<th><a href="' . h($href) . '">' . (!$select || $val ? apply_sql_function($val["fun"], $name) : h(current($select))) . "</a>"; //! columns looking like functions
 						echo "<a href='" . h("$href&desc%5B0%5D=1") . "' title='" . lang('descending') . "' class='text'> ↓</a>";
+						if (!$val["fun"]) {
+							echo '<a href="#fieldset-search" onclick="selectSearch(\'' . h(js_escape($key)) . '\'); return false;" title="' . lang('Search') . '" class="text jsonly"> =</a>';
+						}
 					}
 					$functions[$key] = $val["fun"];
 					next($select);
