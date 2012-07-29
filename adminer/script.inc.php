@@ -13,10 +13,10 @@ if ($_GET["script"] == "db") {
 			foreach ($sums + array("Auto_increment" => 0, "Rows" => 0) as $key => $val) {
 				if ($table_status[$key] != "") {
 					$val = number_format($table_status[$key], 0, '.', lang(','));
-					json_row("$key-$id", ($key == "Rows" && $val && (
-						$table_status["Engine"] == "InnoDB" ||	// MySQL InnoDB
-						$table_status["Engine"] == "table"	// PostgreSQL table reltype
-					) ? "~ $val" : $val));
+					json_row("$key-$id", ($key == "Rows" && $val && $table_status["Engine"] == ($sql == "pgsql" ? "table" : "InnoDB")
+						? "~ $val"
+						: $val
+					));
 					if (isset($sums[$key])) {
 						// ignore innodb_file_per_table because it is not active for tables created before it was enabled
 						$sums[$key] += ($table_status["Engine"] != "InnoDB" || $key != "Data_free" ? $table_status[$key] : 0);

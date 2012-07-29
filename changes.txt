@@ -1,7 +1,8 @@
 Adminer 3.4.1-dev:
 Display assigned auto_increment after clone
 SQLite: Full alter table
-SQLite: Better editing in tables without a primary key
+SQLite: Better editing in tables without primary key
+SQLite: Display number of rows in database overview
 
 Adminer 3.4.0 (released 2012-06-30):
 Link to descending order

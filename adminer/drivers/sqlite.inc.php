@@ -250,10 +250,12 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 
 	function table_status($name = "") {
+		global $connection;
 		$return = array();
 		foreach (get_rows("SELECT name AS Name, type AS Engine FROM sqlite_master WHERE type IN ('table', 'view')" . ($name != "" ? " AND name = " . q($name) : "")) as $row) {
 			$row["Oid"] = "t";
 			$row["Auto_increment"] = "";
+			$row["Rows"] = $connection->result("SELECT COUNT(*) FROM " . idf_escape($row["Name"]));
 			$return[$row["Name"]] = $row;
 		}
 		foreach (get_rows("SELECT * FROM sqlite_sequence", null, "") as $row) {
