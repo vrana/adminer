@@ -1,0 +1,22 @@
+{
+    "name": "vrana/adminer",
+    "description": "Adminer - Database management in single PHP file",
+    "keywords": ["adminer", "phpmyadmin", "mysql", "pgsql", "oracle", "sql"],
+    "homepage": "http://www.adminer.org",
+    "license": ["Apache-2.0", "GPL-2.0"],
+    "type": "vrana-adminer",
+    "authors":[
+        {
+            "name": "Jakub Vrana",
+            "homepage": "http://vrana.cz"
+        }
+    ],
+    "support": {
+        "issues": "http://sourceforge.net/tracker/?group_id=264133&atid=1127745",
+        "source": "https://github.com/vrana/adminer/"
+    },
+    "require":{
+        "php": ">=5.3.2",
+        "foglcz/adminer-installer": "1.*"
+    }
+}
