@@ -220,62 +220,6 @@ function selectAddRow(field) {
 	field.parentNode.parentNode.appendChild(row);
 }
 
-/** Check whether the query will be executed with index
-* @param HTMLFormElement
-*/
-function selectFieldChange(form) {
-	var ok = (function () {
-		var inputs = form.getElementsByTagName('input');
-		for (var i=0; i < inputs.length; i++) {
-			if (inputs[i].value && /^fulltext/.test(inputs[i].name)) {
-				return true;
-			}
-		}
-		var ok = form.limit.value;
-		var selects = form.getElementsByTagName('select');
-		var group = false;
-		var columns = {};
-		for (var i=0; i < selects.length; i++) {
-			var select = selects[i];
-			var col = selectValue(select);
-			var match = /^(where.+)col\]/.exec(select.name);
-			if (match) {
-				var op = selectValue(form[match[1] + 'op]']);
-				var val = form[match[1] + 'val]'].value;
-				if (col in indexColumns && (!/LIKE|REGEXP/.test(op) || (op == 'LIKE' && val.charAt(0) != '%'))) {
-					return true;
-				} else if (col || val) {
-					ok = false;
-				}
-			}
-			if ((match = /^(columns.+)fun\]/.exec(select.name))) {
-				if (/^(avg|count|count distinct|group_concat|max|min|sum)$/.test(col)) {
-					group = true;
-				}
-				var val = selectValue(form[match[1] + 'col]']);
-				if (val) {
-					columns[col && col != 'count' ? '' : val] = 1;
-				}
-			}
-			if (col && /^order/.test(select.name)) {
-				if (!(col in indexColumns)) {
-					 ok = false;
-				}
-				break;
-			}
-		}
-		if (group) {
-			for (var col in columns) {
-				if (!(col in indexColumns)) {
-					ok = false;
-				}
-			}
-		}
-		return ok;
-	})();
-	setHtml('noindex', (ok ? '' : '!'));
-}
-
 
 
 /** Toggles column context menu
@@ -302,7 +246,7 @@ function selectSearch(name) {
 	var divs = el.getElementsByTagName('div');
 	for (var i=0; i < divs.length; i++) {
 		var div = divs[i];
-		if (selectValue(div.firstChild) == name) {
+		if (/select/i.test(div.firstChild.tagName) && selectValue(div.firstChild) == name) {
 			break;
 		}
 	}

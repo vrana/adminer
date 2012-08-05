@@ -3,6 +3,9 @@
 function bodyLoad(version) {
 }
 
+function selectFieldChange(form) {
+}
+
 function whisperClick(event, field) {
 	var el = event.target || event.srcElement;
 	if (/^a$/i.test(el.tagName) && !(event.button || event.ctrlKey || event.shiftKey || event.altKey || event.metaKey)) {

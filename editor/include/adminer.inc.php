@@ -193,7 +193,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	
 	function selectSearchPrint($where, $columns, $indexes) {
 		$where = (array) $_GET["where"];
-		echo '<fieldset><legend>' . lang('Search') . "</legend><div>\n";
+		echo '<fieldset id="fieldset-search"><legend>' . lang('Search') . "</legend><div>\n";
 		$keys = array();
 		foreach ($where as $key => $val) {
 			$keys[$val["col"]] = $key;
