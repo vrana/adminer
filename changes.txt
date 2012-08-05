@@ -1,4 +1,4 @@
-Adminer 3.4.1-dev:
+Adminer 3.5.0 (released 2012-08-05):
 Links for column search in select
 Autohide column context menu in select
 Autodisplay long table names in tables list
