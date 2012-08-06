@@ -36,6 +36,7 @@ function bodyLoad(version) {
 		};
 		document.body.appendChild(script);
 	}
+    loadMenuPosition();
 }
 
 /** Get value of dynamically created form field
