@@ -64,7 +64,7 @@ function typePassword(el, disable) {
 }
 
 function loginDriver(driver) {
-	var trs = driver.parentNode.parentNode.parentNode.rows;
+	var trs = parentTag(driver, 'table').rows;
 	for (var i=1; i < trs.length - 1; i++) {
 		trs[i].className = (/sqlite/.test(driver.value) ? 'hidden' : '');
 	}
@@ -236,7 +236,7 @@ function editingAddRow(button, allowed, focus) {
 	}
 	var match = /(\d+)(\.\d+)?/.exec(button.name);
 	var x = match[0] + (match[2] ? added.substr(match[2].length) : added) + '1';
-	var row = button.parentNode.parentNode;
+	var row = parentTag(button, 'tr');
 	var row2 = row.cloneNode(true);
 	var tags = row.getElementsByTagName('select');
 	var tags2 = row2.getElementsByTagName('select');
@@ -282,7 +282,7 @@ function editingAddRow(button, allowed, focus) {
 function editingRemoveRow(button) {
 	var field = formField(button.form, button.name.replace(/drop_col(.+)/, 'fields$1[field]'));
 	field.parentNode.removeChild(field);
-	button.parentNode.parentNode.style.display = 'none';
+	parentTag(button, 'tr').style.display = 'none';
 	return true;
 }
 
@@ -368,9 +368,9 @@ function partitionByChange(el) {
 * @param HTMLInputElement
 */
 function partitionNameChange(el) {
-	var row = el.parentNode.parentNode.cloneNode(true);
+	var row = parentTag(el, 'tr').cloneNode(true);
 	row.firstChild.firstChild.value = '';
-	el.parentNode.parentNode.parentNode.appendChild(row);
+	parentTag(el, 'table').appendChild(row);
 	el.onchange = function () {};
 }
 
@@ -381,13 +381,13 @@ function partitionNameChange(el) {
 */
 function foreignAddRow(field) {
 	field.onchange = function () { };
-	var row = field.parentNode.parentNode.cloneNode(true);
+	var row = parentTag(field, 'tr').cloneNode(true);
 	var selects = row.getElementsByTagName('select');
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/\]/, '1$&');
 		selects[i].selectedIndex = 0;
 	}
-	field.parentNode.parentNode.parentNode.appendChild(row);
+	parentTag(field, 'table').appendChild(row);
 }
 
 
@@ -397,8 +397,7 @@ function foreignAddRow(field) {
 */
 function indexesAddRow(field) {
 	field.onchange = function () { };
-	var parent = field.parentNode.parentNode;
-	var row = parent.cloneNode(true);
+	var row = parentTag(field, 'tr').cloneNode(true);
 	var selects = row.getElementsByTagName('select');
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/indexes\[\d+/, '$&1');
@@ -409,7 +408,7 @@ function indexesAddRow(field) {
 		inputs[i].name = inputs[i].name.replace(/indexes\[\d+/, '$&1');
 		inputs[i].value = '';
 	}
-	parent.parentNode.appendChild(row);
+	parentTag(field, 'table').appendChild(row);
 }
 
 /** Change column in index
@@ -417,7 +416,7 @@ function indexesAddRow(field) {
 * @param string name prefix
 */
 function indexesChangeColumn(field, prefix) {
-	var columns = field.parentNode.parentNode.getElementsByTagName('select');
+	var columns = parentTag(field, 'td').getElementsByTagName('select');
 	var names = [];
 	for (var i=0; i < columns.length; i++) {
 		var value = selectValue(columns[i]);
@@ -448,7 +447,7 @@ function indexesAddColumn(field, prefix) {
 	var input = column.getElementsByTagName('input')[0];
 	input.name = input.name.replace(/\]\[\d+/, '$&1');
 	input.value = '';
-	field.parentNode.parentNode.appendChild(column);
+	parentTag(field, 'td').appendChild(column);
 	field.onchange();
 }
 

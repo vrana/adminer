@@ -38,11 +38,24 @@ function selectValue(select) {
 	return ((selected.attributes.value || {}).specified ? selected.value : selected.text);
 }
 
+/** Get parent node with specified tag name.
+ * @param HTMLElement
+ * @param string
+ * @return HTMLElement
+ */
+function parentTag(el, tag) {
+	var re = new RegExp('^' + tag + '$', 'i');
+	while (!re.test(el.tagName)) {
+		el = el.parentNode;
+	}
+	return el;
+}
+
 /** Set checked class
 * @param HTMLInputElement
 */
 function trCheck(el) {
-	var tr = el.parentNode.parentNode;
+	var tr = parentTag(el, 'tr');
 	tr.className = tr.className.replace(/(^|\s)checked(\s|$)/, '$2') + (el.checked ? ' checked' : '');
 }
 
@@ -135,7 +148,7 @@ function checkboxClick(event, el) {
 	}
 	if (event.shiftKey && (!lastChecked || lastChecked.name == el.name)) {
 		var checked = (lastChecked ? lastChecked.checked : true);
-		var inputs = el.parentNode.parentNode.parentNode.getElementsByTagName('input');
+		var inputs = parentTag(el, 'table').getElementsByTagName('input');
 		var checking = !lastChecked;
 		for (var i=0; i < inputs.length; i++) {
 			var input = inputs[i];
