@@ -152,8 +152,9 @@ function checkboxClick(event, el) {
 				}
 			}
 		}
+	} else {
+		lastChecked = el;
 	}
-	lastChecked = el;
 }
 
 /** Set HTML code of an element
