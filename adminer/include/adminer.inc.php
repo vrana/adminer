@@ -821,7 +821,7 @@ DROP PROCEDURE adminer_alter;
 				: (isset($_GET["dump"]) ? '<input type="hidden" name="dump" value="">'
 			: "")));
 			echo "</p></form>\n";
-			if ($_GET["ns"] !== "" && !$missing) {
+			if ($_GET["ns"] !== "" && !$missing && DB != "") {
 				echo '<p><a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create new table') . "</a>\n";
 				$tables = tables_list();
 				if (!$tables) {
