@@ -197,11 +197,11 @@ if (DB != "") {
 		$name = $table_status["Name"];
 		$prefix = ereg_replace("_.*", "", $name);
 		$checked = ($TABLE == "" || $TABLE == (substr($TABLE, -1) == "%" ? "$prefix%" : $name)); //! % may be part of table name
-		$print = "<tr><td>" . checkbox("tables[]", $name, $checked, $name, "formUncheck('check-tables');");
+		$print = "<tr><td>" . checkbox("tables[]", $name, $checked, $name, "checkboxClick(event, this); formUncheck('check-tables');");
 		if (is_view($table_status)) {
 			$views .= "$print\n";
 		} else {
-			echo "$print<td align='right'><label>" . ($table_status["Engine"] == "InnoDB" && $table_status["Rows"] ? "~ " : "") . $table_status["Rows"] . checkbox("data[]", $name, $checked, "", "formUncheck('check-data');") . "</label>\n";
+			echo "$print<td align='right'><label>" . ($table_status["Engine"] == "InnoDB" && $table_status["Rows"] ? "~ " : "") . $table_status["Rows"] . checkbox("data[]", $name, $checked, "", "checkboxClick(event, this); formUncheck('check-data');") . "</label>\n";
 		}
 		$prefixes[$prefix]++;
 	}
