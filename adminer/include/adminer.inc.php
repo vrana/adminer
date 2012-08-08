@@ -777,7 +777,7 @@ DROP PROCEDURE adminer_alter;
 					foreach ($usernames as $username => $password) {
 						if ($password !== null) {
 							if ($first) {
-								echo "<p>\n";
+								echo "<p id='logins' onmouseover='menuOver(this);' onmouseout='menuOut(this);'>\n";
 								$first = false;
 							}
 							echo "<a href='" . h(auth_url($driver, $server, $username)) . "'>($drivers[$driver]) " . h($username . ($server != "" ? "@$server" : "")) . "</a><br>\n";
@@ -803,7 +803,7 @@ DROP PROCEDURE adminer_alter;
 </p>
 </form>
 <form action="">
-<p style="overflow: hidden;">
+<p id="dbs">
 <?php hidden_fields_get(); ?>
 <?php echo ($databases ? html_select("db", array("" => "(" . lang('database') . ")") + $databases, DB, "this.form.submit();") : '<input name="db" value="' . h(DB) . '">'); ?>
 <input type="submit" value="<?php echo lang('Use'); ?>"<?php echo ($databases ? " class='hidden'" : ""); ?>>
@@ -848,7 +848,7 @@ DROP PROCEDURE adminer_alter;
 	* @return null
 	*/
 	function tablesPrint($tables) {
-		echo '<p id="tables" onmouseover="this.style.overflow = \'visible\';" onmouseout="this.style.overflow = \'auto\';">' . "\n";
+		echo '<p id="tables" onmouseover="menuOver(this);" onmouseout="menuOut(this);">' . "\n";
 		foreach ($tables as $table => $type) {
 			echo '<a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table) . ">" . lang('select') . "</a> ";
 			echo '<a href="' . h(ME) . 'table=' . urlencode($table) . '"' . bold($_GET["table"] == $table) . " title='" . lang('Show structure') . "'>" . $this->tableName(array("Name" => $table)) . "</a><br>\n"; //! Adminer::tableName may work with full table status

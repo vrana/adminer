@@ -195,6 +195,14 @@ function pageClick(href, page, event) {
 	}
 }
 
+function menuOver(el) {
+	el.style.overflow = 'visible';
+}
+
+function menuOut(el) {
+	el.style.overflow = 'auto';
+}
+
 
 
 /** Add row in select fieldset
