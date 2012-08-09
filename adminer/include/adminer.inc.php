@@ -672,25 +672,32 @@ DROP PROCEDURE adminer_alter;
 			if ($result) {
 				$insert = "";
 				$buffer = "";
-				while ($row = $result->fetch_assoc()) {
+				$keys = array();
+				while ($row = $result->fetch_row()) {
+					if (!$keys) {
+						foreach ($row as $val) {
+							$field = $result->fetch_field();
+							$keys[] = $field->name;
+						}
+					}
 					if ($_POST["format"] != "sql") {
 						if ($style == "table") {
-							dump_csv(array_keys($row));
+							dump_csv($keys);
 							$style = "INSERT";
 						}
 						dump_csv($row);
 					} else {
 						if (!$insert) {
-							$insert = "INSERT INTO " . table($table) . " (" . implode(", ", array_map('idf_escape', array_keys($row))) . ") VALUES";
+							$insert = "INSERT INTO " . table($table) . " (" . implode(", ", array_map('idf_escape', $keys)) . ") VALUES";
 						}
 						foreach ($row as $key => $val) {
-							$row[$key] = ($val !== null ? (ereg('int|float|double|decimal|bit', $fields[$key]["type"]) ? $val : q($val)) : "NULL"); //! columns looking like functions
+							$row[$key] = ($val !== null ? (ereg('int|float|double|decimal|bit', $fields[$keys[$key]]["type"]) ? $val : q($val)) : "NULL"); //! columns looking like functions
 						}
 						$s = implode(",\t", $row);
 						if ($style == "INSERT+UPDATE") {
 							$set = array();
 							foreach ($row as $key => $val) {
-								$set[] = idf_escape($key) . " = $val";
+								$set[] = idf_escape($keys[$key]) . " = $val";
 							}
 							echo "$insert ($s) ON DUPLICATE KEY UPDATE " . implode(", ", $set) . ";\n";
 						} else {

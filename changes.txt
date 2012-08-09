@@ -1,4 +1,6 @@
 Adminer 3.5.1-dev:
+Support same name fields in CSV export
+Support Shift+click in export
 
 Adminer 3.5.0 (released 2012-08-05):
 Links for column search in select
