@@ -395,7 +395,7 @@ username.form['auth[driver]'].onchange();
 					// find anywhere
 					$cols = array();
 					foreach ($fields as $name => $field) {
-						if (is_numeric($val["val"]) || !ereg('int|float|double|decimal', $field["type"])) {
+						if (is_numeric($val["val"]) || !ereg('int|float|double|decimal|bit', $field["type"])) {
 							$name = idf_escape($name);
 							$cols[] = ($jush == "sql" && ereg('char|text|enum|set', $field["type"]) && !ereg('^utf8', $field["collation"]) ? "CONVERT($name USING utf8)" : $name);
 						}
