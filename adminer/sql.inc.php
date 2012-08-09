@@ -58,7 +58,7 @@ if (!$error && $_POST) {
 		$dump_format = $adminer->dumpFormat();
 		unset($dump_format["sql"]);
 		while ($query != "") {
-			if (!$offset && preg_match("~^$space*DELIMITER\\s+(.+)~i", $query, $match)) {
+			if (!$offset && preg_match("~^$space*DELIMITER\\s+(\\S+)~i", $query, $match)) {
 				$delimiter = $match[1];
 				$query = substr($query, strlen($match[0]));
 			} else {
