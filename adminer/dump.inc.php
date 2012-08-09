@@ -48,14 +48,14 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 					foreach (array("FUNCTION", "PROCEDURE") as $routine) {
 						foreach (get_rows("SHOW $routine STATUS WHERE Db = " . q($db), null, "-- ") as $row) {
 							$out .= ($style != 'DROP+CREATE' ? "DROP $routine IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
-							. $connection->result("SHOW CREATE $routine " . idf_escape($row["Name"]), 2) . ";;\n\n";
+							. remove_definer($connection->result("SHOW CREATE $routine " . idf_escape($row["Name"]), 2)) . ";;\n\n";
 						}
 					}
 				}
 				if ($_POST["events"]) {
 					foreach (get_rows("SHOW EVENTS", null, "-- ") as $row) {
 						$out .= ($style != 'DROP+CREATE' ? "DROP EVENT IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
-						. $connection->result("SHOW CREATE EVENT " . idf_escape($row["Name"]), 3) . ";;\n\n";
+						. remove_definer($connection->result("SHOW CREATE EVENT " . idf_escape($row["Name"]), 3)) . ";;\n\n";
 					}
 				}
 				if ($out) {

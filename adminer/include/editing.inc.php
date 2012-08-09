@@ -357,6 +357,14 @@ function drop_create($drop, $create, $location, $message_drop, $message_alter, $
 	return $dropped;
 }
 
+/** Remove current user definer from SQL command
+ * @param string
+ * @return string
+ */
+function remove_definer($query) {
+	return preg_replace('~^([A-Z =]+) DEFINER=`' . preg_replace('~@(.*)~', '`@`(%|\\1)', logged_user()) . '`~', '\\1', $query); //! proper escaping of user
+}
+
 /** Get string to add a file in TAR
 * @param string
 * @param string
