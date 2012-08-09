@@ -855,7 +855,7 @@ DROP PROCEDURE adminer_alter;
 	* @return null
 	*/
 	function tablesPrint($tables) {
-		echo '<p id="tables" onmouseover="menuOver(this);" onmouseout="menuOut(this);">' . "\n";
+		echo "<p id='tables' onmouseover='menuOver(this);' onmouseout='menuOut(this);'>\n";
 		foreach ($tables as $table => $type) {
 			echo '<a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table) . ">" . lang('select') . "</a> ";
 			echo '<a href="' . h(ME) . 'table=' . urlencode($table) . '"' . bold($_GET["table"] == $table) . " title='" . lang('Show structure') . "'>" . $this->tableName(array("Name" => $table)) . "</a><br>\n"; //! Adminer::tableName may work with full table status
