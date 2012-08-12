@@ -672,12 +672,17 @@ DROP PROCEDURE adminer_alter;
 				$insert = "";
 				$buffer = "";
 				$keys = array();
+				$suffix = "";
 				while ($row = $result->fetch_row()) {
 					if (!$keys) {
+						$values = array();
 						foreach ($row as $val) {
 							$field = $result->fetch_field();
 							$keys[] = $field->name;
+							$key = idf_escape($field->name);
+							$values[] = "$key = VALUES($key)";
 						}
+						$suffix = ($style == "INSERT+UPDATE" ? "\nON DUPLICATE KEY UPDATE " . implode(", ", $values) : "") . ";\n";
 					}
 					if ($_POST["format"] != "sql") {
 						if ($style == "table") {
@@ -692,29 +697,19 @@ DROP PROCEDURE adminer_alter;
 						foreach ($row as $key => $val) {
 							$row[$key] = ($val !== null ? (ereg('int|float|double|decimal|bit', $fields[$keys[$key]]["type"]) ? $val : q($val)) : "NULL"); //! columns looking like functions
 						}
-						$s = implode(",\t", $row);
-						if ($style == "INSERT+UPDATE") {
-							$set = array();
-							foreach ($row as $key => $val) {
-								$set[] = idf_escape($keys[$key]) . " = $val";
-							}
-							echo "$insert ($s) ON DUPLICATE KEY UPDATE " . implode(", ", $set) . ";\n";
+						$s = ($max_packet ? "\n" : " ") . "(" . implode(",\t", $row) . ")";
+						if (!$buffer) {
+							$buffer = $insert . $s;
+						} elseif (strlen($buffer) + 4 + strlen($s) + strlen($suffix) < $max_packet) { // 4 - length specification
+							$buffer .= ",$s";
 						} else {
-							$s = ($max_packet ? "\n" : " ") . "($s)";
-							if (!$buffer) {
-								$buffer = $insert . $s;
-							} elseif (strlen($buffer) + 4 + strlen($s) < $max_packet) { // 4 - length specification
-								$buffer .= ",$s";
-							} else {
-								echo "$buffer;\n";
-								$buffer = $insert . $s;
-							}
+							echo $buffer . $suffix;
+							$buffer = $insert . $s;
 						}
 					}
 				}
-				if ($_POST["format"] == "sql" && $style != "INSERT+UPDATE" && $buffer) {
-					$buffer .= ";\n";
-					echo $buffer;
+				if ($buffer) {
+					echo $buffer . $suffix;
 				}
 			} elseif ($_POST["format"] == "sql") {
 				echo "-- " . str_replace("\n", " ", $connection->error) . "\n";

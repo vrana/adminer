@@ -1,5 +1,6 @@
 Adminer 3.5.2-dev:
 Edit strings with \n in textarea
+Use VALUES() in INSERT+UPDATE export
 Style logout button as link
 
 Adminer 3.5.1 (released 2012-08-10):
