@@ -391,6 +391,7 @@ function selectDblClick(td, event, text) {
 		return;
 	}
 	var original = td.innerHTML;
+	text = text || /\n/.test(original);
 	var input = document.createElement(text ? 'textarea' : 'input');
 	input.onkeydown = function (event) {
 		if (!event) {
