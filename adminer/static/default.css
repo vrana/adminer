@@ -45,10 +45,10 @@ input[type=image] { vertical-align: middle; }
 .active { font-weight: bold; }
 .sqlarea { width: 98%; }
 .icon { width: 18px; height: 18px; }
-#menu { position: absolute; margin: 10px 0 0; padding: 0 0 30px 0; top: 2em; left: 0; width: 19em; white-space: nowrap; }
+#menu { position: absolute; margin: 10px 0 0; padding: 0 0 30px 0; top: 2em; left: 0; width: 19em; }
 #menu p { padding: .8em 1em; margin: 0; border-bottom: 1px solid #ccc; }
 #dbs { overflow: hidden; }
-#logins, #tables { overflow: auto; }
+#logins, #tables { white-space: nowrap; overflow: auto; }
 #logins a, #tables a { background: #fff; }
 #logout { background: none; border: none; color: blue; font: inherit; padding: 0; text-decoration: underline; cursor: pointer; }
 #logout:hover { color: red; }
