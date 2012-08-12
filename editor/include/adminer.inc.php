@@ -544,7 +544,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			?>
 <form action="" method="post">
 <p class="logout">
-<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>">
+<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" id="logout">
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </p>
 </form>
