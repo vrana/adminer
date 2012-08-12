@@ -13,10 +13,10 @@ if ($_POST) {
 		echo "-- Adminer $VERSION " . $drivers[DRIVER] . " dump
 
 " . ($jush != "sql" ? "" : "SET NAMES utf8;
-SET foreign_key_checks = 0;
+" . ($_POST["data_style"] ? "SET foreign_key_checks = 0;
 SET time_zone = " . q($connection->result("SELECT @@time_zone")) . ";
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
-
+" : "") . "
 ");
 	}
 	
