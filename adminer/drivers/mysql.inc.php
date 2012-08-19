@@ -265,7 +265,7 @@ if (!defined("DRIVER")) {
 	* @param bool
 	* @return array
 	*/
-	function get_databases($flush = true) {
+	function get_databases($flush) {
 		global $connection;
 		// SHOW DATABASES can take a very long time so it is cached
 		$return = &get_session("dbs");
