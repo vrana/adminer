@@ -26,6 +26,7 @@ function connect_error() {
 		if ($_GET["refresh"]) {
 			set_session("dbs", null);
 		}
+		$refresh = "<a href='" . h(ME) . "refresh=1'>" . lang('Refresh') . "</a>\n";
 		$databases = $adminer->databases();
 		if ($databases) {
 			$scheme = support("scheme");
@@ -45,8 +46,10 @@ function connect_error() {
 			echo "<script type='text/javascript'>tableCheck();</script>\n";
 			echo "<p><input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm("formChecked(this, /db/)") . ">\n";
 			echo "<input type='hidden' name='token' value='$token'>\n";
-			echo "<a href='" . h(ME) . "refresh=1'>" . lang('Refresh') . "</a>\n";
+			echo $refresh;
 			echo "</form>\n";
+		} else {
+			echo "<p>$refresh";
 		}
 	}
 	page_footer("db");
