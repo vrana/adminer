@@ -396,6 +396,15 @@ function restart_session() {
 	}
 }
 
+/** Stop session if it would be possible to restart it later
+* @return null
+*/
+function stop_session() {
+	if (!ini_bool("session.use_cookies")) {
+		session_write_close();
+	}
+}
+
 /** Get session variable for current server
 * @param string
 * @return mixed

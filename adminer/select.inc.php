@@ -189,7 +189,6 @@ if ($_POST && !$error) {
 
 $table_name = $adminer->tableName($table_status);
 page_header(lang('Select') . ": $table_name", $error);
-session_write_close();
 
 $set = null;
 if (isset($rights["insert"])) {

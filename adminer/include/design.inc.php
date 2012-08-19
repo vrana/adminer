@@ -77,6 +77,7 @@ document.body.className = document.body.className.replace(/ nojs/, ' js');
 	if (DB != "" && $databases && !in_array(DB, $databases, true)) {
 		$databases = null;
 	}
+	stop_session();
 	if ($error) {
 		echo "<div class='error'>$error</div>\n";
 	}

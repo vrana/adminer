@@ -39,9 +39,6 @@ if (!$error && $_POST) {
 			}
 		}
 		$space = "(?:\\s|/\\*.*\\*/|(?:#|-- )[^\n]*\n|--\n)";
-		if (!ini_bool("session.use_cookies")) {
-			session_write_close();
-		}
 		$delimiter = ";";
 		$offset = 0;
 		$empty = true;
@@ -136,7 +133,7 @@ if (!$error && $_POST) {
 								if (preg_match("~^$space*(CREATE|DROP|ALTER)$space+(DATABASE|SCHEMA)\\b~isU", $q)) {
 									restart_session();
 									set_session("dbs", null); // clear cache
-									session_write_close();
+									stop_session();
 								}
 								if (!$_POST["only_errors"]) {
 									echo "<p class='message' title='" . h($connection->info) . "'>" . lang('Query executed OK, %d row(s) affected.', $connection->affected_rows) . "$time\n";

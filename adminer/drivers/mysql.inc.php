@@ -271,11 +271,13 @@ if (!defined("DRIVER")) {
 		$return = &get_session("dbs");
 		if ($return === null) {
 			if ($flush) {
-				restart_session();
 				ob_flush();
 				flush();
 			}
-			$return = get_vals($connection->server_info >= 5 ? "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA" : "SHOW DATABASES"); // SHOW DATABASES can be disabled by skip_show_database
+			$databases = get_vals($connection->server_info >= 5 ? "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA" : "SHOW DATABASES"); // SHOW DATABASES can be disabled by skip_show_database
+			restart_session();
+			$return = $databases;
+			stop_session();
 		}
 		return $return;
 	}

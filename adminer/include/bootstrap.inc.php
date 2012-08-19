@@ -76,8 +76,8 @@ include "../adminer/include/auth.inc.php";
 include "./include/connect.inc.php";
 include "./include/editing.inc.php";
 
-session_cache_limiter(""); // to allow restarting session
 if (!ini_bool("session.use_cookies") || @ini_set("session.use_cookies", false) !== false) { // @ - may be disabled
+	session_cache_limiter(""); // to allow restarting session
 	session_write_close(); // improves concurrency if a user opens several pages at once, may be restarted later
 }
 
