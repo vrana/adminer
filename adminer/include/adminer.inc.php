@@ -787,7 +787,6 @@ DROP PROCEDURE adminer_alter;
 				}
 			}
 		} else {
-			$databases = $this->databases();
 			?>
 <form action="" method="post">
 <p class="logout">
@@ -803,6 +802,7 @@ DROP PROCEDURE adminer_alter;
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </p>
 </form>
+<?php $databases = $this->databases(); ?>
 <form action="">
 <p id="dbs">
 <?php hidden_fields_get(); ?>
