@@ -188,6 +188,9 @@ if ($_POST && !$error) {
 }
 
 $table_name = $adminer->tableName($table_status);
+if (is_ajax()) {
+	ob_start('clean_output');
+}
 page_header(lang('Select') . ": $table_name", $error);
 
 $set = null;
@@ -258,7 +261,7 @@ if (!$columns) {
 		} else {
 			$backward_keys = $adminer->backwardKeys($TABLE, $table_name);
 			
-			echo "<table cellspacing='0' class='nowrap checkable' onclick='tableClick(event);' onkeydown='return editingKeydown(event);'>\n";
+			echo "<table id='table' cellspacing='0' class='nowrap checkable' onclick='tableClick(event);' onkeydown='return editingKeydown(event);'>\n";
 			echo "<thead><tr>" . (!$group && $select ? "" : "<td><input type='checkbox' id='all-page' onclick='formCheck(this, /check/);'> <a href='" . h($_GET["modify"] ? remove_from_uri("modify") : $_SERVER["REQUEST_URI"] . "&modify=1") . "'>" . lang('edit') . "</a>");
 			$names = array();
 			$functions = array();
@@ -298,6 +301,12 @@ if (!$columns) {
 				}
 			}
 			echo ($backward_keys ? "<th>" . lang('Relations') : "") . "</thead>\n";
+			if (is_ajax()) {
+				if ($limit % 2 == 1 && $page % 2 == 1) {
+					odd();
+				}
+				ob_end_clean();
+			}
 			foreach ($adminer->rowDescriptions($rows, $foreign_keys) as $n => $row) {
 				$unique_array = unique_array($rows[$n], $indexes);
 				$unique_idf = "";
@@ -383,6 +392,9 @@ if (!$columns) {
 				$adminer->backwardKeysPrint($backward_keys, $rows[$n]);
 				echo "</tr>\n"; // close to allow white-space: pre
 			}
+			if (is_ajax()) {
+				exit;
+			}
 			echo "</table>\n";
 			echo (!$group && $select ? "" : "<script type='text/javascript'>tableCheck();</script>\n");
 		}
@@ -413,6 +425,9 @@ if (!$columns) {
 					echo pagination($i, $page);
 				}
 				echo ($page + 5 < $max_page ? " ..." : "") . ($exact_count && $found_rows !== false ? pagination($max_page, $page) : ' <a href="' . h(remove_from_uri("page") . "&page=last") . '">' . lang('last') . "</a>");
+				if (count($rows) >= $limit) {
+					echo ' <a href="' . h(remove_from_uri("page") . "&page=" . ($page + 1)) . '" onclick="return !selectLoadMore(this, ' . (+$limit) . ', \'' . lang('Loading') . '\');">' . lang('Load more data') . '</a>';
+				}
 			}
 			echo ($found_rows !== false ? " (" . ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) . ")" : "") . " " . checkbox("all", 1, 0, lang('whole result')) . "\n";
 			
@@ -449,4 +464,8 @@ if (!$columns) {
 		
 		echo "</form>\n";
 	}
+}
+
+if (is_ajax()) {
+	exit;
 }

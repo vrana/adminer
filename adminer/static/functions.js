@@ -446,6 +446,38 @@ function selectDblClick(td, event, text) {
 
 
 
+/** Load and display next page in select
+* @param HTMLLinkElement
+* @param string
+* @param number
+* @return boolean
+*/
+function selectLoadMore(a, limit, loading) {
+	var title = a.innerHTML;
+	var href = a.href;
+	a.innerHTML = loading;
+	if (href) {
+		a.removeAttribute('href');
+		return ajax(href, function (request) {
+			document.getElementById('table').innerHTML += request.responseText;
+			var rows = 0;
+			request.responseText.replace(/(^|\n)<tr/g, function () {
+				rows++;
+			});
+			if (rows < limit) {
+				a.parentNode.removeChild(a);
+			} else {
+				a.href = href.replace(/\d+$/, function (page) {
+					return +page + 1;
+				});
+				a.innerHTML = title;
+			}
+		});
+	}
+}
+
+
+
 /** Stop event propagation
 * @param Event
 */

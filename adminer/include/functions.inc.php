@@ -937,3 +937,10 @@ function cancel_kill_timeout() {
 		}
 	}
 }
+
+/** Callback registered to erase output buffer in AJAX calls
+* @return string
+*/
+function clean_output() {
+	return '';
+}

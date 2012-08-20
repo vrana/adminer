@@ -1,4 +1,5 @@
-Adminer 3.5.2-dev:
+Adminer 3.6.0-dev:
+Load more data in select
 Edit strings with \n in textarea
 Time out long running database list and select count
 Use VALUES() in INSERT+UPDATE export

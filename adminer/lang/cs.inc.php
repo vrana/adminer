@@ -234,6 +234,8 @@ $translations = array(
 	'Page' => 'Stránka',
 	'last' => 'poslední',
 	'Last page' => 'Poslední stránka',
+	'Load more data' => 'Nahrát další data',
+	'Loading' => 'Nahrává se',
 	'whole result' => 'celý výsledek',
 	'%d byte(s)' => array('%d bajt', '%d bajty', '%d bajtů'),
 	
