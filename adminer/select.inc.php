@@ -412,7 +412,7 @@ if (!$columns) {
 				for ($i = max(1, $page - 4); $i < min($max_page, $page + 5); $i++) {
 					echo pagination($i, $page);
 				}
-				echo ($page + 5 < $max_page ? " ..." : "") . ($exact_count && $found_rows !== false ? pagination($max_page, $page) : ' <a href="' . h(remove_from_uri() . "&page=last") . '">' . lang('last') . "</a>");
+				echo ($page + 5 < $max_page ? " ..." : "") . ($exact_count && $found_rows !== false ? pagination($max_page, $page) : ' <a href="' . h(remove_from_uri("page") . "&page=last") . '">' . lang('last') . "</a>");
 			}
 			echo ($found_rows !== false ? " (" . ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) . ")" : "") . " " . checkbox("all", 1, 0, lang('whole result')) . "\n";
 			
