@@ -905,6 +905,7 @@ function is_url($string) {
 function kill_timeout() {
 	global $adminer, $token;
 	$kill = mt_rand();
+	if (support("kill")) {
 	?>
 <script type="text/javascript">
 var timeout = setTimeout(function () {
@@ -913,6 +914,7 @@ var timeout = setTimeout(function () {
 }, <?php echo 1000 * $adminer->queryTimeout(); ?>);
 </script>
 <?php
+	}
 	ob_flush();
 	flush();
 	return $kill;
@@ -923,13 +925,15 @@ var timeout = setTimeout(function () {
 */
 function cancel_kill_timeout() {
 	global $connection;
-	echo "<script type='text/javascript'>clearTimeout(timeout);</script>\n";
-	ob_flush();
-	flush();
-	if ($connection->errno == 2006) { // 2006 - CR_SERVER_GONE_ERROR
-		$connection2 = connect();
-		if (is_object($connection2)) {
-			$connection = $connection2;
+	if (support("kill")) {
+		echo "<script type='text/javascript'>clearTimeout(timeout);</script>\n";
+		ob_flush();
+		flush();
+		if ($connection->errno == 2006) { // 2006 - CR_SERVER_GONE_ERROR
+			$connection2 = connect();
+			if (is_object($connection2)) {
+				$connection = $connection2;
+			}
 		}
 	}
 }

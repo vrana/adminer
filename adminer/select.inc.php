@@ -393,25 +393,28 @@ if (!$columns) {
 				$found_rows = found_rows($table_status, $where);
 				if ($found_rows < max(1e4, 2 * ($page + 1) * $limit)) {
 					// slow with big tables
-					ob_flush();
-					flush();
-					$found_rows = $connection->result("SELECT COUNT(*) FROM " . table($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : ""));
+					$kill = kill_timeout();
+					$found_rows = @$connection->result("/* Adminer $kill */ SELECT COUNT(*) FROM " . table($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : "")); // @ - may be kill
+					cancel_kill_timeout();
 				} else {
 					$exact_count = false;
 				}
 			}
 			echo "<p class='pages'>";
-			if (+$limit && $found_rows > $limit) {
+			if (+$limit && ($found_rows === false || $found_rows > $limit)) {
 				// display first, previous 4, next 4 and last page
-				$max_page = floor(($found_rows - 1) / $limit);
+				$max_page = ($found_rows === false
+					? $page + (count($rows) >= $limit ? 2 : 1)
+					: floor(($found_rows - 1) / $limit)
+				);
 				echo '<a href="' . h(remove_from_uri("page")) . "\" onclick=\"pageClick(this.href, +prompt('" . lang('Page') . "', '" . ($page + 1) . "'), event); return false;\">" . lang('Page') . "</a>:";
 				echo pagination(0, $page) . ($page > 5 ? " ..." : "");
 				for ($i = max(1, $page - 4); $i < min($max_page, $page + 5); $i++) {
 					echo pagination($i, $page);
 				}
-				echo ($page + 5 < $max_page ? " ..." : "") . ($exact_count ? pagination($max_page, $page) : ' <a href="' . h(remove_from_uri() . "&page=last") . '">' . lang('last') . "</a>");
+				echo ($page + 5 < $max_page ? " ..." : "") . ($exact_count && $found_rows !== false ? pagination($max_page, $page) : ' <a href="' . h(remove_from_uri() . "&page=last") . '">' . lang('last') . "</a>");
 			}
-			echo " (" . ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) . ") " . checkbox("all", 1, 0, lang('whole result')) . "\n";
+			echo ($found_rows !== false ? " (" . ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) . ")" : "") . " " . checkbox("all", 1, 0, lang('whole result')) . "\n";
 			
 			if ($adminer->selectCommandPrint()) {
 				?>
