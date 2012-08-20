@@ -905,7 +905,8 @@ function is_url($string) {
 */
 function slow_query($query) {
 	global $adminer, $token;
-	if (support("kill") && is_object($connection2 = connect()) && (DB == "" || $connection2->select_db(DB))) {
+	$db = $adminer->database();
+	if (support("kill") && is_object($connection2 = connect()) && ($db == "" || $connection2->select_db($db))) {
 		$kill = $connection2->result("SELECT CONNECTION_ID()"); // MySQL and MySQLi can use thread_id but it's not in PDO_MySQL
 		?>
 <script type="text/javascript">

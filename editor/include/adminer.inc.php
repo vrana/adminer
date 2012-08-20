@@ -30,6 +30,10 @@ class Adminer {
 		return get_databases($flush);
 	}
 	
+	function queryTimeout() {
+		return 5;
+	}
+	
 	function headers() {
 		return true;
 	}
