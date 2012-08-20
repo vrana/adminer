@@ -898,3 +898,38 @@ function is_url($string) {
 	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component //! IDN
 	return (preg_match("~^(https?)://($domain?\\.)+$domain(:\\d+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string, $match) ? strtolower($match[1]) : ""); //! restrict path, query and fragment characters
 }
+
+/** Launch timeout after which the query will be killed
+* @return int kill token
+*/
+function kill_timeout() {
+	global $adminer, $token;
+	$kill = mt_rand();
+	?>
+<script type="text/javascript">
+var timeout = setTimeout(function () {
+	ajax('<?php echo js_escape(ME); ?>script=kill', function () {
+	}, 'token=<?php echo $token; ?>&kill=<?php echo $kill; ?>');
+}, <?php echo 1000 * $adminer->queryTimeout(); ?>);
+</script>
+<?php
+	ob_flush();
+	flush();
+	return $kill;
+}
+
+/** Cancel kill query timeout
+* @return null
+*/
+function cancel_kill_timeout() {
+	global $connection;
+	echo "<script type='text/javascript'>clearTimeout(timeout);</script>\n";
+	ob_flush();
+	flush();
+	if ($connection->errno == 2006) { // 2006 - CR_SERVER_GONE_ERROR
+		$connection2 = connect();
+		if (is_object($connection2)) {
+			$connection = $connection2;
+		}
+	}
+}

@@ -1,5 +1,6 @@
 Adminer 3.5.2-dev:
 Edit strings with \n in textarea
+Time out long running database list
 Use VALUES() in INSERT+UPDATE export
 Style logout button as link
 

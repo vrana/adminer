@@ -23,9 +23,6 @@ function connect_error() {
 		}
 		echo "<p>" . lang('%s version: %s through PHP extension %s', $drivers[DRIVER], "<b>$connection->server_info</b>", "<b>$connection->extension</b>") . "\n";
 		echo "<p>" . lang('Logged as: %s', "<b>" . h(logged_user()) . "</b>") . "\n";
-		if ($_GET["refresh"]) {
-			set_session("dbs", null);
-		}
 		$refresh = "<a href='" . h(ME) . "refresh=1'>" . lang('Refresh') . "</a>\n";
 		$databases = $adminer->databases();
 		if ($databases) {
@@ -61,8 +58,9 @@ function connect_error() {
 if (isset($_GET["status"])) {
 	$_GET["variables"] = $_GET["status"];
 }
-if (!(DB != "" ? $connection->select_db(DB) : isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]) || isset($_GET["processlist"]) || isset($_GET["privileges"]) || isset($_GET["user"]) || isset($_GET["variables"]) || $_GET["script"] == "connect")) {
-	if (DB != "") {
+if (!(DB != "" ? $connection->select_db(DB) : isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]) || isset($_GET["processlist"]) || isset($_GET["privileges"]) || isset($_GET["user"]) || isset($_GET["variables"]) || $_GET["script"] == "connect" || $_GET["script"] == "kill")) {
+	if (DB != "" || $_GET["refresh"]) {
+		restart_session();
 		set_session("dbs", null);
 	}
 	connect_error(); // separate function to catch SQLite error

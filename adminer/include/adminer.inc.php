@@ -42,6 +42,13 @@ class Adminer {
 		return get_databases($flush);
 	}
 	
+	/** Specify limit for waiting on some slow queries like DB list
+	* @return float number of seconds
+	*/
+	function queryTimeout() {
+		return 5;
+	}
+	
 	/** Headers to send before HTML output
 	* @return bool true to send security headers
 	*/
