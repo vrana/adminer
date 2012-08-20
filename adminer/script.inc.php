@@ -33,11 +33,7 @@ if ($_GET["script"] == "db") {
 	json_row("");
 
 } elseif ($_GET["script"] == "kill") {
-	foreach (process_list(false) as $process) {
-		if (ereg('^/\* Adminer ' . (+$_POST["kill"]) . ' \*/', $process["Info"])) {
-			$connection->query("KILL $process[Id]");
-		}
-	}
+	$connection->query("KILL " . (+$_POST["kill"]));
 
 } else { // connect
 	foreach (count_tables($adminer->databases()) as $db => $val) {

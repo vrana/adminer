@@ -405,9 +405,7 @@ if (!$columns) {
 				$found_rows = found_rows($table_status, $where);
 				if ($found_rows < max(1e4, 2 * ($page + 1) * $limit)) {
 					// slow with big tables
-					$kill = kill_timeout();
-					$found_rows = @$connection->result("/* Adminer $kill */ SELECT COUNT(*) FROM " . table($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : "")); // @ - may be kill
-					cancel_kill_timeout();
+					$found_rows = reset(slow_query("SELECT COUNT(*) FROM " . table($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : "")));
 				} else {
 					$exact_count = false;
 				}

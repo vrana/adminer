@@ -899,14 +899,15 @@ function is_url($string) {
 	return (preg_match("~^(https?)://($domain?\\.)+$domain(:\\d+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string, $match) ? strtolower($match[1]) : ""); //! restrict path, query and fragment characters
 }
 
-/** Launch timeout after which the query will be killed
-* @return int kill token
+/** Run query which can be killed by AJAX call after timing out
+* @param string
+* @return Min_Result
 */
-function kill_timeout() {
+function slow_query($query) {
 	global $adminer, $token;
-	$kill = mt_rand();
-	if (support("kill")) {
-	?>
+	if (support("kill") && is_object($connection2 = connect()) && (DB == "" || $connection2->select_db(DB))) {
+		$kill = $connection2->result("SELECT CONNECTION_ID()"); // MySQL and MySQLi can use thread_id but it's not in PDO_MySQL
+		?>
 <script type="text/javascript">
 var timeout = setTimeout(function () {
 	ajax('<?php echo js_escape(ME); ?>script=kill', function () {
@@ -914,28 +915,18 @@ var timeout = setTimeout(function () {
 }, <?php echo 1000 * $adminer->queryTimeout(); ?>);
 </script>
 <?php
+	} else {
+		$connection2 = null;
 	}
 	ob_flush();
 	flush();
-	return $kill;
-}
-
-/** Cancel kill query timeout
-* @return null
-*/
-function cancel_kill_timeout() {
-	global $connection;
-	if (support("kill")) {
+	$return = @get_key_vals($query, $connection2); // @ - may be killed
+	if ($connection2) {
 		echo "<script type='text/javascript'>clearTimeout(timeout);</script>\n";
 		ob_flush();
 		flush();
-		if ($connection->errno == 2006) { // 2006 - CR_SERVER_GONE_ERROR
-			$connection2 = connect();
-			if (is_object($connection2)) {
-				$connection = $connection2;
-			}
-		}
 	}
+	return array_keys($return);
 }
 
 /** Callback registered to erase output buffer in AJAX calls

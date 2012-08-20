@@ -270,14 +270,11 @@ if (!defined("DRIVER")) {
 		// SHOW DATABASES can take a very long time so it is cached
 		$return = get_session("dbs");
 		if ($return === null) {
-			$kill = ($flush ? kill_timeout() : 0);
-			$return = @get_vals("/* Adminer $kill */ " . ($connection->server_info >= 5 // @ - may be killed
+			$query = ($connection->server_info >= 5
 				? "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA"
 				: "SHOW DATABASES"
-			)); // SHOW DATABASES can be disabled by skip_show_database
-			if ($flush) {
-				cancel_kill_timeout();
-			}
+			); // SHOW DATABASES can be disabled by skip_show_database
+			$return = ($flush ? slow_query($query) : get_vals($query));
 			restart_session();
 			set_session("dbs", $return);
 			stop_session();
@@ -935,11 +932,10 @@ if (!defined("DRIVER")) {
 	}
 	
 	/** Get process list
-	* @param bool
 	* @return array ($row)
 	*/
-	function process_list($full = true) {
-		return get_rows("SHOW" . ($full ? " FULL" : "") . " PROCESSLIST");
+	function process_list() {
+		return get_rows("SHOW FULL PROCESSLIST");
 	}
 	
 	/** Get status variables
