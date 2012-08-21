@@ -538,7 +538,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			foreach ((array) $_SESSION["pwds"]["server"][""] as $username => $password) {
 				if ($password !== null) {
 					if ($first) {
-						echo "<p id='logins' onmouseover='menuOver(this);' onmouseout='menuOut(this);'>\n";
+						echo "<p id='logins' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";
 						$first = false;
 					}
 					echo "<a href='" . h(auth_url("server", "", $username)) . "'>" . ($username != "" ? h($username) : "<i>" . lang('empty') . "</i>") . "</a><br>\n";
@@ -569,7 +569,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	}
 	
 	function tablesPrint($tables) {
-		echo "<p id='tables' onmouseover='menuOver(this);' onmouseout='menuOut(this);'>\n";
+		echo "<p id='tables' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";
 		foreach ($tables as $row) {
 			$name = $this->tableName($row);
 			if (isset($row["Engine"]) && $name != "") { // ignore views and tables without name

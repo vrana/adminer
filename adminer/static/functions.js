@@ -209,10 +209,22 @@ function pageClick(href, page, event) {
 	}
 }
 
-function menuOver(el) {
-	el.style.overflow = 'visible';
+
+
+/** Display items in menu
+* @param HTMLElement
+* @param MouseEvent
+*/
+function menuOver(el, event) {
+	var a = event.target;
+	if (/^a$/i.test(a.tagName) && a.offsetLeft + a.offsetWidth > a.parentNode.offsetWidth) {
+		el.style.overflow = 'visible';
+	}
 }
 
+/** Hide items in menu
+* @param HTMLElement
+*/
 function menuOut(el) {
 	el.style.overflow = 'auto';
 }
