@@ -553,6 +553,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 </p>
 </form>
 <?php
+			$this->databasesPrint($missing);
 			if ($missing != "db" && $missing != "ns") {
 				$table_status = table_status();
 				if (!$table_status) {
@@ -562,6 +563,9 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 				}
 			}
 		}
+	}
+	
+	function databasesPrint($missing) {
 	}
 	
 	function tablesPrint($tables) {

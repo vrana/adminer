@@ -771,7 +771,7 @@ DROP PROCEDURE adminer_alter;
 	* @return null
 	*/
 	function navigation($missing) {
-		global $VERSION, $connection, $token, $jush, $drivers;
+		global $VERSION, $token, $jush, $drivers;
 		?>
 <h1>
 <?php echo $this->name(); ?> <span class="version"><?php echo $VERSION; ?></span>
@@ -809,26 +809,8 @@ DROP PROCEDURE adminer_alter;
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </p>
 </form>
-<?php $databases = $this->databases(); ?>
-<form action="">
-<p id="dbs">
-<?php hidden_fields_get(); ?>
-<?php echo ($databases ? html_select("db", array("" => "(" . lang('database') . ")") + $databases, DB, "this.form.submit();") : '<input name="db" value="' . h(DB) . '">'); ?>
-<input type="submit" value="<?php echo lang('Use'); ?>"<?php echo ($databases ? " class='hidden'" : ""); ?>>
 <?php
-			if ($missing != "db" && DB != "" && $connection->select_db(DB)) {
-				if (support("scheme")) {
-					echo "<br>" . html_select("ns", array("" => "(" . lang('schema') . ")") + schemas(), $_GET["ns"], "this.form.submit();");
-					if ($_GET["ns"] != "") {
-						set_schema($_GET["ns"]);
-					}
-				}
-			}
-			echo (isset($_GET["sql"]) ? '<input type="hidden" name="sql" value="">'
-				: (isset($_GET["schema"]) ? '<input type="hidden" name="schema" value="">'
-				: (isset($_GET["dump"]) ? '<input type="hidden" name="dump" value="">'
-			: "")));
-			echo "</p></form>\n";
+			$this->databasesPrint($missing);
 			if ($_GET["ns"] !== "" && !$missing && DB != "") {
 				echo '<p><a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create new table') . "</a>\n";
 				$tables = tables_list();
@@ -849,6 +831,35 @@ DROP PROCEDURE adminer_alter;
 				}
 			}
 		}
+	}
+	
+	/** Prints databases list in menu
+	* @param string
+	* @return null
+	*/
+	function databasesPrint($missing) {
+		global $connection;
+		$databases = $this->databases();
+		?>
+<form action="">
+<p id="dbs">
+<?php hidden_fields_get(); ?>
+<?php echo ($databases ? html_select("db", array("" => "(" . lang('database') . ")") + $databases, DB, "this.form.submit();") : '<input name="db" value="' . h(DB) . '">'); ?>
+<input type="submit" value="<?php echo lang('Use'); ?>"<?php echo ($databases ? " class='hidden'" : ""); ?>>
+<?php
+		if ($missing != "db" && DB != "" && $connection->select_db(DB)) {
+			if (support("scheme")) {
+				echo "<br>" . html_select("ns", array("" => "(" . lang('schema') . ")") + schemas(), $_GET["ns"], "this.form.submit();");
+				if ($_GET["ns"] != "") {
+					set_schema($_GET["ns"]);
+				}
+			}
+		}
+		echo (isset($_GET["sql"]) ? '<input type="hidden" name="sql" value="">'
+			: (isset($_GET["schema"]) ? '<input type="hidden" name="schema" value="">'
+			: (isset($_GET["dump"]) ? '<input type="hidden" name="dump" value="">'
+		: "")));
+		echo "</p></form>\n";
 	}
 	
 	/** Prints table list in menu
