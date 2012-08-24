@@ -502,7 +502,8 @@ if (!defined("DRIVER")) {
 	*/
 	function information_schema($db) {
 		global $connection;
-		return ($connection->server_info >= 5 && $db == "information_schema");
+		return ($connection->server_info >= 5 && $db == "information_schema")
+			|| ($connection->server_info >= 5.5 && $db == "performance_schema");
 	}
 
 	/** Get escaped error message
