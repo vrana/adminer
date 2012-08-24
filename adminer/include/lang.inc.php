@@ -22,6 +22,7 @@ $langs = array(
 	'id' => 'Bahasa Indonesia', // Ivan Lanin - http://ivan.lanin.org
 	'ru' => 'Русский язык', // Maksim Izmaylov
 	'uk' => 'Українська', // Valerii Kryzhov
+	'sr' => 'српски', // Nikola Radovanović - cobisimo@gmail.com
 	'zh' => '简体中文', // Mr. Lodar
 	'zh-tw' => '繁體中文', // http://tzangms.com
 	'ja' => '日本語', // Hitoshi Ozawa - http://sourceforge.jp/projects/oss-ja-jpn/releases/
@@ -54,7 +55,7 @@ function lang($idf, $number = null) {
 			: ($LANG == 'pl' ? ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2) // different forms for 1, 2-4, other
 			: ($LANG == 'sl' ? ($number % 100 == 1 ? 0 : ($number % 100 == 2 ? 1 : ($number % 100 == 3 || $number % 100 == 4 ? 2 : 3))) // different forms for 1, 2, 3-4, other
 			: ($LANG == 'lt' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1, 12-19, other
-			: ($LANG == 'ru' || $LANG == 'uk' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1, 2-4, other
+			: ($LANG == 'ru' || $LANG == 'sr' || $LANG == 'uk' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1, 2-4, other
 			: 1
 		))))))); // http://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
 		$translation = $translation[$pos];
