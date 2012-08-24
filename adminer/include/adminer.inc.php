@@ -452,6 +452,19 @@ username.form['auth[driver]'].onchange();
 		return false;
 	}
 	
+	/** Build SQL query used in select
+	* @param array result of selectColumnsProcess()[0]
+	* @param array result of selectSearchProcess()
+	* @param array result of selectColumnsProcess()[1]
+	* @param array result of selectOrderProcess()
+	* @param int result of selectLimitProcess()
+	* @param int index of page starting at zero
+	* @return string empty string to use default query
+	*/
+	function selectQueryBuild($select, $where, $group, $order, $limit, $page) {
+		return "";
+	}
+	
 	/** Query printed after execution in the message
 	* @param string executed query
 	* @return string

@@ -4,6 +4,7 @@ Edit strings with \n in textarea
 Time out long running database list and select count
 Use VALUES() in INSERT+UPDATE export
 Style logout button as link
+selectQueryBuild() method (customization)
 
 Adminer 3.5.1 (released 2012-08-10):
 Support same name fields in CSV export

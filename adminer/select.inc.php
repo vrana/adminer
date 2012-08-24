@@ -230,7 +230,16 @@ if (!$columns) {
 		$page = floor(max(0, $found_rows - 1) / $limit);
 	}
 
-	$query = "SELECT" . limit((+$limit && $group && count($group) < count($select) && $jush == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . $from, ($where ? "\nWHERE " . implode(" AND ", $where) : "") . $group_by, ($limit != "" ? +$limit : null), ($page ? $limit * $page : 0), "\n");
+	$query = $adminer->selectQueryBuild($select, $where, $group, $order, $limit, $page);
+	if (!$query) {
+		$query = "SELECT" . limit(
+			(+$limit && $group && count($group) < count($select) && $jush == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . $from,
+			($where ? "\nWHERE " . implode(" AND ", $where) : "") . $group_by,
+			($limit != "" ? +$limit : null),
+			($page ? $limit * $page : 0),
+			"\n"
+		);
+	}
 	echo $adminer->selectQuery($query);
 	
 	$result = $connection->query($query);
