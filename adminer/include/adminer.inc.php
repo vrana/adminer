@@ -339,7 +339,7 @@ username.form['auth[driver]'].onchange();
 	* @return bool whether to print default import
 	*/
 	function selectImportPrint() {
-		return true;
+		return !information_schema(DB);
 	}
 	
 	/** Print extra text in the end of a select form
