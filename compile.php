@@ -61,12 +61,49 @@ function lang(\$translation, \$number) {
 	}
 }
 
+function lzw_compress($string) {
+	// compression
+	$dictionary = array_flip(range("\0", "\xFF"));
+	$word = "";
+	$codes = array();
+	for ($i=0; $i <= strlen($string); $i++) {
+		$x = $string[$i];
+		if (strlen($x) && isset($dictionary[$word . $x])) {
+			$word .= $x;
+		} elseif ($i) {
+			$codes[] = $dictionary[$word];
+			$dictionary[$word . $x] = count($dictionary);
+			$word = $x;
+		}
+	}
+	// convert codes to binary string
+	$dictionary_count = 256;
+	$bits = 8; // ceil(log($dictionary_count, 2))
+	$return = "";
+	$rest = 0;
+	$rest_length = 0;
+	foreach ($codes as $code) {
+		$rest = ($rest << $bits) + $code;
+		$rest_length += $bits;
+		$dictionary_count++;
+		if ($dictionary_count >> $bits) {
+			$bits++;
+		}
+		while ($rest_length > 7) {
+			$rest_length -= 8;
+			$return .= chr($rest >> $rest_length);
+			$rest &= (1 << $rest_length) - 1;
+		}
+	}
+	return $return . ($rest_length ? chr($rest << (8 - $rest_length)) : "");
+}
+
 function put_file_lang($match) {
 	global $lang_ids, $project, $langs;
 	if ($_SESSION["lang"]) {
 		return "";
 	}
-	$return = "";
+	$all_translations = array();
 	foreach ($langs as $lang => $val) {
 		include dirname(__FILE__) . "/adminer/lang/$lang.inc.php"; // assign $translations
 		$translation_ids = array_flip($lang_ids); // default translation
@@ -75,13 +112,14 @@ function put_file_lang($match) {
 				$translation_ids[$lang_ids[$key]] = $val;
 			}
 		}
-		$return .= "\tcase \"$lang\": \$translations = array(";
-		foreach ($translation_ids as $val) {
-			$return .= (is_array($val) ? "array('" . implode("', '", array_map('add_apo_slashes', $val)) . "')" : "'" . add_apo_slashes($val) . "'") . ", ";
-		}
-		$return = substr($return, 0, -2) . "); break;\n";
+		$all_translations[$lang] = $translation_ids;
 	}
-	return "switch (\$LANG) {\n$return}\n";
+	return '$translations = &$_SESSION["translations"];
+if ($_GET["lang"] || !$translations) {
+	$all_translations = unserialize(lzw_decompress(\'' . add_apo_slashes(lzw_compress(serialize($all_translations))) . '\'));
+	$translations = $all_translations[$LANG];
+}
+';
 }
 
 function short_identifier($number, $chars) {
@@ -281,8 +319,8 @@ foreach (array("adminer", "editor") as $project) {
 		}
 	}
 	$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
-	$file = preg_replace_callback('~\\b(include|require) "([^"]*\\$LANG.inc.php)";~', 'put_file_lang', $file);
 	$file = str_replace("\r", "", $file);
+	$file = preg_replace_callback('~\\b(include|require) "([^"]*\\$LANG.inc.php)";~', 'put_file_lang', $file);
 	if ($_SESSION["lang"]) {
 		// single language version
 		$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
