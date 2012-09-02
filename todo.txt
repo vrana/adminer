@@ -13,7 +13,7 @@ Selectable <option>(on update)<option>CURRENT_TIMESTAMP for timestamp - https://
 ? Filter by value in row under <thead> in select
 ? Column and table names auto-completition in SQL textarea - http://blog.quplo.com/2010/06/css-code-completion-in-your-browser/
 ? Aliasing of built-in functions can save 7 KB, function minification can save 7 KB, substitution of repetitive $a["a"] can save 4 KB, substitution of $_GET and friends can save 2 KB, aliasing of $connection->query can save 24 B, JS Closure compiler can save 2 KB, not enclosing HTML attribute values can save 1.2 KB, replacing \\n by \n can save .3 KB
-? Branch binary_compile: LZW compression of translations can save 30 KB, LZW compression of all texts can save 11 KB, remove of base64_decode() + using chars 127-255 in minification can save 1 KB
+? Branch binary_compile: LZW compression of all texts can save 11 KB, using chars 127-255 in minification can save 1 KB
 
 Editor:
 Three-state checkbox for boolean searches

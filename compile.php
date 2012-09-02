@@ -328,7 +328,7 @@ foreach (array("adminer", "editor") as $project) {
 		$file = str_replace('<?php echo $LANG; ?>', $_SESSION["lang"], $file);
 	}
 	$file = str_replace('<script type="text/javascript" src="static/editing.js"></script>' . "\n", "", $file);
-	$file = preg_replace_callback("~compile_file\\('([^']+)', '([^']+)'\\);~", 'compile_file', $file); // integrate static files
+	$file = preg_replace_callback('~compile_file\\("([^"]+)", "([^"]+)"\\);~', 'compile_file', $file); // integrate static files
 	$replace = 'h(preg_replace("~\\\\\\\\?.*~", "", ME)) . "?file=\\1&amp;version=' . $VERSION;
 	$file = preg_replace('~\\.\\./adminer/static/(default\\.css|functions\\.js|favicon\\.ico)~', '<?php echo ' . $replace . '"; ?>', $file);
 	$file = preg_replace('~\\.\\./adminer/static/([^\'"]*)~', '" . ' . $replace, $file);
