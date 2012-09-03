@@ -47,7 +47,7 @@ function get_lang() {
 */
 function lang($idf, $number = null) {
 	global $LANG, $translations;
-	$translation = (isset($translations[$idf]) ? $translations[$idf] : $idf);
+	$translation = ($translations[$idf] ? $translations[$idf] : $idf);
 	if (is_array($translation)) {
 		$pos = ($number == 1 ? 0
 			: ($LANG == 'cs' || $LANG == 'sk' ? ($number && $number < 5 ? 1 : 2) // different forms for 1, 2-4, other
@@ -78,6 +78,7 @@ function switch_lang() {
 	echo "</div>\n</form>\n";
 }
 
+// used in compiled version
 function lzw_decompress($binary) {
 	// convert binary string to codes
 	$dictionary_count = 256;

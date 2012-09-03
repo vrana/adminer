@@ -103,27 +103,30 @@ function put_file_lang($match) {
 	if ($_SESSION["lang"]) {
 		return "";
 	}
-	$all_translations = array();
+	$return = "";
 	foreach ($langs as $lang => $val) {
 		include dirname(__FILE__) . "/adminer/lang/$lang.inc.php"; // assign $translations
 		$translation_ids = array_flip($lang_ids); // default translation
 		foreach ($translations as $key => $val) {
 			if ($val !== null) {
-				$translation_ids[$lang_ids[$key]] = $val;
+				$translation_ids[$lang_ids[$key]] = implode("\t", (array) $val);
 			}
 		}
-		$all_translations[$lang] = $translation_ids;
+		$return .= "\n\t\tcase \"$lang\": \$compressed = '" . add_apo_slashes(lzw_compress(implode("\n", $translation_ids))) . "'; break;";
 	}
-	$all_translations = serialize($all_translations);
-	$translations_version = crc32($all_translations);
+	$translations_version = crc32($return);
 	return '$translations = &$_SESSION["translations"];
 if ($_SESSION["translations_version"] != ' . $translations_version . ') {
 	$translations = array();
 	$_SESSION["translations_version"] = ' . $translations_version . ';
 }
 if ($_GET["lang"] || !$translations) {
-	$all_translations = unserialize(lzw_decompress(\'' . add_apo_slashes(lzw_compress($all_translations)) . '\'));
-	$translations = $all_translations[$LANG];
+	switch ($LANG) {' . $return . '
+	}
+	$translations = array();
+	foreach (explode("\n", lzw_decompress($compressed)) as $val) {
+		$translations[] = (strpos($val, "\t") ? explode("\t", $val) : $val);
+	}
 }
 ';
 }
