@@ -114,9 +114,15 @@ function put_file_lang($match) {
 		}
 		$all_translations[$lang] = $translation_ids;
 	}
+	$all_translations = serialize($all_translations);
+	$translations_version = crc32($all_translations);
 	return '$translations = &$_SESSION["translations"];
+if ($_SESSION["translations_version"] != ' . $translations_version . ') {
+	$translations = array();
+	$_SESSION["translations_version"] = ' . $translations_version . ';
+}
 if ($_GET["lang"] || !$translations) {
-	$all_translations = unserialize(lzw_decompress(\'' . add_apo_slashes(lzw_compress(serialize($all_translations))) . '\'));
+	$all_translations = unserialize(lzw_decompress(\'' . add_apo_slashes(lzw_compress($all_translations)) . '\'));
 	$translations = $all_translations[$LANG];
 }
 ';
