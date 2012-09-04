@@ -312,6 +312,20 @@ function bodyKeydown(event, button) {
 	return true;
 }
 
+/** Open form to a new window on Ctrl+click or Shift+click
+* @param MouseEvent
+*/
+function bodyClick(event) {
+	var target = event.target || event.srcElement;
+	if ((event.ctrlKey || event.shiftKey) && target.type == 'submit' && /input/i.test(target.tagName)) {
+		target.form.target = '_blank';
+		setTimeout(function () {
+			// if (event.ctrlKey) { focus(); } doesn't work
+			target.form.target = '';
+		}, 0);
+	}
+}
+
 
 
 /** Change focus by Ctrl+Up or Ctrl+Down
