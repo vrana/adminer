@@ -6,7 +6,7 @@ if ($_GET["file"] == "favicon.ico") {
 	echo "compile_file('../adminer/static/favicon.ico', 'add_quo_slashes');";
 } elseif ($_GET["file"] == "default.css") {
 	header("Content-Type: text/css; charset=utf-8");
-	?>compile_file('../adminer/static/default.css', 'minify_css');<?php
+	echo lzw_decompress("compile_file('../adminer/static/default.css', 'minify_css');");
 } elseif ($_GET["file"] == "functions.js") {
 	header("Content-Type: text/javascript; charset=utf-8");
 	?>compile_file('../adminer/static/functions.js', 'jsShrink');compile_file('static/editing.js', 'jsShrink');<?php

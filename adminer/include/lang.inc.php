@@ -78,44 +78,6 @@ function switch_lang() {
 	echo "</div>\n</form>\n";
 }
 
-// used in compiled version
-function lzw_decompress($binary) {
-	// convert binary string to codes
-	$dictionary_count = 256;
-	$bits = 8; // ceil(log($dictionary_count, 2))
-	$codes = array();
-	$rest = 0;
-	$rest_length = 0;
-	for ($i=0; $i < strlen($binary); $i++) {
-		$rest = ($rest << 8) + ord($binary[$i]);
-		$rest_length += 8;
-		if ($rest_length >= $bits) {
-			$rest_length -= $bits;
-			$codes[] = $rest >> $rest_length;
-			$rest &= (1 << $rest_length) - 1;
-			$dictionary_count++;
-			if ($dictionary_count >> $bits) {
-				$bits++;
-			}
-		}
-	}
-	// decompression
-	$dictionary = range("\0", "\xFF");
-	$return = "";
-	foreach ($codes as $i => $code) {
-		$element = $dictionary[$code];
-		if (!isset($element)) {
-			$element = $word . $word[0];
-		}
-		$return .= $element;
-		if ($i) {
-			$dictionary[] = $word . $element[0];
-		}
-		$word = $element;
-	}
-	return $return;
-}
-
 if (isset($_POST["lang"]) && $_SESSION["token"] == $_POST["token"]) { // $token and $error not yet available
 	cookie("adminer_lang", $_POST["lang"]);
 	$_SESSION["lang"] = $_POST["lang"]; // cookies may be disabled

@@ -254,7 +254,7 @@ function php_shrink($input) {
 }
 
 function minify_css($file) {
-	return preg_replace('~\\s*([:;{},])\\s*~', '\\1', preg_replace('~/\\*.*\\*/~sU', '', $file));
+	return add_quo_slashes(lzw_compress(preg_replace('~\\s*([:;{},])\\s*~', '\\1', preg_replace('~/\\*.*\\*/~sU', '', $file))));
 }
 
 function compile_file($match) {
