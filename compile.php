@@ -14,6 +14,10 @@ function add_apo_slashes($s) {
 	return addcslashes($s, "\\'");
 }
 
+function add_quo_slashes($s) {
+	return addcslashes($s, "\n\r\$\"\\");
+}
+
 function remove_lang($match) {
 	global $translations;
 	$idf = strtr($match[2], array("\\'" => "'", "\\\\" => "\\"));
@@ -112,7 +116,8 @@ function put_file_lang($match) {
 				$translation_ids[$lang_ids[$key]] = implode("\t", (array) $val);
 			}
 		}
-		$return .= "\n\t\tcase \"$lang\": \$compressed = '" . add_apo_slashes(lzw_compress(implode("\n", $translation_ids))) . "'; break;";
+		$return .= '
+		case "' . $lang . '": $compressed = "' . add_quo_slashes(lzw_compress(implode("\n", $translation_ids))) . '"; break;';
 	}
 	$translations_version = crc32($return);
 	return '$translations = &$_SESSION["translations"];
@@ -202,10 +207,10 @@ function php_shrink($input) {
 			$token = array(0, $token);
 		}
 		if ($tokens[$i+2][0] === T_CLOSE_TAG && $tokens[$i+3][0] === T_INLINE_HTML && $tokens[$i+4][0] === T_OPEN_TAG
-			&& strlen(addcslashes($tokens[$i+3][1], "'\\")) < strlen($tokens[$i+3][1]) + 3
+			&& strlen(add_apo_slashes($tokens[$i+3][1])) < strlen($tokens[$i+3][1]) + 3
 		) {
 			$tokens[$i+2] = array(T_ECHO, 'echo');
-			$tokens[$i+3] = array(T_CONSTANT_ENCAPSED_STRING, "'" . addcslashes($tokens[$i+3][1], "'\\") . "'");
+			$tokens[$i+3] = array(T_CONSTANT_ENCAPSED_STRING, "'" . add_apo_slashes($tokens[$i+3][1]) . "'");
 			$tokens[$i+4] = array(0, ';');
 		}
 		if ($token[0] == T_COMMENT || $token[0] == T_WHITESPACE || ($token[0] == T_DOC_COMMENT && $doc_comment)) {
@@ -328,8 +333,8 @@ foreach (array("adminer", "editor") as $project) {
 		}
 	}
 	$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
-	$file = str_replace("\r", "", $file);
 	$file = preg_replace_callback('~\\b(include|require) "([^"]*\\$LANG.inc.php)";~', 'put_file_lang', $file);
+	$file = str_replace("\r", "", $file);
 	if ($_SESSION["lang"]) {
 		// single language version
 		$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
@@ -337,7 +342,7 @@ foreach (array("adminer", "editor") as $project) {
 		$file = str_replace('<?php echo $LANG; ?>', $_SESSION["lang"], $file);
 	}
 	$file = str_replace('<script type="text/javascript" src="static/editing.js"></script>' . "\n", "", $file);
-	$file = preg_replace_callback('~compile_file\\("([^"]+)", "([^"]+)"\\);~', 'compile_file', $file); // integrate static files
+	$file = preg_replace_callback("~compile_file\\('([^']+)', '([^']+)'\\);~", 'compile_file', $file); // integrate static files
 	$replace = 'h(preg_replace("~\\\\\\\\?.*~", "", ME)) . "?file=\\1&amp;version=' . $VERSION;
 	$file = preg_replace('~\\.\\./adminer/static/(default\\.css|functions\\.js|favicon\\.ico)~', '<?php echo ' . $replace . '"; ?>', $file);
 	$file = preg_replace('~\\.\\./adminer/static/([^\'"]*)~', '" . ' . $replace, $file);
