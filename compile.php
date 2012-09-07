@@ -252,6 +252,7 @@ function minify_css($file) {
 }
 
 function minify_js($file) {
+	$file = str_replace("'../externals/jush/'", "location.protocol + '//www.adminer.org/static/'", $file);
 	if (function_exists('jsShrink')) {
 		$file = jsShrink($file);
 	}
@@ -354,7 +355,6 @@ foreach (array("adminer", "editor") as $project) {
 	$replace = 'h(preg_replace("~\\\\\\\\?.*~", "", ME)) . "?file=\\1&amp;version=' . $VERSION;
 	$file = preg_replace('~\\.\\./adminer/static/(default\\.css|functions\\.js|favicon\\.ico)~', '<?php echo ' . $replace . '"; ?>', $file);
 	$file = preg_replace('~\\.\\./adminer/static/([^\'"]*)~', '" . ' . $replace, $file);
-	$file = str_replace("'../externals/jush/'", "location.protocol + '//www.adminer.org/static/'", $file);
 	$file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
 	$file = php_shrink($file);
 
