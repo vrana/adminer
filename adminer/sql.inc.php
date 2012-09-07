@@ -35,7 +35,10 @@ if (!$error && $_POST) {
 		if ($query != "" && strlen($query) < 1e6) { // don't add big queries
 			$q = $query . (ereg(";[ \t\r\n]*\$", $query) ? "" : ";"); //! doesn't work with DELIMITER |
 			if (!$history || reset(end($history)) != $q) { // no repeated queries
+				restart_session();
 				$history[] = array($q, time());
+				set_session("queries", $history_all); // required because reference is unlinked by stop_session()
+				stop_session();
 			}
 		}
 		$space = "(?:\\s|/\\*.*\\*/|(?:#|-- )[^\n]*\n|--\n)";
