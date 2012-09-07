@@ -248,14 +248,14 @@ function php_shrink($input) {
 }
 
 function minify_css($file) {
-	return add_quo_slashes(lzw_compress(preg_replace('~\\s*([:;{},])\\s*~', '\\1', preg_replace('~/\\*.*\\*/~sU', '', $file))));
+	return lzw_compress(preg_replace('~\\s*([:;{},])\\s*~', '\\1', preg_replace('~/\\*.*\\*/~sU', '', $file)));
 }
 
 function minify_js($file) {
 	if (function_exists('jsShrink')) {
 		$file = jsShrink($file);
 	}
-	return add_quo_slashes(lzw_compress($file));
+	return lzw_compress($file);
 }
 
 function compile_file($match) {
@@ -264,7 +264,10 @@ function compile_file($match) {
 	foreach (explode(";", $match[1]) as $filename) {
 		$file .= file_get_contents(dirname(__FILE__) . "/$project/$filename");
 	}
-	return call_user_func($match[2], $file);
+	if ($match[2]) {
+		$file = call_user_func($match[2], $file);
+	}
+	return '"' . add_quo_slashes($file) . '"';
 }
 
 $driver = "";
@@ -347,7 +350,7 @@ foreach (array("adminer", "editor") as $project) {
 		$file = str_replace('<?php echo $LANG; ?>', $_SESSION["lang"], $file);
 	}
 	$file = str_replace('<script type="text/javascript" src="static/editing.js"></script>' . "\n", "", $file);
-	$file = preg_replace_callback("~compile_file\\('([^']+)', '([^']+)'\\);~", 'compile_file', $file); // integrate static files
+	$file = preg_replace_callback("~compile_file\\('([^']+)'(?:, '([^']*)')?\\)~", 'compile_file', $file); // integrate static files
 	$replace = 'h(preg_replace("~\\\\\\\\?.*~", "", ME)) . "?file=\\1&amp;version=' . $VERSION;
 	$file = preg_replace('~\\.\\./adminer/static/(default\\.css|functions\\.js|favicon\\.ico)~', '<?php echo ' . $replace . '"; ?>', $file);
 	$file = preg_replace('~\\.\\./adminer/static/([^\'"]*)~', '" . ' . $replace, $file);
