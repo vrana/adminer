@@ -929,10 +929,3 @@ var timeout = setTimeout(function () {
 	}
 	return array_keys($return);
 }
-
-/** Callback registered to erase output buffer in AJAX calls
-* @return string
-*/
-function clean_output() {
-	return '';
-}

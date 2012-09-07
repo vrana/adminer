@@ -190,7 +190,7 @@ if ($_POST && !$error) {
 $table_name = $adminer->tableName($table_status);
 if (is_ajax()) {
 	// needs to send headers
-	ob_start('clean_output');
+	ob_start();
 }
 page_header(lang('Select') . ": $table_name", $error);
 
@@ -409,7 +409,7 @@ if (!$columns) {
 			echo (!$group && $select ? "" : "<script type='text/javascript'>tableCheck();</script>\n");
 		}
 		
-		if ($rows || $page) {
+		if (($rows || $page) && !is_ajax()) {
 			$exact_count = true;
 			if ($_GET["page"] != "last" && +$limit && count($group) >= count($select) && ($found_rows >= $limit || $page)) {
 				$found_rows = found_rows($table_status, $where);
@@ -474,5 +474,6 @@ if (!$columns) {
 }
 
 if (is_ajax()) {
+	ob_end_clean();
 	exit;
 }
