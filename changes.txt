@@ -5,6 +5,7 @@ Time out long running database list and select count
 Use VALUES() in INSERT+UPDATE export
 Style logout button as link
 Ctrl+click and Shift+click on button opens form to a blank window
+Switch language by POST
 selectQueryBuild() method (customization)
 Serbian translation
 

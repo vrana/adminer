@@ -70,17 +70,18 @@ function lang($idf, $number = null) {
 }
 
 function switch_lang() {
-	global $LANG, $langs;
-	echo "<form action=''>\n<div id='lang'>";
-	hidden_fields($_GET, array('lang'));
+	global $LANG, $langs, $token;
+	echo "<form action='' method='post'>\n<div id='lang'>";
 	echo lang('Language') . ": " . html_select("lang", $langs, $LANG, "this.form.submit();");
 	echo " <input type='submit' value='" . lang('Use') . "' class='hidden'>\n";
+	echo "<input type='hidden' name='token' value='$token'>\n";
 	echo "</div>\n</form>\n";
 }
 
-if (isset($_GET["lang"])) {
-	$_COOKIE["adminer_lang"] = $_GET["lang"];
-	$_SESSION["lang"] = $_GET["lang"]; // cookies may be disabled
+if (isset($_POST["lang"]) && $_SESSION["token"] == $_POST["token"]) { // $token and $error not yet available
+	cookie("adminer_lang", $_POST["lang"]);
+	$_SESSION["lang"] = $_POST["lang"]; // cookies may be disabled
+	redirect(remove_from_uri());
 }
 
 $LANG = "en";
