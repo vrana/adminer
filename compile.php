@@ -4,12 +4,6 @@ error_reporting(6135); // errors and warnings
 include dirname(__FILE__) . "/adminer/include/version.inc.php";
 include dirname(__FILE__) . "/externals/JsShrink/jsShrink.php";
 
-if (!function_exists('jsShrink')) {
-	function jsShrink($code) {
-		return $code;
-	}
-}
-
 function add_apo_slashes($s) {
 	return addcslashes($s, "\\'");
 }
@@ -257,9 +251,20 @@ function minify_css($file) {
 	return add_quo_slashes(lzw_compress(preg_replace('~\\s*([:;{},])\\s*~', '\\1', preg_replace('~/\\*.*\\*/~sU', '', $file))));
 }
 
+function minify_js($file) {
+	if (function_exists('jsShrink')) {
+		$file = jsShrink($file);
+	}
+	return add_quo_slashes(lzw_compress($file));
+}
+
 function compile_file($match) {
 	global $project;
-	return call_user_func($match[2], file_get_contents(dirname(__FILE__) . "/$project/$match[1]"));
+	$file = "";
+	foreach (explode(";", $match[1]) as $filename) {
+		$file .= file_get_contents(dirname(__FILE__) . "/$project/$filename");
+	}
+	return call_user_func($match[2], $file);
 }
 
 $driver = "";

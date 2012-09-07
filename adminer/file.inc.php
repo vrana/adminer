@@ -9,7 +9,7 @@ if ($_GET["file"] == "favicon.ico") {
 	echo lzw_decompress("compile_file('../adminer/static/default.css', 'minify_css');");
 } elseif ($_GET["file"] == "functions.js") {
 	header("Content-Type: text/javascript; charset=utf-8");
-	?>compile_file('../adminer/static/functions.js', 'jsShrink');compile_file('static/editing.js', 'jsShrink');<?php
+	echo lzw_decompress("compile_file('../adminer/static/functions.js;static/editing.js', 'minify_js');");
 } else {
 	header("Content-Type: image/gif");
 	switch ($_GET["file"]) {
