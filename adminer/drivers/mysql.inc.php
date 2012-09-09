@@ -970,12 +970,12 @@ if (!defined("DRIVER")) {
 	}
 	$unsigned = array("unsigned", "zerofill", "unsigned zerofill"); ///< @var array number variants
 	$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", ""); ///< @var array operators used in select
-	$functions = array("char_length", "date", "from_unixtime", "hex", "lower", "round", "sec_to_time", "time_to_sec", "upper"); ///< @var array functions used in select
+	$functions = array("char_length", "date", "from_unixtime", "lower", "round", "sec_to_time", "time_to_sec", "upper"); ///< @var array functions used in select
 	$grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum"); ///< @var array grouping functions used in select
 	$edit_functions = array( ///< @var array of array("$type|$type2" => "$function/$function2") functions used in editing, [0] - edit and insert, [1] - edit only
 		array(
 			"char" => "md5/sha1/password/encrypt/uuid", //! JavaScript for disabling maxlength
-			"binary" => "md5/sha1/hex",
+			"binary" => "md5/sha1",
 			"date|time" => "now",
 		), array(
 			"int|float|double|decimal" => "+/-",

@@ -30,7 +30,7 @@ $is_group = count($group) < count($select);
 $where = $adminer->selectSearchProcess($fields, $indexes);
 $order = $adminer->selectOrderProcess($fields, $indexes);
 $limit = $adminer->selectLimitProcess();
-$from = ($select ? implode(", ", $select) : "*" . ($oid ? ", $oid" : "")) . "\nFROM " . table($TABLE);
+$from = ($select ? implode(", ", $select) : ($oid ? "$oid, " : "") . "*") . "\nFROM " . table($TABLE);
 $group_by = ($group && $is_group ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : "");
 
 if ($_GET["val"] && is_ajax()) {

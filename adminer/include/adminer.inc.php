@@ -543,7 +543,7 @@ username.form['auth[driver]'].onchange();
 			$return = idf_escape($name) . " $function " . (preg_match("~^(\\d+|'[0-9.: -]') [A-Z_]+$~i", $value) ? $value : $return);
 		} elseif (ereg('^(addtime|subtime|concat)$', $function)) {
 			$return = "$function(" . idf_escape($name) . ", $return)";
-		} elseif (ereg('^(md5|sha1|password|encrypt|hex)$', $function)) {
+		} elseif (ereg('^(md5|sha1|password|encrypt)$', $function)) {
 			$return = "$function($return)";
 		}
 		if (ereg("binary", $field["type"])) {
