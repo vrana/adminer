@@ -26,11 +26,12 @@ foreach ($fields as $key => $field) {
 }
 
 list($select, $group) = $adminer->selectColumnsProcess($columns, $indexes);
+$is_group = count($group) < count($select);
 $where = $adminer->selectSearchProcess($fields, $indexes);
 $order = $adminer->selectOrderProcess($fields, $indexes);
 $limit = $adminer->selectLimitProcess();
 $from = ($select ? implode(", ", $select) : ($oid ? "$oid, " : "") . "*") . "\nFROM " . table($TABLE);
-$group_by = ($group && count($group) < count($select) ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : "");
+$group_by = ($group && $is_group ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : "");
 
 if ($_GET["val"] && is_ajax()) {
 	header("Content-Type: text/plain; charset=utf-8");
@@ -105,7 +106,7 @@ if ($_POST && !$error) {
 					$command = "INSERT";
 					$query = "INTO $query";
 				}
-				if ($_POST["all"] || ($unselected === array() && $_POST["check"]) || count($group) < count($select)) {
+				if ($_POST["all"] || ($unselected === array() && $_POST["check"]) || $is_group) {
 					$result = queries("$command $query" . ($_POST["all"] ? ($where ? "\nWHERE " . implode(" AND ", $where) : "") : "\nWHERE $where_check"));
 					$affected = $connection->affected_rows;
 				} else {
@@ -142,7 +143,7 @@ if ($_POST && !$error) {
 					}
 					$query = table($TABLE) . " SET " . implode(", ", $set);
 					$where2 = " WHERE " . where_check($unique_idf) . ($where ? " AND " . implode(" AND ", $where) : "");
-					$result = queries("UPDATE" . (count($group) < count($select) ? " $query$where2" : limit1($query, $where2))); // can change row on a different page without unique key
+					$result = queries("UPDATE" . ($is_group ? " $query$where2" : limit1($query, $where2))); // can change row on a different page without unique key
 					if (!$result) {
 						break;
 					}
@@ -233,7 +234,7 @@ if (!$columns) {
 	$query = $adminer->selectQueryBuild($select, $where, $group, $order, $limit, $page);
 	if (!$query) {
 		$query = "SELECT" . limit(
-			(+$limit && $group && count($group) < count($select) && $jush == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . $from,
+			(+$limit && $group && $is_group && $jush == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . $from,
 			($where ? "\nWHERE " . implode(" AND ", $where) : "") . $group_by,
 			($limit != "" ? +$limit : null),
 			($page ? $limit * $page : 0),
@@ -260,7 +261,7 @@ if (!$columns) {
 		}
 		// use count($rows) without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
 		if ($_GET["page"] != "last") {
-			$found_rows = (+$limit && $group && count($group) < count($select)
+			$found_rows = (+$limit && $group && $is_group
 				? ($jush == "sql" ? $connection->result(" SELECT FOUND_ROWS()") : $connection->result("SELECT COUNT(*) FROM ($query) x")) // space to allow mysql.trace_mode
 				: count($rows)
 			);
@@ -289,7 +290,7 @@ if (!$columns) {
 						$href = remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key);
 						$desc = "&desc%5B0%5D=1";
 						echo '<th onmouseover="columnMouse(this);" onmouseout="columnMouse(this, \' hidden\');">';
-						echo '<a href="' . h($href . ($order[0] == $column || $order[0] == $key || (!$order && count($group) < count($select) && $group[0] == $column) ? $desc : '')) . '">'; // $order[0] == $key - COUNT(*)
+						echo '<a href="' . h($href . ($order[0] == $column || $order[0] == $key || (!$order && $is_group && $group[0] == $column) ? $desc : '')) . '">'; // $order[0] == $key - COUNT(*)
 						echo (!$select || $val ? apply_sql_function($val["fun"], $name) : h(current($select))) . "</a>"; //! columns looking like functions
 						echo "<span class='column hidden'>";
 						echo "<a href='" . h($href . $desc) . "' title='" . lang('descending') . "' class='text'> ↓</a>";
@@ -323,7 +324,7 @@ if (!$columns) {
 				foreach ($unique_array as $key => $val) {
 					$unique_idf .= "&" . ($val !== null ? urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($val) : "null%5B%5D=" . urlencode($key));
 				}
-				echo "<tr" . odd() . ">" . (!$group && $select ? "" : "<td>" . checkbox("check[]", substr($unique_idf, 1), in_array(substr($unique_idf, 1), (array) $_POST["check"]), "", "this.form['all'].checked = false; formUncheck('all-page');") . (count($group) < count($select) || information_schema(DB) ? "" : " <a href='" . h(ME . "edit=" . urlencode($TABLE) . $unique_idf) . "'>" . lang('edit') . "</a>"));
+				echo "<tr" . odd() . ">" . (!$group && $select ? "" : "<td>" . checkbox("check[]", substr($unique_idf, 1), in_array(substr($unique_idf, 1), (array) $_POST["check"]), "", "this.form['all'].checked = false; formUncheck('all-page');") . ($is_group || information_schema(DB) ? "" : " <a href='" . h(ME . "edit=" . urlencode($TABLE) . $unique_idf) . "'>" . lang('edit') . "</a>"));
 				foreach ($row as $key => $val) {
 					if (isset($names[$key])) {
 						$field = $fields[$key];
@@ -411,7 +412,7 @@ if (!$columns) {
 		
 		if (($rows || $page) && !is_ajax()) {
 			$exact_count = true;
-			if ($_GET["page"] != "last" && +$limit && count($group) >= count($select) && ($found_rows >= $limit || $page)) {
+			if ($_GET["page"] != "last" && +$limit && !$is_group && ($found_rows >= $limit || $page)) {
 				$found_rows = found_rows($table_status, $where);
 				if ($found_rows < max(1e4, 2 * ($page + 1) * $limit)) {
 					// slow with big tables
