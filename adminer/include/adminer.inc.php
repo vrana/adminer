@@ -801,7 +801,10 @@ DROP PROCEDURE adminer_alter;
 								echo "<p id='logins' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";
 								$first = false;
 							}
-							echo "<a href='" . h(auth_url($driver, $server, $username)) . "'>($drivers[$driver]) " . h($username . ($server != "" ? "@$server" : "")) . "</a><br>\n";
+							$dbs = $_SESSION["db"][$driver][$server][$username];
+							foreach (($dbs ? array_keys($dbs) : array("")) as $db) {
+								echo "<a href='" . h(auth_url($driver, $server, $username, $db)) . "'>($drivers[$driver]) " . h($username . ($server != "" ? "@$server" : "") . ($db != "" ? " - $db" : "")) . "</a><br>\n";
+							}
 						}
 					}
 				}
