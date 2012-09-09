@@ -53,7 +53,14 @@ if ($_POST["save"]) {
 	$select = array();
 	foreach ($fields as $name => $field) {
 		if (isset($field["privileges"]["select"])) {
-			$select[] = ($_POST["clone"] && $field["auto_increment"] ? "'' AS " : ($jush == "sql" && ereg("enum|set", $field["type"]) ? "1*" . idf_escape($name) . " AS " : "")) . idf_escape($name);
+			$as = convert_field($field);
+			if ($_POST["clone"] && $field["auto_increment"]) {
+				$as = "''";
+			}
+			if ($jush == "sql" && ereg("enum|set", $field["type"])) {
+				$as = "1*" . idf_escape($name);
+			}
+			$select[] = ($as ? "$as AS " : "") . idf_escape($name);
 		}
 	}
 	$row = array();

@@ -591,6 +591,13 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)
 		return array();
 	}
 
+	function convert_field($field) {
+	}
+	
+	function unconvert_field($field, $return) {
+		return $return;
+	}
+	
 	function support($feature) {
 		return ereg('^(scheme|trigger|view|drop_col)$', $feature); //! routine|
 	}

@@ -6,6 +6,7 @@ Use VALUES() in INSERT+UPDATE export
 Style logout button as link
 Store selected database to permanent login
 Ctrl+click and Shift+click on button opens form to a blank window
+MySQL: Support geometry data types
 Switch language by POST
 Compress translations
 selectQueryBuild() method (customization)

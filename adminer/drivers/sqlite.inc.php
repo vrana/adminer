@@ -643,6 +643,13 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return $return;
 	}
 	
+	function convert_field($field) {
+	}
+	
+	function unconvert_field($field, $return) {
+		return $return;
+	}
+	
 	function support($feature) {
 		return ereg('^(view|trigger|variables|status|dump|move_col|drop_col)$', $feature);
 	}

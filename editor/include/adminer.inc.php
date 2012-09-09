@@ -188,7 +188,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		if (ereg('date|timestamp', $field["type"]) && $val !== null) {
 			return preg_replace('~^(\\d{2}(\\d+))-(0?(\\d+))-(0?(\\d+))~', lang('$1-$3-$5'), $val);
 		}
-		return (ereg("binary", $field["type"]) ? reset(unpack("H*", $val)) : $val);
+		return $val;
 	}
 	
 	function selectColumnsPrint($select, $columns) {
@@ -483,10 +483,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		} elseif (ereg('^(md5|sha1)$', $function)) {
 			$return = "$function($return)";
 		}
-		if (ereg("binary", $field["type"])) {
-			$return = "unhex($return)";
-		}
-		return $return;
+		return unconvert_field($field, $return);
 	}
 	
 	function dumpOutput() {

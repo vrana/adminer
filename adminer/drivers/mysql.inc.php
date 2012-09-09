@@ -946,6 +946,34 @@ if (!defined("DRIVER")) {
 		return get_key_vals("SHOW STATUS");
 	}
 	
+	/** Convert field in select and edit
+	* @param array one element from fields()
+	* @return string
+	*/
+	function convert_field($field) {
+		if (ereg("binary", $field["type"])) {
+			return "HEX(" . idf_escape($field["field"]) . ")";
+		}
+		if (ereg("geometry|point|linestring|polygon", $field["type"])) {
+			return "AsWKT(" . idf_escape($field["field"]) . ")";
+		}
+	}
+	
+	/** Convert value in edit after applying functions back
+	* @param array one element from fields()
+	* @param string
+	* @return string
+	*/
+	function unconvert_field($field, $return) {
+		if (ereg("binary", $field["type"])) {
+			$return = "unhex($return)";
+		}
+		if (ereg("geometry|point|linestring|polygon", $field["type"])) {
+			$return = "GeomFromText($return)";
+		}
+		return $return;
+	}
+	
 	/** Check whether a feature is supported
 	* @param string "comment", "copy", "drop_col", "dump", "event", "kill", "partitioning", "privileges", "procedure", "processlist", "routine", "scheme", "sequence", "status", "trigger", "type", "variables", "view"
 	* @return bool
@@ -962,8 +990,9 @@ if (!defined("DRIVER")) {
 		lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "mediumint" => 8, "int" => 10, "bigint" => 20, "decimal" => 66, "float" => 12, "double" => 21),
 		lang('Date and time') => array("date" => 10, "datetime" => 19, "timestamp" => 19, "time" => 10, "year" => 4),
 		lang('Strings') => array("char" => 255, "varchar" => 65535, "tinytext" => 255, "text" => 65535, "mediumtext" => 16777215, "longtext" => 4294967295),
-		lang('Binary') => array("bit" => 20, "binary" => 255, "varbinary" => 65535, "tinyblob" => 255, "blob" => 65535, "mediumblob" => 16777215, "longblob" => 4294967295),
 		lang('Lists') => array("enum" => 65535, "set" => 64),
+		lang('Binary') => array("bit" => 20, "binary" => 255, "varbinary" => 65535, "tinyblob" => 255, "blob" => 65535, "mediumblob" => 16777215, "longblob" => 4294967295),
+		lang('Geometry') => array("geometry" => 0, "point" => 0, "linestring" => 0, "polygon" => 0, "multipoint" => 0, "multilinestring" => 0, "multipolygon" => 0, "geometrycollection" => 0),
 	) as $key => $val) {
 		$types += $val;
 		$structured_types[$key] = array_keys($val);
@@ -978,7 +1007,7 @@ if (!defined("DRIVER")) {
 			"binary" => "md5/sha1",
 			"date|time" => "now",
 		), array(
-			"int|float|double|decimal" => "+/-",
+			"(^|[^o])int|float|double|decimal" => "+/-", // not point
 			"date" => "+ interval/- interval",
 			"time" => "addtime/subtime",
 			"char|text" => "concat",

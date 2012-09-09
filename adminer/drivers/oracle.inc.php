@@ -361,6 +361,13 @@ ORDER BY PROCESS
 		return reset($rows);
 	}
 	
+	function convert_field($field) {
+	}
+	
+	function unconvert_field($field, $return) {
+		return $return;
+	}
+	
 	function support($feature) {
 		return ereg("view|scheme|processlist|drop_col|variables|status", $feature); //!
 	}

@@ -205,7 +205,7 @@ username.form['auth[driver]'].onchange();
 	* @return string
 	*/
 	function editVal($val, $field) {
-		return (ereg("binary", $field["type"]) ? reset(unpack("H*", $val)) : $val);
+		return $val;
 	}
 	
 	/** Print columns box in select
@@ -546,10 +546,7 @@ username.form['auth[driver]'].onchange();
 		} elseif (ereg('^(md5|sha1|password|encrypt)$', $function)) {
 			$return = "$function($return)";
 		}
-		if (ereg("binary", $field["type"])) {
-			$return = "unhex($return)";
-		}
-		return $return;
+		return unconvert_field($field, $return);
 	}
 	
 	/** Returns export output options
