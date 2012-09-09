@@ -80,7 +80,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 				? " (" . implode(",", $partitions) . "\n)"
 				: ($_POST["partitions"] ? " PARTITIONS " . (+$_POST["partitions"]) : "")
 			);
-		} elseif ($TABLE != "" && support("partitioning")) {
+		} elseif (support("partitioning") && ereg("partitioned", $orig_status["Create_options"])) {
 			$partitioning .= "\nREMOVE PARTITIONING";
 		}
 		$message = lang('Table has been altered.');
