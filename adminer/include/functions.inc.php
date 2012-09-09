@@ -798,12 +798,14 @@ function search_tables() {
 		$name = $adminer->tableName($table_status);
 		if (isset($table_status["Engine"]) && $name != "" && (!$_POST["tables"] || in_array($table, $_POST["tables"]))) {
 			$result = $connection->query("SELECT" . limit("1 FROM " . table($table), " WHERE " . implode(" AND ", $adminer->selectSearchProcess(fields($table), array())), 1));
-			if ($result->fetch_row()) {
+			if (!$result || $result->fetch_row()) {
 				if (!$found) {
 					echo "<ul>\n";
 					$found = true;
 				}
-				echo "<li><a href='" . h(ME . "select=" . urlencode($table) . "&where[0][op]=" . urlencode($_GET["where"][0]["op"]) . "&where[0][val]=" . urlencode($_GET["where"][0]["val"])) . "'>$name</a>\n";
+				echo "<li>" . ($result
+					? "<a href='" . h(ME . "select=" . urlencode($table) . "&where[0][op]=" . urlencode($_GET["where"][0]["op"]) . "&where[0][val]=" . urlencode($_GET["where"][0]["val"])) . "'>$name</a>\n"
+					: "$name: <span class='error'>" . error() . "</span>\n");
 			}
 		}
 	}

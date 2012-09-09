@@ -402,9 +402,12 @@ username.form['auth[driver]'].onchange();
 					// find anywhere
 					$cols = array();
 					foreach ($fields as $name => $field) {
-						if (is_numeric($val["val"]) || !ereg('int|float|double|decimal|bit', $field["type"])) {
+						$is_text = ereg('char|text|enum|set', $field["type"]);
+						if ((is_numeric($val["val"]) || !ereg('int|float|double|decimal|bit', $field["type"]))
+							&& (!ereg("[\x80-\xFF]", $val["val"]) || $is_text)
+						) {
 							$name = idf_escape($name);
-							$cols[] = ($jush == "sql" && ereg('char|text|enum|set', $field["type"]) && !ereg('^utf8', $field["collation"]) ? "CONVERT($name USING utf8)" : $name);
+							$cols[] = ($jush == "sql" && $is_text && !ereg('^utf8', $field["collation"]) ? "CONVERT($name USING utf8)" : $name);
 						}
 					}
 					$return[] = ($cols ? "(" . implode("$cond OR ", $cols) . "$cond)" : "0");
