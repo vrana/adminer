@@ -41,11 +41,7 @@ if ($auth) {
 		foreach (array("pwds", "dbs", "queries") as $key) {
 			set_session($key, null);
 		}
-		$key = base64_encode(DRIVER) . "-" . base64_encode(SERVER) . "-" . base64_encode($_GET["username"]);
-		if ($permanent[$key]) {
-			unset($permanent[$key]);
-			cookie("adminer_permanent", implode(" ", $permanent));
-		}
+		unset_permanent();
 		redirect(substr(preg_replace('~(username|db|ns)=[^&]*&~', '', ME), 0, -1), lang('Logout successful.'));
 	}
 } elseif ($permanent && !$_SESSION["pwds"]) {
@@ -55,6 +51,15 @@ if ($auth) {
 		list(, $cipher) = explode(":", $val);
 		list($driver, $server, $username) = array_map('base64_decode', explode("-", $key));
 		$_SESSION["pwds"][$driver][$server][$username] = decrypt_string(base64_decode($cipher), $private);
+	}
+}
+
+function unset_permanent() {
+	global $permanent;
+	$key = base64_encode(DRIVER) . "-" . base64_encode(SERVER) . "-" . base64_encode($_GET["username"]);
+	if ($permanent[$key]) {
+		unset($permanent[$key]);
+		cookie("adminer_permanent", implode(" ", $permanent));
 	}
 }
 
@@ -73,6 +78,7 @@ function auth_error($exception = null) {
 				$error = h($exception ? $exception->getMessage() : (is_string($connection) ? $connection : lang('Invalid credentials.')));
 				$password = null;
 			}
+			unset_permanent();
 		}
 	}
 	page_header(lang('Login'), $error, null);
@@ -87,7 +93,8 @@ function auth_error($exception = null) {
 
 if (isset($_GET["username"])) {
 	if (!class_exists("Min_DB")) {
-		unset($_SESSION["pwds"][DRIVER]); //! remove also from adminer_permanent
+		unset($_SESSION["pwds"][DRIVER]);
+		unset_permanent();
 		page_header(lang('No extension'), lang('None of the supported PHP extensions (%s) are available.', implode(", ", $possible_drivers)), false);
 		page_footer("auth");
 		exit;
