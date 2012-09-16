@@ -296,6 +296,7 @@ if (!defined("DRIVER")) {
 
 	/** Formulate SQL modification query with limit 1
 	* @param string everything after UPDATE or DELETE
+	* @param string
 	* @return string
 	*/
 	function limit1($query, $where) {
@@ -534,6 +535,7 @@ if (!defined("DRIVER")) {
 
 	/** Create database
 	* @param string
+	* @param string
 	* @return string
 	*/
 	function create_database($db, $collation) {
@@ -552,7 +554,7 @@ if (!defined("DRIVER")) {
 	
 	/** Rename database from DB
 	* @param string new name
-	* @return string
+	* @param string
 	* @return bool
 	*/
 	function rename_database($name, $collation) {

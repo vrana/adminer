@@ -359,7 +359,7 @@ function where_check($val) {
 * @param int condition order
 * @param string column identifier
 * @param string
-* @return string
+* @param string
 * @return string
 */
 function where_link($i, $column, $value, $operator = "=") {
@@ -544,6 +544,7 @@ function remove_from_uri($param = "") {
 }
 
 /** Generate page number for pagination
+* @param int
 * @param int
 * @return string
 */
