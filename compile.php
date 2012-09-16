@@ -119,7 +119,7 @@ if ($_SESSION["translations_version"] != ' . $translations_version . ') {
 	$translations = array();
 	$_SESSION["translations_version"] = ' . $translations_version . ';
 }
-if ($_GET["lang"] || !$translations) {
+if (!$translations) {
 	switch ($LANG) {' . $return . '
 	}
 	$translations = array();
