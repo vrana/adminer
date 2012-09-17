@@ -1,4 +1,4 @@
-Adminer 3.6.1-dev:
+Adminer 3.6.1 (released 2012-09-17):
 Fix compiled version on PHP with multibyte support
 
 Adminer 3.6.0 (released 2012-09-16):
