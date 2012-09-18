@@ -9,7 +9,11 @@ function add_apo_slashes($s) {
 }
 
 function add_quo_slashes($s) {
-	return addcslashes($s, "\n\r\$\0\"\\");
+	$return = $s;
+	$return = addcslashes($return, "\n\r\$\"\\");
+	$return = preg_replace('~\0(?![0-7])~', '\\\\0', $return);
+	$return = addcslashes($return, "\0");
+	return $return;
 }
 
 function remove_lang($match) {
