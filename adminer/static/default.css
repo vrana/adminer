@@ -11,7 +11,7 @@ form { margin: 0; }
 table { margin: 1em 20px 0 0; border: 0; border-top: 1px solid #999; border-left: 1px solid #999; font-size: 90%; }
 td, th { border: 0; border-right: 1px solid #999; border-bottom: 1px solid #999; padding: .2em .3em; }
 th { background: #eee; text-align: left; }
-thead th { text-align: center; }
+thead th { text-align: center; padding: .2em .5em; }
 thead td, thead th { background: #ddf; }
 fieldset { display: inline; vertical-align: top; padding: .5em .8em; margin: .8em .5em 0 0; border: 1px solid #999; }
 p { margin: .8em 20px 0 0; }
