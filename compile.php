@@ -8,12 +8,12 @@ function add_apo_slashes($s) {
 	return addcslashes($s, "\\'");
 }
 
-function add_quo_slashes($s) {
-	$return = $s;
-	$return = addcslashes($return, "\n\r\$\"\\");
-	$return = preg_replace('~\0(?![0-7])~', '\\\\0', $return);
-	$return = addcslashes($return, "\0");
-	return $return;
+function binary_latin($s) {
+	return preg_replace_callback('~[\0- ]~', 'binary_latin_callback', $s);
+}
+
+function binary_latin_callback($match) {
+	return ' ' . chr(ord($match[0]) + ord('0'));
 }
 
 function remove_lang($match) {
@@ -114,8 +114,8 @@ function put_file_lang($match) {
 				$translation_ids[$lang_ids[$key]] = implode("\t", (array) $val);
 			}
 		}
-		$return .= '
-		case "' . $lang . '": $compressed = "' . add_quo_slashes(lzw_compress(implode("\n", $translation_ids))) . '"; break;';
+		$return .= "
+		case '$lang': \$compressed = '" . add_apo_slashes(binary_latin(lzw_compress(implode("\n", $translation_ids)))) . "'; break;";
 	}
 	$translations_version = crc32($return);
 	return '$translations = &$_SESSION["translations"];
@@ -127,7 +127,7 @@ if (!$translations) {
 	switch ($LANG) {' . $return . '
 	}
 	$translations = array();
-	foreach (explode("\n", lzw_decompress($compressed)) as $val) {
+	foreach (explode("\n", lzw_decompress(latin_binary($compressed))) as $val) {
 		$translations[] = (strpos($val, "\t") ? explode("\t", $val) : $val);
 	}
 }
@@ -272,7 +272,7 @@ function compile_file($match) {
 	if ($match[2]) {
 		$file = call_user_func($match[2], $file);
 	}
-	return '"' . add_quo_slashes($file) . '"';
+	return "latin_binary('" . add_apo_slashes(binary_latin($file)) . "')";
 }
 
 $driver = "";

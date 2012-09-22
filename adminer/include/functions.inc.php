@@ -970,3 +970,13 @@ function lzw_decompress($binary) {
 	}
 	return $return;
 }
+
+// used in compiled version
+function latin_binary($s) {
+	return preg_replace_callback('~ (.)~', 'latin_binary_callback', $s);
+}
+
+// used in compiled version
+function latin_binary_callback($match) {
+	return chr(ord($match[1]) - 48); // 48 = ord('0')
+}
