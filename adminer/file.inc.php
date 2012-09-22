@@ -9,7 +9,7 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 
 if ($_GET["file"] == "favicon.ico") {
 	header("Content-Type: image/x-icon");
-	echo base64_decode(compile_file('../adminer/static/favicon.ico', 'base64_encode'));
+	echo lzw_decompress(compile_file('../adminer/static/favicon.ico', 'lzw_compress'));
 } elseif ($_GET["file"] == "default.css") {
 	header("Content-Type: text/css; charset=utf-8");
 	echo lzw_decompress(compile_file('../adminer/static/default.css', 'minify_css'));
