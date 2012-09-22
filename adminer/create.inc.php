@@ -183,7 +183,8 @@ edit_fields($row["fields"], $collations, "TABLE", $suhosin, $foreign_keys, $comm
 </table>
 <p>
 <?php echo lang('Auto Increment'); ?>: <input name="Auto_increment" size="6" value="<?php echo h($row["Auto_increment"]); ?>">
-<label class="jsonly"><input type="checkbox" name="defaults" value="1"<?php echo ($_POST["defaults"] ? " checked" : ""); ?> onclick="columnShow(this.checked, 5);"><?php echo lang('Default values'); ?></label>
+<label class="jsonly"><input type="checkbox" id="defaults" name="defaults" value="1" checked onclick="columnShow(this.checked, 5);"><?php echo lang('Default values'); ?></label>
+<?php if (!$_POST["defaults"]) { ?><script type="text/javascript">editingHideDefaults()</script><?php } ?>
 <?php echo (support("comment") ? checkbox("comments", 1, $comments, lang('Comment'), "columnShow(this.checked, 6); toggle('Comment'); if (this.checked) this.form['Comment'].focus();", true) . ' <input id="Comment" name="Comment" value="' . h($row["Comment"]) . '" maxlength="60"' . ($comments ? '' : ' class="hidden"') . '>' : ''); ?>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">

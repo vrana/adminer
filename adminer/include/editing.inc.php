@@ -231,7 +231,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 <?php if ($type == "TABLE") { ?>
 <td>NULL
 <td><input type="radio" name="auto_increment_col" value=""><acronym title="<?php echo lang('Auto Increment'); ?>">AI</acronym>
-<td<?php echo ($_POST["defaults"] ? "" : " class='hidden'"); ?>><?php echo lang('Default values'); ?>
+<td><?php echo lang('Default values'); ?>
 <?php echo (support("comment") ? "<td" . ($comments ? "" : " class='hidden'") . ">" . lang('Comment') : ""); ?>
 <?php } ?>
 <td><?php echo "<input type='image' class='icon' name='add[" . (support("move_col") ? 0 : count($fields)) . "]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>"; ?><script type="text/javascript">row_count = <?php echo count($fields); ?>;</script>
@@ -250,7 +250,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 <?php if ($type == "TABLE") { ?>
 <td><?php echo checkbox("fields[$i][null]", 1, $field["null"]); ?>
 <td><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked<?php } ?> onclick="var field = this.form['fields[' + this.value + '][field]']; if (!field.value) { field.value = 'id'; field.onchange(); }">
-<td<?php echo ($_POST["defaults"] ? "" : " class='hidden'"); ?>><?php echo checkbox("fields[$i][has_default]", 1, $field["has_default"]); ?><input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["default"]); ?>" onchange="this.previousSibling.checked = true;">
+<td><?php echo checkbox("fields[$i][has_default]", 1, $field["has_default"]); ?><input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["default"]); ?>" onchange="this.previousSibling.checked = true;">
 <?php echo (support("comment") ? "<td" . ($comments ? "" : " class='hidden'") . "><input name='fields[$i][comment]' value='" . h($field["comment"]) . "' maxlength='255'>" : ""); ?>
 <?php } ?>
 <?php

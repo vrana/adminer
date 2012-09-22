@@ -1,5 +1,6 @@
 Adminer 3.6.2-dev:
 Shorten varchar fields
+Display table default values on wide screens
 Fix switching language on first load
 
 Adminer 3.6.1 (released 2012-09-17):

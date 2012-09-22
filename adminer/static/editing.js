@@ -355,6 +355,15 @@ function columnShow(checked, column) {
 	}
 }
 
+/** Hide column with default values in narrow window
+*/
+function editingHideDefaults() {
+	if (innerWidth < document.documentElement.scrollWidth) {
+		document.getElementById('defaults').checked = false;
+		columnShow(false, 5);
+	}
+}
+
 /** Display partition options
 * @param HTMLSelectElement
 */
