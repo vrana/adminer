@@ -902,6 +902,14 @@ function is_url($string) {
 	return (preg_match("~^(https?)://($domain?\\.)+$domain(:\\d+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string, $match) ? strtolower($match[1]) : ""); //! restrict path, query and fragment characters
 }
 
+/** Check if field should be shortened
+* @param array
+* @return bool
+*/
+function is_shortable($field) {
+	return ereg('char|text|lob|geometry|point|linestring|polygon', $field["type"]);
+}
+
 /** Run query which can be killed by AJAX call after timing out
 * @param string
 * @return Min_Result

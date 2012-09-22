@@ -18,7 +18,7 @@ foreach ($fields as $key => $field) {
 	$name = $adminer->fieldName($field);
 	if (isset($field["privileges"]["select"]) && $name != "") {
 		$columns[$key] = html_entity_decode(strip_tags($name));
-		if (ereg('text|lob|geometry|point|linestring|polygon', $field["type"])) {
+		if (is_shortable($field)) {
 			$text_length = $adminer->selectLengthProcess();
 		}
 	}
@@ -350,7 +350,7 @@ if (!$columns) {
 							if ($val === "") { // === - may be int
 								$val = "&nbsp;";
 							} elseif (is_utf8($val)) {
-								if ($text_length != "" && ereg('text|lob|geometry|point|linestring|polygon', $field["type"])) {
+								if ($text_length != "" && is_shortable($field)) {
 									$val = shorten_utf8($val, max(0, +$text_length)); // usage of LEFT() would reduce traffic but complicate query - expected average speedup: .001 s VS .01 s on local network
 								} else {
 									$val = h($val);
