@@ -275,6 +275,12 @@ function compile_file($match) {
 	return "latin_binary('" . add_apo_slashes(binary_latin($file)) . "')";
 }
 
+$project = "adminer";
+if ($_SERVER["argv"][1] == "editor") {
+	$project = "editor";
+	array_shift($_SERVER["argv"]);
+}
+
 $driver = "";
 if (file_exists(dirname(__FILE__) . "/adminer/drivers/" . $_SERVER["argv"][1] . ".inc.php")) {
 	$driver = $_SERVER["argv"][1];
@@ -284,12 +290,15 @@ if (file_exists(dirname(__FILE__) . "/adminer/drivers/" . $_SERVER["argv"][1] . 
 unset($_COOKIE["adminer_lang"]);
 $_SESSION["lang"] = $_SERVER["argv"][1]; // Adminer functions read language from session
 include dirname(__FILE__) . "/adminer/include/lang.inc.php";
-if (isset($_SESSION["lang"])) {
-	if (isset($_SERVER["argv"][2]) || !isset($langs[$_SESSION["lang"]])) {
-		echo "Usage: php compile.php [driver] [lang]\nPurpose: Compile adminer[-driver][-lang].php and editor[-driver][-lang].php.\n";
-		exit(1);
-	}
+if (isset($langs[$_SESSION["lang"]])) {
 	include dirname(__FILE__) . "/adminer/lang/$_SESSION[lang].inc.php";
+	array_shift($_SERVER["argv"]);
+}
+
+if ($_SERVER["argv"][1]) {
+	echo "Usage: php compile.php [editor] [driver] [lang]\n";
+	echo "Purpose: Compile adminer[-driver][-lang].php or editor[-driver][-lang].php.\n";
+	exit(1);
 }
 
 // check function definition in drivers
@@ -310,59 +319,57 @@ foreach (glob(dirname(__FILE__) . "/adminer/drivers/" . ($driver ? $driver : "*"
 
 include dirname(__FILE__) . "/adminer/include/pdo.inc.php";
 $features = array("call" => "routine", "dump", "event", "privileges", "procedure" => "routine", "processlist", "routine", "scheme", "sequence", "status", "trigger", "type", "user" => "privileges", "variables", "view");
-foreach (array("adminer", "editor") as $project) {
-	$lang_ids = array(); // global variable simplifies usage in a callback function
-	$file = file_get_contents(dirname(__FILE__) . "/$project/index.php");
-	if ($driver) {
-		$connection = (object) array("server_info" => 5.1); // MySQL support is version specific
-		$_GET[$driver] = true; // to load the driver
-		include_once dirname(__FILE__) . "/adminer/drivers/$driver.inc.php";
-		foreach ($features as $key => $feature) {
-			if (!support($feature)) {
-				if (!is_int($key)) {
-					$feature = $key;
-				}
-				$file = str_replace("} elseif (isset(\$_GET[\"$feature\"])) {\n\tinclude \"./$feature.inc.php\";\n", "", $file);
+$lang_ids = array(); // global variable simplifies usage in a callback function
+$file = file_get_contents(dirname(__FILE__) . "/$project/index.php");
+if ($driver) {
+	$connection = (object) array("server_info" => 5.1); // MySQL support is version specific
+	$_GET[$driver] = true; // to load the driver
+	include_once dirname(__FILE__) . "/adminer/drivers/$driver.inc.php";
+	foreach ($features as $key => $feature) {
+		if (!support($feature)) {
+			if (!is_int($key)) {
+				$feature = $key;
 			}
-		}
-		if (!support("routine")) {
-			$file = str_replace("if (isset(\$_GET[\"callf\"])) {\n\t\$_GET[\"call\"] = \$_GET[\"callf\"];\n}\nif (isset(\$_GET[\"function\"])) {\n\t\$_GET[\"procedure\"] = \$_GET[\"function\"];\n}\n", "", $file);
+			$file = str_replace("} elseif (isset(\$_GET[\"$feature\"])) {\n\tinclude \"./$feature.inc.php\";\n", "", $file);
 		}
 	}
-	$file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file);
-	$file = str_replace('include "../adminer/include/coverage.inc.php";', '', $file);
-	if ($driver) {
-		$file = preg_replace('(include "../adminer/drivers/(?!' . preg_quote($driver) . ').*\\s*)', '', $file);
+	if (!support("routine")) {
+		$file = str_replace("if (isset(\$_GET[\"callf\"])) {\n\t\$_GET[\"call\"] = \$_GET[\"callf\"];\n}\nif (isset(\$_GET[\"function\"])) {\n\t\$_GET[\"procedure\"] = \$_GET[\"function\"];\n}\n", "", $file);
 	}
-	$file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file); // bootstrap.inc.php
-	if ($driver) {
-		foreach ($features as $feature) {
-			if (!support($feature)) {
-				$file = preg_replace("((\t*)" . preg_quote('if (support("' . $feature . '")') . ".*\n\\1\\})sU", '', $file);
-			}
-		}
-		if (count($drivers) == 1) {
-			$file = str_replace('<?php echo html_select("driver", $drivers, DRIVER); ?>', "<input type='hidden' name='driver' value='" . ($driver == "mysql" ? "server" : $driver) . "'>" . reset($drivers), $file);
-		}
-	}
-	$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
-	$file = preg_replace_callback('~\\b(include|require) "([^"]*\\$LANG.inc.php)";~', 'put_file_lang', $file);
-	$file = str_replace("\r", "", $file);
-	if ($_SESSION["lang"]) {
-		// single language version
-		$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
-		$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
-		$file = str_replace('<?php echo $LANG; ?>', $_SESSION["lang"], $file);
-	}
-	$file = str_replace('<script type="text/javascript" src="static/editing.js"></script>' . "\n", "", $file);
-	$file = preg_replace_callback("~compile_file\\('([^']+)'(?:, '([^']*)')?\\)~", 'compile_file', $file); // integrate static files
-	$replace = 'h(preg_replace("~\\\\\\\\?.*~", "", ME)) . "?file=\\1&amp;version=' . $VERSION;
-	$file = preg_replace('~\\.\\./adminer/static/(default\\.css|functions\\.js|favicon\\.ico)~', '<?php echo ' . $replace . '"; ?>', $file);
-	$file = preg_replace('~\\.\\./adminer/static/([^\'"]*)~', '" . ' . $replace, $file);
-	$file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
-	$file = php_shrink($file);
-
-	$filename = $project . (preg_match('~-dev$~', $VERSION) ? "" : "-$VERSION") . ($driver ? "-$driver" : "") . ($_SESSION["lang"] ? "-$_SESSION[lang]" : "") . ".php";
-	fwrite(fopen($filename, "w"), $file); // file_put_contents() since PHP 5
-	echo "$filename created (" . strlen($file) . " B).\n";
 }
+$file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file);
+$file = str_replace('include "../adminer/include/coverage.inc.php";', '', $file);
+if ($driver) {
+	$file = preg_replace('(include "../adminer/drivers/(?!' . preg_quote($driver) . ').*\\s*)', '', $file);
+}
+$file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file); // bootstrap.inc.php
+if ($driver) {
+	foreach ($features as $feature) {
+		if (!support($feature)) {
+			$file = preg_replace("((\t*)" . preg_quote('if (support("' . $feature . '")') . ".*\n\\1\\})sU", '', $file);
+		}
+	}
+	if (count($drivers) == 1) {
+		$file = str_replace('<?php echo html_select("driver", $drivers, DRIVER); ?>', "<input type='hidden' name='driver' value='" . ($driver == "mysql" ? "server" : $driver) . "'>" . reset($drivers), $file);
+	}
+}
+$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
+$file = preg_replace_callback('~\\b(include|require) "([^"]*\\$LANG.inc.php)";~', 'put_file_lang', $file);
+$file = str_replace("\r", "", $file);
+if ($_SESSION["lang"]) {
+	// single language version
+	$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
+	$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
+	$file = str_replace('<?php echo $LANG; ?>', $_SESSION["lang"], $file);
+}
+$file = str_replace('<script type="text/javascript" src="static/editing.js"></script>' . "\n", "", $file);
+$file = preg_replace_callback("~compile_file\\('([^']+)'(?:, '([^']*)')?\\)~", 'compile_file', $file); // integrate static files
+$replace = 'h(preg_replace("~\\\\\\\\?.*~", "", ME)) . "?file=\\1&amp;version=' . $VERSION;
+$file = preg_replace('~\\.\\./adminer/static/(default\\.css|functions\\.js|favicon\\.ico)~', '<?php echo ' . $replace . '"; ?>', $file);
+$file = preg_replace('~\\.\\./adminer/static/([^\'"]*)~', '" . ' . $replace, $file);
+$file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
+$file = php_shrink($file);
+
+$filename = $project . (preg_match('~-dev$~', $VERSION) ? "" : "-$VERSION") . ($driver ? "-$driver" : "") . ($_SESSION["lang"] ? "-$_SESSION[lang]" : "") . ".php";
+fwrite(fopen($filename, "w"), $file); // file_put_contents() since PHP 5
+echo "$filename created (" . strlen($file) . " B).\n";
