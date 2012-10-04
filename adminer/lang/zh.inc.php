@@ -244,7 +244,6 @@ $translations = array(
 	'Alter type' => '更改类型',
 	'Type has been dropped.' => '已丢弃类型。',
 	'Type has been created.' => '已创建类型。',
-	'Double click on a value to modify it.' => '在值上双击类修改它。',
 	'Use edit link to modify this value.' => '使用编辑链接来修改该值。',
 	'last' => '最后',
 	'From server' => '来自服务器',

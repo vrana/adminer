@@ -243,7 +243,7 @@ $translations = array(
 	'%d row(s) have been imported.' => array('%d ред је увежен.', '%d реда су увежена.', '%d редова је увежено.'),
 
 	// in-place editing in select
-	'Double click on a value to modify it.' => 'Дупли клик на вредност за измену.',
+	'Ctrl+click on a value to modify it.' => 'Ctrl+клик на вредност за измену.',
 	'Use edit link to modify this value.' => 'Користи везу за измену ове вредности.',
 
 	// %s can contain auto-increment value

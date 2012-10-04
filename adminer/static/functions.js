@@ -412,8 +412,8 @@ function ajaxSetHtml(url) {
 * @param MouseEvent
 * @param number display textarea instead of input, 2 - load long text
 */
-function selectDblClick(td, event, text) {
-	if (/input|textarea/i.test(td.firstChild.tagName)) {
+function selectClick(td, event, text) {
+	if (!event.ctrlKey || /input|textarea/i.test(td.firstChild.tagName)) {
 		return;
 	}
 	var original = td.innerHTML;

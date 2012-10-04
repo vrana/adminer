@@ -241,7 +241,7 @@ $translations = array(
 	'%d row(s) have been imported.' => array('xx', 'xx'),
 	
 	// in-place editing in select
-	'Double click on a value to modify it.' => 'xx',
+	'Ctrl+click on a value to modify it.' => 'xx',
 	'Use edit link to modify this value.' => 'xx',
 	
 	// %s can contain auto-increment value

@@ -235,7 +235,6 @@ $translations = array(
 	'%d row(s) have been imported.' => array('%d sıra ithal edildi.', '%d kadar sıra ithal edildi.'),
 	
 	// in-place editing in select
-	'Double click on a value to modify it.' => 'Değerin üzerine çift tıklayın ve değiştirin.',
 	'Use edit link to modify this value.' => 'Değeri değiştirmek için düzenleme bağlantısını kullanın.',
 	
 	// %s can contain auto-increment value

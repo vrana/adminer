@@ -239,7 +239,6 @@ $translations = array(
 	'%d row(s) have been imported.' => array('%d įrašas įkelta.', '%d įrašai įkelti.', '%d įrašų įkelta.'),
 	
 	// in-place editing in select
-	'Double click on a value to modify it.' => 'Du kartus spragtelėkite pelyte norėdami redaguoti.',
 	'Use edit link to modify this value.' => 'Norėdami redaguoti reikšmę naudokite redagavimo nuorodą.',
 	
 	// %s can contain auto-increment value

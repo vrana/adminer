@@ -141,7 +141,7 @@ if ($_POST && !$error) {
 			//! display edit page in case of an error
 		} elseif (!$_POST["import"]) { // modify
 			if (!$_POST["val"]) {
-				$error = lang('Double click on a value to modify it.');
+				$error = lang('Ctrl+click on a value to modify it.');
 			} else {
 				$result = true;
 				$affected = 0;
@@ -403,7 +403,7 @@ if (!$columns) {
 						$text = ereg('text|lob', $field["type"]);
 						echo (($_GET["modify"] && $editable) || $value !== null
 							? "<td>" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>")
-							: "<td id='$id' ondblclick=\"" . ($editable ? "selectDblClick(this, event" . ($long ? ", 2" : ($text ? ", 1" : "")) . ")" : "alert('" . h(lang('Use edit link to modify this value.')) . "')") . ";\">" . $adminer->selectVal($val, $link, $field)
+							: "<td id='$id' onclick=\"" . ($editable ? "selectClick(this, event" . ($long ? ", 2" : ($text ? ", 1" : "")) . ")" : "alert('" . h(lang('Use edit link to modify this value.')) . "')") . ";\">" . $adminer->selectVal($val, $link, $field)
 						);
 					}
 				}
@@ -452,7 +452,7 @@ if (!$columns) {
 			if ($adminer->selectCommandPrint()) {
 				?>
 <fieldset><legend><?php echo lang('Edit'); ?></legend><div>
-<input type="submit" value="<?php echo lang('Save'); ?>"<?php echo ($_GET["modify"] ? '' : ' title="' . lang('Double click on a value to modify it.') . '" class="jsonly"'); ?>>
+<input type="submit" value="<?php echo lang('Save'); ?>"<?php echo ($_GET["modify"] ? '' : ' title="' . lang('Ctrl+click on a value to modify it.') . '" class="jsonly"'); ?>>
 <input type="submit" name="edit" value="<?php echo lang('Edit'); ?>">
 <input type="submit" name="clone" value="<?php echo lang('Clone'); ?>">
 <input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?> (' + (this.form['all'].checked ? <?php echo $found_rows; ?> : formChecked(this, /check/)) + ')');">

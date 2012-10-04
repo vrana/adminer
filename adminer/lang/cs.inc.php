@@ -243,7 +243,7 @@ $translations = array(
 	'%d row(s) have been imported.' => array('Byl importován %d záznam.', 'Byly importovány %d záznamy.', 'Bylo importováno %d záznamů.'),
 	
 	// in-place editing in select
-	'Double click on a value to modify it.' => 'Dvojklikněte na políčko, které chcete změnit.',
+	'Ctrl+click on a value to modify it.' => 'Ctrl+klikněte na políčko, které chcete změnit.',
 	'Use edit link to modify this value.' => 'Ke změně této hodnoty použijte odkaz upravit.',
 	
 	// %s can contain auto-increment value
