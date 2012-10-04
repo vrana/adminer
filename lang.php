@@ -5,7 +5,7 @@ unset($_COOKIE["adminer_lang"]);
 $_SESSION["lang"] = $_SERVER["argv"][1]; // Adminer functions read language from session
 if (isset($_SESSION["lang"])) {
 	include dirname(__FILE__) . "/adminer/include/lang.inc.php";
-	if (isset($_SERVER["argv"][2]) || !isset($langs[$_SESSION["lang"]])) {
+	if (isset($_SERVER["argv"][2]) || (!isset($langs[$_SESSION["lang"]]) && $_SESSION["lang"] != "xx")) {
 		echo "Usage: php lang.php [lang]\nPurpose: Update adminer/lang/*.inc.php from source code messages.\n";
 		exit(1);
 	}
