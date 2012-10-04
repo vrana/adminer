@@ -13,7 +13,7 @@ page_header(lang('Process list'), $error);
 ?>
 
 <form action="" method="post">
-<table cellspacing="0" onclick="tableClick(event);" class="nowrap checkable">
+<table cellspacing="0" onclick="tableClick(event);" ondblclick="tableClick(event, true);" class="nowrap checkable">
 <?php
 // HTML valid because there is always at least one process
 $i = -1;

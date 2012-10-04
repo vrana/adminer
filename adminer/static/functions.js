@@ -114,9 +114,10 @@ function formChecked(el, name) {
 
 /** Select clicked row
 * @param MouseEvent
+* @param [boolean] force click
 */
-function tableClick(event) {
-	var click = (!window.getSelection || getSelection().isCollapsed);
+function tableClick(event, click) {
+	click = (click || !window.getSelection || getSelection().isCollapsed);
 	var el = event.target || event.srcElement;
 	while (!/^tr$/i.test(el.tagName)) {
 		if (/^(table|a|input|textarea)$/i.test(el.tagName)) {
@@ -130,7 +131,7 @@ function tableClick(event) {
 	}
 	el = el.firstChild.firstChild;
 	if (click) {
-		el.click && el.click();
+		el.checked = !el.checked;
 		el.onclick && el.onclick();
 	}
 	trCheck(el);

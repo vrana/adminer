@@ -54,7 +54,7 @@ if ($adminer->homepage()) {
 			if ($_POST["search"] && $_POST["query"] != "") {
 				search_tables();
 			}
-			echo "<table cellspacing='0' class='nowrap checkable' onclick='tableClick(event);'>\n";
+			echo "<table cellspacing='0' class='nowrap checkable' onclick='tableClick(event);' ondblclick='tableClick(event, true);'>\n";
 			echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck(this, /^(tables|views)\[/);">';
 			echo '<th>' . lang('Table');
 			echo '<td>' . lang('Engine');

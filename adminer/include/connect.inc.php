@@ -29,7 +29,7 @@ function connect_error() {
 			$scheme = support("scheme");
 			$collations = collations();
 			echo "<form action='' method='post'>\n";
-			echo "<table cellspacing='0' class='checkable' onclick='tableClick(event);'>\n";
+			echo "<table cellspacing='0' class='checkable' onclick='tableClick(event);' ondblclick='tableClick(event, true);'>\n";
 			echo "<thead><tr><td>&nbsp;<th>" . lang('Database') . "<td>" . lang('Collation') . "<td>" . lang('Tables') . "</thead>\n";
 			foreach ($databases as $db) {
 				$root = h(ME) . "db=" . urlencode($db);
