@@ -234,6 +234,8 @@ $translations = array(
 	'Page' => 'xx',
 	'last' => 'xx',
 	'Last page' => 'xx',
+	'Load more data' => 'xx',
+	'Loading' => 'xx',
 	'whole result' => 'xx',
 	'%d byte(s)' => array('xx', 'xx'),
 	
