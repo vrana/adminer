@@ -4,6 +4,7 @@ Don't select row on double click
 Shorten values in varchar fields
 Display table default values on wide screens
 Fix switching language on first load
+PostgreSQL: Fix process list in version 9.2
 
 Adminer 3.6.1 (released 2012-09-17):
 Fix compiled version on PHP with multibyte support

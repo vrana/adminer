@@ -574,7 +574,8 @@ AND typelem = 0"
 	}
 
 	function process_list() {
-		return get_rows("SELECT * FROM pg_stat_activity ORDER BY procpid");
+		global $connection;
+		return get_rows("SELECT * FROM pg_stat_activity ORDER BY " . ($connection->server_info < 9.2 ? "procpid" : "pid"));
 	}
 	
 	function show_status() {
