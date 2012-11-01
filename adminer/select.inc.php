@@ -403,7 +403,7 @@ if (!$columns) {
 						$text = ereg('text|lob', $field["type"]);
 						echo (($_GET["modify"] && $editable) || $value !== null
 							? "<td>" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>")
-							: "<td id='$id' onclick=\"" . ($editable ? "selectClick(this, event" . ($long ? ", 2" : ($text ? ", 1" : "")) . ")" : "alert('" . h(lang('Use edit link to modify this value.')) . "')") . ";\">" . $adminer->selectVal($val, $link, $field)
+							: "<td id='$id' onclick=\"" . ($editable ? "selectClick(this, event" . ($long ? ", 2" : ($text ? ", 1" : "")) . ")" : "if (event.ctrlKey) alert('" . h(lang('Use edit link to modify this value.')) . "')") . ";\">" . $adminer->selectVal($val, $link, $field)
 						);
 					}
 				}
