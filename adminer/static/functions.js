@@ -412,10 +412,15 @@ function ajaxSetHtml(url) {
 * @param HTMLElement
 * @param MouseEvent
 * @param number display textarea instead of input, 2 - load long text
+* @param string warning to display
 */
-function selectClick(td, event, text) {
-	if (!event.ctrlKey || /input|textarea/i.test(td.firstChild.tagName)) {
+function selectClick(td, event, text, warning) {
+	var target = event.target || event.srcElement;
+	if (!event.ctrlKey || /input|textarea/i.test(td.firstChild.tagName) || /^a$/i.test(target.tagName)) {
 		return;
+	}
+	if (warning) {
+		return alert(warning);
 	}
 	var original = td.innerHTML;
 	text = text || /\n/.test(original);
