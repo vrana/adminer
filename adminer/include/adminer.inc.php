@@ -715,7 +715,7 @@ DROP PROCEDURE adminer_alter;
 							$insert = "INSERT INTO " . table($table) . " (" . implode(", ", array_map('idf_escape', $keys)) . ") VALUES";
 						}
 						foreach ($row as $key => $val) {
-							$row[$key] = ($val !== null ? (ereg('int|float|double|decimal|bit', $fields[$keys[$key]]["type"]) ? $val : q($val)) : "NULL"); //! columns looking like functions
+							$row[$key] = $this->dumpTypeValue($fields[$keys[$key]]["type"], $val); //! columns looking like functions
 						}
 						$s = ($max_packet ? "\n" : " ") . "(" . implode(",\t", $row) . ")";
 						if (!$buffer) {
@@ -736,7 +736,28 @@ DROP PROCEDURE adminer_alter;
 			}
 		}
 	}
-	
+
+	/** Export value based on its type
+	 * @param string type
+	 * @param * value
+	 * @return string properly quoted sql output for given value and type
+	 */
+	function dumpTypeValue($type, $val) {
+		if ($val === null)
+			return "NULL";
+
+		// unquoted stuff
+		if (ereg('(^|[^o])int|float|double|decimal|bit', $type))	// not point
+			return $val;
+
+		// hex binary data
+		if (ereg('binary|blob|point', $type))
+			return "X".q(bin2hex($val));
+
+		// string data
+		return q($val);
+	}
+
 	/** Set export filename
 	* @param string
 	* @return string filename without extension
