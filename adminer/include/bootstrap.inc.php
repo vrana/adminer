@@ -14,6 +14,8 @@ if ($filter || ini_get("filter.default_flags")) {
 	}
 }
 
+@ini_set("mbstring.internal_encoding", "8bit"); // @ - can be disabled
+
 // used only in compiled file
 if (isset($_GET["file"])) {
 	include "../adminer/file.inc.php";
