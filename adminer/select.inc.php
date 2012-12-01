@@ -474,12 +474,12 @@ if (!$columns) {
 			echo "<input type='file' name='csv_file'> ";
 			echo html_select("separator", array("csv" => "CSV,", "csv;" => "CSV;", "tsv" => "TSV"), $adminer_import["format"], 1); // 1 - select
 			echo " <input type='submit' name='import' value='" . lang('Import') . "'>";
-			echo "<input type='hidden' name='token' value='$token'>\n";
 			echo "</div></fieldset>\n";
 		}
 		
 		$adminer->selectEmailPrint(array_filter($email_fields, 'strlen'), $columns);
 		
+		echo "<p><input type='hidden' name='token' value='$token'></p>\n";
 		echo "</form>\n";
 	}
 }
