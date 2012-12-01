@@ -205,7 +205,7 @@ if ($history) {
 	print_fieldset("history", lang('History'), $_GET["history"] != "");
 	foreach ($history as $key => $val) {
 		list($q, $time) = $val;
-		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . "</a> <span class='time'>" . @date("H:i:s", $time) . "</span> <code class='jush-$jush'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace('~^(#|-- ).*~m', '', $q)))), 80, "</code>") . "<br>\n"; // @ - time zone may be not set
+		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . "</a> <span class='time' title='" . @date('Y-m-d', $time) . "'>" . @date("H:i:s", $time) . "</span> <code class='jush-$jush'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace('~^(#|-- ).*~m', '', $q)))), 80, "</code>") . "<br>\n"; // @ - time zone may be not set
 	}
 	echo "<input type='submit' name='clear' value='" . lang('Clear') . "'>\n";
 	echo "<a href='" . h(ME . "sql=&history=all") . "'>" . lang('Edit all') . "</a>\n";
