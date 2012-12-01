@@ -38,7 +38,7 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function select_db($database) {
-				return $this->query("USE $database");
+				return $this->query("USE " . idf_escape($database));
 			}
 
 			function query($query, $unbuffered = false) {
