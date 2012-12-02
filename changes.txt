@@ -1,10 +1,14 @@
 Adminer 3.6.2-dev:
 Edit values by Ctrl+click instead of double click
 Don't select row on double click
-Shorten values in varchar fields
+Shorten printed values in varchar fields
 Display table default values on wide screens
+Display date in SQL history
 Fix switching language on first load
+Support enabled mbstring.func_overload
+MySQL: Prolong comment length since MySQL 5.5
 PostgreSQL: Fix process list in version 9.2
+MS SQL: Support databases starting with number
 
 Adminer 3.6.1 (released 2012-09-17):
 Fix compiled version on PHP with multibyte support
