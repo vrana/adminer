@@ -164,6 +164,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	
 	function selectVal($val, $link, $field) {
 		$return = ($val === null ? "&nbsp;" : $val);
+		$link = h($link);
 		if (ereg('blob|bytea', $field["type"]) && !is_utf8($val)) {
 			$return = lang('%d byte(s)', strlen($val));
 			if (ereg("^(GIF|\xFF\xD8\xFF|\x89PNG\x0D\x0A\x1A\x0A)", $val)) { // GIF|JPG|PNG, getimagetype() works with filename

@@ -196,7 +196,7 @@ username.form['auth[driver]'].onchange();
 		if (ereg('blob|bytea|raw|file', $field["type"]) && !is_utf8($val)) {
 			$return = lang('%d byte(s)', strlen($val));
 		}
-		return ($link ? "<a href='$link'>$return</a>" : $return);
+		return ($link ? "<a href='" . h($link) . "'>$return</a>" : $return);
 	}
 	
 	/** Value conversion used in select and edit
