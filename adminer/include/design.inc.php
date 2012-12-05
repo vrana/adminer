@@ -16,7 +16,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	$title_all = $title . ($title2 != "" ? ": " . h($title2) : "");
 	$title_page = strip_tags($title_all . (SERVER != "" && SERVER != "localhost" ? h(" - " . SERVER) : "") . " - " . $adminer->name());
 	?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<!DOCTYPE html>
 <html lang="<?php echo $LANG; ?>" dir="<?php echo lang('ltr'); ?>">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Script-Type" content="text/javascript">

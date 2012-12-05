@@ -740,7 +740,8 @@ function input($field, $value, $function) {
 		} else {
 			// int(3) is only a display hint
 			$maxlength = (!ereg('int', $field["type"]) && preg_match('~^(\\d+)(,(\\d+))?$~', $field["length"], $match) ? ((ereg("binary", $field["type"]) ? 2 : 1) * $match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) : ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0));
-			echo "<input value='" . h($value) . "'" . ($maxlength ? " maxlength='$maxlength'" : "") . (ereg('char|binary', $field["type"]) && $maxlength > 20 ? " size='40'" : "") . "$attrs>";
+			// type='date' and type='time' display localized value which may be confusing, type='datetime' uses 'T' as date and time separator
+			echo "<input" . (ereg('int|float|double|decimal', $field["type"]) ? " type='number'" : "") . " value='" . h($value) . "'" . ($maxlength ? " maxlength='$maxlength'" : "") . (ereg('char|binary', $field["type"]) && $maxlength > 20 ? " size='40'" : "") . "$attrs>";
 		}
 	}
 }

@@ -4,6 +4,7 @@ Don't select row on double click
 Shorten printed values in varchar fields
 Display table default values on wide screens
 Display date in SQL history
+HTML5 input fields
 Fix switching language on first load
 Support enabled mbstring.func_overload
 MySQL: Prolong comment length since MySQL 5.5
