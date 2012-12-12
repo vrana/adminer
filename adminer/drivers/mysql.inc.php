@@ -768,6 +768,7 @@ if (!defined("DRIVER")) {
 				"type" => strtolower($param[5]),
 				"length" => preg_replace_callback("~$enum_length~s", 'normalize_enum', $param[6]),
 				"unsigned" => strtolower(preg_replace('~\\s+~', ' ', trim("$param[8] $param[7]"))),
+				"null" => 1,
 				"full_type" => $param[4],
 				"inout" => strtoupper($param[1]),
 				"collation" => strtolower($param[9]),
