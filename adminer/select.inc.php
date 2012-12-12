@@ -46,7 +46,7 @@ if ($_GET["val"] && is_ajax()) {
 	header("Content-Type: text/plain; charset=utf-8");
 	foreach ($_GET["val"] as $unique_idf => $row) {
 		$as = convert_field($fields[key($row)]);
-		echo $connection->result("SELECT" . limit(($as ? $as : idf_escape(key($row))) . " FROM " . table($TABLE), " WHERE " . where_check($unique_idf) . ($where ? " AND " . implode(" AND ", $where) : "") . ($order ? " ORDER BY " . implode(", ", $order) : ""), 1));
+		echo $connection->result("SELECT" . limit(($as ? $as : idf_escape(key($row))) . " FROM " . table($TABLE), " WHERE " . where_check($unique_idf, $fields) . ($where ? " AND " . implode(" AND ", $where) : "") . ($order ? " ORDER BY " . implode(", ", $order) : ""), 1));
 	}
 	exit;
 }
@@ -80,7 +80,7 @@ if ($_POST && !$error) {
 			$union = array();
 			foreach ($_POST["check"] as $val) {
 				// where is not unique so OR can't be used
-				$union[] = "(SELECT" . limit($from, "\nWHERE " . ($where ? implode(" AND ", $where) . " AND " : "") . where_check($val) . $group_by, 1) . ")";
+				$union[] = "(SELECT" . limit($from, "\nWHERE " . ($where ? implode(" AND ", $where) . " AND " : "") . where_check($val, $fields) . $group_by, 1) . ")";
 			}
 			$query = implode(" UNION ALL ", $union);
 		}
@@ -122,7 +122,7 @@ if ($_POST && !$error) {
 				} else {
 					foreach ((array) $_POST["check"] as $val) {
 						// where is not unique so OR can't be used
-						$result = queries($command . limit1($query, "\nWHERE " . where_check($val)));
+						$result = queries($command . limit1($query, "\nWHERE " . where_check($val, $fields)));
 						if (!$result) {
 							break;
 						}
@@ -152,7 +152,7 @@ if ($_POST && !$error) {
 						$set[] = idf_escape($key) . " = " . (ereg('char|text', $fields[$key]["type"]) || $val != "" ? $adminer->processInput($fields[$key], $val) : "NULL");
 					}
 					$query = table($TABLE) . " SET " . implode(", ", $set);
-					$where2 = " WHERE " . where_check($unique_idf) . ($where ? " AND " . implode(" AND ", $where) : "");
+					$where2 = " WHERE " . where_check($unique_idf, $fields) . ($where ? " AND " . implode(" AND ", $where) : "");
 					$result = queries("UPDATE" . ($is_group ? " $query$where2" : limit1($query, $where2))); // can change row on a different page without unique key
 					if (!$result) {
 						break;

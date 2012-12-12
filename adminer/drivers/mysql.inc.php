@@ -968,7 +968,7 @@ if (!defined("DRIVER")) {
 	*/
 	function unconvert_field($field, $return) {
 		if (ereg("binary", $field["type"])) {
-			$return = "unhex($return)";
+			$return = "UNHEX($return)";
 		}
 		if (ereg("geometry|point|linestring|polygon", $field["type"])) {
 			$return = "GeomFromText($return)";

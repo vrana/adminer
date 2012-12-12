@@ -329,14 +329,15 @@ function unique_array($row, $indexes) {
 
 /** Create SQL condition from parsed query string
 * @param array parsed query string
+* @param array
 * @return string
 */
-function where($where) {
+function where($where, $fields = array()) {
 	global $jush;
 	$return = array();
 	foreach ((array) $where["where"] as $key => $val) {
 		$return[] = idf_escape(bracket_escape($key, 1)) // 1 - back
-			. (($jush == "sql" && ereg('\\.', $val)) || $jush == "mssql" ? " LIKE " . exact_value(addcslashes($val, "%_\\")) : " = " . exact_value($val)) // LIKE because of floats, but slow with ints, in MS SQL because of text
+			. (($jush == "sql" && ereg('\\.', $val)) || $jush == "mssql" ? " LIKE " . exact_value(addcslashes($val, "%_\\")) : " = " . unconvert_field($fields[$key], exact_value($val))) // LIKE because of floats, but slow with ints, in MS SQL because of text
 		; //! enum and set
 	}
 	foreach ((array) $where["null"] as $key) {
@@ -347,12 +348,13 @@ function where($where) {
 
 /** Create SQL condition from query string
 * @param string
+* @param array
 * @return string
 */
-function where_check($val) {
+function where_check($val, $fields = array()) {
 	parse_str($val, $check);
 	remove_slashes(array(&$check));
-	return where($check);
+	return where($check, $fields);
 }
 
 /** Create query string where condition from value
