@@ -1,6 +1,7 @@
 Adminer 3.6.2-dev:
 Edit values by Ctrl+click instead of double click
 Don't select row on double click
+Support NULL in routine calls
 Shorten printed values in varchar fields
 Display table default values on wide screens
 Display date in SQL history

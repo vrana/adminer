@@ -171,7 +171,7 @@ if ($_POST && !$error) {
 			begin();
 			$separator = ($_POST["separator"] == "csv" ? "," : ($_POST["separator"] == "tsv" ? "\t" : ";"));
 			foreach ($matches[0] as $key => $val) {
-				preg_match_all("~((\"[^\"]*\")+|[^$separator]*)$separator~", $val . $separator, $matches2);
+				preg_match_all("~((?>\"[^\"]*\")+|[^$separator]*)$separator~", $val . $separator, $matches2);
 				if (!$key && !array_diff($matches2[1], $cols)) { //! doesn't work with column names containing ",\n
 					// first row corresponds to column names - use it for table structure
 					$cols = $matches2[1];
