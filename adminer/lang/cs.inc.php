@@ -263,6 +263,7 @@ $translations = array(
 	'Save and insert next' => 'Uložit a vložit další',
 	'Clone' => 'Klonovat',
 	'Delete' => 'Smazat',
+	'You have no privileges to update this table.' => 'Nemáte oprávnění editovat tuto tabulku.',
 	
 	'E-mail' => 'E-mail',
 	'From' => 'Odesílatel',

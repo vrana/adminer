@@ -263,6 +263,7 @@ $translations = array(
 	'Save and insert next' => 'xx',
 	'Clone' => 'xx',
 	'Delete' => 'xx',
+	'You have no privileges to update this table.' => 'xx',
 	
 	'E-mail' => 'xx',
 	'From' => 'xx',

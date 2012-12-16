@@ -77,7 +77,9 @@ if ($row === false) {
 
 <form action="" method="post" enctype="multipart/form-data" id="form">
 <?php
-if ($fields) {
+if (!$fields) {
+	echo "<p class='error'>" . lang('You have no privileges to update this table.') . "\n";
+} else {
 	echo "<table cellspacing='0' onkeydown='return editingKeydown(event);'>\n";
 	foreach ($fields as $name => $field) {
 		echo "<tr><th>" . $adminer->fieldName($field);
