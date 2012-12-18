@@ -30,6 +30,7 @@ if (!defined("DRIVER")) {
 					} else {
 						$this->query("SET NAMES utf8");
 					}
+					$this->query("SET time_zone = '" . date('P') . "'");
 				}
 				return $return;
 			}
@@ -79,6 +80,7 @@ if (!defined("DRIVER")) {
 					} else {
 						$this->query("SET NAMES utf8");
 					}
+					$this->query("SET time_zone = '" . date('P') . "'");
 				} else {
 					$this->error = mysql_error();
 				}
