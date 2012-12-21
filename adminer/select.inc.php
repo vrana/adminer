@@ -345,7 +345,7 @@ if (!$columns) {
 						$val = $adminer->editVal($val, $field);
 						if ($val !== null) {
 							if (ereg('blob|bytea|raw|file', $field["type"]) && $val != "") {
-								$link = h(ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . $unique_idf);
+								$link = ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . $unique_idf;
 							}
 							if ($val === "") { // === - may be int
 								$val = "&nbsp;";
@@ -364,7 +364,7 @@ if (!$columns) {
 										foreach ($foreign_key["source"] as $i => $source) {
 											$link .= where_link($i, $foreign_key["target"][$i], $rows[$n][$source]);
 										}
-										$link = h(($foreign_key["db"] != "" ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), ME) : ME) . 'select=' . urlencode($foreign_key["table"]) . $link); // InnoDB supports non-UNIQUE keys
+										$link = ($foreign_key["db"] != "" ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), ME) : ME) . 'select=' . urlencode($foreign_key["table"]) . $link; // InnoDB supports non-UNIQUE keys
 										if (count($foreign_key["source"]) == 1) {
 											break;
 										}
@@ -372,15 +372,15 @@ if (!$columns) {
 								}
 							}
 							if ($key == "COUNT(*)") { //! columns looking like functions
-								$link = h(ME . "select=" . urlencode($TABLE));
+								$link = ME . "select=" . urlencode($TABLE);
 								$i = 0;
 								foreach ((array) $_GET["where"] as $v) {
 									if (!array_key_exists($v["col"], $unique_array)) {
-										$link .= h(where_link($i++, $v["col"], $v["val"], $v["op"]));
+										$link .= where_link($i++, $v["col"], $v["val"], $v["op"]);
 									}
 								}
 								foreach ($unique_array as $k => $v) {
-									$link .= h(where_link($i++, $k, $v));
+									$link .= where_link($i++, $k, $v);
 								}
 							}
 						}
