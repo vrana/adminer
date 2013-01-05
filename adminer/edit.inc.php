@@ -1,8 +1,8 @@
 <?php
 $TABLE = $_GET["edit"];
-$where = (isset($_GET["select"]) ? (count($_POST["check"]) == 1 ? where_check($_POST["check"][0]) : "") : where($_GET));
-$update = (isset($_GET["select"]) ? $_POST["edit"] : $where);
 $fields = fields($TABLE);
+$where = (isset($_GET["select"]) ? (count($_POST["check"]) == 1 ? where_check($_POST["check"][0], $fields) : "") : where($_GET, $fields));
+$update = (isset($_GET["select"]) ? $_POST["edit"] : $where);
 foreach ($fields as $name => $field) {
 	if (!isset($field["privileges"][$update ? "update" : "insert"]) || $adminer->fieldName($field) == "") {
 		unset($fields[$name]);
@@ -53,7 +53,14 @@ if ($_POST["save"]) {
 	$select = array();
 	foreach ($fields as $name => $field) {
 		if (isset($field["privileges"]["select"])) {
-			$select[] = ($_POST["clone"] && $field["auto_increment"] ? "'' AS " : (ereg("enum|set", $field["type"]) ? "1*" . idf_escape($name) . " AS " : "")) . idf_escape($name);
+			$as = convert_field($field);
+			if ($_POST["clone"] && $field["auto_increment"]) {
+				$as = "''";
+			}
+			if ($jush == "sql" && ereg("enum|set", $field["type"])) {
+				$as = "1*" . idf_escape($name);
+			}
+			$select[] = ($as ? "$as AS " : "") . idf_escape($name);
 		}
 	}
 	$row = array();
@@ -70,13 +77,15 @@ if ($row === false) {
 
 <form action="" method="post" enctype="multipart/form-data" id="form">
 <?php
-if ($fields) {
+if (!$fields) {
+	echo "<p class='error'>" . lang('You have no privileges to update this table.') . "\n";
+} else {
 	echo "<table cellspacing='0' onkeydown='return editingKeydown(event);'>\n";
 	foreach ($fields as $name => $field) {
 		echo "<tr><th>" . $adminer->fieldName($field);
 		$default = $_GET["set"][bracket_escape($name)];
 		$value = ($row !== null
-			? ($row[$name] != "" && ereg("enum|set", $field["type"]) ? (is_array($row[$name]) ? array_sum($row[$name]) : +$row[$name]) : $row[$name])
+			? ($row[$name] != "" && $jush == "sql" && ereg("enum|set", $field["type"]) ? (is_array($row[$name]) ? array_sum($row[$name]) : +$row[$name]) : $row[$name])
 			: (!$update && $field["auto_increment"] ? "" : (isset($_GET["select"]) ? false : ($default !== null ? $default : $field["default"])))
 		);
 		if (!$_POST["save"] && is_string($value)) {

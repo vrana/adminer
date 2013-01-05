@@ -35,13 +35,13 @@ if (!$error && $_POST) {
 		if ($query != "" && strlen($query) < 1e6) { // don't add big queries
 			$q = $query . (ereg(";[ \t\r\n]*\$", $query) ? "" : ";"); //! doesn't work with DELIMITER |
 			if (!$history || reset(end($history)) != $q) { // no repeated queries
+				restart_session();
 				$history[] = array($q, time());
+				set_session("queries", $history_all); // required because reference is unlinked by stop_session()
+				stop_session();
 			}
 		}
 		$space = "(?:\\s|/\\*.*\\*/|(?:#|-- )[^\n]*\n|--\n)";
-		if (!ini_bool("session.use_cookies")) {
-			session_write_close();
-		}
 		$delimiter = ";";
 		$offset = 0;
 		$empty = true;
@@ -58,7 +58,7 @@ if (!$error && $_POST) {
 		$dump_format = $adminer->dumpFormat();
 		unset($dump_format["sql"]);
 		while ($query != "") {
-			if (!$offset && preg_match("~^$space*DELIMITER\\s+(.+)~i", $query, $match)) {
+			if (!$offset && preg_match("~^$space*DELIMITER\\s+(\\S+)~i", $query, $match)) {
 				$delimiter = $match[1];
 				$query = substr($query, strlen($match[0]));
 			} else {
@@ -136,7 +136,7 @@ if (!$error && $_POST) {
 								if (preg_match("~^$space*(CREATE|DROP|ALTER)$space+(DATABASE|SCHEMA)\\b~isU", $q)) {
 									restart_session();
 									set_session("dbs", null); // clear cache
-									session_write_close();
+									stop_session();
 								}
 								if (!$_POST["only_errors"]) {
 									echo "<p class='message' title='" . h($connection->info) . "'>" . lang('Query executed OK, %d row(s) affected.', $connection->affected_rows) . "$time\n";
@@ -205,7 +205,7 @@ if ($history) {
 	print_fieldset("history", lang('History'), $_GET["history"] != "");
 	foreach ($history as $key => $val) {
 		list($q, $time) = $val;
-		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . "</a> <span class='time'>" . @date("H:i:s", $time) . "</span> <code class='jush-$jush'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace('~^(#|-- ).*~m', '', $q)))), 80, "</code>") . "<br>\n"; // @ - time zone may be not set
+		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . "</a> <span class='time' title='" . @date('Y-m-d', $time) . "'>" . @date("H:i:s", $time) . "</span> <code class='jush-$jush'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace('~^(#|-- ).*~m', '', $q)))), 80, "</code>") . "<br>\n"; // @ - time zone may be not set
 	}
 	echo "<input type='submit' name='clear' value='" . lang('Clear') . "'>\n";
 	echo "<a href='" . h(ME . "sql=&history=all") . "'>" . lang('Edit all') . "</a>\n";

@@ -23,7 +23,7 @@ function tablesFilter(value) {
 </script>
 <p class="jsonly"><input onkeyup="tablesFilter(this.value);">
 <?php
-		echo "<p id='tables'>\n";
+		echo "<p id='tables' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";
 		foreach ($tables as $table => $type) {
 			echo '<span><a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table) . ">" . lang('select') . "</a> ";
 			echo '<a href="' . h(ME) . 'table=' . urlencode($table) . '"' . bold($_GET["table"] == $table) . ">" . h($table) . "</a><br></span>\n";

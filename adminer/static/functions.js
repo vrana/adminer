@@ -38,11 +38,24 @@ function selectValue(select) {
 	return ((selected.attributes.value || {}).specified ? selected.value : selected.text);
 }
 
+/** Get parent node with specified tag name.
+ * @param HTMLElement
+ * @param string
+ * @return HTMLElement
+ */
+function parentTag(el, tag) {
+	var re = new RegExp('^' + tag + '$', 'i');
+	while (!re.test(el.tagName)) {
+		el = el.parentNode;
+	}
+	return el;
+}
+
 /** Set checked class
 * @param HTMLInputElement
 */
 function trCheck(el) {
-	var tr = el.parentNode.parentNode;
+	var tr = parentTag(el, 'tr');
 	tr.className = tr.className.replace(/(^|\s)checked(\s|$)/, '$2') + (el.checked ? ' checked' : '');
 }
 
@@ -101,9 +114,10 @@ function formChecked(el, name) {
 
 /** Select clicked row
 * @param MouseEvent
+* @param [boolean] force click
 */
-function tableClick(event) {
-	var click = (!window.getSelection || getSelection().isCollapsed);
+function tableClick(event, click) {
+	click = (click || !window.getSelection || getSelection().isCollapsed);
 	var el = event.target || event.srcElement;
 	while (!/^tr$/i.test(el.tagName)) {
 		if (/^(table|a|input|textarea)$/i.test(el.tagName)) {
@@ -117,7 +131,7 @@ function tableClick(event) {
 	}
 	el = el.firstChild.firstChild;
 	if (click) {
-		el.click && el.click();
+		el.checked = !el.checked;
 		el.onclick && el.onclick();
 	}
 	trCheck(el);
@@ -135,7 +149,7 @@ function checkboxClick(event, el) {
 	}
 	if (event.shiftKey && (!lastChecked || lastChecked.name == el.name)) {
 		var checked = (lastChecked ? lastChecked.checked : true);
-		var inputs = el.parentNode.parentNode.parentNode.getElementsByTagName('input');
+		var inputs = parentTag(el, 'table').getElementsByTagName('input');
 		var checking = !lastChecked;
 		for (var i=0; i < inputs.length; i++) {
 			var input = inputs[i];
@@ -152,8 +166,9 @@ function checkboxClick(event, el) {
 				}
 			}
 		}
+	} else {
+		lastChecked = el;
 	}
-	lastChecked = el;
 }
 
 /** Set HTML code of an element
@@ -197,6 +212,26 @@ function pageClick(href, page, event) {
 
 
 
+/** Display items in menu
+* @param HTMLElement
+* @param MouseEvent
+*/
+function menuOver(el, event) {
+	var a = event.target;
+	if (/^a$/i.test(a.tagName) && a.offsetLeft + a.offsetWidth > a.parentNode.offsetWidth) {
+		el.style.overflow = 'visible';
+	}
+}
+
+/** Hide items in menu
+* @param HTMLElement
+*/
+function menuOut(el) {
+	el.style.overflow = 'auto';
+}
+
+
+
 /** Add row in select fieldset
 * @param HTMLSelectElement
 */
@@ -220,44 +255,41 @@ function selectAddRow(field) {
 	field.parentNode.parentNode.appendChild(row);
 }
 
-/** Check whether the query will be executed with index
-* @param HTMLFormElement
-*/
-function selectFieldChange(form) {
-	var ok = (function () {
-		var inputs = form.getElementsByTagName('input');
-		for (var i=0; i < inputs.length; i++) {
-			var input = inputs[i];
-			if (/^fulltext/.test(input.name) && input.value) {
-				return true;
-			}
+
+
+/** Toggles column context menu
+ * @param HTMLElement
+ * @param [string] extra class name
+ */
+function columnMouse(el, className) {
+	var spans = el.getElementsByTagName('span');
+	for (var i=0; i < spans.length; i++) {
+		if (/column/.test(spans[i].className)) {
+			spans[i].className = 'column' + (className || '');
 		}
-		var ok = true;
-		var selects = form.getElementsByTagName('select');
-		for (var i=0; i < selects.length; i++) {
-			var select = selects[i];
-			var col = selectValue(select);
-			var match = /^(where.+)col\]/.exec(select.name);
-			if (match) {
-				var op = selectValue(form[match[1] + 'op]']);
-				var val = form[match[1] + 'val]'].value;
-				if (col in indexColumns && (!/LIKE|REGEXP/.test(op) || (op == 'LIKE' && val.charAt(0) != '%'))) {
-					return true;
-				} else if (col || val) {
-					ok = false;
-				}
-			}
-			//! take grouping in select into account
-			if (col && /^order/.test(select.name)) {
-				if (!(col in indexColumns)) {
-					 ok = false;
-				}
-				break;
-			}
+	}
+}
+
+
+
+/** Fill column in search field
+ * @param string
+ */
+function selectSearch(name) {
+	var el = document.getElementById('fieldset-search');
+	el.className = '';
+	var divs = el.getElementsByTagName('div');
+	for (var i=0; i < divs.length; i++) {
+		var div = divs[i];
+		if (/select/i.test(div.firstChild.tagName) && selectValue(div.firstChild) == name) {
+			break;
 		}
-		return ok;
-	})();
-	setHtml('noindex', (ok ? '' : '!'));
+	}
+	if (i == divs.length) {
+		div.firstChild.value = name;
+		div.firstChild.onchange();
+	}
+	div.lastChild.focus();
 }
 
 
@@ -279,6 +311,20 @@ function bodyKeydown(event, button) {
 		return false;
 	}
 	return true;
+}
+
+/** Open form to a new window on Ctrl+click or Shift+click
+* @param MouseEvent
+*/
+function bodyClick(event) {
+	var target = event.target || event.srcElement;
+	if ((event.ctrlKey || event.shiftKey) && target.type == 'submit' && /input/i.test(target.tagName)) {
+		target.form.target = '_blank';
+		setTimeout(function () {
+			// if (event.ctrlKey) { focus(); } doesn't work
+			target.form.target = '';
+		}, 0);
+	}
 }
 
 
@@ -366,12 +412,18 @@ function ajaxSetHtml(url) {
 * @param HTMLElement
 * @param MouseEvent
 * @param number display textarea instead of input, 2 - load long text
+* @param string warning to display
 */
-function selectDblClick(td, event, text) {
-	if (/input|textarea/i.test(td.firstChild.tagName)) {
+function selectClick(td, event, text, warning) {
+	var target = event.target || event.srcElement;
+	if (!event.ctrlKey || /input|textarea/i.test(td.firstChild.tagName) || /^a$/i.test(target.tagName)) {
 		return;
 	}
+	if (warning) {
+		return alert(warning);
+	}
 	var original = td.innerHTML;
+	text = text || /\n/.test(original);
 	var input = document.createElement(text ? 'textarea' : 'input');
 	input.onkeydown = function (event) {
 		if (!event) {
@@ -421,6 +473,38 @@ function selectDblClick(td, event, text) {
 		var range = document.selection.createRange();
 		range.moveEnd('character', -input.value.length + pos);
 		range.select();
+	}
+}
+
+
+
+/** Load and display next page in select
+* @param HTMLLinkElement
+* @param string
+* @param number
+* @return boolean
+*/
+function selectLoadMore(a, limit, loading) {
+	var title = a.innerHTML;
+	var href = a.href;
+	a.innerHTML = loading;
+	if (href) {
+		a.removeAttribute('href');
+		return ajax(href, function (request) {
+			document.getElementById('table').innerHTML += request.responseText;
+			var rows = 0;
+			request.responseText.replace(/(^|\n)<tr/g, function () {
+				rows++;
+			});
+			if (rows < limit) {
+				a.parentNode.removeChild(a);
+			} else {
+				a.href = href.replace(/\d+$/, function (page) {
+					return +page + 1;
+				});
+				a.innerHTML = title;
+			}
+		});
 	}
 }
 

@@ -4,14 +4,16 @@ error_reporting(6135); // errors and warnings
 include dirname(__FILE__) . "/adminer/include/version.inc.php";
 include dirname(__FILE__) . "/externals/JsShrink/jsShrink.php";
 
-if (!function_exists('jsShrink')) {
-	function jsShrink($code) {
-		return $code;
-	}
-}
-
 function add_apo_slashes($s) {
 	return addcslashes($s, "\\'");
+}
+
+function add_quo_slashes($s) {
+	$return = $s;
+	$return = addcslashes($return, "\n\r\$\"\\");
+	$return = preg_replace('~\0(?![0-7])~', '\\\\0', $return);
+	$return = addcslashes($return, "\0");
+	return $return;
 }
 
 function remove_lang($match) {
@@ -61,6 +63,43 @@ function lang(\$translation, \$number) {
 	}
 }
 
+function lzw_compress($string) {
+	// compression
+	$dictionary = array_flip(range("\0", "\xFF"));
+	$word = "";
+	$codes = array();
+	for ($i=0; $i <= strlen($string); $i++) {
+		$x = $string[$i];
+		if (strlen($x) && isset($dictionary[$word . $x])) {
+			$word .= $x;
+		} elseif ($i) {
+			$codes[] = $dictionary[$word];
+			$dictionary[$word . $x] = count($dictionary);
+			$word = $x;
+		}
+	}
+	// convert codes to binary string
+	$dictionary_count = 256;
+	$bits = 8; // ceil(log($dictionary_count, 2))
+	$return = "";
+	$rest = 0;
+	$rest_length = 0;
+	foreach ($codes as $code) {
+		$rest = ($rest << $bits) + $code;
+		$rest_length += $bits;
+		$dictionary_count++;
+		if ($dictionary_count >> $bits) {
+			$bits++;
+		}
+		while ($rest_length > 7) {
+			$rest_length -= 8;
+			$return .= chr($rest >> $rest_length);
+			$rest &= (1 << $rest_length) - 1;
+		}
+	}
+	return $return . ($rest_length ? chr($rest << (8 - $rest_length)) : "");
+}
+
 function put_file_lang($match) {
 	global $lang_ids, $project, $langs;
 	if ($_SESSION["lang"]) {
@@ -72,16 +111,27 @@ function put_file_lang($match) {
 		$translation_ids = array_flip($lang_ids); // default translation
 		foreach ($translations as $key => $val) {
 			if ($val !== null) {
-				$translation_ids[$lang_ids[$key]] = $val;
+				$translation_ids[$lang_ids[$key]] = implode("\t", (array) $val);
 			}
 		}
-		$return .= "\tcase \"$lang\": \$translations = array(";
-		foreach ($translation_ids as $val) {
-			$return .= (is_array($val) ? "array('" . implode("', '", array_map('add_apo_slashes', $val)) . "')" : "'" . add_apo_slashes($val) . "'") . ", ";
-		}
-		$return = substr($return, 0, -2) . "); break;\n";
+		$return .= '
+		case "' . $lang . '": $compressed = "' . add_quo_slashes(lzw_compress(implode("\n", $translation_ids))) . '"; break;';
 	}
-	return "switch (\$LANG) {\n$return}\n";
+	$translations_version = crc32($return);
+	return '$translations = &$_SESSION["translations"];
+if ($_SESSION["translations_version"] != ' . $translations_version . ') {
+	$translations = array();
+	$_SESSION["translations_version"] = ' . $translations_version . ';
+}
+if (!$translations) {
+	switch ($LANG) {' . $return . '
+	}
+	$translations = array();
+	foreach (explode("\n", lzw_decompress($compressed)) as $val) {
+		$translations[] = (strpos($val, "\t") ? explode("\t", $val) : $val);
+	}
+}
+';
 }
 
 function short_identifier($number, $chars) {
@@ -145,7 +195,7 @@ function php_shrink($input) {
 		$short_variables[$key] = short_identifier($number, $chars); // could use also numbers and \x7f-\xff
 	}
 	
-	$set = array_flip(preg_split('//', '!"#$&\'()*+,-./:;<=>?@[\]^`{|}'));
+	$set = array_flip(preg_split('//', '!"#$%&\'()*+,-./:;<=>?@[\]^`{|}'));
 	$space = '';
 	$output = '';
 	$in_echo = false;
@@ -155,10 +205,10 @@ function php_shrink($input) {
 			$token = array(0, $token);
 		}
 		if ($tokens[$i+2][0] === T_CLOSE_TAG && $tokens[$i+3][0] === T_INLINE_HTML && $tokens[$i+4][0] === T_OPEN_TAG
-			&& strlen(addcslashes($tokens[$i+3][1], "'\\")) < strlen($tokens[$i+3][1]) + 3
+			&& strlen(add_apo_slashes($tokens[$i+3][1])) < strlen($tokens[$i+3][1]) + 3
 		) {
 			$tokens[$i+2] = array(T_ECHO, 'echo');
-			$tokens[$i+3] = array(T_CONSTANT_ENCAPSED_STRING, "'" . addcslashes($tokens[$i+3][1], "'\\") . "'");
+			$tokens[$i+3] = array(T_CONSTANT_ENCAPSED_STRING, "'" . add_apo_slashes($tokens[$i+3][1]) . "'");
 			$tokens[$i+4] = array(0, ';');
 		}
 		if ($token[0] == T_COMMENT || $token[0] == T_WHITESPACE || ($token[0] == T_DOC_COMMENT && $doc_comment)) {
@@ -202,12 +252,33 @@ function php_shrink($input) {
 }
 
 function minify_css($file) {
-	return preg_replace('~\\s*([:;{},])\\s*~', '\\1', preg_replace('~/\\*.*\\*/~sU', '', $file));
+	return lzw_compress(preg_replace('~\\s*([:;{},])\\s*~', '\\1', preg_replace('~/\\*.*\\*/~sU', '', $file)));
+}
+
+function minify_js($file) {
+	$file = str_replace("'../externals/jush/'", "location.protocol + '//www.adminer.org/static/'", $file);
+	if (function_exists('jsShrink')) {
+		$file = jsShrink($file);
+	}
+	return lzw_compress($file);
 }
 
 function compile_file($match) {
 	global $project;
-	return call_user_func($match[2], file_get_contents(dirname(__FILE__) . "/$project/$match[1]"));
+	$file = "";
+	foreach (explode(";", $match[1]) as $filename) {
+		$file .= file_get_contents(dirname(__FILE__) . "/$project/$filename");
+	}
+	if ($match[2]) {
+		$file = call_user_func($match[2], $file);
+	}
+	return '"' . add_quo_slashes($file) . '"';
+}
+
+$project = "adminer";
+if ($_SERVER["argv"][1] == "editor") {
+	$project = "editor";
+	array_shift($_SERVER["argv"]);
 }
 
 $driver = "";
@@ -219,12 +290,15 @@ if (file_exists(dirname(__FILE__) . "/adminer/drivers/" . $_SERVER["argv"][1] . 
 unset($_COOKIE["adminer_lang"]);
 $_SESSION["lang"] = $_SERVER["argv"][1]; // Adminer functions read language from session
 include dirname(__FILE__) . "/adminer/include/lang.inc.php";
-if (isset($_SESSION["lang"])) {
-	if (isset($_SERVER["argv"][2]) || !isset($langs[$_SESSION["lang"]])) {
-		echo "Usage: php compile.php [driver] [lang]\nPurpose: Compile adminer[-driver][-lang].php and editor[-driver][-lang].php.\n";
-		exit(1);
-	}
+if (isset($langs[$_SESSION["lang"]])) {
 	include dirname(__FILE__) . "/adminer/lang/$_SESSION[lang].inc.php";
+	array_shift($_SERVER["argv"]);
+}
+
+if ($_SERVER["argv"][1]) {
+	echo "Usage: php compile.php [editor] [driver] [lang]\n";
+	echo "Purpose: Compile adminer[-driver][-lang].php or editor[-driver][-lang].php.\n";
+	exit(1);
 }
 
 // check function definition in drivers
@@ -237,7 +311,7 @@ foreach (glob(dirname(__FILE__) . "/adminer/drivers/" . ($driver ? $driver : "*"
 		$file = file_get_contents($filename);
 		foreach ($functions as $val) {
 			if (!strpos($file, "$val(")) {
-				echo "Missing $val in $filename\n";
+				fprintf(STDERR, "Missing $val in $filename\n");
 			}
 		}
 	}
@@ -245,60 +319,57 @@ foreach (glob(dirname(__FILE__) . "/adminer/drivers/" . ($driver ? $driver : "*"
 
 include dirname(__FILE__) . "/adminer/include/pdo.inc.php";
 $features = array("call" => "routine", "dump", "event", "privileges", "procedure" => "routine", "processlist", "routine", "scheme", "sequence", "status", "trigger", "type", "user" => "privileges", "variables", "view");
-foreach (array("adminer", "editor") as $project) {
-	$lang_ids = array(); // global variable simplifies usage in a callback function
-	$file = file_get_contents(dirname(__FILE__) . "/$project/index.php");
-	if ($driver) {
-		$connection = (object) array("server_info" => 5.1); // MySQL support is version specific
-		$_GET[$driver] = true; // to load the driver
-		include_once dirname(__FILE__) . "/adminer/drivers/$driver.inc.php";
-		foreach ($features as $key => $feature) {
-			if (!support($feature)) {
-				if (!is_int($key)) {
-					$feature = $key;
-				}
-				$file = str_replace("} elseif (isset(\$_GET[\"$feature\"])) {\n\tinclude \"./$feature.inc.php\";\n", "", $file);
+$lang_ids = array(); // global variable simplifies usage in a callback function
+$file = file_get_contents(dirname(__FILE__) . "/$project/index.php");
+if ($driver) {
+	$connection = (object) array("server_info" => 5.1); // MySQL support is version specific
+	$_GET[$driver] = true; // to load the driver
+	include_once dirname(__FILE__) . "/adminer/drivers/$driver.inc.php";
+	foreach ($features as $key => $feature) {
+		if (!support($feature)) {
+			if (!is_int($key)) {
+				$feature = $key;
 			}
-		}
-		if (!support("routine")) {
-			$file = str_replace("if (isset(\$_GET[\"callf\"])) {\n\t\$_GET[\"call\"] = \$_GET[\"callf\"];\n}\nif (isset(\$_GET[\"function\"])) {\n\t\$_GET[\"procedure\"] = \$_GET[\"function\"];\n}\n", "", $file);
+			$file = str_replace("} elseif (isset(\$_GET[\"$feature\"])) {\n\tinclude \"./$feature.inc.php\";\n", "", $file);
 		}
 	}
-	$file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file);
-	$file = str_replace('include "../adminer/include/coverage.inc.php";', '', $file);
-	if ($driver) {
-		$file = preg_replace('(include "../adminer/drivers/(?!' . preg_quote($driver) . ').*\\s*)', '', $file);
+	if (!support("routine")) {
+		$file = str_replace("if (isset(\$_GET[\"callf\"])) {\n\t\$_GET[\"call\"] = \$_GET[\"callf\"];\n}\nif (isset(\$_GET[\"function\"])) {\n\t\$_GET[\"procedure\"] = \$_GET[\"function\"];\n}\n", "", $file);
 	}
-	$file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file); // bootstrap.inc.php
-	if ($driver) {
-		foreach ($features as $feature) {
-			if (!support($feature)) {
-				$file = preg_replace("((\t*)" . preg_quote('if (support("' . $feature . '")') . ".*\n\\1\\})sU", '', $file);
-			}
-		}
-		if (count($drivers) == 1) {
-			$file = str_replace('<?php echo html_select("driver", $drivers, DRIVER); ?>', "<input type='hidden' name='driver' value='" . ($driver == "mysql" ? "server" : $driver) . "'>" . reset($drivers), $file);
-		}
-	}
-	$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
-	$file = preg_replace_callback('~\\b(include|require) "([^"]*\\$LANG.inc.php)";~', 'put_file_lang', $file);
-	$file = str_replace("\r", "", $file);
-	if ($_SESSION["lang"]) {
-		// single language version
-		$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
-		$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
-		$file = str_replace('<?php echo $LANG; ?>', $_SESSION["lang"], $file);
-	}
-	$file = str_replace('<script type="text/javascript" src="static/editing.js"></script>' . "\n", "", $file);
-	$file = preg_replace_callback("~compile_file\\('([^']+)', '([^']+)'\\);~", 'compile_file', $file); // integrate static files
-	$replace = 'h(preg_replace("~\\\\\\\\?.*~", "", ME)) . "?file=\\1&amp;version=' . $VERSION;
-	$file = preg_replace('~\\.\\./adminer/static/(default\\.css|functions\\.js|favicon\\.ico)~', '<?php echo ' . $replace . '"; ?>', $file);
-	$file = preg_replace('~\\.\\./adminer/static/([^\'"]*)~', '" . ' . $replace, $file);
-	$file = str_replace("'../externals/jush/'", "location.protocol + '//www.adminer.org/static/'", $file);
-	$file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
-	$file = php_shrink($file);
-
-	$filename = $project . (preg_match('~-dev$~', $VERSION) ? "" : "-$VERSION") . ($driver ? "-$driver" : "") . ($_SESSION["lang"] ? "-$_SESSION[lang]" : "") . ".php";
-	fwrite(fopen($filename, "w"), $file); // file_put_contents() since PHP 5
-	echo "$filename created (" . strlen($file) . " B).\n";
 }
+$file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file);
+$file = str_replace('include "../adminer/include/coverage.inc.php";', '', $file);
+if ($driver) {
+	$file = preg_replace('(include "../adminer/drivers/(?!' . preg_quote($driver) . ').*\\s*)', '', $file);
+}
+$file = preg_replace_callback('~\\b(include|require) "([^"]*)";~', 'put_file', $file); // bootstrap.inc.php
+if ($driver) {
+	foreach ($features as $feature) {
+		if (!support($feature)) {
+			$file = preg_replace("((\t*)" . preg_quote('if (support("' . $feature . '")') . ".*\n\\1\\})sU", '', $file);
+		}
+	}
+	if (count($drivers) == 1) {
+		$file = str_replace('<?php echo html_select("driver", $drivers, DRIVER); ?>', "<input type='hidden' name='driver' value='" . ($driver == "mysql" ? "server" : $driver) . "'>" . reset($drivers), $file);
+	}
+}
+$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
+$file = preg_replace_callback('~\\b(include|require) "([^"]*\\$LANG.inc.php)";~', 'put_file_lang', $file);
+$file = str_replace("\r", "", $file);
+if ($_SESSION["lang"]) {
+	// single language version
+	$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
+	$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
+	$file = str_replace('<?php echo $LANG; ?>', $_SESSION["lang"], $file);
+}
+$file = str_replace('<script type="text/javascript" src="static/editing.js"></script>' . "\n", "", $file);
+$file = preg_replace_callback("~compile_file\\('([^']+)'(?:, '([^']*)')?\\)~", 'compile_file', $file); // integrate static files
+$replace = 'h(preg_replace("~\\\\\\\\?.*~", "", ME)) . "?file=\\1&amp;version=' . $VERSION;
+$file = preg_replace('~\\.\\./adminer/static/(default\\.css|functions\\.js|favicon\\.ico)~', '<?php echo ' . $replace . '"; ?>', $file);
+$file = preg_replace('~\\.\\./adminer/static/([^\'"]*)~', '" . ' . $replace, $file);
+$file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
+$file = php_shrink($file);
+
+$filename = $project . (preg_match('~-dev$~', $VERSION) ? "" : "-$VERSION") . ($driver ? "-$driver" : "") . ($_SESSION["lang"] ? "-$_SESSION[lang]" : "") . ".php";
+fwrite(fopen($filename, "w"), $file); // file_put_contents() since PHP 5
+echo "$filename created (" . strlen($file) . " B).\n";

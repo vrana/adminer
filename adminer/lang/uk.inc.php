@@ -240,7 +240,7 @@ $translations = array(
 	'%d row(s) have been imported.' => array('%d рядок було імпортовано.', '%d рядки було імпортовано.', '%d рядків було імпортовано.'),
 	
 	// in-place editing in select
-	'Double click on a value to modify it.' => 'Двічі клікніть на значенні щоб змінити його.',
+	'Ctrl+click on a value to modify it.' => 'Ctrl+клікніть на значенні щоб змінити його.',
 	'Use edit link to modify this value.' => 'Використовуйте посилання щоб змінити це значення.',
 	
 	// %s can contain auto-increment value

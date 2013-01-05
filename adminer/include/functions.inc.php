@@ -329,14 +329,15 @@ function unique_array($row, $indexes) {
 
 /** Create SQL condition from parsed query string
 * @param array parsed query string
+* @param array
 * @return string
 */
-function where($where) {
+function where($where, $fields = array()) {
 	global $jush;
 	$return = array();
 	foreach ((array) $where["where"] as $key => $val) {
 		$return[] = idf_escape(bracket_escape($key, 1)) // 1 - back
-			. (($jush == "sql" && ereg('\\.', $val)) || $jush == "mssql" ? " LIKE " . exact_value(addcslashes($val, "%_\\")) : " = " . exact_value($val)) // LIKE because of floats, but slow with ints, in MS SQL because of text
+			. (($jush == "sql" && ereg('\\.', $val)) || $jush == "mssql" ? " LIKE " . exact_value(addcslashes($val, "%_\\")) : " = " . unconvert_field($fields[$key], exact_value($val))) // LIKE because of floats, but slow with ints, in MS SQL because of text
 		; //! enum and set
 	}
 	foreach ((array) $where["null"] as $key) {
@@ -347,19 +348,20 @@ function where($where) {
 
 /** Create SQL condition from query string
 * @param string
+* @param array
 * @return string
 */
-function where_check($val) {
+function where_check($val, $fields = array()) {
 	parse_str($val, $check);
 	remove_slashes(array(&$check));
-	return where($check);
+	return where($check, $fields);
 }
 
 /** Create query string where condition from value
 * @param int condition order
 * @param string column identifier
 * @param string
-* @return string
+* @param string
 * @return string
 */
 function where_link($i, $column, $value, $operator = "=") {
@@ -393,6 +395,15 @@ function cookie($name, $value) {
 function restart_session() {
 	if (!ini_bool("session.use_cookies")) {
 		session_start();
+	}
+}
+
+/** Stop session if it would be possible to restart it later
+* @return null
+*/
+function stop_session() {
+	if (!ini_bool("session.use_cookies")) {
+		session_write_close();
 	}
 }
 
@@ -535,6 +546,7 @@ function remove_from_uri($param = "") {
 }
 
 /** Generate page number for pagination
+* @param int
 * @param int
 * @return string
 */
@@ -719,12 +731,19 @@ function input($field, $value, $function) {
 			}
 		} elseif (ereg('blob|bytea|raw|file', $field["type"]) && ini_bool("file_uploads")) {
 			echo "<input type='file' name='fields-$name'$onchange>";
-		} elseif (ereg('text|lob', $field["type"])) {
-			echo "<textarea " . ($jush != "sqlite" || ereg("\n", $value) ? "cols='50' rows='12'" : "cols='30' rows='1' style='height: 1.2em;'") . "$attrs>" . h($value) . '</textarea>'; // 1.2em - line-height
+		} elseif (($text = ereg('text|lob', $field["type"])) || ereg("\n", $value)) {
+			if ($text && $jush != "sqlite") {
+				$attrs .= " cols='50' rows='12'";
+			} else {
+				$rows = min(12, substr_count($value, "\n") + 1);
+				$attrs .= " cols='30' rows='$rows'" . ($rows == 1 ? " style='height: 1.2em;'" : ""); // 1.2em - line-height
+			}
+			echo "<textarea$attrs>" . h($value) . '</textarea>';
 		} else {
 			// int(3) is only a display hint
 			$maxlength = (!ereg('int', $field["type"]) && preg_match('~^(\\d+)(,(\\d+))?$~', $field["length"], $match) ? ((ereg("binary", $field["type"]) ? 2 : 1) * $match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) : ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0));
-			echo "<input value='" . h($value) . "'" . ($maxlength ? " maxlength='$maxlength'" : "") . (ereg('char|binary', $field["type"]) && $maxlength > 20 ? " size='40'" : "") . "$attrs>";
+			// type='date' and type='time' display localized value which may be confusing, type='datetime' uses 'T' as date and time separator
+			echo "<input" . (ereg('int|float|double|decimal', $field["type"]) ? " type='number'" : "") . " value='" . h($value) . "'" . ($maxlength ? " maxlength='$maxlength'" : "") . (ereg('char|binary', $field["type"]) && $maxlength > 20 ? " size='40'" : "") . "$attrs>";
 		}
 	}
 }
@@ -783,12 +802,14 @@ function search_tables() {
 		$name = $adminer->tableName($table_status);
 		if (isset($table_status["Engine"]) && $name != "" && (!$_POST["tables"] || in_array($table, $_POST["tables"]))) {
 			$result = $connection->query("SELECT" . limit("1 FROM " . table($table), " WHERE " . implode(" AND ", $adminer->selectSearchProcess(fields($table), array())), 1));
-			if ($result->fetch_row()) {
+			if (!$result || $result->fetch_row()) {
 				if (!$found) {
 					echo "<ul>\n";
 					$found = true;
 				}
-				echo "<li><a href='" . h(ME . "select=" . urlencode($table) . "&where[0][op]=" . urlencode($_GET["where"][0]["op"]) . "&where[0][val]=" . urlencode($_GET["where"][0]["val"])) . "'>$name</a>\n";
+				echo "<li>" . ($result
+					? "<a href='" . h(ME . "select=" . urlencode($table) . "&where[0][op]=" . urlencode($_GET["where"][0]["op"]) . "&where[0][val]=" . urlencode($_GET["where"][0]["val"])) . "'>$name</a>\n"
+					: "$name: <span class='error'>" . error() . "</span>\n");
 			}
 		}
 	}
@@ -882,4 +903,81 @@ function is_mail($email) {
 function is_url($string) {
 	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component //! IDN
 	return (preg_match("~^(https?)://($domain?\\.)+$domain(:\\d+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string, $match) ? strtolower($match[1]) : ""); //! restrict path, query and fragment characters
+}
+
+/** Check if field should be shortened
+* @param array
+* @return bool
+*/
+function is_shortable($field) {
+	return ereg('char|text|lob|geometry|point|linestring|polygon', $field["type"]);
+}
+
+/** Run query which can be killed by AJAX call after timing out
+* @param string
+* @return Min_Result
+*/
+function slow_query($query) {
+	global $adminer, $token;
+	$db = $adminer->database();
+	if (support("kill") && is_object($connection2 = connect()) && ($db == "" || $connection2->select_db($db))) {
+		$kill = $connection2->result("SELECT CONNECTION_ID()"); // MySQL and MySQLi can use thread_id but it's not in PDO_MySQL
+		?>
+<script type="text/javascript">
+var timeout = setTimeout(function () {
+	ajax('<?php echo js_escape(ME); ?>script=kill', function () {
+	}, 'token=<?php echo $token; ?>&kill=<?php echo $kill; ?>');
+}, <?php echo 1000 * $adminer->queryTimeout(); ?>);
+</script>
+<?php
+	} else {
+		$connection2 = null;
+	}
+	ob_flush();
+	flush();
+	$return = @get_key_vals($query, $connection2); // @ - may be killed
+	if ($connection2) {
+		echo "<script type='text/javascript'>clearTimeout(timeout);</script>\n";
+		ob_flush();
+		flush();
+	}
+	return array_keys($return);
+}
+
+// used in compiled version
+function lzw_decompress($binary) {
+	// convert binary string to codes
+	$dictionary_count = 256;
+	$bits = 8; // ceil(log($dictionary_count, 2))
+	$codes = array();
+	$rest = 0;
+	$rest_length = 0;
+	for ($i=0; $i < strlen($binary); $i++) {
+		$rest = ($rest << 8) + ord($binary[$i]);
+		$rest_length += 8;
+		if ($rest_length >= $bits) {
+			$rest_length -= $bits;
+			$codes[] = $rest >> $rest_length;
+			$rest &= (1 << $rest_length) - 1;
+			$dictionary_count++;
+			if ($dictionary_count >> $bits) {
+				$bits++;
+			}
+		}
+	}
+	// decompression
+	$dictionary = range("\0", "\xFF");
+	$return = "";
+	foreach ($codes as $i => $code) {
+		$element = $dictionary[$code];
+		if (!isset($element)) {
+			$element = $word . $word[0];
+		}
+		$return .= $element;
+		if ($i) {
+			$dictionary[] = $word . $element[0];
+		}
+		$word = $element;
+	}
+	return $return;
 }

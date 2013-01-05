@@ -24,6 +24,7 @@ if (extension_loaded('pdo')) {
 		
 		function query($query, $unbuffered = false) {
 			$result = parent::query($query);
+			$this->error = "";
 			if (!$result) {
 				$errorInfo = $this->errorInfo();
 				$this->error = $errorInfo[2];

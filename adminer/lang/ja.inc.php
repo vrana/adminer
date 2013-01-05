@@ -245,7 +245,6 @@ $translations = array(
 	'Alter type' => 'ユーザー定義型変更',
 	'Type has been dropped.' => 'ユーザー定義型を削除しました',
 	'Type has been created.' => 'ユーザー定義型を追加しました',
-	'Double click on a value to modify it.' => 'ダブルクリックして編集',
 	'Use edit link to modify this value.' => 'リンクを編集する',
 	'last' => '最終',
 	'From server' => 'サーバーから実行',

@@ -234,6 +234,8 @@ $translations = array(
 	'Page' => 'xx',
 	'last' => 'xx',
 	'Last page' => 'xx',
+	'Load more data' => 'xx',
+	'Loading' => 'xx',
 	'whole result' => 'xx',
 	'%d byte(s)' => array('xx', 'xx'),
 	
@@ -241,7 +243,7 @@ $translations = array(
 	'%d row(s) have been imported.' => array('xx', 'xx'),
 	
 	// in-place editing in select
-	'Double click on a value to modify it.' => 'xx',
+	'Ctrl+click on a value to modify it.' => 'xx',
 	'Use edit link to modify this value.' => 'xx',
 	
 	// %s can contain auto-increment value
@@ -261,6 +263,7 @@ $translations = array(
 	'Save and insert next' => 'xx',
 	'Clone' => 'xx',
 	'Delete' => 'xx',
+	'You have no privileges to update this table.' => 'xx',
 	
 	'E-mail' => 'xx',
 	'From' => 'xx',

@@ -13,10 +13,10 @@ if ($_POST) {
 		echo "-- Adminer $VERSION " . $drivers[DRIVER] . " dump
 
 " . ($jush != "sql" ? "" : "SET NAMES utf8;
-SET foreign_key_checks = 0;
+" . ($_POST["data_style"] ? "SET foreign_key_checks = 0;
 SET time_zone = " . q($connection->result("SELECT @@time_zone")) . ";
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
-
+" : "") . "
 ");
 	}
 	
@@ -48,14 +48,14 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 					foreach (array("FUNCTION", "PROCEDURE") as $routine) {
 						foreach (get_rows("SHOW $routine STATUS WHERE Db = " . q($db), null, "-- ") as $row) {
 							$out .= ($style != 'DROP+CREATE' ? "DROP $routine IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
-							. $connection->result("SHOW CREATE $routine " . idf_escape($row["Name"]), 2) . ";;\n\n";
+							. remove_definer($connection->result("SHOW CREATE $routine " . idf_escape($row["Name"]), 2)) . ";;\n\n";
 						}
 					}
 				}
 				if ($_POST["events"]) {
 					foreach (get_rows("SHOW EVENTS", null, "-- ") as $row) {
 						$out .= ($style != 'DROP+CREATE' ? "DROP EVENT IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
-						. $connection->result("SHOW CREATE EVENT " . idf_escape($row["Name"]), 3) . ";;\n\n";
+						. remove_definer($connection->result("SHOW CREATE EVENT " . idf_escape($row["Name"]), 3)) . ";;\n\n";
 					}
 				}
 				if ($out) {
@@ -197,11 +197,11 @@ if (DB != "") {
 		$name = $table_status["Name"];
 		$prefix = ereg_replace("_.*", "", $name);
 		$checked = ($TABLE == "" || $TABLE == (substr($TABLE, -1) == "%" ? "$prefix%" : $name)); //! % may be part of table name
-		$print = "<tr><td>" . checkbox("tables[]", $name, $checked, $name, "formUncheck('check-tables');");
+		$print = "<tr><td>" . checkbox("tables[]", $name, $checked, $name, "checkboxClick(event, this); formUncheck('check-tables');");
 		if (is_view($table_status)) {
 			$views .= "$print\n";
 		} else {
-			echo "$print<td align='right'><label>" . ($table_status["Engine"] == "InnoDB" && $table_status["Rows"] ? "~ " : "") . $table_status["Rows"] . checkbox("data[]", $name, $checked, "", "formUncheck('check-data');") . "</label>\n";
+			echo "$print<td align='right'><label>" . ($table_status["Engine"] == "InnoDB" && $table_status["Rows"] ? "~ " : "") . $table_status["Rows"] . checkbox("data[]", $name, $checked, "", "checkboxClick(event, this); formUncheck('check-data');") . "</label>\n";
 		}
 		$prefixes[$prefix]++;
 	}

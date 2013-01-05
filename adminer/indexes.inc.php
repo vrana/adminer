@@ -89,7 +89,7 @@ foreach ($row["indexes"] as $index) {
 	$i = 1;
 	foreach ($index["columns"] as $key => $column) {
 		echo "<span>" . html_select("indexes[$j][columns][$i]", array(-1 => "") + $fields, $column, ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . "(this, '" . js_escape($jush == "sql" ? "" : $_GET["indexes"] . "_") . "');");
-		echo "<input name='indexes[$j][lengths][$i]' size='2' value='" . h($index["lengths"][$key]) . "'> </span>"; //! hide for non-MySQL drivers, add ASC|DESC
+		echo "<input type='number' name='indexes[$j][lengths][$i]' class='size' value='" . h($index["lengths"][$key]) . "'> </span>"; //! hide for non-MySQL drivers, add ASC|DESC
 		$i++;
 	}
 	echo "<td><input name='indexes[$j][name]' value='" . h($index["name"]) . "'>\n";

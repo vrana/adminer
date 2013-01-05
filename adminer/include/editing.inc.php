@@ -147,7 +147,7 @@ function edit_type($key, $field, $collations, $foreign_keys = array()) {
 	global $structured_types, $types, $unsigned, $on_actions;
 	?>
 <td><select name="<?php echo $key; ?>[type]" class="type" onfocus="lastType = selectValue(this);" onchange="editingTypeChange(this);"><?php echo optionlist((!$field["type"] || isset($types[$field["type"]]) ? array() : array($field["type"])) + $structured_types + ($foreign_keys ? array(lang('Foreign keys') => $foreign_keys) : array()), $field["type"]); ?></select>
-<td><input name="<?php echo $key; ?>[length]" value="<?php echo h($field["length"]); ?>" size="3" onfocus="editingLengthFocus(this);"><td class="options"><?php
+<td><input name="<?php echo $key; ?>[length]" value="<?php echo h($field["length"]); ?>" size="3" onfocus="editingLengthFocus(this);"><td class="options"><?php //! type="number" with enabled JavaScript
 	echo "<select name='$key" . "[collation]'" . (ereg('(char|text|enum|set)$', $field["type"]) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>';
 	echo ($unsigned ? "<select name='$key" . "[unsigned]'" . (!$field["type"] || ereg('(int|float|double|decimal)$', $field["type"]) ? "" : " class='hidden'") . '><option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
 	echo ($foreign_keys ? "<select name='$key" . "[on_delete]'" . (ereg("`", $field["type"]) ? "" : " class='hidden'") . "><option value=''>(" . lang('ON DELETE') . ")" . optionlist(explode("|", $on_actions), $field["on_delete"]) . "</select> " : " "); // space for IE
@@ -220,7 +220,7 @@ function type_class($type) {
 * @return null
 */
 function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $foreign_keys = array(), $comments = false) {
-	global $inout;
+	global $connection, $inout;
 	?>
 <thead><tr class="wrap">
 <?php if ($type == "PROCEDURE") { ?><td>&nbsp;<?php } ?>
@@ -231,7 +231,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 <?php if ($type == "TABLE") { ?>
 <td>NULL
 <td><input type="radio" name="auto_increment_col" value=""><acronym title="<?php echo lang('Auto Increment'); ?>">AI</acronym>
-<td<?php echo ($_POST["defaults"] ? "" : " class='hidden'"); ?>><?php echo lang('Default values'); ?>
+<td><?php echo lang('Default values'); ?>
 <?php echo (support("comment") ? "<td" . ($comments ? "" : " class='hidden'") . ">" . lang('Comment') : ""); ?>
 <?php } ?>
 <td><?php echo "<input type='image' class='icon' name='add[" . (support("move_col") ? 0 : count($fields)) . "]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>"; ?><script type="text/javascript">row_count = <?php echo count($fields); ?>;</script>
@@ -250,8 +250,8 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 <?php if ($type == "TABLE") { ?>
 <td><?php echo checkbox("fields[$i][null]", 1, $field["null"]); ?>
 <td><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked<?php } ?> onclick="var field = this.form['fields[' + this.value + '][field]']; if (!field.value) { field.value = 'id'; field.onchange(); }">
-<td<?php echo ($_POST["defaults"] ? "" : " class='hidden'"); ?>><?php echo checkbox("fields[$i][has_default]", 1, $field["has_default"]); ?><input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["default"]); ?>" onchange="this.previousSibling.checked = true;">
-<?php echo (support("comment") ? "<td" . ($comments ? "" : " class='hidden'") . "><input name='fields[$i][comment]' value='" . h($field["comment"]) . "' maxlength='255'>" : ""); ?>
+<td><?php echo checkbox("fields[$i][has_default]", 1, $field["has_default"]); ?><input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["default"]); ?>" onchange="this.previousSibling.checked = true;">
+<?php echo (support("comment") ? "<td" . ($comments ? "" : " class='hidden'") . "><input name='fields[$i][comment]' value='" . h($field["comment"]) . "' maxlength='" . ($connection->server_info >= 5.5 ? 1024 : 255) . "'>" : ""); ?>
 <?php } ?>
 <?php
 		echo "<td>";
@@ -355,6 +355,14 @@ function drop_create($drop, $create, $location, $message_drop, $message_alter, $
 		redirect(null, $message_drop);
 	}
 	return $dropped;
+}
+
+/** Remove current user definer from SQL command
+ * @param string
+ * @return string
+ */
+function remove_definer($query) {
+	return preg_replace('~^([A-Z =]+) DEFINER=`' . preg_replace('~@(.*)~', '`@`(%|\\1)', logged_user()) . '`~', '\\1', $query); //! proper escaping of user
 }
 
 /** Get string to add a file in TAR

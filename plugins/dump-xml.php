@@ -37,7 +37,7 @@ class AdminerDumpXml {
 				while ($row = $result->fetch_assoc()) {
 					echo "\t<table name='" . h($table) . "'>\n";
 					foreach ($row as $key => $val) {
-						echo "\t\t<column name='" . h($key) . "'>" . h($val) . "</column>\n";
+						echo "\t\t<column name='" . h($key) . "'" . (isset($val) ? "" : " null='null'") . ">" . h($val) . "</column>\n";
 					}
 					echo "\t</table>\n";
 				}

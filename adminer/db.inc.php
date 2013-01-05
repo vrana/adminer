@@ -50,11 +50,11 @@ if ($adminer->homepage()) {
 			echo "<p class='message'>" . lang('No tables.') . "\n";
 		} else {
 			echo "<form action='' method='post'>\n";
-			echo "<p>" . lang('Search data in tables') . ": <input name='query' value='" . h($_POST["query"]) . "'> <input type='submit' name='search' value='" . lang('Search') . "'>\n";
+			echo "<p>" . lang('Search data in tables') . ": <input type='search' name='query' value='" . h($_POST["query"]) . "'> <input type='submit' name='search' value='" . lang('Search') . "'>\n";
 			if ($_POST["search"] && $_POST["query"] != "") {
 				search_tables();
 			}
-			echo "<table cellspacing='0' class='nowrap checkable' onclick='tableClick(event);'>\n";
+			echo "<table cellspacing='0' class='nowrap checkable' onclick='tableClick(event);' ondblclick='tableClick(event, true);'>\n";
 			echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck(this, /^(tables|views)\[/);">';
 			echo '<th>' . lang('Table');
 			echo '<td>' . lang('Engine');

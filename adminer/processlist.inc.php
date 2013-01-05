@@ -13,7 +13,7 @@ page_header(lang('Process list'), $error);
 ?>
 
 <form action="" method="post">
-<table cellspacing="0" onclick="tableClick(event);" class="nowrap checkable">
+<table cellspacing="0" onclick="tableClick(event);" ondblclick="tableClick(event, true);" class="nowrap checkable">
 <?php
 // HTML valid because there is always at least one process
 $i = -1;
@@ -24,7 +24,7 @@ foreach (process_list() as $i => $row) {
 	echo "<tr" . odd() . ">" . (support("kill") ? "<td>" . checkbox("kill[]", $row["Id"], 0) : "");
 	foreach ($row as $key => $val) {
 		echo "<td>" . (
-			($jush == "sql" && $key == "Info" && $row["Command"] == "Query" && $val != "") ||
+			($jush == "sql" && $key == "Info" && ereg("Query|Killed", $row["Command"]) && $val != "") ||
 			($jush == "pgsql" && $key == "current_query" && $val != "<IDLE>") ||
 			($jush == "oracle" && $key == "sql_text" && $val != "")
 			? "<code class='jush-$jush'>" . shorten_utf8($val, 100, "</code>") . ' <a href="' . h(ME . ($row["db"] != "" ? "db=" . urlencode($row["db"]) . "&" : "") . "sql=" . urlencode($val)) . '">' . lang('Edit') . '</a>'

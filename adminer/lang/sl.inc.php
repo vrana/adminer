@@ -235,7 +235,7 @@ $translations = array(
 	'%d row(s) have been imported.' => array('Uvožena je %d vrstica.', 'Uvoženi sta %d vrstici.', 'Uvožene so %d vrstice.', 'Uvoženih je %d vrstic.'),
 	
 	// in-place editing in select
-	'Double click on a value to modify it.' => 'Dvojni klik na vrednost za urejanje.',
+	'Ctrl+click on a value to modify it.' => 'Ctrl+klik na vrednost za urejanje.',
 	'Use edit link to modify this value.' => 'Uporabite urejanje povezave za spreminjanje te vrednosti.',
 	
 	// %s can contain auto-increment value

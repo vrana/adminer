@@ -108,6 +108,7 @@ if (!defined("DRIVER")) {
 			*/
 			function query($query, $unbuffered = false) {
 				$result = @($unbuffered ? mysql_unbuffered_query($query, $this->_link) : mysql_query($query, $this->_link)); // @ - mute mysql.trace_mode
+				$this->error = "";
 				if (!$result) {
 					$this->error = mysql_error($this->_link);
 					return false;
@@ -264,17 +265,19 @@ if (!defined("DRIVER")) {
 	* @param bool
 	* @return array
 	*/
-	function get_databases($flush = true) {
+	function get_databases($flush) {
 		global $connection;
 		// SHOW DATABASES can take a very long time so it is cached
-		$return = &get_session("dbs");
+		$return = get_session("dbs");
 		if ($return === null) {
-			if ($flush) {
-				restart_session();
-				ob_flush();
-				flush();
-			}
-			$return = get_vals($connection->server_info >= 5 ? "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA" : "SHOW DATABASES"); // SHOW DATABASES can be disabled by skip_show_database
+			$query = ($connection->server_info >= 5
+				? "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA"
+				: "SHOW DATABASES"
+			); // SHOW DATABASES can be disabled by skip_show_database
+			$return = ($flush ? slow_query($query) : get_vals($query));
+			restart_session();
+			set_session("dbs", $return);
+			stop_session();
 		}
 		return $return;
 	}
@@ -293,6 +296,7 @@ if (!defined("DRIVER")) {
 
 	/** Formulate SQL modification query with limit 1
 	* @param string everything after UPDATE or DELETE
+	* @param string
 	* @return string
 	*/
 	function limit1($query, $where) {
@@ -499,7 +503,8 @@ if (!defined("DRIVER")) {
 	*/
 	function information_schema($db) {
 		global $connection;
-		return ($connection->server_info >= 5 && $db == "information_schema");
+		return ($connection->server_info >= 5 && $db == "information_schema")
+			|| ($connection->server_info >= 5.5 && $db == "performance_schema");
 	}
 
 	/** Get escaped error message
@@ -530,6 +535,7 @@ if (!defined("DRIVER")) {
 
 	/** Create database
 	* @param string
+	* @param string
 	* @return string
 	*/
 	function create_database($db, $collation) {
@@ -548,7 +554,7 @@ if (!defined("DRIVER")) {
 	
 	/** Rename database from DB
 	* @param string new name
-	* @return string
+	* @param string
 	* @return bool
 	*/
 	function rename_database($name, $collation) {
@@ -602,7 +608,7 @@ if (!defined("DRIVER")) {
 		$alter = array();
 		foreach ($fields as $field) {
 			$alter[] = ($field[1]
-				? ($table != "" ? ($field[0] != "" ? "CHANGE " . idf_escape($field[0]) : "ADD") : " ") . " " . implode($field[1]) . ($table != "" ? " $field[2]" : "")
+				? ($table != "" ? ($field[0] != "" ? "CHANGE " . idf_escape($field[0]) : "ADD") : " ") . " " . implode($field[1]) . ($table != "" ? $field[2] : "")
 				: "DROP " . idf_escape($field[0])
 			);
 		}
@@ -708,7 +714,7 @@ if (!defined("DRIVER")) {
 	
 	/** Get information about trigger
 	* @param string trigger name
-	* @return array array("Trigger" => , "Timing" => , "Event" => , "Statement" => )
+	* @return array array("Trigger" => , "Timing" => , "Event" => , "Type" => , "Statement" => )
 	*/
 	function trigger($name) {
 		if ($name == "") {
@@ -762,6 +768,7 @@ if (!defined("DRIVER")) {
 				"type" => strtolower($param[5]),
 				"length" => preg_replace_callback("~$enum_length~s", 'normalize_enum', $param[6]),
 				"unsigned" => strtolower(preg_replace('~\\s+~', ' ', trim("$param[8] $param[7]"))),
+				"null" => 1,
 				"full_type" => $param[4],
 				"inout" => strtoupper($param[1]),
 				"collation" => strtolower($param[9]),
@@ -942,6 +949,34 @@ if (!defined("DRIVER")) {
 		return get_key_vals("SHOW STATUS");
 	}
 	
+	/** Convert field in select and edit
+	* @param array one element from fields()
+	* @return string
+	*/
+	function convert_field($field) {
+		if (ereg("binary", $field["type"])) {
+			return "HEX(" . idf_escape($field["field"]) . ")";
+		}
+		if (ereg("geometry|point|linestring|polygon", $field["type"])) {
+			return "AsWKT(" . idf_escape($field["field"]) . ")";
+		}
+	}
+	
+	/** Convert value in edit after applying functions back
+	* @param array one element from fields()
+	* @param string
+	* @return string
+	*/
+	function unconvert_field($field, $return) {
+		if (ereg("binary", $field["type"])) {
+			$return = "UNHEX($return)";
+		}
+		if (ereg("geometry|point|linestring|polygon", $field["type"])) {
+			$return = "GeomFromText($return)";
+		}
+		return $return;
+	}
+	
 	/** Check whether a feature is supported
 	* @param string "comment", "copy", "drop_col", "dump", "event", "kill", "partitioning", "privileges", "procedure", "processlist", "routine", "scheme", "sequence", "status", "trigger", "type", "variables", "view"
 	* @return bool
@@ -958,23 +993,24 @@ if (!defined("DRIVER")) {
 		lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "mediumint" => 8, "int" => 10, "bigint" => 20, "decimal" => 66, "float" => 12, "double" => 21),
 		lang('Date and time') => array("date" => 10, "datetime" => 19, "timestamp" => 19, "time" => 10, "year" => 4),
 		lang('Strings') => array("char" => 255, "varchar" => 65535, "tinytext" => 255, "text" => 65535, "mediumtext" => 16777215, "longtext" => 4294967295),
-		lang('Binary') => array("bit" => 20, "binary" => 255, "varbinary" => 65535, "tinyblob" => 255, "blob" => 65535, "mediumblob" => 16777215, "longblob" => 4294967295),
 		lang('Lists') => array("enum" => 65535, "set" => 64),
+		lang('Binary') => array("bit" => 20, "binary" => 255, "varbinary" => 65535, "tinyblob" => 255, "blob" => 65535, "mediumblob" => 16777215, "longblob" => 4294967295),
+		lang('Geometry') => array("geometry" => 0, "point" => 0, "linestring" => 0, "polygon" => 0, "multipoint" => 0, "multilinestring" => 0, "multipolygon" => 0, "geometrycollection" => 0),
 	) as $key => $val) {
 		$types += $val;
 		$structured_types[$key] = array_keys($val);
 	}
 	$unsigned = array("unsigned", "zerofill", "unsigned zerofill"); ///< @var array number variants
 	$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", ""); ///< @var array operators used in select
-	$functions = array("char_length", "date", "from_unixtime", "hex", "lower", "round", "sec_to_time", "time_to_sec", "upper"); ///< @var array functions used in select
+	$functions = array("char_length", "date", "from_unixtime", "lower", "round", "sec_to_time", "time_to_sec", "upper"); ///< @var array functions used in select
 	$grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum"); ///< @var array grouping functions used in select
 	$edit_functions = array( ///< @var array of array("$type|$type2" => "$function/$function2") functions used in editing, [0] - edit and insert, [1] - edit only
 		array(
 			"char" => "md5/sha1/password/encrypt/uuid", //! JavaScript for disabling maxlength
-			"binary" => "md5/sha1/hex",
+			"binary" => "md5/sha1",
 			"date|time" => "now",
 		), array(
-			"int|float|double|decimal" => "+/-",
+			"(^|[^o])int|float|double|decimal" => "+/-", // not point
 			"date" => "+ interval/- interval",
 			"time" => "addtime/subtime",
 			"char|text" => "concat",

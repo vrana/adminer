@@ -239,7 +239,6 @@ $translations = array(
 	'%d row(s) have been imported.' => array('%d سطر وارد شد', '%d سطر وارد شد'),
 	
 	// in-place editing in select
-	'Double click on a value to modify it.' => 'روی مقدار دوبار کلیک کنید تا آنرا ویرایش کنید',
 	'Use edit link to modify this value.' => 'از لینک ویرایش برای ویرایش این مقدار استفاده کنید',
 	
 	// %s can contain auto-increment value

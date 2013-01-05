@@ -4,8 +4,10 @@ $table_status = table_status($TABLE);
 $indexes = indexes($TABLE);
 $fields = fields($TABLE);
 $foreign_keys = column_foreign_keys($TABLE);
+$oid = "";
 if ($table_status["Oid"] == "t") {
-	$indexes[] = array("type" => "PRIMARY", "columns" => array("oid"));
+	$oid = ($jush == "sqlite" ? "rowid" : "oid");
+	$indexes[] = array("type" => "PRIMARY", "columns" => array($oid));
 }
 parse_str($_COOKIE["adminer_import"], $adminer_import);
 
@@ -16,7 +18,7 @@ foreach ($fields as $key => $field) {
 	$name = $adminer->fieldName($field);
 	if (isset($field["privileges"]["select"]) && $name != "") {
 		$columns[$key] = html_entity_decode(strip_tags($name));
-		if (ereg('text|lob', $field["type"])) {
+		if (is_shortable($field)) {
 			$text_length = $adminer->selectLengthProcess();
 		}
 	}
@@ -24,16 +26,27 @@ foreach ($fields as $key => $field) {
 }
 
 list($select, $group) = $adminer->selectColumnsProcess($columns, $indexes);
+$is_group = count($group) < count($select);
 $where = $adminer->selectSearchProcess($fields, $indexes);
 $order = $adminer->selectOrderProcess($fields, $indexes);
 $limit = $adminer->selectLimitProcess();
-$from = ($select ? implode(", ", $select) : ($table_status["Oid"] == "t" ? "oid, " : "") . "*") . "\nFROM " . table($TABLE);
-$group_by = ($group && count($group) < count($select) ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : "");
+$from = ($select ? implode(", ", $select) : "*" . ($oid ? ", $oid" : ""));
+if ($jush == "sql") {
+	foreach ($columns as $key => $val) {
+		$as = convert_field($fields[$key]);
+		if ($as) {
+			$from .= ", $as AS " . idf_escape($key);
+		}
+	}
+}
+$from .= "\nFROM " . table($TABLE);
+$group_by = ($group && $is_group ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : "");
 
 if ($_GET["val"] && is_ajax()) {
 	header("Content-Type: text/plain; charset=utf-8");
 	foreach ($_GET["val"] as $unique_idf => $row) {
-		echo $connection->result("SELECT" . limit(idf_escape(key($row)) . " FROM " . table($TABLE), " WHERE " . where_check($unique_idf) . ($where ? " AND " . implode(" AND ", $where) : "") . ($order ? " ORDER BY " . implode(", ", $order) : ""), 1));
+		$as = convert_field($fields[key($row)]);
+		echo $connection->result("SELECT" . limit(($as ? $as : idf_escape(key($row))) . " FROM " . table($TABLE), " WHERE " . where_check($unique_idf, $fields) . ($where ? " AND " . implode(" AND ", $where) : "") . ($order ? " ORDER BY " . implode(", ", $order) : ""), 1));
 	}
 	exit;
 }
@@ -67,7 +80,7 @@ if ($_POST && !$error) {
 			$union = array();
 			foreach ($_POST["check"] as $val) {
 				// where is not unique so OR can't be used
-				$union[] = "(SELECT" . limit($from, "\nWHERE " . ($where ? implode(" AND ", $where) . " AND " : "") . where_check($val) . $group_by, 1) . ")";
+				$union[] = "(SELECT" . limit($from, "\nWHERE " . ($where ? implode(" AND ", $where) . " AND " : "") . where_check($val, $fields) . $group_by, 1) . ")";
 			}
 			$query = implode(" UNION ALL ", $union);
 		}
@@ -103,13 +116,13 @@ if ($_POST && !$error) {
 					$command = "INSERT";
 					$query = "INTO $query";
 				}
-				if ($_POST["all"] || ($unselected === array() && $_POST["check"]) || count($group) < count($select)) {
-					$result = queries($command . " $query" . ($_POST["all"] ? ($where ? "\nWHERE " . implode(" AND ", $where) : "") : "\nWHERE $where_check"));
+				if ($_POST["all"] || ($unselected === array() && $_POST["check"]) || $is_group) {
+					$result = queries("$command $query" . ($_POST["all"] ? ($where ? "\nWHERE " . implode(" AND ", $where) : "") : "\nWHERE $where_check"));
 					$affected = $connection->affected_rows;
 				} else {
 					foreach ((array) $_POST["check"] as $val) {
 						// where is not unique so OR can't be used
-						$result = queries($command . limit1($query, "\nWHERE " . where_check($val)));
+						$result = queries($command . limit1($query, "\nWHERE " . where_check($val, $fields)));
 						if (!$result) {
 							break;
 						}
@@ -117,11 +130,18 @@ if ($_POST && !$error) {
 					}
 				}
 			}
-			queries_redirect(remove_from_uri("page"), lang('%d item(s) have been affected.', $affected), $result);
+			$message = lang('%d item(s) have been affected.', $affected);
+			if ($_POST["clone"] && $result && $affected == 1) {
+				$last_id = last_id();
+				if ($last_id) {
+					$message = lang('Item%s has been inserted.', " $last_id");
+				}
+			}
+			queries_redirect(remove_from_uri("page"), $message, $result);
 			//! display edit page in case of an error
 		} elseif (!$_POST["import"]) { // modify
 			if (!$_POST["val"]) {
-				$error = lang('Double click on a value to modify it.');
+				$error = lang('Ctrl+click on a value to modify it.');
 			} else {
 				$result = true;
 				$affected = 0;
@@ -132,8 +152,8 @@ if ($_POST && !$error) {
 						$set[] = idf_escape($key) . " = " . (ereg('char|text', $fields[$key]["type"]) || $val != "" ? $adminer->processInput($fields[$key], $val) : "NULL");
 					}
 					$query = table($TABLE) . " SET " . implode(", ", $set);
-					$where2 = " WHERE " . where_check($unique_idf) . ($where ? " AND " . implode(" AND ", $where) : "");
-					$result = queries("UPDATE" . (count($group) < count($select) ? " $query$where2" : limit1($query, $where2))); // can change row on a different page without unique key
+					$where2 = " WHERE " . where_check($unique_idf, $fields) . ($where ? " AND " . implode(" AND ", $where) : "");
+					$result = queries("UPDATE" . ($is_group ? " $query$where2" : limit1($query, $where2))); // can change row on a different page without unique key
 					if (!$result) {
 						break;
 					}
@@ -151,7 +171,7 @@ if ($_POST && !$error) {
 			begin();
 			$separator = ($_POST["separator"] == "csv" ? "," : ($_POST["separator"] == "tsv" ? "\t" : ";"));
 			foreach ($matches[0] as $key => $val) {
-				preg_match_all("~((\"[^\"]*\")+|[^$separator]*)$separator~", $val . $separator, $matches2);
+				preg_match_all("~((?>\"[^\"]*\")+|[^$separator]*)$separator~", $val . $separator, $matches2);
 				if (!$key && !array_diff($matches2[1], $cols)) { //! doesn't work with column names containing ",\n
 					// first row corresponds to column names - use it for table structure
 					$cols = $matches2[1];
@@ -179,8 +199,11 @@ if ($_POST && !$error) {
 }
 
 $table_name = $adminer->tableName($table_status);
+if (is_ajax()) {
+	// needs to send headers
+	ob_start();
+}
 page_header(lang('Select') . ": $table_name", $error);
-session_write_close();
 
 $set = null;
 if (isset($rights["insert"])) {
@@ -218,7 +241,16 @@ if (!$columns) {
 		$page = floor(max(0, $found_rows - 1) / $limit);
 	}
 
-	$query = "SELECT" . limit((+$limit && $group && count($group) < count($select) && $jush == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . $from, ($where ? "\nWHERE " . implode(" AND ", $where) : "") . $group_by, ($limit != "" ? +$limit : null), ($page ? $limit * $page : 0), "\n");
+	$query = $adminer->selectQueryBuild($select, $where, $group, $order, $limit, $page);
+	if (!$query) {
+		$query = "SELECT" . limit(
+			(+$limit && $group && $is_group && $jush == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . $from,
+			($where ? "\nWHERE " . implode(" AND ", $where) : "") . $group_by,
+			($limit != "" ? +$limit : null),
+			($page ? $limit * $page : 0),
+			"\n"
+		);
+	}
 	echo $adminer->selectQuery($query);
 	
 	$result = $connection->query($query);
@@ -239,7 +271,7 @@ if (!$columns) {
 		}
 		// use count($rows) without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
 		if ($_GET["page"] != "last") {
-			$found_rows = (+$limit && $group && count($group) < count($select)
+			$found_rows = (+$limit && $group && $is_group
 				? ($jush == "sql" ? $connection->result(" SELECT FOUND_ROWS()") : $connection->result("SELECT COUNT(*) FROM ($query) x")) // space to allow mysql.trace_mode
 				: count($rows)
 			);
@@ -250,14 +282,14 @@ if (!$columns) {
 		} else {
 			$backward_keys = $adminer->backwardKeys($TABLE, $table_name);
 			
-			echo "<table cellspacing='0' class='nowrap checkable' onclick='tableClick(event);' onkeydown='return editingKeydown(event);'>\n";
+			echo "<table id='table' cellspacing='0' class='nowrap checkable' onclick='tableClick(event);' ondblclick='tableClick(event, true);' onkeydown='return editingKeydown(event);'>\n";
 			echo "<thead><tr>" . (!$group && $select ? "" : "<td><input type='checkbox' id='all-page' onclick='formCheck(this, /check/);'> <a href='" . h($_GET["modify"] ? remove_from_uri("modify") : $_SERVER["REQUEST_URI"] . "&modify=1") . "'>" . lang('edit') . "</a>");
 			$names = array();
 			$functions = array();
 			reset($select);
 			$rank = 1;
 			foreach ($rows[0] as $key => $val) {
-				if ($table_status["Oid"] != "t" || $key != "oid") {
+				if ($key != $oid) {
 					$val = $_GET["columns"][key($select)];
 					$field = $fields[$select ? ($val ? $val["col"] : current($select)) : $key];
 					$name = ($field ? $adminer->fieldName($field, $rank) : "*");
@@ -266,8 +298,16 @@ if (!$columns) {
 						$names[$key] = $name;
 						$column = idf_escape($key);
 						$href = remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key);
-						echo '<th><a href="' . h($href) . '">' . (!$select || $val ? apply_sql_function($val["fun"], $name) : h(current($select))) . "</a>"; //! columns looking like functions
-						echo "<a href='" . h("$href&desc%5B0%5D=1") . "' title='" . lang('descending') . "' class='text'> ↓</a>";
+						$desc = "&desc%5B0%5D=1";
+						echo '<th onmouseover="columnMouse(this);" onmouseout="columnMouse(this, \' hidden\');">';
+						echo '<a href="' . h($href . ($order[0] == $column || $order[0] == $key || (!$order && $is_group && $group[0] == $column) ? $desc : '')) . '">'; // $order[0] == $key - COUNT(*)
+						echo (!$select || $val ? apply_sql_function($val["fun"], $name) : h(current($select))) . "</a>"; //! columns looking like functions
+						echo "<span class='column hidden'>";
+						echo "<a href='" . h($href . $desc) . "' title='" . lang('descending') . "' class='text'> ↓</a>";
+						if (!$val["fun"]) {
+							echo '<a href="#fieldset-search" onclick="selectSearch(\'' . h(js_escape($key)) . '\'); return false;" title="' . lang('Search') . '" class="text jsonly"> =</a>';
+						}
+						echo "</span>";
 					}
 					$functions[$key] = $val["fun"];
 					next($select);
@@ -282,13 +322,19 @@ if (!$columns) {
 				}
 			}
 			echo ($backward_keys ? "<th>" . lang('Relations') : "") . "</thead>\n";
+			if (is_ajax()) {
+				if ($limit % 2 == 1 && $page % 2 == 1) {
+					odd();
+				}
+				ob_end_clean();
+			}
 			foreach ($adminer->rowDescriptions($rows, $foreign_keys) as $n => $row) {
 				$unique_array = unique_array($rows[$n], $indexes);
 				$unique_idf = "";
 				foreach ($unique_array as $key => $val) {
 					$unique_idf .= "&" . ($val !== null ? urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($val) : "null%5B%5D=" . urlencode($key));
 				}
-				echo "<tr" . odd() . ">" . (!$group && $select ? "" : "<td>" . checkbox("check[]", substr($unique_idf, 1), in_array(substr($unique_idf, 1), (array) $_POST["check"]), "", "this.form['all'].checked = false; formUncheck('all-page');") . (count($group) < count($select) || information_schema(DB) ? "" : " <a href='" . h(ME . "edit=" . urlencode($TABLE) . $unique_idf) . "'>" . lang('edit') . "</a>"));
+				echo "<tr" . odd() . ">" . (!$group && $select ? "" : "<td>" . checkbox("check[]", substr($unique_idf, 1), in_array(substr($unique_idf, 1), (array) $_POST["check"]), "", "this.form['all'].checked = false; formUncheck('all-page');") . ($is_group || information_schema(DB) ? "" : " <a href='" . h(ME . "edit=" . urlencode($TABLE) . $unique_idf) . "'>" . lang('edit') . "</a>"));
 				foreach ($row as $key => $val) {
 					if (isset($names[$key])) {
 						$field = $fields[$key];
@@ -299,12 +345,12 @@ if (!$columns) {
 						$val = $adminer->editVal($val, $field);
 						if ($val !== null) {
 							if (ereg('blob|bytea|raw|file', $field["type"]) && $val != "") {
-								$link = h(ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . $unique_idf);
+								$link = ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . $unique_idf;
 							}
 							if ($val === "") { // === - may be int
 								$val = "&nbsp;";
 							} elseif (is_utf8($val)) {
-								if ($text_length != "" && ereg('text|blob', $field["type"])) {
+								if ($text_length != "" && is_shortable($field)) {
 									$val = shorten_utf8($val, max(0, +$text_length)); // usage of LEFT() would reduce traffic but complicate query - expected average speedup: .001 s VS .01 s on local network
 								} else {
 									$val = h($val);
@@ -318,7 +364,7 @@ if (!$columns) {
 										foreach ($foreign_key["source"] as $i => $source) {
 											$link .= where_link($i, $foreign_key["target"][$i], $rows[$n][$source]);
 										}
-										$link = h(($foreign_key["db"] != "" ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), ME) : ME) . 'select=' . urlencode($foreign_key["table"]) . $link); // InnoDB supports non-UNIQUE keys
+										$link = ($foreign_key["db"] != "" ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), ME) : ME) . 'select=' . urlencode($foreign_key["table"]) . $link; // InnoDB supports non-UNIQUE keys
 										if (count($foreign_key["source"]) == 1) {
 											break;
 										}
@@ -326,15 +372,15 @@ if (!$columns) {
 								}
 							}
 							if ($key == "COUNT(*)") { //! columns looking like functions
-								$link = h(ME . "select=" . urlencode($TABLE));
+								$link = ME . "select=" . urlencode($TABLE);
 								$i = 0;
 								foreach ((array) $_GET["where"] as $v) {
 									if (!array_key_exists($v["col"], $unique_array)) {
-										$link .= h(where_link($i++, $v["col"], $v["val"], $v["op"]));
+										$link .= where_link($i++, $v["col"], $v["val"], $v["op"]);
 									}
 								}
 								foreach ($unique_array as $k => $v) {
-									$link .= h(where_link($i++, $k, $v));
+									$link .= where_link($i++, $k, $v);
 								}
 							}
 						}
@@ -357,7 +403,7 @@ if (!$columns) {
 						$text = ereg('text|lob', $field["type"]);
 						echo (($_GET["modify"] && $editable) || $value !== null
 							? "<td>" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>")
-							: "<td id='$id' ondblclick=\"" . ($editable ? "selectDblClick(this, event" . ($long ? ", 2" : ($text ? ", 1" : "")) . ")" : "alert('" . h(lang('Use edit link to modify this value.')) . "')") . ";\">" . $adminer->selectVal($val, $link, $field)
+							: "<td id='$id' onclick=\"selectClick(this, event, " . ($long ? 2 : ($text ? 1 : 0)) . ($editable ? "" : ", '" . h(lang('Use edit link to modify this value.')) . "'") . ");\">" . $adminer->selectVal($val, $link, $field)
 						);
 					}
 				}
@@ -367,40 +413,46 @@ if (!$columns) {
 				$adminer->backwardKeysPrint($backward_keys, $rows[$n]);
 				echo "</tr>\n"; // close to allow white-space: pre
 			}
+			if (is_ajax()) {
+				exit;
+			}
 			echo "</table>\n";
 			echo (!$group && $select ? "" : "<script type='text/javascript'>tableCheck();</script>\n");
 		}
 		
-		if ($rows || $page) {
+		if (($rows || $page) && !is_ajax()) {
 			$exact_count = true;
-			if ($_GET["page"] != "last" && +$limit && count($group) >= count($select) && ($found_rows >= $limit || $page)) {
+			if ($_GET["page"] != "last" && +$limit && !$is_group && ($found_rows >= $limit || $page)) {
 				$found_rows = found_rows($table_status, $where);
 				if ($found_rows < max(1e4, 2 * ($page + 1) * $limit)) {
 					// slow with big tables
-					ob_flush();
-					flush();
-					$found_rows = $connection->result("SELECT COUNT(*) FROM " . table($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : ""));
+					$found_rows = reset(slow_query("SELECT COUNT(*) FROM " . table($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : "")));
 				} else {
 					$exact_count = false;
 				}
 			}
 			echo "<p class='pages'>";
-			if (+$limit && $found_rows > $limit) {
+			if (+$limit && ($found_rows === false || $found_rows > $limit)) {
 				// display first, previous 4, next 4 and last page
-				$max_page = floor(($found_rows - 1) / $limit);
+				$max_page = ($found_rows === false
+					? $page + (count($rows) >= $limit ? 2 : 1)
+					: floor(($found_rows - 1) / $limit)
+				);
 				echo '<a href="' . h(remove_from_uri("page")) . "\" onclick=\"pageClick(this.href, +prompt('" . lang('Page') . "', '" . ($page + 1) . "'), event); return false;\">" . lang('Page') . "</a>:";
 				echo pagination(0, $page) . ($page > 5 ? " ..." : "");
 				for ($i = max(1, $page - 4); $i < min($max_page, $page + 5); $i++) {
 					echo pagination($i, $page);
 				}
-				echo ($page + 5 < $max_page ? " ..." : "") . ($exact_count ? pagination($max_page, $page) : ' <a href="' . h(remove_from_uri() . "&page=last") . '">' . lang('last') . "</a>");
+				echo ($page + 5 < $max_page ? " ..." : "") . ($exact_count && $found_rows !== false ? pagination($max_page, $page) : ' <a href="' . h(remove_from_uri("page") . "&page=last") . '">' . lang('last') . "</a>");
 			}
-			echo " (" . ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) . ") " . checkbox("all", 1, 0, lang('whole result')) . "\n";
+			echo ($found_rows !== false ? " (" . ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) . ")" : "");
+			echo (+$limit && ($found_rows === false ? count($rows) + 1 : $found_rows - $page * $limit) > $limit ? ' <a href="' . h(remove_from_uri("page") . "&page=" . ($page + 1)) . '" onclick="return !selectLoadMore(this, ' . (+$limit) . ', \'' . lang('Loading') . '\');">' . lang('Load more data') . '</a>' : '');
+			echo " " . checkbox("all", 1, 0, lang('whole result')) . "\n";
 			
 			if ($adminer->selectCommandPrint()) {
 				?>
 <fieldset><legend><?php echo lang('Edit'); ?></legend><div>
-<input type="submit" value="<?php echo lang('Save'); ?>"<?php echo ($_GET["modify"] ? '' : ' title="' . lang('Double click on a value to modify it.') . '" class="jsonly"'); ?>>
+<input type="submit" value="<?php echo lang('Save'); ?>"<?php echo ($_GET["modify"] ? '' : ' title="' . lang('Ctrl+click on a value to modify it.') . '" class="jsonly"'); ?>>
 <input type="submit" name="edit" value="<?php echo lang('Edit'); ?>">
 <input type="submit" name="clone" value="<?php echo lang('Clone'); ?>">
 <input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?> (' + (this.form['all'].checked ? <?php echo $found_rows; ?> : formChecked(this, /check/)) + ')');">
@@ -422,12 +474,17 @@ if (!$columns) {
 			echo "<input type='file' name='csv_file'> ";
 			echo html_select("separator", array("csv" => "CSV,", "csv;" => "CSV;", "tsv" => "TSV"), $adminer_import["format"], 1); // 1 - select
 			echo " <input type='submit' name='import' value='" . lang('Import') . "'>";
-			echo "<input type='hidden' name='token' value='$token'>\n";
 			echo "</div></fieldset>\n";
 		}
 		
 		$adminer->selectEmailPrint(array_filter($email_fields, 'strlen'), $columns);
 		
+		echo "<p><input type='hidden' name='token' value='$token'></p>\n";
 		echo "</form>\n";
 	}
+}
+
+if (is_ajax()) {
+	ob_end_clean();
+	exit;
 }

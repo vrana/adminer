@@ -244,7 +244,6 @@ $translations = array(
 	'Alter type' => 'টাইপ পরিবর্তন করো',
 	'Type has been dropped.' => 'টাইপ মুছে ফেলা হয়েছে।',
 	'Type has been created.' => 'টাইপ তৈরি করা হয়েছে।',
-	'Double click on a value to modify it.' => 'কোন মানকে পরিবর্তন করতে এতে ডবল ক্লিক করো।',
 	'Use edit link to modify this value.' => 'এই মান পরিবর্তনের জন্য সম্পাদনা লিঙ্ক ব্যবহার করো।',
 	'last' => 'সর্বশেষ',
 	'From server' => 'সার্ভার থেকে',

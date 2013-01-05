@@ -37,6 +37,7 @@ if (isset($_GET["oracle"])) {
 
 			function query($query, $unbuffered = false) {
 				$result = oci_parse($this->_link, $query);
+				$this->error = "";
 				if (!$result) {
 					$error = oci_error($this->_link);
 					$this->error = $error["message"];
@@ -358,6 +359,13 @@ ORDER BY PROCESS
 	function show_status() {
 		$rows = get_rows('SELECT * FROM v$instance');
 		return reset($rows);
+	}
+	
+	function convert_field($field) {
+	}
+	
+	function unconvert_field($field, $return) {
+		return $return;
 	}
 	
 	function support($feature) {

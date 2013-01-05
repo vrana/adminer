@@ -42,6 +42,13 @@ class Adminer {
 		return get_databases($flush);
 	}
 	
+	/** Specify limit for waiting on some slow queries like DB list
+	* @return float number of seconds
+	*/
+	function queryTimeout() {
+		return 5;
+	}
+	
 	/** Headers to send before HTML output
 	* @return bool true to send security headers
 	*/
@@ -189,7 +196,7 @@ username.form['auth[driver]'].onchange();
 		if (ereg('blob|bytea|raw|file', $field["type"]) && !is_utf8($val)) {
 			$return = lang('%d byte(s)', strlen($val));
 		}
-		return ($link ? "<a href='$link'>$return</a>" : $return);
+		return ($link ? "<a href='" . h($link) . "'>$return</a>" : $return);
 	}
 	
 	/** Value conversion used in select and edit
@@ -198,7 +205,7 @@ username.form['auth[driver]'].onchange();
 	* @return string
 	*/
 	function editVal($val, $field) {
-		return (ereg("binary", $field["type"]) ? reset(unpack("H*", $val)) : $val);
+		return $val;
 	}
 	
 	/** Print columns box in select
@@ -214,7 +221,7 @@ username.form['auth[driver]'].onchange();
 		foreach ($select as $key => $val) {
 			$val = $_GET["columns"][$key];
 			echo "<div>" . html_select("columns[$i][fun]", array(-1 => "") + $fun_group, $val["fun"]);
-			echo "(<select name='columns[$i][col]'><option>" . optionlist($columns, $val["col"], true) . "</select>)</div>\n";
+			echo "(<select name='columns[$i][col]' onchange='selectFieldChange(this.form);'><option>" . optionlist($columns, $val["col"], true) . "</select>)</div>\n";
 			$i++;
 		}
 		echo "<div>" . html_select("columns[$i][fun]", array(-1 => "") + $fun_group, "", "this.nextSibling.nextSibling.onchange();");
@@ -233,7 +240,7 @@ username.form['auth[driver]'].onchange();
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT") {
 				echo "(<i>" . implode("</i>, <i>", array_map('h', $index["columns"])) . "</i>) AGAINST";
-				echo " <input name='fulltext[$i]' value='" . h($_GET["fulltext"][$i]) . "' onchange='selectFieldChange(this.form);'>";
+				echo " <input type='search' name='fulltext[$i]' value='" . h($_GET["fulltext"][$i]) . "' onchange='selectFieldChange(this.form);'>";
 				echo checkbox("boolean[$i]", 1, isset($_GET["boolean"][$i]), "BOOL");
 				echo "<br>\n";
 			}
@@ -246,7 +253,7 @@ username.form['auth[driver]'].onchange();
 			if (!$val || ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators))) {
 				echo "<div><select name='where[$i][col]' onchange='$change_next'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
 				echo html_select("where[$i][op]", $this->operators, $val["op"], $change_next);
-				echo "<input name='where[$i][val]' value='" . h($val["val"]) . "' onchange='" . ($val ? "selectFieldChange(this.form)" : "selectAddRow(this)") . ";'></div>\n";
+				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' onchange='" . ($val ? "selectFieldChange(this.form)" : "selectAddRow(this)") . ";'></div>\n";
 			}
 		}
 		echo "</div></fieldset>\n";
@@ -279,7 +286,7 @@ username.form['auth[driver]'].onchange();
 	*/
 	function selectLimitPrint($limit) {
 		echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
-		echo "<input name='limit' size='3' value='" . h($limit) . "'>";
+		echo "<input type='number' name='limit' class='size' value='" . h($limit) . "' onchange='selectFieldChange(this.form);'>";
 		echo "</div></fieldset>\n";
 	}
 	
@@ -290,7 +297,7 @@ username.form['auth[driver]'].onchange();
 	function selectLengthPrint($text_length) {
 		if ($text_length !== null) {
 			echo "<fieldset><legend>" . lang('Text length') . "</legend><div>";
-			echo '<input name="text_length" size="3" value="' . h($text_length) . '">';
+			echo "<input type='number' name='text_length' class='size' value='" . h($text_length) . "'>";
 			echo "</div></fieldset>\n";
 		}
 	}
@@ -332,7 +339,7 @@ username.form['auth[driver]'].onchange();
 	* @return bool whether to print default import
 	*/
 	function selectImportPrint() {
-		return true;
+		return !information_schema(DB);
 	}
 	
 	/** Print extra text in the end of a select form
@@ -395,9 +402,12 @@ username.form['auth[driver]'].onchange();
 					// find anywhere
 					$cols = array();
 					foreach ($fields as $name => $field) {
-						if (is_numeric($val["val"]) || !ereg('int|float|double|decimal', $field["type"])) {
+						$is_text = ereg('char|text|enum|set', $field["type"]);
+						if ((is_numeric($val["val"]) || !ereg('int|float|double|decimal|bit', $field["type"]))
+							&& (!ereg("[\x80-\xFF]", $val["val"]) || $is_text)
+						) {
 							$name = idf_escape($name);
-							$cols[] = ($jush == "sql" && ereg('char|text|enum|set', $field["type"]) && !ereg('^utf8', $field["collation"]) ? "CONVERT($name USING utf8)" : $name);
+							$cols[] = ($jush == "sql" && $is_text && !ereg('^utf8', $field["collation"]) ? "CONVERT($name USING utf8)" : $name);
 						}
 					}
 					$return[] = ($cols ? "(" . implode("$cond OR ", $cols) . "$cond)" : "0");
@@ -443,6 +453,19 @@ username.form['auth[driver]'].onchange();
 	*/
 	function selectEmailProcess($where, $foreignKeys) {
 		return false;
+	}
+	
+	/** Build SQL query used in select
+	* @param array result of selectColumnsProcess()[0]
+	* @param array result of selectSearchProcess()
+	* @param array result of selectColumnsProcess()[1]
+	* @param array result of selectOrderProcess()
+	* @param int result of selectLimitProcess()
+	* @param int index of page starting at zero
+	* @return string empty string to use default query
+	*/
+	function selectQueryBuild($select, $where, $group, $order, $limit, $page) {
+		return "";
 	}
 	
 	/** Query printed after execution in the message
@@ -523,13 +546,10 @@ username.form['auth[driver]'].onchange();
 			$return = idf_escape($name) . " $function " . (preg_match("~^(\\d+|'[0-9.: -]') [A-Z_]+$~i", $value) ? $value : $return);
 		} elseif (ereg('^(addtime|subtime|concat)$', $function)) {
 			$return = "$function(" . idf_escape($name) . ", $return)";
-		} elseif (ereg('^(md5|sha1|password|encrypt|hex)$', $function)) {
+		} elseif (ereg('^(md5|sha1|password|encrypt)$', $function)) {
 			$return = "$function($return)";
 		}
-		if (ereg("binary", $field["type"])) {
-			$return = "unhex($return)";
-		}
-		return $return;
+		return unconvert_field($field, $return);
 	}
 	
 	/** Returns export output options
@@ -573,8 +593,7 @@ username.form['auth[driver]'].onchange();
 					echo "DROP " . ($is_view ? "VIEW" : "TABLE") . " IF EXISTS " . table($table) . ";\n";
 				}
 				if ($is_view) {
-					// remove DEFINER with current user
-					$create = preg_replace('~^([A-Z =]+) DEFINER=`' . preg_replace('~@(.*)~', '`@`(%|\\1)', logged_user()) . '`~', '\\1', $create); //! proper escaping of user
+					$create = remove_definer($create);
 				}
 				echo ($style != "CREATE+ALTER" ? $create : ($is_view ? substr_replace($create, " OR REPLACE", 6, 0) : substr_replace($create, " IF NOT EXISTS", 12, 0))) . ";\n\n";
 			}
@@ -672,43 +691,45 @@ DROP PROCEDURE adminer_alter;
 			if ($result) {
 				$insert = "";
 				$buffer = "";
-				while ($row = $result->fetch_assoc()) {
+				$keys = array();
+				$suffix = "";
+				while ($row = $result->fetch_row()) {
+					if (!$keys) {
+						$values = array();
+						foreach ($row as $val) {
+							$field = $result->fetch_field();
+							$keys[] = $field->name;
+							$key = idf_escape($field->name);
+							$values[] = "$key = VALUES($key)";
+						}
+						$suffix = ($style == "INSERT+UPDATE" ? "\nON DUPLICATE KEY UPDATE " . implode(", ", $values) : "") . ";\n";
+					}
 					if ($_POST["format"] != "sql") {
 						if ($style == "table") {
-							dump_csv(array_keys($row));
+							dump_csv($keys);
 							$style = "INSERT";
 						}
 						dump_csv($row);
 					} else {
 						if (!$insert) {
-							$insert = "INSERT INTO " . table($table) . " (" . implode(", ", array_map('idf_escape', array_keys($row))) . ") VALUES";
+							$insert = "INSERT INTO " . table($table) . " (" . implode(", ", array_map('idf_escape', $keys)) . ") VALUES";
 						}
 						foreach ($row as $key => $val) {
-							$row[$key] = ($val !== null ? (ereg('int|float|double|decimal|bit', $fields[$key]["type"]) ? $val : q($val)) : "NULL"); //! columns looking like functions
+							$row[$key] = ($val !== null ? (ereg('int|float|double|decimal|bit', $fields[$keys[$key]]["type"]) ? $val : q($val)) : "NULL"); //! columns looking like functions
 						}
-						$s = implode(",\t", $row);
-						if ($style == "INSERT+UPDATE") {
-							$set = array();
-							foreach ($row as $key => $val) {
-								$set[] = idf_escape($key) . " = $val";
-							}
-							echo "$insert ($s) ON DUPLICATE KEY UPDATE " . implode(", ", $set) . ";\n";
+						$s = ($max_packet ? "\n" : " ") . "(" . implode(",\t", $row) . ")";
+						if (!$buffer) {
+							$buffer = $insert . $s;
+						} elseif (strlen($buffer) + 4 + strlen($s) + strlen($suffix) < $max_packet) { // 4 - length specification
+							$buffer .= ",$s";
 						} else {
-							$s = ($max_packet ? "\n" : " ") . "($s)";
-							if (!$buffer) {
-								$buffer = $insert . $s;
-							} elseif (strlen($buffer) + 4 + strlen($s) < $max_packet) { // 4 - length specification
-								$buffer .= ",$s";
-							} else {
-								echo "$buffer;\n";
-								$buffer = $insert . $s;
-							}
+							echo $buffer . $suffix;
+							$buffer = $insert . $s;
 						}
 					}
 				}
-				if ($_POST["format"] == "sql" && $style != "INSERT+UPDATE" && $buffer) {
-					$buffer .= ";\n";
-					echo $buffer;
+				if ($buffer) {
+					echo $buffer . $suffix;
 				}
 			} elseif ($_POST["format"] == "sql") {
 				echo "-- " . str_replace("\n", " ", $connection->error) . "\n";
@@ -763,7 +784,7 @@ DROP PROCEDURE adminer_alter;
 	* @return null
 	*/
 	function navigation($missing) {
-		global $VERSION, $connection, $token, $jush, $drivers;
+		global $VERSION, $token, $jush, $drivers;
 		?>
 <h1>
 <?php echo $this->name(); ?> <span class="version"><?php echo $VERSION; ?></span>
@@ -777,16 +798,18 @@ DROP PROCEDURE adminer_alter;
 					foreach ($usernames as $username => $password) {
 						if ($password !== null) {
 							if ($first) {
-								echo "<p>\n";
+								echo "<p id='logins' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";
 								$first = false;
 							}
-							echo "<a href='" . h(auth_url($driver, $server, $username)) . "'>($drivers[$driver]) " . h($username . ($server != "" ? "@$server" : "")) . "</a><br>\n";
+							$dbs = $_SESSION["db"][$driver][$server][$username];
+							foreach (($dbs ? array_keys($dbs) : array("")) as $db) {
+								echo "<a href='" . h(auth_url($driver, $server, $username, $db)) . "'>($drivers[$driver]) " . h($username . ($server != "" ? "@$server" : "") . ($db != "" ? " - $db" : "")) . "</a><br>\n";
+							}
 						}
 					}
 				}
 			}
 		} else {
-			$databases = $this->databases();
 			?>
 <form action="" method="post">
 <p class="logout">
@@ -798,49 +821,61 @@ DROP PROCEDURE adminer_alter;
 				}
 			}
 			?>
-<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>">
+<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" id="logout">
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </p>
 </form>
+<?php
+			$this->databasesPrint($missing);
+			if ($_GET["ns"] !== "" && !$missing && DB != "") {
+				echo '<p><a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create new table') . "</a>\n";
+				$tables = tables_list();
+				if (!$tables) {
+					echo "<p class='message'>" . lang('No tables.') . "\n";
+				} else {
+					$this->tablesPrint($tables);
+					$links = array();
+					foreach ($tables as $table => $type) {
+						$links[] = preg_quote($table, '/');
+					}
+					echo "<script type='text/javascript'>\n";
+					echo "var jushLinks = { $jush: [ '" . js_escape(ME) . "table=\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
+					foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
+						echo "jushLinks.$val = jushLinks.$jush;\n";
+					}
+					echo "</script>\n";
+				}
+			}
+		}
+	}
+	
+	/** Prints databases list in menu
+	* @param string
+	* @return null
+	*/
+	function databasesPrint($missing) {
+		global $connection;
+		$databases = $this->databases();
+		?>
 <form action="">
-<p>
+<p id="dbs">
 <?php hidden_fields_get(); ?>
 <?php echo ($databases ? html_select("db", array("" => "(" . lang('database') . ")") + $databases, DB, "this.form.submit();") : '<input name="db" value="' . h(DB) . '">'); ?>
 <input type="submit" value="<?php echo lang('Use'); ?>"<?php echo ($databases ? " class='hidden'" : ""); ?>>
 <?php
-			if ($missing != "db" && DB != "" && $connection->select_db(DB)) {
-				if (support("scheme")) {
-					echo "<br>" . html_select("ns", array("" => "(" . lang('schema') . ")") + schemas(), $_GET["ns"], "this.form.submit();");
-					if ($_GET["ns"] != "") {
-						set_schema($_GET["ns"]);
-					}
-				}
-				if ($_GET["ns"] !== "" && !$missing) {
-					echo '<p><a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create new table') . "</a>\n";
-					$tables = tables_list();
-					if (!$tables) {
-						echo "<p class='message'>" . lang('No tables.') . "\n";
-					} else {
-						$this->tablesPrint($tables);
-						$links = array();
-						foreach ($tables as $table => $type) {
-							$links[] = preg_quote($table, '/');
-						}
-						echo "<script type='text/javascript'>\n";
-						echo "var jushLinks = { $jush: [ '" . js_escape(ME) . "table=\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
-						foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
-							echo "jushLinks.$val = jushLinks.$jush;\n";
-						}
-						echo "</script>\n";
-					}
+		if ($missing != "db" && DB != "" && $connection->select_db(DB)) {
+			if (support("scheme")) {
+				echo "<br>" . html_select("ns", array("" => "(" . lang('schema') . ")") + schemas(), $_GET["ns"], "this.form.submit();");
+				if ($_GET["ns"] != "") {
+					set_schema($_GET["ns"]);
 				}
 			}
-			echo (isset($_GET["sql"]) ? '<input type="hidden" name="sql" value="">'
-				: (isset($_GET["schema"]) ? '<input type="hidden" name="schema" value="">'
-				: (isset($_GET["dump"]) ? '<input type="hidden" name="dump" value="">'
-			: "")));
-			echo "</p></form>\n";
 		}
+		echo (isset($_GET["sql"]) ? '<input type="hidden" name="sql" value="">'
+			: (isset($_GET["schema"]) ? '<input type="hidden" name="schema" value="">'
+			: (isset($_GET["dump"]) ? '<input type="hidden" name="dump" value="">'
+		: "")));
+		echo "</p></form>\n";
 	}
 	
 	/** Prints table list in menu
@@ -848,7 +883,7 @@ DROP PROCEDURE adminer_alter;
 	* @return null
 	*/
 	function tablesPrint($tables) {
-		echo "<p id='tables'>\n";
+		echo "<p id='tables' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";
 		foreach ($tables as $table => $type) {
 			echo '<a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table) . ">" . lang('select') . "</a> ";
 			echo '<a href="' . h(ME) . 'table=' . urlencode($table) . '"' . bold($_GET["table"] == $table) . " title='" . lang('Show structure') . "'>" . $this->tableName(array("Name" => $table)) . "</a><br>\n"; //! Adminer::tableName may work with full table status

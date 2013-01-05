@@ -234,6 +234,8 @@ $translations = array(
 	'Page' => 'Stránka',
 	'last' => 'poslední',
 	'Last page' => 'Poslední stránka',
+	'Load more data' => 'Nahrát další data',
+	'Loading' => 'Nahrává se',
 	'whole result' => 'celý výsledek',
 	'%d byte(s)' => array('%d bajt', '%d bajty', '%d bajtů'),
 	
@@ -241,7 +243,7 @@ $translations = array(
 	'%d row(s) have been imported.' => array('Byl importován %d záznam.', 'Byly importovány %d záznamy.', 'Bylo importováno %d záznamů.'),
 	
 	// in-place editing in select
-	'Double click on a value to modify it.' => 'Dvojklikněte na políčko, které chcete změnit.',
+	'Ctrl+click on a value to modify it.' => 'Ctrl+klikněte na políčko, které chcete změnit.',
 	'Use edit link to modify this value.' => 'Ke změně této hodnoty použijte odkaz upravit.',
 	
 	// %s can contain auto-increment value
@@ -261,6 +263,7 @@ $translations = array(
 	'Save and insert next' => 'Uložit a vložit další',
 	'Clone' => 'Klonovat',
 	'Delete' => 'Smazat',
+	'You have no privileges to update this table.' => 'Nemáte oprávnění editovat tuto tabulku.',
 	
 	'E-mail' => 'E-mail',
 	'From' => 'Odesílatel',

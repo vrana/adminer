@@ -234,7 +234,6 @@ $translations = array(
 	'Schema has been dropped.' => 'அமைப்புமுறை நீக்க‌ப்ப‌ட்ட‌து.',
 	'Schema has been created.' => 'அமைப்புமுறை உருவாக்க‌ப்ப‌ட்ட‌து.',
 	'Schema has been altered.' => 'அமைப்புமுறை மாற்ற‌ப்ப‌ட்ட‌து.',
-	'Double click on a value to modify it.' => 'ம‌திப்பினை மாற்ற அத‌ன் மீது இருமுறை சொடுக்க‌வும் (Double click).',
 	'Use edit link to modify this value.' => 'இந்த‌ ம‌திப்பினை மாற்ற‌, தொகுப்பு இணைப்பினை உப‌யோகிக்க‌வும்.',
 	'last' => 'க‌டைசி',
 	'Sequence has been dropped.' => 'வ‌ரிசைமுறை நீக்க‌ப்ப‌ட்ட‌து.',

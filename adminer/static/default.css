@@ -11,7 +11,7 @@ form { margin: 0; }
 table { margin: 1em 20px 0 0; border: 0; border-top: 1px solid #999; border-left: 1px solid #999; font-size: 90%; }
 td, th { border: 0; border-right: 1px solid #999; border-bottom: 1px solid #999; padding: .2em .3em; }
 th { background: #eee; text-align: left; }
-thead th { text-align: center; }
+thead th { text-align: center; padding: .2em .5em; }
 thead td, thead th { background: #ddf; }
 fieldset { display: inline; vertical-align: top; padding: .5em .8em; margin: .8em .5em 0 0; border: 1px solid #999; }
 p { margin: .8em 20px 0 0; }
@@ -23,6 +23,7 @@ pre { margin: 1em 0 0; }
 input[type=image] { vertical-align: middle; }
 .version { color: #777; font-size: 67%; }
 .js .hidden, .nojs .jsonly { display: none; }
+.js .column { position: absolute; background: #ddf; padding: .3em 1ex .3em 0; margin-top: -.3em; }
 .nowrap td, .nowrap th, td.nowrap { white-space: pre; }
 .wrap td { white-space: normal; }
 .error { color: red; background: #fee; }
@@ -44,8 +45,14 @@ input[type=image] { vertical-align: middle; }
 .active { font-weight: bold; }
 .sqlarea { width: 98%; }
 .icon { width: 18px; height: 18px; }
-#menu { position: absolute; margin: 10px 0 0; padding: 0 0 30px 0; top: 2em; left: 0; width: 19em; overflow: auto; overflow-y: hidden; white-space: nowrap; }
+.size { width: 6ex; }
+#menu { position: absolute; margin: 10px 0 0; padding: 0 0 30px 0; top: 2em; left: 0; width: 19em; }
 #menu p { padding: .8em 1em; margin: 0; border-bottom: 1px solid #ccc; }
+#dbs { overflow: hidden; }
+#logins, #tables { white-space: nowrap; overflow: auto; }
+#logins a, #tables a { background: #fff; }
+#logout { background: none; border: none; color: blue; font: inherit; padding: 0; text-decoration: underline; cursor: pointer; }
+#logout:hover { color: red; }
 #content { margin: 2em 0 0 21em; padding: 10px 20px 20px 0; }
 #lang { position: absolute; top: 0; left: 0; line-height: 1.8em; padding: .3em 1em; }
 #breadcrumb { white-space: nowrap; position: absolute; top: 0; left: 21em; background: #eee; height: 2em; line-height: 1.8em; padding: 0 1em; margin: 0 0 0 -18px; }

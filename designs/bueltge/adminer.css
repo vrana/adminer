@@ -285,11 +285,8 @@ position: absolute;
 #schema .references { 
 position: absolute;
 }
-.js .hidden {
+.js div.hidden {
 display: inline;
-}
-.js td.hidden, .js input.hidden {
-display: none;
 }
 legend a {
 color: #333;
@@ -325,4 +322,17 @@ border-bottom-left-radius: 5px;
 -khtml-border-top-right-radius: 5px;
 -webkit-border-top-right-radius: 5px;
 border-bottom-top-radius: 5px;
+}
+.js .column {
+background: #DFDFDF;
+}
+#logout {
+color: #21759B;
+}
+#logout:hover {
+text-decoration: none;
+}
+#logins a, #tables a {
+background: #F1F1F1;
+line-height: 1.5em;
 }

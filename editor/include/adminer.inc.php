@@ -30,6 +30,10 @@ class Adminer {
 		return get_databases($flush);
 	}
 	
+	function queryTimeout() {
+		return 5;
+	}
+	
 	function headers() {
 		return true;
 	}
@@ -160,6 +164,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	
 	function selectVal($val, $link, $field) {
 		$return = ($val === null ? "&nbsp;" : $val);
+		$link = h($link);
 		if (ereg('blob|bytea', $field["type"]) && !is_utf8($val)) {
 			$return = lang('%d byte(s)', strlen($val));
 			if (ereg("^(GIF|\xFF\xD8\xFF|\x89PNG\x0D\x0A\x1A\x0A)", $val)) { // GIF|JPG|PNG, getimagetype() works with filename
@@ -184,7 +189,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		if (ereg('date|timestamp', $field["type"]) && $val !== null) {
 			return preg_replace('~^(\\d{2}(\\d+))-(0?(\\d+))-(0?(\\d+))~', lang('$1-$3-$5'), $val);
 		}
-		return (ereg("binary", $field["type"]) ? reset(unpack("H*", $val)) : $val);
+		return $val;
 	}
 	
 	function selectColumnsPrint($select, $columns) {
@@ -193,7 +198,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	
 	function selectSearchPrint($where, $columns, $indexes) {
 		$where = (array) $_GET["where"];
-		echo '<fieldset><legend>' . lang('Search') . "</legend><div>\n";
+		echo '<fieldset id="fieldset-search"><legend>' . lang('Search') . "</legend><div>\n";
 		$keys = array();
 		foreach ($where as $key => $val) {
 			$keys[$val["col"]] = $key;
@@ -227,13 +232,13 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			if (($val["col"] == "" || $columns[$val["col"]]) && "$val[col]$val[val]" != "") {
 				echo "<div><select name='where[$i][col]'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
 				echo html_select("where[$i][op]", array(-1 => "") + $this->operators, $val["op"]);
-				echo "<input name='where[$i][val]' value='" . h($val["val"]) . "'></div>\n";
+				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'></div>\n";
 				$i++;
 			}
 		}
 		echo "<div><select name='where[$i][col]' onchange='this.nextSibling.nextSibling.onchange();'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, null, true) . "</select>";
 		echo html_select("where[$i][op]", array(-1 => "") + $this->operators);
-		echo "<input name='where[$i][val]' onchange='selectAddRow(this);'></div>\n";
+		echo "<input type='search' name='where[$i][val]' onchange='selectAddRow(this);'></div>\n";
 		echo "</div></fieldset>\n";
 	}
 	
@@ -407,6 +412,10 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		return false;
 	}
 	
+	function selectQueryBuild($select, $where, $group, $order, $limit, $page) {
+		return "";
+	}
+	
 	function messageQuery($query) {
 		return " <span class='time'>" . @date("H:i:s") . "</span><!--\n" . str_replace("--", "--><!-- ", $query) . "\n-->";
 	}
@@ -468,15 +477,14 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			$return = ($match["p1"] != "" ? $match["p1"] : ($match["p2"] != "" ? ($match["p2"] < 70 ? 20 : 19) . $match["p2"] : gmdate("Y"))) . "-$match[p3]$match[p4]-$match[p5]$match[p6]" . end($match);
 		}
 		$return = ($field["type"] == "bit" && ereg('^[0-9]+$', $value) ? $return : q($return));
-		if ($value == "" && ($field["null"] || !ereg('char|text', $field["type"])) && !like_bool($field)) {
+		if ($value == "" && like_bool($field)) {
+			$return = "0";
+		} elseif ($value == "" && ($field["null"] || !ereg('char|text', $field["type"]))) {
 			$return = "NULL";
 		} elseif (ereg('^(md5|sha1)$', $function)) {
 			$return = "$function($return)";
 		}
-		if (ereg("binary", $field["type"])) {
-			$return = "unhex($return)";
-		}
-		return $return;
+		return unconvert_field($field, $return);
 	}
 	
 	function dumpOutput() {
@@ -532,7 +540,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			foreach ((array) $_SESSION["pwds"]["server"][""] as $username => $password) {
 				if ($password !== null) {
 					if ($first) {
-						echo "<p>\n";
+						echo "<p id='logins' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";
 						$first = false;
 					}
 					echo "<a href='" . h(auth_url("server", "", $username)) . "'>" . ($username != "" ? h($username) : "<i>" . lang('empty') . "</i>") . "</a><br>\n";
@@ -542,11 +550,12 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			?>
 <form action="" method="post">
 <p class="logout">
-<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>">
+<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" id="logout">
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </p>
 </form>
 <?php
+			$this->databasesPrint($missing);
 			if ($missing != "db" && $missing != "ns") {
 				$table_status = table_status();
 				if (!$table_status) {
@@ -558,8 +567,11 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		}
 	}
 	
+	function databasesPrint($missing) {
+	}
+	
 	function tablesPrint($tables) {
-		echo "<p id='tables'>\n";
+		echo "<p id='tables' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";
 		foreach ($tables as $row) {
 			$name = $this->tableName($row);
 			if (isset($row["Engine"]) && $name != "") { // ignore views and tables without name

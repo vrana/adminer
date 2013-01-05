@@ -22,6 +22,7 @@ $langs = array(
 	'id' => 'Bahasa Indonesia', // Ivan Lanin - http://ivan.lanin.org
 	'ru' => 'Русский язык', // Maksim Izmaylov
 	'uk' => 'Українська', // Valerii Kryzhov
+	'sr' => 'Српски', // Nikola Radovanović - cobisimo@gmail.com
 	'zh' => '简体中文', // Mr. Lodar
 	'zh-tw' => '繁體中文', // http://tzangms.com
 	'ja' => '日本語', // Hitoshi Ozawa - http://sourceforge.jp/projects/oss-ja-jpn/releases/
@@ -46,7 +47,7 @@ function get_lang() {
 */
 function lang($idf, $number = null) {
 	global $LANG, $translations;
-	$translation = (isset($translations[$idf]) ? $translations[$idf] : $idf);
+	$translation = ($translations[$idf] ? $translations[$idf] : $idf);
 	if (is_array($translation)) {
 		$pos = ($number == 1 ? 0
 			: ($LANG == 'cs' || $LANG == 'sk' ? ($number && $number < 5 ? 1 : 2) // different forms for 1, 2-4, other
@@ -54,7 +55,7 @@ function lang($idf, $number = null) {
 			: ($LANG == 'pl' ? ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2) // different forms for 1, 2-4, other
 			: ($LANG == 'sl' ? ($number % 100 == 1 ? 0 : ($number % 100 == 2 ? 1 : ($number % 100 == 3 || $number % 100 == 4 ? 2 : 3))) // different forms for 1, 2, 3-4, other
 			: ($LANG == 'lt' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1, 12-19, other
-			: ($LANG == 'ru' || $LANG == 'uk' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1, 2-4, other
+			: ($LANG == 'ru' || $LANG == 'sr' || $LANG == 'uk' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1, 2-4, other
 			: 1
 		))))))); // http://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
 		$translation = $translation[$pos];
@@ -70,16 +71,18 @@ function lang($idf, $number = null) {
 
 function switch_lang() {
 	global $LANG, $langs;
-	echo "<form action=''>\n<div id='lang'>";
-	hidden_fields($_GET, array('lang'));
-	echo lang('Language') . ": " . html_select("lang", $langs, $LANG, "var loc = location.search.replace(/[?&]lang=[^&]*/, ''); location.search = loc + (loc ? '&' : '') + 'lang=' + this.value;");
+	echo "<form action='' method='post'>\n<div id='lang'>";
+	echo lang('Language') . ": " . html_select("lang", $langs, $LANG, "this.form.submit();");
 	echo " <input type='submit' value='" . lang('Use') . "' class='hidden'>\n";
+	echo "<input type='hidden' name='token' value='$_SESSION[token]'>\n"; // $token may be empty in auth.inc.php
 	echo "</div>\n</form>\n";
 }
 
-if (isset($_GET["lang"])) {
-	$_COOKIE["adminer_lang"] = $_GET["lang"];
-	$_SESSION["lang"] = $_GET["lang"]; // cookies may be disabled
+if (isset($_POST["lang"]) && $_SESSION["token"] == $_POST["token"]) { // $token and $error not yet available
+	cookie("adminer_lang", $_POST["lang"]);
+	$_SESSION["lang"] = $_POST["lang"]; // cookies may be disabled
+	$_SESSION["translations"] = array(); // used in compiled version
+	redirect(remove_from_uri());
 }
 
 $LANG = "en";
