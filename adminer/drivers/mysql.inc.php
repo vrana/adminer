@@ -416,7 +416,7 @@ if (!defined("DRIVER")) {
 				"type" => $match[1],
 				"length" => $match[2],
 				"unsigned" => ltrim($match[3] . $match[4]),
-				"default" => ($row["Default"] != "" || ereg("char", $match[1]) ? $row["Default"] : null),
+				"default" => ($row["Default"] != "" || ereg("char|set", $match[1]) ? $row["Default"] : null),
 				"null" => ($row["Null"] == "YES"),
 				"auto_increment" => ($row["Extra"] == "auto_increment"),
 				"on_update" => (eregi('^on update (.+)', $row["Extra"], $match) ? $match[1] : ""), //! available since MySQL 5.1.23
