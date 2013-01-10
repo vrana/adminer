@@ -40,6 +40,9 @@ if (extension_loaded('pdo')) {
 		function store_result($result = null) {
 			if (!$result) {
 				$result = $this->_result;
+				if (!$result) {
+					return false;
+				}
 			}
 			if ($result->columnCount()) {
 				$result->num_rows = $result->rowCount(); // is not guaranteed to work with all drivers
@@ -50,6 +53,9 @@ if (extension_loaded('pdo')) {
 		}
 		
 		function next_result() {
+			if (!$this->_result) {
+				return false;
+			}
 			$this->_result->_offset = 0;
 			return @$this->_result->nextRowset(); // @ - PDO_PgSQL doesn't support it
 		}
