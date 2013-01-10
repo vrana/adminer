@@ -81,7 +81,7 @@ function loginDriver(driver) {
 * @return boolean
 */
 function textareaKeydown(target, event) {
-	if (!event.shiftKey && !event.altKey && !event.ctrlKey && !event.metaKey) {
+	if (!event.shiftKey && !event.altKey && !isCtrl(event)) {
 		if (event.keyCode == 9) { // 9 - Tab
 			// inspired by http://pallieter.org/Projects/insertTab/
 			if (target.setSelectionRange) {

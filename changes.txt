@@ -1,3 +1,6 @@
+Adminer 3.6.3-dev:
+Treat Meta key same as Ctrl
+
 Adminer 3.6.2 (released 2012-12-21):
 Edit values by Ctrl+click instead of double click
 Don't select row on double click

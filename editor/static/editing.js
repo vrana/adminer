@@ -8,7 +8,7 @@ function selectFieldChange(form) {
 
 function whisperClick(event, field) {
 	var el = event.target || event.srcElement;
-	if (/^a$/i.test(el.tagName) && !(event.button || event.ctrlKey || event.shiftKey || event.altKey || event.metaKey)) {
+	if (/^a$/i.test(el.tagName) && !(event.button || event.shiftKey || event.altKey || isCtrl(event))) {
 		field.value = el.firstChild.data;
 		field.previousSibling.value = decodeURIComponent(el.href.replace(/.*=/, ''));
 		field.nextSibling.style.display = 'none';
