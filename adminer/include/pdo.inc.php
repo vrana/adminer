@@ -2,7 +2,7 @@
 // PDO can be used in several database drivers
 if (extension_loaded('pdo')) {
 	/*abstract*/ class Min_PDO extends PDO {
-		var $_result, $server_info, $affected_rows, $error;
+		var $_result, $server_info, $affected_rows, $errno, $error;
 		
 		function __construct() {
 			global $adminer;
@@ -26,8 +26,7 @@ if (extension_loaded('pdo')) {
 			$result = parent::query($query);
 			$this->error = "";
 			if (!$result) {
-				$errorInfo = $this->errorInfo();
-				$this->error = $errorInfo[2];
+				list(, $this->errno, $this->error) = $this->errorInfo();
 				return false;
 			}
 			$this->store_result($result);

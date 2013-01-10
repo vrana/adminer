@@ -1,4 +1,5 @@
 Adminer 3.6.3-dev:
+Display error code in SQL query
 Treat Meta key same as Ctrl
 Don't use type="number" for decimal numbers
 

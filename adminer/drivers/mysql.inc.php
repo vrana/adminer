@@ -54,6 +54,7 @@ if (!defined("DRIVER")) {
 				$extension = "MySQL", ///< @var string extension name
 				$server_info, ///< @var string server version
 				$affected_rows, ///< @var int number of affected rows
+				$errno, ///< @var int last error code
 				$error, ///< @var string last error message
 				$_link, $_result ///< @access private
 			;
@@ -110,6 +111,7 @@ if (!defined("DRIVER")) {
 				$result = @($unbuffered ? mysql_unbuffered_query($query, $this->_link) : mysql_query($query, $this->_link)); // @ - mute mysql.trace_mode
 				$this->error = "";
 				if (!$result) {
+					$this->errrno = mysql_errno($this->_link);
 					$this->error = mysql_error($this->_link);
 					return false;
 				}

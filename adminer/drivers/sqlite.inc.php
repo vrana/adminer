@@ -9,7 +9,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		if (isset($_GET["sqlite"])) {
 			
 			class Min_SQLite {
-				var $extension = "SQLite3", $server_info, $affected_rows, $error, $_link;
+				var $extension = "SQLite3", $server_info, $affected_rows, $errno, $error, $_link;
 				
 				function Min_SQLite($filename) {
 					$this->_link = new SQLite3($filename);
@@ -21,6 +21,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 					$result = @$this->_link->query($query);
 					$this->error = "";
 					if (!$result) {
+						$this->errno = $this->_link->lastErrorCode();
 						$this->error = $this->_link->lastErrorMsg();
 						return false;
 					} elseif ($result->numColumns()) {
