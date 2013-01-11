@@ -185,6 +185,14 @@ username.form['auth[driver]'].onchange();
 		return $rows;
 	}
 	
+	/** Get a link to use in select table
+	* @param string raw value of the field
+	* @param array single field returned from fields()
+	* @return string or null to create the default link
+	*/
+	function selectLink($val, $field) {
+	}
+	
 	/** Value printed in select table
 	* @param string HTML-escaped value to print
 	* @param string link to foreign key

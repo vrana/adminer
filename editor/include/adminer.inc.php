@@ -162,6 +162,9 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		return $return;
 	}
 	
+	function selectLink($val, $field) {
+	}
+	
 	function selectVal($val, $link, $field) {
 		$return = ($val === null ? "&nbsp;" : $val);
 		$link = h($link);

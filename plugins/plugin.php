@@ -191,6 +191,11 @@ class AdminerPlugin extends Adminer {
 		return $this->_applyPlugin(__FUNCTION__, $args);
 	}
 
+	function selectLink() {
+		$args = func_get_args();
+		return $this->_applyPlugin(__FUNCTION__, $args);
+	}
+
 	function selectVal() {
 		$args = func_get_args();
 		return $this->_applyPlugin(__FUNCTION__, $args);
