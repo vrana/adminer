@@ -722,14 +722,13 @@ DROP PROCEDURE adminer_alter;
 						foreach ($row as $key => $val) {
 							$row[$key] = ($val !== null ? (ereg('int|float|double|decimal|bit', $fields[$keys[$key]]["type"]) ? $val : q($val)) : "NULL"); //! columns looking like functions
 						}
-						
 
 						$s = ($max_packet ? "\n" : " ") . "(" . implode(",\t", $row) . ")";
 
 						if (!$buffer) {
 							$buffer = $insert . $s;
 						} elseif (strlen($buffer) + 4 + strlen($s) + strlen($suffix) < $max_packet) { // 4 - length specification
-							if ($entries % 100 == 0) {
+							if ($entries % $separate == 0) {
 								$buffer .= "{$suffix}{$insert}{$s}";
 							} else {
 								$buffer .= ",$s";
