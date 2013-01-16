@@ -104,7 +104,7 @@ if (!$error && $_POST) {
 							$time = format_time($start, $end) . (strlen($q) < 1000 ? " <a href='" . h(ME) . "sql=" . urlencode(trim($q)) . "'>" . lang('Edit') . "</a>" : ""); // 1000 - maximum length of encoded URL in IE is 2083 characters
 							if ($connection->error) {
 								echo ($_POST["only_errors"] ? $print : "");
-								echo "<p class='error'>" . lang('Error in query') . ": " . error() . "\n";
+								echo "<p class='error'>" . lang('Error in query') . ($connection->errno ? " ($connection->errno)" : "") . ": " . error() . "\n";
 								$errors[] = " <a href='#sql-$commands'>$commands</a>";
 								if ($_POST["error_stops"]) {
 									break 2;

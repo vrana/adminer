@@ -293,6 +293,15 @@ function selectSearch(name) {
 }
 
 
+/** Check if Ctrl key (Command key on Mac) was pressed
+* @param KeyboardEvent|MouseEvent
+* @return boolean
+*/
+function isCtrl(event) {
+	return (event.ctrlKey || event.metaKey) && !event.altKey; // shiftKey allowed
+}
+
+
 
 /** Send form by Ctrl+Enter on <select> and <textarea>
 * @param KeyboardEvent
@@ -301,7 +310,7 @@ function selectSearch(name) {
 */
 function bodyKeydown(event, button) {
 	var target = event.target || event.srcElement;
-	if (event.ctrlKey && (event.keyCode == 13 || event.keyCode == 10) && !event.altKey && !event.metaKey && /select|textarea|input/i.test(target.tagName)) { // 13|10 - Enter, shiftKey allowed
+	if (isCtrl(event) && (event.keyCode == 13 || event.keyCode == 10) && /select|textarea|input/i.test(target.tagName)) { // 13|10 - Enter
 		target.blur();
 		if (button) {
 			target.form[button].click();
@@ -318,10 +327,10 @@ function bodyKeydown(event, button) {
 */
 function bodyClick(event) {
 	var target = event.target || event.srcElement;
-	if ((event.ctrlKey || event.shiftKey) && target.type == 'submit' && /input/i.test(target.tagName)) {
+	if ((isCtrl(event) || event.shiftKey) && target.type == 'submit' && /input/i.test(target.tagName)) {
 		target.form.target = '_blank';
 		setTimeout(function () {
-			// if (event.ctrlKey) { focus(); } doesn't work
+			// if (isCtrl(event)) { focus(); } doesn't work
 			target.form.target = '';
 		}, 0);
 	}
@@ -334,7 +343,7 @@ function bodyClick(event) {
 * @return boolean
 */
 function editingKeydown(event) {
-	if ((event.keyCode == 40 || event.keyCode == 38) && event.ctrlKey && !event.altKey && !event.metaKey) { // 40 - Down, 38 - Up, shiftKey allowed
+	if ((event.keyCode == 40 || event.keyCode == 38) && isCtrl(event)) { // 40 - Down, 38 - Up
 		var target = event.target || event.srcElement;
 		var sibling = (event.keyCode == 40 ? 'nextSibling' : 'previousSibling');
 		var el = target.parentNode.parentNode[sibling];
@@ -416,7 +425,7 @@ function ajaxSetHtml(url) {
 */
 function selectClick(td, event, text, warning) {
 	var target = event.target || event.srcElement;
-	if (!event.ctrlKey || /input|textarea/i.test(td.firstChild.tagName) || /^a$/i.test(target.tagName)) {
+	if (!isCtrl(event) || /input|textarea/i.test(td.firstChild.tagName) || /^a$/i.test(target.tagName)) {
 		return;
 	}
 	if (warning) {
@@ -429,7 +438,7 @@ function selectClick(td, event, text, warning) {
 		if (!event) {
 			event = window.event;
 		}
-		if (event.keyCode == 27 && !(event.ctrlKey || event.shiftKey || event.altKey || event.metaKey)) { // 27 - Esc
+		if (event.keyCode == 27 && !event.shiftKey && !event.altKey && !isCtrl(event)) { // 27 - Esc
 			td.innerHTML = original;
 		}
 	};

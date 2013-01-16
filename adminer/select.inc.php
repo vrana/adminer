@@ -384,9 +384,9 @@ if (!$columns) {
 								}
 							}
 						}
-						if (!$link) {
-							if (is_mail($val)) {
-								$link = "mailto:$val";
+						if (!$link && ($link = $adminer->selectLink($row[$key], $field)) === null) {
+							if (is_mail($row[$key])) {
+								$link = "mailto:$row[$key]";
 							}
 							if ($protocol = is_url($row[$key])) {
 								$link = ($protocol == "http" && $HTTPS

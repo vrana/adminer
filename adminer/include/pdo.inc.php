@@ -2,7 +2,7 @@
 // PDO can be used in several database drivers
 if (extension_loaded('pdo')) {
 	/*abstract*/ class Min_PDO extends PDO {
-		var $_result, $server_info, $affected_rows, $error;
+		var $_result, $server_info, $affected_rows, $errno, $error;
 		
 		function __construct() {
 			global $adminer;
@@ -26,8 +26,7 @@ if (extension_loaded('pdo')) {
 			$result = parent::query($query);
 			$this->error = "";
 			if (!$result) {
-				$errorInfo = $this->errorInfo();
-				$this->error = $errorInfo[2];
+				list(, $this->errno, $this->error) = $this->errorInfo();
 				return false;
 			}
 			$this->store_result($result);
@@ -41,6 +40,9 @@ if (extension_loaded('pdo')) {
 		function store_result($result = null) {
 			if (!$result) {
 				$result = $this->_result;
+				if (!$result) {
+					return false;
+				}
 			}
 			if ($result->columnCount()) {
 				$result->num_rows = $result->rowCount(); // is not guaranteed to work with all drivers
@@ -51,6 +53,9 @@ if (extension_loaded('pdo')) {
 		}
 		
 		function next_result() {
+			if (!$this->_result) {
+				return false;
+			}
 			$this->_result->_offset = 0;
 			return @$this->_result->nextRowset(); // @ - PDO_PgSQL doesn't support it
 		}

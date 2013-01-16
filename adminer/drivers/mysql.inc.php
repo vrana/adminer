@@ -54,6 +54,7 @@ if (!defined("DRIVER")) {
 				$extension = "MySQL", ///< @var string extension name
 				$server_info, ///< @var string server version
 				$affected_rows, ///< @var int number of affected rows
+				$errno, ///< @var int last error code
 				$error, ///< @var string last error message
 				$_link, $_result ///< @access private
 			;
@@ -110,6 +111,7 @@ if (!defined("DRIVER")) {
 				$result = @($unbuffered ? mysql_unbuffered_query($query, $this->_link) : mysql_query($query, $this->_link)); // @ - mute mysql.trace_mode
 				$this->error = "";
 				if (!$result) {
+					$this->errno = mysql_errno($this->_link);
 					$this->error = mysql_error($this->_link);
 					return false;
 				}
@@ -414,7 +416,7 @@ if (!defined("DRIVER")) {
 				"type" => $match[1],
 				"length" => $match[2],
 				"unsigned" => ltrim($match[3] . $match[4]),
-				"default" => ($row["Default"] != "" || ereg("char", $match[1]) ? $row["Default"] : null),
+				"default" => ($row["Default"] != "" || ereg("char|set", $match[1]) ? $row["Default"] : null),
 				"null" => ($row["Null"] == "YES"),
 				"auto_increment" => ($row["Extra"] == "auto_increment"),
 				"on_update" => (eregi('^on update (.+)', $row["Extra"], $match) ? $match[1] : ""), //! available since MySQL 5.1.23

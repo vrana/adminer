@@ -1,4 +1,10 @@
-Adminer 3.6.2-dev:
+Adminer 3.6.3-dev:
+Display error code in SQL query
+Allow specifying external links
+Treat Meta key same as Ctrl
+Don't use type="number" for decimal numbers
+
+Adminer 3.6.2 (released 2012-12-21):
 Edit values by Ctrl+click instead of double click
 Don't select row on double click
 Support NULL in routine calls

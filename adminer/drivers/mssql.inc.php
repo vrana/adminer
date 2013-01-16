@@ -12,11 +12,12 @@ if (isset($_GET["mssql"])) {
 	define("DRIVER", "mssql");
 	if (extension_loaded("sqlsrv")) {
 		class Min_DB {
-			var $extension = "sqlsrv", $_link, $_result, $server_info, $affected_rows, $error;
+			var $extension = "sqlsrv", $_link, $_result, $server_info, $affected_rows, $errno, $error;
 
 			function _get_error() {
 				$this->error = "";
 				foreach (sqlsrv_errors() as $error) {
+					$this->errno = $error["code"];
 					$this->error .= "$error[message]\n";
 				}
 				$this->error = rtrim($this->error);
