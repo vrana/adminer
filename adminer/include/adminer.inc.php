@@ -694,6 +694,7 @@ DROP PROCEDURE adminer_alter;
 				$buffer = "";
 				$keys = array();
 				$suffix = "";
+				$entries = 1;
 				while ($row = $result->fetch_row()) {
 					if (!$keys) {
 						$values = array();
@@ -728,15 +729,18 @@ DROP PROCEDURE adminer_alter;
 						if (!$buffer) {
 							$buffer = $insert . $s;
 						} elseif (strlen($buffer) + 4 + strlen($s) + strlen($suffix) < $max_packet) { // 4 - length specification
-							$buffer .= ",$s";
+							if ($entries % 100 == 0) {
+								$buffer .= "{$suffix}{$insert}{$s}";
+							} else {
+								$buffer .= ",$s";
+							}
 						} else {
 							echo $buffer . $suffix;
 							$buffer = $insert . $s;
 						}
 
 					}
-
-
+					++$entries;
 				}
 				if ($buffer) {
 					echo $buffer . $suffix;
