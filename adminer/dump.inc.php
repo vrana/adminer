@@ -227,6 +227,7 @@ if (DB != "") {
 ?>
 </table>
 </form>
+<script type='text/javascript' src='static/dump.js'></script>
 <?php
 $first = true;
 foreach ($prefixes as $key => $val) {
