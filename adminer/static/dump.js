@@ -11,9 +11,9 @@ var data_style = get_from_name("select", "data_style", document);
 data_style.onchange = function() {
   var separate_insert = document.getElementById("separate_insert_container");
   if (this.value != undefined && this.value.contains("INSERT")) {
-    separate_insert.style.visibility = "inherit";
+    separate_insert.style.display = "inherit";
   } else {
-    separate_insert.style.visibility = "hidden";
+    separate_insert.style.display = "none";
   }
 }
 data_style.onchange();
