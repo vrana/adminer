@@ -75,7 +75,9 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 							}
 							$adminer->dumpTable($table_status["Name"], ($table ? $_POST["table_style"] : ""));
 							if ($data) {
-								$adminer->dumpData($table_status["Name"], $_POST["data_style"], "SELECT * FROM " . table($table_status["Name"]));
+								// Bheesham Persaud
+								$separate = (isset($_POST['separate_insert']) && !empty($_POST['separate_insert'])) ? intval($_POST['separate_insert']) : 100;
+								$adminer->dumpData($table_status["Name"], $_POST["data_style"], "SELECT * FROM " . table($table_status["Name"]), $separate);
 							}
 							if ($is_sql && $_POST["triggers"] && $table && ($triggers = trigger_sql($table_status["Name"], $_POST["table_style"]))) {
 								echo "\nDELIMITER ;;\n$triggers\nDELIMITER ;\n";
@@ -179,6 +181,7 @@ echo "<tr><th>" . lang('Tables') . "<td>" . html_select('table_style', $table_st
 ;
 echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style, $row["data_style"]);
 ?>
+<tr id="separate_insert_container"><th><?php echo lang('Number of rows per INSERT'); ?><td><input name="separate_insert" maxlength="4" value="100">
 </table>
 <p><input type="submit" value="<?php echo lang('Export'); ?>">
 
@@ -224,6 +227,7 @@ if (DB != "") {
 ?>
 </table>
 </form>
+<script type='text/javascript' src='static/dump.js'></script>
 <?php
 $first = true;
 foreach ($prefixes as $key => $val) {
