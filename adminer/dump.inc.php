@@ -181,7 +181,7 @@ echo "<tr><th>" . lang('Tables') . "<td>" . html_select('table_style', $table_st
 ;
 echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style, $row["data_style"]);
 ?>
-<tr><th><?php echo lang('Number of rows per INSERT'); ?><td><input id="separate_insert" name="separate_insert" maxlength="4" value="100">
+<tr><th><?php echo lang('Number of rows per INSERT'); ?><td><input id="separate_insert" name="separate_insert" value="100">
 </table>
 <p><input type="submit" value="<?php echo lang('Export'); ?>">
 
