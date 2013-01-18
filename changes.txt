@@ -2,6 +2,7 @@ Adminer 3.6.3-dev:
 Display error code in SQL query
 Allow specifying external links
 Treat Meta key same as Ctrl
+Fix XSS in displaying non-UTF-8 strings
 Don't use type="number" for decimal numbers
 
 Adminer 3.6.2 (released 2012-12-21):
