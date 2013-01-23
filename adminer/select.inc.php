@@ -332,6 +332,10 @@ if (!$columns) {
 				$unique_array = unique_array($rows[$n], $indexes);
 				$unique_idf = "";
 				foreach ($unique_array as $key => $val) {
+					if (strlen($val) > 10) {
+						$key = "MD5(" . (strpos($key, '(') ? $key : idf_escape($key)) . ")"; //! columns looking like functions
+						$val = md5($val);
+					}
 					$unique_idf .= "&" . ($val !== null ? urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($val) : "null%5B%5D=" . urlencode($key));
 				}
 				echo "<tr" . odd() . ">" . (!$group && $select ? "" : "<td>" . checkbox("check[]", substr($unique_idf, 1), in_array(substr($unique_idf, 1), (array) $_POST["check"]), "", "this.form['all'].checked = false; formUncheck('all-page');") . ($is_group || information_schema(DB) ? "" : " <a href='" . h(ME . "edit=" . urlencode($TABLE) . $unique_idf) . "'>" . lang('edit') . "</a>"));
