@@ -683,9 +683,10 @@ DROP PROCEDURE adminer_alter;
 	* @param string
 	* @param string
 	* @param string
+	* @param int
 	* @return null prints data
 	*/
-	function dumpData($table, $style, $query) {
+	function dumpData($table, $style, $query, $separate = 100) {
 		global $connection, $jush;
 		$max_packet = ($jush == "sqlite" ? 0 : 1048576); // default, minimum is 1024
 		if ($style) {
@@ -701,6 +702,7 @@ DROP PROCEDURE adminer_alter;
 				$buffer = "";
 				$keys = array();
 				$suffix = "";
+				$entries = 1;
 				while ($row = $result->fetch_row()) {
 					if (!$keys) {
 						$values = array();
@@ -712,6 +714,7 @@ DROP PROCEDURE adminer_alter;
 						}
 						$suffix = ($style == "INSERT+UPDATE" ? "\nON DUPLICATE KEY UPDATE " . implode(", ", $values) : "") . ";\n";
 					}
+
 					if ($_POST["format"] != "sql") {
 						if ($style == "table") {
 							dump_csv($keys);
@@ -719,22 +722,32 @@ DROP PROCEDURE adminer_alter;
 						}
 						dump_csv($row);
 					} else {
+
 						if (!$insert) {
-							$insert = "INSERT INTO " . table($table) . " (" . implode(", ", array_map('idf_escape', $keys)) . ") VALUES";
+							$insert = "\nINSERT INTO " . table($table) . " (" . implode(", ", array_map('idf_escape', $keys)) . ") VALUES";
 						}
+
 						foreach ($row as $key => $val) {
 							$row[$key] = ($val !== null ? (ereg('int|float|double|decimal|bit', $fields[$keys[$key]]["type"]) ? $val : q($val)) : "NULL"); //! columns looking like functions
 						}
+
 						$s = ($max_packet ? "\n" : " ") . "(" . implode(",\t", $row) . ")";
+
 						if (!$buffer) {
 							$buffer = $insert . $s;
 						} elseif (strlen($buffer) + 4 + strlen($s) + strlen($suffix) < $max_packet) { // 4 - length specification
-							$buffer .= ",$s";
+							if ($entries % $separate == 0) {
+								$buffer .= "{$suffix}{$insert}{$s}";
+							} else {
+								$buffer .= ",$s";
+							}
 						} else {
 							echo $buffer . $suffix;
 							$buffer = $insert . $s;
 						}
+
 					}
+					++$entries;
 				}
 				if ($buffer) {
 					echo $buffer . $suffix;
