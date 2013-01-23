@@ -335,8 +335,10 @@ function unique_array($row, $indexes) {
 function where($where, $fields = array()) {
 	global $jush;
 	$return = array();
+	$function_pattern = '(^[\w\(]+' . str_replace("_", ".*", preg_quote(idf_escape("_"))) . '\)+$)'; //! columns looking like functions
 	foreach ((array) $where["where"] as $key => $val) {
-		$return[] = idf_escape(bracket_escape($key, 1)) // 1 - back
+		$key = bracket_escape($key, 1); // 1 - back
+		$return[] = (preg_match($function_pattern, $key) ? $key : idf_escape($key)) //! SQL injection
 			. (($jush == "sql" && ereg('\\.', $val)) || $jush == "mssql" ? " LIKE " . exact_value(addcslashes($val, "%_\\")) : " = " . unconvert_field($fields[$key], exact_value($val))) // LIKE because of floats, but slow with ints, in MS SQL because of text
 		; //! enum and set
 	}
