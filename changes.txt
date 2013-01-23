@@ -1,4 +1,4 @@
-Adminer 3.6.3-dev:
+Adminer 3.6.3 (released 2012-01-23):
 Display error code in SQL query
 Allow specifying external links
 Treat Meta key same as Ctrl
