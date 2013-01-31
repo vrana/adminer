@@ -1,5 +1,6 @@
 Adminer 3.6.4-dev:
 Disable autocapitalize in identifiers
+Indeterminate state of select all checkboxes
 
 Adminer 3.6.3 (released 2013-01-23):
 Display error code in SQL query

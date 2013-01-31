@@ -64,6 +64,7 @@ function trCheck(el) {
 * @param RegExp
 */
 function formCheck(el, name) {
+	el.indeterminate = false;
 	var elems = el.form.elements;
 	for (var i=0; i < elems.length; i++) {
 		if (name.test(elems[i].name)) {
@@ -92,6 +93,7 @@ function tableCheck() {
 */
 function formUncheck(id) {
 	var el = document.getElementById(id);
+	el.indeterminate = true;
 	el.checked = false;
 	trCheck(el);
 }
