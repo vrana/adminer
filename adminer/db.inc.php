@@ -32,7 +32,9 @@ if ($tables_views && !$error && !$_POST["search"]) {
 			: apply_queries("VACUUM" . ($_POST["optimize"] ? "" : " ANALYZE"), $_POST["tables"])
 		);
 		$message = lang('Tables have been optimized.');
-	} elseif ($_POST["tables"] && ($result = queries(($_POST["optimize"] ? "OPTIMIZE" : ($_POST["check"] ? "CHECK" : ($_POST["repair"] ? "REPAIR" : "ANALYZE"))) . " TABLE " . implode(", ", array_map('idf_escape', $_POST["tables"]))))) {
+	} elseif (!$_POST["tables"]) {
+		$message = lang('No tables.');
+	} elseif ($result = queries(($_POST["optimize"] ? "OPTIMIZE" : ($_POST["check"] ? "CHECK" : ($_POST["repair"] ? "REPAIR" : "ANALYZE"))) . " TABLE " . implode(", ", array_map('idf_escape', $_POST["tables"])))) {
 		while ($row = $result->fetch_assoc()) {
 			$message .= "<b>" . h($row["Table"]) . "</b>: " . h($row["Msg_text"]) . "<br>";
 		}
