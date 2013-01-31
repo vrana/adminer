@@ -1,4 +1,5 @@
 Adminer 3.6.4-dev:
+Recover original view, trigger, routine if creating fails
 Disable autocapitalize in identifiers
 Indeterminate state of select all checkboxes
 

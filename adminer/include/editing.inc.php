@@ -338,23 +338,64 @@ function grant($grant, $privileges, $columns, $on) {
 /** Drop old object and create a new one
 * @param string drop query
 * @param string create query
+* @param string rollback query
 * @param string
 * @param string
 * @param string
 * @param string
 * @param string
-* @return bool dropped
+* @return null redirect in success
 */
-function drop_create($drop, $create, $location, $message_drop, $message_alter, $message_create, $name) {
+function drop_create($drop, $create, $rollback, $location, $message_drop, $message_alter, $message_create, $name) {
 	if ($_POST["drop"]) {
-		return query_redirect($drop, $location, $message_drop, true, !$_POST["dropped"]);
+		query_redirect($drop, $location, $message_drop);
+	} else {
+		if ($name != "") {
+			queries($drop);
+		}
+		queries_redirect($location, ($name != "" ? $message_alter : $message_create), queries($create));
+		if ($name != "") {
+			queries($rollback);
+		}
 	}
-	$dropped = $name != "" && ($_POST["dropped"] || queries($drop));
-	$created = queries($create);
-	if (!queries_redirect($location, ($name != "" ? $message_alter : $message_create), $created) && $dropped) {
-		redirect(null, $message_drop);
+}
+
+/** Generate SQL query for creating trigger
+* @param string
+* @return array result of trigger()
+*/
+function create_trigger($on, $row) {
+	global $jush;
+	$timing_event = " $row[Timing] $row[Event]";
+	return "CREATE TRIGGER " 
+		. idf_escape($row["Trigger"]) 
+		. ($jush == "mssql" ? $on . $timing_event : $timing_event . $on) 
+		. rtrim(" $row[Type]\n$row[Statement]", ";") 
+		. ";";
+}
+
+/** Generate SQL query for creating routine
+* @param string "PROCEDURE" or "FUNCTION"
+* @param array result of routine()
+* @return string
+*/
+function create_routine($routine, $row) {
+	global $inout;
+	$set = array();
+	$fields = (array) $row["fields"];
+	ksort($fields); // enforce fields order
+	foreach ($fields as $field) {
+		if ($field["field"] != "") {
+			$set[] = (ereg("^($inout)\$", $field["inout"]) ? "$field[inout] " : "") . idf_escape($field["field"]) . process_type($field, "CHARACTER SET");
+		}
 	}
-	return $dropped;
+	return "CREATE $routine " 
+		. idf_escape(trim($row["name"])) 
+		. " (" . implode(", ", $set) . ")" 
+		. (isset($_GET["function"]) ? " RETURNS" . process_type($row["returns"], "CHARACTER SET") : "") 
+		. ($row["language"] ? " LANGUAGE $row[language]" : "") 
+		. rtrim("\n$row[definition]", ";") 
+		. ";";
 }
 
 /** Remove current user definer from SQL command
