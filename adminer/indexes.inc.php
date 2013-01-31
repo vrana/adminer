@@ -92,7 +92,7 @@ foreach ($row["indexes"] as $index) {
 		echo "<input type='number' name='indexes[$j][lengths][$i]' class='size' value='" . h($index["lengths"][$key]) . "'> </span>"; //! hide for non-MySQL drivers, add ASC|DESC
 		$i++;
 	}
-	echo "<td><input name='indexes[$j][name]' value='" . h($index["name"]) . "'>\n";
+	echo "<td><input name='indexes[$j][name]' value='" . h($index["name"]) . "' autocapitalize='off'>\n";
 	$j++;
 }
 ?>

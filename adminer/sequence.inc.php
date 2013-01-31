@@ -24,7 +24,7 @@ if (!$row) {
 ?>
 
 <form action="" method="post">
-<p><input name="name" value="<?php echo h($row["name"]); ?>">
+<p><input name="name" value="<?php echo h($row["name"]); ?>" autocapitalize="off">
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php
 if ($SEQUENCE != "") {

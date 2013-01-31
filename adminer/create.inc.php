@@ -162,7 +162,7 @@ foreach ($engines as $engine) {
 
 <form action="" method="post" id="form">
 <p>
-<?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo h($row["name"]); ?>">
+<?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo h($row["name"]); ?>" autocapitalize="off">
 <?php if ($TABLE == "" && !$_POST) { ?><script type='text/javascript'>document.getElementById('form')['name'].focus();</script><?php } ?>
 <?php echo ($engines ? html_select("Engine", array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) : ""); ?>
  <?php echo ($collations && !ereg("sqlite|mssql", $jush) ? html_select("Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]) : ""); ?>
@@ -182,10 +182,10 @@ edit_fields($row["fields"], $collations, "TABLE", $suhosin, $foreign_keys, $comm
 ?>
 </table>
 <p>
-<?php echo lang('Auto Increment'); ?>: <input name="Auto_increment" size="6" value="<?php echo h($row["Auto_increment"]); ?>">
+<?php echo lang('Auto Increment'); ?>: <input type="number" name="Auto_increment" size="6" value="<?php echo h($row["Auto_increment"]); ?>">
 <label class="jsonly"><input type="checkbox" id="defaults" name="defaults" value="1" checked onclick="columnShow(this.checked, 5);"><?php echo lang('Default values'); ?></label>
 <?php if (!$_POST["defaults"]) { ?><script type="text/javascript">editingHideDefaults()</script><?php } ?>
-<?php echo (support("comment") ? checkbox("comments", 1, $comments, lang('Comment'), "columnShow(this.checked, 6); toggle('Comment'); if (this.checked) this.form['Comment'].focus();", true) . ' <input id="Comment" name="Comment" value="' . h($row["Comment"]) . '" maxlength="' . ($connection->server_info >= 5.5 ? 2048 : 60) . '"' . ($comments ? '' : ' class="hidden"') . '>' : ''); ?>
+<?php echo (support("comment") ? checkbox("comments", 1, $comments, lang('Comment'), "columnShow(this.checked, 6); toggle('Comment'); if (this.checked) this.form['Comment'].focus();", true) . ' <input name="Comment" id="Comment" value="' . h($row["Comment"]) . '" maxlength="' . ($connection->server_info >= 5.5 ? 2048 : 60) . '"' . ($comments ? '' : ' class="hidden"') . '>' : ''); ?>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php if ($_GET["create"] != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo confirm(); ?>><?php } ?>
@@ -204,7 +204,7 @@ if (support("partitioning")) {
 <?php
 foreach ($row["partition_names"] as $key => $val) {
 	echo '<tr>';
-	echo '<td><input name="partition_names[]" value="' . h($val) . '"' . ($key == count($row["partition_names"]) - 1 ? ' onchange="partitionNameChange(this);"' : '') . '>';
+	echo '<td><input name="partition_names[]" value="' . h($val) . '"' . ($key == count($row["partition_names"]) - 1 ? ' onchange="partitionNameChange(this);"' : '') . ' autocapitalize="off">';
 	echo '<td><input name="partition_values[]" value="' . h($row["partition_values"][$key]) . '">';
 }
 ?>

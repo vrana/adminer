@@ -71,10 +71,10 @@ class Adminer {
 		?>
 <table cellspacing="0">
 <tr><th><?php echo lang('System'); ?><td><?php echo html_select("auth[driver]", $drivers, DRIVER, "loginDriver(this);"); ?>
-<tr><th><?php echo lang('Server'); ?><td><input name="auth[server]" value="<?php echo h(SERVER); ?>" title="hostname[:port]">
-<tr><th><?php echo lang('Username'); ?><td><input id="username" name="auth[username]" value="<?php echo h($_GET["username"]); ?>">
+<tr><th><?php echo lang('Server'); ?><td><input name="auth[server]" value="<?php echo h(SERVER); ?>" title="hostname[:port]" autocapitalize="off">
+<tr><th><?php echo lang('Username'); ?><td><input name="auth[username]" id="username" value="<?php echo h($_GET["username"]); ?>" autocapitalize="off">
 <tr><th><?php echo lang('Password'); ?><td><input type="password" name="auth[password]">
-<tr><th><?php echo lang('Database'); ?><td><input name="auth[db]" value="<?php echo h($_GET["db"]); ?>">
+<tr><th><?php echo lang('Database'); ?><td><input name="auth[db]" value="<?php echo h($_GET["db"]); ?>" autocapitalize="off">
 </table>
 <script type="text/javascript">
 var username = document.getElementById('username');
@@ -868,7 +868,7 @@ DROP PROCEDURE adminer_alter;
 <form action="">
 <p id="dbs">
 <?php hidden_fields_get(); ?>
-<?php echo ($databases ? html_select("db", array("" => "(" . lang('database') . ")") + $databases, DB, "this.form.submit();") : '<input name="db" value="' . h(DB) . '">'); ?>
+<?php echo ($databases ? html_select("db", array("" => "(" . lang('database') . ")") + $databases, DB, "this.form.submit();") : '<input name="db" value="' . h(DB) . '" autocapitalize="off">'); ?>
 <input type="submit" value="<?php echo lang('Use'); ?>"<?php echo ($databases ? " class='hidden'" : ""); ?>>
 <?php
 		if ($missing != "db" && DB != "" && $connection->select_db(DB)) {

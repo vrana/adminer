@@ -105,7 +105,7 @@ if ($adminer->homepage()) {
 				if (count($databases) != 1 && $jush != "sqlite") {
 					$db = (isset($_POST["target"]) ? $_POST["target"] : (support("scheme") ? $_GET["ns"] : DB));
 					echo "<p>" . lang('Move to other database') . ": ";
-					echo ($databases ? html_select("target", $databases, $db) : '<input name="target" value="' . h($db) . '">');
+					echo ($databases ? html_select("target", $databases, $db) : '<input name="target" value="' . h($db) . '" autocapitalize="off">');
 					echo " <input type='submit' name='move' value='" . lang('Move') . "'>";
 					echo (support("copy") ? " <input type='submit' name='copy' value='" . lang('Copy') . "'>" : "");
 					echo "\n";

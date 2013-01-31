@@ -59,7 +59,7 @@ if ($_POST) {
 <?php
 echo ($_POST["add_x"] || strpos($name, "\n")
 	? '<textarea id="name" name="name" rows="10" cols="40">' . h($name) . '</textarea><br>'
-	: '<input id="name" name="name" value="' . h($name) . '" maxlength="64">'
+	: '<input name="name" id="name" value="' . h($name) . '" maxlength="64" autocapitalize="off">'
 ) . "\n" . ($collations ? html_select("collation", array("" => "(" . lang('collation') . ")") + $collations, $collate) : "");
 ?>
 <script type='text/javascript'>document.getElementById('name').focus();</script>

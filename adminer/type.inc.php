@@ -24,7 +24,7 @@ if (!$row) {
 if ($TYPE != "") {
 	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm() . ">\n";
 } else {
-	echo "<input name='name' value='" . h($row['name']) . "'>\n";
+	echo "<input name='name' value='" . h($row['name']) . "' autocapitalize='off'>\n";
 	textarea("as", $row["as"]);
 	echo "<p><input type='submit' value='" . lang('Save') . "'>\n";
 }

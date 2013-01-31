@@ -24,7 +24,7 @@ if (!$row && $TABLE != "") {
 ?>
 
 <form action="" method="post">
-<p><?php echo lang('Name'); ?>: <input name="name" value="<?php echo h($row["name"]); ?>" maxlength="64">
+<p><?php echo lang('Name'); ?>: <input name="name" value="<?php echo h($row["name"]); ?>" maxlength="64" autocapitalize="off">
 <p><?php textarea("select", $row["select"]); ?>
 <p>
 <?php if ($dropped) { // old view was dropped but new wasn't created ?><input type="hidden" name="dropped" value="1"><?php } ?>

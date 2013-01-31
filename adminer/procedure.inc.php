@@ -40,7 +40,7 @@ if ($_POST) {
 ?>
 
 <form action="" method="post" id="form">
-<p><?php echo lang('Name'); ?>: <input name="name" value="<?php echo h($row["name"]); ?>" maxlength="64">
+<p><?php echo lang('Name'); ?>: <input name="name" value="<?php echo h($row["name"]); ?>" maxlength="64" autocapitalize="off">
 <?php echo ($routine_languages ? lang('Language') . ": " . html_select("language", $routine_languages, $row["language"]) : ""); ?>
 <table cellspacing="0" class="nowrap">
 <?php
