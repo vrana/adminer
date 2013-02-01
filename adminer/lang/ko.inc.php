@@ -1,5 +1,5 @@
 <? php
-$ translations = array (
+$translations = array (
 	'Login'=> '로그인',
 	'Logout successful'=> '로그아웃',
 	'Invalid credentials'=> '잘못된 로그인',
@@ -185,7 +185,7 @@ $ translations = array (
 	'Move'=> '이동',
 	'Save and continue edit'=> '저장하고 계속',
 	'original'=> '원래',
-	'% d item (s) have been af​​fected.'=> '%d를 갱신했습니다.',
+	'%d item (s) have been af​​fected.'=> '%d를 갱신했습니다.',
 	'whole result'=> '모든 결과',
 	'Tables have been dropped'=> '테이블을 삭제했습니다.',
 	'Clone'=> '복제',
