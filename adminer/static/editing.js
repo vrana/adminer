@@ -36,6 +36,11 @@ function bodyLoad(version) {
 		};
 		document.body.appendChild(script);
 	}
+	for (var i=0; i < document.getElementsByTagName('input').length; i++) {
+		if (document.getElementsByTagName('input').item(i).type == 'text') {
+			document.getElementsByTagName('input').item(i).setAttribute('autocomplete', 'off');
+		};
+	};
 }
 
 /** Get value of dynamically created form field
