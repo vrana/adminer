@@ -158,12 +158,12 @@ if ($adminer->homepage()) {
 		
 		if (support("type")) {
 			echo "<h3>" . lang('User types') . "</h3>\n";
-			$types = types();
-			if ($types) {
+			$user_types = types();
+			if ($user_types) {
 				echo "<table cellspacing='0'>\n";
 				echo "<thead><tr><th>" . lang('Name') . "</thead>\n";
 				odd('');
-				foreach ($types as $val) {
+				foreach ($user_types as $val) {
 					echo "<tr" . odd() . "><th><a href='" . h(ME) . "type=" . urlencode($val) . "'>" . h($val) . "</a>\n";
 				}
 				echo "</table>\n";
