@@ -2,7 +2,7 @@
 $TABLE = $_GET["indexes"];
 $index_types = array("PRIMARY", "UNIQUE", "INDEX");
 $table_status = table_status($TABLE);
-if (eregi("MyISAM|M?aria", $table_status["Engine"])) {
+if (eregi("MyISAM|M?aria" . ($connection->server_info >= 5.6 ? "|InnoDB" : ""), $table_status["Engine"])) {
 	$index_types[] = "FULLTEXT";
 }
 $indexes = indexes($TABLE);

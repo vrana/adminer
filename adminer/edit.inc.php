@@ -92,7 +92,7 @@ if (!$fields) {
 			$value = $adminer->editVal($value, $field);
 		}
 		$function = ($_POST["save"] ? (string) $_POST["function"][$name] : ($update && $field["on_update"] == "CURRENT_TIMESTAMP" ? "now" : ($value === false ? null : ($value !== null ? '' : 'NULL'))));
-		if ($field["type"] == "timestamp" && $value == "CURRENT_TIMESTAMP") {
+		if (ereg("time", $field["type"]) && $value == "CURRENT_TIMESTAMP") {
 			$value = "";
 			$function = "now";
 		}
