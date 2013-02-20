@@ -26,7 +26,8 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <script type="text/javascript" src="../adminer/static/functions.js"></script>
 <script type="text/javascript" src="static/editing.js"></script>
 <?php if ($adminer->head()) { ?>
-<link rel="shortcut icon" type="image/x-icon" href="../adminer/static/favicon.ico" id="favicon">
+<link rel="shortcut icon" type="image/x-icon" href="../adminer/static/favicon.ico">
+<link rel="apple-touch-icon" href="../adminer/static/favicon.ico">
 <?php if (file_exists("adminer.css")) { ?>
 <link rel="stylesheet" type="text/css" href="adminer.css">
 <?php } ?>
