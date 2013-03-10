@@ -284,8 +284,9 @@ table code {
 #breadcrumb {
 	background: #333;
 	color: #FFF;
-	left: 320px;
+	left: 300px;
 	line-height: 40px;
+	height: 40px;
 	margin: 0;
 	padding: 0;
 	position: fixed;
