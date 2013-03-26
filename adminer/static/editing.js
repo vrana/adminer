@@ -168,6 +168,26 @@ function selectFieldChange(form) {
 	setHtml('noindex', (ok ? '' : '!'));
 }
 
+/** Create edit query form
+* @param HTMLSpanElement
+* @param string
+* @return boolean
+*/
+function selectEditSql(el, label) {
+	var sql = el.firstChild;
+	var input = document.createElement('input');
+	input.name = 'query';
+	input.value = sql.textContent || sql.innerText;
+	input.style.width = sql.offsetWidth + 'px';
+	el.innerHTML = '';
+	el.appendChild(input);
+	var submit = document.createElement('input');
+	submit.type = 'submit';
+	submit.value = label;
+	el.appendChild(submit);
+	return true;
+}
+
 
 
 var added = '.', rowCount;
