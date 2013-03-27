@@ -2,6 +2,7 @@ Adminer 3.6.4-dev:
 Display select SQL edit form inline
 Compatibility with MySQL 5.6
 Recover original view, trigger, routine if creating fails
+Allow loading more data with inline edit (bug #3605531)
 Disable autocapitalize in identifiers
 Indeterminate state of select all checkboxes
 

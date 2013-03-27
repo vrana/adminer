@@ -502,12 +502,10 @@ function selectLoadMore(a, limit, loading) {
 	if (href) {
 		a.removeAttribute('href');
 		return ajax(href, function (request) {
-			document.getElementById('table').innerHTML += request.responseText;
-			var rows = 0;
-			request.responseText.replace(/(^|\n)<tr/g, function () {
-				rows++;
-			});
-			if (rows < limit) {
+			var tbody = document.createElement('tbody');
+			tbody.innerHTML = request.responseText;
+			document.getElementById('table').appendChild(tbody);
+			if (tbody.children.length < limit) {
 				a.parentNode.removeChild(a);
 			} else {
 				a.href = href.replace(/\d+$/, function (page) {
