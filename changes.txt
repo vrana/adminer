@@ -3,6 +3,7 @@ Display select SQL edit form inline
 Compatibility with MySQL 5.6
 Recover original view, trigger, routine if creating fails
 Allow loading more data with inline edit (bug #3605531)
+Stay on the same page after deleting rows (bug #3605845)
 Disable autocapitalize in identifiers
 Indeterminate state of select all checkboxes
 

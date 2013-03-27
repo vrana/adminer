@@ -137,7 +137,7 @@ if ($_POST && !$error) {
 					$message = lang('Item%s has been inserted.', " $last_id");
 				}
 			}
-			queries_redirect(remove_from_uri("page"), $message, $result);
+			queries_redirect(remove_from_uri(), $message, $result);
 			//! display edit page in case of an error
 		} elseif (!$_POST["import"]) { // modify
 			if (!$_POST["val"]) {
@@ -434,7 +434,7 @@ if (!$columns) {
 				}
 			}
 			echo "<p class='pages'>";
-			if (+$limit && ($found_rows === false || $found_rows > $limit)) {
+			if (+$limit && ($found_rows === false || $found_rows > $limit || $page)) {
 				// display first, previous 4, next 4 and last page
 				$max_page = ($found_rows === false
 					? $page + (count($rows) >= $limit ? 2 : 1)
@@ -445,7 +445,9 @@ if (!$columns) {
 				for ($i = max(1, $page - 4); $i < min($max_page, $page + 5); $i++) {
 					echo pagination($i, $page);
 				}
-				echo ($page + 5 < $max_page ? " ..." : "") . ($exact_count && $found_rows !== false ? pagination($max_page, $page) : ' <a href="' . h(remove_from_uri("page") . "&page=last") . '">' . lang('last') . "</a>");
+				if ($max_page > 0) {
+					echo ($page + 5 < $max_page ? " ..." : "") . ($exact_count && $found_rows !== false ? pagination($max_page, $page) : ' <a href="' . h(remove_from_uri("page") . "&page=last") . '">' . lang('last') . "</a>");
+				}
 			}
 			echo ($found_rows !== false ? " (" . ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) . ")" : "");
 			echo (+$limit && ($found_rows === false ? count($rows) + 1 : $found_rows - $page * $limit) > $limit ? ' <a href="' . h(remove_from_uri("page") . "&page=" . ($page + 1)) . '" onclick="return !selectLoadMore(this, ' . (+$limit) . ', \'' . lang('Loading') . '\');">' . lang('Load more data') . '</a>' : '');
