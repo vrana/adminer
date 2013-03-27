@@ -137,7 +137,7 @@ if ($_POST && !$error) {
 					$message = lang('Item%s has been inserted.', " $last_id");
 				}
 			}
-			queries_redirect(remove_from_uri(), $message, $result);
+			queries_redirect(remove_from_uri($_POST["all"] && $_POST["delete"] ? "page" : ""), $message, $result);
 			//! display edit page in case of an error
 		} elseif (!$_POST["import"]) { // modify
 			if (!$_POST["val"]) {
