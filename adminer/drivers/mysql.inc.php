@@ -550,6 +550,7 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function drop_databases($databases) {
+		restart_session();
 		set_session("dbs", null);
 		return apply_queries("DROP DATABASE", $databases, 'idf_escape');
 	}
