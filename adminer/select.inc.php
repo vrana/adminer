@@ -33,6 +33,9 @@ $limit = $adminer->selectLimitProcess();
 $from = ($select ? implode(", ", $select) : "*" . ($oid ? ", $oid" : ""));
 if ($jush == "sql") {
 	foreach ($columns as $key => $val) {
+		if ($select && !$select[$key]) {
+			continue;
+		}
 		$as = convert_field($fields[$key]);
 		if ($as) {
 			$from .= ", $as AS " . idf_escape($key);
