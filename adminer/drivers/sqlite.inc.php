@@ -5,7 +5,7 @@ $drivers["sqlite2"] = "SQLite 2";
 if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	$possible_drivers = array((isset($_GET["sqlite"]) ? "SQLite3" : "SQLite"), "PDO_SQLite");
 	define("DRIVER", (isset($_GET["sqlite"]) ? "sqlite" : "sqlite2"));
-	if (extension_loaded(isset($_GET["sqlite"]) ? "sqlite3" : "sqlite")) {
+	if (class_exists(isset($_GET["sqlite"]) ? "SQLite3" : "SQLiteDatabase")) {
 		if (isset($_GET["sqlite"])) {
 			
 			class Min_SQLite {
