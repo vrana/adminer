@@ -168,7 +168,7 @@ username.form['auth[driver]'].onchange();
 		return "<form action='" . h(ME) . "sql=' method='post'><p>"
 			. "<a href='" . h(remove_from_uri("page")) . "&amp;page=last' title='" . lang('Last page') . "'>&gt;&gt;</a> <span>"
 			. "<code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code>"
-			. " <a href='" . h(ME) . "sql=" . urlencode($query) . "' onclick=\"return !selectEditSql(this.parentNode, '" . lang('Execute') . "');\">" . lang('Edit') . "</a>"
+			. " <a href='" . h(ME) . "sql=" . urlencode($query) . "' onclick=\"return !selectEditSql(event, this.parentNode, '" . lang('Execute') . "');\">" . lang('Edit') . "</a>"
 			. "</span><input type='hidden' name='token' value='$token'></p></form>\n"; // </p> - required for IE9 inline edit
 	}
 	

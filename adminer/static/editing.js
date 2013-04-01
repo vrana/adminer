@@ -169,11 +169,15 @@ function selectFieldChange(form) {
 }
 
 /** Create edit query form
+* @param MouseEvent
 * @param HTMLSpanElement
 * @param string
 * @return boolean
 */
-function selectEditSql(el, label) {
+function selectEditSql(event, el, label) {
+	if (isCtrl(event) || event.altKey) {
+		return false;
+	}
 	var sql = el.firstChild;
 	var input = document.createElement('input');
 	input.name = 'query';
