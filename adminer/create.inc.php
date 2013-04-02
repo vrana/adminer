@@ -145,11 +145,6 @@ if ($_POST) {
 }
 $collations = collations();
 
-$suhosin = floor(extension_loaded("suhosin") ? (min(ini_get("suhosin.request.max_vars"), ini_get("suhosin.post.max_vars")) - 13) / 10 : 0); // 10 - number of fields per row, 13 - number of other fields
-if ($suhosin && count($row["fields"]) > $suhosin) {
-	echo "<p class='error'>" . h(lang('Maximum number of allowed fields exceeded. Please increase %s and %s.', 'suhosin.post.max_vars', 'suhosin.request.max_vars')) . "\n";
-}
-
 $engines = engines();
 // case of engine may differ
 foreach ($engines as $engine) {
@@ -178,7 +173,7 @@ if (!$_POST && !$comments) {
 		}
 	}
 }
-edit_fields($row["fields"], $collations, "TABLE", $suhosin, $foreign_keys, $comments);
+edit_fields($row["fields"], $collations, "TABLE", $foreign_keys, $comments);
 ?>
 </table>
 <p>
@@ -189,7 +184,6 @@ edit_fields($row["fields"], $collations, "TABLE", $suhosin, $foreign_keys, $comm
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php if ($_GET["create"] != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo confirm(); ?>><?php } ?>
-<input type="hidden" name="token" value="<?php echo $token; ?>">
 <?php
 if (support("partitioning")) {
 	$partition_table = ereg('RANGE|LIST', $row["partition_by"]);
@@ -213,4 +207,5 @@ foreach ($row["partition_names"] as $key => $val) {
 <?php
 }
 ?>
+<input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

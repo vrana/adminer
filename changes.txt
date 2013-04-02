@@ -4,6 +4,7 @@ Compatibility with MySQL 5.6
 Recover original view, trigger, routine if creating fails
 Allow loading more data with inline edit (bug #3605531)
 Stay on the same page after deleting rows (bug #3605845)
+Handle max_input_vars
 Disable autocapitalize in identifiers
 
 Adminer 3.6.3 (released 2013-01-23):

@@ -166,7 +166,7 @@ $translations = array(
 	'Move up' => 'Naik',
 	'Move down' => 'Turun',
 	'Remove' => 'Hapus',
-	'Maximum number of allowed fields exceeded. Please increase %s and %s.' => 'Jumlah ruas maksimum yang diizinkan dilewati. Harap naikkan %s dan %s.',
+	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Jumlah ruas maksimum yang diizinkan dilewati. Harap naikkan %s.',
 
 	'Partition by' => 'Partisi menurut',
 	'Partitions' => 'Partisi',

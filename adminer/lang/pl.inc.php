@@ -166,7 +166,7 @@ $translations = array(
 	'Move up' => 'Przesuń w górę',
 	'Move down' => 'Przesuń w dół',
 	'Remove' => 'Usuń',
-	'Maximum number of allowed fields exceeded. Please increase %s and %s.' => 'Przekroczono maksymalną liczbę pól. Zwiększ %s i %s.',
+	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Przekroczono maksymalną liczbę pól. Zwiększ %s.',
 	
 	'Partition by' => 'Partycjonowanie',
 	'Partitions' => 'Partycje',

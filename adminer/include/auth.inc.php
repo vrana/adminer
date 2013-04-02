@@ -114,7 +114,27 @@ $token = $_SESSION["token"]; ///< @var string CSRF protection
 if ($auth && $_POST["token"]) {
 	$_POST["token"] = $token; // reset token after explicit login
 }
-$error = ($_POST ///< @var string
-	? ($_POST["token"] == $token ? "" : lang('Invalid CSRF token. Send the form again.'))
-	: ($_SERVER["REQUEST_METHOD"] != "POST" ? "" : lang('Too big POST data. Reduce the data or increase the %s configuration directive.', '"post_max_size"')) // posted form with no data means that post_max_size exceeded because Adminer always sends token at least
-);
+
+$error = ''; ///< @var string
+if ($_POST) {
+	if ($_POST["token"] != $token) {
+		$ini = "max_input_vars";
+		$max_vars = ini_get($ini);
+		if (extension_loaded("suhosin")) {
+			foreach (array("suhosin.request.max_vars", "suhosin.post.max_vars") as $key) {
+				$val = ini_get($key);
+				if ($val && (!$max_vars || $val < $max_vars)) {
+					$ini = $key;
+					$max_vars = $val;
+				}
+			}
+		}
+		$error = (!$_POST["token"] && $max_vars
+			? lang('Maximum number of allowed fields exceeded. Please increase %s.', "'$ini'")
+			: lang('Invalid CSRF token. Send the form again.')
+		);
+	}
+} elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
+	// posted form with no data means that post_max_size exceeded because Adminer always sends token at least
+	$error = lang('Too big POST data. Reduce the data or increase the %s configuration directive.', "'post_max_size'");
+}

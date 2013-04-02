@@ -166,7 +166,7 @@ $translations = array(
 	'Move up' => 'xx',
 	'Move down' => 'xx',
 	'Remove' => 'xx',
-	'Maximum number of allowed fields exceeded. Please increase %s and %s.' => 'xx',
+	'Maximum number of allowed fields exceeded. Please increase %s.' => 'xx',
 	
 	'Partition by' => 'xx',
 	'Partitions' => 'xx',

@@ -166,7 +166,7 @@ $translations = array(
 	'Move up' => 'Помери на горе',
 	'Move down' => 'Помери на доле',
 	'Remove' => 'Уклони',
-	'Maximum number of allowed fields exceeded. Please increase %s and %s.' => 'Премашен је максимални број дозвољених поља. Молим увећајте %s и %s.',
+	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Премашен је максимални број дозвољених поља. Молим увећајте %s.',
 
 	'Partition by' => 'Подели по',
 	'Partitions' => 'Поделе',

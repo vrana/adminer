@@ -254,13 +254,9 @@ function editingNameChange(field) {
 /** Add table row for next field
 * @param HTMLInputElement
 * @param boolean
-* @param boolean
 * @return boolean
 */
-function editingAddRow(button, allowed, focus) {
-	if (allowed && rowCount >= allowed) {
-		return false;
-	}
+function editingAddRow(button, focus) {
 	var match = /(\d+)(\.\d+)?/.exec(button.name);
 	var x = match[0] + (match[2] ? added.substr(match[2].length) : added) + '1';
 	var row = parentTag(button, 'tr');

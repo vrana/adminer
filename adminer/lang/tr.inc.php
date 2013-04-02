@@ -166,7 +166,7 @@ $translations = array(
 	'Move up' => 'Yukarı taşı',
 	'Move down' => 'Aşağı taşı',
 	'Remove' => 'Sil',
-	'Maximum number of allowed fields exceeded. Please increase %s and %s.' => 'İzin verilen en fazla alan sayısı aşıldı. Lütfen %s ve %s değerlerini artırın.',
+	'Maximum number of allowed fields exceeded. Please increase %s.' => 'İzin verilen en fazla alan sayısı aşıldı. Lütfen %s değerlerini artırın.',
 
 	'Partition by' => 'Bununla bölümle',
 	'Partitions' => 'Bölümler',

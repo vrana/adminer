@@ -185,7 +185,6 @@ echo "<p>" . (ini_bool("file_uploads")
 ?>
 <p>
 <input type="submit" value="<?php echo lang('Execute'); ?>" title="Ctrl+Enter">
-<input type="hidden" name="token" value="<?php echo $token; ?>">
 <?php
 echo checkbox("error_stops", 1, $_POST["error_stops"], lang('Stop on error')) . "\n";
 echo checkbox("only_errors", 1, $_POST["only_errors"], lang('Show only errors')) . "\n";
@@ -212,5 +211,5 @@ if ($history) {
 	echo "</div></fieldset>\n";
 }
 ?>
-
+<input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>
