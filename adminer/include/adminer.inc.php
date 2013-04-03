@@ -277,7 +277,7 @@ username.form['auth[driver]'].onchange();
 	* @return null
 	*/
 	function selectOrderPrint($order, $columns, $indexes) {
-		print_fieldset("sort", lang('Sort'), $order && $_GET["order"]);
+		print_fieldset("sort", lang('Sort'), $order);
 		$i = 0;
 		foreach ((array) $_GET["order"] as $key => $val) {
 			if (isset($columns[$val])) {
@@ -438,17 +438,6 @@ username.form['auth[driver]'].onchange();
 		foreach ((array) $_GET["order"] as $key => $val) {
 			if (isset($fields[$val]) || preg_match('~^((COUNT\\(DISTINCT |[A-Z0-9_]+\\()(`(?:[^`]|``)+`|"(?:[^"]|"")+")\\)|COUNT\\(\\*\\))$~', $val)) { //! MS SQL uses []
 				$return[] = (isset($fields[$val]) ? idf_escape($val) : $val) . (isset($_GET["desc"][$key]) ? " DESC" : "");
-			}
-		}
-		if (!$_GET["order"]) {
-			foreach ($fields as $name => $field) {
-				if ($field["auto_increment"]) {
-					foreach ($indexes as $index) {
-						if ($index["columns"] == array($name)) {
-							return array(idf_escape($name) . " DESC");
-						}
-					}
-				}
 			}
 		}
 		return $return;
