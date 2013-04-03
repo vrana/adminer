@@ -726,7 +726,10 @@ DROP PROCEDURE adminer_alter;
 							$insert = "INSERT INTO " . table($table) . " (" . implode(", ", array_map('idf_escape', $keys)) . ") VALUES";
 						}
 						foreach ($row as $key => $val) {
-							$row[$key] = ($val !== null ? (ereg('int|float|double|decimal|bit', $fields[$keys[$key]]["type"]) ? $val : q($val)) : "NULL"); //! columns looking like functions
+							$row[$key] = ($val !== null
+								? (ereg('int|float|double|decimal|bit', $fields[$keys[$key]]["type"]) && $val != '' ? $val : q($val)) //! columns looking like functions
+								: "NULL"
+							);
 						}
 						$s = ($max_packet ? "\n" : " ") . "(" . implode(",\t", $row) . ")";
 						if (!$buffer) {
