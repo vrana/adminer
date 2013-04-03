@@ -505,11 +505,19 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return true;
 	}
 	
+	function index_sql($table, $type, $name, $columns) {
+		return "CREATE $type " . ($type != "INDEX" ? "INDEX " : "")
+			. idf_escape($name != "" ? $name : uniqid($table . "_"))
+			. " ON " . table($table)
+			. " $columns"
+		;
+	}
+	
 	function alter_indexes($table, $alter) {
 		foreach ($alter as $val) {
 			if (!queries($val[2] == "DROP"
 				? "DROP INDEX " . idf_escape($val[1])
-				: "CREATE $val[0] " . ($val[0] != "INDEX" ? "INDEX " : "") . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_")) . " ON " . table($table) . " $val[2]"
+				: index_sql($table, $val[0], $val[1], $val[2])
 			)) {
 				return false;
 			}
@@ -612,7 +620,14 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	
 	function create_sql($table, $auto_increment) {
 		global $connection;
-		return $connection->result("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table));
+		$return = $connection->result("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table));
+		foreach (indexes($table) as $name => $index) {
+			if ($name == '') {
+				continue;
+			}
+			$return .= ";\n\n" . index_sql($table, $index['type'], $name, "(" . implode(", ", array_map('idf_escape', $index['columns'])) . ")");
+		}
+		return $return;
 	}
 	
 	function truncate_sql($table) {
