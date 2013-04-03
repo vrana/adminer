@@ -258,7 +258,6 @@ $translations = array(
 	'Attachments' => 'Fișiere atașate',
 	'%d query(s) executed OK.' => array('%d query executat.', '%d query-uri executate cu succes.'),
 	'Show only errors' => 'Arată doar greșeli',
-	'Last page' => 'Ultima pagină',
 	'Refresh' => 'Împrospătează',
 	'Invalid schema.' => 'Schemă incorectă.',
 	'Please use one of the extensions %s.' => 'Folosiți una din următoarele extensii %s.',

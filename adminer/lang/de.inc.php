@@ -258,7 +258,6 @@ $translations = array(
 	'Attachments' => 'Anhänge',
 	'%d query(s) executed OK.' => array('SQL-Query erfolgreich ausgeführt.', '%d SQL-Queries erfolgreich ausgeführt.'),
 	'Show only errors' => 'Nur Fehler anzeigen',
-	'Last page' => 'Letzte Seite',
 	'Refresh' => 'Aktualisieren',
 	'Invalid schema.' => 'Schema nicht gültig.',
 	'Please use one of the extensions %s.' => 'Bitte einen der Dateitypen %s benutzen.',

@@ -232,7 +232,6 @@ $translations = array(
 	'%d row(s)' => array('%d рядок', '%d рядки', '%d рядків'),
 	'Page' => 'Сторінка',
 	'last' => 'остання',
-	'Last page' => 'Остання сторінка',
 	'whole result' => 'весь результат',
 	'%d byte(s)' => array('%d байт', '%d байта', '%d байтів'),
 	

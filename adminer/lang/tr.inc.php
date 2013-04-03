@@ -233,7 +233,6 @@ $translations = array(
 	'%d row(s)' => array('%d kayıt', '%d adet kayıt'),
 	'Page' => 'Sayfa',
 	'last' => 'son',
-	'Last page' => 'Son sayfa',
 	'Load more data' => 'Daha fazla veri yükle',
 	'Loading' => 'Yükleniyor',
 	'whole result' => 'tüm sonuç',

@@ -258,7 +258,6 @@ $translations = array(
 	'Attachments' => 'Прикрепленные файлы',
 	'%d query(s) executed OK.' => array('%d запрос выполнен успешно.', '%d запроса выполнено успешно.', '%d запросов выполнено успешно.'),
 	'Show only errors' => 'Только ошибки',
-	'Last page' => 'Последняя страница',
 	'Refresh' => 'Обновить',
 	'Invalid schema.' => 'Неправильная схема.',
 	'Please use one of the extensions %s.' => 'Используйте одно из этих расширений %s.',

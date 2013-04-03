@@ -231,7 +231,6 @@ $translations = array(
 	'%d row(s)' => array('%d سطر', '%d سطر'),
 	'Page' => 'صفحه',
 	'last' => 'آخری',
-	'Last page' => 'صفحه آخر',
 	'whole result' => 'همه نتایج',
 	'%d byte(s)' => array('%d بایت', '%d بایت'),
 	

@@ -233,7 +233,6 @@ $translations = array(
 	'%d row(s)' => array('xx', 'xx'),
 	'Page' => 'xx',
 	'last' => 'xx',
-	'Last page' => 'xx',
 	'Load more data' => 'xx',
 	'Loading' => 'xx',
 	'whole result' => 'xx',

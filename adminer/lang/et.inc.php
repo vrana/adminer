@@ -258,7 +258,6 @@ $translations = array(
 	'Attachments' => 'Manused',
 	'%d query(s) executed OK.' => array('%d päring edukalt käivitatud.', '%d päringut edukalt käivitatud.'),
 	'Show only errors' => 'Kuva vaid veateateid',
-	'Last page' => 'Viimane lehekülg',
 	'Refresh' => 'Uuenda',
 	'Invalid schema.' => 'Sobimatu skeema.',
 	'Please use one of the extensions %s.' => 'Palun kasuta üht laiendustest %s.',

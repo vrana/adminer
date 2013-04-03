@@ -231,7 +231,6 @@ $translations = array(
 	'%d row(s)' => array('%d įrašas', '%d įrašai', '%d įrašų'),
 	'Page' => 'Puslapis',
 	'last' => 'paskutinis',
-	'Last page' => 'Paskutinis puslapis',
 	'whole result' => 'visas rezultatas',
 	'%d byte(s)' => array('%d baitas', '%d baigai', '%d baitų'),
 	

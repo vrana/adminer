@@ -233,7 +233,6 @@ $translations = array(
 	'%d row(s)' => array('%d ред', '%d реда', '%d редова'),
 	'Page' => 'Страна',
 	'last' => 'последња',
-	'Last page' => 'Последња страна',
 	'Loading'  => 'Учитавам',
 	'Load more data'  => 'Учитавам још података',
 	'whole result' => 'цео резултат',

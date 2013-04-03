@@ -259,7 +259,6 @@ $translations = array(
 	'now' => 'ara',
 	'%d query(s) executed OK.' => array('%d consulta executada correctament.', '%d consultes executades correctament.'),
 	'Show only errors' => 'Mostra només els errors',
-	'Last page' => 'Darrera plana',
 	'Refresh' => 'Refresca',
 	'Invalid schema.' => 'Esquema invàlid.',
 	'Please use one of the extensions %s.' => 'Si us plau, utilitza una de les extensions %s.',

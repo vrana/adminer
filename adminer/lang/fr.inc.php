@@ -259,7 +259,6 @@ $translations = array(
 	'now' => 'maintenant',
 	'%d query(s) executed OK.' => array('%d requête exécutée avec succès.', '%d requêtes exécutées avec succès.'),
 	'Show only errors' => 'Montrer seulement les erreurs',
-	'Last page' => 'Dernière page',
 	'Refresh' => 'Rafraîchir',
 	'Invalid schema.' => 'Schéma invalide.',
 	'Please use one of the extensions %s.' => 'Veuillez utiliser l\'une des extensions %s.',

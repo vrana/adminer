@@ -257,7 +257,6 @@ $translations = array(
 	'Attachments' => 'সংযুক্তি',
 	'%d query(s) executed OK.' => array('SQL-কোয়্যারী সফলভাবে সম্পন্ন হয়েছে', '%d SQL-কোয়্যারীসমূহ সফলভাবে সম্পন্ন হয়েছে'),
 	'Show only errors' => 'শুধুমাত্র ত্রুটি দেখাও',
-	'Last page' => 'শেষ পাতা',
 	'Refresh' => 'রিফ্রেশ',
 	'Invalid schema.' => 'অবৈধ স্কিমা।',
 	'Please use one of the extensions %s.' => 'কোন একটা এক্সটেনশন %s ব্যবহার করো।',

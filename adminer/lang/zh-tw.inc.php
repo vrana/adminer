@@ -257,7 +257,6 @@ $translations = array(
 	'Attachments' => '附件',
 	'%d query(s) executed OK.' => '已順利執行 %d 個查詢。',
 	'Show only errors' => '僅顯示錯誤訊息',
-	'Last page' => '最後一頁',
 	'Refresh' => '重新載入',
 	'Invalid schema.' => '無效的資料表結構。',
 	'Please use one of the extensions %s.' => '請使用下列其中一個 extension %s。',

@@ -227,7 +227,6 @@ $translations = array(
 	'%d row(s)' => array('%d vrstica', '%d vrstici', '%d vrstice', '%d vrstic'),
 	'Page' => 'Stran',
 	'last' => 'Zadnja',
-	'Last page' => 'Zadnja stran',
 	'whole result' => 'cel razultat',
 	'%d byte(s)' => array('%d bajt', '%d bajta', '%d bajti', '%d bajtov'),
 	

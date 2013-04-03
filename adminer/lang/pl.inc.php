@@ -233,7 +233,6 @@ $translations = array(
 	'%d row(s)' => array('%d rekord', '%d rekordy', '%d rekordów'),
 	'Page' => 'Strona',
 	'last' => 'ostatni',
-	'Last page' => 'Ostatnia strona',
 	'Load more data' => 'Wczytaj więcej danych',
 	'Loading' => 'Wczytywanie',
 	'whole result' => 'wybierz wszystkie',

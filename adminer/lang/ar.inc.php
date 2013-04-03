@@ -258,7 +258,6 @@ $translations = array(
 	'now' => 'الآن',
 	'%d query(s) executed OK.' => array('تم تنفيذ الإستعلام %d بنجاح.', 'تم تنفيذ الإستعلامات %d بنجاح.'),
 	'Show only errors' => 'إعرض الأخطاء فقط',
-	'Last page' => 'الصفحة السابقة',
 	'Refresh' => 'تحديث',
 	'Invalid schema.' => 'مخطط خاطئ.',
 	'Please use one of the extensions %s.' => 'من فضلك إستعمل إحدى الإمتدادات: %s.',

@@ -258,7 +258,6 @@ $translations = array(
 	'now' => '現在の日時',
 	'%d query(s) executed OK.' => '%d クエリーを実行しました',
 	'Show only errors' => 'エラーのみ表示',
-	'Last page' => '最後のページ',
 	'Refresh' => 'リフレッシュ',
 	'Invalid schema.' => '無効なスキーマ',
 	'Please use one of the extensions %s.' => 'いずれかの拡張機能を使ってください %s',

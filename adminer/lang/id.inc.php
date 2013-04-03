@@ -233,7 +233,6 @@ $translations = array(
 	'%d row(s)' => '%d baris',
 	'Page' => 'Halaman',
 	'last' => 'terakhir',
-	'Last page' => 'Halaman terakhir',
 	'whole result' => 'Seluruh hasil',
 	'%d byte(s)' => '%d bita',
 

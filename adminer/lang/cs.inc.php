@@ -233,7 +233,6 @@ $translations = array(
 	'%d row(s)' => array('%d řádek', '%d řádky', '%d řádků'),
 	'Page' => 'Stránka',
 	'last' => 'poslední',
-	'Last page' => 'Poslední stránka',
 	'Load more data' => 'Nahrát další data',
 	'Loading' => 'Nahrává se',
 	'whole result' => 'celý výsledek',

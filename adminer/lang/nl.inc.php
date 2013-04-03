@@ -258,7 +258,6 @@ $translations = array(
 	'Attachments' => 'Bijlagen',
 	'%d query(s) executed OK.' => array('%d query succesvol uitgevoerd.', '%d querys succesvol uitgevoerd'),
 	'Show only errors' => 'Enkel fouten tonen',
-	'Last page' => 'Laatste pagina',
 	'Refresh' => 'Vernieuwen',
 	'Invalid schema.' => 'Ongeldig schema.',
 	'Please use one of the extensions %s.' => 'Gebruik 1 van volgende extensies: %s.',
