@@ -436,8 +436,8 @@ if (!$columns) {
 					$exact_count = false;
 				}
 			}
-			echo "<p class='pages'>";
 			if (+$limit && ($found_rows === false || $found_rows > $limit || $page)) {
+				echo "<p class='pages'>";
 				// display first, previous 4, next 4 and last page
 				$max_page = ($found_rows === false
 					? $page + (count($rows) >= $limit ? 2 : 1)
@@ -451,10 +451,11 @@ if (!$columns) {
 				if ($max_page > 0) {
 					echo ($page + 5 < $max_page ? " ..." : "") . ($exact_count && $found_rows !== false ? pagination($max_page, $page) : ' <a href="' . h(remove_from_uri("page") . "&page=last") . '">' . lang('last') . "</a>");
 				}
+				echo (($found_rows === false ? count($rows) + 1 : $found_rows - $page * $limit) > $limit ? ' <a href="' . h(remove_from_uri("page") . "&page=" . ($page + 1)) . '" onclick="return !selectLoadMore(this, ' . (+$limit) . ', \'' . lang('Loading') . '\');">' . lang('Load more data') . '</a>' : '');
 			}
-			echo ($found_rows !== false ? " (" . ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) . ")" : "");
-			echo (+$limit && ($found_rows === false ? count($rows) + 1 : $found_rows - $page * $limit) > $limit ? ' <a href="' . h(remove_from_uri("page") . "&page=" . ($page + 1)) . '" onclick="return !selectLoadMore(this, ' . (+$limit) . ', \'' . lang('Loading') . '\');">' . lang('Load more data') . '</a>' : '');
-			echo " " . checkbox("all", 1, 0, lang('whole result')) . "\n";
+			echo "<p>\n";
+			echo ($found_rows !== false ? "(" . ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) . ") " : "");
+			echo checkbox("all", 1, 0, lang('whole result')) . "\n";
 			
 			if ($adminer->selectCommandPrint()) {
 				?>
