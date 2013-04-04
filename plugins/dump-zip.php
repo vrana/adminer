@@ -19,6 +19,7 @@ class AdminerDumpZip {
 	}
 	
 	function _zip($string, $state) {
+		// ZIP can be created without temporary file by gzcompress - see PEAR File_Archive
 		$this->data .= $string;
 		if ($state & PHP_OUTPUT_HANDLER_END) {
 			$zip = new ZipArchive;

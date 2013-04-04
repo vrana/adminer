@@ -574,7 +574,6 @@ username.form['auth[driver]'].onchange();
 		if (function_exists('bzcompress')) {
 			$return['bz2'] = 'bzip2';
 		}
-		// ZipArchive requires temporary file, ZIP can be created by gzcompress - see PEAR File_Archive
 		return $return;
 	}
 	
