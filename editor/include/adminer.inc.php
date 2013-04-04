@@ -498,6 +498,9 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		return array('csv' => 'CSV,', 'csv;' => 'CSV;', 'tsv' => 'TSV');
 	}
 	
+	function dumpDatabase($db) {
+	}
+	
 	function dumpTable() {
 		echo "\xef\xbb\xbf"; // UTF-8 byte order mark
 	}

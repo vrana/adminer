@@ -8,7 +8,7 @@ if ($_POST) {
 	}
 	cookie("adminer_export", substr($cookie, 1));
 	$ext = dump_headers(($TABLE != "" ? $TABLE : DB), (DB == "" || count((array) $_POST["tables"] + (array) $_POST["data"]) > 1));
-	$is_sql = ($_POST["format"] == "sql");
+	$is_sql = ereg('sql', $_POST["format"]);
 	if ($is_sql) {
 		echo "-- Adminer $VERSION " . $drivers[DRIVER] . " dump
 
@@ -29,19 +29,17 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 		}
 	}
 	foreach ((array) $databases as $db) {
+		$adminer->dumpDatabase($db);
 		if ($connection->select_db($db)) {
 			if ($is_sql && ereg('CREATE', $style) && ($create = $connection->result("SHOW CREATE DATABASE " . idf_escape($db), 1))) {
 				if ($style == "DROP+CREATE") {
 					echo "DROP DATABASE IF EXISTS " . idf_escape($db) . ";\n";
 				}
-				echo ($style == "CREATE+ALTER" ? preg_replace('~^CREATE DATABASE ~', '\\0IF NOT EXISTS ', $create) : $create) . ";\n";
+				echo "$create;\n";
 			}
 			if ($is_sql) {
 				if ($style) {
 					echo use_sql($db) . ";\n\n";
-				}
-				if (in_array("CREATE+ALTER", array($style, $_POST["table_style"]))) {
-					echo "SET @adminer_alter = '';\n\n";
 				}
 				$out = "";
 				if ($_POST["routines"]) {
@@ -97,46 +95,6 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 					echo pack("x512");
 				}
 			}
-			
-			if ($style == "CREATE+ALTER" && $is_sql) {
-				// drop old tables
-				$query = "SELECT TABLE_NAME, ENGINE, TABLE_COLLATION, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()";
-				echo "DELIMITER ;;
-CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
-	DECLARE _table_name, _engine, _table_collation varchar(64);
-	DECLARE _table_comment varchar(64);
-	DECLARE done bool DEFAULT 0;
-	DECLARE tables CURSOR FOR $query;
-	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
-	OPEN tables;
-	REPEAT
-		FETCH tables INTO _table_name, _engine, _table_collation, _table_comment;
-		IF NOT done THEN
-			CASE _table_name";
-				foreach (get_rows($query) as $row) {
-					$comment = q($row["ENGINE"] == "InnoDB" ? preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["TABLE_COMMENT"]) : $row["TABLE_COMMENT"]);
-					echo "
-				WHEN " . q($row["TABLE_NAME"]) . " THEN
-					" . (isset($row["ENGINE"]) ? "IF _engine != '$row[ENGINE]' OR _table_collation != '$row[TABLE_COLLATION]' OR _table_comment != $comment THEN
-						ALTER TABLE " . idf_escape($row["TABLE_NAME"]) . " ENGINE=$row[ENGINE] COLLATE=$row[TABLE_COLLATION] COMMENT=$comment;
-					END IF" : "BEGIN END") . ";";
-				}
-				echo "
-				ELSE
-					SET alter_command = CONCAT(alter_command, 'DROP TABLE `', REPLACE(_table_name, '`', '``'), '`;\\n');
-			END CASE;
-		END IF;
-	UNTIL done END REPEAT;
-	CLOSE tables;
-END;;
-DELIMITER ;
-CALL adminer_alter(@adminer_alter);
-DROP PROCEDURE adminer_alter;
-";
-			}
-			if (in_array("CREATE+ALTER", array($style, $_POST["table_style"])) && $is_sql) {
-				echo "SELECT @adminer_alter;\n";
-			}
 		}
 	}
 	if ($is_sql) {
@@ -154,9 +112,7 @@ page_header(lang('Export'), "", ($_GET["export"] != "" ? array("table" => $_GET[
 $db_style = array('', 'USE', 'DROP+CREATE', 'CREATE');
 $table_style = array('', 'DROP+CREATE', 'CREATE');
 $data_style = array('', 'TRUNCATE+INSERT', 'INSERT');
-if ($jush == "sql") {
-	$db_style[] = 'CREATE+ALTER';
-	$table_style[] = 'CREATE+ALTER';
+if ($jush == "sql") { //! use insert_update() in all drivers
 	$data_style[] = 'INSERT+UPDATE';
 }
 parse_str($_COOKIE["adminer_export"], $row);

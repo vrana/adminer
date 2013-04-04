@@ -585,6 +585,13 @@ username.form['auth[driver]'].onchange();
 		return array('sql' => 'SQL', 'csv' => 'CSV,', 'csv;' => 'CSV;', 'tsv' => 'TSV');
 	}
 	
+	/** Export database structure
+	* @param string
+	* @return null prints data
+	*/
+	function dumpDatabase($db) {
+	}
+	
 	/** Export table structure
 	* @param string
 	* @param string
@@ -606,78 +613,7 @@ username.form['auth[driver]'].onchange();
 				if ($is_view) {
 					$create = remove_definer($create);
 				}
-				echo ($style != "CREATE+ALTER" ? $create : ($is_view ? substr_replace($create, " OR REPLACE", 6, 0) : substr_replace($create, " IF NOT EXISTS", 12, 0))) . ";\n\n";
-			}
-			if ($style == "CREATE+ALTER" && !$is_view) {
-				// create procedure which iterates over original columns and adds new and removes old
-				$query = "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLLATION_NAME, COLUMN_TYPE, EXTRA, COLUMN_COMMENT FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = " . q($table) . " ORDER BY ORDINAL_POSITION";
-				echo "DELIMITER ;;
-CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
-	DECLARE _column_name, _collation_name, after varchar(64) DEFAULT '';
-	DECLARE _column_type, _column_default text;
-	DECLARE _is_nullable char(3);
-	DECLARE _extra varchar(30);
-	DECLARE _column_comment varchar(255);
-	DECLARE done, set_after bool DEFAULT 0;
-	DECLARE add_columns text DEFAULT '";
-				$fields = array();
-				$after = "";
-				foreach (get_rows($query) as $row) {
-					$default = $row["COLUMN_DEFAULT"];
-					$row["default"] = ($default !== null ? q($default) : "NULL");
-					$row["after"] = q($after); //! rgt AFTER lft, lft AFTER id doesn't work
-					$row["alter"] = escape_string(idf_escape($row["COLUMN_NAME"])
-						. " $row[COLUMN_TYPE]"
-						. ($row["COLLATION_NAME"] ? " COLLATE $row[COLLATION_NAME]" : "")
-						. ($default !== null ? " DEFAULT " . ($default == "CURRENT_TIMESTAMP" ? $default : $row["default"]) : "")
-						. ($row["IS_NULLABLE"] == "YES" ? "" : " NOT NULL")
-						. ($row["EXTRA"] ? " $row[EXTRA]" : "")
-						. ($row["COLUMN_COMMENT"] ? " COMMENT " . q($row["COLUMN_COMMENT"]) : "")
-						. ($after ? " AFTER " . idf_escape($after) : " FIRST")
-					);
-					echo ", ADD $row[alter]";
-					$fields[] = $row;
-					$after = $row["COLUMN_NAME"];
-				}
-				echo "';
-	DECLARE columns CURSOR FOR $query;
-	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
-	SET @alter_table = '';
-	OPEN columns;
-	REPEAT
-		FETCH columns INTO _column_name, _column_default, _is_nullable, _collation_name, _column_type, _extra, _column_comment;
-		IF NOT done THEN
-			SET set_after = 1;
-			CASE _column_name";
-			foreach ($fields as $row) {
-				echo "
-				WHEN " . q($row["COLUMN_NAME"]) . " THEN
-					SET add_columns = REPLACE(add_columns, ', ADD $row[alter]', IF(
-						_column_default <=> $row[default] AND _is_nullable = '$row[IS_NULLABLE]' AND _collation_name <=> " . (isset($row["COLLATION_NAME"]) ? "'$row[COLLATION_NAME]'" : "NULL") . " AND _column_type = " . q($row["COLUMN_TYPE"]) . " AND _extra = '$row[EXTRA]' AND _column_comment = " . q($row["COLUMN_COMMENT"]) . " AND after = $row[after]
-					, '', ', MODIFY $row[alter]'));"
-				; //! don't replace in comment
-			}
-			echo "
-				ELSE
-					SET @alter_table = CONCAT(@alter_table, ', DROP ', _column_name);
-					SET set_after = 0;
-			END CASE;
-			IF set_after THEN
-				SET after = _column_name;
-			END IF;
-		END IF;
-	UNTIL done END REPEAT;
-	CLOSE columns;
-	IF @alter_table != '' OR add_columns != '' THEN
-		SET alter_command = CONCAT(alter_command, 'ALTER TABLE " . table($table) . "', SUBSTR(CONCAT(add_columns, @alter_table), 2), ';\\n');
-	END IF;
-END;;
-DELIMITER ;
-CALL adminer_alter(@adminer_alter);
-DROP PROCEDURE adminer_alter;
-
-";
-				//! indexes
+				echo "$create;\n\n";
 			}
 		}
 	}
@@ -766,7 +702,7 @@ DROP PROCEDURE adminer_alter;
 	*/
 	function dumpHeaders($identifier, $multi_table = false) {
 		$output = $_POST["output"];
-		$ext = ($_POST["format"] == "sql" ? "sql" : ($multi_table ? "tar" : "csv")); // multiple CSV packed to TAR
+		$ext = (ereg('sql', $_POST["format"]) ? "sql" : ($multi_table ? "tar" : "csv")); // multiple CSV packed to TAR
 		header("Content-Type: " .
 			($output == "bz2" ? "application/x-bzip" :
 			($output == "gz" ? "application/x-gzip" :
