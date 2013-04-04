@@ -808,8 +808,13 @@ username.form['auth[driver]'].onchange();
 		?>
 <form action="">
 <p id="dbs">
-<?php hidden_fields_get(); ?>
-<?php echo ($databases ? html_select("db", array("" => "(" . lang('database') . ")") + $databases, DB, "this.form.submit();") : '<input name="db" value="' . h(DB) . '" autocapitalize="off">'); ?>
+<?php
+hidden_fields_get();
+echo ($databases
+	? '<select name="db" onmousedown="dbMouseDown(event, this);" onchange="dbChange(this);">' . optionlist(array("" => "(" . lang('database') . ")") + $databases, DB) . '</select>'
+	: '<input name="db" value="' . h(DB) . '" autocapitalize="off">'
+);
+?>
 <input type="submit" value="<?php echo lang('Use'); ?>"<?php echo ($databases ? " class='hidden'" : ""); ?>>
 <?php
 		if ($missing != "db" && DB != "" && $connection->select_db(DB)) {

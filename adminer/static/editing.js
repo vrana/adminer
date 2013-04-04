@@ -75,6 +75,37 @@ function loginDriver(driver) {
 
 
 
+var dbCtrl;
+var dbPrevious;
+
+/** Check if database should be opened to a new window
+* @param MouseEvent
+* @param HTMLSelectElement
+*/
+function dbMouseDown(event, el) {
+	dbCtrl = isCtrl(event);
+	if (dbPrevious == undefined) {
+		dbPrevious = el.value;
+	}
+}
+
+/** Load database after selecting it
+* @param HTMLSelectElement
+*/
+function dbChange(el) {
+	if (dbCtrl) {
+		el.form.target = '_blank';
+	}
+	el.form.submit();
+	el.form.target = '';
+	if (dbCtrl && dbPrevious != undefined) {
+		el.value = dbPrevious;
+		dbPrevious = undefined;
+	}
+}
+
+
+
 /** Handle Tab and Esc in textarea
 * @param HTMLTextAreaElement
 * @param KeyboardEvent
