@@ -255,6 +255,15 @@ function selectAddRow(field) {
 	field.parentNode.parentNode.appendChild(row);
 }
 
+/** Clear column name after resetting search
+* @param HTMLInputElement
+*/
+function selectSearch(el) {
+	if (!el.value) {
+		el.parentNode.firstChild.selectedIndex = 0;
+	}
+}
+
 
 
 /** Toggles column context menu
