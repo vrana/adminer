@@ -1,6 +1,6 @@
 Adminer 3.6.4-dev:
 Display pagination on a fixed position
-Display select SQL edit form inline
+Display SQL edit form on Ctrl+click on the select query
 Recover original view, trigger, routine if creating fails
 Allow loading more data with inline edit (bug #3605531)
 Stay on the same page after deleting rows (bug #3605845)

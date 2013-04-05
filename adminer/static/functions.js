@@ -40,12 +40,12 @@ function selectValue(select) {
 
 /** Get parent node with specified tag name.
  * @param HTMLElement
- * @param string
+ * @param string regular expression
  * @return HTMLElement
  */
 function parentTag(el, tag) {
 	var re = new RegExp('^' + tag + '$', 'i');
-	while (!re.test(el.tagName)) {
+	while (el && !re.test(el.tagName)) {
 		el = el.parentNode;
 	}
 	return el;

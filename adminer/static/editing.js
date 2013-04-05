@@ -203,11 +203,11 @@ function selectFieldChange(form) {
 * @param MouseEvent
 * @param HTMLSpanElement
 * @param string
-* @return boolean
 */
 function selectEditSql(event, el, label) {
-	if (isCtrl(event) || event.altKey) {
-		return false;
+	var a = parentTag(event.target || event.srcElement, 'a');
+	if (!isCtrl(event) || (a && a.href)) {
+		return;
 	}
 	var sql = el.firstChild;
 	var input = document.createElement('input');

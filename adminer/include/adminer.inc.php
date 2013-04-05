@@ -165,9 +165,9 @@ username.form['auth[driver]'].onchange();
 	*/
 	function selectQuery($query) {
 		global $jush, $token;
-		return "<form action='" . h(ME) . "sql=' method='post'><p><span>"
+		return "<form action='" . h(ME) . "sql=' method='post'><p><span onclick=\"return !selectEditSql(event, this, '" . lang('Execute') . "');\">"
 			. "<code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code>"
-			. " <a href='" . h(ME) . "sql=" . urlencode($query) . "' onclick=\"return !selectEditSql(event, this.parentNode, '" . lang('Execute') . "');\">" . lang('Edit') . "</a>"
+			. " <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>"
 			. "</span><input type='hidden' name='token' value='$token'></p></form>\n"; // </p> - required for IE9 inline edit
 	}
 	
