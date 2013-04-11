@@ -260,7 +260,7 @@ if (!$columns) {
 	if (!$result) {
 		echo "<p class='error'>" . error() . "\n";
 	} else {
-		if ($jush == "mssql") {
+		if ($jush == "mssql" && $page) {
 			$result->seek($limit * $page);
 		}
 		$email_fields = array();
