@@ -11,6 +11,7 @@ Open database to a new window after selecting it with Ctrl
 Disable autocapitalize in identifiers on mobile browsers
 MySQL: Compatibility with MySQL 5.6
 MySQL: Move ALTER export to plugin
+MySQL: Use numeric time zone in export
 SQLite: Export indexes
 
 Adminer 3.6.3 (released 2013-01-23):

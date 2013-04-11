@@ -14,7 +14,7 @@ if ($_POST) {
 
 " . ($jush != "sql" ? "" : "SET NAMES utf8;
 " . ($_POST["data_style"] ? "SET foreign_key_checks = 0;
-SET time_zone = " . q($connection->result("SELECT @@time_zone")) . ";
+SET time_zone = " . q(substr(preg_replace('~^[^-]~', '+\0', $connection->result("SELECT TIMEDIFF(NOW(), UTC_TIMESTAMP)")), 0, 6)) . ";
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 " : "") . "
 ");
