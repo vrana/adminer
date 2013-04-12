@@ -335,7 +335,7 @@ if (!$columns) {
 				$unique_array = unique_array($rows[$n], $indexes);
 				$unique_idf = "";
 				foreach ($unique_array as $key => $val) {
-					if (strlen($val) > 10) {
+					if (strlen($val) > 64) {
 						$key = "MD5(" . (strpos($key, '(') ? $key : idf_escape($key)) . ")"; //! columns looking like functions
 						$val = md5($val);
 					}
