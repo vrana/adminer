@@ -447,7 +447,7 @@ username.form['auth[driver]'].onchange();
 	* @return string expression to use in LIMIT, will be escaped
 	*/
 	function selectLimitProcess() {
-		return (isset($_GET["limit"]) ? $_GET["limit"] : "30");
+		return (isset($_GET["limit"]) ? $_GET["limit"] : "50");
 	}
 	
 	/** Process length box in select

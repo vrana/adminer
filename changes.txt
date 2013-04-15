@@ -1,5 +1,6 @@
 Adminer 3.6.4-dev:
 Display pagination on a fixed position
+Increase default select limit to 50
 Display SQL edit form on Ctrl+click on the select query
 Recover original view, trigger, routine if creating fails
 Clear column name after resetting search (bug #3601200)
