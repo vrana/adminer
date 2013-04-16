@@ -202,7 +202,8 @@ echo "</div></fieldset>\n";
 
 if ($history) {
 	print_fieldset("history", lang('History'), $_GET["history"] != "");
-	foreach ($history as $key => $val) {
+	for ($val = end($history); $val; $val = prev($history)) { // not array_reverse() to save memory
+		$key = key($history);
 		list($q, $time) = $val;
 		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . "</a> <span class='time' title='" . @date('Y-m-d', $time) . "'>" . @date("H:i:s", $time) . "</span> <code class='jush-$jush'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace('~^(#|-- ).*~m', '', $q)))), 80, "</code>") . "<br>\n"; // @ - time zone may be not set
 	}
