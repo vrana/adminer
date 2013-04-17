@@ -485,10 +485,9 @@ username.form['auth[driver]'].onchange();
 	*/
 	function messageQuery($query) {
 		global $jush;
-		static $count = 0;
 		restart_session();
-		$id = "sql-" . ($count++);
 		$history = &get_session("queries");
+		$id = "sql-" . count($history[$_GET["db"]]);
 		if (strlen($query) > 1e6) {
 			$query = ereg_replace('[\x80-\xFF]+$', '', substr($query, 0, 1e6)) . "\n..."; // [\x80-\xFF] - valid UTF-8, \n - can end by one-line comment
 		}

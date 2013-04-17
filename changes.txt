@@ -9,7 +9,7 @@ Explain partitions in SQL query (bug #3600150)
 Allow loading more data with inline edit (bug #3605531)
 Stay on the same page after deleting rows (bug #3605845)
 Respect checked tables in export filename (bug #3245464)
-Handle max_input_vars
+Respect PHP configuration max_input_vars
 Open database to a new window after selecting it with Ctrl
 Disable autocapitalize in identifiers on mobile browsers
 MySQL: Compatibility with MySQL 5.6
