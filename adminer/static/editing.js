@@ -365,6 +365,9 @@ function editingTypeChange(type) {
 		if (el.name == name + '[unsigned]') {
 			el.className = (/(int|float|double|decimal)$/.test(text) ? '' : 'hidden');
 		}
+		if (el.name == name + '[on_update]') {
+			el.className = (text == 'timestamp' ? '' : 'hidden');
+		}
 		if (el.name == name + '[on_delete]') {
 			el.className = (/`/.test(text) ? '' : 'hidden');
 		}

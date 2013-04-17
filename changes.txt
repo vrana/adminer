@@ -4,6 +4,7 @@ Increase default select limit to 50
 Display SQL edit form on Ctrl+click on the select query
 Display SQL history from oldest
 Recover original view, trigger, routine if creating fails
+Selectable ON UPDATE CURRENT_TIMESTAMP field in create table
 Clear column name after resetting search (bug #3601200)
 Explain partitions in SQL query (bug #3600150)
 Allow loading more data with inline edit (bug #3605531)

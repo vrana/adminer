@@ -36,11 +36,6 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 				if (!$field["has_default"]) {
 					$field["default"] = null;
 				}
-				$default = eregi_replace(" *on update CURRENT_TIMESTAMP", "", $field["default"]);
-				if ($default != $field["default"]) { // preg_replace $count is available since PHP 5.1.0
-					$field["on_update"] = "CURRENT_TIMESTAMP";
-					$field["default"] = $default;
-				}
 				if ($key == $_POST["auto_increment_col"]) {
 					$field["auto_increment"] = true;
 				}
@@ -125,9 +120,6 @@ if ($_POST) {
 	}
 	foreach ($orig_fields as $field) {
 		$field["has_default"] = isset($field["default"]);
-		if ($field["on_update"]) {
-			$field["default"] .= " ON UPDATE $field[on_update]"; // CURRENT_TIMESTAMP
-		}
 		$row["fields"][] = $field;
 	}
 	if (support("partitioning")) {
