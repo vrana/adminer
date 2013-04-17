@@ -1,7 +1,7 @@
 <?php
 $TABLE = $_GET["dump"];
 
-if ($_POST) {
+if ($_POST && !$error) {
 	$cookie = "";
 	foreach (array("output", "format", "db_style", "routines", "events", "table_style", "auto_increment", "triggers", "data_style") as $key) {
 		$cookie .= "&$key=" . urlencode($_POST[$key]);
@@ -106,7 +106,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 	exit;
 }
 
-page_header(lang('Export'), "", ($_GET["export"] != "" ? array("table" => $_GET["export"]) : array()), DB);
+page_header(lang('Export'), $error, ($_GET["export"] != "" ? array("table" => $_GET["export"]) : array()), DB);
 ?>
 
 <form action="" method="post">
@@ -140,6 +140,7 @@ echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style,
 ?>
 </table>
 <p><input type="submit" value="<?php echo lang('Export'); ?>">
+<input type="hidden" name="token" value="<?php echo $token; ?>">
 
 <table cellspacing="0">
 <?php
