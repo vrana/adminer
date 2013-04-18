@@ -217,10 +217,29 @@ table code {
 
 #content:after {
 	clear: both;
-	content: ".";
+	content: "";
+	display: table;
+}
+
+#content > h2:before {
 	display: block;
-	height: 0;
-	overflow: hidden;
+	content: "";
+	color: #FF9;
+	font-size: 13px;
+	background: #333;
+	line-height: 40px;
+	margin: 0;
+	padding: 0 0 0 20px;
+	position: fixed;
+	top: 0;
+	left: 300px;
+	width: 100%;
+	height: 40px;
+
+}
+
+#content > #breadcrumb + h2:before {
+	display: none;
 }
 
 #content > p {
@@ -231,11 +250,11 @@ table code {
 	background: #333;
 	color: #FFF;
 	height: 40px;
-	left: 0;
 	line-height: 40px;
 	padding: 0 0 0 40px;
 	position: fixed;
 	top: 0;
+	left: 0;
 	width: 260px;
 }
 
@@ -281,12 +300,12 @@ table code {
 #breadcrumb {
 	background: #333;
 	color: #FFF;
-	left: 300px;
 	line-height: 40px;
 	margin: 0;
 	padding: 0 0 0 20px;
 	position: fixed;
 	top: 0;
+	left: 300px;
 	width: 100%;
 	height: 40px;
 }
@@ -327,6 +346,12 @@ table code {
 
 * html form#form {
 	height: 100%;
+}
+
+#content > p.tabs + *:after {
+	display: table;
+	clear: both;
+	content: "";
 }
 
 
