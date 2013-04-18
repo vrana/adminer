@@ -5,17 +5,18 @@ Display SQL edit form on Ctrl+click on the select query
 Display SQL history from oldest
 Recover original view, trigger, routine if creating fails
 Selectable ON UPDATE CURRENT_TIMESTAMP field in create table
+Open database to a new window after selecting it with Ctrl
 Clear column name after resetting search (bug #3601200)
 Explain partitions in SQL query (bug #3600150)
 Allow loading more data with inline edit (bug #3605531)
 Stay on the same page after deleting rows (bug #3605845)
 Respect checked tables in export filename (bug #3245464)
 Respect PHP configuration max_input_vars
-Open database to a new window after selecting it with Ctrl
 Disable autocapitalize in identifiers on mobile browsers
 MySQL: Compatibility with MySQL 5.6
 MySQL: Move ALTER export to plugin
 MySQL: Use numeric time zone in export
+MySQL: Link processlist documentation
 SQLite: Export indexes
 
 Adminer 3.6.3 (released 2013-01-23):
