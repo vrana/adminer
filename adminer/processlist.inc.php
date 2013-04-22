@@ -34,7 +34,7 @@ foreach (process_list() as $i => $row) {
 			($jush == "sql" && $key == "Info" && ereg("Query|Killed", $row["Command"]) && $val != "") ||
 			($jush == "pgsql" && $key == "current_query" && $val != "<IDLE>") ||
 			($jush == "oracle" && $key == "sql_text" && $val != "")
-			? "<code class='jush-$jush'>" . shorten_utf8($val, 100, "</code>") . ' <a href="' . h(ME . ($row["db"] != "" ? "db=" . urlencode($row["db"]) . "&" : "") . "sql=" . urlencode($val)) . '">' . lang('Edit') . '</a>'
+			? "<code class='jush-$jush'>" . shorten_utf8($val, 100, "</code>") . ' <a href="' . h(ME . ($row["db"] != "" ? "db=" . urlencode($row["db"]) . "&" : "") . "sql=" . urlencode($val)) . '">' . lang('Clone') . '</a>'
 			: nbsp($val)
 		);
 	}
