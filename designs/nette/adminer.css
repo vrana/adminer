@@ -523,7 +523,7 @@ table a[href*="&clone="]:hover {
 	width: auto;
 }
 
-input[name="delete"], input[name="drop"] {
+input[name="delete"], input[name="drop"], input[name="truncate"] {
 	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHSSURBVHjapFM5bsJQEB2zSIDFJrHYpEtyAyoKJAp6CrqIkBPkNDlBAKXjBEgUpKOBCyQNijFiEZvZl8z7wsjESYpkpNFfPO/Nmz9j6Xg80n/M9fWi3W7fMOnd4XAo8qogAbvO5xKvL6lU6s0aL1kVMDjP5ye/36+Gw2FyOp3EQFqtVtTr9WixWHT5/JhOp6s2ghP4ORaLyaFQiGazGa3Xa0HgdrvJ6/WSpmk0Go0MjnvIZDLVM0Gr1brm/WskEkkA3O/3abvdQjq5XC6xgoiVka7rNB6PNT6ns9nsu+OkpODxeBLBYJAGgwHt9/uzQ8Vms6Hdbie+KYqC+ASTFrARBMx2HwgEaDKZiHqn0yktl0uxtzrMMAyKx+MCc+4Cs13hwQCC1GQy+W3Lms2mUIUygbEqEBLNun8z8zswVgUfLO0WD4Z6kekn8/l8okNM8GFVUMYDoVWQ6HA4bEAzoyzL1O12kbRsJajwhYZhiUajJEnShWSAQaqqKnU6HahEGysXg9RoNPJ8+cwZZLSKp47m8/k5Kxzg4XBocNxDLper2ka5Xq+LUeatilahJLN1mEJ+ZDHKJthGAKvVauJnYi9ysHIqQee1xOsLg3/+mf5inwIMAJMhb74NwG5wAAAAAElFTkSuQmCC") no-repeat scroll left center;
 	border: none;
 	cursor: pointer;
@@ -532,7 +532,7 @@ input[name="delete"], input[name="drop"] {
 	color: #999;
 }
 
-input[name="delete"]:hover, input[name="drop"]:hover {
+input[name="delete"]:hover, input[name="drop"]:hover, input[name="truncate"]:hover {
 	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJdSURBVDjLpZP7S1NhGMf9W7YfogSJboSEUVCY8zJ31trcps6zTI9bLGJpjp1hmkGNxVz4Q6ildtXKXzJNbJRaRmrXoeWx8tJOTWptnrNryre5YCYuI3rh+8vL+/m8PA/PkwIg5X+y5mJWrxfOUBXm91QZM6UluUmthntHqplxUml2lciF6wrmdHriI0Wx3xw2hAediLwZRWRkCPzdDswaSvGqkGCfq8VEUsEyPF1O8Qu3O7A09RbRvjuIttsRbT6HHzebsDjcB4/JgFFlNv9MnkmsEszodIIY7Oaut2OJcSF68Qx8dgv8tmqEL1gQaaARtp5A+N4NzB0lMXxon/uxbI8gIYjB9HytGYuusfiPIQcN71kjgnW6VeFOkgh3XcHLvAwMSDPohOADdYQJdF1FtLMZPmslvhZJk2ahkgRvq4HHUoWHRDqTEDDl2mDkfheiDgt8pw340/EocuClCuFvboQzb0cwIZgki4KhzlaE6w0InipbVzBfqoK/qRH94i0rgokSFeO11iBkp8EdV8cfJo0yD75aE2ZNRvSJ0lZKcBXLaUYmQrCzDT6tDN5SyRqYlWeDLZAg0H4JQ+Jt6M3atNLE10VSwQsN4Z6r0CBwqzXesHmV+BeoyAUri8EyMfi2FowXS5dhd7doo2DVII0V5BAjigP89GEVAtda8b2ehodU4rNaAW+dGfzlFkyo89GTlcrHYCLpKD+V7yeeHNzLjkp24Uu1Ed6G8/F8qjqGRzlbl2H2dzjpMg1KdwsHxOlmJ7GTeZC/nesXbeZ6c9OYnuxUc3fmBuFft/Ff8xMd0s65SXIb/gAAAABJRU5ErkJggg==") no-repeat scroll left center;
 	color: red;
 }

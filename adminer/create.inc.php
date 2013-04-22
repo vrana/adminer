@@ -21,6 +21,9 @@ if ($_POST && !$_POST["fields"]) {
 if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] && !$_POST["down"]) {
 	if ($_POST["drop"]) {
 		query_redirect("DROP TABLE " . table($TABLE), substr(ME, 0, -1), lang('Table has been dropped.'));
+	}
+	elseif ($_POST["truncate"]) {
+		query_redirect("TRUNCATE " . table($TABLE), substr(ME, 0, -1), lang('Table has been truncated.'));
 	} else {
 		$fields = array();
 		$all_fields = array();
@@ -176,6 +179,7 @@ edit_fields($row["fields"], $collations, "TABLE", $foreign_keys, $comments);
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php if ($_GET["create"] != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo confirm(); ?>><?php } ?>
+<?php if ($_GET["create"] != "" && support("truncate")) { ?><input type="submit" name="truncate" value="<?php echo lang('Truncate'); ?>"<?php echo confirm(); ?>><?php } ?>
 <?php
 if (support("partitioning")) {
 	$partition_table = ereg('RANGE|LIST', $row["partition_by"]);
