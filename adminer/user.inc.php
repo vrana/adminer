@@ -51,7 +51,7 @@ if ($_POST && !$error) {
 	} else {
 		$new_user = q($_POST["user"]) . "@" . q($_POST["host"]); // if $_GET["host"] is not set then $new_user is always different
 		$pass = $_POST["pass"];
-		if (!$_POST["hashed"]) {
+		if ($pass != '' && !$_POST["hashed"]) {
 			// compute hash in a separate query so that plain text password is not saved to history
 			$pass = $connection->result("SELECT PASSWORD(" . q($pass) . ")");
 			$error = !$pass;
