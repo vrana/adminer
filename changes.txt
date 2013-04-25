@@ -2,8 +2,9 @@ Adminer 3.6.4-dev:
 Display pagination on a fixed position
 Increase default select limit to 50
 Display SQL edit form on Ctrl+click on the select query
-Display SQL history from oldest
+Display SQL history from newest
 Recover original view, trigger, routine if creating fails
+Do not store plain text password to history in creating user
 Selectable ON UPDATE CURRENT_TIMESTAMP field in create table
 Open database to a new window after selecting it with Ctrl
 Clear column name after resetting search (bug #3601200)

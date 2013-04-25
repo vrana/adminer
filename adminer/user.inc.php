@@ -46,17 +46,24 @@ if (isset($_GET["host"]) && ($result = $connection->query("SHOW GRANTS FOR " . q
 
 if ($_POST && !$error) {
 	$old_user = (isset($_GET["host"]) ? q($USER) . "@" . q($_GET["host"]) : "''");
-	$new_user = q($_POST["user"]) . "@" . q($_POST["host"]); // if $_GET["host"] is not set then $new_user is always different
-	$pass = q($_POST["pass"]);
 	if ($_POST["drop"]) {
 		query_redirect("DROP USER $old_user", ME . "privileges=", lang('User has been dropped.'));
 	} else {
+		$new_user = q($_POST["user"]) . "@" . q($_POST["host"]); // if $_GET["host"] is not set then $new_user is always different
+		$pass = $_POST["pass"];
+		if (!$_POST["hashed"]) {
+			// compute hash in a separate query so that plain text password is not saved to history
+			$pass = $connection->result("SELECT PASSWORD(" . q($pass) . ")");
+			$error = !$pass;
+		}
 		$created = false;
-		if ($old_user != $new_user) {
-			$created = queries(($connection->server_info < 5 ? "GRANT USAGE ON *.* TO" : "CREATE USER") . " $new_user IDENTIFIED BY" . ($_POST["hashed"] ? " PASSWORD" : "") . " $pass");
-			$error = !$created;
-		} elseif ($_POST["pass"] != $old_pass || !$_POST["hashed"]) {
-			queries("SET PASSWORD FOR $new_user = " . ($_POST["hashed"] ? $pass : "PASSWORD($pass)"));
+		if (!$error) {
+			if ($old_user != $new_user) {
+				$created = queries(($connection->server_info < 5 ? "GRANT USAGE ON *.* TO" : "CREATE USER") . " $new_user IDENTIFIED BY PASSWORD " . q($pass));
+				$error = !$created;
+			} elseif ($pass != $old_pass) {
+				queries("SET PASSWORD FOR $new_user = " . q($pass));
+			}
 		}
 		if (!$error) {
 			$revoke = array();
