@@ -59,8 +59,8 @@ if ($auth) {
 function unset_permanent() {
 	global $permanent;
 	foreach ($permanent as $key => $val) {
-		list($driver, $server, $username) = array_map('base64_decode', explode("-", $key));
-		if ($driver == DRIVER && $server == SERVER && $db == $_GET["username"]) {
+		list($driver, $server, $username, $db) = array_map('base64_decode', explode("-", $key));
+		if ($driver == DRIVER && $server == SERVER && $username == $_GET["username"] && $db == DB) {
 			unset($permanent[$key]);
 		}
 	}

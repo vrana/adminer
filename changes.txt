@@ -12,6 +12,7 @@ Allow loading more data with inline edit (bug #3605531)
 Stay on the same page after deleting rows (bug #3605845)
 Respect checked tables in export filename (bug #3245464)
 Respect PHP configuration max_input_vars
+Fix unsetting permanent login after logout
 Disable autocapitalize in identifiers on mobile browsers
 MySQL: Compatibility with MySQL 5.6
 MySQL: Move ALTER export to plugin
