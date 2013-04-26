@@ -400,8 +400,8 @@ username.form['auth[driver]'].onchange();
 				if (ereg('IN$', $val["op"])) {
 					$in = process_length($val["val"]);
 					$cond .= " (" . ($in != "" ? $in : "NULL") . ")";
-				} elseif (!$val["op"]) {
-					$cond .= $val["val"]; // SQL injection
+				} elseif ($val["op"] == "SQL") {
+					$cond = " $val[val]"; // SQL injection
 				} elseif ($val["op"] == "LIKE %%") {
 					$cond = " LIKE " . $this->processInput($fields[$val["col"]], "%$val[val]%");
 				} elseif (!ereg('NULL$', $val["op"])) {
