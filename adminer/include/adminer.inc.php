@@ -510,7 +510,7 @@ username.form['auth[driver]'].onchange();
 					}
 				}
 				if ($key && !ereg('set|blob|bytea|raw|file', $field["type"])) {
-					$return .= "/=";
+					$return .= "/SQL";
 				}
 			}
 		}
@@ -541,7 +541,7 @@ username.form['auth[driver]'].onchange();
 	* @return string expression to use in a query
 	*/
 	function processInput($field, $value, $function = "") {
-		if ($function == "=") {
+		if ($function == "SQL") {
 			return $value; // SQL injection
 		}
 		$name = $field["field"];
