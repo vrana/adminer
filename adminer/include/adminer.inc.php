@@ -414,7 +414,7 @@ username.form['auth[driver]'].onchange();
 					$cols = array();
 					foreach ($fields as $name => $field) {
 						$is_text = ereg('char|text|enum|set', $field["type"]);
-						if ((is_numeric($val["val"]) || !ereg('int|float|double|decimal|bit', $field["type"]))
+						if ((is_numeric($val["val"]) || !ereg('(^|[^o])int|float|double|decimal|bit', $field["type"]))
 							&& (!ereg("[\x80-\xFF]", $val["val"]) || $is_text)
 						) {
 							$name = idf_escape($name);
@@ -661,7 +661,7 @@ username.form['auth[driver]'].onchange();
 						}
 						foreach ($row as $key => $val) {
 							$row[$key] = ($val !== null
-								? (ereg('int|float|double|decimal|bit', $fields[$keys[$key]]["type"]) && $val != '' ? $val : q($val)) //! columns looking like functions
+								? (ereg('(^|[^o])int|float|double|decimal|bit', $fields[$keys[$key]]["type"]) && $val != '' ? $val : q($val)) //! columns looking like functions
 								: "NULL"
 							);
 						}
