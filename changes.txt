@@ -1,5 +1,6 @@
 Adminer 3.6.5-dev:
 Print run time next to executed queries
+Disable SQL export when applying functions in select
 Fix handling of POINT data type (bug #3582578)
 Don't export binary and geometry columns twice in select
 

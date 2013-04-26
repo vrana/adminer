@@ -472,6 +472,12 @@ if (!$columns) {
 <?php
 			}
 			$format = $adminer->dumpFormat();
+			foreach ((array) $_GET["columns"] as $column) {
+				if ($column["fun"]) {
+					unset($format['sql']);
+					break;
+				}
+			}
 			if ($format) {
 				print_fieldset("export", lang('Export'));
 				$output = $adminer->dumpOutput();
