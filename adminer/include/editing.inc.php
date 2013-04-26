@@ -364,7 +364,8 @@ function drop_create($drop, $create, $rollback, $location, $message_drop, $messa
 
 /** Generate SQL query for creating trigger
 * @param string
-* @return array result of trigger()
+* @param array result of trigger()
+* @return string
 */
 function create_trigger($on, $row) {
 	global $jush;
