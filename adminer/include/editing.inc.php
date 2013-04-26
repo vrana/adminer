@@ -135,7 +135,7 @@ function textarea($name, $value, $rows = 10, $cols = 80) {
 * @return string HTML code
 */
 function format_time($start, $end) {
-	return " <span class='time'>(" . lang('%.3f s', max(0, array_sum(explode(" ", $end)) - array_sum(explode(" ", $start)))) . ")</span>";
+	return lang('%.3f s', max(0, array_sum(explode(" ", $end)) - array_sum(explode(" ", $start))));
 }
 
 /** Print table columns for type edit

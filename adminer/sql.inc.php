@@ -101,7 +101,8 @@ if (!$error && $_POST) {
 						do {
 							$result = $connection->store_result();
 							$end = microtime();
-							$time = format_time($start, $end) . (strlen($q) < 1000 ? " <a href='" . h(ME) . "sql=" . urlencode(trim($q)) . "'>" . lang('Edit') . "</a>" : ""); // 1000 - maximum length of encoded URL in IE is 2083 characters
+							$time = " <span class='time'>(" . format_time($start, $end) . ")</span>"
+								. (strlen($q) < 1000 ? " <a href='" . h(ME) . "sql=" . urlencode(trim($q)) . "'>" . lang('Edit') . "</a>" : ""); // 1000 - maximum length of encoded URL in IE is 2083 characters
 							if ($connection->error) {
 								echo ($_POST["only_errors"] ? $print : "");
 								echo "<p class='error'>" . lang('Error in query') . ($connection->errno ? " ($connection->errno)" : "") . ": " . error() . "\n";
@@ -154,7 +155,8 @@ if (!$error && $_POST) {
 		if ($empty) {
 			echo "<p class='message'>" . lang('No commands to execute.') . "\n";
 		} elseif ($_POST["only_errors"]) {
-			echo "<p class='message'>" . lang('%d query(s) executed OK.', $commands - count($errors)) . format_time($total_start, microtime()) . "\n";
+			echo "<p class='message'>" . lang('%d query(s) executed OK.', $commands - count($errors));
+			echo " <span class='time'>(" . format_time($total_start, microtime()) . ")</span>\n";
 		} elseif ($errors && $commands > 1) {
 			echo "<p class='error'>" . lang('Error in query') . ": " . implode("", $errors) . "\n";
 		}

@@ -482,12 +482,15 @@ function redirect($location, $message = null) {
 */
 function query_redirect($query, $location, $message, $redirect = true, $execute = true, $failed = false) {
 	global $connection, $error, $adminer;
+	$time = "";
 	if ($execute) {
+		$start = microtime();
 		$failed = !$connection->query($query);
+		$time = "; -- " . format_time($start, microtime());
 	}
 	$sql = "";
 	if ($query) {
-		$sql = $adminer->messageQuery("$query;");
+		$sql = $adminer->messageQuery($query . $time);
 	}
 	if ($failed) {
 		$error = error() . $sql;
@@ -508,10 +511,13 @@ function queries($query = null) {
 	static $queries = array();
 	if ($query === null) {
 		// return executed queries without parameter
-		return implode(";\n", $queries);
+		return implode("\n", $queries);
 	}
-	$queries[] = (ereg(';$', $query) ? "DELIMITER ;;\n$query;\nDELIMITER " : $query);
-	return $connection->query($query);
+	$start = microtime();
+	$return = $connection->query($query);
+	$queries[] = (ereg(';$', $query) ? "DELIMITER ;;\n$query;\nDELIMITER " : $query)
+		. "; -- " . format_time($start, microtime());
+	return $return;
 }
 
 /** Apply command to all array items

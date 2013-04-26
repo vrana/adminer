@@ -1,4 +1,5 @@
 Adminer 3.6.5-dev:
+Print run time next to executed queries
 
 Adminer 3.6.4 (released 2013-04-26):
 Display pagination on a fixed position
