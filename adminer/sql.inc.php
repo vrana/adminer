@@ -25,7 +25,7 @@ if (!$error && $_POST) {
 			: "compress.bzip2://adminer.sql.bz2"
 		)), "rb");
 		$query = ($fp ? fread($fp, 1e6) : false);
-	} elseif ($_FILES && $_FILES["sql_file"]["error"] != UPLOAD_ERR_NO_FILE) {
+	} elseif ($_FILES && $_FILES["sql_file"]["error"][0] != 4) { // 4 - UPLOAD_ERR_NO_FILE
 		$query = get_file("sql_file", true);
 	}
 	if (is_string($query)) { // get_file() returns error as number, fread() as false
@@ -180,7 +180,9 @@ if ($_POST) {
 textarea("query", $q, 20);
 echo ($_POST ? "" : "<script type='text/javascript'>document.getElementsByTagName('textarea')[0].focus();</script>\n");
 echo "<p>" . (ini_bool("file_uploads")
-	? lang('File upload') . ': <input type="file" name="sql_file"' . ($_FILES && $_FILES["sql_file"]["error"] != 4 ? '' : ' onchange="this.form[\'only_errors\'].checked = true;"') . '> (&lt; ' . ini_get("upload_max_filesize") . 'B)' // ignore post_max_size because it is for all form fields together and bytes computing would be necessary
+	? lang('File upload') . ': <input type="file" name="sql_file[]" multiple'
+		. ($_FILES && $_FILES["sql_file"]["error"][0] != 4 ? '' : ' onchange="this.form[\'only_errors\'].checked = true;"') // 4 - UPLOAD_ERR_NO_FILE
+		. '> (&lt; ' . ini_get("upload_max_filesize") . 'B)' // ignore post_max_size because it is for all form fields together and bytes computing would be necessary
 	: lang('File uploads are disabled.')
 );
 

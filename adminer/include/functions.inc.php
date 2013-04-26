@@ -569,22 +569,35 @@ function pagination($page, $current) {
 */
 function get_file($key, $decompress = false) {
 	$file = $_FILES[$key];
-	if (!$file || $file["error"]) {
-		return $file["error"];
+	if (!$file) {
+		return null;
 	}
-	$return = file_get_contents($decompress && ereg('\\.gz$', $file["name"]) ? "compress.zlib://$file[tmp_name]"
-		: ($decompress && ereg('\\.bz2$', $file["name"]) ? "compress.bzip2://$file[tmp_name]"
-		: $file["tmp_name"]
-	)); //! may not be reachable because of open_basedir
-	if ($decompress) {
-		$start = substr($return, 0, 3);
-		if (function_exists("iconv") && ereg("^\xFE\xFF|^\xFF\xFE", $start, $regs)) { // not ternary operator to save memory
-			$return = iconv("utf-16", "utf-8", $return);
-		} elseif ($start == "\xEF\xBB\xBF") { // UTF-8 BOM
-			$return = substr($return, 3);
+	foreach ($file as $key => $val) {
+		$file[$key] = (array) $val;
+	}
+	$return = array();
+	foreach ($file["error"] as $key => $error) {
+		if ($error) {
+			return $error;
 		}
+		$name = $file["name"][$key];
+		$tmp_name = $file["tmp_name"][$key];
+		$content = file_get_contents($decompress && ereg('\\.gz$', $name) ? "compress.zlib://$tmp_name"
+			: ($decompress && ereg('\\.bz2$', $name) ? "compress.bzip2://$tmp_name"
+			: $tmp_name
+		)); //! may not be reachable because of open_basedir
+		if ($decompress) {
+			$start = substr($content, 0, 3);
+			if (function_exists("iconv") && ereg("^\xFE\xFF|^\xFF\xFE", $start, $regs)) { // not ternary operator to save memory
+				$content = iconv("utf-16", "utf-8", $content);
+			} elseif ($start == "\xEF\xBB\xBF") { // UTF-8 BOM
+				$content = substr($content, 3);
+			}
+		}
+		$return[] = $content;
 	}
-	return $return;
+	//! support SQL files not ending with semicolon
+	return implode("\n\n\n", $return);
 }
 
 /** Determine upload error

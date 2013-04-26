@@ -1,4 +1,5 @@
-Adminer 3.6.5-dev:
+Adminer 3.7.0-dev:
+Allow more SQL files to be uploaded at the same time
 Print run time next to executed queries
 Disable SQL export when applying functions in select
 Fix handling of POINT data type (bug #3582578)
