@@ -1,4 +1,4 @@
-Adminer 3.6.4-dev:
+Adminer 3.6.4 (released 2013-04-26):
 Display pagination on a fixed position
 Increase default select limit to 50
 Display SQL edit form on Ctrl+click on the select query
