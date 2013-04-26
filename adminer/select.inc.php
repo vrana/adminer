@@ -31,7 +31,7 @@ $where = $adminer->selectSearchProcess($fields, $indexes);
 $order = $adminer->selectOrderProcess($fields, $indexes);
 $limit = $adminer->selectLimitProcess();
 $from = ($select ? implode(", ", $select) : "*" . ($oid ? ", $oid" : ""));
-if ($jush == "sql") {
+if ($jush == "sql" && !$_POST["export"]) {
 	foreach ($columns as $key => $val) {
 		if ($select && !$select[$key]) {
 			continue;
