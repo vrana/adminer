@@ -17,7 +17,7 @@ $text_length = null;
 foreach ($fields as $key => $field) {
 	$name = $adminer->fieldName($field);
 	if (isset($field["privileges"]["select"]) && $name != "") {
-		$columns[$key] = html_entity_decode(strip_tags($name));
+		$columns[$key] = html_entity_decode(strip_tags($name), ENT_QUOTES);
 		if (is_shortable($field)) {
 			$text_length = $adminer->selectLengthProcess();
 		}
