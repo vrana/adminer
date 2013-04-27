@@ -638,7 +638,8 @@ username.form['auth[driver]'].onchange();
 				$buffer = "";
 				$keys = array();
 				$suffix = "";
-				while ($row = $result->fetch_row()) {
+				$fetch_function = ($table != '' ? 'fetch_assoc' : 'fetch_row');
+				while ($row = $result->$fetch_function()) {
 					if (!$keys) {
 						$values = array();
 						foreach ($row as $val) {
@@ -660,8 +661,9 @@ username.form['auth[driver]'].onchange();
 							$insert = "INSERT INTO " . table($table) . " (" . implode(", ", array_map('idf_escape', $keys)) . ") VALUES";
 						}
 						foreach ($row as $key => $val) {
+							$field = $fields[$key];
 							$row[$key] = ($val !== null
-								? (ereg('(^|[^o])int|float|double|decimal|bit', $fields[$keys[$key]]["type"]) && $val != '' ? $val : q($val)) //! columns looking like functions
+								? unconvert_field($field, ereg('(^|[^o])int|float|double|decimal', $field["type"]) && $val != '' ? $val : q($val))
 								: "NULL"
 							);
 						}

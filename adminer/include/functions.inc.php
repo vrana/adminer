@@ -370,6 +370,26 @@ function where_link($i, $column, $value, $operator = "=") {
 	return "&where%5B$i%5D%5Bcol%5D=" . urlencode($column) . "&where%5B$i%5D%5Bop%5D=" . urlencode(($value !== null ? $operator : "IS NULL")) . "&where%5B$i%5D%5Bval%5D=" . urlencode($value);
 }
 
+/** Get select clause for convertible fields
+* @param array
+* @param array
+* @param array
+* @return string
+*/
+function convert_fields($columns, $fields, $select = array()) {
+	$return = "";
+	foreach ($columns as $key => $val) {
+		if ($select && !in_array(idf_escape($key), $select)) {
+			continue;
+		}
+		$as = convert_field($fields[$key]);
+		if ($as) {
+			$return .= ", $as AS " . idf_escape($key);
+		}
+	}
+	return $return;
+}
+
 /** Set cookie valid for 1 month
 * @param string
 * @param string

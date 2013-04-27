@@ -30,19 +30,9 @@ $is_group = count($group) < count($select);
 $where = $adminer->selectSearchProcess($fields, $indexes);
 $order = $adminer->selectOrderProcess($fields, $indexes);
 $limit = $adminer->selectLimitProcess();
-$from = ($select ? implode(", ", $select) : "*" . ($oid ? ", $oid" : ""));
-if ($jush == "sql" && !$_POST["export"]) {
-	foreach ($columns as $key => $val) {
-		if ($select && !in_array(idf_escape($key), $select)) {
-			continue;
-		}
-		$as = convert_field($fields[$key]);
-		if ($as) {
-			$from .= ", $as AS " . idf_escape($key);
-		}
-	}
-}
-$from .= "\nFROM " . table($TABLE);
+$from = ($select ? implode(", ", $select) : "*" . ($oid ? ", $oid" : ""))
+	. convert_fields($columns, $fields, $select)
+	. "\nFROM " . table($TABLE);
 $group_by = ($group && $is_group ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : "");
 
 if ($_GET["val"] && is_ajax()) {
