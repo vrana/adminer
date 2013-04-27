@@ -545,7 +545,7 @@ username.form['auth[driver]'].onchange();
 			return $value; // SQL injection
 		}
 		$name = $field["field"];
-		$return = ($field["type"] == "bit" && ereg("^([0-9]+|b'[0-1]+')\$", $value) ? $value : q($value));
+		$return = q($value);
 		if (ereg('^(now|getdate|uuid)$', $function)) {
 			$return = "$function()";
 		} elseif (ereg('^current_(date|timestamp)$', $function)) {

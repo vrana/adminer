@@ -84,9 +84,15 @@ if (!$fields) {
 	foreach ($fields as $name => $field) {
 		echo "<tr><th>" . $adminer->fieldName($field);
 		$default = $_GET["set"][bracket_escape($name)];
+		if ($default === null) {
+			$default = $field["default"];
+			if ($field["type"] == "bit" && ereg("^b'([01]*)'\$", $default, $regs)) {
+				$default = $regs[1];
+			}
+		}
 		$value = ($row !== null
 			? ($row[$name] != "" && $jush == "sql" && ereg("enum|set", $field["type"]) ? (is_array($row[$name]) ? array_sum($row[$name]) : +$row[$name]) : $row[$name])
-			: (!$update && $field["auto_increment"] ? "" : (isset($_GET["select"]) ? false : ($default !== null ? $default : $field["default"])))
+			: (!$update && $field["auto_increment"] ? "" : (isset($_GET["select"]) ? false : $default))
 		);
 		if (!$_POST["save"] && is_string($value)) {
 			$value = $adminer->editVal($value, $field);
