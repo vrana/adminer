@@ -3,6 +3,7 @@ Allow more SQL files to be uploaded at the same time
 Print run time next to executed queries
 Disable SQL export when applying functions in select
 MySQL: Optimize create table page and Editor navigation
+MySQL: Display bit type as binary number
 MySQL: Fix handling of POINT data type (bug #3582578)
 MySQL: Don't export binary and geometry columns twice in select
 
