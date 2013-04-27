@@ -120,7 +120,7 @@ if ($_POST) {
 	if ($old_pass != "") {
 		$row["hashed"] = true;
 	}
-	$grants[(DB == "" || $grants ? "" : idf_escape(addcslashes(DB, "%_"))) . ".*"] = array();
+	$grants[(DB == "" || $grants ? "" : idf_escape(addcslashes(DB, "%_\\"))) . ".*"] = array();
 }
 
 ?>

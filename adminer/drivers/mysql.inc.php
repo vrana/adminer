@@ -370,7 +370,7 @@ if (!defined("DRIVER")) {
 	*/
 	function table_status($name = "") {
 		$return = array();
-		foreach (get_rows("SHOW TABLE STATUS" . ($name != "" ? " LIKE " . q(addcslashes($name, "%_")) : "")) as $row) {
+		foreach (get_rows("SHOW TABLE STATUS" . ($name != "" ? " LIKE " . q(addcslashes($name, "%_\\")) : "")) as $row) {
 			if ($row["Engine"] == "InnoDB") {
 				// ignore internal comment, unnecessary since MySQL 5.1.21
 				$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["Comment"]);
@@ -733,7 +733,7 @@ if (!defined("DRIVER")) {
 	*/
 	function triggers($table) {
 		$return = array();
-		foreach (get_rows("SHOW TRIGGERS LIKE " . q(addcslashes($table, "%_"))) as $row) {
+		foreach (get_rows("SHOW TRIGGERS LIKE " . q(addcslashes($table, "%_\\"))) as $row) {
 			$return[$row["Trigger"]] = array($row["Timing"], $row["Event"]);
 		}
 		return $return;
@@ -924,7 +924,7 @@ if (!defined("DRIVER")) {
 	*/
 	function trigger_sql($table, $style) {
 		$return = "";
-		foreach (get_rows("SHOW TRIGGERS LIKE " . q(addcslashes($table, "%_")), null, "-- ") as $row) {
+		foreach (get_rows("SHOW TRIGGERS LIKE " . q(addcslashes($table, "%_\\")), null, "-- ") as $row) {
 			$return .= "\n" . ($style == 'CREATE+ALTER' ? "DROP TRIGGER IF EXISTS " . idf_escape($row["Trigger"]) . ";;\n" : "")
 			. "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . table($row["Table"]) . " FOR EACH ROW\n$row[Statement];;\n";
 		}
