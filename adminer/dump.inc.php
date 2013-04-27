@@ -66,28 +66,28 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 			
 			if ($_POST["table_style"] || $_POST["data_style"]) {
 				$views = array();
-				foreach (table_status() as $table_status) {
-					$table = (DB == "" || in_array($table_status["Name"], (array) $_POST["tables"]));
-					$data = (DB == "" || in_array($table_status["Name"], (array) $_POST["data"]));
+				foreach (table_status() as $name => $table_status) {
+					$table = (DB == "" || in_array($name, (array) $_POST["tables"]));
+					$data = (DB == "" || in_array($name, (array) $_POST["data"]));
 					if ($table || $data) {
 						if (!is_view($table_status)) {
 							if ($ext == "tar") {
 								ob_start();
 							}
-							$adminer->dumpTable($table_status["Name"], ($table ? $_POST["table_style"] : ""));
+							$adminer->dumpTable($name, ($table ? $_POST["table_style"] : ""));
 							if ($data) {
-								$adminer->dumpData($table_status["Name"], $_POST["data_style"], "SELECT * FROM " . table($table_status["Name"]));
+								$adminer->dumpData($name, $_POST["data_style"], "SELECT * FROM " . table($name));
 							}
-							if ($is_sql && $_POST["triggers"] && $table && ($triggers = trigger_sql($table_status["Name"], $_POST["table_style"]))) {
+							if ($is_sql && $_POST["triggers"] && $table && ($triggers = trigger_sql($name, $_POST["table_style"]))) {
 								echo "\nDELIMITER ;;\n$triggers\nDELIMITER ;\n";
 							}
 							if ($ext == "tar") {
-								echo tar_file((DB != "" ? "" : "$db/") . "$table_status[Name].csv", ob_get_clean());
+								echo tar_file((DB != "" ? "" : "$db/") . "$name.csv", ob_get_clean());
 							} elseif ($is_sql) {
 								echo "\n";
 							}
 						} elseif ($is_sql) {
-							$views[] = $table_status["Name"];
+							$views[] = $name;
 						}
 					}
 				}
@@ -153,8 +153,7 @@ if (DB != "") {
 	echo "</thead>\n";
 	$views = "";
 	//! defer number of rows to JavaScript
-	foreach (table_status() as $table_status) {
-		$name = $table_status["Name"];
+	foreach (table_status() as $name => $table_status) {
 		$prefix = ereg_replace("_.*", "", $name);
 		$checked = ($TABLE == "" || $TABLE == (substr($TABLE, -1) == "%" ? "$prefix%" : $name)); //! % may be part of table name
 		$print = "<tr><td>" . checkbox("tables[]", $name, $checked, $name, "checkboxClick(event, this); formUncheck('check-tables');");
