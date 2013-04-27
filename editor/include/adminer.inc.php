@@ -92,7 +92,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			$return[$row["TABLE_NAME"]]["keys"][$row["CONSTRAINT_NAME"]][$row["COLUMN_NAME"]] = $row["REFERENCED_COLUMN_NAME"];
 		}
 		foreach ($return as $key => $val) {
-			$name = $this->tableName(table_status($key));
+			$name = $this->tableName(table_status($key, true));
 			if ($name != "") {
 				$search = preg_quote($tableName);
 				$separator = "(:|\\s*-)?\\s+";
@@ -562,7 +562,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 <?php
 			$this->databasesPrint($missing);
 			if ($missing != "db" && $missing != "ns") {
-				$table_status = table_status();
+				$table_status = table_status('', true);
 				if (!$table_status) {
 					echo "<p class='message'>" . lang('No tables.') . "\n";
 				} else {

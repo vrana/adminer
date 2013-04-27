@@ -38,7 +38,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 	}
 }
 
-$table_name = $adminer->tableName(table_status($TABLE));
+$table_name = $adminer->tableName(table_status($TABLE, true));
 page_header(
 	($update ? lang('Edit') : lang('Insert')),
 	$error,

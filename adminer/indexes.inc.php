@@ -1,7 +1,7 @@
 <?php
 $TABLE = $_GET["indexes"];
 $index_types = array("PRIMARY", "UNIQUE", "INDEX");
-$table_status = table_status($TABLE);
+$table_status = table_status($TABLE, true);
 if (eregi("MyISAM|M?aria" . ($connection->server_info >= 5.6 ? "|InnoDB" : ""), $table_status["Engine"])) {
 	$index_types[] = "FULLTEXT";
 }

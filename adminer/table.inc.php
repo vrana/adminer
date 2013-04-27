@@ -4,7 +4,7 @@ $fields = fields($TABLE);
 if (!$fields) {
 	$error = error();
 }
-$table_status = ($fields ? table_status($TABLE) : array());
+$table_status = ($fields ? table_status($TABLE, true) : array());
 
 page_header(($fields && is_view($table_status) ? lang('View') : lang('Table')) . ": " . h($TABLE), $error);
 $adminer->selectLinks($table_status);

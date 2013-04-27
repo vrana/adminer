@@ -366,11 +366,16 @@ if (!defined("DRIVER")) {
 
 	/** Get table status
 	* @param string
+	* @param bool return only "Name", "Engine" and "Comment" fields
 	* @return array array($name => array("Name" => , "Engine" => , "Comment" => , "Oid" => , "Rows" => , "Collation" => , "Auto_increment" => , "Data_length" => , "Index_length" => , "Data_free" => )) or only inner array with $name
 	*/
-	function table_status($name = "") {
+	function table_status($name = "", $fast = false) {
+		global $connection;
 		$return = array();
-		foreach (get_rows("SHOW TABLE STATUS" . ($name != "" ? " LIKE " . q(addcslashes($name, "%_\\")) : "")) as $row) {
+		foreach (get_rows($fast && $connection->server_info >= 5
+			? "SELECT table_name AS Name, Engine, TABLE_COMMENT AS Comment FROM information_schema.TABLES WHERE table_schema = " . q(DB) . ($name != "" ? " AND table_name = " . q($name) : "")
+			: "SHOW TABLE STATUS" . ($name != "" ? " LIKE " . q(addcslashes($name, "%_\\")) : "")
+		) as $row) {
 			if ($row["Engine"] == "InnoDB") {
 				// ignore internal comment, unnecessary since MySQL 5.1.21
 				$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["Comment"]);
@@ -391,7 +396,7 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function is_view($table_status) {
-		return !isset($table_status["Rows"]);
+		return !isset($table_status["Engine"]);
 	}
 
 	/** Check if table supports foreign keys
@@ -960,6 +965,9 @@ if (!defined("DRIVER")) {
 		if (ereg("binary", $field["type"])) {
 			return "HEX(" . idf_escape($field["field"]) . ")";
 		}
+		if ($field["type"] == "bit") {
+			return "BIN(" . idf_escape($field["field"]) . " + 0)"; // + 0 is required outside MySQLnd
+		}
 		if (ereg("geometry|point|linestring|polygon", $field["type"])) {
 			return "AsWKT(" . idf_escape($field["field"]) . ")";
 		}
@@ -973,6 +981,9 @@ if (!defined("DRIVER")) {
 	function unconvert_field($field, $return) {
 		if (ereg("binary", $field["type"])) {
 			$return = "UNHEX($return)";
+		}
+		if ($field["type"] == "bit") {
+			return "CONV($return, 2, 10) + 0";
 		}
 		if (ereg("geometry|point|linestring|polygon", $field["type"])) {
 			$return = "GeomFromText($return)";

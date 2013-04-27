@@ -66,7 +66,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 			
 			if ($_POST["table_style"] || $_POST["data_style"]) {
 				$views = array();
-				foreach (table_status() as $name => $table_status) {
+				foreach (table_status('', true) as $name => $table_status) {
 					$table = (DB == "" || in_array($name, (array) $_POST["tables"]));
 					$data = (DB == "" || in_array($name, (array) $_POST["data"]));
 					if ($table || $data) {

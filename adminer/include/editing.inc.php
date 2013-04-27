@@ -94,7 +94,7 @@ function select($result, $connection2 = null, $href = "", $orgtables = array()) 
 */
 function referencable_primary($self) {
 	$return = array(); // table_name => field
-	foreach (table_status() as $table_name => $table) {
+	foreach (table_status('', true) as $table_name => $table) {
 		if ($table_name != $self && fk_support($table)) {
 			foreach (fields($table_name) as $field) {
 				if ($field["primary"]) {

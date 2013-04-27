@@ -39,12 +39,7 @@ if ($_POST) {
 
 $source = array_keys(fields($TABLE)); //! no text and blob
 $target = ($TABLE === $row["table"] ? $source : array_keys(fields($row["table"])));
-$referencable = array();
-foreach (table_status() as $name => $table_status) {
-	if (fk_support($table_status)) {
-		$referencable[] = $name;
-	}
-}
+$referencable = array_keys(array_filter(table_status('', true), 'fk_support'));
 ?>
 
 <form action="" method="post">

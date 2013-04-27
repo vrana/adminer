@@ -822,7 +822,7 @@ function search_tables() {
 	$_GET["where"][0]["op"] = "LIKE %%";
 	$_GET["where"][0]["val"] = $_POST["query"];
 	$found = false;
-	foreach (table_status() as $table => $table_status) {
+	foreach (table_status('', true) as $table => $table_status) {
 		$name = $adminer->tableName($table_status);
 		if (isset($table_status["Engine"]) && $name != "" && (!$_POST["tables"] || in_array($table, $_POST["tables"]))) {
 			$result = $connection->query("SELECT" . limit("1 FROM " . table($table), " WHERE " . implode(" AND ", $adminer->selectSearchProcess(fields($table), array())), 1));

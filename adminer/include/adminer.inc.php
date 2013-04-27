@@ -777,7 +777,7 @@ username.form['auth[driver]'].onchange();
 			$this->databasesPrint($missing);
 			if ($_GET["ns"] !== "" && !$missing && DB != "") {
 				echo '<p><a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create new table') . "</a>\n";
-				$tables = tables_list();
+				$tables = table_status('', true);
 				if (!$tables) {
 					echo "<p class='message'>" . lang('No tables.') . "\n";
 				} else {
@@ -832,14 +832,14 @@ echo ($databases
 	}
 	
 	/** Prints table list in menu
-	* @param array
+	* @param array result of table_status('', true)
 	* @return null
 	*/
 	function tablesPrint($tables) {
 		echo "<p id='tables' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";
-		foreach ($tables as $table => $type) {
+		foreach ($tables as $table => $status) {
 			echo '<a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table) . ">" . lang('select') . "</a> ";
-			echo '<a href="' . h(ME) . 'table=' . urlencode($table) . '"' . bold($_GET["table"] == $table) . " title='" . lang('Show structure') . "'>" . $this->tableName(array("Name" => $table)) . "</a><br>\n"; //! Adminer::tableName may work with full table status
+			echo '<a href="' . h(ME) . 'table=' . urlencode($table) . '"' . bold($_GET["table"] == $table) . " title='" . lang('Show structure') . "'>" . $this->tableName($status) . "</a><br>\n";
 		}
 	}
 	
