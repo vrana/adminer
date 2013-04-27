@@ -33,7 +33,7 @@ $limit = $adminer->selectLimitProcess();
 $from = ($select ? implode(", ", $select) : "*" . ($oid ? ", $oid" : ""));
 if ($jush == "sql" && !$_POST["export"]) {
 	foreach ($columns as $key => $val) {
-		if ($select && !$select[$key]) {
+		if ($select && !in_array(idf_escape($key), $select)) {
 			continue;
 		}
 		$as = convert_field($fields[$key]);
