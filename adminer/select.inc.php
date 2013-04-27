@@ -49,7 +49,7 @@ if ($_GET["val"] && is_ajax()) {
 	header("Content-Type: text/plain; charset=utf-8");
 	foreach ($_GET["val"] as $unique_idf => $row) {
 		$as = convert_field($fields[key($row)]);
-		echo $connection->result("SELECT" . limit(($as ? $as : idf_escape(key($row))) . " FROM " . table($TABLE), " WHERE " . where_check($unique_idf, $fields) . ($where ? " AND " . implode(" AND ", $where) : "") . ($order ? " ORDER BY " . implode(", ", $order) : ""), 1));
+		echo $connection->result("SELECT" . limit($as ? $as : idf_escape(key($row)) . " FROM " . table($TABLE), " WHERE " . where_check($unique_idf, $fields) . ($where ? " AND " . implode(" AND ", $where) : "") . ($order ? " ORDER BY " . implode(", ", $order) : ""), 1));
 	}
 	exit;
 }

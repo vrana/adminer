@@ -626,10 +626,10 @@ username.form['auth[driver]'].onchange();
 		global $connection, $jush;
 		$max_packet = ($jush == "sqlite" ? 0 : 1048576); // default, minimum is 1024
 		if ($style) {
-			if ($_POST["format"] == "sql" && $style == "TRUNCATE+INSERT") {
-				echo truncate_sql($table) . ";\n";
-			}
 			if ($_POST["format"] == "sql") {
+				if ($style == "TRUNCATE+INSERT") {
+					echo truncate_sql($table) . ";\n";
+				}
 				$fields = fields($table);
 			}
 			$result = $connection->query($query, 1); // 1 - MYSQLI_USE_RESULT //! enum and set as numbers
