@@ -17,7 +17,7 @@ $schema = array(); // table => array("fields" => array(name => field), "pos" => 
 $referenced = array(); // target_table => array(table => array(left => target_column))
 $lefts = array(); // float => bool
 foreach (table_status() as $table => $table_status) {
-	if (!isset($table_status["Engine"])) { // view
+	if (is_view($table_status)) {
 		continue;
 	}
 	$pos = 0;
