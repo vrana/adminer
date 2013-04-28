@@ -50,10 +50,13 @@ function put_file($match) {
 	return '$_SESSION[lang]';
 }
 
-function lang(\$translation, \$number) {
-	\$pos = $match2[2]\t\t: " . (preg_match("~\\\$LANG == '$_SESSION[lang]'.* \\? (.+)\n~U", $match2[1], $match3) ? $match3[1] : "1") . '
-	);
-	$translation = str_replace("%d", "%s", $translation[$pos]);
+function lang(\$translation, \$number = 0) {
+	if (is_array(\$translation)) {
+		\$pos = $match2[2]\t\t\t: " . (preg_match("~\\\$LANG == '$_SESSION[lang]'.* \\? (.+)\n~U", $match2[1], $match3) ? $match3[1] : "1") . '
+		);
+		$translation = $translation[$pos];
+	}
+	$translation = str_replace("%d", "%s", $translation);
 	$number = number_format($number, 0, ".", lang(\',\'));
 	return sprintf($translation, $number);
 }
