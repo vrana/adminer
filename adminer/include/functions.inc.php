@@ -595,7 +595,7 @@ function get_file($key, $decompress = false) {
 	foreach ($file as $key => $val) {
 		$file[$key] = (array) $val;
 	}
-	$return = array();
+	$return = '';
 	foreach ($file["error"] as $key => $error) {
 		if ($error) {
 			return $error;
@@ -614,10 +614,10 @@ function get_file($key, $decompress = false) {
 				$content = substr($content, 3);
 			}
 		}
-		$return[] = $content;
+		$return .= $content . "\n\n";
 	}
 	//! support SQL files not ending with semicolon
-	return implode("\n\n\n", $return);
+	return $return;
 }
 
 /** Determine upload error
