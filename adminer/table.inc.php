@@ -26,7 +26,7 @@ if ($fields) {
 	echo "</table>\n";
 	
 	if (!is_view($table_status)) {
-		echo "<h3>" . lang('Indexes') . "</h3>\n";
+		echo "<h3 id='indexes'>" . lang('Indexes') . "</h3>\n";
 		$indexes = indexes($TABLE);
 		if ($indexes) {
 			echo "<table cellspacing='0'>\n";
@@ -43,7 +43,7 @@ if ($fields) {
 		echo '<p><a href="' . h(ME) . 'indexes=' . urlencode($TABLE) . '">' . lang('Alter indexes') . "</a>\n";
 		
 		if (fk_support($table_status)) {
-			echo "<h3>" . lang('Foreign keys') . "</h3>\n";
+			echo "<h3 id='foreign-keys'>" . lang('Foreign keys') . "</h3>\n";
 			$foreign_keys = foreign_keys($TABLE);
 			if ($foreign_keys) {
 				echo "<table cellspacing='0'>\n";
@@ -68,7 +68,7 @@ if ($fields) {
 		}
 		
 		if (support("trigger")) {
-			echo "<h3>" . lang('Triggers') . "</h3>\n";
+			echo "<h3 id='triggers'>" . lang('Triggers') . "</h3>\n";
 			$triggers = triggers($TABLE);
 			if ($triggers) {
 				echo "<table cellspacing='0'>\n";

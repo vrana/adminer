@@ -46,7 +46,7 @@ page_header(($_GET["ns"] == "" ? lang('Database') . ": " . h(DB) : lang('Schema'
 
 if ($adminer->homepage()) {
 	if ($_GET["ns"] !== "") {
-		echo "<h3>" . lang('Tables and views') . "</h3>\n";
+		echo "<h3 id='tables-views'>" . lang('Tables and views') . "</h3>\n";
 		$tables_list = tables_list();
 		if (!$tables_list) {
 			echo "<p class='message'>" . lang('No tables.') . "\n";
@@ -123,7 +123,7 @@ if ($adminer->homepage()) {
 		}
 	
 		if (support("routine")) {
-			echo "<h3>" . lang('Routines') . "</h3>\n";
+			echo "<h3 id='routines'>" . lang('Routines') . "</h3>\n";
 			$routines = routines();
 			if ($routines) {
 				echo "<table cellspacing='0'>\n";
@@ -142,7 +142,7 @@ if ($adminer->homepage()) {
 		}
 		
 		if (support("sequence")) {
-			echo "<h3>" . lang('Sequences') . "</h3>\n";
+			echo "<h3 id='sequences'>" . lang('Sequences') . "</h3>\n";
 			$sequences = get_vals("SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = current_schema()");
 			if ($sequences) {
 				echo "<table cellspacing='0'>\n";
@@ -157,7 +157,7 @@ if ($adminer->homepage()) {
 		}
 		
 		if (support("type")) {
-			echo "<h3>" . lang('User types') . "</h3>\n";
+			echo "<h3 id='user-types'>" . lang('User types') . "</h3>\n";
 			$user_types = types();
 			if ($user_types) {
 				echo "<table cellspacing='0'>\n";
@@ -172,7 +172,7 @@ if ($adminer->homepage()) {
 		}
 		
 		if (support("event")) {
-			echo "<h3>" . lang('Events') . "</h3>\n";
+			echo "<h3 id='events'>" . lang('Events') . "</h3>\n";
 			$rows = get_rows("SHOW EVENTS");
 			if ($rows) {
 				echo "<table cellspacing='0'>\n";
