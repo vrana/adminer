@@ -42,6 +42,19 @@ function put_file($match) {
 	}
 	$return = file_get_contents(dirname(__FILE__) . "/$project/$match[2]");
 	if (basename($match[2]) != "lang.inc.php" || !$_SESSION["lang"]) {
+		if (basename($match[2]) == "lang.inc.php") {
+			$return = str_replace('function lang($idf, $number = null) {', 'function lang($idf, $number = null) {
+	if (is_string($idf)) { // compiled version uses numbers, string comes from a plugin
+		// English translation is closest to the original identifiers //! pluralized translations are not found
+		$pos = array_search($idf, get_translations("en")); //! this should be cached
+		if ($pos !== false) {
+			$idf = $pos;
+		}
+	}', $return, $count);
+			if (!$count) {
+				echo "lang() not found\n";
+			}
+		}
 		$tokens = token_get_all($return); // to find out the last token
 		return "?>\n$return" . (in_array($tokens[count($tokens) - 1][0], array(T_CLOSE_TAG, T_INLINE_HTML), true) ? "<?php" : "");
 	} elseif (preg_match('~\\s*(\\$pos = (.+\n).+;)~sU', $return, $match2)) {
@@ -50,7 +63,7 @@ function put_file($match) {
 	return '$_SESSION[lang]';
 }
 
-function lang(\$translation, \$number = 0) {
+function lang(\$translation, \$number = null) {
 	if (is_array(\$translation)) {
 		\$pos = $match2[2]\t\t\t: " . (preg_match("~\\\$LANG == '$_SESSION[lang]'.* \\? (.+)\n~U", $match2[1], $match3) ? $match3[1] : "1") . '
 		);
@@ -62,7 +75,7 @@ function lang(\$translation, \$number = 0) {
 }
 ';
 	} else {
-		echo "lang() not found\n";
+		echo "lang() \$pos not found\n";
 	}
 }
 
@@ -126,13 +139,19 @@ if ($_SESSION["translations_version"] != ' . $translations_version . ') {
 	$translations = array();
 	$_SESSION["translations_version"] = ' . $translations_version . ';
 }
-if (!$translations) {
-	switch ($LANG) {' . $return . '
+
+function get_translations($lang) {
+	switch ($lang) {' . $return . '
 	}
 	$translations = array();
 	foreach (explode("\n", lzw_decompress($compressed)) as $val) {
 		$translations[] = (strpos($val, "\t") ? explode("\t", $val) : $val);
 	}
+	return $translations;
+}
+
+if (!$translations) {
+	$translations = get_translations($LANG);
 }
 ';
 }
