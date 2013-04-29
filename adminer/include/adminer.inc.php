@@ -570,9 +570,6 @@ username.form['auth[driver]'].onchange();
 		if (function_exists('gzencode')) {
 			$return['gz'] = 'gzip';
 		}
-		if (function_exists('bzcompress')) {
-			$return['bz2'] = 'bzip2';
-		}
 		return $return;
 	}
 	
@@ -704,14 +701,10 @@ username.form['auth[driver]'].onchange();
 		$output = $_POST["output"];
 		$ext = (ereg('sql', $_POST["format"]) ? "sql" : ($multi_table ? "tar" : "csv")); // multiple CSV packed to TAR
 		header("Content-Type: " .
-			($output == "bz2" ? "application/x-bzip" :
 			($output == "gz" ? "application/x-gzip" :
 			($ext == "tar" ? "application/x-tar" :
 			($ext == "sql" || $output != "file" ? "text/plain" : "text/csv") . "; charset=utf-8"
-		))));
-		if ($output == "bz2") {
-			ob_start('bzcompress', 1e6);
-		}
+		)));
 		if ($output == "gz") {
 			ob_start('gzencode', 1e6);
 		}

@@ -3,6 +3,7 @@ Allow more SQL files to be uploaded at the same time
 Print run time next to executed queries
 Disable SQL export when applying functions in select
 Allow using lang() in plugins (customization)
+Remove bzip2 compression support
 MySQL: Optimize create table page and Editor navigation
 MySQL: Display bit type as binary number
 MySQL: Improve export of binary data types

@@ -4,7 +4,7 @@ Variables editation
 Blob download and image display in edit form (important for Editor with hidden fields in select and SQL command)
 Add title to Logout, edit (in select) and select (in menu) for style "hever"
 Export by GET parameters
-Only first part of big BZ2 export is readable, files are missing in TAR
+Files are missing in TAR
 Draggable columns in alter table (thanks to Michal Manak)
 <option class> for system databases and schemas - information_schema and driver-specific (thanks to Vaclav Novotny)
 Define foreign keys name - http://forum.zdrojak.root.cz/index.php?topic=185.msg1255#msg1255

@@ -20,10 +20,10 @@ if (!$error && $_POST) {
 	$fp = false;
 	$query = $_POST["query"];
 	if ($_POST["webfile"]) {
-		$fp = @fopen((file_exists("adminer.sql") ? "adminer.sql"
-			: (file_exists("adminer.sql.gz") ? "compress.zlib://adminer.sql.gz"
-			: "compress.bzip2://adminer.sql.bz2"
-		)), "rb");
+		$fp = @fopen((file_exists("adminer.sql")
+			? "adminer.sql"
+			: "compress.zlib://adminer.sql.gz"
+		), "rb");
 		$query = ($fp ? fread($fp, 1e6) : false);
 	} elseif ($_FILES && $_FILES["sql_file"]["error"][0] != 4) { // 4 - UPLOAD_ERR_NO_FILE
 		$query = get_file("sql_file", true);
@@ -194,13 +194,7 @@ echo checkbox("error_stops", 1, $_POST["error_stops"], lang('Stop on error')) . 
 echo checkbox("only_errors", 1, $_POST["only_errors"], lang('Show only errors')) . "\n";
 
 print_fieldset("webfile", lang('From server'), $_POST["webfile"], "document.getElementById('form')['only_errors'].checked = true; ");
-$compress = array();
-foreach (array("gz" => "zlib", "bz2" => "bz2") as $key => $val) {
-	if (extension_loaded($val)) {
-		$compress[] = ".$key";
-	}
-}
-echo lang('Webserver file %s', "<code>adminer.sql" . ($compress ? "[" . implode("|", $compress) . "]" : "") . "</code>");
+echo lang('Webserver file %s', "<code>adminer.sql" . (extension_loaded("zlib") ? "[.gz]" : "") . "</code>");
 echo ' <input type="submit" name="webfile" value="' . lang('Run file') . '">';
 echo "</div></fieldset>\n";
 
