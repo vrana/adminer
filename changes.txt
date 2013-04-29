@@ -4,6 +4,7 @@ Print run time next to executed queries
 Disable SQL export when applying functions in select
 Allow using lang() in plugins (customization)
 Remove bzip2 compression support
+Allow exporting views dependent on each other (bug #3459151)
 MySQL: Optimize create table page and Editor navigation
 MySQL: Display bit type as binary number
 MySQL: Improve export of binary data types

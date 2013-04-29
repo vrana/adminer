@@ -590,22 +590,30 @@ username.form['auth[driver]'].onchange();
 	/** Export table structure
 	* @param string
 	* @param string
-	* @param bool
+	* @param int 0 table, 1 view, 2 temporary view table
 	* @return null prints data
 	*/
-	function dumpTable($table, $style, $is_view = false) {
+	function dumpTable($table, $style, $is_view = 0) {
 		if ($_POST["format"] != "sql") {
 			echo "\xef\xbb\xbf"; // UTF-8 byte order mark
 			if ($style) {
 				dump_csv(array_keys(fields($table)));
 			}
 		} elseif ($style) {
-			$create = create_sql($table, $_POST["auto_increment"]);
-			if ($create) {
-				if ($style == "DROP+CREATE") {
-					echo "DROP " . ($is_view ? "VIEW" : "TABLE") . " IF EXISTS " . table($table) . ";\n";
+			if ($is_view == 2) {
+				$fields = array();
+				foreach (fields($table) as $name => $field) {
+					$fields[] = idf_escape($name) . " $field[full_type]";
 				}
-				if ($is_view) {
+				$create = "CREATE TABLE " . table($table) . " (" . implode(", ", $fields) . ")";
+			} else {
+				$create = create_sql($table, $_POST["auto_increment"]);
+			}
+			if ($create) {
+				if ($style == "DROP+CREATE" || $is_view == 1) {
+					echo "DROP " . ($is_view == 2 ? "VIEW" : "TABLE") . " IF EXISTS " . table($table) . ";\n";
+				}
+				if ($is_view == 1) {
 					$create = remove_definer($create);
 				}
 				echo "$create;\n\n";

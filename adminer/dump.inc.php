@@ -70,30 +70,28 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 					$table = (DB == "" || in_array($name, (array) $_POST["tables"]));
 					$data = (DB == "" || in_array($name, (array) $_POST["data"]));
 					if ($table || $data) {
-						if (!is_view($table_status)) {
-							if ($ext == "tar") {
-								ob_start();
-							}
-							$adminer->dumpTable($name, ($table ? $_POST["table_style"] : ""));
-							if ($data) {
-								$fields = fields($name);
-								$adminer->dumpData($name, $_POST["data_style"], "SELECT *" . convert_fields($fields, $fields) . " FROM " . table($name));
-							}
-							if ($is_sql && $_POST["triggers"] && $table && ($triggers = trigger_sql($name, $_POST["table_style"]))) {
-								echo "\nDELIMITER ;;\n$triggers\nDELIMITER ;\n";
-							}
-							if ($ext == "tar") {
-								echo tar_file((DB != "" ? "" : "$db/") . "$name.csv", ob_get_clean());
-							} elseif ($is_sql) {
-								echo "\n";
-							}
-						} elseif ($is_sql) {
+						if ($ext == "tar") {
+							ob_start();
+						}
+						$adminer->dumpTable($name, ($table ? $_POST["table_style"] : ""), (is_view($table_status) ? 2 : 0));
+						if (is_view($table_status)) {
 							$views[] = $name;
+						} elseif ($data) {
+							$fields = fields($name);
+							$adminer->dumpData($name, $_POST["data_style"], "SELECT *" . convert_fields($fields, $fields) . " FROM " . table($name));
+						}
+						if ($is_sql && $_POST["triggers"] && $table && ($triggers = trigger_sql($name, $_POST["table_style"]))) {
+							echo "\nDELIMITER ;;\n$triggers\nDELIMITER ;\n";
+						}
+						if ($ext == "tar") {
+							echo tar_file((DB != "" ? "" : "$db/") . "$name.csv", ob_get_clean());
+						} elseif ($is_sql) {
+							echo "\n";
 						}
 					}
 				}
 				foreach ($views as $view) {
-					$adminer->dumpTable($view, $_POST["table_style"], true);
+					$adminer->dumpTable($view, $_POST["table_style"], 1);
 				}
 				if ($ext == "tar") {
 					echo pack("x512");
