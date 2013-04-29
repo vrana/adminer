@@ -412,7 +412,7 @@ function remove_definer($query) {
 /** Get string to add a file in TAR
 * @param string
 * @param string
-* @return string
+* @return null prints the output
 */
 function tar_file($filename, $contents) {
 	$return = pack("a100a8a8a8a12a12", $filename, 644, 0, 0, decoct(strlen($contents)), decoct(time()));
@@ -421,7 +421,10 @@ function tar_file($filename, $contents) {
 		$checksum += ord($return[$i]);
 	}
 	$return .= sprintf("%06o", $checksum) . "\0 ";
-	return $return . str_repeat("\0", 512 - strlen($return)) . $contents . str_repeat("\0", 511 - (strlen($contents) + 511) % 512);
+	echo $return;
+	echo str_repeat("\0", 512 - strlen($return));
+	echo $contents;
+	echo str_repeat("\0", 511 - (strlen($contents) + 511) % 512);
 }
 
 /** Get INI bytes value

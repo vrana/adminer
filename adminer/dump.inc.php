@@ -84,7 +84,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 							echo "\nDELIMITER ;;\n$triggers\nDELIMITER ;\n";
 						}
 						if ($ext == "tar") {
-							echo tar_file((DB != "" ? "" : "$db/") . "$name.csv", ob_get_clean());
+							tar_file((DB != "" ? "" : "$db/") . "$name.csv", ob_get_clean());
 						} elseif ($is_sql) {
 							echo "\n";
 						}
