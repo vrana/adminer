@@ -873,6 +873,8 @@ function dump_headers($identifier, $multi_table = false) {
 		header("Content-Disposition: attachment; filename=" . $adminer->dumpFilename($identifier) . ".$return" . ($output != "file" && !ereg('[^0-9a-z]', $output) ? ".$output" : ""));
 	}
 	session_write_close();
+	ob_flush();
+	flush();
 	return $return;
 }
 
