@@ -4,7 +4,6 @@ Variables editation
 Blob download and image display in edit form (important for Editor with hidden fields in select and SQL command)
 Add title to Logout, edit (in select) and select (in menu) for style "hever"
 Export by GET parameters
-Files are missing in TAR due to exhausted memory - can be fixed by creating a temporary file
 Draggable columns in alter table (thanks to Michal Manak)
 <option class> for system databases and schemas - information_schema and driver-specific (thanks to Vaclav Novotny)
 Define foreign keys name - http://forum.zdrojak.root.cz/index.php?topic=185.msg1255#msg1255

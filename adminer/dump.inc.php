@@ -71,7 +71,8 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 					$data = (DB == "" || in_array($name, (array) $_POST["data"]));
 					if ($table || $data) {
 						if ($ext == "tar") {
-							ob_start();
+							$tmp_file = new TmpFile;
+							ob_start(array($tmp_file, 'write'), 1e5);
 						}
 						$adminer->dumpTable($name, ($table ? $_POST["table_style"] : ""), (is_view($table_status) ? 2 : 0));
 						if (is_view($table_status)) {
@@ -84,7 +85,8 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 							echo "\nDELIMITER ;;\n$triggers\nDELIMITER ;\n";
 						}
 						if ($ext == "tar") {
-							tar_file((DB != "" ? "" : "$db/") . "$name.csv", ob_get_clean());
+							ob_end_flush();
+							tar_file((DB != "" ? "" : "$db/") . "$name.csv", $tmp_file);
 						} elseif ($is_sql) {
 							echo "\n";
 						}
