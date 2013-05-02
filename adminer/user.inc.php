@@ -26,6 +26,7 @@ if ($_POST) {
 }
 $grants = array();
 $old_pass = "";
+
 if (isset($_GET["host"]) && ($result = $connection->query("SHOW GRANTS FOR " . q($USER) . "@" . q($_GET["host"])))) { //! use information_schema for MySQL 5 - column names in column privileges are not escaped
 	while ($row = $result->fetch_row()) {
 		if (preg_match('~GRANT (.*) ON (.*) TO ~', $row[0], $match) && preg_match_all('~ *([^(,]*[^ ,(])( *\\([^)]+\\))?~', $match[1], $matches, PREG_SET_ORDER)) { //! escape the part between ON and TO
@@ -56,6 +57,7 @@ if ($_POST && !$error) {
 			$pass = $connection->result("SELECT PASSWORD(" . q($pass) . ")");
 			$error = !$pass;
 		}
+		
 		$created = false;
 		if (!$error) {
 			if ($old_user != $new_user) {
@@ -65,6 +67,7 @@ if ($_POST && !$error) {
 				queries("SET PASSWORD FOR $new_user = " . q($pass));
 			}
 		}
+		
 		if (!$error) {
 			$revoke = array();
 			foreach ($new_grants as $object => $grant) {
@@ -90,6 +93,7 @@ if ($_POST && !$error) {
 				}
 			}
 		}
+		
 		if (!$error && isset($_GET["host"])) {
 			if ($old_user != $new_user) {
 				queries("DROP USER $old_user");
@@ -101,7 +105,9 @@ if ($_POST && !$error) {
 				}
 			}
 		}
+		
 		queries_redirect(ME . "privileges=", (isset($_GET["host"]) ? lang('User has been altered.') : lang('User has been created.')), !$error);
+		
 		if ($created) {
 			// delete new user in case of an error
 			$connection->query("DROP USER $new_user");
@@ -143,6 +149,7 @@ foreach ($grants as $object => $grant) {
 	$i++;
 }
 echo "</thead>\n";
+
 foreach (array(
 	"" => "",
 	"Server Admin" => lang('Server'),
@@ -168,6 +175,7 @@ foreach (array(
 		}
 	}
 }
+
 echo "</table>\n";
 ?>
 <p>

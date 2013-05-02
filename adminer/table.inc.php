@@ -7,6 +7,7 @@ if (!$fields) {
 $table_status = ($fields ? table_status($TABLE, true) : array());
 
 page_header(($fields && is_view($table_status) ? lang('View') : lang('Table')) . ": " . h($TABLE), $error);
+
 $adminer->selectLinks($table_status);
 $comment = $table_status["Comment"];
 if ($comment != "") {
@@ -79,5 +80,6 @@ if ($fields) {
 			}
 			echo '<p><a href="' . h(ME) . 'trigger=' . urlencode($TABLE) . '">' . lang('Add trigger') . "</a>\n";
 		}
+		
 	}
 }

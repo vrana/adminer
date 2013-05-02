@@ -18,6 +18,7 @@ page_header(lang('Process list'), $error);
 // HTML valid because there is always at least one process
 $i = -1;
 foreach (process_list() as $i => $row) {
+	
 	if (!$i) {
 		echo "<thead><tr lang='en'>" . (support("kill") ? "<th>&nbsp;" : "");
 		foreach ($row as $key => $val) {
@@ -28,6 +29,7 @@ foreach (process_list() as $i => $row) {
 		}
 		echo "</thead>\n";
 	}
+	
 	echo "<tr" . odd() . ">" . (support("kill") ? "<td>" . checkbox("kill[]", $row["Id"], 0) : "");
 	foreach ($row as $key => $val) {
 		echo "<td>" . (

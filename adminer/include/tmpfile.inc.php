@@ -18,4 +18,5 @@ class TmpFile {
 		fpassthru($this->handler);
 		fclose($this->handler);
 	}
+	
 }

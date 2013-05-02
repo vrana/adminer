@@ -33,6 +33,7 @@ if ($auth) {
 	) {
 		redirect(auth_url($auth["driver"], $auth["server"], $auth["username"], $auth["db"]));
 	}
+	
 } elseif ($_POST["logout"]) {
 	if ($token && $_POST["token"] != $token) {
 		page_header(lang('Logout'), lang('Invalid CSRF token. Send the form again.'));
@@ -45,6 +46,7 @@ if ($auth) {
 		unset_permanent();
 		redirect(substr(preg_replace('~(username|db|ns)=[^&]*&~', '', ME), 0, -1), lang('Logout successful.'));
 	}
+	
 } elseif ($permanent && !$_SESSION["pwds"]) {
 	session_regenerate_id();
 	$private = $adminer->permanentLogin(); // try to decode even if not set
@@ -105,6 +107,7 @@ if (isset($_GET["username"])) {
 	}
 	$connection = connect();
 }
+
 if (is_string($connection) || !$adminer->login($_GET["username"], get_session("pwds"))) {
 	auth_error();
 	exit;
@@ -134,6 +137,7 @@ if ($_POST) {
 			: lang('Invalid CSRF token. Send the form again.')
 		);
 	}
+	
 } elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
 	// posted form with no data means that post_max_size exceeded because Adminer always sends token at least
 	$error = lang('Too big POST data. Reduce the data or increase the %s configuration directive.', "'post_max_size'");

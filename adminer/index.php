@@ -22,6 +22,7 @@ if (isset($_GET["callf"])) {
 if (isset($_GET["function"])) {
 	$_GET["procedure"] = $_GET["function"];
 }
+
 if (isset($_GET["download"])) {
 	include "./download.inc.php";
 } elseif (isset($_GET["table"])) {

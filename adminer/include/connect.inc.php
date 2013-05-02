@@ -31,6 +31,7 @@ function connect_error() {
 			echo "<form action='' method='post'>\n";
 			echo "<table cellspacing='0' class='checkable' onclick='tableClick(event);' ondblclick='tableClick(event, true);'>\n";
 			echo "<thead><tr><td>&nbsp;<th>" . lang('Database') . "<td>" . lang('Collation') . "<td>" . lang('Tables') . "</thead>\n";
+			
 			foreach ($databases as $db) {
 				$root = h(ME) . "db=" . urlencode($db);
 				echo "<tr" . odd() . "><td>" . checkbox("db[]", $db, in_array($db, (array) $_POST["db"]));
@@ -39,6 +40,7 @@ function connect_error() {
 				echo "<td align='right'><a href='$root&amp;schema=' id='tables-" . h($db) . "' title='" . lang('Database schema') . "'>?</a>";
 				echo "\n";
 			}
+			
 			echo "</table>\n";
 			echo "<script type='text/javascript'>tableCheck();</script>\n";
 			echo "<p><input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm("formChecked(this, /db/)") . ">\n";
@@ -49,6 +51,7 @@ function connect_error() {
 			echo "<p>$refresh";
 		}
 	}
+	
 	page_footer("db");
 	if ($databases) {
 		echo "<script type='text/javascript'>ajaxSetHtml('" . js_escape(ME) . "script=connect');</script>\n";

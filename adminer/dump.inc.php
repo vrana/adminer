@@ -12,6 +12,7 @@ if ($_POST && !$error) {
 		(count($tables) == 1 ? key($tables) : DB),
 		(DB == "" || count($tables) > 1));
 	$is_sql = ereg('sql', $_POST["format"]);
+	
 	if ($is_sql) {
 		echo "-- Adminer $VERSION " . $drivers[DRIVER] . " dump
 
@@ -31,6 +32,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 			$databases = explode("\n", rtrim(str_replace("\r", "", $databases), "\n"));
 		}
 	}
+	
 	foreach ((array) $databases as $db) {
 		$adminer->dumpDatabase($db);
 		if ($connection->select_db($db)) {
@@ -45,6 +47,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 					echo use_sql($db) . ";\n\n";
 				}
 				$out = "";
+				
 				if ($_POST["routines"]) {
 					foreach (array("FUNCTION", "PROCEDURE") as $routine) {
 						foreach (get_rows("SHOW $routine STATUS WHERE Db = " . q($db), null, "-- ") as $row) {
@@ -53,12 +56,14 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 						}
 					}
 				}
+				
 				if ($_POST["events"]) {
 					foreach (get_rows("SHOW EVENTS", null, "-- ") as $row) {
 						$out .= ($style != 'DROP+CREATE' ? "DROP EVENT IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
 						. remove_definer($connection->result("SHOW CREATE EVENT " . idf_escape($row["Name"]), 3)) . ";;\n\n";
 					}
 				}
+				
 				if ($out) {
 					echo "DELIMITER ;;\n\n$out" . "DELIMITER ;\n\n";
 				}
@@ -74,6 +79,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 							$tmp_file = new TmpFile;
 							ob_start(array($tmp_file, 'write'), 1e5);
 						}
+						
 						$adminer->dumpTable($name, ($table ? $_POST["table_style"] : ""), (is_view($table_status) ? 2 : 0));
 						if (is_view($table_status)) {
 							$views[] = $name;
@@ -84,6 +90,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 						if ($is_sql && $_POST["triggers"] && $table && ($triggers = trigger_sql($name, $_POST["table_style"]))) {
 							echo "\nDELIMITER ;;\n$triggers\nDELIMITER ;\n";
 						}
+						
 						if ($ext == "tar") {
 							ob_end_flush();
 							tar_file((DB != "" ? "" : "$db/") . "$name.csv", $tmp_file);
@@ -92,15 +99,18 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 						}
 					}
 				}
+				
 				foreach ($views as $view) {
 					$adminer->dumpTable($view, $_POST["table_style"], 1);
 				}
+				
 				if ($ext == "tar") {
 					echo pack("x512");
 				}
 			}
 		}
 	}
+	
 	if ($is_sql) {
 		echo "-- " . $connection->result("SELECT NOW()") . "\n";
 	}
@@ -127,16 +137,21 @@ if (!isset($row["events"])) { // backwards compatibility
 	$row["routines"] = $row["events"] = ($_GET["dump"] == "");
 	$row["triggers"] = $row["table_style"];
 }
+
 echo "<tr><th>" . lang('Output') . "<td>" . html_select("output", $adminer->dumpOutput(), $row["output"], 0) . "\n"; // 0 - radio
+
 echo "<tr><th>" . lang('Format') . "<td>" . html_select("format", $adminer->dumpFormat(), $row["format"], 0) . "\n"; // 0 - radio
+
 echo ($jush == "sqlite" ? "" : "<tr><th>" . lang('Database') . "<td>" . html_select('db_style', $db_style, $row["db_style"])
 	. (support("routine") ? checkbox("routines", 1, $row["routines"], lang('Routines')) : "")
 	. (support("event") ? checkbox("events", 1, $row["events"], lang('Events')) : "")
 );
+
 echo "<tr><th>" . lang('Tables') . "<td>" . html_select('table_style', $table_style, $row["table_style"])
 	. checkbox("auto_increment", 1, $row["auto_increment"], lang('Auto Increment'))
 	. (support("trigger") ? checkbox("triggers", 1, $row["triggers"], lang('Triggers')) : "")
 ;
+
 echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style, $row["data_style"]);
 ?>
 </table>
@@ -152,6 +167,7 @@ if (DB != "") {
 	echo "<th style='text-align: left;'><label><input type='checkbox' id='check-tables'$checked onclick='formCheck(this, /^tables\\[/);'>" . lang('Tables') . "</label>";
 	echo "<th style='text-align: right;'><label>" . lang('Data') . "<input type='checkbox' id='check-data'$checked onclick='formCheck(this, /^data\\[/);'></label>";
 	echo "</thead>\n";
+	
 	$views = "";
 	//! defer number of rows to JavaScript
 	foreach (table_status() as $name => $table_status) {
@@ -166,6 +182,7 @@ if (DB != "") {
 		$prefixes[$prefix]++;
 	}
 	echo $views;
+	
 } else {
 	echo "<thead><tr><th style='text-align: left;'><label><input type='checkbox' id='check-databases'" . ($TABLE == "" ? " checked" : "") . " onclick='formCheck(this, /^databases\\[/);'>" . lang('Database') . "</label></thead>\n";
 	$databases = $adminer->databases();

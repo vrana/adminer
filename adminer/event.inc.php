@@ -14,6 +14,7 @@ if ($_POST && !$error) {
 			: "AT " . q($_POST["STARTS"])
 			) . " ON COMPLETION" . ($_POST["ON_COMPLETION"] ? "" : " NOT") . " PRESERVE"
 		;
+		
 		queries_redirect(substr(ME, 0, -1), ($EVENT != "" ? lang('Event has been altered.') : lang('Event has been created.')), queries(($EVENT != ""
 			? "ALTER EVENT " . idf_escape($EVENT) . $schedule
 			. ($EVENT != $_POST["EVENT_NAME"] ? "\nRENAME TO " . idf_escape($_POST["EVENT_NAME"]) : "")

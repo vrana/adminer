@@ -29,6 +29,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 		ksort($_POST["fields"]);
 		$orig_field = reset($orig_fields);
 		$after = " FIRST";
+		
 		foreach ($_POST["fields"] as $key => $field) {
 			$foreign_key = $foreign_keys[$field["type"]];
 			$type_field = ($foreign_key !== null ? $referencable_primary[$foreign_key] : $field); //! can collide with user defined type
@@ -62,6 +63,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 				}
 			}
 		}
+		
 		$partitioning = "";
 		if (in_array($_POST["partition_by"], $partition_by)) {
 			$partitions = array();
@@ -78,12 +80,14 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 		} elseif (support("partitioning") && ereg("partitioned", $orig_status["Create_options"])) {
 			$partitioning .= "\nREMOVE PARTITIONING";
 		}
+		
 		$message = lang('Table has been altered.');
 		if ($TABLE == "") {
 			cookie("adminer_engine", $_POST["Engine"]);
 			$message = lang('Table has been created.');
 		}
 		$name = trim($_POST["name"]);
+		
 		queries_redirect(ME . "table=" . urlencode($name), $message, alter_table(
 			$TABLE,
 			$name,
@@ -105,12 +109,14 @@ $row = array(
 	"fields" => array(array("field" => "", "type" => (isset($types["int"]) ? "int" : (isset($types["integer"]) ? "integer" : "")))),
 	"partition_names" => array(""),
 );
+
 if ($_POST) {
 	$row = $_POST;
 	if ($row["auto_increment_col"]) {
 		$row["fields"][$row["auto_increment_col"]]["auto_increment"] = true;
 	}
 	process_fields($row["fields"]);
+	
 } elseif ($TABLE != "") {
 	$row = $orig_status;
 	$row["name"] = $TABLE;
@@ -122,6 +128,7 @@ if ($_POST) {
 		$field["has_default"] = isset($field["default"]);
 		$row["fields"][] = $field;
 	}
+	
 	if (support("partitioning")) {
 		$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . q(DB) . " AND TABLE_NAME = " . q($TABLE);
 		$result = $connection->query("SELECT PARTITION_METHOD, PARTITION_ORDINAL_POSITION, PARTITION_EXPRESSION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
@@ -135,8 +142,8 @@ if ($_POST) {
 		$row["partition_names"][] = "";
 	}
 }
-$collations = collations();
 
+$collations = collations();
 $engines = engines();
 // case of engine may differ
 foreach ($engines as $engine) {

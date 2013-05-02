@@ -8,6 +8,7 @@ foreach ($fields as $name => $field) {
 		unset($fields[$name]);
 	}
 }
+
 if ($_POST && !$error && !isset($_GET["select"])) {
 	$location = $_POST["referer"];
 	if ($_POST["insert"]) { // continue edit or insert
@@ -15,6 +16,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 	} elseif (!ereg('^.+&select=.+$', $location)) {
 		$location = ME . "select=" . urlencode($TABLE);
 	}
+	
 	if (isset($_POST["delete"])) {
 		query_redirect("DELETE" . limit1("FROM " . table($TABLE), " WHERE $where"), $location, lang('Item has been deleted.'));
 	} else {
@@ -25,6 +27,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 				$set[idf_escape($name)] = ($update ? "\n" . idf_escape($name) . " = $val" : $val);
 			}
 		}
+		
 		if ($update) {
 			if (!$set) {
 				redirect($location);
@@ -81,6 +84,7 @@ if (!$fields) {
 	echo "<p class='error'>" . lang('You have no privileges to update this table.') . "\n";
 } else {
 	echo "<table cellspacing='0' onkeydown='return editingKeydown(event);'>\n";
+	
 	foreach ($fields as $name => $field) {
 		echo "<tr><th>" . $adminer->fieldName($field);
 		$default = $_GET["set"][bracket_escape($name)];
@@ -105,6 +109,7 @@ if (!$fields) {
 		input($field, $value, $function);
 		echo "\n";
 	}
+	
 	echo "</table>\n";
 }
 ?>

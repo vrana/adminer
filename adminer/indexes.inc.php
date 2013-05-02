@@ -10,6 +10,7 @@ if ($jush == "sqlite") { // doesn't support primary key
 	unset($index_types[0]);
 	unset($indexes[""]);
 }
+
 if ($_POST && !$error && !$_POST["add"]) {
 	$alter = array();
 	foreach ($_POST["indexes"] as $index) {
@@ -27,6 +28,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 					$lengths[] = ($length ? $length : null);
 				}
 			}
+			
 			if ($columns) {
 				$existing = $indexes[$name];
 				if ($existing) {
@@ -42,6 +44,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 			}
 		}
 	}
+	
 	// drop removed indexes
 	foreach ($indexes as $name => $existing) {
 		$alter[] = array($existing["type"], $name, "DROP");
@@ -86,12 +89,14 @@ $j = 1;
 foreach ($row["indexes"] as $index) {
 	echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) ? "indexesAddRow(this);" : 1)) . "<td>";
 	ksort($index["columns"]);
+	
 	$i = 1;
 	foreach ($index["columns"] as $key => $column) {
 		echo "<span>" . html_select("indexes[$j][columns][$i]", array(-1 => "") + $fields, $column, ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . "(this, '" . js_escape($jush == "sql" ? "" : $_GET["indexes"] . "_") . "');");
 		echo "<input type='number' name='indexes[$j][lengths][$i]' class='size' value='" . h($index["lengths"][$key]) . "'> </span>"; //! hide for non-MySQL drivers, add ASC|DESC
 		$i++;
 	}
+	
 	echo "<td><input name='indexes[$j][name]' value='" . h($index["name"]) . "' autocapitalize='off'>\n";
 	$j++;
 }

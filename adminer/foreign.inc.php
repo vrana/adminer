@@ -10,6 +10,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 		foreach ($source as $key => $val) {
 			$target[$key] = $_POST["target"][$key];
 		}
+		
 		query_redirect("ALTER TABLE " . table($TABLE)
 			. ($_GET["name"] != "" ? "\nDROP " . ($jush == "sql" ? "FOREIGN KEY " : "CONSTRAINT ") . idf_escape($_GET["name"]) . "," : "")
 			. "\nADD FOREIGN KEY (" . implode(", ", array_map('idf_escape', $source)) . ") REFERENCES " . table($_POST["table"]) . " (" . implode(", ", array_map('idf_escape', $target)) . ")" //! reuse $_GET["name"] - check in older MySQL versions
