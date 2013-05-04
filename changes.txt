@@ -6,6 +6,7 @@ Allow using lang() in plugins (customization)
 Remove bzip2 compression support
 Constraint memory used in TAR export
 Allow exporting views dependent on each other (bug #3459151)
+Fix resetting search (bug #3612507)
 MySQL: Optimize create table page and Editor navigation
 MySQL: Display bit type as binary number
 MySQL: Improve export of binary data types

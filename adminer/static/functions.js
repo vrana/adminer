@@ -258,7 +258,7 @@ function selectAddRow(field) {
 /** Clear column name after resetting search
 * @param HTMLInputElement
 */
-function selectSearch(el) {
+function selectSearchSearch(el) {
 	if (!el.value) {
 		el.parentNode.firstChild.selectedIndex = 0;
 	}
