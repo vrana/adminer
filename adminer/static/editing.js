@@ -291,7 +291,7 @@ function editingAddRow(button, focus) {
 	var match = /(\d+)(\.\d+)?/.exec(button.name);
 	var x = match[0] + (match[2] ? added.substr(match[2].length) : added) + '1';
 	var row = parentTag(button, 'tr');
-	var row2 = row.cloneNode(true);
+	var row2 = cloneNode(row);
 	var tags = row.getElementsByTagName('select');
 	var tags2 = row2.getElementsByTagName('select');
 	for (var i=0; i < tags.length; i++) {
@@ -434,7 +434,7 @@ function partitionByChange(el) {
 * @param HTMLInputElement
 */
 function partitionNameChange(el) {
-	var row = parentTag(el, 'tr').cloneNode(true);
+	var row = cloneNode(parentTag(el, 'tr'));
 	row.firstChild.firstChild.value = '';
 	parentTag(el, 'table').appendChild(row);
 	el.onchange = function () {};
@@ -447,7 +447,7 @@ function partitionNameChange(el) {
 */
 function foreignAddRow(field) {
 	field.onchange = function () { };
-	var row = parentTag(field, 'tr').cloneNode(true);
+	var row = cloneNode(parentTag(field, 'tr'));
 	var selects = row.getElementsByTagName('select');
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/\]/, '1$&');
@@ -463,7 +463,7 @@ function foreignAddRow(field) {
 */
 function indexesAddRow(field) {
 	field.onchange = function () { };
-	var row = parentTag(field, 'tr').cloneNode(true);
+	var row = cloneNode(parentTag(field, 'tr'));
 	var selects = row.getElementsByTagName('select');
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/indexes\[\d+/, '$&1');
@@ -506,7 +506,7 @@ function indexesAddColumn(field, prefix) {
 		select.selectedIndex = 3;
 		select.onchange();
 	}
-	var column = field.parentNode.cloneNode(true);
+	var column = cloneNode(field.parentNode);
 	select = column.getElementsByTagName('select')[0];
 	select.name = select.name.replace(/\]\[\d+/, '$&1');
 	select.selectedIndex = 0;

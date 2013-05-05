@@ -195,7 +195,7 @@ if ($_POST) {
 }
 textarea("query", $q, 20);
 
-echo ($_POST ? "" : "<script type='text/javascript'>document.getElementsByTagName('textarea')[0].focus();</script>\n");
+echo ($_POST ? "" : "<script type='text/javascript'>focus(document.getElementsByTagName('textarea')[0]);</script>\n");
 echo "<p>" . (ini_bool("file_uploads")
 	? lang('File upload') . ': <input type="file" name="sql_file[]" multiple'
 		. ($_FILES && $_FILES["sql_file"]["error"][0] != 4 ? '' : ' onchange="this.form[\'only_errors\'].checked = true;"') // 4 - UPLOAD_ERR_NO_FILE

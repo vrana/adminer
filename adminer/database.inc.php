@@ -62,7 +62,7 @@ echo ($_POST["add_x"] || strpos($name, "\n")
 	: '<input name="name" id="name" value="' . h($name) . '" maxlength="64" autocapitalize="off">'
 ) . "\n" . ($collations ? html_select("collation", array("" => "(" . lang('collation') . ")") + $collations, $collate) : "");
 ?>
-<script type='text/javascript'>document.getElementById('name').focus();</script>
+<script type='text/javascript'>focus(document.getElementById('name'));</script>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php
 if (DB != "") {

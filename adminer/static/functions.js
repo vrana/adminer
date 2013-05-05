@@ -240,7 +240,7 @@ function selectAddRow(field) {
 		selectFieldChange(field.form);
 	};
 	field.onchange();
-	var row = field.parentNode.cloneNode(true);
+	var row = cloneNode(field.parentNode);
 	var selects = row.getElementsByTagName('select');
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/[a-z]\[\d+/, '$&1');
@@ -474,6 +474,7 @@ function selectClick(td, event, text, warning) {
 	}
 	td.innerHTML = '';
 	td.appendChild(input);
+	setupSubmitHighlight(td);
 	input.focus();
 	if (text == 2) { // long text
 		return ajax(location.href + '&' + encodeURIComponent(td.id) + '=', function (request) {
@@ -535,4 +536,89 @@ function eventStop(event) {
 	} else {
 		event.cancelBubble = true;
 	}
+}
+
+
+
+/** Setup highlighting of default submit button on form field focus
+* @param HTMLElement
+*/
+function setupSubmitHighlight(parent) {
+	for (var key in { input: 1, select: 1, textarea: 1 }) {
+		var inputs = parent.getElementsByTagName(key);
+		for (var i = 0; i < inputs.length; i++) {
+			if (!/submit|image|file/.test(inputs[i].type)) {
+				addEvent(inputs[i], 'focus', inputFocus);
+				addEvent(inputs[i], 'blur', inputBlur);
+			}
+		}
+	}
+}
+
+/** Highlight default submit button
+* @this HTMLInputElement
+*/
+function inputFocus() {
+	var submit = findDefaultSubmit(this.form);
+	if (submit) {
+		submit.className += ' default';
+	}
+}
+
+/** Unhighlight default submit button
+* @this HTMLInputElement
+*/
+function inputBlur() {
+	var submit = findDefaultSubmit(this.form);
+	if (submit) {
+		submit.className = submit.className.replace(/ default( |$)/, '$1');
+	}
+}
+
+/** Find submit button used by Enter
+* @param HTMLFormElement
+* @return HTMLInputElement
+*/
+function findDefaultSubmit(form) {
+	var inputs = form.getElementsByTagName('input');
+	for (var i = 0; i < inputs.length; i++) {
+		var input = inputs[i];
+		if (input.type == 'submit') {
+			return input;
+		}
+	}
+}
+
+
+
+/** Add event listener
+* @param HTMLElement
+* @param string without 'on'
+* @param function
+*/
+function addEvent(el, action, handler) {
+	if (el.addEventListener) {
+		el.addEventListener(action, handler, false);
+	} else {
+		el.attachEvent('on' + action, handler);
+	}
+}
+
+/** Defer focusing element
+* @param HTMLElement
+*/
+function focus(el) {
+	setTimeout(function () { // this has to be an anonymous function because Firefox passes some arguments to setTimeout callback
+		el.focus();
+	}, 0);
+}
+
+/** Clone node and setup submit highlighting
+* @param HTMLElement
+* @return HTMLElement
+*/
+function cloneNode(el) {
+	var el2 = el.cloneNode(true);
+	setupSubmitHighlight(el2);
+	return el2;
 }

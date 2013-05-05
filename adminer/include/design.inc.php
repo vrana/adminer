@@ -98,5 +98,6 @@ function page_footer($missing = "") {
 <div id="menu">
 <?php $adminer->navigation($missing); ?>
 </div>
+<script type="text/javascript">setupSubmitHighlight(document);</script>
 <?php
 }

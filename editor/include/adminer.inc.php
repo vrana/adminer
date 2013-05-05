@@ -49,7 +49,7 @@ class Adminer {
 <tr><th><?php echo lang('Password'); ?><td><input type="password" name="auth[password]">
 </table>
 <script type="text/javascript">
-document.getElementById('username').focus();
+focus(document.getElementById('username'));
 </script>
 <?php
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";

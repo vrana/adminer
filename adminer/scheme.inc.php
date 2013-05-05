@@ -26,7 +26,7 @@ if (!$row) {
 
 <form action="" method="post">
 <p><input name="name" id="name" value="<?php echo h($row["name"]); ?>" autocapitalize="off">
-<script type='text/javascript'>document.getElementById('name').focus();</script>
+<script type='text/javascript'>focus(document.getElementById('name'));</script>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php
 if ($_GET["ns"] != "") {

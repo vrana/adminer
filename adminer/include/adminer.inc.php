@@ -78,7 +78,7 @@ class Adminer {
 </table>
 <script type="text/javascript">
 var username = document.getElementById('username');
-username.focus();
+focus(username);
 username.form['auth[driver]'].onchange();
 </script>
 <?php
