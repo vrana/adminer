@@ -129,15 +129,6 @@ function textarea($name, $value, $rows = 10, $cols = 80) {
 	echo "</textarea>";
 }
 
-/** Format time difference
-* @param string output of microtime()
-* @param string output of microtime()
-* @return string HTML code
-*/
-function format_time($start, $end) {
-	return lang('%.3f s', max(0, array_sum(explode(" ", $end)) - array_sum(explode(" ", $start))));
-}
-
 /** Print table columns for type edit
 * @param string
 * @param array

@@ -565,6 +565,15 @@ function queries_redirect($location, $message, $redirect) {
 	return query_redirect(queries(), $location, $message, $redirect, false, !$redirect);
 }
 
+/** Format time difference
+* @param string output of microtime()
+* @param string output of microtime()
+* @return string HTML code
+*/
+function format_time($start, $end) {
+	return lang('%.3f s', max(0, array_sum(explode(" ", $end)) - array_sum(explode(" ", $start))));
+}
+
 /** Remove parameter from query string
 * @param string
 * @return string
