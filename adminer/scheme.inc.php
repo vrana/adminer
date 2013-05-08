@@ -1,10 +1,12 @@
 <?php
+$row = $_POST;
+
 if ($_POST && !$error) {
 	$link = preg_replace('~ns=[^&]*&~', '', ME) . "ns=";
 	if ($_POST["drop"]) {
 		query_redirect("DROP SCHEMA " . idf_escape($_GET["ns"]), $link, lang('Schema has been dropped.'));
 	} else {
-		$name = trim($_POST["name"]);
+		$name = trim($row["name"]);
 		$link .= urlencode($name);
 		if ($_GET["ns"] == "") {
 			query_redirect("CREATE SCHEMA " . idf_escape($name), $link, lang('Schema has been created.'));
@@ -18,9 +20,8 @@ if ($_POST && !$error) {
 
 page_header($_GET["ns"] != "" ? lang('Alter schema') : lang('Create schema'), $error);
 
-$row = $_POST;
 if (!$row) {
-	$row = array("name" => $_GET["ns"]);
+	$row["name"] = $_GET["ns"];
 }
 ?>
 

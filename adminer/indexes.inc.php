@@ -10,10 +10,11 @@ if ($jush == "sqlite") { // doesn't support primary key
 	unset($index_types[0]);
 	unset($indexes[""]);
 }
+$row = $_POST;
 
 if ($_POST && !$error && !$_POST["add"]) {
 	$alter = array();
-	foreach ($_POST["indexes"] as $index) {
+	foreach ($row["indexes"] as $index) {
 		$name = $index["name"];
 		if (in_array($index["type"], $index_types)) {
 			$columns = array();
@@ -58,26 +59,24 @@ if ($_POST && !$error && !$_POST["add"]) {
 page_header(lang('Indexes'), $error, array("table" => $TABLE), $TABLE);
 
 $fields = array_keys(fields($TABLE));
-$row = array("indexes" => $indexes);
-if ($_POST) {
-	$row = $_POST;
-	if ($_POST["add"]) {
-		foreach ($row["indexes"] as $key => $index) {
-			if ($index["columns"][count($index["columns"])] != "") {
-				$row["indexes"][$key]["columns"][] = "";
-			}
-		}
-		$index = end($row["indexes"]);
-		if ($index["type"] || array_filter($index["columns"], 'strlen') || array_filter($index["lengths"], 'strlen')) {
-			$row["indexes"][] = array("columns" => array(1 => ""));
-		}
-	}
-} else {
+if ($_POST["add"]) {
 	foreach ($row["indexes"] as $key => $index) {
-		$row["indexes"][$key]["name"] = $key;
-		$row["indexes"][$key]["columns"][] = "";
+		if ($index["columns"][count($index["columns"])] != "") {
+			$row["indexes"][$key]["columns"][] = "";
+		}
 	}
-	$row["indexes"][] = array("columns" => array(1 => ""));
+	$index = end($row["indexes"]);
+	if ($index["type"] || array_filter($index["columns"], 'strlen') || array_filter($index["lengths"], 'strlen')) {
+		$row["indexes"][] = array("columns" => array(1 => ""));
+	}
+}
+if (!$row) {
+	foreach ($indexes as $key => $index) {
+		$indexes[$key]["name"] = $key;
+		$indexes[$key]["columns"][] = "";
+	}
+	$indexes[] = array("columns" => array(1 => ""));
+	$row["indexes"] = $indexes;
 }
 ?>
 

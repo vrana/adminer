@@ -1,9 +1,10 @@
 <?php
 $SEQUENCE = $_GET["sequence"];
+$row = $_POST;
 
 if ($_POST && !$error) {
 	$link = substr(ME, 0, -1);
-	$name = trim($_POST["name"]);
+	$name = trim($row["name"]);
 	if ($_POST["drop"]) {
 		query_redirect("DROP SEQUENCE " . idf_escape($SEQUENCE), $link, lang('Sequence has been dropped.'));
 	} elseif ($SEQUENCE == "") {
@@ -17,9 +18,8 @@ if ($_POST && !$error) {
 
 page_header($SEQUENCE != "" ? lang('Alter sequence') . ": " . h($SEQUENCE) : lang('Create sequence'), $error);
 
-$row = $_POST;
 if (!$row) {
-	$row = array("name" => $SEQUENCE);
+	$row["name"] = $SEQUENCE;
 }
 ?>
 

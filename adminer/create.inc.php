@@ -14,9 +14,9 @@ if ($TABLE != "") {
 	$orig_fields = fields($TABLE);
 	$orig_status = table_status($TABLE);
 }
-if ($_POST && !$_POST["fields"]) {
-	$_POST["fields"] = array();
-}
+
+$row = $_POST;
+$row["fields"] = (array) $row["fields"];
 
 if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] && !$_POST["down"]) {
 	if ($_POST["drop"]) {
@@ -26,18 +26,18 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 		$all_fields = array();
 		$use_all_fields = false;
 		$foreign = array();
-		ksort($_POST["fields"]);
+		ksort($row["fields"]);
 		$orig_field = reset($orig_fields);
 		$after = " FIRST";
 		
-		foreach ($_POST["fields"] as $key => $field) {
+		foreach ($row["fields"] as $key => $field) {
 			$foreign_key = $foreign_keys[$field["type"]];
 			$type_field = ($foreign_key !== null ? $referencable_primary[$foreign_key] : $field); //! can collide with user defined type
 			if ($field["field"] != "") {
 				if (!$field["has_default"]) {
 					$field["default"] = null;
 				}
-				if ($key == $_POST["auto_increment_col"]) {
+				if ($key == $row["auto_increment_col"]) {
 					$field["auto_increment"] = true;
 				}
 				$process_field = process_field($field, $type_field);
@@ -65,17 +65,17 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 		}
 		
 		$partitioning = "";
-		if (in_array($_POST["partition_by"], $partition_by)) {
+		if (in_array($row["partition_by"], $partition_by)) {
 			$partitions = array();
-			if ($_POST["partition_by"] == 'RANGE' || $_POST["partition_by"] == 'LIST') {
-				foreach (array_filter($_POST["partition_names"]) as $key => $val) {
-					$value = $_POST["partition_values"][$key];
-					$partitions[] = "\nPARTITION " . idf_escape($val) . " VALUES " . ($_POST["partition_by"] == 'RANGE' ? "LESS THAN" : "IN") . ($value != "" ? " ($value)" : " MAXVALUE"); //! SQL injection
+			if ($row["partition_by"] == 'RANGE' || $row["partition_by"] == 'LIST') {
+				foreach (array_filter($row["partition_names"]) as $key => $val) {
+					$value = $row["partition_values"][$key];
+					$partitions[] = "\nPARTITION " . idf_escape($val) . " VALUES " . ($row["partition_by"] == 'RANGE' ? "LESS THAN" : "IN") . ($value != "" ? " ($value)" : " MAXVALUE"); //! SQL injection
 				}
 			}
-			$partitioning .= "\nPARTITION BY $_POST[partition_by]($_POST[partition])" . ($partitions // $_POST["partition"] can be expression, not only column
+			$partitioning .= "\nPARTITION BY $row[partition_by]($row[partition])" . ($partitions // $row["partition"] can be expression, not only column
 				? " (" . implode(",", $partitions) . "\n)"
-				: ($_POST["partitions"] ? " PARTITIONS " . (+$_POST["partitions"]) : "")
+				: ($row["partitions"] ? " PARTITIONS " . (+$row["partitions"]) : "")
 			);
 		} elseif (support("partitioning") && ereg("partitioned", $orig_status["Create_options"])) {
 			$partitioning .= "\nREMOVE PARTITIONING";
@@ -83,20 +83,20 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 		
 		$message = lang('Table has been altered.');
 		if ($TABLE == "") {
-			cookie("adminer_engine", $_POST["Engine"]);
+			cookie("adminer_engine", $row["Engine"]);
 			$message = lang('Table has been created.');
 		}
-		$name = trim($_POST["name"]);
+		$name = trim($row["name"]);
 		
 		queries_redirect(ME . "table=" . urlencode($name), $message, alter_table(
 			$TABLE,
 			$name,
 			($jush == "sqlite" && ($use_all_fields || $foreign) ? $all_fields : $fields),
 			$foreign,
-			$_POST["Comment"],
-			($_POST["Engine"] && $_POST["Engine"] != $orig_status["Engine"] ? $_POST["Engine"] : ""),
-			($_POST["Collation"] && $_POST["Collation"] != $orig_status["Collation"] ? $_POST["Collation"] : ""),
-			($_POST["Auto_increment"] != "" ? +$_POST["Auto_increment"] : ""),
+			$row["Comment"],
+			($row["Engine"] && $row["Engine"] != $orig_status["Engine"] ? $row["Engine"] : ""),
+			($row["Collation"] && $row["Collation"] != $orig_status["Collation"] ? $row["Collation"] : ""),
+			($row["Auto_increment"] != "" ? +$row["Auto_increment"] : ""),
 			$partitioning
 		));
 	}
@@ -104,14 +104,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 
 page_header(($TABLE != "" ? lang('Alter table') : lang('Create table')), $error, array("table" => $TABLE), $TABLE);
 
-$row = array(
-	"Engine" => $_COOKIE["adminer_engine"],
-	"fields" => array(array("field" => "", "type" => (isset($types["int"]) ? "int" : (isset($types["integer"]) ? "integer" : "")))),
-	"partition_names" => array(""),
-);
-
 if ($_POST) {
-	$row = $_POST;
 	if ($row["auto_increment_col"]) {
 		$row["fields"][$row["auto_increment_col"]]["auto_increment"] = true;
 	}
@@ -141,6 +134,13 @@ if ($_POST) {
 		}
 		$row["partition_names"][] = "";
 	}
+	
+} else {
+	$row = array(
+		"Engine" => $_COOKIE["adminer_engine"],
+		"fields" => array(array("field" => "", "type" => (isset($types["int"]) ? "int" : (isset($types["integer"]) ? "integer" : "")))),
+		"partition_names" => array(""),
+	);
 }
 
 $collations = collations();
