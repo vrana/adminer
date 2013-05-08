@@ -17,8 +17,11 @@ if ($TABLE != "") {
 
 $row = $_POST;
 $row["fields"] = (array) $row["fields"];
+if ($row["auto_increment_col"]) {
+	$row["fields"][$row["auto_increment_col"]]["auto_increment"] = true;
+}
 
-if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] && !$_POST["down"]) {
+if ($_POST && !process_fields($row["fields"]) && !$error) {
 	if ($_POST["drop"]) {
 		query_redirect("DROP TABLE " . table($TABLE), substr(ME, 0, -1), lang('Table has been dropped.'));
 	} else {
@@ -104,43 +107,38 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] 
 
 page_header(($TABLE != "" ? lang('Alter table') : lang('Create table')), $error, array("table" => $TABLE), $TABLE);
 
-if ($_POST) {
-	if ($row["auto_increment_col"]) {
-		$row["fields"][$row["auto_increment_col"]]["auto_increment"] = true;
-	}
-	process_fields($row["fields"]);
-	
-} elseif ($TABLE != "") {
-	$row = $orig_status;
-	$row["name"] = $TABLE;
-	$row["fields"] = array();
-	if (!$_GET["auto_increment"]) { // don't prefill by original Auto_increment for the sake of performance and not reusing deleted ids
-		$row["Auto_increment"] = "";
-	}
-	foreach ($orig_fields as $field) {
-		$field["has_default"] = isset($field["default"]);
-		$row["fields"][] = $field;
-	}
-	
-	if (support("partitioning")) {
-		$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . q(DB) . " AND TABLE_NAME = " . q($TABLE);
-		$result = $connection->query("SELECT PARTITION_METHOD, PARTITION_ORDINAL_POSITION, PARTITION_EXPRESSION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
-		list($row["partition_by"], $row["partitions"], $row["partition"]) = $result->fetch_row();
-		$row["partition_names"] = array();
-		$row["partition_values"] = array();
-		foreach (get_rows("SELECT PARTITION_NAME, PARTITION_DESCRIPTION $from AND PARTITION_NAME != '' ORDER BY PARTITION_ORDINAL_POSITION") as $row1) {
-			$row["partition_names"][] = $row1["PARTITION_NAME"];
-			$row["partition_values"][] = $row1["PARTITION_DESCRIPTION"];
-		}
-		$row["partition_names"][] = "";
-	}
-	
-} else {
+if (!$_POST) {
 	$row = array(
 		"Engine" => $_COOKIE["adminer_engine"],
 		"fields" => array(array("field" => "", "type" => (isset($types["int"]) ? "int" : (isset($types["integer"]) ? "integer" : "")))),
 		"partition_names" => array(""),
 	);
+	
+	if ($TABLE != "") {
+		$row = $orig_status;
+		$row["name"] = $TABLE;
+		$row["fields"] = array();
+		if (!$_GET["auto_increment"]) { // don't prefill by original Auto_increment for the sake of performance and not reusing deleted ids
+			$row["Auto_increment"] = "";
+		}
+		foreach ($orig_fields as $field) {
+			$field["has_default"] = isset($field["default"]);
+			$row["fields"][] = $field;
+		}
+		
+		if (support("partitioning")) {
+			$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . q(DB) . " AND TABLE_NAME = " . q($TABLE);
+			$result = $connection->query("SELECT PARTITION_METHOD, PARTITION_ORDINAL_POSITION, PARTITION_EXPRESSION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
+			list($row["partition_by"], $row["partitions"], $row["partition"]) = $result->fetch_row();
+			$row["partition_names"] = array();
+			$row["partition_values"] = array();
+			foreach (get_rows("SELECT PARTITION_NAME, PARTITION_DESCRIPTION $from AND PARTITION_NAME != '' ORDER BY PARTITION_ORDINAL_POSITION") as $row1) {
+				$row["partition_names"][] = $row1["PARTITION_NAME"];
+				$row["partition_values"][] = $row1["PARTITION_DESCRIPTION"];
+			}
+			$row["partition_names"][] = "";
+		}
+	}
 }
 
 $collations = collations();

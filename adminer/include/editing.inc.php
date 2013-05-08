@@ -260,7 +260,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 
 /** Move fields up and down or add field
 * @param array
-* @return null
+* @return bool
 */
 function process_fields(&$fields) {
 	ksort($fields);
@@ -278,8 +278,7 @@ function process_fields(&$fields) {
 			}
 			$offset++;
 		}
-	}
-	if ($_POST["down"]) {
+	} elseif ($_POST["down"]) {
 		$found = false;
 		foreach ($fields as $key => $field) {
 			if (isset($field["field"]) && $found) {
@@ -292,11 +291,13 @@ function process_fields(&$fields) {
 			}
 			$offset++;
 		}
-	}
-	$fields = array_values($fields);
-	if ($_POST["add"]) {
+	} elseif ($_POST["add"]) {
+		$fields = array_values($fields);
 		array_splice($fields, key($_POST["add"]), 0, array(array()));
+	} elseif (!$_POST["drop_col"]) {
+		return false;
 	}
+	return true;
 }
 
 /** Callback used in routine()
