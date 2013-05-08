@@ -73,7 +73,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 			if ($row["partition_by"] == 'RANGE' || $row["partition_by"] == 'LIST') {
 				foreach (array_filter($row["partition_names"]) as $key => $val) {
 					$value = $row["partition_values"][$key];
-					$partitions[] = "\nPARTITION " . idf_escape($val) . " VALUES " . ($row["partition_by"] == 'RANGE' ? "LESS THAN" : "IN") . ($value != "" ? " ($value)" : " MAXVALUE"); //! SQL injection
+					$partitions[] = "\n  PARTITION " . idf_escape($val) . " VALUES " . ($row["partition_by"] == 'RANGE' ? "LESS THAN" : "IN") . ($value != "" ? " ($value)" : " MAXVALUE"); //! SQL injection
 				}
 			}
 			$partitioning .= "\nPARTITION BY $row[partition_by]($row[partition])" . ($partitions // $row["partition"] can be expression, not only column
@@ -130,13 +130,10 @@ if (!$_POST) {
 			$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . q(DB) . " AND TABLE_NAME = " . q($TABLE);
 			$result = $connection->query("SELECT PARTITION_METHOD, PARTITION_ORDINAL_POSITION, PARTITION_EXPRESSION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
 			list($row["partition_by"], $row["partitions"], $row["partition"]) = $result->fetch_row();
-			$row["partition_names"] = array();
-			$row["partition_values"] = array();
-			foreach (get_rows("SELECT PARTITION_NAME, PARTITION_DESCRIPTION $from AND PARTITION_NAME != '' ORDER BY PARTITION_ORDINAL_POSITION") as $row1) {
-				$row["partition_names"][] = $row1["PARTITION_NAME"];
-				$row["partition_values"][] = $row1["PARTITION_DESCRIPTION"];
-			}
-			$row["partition_names"][] = "";
+			$partitions = get_key_vals("SELECT PARTITION_NAME, PARTITION_DESCRIPTION $from AND PARTITION_NAME != '' ORDER BY PARTITION_ORDINAL_POSITION");
+			$partitions[""] = "";
+			$row["partition_names"] = array_keys($partitions);
+			$row["partition_values"] = array_values($partitions);
 		}
 	}
 }
