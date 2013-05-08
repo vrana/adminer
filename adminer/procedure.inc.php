@@ -1,16 +1,17 @@
 <?php
 $PROCEDURE = $_GET["procedure"];
 $routine = (isset($_GET["function"]) ? "FUNCTION" : "PROCEDURE");
-$routine_languages = routine_languages();
-$row = ($PROCEDURE == "" ? array("fields" => array()) : routine($PROCEDURE, $routine));
-$row["name"] = $PROCEDURE;
+$row = $_POST;
+$row["fields"] = (array) $row["fields"];
 
 if ($_POST) {
 	if (!$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] && !$_POST["down"]) {
+		$temp_name = "$row[name]_adminer_" . uniqid();
 		drop_create(
 			"DROP $routine " . idf_escape($PROCEDURE),
-			create_routine($routine, $_POST),
 			create_routine($routine, $row),
+			create_routine($routine, array("name" => $temp_name) + $row),
+			"DROP $routine " . idf_escape($temp_name),
 			substr(ME, 0, -1),
 			lang('Routine has been dropped.'),
 			lang('Routine has been altered.'),
@@ -18,15 +19,19 @@ if ($_POST) {
 			$PROCEDURE
 		);
 	}
-	$row = $_POST;
-	$row["fields"] = (array) $row["fields"];
 	process_fields($row["fields"]);
 }
 
 page_header(($PROCEDURE != "" ? (isset($_GET["function"]) ? lang('Alter function') : lang('Alter procedure')) . ": " . h($PROCEDURE) : (isset($_GET["function"]) ? lang('Create function') : lang('Create procedure'))), $error);
 
+if (!$_POST && $PROCEDURE != "") {
+	$row = routine($PROCEDURE, $routine);
+	$row["name"] = $PROCEDURE;
+}
+
 $collations = get_vals("SHOW CHARACTER SET");
 sort($collations);
+$routine_languages = routine_languages();
 ?>
 
 <form action="" method="post" id="form">

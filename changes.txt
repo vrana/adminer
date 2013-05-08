@@ -1,6 +1,7 @@
 Adminer 3.7.0-dev:
 Allow more SQL files to be uploaded at the same time
 Print run time next to executed queries
+Don't drop original view and routine before creating the new one
 Highlight default submit button
 Disable SQL export when applying functions in select
 Allow using lang() in plugins (customization)
