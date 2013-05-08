@@ -9,7 +9,7 @@
 class AdminerMasterSlave {
 	private $masters = array();
 	
-	/** 
+	/**
 	* @param array ($slave => $master)
 	*/
 	function AdminerMasterSlave($masters) {

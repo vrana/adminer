@@ -3,7 +3,7 @@
 * @param Min_Result
 * @param Min_DB connection to examine indexes
 * @param string base link for <th> fields
-* @param array 
+* @param array
 * @return null
 */
 function select($result, $connection2 = null, $href = "", $orgtables = array()) {
@@ -360,11 +360,12 @@ function drop_create($drop, $create, $test, $drop_test, $location, $message_drop
 function create_trigger($on, $row) {
 	global $jush;
 	$timing_event = " $row[Timing] $row[Event]";
-	return "CREATE TRIGGER " 
-		. idf_escape($row["Trigger"]) 
-		. ($jush == "mssql" ? $on . $timing_event : $timing_event . $on) 
-		. rtrim(" $row[Type]\n$row[Statement]", ";") 
-		. ";";
+	return "CREATE TRIGGER "
+		. idf_escape($row["Trigger"])
+		. ($jush == "mssql" ? $on . $timing_event : $timing_event . $on)
+		. rtrim(" $row[Type]\n$row[Statement]", ";")
+		. ";"
+	;
 }
 
 /** Generate SQL query for creating routine
@@ -382,13 +383,14 @@ function create_routine($routine, $row) {
 			$set[] = (ereg("^($inout)\$", $field["inout"]) ? "$field[inout] " : "") . idf_escape($field["field"]) . process_type($field, "CHARACTER SET");
 		}
 	}
-	return "CREATE $routine " 
-		. idf_escape(trim($row["name"])) 
-		. " (" . implode(", ", $set) . ")" 
-		. (isset($_GET["function"]) ? " RETURNS" . process_type($row["returns"], "CHARACTER SET") : "") 
-		. ($row["language"] ? " LANGUAGE $row[language]" : "") 
-		. rtrim("\n$row[definition]", ";") 
-		. ";";
+	return "CREATE $routine "
+		. idf_escape(trim($row["name"]))
+		. " (" . implode(", ", $set) . ")"
+		. (isset($_GET["function"]) ? " RETURNS" . process_type($row["returns"], "CHARACTER SET") : "")
+		. ($row["language"] ? " LANGUAGE $row[language]" : "")
+		. rtrim("\n$row[definition]", ";")
+		. ";"
+	;
 }
 
 /** Remove current user definer from SQL command
