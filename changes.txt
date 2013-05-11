@@ -15,6 +15,7 @@ MySQL: Display bit type as binary number
 MySQL: Improve export of binary data types
 MySQL: Fix handling of POINT data type (bug #3582578)
 MySQL: Don't export binary and geometry columns twice in select
+MySQL: Fix EXPLAIN in MySQL < 5.1, bug since Adminer 3.6.4
 SQLite: Export views
 
 Adminer 3.6.4 (released 2013-04-26):

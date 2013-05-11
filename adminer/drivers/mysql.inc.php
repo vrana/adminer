@@ -851,7 +851,7 @@ if (!defined("DRIVER")) {
 	* @return Min_Result
 	*/
 	function explain($connection, $query) {
-		return $connection->query("EXPLAIN " . ($connection->server_info ? "PARTITIONS " : "") . $query);
+		return $connection->query("EXPLAIN " . ($connection->server_info >= 5.1 ? "PARTITIONS " : "") . $query);
 	}
 	
 	/** Get approximate number of rows
