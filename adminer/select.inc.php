@@ -332,6 +332,14 @@ if (!$columns) {
 			
 			foreach ($adminer->rowDescriptions($rows, $foreign_keys) as $n => $row) {
 				$unique_array = unique_array($rows[$n], $indexes);
+				if (!$unique_array) {
+					$unique_array = array();
+					foreach ($rows[$n] as $key => $val) {
+						if (!preg_match('~^(COUNT\\((\\*|(DISTINCT )?`(?:[^`]|``)+`)\\)|(AVG|GROUP_CONCAT|MAX|MIN|SUM)\\(`(?:[^`]|``)+`\\))$~', $key)) { //! columns looking like functions
+							$unique_array[$key] = $val;
+						}
+					}
+				}
 				$unique_idf = "";
 				foreach ($unique_array as $key => $val) {
 					if (strlen($val) > 64) {

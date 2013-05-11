@@ -303,7 +303,7 @@ function get_rows($query, $connection2 = null, $error = "<p class='error'>") {
 /** Find unique identifier of a row
 * @param array
 * @param array result of indexes()
-* @return array
+* @return array or null if there is no unique identifier
 */
 function unique_array($row, $indexes) {
 	foreach ($indexes as $index) {
@@ -318,13 +318,6 @@ function unique_array($row, $indexes) {
 			return $return;
 		}
 	}
-	$return = array();
-	foreach ($row as $key => $val) {
-		if (!preg_match('~^(COUNT\\((\\*|(DISTINCT )?`(?:[^`]|``)+`)\\)|(AVG|GROUP_CONCAT|MAX|MIN|SUM)\\(`(?:[^`]|``)+`\\))$~', $key)) { //! columns looking like functions
-			$return[$key] = $val;
-		}
-	}
-	return $return;
 }
 
 /** Create SQL condition from parsed query string
