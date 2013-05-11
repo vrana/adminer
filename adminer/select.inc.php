@@ -45,7 +45,11 @@ if ($_GET["val"] && is_ajax()) {
 }
 
 if ($_POST && !$error) {
-	$where_check = "(" . implode(") OR (", array_map('where_check', (array) $_POST["check"])) . ")";
+	$where_check = $where;
+	if (is_array($_POST["check"])) {
+		$where_check[] = "((" . implode(") OR (", array_map('where_check', $_POST["check"])) . "))";
+	}
+	$where_check = ($where_check ? "\nWHERE " . implode(" AND ", $where_check) : "");
 	$primary = $unselected = null;
 	foreach ($indexes as $index) {
 		if ($index["type"] == "PRIMARY") {
@@ -65,11 +69,7 @@ if ($_POST && !$error) {
 		dump_headers($TABLE);
 		$adminer->dumpTable($TABLE, "");
 		if (!is_array($_POST["check"]) || $unselected === array()) {
-			$where2 = $where;
-			if (is_array($_POST["check"])) {
-				$where2[] = "($where_check)";
-			}
-			$query = "SELECT $from" . ($where2 ? "\nWHERE " . implode(" AND ", $where2) : "") . $group_by;
+			$query = "SELECT $from$where_check$group_by";
 		} else {
 			$union = array();
 			foreach ($_POST["check"] as $val) {
@@ -112,12 +112,12 @@ if ($_POST && !$error) {
 					$query = "INTO $query";
 				}
 				if ($_POST["all"] || ($unselected === array() && $_POST["check"]) || $is_group) {
-					$result = queries("$command $query" . ($_POST["all"] ? ($where ? "\nWHERE " . implode(" AND ", $where) : "") : "\nWHERE $where_check"));
+					$result = queries("$command $query$where_check");
 					$affected = $connection->affected_rows;
 				} else {
 					foreach ((array) $_POST["check"] as $val) {
 						// where is not unique so OR can't be used
-						$result = queries($command . limit1($query, "\nWHERE " . where_check($val, $fields)));
+						$result = queries($command . limit1($query, "\nWHERE " . ($where ? implode(" AND ", $where) . " AND " : "") . where_check($val, $fields)));
 						if (!$result) {
 							break;
 						}
