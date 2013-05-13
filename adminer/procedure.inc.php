@@ -9,13 +9,15 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 	drop_create(
 		"DROP $routine " . idf_escape($PROCEDURE),
 		create_routine($routine, $row),
+		"DROP $routine " . idf_escape($row["name"]),
 		create_routine($routine, array("name" => $temp_name) + $row),
 		"DROP $routine " . idf_escape($temp_name),
 		substr(ME, 0, -1),
 		lang('Routine has been dropped.'),
 		lang('Routine has been altered.'),
 		lang('Routine has been created.'),
-		$PROCEDURE
+		$PROCEDURE,
+		$row["name"]
 	);
 }
 
