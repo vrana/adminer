@@ -4,7 +4,7 @@ $fields = fields($TABLE);
 if (!$fields) {
 	$error = error();
 }
-$table_status = ($fields ? table_status($TABLE, true) : array());
+$table_status = table_status($TABLE, true);
 
 page_header(($fields && is_view($table_status) ? lang('View') : lang('Table')) . ": " . h($TABLE), $error);
 
