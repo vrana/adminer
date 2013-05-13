@@ -227,7 +227,7 @@ AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema(
 	
 	function fields($table) {
 		$return = array();
-		foreach (get_rows("SELECT a.attname AS field, format_type(a.atttypid, a.atttypmod) AS full_type, d.adsrc AS default, a.attnotnull, col_description(c.oid, a.attnum) AS comment
+		foreach (get_rows("SELECT a.attname AS field, format_type(a.atttypid, a.atttypmod) AS full_type, d.adsrc AS default, a.attnotnull::int, col_description(c.oid, a.attnum) AS comment
 FROM pg_class c
 JOIN pg_namespace n ON c.relnamespace = n.oid
 JOIN pg_attribute a ON c.oid = a.attrelid
@@ -242,7 +242,7 @@ ORDER BY a.attnum"
 			ereg('(.*)(\\((.*)\\))?', $row["full_type"], $match);
 			list(, $row["type"], , $row["length"]) = $match;
 			$row["full_type"] = $row["type"] . ($row["length"] ? "($row[length])" : "");
-			$row["null"] = ($row["attnotnull"] == "f");
+			$row["null"] = !$row["attnotnull"];
 			$row["auto_increment"] = eregi("^nextval\\(", $row["default"]);
 			$row["privileges"] = array("insert" => 1, "select" => 1, "update" => 1);
 			if (preg_match('~^(.*)::.+$~', $row["default"], $match)) {
@@ -261,8 +261,8 @@ ORDER BY a.attnum"
 		$return = array();
 		$table_oid = $connection2->result("SELECT oid FROM pg_class WHERE relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema()) AND relname = " . q($table));
 		$columns = get_key_vals("SELECT attnum, attname FROM pg_attribute WHERE attrelid = $table_oid AND attnum > 0", $connection2);
-		foreach (get_rows("SELECT relname, indisunique, indisprimary, indkey FROM pg_index i, pg_class ci WHERE i.indrelid = $table_oid AND ci.oid = i.indexrelid", $connection2) as $row) {
-			$return[$row["relname"]]["type"] = ($row["indisprimary"] == "t" ? "PRIMARY" : ($row["indisunique"] == "t" ? "UNIQUE" : "INDEX"));
+		foreach (get_rows("SELECT relname, indisunique::int, indisprimary::int, indkey FROM pg_index i, pg_class ci WHERE i.indrelid = $table_oid AND ci.oid = i.indexrelid", $connection2) as $row) {
+			$return[$row["relname"]]["type"] = ($row["indisprimary"] ? "PRIMARY" : ($row["indisunique"] ? "UNIQUE" : "INDEX"));
 			$return[$row["relname"]]["columns"] = array();
 			foreach (explode(" ", $row["indkey"]) as $indkey) {
 				$return[$row["relname"]]["columns"][] = $columns[$indkey];
