@@ -169,19 +169,23 @@ if (DB != "") {
 	echo "</thead>\n";
 	
 	$views = "";
-	//! defer number of rows to JavaScript
-	foreach (table_status() as $name => $table_status) {
+	$tables_list = tables_list();
+	foreach ($tables_list as $name => $type) {
 		$prefix = ereg_replace("_.*", "", $name);
 		$checked = ($TABLE == "" || $TABLE == (substr($TABLE, -1) == "%" ? "$prefix%" : $name)); //! % may be part of table name
 		$print = "<tr><td>" . checkbox("tables[]", $name, $checked, $name, "checkboxClick(event, this); formUncheck('check-tables');");
-		if (is_view($table_status)) {
+		if ($type !== null && !eregi("table", $type)) {
 			$views .= "$print\n";
 		} else {
-			echo "$print<td align='right'><label>" . ($table_status["Engine"] == "InnoDB" && $table_status["Rows"] ? "~ " : "") . $table_status["Rows"] . checkbox("data[]", $name, $checked, "", "checkboxClick(event, this); formUncheck('check-data');") . "</label>\n";
+			echo "$print<td align='right'><label><span id='Rows-" . h($name) . "'></span>" . checkbox("data[]", $name, $checked, "", "checkboxClick(event, this); formUncheck('check-data');") . "</label>\n";
 		}
 		$prefixes[$prefix]++;
 	}
 	echo $views;
+	
+	if ($tables_list) {
+		echo "<script type='text/javascript'>ajaxSetHtml('" . js_escape(ME) . "script=db');</script>\n";
+	}
 	
 } else {
 	echo "<thead><tr><th style='text-align: left;'><label><input type='checkbox' id='check-databases'" . ($TABLE == "" ? " checked" : "") . " onclick='formCheck(this, /^databases\\[/);'>" . lang('Database') . "</label></thead>\n";
