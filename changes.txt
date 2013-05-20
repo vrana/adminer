@@ -1,4 +1,5 @@
 Adminer 3.7.1-dev:
+Increase click target for checkboxes
 Use shadow for highlighting default button
 
 Adminer 3.7.0 (released 2013-05-19):

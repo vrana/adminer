@@ -169,7 +169,7 @@ foreach (array(
 			} elseif (isset($_GET["grant"])) {
 				echo "<td><select name=$name><option><option value='1'" . ($value ? " selected" : "") . ">" . lang('Grant') . "<option value='0'" . ($value == "0" ? " selected" : "") . ">" . lang('Revoke') . "</select>";
 			} else {
-				echo "<td align='center'><input type='checkbox' name=$name value='1'" . ($value ? " checked" : "") . ($privilege == "All privileges" ? " id='grants-$i-all'" : ($privilege == "Grant option" ? "" : " onclick=\"if (this.checked) formUncheck('grants-$i-all');\"")) . ">"; //! uncheck all except grant if all is checked
+				echo "<td align='center'><label class='block'><input type='checkbox' name=$name value='1'" . ($value ? " checked" : "") . ($privilege == "All privileges" ? " id='grants-$i-all'" : ($privilege == "Grant option" ? "" : " onclick=\"if (this.checked) formUncheck('grants-$i-all');\"")) . "></label>"; //! uncheck all except grant if all is checked
 			}
 			$i++;
 		}

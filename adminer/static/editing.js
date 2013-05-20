@@ -416,7 +416,7 @@ function columnShow(checked, column) {
 */
 function editingHideDefaults() {
 	if (innerWidth < document.documentElement.scrollWidth) {
-		document.getElementById('defaults').checked = false;
+		document.getElementById('form')['defaults'].checked = false;
 		columnShow(false, 5);
 	}
 }

@@ -172,9 +172,13 @@ edit_fields($row["fields"], $collations, "TABLE", $foreign_keys, $comments);
 </table>
 <p>
 <?php echo lang('Auto Increment'); ?>: <input type="number" name="Auto_increment" size="6" value="<?php echo h($row["Auto_increment"]); ?>">
-<label class="jsonly"><input type="checkbox" id="defaults" name="defaults" value="1" checked onclick="columnShow(this.checked, 5);"><?php echo lang('Default values'); ?></label>
+<?php echo checkbox("defaults", 1, true, lang('Default values'), "columnShow(this.checked, 5)", "jsonly"); ?>
 <?php if (!$_POST["defaults"]) { ?><script type="text/javascript">editingHideDefaults()</script><?php } ?>
-<?php echo (support("comment") ? checkbox("comments", 1, $comments, lang('Comment'), "columnShow(this.checked, 6); toggle('Comment'); if (this.checked) this.form['Comment'].focus();", true) . ' <input name="Comment" id="Comment" value="' . h($row["Comment"]) . '" maxlength="' . ($connection->server_info >= 5.5 ? 2048 : 60) . '"' . ($comments ? '' : ' class="hidden"') . '>' : ''); ?>
+<?php echo (support("comment")
+	? "<label><input type='checkbox' name='comments' value='1' class='jsonly' onclick=\"columnShow(this.checked, 6); toggle('Comment'); if (this.checked) this.form['Comment'].focus();\"" . ($comments ? " checked" : "") . ">" . lang('Comment') . "</label>"
+		. ' <input name="Comment" id="Comment" value="' . h($row["Comment"]) . '" maxlength="' . ($connection->server_info >= 5.5 ? 2048 : 60) . '"' . ($comments ? '' : ' class="hidden"') . '>'
+	: '')
+; ?>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php if ($_GET["create"] != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo confirm(); ?>><?php } ?>

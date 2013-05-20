@@ -95,14 +95,18 @@ function nl_br($string) {
 * @param bool
 * @param string
 * @param string
-* @param bool
+* @param string
 * @return string
 */
-function checkbox($name, $value, $checked, $label = "", $onclick = "", $jsonly = false) {
+function checkbox($name, $value, $checked, $label = "", $onclick = "", $class = "") {
 	static $id = 0;
 	$id++;
-	$return = "<input type='checkbox' name='$name' value='" . h($value) . "'" . ($checked ? " checked" : "") . ($onclick ? ' onclick="' . h($onclick) . '"' : '') . ($jsonly ? " class='jsonly'" : "") . " id='checkbox-$id'>";
-	return ($label != "" ? "<label for='checkbox-$id'>$return" . h($label) . "</label>" : $return);
+	$return = "<input type='checkbox' name='$name' value='" . h($value) . "'"
+		. ($checked ? " checked" : "")
+		. ($onclick ? ' onclick="' . h($onclick) . '"' : '')
+		. " id='checkbox-$id'>"
+	;
+	return ($label != "" || $class ? "<label for='checkbox-$id'" . ($class ? " class='$class'" : "") . ">$return" . h($label) . "</label>" : $return);
 }
 
 /** Generate list of HTML options
