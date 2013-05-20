@@ -37,7 +37,7 @@ input.default { box-shadow: 1px 1px 1px rgba(0, 0, 0, .5); }
 .enum { color: #007F7F; }
 .binary { color: red; }
 .odd td { background: #F5F5F5; }
-.js .checked td, .js .checked th { background: #ddf; }
+.js .checkable .checked td, .js .checkable .checked th { background: #ddf; }
 .time { color: silver; font-size: 70%; }
 .function { text-align: right; }
 .number { text-align: right; }
