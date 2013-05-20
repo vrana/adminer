@@ -1,4 +1,4 @@
-Adminer 3.7.0-dev:
+Adminer 3.7.0 (released 2013-05-19):
 Allow more SQL files to be uploaded at the same time
 Print run time next to executed queries
 Don't drop original view and routine before creating the new one
