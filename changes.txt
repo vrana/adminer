@@ -1,3 +1,6 @@
+Adminer 3.7.1-dev:
+Use shadow for highlighting default button
+
 Adminer 3.7.0 (released 2013-05-19):
 Allow more SQL files to be uploaded at the same time
 Print run time next to executed queries

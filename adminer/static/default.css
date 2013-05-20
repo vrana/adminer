@@ -21,7 +21,7 @@ code { background: #eee; }
 tbody tr:hover td, tbody tr:hover th { background: #eee; }
 pre { margin: 1em 0 0; }
 input[type=image] { vertical-align: middle; }
-input.default { background: #ddf; }
+input.default { box-shadow: 1px 1px 1px rgba(0, 0, 0, .5); }
 .version { color: #777; font-size: 67%; }
 .js .hidden, .nojs .jsonly { display: none; }
 .js .column { position: absolute; background: #ddf; padding: .3em 1ex .3em 0; margin-top: -.3em; }
