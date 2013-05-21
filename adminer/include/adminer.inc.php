@@ -229,14 +229,15 @@ username.form['auth[driver]'].onchange();
 		print_fieldset("select", lang('Select'), $select);
 		$i = 0;
 		$fun_group = array(lang('Functions') => $functions, lang('Aggregation') => $grouping);
+		$move = "<img src='static/move.gif' width='18' height='18' alt='" . lang('Move') . "' class='jsonly move' onmousedown=''>";
 		foreach ($select as $key => $val) {
 			$val = $_GET["columns"][$key];
 			echo "<div>" . html_select("columns[$i][fun]", array(-1 => "") + $fun_group, $val["fun"]);
-			echo "(<select name='columns[$i][col]' onchange='selectFieldChange(this.form);'><option>" . optionlist($columns, $val["col"], true) . "</select>)</div>\n";
+			echo "(<select name='columns[$i][col]' onchange='selectFieldChange(this.form);'><option>" . optionlist($columns, $val["col"], true) . "</select>) $move</div>\n";
 			$i++;
 		}
 		echo "<div>" . html_select("columns[$i][fun]", array(-1 => "") + $fun_group, "", "this.nextSibling.nextSibling.onchange();");
-		echo "(<select name='columns[$i][col]' onchange='selectAddRow(this);'><option>" . optionlist($columns, null, true) . "</select>)</div>\n";
+		echo "(<select name='columns[$i][col]' onchange='selectAddRow(this);'><option>" . optionlist($columns, null, true) . "</select>) $move</div>\n";
 		echo "</div></fieldset>\n";
 	}
 	
