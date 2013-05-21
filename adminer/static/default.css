@@ -49,7 +49,7 @@ input.default { box-shadow: 1px 1px 1px rgba(0, 0, 0, .5); }
 .icon { width: 18px; height: 18px; }
 .size { width: 6ex; }
 .help { cursor: help; }
-.pages { position: fixed; bottom: 0; left: 21em; padding: 5px; background: #ddf; border: 1px solid #999; }
+.pages { position: fixed; bottom: 0; left: 21em; padding: 5px; background: #ddf; border: 1px solid #999; z-index: 1; }
 #menu { position: absolute; margin: 10px 0 0; padding: 0 0 30px 0; top: 2em; left: 0; width: 19em; }
 #menu p { padding: .8em 1em; margin: 0; border-bottom: 1px solid #ccc; }
 #dbs { overflow: hidden; }
