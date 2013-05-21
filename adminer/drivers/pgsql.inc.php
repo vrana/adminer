@@ -209,7 +209,7 @@ if (isset($_GET["pgsql"])) {
 		foreach (get_rows("SELECT relname AS \"Name\", CASE relkind WHEN 'r' THEN 'table' ELSE 'view' END AS \"Engine\", pg_relation_size(oid) AS \"Data_length\", pg_total_relation_size(oid) - pg_relation_size(oid) AS \"Index_length\", obj_description(oid, 'pg_class') AS \"Comment\", relhasoids AS \"Oid\", reltuples as \"Rows\"
 FROM pg_class
 WHERE relkind IN ('r','v')
-AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema())"
+AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema()) ORDER BY relname"
 			. ($name != "" ? " AND relname = " . q($name) : "")
 		) as $row) { //! Index_length, Auto_increment
 			$return[$row["Name"]] = $row;
