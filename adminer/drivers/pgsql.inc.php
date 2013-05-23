@@ -210,7 +210,7 @@ if (isset($_GET["pgsql"])) {
 FROM pg_class
 WHERE relkind IN ('r','v')
 AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema())"
-			. ($name != "" ? " AND relname = " . q($name) : "")
+			. ($name != "" ? " AND relname = " . q($name) : " ORDER BY relname")
 		) as $row) { //! Index_length, Auto_increment
 			$return[$row["Name"]] = $row;
 		}
