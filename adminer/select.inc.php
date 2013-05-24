@@ -5,7 +5,7 @@ $indexes = indexes($TABLE);
 $fields = fields($TABLE);
 $foreign_keys = column_foreign_keys($TABLE);
 $oid = "";
-if ($table_status["Oid"] == "t") {
+if ($table_status["Oid"]) {
 	$oid = ($jush == "sqlite" ? "rowid" : "oid");
 	$indexes[] = array("type" => "PRIMARY", "columns" => array($oid));
 }

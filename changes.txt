@@ -2,6 +2,7 @@ Adminer 3.7.1-dev:
 Increase click target for checkboxes
 Use shadow for highlighting default button
 PostgreSQL: Order table list by name
+PostgreSQL: Fix detecting oid column in PDO
 
 Adminer 3.7.0 (released 2013-05-19):
 Allow more SQL files to be uploaded at the same time
@@ -26,7 +27,7 @@ MySQL: Fix handling of POINT data type (bug #3582578)
 MySQL: Don't export binary and geometry columns twice in select
 MySQL: Fix EXPLAIN in MySQL < 5.1, bug since Adminer 3.6.4
 SQLite: Export views
-PostgreSQL: Fix swapped NULL and NOT NULL columns in weird setups
+PostgreSQL: Fix swapped NULL and NOT NULL columns in PDO
 
 Adminer 3.6.4 (released 2013-04-26):
 Display pagination on a fixed position
