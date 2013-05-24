@@ -149,7 +149,7 @@ if ($_POST && !$error) {
 					}
 					$query = table($TABLE) . " SET " . implode(", ", $set);
 					$where2 = " WHERE " . where_check($unique_idf, $fields) . ($where ? " AND " . implode(" AND ", $where) : "");
-					$result = queries("UPDATE" . ($is_group ? " $query$where2" : limit1($query, $where2))); // can change row on a different page without unique key
+					$result = queries("UPDATE" . ($is_group || $unselected === array() ? " $query$where2" : limit1($query, $where2))); // can change row on a different page without unique key
 					if (!$result) {
 						break;
 					}
