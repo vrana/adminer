@@ -111,7 +111,7 @@ if ($_POST && !$error) {
 					$command = "INSERT";
 					$query = "INTO $query";
 				}
-				if ($_POST["all"] || ($unselected === array() && $_POST["check"]) || $is_group) {
+				if ($_POST["all"] || ($unselected === array() && is_array($_POST["check"])) || $is_group) {
 					$result = queries("$command $query$where_check");
 					$affected = $connection->affected_rows;
 				} else {
