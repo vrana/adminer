@@ -12,6 +12,7 @@ function adminer_object() {
 		// specify enabled plugins here
 		new AdminerDatabaseHide(array('information_schema')),
 		new AdminerDumpJson,
+		new AdminerDumpBz2,
 		new AdminerDumpZip,
 		new AdminerDumpXml,
 		new AdminerDumpAlter,
