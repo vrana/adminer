@@ -181,7 +181,8 @@ if (isset($_GET["oracle"])) {
 
 	function tables_list() {
 		return get_key_vals("SELECT table_name, 'table' FROM all_tables WHERE tablespace_name = " . q(DB) . "
-UNION SELECT view_name, 'view' FROM user_views"
+UNION SELECT view_name, 'view' FROM user_views
+ORDER BY 1"
 		); //! views don't have schema
 	}
 
@@ -193,7 +194,8 @@ UNION SELECT view_name, 'view' FROM user_views"
 		$return = array();
 		$search = q($name);
 		foreach (get_rows('SELECT table_name "Name", \'table\' "Engine", avg_row_len * num_rows "Data_length", num_rows "Rows" FROM all_tables WHERE tablespace_name = ' . q(DB) . ($name != "" ? " AND table_name = $search" : "") . "
-UNION SELECT view_name, 'view', 0, 0 FROM user_views" . ($name != "" ? " WHERE view_name = $search" : "")
+UNION SELECT view_name, 'view', 0, 0 FROM user_views" . ($name != "" ? " WHERE view_name = $search" : "") . "
+ORDER BY 1"
 		) as $row) {
 			if ($name != "") {
 				return $row;

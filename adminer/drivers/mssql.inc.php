@@ -293,7 +293,7 @@ if (isset($_GET["mssql"])) {
 	
 	function table_status($name = "") {
 		$return = array();
-		foreach (get_rows("SELECT name AS Name, type_desc AS Engine FROM sys.all_objects WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V')" . ($name != "" ? " AND name = " . q($name) : "")) as $row) {
+		foreach (get_rows("SELECT name AS Name, type_desc AS Engine FROM sys.all_objects WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V') " . ($name != "" ? "AND name = " . q($name) : "ORDER BY name")) as $row) {
 			if ($name != "") {
 				return $row;
 			}
