@@ -227,6 +227,10 @@ AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema(
 	
 	function fields($table) {
 		$return = array();
+		$aliases = array(
+			'timestamp without time zone' => 'timestamp',
+			'timestamp with time zone' => 'timestamptz',
+		);
 		foreach (get_rows("SELECT a.attname AS field, format_type(a.atttypid, a.atttypmod) AS full_type, d.adsrc AS default, a.attnotnull::int, col_description(c.oid, a.attnum) AS comment
 FROM pg_class c
 JOIN pg_namespace n ON c.relnamespace = n.oid
@@ -239,8 +243,11 @@ AND a.attnum > 0
 ORDER BY a.attnum"
 		) as $row) {
 			//! collation, primary
-			ereg('(.*)(\\((.*)\\))?', $row["full_type"], $match);
-			list(, $row["type"], , $row["length"]) = $match;
+			$type = $row["full_type"];
+			if (ereg('(.+)\\((.*)\\)$', $row["full_type"], $match)) {
+				list(, $type, $row["length"]) = $match;
+			}
+			$row["type"] = ($aliases[$type] ? $aliases[$type] : $type);
 			$row["full_type"] = $row["type"] . ($row["length"] ? "($row[length])" : "");
 			$row["null"] = !$row["attnotnull"];
 			$row["auto_increment"] = eregi("^nextval\\(", $row["default"]);
