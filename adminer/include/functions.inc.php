@@ -106,7 +106,7 @@ function checkbox($name, $value, $checked, $label = "", $onclick = "", $class = 
 		. ($onclick ? ' onclick="' . h($onclick) . '"' : '')
 		. " id='checkbox-$id'>"
 	;
-	return ($label != "" || $class ? "<label for='checkbox-$id'" . ($class ? " class='$class'" : "") . ">$return" . h($label) . "</label>" : $return);
+	return ($label != "" || $class ? "<label" . ($class ? " class='$class'" : "") . ">$return" . h($label) . "</label>" : $return);
 }
 
 /** Generate list of HTML options
