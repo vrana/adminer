@@ -240,6 +240,7 @@ $translations = array(
 	
 	'Import' => 'xx',
 	'%d row(s) have been imported.' => array('xx', 'xx'),
+	'File must be in UTF-8 encoding.' => 'xx',
 	
 	// in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'xx',

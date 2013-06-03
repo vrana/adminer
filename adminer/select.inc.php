@@ -158,8 +158,11 @@ if ($_POST && !$error) {
 				queries_redirect(remove_from_uri(), lang('%d item(s) have been affected.', $affected), $result);
 			}
 			
-		} elseif (is_string($file = get_file("csv_file", true))) {
-			//! character set
+		} elseif (!is_string($file = get_file("csv_file", true))) {
+			$error = upload_error($file);
+		} elseif (!preg_match('~~u', $file)) {
+			$error = lang('File must be in UTF-8 encoding.');
+		} else {
 			cookie("adminer_import", "output=" . urlencode($adminer_import["output"]) . "&format=" . urlencode($_POST["separator"]));
 			$result = true;
 			$cols = array_keys($fields);
@@ -190,8 +193,6 @@ if ($_POST && !$error) {
 			queries_redirect(remove_from_uri("page"), lang('%d row(s) have been imported.', $affected), $result);
 			queries("ROLLBACK"); // after queries_redirect() to not overwrite error
 			
-		} else {
-			$error = upload_error($file);
 		}
 	}
 }

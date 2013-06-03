@@ -240,6 +240,7 @@ $translations = array(
 	
 	'Import' => 'Import',
 	'%d row(s) have been imported.' => array('Byl importován %d záznam.', 'Byly importovány %d záznamy.', 'Bylo importováno %d záznamů.'),
+	'File must be in UTF-8 encoding.' => 'Soubor musí být v kódování UTF-8.',
 	
 	// in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Ctrl+klikněte na políčko, které chcete změnit.',
