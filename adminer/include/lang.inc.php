@@ -30,6 +30,7 @@ $langs = array(
 	'bn' => 'বাংলা', // Dipak Kumar - dipak.ndc@gmail.com
 	'ar' => 'العربية', // Y.M Amine - Algeria - nbr7@live.fr
 	'fa' => 'فارسی', // mojtaba barghbani - Iran - mbarghbani@gmail.com
+	'ko' => '한국어', // dalli - skcha67@gmail.com
 );
 
 /** Get current language
