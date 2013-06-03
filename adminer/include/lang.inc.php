@@ -3,34 +3,34 @@
 
 $langs = array(
 	'en' => 'English', // Jakub Vrána - http://www.vrana.cz
-	'cs' => 'Čeština', // Jakub Vrána - http://www.vrana.cz
-	'sk' => 'Slovenčina', // Ivan Suchy - http://www.ivansuchy.com, Juraj Krivda - http://www.jstudio.cz
-	'nl' => 'Nederlands', // Maarten Balliauw - http://blog.maartenballiauw.be
-	'es' => 'Español', // Klemens Häckel - http://clickdimension.wordpress.com
-	'de' => 'Deutsch', // Klemens Häckel - http://clickdimension.wordpress.com
-	'fr' => 'Français', // Francis Gagné, Aurélien Royer
-	'it' => 'Italiano', // Alessandro Fiorotto, Paolo Asperti
-	'et' => 'Eesti', // Priit Kallas
-	'hu' => 'Magyar', // Borsos Szilárd (Borsosfi) - http://www.borsosfi.hu, info@borsosfi.hu
-	'pl' => 'Polski', // Radosław Kowalewski - http://srsbiz.pl/
+	'ar' => 'العربية', // Y.M Amine - Algeria - nbr7@live.fr
+	'bn' => 'বাংলা', // Dipak Kumar - dipak.ndc@gmail.com
 	'ca' => 'Català', // Joan Llosas
-	'pt' => 'Português', // Gian Live - gian@live.com, Davi Alexandre davi@davialexandre.com.br
-	'sl' => 'Slovenski', // Matej Ferlan - www.itdinamik.com, matej.ferlan@itdinamik.com
-	'lt' => 'Lietuvių', // Paulius Leščinskas - http://www.lescinskas.lt
-	'tr' => 'Türkçe', // Bilgehan Korkmaz - turktron.com
-	'ro' => 'Limba Română', // .nick .messing - dot.nick.dot.messing@gmail.com
+	'cs' => 'Čeština', // Jakub Vrána - http://www.vrana.cz
+	'de' => 'Deutsch', // Klemens Häckel - http://clickdimension.wordpress.com
+	'es' => 'Español', // Klemens Häckel - http://clickdimension.wordpress.com
+	'et' => 'Eesti', // Priit Kallas
+	'fa' => 'فارسی', // mojtaba barghbani - Iran - mbarghbani@gmail.com
+	'fr' => 'Français', // Francis Gagné, Aurélien Royer
+	'hu' => 'Magyar', // Borsos Szilárd (Borsosfi) - http://www.borsosfi.hu, info@borsosfi.hu
 	'id' => 'Bahasa Indonesia', // Ivan Lanin - http://ivan.lanin.org
-	'ru' => 'Русский язык', // Maksim Izmaylov
-	'uk' => 'Українська', // Valerii Kryzhov
-	'sr' => 'Српски', // Nikola Radovanović - cobisimo@gmail.com
-	'zh' => '简体中文', // Mr. Lodar
-	'zh-tw' => '繁體中文', // http://tzangms.com
+	'it' => 'Italiano', // Alessandro Fiorotto, Paolo Asperti
 	'ja' => '日本語', // Hitoshi Ozawa - http://sourceforge.jp/projects/oss-ja-jpn/releases/
 	'ko' => '한국어', // dalli - skcha67@gmail.com
+	'lt' => 'Lietuvių', // Paulius Leščinskas - http://www.lescinskas.lt
+	'nl' => 'Nederlands', // Maarten Balliauw - http://blog.maartenballiauw.be
+	'pl' => 'Polski', // Radosław Kowalewski - http://srsbiz.pl/
+	'pt' => 'Português', // Gian Live - gian@live.com, Davi Alexandre davi@davialexandre.com.br
+	'ro' => 'Limba Română', // .nick .messing - dot.nick.dot.messing@gmail.com
+	'ru' => 'Русский язык', // Maksim Izmaylov
+	'sk' => 'Slovenčina', // Ivan Suchy - http://www.ivansuchy.com, Juraj Krivda - http://www.jstudio.cz
+	'sl' => 'Slovenski', // Matej Ferlan - www.itdinamik.com, matej.ferlan@itdinamik.com
+	'sr' => 'Српски', // Nikola Radovanović - cobisimo@gmail.com
 	'ta' => 'த‌மிழ்', // G. Sampath Kumar, Chennai, India, sampathkumar11@gmail.com
-	'bn' => 'বাংলা', // Dipak Kumar - dipak.ndc@gmail.com
-	'ar' => 'العربية', // Y.M Amine - Algeria - nbr7@live.fr
-	'fa' => 'فارسی', // mojtaba barghbani - Iran - mbarghbani@gmail.com
+	'tr' => 'Türkçe', // Bilgehan Korkmaz - turktron.com
+	'uk' => 'Українська', // Valerii Kryzhov
+	'zh' => '简体中文', // Mr. Lodar
+	'zh-tw' => '繁體中文', // http://tzangms.com
 );
 
 /** Get current language
