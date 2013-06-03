@@ -295,7 +295,7 @@ function editingAddRow(button, focus) {
 	var tags = row.getElementsByTagName('select');
 	var tags2 = row2.getElementsByTagName('select');
 	for (var i=0; i < tags.length; i++) {
-		tags2[i].name = tags[i].name.replace(/([0-9.]+)/, x);
+		tags2[i].name = tags[i].name.replace(/[0-9.]+/, x);
 		tags2[i].selectedIndex = tags[i].selectedIndex;
 	}
 	tags = row.getElementsByTagName('input');

@@ -2,6 +2,7 @@ Adminer 3.7.1-dev:
 Increase click target for checkboxes
 Use shadow for highlighting default button
 Don't use LIMIT 1 if inline updating unique row
+Don't check previous checkbox on added column in create table (bug #3614245)
 Order table list by name
 PostgreSQL: Fix detecting oid column in PDO
 PostgreSQL: Handle timestamp types (bug #3614086)
