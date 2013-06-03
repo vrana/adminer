@@ -201,8 +201,8 @@ $translations = array(
 	'Stop on error' => '오류의 경우 중지',
 	'Select data' => '데이터',
 	'%.3f s' => '%.3f 초',
-	'$1-$3-$5' => '$1 $3 : $5',
-	'[yyyy]-mm-dd' => '[yyyy]. mm.dd',
+	'$1-$3-$5' => '$1-$3-$5',
+	'[yyyy]-mm-dd' => '[yyyy]-mm-dd',
 	'History' => '역사',
 	'Variables' => '변수',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => '원본 및 대상 열은 동일한 데이터 형식이어야합니다. 목표 컬럼에 인덱스와 데이터가 존재해야합니다.',
@@ -266,5 +266,5 @@ $translations = array(
 	'Copy' => '복사',
 	'Permanent link' => '영구 링크',
 	'Edit all' => '모든 편집',
-	'HH:MM:SS' => '시 : 분 : 초',
+	'HH:MM:SS' => '시:분:초',
 );
