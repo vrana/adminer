@@ -345,7 +345,7 @@ function where($where, $fields = array()) {
 		}
 	}
 	foreach ((array) $where["null"] as $key) {
-		$return[] = idf_escape($key) . " IS NULL";
+		$return[] = (preg_match($function_pattern, $key) ? $key : idf_escape($key)) . " IS NULL";
 	}
 	return implode(" AND ", $return);
 }
