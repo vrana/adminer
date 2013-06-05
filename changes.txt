@@ -5,6 +5,7 @@ Don't use LIMIT 1 if inline updating unique row
 Don't check previous checkbox on added column in create table (bug #3614245)
 Order table list by name
 Verify UTF-8 encoding of CSV import
+MySQL: Speed up updating rows without numeric or UTF-8 primary key
 PostgreSQL: Fix detecting oid column in PDO
 PostgreSQL: Handle timestamp types (bug #3614086)
 Add Korean translation

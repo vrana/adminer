@@ -532,14 +532,6 @@ if (!defined("DRIVER")) {
 		}
 	}
 
-	/** Return expression for binary comparison
-	* @param string
-	* @return string
-	*/
-	function exact_value($val) {
-		return q($val) . " COLLATE utf8_bin";
-	}
-
 	/** Create database
 	* @param string
 	* @param string
@@ -983,7 +975,7 @@ if (!defined("DRIVER")) {
 			$return = "UNHEX($return)";
 		}
 		if ($field["type"] == "bit") {
-			return "CONV($return, 2, 10) + 0";
+			$return = "CONV($return, 2, 10) + 0";
 		}
 		if (ereg("geometry|point|linestring|polygon", $field["type"])) {
 			$return = "GeomFromText($return)";

@@ -375,10 +375,6 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 		return nl_br(h(preg_replace('~^(\\[[^]]*])+~m', '', $connection->error)));
 	}
 	
-	function exact_value($val) {
-		return q($val);
-	}
-
 	function create_database($db, $collation) {
 		return queries("CREATE DATABASE " . idf_escape($db) . (eregi('^[a-z0-9_]+$', $collation) ? " COLLATE $collation" : ""));
 	}

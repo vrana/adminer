@@ -333,9 +333,16 @@ function where($where, $fields = array()) {
 	$function_pattern = '(^[\w\(]+' . str_replace("_", ".*", preg_quote(idf_escape("_"))) . '\)+$)'; //! columns looking like functions
 	foreach ((array) $where["where"] as $key => $val) {
 		$key = bracket_escape($key, 1); // 1 - back
-		$return[] = (preg_match($function_pattern, $key) ? $key : idf_escape($key)) //! SQL injection
-			. (($jush == "sql" && ereg('\\.', $val)) || $jush == "mssql" ? " LIKE " . exact_value(addcslashes($val, "%_\\")) : " = " . unconvert_field($fields[$key], exact_value($val))) // LIKE because of floats, but slow with ints, in MS SQL because of text
+		$column = (preg_match($function_pattern, $key) ? $key : idf_escape($key)); //! SQL injection
+		$return[] = $column
+			. (($jush == "sql" && ereg('^[0-9]*\\.[0-9]*$', $val)) || $jush == "mssql"
+				? " LIKE " . q(addcslashes($val, "%_\\"))
+				: " = " . unconvert_field($fields[$key], q($val))
+			) // LIKE because of floats but slow with ints, in MS SQL because of text
 		; //! enum and set
+		if ($jush == "sql" && ereg("[^ -@]", $val)) { // not just [a-z] to catch non-ASCII characters
+			$return[] = "$column = " . q($val) . " COLLATE utf8_bin";
+		}
 	}
 	foreach ((array) $where["null"] as $key) {
 		$return[] = idf_escape($key) . " IS NULL";

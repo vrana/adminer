@@ -270,10 +270,6 @@ ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
 		return h($connection->error); //! highlight sqltext from offset
 	}
 	
-	function exact_value($val) {
-		return q($val);
-	}
-	
 	function explain($connection, $query) {
 		$connection->query("EXPLAIN PLAN FOR $query");
 		return $connection->query("SELECT * FROM plan_table");

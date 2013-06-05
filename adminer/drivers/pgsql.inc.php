@@ -326,10 +326,6 @@ ORDER BY conkey, conname") as $row) {
 		return nl_br($return);
 	}
 	
-	function exact_value($val) {
-		return q($val);
-	}
-	
 	function create_database($db, $collation) {
 		return queries("CREATE DATABASE " . idf_escape($db) . ($collation ? " ENCODING " . idf_escape($collation) : ""));
 	}

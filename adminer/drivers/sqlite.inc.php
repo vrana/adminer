@@ -348,10 +348,6 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return h($connection->error);
 	}
 	
-	function exact_value($val) {
-		return q($val);
-	}
-	
 	function check_sqlite_name($name) {
 		// avoid creating PHP files on unsecured servers
 		global $connection;
