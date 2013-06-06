@@ -1,0 +1,319 @@
+/*
+FLAT UI Flavored Adminer Theme by M. Mahbubur Rahman (mahbub@mahbubblog.com) 
+Screenshot : http://d.pr/i/cznH
+Based on work by : Lukáš Brandejs	
+https://raw.github.com/vrana/adminer/master/designs/ng9/adminer.css
+*/
+
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600);
+
+* {
+	font: 14px/1.7 "Source Sans Pro","Droid Sans",Arial,Helvetica, sans-serif;
+	color:#333333;
+	margin:0px;
+	padding:0px;
+}
+
+a,a:visited {
+	color:#2980b9;
+	text-decoration:none;
+	padding:3px 1px;
+}
+
+#content table thead span, #content table thead a {
+	font-weight:bold;
+	color:black;
+}
+
+#content table thead a:hover {
+	background:none;
+	text-decoration:underline;
+	color:black;
+}
+
+a:hover {
+	text-decoration:underline;
+}
+
+h1 {
+	font-size:1.9em;
+	font-weight:normal;
+	background:white;
+	color:#1e5eb6;
+	border-bottom:1px solid rgb(85, 112, 139);
+	padding:20px;
+	margin:0px;
+}
+
+#menu h1 {
+	padding:0px 0px 5px 20px;
+	background:none;
+}
+
+h2,h3 {
+	font-size:1.7em;
+	font-weight:bold;
+	background:white;
+	color:#34495e;
+	border-bottom:1px solid #f4f4f4;
+	padding:10px 0px;
+	margin:0px;
+}
+
+fieldset {
+	padding:5px;
+	border:1px solid #DEDEDE;
+}
+
+input,select,textarea {
+	border:1px solid #e5e5e5;
+	margin:1px;
+	padding:3px;
+}
+
+input[type=submit] {
+	color:white;
+	background:#27ae60;
+	padding:4px 10px;
+	cursor:pointer;
+	border:0px solid;
+}
+
+input[type=submit]:hover{
+	background:#2c3e50;
+}
+
+input[type=checkbox]{
+	margin-right:5px;
+}
+
+input[type=image] {
+	border:1px solid #d0cdc4;
+}
+
+input[type=checkbox],input[type=radio]{
+	border:1px solid #e5e5e5;
+	padding:2px 5px;
+}
+
+code{
+	background:#f0ffe1;
+	border:1px dashed #d5f1b9;
+	padding:2px 4px;
+	font-family:"Monaco","Courier New";
+}
+code a:hover{background:transparent}
+
+table{
+	margin:10px 0px;
+	border:1px solid #d0cdc4;
+	border-collapse:collapse;
+}
+
+tbody tr:hover td,tbody tr:hover th{
+	background:#edf4ff
+}
+
+thead th, thead td {
+	text-align:center;
+	vertical-align:middle;
+	font-weight:bold;
+	white-space:nowrap;
+	background:#ecf0f1;
+	color:#808080;
+}
+
+th,td{
+	border:1px solid #d0cdc4;
+	padding:3px 6px;
+	vertical-align:top;
+}
+
+th a {
+	font-weight:bold;
+	padding-bottom:0px;
+}
+
+th {
+	background:white;
+}
+
+tr.odd td {
+	background:#fcfaf5;
+}
+
+#content tbody tr.checked td, tr.checked.odd td {
+	background:#fbe2e2;
+	color:red;
+}
+
+.hidden{
+	display:none
+}
+
+.error,.message{
+	padding:0px;
+	background:transparent;
+	font-weight:bold
+}
+
+.error{
+	color:#c00
+}
+
+.message{
+	color:#090
+}
+
+#content{
+	margin:0px 0px 0px 320px;
+	padding:50px 20px 40px 0px;
+	height:100%;
+}
+
+#lang {
+	background:#ecf0f1;
+	color:#808080;
+	position:fixed;
+	top:0px;
+	left:0px;
+	width:100%;
+	padding:10px 20px;
+	z-index:1;
+}
+
+#breadcrumb {
+	position:fixed;
+	top:0px;
+	left:300px;
+	background:#34495e;
+	z-index:2;
+	width:100%;
+	color:#ecf0f1;
+	padding:10px;
+	font-size:15px;
+	font-weight:bold;
+}
+#breadcrumb a{
+	color:#ecf0f1;
+	font-size:15px;
+	font-weight:bold;
+}
+
+#menu {
+	background:#34495e;
+	position:fixed;
+	top:-10px;
+	color:#FFF;
+	padding:20px;
+	padding-top:40px;
+	bottom:0px;
+	overflow:auto;
+	left:0px;
+	width:240px;
+	border-right:5px solid #34495e;
+}
+
+#menu p{
+	border-bottom:1px solid rgb(85, 112, 139);
+}
+
+#menu a{
+	color:#FFF;
+}
+
+#schema .table {
+	padding:5px;
+	background:#fcfaf5;
+	border:1px solid #d0cdc4;
+}
+
+#schema .table b {
+	color:#006aeb;
+	font-weight:bold;
+	text-decoration:underline;
+}
+
+#schema .table b:hover {
+	color:white;
+}
+
+input[name=logout] {
+	color:#fce2e2;
+	background:#d73e3e;
+}
+
+input[name=drop] {
+	background-color:#c0392b;
+}
+
+input[name=logout]:hover {
+	background:#ea0202;
+}
+
+#logins a, #tables a { 
+	background:none;
+}
+
+#logins a:hover, #tables a:hover { 
+	
+}
+
+#logout {
+	color:#FFF;
+	text-decoration:none;
+}
+
+#logout:hover {
+	color:red;	
+}
+
+.js .column {
+	background:#ecf0f1;
+}
+
+#content table thead a.text:hover {
+	text-decoration:none;
+}
+
+#version, .version {
+	font-size:50%;
+}
+
+#h1:hover {
+	color:white;
+}
+
+
+input[type=submit] {
+	font-size:13px;	
+	font-weight:normal;
+	-moz-border-radius:2px;
+	-webkit-border-radius:2px;
+	border-radius:2px;
+	border:0px solid #469df5;
+	padding:3px 10px;
+	text-decoration:none;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(5%, #63b8ee), color-stop(100%, #468ccf) );
+	background:-moz-linear-gradient( center top, #63b8ee 5%, #468ccf 100% );
+	background:-ms-linear-gradient( top, #63b8ee 5%, #468ccf 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#63b8ee', endColorstr='#468ccf');
+	background-color:#63b8ee;
+	color:#ffffff;
+	display:inline-block;
+	text-shadow:1px 1px 0px #287ace;
+ 	-webkit-box-shadow:inset 0px 0px 0px 0px #cae3fc;
+ 	-moz-box-shadow:inset 0px 0px 0px 0px #cae3fc;
+ 	box-shadow:inset 0px 0px 0px 0px #cae3fc;
+}
+input[type=submit]:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(5%, #4197ee), color-stop(100%, #79bbff) );
+	background:-moz-linear-gradient( center top, #4197ee 5%, #79bbff 100% );
+	background:-ms-linear-gradient( top, #4197ee 5%, #79bbff 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#4197ee', endColorstr='#79bbff');
+	background-color:#4197ee;
+}
+input[type=submit]:active {
+	position:relative;
+	top:1px;
+}
