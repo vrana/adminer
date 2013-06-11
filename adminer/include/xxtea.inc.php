@@ -79,6 +79,9 @@ function decrypt_string($str, $key) {
 	if ($str == "") {
 		return "";
 	}
+	if (!$key) {
+		return false;
+	}
 	$key = array_values(unpack("V*", pack("H*", md5($key))));
 	$v = str2long($str, false);
 	$n = count($v) - 1;

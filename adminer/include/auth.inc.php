@@ -21,7 +21,7 @@ if ($auth) {
 	$_SESSION["db"][$auth["driver"]][$auth["server"]][$auth["username"]][$auth["db"]] = true;
 	if ($auth["permanent"]) {
 		$key = base64_encode($auth["driver"]) . "-" . base64_encode($auth["server"]) . "-" . base64_encode($auth["username"]) . "-" . base64_encode($auth["db"]);
-		$private = $adminer->permanentLogin();
+		$private = $adminer->permanentLogin(true);
 		$permanent[$key] = "$key:" . base64_encode($private ? encrypt_string($auth["password"], $private) : "");
 		cookie("adminer_permanent", implode(" ", $permanent));
 	}
@@ -49,7 +49,7 @@ if ($auth) {
 	
 } elseif ($permanent && !$_SESSION["pwds"]) {
 	session_regenerate_id();
-	$private = $adminer->permanentLogin(); // try to decode even if not set
+	$private = $adminer->permanentLogin();
 	foreach ($permanent as $key => $val) {
 		list(, $cipher) = explode(":", $val);
 		list($driver, $server, $username, $db) = array_map('base64_decode', explode("-", $key));
@@ -82,6 +82,9 @@ function auth_error($exception = null) {
 			$password = &get_session("pwds");
 			if ($password !== null) {
 				$error = h($exception ? $exception->getMessage() : (is_string($connection) ? $connection : lang('Invalid credentials.')));
+				if ($password === false) {
+					$error .= '<br>' . lang('Master password expired. <a href="http://www.adminer.org/en/extension/" target="_blank">Implement</a> <code>permanentLogin()</code> method to make it permanent.');
+				}
 				$password = null;
 			}
 			unset_permanent();

@@ -13,8 +13,8 @@ class Adminer {
 		return array(SERVER, $_GET["username"], get_session("pwds"));
 	}
 	
-	function permanentLogin() {
-		return password_file();
+	function permanentLogin($create = false) {
+		return password_file($create);
 	}
 	
 	function database() {

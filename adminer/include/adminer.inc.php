@@ -20,10 +20,11 @@ class Adminer {
 	}
 	
 	/** Get key used for permanent login
-	* @return string cryptic string which gets combined with password
+	* @param bool
+	* @return string cryptic string which gets combined with password or false in case of an error
 	*/
-	function permanentLogin() {
-		return password_file();
+	function permanentLogin($create = false) {
+		return password_file($create);
 	}
 	
 	/** Identifier of selected database

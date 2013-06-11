@@ -11,6 +11,7 @@ $translations = array(
 	'Logged as: %s' => 'Přihlášen jako: %s',
 	'Logout successful.' => 'Odhlášení proběhlo v pořádku.',
 	'Invalid credentials.' => 'Neplatné přihlašovací údaje.',
+	'Master password expired. <a href="http://www.adminer.org/en/extension/" target="_blank">Implement</a> <code>permanentLogin()</code> method to make it permanent.' => 'Platnost hlavního hesla vypršela. <a href="http://www.adminer.org/cs/extension/" target="_blank">Implementujte</a> metodu <code>permanentLogin()</code>, aby platilo stále.',
 	'Language' => 'Jazyk',
 	'Invalid CSRF token. Send the form again.' => 'Neplatný token CSRF. Odešlete formulář znovu.',
 	'No extension' => 'Žádné rozšíření',

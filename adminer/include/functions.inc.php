@@ -912,9 +912,10 @@ function apply_sql_function($function, $column) {
 }
 
 /** Read password from file adminer.key in temporary directory or create one
+* @param bool
 * @return string or false if the file can not be created
 */
-function password_file() {
+function password_file($create) {
 	$dir = ini_get("upload_tmp_dir"); // session_save_path() may contain other storage path
 	if (!$dir) {
 		if (function_exists('sys_get_temp_dir')) {
@@ -930,7 +931,7 @@ function password_file() {
 	}
 	$filename = "$dir/adminer.key";
 	$return = @file_get_contents($filename); // @ - can not exist
-	if ($return) {
+	if ($return || !$create) {
 		return $return;
 	}
 	$fp = @fopen($filename, "w"); // @ - can have insufficient rights //! is not atomic
