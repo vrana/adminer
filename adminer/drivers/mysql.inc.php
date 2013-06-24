@@ -396,7 +396,7 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function is_view($table_status) {
-		return !isset($table_status["Engine"]);
+		return $table_status["Engine"] === null;
 	}
 
 	/** Check if table supports foreign keys
