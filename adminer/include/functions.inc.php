@@ -707,6 +707,16 @@ function hidden_fields_get() {
 	echo '<input type="hidden" name="username" value="' . h($_GET["username"]) . '">';
 }
 
+/** Get status of a single table and fall back to name on error
+* @param string
+* @param bool
+* @return array
+*/
+function table_status1($table, $fast = false) {
+	$return = table_status($table, $fast);
+	return ($return ? $return : array("Name" => $table));
+}
+
 /** Find out foreign keys for each column
 * @param string
 * @return array array($col => array())

@@ -1,6 +1,6 @@
 <?php
 $TABLE = $_GET["select"];
-$table_status = table_status($TABLE);
+$table_status = table_status1($TABLE);
 $indexes = indexes($TABLE);
 $fields = fields($TABLE);
 $foreign_keys = column_foreign_keys($TABLE);
