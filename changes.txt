@@ -6,6 +6,7 @@ Don't check previous checkbox on added column in create table (bug #3614245)
 Order table list by name
 Verify UTF-8 encoding of CSV import
 Notify user about expired master password for permanent login
+Send 404 for invalid database and schema
 MySQL: Speed up updating rows without numeric or UTF-8 primary key
 PostgreSQL: Fix detecting oid column in PDO
 PostgreSQL: Handle timestamp types (bug #3614086)

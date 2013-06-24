@@ -3,6 +3,7 @@ function connect_error() {
 	global $adminer, $connection, $token, $error, $drivers;
 	$databases = array();
 	if (DB != "") {
+		header("HTTP/1.1 404 Not Found");
 		page_header(lang('Database') . ": " . h(DB), lang('Invalid database.'), true);
 	} else {
 		if ($_POST["db"] && !$error) {
@@ -75,6 +76,7 @@ if (support("scheme") && DB != "" && $_GET["ns"] !== "") {
 		redirect(preg_replace('~ns=[^&]*&~', '', ME) . "ns=" . get_schema());
 	}
 	if (!set_schema($_GET["ns"])) {
+		header("HTTP/1.1 404 Not Found");
 		page_header(lang('Schema') . ": " . h($_GET["ns"]), lang('Invalid schema.'), true);
 		page_footer("ns");
 		exit;
