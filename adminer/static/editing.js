@@ -503,7 +503,7 @@ function indexesAddColumn(field, prefix) {
 	};
 	var select = field.form[field.name.replace(/\].*/, '][type]')];
 	if (!select.selectedIndex) {
-		select.selectedIndex = 3;
+		select.selectedIndex = select.options.length - 1;
 		select.onchange();
 	}
 	var column = cloneNode(field.parentNode);
