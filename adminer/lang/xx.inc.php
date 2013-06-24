@@ -65,6 +65,7 @@ $translations = array(
 	'Unable to upload a file.' => 'xx',
 	'Maximum allowed file size is %sB.' => 'xx',
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'xx',
+	'You can upload a big SQL file via FTP and import it from server.' => 'xx',
 	
 	'Export' => 'xx',
 	'Dump' => 'xx',

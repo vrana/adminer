@@ -65,6 +65,7 @@ $translations = array(
 	'Unable to upload a file.' => 'Nepodařilo se nahrát soubor.',
 	'Maximum allowed file size is %sB.' => 'Maximální povolená velikost souboru je %sB.',
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Příliš velká POST data. Zmenšete data nebo zvyšte hodnotu konfigurační direktivy %s.',
+	'You can upload a big SQL file via FTP and import it from server.' => 'Velký SQL soubor můžete nahrát pomocí FTP a importovat ho ze serveru.',
 	
 	'Export' => 'Export',
 	'Dump' => 'Export',
