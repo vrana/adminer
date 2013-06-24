@@ -28,12 +28,15 @@ if ($_POST && !$error) {
 	}
 }
 
-page_header(($TABLE != "" ? lang('Alter view') : lang('Create view')), $error, array("table" => $TABLE), $TABLE);
-
 if (!$_POST && $TABLE != "") {
 	$row = view($TABLE);
 	$row["name"] = $TABLE;
+	if (!$error) {
+		$error = $connection->error;
+	}
 }
+
+page_header(($TABLE != "" ? lang('Alter view') : lang('Create view')), $error, array("table" => $TABLE), $TABLE);
 ?>
 
 <form action="" method="post">

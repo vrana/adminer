@@ -9,10 +9,13 @@ foreach ($referencable_primary as $table_name => $field) {
 }
 
 $orig_fields = array();
-$orig_status = array();
+$table_status = array();
 if ($TABLE != "") {
 	$orig_fields = fields($TABLE);
-	$orig_status = table_status($TABLE);
+	$table_status = table_status($TABLE);
+	if (!$table_status) {
+		$error = lang('No tables.');
+	}
 }
 
 $row = $_POST;
@@ -80,7 +83,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 				? " (" . implode(",", $partitions) . "\n)"
 				: ($row["partitions"] ? " PARTITIONS " . (+$row["partitions"]) : "")
 			);
-		} elseif (support("partitioning") && ereg("partitioned", $orig_status["Create_options"])) {
+		} elseif (support("partitioning") && ereg("partitioned", $table_status["Create_options"])) {
 			$partitioning .= "\nREMOVE PARTITIONING";
 		}
 		
@@ -97,8 +100,8 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 			($jush == "sqlite" && ($use_all_fields || $foreign) ? $all_fields : $fields),
 			$foreign,
 			$row["Comment"],
-			($row["Engine"] && $row["Engine"] != $orig_status["Engine"] ? $row["Engine"] : ""),
-			($row["Collation"] && $row["Collation"] != $orig_status["Collation"] ? $row["Collation"] : ""),
+			($row["Engine"] && $row["Engine"] != $table_status["Engine"] ? $row["Engine"] : ""),
+			($row["Collation"] && $row["Collation"] != $table_status["Collation"] ? $row["Collation"] : ""),
 			($row["Auto_increment"] != "" ? +$row["Auto_increment"] : ""),
 			$partitioning
 		));
@@ -115,7 +118,7 @@ if (!$_POST) {
 	);
 	
 	if ($TABLE != "") {
-		$row = $orig_status;
+		$row = $table_status;
 		$row["name"] = $TABLE;
 		$row["fields"] = array();
 		if (!$_GET["auto_increment"]) { // don't prefill by original Auto_increment for the sake of performance and not reusing deleted ids
