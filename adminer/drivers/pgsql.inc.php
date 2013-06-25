@@ -277,7 +277,7 @@ ORDER BY a.attnum"
 			}
 			$return[$relname]["descs"] = array();
 			foreach (explode(" ", $row["indoption"]) as $indoption) {
-				$return[$relname]["descs"][] = ($indoption ? '1' : null); //! check what the bits mean
+				$return[$relname]["descs"][] = ($indoption & 1 ? '1' : null); // 1 - INDOPTION_DESC
 			}
 			$return[$relname]["lengths"] = array();
 		}
