@@ -6,6 +6,7 @@ Don't check previous checkbox on added column in create table (bug #3614245)
 Order table list by name
 Verify UTF-8 encoding of CSV import
 Notify user about expired master password for permanent login
+Highlight table being altered in navigation
 Send 404 for invalid database and schema
 Fix title and links on invalid table pages
 Display error on invalid alter table and view pages
