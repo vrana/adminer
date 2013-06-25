@@ -19,14 +19,17 @@ if ($_POST && !$error && !$_POST["add"]) {
 		if (in_array($index["type"], $index_types)) {
 			$columns = array();
 			$lengths = array();
+			$descs = array();
 			$set = array();
 			ksort($index["columns"]);
 			foreach ($index["columns"] as $key => $column) {
 				if ($column != "") {
 					$length = $index["lengths"][$key];
-					$set[] = idf_escape($column) . ($length ? "(" . (+$length) . ")" : "");
+					$desc = $index["descs"][$key];
+					$set[] = idf_escape($column) . ($length ? "(" . (+$length) . ")" : "") . ($desc ? " DESC" : "");
 					$columns[] = $column;
 					$lengths[] = ($length ? $length : null);
+					$descs[] = $desc;
 				}
 			}
 			
@@ -35,7 +38,12 @@ if ($_POST && !$error && !$_POST["add"]) {
 				if ($existing) {
 					ksort($existing["columns"]);
 					ksort($existing["lengths"]);
-					if ($index["type"] == $existing["type"] && array_values($existing["columns"]) === $columns && (!$existing["lengths"] || array_values($existing["lengths"]) === $lengths)) {
+					ksort($existing["descs"]);
+					if ($index["type"] == $existing["type"]
+						&& array_values($existing["columns"]) === $columns
+						&& (!$existing["lengths"] || array_values($existing["lengths"]) === $lengths)
+						&& array_values($existing["descs"]) === $descs
+					) {
 						// skip existing index
 						unset($indexes[$name]);
 						continue;
@@ -66,7 +74,11 @@ if ($_POST["add"]) {
 		}
 	}
 	$index = end($row["indexes"]);
-	if ($index["type"] || array_filter($index["columns"], 'strlen') || array_filter($index["lengths"], 'strlen')) {
+	if ($index["type"]
+		|| array_filter($index["columns"], 'strlen')
+		|| array_filter($index["lengths"], 'strlen')
+		|| array_filter($index["descs"])
+	) {
 		$row["indexes"][] = array("columns" => array(1 => ""));
 	}
 }
@@ -92,7 +104,9 @@ foreach ($row["indexes"] as $index) {
 	$i = 1;
 	foreach ($index["columns"] as $key => $column) {
 		echo "<span>" . html_select("indexes[$j][columns][$i]", array(-1 => "") + $fields, $column, ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . "(this, '" . js_escape($jush == "sql" ? "" : $_GET["indexes"] . "_") . "');");
-		echo "<input type='number' name='indexes[$j][lengths][$i]' class='size' value='" . h($index["lengths"][$key]) . "'> </span>"; //! hide for non-MySQL drivers, add ASC|DESC
+		echo ($jush == "sql" || $jush == "mssql" ? "<input type='number' name='indexes[$j][lengths][$i]' class='size' value='" . h($index["lengths"][$key]) . "'>" : "");
+		echo ($jush != "sql" ? checkbox("indexes[$j][descs][$i]", 1, $index["descs"][$key], lang('descending')) : "");
+		echo " </span>";
 		$i++;
 	}
 	

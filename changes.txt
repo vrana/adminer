@@ -10,6 +10,7 @@ Send 404 for invalid database and schema
 Fix title and links on invalid table pages
 Display error on invalid alter table and view pages
 MySQL: Speed up updating rows without numeric or UTF-8 primary key
+Non-MySQL: Descending indexes
 PostgreSQL: Fix detecting oid column in PDO
 PostgreSQL: Handle timestamp types (bug #3614086)
 Add Korean translation

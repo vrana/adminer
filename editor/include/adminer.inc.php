@@ -357,6 +357,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		}
 		foreach (($index_order != "" ? array($indexes[$index_order]) : $indexes) as $index) {
 			if ($index_order != "" || $index["type"] == "INDEX") {
+				$has_desc = array_filter($index["descs"]);
 				$desc = false;
 				foreach ($index["columns"] as $val) {
 					if (ereg('date|timestamp', $fields[$val]["type"])) {
@@ -365,8 +366,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 					}
 				}
 				$return = array();
-				foreach ($index["columns"] as $val) {
-					$return[] = idf_escape($val) . ($desc ? " DESC" : "");
+				foreach ($index["columns"] as $key => $val) {
+					$return[] = idf_escape($val) . (($has_desc ? $index["descs"][$key] : $desc) ? " DESC" : "");
 				}
 				return $return;
 			}

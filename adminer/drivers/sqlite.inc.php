@@ -305,11 +305,14 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			$return[""] = array("type" => "PRIMARY", "columns" => $primary, "lengths" => array());
 		}
 		foreach (get_rows("PRAGMA index_list(" . table($table) . ")") as $row) {
-			if (!ereg("^sqlite_", $row["name"])) {
-				$return[$row["name"]]["type"] = ($row["unique"] ? "UNIQUE" : "INDEX");
-				$return[$row["name"]]["lengths"] = array();
-				foreach (get_rows("PRAGMA index_info(" . idf_escape($row["name"]) . ")") as $row1) {
-					$return[$row["name"]]["columns"][] = $row1["name"];
+			$name = $row["name"];
+			if (!ereg("^sqlite_", $name)) {
+				$return[$name]["type"] = ($row["unique"] ? "UNIQUE" : "INDEX");
+				$return[$name]["lengths"] = array();
+				$return[$name]["descs"] = array();
+				foreach (get_rows("PRAGMA index_info(" . idf_escape($name) . ")") as $row1) {
+					$return[$name]["columns"][] = $row1["name"];
+					$return[$name]["descs"][] = null; // information about DESC is not available anywhere
 				}
 			}
 		}

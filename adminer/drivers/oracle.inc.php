@@ -245,9 +245,11 @@ FROM user_ind_columns uic
 LEFT JOIN user_constraints uc ON uic.index_name = uc.constraint_name AND uic.table_name = uc.table_name
 WHERE uic.table_name = " . q($table) . "
 ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
-			$return[$row["INDEX_NAME"]]["type"] = ($row["CONSTRAINT_TYPE"] == "P" ? "PRIMARY" : ($row["CONSTRAINT_TYPE"] == "U" ? "UNIQUE" : "INDEX"));
-			$return[$row["INDEX_NAME"]]["columns"][] = $row["COLUMN_NAME"];
-			$return[$row["INDEX_NAME"]]["lengths"][] = ($row["CHAR_LENGTH"] && $row["CHAR_LENGTH"] != $row["COLUMN_LENGTH"] ? $row["CHAR_LENGTH"] : null);
+			$index_name = $row["INDEX_NAME"];
+			$return[$index_name]["type"] = ($row["CONSTRAINT_TYPE"] == "P" ? "PRIMARY" : ($row["CONSTRAINT_TYPE"] == "U" ? "UNIQUE" : "INDEX"));
+			$return[$index_name]["columns"][] = $row["COLUMN_NAME"];
+			$return[$index_name]["lengths"][] = ($row["CHAR_LENGTH"] && $row["CHAR_LENGTH"] != $row["COLUMN_LENGTH"] ? $row["CHAR_LENGTH"] : null);
+			$return[$index_name]["descs"][] = ($row["DESCEND"] ? '1' : null);
 		}
 		return $return;
 	}

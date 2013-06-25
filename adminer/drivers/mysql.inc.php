@@ -445,6 +445,7 @@ if (!defined("DRIVER")) {
 			$return[$row["Key_name"]]["type"] = ($row["Key_name"] == "PRIMARY" ? "PRIMARY" : ($row["Index_type"] == "FULLTEXT" ? "FULLTEXT" : ($row["Non_unique"] ? "INDEX" : "UNIQUE")));
 			$return[$row["Key_name"]]["columns"][] = $row["Column_name"];
 			$return[$row["Key_name"]]["lengths"][] = $row["Sub_part"];
+			$return[$row["Key_name"]]["descs"][] = null;
 		}
 		return $return;
 	}

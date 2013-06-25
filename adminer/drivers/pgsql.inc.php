@@ -268,13 +268,18 @@ ORDER BY a.attnum"
 		$return = array();
 		$table_oid = $connection2->result("SELECT oid FROM pg_class WHERE relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema()) AND relname = " . q($table));
 		$columns = get_key_vals("SELECT attnum, attname FROM pg_attribute WHERE attrelid = $table_oid AND attnum > 0", $connection2);
-		foreach (get_rows("SELECT relname, indisunique::int, indisprimary::int, indkey FROM pg_index i, pg_class ci WHERE i.indrelid = $table_oid AND ci.oid = i.indexrelid", $connection2) as $row) {
-			$return[$row["relname"]]["type"] = ($row["indisprimary"] ? "PRIMARY" : ($row["indisunique"] ? "UNIQUE" : "INDEX"));
-			$return[$row["relname"]]["columns"] = array();
+		foreach (get_rows("SELECT relname, indisunique::int, indisprimary::int, indkey, indoption FROM pg_index i, pg_class ci WHERE i.indrelid = $table_oid AND ci.oid = i.indexrelid", $connection2) as $row) {
+			$relname = $row["relname"];
+			$return[$relname]["type"] = ($row["indisprimary"] ? "PRIMARY" : ($row["indisunique"] ? "UNIQUE" : "INDEX"));
+			$return[$relname]["columns"] = array();
 			foreach (explode(" ", $row["indkey"]) as $indkey) {
-				$return[$row["relname"]]["columns"][] = $columns[$indkey];
+				$return[$relname]["columns"][] = $columns[$indkey];
 			}
-			$return[$row["relname"]]["lengths"] = array();
+			$return[$relname]["descs"] = array();
+			foreach (explode(" ", $row["indoption"]) as $indoption) {
+				$return[$relname]["descs"][] = ($indoption ? '1' : null); //! check what the bits mean
+			}
+			$return[$relname]["lengths"] = array();
 		}
 		return $return;
 	}
@@ -405,6 +410,7 @@ ORDER BY conkey, conname") as $row) {
 		$queries = array();
 		foreach ($alter as $val) {
 			if ($val[0] != "INDEX") {
+				//! descending UNIQUE indexes results in syntax error
 				$create[] = ($val[2] == "DROP"
 					? "\nDROP CONSTRAINT " . idf_escape($val[1])
 					: "\nADD" . ($val[1] != "" ? " CONSTRAINT " . idf_escape($val[1]) : "") . " $val[0] " . ($val[0] == "PRIMARY" ? "KEY " : "") . $val[2]

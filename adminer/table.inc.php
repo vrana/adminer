@@ -35,7 +35,10 @@ if ($fields) {
 				ksort($index["columns"]); // enforce correct columns order
 				$print = array();
 				foreach ($index["columns"] as $key => $val) {
-					$print[] = "<i>" . h($val) . "</i>" . ($index["lengths"][$key] ? "(" . $index["lengths"][$key] . ")" : "");
+					$print[] = "<i>" . h($val) . "</i>"
+						. ($index["lengths"][$key] ? "(" . $index["lengths"][$key] . ")" : "")
+						. ($index["descs"][$key] ? " DESC" : "")
+					;
 				}
 				echo "<tr title='" . h($name) . "'><th>$index[type]<td>" . implode(", ", $print) . "\n";
 			}
