@@ -812,17 +812,16 @@ username.form['auth[driver]'].onchange();
 <form action="">
 <p id="dbs">
 <?php
-hidden_fields_get();
-echo ($databases
-	? '<select name="db" onmousedown="dbMouseDown(event, this);" onchange="dbChange(this);">' . optionlist(array("" => "(" . lang('database') . ")") + $databases, DB) . '</select>'
-	: '<input name="db" value="' . h(DB) . '" autocapitalize="off">'
-);
-?>
-<input type="submit" value="<?php echo lang('Use'); ?>"<?php echo ($databases ? " class='hidden'" : ""); ?>>
-<?php
+		hidden_fields_get();
+		$db_events = " onmousedown='dbMouseDown(event, this);' onchange='dbChange(this);'";
+		echo ($databases
+			? "<select name='db'$db_events>" . optionlist(array("" => "(" . lang('database') . ")") + $databases, DB) . "</select>"
+			: '<input name="db" value="' . h(DB) . '" autocapitalize="off">'
+		);
+		echo "<input type='submit' value='" . lang('Use') . "'" . ($databases ? " class='hidden'" : "") . ">\n";
 		if ($missing != "db" && DB != "" && $connection->select_db(DB)) {
 			if (support("scheme")) {
-				echo "<br>" . html_select("ns", array("" => "(" . lang('schema') . ")") + schemas(), $_GET["ns"], "this.form.submit();");
+				echo "<br><select name='ns'$db_events>" . optionlist(array("" => "(" . lang('schema') . ")") + schemas(), $_GET["ns"]) . "</select>";
 				if ($_GET["ns"] != "") {
 					set_schema($_GET["ns"]);
 				}

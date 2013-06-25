@@ -76,7 +76,7 @@ function loginDriver(driver) {
 
 
 var dbCtrl;
-var dbPrevious;
+var dbPrevious = {};
 
 /** Check if database should be opened to a new window
 * @param MouseEvent
@@ -84,8 +84,8 @@ var dbPrevious;
 */
 function dbMouseDown(event, el) {
 	dbCtrl = isCtrl(event);
-	if (dbPrevious == undefined) {
-		dbPrevious = el.value;
+	if (dbPrevious[el.name] == undefined) {
+		dbPrevious[el.name] = el.value;
 	}
 }
 
@@ -98,9 +98,9 @@ function dbChange(el) {
 	}
 	el.form.submit();
 	el.form.target = '';
-	if (dbCtrl && dbPrevious != undefined) {
-		el.value = dbPrevious;
-		dbPrevious = undefined;
+	if (dbCtrl && dbPrevious[el.name] != undefined) {
+		el.value = dbPrevious[el.name];
+		dbPrevious[el.name] = undefined;
 	}
 }
 
