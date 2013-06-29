@@ -47,6 +47,11 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 				$location,
 				lang('Item has been updated.')
 			);
+			if (is_ajax()) {
+				page_headers();
+				page_messages($error);
+				exit;
+			}
 		} else {
 			$result = insert_into($TABLE, $set);
 			$last_id = ($result ? last_id() : 0);
@@ -92,6 +97,8 @@ if ($row === false) {
 }
 ?>
 
+<div id="message"></div>
+
 <form action="" method="post" enctype="multipart/form-data" id="form">
 <?php
 if (!$fields) {
@@ -132,7 +139,10 @@ if (!$fields) {
 if ($fields) {
 	echo "<input type='submit' value='" . lang('Save') . "'>\n";
 	if (!isset($_GET["select"])) {
-		echo "<input type='submit' name='insert' value='" . ($update ? lang('Save and continue edit') : lang('Save and insert next')) . "' title='Ctrl+Shift+Enter'>\n";
+		echo "<input type='submit' name='insert' value='" . ($update
+			? lang('Save and continue edit') . "' onclick='return !ajaxForm(this.form, \"" . lang('Loading') . '", this)'
+			: lang('Save and insert next')
+		) . "' title='Ctrl+Shift+Enter'>\n";
 	}
 }
 echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\">\n"

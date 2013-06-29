@@ -199,10 +199,11 @@ if ($_POST && !$error) {
 
 $table_name = $adminer->tableName($table_status);
 if (is_ajax()) {
-	// needs to send headers
+	page_headers();
 	ob_start();
+} else {
+	page_header(lang('Select') . ": $table_name", $error);
 }
-page_header(lang('Select') . ": $table_name", $error);
 
 $set = null;
 if (isset($rights["insert"])) {

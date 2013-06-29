@@ -326,6 +326,7 @@ function bodyKeydown(event, button) {
 		} else {
 			target.form.submit();
 		}
+		target.focus();
 		return false;
 	}
 	return true;
@@ -422,6 +423,42 @@ function ajaxSetHtml(url) {
 			}
 		}
 	});
+}
+
+/** Save form contents through AJAX
+* @param HTMLFormElement
+* @param string
+* @param [HTMLInputElement]
+* @return boolean
+*/
+function ajaxForm(form, message, button) {
+	var data = [];
+	var els = form.elements;
+	for (var i = 0; i < els.length; i++) {
+		var el = els[i];
+		if (el.name && !el.disabled) {
+			if (/^file$/i.test(el.type) && el.value) {
+				return false;
+			}
+			if (!/^(checkbox|radio|submit|file)$/i.test(el.type) || el.checked || el == button) {
+				data.push(encodeURIComponent(el.name) + '=' + encodeURIComponent(/select/i.test(el.tagName) ? selectValue(el) : el.value));
+			}
+		}
+	}
+	data = data.join('&');
+	
+	setHtml('message', message);
+	var url = form.action;
+	if (!/post/i.test(form.method)) {
+		url = url.replace(/\?.*/, '') + '?' + data;
+		data = '';
+	}
+	return ajax(url, function (request) {
+		setHtml('message', request.responseText);
+		if (window.jush) {
+			jush.highlight_tag('code', 0);
+		}
+	}, data);
 }
 
 
