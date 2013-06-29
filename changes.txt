@@ -1,4 +1,4 @@
-Adminer 3.7.1-dev:
+Adminer (released 2013-06-29):
 Increase click target for checkboxes
 Use shadow for highlighting default button
 Don't use LIMIT 1 if inline updating unique row
