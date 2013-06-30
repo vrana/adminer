@@ -252,8 +252,13 @@ ORDER BY a.attnum"
 			$row["null"] = !$row["attnotnull"];
 			$row["auto_increment"] = eregi("^nextval\\(", $row["default"]);
 			$row["privileges"] = array("insert" => 1, "select" => 1, "update" => 1);
-			if (preg_match('~^(.*)::.+$~', $row["default"], $match)) {
-				$row["default"] = ($match[1][0] == "'" ? idf_unescape($match[1]) : $match[1]);
+			if ($row["auto_increment"] && preg_match('~^.+(\'.*\')::.+$~', $row["default"], $match)) {
+				$row["default"] = "nextval($match[1])";
+			}
+			else {
+				if (preg_match('~^(.*)::.+$~', $row["default"], $match)) {
+					$row["default"] = ($match[1][0] == "'" ? idf_unescape($match[1]) : $match[1]);
+				}
 			}
 			$return[$row["field"]] = $row;
 		}
@@ -372,7 +377,13 @@ ORDER BY conkey, conname") as $row) {
 					}
 					$alter[] = "ALTER $column TYPE$val[1]";
 					if (!$val[6]) {
-						$alter[] = "ALTER $column " . ($val[3] ? "SET$val[3]" : "DROP DEFAULT"); //! quoting
+						if (preg_match('~^ DEFAULT \'\s*nextval\\(\'\'(.*)\'\'\\)\s*\'$~', $val[3], $match)) {
+							$default = " DEFAULT nextval('$match[1]')";
+						}
+						else {
+							$default = $val[3];
+						}
+						$alter[] = "ALTER $column " . ($val[3] ? "SET$default" : "DROP DEFAULT"); //! quoting
 						$alter[] = "ALTER $column " . ($val[2] == " NULL" ? "DROP NOT" : "SET") . $val[2];
 					}
 				}
