@@ -377,7 +377,7 @@ ORDER BY conkey, conname") as $row) {
 					}
 					$alter[] = "ALTER $column TYPE$val[1]";
 					if (!$val[6]) {
-						if (preg_match('~^\s+DEFAULT\s+\'nextval\\(\'\'(.*)\'\'\\)\'\s*$~', $val[3], $match)) {
+						if (preg_match('~^ DEFAULT \'\s*nextval\\(\'\'(.*)\'\'\\)\s*\'$~', $val[3], $match)) {
 							$default = " DEFAULT nextval('$match[1]')";
 						}
 						else {
