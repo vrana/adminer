@@ -1,5 +1,6 @@
 Adminer 3.7.2-dev:
 Save and continue edit by AJAX
+PostgreSQL: Fix handling of nextval() default values
 
 Adminer 3.7.1 (released 2013-06-29):
 Increase click target for checkboxes

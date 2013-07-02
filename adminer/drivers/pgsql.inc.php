@@ -252,8 +252,8 @@ ORDER BY a.attnum"
 			$row["null"] = !$row["attnotnull"];
 			$row["auto_increment"] = eregi("^nextval\\(", $row["default"]);
 			$row["privileges"] = array("insert" => 1, "select" => 1, "update" => 1);
-			if (preg_match('~^(.*)::.+$~', $row["default"], $match)) {
-				$row["default"] = ($match[1][0] == "'" ? idf_unescape($match[1]) : $match[1]);
+			if (preg_match('~(.+)::[^)]+(.*)~', $row["default"], $match)) {
+				$row["default"] = ($match[1][0] == "'" ? idf_unescape($match[1]) : $match[1]) . $match[2];
 			}
 			$return[$row["field"]] = $row;
 		}
@@ -372,7 +372,7 @@ ORDER BY conkey, conname") as $row) {
 					}
 					$alter[] = "ALTER $column TYPE$val[1]";
 					if (!$val[6]) {
-						$alter[] = "ALTER $column " . ($val[3] ? "SET$val[3]" : "DROP DEFAULT"); //! quoting
+						$alter[] = "ALTER $column " . ($val[3] ? "SET$val[3]" : "DROP DEFAULT");
 						$alter[] = "ALTER $column " . ($val[2] == " NULL" ? "DROP NOT" : "SET") . $val[2];
 					}
 				}

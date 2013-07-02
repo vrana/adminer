@@ -176,11 +176,17 @@ function process_type($field, $collate = "COLLATE") {
 * @return array array("field", "type", "NULL", "DEFAULT", "ON UPDATE", "COMMENT", "AUTO_INCREMENT")
 */
 function process_field($field, $type_field) {
+	global $jush;
+	$default = $field["default"];
 	return array(
 		idf_escape(trim($field["field"])),
 		process_type($type_field),
 		($field["null"] ? " NULL" : " NOT NULL"), // NULL for timestamp
-		(isset($field["default"]) ? " DEFAULT " . ((ereg("time", $field["type"]) && eregi('^CURRENT_TIMESTAMP$', $field["default"])) || ($field["type"] == "bit" && ereg("^([0-9]+|b'[0-1]+')\$", $field["default"])) ? $field["default"] : q($field["default"])) : ""),
+		(isset($default) ? " DEFAULT " . (
+			(ereg("time", $field["type"]) && eregi('^CURRENT_TIMESTAMP$', $default))
+			|| ($field["type"] == "bit" && ereg("^([0-9]+|b'[0-1]+')\$", $default))
+			|| ($jush == "pgsql" && ereg("^[a-z]+\(('[^']*')+\)\$", $default))
+			? $default : q($default)) : ""),
 		($field["type"] == "timestamp" && $field["on_update"] ? " ON UPDATE $field[on_update]" : ""),
 		(support("comment") && $field["comment"] != "" ? " COMMENT " . q($field["comment"]) : ""),
 		($field["auto_increment"] ? auto_increment() : null),
