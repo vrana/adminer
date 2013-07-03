@@ -26,7 +26,7 @@ if ($row["auto_increment_col"]) {
 
 if ($_POST && !process_fields($row["fields"]) && !$error) {
 	if ($_POST["drop"]) {
-		query_redirect("DROP TABLE " . table($TABLE), substr(ME, 0, -1), lang('Table has been dropped.'));
+		queries_redirect(substr(ME, 0, -1), lang('Table has been dropped.'), drop_tables(array($TABLE)));
 	} else {
 		$fields = array();
 		$all_fields = array();
