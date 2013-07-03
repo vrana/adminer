@@ -184,7 +184,7 @@ edit_fields($row["fields"], $collations, "TABLE", $foreign_keys, $comments);
 ; ?>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
-<?php if ($_GET["create"] != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo confirm(); ?>><?php } ?>
+<?php if ($TABLE != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo confirm(); ?>><?php } ?>
 <?php
 if (support("partitioning")) {
 	$partition_table = ereg('RANGE|LIST', $row["partition_by"]);
