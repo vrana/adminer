@@ -37,9 +37,9 @@ document.body.className = document.body.className.replace(/ nojs/, ' js');
 <div id="content">
 <?php
 	if ($breadcrumb !== null) {
-		$link = substr(preg_replace('~(username|db|ns)=[^&]*&~', '', ME), 0, -1);
+		$link = substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1);
 		echo '<p id="breadcrumb"><a href="' . h($link ? $link : ".") . '">' . $drivers[DRIVER] . '</a> &raquo; ';
-		$link = substr(preg_replace('~(db|ns)=[^&]*&~', '', ME), 0, -1);
+		$link = substr(preg_replace('~\b(db|ns)=[^&]*&~', '', ME), 0, -1);
 		$server = (SERVER != "" ? h(SERVER) : lang('Server'));
 		if ($breadcrumb === false) {
 			echo "$server\n";

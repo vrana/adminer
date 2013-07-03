@@ -11,7 +11,7 @@ if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP c
 		// create or rename database
 		if (DB != "") {
 			$_GET["db"] = $name;
-			queries_redirect(preg_replace('~db=[^&]*&~', '', ME) . "db=" . urlencode($name), lang('Database has been renamed.'), rename_database($name, $row["collation"]));
+			queries_redirect(preg_replace('~\bdb=[^&]*&~', '', ME) . "db=" . urlencode($name), lang('Database has been renamed.'), rename_database($name, $row["collation"]));
 		} else {
 			$databases = explode("\n", str_replace("\r", "", $name));
 			$success = true;

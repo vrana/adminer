@@ -44,7 +44,7 @@ if ($auth) {
 			set_session($key, null);
 		}
 		unset_permanent();
-		redirect(substr(preg_replace('~(username|db|ns)=[^&]*&~', '', ME), 0, -1), lang('Logout successful.'));
+		redirect(substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1), lang('Logout successful.'));
 	}
 	
 } elseif ($permanent && !$_SESSION["pwds"]) {
