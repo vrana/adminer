@@ -437,7 +437,7 @@ if (!defined("DRIVER")) {
 	/** Get table indexes
 	* @param string
 	* @param string Min_DB to use
-	* @return array array($key_name => array("type" => , "columns" => array(), "lengths" => array()))
+	* @return array array($key_name => array("type" => , "columns" => array(), "lengths" => array(), "descs" => array()))
 	*/
 	function indexes($table, $connection2 = null) {
 		$return = array();
