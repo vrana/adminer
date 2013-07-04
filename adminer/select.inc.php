@@ -237,7 +237,11 @@ if (!$columns) {
 	
 	$page = $_GET["page"];
 	if ($page == "last") {
-		$found_rows = $connection->result("SELECT COUNT(*) FROM " . table($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : ""));
+		$query = " FROM " . table($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : "");
+		$found_rows = $connection->result($is_group && ($jush == "sql" || count($group) == 1)
+			? "SELECT COUNT(DISTINCT " . implode(", ", $group) . ")$query"
+			: "SELECT COUNT(*)" . ($is_group ? " FROM (SELECT 1$query$group_by) x" : $query)
+		);
 		$page = floor(max(0, $found_rows - 1) / $limit);
 	}
 
