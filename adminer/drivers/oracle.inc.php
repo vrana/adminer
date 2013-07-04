@@ -6,7 +6,7 @@ if (isset($_GET["oracle"])) {
 	define("DRIVER", "oracle");
 	if (extension_loaded("oci8")) {
 		class Min_DB {
-			var $extension = "oci8", $_link, $_result, $server_info, $affected_rows, $error;
+			var $extension = "oci8", $_link, $_result, $server_info, $affected_rows, $errno, $error;
 
 			function _error($errno, $error) {
 				if (ini_bool("html_errors")) {
@@ -40,6 +40,7 @@ if (isset($_GET["oracle"])) {
 				$this->error = "";
 				if (!$result) {
 					$error = oci_error($this->_link);
+					$this->errno = $error["code"];
 					$this->error = $error["message"];
 					return false;
 				}
@@ -180,7 +181,8 @@ if (isset($_GET["oracle"])) {
 
 	function tables_list() {
 		return get_key_vals("SELECT table_name, 'table' FROM all_tables WHERE tablespace_name = " . q(DB) . "
-UNION SELECT view_name, 'view' FROM user_views"
+UNION SELECT view_name, 'view' FROM user_views
+ORDER BY 1"
 		); //! views don't have schema
 	}
 
@@ -192,7 +194,8 @@ UNION SELECT view_name, 'view' FROM user_views"
 		$return = array();
 		$search = q($name);
 		foreach (get_rows('SELECT table_name "Name", \'table\' "Engine", avg_row_len * num_rows "Data_length", num_rows "Rows" FROM all_tables WHERE tablespace_name = ' . q(DB) . ($name != "" ? " AND table_name = $search" : "") . "
-UNION SELECT view_name, 'view', 0, 0 FROM user_views" . ($name != "" ? " WHERE view_name = $search" : "")
+UNION SELECT view_name, 'view', 0, 0 FROM user_views" . ($name != "" ? " WHERE view_name = $search" : "") . "
+ORDER BY 1"
 		) as $row) {
 			if ($name != "") {
 				return $row;
@@ -242,9 +245,11 @@ FROM user_ind_columns uic
 LEFT JOIN user_constraints uc ON uic.index_name = uc.constraint_name AND uic.table_name = uc.table_name
 WHERE uic.table_name = " . q($table) . "
 ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
-			$return[$row["INDEX_NAME"]]["type"] = ($row["CONSTRAINT_TYPE"] == "P" ? "PRIMARY" : ($row["CONSTRAINT_TYPE"] == "U" ? "UNIQUE" : "INDEX"));
-			$return[$row["INDEX_NAME"]]["columns"][] = $row["COLUMN_NAME"];
-			$return[$row["INDEX_NAME"]]["lengths"][] = ($row["CHAR_LENGTH"] && $row["CHAR_LENGTH"] != $row["COLUMN_LENGTH"] ? $row["CHAR_LENGTH"] : null);
+			$index_name = $row["INDEX_NAME"];
+			$return[$index_name]["type"] = ($row["CONSTRAINT_TYPE"] == "P" ? "PRIMARY" : ($row["CONSTRAINT_TYPE"] == "U" ? "UNIQUE" : "INDEX"));
+			$return[$index_name]["columns"][] = $row["COLUMN_NAME"];
+			$return[$index_name]["lengths"][] = ($row["CHAR_LENGTH"] && $row["CHAR_LENGTH"] != $row["COLUMN_LENGTH"] ? $row["CHAR_LENGTH"] : null);
+			$return[$index_name]["descs"][] = ($row["DESCEND"] ? '1' : null);
 		}
 		return $return;
 	}
@@ -265,10 +270,6 @@ ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
 	function error() {
 		global $connection;
 		return h($connection->error); //! highlight sqltext from offset
-	}
-	
-	function exact_value($val) {
-		return q($val);
 	}
 	
 	function explain($connection, $query) {
@@ -385,7 +386,7 @@ ORDER BY PROCESS
 		$structured_types[$key] = array_keys($val);
 	}
 	$unsigned = array();
-	$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "");
+	$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL");
 	$functions = array("length", "lower", "round", "upper");
 	$grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 	$edit_functions = array(

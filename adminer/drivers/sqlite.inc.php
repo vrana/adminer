@@ -5,11 +5,11 @@ $drivers["sqlite2"] = "SQLite 2";
 if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	$possible_drivers = array((isset($_GET["sqlite"]) ? "SQLite3" : "SQLite"), "PDO_SQLite");
 	define("DRIVER", (isset($_GET["sqlite"]) ? "sqlite" : "sqlite2"));
-	if (extension_loaded(isset($_GET["sqlite"]) ? "sqlite3" : "sqlite")) {
+	if (class_exists(isset($_GET["sqlite"]) ? "SQLite3" : "SQLiteDatabase")) {
 		if (isset($_GET["sqlite"])) {
 			
 			class Min_SQLite {
-				var $extension = "SQLite3", $server_info, $affected_rows, $error, $_link;
+				var $extension = "SQLite3", $server_info, $affected_rows, $errno, $error, $_link;
 				
 				function Min_SQLite($filename) {
 					$this->_link = new SQLite3($filename);
@@ -21,6 +21,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 					$result = @$this->_link->query($query);
 					$this->error = "";
 					if (!$result) {
+						$this->errno = $this->_link->lastErrorCode();
 						$this->error = $this->_link->lastErrorMsg();
 						return false;
 					} elseif ($result->numColumns()) {
@@ -252,8 +253,8 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	function table_status($name = "") {
 		global $connection;
 		$return = array();
-		foreach (get_rows("SELECT name AS Name, type AS Engine FROM sqlite_master WHERE type IN ('table', 'view')" . ($name != "" ? " AND name = " . q($name) : "")) as $row) {
-			$row["Oid"] = "t";
+		foreach (get_rows("SELECT name AS Name, type AS Engine FROM sqlite_master WHERE type IN ('table', 'view') " . ($name != "" ? "AND name = " . q($name) : "ORDER BY name")) as $row) {
+			$row["Oid"] = 1;
 			$row["Auto_increment"] = "";
 			$row["Rows"] = $connection->result("SELECT COUNT(*) FROM " . idf_escape($row["Name"]));
 			$return[$row["Name"]] = $row;
@@ -303,12 +304,21 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		if ($primary) {
 			$return[""] = array("type" => "PRIMARY", "columns" => $primary, "lengths" => array());
 		}
+		$sqls = get_key_vals("SELECT name, sql FROM sqlite_master WHERE type = 'index' AND tbl_name = " . q($table));
 		foreach (get_rows("PRAGMA index_list(" . table($table) . ")") as $row) {
-			if (!ereg("^sqlite_", $row["name"])) {
-				$return[$row["name"]]["type"] = ($row["unique"] ? "UNIQUE" : "INDEX");
-				$return[$row["name"]]["lengths"] = array();
-				foreach (get_rows("PRAGMA index_info(" . idf_escape($row["name"]) . ")") as $row1) {
-					$return[$row["name"]]["columns"][] = $row1["name"];
+			$name = $row["name"];
+			if (!ereg("^sqlite_", $name)) {
+				$return[$name]["type"] = ($row["unique"] ? "UNIQUE" : "INDEX");
+				$return[$name]["lengths"] = array();
+				foreach (get_rows("PRAGMA index_info(" . idf_escape($name) . ")") as $row1) {
+					$return[$name]["columns"][] = $row1["name"];
+				}
+				$return[$name]["descs"] = array();
+				if (eregi('^CREATE( UNIQUE)? INDEX ' . quotemeta(idf_escape($name) . ' ON ' . idf_escape($table)) . ' \((.*)\)$', $sqls[$name], $regs)) {
+					preg_match_all('/("[^"]*+")+( DESC)?/', $regs[2], $matches);
+					foreach ($matches[2] as $val) {
+						$return[$name]["descs"][] = ($val ? '1' : null);
+					}
 				}
 			}
 		}
@@ -345,10 +355,6 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	function error() {
 		global $connection;
 		return h($connection->error);
-	}
-	
-	function exact_value($val) {
-		return q($val);
 	}
 	
 	function check_sqlite_name($name) {
@@ -504,11 +510,19 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return true;
 	}
 	
+	function index_sql($table, $type, $name, $columns) {
+		return "CREATE $type " . ($type != "INDEX" ? "INDEX " : "")
+			. idf_escape($name != "" ? $name : uniqid($table . "_"))
+			. " ON " . table($table)
+			. " $columns"
+		;
+	}
+	
 	function alter_indexes($table, $alter) {
-		foreach ($alter as $val) {
+		foreach (array_reverse($alter) as $val) {
 			if (!queries($val[2] == "DROP"
 				? "DROP INDEX " . idf_escape($val[1])
-				: "CREATE $val[0] " . ($val[0] != "INDEX" ? "INDEX " : "") . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_")) . " ON " . table($table) . " $val[2]"
+				: index_sql($table, $val[0], $val[1], $val[2])
 			)) {
 				return false;
 			}
@@ -611,7 +625,14 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	
 	function create_sql($table, $auto_increment) {
 		global $connection;
-		return $connection->result("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table));
+		$return = $connection->result("SELECT sql FROM sqlite_master WHERE type IN ('table', 'view') AND name = " . q($table));
+		foreach (indexes($table) as $name => $index) {
+			if ($name == '') {
+				continue;
+			}
+			$return .= ";\n\n" . index_sql($table, $index['type'], $name, "(" . implode(", ", array_map('idf_escape', $index['columns'])) . ")");
+		}
+		return $return;
 	}
 	
 	function truncate_sql($table) {
@@ -658,7 +679,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	$types = array("integer" => 0, "real" => 0, "numeric" => 0, "text" => 0, "blob" => 0);
 	$structured_types = array_keys($types);
 	$unsigned = array();
-	$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", ""); // REGEXP can be user defined function
+	$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL"); // REGEXP can be user defined function
 	$functions = array("hex", "length", "lower", "round", "unixepoch", "upper");
 	$grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
 	$edit_functions = array(

@@ -3,8 +3,8 @@ header("Content-Type: text/javascript; charset=utf-8");
 
 if ($_GET["script"] == "db") {
 	$sums = array("Data_length" => 0, "Index_length" => 0, "Data_free" => 0);
-	foreach (table_status() as $table_status) {
-		$id = js_escape($table_status["Name"]);
+	foreach (table_status() as $name => $table_status) {
+		$id = js_escape($name);
 		json_row("Comment-$id", nbsp($table_status["Comment"]));
 		if (!is_view($table_status)) {
 			foreach (array("Engine", "Collation") as $key) {

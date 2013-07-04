@@ -28,8 +28,10 @@ if (!$error && $_POST) {
 		}
 		$call[] = (isset($out[$key]) ? "@" . idf_escape($field["field"]) : $val);
 	}
+	
 	$query = (isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . idf_escape($PROCEDURE) . "(" . implode(", ", $call) . ")";
 	echo "<p><code class='jush-$jush'>" . h($query) . "</code> <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>\n";
+	
 	if (!$connection->multi_query($query)) {
 		echo "<p class='error'>" . error() . "\n";
 	} else {
@@ -37,6 +39,7 @@ if (!$error && $_POST) {
 		if (is_object($connection2)) {
 			$connection2->select_db(DB);
 		}
+		
 		do {
 			$result = $connection->store_result();
 			if (is_object($result)) {
@@ -45,6 +48,7 @@ if (!$error && $_POST) {
 				echo "<p class='message'>" . lang('Routine has been called, %d row(s) affected.', $connection->affected_rows) . "\n";
 			}
 		} while ($connection->next_result());
+		
 		if ($out) {
 			select($connection->query("SELECT " . implode(", ", $out)));
 		}

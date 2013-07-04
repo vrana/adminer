@@ -206,11 +206,11 @@ if (isset($_GET["pgsql"])) {
 
 	function table_status($name = "") {
 		$return = array();
-		foreach (get_rows("SELECT relname AS \"Name\", CASE relkind WHEN 'r' THEN 'table' ELSE 'view' END AS \"Engine\", pg_relation_size(oid) AS \"Data_length\", pg_total_relation_size(oid) - pg_relation_size(oid) AS \"Index_length\", obj_description(oid, 'pg_class') AS \"Comment\", relhasoids AS \"Oid\", reltuples as \"Rows\"
+		foreach (get_rows("SELECT relname AS \"Name\", CASE relkind WHEN 'r' THEN 'table' ELSE 'view' END AS \"Engine\", pg_relation_size(oid) AS \"Data_length\", pg_total_relation_size(oid) - pg_relation_size(oid) AS \"Index_length\", obj_description(oid, 'pg_class') AS \"Comment\", relhasoids::int AS \"Oid\", reltuples as \"Rows\"
 FROM pg_class
 WHERE relkind IN ('r','v')
-AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema())"
-			. ($name != "" ? " AND relname = " . q($name) : "")
+AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema())
+" . ($name != "" ? "AND relname = " . q($name) : "ORDER BY relname")
 		) as $row) { //! Index_length, Auto_increment
 			$return[$row["Name"]] = $row;
 		}
@@ -227,7 +227,11 @@ AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema(
 	
 	function fields($table) {
 		$return = array();
-		foreach (get_rows("SELECT a.attname AS field, format_type(a.atttypid, a.atttypmod) AS full_type, d.adsrc AS default, a.attnotnull, col_description(c.oid, a.attnum) AS comment
+		$aliases = array(
+			'timestamp without time zone' => 'timestamp',
+			'timestamp with time zone' => 'timestamptz',
+		);
+		foreach (get_rows("SELECT a.attname AS field, format_type(a.atttypid, a.atttypmod) AS full_type, d.adsrc AS default, a.attnotnull::int, col_description(c.oid, a.attnum) AS comment
 FROM pg_class c
 JOIN pg_namespace n ON c.relnamespace = n.oid
 JOIN pg_attribute a ON c.oid = a.attrelid
@@ -239,14 +243,17 @@ AND a.attnum > 0
 ORDER BY a.attnum"
 		) as $row) {
 			//! collation, primary
-			ereg('(.*)(\\((.*)\\))?', $row["full_type"], $match);
-			list(, $row["type"], , $row["length"]) = $match;
+			$type = $row["full_type"];
+			if (ereg('(.+)\\((.*)\\)$', $row["full_type"], $match)) {
+				list(, $type, $row["length"]) = $match;
+			}
+			$row["type"] = ($aliases[$type] ? $aliases[$type] : $type);
 			$row["full_type"] = $row["type"] . ($row["length"] ? "($row[length])" : "");
-			$row["null"] = ($row["attnotnull"] == "f");
+			$row["null"] = !$row["attnotnull"];
 			$row["auto_increment"] = eregi("^nextval\\(", $row["default"]);
 			$row["privileges"] = array("insert" => 1, "select" => 1, "update" => 1);
-			if (preg_match('~^(.*)::.+$~', $row["default"], $match)) {
-				$row["default"] = ($match[1][0] == "'" ? idf_unescape($match[1]) : $match[1]);
+			if (preg_match('~(.+)::[^)]+(.*)~', $row["default"], $match)) {
+				$row["default"] = ($match[1][0] == "'" ? idf_unescape($match[1]) : $match[1]) . $match[2];
 			}
 			$return[$row["field"]] = $row;
 		}
@@ -261,13 +268,18 @@ ORDER BY a.attnum"
 		$return = array();
 		$table_oid = $connection2->result("SELECT oid FROM pg_class WHERE relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema()) AND relname = " . q($table));
 		$columns = get_key_vals("SELECT attnum, attname FROM pg_attribute WHERE attrelid = $table_oid AND attnum > 0", $connection2);
-		foreach (get_rows("SELECT relname, indisunique, indisprimary, indkey FROM pg_index i, pg_class ci WHERE i.indrelid = $table_oid AND ci.oid = i.indexrelid", $connection2) as $row) {
-			$return[$row["relname"]]["type"] = ($row["indisprimary"] == "t" ? "PRIMARY" : ($row["indisunique"] == "t" ? "UNIQUE" : "INDEX"));
-			$return[$row["relname"]]["columns"] = array();
+		foreach (get_rows("SELECT relname, indisunique::int, indisprimary::int, indkey, indoption FROM pg_index i, pg_class ci WHERE i.indrelid = $table_oid AND ci.oid = i.indexrelid", $connection2) as $row) {
+			$relname = $row["relname"];
+			$return[$relname]["type"] = ($row["indisprimary"] ? "PRIMARY" : ($row["indisunique"] ? "UNIQUE" : "INDEX"));
+			$return[$relname]["columns"] = array();
 			foreach (explode(" ", $row["indkey"]) as $indkey) {
-				$return[$row["relname"]]["columns"][] = $columns[$indkey];
+				$return[$relname]["columns"][] = $columns[$indkey];
 			}
-			$return[$row["relname"]]["lengths"] = array();
+			$return[$relname]["descs"] = array();
+			foreach (explode(" ", $row["indoption"]) as $indoption) {
+				$return[$relname]["descs"][] = ($indoption & 1 ? '1' : null); // 1 - INDOPTION_DESC
+			}
+			$return[$relname]["lengths"] = array();
 		}
 		return $return;
 	}
@@ -319,10 +331,6 @@ ORDER BY conkey, conname") as $row) {
 		return nl_br($return);
 	}
 	
-	function exact_value($val) {
-		return q($val);
-	}
-	
 	function create_database($db, $collation) {
 		return queries("CREATE DATABASE " . idf_escape($db) . ($collation ? " ENCODING " . idf_escape($collation) : ""));
 	}
@@ -364,7 +372,7 @@ ORDER BY conkey, conname") as $row) {
 					}
 					$alter[] = "ALTER $column TYPE$val[1]";
 					if (!$val[6]) {
-						$alter[] = "ALTER $column " . ($val[3] ? "SET$val[3]" : "DROP DEFAULT"); //! quoting
+						$alter[] = "ALTER $column " . ($val[3] ? "SET$val[3]" : "DROP DEFAULT");
 						$alter[] = "ALTER $column " . ($val[2] == " NULL" ? "DROP NOT" : "SET") . $val[2];
 					}
 				}
@@ -399,21 +407,32 @@ ORDER BY conkey, conname") as $row) {
 	function alter_indexes($table, $alter) {
 		$create = array();
 		$drop = array();
+		$queries = array();
 		foreach ($alter as $val) {
 			if ($val[0] != "INDEX") {
+				//! descending UNIQUE indexes results in syntax error
 				$create[] = ($val[2] == "DROP"
 					? "\nDROP CONSTRAINT " . idf_escape($val[1])
-					: "\nADD $val[0] " . ($val[0] == "PRIMARY" ? "KEY " : "") . $val[2]
+					: "\nADD" . ($val[1] != "" ? " CONSTRAINT " . idf_escape($val[1]) : "") . " $val[0] " . ($val[0] == "PRIMARY" ? "KEY " : "") . $val[2]
 				);
 			} elseif ($val[2] == "DROP") {
 				$drop[] = idf_escape($val[1]);
-			} elseif (!queries("CREATE INDEX " . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_")) . " ON " . table($table) . " $val[2]")) {
+			} else {
+				$queries[] = "CREATE INDEX " . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_")) . " ON " . table($table) . " $val[2]";
+			}
+		}
+		if ($create) {
+			array_unshift($queries, "ALTER TABLE " . table($table) . implode(",", $create));
+		}
+		if ($drop) {
+			array_unshift($queries, "DROP INDEX " . implode(", ", $drop));
+		}
+		foreach ($queries as $query) {
+			if (!queries($query)) {
 				return false;
 			}
 		}
-		return ((!$create || queries("ALTER TABLE " . table($table) . implode(",", $create)))
-			&& (!$drop || queries("DROP INDEX " . implode(", ", $drop)))
-		);
+		return true;
 	}
 	
 	function truncate_tables($tables) {
@@ -607,7 +626,7 @@ AND typelem = 0"
 		$structured_types[$key] = array_keys($val);
 	}
 	$unsigned = array();
-	$operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"); // no "" to avoid SQL injection
+	$operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"); // no "SQL" to avoid SQL injection
 	$functions = array("char_length", "lower", "round", "to_hex", "to_timestamp", "upper");
 	$grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 	$edit_functions = array(

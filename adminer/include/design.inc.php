@@ -8,11 +8,7 @@
 */
 function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	global $LANG, $adminer, $connection, $drivers;
-	header("Content-Type: text/html; charset=utf-8");
-	if ($adminer->headers()) {
-		header("X-Frame-Options: deny"); // ClickJacking protection in IE8, Safari 4, Chrome 2, Firefox 3.6.9
-		header("X-XSS-Protection: 0"); // prevents introducing XSS in IE8 by removing safe parts of the page
-	}
+	page_headers();
 	$title_all = $title . ($title2 != "" ? ": " . h($title2) : "");
 	$title_page = strip_tags($title_all . (SERVER != "" && SERVER != "localhost" ? h(" - " . SERVER) : "") . " - " . $adminer->name());
 	?>
@@ -26,7 +22,8 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <script type="text/javascript" src="../adminer/static/functions.js"></script>
 <script type="text/javascript" src="static/editing.js"></script>
 <?php if ($adminer->head()) { ?>
-<link rel="shortcut icon" type="image/x-icon" href="../adminer/static/favicon.ico" id="favicon">
+<link rel="shortcut icon" type="image/x-icon" href="../adminer/static/favicon.ico">
+<link rel="apple-touch-icon" href="../adminer/static/favicon.ico">
 <?php if (file_exists("adminer.css")) { ?>
 <link rel="stylesheet" type="text/css" href="adminer.css">
 <?php } ?>
@@ -67,21 +64,41 @@ document.body.className = document.body.className.replace(/ nojs/, ' js');
 	}
 	echo "<h2>$title_all</h2>\n";
 	restart_session();
+	page_messages($error);
+	$databases = &get_session("dbs");
+	if (DB != "" && $databases && !in_array(DB, $databases, true)) {
+		$databases = null;
+	}
+	stop_session();
+	define("PAGE_HEADER", 1);
+}
+
+/** Send HTTP headers
+* @return null
+*/
+function page_headers() {
+	global $adminer;
+	header("Content-Type: text/html; charset=utf-8");
+	if ($adminer->headers()) {
+		header("X-Frame-Options: deny"); // ClickJacking protection in IE8, Safari 4, Chrome 2, Firefox 3.6.9
+		header("X-XSS-Protection: 0"); // prevents introducing XSS in IE8 by removing safe parts of the page
+	}
+}
+
+/** Print flash and error messages
+* @param string
+* @return null
+*/
+function page_messages($error) {
 	$uri = preg_replace('~^[^?]*~', '', $_SERVER["REQUEST_URI"]);
 	$messages = $_SESSION["messages"][$uri];
 	if ($messages) {
 		echo "<div class='message'>" . implode("</div>\n<div class='message'>", $messages) . "</div>\n";
 		unset($_SESSION["messages"][$uri]);
 	}
-	$databases = &get_session("dbs");
-	if (DB != "" && $databases && !in_array(DB, $databases, true)) {
-		$databases = null;
-	}
-	stop_session();
 	if ($error) {
 		echo "<div class='error'>$error</div>\n";
 	}
-	define("PAGE_HEADER", 1);
 }
 
 /** Print HTML footer
@@ -97,5 +114,6 @@ function page_footer($missing = "") {
 <div id="menu">
 <?php $adminer->navigation($missing); ?>
 </div>
+<script type="text/javascript">setupSubmitHighlight(document);</script>
 <?php
 }

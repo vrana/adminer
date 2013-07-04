@@ -13,6 +13,7 @@ $drivers[DRIVER] = lang('Login');
 if (isset($_GET["select"]) && ($_POST["edit"] || $_POST["clone"]) && !$_POST["save"]) {
 	$_GET["edit"] = $_GET["select"];
 }
+
 if (isset($_GET["download"])) {
 	include "../adminer/download.inc.php";
 } elseif (isset($_GET["edit"])) {

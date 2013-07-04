@@ -54,6 +54,7 @@ if (!defined("DRIVER")) {
 				$extension = "MySQL", ///< @var string extension name
 				$server_info, ///< @var string server version
 				$affected_rows, ///< @var int number of affected rows
+				$errno, ///< @var int last error code
 				$error, ///< @var string last error message
 				$_link, $_result ///< @access private
 			;
@@ -110,6 +111,7 @@ if (!defined("DRIVER")) {
 				$result = @($unbuffered ? mysql_unbuffered_query($query, $this->_link) : mysql_query($query, $this->_link)); // @ - mute mysql.trace_mode
 				$this->error = "";
 				if (!$result) {
+					$this->errno = mysql_errno($this->_link);
 					$this->error = mysql_error($this->_link);
 					return false;
 				}
@@ -364,16 +366,21 @@ if (!defined("DRIVER")) {
 
 	/** Get table status
 	* @param string
+	* @param bool return only "Name", "Engine" and "Comment" fields
 	* @return array array($name => array("Name" => , "Engine" => , "Comment" => , "Oid" => , "Rows" => , "Collation" => , "Auto_increment" => , "Data_length" => , "Index_length" => , "Data_free" => )) or only inner array with $name
 	*/
-	function table_status($name = "") {
+	function table_status($name = "", $fast = false) {
+		global $connection;
 		$return = array();
-		foreach (get_rows("SHOW TABLE STATUS" . ($name != "" ? " LIKE " . q(addcslashes($name, "%_")) : "")) as $row) {
+		foreach (get_rows($fast && $connection->server_info >= 5
+			? "SELECT TABLE_NAME AS Name, Engine, TABLE_COMMENT AS Comment FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() " . ($name != "" ? "AND TABLE_NAME = " . q($name) : "ORDER BY Name")
+			: "SHOW TABLE STATUS" . ($name != "" ? " LIKE " . q(addcslashes($name, "%_\\")) : "")
+		) as $row) {
 			if ($row["Engine"] == "InnoDB") {
 				// ignore internal comment, unnecessary since MySQL 5.1.21
 				$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["Comment"]);
 			}
-			if (!isset($row["Rows"])) {
+			if (!isset($row["Engine"])) {
 				$row["Comment"] = "";
 			}
 			if ($name != "") {
@@ -389,7 +396,7 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function is_view($table_status) {
-		return !isset($table_status["Rows"]);
+		return $table_status["Engine"] === null;
 	}
 
 	/** Check if table supports foreign keys
@@ -414,7 +421,7 @@ if (!defined("DRIVER")) {
 				"type" => $match[1],
 				"length" => $match[2],
 				"unsigned" => ltrim($match[3] . $match[4]),
-				"default" => ($row["Default"] != "" || ereg("char", $match[1]) ? $row["Default"] : null),
+				"default" => ($row["Default"] != "" || ereg("char|set", $match[1]) ? $row["Default"] : null),
 				"null" => ($row["Null"] == "YES"),
 				"auto_increment" => ($row["Extra"] == "auto_increment"),
 				"on_update" => (eregi('^on update (.+)', $row["Extra"], $match) ? $match[1] : ""), //! available since MySQL 5.1.23
@@ -438,6 +445,7 @@ if (!defined("DRIVER")) {
 			$return[$row["Key_name"]]["type"] = ($row["Key_name"] == "PRIMARY" ? "PRIMARY" : ($row["Index_type"] == "FULLTEXT" ? "FULLTEXT" : ($row["Non_unique"] ? "INDEX" : "UNIQUE")));
 			$return[$row["Key_name"]]["columns"][] = $row["Column_name"];
 			$return[$row["Key_name"]]["lengths"][] = $row["Sub_part"];
+			$return[$row["Key_name"]]["descs"][] = null;
 		}
 		return $return;
 	}
@@ -525,14 +533,6 @@ if (!defined("DRIVER")) {
 		}
 	}
 
-	/** Return expression for binary comparison
-	* @param string
-	* @return string
-	*/
-	function exact_value($val) {
-		return q($val) . " COLLATE utf8_bin";
-	}
-
 	/** Create database
 	* @param string
 	* @param string
@@ -548,6 +548,7 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function drop_databases($databases) {
+		restart_session();
 		set_session("dbs", null);
 		return apply_queries("DROP DATABASE", $databases, 'idf_escape');
 	}
@@ -730,7 +731,7 @@ if (!defined("DRIVER")) {
 	*/
 	function triggers($table) {
 		$return = array();
-		foreach (get_rows("SHOW TRIGGERS LIKE " . q(addcslashes($table, "%_"))) as $row) {
+		foreach (get_rows("SHOW TRIGGERS LIKE " . q(addcslashes($table, "%_\\"))) as $row) {
 			$return[$row["Trigger"]] = array($row["Timing"], $row["Event"]);
 		}
 		return $return;
@@ -789,7 +790,7 @@ if (!defined("DRIVER")) {
 	* @return array ("ROUTINE_TYPE" => , "ROUTINE_NAME" => , "DTD_IDENTIFIER" => )
 	*/
 	function routines() {
-		return get_rows("SELECT * FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . q(DB));
+		return get_rows("SELECT ROUTINE_NAME, ROUTINE_TYPE, DTD_IDENTIFIER FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . q(DB));
 	}
 	
 	/** Get list of available routine languages
@@ -843,7 +844,7 @@ if (!defined("DRIVER")) {
 	* @return Min_Result
 	*/
 	function explain($connection, $query) {
-		return $connection->query("EXPLAIN $query");
+		return $connection->query("EXPLAIN " . ($connection->server_info >= 5.1 ? "PARTITIONS " : "") . $query);
 	}
 	
 	/** Get approximate number of rows
@@ -921,7 +922,7 @@ if (!defined("DRIVER")) {
 	*/
 	function trigger_sql($table, $style) {
 		$return = "";
-		foreach (get_rows("SHOW TRIGGERS LIKE " . q(addcslashes($table, "%_")), null, "-- ") as $row) {
+		foreach (get_rows("SHOW TRIGGERS LIKE " . q(addcslashes($table, "%_\\")), null, "-- ") as $row) {
 			$return .= "\n" . ($style == 'CREATE+ALTER' ? "DROP TRIGGER IF EXISTS " . idf_escape($row["Trigger"]) . ";;\n" : "")
 			. "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . table($row["Table"]) . " FOR EACH ROW\n$row[Statement];;\n";
 		}
@@ -957,6 +958,9 @@ if (!defined("DRIVER")) {
 		if (ereg("binary", $field["type"])) {
 			return "HEX(" . idf_escape($field["field"]) . ")";
 		}
+		if ($field["type"] == "bit") {
+			return "BIN(" . idf_escape($field["field"]) . " + 0)"; // + 0 is required outside MySQLnd
+		}
 		if (ereg("geometry|point|linestring|polygon", $field["type"])) {
 			return "AsWKT(" . idf_escape($field["field"]) . ")";
 		}
@@ -970,6 +974,9 @@ if (!defined("DRIVER")) {
 	function unconvert_field($field, $return) {
 		if (ereg("binary", $field["type"])) {
 			$return = "UNHEX($return)";
+		}
+		if ($field["type"] == "bit") {
+			$return = "CONV($return, 2, 10) + 0";
 		}
 		if (ereg("geometry|point|linestring|polygon", $field["type"])) {
 			$return = "GeomFromText($return)";
@@ -1001,7 +1008,7 @@ if (!defined("DRIVER")) {
 		$structured_types[$key] = array_keys($val);
 	}
 	$unsigned = array("unsigned", "zerofill", "unsigned zerofill"); ///< @var array number variants
-	$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", ""); ///< @var array operators used in select
+	$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL"); ///< @var array operators used in select
 	$functions = array("char_length", "date", "from_unixtime", "lower", "round", "sec_to_time", "time_to_sec", "upper"); ///< @var array functions used in select
 	$grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum"); ///< @var array grouping functions used in select
 	$edit_functions = array( ///< @var array of array("$type|$type2" => "$function/$function2") functions used in editing, [0] - edit and insert, [1] - edit only

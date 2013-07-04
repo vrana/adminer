@@ -165,7 +165,7 @@ $translations = array(
 	'Move up' => 'انتقال به بالا',
 	'Move down' => 'انتقال به پایین',
 	'Remove' => 'حذف',
-	'Maximum number of allowed fields exceeded. Please increase %s and %s.' => 'حداکثر مجاز فیلدهای مجاز اشباع شد. لطفا %s و %s را کاهش دهید',
+	'Maximum number of allowed fields exceeded. Please increase %s.' => 'حداکثر مجاز فیلدهای مجاز اشباع شد. لطفا %s را کاهش دهید',
 	
 	'Partition by' => 'بخشبندی توسط',
 	'Partitions' => 'بخشبندیها',
@@ -231,7 +231,6 @@ $translations = array(
 	'%d row(s)' => array('%d سطر', '%d سطر'),
 	'Page' => 'صفحه',
 	'last' => 'آخری',
-	'Last page' => 'صفحه آخر',
 	'whole result' => 'همه نتایج',
 	'%d byte(s)' => array('%d بایت', '%d بایت'),
 	

@@ -165,7 +165,7 @@ $translations = array(
 	'Move up' => 'Perkelti į viršų',
 	'Move down' => 'Perkelti žemyn',
 	'Remove' => 'Pašalinti',
-	'Maximum number of allowed fields exceeded. Please increase %s and %s.' => 'Viršytas maksimalus leidžiamų stulpelių kiekis. Padidinkite %s ir %s.',
+	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Viršytas maksimalus leidžiamų stulpelių kiekis. Padidinkite %s.',
 	
 	'Partition by' => 'Skirstyti pagal',
 	'Partitions' => 'Skirsniai',
@@ -231,7 +231,6 @@ $translations = array(
 	'%d row(s)' => array('%d įrašas', '%d įrašai', '%d įrašų'),
 	'Page' => 'Puslapis',
 	'last' => 'paskutinis',
-	'Last page' => 'Paskutinis puslapis',
 	'whole result' => 'visas rezultatas',
 	'%d byte(s)' => array('%d baitas', '%d baigai', '%d baitų'),
 	

@@ -75,13 +75,44 @@ function loginDriver(driver) {
 
 
 
+var dbCtrl;
+var dbPrevious = {};
+
+/** Check if database should be opened to a new window
+* @param MouseEvent
+* @param HTMLSelectElement
+*/
+function dbMouseDown(event, el) {
+	dbCtrl = isCtrl(event);
+	if (dbPrevious[el.name] == undefined) {
+		dbPrevious[el.name] = el.value;
+	}
+}
+
+/** Load database after selecting it
+* @param HTMLSelectElement
+*/
+function dbChange(el) {
+	if (dbCtrl) {
+		el.form.target = '_blank';
+	}
+	el.form.submit();
+	el.form.target = '';
+	if (dbCtrl && dbPrevious[el.name] != undefined) {
+		el.value = dbPrevious[el.name];
+		dbPrevious[el.name] = undefined;
+	}
+}
+
+
+
 /** Handle Tab and Esc in textarea
 * @param HTMLTextAreaElement
 * @param KeyboardEvent
 * @return boolean
 */
 function textareaKeydown(target, event) {
-	if (!event.shiftKey && !event.altKey && !event.ctrlKey && !event.metaKey) {
+	if (!event.shiftKey && !event.altKey && !isCtrl(event)) {
 		if (event.keyCode == 9) { // 9 - Tab
 			// inspired by http://pallieter.org/Projects/insertTab/
 			if (target.setSelectionRange) {
@@ -168,6 +199,30 @@ function selectFieldChange(form) {
 	setHtml('noindex', (ok ? '' : '!'));
 }
 
+/** Create edit query form
+* @param MouseEvent
+* @param HTMLSpanElement
+* @param string
+*/
+function selectEditSql(event, el, label) {
+	var a = parentTag(event.target || event.srcElement, 'a');
+	if (!isCtrl(event) || (a && a.href)) {
+		return;
+	}
+	var sql = el.firstChild;
+	var input = document.createElement('input');
+	input.name = 'query';
+	input.value = sql.textContent || sql.innerText;
+	input.style.width = sql.offsetWidth + 'px';
+	el.innerHTML = '';
+	el.appendChild(input);
+	var submit = document.createElement('input');
+	submit.type = 'submit';
+	submit.value = label;
+	el.appendChild(submit);
+	return true;
+}
+
 
 
 var added = '.', rowCount;
@@ -230,21 +285,17 @@ function editingNameChange(field) {
 /** Add table row for next field
 * @param HTMLInputElement
 * @param boolean
-* @param boolean
 * @return boolean
 */
-function editingAddRow(button, allowed, focus) {
-	if (allowed && rowCount >= allowed) {
-		return false;
-	}
+function editingAddRow(button, focus) {
 	var match = /(\d+)(\.\d+)?/.exec(button.name);
 	var x = match[0] + (match[2] ? added.substr(match[2].length) : added) + '1';
 	var row = parentTag(button, 'tr');
-	var row2 = row.cloneNode(true);
+	var row2 = cloneNode(row);
 	var tags = row.getElementsByTagName('select');
 	var tags2 = row2.getElementsByTagName('select');
 	for (var i=0; i < tags.length; i++) {
-		tags2[i].name = tags[i].name.replace(/([0-9.]+)/, x);
+		tags2[i].name = tags[i].name.replace(/[0-9.]+/, x);
 		tags2[i].selectedIndex = tags[i].selectedIndex;
 	}
 	tags = row.getElementsByTagName('input');
@@ -312,7 +363,10 @@ function editingTypeChange(type) {
 			el.className = (/(char|text|enum|set)$/.test(text) ? '' : 'hidden');
 		}
 		if (el.name == name + '[unsigned]') {
-			el.className = (/(int|float|double|decimal)$/.test(text) ? '' : 'hidden');
+			el.className = (/((^|[^o])int|float|double|decimal)$/.test(text) ? '' : 'hidden');
+		}
+		if (el.name == name + '[on_update]') {
+			el.className = (text == 'timestamp' ? '' : 'hidden');
 		}
 		if (el.name == name + '[on_delete]') {
 			el.className = (/`/.test(text) ? '' : 'hidden');
@@ -362,7 +416,7 @@ function columnShow(checked, column) {
 */
 function editingHideDefaults() {
 	if (innerWidth < document.documentElement.scrollWidth) {
-		document.getElementById('defaults').checked = false;
+		document.getElementById('form')['defaults'].checked = false;
 		columnShow(false, 5);
 	}
 }
@@ -380,7 +434,7 @@ function partitionByChange(el) {
 * @param HTMLInputElement
 */
 function partitionNameChange(el) {
-	var row = parentTag(el, 'tr').cloneNode(true);
+	var row = cloneNode(parentTag(el, 'tr'));
 	row.firstChild.firstChild.value = '';
 	parentTag(el, 'table').appendChild(row);
 	el.onchange = function () {};
@@ -393,7 +447,7 @@ function partitionNameChange(el) {
 */
 function foreignAddRow(field) {
 	field.onchange = function () { };
-	var row = parentTag(field, 'tr').cloneNode(true);
+	var row = cloneNode(parentTag(field, 'tr'));
 	var selects = row.getElementsByTagName('select');
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/\]/, '1$&');
@@ -409,7 +463,7 @@ function foreignAddRow(field) {
 */
 function indexesAddRow(field) {
 	field.onchange = function () { };
-	var row = parentTag(field, 'tr').cloneNode(true);
+	var row = cloneNode(parentTag(field, 'tr'));
 	var selects = row.getElementsByTagName('select');
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/indexes\[\d+/, '$&1');
@@ -449,10 +503,10 @@ function indexesAddColumn(field, prefix) {
 	};
 	var select = field.form[field.name.replace(/\].*/, '][type]')];
 	if (!select.selectedIndex) {
-		select.selectedIndex = 3;
+		select.selectedIndex = select.options.length - 1;
 		select.onchange();
 	}
-	var column = field.parentNode.cloneNode(true);
+	var column = cloneNode(field.parentNode);
 	select = column.getElementsByTagName('select')[0];
 	select.name = select.name.replace(/\]\[\d+/, '$&1');
 	select.selectedIndex = 0;

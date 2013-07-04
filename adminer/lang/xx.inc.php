@@ -11,6 +11,7 @@ $translations = array(
 	'Logged as: %s' => 'xx',
 	'Logout successful.' => 'xx',
 	'Invalid credentials.' => 'xx',
+	'Master password expired. <a href="http://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to make it permanent.' => 'xx',
 	'Language' => 'xx',
 	'Invalid CSRF token. Send the form again.' => 'xx',
 	'No extension' => 'xx',
@@ -64,6 +65,7 @@ $translations = array(
 	'Unable to upload a file.' => 'xx',
 	'Maximum allowed file size is %sB.' => 'xx',
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'xx',
+	'You can upload a big SQL file via FTP and import it from server.' => 'xx',
 	
 	'Export' => 'xx',
 	'Dump' => 'xx',
@@ -166,7 +168,7 @@ $translations = array(
 	'Move up' => 'xx',
 	'Move down' => 'xx',
 	'Remove' => 'xx',
-	'Maximum number of allowed fields exceeded. Please increase %s and %s.' => 'xx',
+	'Maximum number of allowed fields exceeded. Please increase %s.' => 'xx',
 	
 	'Partition by' => 'xx',
 	'Partitions' => 'xx',
@@ -233,7 +235,6 @@ $translations = array(
 	'%d row(s)' => array('xx', 'xx'),
 	'Page' => 'xx',
 	'last' => 'xx',
-	'Last page' => 'xx',
 	'Load more data' => 'xx',
 	'Loading' => 'xx',
 	'whole result' => 'xx',
@@ -241,6 +242,7 @@ $translations = array(
 	
 	'Import' => 'xx',
 	'%d row(s) have been imported.' => array('xx', 'xx'),
+	'File must be in UTF-8 encoding.' => 'xx',
 	
 	// in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'xx',

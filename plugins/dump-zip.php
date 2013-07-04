@@ -19,6 +19,7 @@ class AdminerDumpZip {
 	}
 	
 	function _zip($string, $state) {
+		// ZIP can be created without temporary file by gzcompress - see PEAR File_Archive
 		$this->data .= $string;
 		if ($state & PHP_OUTPUT_HANDLER_END) {
 			$zip = new ZipArchive;
@@ -34,8 +35,8 @@ class AdminerDumpZip {
 	}
 	
 	function dumpHeaders($identifier, $multi_table = false) {
-		$this->filename = "$identifier." . ($multi_table && ereg("[ct]sv", $_POST["format"]) ? "tar" : $_POST["format"]);
 		if ($_POST["output"] == "zip") {
+			$this->filename = "$identifier." . ($multi_table && ereg("[ct]sv", $_POST["format"]) ? "tar" : $_POST["format"]);
 			header("Content-Type: application/zip");
 			ob_start(array($this, '_zip'));
 		}

@@ -3,7 +3,7 @@
 * @param Min_Result
 * @param Min_DB connection to examine indexes
 * @param string base link for <th> fields
-* @param array 
+* @param array
 * @return null
 */
 function select($result, $connection2 = null, $href = "", $orgtables = array()) {
@@ -49,7 +49,9 @@ function select($result, $connection2 = null, $href = "", $orgtables = array()) 
 				}
 				$types[$j] = $field->type;
 				$name = h($name);
-				echo "<th" . ($orgtable != "" || $field->name != $orgname ? " title='" . h(($orgtable != "" ? "$orgtable." : "") . $orgname) . "'" : "") . ">" . ($href ? "<a href='$href" . strtolower($name) . "' target='_blank' rel='noreferrer'>$name</a>" : $name);
+				echo "<th" . ($orgtable != "" || $field->name != $orgname ? " title='" . h(($orgtable != "" ? "$orgtable." : "") . $orgname) . "'" : "") . ">"
+					. ($href ? "<a href='$href" . strtolower($name) . "' target='_blank' rel='noreferrer' class='help'>$name</a>" : $name)
+				;
 			}
 			echo "</thead>\n";
 		}
@@ -92,7 +94,7 @@ function select($result, $connection2 = null, $href = "", $orgtables = array()) 
 */
 function referencable_primary($self) {
 	$return = array(); // table_name => field
-	foreach (table_status() as $table_name => $table) {
+	foreach (table_status('', true) as $table_name => $table) {
 		if ($table_name != $self && fk_support($table)) {
 			foreach (fields($table_name) as $field) {
 				if ($field["primary"]) {
@@ -127,15 +129,6 @@ function textarea($name, $value, $rows = 10, $cols = 80) {
 	echo "</textarea>";
 }
 
-/** Format time difference
-* @param string output of microtime()
-* @param string output of microtime()
-* @return string HTML code
-*/
-function format_time($start, $end) {
-	return " <span class='time'>(" . lang('%.3f s', max(0, array_sum(explode(" ", $end)) - array_sum(explode(" ", $start)))) . ")</span>";
-}
-
 /** Print table columns for type edit
 * @param string
 * @param array
@@ -149,7 +142,8 @@ function edit_type($key, $field, $collations, $foreign_keys = array()) {
 <td><select name="<?php echo $key; ?>[type]" class="type" onfocus="lastType = selectValue(this);" onchange="editingTypeChange(this);"><?php echo optionlist((!$field["type"] || isset($types[$field["type"]]) ? array() : array($field["type"])) + $structured_types + ($foreign_keys ? array(lang('Foreign keys') => $foreign_keys) : array()), $field["type"]); ?></select>
 <td><input name="<?php echo $key; ?>[length]" value="<?php echo h($field["length"]); ?>" size="3" onfocus="editingLengthFocus(this);"><td class="options"><?php //! type="number" with enabled JavaScript
 	echo "<select name='$key" . "[collation]'" . (ereg('(char|text|enum|set)$', $field["type"]) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>';
-	echo ($unsigned ? "<select name='$key" . "[unsigned]'" . (!$field["type"] || ereg('(int|float|double|decimal)$', $field["type"]) ? "" : " class='hidden'") . '><option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
+	echo ($unsigned ? "<select name='$key" . "[unsigned]'" . (!$field["type"] || ereg('((^|[^o])int|float|double|decimal)$', $field["type"]) ? "" : " class='hidden'") . '><option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
+	echo (isset($field['on_update']) ? "<select name='$key" . "[on_update]'" . ($field["type"] == "timestamp" ? "" : " class='hidden'") . '>' . optionlist(array("" => "(" . lang('ON UPDATE') . ")", "CURRENT_TIMESTAMP"), $field["on_update"]) . '</select>' : '');
 	echo ($foreign_keys ? "<select name='$key" . "[on_delete]'" . (ereg("`", $field["type"]) ? "" : " class='hidden'") . "><option value=''>(" . lang('ON DELETE') . ")" . optionlist(explode("|", $on_actions), $field["on_delete"]) . "</select> " : " "); // space for IE
 }
 
@@ -171,7 +165,7 @@ function process_type($field, $collate = "COLLATE") {
 	global $unsigned;
 	return " $field[type]"
 		. ($field["length"] != "" ? "(" . process_length($field["length"]) . ")" : "")
-		. (ereg('int|float|double|decimal', $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
+		. (ereg('(^|[^o])int|float|double|decimal', $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
 		. (ereg('char|text|enum|set', $field["type"]) && $field["collation"] ? " $collate " . q($field["collation"]) : "")
 	;
 }
@@ -182,12 +176,18 @@ function process_type($field, $collate = "COLLATE") {
 * @return array array("field", "type", "NULL", "DEFAULT", "ON UPDATE", "COMMENT", "AUTO_INCREMENT")
 */
 function process_field($field, $type_field) {
+	global $jush;
+	$default = $field["default"];
 	return array(
 		idf_escape(trim($field["field"])),
 		process_type($type_field),
 		($field["null"] ? " NULL" : " NOT NULL"), // NULL for timestamp
-		(isset($field["default"]) ? " DEFAULT " . (($field["type"] == "timestamp" && eregi('^CURRENT_TIMESTAMP$', $field["default"])) || ($field["type"] == "bit" && ereg("^([0-9]+|b'[0-1]+')\$", $field["default"])) ? $field["default"] : q($field["default"])) : ""),
-		($field["on_update"] ? " ON UPDATE $field[on_update]" : ""),
+		(isset($default) ? " DEFAULT " . (
+			(ereg("time", $field["type"]) && eregi('^CURRENT_TIMESTAMP$', $default))
+			|| ($field["type"] == "bit" && ereg("^([0-9]+|b'[0-1]+')\$", $default))
+			|| ($jush == "pgsql" && ereg("^[a-z]+\(('[^']*')+\)\$", $default))
+			? $default : q($default)) : ""),
+		($field["type"] == "timestamp" && $field["on_update"] ? " ON UPDATE $field[on_update]" : ""),
 		(support("comment") && $field["comment"] != "" ? " COMMENT " . q($field["comment"]) : ""),
 		($field["auto_increment"] ? auto_increment() : null),
 	);
@@ -214,12 +214,11 @@ function type_class($type) {
 * @param array
 * @param array
 * @param string TABLE or PROCEDURE
-* @param int number of fields allowed by Suhosin
 * @param array returned by referencable_primary()
 * @param bool display comments column
 * @return null
 */
-function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $foreign_keys = array(), $comments = false) {
+function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = array(), $comments = false) {
 	global $connection, $inout;
 	?>
 <thead><tr class="wrap">
@@ -245,18 +244,18 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 		?>
 <tr<?php echo ($display ? "" : " style='display: none;'"); ?>>
 <?php echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", explode("|", $inout), $field["inout"]) : ""); ?>
-<th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo h($field["field"]); ?>" onchange="<?php echo ($field["field"] != "" || count($fields) > 1 ? "" : "editingAddRow(this, $allowed); "); ?>editingNameChange(this);" maxlength="64"><?php } ?><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo h($orig); ?>">
+<th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo h($field["field"]); ?>" onchange="<?php echo ($field["field"] != "" || count($fields) > 1 ? "" : "editingAddRow(this); "); ?>editingNameChange(this);" maxlength="64" autocapitalize="off"><?php } ?><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo h($orig); ?>">
 <?php edit_type("fields[$i]", $field, $collations, $foreign_keys); ?>
 <?php if ($type == "TABLE") { ?>
-<td><?php echo checkbox("fields[$i][null]", 1, $field["null"]); ?>
-<td><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked<?php } ?> onclick="var field = this.form['fields[' + this.value + '][field]']; if (!field.value) { field.value = 'id'; field.onchange(); }">
-<td><?php echo checkbox("fields[$i][has_default]", 1, $field["has_default"]); ?><input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["default"]); ?>" onchange="this.previousSibling.checked = true;">
+<td><?php echo checkbox("fields[$i][null]", 1, $field["null"], "", "", "block"); ?>
+<td><label class="block"><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked<?php } ?> onclick="var field = this.form['fields[' + this.value + '][field]']; if (!field.value) { field.value = 'id'; field.onchange(); }"></label><td><?php
+echo checkbox("fields[$i][has_default]", 1, $field["has_default"]); ?><input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["default"]); ?>" onchange="this.previousSibling.checked = true;">
 <?php echo (support("comment") ? "<td" . ($comments ? "" : " class='hidden'") . "><input name='fields[$i][comment]' value='" . h($field["comment"]) . "' maxlength='" . ($connection->server_info >= 5.5 ? 1024 : 255) . "'>" : ""); ?>
 <?php } ?>
 <?php
 		echo "<td>";
 		echo (support("move_col") ?
-			"<input type='image' class='icon' name='add[$i]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "' onclick='return !editingAddRow(this, $allowed, 1);'>&nbsp;"
+			"<input type='image' class='icon' name='add[$i]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "' onclick='return !editingAddRow(this, 1);'>&nbsp;"
 			. "<input type='image' class='icon' name='up[$i]' src='../adminer/static/up.gif' alt='^' title='" . lang('Move up') . "'>&nbsp;"
 			. "<input type='image' class='icon' name='down[$i]' src='../adminer/static/down.gif' alt='v' title='" . lang('Move down') . "'>&nbsp;"
 		: "");
@@ -267,7 +266,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $allowed = 0, $forei
 
 /** Move fields up and down or add field
 * @param array
-* @return null
+* @return bool
 */
 function process_fields(&$fields) {
 	ksort($fields);
@@ -285,8 +284,7 @@ function process_fields(&$fields) {
 			}
 			$offset++;
 		}
-	}
-	if ($_POST["down"]) {
+	} elseif ($_POST["down"]) {
 		$found = false;
 		foreach ($fields as $key => $field) {
 			if (isset($field["field"]) && $found) {
@@ -299,11 +297,13 @@ function process_fields(&$fields) {
 			}
 			$offset++;
 		}
-	}
-	$fields = array_values($fields);
-	if ($_POST["add"]) {
+	} elseif ($_POST["add"]) {
+		$fields = array_values($fields);
 		array_splice($fields, key($_POST["add"]), 0, array(array()));
+	} elseif (!$_POST["drop_col"]) {
+		return false;
 	}
+	return true;
 }
 
 /** Callback used in routine()
@@ -336,25 +336,78 @@ function grant($grant, $privileges, $columns, $on) {
 }
 
 /** Drop old object and create a new one
-* @param string drop query
-* @param string create query
+* @param string drop old object query
+* @param string create new object query
+* @param string drop new object query
+* @param string create test object query
+* @param string drop test object query
 * @param string
 * @param string
 * @param string
 * @param string
 * @param string
-* @return bool dropped
+* @param string
+* @return null redirect in success
 */
-function drop_create($drop, $create, $location, $message_drop, $message_alter, $message_create, $name) {
+function drop_create($drop, $create, $drop_created, $test, $drop_test, $location, $message_drop, $message_alter, $message_create, $old_name, $new_name) {
 	if ($_POST["drop"]) {
-		return query_redirect($drop, $location, $message_drop, true, !$_POST["dropped"]);
+		query_redirect($drop, $location, $message_drop);
+	} elseif ($old_name == "") {
+		query_redirect($create, $location, $message_create);
+	} elseif ($old_name != $new_name) {
+		$created = queries($create);
+		queries_redirect($location, $message_alter, $created && queries($drop));
+		if ($created) {
+			queries($drop_created);
+		}
+	} else {
+		queries_redirect(
+			$location,
+			$message_alter,
+			queries($test) && queries($drop_test) && queries($drop) && queries($create)
+		);
 	}
-	$dropped = $name != "" && ($_POST["dropped"] || queries($drop));
-	$created = queries($create);
-	if (!queries_redirect($location, ($name != "" ? $message_alter : $message_create), $created) && $dropped) {
-		redirect(null, $message_drop);
+}
+
+/** Generate SQL query for creating trigger
+* @param string
+* @param array result of trigger()
+* @return string
+*/
+function create_trigger($on, $row) {
+	global $jush;
+	$timing_event = " $row[Timing] $row[Event]";
+	return "CREATE TRIGGER "
+		. idf_escape($row["Trigger"])
+		. ($jush == "mssql" ? $on . $timing_event : $timing_event . $on)
+		. rtrim(" $row[Type]\n$row[Statement]", ";")
+		. ";"
+	;
+}
+
+/** Generate SQL query for creating routine
+* @param string "PROCEDURE" or "FUNCTION"
+* @param array result of routine()
+* @return string
+*/
+function create_routine($routine, $row) {
+	global $inout;
+	$set = array();
+	$fields = (array) $row["fields"];
+	ksort($fields); // enforce fields order
+	foreach ($fields as $field) {
+		if ($field["field"] != "") {
+			$set[] = (ereg("^($inout)\$", $field["inout"]) ? "$field[inout] " : "") . idf_escape($field["field"]) . process_type($field, "CHARACTER SET");
+		}
 	}
-	return $dropped;
+	return "CREATE $routine "
+		. idf_escape(trim($row["name"]))
+		. " (" . implode(", ", $set) . ")"
+		. (isset($_GET["function"]) ? " RETURNS" . process_type($row["returns"], "CHARACTER SET") : "")
+		. ($row["language"] ? " LANGUAGE $row[language]" : "")
+		. rtrim("\n$row[definition]", ";")
+		. ";"
+	;
 }
 
 /** Remove current user definer from SQL command
@@ -365,19 +418,22 @@ function remove_definer($query) {
 	return preg_replace('~^([A-Z =]+) DEFINER=`' . preg_replace('~@(.*)~', '`@`(%|\\1)', logged_user()) . '`~', '\\1', $query); //! proper escaping of user
 }
 
-/** Get string to add a file in TAR
+/** Add a file to TAR
 * @param string
-* @param string
-* @return string
+* @param TmpFile
+* @return null prints the output
 */
-function tar_file($filename, $contents) {
-	$return = pack("a100a8a8a8a12a12", $filename, 644, 0, 0, decoct(strlen($contents)), decoct(time()));
+function tar_file($filename, $tmp_file) {
+	$return = pack("a100a8a8a8a12a12", $filename, 644, 0, 0, decoct($tmp_file->size), decoct(time()));
 	$checksum = 8*32; // space for checksum itself
 	for ($i=0; $i < strlen($return); $i++) {
 		$checksum += ord($return[$i]);
 	}
 	$return .= sprintf("%06o", $checksum) . "\0 ";
-	return $return . str_repeat("\0", 512 - strlen($return)) . $contents . str_repeat("\0", 511 - (strlen($contents) + 511) % 512);
+	echo $return;
+	echo str_repeat("\0", 512 - strlen($return));
+	$tmp_file->send();
+	echo str_repeat("\0", 511 - ($tmp_file->size + 511) % 512);
 }
 
 /** Get INI bytes value

@@ -20,10 +20,11 @@ class Adminer {
 	}
 	
 	/** Get key used for permanent login
-	* @return string cryptic string which gets combined with password
+	* @param bool
+	* @return string cryptic string which gets combined with password or false in case of an error
 	*/
-	function permanentLogin() {
-		return password_file();
+	function permanentLogin($create = false) {
+		return password_file($create);
 	}
 	
 	/** Identifier of selected database
@@ -71,14 +72,14 @@ class Adminer {
 		?>
 <table cellspacing="0">
 <tr><th><?php echo lang('System'); ?><td><?php echo html_select("auth[driver]", $drivers, DRIVER, "loginDriver(this);"); ?>
-<tr><th><?php echo lang('Server'); ?><td><input name="auth[server]" value="<?php echo h(SERVER); ?>" title="hostname[:port]">
-<tr><th><?php echo lang('Username'); ?><td><input id="username" name="auth[username]" value="<?php echo h($_GET["username"]); ?>">
+<tr><th><?php echo lang('Server'); ?><td><input name="auth[server]" value="<?php echo h(SERVER); ?>" title="hostname[:port]" placeholder="localhost" autocapitalize="off">
+<tr><th><?php echo lang('Username'); ?><td><input name="auth[username]" id="username" value="<?php echo h($_GET["username"]); ?>" autocapitalize="off">
 <tr><th><?php echo lang('Password'); ?><td><input type="password" name="auth[password]">
-<tr><th><?php echo lang('Database'); ?><td><input name="auth[db]" value="<?php echo h($_GET["db"]); ?>">
+<tr><th><?php echo lang('Database'); ?><td><input name="auth[db]" value="<?php echo h($_GET["db"]); ?>" autocapitalize="off">
 </table>
 <script type="text/javascript">
 var username = document.getElementById('username');
-username.focus();
+focus(username);
 username.form['auth[driver]'].onchange();
 </script>
 <?php
@@ -164,8 +165,11 @@ username.form['auth[driver]'].onchange();
 	* @return string
 	*/
 	function selectQuery($query) {
-		global $jush;
-		return "<p><a href='" . h(remove_from_uri("page")) . "&amp;page=last' title='" . lang('Last page') . "'>&gt;&gt;</a> <code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code> <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a></p>\n"; // </p> - required for IE9 inline edit
+		global $jush, $token;
+		return "<form action='" . h(ME) . "sql=' method='post'><p><span onclick=\"return !selectEditSql(event, this, '" . lang('Execute') . "');\">"
+			. "<code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code>"
+			. " <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>"
+			. "</span><input type='hidden' name='token' value='$token'></p></form>\n"; // </p> - required for IE9 inline edit
 	}
 	
 	/** Description of a row in a table
@@ -185,6 +189,14 @@ username.form['auth[driver]'].onchange();
 		return $rows;
 	}
 	
+	/** Get a link to use in select table
+	* @param string raw value of the field
+	* @param array single field returned from fields()
+	* @return string or null to create the default link
+	*/
+	function selectLink($val, $field) {
+	}
+	
 	/** Value printed in select table
 	* @param string HTML-escaped value to print
 	* @param string link to foreign key
@@ -194,7 +206,7 @@ username.form['auth[driver]'].onchange();
 	function selectVal($val, $link, $field) {
 		$return = ($val === null ? "<i>NULL</i>" : (ereg("char|binary", $field["type"]) && !ereg("var", $field["type"]) ? "<code>$val</code>" : $val));
 		if (ereg('blob|bytea|raw|file', $field["type"]) && !is_utf8($val)) {
-			$return = lang('%d byte(s)', strlen($val));
+			$return = lang('%d byte(s)', strlen(html_entity_decode($val, ENT_QUOTES)));
 		}
 		return ($link ? "<a href='" . h($link) . "'>$return</a>" : $return);
 	}
@@ -253,7 +265,7 @@ username.form['auth[driver]'].onchange();
 			if (!$val || ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators))) {
 				echo "<div><select name='where[$i][col]' onchange='$change_next'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
 				echo html_select("where[$i][op]", $this->operators, $val["op"], $change_next);
-				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' onchange='" . ($val ? "selectFieldChange(this.form)" : "selectAddRow(this)") . ";'></div>\n";
+				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' onchange='" . ($val ? "selectFieldChange(this.form)" : "selectAddRow(this)") . ";' onsearch='selectSearchSearch(this);'></div>\n";
 			}
 		}
 		echo "</div></fieldset>\n";
@@ -276,7 +288,7 @@ username.form['auth[driver]'].onchange();
 			}
 		}
 		echo "<div><select name='order[$i]' onchange='selectAddRow(this);'><option>" . optionlist($columns, null, true) . "</select>";
-		echo "<label><input type='checkbox' name='desc[$i]' value='1'>" . lang('descending') . "</label></div>\n"; // not checkbox() to allow selectAddRow()
+		echo checkbox("desc[$i]", 1, false, lang('descending')) . "</div>\n";
 		echo "</div></fieldset>\n";
 	}
 	
@@ -389,8 +401,8 @@ username.form['auth[driver]'].onchange();
 				if (ereg('IN$', $val["op"])) {
 					$in = process_length($val["val"]);
 					$cond .= " (" . ($in != "" ? $in : "NULL") . ")";
-				} elseif (!$val["op"]) {
-					$cond .= $val["val"]; // SQL injection
+				} elseif ($val["op"] == "SQL") {
+					$cond = " $val[val]"; // SQL injection
 				} elseif ($val["op"] == "LIKE %%") {
 					$cond = " LIKE " . $this->processInput($fields[$val["col"]], "%$val[val]%");
 				} elseif (!ereg('NULL$', $val["op"])) {
@@ -403,7 +415,7 @@ username.form['auth[driver]'].onchange();
 					$cols = array();
 					foreach ($fields as $name => $field) {
 						$is_text = ereg('char|text|enum|set', $field["type"]);
-						if ((is_numeric($val["val"]) || !ereg('int|float|double|decimal|bit', $field["type"]))
+						if ((is_numeric($val["val"]) || !ereg('(^|[^o])int|float|double|decimal|bit', $field["type"]))
 							&& (!ereg("[\x80-\xFF]", $val["val"]) || $is_text)
 						) {
 							$name = idf_escape($name);
@@ -436,7 +448,7 @@ username.form['auth[driver]'].onchange();
 	* @return string expression to use in LIMIT, will be escaped
 	*/
 	function selectLimitProcess() {
-		return (isset($_GET["limit"]) ? $_GET["limit"] : "30");
+		return (isset($_GET["limit"]) ? $_GET["limit"] : "50");
 	}
 	
 	/** Process length box in select
@@ -474,10 +486,9 @@ username.form['auth[driver]'].onchange();
 	*/
 	function messageQuery($query) {
 		global $jush;
-		static $count = 0;
 		restart_session();
-		$id = "sql-" . ($count++);
 		$history = &get_session("queries");
+		$id = "sql-" . count($history[$_GET["db"]]);
 		if (strlen($query) > 1e6) {
 			$query = ereg_replace('[\x80-\xFF]+$', '', substr($query, 0, 1e6)) . "\n..."; // [\x80-\xFF] - valid UTF-8, \n - can end by one-line comment
 		}
@@ -500,7 +511,7 @@ username.form['auth[driver]'].onchange();
 					}
 				}
 				if ($key && !ereg('set|blob|bytea|raw|file', $field["type"])) {
-					$return .= "/=";
+					$return .= "/SQL";
 				}
 			}
 		}
@@ -531,11 +542,11 @@ username.form['auth[driver]'].onchange();
 	* @return string expression to use in a query
 	*/
 	function processInput($field, $value, $function = "") {
-		if ($function == "=") {
+		if ($function == "SQL") {
 			return $value; // SQL injection
 		}
 		$name = $field["field"];
-		$return = ($field["type"] == "bit" && ereg("^([0-9]+|b'[0-1]+')\$", $value) ? $value : q($value));
+		$return = q($value);
 		if (ereg('^(now|getdate|uuid)$', $function)) {
 			$return = "$function()";
 		} elseif (ereg('^current_(date|timestamp)$', $function)) {
@@ -560,10 +571,6 @@ username.form['auth[driver]'].onchange();
 		if (function_exists('gzencode')) {
 			$return['gz'] = 'gzip';
 		}
-		if (function_exists('bzcompress')) {
-			$return['bz2'] = 'bzip2';
-		}
-		// ZipArchive requires temporary file, ZIP can be created by gzcompress - see PEAR File_Archive
 		return $return;
 	}
 	
@@ -574,99 +581,43 @@ username.form['auth[driver]'].onchange();
 		return array('sql' => 'SQL', 'csv' => 'CSV,', 'csv;' => 'CSV;', 'tsv' => 'TSV');
 	}
 	
+	/** Export database structure
+	* @param string
+	* @return null prints data
+	*/
+	function dumpDatabase($db) {
+	}
+	
 	/** Export table structure
 	* @param string
 	* @param string
-	* @param bool
+	* @param int 0 table, 1 view, 2 temporary view table
 	* @return null prints data
 	*/
-	function dumpTable($table, $style, $is_view = false) {
+	function dumpTable($table, $style, $is_view = 0) {
 		if ($_POST["format"] != "sql") {
 			echo "\xef\xbb\xbf"; // UTF-8 byte order mark
 			if ($style) {
 				dump_csv(array_keys(fields($table)));
 			}
 		} elseif ($style) {
-			$create = create_sql($table, $_POST["auto_increment"]);
-			if ($create) {
-				if ($style == "DROP+CREATE") {
-					echo "DROP " . ($is_view ? "VIEW" : "TABLE") . " IF EXISTS " . table($table) . ";\n";
+			if ($is_view == 2) {
+				$fields = array();
+				foreach (fields($table) as $name => $field) {
+					$fields[] = idf_escape($name) . " $field[full_type]";
 				}
-				if ($is_view) {
+				$create = "CREATE TABLE " . table($table) . " (" . implode(", ", $fields) . ")";
+			} else {
+				$create = create_sql($table, $_POST["auto_increment"]);
+			}
+			if ($create) {
+				if ($style == "DROP+CREATE" || $is_view == 1) {
+					echo "DROP " . ($is_view == 2 ? "VIEW" : "TABLE") . " IF EXISTS " . table($table) . ";\n";
+				}
+				if ($is_view == 1) {
 					$create = remove_definer($create);
 				}
-				echo ($style != "CREATE+ALTER" ? $create : ($is_view ? substr_replace($create, " OR REPLACE", 6, 0) : substr_replace($create, " IF NOT EXISTS", 12, 0))) . ";\n\n";
-			}
-			if ($style == "CREATE+ALTER" && !$is_view) {
-				// create procedure which iterates over original columns and adds new and removes old
-				$query = "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLLATION_NAME, COLUMN_TYPE, EXTRA, COLUMN_COMMENT FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = " . q($table) . " ORDER BY ORDINAL_POSITION";
-				echo "DELIMITER ;;
-CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
-	DECLARE _column_name, _collation_name, after varchar(64) DEFAULT '';
-	DECLARE _column_type, _column_default text;
-	DECLARE _is_nullable char(3);
-	DECLARE _extra varchar(30);
-	DECLARE _column_comment varchar(255);
-	DECLARE done, set_after bool DEFAULT 0;
-	DECLARE add_columns text DEFAULT '";
-				$fields = array();
-				$after = "";
-				foreach (get_rows($query) as $row) {
-					$default = $row["COLUMN_DEFAULT"];
-					$row["default"] = ($default !== null ? q($default) : "NULL");
-					$row["after"] = q($after); //! rgt AFTER lft, lft AFTER id doesn't work
-					$row["alter"] = escape_string(idf_escape($row["COLUMN_NAME"])
-						. " $row[COLUMN_TYPE]"
-						. ($row["COLLATION_NAME"] ? " COLLATE $row[COLLATION_NAME]" : "")
-						. ($default !== null ? " DEFAULT " . ($default == "CURRENT_TIMESTAMP" ? $default : $row["default"]) : "")
-						. ($row["IS_NULLABLE"] == "YES" ? "" : " NOT NULL")
-						. ($row["EXTRA"] ? " $row[EXTRA]" : "")
-						. ($row["COLUMN_COMMENT"] ? " COMMENT " . q($row["COLUMN_COMMENT"]) : "")
-						. ($after ? " AFTER " . idf_escape($after) : " FIRST")
-					);
-					echo ", ADD $row[alter]";
-					$fields[] = $row;
-					$after = $row["COLUMN_NAME"];
-				}
-				echo "';
-	DECLARE columns CURSOR FOR $query;
-	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
-	SET @alter_table = '';
-	OPEN columns;
-	REPEAT
-		FETCH columns INTO _column_name, _column_default, _is_nullable, _collation_name, _column_type, _extra, _column_comment;
-		IF NOT done THEN
-			SET set_after = 1;
-			CASE _column_name";
-			foreach ($fields as $row) {
-				echo "
-				WHEN " . q($row["COLUMN_NAME"]) . " THEN
-					SET add_columns = REPLACE(add_columns, ', ADD $row[alter]', IF(
-						_column_default <=> $row[default] AND _is_nullable = '$row[IS_NULLABLE]' AND _collation_name <=> " . (isset($row["COLLATION_NAME"]) ? "'$row[COLLATION_NAME]'" : "NULL") . " AND _column_type = " . q($row["COLUMN_TYPE"]) . " AND _extra = '$row[EXTRA]' AND _column_comment = " . q($row["COLUMN_COMMENT"]) . " AND after = $row[after]
-					, '', ', MODIFY $row[alter]'));"
-				; //! don't replace in comment
-			}
-			echo "
-				ELSE
-					SET @alter_table = CONCAT(@alter_table, ', DROP ', _column_name);
-					SET set_after = 0;
-			END CASE;
-			IF set_after THEN
-				SET after = _column_name;
-			END IF;
-		END IF;
-	UNTIL done END REPEAT;
-	CLOSE columns;
-	IF @alter_table != '' OR add_columns != '' THEN
-		SET alter_command = CONCAT(alter_command, 'ALTER TABLE " . table($table) . "', SUBSTR(CONCAT(add_columns, @alter_table), 2), ';\\n');
-	END IF;
-END;;
-DELIMITER ;
-CALL adminer_alter(@adminer_alter);
-DROP PROCEDURE adminer_alter;
-
-";
-				//! indexes
+				echo "$create;\n\n";
 			}
 		}
 	}
@@ -681,10 +632,10 @@ DROP PROCEDURE adminer_alter;
 		global $connection, $jush;
 		$max_packet = ($jush == "sqlite" ? 0 : 1048576); // default, minimum is 1024
 		if ($style) {
-			if ($_POST["format"] == "sql" && $style == "TRUNCATE+INSERT") {
-				echo truncate_sql($table) . ";\n";
-			}
 			if ($_POST["format"] == "sql") {
+				if ($style == "TRUNCATE+INSERT") {
+					echo truncate_sql($table) . ";\n";
+				}
 				$fields = fields($table);
 			}
 			$result = $connection->query($query, 1); // 1 - MYSQLI_USE_RESULT //! enum and set as numbers
@@ -693,7 +644,8 @@ DROP PROCEDURE adminer_alter;
 				$buffer = "";
 				$keys = array();
 				$suffix = "";
-				while ($row = $result->fetch_row()) {
+				$fetch_function = ($table != '' ? 'fetch_assoc' : 'fetch_row');
+				while ($row = $result->$fetch_function()) {
 					if (!$keys) {
 						$values = array();
 						foreach ($row as $val) {
@@ -715,7 +667,11 @@ DROP PROCEDURE adminer_alter;
 							$insert = "INSERT INTO " . table($table) . " (" . implode(", ", array_map('idf_escape', $keys)) . ") VALUES";
 						}
 						foreach ($row as $key => $val) {
-							$row[$key] = ($val !== null ? (ereg('int|float|double|decimal|bit', $fields[$keys[$key]]["type"]) ? $val : q($val)) : "NULL"); //! columns looking like functions
+							$field = $fields[$key];
+							$row[$key] = ($val !== null
+								? unconvert_field($field, ereg('(^|[^o])int|float|double|decimal', $field["type"]) && $val != '' ? $val : q($val))
+								: "NULL"
+							);
 						}
 						$s = ($max_packet ? "\n" : " ") . "(" . implode(",\t", $row) . ")";
 						if (!$buffer) {
@@ -752,16 +708,12 @@ DROP PROCEDURE adminer_alter;
 	*/
 	function dumpHeaders($identifier, $multi_table = false) {
 		$output = $_POST["output"];
-		$ext = ($_POST["format"] == "sql" ? "sql" : ($multi_table ? "tar" : "csv")); // multiple CSV packed to TAR
+		$ext = (ereg('sql', $_POST["format"]) ? "sql" : ($multi_table ? "tar" : "csv")); // multiple CSV packed to TAR
 		header("Content-Type: " .
-			($output == "bz2" ? "application/x-bzip" :
 			($output == "gz" ? "application/x-gzip" :
 			($ext == "tar" ? "application/x-tar" :
 			($ext == "sql" || $output != "file" ? "text/plain" : "text/csv") . "; charset=utf-8"
-		))));
-		if ($output == "bz2") {
-			ob_start('bzcompress', 1e6);
-		}
+		)));
 		if ($output == "gz") {
 			ob_start('gzencode', 1e6);
 		}
@@ -815,7 +767,7 @@ DROP PROCEDURE adminer_alter;
 <p class="logout">
 <?php
 			if (DB == "" || !$missing) {
-				echo "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"])) . ">" . lang('SQL command') . "</a>\n";
+				echo "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"])) . " title='" . lang('Import') . "'>" . lang('SQL command') . "</a>\n";
 				if (support("dump")) {
 					echo "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . lang('Dump') . "</a>\n";
 				}
@@ -829,7 +781,7 @@ DROP PROCEDURE adminer_alter;
 			$this->databasesPrint($missing);
 			if ($_GET["ns"] !== "" && !$missing && DB != "") {
 				echo '<p><a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create new table') . "</a>\n";
-				$tables = tables_list();
+				$tables = table_status('', true);
 				if (!$tables) {
 					echo "<p class='message'>" . lang('No tables.') . "\n";
 				} else {
@@ -859,13 +811,17 @@ DROP PROCEDURE adminer_alter;
 		?>
 <form action="">
 <p id="dbs">
-<?php hidden_fields_get(); ?>
-<?php echo ($databases ? html_select("db", array("" => "(" . lang('database') . ")") + $databases, DB, "this.form.submit();") : '<input name="db" value="' . h(DB) . '">'); ?>
-<input type="submit" value="<?php echo lang('Use'); ?>"<?php echo ($databases ? " class='hidden'" : ""); ?>>
 <?php
+		hidden_fields_get();
+		$db_events = " onmousedown='dbMouseDown(event, this);' onchange='dbChange(this);'";
+		echo ($databases
+			? "<select name='db'$db_events>" . optionlist(array("" => "(" . lang('database') . ")") + $databases, DB) . "</select>"
+			: '<input name="db" value="' . h(DB) . '" autocapitalize="off">'
+		);
+		echo "<input type='submit' value='" . lang('Use') . "'" . ($databases ? " class='hidden'" : "") . ">\n";
 		if ($missing != "db" && DB != "" && $connection->select_db(DB)) {
 			if (support("scheme")) {
-				echo "<br>" . html_select("ns", array("" => "(" . lang('schema') . ")") + schemas(), $_GET["ns"], "this.form.submit();");
+				echo "<br><select name='ns'$db_events>" . optionlist(array("" => "(" . lang('schema') . ")") + schemas(), $_GET["ns"]) . "</select>";
 				if ($_GET["ns"] != "") {
 					set_schema($_GET["ns"]);
 				}
@@ -879,14 +835,14 @@ DROP PROCEDURE adminer_alter;
 	}
 	
 	/** Prints table list in menu
-	* @param array
+	* @param array result of table_status('', true)
 	* @return null
 	*/
 	function tablesPrint($tables) {
 		echo "<p id='tables' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";
-		foreach ($tables as $table => $type) {
-			echo '<a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table) . ">" . lang('select') . "</a> ";
-			echo '<a href="' . h(ME) . 'table=' . urlencode($table) . '"' . bold($_GET["table"] == $table) . " title='" . lang('Show structure') . "'>" . $this->tableName(array("Name" => $table)) . "</a><br>\n"; //! Adminer::tableName may work with full table status
+		foreach ($tables as $table => $status) {
+			echo '<a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table || $_GET["edit"] == $table) . ">" . lang('select') . "</a> ";
+			echo '<a href="' . h(ME) . 'table=' . urlencode($table) . '"' . bold(in_array($table, array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"]))) . " title='" . lang('Show structure') . "'>" . $this->tableName($status) . "</a><br>\n";
 		}
 	}
 	

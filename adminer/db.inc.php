@@ -7,6 +7,7 @@ if ($tables_views && !$error && !$_POST["search"]) {
 	if ($jush == "sql" && count($_POST["tables"]) > 1 && ($_POST["drop"] || $_POST["truncate"] || $_POST["copy"])) {
 		queries("SET foreign_key_checks = 0"); // allows to truncate or drop several tables at once
 	}
+	
 	if ($_POST["truncate"]) {
 		if ($_POST["tables"]) {
 			$result = truncate_tables($_POST["tables"]);
@@ -32,11 +33,14 @@ if ($tables_views && !$error && !$_POST["search"]) {
 			: apply_queries("VACUUM" . ($_POST["optimize"] ? "" : " ANALYZE"), $_POST["tables"])
 		);
 		$message = lang('Tables have been optimized.');
-	} elseif ($_POST["tables"] && ($result = queries(($_POST["optimize"] ? "OPTIMIZE" : ($_POST["check"] ? "CHECK" : ($_POST["repair"] ? "REPAIR" : "ANALYZE"))) . " TABLE " . implode(", ", array_map('idf_escape', $_POST["tables"]))))) {
+	} elseif (!$_POST["tables"]) {
+		$message = lang('No tables.');
+	} elseif ($result = queries(($_POST["optimize"] ? "OPTIMIZE" : ($_POST["check"] ? "CHECK" : ($_POST["repair"] ? "REPAIR" : "ANALYZE"))) . " TABLE " . implode(", ", array_map('idf_escape', $_POST["tables"])))) {
 		while ($row = $result->fetch_assoc()) {
 			$message .= "<b>" . h($row["Table"]) . "</b>: " . h($row["Msg_text"]) . "<br>";
 		}
 	}
+	
 	queries_redirect(substr(ME, 0, -1), $message, $result);
 }
 
@@ -44,7 +48,7 @@ page_header(($_GET["ns"] == "" ? lang('Database') . ": " . h(DB) : lang('Schema'
 
 if ($adminer->homepage()) {
 	if ($_GET["ns"] !== "") {
-		echo "<h3>" . lang('Tables and views') . "</h3>\n";
+		echo "<h3 id='tables-views'>" . lang('Tables and views') . "</h3>\n";
 		$tables_list = tables_list();
 		if (!$tables_list) {
 			echo "<p class='message'>" . lang('No tables.') . "\n";
@@ -55,6 +59,7 @@ if ($adminer->homepage()) {
 				search_tables();
 			}
 			echo "<table cellspacing='0' class='nowrap checkable' onclick='tableClick(event);' ondblclick='tableClick(event, true);'>\n";
+			
 			echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck(this, /^(tables|views)\[/);">';
 			echo '<th>' . lang('Table');
 			echo '<td>' . lang('Engine');
@@ -66,6 +71,7 @@ if ($adminer->homepage()) {
 			echo '<td>' . lang('Rows');
 			echo (support("comment") ? '<td>' . lang('Comment') : '');
 			echo "</thead>\n";
+			
 			foreach ($tables_list as $name => $type) {
 				$view = ($type !== null && !eregi("table", $type));
 				echo '<tr' . odd() . '><td>' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array($name, $tables_views, true), "", "formUncheck('check-all');");
@@ -88,12 +94,14 @@ if ($adminer->homepage()) {
 				}
 				echo (support("comment") ? "<td id='Comment-" . h($name) . "'>&nbsp;" : "");
 			}
+			
 			echo "<tr><td>&nbsp;<th>" . lang('%d in total', count($tables_list));
 			echo "<td>" . nbsp($jush == "sql" ? $connection->result("SELECT @@storage_engine") : "");
 			echo "<td>" . nbsp(db_collation(DB, collations()));
 			foreach (array("Data_length", "Index_length", "Data_free") as $key) {
 				echo "<td align='right' id='sum-$key'>&nbsp;";
 			}
+			
 			echo "</table>\n";
 			echo "<script type='text/javascript'>tableCheck();</script>\n";
 			if (!information_schema(DB)) {
@@ -105,7 +113,7 @@ if ($adminer->homepage()) {
 				if (count($databases) != 1 && $jush != "sqlite") {
 					$db = (isset($_POST["target"]) ? $_POST["target"] : (support("scheme") ? $_GET["ns"] : DB));
 					echo "<p>" . lang('Move to other database') . ": ";
-					echo ($databases ? html_select("target", $databases, $db) : '<input name="target" value="' . h($db) . '">');
+					echo ($databases ? html_select("target", $databases, $db) : '<input name="target" value="' . h($db) . '" autocapitalize="off">');
 					echo " <input type='submit' name='move' value='" . lang('Move') . "'>";
 					echo (support("copy") ? " <input type='submit' name='copy' value='" . lang('Copy') . "'>" : "");
 					echo "\n";
@@ -121,7 +129,7 @@ if ($adminer->homepage()) {
 		}
 	
 		if (support("routine")) {
-			echo "<h3>" . lang('Routines') . "</h3>\n";
+			echo "<h3 id='routines'>" . lang('Routines') . "</h3>\n";
 			$routines = routines();
 			if ($routines) {
 				echo "<table cellspacing='0'>\n";
@@ -140,7 +148,7 @@ if ($adminer->homepage()) {
 		}
 		
 		if (support("sequence")) {
-			echo "<h3>" . lang('Sequences') . "</h3>\n";
+			echo "<h3 id='sequences'>" . lang('Sequences') . "</h3>\n";
 			$sequences = get_vals("SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = current_schema()");
 			if ($sequences) {
 				echo "<table cellspacing='0'>\n";
@@ -155,13 +163,13 @@ if ($adminer->homepage()) {
 		}
 		
 		if (support("type")) {
-			echo "<h3>" . lang('User types') . "</h3>\n";
-			$types = types();
-			if ($types) {
+			echo "<h3 id='user-types'>" . lang('User types') . "</h3>\n";
+			$user_types = types();
+			if ($user_types) {
 				echo "<table cellspacing='0'>\n";
 				echo "<thead><tr><th>" . lang('Name') . "</thead>\n";
 				odd('');
-				foreach ($types as $val) {
+				foreach ($user_types as $val) {
 					echo "<tr" . odd() . "><th><a href='" . h(ME) . "type=" . urlencode($val) . "'>" . h($val) . "</a>\n";
 				}
 				echo "</table>\n";
@@ -170,16 +178,17 @@ if ($adminer->homepage()) {
 		}
 		
 		if (support("event")) {
-			echo "<h3>" . lang('Events') . "</h3>\n";
+			echo "<h3 id='events'>" . lang('Events') . "</h3>\n";
 			$rows = get_rows("SHOW EVENTS");
 			if ($rows) {
 				echo "<table cellspacing='0'>\n";
-				echo "<thead><tr><th>" . lang('Name') . "<td>" . lang('Schedule') . "<td>" . lang('Start') . "<td>" . lang('End') . "</thead>\n";
+				echo "<thead><tr><th>" . lang('Name') . "<td>" . lang('Schedule') . "<td>" . lang('Start') . "<td>" . lang('End') . "<td></thead>\n";
 				foreach ($rows as $row) {
 					echo "<tr>";
-					echo '<th><a href="' . h(ME) . 'event=' . urlencode($row["Name"]) . '">' . h($row["Name"]) . "</a>";
+					echo "<th>" . h($row["Name"]);
 					echo "<td>" . ($row["Execute at"] ? lang('At given time') . "<td>" . $row["Execute at"] : lang('Every') . " " . $row["Interval value"] . " " . $row["Interval field"] . "<td>$row[Starts]");
 					echo "<td>$row[Ends]";
+					echo '<td><a href="' . h(ME) . 'event=' . urlencode($row["Name"]) . '">' . lang('Alter') . '</a>';
 				}
 				echo "</table>\n";
 				$event_scheduler = $connection->result("SELECT @@event_scheduler");

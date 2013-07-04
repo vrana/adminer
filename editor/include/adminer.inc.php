@@ -13,17 +13,19 @@ class Adminer {
 		return array(SERVER, $_GET["username"], get_session("pwds"));
 	}
 	
-	function permanentLogin() {
-		return password_file();
+	function permanentLogin($create = false) {
+		return password_file($create);
 	}
 	
 	function database() {
 		global $connection;
-		$databases = $this->databases(false);
-		return (!$databases
-			? $connection->result("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1)") // username without the database list
-			: $databases[(information_schema($databases[0]) ? 1 : 0)] // first available database
-		);
+		if ($connection) {
+			$databases = $this->databases(false);
+			return (!$databases
+				? $connection->result("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1)") // username without the database list
+				: $databases[(information_schema($databases[0]) ? 1 : 0)] // first available database
+			);
+		}
 	}
 	
 	function databases($flush = true) {
@@ -45,11 +47,11 @@ class Adminer {
 	function loginForm() {
 		?>
 <table cellspacing="0">
-<tr><th><?php echo lang('Username'); ?><td><input type="hidden" name="auth[driver]" value="server"><input id="username" name="auth[username]" value="<?php echo h($_GET["username"]);  ?>">
+<tr><th><?php echo lang('Username'); ?><td><input type="hidden" name="auth[driver]" value="server"><input name="auth[username]" id="username" value="<?php echo h($_GET["username"]); ?>" autocapitalize="off">
 <tr><th><?php echo lang('Password'); ?><td><input type="password" name="auth[password]">
 </table>
 <script type="text/javascript">
-document.getElementById('username').focus();
+focus(document.getElementById('username'));
 </script>
 <?php
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
@@ -75,7 +77,6 @@ document.getElementById('username').focus();
 		if ($set !== null) {
 			echo '<p class="tabs"><a href="' . h(ME . 'edit=' . urlencode($TABLE) . $set) . '">' . lang('New item') . "</a>\n";
 		}
-		echo "<a href='" . h(remove_from_uri("page")) . "&amp;page=last' title='" . lang('Last page') . "'>&gt;&gt;</a>\n";
 	}
 	
 	function foreignKeys($table) {
@@ -93,7 +94,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			$return[$row["TABLE_NAME"]]["keys"][$row["CONSTRAINT_NAME"]][$row["COLUMN_NAME"]] = $row["REFERENCED_COLUMN_NAME"];
 		}
 		foreach ($return as $key => $val) {
-			$name = $this->tableName(table_status($key));
+			$name = $this->tableName(table_status($key, true));
 			if ($name != "") {
 				$search = preg_quote($tableName);
 				$separator = "(:|\\s*-)?\\s+";
@@ -144,7 +145,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 				// find all used ids
 				$ids = array();
 				foreach ($rows as $row) {
-					$ids[$row[$key]] = exact_value($row[$key]);
+					$ids[$row[$key]] = q($row[$key]);
 				}
 				// uses constant number of queries to get the descriptions, join would be complex, multiple queries would be slow
 				$descriptions = $this->_values[$table];
@@ -160,6 +161,9 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			}
 		}
 		return $return;
+	}
+	
+	function selectLink($val, $field) {
 	}
 	
 	function selectVal($val, $link, $field) {
@@ -232,13 +236,13 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			if (($val["col"] == "" || $columns[$val["col"]]) && "$val[col]$val[val]" != "") {
 				echo "<div><select name='where[$i][col]'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
 				echo html_select("where[$i][op]", array(-1 => "") + $this->operators, $val["op"]);
-				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'></div>\n";
+				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' onsearch='selectSearchSearch(this);'></div>\n";
 				$i++;
 			}
 		}
 		echo "<div><select name='where[$i][col]' onchange='this.nextSibling.nextSibling.onchange();'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, null, true) . "</select>";
 		echo html_select("where[$i][op]", array(-1 => "") + $this->operators);
-		echo "<input type='search' name='where[$i][val]' onchange='selectAddRow(this);'></div>\n";
+		echo "<input type='search' name='where[$i][val]' onchange='selectAddRow(this);' onsearch='selectSearch(this);'></div>\n";
 		echo "</div></fieldset>\n";
 	}
 	
@@ -269,7 +273,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	
 	function selectLimitPrint($limit) {
 		echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
-		echo html_select("limit", array("", "30", "100"), $limit);
+		echo html_select("limit", array("", "50", "100"), $limit);
 		echo "</div></fieldset>\n";
 	}
 	
@@ -353,6 +357,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		}
 		foreach (($index_order != "" ? array($indexes[$index_order]) : $indexes) as $index) {
 			if ($index_order != "" || $index["type"] == "INDEX") {
+				$has_desc = array_filter($index["descs"]);
 				$desc = false;
 				foreach ($index["columns"] as $val) {
 					if (ereg('date|timestamp', $fields[$val]["type"])) {
@@ -361,8 +366,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 					}
 				}
 				$return = array();
-				foreach ($index["columns"] as $val) {
-					$return[] = idf_escape($val) . ($desc ? " DESC" : "");
+				foreach ($index["columns"] as $key => $val) {
+					$return[] = idf_escape($val) . (($has_desc ? $index["descs"][$key] : $desc) ? " DESC" : "");
 				}
 				return $return;
 			}
@@ -371,7 +376,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	}
 	
 	function selectLimitProcess() {
-		return (isset($_GET["limit"]) ? $_GET["limit"] : "30");
+		return (isset($_GET["limit"]) ? $_GET["limit"] : "50");
 	}
 	
 	function selectLengthProcess() {
@@ -495,6 +500,9 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		return array('csv' => 'CSV,', 'csv;' => 'CSV;', 'tsv' => 'TSV');
 	}
 	
+	function dumpDatabase($db) {
+	}
+	
 	function dumpTable() {
 		echo "\xef\xbb\xbf"; // UTF-8 byte order mark
 	}
@@ -557,7 +565,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 <?php
 			$this->databasesPrint($missing);
 			if ($missing != "db" && $missing != "ns") {
-				$table_status = table_status();
+				$table_status = table_status('', true);
 				if (!$table_status) {
 					echo "<p class='message'>" . lang('No tables.') . "\n";
 				} else {
@@ -575,7 +583,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		foreach ($tables as $row) {
 			$name = $this->tableName($row);
 			if (isset($row["Engine"]) && $name != "") { // ignore views and tables without name
-				echo "<a href='" . h(ME) . 'select=' . urlencode($row["Name"]) . "'" . bold($_GET["select"] == $row["Name"]) . " title='" . lang('Select data') . "'>$name</a><br>\n";
+				echo "<a href='" . h(ME) . 'select=' . urlencode($row["Name"]) . "'" . bold($_GET["select"] == $row["Name"] || $_GET["edit"] == $row["Name"]) . " title='" . lang('Select data') . "'>$name</a><br>\n";
 			}
 		}
 	}

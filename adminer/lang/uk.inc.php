@@ -166,7 +166,7 @@ $translations = array(
 	'Move up' => 'Пересунути вгору',
 	'Move down' => 'Пересунути вниз',
 	'Remove' => 'Видалити',
-	'Maximum number of allowed fields exceeded. Please increase %s and %s.' => 'Досягнута максимальна кількість доступних полів. Будь ласка, збільшіть %s і %s.',
+	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Досягнута максимальна кількість доступних полів. Будь ласка, збільшіть %s.',
 	
 	'Partition by' => 'Розділити по',
 	'Partitions' => 'Розділи',
@@ -232,7 +232,6 @@ $translations = array(
 	'%d row(s)' => array('%d рядок', '%d рядки', '%d рядків'),
 	'Page' => 'Сторінка',
 	'last' => 'остання',
-	'Last page' => 'Остання сторінка',
 	'whole result' => 'весь результат',
 	'%d byte(s)' => array('%d байт', '%d байта', '%d байтів'),
 	

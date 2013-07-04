@@ -1,3 +1,80 @@
+Adminer 3.7.2-dev:
+Save and continue edit by AJAX
+PostgreSQL: Fix handling of nextval() default values
+
+Adminer 3.7.1 (released 2013-06-29):
+Increase click target for checkboxes
+Use shadow for highlighting default button
+Don't use LIMIT 1 if inline updating unique row
+Don't check previous checkbox on added column in create table (bug #3614245)
+Order table list by name
+Verify UTF-8 encoding of CSV import
+Notify user about expired master password for permanent login
+Highlight table being altered in navigation
+Send 404 for invalid database and schema
+Fix title and links on invalid table pages
+Display error on invalid alter table and view pages
+MySQL: Speed up updating rows without numeric or UTF-8 primary key
+Non-MySQL: Descending indexes
+PostgreSQL: Fix detecting oid column in PDO
+PostgreSQL: Handle timestamp types (bug #3614086)
+Add Korean translation
+
+Adminer 3.7.0 (released 2013-05-19):
+Allow more SQL files to be uploaded at the same time
+Print run time next to executed queries
+Don't drop original view and routine before creating the new one
+Highlight default submit button
+Add server placeholder to login form
+Disable SQL export when applying functions in select
+Allow using lang() in plugins (customization)
+Remove bzip2 compression support
+Constraint memory used in TAR export
+Allow exporting views dependent on each other (bug #3459151)
+Fix resetting search (bug #3612507)
+Don't use LIMIT 1 if updating unique row (bug #3613109)
+Restrict editing rows without unique identifier to search results
+Display navigation bellow main content on mobile browsers
+Get number of rows on export page asynchronously
+MySQL: Optimize create table page and Editor navigation
+MySQL: Display bit type as binary number
+MySQL: Improve export of binary data types
+MySQL: Fix handling of POINT data type (bug #3582578)
+MySQL: Don't export binary and geometry columns twice in select
+MySQL: Fix EXPLAIN in MySQL < 5.1, bug since Adminer 3.6.4
+SQLite: Export views
+PostgreSQL: Fix swapped NULL and NOT NULL columns in PDO
+
+Adminer 3.6.4 (released 2013-04-26):
+Display pagination on a fixed position
+Increase default select limit to 50
+Display SQL edit form on Ctrl+click on the select query
+Display SQL history from newest
+Recover original view, trigger, routine if creating fails
+Do not store plain text password to history in creating user
+Selectable ON UPDATE CURRENT_TIMESTAMP field in create table
+Open database to a new window after selecting it with Ctrl
+Clear column name after resetting search (bug #3601200)
+Explain partitions in SQL query (bug #3600150)
+Allow loading more data with inline edit (bug #3605531)
+Stay on the same page after deleting rows (bug #3605845)
+Respect checked tables in export filename (bug #3245464)
+Respect PHP configuration max_input_vars
+Fix unsetting permanent login after logout
+Disable autocapitalize in identifiers on mobile browsers
+MySQL: Compatibility with MySQL 5.6
+MySQL: Move ALTER export to plugin
+MySQL: Use numeric time zone in export
+MySQL: Link processlist documentation
+SQLite: Export indexes
+
+Adminer 3.6.3 (released 2013-01-23):
+Display error code in SQL query
+Allow specifying external links
+Treat Meta key same as Ctrl
+Fix XSS in displaying non-UTF-8 strings
+Don't use type="number" for decimal numbers
+
 Adminer 3.6.2 (released 2012-12-21):
 Edit values by Ctrl+click instead of double click
 Don't select row on double click

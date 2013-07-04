@@ -12,11 +12,12 @@ if (isset($_GET["mssql"])) {
 	define("DRIVER", "mssql");
 	if (extension_loaded("sqlsrv")) {
 		class Min_DB {
-			var $extension = "sqlsrv", $_link, $_result, $server_info, $affected_rows, $error;
+			var $extension = "sqlsrv", $_link, $_result, $server_info, $affected_rows, $errno, $error;
 
 			function _get_error() {
 				$this->error = "";
 				foreach (sqlsrv_errors() as $error) {
+					$this->errno = $error["code"];
 					$this->error .= "$error[message]\n";
 				}
 				$this->error = rtrim($this->error);
@@ -292,7 +293,7 @@ if (isset($_GET["mssql"])) {
 	
 	function table_status($name = "") {
 		$return = array();
-		foreach (get_rows("SELECT name AS Name, type_desc AS Engine FROM sys.all_objects WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V')" . ($name != "" ? " AND name = " . q($name) : "")) as $row) {
+		foreach (get_rows("SELECT name AS Name, type_desc AS Engine FROM sys.all_objects WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V') " . ($name != "" ? "AND name = " . q($name) : "ORDER BY name")) as $row) {
 			if ($name != "") {
 				return $row;
 			}
@@ -339,15 +340,17 @@ WHERE o.schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND o.type IN ('S', 'U', 
 	function indexes($table, $connection2 = null) {
 		$return = array();
 		// sp_statistics doesn't return information about primary key
-		foreach (get_rows("SELECT i.name, key_ordinal, is_unique, is_primary_key, c.name AS column_name
+		foreach (get_rows("SELECT i.name, key_ordinal, is_unique, is_primary_key, c.name AS column_name, is_descending_key
 FROM sys.indexes i
 INNER JOIN sys.index_columns ic ON i.object_id = ic.object_id AND i.index_id = ic.index_id
 INNER JOIN sys.columns c ON ic.object_id = c.object_id AND ic.column_id = c.column_id
 WHERE OBJECT_NAME(i.object_id) = " . q($table)
 		, $connection2) as $row) {
-			$return[$row["name"]]["type"] = ($row["is_primary_key"] ? "PRIMARY" : ($row["is_unique"] ? "UNIQUE" : "INDEX"));
-			$return[$row["name"]]["lengths"] = array();
-			$return[$row["name"]]["columns"][$row["key_ordinal"]] = $row["column_name"];
+			$name = $row["name"];
+			$return[$name]["type"] = ($row["is_primary_key"] ? "PRIMARY" : ($row["is_unique"] ? "UNIQUE" : "INDEX"));
+			$return[$name]["lengths"] = array();
+			$return[$name]["columns"][$row["key_ordinal"]] = $row["column_name"];
+			$return[$name]["descs"][$row["key_ordinal"]] = ($row["is_descending_key"] ? '1' : null);
 		}
 		return $return;
 	}
@@ -374,10 +377,6 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 		return nl_br(h(preg_replace('~^(\\[[^]]*])+~m', '', $connection->error)));
 	}
 	
-	function exact_value($val) {
-		return q($val);
-	}
-
 	function create_database($db, $collation) {
 		return queries("CREATE DATABASE " . idf_escape($db) . (eregi('^[a-z0-9_]+$', $collation) ? " COLLATE $collation" : ""));
 	}

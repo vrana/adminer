@@ -161,7 +161,7 @@ $translations = array(
 	'Move up' => 'Premakni gor',
 	'Move down' => 'Premakni dol',
 	'Remove' => 'Odstrani',
-	'Maximum number of allowed fields exceeded. Please increase %s and %s.' => 'Največje število dovoljenih polje je preseženo. Prosimo, povečajte %s in %s.',
+	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Največje število dovoljenih polje je preseženo. Prosimo, povečajte %s.',
 	
 	'Partition by' => 'Porazdeli po',
 	'Partitions' => 'Porazdelitve',
@@ -227,7 +227,6 @@ $translations = array(
 	'%d row(s)' => array('%d vrstica', '%d vrstici', '%d vrstice', '%d vrstic'),
 	'Page' => 'Stran',
 	'last' => 'Zadnja',
-	'Last page' => 'Zadnja stran',
 	'whole result' => 'cel razultat',
 	'%d byte(s)' => array('%d bajt', '%d bajta', '%d bajti', '%d bajtov'),
 	

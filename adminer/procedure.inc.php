@@ -1,46 +1,40 @@
 <?php
 $PROCEDURE = $_GET["procedure"];
 $routine = (isset($_GET["function"]) ? "FUNCTION" : "PROCEDURE");
-$routine_languages = routine_languages();
+$row = $_POST;
+$row["fields"] = (array) $row["fields"];
 
-$dropped = false;
-if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"] && !$_POST["up"] && !$_POST["down"]) {
-	$set = array();
-	$fields = (array) $_POST["fields"];
-	ksort($fields); // enforce fields order
-	foreach ($fields as $field) {
-		if ($field["field"] != "") {
-			$set[] = (ereg("^($inout)\$", $field["inout"]) ? "$field[inout] " : "") . idf_escape($field["field"]) . process_type($field, "CHARACTER SET");
-		}
-	}
-	$dropped = drop_create(
+if ($_POST && !process_fields($row["fields"]) && !$error) {
+	$temp_name = "$row[name]_adminer_" . uniqid();
+	drop_create(
 		"DROP $routine " . idf_escape($PROCEDURE),
-		"CREATE $routine " . idf_escape(trim($_POST["name"])) . " (" . implode(", ", $set) . ")" . (isset($_GET["function"]) ? " RETURNS" . process_type($_POST["returns"], "CHARACTER SET") : "") . (in_array($_POST["language"], $routine_languages) ? " LANGUAGE $_POST[language]" : "") . rtrim("\n$_POST[definition]", ";") . ";",
+		create_routine($routine, $row),
+		"DROP $routine " . idf_escape($row["name"]),
+		create_routine($routine, array("name" => $temp_name) + $row),
+		"DROP $routine " . idf_escape($temp_name),
 		substr(ME, 0, -1),
 		lang('Routine has been dropped.'),
 		lang('Routine has been altered.'),
 		lang('Routine has been created.'),
-		$PROCEDURE
+		$PROCEDURE,
+		$row["name"]
 	);
 }
 
 page_header(($PROCEDURE != "" ? (isset($_GET["function"]) ? lang('Alter function') : lang('Alter procedure')) . ": " . h($PROCEDURE) : (isset($_GET["function"]) ? lang('Create function') : lang('Create procedure'))), $error);
 
-$collations = get_vals("SHOW CHARACTER SET");
-sort($collations);
-$row = array("fields" => array());
-if ($_POST) {
-	$row = $_POST;
-	$row["fields"] = (array) $row["fields"];
-	process_fields($row["fields"]);
-} elseif ($PROCEDURE != "") {
+if (!$_POST && $PROCEDURE != "") {
 	$row = routine($PROCEDURE, $routine);
 	$row["name"] = $PROCEDURE;
 }
+
+$collations = get_vals("SHOW CHARACTER SET");
+sort($collations);
+$routine_languages = routine_languages();
 ?>
 
 <form action="" method="post" id="form">
-<p><?php echo lang('Name'); ?>: <input name="name" value="<?php echo h($row["name"]); ?>" maxlength="64">
+<p><?php echo lang('Name'); ?>: <input name="name" value="<?php echo h($row["name"]); ?>" maxlength="64" autocapitalize="off">
 <?php echo ($routine_languages ? lang('Language') . ": " . html_select("language", $routine_languages, $row["language"]) : ""); ?>
 <table cellspacing="0" class="nowrap">
 <?php
@@ -55,6 +49,5 @@ if (isset($_GET["function"])) {
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php if ($PROCEDURE != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo confirm(); ?>><?php } ?>
-<?php if ($dropped) { ?><input type="hidden" name="dropped" value="1"><?php } ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

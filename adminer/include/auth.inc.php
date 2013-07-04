@@ -21,7 +21,7 @@ if ($auth) {
 	$_SESSION["db"][$auth["driver"]][$auth["server"]][$auth["username"]][$auth["db"]] = true;
 	if ($auth["permanent"]) {
 		$key = base64_encode($auth["driver"]) . "-" . base64_encode($auth["server"]) . "-" . base64_encode($auth["username"]) . "-" . base64_encode($auth["db"]);
-		$private = $adminer->permanentLogin();
+		$private = $adminer->permanentLogin(true);
 		$permanent[$key] = "$key:" . base64_encode($private ? encrypt_string($auth["password"], $private) : "");
 		cookie("adminer_permanent", implode(" ", $permanent));
 	}
@@ -33,6 +33,7 @@ if ($auth) {
 	) {
 		redirect(auth_url($auth["driver"], $auth["server"], $auth["username"], $auth["db"]));
 	}
+	
 } elseif ($_POST["logout"]) {
 	if ($token && $_POST["token"] != $token) {
 		page_header(lang('Logout'), lang('Invalid CSRF token. Send the form again.'));
@@ -45,9 +46,10 @@ if ($auth) {
 		unset_permanent();
 		redirect(substr(preg_replace('~(username|db|ns)=[^&]*&~', '', ME), 0, -1), lang('Logout successful.'));
 	}
+	
 } elseif ($permanent && !$_SESSION["pwds"]) {
 	session_regenerate_id();
-	$private = $adminer->permanentLogin(); // try to decode even if not set
+	$private = $adminer->permanentLogin();
 	foreach ($permanent as $key => $val) {
 		list(, $cipher) = explode(":", $val);
 		list($driver, $server, $username, $db) = array_map('base64_decode', explode("-", $key));
@@ -59,8 +61,8 @@ if ($auth) {
 function unset_permanent() {
 	global $permanent;
 	foreach ($permanent as $key => $val) {
-		list($driver, $server, $username) = array_map('base64_decode', explode("-", $key));
-		if ($driver == DRIVER && $server == SERVER && $db == $_GET["username"]) {
+		list($driver, $server, $username, $db) = array_map('base64_decode', explode("-", $key));
+		if ($driver == DRIVER && $server == SERVER && $username == $_GET["username"] && $db == DB) {
 			unset($permanent[$key]);
 		}
 	}
@@ -80,6 +82,9 @@ function auth_error($exception = null) {
 			$password = &get_session("pwds");
 			if ($password !== null) {
 				$error = h($exception ? $exception->getMessage() : (is_string($connection) ? $connection : lang('Invalid credentials.')));
+				if ($password === false) {
+					$error .= '<br>' . lang('Master password expired. <a href="http://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to make it permanent.', '<code>permanentLogin()</code>');
+				}
 				$password = null;
 			}
 			unset_permanent();
@@ -105,6 +110,7 @@ if (isset($_GET["username"])) {
 	}
 	$connection = connect();
 }
+
 if (is_string($connection) || !$adminer->login($_GET["username"], get_session("pwds"))) {
 	auth_error();
 	exit;
@@ -114,7 +120,31 @@ $token = $_SESSION["token"]; ///< @var string CSRF protection
 if ($auth && $_POST["token"]) {
 	$_POST["token"] = $token; // reset token after explicit login
 }
-$error = ($_POST ///< @var string
-	? ($_POST["token"] == $token ? "" : lang('Invalid CSRF token. Send the form again.'))
-	: ($_SERVER["REQUEST_METHOD"] != "POST" ? "" : lang('Too big POST data. Reduce the data or increase the %s configuration directive.', '"post_max_size"')) // posted form with no data means that post_max_size exceeded because Adminer always sends token at least
-);
+
+$error = ''; ///< @var string
+if ($_POST) {
+	if ($_POST["token"] != $token) {
+		$ini = "max_input_vars";
+		$max_vars = ini_get($ini);
+		if (extension_loaded("suhosin")) {
+			foreach (array("suhosin.request.max_vars", "suhosin.post.max_vars") as $key) {
+				$val = ini_get($key);
+				if ($val && (!$max_vars || $val < $max_vars)) {
+					$ini = $key;
+					$max_vars = $val;
+				}
+			}
+		}
+		$error = (!$_POST["token"] && $max_vars
+			? lang('Maximum number of allowed fields exceeded. Please increase %s.', "'$ini'")
+			: lang('Invalid CSRF token. Send the form again.')
+		);
+	}
+	
+} elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
+	// posted form with no data means that post_max_size exceeded because Adminer always sends token at least
+	$error = lang('Too big POST data. Reduce the data or increase the %s configuration directive.', "'post_max_size'");
+	if (isset($_GET["sql"])) {
+		$error .= ' ' . lang('You can upload a big SQL file via FTP and import it from server.');
+	}
+}

@@ -11,6 +11,7 @@ $translations = array(
 	'Logged as: %s' => 'Přihlášen jako: %s',
 	'Logout successful.' => 'Odhlášení proběhlo v pořádku.',
 	'Invalid credentials.' => 'Neplatné přihlašovací údaje.',
+	'Master password expired. <a href="http://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to make it permanent.' => 'Platnost hlavního hesla vypršela. <a href="http://www.adminer.org/cs/extension/" target="_blank">Implementujte</a> metodu %s, aby platilo stále.',
 	'Language' => 'Jazyk',
 	'Invalid CSRF token. Send the form again.' => 'Neplatný token CSRF. Odešlete formulář znovu.',
 	'No extension' => 'Žádné rozšíření',
@@ -64,6 +65,7 @@ $translations = array(
 	'Unable to upload a file.' => 'Nepodařilo se nahrát soubor.',
 	'Maximum allowed file size is %sB.' => 'Maximální povolená velikost souboru je %sB.',
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Příliš velká POST data. Zmenšete data nebo zvyšte hodnotu konfigurační direktivy %s.',
+	'You can upload a big SQL file via FTP and import it from server.' => 'Velký SQL soubor můžete nahrát pomocí FTP a importovat ho ze serveru.',
 	
 	'Export' => 'Export',
 	'Dump' => 'Export',
@@ -166,7 +168,7 @@ $translations = array(
 	'Move up' => 'Přesunout nahoru',
 	'Move down' => 'Přesunout dolů',
 	'Remove' => 'Odebrat',
-	'Maximum number of allowed fields exceeded. Please increase %s and %s.' => 'Byl překročen maximální povolený počet polí. Zvyšte prosím %s a %s.',
+	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Byl překročen maximální povolený počet polí. Zvyšte prosím %s.',
 	
 	'Partition by' => 'Rozdělit podle',
 	'Partitions' => 'Oddíly',
@@ -233,7 +235,6 @@ $translations = array(
 	'%d row(s)' => array('%d řádek', '%d řádky', '%d řádků'),
 	'Page' => 'Stránka',
 	'last' => 'poslední',
-	'Last page' => 'Poslední stránka',
 	'Load more data' => 'Nahrát další data',
 	'Loading' => 'Nahrává se',
 	'whole result' => 'celý výsledek',
@@ -241,6 +242,7 @@ $translations = array(
 	
 	'Import' => 'Import',
 	'%d row(s) have been imported.' => array('Byl importován %d záznam.', 'Byly importovány %d záznamy.', 'Bylo importováno %d záznamů.'),
+	'File must be in UTF-8 encoding.' => 'Soubor musí být v kódování UTF-8.',
 	
 	// in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Ctrl+klikněte na políčko, které chcete změnit.',
