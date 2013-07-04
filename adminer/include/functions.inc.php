@@ -983,7 +983,7 @@ function is_shortable($field) {
 
 /** Run query which can be killed by AJAX call after timing out
 * @param string
-* @return Min_Result
+* @return array of strings
 */
 function slow_query($query) {
 	global $adminer, $token;
