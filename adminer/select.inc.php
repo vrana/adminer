@@ -237,18 +237,14 @@ if (!$columns) {
 	
 	$page = $_GET["page"];
 	if ($page == "last") {
-		$query = " FROM " . table($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : "");
-		$found_rows = $connection->result($is_group && ($jush == "sql" || count($group) == 1)
-			? "SELECT COUNT(DISTINCT " . implode(", ", $group) . ")$query"
-			: "SELECT COUNT(*)" . ($is_group ? " FROM (SELECT 1$query$group_by) x" : $query)
-		);
+		$found_rows = $connection->result(count_rows($TABLE, $where, $is_group, $group));
 		$page = floor(max(0, $found_rows - 1) / $limit);
 	}
 
 	$query = $adminer->selectQueryBuild($select, $where, $group, $order, $limit, $page);
 	if (!$query) {
 		$query = "SELECT" . limit(
-			(+$limit && $group && $is_group && $jush == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . $from,
+			($_GET["page"] != "last" && +$limit && $group && $is_group && $jush == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . $from,
 			($where ? "\nWHERE " . implode(" AND ", $where) : "") . $group_by,
 			($limit != "" ? +$limit : null),
 			($page ? $limit * $page : 0),
@@ -273,12 +269,10 @@ if (!$columns) {
 			}
 			$rows[] = $row;
 		}
+		
 		// use count($rows) without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
-		if ($_GET["page"] != "last") {
-			$found_rows = (+$limit && $group && $is_group
-				? ($jush == "sql" ? $connection->result(" SELECT FOUND_ROWS()") : $connection->result("SELECT COUNT(*) FROM ($query) x")) // space to allow mysql.trace_mode
-				: count($rows)
-			);
+		if ($_GET["page"] != "last" && +$limit && $group && $is_group && $jush == "sql") {
+			$found_rows = $connection->result(" SELECT FOUND_ROWS()"); // space to allow mysql.trace_mode
 		}
 		
 		if (!$rows) {
@@ -448,13 +442,17 @@ if (!$columns) {
 		
 		if (($rows || $page) && !is_ajax()) {
 			$exact_count = true;
-			if ($_GET["page"] != "last" && +$limit && !$is_group && ($found_rows >= $limit || $page)) {
-				$found_rows = found_rows($table_status, $where);
-				if ($found_rows < max(1e4, 2 * ($page + 1) * $limit)) {
-					// slow with big tables
-					$found_rows = reset(slow_query("SELECT COUNT(*) FROM " . table($TABLE) . ($where ? " WHERE " . implode(" AND ", $where) : "")));
-				} else {
-					$exact_count = false;
+			if ($_GET["page"] != "last") {
+				if (!+$limit) {
+					$found_rows = count($rows);
+				} elseif ($jush != "sql" || !$is_group) {
+					$found_rows = ($is_group ? false : found_rows($table_status, $where));
+					if ($found_rows < max(1e4, 2 * ($page + 1) * $limit)) {
+						// slow with big tables
+						$found_rows = reset(slow_query(count_rows($TABLE, $where, $is_group, $group)));
+					} else {
+						$exact_count = false;
+					}
 				}
 			}
 			

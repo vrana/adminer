@@ -981,6 +981,22 @@ function is_shortable($field) {
 	return ereg('char|text|lob|geometry|point|linestring|polygon', $field["type"]);
 }
 
+/** Get query to compute number of found rows
+* @param string
+* @param array
+* @param bool
+* @param array
+* @return string
+*/
+function count_rows($table, $where, $is_group, $group) {
+	global $jush;
+	$query = " FROM " . table($table) . ($where ? " WHERE " . implode(" AND ", $where) : "");
+	return ($is_group && ($jush == "sql" || count($group) == 1)
+		? "SELECT COUNT(DISTINCT " . implode(", ", $group) . ")$query"
+		: "SELECT COUNT(*)" . ($is_group ? " FROM (SELECT 1$query$group_by) x" : $query)
+	);
+}
+
 /** Run query which can be killed by AJAX call after timing out
 * @param string
 * @return array of strings
