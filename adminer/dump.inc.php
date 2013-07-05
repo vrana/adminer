@@ -126,7 +126,7 @@ page_header(lang('Export'), $error, ($_GET["export"] != "" ? array("table" => $_
 $db_style = array('', 'USE', 'DROP+CREATE', 'CREATE');
 $table_style = array('', 'DROP+CREATE', 'CREATE');
 $data_style = array('', 'TRUNCATE+INSERT', 'INSERT');
-if ($jush == "sql") { //! use insert_update() in all drivers
+if ($jush == "sql") { //! use insertUpdate() in all drivers
 	$data_style[] = 'INSERT+UPDATE';
 }
 parse_str($_COOKIE["adminer_export"], $row);

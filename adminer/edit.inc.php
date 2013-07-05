@@ -22,12 +22,12 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 	$query_where = "\nWHERE $where";
 	
 	if (isset($_POST["delete"])) {
-		$query = "FROM " . table($TABLE);
-		query_redirect(
-			"DELETE" . ($unique_array ? " $query$query_where" : limit1($query, $query_where)),
+		queries_redirect(
 			$location,
-			lang('Item has been deleted.')
+			lang('Item has been deleted.'),
+			$driver->delete($TABLE, $query_where, !$unique_array)
 		);
+		
 	} else {
 		$set = array();
 		foreach ($fields as $name => $field) {
@@ -53,7 +53,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 				exit;
 			}
 		} else {
-			$result = insert_into($TABLE, $set);
+			$result = $driver->insert($TABLE, $set);
 			$last_id = ($result ? last_id() : 0);
 			queries_redirect($location, lang('Item%s has been inserted.', ($last_id ? " $last_id" : "")), $result); //! link
 		}

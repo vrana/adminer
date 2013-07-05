@@ -116,6 +116,8 @@ if (is_string($connection) || !$adminer->login($_GET["username"], get_session("p
 	exit;
 }
 
+$driver = new Min_Driver($connection);
+
 $token = $_SESSION["token"]; ///< @var string CSRF protection
 if ($auth && $_POST["token"]) {
 	$_POST["token"] = $token; // reset token after explicit login

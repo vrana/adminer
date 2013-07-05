@@ -148,7 +148,30 @@ if (isset($_GET["pgsql"])) {
 		}
 		
 	}
-	
+
+
+
+	class Min_Driver extends Min_SQL {
+		
+		function insertUpdate($table, $set, $primary) {
+			global $connection;
+			$update = array();
+			$where = array();
+			foreach ($set as $key => $val) {
+				$update[] = "$key = $val";
+				if (isset($primary[idf_unescape($key)])) {
+					$where[] = "$key = $val";
+				}
+			}
+			return ($where && queries("UPDATE " . table($table) . " SET " . implode(", ", $update) . " WHERE " . implode(" AND ", $where)) && $connection->affected_rows)
+				|| queries("INSERT INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ")")
+			;
+		}
+		
+	}
+
+
+
 	function idf_escape($idf) {
 		return '"' . str_replace('"', '""', $idf) . '"';
 	}
@@ -513,25 +536,6 @@ ORDER BY p.proname');
 	
 	function begin() {
 		return queries("BEGIN");
-	}
-	
-	function insert_into($table, $set) {
-		return queries("INSERT INTO " . table($table) . ($set ? " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")" : "DEFAULT VALUES"));
-	}
-	
-	function insert_update($table, $set, $primary) {
-		global $connection;
-		$update = array();
-		$where = array();
-		foreach ($set as $key => $val) {
-			$update[] = "$key = $val";
-			if (isset($primary[idf_unescape($key)])) {
-				$where[] = "$key = $val";
-			}
-		}
-		return ($where && queries("UPDATE " . table($table) . " SET " . implode(", ", $update) . " WHERE " . implode(" AND ", $where)) && $connection->affected_rows)
-			|| queries("INSERT INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ")")
-		;
 	}
 	
 	function last_id() {
