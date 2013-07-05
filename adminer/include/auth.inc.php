@@ -52,17 +52,17 @@ if ($auth) {
 	$private = $adminer->permanentLogin();
 	foreach ($permanent as $key => $val) {
 		list(, $cipher) = explode(":", $val);
-		list($driver, $server, $username, $db) = array_map('base64_decode', explode("-", $key));
-		$_SESSION["pwds"][$driver][$server][$username] = decrypt_string(base64_decode($cipher), $private);
-		$_SESSION["db"][$driver][$server][$username][$db] = true;
+		list($vendor, $server, $username, $db) = array_map('base64_decode', explode("-", $key));
+		$_SESSION["pwds"][$vendor][$server][$username] = decrypt_string(base64_decode($cipher), $private);
+		$_SESSION["db"][$vendor][$server][$username][$db] = true;
 	}
 }
 
 function unset_permanent() {
 	global $permanent;
 	foreach ($permanent as $key => $val) {
-		list($driver, $server, $username, $db) = array_map('base64_decode', explode("-", $key));
-		if ($driver == DRIVER && $server == SERVER && $username == $_GET["username"] && $db == DB) {
+		list($vendor, $server, $username, $db) = array_map('base64_decode', explode("-", $key));
+		if ($vendor == DRIVER && $server == SERVER && $username == $_GET["username"] && $db == DB) {
 			unset($permanent[$key]);
 		}
 	}

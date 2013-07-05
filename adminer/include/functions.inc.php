@@ -455,12 +455,12 @@ function set_session($key, $val) {
 * @param string
 * @return string
 */
-function auth_url($driver, $server, $username, $db = null) {
+function auth_url($vendor, $server, $username, $db = null) {
 	global $drivers;
 	preg_match('~([^?]*)\\??(.*)~', remove_from_uri(implode("|", array_keys($drivers)) . "|username|" . ($db !== null ? "db|" : "") . session_name()), $match);
 	return "$match[1]?"
 		. (sid() ? SID . "&" : "")
-		. ($driver != "server" || $server != "" ? urlencode($driver) . "=" . urlencode($server) . "&" : "")
+		. ($vendor != "server" || $server != "" ? urlencode($vendor) . "=" . urlencode($server) . "&" : "")
 		. "username=" . urlencode($username)
 		. ($db != "" ? "&db=" . urlencode($db) : "")
 		. ($match[2] ? "&$match[2]" : "")

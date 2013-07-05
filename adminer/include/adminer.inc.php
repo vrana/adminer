@@ -745,7 +745,7 @@ username.form['auth[driver]'].onchange();
 <?php
 		if ($missing == "auth") {
 			$first = true;
-			foreach ((array) $_SESSION["pwds"] as $driver => $servers) {
+			foreach ((array) $_SESSION["pwds"] as $vendor => $servers) {
 				foreach ($servers as $server => $usernames) {
 					foreach ($usernames as $username => $password) {
 						if ($password !== null) {
@@ -753,9 +753,9 @@ username.form['auth[driver]'].onchange();
 								echo "<p id='logins' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";
 								$first = false;
 							}
-							$dbs = $_SESSION["db"][$driver][$server][$username];
+							$dbs = $_SESSION["db"][$vendor][$server][$username];
 							foreach (($dbs ? array_keys($dbs) : array("")) as $db) {
-								echo "<a href='" . h(auth_url($driver, $server, $username, $db)) . "'>($drivers[$driver]) " . h($username . ($server != "" ? "@$server" : "") . ($db != "" ? " - $db" : "")) . "</a><br>\n";
+								echo "<a href='" . h(auth_url($vendor, $server, $username, $db)) . "'>($drivers[$vendor]) " . h($username . ($server != "" ? "@$server" : "") . ($db != "" ? " - $db" : "")) . "</a><br>\n";
 							}
 						}
 					}
