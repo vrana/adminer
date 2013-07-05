@@ -103,21 +103,24 @@ if ($_POST && !$error) {
 			}
 			if ($_POST["delete"] || $set) {
 				$command = "UPDATE";
-				if ($_POST["delete"]) {
-					$command = "DELETE";
-					$query = "FROM $query";
-				}
 				if ($_POST["clone"]) {
 					$command = "INSERT";
 					$query = "INTO $query";
 				}
 				if ($_POST["all"] || ($unselected === array() && is_array($_POST["check"])) || $is_group) {
-					$result = queries("$command $query$where_check");
+					$result = ($_POST["delete"]
+						? $driver->delete($TABLE, $where_check)
+						: queries("$command $query$where_check")
+					);
 					$affected = $connection->affected_rows;
 				} else {
 					foreach ((array) $_POST["check"] as $val) {
 						// where is not unique so OR can't be used
-						$result = queries($command . limit1($query, "\nWHERE " . ($where ? implode(" AND ", $where) . " AND " : "") . where_check($val, $fields)));
+						$where2 = "\nWHERE " . ($where ? implode(" AND ", $where) . " AND " : "") . where_check($val, $fields);
+						$result = ($_POST["delete"]
+							? $driver->delete($TABLE, $where2, 1)
+							: queries($command . limit1($query, $where2))
+						);
 						if (!$result) {
 							break;
 						}
@@ -181,7 +184,7 @@ if ($_POST && !$error) {
 					foreach ($matches2[1] as $i => $col) {
 						$set[idf_escape($cols[$i])] = ($col == "" && $fields[$cols[$i]]["null"] ? "NULL" : q(str_replace('""', '"', preg_replace('~^"|"$~', '', $col))));
 					}
-					$result = insert_update($TABLE, $set, $primary);
+					$result = $driver->insertUpdate($TABLE, $set, $primary);
 					if (!$result) {
 						break;
 					}

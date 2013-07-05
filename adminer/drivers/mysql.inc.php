@@ -229,6 +229,26 @@ if (!defined("DRIVER")) {
 		
 	}
 
+
+
+	class Min_Driver extends Min_SQL {
+		
+		function insert($table, $set) {
+			return ($set ? parent::insert($table, $set) : queries("INSERT INTO " . table($table) . " ()\nVALUES ()"));
+		}
+		
+		function insertUpdate($table, $set, $primary) {
+			foreach ($set as $key => $val) {
+				$set[$key] = "$key = $val";
+			}
+			$update = implode(", ", $set);
+			return queries("INSERT INTO " . table($table) . " SET $update ON DUPLICATE KEY UPDATE $update");
+		}
+		
+	}
+
+
+
 	/** Escape database identifier
 	* @param string
 	* @return string
@@ -805,29 +825,6 @@ if (!defined("DRIVER")) {
 	*/
 	function begin() {
 		return queries("BEGIN");
-	}
-	
-	/** Insert data into table
-	* @param string
-	* @param array
-	* @return bool
-	*/
-	function insert_into($table, $set) {
-		return queries("INSERT INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")");
-	}
-	
-	/** Insert or update data in the table
-	* @param string
-	* @param array
-	* @param array columns in keys
-	* @return bool
-	*/
-	function insert_update($table, $set, $primary) {
-		foreach ($set as $key => $val) {
-			$set[$key] = "$key = $val";
-		}
-		$update = implode(", ", $set);
-		return queries("INSERT INTO " . table($table) . " SET $update ON DUPLICATE KEY UPDATE $update");
 	}
 	
 	/** Get last auto increment ID

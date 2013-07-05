@@ -132,6 +132,16 @@ if (isset($_GET["oracle"])) {
 		
 	}
 	
+
+
+	class Min_Driver extends Min_SQL {
+		
+		//! support empty $set in insert()
+		
+	}
+
+
+
 	function idf_escape($idf) {
 		return '"' . str_replace('"', '""', $idf) . '"';
 	}
@@ -320,10 +330,6 @@ ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
 
 	function begin() {
 		return true; // automatic start
-	}
-	
-	function insert_into($table, $set) {
-		return queries("INSERT INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")"); //! no columns
 	}
 	
 	function last_id() {

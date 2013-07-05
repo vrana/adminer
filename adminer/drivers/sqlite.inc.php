@@ -203,7 +203,19 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			}
 		}
 	}
-	
+
+
+
+	class Min_Driver extends Min_SQL {
+		
+		function insertUpdate($table, $set, $primary) {
+			return queries("REPLACE INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ")");
+		}
+		
+	}
+
+
+
 	function idf_escape($idf) {
 		return '"' . str_replace('"', '""', $idf) . '"';
 	}
@@ -585,14 +597,6 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	
 	function begin() {
 		return queries("BEGIN");
-	}
-	
-	function insert_into($table, $set) {
-		return queries("INSERT INTO " . table($table) . ($set ? " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")" : "DEFAULT VALUES"));
-	}
-	
-	function insert_update($table, $set, $primary) {
-		return queries("REPLACE INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ")");
 	}
 	
 	function last_id() {

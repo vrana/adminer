@@ -58,6 +58,7 @@ if (function_exists("set_magic_quotes_runtime")) { // removed in PHP 6
 include "../adminer/include/lang.inc.php";
 include "../adminer/lang/$LANG.inc.php";
 include "../adminer/include/pdo.inc.php";
+include "../adminer/include/driver.inc.php";
 include "../adminer/drivers/sqlite.inc.php";
 include "../adminer/drivers/pgsql.inc.php";
 include "../adminer/drivers/oracle.inc.php";
