@@ -117,7 +117,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 	exit;
 }
 
-page_header(lang('Export'), $error, ($_GET["export"] != "" ? array("table" => $_GET["export"]) : array()), DB);
+page_header(lang('Export'), $error, ($_GET["export"] != "" ? array("table" => $_GET["export"]) : array()), h(DB));
 ?>
 
 <form action="" method="post">

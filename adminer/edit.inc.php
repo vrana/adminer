@@ -65,7 +65,7 @@ page_header(
 	($update ? lang('Edit') : lang('Insert')),
 	$error,
 	array("select" => array($TABLE, $table_name)),
-	$table_name //! two calls of h()
+	$table_name
 );
 
 $row = null;

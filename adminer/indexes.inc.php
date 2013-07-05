@@ -64,7 +64,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 	queries_redirect(ME . "table=" . urlencode($TABLE), lang('Indexes have been altered.'), alter_indexes($TABLE, $alter));
 }
 
-page_header(lang('Indexes'), $error, array("table" => $TABLE), $TABLE);
+page_header(lang('Indexes'), $error, array("table" => $TABLE), h($TABLE));
 
 $fields = array_keys(fields($TABLE));
 if ($_POST["add"]) {

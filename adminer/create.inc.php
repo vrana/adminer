@@ -108,7 +108,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 	}
 }
 
-page_header(($TABLE != "" ? lang('Alter table') : lang('Create table')), $error, array("table" => $TABLE), $TABLE);
+page_header(($TABLE != "" ? lang('Alter table') : lang('Create table')), $error, array("table" => $TABLE), h($TABLE));
 
 if (!$_POST) {
 	$row = array(

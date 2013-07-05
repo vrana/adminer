@@ -24,7 +24,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 	}
 }
 
-page_header(lang('Foreign key'), $error, array("table" => $TABLE), $TABLE);
+page_header(lang('Foreign key'), $error, array("table" => $TABLE), h($TABLE));
 
 if ($_POST) {
 	ksort($row["source"]);
