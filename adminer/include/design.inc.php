@@ -53,9 +53,9 @@ document.body.className = document.body.className.replace(/ nojs/, ' js');
 					echo '<a href="' . h(substr(ME, 0, -1)) . '">' . h($_GET["ns"]) . '</a> &raquo; ';
 				}
 				foreach ($breadcrumb as $key => $val) {
-					$desc = (is_array($val) ? $val[1] : $val);
+					$desc = (is_array($val) ? $val[1] : h($val));
 					if ($desc != "") {
-						echo '<a href="' . h(ME . "$key=") . urlencode(is_array($val) ? $val[0] : $val) . '">' . h($desc) . '</a> &raquo; ';
+						echo "<a href='" . h(ME . "$key=") . urlencode(is_array($val) ? $val[0] : $val) . "'>$desc</a> &raquo; ";
 					}
 				}
 			}
