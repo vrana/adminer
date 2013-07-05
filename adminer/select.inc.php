@@ -86,7 +86,6 @@ if ($_POST && !$error) {
 		if ($_POST["save"] || $_POST["delete"]) { // edit
 			$result = true;
 			$affected = 0;
-			$query = table($TABLE);
 			$set = array();
 			if (!$_POST["delete"]) {
 				foreach ($columns as $name => $val) { //! should check also for edit or insert privileges
@@ -95,22 +94,22 @@ if ($_POST && !$error) {
 						if ($_POST["clone"]) {
 							$set[idf_escape($name)] = ($val !== false ? $val : idf_escape($name));
 						} elseif ($val !== false) {
-							$set[] = idf_escape($name) . " = $val";
+							$set[] = "\n" . idf_escape($name) . " = $val";
 						}
 					}
 				}
-				$query .= ($_POST["clone"] ? " (" . implode(", ", array_keys($set)) . ")\nSELECT " . implode(", ", $set) . "\nFROM " . table($TABLE) : " SET\n" . implode(",\n", $set));
 			}
 			if ($_POST["delete"] || $set) {
-				$command = "UPDATE";
 				if ($_POST["clone"]) {
-					$command = "INSERT";
-					$query = "INTO $query";
+					$query = "INTO " . table($TABLE) . " (" . implode(", ", array_keys($set)) . ")\nSELECT " . implode(", ", $set) . "\nFROM " . table($TABLE);
 				}
 				if ($_POST["all"] || ($unselected === array() && is_array($_POST["check"])) || $is_group) {
 					$result = ($_POST["delete"]
 						? $driver->delete($TABLE, $where_check)
-						: queries("$command $query$where_check")
+						: ($_POST["clone"]
+							? queries("INSERT $query$where_check")
+							: $driver->update($TABLE, $set, $where_check)
+						)
 					);
 					$affected = $connection->affected_rows;
 				} else {
@@ -119,7 +118,10 @@ if ($_POST && !$error) {
 						$where2 = "\nWHERE " . ($where ? implode(" AND ", $where) . " AND " : "") . where_check($val, $fields);
 						$result = ($_POST["delete"]
 							? $driver->delete($TABLE, $where2, 1)
-							: queries($command . limit1($query, $where2))
+							: ($_POST["clone"]
+								? queries("INSERT" . limit1($query, $where2))
+								: $driver->update($TABLE, $set, $where2)
+							)
 						);
 						if (!$result) {
 							break;
@@ -148,11 +150,14 @@ if ($_POST && !$error) {
 					$set = array();
 					foreach ($row as $key => $val) {
 						$key = bracket_escape($key, 1); // 1 - back
-						$set[] = idf_escape($key) . " = " . (ereg('char|text', $fields[$key]["type"]) || $val != "" ? $adminer->processInput($fields[$key], $val) : "NULL");
+						$set[] = " " . idf_escape($key) . " = " . (ereg('char|text', $fields[$key]["type"]) || $val != "" ? $adminer->processInput($fields[$key], $val) : "NULL");
 					}
-					$query = table($TABLE) . " SET " . implode(", ", $set);
-					$where2 = " WHERE " . where_check($unique_idf, $fields) . ($where ? " AND " . implode(" AND ", $where) : "");
-					$result = queries("UPDATE" . ($is_group || $unselected === array() ? " $query$where2" : limit1($query, $where2))); // can change row on a different page without unique key
+					$result = $driver->update(
+						$TABLE,
+						$set,
+						" WHERE " . ($where ? implode(" AND ", $where) . " AND " : "") . where_check($unique_idf, $fields),
+						!($is_group || $unselected === array())
+					);
 					if (!$result) {
 						break;
 					}

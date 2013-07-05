@@ -41,11 +41,10 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 			if (!$set) {
 				redirect($location);
 			}
-			$query = table($TABLE) . " SET" . implode(",", $set);
-			query_redirect(
-				"UPDATE" . ($unique_array ? " $query$query_where" : limit1($query, $query_where)),
+			queries_redirect(
 				$location,
-				lang('Item has been updated.')
+				lang('Item has been updated.'),
+				$driver->update($TABLE, $set, $query_where, !$unique_array)
 			);
 			if (is_ajax()) {
 				page_headers();

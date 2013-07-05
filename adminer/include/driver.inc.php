@@ -21,6 +21,18 @@
 		return queries("DELETE" . ($limit ? limit1($query, $queryWhere) : " $query$queryWhere"));
 	}
 	
+	/** Update data in table
+	* @param string
+	* @param array
+	* @param string " WHERE ..."
+	* @param int 0 or 1
+	* @return bool
+	*/
+	function update($table, $set, $queryWhere, $limit = 0) {
+		$query = table($table) . " SET" . implode(",", $set);
+		return queries("UPDATE" . ($limit ? limit1($query, $queryWhere) : " $query$queryWhere"));
+	}
+	
 	/** Insert data into table
 	* @param string
 	* @param array
