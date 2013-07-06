@@ -11,6 +11,7 @@ $translations = array(
 	'Logged as: %s' => 'Zalogowany jako: %s',
 	'Logout successful.' => 'Wylogowano pomyślnie.',
 	'Invalid credentials.' => 'Nieprawidłowe dane logowania.',
+	'Master password expired. <a href="http://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to make it permanent.' => 'Ważność hasła głównego wygasła. <a href="http://www.adminer.org/pl/extension/" target="_blank">Zaimplementuj</a> własną metodę %s, aby ustawić je na stałe.',
 	'Language' => 'Język',
 	'Invalid CSRF token. Send the form again.' => 'Nieprawidłowy token CSRF. Spróbuj wysłać formularz ponownie.',
 	'No extension' => 'Brak rozszerzenia',
@@ -64,6 +65,7 @@ $translations = array(
 	'Unable to upload a file.' => 'Wgranie pliku było niemożliwe.',
 	'Maximum allowed file size is %sB.' => 'Maksymalna wielkość pliku to %sB.',
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Przesłano zbyt dużo danych. Zmniejsz objętość danych lub zwiększ zmienną konfiguracyjną %s.',
+	'You can upload a big SQL file via FTP and import it from server.' => 'Większe pliki SQL możesz wgrać na serwer poprzez FTP przed zaimportowaniem.',
 	
 	'Export' => 'Eksport',
 	'Dump' => 'Eksport',
@@ -240,6 +242,7 @@ $translations = array(
 	
 	'Import' => 'Import',
 	'%d row(s) have been imported.' => array('%d rekord został zaimportowany.', '%d rekordy zostały zaimportowane.', '%d rekordów zostało zaimportowanych.'),
+	'File must be in UTF-8 encoding.' => 'Kodowanie pliku musi być ustawione na UTF-8.',
 	
 	// in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Ctrl+kliknij wartość, aby ją edytować.',
