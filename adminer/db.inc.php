@@ -75,7 +75,7 @@ if ($adminer->homepage()) {
 			foreach ($tables_list as $name => $type) {
 				$view = ($type !== null && !eregi("table", $type));
 				echo '<tr' . odd() . '><td>' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array($name, $tables_views, true), "", "formUncheck('check-all');");
-				echo '<th><a href="' . h(ME) . 'table=' . urlencode($name) . '" title="' . lang('Show structure') . '">' . h($name) . '</a>';
+				echo '<th>' . (support("table") ? '<a href="' . h(ME) . 'table=' . urlencode($name) . '" title="' . lang('Show structure') . '">' . h($name) . '</a>' : h($name));
 				if ($view) {
 					echo '<td colspan="6"><a href="' . h(ME) . "view=" . urlencode($name) . '" title="' . lang('Alter view') . '">' . lang('View') . '</a>';
 					echo '<td align="right"><a href="' . h(ME) . "select=" . urlencode($name) . '" title="' . lang('Select data') . '">?</a>';
@@ -89,7 +89,11 @@ if ($adminer->homepage()) {
 						"Auto_increment" => array("auto_increment=1&create", lang('Alter table')),
 						"Rows" => array("select", lang('Select data')),
 					) as $key => $link) {
-						echo ($link ? "<td align='right'><a href='" . h(ME . "$link[0]=") . urlencode($name) . "' id='$key-" . h($name) . "' title='$link[1]'>?</a>" : "<td id='$key-" . h($name) . "'>&nbsp;");
+						$id = " id='$key-" . h($name) . "'";
+						echo ($link ? "<td align='right'>" . (support("table") || $key == "Rows"
+							? "<a href='" . h(ME . "$link[0]=") . urlencode($name) . "'$id title='$link[1]'>?</a>"
+							: "<span$id>?</span>"
+						) : "<td id='$key-" . h($name) . "'>&nbsp;");
 					}
 				}
 				echo (support("comment") ? "<td id='Comment-" . h($name) . "'>&nbsp;" : "");
@@ -105,10 +109,11 @@ if ($adminer->homepage()) {
 			echo "</table>\n";
 			echo "<script type='text/javascript'>tableCheck();</script>\n";
 			if (!information_schema(DB)) {
-				echo "<p>" . (ereg('^(sql|sqlite|pgsql)$', $jush)
-					? ($jush != "sqlite" ? "<input type='submit' value='" . lang('Analyze') . "'> " : "")
-					. "<input type='submit' name='optimize' value='" . lang('Optimize') . "'> " : ""
-				) . ($jush == "sql" ? "<input type='submit' name='check' value='" . lang('Check') . "'> <input type='submit' name='repair' value='" . lang('Repair') . "'> " : "") . "<input type='submit' name='truncate' value='" . lang('Truncate') . "'" . confirm("formChecked(this, /tables/)") . "> <input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm("formChecked(this, /tables|views/)") . ">\n";
+				echo "<p>"
+				. (ereg('^(sql|sqlite|pgsql)$', $jush) ? ($jush != "sqlite" ? "<input type='submit' value='" . lang('Analyze') . "'> " : "") . "<input type='submit' name='optimize' value='" . lang('Optimize') . "'> " : "")
+				. ($jush == "sql" ? "<input type='submit' name='check' value='" . lang('Check') . "'> <input type='submit' name='repair' value='" . lang('Repair') . "'> " : "")
+				. (support("table") ? "<input type='submit' name='truncate' value='" . lang('Truncate') . "'" . confirm("formChecked(this, /tables/)") . "> " : "")
+				. "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm("formChecked(this, /tables|views/)") . ">\n";
 				$databases = (support("scheme") ? schemas() : $adminer->databases());
 				if (count($databases) != 1 && $jush != "sqlite") {
 					$db = (isset($_POST["target"]) ? $_POST["target"] : (support("scheme") ? $_GET["ns"] : DB));

@@ -30,10 +30,13 @@ function verifyVersion() {
 }
 
 /** Get value of select
-* @param HTMLSelectElement
+* @param HTMLElement <select> or <input>
 * @return string
 */
 function selectValue(select) {
+	if (!select.selectedIndex) {
+		return select.value;
+	}
 	var selected = select.options[select.selectedIndex];
 	return ((selected.attributes.value || {}).specified ? selected.value : selected.text);
 }
@@ -247,10 +250,10 @@ function selectAddRow(field) {
 		selects[i].selectedIndex = 0;
 	}
 	var inputs = row.getElementsByTagName('input');
-	if (inputs.length) {
-		inputs[0].name = inputs[0].name.replace(/[a-z]\[\d+/, '$&1');
-		inputs[0].value = '';
-		inputs[0].className = '';
+	for (var i=0; i < inputs.length; i++) {
+		inputs[i].name = inputs[i].name.replace(/[a-z]\[\d+/, '$&1');
+		inputs[i].value = '';
+		inputs[i].className = '';
 	}
 	field.parentNode.parentNode.appendChild(row);
 }

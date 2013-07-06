@@ -149,6 +149,20 @@ function html_select($name, $options, $value = "", $onchange = true) {
 	return $return;
 }
 
+/** Generate HTML <select> or <input> if $options are empty
+ * @param string
+ * @param array
+ * @param string
+ * @param string
+ * @return string
+ */
+function select_input($attrs, $options, $value = "", $placeholder = "") {
+	return ($options
+		? "<select$attrs><option value=''>$placeholder" . optionlist($options, $value, true) . "</select>"
+		: "<input$attrs value='" . h($value) . "' placeholder='$placeholder'>"
+	);
+}
+
 /** Get onclick confirmation
 * @param string JavaScript expression
 * @return string
@@ -264,15 +278,18 @@ function get_vals($query, $column = 0) {
 /** Get keys from first column and values from second
 * @param string
 * @param Min_DB
+* @param float
 * @return array
 */
-function get_key_vals($query, $connection2 = null) {
+function get_key_vals($query, $connection2 = null, $timeout = 0) {
 	global $connection;
 	if (!is_object($connection2)) {
 		$connection2 = $connection;
 	}
 	$return = array();
+	$connection2->timeout = $timeout;
 	$result = $connection2->query($query);
+	$connection2->timeout = 0;
 	if (is_object($result)) {
 		while ($row = $result->fetch_row()) {
 			$return[$row[0]] = $row[1];
@@ -330,7 +347,7 @@ function unique_array($row, $indexes) {
 function where($where, $fields = array()) {
 	global $jush;
 	$return = array();
-	$function_pattern = '(^[\w\(]+' . str_replace("_", ".*", preg_quote(idf_escape("_"))) . '\)+$)'; //! columns looking like functions
+	$function_pattern = '(^[\w\(]+(' . str_replace("_", ".*", preg_quote(idf_escape("_"))) . ')?\)+$)'; //! columns looking like functions
 	foreach ((array) $where["where"] as $key => $val) {
 		$key = bracket_escape($key, 1); // 1 - back
 		$column = (preg_match($function_pattern, $key) ? $key : idf_escape($key)); //! SQL injection
@@ -590,7 +607,10 @@ function remove_from_uri($param = "") {
 * @return string
 */
 function pagination($page, $current) {
-	return " " . ($page == $current ? $page + 1 : '<a href="' . h(remove_from_uri("page") . ($page ? "&page=$page" : "")) . '">' . ($page + 1) . "</a>");
+	return " " . ($page == $current
+		? $page + 1
+		: '<a href="' . h(remove_from_uri("page") . ($page ? "&page=$page" . ($_GET["next"] ? "&next=" . urlencode($_GET["next"]) : "") : "")) . '">' . ($page + 1) . "</a>"
+	);
 }
 
 /** Get file contents from $_FILES
@@ -1004,6 +1024,7 @@ function count_rows($table, $where, $is_group, $group) {
 function slow_query($query) {
 	global $adminer, $token;
 	$db = $adminer->database();
+	$timeout = $adminer->queryTimeout();
 	if (support("kill") && is_object($connection2 = connect()) && ($db == "" || $connection2->select_db($db))) {
 		$kill = $connection2->result("SELECT CONNECTION_ID()"); // MySQL and MySQLi can use thread_id but it's not in PDO_MySQL
 		?>
@@ -1011,7 +1032,7 @@ function slow_query($query) {
 var timeout = setTimeout(function () {
 	ajax('<?php echo js_escape(ME); ?>script=kill', function () {
 	}, 'token=<?php echo $token; ?>&kill=<?php echo $kill; ?>');
-}, <?php echo 1000 * $adminer->queryTimeout(); ?>);
+}, <?php echo 1000 * $timeout; ?>);
 </script>
 <?php
 	} else {
@@ -1019,7 +1040,7 @@ var timeout = setTimeout(function () {
 	}
 	ob_flush();
 	flush();
-	$return = @get_key_vals($query, $connection2); // @ - may be killed
+	$return = @get_key_vals($query, $connection2, $timeout); // @ - may be killed
 	if ($connection2) {
 		echo "<script type='text/javascript'>clearTimeout(timeout);</script>\n";
 		ob_flush();

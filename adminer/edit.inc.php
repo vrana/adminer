@@ -21,6 +21,21 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 	$unique_array = unique_array($_GET["where"], $indexes);
 	$query_where = "\nWHERE $where";
 	
+	if (!support("table")) {
+		foreach ($_POST["field_keys"] as $key => $val) {
+			if ($val != "") {
+				$_POST["fields"][bracket_escape($val)] = $_POST["field_vals"][$key];
+			}
+		}
+		foreach ($_POST["fields"] as $key => $val) {
+			$name = bracket_escape($key, 1); // 1 - back
+			$fields[$name] = array("field" => $name);
+			if (isset($_POST["function"][$key])) {
+				$fields[$name]["null"] = true;
+			}
+		}
+	}
+
 	if (isset($_POST["delete"])) {
 		queries_redirect(
 			$location,
@@ -33,7 +48,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 		foreach ($fields as $name => $field) {
 			$val = process_input($field);
 			if ($val !== false && $val !== null) {
-				$set[idf_escape($name)] = ($update ? "\n" . idf_escape($name) . " = $val" : $val);
+				$set[idf_escape($name)] = $val;
 			}
 		}
 		
@@ -85,9 +100,29 @@ if ($_POST["save"]) {
 		}
 	}
 	$row = array();
+	if (!support("table")) {
+		$select = array("*");
+	}
 	if ($select) {
 		$rows = get_rows("SELECT" . limit(implode(", ", $select) . " FROM " . table($TABLE), " WHERE $where", (isset($_GET["select"]) ? 2 : 1)));
 		$row = (isset($_GET["select"]) && count($rows) != 1 ? null : reset($rows));
+	}
+}
+
+if (!support("table") && !$fields) {
+	if (!$where) { // insert
+		$row = reset(get_rows("SELECT * FROM " . table($TABLE) . " LIMIT 1"));
+		if (!$row) {
+			$row = array("itemName()" => "");
+		}
+	}
+	if ($row) {
+		foreach ($row as $key => $val) {
+			if (!$_POST["save"] && !$where) {
+				$row[$key] = null;
+			}
+			$fields[$key] = array("field" => $key, "null" => ($key != "itemName()"));
+		}
 	}
 }
 
@@ -128,6 +163,10 @@ if (!$fields) {
 		}
 		input($field, $value, $function);
 		echo "\n";
+	}
+	
+	if (!support("table")) {
+		echo "<tr><th><input name='field_keys[]'><td class='function'>&nbsp;<td><input name='field_vals[]'>";
 	}
 	
 	echo "</table>\n";

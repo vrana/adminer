@@ -1,4 +1,5 @@
-Adminer 3.7.2-dev:
+Adminer 4.0.0-dev:
+Driver for SimpleDB
 Save and continue edit by AJAX
 PostgreSQL: Fix handling of nextval() default values
 

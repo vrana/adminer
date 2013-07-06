@@ -90,12 +90,8 @@ if ($_POST && !$error) {
 			if (!$_POST["delete"]) {
 				foreach ($columns as $name => $val) { //! should check also for edit or insert privileges
 					$val = process_input($fields[$name]);
-					if ($val !== null) {
-						if ($_POST["clone"]) {
-							$set[idf_escape($name)] = ($val !== false ? $val : idf_escape($name));
-						} elseif ($val !== false) {
-							$set[] = "\n" . idf_escape($name) . " = $val";
-						}
+					if ($val !== null && ($_POST["clone"] || $val !== false)) {
+						$set[idf_escape($name)] = ($val !== false ? $val : idf_escape($name));
 					}
 				}
 			}
@@ -150,13 +146,14 @@ if ($_POST && !$error) {
 					$set = array();
 					foreach ($row as $key => $val) {
 						$key = bracket_escape($key, 1); // 1 - back
-						$set[] = " " . idf_escape($key) . " = " . (ereg('char|text', $fields[$key]["type"]) || $val != "" ? $adminer->processInput($fields[$key], $val) : "NULL");
+						$set[idf_escape($key)] = (ereg('char|text', $fields[$key]["type"]) || $val != "" ? $adminer->processInput($fields[$key], $val) : "NULL");
 					}
 					$result = $driver->update(
 						$TABLE,
 						$set,
 						" WHERE " . ($where ? implode(" AND ", $where) . " AND " : "") . where_check($unique_idf, $fields),
-						!($is_group || $unselected === array())
+						!($is_group || $unselected === array()),
+						" "
 					);
 					if (!$result) {
 						break;
@@ -214,7 +211,7 @@ if (is_ajax()) {
 }
 
 $set = null;
-if (isset($rights["insert"])) {
+if (isset($rights["insert"]) || !support("table")) {
 	$set = "";
 	foreach ((array) $_GET["where"] as $val) {
 		if (count($foreign_keys[$val["col"]]) == 1 && ($val["op"] == "="
@@ -226,7 +223,7 @@ if (isset($rights["insert"])) {
 }
 $adminer->selectLinks($table_status, $set);
 
-if (!$columns) {
+if (!$columns && support("table")) {
 	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "." : ": " . error()) . "\n";
 } else {
 	echo "<form action='' id='form'>\n";
@@ -261,7 +258,9 @@ if (!$columns) {
 	}
 	echo $adminer->selectQuery($query);
 	
+	$connection->next = $_GET["next"];
 	$result = $connection->query($query);
+	$connection->next = 0;
 	if (!$result) {
 		echo "<p class='error'>" . error() . "\n";
 	} else {
@@ -298,7 +297,7 @@ if (!$columns) {
 				if ($key != $oid) {
 					$val = $_GET["columns"][key($select)];
 					$field = $fields[$select ? ($val ? $val["col"] : current($select)) : $key];
-					$name = ($field ? $adminer->fieldName($field, $rank) : "*");
+					$name = ($field ? $adminer->fieldName($field, $rank) : ($val["fun"] ? "*" : $key));
 					if ($name != "") {
 						$rank++;
 						$names[$key] = $name;
@@ -307,7 +306,7 @@ if (!$columns) {
 						$desc = "&desc%5B0%5D=1";
 						echo '<th onmouseover="columnMouse(this);" onmouseout="columnMouse(this, \' hidden\');">';
 						echo '<a href="' . h($href . ($order[0] == $column || $order[0] == $key || (!$order && $is_group && $group[0] == $column) ? $desc : '')) . '">'; // $order[0] == $key - COUNT(*)
-						echo (!$select || $val ? apply_sql_function($val["fun"], $name) : h(current($select))) . "</a>"; //! columns looking like functions
+						echo apply_sql_function($val["fun"], $name) . "</a>"; //! columns looking like functions
 						echo "<span class='column hidden'>";
 						echo "<a href='" . h($href . $desc) . "' title='" . lang('descending') . "' class='text'> ↓</a>";
 						if (!$val["fun"]) {
@@ -471,19 +470,29 @@ if (!$columns) {
 					? $page + (count($rows) >= $limit ? 2 : 1)
 					: floor(($found_rows - 1) / $limit)
 				);
-				echo '<a href="' . h(remove_from_uri("page")) . "\" onclick=\"pageClick(this.href, +prompt('" . lang('Page') . "', '" . ($page + 1) . "'), event); return false;\">" . lang('Page') . "</a>:";
-				echo pagination(0, $page) . ($page > 5 ? " ..." : "");
-				for ($i = max(1, $page - 4); $i < min($max_page, $page + 5); $i++) {
-					echo pagination($i, $page);
-				}
-				if ($max_page > 0) {
-					echo ($page + 5 < $max_page ? " ..." : "");
-					echo ($exact_count && $found_rows !== false
-						? pagination($max_page, $page)
-						: " <a href='" . h(remove_from_uri("page") . "&page=last") . "' title='~$max_page'>" . lang('last') . "</a>"
+				if (support("table")) {
+					echo '<a href="' . h(remove_from_uri("page")) . "\" onclick=\"pageClick(this.href, +prompt('" . lang('Page') . "', '" . ($page + 1) . "'), event); return false;\">" . lang('Page') . "</a>:";
+					echo pagination(0, $page) . ($page > 5 ? " ..." : "");
+					for ($i = max(1, $page - 4); $i < min($max_page, $page + 5); $i++) {
+						echo pagination($i, $page);
+					}
+					if ($max_page > 0) {
+						echo ($page + 5 < $max_page ? " ..." : "");
+						echo ($exact_count && $found_rows !== false
+							? pagination($max_page, $page)
+							: " <a href='" . h(remove_from_uri("page") . "&page=last") . "' title='~$max_page'>" . lang('last') . "</a>"
+						);
+					}
+					echo (($found_rows === false ? count($rows) + 1 : $found_rows - $page * $limit) > $limit
+						? ' <a href="' . h(remove_from_uri("page") . "&page=" . ($page + 1)) . '" onclick="return !selectLoadMore(this, ' . (+$limit) . ', \'' . lang('Loading') . '\');">' . lang('Load more data') . '</a>'
+						: ''
 					);
+				} else {
+					echo lang('Page') . ":";
+					echo pagination(0, $page) . ($page > 1 ? " ..." : "");
+					echo ($page ? pagination($page, $page) : "");
+					echo ($max_page > $page ? pagination($page + 1, $page) . ($max_page > $page + 1 ? " ..." : "") : "");
 				}
-				echo (($found_rows === false ? count($rows) + 1 : $found_rows - $page * $limit) > $limit ? ' <a href="' . h(remove_from_uri("page") . "&page=" . ($page + 1)) . '" onclick="return !selectLoadMore(this, ' . (+$limit) . ', \'' . lang('Loading') . '\');">' . lang('Load more data') . '</a>' : '');
 			}
 			
 			echo "<p>\n";

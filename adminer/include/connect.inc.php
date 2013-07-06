@@ -11,8 +11,9 @@ function connect_error() {
 		}
 		
 		page_header(lang('Select database'), $error, false);
-		echo "<p><a href='" . h(ME) . "database='>" . lang('Create new database') . "</a>\n";
+		echo "<p>";
 		foreach (array(
+			'database' => lang('Create new database'),
 			'privileges' => lang('Privileges'),
 			'processlist' => lang('Process list'),
 			'variables' => lang('Variables'),
@@ -31,20 +32,21 @@ function connect_error() {
 			$collations = collations();
 			echo "<form action='' method='post'>\n";
 			echo "<table cellspacing='0' class='checkable' onclick='tableClick(event);' ondblclick='tableClick(event, true);'>\n";
-			echo "<thead><tr><td>&nbsp;<th>" . lang('Database') . "<td>" . lang('Collation') . "<td>" . lang('Tables') . "</thead>\n";
+			echo "<thead><tr>" . (support("database") ? "<td>&nbsp;" : "") . "<th>" . lang('Database') . "<td>" . lang('Collation') . "<td>" . lang('Tables') . "</thead>\n";
 			
 			foreach ($databases as $db) {
 				$root = h(ME) . "db=" . urlencode($db);
-				echo "<tr" . odd() . "><td>" . checkbox("db[]", $db, in_array($db, (array) $_POST["db"]));
+				echo "<tr" . odd() . ">" . (support("database") ? "<td>" . checkbox("db[]", $db, in_array($db, (array) $_POST["db"])) : "");
 				echo "<th><a href='$root'>" . h($db) . "</a>";
-				echo "<td><a href='$root" . ($scheme ? "&amp;ns=" : "") . "&amp;database=' title='" . lang('Alter database') . "'>" . nbsp(db_collation($db, $collations)) . "</a>";
+				$collation = nbsp(db_collation($db, $collations));
+				echo "<td>" . (support("database") ? "<a href='$root" . ($scheme ? "&amp;ns=" : "") . "&amp;database=' title='" . lang('Alter database') . "'>$collation</a>" : $collation);
 				echo "<td align='right'><a href='$root&amp;schema=' id='tables-" . h($db) . "' title='" . lang('Database schema') . "'>?</a>";
 				echo "\n";
 			}
 			
 			echo "</table>\n";
 			echo "<script type='text/javascript'>tableCheck();</script>\n";
-			echo "<p><input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm("formChecked(this, /db/)") . ">\n";
+			echo "<p>" . (support("database") ? "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm("formChecked(this, /db/)") . ">\n" : "");
 			echo "<input type='hidden' name='token' value='$token'>\n";
 			echo $refresh;
 			echo "</form>\n";

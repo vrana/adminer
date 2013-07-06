@@ -120,11 +120,14 @@ username.form['auth[driver]'].onchange();
 	*/
 	function selectLinks($tableStatus, $set = "") {
 		echo '<p class="tabs">';
-		$links = array("select" => lang('Select data'), "table" => lang('Show structure'));
-		if (is_view($tableStatus)) {
-			$links["view"] = lang('Alter view');
-		} else {
-			$links["create"] = lang('Alter table');
+		$links = array("select" => lang('Select data'));
+		if (support("table")) {
+			$links["table"] = lang('Show structure');
+			if (is_view($tableStatus)) {
+				$links["view"] = lang('Alter view');
+			} else {
+				$links["create"] = lang('Alter table');
+			}
 		}
 		if ($set !== null) {
 			$links["edit"] = lang('New item');
@@ -229,15 +232,15 @@ username.form['auth[driver]'].onchange();
 		global $functions, $grouping;
 		print_fieldset("select", lang('Select'), $select);
 		$i = 0;
-		$fun_group = array(lang('Functions') => $functions, lang('Aggregation') => $grouping);
+		$fun_group = array_filter(array(lang('Functions') => $functions, lang('Aggregation') => $grouping));
 		foreach ($select as $key => $val) {
 			$val = $_GET["columns"][$key];
 			echo "<div>" . html_select("columns[$i][fun]", array(-1 => "") + $fun_group, $val["fun"]);
-			echo "(<select name='columns[$i][col]' onchange='selectFieldChange(this.form);'><option>" . optionlist($columns, $val["col"], true) . "</select>)</div>\n";
+			echo "(" . select_input(" name='columns[$i][col]' onchange='selectFieldChange(this.form);'", $columns, $val["col"]) . ")</div>\n";
 			$i++;
 		}
 		echo "<div>" . html_select("columns[$i][fun]", array(-1 => "") + $fun_group, "", "this.nextSibling.nextSibling.onchange();");
-		echo "(<select name='columns[$i][col]' onchange='selectAddRow(this);'><option>" . optionlist($columns, null, true) . "</select>)</div>\n";
+		echo "(" . select_input(" name='columns[$i][col]' onchange='selectAddRow(this);'", $columns) . ")</div>\n";
 		echo "</div></fieldset>\n";
 	}
 	
@@ -263,7 +266,7 @@ username.form['auth[driver]'].onchange();
 		for ($i = 0; $i <= count($_GET["where"]); $i++) {
 			list(, $val) = each($_GET["where"]);
 			if (!$val || ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators))) {
-				echo "<div><select name='where[$i][col]' onchange='$change_next'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
+				echo "<div>" . select_input(" name='where[$i][col]' onchange='$change_next'", $columns, $val["col"], "(" . lang('anywhere') . ")");
 				echo html_select("where[$i][op]", $this->operators, $val["op"], $change_next);
 				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' onchange='" . ($val ? "selectFieldChange(this.form)" : "selectAddRow(this)") . ";' onsearch='selectSearchSearch(this);'></div>\n";
 			}
@@ -281,13 +284,13 @@ username.form['auth[driver]'].onchange();
 		print_fieldset("sort", lang('Sort'), $order);
 		$i = 0;
 		foreach ((array) $_GET["order"] as $key => $val) {
-			if (isset($columns[$val])) {
-				echo "<div><select name='order[$i]' onchange='selectFieldChange(this.form);'><option>" . optionlist($columns, $val, true) . "</select>";
+			if ($val != "") {
+				echo "<div>" . select_input(" name='order[$i]' onchange='selectFieldChange(this.form);'", $columns, $val);
 				echo checkbox("desc[$i]", 1, isset($_GET["desc"][$key]), lang('descending')) . "</div>\n";
 				$i++;
 			}
 		}
-		echo "<div><select name='order[$i]' onchange='selectAddRow(this);'><option>" . optionlist($columns, null, true) . "</select>";
+		echo "<div>" . select_input(" name='order[$i]' onchange='selectAddRow(this);'", $columns);
 		echo checkbox("desc[$i]", 1, false, lang('descending')) . "</div>\n";
 		echo "</div></fieldset>\n";
 	}
@@ -372,8 +375,8 @@ username.form['auth[driver]'].onchange();
 		$select = array(); // select expressions, empty for *
 		$group = array(); // expressions without aggregation - will be used for GROUP BY if an aggregation function is used
 		foreach ((array) $_GET["columns"] as $key => $val) {
-			if ($val["fun"] == "count" || (isset($columns[$val["col"]]) && (!$val["fun"] || in_array($val["fun"], $functions) || in_array($val["fun"], $grouping)))) {
-				$select[$key] = apply_sql_function($val["fun"], (isset($columns[$val["col"]]) ? idf_escape($val["col"]) : "*"));
+			if ($val["fun"] == "count" || ($val["col"] != "" && (!$val["fun"] || in_array($val["fun"], $functions) || in_array($val["fun"], $grouping)))) {
+				$select[$key] = apply_sql_function($val["fun"], ($val["col"] != "" ? idf_escape($val["col"]) : "*"));
 				if (!in_array($val["fun"], $grouping)) {
 					$group[] = $select[$key];
 				}
@@ -437,8 +440,10 @@ username.form['auth[driver]'].onchange();
 	function selectOrderProcess($fields, $indexes) {
 		$return = array();
 		foreach ((array) $_GET["order"] as $key => $val) {
-			if (isset($fields[$val]) || preg_match('~^((COUNT\\(DISTINCT |[A-Z0-9_]+\\()(`(?:[^`]|``)+`|"(?:[^"]|"")+")\\)|COUNT\\(\\*\\))$~', $val)) { //! MS SQL uses []
-				$return[] = (isset($fields[$val]) ? idf_escape($val) : $val) . (isset($_GET["desc"][$key]) ? " DESC" : "");
+			if ($val != "") {
+				$return[] = (preg_match('~^((COUNT\\(DISTINCT |[A-Z0-9_]+\\()(`(?:[^`]|``)+`|"(?:[^"]|"")+")\\)|COUNT\\(\\*\\))$~', $val) ? $val : idf_escape($val)) //! MS SQL uses []
+					. (isset($_GET["desc"][$key]) ? " DESC" : "")
+				;
 			}
 		}
 		return $return;
@@ -724,7 +729,7 @@ username.form['auth[driver]'].onchange();
 	* @return bool whether to print default homepage
 	*/
 	function homepage() {
-		echo '<p>' . ($_GET["ns"] == "" ? '<a href="' . h(ME) . 'database=">' . lang('Alter database') . "</a>\n" : "");
+		echo '<p>' . ($_GET["ns"] == "" && support("database") ? '<a href="' . h(ME) . 'database=">' . lang('Alter database') . "</a>\n" : "");
 		echo (support("scheme") ? "<a href='" . h(ME) . "scheme='>" . ($_GET["ns"] != "" ? lang('Alter schema') : lang('Create schema')) . "</a>\n" : "");
 		echo ($_GET["ns"] !== "" ? '<a href="' . h(ME) . 'schema=">' . lang('Database schema') . "</a>\n" : "");
 		echo (support("privileges") ? "<a href='" . h(ME) . "privileges='>" . lang('Privileges') . "</a>\n" : "");
@@ -791,7 +796,7 @@ username.form['auth[driver]'].onchange();
 						$links[] = preg_quote($table, '/');
 					}
 					echo "<script type='text/javascript'>\n";
-					echo "var jushLinks = { $jush: [ '" . js_escape(ME) . "table=\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
+					echo "var jushLinks = { $jush: [ '" . js_escape(ME) . (support("table") ? "table=" : "select=") . "\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
 					foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
 						echo "jushLinks.$val = jushLinks.$jush;\n";
 					}
@@ -842,7 +847,11 @@ username.form['auth[driver]'].onchange();
 		echo "<p id='tables' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";
 		foreach ($tables as $table => $status) {
 			echo '<a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table || $_GET["edit"] == $table) . ">" . lang('select') . "</a> ";
-			echo '<a href="' . h(ME) . 'table=' . urlencode($table) . '"' . bold(in_array($table, array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"]))) . " title='" . lang('Show structure') . "'>" . $this->tableName($status) . "</a><br>\n";
+			$name = $this->tableName($status);
+			echo (support("table")
+				? '<a href="' . h(ME) . 'table=' . urlencode($table) . '"' . bold(in_array($table, array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"]))) . " title='" . lang('Show structure') . "'>$name</a>"
+				: $name
+			) . "<br>\n";
 		}
 	}
 	

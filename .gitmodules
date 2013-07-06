@@ -1,6 +1,6 @@
 [submodule "jush"]
 	path = externals/jush
-	url = git://jush.git.sourceforge.net/gitroot/jush/jush
+	url = git://git.code.sf.net/p/jush/git
 [submodule "tinymce"]
 	path = externals/tinymce
 	url = git://github.com/tinymce/tinymce.git
