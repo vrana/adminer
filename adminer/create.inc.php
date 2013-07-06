@@ -94,7 +94,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 		}
 		$name = trim($row["name"]);
 		
-		queries_redirect(ME . "table=" . urlencode($name), $message, alter_table(
+		queries_redirect(ME . (support("table") ? "table=" : "select=") . urlencode($name), $message, alter_table(
 			$TABLE,
 			$name,
 			($jush == "sqlite" && ($use_all_fields || $foreign) ? $all_fields : $fields),
@@ -154,11 +154,15 @@ foreach ($engines as $engine) {
 
 <form action="" method="post" id="form">
 <p>
+<?php if (support("table") || $TABLE == "") { ?>
 <?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo h($row["name"]); ?>" autocapitalize="off">
 <?php if ($TABLE == "" && !$_POST) { ?><script type='text/javascript'>focus(document.getElementById('form')['name']);</script><?php } ?>
 <?php echo ($engines ? html_select("Engine", array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) : ""); ?>
  <?php echo ($collations && !ereg("sqlite|mssql", $jush) ? html_select("Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]) : ""); ?>
  <input type="submit" value="<?php echo lang('Save'); ?>" formnovalidate>
+<?php } ?>
+
+<?php if (support("table")) { ?>
 <table cellspacing="0" id="edit-fields" class="nowrap">
 <?php
 $comments = ($_POST ? $_POST["comments"] : $row["Comment"] != "");
@@ -184,6 +188,8 @@ edit_fields($row["fields"], $collations, "TABLE", $foreign_keys, $comments);
 ; ?>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>" formnovalidate>
+<?php } ?>
+
 <?php if ($TABLE != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo confirm(); ?> formnovalidate><?php } ?>
 <?php
 if (support("partitioning")) {
