@@ -335,10 +335,11 @@ function editingAddRow(button, focus) {
 
 /** Remove table row for field
 * @param HTMLInputElement
+* @param string
 * @return boolean
 */
-function editingRemoveRow(button) {
-	var field = formField(button.form, button.name.replace(/drop_col(.+)/, 'fields$1[field]'));
+function editingRemoveRow(button, name) {
+	var field = formField(button.form, button.name.replace(/drop_col(.+)/, name));
 	field.parentNode.removeChild(field);
 	parentTag(button, 'tr').style.display = 'none';
 	return true;

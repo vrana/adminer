@@ -12,7 +12,7 @@ if ($jush == "sqlite") { // doesn't support primary key
 }
 $row = $_POST;
 
-if ($_POST && !$error && !$_POST["add"]) {
+if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 	$alter = array();
 	foreach ($row["indexes"] as $index) {
 		$name = $index["name"];
@@ -94,23 +94,27 @@ if (!$row) {
 
 <form action="" method="post">
 <table cellspacing="0" class="nowrap">
-<thead><tr><th><?php echo lang('Index Type'); ?><th><?php echo lang('Column (length)'); ?><th><?php echo lang('Name'); ?></thead>
+<thead><tr><th><?php echo lang('Index Type'); ?><th><?php echo lang('Column (length)'); ?><th><?php echo lang('Name'); ?><th>&nbsp;</thead>
 <?php
 $j = 1;
 foreach ($row["indexes"] as $index) {
-	echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) ? "indexesAddRow(this);" : 1)) . "<td>";
-	ksort($index["columns"]);
-	
-	$i = 1;
-	foreach ($index["columns"] as $key => $column) {
-		echo "<span>" . html_select("indexes[$j][columns][$i]", array(-1 => "") + $fields, $column, ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . "(this, '" . js_escape($jush == "sql" ? "" : $_GET["indexes"] . "_") . "');");
-		echo ($jush == "sql" || $jush == "mssql" ? "<input type='number' name='indexes[$j][lengths][$i]' class='size' value='" . h($index["lengths"][$key]) . "'>" : "");
-		echo ($jush != "sql" ? checkbox("indexes[$j][descs][$i]", 1, $index["descs"][$key], lang('descending')) : "");
-		echo " </span>";
-		$i++;
+	if (!$_POST["drop_col"] || $j != key($_POST["drop_col"])) {
+		echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) ? "indexesAddRow(this);" : 1));
+		
+		echo "<td>";
+		ksort($index["columns"]);
+		$i = 1;
+		foreach ($index["columns"] as $key => $column) {
+			echo "<span>" . html_select("indexes[$j][columns][$i]", array(-1 => "") + $fields, $column, ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . "(this, '" . js_escape($jush == "sql" ? "" : $_GET["indexes"] . "_") . "');");
+			echo ($jush == "sql" || $jush == "mssql" ? "<input type='number' name='indexes[$j][lengths][$i]' class='size' value='" . h($index["lengths"][$key]) . "'>" : "");
+			echo ($jush != "sql" ? checkbox("indexes[$j][descs][$i]", 1, $index["descs"][$key], lang('descending')) : "");
+			echo " </span>";
+			$i++;
+		}
+		
+		echo "<td><input name='indexes[$j][name]' value='" . h($index["name"]) . "' autocapitalize='off'>\n";
+		echo "<td><input type='image' class='icon' name='drop_col[$j]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "' onclick=\"return !editingRemoveRow(this, 'indexes\$1[type]');\">\n";
 	}
-	
-	echo "<td><input name='indexes[$j][name]' value='" . h($index["name"]) . "' autocapitalize='off'>\n";
 	$j++;
 }
 ?>
