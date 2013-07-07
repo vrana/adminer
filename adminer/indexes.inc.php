@@ -74,11 +74,7 @@ if ($_POST["add"]) {
 		}
 	}
 	$index = end($row["indexes"]);
-	if ($index["type"]
-		|| array_filter($index["columns"], 'strlen')
-		|| array_filter($index["lengths"], 'strlen')
-		|| array_filter($index["descs"])
-	) {
+	if ($index["type"] || array_filter($index["columns"], 'strlen')) {
 		$row["indexes"][] = array("columns" => array(1 => ""));
 	}
 }
