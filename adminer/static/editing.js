@@ -509,7 +509,9 @@ function indexesAddColumn(field, prefix) {
 	};
 	var select = field.form[field.name.replace(/\].*/, '][type]')];
 	if (!select.selectedIndex) {
-		select.selectedIndex = select.options.length - 1;
+		while (selectValue(select) != "INDEX" && select.selectedIndex < select.options.length) {
+			select.selectedIndex++;
+		}
 		select.onchange();
 	}
 	var column = cloneNode(field.parentNode);
