@@ -15,7 +15,7 @@ if (isset($_GET["simpledb"])) {
 	
 	if (class_exists('SimpleXMLElement')) {
 		class Min_DB {
-			var $extension = "SimpleXML", $server_info = '2009-04-15', $error, $timeout, $next, $_result;
+			var $extension = "SimpleXML", $server_info = '2009-04-15', $error, $timeout, $next, $affected_rows, $_result;
 			
 			function select_db($database) {
 				return ($database == "domain");
@@ -122,6 +122,7 @@ if (isset($_GET["simpledb"])) {
 	class Min_Driver {
 		
 		function _chunkRequest($ids, $action, $params, $expand = array()) {
+			global $connection;
 			foreach (array_chunk($ids, 25) as $chunk) {
 				$params2 = $params;
 				foreach ($chunk as $i => $id) {
@@ -134,10 +135,11 @@ if (isset($_GET["simpledb"])) {
 					return false;
 				}
 			}
+			$connection->affected_rows = count($ids);
 			return true;
 		}
 		
-		function _extractIds($queryWhere, $limit) {
+		function _extractIds($table, $queryWhere, $limit) {
 			$return = array();
 			if (preg_match_all("~itemName\(\) = ('[^']*+')+~", $queryWhere, $matches)) {
 				$return = array_map('idf_unescape', $matches[1]);
@@ -151,7 +153,7 @@ if (isset($_GET["simpledb"])) {
 		
 		function delete($table, $queryWhere, $limit = 0) {
 			return $this->_chunkRequest(
-				$this->_extractIds($queryWhere, $limit),
+				$this->_extractIds($table, $queryWhere, $limit),
 				'BatchDeleteAttributes',
 				array('DomainName' => $table)
 			);
@@ -172,7 +174,7 @@ if (isset($_GET["simpledb"])) {
 					$i++;
 				}
 			}
-			$ids = $this->_extractIds($queryWhere, $limit);
+			$ids = $this->_extractIds($table, $queryWhere, $limit);
 			$params = array('DomainName' => $table);
 			return (!$insert || $this->_chunkRequest($ids, 'BatchPutAttributes', $params, $insert))
 				&& (!$delete || $this->_chunkRequest($ids, 'BatchDeleteAttributes', $params, $delete))
