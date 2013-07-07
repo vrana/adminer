@@ -94,7 +94,7 @@ if (!$row) {
 
 <form action="" method="post">
 <table cellspacing="0" class="nowrap">
-<thead><tr><th><?php echo lang('Index Type'); ?><th><?php echo lang('Column (length)'); ?><th><?php echo lang('Name'); ?><th>&nbsp;</thead>
+<thead><tr><th><?php echo lang('Index Type'); ?><th><?php echo lang('Column (length)'); ?><th><?php echo lang('Name'); ?><th><noscript><input type='image' class='icon' name='add[0]' src='../adminer/static/plus.gif' alt='+' title='<?php echo lang('Add next'); ?>'></noscript>&nbsp;</thead>
 <?php
 $j = 1;
 foreach ($row["indexes"] as $index) {
@@ -121,6 +121,5 @@ foreach ($row["indexes"] as $index) {
 </table>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
-<noscript><p><input type="submit" name="add" value="<?php echo lang('Add next'); ?>"></noscript>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>
