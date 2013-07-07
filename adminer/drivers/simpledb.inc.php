@@ -285,7 +285,20 @@ if (isset($_GET["simpledb"])) {
 	}
 	
 	function fields($table) {
-		return array();
+		$return = array();
+		foreach ((array) $_POST["field_keys"] as $key => $val) {
+			if ($val != "") {
+				$_POST["fields"][bracket_escape($val)] = $_POST["field_vals"][$key];
+			}
+		}
+		foreach ((array) $_POST["fields"] as $key => $val) {
+			$name = bracket_escape($key, 1); // 1 - back
+			$return[$name] = array("field" => $name, "privileges" => array("insert" => 1, "update" => 1));
+			if (isset($_POST["function"][$key])) {
+				$return[$name]["null"] = true;
+			}
+		}
+		return $return;
 	}
 	
 	function foreign_keys($table) {

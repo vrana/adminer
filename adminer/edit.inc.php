@@ -21,21 +21,6 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 	$unique_array = unique_array($_GET["where"], $indexes);
 	$query_where = "\nWHERE $where";
 	
-	if (!support("table")) {
-		foreach ($_POST["field_keys"] as $key => $val) {
-			if ($val != "") {
-				$_POST["fields"][bracket_escape($val)] = $_POST["field_vals"][$key];
-			}
-		}
-		foreach ($_POST["fields"] as $key => $val) {
-			$name = bracket_escape($key, 1); // 1 - back
-			$fields[$name] = array("field" => $name);
-			if (isset($_POST["function"][$key])) {
-				$fields[$name]["null"] = true;
-			}
-		}
-	}
-
 	if (isset($_POST["delete"])) {
 		queries_redirect(
 			$location,
@@ -118,7 +103,7 @@ if (!support("table") && !$fields) {
 	}
 	if ($row) {
 		foreach ($row as $key => $val) {
-			if (!$_POST["save"] && !$where) {
+			if (!$where) {
 				$row[$key] = null;
 			}
 			$fields[$key] = array("field" => $key, "null" => ($key != "itemName()"));
