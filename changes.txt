@@ -1,5 +1,6 @@
 Adminer 3.7.2-dev:
 Save and continue edit by AJAX
+Add a new column in alter table on key press
 PostgreSQL: Fix handling of nextval() default values
 
 Adminer 3.7.1 (released 2013-06-29):

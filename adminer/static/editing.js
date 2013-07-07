@@ -317,10 +317,14 @@ function editingAddRow(button, focus) {
 	tags[0].onchange = function () {
 		editingNameChange(tags[0]);
 	};
+	tags[0].onkeypress = function () {
+	};
 	row.parentNode.insertBefore(row2, row.nextSibling);
 	if (focus) {
 		input.onchange = function () {
 			editingNameChange(input);
+		};
+		input.onkeypress = function () {
 		};
 		input.focus();
 	}
