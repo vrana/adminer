@@ -158,7 +158,7 @@ foreach ($engines as $engine) {
 <?php if ($TABLE == "" && !$_POST) { ?><script type='text/javascript'>focus(document.getElementById('form')['name']);</script><?php } ?>
 <?php echo ($engines ? html_select("Engine", array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) : ""); ?>
  <?php echo ($collations && !ereg("sqlite|mssql", $jush) ? html_select("Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]) : ""); ?>
- <input type="submit" value="<?php echo lang('Save'); ?>">
+ <input type="submit" value="<?php echo lang('Save'); ?>" formnovalidate>
 <table cellspacing="0" id="edit-fields" class="nowrap">
 <?php
 $comments = ($_POST ? $_POST["comments"] : $row["Comment"] != "");
@@ -183,8 +183,8 @@ edit_fields($row["fields"], $collations, "TABLE", $foreign_keys, $comments);
 	: '')
 ; ?>
 <p>
-<input type="submit" value="<?php echo lang('Save'); ?>">
-<?php if ($TABLE != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo confirm(); ?>><?php } ?>
+<input type="submit" value="<?php echo lang('Save'); ?>" formnovalidate>
+<?php if ($TABLE != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo confirm(); ?> formnovalidate><?php } ?>
 <?php
 if (support("partitioning")) {
 	$partition_table = ereg('RANGE|LIST', $row["partition_by"]);

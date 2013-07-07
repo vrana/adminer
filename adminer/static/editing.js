@@ -358,6 +358,7 @@ function editingTypeChange(type) {
 			(/(char|binary)$/.test(lastType) && /(char|binary)$/.test(text))
 			|| (/(enum|set)$/.test(lastType) && /(enum|set)$/.test(text))
 		)) {
+			el.required = /var(char|binary)$/.test(text);
 			el.value = '';
 		}
 		if (lastType == 'timestamp' && el.name == name + '[has_default]' && /timestamp/i.test(formField(type.form, name + '[default]').value)) {
