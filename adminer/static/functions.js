@@ -485,6 +485,7 @@ function selectClick(td, event, text, warning) {
 			event = window.event;
 		}
 		if (event.keyCode == 27 && !event.shiftKey && !event.altKey && !isCtrl(event)) { // 27 - Esc
+			inputBlur.apply(input);
 			td.innerHTML = original;
 		}
 	};
