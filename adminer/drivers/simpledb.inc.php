@@ -394,8 +394,15 @@ if (isset($_GET["simpledb"])) {
 			'content' => $query,
 			'ignore_errors' => 1, // available since PHP 5.2.10
 		))));
-		if (!$file || !($xml = simplexml_load_string($file))) {
+		if (!$file) {
 			$connection->error = $php_errormsg;
+			return false;
+		}
+		libxml_use_internal_errors(true);
+		$xml = simplexml_load_string($file);
+		if (!$xml) {
+			$error = libxml_get_last_error();
+			$connection->error = $error->message;
 			return false;
 		}
 		if ($xml->Errors) {
