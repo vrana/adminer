@@ -814,8 +814,8 @@ username.form['auth[driver]'].onchange();
 <?php
 		hidden_fields_get();
 		$db_events = " onmousedown='dbMouseDown(event, this);' onchange='dbChange(this);'";
-		echo ($databases
-			? "<select name='db'$db_events>" . optionlist(array("" => "(" . lang('database') . ")") + $databases, DB) . "</select>"
+		echo "<span title='" . lang('database') . "'>DB</span>: " . ($databases
+			? "<select name='db'$db_events>" . optionlist(array("" => "") + $databases, DB) . "</select>"
 			: '<input name="db" value="' . h(DB) . '" autocapitalize="off">'
 		);
 		echo "<input type='submit' value='" . lang('Use') . "'" . ($databases ? " class='hidden'" : "") . ">\n";
