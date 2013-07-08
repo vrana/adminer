@@ -355,12 +355,14 @@ function editingTypeChange(type) {
 	var text = selectValue(type);
 	for (var i=0; i < type.form.elements.length; i++) {
 		var el = type.form.elements[i];
-		if (el.name == name + '[length]' && !(
-			(/(char|binary)$/.test(lastType) && /(char|binary)$/.test(text))
-			|| (/(enum|set)$/.test(lastType) && /(enum|set)$/.test(text))
-		)) {
+		if (el.name == name + '[length]') {
 			el.required = /var(char|binary)$/.test(text);
-			el.value = '';
+			if (!(
+				(/(char|binary)$/.test(lastType) && /(char|binary)$/.test(text))
+				|| (/(enum|set)$/.test(lastType) && /(enum|set)$/.test(text))
+			)) {
+				el.value = '';
+			}
 		}
 		if (lastType == 'timestamp' && el.name == name + '[has_default]' && /timestamp/i.test(formField(type.form, name + '[default]').value)) {
 			el.checked = false;
