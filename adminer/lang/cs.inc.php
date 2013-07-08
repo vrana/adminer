@@ -245,6 +245,7 @@ $translations = array(
 	'File must be in UTF-8 encoding.' => 'Soubor musí být v kódování UTF-8.',
 	
 	// in-place editing in select
+	'Modify' => 'Změnit',
 	'Ctrl+click on a value to modify it.' => 'Ctrl+klikněte na políčko, které chcete změnit.',
 	'Use edit link to modify this value.' => 'Ke změně této hodnoty použijte odkaz upravit.',
 	
@@ -263,6 +264,7 @@ $translations = array(
 	'Save' => 'Uložit',
 	'Save and continue edit' => 'Uložit a pokračovat v editaci',
 	'Save and insert next' => 'Uložit a vložit další',
+	'Selected' => 'Označené',
 	'Clone' => 'Klonovat',
 	'Delete' => 'Smazat',
 	'You have no privileges to update this table.' => 'Nemáte oprávnění editovat tuto tabulku.',
