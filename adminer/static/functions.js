@@ -57,6 +57,16 @@ function parentTag(el, tag) {
 function trCheck(el) {
 	var tr = parentTag(el, 'tr');
 	tr.className = tr.className.replace(/(^|\s)checked(\s|$)/, '$2') + (el.checked ? ' checked' : '');
+	if (el.form['all']) {
+		el.form['all'].onclick();
+	}
+}
+
+/** Fill number of selected items
+* @param string
+*/
+function selectCount(count) {
+	setHtml('selected', (count === '' ? '' : '(' + count + ')'));
 }
 
 /** Check all elements matching given name

@@ -4,6 +4,7 @@ Add a new column in alter table on key press
 Mark length as required for strings
 Add label to database selection
 Add button for dropping an index
+Display number of selected rows
 PostgreSQL: Fix handling of nextval() default values
 
 Adminer 3.7.1 (released 2013-06-29):

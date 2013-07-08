@@ -437,7 +437,6 @@ if (!$columns) {
 				exit;
 			}
 			echo "</table>\n";
-			echo (!$group && $select ? "" : "<script type='text/javascript'>tableCheck();</script>\n");
 		}
 		
 		if (($rows || $page) && !is_ajax()) {
@@ -480,20 +479,21 @@ if (!$columns) {
 			
 			echo "<p>\n";
 			echo ($found_rows !== false ? "(" . ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) . ") " : "");
-			echo checkbox("all", 1, 0, lang('whole result')) . "\n";
+			echo checkbox("all", 1, 0, lang('whole result'), "selectCount(this.checked ? '$found_rows' : formChecked(this, /check/));") . "\n";
 			
 			if ($adminer->selectCommandPrint()) {
 				?>
 <fieldset<?php echo ($_GET["modify"] ? '' : ' class="jsonly"'); ?>><legend><?php echo lang('Modify'); ?></legend><div>
 <input type="submit" value="<?php echo lang('Save'); ?>"<?php echo ($_GET["modify"] ? '' : ' title="' . lang('Ctrl+click on a value to modify it.') . '"'); ?>>
 </div></fieldset>
-<fieldset><legend><?php echo lang('Selected'); ?></legend><div>
+<fieldset><legend><?php echo lang('Selected'); ?> <span id="selected"></span></legend><div>
 <input type="submit" name="edit" value="<?php echo lang('Edit'); ?>">
 <input type="submit" name="clone" value="<?php echo lang('Clone'); ?>">
 <input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?> (' + (this.form['all'].checked ? '<?php echo $found_rows; ?>' : formChecked(this, /check/)) + ')');">
 </div></fieldset>
 <?php
 			}
+			echo (!$group && $select ? "" : "<script type='text/javascript'>tableCheck();</script>\n");
 			
 			$format = $adminer->dumpFormat();
 			foreach ((array) $_GET["columns"] as $column) {
