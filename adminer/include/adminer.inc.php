@@ -762,15 +762,15 @@ username.form['auth[driver]'].onchange();
 				}
 			}
 		} else {
+			$this->databasesPrint($missing);
 			if (DB == "" || !$missing) {
 				echo "<p class='links'><a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"])) . " title='" . lang('Import') . "'>" . lang('SQL command') . "</a>\n";
 				if (support("dump")) {
 					echo "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . lang('Dump') . "</a>\n";
 				}
 			}
-			$this->databasesPrint($missing);
 			if ($_GET["ns"] !== "" && !$missing && DB != "") {
-				echo '<p class="links"><a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create new table') . "</a>\n";
+				echo '<a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create new table') . "</a>\n";
 				$tables = table_status('', true);
 				if (!$tables) {
 					echo "<p class='message'>" . lang('No tables.') . "\n";
