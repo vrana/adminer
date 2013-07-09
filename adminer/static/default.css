@@ -46,7 +46,8 @@ input.default { box-shadow: 1px 1px 1px #777; }
 .options select { width: 20ex; width: auto\9; }
 .active { font-weight: bold; }
 .sqlarea { width: 98%; }
-.icon { width: 18px; height: 18px; }
+.icon { width: 18px; height: 18px; background-color: navy; }
+.icon:hover { background-color: red; }
 .size { width: 6ex; }
 .help { cursor: help; }
 .pages { position: fixed; bottom: 0; left: 21em; padding: 5px; background: #ddf; border: 1px solid #999; }
