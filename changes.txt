@@ -5,6 +5,7 @@ Mark length as required for strings
 Add label to database selection
 Add button for dropping an index
 Display number of selected rows
+Disable underlining links
 PostgreSQL: Fix handling of nextval() default values
 
 Adminer 3.7.1 (released 2013-06-29):

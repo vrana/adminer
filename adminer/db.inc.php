@@ -123,10 +123,8 @@ if ($adminer->homepage()) {
 			echo "</form>\n";
 		}
 		
-		echo '<p><a href="' . h(ME) . 'create=">' . lang('Create table') . "</a>\n";
-		if (support("view")) {
-			echo '<a href="' . h(ME) . 'view=">' . lang('Create view') . "</a>\n";
-		}
+		echo '<p class="links"><a href="' . h(ME) . 'create=">' . lang('Create table') . "</a>\n";
+		echo (support("view") ? '<a href="' . h(ME) . 'view=">' . lang('Create view') . "</a>\n" : "");
 	
 		if (support("routine")) {
 			echo "<h3 id='routines'>" . lang('Routines') . "</h3>\n";
@@ -144,7 +142,10 @@ if ($adminer->homepage()) {
 				}
 				echo "</table>\n";
 			}
-			echo '<p>' . (support("procedure") ? '<a href="' . h(ME) . 'procedure=">' . lang('Create procedure') . '</a> ' : '') . '<a href="' . h(ME) . 'function=">' . lang('Create function') . "</a>\n";
+			echo '<p class="links">'
+				. (support("procedure") ? '<a href="' . h(ME) . 'procedure=">' . lang('Create procedure') . '</a>' : '')
+				. '<a href="' . h(ME) . 'function=">' . lang('Create function') . "</a>\n"
+			;
 		}
 		
 		if (support("sequence")) {

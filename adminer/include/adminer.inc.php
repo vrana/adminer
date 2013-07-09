@@ -119,7 +119,7 @@ username.form['auth[driver]'].onchange();
 	* @return null
 	*/
 	function selectLinks($tableStatus, $set = "") {
-		echo '<p class="tabs">';
+		echo '<p class="links">';
 		$links = array("select" => lang('Select data'), "table" => lang('Show structure'));
 		if (is_view($tableStatus)) {
 			$links["view"] = lang('Alter view');
@@ -724,7 +724,7 @@ username.form['auth[driver]'].onchange();
 	* @return bool whether to print default homepage
 	*/
 	function homepage() {
-		echo '<p>' . ($_GET["ns"] == "" ? '<a href="' . h(ME) . 'database=">' . lang('Alter database') . "</a>\n" : "");
+		echo '<p class="links">' . ($_GET["ns"] == "" ? '<a href="' . h(ME) . 'database=">' . lang('Alter database') . "</a>\n" : "");
 		echo (support("scheme") ? "<a href='" . h(ME) . "scheme='>" . ($_GET["ns"] != "" ? lang('Alter schema') : lang('Create schema')) . "</a>\n" : "");
 		echo ($_GET["ns"] !== "" ? '<a href="' . h(ME) . 'schema=">' . lang('Database schema') . "</a>\n" : "");
 		echo (support("privileges") ? "<a href='" . h(ME) . "privileges='>" . lang('Privileges') . "</a>\n" : "");
@@ -763,14 +763,14 @@ username.form['auth[driver]'].onchange();
 			}
 		} else {
 			if (DB == "" || !$missing) {
-				echo "<p><a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"])) . " title='" . lang('Import') . "'>" . lang('SQL command') . "</a>\n";
+				echo "<p class='links'><a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"])) . " title='" . lang('Import') . "'>" . lang('SQL command') . "</a>\n";
 				if (support("dump")) {
 					echo "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . lang('Dump') . "</a>\n";
 				}
 			}
 			$this->databasesPrint($missing);
 			if ($_GET["ns"] !== "" && !$missing && DB != "") {
-				echo '<p><a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create new table') . "</a>\n";
+				echo '<p class="links"><a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create new table') . "</a>\n";
 				$tables = table_status('', true);
 				if (!$tables) {
 					echo "<p class='message'>" . lang('No tables.') . "\n";
