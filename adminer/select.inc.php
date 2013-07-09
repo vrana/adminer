@@ -173,7 +173,7 @@ if ($_POST && !$error) {
 			$cols = array_keys($fields);
 			preg_match_all('~(?>"[^"]*"|[^"\\r\\n]+)+~', $file, $matches);
 			$affected = count($matches[0]);
-			begin();
+			$driver->begin();
 			$separator = ($_POST["separator"] == "csv" ? "," : ($_POST["separator"] == "tsv" ? "\t" : ";"));
 			$rows = array();
 			foreach ($matches[0] as $key => $val) {
@@ -192,10 +192,10 @@ if ($_POST && !$error) {
 			}
 			$result = (!$rows || $driver->insertUpdate($TABLE, $rows, $primary));
 			if ($result) {
-				queries("COMMIT");
+				$driver->commit();
 			}
 			queries_redirect(remove_from_uri("page"), lang('%d row(s) have been imported.', $affected), $result);
-			queries("ROLLBACK"); // after queries_redirect() to not overwrite error
+			$driver->rollback(); // after queries_redirect() to not overwrite error
 			
 		}
 	}

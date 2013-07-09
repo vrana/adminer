@@ -539,10 +539,6 @@ ORDER BY p.proname');
 		return get_vals("SELECT langname FROM pg_catalog.pg_language");
 	}
 	
-	function begin() {
-		return queries("BEGIN");
-	}
-	
 	function last_id() {
 		return 0; // there can be several sequences
 	}

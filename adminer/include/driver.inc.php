@@ -60,4 +60,19 @@
 		return false;
 	}
 	
+	/** Begin transaction
+	* @return bool
+	*/
+	function begin() {
+		return queries("BEGIN");
+	}
+	
+	function commit() {
+		return queries("COMMIT");
+	}
+	
+	function rollback() {
+		return queries("ROLLBACK");
+	}
+	
 }

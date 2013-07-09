@@ -837,13 +837,6 @@ if (!defined("DRIVER")) {
 		return array(); // "SQL" not required
 	}
 	
-	/** Begin transaction
-	* @return bool
-	*/
-	function begin() {
-		return queries("BEGIN");
-	}
-	
 	/** Get last auto increment ID
 	* @return string
 	*/

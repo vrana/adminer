@@ -138,6 +138,10 @@ if (isset($_GET["oracle"])) {
 		
 		//! support empty $set in insert()
 		
+		function begin() {
+			return true; // automatic start
+		}
+		
 	}
 
 
@@ -328,10 +332,6 @@ ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
 		return apply_queries("DROP TABLE", $tables);
 	}
 
-	function begin() {
-		return true; // automatic start
-	}
-	
 	function last_id() {
 		return 0; //!
 	}

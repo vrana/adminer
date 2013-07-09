@@ -258,6 +258,10 @@ if (isset($_GET["mssql"])) {
 			return true;
 		}
 		
+		function begin() {
+			return queries("BEGIN TRANSACTION");
+		}
+		
 	}
 
 
@@ -483,10 +487,6 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 		return (!$index || queries("DROP INDEX " . implode(", ", $index)))
 			&& (!$drop || queries("ALTER TABLE " . table($table) . " DROP " . implode(", ", $drop)))
 		;
-	}
-	
-	function begin() {
-		return queries("BEGIN TRANSACTION");
 	}
 	
 	function last_id() {

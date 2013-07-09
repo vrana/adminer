@@ -210,6 +210,18 @@ if (isset($_GET["simpledb"])) {
 			return true;
 		}
 		
+		function begin() {
+			return false;
+		}
+		
+		function commit() {
+			return false;
+		}
+		
+		function rollback() {
+			return false;
+		}
+		
 	}
 	
 	
