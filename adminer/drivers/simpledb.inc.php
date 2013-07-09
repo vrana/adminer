@@ -200,6 +200,10 @@ if (isset($_GET["simpledb"])) {
 			return sdb_request('PutAttributes', $params);
 		}
 		
+		function insertUpdate($table, $set, $primary) {
+			return $this->update($table, $set, "WHERE `itemName()` = " . q($set["`itemName()`"]));
+		}
+		
 	}
 	
 	
