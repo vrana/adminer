@@ -346,7 +346,6 @@ if (isset($_GET["simpledb"])) {
 	}
 	
 	function fk_support($table_status) {
-		return false;
 	}
 	
 	function engines() {
