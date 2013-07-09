@@ -239,7 +239,7 @@ if (!defined("DRIVER")) {
 		
 		function insertUpdate($table, $set, $primary) {
 			foreach ($set as $key => $val) {
-				$set[$key] = "$key = $val";
+				$set[$key] = "$key = VALUES($key)";
 			}
 			$update = implode(", ", $set);
 			return queries("INSERT INTO " . table($table) . " SET $update ON DUPLICATE KEY UPDATE $update");
