@@ -107,9 +107,8 @@ if ($adminer->homepage()) {
 			}
 			
 			echo "</table>\n";
-			echo "<script type='text/javascript'>tableCheck();</script>\n";
 			if (!information_schema(DB)) {
-				echo "<p>"
+				echo "<fieldset><legend>" . lang('Selected') . " <span id='selected'></span></legend><div>"
 				. (ereg('^(sql|sqlite|pgsql)$', $jush) ? ($jush != "sqlite" ? "<input type='submit' value='" . lang('Analyze') . "'> " : "") . "<input type='submit' name='optimize' value='" . lang('Optimize') . "'> " : "")
 				. ($jush == "sql" ? "<input type='submit' name='check' value='" . lang('Check') . "'> <input type='submit' name='repair' value='" . lang('Repair') . "'> " : "")
 				. (support("table") ? "<input type='submit' name='truncate' value='" . lang('Truncate') . "'" . confirm("formChecked(this, /tables/)") . "> " : "")
@@ -123,9 +122,12 @@ if ($adminer->homepage()) {
 					echo (support("copy") ? " <input type='submit' name='copy' value='" . lang('Copy') . "'>" : "");
 					echo "\n";
 				}
+				echo "<input type='hidden' name='all' value='' onclick='selectCount(formChecked(this, /^(tables|views)\[/));'>\n"; // used by trCheck()
 				echo "<input type='hidden' name='token' value='$token'>\n";
+				echo "</div></fieldset>\n";
 			}
 			echo "</form>\n";
+			echo "<script type='text/javascript'>tableCheck();</script>\n";
 		}
 		
 		echo '<p class="links"><a href="' . h(ME) . 'create=">' . lang('Create table') . "</a>\n";
