@@ -57,7 +57,7 @@ function parentTag(el, tag) {
 function trCheck(el) {
 	var tr = parentTag(el, 'tr');
 	tr.className = tr.className.replace(/(^|\s)checked(\s|$)/, '$2') + (el.checked ? ' checked' : '');
-	if (el.form['all']) {
+	if (el.form && el.form['all']) {
 		el.form['all'].onclick();
 	}
 }
