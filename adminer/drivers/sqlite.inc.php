@@ -208,8 +208,12 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 
 	class Min_Driver extends Min_SQL {
 		
-		function insertUpdate($table, $set, $primary) {
-			return queries("REPLACE INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ")");
+		function insertUpdate($table, $rows, $primary) {
+			$values = array();
+			foreach ($rows as $set) {
+				$values[] = "(" . implode(", ", $set) . ")";
+			}
+			return queries("REPLACE INTO " . table($table) . " (" . implode(", ", array_keys(reset($rows))) . ") VALUES\n" . implode(",\n", $values));
 		}
 		
 	}

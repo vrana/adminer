@@ -53,10 +53,10 @@
 	/** Insert or update data in table
 	* @param string
 	* @param array
-	* @param array columns in keys
+	* @param array of arrays with escaped columns in keys and quoted data in values
 	* @return bool
 	*/
-	/*abstract*/ function insertUpdate($table, $set, $primary) {
+	/*abstract*/ function insertUpdate($table, $rows, $primary) {
 		return false;
 	}
 	

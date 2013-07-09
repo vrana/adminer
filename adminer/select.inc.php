@@ -175,6 +175,7 @@ if ($_POST && !$error) {
 			$affected = count($matches[0]);
 			begin();
 			$separator = ($_POST["separator"] == "csv" ? "," : ($_POST["separator"] == "tsv" ? "\t" : ";"));
+			$rows = array();
 			foreach ($matches[0] as $key => $val) {
 				preg_match_all("~((?>\"[^\"]*\")+|[^$separator]*)$separator~", $val . $separator, $matches2);
 				if (!$key && !array_diff($matches2[1], $cols)) { //! doesn't work with column names containing ",\n
@@ -186,12 +187,10 @@ if ($_POST && !$error) {
 					foreach ($matches2[1] as $i => $col) {
 						$set[idf_escape($cols[$i])] = ($col == "" && $fields[$cols[$i]]["null"] ? "NULL" : q(str_replace('""', '"', preg_replace('~^"|"$~', '', $col))));
 					}
-					$result = $driver->insertUpdate($TABLE, $set, $primary);
-					if (!$result) {
-						break;
-					}
+					$rows[] = $set;
 				}
 			}
+			$result = (!$rows || $driver->insertUpdate($TABLE, $rows, $primary));
 			if ($result) {
 				queries("COMMIT");
 			}

@@ -153,19 +153,24 @@ if (isset($_GET["pgsql"])) {
 
 	class Min_Driver extends Min_SQL {
 		
-		function insertUpdate($table, $set, $primary) {
+		function insertUpdate($table, $rows, $primary) {
 			global $connection;
-			$update = array();
-			$where = array();
-			foreach ($set as $key => $val) {
-				$update[] = "$key = $val";
-				if (isset($primary[idf_unescape($key)])) {
-					$where[] = "$key = $val";
+			foreach ($rows as $set) {
+				$update = array();
+				$where = array();
+				foreach ($set as $key => $val) {
+					$update[] = "$key = $val";
+					if (isset($primary[idf_unescape($key)])) {
+						$where[] = "$key = $val";
+					}
+				}
+				if (!(($where && queries("UPDATE " . table($table) . " SET " . implode(", ", $update) . " WHERE " . implode(" AND ", $where)) && $connection->affected_rows)
+					|| queries("INSERT INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ")")
+				)) {
+					return false;
 				}
 			}
-			return ($where && queries("UPDATE " . table($table) . " SET " . implode(", ", $update) . " WHERE " . implode(" AND ", $where)) && $connection->affected_rows)
-				|| queries("INSERT INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ")")
-			;
+			return true;
 		}
 		
 	}
