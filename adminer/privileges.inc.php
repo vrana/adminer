@@ -26,4 +26,4 @@ if (!$grant || DB != "") {
 echo "</table>\n";
 echo "</form>\n";
 
-echo '<p><a href="' . h(ME) . 'user=">' . lang('Create user') . "</a>";
+echo '<p class="links"><a href="' . h(ME) . 'user=">' . lang('Create user') . "</a>";

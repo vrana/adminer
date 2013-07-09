@@ -167,7 +167,7 @@ if ($adminer->homepage()) {
 				}
 				echo "</table>\n";
 			}
-			echo "<p><a href='" . h(ME) . "sequence='>" . lang('Create sequence') . "</a>\n";
+			echo "<p class='links'><a href='" . h(ME) . "sequence='>" . lang('Create sequence') . "</a>\n";
 		}
 		
 		if (support("type")) {
@@ -182,7 +182,7 @@ if ($adminer->homepage()) {
 				}
 				echo "</table>\n";
 			}
-			echo "<p><a href='" . h(ME) . "type='>" . lang('Create type') . "</a>\n";
+			echo "<p class='links'><a href='" . h(ME) . "type='>" . lang('Create type') . "</a>\n";
 		}
 		
 		if (support("event")) {
@@ -204,7 +204,7 @@ if ($adminer->homepage()) {
 					echo "<p class='error'><code class='jush-sqlset'>event_scheduler</code>: " . h($event_scheduler) . "\n";
 				}
 			}
-			echo '<p><a href="' . h(ME) . 'event=">' . lang('Create event') . "</a>\n";
+			echo '<p class="links"><a href="' . h(ME) . 'event=">' . lang('Create event') . "</a>\n";
 		}
 		
 		if ($tables_list) {

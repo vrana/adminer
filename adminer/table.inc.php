@@ -44,7 +44,7 @@ if ($fields) {
 			}
 			echo "</table>\n";
 		}
-		echo '<p><a href="' . h(ME) . 'indexes=' . urlencode($TABLE) . '">' . lang('Alter indexes') . "</a>\n";
+		echo '<p class="links"><a href="' . h(ME) . 'indexes=' . urlencode($TABLE) . '">' . lang('Alter indexes') . "</a>\n";
 		
 		if (fk_support($table_status)) {
 			echo "<h3 id='foreign-keys'>" . lang('Foreign keys') . "</h3>\n";
@@ -67,7 +67,7 @@ if ($fields) {
 				echo "</table>\n";
 			}
 			if ($jush != "sqlite") {
-				echo '<p><a href="' . h(ME) . 'foreign=' . urlencode($TABLE) . '">' . lang('Add foreign key') . "</a>\n";
+				echo '<p class="links"><a href="' . h(ME) . 'foreign=' . urlencode($TABLE) . '">' . lang('Add foreign key') . "</a>\n";
 			}
 		}
 		
@@ -81,7 +81,7 @@ if ($fields) {
 				}
 				echo "</table>\n";
 			}
-			echo '<p><a href="' . h(ME) . 'trigger=' . urlencode($TABLE) . '">' . lang('Add trigger') . "</a>\n";
+			echo '<p class="links"><a href="' . h(ME) . 'trigger=' . urlencode($TABLE) . '">' . lang('Add trigger') . "</a>\n";
 		}
 		
 	}
