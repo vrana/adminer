@@ -536,7 +536,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	}
 	
 	function navigation($missing) {
-		global $VERSION, $token;
+		global $VERSION;
 		?>
 <h1>
 <?php echo $this->name(); ?> <span class="version"><?php echo $VERSION; ?></span>
@@ -555,14 +555,6 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 				}
 			}
 		} else {
-			?>
-<form action="" method="post">
-<p class="logout">
-<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" id="logout">
-<input type="hidden" name="token" value="<?php echo $token; ?>">
-</p>
-</form>
-<?php
 			$this->databasesPrint($missing);
 			if ($missing != "db" && $missing != "ns") {
 				$table_status = table_status('', true);

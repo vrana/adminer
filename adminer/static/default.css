@@ -50,13 +50,12 @@ input.default { box-shadow: 1px 1px 1px #777; }
 .size { width: 6ex; }
 .help { cursor: help; }
 .pages { position: fixed; bottom: 0; left: 21em; padding: 5px; background: #ddf; border: 1px solid #999; }
+.logout { margin-top: .5em; position: absolute; top: 0; right: 0; }
 #menu { position: absolute; margin: 10px 0 0; padding: 0 0 30px 0; top: 2em; left: 0; width: 19em; }
 #menu p { padding: .8em 1em; margin: 0; border-bottom: 1px solid #ccc; }
 #dbs { overflow: hidden; }
 #logins, #tables { white-space: nowrap; overflow: auto; text-overflow: ellipsis; }
 #logins a, #tables a { background: #fff; }
-#logout { background: none; border: none; color: blue; font: inherit; padding: 0; text-decoration: underline; cursor: pointer; }
-#logout:hover { color: red; }
 #content { margin: 2em 0 0 21em; padding: 10px 20px 20px 0; }
 #lang { position: absolute; top: 0; left: 0; line-height: 1.8em; padding: .3em 1em; }
 #breadcrumb { white-space: nowrap; position: absolute; top: 0; left: 21em; background: #eee; height: 2em; line-height: 1.8em; padding: 0 1em; margin: 0 0 0 -18px; }
@@ -68,6 +67,7 @@ input.default { box-shadow: 1px 1px 1px #777; }
 
 .rtl h2 { margin: 0 -18px 20px 0; }
 .rtl p, .rtl table, .rtl .error, .rtl .message { margin: 1em 0 0 20px; }
+.rtl .logout { left: 0; right: auto; }
 .rtl #content { margin: 2em 21em 0 0; padding: 10px 0 20px 20px; }
 .rtl #breadcrumb { left: auto; right: 21em; margin: 0 -18px 0 0; }
 .rtl #lang, .rtl #menu { left: auto; right: 0; }

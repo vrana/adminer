@@ -736,7 +736,7 @@ username.form['auth[driver]'].onchange();
 	* @return null
 	*/
 	function navigation($missing) {
-		global $VERSION, $token, $jush, $drivers;
+		global $VERSION, $jush, $drivers;
 		?>
 <h1>
 <?php echo $this->name(); ?> <span class="version"><?php echo $VERSION; ?></span>
@@ -762,22 +762,12 @@ username.form['auth[driver]'].onchange();
 				}
 			}
 		} else {
-			?>
-<form action="" method="post">
-<p class="logout">
-<?php
 			if (DB == "" || !$missing) {
-				echo "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"])) . " title='" . lang('Import') . "'>" . lang('SQL command') . "</a>\n";
+				echo "<p><a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"])) . " title='" . lang('Import') . "'>" . lang('SQL command') . "</a>\n";
 				if (support("dump")) {
 					echo "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . lang('Dump') . "</a>\n";
 				}
 			}
-			?>
-<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" id="logout">
-<input type="hidden" name="token" value="<?php echo $token; ?>">
-</p>
-</form>
-<?php
 			$this->databasesPrint($missing);
 			if ($_GET["ns"] !== "" && !$missing && DB != "") {
 				echo '<p><a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create new table') . "</a>\n";
