@@ -54,7 +54,9 @@ if ($adminer->homepage()) {
 			echo "<p class='message'>" . lang('No tables.') . "\n";
 		} else {
 			echo "<form action='' method='post'>\n";
-			echo "<p>" . lang('Search data in tables') . ": <input type='search' name='query' value='" . h($_POST["query"]) . "'> <input type='submit' name='search' value='" . lang('Search') . "'>\n";
+			echo "<fieldset><legend>" . lang('Search data in tables') . " <span id='selected2'></span></legend><div>";
+			echo "<input type='search' name='query' value='" . h($_POST["query"]) . "'> <input type='submit' name='search' value='" . lang('Search') . "'>\n";
+			echo "</div></fieldset>\n";
 			if ($_POST["search"] && $_POST["query"] != "") {
 				search_tables();
 			}
@@ -72,6 +74,7 @@ if ($adminer->homepage()) {
 			echo (support("comment") ? '<td>' . lang('Comment') : '');
 			echo "</thead>\n";
 			
+			$tables = 0;
 			foreach ($tables_list as $name => $type) {
 				$view = ($type !== null && !eregi("table", $type));
 				echo '<tr' . odd() . '><td>' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array($name, $tables_views, true), "", "formUncheck('check-all');");
@@ -95,6 +98,7 @@ if ($adminer->homepage()) {
 							: "<span$id>?</span>"
 						) : "<td id='$key-" . h($name) . "'>&nbsp;");
 					}
+					$tables++;
 				}
 				echo (support("comment") ? "<td id='Comment-" . h($name) . "'>&nbsp;" : "");
 			}
@@ -122,7 +126,7 @@ if ($adminer->homepage()) {
 					echo (support("copy") ? " <input type='submit' name='copy' value='" . lang('Copy') . "'>" : "");
 					echo "\n";
 				}
-				echo "<input type='hidden' name='all' value='' onclick=\"selectCount('selected', formChecked(this, /^(tables|views)\[/));\">\n"; // used by trCheck()
+				echo "<input type='hidden' name='all' value='' onclick=\"selectCount('selected', formChecked(this, /^(tables|views)\[/)); selectCount('selected2', formChecked(this, /^tables\[/) || $tables);\">\n"; // used by trCheck()
 				echo "<input type='hidden' name='token' value='$token'>\n";
 				echo "</div></fieldset>\n";
 			}
