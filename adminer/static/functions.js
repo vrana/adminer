@@ -635,7 +635,7 @@ function findDefaultSubmit(form) {
 	var inputs = form.getElementsByTagName('input');
 	for (var i = 0; i < inputs.length; i++) {
 		var input = inputs[i];
-		if (input.type == 'submit') {
+		if (input.type == 'submit' && !input.style.zIndex) {
 			return input;
 		}
 	}

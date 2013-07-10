@@ -90,7 +90,12 @@ if (!$row) {
 
 <form action="" method="post">
 <table cellspacing="0" class="nowrap">
-<thead><tr><th><?php echo lang('Index Type'); ?><th><?php echo lang('Column (length)'); ?><th><?php echo lang('Name'); ?><th><noscript><input type='image' class='icon' name='add[0]' src='../adminer/static/plus.gif' alt='+' title='<?php echo lang('Add next'); ?>'></noscript>&nbsp;</thead>
+<thead><tr>
+<th><?php echo lang('Index Type'); ?>
+<th><input type="submit" style="z-index: -1; position: absolute; height: 0;"><?php echo lang('Column (length)'); ?>
+<th><?php echo lang('Name'); ?>
+<th><noscript><input type='image' class='icon' name='add[0]' src='../adminer/static/plus.gif' alt='+' title='<?php echo lang('Add next'); ?>'></noscript>&nbsp;
+</thead>
 <?php
 $j = 1;
 foreach ($row["indexes"] as $index) {
