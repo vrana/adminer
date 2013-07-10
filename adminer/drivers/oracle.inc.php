@@ -376,7 +376,7 @@ ORDER BY PROCESS
 	}
 	
 	function support($feature) {
-		return ereg("database|table|view|scheme|processlist|drop_col|variables|status", $feature); //!
+		return ereg('^(database|table|sql|indexes|view|scheme|processlist|drop_col|variables|status)$', $feature); //!
 	}
 	
 	$jush = "oracle";

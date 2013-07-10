@@ -119,7 +119,7 @@ if (isset($_GET["simpledb"])) {
 	
 	
 	
-	class Min_Driver {
+	class Min_Driver extends Min_SQL {
 		
 		function _chunkRequest($ids, $action, $params, $expand = array()) {
 			global $connection;
@@ -148,6 +148,14 @@ if (isset($_GET["simpledb"])) {
 					$return[] = $item->Name;
 				}
 			}
+			return $return;
+		}
+		
+		function select($table, $select, $where, $group, $order, $limit, $page) {
+			global $connection;
+			$connection->next = $_GET["next"];
+			$return = parent::select($table, $select, $where, $group, $order, $limit, $page);
+			$connection->next = 0;
 			return $return;
 		}
 		
@@ -231,7 +239,7 @@ if (isset($_GET["simpledb"])) {
 	}
 	
 	function support($feature) {
-		return false;
+		return ereg('sql', $feature);
 	}
 	
 	function logged_user() {

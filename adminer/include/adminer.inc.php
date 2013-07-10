@@ -769,7 +769,7 @@ username.form['auth[driver]'].onchange();
 		} else {
 			$this->databasesPrint($missing);
 			if (DB == "" || !$missing) {
-				echo "<p class='links'><a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"])) . ">" . lang('SQL command') . "/" . lang('Import') . "</a><br>\n";
+				echo "<p class='links'>" . (support("sql") ? "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"])) . ">" . lang('SQL command') . "/" . lang('Import') . "</a><br>\n" : "") . "";
 				if (support("dump")) {
 					echo "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . lang('Dump') . "</a><br>\n";
 				}

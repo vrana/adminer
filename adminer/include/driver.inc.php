@@ -10,6 +10,33 @@
 		$this->_conn = $connection;
 	}
 	
+	/** Select data from table
+	* @param string
+	* @param array result of $adminer->selectColumnsProcess()[0]
+	* @param array result of $adminer->selectSearchProcess()
+	* @param array result of $adminer->selectColumnsProcess()[1]
+	* @param array result of $adminer->selectOrderProcess()
+	* @param int result of $adminer->selectLimitProcess()
+	* @param int index of page starting at zero
+	* @return Min_Result
+	*/
+	function select($table, $select, $where, $group, $order, $limit, $page) {
+		global $adminer, $jush;
+		$is_group = (count($group) < count($select));
+		$query = $adminer->selectQueryBuild($select, $where, $group, $order, $limit, $page);
+		if (!$query) {
+			$query = "SELECT" . limit(
+				($_GET["page"] != "last" && +$limit && $group && $is_group && $jush == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . implode(", ", $select) . "\nFROM " . table($table),
+				($where ? "\nWHERE " . implode(" AND ", $where) : "") . ($group && $is_group ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : ""),
+				($limit != "" ? +$limit : null),
+				($page ? $limit * $page : 0),
+				"\n"
+			);
+		}
+		echo $adminer->selectQuery($query);
+		return $this->_conn->query($query);
+	}
+	
 	/** Delete data from table
 	* @param string
 	* @param string " WHERE ..."

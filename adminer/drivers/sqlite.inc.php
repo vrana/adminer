@@ -680,7 +680,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 	
 	function support($feature) {
-		return ereg('^(database|table|view|trigger|variables|status|dump|move_col|drop_col)$', $feature);
+		return ereg('^(database|table|sql|indexes|view|trigger|variables|status|dump|move_col|drop_col)$', $feature);
 	}
 	
 	$jush = "sqlite";

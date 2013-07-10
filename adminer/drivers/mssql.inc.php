@@ -607,7 +607,7 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)
 	}
 	
 	function support($feature) {
-		return ereg('^(database|table|scheme|trigger|view|drop_col)$', $feature); //! routine|
+		return ereg('^(database|table|sql|indexes|scheme|trigger|view|drop_col)$', $feature); //! routine|
 	}
 	
 	$jush = "mssql";

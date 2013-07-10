@@ -245,21 +245,19 @@ if (!$columns && support("table")) {
 		$page = floor(max(0, $found_rows - 1) / $limit);
 	}
 
-	$query = $adminer->selectQueryBuild($select, $where, $group, $order, $limit, $page);
-	if (!$query) {
-		$query = "SELECT" . limit(
-			($_GET["page"] != "last" && +$limit && $group && $is_group && $jush == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . $from,
-			($where ? "\nWHERE " . implode(" AND ", $where) : "") . $group_by,
-			($limit != "" ? +$limit : null),
-			($page ? $limit * $page : 0),
-			"\n"
-		);
+	$select2 = $select;
+	if (!$select2) {
+		$select2[] = "*";
+		if ($oid) {
+			$select2[] = $oid;
+		}
 	}
-	echo $adminer->selectQuery($query);
+	$convert_fields = convert_fields($columns, $fields, $select);
+	if ($convert_fields) {
+		$select2[] = substr($convert_fields, 2);
+	}
+	$result = $driver->select($TABLE, $select2, $where, $group, $order, $limit, $page);
 	
-	$connection->next = $_GET["next"];
-	$result = $connection->query($query);
-	$connection->next = 0;
 	if (!$result) {
 		echo "<p class='error'>" . error() . "\n";
 	} else {

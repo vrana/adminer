@@ -27,24 +27,26 @@ if ($fields) {
 	echo "</table>\n";
 	
 	if (!is_view($table_status)) {
-		echo "<h3 id='indexes'>" . lang('Indexes') . "</h3>\n";
-		$indexes = indexes($TABLE);
-		if ($indexes) {
-			echo "<table cellspacing='0'>\n";
-			foreach ($indexes as $name => $index) {
-				ksort($index["columns"]); // enforce correct columns order
-				$print = array();
-				foreach ($index["columns"] as $key => $val) {
-					$print[] = "<i>" . h($val) . "</i>"
-						. ($index["lengths"][$key] ? "(" . $index["lengths"][$key] . ")" : "")
-						. ($index["descs"][$key] ? " DESC" : "")
-					;
+		if (support("indexes")) {
+			echo "<h3 id='indexes'>" . lang('Indexes') . "</h3>\n";
+			$indexes = indexes($TABLE);
+			if ($indexes) {
+				echo "<table cellspacing='0'>\n";
+				foreach ($indexes as $name => $index) {
+					ksort($index["columns"]); // enforce correct columns order
+					$print = array();
+					foreach ($index["columns"] as $key => $val) {
+						$print[] = "<i>" . h($val) . "</i>"
+							. ($index["lengths"][$key] ? "(" . $index["lengths"][$key] . ")" : "")
+							. ($index["descs"][$key] ? " DESC" : "")
+						;
+					}
+					echo "<tr title='" . h($name) . "'><th>$index[type]<td>" . implode(", ", $print) . "\n";
 				}
-				echo "<tr title='" . h($name) . "'><th>$index[type]<td>" . implode(", ", $print) . "\n";
+				echo "</table>\n";
 			}
-			echo "</table>\n";
+			echo '<p class="links"><a href="' . h(ME) . 'indexes=' . urlencode($TABLE) . '">' . lang('Alter indexes') . "</a>\n";
 		}
-		echo '<p class="links"><a href="' . h(ME) . 'indexes=' . urlencode($TABLE) . '">' . lang('Alter indexes') . "</a>\n";
 		
 		if (fk_support($table_status)) {
 			echo "<h3 id='foreign-keys'>" . lang('Foreign keys') . "</h3>\n";

@@ -1,5 +1,5 @@
 Adminer 4.0.0-dev:
-Driver for SimpleDB
+Driver for SimpleDB and Elasticsearch
 Save and continue edit by AJAX
 Add a new column in alter table on key press
 Mark length as required for strings
