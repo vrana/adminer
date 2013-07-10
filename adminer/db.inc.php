@@ -122,7 +122,7 @@ if ($adminer->homepage()) {
 					echo (support("copy") ? " <input type='submit' name='copy' value='" . lang('Copy') . "'>" : "");
 					echo "\n";
 				}
-				echo "<input type='hidden' name='all' value='' onclick='selectCount(formChecked(this, /^(tables|views)\[/));'>\n"; // used by trCheck()
+				echo "<input type='hidden' name='all' value='' onclick=\"selectCount('selected', formChecked(this, /^(tables|views)\[/));\">\n"; // used by trCheck()
 				echo "<input type='hidden' name='token' value='$token'>\n";
 				echo "</div></fieldset>\n";
 			}

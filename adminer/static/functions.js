@@ -67,9 +67,10 @@ function trCheck(el) {
 
 /** Fill number of selected items
 * @param string
+* @param string
 */
-function selectCount(count) {
-	setHtml('selected', (count === '' ? '' : '(' + count + ')'));
+function selectCount(id, count) {
+	setHtml(id, (count === '' ? '' : '(' + count + ')'));
 }
 
 /** Check all elements matching given name

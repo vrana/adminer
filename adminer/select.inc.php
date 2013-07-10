@@ -493,7 +493,7 @@ if (!$columns && support("table")) {
 			
 			echo "<p>\n";
 			echo ($found_rows !== false ? "(" . ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) . ") " : "");
-			echo checkbox("all", 1, 0, lang('whole result'), "selectCount(this.checked ? '$found_rows' : formChecked(this, /check/));") . "\n";
+			echo checkbox("all", 1, 0, lang('whole result'), "var checked = formChecked(this, /check/); selectCount('selected', this.checked ? '$found_rows' : checked); selectCount('selected2', this.checked || !checked ? '$found_rows' : checked);") . "\n";
 			
 			if ($adminer->selectCommandPrint()) {
 				?>
@@ -507,7 +507,6 @@ if (!$columns && support("table")) {
 </div></fieldset>
 <?php
 			}
-			echo (!$group && $select ? "" : "<script type='text/javascript'>tableCheck();</script>\n");
 			
 			$format = $adminer->dumpFormat();
 			foreach ((array) $_GET["columns"] as $column) {
@@ -517,13 +516,15 @@ if (!$columns && support("table")) {
 				}
 			}
 			if ($format) {
-				print_fieldset("export", lang('Export'));
+				print_fieldset("export", lang('Export') . " <span id='selected2'></span>");
 				$output = $adminer->dumpOutput();
 				echo ($output ? html_select("output", $output, $adminer_import["output"]) . " " : "");
 				echo html_select("format", $format, $adminer_import["format"]);
 				echo " <input type='submit' name='export' value='" . lang('Export') . "'>\n";
 				echo "</div></fieldset>\n";
 			}
+			
+			echo (!$group && $select ? "" : "<script type='text/javascript'>tableCheck();</script>\n");
 		}
 		
 		if ($adminer->selectImportPrint()) {
