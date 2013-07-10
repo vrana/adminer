@@ -356,13 +356,13 @@ function editingTypeChange(type) {
 	for (var i=0; i < type.form.elements.length; i++) {
 		var el = type.form.elements[i];
 		if (el.name == name + '[length]') {
-			el.required = /var(char|binary)$/.test(text);
 			if (!(
 				(/(char|binary)$/.test(lastType) && /(char|binary)$/.test(text))
 				|| (/(enum|set)$/.test(lastType) && /(enum|set)$/.test(text))
 			)) {
 				el.value = '';
 			}
+			el.onchange.apply(el);
 		}
 		if (lastType == 'timestamp' && el.name == name + '[has_default]' && /timestamp/i.test(formField(type.form, name + '[default]').value)) {
 			el.checked = false;
@@ -379,6 +379,16 @@ function editingTypeChange(type) {
 		if (el.name == name + '[on_delete]') {
 			el.className = (/`/.test(text) ? '' : 'hidden');
 		}
+	}
+}
+
+/** Mark length as required
+* @param HTMLInputElement
+*/
+function editingLengthChange(el) {
+	el.className = el.className.replace(/( |^)required( |$)/, '$2');
+	if (!el.value.length && /var(char|binary)$/.test(selectValue(el.parentNode.previousSibling.firstChild))) {
+		el.className += ' required';
 	}
 }
 
