@@ -79,7 +79,7 @@ function trCheck(el) {
 * @param string
 */
 function selectCount(id, count) {
-	setHtml(id, (count === '' ? '' : '(' + count + ')'));
+	setHtml(id, (count === '' ? '' : '(' + (count + '').replace(/\B(?=(\d{3})+$)/g, ' ') + ')'));
 	var inputs = document.getElementById(id).parentNode.parentNode.getElementsByTagName('input');
 	for (var i = 0; i < inputs.length; i++) {
 		var input = inputs[i];
