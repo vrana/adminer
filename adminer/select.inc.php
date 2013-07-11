@@ -493,7 +493,8 @@ if (!$columns && support("table")) {
 			
 			echo "<p>\n";
 			echo ($found_rows !== false ? "(" . ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) . ") " : "");
-			echo checkbox("all", 1, 0, lang('whole result'), "var checked = formChecked(this, /check/); selectCount('selected', this.checked ? '$found_rows' : checked); selectCount('selected2', this.checked || !checked ? '$found_rows' : checked);") . "\n";
+			$display_rows = ($exact_count ? "" : "~ ") . $found_rows;
+			echo checkbox("all", 1, 0, lang('whole result'), "var checked = formChecked(this, /check/); selectCount('selected', this.checked ? '$display_rows' : checked); selectCount('selected2', this.checked || !checked ? '$display_rows' : checked);") . "\n";
 			
 			if ($adminer->selectCommandPrint()) {
 				?>
@@ -503,7 +504,7 @@ if (!$columns && support("table")) {
 <fieldset><legend><?php echo lang('Selected'); ?> <span id="selected"></span></legend><div>
 <input type="submit" name="edit" value="<?php echo lang('Edit'); ?>">
 <input type="submit" name="clone" value="<?php echo lang('Clone'); ?>">
-<input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?> (' + (this.form['all'].checked ? '<?php echo $found_rows; ?>' : formChecked(this, /check/)) + ')');">
+<input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?> (' + (this.form['all'].checked ? '<?php echo $display_rows; ?>' : formChecked(this, /check/)) + ')');">
 </div></fieldset>
 <?php
 			}
