@@ -80,6 +80,13 @@ function trCheck(el) {
 */
 function selectCount(id, count) {
 	setHtml(id, (count === '' ? '' : '(' + count + ')'));
+	var inputs = document.getElementById(id).parentNode.parentNode.getElementsByTagName('input');
+	for (var i = 0; i < inputs.length; i++) {
+		var input = inputs[i];
+		if (input.type == 'submit') {
+			input.disabled = (count == '0');
+		}
+	}
 }
 
 /** Check all elements matching given name
