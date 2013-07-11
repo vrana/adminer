@@ -69,7 +69,7 @@ function typePassword(el, disable) {
 function loginDriver(driver) {
 	var trs = parentTag(driver, 'table').rows;
 	for (var i=1; i < trs.length - 1; i++) {
-		trs[i].className = (/sqlite/.test(driver.value) ? 'hidden' : '');
+		alterClass(trs[i], 'hidden', /sqlite/.test(driver.value));
 	}
 }
 
@@ -368,16 +368,16 @@ function editingTypeChange(type) {
 			el.checked = false;
 		}
 		if (el.name == name + '[collation]') {
-			el.className = (/(char|text|enum|set)$/.test(text) ? '' : 'hidden');
+			alterClass(el, 'hidden', !/(char|text|enum|set)$/.test(text));
 		}
 		if (el.name == name + '[unsigned]') {
-			el.className = (/((^|[^o])int|float|double|decimal)$/.test(text) ? '' : 'hidden');
+			alterClass(el, 'hidden', !/((^|[^o])int|float|double|decimal)$/.test(text));
 		}
 		if (el.name == name + '[on_update]') {
-			el.className = (text == 'timestamp' ? '' : 'hidden');
+			alterClass(el, 'hidden', text != 'timestamp');
 		}
 		if (el.name == name + '[on_delete]') {
-			el.className = (/`/.test(text) ? '' : 'hidden');
+			alterClass(el, 'hidden', !/`/.test(text));
 		}
 	}
 }
@@ -386,10 +386,7 @@ function editingTypeChange(type) {
 * @param HTMLInputElement
 */
 function editingLengthChange(el) {
-	el.className = el.className.replace(/( |^)required( |$)/, '$2');
-	if (!el.value.length && /var(char|binary)$/.test(selectValue(el.parentNode.previousSibling.firstChild))) {
-		el.className += ' required';
-	}
+	alterClass(el, 'required', !el.value.length && /var(char|binary)$/.test(selectValue(el.parentNode.previousSibling.firstChild)));
 }
 
 /** Edit enum or set
@@ -426,7 +423,7 @@ function editingLengthBlur(edit) {
 function columnShow(checked, column) {
 	var trs = document.getElementById('edit-fields').getElementsByTagName('tr');
 	for (var i=0; i < trs.length; i++) {
-		trs[i].getElementsByTagName('td')[column].className = (checked ? '' : 'hidden');
+		alterClass(trs[i].getElementsByTagName('td')[column], 'hidden', !checked);
 	}
 }
 
@@ -444,8 +441,8 @@ function editingHideDefaults() {
 */
 function partitionByChange(el) {
 	var partitionTable = /RANGE|LIST/.test(selectValue(el));
-	el.form['partitions'].className = (partitionTable || !el.selectedIndex ? 'hidden' : '');
-	document.getElementById('partition-table').className = (partitionTable ? '' : 'hidden');
+	alterClass(el.form['partitions'], 'hidden', partitionTable || !el.selectedIndex);
+	alterClass(document.getElementById('partition-table'), 'hidden', !partitionTable);
 }
 
 /** Add next partition row

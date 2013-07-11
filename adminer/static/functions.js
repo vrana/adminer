@@ -1,4 +1,13 @@
 
+/** Add or remove CSS class
+* @param HTMLElement
+* @param string
+* @param [bool]
+*/
+function alterClass(el, className, enable) {
+	el.className = el.className.replace(RegExp('(^|\\s)' + className + '(\\s|$)'), '$2') + (enable ? ' ' + className : '');
+}
+
 /** Toggle visibility
 * @param string
 * @return boolean
@@ -59,7 +68,7 @@ function parentTag(el, tag) {
 */
 function trCheck(el) {
 	var tr = parentTag(el, 'tr');
-	tr.className = tr.className.replace(/(^|\s)checked(\s|$)/, '$2') + (el.checked ? ' checked' : '');
+	alterClass(tr, 'checked', el.checked);
 	if (el.form && el.form['all']) {
 		el.form['all'].onclick();
 	}
@@ -613,7 +622,7 @@ function setupSubmitHighlight(parent) {
 function inputFocus() {
 	var submit = findDefaultSubmit(this.form);
 	if (submit) {
-		submit.className += ' default';
+		alterClass(submit, 'default', true);
 	}
 }
 
@@ -623,7 +632,7 @@ function inputFocus() {
 function inputBlur() {
 	var submit = findDefaultSubmit(this.form);
 	if (submit) {
-		submit.className = submit.className.replace(/ default( |$)/, '$1');
+		alterClass(submit, 'default');
 	}
 }
 
