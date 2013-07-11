@@ -25,7 +25,6 @@ function connect_error() {
 		}
 		echo "<p>" . lang('%s version: %s through PHP extension %s', $drivers[DRIVER], "<b>$connection->server_info</b>", "<b>$connection->extension</b>") . "\n";
 		echo "<p>" . lang('Logged as: %s', "<b>" . h(logged_user()) . "</b>") . "\n";
-		$refresh = "<a href='" . h(ME) . "refresh=1'>" . lang('Refresh') . "</a>\n";
 		$databases = $adminer->databases();
 		if ($databases) {
 			$scheme = support("scheme");
@@ -45,14 +44,18 @@ function connect_error() {
 			}
 			
 			echo "</table>\n";
+			echo (support("database")
+				? "<fieldset><legend>" . lang('Selected') . " <span id='selected'></span></legend><div>\n"
+					. "<input type='hidden' name='all' value='' onclick=\"selectCount('selected', formChecked(this, /^db/));\">\n" // used by trCheck()
+					. "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm("formChecked(this, /db/)") . ">\n"
+					. "</div></fieldset>\n"
+				: ""
+			);
 			echo "<script type='text/javascript'>tableCheck();</script>\n";
-			echo "<p>" . (support("database") ? "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm("formChecked(this, /db/)") . ">\n" : "");
 			echo "<input type='hidden' name='token' value='$token'>\n";
-			echo $refresh;
 			echo "</form>\n";
-		} else {
-			echo "<p>$refresh";
 		}
+		echo "<p><a href='" . h(ME) . "refresh=1'>" . lang('Refresh') . "</a>\n";
 	}
 	
 	page_footer("db");
