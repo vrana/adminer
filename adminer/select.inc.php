@@ -504,7 +504,7 @@ if (!$columns && support("table")) {
 <fieldset><legend><?php echo lang('Selected'); ?> <span id="selected"></span></legend><div>
 <input type="submit" name="edit" value="<?php echo lang('Edit'); ?>">
 <input type="submit" name="clone" value="<?php echo lang('Clone'); ?>">
-<input type="submit" name="delete" value="<?php echo lang('Delete'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?> (' + (this.form['all'].checked ? '<?php echo $display_rows; ?>' : formChecked(this, /check/)) + ')');">
+<input type="submit" name="delete" value="<?php echo lang('Delete'); ?>"<?php echo confirm(); ?>>
 </div></fieldset>
 <?php
 			}

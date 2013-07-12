@@ -168,7 +168,7 @@ if ($fields) {
 		) . "' title='Ctrl+Shift+Enter'>\n";
 	}
 }
-echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "' onclick=\"return confirm('" . lang('Are you sure?') . "');\">\n"
+echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "'" . confirm() . ">\n"
 	: ($_POST || !$fields ? "" : "<script type='text/javascript'>focus(document.getElementById('form').getElementsByTagName('td')[1].firstChild);</script>\n")
 );
 if (isset($_GET["select"])) {

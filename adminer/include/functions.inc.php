@@ -164,11 +164,10 @@ function select_input($attrs, $options, $value = "", $placeholder = "") {
 }
 
 /** Get onclick confirmation
-* @param string JavaScript expression
 * @return string
 */
-function confirm($count = "") {
-	return " onclick=\"return confirm('" . lang('Are you sure?') . ($count ? " (' + $count + ')" : "") . "');\"";
+function confirm() {
+	return " onclick=\"return confirm('" . lang('Are you sure?') . "');\"";
 }
 
 /** Print header for hidden fieldset (close by </div></fieldset>)

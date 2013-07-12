@@ -115,8 +115,8 @@ if ($adminer->homepage()) {
 				echo "<fieldset><legend>" . lang('Selected') . " <span id='selected'></span></legend><div>"
 				. (ereg('^(sql|sqlite|pgsql)$', $jush) ? ($jush != "sqlite" ? "<input type='submit' value='" . lang('Analyze') . "'> " : "") . "<input type='submit' name='optimize' value='" . lang('Optimize') . "'> " : "")
 				. ($jush == "sql" ? "<input type='submit' name='check' value='" . lang('Check') . "'> <input type='submit' name='repair' value='" . lang('Repair') . "'> " : "")
-				. (support("table") ? "<input type='submit' name='truncate' value='" . lang('Truncate') . "'" . confirm("formChecked(this, /tables/)") . "> " : "")
-				. "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm("formChecked(this, /tables|views/)") . ">\n";
+				. (support("table") ? "<input type='submit' name='truncate' value='" . lang('Truncate') . "'" . confirm() . "> " : "")
+				. "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm() . ">\n";
 				$databases = (support("scheme") ? schemas() : $adminer->databases());
 				if (count($databases) != 1 && $jush != "sqlite") {
 					$db = (isset($_POST["target"]) ? $_POST["target"] : (support("scheme") ? $_GET["ns"] : DB));
