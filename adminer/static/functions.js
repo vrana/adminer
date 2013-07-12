@@ -50,14 +50,23 @@ function selectValue(select) {
 	return ((selected.attributes.value || {}).specified ? selected.value : selected.text);
 }
 
-/** Get parent node with specified tag name.
+/** Verify if element has a specified tag name
+ * @param HTMLElement
+ * @param string regular expression
+ * @return bool
+ */
+function isTag(el, tag) {
+	var re = new RegExp('^(' + tag + ')$', 'i');
+	return re.test(el.tagName);
+}
+
+/** Get parent node with specified tag name
  * @param HTMLElement
  * @param string regular expression
  * @return HTMLElement
  */
 function parentTag(el, tag) {
-	var re = new RegExp('^' + tag + '$', 'i');
-	while (el && !re.test(el.tagName)) {
+	while (el && !isTag(el, tag)) {
 		el = el.parentNode;
 	}
 	return el;
@@ -149,8 +158,8 @@ function formChecked(el, name) {
 function tableClick(event, click) {
 	click = (click || !window.getSelection || getSelection().isCollapsed);
 	var el = event.target || event.srcElement;
-	while (!/^tr$/i.test(el.tagName)) {
-		if (/^(table|a|input|textarea)$/i.test(el.tagName)) {
+	while (!isTag(el, 'tr')) {
+		if (isTag(el, 'table|a|input|textarea')) {
 			if (el.type != 'checkbox') {
 				return;
 			}
@@ -248,7 +257,7 @@ function pageClick(href, page, event) {
 */
 function menuOver(el, event) {
 	var a = event.target;
-	if (/^(a|span)$/i.test(a.tagName) && a.offsetLeft + a.offsetWidth > a.parentNode.offsetWidth - 15) { // 15 - ellipsis
+	if (isTag(a, 'a|span') && a.offsetLeft + a.offsetWidth > a.parentNode.offsetWidth - 15) { // 15 - ellipsis
 		el.style.overflow = 'visible';
 	}
 }
@@ -320,7 +329,7 @@ function selectSearch(name) {
 	var divs = el.getElementsByTagName('div');
 	for (var i=0; i < divs.length; i++) {
 		var div = divs[i];
-		if (/select/i.test(div.firstChild.tagName) && selectValue(div.firstChild) == name) {
+		if (isTag(div.firstChild, 'select') && selectValue(div.firstChild) == name) {
 			break;
 		}
 	}
@@ -349,7 +358,7 @@ function isCtrl(event) {
 */
 function bodyKeydown(event, button) {
 	var target = event.target || event.srcElement;
-	if (isCtrl(event) && (event.keyCode == 13 || event.keyCode == 10) && /select|textarea|input/i.test(target.tagName)) { // 13|10 - Enter
+	if (isCtrl(event) && (event.keyCode == 13 || event.keyCode == 10) && isTag(target, 'select|textarea|input')) { // 13|10 - Enter
 		target.blur();
 		if (button) {
 			target.form[button].click();
@@ -367,7 +376,7 @@ function bodyKeydown(event, button) {
 */
 function bodyClick(event) {
 	var target = event.target || event.srcElement;
-	if ((isCtrl(event) || event.shiftKey) && target.type == 'submit' && /input/i.test(target.tagName)) {
+	if ((isCtrl(event) || event.shiftKey) && target.type == 'submit' && isTag(target, 'input')) {
 		target.form.target = '_blank';
 		setTimeout(function () {
 			// if (isCtrl(event)) { focus(); } doesn't work
@@ -387,7 +396,7 @@ function editingKeydown(event) {
 		var target = event.target || event.srcElement;
 		var sibling = (event.keyCode == 40 ? 'nextSibling' : 'previousSibling');
 		var el = target.parentNode.parentNode[sibling];
-		if (el && (/^tr$/i.test(el.tagName) || (el = el[sibling])) && /^tr$/i.test(el.tagName) && (el = el.childNodes[nodePosition(target.parentNode)]) && (el = el.childNodes[nodePosition(target)])) {
+		if (el && (isTag(el, 'tr') || (el = el[sibling])) && isTag(el, 'tr') && (el = el.childNodes[nodePosition(target.parentNode)]) && (el = el.childNodes[nodePosition(target)])) {
 			el.focus();
 		}
 		return false;
@@ -471,7 +480,7 @@ function ajaxForm(form, message, button) {
 				return false;
 			}
 			if (!/^(checkbox|radio|submit|file)$/i.test(el.type) || el.checked || el == button) {
-				data.push(encodeURIComponent(el.name) + '=' + encodeURIComponent(/select/i.test(el.tagName) ? selectValue(el) : el.value));
+				data.push(encodeURIComponent(el.name) + '=' + encodeURIComponent(isTag(el, 'select') ? selectValue(el) : el.value));
 			}
 		}
 	}
@@ -501,7 +510,7 @@ function ajaxForm(form, message, button) {
 */
 function selectClick(td, event, text, warning) {
 	var target = event.target || event.srcElement;
-	if (!isCtrl(event) || /input|textarea/i.test(td.firstChild.tagName) || /^a$/i.test(target.tagName)) {
+	if (!isCtrl(event) || isTag(td.firstChild, 'input|textarea') || isTag(target, 'a')) {
 		return;
 	}
 	if (warning) {
