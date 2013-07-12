@@ -54,11 +54,13 @@ if ($adminer->homepage()) {
 			echo "<p class='message'>" . lang('No tables.') . "\n";
 		} else {
 			echo "<form action='' method='post'>\n";
-			echo "<fieldset><legend>" . lang('Search data in tables') . " <span id='selected2'></span></legend><div>";
-			echo "<input type='search' name='query' value='" . h($_POST["query"]) . "'> <input type='submit' name='search' value='" . lang('Search') . "'>\n";
-			echo "</div></fieldset>\n";
-			if ($_POST["search"] && $_POST["query"] != "") {
-				search_tables();
+			if (support("table")) {
+				echo "<fieldset><legend>" . lang('Search data in tables') . " <span id='selected2'></span></legend><div>";
+				echo "<input type='search' name='query' value='" . h($_POST["query"]) . "'> <input type='submit' name='search' value='" . lang('Search') . "'>\n";
+				echo "</div></fieldset>\n";
+				if ($_POST["search"] && $_POST["query"] != "") {
+					search_tables();
+				}
 			}
 			echo "<table cellspacing='0' class='nowrap checkable' onclick='tableClick(event);' ondblclick='tableClick(event, true);'>\n";
 			
