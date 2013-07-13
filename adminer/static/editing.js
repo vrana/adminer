@@ -182,7 +182,7 @@ function selectFieldChange(form) {
 			}
 			if (col && /^order/.test(select.name)) {
 				if (!(col in indexColumns)) {
-					 ok = false;
+					ok = false;
 				}
 				break;
 			}
