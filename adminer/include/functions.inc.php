@@ -643,8 +643,8 @@ function get_file($key, $decompress = false) {
 			} elseif ($start == "\xEF\xBB\xBF") { // UTF-8 BOM
 				$content = substr($content, 3);
 			}
+			$return .= $content . "\n\n";
 		}
-		$return .= $content . "\n\n";
 	}
 	//! support SQL files not ending with semicolon
 	return $return;

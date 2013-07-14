@@ -8,6 +8,7 @@ Add button for dropping an index
 Display number of selected rows
 Disable underlining links
 Improve speed of CSV import
+Don't append newlines to uploaded files, bug since Adminer 3.7.0
 PostgreSQL: Fix handling of nextval() default values
 
 Adminer 3.7.1 (released 2013-06-29):
