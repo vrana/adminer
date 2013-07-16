@@ -134,7 +134,8 @@ if ($_POST && !$error) {
 			}
 			queries_redirect(remove_from_uri($_POST["all"] && $_POST["delete"] ? "page" : ""), $message, $result);
 			//! display edit page in case of an error
-			
+		} elseif ($_POST['truncate']) {
+			$result = queries("TRUNCATE " . table($TABLE));
 		} elseif (!$_POST["import"]) { // modify
 			if (!$_POST["val"]) {
 				$error = lang('Ctrl+click on a value to modify it.');
@@ -486,6 +487,7 @@ if (!$columns) {
 <fieldset<?php echo ($_GET["modify"] ? '' : ' class="jsonly"'); ?>><legend><?php echo lang('Modify'); ?></legend><div>
 <input type="submit" value="<?php echo lang('Save'); ?>"<?php echo ($_GET["modify"] ? '' : ' title="' . lang('Ctrl+click on a value to modify it.') . '"'); ?>>
 </div></fieldset>
+
 <fieldset><legend><?php echo lang('Selected'); ?> <span id="selected"></span></legend><div>
 <input type="submit" name="edit" value="<?php echo lang('Edit'); ?>">
 <input type="submit" name="clone" value="<?php echo lang('Clone'); ?>">
@@ -521,7 +523,13 @@ if (!$columns) {
 		}
 		
 		$adminer->selectEmailPrint(array_filter($email_fields, 'strlen'), $columns);
-		
+
+		?>
+<fieldset><legend><?php echo lang('Truncate'); ?></legend><div>
+<input type="submit" name="truncate" value="<?php echo lang('Truncate'); ?>" onclick="return confirm('<?php echo lang('Are you sure?'); ?>')">
+</div></fieldset>
+<?php
+
 		echo "<p><input type='hidden' name='token' value='$token'></p>\n";
 		echo "</form>\n";
 	}
