@@ -136,7 +136,7 @@ if (!$error && $_POST) {
 										$id = "explain-$commands";
 										echo ", <a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>$export";
 										echo "<div id='$id' class='hidden'>\n";
-										select($explain, $connection2, ($jush == "sql" ? "http://dev.mysql.com/doc/refman/" . substr($connection->server_info, 0, 3) . "/en/explain-output.html#explain_" : ""), $orgtables);
+										select($explain, $connection2, $orgtables);
 										echo "</div>\n";
 									} else {
 										echo $export;

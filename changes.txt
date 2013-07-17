@@ -6,6 +6,7 @@ Mark length as required for strings
 Add label to database selection
 Add button for dropping an index
 Display number of selected rows
+Add links to documentation
 Disable underlining links
 Improve speed of CSV import
 Don't append newlines to uploaded files, bug since Adminer 3.7.0

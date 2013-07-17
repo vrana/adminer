@@ -197,7 +197,7 @@ if (support("partitioning")) {
 	print_fieldset("partition", lang('Partition by'), $row["partition_by"]);
 	?>
 <p>
-<?php echo html_select("partition_by", array(-1 => "") + $partition_by, $row["partition_by"], "partitionByChange(this);"); ?>
+<?php echo html_select("partition_by", array(-1 => "") + $partition_by, $row["partition_by"], "partitionByChange(this);") . doc_link("partitioning-types.html"); ?>
 (<input name="partition" value="<?php echo h($row["partition"]); ?>">)
 <?php echo lang('Partitions'); ?>: <input type="number" name="partitions" class="size<?php echo ($partition_table || !$row["partition_by"] ? " hidden" : ""); ?>" value="<?php echo h($row["partitions"]); ?>">
 <table cellspacing="0" id="partition-table"<?php echo ($partition_table ? "" : " class='hidden'"); ?>>

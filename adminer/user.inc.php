@@ -142,7 +142,7 @@ if ($_POST) {
 <?php
 //! MAX_* limits, REQUIRE
 echo "<table cellspacing='0'>\n";
-echo "<thead><tr><th colspan='2'><a href='http://dev.mysql.com/doc/refman/" . substr($connection->server_info, 0, 3) . "/en/grant.html#priv_level' target='_blank' rel='noreferrer' class='help'>" . lang('Privileges') . "</a>";
+echo "<thead><tr><th colspan='2'>" . lang('Privileges') . doc_link("grant.html#priv_level");
 $i = 0;
 foreach ($grants as $object => $grant) {
 	echo '<th>' . ($object != "*.*" ? "<input name='objects[$i]' value='" . h($object) . "' size='10' autocapitalize='off'>" : "<input type='hidden' name='objects[$i]' value='*.*' size='10'>*.*"); //! separate db, table, columns, PROCEDURE|FUNCTION, routine

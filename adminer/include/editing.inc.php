@@ -2,11 +2,11 @@
 /** Print select result
 * @param Min_Result
 * @param Min_DB connection to examine indexes
-* @param string base link for <th> fields
 * @param array
-* @return null
+* @return array $orgtables
 */
-function select($result, $connection2 = null, $href = "", $orgtables = array()) {
+function select($result, $connection2 = null, $orgtables = array()) {
+	global $jush;
 	$links = array(); // colno => orgtable - create links from these columns
 	$indexes = array(); // orgtable => array(column => colno) - primary keys
 	$columns = array(); // orgtable => array(column => ) - not selected columns in primary key
@@ -24,7 +24,7 @@ function select($result, $connection2 = null, $href = "", $orgtables = array()) 
 				$orgtable = $field->orgtable;
 				$orgname = $field->orgname;
 				$return[$field->table] = $orgtable;
-				if ($href) { // MySQL EXPLAIN
+				if ($orgtables && $jush == "sql") { // MySQL EXPLAIN
 					$links[$j] = ($name == "table" ? "table=" : ($name == "possible_keys" ? "indexes=" : null));
 				} elseif ($orgtable != "") {
 					if (!isset($indexes[$orgtable])) {
@@ -48,9 +48,8 @@ function select($result, $connection2 = null, $href = "", $orgtables = array()) 
 					$blobs[$j] = true;
 				}
 				$types[$j] = $field->type;
-				$name = h($name);
-				echo "<th" . ($orgtable != "" || $field->name != $orgname ? " title='" . h(($orgtable != "" ? "$orgtable." : "") . $orgname) . "'" : "") . ">"
-					. ($href ? "<a href='$href" . strtolower($name) . "' target='_blank' rel='noreferrer' class='help'>$name</a>" : $name)
+				echo "<th" . ($orgtable != "" || $field->name != $orgname ? " title='" . h(($orgtable != "" ? "$orgtable." : "") . $orgname) . "'" : "") . ">" . h($name)
+					. ($orgtables && $jush == "sql" ? doc_link("explain-output.html#explain_" . strtolower($name)) : "")
 				;
 			}
 			echo "</thead>\n";
@@ -70,7 +69,7 @@ function select($result, $connection2 = null, $href = "", $orgtables = array()) 
 				}
 			}
 			if (isset($links[$key]) && !$columns[$links[$key]]) {
-				if ($href) { // MySQL EXPLAIN
+				if ($orgtables && $jush == "sql") { // MySQL EXPLAIN
 					$table = $row[array_search("table=", $links)];
 					$link = $links[$key] . urlencode($orgtables[$table] != "" ? $orgtables[$table] : $table);
 				} else {
@@ -449,4 +448,45 @@ function ini_bytes($ini) {
 		case 'k': $val *= 1024;
 	}
 	return $val;
+}
+
+/** Create link to database documentation
+* @param string
+* @return string HTML code
+*/
+function doc_link($path) {
+	global $jush, $connection;
+	$urls = array(
+		 'sql' => "http://dev.mysql.com/doc/refman/" . substr($connection->server_info, 0, 3) . "/en/",
+		 'sqlite' => "http://www.sqlite.org/",
+		 'pgsql' => "http://www.postgresql.org/docs/" . substr($connection->server_info, 0, 3) . "/static/",
+		 'mssql' => "http://msdn.microsoft.com/library/",
+		 'oracle' => "http://download.oracle.com/docs/cd/B19306_01/server.102/b14200/",
+	);
+	return ($urls[$jush] ? "<a href='$urls[$jush]$path' target='_blank' rel='noreferrer'><sup>?</sup></a>" : "");
+}
+
+/** Create link to documentation of database command
+* @param string lower-case
+* @return string HTML code
+*/
+function doc_command($command) {
+	global $jush;
+	switch ($jush) {
+		case 'sql': return doc_link("$command.html");
+		case 'sqlite': return doc_link("lang_" . str_replace("-", "", $command) . ".html");
+		case 'pgsql': return doc_link("sql-" . str_replace("-", "", $command) . ".html");
+		case 'mssql':
+			$links = array(
+				'drop-table' => 'ms173790',
+				'truncate-table' => 'ms177570',
+			);
+			return doc_link("$links[$command].aspx");
+		case 'oracle':
+			$links = array(
+				'drop-table' => 'statements_9003.htm',
+				'truncate-table' => 'statements_10006.htm',
+			);
+			return doc_link($links[$command]);
+	}
 }

@@ -22,10 +22,9 @@ foreach (process_list() as $i => $row) {
 	if (!$i) {
 		echo "<thead><tr lang='en'>" . (support("kill") ? "<th>&nbsp;" : "");
 		foreach ($row as $key => $val) {
-			echo "<th>" . ($jush == "sql"
-				? "<a href='http://dev.mysql.com/doc/refman/" . substr($connection->server_info, 0, 3) . "/en/show-processlist.html#processlist_" . strtolower($key) . "' target='_blank' rel='noreferrer' class='help'>$key</a>"
-				: $key
-			);
+			echo "<th>$key"
+			. ($jush == "sql" ? doc_link("show-processlist.html#processlist_" . strtolower($key)) : "")
+			;
 		}
 		echo "</thead>\n";
 	}
