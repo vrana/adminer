@@ -104,6 +104,7 @@ $translations = array(
 	'%d in total' => '%d celkem',
 	'Analyze' => 'Analyzovat',
 	'Optimize' => 'Optimalizovat',
+	'Vacuum' => 'Vyčistit',
 	'Check' => 'Zkontrolovat',
 	'Repair' => 'Opravit',
 	'Truncate' => 'Vyprázdnit',

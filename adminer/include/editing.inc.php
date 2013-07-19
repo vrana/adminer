@@ -49,7 +49,7 @@ function select($result, $connection2 = null, $orgtables = array()) {
 				}
 				$types[$j] = $field->type;
 				echo "<th" . ($orgtable != "" || $field->name != $orgname ? " title='" . h(($orgtable != "" ? "$orgtable." : "") . $orgname) . "'" : "") . ">" . h($name)
-					. ($orgtables && $jush == "sql" ? doc_link("explain-output.html#explain_" . strtolower($name)) : "")
+					. ($orgtables ? doc_link("explain-output.html#explain_" . strtolower($name)) : "")
 				;
 			}
 			echo "</thead>\n";
@@ -458,35 +458,21 @@ function doc_link($path) {
 	global $jush, $connection;
 	$urls = array(
 		 'sql' => "http://dev.mysql.com/doc/refman/" . substr($connection->server_info, 0, 3) . "/en/",
+		 /* not used:
 		 'sqlite' => "http://www.sqlite.org/",
 		 'pgsql' => "http://www.postgresql.org/docs/" . substr($connection->server_info, 0, 3) . "/static/",
 		 'mssql' => "http://msdn.microsoft.com/library/",
 		 'oracle' => "http://download.oracle.com/docs/cd/B19306_01/server.102/b14200/",
+		 */
 	);
 	return ($urls[$jush] ? "<a href='$urls[$jush]$path' target='_blank' rel='noreferrer'><sup>?</sup></a>" : "");
 }
 
-/** Create link to documentation of database command
-* @param string lower-case
-* @return string HTML code
+/** Return events to display help on mouse over
+* @param string
+* @param bool
+* @return string
 */
-function doc_command($command) {
-	global $jush;
-	switch ($jush) {
-		case 'sql': return doc_link("$command.html");
-		case 'sqlite': return doc_link("lang_" . str_replace("-", "", $command) . ".html");
-		case 'pgsql': return doc_link("sql-" . str_replace("-", "", $command) . ".html");
-		case 'mssql':
-			$links = array(
-				'drop-table' => 'ms173790',
-				'truncate-table' => 'ms177570',
-			);
-			return doc_link("$links[$command].aspx");
-		case 'oracle':
-			$links = array(
-				'drop-table' => 'statements_9003.htm',
-				'truncate-table' => 'statements_10006.htm',
-			);
-			return doc_link($links[$command]);
-	}
+function on_help($command, $right = 0) {
+	return " onmouseover=\"helpMouseover(this, '" . js_escape($command) . "', $right);\" onmouseout='helpMouseout();'";
 }

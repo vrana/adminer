@@ -68,6 +68,7 @@ input.required { box-shadow: 1px 1px 1px red; }
 #schema { margin-left: 60px; position: relative; -moz-user-select: none; -webkit-user-select: none; }
 #schema .table { border: 1px solid silver; padding: 0 2px; cursor: move; position: absolute; }
 #schema .references { position: absolute; }
+#help { position: absolute; border: 1px solid #999; background: #eee; padding: 5px; font-family: monospace; z-index: 1; }
 
 .rtl h2 { margin: 0 -18px 20px 0; }
 .rtl p, .rtl table, .rtl .error, .rtl .message { margin: 1em 0 0 20px; }

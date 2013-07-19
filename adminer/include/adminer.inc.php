@@ -233,14 +233,13 @@ username.form['auth[driver]'].onchange();
 		print_fieldset("select", lang('Select'), $select);
 		$i = 0;
 		$fun_group = array_filter(array(lang('Functions') => $functions, lang('Aggregation') => $grouping));
+		$select[""] = array();
 		foreach ($select as $key => $val) {
 			$val = $_GET["columns"][$key];
-			echo "<div>" . html_select("columns[$i][fun]", array(-1 => "") + $fun_group, $val["fun"]);
-			echo "(" . select_input(" name='columns[$i][col]' onchange='selectFieldChange(this.form);'", $columns, $val["col"]) . ")</div>\n";
+			echo "<div>" . html_select("columns[$i][fun]", array(-1 => "") + $fun_group, $val["fun"], ($key !== "" ? "" : " this.nextSibling.nextSibling.onchange();"));
+			echo "(" . select_input(" name='columns[$i][col]' onchange='" . ($key !== ""  ? "selectFieldChange(this.form)" : "selectAddRow(this)") . ";'", $columns, $val["col"]) . ")</div>\n";
 			$i++;
 		}
-		echo "<div>" . html_select("columns[$i][fun]", array(-1 => "") + $fun_group, "", "this.nextSibling.nextSibling.onchange();");
-		echo "(" . select_input(" name='columns[$i][col]' onchange='selectAddRow(this);'", $columns) . ")</div>\n";
 		echo "</div></fieldset>\n";
 	}
 	
@@ -786,6 +785,7 @@ username.form['auth[driver]'].onchange();
 						$links[] = preg_quote($table, '/');
 					}
 					echo "<script type='text/javascript'>\n";
+					echo "var jushLang = '$jush';\n";
 					echo "var jushLinks = { $jush: [ '" . js_escape(ME) . (support("table") ? "table=" : "select=") . "\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
 					foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
 						echo "jushLinks.$val = jushLinks.$jush;\n";

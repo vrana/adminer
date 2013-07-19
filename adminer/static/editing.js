@@ -612,3 +612,35 @@ function schemaMouseup(ev, db) {
 		cookie('adminer_schema-' + db + '=' + s, 30); //! special chars in db
 	}
 }
+
+var helpOpen;
+
+function helpMouseover(el, text, right) {
+	if (window.jush) {
+		helpOpen = 1;
+		var help = document.getElementById('help');
+		help.innerHTML = text;
+		jush.highlight_tag([ help ]);
+		alterClass(help, 'hidden');
+		var top = 0, left = 0, parent = el;
+		do {
+			top += parent.offsetTop;
+			left += parent.offsetLeft;
+		} while (parent = parent.offsetParent);
+		help.style.top = (top - (right ? (help.offsetHeight - el.offsetHeight) / 2 : help.offsetHeight)) + 'px';
+		help.style.left = (left + (right ? el.offsetWidth : (el.offsetWidth - help.offsetWidth) / 2)) + 'px';
+	}
+}
+
+function helpMouseout() {
+	helpOpen = 0;
+	setTimeout(function () {
+		if (!helpOpen) {
+			helpClose();
+		}
+	}, 200);
+}
+
+function helpClose() {
+	alterClass(document.getElementById('help'), 'hidden', true);
+}

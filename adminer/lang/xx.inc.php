@@ -104,6 +104,7 @@ $translations = array(
 	'%d in total' => 'xx',
 	'Analyze' => 'xx',
 	'Optimize' => 'xx',
+	'Vacuum' => 'xx',
 	'Check' => 'xx',
 	'Repair' => 'xx',
 	'Truncate' => 'xx',

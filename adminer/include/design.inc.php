@@ -7,7 +7,7 @@
 * @return null
 */
 function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
-	global $LANG, $adminer, $connection, $drivers;
+	global $LANG, $adminer, $connection, $drivers, $jush;
 	page_headers();
 	$title_all = $title . ($title2 != "" ? ": $title2" : "");
 	$title_page = strip_tags($title_all . (SERVER != "" && SERVER != "localhost" ? h(" - " . SERVER) : "") . " - " . $adminer->name());
@@ -33,6 +33,8 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <script type="text/javascript">
 document.body.className = document.body.className.replace(/ nojs/, ' js');
 </script>
+
+<div id="help" class="jush-<?php echo $jush; ?> jsonly hidden" onmouseover="helpOpen = 1;" onmouseout="helpMouseout();"></div>
 
 <div id="content">
 <?php

@@ -22,9 +22,7 @@ foreach (process_list() as $i => $row) {
 	if (!$i) {
 		echo "<thead><tr lang='en'>" . (support("kill") ? "<th>&nbsp;" : "");
 		foreach ($row as $key => $val) {
-			echo "<th>$key"
-			. ($jush == "sql" ? doc_link("show-processlist.html#processlist_" . strtolower($key)) : "")
-			;
+			echo "<th>$key" . doc_link("show-processlist.html#processlist_" . strtolower($key));
 		}
 		echo "</thead>\n";
 	}
