@@ -205,7 +205,7 @@ function selectFieldChange(form) {
 * @param string
 */
 function selectEditSql(event, el, label) {
-	var a = parentTag(event.target || event.srcElement, 'a');
+	var a = parentTag(getTarget(event), 'a');
 	if (!isCtrl(event) || (a && a.href)) {
 		return;
 	}

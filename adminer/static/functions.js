@@ -157,7 +157,7 @@ function formChecked(el, name) {
 */
 function tableClick(event, click) {
 	click = (click || !window.getSelection || getSelection().isCollapsed);
-	var el = event.target || event.srcElement;
+	var el = getTarget(event);
 	while (!isTag(el, 'tr')) {
 		if (isTag(el, 'table|a|input|textarea')) {
 			if (el.type != 'checkbox') {
@@ -256,7 +256,7 @@ function pageClick(href, page, event) {
 * @param MouseEvent
 */
 function menuOver(el, event) {
-	var a = event.target;
+	var a = getTarget(event);
 	if (isTag(a, 'a|span') && a.offsetLeft + a.offsetWidth > a.parentNode.offsetWidth - 15) { // 15 - ellipsis
 		el.style.overflow = 'visible';
 	}
@@ -349,6 +349,14 @@ function isCtrl(event) {
 	return (event.ctrlKey || event.metaKey) && !event.altKey; // shiftKey allowed
 }
 
+/** Return event target
+* @param Event
+* @return HtmlElement
+*/
+function getTarget(event) {
+	return event.target || event.srcElement;
+}
+
 
 
 /** Send form by Ctrl+Enter on <select> and <textarea>
@@ -357,7 +365,7 @@ function isCtrl(event) {
 * @return boolean
 */
 function bodyKeydown(event, button) {
-	var target = event.target || event.srcElement;
+	var target = getTarget(event);
 	if (isCtrl(event) && (event.keyCode == 13 || event.keyCode == 10) && isTag(target, 'select|textarea|input')) { // 13|10 - Enter
 		target.blur();
 		if (button) {
@@ -375,7 +383,7 @@ function bodyKeydown(event, button) {
 * @param MouseEvent
 */
 function bodyClick(event) {
-	var target = event.target || event.srcElement;
+	var target = getTarget(event);
 	if ((isCtrl(event) || event.shiftKey) && target.type == 'submit' && isTag(target, 'input')) {
 		target.form.target = '_blank';
 		setTimeout(function () {
@@ -393,7 +401,7 @@ function bodyClick(event) {
 */
 function editingKeydown(event) {
 	if ((event.keyCode == 40 || event.keyCode == 38) && isCtrl(event)) { // 40 - Down, 38 - Up
-		var target = event.target || event.srcElement;
+		var target = getTarget(event);
 		var sibling = (event.keyCode == 40 ? 'nextSibling' : 'previousSibling');
 		var el = target.parentNode.parentNode[sibling];
 		if (el && (isTag(el, 'tr') || (el = el[sibling])) && isTag(el, 'tr') && (el = el.childNodes[nodePosition(target.parentNode)]) && (el = el.childNodes[nodePosition(target)])) {
@@ -509,7 +517,7 @@ function ajaxForm(form, message, button) {
 * @param string warning to display
 */
 function selectClick(td, event, text, warning) {
-	var target = event.target || event.srcElement;
+	var target = getTarget(event);
 	if (!isCtrl(event) || isTag(td.firstChild, 'input|textarea') || isTag(target, 'a')) {
 		return;
 	}
