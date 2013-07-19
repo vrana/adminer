@@ -614,36 +614,41 @@ function schemaMouseup(ev, db) {
 	}
 }
 
-var helpOpen;
+var helpOpen, helpIgnore; // when mouse outs <option> then it mouse overs border of <select> - ignore it
 
 /** Display help
 * @param HTMLElement
+* @param MouseEvent
 * @param string
 * @param bool display on left side (otherwise on top)
 */
-function helpMouseover(el, text, side) {
+function helpMouseover(el, event, text, side) {
+	var target = getTarget(event);
 	if (!text) {
 		helpClose();
-	} else if (window.jush) {
+	} else if (window.jush && (!helpIgnore || el != target)) {
 		helpOpen = 1;
 		var help = document.getElementById('help');
 		help.innerHTML = text;
 		jush.highlight_tag([ help ]);
 		alterClass(help, 'hidden');
-		var top = 0, left = 0, parent = el;
+		var top = 0, left = 0, parent = target;
 		do {
 			top += parent.offsetTop;
 			left += parent.offsetLeft;
 		} while (parent = parent.offsetParent);
-		help.style.top = (top - (side ? (help.offsetHeight - el.offsetHeight) / 2 : help.offsetHeight)) + 'px';
-		help.style.left = (left - (side ? help.offsetWidth : (help.offsetWidth - el.offsetWidth) / 2)) + 'px';
+		help.style.top = (top - (side ? (help.offsetHeight - target.offsetHeight) / 2 : help.offsetHeight)) + 'px';
+		help.style.left = (left - (side ? help.offsetWidth : (help.offsetWidth - target.offsetWidth) / 2)) + 'px';
 	}
 }
 
 /** Close help after timeout
+* @param HTMLElement
+* @param MouseEvent
 */
-function helpMouseout() {
+function helpMouseout(el, event) {
 	helpOpen = 0;
+	helpIgnore = (el != getTarget(event));
 	setTimeout(function () {
 		if (!helpOpen) {
 			helpClose();

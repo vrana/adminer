@@ -474,5 +474,5 @@ function doc_link($path) {
 * @return string
 */
 function on_help($command, $side = 0) {
-	return " onmouseover='helpMouseover(getTarget(event), " . h($command) . ", $side);' onmouseout='helpMouseout();'";
+	return " onmouseover='helpMouseover(this, event, " . h($command) . ", $side);' onmouseout='helpMouseout(this, event);'";
 }
