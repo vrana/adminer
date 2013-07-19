@@ -60,7 +60,7 @@ if ($_POST) {
 echo ($_POST["add_x"] || strpos($name, "\n")
 	? '<textarea id="name" name="name" rows="10" cols="40">' . h($name) . '</textarea><br>'
 	: '<input name="name" id="name" value="' . h($name) . '" maxlength="64" autocapitalize="off">'
-) . "\n" . ($collations ? html_select("collation", array("" => "(" . lang('collation') . ")") + $collations, $row["collation"]) : "");
+) . "\n" . ($collations ? html_select("collation", array("" => "(" . lang('collation') . ")") + $collations, $row["collation"]) . doc_link("charset-charsets.html") : "");
 ?>
 <script type='text/javascript'>focus(document.getElementById('name'));</script>
 <input type="submit" value="<?php echo lang('Save'); ?>">
