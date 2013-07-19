@@ -826,7 +826,8 @@ username.form['auth[driver]'].onchange();
 		echo (isset($_GET["sql"]) ? '<input type="hidden" name="sql" value="">'
 			: (isset($_GET["schema"]) ? '<input type="hidden" name="schema" value="">'
 			: (isset($_GET["dump"]) ? '<input type="hidden" name="dump" value="">'
-		: "")));
+			: (isset($_GET["privileges"]) ? '<input type="hidden" name="privileges" value="">'
+		: ""))));
 		echo "</p></form>\n";
 	}
 	
