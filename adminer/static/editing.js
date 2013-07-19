@@ -632,13 +632,9 @@ function helpMouseover(el, event, text, side) {
 		help.innerHTML = text;
 		jush.highlight_tag([ help ]);
 		alterClass(help, 'hidden');
-		var top = 0, left = 0, parent = target;
-		do {
-			top += parent.offsetTop;
-			left += parent.offsetLeft;
-		} while (parent = parent.offsetParent);
-		help.style.top = (top - (side ? (help.offsetHeight - target.offsetHeight) / 2 : help.offsetHeight)) + 'px';
-		help.style.left = (left - (side ? help.offsetWidth : (help.offsetWidth - target.offsetWidth) / 2)) + 'px';
+		var rect = target.getBoundingClientRect();
+		help.style.top = (rect.top - (side ? (help.offsetHeight - target.offsetHeight) / 2 : help.offsetHeight)) + 'px';
+		help.style.left = (rect.left - (side ? help.offsetWidth : (help.offsetWidth - target.offsetWidth) / 2)) + 'px';
 	}
 }
 
