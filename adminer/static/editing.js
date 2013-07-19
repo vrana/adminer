@@ -443,6 +443,7 @@ function partitionByChange(el) {
 	var partitionTable = /RANGE|LIST/.test(selectValue(el));
 	alterClass(el.form['partitions'], 'hidden', partitionTable || !el.selectedIndex);
 	alterClass(document.getElementById('partition-table'), 'hidden', !partitionTable);
+	helpClose();
 }
 
 /** Add next partition row

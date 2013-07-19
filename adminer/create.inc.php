@@ -1,6 +1,9 @@
 <?php
 $TABLE = $_GET["create"];
-$partition_by = array('HASH', 'LINEAR HASH', 'KEY', 'LINEAR KEY', 'RANGE', 'LIST');
+$partition_by = array();
+foreach (array('HASH', 'LINEAR HASH', 'KEY', 'LINEAR KEY', 'RANGE', 'LIST') as $key) {
+	$partition_by[$key] = $key;
+}
 
 $referencable_primary = referencable_primary($TABLE);
 $foreign_keys = array();
@@ -71,7 +74,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 		}
 		
 		$partitioning = "";
-		if (in_array($row["partition_by"], $partition_by)) {
+		if ($partition_by[$row["partition_by"]]) {
 			$partitions = array();
 			if ($row["partition_by"] == 'RANGE' || $row["partition_by"] == 'LIST') {
 				foreach (array_filter($row["partition_names"]) as $key => $val) {
@@ -197,7 +200,7 @@ if (support("partitioning")) {
 	print_fieldset("partition", lang('Partition by'), $row["partition_by"]);
 	?>
 <p>
-<?php echo html_select("partition_by", array(-1 => "") + $partition_by, $row["partition_by"], "partitionByChange(this);") . doc_link("partitioning-types.html"); ?>
+<?php echo "<select name='partition_by' onchange='partitionByChange(this);'" . on_help("getTarget(event).value.replace(/./, 'PARTITION BY \$&')", 1) . ">" . optionlist(array("" => "") + $partition_by, $row["partition_by"]) . "</select>"; ?>
 (<input name="partition" value="<?php echo h($row["partition"]); ?>">)
 <?php echo lang('Partitions'); ?>: <input type="number" name="partitions" class="size<?php echo ($partition_table || !$row["partition_by"] ? " hidden" : ""); ?>" value="<?php echo h($row["partitions"]); ?>">
 <table cellspacing="0" id="partition-table"<?php echo ($partition_table ? "" : " class='hidden'"); ?>>
