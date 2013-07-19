@@ -469,10 +469,10 @@ function doc_link($path) {
 }
 
 /** Return events to display help on mouse over
-* @param string
-* @param bool
+* @param string JS expression
+* @param bool JS expression
 * @return string
 */
-function on_help($command, $right = 0) {
-	return " onmouseover=\"helpMouseover(this, '" . js_escape($command) . "', $right);\" onmouseout='helpMouseout();'";
+function on_help($command, $side = 0) {
+	return " onmouseover='helpMouseover(getTarget(event), " . h($command) . ", $side);' onmouseout='helpMouseout();'";
 }

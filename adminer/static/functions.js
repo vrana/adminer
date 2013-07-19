@@ -351,7 +351,7 @@ function isCtrl(event) {
 
 /** Return event target
 * @param Event
-* @return HtmlElement
+* @return HTMLElement
 */
 function getTarget(event) {
 	return event.target || event.srcElement;
@@ -429,6 +429,7 @@ function functionChange(select) {
 	} else if (input.origMaxLength >= 0) {
 		input.maxLength = input.origMaxLength;
 	}
+	helpClose();
 }
 
 

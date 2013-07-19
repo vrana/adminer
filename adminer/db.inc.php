@@ -114,17 +114,17 @@ if ($adminer->homepage()) {
 			
 			echo "</table>\n";
 			if (!information_schema(DB)) {
-				$vacuum = "<input type='submit' value='" . lang('Vacuum') . "'" . on_help("VACUUM") . "> ";
-				$optimize = "<input type='submit' name='optimize' value='" . lang('Optimize') . "'" . on_help($jush == "sql" ? "OPTIMIZE TABLE" : "VACUUM OPTIMIZE") . "> ";
+				$vacuum = "<input type='submit' value='" . lang('Vacuum') . "'" . on_help("'VACUUM'") . "> ";
+				$optimize = "<input type='submit' name='optimize' value='" . lang('Optimize') . "'" . on_help($jush == "sql" ? "'OPTIMIZE TABLE'" : "'VACUUM OPTIMIZE'") . "> ";
 				echo "<fieldset><legend>" . lang('Selected') . " <span id='selected'></span></legend><div>"
 				. ($jush == "sqlite" ? $vacuum
 				: ($jush == "pgsql" ? $vacuum . $optimize
-				: ($jush == "sql" ? "<input type='submit' value='" . lang('Analyze') . "'" . on_help("ANALYZE TABLE") . "> " . $optimize
-					. "<input type='submit' name='check' value='" . lang('Check') . "'" . on_help("CHECK TABLE") . "> "
-					. "<input type='submit' name='repair' value='" . lang('Repair') . "'" . on_help("REPAIR TABLE") . "> "
+				: ($jush == "sql" ? "<input type='submit' value='" . lang('Analyze') . "'" . on_help("'ANALYZE TABLE'") . "> " . $optimize
+					. "<input type='submit' name='check' value='" . lang('Check') . "'" . on_help("'CHECK TABLE'") . "> "
+					. "<input type='submit' name='repair' value='" . lang('Repair') . "'" . on_help("'REPAIR TABLE'") . "> "
 				: "")))
-				. (support("table") ? "<input type='submit' name='truncate' value='" . lang('Truncate') . "'" . confirm() . "" . on_help($jush == "sqlite" ? "DELETE" : "TRUNCATE" . ($jush == "pgsql" ? "" : " TABLE")) . "> " : "")
-				. "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm() . "" . on_help("DROP TABLE") . ">\n";
+				. (support("table") ? "<input type='submit' name='truncate' value='" . lang('Truncate') . "'" . confirm() . "" . on_help($jush == "sqlite" ? "'DELETE'" : "'TRUNCATE" . ($jush == "pgsql" ? "'" : " TABLE'")) . "> " : "")
+				. "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm() . "" . on_help("'DROP TABLE'") . ">\n";
 				$databases = (support("scheme") ? schemas() : $adminer->databases());
 				if (count($databases) != 1 && $jush != "sqlite") {
 					$db = (isset($_POST["target"]) ? $_POST["target"] : (support("scheme") ? $_GET["ns"] : DB));

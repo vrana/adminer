@@ -615,8 +615,15 @@ function schemaMouseup(ev, db) {
 
 var helpOpen;
 
-function helpMouseover(el, text, right) {
-	if (window.jush) {
+/** Display help
+* @param HTMLElement
+* @param string
+* @param bool display on left side (otherwise on top)
+*/
+function helpMouseover(el, text, side) {
+	if (!text) {
+		helpClose();
+	} else if (window.jush) {
 		helpOpen = 1;
 		var help = document.getElementById('help');
 		help.innerHTML = text;
@@ -627,11 +634,13 @@ function helpMouseover(el, text, right) {
 			top += parent.offsetTop;
 			left += parent.offsetLeft;
 		} while (parent = parent.offsetParent);
-		help.style.top = (top - (right ? (help.offsetHeight - el.offsetHeight) / 2 : help.offsetHeight)) + 'px';
-		help.style.left = (left + (right ? el.offsetWidth : (el.offsetWidth - help.offsetWidth) / 2)) + 'px';
+		help.style.top = (top - (side ? (help.offsetHeight - el.offsetHeight) / 2 : help.offsetHeight)) + 'px';
+		help.style.left = (left - (side ? help.offsetWidth : (help.offsetWidth - el.offsetWidth) / 2)) + 'px';
 	}
 }
 
+/** Close help after timeout
+*/
 function helpMouseout() {
 	helpOpen = 0;
 	setTimeout(function () {
@@ -641,6 +650,8 @@ function helpMouseout() {
 	}, 200);
 }
 
+/** Close help
+*/
 function helpClose() {
 	alterClass(document.getElementById('help'), 'hidden', true);
 }
