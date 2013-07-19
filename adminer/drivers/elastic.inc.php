@@ -93,7 +93,7 @@ if (isset($_GET["elastic"])) {
 				$query = "$table/_search?default_operator=AND"
 					. ($select != array("*") ? "&fields=" . urlencode(implode(",", $select)) : "")
 					. ($order ? "&sort=" . urlencode(ereg_replace(' DESC(,|$)', ':desc\1', implode(",", $order))) : "")
-					. ($limit ? "&size=$limit" . ($page ? "&from=" . ($page * $limit) : "") : "")
+					. ($limit ? "&size=" . (+$limit) . ($page ? "&from=" . ($page * $limit) : "") : "") // doesn't support returning all results
 				;
 				foreach ((array) $_GET["where"] as $val) {
 					if ("$val[col]$val[val]" != "") {
