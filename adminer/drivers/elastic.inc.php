@@ -10,10 +10,10 @@ if (isset($_GET["elastic"])) {
 			var $extension = "JSON", $server_info, $errno, $error, $_url;
 			
 			function query($path) {
+				@ini_set('track_errors', 1); // @ - may be disabled
 				$file = @file_get_contents($this->_url . ($this->_db != "" ? "$this->_db/" : "") . $path, false, stream_context_create(array('http' => array(
 					'ignore_errors' => 1, // available since PHP 5.2.10
 				))));
-				@ini_set('track_errors', 1); // @ - may be disabled
 				if (!$file) {
 					$this->error = $php_errormsg;
 					return $file;
@@ -90,8 +90,19 @@ if (isset($_GET["elastic"])) {
 			global $adminer;
 			$query = $adminer->selectQueryBuild($select, $where, $group, $order, $limit, $page);
 			if (!$query) {
-				$query = "$table/_search";
+				$query = "$table/_search?default_operator=AND"
+					. ($select != array("*") ? "&fields=" . urlencode(implode(",", $select)) : "")
+					. ($order ? "&sort=" . urlencode(ereg_replace(' DESC(,|$)', ':desc\1', implode(",", $order))) : "")
+					. ($limit ? "&size=$limit" . ($page ? "&from=" . ($page * $limit) : "") : "")
+				;
+				foreach ((array) $_GET["where"] as $val) {
+					if ("$val[col]$val[val]" != "") {
+						$query .= "&q=" . urlencode(($val["col"] != "" ? "$val[col]:" : "") . $val["val"]);
+						//! uses only last condition
+					}
+				}
 			}
+			echo $adminer->selectQuery($query);
 			$search = $this->_conn->query($query);
 			if (!$search) {
 				return false;
@@ -99,12 +110,18 @@ if (isset($_GET["elastic"])) {
 			$return = array();
 			foreach ($search['hits']['hits'] as $hit) {
 				$row = array();
-				foreach ($hit['_source'] as $key => $val) {
-					$row[$key] = (is_array($val) ? implode(", ", $val) : $val);
+				$fields = $hit['_source'];
+				if ($select != array("*")) {
+					$fields = array();
+					foreach ($select as $key) {
+						$fields[$key] = $hit['fields'][$key];
+					}
+				}
+				foreach ($fields as $key => $val) {
+					$row[$key] = (is_array($val) ? json_encode($val) : $val); //! display JSON and others differently
 				}
 				$return[] = $row;
 			}
-			echo $adminer->selectQuery($query);
 			return new Min_Result($return);
 		}
 		
