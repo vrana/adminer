@@ -69,6 +69,7 @@ foreach ($row["source"] as $key => $val) {
 <p>
 <?php echo lang('ON DELETE'); ?>: <?php echo html_select("on_delete", array(-1 => "") + explode("|", $on_actions), $row["on_delete"]); ?>
  <?php echo lang('ON UPDATE'); ?>: <?php echo html_select("on_update", array(-1 => "") + explode("|", $on_actions), $row["on_update"]); ?>
+<?php echo doc_link("innodb-foreign-key-constraints.html"); ?>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <noscript><p><input type="submit" name="add" value="<?php echo lang('Add column'); ?>"></noscript>
