@@ -1000,7 +1000,7 @@ function is_url($string) {
 * @return bool
 */
 function is_shortable($field) {
-	return ereg('char|text|lob|geometry|point|linestring|polygon', $field["type"]);
+	return ereg('char|text|lob|geometry|point|linestring|polygon|string', $field["type"]);
 }
 
 /** Get query to compute number of found rows
