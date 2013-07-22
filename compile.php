@@ -278,7 +278,7 @@ function minify_css($file) {
 }
 
 function minify_js($file) {
-	$file = str_replace("'../externals/jush/'", "location.protocol + '//www.adminer.org/static/'", $file);
+	$file = str_replace("'../externals/jush/'", "location.protocol + '//www.adminer.org/static/jush/2.0.0/'", $file);
 	if (function_exists('jsShrink')) {
 		$file = jsShrink($file);
 	}
