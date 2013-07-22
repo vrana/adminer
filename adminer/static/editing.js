@@ -27,6 +27,12 @@ function bodyLoad(version) {
 					jush.custom_links = jushLinks;
 				}
 				jush.highlight_tag('code', 0);
+				var tags = document.getElementsByTagName('textarea');
+				for (var i = 0; i < tags.length; i++) {
+					if (/(^|\s)jush-/.test(tags[i].className)) {
+						jush.textarea(tags[i]);
+					}
+				}
 			}
 		};
 		script.onreadystatechange = function () {

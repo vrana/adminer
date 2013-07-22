@@ -366,6 +366,9 @@ function getTarget(event) {
 */
 function bodyKeydown(event, button) {
 	var target = getTarget(event);
+	if (target.jushTextarea) {
+		target = target.jushTextarea;
+	}
 	if (isCtrl(event) && (event.keyCode == 13 || event.keyCode == 10) && isTag(target, 'select|textarea|input')) { // 13|10 - Enter
 		target.blur();
 		if (button) {
