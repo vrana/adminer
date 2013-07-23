@@ -30,7 +30,10 @@ function bodyLoad(version) {
 				var tags = document.getElementsByTagName('textarea');
 				for (var i = 0; i < tags.length; i++) {
 					if (/(^|\s)jush-/.test(tags[i].className)) {
-						jush.textarea(tags[i]);
+						var pre = jush.textarea(tags[i]);
+						if (pre) {
+							setupSubmitHighlightInput(pre);
+						}
 					}
 				}
 			}

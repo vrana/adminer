@@ -636,11 +636,18 @@ function setupSubmitHighlight(parent) {
 	for (var key in { input: 1, select: 1, textarea: 1 }) {
 		var inputs = parent.getElementsByTagName(key);
 		for (var i = 0; i < inputs.length; i++) {
-			if (!/submit|image|file/.test(inputs[i].type)) {
-				addEvent(inputs[i], 'focus', inputFocus);
-				addEvent(inputs[i], 'blur', inputBlur);
-			}
+			setupSubmitHighlightInput(inputs[i])
 		}
+	}
+}
+
+/** Setup submit highlighting for single element
+* @param HTMLElement
+*/
+function setupSubmitHighlightInput(input) {
+	if (!/submit|image|file/.test(input.type)) {
+		addEvent(input, 'focus', inputFocus);
+		addEvent(input, 'blur', inputBlur);
 	}
 }
 
@@ -648,7 +655,7 @@ function setupSubmitHighlight(parent) {
 * @this HTMLInputElement
 */
 function inputFocus() {
-	var submit = findDefaultSubmit(this.form);
+	var submit = findDefaultSubmit(this);
 	if (submit) {
 		alterClass(submit, 'default', true);
 	}
@@ -658,18 +665,21 @@ function inputFocus() {
 * @this HTMLInputElement
 */
 function inputBlur() {
-	var submit = findDefaultSubmit(this.form);
+	var submit = findDefaultSubmit(this);
 	if (submit) {
 		alterClass(submit, 'default');
 	}
 }
 
 /** Find submit button used by Enter
-* @param HTMLFormElement
+* @param HTMLElement
 * @return HTMLInputElement
 */
-function findDefaultSubmit(form) {
-	var inputs = form.getElementsByTagName('input');
+function findDefaultSubmit(el) {
+	if (el.jushTextarea) {
+		el = el.jushTextarea;
+	}
+	var inputs = el.form.getElementsByTagName('input');
 	for (var i = 0; i < inputs.length; i++) {
 		var input = inputs[i];
 		if (input.type == 'submit' && !input.style.zIndex) {
