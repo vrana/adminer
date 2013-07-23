@@ -58,7 +58,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 					}
 				}
 				if ($foreign_key !== null) {
-					$foreign[idf_escape($field["field"])] = ($TABLE != "" && $jush != "sqlite" ? "ADD" : " ") . " FOREIGN KEY (" . idf_escape($field["field"]) . ") REFERENCES " . table($foreign_keys[$field["type"]]) . " (" . idf_escape($type_field["field"]) . ")" . (ereg("^($on_actions)\$", $field["on_delete"]) ? " ON DELETE $field[on_delete]" : "");
+					$foreign[idf_escape($field["field"])] = ($TABLE != "" && $jush != "sqlite" ? "ADD" : " ") . " FOREIGN KEY (" . idf_escape($field["field"]) . ") REFERENCES " . table($foreign_keys[$field["type"]]) . " (" . idf_escape($type_field["field"]) . ")" . (preg_match("/^($on_actions)\$/", $field["on_delete"]) ? " ON DELETE $field[on_delete]" : "");
 				}
 				$after = " AFTER " . idf_escape($field["field"]);
 			} elseif ($field["orig"] != "") {
@@ -86,7 +86,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 				? " (" . implode(",", $partitions) . "\n)"
 				: ($row["partitions"] ? " PARTITIONS " . (+$row["partitions"]) : "")
 			);
-		} elseif (support("partitioning") && ereg("partitioned", $table_status["Create_options"])) {
+		} elseif (support("partitioning") && preg_match("/partitioned/", $table_status["Create_options"])) {
 			$partitioning .= "\nREMOVE PARTITIONING";
 		}
 		
@@ -161,7 +161,7 @@ foreach ($engines as $engine) {
 <?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo h($row["name"]); ?>" autocapitalize="off">
 <?php if ($TABLE == "" && !$_POST) { ?><script type='text/javascript'>focus(document.getElementById('form')['name']);</script><?php } ?>
 <?php echo ($engines ? "<select name='Engine' onchange='helpClose();'" . on_help("getTarget(event).value", 1) . ">" . optionlist(array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) . "</select>" : ""); ?>
- <?php echo ($collations && !ereg("sqlite|mssql", $jush) ? html_select("Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]) : ""); ?>
+ <?php echo ($collations && !preg_match("/sqlite|mssql/", $jush) ? html_select("Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]) : ""); ?>
  <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php } ?>
 
@@ -196,7 +196,7 @@ edit_fields($row["fields"], $collations, "TABLE", $foreign_keys, $comments);
 <?php if ($TABLE != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo confirm(); ?>><?php } ?>
 <?php
 if (support("partitioning")) {
-	$partition_table = ereg('RANGE|LIST', $row["partition_by"]);
+	$partition_table = preg_match('/RANGE|LIST/', $row["partition_by"]);
 	print_fieldset("partition", lang('Partition by'), $row["partition_by"]);
 	?>
 <p>

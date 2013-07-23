@@ -12,7 +12,7 @@ if (isset($_GET["oracle"])) {
 				if (ini_bool("html_errors")) {
 					$error = html_entity_decode(strip_tags($error));
 				}
-				$error = ereg_replace('^[^:]*: ', '', $error);
+				$error = preg_replace('/^[^:]*: /', '', $error);
 				$this->error = $error;
 			}
 			
@@ -107,7 +107,7 @@ if (isset($_GET["oracle"])) {
 				$return->name = oci_field_name($this->_result, $column);
 				$return->orgname = $return->name;
 				$return->type = oci_field_type($this->_result, $column);
-				$return->charsetnr = (ereg("raw|blob|bfile", $return->type) ? 63 : 0); // 63 - binary
+				$return->charsetnr = (preg_match("/raw|blob|bfile/", $return->type) ? 63 : 0); // 63 - binary
 				return $return;
 			}
 			
@@ -376,7 +376,7 @@ ORDER BY PROCESS
 	}
 	
 	function support($feature) {
-		return ereg('^(database|table|sql|indexes|view|scheme|processlist|drop_col|variables|status)$', $feature); //!
+		return preg_match('/^(database|table|sql|indexes|view|scheme|processlist|drop_col|variables|status)$/', $feature); //!
 	}
 	
 	$jush = "oracle";

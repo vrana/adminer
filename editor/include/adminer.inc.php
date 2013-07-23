@@ -131,7 +131,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	function rowDescription($table) {
 		// first varchar column
 		foreach (fields($table) as $field) {
-			if (ereg("varchar|character varying", $field["type"])) {
+			if (preg_match("/varchar|character varying/", $field["type"])) {
 				return idf_escape($field["field"]);
 			}
 		}
@@ -169,9 +169,9 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	function selectVal($val, $link, $field) {
 		$return = ($val === null ? "&nbsp;" : $val);
 		$link = h($link);
-		if (ereg('blob|bytea', $field["type"]) && !is_utf8($val)) {
+		if (preg_match('/blob|bytea/', $field["type"]) && !is_utf8($val)) {
 			$return = lang('%d byte(s)', strlen($val));
-			if (ereg("^(GIF|\xFF\xD8\xFF|\x89PNG\x0D\x0A\x1A\x0A)", $val)) { // GIF|JPG|PNG, getimagetype() works with filename
+			if (preg_match("/^(GIF|\xFF\xD8\xFF|\x89PNG\x0D\x0A\x1A\x0A)/", $val)) { // GIF|JPG|PNG, getimagetype() works with filename
 				$return = "<img src='$link' alt='$return'>";
 			}
 		}
@@ -181,16 +181,16 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		if ($link) {
 			$return = "<a href='$link'>$return</a>";
 		}
-		if (!$link && !like_bool($field) && ereg('int|float|double|decimal', $field["type"])) {
+		if (!$link && !like_bool($field) && preg_match('/int|float|double|decimal/', $field["type"])) {
 			$return = "<div class='number'>$return</div>"; // Firefox doesn't support <colgroup>
-		} elseif (ereg('date', $field["type"])) {
+		} elseif (preg_match('/date/', $field["type"])) {
 			$return = "<div class='datetime'>$return</div>";
 		}
 		return $return;
 	}
 	
 	function editVal($val, $field) {
-		if (ereg('date|timestamp', $field["type"]) && $val !== null) {
+		if (preg_match('/date|timestamp/', $field["type"]) && $val !== null) {
 			return preg_replace('~^(\\d{2}(\\d+))-(0?(\\d+))-(0?(\\d+))~', lang('$1-$3-$5'), $val);
 		}
 		return $val;
@@ -211,7 +211,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		$fields = fields($_GET["select"]);
 		foreach ($columns as $name => $desc) {
 			$field = $fields[$name];
-			if (ereg("enum", $field["type"]) || like_bool($field)) { //! set - uses 1 << $i and FIND_IN_SET()
+			if (preg_match("/enum/", $field["type"]) || like_bool($field)) { //! set - uses 1 << $i and FIND_IN_SET()
 				$key = $keys[$name];
 				$i--;
 				echo "<div>" . h($desc) . "<input type='hidden' name='where[$i][col]' value='" . h($name) . "'>:";
@@ -323,13 +323,13 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			if (($key < 0 ? "" : $col) . $val != "") {
 				$conds = array();
 				foreach (($col != "" ? array($col => $fields[$col]) : $fields) as $name => $field) {
-					if ($col != "" || is_numeric($val) || !ereg('int|float|double|decimal', $field["type"])) {
+					if ($col != "" || is_numeric($val) || !preg_match('/int|float|double|decimal/', $field["type"])) {
 						$name = idf_escape($name);
 						if ($col != "" && $field["type"] == "enum") {
 							$conds[] = (in_array(0, $val) ? "$name IS NULL OR " : "") . "$name IN (" . implode(", ", array_map('intval', $val)) . ")";
 						} else {
-							$text_type = ereg('char|text|enum|set', $field["type"]);
-							$value = $this->processInput($field, (!$op && $text_type && ereg('^[^%]+$', $val) ? "%$val%" : $val));
+							$text_type = preg_match('/char|text|enum|set/', $field["type"]);
+							$value = $this->processInput($field, (!$op && $text_type && preg_match('/^[^%]+$/', $val) ? "%$val%" : $val));
 							$conds[] = $name . ($value == "NULL" ? " IS" . ($op == ">=" ? " NOT" : "") . " $value"
 								: (in_array($op, $this->operators) || $op == "=" ? " $op $value"
 								: ($text_type ? " LIKE $value"
@@ -360,7 +360,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 				$has_desc = array_filter($index["descs"]);
 				$desc = false;
 				foreach ($index["columns"] as $val) {
-					if (ereg('date|timestamp', $fields[$val]["type"])) {
+					if (preg_match('/date|timestamp/', $fields[$val]["type"])) {
 						$desc = true;
 						break;
 					}
@@ -427,15 +427,15 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	
 	function editFunctions($field) {
 		$return = array();
-		if ($field["null"] && ereg('blob', $field["type"])) {
+		if ($field["null"] && preg_match('/blob/', $field["type"])) {
 			$return["NULL"] = lang('empty');
 		}
 		$return[""] = ($field["null"] || $field["auto_increment"] || like_bool($field) ? "" : "*");
 		//! respect driver
-		if (ereg('date|time', $field["type"])) {
+		if (preg_match('/date|time/', $field["type"])) {
 			$return["now"] = lang('now');
 		}
-		if (eregi('_(md5|sha1)$', $field["field"], $match)) {
+		if (preg_match('/_(md5|sha1)$/i', $field["field"], $match)) {
 			$return[] = strtolower($match[1]);
 		}
 		return $return;
@@ -458,16 +458,16 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			return '<input type="checkbox" value="' . h($value ? $value : 1) . '"' . ($value ? ' checked' : '') . "$attrs>";
 		}
 		$hint = "";
-		if (ereg('time', $field["type"])) {
+		if (preg_match('/time/', $field["type"])) {
 			$hint = lang('HH:MM:SS');
 		}
-		if (ereg('date|timestamp', $field["type"])) {
+		if (preg_match('/date|timestamp/', $field["type"])) {
 			$hint = lang('[yyyy]-mm-dd') . ($hint ? " [$hint]" : "");
 		}
 		if ($hint) {
 			return "<input value='" . h($value) . "'$attrs> ($hint)"; //! maxlength
 		}
-		if (eregi('_(md5|sha1)$', $field["field"])) {
+		if (preg_match('/_(md5|sha1)$/i', $field["field"])) {
 			return "<input type='password' value='" . h($value) . "'$attrs>";
 		}
 		return '';
@@ -478,15 +478,15 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			return "$function()";
 		}
 		$return = $value;
-		if (ereg('date|timestamp', $field["type"]) && preg_match('(^' . str_replace('\\$1', '(?P<p1>\\d*)', preg_replace('~(\\\\\\$([2-6]))~', '(?P<p\\2>\\d{1,2})', preg_quote(lang('$1-$3-$5')))) . '(.*))', $value, $match)) {
+		if (preg_match('/date|timestamp/', $field["type"]) && preg_match('(^' . str_replace('\\$1', '(?P<p1>\\d*)', preg_replace('~(\\\\\\$([2-6]))~', '(?P<p\\2>\\d{1,2})', preg_quote(lang('$1-$3-$5')))) . '(.*))', $value, $match)) {
 			$return = ($match["p1"] != "" ? $match["p1"] : ($match["p2"] != "" ? ($match["p2"] < 70 ? 20 : 19) . $match["p2"] : gmdate("Y"))) . "-$match[p3]$match[p4]-$match[p5]$match[p6]" . end($match);
 		}
-		$return = ($field["type"] == "bit" && ereg('^[0-9]+$', $value) ? $return : q($return));
+		$return = ($field["type"] == "bit" && preg_match('/^[0-9]+$/', $value) ? $return : q($return));
 		if ($value == "" && like_bool($field)) {
 			$return = "0";
-		} elseif ($value == "" && ($field["null"] || !ereg('char|text', $field["type"]))) {
+		} elseif ($value == "" && ($field["null"] || !preg_match('/char|text/', $field["type"]))) {
 			$return = "NULL";
-		} elseif (ereg('^(md5|sha1)$', $function)) {
+		} elseif (preg_match('/^(md5|sha1)$/', $function)) {
 			$return = "$function($return)";
 		}
 		return unconvert_field($field, $return);

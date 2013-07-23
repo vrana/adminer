@@ -36,7 +36,7 @@ class AdminerDumpZip {
 	
 	function dumpHeaders($identifier, $multi_table = false) {
 		if ($_POST["output"] == "zip") {
-			$this->filename = "$identifier." . ($multi_table && ereg("[ct]sv", $_POST["format"]) ? "tar" : $_POST["format"]);
+			$this->filename = "$identifier." . ($multi_table && preg_match("/[ct]sv/", $_POST["format"]) ? "tar" : $_POST["format"]);
 			header("Content-Type: application/zip");
 			ob_start(array($this, '_zip'));
 		}

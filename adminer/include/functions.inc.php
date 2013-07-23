@@ -234,7 +234,7 @@ function json_row($key, $val = null) {
 */
 function ini_bool($ini) {
 	$val = ini_get($ini);
-	return (eregi('^(on|true|yes)$', $val) || (int) $val); // boolean values set by php_value are strings
+	return (preg_match('/^(on|true|yes)$/i', $val) || (int) $val); // boolean values set by php_value are strings
 }
 
 /** Check if SID is neccessary
@@ -325,7 +325,7 @@ function get_rows($query, $connection2 = null, $error = "<p class='error'>") {
 */
 function unique_array($row, $indexes) {
 	foreach ($indexes as $index) {
-		if (ereg("PRIMARY|UNIQUE", $index["type"])) {
+		if (preg_match("/PRIMARY|UNIQUE/", $index["type"])) {
 			$return = array();
 			foreach ($index["columns"] as $key) {
 				if (!isset($row[$key])) { // NULL is ambiguous
@@ -351,12 +351,12 @@ function where($where, $fields = array()) {
 		$key = bracket_escape($key, 1); // 1 - back
 		$column = (preg_match($function_pattern, $key) ? $key : idf_escape($key)); //! SQL injection
 		$return[] = $column
-			. (($jush == "sql" && ereg('^[0-9]*\\.[0-9]*$', $val)) || $jush == "mssql"
+			. (($jush == "sql" && preg_match('/^[0-9]*\\.[0-9]*$/', $val)) || $jush == "mssql"
 				? " LIKE " . q(addcslashes($val, "%_\\"))
 				: " = " . unconvert_field($fields[$key], q($val))
 			) // LIKE because of floats but slow with ints, in MS SQL because of text
 		; //! enum and set
-		if ($jush == "sql" && ereg("[^ -@]", $val)) { // not just [a-z] to catch non-ASCII characters
+		if ($jush == "sql" && preg_match("/[^ -@]/", $val)) { // not just [a-z] to catch non-ASCII characters
 			$return[] = "$column = " . q($val) . " COLLATE utf8_bin";
 		}
 	}
@@ -417,7 +417,7 @@ function cookie($name, $value) {
 	global $HTTPS;
 	$params = array(
 		$name,
-		(ereg("\n", $value) ? "" : $value), // HTTP Response Splitting protection in PHP < 5.1.2
+		(preg_match("/\n/", $value) ? "" : $value), // HTTP Response Splitting protection in PHP < 5.1.2
 		time() + 2592000, // 2592000 - 30 days
 		preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]),
 		"",
@@ -553,7 +553,7 @@ function queries($query = null) {
 	}
 	$start = microtime();
 	$return = $connection->query($query);
-	$queries[] = (ereg(';$', $query) ? "DELIMITER ;;\n$query;\nDELIMITER " : $query)
+	$queries[] = (preg_match('/;$/', $query) ? "DELIMITER ;;\n$query;\nDELIMITER " : $query)
 		. "; -- " . format_time($start, microtime());
 	return $return;
 }
@@ -632,13 +632,13 @@ function get_file($key, $decompress = false) {
 		}
 		$name = $file["name"][$key];
 		$tmp_name = $file["tmp_name"][$key];
-		$content = file_get_contents($decompress && ereg('\\.gz$', $name)
+		$content = file_get_contents($decompress && preg_match('/\\.gz$/', $name)
 			? "compress.zlib://$tmp_name"
 			: $tmp_name
 		); //! may not be reachable because of open_basedir
 		if ($decompress) {
 			$start = substr($content, 0, 3);
-			if (function_exists("iconv") && ereg("^\xFE\xFF|^\xFF\xFE", $start, $regs)) { // not ternary operator to save memory
+			if (function_exists("iconv") && preg_match("/^\xFE\xFF|^\xFF\xFE/", $start, $regs)) { // not ternary operator to save memory
 				$content = iconv("utf-16", "utf-8", $content);
 			} elseif ($start == "\xEF\xBB\xBF") { // UTF-8 BOM
 				$content = substr($content, 3);
@@ -813,9 +813,9 @@ function input($field, $value, $function) {
 				$checked = (is_int($value) ? ($value >> $i) & 1 : in_array($val, explode(",", $value), true));
 				echo " <label><input type='checkbox' name='fields[$name][$i]' value='" . (1 << $i) . "'" . ($checked ? ' checked' : '') . "$onchange>" . h($adminer->editVal($val, $field)) . '</label>';
 			}
-		} elseif (ereg('blob|bytea|raw|file', $field["type"]) && ini_bool("file_uploads")) {
+		} elseif (preg_match('/blob|bytea|raw|file/', $field["type"]) && ini_bool("file_uploads")) {
 			echo "<input type='file' name='fields-$name'$onchange>";
-		} elseif (($text = ereg('text|lob', $field["type"])) || ereg("\n", $value)) {
+		} elseif (($text = preg_match('/text|lob/', $field["type"])) || preg_match("/\n/", $value)) {
 			if ($text && $jush != "sqlite") {
 				$attrs .= " cols='50' rows='12'";
 			} else {
@@ -825,12 +825,12 @@ function input($field, $value, $function) {
 			echo "<textarea$attrs>" . h($value) . '</textarea>';
 		} else {
 			// int(3) is only a display hint
-			$maxlength = (!ereg('int', $field["type"]) && preg_match('~^(\\d+)(,(\\d+))?$~', $field["length"], $match) ? ((ereg("binary", $field["type"]) ? 2 : 1) * $match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) : ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0));
-			if ($jush == 'sql' && $connection->server_info >= 5.6 && ereg('time', $field["type"])) {
+			$maxlength = (!preg_match('/int/', $field["type"]) && preg_match('~^(\\d+)(,(\\d+))?$~', $field["length"], $match) ? ((preg_match("/binary/", $field["type"]) ? 2 : 1) * $match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) : ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0));
+			if ($jush == 'sql' && $connection->server_info >= 5.6 && preg_match('/time/', $field["type"])) {
 				$maxlength += 7; // microtime
 			}
 			// type='date' and type='time' display localized value which may be confusing, type='datetime' uses 'T' as date and time separator
-			echo "<input" . (ereg('int', $field["type"]) ? " type='number'" : "") . " value='" . h($value) . "'" . ($maxlength ? " maxlength='$maxlength'" : "") . (ereg('char|binary', $field["type"]) && $maxlength > 20 ? " size='40'" : "") . "$attrs>";
+			echo "<input" . (preg_match('/int/', $field["type"]) ? " type='number'" : "") . " value='" . h($value) . "'" . ($maxlength ? " maxlength='$maxlength'" : "") . (preg_match('/char|binary/', $field["type"]) && $maxlength > 20 ? " size='40'" : "") . "$attrs>";
 		}
 	}
 }
@@ -865,7 +865,7 @@ function process_input($field) {
 	if ($field["type"] == "set") {
 		return array_sum((array) $value);
 	}
-	if (ereg('blob|bytea|raw|file', $field["type"]) && ini_bool("file_uploads")) {
+	if (preg_match('/blob|bytea|raw|file/', $field["type"]) && ini_bool("file_uploads")) {
 		$file = get_file("fields-$idf");
 		if (!is_string($file)) {
 			return false; //! report errors
@@ -913,7 +913,7 @@ function dump_headers($identifier, $multi_table = false) {
 	$return = $adminer->dumpHeaders($identifier, $multi_table);
 	$output = $_POST["output"];
 	if ($output != "text") {
-		header("Content-Disposition: attachment; filename=" . $adminer->dumpFilename($identifier) . ".$return" . ($output != "file" && !ereg('[^0-9a-z]', $output) ? ".$output" : ""));
+		header("Content-Disposition: attachment; filename=" . $adminer->dumpFilename($identifier) . ".$return" . ($output != "file" && !preg_match('/[^0-9a-z]/', $output) ? ".$output" : ""));
 	}
 	session_write_close();
 	ob_flush();
@@ -1000,7 +1000,7 @@ function is_url($string) {
 * @return bool
 */
 function is_shortable($field) {
-	return ereg('char|text|lob|geometry|point|linestring|polygon|string', $field["type"]);
+	return preg_match('/char|text|lob|geometry|point|linestring|polygon|string/', $field["type"]);
 }
 
 /** Get query to compute number of found rows

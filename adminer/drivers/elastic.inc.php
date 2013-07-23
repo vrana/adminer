@@ -18,7 +18,7 @@ if (isset($_GET["elastic"])) {
 					$this->error = $php_errormsg;
 					return $file;
 				}
-				if (!eregi('^HTTP/[0-9.]+ 2', $http_response_header[0])) {
+				if (!preg_match('/^HTTP/[0-9.]+ 2/i', $http_response_header[0])) {
 					$this->error = $file;
 					return false;
 				}
@@ -30,7 +30,7 @@ if (isset($_GET["elastic"])) {
 					} else {
 						$constants = get_defined_constants(true);
 						foreach ($constants['json'] as $name => $value) {
-							if ($value == $this->errno && ereg('^JSON_ERROR_', $name)) {
+							if ($value == $this->errno && preg_match('/^JSON_ERROR_/', $name)) {
 								$this->error = $name;
 								break;
 							}
@@ -92,7 +92,7 @@ if (isset($_GET["elastic"])) {
 			if (!$query) {
 				$query = "$table/_search?default_operator=AND"
 					. ($select != array("*") ? "&fields=" . urlencode(implode(",", $select)) : "")
-					. ($order ? "&sort=" . urlencode(ereg_replace(' DESC(,|$)', ':desc\1', implode(",", $order))) : "")
+					. ($order ? "&sort=" . urlencode(preg_replace('/ DESC(,|$)/', ':desc\1', implode(",", $order))) : "")
 					. ($limit ? "&size=" . (+$limit) . ($page ? "&from=" . ($page * $limit) : "") : "") // doesn't support returning all results
 				;
 				foreach ((array) $_GET["where"] as $val) {
@@ -140,7 +140,7 @@ if (isset($_GET["elastic"])) {
 	}
 	
 	function support($feature) {
-		return ereg("database|table", $feature);
+		return preg_match("/database|table/", $feature);
 	}
 	
 	function logged_user() {

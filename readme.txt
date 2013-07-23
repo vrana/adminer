@@ -14,3 +14,6 @@ adminer/plugin.php - Plugin demo
 compile.php - Create a single file version
 lang.php - Update translations
 tests/selenium.html - Selenium test suite
+
+
+This branch was created to remove all ereg, eregi and ereg_replace functions.

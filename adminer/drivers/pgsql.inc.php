@@ -12,7 +12,7 @@ if (isset($_GET["pgsql"])) {
 				if (ini_bool("html_errors")) {
 					$error = html_entity_decode(strip_tags($error));
 				}
-				$error = ereg_replace('^[^:]*: ', '', $error);
+				$error = preg_replace('/^[^:]*: /', '', $error);
 				$this->error = $error;
 			}
 			
@@ -272,13 +272,13 @@ ORDER BY a.attnum"
 		) as $row) {
 			//! collation, primary
 			$type = $row["full_type"];
-			if (ereg('(.+)\\((.*)\\)$', $row["full_type"], $match)) {
+			if (preg_match('/(.+)\\((.*)\\)$/', $row["full_type"], $match)) {
 				list(, $type, $row["length"]) = $match;
 			}
 			$row["type"] = ($aliases[$type] ? $aliases[$type] : $type);
 			$row["full_type"] = $row["type"] . ($row["length"] ? "($row[length])" : "");
 			$row["null"] = !$row["attnotnull"];
-			$row["auto_increment"] = eregi("^nextval\\(", $row["default"]);
+			$row["auto_increment"] = preg_match("/^nextval\\(/i", $row["default"]);
 			$row["privileges"] = array("insert" => 1, "select" => 1, "update" => 1);
 			if (preg_match('~(.+)::[^)]+(.*)~', $row["default"], $match)) {
 				$row["default"] = ($match[1][0] == "'" ? idf_unescape($match[1]) : $match[1]) . $match[2];
@@ -549,8 +549,8 @@ ORDER BY p.proname');
 	
 	function found_rows($table_status, $where) {
 		global $connection;
-		if (ereg(
-			" rows=([0-9]+)",
+		if (preg_match(
+			"/ rows=([0-9]+)/",
 			$connection->result("EXPLAIN SELECT * FROM " . idf_escape($table_status["Name"]) . ($where ? " WHERE " . implode(" AND ", $where) : "")),
 			$regs
 		)) {
@@ -613,7 +613,7 @@ AND typelem = 0"
 	}
 	
 	function support($feature) {
-		return ereg('^(database|table|sql|indexes|comment|view|scheme|processlist|sequence|trigger|type|variables|drop_col)$', $feature); //! routine|
+		return preg_match('/^(database|table|sql|indexes|comment|view|scheme|processlist|sequence|trigger|type|variables|drop_col)$/', $feature); //! routine|
 	}
 	
 	$jush = "pgsql";

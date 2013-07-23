@@ -13,7 +13,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 	$location = $_POST["referer"];
 	if ($_POST["insert"]) { // continue edit or insert
 		$location = ($update ? null : $_SERVER["REQUEST_URI"]);
-	} elseif (!ereg('^.+&select=.+$', $location)) {
+	} elseif (!preg_match('/^.+&select=.+$/', $location)) {
 		$location = ME . "select=" . urlencode($TABLE);
 	}
 	
@@ -78,7 +78,7 @@ if ($_POST["save"]) {
 			if ($_POST["clone"] && $field["auto_increment"]) {
 				$as = "''";
 			}
-			if ($jush == "sql" && ereg("enum|set", $field["type"])) {
+			if ($jush == "sql" && preg_match("/enum|set/", $field["type"])) {
 				$as = "1*" . idf_escape($name);
 			}
 			$select[] = ($as ? "$as AS " : "") . idf_escape($name);
@@ -130,19 +130,19 @@ if (!$fields) {
 		$default = $_GET["set"][bracket_escape($name)];
 		if ($default === null) {
 			$default = $field["default"];
-			if ($field["type"] == "bit" && ereg("^b'([01]*)'\$", $default, $regs)) {
+			if ($field["type"] == "bit" && preg_match("/^b'([01]*)'\$/", $default, $regs)) {
 				$default = $regs[1];
 			}
 		}
 		$value = ($row !== null
-			? ($row[$name] != "" && $jush == "sql" && ereg("enum|set", $field["type"]) ? (is_array($row[$name]) ? array_sum($row[$name]) : +$row[$name]) : $row[$name])
+			? ($row[$name] != "" && $jush == "sql" && preg_match("/enum|set/", $field["type"]) ? (is_array($row[$name]) ? array_sum($row[$name]) : +$row[$name]) : $row[$name])
 			: (!$update && $field["auto_increment"] ? "" : (isset($_GET["select"]) ? false : $default))
 		);
 		if (!$_POST["save"] && is_string($value)) {
 			$value = $adminer->editVal($value, $field);
 		}
 		$function = ($_POST["save"] ? (string) $_POST["function"][$name] : ($update && $field["on_update"] == "CURRENT_TIMESTAMP" ? "now" : ($value === false ? null : ($value !== null ? '' : 'NULL'))));
-		if (ereg("time", $field["type"]) && $value == "CURRENT_TIMESTAMP") {
+		if (preg_match("/time/", $field["type"]) && $value == "CURRENT_TIMESTAMP") {
 			$value = "";
 			$function = "now";
 		}

@@ -17,8 +17,8 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 		query_redirect("ALTER TABLE " . table($TABLE)
 			. ($name != "" ? "\nDROP " . ($jush == "sql" ? "FOREIGN KEY " : "CONSTRAINT ") . idf_escape($name) . "," : "")
 			. "\nADD FOREIGN KEY (" . implode(", ", array_map('idf_escape', $source)) . ") REFERENCES " . table($row["table"]) . " (" . implode(", ", array_map('idf_escape', $target)) . ")" //! reuse $name - check in older MySQL versions
-			. (ereg("^($on_actions)\$", $row["on_delete"]) ? " ON DELETE $row[on_delete]" : "")
-			. (ereg("^($on_actions)\$", $row["on_update"]) ? " ON UPDATE $row[on_update]" : "")
+			. (preg_match("/^($on_actions)\$/", $row["on_delete"]) ? " ON DELETE $row[on_delete]" : "")
+			. (preg_match("/^($on_actions)\$/", $row["on_update"]) ? " ON UPDATE $row[on_update]" : "")
 		, ME . "table=" . urlencode($TABLE), ($name != "" ? lang('Foreign key has been altered.') : lang('Foreign key has been created.')));
 		$error = lang('Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.') . "<br>$error"; //! no partitioning
 	}

@@ -207,8 +207,8 @@ username.form['auth[driver]'].onchange();
 	* @return string
 	*/
 	function selectVal($val, $link, $field) {
-		$return = ($val === null ? "<i>NULL</i>" : (ereg("char|binary", $field["type"]) && !ereg("var", $field["type"]) ? "<code>$val</code>" : $val));
-		if (ereg('blob|bytea|raw|file', $field["type"]) && !is_utf8($val)) {
+		$return = ($val === null ? "<i>NULL</i>" : (preg_match("/char|binary/", $field["type"]) && !preg_match("/var/", $field["type"]) ? "<code>$val</code>" : $val));
+		if (preg_match('/blob|bytea|raw|file/', $field["type"]) && !is_utf8($val)) {
 			$return = lang('%d byte(s)', strlen(html_entity_decode($val, ENT_QUOTES)));
 		}
 		return ($link ? "<a href='" . h($link) . "'>$return</a>" : $return);
@@ -401,14 +401,14 @@ username.form['auth[driver]'].onchange();
 		foreach ((array) $_GET["where"] as $val) {
 			if ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators)) {
 				$cond = " $val[op]";
-				if (ereg('IN$', $val["op"])) {
+				if (preg_match('/IN$/', $val["op"])) {
 					$in = process_length($val["val"]);
 					$cond .= " (" . ($in != "" ? $in : "NULL") . ")";
 				} elseif ($val["op"] == "SQL") {
 					$cond = " $val[val]"; // SQL injection
 				} elseif ($val["op"] == "LIKE %%") {
 					$cond = " LIKE " . $this->processInput($fields[$val["col"]], "%$val[val]%");
-				} elseif (!ereg('NULL$', $val["op"])) {
+				} elseif (!preg_match('/NULL$/', $val["op"])) {
 					$cond .= " " . $this->processInput($fields[$val["col"]], $val["val"]);
 				}
 				if ($val["col"] != "") {
@@ -417,12 +417,12 @@ username.form['auth[driver]'].onchange();
 					// find anywhere
 					$cols = array();
 					foreach ($fields as $name => $field) {
-						$is_text = ereg('char|text|enum|set', $field["type"]);
-						if ((is_numeric($val["val"]) || !ereg('(^|[^o])int|float|double|decimal|bit', $field["type"]))
-							&& (!ereg("[\x80-\xFF]", $val["val"]) || $is_text)
+						$is_text = preg_match('/char|text|enum|set/', $field["type"]);
+						if ((is_numeric($val["val"]) || !preg_match('/(^|[^o])int|float|double|decimal|bit/', $field["type"]))
+							&& (!preg_match("/[\x80-\xFF]/", $val["val"]) || $is_text)
 						) {
 							$name = idf_escape($name);
-							$cols[] = ($jush == "sql" && $is_text && !ereg('^utf8', $field["collation"]) ? "CONVERT($name USING utf8)" : $name);
+							$cols[] = ($jush == "sql" && $is_text && !preg_match('/^utf8/', $field["collation"]) ? "CONVERT($name USING utf8)" : $name);
 						}
 					}
 					$return[] = ($cols ? "(" . implode("$cond OR ", $cols) . "$cond)" : "0");
@@ -495,7 +495,7 @@ username.form['auth[driver]'].onchange();
 		$history = &get_session("queries");
 		$id = "sql-" . count($history[$_GET["db"]]);
 		if (strlen($query) > 1e6) {
-			$query = ereg_replace('[\x80-\xFF]+$', '', substr($query, 0, 1e6)) . "\n..."; // [\x80-\xFF] - valid UTF-8, \n - can end by one-line comment
+			$query = preg_replace('/[\x80-\xFF]+$/', '', substr($query, 0, 1e6)) . "\n..."; // [\x80-\xFF] - valid UTF-8, \n - can end by one-line comment
 		}
 		$history[$_GET["db"]][] = array($query, time()); // not DB - $_GET["db"] is changed in database.inc.php //! respect $_GET["ns"]
 		return " <span class='time'>" . @date("H:i:s") . "</span> <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre><code class='jush-$jush'>" . shorten_utf8($query, 1000) . '</code></pre><p><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a></div>'; // @ - time zone may be not set
@@ -511,11 +511,11 @@ username.form['auth[driver]'].onchange();
 		foreach ($edit_functions as $key => $functions) {
 			if (!$key || (!isset($_GET["call"]) && (isset($_GET["select"]) || where($_GET)))) { // relative functions
 				foreach ($functions as $pattern => $val) {
-					if (!$pattern || ereg($pattern, $field["type"])) {
+					if (!$pattern || preg_match("/" . str_replace("/", "\/", $pattern) . "/", $field["type"])) {
 						$return .= "/$val";
 					}
 				}
-				if ($key && !ereg('set|blob|bytea|raw|file', $field["type"])) {
+				if ($key && !preg_match('/set|blob|bytea|raw|file/', $field["type"])) {
 					$return .= "/SQL";
 				}
 			}
@@ -552,17 +552,17 @@ username.form['auth[driver]'].onchange();
 		}
 		$name = $field["field"];
 		$return = q($value);
-		if (ereg('^(now|getdate|uuid)$', $function)) {
+		if (preg_match('/^(now|getdate|uuid)$/', $function)) {
 			$return = "$function()";
-		} elseif (ereg('^current_(date|timestamp)$', $function)) {
+		} elseif (preg_match('/^current_(date|timestamp)$/', $function)) {
 			$return = $function;
-		} elseif (ereg('^([+-]|\\|\\|)$', $function)) {
+		} elseif (preg_match('/^([+-]|\\|\\|)$/', $function)) {
 			$return = idf_escape($name) . " $function $return";
-		} elseif (ereg('^[+-] interval$', $function)) {
+		} elseif (preg_match('/^[+-] interval$/', $function)) {
 			$return = idf_escape($name) . " $function " . (preg_match("~^(\\d+|'[0-9.: -]') [A-Z_]+$~i", $value) ? $value : $return);
-		} elseif (ereg('^(addtime|subtime|concat)$', $function)) {
+		} elseif (preg_match('/^(addtime|subtime|concat)$/', $function)) {
 			$return = "$function(" . idf_escape($name) . ", $return)";
-		} elseif (ereg('^(md5|sha1|password|encrypt)$', $function)) {
+		} elseif (preg_match('/^(md5|sha1|password|encrypt)$/', $function)) {
 			$return = "$function($return)";
 		}
 		return unconvert_field($field, $return);
@@ -674,7 +674,7 @@ username.form['auth[driver]'].onchange();
 						foreach ($row as $key => $val) {
 							$field = $fields[$key];
 							$row[$key] = ($val !== null
-								? unconvert_field($field, ereg('(^|[^o])int|float|double|decimal', $field["type"]) && $val != '' ? $val : q($val))
+								? unconvert_field($field, preg_match('/(^|[^o])int|float|double|decimal/', $field["type"]) && $val != '' ? $val : q($val))
 								: "NULL"
 							);
 						}
@@ -713,7 +713,7 @@ username.form['auth[driver]'].onchange();
 	*/
 	function dumpHeaders($identifier, $multi_table = false) {
 		$output = $_POST["output"];
-		$ext = (ereg('sql', $_POST["format"]) ? "sql" : ($multi_table ? "tar" : "csv")); // multiple CSV packed to TAR
+		$ext = (preg_match('/sql/', $_POST["format"]) ? "sql" : ($multi_table ? "tar" : "csv")); // multiple CSV packed to TAR
 		header("Content-Type: " .
 			($output == "gz" ? "application/x-gzip" :
 			($ext == "tar" ? "application/x-tar" :

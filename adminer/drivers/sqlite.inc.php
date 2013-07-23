@@ -187,7 +187,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			}
 			
 			function select_db($filename) {
-				if (is_readable($filename) && $this->query("ATTACH " . $this->quote(ereg("(^[/\\\\]|:)", $filename) ? $filename : dirname($_SERVER["SCRIPT_FILENAME"]) . "/$filename") . " AS a")) { // is_readable - SQLite 3
+				if (is_readable($filename) && $this->query("ATTACH " . $this->quote(preg_match("/(^[\/\\\\]|:)/", $filename) ? $filename : dirname($_SERVER["SCRIPT_FILENAME"]) . "/$filename") . " AS a")) { // is_readable - SQLite 3
 					$this->Min_SQLite($filename);
 					return true;
 				}
@@ -297,11 +297,11 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			$default = $row["dflt_value"];
 			$return[$row["name"]] = array(
 				"field" => $row["name"],
-				"type" => (eregi("int", $type) ? "integer" : (eregi("char|clob|text", $type) ? "text" : (eregi("blob", $type) ? "blob" : (eregi("real|floa|doub", $type) ? "real" : "numeric")))),
+				"type" => (preg_match("/int/i", $type) ? "integer" : (preg_match("/char|clob|text/i", $type) ? "text" : (preg_match("/blob/i", $type) ? "blob" : (preg_match("/real|floa|doub/i", $type) ? "real" : "numeric")))),
 				"full_type" => $type,
-				"default" => (ereg("'(.*)'", $default, $match) ? str_replace("''", "'", $match[1]) : ($default == "NULL" ? null : $default)),
+				"default" => (preg_match("/'(.*)'/", $default, $match) ? str_replace("''", "'", $match[1]) : ($default == "NULL" ? null : $default)),
 				"null" => !$row["notnull"],
-				"auto_increment" => eregi('^integer$', $type) && $row["pk"], //! possible false positive
+				"auto_increment" => preg_match('/^integer$/i', $type) && $row["pk"], //! possible false positive
 				"privileges" => array("select" => 1, "insert" => 1, "update" => 1),
 				"primary" => $row["pk"],
 			);
@@ -323,14 +323,14 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		$sqls = get_key_vals("SELECT name, sql FROM sqlite_master WHERE type = 'index' AND tbl_name = " . q($table));
 		foreach (get_rows("PRAGMA index_list(" . table($table) . ")") as $row) {
 			$name = $row["name"];
-			if (!ereg("^sqlite_", $name)) {
+			if (!preg_match("/^sqlite_/", $name)) {
 				$return[$name]["type"] = ($row["unique"] ? "UNIQUE" : "INDEX");
 				$return[$name]["lengths"] = array();
 				foreach (get_rows("PRAGMA index_info(" . idf_escape($name) . ")") as $row1) {
 					$return[$name]["columns"][] = $row1["name"];
 				}
 				$return[$name]["descs"] = array();
-				if (eregi('^CREATE( UNIQUE)? INDEX ' . quotemeta(idf_escape($name) . ' ON ' . idf_escape($table)) . ' \((.*)\)$', $sqls[$name], $regs)) {
+				if (preg_match('/^CREATE( UNIQUE)? INDEX /i' . quotemeta(idf_escape($name) . ' ON ' . idf_escape($table)) . ' \((.*)\)$', $sqls[$name], $regs)) {
 					preg_match_all('/("[^"]*+")+( DESC)?/', $regs[2], $matches);
 					foreach ($matches[2] as $val) {
 						$return[$name]["descs"][] = ($val ? '1' : null);
@@ -680,7 +680,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 	
 	function support($feature) {
-		return ereg('^(database|table|sql|indexes|view|trigger|variables|status|dump|move_col|drop_col)$', $feature);
+		return preg_match('/^(database|table|sql|indexes|view|trigger|variables|status|dump|move_col|drop_col)$/', $feature);
 	}
 	
 	$jush = "sqlite";

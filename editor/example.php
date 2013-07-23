@@ -29,7 +29,7 @@ function adminer_object() {
 		}
 		
 		function fieldName($field, $order = 0) {
-			if ($order && ereg('_(md5|sha1)$', $field["field"])) {
+			if ($order && preg_match('/_(md5|sha1)$/', $field["field"])) {
 				return ""; // hide hashes in select
 			}
 			// display only column with comments, first five of them plus searched columns

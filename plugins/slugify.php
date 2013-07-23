@@ -26,7 +26,7 @@ class AdminerSlugify {
 				$slugify = array();
 				$prev = null;
 				foreach (fields($table) as $name => $val) {
-					if ($prev && ereg('(^|_)slug(_|$)', $name)) {
+					if ($prev && preg_match('/(^|_)slug(_|$)/', $name)) {
 						$slugify[$prev] = $name;
 					}
 					$prev = $name;

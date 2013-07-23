@@ -146,7 +146,7 @@ if ($_POST && !$error) {
 					$set = array();
 					foreach ($row as $key => $val) {
 						$key = bracket_escape($key, 1); // 1 - back
-						$set[idf_escape($key)] = (ereg('char|text', $fields[$key]["type"]) || $val != "" ? $adminer->processInput($fields[$key], $val) : "NULL");
+						$set[idf_escape($key)] = (preg_match('/char|text/', $fields[$key]["type"]) || $val != "" ? $adminer->processInput($fields[$key], $val) : "NULL");
 					}
 					$result = $driver->update(
 						$TABLE,
@@ -214,7 +214,7 @@ if (isset($rights["insert"]) || !support("table")) {
 	$set = "";
 	foreach ((array) $_GET["where"] as $val) {
 		if (count($foreign_keys[$val["col"]]) == 1 && ($val["op"] == "="
-			|| (!$val["op"] && !ereg('[_%]', $val["val"])) // LIKE in Editor
+			|| (!$val["op"] && !preg_match('/[_%]/', $val["val"])) // LIKE in Editor
 		)) {
 			$set .= "&set" . urlencode("[" . bracket_escape($val["col"]) . "]") . "=" . urlencode($val["val"]);
 		}
@@ -364,7 +364,7 @@ if (!$columns && support("table")) {
 						$link = "";
 						$val = $adminer->editVal($val, $field);
 						if ($val !== null) {
-							if (ereg('blob|bytea|raw|file', $field["type"]) && $val != "") {
+							if (preg_match('/blob|bytea|raw|file/', $field["type"]) && $val != "") {
 								$link = ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . $unique_idf;
 							}
 							if ($val === "") { // === - may be int
@@ -422,7 +422,7 @@ if (!$columns && support("table")) {
 						$h_value = h($value !== null ? $value : $row[$key]);
 						$long = strpos($val, "<i>...</i>");
 						$editable = is_utf8($val) && $rows[$n][$key] == $row[$key] && !$functions[$key];
-						$text = ereg('text|lob', $field["type"]);
+						$text = preg_match('/text|lob/', $field["type"]);
 						echo (($_GET["modify"] && $editable) || $value !== null
 							? "<td>" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>")
 							: "<td id='$id' onclick=\"selectClick(this, event, " . ($long ? 2 : ($text ? 1 : 0)) . ($editable ? "" : ", '" . h(lang('Use edit link to modify this value.')) . "'") . ");\">" . $adminer->selectVal($val, $link, $field)
