@@ -36,6 +36,7 @@ if (!strpos($_SERVER["REQUEST_URI"], '?') && $_SERVER["QUERY_STRING"] != "") { /
 $HTTPS = $_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off");
 
 @ini_set("session.use_trans_sid", false); // protect links in export, @ - may be disabled
+session_cache_limiter(""); // to allow restarting session and to not send Cache-Control: no-store
 if (!defined("SID")) {
 	session_name("adminer_sid"); // use specific session name to get own namespace
 	$params = array(0, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]), "", $HTTPS);
@@ -83,7 +84,6 @@ include "../adminer/include/xxtea.inc.php";
 include "../adminer/include/auth.inc.php";
 
 if (!ini_bool("session.use_cookies") || @ini_set("session.use_cookies", false) !== false) { // @ - may be disabled
-	session_cache_limiter(""); // to allow restarting session
 	session_write_close(); // improves concurrency if a user opens several pages at once, may be restarted later
 }
 
