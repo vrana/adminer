@@ -239,7 +239,7 @@ if (isset($_GET["simpledb"])) {
 	}
 	
 	function support($feature) {
-		return ereg('sql', $feature);
+		return preg_match('/sql/', $feature);
 	}
 	
 	function logged_user() {
@@ -416,9 +416,9 @@ if (isset($_GET["simpledb"])) {
 			$query .= '&' . rawurlencode($key) . '=' . rawurlencode($val);
 		}
 		$query = str_replace('%7E', '~', substr($query, 1));
-		$query .= "&Signature=" . urlencode(base64_encode(hmac('sha1', "POST\n" . ereg_replace('^https?://', '', $host) . "\n/\n$query", $secret, true)));
+		$query .= "&Signature=" . urlencode(base64_encode(hmac('sha1', "POST\n" . preg_replace('/^https?:\/\//', '', $host) . "\n/\n$query", $secret, true)));
 		@ini_set('track_errors', 1); // @ - may be disabled
-		$file = @file_get_contents((ereg('^https?://', $host) ? $host : "http://$host"), false, stream_context_create(array('http' => array(
+		$file = @file_get_contents((preg_match('/^https?:\/\//', $host) ? $host : "http://$host"), false, stream_context_create(array('http' => array(
 			'method' => 'POST', // may not fit in URL with GET
 			'content' => $query,
 			'ignore_errors' => 1, // available since PHP 5.2.10

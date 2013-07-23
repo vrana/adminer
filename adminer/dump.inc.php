@@ -11,7 +11,7 @@ if ($_POST && !$error) {
 	$ext = dump_headers(
 		(count($tables) == 1 ? key($tables) : DB),
 		(DB == "" || count($tables) > 1));
-	$is_sql = ereg('sql', $_POST["format"]);
+	$is_sql = preg_match('/sql/', $_POST["format"]);
 	
 	if ($is_sql) {
 		echo "-- Adminer $VERSION " . $drivers[DRIVER] . " dump
@@ -36,7 +36,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 	foreach ((array) $databases as $db) {
 		$adminer->dumpDatabase($db);
 		if ($connection->select_db($db)) {
-			if ($is_sql && ereg('CREATE', $style) && ($create = $connection->result("SHOW CREATE DATABASE " . idf_escape($db), 1))) {
+			if ($is_sql && preg_match('/CREATE/', $style) && ($create = $connection->result("SHOW CREATE DATABASE " . idf_escape($db), 1))) {
 				if ($style == "DROP+CREATE") {
 					echo "DROP DATABASE IF EXISTS " . idf_escape($db) . ";\n";
 				}
@@ -171,10 +171,10 @@ if (DB != "") {
 	$views = "";
 	$tables_list = tables_list();
 	foreach ($tables_list as $name => $type) {
-		$prefix = ereg_replace("_.*", "", $name);
+		$prefix = preg_replace("/_.*/", "", $name);
 		$checked = ($TABLE == "" || $TABLE == (substr($TABLE, -1) == "%" ? "$prefix%" : $name)); //! % may be part of table name
 		$print = "<tr><td>" . checkbox("tables[]", $name, $checked, $name, "checkboxClick(event, this); formUncheck('check-tables');", "block");
-		if ($type !== null && !eregi("table", $type)) {
+		if ($type !== null && !preg_match("/table/i", $type)) {
 			$views .= "$print\n";
 		} else {
 			echo "$print<td align='right'><label class='block'><span id='Rows-" . h($name) . "'></span>" . checkbox("data[]", $name, $checked, "", "checkboxClick(event, this); formUncheck('check-data');") . "</label>\n";
@@ -193,7 +193,7 @@ if (DB != "") {
 	if ($databases) {
 		foreach ($databases as $db) {
 			if (!information_schema($db)) {
-				$prefix = ereg_replace("_.*", "", $db);
+				$prefix = preg_replace("/_.*/", "", $db);
 				echo "<tr><td>" . checkbox("databases[]", $db, $TABLE == "" || $TABLE == "$prefix%", $db, "formUncheck('check-databases');", "block") . "\n";
 				$prefixes[$prefix]++;
 			}

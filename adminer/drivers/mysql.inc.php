@@ -366,7 +366,7 @@ if (!defined("DRIVER")) {
 	function engines() {
 		$return = array();
 		foreach (get_rows("SHOW ENGINES") as $row) {
-			if (ereg("YES|DEFAULT", $row["Support"])) {
+			if (preg_match("/YES|DEFAULT/", $row["Support"])) {
 				$return[] = $row["Engine"];
 			}
 		}
@@ -441,7 +441,7 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function fk_support($table_status) {
-		return eregi("InnoDB|IBMDB2I", $table_status["Engine"]);
+		return preg_match("/InnoDB|IBMDB2I/i", $table_status["Engine"]);
 	}
 
 	/** Get information about fields
@@ -458,10 +458,10 @@ if (!defined("DRIVER")) {
 				"type" => $match[1],
 				"length" => $match[2],
 				"unsigned" => ltrim($match[3] . $match[4]),
-				"default" => ($row["Default"] != "" || ereg("char|set", $match[1]) ? $row["Default"] : null),
+				"default" => ($row["Default"] != "" || preg_match("/char|set/", $match[1]) ? $row["Default"] : null),
 				"null" => ($row["Null"] == "YES"),
 				"auto_increment" => ($row["Extra"] == "auto_increment"),
-				"on_update" => (eregi('^on update (.+)', $row["Extra"], $match) ? $match[1] : ""), //! available since MySQL 5.1.23
+				"on_update" => (preg_match('/^on update (.+)/i', $row["Extra"], $match) ? $match[1] : ""), //! available since MySQL 5.1.23
 				"collation" => $row["Collation"],
 				"privileges" => array_flip(explode(",", $row["Privileges"])),
 				"comment" => $row["Comment"],
@@ -565,7 +565,7 @@ if (!defined("DRIVER")) {
 	*/
 	function error_line() {
 		global $connection;
-		if (ereg(' at line ([0-9]+)$', $connection->error, $regs)) {
+		if (preg_match('/ at line ([0-9]+)$/', $connection->error, $regs)) {
 			return $regs[1] - 1;
 		}
 	}
@@ -962,13 +962,13 @@ if (!defined("DRIVER")) {
 	* @return string
 	*/
 	function convert_field($field) {
-		if (ereg("binary", $field["type"])) {
+		if (preg_match("/binary/", $field["type"])) {
 			return "HEX(" . idf_escape($field["field"]) . ")";
 		}
 		if ($field["type"] == "bit") {
 			return "BIN(" . idf_escape($field["field"]) . " + 0)"; // + 0 is required outside MySQLnd
 		}
-		if (ereg("geometry|point|linestring|polygon", $field["type"])) {
+		if (preg_match("/geometry|point|linestring|polygon/", $field["type"])) {
 			return "AsWKT(" . idf_escape($field["field"]) . ")";
 		}
 	}
@@ -979,13 +979,13 @@ if (!defined("DRIVER")) {
 	* @return string
 	*/
 	function unconvert_field($field, $return) {
-		if (ereg("binary", $field["type"])) {
+		if (preg_match("/binary/", $field["type"])) {
 			$return = "UNHEX($return)";
 		}
 		if ($field["type"] == "bit") {
 			$return = "CONV($return, 2, 10) + 0";
 		}
-		if (ereg("geometry|point|linestring|polygon", $field["type"])) {
+		if (preg_match("/geometry|point|linestring|polygon/", $field["type"])) {
 			$return = "GeomFromText($return)";
 		}
 		return $return;
@@ -997,7 +997,7 @@ if (!defined("DRIVER")) {
 	*/
 	function support($feature) {
 		global $connection;
-		return !ereg("scheme|sequence|type" . ($connection->server_info < 5.1 ? "|event|partitioning" . ($connection->server_info < 5 ? "|view|routine|trigger" : "") : ""), $feature);
+		return !preg_match("/scheme|sequence|type/" . ($connection->server_info < 5.1 ? "|event|partitioning" . ($connection->server_info < 5 ? "|view|routine|trigger" : "") : ""), $feature);
 	}
 
 	$jush = "sql"; ///< @var string JUSH identifier

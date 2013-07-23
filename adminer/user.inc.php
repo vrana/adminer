@@ -34,7 +34,7 @@ if (isset($_GET["host"]) && ($result = $connection->query("SHOW GRANTS FOR " . q
 				if ($val[1] != "USAGE") {
 					$grants["$match[2]$val[2]"][$val[1]] = true;
 				}
-				if (ereg(' WITH GRANT OPTION', $row[0])) { //! don't check inside strings and identifiers
+				if (preg_match('/ WITH GRANT OPTION/', $row[0])) { //! don't check inside strings and identifiers
 					$grants["$match[2]$val[2]"]["GRANT OPTION"] = true;
 				}
 			}

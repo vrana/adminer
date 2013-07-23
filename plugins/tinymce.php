@@ -47,7 +47,7 @@ tinyMCE.init({
 	}
 	
 	function selectVal(&$val, $link, $field) {
-		if (ereg("_html", $field["field"]) && $val != '&nbsp;') {
+		if (preg_match("/_html/", $field["field"]) && $val != '&nbsp;') {
 			$shortened = (substr($val, -10) == "<i>...</i>");
 			if ($shortened) {
 				$val = substr($val, 0, -10);
@@ -67,7 +67,7 @@ tinyMCE.init({
 	}
 	
 	function editInput($table, $field, $attrs, $value) {
-		if (ereg("text", $field["type"]) && ereg("_html", $field["field"])) {
+		if (preg_match("/text/", $field["type"]) && preg_match("/_html/", $field["field"])) {
 			return "<textarea$attrs id='fields-" . h($field["field"]) . "' rows='12' cols='50'>" . h($value) . "</textarea><script type='text/javascript'>
 tinyMCE.remove(tinyMCE.get('fields-" . js_escape($field["field"]) . "') || { });
 tinyMCE.execCommand('mceAddControl', true, 'fields-" . js_escape($field["field"]) . "');

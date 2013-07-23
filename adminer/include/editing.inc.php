@@ -140,11 +140,11 @@ function edit_type($key, $field, $collations, $foreign_keys = array()) {
 	global $structured_types, $types, $unsigned, $on_actions;
 	?>
 <td><select name="<?php echo $key; ?>[type]" class="type" onfocus="lastType = selectValue(this);" onchange="editingTypeChange(this);"<?php echo on_help("getTarget(event).value", 1); ?>><?php echo optionlist((!$field["type"] || isset($types[$field["type"]]) ? array() : array($field["type"])) + $structured_types + ($foreign_keys ? array(lang('Foreign keys') => $foreign_keys) : array()), $field["type"]); ?></select>
-<td><input name="<?php echo $key; ?>[length]" value="<?php echo h($field["length"]); ?>" size="3" onfocus="editingLengthFocus(this);"<?php echo (!$field["length"] && ereg('var(char|binary)$', $field["type"]) ? " class='required'" : ""); ?> onchange="editingLengthChange(this);" onkeyup="this.onchange();"><td class="options"><?php //! type="number" with enabled JavaScript
-	echo "<select name='$key" . "[collation]'" . (ereg('(char|text|enum|set)$', $field["type"]) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>';
-	echo ($unsigned ? "<select name='$key" . "[unsigned]'" . (!$field["type"] || ereg('((^|[^o])int|float|double|decimal)$', $field["type"]) ? "" : " class='hidden'") . '><option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
+<td><input name="<?php echo $key; ?>[length]" value="<?php echo h($field["length"]); ?>" size="3" onfocus="editingLengthFocus(this);"<?php echo (!$field["length"] && preg_match('/var(char|binary)$/', $field["type"]) ? " class='required'" : ""); ?> onchange="editingLengthChange(this);" onkeyup="this.onchange();"><td class="options"><?php //! type="number" with enabled JavaScript
+	echo "<select name='$key" . "[collation]'" . (preg_match('/(char|text|enum|set)$/', $field["type"]) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>';
+	echo ($unsigned ? "<select name='$key" . "[unsigned]'" . (!$field["type"] || preg_match('/((^|[^o])int|float|double|decimal)$/', $field["type"]) ? "" : " class='hidden'") . '><option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
 	echo (isset($field['on_update']) ? "<select name='$key" . "[on_update]'" . ($field["type"] == "timestamp" ? "" : " class='hidden'") . '>' . optionlist(array("" => "(" . lang('ON UPDATE') . ")", "CURRENT_TIMESTAMP"), $field["on_update"]) . '</select>' : '');
-	echo ($foreign_keys ? "<select name='$key" . "[on_delete]'" . (ereg("`", $field["type"]) ? "" : " class='hidden'") . "><option value=''>(" . lang('ON DELETE') . ")" . optionlist(explode("|", $on_actions), $field["on_delete"]) . "</select> " : " "); // space for IE
+	echo ($foreign_keys ? "<select name='$key" . "[on_delete]'" . (preg_match("/`/", $field["type"]) ? "" : " class='hidden'") . "><option value=''>(" . lang('ON DELETE') . ")" . optionlist(explode("|", $on_actions), $field["on_delete"]) . "</select> " : " "); // space for IE
 }
 
 /** Filter length value including enums
@@ -165,8 +165,8 @@ function process_type($field, $collate = "COLLATE") {
 	global $unsigned;
 	return " $field[type]"
 		. ($field["length"] != "" ? "(" . process_length($field["length"]) . ")" : "")
-		. (ereg('(^|[^o])int|float|double|decimal', $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
-		. (ereg('char|text|enum|set', $field["type"]) && $field["collation"] ? " $collate " . q($field["collation"]) : "")
+		. (preg_match('/(^|[^o])int|float|double|decimal/', $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
+		. (preg_match('/char|text|enum|set/', $field["type"]) && $field["collation"] ? " $collate " . q($field["collation"]) : "")
 	;
 }
 
@@ -183,9 +183,9 @@ function process_field($field, $type_field) {
 		process_type($type_field),
 		($field["null"] ? " NULL" : " NOT NULL"), // NULL for timestamp
 		(isset($default) ? " DEFAULT " . (
-			(ereg("time", $field["type"]) && eregi('^CURRENT_TIMESTAMP$', $default))
-			|| ($field["type"] == "bit" && ereg("^([0-9]+|b'[0-1]+')\$", $default))
-			|| ($jush == "pgsql" && ereg("^[a-z]+\(('[^']*')+\)\$", $default))
+			(preg_match("/time/", $field["type"]) && preg_match('/^CURRENT_TIMESTAMP$/i', $default))
+			|| ($field["type"] == "bit" && preg_match("/^([0-9]+|b'[0-1]+')\$/", $default))
+			|| ($jush == "pgsql" && preg_match("/^[a-z]+\(('[^']*')+\)\$/", $default))
 			? $default : q($default)) : ""),
 		($field["type"] == "timestamp" && $field["on_update"] ? " ON UPDATE $field[on_update]" : ""),
 		(support("comment") && $field["comment"] != "" ? " COMMENT " . q($field["comment"]) : ""),
@@ -204,7 +204,7 @@ function type_class($type) {
 		'binary' => 'blob',
 		'enum' => 'set',
 	) as $key => $val) {
-		if (ereg("$key|$val", $type)) {
+		if (preg_match("/$key|$val/", $type)) {
 			return " class='$key'";
 		}
 	}
@@ -398,7 +398,7 @@ function create_routine($routine, $row) {
 	ksort($fields); // enforce fields order
 	foreach ($fields as $field) {
 		if ($field["field"] != "") {
-			$set[] = (ereg("^($inout)\$", $field["inout"]) ? "$field[inout] " : "") . idf_escape($field["field"]) . process_type($field, "CHARACTER SET");
+			$set[] = (preg_match("/^($inout)\$/", $field["inout"]) ? "$field[inout] " : "") . idf_escape($field["field"]) . process_type($field, "CHARACTER SET");
 		}
 	}
 	return "CREATE $routine "

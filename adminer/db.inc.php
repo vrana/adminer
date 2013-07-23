@@ -78,7 +78,7 @@ if ($adminer->homepage()) {
 			
 			$tables = 0;
 			foreach ($tables_list as $name => $type) {
-				$view = ($type !== null && !eregi("table", $type));
+				$view = ($type !== null && !preg_match("/table/i", $type));
 				echo '<tr' . odd() . '><td>' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array($name, $tables_views, true), "", "formUncheck('check-all');");
 				echo '<th>' . (support("table") ? '<a href="' . h(ME) . 'table=' . urlencode($name) . '" title="' . lang('Show structure') . '">' . h($name) . '</a>' : h($name));
 				if ($view) {

@@ -353,7 +353,7 @@ LEFT JOIN sys.default_constraints d ON c.default_object_id = d.parent_column_id
 WHERE o.schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND o.type IN ('S', 'U', 'V') AND o.name = " . q($table)
 		) as $row) {
 			$type = $row["type"];
-			$length = (ereg("char|binary", $type) ? $row["max_length"] : ($type == "decimal" ? "$row[precision],$row[scale]" : ""));
+			$length = (preg_match("/char|binary/", $type) ? $row["max_length"] : ($type == "decimal" ? "$row[precision],$row[scale]" : ""));
 			$return[$row["name"]] = array(
 				"field" => $row["name"],
 				"full_type" => $type . ($length ? "($length)" : ""),
@@ -396,7 +396,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 	function collations() {
 		$return = array();
 		foreach (get_vals("SELECT name FROM fn_helpcollations()") as $collation) {
-			$return[ereg_replace("_.*", "", $collation)][] = $collation;
+			$return[preg_replace("/_.*/", "", $collation)][] = $collation;
 		}
 		return $return;
 	}
@@ -411,7 +411,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 	}
 	
 	function create_database($db, $collation) {
-		return queries("CREATE DATABASE " . idf_escape($db) . (eregi('^[a-z0-9_]+$', $collation) ? " COLLATE $collation" : ""));
+		return queries("CREATE DATABASE " . idf_escape($db) . (preg_match('/^[a-z0-9_]+$/i', $collation) ? " COLLATE $collation" : ""));
 	}
 	
 	function drop_databases($databases) {
@@ -419,7 +419,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 	}
 	
 	function rename_database($name, $collation) {
-		if (eregi('^[a-z0-9_]+$', $collation)) {
+		if (preg_match('/^[a-z0-9_]+$/i', $collation)) {
 			queries("ALTER DATABASE " . idf_escape(DB) . " COLLATE $collation");
 		}
 		queries("ALTER DATABASE " . idf_escape(DB) . " MODIFY NAME = " . idf_escape($name));
@@ -607,7 +607,7 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)
 	}
 	
 	function support($feature) {
-		return ereg('^(database|table|sql|indexes|scheme|trigger|view|drop_col)$', $feature); //! routine|
+		return preg_match('/^(database|table|sql|indexes|scheme|trigger|view|drop_col)$/', $feature); //! routine|
 	}
 	
 	$jush = "mssql";
