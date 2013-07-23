@@ -386,6 +386,7 @@ function editingTypeChange(type) {
 			alterClass(el, 'hidden', !/`/.test(text));
 		}
 	}
+	helpClose();
 }
 
 /** Mark length as required
