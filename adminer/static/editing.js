@@ -19,10 +19,17 @@ function bodyLoad(version) {
 		script.onload = function () {
 			if (window.jush) { // IE runs in case of an error too
 				jush.create_links = ' target="_blank" rel="noreferrer"';
-				jush.urls.sql_sqlset = jush.urls.sql[0] = jush.urls.sqlset[0] = jush.urls.sqlstatus[0] = 'http://dev.mysql.com/doc/refman/' + version + '/en/$key';
-				var pgsql = 'http://www.postgresql.org/docs/' + version + '/static/';
-				jush.urls.pgsql_pgsqlset = jush.urls.pgsql[0] = pgsql + '$key';
-				jush.urls.pgsqlset[0] = pgsql + 'runtime-config-$key.html#GUC-$1';
+				for (var key in jush.urls) {
+					var obj = jush.urls;
+					if (typeof obj[key] != 'string') {
+						obj = obj[key];
+						key = 0;
+					}
+					obj[key] = obj[key]
+						.replace(/\/doc\/mysql/, '/doc/refman/' + version) // MySQL
+						.replace(/\/docs\/current/, '/docs/' + version) // PostgreSQL
+					;
+				}
 				if (window.jushLinks) {
 					jush.custom_links = jushLinks;
 				}
