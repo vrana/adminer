@@ -4,21 +4,21 @@
 class Adminer {
 	/** @var array operators used in select, null for all operators */
 	var $operators;
-	
+
 	/** Name in title and navigation
 	* @return string HTML code
 	*/
 	function name() {
 		return "<a href='http://www.adminer.org/' id='h1'>Adminer</a>";
 	}
-	
+
 	/** Connection parameters
 	* @return array ($server, $username, $password)
 	*/
 	function credentials() {
 		return array(SERVER, $_GET["username"], get_session("pwds"));
 	}
-	
+
 	/** Get key used for permanent login
 	* @param bool
 	* @return string cryptic string which gets combined with password or false in case of an error
@@ -26,7 +26,7 @@ class Adminer {
 	function permanentLogin($create = false) {
 		return password_file($create);
 	}
-	
+
 	/** Identifier of selected database
 	* @return string
 	*/
@@ -34,7 +34,7 @@ class Adminer {
 		// should be used everywhere instead of DB
 		return DB;
 	}
-	
+
 	/** Get cached list of databases
 	* @param bool
 	* @return array
@@ -42,28 +42,28 @@ class Adminer {
 	function databases($flush = true) {
 		return get_databases($flush);
 	}
-	
+
 	/** Specify limit for waiting on some slow queries like DB list
 	* @return float number of seconds
 	*/
 	function queryTimeout() {
 		return 5;
 	}
-	
+
 	/** Headers to send before HTML output
 	* @return bool true to send security headers
 	*/
 	function headers() {
 		return true;
 	}
-	
+
 	/** Print HTML code inside <head>
 	* @return bool true to link adminer.css if exists
 	*/
 	function head() {
 		return true;
 	}
-	
+
 	/** Print login form
 	* @return null
 	*/
@@ -86,7 +86,7 @@ username.form['auth[driver]'].onchange();
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
 		echo checkbox("auth[permanent]", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
 	}
-	
+
 	/** Authorize the user
 	* @param string
 	* @param string
@@ -95,7 +95,7 @@ username.form['auth[driver]'].onchange();
 	function login($login, $password) {
 		return true;
 	}
-	
+
 	/** Table caption used in navigation and headings
 	* @param array result of SHOW TABLE STATUS
 	* @return string HTML code, "" to ignore table
@@ -103,7 +103,7 @@ username.form['auth[driver]'].onchange();
 	function tableName($tableStatus) {
 		return h($tableStatus["Name"]);
 	}
-	
+
 	/** Field caption used in select and edit
 	* @param array single field returned from fields()
 	* @param int order of column in select
@@ -112,7 +112,7 @@ username.form['auth[driver]'].onchange();
 	function fieldName($field, $order = 0) {
 		return '<span title="' . h($field["full_type"]) . '">' . h($field["field"]) . '</span>';
 	}
-	
+
 	/** Print links after select heading
 	* @param array result of SHOW TABLE STATUS
 	* @param string new item options, NULL for no new item
@@ -137,7 +137,7 @@ username.form['auth[driver]'].onchange();
 		}
 		echo "\n";
 	}
-	
+
 	/** Get foreign keys for table
 	* @param string
 	* @return array same format as foreign_keys()
@@ -145,7 +145,7 @@ username.form['auth[driver]'].onchange();
 	function foreignKeys($table) {
 		return foreign_keys($table);
 	}
-	
+
 	/** Find backward keys for table
 	* @param string
 	* @param string
@@ -154,7 +154,7 @@ username.form['auth[driver]'].onchange();
 	function backwardKeys($table, $tableName) {
 		return array();
 	}
-	
+
 	/** Print backward keys for row
 	* @param array result of $this->backwardKeys()
 	* @param array
@@ -162,19 +162,19 @@ username.form['auth[driver]'].onchange();
 	*/
 	function backwardKeysPrint($backwardKeys, $row) {
 	}
-	
+
 	/** Query printed in select before execution
 	* @param string query to be executed
 	* @return string
 	*/
 	function selectQuery($query) {
-		global $jush, $token;
-		return "<form action='" . h(ME) . "sql=' method='post'><p><span onclick=\"return !selectEditSql(event, this, '" . lang('Execute') . "');\">"
-			. "<code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code>"
+		global $jush;
+		return "<p><code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code>"
 			. " <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>"
-			. "</span><input type='hidden' name='token' value='$token'></p></form>\n"; // </p> - required for IE9 inline edit
+			. "</p>" // </p> - required for IE9 inline edit
+		;
 	}
-	
+
 	/** Description of a row in a table
 	* @param string
 	* @return string SQL expression, empty string for no description
@@ -182,7 +182,7 @@ username.form['auth[driver]'].onchange();
 	function rowDescription($table) {
 		return "";
 	}
-	
+
 	/** Get descriptions of selected data
 	* @param array all data to print
 	* @param array
@@ -191,7 +191,7 @@ username.form['auth[driver]'].onchange();
 	function rowDescriptions($rows, $foreignKeys) {
 		return $rows;
 	}
-	
+
 	/** Get a link to use in select table
 	* @param string raw value of the field
 	* @param array single field returned from fields()
@@ -199,7 +199,7 @@ username.form['auth[driver]'].onchange();
 	*/
 	function selectLink($val, $field) {
 	}
-	
+
 	/** Value printed in select table
 	* @param string HTML-escaped value to print
 	* @param string link to foreign key
@@ -213,7 +213,7 @@ username.form['auth[driver]'].onchange();
 		}
 		return ($link ? "<a href='" . h($link) . "'>$return</a>" : $return);
 	}
-	
+
 	/** Value conversion used in select and edit
 	* @param string
 	* @param array single field returned from fields()
@@ -222,7 +222,7 @@ username.form['auth[driver]'].onchange();
 	function editVal($val, $field) {
 		return $val;
 	}
-	
+
 	/** Print columns box in select
 	* @param array result of selectColumnsProcess()[0]
 	* @param array selectable columns
@@ -243,7 +243,7 @@ username.form['auth[driver]'].onchange();
 		}
 		echo "</div></fieldset>\n";
 	}
-	
+
 	/** Print search box in select
 	* @param array result of selectSearchProcess()
 	* @param array selectable columns
@@ -273,7 +273,7 @@ username.form['auth[driver]'].onchange();
 		}
 		echo "</div></fieldset>\n";
 	}
-	
+
 	/** Print order box in select
 	* @param array result of selectOrderProcess()
 	* @param array selectable columns
@@ -294,7 +294,7 @@ username.form['auth[driver]'].onchange();
 		echo checkbox("desc[$i]", 1, false, lang('descending')) . "</div>\n";
 		echo "</div></fieldset>\n";
 	}
-	
+
 	/** Print limit box in select
 	* @param string result of selectLimitProcess()
 	* @return null
@@ -304,7 +304,7 @@ username.form['auth[driver]'].onchange();
 		echo "<input type='number' name='limit' class='size' value='" . h($limit) . "' onchange='selectFieldChange(this.form);'>";
 		echo "</div></fieldset>\n";
 	}
-	
+
 	/** Print text length box in select
 	* @param string result of selectLengthProcess()
 	* @return null
@@ -316,7 +316,7 @@ username.form['auth[driver]'].onchange();
 			echo "</div></fieldset>\n";
 		}
 	}
-	
+
 	/** Print action box in select
 	* @param array
 	* @return null
@@ -342,21 +342,21 @@ username.form['auth[driver]'].onchange();
 		echo "</script>\n";
 		echo "</div></fieldset>\n";
 	}
-	
+
 	/** Print command box in select
 	* @return bool whether to print default commands
 	*/
 	function selectCommandPrint() {
 		return !information_schema(DB);
 	}
-	
+
 	/** Print import box in select
 	* @return bool whether to print default import
 	*/
 	function selectImportPrint() {
 		return !information_schema(DB);
 	}
-	
+
 	/** Print extra text in the end of a select form
 	* @param array fields holding e-mails
 	* @param array selectable columns
@@ -364,7 +364,7 @@ username.form['auth[driver]'].onchange();
 	*/
 	function selectEmailPrint($emailFields, $columns) {
 	}
-	
+
 	/** Process columns box in select
 	* @param array selectable columns
 	* @param array
@@ -384,7 +384,7 @@ username.form['auth[driver]'].onchange();
 		}
 		return array($select, $group);
 	}
-	
+
 	/** Process search box in select
 	* @param array
 	* @param array
@@ -431,7 +431,7 @@ username.form['auth[driver]'].onchange();
 		}
 		return $return;
 	}
-	
+
 	/** Process order box in select
 	* @param array
 	* @param array
@@ -448,21 +448,21 @@ username.form['auth[driver]'].onchange();
 		}
 		return $return;
 	}
-	
+
 	/** Process limit box in select
 	* @return string expression to use in LIMIT, will be escaped
 	*/
 	function selectLimitProcess() {
 		return (isset($_GET["limit"]) ? $_GET["limit"] : "50");
 	}
-	
+
 	/** Process length box in select
 	* @return string number of characters to shorten texts, will be escaped
 	*/
 	function selectLengthProcess() {
 		return (isset($_GET["text_length"]) ? $_GET["text_length"] : "100");
 	}
-	
+
 	/** Process extras in select form
 	* @param array AND conditions
 	* @param array
@@ -471,7 +471,7 @@ username.form['auth[driver]'].onchange();
 	function selectEmailProcess($where, $foreignKeys) {
 		return false;
 	}
-	
+
 	/** Build SQL query used in select
 	* @param array result of selectColumnsProcess()[0]
 	* @param array result of selectSearchProcess()
@@ -484,7 +484,7 @@ username.form['auth[driver]'].onchange();
 	function selectQueryBuild($select, $where, $group, $order, $limit, $page) {
 		return "";
 	}
-	
+
 	/** Query printed after execution in the message
 	* @param string executed query
 	* @return string
@@ -500,7 +500,7 @@ username.form['auth[driver]'].onchange();
 		$history[$_GET["db"]][] = array($query, time()); // not DB - $_GET["db"] is changed in database.inc.php //! respect $_GET["ns"]
 		return " <span class='time'>" . @date("H:i:s") . "</span> <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a><div id='$id' class='hidden'><pre><code class='jush-$jush'>" . shorten_utf8($query, 1000) . '</code></pre><p><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a></div>'; // @ - time zone may be not set
 	}
-	
+
 	/** Functions displayed in edit form
 	* @param array single field from fields()
 	* @return array
@@ -522,7 +522,7 @@ username.form['auth[driver]'].onchange();
 		}
 		return explode("/", $return);
 	}
-	
+
 	/** Get options to display edit field
 	* @param string table name
 	* @param array single field from fields()
@@ -539,7 +539,7 @@ username.form['auth[driver]'].onchange();
 		}
 		return "";
 	}
-	
+
 	/** Process sent input
 	* @param array single field from fields()
 	* @param string
@@ -567,7 +567,7 @@ username.form['auth[driver]'].onchange();
 		}
 		return unconvert_field($field, $return);
 	}
-	
+
 	/** Returns export output options
 	* @return array
 	*/
@@ -578,21 +578,21 @@ username.form['auth[driver]'].onchange();
 		}
 		return $return;
 	}
-	
+
 	/** Returns export format options
 	* @return array empty to disable export
 	*/
 	function dumpFormat() {
 		return array('sql' => 'SQL', 'csv' => 'CSV,', 'csv;' => 'CSV;', 'tsv' => 'TSV');
 	}
-	
+
 	/** Export database structure
 	* @param string
 	* @return null prints data
 	*/
 	function dumpDatabase($db) {
 	}
-	
+
 	/** Export table structure
 	* @param string
 	* @param string
@@ -626,7 +626,7 @@ username.form['auth[driver]'].onchange();
 			}
 		}
 	}
-	
+
 	/** Export table data
 	* @param string
 	* @param string
@@ -697,7 +697,7 @@ username.form['auth[driver]'].onchange();
 			}
 		}
 	}
-	
+
 	/** Set export filename
 	* @param string
 	* @return string filename without extension
@@ -705,7 +705,7 @@ username.form['auth[driver]'].onchange();
 	function dumpFilename($identifier) {
 		return friendly_url($identifier != "" ? $identifier : (SERVER != "" ? SERVER : "localhost"));
 	}
-	
+
 	/** Send headers for export
 	* @param string
 	* @param bool
@@ -724,7 +724,7 @@ username.form['auth[driver]'].onchange();
 		}
 		return $ext;
 	}
-	
+
 	/** Print homepage
 	* @return bool whether to print default homepage
 	*/
@@ -735,7 +735,7 @@ username.form['auth[driver]'].onchange();
 		echo (support("privileges") ? "<a href='" . h(ME) . "privileges='>" . lang('Privileges') . "</a>\n" : "");
 		return true;
 	}
-	
+
 	/** Prints navigation after Adminer title
 	* @param string can be "auth" if there is no database connection, "db" if there is no database selected, "ns" with invalid schema
 	* @return null
@@ -796,7 +796,7 @@ username.form['auth[driver]'].onchange();
 			}
 		}
 	}
-	
+
 	/** Prints databases list in menu
 	* @param string
 	* @return null
@@ -830,7 +830,7 @@ username.form['auth[driver]'].onchange();
 		: ""))));
 		echo "</p></form>\n";
 	}
-	
+
 	/** Prints table list in menu
 	* @param array result of table_status('', true)
 	* @return null
@@ -846,7 +846,7 @@ username.form['auth[driver]'].onchange();
 			) . "<br>\n";
 		}
 	}
-	
+
 }
 
 $adminer = (function_exists('adminer_object') ? adminer_object() : new Adminer);

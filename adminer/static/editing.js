@@ -13,7 +13,7 @@ function bodyLoad(version) {
 		link.type = 'text/css';
 		link.href = jushRoot + 'jush.css';
 		document.getElementsByTagName('head')[0].appendChild(link);
-		
+
 		var script = document.createElement('script');
 		script.src = jushRoot + 'jush.js';
 		script.onload = function () {
@@ -176,30 +176,6 @@ function selectFieldChange(form) {
 		return ok;
 	})();
 	setHtml('noindex', (ok ? '' : '!'));
-}
-
-/** Create edit query form
-* @param MouseEvent
-* @param HTMLSpanElement
-* @param string
-*/
-function selectEditSql(event, el, label) {
-	var a = parentTag(getTarget(event), 'a');
-	if (!isCtrl(event) || (a && a.href)) {
-		return;
-	}
-	var sql = el.firstChild;
-	var input = document.createElement('input');
-	input.name = 'query';
-	input.value = sql.textContent || sql.innerText;
-	input.style.width = sql.offsetWidth + 'px';
-	el.innerHTML = '';
-	el.appendChild(input);
-	var submit = document.createElement('input');
-	submit.type = 'submit';
-	submit.value = label;
-	el.appendChild(submit);
-	return true;
 }
 
 
