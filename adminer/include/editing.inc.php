@@ -118,7 +118,7 @@ function referencable_primary($self) {
 */
 function textarea($name, $value, $rows = 10, $cols = 80) {
 	global $jush;
-	echo "<textarea name='$name' rows='$rows' cols='$cols' class='sqlarea jush-$jush' spellcheck='false' wrap='off' onkeydown='return textareaKeydown(this, event);'>"; // spellcheck, wrap - not valid before HTML5
+	echo "<textarea name='$name' rows='$rows' cols='$cols' class='sqlarea jush-$jush' spellcheck='false' wrap='off'>";
 	if (is_array($value)) {
 		foreach ($value as $val) { // not implode() to save memory
 			echo h($val[0]) . "\n\n\n"; // $val == array($query, $time)
