@@ -196,19 +196,19 @@ if ($_POST) {
 textarea("query", $q, 20);
 
 echo ($_POST ? "" : "<script type='text/javascript'>focus(document.getElementsByTagName('textarea')[0]);</script>\n");
-echo "<p>" . (ini_bool("file_uploads")
-	? lang('File upload') . ': <input type="file" name="sql_file[]" multiple'
-		. ($_FILES && $_FILES["sql_file"]["error"][0] != 4 ? '' : ' onchange="this.form[\'only_errors\'].checked = true;"') // 4 - UPLOAD_ERR_NO_FILE
-		. '> (&lt; ' . ini_get("upload_max_filesize") . 'B)' // ignore post_max_size because it is for all form fields together and bytes computing would be necessary
-	: lang('File uploads are disabled.')
-);
-
 ?>
 <p>
 <input type="submit" value="<?php echo lang('Execute'); ?>" title="Ctrl+Enter">
 <?php
 echo checkbox("error_stops", 1, $_POST["error_stops"], lang('Stop on error')) . "\n";
 echo checkbox("only_errors", 1, $_POST["only_errors"], lang('Show only errors')) . "\n";
+
+echo "<p>" . (ini_bool("file_uploads")
+	? lang('File upload') . ': <input type="file" name="sql_file[]" multiple'
+		. ($_FILES && $_FILES["sql_file"]["error"][0] != 4 ? '' : ' onchange="this.form[\'only_errors\'].checked = true;"') // 4 - UPLOAD_ERR_NO_FILE
+		. '> (&lt; ' . ini_get("upload_max_filesize") . 'B)' // ignore post_max_size because it is for all form fields together and bytes computing would be necessary
+	: lang('File uploads are disabled.')
+);
 
 print_fieldset("webfile", lang('From server'), $_POST["webfile"], "document.getElementById('form')['only_errors'].checked = true; ");
 echo lang('Webserver file %s', "<code>adminer.sql" . (extension_loaded("zlib") ? "[.gz]" : "") . "</code>");
