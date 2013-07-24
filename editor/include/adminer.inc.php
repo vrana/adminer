@@ -2,21 +2,21 @@
 class Adminer {
 	var $operators = array("<=", ">=");
 	var $_values = array();
-	
+
 	function name() {
 		return "<a href='http://www.adminer.org/editor/' id='h1'>" . lang('Editor') . "</a>";
 	}
-	
+
 	//! driver, ns
-	
+
 	function credentials() {
 		return array(SERVER, $_GET["username"], get_session("pwds"));
 	}
-	
+
 	function permanentLogin($create = false) {
 		return password_file($create);
 	}
-	
+
 	function database() {
 		global $connection;
 		if ($connection) {
@@ -27,23 +27,23 @@ class Adminer {
 			);
 		}
 	}
-	
+
 	function databases($flush = true) {
 		return get_databases($flush);
 	}
-	
+
 	function queryTimeout() {
 		return 5;
 	}
-	
+
 	function headers() {
 		return true;
 	}
-	
+
 	function head() {
 		return true;
 	}
-	
+
 	function loginForm() {
 		?>
 <table cellspacing="0">
@@ -57,32 +57,32 @@ focus(document.getElementById('username'));
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
 		echo checkbox("auth[permanent]", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
 	}
-	
+
 	function login($login, $password) {
 		global $connection;
 		$connection->query("SET time_zone = " . q(substr_replace(@date("O"), ":", -2, 0))); // date("P") available since PHP 5.1.3, @ - requires date.timezone since PHP 5.3.0
 		return true;
 	}
-	
+
 	function tableName($tableStatus) {
 		return h($tableStatus["Comment"] != "" ? $tableStatus["Comment"] : $tableStatus["Name"]);
 	}
-	
+
 	function fieldName($field, $order = 0) {
 		return h($field["comment"] != "" ? $field["comment"] : $field["field"]);
 	}
-	
+
 	function selectLinks($tableStatus, $set = "") {
 		$TABLE = $tableStatus["Name"];
 		if ($set !== null) {
 			echo '<p class="tabs"><a href="' . h(ME . 'edit=' . urlencode($TABLE) . $set) . '">' . lang('New item') . "</a>\n";
 		}
 	}
-	
+
 	function foreignKeys($table) {
 		return foreign_keys($table);
 	}
-	
+
 	function backwardKeys($table, $tableName) {
 		$return = array();
 		foreach (get_rows("SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME
@@ -105,7 +105,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		}
 		return $return;
 	}
-	
+
 	function backwardKeysPrint($backwardKeys, $row) {
 		foreach ($backwardKeys as $table => $backwardKey) {
 			foreach ($backwardKey["keys"] as $cols) {
@@ -123,21 +123,21 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			}
 		}
 	}
-	
+
 	function selectQuery($query) {
 		return "<!--\n" . str_replace("--", "--><!-- ", $query) . "\n-->\n";
 	}
-	
+
 	function rowDescription($table) {
 		// first varchar column
 		foreach (fields($table) as $field) {
-			if (ereg("varchar|character varying", $field["type"])) {
+			if (preg_match("~varchar|character varying~", $field["type"])) {
 				return idf_escape($field["field"]);
 			}
 		}
 		return "";
 	}
-	
+
 	function rowDescriptions($rows, $foreignKeys) {
 		$return = $rows;
 		foreach ($rows[0] as $key => $val) {
@@ -162,16 +162,16 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		}
 		return $return;
 	}
-	
+
 	function selectLink($val, $field) {
 	}
-	
+
 	function selectVal($val, $link, $field) {
 		$return = ($val === null ? "&nbsp;" : $val);
 		$link = h($link);
-		if (ereg('blob|bytea', $field["type"]) && !is_utf8($val)) {
+		if (preg_match('~blob|bytea~', $field["type"]) && !is_utf8($val)) {
 			$return = lang('%d byte(s)', strlen($val));
-			if (ereg("^(GIF|\xFF\xD8\xFF|\x89PNG\x0D\x0A\x1A\x0A)", $val)) { // GIF|JPG|PNG, getimagetype() works with filename
+			if (preg_match("~^(GIF|\xFF\xD8\xFF|\x89PNG\x0D\x0A\x1A\x0A)~", $val)) { // GIF|JPG|PNG, getimagetype() works with filename
 				$return = "<img src='$link' alt='$return'>";
 			}
 		}
@@ -181,25 +181,25 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		if ($link) {
 			$return = "<a href='$link'>$return</a>";
 		}
-		if (!$link && !like_bool($field) && ereg('int|float|double|decimal', $field["type"])) {
+		if (!$link && !like_bool($field) && preg_match('~int|float|double|decimal~', $field["type"])) {
 			$return = "<div class='number'>$return</div>"; // Firefox doesn't support <colgroup>
-		} elseif (ereg('date', $field["type"])) {
+		} elseif (preg_match('~date~', $field["type"])) {
 			$return = "<div class='datetime'>$return</div>";
 		}
 		return $return;
 	}
-	
+
 	function editVal($val, $field) {
-		if (ereg('date|timestamp', $field["type"]) && $val !== null) {
+		if (preg_match('~date|timestamp~', $field["type"]) && $val !== null) {
 			return preg_replace('~^(\\d{2}(\\d+))-(0?(\\d+))-(0?(\\d+))~', lang('$1-$3-$5'), $val);
 		}
 		return $val;
 	}
-	
+
 	function selectColumnsPrint($select, $columns) {
 		// can allow grouping functions by indexes
 	}
-	
+
 	function selectSearchPrint($where, $columns, $indexes) {
 		$where = (array) $_GET["where"];
 		echo '<fieldset id="fieldset-search"><legend>' . lang('Search') . "</legend><div>\n";
@@ -211,7 +211,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		$fields = fields($_GET["select"]);
 		foreach ($columns as $name => $desc) {
 			$field = $fields[$name];
-			if (ereg("enum", $field["type"]) || like_bool($field)) { //! set - uses 1 << $i and FIND_IN_SET()
+			if (preg_match("~enum~", $field["type"]) || like_bool($field)) { //! set - uses 1 << $i and FIND_IN_SET()
 				$key = $keys[$name];
 				$i--;
 				echo "<div>" . h($desc) . "<input type='hidden' name='where[$i][col]' value='" . h($name) . "'>:";
@@ -245,7 +245,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		echo "<input type='search' name='where[$i][val]' onchange='selectAddRow(this);' onsearch='selectSearch(this);'></div>\n";
 		echo "</div></fieldset>\n";
 	}
-	
+
 	function selectOrderPrint($order, $columns, $indexes) {
 		//! desc
 		$orders = array();
@@ -270,30 +270,30 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			)) . "</div>\n";
 		}
 	}
-	
+
 	function selectLimitPrint($limit) {
 		echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
 		echo html_select("limit", array("", "50", "100"), $limit);
 		echo "</div></fieldset>\n";
 	}
-	
+
 	function selectLengthPrint($text_length) {
 	}
-	
+
 	function selectActionPrint($indexes) {
 		echo "<fieldset><legend>" . lang('Action') . "</legend><div>";
 		echo "<input type='submit' value='" . lang('Select') . "'>";
 		echo "</div></fieldset>\n";
 	}
-	
+
 	function selectCommandPrint() {
 		return true;
 	}
-	
+
 	function selectImportPrint() {
 		return true;
 	}
-	
+
 	function selectEmailPrint($emailFields, $columns) {
 		if ($emailFields) {
 			print_fieldset("email", lang('E-mail'), $_POST["email_append"]);
@@ -309,11 +309,11 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			echo "</div></fieldset>\n";
 		}
 	}
-	
+
 	function selectColumnsProcess($columns, $indexes) {
 		return array(array(), array());
 	}
-	
+
 	function selectSearchProcess($fields, $indexes) {
 		$return = array();
 		foreach ((array) $_GET["where"] as $key => $where) {
@@ -323,13 +323,13 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			if (($key < 0 ? "" : $col) . $val != "") {
 				$conds = array();
 				foreach (($col != "" ? array($col => $fields[$col]) : $fields) as $name => $field) {
-					if ($col != "" || is_numeric($val) || !ereg('int|float|double|decimal', $field["type"])) {
+					if ($col != "" || is_numeric($val) || !preg_match('~int|float|double|decimal~', $field["type"])) {
 						$name = idf_escape($name);
 						if ($col != "" && $field["type"] == "enum") {
 							$conds[] = (in_array(0, $val) ? "$name IS NULL OR " : "") . "$name IN (" . implode(", ", array_map('intval', $val)) . ")";
 						} else {
-							$text_type = ereg('char|text|enum|set', $field["type"]);
-							$value = $this->processInput($field, (!$op && $text_type && ereg('^[^%]+$', $val) ? "%$val%" : $val));
+							$text_type = preg_match('~char|text|enum|set~', $field["type"]);
+							$value = $this->processInput($field, (!$op && $text_type && preg_match('~^[^%]+$~', $val) ? "%$val%" : $val));
 							$conds[] = $name . ($value == "NULL" ? " IS" . ($op == ">=" ? " NOT" : "") . " $value"
 								: (in_array($op, $this->operators) || $op == "=" ? " $op $value"
 								: ($text_type ? " LIKE $value"
@@ -346,7 +346,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		}
 		return $return;
 	}
-	
+
 	function selectOrderProcess($fields, $indexes) {
 		$index_order = $_GET["index_order"];
 		if ($index_order != "") {
@@ -360,7 +360,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 				$has_desc = array_filter($index["descs"]);
 				$desc = false;
 				foreach ($index["columns"] as $val) {
-					if (ereg('date|timestamp', $fields[$val]["type"])) {
+					if (preg_match('~date|timestamp~', $fields[$val]["type"])) {
 						$desc = true;
 						break;
 					}
@@ -374,15 +374,15 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		}
 		return array();
 	}
-	
+
 	function selectLimitProcess() {
 		return (isset($_GET["limit"]) ? $_GET["limit"] : "50");
 	}
-	
+
 	function selectLengthProcess() {
 		return "100";
 	}
-	
+
 	function selectEmailProcess($where, $foreignKeys) {
 		if ($_POST["email_append"]) {
 			return true;
@@ -416,31 +416,31 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		}
 		return false;
 	}
-	
+
 	function selectQueryBuild($select, $where, $group, $order, $limit, $page) {
 		return "";
 	}
-	
+
 	function messageQuery($query) {
 		return " <span class='time'>" . @date("H:i:s") . "</span><!--\n" . str_replace("--", "--><!-- ", $query) . "\n-->";
 	}
-	
+
 	function editFunctions($field) {
 		$return = array();
-		if ($field["null"] && ereg('blob', $field["type"])) {
+		if ($field["null"] && preg_match('~blob~', $field["type"])) {
 			$return["NULL"] = lang('empty');
 		}
 		$return[""] = ($field["null"] || $field["auto_increment"] || like_bool($field) ? "" : "*");
 		//! respect driver
-		if (ereg('date|time', $field["type"])) {
+		if (preg_match('~date|time~', $field["type"])) {
 			$return["now"] = lang('now');
 		}
-		if (eregi('_(md5|sha1)$', $field["field"], $match)) {
+		if (preg_match('~_(md5|sha1)$~i', $field["field"], $match)) {
 			$return[] = strtolower($match[1]);
 		}
 		return $return;
 	}
-	
+
 	function editInput($table, $field, $attrs, $value) {
 		if ($field["type"] == "enum") {
 			return (isset($_GET["select"]) ? "<label><input type='radio'$attrs value='-1' checked><i>" . lang('original') . "</i></label> " : "")
@@ -458,55 +458,55 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			return '<input type="checkbox" value="' . h($value ? $value : 1) . '"' . ($value ? ' checked' : '') . "$attrs>";
 		}
 		$hint = "";
-		if (ereg('time', $field["type"])) {
+		if (preg_match('~time~', $field["type"])) {
 			$hint = lang('HH:MM:SS');
 		}
-		if (ereg('date|timestamp', $field["type"])) {
+		if (preg_match('~date|timestamp~', $field["type"])) {
 			$hint = lang('[yyyy]-mm-dd') . ($hint ? " [$hint]" : "");
 		}
 		if ($hint) {
 			return "<input value='" . h($value) . "'$attrs> ($hint)"; //! maxlength
 		}
-		if (eregi('_(md5|sha1)$', $field["field"])) {
+		if (preg_match('~_(md5|sha1)$~i', $field["field"])) {
 			return "<input type='password' value='" . h($value) . "'$attrs>";
 		}
 		return '';
 	}
-	
+
 	function processInput($field, $value, $function = "") {
 		if ($function == "now") {
 			return "$function()";
 		}
 		$return = $value;
-		if (ereg('date|timestamp', $field["type"]) && preg_match('(^' . str_replace('\\$1', '(?P<p1>\\d*)', preg_replace('~(\\\\\\$([2-6]))~', '(?P<p\\2>\\d{1,2})', preg_quote(lang('$1-$3-$5')))) . '(.*))', $value, $match)) {
+		if (preg_match('~date|timestamp~', $field["type"]) && preg_match('(^' . str_replace('\\$1', '(?P<p1>\\d*)', preg_replace('~(\\\\\\$([2-6]))~', '(?P<p\\2>\\d{1,2})', preg_quote(lang('$1-$3-$5')))) . '(.*))', $value, $match)) {
 			$return = ($match["p1"] != "" ? $match["p1"] : ($match["p2"] != "" ? ($match["p2"] < 70 ? 20 : 19) . $match["p2"] : gmdate("Y"))) . "-$match[p3]$match[p4]-$match[p5]$match[p6]" . end($match);
 		}
-		$return = ($field["type"] == "bit" && ereg('^[0-9]+$', $value) ? $return : q($return));
+		$return = ($field["type"] == "bit" && preg_match('~^[0-9]+$~', $value) ? $return : q($return));
 		if ($value == "" && like_bool($field)) {
 			$return = "0";
-		} elseif ($value == "" && ($field["null"] || !ereg('char|text', $field["type"]))) {
+		} elseif ($value == "" && ($field["null"] || !preg_match('~char|text~', $field["type"]))) {
 			$return = "NULL";
-		} elseif (ereg('^(md5|sha1)$', $function)) {
+		} elseif (preg_match('~^(md5|sha1)$~', $function)) {
 			$return = "$function($return)";
 		}
 		return unconvert_field($field, $return);
 	}
-	
+
 	function dumpOutput() {
 		return array();
 	}
-	
+
 	function dumpFormat() {
 		return array('csv' => 'CSV,', 'csv;' => 'CSV;', 'tsv' => 'TSV');
 	}
-	
+
 	function dumpDatabase($db) {
 	}
-	
+
 	function dumpTable() {
 		echo "\xef\xbb\xbf"; // UTF-8 byte order mark
 	}
-	
+
 	function dumpData($table, $style, $query) {
 		global $connection;
 		$result = $connection->query($query, 1); // 1 - MYSQLI_USE_RESULT
@@ -520,21 +520,21 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			}
 		}
 	}
-	
+
 	function dumpFilename($identifier) {
 		return friendly_url($identifier);
 	}
-	
+
 	function dumpHeaders($identifier, $multi_table = false) {
 		$ext = "csv";
 		header("Content-Type: text/csv; charset=utf-8");
 		return $ext;
 	}
-	
+
 	function homepage() {
 		return true;
 	}
-	
+
 	function navigation($missing) {
 		global $VERSION;
 		?>
@@ -566,10 +566,10 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			}
 		}
 	}
-	
+
 	function databasesPrint($missing) {
 	}
-	
+
 	function tablesPrint($tables) {
 		echo "<p id='tables' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";
 		foreach ($tables as $row) {
@@ -579,7 +579,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			}
 		}
 	}
-	
+
 	function _foreignColumn($foreignKeys, $column) {
 		foreach ((array) $foreignKeys[$column] as $foreignKey) {
 			if (count($foreignKey["source"]) == 1) {
@@ -591,7 +591,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			}
 		}
 	}
-	
+
 	function _foreignKeyOptions($table, $column, $value = null) {
 		global $connection;
 		if (list($target, $id, $name) = $this->_foreignColumn(column_foreign_keys($table), $column)) {

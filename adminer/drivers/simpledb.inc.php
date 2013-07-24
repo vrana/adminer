@@ -12,15 +12,15 @@ $drivers["simpledb"] = "SimpleDB";
 if (isset($_GET["simpledb"])) {
 	$possible_drivers = array("SimpleXML");
 	define("DRIVER", "simpledb");
-	
+
 	if (class_exists('SimpleXMLElement')) {
 		class Min_DB {
 			var $extension = "SimpleXML", $server_info = '2009-04-15', $error, $timeout, $next, $affected_rows, $_result;
-			
+
 			function select_db($database) {
 				return ($database == "domain");
 			}
-			
+
 			function query($query, $unbuffered = false) {
 				$params = array('SelectExpression' => $query, 'ConsistentRead' => 'true');
 				if ($this->next) {
@@ -42,28 +42,28 @@ if (isset($_GET["simpledb"])) {
 				}
 				return new Min_Result($result);
 			}
-			
+
 			function multi_query($query) {
 				return $this->_result = $this->query($query);
 			}
-			
+
 			function store_result() {
 				return $this->_result;
 			}
-			
+
 			function next_result() {
 				return false;
 			}
-			
+
 			function quote($string) {
 				return "'" . str_replace("'", "''", $string) . "'";
 			}
-			
+
 		}
-		
+
 		class Min_Result {
 			var $num_rows, $_rows = array(), $_offset = 0;
-			
+
 			function Min_Result($result) {
 				foreach ($result as $item) {
 					$row = array();
@@ -83,11 +83,11 @@ if (isset($_GET["simpledb"])) {
 				}
 				$this->num_rows = count($this->_rows);
 			}
-			
+
 			function _processValue($element) {
 				return (is_object($element) && $element['encoding'] == 'base64' ? base64_decode($element) : (string) $element);
 			}
-			
+
 			function fetch_assoc() {
 				$row = current($this->_rows);
 				if (!$row) {
@@ -100,7 +100,7 @@ if (isset($_GET["simpledb"])) {
 				next($this->_rows);
 				return $return;
 			}
-			
+
 			function fetch_row() {
 				$return = $this->fetch_assoc();
 				if (!$return) {
@@ -108,19 +108,19 @@ if (isset($_GET["simpledb"])) {
 				}
 				return array_values($return);
 			}
-			
+
 			function fetch_field() {
 				$keys = array_keys($this->_rows[0]);
 				return (object) array('name' => $keys[$this->_offset++]);
 			}
-			
+
 		}
 	}
-	
-	
-	
+
+
+
 	class Min_Driver extends Min_SQL {
-		
+
 		function _chunkRequest($ids, $action, $params, $expand = array()) {
 			global $connection;
 			foreach (array_chunk($ids, 25) as $chunk) {
@@ -138,7 +138,7 @@ if (isset($_GET["simpledb"])) {
 			$connection->affected_rows = count($ids);
 			return true;
 		}
-		
+
 		function _extractIds($table, $queryWhere, $limit) {
 			$return = array();
 			if (preg_match_all("~itemName\(\) = ('[^']*+')+~", $queryWhere, $matches)) {
@@ -150,7 +150,7 @@ if (isset($_GET["simpledb"])) {
 			}
 			return $return;
 		}
-		
+
 		function select($table, $select, $where, $group, $order, $limit, $page) {
 			global $connection;
 			$connection->next = $_GET["next"];
@@ -158,7 +158,7 @@ if (isset($_GET["simpledb"])) {
 			$connection->next = 0;
 			return $return;
 		}
-		
+
 		function delete($table, $queryWhere, $limit = 0) {
 			return $this->_chunkRequest(
 				$this->_extractIds($table, $queryWhere, $limit),
@@ -166,7 +166,7 @@ if (isset($_GET["simpledb"])) {
 				array('DomainName' => $table)
 			);
 		}
-		
+
 		function update($table, $set, $queryWhere, $limit = 0, $separator = "\n") {
 			$delete = array();
 			$insert = array();
@@ -188,7 +188,7 @@ if (isset($_GET["simpledb"])) {
 				&& (!$delete || $this->_chunkRequest($ids, 'BatchDeleteAttributes', $params, $delete))
 			;
 		}
-		
+
 		function insert($table, $set) {
 			$params = array("DomainName" => $table);
 			$i = 0;
@@ -207,7 +207,7 @@ if (isset($_GET["simpledb"])) {
 			}
 			return sdb_request('PutAttributes', $params);
 		}
-		
+
 		function insertUpdate($table, $rows, $primary) {
 			//! use one batch request
 			foreach ($rows as $set) {
@@ -217,48 +217,48 @@ if (isset($_GET["simpledb"])) {
 			}
 			return true;
 		}
-		
+
 		function begin() {
 			return false;
 		}
-		
+
 		function commit() {
 			return false;
 		}
-		
+
 		function rollback() {
 			return false;
 		}
-		
+
 	}
-	
-	
-	
+
+
+
 	function connect() {
 		return new Min_DB;
 	}
-	
+
 	function support($feature) {
-		return ereg('sql', $feature);
+		return preg_match('~sql~', $feature);
 	}
-	
+
 	function logged_user() {
 		global $adminer;
 		$credentials = $adminer->credentials();
 		return $credentials[1];
 	}
-	
+
 	function get_databases() {
 		return array("domain");
 	}
-	
+
 	function collations() {
 		return array();
 	}
-	
+
 	function db_collation($db, $collations) {
 	}
-	
+
 	function tables_list() {
 		global $connection;
 		$return = array();
@@ -270,7 +270,7 @@ if (isset($_GET["simpledb"])) {
 		}
 		return $return;
 	}
-	
+
 	function table_status($name = "", $fast = false) {
 		$return = array();
 		foreach (($name != "" ? array($name => true) : tables_list()) as $table => $type) {
@@ -295,27 +295,27 @@ if (isset($_GET["simpledb"])) {
 		}
 		return $return;
 	}
-	
+
 	function explain($connection, $query) {
 	}
-	
+
 	function error() {
 		global $connection;
 		return h($connection->error);
 	}
-	
+
 	function information_schema() {
 	}
-	
+
 	function is_view($table_status) {
 	}
-	
+
 	function indexes($table, $connection2 = null) {
 		return array(
 			array("type" => "PRIMARY", "columns" => array("itemName()")),
 		);
 	}
-	
+
 	function fields($table) {
 		$return = array();
 		foreach ((array) $_POST["field_keys"] as $key => $val) {
@@ -332,38 +332,38 @@ if (isset($_GET["simpledb"])) {
 		}
 		return $return;
 	}
-	
+
 	function foreign_keys($table) {
 		return array();
 	}
-	
+
 	function table($idf) {
 		return idf_escape($idf);
 	}
-	
+
 	function idf_escape($idf) {
 		return "`" . str_replace("`", "``", $idf) . "`";
 	}
-	
+
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
 		return " $query$where" . ($limit !== null ? $separator . "LIMIT $limit" : "");
 	}
-	
+
 	function unconvert_field($field, $return) {
 		return $return;
 	}
-	
+
 	function fk_support($table_status) {
 	}
-	
+
 	function engines() {
 		return array();
 	}
-	
+
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
 		return ($table == "" && sdb_request('CreateDomain', array('DomainName' => $name)));
 	}
-	
+
 	function drop_tables($tables) {
 		foreach ($tables as $table) {
 			if (!sdb_request('DeleteDomain', array('DomainName' => $table))) {
@@ -372,20 +372,20 @@ if (isset($_GET["simpledb"])) {
 		}
 		return true;
 	}
-	
+
 	function count_tables($databases) {
 		foreach ($databases as $db) {
 			return array($db => count(tables_list()));
 		}
 	}
-	
+
 	function found_rows($table_status, $where) {
 		return ($where ? null : $table_status["Rows"]);
 	}
-	
+
 	function last_id() {
 	}
-	
+
 	function hmac($algo, $data, $key, $raw_output = false) {
 		// can use hash_hmac() since PHP 5.1.2
 		$blocksize = 64;
@@ -416,9 +416,9 @@ if (isset($_GET["simpledb"])) {
 			$query .= '&' . rawurlencode($key) . '=' . rawurlencode($val);
 		}
 		$query = str_replace('%7E', '~', substr($query, 1));
-		$query .= "&Signature=" . urlencode(base64_encode(hmac('sha1', "POST\n" . ereg_replace('^https?://', '', $host) . "\n/\n$query", $secret, true)));
+		$query .= "&Signature=" . urlencode(base64_encode(hmac('sha1', "POST\n" . preg_replace('~^https?://~', '', $host) . "\n/\n$query", $secret, true)));
 		@ini_set('track_errors', 1); // @ - may be disabled
-		$file = @file_get_contents((ereg('^https?://', $host) ? $host : "http://$host"), false, stream_context_create(array('http' => array(
+		$file = @file_get_contents((preg_match('~^https?://~', $host) ? $host : "http://$host"), false, stream_context_create(array('http' => array(
 			'method' => 'POST', // may not fit in URL with GET
 			'content' => $query,
 			'ignore_errors' => 1, // available since PHP 5.2.10
@@ -443,7 +443,7 @@ if (isset($_GET["simpledb"])) {
 		$tag = $action . "Result";
 		return ($xml->$tag ? $xml->$tag : true);
 	}
-	
+
 	function sdb_request_all($action, $tag, $params = array(), $timeout = 0) {
 		$return = array();
 		$start = ($timeout ? microtime(true) : 0);
@@ -470,7 +470,7 @@ if (isset($_GET["simpledb"])) {
 		} while ($xml->NextToken);
 		return $return;
 	}
-	
+
 	$jush = "simpledb";
 	$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "IS NOT NULL");
 	$functions = array();

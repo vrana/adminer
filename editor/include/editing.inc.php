@@ -49,5 +49,5 @@ function send_mail($email, $subject, $message, $from = "", $files = array()) {
 * @return bool
 */
 function like_bool($field) {
-	return ereg("bool|(tinyint|bit)\\(1\\)", $field["full_type"]);
+	return preg_match("~bool|(tinyint|bit)\\(1\\)~", $field["full_type"]);
 }

@@ -2,7 +2,7 @@
 $TABLE = $_GET["indexes"];
 $index_types = array("PRIMARY", "UNIQUE", "INDEX");
 $table_status = table_status($TABLE, true);
-if (eregi("MyISAM|M?aria" . ($connection->server_info >= 5.6 ? "|InnoDB" : ""), $table_status["Engine"])) {
+if (preg_match('~MyISAM|M?aria' . ($connection->server_info >= 5.6 ? '|InnoDB' : '') . '~i', $table_status["Engine"])) {
 	$index_types[] = "FULLTEXT";
 }
 $indexes = indexes($TABLE);
@@ -32,7 +32,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 					$descs[] = $desc;
 				}
 			}
-			
+
 			if ($columns) {
 				$existing = $indexes[$name];
 				if ($existing) {
@@ -53,7 +53,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 			}
 		}
 	}
-	
+
 	// drop removed indexes
 	foreach ($indexes as $name => $existing) {
 		$alter[] = array($existing["type"], $name, "DROP");
@@ -101,7 +101,7 @@ $j = 1;
 foreach ($row["indexes"] as $index) {
 	if (!$_POST["drop_col"] || $j != key($_POST["drop_col"])) {
 		echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) ? "indexesAddRow(this);" : 1));
-		
+
 		echo "<td>";
 		ksort($index["columns"]);
 		$i = 1;
@@ -112,7 +112,7 @@ foreach ($row["indexes"] as $index) {
 			echo " </span>";
 			$i++;
 		}
-		
+
 		echo "<td><input name='indexes[$j][name]' value='" . h($index["name"]) . "' autocapitalize='off'>\n";
 		echo "<td><input type='image' class='icon' name='drop_col[$j]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "' onclick=\"return !editingRemoveRow(this, 'indexes\$1[type]');\">\n";
 	}

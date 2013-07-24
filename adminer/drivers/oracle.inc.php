@@ -12,10 +12,10 @@ if (isset($_GET["oracle"])) {
 				if (ini_bool("html_errors")) {
 					$error = html_entity_decode(strip_tags($error));
 				}
-				$error = ereg_replace('^[^:]*: ', '', $error);
+				$error = preg_replace('~^[^:]*: ~', '', $error);
 				$this->error = $error;
 			}
-			
+
 			function connect($server, $username, $password) {
 				$this->_link = @oci_new_connect($username, $password, $server, "AL32UTF8");
 				if ($this->_link) {
@@ -59,15 +59,15 @@ if (isset($_GET["oracle"])) {
 			function multi_query($query) {
 				return $this->_result = $this->query($query);
 			}
-			
+
 			function store_result() {
 				return $this->_result;
 			}
-			
+
 			function next_result() {
 				return false;
 			}
-			
+
 			function result($query, $field = 1) {
 				$result = $this->query($query);
 				if (!is_object($result) || !oci_fetch($result->_result)) {
@@ -92,7 +92,7 @@ if (isset($_GET["oracle"])) {
 				}
 				return $row;
 			}
-			
+
 			function fetch_assoc() {
 				return $this->_convert(oci_fetch_assoc($this->_result));
 			}
@@ -107,41 +107,41 @@ if (isset($_GET["oracle"])) {
 				$return->name = oci_field_name($this->_result, $column);
 				$return->orgname = $return->name;
 				$return->type = oci_field_type($this->_result, $column);
-				$return->charsetnr = (ereg("raw|blob|bfile", $return->type) ? 63 : 0); // 63 - binary
+				$return->charsetnr = (preg_match("~raw|blob|bfile~", $return->type) ? 63 : 0); // 63 - binary
 				return $return;
 			}
-			
+
 			function __destruct() {
 				oci_free_statement($this->_result);
 			}
 		}
-		
+
 	} elseif (extension_loaded("pdo_oci")) {
 		class Min_DB extends Min_PDO {
 			var $extension = "PDO_OCI";
-			
+
 			function connect($server, $username, $password) {
 				$this->dsn("oci:dbname=//$server;charset=AL32UTF8", $username, $password);
 				return true;
 			}
-			
+
 			function select_db($database) {
 				return true;
 			}
 		}
-		
+
 	}
-	
+
 
 
 	class Min_Driver extends Min_SQL {
-		
+
 		//! support empty $set in insert()
-		
+
 		function begin() {
 			return true; // automatic start
 		}
-		
+
 	}
 
 
@@ -203,7 +203,7 @@ ORDER BY 1"
 	function count_tables($databases) {
 		return array();
 	}
-	
+
 	function table_status($name = "") {
 		$return = array();
 		$search = q($name);
@@ -222,7 +222,7 @@ ORDER BY 1"
 	function is_view($table_status) {
 		return $table_status["Engine"] == "view";
 	}
-	
+
 	function fk_support($table_status) {
 		return true;
 	}
@@ -272,7 +272,7 @@ ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
 		$rows = get_rows('SELECT text "select" FROM user_views WHERE view_name = ' . q($name));
 		return reset($rows);
 	}
-	
+
 	function collations() {
 		return array(); //!
 	}
@@ -285,15 +285,15 @@ ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
 		global $connection;
 		return h($connection->error); //! highlight sqltext from offset
 	}
-	
+
 	function explain($connection, $query) {
 		$connection->query("EXPLAIN PLAN FOR $query");
 		return $connection->query("SELECT * FROM plan_table");
 	}
-	
+
 	function found_rows($table_status, $where) {
 	}
-	
+
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
 		$alter = $drop = array();
 		foreach ($fields as $field) {
@@ -315,11 +315,11 @@ ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
 			&& ($table == $name || queries("ALTER TABLE " . table($table) . " RENAME TO " . table($name)))
 		;
 	}
-	
+
 	function foreign_keys($table) {
 		return array(); //!
 	}
-	
+
 	function truncate_tables($tables) {
 		return apply_queries("TRUNCATE TABLE", $tables);
 	}
@@ -335,25 +335,25 @@ ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
 	function last_id() {
 		return 0; //!
 	}
-	
+
 	function schemas() {
 		return get_vals("SELECT DISTINCT owner FROM dba_segments WHERE owner IN (SELECT username FROM dba_users WHERE default_tablespace NOT IN ('SYSTEM','SYSAUX'))");
 	}
-	
+
 	function get_schema() {
 		global $connection;
 		return $connection->result("SELECT sys_context('USERENV', 'SESSION_USER') FROM dual");
 	}
-	
+
 	function set_schema($scheme) {
 		global $connection;
 		return $connection->query("ALTER SESSION SET CURRENT_SCHEMA = " . idf_escape($scheme));
 	}
-	
+
 	function show_variables() {
 		return get_key_vals('SELECT name, display_value FROM v$parameter');
 	}
-	
+
 	function process_list() {
 		return get_rows('SELECT sess.process AS "process", sess.username AS "user", sess.schemaname AS "schema", sess.status AS "status", sess.wait_class AS "wait_class", sess.seconds_in_wait AS "seconds_in_wait", sql.sql_text AS "sql_text", sess.machine AS "machine", sess.port AS "port"
 FROM v$session sess LEFT OUTER JOIN v$sql sql
@@ -362,23 +362,23 @@ WHERE sess.type = \'USER\'
 ORDER BY PROCESS
 ');
 	}
-	
+
 	function show_status() {
 		$rows = get_rows('SELECT * FROM v$instance');
 		return reset($rows);
 	}
-	
+
 	function convert_field($field) {
 	}
-	
+
 	function unconvert_field($field, $return) {
 		return $return;
 	}
-	
+
 	function support($feature) {
-		return ereg('^(database|table|sql|indexes|view|scheme|processlist|drop_col|variables|status)$', $feature); //!
+		return preg_match('~^(database|table|sql|indexes|view|scheme|processlist|drop_col|variables|status)$~', $feature); //!
 	}
-	
+
 	$jush = "oracle";
 	$types = array();
 	$structured_types = array();

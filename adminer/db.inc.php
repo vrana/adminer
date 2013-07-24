@@ -7,7 +7,7 @@ if ($tables_views && !$error && !$_POST["search"]) {
 	if ($jush == "sql" && count($_POST["tables"]) > 1 && ($_POST["drop"] || $_POST["truncate"] || $_POST["copy"])) {
 		queries("SET foreign_key_checks = 0"); // allows to truncate or drop several tables at once
 	}
-	
+
 	if ($_POST["truncate"]) {
 		if ($_POST["tables"]) {
 			$result = truncate_tables($_POST["tables"]);
@@ -40,7 +40,7 @@ if ($tables_views && !$error && !$_POST["search"]) {
 			$message .= "<b>" . h($row["Table"]) . "</b>: " . h($row["Msg_text"]) . "<br>";
 		}
 	}
-	
+
 	queries_redirect(substr(ME, 0, -1), $message, $result);
 }
 
@@ -63,7 +63,7 @@ if ($adminer->homepage()) {
 				}
 			}
 			echo "<table cellspacing='0' class='nowrap checkable' onclick='tableClick(event);' ondblclick='tableClick(event, true);'>\n";
-			
+
 			echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck(this, /^(tables|views)\[/);">';
 			echo '<th>' . lang('Table');
 			echo '<td>' . lang('Engine');
@@ -75,10 +75,10 @@ if ($adminer->homepage()) {
 			echo '<td>' . lang('Rows');
 			echo (support("comment") ? '<td>' . lang('Comment') : '');
 			echo "</thead>\n";
-			
+
 			$tables = 0;
 			foreach ($tables_list as $name => $type) {
-				$view = ($type !== null && !eregi("table", $type));
+				$view = ($type !== null && !preg_match('~table~i', $type));
 				echo '<tr' . odd() . '><td>' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array($name, $tables_views, true), "", "formUncheck('check-all');");
 				echo '<th>' . (support("table") ? '<a href="' . h(ME) . 'table=' . urlencode($name) . '" title="' . lang('Show structure') . '">' . h($name) . '</a>' : h($name));
 				if ($view) {
@@ -104,14 +104,14 @@ if ($adminer->homepage()) {
 				}
 				echo (support("comment") ? "<td id='Comment-" . h($name) . "'>&nbsp;" : "");
 			}
-			
+
 			echo "<tr><td>&nbsp;<th>" . lang('%d in total', count($tables_list));
 			echo "<td>" . nbsp($jush == "sql" ? $connection->result("SELECT @@storage_engine") : "");
 			echo "<td>" . nbsp(db_collation(DB, collations()));
 			foreach (array("Data_length", "Index_length", "Data_free") as $key) {
 				echo "<td align='right' id='sum-$key'>&nbsp;";
 			}
-			
+
 			echo "</table>\n";
 			if (!information_schema(DB)) {
 				$vacuum = "<input type='submit' value='" . lang('Vacuum') . "'" . on_help("'VACUUM'") . "> ";
@@ -141,10 +141,10 @@ if ($adminer->homepage()) {
 			echo "</form>\n";
 			echo "<script type='text/javascript'>tableCheck();</script>\n";
 		}
-		
+
 		echo '<p class="links"><a href="' . h(ME) . 'create=">' . lang('Create table') . "</a>\n";
 		echo (support("view") ? '<a href="' . h(ME) . 'view=">' . lang('Create view') . "</a>\n" : "");
-	
+
 		if (support("routine")) {
 			echo "<h3 id='routines'>" . lang('Routines') . "</h3>\n";
 			$routines = routines();
@@ -166,7 +166,7 @@ if ($adminer->homepage()) {
 				. '<a href="' . h(ME) . 'function=">' . lang('Create function') . "</a>\n"
 			;
 		}
-		
+
 		if (support("sequence")) {
 			echo "<h3 id='sequences'>" . lang('Sequences') . "</h3>\n";
 			$sequences = get_vals("SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = current_schema()");
@@ -181,7 +181,7 @@ if ($adminer->homepage()) {
 			}
 			echo "<p class='links'><a href='" . h(ME) . "sequence='>" . lang('Create sequence') . "</a>\n";
 		}
-		
+
 		if (support("type")) {
 			echo "<h3 id='user-types'>" . lang('User types') . "</h3>\n";
 			$user_types = types();
@@ -196,7 +196,7 @@ if ($adminer->homepage()) {
 			}
 			echo "<p class='links'><a href='" . h(ME) . "type='>" . lang('Create type') . "</a>\n";
 		}
-		
+
 		if (support("event")) {
 			echo "<h3 id='events'>" . lang('Events') . "</h3>\n";
 			$rows = get_rows("SHOW EVENTS");
@@ -218,7 +218,7 @@ if ($adminer->homepage()) {
 			}
 			echo '<p class="links"><a href="' . h(ME) . 'event=">' . lang('Create event') . "</a>\n";
 		}
-		
+
 		if ($tables_list) {
 			echo "<script type='text/javascript'>ajaxSetHtml('" . js_escape(ME) . "script=db');</script>\n";
 		}

@@ -4,11 +4,11 @@ $drivers["elastic"] = "Elasticsearch";
 if (isset($_GET["elastic"])) {
 	$possible_drivers = array("json");
 	define("DRIVER", "elastic");
-	
+
 	if (function_exists('json_decode')) {
 		class Min_DB {
 			var $extension = "JSON", $server_info, $errno, $error, $_url;
-			
+
 			function query($path) {
 				@ini_set('track_errors', 1); // @ - may be disabled
 				$file = @file_get_contents($this->_url . ($this->_db != "" ? "$this->_db/" : "") . $path, false, stream_context_create(array('http' => array(
@@ -18,7 +18,7 @@ if (isset($_GET["elastic"])) {
 					$this->error = $php_errormsg;
 					return $file;
 				}
-				if (!eregi('^HTTP/[0-9.]+ 2', $http_response_header[0])) {
+				if (!preg_match('~^HTTP/[0-9.]+ 2~i', $http_response_header[0])) {
 					$this->error = $file;
 					return false;
 				}
@@ -30,7 +30,7 @@ if (isset($_GET["elastic"])) {
 					} else {
 						$constants = get_defined_constants(true);
 						foreach ($constants['json'] as $name => $value) {
-							if ($value == $this->errno && ereg('^JSON_ERROR_', $name)) {
+							if ($value == $this->errno && preg_match('~^JSON_ERROR_~', $name)) {
 								$this->error = $name;
 								break;
 							}
@@ -39,7 +39,7 @@ if (isset($_GET["elastic"])) {
 				}
 				return $return;
 			}
-			
+
 			function connect($server, $username, $password) {
 				$this->_url = "http://$username:$password@$server/";
 				$return = $this->query('');
@@ -48,51 +48,51 @@ if (isset($_GET["elastic"])) {
 				}
 				return (bool) $return;
 			}
-			
+
 			function select_db($database) {
 				$this->_db = $database;
 				return true;
 			}
-			
+
 			function quote($string) {
 				return $string;
 			}
-			
+
 		}
-		
+
 		class Min_Result {
 			var $_rows;
-			
+
 			function Min_Result($rows) {
 				$this->_rows = $rows;
 				reset($this->_rows);
 			}
-			
+
 			function fetch_assoc() {
 				$return = current($this->_rows);
 				next($this->_rows);
 				return $return;
 			}
-			
+
 			function fetch_row() {
 				return array_values($this->fetch_assoc());
 			}
-			
+
 		}
-		
+
 	}
-	
-	
-	
+
+
+
 	class Min_Driver extends Min_SQL {
-		
+
 		function select($table, $select, $where, $group, $order, $limit, $page) {
 			global $adminer;
 			$query = $adminer->selectQueryBuild($select, $where, $group, $order, $limit, $page);
 			if (!$query) {
 				$query = "$table/_search?default_operator=AND"
 					. ($select != array("*") ? "&fields=" . urlencode(implode(",", $select)) : "")
-					. ($order ? "&sort=" . urlencode(ereg_replace(' DESC(,|$)', ':desc\1', implode(",", $order))) : "")
+					. ($order ? "&sort=" . urlencode(preg_replace('~ DESC(,|$)~', ':desc\1', implode(",", $order))) : "")
 					. ($limit ? "&size=" . (+$limit) . ($page ? "&from=" . ($page * $limit) : "") : "") // doesn't support returning all results
 				;
 				foreach ((array) $_GET["where"] as $val) {
@@ -124,11 +124,11 @@ if (isset($_GET["elastic"])) {
 			}
 			return new Min_Result($return);
 		}
-		
+
 	}
-	
-	
-	
+
+
+
 	function connect() {
 		global $adminer;
 		$connection = new Min_DB;
@@ -138,17 +138,17 @@ if (isset($_GET["elastic"])) {
 		}
 		return $connection->error;
 	}
-	
+
 	function support($feature) {
-		return ereg("database|table", $feature);
+		return preg_match("~database|table~", $feature);
 	}
-	
+
 	function logged_user() {
 		global $adminer;
 		$credentials = $adminer->credentials();
 		return $credentials[1];
 	}
-	
+
 	function get_databases() {
 		global $connection;
 		$return = $connection->query('_aliases');
@@ -157,14 +157,14 @@ if (isset($_GET["elastic"])) {
 		}
 		return $return;
 	}
-	
+
 	function collations() {
 		return array();
 	}
-	
+
 	function db_collation($db, $collations) {
 	}
-	
+
 	function count_tables($databases) {
 		global $connection;
 		$return = $connection->query('_mapping');
@@ -173,7 +173,7 @@ if (isset($_GET["elastic"])) {
 		}
 		return $return;
 	}
-	
+
 	function tables_list() {
 		global $connection;
 		$return = $connection->query('_mapping');
@@ -182,7 +182,7 @@ if (isset($_GET["elastic"])) {
 		}
 		return $return;
 	}
-	
+
 	function table_status($name = "", $fast = false) {
 		$return = tables_list();
 		if ($return) {
@@ -195,24 +195,24 @@ if (isset($_GET["elastic"])) {
 		}
 		return $return;
 	}
-	
+
 	function error() {
 		global $connection;
 		return h($connection->error);
 	}
-	
+
 	function information_schema() {
 	}
-	
+
 	function is_view($table_status) {
 	}
-	
+
 	function indexes($table, $connection2 = null) {
 		return array(
 			array("type" => "PRIMARY", "columns" => array("_id")),
 		);
 	}
-	
+
 	function fields($table) {
 		global $connection;
 		$mapping = $connection->query("$table/_mapping");
@@ -229,33 +229,33 @@ if (isset($_GET["elastic"])) {
 		}
 		return $return;
 	}
-	
+
 	function foreign_keys($table) {
 		return array();
 	}
-	
+
 	function table($idf) {
 		return $idf;
 	}
-	
+
 	function idf_escape($idf) {
 		return $idf;
 	}
-	
+
 	function convert_field($field) {
 	}
-		
+
 	function unconvert_field($field, $return) {
 		return $return;
 	}
-	
+
 	function fk_support($table_status) {
 	}
-	
+
 	function found_rows($table_status, $where) {
 		return null;
 	}
-	
+
 	$jush = "elastic";
 	$operators = array("=");
 	$functions = array();

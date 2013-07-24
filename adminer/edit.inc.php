@@ -13,21 +13,21 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 	$location = $_POST["referer"];
 	if ($_POST["insert"]) { // continue edit or insert
 		$location = ($update ? null : $_SERVER["REQUEST_URI"]);
-	} elseif (!ereg('^.+&select=.+$', $location)) {
+	} elseif (!preg_match('~^.+&select=.+$~', $location)) {
 		$location = ME . "select=" . urlencode($TABLE);
 	}
-	
+
 	$indexes = indexes($TABLE);
 	$unique_array = unique_array($_GET["where"], $indexes);
 	$query_where = "\nWHERE $where";
-	
+
 	if (isset($_POST["delete"])) {
 		queries_redirect(
 			$location,
 			lang('Item has been deleted.'),
 			$driver->delete($TABLE, $query_where, !$unique_array)
 		);
-		
+
 	} else {
 		$set = array();
 		foreach ($fields as $name => $field) {
@@ -36,7 +36,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 				$set[idf_escape($name)] = $val;
 			}
 		}
-		
+
 		if ($update) {
 			if (!$set) {
 				redirect($location);
@@ -78,7 +78,7 @@ if ($_POST["save"]) {
 			if ($_POST["clone"] && $field["auto_increment"]) {
 				$as = "''";
 			}
-			if ($jush == "sql" && ereg("enum|set", $field["type"])) {
+			if ($jush == "sql" && preg_match("~enum|set~", $field["type"])) {
 				$as = "1*" . idf_escape($name);
 			}
 			$select[] = ($as ? "$as AS " : "") . idf_escape($name);
@@ -124,36 +124,36 @@ if (!$fields) {
 	echo "<p class='error'>" . lang('You have no privileges to update this table.') . "\n";
 } else {
 	echo "<table cellspacing='0' onkeydown='return editingKeydown(event);'>\n";
-	
+
 	foreach ($fields as $name => $field) {
 		echo "<tr><th>" . $adminer->fieldName($field);
 		$default = $_GET["set"][bracket_escape($name)];
 		if ($default === null) {
 			$default = $field["default"];
-			if ($field["type"] == "bit" && ereg("^b'([01]*)'\$", $default, $regs)) {
+			if ($field["type"] == "bit" && preg_match("~^b'([01]*)'\$~", $default, $regs)) {
 				$default = $regs[1];
 			}
 		}
 		$value = ($row !== null
-			? ($row[$name] != "" && $jush == "sql" && ereg("enum|set", $field["type"]) ? (is_array($row[$name]) ? array_sum($row[$name]) : +$row[$name]) : $row[$name])
+			? ($row[$name] != "" && $jush == "sql" && preg_match("~enum|set~", $field["type"]) ? (is_array($row[$name]) ? array_sum($row[$name]) : +$row[$name]) : $row[$name])
 			: (!$update && $field["auto_increment"] ? "" : (isset($_GET["select"]) ? false : $default))
 		);
 		if (!$_POST["save"] && is_string($value)) {
 			$value = $adminer->editVal($value, $field);
 		}
 		$function = ($_POST["save"] ? (string) $_POST["function"][$name] : ($update && $field["on_update"] == "CURRENT_TIMESTAMP" ? "now" : ($value === false ? null : ($value !== null ? '' : 'NULL'))));
-		if (ereg("time", $field["type"]) && $value == "CURRENT_TIMESTAMP") {
+		if (preg_match("~time~", $field["type"]) && $value == "CURRENT_TIMESTAMP") {
 			$value = "";
 			$function = "now";
 		}
 		input($field, $value, $function);
 		echo "\n";
 	}
-	
+
 	if (!support("table")) {
 		echo "<tr><th><input name='field_keys[]'><td class='function'>&nbsp;<td><input name='field_vals[]'>";
 	}
-	
+
 	echo "</table>\n";
 }
 ?>

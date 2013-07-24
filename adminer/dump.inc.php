@@ -11,8 +11,8 @@ if ($_POST && !$error) {
 	$ext = dump_headers(
 		(count($tables) == 1 ? key($tables) : DB),
 		(DB == "" || count($tables) > 1));
-	$is_sql = ereg('sql', $_POST["format"]);
-	
+	$is_sql = preg_match('~sql~', $_POST["format"]);
+
 	if ($is_sql) {
 		echo "-- Adminer $VERSION " . $drivers[DRIVER] . " dump
 
@@ -23,7 +23,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 " : "") . "
 ");
 	}
-	
+
 	$style = $_POST["db_style"];
 	$databases = array(DB);
 	if (DB == "") {
@@ -32,11 +32,11 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 			$databases = explode("\n", rtrim(str_replace("\r", "", $databases), "\n"));
 		}
 	}
-	
+
 	foreach ((array) $databases as $db) {
 		$adminer->dumpDatabase($db);
 		if ($connection->select_db($db)) {
-			if ($is_sql && ereg('CREATE', $style) && ($create = $connection->result("SHOW CREATE DATABASE " . idf_escape($db), 1))) {
+			if ($is_sql && preg_match('~CREATE~', $style) && ($create = $connection->result("SHOW CREATE DATABASE " . idf_escape($db), 1))) {
 				if ($style == "DROP+CREATE") {
 					echo "DROP DATABASE IF EXISTS " . idf_escape($db) . ";\n";
 				}
@@ -47,7 +47,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 					echo use_sql($db) . ";\n\n";
 				}
 				$out = "";
-				
+
 				if ($_POST["routines"]) {
 					foreach (array("FUNCTION", "PROCEDURE") as $routine) {
 						foreach (get_rows("SHOW $routine STATUS WHERE Db = " . q($db), null, "-- ") as $row) {
@@ -56,19 +56,19 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 						}
 					}
 				}
-				
+
 				if ($_POST["events"]) {
 					foreach (get_rows("SHOW EVENTS", null, "-- ") as $row) {
 						$out .= ($style != 'DROP+CREATE' ? "DROP EVENT IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
 						. remove_definer($connection->result("SHOW CREATE EVENT " . idf_escape($row["Name"]), 3)) . ";;\n\n";
 					}
 				}
-				
+
 				if ($out) {
 					echo "DELIMITER ;;\n\n$out" . "DELIMITER ;\n\n";
 				}
 			}
-			
+
 			if ($_POST["table_style"] || $_POST["data_style"]) {
 				$views = array();
 				foreach (table_status('', true) as $name => $table_status) {
@@ -79,7 +79,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 							$tmp_file = new TmpFile;
 							ob_start(array($tmp_file, 'write'), 1e5);
 						}
-						
+
 						$adminer->dumpTable($name, ($table ? $_POST["table_style"] : ""), (is_view($table_status) ? 2 : 0));
 						if (is_view($table_status)) {
 							$views[] = $name;
@@ -90,7 +90,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 						if ($is_sql && $_POST["triggers"] && $table && ($triggers = trigger_sql($name, $_POST["table_style"]))) {
 							echo "\nDELIMITER ;;\n$triggers\nDELIMITER ;\n";
 						}
-						
+
 						if ($ext == "tar") {
 							ob_end_flush();
 							tar_file((DB != "" ? "" : "$db/") . "$name.csv", $tmp_file);
@@ -99,18 +99,18 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 						}
 					}
 				}
-				
+
 				foreach ($views as $view) {
 					$adminer->dumpTable($view, $_POST["table_style"], 1);
 				}
-				
+
 				if ($ext == "tar") {
 					echo pack("x512");
 				}
 			}
 		}
 	}
-	
+
 	if ($is_sql) {
 		echo "-- " . $connection->result("SELECT NOW()") . "\n";
 	}
@@ -167,14 +167,14 @@ if (DB != "") {
 	echo "<th style='text-align: left;'><label class='block'><input type='checkbox' id='check-tables'$checked onclick='formCheck(this, /^tables\\[/);'>" . lang('Tables') . "</label>";
 	echo "<th style='text-align: right;'><label class='block'>" . lang('Data') . "<input type='checkbox' id='check-data'$checked onclick='formCheck(this, /^data\\[/);'></label>";
 	echo "</thead>\n";
-	
+
 	$views = "";
 	$tables_list = tables_list();
 	foreach ($tables_list as $name => $type) {
-		$prefix = ereg_replace("_.*", "", $name);
+		$prefix = preg_replace('~_.*~', '', $name);
 		$checked = ($TABLE == "" || $TABLE == (substr($TABLE, -1) == "%" ? "$prefix%" : $name)); //! % may be part of table name
 		$print = "<tr><td>" . checkbox("tables[]", $name, $checked, $name, "checkboxClick(event, this); formUncheck('check-tables');", "block");
-		if ($type !== null && !eregi("table", $type)) {
+		if ($type !== null && !preg_match('~table~i', $type)) {
 			$views .= "$print\n";
 		} else {
 			echo "$print<td align='right'><label class='block'><span id='Rows-" . h($name) . "'></span>" . checkbox("data[]", $name, $checked, "", "checkboxClick(event, this); formUncheck('check-data');") . "</label>\n";
@@ -182,18 +182,18 @@ if (DB != "") {
 		$prefixes[$prefix]++;
 	}
 	echo $views;
-	
+
 	if ($tables_list) {
 		echo "<script type='text/javascript'>ajaxSetHtml('" . js_escape(ME) . "script=db');</script>\n";
 	}
-	
+
 } else {
 	echo "<thead><tr><th style='text-align: left;'><label class='block'><input type='checkbox' id='check-databases'" . ($TABLE == "" ? " checked" : "") . " onclick='formCheck(this, /^databases\\[/);'>" . lang('Database') . "</label></thead>\n";
 	$databases = $adminer->databases();
 	if ($databases) {
 		foreach ($databases as $db) {
 			if (!information_schema($db)) {
-				$prefix = ereg_replace("_.*", "", $db);
+				$prefix = preg_replace('~_.*~', '', $db);
 				echo "<tr><td>" . checkbox("databases[]", $db, $TABLE == "" || $TABLE == "$prefix%", $db, "formUncheck('check-databases');", "block") . "\n";
 				$prefixes[$prefix]++;
 			}

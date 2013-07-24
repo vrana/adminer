@@ -9,7 +9,7 @@
 class AdminerSlugify {
 	/** @access protected */
 	var $from, $to;
-	
+
 	/**
 	* @param string find these characters ...
 	* @param string ... and replace them by these
@@ -18,7 +18,7 @@ class AdminerSlugify {
 		$this->from = $from;
 		$this->to = $to;
 	}
-	
+
 	function editInput($table, $field, $attrs, $value) {
 		static $slugify;
 		if (!$_GET["select"] && !$_GET["where"]) {
@@ -26,7 +26,7 @@ class AdminerSlugify {
 				$slugify = array();
 				$prev = null;
 				foreach (fields($table) as $name => $val) {
-					if ($prev && ereg('(^|_)slug(_|$)', $name)) {
+					if ($prev && preg_match('~(^|_)slug(_|$)~', $name)) {
 						$slugify[$prev] = $name;
 					}
 					$prev = $name;
@@ -38,5 +38,5 @@ class AdminerSlugify {
 			}
 		}
 	}
-	
+
 }

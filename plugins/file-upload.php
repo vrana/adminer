@@ -10,7 +10,7 @@
 class AdminerFileUpload {
 	/** @access protected */
 	var $uploadPath, $displayPath, $extensions;
-	
+
 	/**
 	* @param string prefix for uploading data (create writable subdirectory for each table containing uploadable fields)
 	* @param string prefix for displaying data, null stands for $uploadPath
@@ -21,18 +21,18 @@ class AdminerFileUpload {
 		$this->displayPath = ($displayPath !== null ? $displayPath : $uploadPath);
 		$this->extensions = $extensions;
 	}
-	
+
 	function editInput($table, $field, $attrs, $value) {
-		if (ereg('(.*)_path$', $field["field"])) {
+		if (preg_match('~(.*)_path$~', $field["field"])) {
 			return "<input type='file' name='fields-$field[field]'>";
 		}
 	}
-	
+
 	function processInput($field, $value, $function = "") {
-		if (ereg('(.*)_path$', $field["field"], $regs)) {
+		if (preg_match('~(.*)_path$~', $field["field"], $regs)) {
 			$table = ($_GET["edit"] != "" ? $_GET["edit"] : $_GET["select"]);
 			$name = "fields-$field[field]";
-			if ($_FILES[$name]["error"] || !ereg("(\\.($this->extensions))?\$", $_FILES[$name]["name"], $regs2)) {
+			if ($_FILES[$name]["error"] || !preg_match("~(\\.($this->extensions))?\$~", $_FILES[$name]["name"], $regs2)) {
 				return false;
 			}
 			//! unlink old
@@ -43,11 +43,11 @@ class AdminerFileUpload {
 			return q($filename);
 		}
 	}
-	
+
 	function selectVal($val, &$link, $field) {
-		if ($val != "&nbsp;" && ereg('(.*)_path$', $field["field"], $regs)) {
+		if ($val != "&nbsp;" && preg_match('~(.*)_path$~', $field["field"], $regs)) {
 			$link = "$this->displayPath$_GET[select]/$regs[1]-$val";
 		}
 	}
-	
+
 }

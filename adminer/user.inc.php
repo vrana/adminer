@@ -34,7 +34,7 @@ if (isset($_GET["host"]) && ($result = $connection->query("SHOW GRANTS FOR " . q
 				if ($val[1] != "USAGE") {
 					$grants["$match[2]$val[2]"][$val[1]] = true;
 				}
-				if (ereg(' WITH GRANT OPTION', $row[0])) { //! don't check inside strings and identifiers
+				if (preg_match('~ WITH GRANT OPTION~', $row[0])) { //! don't check inside strings and identifiers
 					$grants["$match[2]$val[2]"]["GRANT OPTION"] = true;
 				}
 			}
@@ -57,7 +57,7 @@ if ($_POST && !$error) {
 			$pass = $connection->result("SELECT PASSWORD(" . q($pass) . ")");
 			$error = !$pass;
 		}
-		
+
 		$created = false;
 		if (!$error) {
 			if ($old_user != $new_user) {
@@ -67,7 +67,7 @@ if ($_POST && !$error) {
 				queries("SET PASSWORD FOR $new_user = " . q($pass));
 			}
 		}
-		
+
 		if (!$error) {
 			$revoke = array();
 			foreach ($new_grants as $object => $grant) {
@@ -93,7 +93,7 @@ if ($_POST && !$error) {
 				}
 			}
 		}
-		
+
 		if (!$error && isset($_GET["host"])) {
 			if ($old_user != $new_user) {
 				queries("DROP USER $old_user");
@@ -105,9 +105,9 @@ if ($_POST && !$error) {
 				}
 			}
 		}
-		
+
 		queries_redirect(ME . "privileges=", (isset($_GET["host"]) ? lang('User has been altered.') : lang('User has been created.')), !$error);
-		
+
 		if ($created) {
 			// delete new user in case of an error
 			$connection->query("DROP USER $new_user");

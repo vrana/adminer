@@ -63,7 +63,7 @@ if ($_POST && !$error) {
 			unset($unselected[$key]);
 		}
 	}
-	
+
 	if ($_POST["export"]) {
 		cookie("adminer_import", "output=" . urlencode($_POST["output"]) . "&format=" . urlencode($_POST["format"]));
 		dump_headers($TABLE);
@@ -81,7 +81,7 @@ if ($_POST && !$error) {
 		$adminer->dumpData($TABLE, "table", $query);
 		exit;
 	}
-	
+
 	if (!$adminer->selectEmailProcess($where, $foreign_keys)) {
 		if ($_POST["save"] || $_POST["delete"]) { // edit
 			$result = true;
@@ -135,7 +135,7 @@ if ($_POST && !$error) {
 			}
 			queries_redirect(remove_from_uri($_POST["all"] && $_POST["delete"] ? "page" : ""), $message, $result);
 			//! display edit page in case of an error
-			
+
 		} elseif (!$_POST["import"]) { // modify
 			if (!$_POST["val"]) {
 				$error = lang('Ctrl+click on a value to modify it.');
@@ -146,7 +146,7 @@ if ($_POST && !$error) {
 					$set = array();
 					foreach ($row as $key => $val) {
 						$key = bracket_escape($key, 1); // 1 - back
-						$set[idf_escape($key)] = (ereg('char|text', $fields[$key]["type"]) || $val != "" ? $adminer->processInput($fields[$key], $val) : "NULL");
+						$set[idf_escape($key)] = (preg_match('~char|text~', $fields[$key]["type"]) || $val != "" ? $adminer->processInput($fields[$key], $val) : "NULL");
 					}
 					$result = $driver->update(
 						$TABLE,
@@ -162,7 +162,7 @@ if ($_POST && !$error) {
 				}
 				queries_redirect(remove_from_uri(), lang('%d item(s) have been affected.', $affected), $result);
 			}
-			
+
 		} elseif (!is_string($file = get_file("csv_file", true))) {
 			$error = upload_error($file);
 		} elseif (!preg_match('~~u', $file)) {
@@ -196,7 +196,7 @@ if ($_POST && !$error) {
 			}
 			queries_redirect(remove_from_uri("page"), lang('%d row(s) have been imported.', $affected), $result);
 			$driver->rollback(); // after queries_redirect() to not overwrite error
-			
+
 		}
 	}
 }
@@ -214,7 +214,7 @@ if (isset($rights["insert"]) || !support("table")) {
 	$set = "";
 	foreach ((array) $_GET["where"] as $val) {
 		if (count($foreign_keys[$val["col"]]) == 1 && ($val["op"] == "="
-			|| (!$val["op"] && !ereg('[_%]', $val["val"])) // LIKE in Editor
+			|| (!$val["op"] && !preg_match('~[_%]~', $val["val"])) // LIKE in Editor
 		)) {
 			$set .= "&set" . urlencode("[" . bracket_escape($val["col"]) . "]") . "=" . urlencode($val["val"]);
 		}
@@ -238,7 +238,7 @@ if (!$columns && support("table")) {
 	$adminer->selectLengthPrint($text_length);
 	$adminer->selectActionPrint($indexes);
 	echo "</form>\n";
-	
+
 	$page = $_GET["page"];
 	if ($page == "last") {
 		$found_rows = $connection->result(count_rows($TABLE, $where, $is_group, $group));
@@ -257,7 +257,7 @@ if (!$columns && support("table")) {
 		$select2[] = substr($convert_fields, 2);
 	}
 	$result = $driver->select($TABLE, $select2, $where, $group, $order, $limit, $page);
-	
+
 	if (!$result) {
 		echo "<p class='error'>" . error() . "\n";
 	} else {
@@ -273,17 +273,17 @@ if (!$columns && support("table")) {
 			}
 			$rows[] = $row;
 		}
-		
+
 		// use count($rows) without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
 		if ($_GET["page"] != "last" && +$limit && $group && $is_group && $jush == "sql") {
 			$found_rows = $connection->result(" SELECT FOUND_ROWS()"); // space to allow mysql.trace_mode
 		}
-		
+
 		if (!$rows) {
 			echo "<p class='message'>" . lang('No rows.') . "\n";
 		} else {
 			$backward_keys = $adminer->backwardKeys($TABLE, $table_name);
-			
+
 			echo "<table id='table' cellspacing='0' class='nowrap checkable' onclick='tableClick(event);' ondblclick='tableClick(event, true);' onkeydown='return editingKeydown(event);'>\n";
 			echo "<thead><tr>" . (!$group && $select ? "" : "<td><input type='checkbox' id='all-page' onclick='formCheck(this, /check/);'> <a href='" . h($_GET["modify"] ? remove_from_uri("modify") : $_SERVER["REQUEST_URI"] . "&modify=1") . "'>" . lang('Modify') . "</a>");
 			$names = array();
@@ -315,7 +315,7 @@ if (!$columns && support("table")) {
 					next($select);
 				}
 			}
-			
+
 			$lengths = array();
 			if ($_GET["modify"]) {
 				foreach ($rows as $row) {
@@ -324,16 +324,16 @@ if (!$columns && support("table")) {
 					}
 				}
 			}
-			
+
 			echo ($backward_keys ? "<th>" . lang('Relations') : "") . "</thead>\n";
-			
+
 			if (is_ajax()) {
 				if ($limit % 2 == 1 && $page % 2 == 1) {
 					odd();
 				}
 				ob_end_clean();
 			}
-			
+
 			foreach ($adminer->rowDescriptions($rows, $foreign_keys) as $n => $row) {
 				$unique_array = unique_array($rows[$n], $indexes);
 				if (!$unique_array) {
@@ -353,18 +353,18 @@ if (!$columns && support("table")) {
 					$unique_idf .= "&" . ($val !== null ? urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($val) : "null%5B%5D=" . urlencode($key));
 				}
 				echo "<tr" . odd() . ">" . (!$group && $select ? "" : "<td>" . checkbox("check[]", substr($unique_idf, 1), in_array(substr($unique_idf, 1), (array) $_POST["check"]), "", "this.form['all'].checked = false; formUncheck('all-page');") . ($is_group || information_schema(DB) ? "" : " <a href='" . h(ME . "edit=" . urlencode($TABLE) . $unique_idf) . "'>" . lang('edit') . "</a>"));
-				
+
 				foreach ($row as $key => $val) {
 					if (isset($names[$key])) {
 						$field = $fields[$key];
 						if ($val != "" && (!isset($email_fields[$key]) || $email_fields[$key] != "")) {
 							$email_fields[$key] = (is_mail($val) ? $names[$key] : ""); //! filled e-mails can be contained on other pages
 						}
-						
+
 						$link = "";
 						$val = $adminer->editVal($val, $field);
 						if ($val !== null) {
-							if (ereg('blob|bytea|raw|file', $field["type"]) && $val != "") {
+							if (preg_match('~blob|bytea|raw|file~', $field["type"]) && $val != "") {
 								$link = ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . $unique_idf;
 							}
 							if ($val === "") { // === - may be int
@@ -374,7 +374,7 @@ if (!$columns && support("table")) {
 							} else {
 								$val = h($val);
 							}
-							
+
 							if (!$link) { // link related items
 								foreach ((array) $foreign_keys[$key] as $foreign_key) {
 									if (count($foreign_keys[$key]) == 1 || end($foreign_key["source"]) == $key) {
@@ -389,7 +389,7 @@ if (!$columns && support("table")) {
 									}
 								}
 							}
-							
+
 							if ($key == "COUNT(*)") { //! columns looking like functions
 								$link = ME . "select=" . urlencode($TABLE);
 								$i = 0;
@@ -402,9 +402,9 @@ if (!$columns && support("table")) {
 									$link .= where_link($i++, $k, $v);
 								}
 							}
-							
+
 						}
-						
+
 						if (!$link && ($link = $adminer->selectLink($row[$key], $field)) === null) {
 							if (is_mail($row[$key])) {
 								$link = "mailto:$row[$key]";
@@ -416,33 +416,33 @@ if (!$columns && support("table")) {
 								);
 							}
 						}
-						
+
 						$id = h("val[$unique_idf][" . bracket_escape($key) . "]");
 						$value = $_POST["val"][$unique_idf][bracket_escape($key)];
 						$h_value = h($value !== null ? $value : $row[$key]);
 						$long = strpos($val, "<i>...</i>");
 						$editable = is_utf8($val) && $rows[$n][$key] == $row[$key] && !$functions[$key];
-						$text = ereg('text|lob', $field["type"]);
+						$text = preg_match('~text|lob~', $field["type"]);
 						echo (($_GET["modify"] && $editable) || $value !== null
 							? "<td>" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>")
 							: "<td id='$id' onclick=\"selectClick(this, event, " . ($long ? 2 : ($text ? 1 : 0)) . ($editable ? "" : ", '" . h(lang('Use edit link to modify this value.')) . "'") . ");\">" . $adminer->selectVal($val, $link, $field)
 						);
 					}
 				}
-				
+
 				if ($backward_keys) {
 					echo "<td>";
 				}
 				$adminer->backwardKeysPrint($backward_keys, $rows[$n]);
 				echo "</tr>\n"; // close to allow white-space: pre
 			}
-			
+
 			if (is_ajax()) {
 				exit;
 			}
 			echo "</table>\n";
 		}
-		
+
 		if (($rows || $page) && !is_ajax()) {
 			$exact_count = true;
 			if ($_GET["page"] != "last") {
@@ -458,7 +458,7 @@ if (!$columns && support("table")) {
 					}
 				}
 			}
-			
+
 			if (+$limit && ($found_rows === false || $found_rows > $limit || $page)) {
 				echo "<p class='pages'>";
 				// display first, previous 4, next 4 and last page
@@ -490,12 +490,12 @@ if (!$columns && support("table")) {
 					echo ($max_page > $page ? pagination($page + 1, $page) . ($max_page > $page + 1 ? " ..." : "") : "");
 				}
 			}
-			
+
 			echo "<p>\n";
 			echo ($found_rows !== false ? "(" . ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) . ") " : "");
 			$display_rows = ($exact_count ? "" : "~ ") . $found_rows;
 			echo checkbox("all", 1, 0, lang('whole result'), "var checked = formChecked(this, /check/); selectCount('selected', this.checked ? '$display_rows' : checked); selectCount('selected2', this.checked || !checked ? '$display_rows' : checked);") . "\n";
-			
+
 			if ($adminer->selectCommandPrint()) {
 				?>
 <fieldset<?php echo ($_GET["modify"] ? '' : ' class="jsonly"'); ?>><legend><?php echo lang('Modify'); ?></legend><div>
@@ -508,7 +508,7 @@ if (!$columns && support("table")) {
 </div></fieldset>
 <?php
 			}
-			
+
 			$format = $adminer->dumpFormat();
 			foreach ((array) $_GET["columns"] as $column) {
 				if ($column["fun"]) {
@@ -524,10 +524,10 @@ if (!$columns && support("table")) {
 				echo " <input type='submit' name='export' value='" . lang('Export') . "'>\n";
 				echo "</div></fieldset>\n";
 			}
-			
+
 			echo (!$group && $select ? "" : "<script type='text/javascript'>tableCheck();</script>\n");
 		}
-		
+
 		if ($adminer->selectImportPrint()) {
 			print_fieldset("import", lang('Import'), !$rows);
 			echo "<input type='file' name='csv_file'> ";
@@ -535,9 +535,9 @@ if (!$columns && support("table")) {
 			echo " <input type='submit' name='import' value='" . lang('Import') . "'>";
 			echo "</div></fieldset>\n";
 		}
-		
+
 		$adminer->selectEmailPrint(array_filter($email_fields, 'strlen'), $columns);
-		
+
 		echo "<p><input type='hidden' name='token' value='$token'></p>\n";
 		echo "</form>\n";
 	}

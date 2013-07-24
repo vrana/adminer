@@ -10,7 +10,7 @@
 class AdminerWymeditor {
 	/** @access protected */
 	var $scripts, $options;
-	
+
 	/**
 	* @param array
 	* @param string in format "skin: 'custom', preInit: function () { }"
@@ -19,16 +19,16 @@ class AdminerWymeditor {
 		$this->scripts = $scripts;
 		$this->options = $options;
 	}
-	
+
 	function head() {
 		foreach ($this->scripts as $script) {
 			echo "<script type='text/javascript' src='" . h($script) . "'></script>\n";
 		}
 	}
-	
+
 	function selectVal(&$val, $link, $field) {
 		// copied from tinymce.php
-		if (ereg("_html", $field["field"]) && $val != '&nbsp;') {
+		if (preg_match("~_html~", $field["field"]) && $val != '&nbsp;') {
 			$shortened = (substr($val, -10) == "<i>...</i>");
 			if ($shortened) {
 				$val = substr($val, 0, -10);
@@ -46,10 +46,10 @@ class AdminerWymeditor {
 			}
 		}
 	}
-	
+
 	function editInput($table, $field, $attrs, $value) {
 		static $lang = "";
-		if (!$lang && ereg("text", $field["type"]) && ereg("_html", $field["field"])) {
+		if (!$lang && preg_match("~text~", $field["type"]) && preg_match("~_html~", $field["field"])) {
 			$lang = "en";
 			if (function_exists('get_lang')) { // since Adminer 3.2.0
 				$lang = get_lang();
@@ -60,5 +60,5 @@ jQuery('#fields-" . js_escape($field["field"]) . "').wymeditor({ updateSelector:
 </script>";
 		}
 	}
-	
+
 }
