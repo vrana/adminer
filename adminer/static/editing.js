@@ -294,7 +294,7 @@ function editingAddRow(button, focus) {
 * @return boolean
 */
 function editingRemoveRow(button, name) {
-	var field = formField(button.form, button.name.replace(/drop_col(.+)/, name));
+	var field = formField(button.form, button.name.replace(/[^\[]+(.+)/, name));
 	field.parentNode.removeChild(field);
 	parentTag(button, 'tr').style.display = 'none';
 	return true;
