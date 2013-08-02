@@ -144,7 +144,6 @@ $translations = array(
 	'No tables.' => 'Tiada tabel.',
 	'Alter table' => 'Ubah tabel',
 	'Create table' => 'Buat tabel',
-	'Create new table' => 'Buat tabel baru',
 	'Table has been dropped.' => 'Tabel berhasil dihapus.',
 	'Tables have been dropped.' => 'Tabel berhasil dihapus.',
 	'Tables have been optimized.' => 'Tabel berhasil dioptimalkan.',

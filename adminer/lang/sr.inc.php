@@ -144,7 +144,6 @@ $translations = array(
 	'No tables.' => 'Без табела.',
 	'Alter table' => 'Уреди табелу',
 	'Create table' => 'Направи табелу',
-	'Create new table' => 'направи нову табелу',
 	'Table has been dropped.' => 'Табела је избрисана.',
 	'Tables have been dropped.' => 'Табеле су избрисане.',
 	'Tables have been optimized.' => 'Табеле су оптимизоване.',

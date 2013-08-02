@@ -36,7 +36,6 @@ $translations = array(
 	'Use' => 'المستعمل',
 	'No tables.' => 'لا توجد جداول.',
 	'select' => 'تحديد',
-	'Create new table' => 'أنشئ جدول جديد',
 	'Item has been deleted.' => 'تم حذف العنصر.',
 	'Item has been updated.' => 'تم تعديل العنصر.',
 	'Edit' => 'تعديل',

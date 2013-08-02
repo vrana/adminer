@@ -38,7 +38,6 @@ $translations = array(
 	'Use' => 'Vybrať',
 	'No tables.' => 'Žiadne tabuľky.',
 	'select' => 'vypísať',
-	'Create new table' => 'Vytvoriť novú tabuľku',
 	'Item has been deleted.' => 'Položka bola vymazaná.',
 	'Item has been updated.' => 'Položka bola aktualizovaná.',
 	'Item%s has been inserted.' => 'Položka%s bola vložená.',

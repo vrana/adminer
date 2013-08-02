@@ -144,7 +144,6 @@ $translations = array(
 	'No tables.' => 'Nėra lentelių.',
 	'Alter table' => 'Redaguoti lentelę',
 	'Create table' => 'Sukurti lentelę',
-	'Create new table' => 'Sukurti naują lentelę',
 	'Table has been dropped.' => 'Lentelė pašalinta.',
 	'Tables have been dropped.' => 'Lentelės pašalintos.',
 	'Table has been altered.' => 'Lentelė pakeista.',

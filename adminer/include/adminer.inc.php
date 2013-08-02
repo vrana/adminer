@@ -775,7 +775,7 @@ username.form['auth[driver]'].onchange();
 				}
 			}
 			if ($_GET["ns"] !== "" && !$missing && DB != "") {
-				echo '<a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create new table') . "</a>\n";
+				echo '<a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create table') . "</a>\n";
 				$tables = table_status('', true);
 				if (!$tables) {
 					echo "<p class='message'>" . lang('No tables.') . "\n";

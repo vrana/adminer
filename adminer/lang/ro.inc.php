@@ -37,7 +37,6 @@ $translations = array(
 	'Use' => 'Alege',
 	'No tables.' => 'În baza de date nu sunt tabele.',
 	'select' => 'selectează',
-	'Create new table' => 'Crează tabel nou',
 	'Item has been deleted.' => 'Înregistrare a fost ștearsă.',
 	'Item has been updated.' => 'Înregistrare a fost înnoită.',
 	'Item%s has been inserted.' => 'Înregistrarea%s a fost inserată.',

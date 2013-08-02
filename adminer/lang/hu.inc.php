@@ -37,7 +37,6 @@ $translations = array(
 	'Use' => 'Használ',
 	'No tables.' => 'Nincs tábla.',
 	'select' => 'kiválasztás',
-	'Create new table' => 'Új tábla',
 	'Item has been deleted.' => 'A tétel törölve.',
 	'Item has been updated.' => 'A tétel frissítve.',
 	'Item%s has been inserted.' => '%s tétel beszúrva.',

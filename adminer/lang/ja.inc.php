@@ -37,7 +37,6 @@ $translations = array(
 	'Use' => '使用',
 	'No tables.' => 'テーブルがありません。',
 	'select' => '選択',
-	'Create new table' => 'テーブルを作成',
 	'Item has been deleted.' => '項目を削除しました',
 	'Item has been updated.' => '項目を更新しました',
 	'Edit' => '編集',

@@ -37,7 +37,6 @@ $translations = array(
 	'Use' => 'Utilitza',
 	'No tables.' => 'No hi ha cap taula.',
 	'select' => 'registres',
-	'Create new table' => 'Crea una nova taula',
 	'Item has been deleted.' => 'S\'ha suprmit l\'element.',
 	'Item has been updated.' => 'S\'ha actualitzat l\'element.',
 	'Item%s has been inserted.' => 'S\'ha insertat l\'element%s.',

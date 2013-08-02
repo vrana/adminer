@@ -140,7 +140,6 @@ $translations = array(
 	'No tables.' => 'Ni tabel.',
 	'Alter table' => 'Spremeni tabelo',
 	'Create table' => 'Ustvari tabelo',
-	'Create new table' => 'Ustvari novo tabelo',
 	'Table has been dropped.' => 'Tabela je zavržena.',
 	'Tables have been dropped.' => 'Tabele so zavržene.',
 	'Table has been altered.' => 'Tabela je spremenjena.',

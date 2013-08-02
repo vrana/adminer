@@ -37,7 +37,6 @@ $translations = array(
 	'Use' => 'உப‌யோகி',
 	'No tables.' => 'அட்ட‌வ‌ணை இல்லை.',
 	'select' => 'தேர்வு செய்',
-	'Create new table' => 'புதிய‌ அட்ட‌வ‌ணையை உருவாக்கு',
 	'Item has been deleted.' => 'உருப்படி நீக்க‌ப்ப‌ட்ட‌து.',
 	'Item has been updated.' => 'உருப்ப‌டி புதுப்பிக்க‌ப்ப‌ட்ட‌து.',
 	'Edit' => 'தொகு',

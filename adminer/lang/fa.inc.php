@@ -144,7 +144,6 @@ $translations = array(
 	'No tables.' => 'جدولی وجود ندارد',
 	'Alter table' => 'ویرایش جدول',
 	'Create table' => 'ایجاد جدول',
-	'Create new table' => 'ایجاد جدول جدید',
 	'Table has been dropped.' => 'جدول حذف شد',
 	'Tables have been dropped.' => 'جدولها حذف شدند',
 	'Table has been altered.' => 'جدول ویرایش شد',

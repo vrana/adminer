@@ -36,7 +36,6 @@ $translations = array(
 	'Use' => '使用',
 	'No tables.' => '沒有資料表。',
 	'select' => '選擇',
-	'Create new table' => '建立新資料表',
 	'Item has been updated.' => '已更新項目。',
 	'Item%s has been inserted.' => '已插入項目%s。',
 	'Edit' => '編輯',

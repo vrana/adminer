@@ -147,7 +147,6 @@ $translations = array(
 	'No tables.' => 'xx',
 	'Alter table' => 'xx',
 	'Create table' => 'xx',
-	'Create new table' => 'xx',
 	'Table has been dropped.' => 'xx',
 	'Tables have been dropped.' => 'xx',
 	'Tables have been optimized.' => 'xx',

@@ -37,7 +37,6 @@ $translations = array(
 	'Use' => 'ব্যবহার',
 	'No tables.' => 'কোন টেবিল নাই।',
 	'select' => 'নির্বাচন',
-	'Create new table' => 'নতুন টেবিল তৈরী করো',
 	'Item has been deleted.' => 'বিষয়বস্তু মুছে ফেলা হয়েছে।',
 	'Item has been updated.' => 'বিষয়বস্তু আপডেট করা হয়েছে।',
 	'Item%s has been inserted.' => 'বিষয়বস্তুসমূহ সংযোজন করা হয়েছে।',

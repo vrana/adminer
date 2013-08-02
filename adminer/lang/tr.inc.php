@@ -144,7 +144,6 @@ $translations = array(
 	'No tables.' => 'Tablo yok.',
 	'Alter table' => 'Tabloyu değiştir',
 	'Create table' => 'Tablo oluştur',
-	'Create new table' => 'Yeni tablo oluştur',
 	'Table has been dropped.' => 'Tablo silindi.',
 	'Tables have been dropped.' => 'Tablolar silindi.',
 	'Tables have been optimized.' => 'Tablolar en uygun hale getirildi.',
