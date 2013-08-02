@@ -14,18 +14,19 @@ if (!$error && $_POST["clear"]) {
 	redirect(remove_from_uri("history"));
 }
 
-page_header(lang('SQL command'), $error);
+page_header((isset($_GET["import"]) ? lang('Import') : lang('SQL command')), $error);
 
 if (!$error && $_POST) {
 	$fp = false;
-	$query = $_POST["query"];
-	if ($_POST["webfile"]) {
+	if (!isset($_GET["import"])) {
+		$query = $_POST["query"];
+	} elseif ($_POST["webfile"]) {
 		$fp = @fopen((file_exists("adminer.sql")
 			? "adminer.sql"
 			: "compress.zlib://adminer.sql.gz"
 		), "rb");
 		$query = ($fp ? fread($fp, 1e6) : false);
-	} elseif ($_FILES && $_FILES["sql_file"]["error"][0] != 4) { // 4 - UPLOAD_ERR_NO_FILE
+	} else {
 		$query = get_file("sql_file", true);
 	}
 
@@ -184,38 +185,41 @@ if (!$error && $_POST) {
 ?>
 
 <form action="" method="post" enctype="multipart/form-data" id="form">
-<p><?php
-$q = $_GET["sql"]; // overwrite $q from if ($_POST) to save memory
-if ($_POST) {
-	$q = $_POST["query"];
-} elseif ($_GET["history"] == "all") {
-	$q = $history;
-} elseif ($_GET["history"] != "") {
-	$q = $history[$_GET["history"]][0];
-}
-textarea("query", $q, 20);
-
-echo ($_POST ? "" : "<script type='text/javascript'>focus(document.getElementsByTagName('textarea')[0]);</script>\n");
-?>
-<p>
-<input type="submit" value="<?php echo lang('Execute'); ?>" title="Ctrl+Enter">
 <?php
-echo checkbox("error_stops", 1, $_POST["error_stops"], lang('Stop on error')) . "\n";
+$execute = "<input type='submit' value='" . lang('Execute') . "' title='Ctrl+Enter'>";
+if (!isset($_GET["import"])) {
+	$q = $_GET["sql"]; // overwrite $q from if ($_POST) to save memory
+	if ($_POST) {
+		$q = $_POST["query"];
+	} elseif ($_GET["history"] == "all") {
+		$q = $history;
+	} elseif ($_GET["history"] != "") {
+		$q = $history[$_GET["history"]][0];
+	}
+	echo "<p>";
+	textarea("query", $q, 20);
+	echo ($_POST ? "" : "<script type='text/javascript'>focus(document.getElementsByTagName('textarea')[0]);</script>\n");
+	echo "<p>$execute\n";
+	
+} else {
+	echo "<fieldset><legend>" . lang('File upload') . "</legend><div>";
+	echo (ini_bool("file_uploads")
+		? '<input type="file" name="sql_file[]" multiple> (&lt; ' . ini_get("upload_max_filesize") . 'B)' // ignore post_max_size because it is for all form fields together and bytes computing would be necessary
+		: lang('File uploads are disabled.')
+	);
+	echo "\n$execute";
+	echo "</div></fieldset>\n";
+	echo "<fieldset><legend>" . lang('From server') . "</legend><div>";
+	echo lang('Webserver file %s', "<code>adminer.sql" . (extension_loaded("zlib") ? "[.gz]" : "") . "</code>");
+	echo ' <input type="submit" name="webfile" value="' . lang('Run file') . '">';
+	echo "</div></fieldset>\n";
+	echo "<p>";
+}
+
+echo checkbox("error_stops", 1, ($_POST ? $_POST["error_stops"] : isset($_GET["import"])), lang('Stop on error')) . "\n";
 echo checkbox("only_errors", 1, $_POST["only_errors"], lang('Show only errors')) . "\n";
 
-echo "<p>" . (ini_bool("file_uploads")
-	? lang('File upload') . ': <input type="file" name="sql_file[]" multiple'
-		. ($_FILES && $_FILES["sql_file"]["error"][0] != 4 ? '' : ' onchange="this.form[\'only_errors\'].checked = true;"') // 4 - UPLOAD_ERR_NO_FILE
-		. '> (&lt; ' . ini_get("upload_max_filesize") . 'B)' // ignore post_max_size because it is for all form fields together and bytes computing would be necessary
-	: lang('File uploads are disabled.')
-);
-
-print_fieldset("webfile", lang('From server'), $_POST["webfile"], "document.getElementById('form')['only_errors'].checked = true; ");
-echo lang('Webserver file %s', "<code>adminer.sql" . (extension_loaded("zlib") ? "[.gz]" : "") . "</code>");
-echo ' <input type="submit" name="webfile" value="' . lang('Run file') . '">';
-echo "</div></fieldset>\n";
-
-if ($history) {
+if (!isset($_GET["import"]) && $history) {
 	print_fieldset("history", lang('History'), $_GET["history"] != "");
 	for ($val = end($history); $val; $val = prev($history)) { // not array_reverse() to save memory
 		$key = key($history);
