@@ -975,6 +975,53 @@ function password_file($create) {
 	return $return;
 }
 
+/** Format value to use in select
+* @param string
+* @param string
+* @param array
+* @param int
+* @return string HTML
+*/
+function select_value($val, $link, $field, $text_length) {
+	global $adminer, $HTTPS;
+	if (is_array($val)) {
+		$return = "";
+		foreach ($val as $k => $v) {
+			$return .= "<tr>"
+				. ($val != array_values($val) ? "<th>" . h($k) : "")
+				. "<td>" . select_value($v, $link, $field, $text_length)
+			;
+		}
+		return "<table cellspacing='0'>$return</table>";
+	}
+	if (!$link) {
+		$link = $adminer->selectLink($val, $field);
+	}
+	if ($link === null) {
+		if (is_mail($val)) {
+			$link = "mailto:$val";
+		}
+		if ($protocol = is_url($val)) {
+			$link = ($protocol == "http" && $HTTPS
+				? $val // HTTP links from HTTPS pages don't receive Referer automatically
+				: "$protocol://www.adminer.org/redirect/?url=" . urlencode($val) // intermediate page to hide Referer, may be changed to rel="noreferrer" in HTML5
+			);
+		}
+	}
+	$val = $adminer->editVal($val, $field);
+	if ($val !== null) {
+		if ($val === "") { // === - may be int
+			$val = "&nbsp;";
+		} elseif ($text_length != "" && is_shortable($field)) {
+			$val = shorten_utf8($val, max(0, +$text_length)); // usage of LEFT() would reduce traffic but complicate query - expected average speedup: .001 s VS .01 s on local network
+		} else {
+			$val = h($val);
+		}
+	}
+	$val = $adminer->selectVal($val, $link, $field);
+	return $val;
+}
+
 /** Check whether the string is e-mail address
 * @param string
 * @return bool
@@ -983,7 +1030,7 @@ function is_mail($email) {
 	$atom = '[-a-z0-9!#$%&\'*+/=?^_`{|}~]'; // characters of local-name
 	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component
 	$pattern = "$atom+(\\.$atom+)*@($domain?\\.)+$domain";
-	return preg_match("(^$pattern(,\\s*$pattern)*\$)i", $email);
+	return is_string($email) && preg_match("(^$pattern(,\\s*$pattern)*\$)i", $email);
 }
 
 /** Check whether the string is URL address

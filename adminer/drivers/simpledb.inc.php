@@ -1,12 +1,4 @@
 <?php
-/* //!
-invalid user or password
-report API calls instead of queries
-multi-value attributes
-select: clone
-update: delete + insert when changing itemName()
-*/
-
 $drivers["simpledb"] = "SimpleDB";
 
 if (isset($_GET["simpledb"])) {
@@ -72,7 +64,13 @@ if (isset($_GET["simpledb"])) {
 					}
 					foreach ($item->Attribute as $attribute) {
 						$name = $this->_processValue($attribute->Name);
-						$row[$name] .= ($row[$name] != '' ? ',' : '') . $this->_processValue($attribute->Value);
+						$value = $this->_processValue($attribute->Value);
+						if (isset($row[$name])) {
+							$row[$name] = (array) $row[$name];
+							$row[$name][] = $value;
+						} else {
+							$row[$name] = $value;
+						}
 					}
 					$this->_rows[] = $row;
 					foreach ($row as $key => $val) {

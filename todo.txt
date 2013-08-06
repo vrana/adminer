@@ -43,3 +43,10 @@ PDO_MSSQL and PDO_SQLSRV driver with seek
 
 Oracle:
 clob comparable with string
+
+SimpleDB:
+Report invalid user or password
+Report API calls instead of queries
+Edit multi-value attributes
+Select: clone
+Update: delete + insert when changing itemName()

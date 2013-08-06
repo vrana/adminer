@@ -362,71 +362,48 @@ if (!$columns && support("table")) {
 						}
 
 						$link = "";
-						$val = $adminer->editVal($val, $field);
-						if ($val !== null) {
-							if (preg_match('~blob|bytea|raw|file~', $field["type"]) && $val != "") {
-								$link = ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . $unique_idf;
-							}
-							if ($val === "") { // === - may be int
-								$val = "&nbsp;";
-							} elseif ($text_length != "" && is_shortable($field)) {
-								$val = shorten_utf8($val, max(0, +$text_length)); // usage of LEFT() would reduce traffic but complicate query - expected average speedup: .001 s VS .01 s on local network
-							} else {
-								$val = h($val);
-							}
-
-							if (!$link) { // link related items
-								foreach ((array) $foreign_keys[$key] as $foreign_key) {
-									if (count($foreign_keys[$key]) == 1 || end($foreign_key["source"]) == $key) {
-										$link = "";
-										foreach ($foreign_key["source"] as $i => $source) {
-											$link .= where_link($i, $foreign_key["target"][$i], $rows[$n][$source]);
-										}
-										$link = ($foreign_key["db"] != "" ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), ME) : ME) . 'select=' . urlencode($foreign_key["table"]) . $link; // InnoDB supports non-UNIQUE keys
-										if (count($foreign_key["source"]) == 1) {
-											break;
-										}
+						if (preg_match('~blob|bytea|raw|file~', $field["type"]) && $val != "") {
+							$link = ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . $unique_idf;
+						}
+						if (!$link) { // link related items
+							foreach ((array) $foreign_keys[$key] as $foreign_key) {
+								if (count($foreign_keys[$key]) == 1 || end($foreign_key["source"]) == $key) {
+									$link = "";
+									foreach ($foreign_key["source"] as $i => $source) {
+										$link .= where_link($i, $foreign_key["target"][$i], $rows[$n][$source]);
+									}
+									$link = ($foreign_key["db"] != "" ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), ME) : ME) . 'select=' . urlencode($foreign_key["table"]) . $link; // InnoDB supports non-UNIQUE keys
+									if (count($foreign_key["source"]) == 1) {
+										break;
 									}
 								}
 							}
-
-							if ($key == "COUNT(*)") { //! columns looking like functions
-								$link = ME . "select=" . urlencode($TABLE);
-								$i = 0;
-								foreach ((array) $_GET["where"] as $v) {
-									if (!array_key_exists($v["col"], $unique_array)) {
-										$link .= where_link($i++, $v["col"], $v["val"], $v["op"]);
-									}
-								}
-								foreach ($unique_array as $k => $v) {
-									$link .= where_link($i++, $k, $v);
+						}
+						if ($key == "COUNT(*)") { //! columns looking like functions
+							$link = ME . "select=" . urlencode($TABLE);
+							$i = 0;
+							foreach ((array) $_GET["where"] as $v) {
+								if (!array_key_exists($v["col"], $unique_array)) {
+									$link .= where_link($i++, $v["col"], $v["val"], $v["op"]);
 								}
 							}
-
-						}
-
-						if (!$link && ($link = $adminer->selectLink($row[$key], $field)) === null) {
-							if (is_mail($row[$key])) {
-								$link = "mailto:$row[$key]";
-							}
-							if ($protocol = is_url($row[$key])) {
-								$link = ($protocol == "http" && $HTTPS
-									? $row[$key] // HTTP links from HTTPS pages don't receive Referer automatically
-									: "$protocol://www.adminer.org/redirect/?url=" . urlencode($row[$key]) // intermediate page to hide Referer, may be changed to rel="noreferrer" in HTML5
-								);
+							foreach ($unique_array as $k => $v) {
+								$link .= where_link($i++, $k, $v);
 							}
 						}
-
+						
+						$val = select_value($val, $link, $field, $text_length);
 						$id = h("val[$unique_idf][" . bracket_escape($key) . "]");
 						$value = $_POST["val"][$unique_idf][bracket_escape($key)];
-						$h_value = h($value !== null ? $value : $row[$key]);
-						$long = strpos($val, "<i>...</i>");
-						$editable = is_utf8($val) && $rows[$n][$key] == $row[$key] && !$functions[$key];
+						$editable = !is_array($row[$key]) && is_utf8($val) && $rows[$n][$key] == $row[$key] && !$functions[$key];
 						$text = preg_match('~text|lob~', $field["type"]);
-						echo (($_GET["modify"] && $editable) || $value !== null
-							? "<td>" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>")
-							: "<td id='$id' onclick=\"selectClick(this, event, " . ($long ? 2 : ($text ? 1 : 0)) . ($editable ? "" : ", '" . h(lang('Use edit link to modify this value.')) . "'") . ");\">" . $adminer->selectVal($val, $link, $field)
-						);
+						if (($_GET["modify"] && $editable) || $value !== null) {
+							$h_value = h($value !== null ? $value : $row[$key]);
+							echo "<td>" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>");
+						} else {
+							$long = strpos($val, "<i>...</i>");
+							echo "<td id='$id' onclick=\"selectClick(this, event, " . ($long ? 2 : ($text ? 1 : 0)) . ($editable ? "" : ", '" . h(lang('Use edit link to modify this value.')) . "'") . ");\">$val";
+						}
 					}
 				}
 
