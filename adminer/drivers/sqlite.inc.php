@@ -318,7 +318,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			}
 		}
 		if ($primary) {
-			$return[""] = array("type" => "PRIMARY", "columns" => $primary, "lengths" => array());
+			$return[""] = array("type" => "PRIMARY", "columns" => $primary, "lengths" => array()); //! column order, descending
 		}
 		$sqls = get_key_vals("SELECT name, sql FROM sqlite_master WHERE type = 'index' AND tbl_name = " . q($table));
 		foreach (get_rows("PRAGMA index_list(" . table($table) . ")") as $row) {

@@ -6,7 +6,9 @@ if (preg_match('~MyISAM|M?aria' . ($connection->server_info >= 5.6 ? '|InnoDB' :
 	$index_types[] = "FULLTEXT";
 }
 $indexes = indexes($TABLE);
+$primary = array();
 if ($jush == "sqlite") { // doesn't support primary key
+	$primary = $indexes[""];
 	unset($index_types[0]);
 	unset($indexes[""]);
 }
@@ -97,6 +99,14 @@ if (!$row) {
 <th><noscript><input type='image' class='icon' name='add[0]' src='../adminer/static/plus.gif' alt='+' title='<?php echo lang('Add next'); ?>'></noscript>&nbsp;
 </thead>
 <?php
+if ($primary) {
+	echo "<tr><td>PRIMARY<td>";
+	foreach ($primary["columns"] as $key => $column) {
+		echo "<select disabled>" . optionlist($fields, $column) . "</select>";
+		echo "<label><input disabled type='checkbox'>" . lang('descending') . "</label> ";
+	}
+	echo "<td><td>\n";
+}
 $j = 1;
 foreach ($row["indexes"] as $index) {
 	if (!$_POST["drop_col"] || $j != key($_POST["drop_col"])) {
