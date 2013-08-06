@@ -49,7 +49,7 @@ function select($result, $connection2 = null, $orgtables = array()) {
 				}
 				$types[$j] = $field->type;
 				echo "<th" . ($orgtable != "" || $field->name != $orgname ? " title='" . h(($orgtable != "" ? "$orgtable." : "") . $orgname) . "'" : "") . ">" . h($name)
-					. ($orgtables ? doc_link("explain-output.html#explain_" . strtolower($name)) : "")
+					. ($orgtables ? doc_link(array('sql' => "explain-output.html#explain_" . strtolower($name))) : "")
 				;
 			}
 			echo "</thead>\n";
@@ -452,21 +452,19 @@ function ini_bytes($ini) {
 }
 
 /** Create link to database documentation
-* @param string
+* @param array $jush => $path
 * @return string HTML code
 */
-function doc_link($path) {
+function doc_link($paths) {
 	global $jush, $connection;
 	$urls = array(
-		 'sql' => "http://dev.mysql.com/doc/refman/" . substr($connection->server_info, 0, 3) . "/en/",
-		 /* not used:
-		 'sqlite' => "http://www.sqlite.org/",
-		 'pgsql' => "http://www.postgresql.org/docs/" . substr($connection->server_info, 0, 3) . "/static/",
-		 'mssql' => "http://msdn.microsoft.com/library/",
-		 'oracle' => "http://download.oracle.com/docs/cd/B19306_01/server.102/b14200/",
-		 */
+		'sql' => "http://dev.mysql.com/doc/refman/" . substr($connection->server_info, 0, 3) . "/en/",
+		'sqlite' => "http://www.sqlite.org/",
+		'pgsql' => "http://www.postgresql.org/docs/" . substr($connection->server_info, 0, 3) . "/static/",
+		'mssql' => "http://msdn.microsoft.com/library/",
+		'oracle' => "http://download.oracle.com/docs/cd/B19306_01/server.102/b14200/",
 	);
-	return ($urls[$jush] ? "<a href='$urls[$jush]$path' target='_blank' rel='noreferrer'><sup>?</sup></a>" : "");
+	return ($paths[$jush] ? "<a href='$urls[$jush]$paths[$jush]' target='_blank' rel='noreferrer'><sup>?</sup></a>" : "");
 }
 
 /** Return events to display help on mouse over
