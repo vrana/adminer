@@ -403,7 +403,7 @@ username.form['auth[driver]'].onchange();
 				$cond = " $val[op]";
 				if (preg_match('~IN$~', $val["op"])) {
 					$in = process_length($val["val"]);
-					$cond .= " (" . ($in != "" ? $in : "NULL") . ")";
+					$cond .= " " . ($in != "" ? $in : "(NULL)");
 				} elseif ($val["op"] == "SQL") {
 					$cond = " $val[val]"; // SQL injection
 				} elseif ($val["op"] == "LIKE %%") {

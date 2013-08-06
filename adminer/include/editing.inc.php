@@ -153,7 +153,10 @@ function edit_type($key, $field, $collations, $foreign_keys = array()) {
 */
 function process_length($length) {
 	global $enum_length;
-	return (preg_match("~^\\s*$enum_length(?:\\s*,\\s*$enum_length)*+\\s*\$~", $length) && preg_match_all("~$enum_length~", $length, $matches) ? implode(",", $matches[0]) : preg_replace('~[^0-9,+-]~', '', $length));
+	return (preg_match("~^\\s*\\(?\\s*$enum_length(?:\\s*,\\s*$enum_length)*+\\s*\\)?\\s*\$~", $length) && preg_match_all("~$enum_length~", $length, $matches)
+		? "(" . implode(",", $matches[0]) . ")"
+		: preg_replace('~[^-0-9,+()[\]]~', '', preg_replace('~^[0-9]+~', '(\1)', $length))
+	);
 }
 
 /** Create SQL string from field type
@@ -164,7 +167,7 @@ function process_length($length) {
 function process_type($field, $collate = "COLLATE") {
 	global $unsigned;
 	return " $field[type]"
-		. ($field["length"] != "" ? "(" . process_length($field["length"]) . ")" : "")
+		. process_length($field["length"])
 		. (preg_match('~(^|[^o])int|float|double|decimal~', $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
 		. (preg_match('~char|text|enum|set~', $field["type"]) && $field["collation"] ? " $collate " . q($field["collation"]) : "")
 	;
