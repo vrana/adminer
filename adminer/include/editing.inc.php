@@ -229,7 +229,12 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 <td><?php echo lang('Options'); ?>
 <?php if ($type == "TABLE") { ?>
 <td>NULL
-<td><input type="radio" name="auto_increment_col" value=""><acronym title="<?php echo lang('Auto Increment'); ?>">AI</acronym>
+<td><input type="radio" name="auto_increment_col" value=""><acronym title="<?php echo lang('Auto Increment'); ?>">AI</acronym><?php echo doc_link(array(
+	'sql' => "example-auto-increment.html",
+	'sqlite' => "autoinc.html",
+	'pgsql' => "datatype.html#DATATYPE-SERIAL",
+	'mssql' => "ms186775.aspx",
+)); ?>
 <td><?php echo lang('Default values'); ?>
 <?php echo (support("comment") ? "<td" . ($comments ? "" : " class='hidden'") . ">" . lang('Comment') : ""); ?>
 <?php } ?>
