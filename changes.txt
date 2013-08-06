@@ -13,6 +13,7 @@ Improve speed of CSV import
 Keep form values after refresh in Firefox
 Don't append newlines to uploaded files, bug since Adminer 3.7.0
 Don't display SQL edit form on Ctrl+click on the select query, introduced in Adminer 3.6.4
+Use MD5 for editing long keys only in supported drivers, bug since Adminer 3.6.4
 PostgreSQL: Fix handling of nextval() default values
 
 Adminer 3.7.1 (released 2013-06-29):
