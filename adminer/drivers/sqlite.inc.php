@@ -292,19 +292,28 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 
 	function fields($table) {
 		$return = array();
+		$primary = "";
 		foreach (get_rows("PRAGMA table_info(" . table($table) . ")") as $row) {
+			$name = $row["name"];
 			$type = strtolower($row["type"]);
 			$default = $row["dflt_value"];
-			$return[$row["name"]] = array(
-				"field" => $row["name"],
+			$return[$name] = array(
+				"field" => $name,
 				"type" => (preg_match('~int~i', $type) ? "integer" : (preg_match('~char|clob|text~i', $type) ? "text" : (preg_match('~blob~i', $type) ? "blob" : (preg_match('~real|floa|doub~i', $type) ? "real" : "numeric")))),
 				"full_type" => $type,
 				"default" => (preg_match("~'(.*)'~", $default, $match) ? str_replace("''", "'", $match[1]) : ($default == "NULL" ? null : $default)),
 				"null" => !$row["notnull"],
-				"auto_increment" => preg_match('~^integer$~i', $type) && $row["pk"], //! possible false positive
 				"privileges" => array("select" => 1, "insert" => 1, "update" => 1),
 				"primary" => $row["pk"],
 			);
+			if ($row["pk"]) {
+				if ($primary != "") {
+					$return[$primary]["auto_increment"] = false;
+				} elseif (preg_match('~^integer$~i', $type)) {
+					$return[$name]["auto_increment"] = true;
+					$primary = $name;
+				}
+			}
 		}
 		return $return;
 	}
