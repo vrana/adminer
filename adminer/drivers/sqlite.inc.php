@@ -319,23 +319,27 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 
 	function indexes($table, $connection2 = null) {
+		global $connection;
+		if (!is_object($connection2)) {
+			$connection2 = $connection;
+		}
 		$return = array();
-		$primary = array();
-		foreach (fields($table) as $field) {
-			if ($field["primary"]) {
-				$primary[] = $field["field"];
+		$sql = $connection2->result("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table));
+		if (preg_match('~\bPRIMARY\s+KEY\s*\((([^)"]+|"[^"]*")++)~i', $sql, $match)) {
+			$return[""] = array("type" => "PRIMARY", "columns" => array(), "descs" => array());
+			preg_match_all('~((("[^"]*+")+)|(\S+))(\s+(ASC|DESC))?(,\s*|$)~i', $match[1], $matches, PREG_SET_ORDER);
+			foreach ($matches as $match) {
+				$return[""]["columns"][] = idf_unescape($match[2]) . $match[4];
+				$return[""]["descs"][] = (preg_match('~DESC~i', $match[5]) ? '1' : null);
 			}
 		}
-		if ($primary) {
-			$return[""] = array("type" => "PRIMARY", "columns" => $primary, "lengths" => array()); //! column order, descending
-		}
-		$sqls = get_key_vals("SELECT name, sql FROM sqlite_master WHERE type = 'index' AND tbl_name = " . q($table));
-		foreach (get_rows("PRAGMA index_list(" . table($table) . ")") as $row) {
+		$sqls = get_key_vals("SELECT name, sql FROM sqlite_master WHERE type = 'index' AND tbl_name = " . q($table), $connection2);
+		foreach (get_rows("PRAGMA index_list(" . table($table) . ")", $connection2) as $row) {
 			$name = $row["name"];
 			if (!preg_match("~^sqlite_~", $name)) {
 				$return[$name]["type"] = ($row["unique"] ? "UNIQUE" : "INDEX");
 				$return[$name]["lengths"] = array();
-				foreach (get_rows("PRAGMA index_info(" . idf_escape($name) . ")") as $row1) {
+				foreach (get_rows("PRAGMA index_info(" . idf_escape($name) . ")", $connection2) as $row1) {
 					$return[$name]["columns"][] = $row1["name"];
 				}
 				$return[$name]["descs"] = array();
@@ -477,11 +481,11 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 				$indexes = array();
 				foreach (indexes($table) as $key_name => $index) {
 					$columns = array();
-					foreach ($index["columns"] as $column) {
+					foreach ($index["columns"] as $key => $column) {
 						if (!$originals[$column]) {
 							continue 2;
 						}
-						$columns[] = $originals[$column];
+						$columns[] = $originals[$column] . ($index["descs"][$key] ? " DESC" : "");
 					}
 					$columns = "(" . implode(", ", $columns) . ")";
 					if ($index["type"] != "PRIMARY") {
