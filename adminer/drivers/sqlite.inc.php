@@ -326,7 +326,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		$return = array();
 		$sql = $connection2->result("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table));
 		if (preg_match('~\bPRIMARY\s+KEY\s*\((([^)"]+|"[^"]*")++)~i', $sql, $match)) {
-			$return[""] = array("type" => "PRIMARY", "columns" => array(), "descs" => array());
+			$return[""] = array("type" => "PRIMARY", "columns" => array(), "lengths" => array(), "descs" => array());
 			preg_match_all('~((("[^"]*+")+)|(\S+))(\s+(ASC|DESC))?(,\s*|$)~i', $match[1], $matches, PREG_SET_ORDER);
 			foreach ($matches as $match) {
 				$return[""]["columns"][] = idf_unescape($match[2]) . $match[4];
@@ -463,21 +463,6 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		}
 		if ($use_all_fields) {
 			if ($table != "") {
-				queries("BEGIN");
-				foreach (foreign_keys($table) as $foreign_key) {
-					$columns = array();
-					foreach ($foreign_key["source"] as $column) {
-						if (!$originals[$column]) {
-							continue 2;
-						}
-						$columns[] = $originals[$column];
-					}
-					$foreign[] = "  FOREIGN KEY (" . implode(", ", $columns) . ") REFERENCES "
-						. table($foreign_key["table"])
-						. " (" . implode(", ", array_map('idf_escape', $foreign_key["target"]))
-						. ") ON DELETE $foreign_key[on_delete] ON UPDATE $foreign_key[on_update]"
-					;
-				}
 				$indexes = array();
 				foreach (indexes($table) as $key_name => $index) {
 					$columns = array();
@@ -495,33 +480,8 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 					}
 				}
 			}
-			$alter = array_merge($alter, $foreign);
-			if (!queries("CREATE TABLE " . table($table != "" ? "adminer_$name" : $name) . " (\n" . implode(",\n", $alter) . "\n)")) {
-				// implicit ROLLBACK to not overwrite $connection->error
+			if (!recreate_table($table, $name, $alter, $originals, $foreign, $indexes)) {
 				return false;
-			}
-			if ($table != "") {
-				if ($originals && !queries("INSERT INTO " . table("adminer_$name") . " (" . implode(", ", $originals) . ") SELECT " . implode(", ", array_map('idf_escape', array_keys($originals))) . " FROM " . table($table))) {
-					return false;
-				}
-				$triggers = array();
-				foreach (triggers($table) as $trigger_name => $timing_event) {
-					$trigger = trigger($trigger_name);
-					$triggers[] = "CREATE TRIGGER " . idf_escape($trigger_name) . " " . implode(" ", $timing_event) . " ON " . table($name) . "\n$trigger[Statement]";
-				}
-				if (!queries("DROP TABLE " . table($table))) { // drop before creating indexes and triggers to allow using old names
-					return false;
-				}
-				queries("ALTER TABLE " . table("adminer_$name") . " RENAME TO " . table($name));
-				if (!alter_indexes($name, $indexes)) {
-					return false;
-				}
-				foreach ($triggers as $trigger) {
-					if (!queries($trigger)) {
-						return false;
-					}
-				}
-				queries("COMMIT");
 			}
 		} else {
 			foreach ($alter as $val) {
@@ -539,6 +499,55 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return true;
 	}
 
+	function recreate_table($table, $name, $alter, $originals, $foreign, $indexes) {
+		queries("BEGIN");
+		if ($table != "") {
+			foreach (foreign_keys($table) as $foreign_key) {
+				$columns = array();
+				foreach ($foreign_key["source"] as $column) {
+					if (!$originals[$column]) {
+						continue 2;
+					}
+					$columns[] = $originals[$column];
+				}
+				$foreign[] = "  FOREIGN KEY (" . implode(", ", $columns) . ") REFERENCES "
+					. table($foreign_key["table"])
+					. " (" . implode(", ", array_map('idf_escape', $foreign_key["target"]))
+					. ") ON DELETE $foreign_key[on_delete] ON UPDATE $foreign_key[on_update]"
+				;
+			}
+		}
+		$alter = array_merge($alter, $foreign);
+		if (!queries("CREATE TABLE " . table($table != "" ? "adminer_$name" : $name) . " (\n" . implode(",\n", $alter) . "\n)")) {
+			// implicit ROLLBACK to not overwrite $connection->error
+			return false;
+		}
+		if ($table != "") {
+			if ($originals && !queries("INSERT INTO " . table("adminer_$name") . " (" . implode(", ", $originals) . ") SELECT " . implode(", ", array_map('idf_escape', array_keys($originals))) . " FROM " . table($table))) {
+				return false;
+			}
+			$triggers = array();
+			foreach (triggers($table) as $trigger_name => $timing_event) {
+				$trigger = trigger($trigger_name);
+				$triggers[] = "CREATE TRIGGER " . idf_escape($trigger_name) . " " . implode(" ", $timing_event) . " ON " . table($name) . "\n$trigger[Statement]";
+			}
+			if (!queries("DROP TABLE " . table($table))) { // drop before creating indexes and triggers to allow using old names
+				return false;
+			}
+			queries("ALTER TABLE " . table("adminer_$name") . " RENAME TO " . table($name));
+			if (!alter_indexes($name, $indexes)) {
+				return false;
+			}
+			foreach ($triggers as $trigger) {
+				if (!queries($trigger)) {
+					return false;
+				}
+			}
+			queries("COMMIT");
+		}
+		return true;
+	}
+
 	function index_sql($table, $type, $name, $columns) {
 		return "CREATE $type " . ($type != "INDEX" ? "INDEX " : "")
 			. idf_escape($name != "" ? $name : uniqid($table . "_"))
@@ -548,6 +557,32 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 
 	function alter_indexes($table, $alter) {
+		foreach ($alter as $primary) {
+			if ($primary[0] == "PRIMARY") {
+				$indexes = array();
+				foreach (indexes($table) as $key_name => $index) {
+					$columns = array();
+					foreach ($index["columns"] as $key => $column) {
+						$columns[] = idf_escape($column) . ($index["descs"][$key] ? " DESC" : "");
+					}
+					$indexes[$key_name] = array($index["type"], $key_name, "(" . implode(", ", $columns) . ")");
+				}
+				foreach ($alter as $val) {
+					if ($val[2] == "DROP") {
+						unset($indexes[$val[1]]);
+					} elseif ($val != $primary) {
+						$indexes[] = $val;
+					}
+				}
+				$alter = array();
+				$originals = array();
+				foreach (fields($table) as $name => $field) {
+					$alter[] = "  " . implode(process_field($field, $field));
+					$originals[$name] = idf_escape($name);
+				}
+				return recreate_table($table, $table, $alter, $originals, array("  PRIMARY KEY $primary[2]"), $indexes);
+			}
+		}
 		foreach (array_reverse($alter) as $val) {
 			if (!queries($val[2] == "DROP"
 				? "DROP INDEX " . idf_escape($val[1])

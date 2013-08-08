@@ -7,10 +7,10 @@ if (preg_match('~MyISAM|M?aria' . ($connection->server_info >= 5.6 ? '|InnoDB' :
 }
 $indexes = indexes($TABLE);
 $primary = array();
-if ($jush == "sqlite") { // doesn't support primary key
-	$primary = $indexes[""];
+if ($jush == "mongo") { // doesn't support primary key
+	$primary = $indexes["_id_"];
 	unset($index_types[0]);
-	unset($indexes[""]);
+	unset($indexes["_id_"]);
 }
 $row = $_POST;
 
