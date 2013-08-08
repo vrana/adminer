@@ -9,9 +9,10 @@ if (isset($_GET["elastic"])) {
 		class Min_DB {
 			var $extension = "JSON", $server_info, $errno, $error, $_url;
 
-			function query($path) {
+			function query($path, $content = array()) {
 				@ini_set('track_errors', 1); // @ - may be disabled
 				$file = @file_get_contents($this->_url . ($this->_db != "" ? "$this->_db/" : "") . $path, false, stream_context_create(array('http' => array(
+					'content' => json_encode($content),
 					'ignore_errors' => 1, // available since PHP 5.2.10
 				))));
 				if (!$file) {
@@ -89,21 +90,42 @@ if (isset($_GET["elastic"])) {
 		function select($table, $select, $where, $group, $order, $limit, $page) {
 			global $adminer;
 			$query = $adminer->selectQueryBuild($select, $where, $group, $order, $limit, $page);
+			$data = array();
 			if (!$query) {
-				$query = "$table/_search?default_operator=AND"
-					. ($select != array("*") ? "&fields=" . urlencode(implode(",", $select)) : "")
-					. ($order ? "&sort=" . urlencode(preg_replace('~ DESC(,|$)~', ':desc\1', implode(",", $order))) : "")
-					. ($limit ? "&size=" . (+$limit) . ($page ? "&from=" . ($page * $limit) : "") : "") // doesn't support returning all results
-				;
+				$query = "$table/_search";
+				if ($select != array("*")) {
+					$data["fields"] = $select;
+				}
+				if ($order) {
+					$sort = array();
+					foreach ($order as $col) {
+						$col = preg_replace('~ DESC$~', '', $col, 1, $count);
+						$sort[] = ($count ? array($col => "desc") : $col);
+					}
+					$data["sort"] = $sort;
+				}
+				if ($limit) {
+					$data["size"] = +$limit;
+					if ($page) {
+						$data["from"] = ($page * $limit);
+					}
+				}
 				foreach ((array) $_GET["where"] as $val) {
 					if ("$val[col]$val[val]" != "") {
-						$query .= "&q=" . urlencode(($val["col"] != "" ? "$val[col]:" : "") . $val["val"]);
-						//! uses only last condition
+						$term = array("match" => array(($val["col"] != "" ? $val["col"] : "_all") => $val["val"]));
+						if ($val["op"] == "=") {
+							$data["query"]["filtered"]["filter"]["and"][] = $term;
+						} else {
+							$data["query"]["filtered"]["query"]["bool"]["must"][] = $term;
+						}
 					}
+				}
+				if ($data["query"] && !$data["query"]["filtered"]["query"]) {
+					$data["query"]["filtered"]["query"] = array("match_all" => array());
 				}
 			}
 			echo $adminer->selectQuery($query);
-			$search = $this->_conn->query($query);
+			$search = $this->_conn->query($query, $data);
 			if (!$search) {
 				return false;
 			}
@@ -257,7 +279,7 @@ if (isset($_GET["elastic"])) {
 	}
 
 	$jush = "elastic";
-	$operators = array("=");
+	$operators = array("=", "query");
 	$functions = array();
 	$grouping = array();
 	$edit_functions = array();
