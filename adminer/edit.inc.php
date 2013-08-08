@@ -138,8 +138,14 @@ if (!$fields) {
 			}
 		}
 		$value = ($row !== null
-			? ($row[$name] != "" && $jush == "sql" && preg_match("~enum|set~", $field["type"]) ? (is_array($row[$name]) ? array_sum($row[$name]) : +$row[$name]) : $row[$name])
-			: (!$update && $field["auto_increment"] ? "" : (isset($_GET["select"]) ? false : $default))
+			? ($row[$name] != "" && $jush == "sql" && preg_match("~enum|set~", $field["type"])
+				? (is_array($row[$name]) ? array_sum($row[$name]) : +$row[$name])
+				: $row[$name]
+			)
+			: (!$update && $field["auto_increment"]
+				? ""
+				: (isset($_GET["select"]) ? false : $default)
+			)
 		);
 		if (!$_POST["save"] && is_string($value)) {
 			$value = $adminer->editVal($value, $field);
