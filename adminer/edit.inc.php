@@ -89,8 +89,11 @@ if ($_POST["save"]) {
 		$select = array("*");
 	}
 	if ($select) {
-		$rows = get_rows("SELECT" . limit(implode(", ", $select) . " FROM " . table($TABLE), " WHERE $where", (isset($_GET["select"]) ? 2 : 1)));
-		$row = (isset($_GET["select"]) && count($rows) != 1 ? null : reset($rows));
+		$result = $driver->select($TABLE, $select, array($where), $select, array(), (isset($_GET["select"]) ? 2 : 1), 0);
+		$row = $result->fetch_assoc();
+		if (isset($_GET["select"]) && (!$row || $result->fetch_assoc())) { // $result->num_rows != 1 isn't available in all drivers
+			$row = null;
+		}
 	}
 }
 
