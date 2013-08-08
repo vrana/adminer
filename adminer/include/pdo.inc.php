@@ -12,10 +12,13 @@ if (extension_loaded('pdo')) {
 			}
 		}
 		
-		function dsn($dsn, $username, $password, $exception_handler = 'auth_error') {
-			set_exception_handler($exception_handler); // try/catch is not compatible with PHP 4
-			parent::__construct($dsn, $username, $password);
-			restore_exception_handler();
+		function dsn($dsn, $username, $password) {
+			try {
+				parent::__construct($dsn, $username, $password);
+			} catch (Exception $ex) {
+				auth_error($ex);
+				exit;
+			}
 			$this->setAttribute(13, array('Min_PDOStatement')); // 13 - PDO::ATTR_STATEMENT_CLASS
 			$this->server_info = $this->getAttribute(4); // 4 - PDO::ATTR_SERVER_VERSION
 		}
