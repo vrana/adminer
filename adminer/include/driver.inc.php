@@ -73,7 +73,7 @@
 	function insert($table, $set) {
 		return queries("INSERT INTO " . table($table) . ($set
 			? " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")"
-			: "DEFAULT VALUES"
+			: " DEFAULT VALUES"
 		));
 	}
 	
