@@ -1,5 +1,5 @@
 Adminer 4.0.0-dev:
-Driver for SimpleDB and Elasticsearch
+Driver for MongoDB, SimpleDB and Elasticsearch
 Save and continue edit by AJAX
 Split SQL command and import
 Add a new column in alter table on key press

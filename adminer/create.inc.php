@@ -157,7 +157,7 @@ foreach ($engines as $engine) {
 
 <form action="" method="post" id="form">
 <p>
-<?php if (support("table") || $TABLE == "") { ?>
+<?php if (support("columns") || $TABLE == "") { ?>
 <?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo h($row["name"]); ?>" autocapitalize="off">
 <?php if ($TABLE == "" && !$_POST) { ?><script type='text/javascript'>focus(document.getElementById('form')['name']);</script><?php } ?>
 <?php echo ($engines ? "<select name='Engine' onchange='helpClose();'" . on_help("getTarget(event).value", 1) . ">" . optionlist(array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) . "</select>" : ""); ?>
@@ -165,7 +165,7 @@ foreach ($engines as $engine) {
  <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php } ?>
 
-<?php if (support("table")) { ?>
+<?php if (support("columns")) { ?>
 <table cellspacing="0" id="edit-fields" class="nowrap">
 <?php
 $comments = ($_POST ? $_POST["comments"] : $row["Comment"] != "");

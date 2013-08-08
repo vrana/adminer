@@ -612,7 +612,7 @@ AND typelem = 0"
 	}
 
 	function support($feature) {
-		return preg_match('~^(database|table|sql|indexes|comment|view|scheme|processlist|sequence|trigger|type|variables|drop_col)$~', $feature); //! routine|
+		return preg_match('~^(database|table|columns|sql|indexes|comment|view|scheme|processlist|sequence|trigger|type|variables|drop_col)$~', $feature); //! routine|
 	}
 
 	$jush = "pgsql";
