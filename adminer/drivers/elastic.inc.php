@@ -283,5 +283,5 @@ if (isset($_GET["elastic"])) {
 	$operators = array("=", "query");
 	$functions = array();
 	$grouping = array();
-	$edit_functions = array();
+	$edit_functions = array(array("json"));
 }

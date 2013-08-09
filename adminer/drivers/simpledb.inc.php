@@ -173,11 +173,15 @@ if (isset($_GET["simpledb"])) {
 				$key = idf_unescape($key);
 				if ($val == "NULL") {
 					$delete["Attribute." . count($delete) . ".Name"] = $key;
-				} elseif ($key != "itemName()") {
-					$insert["Attribute.$i.Name"] = $key;
-					$insert["Attribute.$i.Value"] = idf_unescape($val);
-					$insert["Attribute.$i.Replace"] = "true";
-					$i++;
+				} elseif ($key != "itemName()") { //! allow changing itemName()
+					foreach ((array) $val as $k => $v) {
+						$insert["Attribute.$i.Name"] = $key;
+						$insert["Attribute.$i.Value"] = (is_array($val) ? $v : idf_unescape($v));
+						if (!$k) {
+							$insert["Attribute.$i.Replace"] = "true";
+						}
+						$i++;
+					}
 				}
 			}
 			$ids = $this->_extractIds($table, $queryWhere, $limit);
@@ -473,5 +477,5 @@ if (isset($_GET["simpledb"])) {
 	$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "IS NOT NULL");
 	$functions = array();
 	$grouping = array("count");
-	$edit_functions = array();
+	$edit_functions = array(array("json"));
 }

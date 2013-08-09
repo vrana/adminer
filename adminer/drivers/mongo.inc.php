@@ -290,5 +290,5 @@ if (isset($_GET["mongo"])) {
 	$operators = array("=");
 	$functions = array();
 	$grouping = array();
-	$edit_functions = array();
+	$edit_functions = array(array("json"));
 }

@@ -781,6 +781,14 @@ function input($field, $value, $function) {
 	global $connection, $types, $adminer, $jush;
 	$name = h(bracket_escape($field["field"]));
 	echo "<td class='function'>";
+	if (is_array($value) && !$function) {
+		$args = array($value);
+		if (version_compare(PHP_VERSION, 5.4) >= 0) {
+			$args[] = JSON_PRETTY_PRINT;
+		}
+		$value = call_user_func_array('json_encode', $args); //! requires PHP 5.2
+		$function = "json";
+	}
 	$reset = ($jush == "mssql" && $field["auto_increment"]);
 	if ($reset && !$_POST["save"]) {
 		$function = null;
@@ -823,6 +831,8 @@ function input($field, $value, $function) {
 				$attrs .= " cols='30' rows='$rows'" . ($rows == 1 ? " style='height: 1.2em;'" : ""); // 1.2em - line-height
 			}
 			echo "<textarea$attrs>" . h($value) . '</textarea>';
+		} elseif ($function == "json") {
+			echo "<textarea$attrs cols='50' rows='12' class='jush-js'>" . h($value) . '</textarea>';
 		} else {
 			// int(3) is only a display hint
 			$maxlength = (!preg_match('~int~', $field["type"]) && preg_match('~^(\\d+)(,(\\d+))?$~', $field["length"], $match) ? ((preg_match("~binary~", $field["type"]) ? 2 : 1) * $match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) : ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0));
@@ -837,7 +847,7 @@ function input($field, $value, $function) {
 
 /** Process edit input field
 * @param one field from fields()
-* @return string
+* @return string or false to leave the original value
 */
 function process_input($field) {
 	global $adminer;
@@ -864,6 +874,14 @@ function process_input($field) {
 	}
 	if ($field["type"] == "set") {
 		return array_sum((array) $value);
+	}
+	if ($function == "json") {
+		$function = "";
+		$value = json_decode($value, true);
+		if (!is_array($value)) {
+			return false; //! report errors
+		}
+		return $value;
 	}
 	if (preg_match('~blob|bytea|raw|file~', $field["type"]) && ini_bool("file_uploads")) {
 		$file = get_file("fields-$idf");
