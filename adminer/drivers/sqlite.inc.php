@@ -482,15 +482,21 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return true;
 	}
 
-	function recreate_table($table, $name, $alter, $originals, $foreign, $indexes = array()) {
+	function recreate_table($table, $name, $fields, $originals, $foreign, $indexes = array()) {
 		queries("BEGIN");
 		if ($table != "") {
+			if (!$fields) {
+				foreach (fields($table) as $key => $field) {
+					$fields[] = process_field($field, $field);
+					$originals[$key] = idf_escape($key);
+				}
+			}
 			$primary_key = false;
-			foreach ($alter as $key => $field) {
+			foreach ($fields as $key => $field) {
 				if ($field[6]) {
 					$primary_key = true;
 				}
-				$alter[$key] = "  " . implode($field);
+				$fields[$key] = "  " . implode($field);
 			}
 			$drop_indexes = array();
 			foreach ($indexes as $key => $val) {
@@ -520,23 +526,20 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 					$foreign[] = "  PRIMARY KEY $val[2]";
 				}
 			}
-			foreach (foreign_keys($table) as $foreign_key) {
-				$columns = array();
-				foreach ($foreign_key["source"] as $column) {
+			foreach (foreign_keys($table) as $key_name => $foreign_key) {
+				foreach ($foreign_key["source"] as $key => $column) {
 					if (!$originals[$column]) {
 						continue 2;
 					}
-					$columns[] = $originals[$column];
+					$foreign_key["source"][$key] = idf_unescape($originals[$column]);
 				}
-				$foreign[] = "  FOREIGN KEY (" . implode(", ", $columns) . ") REFERENCES "
-					. table($foreign_key["table"])
-					. " (" . implode(", ", array_map('idf_escape', $foreign_key["target"]))
-					. ") ON DELETE $foreign_key[on_delete] ON UPDATE $foreign_key[on_update]"
-				;
+				if (!isset($foreign[" $key_name"])) {
+					$foreign[] = " " . format_foreign_key($foreign_key);
+				}
 			}
 		}
-		$alter = array_merge($alter, $foreign);
-		if (!queries("CREATE TABLE " . table($table != "" ? "adminer_$name" : $name) . " (\n" . implode(",\n", $alter) . "\n)")) {
+		$fields = array_merge($fields, array_filter($foreign));
+		if (!queries("CREATE TABLE " . table($table != "" ? "adminer_$name" : $name) . " (\n" . implode(",\n", $fields) . "\n)")) {
 			// implicit ROLLBACK to not overwrite $connection->error
 			return false;
 		}
@@ -577,13 +580,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	function alter_indexes($table, $alter) {
 		foreach ($alter as $primary) {
 			if ($primary[0] == "PRIMARY") {
-				$fields = array();
-				$originals = array();
-				foreach (fields($table) as $name => $field) {
-					$fields[] = process_field($field, $field);
-					$originals[$name] = idf_escape($name);
-				}
-				return recreate_table($table, $table, $fields, $originals, array(), $alter);
+				return recreate_table($table, $table, array(), array(), array(), $alter);
 			}
 		}
 		foreach (array_reverse($alter) as $val) {

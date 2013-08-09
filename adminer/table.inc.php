@@ -53,7 +53,7 @@ if ($fields) {
 			$foreign_keys = foreign_keys($TABLE);
 			if ($foreign_keys) {
 				echo "<table cellspacing='0'>\n";
-				echo "<thead><tr><th>" . lang('Source') . "<td>" . lang('Target') . "<td>" . lang('ON DELETE') . "<td>" . lang('ON UPDATE') . ($jush != "sqlite" ? "<td>&nbsp;" : "") . "</thead>\n";
+				echo "<thead><tr><th>" . lang('Source') . "<td>" . lang('Target') . "<td>" . lang('ON DELETE') . "<td>" . lang('ON UPDATE') . "<td>&nbsp;</thead>\n";
 				foreach ($foreign_keys as $name => $foreign_key) {
 					echo "<tr title='" . h($name) . "'>";
 					echo "<th><i>" . implode("</i>, <i>", array_map('h', $foreign_key["source"])) . "</i>";
@@ -64,13 +64,11 @@ if ($fields) {
 					echo "(<i>" . implode("</i>, <i>", array_map('h', $foreign_key["target"])) . "</i>)";
 					echo "<td>" . nbsp($foreign_key["on_delete"]) . "\n";
 					echo "<td>" . nbsp($foreign_key["on_update"]) . "\n";
-					echo ($jush == "sqlite" ? "" : '<td><a href="' . h(ME . 'foreign=' . urlencode($TABLE) . '&name=' . urlencode($name)) . '">' . lang('Alter') . '</a>');
+					echo '<td><a href="' . h(ME . 'foreign=' . urlencode($TABLE) . '&name=' . urlencode($name)) . '">' . lang('Alter') . '</a>';
 				}
 				echo "</table>\n";
 			}
-			if ($jush != "sqlite") {
-				echo '<p class="links"><a href="' . h(ME) . 'foreign=' . urlencode($TABLE) . '">' . lang('Add foreign key') . "</a>\n";
-			}
+			echo '<p class="links"><a href="' . h(ME) . 'foreign=' . urlencode($TABLE) . '">' . lang('Add foreign key') . "</a>\n";
 		}
 		
 		if (support("trigger")) {

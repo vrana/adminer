@@ -4,25 +4,28 @@ $name = $_GET["name"];
 $row = $_POST;
 
 if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-js"]) {
-	$alter = "ALTER TABLE " . table($TABLE);
-	$drop = "\nDROP " . ($jush == "sql" ? "FOREIGN KEY " : "CONSTRAINT ") . idf_escape($name);
-	if ($_POST["drop"]) {
-		query_redirect($alter . $drop, ME . "table=" . urlencode($TABLE), lang('Foreign key has been dropped.'));
+	$message = ($_POST["drop"] ? lang('Foreign key has been dropped.') : ($name != "" ? lang('Foreign key has been altered.') : lang('Foreign key has been created.')));
+	$location = ME . "table=" . urlencode($TABLE);
+	
+	$row["source"] = array_filter($row["source"], 'strlen');
+	ksort($row["source"]); // enforce input order
+	$target = array();
+	foreach ($row["source"] as $key => $val) {
+		$target[$key] = $row["target"][$key];
+	}
+	$row["target"] = $target;
+	
+	if ($jush == "sqlite") {
+		queries_redirect($location, $message, recreate_table($TABLE, $TABLE, array(), array(), array(" $name" => ($_POST["drop"] ? "" : " " . format_foreign_key($row)))));
 	} else {
-		$source = array_filter($row["source"], 'strlen');
-		ksort($source); // enforce input order
-		$target = array();
-		foreach ($source as $key => $val) {
-			$target[$key] = $row["target"][$key];
+		$alter = "ALTER TABLE " . table($TABLE);
+		$drop = "\nDROP " . ($jush == "sql" ? "FOREIGN KEY " : "CONSTRAINT ") . idf_escape($name);
+		if ($_POST["drop"]) {
+			query_redirect($alter . $drop, $location, $message);
+		} else {
+			query_redirect($alter . ($name != "" ? "$drop," : "") . "\nADD" . format_foreign_key($row), $location, $message);
+			$error = lang('Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.') . "<br>$error"; //! no partitioning
 		}
-
-		query_redirect($alter
-			. ($name != "" ? "$drop," : "")
-			. "\nADD FOREIGN KEY (" . implode(", ", array_map('idf_escape', $source)) . ") REFERENCES " . table($row["table"]) . " (" . implode(", ", array_map('idf_escape', $target)) . ")" //! reuse $name - check in older MySQL versions
-			. (preg_match("~^($on_actions)\$~", $row["on_delete"]) ? " ON DELETE $row[on_delete]" : "")
-			. (preg_match("~^($on_actions)\$~", $row["on_update"]) ? " ON UPDATE $row[on_update]" : "")
-		, ME . "table=" . urlencode($TABLE), ($name != "" ? lang('Foreign key has been altered.') : lang('Foreign key has been created.')));
-		$error = lang('Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.') . "<br>$error"; //! no partitioning
 	}
 }
 

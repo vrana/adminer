@@ -58,7 +58,12 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 					}
 				}
 				if ($foreign_key !== null) {
-					$foreign[idf_escape($field["field"])] = ($TABLE != "" && $jush != "sqlite" ? "ADD" : " ") . " FOREIGN KEY (" . idf_escape($field["field"]) . ") REFERENCES " . table($foreign_keys[$field["type"]]) . " (" . idf_escape($type_field["field"]) . ")" . (preg_match("~^($on_actions)\$~", $field["on_delete"]) ? " ON DELETE $field[on_delete]" : "");
+					$foreign[idf_escape($field["field"])] = ($TABLE != "" && $jush != "sqlite" ? "ADD" : " ") . format_foreign_key(array(
+						'table' => $foreign_keys[$field["type"]],
+						'source' => array($field["field"]),
+						'target' => array($type_field["field"]),
+						'on_delete' => $field["on_delete"],
+					));
 				}
 				$after = " AFTER " . idf_escape($field["field"]);
 			} elseif ($field["orig"] != "") {
