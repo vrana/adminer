@@ -449,41 +449,15 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		}
 		$alter = array();
 		$originals = array();
-		$primary_key = false;
 		foreach ($fields as $field) {
 			if ($field[1]) {
-				if ($field[1][6]) {
-					$primary_key = true;
-				}
-				$alter[] = ($use_all_fields ? "  " : "ADD ") . implode($field[1]);
+				$alter[] = ($use_all_fields ? $field[1] : "ADD " . implode($field[1]));
 				if ($field[0] != "") {
 					$originals[$field[0]] = $field[1][0];
 				}
 			}
 		}
-		if ($use_all_fields) {
-			if ($table != "") {
-				$indexes = array();
-				foreach (indexes($table) as $key_name => $index) {
-					$columns = array();
-					foreach ($index["columns"] as $key => $column) {
-						if (!$originals[$column]) {
-							continue 2;
-						}
-						$columns[] = $originals[$column] . ($index["descs"][$key] ? " DESC" : "");
-					}
-					$columns = "(" . implode(", ", $columns) . ")";
-					if ($index["type"] != "PRIMARY") {
-						$indexes[] = array($index["type"], $key_name, $columns);
-					} elseif (!$primary_key) {
-						$foreign[] = "  PRIMARY KEY $columns";
-					}
-				}
-			}
-			if (!recreate_table($table, $name, $alter, $originals, $foreign, $indexes)) {
-				return false;
-			}
-		} else {
+		if (!$use_all_fields) {
 			foreach ($alter as $val) {
 				if (!queries("ALTER TABLE " . table($table) . " $val")) {
 					return false;
@@ -492,6 +466,8 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			if ($table != $name && !queries("ALTER TABLE " . table($table) . " RENAME TO " . table($name))) {
 				return false;
 			}
+		} elseif (!recreate_table($table, $name, $alter, $originals, $foreign)) {
+			return false;
 		}
 		if ($auto_increment) {
 			queries("UPDATE sqlite_sequence SET seq = $auto_increment WHERE name = " . q($name)); // ignores error
@@ -499,9 +475,40 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return true;
 	}
 
-	function recreate_table($table, $name, $alter, $originals, $foreign, $indexes) {
+	function recreate_table($table, $name, $alter, $originals, $foreign, $indexes = array()) {
 		queries("BEGIN");
 		if ($table != "") {
+			$primary_key = false;
+			foreach ($alter as $key => $field) {
+				if ($field[6]) {
+					$primary_key = true;
+				}
+				$alter[$key] = "  " . implode($field);
+			}
+			$drop_indexes = array();
+			foreach ($indexes as $key => $val) {
+				if ($val[2] == "DROP") {
+					$drop_indexes[$val[1]] = true;
+					unset($indexes[$key]);
+				}
+			}
+			foreach (indexes($table) as $key_name => $index) {
+				$columns = array();
+				foreach ($index["columns"] as $key => $column) {
+					if (!$originals[$column]) {
+						continue 2;
+					}
+					$columns[] = $originals[$column] . ($index["descs"][$key] ? " DESC" : "");
+				}
+				$columns = "(" . implode(", ", $columns) . ")";
+				if (!$drop_indexes[$key_name]) {
+					if ($index["type"] != "PRIMARY") {
+						$indexes[] = array($index["type"], $key_name, $columns);
+					} elseif (!$primary_key) {
+						$foreign[] = "  PRIMARY KEY $columns";
+					}
+				}
+			}
 			foreach (foreign_keys($table) as $foreign_key) {
 				$columns = array();
 				foreach ($foreign_key["source"] as $column) {
@@ -559,28 +566,13 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	function alter_indexes($table, $alter) {
 		foreach ($alter as $primary) {
 			if ($primary[0] == "PRIMARY") {
-				$indexes = array();
-				foreach (indexes($table) as $key_name => $index) {
-					$columns = array();
-					foreach ($index["columns"] as $key => $column) {
-						$columns[] = idf_escape($column) . ($index["descs"][$key] ? " DESC" : "");
-					}
-					$indexes[$key_name] = array($index["type"], $key_name, "(" . implode(", ", $columns) . ")");
-				}
-				foreach ($alter as $val) {
-					if ($val[2] == "DROP") {
-						unset($indexes[$val[1]]);
-					} elseif ($val != $primary) {
-						$indexes[] = $val;
-					}
-				}
-				$alter = array();
+				$fields = array();
 				$originals = array();
 				foreach (fields($table) as $name => $field) {
-					$alter[] = "  " . implode(process_field($field, $field));
+					$fields[] = process_field($field, $field);
 					$originals[$name] = idf_escape($name);
 				}
-				return recreate_table($table, $table, $alter, $originals, array("  PRIMARY KEY $primary[2]"), $indexes);
+				return recreate_table($table, $table, $fields, $originals, array(), $alter);
 			}
 		}
 		foreach (array_reverse($alter) as $val) {
