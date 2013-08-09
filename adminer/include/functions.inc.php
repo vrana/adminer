@@ -522,9 +522,9 @@ function query_redirect($query, $location, $message, $redirect = true, $execute 
 	global $connection, $error, $adminer;
 	$time = "";
 	if ($execute) {
-		$start = microtime();
+		$start = microtime(true);
 		$failed = !$connection->query($query);
-		$time = "; -- " . format_time($start, microtime());
+		$time = "; -- " . format_time($start, microtime(true));
 	}
 	$sql = "";
 	if ($query) {
@@ -551,10 +551,10 @@ function queries($query = null) {
 		// return executed queries without parameter
 		return implode("\n", $queries);
 	}
-	$start = microtime();
+	$start = microtime(true);
 	$return = $connection->query($query);
 	$queries[] = (preg_match('~;$~', $query) ? "DELIMITER ;;\n$query;\nDELIMITER " : $query)
-		. "; -- " . format_time($start, microtime());
+		. "; -- " . format_time($start, microtime(true));
 	return $return;
 }
 
@@ -584,12 +584,12 @@ function queries_redirect($location, $message, $redirect) {
 }
 
 /** Format time difference
-* @param string output of microtime()
-* @param string output of microtime()
+* @param string output of microtime(true)
+* @param string output of microtime(true)
 * @return string HTML code
 */
 function format_time($start, $end) {
-	return lang('%.3f s', max(0, array_sum(explode(" ", $end)) - array_sum(explode(" ", $start))));
+	return lang('%.3f s', max(0, $end - $start));
 }
 
 /** Remove parameter from query string
