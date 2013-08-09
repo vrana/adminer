@@ -333,6 +333,13 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 				$return[""]["descs"][] = (preg_match('~DESC~i', $match[5]) ? '1' : null);
 			}
 		}
+		if (!$return) {
+			foreach (fields($table) as $name => $field) {
+				if ($field["primary"]) {
+					$return[""] = array("type" => "PRIMARY", "columns" => array($name), "lengths" => array(), "descs" => array());
+				}
+			}
+		}
 		$sqls = get_key_vals("SELECT name, sql FROM sqlite_master WHERE type = 'index' AND tbl_name = " . q($table), $connection2);
 		foreach (get_rows("PRAGMA index_list(" . table($table) . ")", $connection2) as $row) {
 			$name = $row["name"];
