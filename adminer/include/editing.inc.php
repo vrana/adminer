@@ -141,12 +141,10 @@ function edit_type($key, $field, $collations, $foreign_keys = array()) {
 	$type = $field["type"];
 	?>
 <td><select name="<?php echo $key; ?>[type]" class="type" onfocus="lastType = selectValue(this);" onchange="editingTypeChange(this);"<?php echo on_help("getTarget(event).value", 1); ?>><?php
-echo optionlist(
-	(!$type || isset($types[$type]) || isset($foreign_keys[$type]) ? array() : array($type))
-		+ $structured_types
-		+ ($foreign_keys ? array(lang('Foreign keys') => $foreign_keys) : array())
-	, $type
-);
+if ($type && !isset($types[$type]) && !isset($foreign_keys[$type])) {
+	array_unshift($structured_types, $type);
+}
+echo optionlist($structured_types + ($foreign_keys ? array(lang('Foreign keys') => $foreign_keys) : array()), $type);
 ?></select>
 <td><input name="<?php echo $key; ?>[length]" value="<?php echo h($field["length"]); ?>" size="3" onfocus="editingLengthFocus(this);"<?php echo (!$field["length"] && preg_match('~var(char|binary)$~', $type) ? " class='required'" : ""); ?> onchange="editingLengthChange(this);" onkeyup="this.onchange();"><td class="options"><?php //! type="number" with enabled JavaScript
 	echo "<select name='$key" . "[collation]'" . (preg_match('~(char|text|enum|set)$~', $type) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>';
