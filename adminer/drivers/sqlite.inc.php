@@ -336,7 +336,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		if (!$return) {
 			foreach (fields($table) as $name => $field) {
 				if ($field["primary"]) {
-					$return[""] = array("type" => "PRIMARY", "columns" => array($name), "lengths" => array(), "descs" => array());
+					$return[""] = array("type" => "PRIMARY", "columns" => array($name), "lengths" => array(), "descs" => array(null));
 				}
 			}
 		}
@@ -509,11 +509,15 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 				}
 				$columns = "(" . implode(", ", $columns) . ")";
 				if (!$drop_indexes[$key_name]) {
-					if ($index["type"] != "PRIMARY") {
+					if ($index["type"] != "PRIMARY" || !$primary_key) {
 						$indexes[] = array($index["type"], $key_name, $columns);
-					} elseif (!$primary_key) {
-						$foreign[] = "  PRIMARY KEY $columns";
 					}
+				}
+			}
+			foreach ($indexes as $key => $val) {
+				if ($val[0] == "PRIMARY") {
+					unset($indexes[$key]);
+					$foreign[] = "  PRIMARY KEY $val[2]";
 				}
 			}
 			foreach (foreign_keys($table) as $foreign_key) {
