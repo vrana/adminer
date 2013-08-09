@@ -211,8 +211,8 @@ if (!defined("DRIVER")) {
 			var $extension = "PDO_MySQL";
 
 			function connect($server, $username, $password) {
-				$this->dsn("mysql:host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\\d)~', ';port=\\1', $server)), $username, $password);
-				$this->query("SET NAMES utf8"); // charset in DSN is ignored
+				$this->dsn("mysql:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\\d)~', ';port=\\1', $server)), $username, $password);
+				$this->query("SET NAMES utf8"); // charset in DSN is ignored before PHP 5.3.6
 				return true;
 			}
 
