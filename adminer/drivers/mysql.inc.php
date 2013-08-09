@@ -202,7 +202,7 @@ if (!defined("DRIVER")) {
 			/** Free result set
 			*/
 			function __destruct() {
-				mysql_free_result($this->_result); //! not called in PHP 4 which is a problem with mysql.trace_mode
+				mysql_free_result($this->_result);
 			}
 		}
 

@@ -56,7 +56,7 @@ foreach (glob(dirname(__FILE__) . "/adminer/lang/" . ($_SESSION["lang"] ? $_SESS
 	}
 	$s = "<?php\n\$translations = array(\n$s);\n";
 	if ($s != $file) {
-		fwrite(fopen($filename, "w"), $s); // file_put_contents() since PHP 5
+		file_put_contents($filename, $s);
 		echo "$filename updated.\n";
 	}
 }

@@ -24,26 +24,17 @@ class AdminerPlugin extends Adminer {
 		if ($plugins === null) {
 			$plugins = array();
 			foreach (get_declared_classes() as $class) {
-				if (preg_match('~^Adminer.~i', $class) && strcasecmp($this->_findRootClass($class), 'Adminer')) { // can use interface since PHP 5
+				if (preg_match('~^Adminer.~i', $class) && strcasecmp($this->_findRootClass($class), 'Adminer')) { //! can use interface
 					$plugins[$class] = new $class;
 				}
 			}
 		}
 		$this->plugins = $plugins;
-		// it is possible to use ReflectionObject in PHP 5 to find out which plugins defines which methods at once
+		//! it is possible to use ReflectionObject to find out which plugins defines which methods at once
 	}
 	
 	function _callParent($function, $args) {
-		switch (count($args)) { // call_user_func_array(array('parent', $function), $args) works since PHP 5
-			case 0: return parent::$function();
-			case 1: return parent::$function($args[0]);
-			case 2: return parent::$function($args[0], $args[1]);
-			case 3: return parent::$function($args[0], $args[1], $args[2]);
-			case 4: return parent::$function($args[0], $args[1], $args[2], $args[3]);
-			case 5: return parent::$function($args[0], $args[1], $args[2], $args[3], $args[4]);
-			case 6: return parent::$function($args[0], $args[1], $args[2], $args[3], $args[4], $args[5]);
-			default: trigger_error('Too many parameters.', E_USER_WARNING);
-		}
+		return call_user_func_array(array('parent', $function), $args);
 	}
 	
 	function _applyPlugin($function, $args) {
