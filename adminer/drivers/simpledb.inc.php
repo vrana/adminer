@@ -197,13 +197,14 @@ if (isset($_GET["simpledb"])) {
 			foreach ($set as $name => $value) {
 				if ($value != "NULL") {
 					$name = idf_unescape($name);
-					$value = idf_unescape($value);
 					if ($name == "itemName()") {
-						$params["ItemName"] = $value;
+						$params["ItemName"] = idf_unescape($value);
 					} else {
-						$params["Attribute.$i.Name"] = $name;
-						$params["Attribute.$i.Value"] = $value;
-						$i++;
+						foreach ((array) $value as $val) {
+							$params["Attribute.$i.Name"] = $name;
+							$params["Attribute.$i.Value"] = (is_array($value) ? $val : idf_unescape($value));
+							$i++;
+						}
 					}
 				}
 			}
@@ -322,15 +323,14 @@ if (isset($_GET["simpledb"])) {
 		$return = array();
 		foreach ((array) $_POST["field_keys"] as $key => $val) {
 			if ($val != "") {
-				$_POST["fields"][bracket_escape($val)] = $_POST["field_vals"][$key];
+				$val = bracket_escape($val);
+				$_POST["function"][$val] = $_POST["field_funs"][$key];
+				$_POST["fields"][$val] = $_POST["field_vals"][$key];
 			}
 		}
 		foreach ((array) $_POST["fields"] as $key => $val) {
 			$name = bracket_escape($key, 1); // 1 - back
-			$return[$name] = array("field" => $name, "privileges" => array("insert" => 1, "update" => 1));
-			if (isset($_POST["function"][$key])) {
-				$return[$name]["null"] = true;
-			}
+			$return[$name] = array("field" => $name, "privileges" => array("insert" => 1, "update" => 1), "null" => 1);
 		}
 		return $return;
 	}
