@@ -139,7 +139,7 @@ if (isset($_GET["simpledb"])) {
 
 		function _extractIds($table, $queryWhere, $limit) {
 			$return = array();
-			if (preg_match_all("~itemName\(\) = ('[^']*+')+~", $queryWhere, $matches)) {
+			if (preg_match_all("~itemName\(\) = (('[^']*+')+)~", $queryWhere, $matches)) {
 				$return = array_map('idf_unescape', $matches[1]);
 			} else {
 				foreach (sdb_request_all('Select', 'Item', array('SelectExpression' => 'SELECT itemName() FROM ' . table($table) . $queryWhere . ($limit ? " LIMIT 1" : ""))) as $item) {
@@ -169,11 +169,15 @@ if (isset($_GET["simpledb"])) {
 			$delete = array();
 			$insert = array();
 			$i = 0;
+			$ids = $this->_extractIds($table, $queryWhere, $limit);
+			$id = idf_unescape($set["`itemName()`"]);
+			unset($set["`itemName()`"]);
 			foreach ($set as $key => $val) {
 				$key = idf_unescape($key);
-				if ($val == "NULL") {
+				if ($val == "NULL" || ($id != "" && array($id) != $ids)) {
 					$delete["Attribute." . count($delete) . ".Name"] = $key;
-				} elseif ($key != "itemName()") { //! allow changing itemName()
+				}
+				if ($val != "NULL") {
 					foreach ((array) $val as $k => $v) {
 						$insert["Attribute.$i.Name"] = $key;
 						$insert["Attribute.$i.Value"] = (is_array($val) ? $v : idf_unescape($v));
@@ -184,9 +188,8 @@ if (isset($_GET["simpledb"])) {
 					}
 				}
 			}
-			$ids = $this->_extractIds($table, $queryWhere, $limit);
 			$params = array('DomainName' => $table);
-			return (!$insert || $this->_chunkRequest($ids, 'BatchPutAttributes', $params, $insert))
+			return (!$insert || $this->_chunkRequest(($id != "" ? array($id) : $ids), 'BatchPutAttributes', $params, $insert))
 				&& (!$delete || $this->_chunkRequest($ids, 'BatchDeleteAttributes', $params, $delete))
 			;
 		}
