@@ -109,7 +109,7 @@ if (!support("table") && !$fields) {
 			if (!$where) {
 				$row[$key] = null;
 			}
-			$fields[$key] = array("field" => $key, "null" => ($key != "itemName()"));
+			$fields[$key] = array("field" => $key, "null" => ($key != "itemName()"), "auto_increment" => ($key == "itemName()"));
 		}
 	}
 }
