@@ -435,6 +435,16 @@ function functionChange(select) {
 	helpClose();
 }
 
+/** Call this.onchange() if value changes
+* @this HTMLInputElement
+*/
+function keyupChange() {
+	if (this.value != this.getAttribute('value')) {
+		this.onchange();
+		this.setAttribute('value', this.value);
+	}
+}
+
 
 
 /** Create AJAX request

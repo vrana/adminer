@@ -805,7 +805,7 @@ function input($field, $value, $function) {
 			}
 			$first++;
 		}
-		$onchange = ($first ? " onchange=\"var f = this.form['function[" . h(js_escape(bracket_escape($field["field"]))) . "]']; if ($first > f.selectedIndex) f.selectedIndex = $first;\"" : "");
+		$onchange = ($first ? " onchange=\"var f = this.form['function[" . h(js_escape(bracket_escape($field["field"]))) . "]']; if ($first > f.selectedIndex) f.selectedIndex = $first;\" onkeyup='keyupChange.call(this);'" : "");
 		$attrs .= $onchange;
 		echo (count($functions) > 1
 			? "<select name='function[$name]' onchange='functionChange(this);'" . on_help("getTarget(event).value.replace(/^SQL\$/, '')", 1) . ">" . optionlist($functions, $function === null || in_array($function, $functions) || isset($functions[$function]) ? $function : "") . "</select>"
