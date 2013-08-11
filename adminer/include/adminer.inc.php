@@ -16,7 +16,7 @@ class Adminer {
 	* @return array ($server, $username, $password)
 	*/
 	function credentials() {
-		return array(SERVER, $_GET["username"], get_session("pwds"));
+		return array(SERVER, $_GET["username"], get_password());
 	}
 
 	/** Get key used for permanent login

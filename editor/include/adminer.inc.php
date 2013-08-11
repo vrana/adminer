@@ -10,7 +10,7 @@ class Adminer {
 	//! driver, ns
 
 	function credentials() {
-		return array(SERVER, $_GET["username"], get_session("pwds"));
+		return array(SERVER, $_GET["username"], get_password());
 	}
 
 	function permanentLogin($create = false) {

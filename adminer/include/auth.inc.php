@@ -17,7 +17,7 @@ if ($_COOKIE["adminer_permanent"]) {
 $auth = $_POST["auth"];
 if ($auth) {
 	session_regenerate_id(); // defense against session fixation
-	$_SESSION["pwds"][$auth["driver"]][$auth["server"]][$auth["username"]] = $auth["password"];
+	set_password($auth["driver"], $auth["server"], $auth["username"], $auth["password"]);
 	$_SESSION["db"][$auth["driver"]][$auth["server"]][$auth["username"]][$auth["db"]] = true;
 	if ($auth["permanent"]) {
 		$key = base64_encode($auth["driver"]) . "-" . base64_encode($auth["server"]) . "-" . base64_encode($auth["username"]) . "-" . base64_encode($auth["db"]);
@@ -53,7 +53,7 @@ if ($auth) {
 	foreach ($permanent as $key => $val) {
 		list(, $cipher) = explode(":", $val);
 		list($vendor, $server, $username, $db) = array_map('base64_decode', explode("-", $key));
-		$_SESSION["pwds"][$vendor][$server][$username] = decrypt_string(base64_decode($cipher), $private);
+		set_password($vendor, $server, $username, decrypt_string(base64_decode($cipher), $private));
 		$_SESSION["db"][$vendor][$server][$username][$db] = true;
 	}
 }
@@ -79,13 +79,13 @@ function auth_error($exception = null) {
 		if (($_COOKIE[$session_name] || $_GET[$session_name]) && !$token) {
 			$error = lang('Session expired, please login again.');
 		} else {
-			$password = &get_session("pwds");
+			$password = get_password();
 			if ($password !== null) {
 				$error = h($exception ? $exception->getMessage() : (is_string($connection) ? $connection : lang('Invalid credentials.')));
 				if ($password === false) {
 					$error .= '<br>' . lang('Master password expired. <a href="http://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to make it permanent.', '<code>permanentLogin()</code>');
 				}
-				$password = null;
+				set_password(DRIVER, SERVER, $_GET["username"], null);
 			}
 			unset_permanent();
 		}
@@ -100,6 +100,14 @@ function auth_error($exception = null) {
 	page_footer("auth");
 }
 
+function set_password($vendor, $server, $username, $password) {
+	$_SESSION["pwds"][$vendor][$server][$username] = $password;
+}
+
+function get_password() {
+	return get_session("pwds");
+}
+
 if (isset($_GET["username"])) {
 	if (!class_exists("Min_DB")) {
 		unset($_SESSION["pwds"][DRIVER]);
@@ -111,7 +119,7 @@ if (isset($_GET["username"])) {
 	$connection = connect();
 }
 
-if (is_string($connection) || !$adminer->login($_GET["username"], get_session("pwds"))) {
+if (is_string($connection) || !$adminer->login($_GET["username"], get_password())) {
 	auth_error();
 	exit;
 }
