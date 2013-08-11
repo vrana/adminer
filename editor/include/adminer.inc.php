@@ -545,13 +545,15 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 <?php
 		if ($missing == "auth") {
 			$first = true;
-			foreach ((array) $_SESSION["pwds"]["server"][""] as $username => $password) {
-				if ($password !== null) {
-					if ($first) {
-						echo "<p id='logins' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";
-						$first = false;
+			foreach ((array) $_SESSION["pwds"] as $vendor => $servers) {
+				foreach ($servers[""] as $username => $password) {
+					if ($password !== null) {
+						if ($first) {
+							echo "<p id='logins' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";
+							$first = false;
+						}
+						echo "<a href='" . h(auth_url($vendor, "", $username)) . "'>" . ($username != "" ? h($username) : "<i>" . lang('empty') . "</i>") . "</a><br>\n";
 					}
-					echo "<a href='" . h(auth_url("server", "", $username)) . "'>" . ($username != "" ? h($username) : "<i>" . lang('empty') . "</i>") . "</a><br>\n";
 				}
 			}
 		} else {
