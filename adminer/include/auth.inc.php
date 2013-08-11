@@ -17,21 +17,26 @@ if ($_COOKIE["adminer_permanent"]) {
 $auth = $_POST["auth"];
 if ($auth) {
 	session_regenerate_id(); // defense against session fixation
-	set_password($auth["driver"], $auth["server"], $auth["username"], $auth["password"]);
-	$_SESSION["db"][$auth["driver"]][$auth["server"]][$auth["username"]][$auth["db"]] = true;
-	if ($auth["permanent"]) {
-		$key = base64_encode($auth["driver"]) . "-" . base64_encode($auth["server"]) . "-" . base64_encode($auth["username"]) . "-" . base64_encode($auth["db"]);
+	$driver = $auth["driver"];
+	$server = $auth["server"];
+	$username = $auth["username"];
+	$password = $auth["password"];
+	$db = $auth["db"];
+	set_password($driver, $server, $username, $password);
+	$_SESSION["db"][$driver][$server][$username][$db] = true;
+	if ($permanent) {
+		$key = base64_encode($driver) . "-" . base64_encode($server) . "-" . base64_encode($username) . "-" . base64_encode($db);
 		$private = $adminer->permanentLogin(true);
-		$permanent[$key] = "$key:" . base64_encode($private ? encrypt_string($auth["password"], $private) : "");
+		$permanent[$key] = "$key:" . base64_encode($private ? encrypt_string($password, $private) : "");
 		cookie("adminer_permanent", implode(" ", $permanent));
 	}
 	if (count($_POST) == 1 // 1 - auth
-		|| DRIVER != $auth["driver"]
-		|| SERVER != $auth["server"]
-		|| $_GET["username"] !== $auth["username"] // "0" == "00"
-		|| DB != $auth["db"]
+		|| DRIVER != $driver
+		|| SERVER != $server
+		|| $_GET["username"] !== $username // "0" == "00"
+		|| DB != $db
 	) {
-		redirect(auth_url($auth["driver"], $auth["server"], $auth["username"], $auth["db"]));
+		redirect(auth_url($driver, $server, $username, $db));
 	}
 	
 } elseif ($_POST["logout"]) {
