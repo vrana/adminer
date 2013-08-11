@@ -95,6 +95,8 @@ function auth_error($exception = null) {
 			unset_permanent();
 		}
 	}
+	$params = session_get_cookie_params();
+	cookie("adminer_key", ($_COOKIE["adminer_key"] ? $_COOKIE["adminer_key"] : rand_string()), $params["lifetime"]);
 	page_header(lang('Login'), $error, null);
 	echo "<form action='' method='post'>\n";
 	$adminer->loginForm();
@@ -106,11 +108,21 @@ function auth_error($exception = null) {
 }
 
 function set_password($vendor, $server, $username, $password) {
-	$_SESSION["pwds"][$vendor][$server][$username] = $password;
+	$_SESSION["pwds"][$vendor][$server][$username] = ($_COOKIE["adminer_key"]
+		? array(encrypt_string($password, $_COOKIE["adminer_key"]))
+		: $password
+	);
 }
 
 function get_password() {
-	return get_session("pwds");
+	$return = get_session("pwds");
+	if (is_array($return)) {
+		if (!$_COOKIE["adminer_key"]) {
+			return false;
+		}
+		$return = decrypt_string($return[0], $_COOKIE["adminer_key"]);
+	}
+	return $return;
 }
 
 if (isset($_GET["username"])) {

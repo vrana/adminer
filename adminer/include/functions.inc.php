@@ -408,17 +408,18 @@ function convert_fields($columns, $fields, $select = array()) {
 	return $return;
 }
 
-/** Set cookie valid for 1 month
+/** Set cookie valid on current path
 * @param string
 * @param string
+* @param int number of seconds, 0 for session cookie
 * @return bool
 */
-function cookie($name, $value) {
+function cookie($name, $value, $lifetime = 2592000) { // 2592000 - 30 days
 	global $HTTPS;
 	$params = array(
 		$name,
 		(preg_match("~\n~", $value) ? "" : $value), // HTTP Response Splitting protection in PHP < 5.1.2
-		time() + 2592000, // 2592000 - 30 days
+		($lifetime ? time() + $lifetime : 0),
 		preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]),
 		"",
 		$HTTPS
@@ -986,11 +987,18 @@ function password_file($create) {
 	}
 	$fp = @fopen($filename, "w"); // @ - can have insufficient rights //! is not atomic
 	if ($fp) {
-		$return = md5(uniqid(mt_rand(), true));
+		$return = rand_string();
 		fwrite($fp, $return);
 		fclose($fp);
 	}
 	return $return;
+}
+
+/** Get a random string
+* @return string 32 hexadecimal characters
+*/
+function rand_string() {
+	return md5(uniqid(mt_rand(), true));
 }
 
 /** Format value to use in select
