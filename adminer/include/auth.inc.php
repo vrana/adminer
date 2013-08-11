@@ -117,10 +117,10 @@ function set_password($vendor, $server, $username, $password) {
 function get_password() {
 	$return = get_session("pwds");
 	if (is_array($return)) {
-		if (!$_COOKIE["adminer_key"]) {
-			return false;
-		}
-		$return = decrypt_string($return[0], $_COOKIE["adminer_key"]);
+		$return = ($_COOKIE["adminer_key"]
+			? decrypt_string($return[0], $_COOKIE["adminer_key"])
+			: false
+		);
 	}
 	return $return;
 }
