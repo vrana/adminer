@@ -291,6 +291,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 
 	function fields($table) {
+		global $connection;
 		$return = array();
 		$primary = "";
 		foreach (get_rows("PRAGMA table_info(" . table($table) . ")") as $row) {
@@ -313,6 +314,14 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 					$return[$name]["auto_increment"] = true;
 				}
 				$primary = $name;
+			}
+		}
+		$sql = $connection->result("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table));
+		preg_match_all('~(("[^"]*+")+|[a-z0-9_]+)\s+text\s+COLLATE\s+(\'[^\']+\'|\S+)~i', $sql, $matches, PREG_SET_ORDER);
+		foreach ($matches as $match) {
+			$name = str_replace('""', '"', preg_replace('~^"|"$~', '', $match[1]));
+			if ($return[$name]) {
+				$return[$name]["collation"] = trim($match[3], "'");
 			}
 		}
 		return $return;
