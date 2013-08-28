@@ -311,8 +311,8 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 					$return[$primary]["auto_increment"] = false;
 				} elseif (preg_match('~^integer$~i', $type)) {
 					$return[$name]["auto_increment"] = true;
-					$primary = $name;
 				}
+				$primary = $name;
 			}
 		}
 		return $return;
