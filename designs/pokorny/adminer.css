@@ -119,7 +119,6 @@ html>/**/body table a[href*="&edit="][href*="&where"] {
     height: 16px;
     overflow: hidden;
     padding-left: 24px;
-    width: 0;
 }
 /* Select data */
 html>/**/body #menu p a[href*="&select="], html>/**/body .tabs a[href*="&select="] {
