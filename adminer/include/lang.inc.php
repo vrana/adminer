@@ -27,6 +27,7 @@ $langs = array(
 	'sl' => 'Slovenski', // Matej Ferlan - www.itdinamik.com, matej.ferlan@itdinamik.com
 	'sr' => 'Српски', // Nikola Radovanović - cobisimo@gmail.com
 	'ta' => 'த‌மிழ்', // G. Sampath Kumar, Chennai, India, sampathkumar11@gmail.com
+	'th' => 'ภาษาไทย';// Panya  Saraphi , elect.tu@gmail.com - http://www.opencart2u.com/
 	'tr' => 'Türkçe', // Bilgehan Korkmaz - turktron.com
 	'uk' => 'Українська', // Valerii Kryzhov
 	'zh' => '简体中文', // Mr. Lodar
