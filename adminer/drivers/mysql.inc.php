@@ -386,7 +386,7 @@ if (!defined("DRIVER")) {
 	*/
 	function tables_list() {
 		global $connection;
-		return get_key_vals("SHOW" . ($connection->server_info >= 5 ? " FULL" : "") . " TABLES");
+		return get_key_vals("SELECT TABLE_NAME AS Name FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()  ORDER BY Name");
 	}
 
 	/** Count tables in all databases
@@ -425,6 +425,8 @@ if (!defined("DRIVER")) {
 			}
 			$return[$row["Name"]] = $row;
 		}
+
+        
 		return $return;
 	}
 
