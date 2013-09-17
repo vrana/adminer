@@ -121,7 +121,7 @@ if (isset($_GET["oracle"])) {
 			var $extension = "PDO_OCI";
 
 			function connect($server, $username, $password) {
-				$this->dsn("oci:dbname=//$server;charset=AL32UTF8", $username, $password);
+				$this->dsn("oci:dbname=$server;charset=AL32UTF8", $username, $password);
 				return true;
 			}
 
@@ -158,7 +158,7 @@ if (isset($_GET["oracle"])) {
 		global $adminer;
 		$connection = new Min_DB;
 		$credentials = $adminer->credentials();
-		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
+		if ($connection->connect(DB, $credentials[1], $credentials[2])) {
 			return $connection;
 		}
 		return $connection->error;
