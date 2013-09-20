@@ -207,7 +207,7 @@ ORDER BY 1"
 	function table_status($name = "") {
 		$return = array();
 		$search = q($name);
-		foreach (get_rows('SELECT table_name "Name", \'table\' "Engine", avg_row_len * num_rows "Data_length", num_rows "Rows" FROM all_tables WHERE owner = ' . q(get_schema()) . ($name != "" ? " AND table_name = $search" : "") . "
+		foreach (get_rows('SELECT table_name "Name", tablespace_name "Engine", avg_row_len * num_rows "Data_length", num_rows "Rows" FROM all_tables WHERE owner = ' . q(get_schema()) . ($name != "" ? " AND table_name = $search" : "") . "
 UNION SELECT view_name, 'view', 0, 0 FROM user_views" . ($name != "" ? " WHERE view_name = $search" : "") . "
 ORDER BY 1"
 		) as $row) {
