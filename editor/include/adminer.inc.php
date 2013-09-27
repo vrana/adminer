@@ -65,11 +65,11 @@ focus(document.getElementById('username'));
 	}
 
 	function tableName($tableStatus) {
-		return h($tableStatus["Comment"] != "" ? $tableStatus["Comment"] : $tableStatus["Name"]);
+		return h($tableStatus["Name"]);
 	}
 
 	function fieldName($field, $order = 0) {
-		return h($field["comment"] != "" ? $field["comment"] : $field["field"]);
+		return h($field["field"]);
 	}
 
 	function selectLinks($tableStatus, $set = "") {
