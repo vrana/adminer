@@ -293,7 +293,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	function fields($table) {
 		global $connection;
 		$return = array();
-		$primary = "";
+
 		foreach (get_rows("PRAGMA table_info(" . table($table) . ")") as $row) {
 			$name = $row["name"];
 			$type = strtolower($row["type"]);
@@ -308,12 +308,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 				"primary" => $row["pk"],
 			);
 			if ($row["pk"]) {
-				if ($primary != "") {
-					$return[$primary]["auto_increment"] = false;
-				} elseif (preg_match('~^integer$~i', $type)) {
-					$return[$name]["auto_increment"] = true;
-				}
-				$primary = $name;
+                                        $return[$name]["pk"] = true;
 			}
 		}
 		$sql = $connection->result("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table));
