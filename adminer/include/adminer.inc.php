@@ -43,6 +43,13 @@ class Adminer {
 		return get_databases($flush);
 	}
 
+	/** Get list of schemas
+	* @return array
+	*/
+	function schemas() {
+		return schemas();
+	}
+
 	/** Specify limit for waiting on some slow queries like DB list
 	* @return float number of seconds
 	*/
@@ -806,7 +813,7 @@ username.form['auth[driver]'].onchange();
 	* @return null
 	*/
 	function databasesPrint($missing) {
-		global $connection;
+		global $adminer, $connection;
 		$databases = $this->databases();
 		?>
 <form action="">
@@ -821,7 +828,7 @@ username.form['auth[driver]'].onchange();
 		echo "<input type='submit' value='" . lang('Use') . "'" . ($databases ? " class='hidden'" : "") . ">\n";
 		if ($missing != "db" && DB != "" && $connection->select_db(DB)) {
 			if (support("scheme")) {
-				echo "<br><select name='ns'$db_events>" . optionlist(array("" => "(" . lang('schema') . ")") + schemas(), $_GET["ns"]) . "</select>";
+				echo "<br><select name='ns'$db_events>" . optionlist(array("" => "(" . lang('schema') . ")") + $adminer->schemas(), $_GET["ns"]) . "</select>";
 				if ($_GET["ns"] != "") {
 					set_schema($_GET["ns"]);
 				}

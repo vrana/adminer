@@ -28,6 +28,10 @@ class Adminer {
 		}
 	}
 
+	function schemas() {
+		return schemas();
+	}
+
 	function databases($flush = true) {
 		return get_databases($flush);
 	}

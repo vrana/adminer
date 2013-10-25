@@ -21,6 +21,7 @@ SQLite: Allow editing primary key
 SQLite: Allow editing foreign keys
 PostgreSQL: Fix handling of nextval() default values
 PostgreSQL: Support creating array columns
+Customization: Provide schemas()
 Thai translation
 
 Adminer 3.7.1 (released 2013-06-29):
