@@ -114,12 +114,14 @@ function page_footer($missing = "") {
 </div>
 
 <?php switch_lang(); ?>
+<?php if ($missing != "auth") { ?>
 <form action="" method="post">
 <p class="logout">
 <input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" id="logout">
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </p>
 </form>
+<?php } ?>
 <div id="menu">
 <?php $adminer->navigation($missing); ?>
 </div>
