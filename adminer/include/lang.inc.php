@@ -76,11 +76,11 @@ function switch_lang() {
 	echo "<form action='' method='post'>\n<div id='lang'>";
 	echo lang('Language') . ": " . html_select("lang", $langs, $LANG, "this.form.submit();");
 	echo " <input type='submit' value='" . lang('Use') . "' class='hidden'>\n";
-	echo "<input type='hidden' name='token' value='$_SESSION[token]'>\n"; // $token may be empty in auth.inc.php
+	echo "<input type='hidden' name='token' value='" . get_token() . "'>\n"; // $token may be empty in auth.inc.php
 	echo "</div>\n</form>\n";
 }
 
-if (isset($_POST["lang"]) && $_SESSION["token"] == $_POST["token"]) { // $token and $error not yet available
+if (isset($_POST["lang"]) && verify_token()) { // $error not yet available
 	cookie("adminer_lang", $_POST["lang"]);
 	$_SESSION["lang"] = $_POST["lang"]; // cookies may be disabled
 	$_SESSION["translations"] = array(); // used in compiled version

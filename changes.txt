@@ -15,6 +15,7 @@ Encrypt passwords stored in session by a key stored in cookie
 Don't append newlines to uploaded files, bug since Adminer 3.7.0
 Don't display SQL edit form on Ctrl+click on the select query, introduced in Adminer 3.6.4
 Use MD5 for editing long keys only in supported drivers, bug since Adminer 3.6.4
+Protect CSRF token against BREACH
 SQLite: Allow editing primary key
 SQLite: Allow editing foreign keys
 PostgreSQL: Fix handling of nextval() default values

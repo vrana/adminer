@@ -1124,6 +1124,22 @@ var timeout = setTimeout(function () {
 	return array_keys($return);
 }
 
+/** Generate BREACH resistant CSRF token
+* @return string
+*/
+function get_token() {
+	$rand = rand(1, 1e6);
+	return ($rand ^ $_SESSION["token"]) . ":$rand";
+}
+
+/** Verify if supplied CSRF token is valid
+* @return bool
+*/
+function verify_token() {
+	list($token, $rand) = explode(":", $_POST["token"]);
+	return ($rand ^ $_SESSION["token"]) == $token;
+}
+
 // used in compiled version
 function lzw_decompress($binary) {
 	// convert binary string to codes

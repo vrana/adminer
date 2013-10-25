@@ -1,10 +1,11 @@
 <?php
 $connection = '';
 
-$token = $_SESSION["token"];
-if (!$_SESSION["token"]) {
+$has_token = $_SESSION["token"];
+if (!$has_token) {
 	$_SESSION["token"] = rand(1, 1e6); // defense against cross-site request forgery
 }
+$token = get_token(); ///< @var string CSRF protection
 
 $permanent = array();
 if ($_COOKIE["adminer_permanent"]) {
@@ -40,7 +41,7 @@ if ($auth) {
 	}
 	
 } elseif ($_POST["logout"]) {
-	if ($token && $_POST["token"] != $token) {
+	if ($has_token && !verify_token()) {
 		page_header(lang('Logout'), lang('Invalid CSRF token. Send the form again.'));
 		page_footer("db");
 		exit;
@@ -75,13 +76,13 @@ function unset_permanent() {
 }
 
 function auth_error($exception = null) {
-	global $connection, $adminer, $token;
+	global $connection, $adminer, $has_token;
 	$session_name = session_name();
 	$error = "";
 	if (!$_COOKIE[$session_name] && $_GET[$session_name] && ini_bool("session.use_only_cookies")) {
 		$error = lang('Session support must be enabled.');
 	} elseif (isset($_GET["username"])) {
-		if (($_COOKIE[$session_name] || $_GET[$session_name]) && !$token) {
+		if (($_COOKIE[$session_name] || $_GET[$session_name]) && !$has_token) {
 			$error = lang('Session expired, please login again.');
 		} else {
 			$password = get_password();
@@ -143,14 +144,13 @@ if (is_string($connection) || !$adminer->login($_GET["username"], get_password()
 
 $driver = new Min_Driver($connection);
 
-$token = $_SESSION["token"]; ///< @var string CSRF protection
 if ($auth && $_POST["token"]) {
 	$_POST["token"] = $token; // reset token after explicit login
 }
 
 $error = ''; ///< @var string
 if ($_POST) {
-	if ($_POST["token"] != $token) {
+	if (!verify_token()) {
 		$ini = "max_input_vars";
 		$max_vars = ini_get($ini);
 		if (extension_loaded("suhosin")) {
