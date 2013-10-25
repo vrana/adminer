@@ -183,10 +183,11 @@ function print_fieldset($id, $legend, $visible = false, $onclick = "") {
 
 /** Return class='active' if $bold is true
 * @param bool
+* @param string
 * @return string
 */
-function bold($bold) {
-	return ($bold ? " class='active'" : "");
+function bold($bold, $class = "") {
+	return ($bold ? " class='active $class'" : ($class ? " class='$class'" : ""));
 }
 
 /** Generate class for odd rows

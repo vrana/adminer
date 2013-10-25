@@ -9,6 +9,7 @@ Add button for dropping an index
 Display number of selected rows
 Add links to documentation
 Disable underlining links
+Differentiate views in navigation
 Improve speed of CSV import
 Keep form values after refresh in Firefox
 Encrypt passwords stored in session by a key stored in cookie

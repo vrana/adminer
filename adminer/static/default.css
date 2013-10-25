@@ -48,6 +48,7 @@ input.required { box-shadow: 1px 1px 1px red; }
 .datetime { text-align: right; }
 .type { width: 15ex; width: auto\9; }
 .options select { width: 20ex; width: auto\9; }
+.view { font-style: italic; }
 .active { font-weight: bold; }
 .sqlarea { width: 98%; }
 .icon { width: 18px; height: 18px; background-color: navy; }
