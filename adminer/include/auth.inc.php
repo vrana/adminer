@@ -25,7 +25,7 @@ if ($auth) {
 	$db = $auth["db"];
 	set_password($driver, $server, $username, $password);
 	$_SESSION["db"][$driver][$server][$username][$db] = true;
-	if ($permanent) {
+	if ($auth["permanent"]) {
 		$key = base64_encode($driver) . "-" . base64_encode($server) . "-" . base64_encode($username) . "-" . base64_encode($db);
 		$private = $adminer->permanentLogin(true);
 		$permanent[$key] = "$key:" . base64_encode($private ? encrypt_string($password, $private) : "");
