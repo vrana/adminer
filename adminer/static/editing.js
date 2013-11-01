@@ -52,6 +52,55 @@ function bodyLoad(version) {
 		};
 		document.body.appendChild(script);
 	}
+
+
+    // Trigger store of the menus scroll position when scrolling
+    document.getElementById('menu').onscroll = function () {
+        createCookie('menuScrollTop', this.scrollTop);
+    }
+
+    // Check stored scroll position and return to the same position
+    if ((menuScrollTop = readCookie('menuScrollTop'))) {
+        document.getElementById('menu').scrollTop = menuScrollTop;
+    }
+
+}
+
+
+/** 
+* Store a cookie
+*
+* @param name Name of the cookie
+* @param value Value of the cookie
+* @param days Expire time, if null, it sets a session cookie
+* @return null
+*/
+function createCookie(name,value,days) {
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime()+(days*24*60*60*1000));
+        var expires = "; expires="+date.toGMTString();
+    }
+    else var expires = "";
+    document.cookie = name+"="+value+expires+"; path=/";
+}
+
+
+/** 
+* Read a cookie value
+*
+* @param name Name of the cookie
+* @return value value of cookie or null
+*/
+function readCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
 }
 
 /** Get value of dynamically created form field
