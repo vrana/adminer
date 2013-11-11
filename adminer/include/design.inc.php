@@ -113,7 +113,11 @@ function page_footer($missing = "") {
 	?>
 </div>
 
-<?php switch_lang(); ?>
+
+<div id="footer-dbs">
+    <?$adminer->databasesPrint($missing);?>
+</div>
+
 <?php if ($missing != "auth") { ?>
 <form action="" method="post">
 <p class="logout">
@@ -121,6 +125,7 @@ function page_footer($missing = "") {
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </p>
 </form>
+<?php switch_lang(); ?>
 <?php } ?>
 <div id="menu">
 <?php $adminer->navigation($missing); ?>
