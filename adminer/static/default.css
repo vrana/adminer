@@ -61,7 +61,7 @@ input.required { box-shadow: 1px 1px 1px red; }
 #menu { position: absolute; margin: 10px 0 0; padding: 0 0 30px 0; top: 2em; left: 0; width: 19em; }
 #menu p { padding: .8em 1em; margin: 0; border-bottom: 1px solid #ccc; }
 #dbs { overflow: hidden; }
-#footer-dbs { width: 20em; position: absolute; top: 0; left: 0; }
+#footer-dbs { width: 20em; position: fixed; top: 0; left: 0; }
 #logins, #tables { white-space: nowrap; overflow: auto; }
 #logins a, #tables a, #tables span { background: #fff; }
 #content { margin: 2em 0 0 21em; padding: 10px 20px 20px 0; }
