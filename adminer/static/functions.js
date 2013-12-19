@@ -30,12 +30,29 @@ function cookie(assign, days) {
 }
 
 /** Verify current Adminer version
+* @param string
 */
-function verifyVersion() {
+function verifyVersion(current) {
 	cookie('adminer_version=0', 1);
-	var script = document.createElement('script');
-	script.src = location.protocol + '//www.adminer.org/version.php';
-	document.body.appendChild(script);
+	var iframe = document.createElement('iframe');
+	iframe.src = location.protocol + '//www.adminer.org/version/?current=' + current;
+	iframe.frameBorder = 0;
+	iframe.marginHeight = 0;
+	iframe.scrolling = 'no';
+	iframe.style.width = '7ex';
+	iframe.style.height = '1.25em';
+	if (window.postMessage && window.addEventListener) {
+		iframe.style.display = 'none';
+		addEventListener('message', function (event) {
+			if (event.origin == location.protocol + '//www.adminer.org') {
+				var match = /version=(.+)/.exec(event.data);
+				if (match) {
+					cookie('adminer_version=' + match[1], 1);
+				}
+			}
+		}, false);
+	}
+	document.getElementById('version').appendChild(iframe);
 }
 
 /** Get value of select
