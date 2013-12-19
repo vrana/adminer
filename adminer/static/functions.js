@@ -534,7 +534,7 @@ function ajaxForm(form, message, button) {
 	return ajax(url, function (request) {
 		setHtml('message', request.responseText);
 		if (window.jush) {
-			jush.highlight_tag('code', 0);
+			jush.highlight_tag(document.getElementById('message').getElementsByTagName('code'), 0);
 		}
 	}, data);
 }
