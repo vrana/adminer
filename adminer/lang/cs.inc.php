@@ -262,6 +262,7 @@ $translations = array(
 	'Edit' => 'Upravit',
 	'Insert' => 'Vložit',
 	'Save' => 'Uložit',
+	'Saving' => 'Ukládá se',
 	'Save and continue edit' => 'Uložit a pokračovat v editaci',
 	'Save and insert next' => 'Uložit a vložit další',
 	'Selected' => 'Označené',

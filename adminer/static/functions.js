@@ -525,7 +525,7 @@ function ajaxForm(form, message, button) {
 	}
 	data = data.join('&');
 	
-	setHtml('message', message);
+	setHtml('message', '<div class="message">' + message + '</div>');
 	var url = form.action;
 	if (!/post/i.test(form.method)) {
 		url = url.replace(/\?.*/, '') + '?' + data;
@@ -615,8 +615,8 @@ function selectClick(td, event, text, warning) {
 
 /** Load and display next page in select
 * @param HTMLLinkElement
-* @param string
 * @param number
+* @param string
 * @return boolean
 */
 function selectLoadMore(a, limit, loading) {

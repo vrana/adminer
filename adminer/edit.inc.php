@@ -177,7 +177,7 @@ if ($fields) {
 	echo "<input type='submit' value='" . lang('Save') . "'>\n";
 	if (!isset($_GET["select"])) {
 		echo "<input type='submit' name='insert' value='" . ($update
-			? lang('Save and continue edit') . "' onclick='return !ajaxForm(this.form, \"" . lang('Loading') . '", this)'
+			? lang('Save and continue edit') . "' onclick='return !ajaxForm(this.form, \"" . lang('Saving') . '...", this)'
 			: lang('Save and insert next')
 		) . "' title='Ctrl+Shift+Enter'>\n";
 	}
