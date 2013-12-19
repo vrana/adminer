@@ -1,56 +1,35 @@
 // Adminer specific functions
 
-var jushRoot = '../externals/jush/'; // global variable to allow simple customization
-
 /** Load syntax highlighting
 * @param string first three characters of database system version
 */
 function bodyLoad(version) {
-	if (jushRoot) {
-		// copy of jush.style to load JS and CSS at once
-		var link = document.createElement('link');
-		link.rel = 'stylesheet';
-		link.type = 'text/css';
-		link.href = jushRoot + 'jush.css';
-		document.getElementsByTagName('head')[0].appendChild(link);
-
-		var script = document.createElement('script');
-		script.src = jushRoot + 'jush.js';
-		script.onload = function () {
-			if (window.jush) { // IE runs in case of an error too
-				jush.create_links = ' target="_blank" rel="noreferrer"';
-				for (var key in jush.urls) {
-					var obj = jush.urls;
-					if (typeof obj[key] != 'string') {
-						obj = obj[key];
-						key = 0;
-					}
-					obj[key] = obj[key]
-						.replace(/\/doc\/mysql/, '/doc/refman/' + version) // MySQL
-						.replace(/\/docs\/current/, '/docs/' + version) // PostgreSQL
-					;
-				}
-				if (window.jushLinks) {
-					jush.custom_links = jushLinks;
-				}
-				jush.highlight_tag('code', 0);
-				var tags = document.getElementsByTagName('textarea');
-				for (var i = 0; i < tags.length; i++) {
-					if (/(^|\s)jush-/.test(tags[i].className)) {
-						var pre = jush.textarea(tags[i]);
-						if (pre) {
-							setupSubmitHighlightInput(pre);
-						}
-					}
+	if (window.jush) {
+		jush.create_links = ' target="_blank" rel="noreferrer"';
+		for (var key in jush.urls) {
+			var obj = jush.urls;
+			if (typeof obj[key] != 'string') {
+				obj = obj[key];
+				key = 0;
+			}
+			obj[key] = obj[key]
+				.replace(/\/doc\/mysql/, '/doc/refman/' + version) // MySQL
+				.replace(/\/docs\/current/, '/docs/' + version) // PostgreSQL
+			;
+		}
+		if (window.jushLinks) {
+			jush.custom_links = jushLinks;
+		}
+		jush.highlight_tag('code', 0);
+		var tags = document.getElementsByTagName('textarea');
+		for (var i = 0; i < tags.length; i++) {
+			if (/(^|\s)jush-/.test(tags[i].className)) {
+				var pre = jush.textarea(tags[i]);
+				if (pre) {
+					setupSubmitHighlightInput(pre);
 				}
 			}
-		};
-		script.onreadystatechange = function () {
-			if (/^(loaded|complete)$/.test(script.readyState)) {
-				script.onload();
-			}
-		};
-		document.body.appendChild(script);
+		}
 	}
 }
 
