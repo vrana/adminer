@@ -1178,3 +1178,12 @@ function lzw_decompress($binary) {
 	}
 	return $return;
 }
+
+/** Return events to display help on mouse over
+* @param string JS expression
+* @param bool JS expression
+* @return string
+*/
+function on_help($command, $side = 0) {
+	return " onmouseover='helpMouseover(this, event, " . h($command) . ", $side);' onmouseout='helpMouseout(this, event);'";
+}
