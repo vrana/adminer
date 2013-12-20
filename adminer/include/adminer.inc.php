@@ -778,7 +778,6 @@ username.form['auth[driver]'].onchange();
 				}
 			}
 		} else {
-			$this->databasesPrint($missing);
 			if (DB == "" || !$missing) {
 				echo "<p class='links'>" . (support("sql") ? "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"]) && !isset($_GET["import"])) . ">" . lang('SQL command') . "</a>\n<a href='" . h(ME) . "import='" . bold(isset($_GET["import"])) . ">" . lang('Import') . "</a>\n" : "") . "";
 				if (support("dump")) {
