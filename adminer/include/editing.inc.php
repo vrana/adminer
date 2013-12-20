@@ -438,7 +438,7 @@ function remove_definer($query) {
 
 /** Format foreign key to use in SQL query
 * @param array ("table" => string, "source" => array, "target" => array, "on_delete" => one of $on_actions, "on_update" => one of $on_actions)
-* @return 
+* @return string
 */
 function format_foreign_key($foreign_key) {
 	global $on_actions;
