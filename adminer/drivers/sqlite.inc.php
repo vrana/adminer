@@ -422,7 +422,12 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		if (!check_sqlite_name($db)) {
 			return false;
 		}
-		$link = new Min_SQLite($db); //! exception handler
+		try {
+			$link = new Min_SQLite($db);
+		} catch (Exception $ex) {
+			$connection->error = $ex->getMessage();
+			return false;
+		}
 		$link->query('PRAGMA encoding = "UTF-8"');
 		$link->query('CREATE TABLE adminer (i)'); // otherwise creates empty file
 		$link->query('DROP TABLE adminer');
