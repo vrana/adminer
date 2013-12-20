@@ -463,7 +463,7 @@ if (!defined("DRIVER")) {
 				"auto_increment" => ($row["Extra"] == "auto_increment"),
 				"on_update" => (preg_match('~^on update (.+)~i', $row["Extra"], $match) ? $match[1] : ""), //! available since MySQL 5.1.23
 				"collation" => $row["Collation"],
-				"privileges" => array_flip(explode(",", $row["Privileges"])),
+				"privileges" => array_flip(preg_split('~, *~', $row["Privileges"])),
 				"comment" => $row["Comment"],
 				"primary" => ($row["Key"] == "PRI"),
 			);
