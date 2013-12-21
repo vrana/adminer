@@ -240,7 +240,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			if (($val["col"] == "" || $columns[$val["col"]]) && "$val[col]$val[val]" != "") {
 				echo "<div><select name='where[$i][col]'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
 				echo html_select("where[$i][op]", array(-1 => "") + $this->operators, $val["op"]);
-				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' onsearch='selectSearchSearch(this);'></div>\n";
+				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' onkeydown='selectSearchKeydown(this, event);' onsearch='selectSearchSearch(this);'></div>\n";
 				$i++;
 			}
 		}

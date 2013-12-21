@@ -311,6 +311,17 @@ function selectAddRow(field) {
 	field.parentNode.parentNode.appendChild(row);
 }
 
+/** Prevent onsearch handler on Enter
+* @param HTMLInputElement
+* @param KeyboardEvent
+*/
+function selectSearchKeydown(el, event) {
+	if (event.keyCode == 13 || event.keyCode == 10) {
+		el.onsearch = function () {
+		};
+	}
+}
+
 /** Clear column name after resetting search
 * @param HTMLInputElement
 */
