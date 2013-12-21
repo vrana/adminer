@@ -321,10 +321,9 @@ AND contype = 'f'::char
 ORDER BY conkey, conname") as $row) {
 			if (preg_match('~FOREIGN KEY\s*\((.+)\)\s*REFERENCES (.+)\((.+)\)(.*)$~iA', $row['definition'], $match)) {
 				$row['source'] = array_map('trim', explode(',', $match[1]));
-				$row['table'] = $match[2];
-				if (preg_match('~(.+)\.(.+)~', $match[2], $match2)) {
-					$row['ns'] = $match2[1];
-					$row['table'] = $match2[2];
+				if (preg_match('~^(("([^"]|"")+"|[^"]+)\.)?"?("([^"]|"")+"|[^"]+)$~', $match[2], $match2)) {
+					$row['ns'] = str_replace('""', '"', preg_replace('~^"(.+)"$~', '\1', $match2[2]));
+					$row['table'] = str_replace('""', '"', preg_replace('~^"(.+)"$~', '\1', $match2[4]));
 				}
 				$row['target'] = array_map('trim', explode(',', $match[3]));
 				$row['on_delete'] = (preg_match("~ON DELETE ($on_actions)~", $match[4], $match2) ? $match2[1] : 'NO ACTION');
