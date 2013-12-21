@@ -19,6 +19,7 @@ Use MD5 for editing long keys only in supported drivers, bug since Adminer 3.6.4
 Don't execute external JavaScript when verifying version
 Include JUSH in the compiled version
 Protect CSRF token against BREACH
+Non-MySQL: View triggers
 SQLite: Allow editing primary key
 SQLite: Allow editing foreign keys
 PostgreSQL: Fix handling of nextval() default values

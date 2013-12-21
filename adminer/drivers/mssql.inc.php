@@ -607,7 +607,7 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)
 	}
 
 	function support($feature) {
-		return preg_match('~^(database|table|columns|sql|indexes|scheme|trigger|view|drop_col)$~', $feature); //! routine|
+		return preg_match('~^(columns|database|drop_col|indexes|scheme|sql|table|trigger|view|view_trigger)$~', $feature); //! routine|
 	}
 
 	$jush = "mssql";

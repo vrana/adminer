@@ -71,18 +71,18 @@ if ($fields) {
 			echo '<p class="links"><a href="' . h(ME) . 'foreign=' . urlencode($TABLE) . '">' . lang('Add foreign key') . "</a>\n";
 		}
 		
-		if (support("trigger")) {
-			echo "<h3 id='triggers'>" . lang('Triggers') . "</h3>\n";
-			$triggers = triggers($TABLE);
-			if ($triggers) {
-				echo "<table cellspacing='0'>\n";
-				foreach ($triggers as $key => $val) {
-					echo "<tr valign='top'><td>$val[0]<td>$val[1]<th>" . h($key) . "<td><a href='" . h(ME . 'trigger=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "'>" . lang('Alter') . "</a>\n";
-				}
-				echo "</table>\n";
+	}
+	
+	if (support(is_view($table_status) ? "view_trigger" : "trigger")) {
+		echo "<h3 id='triggers'>" . lang('Triggers') . "</h3>\n";
+		$triggers = triggers($TABLE);
+		if ($triggers) {
+			echo "<table cellspacing='0'>\n";
+			foreach ($triggers as $key => $val) {
+				echo "<tr valign='top'><td>$val[0]<td>$val[1]<th>" . h($key) . "<td><a href='" . h(ME . 'trigger=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "'>" . lang('Alter') . "</a>\n";
 			}
-			echo '<p class="links"><a href="' . h(ME) . 'trigger=' . urlencode($TABLE) . '">' . lang('Add trigger') . "</a>\n";
+			echo "</table>\n";
 		}
-		
+		echo '<p class="links"><a href="' . h(ME) . 'trigger=' . urlencode($TABLE) . '">' . lang('Add trigger') . "</a>\n";
 	}
 }
