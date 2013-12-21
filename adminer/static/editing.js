@@ -332,7 +332,7 @@ function editingLengthFocus(field) {
 	if (/(enum|set)$/.test(selectValue(td.previousSibling.firstChild))) {
 		var edit = document.getElementById('enum-edit');
 		var val = field.value;
-		edit.value = (/^'.+','.+'$/.test(val) ? val.substr(1, val.length - 2).replace(/','/g, "\n").replace(/''/g, "'") : val);
+		edit.value = (/^'.+'$/.test(val) ? val.substr(1, val.length - 2).replace(/','/g, "\n").replace(/''/g, "'") : val); //! doesn't handle 'a'',''b' correctly
 		td.appendChild(edit);
 		field.style.display = 'none';
 		edit.style.display = 'inline';
@@ -346,7 +346,7 @@ function editingLengthFocus(field) {
 function editingLengthBlur(edit) {
 	var field = edit.parentNode.firstChild;
 	var val = edit.value;
-	field.value = (/\n/.test(val) ? "'" + val.replace(/\n+$/, '').replace(/'/g, "''").replace(/\n/g, "','") + "'" : val);
+	field.value = (/^'[^\n]+'$/.test(val) ? val : "'" + val.replace(/\n+$/, '').replace(/'/g, "''").replace(/\n/g, "','") + "'");
 	field.style.display = 'inline';
 	edit.style.display = 'none';
 }
