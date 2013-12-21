@@ -62,6 +62,7 @@ Don't use LIMIT 1 if updating unique row (bug #3613109)
 Restrict editing rows without unique identifier to search results
 Display navigation bellow main content on mobile browsers
 Get number of rows on export page asynchronously
+Respect 'whole result' even if some rows are checked (bug #339 since Adminer 3.7.0)
 MySQL: Optimize create table page and Editor navigation
 MySQL: Display bit type as binary number
 MySQL: Improve export of binary data types
