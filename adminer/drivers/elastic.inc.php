@@ -1,5 +1,5 @@
 <?php
-$drivers["elastic"] = "Elasticsearch (experimental)";
+$drivers["elastic"] = "Elasticsearch (beta)";
 
 if (isset($_GET["elastic"])) {
 	$possible_drivers = array("json");
