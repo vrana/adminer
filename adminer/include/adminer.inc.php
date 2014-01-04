@@ -531,6 +531,9 @@ username.form['auth[driver]'].onchange();
 				}
 			}
 		}
+		if ($field["auto_increment"] && !isset($_GET["select"]) && !where($_GET)) {
+			$return = lang('Auto Increment');
+		}
 		return explode("/", $return);
 	}
 

@@ -13,11 +13,12 @@ Disable underlining links
 Differentiate views in navigation
 Improve speed of CSV import
 Keep form values after refresh in Firefox
-Encrypt passwords stored in session by a key stored in cookie
+Mark auto_increment fields in edit
 Don't append newlines to uploaded files, bug since Adminer 3.7.0
 Don't display SQL edit form on Ctrl+click on the select query, introduced in Adminer 3.6.4
 Use MD5 for editing long keys only in supported drivers, bug since Adminer 3.6.4
 Don't reset column when searching for an empty value with Enter, bug since Adminer 3.6.4
+Encrypt passwords stored in session by a key stored in cookie
 Don't execute external JavaScript when verifying version
 Include JUSH in the compiled version
 Protect CSRF token against BREACH
