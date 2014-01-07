@@ -1,10 +1,11 @@
 Adminer 4.0.0-dev:
-Driver for MongoDB, SimpleDB and Elasticsearch
+Driver for SimpleDB, MongoDB and Elasticsearch
+Highlight SQL in textareas
 Save and continue edit by AJAX
 Split SQL command and import
 Add a new column in alter table on key press
 Mark length as required for strings
-Add label to database selection
+Add label to database selection, move logout button
 Add button for dropping an index
 Display number of selected rows
 Add links to documentation
