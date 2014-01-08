@@ -453,12 +453,17 @@ function editingKeydown(event) {
 function functionChange(select) {
 	var input = select.form[select.name.replace(/^function/, 'fields')];
 	if (selectValue(select)) {
-		if (input.origMaxLength === undefined) {
+		if (input.origType === undefined) {
+			input.origType = input.type;
 			input.origMaxLength = input.maxLength;
 		}
 		input.removeAttribute('maxlength');
-	} else if (input.origMaxLength >= 0) {
-		input.maxLength = input.origMaxLength;
+		input.type = 'text';
+	} else if (input.origType) {
+		input.type = input.origType;
+		if (input.origMaxLength >= 0) {
+			input.maxLength = input.origMaxLength;
+		}
 	}
 	helpClose();
 }

@@ -809,8 +809,9 @@ function input($field, $value, $function) {
 		}
 		$onchange = ($first ? " onchange=\"var f = this.form['function[" . h(js_escape(bracket_escape($field["field"]))) . "]']; if ($first > f.selectedIndex) f.selectedIndex = $first;\" onkeyup='keyupChange.call(this);'" : "");
 		$attrs .= $onchange;
+		$has_function = (in_array($function, $functions) || isset($functions[$function]));
 		echo (count($functions) > 1
-			? "<select name='function[$name]' onchange='functionChange(this);'" . on_help("getTarget(event).value.replace(/^SQL\$/, '')", 1) . ">" . optionlist($functions, $function === null || in_array($function, $functions) || isset($functions[$function]) ? $function : "") . "</select>"
+			? "<select name='function[$name]' onchange='functionChange(this);'" . on_help("getTarget(event).value.replace(/^SQL\$/, '')", 1) . ">" . optionlist($functions, $function === null || $has_function ? $function : "") . "</select>"
 			: nbsp(reset($functions))
 		) . '<td>';
 		$input = $adminer->editInput($_GET["edit"], $field, $attrs, $value); // usage in call is without a table
@@ -842,7 +843,12 @@ function input($field, $value, $function) {
 				$maxlength += 7; // microtime
 			}
 			// type='date' and type='time' display localized value which may be confusing, type='datetime' uses 'T' as date and time separator
-			echo "<input" . (preg_match('~int~', $field["type"]) ? " type='number'" : "") . " value='" . h($value) . "'" . ($maxlength ? " maxlength='$maxlength'" : "") . (preg_match('~char|binary~', $field["type"]) && $maxlength > 20 ? " size='40'" : "") . "$attrs>";
+			echo "<input"
+				. ((!$has_function || $function === "") && preg_match('~(?<!o)int~', $field["type"]) ? " type='number'" : "")
+				. " value='" . h($value) . "'" . ($maxlength ? " maxlength='$maxlength'" : "")
+				. (preg_match('~char|binary~', $field["type"]) && $maxlength > 20 ? " size='40'" : "")
+				. "$attrs>"
+			;
 		}
 	}
 }
