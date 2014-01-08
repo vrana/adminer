@@ -56,12 +56,13 @@ if (isset($_GET["mongo"])) {
 							$this->_charset[$key] = 63;
 						}
 						$row[$key] =
+							(is_a($val, 'MongoId') ? 'ObjectId("' . strval($val) . '")':
 							(is_a($val, 'MongoDate') ? gmdate("Y-m-d H:i:s", $val->sec) . " GMT" :
 							(is_a($val, 'MongoBinData') ? $val->bin : //! allow downloading
 							(is_a($val, 'MongoRegex') ? strval($val) :
 							(is_object($val) ? get_class($val) : // MongoMinKey, MongoMaxKey
 							$val
-						))));
+						)))));
 					}
 					$this->_rows[] = $row;
 					foreach ($row as $key => $val) {
