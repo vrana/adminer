@@ -374,7 +374,7 @@ if ($driver) {
 	if (count($drivers) == 1) {
 		$file = str_replace('<?php echo html_select("driver", $drivers, DRIVER); ?>', "<input type='hidden' name='driver' value='" . ($driver == "mysql" ? "server" : $driver) . "'>" . reset($drivers), $file);
 	}
-	$file = preg_replace('(;../externals/jush/modules/jush-(?!' . preg_quote($driver == "mysql" ? "sql" : $driver) . '\.)[^.]+.js)', '', $file);
+	$file = preg_replace('(;../externals/jush/modules/jush-(?!textarea\.|' . preg_quote($driver == "mysql" ? "sql" : $driver) . '\.)[^.]+.js)', '', $file);
 }
 if ($project == "editor") {
 	$file = preg_replace('~;../externals/jush/jush.css~', '', $file);
