@@ -165,7 +165,12 @@ if (isset($_GET["mongo"])) {
 	}
 
 	function count_tables($databases) {
-		return array();
+		global $connection;
+		$return = array();
+		foreach ($databases as $db) {
+			$return[$db] = count($connection->_link->selectDB($db)->getCollectionNames(true));
+		}
+		return $return;
 	}
 
 	function tables_list() {
