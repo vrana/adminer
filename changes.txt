@@ -1,6 +1,7 @@
 Adminer 4.0.1-dev:
 Fix compiled version of Elasticsearch
 Don't use type=number if a SQL function is used
+MongoDB: Count tables, display ObjectIds
 
 Adminer 4.0.0 (released 2014-01-08):
 Driver for SimpleDB, MongoDB and Elasticsearch
