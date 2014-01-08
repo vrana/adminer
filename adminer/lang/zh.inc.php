@@ -1,5 +1,4 @@
 <?php
-//Chinese language for Adminer from vea - urn2.net - vea.urn2@gmail.com
 $translations = array(
 	'Login' => '登录',
 	'Logout successful.' => '注销成功。',

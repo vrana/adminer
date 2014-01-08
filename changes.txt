@@ -1,4 +1,4 @@
-Adminer 4.0.0-dev:
+Adminer 4.0.0 (released 2014-01-08):
 Driver for SimpleDB, MongoDB and Elasticsearch
 Highlight SQL in textareas
 Save and continue edit by AJAX
