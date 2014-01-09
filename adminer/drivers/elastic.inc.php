@@ -297,6 +297,19 @@ if (isset($_GET["elastic"])) {
 		return $connection->query(urlencode(implode(',', $databases)), array(), 'DELETE');
 	}
 
+	/** Drop tables
+	* @param array
+	* @return bool
+	*/
+	function drop_tables($tables) {
+		global $connection;
+		$result = true;
+		foreach ($tables as $table) { // convert to bulk api
+			$result = $result && $connection->query(urlencode($table), array(), 'DELETE');
+		}
+		return $result;
+	}
+
 	$jush = "elastic";
 	$operators = array("=", "query");
 	$functions = array();
