@@ -29,7 +29,7 @@ input.required { box-shadow: 1px 1px 1px red; }
 .block { display: block; }
 .version { color: #777; font-size: 67%; }
 .js .hidden, .nojs .jsonly { display: none; }
-.js .column { position: absolute; background: #ddf; padding: .3em 1ex .3em 0; margin-top: -.3em; }
+.js .column { position: absolute; background: #ddf; padding: .27em 1ex .3em 0; margin-top: -.27em; }
 .nowrap td, .nowrap th, td.nowrap { white-space: pre; }
 .wrap td { white-space: normal; }
 .error { color: red; background: #fee; }
