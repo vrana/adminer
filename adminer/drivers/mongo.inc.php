@@ -234,11 +234,7 @@ if (isset($_GET["mongo"])) {
 	}
 
 	function fields($table) {
-		return array("_id" => array(
-			"field" => "_id",
-			"auto_increment" => true,
-			"privileges" => array("select" => 1, "insert" => 1, "update" => 1),
-		));
+		return array();
 	}
 
 	function convert_field($field) {
@@ -304,7 +300,7 @@ if (isset($_GET["mongo"])) {
 	}
 
 	function support($feature) {
-		return preg_match("~database|table|indexes~", $feature);
+		return preg_match("~database|indexes~", $feature);
 	}
 
 	$jush = "mongo";
