@@ -288,6 +288,15 @@ if (isset($_GET["elastic"])) {
 		return $connection->query(urlencode($db), array(), 'PUT');
 	}
 
+	/** Drop databases
+	* @param array
+	* @return mixed
+	*/
+	function drop_databases($databases) {
+		global $connection;
+		return $connection->query(urlencode(implode(',', $databases)), array(), 'DELETE');
+	}
+
 	$jush = "elastic";
 	$operators = array("=", "query");
 	$functions = array();
