@@ -211,9 +211,9 @@ if (isset($_GET["elastic"])) {
 		if ($return) {
 			foreach ($return as $key => $type) { // _stats have just info about database
 				$return[$key] = array("Name" => $key, "Engine" => $type);
-				if ($name != "") {
-					return $return[$name];
-				}
+			}
+			if ($name != "") {
+				return $return[$name];
 			}
 		}
 		return $return;
