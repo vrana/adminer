@@ -168,7 +168,7 @@ function short_identifier($number, $chars) {
 // based on http://latrine.dgx.cz/jak-zredukovat-php-skripty
 function php_shrink($input) {
 	global $VERSION;
-	$special_variables = array_flip(array('$this', '$GLOBALS', '$_GET', '$_POST', '$_FILES', '$_COOKIE', '$_SESSION', '$_SERVER', '$http_response_header'));
+	$special_variables = array_flip(array('$this', '$GLOBALS', '$_GET', '$_POST', '$_FILES', '$_COOKIE', '$_SESSION', '$_SERVER', '$http_response_header', '$php_errormsg'));
 	$short_variables = array();
 	$shortening = true;
 	$tokens = token_get_all($input);
