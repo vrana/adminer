@@ -128,8 +128,10 @@ username.form['auth[driver]'].onchange();
 	function selectLinks($tableStatus, $set = "") {
 		echo '<p class="links">';
 		$links = array("select" => lang('Select data'));
-		if (support("table")) {
+		if (support("table") || support("indexes")) {
 			$links["table"] = lang('Show structure');
+		}
+		if (support("table")) {
 			if (is_view($tableStatus)) {
 				$links["view"] = lang('Alter view');
 			} else {
@@ -854,7 +856,7 @@ username.form['auth[driver]'].onchange();
 		foreach ($tables as $table => $status) {
 			echo '<a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table || $_GET["edit"] == $table) . ">" . lang('select') . "</a> ";
 			$name = $this->tableName($status);
-			echo (support("table")
+			echo (support("table") || support("indexes")
 				? '<a href="' . h(ME) . 'table=' . urlencode($table) . '"' . bold(in_array($table, array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"])), (is_view($status) ? "view" : "")) . " title='" . lang('Show structure') . "'>$name</a>"
 				: "<span>$name</span>"
 			) . "<br>\n";

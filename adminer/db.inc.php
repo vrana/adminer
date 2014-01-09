@@ -80,7 +80,7 @@ if ($adminer->homepage()) {
 			foreach ($tables_list as $name => $type) {
 				$view = ($type !== null && !preg_match('~table~i', $type));
 				echo '<tr' . odd() . '><td>' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array($name, $tables_views, true), "", "formUncheck('check-all');");
-				echo '<th>' . (support("table") ? '<a href="' . h(ME) . 'table=' . urlencode($name) . '" title="' . lang('Show structure') . '">' . h($name) . '</a>' : h($name));
+				echo '<th>' . (support("table") || support("indexes") ? '<a href="' . h(ME) . 'table=' . urlencode($name) . '" title="' . lang('Show structure') . '">' . h($name) . '</a>' : h($name));
 				if ($view) {
 					echo '<td colspan="6"><a href="' . h(ME) . "view=" . urlencode($name) . '" title="' . lang('Alter view') . '">' . lang('View') . '</a>';
 					echo '<td align="right"><a href="' . h(ME) . "select=" . urlencode($name) . '" title="' . lang('Select data') . '">?</a>';
@@ -95,7 +95,7 @@ if ($adminer->homepage()) {
 						"Rows" => array("select", lang('Select data')),
 					) as $key => $link) {
 						$id = " id='$key-" . h($name) . "'";
-						echo ($link ? "<td align='right'>" . (support("table") || $key == "Rows"
+						echo ($link ? "<td align='right'>" . (support("table") || $key == "Rows" || (support("indexes") && $key != "Data_length")
 							? "<a href='" . h(ME . "$link[0]=") . urlencode($name) . "'$id title='$link[1]'>?</a>"
 							: "<span$id>?</span>"
 						) : "<td id='$key-" . h($name) . "'>&nbsp;");

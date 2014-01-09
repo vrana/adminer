@@ -448,7 +448,7 @@ if (!$columns && support("table")) {
 					? $page + (count($rows) >= $limit ? 2 : 1)
 					: floor(($found_rows - 1) / $limit)
 				);
-				if (support("table")) {
+				if ($jush != "simpledb") {
 					echo '<a href="' . h(remove_from_uri("page")) . "\" onclick=\"pageClick(this.href, +prompt('" . lang('Page') . "', '" . ($page + 1) . "'), event); return false;\">" . lang('Page') . "</a>:";
 					echo pagination(0, $page) . ($page > 5 ? " ..." : "");
 					for ($i = max(1, $page - 4); $i < min($max_page, $page + 5); $i++) {
