@@ -610,7 +610,7 @@ function selectClick(td, event, text, warning) {
 	input.focus();
 	if (text == 2) { // long text
 		return ajax(location.href + '&' + encodeURIComponent(td.id) + '=', function (request) {
-			if (request.status) {
+			if (request.status && request.responseText) {
 				input.value = request.responseText;
 				input.name = td.id;
 			}
