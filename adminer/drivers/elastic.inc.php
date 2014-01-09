@@ -88,7 +88,7 @@ if (isset($_GET["elastic"])) {
 
 	class Min_Driver extends Min_SQL {
 
-		function select($table, $select, $where, $group, $order, $limit, $page) {
+		function select($table, $select, $where, $group, $order, $limit, $page, $print = false) {
 			global $adminer;
 			$query = $adminer->selectQueryBuild($select, $where, $group, $order, $limit, $page);
 			$data = array();
@@ -125,7 +125,9 @@ if (isset($_GET["elastic"])) {
 					$data["query"]["filtered"]["query"] = array("match_all" => array());
 				}
 			}
-			echo $adminer->selectQuery($query);
+			if ($print) {
+				echo $adminer->selectQuery("$query: " . print_r($data, true));
+			}
 			$search = $this->_conn->query($query, $data);
 			if (!$search) {
 				return false;

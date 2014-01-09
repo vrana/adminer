@@ -256,7 +256,7 @@ if (!$columns && support("table")) {
 	if ($convert_fields) {
 		$select2[] = substr($convert_fields, 2);
 	}
-	$result = $driver->select($TABLE, $select2, $where, $group, $order, $limit, $page);
+	$result = $driver->select($TABLE, $select2, $where, $group, $order, $limit, $page, true);
 
 	if (!$result) {
 		echo "<p class='error'>" . error() . "\n";
@@ -346,7 +346,7 @@ if (!$columns && support("table")) {
 				}
 				$unique_idf = "";
 				foreach ($unique_array as $key => $val) {
-					if (strlen($val) > 64 && ($jush == "sql" || $jush == "pgsql")) {
+					if (($jush == "sql" || $jush == "pgsql") && strlen($val) > 64) {
 						$key = "MD5(" . (strpos($key, '(') ? $key : idf_escape($key)) . ")"; //! columns looking like functions
 						$val = md5($val);
 					}

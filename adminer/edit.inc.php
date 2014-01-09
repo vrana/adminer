@@ -89,7 +89,7 @@ if ($_POST["save"]) {
 		$select = array("*");
 	}
 	if ($select) {
-		$result = $driver->select($TABLE, $select, array($where), $select, array(), (isset($_GET["select"]) ? 2 : 1), 0);
+		$result = $driver->select($TABLE, $select, array($where), $select, array(), (isset($_GET["select"]) ? 2 : 1), 0, true);
 		$row = $result->fetch_assoc();
 		if (isset($_GET["select"]) && (!$row || $result->fetch_assoc())) { // $result->num_rows != 1 isn't available in all drivers
 			$row = null;

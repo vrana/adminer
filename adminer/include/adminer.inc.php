@@ -176,10 +176,10 @@ username.form['auth[driver]'].onchange();
 	*/
 	function selectQuery($query) {
 		global $jush;
-		return ($_GET["edit"] != "" ? "" : "<p><code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code>"
+		return "<p><code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code>"
 			. (support("sql") ? " <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>" : "")
 			. "</p>" // </p> - required for IE9 inline edit
-		);
+		;
 	}
 
 	/** Description of a row in a table

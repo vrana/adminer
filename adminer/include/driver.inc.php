@@ -18,9 +18,10 @@
 	* @param array result of $adminer->selectOrderProcess()
 	* @param int result of $adminer->selectLimitProcess()
 	* @param int index of page starting at zero
+	* @param bool whether to print the query
 	* @return Min_Result
 	*/
-	function select($table, $select, $where, $group, $order, $limit, $page) {
+	function select($table, $select, $where, $group, $order, $limit, $page, $print = false) {
 		global $adminer, $jush;
 		$is_group = (count($group) < count($select));
 		$query = $adminer->selectQueryBuild($select, $where, $group, $order, $limit, $page);
@@ -33,7 +34,9 @@
 				"\n"
 			);
 		}
-		echo $adminer->selectQuery($query);
+		if ($print) {
+			echo $adminer->selectQuery($query);
+		}
 		return $this->_conn->query($query);
 	}
 	

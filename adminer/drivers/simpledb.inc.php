@@ -149,10 +149,10 @@ if (isset($_GET["simpledb"])) {
 			return $return;
 		}
 
-		function select($table, $select, $where, $group, $order, $limit, $page) {
+		function select($table, $select, $where, $group, $order, $limit, $page, $print = false) {
 			global $connection;
 			$connection->next = $_GET["next"];
-			$return = parent::select($table, $select, $where, $group, $order, $limit, $page);
+			$return = parent::select($table, $select, $where, $group, $order, $limit, $page, $print);
 			$connection->next = 0;
 			return $return;
 		}

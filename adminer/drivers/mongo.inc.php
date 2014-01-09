@@ -21,7 +21,7 @@ if (isset($_GET["mongo"])) {
 					$options["db"] = $db;
 				}
 				try {
-					$this->_link = new MongoClient("mongodb://$server", $options);
+					$this->_link = @new MongoClient("mongodb://$server", $options);
 					return true;
 				} catch (Exception $ex) {
 					$this->error = $ex->getMessage();
@@ -41,6 +41,10 @@ if (isset($_GET["mongo"])) {
 					$this->error = $ex->getMessage();
 					return false;
 				}
+			}
+
+			function quote($string) {
+				return $string;
 			}
 
 		}
@@ -110,18 +114,23 @@ if (isset($_GET["mongo"])) {
 
 
 	class Min_Driver extends Min_SQL {
-		function select($table, $select, $where, $group, $order, $limit, $page) {
+		function select($table, $select, $where, $group, $order, $limit, $page, $print = false) {
 			global $connection;
-			if ($select == array("*")) {
-				$select = array();
-			} else {
-				$select = array_fill_keys($select, true);
+			$select = ($select == array("*")
+				? array()
+				: array_fill_keys($select, true)
+			);
+			$sort = array();
+			foreach ($order as $val) {
+				$val = preg_replace('~ DESC$~', '', $val, 1, $count);
+				$sort[$val] = ($count ? -1 : 1);
 			}
-			$return = array();
-			foreach ($connection->_db->selectCollection($table)->find(array(), $select) as $val) {
-				$return[] = $val;
-			}
-			return new Min_Result($return);
+			return new Min_Result(iterator_to_array($connection->_db->selectCollection($table)
+				->find(array(), $select)
+				->sort($sort)
+				->limit(+$limit)
+				->skip($page * $limit)
+			));
 		}
 	}
 
@@ -235,6 +244,10 @@ if (isset($_GET["mongo"])) {
 	function convert_field($field) {
 	}
 
+	function unconvert_field($field, $return) {
+		return $return;
+	}
+
 	function foreign_keys($table) {
 		return array();
 	}
@@ -247,7 +260,9 @@ if (isset($_GET["mongo"])) {
 	}
 
 	function found_rows($table_status, $where) {
-		return null;
+		global $connection;
+		//! don't call count_rows()
+		return $connection->_db->selectCollection($_GET["select"])->count($where);
 	}
 
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
