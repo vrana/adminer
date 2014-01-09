@@ -115,7 +115,6 @@ if (isset($_GET["mongo"])) {
 
 	class Min_Driver extends Min_SQL {
 		function select($table, $select, $where, $group, $order, $limit, $page, $print = false) {
-			global $connection;
 			$select = ($select == array("*")
 				? array()
 				: array_fill_keys($select, true)
@@ -125,12 +124,24 @@ if (isset($_GET["mongo"])) {
 				$val = preg_replace('~ DESC$~', '', $val, 1, $count);
 				$sort[$val] = ($count ? -1 : 1);
 			}
-			return new Min_Result(iterator_to_array($connection->_db->selectCollection($table)
+			return new Min_Result(iterator_to_array($this->_conn->_db->selectCollection($table)
 				->find(array(), $select)
 				->sort($sort)
 				->limit(+$limit)
 				->skip($page * $limit)
 			));
+		}
+		
+		function insert($table, $set) {
+			try {
+				$return = $this->_conn->_db->selectCollection($table)->insert($set);
+				$this->_conn->errno = $return['code'];
+				$this->_conn->error = $return['err'];
+				return !$return['err'];
+			} catch (Exception $ex) {
+				$this->_conn->error = $ex->getMessage();
+				return false;
+			}
 		}
 	}
 

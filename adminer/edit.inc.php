@@ -98,18 +98,17 @@ if ($_POST["save"]) {
 }
 
 if (!support("table") && !$fields) {
+	$id = ($jush == "mongo" ? "_id" : "itemName()"); // simpledb
 	if (!$where) { // insert
-		$row = reset(get_rows("SELECT * FROM " . table($TABLE) . " LIMIT 1"));
-		if (!$row) {
-			$row = array("itemName()" => "");
-		}
+		$row = $driver->select($TABLE, array("*"), $where, array("*"), array(), 1, 0);
+		$row = ($row ? $row->fetch_assoc() : array($id => ""));
 	}
 	if ($row) {
 		foreach ($row as $key => $val) {
 			if (!$where) {
 				$row[$key] = null;
 			}
-			$fields[$key] = array("field" => $key, "null" => ($key != "itemName()"), "auto_increment" => ($key == "itemName()"));
+			$fields[$key] = array("field" => $key, "null" => ($key != $id), "auto_increment" => ($key == $id));
 		}
 	}
 }
