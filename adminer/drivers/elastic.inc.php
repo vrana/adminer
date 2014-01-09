@@ -90,40 +90,37 @@ if (isset($_GET["elastic"])) {
 
 		function select($table, $select, $where, $group, $order, $limit, $page, $print = false) {
 			global $adminer;
-			$query = $adminer->selectQueryBuild($select, $where, $group, $order, $limit, $page);
 			$data = array();
-			if (!$query) {
-				$query = "$table/_search";
-				if ($select != array("*")) {
-					$data["fields"] = $select;
+			$query = "$table/_search";
+			if ($select != array("*")) {
+				$data["fields"] = $select;
+			}
+			if ($order) {
+				$sort = array();
+				foreach ($order as $col) {
+					$col = preg_replace('~ DESC$~', '', $col, 1, $count);
+					$sort[] = ($count ? array($col => "desc") : $col);
 				}
-				if ($order) {
-					$sort = array();
-					foreach ($order as $col) {
-						$col = preg_replace('~ DESC$~', '', $col, 1, $count);
-						$sort[] = ($count ? array($col => "desc") : $col);
-					}
-					$data["sort"] = $sort;
+				$data["sort"] = $sort;
+			}
+			if ($limit) {
+				$data["size"] = +$limit;
+				if ($page) {
+					$data["from"] = ($page * $limit);
 				}
-				if ($limit) {
-					$data["size"] = +$limit;
-					if ($page) {
-						$data["from"] = ($page * $limit);
-					}
-				}
-				foreach ((array) $_GET["where"] as $val) {
-					if ("$val[col]$val[val]" != "") {
-						$term = array("match" => array(($val["col"] != "" ? $val["col"] : "_all") => $val["val"]));
-						if ($val["op"] == "=") {
-							$data["query"]["filtered"]["filter"]["and"][] = $term;
-						} else {
-							$data["query"]["filtered"]["query"]["bool"]["must"][] = $term;
-						}
+			}
+			foreach ((array) $_GET["where"] as $val) {
+				if ("$val[col]$val[val]" != "") {
+					$term = array("match" => array(($val["col"] != "" ? $val["col"] : "_all") => $val["val"]));
+					if ($val["op"] == "=") {
+						$data["query"]["filtered"]["filter"]["and"][] = $term;
+					} else {
+						$data["query"]["filtered"]["query"]["bool"]["must"][] = $term;
 					}
 				}
-				if ($data["query"] && !$data["query"]["filtered"]["query"]) {
-					$data["query"]["filtered"]["query"] = array("match_all" => array());
-				}
+			}
+			if ($data["query"] && !$data["query"]["filtered"]["query"]) {
+				$data["query"]["filtered"]["query"] = array("match_all" => array());
 			}
 			if ($print) {
 				echo $adminer->selectQuery("$query: " . print_r($data, true));
