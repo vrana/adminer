@@ -68,6 +68,13 @@ class Adminer {
 	* @return bool true to link adminer.css if exists
 	*/
 	function head() {
+		global $jush;
+		?>
+<link rel="stylesheet" type="text/css" href="../externals/jush/jush.css">
+<script type="text/javascript" src="../externals/jush/modules/jush.js"></script>
+<script type="text/javascript" src="../externals/jush/modules/jush-textarea.js"></script>
+<script type="text/javascript" src="../externals/jush/modules/jush-<?php echo $jush; ?>.js"></script>
+<?php
 		return true;
 	}
 
