@@ -303,11 +303,11 @@ if (isset($_GET["elastic"])) {
 	*/
 	function drop_tables($tables) {
 		global $connection;
-		$result = true;
-		foreach ($tables as $table) { // convert to bulk api
-			$result = $result && $connection->query(urlencode($table), array(), 'DELETE');
+		$return = true;
+		foreach ($tables as $table) { //! convert to bulk api
+			$return = $return && $connection->query(urlencode($table), array(), 'DELETE');
 		}
-		return $result;
+		return $return;
 	}
 
 	$jush = "elastic";
