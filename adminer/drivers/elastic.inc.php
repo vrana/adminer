@@ -9,9 +9,10 @@ if (isset($_GET["elastic"])) {
 		class Min_DB {
 			var $extension = "JSON", $server_info, $errno, $error, $_url;
 
-			function query($path, $content = array()) {
+			function query($path, $content = array(), $method = 'GET') {
 				@ini_set('track_errors', 1); // @ - may be disabled
 				$file = @file_get_contents($this->_url . ($this->_db != "" ? "$this->_db/" : "") . $path, false, stream_context_create(array('http' => array(
+					'method' => $method,
 					'content' => json_encode($content),
 					'ignore_errors' => 1, // available since PHP 5.2.10
 				))));
@@ -210,9 +211,9 @@ if (isset($_GET["elastic"])) {
 		if ($return) {
 			foreach ($return as $key => $type) { // _stats have just info about database
 				$return[$key] = array("Name" => $key, "Engine" => $type);
-				if ($name != "") {
-					return $return[$name];
-				}
+			}
+			if ($name != "") {
+				return $return[$name];
 			}
 		}
 		return $return;
@@ -276,6 +277,37 @@ if (isset($_GET["elastic"])) {
 
 	function found_rows($table_status, $where) {
 		return null;
+	}
+
+	/** Create database
+	* @param string
+	* @return mixed
+	*/
+	function create_database($db) {
+		global $connection;
+		return $connection->query(urlencode($db), array(), 'PUT');
+	}
+
+	/** Drop databases
+	* @param array
+	* @return mixed
+	*/
+	function drop_databases($databases) {
+		global $connection;
+		return $connection->query(urlencode(implode(',', $databases)), array(), 'DELETE');
+	}
+
+	/** Drop tables
+	* @param array
+	* @return bool
+	*/
+	function drop_tables($tables) {
+		global $connection;
+		$result = true;
+		foreach ($tables as $table) { // convert to bulk api
+			$result = $result && $connection->query(urlencode($table), array(), 'DELETE');
+		}
+		return $result;
 	}
 
 	$jush = "elastic";
