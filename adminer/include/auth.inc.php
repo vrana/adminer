@@ -137,7 +137,7 @@ if (isset($_GET["username"])) {
 	$connection = connect();
 }
 
-if (is_string($connection) || !$adminer->login($_GET["username"], get_password())) {
+if (!is_object($connection) || !$adminer->login($_GET["username"], get_password())) {
 	auth_error();
 	exit;
 }
