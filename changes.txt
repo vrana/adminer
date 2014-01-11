@@ -1,4 +1,4 @@
-Adminer 4.0.1-dev:
+Adminer 4.0.1 (released 2014-01-11):
 Don't use type=number if a SQL function is used
 Disable highlighting in textareas with long texts
 Don't autofocus SQL textarea in Firefox
