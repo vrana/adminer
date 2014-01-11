@@ -217,7 +217,7 @@ if (!isset($_GET["import"])) {
 }
 
 echo checkbox("error_stops", 1, ($_POST ? $_POST["error_stops"] : isset($_GET["import"])), lang('Stop on error')) . "\n";
-echo checkbox("only_errors", 1, $_POST["only_errors"], lang('Show only errors')) . "\n";
+echo checkbox("only_errors", 1, ($_POST ? $_POST["only_errors"] : isset($_GET["import"])), lang('Show only errors')) . "\n";
 echo "<input type='hidden' name='token' value='$token'>\n";
 
 if (!isset($_GET["import"]) && $history) {
