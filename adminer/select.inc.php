@@ -370,7 +370,7 @@ if (!$columns && support("table")) {
 						if (preg_match('~blob|bytea|raw|file~', $field["type"]) && $val != "") {
 							$link = ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . $unique_idf;
 						}
-						if (!$link) { // link related items
+						if (!$link && $val !== null) { // link related items
 							foreach ((array) $foreign_keys[$key] as $foreign_key) {
 								if (count($foreign_keys[$key]) == 1 || end($foreign_key["source"]) == $key) {
 									$link = "";
