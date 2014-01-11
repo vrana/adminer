@@ -646,6 +646,8 @@ function get_file($key, $decompress = false) {
 				$content = substr($content, 3);
 			}
 			$return .= $content . "\n\n";
+		} else {
+			$return .= $content;
 		}
 	}
 	//! support SQL files not ending with semicolon

@@ -4,6 +4,7 @@ Disable highlighting in textareas with long texts
 Don't autofocus SQL textarea in Firefox
 Don't link NULL foreign key values
 Fix displaying images in Editor, bug since Adminer 3.6.0
+Fix uploading files, bug since Adminer 4.0.0
 MongoDB: Count tables, display ObjectIds, sort, limit, offset, count rows
 Elasticsearch: Fix compiled version, create and drop DB, drop table
 
