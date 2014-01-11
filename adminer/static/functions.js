@@ -478,6 +478,20 @@ function keyupChange() {
 	}
 }
 
+/** Add new field in schema-less edit
+* @param HTMLInputElement
+*/
+function fieldChange(field) {
+	var row = cloneNode(parentTag(field, 'tr'));
+	var inputs = row.getElementsByTagName('input');
+	for (var i = 0; i < inputs.length; i++) {
+		inputs[i].value = '';
+	}
+	// keep value in <select> (function)
+	parentTag(field, 'table').appendChild(row);
+	field.onchange = function () { };
+}
+
 
 
 /** Create AJAX request

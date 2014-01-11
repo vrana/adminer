@@ -1,5 +1,6 @@
 Adminer 4.0.3-dev:
 MongoDB: insert
+SimpleDB, MongoDB: insert more fields at once
 
 Adminer 4.0.2 (released 2014-01-11):
 Fix handling of long text in SQL textarea
