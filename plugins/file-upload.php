@@ -44,7 +44,7 @@ class AdminerFileUpload {
 		}
 	}
 
-	function selectVal($val, &$link, $field) {
+	function selectVal($val, &$link, $field, $original) {
 		if ($val != "&nbsp;" && preg_match('~(.*)_path$~', $field["field"], $regs)) {
 			$link = "$this->displayPath$_GET[select]/$regs[1]-$val";
 		}

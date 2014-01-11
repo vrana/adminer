@@ -220,12 +220,13 @@ username.form['auth[driver]'].onchange();
 	* @param string HTML-escaped value to print
 	* @param string link to foreign key
 	* @param array single field returned from fields()
+	* @param array original value before applying editVal() and escaping
 	* @return string
 	*/
-	function selectVal($val, $link, $field) {
+	function selectVal($val, $link, $field, $original) {
 		$return = ($val === null ? "<i>NULL</i>" : (preg_match("~char|binary~", $field["type"]) && !preg_match("~var~", $field["type"]) ? "<code>$val</code>" : $val));
 		if (preg_match('~blob|bytea|raw|file~', $field["type"]) && !is_utf8($val)) {
-			$return = lang('%d byte(s)', strlen(html_entity_decode($val, ENT_QUOTES)));
+			$return = lang('%d byte(s)', strlen($original));
 		}
 		return ($link ? "<a href='" . h($link) . "'>$return</a>" : $return);
 	}

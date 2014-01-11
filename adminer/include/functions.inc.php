@@ -1041,18 +1041,17 @@ function select_value($val, $link, $field, $text_length) {
 			);
 		}
 	}
-	$val = $adminer->editVal($val, $field);
-	if ($val !== null) {
-		if ($val === "") { // === - may be int
-			$val = "&nbsp;";
-		} elseif ($text_length != "" && is_shortable($field)) {
-			$val = shorten_utf8($val, max(0, +$text_length)); // usage of LEFT() would reduce traffic but complicate query - expected average speedup: .001 s VS .01 s on local network
+	$return = $adminer->editVal($val, $field);
+	if ($return !== null) {
+		if ($return === "") { // === - may be int
+			$return = "&nbsp;";
+		} elseif ($text_length != "" && is_shortable($field) && is_utf8($return)) {
+			$return = shorten_utf8($return, max(0, +$text_length)); // usage of LEFT() would reduce traffic but complicate query - expected average speedup: .001 s VS .01 s on local network
 		} else {
-			$val = h($val);
+			$return = h($return);
 		}
 	}
-	$val = $adminer->selectVal($val, $link, $field);
-	return $val;
+	return $adminer->selectVal($return, $link, $field, $val);
 }
 
 /** Check whether the string is e-mail address

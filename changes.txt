@@ -1,11 +1,11 @@
 Adminer 4.0.1-dev:
-Fix compiled version of Elasticsearch
 Don't use type=number if a SQL function is used
 Disable highlighting in textareas with long texts
 Don't autofocus SQL textarea in Firefox
 Don't link NULL foreign key values
+Fix displaying images in Editor, bug since Adminer 3.6.0
 MongoDB: Count tables, display ObjectIds, sort, limit, offset, count rows
-Elasticsearch: Create and drop DB, drop table
+Elasticsearch: Fix compiled version, create and drop DB, drop table
 
 Adminer 4.0.0 (released 2014-01-08):
 Driver for SimpleDB, MongoDB and Elasticsearch

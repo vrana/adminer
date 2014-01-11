@@ -170,12 +170,12 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	function selectLink($val, $field) {
 	}
 
-	function selectVal($val, $link, $field) {
+	function selectVal($val, $link, $field, $original) {
 		$return = ($val === null ? "&nbsp;" : $val);
 		$link = h($link);
 		if (preg_match('~blob|bytea~', $field["type"]) && !is_utf8($val)) {
-			$return = lang('%d byte(s)', strlen($val));
-			if (preg_match("~^(GIF|\xFF\xD8\xFF|\x89PNG\x0D\x0A\x1A\x0A)~", $val)) { // GIF|JPG|PNG, getimagetype() works with filename
+			$return = lang('%d byte(s)', strlen($original));
+			if (preg_match("~^(GIF|\xFF\xD8\xFF|\x89PNG\x0D\x0A\x1A\x0A)~", $original)) { // GIF|JPG|PNG, getimagetype() works with filename
 				$return = "<img src='$link' alt='$return'>";
 			}
 		}
