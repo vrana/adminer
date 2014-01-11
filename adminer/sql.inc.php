@@ -45,7 +45,7 @@ if (!$error && $_POST) {
 			}
 		}
 
-		$space = "(?:\\s|/\\*.*\\*/|(?:#|-- )[^\n]*\n|--\n)";
+		$space = "(?:\\s|/\\*.*\\*/|(?:#|-- )[^\n]*\n|--\r?\n)";
 		$delimiter = ";";
 		$offset = 0;
 		$empty = true;
