@@ -100,8 +100,13 @@ if ($_POST["save"]) {
 if (!support("table") && !$fields) {
 	$id = ($jush == "mongo" ? "_id" : "itemName()"); // simpledb
 	if (!$where) { // insert
-		$row = $driver->select($TABLE, array("*"), $where, array("*"), array(), 1, 0);
-		$row = ($row ? $row->fetch_assoc() : array($id => ""));
+		$result = $driver->select($TABLE, array("*"), $where, array("*"), array(), 1, 0);
+		if ($result) {
+			$row = $result->fetch_assoc();
+		}
+		if (!$row) {
+			$row = array($id => "");
+		}
 	}
 	if ($row) {
 		foreach ($row as $key => $val) {
