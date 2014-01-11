@@ -1,3 +1,6 @@
+Adminer 4.0.2-dev:
+Fix handling of long text in SQL textarea
+
 Adminer 4.0.1 (released 2014-01-11):
 Don't use type=number if a SQL function is used
 Disable highlighting in textareas with long texts

@@ -73,6 +73,7 @@ class Adminer {
 <link rel="stylesheet" type="text/css" href="../externals/jush/jush.css">
 <script type="text/javascript" src="../externals/jush/modules/jush.js"></script>
 <script type="text/javascript" src="../externals/jush/modules/jush-textarea.js"></script>
+<script type="text/javascript" src="../externals/jush/modules/jush-txt.js"></script>
 <script type="text/javascript" src="../externals/jush/modules/jush-<?php echo $jush; ?>.js"></script>
 <?php
 		return true;
