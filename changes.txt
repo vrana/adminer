@@ -1,3 +1,6 @@
+Adminer 4.0.3-dev:
+MongoDB: insert
+
 Adminer 4.0.2 (released 2014-01-11):
 Fix handling of long text in SQL textarea
 Support paste to SQL textarea in Opera

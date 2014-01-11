@@ -245,7 +245,7 @@ if (isset($_GET["mongo"])) {
 	}
 
 	function fields($table) {
-		return array();
+		return fields_from_edit();
 	}
 
 	function convert_field($field) {

@@ -323,19 +323,7 @@ if (isset($_GET["simpledb"])) {
 	}
 
 	function fields($table) {
-		$return = array();
-		foreach ((array) $_POST["field_keys"] as $key => $val) {
-			if ($val != "") {
-				$val = bracket_escape($val);
-				$_POST["function"][$val] = $_POST["field_funs"][$key];
-				$_POST["fields"][$val] = $_POST["field_vals"][$key];
-			}
-		}
-		foreach ((array) $_POST["fields"] as $key => $val) {
-			$name = bracket_escape($key, 1); // 1 - back
-			$return[$name] = array("field" => $name, "privileges" => array("insert" => 1, "update" => 1), "null" => 1);
-		}
-		return $return;
+		return fields_from_edit();
 	}
 
 	function foreign_keys($table) {

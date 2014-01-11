@@ -165,9 +165,9 @@ if (!$fields) {
 
 	if (!support("table")) {
 		echo "<tr>"
-			. "<th><input name='field_keys[]' value='" . h($_POST["field_keys"][0]) . "'>"
-			. "<td class='function'>" . html_select("field_funs[]", $adminer->editFunctions(array()), $_POST["field_funs"][0])
-			. "<td><input name='field_vals[]' value='" . h($_POST["field_vals"][0]) . "'>"
+			. "<th><input name='field_keys[]'>"
+			. "<td class='function'>" . html_select("field_funs[]", $adminer->editFunctions(array()))
+			. "<td><input name='field_vals[]'>"
 			. "\n"
 		;
 	}
