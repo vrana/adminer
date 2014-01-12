@@ -907,6 +907,7 @@ function process_input($field) {
 * @return array
 */
 function fields_from_edit() {
+	global $driver;
 	$return = array();
 	foreach ((array) $_POST["field_keys"] as $key => $val) {
 		if ($val != "") {
@@ -917,7 +918,12 @@ function fields_from_edit() {
 	}
 	foreach ((array) $_POST["fields"] as $key => $val) {
 		$name = bracket_escape($key, 1); // 1 - back
-		$return[$name] = array("field" => $name, "privileges" => array("insert" => 1, "update" => 1), "null" => 1);
+		$return[$name] = array(
+			"field" => $name,
+			"privileges" => array("insert" => 1, "update" => 1),
+			"null" => 1,
+			"auto_increment" => ($key == $driver->primary),
+		);
 	}
 	return $return;
 }

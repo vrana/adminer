@@ -7,7 +7,7 @@ if (isset($_GET["mongo"])) {
 
 	if (class_exists('MongoDB')) {
 		class Min_DB {
-			var $extension = "Mongo", $error, $_link, $_db;
+			var $extension = "Mongo", $error, $last_id, $_link, $_db;
 
 			function connect($server, $username, $password) {
 				global $adminer;
@@ -114,6 +114,8 @@ if (isset($_GET["mongo"])) {
 
 
 	class Min_Driver extends Min_SQL {
+		public $primary = "_id";
+		
 		function select($table, $select, $where, $group, $order, $limit, $page, $print = false) {
 			$select = ($select == array("*")
 				? array()
@@ -137,6 +139,7 @@ if (isset($_GET["mongo"])) {
 				$return = $this->_conn->_db->selectCollection($table)->insert($set);
 				$this->_conn->errno = $return['code'];
 				$this->_conn->error = $return['err'];
+				$this->_conn->last_id = $set['_id'];
 				return !$return['err'];
 			} catch (Exception $ex) {
 				$this->_conn->error = $ex->getMessage();
@@ -300,6 +303,11 @@ if (isset($_GET["mongo"])) {
 			}
 		}
 		return true;
+	}
+
+	function last_id() {
+		global $connection;
+		return $connection->last_id;
 	}
 
 	function table($idf) {

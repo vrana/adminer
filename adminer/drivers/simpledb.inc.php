@@ -118,6 +118,7 @@ if (isset($_GET["simpledb"])) {
 
 
 	class Min_Driver extends Min_SQL {
+		public $primary = "itemName()";
 
 		function _chunkRequest($ids, $action, $params, $expand = array()) {
 			global $connection;

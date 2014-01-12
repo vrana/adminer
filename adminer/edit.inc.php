@@ -98,14 +98,11 @@ if ($_POST["save"]) {
 }
 
 if (!support("table") && !$fields) {
-	$id = ($jush == "mongo" ? "_id" : "itemName()"); // simpledb
 	if (!$where) { // insert
 		$result = $driver->select($TABLE, array("*"), $where, array("*"), array(), 1, 0);
-		if ($result) {
-			$row = $result->fetch_assoc();
-		}
+		$row = ($result ? $result->fetch_assoc() : false);
 		if (!$row) {
-			$row = array($id => "");
+			$row = array($driver->primary => "");
 		}
 	}
 	if ($row) {
@@ -113,7 +110,7 @@ if (!support("table") && !$fields) {
 			if (!$where) {
 				$row[$key] = null;
 			}
-			$fields[$key] = array("field" => $key, "null" => ($key != $id), "auto_increment" => ($key == $id));
+			$fields[$key] = array("field" => $key, "null" => ($key != $driver->primary), "auto_increment" => ($key == $driver->primary));
 		}
 	}
 }
