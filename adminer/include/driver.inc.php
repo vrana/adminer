@@ -10,6 +10,14 @@
 		$this->_conn = $connection;
 	}
 	
+	/** Quote a SQL string or null value
+	* @param string
+	* @return string
+	*/
+	function quote($value) {
+		return ($value === null ? "NULL" : $this->_conn->quote($value));
+	}
+	
 	/** Select data from table
 	* @param string
 	* @param array result of $adminer->selectColumnsProcess()[0]

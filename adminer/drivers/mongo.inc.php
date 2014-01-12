@@ -116,6 +116,10 @@ if (isset($_GET["mongo"])) {
 	class Min_Driver extends Min_SQL {
 		public $primary = "_id";
 		
+		function quote($value) {
+			return ($value === null ? $value : parent::quote($value));
+		}
+		
 		function select($table, $select, $where, $group, $order, $limit, $page, $print = false) {
 			$select = ($select == array("*")
 				? array()

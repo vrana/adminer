@@ -249,13 +249,13 @@ function sid() {
 	return $return;
 }
 
-/** Shortcut for $connection->quote($string)
+/** Shortcut for $driver->quote($string)
 * @param string
 * @return string
 */
 function q($string) {
-	global $connection;
-	return $connection->quote($string);
+	global $driver;
+	return $driver->quote($string);
 }
 
 /** Get list of values from database
@@ -880,7 +880,7 @@ function process_input($field) {
 		return ($field["on_update"] == "CURRENT_TIMESTAMP" ? idf_escape($field["field"]) : false);
 	}
 	if ($function == "NULL") {
-		return "NULL";
+		$value = null;
 	}
 	if ($field["type"] == "set") {
 		return array_sum((array) $value);
