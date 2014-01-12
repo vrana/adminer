@@ -433,12 +433,16 @@ function indexesAddRow(field) {
 * @param string name prefix
 */
 function indexesChangeColumn(field, prefix) {
-	var columns = parentTag(field, 'td').getElementsByTagName('select');
 	var names = [];
-	for (var i=0; i < columns.length; i++) {
-		var value = selectValue(columns[i]);
-		if (value) {
-			names.push(value);
+	for (var tag in { 'select': 1, 'input': 1 }) {
+		var columns = parentTag(field, 'td').getElementsByTagName(tag);
+		for (var i=0; i < columns.length; i++) {
+			if (/\[columns\]/.test(columns[i].name)) {
+				var value = selectValue(columns[i]);
+				if (value) {
+					names.push(value);
+				}
+			}
 		}
 	}
 	field.form[field.name.replace(/\].*/, '][name]')].value = prefix + names.join('_');
@@ -460,12 +464,20 @@ function indexesAddColumn(field, prefix) {
 		select.onchange();
 	}
 	var column = cloneNode(field.parentNode);
-	select = column.getElementsByTagName('select')[0];
-	select.name = select.name.replace(/\]\[\d+/, '$&1');
-	select.selectedIndex = 0;
-	var input = column.getElementsByTagName('input')[0];
-	input.name = input.name.replace(/\]\[\d+/, '$&1');
-	input.value = '';
+	var selects = column.getElementsByTagName('select');
+	for (var i = 0; i < selects.length; i++) {
+		select = selects[i];
+		select.name = select.name.replace(/\]\[\d+/, '$&1');
+		select.selectedIndex = 0;
+	}
+	var inputs = column.getElementsByTagName('input');
+	for (var i = 0; i < inputs.length; i++) {
+		var input = inputs[i];
+		input.name = input.name.replace(/\]\[\d+/, '$&1');
+		if (input.type != 'checkbox') {
+			input.value = '';
+		}
+	}
 	parentTag(field, 'td').appendChild(column);
 	field.onchange();
 }

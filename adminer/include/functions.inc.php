@@ -159,7 +159,7 @@ function html_select($name, $options, $value = "", $onchange = true) {
 function select_input($attrs, $options, $value = "", $placeholder = "") {
 	return ($options
 		? "<select$attrs><option value=''>$placeholder" . optionlist($options, $value, true) . "</select>"
-		: "<input$attrs value='" . h($value) . "' placeholder='$placeholder'>"
+		: "<input$attrs size='10' value='" . h($value) . "' placeholder='$placeholder'>"
 	);
 }
 
