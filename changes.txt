@@ -1,5 +1,5 @@
 Adminer 4.0.3-dev:
-MongoDB: insert
+MongoDB: insert, truncate
 SimpleDB, MongoDB: insert more fields at once
 
 Adminer 4.0.2 (released 2014-01-11):
