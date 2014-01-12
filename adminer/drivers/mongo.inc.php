@@ -245,6 +245,7 @@ if (isset($_GET["mongo"])) {
 			$return[$index["name"]] = array(
 				"type" => ($index["name"] == "_id_" ? "PRIMARY" : ($index["unique"] ? "UNIQUE" : "INDEX")),
 				"columns" => array_keys($index["key"]),
+				"lengths" => array(),
 				"descs" => $descs,
 			);
 		}
@@ -309,6 +310,32 @@ if (isset($_GET["mongo"])) {
 		return true;
 	}
 
+	function alter_indexes($table, $alter) {
+		global $connection;
+		foreach ($alter as $val) {
+			list($type, $name, $set) = $val;
+			if ($set == "DROP") {
+				$return = $connection->_db->command(array("deleteIndexes" => $table, "index" => $name));
+			} else {
+				$columns = array();
+				foreach ($set as $column) {
+					$column = preg_replace('~ DESC$~', '', $column, 1, $count);
+					$columns[$column] = ($count ? -1 : 1);
+				}
+				$return = $connection->_db->selectCollection($table)->ensureIndex($columns, array(
+					"unique" => ($type == "UNIQUE"),
+					"name" => $name,
+					//! "sparse"
+				));
+			}
+			if ($return['errmsg']) {
+				$connection->error = $return['errmsg'];
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	function last_id() {
 		global $connection;
 		return $connection->last_id;
