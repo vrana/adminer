@@ -69,13 +69,15 @@ class Adminer {
 	*/
 	function head() {
 		global $jush;
-		?>
+		if (support("sql")) {
+			?>
 <link rel="stylesheet" type="text/css" href="../externals/jush/jush.css">
 <script type="text/javascript" src="../externals/jush/modules/jush.js"></script>
 <script type="text/javascript" src="../externals/jush/modules/jush-textarea.js"></script>
 <script type="text/javascript" src="../externals/jush/modules/jush-txt.js"></script>
 <script type="text/javascript" src="../externals/jush/modules/jush-<?php echo $jush; ?>.js"></script>
 <?php
+		}
 		return true;
 	}
 
@@ -806,17 +808,19 @@ username.form['auth[driver]'].onchange();
 					echo "<p class='message'>" . lang('No tables.') . "\n";
 				} else {
 					$this->tablesPrint($tables);
-					$links = array();
-					foreach ($tables as $table => $type) {
-						$links[] = preg_quote($table, '/');
+					if (support("sql")) {
+						$links = array();
+						foreach ($tables as $table => $type) {
+							$links[] = preg_quote($table, '/');
+						}
+						echo "<script type='text/javascript'>\n";
+						echo "var jushLang = '$jush';\n";
+						echo "var jushLinks = { $jush: [ '" . js_escape(ME) . (support("table") ? "table=" : "select=") . "\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
+						foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
+							echo "jushLinks.$val = jushLinks.$jush;\n";
+						}
+						echo "</script>\n";
 					}
-					echo "<script type='text/javascript'>\n";
-					echo "var jushLang = '$jush';\n";
-					echo "var jushLinks = { $jush: [ '" . js_escape(ME) . (support("table") ? "table=" : "select=") . "\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
-					foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
-						echo "jushLinks.$val = jushLinks.$jush;\n";
-					}
-					echo "</script>\n";
 				}
 			}
 		}
