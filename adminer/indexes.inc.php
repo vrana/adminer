@@ -51,7 +51,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 						continue;
 					}
 				}
-				$alter[] = array($index["type"], $name, "(" . implode(", ", $set) . ")");
+				$alter[] = array($index["type"], $name, $set);
 			}
 		}
 	}

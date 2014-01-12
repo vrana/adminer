@@ -600,7 +600,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		foreach (array_reverse($alter) as $val) {
 			if (!queries($val[2] == "DROP"
 				? "DROP INDEX " . idf_escape($val[1])
-				: index_sql($table, $val[0], $val[1], $val[2])
+				: index_sql($table, $val[0], $val[1], "(" . implode(", ", $val[2]) . ")")
 			)) {
 				return false;
 			}
