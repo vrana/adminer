@@ -9,9 +9,15 @@ if (isset($_GET["elastic"])) {
 		class Min_DB {
 			var $extension = "JSON", $server_info, $errno, $error, $_url;
 
-			function query($path, $content = array(), $method = 'GET') {
+			/** Performs query
+			 * @param string
+			 * @param array
+			 * @param string
+			 * @return mixed
+			 */
+			function rootQuery($path, $content = array(), $method = 'GET') {
 				@ini_set('track_errors', 1); // @ - may be disabled
-				$file = @file_get_contents($this->_url . ($this->_db != "" ? "$this->_db/" : "") . $path, false, stream_context_create(array('http' => array(
+				$file = @file_get_contents($this->_url  . '/' . ltrim($path, '/'), false, stream_context_create(array('http' => array(
 					'method' => $method,
 					'content' => json_encode($content),
 					'ignore_errors' => 1, // available since PHP 5.2.10
@@ -40,6 +46,16 @@ if (isset($_GET["elastic"])) {
 					}
 				}
 				return $return;
+			}
+
+			/** Performs query relative to actual selected DB
+			 * @param string
+			 * @param array
+			 * @param string
+			 * @return mixed
+			 */
+			function query($path, $content = array(), $method = 'GET') {
+				return $this->rootQuery(($this->_db != "" ? "$this->_db/" : "/") . ltrim($path, '/'), $content, $method);
 			}
 
 			function connect($server, $username, $password) {
@@ -174,7 +190,7 @@ if (isset($_GET["elastic"])) {
 
 	function get_databases() {
 		global $connection;
-		$return = $connection->query('_aliases');
+		$return = $connection->rootQuery('_aliases');
 		if ($return) {
 			$return = array_keys($return);
 		}
@@ -285,7 +301,7 @@ if (isset($_GET["elastic"])) {
 	*/
 	function create_database($db) {
 		global $connection;
-		return $connection->query(urlencode($db), array(), 'PUT');
+		return $connection->rootQuery(urlencode($db), array(), 'PUT');
 	}
 
 	/** Drop databases
@@ -294,7 +310,7 @@ if (isset($_GET["elastic"])) {
 	*/
 	function drop_databases($databases) {
 		global $connection;
-		return $connection->query(urlencode(implode(',', $databases)), array(), 'DELETE');
+		return $connection->rootQuery(urlencode(implode(',', $databases)), array(), 'DELETE');
 	}
 
 	/** Drop tables
