@@ -91,6 +91,9 @@ if ($_POST["save"]) {
 	if ($select) {
 		$result = $driver->select($TABLE, $select, array($where), $select, array(), (isset($_GET["select"]) ? 2 : 1), 0);
 		$row = $result->fetch_assoc();
+		if (!$row) { // MySQLi returns null
+			$row = false;
+		}
 		if (isset($_GET["select"]) && (!$row || $result->fetch_assoc())) { // $result->num_rows != 1 isn't available in all drivers
 			$row = null;
 		}
