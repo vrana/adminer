@@ -166,7 +166,7 @@ if (!$fields) {
 	if (!support("table")) {
 		echo "<tr>"
 			. "<th><input name='field_keys[]' onkeyup='keyupChange.call(this);' onchange='fieldChange(this);' value=''>" // needs empty value for keyupChange()
-			. "<td class='function'>" . html_select("field_funs[]", $adminer->editFunctions(array()))
+			. "<td class='function'>" . html_select("field_funs[]", $adminer->editFunctions(array("null" => isset($_GET["select"]))))
 			. "<td><input name='field_vals[]'>"
 			. "\n"
 		;
