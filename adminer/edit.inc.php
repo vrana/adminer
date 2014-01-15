@@ -89,7 +89,7 @@ if ($_POST["save"]) {
 		$select = array("*");
 	}
 	if ($select) {
-		$result = $driver->select($TABLE, $select, array($where), $select, array(), (isset($_GET["select"]) ? 2 : 1), 0);
+		$result = $driver->select($TABLE, $select, array($where), $select, array(), (isset($_GET["select"]) ? 2 : 1));
 		$row = $result->fetch_assoc();
 		if (!$row) { // MySQLi returns null
 			$row = false;
@@ -102,7 +102,7 @@ if ($_POST["save"]) {
 
 if (!support("table") && !$fields) {
 	if (!$where) { // insert
-		$result = $driver->select($TABLE, array("*"), $where, array("*"), array(), 1, 0);
+		$result = $driver->select($TABLE, array("*"), $where, array("*"));
 		$row = ($result ? $result->fetch_assoc() : false);
 		if (!$row) {
 			$row = array($driver->primary => "");

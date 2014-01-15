@@ -120,7 +120,7 @@ if (isset($_GET["mongo"])) {
 			return ($value === null ? $value : parent::quote($value));
 		}
 		
-		function select($table, $select, $where, $group, $order, $limit, $page, $print = false) {
+		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
 			$select = ($select == array("*")
 				? array()
 				: array_fill_keys($select, true)

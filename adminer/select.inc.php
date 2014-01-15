@@ -41,7 +41,7 @@ if ($_GET["val"] && is_ajax()) {
 		$as = convert_field($fields[key($row)]);
 		$select = array($as ? $as : idf_escape(key($row)));
 		$where[] = where_check($unique_idf, $fields);
-		$return = $driver->select($TABLE, $select, $where, $select, array(), 1, 0);
+		$return = $driver->select($TABLE, $select, $where, $select);
 		if ($return) {
 			echo reset($return->fetch_row());
 		}
