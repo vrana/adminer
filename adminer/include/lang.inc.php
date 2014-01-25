@@ -33,6 +33,7 @@ $langs = array(
 	'uk' => 'Українська', // Valerii Kryzhov
 	'zh' => '简体中文', // Mr. Lodar, vea - urn2.net - vea.urn2@gmail.com
 	'zh-tw' => '繁體中文', // http://tzangms.com
+	'no' => 'Norsk', // Iver Odin Kvello, mupublishing.com
 );
 
 /** Get current language
