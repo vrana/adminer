@@ -280,5 +280,5 @@ $translations = array(
 	'Type has been dropped.' => 'Type er slettet.',
 	'Type has been created.' => 'Type er opprettet.',
 	'Alter type' => 'Endre type',
-	'Saving' => 'Lagrer'
+	'Saving' => 'Lagrer',
 );
