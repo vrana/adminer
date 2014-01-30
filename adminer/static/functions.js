@@ -95,7 +95,7 @@ function parentTag(el, tag) {
 function trCheck(el) {
 	var tr = parentTag(el, 'tr');
 	alterClass(tr, 'checked', el.checked);
-	if (el.form && el.form['all']) {
+	if (el.form && el.form['all'] && el.form['all'].onclick) { // Opera thinks that 'all' is who knows what
 		el.form['all'].onclick();
 	}
 }
