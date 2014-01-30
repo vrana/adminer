@@ -68,16 +68,9 @@ class Adminer {
 	* @return bool true to link adminer.css if exists
 	*/
 	function head() {
-		global $jush;
-		if (support("sql")) {
-			?>
+		?>
 <link rel="stylesheet" type="text/css" href="../externals/jush/jush.css">
-<script type="text/javascript" src="../externals/jush/modules/jush.js"></script>
-<script type="text/javascript" src="../externals/jush/modules/jush-textarea.js"></script>
-<script type="text/javascript" src="../externals/jush/modules/jush-txt.js"></script>
-<script type="text/javascript" src="../externals/jush/modules/jush-<?php echo $jush; ?>.js"></script>
 <?php
-		}
 		return true;
 	}
 
@@ -794,6 +787,14 @@ username.form['auth[driver]'].onchange();
 				}
 			}
 		} else {
+			if (support("sql")) {
+				?>
+<script type="text/javascript" src="../externals/jush/modules/jush.js"></script>
+<script type="text/javascript" src="../externals/jush/modules/jush-textarea.js"></script>
+<script type="text/javascript" src="../externals/jush/modules/jush-txt.js"></script>
+<script type="text/javascript" src="../externals/jush/modules/jush-<?php echo $jush; ?>.js"></script>
+<?php
+			}
 			$this->databasesPrint($missing);
 			if (DB == "" || !$missing) {
 				echo "<p class='links'>" . (support("sql") ? "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"]) && !isset($_GET["import"])) . ">" . lang('SQL command') . "</a>\n<a href='" . h(ME) . "import='" . bold(isset($_GET["import"])) . ">" . lang('Import') . "</a>\n" : "") . "";
@@ -814,7 +815,6 @@ username.form['auth[driver]'].onchange();
 							$links[] = preg_quote($table, '/');
 						}
 						echo "<script type='text/javascript'>\n";
-						echo "var jushLang = '$jush';\n";
 						echo "var jushLinks = { $jush: [ '" . js_escape(ME) . (support("table") ? "table=" : "select=") . "\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
 						foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
 							echo "jushLinks.$val = jushLinks.$jush;\n";
