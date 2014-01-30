@@ -1,8 +1,5 @@
 // Editor specific functions
 
-function bodyLoad(version) {
-}
-
 function selectFieldChange(form) {
 }
 

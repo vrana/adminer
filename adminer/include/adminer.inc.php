@@ -761,7 +761,7 @@ username.form['auth[driver]'].onchange();
 	* @return null
 	*/
 	function navigation($missing) {
-		global $VERSION, $jush, $drivers;
+		global $VERSION, $jush, $drivers, $connection;
 		?>
 <h1>
 <?php echo $this->name(); ?> <span class="version"><?php echo $VERSION; ?></span>
@@ -787,12 +787,31 @@ username.form['auth[driver]'].onchange();
 				}
 			}
 		} else {
+			if ($_GET["ns"] !== "" && !$missing && DB != "") {
+				$connection->select_db(DB);
+				$tables = table_status('', true);
+			}
 			if (support("sql")) {
 				?>
 <script type="text/javascript" src="../externals/jush/modules/jush.js"></script>
 <script type="text/javascript" src="../externals/jush/modules/jush-textarea.js"></script>
 <script type="text/javascript" src="../externals/jush/modules/jush-txt.js"></script>
 <script type="text/javascript" src="../externals/jush/modules/jush-<?php echo $jush; ?>.js"></script>
+<script type="text/javascript">
+<?php
+				if ($tables) {
+					$links = array();
+					foreach ($tables as $table => $type) {
+						$links[] = preg_quote($table, '/');
+					}
+					echo "var jushLinks = { $jush: [ '" . js_escape(ME) . (support("table") ? "table=" : "select=") . "\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
+					foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
+						echo "jushLinks.$val = jushLinks.$jush;\n";
+					}
+				}
+				?>
+bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 0, 3) : ""); ?>');
+</script>
 <?php
 			}
 			$this->databasesPrint($missing);
@@ -804,23 +823,10 @@ username.form['auth[driver]'].onchange();
 			}
 			if ($_GET["ns"] !== "" && !$missing && DB != "") {
 				echo '<a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create table') . "</a>\n";
-				$tables = table_status('', true);
 				if (!$tables) {
 					echo "<p class='message'>" . lang('No tables.') . "\n";
 				} else {
 					$this->tablesPrint($tables);
-					if (support("sql")) {
-						$links = array();
-						foreach ($tables as $table => $type) {
-							$links[] = preg_quote($table, '/');
-						}
-						echo "<script type='text/javascript'>\n";
-						echo "var jushLinks = { $jush: [ '" . js_escape(ME) . (support("table") ? "table=" : "select=") . "\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
-						foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
-							echo "jushLinks.$val = jushLinks.$jush;\n";
-						}
-						echo "</script>\n";
-					}
 				}
 			}
 		}

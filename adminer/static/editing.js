@@ -6,16 +6,18 @@
 function bodyLoad(version) {
 	if (window.jush) {
 		jush.create_links = ' target="_blank" rel="noreferrer"';
-		for (var key in jush.urls) {
-			var obj = jush.urls;
-			if (typeof obj[key] != 'string') {
-				obj = obj[key];
-				key = 0;
+		if (version) {
+			for (var key in jush.urls) {
+				var obj = jush.urls;
+				if (typeof obj[key] != 'string') {
+					obj = obj[key];
+					key = 0;
+				}
+				obj[key] = obj[key]
+					.replace(/\/doc\/mysql/, '/doc/refman/' + version) // MySQL
+					.replace(/\/docs\/current/, '/docs/' + version) // PostgreSQL
+				;
 			}
-			obj[key] = obj[key]
-				.replace(/\/doc\/mysql/, '/doc/refman/' + version) // MySQL
-				.replace(/\/docs\/current/, '/docs/' + version) // PostgreSQL
-			;
 		}
 		if (window.jushLinks) {
 			jush.custom_links = jushLinks;
