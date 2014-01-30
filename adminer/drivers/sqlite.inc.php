@@ -497,7 +497,6 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 
 	function recreate_table($table, $name, $fields, $originals, $foreign, $indexes = array()) {
-		queries("BEGIN");
 		if ($table != "") {
 			if (!$fields) {
 				foreach (fields($table) as $key => $field) {
@@ -506,11 +505,10 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 				}
 			}
 			$primary_key = false;
-			foreach ($fields as $key => $field) {
+			foreach ($fields as $field) {
 				if ($field[6]) {
 					$primary_key = true;
 				}
-				$fields[$key] = "  " . implode($field);
 			}
 			$drop_indexes = array();
 			foreach ($indexes as $key => $val) {
@@ -527,7 +525,6 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 					}
 					$columns[] = $originals[$column] . ($index["descs"][$key] ? " DESC" : "");
 				}
-				$columns = "(" . implode(", ", $columns) . ")";
 				if (!$drop_indexes[$key_name]) {
 					if ($index["type"] != "PRIMARY" || !$primary_key) {
 						$indexes[] = array($index["type"], $key_name, $columns);
@@ -537,7 +534,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			foreach ($indexes as $key => $val) {
 				if ($val[0] == "PRIMARY") {
 					unset($indexes[$key]);
-					$foreign[] = "  PRIMARY KEY $val[2]";
+					$foreign[] = "  PRIMARY KEY (" . implode(", ", $val[2]) . ")";
 				}
 			}
 			foreach (foreign_keys($table) as $key_name => $foreign_key) {
@@ -551,6 +548,10 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 					$foreign[] = " " . format_foreign_key($foreign_key);
 				}
 			}
+			queries("BEGIN");
+		}
+		foreach ($fields as $key => $field) {
+			$fields[$key] = "  " . implode($field);
 		}
 		$fields = array_merge($fields, array_filter($foreign));
 		if (!queries("CREATE TABLE " . table($table != "" ? "adminer_$name" : $name) . " (\n" . implode(",\n", $fields) . "\n)")) {
