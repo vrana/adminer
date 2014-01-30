@@ -109,7 +109,7 @@ function auth_error($exception = null) {
 }
 
 function set_password($vendor, $server, $username, $password) {
-	$_SESSION["pwds"][$vendor][$server][$username] = ($_COOKIE["adminer_key"]
+	$_SESSION["pwds"][$vendor][$server][$username] = ($_COOKIE["adminer_key"] && is_string($password)
 		? array(encrypt_string($password, $_COOKIE["adminer_key"]))
 		: $password
 	);
