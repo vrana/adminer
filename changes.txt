@@ -1,4 +1,4 @@
-Adminer 4.0.3-dev:
+Adminer 4.0.3 (released 2014-02-01)
 MongoDB: insert, truncate, indexes
 SimpleDB, MongoDB: insert more fields at once
 SQLite: Fix creating table and altering primary key, bug since Adminer 4.0.0
