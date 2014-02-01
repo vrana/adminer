@@ -1,15 +1,6 @@
 [submodule "jush"]
 	path = externals/jush
 	url = git://git.code.sf.net/p/jush/git
-[submodule "tinymce"]
-	path = externals/tinymce
-	url = git://github.com/tinymce/tinymce.git
-[submodule "jquery-ui"]
-	path = externals/jquery-ui
-	url = git://github.com/jquery/jquery-ui.git
-[submodule "jquery-timepicker"]
-	path = externals/jquery-timepicker
-	url = git://github.com/trentrichardson/jQuery-Timepicker-Addon.git
 [submodule "wymeditor"]
 	path = externals/wymeditor
 	url = git://github.com/wymeditor/wymeditor.git
