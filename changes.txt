@@ -1,3 +1,5 @@
+Adminer 4.0.4-dev:
+
 Adminer 4.0.3 (released 2014-02-01)
 MongoDB: insert, truncate, indexes
 SimpleDB, MongoDB: insert more fields at once
