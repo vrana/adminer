@@ -352,19 +352,23 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		$sqls = get_key_vals("SELECT name, sql FROM sqlite_master WHERE type = 'index' AND tbl_name = " . q($table), $connection2);
 		foreach (get_rows("PRAGMA index_list(" . table($table) . ")", $connection2) as $row) {
 			$name = $row["name"];
-			if (!preg_match("~^sqlite_~", $name)) {
-				$return[$name]["type"] = ($row["unique"] ? "UNIQUE" : "INDEX");
-				$return[$name]["lengths"] = array();
-				foreach (get_rows("PRAGMA index_info(" . idf_escape($name) . ")", $connection2) as $row1) {
-					$return[$name]["columns"][] = $row1["name"];
-				}
-				$return[$name]["descs"] = array();
-				if (preg_match('~^CREATE( UNIQUE)? INDEX ' . preg_quote(idf_escape($name) . ' ON ' . idf_escape($table), '~') . ' \((.*)\)$~i', $sqls[$name], $regs)) {
-					preg_match_all('/("[^"]*+")+( DESC)?/', $regs[2], $matches);
-					foreach ($matches[2] as $val) {
-						$return[$name]["descs"][] = ($val ? '1' : null);
+			$index = array("type" => ($row["unique"] ? "UNIQUE" : "INDEX"));
+			$index["lengths"] = array();
+			$index["descs"] = array();
+			foreach (get_rows("PRAGMA index_info(" . idf_escape($name) . ")", $connection2) as $row1) {
+				$index["columns"][] = $row1["name"];
+				$index["descs"][] = null;
+			}
+			if (preg_match('~^CREATE( UNIQUE)? INDEX ' . preg_quote(idf_escape($name) . ' ON ' . idf_escape($table), '~') . ' \((.*)\)$~i', $sqls[$name], $regs)) {
+				preg_match_all('/("[^"]*+")+( DESC)?/', $regs[2], $matches);
+				foreach ($matches[2] as $key => $val) {
+					if ($val) {
+						$index["descs"][$key] = '1';
 					}
 				}
+			}
+			if (!$return[""] || $index["type"] != "UNIQUE" || $index["columns"] != $return[""]["columns"] || $index["descs"] != $return[""]["descs"] || !preg_match("~^sqlite_~", $name)) {
+				$return[$name] = $index;
 			}
 		}
 		return $return;
