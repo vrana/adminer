@@ -137,12 +137,12 @@ if (isset($_GET["username"])) {
 	$connection = connect();
 }
 
+$driver = new Min_Driver($connection);
+
 if (!is_object($connection) || !$adminer->login($_GET["username"], get_password())) {
 	auth_error();
 	exit;
 }
-
-$driver = new Min_Driver($connection);
 
 if ($auth && $_POST["token"]) {
 	$_POST["token"] = $token; // reset token after explicit login
