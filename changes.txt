@@ -1,5 +1,6 @@
 Adminer 4.0.4-dev:
 SQLite: Display auto-created unique indexes, bug since Adminer 3.5.0
+Editor: Fix login() method, bug since Adminer 4.0.0
 
 Adminer 4.0.3 (released 2014-02-01)
 MongoDB: insert, truncate, indexes
