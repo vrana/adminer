@@ -2,7 +2,7 @@
  * Alternative style for Adminer by Frank Bültge
  * 
  * @link     http://bueltge.de/
- * @version  01/26/2014
+ * @version  02/18/2014
  */
 
 body {
@@ -21,9 +21,6 @@ font-family: "Lucida Grande",Verdana,Arial,"Bitstream Vera Sans",sans-serif;
 input, textarea, pre, code, samp, kbd, var {
 font-family: "Lucida Grande",Verdana,Arial,"Bitstream Vera Sans",sans-serif;
 font-size: 12px;
-}
-input[type='submit']#logout {
-display:none;
 }
 
 pre {
@@ -353,9 +350,6 @@ padding: 0 !important;
 padding-left: 0;
 text-align: left;
 }
-#menu h1 {
-display: none;
-}
 h1 .h1:hover {
 text-decoration: underline;
 } 
@@ -366,9 +360,6 @@ padding: 14px 15px 3px 10px;
 line-height: 35px;
 text-shadow: rgba(255,255,255,1) 0 1px 0px;
 background: none;
-}
-h1 {
-font-size: 12px;
 }
 h1 .h1 {
 font-size: 12px;
