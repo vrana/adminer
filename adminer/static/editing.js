@@ -584,8 +584,9 @@ function helpMouseover(el, event, text, side) {
 		jush.highlight_tag([ help ]);
 		alterClass(help, 'hidden');
 		var rect = target.getBoundingClientRect();
-		help.style.top = (rect.top - (side ? (help.offsetHeight - target.offsetHeight) / 2 : help.offsetHeight)) + 'px';
-		help.style.left = (rect.left - (side ? help.offsetWidth : (help.offsetWidth - target.offsetWidth) / 2)) + 'px';
+		var body = document.documentElement;
+		help.style.top = (body.scrollTop + rect.top - (side ? (help.offsetHeight - target.offsetHeight) / 2 : help.offsetHeight)) + 'px';
+		help.style.left = (body.scrollLeft + rect.left - (side ? help.offsetWidth : (help.offsetWidth - target.offsetWidth) / 2)) + 'px';
 	}
 }
 
