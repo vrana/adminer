@@ -66,7 +66,9 @@ function typePassword(el, disable) {
 function loginDriver(driver) {
 	var trs = parentTag(driver, 'table').rows;
 	for (var i=1; i < trs.length - 1; i++) {
-		alterClass(trs[i], 'hidden', /sqlite/.test(driver.value));
+		var disabled = /sqlite/.test(driver.value);
+		alterClass(trs[i], 'hidden', disabled);
+		trs[i].getElementsByTagName('input')[0].disabled = disabled;
 	}
 }
 
