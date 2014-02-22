@@ -17,12 +17,11 @@ if ($_POST && !$error) {
 		echo "-- Adminer $VERSION " . $drivers[DRIVER] . " dump\n\n";
 		if ($jush == "sql") {
 			echo "SET NAMES utf8;
-SET time_zone = '+00:00';
+SET time_zone = '", get_timezone(), "';
 " . ($_POST["data_style"] ? "SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 " : "") . "
 ";
-			$connection->query("SET time_zone = '+00:00';");
 		}
 	}
 
