@@ -30,6 +30,11 @@ if (!defined("DRIVER")) {
 					} else {
 						$this->query("SET NAMES utf8");
 					}
+					if (method_exists($this, 'set_timezone')) {
+						$this->set_timezone($TIMEZONE);
+					} else {
+						$this->query("SET time_zone = '".get_timezone()."';");
+					}
 				}
 				return $return;
 			}
@@ -79,6 +84,11 @@ if (!defined("DRIVER")) {
 						mysql_set_charset("utf8", $this->_link);
 					} else {
 						$this->query("SET NAMES utf8");
+					}
+					if (method_exists($this, 'set_timezone')) {
+						$this->set_timezone($TIMEZONE);
+					} else {
+						$this->query("SET time_zone = '".get_timezone()."';");
 					}
 				} else {
 					$this->error = mysql_error();
@@ -213,6 +223,7 @@ if (!defined("DRIVER")) {
 			function connect($server, $username, $password) {
 				$this->dsn("mysql:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\\d)~', ';port=\\1', $server)), $username, $password);
 				$this->query("SET NAMES utf8"); // charset in DSN is ignored before PHP 5.3.6
+				$this->query("SET time_zone = '".get_timezone()."'");
 				return true;
 			}
 
