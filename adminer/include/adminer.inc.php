@@ -740,7 +740,7 @@ username.form['auth[driver]'].onchange();
 			($ext == "sql" || $output != "file" ? "text/plain" : "text/csv") . "; charset=utf-8"
 		)));
 		if ($output == "gz") {
-			ob_start('gzencode', 1e6);
+			ob_start('ob_gzencode', 1e6);
 		}
 		return $ext;
 	}

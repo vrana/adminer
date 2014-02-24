@@ -496,3 +496,12 @@ function doc_link($paths) {
 	);
 	return ($paths[$jush] ? "<a href='$urls[$jush]$paths[$jush]' target='_blank' rel='noreferrer'><sup>?</sup></a>" : "");
 }
+
+/** Wrap gzencode() for usage in ob_start()
+* @param string
+* @return string
+*/
+function ob_gzencode($string) {
+	// ob_start() callback recieves an optional parameter $phase but gzencode() accepts optional parameter $level
+	return gzencode($string);
+}
