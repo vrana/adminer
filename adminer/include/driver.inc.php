@@ -42,10 +42,12 @@
 				"\n"
 			);
 		}
+		$start = microtime(true);
+		$return = $this->_conn->query($query);
 		if ($print) {
-			echo $adminer->selectQuery($query);
+			echo $adminer->selectQuery($query . ";\n-- " . format_time($start, microtime(true)));
 		}
-		return $this->_conn->query($query);
+		return $return;
 	}
 	
 	/** Delete data from table
