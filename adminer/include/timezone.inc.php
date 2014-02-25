@@ -591,12 +591,12 @@ function get_timezone() {
 	return $TIMEZONE;
 }
 
-
 function switch_timezone() {
 	global $TIMEZONE, $timezones;
 	echo "<form action='' method='post'>\n<div id='timezone'>";
-	echo lang('Timezone') . ": " . html_select("timezone", $timezones, $TIMEZONE, "this.form.submit();");
+	echo lang('Time zone') . ": " . html_select("timezone", $timezones, $TIMEZONE, "this.form.submit();");
 	echo " <input type='submit' value='" . lang('Use') . "' class='hidden'>\n";
+	echo "<input type='hidden' name='timezone_instant_set' value='1'>\n";
 	echo "<input type='hidden' name='token' value='" . get_token() . "'>\n"; // $token may be empty in auth.inc.php
 	echo "</div>\n</form>\n";
 }
@@ -604,10 +604,12 @@ function switch_timezone() {
 if (isset($_POST["timezone"]) && verify_token()) { // $error not yet available
 	cookie("adminer_timezone", $_POST["timezone"]);
 	$_SESSION["timezone"] = $_POST["timezone"]; // cookies may be disabled
-	redirect(remove_from_uri());
-}
-
-if (isset($timezones[$_COOKIE["adminer_timezone"]])) {
+	if (!empty($_POST['timezone_instant_set'])) {
+		redirect(remove_from_uri());
+	} else {
+		date_default_timezone_set($_POST["timezone"]);
+	}
+} elseif (isset($timezones[$_COOKIE["adminer_timezone"]])) {
 	cookie("adminer_timezone", $_COOKIE["adminer_timezone"]);
 	date_default_timezone_set($_COOKIE["adminer_timezone"]);
 } elseif (isset($timezones[$_SESSION["timezone"]])) {
@@ -619,4 +621,3 @@ if (!isset($timezones[$TIMEZONE])) {
 	$timezones[$TIMEZONE] = $TIMEZONE;
 }
 
-error_log('TZ: '.get_timezone());

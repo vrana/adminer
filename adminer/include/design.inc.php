@@ -114,7 +114,6 @@ function page_footer($missing = "") {
 </div>
 
 <?php switch_lang(); ?>
-<?php switch_timezone(); ?>
 <?php if ($missing != "auth") { ?>
 <form action="" method="post">
 <p class="logout">
