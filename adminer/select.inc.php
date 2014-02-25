@@ -52,7 +52,11 @@ if ($_GET["val"] && is_ajax()) {
 if ($_POST && !$error) {
 	$where_check = $where;
 	if (!$_POST["all"] && is_array($_POST["check"])) {
-		$where_check[] = "((" . implode(") OR (", array_map('where_check', $_POST["check"])) . "))";
+		$checks = array();
+		foreach ($_POST["check"] as $check) {
+			$checks[] = where_check($check, $fields);
+		}
+		$where_check[] = "((" . implode(") OR (", $checks) . "))";
 	}
 	$where_check = ($where_check ? "\nWHERE " . implode(" AND ", $where_check) : "");
 	$primary = $unselected = null;
