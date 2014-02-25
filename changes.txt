@@ -1,4 +1,5 @@
 Adminer 4.0.4-dev:
+Display edit form after error in clone or multi-edit
 Display time of the select command
 Improve gzip export ratio (bug #387)
 MySQL: Fix editing rows by binary values, bug since Adminer 3.7.1

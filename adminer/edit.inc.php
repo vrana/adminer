@@ -59,14 +59,6 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 	}
 }
 
-$table_name = $adminer->tableName(table_status1($TABLE, true));
-page_header(
-	($update ? lang('Edit') : lang('Insert')),
-	$error,
-	array("select" => array($TABLE, $table_name)),
-	$table_name
-);
-
 $row = null;
 if ($_POST["save"]) {
 	$row = (array) $_POST["fields"];
@@ -118,12 +110,4 @@ if (!support("table") && !$fields) {
 	}
 }
 
-if ($row === false) {
-	echo "<p class='error'>" . lang('No rows.') . "\n";
-}
-?>
-
-<div id="message"></div>
-
-<?php
-edit_form($fields, $row, $update);
+edit_form($TABLE, $fields, $row, $update);

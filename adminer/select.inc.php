@@ -139,7 +139,11 @@ if ($_POST && !$error) {
 				}
 			}
 			queries_redirect(remove_from_uri($_POST["all"] && $_POST["delete"] ? "page" : ""), $message, $result);
-			//! display edit page in case of an error
+			if (!$_POST["delete"]) {
+				edit_form($TABLE, $fields, (array) $_POST["fields"], !$_POST["clone"]);
+				page_footer();
+				exit;
+			}
 
 		} elseif (!$_POST["import"]) { // modify
 			if (!$_POST["val"]) {

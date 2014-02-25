@@ -1249,14 +1249,26 @@ function on_help($command, $side = 0) {
 }
 
 /** Print edit data form
+* @param string
 * @param array
 * @param mixed
 * @param bool
 * @return null
 */
-function edit_form($fields, $row, $update) {
-	global $adminer, $jush, $token;
+function edit_form($TABLE, $fields, $row, $update) {
+	global $adminer, $jush, $token, $error;
+	$table_name = $adminer->tableName(table_status1($TABLE, true));
+	page_header(
+		($update ? lang('Edit') : lang('Insert')),
+		$error,
+		array("select" => array($TABLE, $table_name)),
+		$table_name
+	);
+	if ($row === false) {
+		echo "<p class='error'>" . lang('No rows.') . "\n";
+	}
 	?>
+<div id="message"></div>
 <form action="" method="post" enctype="multipart/form-data" id="form">
 <?php
 	if (!$fields) {
