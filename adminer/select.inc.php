@@ -3,6 +3,7 @@ $TABLE = $_GET["select"];
 $table_status = table_status1($TABLE);
 $indexes = indexes($TABLE);
 $fields = fields($TABLE);
+$have_timezone_sensitive_data = false;
 $foreign_keys = column_foreign_keys($TABLE);
 $oid = "";
 if ($table_status["Oid"]) {
@@ -23,6 +24,10 @@ foreach ($fields as $key => $field) {
 		}
 	}
 	$rights += $field["privileges"];
+
+	if ($field["type"] == "timestamp" && $jush == "sql") {
+		$have_timezone_sensitive_data = true;
+	}
 }
 
 list($select, $group) = $adminer->selectColumnsProcess($columns, $indexes);
@@ -530,6 +535,10 @@ if (!$columns && support("table")) {
 
 		echo "<p><input type='hidden' name='token' value='$token'></p>\n";
 		echo "</form>\n";
+
+		if ($have_timezone_sensitive_data) {
+			switch_timezone();
+		}
 	}
 }
 

@@ -17,12 +17,11 @@ if ($_POST && !$error) {
 		echo "-- Adminer $VERSION " . $drivers[DRIVER] . " dump\n\n";
 		if ($jush == "sql") {
 			echo "SET NAMES utf8;
-SET time_zone = '+00:00';
+SET time_zone = '", get_timezone(), "';
 " . ($_POST["data_style"] ? "SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 " : "") . "
 ";
-			$connection->query("SET time_zone = '+00:00';");
 		}
 	}
 
@@ -139,6 +138,9 @@ if (!isset($row["events"])) { // backwards compatibility
 	$row["routines"] = $row["events"] = ($_GET["dump"] == "");
 	$row["triggers"] = $row["table_style"];
 }
+if (!isset($row["timezone"])) {
+	$row["timezone"] = get_timezone();
+}
 
 echo "<tr><th>" . lang('Output') . "<td>" . html_select("output", $adminer->dumpOutput(), $row["output"], 0) . "\n"; // 0 - radio
 
@@ -155,6 +157,11 @@ echo "<tr><th>" . lang('Tables') . "<td>" . html_select('table_style', $table_st
 ;
 
 echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style, $row["data_style"]);
+
+if ($jush == "sql") {
+	echo "<tr><th>" . lang('Time zone') . "<td>" . html_select('timezone', $timezones, $row["timezone"]);
+}
+
 ?>
 </table>
 <p><input type="submit" value="<?php echo lang('Export'); ?>">
