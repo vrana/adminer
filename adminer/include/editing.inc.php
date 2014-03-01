@@ -505,3 +505,19 @@ function ob_gzencode($string) {
 	// ob_start() callback recieves an optional parameter $phase but gzencode() accepts optional parameter $level
 	return gzencode($string);
 }
+
+/** Compute size of database
+* @param string
+* @return string formatted
+*/
+function db_size($db) {
+	global $connection;
+	if (!$connection->select_db($db)) {
+		return "?";
+	}
+	$return = 0;
+	foreach (table_status() as $table_status) {
+		$return += $table_status["Data_length"] + $table_status["Index_length"];
+	}
+	return number_format($return, 0, '.', lang(','));
+}

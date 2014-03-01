@@ -1,4 +1,6 @@
-Adminer 4.0.4-dev:
+Adminer 4.1.0-dev:
+Provide size of all databases in the overview
+Compute number of tables in the overview explicitly
 Display edit form after error in clone or multi-edit
 Display time of the select command
 Improve gzip export ratio (bug #387)
