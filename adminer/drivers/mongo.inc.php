@@ -130,12 +130,12 @@ if (isset($_GET["mongo"])) {
 				$val = preg_replace('~ DESC$~', '', $val, 1, $count);
 				$sort[$val] = ($count ? -1 : 1);
 			}
-			return new Min_Result(iterator_to_array($this->_conn->_db->selectCollection($table)
+			return new Min_Result($this->_conn->_db->selectCollection($table)
 				->find(array(), $select)
 				->sort($sort)
 				->limit(+$limit)
 				->skip($page * $limit)
-			));
+			);
 		}
 		
 		function insert($table, $set) {
