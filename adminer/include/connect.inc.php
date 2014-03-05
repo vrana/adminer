@@ -32,7 +32,7 @@ function connect_error() {
 			echo "<table cellspacing='0' class='checkable' onclick='tableClick(event);' ondblclick='tableClick(event, true);'>\n";
 			echo "<thead><tr>"
 				. (support("database") ? "<td>&nbsp;" : "")
-				. "<th>" . lang('Database')
+				. "<th>" . lang('Database') . " - <a href='" . h(ME) . "refresh=1'>" . lang('Refresh') . "</a>"
 				. "<td>" . lang('Collation')
 				. "<td>" . lang('Tables')
 				. "<td>" . lang('Size') . " - <a href='" . h(ME) . "dbsize=1' onclick=\"return !ajaxSetHtml('" . js_escape(ME) . "script=connect');\">" . lang('Compute') . "</a>"
@@ -64,7 +64,6 @@ function connect_error() {
 			echo "<input type='hidden' name='token' value='$token'>\n";
 			echo "</form>\n";
 		}
-		echo "<p><a href='" . h(ME) . "refresh=1'>" . lang('Refresh') . "</a>\n";
 	}
 	
 	page_footer("db");
