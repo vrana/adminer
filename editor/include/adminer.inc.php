@@ -128,8 +128,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		}
 	}
 
-	function selectQuery($query) {
-		return "<!--\n" . str_replace("--", "--><!-- ", $query) . "\n-->\n";
+	function selectQuery($query, $time) {
+		return "<!--\n" . str_replace("--", "--><!-- ", $query) . "\n($time)\n-->\n";
 	}
 
 	function rowDescription($table) {
@@ -425,8 +425,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		return "";
 	}
 
-	function messageQuery($query) {
-		return " <span class='time'>" . @date("H:i:s") . "</span><!--\n" . str_replace("--", "--><!-- ", $query) . "\n-->";
+	function messageQuery($query, $time) {
+		return " <span class='time'>" . @date("H:i:s") . "</span><!--\n" . str_replace("--", "--><!-- ", $query) . "\n" . ($time ? "($time)\n" : "") . "-->";
 	}
 
 	function editFunctions($field) {

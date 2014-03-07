@@ -39,7 +39,7 @@ if (!$error && $_POST) {
 			$q = $query . (preg_match("~;[ \t\r\n]*\$~", $query) ? "" : ";"); //! doesn't work with DELIMITER |
 			if (!$history || reset(end($history)) != $q) { // no repeated queries
 				restart_session();
-				$history[] = array($q, time());
+				$history[] = array($q, time()); //! add elapsed time
 				set_session("queries", $history_all); // required because reference is unlinked by stop_session()
 				stop_session();
 			}
@@ -224,8 +224,13 @@ if (!isset($_GET["import"]) && $history) {
 	print_fieldset("history", lang('History'), $_GET["history"] != "");
 	for ($val = end($history); $val; $val = prev($history)) { // not array_reverse() to save memory
 		$key = key($history);
-		list($q, $time) = $val;
-		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . "</a> <span class='time' title='" . @date('Y-m-d', $time) . "'>" . @date("H:i:s", $time) . "</span> <code class='jush-$jush'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace('~^(#|-- ).*~m', '', $q)))), 80, "</code>") . "<br>\n"; // @ - time zone may be not set
+		list($q, $time, $elapsed) = $val;
+		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . "</a>"
+			. " <span class='time' title='" . @date('Y-m-d', $time) . "'>" . @date("H:i:s", $time) . "</span>" // @ - time zone may be not set
+			. " <code class='jush-$jush'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace('~^(#|-- ).*~m', '', $q)))), 80, "</code>")
+			. ($elapsed ? " <span class='time'>($elapsed)</span>" : "")
+			. "<br>\n"
+		;
 	}
 	echo "<input type='submit' name='clear' value='" . lang('Clear') . "'>\n";
 	echo "<a href='" . h(ME . "sql=&history=all") . "'>" . lang('Edit all') . "</a>\n";

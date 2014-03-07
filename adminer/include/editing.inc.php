@@ -111,9 +111,9 @@ function referencable_primary($self) {
 
 /** Print SQL <textarea> tag
 * @param string
+* @param string or array in which case [0] of every element is used
 * @param int
 * @param int
-* @param string
 * @return null
 */
 function textarea($name, $value, $rows = 10, $cols = 80) {
@@ -121,7 +121,7 @@ function textarea($name, $value, $rows = 10, $cols = 80) {
 	echo "<textarea name='$name' rows='$rows' cols='$cols' class='sqlarea jush-$jush' spellcheck='false' wrap='off'>";
 	if (is_array($value)) {
 		foreach ($value as $val) { // not implode() to save memory
-			echo h($val[0]) . "\n\n\n"; // $val == array($query, $time)
+			echo h($val[0]) . "\n\n\n"; // $val == array($query, $time, $elapsed)
 		}
 	} else {
 		echo h($value);

@@ -548,17 +548,16 @@ function redirect($location, $message = null) {
 * @param bool
 * @return bool
 */
-function query_redirect($query, $location, $message, $redirect = true, $execute = true, $failed = false) {
+function query_redirect($query, $location, $message, $redirect = true, $execute = true, $failed = false, $time = "") {
 	global $connection, $error, $adminer;
-	$time = "";
 	if ($execute) {
 		$start = microtime(true);
 		$failed = !$connection->query($query);
-		$time = "; -- " . format_time($start, microtime(true));
+		$time = format_time($start, microtime(true));
 	}
 	$sql = "";
 	if ($query) {
-		$sql = $adminer->messageQuery($query . $time);
+		$sql = $adminer->messageQuery($query, $time);
 	}
 	if ($failed) {
 		$error = error() . $sql;
@@ -571,21 +570,22 @@ function query_redirect($query, $location, $message, $redirect = true, $execute 
 }
 
 /** Execute and remember query
-* @param string null to return remembered queries, end with ';' to use DELIMITER
-* @return Min_Result
+* @param string or null to return remembered queries, end with ';' to use DELIMITER
+* @return Min_Result or string if $query = null
 */
-function queries($query = null) {
+function queries($query) {
 	global $connection;
 	static $queries = array();
-	if ($query === null) {
-		// return executed queries without parameter
-		return implode("\n", $queries);
+	static $start;
+	if (!$start) {
+		$start = microtime(true);
 	}
-	$start = microtime(true);
-	$return = $connection->query($query);
-	$queries[] = (preg_match('~;$~', $query) ? "DELIMITER ;;\n$query;\nDELIMITER " : $query)
-		. "; -- " . format_time($start, microtime(true));
-	return $return;
+	if ($query === null) {
+		// return executed queries
+		return array(implode("\n", $queries), format_time($start, microtime(true)));
+	}
+	$queries[] = (preg_match('~;$~', $query) ? "DELIMITER ;;\n$query;\nDELIMITER " : $query) . ";";
+	return $connection->query($query);
 }
 
 /** Apply command to all array items
@@ -610,7 +610,8 @@ function apply_queries($query, $tables, $escape = 'table') {
 * @return bool
 */
 function queries_redirect($location, $message, $redirect) {
-	return query_redirect(queries(), $location, $message, $redirect, false, !$redirect);
+	list($queries, $time) = queries(null);
+	return query_redirect($queries, $location, $message, $redirect, false, !$redirect, $time);
 }
 
 /** Format time difference

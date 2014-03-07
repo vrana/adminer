@@ -139,10 +139,11 @@ if (isset($_GET["elastic"])) {
 			if ($data["query"] && !$data["query"]["filtered"]["query"]) {
 				$data["query"]["filtered"]["query"] = array("match_all" => array());
 			}
-			if ($print) {
-				echo $adminer->selectQuery("$query: " . print_r($data, true));
-			}
+			$start = microtime(true);
 			$search = $this->_conn->query($query, $data);
+			if ($print) {
+				echo $adminer->selectQuery("$query: " . print_r($data, true), format_time($start, microtime(true)));
+			}
 			if (!$search) {
 				return false;
 			}
