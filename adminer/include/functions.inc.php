@@ -553,7 +553,7 @@ function query_redirect($query, $location, $message, $redirect = true, $execute 
 	if ($execute) {
 		$start = microtime(true);
 		$failed = !$connection->query($query);
-		$time = format_time($start, microtime(true));
+		$time = format_time($start);
 	}
 	$sql = "";
 	if ($query) {
@@ -571,7 +571,7 @@ function query_redirect($query, $location, $message, $redirect = true, $execute 
 
 /** Execute and remember query
 * @param string or null to return remembered queries, end with ';' to use DELIMITER
-* @return Min_Result or string if $query = null
+* @return Min_Result or array($queries, $time) if $query = null
 */
 function queries($query) {
 	global $connection;
@@ -582,7 +582,7 @@ function queries($query) {
 	}
 	if ($query === null) {
 		// return executed queries
-		return array(implode("\n", $queries), format_time($start, microtime(true)));
+		return array(implode("\n", $queries), format_time($start));
 	}
 	$queries[] = (preg_match('~;$~', $query) ? "DELIMITER ;;\n$query;\nDELIMITER " : $query) . ";";
 	return $connection->query($query);
@@ -614,13 +614,12 @@ function queries_redirect($location, $message, $redirect) {
 	return query_redirect($queries, $location, $message, $redirect, false, !$redirect, $time);
 }
 
-/** Format time difference
-* @param string output of microtime(true)
-* @param string output of microtime(true)
+/** Format elapsed time
+* @param float output of microtime(true)
 * @return string HTML code
 */
-function format_time($start, $end) {
-	return lang('%.3f s', max(0, $end - $start));
+function format_time($start) {
+	return lang('%.3f s', max(0, microtime(true) - $start));
 }
 
 /** Remove parameter from query string

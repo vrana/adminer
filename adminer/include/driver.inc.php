@@ -45,7 +45,7 @@
 		$start = microtime(true);
 		$return = $this->_conn->query($query);
 		if ($print) {
-			echo $adminer->selectQuery($query, format_time($start, microtime(true)));
+			echo $adminer->selectQuery($query, format_time($start));
 		}
 		return $return;
 	}
