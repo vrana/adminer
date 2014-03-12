@@ -288,7 +288,6 @@ $translations = array(
 	'Schema has been dropped.' => 'Shema je zavržena.',
 	'Schema has been created.' => 'Shema je ustvarjena.',
 	'Schema has been altered.' => 'Shema je spremenjena.',
-	'schema' => 'shema',
 	'Schema' => 'Shema',
 	'Invalid schema.' => 'Neveljavna shema.',
 	

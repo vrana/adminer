@@ -225,7 +225,6 @@ $translations = array(
 	'Permanent login' => 'จดจำการเข้าสู่ระบบตลอดไป',
 	'Databases have been dropped.' => 'ฐานข้อมูลถูกลบแล้ว.',
 	'Search data in tables' => 'ค้นหาในตาราง',
-	'schema' => 'schema',
 	'Schema' => 'Schema',
 	'Alter schema' => 'เปลี่ยนแปลง schema',
 	'Create schema' => 'สร้าง schema',

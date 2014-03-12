@@ -293,7 +293,6 @@ $translations = array(
 	'Schema has been dropped.' => 'ساختار حذف شد',
 	'Schema has been created.' => 'ساختار ایجاد شد',
 	'Schema has been altered.' => 'ساختار ویرایش شد',
-	'schema' => 'ساختار',
 	'Schema' => 'ساختار',
 	'Invalid schema.' => 'ساختار نامعتبر',
 	

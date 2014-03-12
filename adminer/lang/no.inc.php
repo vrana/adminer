@@ -266,7 +266,6 @@ $translations = array(
 	'Schema has been dropped.' => 'Skjemaet er slettet.',
 	'Schema has been created.' => 'Skjemaet er opprettet.',
 	'Schema has been altered.' => 'Skjemaet er endret.',
-	'schema' => 'skjema',
 	'Schema' => 'Skjema',
 	'Invalid schema.' => 'Ugylding skjema.',
 	'Sequences' => 'Sekvenser',

@@ -855,7 +855,7 @@ bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 
 		echo "<input type='submit' value='" . lang('Use') . "'" . ($databases ? " class='hidden'" : "") . ">\n";
 		if ($missing != "db" && DB != "" && $connection->select_db(DB)) {
 			if (support("scheme")) {
-				echo "<br><select name='ns'$db_events>" . optionlist(array("" => "(" . lang('schema') . ")") + $adminer->schemas(), $_GET["ns"]) . "</select>";
+				echo "<br>" . lang('Schema') . ": <select name='ns'$db_events>" . optionlist(array("" => "") + $adminer->schemas(), $_GET["ns"]) . "</select>";
 				if ($_GET["ns"] != "") {
 					set_schema($_GET["ns"]);
 				}

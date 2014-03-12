@@ -225,7 +225,6 @@ $translations = array(
 	'%d in total' => '%d in totaal',
 	'Permanent login' => 'Blijf aangemeld',
 	'Search data in tables' => 'Zoeken in database',
-	'schema' => 'schema',
 	'Schema' => 'Schema',
 	'Alter schema' => 'Schema wijzigen',
 	'Create schema' => 'Schema maken',

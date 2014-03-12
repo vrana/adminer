@@ -246,7 +246,6 @@ $translations = array(
 	'System' => 'சிஸ்ட‌ம் (System)',
 	'anywhere' => 'எங்காயினும்',
 	'empty' => 'வெறுமை (empty)',
-	'schema' => 'அமைப்புமுறை',
 	'No extension' => 'விரிவு (extensஇஒன்) இல்லை ',
 	'Databases have been dropped.' => 'த‌க‌வ‌ல் த‌ள‌ங்க‌ள் நீக்க‌ப்ப‌ட்டன‌.',
 	'%s version: %s through PHP extension %s' => '%s ப‌திப்பு: %s through PHP extension %s',

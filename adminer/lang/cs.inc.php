@@ -310,7 +310,6 @@ $translations = array(
 	'Schema has been dropped.' => 'Schéma bylo odstraněno.',
 	'Schema has been created.' => 'Schéma bylo vytvořeno.',
 	'Schema has been altered.' => 'Schéma bylo změněno.',
-	'schema' => 'schéma',
 	'Schema' => 'Schéma',
 	'Invalid schema.' => 'Nesprávné schéma.',
 	

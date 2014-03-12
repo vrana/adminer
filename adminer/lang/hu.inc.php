@@ -238,7 +238,6 @@ $translations = array(
 	'Schema has been dropped.' => 'Séma eldobva.',
 	'Schema has been created.' => 'Séma létrejött.',
 	'Schema has been altered.' => 'Séma módosult.',
-	'schema' => 'séma',
 	'Schema' => 'Séma',
 	'Sequences' => 'Sorozatok',
 	'Create sequence' => 'Sorozat létrehozása',

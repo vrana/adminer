@@ -239,7 +239,6 @@ $translations = array(
 	'Schema has been dropped.' => 'S\'ha suprimit l\'esquema.',
 	'Schema has been created.' => 'S\'ha creat l\'esquema.',
 	'Schema has been altered.' => 'S\'ha modificat l\'esquema.',
-	'schema' => 'esquema',
 	'Schema' => 'Esquema',
 	'Sequences' => 'Seqüències',
 	'Create sequence' => 'Crea una seqüència',

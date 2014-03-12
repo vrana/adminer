@@ -226,7 +226,6 @@ $translations = array(
 	'Permanent login' => '영구적으로 로그인',
 	'Databases have been dropped.' => '데이터베이스를 삭제했습니다.',
 	'Search data in tables' => '데이터 검색',
-	'schema' => '스키마',
 	'Schema' => '스키마',
 	'Alter schema' => '스키마 변경',
 	'Create schema' => '스키마 추가',

@@ -300,7 +300,6 @@ $translations = array(
 	'Schema has been dropped.' => 'Şema silindi.',
 	'Schema has been created.' => 'Şema oluşturuldu.',
 	'Schema has been altered.' => 'Şema değiştirildi.',
-	'schema' => 'şema',
 	'Schema' => 'Şema',
 	'Invalid schema.' => 'Geçersiz şema.',
 

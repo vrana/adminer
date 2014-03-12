@@ -309,7 +309,6 @@ $translations = array(
 	'Schema has been dropped.' => 'xx',
 	'Schema has been created.' => 'xx',
 	'Schema has been altered.' => 'xx',
-	'schema' => 'xx',
 	'Schema' => 'xx',
 	'Invalid schema.' => 'xx',
 	

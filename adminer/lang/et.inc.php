@@ -225,7 +225,6 @@ $translations = array(
 	'Permanent login' => 'Jäta mind meelde',
 	'Databases have been dropped.' => 'Andmebaasid on edukalt kustutatud.',
 	'Search data in tables' => 'Otsi kogu andmebaasist',
-	'schema' => 'struktuur',
 	'Schema' => 'Struktuur',
 	'Alter schema' => 'Muuda struktuuri',
 	'Create schema' => 'Loo struktuur',

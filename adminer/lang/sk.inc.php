@@ -230,7 +230,6 @@ $translations = array(
 	'Schema has been dropped.' => 'Schéma bola odstránená.',
 	'Schema has been created.' => 'Schéma bola vytvorená.',
 	'Schema has been altered.' => 'Schéma bola zmenená.',
-	'schema' => 'schéma',
 	'Schema' => 'Schéma',
 	'Sequences' => 'Sekvencia',
 	'Create sequence' => 'Vytvoriť sekvenciu',

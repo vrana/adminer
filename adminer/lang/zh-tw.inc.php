@@ -225,7 +225,6 @@ $translations = array(
 	'Table has been dropped.' => '已經刪除資料表。',
 	'Databases have been dropped.' => '資料庫已刪除。',
 	'Search data in tables' => '在資料庫搜尋',
-	'schema' => '資料表結構',
 	'Schema' => '資料表結構',
 	'Alter schema' => '修改資料表結構',
 	'Create schema' => '建立資料表結構',

@@ -304,7 +304,6 @@ $translations = array(
 	'Schema has been dropped.' => 'Schemat został usunięty.',
 	'Schema has been created.' => 'Schemat został utworzony.',
 	'Schema has been altered.' => 'Schemat został zmieniony.',
-	'schema' => 'schemat',
 	'Schema' => 'Schemat',
 	'Invalid schema.' => 'Nieprawidłowy schemat.',
 	

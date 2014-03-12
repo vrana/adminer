@@ -225,7 +225,6 @@ $translations = array(
 	'Permanent login' => 'Passwort speichern',
 	'Databases have been dropped.' => 'Datenbanken entfernt.',
 	'Search data in tables' => 'Suche in Tabellen',
-	'schema' => 'Schema',
 	'Schema' => 'Schema',
 	'Alter schema' => 'Schema ändern',
 	'Create schema' => 'Neues Schema',

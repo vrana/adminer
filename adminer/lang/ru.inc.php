@@ -225,7 +225,6 @@ $translations = array(
 	'Permanent login' => 'Оставаться в системе',
 	'Databases have been dropped.' => 'Базы данных удалены.',
 	'Search data in tables' => 'Поиск в таблицах',
-	'schema' => 'схема',
 	'Schema' => 'Схема',
 	'Alter schema' => 'Изменить схему',
 	'Create schema' => 'Новая схема',

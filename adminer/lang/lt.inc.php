@@ -293,7 +293,6 @@ $translations = array(
 	'Schema has been dropped.' => 'Schema pašalinta.',
 	'Schema has been created.' => 'Schema sukurta.',
 	'Schema has been altered.' => 'Schema pakeista.',
-	'schema' => 'schema',
 	'Schema' => 'Schema',
 	'Invalid schema.' => 'Neteisinga schema.',
 	

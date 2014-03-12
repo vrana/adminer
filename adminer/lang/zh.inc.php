@@ -225,7 +225,6 @@ $translations = array(
 	'Permanent login' => '保持登录',
 	'Databases have been dropped.' => '已删除数据库。',
 	'Search data in tables' => '在表中搜索数据',
-	'schema' => '模式',
 	'Schema' => '模式',
 	'Alter schema' => '修改模式',
 	'Create schema' => '创建模式',

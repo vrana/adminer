@@ -297,7 +297,6 @@ $translations = array(
 	'Schema has been dropped.' => 'Skema berhasil dihapus.',
 	'Schema has been created.' => 'Skema berhasil dibuat.',
 	'Schema has been altered.' => 'Skema berhasil diubah.',
-	'schema' => 'skema',
 	'Schema' => 'Skema',
 	'Invalid schema.' => 'Skema invalid.',
 
