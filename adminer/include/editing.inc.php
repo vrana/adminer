@@ -152,7 +152,7 @@ echo optionlist($structured_types, $type);
 <td><input name="<?php echo $key; ?>[length]" value="<?php echo h($field["length"]); ?>" size="3" onfocus="editingLengthFocus(this);"<?php echo (!$field["length"] && preg_match('~var(char|binary)$~', $type) ? " class='required'" : ""); ?> onchange="editingLengthChange(this);" onkeyup="this.onchange();"><td class="options"><?php //! type="number" with enabled JavaScript
 	echo "<select name='$key" . "[collation]'" . (preg_match('~(char|text|enum|set)$~', $type) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>';
 	echo ($unsigned ? "<select name='$key" . "[unsigned]'" . (!$type || preg_match('~((^|[^o])int|float|double|decimal)$~', $type) ? "" : " class='hidden'") . '><option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
-	echo (isset($field['on_update']) ? "<select name='$key" . "[on_update]'" . ($type == "timestamp" ? "" : " class='hidden'") . '>' . optionlist(array("" => "(" . lang('ON UPDATE') . ")", "CURRENT_TIMESTAMP"), $field["on_update"]) . '</select>' : '');
+	echo (isset($field['on_update']) ? "<select name='$key" . "[on_update]'" . (preg_match('~timestamp|datetime~', $type) ? "" : " class='hidden'") . '>' . optionlist(array("" => "(" . lang('ON UPDATE') . ")", "CURRENT_TIMESTAMP"), $field["on_update"]) . '</select>' : '');
 	echo ($foreign_keys ? "<select name='$key" . "[on_delete]'" . (preg_match("~`~", $type) ? "" : " class='hidden'") . "><option value=''>(" . lang('ON DELETE') . ")" . optionlist(explode("|", $on_actions), $field["on_delete"]) . "</select> " : " "); // space for IE
 }
 
@@ -199,7 +199,7 @@ function process_field($field, $type_field) {
 			|| ($field["type"] == "bit" && preg_match("~^([0-9]+|b'[0-1]+')\$~", $default))
 			|| ($jush == "pgsql" && preg_match("~^[a-z]+\\(('[^']*')+\\)\$~", $default))
 			? $default : q($default)) : ""),
-		($field["type"] == "timestamp" && $field["on_update"] ? " ON UPDATE $field[on_update]" : ""),
+		(preg_match('~timestamp|datetime~', $field["type"]) && $field["on_update"] ? " ON UPDATE $field[on_update]" : ""),
 		(support("comment") && $field["comment"] != "" ? " COMMENT " . q($field["comment"]) : ""),
 		($field["auto_increment"] ? auto_increment() : null),
 	);

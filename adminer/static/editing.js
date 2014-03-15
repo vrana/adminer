@@ -312,7 +312,7 @@ function editingTypeChange(type) {
 			alterClass(el, 'hidden', !/((^|[^o])int|float|double|decimal)$/.test(text));
 		}
 		if (el.name == name + '[on_update]') {
-			alterClass(el, 'hidden', text != 'timestamp');
+			alterClass(el, 'hidden', !/timestamp|datetime/.test(text)); // MySQL supports datetime since 5.6.5
 		}
 		if (el.name == name + '[on_delete]') {
 			alterClass(el, 'hidden', !/`/.test(text));
