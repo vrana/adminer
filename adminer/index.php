@@ -10,7 +10,7 @@
 include "./include/bootstrap.inc.php";
 include "./include/tmpfile.inc.php";
 
-$enum_length = "'(?:''|[^'\\\\]|\\\\.)*+'";
+$enum_length = "'(?:''|[^'\\\\]|\\\\.)*'";
 $inout = "IN|OUT|INOUT";
 
 if (isset($_GET["select"]) && ($_POST["edit"] || $_POST["clone"]) && !$_POST["save"]) {

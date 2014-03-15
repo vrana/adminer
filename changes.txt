@@ -5,6 +5,7 @@ Display edit form after error in clone or multi-edit
 Display time of the select command
 Print elapsed time in HTML instead of SQL command comment
 Improve gzip export ratio (bug #387)
+Fix enum types in routines (bug #391)
 MySQL: Fix editing rows by binary values, bug since Adminer 3.7.1
 MySQL: Respect daylight saving time in dump, bug since Adminer 3.6.4
 MySQL 5.6.5+: Support ON UPDATE on datatime column
