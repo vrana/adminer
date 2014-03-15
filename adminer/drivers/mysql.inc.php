@@ -734,7 +734,7 @@ if (!defined("DRIVER")) {
 		queries("SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO'");
 		foreach ($tables as $table) {
 			$name = ($target == DB ? table("copy_$table") : idf_escape($target) . "." . table($table));
-			if (!queries("DROP TABLE IF EXISTS $name")
+			if (!queries("\nDROP TABLE IF EXISTS $name")
 				|| !queries("CREATE TABLE $name LIKE " . table($table))
 				|| !queries("INSERT INTO $name SELECT * FROM " . table($table))
 			) {
