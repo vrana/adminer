@@ -567,6 +567,7 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)
 	function trigger_options() {
 		return array(
 			"Timing" => array("AFTER", "INSTEAD OF"),
+			"Event" => array("INSERT", "UPDATE", "DELETE"),
 			"Type" => array("AS"),
 		);
 	}

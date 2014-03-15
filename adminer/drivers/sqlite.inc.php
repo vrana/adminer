@@ -634,18 +634,21 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		if ($name == "") {
 			return array("Statement" => "BEGIN\n\t;\nEND");
 		}
+		$idf = '(?:[^`"\\s]+|`[^`]*`|"[^"]*")+';
+		$trigger_options = trigger_options();
 		preg_match(
-			'~^CREATE\\s+TRIGGER\\s*(?:[^`"\\s]+|`[^`]*`|"[^"]*")+\\s*(BEFORE|AFTER|INSTEAD\\s+OF)\\s+([a-z]+)\\s+ON\\s*(?:[^`"\\s]+|`[^`]*`|"[^"]*")+\\s*(?:FOR\\s*EACH\\s*ROW\\s)?(.*)~is',
+			"~^CREATE\\s+TRIGGER\\s*$idf\\s*(" . implode("|", $trigger_options["Timing"]) . ")\\s+([a-z]+)(?:\\s+OF\\s+($idf))?\\s+ON\\s*$idf\\s*(?:FOR\\s+EACH\\s+ROW\\s)?(.*)~is",
 			$connection->result("SELECT sql FROM sqlite_master WHERE type = 'trigger' AND name = " . q($name)),
 			$match
 		);
-		return array("Timing" => strtoupper($match[1]), "Event" => strtoupper($match[2]), "Trigger" => $name, "Statement" => $match[3]);
+		return array("Timing" => strtoupper($match[1]), "Event" => strtoupper($match[2]), "Of" => $match[3], "Trigger" => $name, "Statement" => $match[4]);
 	}
 
 	function triggers($table) {
 		$return = array();
+		$trigger_options = trigger_options();
 		foreach (get_rows("SELECT * FROM sqlite_master WHERE type = 'trigger' AND tbl_name = " . q($table)) as $row) {
-			preg_match('~^CREATE\\s+TRIGGER\\s*(?:[^`"\\s]+|`[^`]*`|"[^"]*")+\\s*([a-z]+)\\s*([a-z]+)~i', $row["sql"], $match);
+			preg_match('~^CREATE\\s+TRIGGER\\s*(?:[^`"\\s]+|`[^`]*`|"[^"]*")+\\s*(' . implode("|", $trigger_options["Timing"]) . ')\\s*(.*)\\s+ON\\b~iU', $row["sql"], $match);
 			$return[$row["name"]] = array($match[1], $match[2]);
 		}
 		return $return;
@@ -654,6 +657,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	function trigger_options() {
 		return array(
 			"Timing" => array("BEFORE", "AFTER", "INSTEAD OF"),
+			"Event" => array("INSERT", "UPDATE", "UPDATE OF", "DELETE"),
 			"Type" => array("FOR EACH ROW"),
 		);
 	}

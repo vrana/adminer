@@ -755,7 +755,7 @@ if (!defined("DRIVER")) {
 
 	/** Get information about trigger
 	* @param string trigger name
-	* @return array array("Trigger" => , "Timing" => , "Event" => , "Type" => , "Statement" => )
+	* @return array array("Trigger" => , "Timing" => , "Event" => , "Of" => , "Type" => , "Statement" => )
 	*/
 	function trigger($name) {
 		if ($name == "") {
@@ -778,12 +778,12 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Get trigger options
-	* @return array ("Timing" => array(), "Type" => array())
+	* @return array ("Timing" => array(), "Event" => array(), "Type" => array())
 	*/
 	function trigger_options() {
 		return array(
 			"Timing" => array("BEFORE", "AFTER"),
-			// Event is always INSERT, UPDATE, DELETE
+			"Event" => array("INSERT", "UPDATE", "DELETE"),
 			"Type" => array("FOR EACH ROW"),
 		);
 	}

@@ -507,6 +507,7 @@ ORDER BY conkey, conname") as $row) {
 	function trigger_options() {
 		return array(
 			"Timing" => array("BEFORE", "AFTER"),
+			"Event" => array("INSERT", "UPDATE", "DELETE"),
 			"Type" => array("FOR EACH ROW", "FOR EACH STATEMENT"),
 		);
 	}

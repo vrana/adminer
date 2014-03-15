@@ -5,7 +5,9 @@
 * @param [bool]
 */
 function alterClass(el, className, enable) {
-	el.className = el.className.replace(RegExp('(^|\\s)' + className + '(\\s|$)'), '$2') + (enable ? ' ' + className : '');
+	if (el) {
+		el.className = el.className.replace(RegExp('(^|\\s)' + className + '(\\s|$)'), '$2') + (enable ? ' ' + className : '');
+	}
 }
 
 /** Toggle visibility

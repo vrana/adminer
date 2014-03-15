@@ -79,7 +79,7 @@ if (support(is_view($table_status) ? "view_trigger" : "trigger")) {
 	if ($triggers) {
 		echo "<table cellspacing='0'>\n";
 		foreach ($triggers as $key => $val) {
-			echo "<tr valign='top'><td>$val[0]<td>$val[1]<th>" . h($key) . "<td><a href='" . h(ME . 'trigger=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "'>" . lang('Alter') . "</a>\n";
+			echo "<tr valign='top'><td>" . h($val[0]) . "<td>" . h($val[1]) . "<th>" . h($key) . "<td><a href='" . h(ME . 'trigger=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "'>" . lang('Alter') . "</a>\n";
 		}
 		echo "</table>\n";
 	}

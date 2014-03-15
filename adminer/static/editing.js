@@ -488,6 +488,21 @@ function indexesAddColumn(field, prefix) {
 
 
 
+/** Handle changing trigger time or event
+* @param RegExp
+* @param string
+* @param HTMLFormElement
+*/
+function triggerChange(tableRe, table, form) {
+	var formEvent = selectValue(form['Event']);
+	if (tableRe.test(form['Trigger'].value)) {
+		form['Trigger'].value = table + '_' + (selectValue(form['Timing']).charAt(0) + formEvent.charAt(0)).toLowerCase();
+	}
+	alterClass(form['Of'], 'hidden', formEvent != 'UPDATE OF');
+}
+
+
+
 var that, x, y; // em and tablePos defined in schema.inc.php
 
 /** Get mouse position
@@ -564,6 +579,8 @@ function schemaMouseup(ev, db) {
 		cookie('adminer_schema-' + db + '=' + s, 30); //! special chars in db
 	}
 }
+
+
 
 var helpOpen, helpIgnore; // when mouse outs <option> then it mouse overs border of <select> - ignore it
 
