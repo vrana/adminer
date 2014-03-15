@@ -641,7 +641,14 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			$connection->result("SELECT sql FROM sqlite_master WHERE type = 'trigger' AND name = " . q($name)),
 			$match
 		);
-		return array("Timing" => strtoupper($match[1]), "Event" => strtoupper($match[2]), "Of" => $match[3], "Trigger" => $name, "Statement" => $match[4]);
+		$of = $match[3];
+		return array(
+			"Timing" => strtoupper($match[1]),
+			"Event" => strtoupper($match[2]) . ($of ? " OF" : ""),
+			"Of" => ($of[0] == '`' || $of[0] == '"' ? idf_unescape($of) : $of),
+			"Trigger" => $name,
+			"Statement" => $match[4],
+		);
 	}
 
 	function triggers($table) {
