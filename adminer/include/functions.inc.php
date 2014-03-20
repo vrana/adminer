@@ -723,6 +723,14 @@ function shorten_utf8($string, $length = 80, $suffix = "") {
 	return h($match[1]) . $suffix . (isset($match[2]) ? "" : "<i>...</i>");
 }
 
+/** Format decimal number
+* @param int
+* @return string
+*/
+function format_number($val) {
+  return strtr(number_format($val, 0, ".", lang(',')), preg_split('~~u', lang('0123456789'), -1, PREG_SPLIT_NO_EMPTY));
+}
+
 /** Generate friendly URL
 * @param string
 * @return string

@@ -12,6 +12,7 @@ MySQL 5.6.5+: Support ON UPDATE on datatime column
 SQLite: Support UPDATE OF triggers
 SQLite: Display auto-created unique indexes, bug since Adminer 3.5.0
 Editor: Fix login() method, bug since Adminer 4.0.0
+Translate numbers in ar, bn, fa
 
 Adminer 4.0.3 (released 2014-02-01)
 MongoDB: insert, truncate, indexes

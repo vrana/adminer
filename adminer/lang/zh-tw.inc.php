@@ -174,6 +174,7 @@ $translations = array(
 	'Data Free' => '資料空閒',
 	'Rows' => '行數',
 	',' => ',',
+	'0123456789' => '0123456789',
 	'Analyze' => '分析',
 	'Optimize' => '最佳化',
 	'Check' => '檢查',

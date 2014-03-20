@@ -179,6 +179,7 @@ $translations = array(
 	'Tables have been truncated.' => 'เคลียร์ตารางแล้ว (truncate).',
 	'Rows' => 'แถว',
 	',' => ' ',
+	'0123456789' => '0123456789',
 	'Tables have been moved.' => 'ตารางถูกย้ายแล้ว.',
 	'Move to other database' => 'ย้ายไปยังฐานข้อมูลอื่น',
 	'Move' => 'ย้าย',

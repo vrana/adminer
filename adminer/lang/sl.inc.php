@@ -89,6 +89,7 @@ $translations = array(
 	
 	// thousands separator - must contain single byte
 	',' => ' ',
+	'0123456789' => '0123456789',
 	'Engine' => 'Pogon',
 	'Collation' => 'Zbiranje',
 	'Data Length' => 'Velikost podatkov',

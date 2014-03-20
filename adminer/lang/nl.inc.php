@@ -180,6 +180,7 @@ $translations = array(
 	'Data Free' => 'Data Vrij',
 	'Rows' => 'Rijen',
 	',' => '.',
+	'0123456789' => '0123456789',
 	'Analyze' => 'Analyseer',
 	'Optimize' => 'Optimaliseer',
 	'Check' => 'Controleer',

@@ -80,6 +80,7 @@ $translations = array(
 	'Database schema' => 'Databaseskjema',
 	'Permanent link' => 'Permanent lenke',
 	',' => ' ',
+	'0123456789' => '0123456789',
 	'Engine' => 'Motor',
 	'Collation' => 'Tekstsortering',
 	'Data Length' => 'Datalengde',

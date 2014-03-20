@@ -70,7 +70,7 @@ function lang(\$translation, \$number = null) {
 		$translation = $translation[$pos];
 	}
 	$translation = str_replace("%d", "%s", $translation);
-	$number = number_format($number, 0, ".", lang(\',\'));
+	$number = format_number($number);
 	return sprintf($translation, $number);
 }
 ';

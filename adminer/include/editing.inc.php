@@ -519,5 +519,5 @@ function db_size($db) {
 	foreach (table_status() as $table_status) {
 		$return += $table_status["Data_length"] + $table_status["Index_length"];
 	}
-	return number_format($return, 0, '.', lang(','));
+	return format_number($return);
 }

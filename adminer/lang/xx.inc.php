@@ -94,7 +94,8 @@ $translations = array(
 	'Permanent link' => 'xx',
 	
 	// thousands separator - must contain single byte
-	',' => 'xx',
+	',' => 'x',
+	'0123456789' => 'xxxxxxxxxx',
 	'Engine' => 'xx',
 	'Collation' => 'xx',
 	'Data Length' => 'xx',

@@ -95,6 +95,7 @@ $translations = array(
 	
 	// thousands separator - must contain single byte
 	',' => ' ',
+	'0123456789' => '0123456789',
 	'Engine' => 'Úložiště',
 	'Collation' => 'Porovnávání',
 	'Data Length' => 'Velikost dat',

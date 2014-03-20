@@ -179,6 +179,7 @@ $translations = array(
 	'Tables have been truncated.' => 'S\'han escapçat les taules.',
 	'Rows' => 'Files',
 	',' => ',',
+	'0123456789' => '0123456789',
 	'Tables have been moved.' => 'S\'han desplaçat les taules.',
 	'Move to other database' => 'Desplaça a una altra base de dades',
 	'Move' => 'Desplaça',

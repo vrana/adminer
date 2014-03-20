@@ -179,6 +179,7 @@ $translations = array(
 	'Data Free' => 'Vaba ruumi',
 	'Rows' => 'Ridu',
 	',' => ',',
+	'0123456789' => '0123456789',
 	'Analyze' => 'Analüüsi',
 	'Optimize' => 'Optimeeri',
 	'Check' => 'Kontrolli',

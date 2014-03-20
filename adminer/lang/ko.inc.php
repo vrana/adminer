@@ -175,6 +175,7 @@ $translations = array(
 	'Data Free' => '여유',
 	'Rows' => '행',
 	',' => ',',
+	'0123456789' => '0123456789',
 	'Analyze' => '분석',
 	'Optimize' => '최적화',
 	'Check' => '확인',

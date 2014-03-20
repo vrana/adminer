@@ -179,6 +179,7 @@ $translations = array(
 	'Tables have been truncated.' => 'Tabelele au fost curățate.',
 	'Rows' => 'Înscrieri',
 	',' => ',',
+	'0123456789' => '0123456789',
 	'Tables have been moved.' => 'Tabelele au fost mutate.',
 	'Move to other database' => 'Mută în altă bază de date',
 	'Move' => 'Mută',

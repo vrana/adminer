@@ -179,6 +179,7 @@ $translations = array(
 	'Tables have been truncated.' => 'টেবিল ছাঁটাই করা হয়েছে',
 	'Rows' => 'সারি',
 	',' => ',',
+	'0123456789' => '০১২৩৪৫৬৭৮৯',
 	'Tables have been moved.' => 'টেবিল স্থানান্তর করা হয়েছে।',
 	'Move to other database' => 'অন্য ডাটাবেজে স্থানান্তর করো',
 	'Move' => 'স্থানান্তর করো',

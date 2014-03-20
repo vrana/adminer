@@ -179,6 +179,7 @@ $translations = array(
 	'Tables have been truncated.' => 'A tábla felszabadítva.',
 	'Rows' => 'Oszlop',
 	',' => ' ',
+	'0123456789' => '0123456789',
 	'Tables have been moved.' => 'Táblák áthelyezve.',
 	'Move to other database' => 'Áthelyezés másik adatbázisba',
 	'Move' => 'Áthelyez',

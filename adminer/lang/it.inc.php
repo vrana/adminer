@@ -179,6 +179,7 @@ $translations = array(
 	'Data Free' => 'Dati liberi',
 	'Rows' => 'Righe',
 	',' => '.',
+	'0123456789' => '0123456789',
 	'Analyze' => 'Analizza',
 	'Optimize' => 'Ottimizza',
 	'Check' => 'Controlla',

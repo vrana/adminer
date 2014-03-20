@@ -93,6 +93,7 @@ $translations = array(
 	
 	// thousands separator - must contain single byte
 	',' => ' ',
+	'0123456789' => '۰۱۲۳۴۵۶۷۸۹',
 	'Engine' => 'موتور',
 	'Collation' => 'تطبیق',
 	'Data Length' => 'طول داده',

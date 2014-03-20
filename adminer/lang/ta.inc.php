@@ -176,6 +176,7 @@ $translations = array(
 	'Tables have been truncated.' => 'அட்ட‌வ‌ணை குறைக்க‌ப்ப‌ட்ட‌து (truncated).',
 	'Rows' => 'வ‌ரிசைக‌ள்',
 	',' => ',',
+	'0123456789' => '0123456789',
 	'Tables have been moved.' => 'அட்ட‌வ‌ணை ந‌க‌ர்த்த‌ப்ப‌ட்ட‌து.',
 	'Move to other database' => 'ம‌ற்ற‌ த‌க‌வ‌ல் தள‌த்திற்க்கு ந‌க‌ர்த்து',
 	'Move' => 'ந‌க‌ர்த்து',

@@ -180,6 +180,7 @@ $translations = array(
 	'Data Free' => 'Voľné miesto',
 	'Rows' => 'Riadky',
 	',' => ' ',
+	'0123456789' => '0123456789',
 	'Analyze' => 'Analyzovať',
 	'Optimize' => 'Optimalizovať',
 	'Check' => 'Skontrolovať',

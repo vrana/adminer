@@ -179,6 +179,7 @@ $translations = array(
 	'Tables have been truncated.' => 'Tabelas truncadas (truncate).',
 	'Rows' => 'Registos',
 	',' => ' ',
+	'0123456789' => '0123456789',
 	'Tables have been moved.' => 'As Tabelas foram movidas.',
 	'Move to other database' => 'Mover outra Base de dados',
 	'Move' => 'Mover',

@@ -68,7 +68,7 @@ function lang($idf, $number = null) {
 	array_shift($args);
 	$format = str_replace("%d", "%s", $translation);
 	if ($format != $translation) {
-		$args[0] = number_format($number, 0, ".", lang(','));
+		$args[0] = format_number($number);
 	}
 	return vsprintf($format, $args);
 }
