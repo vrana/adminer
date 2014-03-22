@@ -747,12 +747,14 @@ function friendly_url($val) {
 */
 function hidden_fields($process, $ignore = array()) {
 	while (list($key, $val) = each($process)) {
-		if (is_array($val)) {
-			foreach ($val as $k => $v) {
-				$process[$key . "[$k]"] = $v;
+		if (!in_array($key, $ignore)) {
+			if (is_array($val)) {
+				foreach ($val as $k => $v) {
+					$process[$key . "[$k]"] = $v;
+				}
+			} else {
+				echo '<input type="hidden" name="' . h($key) . '" value="' . h($val) . '">';
 			}
-		} elseif (!in_array($key, $ignore)) {
-			echo '<input type="hidden" name="' . h($key) . '" value="' . h($val) . '">';
 		}
 	}
 }
