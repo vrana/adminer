@@ -15,8 +15,47 @@ if ($_COOKIE["adminer_permanent"]) {
 	}
 }
 
+function add_invalid_login() {
+	global $adminer;
+	$filename = get_temp_dir() . "/adminer.invalid";
+	$fp = @fopen($filename, "r+"); // @ - may not exist
+	if (!$fp) { // c+ is available since PHP 5.2.6
+		$fp = fopen($filename, "w");
+		if (!$fp) {
+			return;
+		}
+	}
+	flock($fp, LOCK_EX);
+	$invalids = unserialize(stream_get_contents($fp));
+	$time = time();
+	if ($invalids) {
+		foreach ($invalids as $ip => $val) {
+			if ($val[0] < $time) {
+				unset($invalids[$ip]);
+			}
+		}
+	}
+	$invalid = &$invalids[$adminer->bruteForceKey()];
+	if (!$invalid) {
+		$invalid = array($time + 30*60, 0); // active for 30 minutes
+	}
+	$invalid[1]++;
+	$serialized = serialize($invalids);
+	rewind($fp);
+	fwrite($fp, $serialized);
+	ftruncate($fp, strlen($serialized));
+	flock($fp, LOCK_UN);
+	fclose($fp);
+}
+
 $auth = $_POST["auth"];
 if ($auth) {
+	$invalids = unserialize(@file_get_contents(get_temp_dir() . "/adminer.invalid")); // @ - may not exist
+	$invalid = $invalids[$adminer->bruteForceKey()];
+	$next_attempt = ($invalid[1] > 30 ? $invalid[0] - time() : 0); // allow 30 invalid attempts
+	if ($next_attempt > 0) { //! do the same with permanent login
+		auth_error(lang('Too many unsuccessful logins, try again in %d minute(s).', ceil($next_attempt / 60)));
+	}
 	session_regenerate_id(); // defense against session fixation
 	$driver = $auth["driver"];
 	$server = $auth["server"];
@@ -75,19 +114,18 @@ function unset_permanent() {
 	cookie("adminer_permanent", implode(" ", $permanent));
 }
 
-function auth_error($exception = null) {
-	global $connection, $adminer, $has_token;
+function auth_error($error) {
+	global $adminer, $has_token;
 	$session_name = session_name();
-	$error = "";
 	if (!$_COOKIE[$session_name] && $_GET[$session_name] && ini_bool("session.use_only_cookies")) {
 		$error = lang('Session support must be enabled.');
 	} elseif (isset($_GET["username"])) {
 		if (($_COOKIE[$session_name] || $_GET[$session_name]) && !$has_token) {
 			$error = lang('Session expired, please login again.');
 		} else {
+			add_invalid_login();
 			$password = get_password();
 			if ($password !== null) {
-				$error = h($exception ? $exception->getMessage() : (is_string($connection) ? $connection : lang('Invalid credentials.')));
 				if ($password === false) {
 					$error .= '<br>' . lang('Master password expired. <a href="http://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to make it permanent.', '<code>permanentLogin()</code>');
 				}
@@ -106,6 +144,7 @@ function auth_error($exception = null) {
 	echo "</div>\n";
 	echo "</form>\n";
 	page_footer("auth");
+	exit;
 }
 
 if (isset($_GET["username"])) {
@@ -122,8 +161,7 @@ if (isset($_GET["username"])) {
 $driver = new Min_Driver($connection);
 
 if (!is_object($connection) || !$adminer->login($_GET["username"], get_password())) {
-	auth_error();
-	exit;
+	auth_error((is_string($connection) ? $connection : lang('Invalid credentials.')));
 }
 
 if ($auth && $_POST["token"]) {

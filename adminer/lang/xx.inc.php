@@ -11,6 +11,7 @@ $translations = array(
 	'Logged as: %s' => 'xx',
 	'Logout successful.' => 'xx',
 	'Invalid credentials.' => 'xx',
+	'Too many unsuccessful logins, try again in %d minute(s).' => array('xx', 'xx'),
 	'Master password expired. <a href="http://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to make it permanent.' => 'xx',
 	'Language' => 'xx',
 	'Invalid CSRF token. Send the form again.' => 'xx',

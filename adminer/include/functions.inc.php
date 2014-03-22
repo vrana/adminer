@@ -1034,26 +1034,33 @@ function apply_sql_function($function, $column) {
 	return ($function ? ($function == "unixepoch" ? "DATETIME($column, '$function')" : ($function == "count distinct" ? "COUNT(DISTINCT " : strtoupper("$function(")) . "$column)") : $column);
 }
 
-/** Read password from file adminer.key in temporary directory or create one
-* @param bool
-* @return string or false if the file can not be created
+/** Get path of the temporary directory
+* @return string
 */
-function password_file($create) {
-	$dir = ini_get("upload_tmp_dir"); // session_save_path() may contain other storage path
-	if (!$dir) {
+function get_temp_dir() {
+	$return = ini_get("upload_tmp_dir"); // session_save_path() may contain other storage path
+	if (!$return) {
 		if (function_exists('sys_get_temp_dir')) {
-			$dir = sys_get_temp_dir();
+			$return = sys_get_temp_dir();
 		} else {
 			$filename = @tempnam("", ""); // @ - temp directory can be disabled by open_basedir
 			if (!$filename) {
 				return false;
 			}
-			$dir = dirname($filename);
+			$return = dirname($filename);
 			unlink($filename);
 		}
 	}
-	$filename = "$dir/adminer.key";
-	$return = @file_get_contents($filename); // @ - can not exist
+	return $return;
+}
+
+/** Read password from file adminer.key in temporary directory or create one
+* @param bool
+* @return string or false if the file can not be created
+*/
+function password_file($create) {
+	$filename = get_temp_dir() . "/adminer.key";
+	$return = @file_get_contents($filename); // @ - may not exist
 	if ($return || !$create) {
 		return $return;
 	}

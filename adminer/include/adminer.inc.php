@@ -27,6 +27,13 @@ class Adminer {
 		return password_file($create);
 	}
 
+	/** Return key used to group brute force attacks; behind a reverse proxy, you want to return the last part of X-Forwarded-For
+	* @return string
+	*/
+	function bruteForceKey() {
+		return $_SERVER["REMOTE_ADDR"];
+	}
+
 	/** Identifier of selected database
 	* @return string
 	*/

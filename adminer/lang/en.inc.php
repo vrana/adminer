@@ -1,5 +1,6 @@
 <?php
 $translations = array(
+	'Too many unsuccessful logins, try again in %d minute(s).' => array('Too many unsuccessful logins, try again in %d minute.', 'Too many unsuccessful logins, try again in %d minutes.'),
 	'Query executed OK, %d row(s) affected.' => array('Query executed OK, %d row affected.', 'Query executed OK, %d rows affected.'),
 	'%d byte(s)' => array('%d byte', '%d bytes'),
 	'Routine has been called, %d row(s) affected.' => array('Routine has been called, %d row affected.', 'Routine has been called, %d rows affected.'),

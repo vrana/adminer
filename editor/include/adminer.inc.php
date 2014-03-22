@@ -17,6 +17,10 @@ class Adminer {
 		return password_file($create);
 	}
 
+	function bruteForceKey() {
+		return $_SERVER["REMOTE_ADDR"];
+	}
+
 	function database() {
 		global $connection;
 		if ($connection) {

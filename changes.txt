@@ -1,5 +1,6 @@
 Adminer 4.1.0-dev:
 Provide size of all databases in the overview
+Prevent against brute force login attempts from the same IP address
 Compute number of tables in the overview explicitly
 Display edit form after error in clone or multi-edit
 Trim trailing non-breaking spaces in SQL textarea
