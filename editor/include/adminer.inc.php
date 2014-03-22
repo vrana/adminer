@@ -183,7 +183,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			$return = ($val ? lang('yes') : lang('no'));
 		}
 		if ($link) {
-			$return = "<a href='$link'>$return</a>";
+			$return = "<a href='$link'" . (is_url($link) ? " rel='noreferrer'" : "") . ">$return</a>";
 		}
 		if (!$link && !like_bool($field) && preg_match('~int|float|double|decimal~', $field["type"])) {
 			$return = "<div class='number'>$return</div>"; // Firefox doesn't support <colgroup>
