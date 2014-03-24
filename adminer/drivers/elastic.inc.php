@@ -224,10 +224,24 @@ if (isset($_GET["elastic"])) {
 	}
 
 	function table_status($name = "", $fast = false) {
-		$return = tables_list();
-		if ($return) {
-			foreach ($return as $key => $type) { // _stats have just info about database
-				$return[$key] = array("Name" => $key, "Engine" => $type);
+		global $connection;
+		$search = $connection->query("_search?search_type=count", array(
+			"facets" => array(
+				"count_by_type" => array(
+					"terms" => array(
+						"field" => "_type"
+					)
+				)
+			)
+		), "POST");
+		$return = array();
+		if ($search) {
+			foreach ($search["facets"]["count_by_type"]["terms"] as $table) {
+				$return[$table["term"]] = array(
+					"Name" => $table["term"],
+					"Engine" => "table",
+					"Rows" => $table["count"]
+				);
 			}
 			if ($name != "") {
 				return $return[$name];
