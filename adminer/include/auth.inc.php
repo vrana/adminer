@@ -20,7 +20,7 @@ function add_invalid_login() {
 	$filename = get_temp_dir() . "/adminer.invalid";
 	$fp = @fopen($filename, "r+"); // @ - may not exist
 	if (!$fp) { // c+ is available since PHP 5.2.6
-		$fp = fopen($filename, "w");
+		$fp = @fopen($filename, "w"); // @ - may not be writable
 		if (!$fp) {
 			return;
 		}
