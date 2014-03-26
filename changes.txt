@@ -6,7 +6,6 @@ Display edit form after error in clone or multi-edit
 Trim trailing non-breaking spaces in SQL textarea
 Display time of the select command
 Print elapsed time in HTML instead of SQL command comment
-Simplify copying of redirected links
 Improve gzip export ratio (bug #387)
 Fix enum types in routines (bug #391)
 MySQL: Fix editing rows by binary values, bug since Adminer 3.7.1

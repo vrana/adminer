@@ -515,7 +515,7 @@ if (!$columns && support("table")) {
 				echo "</div></fieldset>\n";
 			}
 
-			echo "<script type='text/javascript'>selectLinks(document.getElementById('table'));" . (!$group && $select ? "" : " tableCheck();") . "</script>\n";
+			echo (!$group && $select ? "" : "<script type='text/javascript'>tableCheck();</script>\n");
 		}
 
 		if ($adminer->selectImportPrint()) {
