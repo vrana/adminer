@@ -1107,9 +1107,9 @@ function select_value($val, $link, $field, $text_length) {
 			$link = "mailto:$val";
 		}
 		if ($protocol = is_url($val)) {
-			$link = ($protocol == "http" && $HTTPS
+			$link = (($protocol == "http" && $HTTPS) || preg_match('~WebKit~i', $_SERVER["HTTP_USER_AGENT"]) // WebKit supports noreferrer since 2009
 				? $val // HTTP links from HTTPS pages don't receive Referer automatically
-				: "$protocol://www.adminer.org/redirect/?url=" . urlencode($val) // intermediate page to hide Referer, may be changed to rel="noreferrer" in HTML5
+				: "$protocol://www.adminer.org/redirect/?url=" . urlencode($val) // intermediate page to hide Referer
 			);
 		}
 	}
