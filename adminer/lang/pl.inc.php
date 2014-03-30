@@ -11,6 +11,7 @@ $translations = array(
 	'Logged as: %s' => 'Zalogowany jako: %s',
 	'Logout successful.' => 'Wylogowano pomyślnie.',
 	'Invalid credentials.' => 'Nieprawidłowe dane logowania.',
+	'Too many unsuccessful logins, try again in %d minute(s).' => array('Za dużo nieudanych prób logowania, spróbuj ponownie za %d minutę.', 'Za dużo nieudanych prób logowania, spróbuj ponownie za %d minuty.', 'Za dużo nieudanych prób logowania, spróbuj ponownie za %d minut.'),
 	'Master password expired. <a href="http://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to make it permanent.' => 'Ważność hasła głównego wygasła. <a href="http://www.adminer.org/pl/extension/" target="_blank">Zaimplementuj</a> własną metodę %s, aby ustawić je na stałe.',
 	'Language' => 'Język',
 	'Invalid CSRF token. Send the form again.' => 'Nieprawidłowy token CSRF. Spróbuj wysłać formularz ponownie.',
@@ -105,6 +106,7 @@ $translations = array(
 	'%d in total' => '%d w sumie',
 	'Analyze' => 'Analizuj',
 	'Optimize' => 'Optymalizuj',
+	'Vacuum' => 'Wyczyść',
 	'Check' => 'Sprawdź',
 	'Repair' => 'Napraw',
 	'Truncate' => 'Opróżnij',
@@ -165,6 +167,8 @@ $translations = array(
 	'Default values' => 'Wartości domyślne',
 	'Drop' => 'Usuń',
 	'Are you sure?' => 'Czy jesteś pewien?',
+	'Size' => 'Wielkość',
+	'Compute' => 'Oblicz',
 	'Move up' => 'Przesuń w górę',
 	'Move down' => 'Przesuń w dół',
 	'Remove' => 'Usuń',
@@ -245,6 +249,7 @@ $translations = array(
 	'File must be in UTF-8 encoding.' => 'Kodowanie pliku musi być ustawione na UTF-8.',
 	
 	// in-place editing in select
+	'Modify' => 'Zmień',
 	'Ctrl+click on a value to modify it.' => 'Ctrl+kliknij wartość, aby ją edytować.',
 	'Use edit link to modify this value.' => 'Użyj linku edycji aby zmienić tę wartość.',
 	
@@ -261,8 +266,10 @@ $translations = array(
 	'Edit' => 'Edytuj',
 	'Insert' => 'Dodaj',
 	'Save' => 'Zapisz zmiany',
+	'Saving' => 'Zapisywanie',
 	'Save and continue edit' => 'Zapisz i kontynuuj edycję',
 	'Save and insert next' => 'Zapisz i dodaj następny',
+	'Selected' => 'Zaznaczone',
 	'Clone' => 'Duplikuj',
 	'Delete' => 'Usuń',
 	'You have no privileges to update this table.' => 'Brak uprawnień do edycji tej tabeli',
