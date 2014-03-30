@@ -34,6 +34,7 @@ $langs = array(
 	'zh' => '简体中文', // Mr. Lodar, vea - urn2.net - vea.urn2@gmail.com
 	'zh-tw' => '繁體中文', // http://tzangms.com
 	'no' => 'Norsk', // Iver Odin Kvello, mupublishing.com
+	'vi' => 'Tiếng Việt', // Giang Manh @ manhgd google mail
 );
 
 /** Get current language
