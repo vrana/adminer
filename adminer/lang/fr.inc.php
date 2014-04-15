@@ -267,4 +267,8 @@ $translations = array(
 	'Permanent link' => 'Lien permanent',
 	'Edit all' => 'Tout modifier',
 	'HH:MM:SS' => 'HH:MM:SS',
+	'Selected' => 'Sélectionnée(s)',
+	'Modify' => 'Modification',
+	'Load more data' => 'Charger plus de données',
+	'Loading' => 'Chargement',
 );
