@@ -546,6 +546,7 @@ function redirect($location, $message = null) {
 * @param bool
 * @param bool
 * @param bool
+* @param string
 * @return bool
 */
 function query_redirect($query, $location, $message, $redirect = true, $execute = true, $failed = false, $time = "") {
