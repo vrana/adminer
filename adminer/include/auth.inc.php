@@ -57,26 +57,26 @@ if ($auth) {
 		auth_error(lang('Too many unsuccessful logins, try again in %d minute(s).', ceil($next_attempt / 60)));
 	}
 	session_regenerate_id(); // defense against session fixation
-	$driver = $auth["driver"];
+	$vendor = $auth["driver"];
 	$server = $auth["server"];
 	$username = $auth["username"];
 	$password = (string) $auth["password"];
 	$db = $auth["db"];
-	set_password($driver, $server, $username, $password);
-	$_SESSION["db"][$driver][$server][$username][$db] = true;
+	set_password($vendor, $server, $username, $password);
+	$_SESSION["db"][$vendor][$server][$username][$db] = true;
 	if ($auth["permanent"]) {
-		$key = base64_encode($driver) . "-" . base64_encode($server) . "-" . base64_encode($username) . "-" . base64_encode($db);
+		$key = base64_encode($vendor) . "-" . base64_encode($server) . "-" . base64_encode($username) . "-" . base64_encode($db);
 		$private = $adminer->permanentLogin(true);
 		$permanent[$key] = "$key:" . base64_encode($private ? encrypt_string($password, $private) : "");
 		cookie("adminer_permanent", implode(" ", $permanent));
 	}
 	if (count($_POST) == 1 // 1 - auth
-		|| DRIVER != $driver
+		|| DRIVER != $vendor
 		|| SERVER != $server
 		|| $_GET["username"] !== $username // "0" == "00"
 		|| DB != $db
 	) {
-		redirect(auth_url($driver, $server, $username, $db));
+		redirect(auth_url($vendor, $server, $username, $db));
 	}
 	
 } elseif ($_POST["logout"]) {
