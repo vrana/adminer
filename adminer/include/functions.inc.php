@@ -70,7 +70,7 @@ function bracket_escape($idf, $back = false) {
 * @return string
 */
 function h($string) {
-	return htmlspecialchars(str_replace("\0", "", $string), ENT_QUOTES);
+	return str_replace("\0", "&#0;", htmlspecialchars($string, ENT_QUOTES));
 }
 
 /** Escape for TD
