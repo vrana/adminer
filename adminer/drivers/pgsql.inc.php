@@ -239,9 +239,9 @@ ORDER BY table_name");
 
 	function table_status($name = "") {
 		$return = array();
-		foreach (get_rows("SELECT relname AS \"Name\", CASE relkind WHEN 'r' THEN 'table' WHEN 'mv' THEN 'materialized view' ELSE 'view' END AS \"Engine\", pg_relation_size(oid) AS \"Data_length\", pg_total_relation_size(oid) - pg_relation_size(oid) AS \"Index_length\", obj_description(oid, 'pg_class') AS \"Comment\", relhasoids::int AS \"Oid\", reltuples as \"Rows\"
+		foreach (get_rows("SELECT relname AS \"Name\", CASE relkind WHEN 'r' THEN 'table' WHEN 'mv' THEN 'materialized view' WHEN 'f' THEN 'foreign table' ELSE 'view' END AS \"Engine\", pg_relation_size(oid) AS \"Data_length\", pg_total_relation_size(oid) - pg_relation_size(oid) AS \"Index_length\", obj_description(oid, 'pg_class') AS \"Comment\", relhasoids::int AS \"Oid\", reltuples as \"Rows\"
 FROM pg_class
-WHERE relkind IN ('r','v','mv')
+WHERE relkind IN ('r','v','mv','f')
 AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema())
 " . ($name != "" ? "AND relname = " . q($name) : "ORDER BY relname")
 		) as $row) { //! Index_length, Auto_increment
