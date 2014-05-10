@@ -225,7 +225,12 @@ if (isset($_GET["pgsql"])) {
 	}
 
 	function tables_list() {
-		return get_key_vals("SELECT table_name, table_type FROM information_schema.tables WHERE table_schema = current_schema() ORDER BY table_name");
+		return get_key_vals("SELECT table_name, table_type FROM information_schema.tables WHERE table_schema = current_schema()
+UNION ALL
+SELECT matviewname, 'MATERIALIZED VIEW'
+FROM pg_matviews
+WHERE schemaname = current_schema()
+ORDER BY table_name");
 	}
 
 	function count_tables($databases) {
@@ -234,9 +239,9 @@ if (isset($_GET["pgsql"])) {
 
 	function table_status($name = "") {
 		$return = array();
-		foreach (get_rows("SELECT relname AS \"Name\", CASE relkind WHEN 'r' THEN 'table' ELSE 'view' END AS \"Engine\", pg_relation_size(oid) AS \"Data_length\", pg_total_relation_size(oid) - pg_relation_size(oid) AS \"Index_length\", obj_description(oid, 'pg_class') AS \"Comment\", relhasoids::int AS \"Oid\", reltuples as \"Rows\"
+		foreach (get_rows("SELECT relname AS \"Name\", CASE relkind WHEN 'r' THEN 'table' WHEN 'mv' THEN 'materialized view' ELSE 'view' END AS \"Engine\", pg_relation_size(oid) AS \"Data_length\", pg_total_relation_size(oid) - pg_relation_size(oid) AS \"Index_length\", obj_description(oid, 'pg_class') AS \"Comment\", relhasoids::int AS \"Oid\", reltuples as \"Rows\"
 FROM pg_class
-WHERE relkind IN ('r','v')
+WHERE relkind IN ('r','v','mv')
 AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema())
 " . ($name != "" ? "AND relname = " . q($name) : "ORDER BY relname")
 		) as $row) { //! Index_length, Auto_increment
@@ -246,7 +251,7 @@ AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema(
 	}
 
 	function is_view($table_status) {
-		return $table_status["Engine"] == "view";
+		return in_array($table_status["Engine"], array("view", "materialized view"));
 	}
 
 	function fk_support($table_status) {
@@ -467,21 +472,25 @@ ORDER BY conkey, conname") as $row) {
 	}
 
 	function drop_views($views) {
-		return queries("DROP VIEW " . implode(", ", array_map('table', $views)));
+		return drop_tables($views);
 	}
 
 	function drop_tables($tables) {
-		return queries("DROP TABLE " . implode(", ", array_map('table', $tables)));
+		$result = true;
+		foreach ($tables as $table) {
+		    $status = table_status($table);
+		    $engine = strtoupper($status["Engine"]);
+		    $result = $result && queries("DROP $engine " . table($table));
+		}
+
+		return $result;
 	}
 
 	function move_tables($tables, $views, $target) {
-		foreach ($tables as $table) {
-			if (!queries("ALTER TABLE " . table($table) . " SET SCHEMA " . idf_escape($target))) {
-				return false;
-			}
-		}
-		foreach ($views as $table) {
-			if (!queries("ALTER VIEW " . table($table) . " SET SCHEMA " . idf_escape($target))) {
+		foreach (array_merge($tables, $views) as $table) {
+			$status = table_status($table);
+			$engine = strtoupper($status["Engine"]);
+			if (!queries("ALTER $engine " . table($table) . " SET SCHEMA " . idf_escape($target))) {
 				return false;
 			}
 		}
@@ -612,7 +621,7 @@ AND typelem = 0"
 	}
 
 	function support($feature) {
-		return preg_match('~^(database|table|columns|sql|indexes|comment|view|scheme|processlist|sequence|trigger|type|variables|drop_col)$~', $feature); //! routine|
+		return preg_match('~^(database|table|columns|sql|indexes|comment|view|materializedview|scheme|processlist|sequence|trigger|type|variables|drop_col)$~', $feature); //! routine|
 	}
 
 	$jush = "pgsql";
