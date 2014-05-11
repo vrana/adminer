@@ -225,12 +225,15 @@ if (isset($_GET["pgsql"])) {
 	}
 
 	function tables_list() {
-		return get_key_vals("SELECT table_name, table_type FROM information_schema.tables WHERE table_schema = current_schema()
-UNION ALL
+		$query = "SELECT table_name, table_type FROM information_schema.tables WHERE table_schema = current_schema()";
+		if (support('materializedview')) {
+			$query .= "UNION ALL
 SELECT matviewname, 'MATERIALIZED VIEW'
 FROM pg_matviews
 WHERE schemaname = current_schema()
-ORDER BY table_name");
+ORDER BY table_name";
+		}
+		return get_key_vals($query);
 	}
 
 	function count_tables($databases) {
@@ -621,7 +624,8 @@ AND typelem = 0"
 	}
 
 	function support($feature) {
-		return preg_match('~^(database|table|columns|sql|indexes|comment|view|materializedview|scheme|processlist|sequence|trigger|type|variables|drop_col)$~', $feature); //! routine|
+		global $connection;
+		return preg_match('~^(database|table|columns|sql|indexes|comment|view|'. ($connection->server_info >= 9.3 ? "materializedview|" : "") . 'scheme|processlist|sequence|trigger|type|variables|drop_col)$~', $feature); //! routine|
 	}
 
 	$jush = "pgsql";
