@@ -1,3 +1,6 @@
+Adminer 4.1.1-dev:
+Fix reading routine column collations
+
 Adminer 4.1.0 (released 2014-04-18)
 Provide size of all databases in the overview
 Prevent against brute force login attempts from the same IP address
