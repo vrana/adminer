@@ -203,10 +203,9 @@ if (!isset($_GET["import"])) {
 } else {
 	echo "<fieldset><legend>" . lang('File upload') . "</legend><div>";
 	echo (ini_bool("file_uploads")
-		? '<input type="file" name="sql_file[]" multiple> (&lt; ' . ini_get("upload_max_filesize") . 'B)' // ignore post_max_size because it is for all form fields together and bytes computing would be necessary
+		? "SQL (&lt; " . ini_get("upload_max_filesize") . "B): <input type='file' name='sql_file[]' multiple>\n$execute" // ignore post_max_size because it is for all form fields together and bytes computing would be necessary
 		: lang('File uploads are disabled.')
 	);
-	echo "\n$execute";
 	echo "</div></fieldset>\n";
 	echo "<fieldset><legend>" . lang('From server') . "</legend><div>";
 	echo lang('Webserver file %s', "<code>adminer.sql" . (extension_loaded("zlib") ? "[.gz]" : "") . "</code>");
