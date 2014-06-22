@@ -1,5 +1,4 @@
 <?php
-<?php
 $translations = array(
 	'Login' => 'Authentification',
 	'Logout successful.' => 'Au revoir !',
