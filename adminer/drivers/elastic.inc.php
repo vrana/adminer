@@ -269,10 +269,14 @@ if (isset($_GET["elastic"])) {
 
 	function fields($table) {
 		global $connection;
-		$mapping = $connection->query("$table/_mapping");
+		$result = $connection->query("$table/_mapping");
 		$return = array();
-		if ($mapping) {
-			foreach ($mapping[$table]['properties'] as $name => $field) {
+		if ($result) {
+			$mappings = $result[$table]['properties'];
+			if (!$mappings) {
+				$mappings = $result[$connection->_db]['mappings'][$table]['properties'];
+			}
+			foreach ($mappings as $name => $field) {
 				$return[$name] = array(
 					"field" => $name,
 					"full_type" => $field["type"],
