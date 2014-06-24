@@ -24,13 +24,6 @@ if (!defined("DRIVER")) {
 					(is_numeric($port) ? $port : ini_get("mysqli.default_port")),
 					(!is_numeric($port) ? $port : null)
 				);
-				if ($return) {
-					if (method_exists($this, 'set_charset')) {
-						$this->set_charset("utf8");
-					} else {
-						$this->query("SET NAMES utf8");
-					}
-				}
 				return $return;
 			}
 
@@ -75,15 +68,21 @@ if (!defined("DRIVER")) {
 				);
 				if ($this->_link) {
 					$this->server_info = mysql_get_server_info($this->_link);
-					if (function_exists('mysql_set_charset')) {
-						mysql_set_charset("utf8", $this->_link);
-					} else {
-						$this->query("SET NAMES utf8");
-					}
 				} else {
 					$this->error = mysql_error();
 				}
 				return (bool) $this->_link;
+			}
+
+			/** Sets the client character set
+			* @param string
+			* @return bool
+			*/
+			function set_charset($charset) {
+				if (function_exists('mysql_set_charset')) {
+					return mysql_set_charset($charset, $this->_link);
+				}
+				return $this->query("SET NAMES $charset");
 			}
 
 			/** Quote string to use in SQL
@@ -212,8 +211,11 @@ if (!defined("DRIVER")) {
 
 			function connect($server, $username, $password) {
 				$this->dsn("mysql:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\\d)~', ';port=\\1', $server)), $username, $password);
-				$this->query("SET NAMES utf8"); // charset in DSN is ignored before PHP 5.3.6
 				return true;
+			}
+
+			function set_charset($charset) {
+				$this->query("SET NAMES $charset"); // charset in DSN is ignored before PHP 5.3.6
 			}
 
 			function select_db($database) {
@@ -290,6 +292,7 @@ if (!defined("DRIVER")) {
 		$connection = new Min_DB;
 		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
+			$connection->set_charset("utf8"); // available in MySQLi since PHP 5.0.5
 			$connection->query("SET sql_quote_show_create = 1, autocommit = 1");
 			return $connection;
 		}
