@@ -31,7 +31,6 @@ $translations = array(
 	'Alter database' => '修改数据库',
 	'Create database' => '创建数据库',
 	'SQL command' => 'SQL命令',
-	'Dump' => '导出',
 	'Logout' => '注销',
 	'database' => '数据库',
 	'Use' => '使用',

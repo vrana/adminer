@@ -31,7 +31,6 @@ $translations = array(
 	'Alter database' => 'Modifica la base de dades',
 	'Create database' => 'Crea una base de dades',
 	'SQL command' => 'Ordre SQL',
-	'Dump' => 'Exporta',
 	'Logout' => 'Desconnecta',
 	'database' => 'base de dades',
 	'Use' => 'Utilitza',

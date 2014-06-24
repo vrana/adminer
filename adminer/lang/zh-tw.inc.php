@@ -30,7 +30,6 @@ $translations = array(
 	'Alter database' => '修改資料庫',
 	'Create database' => '建立資料庫',
 	'SQL command' => 'SQL命令',
-	'Dump' => '匯出',
 	'Logout' => '登出',
 	'database' => '資料庫',
 	'Use' => '使用',

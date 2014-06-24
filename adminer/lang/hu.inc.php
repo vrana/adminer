@@ -31,7 +31,6 @@ $translations = array(
 	'Alter database' => 'Adatbázis módosítása',
 	'Create database' => 'Adatbázis létrehozása',
 	'SQL command' => 'SQL parancs',
-	'Dump' => 'Exportálás',
 	'Logout' => 'Kilépés',
 	'database' => 'adatbázis',
 	'Use' => 'Használ',

@@ -69,7 +69,6 @@ $translations = array(
 	'You can upload a big SQL file via FTP and import it from server.' => 'Velký SQL soubor můžete nahrát pomocí FTP a importovat ho ze serveru.',
 	
 	'Export' => 'Export',
-	'Dump' => 'Export',
 	'Output' => 'Výstup',
 	'open' => 'otevřít',
 	'save' => 'uložit',
