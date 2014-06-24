@@ -292,7 +292,9 @@ if (!defined("DRIVER")) {
 		$connection = new Min_DB;
 		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
-			$connection->set_charset("utf8"); // available in MySQLi since PHP 5.0.5
+			$connection->set_charset( // available in MySQLi since PHP 5.0.5
+				version_compare($connection->server_info, "5.5.3") > 0 ? "utf8mb4" : "utf8" // SHOW CHARSET would require an extra query
+			);
 			$connection->query("SET sql_quote_show_create = 1, autocommit = 1");
 			return $connection;
 		}
