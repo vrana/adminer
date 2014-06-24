@@ -584,7 +584,6 @@ if (!defined("DRIVER")) {
 	* @return string
 	*/
 	function create_database($db, $collation) {
-		set_session("dbs", null);
 		return queries("CREATE DATABASE " . idf_escape($db) . ($collation ? " COLLATE " . q($collation) : ""));
 	}
 
@@ -593,9 +592,10 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function drop_databases($databases) {
+		$return = apply_queries("DROP DATABASE", $databases, 'idf_escape');
 		restart_session();
 		set_session("dbs", null);
-		return apply_queries("DROP DATABASE", $databases, 'idf_escape');
+		return $return;
 	}
 
 	/** Rename database from DB
@@ -604,18 +604,21 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function rename_database($name, $collation) {
+		$return = false;
 		if (create_database($name, $collation)) {
 			//! move triggers
 			$rename = array();
 			foreach (tables_list() as $table => $type) {
 				$rename[] = table($table) . " TO " . idf_escape($name) . "." . table($table);
 			}
-			if (!$rename || queries("RENAME TABLE " . implode(", ", $rename))) {
+			$return = (!$rename || queries("RENAME TABLE " . implode(", ", $rename)));
+			if ($return) {
 				queries("DROP DATABASE " . idf_escape(DB));
-				return true;
 			}
+			restart_session();
+			set_session("dbs", null);
 		}
-		return false;
+		return $return;
 	}
 
 	/** Generate modifier for auto increment column

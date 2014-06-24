@@ -2,7 +2,6 @@
 $row = $_POST;
 
 if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP changes add.x to add_x
-	restart_session();
 	$name = trim($row["name"]);
 	if ($_POST["drop"]) {
 		$_GET["db"] = ""; // to save in global history
@@ -24,6 +23,8 @@ if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP c
 					$last = $db;
 				}
 			}
+			restart_session();
+			set_session("dbs", null);
 			queries_redirect(ME . "db=" . urlencode($last), lang('Database has been created.'), $success);
 		}
 	} else {
