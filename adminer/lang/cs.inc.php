@@ -164,6 +164,7 @@ $translations = array(
 	'Auto Increment' => 'Auto Increment',
 	'Options' => 'Volby',
 	'Comment' => 'Komentář',
+	'Default value' => 'Výchozí hodnota',
 	'Default values' => 'Výchozí hodnoty',
 	'Drop' => 'Odstranit',
 	'Are you sure?' => 'Opravdu?',

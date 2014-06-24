@@ -164,6 +164,7 @@ $translations = array(
 	'Auto Increment' => 'xx',
 	'Options' => 'xx',
 	'Comment' => 'xx',
+	'Default value' => 'xx',
 	'Default values' => 'xx',
 	'Drop' => 'xx',
 	'Are you sure?' => 'xx',

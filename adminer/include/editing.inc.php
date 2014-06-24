@@ -247,7 +247,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 	'pgsql' => "datatype.html#DATATYPE-SERIAL",
 	'mssql' => "ms186775.aspx",
 )); ?>
-<td><?php echo lang('Default values'); ?>
+<td><?php echo lang('Default value'); ?>
 <?php echo (support("comment") ? "<td" . ($comments ? "" : " class='hidden'") . ">" . lang('Comment') : ""); ?>
 <?php } ?>
 <td><?php echo "<input type='image' class='icon' name='add[" . (support("move_col") ? 0 : count($fields)) . "]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>"; ?><script type="text/javascript">row_count = <?php echo count($fields); ?>;</script>
