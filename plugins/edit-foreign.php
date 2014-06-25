@@ -8,6 +8,8 @@
 */
 class AdminerEditForeign {
 	
+	const LIMIT = 50;
+	
 	function editInput($table, $field, $attrs, $value) {
 		static $foreignTables = array();
 		static $values = array();
@@ -21,6 +23,10 @@ class AdminerEditForeign {
 				$id = $foreignKey["target"][0];
 				$options = &$values[$target][$id];
 				if (!$options) {
+					$count = get_vals(count_rows($target, array(), false, null));
+					if($count[0] > self::LIMIT) {
+						return;
+					}
 					$options = array("" => "") + get_vals("SELECT " . idf_escape($id) . " FROM " . table($target) . " ORDER BY 1");
 				}
 				return "<select$attrs>" . optionlist($options, $value) . "</select>";
