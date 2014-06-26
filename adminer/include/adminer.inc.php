@@ -412,7 +412,7 @@ username.form['auth[driver]'].onchange();
 	* @return array expressions to join by AND
 	*/
 	function selectSearchProcess($fields, $indexes) {
-		global $jush;
+		global $connection, $jush;
 		$return = array();
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT" && $_GET["fulltext"][$i] != "") {
@@ -443,7 +443,8 @@ username.form['auth[driver]'].onchange();
 							&& (!preg_match("~[\x80-\xFF]~", $val["val"]) || $is_text)
 						) {
 							$name = idf_escape($name);
-							$cols[] = ($jush == "sql" && $is_text && !preg_match('~^utf8~', $field["collation"]) ? "CONVERT($name USING utf8)" : $name);
+							$charset = charset($connection);
+							$cols[] = ($jush == "sql" && $is_text && !preg_match("~^$charset" . "_~", $field["collation"]) ? "CONVERT($name USING $charset)" : $name);
 						}
 					}
 					$return[] = ($cols ? "(" . implode("$cond OR ", $cols) . "$cond)" : "0");

@@ -65,6 +65,14 @@ function bracket_escape($idf, $back = false) {
 	return strtr($idf, ($back ? array_flip($trans) : $trans));
 }
 
+/** Get connection charset
+* @param Min_DB
+* @return string
+*/
+function charset($connection) {
+	return (version_compare($connection->server_info, "5.5.3") > 0 ? "utf8mb4" : "utf8"); // SHOW CHARSET would require an extra query
+}
+
 /** Escape for HTML
 * @param string
 * @return string
@@ -373,7 +381,7 @@ function unique_array($row, $indexes) {
 * @return string
 */
 function where($where, $fields = array()) {
-	global $jush;
+	global $connection, $jush;
 	$return = array();
 	$function_pattern = '(^[\w\(]+(' . str_replace("_", ".*", preg_quote(idf_escape("_"))) . ')?\)+$)'; //! columns looking like functions
 	foreach ((array) $where["where"] as $key => $val) {
@@ -386,7 +394,7 @@ function where($where, $fields = array()) {
 			) // LIKE because of floats but slow with ints, in MS SQL because of text
 		; //! enum and set
 		if ($jush == "sql" && preg_match('~char|text~', $fields[$key]["type"]) && preg_match("~[^ -@]~", $val)) { // not just [a-z] to catch non-ASCII characters
-			$return[] = "$column = " . q($val) . " COLLATE utf8_bin";
+			$return[] = "$column = " . q($val) . " COLLATE " . charset($connection) . "_bin";
 		}
 	}
 	foreach ((array) $where["null"] as $key) {

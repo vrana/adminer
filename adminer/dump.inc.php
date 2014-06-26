@@ -16,7 +16,7 @@ if ($_POST && !$error) {
 	if ($is_sql) {
 		echo "-- Adminer $VERSION " . $drivers[DRIVER] . " dump\n\n";
 		if ($jush == "sql") {
-			echo "SET NAMES utf8;
+			echo "SET NAMES " . charset($connection) . ";
 SET time_zone = '+00:00';
 " . ($_POST["data_style"] ? "SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
