@@ -1065,6 +1065,7 @@ function password_file($create) {
 	if ($return || !$create) {
 		return $return;
 	}
+	umask(066);
 	$fp = @fopen($filename, "w"); // @ - can have insufficient rights //! is not atomic
 	if ($fp) {
 		$return = rand_string();
