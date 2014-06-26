@@ -375,6 +375,17 @@ function unique_array($row, $indexes) {
 	}
 }
 
+/** Escape column key used in where()
+* @param string
+* @return string
+*/
+function escape_key($key) {
+	if (preg_match('(^([\w(]+)(' . str_replace("_", ".*", preg_quote(idf_escape("_"))) . ')([ \w)]+)$)', $key, $match)) { //! columns looking like functions
+		return $match[1] . idf_escape(idf_unescape($match[2])) . $match[3]; //! SQL injection
+	}
+	return idf_escape($key);
+}
+
 /** Create SQL condition from parsed query string
 * @param array parsed query string
 * @param array
@@ -383,10 +394,9 @@ function unique_array($row, $indexes) {
 function where($where, $fields = array()) {
 	global $connection, $jush;
 	$return = array();
-	$function_pattern = '(^[\w\(]+(' . str_replace("_", ".*", preg_quote(idf_escape("_"))) . ')?\)+$)'; //! columns looking like functions
 	foreach ((array) $where["where"] as $key => $val) {
 		$key = bracket_escape($key, 1); // 1 - back
-		$column = (preg_match($function_pattern, $key) ? $key : idf_escape($key)); //! SQL injection
+		$column = escape_key($key);
 		$return[] = $column
 			. (($jush == "sql" && preg_match('~^[0-9]*\\.[0-9]*$~', $val)) || $jush == "mssql"
 				? " LIKE " . q(addcslashes($val, "%_\\"))
@@ -398,7 +408,7 @@ function where($where, $fields = array()) {
 		}
 	}
 	foreach ((array) $where["null"] as $key) {
-		$return[] = (preg_match($function_pattern, $key) ? $key : idf_escape($key)) . " IS NULL";
+		$return[] = escape_key($key) . " IS NULL";
 	}
 	return implode(" AND ", $return);
 }

@@ -443,8 +443,7 @@ username.form['auth[driver]'].onchange();
 							&& (!preg_match("~[\x80-\xFF]~", $val["val"]) || $is_text)
 						) {
 							$name = idf_escape($name);
-							$charset = charset($connection);
-							$cols[] = ($jush == "sql" && $is_text && !preg_match("~^$charset" . "_~", $field["collation"]) ? "CONVERT($name USING $charset)" : $name);
+							$cols[] = ($jush == "sql" && $is_text && !preg_match("~^utf8_~", $field["collation"]) ? "CONVERT($name USING " . charset($connection) . ")" : $name);
 						}
 					}
 					$return[] = ($cols ? "(" . implode("$cond OR ", $cols) . "$cond)" : "0");
