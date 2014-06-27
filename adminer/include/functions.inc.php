@@ -1085,7 +1085,7 @@ function password_file($create) {
 	}
 	$fp = @fopen($filename, "w"); // @ - can have insufficient rights //! is not atomic
 	if ($fp) {
-		chmod($filename, 0600);
+		chmod($filename, 0660);
 		$return = rand_string();
 		fwrite($fp, $return);
 		fclose($fp);
