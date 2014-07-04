@@ -136,6 +136,41 @@ if (isset($_GET["oracle"])) {
 
 	class Min_Driver extends Min_SQL {
 
+        function insert($table, $set) {
+            return parent::insert($table, $set);
+        }
+
+        function insertUpdate($table, $rows, $primary) {
+
+            $columns = array_keys(reset($rows));
+            $prefix = "INSERT INTO " . table($table) . " (" . implode(", ", $columns) . ") VALUES\n";
+            $values = array();
+            foreach ($columns as $key) {
+                $values[$key] = "$key = VALUES($key)";
+            }
+            $suffix = "\nON DUPLICATE KEY UPDATE " . implode(", ", $values);
+            $values = array();
+            $length = 0;
+            foreach ($rows as $set) {
+                $q = "MERGE INTO ".$table." d
+                    USING (SELECT ".$primary." from ".$table.") s
+                    ON (d.".$primary." = s.".$primary.")
+                    WHEN MATCHED THEN UPDATE SET d.name = s.name
+                    WHEN NOT MATCHED THEN INSERT (id, name) VALUES (s.id, s.name);";
+                $value = "(" . implode(", ", $set) . ")";
+                if ($values && (strlen($prefix) + $length + strlen($value) + strlen($suffix) > 1e6)) { // 1e6 - default max_allowed_packet
+                    if (!queries($prefix . implode(",\n", $values) . $suffix)) {
+                        return false;
+                    }
+                    $values = array();
+                    $length = 0;
+                }
+                $values[] = $value;
+                $length += strlen($value) + 2; // 2 - strlen(",\n")
+            }
+            return queries($prefix . implode(",\n", $values) . $suffix);
+        }
+
 		//! support empty $set in insert()
 
 		function begin() {
