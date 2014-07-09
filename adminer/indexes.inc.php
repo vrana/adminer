@@ -51,7 +51,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 						continue;
 					}
 				}
-				$alter[] = array($index["type"], $name, "(" . implode(", ", $set) . ")");
+				$alter[] = array($index["type"], $name, $set);
 			}
 		}
 	}
@@ -102,7 +102,7 @@ if (!$row) {
 if ($primary) {
 	echo "<tr><td>PRIMARY<td>";
 	foreach ($primary["columns"] as $key => $column) {
-		echo "<select disabled>" . optionlist($fields, $column) . "</select>";
+		echo select_input(" disabled", $fields, $column);
 		echo "<label><input disabled type='checkbox'>" . lang('descending') . "</label> ";
 	}
 	echo "<td><td>\n";
@@ -116,7 +116,11 @@ foreach ($row["indexes"] as $index) {
 		ksort($index["columns"]);
 		$i = 1;
 		foreach ($index["columns"] as $key => $column) {
-			echo "<span>" . html_select("indexes[$j][columns][$i]", array(-1 => "") + $fields, $column, ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . "(this, '" . js_escape($jush == "sql" ? "" : $_GET["indexes"] . "_") . "');");
+			echo "<span>" . select_input(
+				" name='indexes[$j][columns][$i]' onchange=\"" . ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . "(this, '" . js_escape($jush == "sql" ? "" : $_GET["indexes"] . "_") . "');\"",
+				($fields ? array_combine($fields, $fields) : $fields),
+				$column
+			);
 			echo ($jush == "sql" || $jush == "mssql" ? "<input type='number' name='indexes[$j][lengths][$i]' class='size' value='" . h($index["lengths"][$key]) . "'>" : "");
 			echo ($jush != "sql" ? checkbox("indexes[$j][descs][$i]", 1, $index["descs"][$key], lang('descending')) : "");
 			echo " </span>";

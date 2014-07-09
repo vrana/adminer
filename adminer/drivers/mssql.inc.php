@@ -480,7 +480,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 			} elseif (!queries(($val[0] != "PRIMARY"
 				? "CREATE $val[0] " . ($val[0] != "INDEX" ? "INDEX " : "") . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_")) . " ON " . table($table)
 				: "ALTER TABLE " . table($table) . " ADD PRIMARY KEY"
-			) . " $val[2]")) {
+			) . " (" . implode(", ", $val[2]) . ")")) {
 				return false;
 			}
 		}
@@ -567,6 +567,7 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)
 	function trigger_options() {
 		return array(
 			"Timing" => array("AFTER", "INSTEAD OF"),
+			"Event" => array("INSERT", "UPDATE", "DELETE"),
 			"Type" => array("AS"),
 		);
 	}
@@ -607,7 +608,7 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)
 	}
 
 	function support($feature) {
-		return preg_match('~^(database|table|columns|sql|indexes|scheme|trigger|view|drop_col)$~', $feature); //! routine|
+		return preg_match('~^(columns|database|drop_col|indexes|scheme|sql|table|trigger|view|view_trigger)$~', $feature); //! routine|
 	}
 
 	$jush = "mssql";

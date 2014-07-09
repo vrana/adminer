@@ -39,15 +39,24 @@ if ($_GET["val"] && is_ajax()) {
 	header("Content-Type: text/plain; charset=utf-8");
 	foreach ($_GET["val"] as $unique_idf => $row) {
 		$as = convert_field($fields[key($row)]);
-		echo $connection->result("SELECT" . limit($as ? $as : idf_escape(key($row)) . " FROM " . table($TABLE), " WHERE " . where_check($unique_idf, $fields) . ($where ? " AND " . implode(" AND ", $where) : "") . ($order ? " ORDER BY " . implode(", ", $order) : ""), 1));
+		$select = array($as ? $as : idf_escape(key($row)));
+		$where[] = where_check($unique_idf, $fields);
+		$return = $driver->select($TABLE, $select, $where, $select);
+		if ($return) {
+			echo reset($return->fetch_row());
+		}
 	}
 	exit;
 }
 
 if ($_POST && !$error) {
 	$where_check = $where;
-	if (is_array($_POST["check"])) {
-		$where_check[] = "((" . implode(") OR (", array_map('where_check', $_POST["check"])) . "))";
+	if (!$_POST["all"] && is_array($_POST["check"])) {
+		$checks = array();
+		foreach ($_POST["check"] as $check) {
+			$checks[] = where_check($check, $fields);
+		}
+		$where_check[] = "((" . implode(") OR (", $checks) . "))";
 	}
 	$where_check = ($where_check ? "\nWHERE " . implode(" AND ", $where_check) : "");
 	$primary = $unselected = null;
@@ -134,7 +143,11 @@ if ($_POST && !$error) {
 				}
 			}
 			queries_redirect(remove_from_uri($_POST["all"] && $_POST["delete"] ? "page" : ""), $message, $result);
-			//! display edit page in case of an error
+			if (!$_POST["delete"]) {
+				edit_form($TABLE, $fields, (array) $_POST["fields"], !$_POST["clone"]);
+				page_footer();
+				exit;
+			}
 
 		} elseif (!$_POST["import"]) { // modify
 			if (!$_POST["val"]) {
@@ -256,7 +269,7 @@ if (!$columns && support("table")) {
 	if ($convert_fields) {
 		$select2[] = substr($convert_fields, 2);
 	}
-	$result = $driver->select($TABLE, $select2, $where, $group, $order, $limit, $page);
+	$result = $driver->select($TABLE, $select2, $where, $group, $order, $limit, $page, true);
 
 	if (!$result) {
 		echo "<p class='error'>" . error() . "\n";
@@ -346,8 +359,9 @@ if (!$columns && support("table")) {
 				}
 				$unique_idf = "";
 				foreach ($unique_array as $key => $val) {
-					if (strlen($val) > 64 && ($jush == "sql" || $jush == "pgsql")) {
-						$key = "MD5(" . (strpos($key, '(') ? $key : idf_escape($key)) . ")"; //! columns looking like functions
+					if (($jush == "sql" || $jush == "pgsql") && strlen($val) > 64) {
+						$key = (strpos($key, '(') ? $key : idf_escape($key)); //! columns looking like functions
+						$key = "MD5(" . ($jush == 'sql' && preg_match("~^utf8_~", $fields[$key]["collation"]) ? $key : "CONVERT($key USING " . charset($connection) . ")") . ")";
 						$val = md5($val);
 					}
 					$unique_idf .= "&" . ($val !== null ? urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($val) : "null%5B%5D=" . urlencode($key));
@@ -365,7 +379,7 @@ if (!$columns && support("table")) {
 						if (preg_match('~blob|bytea|raw|file~', $field["type"]) && $val != "") {
 							$link = ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . $unique_idf;
 						}
-						if (!$link) { // link related items
+						if (!$link && $val !== null) { // link related items
 							foreach ((array) $foreign_keys[$key] as $foreign_key) {
 								if (count($foreign_keys[$key]) == 1 || end($foreign_key["source"]) == $key) {
 									$link = "";
@@ -443,7 +457,7 @@ if (!$columns && support("table")) {
 					? $page + (count($rows) >= $limit ? 2 : 1)
 					: floor(($found_rows - 1) / $limit)
 				);
-				if (support("table")) {
+				if ($jush != "simpledb") {
 					echo '<a href="' . h(remove_from_uri("page")) . "\" onclick=\"pageClick(this.href, +prompt('" . lang('Page') . "', '" . ($page + 1) . "'), event); return false;\">" . lang('Page') . "</a>:";
 					echo pagination(0, $page) . ($page > 5 ? " ..." : "");
 					for ($i = max(1, $page - 4); $i < min($max_page, $page + 5); $i++) {
@@ -457,7 +471,7 @@ if (!$columns && support("table")) {
 						);
 					}
 					echo (($found_rows === false ? count($rows) + 1 : $found_rows - $page * $limit) > $limit
-						? ' <a href="' . h(remove_from_uri("page") . "&page=" . ($page + 1)) . '" onclick="return !selectLoadMore(this, ' . (+$limit) . ', \'' . lang('Loading') . '\');">' . lang('Load more data') . '</a>'
+						? ' <a href="' . h(remove_from_uri("page") . "&page=" . ($page + 1)) . '" onclick="return !selectLoadMore(this, ' . (+$limit) . ', \'' . lang('Loading') . '...\');" class="loadmore">' . lang('Load more data') . '</a>'
 						: ''
 					);
 				} else {
@@ -468,7 +482,7 @@ if (!$columns && support("table")) {
 				}
 			}
 
-			echo "<p>\n";
+			echo "<p class='count'>\n";
 			echo ($found_rows !== false ? "(" . ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) . ") " : "");
 			$display_rows = ($exact_count ? "" : "~ ") . $found_rows;
 			echo checkbox("all", 1, 0, lang('whole result'), "var checked = formChecked(this, /check/); selectCount('selected', this.checked ? '$display_rows' : checked); selectCount('selected2', this.checked || !checked ? '$display_rows' : checked);") . "\n";

@@ -24,13 +24,6 @@ if (!defined("DRIVER")) {
 					(is_numeric($port) ? $port : ini_get("mysqli.default_port")),
 					(!is_numeric($port) ? $port : null)
 				);
-				if ($return) {
-					if (method_exists($this, 'set_charset')) {
-						$this->set_charset("utf8");
-					} else {
-						$this->query("SET NAMES utf8");
-					}
-				}
 				return $return;
 			}
 
@@ -75,15 +68,21 @@ if (!defined("DRIVER")) {
 				);
 				if ($this->_link) {
 					$this->server_info = mysql_get_server_info($this->_link);
-					if (function_exists('mysql_set_charset')) {
-						mysql_set_charset("utf8", $this->_link);
-					} else {
-						$this->query("SET NAMES utf8");
-					}
 				} else {
 					$this->error = mysql_error();
 				}
 				return (bool) $this->_link;
+			}
+
+			/** Sets the client character set
+			* @param string
+			* @return bool
+			*/
+			function set_charset($charset) {
+				if (function_exists('mysql_set_charset')) {
+					return mysql_set_charset($charset, $this->_link);
+				}
+				return $this->query("SET NAMES $charset");
 			}
 
 			/** Quote string to use in SQL
@@ -212,8 +211,11 @@ if (!defined("DRIVER")) {
 
 			function connect($server, $username, $password) {
 				$this->dsn("mysql:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\\d)~', ';port=\\1', $server)), $username, $password);
-				$this->query("SET NAMES utf8"); // charset in DSN is ignored before PHP 5.3.6
 				return true;
+			}
+
+			function set_charset($charset) {
+				$this->query("SET NAMES $charset"); // charset in DSN is ignored before PHP 5.3.6
 			}
 
 			function select_db($database) {
@@ -290,6 +292,7 @@ if (!defined("DRIVER")) {
 		$connection = new Min_DB;
 		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
+			$connection->set_charset(charset($connection)); // available in MySQLi since PHP 5.0.5
 			$connection->query("SET sql_quote_show_create = 1, autocommit = 1");
 			return $connection;
 		}
@@ -386,7 +389,10 @@ if (!defined("DRIVER")) {
 	*/
 	function tables_list() {
 		global $connection;
-		return get_key_vals("SHOW" . ($connection->server_info >= 5 ? " FULL" : "") . " TABLES");
+		return get_key_vals($connection->server_info >= 5
+			? "SELECT TABLE_NAME, TABLE_TYPE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() ORDER BY TABLE_NAME"
+			: "SHOW TABLES"
+		);
 	}
 
 	/** Count tables in all databases
@@ -463,7 +469,7 @@ if (!defined("DRIVER")) {
 				"auto_increment" => ($row["Extra"] == "auto_increment"),
 				"on_update" => (preg_match('~^on update (.+)~i', $row["Extra"], $match) ? $match[1] : ""), //! available since MySQL 5.1.23
 				"collation" => $row["Collation"],
-				"privileges" => array_flip(explode(",", $row["Privileges"])),
+				"privileges" => array_flip(preg_split('~, *~', $row["Privileges"])),
 				"comment" => $row["Comment"],
 				"primary" => ($row["Key"] == "PRI"),
 			);
@@ -576,7 +582,6 @@ if (!defined("DRIVER")) {
 	* @return string
 	*/
 	function create_database($db, $collation) {
-		set_session("dbs", null);
 		return queries("CREATE DATABASE " . idf_escape($db) . ($collation ? " COLLATE " . q($collation) : ""));
 	}
 
@@ -585,9 +590,10 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function drop_databases($databases) {
+		$return = apply_queries("DROP DATABASE", $databases, 'idf_escape');
 		restart_session();
 		set_session("dbs", null);
-		return apply_queries("DROP DATABASE", $databases, 'idf_escape');
+		return $return;
 	}
 
 	/** Rename database from DB
@@ -596,18 +602,21 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function rename_database($name, $collation) {
+		$return = false;
 		if (create_database($name, $collation)) {
 			//! move triggers
 			$rename = array();
 			foreach (tables_list() as $table => $type) {
 				$rename[] = table($table) . " TO " . idf_escape($name) . "." . table($table);
 			}
-			if (!$rename || queries("RENAME TABLE " . implode(", ", $rename))) {
+			$return = (!$rename || queries("RENAME TABLE " . implode(", ", $rename)));
+			if ($return) {
 				queries("DROP DATABASE " . idf_escape(DB));
-				return true;
 			}
+			restart_session();
+			set_session("dbs", null);
 		}
-		return false;
+		return $return;
 	}
 
 	/** Generate modifier for auto increment column
@@ -669,14 +678,14 @@ if (!defined("DRIVER")) {
 
 	/** Run commands to alter indexes
 	* @param string escaped table name
-	* @param array of array("index type", "name", "(columns definition)") or array("index type", "name", "DROP")
+	* @param array of array("index type", "name", array("column definition", ...)) or array("index type", "name", "DROP")
 	* @return bool
 	*/
 	function alter_indexes($table, $alter) {
 		foreach ($alter as $key => $val) {
 			$alter[$key] = ($val[2] == "DROP"
 				? "\nDROP INDEX " . idf_escape($val[1])
-				: "\nADD $val[0] " . ($val[0] == "PRIMARY" ? "KEY " : "") . ($val[1] != "" ? idf_escape($val[1]) . " " : "") . $val[2]
+				: "\nADD $val[0] " . ($val[0] == "PRIMARY" ? "KEY " : "") . ($val[1] != "" ? idf_escape($val[1]) . " " : "") . "(" . implode(", ", $val[2]) . ")"
 			);
 		}
 		return queries("ALTER TABLE " . table($table) . implode(",", $alter));
@@ -731,7 +740,7 @@ if (!defined("DRIVER")) {
 		queries("SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO'");
 		foreach ($tables as $table) {
 			$name = ($target == DB ? table("copy_$table") : idf_escape($target) . "." . table($table));
-			if (!queries("DROP TABLE IF EXISTS $name")
+			if (!queries("\nDROP TABLE IF EXISTS $name")
 				|| !queries("CREATE TABLE $name LIKE " . table($table))
 				|| !queries("INSERT INTO $name SELECT * FROM " . table($table))
 			) {
@@ -752,7 +761,7 @@ if (!defined("DRIVER")) {
 
 	/** Get information about trigger
 	* @param string trigger name
-	* @return array array("Trigger" => , "Timing" => , "Event" => , "Type" => , "Statement" => )
+	* @return array array("Trigger" => , "Timing" => , "Event" => , "Of" => , "Type" => , "Statement" => )
 	*/
 	function trigger($name) {
 		if ($name == "") {
@@ -775,12 +784,12 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Get trigger options
-	* @return array ("Timing" => array(), "Type" => array())
+	* @return array ("Timing" => array(), "Event" => array(), "Type" => array())
 	*/
 	function trigger_options() {
 		return array(
 			"Timing" => array("BEFORE", "AFTER"),
-			// Event is always INSERT, UPDATE, DELETE
+			"Event" => array("INSERT", "UPDATE", "DELETE"),
 			"Type" => array("FOR EACH ROW"),
 		);
 	}
@@ -793,7 +802,7 @@ if (!defined("DRIVER")) {
 	function routine($name, $type) {
 		global $connection, $enum_length, $inout, $types;
 		$aliases = array("bool", "boolean", "integer", "double precision", "real", "dec", "numeric", "fixed", "national char", "national varchar");
-		$type_pattern = "((" . implode("|", array_merge(array_keys($types), $aliases)) . ")\\b(?:\\s*\\(((?:[^'\")]*|$enum_length)++)\\))?\\s*(zerofill\\s*)?(unsigned(?:\\s+zerofill)?)?)(?:\\s*(?:CHARSET|CHARACTER\\s+SET)\\s*['\"]?([^'\"\\s]+)['\"]?)?";
+		$type_pattern = "((" . implode("|", array_merge(array_keys($types), $aliases)) . ")\\b(?:\\s*\\(((?:[^'\")]|$enum_length)++)\\))?\\s*(zerofill\\s*)?(unsigned(?:\\s+zerofill)?)?)(?:\\s*(?:CHARSET|CHARACTER\\s+SET)\\s*['\"]?([^'\"\\s,]+)['\"]?)?";
 		$pattern = "\\s*(" . ($type == "FUNCTION" ? "" : $inout) . ")?\\s*(?:`((?:[^`]|``)*)`\\s*|\\b(\\S+)\\s+)$type_pattern";
 		$create = $connection->result("SHOW CREATE $type " . idf_escape($name), 2);
 		preg_match("~\\(((?:$pattern\\s*,?)*)\\)\\s*" . ($type == "FUNCTION" ? "RETURNS\\s+$type_pattern\\s+" : "") . "(.*)~is", $create, $match);
@@ -992,12 +1001,12 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Check whether a feature is supported
-	* @param string "comment", "copy", "database", "drop_col", "dump", "event", "kill", "partitioning", "privileges", "procedure", "processlist", "routine", "scheme", "sequence", "status", "table", "trigger", "type", "variables", "view"
+	* @param string "comment", "copy", "database", "drop_col", "dump", "event", "kill", "partitioning", "privileges", "procedure", "processlist", "routine", "scheme", "sequence", "status", "table", "trigger", "type", "variables", "view", "view_trigger"
 	* @return bool
 	*/
 	function support($feature) {
 		global $connection;
-		return !preg_match("~scheme|sequence|type" . ($connection->server_info < 5.1 ? "|event|partitioning" . ($connection->server_info < 5 ? "|view|routine|trigger" : "") : "") . "~", $feature);
+		return !preg_match("~scheme|sequence|type|view_trigger" . ($connection->server_info < 5.1 ? "|event|partitioning" . ($connection->server_info < 5 ? "|routine|trigger|view" : "") : "") . "~", $feature);
 	}
 
 	$jush = "sql"; ///< @var string JUSH identifier

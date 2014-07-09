@@ -66,7 +66,6 @@ $translations = array(
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Çok büyük POST verisi, veriyi azaltın ya da %s ayar yönergesini uygun olarak yapılandırın.',
 
 	'Export' => 'Dışarı Aktar',
-	'Dump' => 'Döküm',
 	'Output' => 'Çıktı',
 	'open' => 'aç',
 	'save' => 'kaydet',
@@ -93,6 +92,7 @@ $translations = array(
 
 	// thousands separator - must contain single byte
 	',' => ' ',
+	'0123456789' => '0123456789',
 	'Engine' => 'Motor',
 	'Collation' => 'Karşılaştırma',
 	'Data Length' => 'Veri Uzunluğu',
@@ -300,7 +300,6 @@ $translations = array(
 	'Schema has been dropped.' => 'Şema silindi.',
 	'Schema has been created.' => 'Şema oluşturuldu.',
 	'Schema has been altered.' => 'Şema değiştirildi.',
-	'schema' => 'şema',
 	'Schema' => 'Şema',
 	'Invalid schema.' => 'Geçersiz şema.',
 

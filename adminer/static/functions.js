@@ -5,7 +5,9 @@
 * @param [bool]
 */
 function alterClass(el, className, enable) {
-	el.className = el.className.replace(RegExp('(^|\\s)' + className + '(\\s|$)'), '$2') + (enable ? ' ' + className : '');
+	if (el) {
+		el.className = el.className.replace(RegExp('(^|\\s)' + className + '(\\s|$)'), '$2') + (enable ? ' ' + className : '');
+	}
 }
 
 /** Toggle visibility
@@ -30,12 +32,29 @@ function cookie(assign, days) {
 }
 
 /** Verify current Adminer version
+* @param string
 */
-function verifyVersion() {
+function verifyVersion(current) {
 	cookie('adminer_version=0', 1);
-	var script = document.createElement('script');
-	script.src = location.protocol + '//www.adminer.org/version.php';
-	document.body.appendChild(script);
+	var iframe = document.createElement('iframe');
+	iframe.src = location.protocol + '//www.adminer.org/version/?current=' + current;
+	iframe.frameBorder = 0;
+	iframe.marginHeight = 0;
+	iframe.scrolling = 'no';
+	iframe.style.width = '7ex';
+	iframe.style.height = '1.25em';
+	if (window.postMessage && window.addEventListener) {
+		iframe.style.display = 'none';
+		addEventListener('message', function (event) {
+			if (event.origin == location.protocol + '//www.adminer.org') {
+				var match = /version=(.+)/.exec(event.data);
+				if (match) {
+					cookie('adminer_version=' + match[1], 1);
+				}
+			}
+		}, false);
+	}
+	document.getElementById('version').appendChild(iframe);
 }
 
 /** Get value of select
@@ -78,7 +97,7 @@ function parentTag(el, tag) {
 function trCheck(el) {
 	var tr = parentTag(el, 'tr');
 	alterClass(tr, 'checked', el.checked);
-	if (el.form && el.form['all']) {
+	if (el.form && el.form['all'] && el.form['all'].onclick) { // Opera treats form.all as document.all
 		el.form['all'].onclick();
 	}
 }
@@ -294,6 +313,17 @@ function selectAddRow(field) {
 	field.parentNode.parentNode.appendChild(row);
 }
 
+/** Prevent onsearch handler on Enter
+* @param HTMLInputElement
+* @param KeyboardEvent
+*/
+function selectSearchKeydown(el, event) {
+	if (event.keyCode == 13 || event.keyCode == 10) {
+		el.onsearch = function () {
+		};
+	}
+}
+
 /** Clear column name after resetting search
 * @param HTMLInputElement
 */
@@ -425,12 +455,17 @@ function editingKeydown(event) {
 function functionChange(select) {
 	var input = select.form[select.name.replace(/^function/, 'fields')];
 	if (selectValue(select)) {
-		if (input.origMaxLength === undefined) {
+		if (input.origType === undefined) {
+			input.origType = input.type;
 			input.origMaxLength = input.maxLength;
 		}
 		input.removeAttribute('maxlength');
-	} else if (input.origMaxLength >= 0) {
-		input.maxLength = input.origMaxLength;
+		input.type = 'text';
+	} else if (input.origType) {
+		input.type = input.origType;
+		if (input.origMaxLength >= 0) {
+			input.maxLength = input.origMaxLength;
+		}
 	}
 	helpClose();
 }
@@ -443,6 +478,20 @@ function keyupChange() {
 		this.onchange();
 		this.setAttribute('value', this.value);
 	}
+}
+
+/** Add new field in schema-less edit
+* @param HTMLInputElement
+*/
+function fieldChange(field) {
+	var row = cloneNode(parentTag(field, 'tr'));
+	var inputs = row.getElementsByTagName('input');
+	for (var i = 0; i < inputs.length; i++) {
+		inputs[i].value = '';
+	}
+	// keep value in <select> (function)
+	parentTag(field, 'table').appendChild(row);
+	field.onchange = function () { };
 }
 
 
@@ -508,7 +557,7 @@ function ajaxForm(form, message, button) {
 	}
 	data = data.join('&');
 	
-	setHtml('message', message);
+	setHtml('message', '<div class="message">' + message + '</div>');
 	var url = form.action;
 	if (!/post/i.test(form.method)) {
 		url = url.replace(/\?.*/, '') + '?' + data;
@@ -517,7 +566,7 @@ function ajaxForm(form, message, button) {
 	return ajax(url, function (request) {
 		setHtml('message', request.responseText);
 		if (window.jush) {
-			jush.highlight_tag('code', 0);
+			jush.highlight_tag(document.getElementById('message').getElementsByTagName('code'), 0);
 		}
 	}, data);
 }
@@ -577,7 +626,7 @@ function selectClick(td, event, text, warning) {
 	input.focus();
 	if (text == 2) { // long text
 		return ajax(location.href + '&' + encodeURIComponent(td.id) + '=', function (request) {
-			if (request.status) {
+			if (request.status && request.responseText) {
 				input.value = request.responseText;
 				input.name = td.id;
 			}
@@ -598,8 +647,8 @@ function selectClick(td, event, text, warning) {
 
 /** Load and display next page in select
 * @param HTMLLinkElement
-* @param string
 * @param number
+* @param string
 * @return boolean
 */
 function selectLoadMore(a, limit, loading) {

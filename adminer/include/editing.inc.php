@@ -111,9 +111,9 @@ function referencable_primary($self) {
 
 /** Print SQL <textarea> tag
 * @param string
+* @param string or array in which case [0] of every element is used
 * @param int
 * @param int
-* @param string
 * @return null
 */
 function textarea($name, $value, $rows = 10, $cols = 80) {
@@ -121,7 +121,7 @@ function textarea($name, $value, $rows = 10, $cols = 80) {
 	echo "<textarea name='$name' rows='$rows' cols='$cols' class='sqlarea jush-$jush' spellcheck='false' wrap='off'>";
 	if (is_array($value)) {
 		foreach ($value as $val) { // not implode() to save memory
-			echo h($val[0]) . "\n\n\n"; // $val == array($query, $time)
+			echo h($val[0]) . "\n\n\n"; // $val == array($query, $time, $elapsed)
 		}
 	} else {
 		echo h($value);
@@ -152,7 +152,7 @@ echo optionlist($structured_types, $type);
 <td><input name="<?php echo $key; ?>[length]" value="<?php echo h($field["length"]); ?>" size="3" onfocus="editingLengthFocus(this);"<?php echo (!$field["length"] && preg_match('~var(char|binary)$~', $type) ? " class='required'" : ""); ?> onchange="editingLengthChange(this);" onkeyup="this.onchange();"><td class="options"><?php //! type="number" with enabled JavaScript
 	echo "<select name='$key" . "[collation]'" . (preg_match('~(char|text|enum|set)$~', $type) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>';
 	echo ($unsigned ? "<select name='$key" . "[unsigned]'" . (!$type || preg_match('~((^|[^o])int|float|double|decimal)$~', $type) ? "" : " class='hidden'") . '><option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
-	echo (isset($field['on_update']) ? "<select name='$key" . "[on_update]'" . ($type == "timestamp" ? "" : " class='hidden'") . '>' . optionlist(array("" => "(" . lang('ON UPDATE') . ")", "CURRENT_TIMESTAMP"), $field["on_update"]) . '</select>' : '');
+	echo (isset($field['on_update']) ? "<select name='$key" . "[on_update]'" . (preg_match('~timestamp|datetime~', $type) ? "" : " class='hidden'") . '>' . optionlist(array("" => "(" . lang('ON UPDATE') . ")", "CURRENT_TIMESTAMP"), $field["on_update"]) . '</select>' : '');
 	echo ($foreign_keys ? "<select name='$key" . "[on_delete]'" . (preg_match("~`~", $type) ? "" : " class='hidden'") . "><option value=''>(" . lang('ON DELETE') . ")" . optionlist(explode("|", $on_actions), $field["on_delete"]) . "</select> " : " "); // space for IE
 }
 
@@ -164,7 +164,7 @@ function process_length($length) {
 	global $enum_length;
 	return (preg_match("~^\\s*\\(?\\s*$enum_length(?:\\s*,\\s*$enum_length)*+\\s*\\)?\\s*\$~", $length) && preg_match_all("~$enum_length~", $length, $matches)
 		? "(" . implode(",", $matches[0]) . ")"
-		: preg_replace('~[^-0-9,+()[\]]~', '', preg_replace('~^[0-9]+~', '(\1)', $length))
+		: preg_replace('~^[0-9].*~', '(\0)', preg_replace('~[^-0-9,+()[\]]~', '', $length))
 	);
 }
 
@@ -199,7 +199,7 @@ function process_field($field, $type_field) {
 			|| ($field["type"] == "bit" && preg_match("~^([0-9]+|b'[0-1]+')\$~", $default))
 			|| ($jush == "pgsql" && preg_match("~^[a-z]+\\(('[^']*')+\\)\$~", $default))
 			? $default : q($default)) : ""),
-		($field["type"] == "timestamp" && $field["on_update"] ? " ON UPDATE $field[on_update]" : ""),
+		(preg_match('~timestamp|datetime~', $field["type"]) && $field["on_update"] ? " ON UPDATE $field[on_update]" : ""),
 		(support("comment") && $field["comment"] != "" ? " COMMENT " . q($field["comment"]) : ""),
 		($field["auto_increment"] ? auto_increment() : null),
 	);
@@ -247,7 +247,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 	'pgsql' => "datatype.html#DATATYPE-SERIAL",
 	'mssql' => "ms186775.aspx",
 )); ?>
-<td><?php echo lang('Default values'); ?>
+<td><?php echo lang('Default value'); ?>
 <?php echo (support("comment") ? "<td" . ($comments ? "" : " class='hidden'") . ">" . lang('Comment') : ""); ?>
 <?php } ?>
 <td><?php echo "<input type='image' class='icon' name='add[" . (support("move_col") ? 0 : count($fields)) . "]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>"; ?><script type="text/javascript">row_count = <?php echo count($fields); ?>;</script>
@@ -394,7 +394,7 @@ function drop_create($drop, $create, $drop_created, $test, $drop_test, $location
 */
 function create_trigger($on, $row) {
 	global $jush;
-	$timing_event = " $row[Timing] $row[Event]";
+	$timing_event = " $row[Timing] $row[Event]" . ($row["Event"] == "UPDATE OF" ? " " . idf_escape($row["Of"]) : "");
 	return "CREATE TRIGGER "
 		. idf_escape($row["Trigger"])
 		. ($jush == "mssql" ? $on . $timing_event : $timing_event . $on)
@@ -438,7 +438,7 @@ function remove_definer($query) {
 
 /** Format foreign key to use in SQL query
 * @param array ("table" => string, "source" => array, "target" => array, "on_delete" => one of $on_actions, "on_update" => one of $on_actions)
-* @return 
+* @return string
 */
 function format_foreign_key($foreign_key) {
 	global $on_actions;
@@ -497,11 +497,27 @@ function doc_link($paths) {
 	return ($paths[$jush] ? "<a href='$urls[$jush]$paths[$jush]' target='_blank' rel='noreferrer'><sup>?</sup></a>" : "");
 }
 
-/** Return events to display help on mouse over
-* @param string JS expression
-* @param bool JS expression
+/** Wrap gzencode() for usage in ob_start()
+* @param string
 * @return string
 */
-function on_help($command, $side = 0) {
-	return " onmouseover='helpMouseover(this, event, " . h($command) . ", $side);' onmouseout='helpMouseout(this, event);'";
+function ob_gzencode($string) {
+	// ob_start() callback recieves an optional parameter $phase but gzencode() accepts optional parameter $level
+	return gzencode($string);
+}
+
+/** Compute size of database
+* @param string
+* @return string formatted
+*/
+function db_size($db) {
+	global $connection;
+	if (!$connection->select_db($db)) {
+		return "?";
+	}
+	$return = 0;
+	foreach (table_status() as $table_status) {
+		$return += $table_status["Data_length"] + $table_status["Index_length"];
+	}
+	return format_number($return);
 }

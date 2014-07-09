@@ -15,7 +15,7 @@ if ($adminer->homepage()) {
 		if (isset($row["Engine"]) && $name != "") {
 			echo '<tr' . odd() . '><td>' . checkbox("tables[]", $table, in_array($table, (array) $_POST["tables"], true), "", "formUncheck('check-all');");
 			echo "<th><a href='" . h(ME) . 'select=' . urlencode($table) . "'>$name</a>";
-			$val = number_format($row["Rows"], 0, '.', lang(','));
+			$val = format_number($row["Rows"]);
 			echo "<td align='right'><a href='" . h(ME . "edit=") . urlencode($table) . "'>" . ($row["Engine"] == "InnoDB" && $val ? "~ $val" : $val) . "</a>";
 		}
 	}

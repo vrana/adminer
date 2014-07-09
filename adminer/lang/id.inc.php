@@ -66,7 +66,6 @@ $translations = array(
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Data POST terlalu besar. Kurangi data atau perbesar pengarah konfigurasi %s.',
 
 	'Export' => 'Ekspor',
-	'Dump' => 'Ekspor',
 	'Output' => 'Hasil',
 	'open' => 'buka',
 	'save' => 'simpan',
@@ -93,6 +92,7 @@ $translations = array(
 
 	// thousands separator - must contain single byte
 	',' => '.',
+	'0123456789' => '0123456789',
 	'Engine' => 'Mesin',
 	'Collation' => 'Kolasi',
 	'Data Length' => 'Panjang Data',
@@ -297,7 +297,6 @@ $translations = array(
 	'Schema has been dropped.' => 'Skema berhasil dihapus.',
 	'Schema has been created.' => 'Skema berhasil dibuat.',
 	'Schema has been altered.' => 'Skema berhasil diubah.',
-	'schema' => 'skema',
 	'Schema' => 'Skema',
 	'Invalid schema.' => 'Skema invalid.',
 

@@ -4,7 +4,7 @@ class Adminer {
 	var $_values = array();
 
 	function name() {
-		return "<a href='http://www.adminer.org/editor/' id='h1'>" . lang('Editor') . "</a>";
+		return "<a href='http://www.adminer.org/editor/' target='_blank' id='h1'>" . lang('Editor') . "</a>";
 	}
 
 	//! driver, ns
@@ -17,6 +17,10 @@ class Adminer {
 		return password_file($create);
 	}
 
+	function bruteForceKey() {
+		return $_SERVER["REMOTE_ADDR"];
+	}
+
 	function database() {
 		global $connection;
 		if ($connection) {
@@ -26,6 +30,10 @@ class Adminer {
 				: $databases[(information_schema($databases[0]) ? 1 : 0)] // first available database
 			);
 		}
+	}
+
+	function schemas() {
+		return schemas();
 	}
 
 	function databases($flush = true) {
@@ -124,8 +132,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		}
 	}
 
-	function selectQuery($query) {
-		return "<!--\n" . str_replace("--", "--><!-- ", $query) . "\n-->\n";
+	function selectQuery($query, $time) {
+		return "<!--\n" . str_replace("--", "--><!-- ", $query) . "\n($time)\n-->\n";
 	}
 
 	function rowDescription($table) {
@@ -166,12 +174,12 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	function selectLink($val, $field) {
 	}
 
-	function selectVal($val, $link, $field) {
+	function selectVal($val, $link, $field, $original) {
 		$return = ($val === null ? "&nbsp;" : $val);
 		$link = h($link);
 		if (preg_match('~blob|bytea~', $field["type"]) && !is_utf8($val)) {
-			$return = lang('%d byte(s)', strlen($val));
-			if (preg_match("~^(GIF|\xFF\xD8\xFF|\x89PNG\x0D\x0A\x1A\x0A)~", $val)) { // GIF|JPG|PNG, getimagetype() works with filename
+			$return = lang('%d byte(s)', strlen($original));
+			if (preg_match("~^(GIF|\xFF\xD8\xFF|\x89PNG\x0D\x0A\x1A\x0A)~", $original)) { // GIF|JPG|PNG, getimagetype() works with filename
 				$return = "<img src='$link' alt='$return'>";
 			}
 		}
@@ -179,7 +187,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			$return = ($val ? lang('yes') : lang('no'));
 		}
 		if ($link) {
-			$return = "<a href='$link'>$return</a>";
+			$return = "<a href='$link'" . (is_url($link) ? " rel='noreferrer'" : "") . ">$return</a>";
 		}
 		if (!$link && !like_bool($field) && preg_match('~int|float|double|decimal~', $field["type"])) {
 			$return = "<div class='number'>$return</div>"; // Firefox doesn't support <colgroup>
@@ -236,7 +244,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			if (($val["col"] == "" || $columns[$val["col"]]) && "$val[col]$val[val]" != "") {
 				echo "<div><select name='where[$i][col]'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
 				echo html_select("where[$i][op]", array(-1 => "") + $this->operators, $val["op"]);
-				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' onsearch='selectSearchSearch(this);'></div>\n";
+				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' onkeydown='selectSearchKeydown(this, event);' onsearch='selectSearchSearch(this);'></div>\n";
 				$i++;
 			}
 		}
@@ -421,8 +429,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		return "";
 	}
 
-	function messageQuery($query) {
-		return " <span class='time'>" . @date("H:i:s") . "</span><!--\n" . str_replace("--", "--><!-- ", $query) . "\n-->";
+	function messageQuery($query, $time) {
+		return " <span class='time'>" . @date("H:i:s") . "</span><!--\n" . str_replace("--", "--><!-- ", $query) . "\n" . ($time ? "($time)\n" : "") . "-->";
 	}
 
 	function editFunctions($field) {
@@ -540,7 +548,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		?>
 <h1>
 <?php echo $this->name(); ?> <span class="version"><?php echo $VERSION; ?></span>
-<a href="http://www.adminer.org/editor/#download" id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
+<a href="http://www.adminer.org/editor/#download" target="_blank" id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
 </h1>
 <?php
 		if ($missing == "auth") {
@@ -577,7 +585,10 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		foreach ($tables as $row) {
 			$name = $this->tableName($row);
 			if (isset($row["Engine"]) && $name != "") { // ignore views and tables without name
-				echo "<a href='" . h(ME) . 'select=' . urlencode($row["Name"]) . "'" . bold($_GET["select"] == $row["Name"] || $_GET["edit"] == $row["Name"]) . " title='" . lang('Select data') . "'>$name</a><br>\n";
+				echo "<a href='" . h(ME) . 'select=' . urlencode($row["Name"]) . "'"
+					. bold($_GET["select"] == $row["Name"] || $_GET["edit"] == $row["Name"], "select")
+					. " title='" . lang('Select data') . "'>$name</a><br>\n"
+				;
 			}
 		}
 	}

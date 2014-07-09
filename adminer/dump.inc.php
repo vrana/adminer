@@ -14,14 +14,16 @@ if ($_POST && !$error) {
 	$is_sql = preg_match('~sql~', $_POST["format"]);
 
 	if ($is_sql) {
-		echo "-- Adminer $VERSION " . $drivers[DRIVER] . " dump
-
-" . ($jush != "sql" ? "" : "SET NAMES utf8;
+		echo "-- Adminer $VERSION " . $drivers[DRIVER] . " dump\n\n";
+		if ($jush == "sql") {
+			echo "SET NAMES " . charset($connection) . ";
+SET time_zone = '+00:00';
 " . ($_POST["data_style"] ? "SET foreign_key_checks = 0;
-SET time_zone = " . q(substr(preg_replace('~^[^-]~', '+\0', $connection->result("SELECT TIMEDIFF(NOW(), UTC_TIMESTAMP)")), 0, 6)) . ";
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 " : "") . "
-");
+";
+			$connection->query("SET time_zone = '+00:00';");
+		}
 	}
 
 	$style = $_POST["db_style"];

@@ -25,7 +25,7 @@ if (isset($_GET["file"])) {
 
 include "../adminer/include/functions.inc.php";
 
-global $adminer, $connection, $drivers, $edit_functions, $enum_length, $error, $functions, $grouping, $HTTPS, $inout, $jush, $LANG, $langs, $on_actions, $permanent, $structured_types, $token, $translations, $types, $unsigned, $VERSION; // allows including Adminer inside a function
+global $adminer, $connection, $drivers, $edit_functions, $enum_length, $error, $functions, $grouping, $HTTPS, $inout, $jush, $LANG, $langs, $on_actions, $permanent, $structured_types, $has_token, $token, $translations, $types, $unsigned, $VERSION; // allows including Adminer inside a function
 
 if (!$_SERVER["REQUEST_URI"]) { // IIS 5 compatibility
 	$_SERVER["REQUEST_URI"] = $_SERVER["ORIG_PATH_INFO"];
@@ -64,9 +64,9 @@ include "../adminer/drivers/sqlite.inc.php";
 include "../adminer/drivers/pgsql.inc.php";
 include "../adminer/drivers/oracle.inc.php";
 include "../adminer/drivers/mssql.inc.php";
+include "../adminer/drivers/simpledb.inc.php";
 include "../adminer/drivers/mongo.inc.php";
 include "../adminer/drivers/elastic.inc.php";
-include "../adminer/drivers/simpledb.inc.php";
 include "../adminer/drivers/mysql.inc.php"; // must be included as last driver
 
 define("SERVER", $_GET[DRIVER]); // read from pgsql=localhost
@@ -88,7 +88,7 @@ if (!ini_bool("session.use_cookies") || @ini_set("session.use_cookies", false) !
 	session_write_close(); // improves concurrency if a user opens several pages at once, may be restarted later
 }
 
-include "./include/connect.inc.php";
 include "./include/editing.inc.php";
+include "./include/connect.inc.php";
 
 $on_actions = "RESTRICT|NO ACTION|CASCADE|SET NULL|SET DEFAULT"; ///< @var string used in foreign_keys()

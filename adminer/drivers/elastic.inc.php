@@ -1,5 +1,5 @@
 <?php
-$drivers["elastic"] = "Elasticsearch";
+$drivers["elastic"] = "Elasticsearch (beta)";
 
 if (isset($_GET["elastic"])) {
 	$possible_drivers = array("json");
@@ -9,9 +9,16 @@ if (isset($_GET["elastic"])) {
 		class Min_DB {
 			var $extension = "JSON", $server_info, $errno, $error, $_url;
 
-			function query($path, $content = array()) {
+			/** Performs query
+			 * @param string
+			 * @param array
+			 * @param string
+			 * @return mixed
+			 */
+			function rootQuery($path, $content = array(), $method = 'GET') {
 				@ini_set('track_errors', 1); // @ - may be disabled
-				$file = @file_get_contents($this->_url . ($this->_db != "" ? "$this->_db/" : "") . $path, false, stream_context_create(array('http' => array(
+				$file = @file_get_contents($this->_url  . '/' . ltrim($path, '/'), false, stream_context_create(array('http' => array(
+					'method' => $method,
 					'content' => json_encode($content),
 					'ignore_errors' => 1, // available since PHP 5.2.10
 				))));
@@ -39,6 +46,16 @@ if (isset($_GET["elastic"])) {
 					}
 				}
 				return $return;
+			}
+
+			/** Performs query relative to actual selected DB
+			 * @param string
+			 * @param array
+			 * @param string
+			 * @return mixed
+			 */
+			function query($path, $content = array(), $method = 'GET') {
+				return $this->rootQuery(($this->_db != "" ? "$this->_db/" : "/") . ltrim($path, '/'), $content, $method);
 			}
 
 			function connect($server, $username, $password) {
@@ -88,45 +105,45 @@ if (isset($_GET["elastic"])) {
 
 	class Min_Driver extends Min_SQL {
 
-		function select($table, $select, $where, $group, $order, $limit, $page) {
+		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
 			global $adminer;
-			$query = $adminer->selectQueryBuild($select, $where, $group, $order, $limit, $page);
 			$data = array();
-			if (!$query) {
-				$query = "$table/_search";
-				if ($select != array("*")) {
-					$data["fields"] = $select;
+			$query = "$table/_search";
+			if ($select != array("*")) {
+				$data["fields"] = $select;
+			}
+			if ($order) {
+				$sort = array();
+				foreach ($order as $col) {
+					$col = preg_replace('~ DESC$~', '', $col, 1, $count);
+					$sort[] = ($count ? array($col => "desc") : $col);
 				}
-				if ($order) {
-					$sort = array();
-					foreach ($order as $col) {
-						$col = preg_replace('~ DESC$~', '', $col, 1, $count);
-						$sort[] = ($count ? array($col => "desc") : $col);
-					}
-					$data["sort"] = $sort;
-				}
-				if ($limit) {
-					$data["size"] = +$limit;
-					if ($page) {
-						$data["from"] = ($page * $limit);
-					}
-				}
-				foreach ((array) $_GET["where"] as $val) {
-					if ("$val[col]$val[val]" != "") {
-						$term = array("match" => array(($val["col"] != "" ? $val["col"] : "_all") => $val["val"]));
-						if ($val["op"] == "=") {
-							$data["query"]["filtered"]["filter"]["and"][] = $term;
-						} else {
-							$data["query"]["filtered"]["query"]["bool"]["must"][] = $term;
-						}
-					}
-				}
-				if ($data["query"] && !$data["query"]["filtered"]["query"]) {
-					$data["query"]["filtered"]["query"] = array("match_all" => array());
+				$data["sort"] = $sort;
+			}
+			if ($limit) {
+				$data["size"] = +$limit;
+				if ($page) {
+					$data["from"] = ($page * $limit);
 				}
 			}
-			echo $adminer->selectQuery($query);
+			foreach ((array) $_GET["where"] as $val) {
+				if ("$val[col]$val[val]" != "") {
+					$term = array("match" => array(($val["col"] != "" ? $val["col"] : "_all") => $val["val"]));
+					if ($val["op"] == "=") {
+						$data["query"]["filtered"]["filter"]["and"][] = $term;
+					} else {
+						$data["query"]["filtered"]["query"]["bool"]["must"][] = $term;
+					}
+				}
+			}
+			if ($data["query"] && !$data["query"]["filtered"]["query"]) {
+				$data["query"]["filtered"]["query"] = array("match_all" => array());
+			}
+			$start = microtime(true);
 			$search = $this->_conn->query($query, $data);
+			if ($print) {
+				echo $adminer->selectQuery("$query: " . print_r($data, true), format_time($start));
+			}
 			if (!$search) {
 				return false;
 			}
@@ -174,7 +191,7 @@ if (isset($_GET["elastic"])) {
 
 	function get_databases() {
 		global $connection;
-		$return = $connection->query('_aliases');
+		$return = $connection->rootQuery('_aliases');
 		if ($return) {
 			$return = array_keys($return);
 		}
@@ -207,13 +224,27 @@ if (isset($_GET["elastic"])) {
 	}
 
 	function table_status($name = "", $fast = false) {
-		$return = tables_list();
-		if ($return) {
-			foreach ($return as $key => $type) { // _stats have just info about database
-				$return[$key] = array("Name" => $key, "Engine" => $type);
-				if ($name != "") {
-					return $return[$name];
-				}
+		global $connection;
+		$search = $connection->query("_search?search_type=count", array(
+			"facets" => array(
+				"count_by_type" => array(
+					"terms" => array(
+						"field" => "_type",
+					)
+				)
+			)
+		), "POST");
+		$return = array();
+		if ($search) {
+			foreach ($search["facets"]["count_by_type"]["terms"] as $table) {
+				$return[$table["term"]] = array(
+					"Name" => $table["term"],
+					"Engine" => "table",
+					"Rows" => $table["count"],
+				);
+			}
+			if ($name != "" && $name == $table["term"]) {
+				return $return[$name];
 			}
 		}
 		return $return;
@@ -238,10 +269,14 @@ if (isset($_GET["elastic"])) {
 
 	function fields($table) {
 		global $connection;
-		$mapping = $connection->query("$table/_mapping");
+		$result = $connection->query("$table/_mapping");
 		$return = array();
-		if ($mapping) {
-			foreach ($mapping[$table]['properties'] as $name => $field) {
+		if ($result) {
+			$mappings = $result[$table]['properties'];
+			if (!$mappings) {
+				$mappings = $result[$connection->_db]['mappings'][$table]['properties'];
+			}
+			foreach ($mappings as $name => $field) {
 				$return[$name] = array(
 					"field" => $name,
 					"full_type" => $field["type"],
@@ -277,6 +312,37 @@ if (isset($_GET["elastic"])) {
 
 	function found_rows($table_status, $where) {
 		return null;
+	}
+
+	/** Create database
+	* @param string
+	* @return mixed
+	*/
+	function create_database($db) {
+		global $connection;
+		return $connection->rootQuery(urlencode($db), array(), 'PUT');
+	}
+
+	/** Drop databases
+	* @param array
+	* @return mixed
+	*/
+	function drop_databases($databases) {
+		global $connection;
+		return $connection->rootQuery(urlencode(implode(',', $databases)), array(), 'DELETE');
+	}
+
+	/** Drop tables
+	* @param array
+	* @return bool
+	*/
+	function drop_tables($tables) {
+		global $connection;
+		$return = true;
+		foreach ($tables as $table) { //! convert to bulk api
+			$return = $return && $connection->query(urlencode($table), array(), 'DELETE');
+		}
+		return $return;
 	}
 
 	$jush = "elastic";

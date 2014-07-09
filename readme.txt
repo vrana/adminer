@@ -1,4 +1,4 @@
-Adminer - Database management in single PHP file
+Adminer - Database management in a single PHP file
 Adminer Editor - Data manipulation for end-users
 
 http://www.adminer.org/

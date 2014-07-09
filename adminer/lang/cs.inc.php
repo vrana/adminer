@@ -11,6 +11,7 @@ $translations = array(
 	'Logged as: %s' => 'Přihlášen jako: %s',
 	'Logout successful.' => 'Odhlášení proběhlo v pořádku.',
 	'Invalid credentials.' => 'Neplatné přihlašovací údaje.',
+	'Too many unsuccessful logins, try again in %d minute(s).' => array('Příliš mnoho pokusů o přihlášení, zkuste to znovu za %d minutu.', 'Příliš mnoho pokusů o přihlášení, zkuste to znovu za %d minuty.', 'Příliš mnoho pokusů o přihlášení, zkuste to znovu za %d minut.'),
 	'Master password expired. <a href="http://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to make it permanent.' => 'Platnost hlavního hesla vypršela. <a href="http://www.adminer.org/cs/extension/" target="_blank">Implementujte</a> metodu %s, aby platilo stále.',
 	'Language' => 'Jazyk',
 	'Invalid CSRF token. Send the form again.' => 'Neplatný token CSRF. Odešlete formulář znovu.',
@@ -68,7 +69,6 @@ $translations = array(
 	'You can upload a big SQL file via FTP and import it from server.' => 'Velký SQL soubor můžete nahrát pomocí FTP a importovat ho ze serveru.',
 	
 	'Export' => 'Export',
-	'Dump' => 'Export',
 	'Output' => 'Výstup',
 	'open' => 'otevřít',
 	'save' => 'uložit',
@@ -95,6 +95,7 @@ $translations = array(
 	
 	// thousands separator - must contain single byte
 	',' => ' ',
+	'0123456789' => '0123456789',
 	'Engine' => 'Úložiště',
 	'Collation' => 'Porovnávání',
 	'Data Length' => 'Velikost dat',
@@ -162,9 +163,12 @@ $translations = array(
 	'Auto Increment' => 'Auto Increment',
 	'Options' => 'Volby',
 	'Comment' => 'Komentář',
+	'Default value' => 'Výchozí hodnota',
 	'Default values' => 'Výchozí hodnoty',
 	'Drop' => 'Odstranit',
 	'Are you sure?' => 'Opravdu?',
+	'Size' => 'Velikost',
+	'Compute' => 'Spočítat',
 	'Move up' => 'Přesunout nahoru',
 	'Move down' => 'Přesunout dolů',
 	'Remove' => 'Odebrat',
@@ -262,6 +266,7 @@ $translations = array(
 	'Edit' => 'Upravit',
 	'Insert' => 'Vložit',
 	'Save' => 'Uložit',
+	'Saving' => 'Ukládá se',
 	'Save and continue edit' => 'Uložit a pokračovat v editaci',
 	'Save and insert next' => 'Uložit a vložit další',
 	'Selected' => 'Označené',
@@ -307,7 +312,6 @@ $translations = array(
 	'Schema has been dropped.' => 'Schéma bylo odstraněno.',
 	'Schema has been created.' => 'Schéma bylo vytvořeno.',
 	'Schema has been altered.' => 'Schéma bylo změněno.',
-	'schema' => 'schéma',
 	'Schema' => 'Schéma',
 	'Invalid schema.' => 'Nesprávné schéma.',
 	

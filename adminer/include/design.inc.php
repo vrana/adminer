@@ -7,7 +7,7 @@
 * @return null
 */
 function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
-	global $LANG, $adminer, $connection, $drivers, $jush;
+	global $LANG, $VERSION, $adminer, $drivers, $jush;
 	page_headers();
 	$title_all = $title . ($title2 != "" ? ": $title2" : "");
 	$title_page = strip_tags($title_all . (SERVER != "" && SERVER != "localhost" ? h(" - " . SERVER) : "") . " - " . $adminer->name());
@@ -29,7 +29,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <?php } ?>
 <?php } ?>
 
-<body class="<?php echo lang('ltr'); ?> nojs" onkeydown="bodyKeydown(event);" onclick="bodyClick(event);" onload="bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 0, 3) : ""); ?>');<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " verifyVersion();"); ?>">
+<body class="<?php echo lang('ltr'); ?> nojs" onkeydown="bodyKeydown(event);" onclick="bodyClick(event);"<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " onload=\"verifyVersion('$VERSION');\""); ?>>
 <script type="text/javascript">
 document.body.className = document.body.className.replace(/ nojs/, ' js');
 </script>
@@ -114,12 +114,14 @@ function page_footer($missing = "") {
 </div>
 
 <?php switch_lang(); ?>
+<?php if ($missing != "auth") { ?>
 <form action="" method="post">
 <p class="logout">
 <input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" id="logout">
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </p>
 </form>
+<?php } ?>
 <div id="menu">
 <?php $adminer->navigation($missing); ?>
 </div>

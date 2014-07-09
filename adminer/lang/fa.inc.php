@@ -66,7 +66,6 @@ $translations = array(
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'حجم داده ارسالي برزگ است. حجم داده كاهش دهيد و يا مقدار %s را در پيكربندي افزايش دهيد.',
 	
 	'Export' => 'استخراج',
-	'Dump' => 'خالي كردن',
 	'Output' => 'خروجي',
 	'open' => 'بازكردن',
 	'save' => 'ذخيره',
@@ -93,6 +92,7 @@ $translations = array(
 	
 	// thousands separator - must contain single byte
 	',' => ' ',
+	'0123456789' => '۰۱۲۳۴۵۶۷۸۹',
 	'Engine' => 'موتور',
 	'Collation' => 'تطبیق',
 	'Data Length' => 'طول داده',
@@ -293,7 +293,6 @@ $translations = array(
 	'Schema has been dropped.' => 'ساختار حذف شد',
 	'Schema has been created.' => 'ساختار ایجاد شد',
 	'Schema has been altered.' => 'ساختار ویرایش شد',
-	'schema' => 'ساختار',
 	'Schema' => 'ساختار',
 	'Invalid schema.' => 'ساختار نامعتبر',
 	

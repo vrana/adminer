@@ -414,7 +414,7 @@ ORDER BY PROCESS
 	}
 
 	function support($feature) {
-		return preg_match('~^(database|table|columns|sql|indexes|view|scheme|processlist|drop_col|variables|status)$~', $feature); //!
+		return preg_match('~^(columns|database|drop_col|indexes|processlist|scheme|sql|status|table|variables|view|view_trigger)$~', $feature); //!
 	}
 
 	$jush = "oracle";

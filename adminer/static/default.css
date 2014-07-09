@@ -29,7 +29,7 @@ input.required { box-shadow: 1px 1px 1px red; }
 .block { display: block; }
 .version { color: #777; font-size: 67%; }
 .js .hidden, .nojs .jsonly { display: none; }
-.js .column { position: absolute; background: #ddf; padding: .3em 1ex .3em 0; margin-top: -.3em; }
+.js .column { position: absolute; background: #ddf; padding: .27em 1ex .3em 0; margin-top: -.27em; }
 .nowrap td, .nowrap th, td.nowrap { white-space: pre; }
 .wrap td { white-space: normal; }
 .error { color: red; background: #fee; }
@@ -48,6 +48,7 @@ input.required { box-shadow: 1px 1px 1px red; }
 .datetime { text-align: right; }
 .type { width: 15ex; width: auto\9; }
 .options select { width: 20ex; width: auto\9; }
+.view { font-style: italic; }
 .active { font-weight: bold; }
 .sqlarea { width: 98%; }
 .icon { width: 18px; height: 18px; background-color: navy; }
@@ -57,10 +58,11 @@ input.required { box-shadow: 1px 1px 1px red; }
 .pages { position: fixed; bottom: 0; left: 21em; padding: 5px; background: #ddf; border: 1px solid #999; }
 .links a { white-space: nowrap; margin-right: 20px; }
 .logout { margin-top: .5em; position: absolute; top: 0; right: 0; }
+.loadmore { margin-left: 1ex; }
 #menu { position: absolute; margin: 10px 0 0; padding: 0 0 30px 0; top: 2em; left: 0; width: 19em; }
 #menu p { padding: .8em 1em; margin: 0; border-bottom: 1px solid #ccc; }
 #dbs { overflow: hidden; }
-#logins, #tables { white-space: nowrap; overflow: auto; text-overflow: ellipsis; }
+#logins, #tables { white-space: nowrap; overflow: auto; }
 #logins a, #tables a, #tables span { background: #fff; }
 #content { margin: 2em 0 0 21em; padding: 10px 20px 20px 0; }
 #lang { position: absolute; top: 0; left: 0; line-height: 1.8em; padding: .3em 1em; }

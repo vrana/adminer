@@ -1,13 +1,16 @@
-/** 
- * Alternative style for Adminer by Frank Bueltge
- * @link http://bueltge.de/
+/**
+ * Alternative style for Adminer by Frank Bültge
+ * 
+ * @link     http://bueltge.de/
+ * @version  02/18/2014
  */
 
 body {
-margin: 0; 
-line-height: 1.25em;
+margin: 0;
 font-size: 12px;
+line-height: 1.4em;
 background: #F9F9F9;
+color: #333;
 }
 body, select, option, optgroup, button {
 font-family: "Lucida Grande",Verdana,Arial,"Bitstream Vera Sans",sans-serif;
@@ -20,27 +23,67 @@ font-family: "Lucida Grande",Verdana,Arial,"Bitstream Vera Sans",sans-serif;
 font-size: 12px;
 }
 
+pre {
+white-space: pre-wrap;
+}
+
+p {
+margin: 0.8em 20px 0 5px
+}
+
 a { 
 color: #21759B;
+background: none !important;
 }
 a:visited { 
 color: #21759B;
 }
-a:hover { 
+a:hover, a:hover { 
 text-decoration: none;
-color: #D54E21;
+color: #d54e21;
+}
+a:focus {
+	background: #c7e7fd;
+	color: #124964;
+}
+a:active {
+	background: none;
+	outline: thin dotted;
+}
+
+a.active, a.active + a {
+	text-decoration: none;
+	font-weight: 700;
 }
 
 form {
 margin: 0;
+padding: 0 0 0 5px;
 }
-table { 
-margin: 0 12px 12px 0; 
+table {
+width: 100%;
+clear: both;
+margin: 0;
+border-spacing: 0;
+border-collapse: separate;
+border-color: gray;
+}
+table, thead, tbody {
+margin: 10px 12px 0 0;
 border: 1px #BBB solid;
 font-size: 90%;
 }
+thead th, thead td {
+text-align: center;
+}
+td {
+white-space: normal;
+overflow: hidden;
+padding: 0 4px;
+}
 th {
 text-align: left;
+font-weight: 400;
 }
 td, th {
 background-color: #fff;
@@ -54,9 +97,14 @@ border-top-width: 0;
 td:first-child, th:first-child {
 border-left-width: 0;
 }
+thead {
+display: table-header-group;
+vertical-align: middle;
+border-color: inherit;
+}
 thead td, thead th { 
 background-color: #DFDFDF;
-border: none; 
+border: none;
 border-bottom: 1px #BBB solid;
 }
 thead tr:hover td, thead tr:hover th {
@@ -85,19 +133,21 @@ fieldset, x:-moz-any-link {
 padding-top: 4px;
 }
 fieldset {
-%padding-top: 14px;
+padding-top: 14px;
 }
 legend {
 font-weight: 900; 
 color: #000;
-position: absolute;
 top: -1.666em;
 left: -1em;
 padding: 0 4px;
 }
-input[name='limit'], input[name*='length'] {
+input {
+padding: 2px 5px 1px 5px;
+}
+input[name='limit'], input[name='length'] {
 width: 3em; 
-xtext-align: right;
+text-align: right;
 }
 input[name='text_length'] {
 width: 5em;
@@ -108,39 +158,83 @@ margin-left: 2px;
 textarea, input, select {
 border-width: 1px;
 border-style: solid;
--moz-border-radius: 4px;
--khtml-border-radius: 4px;
--webkit-border-radius: 4px;
-border-radius: 4px;
+-moz-border-radius: 3px;
+-khtml-border-radius: 3px;
+-webkit-border-radius: 3px;
+border-radius: 3px;
 border-color: #DFDFDF;
+}
+select {
+margin: 0 0 1px 0;
 }
 input[type="checkbox"], input[type="radio"], input[type="image"] {
 border: 0 none;
 }
 input[type=button], input[type=submit] {
-border-color: #bbb;
-color: #464646;
+	display: inline-block;
+	text-decoration: none;
+	font-size: 12px;
+	line-height: 15px;
+	padding: 1px 0 0 0;
+	cursor: pointer;
+	border-width: 1px;
+	border-style: solid;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	-webkit-box-sizing: content-box;
+	-moz-box-sizing:    content-box;
+	box-sizing:         content-box;
+	white-space: nowrap;
+	border-color: #dfdfdf;
+	background-color: #fff;
+	color: #333;
 }
-input[type=button]:hover, input[type=submit]:hover {
-color: #000;
-border-color: #666;
+input[type="button"]:focus, input[type=submit] {
+	border-color: #a1a1a1;
+	-webkit-box-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+	box-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 input[type=button], input[type=submit] {
-text-decoration: none;
-font-size: 11px !important;
-line-height: 14px;
-padding: 2px 8px;
-cursor: pointer;
-border-width: 1px;
-border-style: solid;
--moz-border-radius: 11px;
--khtml-border-radius: 11px;
--webkit-border-radius: 11px;
-border-radius: 11px;
--moz-box-sizing: content-box;
--webkit-box-sizing: content-box;
--khtml-box-sizing: content-box;
-box-sizing: content-box;
+	padding: 2px 5px 1px 5px;
+	background: #ececec;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#eee));
+	background-image: -webkit-linear-gradient(top, #fff, #eee);
+	background-image:    -moz-linear-gradient(top, #fff, #eee);
+	background-image:      -o-linear-gradient(top, #fff, #eee);
+	background-image:   linear-gradient(to bottom, #fff, #eee);
+	border-color: #ccc;
+	-webkit-box-shadow: inset 0 0 1px 1px rgba(255,255,255, 0.9); 
+ 	box-shadow: inset 0 0 1px 1px rgba(255,255,255, 0.9);
+ 	color: #464646;
+	text-shadow: 1px 1px 0 #fff;
+}
+input[type=button]:hover, input[type=submit]:hover,
+input[type=button]:focus, input[type=submit]:focus  {
+	background: #ececec;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#eee));
+	background-image: -webkit-linear-gradient(top, #fff, #eee);
+	background-image:    -moz-linear-gradient(top, #fff, #eee);
+	background-image:      -o-linear-gradient(top, #fff, #eee);
+	background-image:   linear-gradient(to bottom, #fff, #eee);
+	border-color: #bbb;
+	-webkit-box-shadow: 0px 1px 1px rgba(0,0,0,.1); 
+	box-shadow: 0px 1px 1px rgba(0,0,0,.1);
+	color: #000;
+}
+input[type=button]:active, input[type=submit]:active {
+	background: #eee;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#eee), to(#f9f9f9));
+	background-image: -webkit-linear-gradient(top, #eee, #f9f9f9);
+	background-image:    -moz-linear-gradient(top, #eee, #f9f9f9);
+	background-image:      -o-linear-gradient(top, #eee, #f9f9f9);
+	background-image:   linear-gradient(to bottom, #eee, #f9f9f9);
+	border-color: #999 #ddd #ddd #999;
+	color: #555;
+	-webkit-box-shadow: inset 1px 1px 0 rgba(50,50,50,0.1); 
+	box-shadow: inset 1px 1px 0 rgba(50,50,50,0.1);
+}
+input[type=button]:focus, input[type=submit]:focus {
+	border-color: #aaa;
 }
 input + label input, select + label input {
 margin-left: 4px;
@@ -164,6 +258,11 @@ width: 6em;
 img { 
 vertical-align: middle; 
 margin: 0; 
+padding: 0;
+}
+.js .column {
+position: relative;
+background: none;
 padding: 0;
 }
 .error { 
@@ -190,17 +289,20 @@ color: red;
 .jush-sql {
 padding: 2px 4px;
 margin-right: 4px;
-outline: 1px #BBB dashed;
-font-size: 9pt;
+font-size: 11px;
+}
+.time {
+color: #333;
 }
 
 #content { 
-margin: 2px 0 0 260px; 
+margin: 2px 0 0 270px; 
 padding: 10px 20px 20px 0;
 }
-#lang { 
+#lang {
+font-size:10px;
 height: 23px;
-width: 250px;
+width: 255px;
 display: block; 
 padding: 1px 0; 
 position: absolute; 
@@ -212,7 +314,7 @@ border: 1px solid #E3E3E3;
 line-height: 1.25em;
 }
 #lang select {
-font-size: 8pt;
+font-size: 10px;
 }
 #breadcrumb { 
 margin: 0; 
@@ -220,7 +322,7 @@ height: 21px;
 display: block; 
 position: absolute; 
 top: 0; 
-left: 260px;
+left: 270px;
 background-color: #f1f1f1;
 border: 1px solid #E3E3E3;
 padding: 2px 12px;
@@ -230,7 +332,7 @@ position: absolute;
 margin: 0;
 top: 28px; 
 left: 0; 
-width: 250px; 
+width: 255px; 
 background-color: #f1f1f1;
 border: 1px solid #E3E3E3;
 }
@@ -239,8 +341,10 @@ margin: 0;
 }
 #menu p { 
 padding-left: 8px;
-font-size: 10pt;
 border-bottom: none;
+}
+#dbs {
+padding: 0 !important;
 }
 #menu form p {
 padding-left: 0;
@@ -257,19 +361,15 @@ line-height: 35px;
 text-shadow: rgba(255,255,255,1) 0 1px 0px;
 background: none;
 }
-h1 {
-font-size: 12px;
-}
 h1 .h1 {
 font-size: 12px;
 }
 h2 {
 padding: 22px 0 0 10px;
 }
-h3 { 
-margin: 40px 0 0;
-font-weight: 400; 
-font-size: 130%;
+h3 {
+font: normal normal normal 18px/22px Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
+margin: 20px 0 0 5px;
 }
 #schema { 
 margin: 1.5em 0 0 220px;
@@ -285,8 +385,11 @@ position: absolute;
 #schema .references { 
 position: absolute;
 }
-.js div.hidden {
-display: inline;
+.js .hidden {
+display: hidden;
+}
+.js td.hidden, .js input.hidden {
+display: none;
 }
 legend a {
 color: #333;
@@ -299,40 +402,27 @@ color: #333;
 code {
 background: transparent;
 }
-fieldset, legend, h2, table, .error, .message {
--moz-border-radius: 5px;
--khtml-border-radius: 5px;
--webkit-border-radius: 5px;
-border-radius: 5px;
+fieldset, legend, table, thead, tbody, .error, .message {
+-moz-border-radius: 3px;
+-khtml-border-radius: 3px;
+-webkit-border-radius: 3px;
+border-radius: 3px;
 }
 #breadcrumb, #lang, #menu {
--moz-border-radius-bottomright: 5px;
--khtml-border-bottom-right-radius: 5px;
--webkit-border-bottom-right-radius: 5px;
-border-bottom-right-radius: 5px;
+-moz-border-radius-bottomright: 3px;
+-khtml-border-bottom-right-radius: 3px;
+-webkit-border-bottom-right-radius: 3px;
+border-bottom-right-radius: 3px;
 }
 #breadcrumb {
--moz-border-radius-bottomleft: 5px;
--khtml-border-bottom-left-radius: 5px;
--webkit-border-bottom-left-radius: 5px;
-border-bottom-left-radius: 5px;
+-moz-border-radius-bottomleft: 3px;
+-khtml-border-bottom-left-radius: 3px;
+-webkit-border-bottom-left-radius: 3px;
+border-bottom-left-radius: 3px;
 }
 #menu {
 -moz-border-radius-topright: 5px;
--khtml-border-top-right-radius: 5px;
--webkit-border-top-right-radius: 5px;
-border-bottom-top-radius: 5px;
-}
-.js .column {
-background: #DFDFDF;
-}
-#logout {
-color: #21759B;
-}
-#logout:hover {
-text-decoration: none;
-}
-#logins a, #tables a {
-background: #F1F1F1;
-line-height: 1.5em;
+-khtml-border-top-right-radius: 3px;
+-webkit-border-top-right-radius: 3px;
+border-top-right-radius: 3px;
 }

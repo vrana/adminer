@@ -9,7 +9,7 @@ class Adminer {
 	* @return string HTML code
 	*/
 	function name() {
-		return "<a href='http://www.adminer.org/' id='h1'>Adminer</a>";
+		return "<a href='http://www.adminer.org/' target='_blank' id='h1'>Adminer</a>";
 	}
 
 	/** Connection parameters
@@ -27,6 +27,13 @@ class Adminer {
 		return password_file($create);
 	}
 
+	/** Return key used to group brute force attacks; behind a reverse proxy, you want to return the last part of X-Forwarded-For
+	* @return string
+	*/
+	function bruteForceKey() {
+		return $_SERVER["REMOTE_ADDR"];
+	}
+
 	/** Identifier of selected database
 	* @return string
 	*/
@@ -41,6 +48,13 @@ class Adminer {
 	*/
 	function databases($flush = true) {
 		return get_databases($flush);
+	}
+
+	/** Get list of schemas
+	* @return array
+	*/
+	function schemas() {
+		return schemas();
 	}
 
 	/** Specify limit for waiting on some slow queries like DB list
@@ -61,6 +75,9 @@ class Adminer {
 	* @return bool true to link adminer.css if exists
 	*/
 	function head() {
+		?>
+<link rel="stylesheet" type="text/css" href="../externals/jush/jush.css">
+<?php
 		return true;
 	}
 
@@ -121,8 +138,10 @@ username.form['auth[driver]'].onchange();
 	function selectLinks($tableStatus, $set = "") {
 		echo '<p class="links">';
 		$links = array("select" => lang('Select data'));
-		if (support("table")) {
+		if (support("table") || support("indexes")) {
 			$links["table"] = lang('Show structure');
+		}
+		if (support("table")) {
 			if (is_view($tableStatus)) {
 				$links["view"] = lang('Alter view');
 			} else {
@@ -165,14 +184,15 @@ username.form['auth[driver]'].onchange();
 
 	/** Query printed in select before execution
 	* @param string query to be executed
+	* @param string elapsed time
 	* @return string
 	*/
-	function selectQuery($query) {
+	function selectQuery($query, $time) {
 		global $jush;
-		return ($_GET["edit"] != "" ? "" : "<p><code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code>"
+		return "<p><code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code> <span class='time'>($time)</span>"
 			. (support("sql") ? " <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>" : "")
 			. "</p>" // </p> - required for IE9 inline edit
-		);
+		;
 	}
 
 	/** Description of a row in a table
@@ -204,14 +224,15 @@ username.form['auth[driver]'].onchange();
 	* @param string HTML-escaped value to print
 	* @param string link to foreign key
 	* @param array single field returned from fields()
+	* @param array original value before applying editVal() and escaping
 	* @return string
 	*/
-	function selectVal($val, $link, $field) {
+	function selectVal($val, $link, $field, $original) {
 		$return = ($val === null ? "<i>NULL</i>" : (preg_match("~char|binary~", $field["type"]) && !preg_match("~var~", $field["type"]) ? "<code>$val</code>" : $val));
 		if (preg_match('~blob|bytea|raw|file~', $field["type"]) && !is_utf8($val)) {
-			$return = lang('%d byte(s)', strlen(html_entity_decode($val, ENT_QUOTES)));
+			$return = lang('%d byte(s)', strlen($original));
 		}
-		return ($link ? "<a href='" . h($link) . "'>$return</a>" : $return);
+		return ($link ? "<a href='" . h($link) . "'" . (is_url($link) ? " rel='noreferrer'" : "") . ">$return</a>" : $return);
 	}
 
 	/** Value conversion used in select and edit
@@ -268,7 +289,7 @@ username.form['auth[driver]'].onchange();
 			if (!$val || ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators))) {
 				echo "<div>" . select_input(" name='where[$i][col]' onchange='$change_next'", $columns, $val["col"], "(" . lang('anywhere') . ")");
 				echo html_select("where[$i][op]", $this->operators, $val["op"], $change_next);
-				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' onchange='" . ($val ? "selectFieldChange(this.form)" : "selectAddRow(this)") . ";' onsearch='selectSearchSearch(this);'></div>\n";
+				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' onchange='" . ($val ? "selectFieldChange(this.form)" : "selectAddRow(this)") . ";' onkeydown='selectSearchKeydown(this, event);' onsearch='selectSearchSearch(this);'></div>\n";
 			}
 		}
 		echo "</div></fieldset>\n";
@@ -391,7 +412,7 @@ username.form['auth[driver]'].onchange();
 	* @return array expressions to join by AND
 	*/
 	function selectSearchProcess($fields, $indexes) {
-		global $jush;
+		global $connection, $jush;
 		$return = array();
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT" && $_GET["fulltext"][$i] != "") {
@@ -422,7 +443,7 @@ username.form['auth[driver]'].onchange();
 							&& (!preg_match("~[\x80-\xFF]~", $val["val"]) || $is_text)
 						) {
 							$name = idf_escape($name);
-							$cols[] = ($jush == "sql" && $is_text && !preg_match('~^utf8~', $field["collation"]) ? "CONVERT($name USING utf8)" : $name);
+							$cols[] = ($jush == "sql" && $is_text && !preg_match("~^utf8_~", $field["collation"]) ? "CONVERT($name USING " . charset($connection) . ")" : $name);
 						}
 					}
 					$return[] = ($cols ? "(" . implode("$cond OR ", $cols) . "$cond)" : "0");
@@ -487,9 +508,10 @@ username.form['auth[driver]'].onchange();
 
 	/** Query printed after execution in the message
 	* @param string executed query
+	* @param string elapsed time
 	* @return string
 	*/
-	function messageQuery($query) {
+	function messageQuery($query, $time) {
 		global $jush;
 		restart_session();
 		$history = &get_session("queries");
@@ -497,9 +519,10 @@ username.form['auth[driver]'].onchange();
 		if (strlen($query) > 1e6) {
 			$query = preg_replace('~[\x80-\xFF]+$~', '', substr($query, 0, 1e6)) . "\n..."; // [\x80-\xFF] - valid UTF-8, \n - can end by one-line comment
 		}
-		$history[$_GET["db"]][] = array($query, time()); // not DB - $_GET["db"] is changed in database.inc.php //! respect $_GET["ns"]
+		$history[$_GET["db"]][] = array($query, time(), $time); // not DB - $_GET["db"] is changed in database.inc.php //! respect $_GET["ns"]
 		return " <span class='time'>" . @date("H:i:s") . "</span> <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a>" // @ - time zone may be not set
 			. "<div id='$id' class='hidden'><pre><code class='jush-$jush'>" . shorten_utf8($query, 1000) . '</code></pre>'
+			. ($time ? " <span class='time'>($time)</span>" : '')
 			. (support("sql") ? '<p><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a>' : '')
 			. '</div>'
 		;
@@ -523,6 +546,9 @@ username.form['auth[driver]'].onchange();
 					$return .= "/SQL";
 				}
 			}
+		}
+		if ($field["auto_increment"] && !isset($_GET["select"]) && !where($_GET)) {
+			$return = lang('Auto Increment');
 		}
 		return explode("/", $return);
 	}
@@ -724,7 +750,7 @@ username.form['auth[driver]'].onchange();
 			($ext == "sql" || $output != "file" ? "text/plain" : "text/csv") . "; charset=utf-8"
 		)));
 		if ($output == "gz") {
-			ob_start('gzencode', 1e6);
+			ob_start('ob_gzencode', 1e6);
 		}
 		return $ext;
 	}
@@ -745,11 +771,11 @@ username.form['auth[driver]'].onchange();
 	* @return null
 	*/
 	function navigation($missing) {
-		global $VERSION, $jush, $drivers;
+		global $VERSION, $jush, $drivers, $connection;
 		?>
 <h1>
 <?php echo $this->name(); ?> <span class="version"><?php echo $VERSION; ?></span>
-<a href="http://www.adminer.org/#download" id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
+<a href="http://www.adminer.org/#download" target="_blank" id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
 </h1>
 <?php
 		if ($missing == "auth") {
@@ -771,31 +797,46 @@ username.form['auth[driver]'].onchange();
 				}
 			}
 		} else {
-			$this->databasesPrint($missing);
-			if (DB == "" || !$missing) {
-				echo "<p class='links'>" . (support("sql") ? "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"]) && !isset($_GET["import"])) . ">" . lang('SQL command') . "</a>\n<a href='" . h(ME) . "import='" . bold(isset($_GET["import"])) . ">" . lang('Import') . "</a>\n" : "") . "";
-				if (support("dump")) {
-					echo "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . lang('Dump') . "</a>\n";
-				}
-			}
 			if ($_GET["ns"] !== "" && !$missing && DB != "") {
-				echo '<a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create table') . "</a>\n";
+				$connection->select_db(DB);
 				$tables = table_status('', true);
-				if (!$tables) {
-					echo "<p class='message'>" . lang('No tables.') . "\n";
-				} else {
-					$this->tablesPrint($tables);
+			}
+			if (support("sql")) {
+				?>
+<script type="text/javascript" src="../externals/jush/modules/jush.js"></script>
+<script type="text/javascript" src="../externals/jush/modules/jush-textarea.js"></script>
+<script type="text/javascript" src="../externals/jush/modules/jush-txt.js"></script>
+<script type="text/javascript" src="../externals/jush/modules/jush-<?php echo $jush; ?>.js"></script>
+<script type="text/javascript">
+<?php
+				if ($tables) {
 					$links = array();
 					foreach ($tables as $table => $type) {
 						$links[] = preg_quote($table, '/');
 					}
-					echo "<script type='text/javascript'>\n";
-					echo "var jushLang = '$jush';\n";
 					echo "var jushLinks = { $jush: [ '" . js_escape(ME) . (support("table") ? "table=" : "select=") . "\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
 					foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
 						echo "jushLinks.$val = jushLinks.$jush;\n";
 					}
-					echo "</script>\n";
+				}
+				?>
+bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 0, 3) : ""); ?>');
+</script>
+<?php
+			}
+			$this->databasesPrint($missing);
+			if (DB == "" || !$missing) {
+				echo "<p class='links'>" . (support("sql") ? "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"]) && !isset($_GET["import"])) . ">" . lang('SQL command') . "</a>\n<a href='" . h(ME) . "import='" . bold(isset($_GET["import"])) . ">" . lang('Import') . "</a>\n" : "") . "";
+				if (support("dump")) {
+					echo "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . lang('Export') . "</a>\n";
+				}
+			}
+			if ($_GET["ns"] !== "" && !$missing && DB != "") {
+				echo '<a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create table') . "</a>\n";
+				if (!$tables) {
+					echo "<p class='message'>" . lang('No tables.') . "\n";
+				} else {
+					$this->tablesPrint($tables);
 				}
 			}
 		}
@@ -806,7 +847,7 @@ username.form['auth[driver]'].onchange();
 	* @return null
 	*/
 	function databasesPrint($missing) {
-		global $connection;
+		global $adminer, $connection;
 		$databases = $this->databases();
 		?>
 <form action="">
@@ -821,7 +862,7 @@ username.form['auth[driver]'].onchange();
 		echo "<input type='submit' value='" . lang('Use') . "'" . ($databases ? " class='hidden'" : "") . ">\n";
 		if ($missing != "db" && DB != "" && $connection->select_db(DB)) {
 			if (support("scheme")) {
-				echo "<br><select name='ns'$db_events>" . optionlist(array("" => "(" . lang('schema') . ")") + schemas(), $_GET["ns"]) . "</select>";
+				echo "<br>" . lang('Schema') . ": <select name='ns'$db_events>" . optionlist(array("" => "") + $adminer->schemas(), $_GET["ns"]) . "</select>";
 				if ($_GET["ns"] != "") {
 					set_schema($_GET["ns"]);
 				}
@@ -842,10 +883,12 @@ username.form['auth[driver]'].onchange();
 	function tablesPrint($tables) {
 		echo "<p id='tables' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";
 		foreach ($tables as $table => $status) {
-			echo '<a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table || $_GET["edit"] == $table) . ">" . lang('select') . "</a> ";
+			echo '<a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table || $_GET["edit"] == $table, "select") . ">" . lang('select') . "</a> ";
 			$name = $this->tableName($status);
-			echo (support("table")
-				? '<a href="' . h(ME) . 'table=' . urlencode($table) . '"' . bold(in_array($table, array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"]))) . " title='" . lang('Show structure') . "'>$name</a>"
+			echo (support("table") || support("indexes")
+				? '<a href="' . h(ME) . 'table=' . urlencode($table) . '"'
+					. bold(in_array($table, array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"])), (is_view($status) ? "view" : ""), "structure")
+					. " title='" . lang('Show structure') . "'>$name</a>"
 				: "<span>$name</span>"
 			) . "<br>\n";
 		}

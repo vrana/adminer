@@ -118,6 +118,7 @@ if (isset($_GET["simpledb"])) {
 
 
 	class Min_Driver extends Min_SQL {
+		public $primary = "itemName()";
 
 		function _chunkRequest($ids, $action, $params, $expand = array()) {
 			global $connection;
@@ -149,10 +150,10 @@ if (isset($_GET["simpledb"])) {
 			return $return;
 		}
 
-		function select($table, $select, $where, $group, $order, $limit, $page) {
+		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
 			global $connection;
 			$connection->next = $_GET["next"];
-			$return = parent::select($table, $select, $where, $group, $order, $limit, $page);
+			$return = parent::select($table, $select, $where, $group, $order, $limit, $page, $print);
 			$connection->next = 0;
 			return $return;
 		}
@@ -323,19 +324,7 @@ if (isset($_GET["simpledb"])) {
 	}
 
 	function fields($table) {
-		$return = array();
-		foreach ((array) $_POST["field_keys"] as $key => $val) {
-			if ($val != "") {
-				$val = bracket_escape($val);
-				$_POST["function"][$val] = $_POST["field_funs"][$key];
-				$_POST["fields"][$val] = $_POST["field_vals"][$key];
-			}
-		}
-		foreach ((array) $_POST["fields"] as $key => $val) {
-			$name = bracket_escape($key, 1); // 1 - back
-			$return[$name] = array("field" => $name, "privileges" => array("insert" => 1, "update" => 1), "null" => 1);
-		}
-		return $return;
+		return fields_from_edit();
 	}
 
 	function foreign_keys($table) {

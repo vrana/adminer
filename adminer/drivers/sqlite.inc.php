@@ -352,19 +352,23 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		$sqls = get_key_vals("SELECT name, sql FROM sqlite_master WHERE type = 'index' AND tbl_name = " . q($table), $connection2);
 		foreach (get_rows("PRAGMA index_list(" . table($table) . ")", $connection2) as $row) {
 			$name = $row["name"];
-			if (!preg_match("~^sqlite_~", $name)) {
-				$return[$name]["type"] = ($row["unique"] ? "UNIQUE" : "INDEX");
-				$return[$name]["lengths"] = array();
-				foreach (get_rows("PRAGMA index_info(" . idf_escape($name) . ")", $connection2) as $row1) {
-					$return[$name]["columns"][] = $row1["name"];
-				}
-				$return[$name]["descs"] = array();
-				if (preg_match('~^CREATE( UNIQUE)? INDEX ' . preg_quote(idf_escape($name) . ' ON ' . idf_escape($table), '~') . ' \((.*)\)$~i', $sqls[$name], $regs)) {
-					preg_match_all('/("[^"]*+")+( DESC)?/', $regs[2], $matches);
-					foreach ($matches[2] as $val) {
-						$return[$name]["descs"][] = ($val ? '1' : null);
+			$index = array("type" => ($row["unique"] ? "UNIQUE" : "INDEX"));
+			$index["lengths"] = array();
+			$index["descs"] = array();
+			foreach (get_rows("PRAGMA index_info(" . idf_escape($name) . ")", $connection2) as $row1) {
+				$index["columns"][] = $row1["name"];
+				$index["descs"][] = null;
+			}
+			if (preg_match('~^CREATE( UNIQUE)? INDEX ' . preg_quote(idf_escape($name) . ' ON ' . idf_escape($table), '~') . ' \((.*)\)$~i', $sqls[$name], $regs)) {
+				preg_match_all('/("[^"]*+")+( DESC)?/', $regs[2], $matches);
+				foreach ($matches[2] as $key => $val) {
+					if ($val) {
+						$index["descs"][$key] = '1';
 					}
 				}
+			}
+			if (!$return[""] || $index["type"] != "UNIQUE" || $index["columns"] != $return[""]["columns"] || $index["descs"] != $return[""]["descs"] || !preg_match("~^sqlite_~", $name)) {
+				$return[$name] = $index;
 			}
 		}
 		return $return;
@@ -422,7 +426,12 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		if (!check_sqlite_name($db)) {
 			return false;
 		}
-		$link = new Min_SQLite($db); //! exception handler
+		try {
+			$link = new Min_SQLite($db);
+		} catch (Exception $ex) {
+			$connection->error = $ex->getMessage();
+			return false;
+		}
 		$link->query('PRAGMA encoding = "UTF-8"');
 		$link->query('CREATE TABLE adminer (i)'); // otherwise creates empty file
 		$link->query('DROP TABLE adminer');
@@ -492,7 +501,6 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 
 	function recreate_table($table, $name, $fields, $originals, $foreign, $indexes = array()) {
-		queries("BEGIN");
 		if ($table != "") {
 			if (!$fields) {
 				foreach (fields($table) as $key => $field) {
@@ -501,11 +509,10 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 				}
 			}
 			$primary_key = false;
-			foreach ($fields as $key => $field) {
+			foreach ($fields as $field) {
 				if ($field[6]) {
 					$primary_key = true;
 				}
-				$fields[$key] = "  " . implode($field);
 			}
 			$drop_indexes = array();
 			foreach ($indexes as $key => $val) {
@@ -522,7 +529,6 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 					}
 					$columns[] = $originals[$column] . ($index["descs"][$key] ? " DESC" : "");
 				}
-				$columns = "(" . implode(", ", $columns) . ")";
 				if (!$drop_indexes[$key_name]) {
 					if ($index["type"] != "PRIMARY" || !$primary_key) {
 						$indexes[] = array($index["type"], $key_name, $columns);
@@ -532,7 +538,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			foreach ($indexes as $key => $val) {
 				if ($val[0] == "PRIMARY") {
 					unset($indexes[$key]);
-					$foreign[] = "  PRIMARY KEY $val[2]";
+					$foreign[] = "  PRIMARY KEY (" . implode(", ", $val[2]) . ")";
 				}
 			}
 			foreach (foreign_keys($table) as $key_name => $foreign_key) {
@@ -546,6 +552,10 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 					$foreign[] = " " . format_foreign_key($foreign_key);
 				}
 			}
+			queries("BEGIN");
+		}
+		foreach ($fields as $key => $field) {
+			$fields[$key] = "  " . implode($field);
 		}
 		$fields = array_merge($fields, array_filter($foreign));
 		if (!queries("CREATE TABLE " . table($table != "" ? "adminer_$name" : $name) . " (\n" . implode(",\n", $fields) . "\n)")) {
@@ -595,7 +605,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		foreach (array_reverse($alter) as $val) {
 			if (!queries($val[2] == "DROP"
 				? "DROP INDEX " . idf_escape($val[1])
-				: index_sql($table, $val[0], $val[1], $val[2])
+				: index_sql($table, $val[0], $val[1], "(" . implode(", ", $val[2]) . ")")
 			)) {
 				return false;
 			}
@@ -624,14 +634,28 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		if ($name == "") {
 			return array("Statement" => "BEGIN\n\t;\nEND");
 		}
-		preg_match('~^CREATE\\s+TRIGGER\\s*(?:[^`"\\s]+|`[^`]*`|"[^"]*")+\\s*([a-z]+)\\s+([a-z]+)\\s+ON\\s*(?:[^`"\\s]+|`[^`]*`|"[^"]*")+\\s*(?:FOR\\s*EACH\\s*ROW\\s)?(.*)~is', $connection->result("SELECT sql FROM sqlite_master WHERE name = " . q($name)), $match);
-		return array("Timing" => strtoupper($match[1]), "Event" => strtoupper($match[2]), "Trigger" => $name, "Statement" => $match[3]);
+		$idf = '(?:[^`"\\s]+|`[^`]*`|"[^"]*")+';
+		$trigger_options = trigger_options();
+		preg_match(
+			"~^CREATE\\s+TRIGGER\\s*$idf\\s*(" . implode("|", $trigger_options["Timing"]) . ")\\s+([a-z]+)(?:\\s+OF\\s+($idf))?\\s+ON\\s*$idf\\s*(?:FOR\\s+EACH\\s+ROW\\s)?(.*)~is",
+			$connection->result("SELECT sql FROM sqlite_master WHERE type = 'trigger' AND name = " . q($name)),
+			$match
+		);
+		$of = $match[3];
+		return array(
+			"Timing" => strtoupper($match[1]),
+			"Event" => strtoupper($match[2]) . ($of ? " OF" : ""),
+			"Of" => ($of[0] == '`' || $of[0] == '"' ? idf_unescape($of) : $of),
+			"Trigger" => $name,
+			"Statement" => $match[4],
+		);
 	}
 
 	function triggers($table) {
 		$return = array();
+		$trigger_options = trigger_options();
 		foreach (get_rows("SELECT * FROM sqlite_master WHERE type = 'trigger' AND tbl_name = " . q($table)) as $row) {
-			preg_match('~^CREATE\\s+TRIGGER\\s*(?:[^`"\\s]+|`[^`]*`|"[^"]*")+\\s*([a-z]+)\\s*([a-z]+)~i', $row["sql"], $match);
+			preg_match('~^CREATE\\s+TRIGGER\\s*(?:[^`"\\s]+|`[^`]*`|"[^"]*")+\\s*(' . implode("|", $trigger_options["Timing"]) . ')\\s*(.*)\\s+ON\\b~iU', $row["sql"], $match);
 			$return[$row["name"]] = array($match[1], $match[2]);
 		}
 		return $return;
@@ -640,6 +664,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	function trigger_options() {
 		return array(
 			"Timing" => array("BEFORE", "AFTER", "INSTEAD OF"),
+			"Event" => array("INSERT", "UPDATE", "UPDATE OF", "DELETE"),
 			"Type" => array("FOR EACH ROW"),
 		);
 	}
@@ -737,7 +762,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 
 	function support($feature) {
-		return preg_match('~^(database|table|columns|sql|indexes|view|trigger|variables|status|dump|move_col|drop_col)$~', $feature);
+		return preg_match('~^(columns|database|drop_col|dump|indexes|move_col|sql|status|table|trigger|variables|view|view_trigger)$~', $feature);
 	}
 
 	$jush = "sqlite";

@@ -59,14 +59,6 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 	}
 }
 
-$table_name = $adminer->tableName(table_status1($TABLE, true));
-page_header(
-	($update ? lang('Edit') : lang('Insert')),
-	$error,
-	array("select" => array($TABLE, $table_name)),
-	$table_name
-);
-
 $row = null;
 if ($_POST["save"]) {
 	$row = (array) $_POST["fields"];
@@ -89,8 +81,11 @@ if ($_POST["save"]) {
 		$select = array("*");
 	}
 	if ($select) {
-		$result = $driver->select($TABLE, $select, array($where), $select, array(), (isset($_GET["select"]) ? 2 : 1), 0);
+		$result = $driver->select($TABLE, $select, array($where), $select, array(), (isset($_GET["select"]) ? 2 : 1));
 		$row = $result->fetch_assoc();
+		if (!$row) { // MySQLi returns null
+			$row = false;
+		}
 		if (isset($_GET["select"]) && (!$row || $result->fetch_assoc())) { // $result->num_rows != 1 isn't available in all drivers
 			$row = null;
 		}
@@ -99,9 +94,10 @@ if ($_POST["save"]) {
 
 if (!support("table") && !$fields) {
 	if (!$where) { // insert
-		$row = reset(get_rows("SELECT * FROM " . table($TABLE) . " LIMIT 1"));
+		$result = $driver->select($TABLE, array("*"), $where, array("*"));
+		$row = ($result ? $result->fetch_assoc() : false);
 		if (!$row) {
-			$row = array("itemName()" => "");
+			$row = array($driver->primary => "");
 		}
 	}
 	if ($row) {
@@ -109,87 +105,9 @@ if (!support("table") && !$fields) {
 			if (!$where) {
 				$row[$key] = null;
 			}
-			$fields[$key] = array("field" => $key, "null" => ($key != "itemName()"), "auto_increment" => ($key == "itemName()"));
+			$fields[$key] = array("field" => $key, "null" => ($key != $driver->primary), "auto_increment" => ($key == $driver->primary));
 		}
 	}
 }
 
-if ($row === false) {
-	echo "<p class='error'>" . lang('No rows.') . "\n";
-}
-?>
-
-<div id="message"></div>
-
-<form action="" method="post" enctype="multipart/form-data" id="form">
-<?php
-if (!$fields) {
-	echo "<p class='error'>" . lang('You have no privileges to update this table.') . "\n";
-} else {
-	echo "<table cellspacing='0' onkeydown='return editingKeydown(event);'>\n";
-
-	foreach ($fields as $name => $field) {
-		echo "<tr><th>" . $adminer->fieldName($field);
-		$default = $_GET["set"][bracket_escape($name)];
-		if ($default === null) {
-			$default = $field["default"];
-			if ($field["type"] == "bit" && preg_match("~^b'([01]*)'\$~", $default, $regs)) {
-				$default = $regs[1];
-			}
-		}
-		$value = ($row !== null
-			? ($row[$name] != "" && $jush == "sql" && preg_match("~enum|set~", $field["type"])
-				? (is_array($row[$name]) ? array_sum($row[$name]) : +$row[$name])
-				: $row[$name]
-			)
-			: (!$update && $field["auto_increment"]
-				? ""
-				: (isset($_GET["select"]) ? false : $default)
-			)
-		);
-		if (!$_POST["save"] && is_string($value)) {
-			$value = $adminer->editVal($value, $field);
-		}
-		$function = ($_POST["save"] ? (string) $_POST["function"][$name] : ($update && $field["on_update"] == "CURRENT_TIMESTAMP" ? "now" : ($value === false ? null : ($value !== null ? '' : 'NULL'))));
-		if (preg_match("~time~", $field["type"]) && $value == "CURRENT_TIMESTAMP") {
-			$value = "";
-			$function = "now";
-		}
-		input($field, $value, $function);
-		echo "\n";
-	}
-
-	if (!support("table")) {
-		echo "<tr>"
-			. "<th><input name='field_keys[]' value='" . h($_POST["field_keys"][0]) . "'>"
-			. "<td class='function'>" . html_select("field_funs[]", $adminer->editFunctions(array()), $_POST["field_funs"][0])
-			. "<td><input name='field_vals[]' value='" . h($_POST["field_vals"][0]) . "'>"
-			. "\n"
-		;
-	}
-
-	echo "</table>\n";
-}
-?>
-<p>
-<?php
-if ($fields) {
-	echo "<input type='submit' value='" . lang('Save') . "'>\n";
-	if (!isset($_GET["select"])) {
-		echo "<input type='submit' name='insert' value='" . ($update
-			? lang('Save and continue edit') . "' onclick='return !ajaxForm(this.form, \"" . lang('Loading') . '", this)'
-			: lang('Save and insert next')
-		) . "' title='Ctrl+Shift+Enter'>\n";
-	}
-}
-echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "'" . confirm() . ">\n"
-	: ($_POST || !$fields ? "" : "<script type='text/javascript'>focus(document.getElementById('form').getElementsByTagName('td')[1].firstChild);</script>\n")
-);
-if (isset($_GET["select"])) {
-	hidden_fields(array("check" => (array) $_POST["check"], "clone" => $_POST["clone"], "all" => $_POST["all"]));
-}
-?>
-<input type="hidden" name="referer" value="<?php echo h(isset($_POST["referer"]) ? $_POST["referer"] : $_SERVER["HTTP_REFERER"]); ?>">
-<input type="hidden" name="save" value="1">
-<input type="hidden" name="token" value="<?php echo $token; ?>">
-</form>
+edit_form($TABLE, $fields, $row, $update);

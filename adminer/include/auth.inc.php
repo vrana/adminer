@@ -1,10 +1,11 @@
 <?php
 $connection = '';
 
-$token = $_SESSION["token"];
-if (!$_SESSION["token"]) {
+$has_token = $_SESSION["token"];
+if (!$has_token) {
 	$_SESSION["token"] = rand(1, 1e6); // defense against cross-site request forgery
 }
+$token = get_token(); ///< @var string CSRF protection
 
 $permanent = array();
 if ($_COOKIE["adminer_permanent"]) {
@@ -14,33 +15,72 @@ if ($_COOKIE["adminer_permanent"]) {
 	}
 }
 
+function add_invalid_login() {
+	global $adminer;
+	$filename = get_temp_dir() . "/adminer.invalid";
+	$fp = @fopen($filename, "r+"); // @ - may not exist
+	if (!$fp) { // c+ is available since PHP 5.2.6
+		$fp = @fopen($filename, "w"); // @ - may not be writable
+		if (!$fp) {
+			return;
+		}
+	}
+	flock($fp, LOCK_EX);
+	$invalids = unserialize(stream_get_contents($fp));
+	$time = time();
+	if ($invalids) {
+		foreach ($invalids as $ip => $val) {
+			if ($val[0] < $time) {
+				unset($invalids[$ip]);
+			}
+		}
+	}
+	$invalid = &$invalids[$adminer->bruteForceKey()];
+	if (!$invalid) {
+		$invalid = array($time + 30*60, 0); // active for 30 minutes
+	}
+	$invalid[1]++;
+	$serialized = serialize($invalids);
+	rewind($fp);
+	fwrite($fp, $serialized);
+	ftruncate($fp, strlen($serialized));
+	flock($fp, LOCK_UN);
+	fclose($fp);
+}
+
 $auth = $_POST["auth"];
 if ($auth) {
+	$invalids = unserialize(@file_get_contents(get_temp_dir() . "/adminer.invalid")); // @ - may not exist
+	$invalid = $invalids[$adminer->bruteForceKey()];
+	$next_attempt = ($invalid[1] > 30 ? $invalid[0] - time() : 0); // allow 30 invalid attempts
+	if ($next_attempt > 0) { //! do the same with permanent login
+		auth_error(lang('Too many unsuccessful logins, try again in %d minute(s).', ceil($next_attempt / 60)));
+	}
 	session_regenerate_id(); // defense against session fixation
-	$driver = $auth["driver"];
+	$vendor = $auth["driver"];
 	$server = $auth["server"];
 	$username = $auth["username"];
-	$password = $auth["password"];
+	$password = (string) $auth["password"];
 	$db = $auth["db"];
-	set_password($driver, $server, $username, $password);
-	$_SESSION["db"][$driver][$server][$username][$db] = true;
-	if ($permanent) {
-		$key = base64_encode($driver) . "-" . base64_encode($server) . "-" . base64_encode($username) . "-" . base64_encode($db);
+	set_password($vendor, $server, $username, $password);
+	$_SESSION["db"][$vendor][$server][$username][$db] = true;
+	if ($auth["permanent"]) {
+		$key = base64_encode($vendor) . "-" . base64_encode($server) . "-" . base64_encode($username) . "-" . base64_encode($db);
 		$private = $adminer->permanentLogin(true);
 		$permanent[$key] = "$key:" . base64_encode($private ? encrypt_string($password, $private) : "");
 		cookie("adminer_permanent", implode(" ", $permanent));
 	}
 	if (count($_POST) == 1 // 1 - auth
-		|| DRIVER != $driver
+		|| DRIVER != $vendor
 		|| SERVER != $server
 		|| $_GET["username"] !== $username // "0" == "00"
 		|| DB != $db
 	) {
-		redirect(auth_url($driver, $server, $username, $db));
+		redirect(auth_url($vendor, $server, $username, $db));
 	}
 	
 } elseif ($_POST["logout"]) {
-	if ($token && $_POST["token"] != $token) {
+	if ($has_token && !verify_token()) {
 		page_header(lang('Logout'), lang('Invalid CSRF token. Send the form again.'));
 		page_footer("db");
 		exit;
@@ -74,19 +114,18 @@ function unset_permanent() {
 	cookie("adminer_permanent", implode(" ", $permanent));
 }
 
-function auth_error($exception = null) {
-	global $connection, $adminer, $token;
+function auth_error($error) {
+	global $adminer, $has_token;
 	$session_name = session_name();
-	$error = "";
 	if (!$_COOKIE[$session_name] && $_GET[$session_name] && ini_bool("session.use_only_cookies")) {
 		$error = lang('Session support must be enabled.');
 	} elseif (isset($_GET["username"])) {
-		if (($_COOKIE[$session_name] || $_GET[$session_name]) && !$token) {
+		if (($_COOKIE[$session_name] || $_GET[$session_name]) && !$has_token) {
 			$error = lang('Session expired, please login again.');
 		} else {
+			add_invalid_login();
 			$password = get_password();
 			if ($password !== null) {
-				$error = h($exception ? $exception->getMessage() : (is_string($connection) ? $connection : lang('Invalid credentials.')));
 				if ($password === false) {
 					$error .= '<br>' . lang('Master password expired. <a href="http://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to make it permanent.', '<code>permanentLogin()</code>');
 				}
@@ -105,24 +144,7 @@ function auth_error($exception = null) {
 	echo "</div>\n";
 	echo "</form>\n";
 	page_footer("auth");
-}
-
-function set_password($vendor, $server, $username, $password) {
-	$_SESSION["pwds"][$vendor][$server][$username] = ($_COOKIE["adminer_key"]
-		? array(encrypt_string($password, $_COOKIE["adminer_key"]))
-		: $password
-	);
-}
-
-function get_password() {
-	$return = get_session("pwds");
-	if (is_array($return)) {
-		$return = ($_COOKIE["adminer_key"]
-			? decrypt_string($return[0], $_COOKIE["adminer_key"])
-			: false
-		);
-	}
-	return $return;
+	exit;
 }
 
 if (isset($_GET["username"])) {
@@ -136,21 +158,19 @@ if (isset($_GET["username"])) {
 	$connection = connect();
 }
 
-if (is_string($connection) || !$adminer->login($_GET["username"], get_password())) {
-	auth_error();
-	exit;
-}
-
 $driver = new Min_Driver($connection);
 
-$token = $_SESSION["token"]; ///< @var string CSRF protection
+if (!is_object($connection) || !$adminer->login($_GET["username"], get_password())) {
+	auth_error((is_string($connection) ? $connection : lang('Invalid credentials.')));
+}
+
 if ($auth && $_POST["token"]) {
 	$_POST["token"] = $token; // reset token after explicit login
 }
 
 $error = ''; ///< @var string
 if ($_POST) {
-	if ($_POST["token"] != $token) {
+	if (!verify_token()) {
 		$ini = "max_input_vars";
 		$max_vars = ini_get($ini);
 		if (extension_loaded("suhosin")) {

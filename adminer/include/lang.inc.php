@@ -19,8 +19,10 @@ $langs = array(
 	'ko' => '한국어', // dalli - skcha67@gmail.com
 	'lt' => 'Lietuvių', // Paulius Leščinskas - http://www.lescinskas.lt
 	'nl' => 'Nederlands', // Maarten Balliauw - http://blog.maartenballiauw.be
+	'no' => 'Norsk', // Iver Odin Kvello, mupublishing.com
 	'pl' => 'Polski', // Radosław Kowalewski - http://srsbiz.pl/
-	'pt' => 'Português', // Gian Live - gian@live.com, Davi Alexandre davi@davialexandre.com.br
+	'pt' => 'Português', // André Dias
+	'pt-br' => 'Português (Brazil)', // Gian Live - gian@live.com, Davi Alexandre davi@davialexandre.com.br, RobertoPC - http://www.robertopc.com.br
 	'ro' => 'Limba Română', // .nick .messing - dot.nick.dot.messing@gmail.com
 	'ru' => 'Русский язык', // Maksim Izmaylov
 	'sk' => 'Slovenčina', // Ivan Suchy - http://www.ivansuchy.com, Juraj Krivda - http://www.jstudio.cz
@@ -30,7 +32,8 @@ $langs = array(
 	'th' => 'ภาษาไทย', // Panya  Saraphi, elect.tu@gmail.com - http://www.opencart2u.com/
 	'tr' => 'Türkçe', // Bilgehan Korkmaz - turktron.com
 	'uk' => 'Українська', // Valerii Kryzhov
-	'zh' => '简体中文', // Mr. Lodar
+	'vi' => 'Tiếng Việt', // Giang Manh @ manhgd google mail
+	'zh' => '简体中文', // Mr. Lodar, vea - urn2.net - vea.urn2@gmail.com
 	'zh-tw' => '繁體中文', // http://tzangms.com
 );
 
@@ -66,7 +69,7 @@ function lang($idf, $number = null) {
 	array_shift($args);
 	$format = str_replace("%d", "%s", $translation);
 	if ($format != $translation) {
-		$args[0] = number_format($number, 0, ".", lang(','));
+		$args[0] = format_number($number);
 	}
 	return vsprintf($format, $args);
 }
@@ -76,11 +79,11 @@ function switch_lang() {
 	echo "<form action='' method='post'>\n<div id='lang'>";
 	echo lang('Language') . ": " . html_select("lang", $langs, $LANG, "this.form.submit();");
 	echo " <input type='submit' value='" . lang('Use') . "' class='hidden'>\n";
-	echo "<input type='hidden' name='token' value='$_SESSION[token]'>\n"; // $token may be empty in auth.inc.php
+	echo "<input type='hidden' name='token' value='" . get_token() . "'>\n"; // $token may be empty in auth.inc.php
 	echo "</div>\n</form>\n";
 }
 
-if (isset($_POST["lang"]) && $_SESSION["token"] == $_POST["token"]) { // $token and $error not yet available
+if (isset($_POST["lang"]) && verify_token()) { // $error not yet available
 	cookie("adminer_lang", $_POST["lang"]);
 	$_SESSION["lang"] = $_POST["lang"]; // cookies may be disabled
 	$_SESSION["translations"] = array(); // used in compiled version

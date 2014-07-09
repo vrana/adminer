@@ -11,6 +11,7 @@ $translations = array(
 	'Logged as: %s' => 'xx',
 	'Logout successful.' => 'xx',
 	'Invalid credentials.' => 'xx',
+	'Too many unsuccessful logins, try again in %d minute(s).' => array('xx', 'xx'),
 	'Master password expired. <a href="http://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to make it permanent.' => 'xx',
 	'Language' => 'xx',
 	'Invalid CSRF token. Send the form again.' => 'xx',
@@ -68,7 +69,6 @@ $translations = array(
 	'You can upload a big SQL file via FTP and import it from server.' => 'xx',
 	
 	'Export' => 'xx',
-	'Dump' => 'xx',
 	'Output' => 'xx',
 	'open' => 'xx',
 	'save' => 'xx',
@@ -94,7 +94,8 @@ $translations = array(
 	'Permanent link' => 'xx',
 	
 	// thousands separator - must contain single byte
-	',' => 'xx',
+	',' => 'x',
+	'0123456789' => 'xxxxxxxxxx',
 	'Engine' => 'xx',
 	'Collation' => 'xx',
 	'Data Length' => 'xx',
@@ -162,9 +163,12 @@ $translations = array(
 	'Auto Increment' => 'xx',
 	'Options' => 'xx',
 	'Comment' => 'xx',
+	'Default value' => 'xx',
 	'Default values' => 'xx',
 	'Drop' => 'xx',
 	'Are you sure?' => 'xx',
+	'Size' => 'xx',
+	'Compute' => 'xx',
 	'Move up' => 'xx',
 	'Move down' => 'xx',
 	'Remove' => 'xx',
@@ -307,7 +311,6 @@ $translations = array(
 	'Schema has been dropped.' => 'xx',
 	'Schema has been created.' => 'xx',
 	'Schema has been altered.' => 'xx',
-	'schema' => 'xx',
 	'Schema' => 'xx',
 	'Invalid schema.' => 'xx',
 	
