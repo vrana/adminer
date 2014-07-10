@@ -2,6 +2,7 @@ Adminer 4.2.6-dev:
 Add accessibility labels
 Make maxlength in edit fields a soft limit
 Add Cache-Control: immutable to static files
+PostgreSQL: Export
 PostgreSQL: Don't treat partial indexes as unique
 MS SQL: Support pdo_dblib
 
