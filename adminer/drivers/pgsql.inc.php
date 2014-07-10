@@ -244,10 +244,10 @@ ORDER BY 1";
 
 	function table_status($name = "") {
 		$return = array();
-		foreach (get_rows("SELECT relname AS \"Name\", CASE relkind WHEN 'r' THEN 'table' WHEN 'mv' THEN 'materialized view' WHEN 'f' THEN 'foreign table' ELSE 'view' END AS \"Engine\", pg_relation_size(oid) AS \"Data_length\", pg_total_relation_size(oid) - pg_relation_size(oid) AS \"Index_length\", obj_description(oid, 'pg_class') AS \"Comment\", relhasoids::int AS \"Oid\", reltuples as \"Rows\"
-FROM pg_class
-WHERE relkind IN ('r','v','mv','f')
-AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema())
+		foreach (get_rows("SELECT c.relname AS \"Name\", CASE c.relkind WHEN 'r' THEN 'table' ELSE 'view' END AS \"Engine\", pg_relation_size(c.oid) AS \"Data_length\", pg_total_relation_size(c.oid) - pg_relation_size(c.oid) AS \"Index_length\", obj_description(c.oid, 'pg_class') AS \"Comment\", c.relhasoids::int AS \"Oid\", c.reltuples as \"Rows\", n.nspname
+FROM pg_class c
+JOIN pg_namespace n ON(n.nspname = current_schema() AND n.oid = c.relnamespace)
+WHERE relkind IN ('r','v')
 " . ($name != "" ? "AND relname = " . q($name) : "ORDER BY relname")
 		) as $row) { //! Index_length, Auto_increment
 			$return[$row["Name"]] = $row;
@@ -330,7 +330,7 @@ ORDER BY a.attnum"
 	function foreign_keys($table) {
 		global $on_actions;
 		$return = array();
-		foreach (get_rows("SELECT conname, pg_get_constraintdef(oid) AS definition
+		foreach (get_rows("SELECT conname, condeferrable::int AS deferrable, pg_get_constraintdef(oid) AS definition
 FROM pg_constraint
 WHERE conrelid = (SELECT pc.oid FROM pg_class AS pc INNER JOIN pg_namespace AS pn ON (pn.oid = pc.relnamespace) WHERE pc.relname = " . q($table) . " AND pn.nspname = current_schema())
 AND contype = 'f'::char
@@ -506,18 +506,21 @@ ORDER BY conkey, conname") as $row) {
 		return true;
 	}
 
-	function trigger($name) {
+	function trigger($name, $table = null) {
 		if ($name == "") {
 			return array("Statement" => "EXECUTE PROCEDURE ()");
 		}
-		$rows = get_rows('SELECT trigger_name AS "Trigger", condition_timing AS "Timing", event_manipulation AS "Event", \'FOR EACH \' || action_orientation AS "Type", action_statement AS "Statement" FROM information_schema.triggers WHERE event_object_table = ' . q($_GET["trigger"]) . ' AND trigger_name = ' . q($name));
+		if(is_null($table)) {
+			$table = $_GET['trigger'];
+		}
+		$rows = get_rows('SELECT t.trigger_name AS "Trigger", t.action_timing AS "Timing", (SELECT STRING_AGG(event_manipulation, \' OR \') FROM information_schema.triggers WHERE event_object_table = t.event_object_table AND trigger_name = t.trigger_name ) AS "Events", t.event_manipulation AS "Event", \'FOR EACH \' || t.action_orientation AS "Type", t.action_statement AS "Statement" FROM information_schema.triggers t WHERE t.event_object_table = ' . q($table) . ' AND t.trigger_name = ' . q($name));
 		return reset($rows);
 	}
 
 	function triggers($table) {
 		$return = array();
 		foreach (get_rows("SELECT * FROM information_schema.triggers WHERE event_object_table = " . q($table)) as $row) {
-			$return[$row["trigger_name"]] = array($row["condition_timing"], $row["event_manipulation"]);
+			$return[$row["trigger_name"]] = array($row["action_timing"], $row["event_manipulation"]);
 		}
 		return $return;
 	}
@@ -606,6 +609,106 @@ AND typelem = 0"
 		return $return;
 	}
 
+	/** Get SQL command to create table
+	* @param string
+	* @param bool
+	* @return string
+	*/
+	function create_sql($table, $auto_increment) {
+		global $connection;
+		$return = '';
+		$return_parts = array();
+		$sequences = array();
+
+		$status = table_status($table);
+		$fields = fields($table);
+		$indexes = indexes($table);
+		ksort($indexes);
+		$fkeys = foreign_keys($table);
+		ksort($fkeys);
+		$triggers = triggers($table);
+
+		if(!$status || empty($fields)) return false;
+
+		$return = "CREATE TABLE ".idf_escape($status['nspname']).".".idf_escape($status['Name'])." (\n    ";
+
+		// fields' definitions
+		foreach($fields as $field_name => $field) {
+			$part = idf_escape($field['field']).' '.$field['full_type'];
+			if(!is_null($field['default'])) $part .= " DEFAULT {$field['default']}";
+			if($field['attnotnull']) $part .= " NOT NULL";
+			$return_parts[] = $part;
+
+			// sequences for fields
+			if(preg_match('~nextval\(\'([^\']+)\'\)~', $field['default'], $matches)) {
+			$sequence_name = $matches[1];
+				$sq = reset(get_rows("select * from {$sequence_name}"));
+				$sequences[] = "CREATE SEQUENCE {$sequence_name} INCREMENT {$sq['increment_by']} MINVALUE {$sq['min_value']} MAXVALUE {$sq['max_value']} START ".($auto_increment ? $sq['last_value'] : 1)." CACHE {$sq['cache_value']};";
+			}
+		}
+
+		// adding sequences before table definition
+		if(!empty($sequences)) $return = implode("\n\n", $sequences)."\n\n{$return}";
+
+		// primary + unique keys
+		foreach($indexes as $index_name => $index) {
+			switch($index['type']) {
+				case 'INDEX': continue; break;
+				case 'UNIQUE': $return_parts[] = "CONSTRAINT ".idf_escape($index_name)." UNIQUE (".implode(', ', array_map('idf_escape', $index['columns'])).")"; break;
+				case 'PRIMARY': $return_parts[] = "CONSTRAINT ".idf_escape($index_name)." PRIMARY KEY (".implode(', ', array_map('idf_escape', $index['columns'])).")"; break;
+			}
+		}
+
+		// foreign keys
+		foreach($fkeys as $fkey_name => $fkey) {
+			$return_parts[] = "CONSTRAINT ".idf_escape($fkey_name)." ".$fkey['definition']." ".($fkey['deferrable'] ? 'DEFERRABLE' : 'NOT DEFERRABLE');
+		}
+
+		$return = $return.implode(",\n    ", $return_parts)."\n) WITH (oids = ".($status['Oid'] ? 'true' : 'false').");";
+
+		// "basic" indexes after table definition
+		foreach($indexes as $index_name => $index) {
+			if($index['type'] != 'INDEX') continue;
+			$return .= "\n\nCREATE INDEX ".idf_escape($index_name)." ON ".idf_escape($status['nspname']).".".idf_escape($status['Name'])." USING btree (".implode(', ', array_map('idf_escape', $index['columns'])).");";
+		}
+
+		// coments for table & fields
+		if($status['Comment']) {
+			$return .= "\n\nCOMMENT ON TABLE ".idf_escape($status['nspname']).".".idf_escape($status['Name'])." IS ".q($status['Comment']).";";
+		}
+
+		foreach($fields as $field_name => $field) {
+			if(empty($field['comment'])) continue;
+			$return .= "\n\nCOMMENT ON COLUMN ".idf_escape($status['nspname']).".".idf_escape($status['Name']).".".idf_escape($field_name)." IS ".q($field['comment']).";";
+		}
+
+		// triggers
+		foreach($triggers as $trg_id => $trg) {
+			$trigger = trigger($trg_id, $status['Name']);
+			$return .= "\n\nCREATE TRIGGER ".idf_escape($trigger['Trigger'])." ".$trigger['Timing']." ".$trigger['Events']." ON ".idf_escape($status["nspname"]).".".idf_escape($status['Name'])." ".$trigger['Type']." ".$trigger['Statement'].";";
+		}
+
+		return rtrim($return, ';');
+	}
+
+	/** Get SQL commands to create triggers
+	* @param string
+	* @param string
+	* @return string
+	*/
+	//@TODO
+	function trigger_sql($table, $style) {
+		$return = "";
+		//foreach (get_rows("SHOW TRIGGERS LIKE " . q(addcslashes($table, "%_\\")), null, "-- ") as $row) {
+		//    $return .= "\n" . ($style == 'CREATE+ALTER' ? "DROP TRIGGER IF EXISTS " . idf_escape($row["Trigger"]) . ";;\n" : "")
+		//    . "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . table($row["Table"]) . " FOR EACH ROW\n$row[Statement];;\n";
+		//}
+		//return $return;
+
+		return false;
+	}
+
+
 	function use_sql($database) {
 		return "\connect " . idf_escape($database);
 	}
@@ -631,7 +734,7 @@ AND typelem = 0"
 
 	function support($feature) {
 		global $connection;
-		return preg_match('~^(database|table|columns|sql|indexes|comment|view|' . ($connection->server_info >= 9.3 ? 'materializedview|' : '') . 'scheme|processlist|sequence|trigger|type|variables|drop_col)$~', $feature); //! routine|
+		return preg_match('~^(database|table|columns|sql|indexes|comment|view|' . ($connection->server_info >= 9.3 ? 'materializedview|' : '') . 'scheme|processlist|sequence|trigger|type|variables|drop_col|dump)$~', $feature); //! routine|
 	}
 
 	$jush = "pgsql";
