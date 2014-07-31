@@ -16,6 +16,18 @@ if (!defined("DRIVER")) {
 			function connect($server, $username, $password) {
 				mysqli_report(MYSQLI_REPORT_OFF); // stays between requests, not required since PHP 5.3.4
 				list($host, $port) = explode(":", $server, 2); // part after : is used for port or socket
+				if (defined('HHVM_VERSION')) {
+					$return = @$this->real_connect(
+						($server != "" ? $host : null),
+						($server . $username != "" ? $username : null),
+						($server . $username . $password != "" ? $password : null),
+						null,
+						(is_numeric($port) ? $port : null),
+						(!is_numeric($port) ? $port : null)
+
+					return $return;
+				}
+
 				$return = @$this->real_connect(
 					($server != "" ? $host : ini_get("mysqli.default_host")),
 					($server . $username != "" ? $username : ini_get("mysqli.default_user")),
