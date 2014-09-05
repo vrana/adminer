@@ -218,7 +218,7 @@ if (isset($_GET["elastic"])) {
 		global $connection;
 		$return = $connection->query('_mapping');
 		if ($return) {
-			$return = array_fill_keys(array_keys(reset($return)), 'table');
+			$return = array_fill_keys(array_keys($return[$connection->_db]["mappings"]), 'table');
 		}
 		return $return;
 	}
