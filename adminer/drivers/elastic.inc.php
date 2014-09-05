@@ -280,13 +280,15 @@ if (isset($_GET["elastic"])) {
 			if (!$mappings) {
 				$mappings = $result[$connection->_db]['mappings'][$table]['properties'];
 			}
-			foreach ($mappings as $name => $field) {
-				$return[$name] = array(
-					"field" => $name,
-					"full_type" => $field["type"],
-					"type" => $field["type"],
-					"privileges" => array("insert" => 1, "select" => 1, "update" => 1),
-				);
+			if ($mappings) {
+				foreach ($mappings as $name => $field) {
+					$return[$name] = array(
+						"field" => $name,
+						"full_type" => $field["type"],
+						"type" => $field["type"],
+						"privileges" => array("insert" => 1, "select" => 1, "update" => 1),
+					);
+				}
 			}
 		}
 		return $return;
