@@ -204,6 +204,10 @@ if (isset($_GET["elastic"])) {
 
 	function db_collation($db, $collations) {
 	}
+	
+	function engines() {
+		return array();
+	}
 
 	function count_tables($databases) {
 		global $connection;
