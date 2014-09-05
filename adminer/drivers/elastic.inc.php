@@ -276,7 +276,7 @@ if (isset($_GET["elastic"])) {
 			if (!$mappings) {
 				$mappings = $result[$connection->_db]['mappings'][$table]['properties'];
 			}
-			foreach ($mappings as $name => $field) {
+			if ($mappings) foreach ($mappings as $name => $field) {
 				$return[$name] = array(
 					"field" => $name,
 					"full_type" => $field["type"],
