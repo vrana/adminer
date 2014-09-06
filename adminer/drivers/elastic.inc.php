@@ -128,7 +128,11 @@ if (isset($_GET["elastic"])) {
 			}
 			foreach ($where as $val) {
 				list($col,$op,$val) = explode(" ",$val,3);
-				if ("$col$val" != "") {
+				if ($col == "_id")
+				{
+					$data["query"]["ids"]["values"][] = $val;
+				}
+				else if ("$col$val" != "") {
 					$term = array("term" => array(($col != "" ? $col : "_all") => $val));
 					if ($op == "=") {
 						$data["query"]["filtered"]["filter"]["and"][] = $term;
@@ -137,7 +141,7 @@ if (isset($_GET["elastic"])) {
 					}
 				}
 			}
-			if ($data["query"] && !$data["query"]["filtered"]["query"]) {
+			if ($data["query"] && !$data["query"]["filtered"]["query"] && !$data["query"]["ids"]) {
 				$data["query"]["filtered"]["query"] = array("match_all" => array());
 			}
 			$start = microtime(true);
@@ -151,6 +155,10 @@ if (isset($_GET["elastic"])) {
 			$return = array();
 			foreach ($search['hits']['hits'] as $hit) {
 				$row = array();
+				if ($select == array("*"))
+				{
+				  $row["_id"] = $hit["_id"];
+				}
 				$fields = $hit['_source'];
 				if ($select != array("*")) {
 					$fields = array();
