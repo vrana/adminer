@@ -292,6 +292,10 @@ if (isset($_GET["elastic"])) {
 					"type" => $field["type"],
 					"privileges" => array("insert" => 1, "select" => 1, "update" => 1),
 				);
+				if ($field["properties"]) { // only leaf fields can be edited
+					unset( $return[$name]["privileges"]["insert"] );
+					unset( $return[$name]["privileges"]["update"] );
+				}
 			}
 		}
 		return $return;
