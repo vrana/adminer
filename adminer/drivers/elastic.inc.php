@@ -126,10 +126,11 @@ if (isset($_GET["elastic"])) {
 					$data["from"] = ($page * $limit);
 				}
 			}
-			foreach ((array) $_GET["where"] as $val) {
-				if ("$val[col]$val[val]" != "") {
-					$term = array("match" => array(($val["col"] != "" ? $val["col"] : "_all") => $val["val"]));
-					if ($val["op"] == "=") {
+			foreach ($where as $val) {
+				list($col,$op,$val) = explode(" ",$val,3);
+				if ("$col$val" != "") {
+					$term = array("term" => array(($col != "" ? $col : "_all") => $val));
+					if ($op == "=") {
 						$data["query"]["filtered"]["filter"]["and"][] = $term;
 					} else {
 						$data["query"]["filtered"]["query"]["bool"]["must"][] = $term;
