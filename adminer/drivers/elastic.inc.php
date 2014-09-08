@@ -31,7 +31,7 @@ if (isset($_GET["elastic"])) {
 					return false;
 				}
 				$return = json_decode($file, true);
-				if (!$return) {
+				if ($return === NULL) {
 					$this->errno = json_last_error();
 					if (function_exists('json_last_error_msg')) {
 						$this->error = json_last_error_msg();
@@ -204,6 +204,11 @@ if (isset($_GET["elastic"])) {
 
 	function db_collation($db, $collations) {
 	}
+	
+	function engines() {
+		return array();
+	}
+	
 
 	function count_tables($databases) {
 		global $connection;
