@@ -4,6 +4,7 @@ Unlock session in alter database
 Make master key unreadable to others (bug #410)
 Fix edit by long non-utf8 string
 MySQL: Use utf8mb4 if available
+Danish translation
 
 Adminer 4.1.0 (released 2014-04-18)
 Provide size of all databases in the overview
