@@ -126,17 +126,22 @@ if (isset($_GET["elastic"])) {
 					$data["from"] = ($page * $limit);
 				}
 			}
-			foreach ((array) $_GET["where"] as $val) {
-				if ("$val[col]$val[val]" != "") {
-					$term = array("match" => array(($val["col"] != "" ? $val["col"] : "_all") => $val["val"]));
-					if ($val["op"] == "=") {
+			foreach ($where as $val) {
+				list($col,$op,$val) = explode(" ",$val,3);
+				if ($col == "_id")
+				{
+					$data["query"]["ids"]["values"][] = $val;
+				}
+				else if ("$col$val" != "") {
+					$term = array("term" => array(($col != "" ? $col : "_all") => $val));
+					if ($op == "=") {
 						$data["query"]["filtered"]["filter"]["and"][] = $term;
 					} else {
 						$data["query"]["filtered"]["query"]["bool"]["must"][] = $term;
 					}
 				}
 			}
-			if ($data["query"] && !$data["query"]["filtered"]["query"]) {
+			if ($data["query"] && !$data["query"]["filtered"]["query"] && !$data["query"]["ids"]) {
 				$data["query"]["filtered"]["query"] = array("match_all" => array());
 			}
 			$start = microtime(true);
@@ -150,6 +155,10 @@ if (isset($_GET["elastic"])) {
 			$return = array();
 			foreach ($search['hits']['hits'] as $hit) {
 				$row = array();
+				if ($select == array("*"))
+				{
+				  $row["_id"] = $hit["_id"];
+				}
 				$fields = $hit['_source'];
 				if ($select != array("*")) {
 					$fields = array();
@@ -283,6 +292,10 @@ if (isset($_GET["elastic"])) {
 					"type" => $field["type"],
 					"privileges" => array("insert" => 1, "select" => 1, "update" => 1),
 				);
+				if ($field["properties"]) { // only leaf fields can be edited
+					unset( $return[$name]["privileges"]["insert"] );
+					unset( $return[$name]["privileges"]["update"] );
+				}
 			}
 		}
 		return $return;
