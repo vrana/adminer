@@ -158,6 +158,7 @@ if (isset($_GET["elastic"])) {
 					}
 				}
 				foreach ($fields as $key => $val) {
+					if ($data["fields"]) $val = $val[0];
 					$row[$key] = (is_array($val) ? json_encode($val) : $val); //! display JSON and others differently
 				}
 				$return[] = $row;
