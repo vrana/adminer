@@ -194,6 +194,7 @@ if (isset($_GET["elastic"])) {
 		$return = $connection->rootQuery('_aliases');
 		if ($return) {
 			$return = array_keys($return);
+			sort($return);
 		}
 		return $return;
 	}
