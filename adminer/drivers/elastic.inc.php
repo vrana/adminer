@@ -31,7 +31,7 @@ if (isset($_GET["elastic"])) {
 					return false;
 				}
 				$return = json_decode($file, true);
-				if (!$return) {
+				if ($return === NULL) {
 					$this->errno = json_last_error();
 					if (function_exists('json_last_error_msg')) {
 						$this->error = json_last_error_msg();
