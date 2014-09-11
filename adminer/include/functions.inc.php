@@ -78,7 +78,7 @@ function charset($connection) {
 * @return string
 */
 function h($string) {
-	return str_replace("\0", "&#0;", htmlspecialchars($string, ENT_QUOTES));
+	return str_replace("\0", "&#0;", htmlspecialchars($string, ENT_QUOTES, 'utf-8'));
 }
 
 /** Escape for TD

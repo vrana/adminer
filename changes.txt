@@ -3,7 +3,9 @@ Fix reading routine column collations
 Unlock session in alter database
 Make master key unreadable to others (bug #410)
 Fix edit by long non-utf8 string
+Specify encoding for PHP 5.6 with invalid default_charset
 MySQL: Use utf8mb4 if available
+Elasticsearch: Use where in select
 Danish translation
 
 Adminer 4.1.0 (released 2014-04-18)
