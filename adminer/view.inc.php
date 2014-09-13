@@ -7,17 +7,27 @@ if ($_POST && !$error) {
 	$as = " AS\n$row[select]";
 	$location = ME . "table=" . urlencode($name);
 	$message = lang('View has been altered.');
-	
-	if (!$_POST["drop"] && $TABLE == $name && $jush != "sqlite") {
+
+	if (!empty($row["materialized"])) {
+		$relationType = "MATERIALIZED VIEW";
+	} else {
+		$relationType = "VIEW";
+		if ($jush == "pgsql") {
+			$status = table_status($name);
+			$relationType = !$status ? $relationType : strtoupper($status["Engine"]);
+		}
+	}
+
+	if (!$_POST["drop"] && $TABLE == $name && $jush != "sqlite" && $relationType != "MATERIALIZED VIEW") {
 		query_redirect(($jush == "mssql" ? "ALTER" : "CREATE OR REPLACE") . " VIEW " . table($name) . $as, $location, $message);
 	} else {
 		$temp_name = $name . "_adminer_" . uniqid();
 		drop_create(
-			"DROP VIEW " . table($TABLE),
-			"CREATE VIEW " . table($name) . $as,
-			"DROP VIEW " . table($name),
-			"CREATE VIEW " . table($temp_name) . $as,
-			"DROP VIEW " . table($temp_name),
+			"DROP $relationType " . table($TABLE),
+			"CREATE $relationType " . table($name) . $as,
+			"DROP $relationType " . table($name),
+			"CREATE $relationType " . table($temp_name) . $as,
+			"DROP $relationType " . table($temp_name),
 			($_POST["drop"] ? substr(ME, 0, -1) : $location),
 			lang('View has been dropped.'),
 			$message,
@@ -46,4 +56,5 @@ page_header(($TABLE != "" ? lang('Alter view') : lang('Create view')), $error, a
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php if ($_GET["view"] != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo confirm(); ?>><?php } ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
+<?php if (!empty($_GET["materialized"])) { ?> <input name="materialized" type="hidden" value="1" /> <?php } ?>
 </form>
