@@ -285,13 +285,13 @@ function get_password() {
 	return $return;
 }
 
-/** Shortcut for $driver->quote($string)
+/** Shortcut for $connection->quote($string)
 * @param string
 * @return string
 */
 function q($string) {
-	global $driver;
-	return $driver->quote($string);
+	global $connection;
+	return $connection->quote($string);
 }
 
 /** Get list of values from database
@@ -937,7 +937,7 @@ function process_input($field) {
 		return ($field["on_update"] == "CURRENT_TIMESTAMP" ? idf_escape($field["field"]) : false);
 	}
 	if ($function == "NULL") {
-		$value = null;
+		return "NULL";
 	}
 	if ($field["type"] == "set") {
 		return array_sum((array) $value);
