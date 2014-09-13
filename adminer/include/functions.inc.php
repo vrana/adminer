@@ -1137,7 +1137,9 @@ function select_value($val, $link, $field, $text_length) {
 	if ($return !== null) {
 		if ($return === "") { // === - may be int
 			$return = "&nbsp;";
-		} elseif ($text_length != "" && is_shortable($field) && is_utf8($return)) {
+		} elseif (!is_utf8($return)) {
+			$return = "\0"; // htmlspecialchars of binary data returns an empty string
+		} elseif ($text_length != "" && is_shortable($field)) {
 			$return = shorten_utf8($return, max(0, +$text_length)); // usage of LEFT() would reduce traffic but complicate query - expected average speedup: .001 s VS .01 s on local network
 		} else {
 			$return = h($return);
