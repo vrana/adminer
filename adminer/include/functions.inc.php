@@ -1307,7 +1307,6 @@ function edit_form($TABLE, $fields, $row, $update) {
 		echo "<p class='error'>" . lang('No rows.') . "\n";
 	}
 	?>
-<div id="message"></div>
 <form action="" method="post" enctype="multipart/form-data" id="form">
 <?php
 	if (!$fields) {

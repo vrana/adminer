@@ -67,6 +67,7 @@ $translations = array(
 	'Maximum allowed file size is %sB.' => 'Maximální povolená velikost souboru je %sB.',
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Příliš velká POST data. Zmenšete data nebo zvyšte hodnotu konfigurační direktivy %s.',
 	'You can upload a big SQL file via FTP and import it from server.' => 'Velký SQL soubor můžete nahrát pomocí FTP a importovat ho ze serveru.',
+	'You are offline.' => 'Jste offline.',
 	
 	'Export' => 'Export',
 	'Output' => 'Výstup',
