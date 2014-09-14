@@ -186,6 +186,9 @@ function tableClick(event, click) {
 			click = false;
 		}
 		el = el.parentNode;
+		if (!el) { // Ctrl+click on text fields hides the element
+			return;
+		}
 	}
 	el = el.firstChild.firstChild;
 	if (click) {
