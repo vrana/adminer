@@ -280,11 +280,17 @@ AND a.attnum > 0
 ORDER BY a.attnum"
 		) as $row) {
 			//! collation, primary
-			preg_match('~([^([]+)(\((.*)\))?((\[[0-9]*])*)$~', $row["full_type"], $match);
-			list(, $type, $length, $row["length"], $array) = $match;
+			preg_match('~([^([]+)(\((.*)\))?([a-z ]+)?((\[[0-9]*])*)$~', $row["full_type"], $match);
+			list(, $type, $length, $row["length"], $addon, $array) = $match;
 			$row["length"] .= $array;
-			$row["type"] = ($aliases[$type] ? $aliases[$type] : $type);
-			$row["full_type"] = $row["type"] . $length . $array;
+			$check_type = $type.$addon;
+			if(isset($aliases[$check_type])) {
+				$row["type"] = $aliases[$check_type];
+				$row["full_type"] = $row["type"] . $length . $array;
+			} else {
+				$row["type"] = $type;
+				$row["full_type"] = $row["type"] . $length . $addon . $array;
+			}
 			$row["null"] = !$row["attnotnull"];
 			$row["auto_increment"] = preg_match('~^nextval\\(~i', $row["default"]);
 			$row["privileges"] = array("insert" => 1, "select" => 1, "update" => 1);
