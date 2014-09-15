@@ -10,6 +10,7 @@ Report offline and other AJAX errors (bug #419)
 MySQL: Use utf8mb4 if available
 PostgreSQL: Materialized views
 Elasticsearch: Use where in select
+Firebird: Alpha version
 Danish translation
 
 Adminer 4.1.0 (released 2014-04-18)
