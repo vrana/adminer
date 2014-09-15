@@ -114,11 +114,6 @@ if (isset($_GET["firebird"])) {
 	
 	
 	class Min_Driver extends Min_SQL {
-
-		function insert($table, $set) {
-			return ($set ? parent::insert($table, $set) : queries("INSERT INTO " . table($table) . " DEFAULT VALUES"));
-		}
-
 	}
 
 
