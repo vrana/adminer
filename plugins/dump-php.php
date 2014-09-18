@@ -1,30 +1,29 @@
 <?php
 
-/** Dump to JSON format
+/** Dump to PHP format
  *
- * @link    http://www.adminer.org/plugins/#use
  * @author  Martin Zeman (Zemistr), http://www.zemistr.eu/
  * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
  * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
  */
-class AdminerDumpJson {
+class AdminerDumpPhp {
 	var $output = array();
 	var $shutdown_callback = false;
 
 	function dumpFormat() {
-		return array('json' => 'JSON');
+		return array('php' => 'PHP');
 	}
 
 	function dumpHeaders() {
-		if ($_POST["format"] == "json") {
-			header("Content-Type: application/json; charset=utf-8");
+		if ($_POST['format'] == 'php') {
+			header('Content-Type: text/plain; charset=utf-8');
 
-			return "json";
+			return 'php';
 		}
 	}
 
 	function dumpDatabase() {
-		if ($_POST['format'] == 'json') {
+		if ($_POST['format'] == 'php') {
 			if (!$this->shutdown_callback) {
 				$this->shutdown_callback = true;
 				register_shutdown_function(array($this, '_export'));
@@ -35,7 +34,7 @@ class AdminerDumpJson {
 	}
 
 	function dumpTable($table) {
-		if ($_POST['format'] == 'json') {
+		if ($_POST['format'] == 'php') {
 			$this->output[$table] = array();
 
 			return true;
@@ -43,7 +42,7 @@ class AdminerDumpJson {
 	}
 
 	function dumpData($table, $style, $query) {
-		if ($_POST['format'] == 'json') {
+		if ($_POST['format'] == 'php') {
 			$connection = connection();
 			$result = $connection->query($query, 1);
 
@@ -58,6 +57,7 @@ class AdminerDumpJson {
 	}
 
 	function _export() {
-		echo json_encode($this->output, 128);
+		echo "<?php\n";
+		var_export($this->output);
 	}
 }
