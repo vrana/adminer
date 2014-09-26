@@ -66,12 +66,13 @@ if (isset($_GET["mssql"])) {
 				if (!$result) {
 					$result = $this->_result;
 				}
-				if ($result) {
-					if (sqlsrv_field_metadata($result)) {
-						return new Min_Result($result);
-					}
-					$this->affected_rows = sqlsrv_rows_affected($result);
+				if (!$result) {
+					return false;
 				}
+				if (sqlsrv_field_metadata($result)) {
+					return new Min_Result($result);
+				}
+				$this->affected_rows = sqlsrv_rows_affected($result);
 				return true;
 			}
 
