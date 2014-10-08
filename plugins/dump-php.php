@@ -20,19 +20,13 @@ class AdminerDumpPhp {
 		}
 	}
 
-	function dumpDatabase() {
+	function dumpTable($table) {
 		if ($_POST['format'] == 'php') {
+			$this->output[$table] = array();
 			if (!$this->shutdown_callback) {
 				$this->shutdown_callback = true;
 				register_shutdown_function(array($this, '_export'));
 			}
-			return true;
-		}
-	}
-
-	function dumpTable($table) {
-		if ($_POST['format'] == 'php') {
-			$this->output[$table] = array();
 			return true;
 		}
 	}
