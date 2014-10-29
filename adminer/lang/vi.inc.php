@@ -69,7 +69,6 @@ $translations = array(
 	'You can upload a big SQL file via FTP and import it from server.' => 'Bạn có thể tải tệp lên dùng FTP và nhập vào cơ sở dữ liệu.',
 	
 	'Export' => 'Xuất',
-	'Dump' => 'Sao lưu',
 	'Output' => 'Kết quả',
 	'open' => 'xem',
 	'save' => 'lưu',

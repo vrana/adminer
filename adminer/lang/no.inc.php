@@ -58,7 +58,6 @@ $translations = array(
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'For stor datamengde i skjemaet. Reduser datamengden, eller øk størrelsen på %s-konfigurasjonsdirektivet.',
 	'You can upload a big SQL file via FTP and import it from server.' => 'Du kan laste opp en stor SQL-fil via FTP og importere den fra serveren.',
 	'Export' => 'Eksport',
-	'Dump' => 'Dump',
 	'Output' => 'Resultat',
 	'open' => 'åpne',
 	'save' => 'lagre',

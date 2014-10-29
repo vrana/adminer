@@ -31,7 +31,6 @@ $translations = array(
 	'Alter database' => 'Muuda andmebaasi',
 	'Create database' => 'Loo uus andmebaas',
 	'SQL command' => 'SQL-Päring',
-	'Dump' => 'Ekspordi',
 	'Logout' => 'Logi välja',
 	'database' => 'andmebaas',
 	'Use' => 'Kasuta',

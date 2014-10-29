@@ -7,6 +7,7 @@ $langs = array(
 	'bn' => 'বাংলা', // Dipak Kumar - dipak.ndc@gmail.com
 	'ca' => 'Català', // Joan Llosas
 	'cs' => 'Čeština', // Jakub Vrána - http://www.vrana.cz
+	'da' => 'Dansk', // Jarne W. Beutnagel - jarne@beutnagel.dk
 	'de' => 'Deutsch', // Klemens Häckel - http://clickdimension.wordpress.com
 	'es' => 'Español', // Klemens Häckel - http://clickdimension.wordpress.com
 	'et' => 'Eesti', // Priit Kallas

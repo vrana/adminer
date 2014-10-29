@@ -66,7 +66,6 @@ $translations = array(
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'حجم داده ارسالي برزگ است. حجم داده كاهش دهيد و يا مقدار %s را در پيكربندي افزايش دهيد.',
 	
 	'Export' => 'استخراج',
-	'Dump' => 'خالي كردن',
 	'Output' => 'خروجي',
 	'open' => 'بازكردن',
 	'save' => 'ذخيره',

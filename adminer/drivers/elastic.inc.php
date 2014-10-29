@@ -31,7 +31,7 @@ if (isset($_GET["elastic"])) {
 					return false;
 				}
 				$return = json_decode($file, true);
-				if (!$return) {
+				if ($return === null) {
 					$this->errno = json_last_error();
 					if (function_exists('json_last_error_msg')) {
 						$this->error = json_last_error_msg();
@@ -126,17 +126,21 @@ if (isset($_GET["elastic"])) {
 					$data["from"] = ($page * $limit);
 				}
 			}
-			foreach ((array) $_GET["where"] as $val) {
-				if ("$val[col]$val[val]" != "") {
-					$term = array("match" => array(($val["col"] != "" ? $val["col"] : "_all") => $val["val"]));
-					if ($val["op"] == "=") {
+			foreach ($where as $val) {
+				list($col,$op,$val) = explode(" ",$val,3);
+				if ($col == "_id") {
+					$data["query"]["ids"]["values"][] = $val;
+				}
+				elseif ($col . $val != "") {
+					$term = array("term" => array(($col != "" ? $col : "_all") => $val));
+					if ($op == "=") {
 						$data["query"]["filtered"]["filter"]["and"][] = $term;
 					} else {
 						$data["query"]["filtered"]["query"]["bool"]["must"][] = $term;
 					}
 				}
 			}
-			if ($data["query"] && !$data["query"]["filtered"]["query"]) {
+			if ($data["query"] && !$data["query"]["filtered"]["query"] && !$data["query"]["ids"]) {
 				$data["query"]["filtered"]["query"] = array("match_all" => array());
 			}
 			$start = microtime(true);
@@ -150,6 +154,9 @@ if (isset($_GET["elastic"])) {
 			$return = array();
 			foreach ($search['hits']['hits'] as $hit) {
 				$row = array();
+				if ($select == array("*")) {
+				  $row["_id"] = $hit["_id"];
+				}
 				$fields = $hit['_source'];
 				if ($select != array("*")) {
 					$fields = array();
@@ -158,6 +165,9 @@ if (isset($_GET["elastic"])) {
 					}
 				}
 				foreach ($fields as $key => $val) {
+					if ($data["fields"]) {
+						$val = $val[0];
+					}
 					$row[$key] = (is_array($val) ? json_encode($val) : $val); //! display JSON and others differently
 				}
 				$return[] = $row;
@@ -194,6 +204,7 @@ if (isset($_GET["elastic"])) {
 		$return = $connection->rootQuery('_aliases');
 		if ($return) {
 			$return = array_keys($return);
+			sort($return, SORT_STRING);
 		}
 		return $return;
 	}
@@ -203,6 +214,10 @@ if (isset($_GET["elastic"])) {
 	}
 
 	function db_collation($db, $collations) {
+	}
+	
+	function engines() {
+		return array();
 	}
 
 	function count_tables($databases) {
@@ -218,7 +233,7 @@ if (isset($_GET["elastic"])) {
 		global $connection;
 		$return = $connection->query('_mapping');
 		if ($return) {
-			$return = array_fill_keys(array_keys(reset($return)), 'table');
+			$return = array_fill_keys(array_keys($return[$connection->_db]["mappings"]), 'table');
 		}
 		return $return;
 	}
@@ -269,16 +284,26 @@ if (isset($_GET["elastic"])) {
 
 	function fields($table) {
 		global $connection;
-		$mapping = $connection->query("$table/_mapping");
+		$result = $connection->query("$table/_mapping");
 		$return = array();
-		if ($mapping) {
-			foreach ($mapping[$table]['properties'] as $name => $field) {
-				$return[$name] = array(
-					"field" => $name,
-					"full_type" => $field["type"],
-					"type" => $field["type"],
-					"privileges" => array("insert" => 1, "select" => 1, "update" => 1),
-				);
+		if ($result) {
+			$mappings = $result[$table]['properties'];
+			if (!$mappings) {
+				$mappings = $result[$connection->_db]['mappings'][$table]['properties'];
+			}
+			if ($mappings) {
+				foreach ($mappings as $name => $field) {
+					$return[$name] = array(
+						"field" => $name,
+						"full_type" => $field["type"],
+						"type" => $field["type"],
+						"privileges" => array("insert" => 1, "select" => 1, "update" => 1),
+					);
+					if ($field["properties"]) { // only leaf fields can be edited
+						unset($return[$name]["privileges"]["insert"]);
+						unset($return[$name]["privileges"]["update"]);
+					}
+				}
 			}
 		}
 		return $return;

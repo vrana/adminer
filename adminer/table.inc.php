@@ -19,8 +19,10 @@ if ($fields) {
 	echo "<thead><tr><th>" . lang('Column') . "<td>" . lang('Type') . (support("comment") ? "<td>" . lang('Comment') : "") . "</thead>\n";
 	foreach ($fields as $field) {
 		echo "<tr" . odd() . "><th>" . h($field["field"]);
-		echo "<td title='" . h($field["collation"]) . "'>" . h($field["full_type"]) . ($field["null"] ? " <i>NULL</i>" : "") . ($field["auto_increment"] ? " <i>" . lang('Auto Increment') . "</i>" : "");
-		echo (isset($field["default"]) ? " [<b>" . h($field["default"]) . "</b>]" : "");
+		echo "<td><span title='" . h($field["collation"]) . "'>" . h($field["full_type"]) . "</span>";
+		echo ($field["null"] ? " <i>NULL</i>" : "");
+		echo ($field["auto_increment"] ? " <i>" . lang('Auto Increment') . "</i>" : "");
+		echo (isset($field["default"]) ? " <span title='" . lang('Default value') . "'>[<b>" . h($field["default"]) . "</b>]</span>" : "");
 		echo (support("comment") ? "<td>" . nbsp($field["comment"]) : "");
 		echo "\n";
 	}

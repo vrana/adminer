@@ -65,12 +65,20 @@ function bracket_escape($idf, $back = false) {
 	return strtr($idf, ($back ? array_flip($trans) : $trans));
 }
 
+/** Get connection charset
+* @param Min_DB
+* @return string
+*/
+function charset($connection) {
+	return (version_compare($connection->server_info, "5.5.3") > 0 ? "utf8mb4" : "utf8"); // SHOW CHARSET would require an extra query
+}
+
 /** Escape for HTML
 * @param string
 * @return string
 */
 function h($string) {
-	return htmlspecialchars(str_replace("\0", "", $string), ENT_QUOTES);
+	return str_replace("\0", "&#0;", htmlspecialchars($string, ENT_QUOTES, 'utf-8'));
 }
 
 /** Escape for TD
@@ -277,13 +285,13 @@ function get_password() {
 	return $return;
 }
 
-/** Shortcut for $driver->quote($string)
+/** Shortcut for $connection->quote($string)
 * @param string
 * @return string
 */
 function q($string) {
-	global $driver;
-	return $driver->quote($string);
+	global $connection;
+	return $connection->quote($string);
 }
 
 /** Get list of values from database
@@ -367,18 +375,28 @@ function unique_array($row, $indexes) {
 	}
 }
 
+/** Escape column key used in where()
+* @param string
+* @return string
+*/
+function escape_key($key) {
+	if (preg_match('(^([\w(]+)(' . str_replace("_", ".*", preg_quote(idf_escape("_"))) . ')([ \w)]+)$)', $key, $match)) { //! columns looking like functions
+		return $match[1] . idf_escape(idf_unescape($match[2])) . $match[3]; //! SQL injection
+	}
+	return idf_escape($key);
+}
+
 /** Create SQL condition from parsed query string
 * @param array parsed query string
 * @param array
 * @return string
 */
 function where($where, $fields = array()) {
-	global $jush;
+	global $connection, $jush;
 	$return = array();
-	$function_pattern = '(^[\w\(]+(' . str_replace("_", ".*", preg_quote(idf_escape("_"))) . ')?\)+$)'; //! columns looking like functions
 	foreach ((array) $where["where"] as $key => $val) {
 		$key = bracket_escape($key, 1); // 1 - back
-		$column = (preg_match($function_pattern, $key) ? $key : idf_escape($key)); //! SQL injection
+		$column = escape_key($key);
 		$return[] = $column
 			. (($jush == "sql" && preg_match('~^[0-9]*\\.[0-9]*$~', $val)) || $jush == "mssql"
 				? " LIKE " . q(addcslashes($val, "%_\\"))
@@ -386,11 +404,11 @@ function where($where, $fields = array()) {
 			) // LIKE because of floats but slow with ints, in MS SQL because of text
 		; //! enum and set
 		if ($jush == "sql" && preg_match('~char|text~', $fields[$key]["type"]) && preg_match("~[^ -@]~", $val)) { // not just [a-z] to catch non-ASCII characters
-			$return[] = "$column = " . q($val) . " COLLATE utf8_bin";
+			$return[] = "$column = " . q($val) . " COLLATE " . charset($connection) . "_bin";
 		}
 	}
 	foreach ((array) $where["null"] as $key) {
-		$return[] = (preg_match($function_pattern, $key) ? $key : idf_escape($key)) . " IS NULL";
+		$return[] = escape_key($key) . " IS NULL";
 	}
 	return implode(" AND ", $return);
 }
@@ -919,7 +937,7 @@ function process_input($field) {
 		return ($field["on_update"] == "CURRENT_TIMESTAMP" ? idf_escape($field["field"]) : false);
 	}
 	if ($function == "NULL") {
-		$value = null;
+		return "NULL";
 	}
 	if ($field["type"] == "set") {
 		return array_sum((array) $value);
@@ -1067,6 +1085,7 @@ function password_file($create) {
 	}
 	$fp = @fopen($filename, "w"); // @ - can have insufficient rights //! is not atomic
 	if ($fp) {
+		chmod($filename, 0660);
 		$return = rand_string();
 		fwrite($fp, $return);
 		fclose($fp);
@@ -1118,7 +1137,9 @@ function select_value($val, $link, $field, $text_length) {
 	if ($return !== null) {
 		if ($return === "") { // === - may be int
 			$return = "&nbsp;";
-		} elseif ($text_length != "" && is_shortable($field) && is_utf8($return)) {
+		} elseif (!is_utf8($return)) {
+			$return = "\0"; // htmlspecialchars of binary data returns an empty string
+		} elseif ($text_length != "" && is_shortable($field)) {
 			$return = shorten_utf8($return, max(0, +$text_length)); // usage of LEFT() would reduce traffic but complicate query - expected average speedup: .001 s VS .01 s on local network
 		} else {
 			$return = h($return);
@@ -1286,7 +1307,6 @@ function edit_form($TABLE, $fields, $row, $update) {
 		echo "<p class='error'>" . lang('No rows.') . "\n";
 	}
 	?>
-<div id="message"></div>
 <form action="" method="post" enctype="multipart/form-data" id="form">
 <?php
 	if (!$fields) {

@@ -1,6 +1,14 @@
 // Editor specific functions
 
-function selectFieldChange(form) {
+function selectFieldChange() {
+}
+
+var helpOpen;
+
+function helpMouseover() {
+}
+
+function helpMouseout() {
 }
 
 function whisperClick(event, field) {

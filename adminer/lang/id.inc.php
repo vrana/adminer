@@ -66,7 +66,6 @@ $translations = array(
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Data POST terlalu besar. Kurangi data atau perbesar pengarah konfigurasi %s.',
 
 	'Export' => 'Ekspor',
-	'Dump' => 'Ekspor',
 	'Output' => 'Hasil',
 	'open' => 'buka',
 	'save' => 'simpan',
