@@ -1,3 +1,4 @@
 /adminer/adminer.css
 /adminer*.php
 /editor*.php
+/vendor/
