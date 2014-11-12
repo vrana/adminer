@@ -793,3 +793,33 @@ function cloneNode(el) {
 	setupSubmitHighlight(el2);
 	return el2;
 }
+
+/* Find the absolute position of an element on the page (http://www.quirksmode.org/js/findpos.html)
+ */
+function findPos(el) {
+    var curleft = 0, curtop = 0;
+    if(el.offsetParent) {
+        curleft = el.offsetLeft
+        curtop = el.offsetTop
+        while(el = el.offsetParent) {
+            curleft += el.offsetLeft
+            curtop += el.offsetTop
+        }
+    }
+    return [curleft, curtop];
+}
+
+/** Put the active table menu item in view on page load, if the tables list is scrollable
+ */
+function scrollToActiveTable() {
+    var elTables = document.getElementById('tables');
+    var isScrollable = elTables.scrollHeight > elTables.clientHeight;
+    if (isScrollable && document.getElementsByClassName) { // test for getElementsByClassName...it's not available in IE8 and below
+        var active = elTables.getElementsByClassName('active')[0];
+        if (active) {
+            elTables.scrollTop = findPos(active)[1] - findPos(elTables)[1] - active.offsetHeight * 3; // scroll the active table to the top of the list, with a few tables above it shown for convenient access
+        }
+    }
+}
+
+
