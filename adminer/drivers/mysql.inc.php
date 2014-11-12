@@ -447,7 +447,9 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function fk_support($table_status) {
-		return preg_match('~InnoDB|IBMDB2I~i', $table_status["Engine"]);
+		global $connection;
+		return preg_match('~InnoDB|IBMDB2I~i', $table_status["Engine"])
+			|| (preg_match('~NDB~i', $table_status["Engine"]) && version_compare($connection->server_info, '5.6') >= 0);
 	}
 
 	/** Get information about fields

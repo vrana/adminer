@@ -9,6 +9,7 @@ Send 403 for auth error
 Report offline and other AJAX errors (bug #419)
 Add links to documentation on table status page
 MySQL: Use utf8mb4 if available
+MySQL: Support foreign keys in NDB storage
 PostgreSQL: Materialized views
 SQLite: Support CURRENT_* default values (bug #417)
 Elasticsearch: Use where in select
