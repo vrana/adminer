@@ -117,9 +117,8 @@ function unset_permanent() {
 function auth_error($error) {
 	global $adminer, $has_token;
 	$session_name = session_name();
-	if (!$_COOKIE[$session_name] && $_GET[$session_name] && ini_bool("session.use_only_cookies")) {
-		$error = lang('Session support must be enabled.');
-	} elseif (isset($_GET["username"])) {
+	if (isset($_GET["username"])) {
+		header("HTTP/1.1 403 Forbidden"); // 401 requires sending WWW-Authenticate header
 		if (($_COOKIE[$session_name] || $_GET[$session_name]) && !$has_token) {
 			$error = lang('Session expired, please login again.');
 		} else {
@@ -133,6 +132,9 @@ function auth_error($error) {
 			}
 			unset_permanent();
 		}
+	}
+	if (!$_COOKIE[$session_name] && $_GET[$session_name] && ini_bool("session.use_only_cookies")) {
+		$error = lang('Session support must be enabled.');
 	}
 	$params = session_get_cookie_params();
 	cookie("adminer_key", ($_COOKIE["adminer_key"] ? $_COOKIE["adminer_key"] : rand_string()), $params["lifetime"]);
@@ -184,7 +186,7 @@ if ($_POST) {
 		}
 		$error = (!$_POST["token"] && $max_vars
 			? lang('Maximum number of allowed fields exceeded. Please increase %s.', "'$ini'")
-			: lang('Invalid CSRF token. Send the form again.')
+			: lang('Invalid CSRF token. Send the form again.') . ' ' . lang('If you did not send this request from Adminer then close this page.')
 		);
 	}
 	

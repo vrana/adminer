@@ -225,7 +225,16 @@ if (isset($_GET["pgsql"])) {
 	}
 
 	function tables_list() {
-		return get_key_vals("SELECT table_name, table_type FROM information_schema.tables WHERE table_schema = current_schema() ORDER BY table_name");
+		$query = "SELECT table_name, table_type FROM information_schema.tables WHERE table_schema = current_schema()";
+		if (support('materializedview')) {
+			$query .= "
+UNION ALL
+SELECT matviewname, 'MATERIALIZED VIEW'
+FROM pg_matviews
+WHERE schemaname = current_schema()
+ORDER BY table_name";
+		}
+		return get_key_vals($query);
 	}
 
 	function count_tables($databases) {
@@ -234,9 +243,9 @@ if (isset($_GET["pgsql"])) {
 
 	function table_status($name = "") {
 		$return = array();
-		foreach (get_rows("SELECT relname AS \"Name\", CASE relkind WHEN 'r' THEN 'table' ELSE 'view' END AS \"Engine\", pg_relation_size(oid) AS \"Data_length\", pg_total_relation_size(oid) - pg_relation_size(oid) AS \"Index_length\", obj_description(oid, 'pg_class') AS \"Comment\", relhasoids::int AS \"Oid\", reltuples as \"Rows\"
+		foreach (get_rows("SELECT relname AS \"Name\", CASE relkind WHEN 'r' THEN 'table' WHEN 'mv' THEN 'materialized view' WHEN 'f' THEN 'foreign table' ELSE 'view' END AS \"Engine\", pg_relation_size(oid) AS \"Data_length\", pg_total_relation_size(oid) - pg_relation_size(oid) AS \"Index_length\", obj_description(oid, 'pg_class') AS \"Comment\", relhasoids::int AS \"Oid\", reltuples as \"Rows\"
 FROM pg_class
-WHERE relkind IN ('r','v')
+WHERE relkind IN ('r','v','mv','f')
 AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema())
 " . ($name != "" ? "AND relname = " . q($name) : "ORDER BY relname")
 		) as $row) { //! Index_length, Auto_increment
@@ -246,7 +255,7 @@ AND relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema(
 	}
 
 	function is_view($table_status) {
-		return $table_status["Engine"] == "view";
+		return in_array($table_status["Engine"], array("view", "materialized view"));
 	}
 
 	function fk_support($table_status) {
@@ -274,8 +283,8 @@ ORDER BY a.attnum"
 			preg_match('~([^([]+)(\((.*)\))?([a-z ]+)?((\[[0-9]*])*)$~', $row["full_type"], $match);
 			list(, $type, $length, $row["length"], $addon, $array) = $match;
 			$row["length"] .= $array;
-			$check_type = $type.$addon;
-			if(isset($aliases[$check_type])) {
+			$check_type = $type . $addon;
+			if (isset($aliases[$check_type])) {
 				$row["type"] = $aliases[$check_type];
 				$row["full_type"] = $row["type"] . $length . $array;
 			} else {
@@ -473,21 +482,23 @@ ORDER BY conkey, conname") as $row) {
 	}
 
 	function drop_views($views) {
-		return queries("DROP VIEW " . implode(", ", array_map('table', $views)));
+		return drop_tables($views);
 	}
 
 	function drop_tables($tables) {
-		return queries("DROP TABLE " . implode(", ", array_map('table', $tables)));
+		foreach ($tables as $table) {
+		    $status = table_status($table);
+				if (!queries("DROP " . strtoupper($status["Engine"]) . " " . table($table))) {
+					return false;
+				}
+		}
+		return true;
 	}
 
 	function move_tables($tables, $views, $target) {
-		foreach ($tables as $table) {
-			if (!queries("ALTER TABLE " . table($table) . " SET SCHEMA " . idf_escape($target))) {
-				return false;
-			}
-		}
-		foreach ($views as $table) {
-			if (!queries("ALTER VIEW " . table($table) . " SET SCHEMA " . idf_escape($target))) {
+		foreach (array_merge($tables, $views) as $table) {
+			$status = table_status($table);
+			if (!queries("ALTER " . strtoupper($status["Engine"]) . " " . table($table) . " SET SCHEMA " . idf_escape($target))) {
 				return false;
 			}
 		}
@@ -618,7 +629,8 @@ AND typelem = 0"
 	}
 
 	function support($feature) {
-		return preg_match('~^(database|table|columns|sql|indexes|comment|view|scheme|processlist|sequence|trigger|type|variables|drop_col)$~', $feature); //! routine|
+		global $connection;
+		return preg_match('~^(database|table|columns|sql|indexes|comment|view|' . ($connection->server_info >= 9.3 ? 'materializedview|' : '') . 'scheme|processlist|sequence|trigger|type|variables|drop_col)$~', $feature); //! routine|
 	}
 
 	$jush = "pgsql";

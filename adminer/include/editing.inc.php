@@ -196,6 +196,7 @@ function process_field($field, $type_field) {
 		($field["null"] ? " NULL" : " NOT NULL"), // NULL for timestamp
 		(isset($default) ? " DEFAULT " . (
 			(preg_match('~time~', $field["type"]) && preg_match('~^CURRENT_TIMESTAMP$~i', $default))
+			|| ($jush == "sqlite" && preg_match('~^CURRENT_(TIME|TIMESTAMP|DATE)$~i', $default))
 			|| ($field["type"] == "bit" && preg_match("~^([0-9]+|b'[0-1]+')\$~", $default))
 			|| ($jush == "pgsql" && preg_match("~^[a-z]+\\(('[^']*')+\\)\$~", $default))
 			? $default : q($default)) : ""),

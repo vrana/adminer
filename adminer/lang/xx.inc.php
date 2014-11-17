@@ -67,6 +67,7 @@ $translations = array(
 	'Maximum allowed file size is %sB.' => 'xx',
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'xx',
 	'You can upload a big SQL file via FTP and import it from server.' => 'xx',
+	'You are offline.' => 'xx',
 	
 	'Export' => 'xx',
 	'Output' => 'xx',
@@ -180,11 +181,13 @@ $translations = array(
 	'Values' => 'xx',
 	
 	'View' => 'xx',
+	'Materialized View' => 'xx',
 	'View has been dropped.' => 'xx',
 	'View has been altered.' => 'xx',
 	'View has been created.' => 'xx',
 	'Alter view' => 'xx',
 	'Create view' => 'xx',
+	'Create materialized view' => 'xx',
 	
 	'Indexes' => 'xx',
 	'Indexes have been altered.' => 'xx',

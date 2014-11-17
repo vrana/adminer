@@ -447,7 +447,9 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function fk_support($table_status) {
-		return preg_match('~InnoDB|IBMDB2I~i', $table_status["Engine"]);
+		global $connection;
+		return preg_match('~InnoDB|IBMDB2I~i', $table_status["Engine"])
+			|| (preg_match('~NDB~i', $table_status["Engine"]) && version_compare($connection->server_info, '5.6') >= 0);
 	}
 
 	/** Get information about fields
@@ -503,7 +505,7 @@ if (!defined("DRIVER")) {
 		$return = array();
 		$create_table = $connection->result("SHOW CREATE TABLE " . table($table), 1);
 		if ($create_table) {
-			preg_match_all("~CONSTRAINT ($pattern) FOREIGN KEY \\(((?:$pattern,? ?)+)\\) REFERENCES ($pattern)(?:\\.($pattern))? \\(((?:$pattern,? ?)+)\\)(?: ON DELETE ($on_actions))?(?: ON UPDATE ($on_actions))?~", $create_table, $matches, PREG_SET_ORDER);
+			preg_match_all("~CONSTRAINT ($pattern) FOREIGN KEY ?\\(((?:$pattern,? ?)+)\\) REFERENCES ($pattern)(?:\\.($pattern))? \\(((?:$pattern,? ?)+)\\)(?: ON DELETE ($on_actions))?(?: ON UPDATE ($on_actions))?~", $create_table, $matches, PREG_SET_ORDER);
 			foreach ($matches as $match) {
 				preg_match_all("~$pattern~", $match[2], $source);
 				preg_match_all("~$pattern~", $match[5], $target);
@@ -1001,7 +1003,7 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Check whether a feature is supported
-	* @param string "comment", "copy", "database", "drop_col", "dump", "event", "kill", "partitioning", "privileges", "procedure", "processlist", "routine", "scheme", "sequence", "status", "table", "trigger", "type", "variables", "view", "view_trigger"
+	* @param string "comment", "copy", "database", "drop_col", "dump", "event", "kill", "materializedview", "partitioning", "privileges", "procedure", "processlist", "routine", "scheme", "sequence", "status", "table", "trigger", "type", "variables", "view", "view_trigger"
 	* @return bool
 	*/
 	function support($feature) {
