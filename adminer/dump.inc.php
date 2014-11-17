@@ -111,6 +111,9 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 				}
 			}
 		}
+
+        // add database dump extension to the end of each database
+        $adminer->dumpDatabaseAddon();
 	}
 
 	if ($is_sql) {
