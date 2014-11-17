@@ -3,6 +3,7 @@ $drivers["pgsql"] = "PostgreSQL";
 
 if (isset($_GET["pgsql"])) {
 	$possible_drivers = array("PgSQL", "PDO_PgSQL");
+    $database_dump_addon = '';
 	define("DRIVER", "pgsql");
 	if (extension_loaded("pgsql")) {
 		class Min_DB {
@@ -244,10 +245,10 @@ ORDER BY 1";
 
 	function table_status($name = "") {
 		$return = array();
-		foreach (get_rows("SELECT c.relname AS \"Name\", CASE c.relkind WHEN 'r' THEN 'table' ELSE 'view' END AS \"Engine\", pg_relation_size(c.oid) AS \"Data_length\", pg_total_relation_size(c.oid) - pg_relation_size(c.oid) AS \"Index_length\", obj_description(c.oid, 'pg_class') AS \"Comment\", c.relhasoids::int AS \"Oid\", c.reltuples as \"Rows\", n.nspname
+		foreach (get_rows("SELECT c.relname AS \"Name\", CASE c.relkind WHEN 'r' THEN 'table' WHEN 'mv' THEN 'materialized view' WHEN 'f' THEN 'foreign table' ELSE 'view' END AS \"Engine\", pg_relation_size(c.oid) AS \"Data_length\", pg_total_relation_size(c.oid) - pg_relation_size(c.oid) AS \"Index_length\", obj_description(c.oid, 'pg_class') AS \"Comment\", c.relhasoids::int AS \"Oid\", c.reltuples as \"Rows\", n.nspname
 FROM pg_class c
 JOIN pg_namespace n ON(n.nspname = current_schema() AND n.oid = c.relnamespace)
-WHERE relkind IN ('r','v')
+WHERE relkind IN ('r','v','mv','f')
 " . ($name != "" ? "AND relname = " . q($name) : "ORDER BY relname")
 		) as $row) { //! Index_length, Auto_increment
 			$return[$row["Name"]] = $row;
@@ -295,9 +296,11 @@ ORDER BY a.attnum"
 			$row["null"] = !$row["attnotnull"];
 			$row["auto_increment"] = preg_match('~^nextval\\(~i', $row["default"]);
 			$row["privileges"] = array("insert" => 1, "select" => 1, "update" => 1);
+/* this blocks some default values eg. ('now'::text)::date, needs more inspection
 			if (preg_match('~(.+)::[^)]+(.*)~', $row["default"], $match)) {
 				$row["default"] = ($match[1][0] == "'" ? idf_unescape($match[1]) : $match[1]) . $match[2];
 			}
+*/
 			$return[$row["field"]] = $row;
 		}
 		return $return;
@@ -615,7 +618,7 @@ AND typelem = 0"
 	* @return string
 	*/
 	function create_sql($table, $auto_increment) {
-		global $connection;
+		global $connection, $database_dump_addon;
 		$return = '';
 		$return_parts = array();
 		$sequences = array();
@@ -659,11 +662,6 @@ AND typelem = 0"
 			}
 		}
 
-		// foreign keys
-		foreach($fkeys as $fkey_name => $fkey) {
-			$return_parts[] = "CONSTRAINT ".idf_escape($fkey_name)." ".$fkey['definition']." ".($fkey['deferrable'] ? 'DEFERRABLE' : 'NOT DEFERRABLE');
-		}
-
 		$return = $return.implode(",\n    ", $return_parts)."\n) WITH (oids = ".($status['Oid'] ? 'true' : 'false').");";
 
 		// "basic" indexes after table definition
@@ -682,11 +680,16 @@ AND typelem = 0"
 			$return .= "\n\nCOMMENT ON COLUMN ".idf_escape($status['nspname']).".".idf_escape($status['Name']).".".idf_escape($field_name)." IS ".q($field['comment']).";";
 		}
 
-		// triggers
+		// triggers added to database-addon
 		foreach($triggers as $trg_id => $trg) {
 			$trigger = trigger($trg_id, $status['Name']);
-			$return .= "\n\nCREATE TRIGGER ".idf_escape($trigger['Trigger'])." ".$trigger['Timing']." ".$trigger['Events']." ON ".idf_escape($status["nspname"]).".".idf_escape($status['Name'])." ".$trigger['Type']." ".$trigger['Statement'].";";
+			$database_dump_addon .= "\n\nCREATE TRIGGER ".idf_escape($trigger['Trigger'])." ".$trigger['Timing']." ".$trigger['Events']." ON ".idf_escape($status["nspname"]).".".idf_escape($status['Name'])." ".$trigger['Type']." ".$trigger['Statement'].";";
 		}
+
+        // foreign keys added to database-addon
+        foreach($fkeys as $fkey_name => $fkey) {
+            $database_dump_addon .= "\n\nALTER TABLE ONLY ".idf_escape($status['nspname']).".".idf_escape($status['Name'])." ADD CONSTRAINT ".idf_escape($fkey_name)." ".$fkey['definition']." ".($fkey['deferrable'] ? 'DEFERRABLE' : 'NOT DEFERRABLE').";";
+        }
 
 		return rtrim($return, ';');
 	}
