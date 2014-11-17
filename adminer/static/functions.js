@@ -186,6 +186,9 @@ function tableClick(event, click) {
 			click = false;
 		}
 		el = el.parentNode;
+		if (!el) { // Ctrl+click on text fields hides the element
+			return;
+		}
 	}
 	el = el.firstChild.firstChild;
 	if (click) {
@@ -500,11 +503,19 @@ function fieldChange(field) {
 * @param string
 * @param function (XMLHttpRequest)
 * @param [string]
+* @param [string]
 * @return XMLHttpRequest or false in case of an error
 */
-function ajax(url, callback, data) {
+function ajax(url, callback, data, message) {
 	var request = (window.XMLHttpRequest ? new XMLHttpRequest() : (window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') : false));
 	if (request) {
+		var ajaxStatus = document.getElementById('ajaxstatus');
+		if (message) {
+			ajaxStatus.innerHTML = '<div class="message">' + message + '</div>';
+			ajaxStatus.className = ajaxStatus.className.replace(/ hidden/g, '');
+		} else {
+			ajaxStatus.className += ' hidden';
+		}
 		request.open((data ? 'POST' : 'GET'), url);
 		if (data) {
 			request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -512,7 +523,12 @@ function ajax(url, callback, data) {
 		request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 		request.onreadystatechange = function () {
 			if (request.readyState == 4) {
-				callback(request);
+				if (/^2/.test(request.status)) {
+					callback(request);
+				} else {
+					ajaxStatus.innerHTML = (request.status ? request.responseText : '<div class="error">' + offlineMessage + '</div>');
+					ajaxStatus.className = ajaxStatus.className.replace(/ hidden/g, '');
+				}
 			}
 		};
 		request.send(data);
@@ -526,11 +542,9 @@ function ajax(url, callback, data) {
 */
 function ajaxSetHtml(url) {
 	return ajax(url, function (request) {
-		if (request.status) {
-			var data = eval('(' + request.responseText + ')');
-			for (var key in data) {
-				setHtml(key, data[key]);
-			}
+		var data = eval('(' + request.responseText + ')');
+		for (var key in data) {
+			setHtml(key, data[key]);
 		}
 	});
 }
@@ -557,18 +571,17 @@ function ajaxForm(form, message, button) {
 	}
 	data = data.join('&');
 	
-	setHtml('message', '<div class="message">' + message + '</div>');
 	var url = form.action;
 	if (!/post/i.test(form.method)) {
 		url = url.replace(/\?.*/, '') + '?' + data;
 		data = '';
 	}
 	return ajax(url, function (request) {
-		setHtml('message', request.responseText);
+		setHtml('ajaxstatus', request.responseText);
 		if (window.jush) {
-			jush.highlight_tag(document.getElementById('message').getElementsByTagName('code'), 0);
+			jush.highlight_tag(document.getElementById('ajaxstatus').getElementsByTagName('code'), 0);
 		}
-	}, data);
+	}, data, message);
 }
 
 
@@ -626,7 +639,7 @@ function selectClick(td, event, text, warning) {
 	input.focus();
 	if (text == 2) { // long text
 		return ajax(location.href + '&' + encodeURIComponent(td.id) + '=', function (request) {
-			if (request.status && request.responseText) {
+			if (request.responseText) {
 				input.value = request.responseText;
 				input.name = td.id;
 			}

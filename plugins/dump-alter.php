@@ -12,7 +12,7 @@ class AdminerDumpAlter {
 		if (DRIVER == 'server') {
 			return array('sql_alter' => 'Alter');
 		}
-	}	
+	}
 	
 	function _database() {
 		// drop old tables
@@ -29,15 +29,15 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 		FETCH tables INTO _table_name, _engine, _table_collation, _table_comment;
 		IF NOT done THEN
 			CASE _table_name";
-			foreach (get_rows($query) as $row) {
-				$comment = q($row["ENGINE"] == "InnoDB" ? preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["TABLE_COMMENT"]) : $row["TABLE_COMMENT"]);
-				echo "
+		foreach (get_rows($query) as $row) {
+			$comment = q($row["ENGINE"] == "InnoDB" ? preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["TABLE_COMMENT"]) : $row["TABLE_COMMENT"]);
+			echo "
 			WHEN " . q($row["TABLE_NAME"]) . " THEN
 				" . (isset($row["ENGINE"]) ? "IF _engine != '$row[ENGINE]' OR _table_collation != '$row[TABLE_COLLATION]' OR _table_comment != $comment THEN
 					ALTER TABLE " . idf_escape($row["TABLE_NAME"]) . " ENGINE=$row[ENGINE] COLLATE=$row[TABLE_COLLATION] COMMENT=$comment;
 				END IF" : "BEGIN END") . ";";
-			}
-			echo "
+		}
+		echo "
 				ELSE
 					SET alter_command = CONCAT(alter_command, 'DROP TABLE `', REPLACE(_table_name, '`', '``'), '`;\\n');
 			END CASE;
@@ -114,17 +114,16 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 		IF NOT done THEN
 			SET set_after = 1;
 			CASE _column_name";
-			foreach ($fields as $row) {
-				echo "
+				foreach ($fields as $row) {
+					echo "
 				WHEN " . q($row["COLUMN_NAME"]) . " THEN
 					SET add_columns = REPLACE(add_columns, ', ADD $row[alter]', IF(
 						_column_default <=> $row[default] AND _is_nullable = '$row[IS_NULLABLE]' AND _collation_name <=> " . (isset($row["COLLATION_NAME"]) ? "'$row[COLLATION_NAME]'" : "NULL") . " AND _column_type = " . q($row["COLUMN_TYPE"]) . " AND _extra = '$row[EXTRA]' AND _column_comment = " . q($row["COLUMN_COMMENT"]) . " AND after = $row[after]
-					, '', ', MODIFY $row[alter]'));"
-				; //! don't replace in comment
-			}
-			echo "
+					, '', ', MODIFY $row[alter]'));"; //! don't replace in comment
+				}
+				echo "
 				ELSE
-					SET @alter_table = CONCAT(@alter_table, ', DROP ', _column_name);
+					SET @alter_table = CONCAT(@alter_table, ', DROP ', '`', REPLACE(_column_name, '`', '``'), '`');
 					SET set_after = 0;
 			END CASE;
 			IF set_after THEN
@@ -148,4 +147,9 @@ DROP PROCEDURE adminer_alter;
 		}
 	}
 	
+	function dumpData() {
+		if ($_POST["format"] == "sql_alter") {
+			return true;
+		}
+	}
 }
