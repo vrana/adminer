@@ -662,20 +662,22 @@ if (!defined("DRIVER")) {
 			);
 		}
 		$alter = array_merge($alter, $foreign);
-		$status = "COMMENT=" . q($comment)
+		$status = ($comment !== null ? " COMMENT=" . q($comment) : "")
 			. ($engine ? " ENGINE=" . q($engine) : "")
 			. ($collation ? " COLLATE " . q($collation) : "")
 			. ($auto_increment != "" ? " AUTO_INCREMENT=$auto_increment" : "")
 			. $partitioning
 		;
 		if ($table == "") {
-			return queries("CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n) $status");
+			return queries("CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)$status");
 		}
 		if ($table != $name) {
 			$alter[] = "RENAME TO " . table($name);
 		}
-		$alter[] = $status;
-		return queries("ALTER TABLE " . table($table) . "\n" . implode(",\n", $alter));
+		if ($status) {
+			$alter[] = ltrim($status);
+		}
+		return $alter ? queries("ALTER TABLE " . table($table) . "\n" . implode(",\n", $alter)) : true;
 	}
 
 	/** Run commands to alter indexes
