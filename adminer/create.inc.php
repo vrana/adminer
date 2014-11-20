@@ -110,7 +110,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 			($row["Comment"] != $table_status["Comment"] ? $row["Comment"] : null),
 			($row["Engine"] && $row["Engine"] != $table_status["Engine"] ? $row["Engine"] : ""),
 			($row["Collation"] && $row["Collation"] != $table_status["Collation"] ? $row["Collation"] : ""),
-			($row["Auto_increment"] != "" ? +$row["Auto_increment"] : ""),
+			($row["Auto_increment"] != $_POST["Auto_increment_original"] ? +$row["Auto_increment"] : ""),
 			$partitioning
 		));
 	}
@@ -129,9 +129,6 @@ if (!$_POST) {
 		$row = $table_status;
 		$row["name"] = $TABLE;
 		$row["fields"] = array();
-		if (!$_GET["auto_increment"]) { // don't prefill by original Auto_increment for the sake of performance and not reusing deleted ids
-			$row["Auto_increment"] = "";
-		}
 		foreach ($orig_fields as $field) {
 			$field["has_default"] = isset($field["default"]);
 			$row["fields"][] = $field;
@@ -187,6 +184,7 @@ edit_fields($row["fields"], $collations, "TABLE", $foreign_keys, $comments);
 </table>
 <p>
 <?php echo lang('Auto Increment'); ?>: <input type="number" name="Auto_increment" size="6" value="<?php echo h($row["Auto_increment"]); ?>">
+<input type="hidden" name="Auto_increment_original" value="<?php echo h($row["Auto_increment"]); ?>">
 <?php echo checkbox("defaults", 1, true, lang('Default values'), "columnShow(this.checked, 5)", "jsonly"); ?>
 <?php if (!$_POST["defaults"]) { ?><script type="text/javascript">editingHideDefaults()</script><?php } ?>
 <?php echo (support("comment")
