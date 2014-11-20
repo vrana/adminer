@@ -666,10 +666,9 @@ if (!defined("DRIVER")) {
 			. ($engine ? " ENGINE=" . q($engine) : "")
 			. ($collation ? " COLLATE " . q($collation) : "")
 			. ($auto_increment != "" ? " AUTO_INCREMENT=$auto_increment" : "")
-			. $partitioning
 		;
 		if ($table == "") {
-			return queries("CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)$status");
+			return queries("CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)$status$partitioning");
 		}
 		if ($table != $name) {
 			$alter[] = "RENAME TO " . table($name);
@@ -677,7 +676,7 @@ if (!defined("DRIVER")) {
 		if ($status) {
 			$alter[] = ltrim($status);
 		}
-		return $alter ? queries("ALTER TABLE " . table($table) . "\n" . implode(",\n", $alter)) : true;
+		return ($alter || $partitioning ? queries("ALTER TABLE " . table($table) . "\n" . implode(",\n", $alter) . $partitioning) : true);
 	}
 
 	/** Run commands to alter indexes
