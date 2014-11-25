@@ -33,6 +33,14 @@ function escape_string($val) {
 	return substr(q($val), 1, -1);
 }
 
+/** Remove non-digits from a string
+* @param string
+* @return string
+*/
+function number($val) {
+  return preg_replace('~[^0-9]+~', '', $val);
+}
+
 /** Disable magic_quotes_gpc
 * @param array e.g. (&$_GET, &$_POST, &$_COOKIE)
 * @param bool whether to leave values as is

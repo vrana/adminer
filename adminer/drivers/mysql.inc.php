@@ -649,7 +649,7 @@ if (!defined("DRIVER")) {
 	* @param string
 	* @param string
 	* @param string
-	* @param int
+	* @param string number
 	* @param string
 	* @return bool
 	*/
