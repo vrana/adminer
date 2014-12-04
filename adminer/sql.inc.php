@@ -16,6 +16,14 @@ if (!$error && $_POST["clear"]) {
 
 page_header((isset($_GET["import"]) ? lang('Import') : lang('SQL command')), $error);
 
+$displayLimit = null;
+if (isset($_POST['display-limit'])) {
+	$displayLimit = (int) $_POST['display-limit'];
+}
+if ($displayLimit < 1) {
+	$displayLimit = null;
+}
+
 if (!$error && $_POST) {
 	$fp = false;
 	if (!isset($_GET["import"])) {
@@ -121,7 +129,7 @@ if (!$error && $_POST) {
 								}
 
 							} elseif (is_object($result)) {
-								$orgtables = select($result, $connection2);
+								$orgtables = select($result, $connection2, array(), $displayLimit);
 								if (!$_POST["only_errors"]) {
 									echo "<form action='' method='post'>\n";
 									echo "<p>" . ($result->num_rows ? lang('%d row(s)', $result->num_rows) : "") . $time;
@@ -216,6 +224,9 @@ if (!isset($_GET["import"])) {
 
 echo checkbox("error_stops", 1, ($_POST ? $_POST["error_stops"] : isset($_GET["import"])), lang('Stop on error')) . "\n";
 echo checkbox("only_errors", 1, ($_POST ? $_POST["only_errors"] : isset($_GET["import"])), lang('Show only errors')) . "\n";
+
+echo "<label><input type=\"number\" name=\"display-limit\" min=\"1\" value=\"$displayLimit\">", lang("Display Limit"), "</label>";
+
 echo "<input type='hidden' name='token' value='$token'>\n";
 
 if (!isset($_GET["import"]) && $history) {
