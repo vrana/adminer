@@ -3,9 +3,10 @@
 * @param Min_Result
 * @param Min_DB connection to examine indexes
 * @param array
+* @param int
 * @return array $orgtables
 */
-function select($result, $connection2 = null, $orgtables = array()) {
+function select($result, $connection2 = null, $orgtables = array(), $limit = 0) {
 	global $jush;
 	$links = array(); // colno => orgtable - create links from these columns
 	$indexes = array(); // orgtable => array(column => colno) - primary keys
@@ -14,7 +15,7 @@ function select($result, $connection2 = null, $orgtables = array()) {
 	$types = array(); // colno => type - display char in <code>
 	$return = array(); // table => orgtable - mapping to use in EXPLAIN
 	odd(''); // reset odd for each result
-	for ($i=0; $row = $result->fetch_row(); $i++) {
+	for ($i=0; (!$limit || $i < $limit) && ($row = $result->fetch_row()); $i++) {
 		if (!$i) {
 			echo "<table cellspacing='0' class='nowrap'>\n";
 			echo "<thead><tr>";

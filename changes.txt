@@ -1,4 +1,5 @@
-Adminer 4.1.1-dev:
+Adminer 4.2.0-dev:
+Allow limiting number of displayed rows in SQL command
 Fix reading routine column collations
 Unlock session in alter database
 Make master key unreadable to others (bug #410)
