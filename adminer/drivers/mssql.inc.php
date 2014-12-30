@@ -164,7 +164,7 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function query($query, $unbuffered = false) {
-				$result = mssql_query($query, $this->_link); //! $unbuffered
+				$result = @mssql_query($query, $this->_link); //! $unbuffered
 				$this->error = "";
 				if (!$result) {
 					$this->error = mssql_get_last_message();
@@ -186,7 +186,7 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function next_result() {
-				return mssql_next_result($this->_result);
+				return mssql_next_result($this->_result->_result);
 			}
 
 			function result($query, $field = 0) {
