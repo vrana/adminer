@@ -231,9 +231,10 @@ if (isset($_GET["pgsql"])) {
 UNION ALL
 SELECT matviewname, 'MATERIALIZED VIEW'
 FROM pg_matviews
-WHERE schemaname = current_schema()
-ORDER BY table_name";
+WHERE schemaname = current_schema()";
 		}
+		$query .= "
+ORDER BY 1";
 		return get_key_vals($query);
 	}
 
