@@ -42,7 +42,7 @@ if (!$_POST && $TABLE != "") {
 	$row = view($TABLE);
 	$row["name"] = $TABLE;
 	if (!$error) {
-		$error = $connection->error;
+		$error = error();
 	}
 }
 
