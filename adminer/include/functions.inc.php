@@ -78,7 +78,7 @@ function bracket_escape($idf, $back = false) {
 * @return string
 */
 function charset($connection) {
-	return (version_compare($connection->server_info, "5.5.3") > 0 ? "utf8mb4" : "utf8"); // SHOW CHARSET would require an extra query
+	return (version_compare($connection->server_info, "5.5.3") >= 0 ? "utf8mb4" : "utf8"); // SHOW CHARSET would require an extra query
 }
 
 /** Escape for HTML
