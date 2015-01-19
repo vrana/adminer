@@ -429,6 +429,8 @@ username.form['auth[driver]'].onchange();
 					$cond = " $val[val]"; // SQL injection
 				} elseif ($val["op"] == "LIKE %%") {
 					$cond = " LIKE " . $this->processInput($fields[$val["col"]], "%$val[val]%");
+				} elseif ($val["op"] == "ILIKE %%") {
+					$cond = " ILIKE " . $this->processInput($fields[$val["col"]], "%$val[val]%");
 				} elseif (!preg_match('~NULL$~', $val["op"])) {
 					$cond .= " " . $this->processInput($fields[$val["col"]], $val["val"]);
 				}
