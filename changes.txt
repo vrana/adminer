@@ -11,6 +11,7 @@ Report offline and other AJAX errors (bug #419)
 Don't alter table comment if not changed
 Add links to documentation on table status page
 Fix handling of 64 bit numbers in auto_increment
+Add referrer: never meta tag
 MySQL: Use utf8mb4 if available
 MySQL: Support foreign keys in NDB storage
 PostgreSQL: Materialized views
