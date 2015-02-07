@@ -1,4 +1,4 @@
-Adminer 4.2.0-dev:
+Adminer 4.2.0 (released 2015-02-07)
 Fix XSS in login form (bug #436)
 Allow limiting number of displayed rows in SQL command
 Fix reading routine column collations
