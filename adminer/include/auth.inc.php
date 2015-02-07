@@ -114,8 +114,13 @@ function unset_permanent() {
 	cookie("adminer_permanent", implode(" ", $permanent));
 }
 
+/** Renders an error message and a login form
+* @param string plain text
+* @return null exits
+*/
 function auth_error($error) {
 	global $adminer, $has_token;
+	$error = h($error);
 	$session_name = session_name();
 	if (isset($_GET["username"])) {
 		header("HTTP/1.1 403 Forbidden"); // 401 requires sending WWW-Authenticate header
