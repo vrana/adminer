@@ -1,4 +1,5 @@
 Adminer 4.2.1-dev:
+Send referrer header to the same domain
 MySQL: Use utf8mb4 in export only if required
 SQLite: Use EXPLAIN QUERY PLAN in SQL query
 
@@ -415,7 +416,7 @@ Adminer 2.3.1 (released 2010-04-06):
 Add Drop button to Alter pages (regression from 2.0.0)
 Link COUNT(*) result to listing
 Newlines in select query edit
-Return to referer after edit
+Return to referrer after edit
 Respect session.auto_start (bug #2967284)
 
 Adminer 2.3.0 (released 2010-02-26):
