@@ -529,9 +529,10 @@ function db_size($db) {
 * @return null
 */
 function set_utf8mb4($create) {
+  global $connection;
 	static $set = false;
 	if (!$set && preg_match('~\butf8mb4~i', $create)) { // possible false positive
 		$set = true;
-		echo "SET NAMES utf8mb4;\n\n";
+		echo "SET NAMES " . charset($connection) . ";\n\n";
 	}
 }
