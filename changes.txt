@@ -1,5 +1,6 @@
 Adminer 4.2.1-dev:
 MySQL: Use utf8mb4 in export only if required
+SQLite: Use EXPLAIN QUERY PLAN in SQL query
 
 Adminer 4.2.0 (released 2015-02-07):
 Fix XSS in login form (bug #436)
