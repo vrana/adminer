@@ -1,4 +1,7 @@
-Adminer 4.2.0 (released 2015-02-07)
+Adminer 4.2.1-dev:
+MySQL: Use utf8mb4 in export only if required
+
+Adminer 4.2.0 (released 2015-02-07):
 Fix XSS in login form (bug #436)
 Allow limiting number of displayed rows in SQL command
 Fix reading routine column collations
@@ -21,7 +24,7 @@ Elasticsearch: Use where in select
 Firebird: Alpha version
 Danish translation
 
-Adminer 4.1.0 (released 2014-04-18)
+Adminer 4.1.0 (released 2014-04-18):
 Provide size of all databases in the overview
 Prevent against brute force login attempts from the same IP address
 Compute number of tables in the overview explicitly
