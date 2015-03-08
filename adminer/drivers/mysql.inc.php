@@ -27,6 +27,12 @@ if (!defined("DRIVER")) {
 				return $return;
 			}
 
+			function set_charset($charset) {
+				// the client library may not support utf8mb4
+				parent::set_charset('utf8');
+				return $this->query("SET NAMES $charset");
+			}
+
 			function result($query, $field = 0) {
 				$result = $this->query($query);
 				if (!$result) {
@@ -35,7 +41,7 @@ if (!defined("DRIVER")) {
 				$row = $result->fetch_array();
 				return $row[$field];
 			}
-
+			
 			function quote($string) {
 				return "'" . $this->escape_string($string) . "'";
 			}
@@ -80,7 +86,8 @@ if (!defined("DRIVER")) {
 			*/
 			function set_charset($charset) {
 				if (function_exists('mysql_set_charset')) {
-					return mysql_set_charset($charset, $this->_link);
+					// the client library may not support utf8mb4
+					mysql_set_charset('utf8', $this->_link);
 				}
 				return $this->query("SET NAMES $charset");
 			}

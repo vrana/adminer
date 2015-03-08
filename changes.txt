@@ -1,5 +1,6 @@
 Adminer 4.2.1-dev:
 Send referrer header to the same domain
+MySQL: Fix usage of utf8mb4 if the client library doesn't support it
 MySQL: Use utf8mb4 in export only if required
 SQLite: Use EXPLAIN QUERY PLAN in SQL query
 
