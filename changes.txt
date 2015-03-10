@@ -1,4 +1,4 @@
-Adminer 4.2.1-dev:
+Adminer 4.2.1 (released 2015-03-10):
 Send referrer header to the same domain
 MySQL: Fix usage of utf8mb4 if the client library doesn't support it
 MySQL: Use utf8mb4 in export only if required
