@@ -1015,6 +1015,16 @@ if (!defined("DRIVER")) {
 		return !preg_match("~scheme|sequence|type|view_trigger" . ($connection->server_info < 5.1 ? "|event|partitioning" . ($connection->server_info < 5 ? "|routine|trigger|view" : "") : "") . "~", $feature);
 	}
 
+	function kill_process($val) {
+		return queries("KILL " . number($val));
+	}
+
+	function max_connections() {
+		global $connection;
+		return $connection->result("SELECT @@max_connections");
+	}
+
+	$id_name = "Id";
 	$jush = "sql"; ///< @var string JUSH identifier
 	$types = array(); ///< @var array ($type => $maximum_unsigned_length, ...)
 	$structured_types = array(); ///< @var array ($description => array($type, ...), ...)

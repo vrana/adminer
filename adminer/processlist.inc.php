@@ -2,7 +2,7 @@
 if (support("kill") && $_POST && !$error) {
 	$killed = 0;
 	foreach ((array) $_POST["kill"] as $val) {
-		if (queries("KILL " . number($val))) {
+		if (kill_process($val)) {
 			$killed++;
 		}
 	}
@@ -30,8 +30,7 @@ foreach (process_list() as $i => $row) {
 		}
 		echo "</thead>\n";
 	}
-
-	echo "<tr" . odd() . ">" . (support("kill") ? "<td>" . checkbox("kill[]", $row["Id"], 0) : "");
+	echo "<tr" . odd() . ">" . (support("kill") ? "<td>" . checkbox("kill[]", $row[$id_name], 0) : "");
 	foreach ($row as $key => $val) {
 		echo "<td>" . (
 			($jush == "sql" && $key == "Info" && preg_match("~Query|Killed~", $row["Command"]) && $val != "") ||
@@ -49,7 +48,7 @@ foreach (process_list() as $i => $row) {
 <p>
 <?php
 if (support("kill")) {
-	echo ($i + 1) . "/" . lang('%d in total', $connection->result("SELECT @@max_connections"));
+	echo ($i + 1) . "/" . lang('%d in total', max_connections());
 	echo "<p><input type='submit' value='" . lang('Kill') . "'>\n";
 }
 ?>
