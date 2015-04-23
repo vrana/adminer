@@ -33,6 +33,14 @@ function escape_string($val) {
 	return substr(q($val), 1, -1);
 }
 
+/** Remove non-digits from a string
+* @param string
+* @return string
+*/
+function number($val) {
+  return preg_replace('~[^0-9]+~', '', $val);
+}
+
 /** Disable magic_quotes_gpc
 * @param array e.g. (&$_GET, &$_POST, &$_COOKIE)
 * @param bool whether to leave values as is
@@ -70,7 +78,7 @@ function bracket_escape($idf, $back = false) {
 * @return string
 */
 function charset($connection) {
-	return (version_compare($connection->server_info, "5.5.3") > 0 ? "utf8mb4" : "utf8"); // SHOW CHARSET would require an extra query
+	return (version_compare($connection->server_info, "5.5.3") >= 0 ? "utf8mb4" : "utf8"); // SHOW CHARSET would require an extra query
 }
 
 /** Escape for HTML
@@ -78,7 +86,7 @@ function charset($connection) {
 * @return string
 */
 function h($string) {
-	return str_replace("\0", "&#0;", htmlspecialchars($string, ENT_QUOTES));
+	return str_replace("\0", "&#0;", htmlspecialchars($string, ENT_QUOTES, 'utf-8'));
 }
 
 /** Escape for TD
@@ -285,13 +293,13 @@ function get_password() {
 	return $return;
 }
 
-/** Shortcut for $driver->quote($string)
+/** Shortcut for $connection->quote($string)
 * @param string
 * @return string
 */
 function q($string) {
-	global $driver;
-	return $driver->quote($string);
+	global $connection;
+	return $connection->quote($string);
 }
 
 /** Get list of values from database
@@ -942,7 +950,7 @@ function process_input($field) {
 		return ($field["on_update"] == "CURRENT_TIMESTAMP" ? idf_escape($field["field"]) : false);
 	}
 	if ($function == "NULL") {
-		$value = null;
+		return "NULL";
 	}
 	if ($field["type"] == "set") {
 		return array_sum((array) $value);
@@ -1142,7 +1150,9 @@ function select_value($val, $link, $field, $text_length) {
 	if ($return !== null) {
 		if ($return === "") { // === - may be int
 			$return = "&nbsp;";
-		} elseif ($text_length != "" && is_shortable($field) && is_utf8($return)) {
+		} elseif (!is_utf8($return)) {
+			$return = "\0"; // htmlspecialchars of binary data returns an empty string
+		} elseif ($text_length != "" && is_shortable($field)) {
 			$return = shorten_utf8($return, max(0, +$text_length)); // usage of LEFT() would reduce traffic but complicate query - expected average speedup: .001 s VS .01 s on local network
 		} else {
 			$return = h($return);
@@ -1310,7 +1320,6 @@ function edit_form($TABLE, $fields, $row, $update) {
 		echo "<p class='error'>" . lang('No rows.') . "\n";
 	}
 	?>
-<div id="message"></div>
 <form action="" method="post" enctype="multipart/form-data" id="form">
 <?php
 	if (!$fields) {

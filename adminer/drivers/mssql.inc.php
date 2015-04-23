@@ -66,6 +66,9 @@ if (isset($_GET["mssql"])) {
 				if (!$result) {
 					$result = $this->_result;
 				}
+				if (!$result) {
+					return false;
+				}
 				if (sqlsrv_field_metadata($result)) {
 					return new Min_Result($result);
 				}
@@ -74,7 +77,7 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function next_result() {
-				return sqlsrv_next_result($this->_result);
+				return $this->_result ? sqlsrv_next_result($this->_result) : null;
 			}
 
 			function result($query, $field = 0) {
@@ -427,7 +430,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 	}
 
 	function auto_increment() {
-		return " IDENTITY" . ($_POST["Auto_increment"] != "" ? "(" . (+$_POST["Auto_increment"]) . ",1)" : "") . " PRIMARY KEY";
+		return " IDENTITY" . ($_POST["Auto_increment"] != "" ? "(" . number($_POST["Auto_increment"]) . ",1)" : "") . " PRIMARY KEY";
 	}
 
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {

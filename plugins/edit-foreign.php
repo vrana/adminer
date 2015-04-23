@@ -7,6 +7,11 @@
 * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerEditForeign {
+	var $_limit;
+	
+	function AdminerEditForeign($limit = 0) {
+		$this->_limit = $limit;
+	}
 	
 	function editInput($table, $field, $attrs, $value) {
 		static $foreignTables = array();
@@ -22,6 +27,9 @@ class AdminerEditForeign {
 				$options = &$values[$target][$id];
 				if (!$options) {
 					$options = array("" => "") + get_vals("SELECT " . idf_escape($id) . " FROM " . table($target) . " ORDER BY 1");
+					if ($this->_limit && count($options) - 1 > $this->_limit) {
+						return;
+					}
 				}
 				return "<select$attrs>" . optionlist($options, $value) . "</select>";
 			}

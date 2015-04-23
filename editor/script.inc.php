@@ -1,6 +1,6 @@
 <?php
 if ($_GET["script"] == "kill") {
-	$connection->query("KILL " . (+$_POST["kill"]));
+	$connection->query("KILL " . number($_POST["kill"]));
 
 } elseif (list($table, $id, $name) = $adminer->_foreignColumn(column_foreign_keys($_GET["source"]), $_GET["field"])) {
 	$limit = 11;

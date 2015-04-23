@@ -9,6 +9,10 @@
 function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	global $LANG, $VERSION, $adminer, $drivers, $jush;
 	page_headers();
+	if (is_ajax() && $error) {
+		page_messages($error);
+		exit;
+	}
 	$title_all = $title . ($title2 != "" ? ": $title2" : "");
 	$title_page = strip_tags($title_all . (SERVER != "" && SERVER != "localhost" ? h(" - " . SERVER) : "") . " - " . $adminer->name());
 	?>
@@ -17,6 +21,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Script-Type" content="text/javascript">
 <meta name="robots" content="noindex">
+<meta name="referrer" content="origin-when-crossorigin">
 <title><?php echo $title_page; ?></title>
 <link rel="stylesheet" type="text/css" href="../adminer/static/default.css">
 <script type="text/javascript" src="../adminer/static/functions.js"></script>
@@ -32,6 +37,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <body class="<?php echo lang('ltr'); ?> nojs" onkeydown="bodyKeydown(event);" onclick="bodyClick(event);"<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " onload=\"verifyVersion('$VERSION');\""); ?>>
 <script type="text/javascript">
 document.body.className = document.body.className.replace(/ nojs/, ' js');
+var offlineMessage = '<?php echo js_escape(lang('You are offline.')); ?>';
 </script>
 
 <div id="help" class="jush-<?php echo $jush; ?> jsonly hidden" onmouseover="helpOpen = 1;" onmouseout="helpMouseout(this, event);"></div>
@@ -65,6 +71,7 @@ document.body.className = document.body.className.replace(/ nojs/, ' js');
 		}
 	}
 	echo "<h2>$title_all</h2>\n";
+	echo "<div id='ajaxstatus' class='jsonly hidden'></div>\n";
 	restart_session();
 	page_messages($error);
 	$databases = &get_session("dbs");

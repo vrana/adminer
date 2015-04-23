@@ -429,6 +429,8 @@ username.form['auth[driver]'].onchange();
 					$cond = " $val[val]"; // SQL injection
 				} elseif ($val["op"] == "LIKE %%") {
 					$cond = " LIKE " . $this->processInput($fields[$val["col"]], "%$val[val]%");
+				} elseif ($val["op"] == "ILIKE %%") {
+					$cond = " ILIKE " . $this->processInput($fields[$val["col"]], "%$val[val]%");
 				} elseif (!preg_match('~NULL$~', $val["op"])) {
 					$cond .= " " . $this->processInput($fields[$val["col"]], $val["val"]);
 				}
@@ -635,7 +637,7 @@ username.form['auth[driver]'].onchange();
 			if ($style) {
 				dump_csv(array_keys(fields($table)));
 			}
-		} elseif ($style) {
+		} else {
 			if ($is_view == 2) {
 				$fields = array();
 				foreach (fields($table) as $name => $field) {
@@ -645,7 +647,8 @@ username.form['auth[driver]'].onchange();
 			} else {
 				$create = create_sql($table, $_POST["auto_increment"]);
 			}
-			if ($create) {
+			set_utf8mb4($create);
+			if ($style && $create) {
 				if ($style == "DROP+CREATE" || $is_view == 1) {
 					echo "DROP " . ($is_view == 2 ? "VIEW" : "TABLE") . " IF EXISTS " . table($table) . ";\n";
 				}

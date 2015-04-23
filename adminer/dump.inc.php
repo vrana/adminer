@@ -16,7 +16,7 @@ if ($_POST && !$error) {
 	if ($is_sql) {
 		echo "-- Adminer $VERSION " . $drivers[DRIVER] . " dump\n\n";
 		if ($jush == "sql") {
-			echo "SET NAMES " . charset($connection) . ";
+			echo "SET NAMES utf8;
 SET time_zone = '+00:00';
 " . ($_POST["data_style"] ? "SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
@@ -39,6 +39,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 		$adminer->dumpDatabase($db);
 		if ($connection->select_db($db)) {
 			if ($is_sql && preg_match('~CREATE~', $style) && ($create = $connection->result("SHOW CREATE DATABASE " . idf_escape($db), 1))) {
+				set_utf8mb4($create);
 				if ($style == "DROP+CREATE") {
 					echo "DROP DATABASE IF EXISTS " . idf_escape($db) . ";\n";
 				}
@@ -53,16 +54,18 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 				if ($_POST["routines"]) {
 					foreach (array("FUNCTION", "PROCEDURE") as $routine) {
 						foreach (get_rows("SHOW $routine STATUS WHERE Db = " . q($db), null, "-- ") as $row) {
-							$out .= ($style != 'DROP+CREATE' ? "DROP $routine IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
-							. remove_definer($connection->result("SHOW CREATE $routine " . idf_escape($row["Name"]), 2)) . ";;\n\n";
+							$create = remove_definer($connection->result("SHOW CREATE $routine " . idf_escape($row["Name"]), 2));
+							set_utf8mb4($create);
+							$out .= ($style != 'DROP+CREATE' ? "DROP $routine IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "") . "$create;;\n\n";
 						}
 					}
 				}
 
 				if ($_POST["events"]) {
 					foreach (get_rows("SHOW EVENTS", null, "-- ") as $row) {
-						$out .= ($style != 'DROP+CREATE' ? "DROP EVENT IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "")
-						. remove_definer($connection->result("SHOW CREATE EVENT " . idf_escape($row["Name"]), 3)) . ";;\n\n";
+						$create = remove_definer($connection->result("SHOW CREATE EVENT " . idf_escape($row["Name"]), 3));
+						set_utf8mb4($create);
+						$out .= ($style != 'DROP+CREATE' ? "DROP EVENT IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "") . "$create;;\n\n";
 					}
 				}
 

@@ -65,15 +65,16 @@ if ($adminer->homepage()) {
 			echo "<table cellspacing='0' class='nowrap checkable' onclick='tableClick(event);' ondblclick='tableClick(event, true);'>\n";
 
 			echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck(this, /^(tables|views)\[/);">';
+			$doc_link = doc_link(array('sql' => 'show-table-status.html'));
 			echo '<th>' . lang('Table');
-			echo '<td>' . lang('Engine');
-			echo '<td>' . lang('Collation');
-			echo '<td>' . lang('Data Length');
-			echo '<td>' . lang('Index Length');
-			echo '<td>' . lang('Data Free');
-			echo '<td>' . lang('Auto Increment');
-			echo '<td>' . lang('Rows');
-			echo (support("comment") ? '<td>' . lang('Comment') : '');
+			echo '<td>' . lang('Engine') . doc_link(array('sql' => 'storage-engines.html'));
+			echo '<td>' . lang('Collation') . doc_link(array('sql' => 'charset-mysql.html'));
+			echo '<td>' . lang('Data Length') . $doc_link;
+			echo '<td>' . lang('Index Length') . $doc_link;
+			echo '<td>' . lang('Data Free') . $doc_link;
+			echo '<td>' . lang('Auto Increment') . doc_link(array('sql' => 'example-auto-increment.html'));
+			echo '<td>' . lang('Rows') . $doc_link;
+			echo (support("comment") ? '<td>' . lang('Comment') . $doc_link : '');
 			echo "</thead>\n";
 
 			$tables = 0;
@@ -82,7 +83,7 @@ if ($adminer->homepage()) {
 				echo '<tr' . odd() . '><td>' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array($name, $tables_views, true), "", "formUncheck('check-all');");
 				echo '<th>' . (support("table") || support("indexes") ? '<a href="' . h(ME) . 'table=' . urlencode($name) . '" title="' . lang('Show structure') . '">' . h($name) . '</a>' : h($name));
 				if ($view) {
-					echo '<td colspan="6"><a href="' . h(ME) . "view=" . urlencode($name) . '" title="' . lang('Alter view') . '">' . lang('View') . '</a>';
+					echo '<td colspan="6"><a href="' . h(ME) . "view=" . urlencode($name) . '" title="' . lang('Alter view') . '">' . (preg_match('~materialized~i', $type) ? lang('Materialized View') : lang('View')) . '</a>';
 					echo '<td align="right"><a href="' . h(ME) . "select=" . urlencode($name) . '" title="' . lang('Select data') . '">?</a>';
 				} else {
 					foreach (array(
@@ -144,6 +145,7 @@ if ($adminer->homepage()) {
 
 		echo '<p class="links"><a href="' . h(ME) . 'create=">' . lang('Create table') . "</a>\n";
 		echo (support("view") ? '<a href="' . h(ME) . 'view=">' . lang('Create view') . "</a>\n" : "");
+		echo (support("materializedview") ? '<a href="' . h(ME) . 'view=&amp;materialized=1">' . lang('Create materialized view') . "</a>\n" : "");
 
 		if (support("routine")) {
 			echo "<h3 id='routines'>" . lang('Routines') . "</h3>\n";
@@ -169,7 +171,7 @@ if ($adminer->homepage()) {
 
 		if (support("sequence")) {
 			echo "<h3 id='sequences'>" . lang('Sequences') . "</h3>\n";
-			$sequences = get_vals("SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = current_schema()");
+			$sequences = get_vals("SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = current_schema() ORDER BY sequence_name");
 			if ($sequences) {
 				echo "<table cellspacing='0'>\n";
 				echo "<thead><tr><th>" . lang('Name') . "</thead>\n";
