@@ -157,7 +157,8 @@ echo "<tr><th>" . lang('Tables') . "<td>" . html_select('table_style', $table_st
 	. (support("trigger") ? checkbox("triggers", 1, $row["triggers"], lang('Triggers')) : "")
 ;
 
-echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style, $row["data_style"]);
+echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style, $row["data_style"])
+	. checkbox("single_row_insert", 1, $row["single_row_insert"], lang('One query for each row'));
 ?>
 </table>
 <p><input type="submit" value="<?php echo lang('Export'); ?>">

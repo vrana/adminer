@@ -151,6 +151,7 @@ $translations = array(
 	'open' => 'openen',
 	'save' => 'opslaan',
 	'Format' => 'Formaat',
+	'One query for each row' => 'Een query voor elke regel',
 	'Functions' => 'Functies',
 	'Aggregation' => 'Totalen',
 	'Event has been dropped.' => 'Event werd verwijderd.',

@@ -79,6 +79,7 @@ $translations = array(
 	'Saving' => 'Xx',
 	'Format' => 'Xx',
 	'Data' => 'Xx',
+	'One query for each row' => 'xx',
 	
 	'Database' => 'Xx',
 	'database' => 'xx',
