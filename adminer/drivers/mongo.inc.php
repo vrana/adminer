@@ -28,7 +28,7 @@ if (isset($_GET["mongo"])) {
 					return false;
 				}
 			}
-			
+
 			function query($query) {
 				return false;
 			}
@@ -52,7 +52,7 @@ if (isset($_GET["mongo"])) {
 		class Min_Result {
 			var $num_rows, $_rows = array(), $_offset = 0, $_charset = array();
 
-			function Min_Result($result) {
+			function __construct($result) {
 				foreach ($result as $item) {
 					$row = array();
 					foreach ($item as $key => $val) {
@@ -115,7 +115,7 @@ if (isset($_GET["mongo"])) {
 
 	class Min_Driver extends Min_SQL {
 		public $primary = "_id";
-		
+
 		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
 			$select = ($select == array("*")
 				? array()
@@ -133,7 +133,7 @@ if (isset($_GET["mongo"])) {
 				->skip($page * $limit)
 			);
 		}
-		
+
 		function insert($table, $set) {
 			try {
 				$return = $this->_conn->_db->selectCollection($table)->insert($set);
@@ -331,7 +331,7 @@ if (isset($_GET["mongo"])) {
 		}
 		return true;
 	}
-	
+
 	function last_id() {
 		global $connection;
 		return $connection->last_id;

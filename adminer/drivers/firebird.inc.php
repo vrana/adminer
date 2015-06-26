@@ -4,7 +4,7 @@
 */
 
 $drivers['firebird'] = 'Firebird (alpha)';
-	
+
 if (isset($_GET["firebird"])) {
 	$possible_drivers = array("interbase");
 	define("DRIVER", "firebird");
@@ -21,7 +21,7 @@ if (isset($_GET["firebird"])) {
 			;
 
 			function connect($server, $username, $password) {
-				$this->_link = ibase_connect($server, $username, $password); 
+				$this->_link = ibase_connect($server, $username, $password);
 				if ($this->_link) {
 					$url_parts = explode(':', $server);
 					$this->service_link = ibase_service_attach($url_parts[0], $username, $password);
@@ -81,7 +81,7 @@ if (isset($_GET["firebird"])) {
 		class Min_Result {
 			var $num_rows, $_result, $_offset = 0;
 
-			function Min_Result($result) {
+			function __construct($result) {
 				$this->_result = $result;
 				// $this->num_rows = ibase_num_rows($result);
 			}
@@ -110,9 +110,9 @@ if (isset($_GET["firebird"])) {
 		}
 
 	}
-	
-	
-	
+
+
+
 	class Min_Driver extends Min_SQL {
 	}
 
@@ -141,7 +141,7 @@ if (isset($_GET["firebird"])) {
 	}
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
-		$return = ''; 
+		$return = '';
 		$return .= ($limit !== null ? $separator . "FIRST $limit" . ($offset ? " SKIP $offset" : "") : "");
 		$return .= " $query$where";
 		return $return;
@@ -172,7 +172,7 @@ if (isset($_GET["firebird"])) {
 		while ($row = ibase_fetch_assoc($result)) {
 				$return[$row['RDB$RELATION_NAME']] = 'table';
 		}
-		ksort($return);	
+		ksort($return);
 		return $return;
 	}
 

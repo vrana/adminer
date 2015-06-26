@@ -2,14 +2,14 @@
 
 /*abstract*/ class Min_SQL {
 	var $_conn;
-	
+
 	/** Create object for performing database operations
 	* @param Min_DB
 	*/
-	function Min_SQL($connection) {
+	function __construct($connection) {
 		$this->_conn = $connection;
 	}
-	
+
 	/** Select data from table
 	* @param string
 	* @param array result of $adminer->selectColumnsProcess()[0]
@@ -41,7 +41,7 @@
 		}
 		return $return;
 	}
-	
+
 	/** Delete data from table
 	* @param string
 	* @param string " WHERE ..."
@@ -52,7 +52,7 @@
 		$query = "FROM " . table($table);
 		return queries("DELETE" . ($limit ? limit1($query, $queryWhere) : " $query$queryWhere"));
 	}
-	
+
 	/** Update data in table
 	* @param string
 	* @param array escaped columns in keys, quoted data in values
@@ -69,7 +69,7 @@
 		$query = table($table) . " SET$separator" . implode(",$separator", $values);
 		return queries("UPDATE" . ($limit ? limit1($query, $queryWhere) : " $query$queryWhere"));
 	}
-	
+
 	/** Insert data into table
 	* @param string
 	* @param array escaped columns in keys, quoted data in values
@@ -81,7 +81,7 @@
 			: " DEFAULT VALUES"
 		));
 	}
-	
+
 	/** Insert or update data in table
 	* @param string
 	* @param array
@@ -91,20 +91,20 @@
 	/*abstract*/ function insertUpdate($table, $rows, $primary) {
 		return false;
 	}
-	
+
 	/** Begin transaction
 	* @return bool
 	*/
 	function begin() {
 		return queries("BEGIN");
 	}
-	
+
 	function commit() {
 		return queries("COMMIT");
 	}
-	
+
 	function rollback() {
 		return queries("ROLLBACK");
 	}
-	
+
 }
