@@ -76,7 +76,6 @@ if ($_POST && !$error) {
 	if ($_POST["export"]) {
 		cookie("adminer_import", "output=" . urlencode($_POST["output"]) . "&format=" . urlencode($_POST["format"]));
 		dump_headers($TABLE);
-		$adminer->dumpTable($TABLE, "");
 		if (!is_array($_POST["check"]) || $unselected === array()) {
 			$query = "SELECT $from$where_check$group_by";
 		} else {
