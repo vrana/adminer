@@ -2,7 +2,7 @@
 if (support("kill") && $_POST && !$error) {
 	$killed = 0;
 	foreach ((array) $_POST["kill"] as $val) {
-		if (queries("KILL " . (+$val))) {
+		if (queries("KILL " . number($val))) {
 			$killed++;
 		}
 	}

@@ -171,7 +171,7 @@ if ($adminer->homepage()) {
 
 		if (support("sequence")) {
 			echo "<h3 id='sequences'>" . lang('Sequences') . "</h3>\n";
-			$sequences = get_vals("SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = current_schema()");
+			$sequences = get_vals("SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = current_schema() ORDER BY sequence_name");
 			if ($sequences) {
 				echo "<table cellspacing='0'>\n";
 				echo "<thead><tr><th>" . lang('Name') . "</thead>\n";
