@@ -27,6 +27,15 @@ if (!defined("DRIVER")) {
 				return $return;
 			}
 
+			function set_charset($charset) {
+				if (parent::set_charset($charset)) {
+					return true;
+				}
+				// the client library may not support utf8mb4
+				parent::set_charset('utf8');
+				return $this->query("SET NAMES $charset");
+			}
+
 			function result($query, $field = 0) {
 				$result = $this->query($query);
 				if (!$result) {
@@ -35,7 +44,7 @@ if (!defined("DRIVER")) {
 				$row = $result->fetch_array();
 				return $row[$field];
 			}
-
+			
 			function quote($string) {
 				return "'" . $this->escape_string($string) . "'";
 			}
@@ -80,7 +89,11 @@ if (!defined("DRIVER")) {
 			*/
 			function set_charset($charset) {
 				if (function_exists('mysql_set_charset')) {
-					return mysql_set_charset($charset, $this->_link);
+					if (mysql_set_charset($charset, $this->_link)) {
+						return true;
+					}
+					// the client library may not support utf8mb4
+					mysql_set_charset('utf8', $this->_link);
 				}
 				return $this->query("SET NAMES $charset");
 			}
@@ -649,7 +662,7 @@ if (!defined("DRIVER")) {
 	* @param string
 	* @param string
 	* @param string
-	* @param int
+	* @param string number
 	* @param string
 	* @return bool
 	*/
@@ -662,20 +675,21 @@ if (!defined("DRIVER")) {
 			);
 		}
 		$alter = array_merge($alter, $foreign);
-		$status = "COMMENT=" . q($comment)
+		$status = ($comment !== null ? " COMMENT=" . q($comment) : "")
 			. ($engine ? " ENGINE=" . q($engine) : "")
 			. ($collation ? " COLLATE " . q($collation) : "")
 			. ($auto_increment != "" ? " AUTO_INCREMENT=$auto_increment" : "")
-			. $partitioning
 		;
 		if ($table == "") {
-			return queries("CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n) $status");
+			return queries("CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)$status$partitioning");
 		}
 		if ($table != $name) {
 			$alter[] = "RENAME TO " . table($name);
 		}
-		$alter[] = $status;
-		return queries("ALTER TABLE " . table($table) . "\n" . implode(",\n", $alter));
+		if ($status) {
+			$alter[] = ltrim($status);
+		}
+		return ($alter || $partitioning ? queries("ALTER TABLE " . table($table) . "\n" . implode(",\n", $alter) . $partitioning) : true);
 	}
 
 	/** Run commands to alter indexes

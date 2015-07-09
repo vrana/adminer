@@ -1,4 +1,12 @@
-Adminer 4.1.1-dev:
+Adminer 4.2.1 (released 2015-03-10):
+Send referrer header to the same domain
+MySQL: Fix usage of utf8mb4 if the client library doesn't support it
+MySQL: Use utf8mb4 in export only if required
+SQLite: Use EXPLAIN QUERY PLAN in SQL query
+
+Adminer 4.2.0 (released 2015-02-07):
+Fix XSS in login form (bug #436)
+Allow limiting number of displayed rows in SQL command
 Fix reading routine column collations
 Unlock session in alter database
 Make master key unreadable to others (bug #410)
@@ -7,7 +15,10 @@ Specify encoding for PHP 5.6 with invalid default_charset
 Fix saving NULL value, bug since Adminer 4.0.3
 Send 403 for auth error
 Report offline and other AJAX errors (bug #419)
+Don't alter table comment if not changed
 Add links to documentation on table status page
+Fix handling of 64 bit numbers in auto_increment
+Add referrer: never meta tag
 MySQL: Use utf8mb4 if available
 MySQL: Support foreign keys in NDB storage
 PostgreSQL: Materialized views
@@ -16,7 +27,7 @@ Elasticsearch: Use where in select
 Firebird: Alpha version
 Danish translation
 
-Adminer 4.1.0 (released 2014-04-18)
+Adminer 4.1.0 (released 2014-04-18):
 Provide size of all databases in the overview
 Prevent against brute force login attempts from the same IP address
 Compute number of tables in the overview explicitly
@@ -406,7 +417,7 @@ Adminer 2.3.1 (released 2010-04-06):
 Add Drop button to Alter pages (regression from 2.0.0)
 Link COUNT(*) result to listing
 Newlines in select query edit
-Return to referer after edit
+Return to referrer after edit
 Respect session.auto_start (bug #2967284)
 
 Adminer 2.3.0 (released 2010-02-26):

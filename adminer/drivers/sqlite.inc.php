@@ -691,7 +691,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 
 	function explain($connection, $query) {
-		return $connection->query("EXPLAIN $query");
+		return $connection->query("EXPLAIN QUERY PLAN $query");
 	}
 
 	function found_rows($table_status, $where) {
