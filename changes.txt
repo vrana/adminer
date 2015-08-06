@@ -1,4 +1,4 @@
-Adminer 4.2.2 (released ):
+Adminer 4.2.2 (released 2015-08-05):
 Fix XSS in alter table (found by HP Fortify)
 
 Adminer 4.2.1 (released 2015-03-10):
