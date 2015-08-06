@@ -1,3 +1,6 @@
+Adminer 4.2.2 (released ):
+Fix XSS in alter table (found by HP Fortify)
+
 Adminer 4.2.1 (released 2015-03-10):
 Send referrer header to the same domain
 MySQL: Fix usage of utf8mb4 if the client library doesn't support it
