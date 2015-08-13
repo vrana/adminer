@@ -22,6 +22,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <meta http-equiv="Content-Script-Type" content="text/javascript">
 <meta name="robots" content="noindex">
 <meta name="referrer" content="origin-when-crossorigin">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?php echo $title_page; ?></title>
 <link rel="stylesheet" type="text/css" href="../adminer/static/default.css">
 <script type="text/javascript" src="../adminer/static/functions.js"></script>
