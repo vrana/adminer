@@ -205,7 +205,7 @@ tr.odd td {
 	top:0px;
 	left:300px;
 	background:#48A5BF;
-	z-index:2;
+	z-index:0;
 	width:100%;
 	color:#ecf0f1;
 	padding:10px;
