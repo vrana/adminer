@@ -286,6 +286,10 @@ input[name=logout]:hover {
 	color:red;	
 }
 
+.logout {
+	z-index:3;
+}
+
 .js .column {
 	background:#ecf0f1;
 }
