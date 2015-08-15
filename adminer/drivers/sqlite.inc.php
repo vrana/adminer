@@ -11,7 +11,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			class Min_SQLite {
 				var $extension = "SQLite3", $server_info, $affected_rows, $errno, $error, $_link;
 
-				function Min_SQLite($filename) {
+				function __construct($filename) {
 					$this->_link = new SQLite3($filename);
 					$version = $this->_link->version();
 					$this->server_info = $version["versionString"];
@@ -55,7 +55,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			class Min_Result {
 				var $_result, $_offset = 0, $num_rows;
 
-				function Min_Result($result) {
+				function __construct($result) {
 					$this->_result = $result;
 				}
 
@@ -87,7 +87,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			class Min_SQLite {
 				var $extension = "SQLite", $server_info, $affected_rows, $error, $_link;
 
-				function Min_SQLite($filename) {
+				function __construct($filename) {
 					$this->server_info = sqlite_libversion();
 					$this->_link = new SQLiteDatabase($filename);
 				}
@@ -127,7 +127,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			class Min_Result {
 				var $_result, $_offset = 0, $num_rows;
 
-				function Min_Result($result) {
+				function __construct($result) {
 					$this->_result = $result;
 					if (method_exists($result, 'numRows')) { // not available in unbuffered query
 						$this->num_rows = $result->numRows();
@@ -172,7 +172,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		class Min_SQLite extends Min_PDO {
 			var $extension = "PDO_SQLite";
 
-			function Min_SQLite($filename) {
+			function __construct($filename) {
 				$this->dsn(DRIVER . ":$filename", "", "");
 			}
 		}
@@ -182,13 +182,13 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	if (class_exists("Min_SQLite")) {
 		class Min_DB extends Min_SQLite {
 
-			function Min_DB() {
-				$this->Min_SQLite(":memory:");
+			function __construct() {
+				parent::__construct(":memory:");
 			}
 
 			function select_db($filename) {
 				if (is_readable($filename) && $this->query("ATTACH " . $this->quote(preg_match("~(^[/\\\\]|:)~", $filename) ? $filename : dirname($_SERVER["SCRIPT_FILENAME"]) . "/$filename") . " AS a")) { // is_readable - SQLite 3
-					$this->Min_SQLite($filename);
+					parent::__construct($filename);
 					return true;
 				}
 				return false;
@@ -440,7 +440,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 
 	function drop_databases($databases) {
 		global $connection;
-		$connection->Min_SQLite(":memory:"); // to unlock file, doesn't work in PDO on Windows
+		$connection->__construct(":memory:"); // to unlock file, doesn't work in PDO on Windows
 		foreach ($databases as $db) {
 			if (!@unlink($db)) {
 				$connection->error = lang('File exists.');
@@ -455,7 +455,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		if (!check_sqlite_name($name)) {
 			return false;
 		}
-		$connection->Min_SQLite(":memory:");
+		$connection->__construct(":memory:");
 		$connection->error = lang('File exists.');
 		return @rename(DB, $name);
 	}

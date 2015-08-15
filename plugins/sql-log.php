@@ -13,7 +13,7 @@ class AdminerSqlLog {
 	/**
 	* @param string defaults to "$database.sql"
 	*/
-	function AdminerSqlLog($filename = "") {
+	function __construct($filename = "") {
 		$this->filename = $filename;
 	}
 	

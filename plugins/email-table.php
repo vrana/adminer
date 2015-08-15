@@ -17,7 +17,7 @@ class AdminerEmailTable {
 	* @param string quoted column name
 	* @param string quoted column name
 	*/
-	function AdminerEmailTable($table = "email", $id = "id", $title = "subject", $subject = "subject", $message = "message") {
+	function __construct($table = "email", $id = "id", $title = "subject", $subject = "subject", $message = "message") {
 		$this->table = $table;
 		$this->id = $id;
 		$this->title = $title;

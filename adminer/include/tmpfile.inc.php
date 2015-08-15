@@ -4,7 +4,7 @@ class TmpFile {
 	var $handler;
 	var $size;
 	
-	function TmpFile() {
+	function __construct() {
 		$this->handler = tmpfile();
 	}
 	

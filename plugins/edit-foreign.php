@@ -9,7 +9,7 @@
 class AdminerEditForeign {
 	var $_limit;
 	
-	function AdminerEditForeign($limit = 0) {
+	function __construct($limit = 0) {
 		$this->_limit = $limit;
 	}
 	

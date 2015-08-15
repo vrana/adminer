@@ -52,7 +52,7 @@ if (isset($_GET["mongo"])) {
 		class Min_Result {
 			var $num_rows, $_rows = array(), $_offset = 0, $_charset = array();
 
-			function Min_Result($result) {
+			function __construct($result) {
 				foreach ($result as $item) {
 					$row = array();
 					foreach ($item as $key => $val) {

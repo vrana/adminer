@@ -14,7 +14,7 @@ class AdminerTinymce {
 	/**
 	* @param string
 	*/
-	function AdminerTinymce($path = "tiny_mce/tiny_mce.js") {
+	function __construct($path = "tiny_mce/tiny_mce.js") {
 		$this->path = $path;
 	}
 
