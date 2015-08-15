@@ -13,7 +13,7 @@ class AdminerFrames {
 	/**
 	* @param bool allow running from the same origin only
 	*/
-	function AdminerFrames($sameOrigin = false) {
+	function __construct($sameOrigin = false) {
 		$this->sameOrigin = $sameOrigin;
 	}
 	

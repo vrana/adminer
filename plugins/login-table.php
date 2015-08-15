@@ -22,7 +22,7 @@ class AdminerLoginTable {
 	/** Set database of login table
 	* @param string
 	*/
-	function AdminerLoginTable($database) {
+	function __construct($database) {
 		$this->database = $database;
 	}
 	

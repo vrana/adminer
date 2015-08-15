@@ -20,7 +20,7 @@ class AdminerPlugin extends Adminer {
 	/** Register plugins
 	* @param array object instances or null to register all classes starting by 'Adminer'
 	*/
-	function AdminerPlugin($plugins) {
+	function __construct($plugins) {
 		if ($plugins === null) {
 			$plugins = array();
 			foreach (get_declared_classes() as $class) {

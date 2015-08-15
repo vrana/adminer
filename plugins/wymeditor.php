@@ -15,7 +15,7 @@ class AdminerWymeditor {
 	* @param array
 	* @param string in format "skin: 'custom', preInit: function () { }"
 	*/
-	function AdminerWymeditor($scripts = array("jquery/jquery.js", "wymeditor/jquery.wymeditor.min.js"), $options = "") {
+	function __construct($scripts = array("jquery/jquery.js", "wymeditor/jquery.wymeditor.min.js"), $options = "") {
 		$this->scripts = $scripts;
 		$this->options = $options;
 	}

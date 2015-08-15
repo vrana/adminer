@@ -16,7 +16,7 @@ class AdminerFileUpload {
 	* @param string prefix for displaying data, null stands for $uploadPath
 	* @param string regular expression with allowed file extensions
 	*/
-	function AdminerFileUpload($uploadPath = "../static/data/", $displayPath = null, $extensions = "[a-zA-Z0-9]+") {
+	function __construct($uploadPath = "../static/data/", $displayPath = null, $extensions = "[a-zA-Z0-9]+") {
 		$this->uploadPath = $uploadPath;
 		$this->displayPath = ($displayPath !== null ? $displayPath : $uploadPath);
 		$this->extensions = $extensions;

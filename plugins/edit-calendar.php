@@ -16,7 +16,7 @@ class AdminerEditCalendar {
 	* @param string text to append before first calendar usage
 	* @param string path to language file, %s stands for language code
 	*/
-	function AdminerEditCalendar($prepend = "<script type='text/javascript' src='jquery-ui/jquery.js'></script>\n<script type='text/javascript' src='jquery-ui/jquery-ui.js'></script>\n<script type='text/javascript' src='jquery-ui/jquery-ui-timepicker-addon.js'></script>\n<link rel='stylesheet' type='text/css' href='jquery-ui/jquery-ui.css'>\n", $langPath = "jquery-ui/i18n/jquery.ui.datepicker-%s.js") {
+	function __construct($prepend = "<script type='text/javascript' src='jquery-ui/jquery.js'></script>\n<script type='text/javascript' src='jquery-ui/jquery-ui.js'></script>\n<script type='text/javascript' src='jquery-ui/jquery-ui-timepicker-addon.js'></script>\n<link rel='stylesheet' type='text/css' href='jquery-ui/jquery-ui.css'>\n", $langPath = "jquery-ui/i18n/jquery.ui.datepicker-%s.js") {
 		$this->prepend = $prepend;
 		$this->langPath = $langPath;
 	}

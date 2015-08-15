@@ -94,7 +94,7 @@ if (isset($_GET["pgsql"])) {
 		class Min_Result {
 			var $_result, $_offset = 0, $num_rows;
 
-			function Min_Result($result) {
+			function __construct($result) {
 				$this->_result = $result;
 				$this->num_rows = pg_num_rows($result);
 			}
