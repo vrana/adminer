@@ -57,6 +57,13 @@ class Adminer {
 		return schemas();
 	}
 
+	/** Get list of schemas
+	 * @return array
+	 */
+	function count_schemas() {
+		return count_schemas();
+	}
+
 	/** Specify limit for waiting on some slow queries like DB list
 	* @return float number of seconds
 	*/
@@ -762,6 +769,8 @@ username.form['auth[driver]'].onchange();
 	* @return bool whether to print default homepage
 	*/
 	function homepage() {
+		global $adminer;
+		echo (support("scheme") && $_GET['ns'] === '' ? "<p>" . lang('This database contains ' . $adminer->count_schemas() . ' schemas.') . "</p>\n" : "");
 		echo '<p class="links">' . ($_GET["ns"] == "" && support("database") ? '<a href="' . h(ME) . 'database=">' . lang('Alter database') . "</a>\n" : "");
 		echo (support("scheme") ? "<a href='" . h(ME) . "scheme='>" . ($_GET["ns"] != "" ? lang('Alter schema') : lang('Create schema')) . "</a>\n" : "");
 		echo ($_GET["ns"] !== "" ? '<a href="' . h(ME) . 'schema=">' . lang('Database schema') . "</a>\n" : "");
