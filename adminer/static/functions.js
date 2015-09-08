@@ -37,7 +37,7 @@ function cookie(assign, days) {
 function verifyVersion(current) {
 	cookie('adminer_version=0', 1);
 	var iframe = document.createElement('iframe');
-	iframe.src = location.protocol + '//www.adminer.org/version/?current=' + current;
+	iframe.src = 'https://www.adminer.org/version/?current=' + current;
 	iframe.frameBorder = 0;
 	iframe.marginHeight = 0;
 	iframe.scrolling = 'no';
@@ -46,7 +46,7 @@ function verifyVersion(current) {
 	if (window.postMessage && window.addEventListener) {
 		iframe.style.display = 'none';
 		addEventListener('message', function (event) {
-			if (event.origin == location.protocol + '//www.adminer.org') {
+			if (event.origin == 'https://www.adminer.org') {
 				var match = /version=(.+)/.exec(event.data);
 				if (match) {
 					cookie('adminer_version=' + match[1], 1);
