@@ -135,7 +135,6 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function __destruct() {
-				sqlsrv_free_stmt($this->_result);
 			}
 		}
 
@@ -230,7 +229,6 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function __destruct() {
-				mssql_free_result($this->_result);
 			}
 		}
 
