@@ -15,6 +15,7 @@ $translations = array(
 	'Master password expired. <a href="https://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to make it permanent.' => 'Έλειξε ο Κύριος Κωδικός. <a href="https://www.adminer.org/en/extension/" target="_blank">Ενεργοποιήστε</a> τη μέθοδο %s για να τον κάνετε μόνιμο.',
 	'Language' => 'Γλώσσα',
 	'Invalid CSRF token. Send the form again.' => 'Άκυρο κουπόνι CSRF. Στείλτε τη φόρμα ξανά.',
+	'If you did not send this request from Adminer then close this page.' => 'Αν δε στείλατε αυτό το αίτημα από το Adminer, τότε κλείστε αυτή τη σελίδα.',
 	'No extension' => 'Χωρίς Επεκτάσεις',
 	'None of the supported PHP extensions (%s) are available.' => 'Καμία από τις υποστηριζόμενες επεκτάσεις PHP (%s) δεν είναι διαθέσιμη.',
 	'Session support must be enabled.' => 'Πρέπει να είναι ενεργοποιημένη η υποστήριξη συνεδριών.',
@@ -73,6 +74,7 @@ $translations = array(
 	'Output' => 'Αποτέλεσμα',
 	'open' => 'άνοιγμα',
 	'save' => 'αποθήκευση',
+	'Saving' => 'Γίνεται Αποθήκευση',
 	'Format' => 'Μορφή',
 	'Data' => 'Δεδομένα',
 	
