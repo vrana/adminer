@@ -9,7 +9,7 @@ if (!defined("DRIVER")) {
 		class Min_DB extends MySQLi {
 			var $extension = "MySQLi";
 
-			function Min_DB() {
+			function __construct() {
 				parent::init();
 			}
 
@@ -44,7 +44,7 @@ if (!defined("DRIVER")) {
 				$row = $result->fetch_array();
 				return $row[$field];
 			}
-			
+
 			function quote($string) {
 				return "'" . $this->escape_string($string) . "'";
 			}
@@ -181,7 +181,7 @@ if (!defined("DRIVER")) {
 			/** Constructor
 			* @param resource
 			*/
-			function Min_Result($result) {
+			function __construct($result) {
 				$this->_result = $result;
 				$this->num_rows = mysql_num_rows($result);
 			}
