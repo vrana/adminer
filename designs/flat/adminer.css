@@ -1,0 +1,108 @@
+/**
+ * Adminer "flat" theme by Israel Viana
+ *
+ * Color palette from https://kuler.adobe.com/Copy-of-Flat-UI-color-theme-3785174/
+ * Navy: 2c3e50
+ * Red: e74c3c
+ * Gray: ecf0f1
+ * Light blue: 3498db
+ * Blue: 2980b9
+ */
+
+/*
+ * Basic tags
+ */
+
+a {
+	color: #2980b9;
+}
+
+a:visited {
+	color: #3498db
+}
+
+a:link:hover, a:visited:hover {
+	color: #e74c3c;
+}
+
+h1 {
+	border-bottom: 1px solid #e74c3c;
+	background: #ecf0f1;
+}
+
+h2 {
+	border-bottom: 1px solid #e74c3c;
+	background: #ecf0f1;
+}
+
+/*
+ * Tables
+ */
+
+table {
+	border-top: 0;
+	border-left: 1px solid silver;
+}
+
+td, th {
+	border-right: 1px solid silver;
+	border-bottom: 1px solid silver;
+	padding: .3em .5em;
+}
+
+thead th, thead td {
+	background: #3498db;
+	color: white;
+	border-right: 1px solid white;
+	border-bottom: 1px solid white;
+	padding: .3em .5em;
+}
+
+thead th a, thead td a {
+	color: #eee;
+}
+
+.js span.column {
+	background: white;
+}
+	th span.column a.text {
+		color: #2980b9;
+	}
+
+.js .checkable .checked td, .js .checkable .checked th {
+	background: rgba(52, 152, 219, .3);
+}
+
+.pages {
+  border: none;
+  box-shadow: -1px -1px 4px silver;
+}
+
+/*
+ * Common sections
+ */
+
+#breadcrumb a {
+	color: #e74c3c;
+}
+
+#logout {
+	font-weight: bold;
+}
+
+/*
+ * Elements
+ */
+
+sup {
+	padding: 3px 7px;
+	background: #3498db;
+	color: white;
+	border-radius: 2em;
+}
+
+code.jush-sql {
+	display: block;
+	padding: .4em .7em;
+	line-height: 1.5em;
+}
