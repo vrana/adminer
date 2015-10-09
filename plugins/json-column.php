@@ -1,7 +1,7 @@
 <?php
 
 /** Display JSON values as table in edit
-* @link http://www.adminer.org/plugins/#use
+* @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, http://www.vrana.cz/
 * @author Martin Zeman (Zemistr), http://www.zemistr.eu/
 * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
