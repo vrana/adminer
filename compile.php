@@ -392,6 +392,8 @@ if ($_SESSION["lang"]) {
 	$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
 	$file = str_replace('<?php echo $LANG; ?>', $_SESSION["lang"], $file);
 }
+
+
 $file = str_replace('<script type="text/javascript" src="static/editing.js"></script>' . "\n", "", $file);
 $file = str_replace('<script type="text/javascript" src="../externals/jush/modules/jush-textarea.js"></script>' . "\n", "", $file);
 $file = str_replace('<script type="text/javascript" src="../externals/jush/modules/jush-txt.js"></script>' . "\n", "", $file);
@@ -401,6 +403,7 @@ $file = preg_replace_callback("~compile_file\\('([^']+)'(?:, '([^']*)')?\\)~", '
 $replace = 'h(preg_replace("~\\\\\\\\?.*~", "", ME)) . "?file=\\1&amp;version=' . $VERSION . ($driver ? '&amp;driver=' . $driver : '');
 $file = preg_replace('~\\.\\./adminer/static/(default\\.css|functions\\.js|favicon\\.ico)~', '<?php echo ' . $replace . '"; ?>', $file);
 $file = preg_replace('~\\.\\./adminer/static/([^\'"]*)~', '" . ' . $replace, $file);
+$file = preg_replace('~\\.\\./externals/jush/modules/(jush\\.js)~', '<?php echo ' . $replace . '"; ?>', $file);
 $file = preg_replace('~\\.\\./externals/jush/modules/(jush\\.js)~', '<?php echo ' . $replace . '"; ?>', $file);
 $file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
 $file = php_shrink($file);

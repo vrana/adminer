@@ -32,6 +32,19 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <?php if (file_exists("adminer.css")) { ?>
 <link rel="stylesheet" type="text/css" href="adminer.css">
 <?php } ?>
+    <!-- @mshot - fixed header bellow breadcrumb START-->
+<?php if ( file_exists("./jquery/jquery.min.js") && file_exists("./jquery/plugins/jquery.stickytableheaders.js")) { ?>
+    <script type="text/javascript" src="jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="jquery/plugins/jquery.stickytableheaders.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $("#table").stickyTableHeaders({fixedOffset: $('#breadcrumb')});
+        });
+
+    </script>
+<?php } ?>
+    <!-- @mshot - fixed header bellow breadcrumb END -->
 <?php } ?>
 
 <body class="<?php echo lang('ltr'); ?> nojs" onkeydown="bodyKeydown(event);" onclick="bodyClick(event);"<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " onload=\"verifyVersion('$VERSION');\""); ?>>
