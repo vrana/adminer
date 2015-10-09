@@ -234,6 +234,7 @@ function type_class($type) {
 */
 function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = array(), $comments = false) {
 	global $connection, $inout;
+	$fields = array_values($fields);
 	?>
 <thead><tr class="wrap">
 <?php if ($type == "PROCEDURE") { ?><td>&nbsp;<?php } ?>
