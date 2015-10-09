@@ -14,6 +14,7 @@ $langs = array(
 	'et' => 'Eesti', // Priit Kallas
 	'fa' => 'فارسی', // mojtaba barghbani - Iran - mbarghbani@gmail.com, Nima Amini - http://nimlog.com
 	'fr' => 'Français', // Francis Gagné, Aurélien Royer
+	'gl' => 'Galego', // Eduardo Penabad Ramos
 	'hu' => 'Magyar', // Borsos Szilárd (Borsosfi) - http://www.borsosfi.hu, info@borsosfi.hu
 	'id' => 'Bahasa Indonesia', // Ivan Lanin - http://ivan.lanin.org
 	'it' => 'Italiano', // Alessandro Fiorotto, Paolo Asperti
