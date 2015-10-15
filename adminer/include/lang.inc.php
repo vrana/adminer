@@ -9,10 +9,12 @@ $langs = array(
 	'cs' => 'Čeština', // Jakub Vrána - http://www.vrana.cz
 	'da' => 'Dansk', // Jarne W. Beutnagel - jarne@beutnagel.dk
 	'de' => 'Deutsch', // Klemens Häckel - http://clickdimension.wordpress.com
+	'el' => 'Ελληνικά', // Dimitrios T. Tanis - jtanis@tanisfood.gr
 	'es' => 'Español', // Klemens Häckel - http://clickdimension.wordpress.com
 	'et' => 'Eesti', // Priit Kallas
 	'fa' => 'فارسی', // mojtaba barghbani - Iran - mbarghbani@gmail.com, Nima Amini - http://nimlog.com
 	'fr' => 'Français', // Francis Gagné, Aurélien Royer
+	'gl' => 'Galego', // Eduardo Penabad Ramos
 	'hu' => 'Magyar', // Borsos Szilárd (Borsosfi) - http://www.borsosfi.hu, info@borsosfi.hu
 	'id' => 'Bahasa Indonesia', // Ivan Lanin - http://ivan.lanin.org
 	'it' => 'Italiano', // Alessandro Fiorotto, Paolo Asperti
@@ -62,7 +64,7 @@ function lang($idf, $number = null) {
 			: ($LANG == 'sl' ? ($number % 100 == 1 ? 0 : ($number % 100 == 2 ? 1 : ($number % 100 == 3 || $number % 100 == 4 ? 2 : 3))) // different forms for 1, 2, 3-4, other
 			: ($LANG == 'lt' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1, 12-19, other
 			: ($LANG == 'ru' || $LANG == 'sr' || $LANG == 'uk' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1, 2-4, other
-			: 1
+			: 1 // different forms for 1, other
 		))))))); // http://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
 		$translation = $translation[$pos];
 	}
