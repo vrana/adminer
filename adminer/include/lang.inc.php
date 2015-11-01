@@ -4,6 +4,7 @@
 $langs = array(
 	'en' => 'English', // Jakub Vrána - http://www.vrana.cz
 	'ar' => 'العربية', // Y.M Amine - Algeria - nbr7@live.fr
+	'bg' => 'Български', // Deyan Delchev
 	'bn' => 'বাংলা', // Dipak Kumar - dipak.ndc@gmail.com
 	'ca' => 'Català', // Joan Llosas
 	'cs' => 'Čeština', // Jakub Vrána - http://www.vrana.cz
