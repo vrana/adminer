@@ -35,7 +35,7 @@ function connect_error() {
 				. "<th>" . lang('Database') . " - <a href='" . h(ME) . "refresh=1'>" . lang('Refresh') . "</a>"
 				. "<td>" . lang('Collation')
 				. "<td>" . lang('Tables')
-				. "<td>" . lang('Size') . " - <a href='" . h(ME) . "dbsize=1' onclick=\"return !ajaxSetHtml('" . js_escape(ME) . "script=connect');\">" . lang('Compute') . "</a>"
+				. "<td>" . lang('Size') . " - <a href='" . h(ME) . "dbsize=1' onclick=\"return !ajaxSetHtml('" . h(js_escape(ME)) . "script=connect');\">" . lang('Compute') . "</a>"
 				. "</thead>\n"
 			;
 			
