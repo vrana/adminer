@@ -1,4 +1,5 @@
 Adminer 4.2.3-dev:
+Fix XSS in indexes (non-MySQL only)
 Support PHP 7
 Greek translation
 Galician translation
