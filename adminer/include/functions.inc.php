@@ -1323,7 +1323,7 @@ function edit_form($TABLE, $fields, $row, $update) {
 		echo "<table cellspacing='0' onkeydown='return editingKeydown(event);'>\n";
 
 		foreach ($fields as $name => $field) {
-			echo "<tr><th>" . $adminer->fieldName($field);
+			echo "<tr><th>" . $adminer->fieldName($field) . ($field["comment"] ? "<br /><small>".$field["comment"]."</small>" : "");
 			$default = $_GET["set"][bracket_escape($name)];
 			if ($default === null) {
 				$default = $field["default"];
