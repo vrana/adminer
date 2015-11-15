@@ -1,4 +1,4 @@
-Adminer 4.2.3-dev:
+Adminer 4.2.3 (released 2015-11-15):
 Fix XSS in indexes (non-MySQL only)
 Support PHP 7
 Greek translation
