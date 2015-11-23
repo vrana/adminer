@@ -520,6 +520,17 @@ function set_session($key, $val) {
 	$_SESSION[$key][DRIVER][SERVER][$_GET["username"]] = $val; // used also in auth.inc.php
 }
 
+/** Get page table
+*/
+function get_page_table() {
+	if (isset($_GET["indexes"])) return $_GET["indexes"];
+	if (isset($_GET["select"])) return $_GET["select"];
+	if (isset($_GET["create"])) return $_GET["create"];
+	if (isset($_GET["table"])) return $_GET["table"];
+	if (isset($_GET["edit"])) return $_GET["edit"];
+	return "";
+}
+
 /** Get authenticated URL
 * @param string
 * @param string
@@ -1304,13 +1315,15 @@ function on_help($command, $side = 0) {
 */
 function edit_form($TABLE, $fields, $row, $update) {
 	global $adminer, $jush, $token, $error;
-	$table_name = $adminer->tableName(table_status1($TABLE, true));
+	$table_status = table_status1($TABLE, true);
+	$table_name = $adminer->tableName($table_status);
 	page_header(
 		($update ? lang('Edit') : lang('Insert')),
 		$error,
 		array("select" => array($TABLE, $table_name)),
 		$table_name
 	);
+	$adminer->selectLinks($table_status);
 	if ($row === false) {
 		echo "<p class='error'>" . lang('No rows.') . "\n";
 	}

@@ -405,7 +405,7 @@ if (!$columns && support("table")) {
 								$link .= where_link($i++, $k, $v);
 							}
 						}
-						
+
 						$val = select_value($val, $link, $field, $text_length);
 						$id = h("val[$unique_idf][" . bracket_escape($key) . "]");
 						$value = $_POST["val"][$unique_idf][bracket_escape($key)];

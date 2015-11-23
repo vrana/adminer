@@ -152,8 +152,12 @@ username.form['auth[driver]'].onchange();
 			$links["edit"] = lang('New item');
 		}
 		foreach ($links as $key => $val) {
-			echo " <a href='" . h(ME) . "$key=" . urlencode($tableStatus["Name"]) . ($key == "edit" ? $set : "") . "'" . bold(isset($_GET[$key])) . ">$val</a>";
+			$is_bold = isset($_GET[$key]) && !isset($_GET["sql"]);
+			if (($key == "edit") && !empty($_GET["where"]))
+				$is_bold = false;
+			echo " <a href='" . h(ME) . "$key=" . urlencode($tableStatus["Name"]) . ($key == "edit" ? $set : "") . "'" . bold($is_bold) . ">$val</a>";
 		}
+		echo " <a href='" . h(ME) . "sql=&table=" . urlencode($tableStatus["Name"])."'" . bold(isset($_GET["sql"])) . ">".lang('SQL command')."</a>";
 		echo "\n";
 	}
 
@@ -189,8 +193,9 @@ username.form['auth[driver]'].onchange();
 	*/
 	function selectQuery($query, $time) {
 		global $jush;
+		$default_table = get_page_table();
 		return "<p><code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code> <span class='time'>($time)</span>"
-			. (support("sql") ? " <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>" : "")
+			. (support("sql") ? " <a href='" . h(ME) . "sql=" . urlencode($query) . ($default_table ? "&table=".$default_table : "") . "'>" . lang('Edit') . "</a>" : "")
 			. "</p>" // </p> - required for IE9 inline edit
 		;
 	}
@@ -517,6 +522,8 @@ username.form['auth[driver]'].onchange();
 		global $jush;
 		restart_session();
 		$history = &get_session("queries");
+		$default_table = get_page_table();
+
 		$id = "sql-" . count($history[$_GET["db"]]);
 		if (strlen($query) > 1e6) {
 			$query = preg_replace('~[\x80-\xFF]+$~', '', substr($query, 0, 1e6)) . "\n..."; // [\x80-\xFF] - valid UTF-8, \n - can end by one-line comment
@@ -525,7 +532,7 @@ username.form['auth[driver]'].onchange();
 		return " <span class='time'>" . @date("H:i:s") . "</span> <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a>" // @ - time zone may be not set
 			. "<div id='$id' class='hidden'><pre><code class='jush-$jush'>" . shorten_utf8($query, 1000) . '</code></pre>'
 			. ($time ? " <span class='time'>($time)</span>" : '')
-			. (support("sql") ? '<p><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a>' : '')
+			. (support("sql") ? '<p><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . ($default_table ? "&table=".$default_table : "") . '">' . lang('Edit') . '</a>' : '')
 			. '</div>'
 		;
 	}
@@ -829,7 +836,7 @@ bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 
 			}
 			$this->databasesPrint($missing);
 			if (DB == "" || !$missing) {
-				echo "<p class='links'>" . (support("sql") ? "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"]) && !isset($_GET["import"])) . ">" . lang('SQL command') . "</a>\n<a href='" . h(ME) . "import='" . bold(isset($_GET["import"])) . ">" . lang('Import') . "</a>\n" : "") . "";
+				echo "<p class='links'>" . (support("sql") ? "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"]) && !isset($_GET["import"]) && !isset($_GET["table"])) . ">" . lang('SQL command') . "</a>\n<a href='" . h(ME) . "import='" . bold(isset($_GET["import"])) . ">" . lang('Import') . "</a>\n" : "") . "";
 				if (support("dump")) {
 					echo "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . lang('Export') . "</a>\n";
 				}

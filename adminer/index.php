@@ -25,6 +25,8 @@ if (isset($_GET["function"])) {
 
 if (isset($_GET["download"])) {
 	include "./download.inc.php";
+} elseif (isset($_GET["sql"])) {		// sql first, because it can be with &table=
+	include "./sql.inc.php";
 } elseif (isset($_GET["table"])) {
 	include "./table.inc.php";
 } elseif (isset($_GET["schema"])) {
@@ -33,8 +35,6 @@ if (isset($_GET["download"])) {
 	include "./dump.inc.php";
 } elseif (isset($_GET["privileges"])) {
 	include "./privileges.inc.php";
-} elseif (isset($_GET["sql"])) {
-	include "./sql.inc.php";
 } elseif (isset($_GET["edit"])) {
 	include "./edit.inc.php";
 } elseif (isset($_GET["create"])) {

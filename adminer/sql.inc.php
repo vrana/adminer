@@ -14,7 +14,12 @@ if (!$error && $_POST["clear"]) {
 	redirect(remove_from_uri("history"));
 }
 
-page_header((isset($_GET["import"]) ? lang('Import') : lang('SQL command')), $error);
+$TABLE = $_GET["table"];
+$table_status = table_status1($TABLE);
+$table_name = $adminer->tableName($table_status);
+page_header((isset($_GET["import"]) ? lang('Import') : lang('SQL command') . ($table_name ? ": ".$table_name : "")), $error);
+if ($table_name)
+	$adminer->selectLinks($table_status);
 
 if (!$error && $_POST) {
 	$fp = false;
@@ -109,7 +114,7 @@ if (!$error && $_POST) {
 						do {
 							$result = $connection->store_result();
 							$time = " <span class='time'>(" . format_time($start) . ")</span>"
-								. (strlen($q) < 1000 ? " <a href='" . h(ME) . "sql=" . urlencode(trim($q)) . "'>" . lang('Edit') . "</a>" : "") // 1000 - maximum length of encoded URL in IE is 2083 characters
+								. (strlen($q) < 1000 ? " <a href='" . h(ME) . "sql=" . urlencode(trim($q)) . ($_GET["table"] ? "&table=".$_GET["table"] : "") . "'>" . lang('Edit') . "</a>" : "") // 1000 - maximum length of encoded URL in IE is 2083 characters
 							;
 
 							if ($connection->error) {
@@ -203,7 +208,7 @@ if (!isset($_GET["import"])) {
 	echo ($_POST ? "" : "<script type='text/javascript'>focus(document.getElementsByTagName('textarea')[0]);</script>\n");
 	echo "<p>$execute\n";
 	echo lang('Limit rows') . ": <input type='number' name='limit' class='size' value='" . h($_POST ? $_POST["limit"] : $_GET["limit"]) . "'>\n";
-	
+
 } else {
 	echo "<fieldset><legend>" . lang('File upload') . "</legend><div>";
 	echo (ini_bool("file_uploads")
