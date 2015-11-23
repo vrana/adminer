@@ -141,7 +141,7 @@ function edit_type($key, $field, $collations, $foreign_keys = array()) {
 	global $structured_types, $types, $unsigned, $on_actions;
 	$type = $field["type"];
 	?>
-<td><select name="<?php echo $key; ?>[type]" class="type" onfocus="lastType = selectValue(this);" onchange="editingTypeChange(this);"<?php echo on_help("getTarget(event).value", 1); ?>><?php
+<td><select name="<?php echo h($key); ?>[type]" class="type" onfocus="lastType = selectValue(this);" onchange="editingTypeChange(this);"<?php echo on_help("getTarget(event).value", 1); ?>><?php
 if ($type && !isset($types[$type]) && !isset($foreign_keys[$type])) {
 	array_unshift($structured_types, $type);
 }
@@ -150,11 +150,11 @@ if ($foreign_keys) {
 }
 echo optionlist($structured_types, $type);
 ?></select>
-<td><input name="<?php echo $key; ?>[length]" value="<?php echo h($field["length"]); ?>" size="3" onfocus="editingLengthFocus(this);"<?php echo (!$field["length"] && preg_match('~var(char|binary)$~', $type) ? " class='required'" : ""); ?> onchange="editingLengthChange(this);" onkeyup="this.onchange();"><td class="options"><?php //! type="number" with enabled JavaScript
-	echo "<select name='$key" . "[collation]'" . (preg_match('~(char|text|enum|set)$~', $type) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>';
-	echo ($unsigned ? "<select name='$key" . "[unsigned]'" . (!$type || preg_match('~((^|[^o])int|float|double|decimal)$~', $type) ? "" : " class='hidden'") . '><option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
-	echo (isset($field['on_update']) ? "<select name='$key" . "[on_update]'" . (preg_match('~timestamp|datetime~', $type) ? "" : " class='hidden'") . '>' . optionlist(array("" => "(" . lang('ON UPDATE') . ")", "CURRENT_TIMESTAMP"), $field["on_update"]) . '</select>' : '');
-	echo ($foreign_keys ? "<select name='$key" . "[on_delete]'" . (preg_match("~`~", $type) ? "" : " class='hidden'") . "><option value=''>(" . lang('ON DELETE') . ")" . optionlist(explode("|", $on_actions), $field["on_delete"]) . "</select> " : " "); // space for IE
+<td><input name="<?php echo h($key); ?>[length]" value="<?php echo h($field["length"]); ?>" size="3" onfocus="editingLengthFocus(this);"<?php echo (!$field["length"] && preg_match('~var(char|binary)$~', $type) ? " class='required'" : ""); ?> onchange="editingLengthChange(this);" onkeyup="this.onchange();"><td class="options"><?php //! type="number" with enabled JavaScript
+	echo "<select name='" . h($key) . "[collation]'" . (preg_match('~(char|text|enum|set)$~', $type) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>';
+	echo ($unsigned ? "<select name='" . h($key) . "[unsigned]'" . (!$type || preg_match('~((^|[^o])int|float|double|decimal)$~', $type) ? "" : " class='hidden'") . '><option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
+	echo (isset($field['on_update']) ? "<select name='" . h($key) . "[on_update]'" . (preg_match('~timestamp|datetime~', $type) ? "" : " class='hidden'") . '>' . optionlist(array("" => "(" . lang('ON UPDATE') . ")", "CURRENT_TIMESTAMP"), $field["on_update"]) . '</select>' : '');
+	echo ($foreign_keys ? "<select name='" . h($key) . "[on_delete]'" . (preg_match("~`~", $type) ? "" : " class='hidden'") . "><option value=''>(" . lang('ON DELETE') . ")" . optionlist(explode("|", $on_actions), $field["on_delete"]) . "</select> " : " "); // space for IE
 }
 
 /** Filter length value including enums

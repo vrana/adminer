@@ -1,7 +1,9 @@
-Adminer 4.2.3-dev:
+Adminer 4.2.3 (released 2015-11-15):
+Fix XSS in indexes (non-MySQL only)
 Support PHP 7
 Greek translation
 Galician translation
+Bulgarian translation
 
 Adminer 4.2.2 (released 2015-08-05):
 Fix XSS in alter table (found by HP Fortify)
