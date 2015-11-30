@@ -152,6 +152,7 @@ if (!$_POST) {
 }
 
 $collations = collations();
+$collations_name = "";
 $engines = engines();
 // case of engine may differ
 foreach ($engines as $engine) {
@@ -168,7 +169,7 @@ foreach ($engines as $engine) {
 <?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo h($row["name"]); ?>" autocapitalize="off">
 <?php if ($TABLE == "" && !$_POST) { ?><script type='text/javascript'>focus(document.getElementById('form')['name']);</script><?php } ?>
 <?php echo ($engines ? "<select name='Engine' onchange='helpClose();'" . on_help("getTarget(event).value", 1) . ">" . optionlist(array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) . "</select>" : ""); ?>
- <?php echo ($collations && !preg_match("~sqlite|mssql~", $jush) ? html_select("Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]) : ""); ?>
+ <?php echo ($collations && !preg_match("~sqlite|mssql~", $jush) ? html_select($collations_name = "Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]) : ""); ?>
  <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php } ?>
 
@@ -184,7 +185,7 @@ if (!$_POST && !$comments) {
 		}
 	}
 }
-edit_fields($row["fields"], $collations, "TABLE", $foreign_keys, $comments);
+edit_fields($row["fields"], ($collations_name ? $collations_name : $collations), "TABLE", $foreign_keys, $comments);
 ?>
 </table>
 <p>

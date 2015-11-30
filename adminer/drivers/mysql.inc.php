@@ -473,6 +473,33 @@ if (!defined("DRIVER")) {
 			|| (preg_match('~NDB~i', $table_status["Engine"]) && version_compare($connection->server_info, '5.6') >= 0);
 	}
 
+	/** Get DB primary key fields
+	* @param string
+	* @return array array($tbl_name => array($name => array("field" => , "full_type" => , "type" => , "length" => , "unsigned" => , "default" => , "null" => , "auto_increment" => , "on_update" => , "collation" => , "privileges" => , "comment" => , "primary" => )))
+	*/
+	function db_pk_fields($table) {
+		$return = array();
+		foreach (get_rows("SELECT * FROM information_schema.columns WHERE table_schema = ".q(DB)." AND COLUMN_KEY = ".q('PRI')." ORDER BY table_name") as $row) {	// ,ordinal_position
+			preg_match('~^([^( ]+)(?:\\((.+)\\))?( unsigned)?( zerofill)?$~', $row["COLUMN_TYPE"], $match);
+			$return[$row["TABLE_NAME"]][$row["COLUMN_NAME"]] = array(
+				"field" => $row["COLUMN_NAME"],
+				"full_type" => $row["COLUMN_TYPE"],
+				"type" => $match[1],
+				"length" => $match[2],
+				"unsigned" => ltrim($match[3] . $match[4]),
+				"default" => ($row["COLUMN_DEFAULT"] != "" || preg_match("~char|set~", $match[1]) ? $row["COLUMN_DEFAULT"] : null),
+				"null" => ($row["IS_NULLABLE"] == "YES"),
+				"auto_increment" => ($row["EXTRA"] == "auto_increment"),
+				"on_update" => (preg_match('~^on update (.+)~i', $row["EXTRA"], $match) ? $match[1] : ""), //! available since MySQL 5.1.23
+				"collation" => $row["COLLATION_NAME"],
+				"privileges" => array_flip(preg_split('~, *~', $row["PRIVILEGES"])),
+				"comment" => $row["COLUMN_COMMENT"],
+				"primary" => ($row["COLUMN_KEY"] == "PRI"),
+			);
+		}
+		return $return;
+	}
+
 	/** Get information about fields
 	* @param string
 	* @return array array($name => array("field" => , "full_type" => , "type" => , "length" => , "unsigned" => , "default" => , "null" => , "auto_increment" => , "on_update" => , "collation" => , "privileges" => , "comment" => , "primary" => ))

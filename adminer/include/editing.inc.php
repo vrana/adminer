@@ -93,11 +93,13 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 * @return array ($table_name => $field)
 */
 function referencable_primary($self) {
-	$return = array(); // table_name => field
-	foreach (table_status('', true) as $table_name => $table) {
-		if ($table_name != $self && fk_support($table)) {
-			foreach (fields($table_name) as $field) {
-				if ($field["primary"]) {
+	if (function_exists("db_pk_fields"))
+	{
+		// faster method - (mysql execute only two queries)
+		$tables_list = table_status('', true);
+		foreach (db_pk_fields(DB) as $table_name => $fields_list) {
+			if ($table_name != $self && fk_support($tables_list[$table_name])) {
+				foreach ($fields_list as $field) {
 					if ($return[$table_name]) { // multi column primary key
 						unset($return[$table_name]);
 						break;
@@ -107,6 +109,25 @@ function referencable_primary($self) {
 			}
 		}
 	}
+	else
+	{
+		// Too slow when DB has many tables (too many queries)
+		$return = array(); // table_name => field
+		foreach (table_status('', true) as $table_name => $table) {
+			if ($table_name != $self && fk_support($table)) {
+				foreach (fields($table_name) as $field) {
+					if ($field["primary"]) {
+						if ($return[$table_name]) { // multi column primary key
+							unset($return[$table_name]);
+							break;
+						}
+						$return[$table_name] = $field;
+					}
+				}
+			}
+		}
+	}
+
 	return $return;
 }
 
@@ -133,7 +154,7 @@ function textarea($name, $value, $rows = 10, $cols = 80) {
 /** Print table columns for type edit
 * @param string
 * @param array
-* @param array
+* @param array or string if collations already exists on the page in element with this name
 * @param array returned by referencable_primary()
 * @return null
 */
@@ -151,7 +172,12 @@ if ($foreign_keys) {
 echo optionlist($structured_types, $type);
 ?></select>
 <td><input name="<?php echo h($key); ?>[length]" value="<?php echo h($field["length"]); ?>" size="3" onfocus="editingLengthFocus(this);"<?php echo (!$field["length"] && preg_match('~var(char|binary)$~', $type) ? " class='required'" : ""); ?> onchange="editingLengthChange(this);" onkeyup="this.onchange();"><td class="options"><?php //! type="number" with enabled JavaScript
-	echo "<select name='" . h($key) . "[collation]'" . (preg_match('~(char|text|enum|set)$~', $type) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>';
+	echo "<select name='" . h($key) . "[collation]'" . (preg_match('~(char|text|enum|set)$~', $type) ? "" : " class='hidden'") . '>';
+	if (is_array($collations))
+		echo '<option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]);
+	echo '</select>';
+	if (is_string($collations))
+		echo "<script>document.getElementsByName('" . h($key) . "[collation]')[0].innerHTML = document.getElementsByName('".$collations."')[0].innerHTML; document.getElementsByName('" . h($key) . "[collation]')[0].value = '".$field["collation"]."';</script>";
 	echo ($unsigned ? "<select name='" . h($key) . "[unsigned]'" . (!$type || preg_match('~((^|[^o])int|float|double|decimal)$~', $type) ? "" : " class='hidden'") . '><option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
 	echo (isset($field['on_update']) ? "<select name='" . h($key) . "[on_update]'" . (preg_match('~timestamp|datetime~', $type) ? "" : " class='hidden'") . '>' . optionlist(array("" => "(" . lang('ON UPDATE') . ")", "CURRENT_TIMESTAMP"), $field["on_update"]) . '</select>' : '');
 	echo ($foreign_keys ? "<select name='" . h($key) . "[on_delete]'" . (preg_match("~`~", $type) ? "" : " class='hidden'") . "><option value=''>(" . lang('ON DELETE') . ")" . optionlist(explode("|", $on_actions), $field["on_delete"]) . "</select> " : " "); // space for IE
