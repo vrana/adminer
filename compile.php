@@ -343,7 +343,7 @@ foreach (glob(dirname(__FILE__) . "/adminer/drivers/" . ($driver ? $driver : "*"
 
 include dirname(__FILE__) . "/adminer/include/pdo.inc.php";
 include dirname(__FILE__) . "/adminer/include/driver.inc.php";
-$features = array("call" => "routine", "dump", "event", "privileges", "procedure" => "routine", "processlist", "routine", "scheme", "sequence", "status", "trigger", "type", "user" => "privileges", "variables", "view");
+$features = array("call" => "routine", "dump", "event", "privileges", "procedure" => "routine", "processlist", "routine", "scheme", "sequence", "status", "trigger", "type", "user" => "privileges", "replication", "variables", "view");
 $lang_ids = array(); // global variable simplifies usage in a callback function
 $file = file_get_contents(dirname(__FILE__) . "/$project/index.php");
 if ($driver) {
