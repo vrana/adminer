@@ -972,6 +972,20 @@ if (!defined("DRIVER")) {
 		return get_key_vals("SHOW STATUS");
 	}
 
+	/** Get replication status of master or slave
+	* @return array ($name => $value)
+	*/
+	function replication_status($type) {
+		return get_rows("SHOW $type STATUS");
+	}
+
+	/** Get list of slaves connected to the master
+	* @return array ($name => $value)
+	*/
+	function replication_connected_slaves() {
+		return get_rows("SHOW SLAVE HOSTS");
+	}
+
 	/** Convert field in select and edit
 	* @param array one element from fields()
 	* @return string

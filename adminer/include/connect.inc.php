@@ -17,6 +17,7 @@ function connect_error() {
 			'processlist' => lang('Process list'),
 			'variables' => lang('Variables'),
 			'status' => lang('Status'),
+			'replication' => lang('Replication'),
 		) as $key => $val) {
 			if (support($key)) {
 				echo "<a href='" . h(ME) . "$key='>$val</a>\n";
@@ -76,7 +77,7 @@ if (isset($_GET["import"])) {
 	$_GET["sql"] = $_GET["import"];
 }
 
-if (!(DB != "" ? $connection->select_db(DB) : isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]) || isset($_GET["processlist"]) || isset($_GET["privileges"]) || isset($_GET["user"]) || isset($_GET["variables"]) || $_GET["script"] == "connect" || $_GET["script"] == "kill")) {
+if (!(DB != "" ? $connection->select_db(DB) : isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]) || isset($_GET["processlist"]) || isset($_GET["privileges"]) || isset($_GET["user"]) || isset($_GET["replication"]) || isset($_GET["variables"]) || $_GET["script"] == "connect" || $_GET["script"] == "kill")) {
 	if (DB != "" || $_GET["refresh"]) {
 		restart_session();
 		set_session("dbs", null);

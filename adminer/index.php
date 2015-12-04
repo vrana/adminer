@@ -65,6 +65,8 @@ if (isset($_GET["download"])) {
 	include "./user.inc.php";
 } elseif (isset($_GET["processlist"])) {
 	include "./processlist.inc.php";
+} elseif (isset($_GET["replication"])) {
+	include "./replication.inc.php";
 } elseif (isset($_GET["select"])) {
 	include "./select.inc.php";
 } elseif (isset($_GET["variables"])) {
