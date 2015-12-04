@@ -22,6 +22,9 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <meta http-equiv="Content-Script-Type" content="text/javascript">
 <meta name="robots" content="noindex">
 <meta name="referrer" content="origin-when-crossorigin">
+<?php if (!$error && isset($_GET["processlist"], $_GET["autorefresh"])) { ?>
+<meta http-equiv="refresh" content="<?php echo intval($_GET["autorefresh"]); ?>">
+<?php } ?>
 <title><?php echo $title_page; ?></title>
 <link rel="stylesheet" type="text/css" href="../adminer/static/default.css">
 <script type="text/javascript" src="../adminer/static/functions.js"></script>
