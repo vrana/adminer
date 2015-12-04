@@ -13,7 +13,7 @@ page_header(lang('Process list'), $error);
 ?>
 
 <form action="" method="post">
-<table cellspacing="0" onclick="tableClick(event);" ondblclick="tableClick(event, true);" class="nowrap checkable">
+<table cellspacing="0" onclick="tableClick(event);" ondblclick="tableClick(event, true);" class="<?php if (!isset($_GET["showfull"])){?>nowrap <?php } ?>checkable">
 <?php
 // HTML valid because there is always at least one process
 $i = -1;
@@ -36,7 +36,7 @@ foreach (process_list() as $i => $row) {
 			($jush == "sql" && $key == "Info" && preg_match("~Query|Killed~", $row["Command"]) && $val != "") ||
 			($jush == "pgsql" && $key == "current_query" && $val != "<IDLE>") ||
 			($jush == "oracle" && $key == "sql_text" && $val != "")
-			? "<code class='jush-$jush'>" . shorten_utf8($val, 100, "</code>") . ' <a href="' . h(ME . ($row["db"] != "" ? "db=" . urlencode($row["db"]) . "&" : "") . "sql=" . urlencode($val)) . '">' . lang('Clone') . '</a>'
+			? "<code class='jush-$jush'>" . (isset($_GET["showfull"]) ? h($val) . "</code>" : shorten_utf8($val, 100, "</code>")) . ' <a href="' . h(ME . ($row["db"] != "" ? "db=" . urlencode($row["db"]) . "&" : "") . "sql=" . urlencode($val)) . '">' . lang('Clone') . '</a>'
 			: nbsp($val)
 		);
 	}
@@ -50,6 +50,11 @@ foreach (process_list() as $i => $row) {
 if (support("kill")) {
 	echo ($i + 1) . "/" . lang('%d in total', max_connections());
 	echo "<p><input type='submit' value='" . lang('Kill') . "'>\n";
+}
+if (isset($_GET["showfull"])) {
+	echo "<p><a href='" . h(ME . "processlist=") . "'>" . lang('Hide full') . "</a>";
+} else {
+	echo "<p><a href='" . h(ME . "processlist=&showfull=") . "'>" . lang('Show full') . "</a>";
 }
 ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
