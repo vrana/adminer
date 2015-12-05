@@ -1003,6 +1003,12 @@ if (!defined("DRIVER")) {
 	* @return string
 	*/
 	function unconvert_field($field, $return) {
+		if (preg_match("~(tiny|small|medium|big)?int~", $field["type"]) && !is_int($return)) {
+			$intTest = trim($return, "'");
+			if (is_numeric($intTest) && ((int) $intTest) == $intTest) {
+				$return = (int) $intTest;
+			}
+		}
 		if (preg_match("~binary~", $field["type"])) {
 			$return = "UNHEX($return)";
 		}
