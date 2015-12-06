@@ -310,8 +310,12 @@ function selectAddRow(field) {
 	var inputs = row.getElementsByTagName('input');
 	for (var i=0; i < inputs.length; i++) {
 		inputs[i].name = inputs[i].name.replace(/[a-z]\[\d+/, '$&1');
-		inputs[i].value = '';
 		inputs[i].className = '';
+		if (inputs[i].type == 'checkbox') {
+			inputs[i].checked = false;
+		} else {
+			inputs[i].value = '';
+		}
 	}
 	field.parentNode.parentNode.appendChild(row);
 }
