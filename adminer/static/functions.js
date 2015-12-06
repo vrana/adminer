@@ -302,14 +302,17 @@ function selectAddRow(field) {
 	};
 	field.onchange();
 	var row = cloneNode(field.parentNode);
+	var mat, reg = new RegExp(/([a-z]\[)(\d+)/);
 	var selects = row.getElementsByTagName('select');
 	for (var i=0; i < selects.length; i++) {
-		selects[i].name = selects[i].name.replace(/[a-z]\[\d+/, '$&1');
+		mat = selects[i].name.match(reg);
+		selects[i].name = selects[i].name.replace(reg, '$1' + (parseInt(mat[2]) + 1));
 		selects[i].selectedIndex = 0;
 	}
 	var inputs = row.getElementsByTagName('input');
 	for (var i=0; i < inputs.length; i++) {
-		inputs[i].name = inputs[i].name.replace(/[a-z]\[\d+/, '$&1');
+		mat = inputs[i].name.match(reg);
+		inputs[i].name = inputs[i].name.replace(reg, '$1' + (parseInt(mat[2]) + 1));
 		inputs[i].value = '';
 		inputs[i].className = '';
 	}
