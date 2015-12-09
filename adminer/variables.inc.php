@@ -1,6 +1,7 @@
 <?php
 $status = isset($_GET["status"]);
 page_header($status ? lang('Status') : lang('Variables'));
+$adminer->startLinks();
 
 $variables = ($status ? show_status() : show_variables());
 if (!$variables) {

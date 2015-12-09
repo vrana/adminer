@@ -10,6 +10,7 @@ if (support("kill") && $_POST && !$error) {
 }
 
 page_header(lang('Process list'), $error);
+$adminer->startLinks();
 ?>
 
 <form action="" method="post">

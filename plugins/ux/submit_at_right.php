@@ -81,17 +81,18 @@ class AdminerSubmitAtRight
 									if (submit_box_inputs[j].type == "submit")
 										submit_box_buttons.push( submit_box_inputs[j] );
 
-								if (submit_box_buttons.length > 1)
-									submit_box.style.textAlign = "right";
-								else
+//								submit_box.style.textAlign = "right";
+								// better reverse buttons, because safest (Save) has to be at right
+								for (j=0; j<submit_box_buttons.length; j++)
 								{
-									submit_box_buttons[0].style.cssFloat = "right";
-									if (!submit_box_buttons[0].parentNode.myHasSpacesFixer)
+									submit_box_buttons[j].style.cssFloat = "right";
+									submit_box_buttons[j].style.marginLeft = "4px";		// emulate default white space between buttons
+									if (!submit_box_buttons[j].parentNode.myHasSpacesFixer)
 									{
-										var spaces_fixer = submit_box_buttons[0].parentNode.appendChild( document.createElement("SPAN") );
+										var spaces_fixer = submit_box_buttons[j].parentNode.appendChild( document.createElement("SPAN") );
 										spaces_fixer.style.display = "block";
 										spaces_fixer.style.clear = "right";
-										submit_box_buttons[0].parentNode.myHasSpacesFixer = true;
+										submit_box_buttons[j].parentNode.myHasSpacesFixer = true;
 									}
 								}
 							}

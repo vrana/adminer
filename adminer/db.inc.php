@@ -44,7 +44,7 @@ if ($tables_views && !$error && !$_POST["search"]) {
 	queries_redirect(substr(ME, 0, -1), $message, $result);
 }
 
-page_header(($_GET["ns"] == "" ? lang('Database') . ": " . h(DB) : lang('Schema') . ": " . h($_GET["ns"])), $error, true);
+page_header(($_GET["ns"] == "" ? lang('Database') : lang('Schema') ), $error, true, $_GET["ns"] == "" ? h(DB) : h($_GET["ns"]));
 
 if ($adminer->homepage()) {
 	if ($_GET["ns"] !== "") {

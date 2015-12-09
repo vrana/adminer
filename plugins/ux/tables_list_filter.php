@@ -21,6 +21,9 @@ class AdminerTablesListFilter
 		document.addEventListener("DOMContentLoaded", function(evt)
 		{
 			var tables_box = document.getElementById("tables");
+			if (!tables_box)	// no table -> nothing to do.
+				return;
+
 			var search_field = document.createElement("INPUT");
 			search_field.style.width = "90%";
 			search_field.style.backgroundImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAPklEQVR42mNgGBSgoaHhP6kYwwBSAIYBpBiCVTOxhuDVTMgQojTDALohJGmGAZghZGkGgVEDIKABW7IddAAAliX2vncoc8sAAAAASUVORK5CYII=)";
@@ -67,7 +70,7 @@ class AdminerTablesListFilter
 				}
 			});
 
-			search_field.addEventListener("keyup", function(evt)
+			search_field.addEventListener("keydown", function(evt)		// Opera can't catch Esc-key on keyup
 			{
 				if ((evt || event).keyCode == 27)	// Esc did not create "input" event
 				{

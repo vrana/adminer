@@ -130,6 +130,30 @@ username.form['auth[driver]'].onchange();
 		return '<span title="' . h($field["full_type"]) . '">' . h($field["field"]) . '</span>';
 	}
 
+	/** Print links on start pages
+	* @return null
+	*/
+	function startLinks() {
+		echo "<p class='links'>\n";
+		$start_pages = array(
+							'' => lang('Select database'),
+							'database' => lang('Create new database'),
+							'privileges' => lang('Privileges'),
+							'processlist' => lang('Process list'),
+							'variables' => lang('Variables'),
+							'status' => lang('Status')
+							);
+		$any_selected = false;
+		foreach ($start_pages as $key => $val)
+			if ($key)
+				$any_selected |= isset($_GET[$key]);
+		foreach ($start_pages as $key => $val) {
+			if (support($key)) {
+				echo "<a href='" . h(ME) . "$key='" . bold($key ? ($key == "variables" ? isset($_GET[$key]) && !isset($_GET["status"]) : isset($_GET[$key])) : !$any_selected ) . ">$val</a>\n";
+			}
+		}
+	}
+
 	/** Print links after select heading
 	* @param array result of SHOW TABLE STATUS
 	* @param string new item options, NULL for no new item
@@ -769,10 +793,13 @@ username.form['auth[driver]'].onchange();
 	* @return bool whether to print default homepage
 	*/
 	function homepage() {
-		echo '<p class="links">' . ($_GET["ns"] == "" && support("database") ? '<a href="' . h(ME) . 'database=">' . lang('Alter database') . "</a>\n" : "");
-		echo (support("scheme") ? "<a href='" . h(ME) . "scheme='>" . ($_GET["ns"] != "" ? lang('Alter schema') : lang('Create schema')) . "</a>\n" : "");
-		echo ($_GET["ns"] !== "" ? '<a href="' . h(ME) . 'schema=">' . lang('Database schema') . "</a>\n" : "");
-		echo (support("privileges") ? "<a href='" . h(ME) . "privileges='>" . lang('Privileges') . "</a>\n" : "");
+		echo '<p class="links">';
+		echo ($_GET["ns"] == "" && support("database") ? '<a href="' . h(ME) . '" '. bold(!isset($_GET["database"]) && !isset($_GET["scheme"]) && !isset($_GET["schema"]) && !isset($_GET["privileges"])) . '>' . lang('Database') . "</a>\n" : "");
+		echo ($_GET["ns"]) ? '<a href="' . h(ME) . '" '. bold(isset($_GET["ns"]) && !isset($_GET["schema"]) && !isset($_GET["privileges"])) . '>' . lang('Schema') . "</a>\n" : "";
+		echo ($_GET["ns"] == "" && support("database") ? '<a href="' . h(ME) . 'database=" '. bold(isset($_GET["database"])) .'>' . lang('Alter database') . "</a>\n" : "");
+		echo (support("scheme") ? "<a href='" . h(ME) . "scheme=' ". bold(isset($_GET["scheme"])) .">" . ($_GET["ns"] != "" ? lang('Alter schema') : lang('Create schema')) . "</a>\n" : "");
+		echo ($_GET["ns"] !== "" ? '<a href="' . h(ME) . 'schema=" '. bold(isset($_GET["schema"])) .'>' . lang('Database schema') . "</a>\n" : "");
+		echo (support("privileges") ? "<a href='" . h(ME) . "privileges=' ". bold(isset($_GET["privileges"])) .">" . lang('Privileges') . "</a>\n" : "");
 		return true;
 	}
 
