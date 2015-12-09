@@ -16,7 +16,7 @@ if (isset($_GET["pgsql"])) {
 				$this->error = $error;
 			}
 
-			function connect($server, $username, $password) {
+			function connect($server=null, $username=null, $password=null, $_=null, $__=null, $___=null) {
 				global $adminer;
 				$db = $adminer->database();
 				set_error_handler(array($this, '_error'));
@@ -129,7 +129,7 @@ if (isset($_GET["pgsql"])) {
 		class Min_DB extends Min_PDO {
 			var $extension = "PDO_PgSQL";
 
-			function connect($server, $username, $password) {
+			function connect($server=null, $username=null, $password=null, $_=null, $__=null, $___=null) {
 				global $adminer;
 				$db = $adminer->database();
 				$string = "pgsql:host='" . str_replace(":", "' port='", addcslashes($server, "'\\")) . "' options='-c client_encoding=utf8'";

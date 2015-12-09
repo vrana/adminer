@@ -13,7 +13,7 @@ if (!defined("DRIVER")) {
 				parent::init();
 			}
 
-			function connect($server, $username, $password) {
+			function connect($server=null, $username=null, $password=null, $_=null, $__=null, $___=null) {
 				mysqli_report(MYSQLI_REPORT_OFF); // stays between requests, not required since PHP 5.3.4
 				list($host, $port) = explode(":", $server, 2); // part after : is used for port or socket
 				$return = @$this->real_connect(
@@ -67,7 +67,7 @@ if (!defined("DRIVER")) {
 			* @param string
 			* @return bool
 			*/
-			function connect($server, $username, $password) {
+			function connect($server=null, $username=null, $password=null, $_=null, $__=null, $___=null) {
 				$this->_link = @mysql_connect(
 					($server != "" ? $server : ini_get("mysql.default_host")),
 					("$server$username" != "" ? $username : ini_get("mysql.default_user")),
@@ -222,7 +222,7 @@ if (!defined("DRIVER")) {
 		class Min_DB extends Min_PDO {
 			var $extension = "PDO_MySQL";
 
-			function connect($server, $username, $password) {
+			function connect($server=null, $username=null, $password=null, $_=null, $__=null, $___=null) {
 				$this->dsn("mysql:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\\d)~', ';port=\\1', $server)), $username, $password);
 				return true;
 			}

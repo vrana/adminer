@@ -16,7 +16,7 @@ if (isset($_GET["oracle"])) {
 				$this->error = $error;
 			}
 
-			function connect($server, $username, $password) {
+			function connect($server=null, $username=null, $password=null, $_=null, $__=null, $___=null) {
 				$this->_link = @oci_new_connect($username, $password, $server, "AL32UTF8");
 				if ($this->_link) {
 					$this->server_info = oci_server_version($this->_link);
@@ -120,7 +120,7 @@ if (isset($_GET["oracle"])) {
 		class Min_DB extends Min_PDO {
 			var $extension = "PDO_OCI";
 
-			function connect($server, $username, $password) {
+			function connect($server=null, $username=null, $password=null, $_=null, $__=null, $___=null) {
 				$this->dsn("oci:dbname=//$server;charset=AL32UTF8", $username, $password);
 				return true;
 			}
