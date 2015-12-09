@@ -58,7 +58,7 @@ if (isset($_GET["elastic"])) {
 				return $this->rootQuery(($this->_db != "" ? "$this->_db/" : "/") . ltrim($path, '/'), $content, $method);
 			}
 
-			function connect($server, $username, $password) {
+			function connect($server=null, $username=null, $password=null, $_=null, $__=null, $___=null) {
 				$this->_url = "http://$username:$password@$server/";
 				$return = $this->query('');
 				if ($return) {

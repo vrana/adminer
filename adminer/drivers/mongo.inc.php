@@ -9,7 +9,7 @@ if (isset($_GET["mongo"])) {
 		class Min_DB {
 			var $extension = "Mongo", $error, $last_id, $_link, $_db;
 
-			function connect($server, $username, $password) {
+			function connect($server=null, $username=null, $password=null, $_=null, $__=null, $___=null) {
 				global $adminer;
 				$db = $adminer->database();
 				$options = array();

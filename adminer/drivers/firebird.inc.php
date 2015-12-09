@@ -20,7 +20,7 @@ if (isset($_GET["firebird"])) {
 				$_link, $_result
 			;
 
-			function connect($server, $username, $password) {
+			function connect($server=null, $username=null, $password=null, $_=null, $__=null, $___=null) {
 				$this->_link = ibase_connect($server, $username, $password); 
 				if ($this->_link) {
 					$url_parts = explode(':', $server);
