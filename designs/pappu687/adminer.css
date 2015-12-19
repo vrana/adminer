@@ -229,7 +229,6 @@ tr.odd td {
 	overflow:auto;
 	left:0px;
 	width:240px;
-	border-right:2px solid #34495e;
 }
 
 #menu p{
@@ -296,6 +295,7 @@ input[name=logout]:hover {
 
 #version, .version {
 	font-size:50%;
+	color: #999;
 }
 
 #h1:hover {
