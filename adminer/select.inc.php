@@ -519,7 +519,8 @@ if (!$columns && support("table")) {
 				$output = $adminer->dumpOutput();
 				echo ($output ? html_select("output", $output, $adminer_import["output"]) . " " : "");
 				echo html_select("format", $format, $adminer_import["format"]);
-				echo html_select("data_style", $data_style, "");
+				if (isset($format["sql"]))
+					echo html_select("data_style", $data_style, "");
 				echo " <input type='submit' name='export' value='" . lang('Export') . "'>\n";
 				echo "</div></fieldset>\n";
 			}

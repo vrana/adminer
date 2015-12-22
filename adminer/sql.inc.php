@@ -145,7 +145,7 @@ if (!$error && $_POST) {
 									$export = ", <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('Export') . "</a><span id='$id' class='hidden'>: "
 										. html_select("output", $adminer->dumpOutput(), $adminer_export["output"]) . " "
 										. html_select("format", $dump_format, $adminer_export["format"])
-										. html_select("data_style", $data_style, "")
+										. (isset($dump_format["sql"]) ? html_select("data_style", $data_style, "") : "")
 										. "<input type='hidden' name='query' value='" . h($q) . "'>"
 										. " <input type='submit' name='export' value='" . lang('Export') . "'><input type='hidden' name='token' value='$token'></span>\n"
 									;

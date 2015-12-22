@@ -79,13 +79,48 @@ class AdminerDuplicateResultControls
 				var table_box, content = document.getElementById("content");
 				if (content && (table_box = content.getElementsByTagName("TABLE")).length && ((table_box[0].rows.length-1) >= <?=$this->MINIMUM_TABLE_ROWS?>))
 				{
-					var result_control_box = table_box[0];
-					while (result_control_box && (result_control_box.tagName != "FORM"))
-						result_control_box = result_control_box.nextSibling;
-					if (result_control_box && result_control_box.getElementsByClassName("time").length)
-					{
-						table_box[0].parentNode.insertBefore(result_control_box.cloneNode(true), table_box[0]);
-					}
+					var cloned_controls = [];
+
+					var j, cnt = table_box.length;
+					for (j=0; j<cnt; j++)
+						if (table_box[j].parentNode === content)
+						{
+							var result_control_box = table_box[j];
+							while (result_control_box && (result_control_box.tagName != "FORM"))
+								result_control_box = result_control_box.nextSibling;
+							if (result_control_box && result_control_box.getElementsByClassName("time").length)
+							{
+								var controls_clone = result_control_box.cloneNode(true);
+								var i, els_list;
+
+								// replace ID for duplicates
+								els_list = controls_clone.getElementsByTagName("DIV");
+								for (i=0; i<els_list.length; i++)
+									if (els_list[i].id)
+										els_list[i].id = els_list[i].id.replace(/^(explain)-(\d+)$/, "$1-$2-2");
+
+								els_list = controls_clone.getElementsByTagName("SPAN");
+								for (i=0; i<els_list.length; i++)
+									if (els_list[i].id)
+										els_list[i].id = els_list[i].id.replace(/^(export)-(\d+)$/, "$1-$2-2");
+
+								els_list = controls_clone.getElementsByTagName("A");
+								for (i=0; i<els_list.length; i++)
+									if (els_list[i].href)
+									{
+										els_list[i].setAttribute("href", els_list[i].getAttribute("href").replace(/^#(explain|export)-(\d+)$/, "#$1-$2-2"));
+										if (els_list[i].getAttribute("onclick"))
+											els_list[i].setAttribute("onclick", els_list[i].getAttribute("onclick").replace(/'(explain|export)-(\d+)'/, "'$1-$2-2'"));
+									}
+
+								// collect new elements
+								cloned_controls.push([ controls_clone, table_box[j] ]);
+							}
+						}
+
+					// flush new elements
+					for (j=0; j<cloned_controls.length; j++)
+						content.insertBefore(cloned_controls[j][0], cloned_controls[j][1]);
 				}
 <?
 			}
