@@ -25,11 +25,12 @@ class AdminerTablesListFilter
 				return;
 
 			var search_field = document.createElement("INPUT");
-			search_field.style.width = "90%";
+			search_field.style.width = "89%";
 			search_field.style.backgroundImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAPklEQVR42mNgGBSgoaHhP6kYwwBSAIYBpBiCVTOxhuDVTMgQojTDALohJGmGAZghZGkGgVEDIKABW7IddAAAliX2vncoc8sAAAAASUVORK5CYII=)";
 			search_field.style.backgroundRepeat = "no-repeat";
 			search_field.style.backgroundPosition = "0 center";
 			search_field.style.paddingLeft = "23px";
+			search_field.style.marginBottom = "5px";
 
 			search_field.addEventListener("input", function(evt)		// in IE/Edge 'input' work also for clear field by "X"
 			{
@@ -86,7 +87,16 @@ class AdminerTablesListFilter
 			});
 
 
+			// insert new element and tell about it via event of parent
 			tables_box.parentNode.insertBefore(search_field, tables_box);
+			var event = null;
+			if (document.createEvent)
+				(event = document.createEvent("Event")).initEvent("change", true, false);
+			else
+				event = new Event('change');
+			tables_box.dispatchEvent( event );
+
+
 			if (window.sessionStorage && sessionStorage.tableFilter)
 			{
 				search_field.value = sessionStorage.tableFilter;

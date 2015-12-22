@@ -2,7 +2,11 @@
 if (!$error && $_POST["export"]) {
 	dump_headers("sql");
 	$adminer->dumpTable("", "");
-	$adminer->dumpData("", "table", $_POST["query"]);
+
+	$export_style = "table";
+	if (!empty($_POST["data_style"]))
+		$export_style = $_POST["data_style"];
+	$adminer->dumpData("", $export_style, $_POST["query"]);
 	exit;
 }
 
@@ -129,6 +133,10 @@ if (!$error && $_POST) {
 								$limit = $_POST["limit"];
 								$orgtables = select($result, $connection2, array(), $limit);
 								if (!$_POST["only_errors"]) {
+									$data_style = array('', 'TRUNCATE+INSERT', 'INSERT');
+									if ($jush == "sql") //! use insertUpdate() in all drivers
+										$data_style[] = 'INSERT+UPDATE';
+
 									echo "<form action='' method='post'>\n";
 									$num_rows = $result->num_rows;
 									echo "<p>" . ($num_rows ? ($limit && $num_rows > $limit ? lang('%d / ', $limit) : "") . lang('%d row(s)', $num_rows) : "");
@@ -137,6 +145,7 @@ if (!$error && $_POST) {
 									$export = ", <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('Export') . "</a><span id='$id' class='hidden'>: "
 										. html_select("output", $adminer->dumpOutput(), $adminer_export["output"]) . " "
 										. html_select("format", $dump_format, $adminer_export["format"])
+										. html_select("data_style", $data_style, "")
 										. "<input type='hidden' name='query' value='" . h($q) . "'>"
 										. " <input type='submit' name='export' value='" . lang('Export') . "'><input type='hidden' name='token' value='$token'></span>\n"
 									;

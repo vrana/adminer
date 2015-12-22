@@ -8,6 +8,13 @@
 */
 class AdminerFramesetSimulator
 {
+	private $SCROLL_ONLY_TABLES_LIST;
+
+	function __construct($scroll_only_tables_list = false)
+	{
+		$this->SCROLL_ONLY_TABLES_LIST = $scroll_only_tables_list;
+	}
+
 	function head()
 	{
 ?>
@@ -38,7 +45,11 @@ class AdminerFramesetSimulator
 				return arr;
 			};
 
+			// change menu scrolls
+			var restoredScrolls;
 			var menu = document.getElementById("menu");
+			var tables = document.getElementById("tables");
+			var scroll_box = menu;
 			if (GetStyleOfElement(menu, "overflow") == "visible")
 			{
 				// prepare style for correct working, if current skin do not ready for it
@@ -47,13 +58,52 @@ class AdminerFramesetSimulator
 				menu.style.top = "40px";
 				menu.style.bottom = "0";
 				menu.style.margin = "0";
-				var tables = document.getElementById("tables");
-				tables.style.overflow = "visible !important";
-				tables.removeAttribute("onmouseover");
-				tables.removeAttribute("onmouseout");
-				document.getElementById("tables").style.overflow = "visible";
 			}
 
+			tables.removeAttribute("onmouseover");
+			tables.onmouseover = null;
+			tables.removeAttribute("onmouseout");
+			tables.onmouseout = null;
+			tables.style.overflow = "visible";
+
+<?
+			if ($this->SCROLL_ONLY_TABLES_LIST)
+			{
+?>
+				// tables list scroll only for list
+				menu.addEventListener("change", function()
+				{
+					tables.style.position = "static";
+					tables.style.top = tables.offsetTop+"px";
+					tables.style.position = "absolute";
+
+					if (restoredScrolls)
+					{
+						scroll_box.scrollLeft = restoredScrolls[0];
+						scroll_box.scrollTop = restoredScrolls[1];
+					}
+				});
+
+				var event = null;
+				if (document.createEvent)
+					(event = document.createEvent("Event")).initEvent("change", true, false);
+				else
+					event = new Event('change');
+				menu.dispatchEvent( event );
+
+				tables.style.bottom = 0;
+				tables.style.left = GetStyleOfElement(menu, "padding-left");
+				tables.style.right = 0;
+				tables.style.marginBottom = 0;
+				tables.style.overflow = "auto !important";
+				tables.style.setProperty("overflow", "auto", "important");
+
+				scroll_box = tables;
+<?
+			}
+?>
+
+			// setup content box
 			var content = document.getElementById("content");
 			var content_box = document.createElement("DIV");
 			content_box.id = "content_scroll_box";
@@ -61,6 +111,7 @@ class AdminerFramesetSimulator
 			content_box.appendChild(content);
 			content_box.style.position = "absolute";
 
+			// setup content box sizes
 			var menu_css_rules = GetCSSRulesOfElement(menu).join("");
 			var menu_width_dimension = menu_css_rules.match(/[\s;{]width\s*:\s*[0-9\.]+([a-z%]+)[\s};]/);
 			var content_additional_left_shift = content.offsetLeft - menu.offsetWidth;
@@ -92,18 +143,16 @@ class AdminerFramesetSimulator
 			// remember navigation menu scrolls between page reloads
 			if (window.sessionStorage)
 			{
-				var menu_box = document.getElementById("menu");
-
-				menu_box.addEventListener("scroll", function()
+				scroll_box.addEventListener("scroll", function()
 				{
 					sessionStorage.menuScrolls = [ this.scrollLeft, this.scrollTop ].join("x");
 				});
 
 				if (sessionStorage.menuScrolls)
 				{
-					var scrolls = sessionStorage.menuScrolls.split("x");
-					menu_box.scrollLeft = scrolls[0];
-					menu_box.scrollTop = scrolls[1];
+					restoredScrolls = sessionStorage.menuScrolls.split("x");
+					scroll_box.scrollLeft = restoredScrolls[0];
+					scroll_box.scrollTop = restoredScrolls[1];
 				}
 			}
 		});
