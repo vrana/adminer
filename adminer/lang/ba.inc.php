@@ -38,7 +38,7 @@ $translations = array(
 	'%d process(es) have been killed.' => array('%d proces je ukinut.', '%d procesa su ukinuta.', '%d procesa je ukinuto.'),
 	'Kill' => 'Ubij',
 
-	'Variables' => 'Promenljive',
+	'Variables' => 'Promijenljive',
 	'Status' => 'Status',
 
 	'SQL command' => 'SQL komanda',
@@ -215,6 +215,7 @@ $translations = array(
 
 	'select' => 'izaberi',
 	'Select' => 'Izaberi',
+	'Selected' => 'Izabrano',
 	'Select data' => 'Izaberi podatke',
 	'Functions' => 'Funkcije',
 	'Aggregation' => 'Sakupljanje',
@@ -261,6 +262,7 @@ $translations = array(
 	'Save and insert next' => 'Sačuvaj i umijetni slijedeće',
 	'Clone' => 'Dupliraj',
 	'Delete' => 'Izbriši',
+	'Modify' => 'Izmjene',
 
 	'E-mail' => 'El. pošta',
 	'From' => 'Od',
