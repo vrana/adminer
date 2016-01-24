@@ -581,16 +581,6 @@ if (!defined("DRIVER")) {
 		return h(preg_replace('~^You have an error.*syntax to use~U', "Syntax error", $connection->error));
 	}
 
-	/** Get line of error
-	* @return int 0 for first line
-	*/
-	function error_line() {
-		global $connection;
-		if (preg_match('~ at line ([0-9]+)$~', $connection->error, $regs)) {
-			return $regs[1] - 1;
-		}
-	}
-
 	/** Create database
 	* @param string
 	* @param string

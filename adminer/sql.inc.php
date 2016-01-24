@@ -55,7 +55,6 @@ if (!$error && $_POST) {
 		}
 		$commands = 0;
 		$errors = array();
-		$line = 0;
 		$parse = '[\'"' . ($jush == "sql" ? '`#' : ($jush == "sqlite" ? '`[' : ($jush == "mssql" ? '[' : ''))) . ']|/\\*|-- |$' . ($jush == "pgsql" ? '|\\$[^$]*\\$' : '');
 		$total_start = microtime(true);
 		parse_str($_COOKIE["adminer_export"], $adminer_export);
@@ -161,7 +160,6 @@ if (!$error && $_POST) {
 							$start = microtime(true);
 						} while ($connection->next_result());
 
-						$line += substr_count($q.$found, "\n");
 						$query = substr($query, $offset);
 						$offset = 0;
 					}
