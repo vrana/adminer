@@ -13,16 +13,20 @@ if (!defined("DRIVER")) {
 				parent::init();
 			}
 
-			function connect($server, $username, $password) {
+			function connect($server = null, $username = null, $password = null, $database = null, $port = null, $socket = null) {
 				mysqli_report(MYSQLI_REPORT_OFF); // stays between requests, not required since PHP 5.3.4
-				list($host, $port) = explode(":", $server, 2); // part after : is used for port or socket
+				if (strpos($server, ':') !== false) {
+					list($host, $port) = explode(":", $server, 2); // part after : is used for port or socket
+				} else {
+					$host = $server;
+				}
 				$return = @$this->real_connect(
 					($server != "" ? $host : ini_get("mysqli.default_host")),
 					($server . $username != "" ? $username : ini_get("mysqli.default_user")),
 					($server . $username . $password != "" ? $password : ini_get("mysqli.default_pw")),
-					null,
+					$database,
 					(is_numeric($port) ? $port : ini_get("mysqli.default_port")),
-					(!is_numeric($port) ? $port : null)
+					$socket ?: (!is_numeric($port) ? $port : null)
 				);
 				return $return;
 			}
