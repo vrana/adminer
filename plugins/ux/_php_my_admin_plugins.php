@@ -19,7 +19,7 @@
 							"table_structure_advanced"		=> new AdminerTableStructureAdvanced(),
 							"table_record_field_details"	=> new AdminerTableRecordFieldDetails(),
 							// Tools
-							"mysql_shortcuts"				=> new AdminerMysqlShortcuts()
+							"db_diagnostic_queries"			=> new AdminerDbDiagnosticQueries()
 							);
 	$_php_my_admin_plugins = $php_my_admin_plugins;		// user friendly variable
 ?>
