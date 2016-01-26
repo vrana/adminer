@@ -102,24 +102,20 @@ class AdminerDbDiagnosticQueries
 					{
 						case "MySQL":
 ?>
-							// http://mysqlstepbystep.com/2015/07/15/useful-queries-on-mysql-information_schema/
-							funcAddShortcutToQuery("Detect tables fragmentation", "SELECT ENGINE, TABLE_NAME, Round( DATA_LENGTH/1024/1024) AS data_length,\n\
-																						round(INDEX_LENGTH/1024/1024) AS index_length, round(DATA_FREE/1024/1024) AS data_free,\n\
-																						data_free/(data_length+index_length) AS 'fragmentation_ratio'\n\
-																					FROM information_schema.tables\n\
-																					WHERE TABLE_SCHEMA = '"+db_name+"' AND DATA_FREE > 0;");
 							// http://code.openark.org/blog/mysql/useful-database-analysis-queries-with-information_schema
+/*
 							funcAddShortcutToQuery("Detect dublicate indexes", "SELECT * FROM (\n\
 																				  SELECT TABLE_SCHEMA, TABLE_NAME, INDEX_NAME,\n\
-																				  GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX) AS columns\n\
+																				    GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX) AS columns, NON_UNIQUE\n\
 																				  FROM `information_schema`.`STATISTICS`\n\
 																				  WHERE TABLE_SCHEMA NOT IN ('mysql', 'INFORMATION_SCHEMA')\n\
-																					AND TABLE_SCHEMA = '"+db_name+"'\n\
-																					AND NON_UNIQUE = 1 AND INDEX_TYPE='BTREE'\n\
+																				    AND TABLE_SCHEMA = '"+db_name+"'\n\
+																				    AND NON_UNIQUE = 1\n\
+																				    AND INDEX_TYPE='BTREE'\n\
 																				  GROUP BY TABLE_SCHEMA, TABLE_NAME, INDEX_NAME\n\
 																				) AS i1 INNER JOIN (\n\
 																				  SELECT TABLE_SCHEMA, TABLE_NAME, INDEX_NAME,\n\
-																				  GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX) AS columns\n\
+																				    GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX) AS columns, NON_UNIQUE\n\
 																				  FROM `information_schema`.`STATISTICS`\n\
 																				  WHERE INDEX_TYPE='BTREE'\n\
 																					AND TABLE_SCHEMA = '"+db_name+"'\n\
@@ -127,18 +123,58 @@ class AdminerDbDiagnosticQueries
 																				) AS i2\n\
 																				USING (TABLE_SCHEMA, TABLE_NAME)\n\
 																				WHERE i1.columns != i2.columns AND LOCATE(CONCAT(i1.columns, ','), i2.columns) = 1");
-							funcAddShortcutToQuery("Detect lack of primary keys", "SELECT t.TABLE_SCHEMA, t.TABLE_NAME, ENGINE\n\
+*/
+																				// TABLE_SCHEMA NOT IN ('mysql', 'INFORMATION_SCHEMA')\n\
+							funcAddShortcutToQuery("Detect dublicate indexes", "## Detect duplicate and redundant indexes.\n\n\
+																				SELECT * FROM (\n\
+																				  SELECT TABLE_NAME, INDEX_NAME,\n\
+																				    GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX) AS columns, NON_UNIQUE\n\
+																				  FROM `information_schema`.`STATISTICS`\n\
+																				  WHERE INDEX_TYPE='BTREE'\n\
+																				    AND TABLE_SCHEMA = '"+db_name+"'\n\
+																				  GROUP BY TABLE_SCHEMA, TABLE_NAME, INDEX_NAME\n\
+																				) AS i1 INNER JOIN (\n\
+																				  SELECT TABLE_NAME, INDEX_NAME,\n\
+																				    GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX) AS columns, NON_UNIQUE\n\
+																				  FROM `information_schema`.`STATISTICS`\n\
+																				  WHERE INDEX_TYPE='BTREE'\n\
+																				    AND TABLE_SCHEMA = '"+db_name+"'\n\
+																				  GROUP BY TABLE_SCHEMA, TABLE_NAME, INDEX_NAME\n\
+																				) AS i2\n\
+																				USING (TABLE_NAME)\n\
+																				WHERE (i1.columns != i2.columns AND LOCATE(CONCAT(i1.columns, ','), i2.columns) = 1)\n\
+																				   OR (i1.columns = i2.columns AND i1.NON_UNIQUE = i2.NON_UNIQUE AND i1.INDEX_NAME < i2.INDEX_NAME)");
+
+//																							AND t.TABLE_SCHEMA NOT IN ('performance_schema','information_schema','mysql')\n\
+							funcAddShortcutToQuery("Detect lack of primary keys", "## Detect lack of primary keys.\n\n\
+																					SELECT ENGINE\n\
 																					FROM information_schema.TABLES AS t\n\
 																					INNER JOIN information_schema.COLUMNS AS c\n\
-																						ON t.TABLE_SCHEMA=c.TABLE_SCHEMA AND t.TABLE_NAME=c.TABLE_NAME\n\
-																							AND t.TABLE_SCHEMA NOT IN ('performance_schema','information_schema','mysql')\n\
-																							AND t.TABLE_SCHEMA = '"+db_name+"'\n\
-																					GROUP BY t.TABLE_SCHEMA,t.TABLE_NAME\n\
+																					  ON t.TABLE_SCHEMA=c.TABLE_SCHEMA AND t.TABLE_NAME=c.TABLE_NAME\n\
+																					     AND t.TABLE_SCHEMA = '"+db_name+"'\n\
+																					GROUP BY t.TABLE_NAME\n\
 																					HAVING sum(if(column_key in ('PRI','UNI'), 1,0))=0;");
-							funcAddShortcutToQuery("Show foreign keys", "SELECT referenced_table_name AS parent, table_name child, constraint_name\n\
+
+							funcAddShortcutToQuery("Show foreign keys", "## Show foreign keys.\n\n\
+																			SELECT referenced_table_name AS parent, table_name child, constraint_name\n\
 																			FROM information_schema.KEY_COLUMN_USAGE\n\
 																			WHERE referenced_table_name IS NOT NULL AND TABLE_SCHEMA = '"+db_name+"'\n\
 																			ORDER BY referenced_table_name;");
+
+							// http://mysqlstepbystep.com/2015/07/15/useful-queries-on-mysql-information_schema/
+							funcAddShortcutToQuery("Detect tables fragmentation", "## 'OPTIMIZE TABLE' is expensive operation. Use it only when it realy required! For example large fragmentation_ration or/and large data_free.\n\n\
+																					SELECT ENGINE, TABLE_NAME, ROW_FORMAT,\n\
+																					       round( DATA_LENGTH/1024/1024 ) AS `data_length_MB`,\n\
+																					       round( INDEX_LENGTH/1024/1024 ) AS `index_length_MB`,\n\
+																					       concat( round( DATA_FREE/1024/1024 ), if( DATA_FREE/1024/1024 >= 100, '*', '' ) ) AS `data_free_MB`,\n\
+																					       data_free/(data_length+index_length) AS `fragmentation_ratio_1/100%`\n\
+																					FROM information_schema.tables\n\
+																					WHERE TABLE_SCHEMA = '"+db_name+"' AND DATA_FREE > 0;");
+
+							funcAddShortcutToQuery("Detect MyISAM tables", "## MyISAM is a non transactional SE and having a consistent backup where there are MyISAM tables requires locking all tables.\n\n\
+																			SELECT TABLE_NAME, ENGINE, ROW_FORMAT, TABLE_ROWS, DATA_LENGTH/1024/1024 AS `data_length_MB`, INDEX_LENGTH/1024/1024 AS `index_length_MB`\n\
+																			FROM information_schema.tables\n\
+																			WHERE TABLE_SCHEMA = '"+db_name+"' AND ENGINE='MyISAM';");
 <?
 						break;
 					}
