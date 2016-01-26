@@ -60,7 +60,10 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 			if ($val === null) {
 				$val = "<i>NULL</i>";
 			} elseif ($blobs[$key] && !is_utf8($val)) {
-				$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>"; //! link to download
+				if (strlen($val) > 16)
+					$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>"; //! link to download
+				else
+					$val = "<code>" . bin2hex($val) . "</code>"; // usefull for UUID
 			} elseif (!strlen($val)) { // strlen - SQLite can return int
 				$val = "&nbsp;"; // some content to print a border
 			} else {

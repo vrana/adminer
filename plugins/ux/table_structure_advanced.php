@@ -22,6 +22,8 @@ class AdminerTableStructureAdvanced
 
 	function head()
 	{
+		if (Adminer::database() === null)
+			return;
 ?>
 		<script>
 		document.addEventListener("DOMContentLoaded", function(event)

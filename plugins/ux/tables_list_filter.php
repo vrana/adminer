@@ -10,6 +10,8 @@ class AdminerTablesListFilter
 {
 	function head()
 	{
+		if (Adminer::database() === null)
+			return;
 ?>
 		<script>
 		// text wrap in <code> blocks
@@ -101,12 +103,18 @@ class AdminerTablesListFilter
 			{
 				search_field.value = sessionStorage.tableFilter;
 
-				var event = null;
-				if (document.createEvent)
-					(event = document.createEvent("Event")).initEvent("input", true, false);
-				else
-					event = new Event('input');
-				search_field.dispatchEvent(event);
+				var funcEmulateInputEvent = function()
+				{
+					var event = null;
+					if (document.createEvent)
+						(event = document.createEvent("Event")).initEvent("input", true, false);
+					else
+						event = new Event('input');
+					search_field.dispatchEvent(event);
+				};
+
+				funcEmulateInputEvent();
+				window.addEventListener("focus", funcEmulateInputEvent);
 			}
 		});
 		</script>

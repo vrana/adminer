@@ -1174,8 +1174,10 @@ function select_value($val, $link, $field, $text_length) {
 function is_mail($email) {
 	$atom = '[-a-z0-9!#$%&\'*+/=?^_`{|}~]'; // characters of local-name
 	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component
-	$pattern = "$atom+(\\.$atom+)*@($domain?\\.)+$domain";
-	return is_string($email) && preg_match("(^$pattern(,\\s*$pattern)*\$)i", $email);
+//	$pattern = "$atom+(\\.$atom+)*@($domain?\\.)+$domain";
+//	return is_string($email) && preg_match("(^$pattern(,\\s*$pattern)*\$)i", $email);
+	$pattern = "(\p{L}[\p{L}0-9 ]* <?)?$atom+(\\.$atom+)*@($domain?\\.)+$domain>?";
+	return is_string($email) && preg_match("(^$pattern([,;]\\s*$pattern)*\$)i", $email);
 }
 
 /** Check whether the string is URL address

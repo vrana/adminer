@@ -143,10 +143,14 @@ class AdminerFramesetSimulator
 			// remember navigation menu scrolls between page reloads
 			if (window.sessionStorage)
 			{
-				scroll_box.addEventListener("scroll", function()
+				var funcStoreNewScrolls = function()
 				{
-					sessionStorage.menuScrolls = [ this.scrollLeft, this.scrollTop ].join("x");
-				});
+					sessionStorage.menuScrolls = [ scroll_box.scrollLeft, scroll_box.scrollTop ].join("x");
+				};
+
+				// watch for scrolls and focus (for cases with windows with different scrolls)
+				scroll_box.addEventListener("scroll", funcStoreNewScrolls);
+				window.addEventListener("focus", funcStoreNewScrolls);
 
 				if (sessionStorage.menuScrolls)
 				{
