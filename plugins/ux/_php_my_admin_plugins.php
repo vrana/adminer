@@ -18,6 +18,7 @@
 							"export_per_table"				=> new AdminerExportPerTable(),
 							"table_structure_advanced"		=> new AdminerTableStructureAdvanced(),
 							"table_record_field_details"	=> new AdminerTableRecordFieldDetails(),
+							"table_sort_desc_before_title"	=> new AdminerTableSortDescBeforeTitle(),
 							// Tools
 							"db_diagnostic_queries"			=> new AdminerDbDiagnosticQueries()
 							);

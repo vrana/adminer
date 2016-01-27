@@ -12,6 +12,8 @@ class AdminerDbDiagnosticQueries
 	{
 		if (Adminer::database() === null)
 			return;
+		if (get_page_table() !== "")
+			return;
 ?>
 		<script>
 		document.addEventListener("DOMContentLoaded", function(event)
@@ -32,6 +34,16 @@ class AdminerDbDiagnosticQueries
 				var parentBox, insertBeforeEl, formUrl;
 				var funcAddShortcutToQuery = function(label, query)
 				{
+					if (!label && !query)
+					{
+						var new_form = document.createElement("P");
+						new_form.style.margin = "0";
+						new_form.style.padding = "0";
+						new_form.style.clear = "left";
+						parentBox.insertBefore(new_form, insertBeforeEl);
+						return;
+					}
+
 					var new_form = document.createElement("FORM");
 					new_form.method = "POST";
 					new_form.enctype = "multipart/form-data";
@@ -75,7 +87,7 @@ class AdminerDbDiagnosticQueries
 
 					formUrl = sql_form.action;
 				}
-				else
+				else if (content_box.getElementsByTagName("TABLE").length > 0)	// Database page (with all tables)
 				{
 					var childs_list = content_box.childNodes;
 					var i, cnt = childs_list.length;
@@ -97,34 +109,19 @@ class AdminerDbDiagnosticQueries
 
 				if (parentBox)
 				{
+					var fieldset = document.createElement("FIELDSET");
+					fieldset.style.padding = "5px";
+					fieldset.appendChild( document.createElement("LEGEND") ).innerHTML = "Database Diagnostic";
+					parentBox.insertBefore(fieldset, insertBeforeEl);
+					parentBox = fieldset;
+					insertBeforeEl = null;
+
 <?
 					switch ($GLOBALS["drivers"][DRIVER])
 					{
 						case "MySQL":
 ?>
 							// http://code.openark.org/blog/mysql/useful-database-analysis-queries-with-information_schema
-/*
-							funcAddShortcutToQuery("Detect dublicate indexes", "SELECT * FROM (\n\
-																				  SELECT TABLE_SCHEMA, TABLE_NAME, INDEX_NAME,\n\
-																				    GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX) AS columns, NON_UNIQUE\n\
-																				  FROM `information_schema`.`STATISTICS`\n\
-																				  WHERE TABLE_SCHEMA NOT IN ('mysql', 'INFORMATION_SCHEMA')\n\
-																				    AND TABLE_SCHEMA = '"+db_name+"'\n\
-																				    AND NON_UNIQUE = 1\n\
-																				    AND INDEX_TYPE='BTREE'\n\
-																				  GROUP BY TABLE_SCHEMA, TABLE_NAME, INDEX_NAME\n\
-																				) AS i1 INNER JOIN (\n\
-																				  SELECT TABLE_SCHEMA, TABLE_NAME, INDEX_NAME,\n\
-																				    GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX) AS columns, NON_UNIQUE\n\
-																				  FROM `information_schema`.`STATISTICS`\n\
-																				  WHERE INDEX_TYPE='BTREE'\n\
-																					AND TABLE_SCHEMA = '"+db_name+"'\n\
-																				  GROUP BY TABLE_SCHEMA, TABLE_NAME, INDEX_NAME\n\
-																				) AS i2\n\
-																				USING (TABLE_SCHEMA, TABLE_NAME)\n\
-																				WHERE i1.columns != i2.columns AND LOCATE(CONCAT(i1.columns, ','), i2.columns) = 1");
-*/
-																				// TABLE_SCHEMA NOT IN ('mysql', 'INFORMATION_SCHEMA')\n\
 							funcAddShortcutToQuery("Detect dublicate indexes", "## Detect duplicate and redundant indexes.\n\n\
 																				SELECT * FROM (\n\
 																				  SELECT TABLE_NAME, INDEX_NAME,\n\
@@ -145,7 +142,6 @@ class AdminerDbDiagnosticQueries
 																				WHERE (i1.columns != i2.columns AND LOCATE(CONCAT(i1.columns, ','), i2.columns) = 1)\n\
 																				   OR (i1.columns = i2.columns AND i1.NON_UNIQUE = i2.NON_UNIQUE AND i1.INDEX_NAME < i2.INDEX_NAME)");
 
-//																							AND t.TABLE_SCHEMA NOT IN ('performance_schema','information_schema','mysql')\n\
 							funcAddShortcutToQuery("Detect lack of primary keys", "## Detect lack of primary keys.\n\n\
 																					SELECT ENGINE\n\
 																					FROM information_schema.TABLES AS t\n\
@@ -155,6 +151,28 @@ class AdminerDbDiagnosticQueries
 																					GROUP BY t.TABLE_NAME\n\
 																					HAVING sum(if(column_key in ('PRI','UNI'), 1,0))=0;");
 
+							funcAddShortcutToQuery("Detect suspicious charsets", "## See those columns for which the character set or collation is different from the table's character set and collation.\n\n\
+																				SELECT columns.TABLE_NAME, COLUMN_NAME,\n\
+																				  CHARACTER_SET_NAME AS column_CHARSET,\n\
+																				  COLLATION_NAME AS column_COLLATION,\n\
+																				  table_CHARSET, TABLE_COLLATION\n\
+																				FROM (\n\
+																				  SELECT TABLE_NAME, COLUMN_NAME, CHARACTER_SET_NAME, COLLATION_NAME\n\
+																				  FROM information_schema.COLUMNS\n\
+																				  WHERE TABLE_SCHEMA = '"+db_name+"'\n\
+																				    AND CHARACTER_SET_NAME IS NOT NULL\n\
+																				) AS columns INNER JOIN (\n\
+																				  SELECT TABLE_NAME, CHARACTER_SET_NAME AS table_CHARSET, TABLE_COLLATION\n\
+																				  FROM information_schema.TABLES\n\
+																				  INNER JOIN INFORMATION_SCHEMA.COLLATION_CHARACTER_SET_APPLICABILITY\n\
+																				    ON (TABLES.TABLE_COLLATION = COLLATION_CHARACTER_SET_APPLICABILITY.COLLATION_NAME)\n\
+																				  WHERE TABLE_SCHEMA = '"+db_name+"'\n\
+																				) AS tables\n\
+																				ON (columns.TABLE_NAME = tables.TABLE_NAME)\n\
+																				WHERE (columns.CHARACTER_SET_NAME != table_CHARSET OR columns.COLLATION_NAME != TABLE_COLLATION)\n\
+																				ORDER BY TABLE_NAME, COLUMN_NAME");
+							funcAddShortcutToQuery();	// delimiter
+
 							funcAddShortcutToQuery("Show foreign keys", "## Show foreign keys.\n\n\
 																			SELECT referenced_table_name AS parent, table_name child, constraint_name\n\
 																			FROM information_schema.KEY_COLUMN_USAGE\n\
@@ -162,7 +180,7 @@ class AdminerDbDiagnosticQueries
 																			ORDER BY referenced_table_name;");
 
 							// http://mysqlstepbystep.com/2015/07/15/useful-queries-on-mysql-information_schema/
-							funcAddShortcutToQuery("Detect tables fragmentation", "## 'OPTIMIZE TABLE' is expensive operation. Use it only when it realy required! For example large fragmentation_ration or/and large data_free.\n\n\
+							funcAddShortcutToQuery("Show tables fragmentation", "## 'OPTIMIZE TABLE' is expensive operation. Use it only when it realy required! For example large fragmentation_ration or/and large data_free.\n\n\
 																					SELECT ENGINE, TABLE_NAME, ROW_FORMAT,\n\
 																					       round( DATA_LENGTH/1024/1024 ) AS `data_length_MB`,\n\
 																					       round( INDEX_LENGTH/1024/1024 ) AS `index_length_MB`,\n\
@@ -171,7 +189,7 @@ class AdminerDbDiagnosticQueries
 																					FROM information_schema.tables\n\
 																					WHERE TABLE_SCHEMA = '"+db_name+"' AND DATA_FREE > 0;");
 
-							funcAddShortcutToQuery("Detect MyISAM tables", "## MyISAM is a non transactional SE and having a consistent backup where there are MyISAM tables requires locking all tables.\n\n\
+							funcAddShortcutToQuery("Show MyISAM tables", "## MyISAM is a non transactional SE and having a consistent backup where there are MyISAM tables requires locking all tables.\n\n\
 																			SELECT TABLE_NAME, ENGINE, ROW_FORMAT, TABLE_ROWS, DATA_LENGTH/1024/1024 AS `data_length_MB`, INDEX_LENGTH/1024/1024 AS `index_length_MB`\n\
 																			FROM information_schema.tables\n\
 																			WHERE TABLE_SCHEMA = '"+db_name+"' AND ENGINE='MyISAM';");
