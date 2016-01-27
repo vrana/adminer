@@ -1,12 +1,12 @@
 <?php
 
-/** Add shortcuts to some queries
+/** Add shortcuts to some diagnostic queries
 * @link https://www.adminer.org/plugins/#use
 * @author SailorMax, http://www.sailormax.net/
 * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
-class AdminerDbDiagnosticQueries
+class AdminerDbDiagnosticsQueries
 {
 	function head()
 	{
@@ -110,10 +110,8 @@ class AdminerDbDiagnosticQueries
 				if (parentBox)
 				{
 					var fieldset = document.createElement("FIELDSET");
-					fieldset.style.padding = "5px";
-					fieldset.appendChild( document.createElement("LEGEND") ).innerHTML = "Database Diagnostic";
-					parentBox.insertBefore(fieldset, insertBeforeEl);
-					parentBox = fieldset;
+					fieldset.appendChild( document.createElement("LEGEND") ).innerHTML = "Database Diagnostics";
+					parentBox = parentBox.insertBefore(fieldset, insertBeforeEl).appendChild( document.createElement("DIV") );
 					insertBeforeEl = null;
 
 <?

@@ -20,7 +20,7 @@
 							"table_record_field_details"	=> new AdminerTableRecordFieldDetails(),
 							"table_sort_desc_before_title"	=> new AdminerTableSortDescBeforeTitle(),
 							// Tools
-							"db_diagnostic_queries"			=> new AdminerDbDiagnosticQueries()
+							"db_diagnostics_queries"		=> new AdminerDbDiagnosticsQueries()
 							);
 	$_php_my_admin_plugins = $php_my_admin_plugins;		// user friendly variable
 ?>
