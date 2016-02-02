@@ -1,6 +1,6 @@
 <?php
 if (!$error && $_POST["export"]) {
-	dump_headers("sql");
+	dump_headers(!empty($_POST['filename']) ? $_POST['filename'] : 'sql');
 	$adminer->dumpTable("", "");
 	$adminer->dumpData("", "table", $_POST["query"]);
 	exit;
@@ -129,7 +129,8 @@ if (!$error && $_POST) {
 									echo $time;
 									$id = "export-$commands";
 									$export = ", <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('Export') . "</a><span id='$id' class='hidden'>: "
-										. html_select("output", $adminer->dumpOutput(), $adminer_export["output"]) . " "
+										. html_select("output", $adminer->dumpOutput(), $adminer_export["output"], "alterClass(document.getElementById('filename'), 'hidden', !(this.value=='file'||this.value=='gz'))") . " "
+										. "<input type='text' name='filename' id='filename' class='hidden'> "
 										. html_select("format", $dump_format, $adminer_export["format"])
 										. "<input type='hidden' name='query' value='" . h($q) . "'>"
 										. " <input type='submit' name='export' value='" . lang('Export') . "'><input type='hidden' name='token' value='$token'></span>\n"
