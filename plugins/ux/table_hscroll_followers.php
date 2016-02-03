@@ -60,6 +60,7 @@ class AdminerTableHScrollFollowers
 										|| (i == "up_elements")
 										)
 									&& (el.id != "breadcrumb")
+									&& (!el.getElementsByTagName("TABLE").length)		// forms with EXPLAIN table do not scroll
 									)
 								{
 									if (!el.myOriginalPosition)

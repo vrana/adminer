@@ -141,7 +141,7 @@ class AdminerDbDiagnosticsQueries
 																				   OR (i1.columns = i2.columns AND i1.NON_UNIQUE = i2.NON_UNIQUE AND i1.INDEX_NAME < i2.INDEX_NAME)");
 
 							funcAddShortcutToQuery("Detect lack of primary keys", "## Detect lack of primary keys.\n\n\
-																					SELECT ENGINE\n\
+																					SELECT t.TABLE_NAME, ENGINE\n\
 																					FROM information_schema.TABLES AS t\n\
 																					INNER JOIN information_schema.COLUMNS AS c\n\
 																					  ON t.TABLE_SCHEMA=c.TABLE_SCHEMA AND t.TABLE_NAME=c.TABLE_NAME\n\
@@ -170,6 +170,13 @@ class AdminerDbDiagnosticsQueries
 																				WHERE (columns.CHARACTER_SET_NAME != table_CHARSET OR columns.COLLATION_NAME != TABLE_COLLATION)\n\
 																				ORDER BY TABLE_NAME, COLUMN_NAME");
 							funcAddShortcutToQuery();	// delimiter
+
+							funcAddShortcutToQuery("Show not AI PK fields", "## Show not auto increment primary key fields.\n\n\
+																			SELECT t.TABLE_NAME, COLUMN_NAME, COLUMN_TYPE\n\
+																			FROM information_schema.TABLES AS t\n\
+																			  INNER JOIN information_schema.COLUMNS AS c\n\
+																			    ON t.TABLE_SCHEMA=c.TABLE_SCHEMA AND t.TABLE_NAME=c.TABLE_NAME\n\
+																			WHERE t.TABLE_SCHEMA = 'fcg_db' AND column_key = 'PRI' AND EXTRA != \"auto_increment\";");
 
 							funcAddShortcutToQuery("Show foreign keys", "## Show foreign keys.\n\n\
 																			SELECT referenced_table_name AS parent, table_name child, constraint_name\n\
