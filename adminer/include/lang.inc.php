@@ -15,6 +15,7 @@ $langs = array(
 	'es' => 'Español', // Klemens Häckel - http://clickdimension.wordpress.com
 	'et' => 'Eesti', // Priit Kallas
 	'fa' => 'فارسی', // mojtaba barghbani - Iran - mbarghbani@gmail.com, Nima Amini - http://nimlog.com
+	'fi' => 'Suomi', // Finnish - Kari Eveli - http://www.lexitec.fi/
 	'fr' => 'Français', // Francis Gagné, Aurélien Royer
 	'gl' => 'Galego', // Eduardo Penabad Ramos
 	'hu' => 'Magyar', // Borsos Szilárd (Borsosfi) - http://www.borsosfi.hu, info@borsosfi.hu
