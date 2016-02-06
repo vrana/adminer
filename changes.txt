@@ -1,4 +1,5 @@
 Adminer 4.2.4-dev:
+Fix remote execution in SQLite query
 MySQL: Support PHP 7
 Bosnian translation
 Finnish translation
