@@ -13,24 +13,18 @@ if (!defined("DRIVER")) {
 				parent::init();
 			}
 
-			function connect($server = NULL, $username = NULL, $password = NULL, $database = NULL, $port = NULL, $socket = NULL) {		// PHP 7: declaration should be compatible with mysqli::connect
+			function connect($server = "", $username = "", $password = "", $database = null, $port = null, $socket = null) {
 				mysqli_report(MYSQLI_REPORT_OFF); // stays between requests, not required since PHP 5.3.4
-				if (strpos($server, ":"))
-				{
-					list($host, $port) = explode(":", $server, 2); // part after : is used for port or socket
-					if (!is_numeric($port))
-						$socket = $port;
-				}
-				else
-					$host = $server;
+
+				list($host, $port) = explode(":", $server, 2); // part after : is used for port or socket
 
 				$return = @$this->real_connect(
-					($host != "" ? $host : ini_get("mysqli.default_host")),
+					($server != "" ? $host : ini_get("mysqli.default_host")),
 					($server . $username != "" ? $username : ini_get("mysqli.default_user")),
 					($server . $username . $password != "" ? $password : ini_get("mysqli.default_pw")),
 					$database,
 					(is_numeric($port) ? $port : ini_get("mysqli.default_port")),
-					(is_string($socket) ? $socket : null)
+					(!is_numeric($port) ? $port : $socket)
 				);
 				return $return;
 			}

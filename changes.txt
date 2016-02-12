@@ -1,3 +1,6 @@
+Adminer 4.2.4-dev:
+MySQL: Support PHP 7
+
 Adminer 4.2.3 (released 2015-11-15):
 Fix XSS in indexes (non-MySQL only)
 Support PHP 7
