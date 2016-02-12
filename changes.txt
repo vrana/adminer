@@ -1,5 +1,8 @@
-Adminer 4.2.4-dev:
+Adminer 4.2.4 (released 2016-02-06):
+Fix remote execution in SQLite query
 MySQL: Support PHP 7
+Bosnian translation
+Finnish translation
 
 Adminer 4.2.3 (released 2015-11-15):
 Fix XSS in indexes (non-MySQL only)
