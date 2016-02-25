@@ -39,7 +39,18 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function select_db($database) {
-				return $this->query("USE " . idf_escape($database));
+			    	// 20160224 MB - to support SQL Azure re-connect instead of using deprecated USE statement
+				//return $this->query("USE " . idf_escape($database));
+				global $adminer;
+				$credentials = $adminer->credentials();
+				$this->_link = @sqlsrv_connect($credentials[0], array("UID" => $credentials[1], "PWD" => $credentials[2], "Database" => $database, "CharacterSet" => "UTF-8"));
+				if ($this->_link) {
+					$info = sqlsrv_server_info($this->_link);
+					$this->server_info = $info['SQLServerVersion'];
+				} else {
+					$this->_get_error();
+				}
+				return (bool) $this->_link;
 			}
 
 			function query($query, $unbuffered = false) {
