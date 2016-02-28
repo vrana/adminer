@@ -1024,7 +1024,6 @@ if (!defined("DRIVER")) {
 		return $connection->result("SELECT @@max_connections");
 	}
 
-	$id_name = "Id";
 	$jush = "sql"; ///< @var string JUSH identifier
 	$types = array(); ///< @var array ($type => $maximum_unsigned_length, ...)
 	$structured_types = array(); ///< @var array ($description => array($type, ...), ...)

@@ -643,7 +643,6 @@ AND typelem = 0"
 		return $connection->result("SHOW max_connections");
 	}
 
-	$id_name = "pid";
 	$jush = "pgsql";
 	$types = array();
 	$structured_types = array();
