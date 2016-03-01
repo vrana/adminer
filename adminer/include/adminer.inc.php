@@ -671,7 +671,7 @@ focus(document.getElementById('username'));
 	function dumpData($table, $style, $query) {
 		global $connection, $jush;
 		$max_packet = ($jush == "sqlite" ? 0 : 1048576); // default, minimum is 1024
-		if ($_POST["single_row_insert"]) {
+		if (isset($_POST["single_row_insert"]) && $_POST["single_row_insert"]) {
 			// single_row_insert checkbox checked, set $max_packet to 0 to force new query for each row
 			$max_packet = 0;
 		}
