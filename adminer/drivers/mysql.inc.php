@@ -1012,7 +1012,7 @@ if (!defined("DRIVER")) {
 	*/
 	function support($feature) {
 		global $connection;
-		return !preg_match("~scheme|sequence|type|view_trigger" . ($connection->server_info < 5.1 ? "|event|partitioning" . ($connection->server_info < 5 ? "|routine|trigger|view" : "") : "") . "~", $feature);
+		return !preg_match("~scheme|sequence|type|view_trigger|locklist" . ($connection->server_info < 5.1 ? "|event|partitioning" . ($connection->server_info < 5 ? "|routine|trigger|view" : "") : "") . "~", $feature);
 	}
 
 	function kill_process($val) {
