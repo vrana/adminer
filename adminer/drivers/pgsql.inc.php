@@ -606,6 +606,15 @@ AND typelem = 0"
 		return $return;
 	}
 
+	/** Get SQL command to create table
+	 * @param string
+	 * @param bool
+	 * @return string
+	 */
+	function create_sql($table, $auto_increment) {
+		return "\n\nERROR: Exporting DLL of a table is not supported for PostgreSQL yet.\n\n";
+	}
+
 	function use_sql($database) {
 		return "\connect " . idf_escape($database);
 	}
