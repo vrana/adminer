@@ -612,7 +612,7 @@ AND typelem = 0"
 	 * @return string
 	 */
 	function create_sql($table, $auto_increment) {
-		return "\n\nERROR: Exporting DLL of a table is not supported for PostgreSQL yet.\n\n";
+		return "\n\nERROR: Exporting DDL of a table is not supported for PostgreSQL yet.\n\n";
 	}
 
 	function use_sql($database) {
