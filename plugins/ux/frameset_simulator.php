@@ -60,11 +60,14 @@ class AdminerFramesetSimulator
 				menu.style.margin = "0";
 			}
 
-			tables.removeAttribute("onmouseover");
-			tables.onmouseover = null;
-			tables.removeAttribute("onmouseout");
-			tables.onmouseout = null;
-			tables.style.overflow = "visible";
+			if (tables)
+			{
+				tables.removeAttribute("onmouseover");
+				tables.onmouseover = null;
+				tables.removeAttribute("onmouseout");
+				tables.onmouseout = null;
+				tables.style.overflow = "visible";
+			}
 
 <?
 			if ($this->SCROLL_ONLY_TABLES_LIST)
@@ -73,9 +76,12 @@ class AdminerFramesetSimulator
 				// tables list scroll only for list
 				menu.addEventListener("change", function()
 				{
-					tables.style.position = "static";
-					tables.style.top = tables.offsetTop+"px";
-					tables.style.position = "absolute";
+					if (tables)
+					{
+						tables.style.position = "static";
+						tables.style.top = tables.offsetTop+"px";
+						tables.style.position = "absolute";
+					}
 
 					if (restoredScrolls)
 					{
@@ -91,14 +97,17 @@ class AdminerFramesetSimulator
 					event = new Event('change');
 				menu.dispatchEvent( event );
 
-				tables.style.bottom = 0;
-				tables.style.left = GetStyleOfElement(menu, "padding-left");
-				tables.style.right = 0;
-				tables.style.marginBottom = 0;
-				tables.style.overflow = "auto !important";
-				tables.style.setProperty("overflow", "auto", "important");
+				if (tables)
+				{
+					tables.style.bottom = 0;
+					tables.style.left = GetStyleOfElement(menu, "padding-left");
+					tables.style.right = 0;
+					tables.style.marginBottom = 0;
+					tables.style.overflow = "auto !important";
+					tables.style.setProperty("overflow", "auto", "important");
 
-				scroll_box = tables;
+					scroll_box = tables;
+				}
 <?
 			}
 ?>

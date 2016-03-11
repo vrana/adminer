@@ -314,6 +314,44 @@ echo checkbox("fields[$i][has_default]", 1, $field["has_default"]); ?><input nam
 	}
 }
 
+function get_table_structure($TABLE)
+{
+	global $types, $connection;
+
+	$tbl = array(
+		"Engine" => $_COOKIE["adminer_engine"],
+		"fields" => array(array("field" => "", "type" => (isset($types["int"]) ? "int" : (isset($types["integer"]) ? "integer" : "")))),
+		"partition_names" => array(""),
+	);
+
+	if ($TABLE != "") {
+//		$tbl = $table_status;
+		$tbl = table_status($TABLE);
+		$tbl["name"] = $TABLE;
+		$tbl["fields"] = array();
+		if (!$_GET["auto_increment"]) { // don't prefill by original Auto_increment for the sake of performance and not reusing deleted ids
+			$tbl["Auto_increment"] = "";
+		}
+		$orig_fields = fields($TABLE);
+		foreach ($orig_fields as $field) {
+			$field["has_default"] = isset($field["default"]);
+			$tbl["fields"][] = $field;
+		}
+
+		if (support("partitioning")) {
+			$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . q(DB) . " AND TABLE_NAME = " . q($TABLE);
+			$result = $connection->query("SELECT PARTITION_METHOD, PARTITION_ORDINAL_POSITION, PARTITION_EXPRESSION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
+			list($tbl["partition_by"], $tbl["partitions"], $tbl["partition"]) = $result->fetch_row();
+			$partitions = get_key_vals("SELECT PARTITION_NAME, PARTITION_DESCRIPTION $from AND PARTITION_NAME != '' ORDER BY PARTITION_ORDINAL_POSITION");
+			$partitions[""] = "";
+			$tbl["partition_names"] = array_keys($partitions);
+			$tbl["partition_values"] = array_values($partitions);
+		}
+	}
+
+	return $tbl;
+}
+
 /** Move fields up and down or add field
 * @param array
 * @return bool

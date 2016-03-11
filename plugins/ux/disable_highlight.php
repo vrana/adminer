@@ -47,5 +47,14 @@ class AdminerDisableHighlight
 			</script>
 <?
 		}
+
+		if (in_array("textarea", $this->TYPES_LIST) && in_array("code", $this->TYPES_LIST))
+		{
+?>
+			<script>
+			document.addEventListener("DOMContentLoaded", function(event) { window.jush = null; });
+			</script>
+<?
+		}
 	}
 }

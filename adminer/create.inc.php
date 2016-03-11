@@ -22,6 +22,20 @@ if ($TABLE != "") {
 }
 
 $row = $_POST;
+// support of inline move/add/drop fields
+if ($_POST && empty($row["fields"]) && empty($row["name"]))
+{
+	// auto fill $fields
+	$row = get_table_structure($TABLE);
+	$post_fields_list = array();
+	foreach ($row["fields"] as $k => $field)
+	{
+		$field["orig"] = $field["field"];
+		$post_fields_list[$k+1] = $field;						// emulate $_POST, where indexes start from 1
+	}
+	$row["fields"] = $post_fields_list;
+}
+//
 $row["fields"] = (array) $row["fields"];
 if ($row["auto_increment_col"]) {
 	$row["fields"][$row["auto_increment_col"]]["auto_increment"] = true;
@@ -121,6 +135,7 @@ if ($table_status)
 	$adminer->selectLinks($table_status);
 
 if (!$_POST) {
+/*
 	$row = array(
 		"Engine" => $_COOKIE["adminer_engine"],
 		"fields" => array(array("field" => "", "type" => (isset($types["int"]) ? "int" : (isset($types["integer"]) ? "integer" : "")))),
@@ -149,6 +164,8 @@ if (!$_POST) {
 			$row["partition_values"] = array_values($partitions);
 		}
 	}
+*/
+	$row = get_table_structure($TABLE);
 }
 
 $collations = collations();
