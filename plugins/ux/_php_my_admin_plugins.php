@@ -17,6 +17,7 @@
 							"sql_command_table_fields"		=> new AdminerSqlCommandTableFields(),
 							"export_per_table"				=> new AdminerExportPerTable(),
 							"table_structure_advanced"		=> new AdminerTableStructureAdvanced(),
+							"table_edit_by_fields"			=> new AdminerTableEditByFields(),
 							"table_record_field_details"	=> new AdminerTableRecordFieldDetails(),
 							"table_sort_desc_before_title"	=> new AdminerTableSortDescBeforeTitle(),
 							// Tools

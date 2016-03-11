@@ -167,7 +167,7 @@ class AdminerSqlCommandTableFields
 					// via modified function, because we need full page, not only result table
 					myAjax(current_location.replace(/&sql=[^&]*/, "").replace(/&table=[^&]*/, "")+"&select="+encodeURIComponent(tables_array[0])+"&limit=1", function(request)
 					{
-						var quotes = code_re = new RegExp("<code[^>]*>[^<]+([^\s\w])"+tables_array[0]+"([^\s\w])[^<]+<");
+						var quotes, code_re = new RegExp("<code[^>]*>[^<]+([^\s\w])"+tables_array[0]+"([^\s\w])[^<]+<");
 						if (request.responseText && (request.responseText.indexOf("<"+"code") > 0) && (quotes = request.responseText.match(code_re)))
 						{
 							idf_quotes = [quotes[1], quotes[2]];

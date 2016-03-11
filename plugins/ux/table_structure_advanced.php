@@ -253,9 +253,10 @@ class AdminerTableStructureAdvanced
 				// Add possibility to quick edit table structure
 				window.myConfirmRemoveRow = function(sender, key_name)
 				{
+/*
 					if (!confirm("Are you sure?"))
 						return true;
-
+*/
 					if (editingRemoveRow(sender, key_name))
 					{
 						var form = sender.form;

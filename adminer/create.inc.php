@@ -23,17 +23,36 @@ if ($TABLE != "") {
 
 $row = $_POST;
 // support of inline move/add/drop fields
-if ($_POST && empty($row["fields"]) && empty($row["name"]))
+if ($_POST)
 {
 	// auto fill $fields
-	$row = get_table_structure($TABLE);
+	$orig_structure = get_table_structure($TABLE);
+	$named_fields_list = array();
 	$post_fields_list = array();
-	foreach ($row["fields"] as $k => $field)
+	foreach ($orig_structure["fields"] as $k => &$field)
 	{
 		$field["orig"] = $field["field"];
 		$post_fields_list[$k+1] = $field;						// emulate $_POST, where indexes start from 1
+		$named_fields_list[$field["orig"]] = $field;
 	}
-	$row["fields"] = $post_fields_list;
+	unset($field);
+
+	if (empty($row["name"]))
+	{
+		$row = $orig_structure;
+		$row["fields"] = $post_fields_list;
+	}
+	else if (empty($row["fields"]))
+	{
+		$row["fields"] = $post_fields_list;
+	}
+	else
+	{
+		foreach ($row["fields"] as &$post_field)
+			if ((count($post_field) == 2) && !empty($post_field["orig"]) && isset($post_field["field"]))
+				$post_field = $named_fields_list[ $post_field["orig"] ];
+		unset($post_field);
+	}
 }
 //
 $row["fields"] = (array) $row["fields"];
