@@ -26,6 +26,7 @@ pre, textarea { font: 100%/1.25 monospace; }
 input[type=image] { vertical-align: middle; }
 input.default { box-shadow: 1px 1px 1px #777; }
 input.required { box-shadow: 1px 1px 1px red; }
+select:disabled { background-color: #ebebe4; }	/* Chrome fix */
 .block { display: block; }
 .version { color: #777; font-size: 67%; }
 .js .hidden, .nojs .jsonly { display: none; }
