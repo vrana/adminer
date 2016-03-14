@@ -1,3 +1,6 @@
+Adminer 4.2.5-dev:
+PostgreSQL: Support KILL
+
 Adminer 4.2.4 (released 2016-02-06):
 Fix remote execution in SQLite query
 MySQL: Support PHP 7

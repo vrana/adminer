@@ -631,7 +631,16 @@ AND typelem = 0"
 
 	function support($feature) {
 		global $connection;
-		return preg_match('~^(database|table|columns|sql|indexes|comment|view|' . ($connection->server_info >= 9.3 ? 'materializedview|' : '') . 'scheme|processlist|sequence|trigger|type|variables|drop_col)$~', $feature); //! routine|
+		return preg_match('~^(database|table|columns|sql|indexes|comment|view|' . ($connection->server_info >= 9.3 ? 'materializedview|' : '') . 'scheme|processlist|sequence|trigger|type|variables|drop_col|kill)$~', $feature); //! routine|
+	}
+
+	function kill_process($val) {
+		return queries("SELECT pg_terminate_backend(" . number($val).")");
+	}
+
+	function max_connections() {
+		global $connection;
+		return $connection->result("SHOW max_connections");
 	}
 
 	$jush = "pgsql";
