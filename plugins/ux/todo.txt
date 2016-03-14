@@ -1,3 +1,0 @@
-1. add/insert 1 field to table
-2. edit 1 field in table
-3. rename table

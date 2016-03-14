@@ -756,10 +756,12 @@ if (!defined("DRIVER")) {
 	* @param string
 	* @return bool
 	*/
-	function move_tables($tables, $views, $target) {
+	function move_tables($tables, $views, $target, $target_table = "") {
 		$rename = array();
+		if ((count($tables) + count($views)) > 1)
+			$target_table = "";
 		foreach (array_merge($tables, $views) as $table) { // views will report SQL error
-			$rename[] = table($table) . " TO " . idf_escape($target) . "." . table($table);
+			$rename[] = table($table) . " TO " . idf_escape($target) . "." . (empty($target_table) ? table($table) : table($target_table));
 		}
 		return queries("RENAME TABLE " . implode(", ", $rename));
 		//! move triggers
@@ -771,10 +773,12 @@ if (!defined("DRIVER")) {
 	* @param string
 	* @return bool
 	*/
-	function copy_tables($tables, $views, $target) {
+	function copy_tables($tables, $views, $target, $target_table = "") {
+		if ((count($tables) + count($views)) > 1)
+			$target_table = "";
 		queries("SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO'");
 		foreach ($tables as $table) {
-			$name = ($target == DB ? table("copy_$table") : idf_escape($target) . "." . table($table));
+			$name = ($target == DB && (empty($target_table) || $target_table == $table) ? table("copy_$table") : idf_escape($target) . "." . (empty($target_table) ? table($table) : table($target_table)) );
 			if (!queries("\nDROP TABLE IF EXISTS $name")
 				|| !queries("CREATE TABLE $name LIKE " . table($table))
 				|| !queries("INSERT INTO $name SELECT * FROM " . table($table))
@@ -783,7 +787,7 @@ if (!defined("DRIVER")) {
 			}
 		}
 		foreach ($views as $table) {
-			$name = ($target == DB ? table("copy_$table") : idf_escape($target) . "." . table($table));
+			$name = ($target == DB && (empty($target_table) || $target_table == $table) ? table("copy_$table") : idf_escape($target) . "." . (empty($target_table) ? table($table) : table($target_table)) );
 			$view = view($table);
 			if (!queries("DROP VIEW IF EXISTS $name")
 				|| !queries("CREATE VIEW $name AS $view[select]") //! USE to avoid db.table

@@ -22,6 +22,7 @@ class AdminerTableStructureAdvanced
 
 	function head()
 	{
+		global $TABLE;
 		if (Adminer::database() === null)
 			return;
 ?>
@@ -171,6 +172,7 @@ class AdminerTableStructureAdvanced
 						var fieldset_arr = request.responseText.split(/(<fieldset[^<>]*\>)/);
 						var fieldset_html = fieldset_arr[4].split(/<\/fieldset>/)[0].replace(/[\r\n]/g, "");
 						fieldset_html = fieldset_html.replace(/^<legend[^<>]*\>.+<\/legend\>/, "");
+						fieldset_html = fieldset_html.replace(/(<select\s+[^>]*name=['"]target['"][^>]*\/?\>.*<\/select>)/i, "$1as <input name='target_table' value='<?=$TABLE?>' />");
 
 						var form = document.createElement("FORM");
 						form.action = all_dbs_location;
