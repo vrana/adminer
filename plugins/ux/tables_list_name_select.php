@@ -16,6 +16,21 @@ class AdminerTablesListNameSelect
 		<script>
 		document.addEventListener("DOMContentLoaded", function(event)
 		{
+			// swap Show structure <-> Select table from top links
+			var content_box = document.getElementById("content");
+			if (content_box)
+			{
+				var links = content_box.childNodes[0];
+				while (links && (!links.className || links.className.indexOf("links") < 0))
+					links = links.nextSibling;
+				if (links)
+				{
+					var a_list = links.getElementsByTagName("A");
+					if ((a_list.length > 1) && (a_list[0].href.indexOf("&select=") > 0) && (a_list[1].href.indexOf("&table=") > 0))
+						links.insertBefore(a_list[1], a_list[0]);
+				}
+			}
+
 			// swap Show structure <-> Select table from navigation menu
 			var tables_box = document.getElementById("tables");
 			if (tables_box)
@@ -65,21 +80,6 @@ class AdminerTablesListNameSelect
 					tbl_links[i+1].title = first_link[1];
 					if (tbl_links[i].className.split(/\s+/).indexOf("active") != -1)
 						tbl_links[i+1].className += " active";
-				}
-			}
-
-			// swap Show structure <-> Select table from top links
-			var content_box = document.getElementById("content");
-			if (content_box)
-			{
-				var links = content_box.childNodes[0];
-				while (links && (!links.className || links.className.indexOf("links") < 0))
-					links = links.nextSibling;
-				if (links)
-				{
-					var a_list = links.getElementsByTagName("A");
-					if ((a_list.length > 1) && (a_list[0].href.indexOf("&select=") > 0) && (a_list[1].href.indexOf("&table=") > 0))
-						links.insertBefore(a_list[1], a_list[0]);
 				}
 			}
 		});

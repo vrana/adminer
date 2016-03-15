@@ -4,16 +4,21 @@
 			include_once $filename;
 
 	$php_my_admin_plugins = array(
+							// high priority to visually hide modifications
+							// UI additional
+							"tables_list_name_select"		=> new AdminerTablesListNameSelect(),
+							"tables_list_filter"			=> new AdminerTablesListFilter(),
+							// UI mod
+							"duplicate_result_controls"		=> new AdminerDuplicateResultControls(),
+
+							// secondary plugins
 							// UI mod
 							"frameset_simulator"			=> new AdminerFramesetSimulator(true),
 							"disable_highlight"				=> new AdminerDisableHighlight(),
 							"executed_query_output_modifier"=> new AdminerExecutedQueryOutputModifier(),
 							"submit_at_right"				=> new AdminerSubmitAtRight(),
-							"duplicate_result_controls"		=> new AdminerDuplicateResultControls(),
 							"table_hscroll_followers"		=> new AdminerTableHScrollFollowers(),
 							// UI additional
-							"tables_list_name_select"		=> new AdminerTablesListNameSelect(),
-							"tables_list_filter"			=> new AdminerTablesListFilter(),
 							"sql_command_table_fields"		=> new AdminerSqlCommandTableFields(),
 							"export_per_table"				=> new AdminerExportPerTable(),
 							"table_structure_advanced"		=> new AdminerTableStructureAdvanced(),

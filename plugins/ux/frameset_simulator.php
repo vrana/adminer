@@ -116,6 +116,7 @@ class AdminerFramesetSimulator
 			var content = document.getElementById("content");
 			var content_box = document.createElement("DIV");
 			content_box.id = "content_scroll_box";
+			content_box.tabIndex = -1;									// without tabIndex focus() did not work
 			content.parentNode.insertBefore( content_box, content );
 			content_box.appendChild(content);
 			content_box.style.position = "absolute";
@@ -147,7 +148,6 @@ class AdminerFramesetSimulator
 			content.style.marginLeft = "0";
 			content.style.marginTop = "0";
 			content_box.focus();
-
 
 			// resizer
 			var resize_bar = document.createElement("DIV");
