@@ -511,7 +511,7 @@ if (!$columns && support("table")) {
 				}
 			}
 			if ($format) {
-				$data_style = array('', 'TRUNCATE+INSERT', 'INSERT');
+				$data_style = array('', 'TRUNCATE+INSERT', 'INSERT', 'INSERT-AI');
 				if ($jush == "sql") //! use insertUpdate() in all drivers
 					$data_style[] = 'INSERT+UPDATE';
 

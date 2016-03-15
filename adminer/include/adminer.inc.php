@@ -737,6 +737,8 @@ username.form['auth[driver]'].onchange();
 						}
 						foreach ($row as $key => $val) {
 							$field = $fields[$key];
+							if ($field["auto_increment"] && ($style == "INSERT-AI"))
+								$val = null;
 							$row[$key] = ($val !== null
 								? unconvert_field($field, preg_match('~(^|[^o])int|float|double|decimal~', $field["type"]) && $val != '' ? $val : q($val))
 								: "NULL"
