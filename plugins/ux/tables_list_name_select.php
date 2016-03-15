@@ -67,6 +67,21 @@ class AdminerTablesListNameSelect
 						tbl_links[i+1].className += " active";
 				}
 			}
+
+			// swap Show structure <-> Select table from top links
+			var content_box = document.getElementById("content");
+			if (content_box)
+			{
+				var links = content_box.childNodes[0];
+				while (links && (!links.className || links.className.indexOf("links") < 0))
+					links = links.nextSibling;
+				if (links)
+				{
+					var a_list = links.getElementsByTagName("A");
+					if ((a_list.length > 1) && (a_list[0].href.indexOf("&select=") > 0) && (a_list[1].href.indexOf("&table=") > 0))
+						links.insertBefore(a_list[1], a_list[0]);
+				}
+			}
 		});
 		</script>
 <?
