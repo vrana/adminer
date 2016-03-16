@@ -257,9 +257,9 @@ if (isset($_GET["elastic"])) {
 					"Engine" => "table",
 					"Rows" => $table["count"],
 				);
-			}
-			if ($name != "" && $name == $table["term"]) {
-				return $return[$name];
+				if ($name != "" && $name == $table["term"]) {
+					return $return[$name];
+				}
 			}
 		}
 		return $return;
