@@ -1,3 +1,33 @@
+Adminer Next
+Fix paginator page 1 skin
+Fix table pages top links
+Add detect `SQL command` page when URL containt '&table='
+Remove duplicates of collation-lists on `Alter table` page. Require JavaScript on client side!
+Optimize referencable_primary() for MySQL
+Add style chooser to select data export
+Output binary UUID in hex
+Recognize emails with name (name <email@foo.com>)
+Support receive partial data for alter table (workaround for max_input_vars limit errors)
+Fix disabled <select> UI in Chrome
+Support export table rows without AI keys
+UX plugins for simpler migrate phpMyAdmin users:
+ - tables_list_name_select:			table names in menu has link to `Select data`, and icons to `Show structure`
+ - tables_list_filter:				table list in menu has filter field
+ - duplicate_result_controls:		duplicate paginator before result table
+ - frameset_simulator:				simulate frames in UI
+ - disable_highlight:				disable code highlight
+ - executed_query_output_modifier:	<code> text wrap + possibility to show full query + possibility to always show executed query
+ - submit_at_right:					move `submit` buttons to the right
+ - table_hscroll_followers:			do not scroll some page elements (pages list, SQL code,...) while horizontal scroll the page
+ - sql_command_table_fields:		add table fields chooser on `SQL command` page
+ - export_per_table:				copy "Export" link to table links list
+ - table_structure_advanced:		display status and controls on table structure page
+ - table_edit_by_fields:			disable by default input fields on `Alter table` page, to reduce count of submitted values
+ - table_record_field_details:		display field comments on record edit page
+ - table_sort_desc_before_title:	output `desc` link before columnt title
+ - db_diagnostics_queries:			display shortcut to diagnostic queries for database/driver. Currently only for MySQL.
+
+
 Adminer 4.2.5-dev:
 PostgreSQL: Support KILL
 
