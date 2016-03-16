@@ -16,7 +16,22 @@ class AdminerTablesListNameSelect
 		<script>
 		document.addEventListener("DOMContentLoaded", function(event)
 		{
+			var GetCSSRulesOfElement = function(el)
+			{
+				var sheets = document.styleSheets, arr = [];
+				el.matches = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector || el.msMatchesSelector || el.oMatchesSelector;
+				for (var i in sheets)
+				{
+					var rules = sheets[i].rules || sheets[i].cssRules;
+					for (var r in rules)
+						if (el.matches(rules[r].selectorText))
+							arr.push(rules[r].cssText);
+				}
+				return arr;
+			};
+
 			// swap Show structure <-> Select table from top links
+			var structure_icon = "";
 			var content_box = document.getElementById("content");
 			if (content_box)
 			{
@@ -27,7 +42,16 @@ class AdminerTablesListNameSelect
 				{
 					var a_list = links.getElementsByTagName("A");
 					if ((a_list.length > 1) && (a_list[0].href.indexOf("&select=") > 0) && (a_list[1].href.indexOf("&table=") > 0))
+					{
+						var structure_styles = GetCSSRulesOfElement(a_list[1]);
+						for (var i=structure_styles.length-1; i>=0; i--)
+							if (structure_styles[i].indexOf("background-image:") && structure_styles[i].match(/background\-image\:\s*(url\([^\)]+\))/i))
+							{
+								structure_icon = RegExp.$1;
+								break;
+							}
 						links.insertBefore(a_list[1], a_list[0]);
+					}
 				}
 			}
 
@@ -63,6 +87,8 @@ class AdminerTablesListNameSelect
 //								rules[j].cssText = rules[j].cssText.replace(/\#menu p a\[href\*\=["']\&select\=["']\]/, '#menu p a.select');	// Firefox and IE did not support this method
 								cssSelector = rules[j].selectorText.replace(/\#menu p a\[href\*\=["']\&select\=["']\]/, '#menu p a.select');
 								cssText = rules[j].style.cssText;
+								if (structure_icon && (cssText.indexOf("content:") >= 0))
+									cssText = cssText.replace(/content:\s*url\([^\)]+\);/, "content: "+structure_icon+";");
 								styleSheets[i].deleteRule(j);										// removeRule() uses other indexes
 								styleSheets[i].insertRule(cssSelector + " {" + cssText + "}", j);	// addRule() uses other indexes
 							}
