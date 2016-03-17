@@ -45,7 +45,7 @@ class AdminerTablesListNameSelect
 					{
 						var structure_styles = GetCSSRulesOfElement(a_list[1]);
 						for (var i=structure_styles.length-1; i>=0; i--)
-							if (structure_styles[i].indexOf("background-image:") && structure_styles[i].match(/background\-image\:\s*(url\([^\)]+\))/i))
+							if (structure_styles[i].indexOf("url(") && structure_styles[i].match(/[\s: ](url\([^\)]+\))/i))
 							{
 								structure_icon = RegExp.$1;
 								break;
@@ -88,7 +88,7 @@ class AdminerTablesListNameSelect
 								cssSelector = rules[j].selectorText.replace(/\#menu p a\[href\*\=["']\&select\=["']\]/, '#menu p a.select');
 								cssText = rules[j].style.cssText;
 								if (structure_icon && (cssText.indexOf("content:") >= 0))
-									cssText = cssText.replace(/content:\s*url\([^\)]+\);/, "content: "+structure_icon+";");
+									cssText = cssText.replace(/content:\s*url\([^\)]+\);/, "content: "+structure_icon+";") + " opacity:0.7;";
 								styleSheets[i].deleteRule(j);										// removeRule() uses other indexes
 								styleSheets[i].insertRule(cssSelector + " {" + cssText + "}", j);	// addRule() uses other indexes
 							}

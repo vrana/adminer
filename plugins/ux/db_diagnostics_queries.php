@@ -12,7 +12,7 @@ class AdminerDbDiagnosticsQueries
 	{
 //		if (Adminer::database() === null)
 //			return;
-		if (get_page_table() !== "")		// for selected table turn off. Currently we don't have queries for this case
+		if (function_exists("get_page_table") && (get_page_table() !== ""))		// for selected table turn off. Currently we don't have queries for this case
 			return;
 ?>
 		<script>

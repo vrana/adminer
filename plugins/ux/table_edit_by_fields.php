@@ -35,6 +35,8 @@ class AdminerTableEditByFields
 					{
 						if (evt.target && evt.target.type && (evt.target.type == "image"))
 							return false;
+						if (evt.keyCode && (evt.keyCode == 9))
+							return false;
 
 						var row = evt;
 						if (evt.target)
@@ -89,6 +91,8 @@ class AdminerTableEditByFields
 								{
 									if (inputs[j].name.indexOf("][field]") < 0)
 										inputs[j].disabled = true;
+									else if (inputs[j].value == "")
+										inputs[j].focus();
 								}
 
 							inputs = new_cell.parentNode.getElementsByTagName("SELECT");
@@ -96,7 +100,8 @@ class AdminerTableEditByFields
 							for (j=0; j<inputs_cnt; j++)
 								inputs[j].disabled = true;
 						}
-						fieldsTable.rows[i].addEventListener("click", funcEditTableField);
+						fieldsTable.rows[i].addEventListener("keyup", funcEditTableField);
+						fieldsTable.rows[i].addEventListener("mouseup", funcEditTableField);
 					}
 
 					// fix "Default" and "Comment" checkbox handlers

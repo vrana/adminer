@@ -22,9 +22,10 @@ class AdminerTableStructureAdvanced
 
 	function head()
 	{
-		global $TABLE;
 		if (Adminer::database() === null)
 			return;
+
+		global $TABLE;
 ?>
 		<script>
 		document.addEventListener("DOMContentLoaded", function(event)

@@ -12,7 +12,7 @@ class AdminerExportPerTable
 	{
 		if (Adminer::database() === null)
 			return;
-		if (get_page_table() === "")
+		if (function_exists("get_page_table") && (get_page_table() === ""))
 			return;
 ?>
 		<script>
