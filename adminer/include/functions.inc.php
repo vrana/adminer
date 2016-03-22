@@ -888,7 +888,10 @@ function input($field, $value, $function, $field_group_idx = null) {
 			}
 			$first++;
 		}
-		$onchange = ($first ? " onchange=\"var f = this.form['function[" . h(js_escape(bracket_escape($field["field"]))) . "]']; if ($first > f.selectedIndex) f.selectedIndex = $first;\" onkeyup='keyupChange.call(this);'" : "");
+		if (!is_null($field_group_idx))
+			$onchange = ($first ? " onchange=\"var f = this.form['function[" . h(js_escape(bracket_escape($field_group_idx))) . "][" . h(js_escape(bracket_escape($field["field"]))) . "]']; if ($first > f.selectedIndex) f.selectedIndex = $first;\" onkeyup='keyupChange.call(this);'" : "");
+		else
+			$onchange = ($first ? " onchange=\"var f = this.form['function[" . h(js_escape(bracket_escape($field["field"]))) . "]']; if ($first > f.selectedIndex) f.selectedIndex = $first;\" onkeyup='keyupChange.call(this);'" : "");
 		$attrs .= $onchange;
 		$has_function = (in_array($function, $functions) || isset($functions[$function]));
 		echo (count($functions) > 1
@@ -980,7 +983,10 @@ function process_input($field, $group_id = null) {
 		return $value;
 	}
 	if (preg_match('~blob|bytea|raw|file~', $field["type"]) && ini_bool("file_uploads")) {
-		$file = get_file("fields-$idf");
+		if (is_null($group_id))
+			$file = get_file("fields-$idf");
+		else
+			$file = get_file("fields-$group_id-$idf");
 		if (!is_string($file)) {
 			return false; //! report errors
 		}
