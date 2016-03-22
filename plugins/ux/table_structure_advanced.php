@@ -250,7 +250,7 @@ class AdminerTableStructureAdvanced
 <?
 			}
 
-			if (in_array("quick_edit", $this->TYPES_LIST))
+			if (in_array("quick_edit", $this->TYPES_LIST) && function_exists("get_page_table"))	// second condition check modified sources of adminer
 			{
 ?>
 				// Add possibility to quick edit table structure
