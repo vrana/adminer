@@ -82,6 +82,7 @@ class AdminerTablesListNameSelect
 						{
 							if ((rules[j].cssText.indexOf('#menu p a[href*="&select="]') >= 0)
 								|| (rules[j].cssText.indexOf("#menu p a[href*='&select=']") >= 0)
+								|| (rules[j].cssText.indexOf("#menu p a.select") >= 0)
 								)
 							{
 //								rules[j].cssText = rules[j].cssText.replace(/\#menu p a\[href\*\=["']\&select\=["']\]/, '#menu p a.select');	// Firefox and IE did not support this method

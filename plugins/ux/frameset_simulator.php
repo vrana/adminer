@@ -150,12 +150,19 @@ class AdminerFramesetSimulator
 			content_box.focus();
 
 			// resizer
+			var style = document.createElement('style');
+			style.type = 'text/css';
+			style.innerHTML = '.ux-unselectable { -webkit-touch-callout:none; -webkit-user-select:none; -khtml-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select: none; }';
+			document.getElementsByTagName('HEAD')[0].appendChild(style);
+
 			var resize_bar = document.createElement("DIV");
 			resize_bar.style.position = "fixed";
 			resize_bar.style.top = "0";
 			resize_bar.style.bottom = "0";
 			resize_bar.style.backgroundColor = "transparent";
 			var menu_right_border = menu_css_rules.match(/[\s;{]border-right-width\s*:\s*([0-9\.]+px)[\s};]/);
+			if (!menu_right_border)
+				menu_right_border = menu_css_rules.match(/[\s;{]border-right\s*:\s*([0-9\.]+px)[\s};]/);
 			if (menu_right_border)
 			{
 				resize_bar.style.left = (parseInt(content_box.style.left) - parseInt(menu_right_border[1])) + "px";
@@ -184,6 +191,7 @@ class AdminerFramesetSimulator
 			resize_bar.addEventListener("mousedown", function(event)
 			{
 				resize_bar["myResizeOffset"] = { x:event.pageX, w:menu.offsetWidth - parseInt(GetStyleOfElement(menu, "padding-left")) - parseInt(GetStyleOfElement(menu, "padding-right")) - parseInt(GetStyleOfElement(menu, "border-left-width")) - parseInt(GetStyleOfElement(menu, "border-right-width")) };
+				document.body.className += " ux-unselectable";
 			});
 			document.addEventListener("mouseup", function(event)
 			{
@@ -192,6 +200,7 @@ class AdminerFramesetSimulator
 					if (window.sessionStorage)
 						sessionStorage.menuSize = menu.style.width;
 					resize_bar["myResizeOffset"] = null;
+					document.body.className = document.body.className.replace(/ux-unselectable/g, "");
 				}
 			});
 			document.addEventListener("mousemove", function(event)

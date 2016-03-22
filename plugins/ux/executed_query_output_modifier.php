@@ -51,7 +51,7 @@ class AdminerExecutedQueryOutputModifier
 				var style = document.createElement('style');
 				style.type = 'text/css';
 				style.innerHTML = 'pre code { white-space: pre-wrap; }';
-				document.getElementsByTagName('head')[0].appendChild(style);
+				document.getElementsByTagName('HEAD')[0].appendChild(style);
 <?
 			}
 
