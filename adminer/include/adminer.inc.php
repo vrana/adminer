@@ -177,7 +177,7 @@ username.form['auth[driver]'].onchange();
 		}
 		foreach ($links as $key => $val) {
 			$is_bold = isset($_GET[$key]) && !isset($_GET["sql"]);
-			if (($key == "edit") && !empty($_GET["where"]))
+			if (($key == "edit") && (!empty($_GET["where"]) || !empty($_POST["check"])))	// multiple rows edit has $_POST["check"]
 				$is_bold = false;
 			echo " <a href='" . h(ME) . "$key=" . urlencode($tableStatus["Name"]) . ($key == "edit" ? $set : "") . "'" . bold($is_bold) . ">$val</a>";
 		}

@@ -620,7 +620,7 @@ function queries($query) {
 	}
 	if ($query === null) {
 		// return executed queries
-		return array(implode("\n", $queries), format_time($start));
+		return array(implode("\n\n", $queries), format_time($start));
 	}
 	$queries[] = (preg_match('~;$~', $query) ? "DELIMITER ;;\n$query;\nDELIMITER " : $query) . ";";
 	return $connection->query($query);
@@ -855,11 +855,14 @@ function enum_input($type, $attrs, $field, $value, $empty = null) {
 * @param array one field from fields()
 * @param mixed
 * @param string
+* @param string
 * @return null
 */
-function input($field, $value, $function) {
+function input($field, $value, $function, $field_group_idx = null) {
 	global $connection, $types, $adminer, $jush;
 	$name = h(bracket_escape($field["field"]));
+	if (!is_null($field_group_idx))
+		$name = h(bracket_escape($field_group_idx)) . "][" . $name;
 	echo "<td class='function'>";
 	if (is_array($value) && !$function) {
 		$args = array($value);
@@ -903,7 +906,7 @@ function input($field, $value, $function) {
 				echo " <label><input type='checkbox' name='fields[$name][$i]' value='" . (1 << $i) . "'" . ($checked ? ' checked' : '') . "$onchange>" . h($adminer->editVal($val, $field)) . '</label>';
 			}
 		} elseif (preg_match('~blob|bytea|raw|file~', $field["type"]) && ini_bool("file_uploads")) {
-			echo "<input type='file' name='fields-$name'$onchange>";
+			echo "<input type='file' name='fields-" . str_replace("][", "-", $name) . "'$onchange>";
 		} elseif (($text = preg_match('~text|lob~', $field["type"])) || preg_match("~\n~", $value)) {
 			if ($text && $jush != "sqlite") {
 				$attrs .= " cols='50' rows='12'";
@@ -933,13 +936,20 @@ function input($field, $value, $function) {
 
 /** Process edit input field
 * @param one field from fields()
+* @param group id of $_POST["fields/functions"]
 * @return string or false to leave the original value
 */
-function process_input($field) {
+function process_input($field, $group_id = null) {
 	global $adminer;
 	$idf = bracket_escape($field["field"]);
-	$function = $_POST["function"][$idf];
-	$value = $_POST["fields"][$idf];
+	if (is_null($group_id)) {
+		$function = $_POST["function"][$idf];
+		$value = $_POST["fields"][$idf];
+	} else {
+		$function = $_POST["function"][$group_id][$idf];
+		$value = $_POST["fields"][$group_id][$idf];
+	}
+
 	if ($field["type"] == "enum") {
 		if ($value == -1) {
 			return false;
@@ -1329,59 +1339,72 @@ function edit_form($TABLE, $fields, $row, $update) {
 	if ($row === false) {
 		echo "<p class='error'>" . lang('No rows.') . "\n";
 	}
+
+	$form_action = "";
+	if (is_array($update))
+		$form_action = h(ME . "edit=" . urlencode($TABLE));
 	?>
-<form action="" method="post" enctype="multipart/form-data" id="form">
+<form action="<?=$form_action?>" method="post" enctype="multipart/form-data" id="form">
 <?php
 	if (!$fields) {
 		echo "<p class='error'>" . lang('You have no privileges to update this table.') . "\n";
 	} else {
-		echo "<table cellspacing='0' onkeydown='return editingKeydown(event);'>\n";
+		if (is_array($update))
+			$rows_list = $row;
+		else
+			$rows_list = array($row);
 
-		foreach ($fields as $name => $field) {
-			echo "<tr><th>" . $adminer->fieldName($field) . ($field["comment"] ? "<br /><small>".$field["comment"]."</small>" : "");
-			$default = $_GET["set"][bracket_escape($name)];
-			if ($default === null) {
-				$default = $field["default"];
-				if ($field["type"] == "bit" && preg_match("~^b'([01]*)'\$~", $default, $regs)) {
-					$default = $regs[1];
+		foreach ($rows_list as $row_key => $row) {
+			if (count($rows_list) == 1)
+				$row_key = null;
+			echo "<table cellspacing='0' onkeydown='return editingKeydown(event);'>\n";
+
+			foreach ($fields as $name => $field) {
+				echo "<tr><th>" . $adminer->fieldName($field) . ($field["comment"] ? "<br /><small>".$field["comment"]."</small>" : "");
+				$default = $_GET["set"][bracket_escape($name)];
+				if ($default === null) {
+					$default = $field["default"];
+					if ($field["type"] == "bit" && preg_match("~^b'([01]*)'\$~", $default, $regs)) {
+						$default = $regs[1];
+					}
 				}
+				$value = ($row !== null
+					? ($row[$name] != "" && $jush == "sql" && preg_match("~enum|set~", $field["type"])
+						? (is_array($row[$name]) ? array_sum($row[$name]) : +$row[$name])
+						: $row[$name]
+					)
+					: (!$update && $field["auto_increment"]
+						? ""
+						: (isset($_GET["select"]) ? false : $default)
+					)
+				);
+				if (!$_POST["save"] && is_string($value)) {
+					$value = $adminer->editVal($value, $field);
+				}
+				$function = ($_POST["save"]
+					? (string) $_POST["function"][$name]
+					: ($update && $field["on_update"] == "CURRENT_TIMESTAMP"
+						? "now"
+						: ($value === false ? null : ($value !== null ? '' : 'NULL'))
+					)
+				);
+				if (preg_match("~time~", $field["type"]) && $value == "CURRENT_TIMESTAMP") {
+					$value = "";
+					$function = "now";
+				}
+				input($field, $value, $function, $row_key);
+				echo "\n";
 			}
-			$value = ($row !== null
-				? ($row[$name] != "" && $jush == "sql" && preg_match("~enum|set~", $field["type"])
-					? (is_array($row[$name]) ? array_sum($row[$name]) : +$row[$name])
-					: $row[$name]
-				)
-				: (!$update && $field["auto_increment"]
-					? ""
-					: (isset($_GET["select"]) ? false : $default)
-				)
-			);
-			if (!$_POST["save"] && is_string($value)) {
-				$value = $adminer->editVal($value, $field);
+			if (!support("table")) {
+				echo "<tr>"
+					. "<th><input name='field_keys[]' onkeyup='keyupChange.call(this);' onchange='fieldChange(this);' value=''>" // needs empty value for keyupChange()
+					. "<td class='function'>" . html_select("field_funs[]", $adminer->editFunctions(array("null" => isset($_GET["select"]))))
+					. "<td><input name='field_vals[]'>"
+					. "\n"
+				;
 			}
-			$function = ($_POST["save"]
-				? (string) $_POST["function"][$name]
-				: ($update && $field["on_update"] == "CURRENT_TIMESTAMP"
-					? "now"
-					: ($value === false ? null : ($value !== null ? '' : 'NULL'))
-				)
-			);
-			if (preg_match("~time~", $field["type"]) && $value == "CURRENT_TIMESTAMP") {
-				$value = "";
-				$function = "now";
-			}
-			input($field, $value, $function);
-			echo "\n";
+			echo "</table>\n";
 		}
-		if (!support("table")) {
-			echo "<tr>"
-				. "<th><input name='field_keys[]' onkeyup='keyupChange.call(this);' onchange='fieldChange(this);' value=''>" // needs empty value for keyupChange()
-				. "<td class='function'>" . html_select("field_funs[]", $adminer->editFunctions(array("null" => isset($_GET["select"]))))
-				. "<td><input name='field_vals[]'>"
-				. "\n"
-			;
-		}
-		echo "</table>\n";
 	}
 	echo "<p>\n";
 	if ($fields) {
@@ -1393,7 +1416,7 @@ function edit_form($TABLE, $fields, $row, $update) {
 			) . "' title='Ctrl+Shift+Enter'>\n";
 		}
 	}
-	echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "'" . confirm() . ">\n"
+	echo ($update ? (is_array($update) ? "" : "<input type='submit' name='delete' value='" . lang('Delete') . "'" . confirm() . ">\n")
 		: ($_POST || !$fields ? "" : "<script type='text/javascript'>focus(document.getElementById('form').getElementsByTagName('td')[1].firstChild);</script>\n")
 	);
 	if (isset($_GET["select"])) {
