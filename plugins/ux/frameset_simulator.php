@@ -46,10 +46,10 @@ class AdminerFramesetSimulator
 			};
 
 			// change menu scrolls
-			var restoredScrolls;
+			var restoredMenuScrolls;
 			var menu = document.getElementById("menu");
 			var tables = document.getElementById("tables");
-			var scroll_box = menu;
+			var menu_scroll_box = menu;
 			if (GetStyleOfElement(menu, "overflow") == "visible")
 			{
 				// prepare style for correct working, if current skin do not ready for it
@@ -83,10 +83,10 @@ class AdminerFramesetSimulator
 						tables.style.position = "absolute";
 					}
 
-					if (restoredScrolls)
+					if (restoredMenuScrolls)
 					{
-						scroll_box.scrollLeft = restoredScrolls[0];
-						scroll_box.scrollTop = restoredScrolls[1];
+						menu_scroll_box.scrollLeft = restoredMenuScrolls[0];
+						menu_scroll_box.scrollTop = restoredMenuScrolls[1];
 					}
 				});
 
@@ -106,7 +106,7 @@ class AdminerFramesetSimulator
 					tables.style.overflow = "auto !important";
 					tables.style.setProperty("overflow", "auto", "important");
 
-					scroll_box = tables;
+					menu_scroll_box = tables;
 				}
 <?
 			}
@@ -114,12 +114,12 @@ class AdminerFramesetSimulator
 
 			// setup content box
 			var content = document.getElementById("content");
-			var content_box = document.createElement("DIV");
-			content_box.id = "content_scroll_box";
-			content_box.tabIndex = -1;									// without tabIndex focus() did not work
-			content.parentNode.insertBefore( content_box, content );
-			content_box.appendChild(content);
-			content_box.style.position = "absolute";
+			var content_scroll_box = document.createElement("DIV");
+			content_scroll_box.id = "content_scroll_box";
+			content_scroll_box.tabIndex = -1;									// without tabIndex focus() did not work
+			content.parentNode.insertBefore( content_scroll_box, content );
+			content_scroll_box.appendChild(content);
+			content_scroll_box.style.position = "absolute";
 
 			// setup content box sizes
 			var menu_css_rules = GetCSSRulesOfElement(menu).join("");
@@ -133,21 +133,21 @@ class AdminerFramesetSimulator
 				var menu_default_percent = Math.round( menu_default_width / (window.innerWidth / 100) );
 				var menu_backconvertion_width = menu_default_percent * (window.innerWidth / 100);
 				var content_left_shift_percent = Math.floor( (menu_backconvertion_width + menu_width_expander) / (window.innerWidth / 100) );
-				content_box.style.left = content_left_shift_percent+"%";	// "23%";
+				content_scroll_box.style.left = content_left_shift_percent+"%";	// "23%";
 			}
 			else
 			{
-				content_box.style.left = menu.offsetWidth+"px";
+				content_scroll_box.style.left = menu.offsetWidth+"px";
 			}
-			content_box.style.paddingLeft = content_additional_left_shift+"px";
+			content_scroll_box.style.paddingLeft = content_additional_left_shift+"px";
 
-			content_box.style.right = "0";
-			content_box.style.top = GetStyleOfElement(content, "margin-top");
-			content_box.style.bottom = "0";
-			content_box.style.overflow = "auto";
+			content_scroll_box.style.right = "0";
+			content_scroll_box.style.top = GetStyleOfElement(content, "margin-top");
+			content_scroll_box.style.bottom = "0";
+			content_scroll_box.style.overflow = "auto";
 			content.style.marginLeft = "0";
 			content.style.marginTop = "0";
-			content_box.focus();
+			content_scroll_box.focus();
 
 			// resizer
 			var style = document.createElement('style');
@@ -165,12 +165,12 @@ class AdminerFramesetSimulator
 				menu_right_border = menu_css_rules.match(/[\s;{]border-right\s*:\s*([0-9\.]+px)[\s};]/);
 			if (menu_right_border)
 			{
-				resize_bar.style.left = (parseInt(content_box.style.left) - parseInt(menu_right_border[1])) + "px";
+				resize_bar.style.left = (parseInt(content_scroll_box.style.left) - parseInt(menu_right_border[1])) + "px";
 				resize_bar.style.width = menu_right_border[1];
 			}
 			else
 			{
-				resize_bar.style.left = content_box.style.left;
+				resize_bar.style.left = content_scroll_box.style.left;
 				resize_bar.style.width = "5px";
 			}
 			resize_bar.style.cursor = "w-resize";
@@ -183,7 +183,7 @@ class AdminerFramesetSimulator
 			resize_bar.addEventListener("dblclick", function(event)
 			{
 				menu.style.width = default_values.w + "px";
-				content_box.style.left = menu.offsetWidth + "px";
+				content_scroll_box.style.left = menu.offsetWidth + "px";
 				resize_bar.style.left = default_values.l;
 				if (window.sessionStorage)
 					sessionStorage.menuSize = menu.style.width;
@@ -210,12 +210,12 @@ class AdminerFramesetSimulator
 				{
 					var newWidth = resizeOffset.w - (resizeOffset.x - event.pageX);
 					menu.style.width = newWidth + "px";
-					content_box.style.left = menu.offsetWidth + "px";
+					content_scroll_box.style.left = menu.offsetWidth + "px";
 
 					if (menu_right_border)
-						resize_bar.style.left = (parseInt(content_box.style.left) - parseInt(menu_right_border[1])) + "px";
+						resize_bar.style.left = (parseInt(content_scroll_box.style.left) - parseInt(menu_right_border[1])) + "px";
 					else
-						resize_bar.style.left = content_box.style.left;
+						resize_bar.style.left = content_scroll_box.style.left;
 				}
 			});
 			menu.parentNode.appendChild(resize_bar);
@@ -223,32 +223,59 @@ class AdminerFramesetSimulator
 			// remember navigation menu scrolls between page reloads
 			if (window.sessionStorage)
 			{
-				var funcStoreNewScrolls = function()
-				{
-					sessionStorage.menuScrolls = [ scroll_box.scrollLeft, scroll_box.scrollTop ].join("x");
-				};
-
-				// watch for scrolls and focus (for cases with windows with different scrolls)
-				scroll_box.addEventListener("scroll", funcStoreNewScrolls);
-				window.addEventListener("focus", funcStoreNewScrolls);
-
 				if (sessionStorage.menuSize)
 				{
 					menu.style.width = sessionStorage.menuSize;
-					content_box.style.left = menu.offsetWidth + "px";
+					content_scroll_box.style.left = menu.offsetWidth + "px";
 
 					if (menu_right_border)
-						resize_bar.style.left = (parseInt(content_box.style.left) - parseInt(menu_right_border[1])) + "px";
+						resize_bar.style.left = (parseInt(content_scroll_box.style.left) - parseInt(menu_right_border[1])) + "px";
 					else
-						resize_bar.style.left = content_box.style.left;
+						resize_bar.style.left = content_scroll_box.style.left;
 				}
 
+
+				// menu scroll
 				if (sessionStorage.menuScrolls)
 				{
-					restoredScrolls = sessionStorage.menuScrolls.split("x");
-					scroll_box.scrollLeft = restoredScrolls[0];
-					scroll_box.scrollTop = restoredScrolls[1];
+					restoredMenuScrolls = sessionStorage.menuScrolls.split("x");
+					menu_scroll_box.scrollLeft = restoredMenuScrolls[0];
+					menu_scroll_box.scrollTop = restoredMenuScrolls[1];
 				}
+
+				var funcStoreMenuScrolls = function()
+				{
+					sessionStorage.menuScrolls = [ menu_scroll_box.scrollLeft, menu_scroll_box.scrollTop ].join("x");
+				};
+				// watch for scrolls and focus (for cases with windows with different scrolls)
+				window.addEventListener("focus", funcStoreMenuScrolls);
+				menu_scroll_box.addEventListener("scroll", funcStoreMenuScrolls);
+
+
+				// content of select scroll
+				var page_url_mask = document.location.search.match(/.*&select=[^&]+/);
+				if (page_url_mask)
+				{
+					page_url_mask = page_url_mask[0];
+					if (sessionStorage.contentScrolls && (sessionStorage.lastContentUrlMask == page_url_mask))
+					{
+						var restoredScrolls = sessionStorage.contentScrolls.split("x");
+						content_scroll_box.scrollLeft = restoredScrolls[0];
+						content_scroll_box.scrollTop = restoredScrolls[1];
+					}
+
+					var funcStoreContentScrolls = function()
+					{
+						sessionStorage.lastContentUrlMask = page_url_mask;
+						sessionStorage.contentScrolls = [ content_scroll_box.scrollLeft, content_scroll_box.scrollTop ].join("x");
+					};
+					// watch for scrolls and focus (for cases with windows with different scrolls)
+					funcStoreContentScrolls();
+					window.addEventListener("focus", funcStoreContentScrolls);
+					content_scroll_box.addEventListener("scroll", funcStoreContentScrolls);
+				}
+				else
+					sessionStorage.lastContentUrlMask = "";
 			}
 		});
 		</script>

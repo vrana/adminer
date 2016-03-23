@@ -42,9 +42,10 @@ class AdminerTableHScrollFollowers
 					var scroll_box = document.getElementById("content_scroll_box");		// Support plugin, which sumilate frameset scrolls
 					if (!scroll_box)
 						scroll_box = window;
-					scroll_box.addEventListener("scroll", function(event)
+
+					var funcShiftElements = function()
 					{
-						var scrollLeft = this.scrollX || this.scrollLeft;
+						var scrollLeft = scroll_box.scrollX || scroll_box.scrollLeft;
 						var i, el, directions = {
 												down_pages:		{src_obj:result_table, shift_attr:"nextSibling"},
 												up_pages:		{src_obj:result_table, shift_attr:"previousSibling"},
@@ -72,7 +73,10 @@ class AdminerTableHScrollFollowers
 								}
 							}
 						}
-					}, false);
+					};
+
+					funcShiftElements(scroll_box);
+					scroll_box.addEventListener("scroll", funcShiftElements, false);
 				}
 			}
 		});
