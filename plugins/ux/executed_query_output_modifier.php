@@ -79,7 +79,7 @@ class AdminerExecutedQueryOutputModifier
 				var i, cnt = pre_list.length;
 				for (i=0; i<cnt; i++)
 				{
-					if (!pre_list.id)
+					if (!pre_list[i].id)
 						continue;
 
 					var code_list = pre_list[i].getElementsByTagName("CODE");
