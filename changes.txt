@@ -1,15 +1,16 @@
-Adminer Next
-Fix paginator page 1 skin
-Fix table pages top links
-Add detect `SQL command` page when URL containt '&table='
-Remove duplicates of collation-lists on `Alter table` page. Require JavaScript on client side!
-Optimize referencable_primary() for MySQL
-Add style chooser to select data export
-Output binary UUID in hex
+Adminer Next:
+Fix edit multiple checked records
 Recognize emails with name (name <email@foo.com>)
-Support receive partial data for alter table (workaround for max_input_vars limit errors)
-Fix disabled <select> UI in Chrome
+Fix paginator page 1 skin
+Fix table pages top links (all pages, which related to selected table, has similar links)
+Optimize referencable_primary() for MySQL
+Remove duplicates of collation-lists on `Alter table` page. Require JavaScript on client side!
+Add style chooser to select data export
 Support export table rows without AI keys
+Output binary UUID in hex
+Fix disabled <select> UI in Chrome
+Add detect `SQL command` page when URL containt '&table=' (allow to use UX plugin sql_command_table_fields)
+Support receive partial data for alter table (workaround for max_input_vars limit errors) (allow to use UX plugin table_edit_by_fields)
 UX plugins for simpler migrate phpMyAdmin users:
  - tables_list_name_select:			table names in menu has link to `Select data`, and icons to `Show structure`
  - tables_list_filter:				table list in menu has filter field
