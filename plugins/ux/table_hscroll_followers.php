@@ -54,6 +54,8 @@ class AdminerTableHScrollFollowers
 						document.getElementById("logout").parentNode.style.zIndex = "1";
 
 					var scroll_box = document.getElementById("content_scroll_box");		// Support plugin, which sumilate frameset scrolls
+					if (!scroll_box && (GetStyleOfElement(document.getElementById("content"), "overflow-y") == "auto"))
+						scroll_box = document.getElementById("content");
 					if (!scroll_box)
 						scroll_box = window;
 

@@ -54,8 +54,9 @@ class AdminerFramesetSimulator
 			{
 				// prepare style for correct working, if current skin do not ready for it
 				menu.style.position = "fixed !important";
-				menu.style.overflow = "auto";
-				menu.style.top = "40px";
+				menu.style.overflow = "visible";
+				if (GetStyleOfElement(menu, "position") == "static")
+					menu.style.top = "40px";
 				menu.style.bottom = "0";
 				menu.style.margin = "0";
 			}
@@ -97,7 +98,7 @@ class AdminerFramesetSimulator
 					event = new Event('change');
 				menu.dispatchEvent( event );
 
-				if (tables)
+				if (tables && (GetStyleOfElement(menu, "overflow") == "visible"))
 				{
 					tables.style.bottom = 0;
 					tables.style.left = GetStyleOfElement(menu, "padding-left");
@@ -114,6 +115,9 @@ class AdminerFramesetSimulator
 
 			// setup content box
 			var content = document.getElementById("content");
+			if (GetStyleOfElement(content, "position") == "absolute")
+				content.style.position = "static";
+
 			var content_scroll_box = document.createElement("DIV");
 			content_scroll_box.id = "content_scroll_box";
 			content_scroll_box.tabIndex = -1;									// without tabIndex focus() did not work
@@ -145,9 +149,25 @@ class AdminerFramesetSimulator
 			content_scroll_box.style.top = GetStyleOfElement(content, "margin-top");
 			content_scroll_box.style.bottom = "0";
 			content_scroll_box.style.overflow = "auto";
+			document.body.style.overflow = "hidden";
 			content.style.marginLeft = "0";
 			content.style.marginTop = "0";
+			content.style.overflow = "visible !important";
 			content_scroll_box.focus();
+
+			// fix breadcrumb position in some skins
+			var breadcrumb = document.getElementById("breadcrumb");
+			if (GetStyleOfElement(breadcrumb, "position") == "absolute")
+			{
+				breadcrumb.style.position = "fixed";
+				breadcrumb.style.left = content_scroll_box.style.left;
+			}
+
+			// fix forms overflow in some skins
+			var forms = document.getElementsByTagName("FORM");
+			if (forms.length && (GetStyleOfElement(forms[0], "overflow") == "auto"))
+				for (var i=0; i<forms.length; i++)
+					forms[i].style.overflow = "visible";
 
 			// resizer
 			var style = document.createElement('style');

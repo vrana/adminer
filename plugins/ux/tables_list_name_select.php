@@ -57,7 +57,7 @@ class AdminerTablesListNameSelect
 
 			// swap Show structure <-> Select table from navigation menu
 			var tables_box = document.getElementById("tables");
-			if (tables_box)
+			if (tables_box && structure_icon)		// swap only if we have icon for structure (taken from content navigation)
 			{
 				var tbl_links = tables_box.getElementsByTagName("A");
 				var first_link;
@@ -78,15 +78,20 @@ class AdminerTablesListNameSelect
 						else
 							break;
 
+						cssSelector = "";
+
 						for (j=rules.length-1; j>=0; j--)
 						{
 							if ((rules[j].cssText.indexOf('#menu p a[href*="&select="]') >= 0)
+								|| (rules[j].cssText.indexOf('#menu a[href*="&select="]') >= 0)
 								|| (rules[j].cssText.indexOf("#menu p a[href*='&select=']") >= 0)
+								|| (rules[j].cssText.indexOf("#menu a[href*='&select=']") >= 0)
 								|| (rules[j].cssText.indexOf("#menu p a.select") >= 0)
+								|| (rules[j].cssText.indexOf("#menu a.select") >= 0)
 								)
 							{
 //								rules[j].cssText = rules[j].cssText.replace(/\#menu p a\[href\*\=["']\&select\=["']\]/, '#menu p a.select');	// Firefox and IE did not support this method
-								cssSelector = rules[j].selectorText.replace(/\#menu p a\[href\*\=["']\&select\=["']\]/, '#menu p a.select');
+								cssSelector = rules[j].selectorText.replace(/\#menu( p)? a\[href\*\=["']\&select\=["']\]/g, '#menu #tables a.select');
 								cssText = rules[j].style.cssText;
 								if (structure_icon && (cssText.indexOf("content:") >= 0))
 									cssText = cssText.replace(/content:\s*url\([^\)]+\);/, "content: "+structure_icon+";") + " opacity:0.7;";
@@ -94,8 +99,48 @@ class AdminerTablesListNameSelect
 								styleSheets[i].insertRule(cssSelector + " {" + cssText + "}", j);	// addRule() uses other indexes
 							}
 						}
+
+						if (cssSelector == "")
+						{
+							// fix alternative methods
+							for (j=rules.length-1; j>=0; j--)
+							{
+								if ((rules[j].cssText.indexOf('#tables a[href*="&select="]') >= 0)
+									|| (rules[j].cssText.indexOf("#tables a[href*='&select=']") >= 0)
+									|| (rules[j].cssText.indexOf('#tables p a[href*="&select="]') >= 0)
+									|| (rules[j].cssText.indexOf("#tables p a[href*='&select=']") >= 0)
+									)
+								{
+									cssSelector = rules[j].selectorText.replace(/\#tables( p)? a\[href\*\=["']\&select\=["']\]/g, '#menu #tables a.select');
+									cssText = rules[j].style.cssText;
+									if (structure_icon && (cssText.indexOf("content:") >= 0))
+										cssText = cssText.replace(/content:\s*url\([^\)]+\);/, "content: "+structure_icon+";") + " opacity:0.7;";
+									styleSheets[i].deleteRule(j);										// removeRule() uses other indexes
+									styleSheets[i].insertRule(cssSelector + " {" + cssText + "}", j);	// addRule() uses other indexes
+								}
+							}
+						}
+						else
+						{
+							// fix table/view styles
+							for (j=rules.length-1; j>=0; j--)
+							{
+								if ((rules[j].cssText.indexOf('#menu a[href*="&table="]') >= 0)
+									|| (rules[j].cssText.indexOf("#menu a[href*='&table=']") >= 0)
+									|| (rules[j].cssText.indexOf('#menu p a[href*="&table="]') >= 0)
+									|| (rules[j].cssText.indexOf("#menu p a[href*='&table=']") >= 0)
+									)
+								{
+									cssSelector = rules[j].selectorText.replace(/\#menu( p)? a\[href\*\=["']\&(table|view)\=["']\]/g, '#menu #tables a');
+									cssText = rules[j].style.cssText;
+									styleSheets[i].deleteRule(j);										// removeRule() uses other indexes
+									styleSheets[i].insertRule(cssSelector + " {" + cssText + "}", j);	// addRule() uses other indexes
+								}
+							}
+						}
 					}
 				}
+
 				for (i=0; i<cnt; i+=2)
 				{
 					first_link = [ tbl_links[i].href, tbl_links[i].title ];
