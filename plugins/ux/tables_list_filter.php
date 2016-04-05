@@ -118,7 +118,7 @@ class AdminerTablesListFilter
 			}
 		});
 		</script>
-<?
+<?php
 	}
 
 }

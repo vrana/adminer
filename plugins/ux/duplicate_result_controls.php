@@ -30,13 +30,13 @@ class AdminerDuplicateResultControls
 		<script>
 		document.addEventListener("DOMContentLoaded", function(event)
 		{
-<?
+<?php
 			if (in_array("pages_list", $this->TYPES_LIST))
 			{
 ?>
 				// Duplicate pages list
 				var table_box = document.getElementById("table");
-				if (table_box && ((table_box.rows.length-1) >= <?=$this->MINIMUM_TABLE_ROWS?>))
+				if (table_box && ((table_box.rows.length-1) >= <?php print $this->MINIMUM_TABLE_ROWS;?>))
 				{
 					var pages_box = table_box;
 					while (pages_box && (!pages_box.className || (pages_box.className.split(/\s+/).indexOf("pages") < 0)))
@@ -69,7 +69,7 @@ class AdminerDuplicateResultControls
 						}
 					}
 				}
-<?
+<?php
 			}
 
 			if (in_array("explain_query", $this->TYPES_LIST))
@@ -77,7 +77,7 @@ class AdminerDuplicateResultControls
 ?>
 				// Duplicate SQL result controls
 				var table_box, content = document.getElementById("content");
-				if (content && (table_box = content.getElementsByTagName("TABLE")).length && ((table_box[0].rows.length-1) >= <?=$this->MINIMUM_TABLE_ROWS?>))
+				if (content && (table_box = content.getElementsByTagName("TABLE")).length && ((table_box[0].rows.length-1) >= <?php print $this->MINIMUM_TABLE_ROWS;?>))
 				{
 					var cloned_controls = [];
 
@@ -122,11 +122,11 @@ class AdminerDuplicateResultControls
 					for (j=0; j<cloned_controls.length; j++)
 						content.insertBefore(cloned_controls[j][0], cloned_controls[j][1]);
 				}
-<?
+<?php
 			}
 ?>
 		});
 		</script>
-<?
+<?php
 	}
 }

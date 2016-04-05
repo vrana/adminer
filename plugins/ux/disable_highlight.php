@@ -32,7 +32,7 @@ class AdminerDisableHighlight
 			for (i=0; i<cnt; i++)
 				textareas[i].className = textareas[i].className.replace(/\bjush-[^\s]+/, "");
 			</script>
-<?
+<?php
 		}
 
 		if (in_array("code", $this->TYPES_LIST))
@@ -45,7 +45,7 @@ class AdminerDisableHighlight
 			for (i=0; i<cnt; i++)
 				textareas[i].className = textareas[i].className.replace(/\bjush-[^\s]+/, "");
 			</script>
-<?
+<?php
 		}
 
 		if (in_array("textarea", $this->TYPES_LIST) && in_array("code", $this->TYPES_LIST))
@@ -54,7 +54,7 @@ class AdminerDisableHighlight
 			<script>
 			document.addEventListener("DOMContentLoaded", function(event) { window.jush = null; });
 			</script>
-<?
+<?php
 		}
 	}
 }

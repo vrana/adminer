@@ -112,6 +112,6 @@ class AdminerSubmitAtRight
 			window.dispatchEvent(event);
 		});
 		</script>
-<?
+<?php
 	}
 }

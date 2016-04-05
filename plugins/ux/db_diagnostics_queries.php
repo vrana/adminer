@@ -112,7 +112,7 @@ class AdminerDbDiagnosticsQueries
 
 					if (db_name)
 					{
-<?
+<?php
 						switch ($GLOBALS["drivers"][DRIVER])
 						{
 							case "MySQL":
@@ -196,14 +196,14 @@ class AdminerDbDiagnosticsQueries
 																				SELECT TABLE_NAME, ENGINE, ROW_FORMAT, TABLE_ROWS, DATA_LENGTH/1024/1024 AS `data_length_MB`, INDEX_LENGTH/1024/1024 AS `index_length_MB`\n\
 																				FROM information_schema.tables\n\
 																				WHERE TABLE_SCHEMA = '"+db_name+"' AND ENGINE='MyISAM';");
-<?
+<?php
 							break;
 						}
 ?>
 					}
 					else	// no selected Database
 					{
-<?
+<?php
 						switch ($GLOBALS["drivers"][DRIVER])
 						{
 							case "MySQL":
@@ -212,7 +212,7 @@ class AdminerDbDiagnosticsQueries
 																				SELECT PLUGIN_NAME as Name, PLUGIN_VERSION as Version, PLUGIN_STATUS as Status,\n\
 																						PLUGIN_MATURITY as Maturity, LOAD_OPTION, PLUGIN_TYPE as Type, PLUGIN_DESCRIPTION as Description\n\
 																				FROM INFORMATION_SCHEMA.PLUGINS");
-<?
+<?php
 							break;
 						}
 ?>
@@ -221,6 +221,6 @@ class AdminerDbDiagnosticsQueries
 			}
 		});
 		</script>
-<?
+<?php
 	}
 }

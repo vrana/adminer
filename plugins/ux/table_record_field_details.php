@@ -68,6 +68,6 @@ class AdminerTableRecordFieldDetails
 			});
 		});
 		</script>
-<?
+<?php
 	}
 }

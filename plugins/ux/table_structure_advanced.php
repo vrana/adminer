@@ -30,7 +30,7 @@ class AdminerTableStructureAdvanced
 		<script>
 		document.addEventListener("DOMContentLoaded", function(event)
 		{
-<?
+<?php
 			if (in_array("status", $this->TYPES_LIST))
 			{
 ?>
@@ -147,7 +147,7 @@ class AdminerTableStructureAdvanced
 						}
 					}
 				});
-<?
+<?php
 			}
 
 			if (in_array("controls", $this->TYPES_LIST))
@@ -173,7 +173,7 @@ class AdminerTableStructureAdvanced
 						var fieldset_arr = request.responseText.split(/(<fieldset[^<>]*\>)/);
 						var fieldset_html = fieldset_arr[4].split(/<\/fieldset>/)[0].replace(/[\r\n]/g, "");
 						fieldset_html = fieldset_html.replace(/^<legend[^<>]*\>.+<\/legend\>/, "");
-						fieldset_html = fieldset_html.replace(/(<select\s+[^>]*name=['"]target['"][^>]*\/?\>.*<\/select>)/i, "$1as <input name='target_table' value='<?=$TABLE?>' />");
+						fieldset_html = fieldset_html.replace(/(<select\s+[^>]*name=['"]target['"][^>]*\/?\>.*<\/select>)/i, "$1as <input name='target_table' value='<?php print $TABLE;?>' />");
 
 						var form = document.createElement("FORM");
 						form.action = all_dbs_location;
@@ -198,7 +198,7 @@ class AdminerTableStructureAdvanced
 						content.insertBefore(form, fieldset_anchor);
 					}
 				});
-<?
+<?php
 			}
 
 			if (in_array("export", $this->TYPES_LIST))
@@ -247,7 +247,7 @@ class AdminerTableStructureAdvanced
 						content.insertBefore(export_form, form_anchor);
 					}
 				});
-<?
+<?php
 			}
 
 			if (in_array("quick_edit", $this->TYPES_LIST) && function_exists("get_page_table"))	// second condition check modified sources of adminer
@@ -424,11 +424,11 @@ class AdminerTableStructureAdvanced
 						}
 					});
 				}
-<?
+<?php
 			}
 ?>
 		});
 		</script>
-<?
+<?php
 	}
 }

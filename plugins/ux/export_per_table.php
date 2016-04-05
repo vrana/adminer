@@ -44,6 +44,6 @@ class AdminerExportPerTable
 			}
 		});
 		</script>
-<?
+<?php
 	}
 }

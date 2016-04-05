@@ -126,6 +126,6 @@ class AdminerTableEditByFields
 			});
 		});
 		</script>
-<?
+<?php
 	}
 }

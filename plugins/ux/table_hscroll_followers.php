@@ -33,11 +33,25 @@ class AdminerTableHScrollFollowers
 
 				if (result_table)
 				{
-					// do not overpain top bar
-					if (document.getElementById("lang"))	// english only adminer has not lang selector
+					var GetStyleOfElement = function(el, css_name)
+					{
+						if (document.defaultView && document.defaultView.getComputedStyle)
+							return document.defaultView.getComputedStyle(el, "").getPropertyValue(css_name);
+						if (el.currentStyle)
+							return el.currentStyle[ css_name.replace(/-(\w)/g, function(){ return arguments[1].toUpperCase(); }) ];
+						return "";
+					};
+
+					// did not overpain top bar
+					var lang_el = document.getElementById("lang");
+					if (lang_el && ([0, "auto"].indexOf(GetStyleOfElement(lang_el, "z-index")) >= 0))	// english only adminer has not lang selector
 						document.getElementById("lang").style.zIndex = "1";
-					document.getElementById("breadcrumb").style.zIndex = "1";
-					document.getElementById("logout").parentNode.style.zIndex = "1";
+					var breadcrumb_el = document.getElementById("breadcrumb");
+					if ([0, "auto"].indexOf(GetStyleOfElement(breadcrumb_el, "z-index")) >= 0)
+						document.getElementById("breadcrumb").style.zIndex = "1";
+					var logout_el = document.getElementById("logout");
+					if ([0, "auto"].indexOf(GetStyleOfElement(logout_el, "z-index")) >= 0)
+						document.getElementById("logout").parentNode.style.zIndex = "1";
 
 					var scroll_box = document.getElementById("content_scroll_box");		// Support plugin, which sumilate frameset scrolls
 					if (!scroll_box)
@@ -81,6 +95,6 @@ class AdminerTableHScrollFollowers
 			}
 		});
 		</script>
-<?
+<?php
 	}
 }

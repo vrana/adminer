@@ -268,6 +268,6 @@ class AdminerSqlCommandTableFields
 			}
 		});
 		</script>
-<?
+<?php
 	}
 }

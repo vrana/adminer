@@ -26,7 +26,7 @@ class AdminerExecutedQueryOutputModifier
 		<script>
 		document.addEventListener("DOMContentLoaded", function(event)
 		{
-<?
+<?php
 			if (in_array("show_message_queries", $this->TYPES_LIST))
 			{
 ?>
@@ -41,7 +41,7 @@ class AdminerExecutedQueryOutputModifier
 						if (childs[j].tagName && (childs[j].className.split(/\s+/).indexOf("hidden") != -1))
 							childs[j].className = childs[j].className.replace(/\bhidden\b/, "");
 				}
-<?
+<?php
 			}
 
 			if (in_array("text_wrap", $this->TYPES_LIST))
@@ -52,7 +52,7 @@ class AdminerExecutedQueryOutputModifier
 				style.type = 'text/css';
 				style.innerHTML = 'pre code { white-space: pre-wrap; }';
 				document.getElementsByTagName('HEAD')[0].appendChild(style);
-<?
+<?php
 			}
 
 			if (in_array("link2show_full", $this->TYPES_LIST))
@@ -97,11 +97,11 @@ class AdminerExecutedQueryOutputModifier
 					code_list[0].insertBefore(link, italic_list[0]);
 					code_list[0].removeChild(italic_list[0]);
 				}
-<?
+<?php
 			}
 ?>
 		});
 		</script>
-<?
+<?php
 	}
 }

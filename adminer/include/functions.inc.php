@@ -1350,7 +1350,7 @@ function edit_form($TABLE, $fields, $row, $update) {
 	if (is_array($update))
 		$form_action = h(ME . "edit=" . urlencode($TABLE));
 	?>
-<form action="<?=$form_action?>" method="post" enctype="multipart/form-data" id="form">
+<form action="<?=$form_action;?>" method="post" enctype="multipart/form-data" id="form">
 <?php
 	if (!$fields) {
 		echo "<p class='error'>" . lang('You have no privileges to update this table.') . "\n";

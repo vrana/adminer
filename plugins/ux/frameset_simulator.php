@@ -69,7 +69,7 @@ class AdminerFramesetSimulator
 				tables.style.overflow = "visible";
 			}
 
-<?
+<?php
 			if ($this->SCROLL_ONLY_TABLES_LIST)
 			{
 ?>
@@ -108,7 +108,7 @@ class AdminerFramesetSimulator
 
 					menu_scroll_box = tables;
 				}
-<?
+<?php
 			}
 ?>
 
@@ -279,6 +279,6 @@ class AdminerFramesetSimulator
 			}
 		});
 		</script>
-<?
+<?php
 	}
 }

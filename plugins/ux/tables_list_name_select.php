@@ -111,6 +111,6 @@ class AdminerTablesListNameSelect
 			}
 		});
 		</script>
-<?
+<?php
 	}
 }

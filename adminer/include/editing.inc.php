@@ -176,11 +176,13 @@ echo optionlist($structured_types, $type);
 ?></select>
 <td><input name="<?php echo h($key); ?>[length]" value="<?php echo h($field["length"]); ?>" size="3" onfocus="editingLengthFocus(this);"<?php echo (!$field["length"] && preg_match('~var(char|binary)$~', $type) ? " class='required'" : ""); ?> onchange="editingLengthChange(this);" onkeyup="this.onchange();"><td class="options"><?php //! type="number" with enabled JavaScript
 	echo "<select name='" . h($key) . "[collation]'" . (preg_match('~(char|text|enum|set)$~', $type) ? "" : " class='hidden'") . '>';
-	if (is_array($collations))
+	if (is_array($collations)) {
 		echo '<option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]);
-	echo '</select>';
-	if (is_string($collations))
+	}
+	echo "</select>";
+	if (is_string($collations)) {
 		echo "<script>document.addEventListener('DOMContentLoaded', function(event) { var row_coll = document.getElementsByName('" . h($key) . "[collation]')[0]; row_coll.innerHTML = document.getElementsByName('".$collations."')[0].innerHTML; row_coll.setAttribute('value', '".$field["collation"]."'); });</script>";
+	}
 	echo ($unsigned ? "<select name='" . h($key) . "[unsigned]'" . (!$type || preg_match('~((^|[^o])int|float|double|decimal)$~', $type) ? "" : " class='hidden'") . '><option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
 	echo (isset($field['on_update']) ? "<select name='" . h($key) . "[on_update]'" . (preg_match('~timestamp|datetime~', $type) ? "" : " class='hidden'") . '>' . optionlist(array("" => "(" . lang('ON UPDATE') . ")", "CURRENT_TIMESTAMP"), $field["on_update"]) . '</select>' : '');
 	echo ($foreign_keys ? "<select name='" . h($key) . "[on_delete]'" . (preg_match("~`~", $type) ? "" : " class='hidden'") . "><option value=''>(" . lang('ON DELETE') . ")" . optionlist(explode("|", $on_actions), $field["on_delete"]) . "</select> " : " "); // space for IE

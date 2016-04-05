@@ -43,6 +43,6 @@ class AdminerTableSortDescBeforeTitle
 
 		});
 		</script>
-<?
+<?php
 	}
 }
