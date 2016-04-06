@@ -160,7 +160,8 @@ class AdminerFramesetSimulator
 			if (GetStyleOfElement(breadcrumb, "position") == "absolute")
 			{
 				breadcrumb.style.position = "fixed";
-				breadcrumb.style.left = content_scroll_box.style.left;
+				if (GetStyleOfElement(breadcrumb, "left") == "auto")
+					breadcrumb.style.left = content_scroll_box.style.left;
 			}
 
 			// fix forms overflow in some skins
