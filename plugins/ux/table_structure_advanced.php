@@ -342,6 +342,7 @@ class AdminerTableStructureAdvanced
 				});
 
 				// get controls from Select-page (Edit)
+/*
 				ajax(current_location.replace(/&table=([^&]*)/, "&select=$1")+"&limit=1", function(request)
 				{
 					if (request.responseText && (request.responseText.indexOf("<"+"table") > 0) && (request.responseText.indexOf("<"+"code") > 0))
@@ -350,7 +351,7 @@ class AdminerTableStructureAdvanced
 						// take edit icon, if possible
 					}
 				});
-
+*/
 				// modify table with indexes
 				if (tables.length > 1)
 				{
