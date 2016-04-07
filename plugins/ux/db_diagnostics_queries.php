@@ -113,9 +113,9 @@ class AdminerDbDiagnosticsQueries
 					if (db_name)
 					{
 <?php
-						switch ($GLOBALS["drivers"][DRIVER])
+						switch (DRIVER)
 						{
-							case "MySQL":
+							case "server":	// MySQL, MySQLi, PDO_MySQL
 ?>
 								// http://code.openark.org/blog/mysql/useful-database-analysis-queries-with-information_schema
 								funcAddShortcutToQuery("Detect dublicate indexes", "## Detect duplicate and redundant indexes.\n\n\
@@ -204,9 +204,9 @@ class AdminerDbDiagnosticsQueries
 					else	// no selected Database
 					{
 <?php
-						switch ($GLOBALS["drivers"][DRIVER])
+						switch (DRIVER)
 						{
-							case "MySQL":
+							case "server":	// MySQL, MySQLi, PDO_MySQL
 ?>
 								funcAddShortcutToQuery("Show DB Plugins", "## Plugins:\n\n\
 																				SELECT PLUGIN_NAME as Name, PLUGIN_VERSION as Version, PLUGIN_STATUS as Status,\n\
