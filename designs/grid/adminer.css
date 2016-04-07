@@ -1,32 +1,29 @@
-/* Theme "Nette-mod" for Adminer, (c) SailorMax */
+/* Theme "Grid" for Adminer, (c) Kirilych */
 
 /*
-it is based on some parts of:
-- Nette Framework design - http://api.nette.org
-- CSS by Brade - http://www.bradezone.com
-- Silk icon set 1.3 by Mark James - http://www.famfamfam.com/lab/icons/silk
-- CSS icons by Hever - http://hev.cz
-- Theme "Nette" for Adminer, (c) David Grudl
+emulate Grid skin of phpMyAdmin
 */
 
 
 body {
-	background: #FFF;
-	color: #333;
-	font: 13px/18px Helvetica, Arial, sans-serif;
+	background: #f5f5f5;
+	/*color: #333;*/
+	color: black;
+/*	font: 13px/18px Helvetica, Arial, sans-serif;*/
+	font: 13px/18px sans-serif;
 }
 
 /* generic */
 a, a:visited {
 	padding: 3px 2px;
-	color: #006AEB;
+	color: #0000ff;
 	text-decoration: none;
 }
 
 a:hover {
 /*
-	background-color: #006AEB !important;
-	border-bottom: 1px solid #006AEB;
+	background-color: #0000ff !important;
+	border-bottom: 1px solid #0000ff;
 	color: #FFF;
 */
 	text-decoration: underline !important;
@@ -43,7 +40,7 @@ h1 {
 	color: #666;
 	font-size: 18px;
 	font-weight: bold;
-	height: 34px;
+	height: 40px;
 	padding: 0 0 8px;
 }
 
@@ -66,7 +63,7 @@ h3 {
 
 fieldset {
 	border: 1px solid #CCC;
-/*	float: left;*/
+/*	float: left; */
 	margin-bottom: 8px;
 	margin-right: 4px;
 	min-height: 48px;
@@ -79,10 +76,19 @@ fieldset div {
 
 input, select, textarea {
 	border: 1px solid #CCC;
+
 	color: #555;
 	font: 13px Helvetica,Arial,sans-serif;
 	padding: 3px;
 }
+
+#menu input,
+#menu select
+{
+	color: black;
+/*	border: 1px solid #CCC;*/
+}
+
 
 input[disabled=true], select[disabled=true], textarea[disabled=true]
 {
@@ -112,17 +118,13 @@ input[type=submit] {
 }
 
 input[type=submit]:hover {
-	background-color: #006AEB;
+	background-color: #0000ff;
 }
 
 input[type=image], input[type=checkbox] {
 	border: none;
 	padding: 0;
 	vertical-align: middle;
-}
-
-label {
-	display: inline-block;	/* fix export DB checkbox positions */
 }
 
 label input[type=checkbox], td input[type=radio], td span select {
@@ -143,9 +145,12 @@ optgroup {
 
 code {
 	display: inline-block;	/* fix paddings */
-	background: #EEE;
+/*	background: #EEE;*/
 	font-family: Consolas,monospace;
 	padding: 2px 4px;
+
+	background:#e5e5e5;
+	border:1px solid black;
 }
 
 pre code {
@@ -158,40 +163,49 @@ code a:hover {
 }
 
 table {
+	clear: left;
 	border: 1px solid #D0CDC4;
 	font-size: inherit;
 	margin: 4px 0 8px;
+
+	border:none;
 }
 
 tbody tr:hover td, tbody tr:hover th {
-	background: #EDF4FF;
+	background: #ccffcc;
 }
 
 th, td {
-	background: inherit;
-	border: 1px dotted #CCC;
-	border-width:0 0 0 1px;
+	/*background: inherit;*/
+	background: #e5e5e5;
+
+	/*order: 1px dotted #CCC;*/
+	/*border-width:0 0 0 1px;*/
+
+	border:0;
+
 	font-weight: normal;
 	margin: 0;
-	padding: 3px 5px;
+	/*padding: 3px 5px;*/
+	padding: 0.1em 0.5em;
 	text-align: left;
 	vertical-align: top;
 }
 
 tbody tr:nth-child(even) {
-    background: #FCFAF5;
+    background: #d5d5d5;
 }
 
 .odd th, .odd td {
-	background: #FCFAF5;
+	background: #d5d5d5;
 }
 
 .js .checked th, .js .checked td {
-	background: #CEE0FC;
+	background: #ffcc99 !important;
 }
 
 thead th, thead td {
-	background: #F2EEE1;
+	background: #d3dce3;
 	border-color: #D0CDC4;
 	font-weight: bold;
 	white-space: nowrap;
@@ -212,7 +226,7 @@ tbody th small
 
 thead tr:hover td, thead tr:hover th,
 .js thead .checked th, .js thead .checked td {
-	background: #F2EEE1;
+	background: #d3dce3;
 }
 
 th:first-child, td:first-child {
@@ -251,9 +265,10 @@ table code {
 
 #content {
 /*	height: 100%; */
-	margin: 40px 0 20px 290px;	/* bottom padding for pages list */
-	padding: 20px;
-	background: white;
+	margin: 40px 0 20px 280px;	/* bottom padding for pages list */
+/*	padding: 20px;*/
+	padding: 0px;
+	background: #f5f5f5;
 	z-index: 1;
 }
 
@@ -280,6 +295,31 @@ table code {
 
 }
 
+#content > h2
+{
+	background:#d5d5d5;
+	margin-left:-5px;
+	font-size:15px;
+	line-height:20px;
+	padding-left: 10px;
+	/*	border-bottom:1px solid #9f9f9f;*/
+}
+
+#content > .links
+{
+	background:#eeeeee;
+	margin: 0 0 4px -5px;
+	padding:5px 10px;
+
+}
+
+#content > .links a
+{
+	line-height:25px;
+	display:inline-block;
+}
+
+
 #content > #breadcrumb + h2:before {
 	display: none;
 }
@@ -297,7 +337,7 @@ table code {
 	position: fixed;
 	top: 0;
 	left: 0;
-	width: 260px;
+	width: 245px;
 }
 
 #lang select {
@@ -307,7 +347,7 @@ table code {
 }
 
 #menu {
-	background: #FCFAF5;
+	background: #d0dce0;
 	border-right: 5px solid #E4E2DA;
 	bottom: 0;
 	margin: 0;
@@ -315,14 +355,14 @@ table code {
 	padding: 10px 15px;
 	position: fixed;
 	top: 40px;
-	width: 250px;
+	width: 240px;
 }
 
 #menu a {
-	color: #333;
+/*	color: #333;*/
+	color: black;
 	border: none;
 	margin-right: 4px;
-	display: inline-block;
 }
 
 #tables a {
@@ -337,6 +377,7 @@ table code {
 	border: none;
 	margin: 0 0 4px;
 	padding: 0 0 4px;
+	white-space: nowrap;
 }
 
 #menu #tables
@@ -349,13 +390,15 @@ table code {
 	color: #FFF;
 	line-height: 40px;
 	margin: 0;
-	padding: 0 0 0 20px;
+	padding:0;
 	position: fixed;
 	top: 0;
-	left: 10px;
-	padding-left: 300px;	/* single language version fix */
+/*	left: 300px;*/
+	left: 0px;
+	margin-left:284px;
 	width: 100%;
 	height: 40px;
+	z-index: 10;
 }
 
 #breadcrumb a {
@@ -440,7 +483,7 @@ select[name="db"] option {
 	padding-left: 18px;
 }
 
-#menu p a[href*="&select="] {
+#menu p a.select {
 	display: inline-block;
 	margin-right: 0;
 	overflow: hidden;
@@ -450,7 +493,7 @@ select[name="db"] option {
 	height: 16px;
 }
 
-#menu p a[href*="&select="]:before {
+#menu p a.select:before {
 	content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHISURBVDjLpVPNK0RRFP+9D98syMwUspHkm9I0YkFZWBFKkZ0s7a3Ewh+ilChK7FgoZCJFKYlYKB8zk2+Z5t0P577He29kQU7dd+6575zf+d1zztWklPiPmOozt/U4SThjXIoyIQS4AJjSXO0lGGlvcXAm6Vzsz4xUhm0AIeX4QLig+C+ZpxbOG1wGhGYHr1zMUmZGWRgs0ha3PE1nX/8mWmdgWTzLB+DUYbhm9FfZ35IEyrhXA3VXJfPbsV8B9LQUIeUHYJ8ASobag1jcucNgW8g9W4reYSDi2YnnZDoDiwCokDANct6NwTB0LEdj0HRA/wxa2SN25JNBEdWluUhZ366gqmAaGvrCAXKOozccTGPgt8+vn8GYSGcgyTYp3dpBnBg42nbQPRBTo5bTvqYkmxL6AQhNTWQGBXY3B7BxlEBXozcW64dxRKoKUZBju+P06gl5WaaviMJBM3TNDlbypemIZgHYOnlwASsCmW7nHADGnBoQ3c76YmweJ9BR5zFYjsbRHwm4tmJg6PhWA7pCXXk+bu7fURHKweXtq/sWaksz7SC/CCGFrwtyZ3r+rCnFRZ7qr1qc6mLZj4f9OEyPL8lVpbX/PucPv5QPKHB1TdEAAAAASUVORK5CYII=");
 	padding-right: 5px;
 	display: inline-block;
@@ -470,6 +513,7 @@ a[href*="&create="] {
 a[href$="&create="] {
 	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAIpSURBVDjLpZNPSFRRFMZ/749/Kt3IqFTSRoSMmrGIYTTbpEJtjBCCok1Em9JVG1dRC8FFEES5aGFEgRRZWq1iLKKxBiNqLDcltQgmHR9hY6LOu+feFm+YGVsZXbh8nHO53/nud8+xjDH8z3IB7r5avGgMZ8XoBq01okFpjYhGtEGJLtmCKINo/XbgVFPUBdDG9PVEq0P/UvnSvdlwQYFoHQIY/3obpRVKFL5W+OIXUVThrL91AN+XihKCwIeTu85sqPryqsJXUvRARAMwkshsiKB7fw25UgKVJwA40V7H/cl5jh+oL+RGk/P0xIqxl11dr8AXjTYG14HRNxkcx+ZhMoNlg52/ND6VAWMoc6F5+2Zy/l9PMIDrWByL1jI+tcDRaN06BaXxbDqLUnq9AqPBteHpuwUcJ0AIcgBXH93h+/wEyyuLrPk5cmv7gNY8gdIYYyhz4PDeWuIpj85IsS2ujQ2zJAk6DkZpqGnixcwYyU+PifUOX7Eh6DoAx7aIpzwA4imPeMrj+bTH+88PaNkZQWwhsrULsXxie9oAzgcESgUe2NAZCeE6AXZGQhwKh/Cyc5RZVXQ39wFwoeMmjXVhgMqiB8awe0cVP36u0Fi/iW9zvwuzkF3+xUz6Nal0gv6uWww+O02lUwGwmv8FM3l55EtLTvQWXwm+EkRpfNEoUZRXHCE5PUFbuJ0nH4cot1wSH14C3LA2Os6x3m2DwDmgGlgChpLX0/1/AIu8MA7WsWBMAAAAAElFTkSuQmCC") no-repeat scroll left center;
 	padding-left: 22px;
+	display: block;
 }
 
 a[href*="&default="] {
@@ -593,9 +637,7 @@ input[name="delete"], input[name="drop"] {
 	border: none;
 	cursor: pointer;
 	font-size: .9em;
-/*	padding: 1px 5px 1px 18px;*/
-	padding-right: 5px;
-	padding-left: 18px;
+	padding: 1px 5px 1px 18px;
 	color: #555;
 }
 
@@ -616,6 +658,12 @@ input[name="delete"]:hover, input[name="drop"]:hover {
 
 
 /* paginator */
+
+.pages {
+	background: #e5e5e5;
+}
+
+
 .pages {
 	margin: 1em 0;
 	font-size: 90%;
@@ -627,5 +675,13 @@ input[name="delete"]:hover, input[name="drop"]:hover {
 	padding: .2em .5em;
 	border: 1px solid #9AAFE5;
 	text-decoration: none;
+/*	color:black; */
 }
 
+
+
+
+table {
+    border-spacing: 2px;
+    border-collapse: separate;
+}
