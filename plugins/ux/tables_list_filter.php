@@ -39,6 +39,12 @@ class AdminerTablesListFilter
 				if (window.sessionStorage)
 					sessionStorage.tableFilter = this.value;
 
+				var reString = /\s+/;
+				var reHiddenClass = /(^|\s)hidden(\s|$)/g;
+
+				var orig_display_style = tables_box.style.display;
+				tables_box.style.display = "none";
+
 				var tables_links = tables_box.getElementsByTagName("A");
 				for (var i=1; i<tables_links.length; i+=2)
 				{
@@ -46,7 +52,7 @@ class AdminerTablesListFilter
 					var text = tables_links[i].innerText || tables_links[i].textContent;
 					if (text.indexOf(this.value) == -1)
 					{
-						if (tables_links[i].className.split(/\s+/).indexOf("hidden") == -1)
+						if (tables_links[i].className.split(reString).indexOf("hidden") == -1)
 						{
 							tables_links[i-1].className += " hidden";	// icon
 							tables_links[i].className += " hidden";		// name
@@ -60,17 +66,18 @@ class AdminerTablesListFilter
 					}
 					else
 					{
-						tables_links[i-1].className = tables_links[i-1].className.replace(/(^|\s)hidden(\s|$)/g, " ");	// icon
-						tables_links[i].className = tables_links[i].className.replace(/(^|\s)hidden(\s|$)/g, " ");	// name
+						tables_links[i-1].className = tables_links[i-1].className.replace(reHiddenClass, " ");	// icon
+						tables_links[i].className = tables_links[i].className.replace(reHiddenClass, " ");	// name
 						// <br>
 						el = tables_links[i];
 						while (el && (el.tagName != "BR"))
 							el = el.nextSibling;
 						if (el)
-							el.className = el.className.replace(/(^|\s)hidden(\s|$)/g, " ");
+							el.className = el.className.replace(reHiddenClass, " ");
 						tables_links[i].innerHTML = text.replace(this.value, '<b>' + this.value + '</b>');
 					}
 				}
+				tables_box.style.display = orig_display_style;
 			});
 
 			search_field.addEventListener("keydown", function(evt)		// Opera can't catch Esc-key on keyup
