@@ -5,7 +5,10 @@ include dirname(__FILE__) . "/adminer/include/version.inc.php";
 include dirname(__FILE__) . "/externals/JsShrink/jsShrink.php";
 
 if (!defined("STDERR"))
+{
 	define("STDERR", fopen('php://stderr', 'w'));
+	$_SERVER["argv"] = explode("&", "&".$_SERVER["QUERY_STRING"]);
+}
 
 function add_apo_slashes($s) {
 	return addcslashes($s, "\\'");
