@@ -4,7 +4,7 @@ Recognize emails with name (sample: name <email@foo.com>)
 Fix paginator page 1 (first) skin
 Fix table pages top links (all pages, which related to selected table, has similar links)
 Optimize referencable_primary() for MySQL
-Remove duplicates of collation-lists on `Alter table` page. Require JavaScript on client side!
+Remove duplicates of collation-lists on `Alter table` page. Require JavaScript on client side! But support "nojs=1" argument to use old method.
 Add style chooser to select data export
 Support export table rows without AI keys
 Output binary UUID in hex
