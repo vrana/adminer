@@ -73,16 +73,27 @@ class AdminerTableEditByFields
 						return true;
 					}
 
+					var i, headers = [""];			// first column - "edit"
+					if (fieldsTable.rows.length)
+					{
+						var cells_cnt = fieldsTable.rows[0].cells.length;
+						for (i=0; i<cells_cnt; i++)
+							headers.push( fieldsTable.rows[0].cells[i].innerText.replace(/(^\s+|\s+$)/g, "") );
+					}
+
 					// add new column with "edit" link
-					var new_cell, inputs, j, inputs_cnt;
-					var i, rows_cnt = fieldsTable.rows.length;
+					var edit_link = document.createElement("A");
+					edit_link.href = "javascript:;";
+					edit_link.innerText = edit_word;
+
+					var new_cell, inputs, j, inputs_cnt, cell;
+					var rows_cnt = fieldsTable.rows.length;
 					for (i=0; i<rows_cnt; i++)
 					{
 						new_cell = fieldsTable.rows[i].insertCell(0);
 						if (new_cell.parentNode.parentNode.tagName == "TBODY")
 						{
-							new_cell.innerHTML = "<a href='javascript:;'>" + edit_word + "</a>";
-							new_cell.getElementsByTagName("A")[0].addEventListener("click", funcEditTableField);
+							new_cell.appendChild( edit_link.cloneNode(true) );//.addEventListener("click", funcEditTableField);
 							inputs = new_cell.parentNode.getElementsByTagName("INPUT");
 							inputs_cnt = inputs.length;
 							for (j=0; j<inputs_cnt; j++)
@@ -97,6 +108,15 @@ class AdminerTableEditByFields
 										inputs[j].disabled = true;
 									else if (inputs[j].value == "")
 										inputs[j].focus();
+
+									if (inputs[j].title === "")
+									{
+										cell = inputs[j];
+										while (cell && !cell.cellIndex)
+											cell = cell.parentNode;
+										if (cell)
+											inputs[j].title = headers[ cell.cellIndex ];
+									}
 								}
 
 							inputs = new_cell.parentNode.getElementsByTagName("SELECT");
