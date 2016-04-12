@@ -24,6 +24,7 @@ class AdminerTableEditByFields
 				return false;
 
 			// get text words (edit / modify)
+			// TODO: use JS side dictionary, when it will be ready
 			var current_location = document.location.href;
 			eval(("var myAjax = "+ajax).replace("function ajax(", "function(").replace(/([\'\"]X-Requested-With[\'\"]\s*,\s*[\'\"])XMLHttpRequest([\'\"])/, "$1$2"));
 			// via modified function, because we need full page, not only result table

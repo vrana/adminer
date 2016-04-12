@@ -49,6 +49,7 @@ class AdminerTableStructureAdvanced
 				status_table.cellSpacing = "0";
 
 				// get title of new block (on correct language)
+				// TODO: use JS side dictionary, when it will be ready
 				var new_db_location = current_location.replace(/&table=([^&]*)/, "").replace(/&db=([^&]*)/, "");
 				ajax(new_db_location, function(request)
 				{
