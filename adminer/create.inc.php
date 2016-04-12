@@ -221,7 +221,10 @@ if (!$_POST && !$comments) {
 		}
 	}
 }
-edit_fields($row["fields"], ($collations_name ? $collations_name : $collations), "TABLE", $foreign_keys, $comments);
+if ($collations_name && empty($_GET["nojs"]))
+	edit_fields($row["fields"], $collations_name, "TABLE", $foreign_keys, $comments);
+else
+	edit_fields($row["fields"], $collations, "TABLE", $foreign_keys, $comments);
 ?>
 </table>
 <p>
