@@ -54,7 +54,6 @@ class AdminerFramesetSimulator
 			{
 				// prepare style for correct working, if current skin do not ready for it
 				menu.style.position = "fixed !important";
-				menu.style.overflow = "visible";
 				if (GetStyleOfElement(menu, "position") == "static")
 					menu.style.top = "40px";
 				menu.style.bottom = "0";
@@ -74,12 +73,15 @@ class AdminerFramesetSimulator
 			if ($this->SCROLL_ONLY_TABLES_LIST)
 			{
 ?>
+				if (tables && (GetStyleOfElement(menu, "overflow") == "auto"))
+					menu.style.overflow = "visible";
+
 				// tables list scroll only for list
 				menu.addEventListener("change", function()
 				{
 					if (tables)
 					{
-						tables.style.position = "static";
+						tables.style.position = "static";			// temporary, for next .offsetTop
 						tables.style.top = tables.offsetTop+"px";
 						tables.style.position = "absolute";
 					}
@@ -101,7 +103,8 @@ class AdminerFramesetSimulator
 				if (tables && (GetStyleOfElement(menu, "overflow") == "visible"))
 				{
 					tables.style.bottom = 0;
-					tables.style.left = GetStyleOfElement(menu, "padding-left");
+					tables.style.left = 0;
+					tables.style.paddingLeft = GetStyleOfElement(menu, "padding-left");
 					tables.style.right = 0;
 					tables.style.marginBottom = 0;
 					tables.style.overflow = "auto !important";
