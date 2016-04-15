@@ -27,6 +27,7 @@ UX plugins for simpler migrate phpMyAdmin users:
  - table_record_field_details:		display field comments on record edit page
  - table_sort_desc_before_title:	output `desc` link before columnt title
  - db_diagnostics_queries:			display shortcut to diagnostic queries for database/driver. Currently only for MySQL.
+ - sql_command_transaction:			detect "START TRANSACTION" to setup "Stop on error" checkbox
 
 
 Adminer 4.2.5-dev:

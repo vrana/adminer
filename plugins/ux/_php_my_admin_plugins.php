@@ -26,7 +26,8 @@
 							"table_record_field_details"	=> new AdminerTableRecordFieldDetails(),
 							"table_sort_desc_before_title"	=> new AdminerTableSortDescBeforeTitle(),
 							// Tools
-							"db_diagnostics_queries"		=> new AdminerDbDiagnosticsQueries()
+							"db_diagnostics_queries"		=> new AdminerDbDiagnosticsQueries(),
+							"sql_command_transaction"		=> new AdminerSqlCommandTransaction()
 							);
 	$_php_my_admin_plugins = $php_my_admin_plugins;		// user friendly variable
 ?>
