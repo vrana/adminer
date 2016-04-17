@@ -9,20 +9,20 @@ if (!defined("DRIVER")) {
 		class Min_DB extends MySQLi {
 			var $extension = "MySQLi";
 
-			function Min_DB() {
+			function __construct() {
 				parent::init();
 			}
 
-			function connect($server, $username, $password) {
+			function connect($server = "", $username = "", $password = "", $database = null, $port = null, $socket = null) {
 				mysqli_report(MYSQLI_REPORT_OFF); // stays between requests, not required since PHP 5.3.4
 				list($host, $port) = explode(":", $server, 2); // part after : is used for port or socket
 				$return = @$this->real_connect(
 					($server != "" ? $host : ini_get("mysqli.default_host")),
 					($server . $username != "" ? $username : ini_get("mysqli.default_user")),
 					($server . $username . $password != "" ? $password : ini_get("mysqli.default_pw")),
-					null,
+					$database,
 					(is_numeric($port) ? $port : ini_get("mysqli.default_port")),
-					(!is_numeric($port) ? $port : null)
+					(!is_numeric($port) ? $port : $socket)
 				);
 				return $return;
 			}
@@ -181,7 +181,7 @@ if (!defined("DRIVER")) {
 			/** Constructor
 			* @param resource
 			*/
-			function Min_Result($result) {
+			function __construct($result) {
 				$this->_result = $result;
 				$this->num_rows = mysql_num_rows($result);
 			}
@@ -579,16 +579,6 @@ if (!defined("DRIVER")) {
 	function error() {
 		global $connection;
 		return h(preg_replace('~^You have an error.*syntax to use~U', "Syntax error", $connection->error));
-	}
-
-	/** Get line of error
-	* @return int 0 for first line
-	*/
-	function error_line() {
-		global $connection;
-		if (preg_match('~ at line ([0-9]+)$~', $connection->error, $regs)) {
-			return $regs[1] - 1;
-		}
 	}
 
 	/** Create database
@@ -1023,6 +1013,15 @@ if (!defined("DRIVER")) {
 	function support($feature) {
 		global $connection;
 		return !preg_match("~scheme|sequence|type|view_trigger" . ($connection->server_info < 5.1 ? "|event|partitioning" . ($connection->server_info < 5 ? "|routine|trigger|view" : "") : "") . "~", $feature);
+	}
+
+	function kill_process($val) {
+		return queries("KILL " . number($val));
+	}
+
+	function max_connections() {
+		global $connection;
+		return $connection->result("SELECT @@max_connections");
 	}
 
 	$jush = "sql"; ///< @var string JUSH identifier

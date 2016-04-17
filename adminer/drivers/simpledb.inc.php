@@ -56,7 +56,7 @@ if (isset($_GET["simpledb"])) {
 		class Min_Result {
 			var $num_rows, $_rows = array(), $_offset = 0;
 
-			function Min_Result($result) {
+			function __construct($result) {
 				foreach ($result as $item) {
 					$row = array();
 					if ($item->Name != '') { // SELECT COUNT(*)

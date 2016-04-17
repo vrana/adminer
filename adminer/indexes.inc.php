@@ -117,7 +117,7 @@ foreach ($row["indexes"] as $index) {
 		$i = 1;
 		foreach ($index["columns"] as $key => $column) {
 			echo "<span>" . select_input(
-				" name='indexes[$j][columns][$i]' onchange=\"" . ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . "(this, '" . js_escape($jush == "sql" ? "" : $_GET["indexes"] . "_") . "');\"",
+				" name='indexes[$j][columns][$i]' onchange=\"" . ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . "(this, '" . h(js_escape($jush == "sql" ? "" : $_GET["indexes"] . "_")) . "');\"",
 				($fields ? array_combine($fields, $fields) : $fields),
 				$column
 			);

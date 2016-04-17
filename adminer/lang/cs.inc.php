@@ -49,6 +49,7 @@ $translations = array(
 	'Query executed OK, %d row(s) affected.' => array('Příkaz proběhl v pořádku, byl změněn %d záznam.', 'Příkaz proběhl v pořádku, byly změněny %d záznamy.', 'Příkaz proběhl v pořádku, bylo změněno %d záznamů.'),
 	'No commands to execute.' => 'Žádné příkazy k vykonání.',
 	'Error in query' => 'Chyba v dotazu',
+	'ATTACH queries are not supported.' => 'Dotazy ATTACH nejsou podporované.',
 	'Execute' => 'Provést',
 	'Stop on error' => 'Zastavit při chybě',
 	'Show only errors' => 'Zobrazit pouze chyby',

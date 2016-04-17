@@ -6,8 +6,8 @@
  */
 
 /*** Fonts ***/
-@import url(http://fonts.googleapis.com/css?family=Ubuntu:300&subset=latin,latin-ext);
-@import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono&subset=latin,latin-ext);
+@import url(//fonts.googleapis.com/css?family=Ubuntu:300&subset=latin,latin-ext);
+@import url(//fonts.googleapis.com/css?family=Ubuntu+Mono&subset=latin,latin-ext);
 * {
     font-family: 'Ubuntu', sans-serif
 }

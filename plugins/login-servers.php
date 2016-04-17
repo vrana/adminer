@@ -14,7 +14,7 @@ class AdminerLoginServers {
 	* @param array array($domain) or array($domain => $description) or array($category => array())
 	* @param string
 	*/
-	function AdminerLoginServers($servers, $driver = "server") {
+	function __construct($servers, $driver = "server") {
 		$this->servers = $servers;
 		$this->driver = $driver;
 	}
