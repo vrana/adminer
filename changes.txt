@@ -22,7 +22,7 @@ UX plugins for simpler migrate phpMyAdmin users:
  - table_hscroll_followers:			do not scroll some page elements (pages list, SQL code,...) while horizontal scroll the page
  - sql_command_table_fields:		add table fields chooser on `SQL command` page
  - export_per_table:				copy "Export" link to table links list
- - table_structure_advanced:		display table status, table manipulations, export data and edit table controls on table structure page
+ - table_structure_advanced:		display table status, table manipulations (+ table rename), export data and edit table controls on table structure page
  - table_edit_by_fields:			disable by default input fields on `Alter table` page, to reduce count of submitted values
  - table_record_field_details:		display field comments on record edit page
  - table_sort_desc_before_title:	output `desc` link before columnt title

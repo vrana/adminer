@@ -8,10 +8,12 @@
 */
 class AdminerFramesetSimulator
 {
+	private $DETECT_SINGLE_LANGUAGE_MODE;
 	private $SCROLL_ONLY_TABLES_LIST;
 
-	function __construct($scroll_only_tables_list = false)
+	function __construct($scroll_only_tables_list = false, $detect_single_language_mode = true)
 	{
+		$this->DETECT_SINGLE_LANGUAGE_MODE = $detect_single_language_mode;
 		$this->SCROLL_ONLY_TABLES_LIST = $scroll_only_tables_list;
 	}
 
@@ -44,6 +46,17 @@ class AdminerFramesetSimulator
 				}
 				return arr;
 			};
+
+			// detect single lang version for possibility to move menu to top
+<?php
+			if ($this->DETECT_SINGLE_LANGUAGE_MODE)
+			{
+?>
+				if (!document.getElementById("lang"))
+					document.body.className += " single-lang";
+<?php
+			}
+?>
 
 			// change menu scrolls
 			var restoredMenuScrolls;
