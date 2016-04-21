@@ -327,14 +327,17 @@ if (!defined("DRIVER")) {
 		// SHOW DATABASES can take a very long time so it is cached
 		$return = get_session("dbs");
 		if ($return === null) {
+			$ts = microtime(true);
 			$query = ($connection->server_info >= 5
 				? "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA"
 				: "SHOW DATABASES"
 			); // SHOW DATABASES can be disabled by skip_show_database
 			$return = ($flush ? slow_query($query) : get_vals($query));
-			restart_session();
-			set_session("dbs", $return);
-			stop_session();
+			if ((microtime(true)-$ts) > 1) {		// use cache only for slow query ( >1 sec )
+				restart_session();
+				set_session("dbs", $return);
+				stop_session();
+			}
 		}
 		return $return;
 	}
