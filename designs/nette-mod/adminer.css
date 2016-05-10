@@ -84,7 +84,8 @@ input, select, textarea {
 	padding: 3px;
 }
 
-input[disabled=true], select[disabled=true], textarea[disabled=true]
+input[disabled=true], select[disabled=true], textarea[disabled=true],
+input:disabled, select:disabled, textarea:disabled
 {
 	opacity: 0.5;
 }
@@ -334,9 +335,13 @@ BODY.single-lang #menu {
 	padding: 1px 2px;
 }
 
-#menu a:hover {
-/*	color: #FFF;*/
+#menu #tables a
+{
+	float: none;
+	padding-top: 4px;
 }
+#menu #tables a.select { float: left; }
+#menu #tables br { clear: both; }
 
 #menu p {
 	border: none;

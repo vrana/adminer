@@ -57,7 +57,7 @@ class AdminerTablesListNameSelect
 
 			// swap Show structure <-> Select table from navigation menu
 			var tables_box = document.getElementById("tables");
-			if (tables_box && structure_icon)		// swap only if we have icon for structure (taken from content navigation)
+			if (tables_box)
 			{
 				var tbl_links = tables_box.getElementsByTagName("A");
 				var first_link;
@@ -93,7 +93,7 @@ class AdminerTablesListNameSelect
 //								rules[j].cssText = rules[j].cssText.replace(/\#menu p a\[href\*\=["']\&select\=["']\]/, '#menu p a.select');	// Firefox and IE did not support this method
 								cssSelector = rules[j].selectorText.replace(/\#menu( p)? a\[href\*\=["']\&select\=["']\]/g, '#menu #tables a.select');
 								cssText = rules[j].style.cssText;
-								if (structure_icon && (cssText.indexOf("content:") >= 0))
+								if (structure_icon && (cssText.indexOf("content:") >= 0))	// no icon => just leave previous icon
 									cssText = cssText.replace(/content:\s*url\([^\)]+\);/, "content: "+structure_icon+";") + " opacity:0.7;";
 								styleSheets[i].deleteRule(j);										// removeRule() uses other indexes
 								styleSheets[i].insertRule(cssSelector + " {" + cssText + "}", j);	// addRule() uses other indexes

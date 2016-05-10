@@ -133,14 +133,16 @@ class AdminerTableEditByFields
 					for (i=0; i<inp_defaults.length; i++)
 						if (inp_defaults[i].form === fieldsTable.parentNode)
 						{
-							inp_defaults[i].parentNode.innerHTML = inp_defaults[i].parentNode.innerHTML.replace("columnShow(this.checked, 5)", "columnShow(this.checked, 6)");
+//							inp_defaults[i].parentNode.innerHTML = inp_defaults[i].parentNode.innerHTML.replace("columnShow(this.checked, 5)", "columnShow(this.checked, 6)");
+							inp_defaults[i].setAttribute("onclick", inp_defaults[i].getAttribute("onclick").replace("columnShow(this.checked, 5)", "columnShow(this.checked, 6)"));
 							break;
 						}
 					var inp_comments = document.getElementsByName("comments");
 					for (i=0; i<inp_comments.length; i++)
 						if (inp_comments[i].form === fieldsTable.parentNode)
 						{
-							inp_comments[i].parentNode.innerHTML = inp_comments[i].parentNode.innerHTML.replace("columnShow(this.checked, 6)", "columnShow(this.checked, 7)");
+//							inp_comments[i].parentNode.innerHTML = inp_comments[i].parentNode.innerHTML.replace("columnShow(this.checked, 6)", "columnShow(this.checked, 7)");
+							inp_comments[i].setAttribute("onclick", inp_comments[i].getAttribute("onclick").replace("columnShow(this.checked, 6)", "columnShow(this.checked, 7)"));
 							break;
 						}
 				}

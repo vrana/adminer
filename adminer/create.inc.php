@@ -213,11 +213,14 @@ foreach ($engines as $engine) {
 <table cellspacing="0" id="edit-fields" class="nowrap">
 <?php
 $comments = ($_POST ? $_POST["comments"] : $row["Comment"] != "");
-if (!$_POST && !$comments) {
+$defaults = ($_POST ? $_POST["defaults"] : false);
+if (!$_POST && (!$comments || !$defaults)) {
 	foreach ($row["fields"] as $field) {
-		if ($field["comment"] != "") {
+		if (!$comments && ($field["comment"] != "")) {
 			$comments = true;
-			break;
+		}
+		if (!$defaults && ($field["default"] != "")) {
+			$defaults = true;
 		}
 	}
 }
@@ -230,7 +233,7 @@ else
 <p>
 <?php echo lang('Auto Increment'); ?>: <input type="number" name="Auto_increment" size="6" value="<?php echo h($row["Auto_increment"]); ?>">
 <?php echo checkbox("defaults", 1, true, lang('Default values'), "columnShow(this.checked, 5)", "jsonly"); ?>
-<?php if (!$_POST["defaults"]) { ?><script type="text/javascript">editingHideDefaults()</script><?php } ?>
+<?php if (!$defaults) { ?><script type="text/javascript">editingHideDefaults()</script><?php } ?>
 <?php echo (support("comment")
 	? "<label><input type='checkbox' name='comments' value='1' class='jsonly' onclick=\"columnShow(this.checked, 6); toggle('Comment'); if (this.checked) this.form['Comment'].focus();\"" . ($comments ? " checked" : "") . ">" . lang('Comment') . "</label>"
 		. ' <input name="Comment" id="Comment" value="' . h($row["Comment"]) . '" maxlength="' . ($connection->server_info >= 5.5 ? 2048 : 60) . '"' . ($comments ? '' : ' class="hidden"') . '>'
