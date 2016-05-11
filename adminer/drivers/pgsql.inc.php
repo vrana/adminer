@@ -57,6 +57,10 @@ if (isset($_GET["pgsql"])) {
 			}
 
 			function query($query, $unbuffered = false) {
+				if ((bool) preg_match('/COPY (.*?) FROM stdin/i', $query)) {
+					$this->error = "Unable to run COPY FROM stdin in Adminer. Use psql tool instead.";
+					return false;
+				}
 				$result = @pg_query($this->_link, $query);
 				$this->error = "";
 				if (!$result) {
@@ -141,6 +145,14 @@ if (isset($_GET["pgsql"])) {
 			function select_db($database) {
 				global $adminer;
 				return ($adminer->database() == $database);
+			}
+
+			function query($query, $unbuffered = false) {
+				if ((bool) preg_match('/COPY (.*?) FROM stdin/i', $query)) {
+					$this->error = "Unable to run COPY FROM stdin in Adminer. Use psql tool instead.";
+					return false;
+				}
+				return parent::query($query, $unbuffered);
 			}
 
 			function close() {
