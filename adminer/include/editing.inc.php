@@ -96,8 +96,7 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 * @return array ($table_name => $field)
 */
 function referencable_primary($self) {
-	if (function_exists("db_pk_fields"))
-	{
+	if (function_exists("db_pk_fields")) {
 		// faster method - (mysql execute only two queries)
 		$tables_list = table_status('', true);
 		foreach (db_pk_fields(DB) as $table_name => $fields_list) {
@@ -111,9 +110,7 @@ function referencable_primary($self) {
 				}
 			}
 		}
-	}
-	else
-	{
+	} else {
 		// Too slow when DB has many tables (too many queries)
 		$return = array(); // table_name => field
 		foreach (table_status('', true) as $table_name => $table) {
@@ -316,8 +313,7 @@ echo checkbox("fields[$i][has_default]", 1, $field["has_default"]); ?><input nam
 	}
 }
 
-function get_table_structure($TABLE)
-{
+function get_table_structure($TABLE) {
 	global $types, $connection;
 
 	$tbl = array(

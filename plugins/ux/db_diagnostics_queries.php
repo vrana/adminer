@@ -168,7 +168,7 @@ class AdminerDbDiagnosticsQueries
 																					WHERE (columns.CHARACTER_SET_NAME != table_CHARSET OR columns.COLLATION_NAME != TABLE_COLLATION)\n\
 																					ORDER BY TABLE_NAME, COLUMN_NAME");
 
-								funcAddShortcutToQuery("Show 'float' fields", "## 'float'/'double' columns contains values not as is. Better use 'decimal' as column type.\n\n\
+								funcAddShortcutToQuery("Show 'float' columns", "## 'float'/'double' columns contains values not as is. Better use 'decimal' as column type.\n\n\
 																					SELECT TABLE_NAME, COLUMN_NAME, COLUMN_TYPE\n\
 																					FROM information_schema.COLUMNS\n\
 																					WHERE TABLE_SCHEMA = '"+db_name+"' AND DATA_TYPE IN('float', 'double')\n\

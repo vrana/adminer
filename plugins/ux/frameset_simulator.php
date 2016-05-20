@@ -194,6 +194,7 @@ class AdminerFramesetSimulator
 
 			var resize_bar = document.createElement("DIV");
 			resize_bar.style.position = "fixed";
+			resize_bar.style.zIndex = "1000";
 			resize_bar.style.top = "0";
 			resize_bar.style.bottom = "0";
 			resize_bar.style.backgroundColor = "transparent";

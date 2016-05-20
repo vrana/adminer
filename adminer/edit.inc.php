@@ -147,12 +147,10 @@ if (!support("table") && !$fields) {
 	}
 }
 
-if (count($_POST["check"]) > 1)
-{
+if (count($_POST["check"]) > 1) {
 	$rows_list = array();
 	$updates_list = array();
-	foreach ($_POST["check"] as $k => $check_value)
-	{
+	foreach ($_POST["check"] as $k => $check_value) {
 		$where = where_check($check_value, $fields);
 		$result = $driver->select($TABLE, $select, array($where), $select, array(), (isset($_GET["select"]) ? 2 : 1));
 		$row = $result->fetch_assoc();
