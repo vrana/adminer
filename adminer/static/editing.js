@@ -271,6 +271,30 @@ function editingRemoveRow(button, name) {
 	return true;
 }
 
+/** Move table row for field
+* @param HTMLInputElement
+* @param boolean Direction to move row. True for up false for down
+* @return boolean Success
+*/
+function editingMoveRow(button, dir){
+	var row = parentTag(button, 'tr');
+	var table = row.parentNode;
+	var tags = table.getElementsByTagName('tr');
+	for (var i=0; i < tags.length; i++) {
+		if (tags[i] == row) {
+			if (dir && i) {
+				table.removeChild(row);
+				table.insertBefore(row, tags[i - 1]);
+			} else if (!dir && i + 1 < tags.length) {
+				table.removeChild(row);
+				table.insertBefore(row, tags[i + 1]);
+			}
+			break;
+		}
+	}
+	return true;
+}
+
 var lastType = '';
 
 /** Clear length and hide collation or unsigned

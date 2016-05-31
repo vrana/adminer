@@ -35,7 +35,6 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 		$all_fields = array();
 		$use_all_fields = false;
 		$foreign = array();
-		ksort($row["fields"]);
 		$orig_field = reset($orig_fields);
 		$after = " FIRST";
 
