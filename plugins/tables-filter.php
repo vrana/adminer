@@ -7,7 +7,7 @@
 */
 class AdminerTablesFilter {
 	function tablesPrint($tables) { ?>
-<p class="jsonly"><input id="filter-field" onkeyup="tablesFilterInput();">
+<p class="jsonly"><input id="filter-field" onkeyup="tablesFilterInput();" autocomplete="off">
 <p id='tables' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>
 <?php
 foreach ($tables as $table => $type) {
@@ -29,6 +29,9 @@ function tablesFilter(){
 		var reg = (value + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, '\\$1');
 		reg = new RegExp('('+ reg + ')', 'gi');
 	}
+	if (sessionStorage) {
+		sessionStorage.setItem('adminer_tables_filter', value);
+	}
 	var tables = document.getElementById('tables').getElementsByTagName('span');
 	for (var i = 0; i < tables.length; i++) {
 		var a = tables[i].getElementsByTagName('a')[1];
@@ -48,8 +51,14 @@ function tablesFilterInput() {
 	tablesFilterTimeout = window.setTimeout(tablesFilter, 200);
 }
 
-if (document.getElementById('filter-field').value){
-    tablesFilter();
+if (sessionStorage){
+	var db = document.getElementById('dbs').getElementsByTagName('select')[0];
+	db = db.options[db.selectedIndex].text;
+	if (db == sessionStorage.getItem('adminer_tables_filter_db') && sessionStorage.getItem('adminer_tables_filter')){
+		document.getElementById('filter-field').value = sessionStorage.getItem('adminer_tables_filter');
+		tablesFilter();
+	}
+	sessionStorage.setItem('adminer_tables_filter_db', db);
 }
 </script>
 <?php
