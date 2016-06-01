@@ -1,5 +1,6 @@
 Adminer 4.2.5-dev:
 Fix remote execution in SQLite query
+SQLite: Require credentials to use
 PostgreSQL: Support KILL
 
 Adminer 4.2.4 (released 2016-02-06):
