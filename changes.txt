@@ -1,4 +1,4 @@
-Adminer 4.2.5-dev:
+Adminer 4.2.5 (released 2016-06-01):
 Fix remote execution in SQLite query
 SQLite: Require credentials to use
 PostgreSQL: Support KILL
