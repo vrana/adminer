@@ -88,16 +88,14 @@ class Adminer {
 		global $drivers;
 		?>
 <table cellspacing="0">
-<tr><th><?php echo lang('System'); ?><td><?php echo html_select("auth[driver]", $drivers, DRIVER, "loginDriver(this);"); ?>
+<tr><th><?php echo lang('System'); ?><td><?php echo html_select("auth[driver]", $drivers, DRIVER); ?>
 <tr><th><?php echo lang('Server'); ?><td><input name="auth[server]" value="<?php echo h(SERVER); ?>" title="hostname[:port]" placeholder="localhost" autocapitalize="off">
 <tr><th><?php echo lang('Username'); ?><td><input name="auth[username]" id="username" value="<?php echo h($_GET["username"]); ?>" autocapitalize="off">
 <tr><th><?php echo lang('Password'); ?><td><input type="password" name="auth[password]">
 <tr><th><?php echo lang('Database'); ?><td><input name="auth[db]" value="<?php echo h($_GET["db"]); ?>" autocapitalize="off">
 </table>
 <script type="text/javascript">
-var username = document.getElementById('username');
-focus(username);
-username.form['auth[driver]'].onchange();
+focus(document.getElementById('username'));
 </script>
 <?php
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
@@ -107,9 +105,13 @@ username.form['auth[driver]'].onchange();
 	/** Authorize the user
 	* @param string
 	* @param string
-	* @return bool
+	* @return mixed true for success, string for error message, false for unknown error
 	*/
 	function login($login, $password) {
+		global $jush;
+		if ($jush == "sqlite") {
+			return lang('Implement %s method to use SQLite.', 'login()');
+		}
 		return true;
 	}
 

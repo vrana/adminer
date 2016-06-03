@@ -29,8 +29,9 @@ UX plugins for simpler migrate phpMyAdmin users:
  - db_diagnostics_queries:			display shortcut to diagnostic queries for database/driver. Currently only for MySQL.
  - sql_command_transaction:			detect "START TRANSACTION" to setup "Stop on error" checkbox
 
-
-Adminer 4.2.5-dev:
+Adminer 4.2.5 (released 2016-06-01):
+Fix remote execution in SQLite query
+SQLite: Require credentials to use
 PostgreSQL: Support KILL
 
 Adminer 4.2.4 (released 2016-02-06):

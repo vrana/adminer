@@ -60,18 +60,6 @@ function typePassword(el, disable) {
 	}
 }
 
-/** Hide or show some login rows for selected driver
-* @param HTMLSelectElement
-*/
-function loginDriver(driver) {
-	var trs = parentTag(driver, 'table').rows;
-	for (var i=1; i < trs.length - 1; i++) {
-		var disabled = /sqlite/.test(driver.value);
-		alterClass(trs[i], 'hidden', disabled);
-		trs[i].getElementsByTagName('input')[0].disabled = disabled;
-	}
-}
-
 
 
 var dbCtrl;
