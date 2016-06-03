@@ -29,10 +29,10 @@ class AdminerFileUpload {
 	}
 
 	function processInput($field, $value, $function = "") {
+		$name = "fields-$field[field]";
 		// check $_FILES[$name], because search by this field does not have $_FILES
 		if (isset($_FILES[$name]) && preg_match('~(.*)_path$~', $field["field"], $regs)) {
 			$table = ($_GET["edit"] != "" ? $_GET["edit"] : $_GET["select"]);
-			$name = "fields-$field[field]";
 			if ($_FILES[$name]["error"] || !preg_match("~(\\.($this->extensions))?\$~", $_FILES[$name]["name"], $regs2)) {
 				return false;
 			}
