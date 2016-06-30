@@ -21,10 +21,9 @@ class AdminerEnumTypes {
             $this->_types = array();
 
             foreach ($types as $type) {
-                $values = get_vals("SELECT enum_range(NULL::$type)");
-                if (!empty($values) && is_array($values) && 1 == count($values)) {
-                    $values = reset($values);
-                    $this->_types[$type] = explode(',', trim($values, '{}'));
+                $values = get_vals("SELECT unnest(enum_range(NULL::$type))::text AS value");
+                if (!empty($values) && is_array($values)) {
+                    $this->_types[$type] = $values;
                 }
             }
         }
