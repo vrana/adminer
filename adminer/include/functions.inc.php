@@ -237,7 +237,11 @@ function json_row($key, $val = null) {
 		echo "{";
 	}
 	if ($key != "") {
-		echo ($first ? "" : ",") . "\n\t\"" . addcslashes($key, "\r\n\"\\/") . '": ' . ($val !== null ? '"' . addcslashes($val, "\r\n\t\"\\/") . '"' : 'undefined');
+		if (is_numeric($val)) {
+			echo ($first ? "" : ",") . "\n\t\"" . addcslashes($key, "\r\n\"\\/") . '": ' . $val;
+		} else {
+			echo ($first ? "" : ",") . "\n\t\"" . addcslashes($key, "\r\n\"\\/") . '": ' . ($val !== null ? '"' . addcslashes($val, "\r\n\t\"\\/") . '"' : 'undefined');
+		}
 		$first = false;
 	} else {
 		echo "\n}\n";
