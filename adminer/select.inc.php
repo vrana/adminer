@@ -387,6 +387,9 @@ if (!$columns && support("table")) {
 										$link .= where_link($i, $foreign_key["target"][$i], $rows[$n][$source]);
 									}
 									$link = ($foreign_key["db"] != "" ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), ME) : ME) . 'select=' . urlencode($foreign_key["table"]) . $link; // InnoDB supports non-UNIQUE keys
+									if ($foreign_key["ns"]) {
+										$link = preg_replace('~([?&]ns=)[^&]+~', '\\1' . urlencode($foreign_key["ns"]), $link);
+									}
 									if (count($foreign_key["source"]) == 1) {
 										break;
 									}
