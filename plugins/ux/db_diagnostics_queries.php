@@ -189,7 +189,7 @@ class AdminerDbDiagnosticsQueries
 																				ORDER BY referenced_table_name;");
 
 								// http://mysqlstepbystep.com/2015/07/15/useful-queries-on-mysql-information_schema/
-								funcAddShortcutToQuery("Show tables fragmentation", "## 'OPTIMIZE TABLE' is expensive operation. Use it only when it realy required! For example large fragmentation_ration or/and large data_free.\n\n\
+								funcAddShortcutToQuery("Show tables fragmentation", "## 'OPTIMIZE TABLE' is expensive operation. Use it only when it really required! For example large fragmentation_ration or/and large data_free.\n\n\
 																						SELECT ENGINE, TABLE_NAME, ROW_FORMAT,\n\
 																							   round( DATA_LENGTH/1024/1024 ) AS `data_length_MB`,\n\
 																							   round( INDEX_LENGTH/1024/1024 ) AS `index_length_MB`,\n\
