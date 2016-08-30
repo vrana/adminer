@@ -45,7 +45,7 @@ if (!$error && $_POST) {
 			}
 		}
 
-		$space = "(?:\\s|/\\*.*\\*/|(?:#|-- )[^\n]*\n|--\r?\n)";
+		$space = "(?:\\s|/\\*[\s\S]*?\\*/|(?:#|-- )[^\n]*\n?|--\r?\n)";
 		$delimiter = ";";
 		$offset = 0;
 		$empty = true;
@@ -62,7 +62,7 @@ if (!$error && $_POST) {
 		unset($dump_format["sql"]);
 
 		while ($query != "") {
-			if (!$offset && preg_match("~^$space*DELIMITER\\s+(\\S+)~i", $query, $match)) {
+			if (!$offset && preg_match("~^$space*+DELIMITER\\s+(\\S+)~i", $query, $match)) {
 				$delimiter = $match[1];
 				$query = substr($query, strlen($match[0]));
 			} else {
@@ -94,7 +94,7 @@ if (!$error && $_POST) {
 						$q = substr($query, 0, $pos);
 						$commands++;
 						$print = "<pre id='sql-$commands'><code class='jush-$jush'>" . shorten_utf8(trim($q), 1000) . "</code></pre>\n";
-						if ($jush == "sqlite" && preg_match("~^$space*ATTACH\b~i", $q, $match)) {
+						if ($jush == "sqlite" && preg_match("~^$space*+ATTACH\\b~i", $q, $match)) {
 							// PHP doesn't support setting SQLITE_LIMIT_ATTACHED
 							echo $print;
 							echo "<p class='error'>" . lang('ATTACH queries are not supported.') . "\n";
@@ -110,7 +110,7 @@ if (!$error && $_POST) {
 							}
 							$start = microtime(true);
 							//! don't allow changing of character_set_results, convert encoding of displayed query
-							if ($connection->multi_query($q) && is_object($connection2) && preg_match("~^$space*USE\\b~isU", $q)) {
+							if ($connection->multi_query($q) && is_object($connection2) && preg_match("~^$space*+USE\\b~i", $q)) {
 								$connection2->query($q);
 							}
 
@@ -143,7 +143,7 @@ if (!$error && $_POST) {
 											. "<input type='hidden' name='query' value='" . h($q) . "'>"
 											. " <input type='submit' name='export' value='" . lang('Export') . "'><input type='hidden' name='token' value='$token'></span>\n"
 										;
-										if ($connection2 && preg_match("~^($space|\\()*SELECT\\b~isU", $q) && ($explain = explain($connection2, $q))) {
+										if ($connection2 && preg_match("~^($space|\\()*+SELECT\\b~i", $q) && ($explain = explain($connection2, $q))) {
 											$id = "explain-$commands";
 											echo ", <a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>$export";
 											echo "<div id='$id' class='hidden'>\n";
@@ -156,7 +156,7 @@ if (!$error && $_POST) {
 									}
 
 								} else {
-									if (preg_match("~^$space*(CREATE|DROP|ALTER)$space+(DATABASE|SCHEMA)\\b~isU", $q)) {
+									if (preg_match("~^$space*+(CREATE|DROP|ALTER)$space++(DATABASE|SCHEMA)\\b~i", $q)) {
 										restart_session();
 										set_session("dbs", null); // clear cache
 										stop_session();
