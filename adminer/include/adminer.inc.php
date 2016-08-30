@@ -352,8 +352,9 @@ focus(document.getElementById('username'));
 		echo "var indexColumns = ";
 		$columns = array();
 		foreach ($indexes as $index) {
-			if ($index["type"] != "FULLTEXT") {
-				$columns[reset($index["columns"])] = 1;
+			$current_key = reset($index["columns"]);
+			if ($index["type"] != "FULLTEXT" && $current_key) {
+				$columns[$current_key] = 1;
 			}
 		}
 		$columns[""] = 1;
