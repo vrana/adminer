@@ -6,7 +6,7 @@
 	/** Create object for performing database operations
 	* @param Min_DB
 	*/
-	function Min_SQL($connection) {
+	function __construct($connection) {
 		$this->_conn = $connection;
 	}
 	

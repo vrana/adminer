@@ -1,7 +1,7 @@
 <?php
 
 /** Edit all fields containing "_html" by HTML editor WYMeditor and display the HTML in select
-* @link http://www.adminer.org/plugins/#use
+* @link https://www.adminer.org/plugins/#use
 * @uses WYMeditor, http://www.wymeditor.org/
 * @author Jakub Vrana, http://www.vrana.cz/
 * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
@@ -15,7 +15,7 @@ class AdminerWymeditor {
 	* @param array
 	* @param string in format "skin: 'custom', preInit: function () { }"
 	*/
-	function AdminerWymeditor($scripts = array("jquery/jquery.js", "wymeditor/jquery.wymeditor.min.js"), $options = "") {
+	function __construct($scripts = array("jquery/jquery.js", "wymeditor/jquery.wymeditor.min.js"), $options = "") {
 		$this->scripts = $scripts;
 		$this->options = $options;
 	}

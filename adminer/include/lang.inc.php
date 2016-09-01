@@ -4,15 +4,20 @@
 $langs = array(
 	'en' => 'English', // Jakub Vrána - http://www.vrana.cz
 	'ar' => 'العربية', // Y.M Amine - Algeria - nbr7@live.fr
+	'bg' => 'Български', // Deyan Delchev
 	'bn' => 'বাংলা', // Dipak Kumar - dipak.ndc@gmail.com
+	'bs' => 'Bosanski', // Emir Kurtovic
 	'ca' => 'Català', // Joan Llosas
 	'cs' => 'Čeština', // Jakub Vrána - http://www.vrana.cz
 	'da' => 'Dansk', // Jarne W. Beutnagel - jarne@beutnagel.dk
 	'de' => 'Deutsch', // Klemens Häckel - http://clickdimension.wordpress.com
+	'el' => 'Ελληνικά', // Dimitrios T. Tanis - jtanis@tanisfood.gr
 	'es' => 'Español', // Klemens Häckel - http://clickdimension.wordpress.com
 	'et' => 'Eesti', // Priit Kallas
 	'fa' => 'فارسی', // mojtaba barghbani - Iran - mbarghbani@gmail.com, Nima Amini - http://nimlog.com
+	'fi' => 'Suomi', // Finnish - Kari Eveli - http://www.lexitec.fi/
 	'fr' => 'Français', // Francis Gagné, Aurélien Royer
+	'gl' => 'Galego', // Eduardo Penabad Ramos
 	'hu' => 'Magyar', // Borsos Szilárd (Borsosfi) - http://www.borsosfi.hu, info@borsosfi.hu
 	'id' => 'Bahasa Indonesia', // Ivan Lanin - http://ivan.lanin.org
 	'it' => 'Italiano', // Alessandro Fiorotto, Paolo Asperti
@@ -58,11 +63,11 @@ function lang($idf, $number = null) {
 		$pos = ($number == 1 ? 0
 			: ($LANG == 'cs' || $LANG == 'sk' ? ($number && $number < 5 ? 1 : 2) // different forms for 1, 2-4, other
 			: ($LANG == 'fr' ? (!$number ? 0 : 1) // different forms for 0-1, other
-			: ($LANG == 'pl' ? ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2) // different forms for 1, 2-4, other
+			: ($LANG == 'pl' ? ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2) // different forms for 1, 2-4 except 12-14, other
 			: ($LANG == 'sl' ? ($number % 100 == 1 ? 0 : ($number % 100 == 2 ? 1 : ($number % 100 == 3 || $number % 100 == 4 ? 2 : 3))) // different forms for 1, 2, 3-4, other
 			: ($LANG == 'lt' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1, 12-19, other
-			: ($LANG == 'ru' || $LANG == 'sr' || $LANG == 'uk' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1, 2-4, other
-			: 1
+			: ($LANG == 'bs' || $LANG == 'ru' || $LANG == 'sr' || $LANG == 'uk' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1 except 11, 2-4 except 12-14, other
+			: 1 // different forms for 1, other
 		))))))); // http://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
 		$translation = $translation[$pos];
 	}

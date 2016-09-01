@@ -10,7 +10,7 @@ CREATE TABLE login (
 */
 
 /** Authenticate a user from the login table
-* @link http://www.adminer.org/plugins/#use
+* @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, http://www.vrana.cz/
 * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
@@ -22,7 +22,7 @@ class AdminerLoginTable {
 	/** Set database of login table
 	* @param string
 	*/
-	function AdminerLoginTable($database) {
+	function __construct($database) {
 		$this->database = $database;
 	}
 	

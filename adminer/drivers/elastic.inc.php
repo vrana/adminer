@@ -81,7 +81,7 @@ if (isset($_GET["elastic"])) {
 		class Min_Result {
 			var $num_rows, $_rows;
 
-			function Min_Result($rows) {
+			function __construct($rows) {
 				$this->num_rows = count($this->_rows);
 				$this->_rows = $rows;
 				reset($this->_rows);

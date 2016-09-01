@@ -1,7 +1,7 @@
 <?php
 
 /** Get e-mail subject and message from database (Adminer Editor)
-* @link http://www.adminer.org/plugins/#use
+* @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, http://www.vrana.cz/
 * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
@@ -17,7 +17,7 @@ class AdminerEmailTable {
 	* @param string quoted column name
 	* @param string quoted column name
 	*/
-	function AdminerEmailTable($table = "email", $id = "id", $title = "subject", $subject = "subject", $message = "message") {
+	function __construct($table = "email", $id = "id", $title = "subject", $subject = "subject", $message = "message") {
 		$this->table = $table;
 		$this->id = $id;
 		$this->title = $title;

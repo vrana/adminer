@@ -80,7 +80,7 @@ if (isset($_GET["oracle"])) {
 		class Min_Result {
 			var $_result, $_offset = 1, $num_rows;
 
-			function Min_Result($result) {
+			function __construct($result) {
 				$this->_result = $result;
 			}
 

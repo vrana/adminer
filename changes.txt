@@ -1,3 +1,26 @@
+Adminer 4.2.6-dev:
+
+Adminer 4.2.5 (released 2016-06-01):
+Fix remote execution in SQLite query
+SQLite: Require credentials to use
+PostgreSQL: Support KILL
+
+Adminer 4.2.4 (released 2016-02-06):
+Fix remote execution in SQLite query
+MySQL: Support PHP 7
+Bosnian translation
+Finnish translation
+
+Adminer 4.2.3 (released 2015-11-15):
+Fix XSS in indexes (non-MySQL only)
+Support PHP 7
+Greek translation
+Galician translation
+Bulgarian translation
+
+Adminer 4.2.2 (released 2015-08-05):
+Fix XSS in alter table (found by HP Fortify)
+
 Adminer 4.2.1 (released 2015-03-10):
 Send referrer header to the same domain
 MySQL: Fix usage of utf8mb4 if the client library doesn't support it

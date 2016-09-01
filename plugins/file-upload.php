@@ -2,7 +2,7 @@
 //! delete
 
 /** Edit fields ending with "_path" by <input type="file"> and link to the uploaded files from select
-* @link http://www.adminer.org/plugins/#use
+* @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, http://www.vrana.cz/
 * @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
@@ -16,7 +16,7 @@ class AdminerFileUpload {
 	* @param string prefix for displaying data, null stands for $uploadPath
 	* @param string regular expression with allowed file extensions
 	*/
-	function AdminerFileUpload($uploadPath = "../static/data/", $displayPath = null, $extensions = "[a-zA-Z0-9]+") {
+	function __construct($uploadPath = "../static/data/", $displayPath = null, $extensions = "[a-zA-Z0-9]+") {
 		$this->uploadPath = $uploadPath;
 		$this->displayPath = ($displayPath !== null ? $displayPath : $uploadPath);
 		$this->extensions = $extensions;
