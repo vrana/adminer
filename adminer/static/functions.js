@@ -460,16 +460,17 @@ function functionChange(select) {
 	if (selectValue(select)) {
 		if (input.origType === undefined) {
 			input.origType = input.type;
-			input.origMaxLength = input.maxLength;
+			input.origMaxLength = input.getAttribute('data-maxlength');
 		}
-		input.removeAttribute('maxlength');
+		input.removeAttribute('data-maxlength');
 		input.type = 'text';
 	} else if (input.origType) {
 		input.type = input.origType;
 		if (input.origMaxLength >= 0) {
-			input.maxLength = input.origMaxLength;
+			input.setAttribute('data-maxlength', input.origMaxLength);
 		}
 	}
+	oninput({target: input});
 	helpClose();
 }
 
@@ -793,3 +794,9 @@ function cloneNode(el) {
 	setupSubmitHighlight(el2);
 	return el2;
 }
+
+oninput = function (event) {
+	var target = event.target;
+	var maxLength = target.getAttribute('data-maxlength');
+	alterClass(target, 'maxlength', target.value && maxLength != null && target.value.length > maxLength); // maxLength could be 0
+};
