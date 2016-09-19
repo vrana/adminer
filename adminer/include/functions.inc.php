@@ -113,10 +113,12 @@ function nl_br($string) {
 * @param string
 * @param string
 * @return string
+* @return string
 */
-function checkbox($name, $value, $checked, $label = "", $onclick = "", $class = "") {
+function checkbox($name, $value, $checked, $label = "", $onclick = "", $class = "", $labelled_by = "") {
 	$return = "<input type='checkbox' name='$name' value='" . h($value) . "'"
 		. ($checked ? " checked" : "")
+		. ($labelled_by ? " aria-labelledby='$labelled_by'" : "")
 		. ($onclick ? ' onclick="' . h($onclick) . '"' : '')
 		. ">"
 	;
