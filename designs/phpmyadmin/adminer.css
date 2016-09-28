@@ -69,6 +69,11 @@ fieldset div {
 	margin-top: 4px;
 }
 
+label
+{
+	display:inline-block;
+}
+
 input, select, textarea {
 	border: 1px solid #CCC;
 
