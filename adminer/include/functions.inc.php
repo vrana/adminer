@@ -113,10 +113,12 @@ function nl_br($string) {
 * @param string
 * @param string
 * @return string
+* @return string
 */
-function checkbox($name, $value, $checked, $label = "", $onclick = "", $class = "") {
+function checkbox($name, $value, $checked, $label = "", $onclick = "", $class = "", $labelled_by = "") {
 	$return = "<input type='checkbox' name='$name' value='" . h($value) . "'"
 		. ($checked ? " checked" : "")
+		. ($labelled_by ? " aria-labelledby='$labelled_by'" : "")
 		. ($onclick ? ' onclick="' . h($onclick) . '"' : '')
 		. ">"
 	;
@@ -929,7 +931,7 @@ function input($field, $value, $function, $field_group_idx = null) {
 			// type='date' and type='time' display localized value which may be confusing, type='datetime' uses 'T' as date and time separator
 			echo "<input"
 				. ((!$has_function || $function === "") && preg_match('~(?<!o)int~', $field["type"]) ? " type='number'" : "")
-				. " value='" . h($value) . "'" . ($maxlength ? " maxlength='$maxlength'" : "")
+				. " value='" . h($value) . "'" . ($maxlength ? " data-maxlength='$maxlength'" : "")
 				. (preg_match('~char|binary~', $field["type"]) && $maxlength > 20 ? " size='40'" : "")
 				. "$attrs>"
 			;
