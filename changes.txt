@@ -1,6 +1,7 @@
 Adminer 4.2.6-dev:
 Add accessibility labels to Create Table fields
 Make maxlength in edit fields a soft limit
+Add Cache-Control: immutable to static files
 
 Adminer 4.2.5 (released 2016-06-01):
 Fix remote execution in SQLite query
