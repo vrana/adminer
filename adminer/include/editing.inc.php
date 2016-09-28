@@ -241,7 +241,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 <th id="label-name"><?php echo ($type == "TABLE" ? lang('Column name') : lang('Parameter name')); ?>
 <td id="label-type"><?php echo lang('Type'); ?><textarea id="enum-edit" rows="4" cols="12" wrap="off" style="display: none;" onblur="editingLengthBlur(this);"></textarea>
 <td id="label-length"><?php echo lang('Length'); ?>
-<td><?php echo lang('Options'); // no label required, options have their own label ?>
+<td><?php echo lang('Options'); /* no label required, options have their own label */ ?>
 <?php if ($type == "TABLE") { ?>
 <td id="label-null">NULL
 <td><input type="radio" name="auto_increment_col" value=""><acronym id="label-ai" title="<?php echo lang('Auto Increment'); ?>">AI</acronym><?php echo doc_link(array(
