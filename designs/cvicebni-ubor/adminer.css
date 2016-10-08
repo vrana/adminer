@@ -179,7 +179,8 @@ h3{
 #menu form p{
  padding-left:0;
  text-align:center;}
-#tables a,#tables a b{
+#logins a,#tables a,#tables a b{
+ background: transparent none repeat scroll 0 0;
  color:#c00;
  padding:0 0.3ex;}
 /*#tables a b{background-color:#ff7400;color:black;}*/
