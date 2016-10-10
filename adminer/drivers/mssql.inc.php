@@ -8,7 +8,7 @@
 $drivers["mssql"] = "MS SQL";
 
 if (isset($_GET["mssql"])) {
-	$possible_drivers = array("SQLSRV", "MSSQL");
+	$possible_drivers = array("SQLSRV", "MSSQL", "PDO_DBLIB");
 	define("DRIVER", "mssql");
 	if (extension_loaded("sqlsrv")) {
 		class Min_DB {
@@ -195,9 +195,11 @@ if (isset($_GET["mssql"])) {
 					return false;
 				}
 				return mssql_result($result->_result, 0, $field);
-			}
-		}
+            }
 
+        }
+
+    
 		class Min_Result {
 			var $_result, $_offset = 0, $_fields, $num_rows;
 
@@ -234,8 +236,21 @@ if (isset($_GET["mssql"])) {
 			}
 		}
 
-	}
+	} elseif (extension_loaded("pdo_dblib")) {
+		class Min_DB extends Min_PDO {
+			var $extension = "PDO_DBLIB";
 
+			function connect($server, $username, $password) {
+				$this->dsn("dblib:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\\d)~', ';port=\\1', $server)), $username, $password);
+				return true;
+			}
+
+			function select_db($database) {
+				// database selection is separated from the connection so dbname in DSN can't be used
+				return $this->query("USE " . idf_escape($database));
+			}
+		}
+	}
 
 
 	class Min_Driver extends Min_SQL {
