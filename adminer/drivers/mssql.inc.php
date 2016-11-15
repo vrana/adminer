@@ -109,11 +109,11 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function fetch_assoc() {
-				return $this->_convert(sqlsrv_fetch_array($this->_result, SQLSRV_FETCH_ASSOC, SQLSRV_SCROLL_NEXT));
+				return $this->_convert(sqlsrv_fetch_array($this->_result, SQLSRV_FETCH_ASSOC));
 			}
 
 			function fetch_row() {
-				return $this->_convert(sqlsrv_fetch_array($this->_result, SQLSRV_FETCH_NUMERIC, SQLSRV_SCROLL_NEXT));
+				return $this->_convert(sqlsrv_fetch_array($this->_result, SQLSRV_FETCH_NUMERIC));
 			}
 
 			function fetch_field() {
@@ -288,7 +288,7 @@ if (isset($_GET["mssql"])) {
 	}
 
 	function get_databases() {
-		return get_vals("EXEC sp_databases");
+		return get_vals("SELECT name FROM sys.databases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')");
 	}
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
