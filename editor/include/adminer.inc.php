@@ -200,6 +200,10 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	function editVal($val, $field) {
 		if (preg_match('~date|timestamp~', $field["type"]) && $val !== null) {
 			return preg_replace('~^(\\d{2}(\\d+))-(0?(\\d+))-(0?(\\d+))~', lang('$1-$3-$5'), $val);
+		} elseif ($val === "\0") {
+			return 'No';
+		} elseif ($val === "\1") {
+			return 'Yes';
 		}
 		return $val;
 	}

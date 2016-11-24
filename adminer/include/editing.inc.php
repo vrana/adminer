@@ -59,6 +59,10 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 		foreach ($row as $key => $val) {
 			if ($val === null) {
 				$val = "<i>NULL</i>";
+			} elseif ($val === "\0") {
+				$val = "<i>0</i>";
+			} elseif ($val === "\1") {
+				$val = "<i>1</i>";
 			} elseif ($blobs[$key] && !is_utf8($val)) {
 				$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>"; //! link to download
 			} elseif (!strlen($val)) { // strlen - SQLite can return int

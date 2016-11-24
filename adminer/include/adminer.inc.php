@@ -243,6 +243,11 @@ focus(document.getElementById('username'));
 	* @return string
 	*/
 	function editVal($val, $field) {
+		if ($val === "\0") {
+			return '0';
+		} elseif ($val === "\1") {
+			return '1';
+		}
 		return $val;
 	}
 
