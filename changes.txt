@@ -11,6 +11,7 @@ Output binary UUID in hex
 Fix disabled <select> UI in Chrome
 Add detect `SQL command` page when URL containt '&table=' (allow to use UX plugin sql_command_table_fields)
 Support receive partial data for alter table (workaround for max_input_vars limit errors) (allow to use UX plugin table_edit_by_fields)
+Add possibility to remove conditions in search by fields form
 UX plugins for simpler migrate phpMyAdmin users:
  - tables_list_name_select:			table names in menu has link to `Select data`, and icons to `Show structure`
  - tables_list_filter:				table list in menu has filter field

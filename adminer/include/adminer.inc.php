@@ -320,7 +320,8 @@ focus(document.getElementById('username'));
 			if (!$val || ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators))) {
 				echo "<div>" . select_input(" name='where[$i][col]' onchange='$change_next'", $columns, $val["col"], "(" . lang('anywhere') . ")");
 				echo html_select("where[$i][op]", $this->operators, $val["op"], $change_next);
-				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' onchange='" . ($val ? "selectFieldChange(this.form)" : "selectAddRow(this)") . ";' onkeydown='selectSearchKeydown(this, event);' onsearch='selectSearchSearch(this);'></div>\n";
+				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' onchange='" . ($val ? "selectFieldChange(this.form)" : "selectAddRow(this)") . ";' onkeydown='selectSearchKeydown(this, event);' onsearch='selectSearchSearch(this);'>\n";
+				echo "<button type='button' class='icon' onclick='selectSearchRemoveRow(this); return false;'><img src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "' /></button></div>\n";
 			}
 		}
 		echo "</div></fieldset>\n";
