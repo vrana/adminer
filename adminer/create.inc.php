@@ -209,7 +209,8 @@ foreach ($engines as $engine) {
 <?php
 $comments = ($_POST ? $_POST["comments"] : $row["Comment"] != "");
 $defaults = ($_POST ? $_POST["defaults"] : false);
-if (!$_POST && (!$comments || !$defaults)) {
+$quick_edit = ($_POST ? $_POST["up"] || $_POST["down"] || $_POST["add"] || $_POST["drop_col"] : false);
+if ($quick_edit || (!$_POST && (!$comments || !$defaults))) {
 	foreach ($row["fields"] as $field) {
 		if (!$comments && ($field["comment"] != "")) {
 			$comments = true;
