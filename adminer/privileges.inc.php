@@ -1,5 +1,9 @@
 <?php
-page_header(lang('Privileges'));
+page_header(lang('Privileges'), "", array(), h(DB . ($_GET["ns"] ? ".$_GET[ns]" : "")));
+if (DB)
+	$adminer->homepage();
+else
+	$adminer->startLinks();
 
 $result = $connection->query("SELECT User, Host FROM mysql." . (DB == "" ? "user" : "db WHERE " . q(DB) . " LIKE Db") . " ORDER BY Host, User");
 $grant = $result;

@@ -36,7 +36,11 @@ if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP c
 	}
 }
 
-page_header(DB != "" ? lang('Alter database') : lang('Create database'), $error, array(), h(DB));
+page_header(DB != "" ? lang('Alter database') : lang('Create database'), $error, array(), DB != "" ? h(DB) : "");
+if (DB)
+	$adminer->homepage();
+else
+	$adminer->startLinks();
 
 $collations = collations();
 $name = DB;

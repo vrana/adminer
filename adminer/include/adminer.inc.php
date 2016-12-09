@@ -132,6 +132,30 @@ focus(document.getElementById('username'));
 		return '<span title="' . h($field["full_type"]) . '">' . h($field["field"]) . '</span>';
 	}
 
+	/** Print links on start pages
+	* @return null
+	*/
+	function startLinks() {
+		echo "<p class='links'>\n";
+		$start_pages = array(
+							'' => lang('Select database'),
+							'database' => lang('Create new database'),
+							'privileges' => lang('Privileges'),
+							'processlist' => lang('Process list'),
+							'variables' => lang('Variables'),
+							'status' => lang('Status')
+							);
+		$any_selected = false;
+		foreach ($start_pages as $key => $val)
+			if ($key)
+				$any_selected |= isset($_GET[$key]);
+		foreach ($start_pages as $key => $val) {
+			if (support($key)) {
+				echo "<a href='" . h(ME) . "$key='" . bold($key ? ($key == "variables" ? isset($_GET[$key]) && !isset($_GET["status"]) : isset($_GET[$key])) : !$any_selected ) . ">$val</a>\n";
+			}
+		}
+	}
+
 	/** Print links after select heading
 	* @param array result of SHOW TABLE STATUS
 	* @param string new item options, NULL for no new item
@@ -154,8 +178,12 @@ focus(document.getElementById('username'));
 			$links["edit"] = lang('New item');
 		}
 		foreach ($links as $key => $val) {
-			echo " <a href='" . h(ME) . "$key=" . urlencode($tableStatus["Name"]) . ($key == "edit" ? $set : "") . "'" . bold(isset($_GET[$key])) . ">$val</a>";
+			$is_bold = isset($_GET[$key]) && !isset($_GET["sql"]);
+			if (($key == "edit") && (!empty($_GET["where"]) || !empty($_POST["check"])))	// multiple rows edit has $_POST["check"]
+				$is_bold = false;
+			echo " <a href='" . h(ME) . "$key=" . urlencode($tableStatus["Name"]) . ($key == "edit" ? $set : "") . "'" . bold($is_bold) . ">$val</a>";
 		}
+		echo " <a href='" . h(ME) . "sql=&table=" . urlencode($tableStatus["Name"])."'" . bold(isset($_GET["sql"])) . ">".lang('SQL command')."</a>";
 		echo "\n";
 	}
 
@@ -191,8 +219,9 @@ focus(document.getElementById('username'));
 	*/
 	function selectQuery($query, $time) {
 		global $jush;
+		$default_table = get_page_table();
 		return "<p><code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code> <span class='time'>($time)</span>"
-			. (support("sql") ? " <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>" : "")
+			. (support("sql") ? " <a href='" . h(ME) . "sql=" . urlencode($query) . ($default_table ? "&table=".$default_table : "") . "'>" . lang('Edit') . "</a>" : "")
 			. "</p>" // </p> - required for IE9 inline edit
 		;
 	}
@@ -291,7 +320,8 @@ focus(document.getElementById('username'));
 			if (!$val || ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators))) {
 				echo "<div>" . select_input(" name='where[$i][col]' onchange='$change_next'", $columns, $val["col"], "(" . lang('anywhere') . ")");
 				echo html_select("where[$i][op]", $this->operators, $val["op"], $change_next);
-				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' onchange='" . ($val ? "selectFieldChange(this.form)" : "selectAddRow(this)") . ";' onkeydown='selectSearchKeydown(this, event);' onsearch='selectSearchSearch(this);'></div>\n";
+				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' onchange='" . ($val ? "selectFieldChange(this.form)" : "selectAddRow(this)") . ";' onkeydown='selectSearchKeydown(this, event);' onsearch='selectSearchSearch(this);'>\n";
+				echo "<button type='button' class='icon' onclick='selectSearchRemoveRow(this); return false;'><img src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "' /></button></div>\n";
 			}
 		}
 		echo "</div></fieldset>\n";
@@ -519,6 +549,8 @@ focus(document.getElementById('username'));
 		global $jush;
 		restart_session();
 		$history = &get_session("queries");
+		$default_table = get_page_table();
+
 		$id = "sql-" . count($history[$_GET["db"]]);
 		if (strlen($query) > 1e6) {
 			$query = preg_replace('~[\x80-\xFF]+$~', '', substr($query, 0, 1e6)) . "\n..."; // [\x80-\xFF] - valid UTF-8, \n - can end by one-line comment
@@ -527,7 +559,7 @@ focus(document.getElementById('username'));
 		return " <span class='time'>" . @date("H:i:s") . "</span> <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('SQL command') . "</a>" // @ - time zone may be not set
 			. "<div id='$id' class='hidden'><pre><code class='jush-$jush'>" . shorten_utf8($query, 1000) . '</code></pre>'
 			. ($time ? " <span class='time'>($time)</span>" : '')
-			. (support("sql") ? '<p><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a>' : '')
+			. (support("sql") ? '<p><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . ($default_table ? "&table=".$default_table : "") . '">' . lang('Edit') . '</a>' : '')
 			. '</div>'
 		;
 	}
@@ -708,6 +740,8 @@ focus(document.getElementById('username'));
 						}
 						foreach ($row as $key => $val) {
 							$field = $fields[$key];
+							if ($field["auto_increment"] && ($style == "INSERT-AI"))
+								$val = null;
 							$row[$key] = ($val !== null
 								? unconvert_field($field, preg_match('~(^|[^o])int|float|double|decimal~', $field["type"]) && $val != '' ? $val : q($val))
 								: "NULL"
@@ -764,10 +798,13 @@ focus(document.getElementById('username'));
 	* @return bool whether to print default homepage
 	*/
 	function homepage() {
-		echo '<p class="links">' . ($_GET["ns"] == "" && support("database") ? '<a href="' . h(ME) . 'database=">' . lang('Alter database') . "</a>\n" : "");
-		echo (support("scheme") ? "<a href='" . h(ME) . "scheme='>" . ($_GET["ns"] != "" ? lang('Alter schema') : lang('Create schema')) . "</a>\n" : "");
-		echo ($_GET["ns"] !== "" ? '<a href="' . h(ME) . 'schema=">' . lang('Database schema') . "</a>\n" : "");
-		echo (support("privileges") ? "<a href='" . h(ME) . "privileges='>" . lang('Privileges') . "</a>\n" : "");
+		echo '<p class="links">';
+		echo ($_GET["ns"] == "" && support("database") ? '<a href="' . h(ME) . '" '. bold(!isset($_GET["database"]) && !isset($_GET["scheme"]) && !isset($_GET["schema"]) && !isset($_GET["privileges"])) . '>' . lang('Database') . "</a>\n" : "");
+		echo ($_GET["ns"]) ? '<a href="' . h(ME) . '" '. bold(isset($_GET["ns"]) && !isset($_GET["schema"]) && !isset($_GET["privileges"])) . '>' . lang('Schema') . "</a>\n" : "";
+		echo ($_GET["ns"] == "" && support("database") ? '<a href="' . h(ME) . 'database=" '. bold(isset($_GET["database"])) .'>' . lang('Alter database') . "</a>\n" : "");
+		echo (support("scheme") ? "<a href='" . h(ME) . "scheme=' ". bold(isset($_GET["scheme"])) .">" . ($_GET["ns"] != "" ? lang('Alter schema') : lang('Create schema')) . "</a>\n" : "");
+		echo ($_GET["ns"] !== "" ? '<a href="' . h(ME) . 'schema=" '. bold(isset($_GET["schema"])) .'>' . lang('Database schema') . "</a>\n" : "");
+		echo (support("privileges") ? "<a href='" . h(ME) . "privileges=' ". bold(isset($_GET["privileges"])) .">" . lang('Privileges') . "</a>\n" : "");
 		return true;
 	}
 
@@ -831,7 +868,7 @@ bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 
 			}
 			$this->databasesPrint($missing);
 			if (DB == "" || !$missing) {
-				echo "<p class='links'>" . (support("sql") ? "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"]) && !isset($_GET["import"])) . ">" . lang('SQL command') . "</a>\n<a href='" . h(ME) . "import='" . bold(isset($_GET["import"])) . ">" . lang('Import') . "</a>\n" : "") . "";
+				echo "<p class='links'>" . (support("sql") ? "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"]) && !isset($_GET["import"]) && !isset($_GET["table"])) . ">" . lang('SQL command') . "</a>\n<a href='" . h(ME) . "import='" . bold(isset($_GET["import"])) . ">" . lang('Import') . "</a>\n" : "") . "";
 				if (support("dump")) {
 					echo "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . lang('Export') . "</a>\n";
 				}

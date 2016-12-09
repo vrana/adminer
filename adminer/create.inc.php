@@ -22,6 +22,34 @@ if ($TABLE != "") {
 }
 
 $row = $_POST;
+// support of inline move/add/drop fields
+if ($_POST) {
+	// auto fill $fields
+	$orig_structure = get_table_structure($TABLE);
+	$named_fields_list = array();
+	$post_fields_list = array();
+	foreach ($orig_structure["fields"] as $k => &$field) {
+		$field["orig"] = $field["field"];
+		$post_fields_list[$k+1] = $field;						// emulate $_POST, where indexes start from 1
+		$named_fields_list[$field["orig"]] = $field;
+	}
+	unset($field);
+
+	if (empty($row["name"])) {
+		$row = $orig_structure;
+		$row["fields"] = $post_fields_list;
+	}
+	else if (empty($row["fields"])) {
+		$row["fields"] = $post_fields_list;
+	}
+	else {
+		foreach ($row["fields"] as &$post_field)
+			if ((count($post_field) == 2) && !empty($post_field["orig"]) && isset($post_field["field"]))
+				$post_field = $named_fields_list[ $post_field["orig"] ];
+		unset($post_field);
+	}
+}
+//
 $row["fields"] = (array) $row["fields"];
 if ($row["auto_increment_col"]) {
 	$row["fields"][$row["auto_increment_col"]]["auto_increment"] = true;
@@ -117,8 +145,11 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 }
 
 page_header(($TABLE != "" ? lang('Alter table') : lang('Create table')), $error, array("table" => $TABLE), h($TABLE));
+if ($table_status)
+	$adminer->selectLinks($table_status);
 
 if (!$_POST) {
+/*
 	$row = array(
 		"Engine" => $_COOKIE["adminer_engine"],
 		"fields" => array(array("field" => "", "type" => (isset($types["int"]) ? "int" : (isset($types["integer"]) ? "integer" : "")))),
@@ -147,9 +178,12 @@ if (!$_POST) {
 			$row["partition_values"] = array_values($partitions);
 		}
 	}
+*/
+	$row = get_table_structure($TABLE);
 }
 
 $collations = collations();
+$collations_name = "";
 $engines = engines();
 // case of engine may differ
 foreach ($engines as $engine) {
@@ -166,7 +200,7 @@ foreach ($engines as $engine) {
 <?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo h($row["name"]); ?>" autocapitalize="off">
 <?php if ($TABLE == "" && !$_POST) { ?><script type='text/javascript'>focus(document.getElementById('form')['name']);</script><?php } ?>
 <?php echo ($engines ? "<select name='Engine' onchange='helpClose();'" . on_help("getTarget(event).value", 1) . ">" . optionlist(array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) . "</select>" : ""); ?>
- <?php echo ($collations && !preg_match("~sqlite|mssql~", $jush) ? html_select("Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]) : ""); ?>
+ <?php echo ($collations && !preg_match("~sqlite|mssql~", $jush) ? html_select($collations_name = "Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]) : ""); ?>
  <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php } ?>
 
@@ -174,21 +208,28 @@ foreach ($engines as $engine) {
 <table cellspacing="0" id="edit-fields" class="nowrap">
 <?php
 $comments = ($_POST ? $_POST["comments"] : $row["Comment"] != "");
-if (!$_POST && !$comments) {
+$defaults = ($_POST ? $_POST["defaults"] : false);
+$quick_edit = ($_POST ? $_POST["up"] || $_POST["down"] || $_POST["add"] || $_POST["drop_col"] : false);
+if ($quick_edit || (!$_POST && (!$comments || !$defaults))) {
 	foreach ($row["fields"] as $field) {
-		if ($field["comment"] != "") {
+		if (!$comments && ($field["comment"] != "")) {
 			$comments = true;
-			break;
+		}
+		if (!$defaults && ($field["default"] != "")) {
+			$defaults = true;
 		}
 	}
 }
-edit_fields($row["fields"], $collations, "TABLE", $foreign_keys, $comments);
+if ($collations_name && empty($_GET["nojs"]))
+	edit_fields($row["fields"], $collations_name, "TABLE", $foreign_keys, $comments);
+else
+	edit_fields($row["fields"], $collations, "TABLE", $foreign_keys, $comments);
 ?>
 </table>
 <p>
 <?php echo lang('Auto Increment'); ?>: <input type="number" name="Auto_increment" size="6" value="<?php echo h($row["Auto_increment"]); ?>">
 <?php echo checkbox("defaults", 1, true, lang('Default values'), "columnShow(this.checked, 5)", "jsonly"); ?>
-<?php if (!$_POST["defaults"]) { ?><script type="text/javascript">editingHideDefaults()</script><?php } ?>
+<?php if (!$defaults) { ?><script type="text/javascript">editingHideDefaults()</script><?php } ?>
 <?php echo (support("comment")
 	? "<label><input type='checkbox' name='comments' value='1' class='jsonly' onclick=\"columnShow(this.checked, 6); toggle('Comment'); if (this.checked) this.form['Comment'].focus();\"" . ($comments ? " checked" : "") . ">" . lang('Comment') . "</label>"
 		. ' <input name="Comment" id="Comment" value="' . h($row["Comment"]) . '" maxlength="' . ($connection->server_info >= 5.5 ? 2048 : 60) . '"' . ($comments ? '' : ' class="hidden"') . '>'

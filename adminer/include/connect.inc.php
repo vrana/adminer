@@ -8,20 +8,10 @@ function connect_error() {
 		if ($_POST["db"] && !$error) {
 			queries_redirect(substr(ME, 0, -1), lang('Databases have been dropped.'), drop_databases($_POST["db"]));
 		}
-		
+
 		page_header(lang('Select database'), $error, false);
-		echo "<p class='links'>\n";
-		foreach (array(
-			'database' => lang('Create new database'),
-			'privileges' => lang('Privileges'),
-			'processlist' => lang('Process list'),
-			'variables' => lang('Variables'),
-			'status' => lang('Status'),
-		) as $key => $val) {
-			if (support($key)) {
-				echo "<a href='" . h(ME) . "$key='>$val</a>\n";
-			}
-		}
+		$adminer->startLinks();
+
 		echo "<p>" . lang('%s version: %s through PHP extension %s', $drivers[DRIVER], "<b>" . h($connection->server_info) . "</b>", "<b>$connection->extension</b>") . "\n";
 		echo "<p>" . lang('Logged as: %s', "<b>" . h(logged_user()) . "</b>") . "\n";
 		$databases = $adminer->databases();
@@ -38,9 +28,9 @@ function connect_error() {
 				. "<td>" . lang('Size') . " - <a href='" . h(ME) . "dbsize=1' onclick=\"return !ajaxSetHtml('" . h(js_escape(ME)) . "script=connect');\">" . lang('Compute') . "</a>"
 				. "</thead>\n"
 			;
-			
+
 			$databases = ($_GET["dbsize"] ? count_tables($databases) : array_flip($databases));
-			
+
 			foreach ($databases as $db => $tables) {
 				$root = h(ME) . "db=" . urlencode($db);
 				echo "<tr" . odd() . ">" . (support("database") ? "<td>" . checkbox("db[]", $db, in_array($db, (array) $_POST["db"])) : "");
@@ -51,7 +41,7 @@ function connect_error() {
 				echo "<td align='right' id='size-" . h($db) . "'>" . ($_GET["dbsize"] ? db_size($db) : "?");
 				echo "\n";
 			}
-			
+
 			echo "</table>\n";
 			echo (support("database")
 				? "<fieldset><legend>" . lang('Selected') . " <span id='selected'></span></legend><div>\n"
@@ -65,7 +55,7 @@ function connect_error() {
 			echo "</form>\n";
 		}
 	}
-	
+
 	page_footer("db");
 }
 

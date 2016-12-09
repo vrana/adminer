@@ -1,7 +1,8 @@
 <?php
 $TABLE = $_GET["edit"];
 $fields = fields($TABLE);
-$where = (isset($_GET["select"]) ? (count($_POST["check"]) == 1 ? where_check($_POST["check"][0], $fields) : "") : where($_GET, $fields));
+//$where = (isset($_GET["select"]) ? (count($_POST["check"]) == 1 ? where_check($_POST["check"][0], $fields) : "") : where($_GET, $fields));
+$where = (isset($_GET["select"]) ? (count($_POST["check"]) ? where_check($_POST["check"][0], $fields) : "") : where($_GET, $fields));
 $update = (isset($_GET["select"]) ? $_POST["edit"] : $where);
 foreach ($fields as $name => $field) {
 	if (!isset($field["privileges"][$update ? "update" : "insert"]) || $adminer->fieldName($field) == "") {
@@ -29,32 +30,68 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 		);
 
 	} else {
-		$set = array();
-		foreach ($fields as $name => $field) {
-			$val = process_input($field);
-			if ($val !== false && $val !== null) {
-				$set[idf_escape($name)] = $val;
+		$update_few_items = (count($_POST["check"]) > 1);
+		if (!$update_few_items) {
+			$set = array();
+			foreach ($fields as $name => $field) {
+				$val = process_input($field, $check_id);
+				if ($val !== false && $val !== null) {
+					$set[idf_escape($name)] = $val;
+				}
 			}
-		}
 
-		if ($update) {
-			if (!$set) {
+			if ($update) {
+				if (!$set) {
+					redirect($location);
+				}
+				queries_redirect(
+					$location,
+					lang('Item has been updated.'),
+					$driver->update($TABLE, $set, $query_where, !$unique_array)
+				);
+				if (is_ajax()) {
+					page_headers();
+					page_messages($error);
+					exit;
+				}
+			} else {
+				$result = $driver->insert($TABLE, $set);
+				$last_id = ($result ? last_id() : 0);
+				queries_redirect($location, lang('Item%s has been inserted.', ($last_id ? " $last_id" : "")), $result); //! link
+			}
+
+		} else {	// edit multiple records
+			$result = null;
+			foreach ($_POST["check"] as $check_id => $check_value) {
+				$set = array();
+				foreach ($fields as $name => $field) {
+					$val = process_input($field, $check_id);
+					if ($val !== false && $val !== null) {
+						$set[idf_escape($name)] = $val;
+					}
+				}
+				$where = where_check($check_value, $fields);
+				$query_where = "\nWHERE $where";
+
+				if (!$set)
+					continue;
+				if ($res = $driver->update($TABLE, $set, $query_where, !$unique_array))
+					$result = $res;
+			}
+
+			if (!$result) {
 				redirect($location);
 			}
 			queries_redirect(
 				$location,
-				lang('Item has been updated.'),
-				$driver->update($TABLE, $set, $query_where, !$unique_array)
+				lang('Items has been updated.'),
+				$result
 			);
 			if (is_ajax()) {
 				page_headers();
 				page_messages($error);
 				exit;
 			}
-		} else {
-			$result = $driver->insert($TABLE, $set);
-			$last_id = ($result ? last_id() : 0);
-			queries_redirect($location, lang('Item%s has been inserted.', ($last_id ? " $last_id" : "")), $result); //! link
 		}
 	}
 }
@@ -108,6 +145,27 @@ if (!support("table") && !$fields) {
 			$fields[$key] = array("field" => $key, "null" => ($key != $driver->primary), "auto_increment" => ($key == $driver->primary));
 		}
 	}
+}
+
+if (count($_POST["check"]) > 1) {
+	$rows_list = array();
+	$updates_list = array();
+	foreach ($_POST["check"] as $k => $check_value) {
+		$where = where_check($check_value, $fields);
+		$result = $driver->select($TABLE, $select, array($where), $select, array(), (isset($_GET["select"]) ? 2 : 1));
+		$row = $result->fetch_assoc();
+		if (!$row) { // MySQLi returns null
+			$row = false;
+		}
+		if (isset($_GET["select"]) && (!$row || $result->fetch_assoc())) { // $result->num_rows != 1 isn't available in all drivers
+			$row = null;
+		}
+
+		$rows_list[$k] = $row;
+		$updates_list[$k] = $where;
+	}
+	$row = $rows_list;
+	$update = $updates_list;
 }
 
 edit_form($TABLE, $fields, $row, $update);

@@ -15,7 +15,9 @@ if (!defined("DRIVER")) {
 
 			function connect($server = "", $username = "", $password = "", $database = null, $port = null, $socket = null) {
 				mysqli_report(MYSQLI_REPORT_OFF); // stays between requests, not required since PHP 5.3.4
+
 				list($host, $port) = explode(":", $server, 2); // part after : is used for port or socket
+
 				$return = @$this->real_connect(
 					($server != "" ? $host : ini_get("mysqli.default_host")),
 					($server . $username != "" ? $username : ini_get("mysqli.default_user")),
@@ -44,7 +46,7 @@ if (!defined("DRIVER")) {
 				$row = $result->fetch_array();
 				return $row[$field];
 			}
-			
+
 			function quote($string) {
 				return "'" . $this->escape_string($string) . "'";
 			}
@@ -325,14 +327,17 @@ if (!defined("DRIVER")) {
 		// SHOW DATABASES can take a very long time so it is cached
 		$return = get_session("dbs");
 		if ($return === null) {
+			$ts = microtime(true);
 			$query = ($connection->server_info >= 5
 				? "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA"
 				: "SHOW DATABASES"
 			); // SHOW DATABASES can be disabled by skip_show_database
 			$return = ($flush ? slow_query($query) : get_vals($query));
-			restart_session();
-			set_session("dbs", $return);
-			stop_session();
+			if ((microtime(true)-$ts) > 1) {		// use cache only for slow query ( >1 sec )
+				restart_session();
+				set_session("dbs", $return);
+				stop_session();
+			}
 		}
 		return $return;
 	}
@@ -463,6 +468,33 @@ if (!defined("DRIVER")) {
 		global $connection;
 		return preg_match('~InnoDB|IBMDB2I~i', $table_status["Engine"])
 			|| (preg_match('~NDB~i', $table_status["Engine"]) && version_compare($connection->server_info, '5.6') >= 0);
+	}
+
+	/** Get DB primary key fields
+	* @param string
+	* @return array array($tbl_name => array($name => array("field" => , "full_type" => , "type" => , "length" => , "unsigned" => , "default" => , "null" => , "auto_increment" => , "on_update" => , "collation" => , "privileges" => , "comment" => , "primary" => )))
+	*/
+	function db_pk_fields($table) {
+		$return = array();
+		foreach (get_rows("SELECT * FROM information_schema.columns WHERE table_schema = ".q(DB)." AND COLUMN_KEY = ".q('PRI')." ORDER BY table_name") as $row) {	// ,ordinal_position
+			preg_match('~^([^( ]+)(?:\\((.+)\\))?( unsigned)?( zerofill)?$~', $row["COLUMN_TYPE"], $match);
+			$return[$row["TABLE_NAME"]][$row["COLUMN_NAME"]] = array(
+				"field" => $row["COLUMN_NAME"],
+				"full_type" => $row["COLUMN_TYPE"],
+				"type" => $match[1],
+				"length" => $match[2],
+				"unsigned" => ltrim($match[3] . $match[4]),
+				"default" => ($row["COLUMN_DEFAULT"] != "" || preg_match("~char|set~", $match[1]) ? $row["COLUMN_DEFAULT"] : null),
+				"null" => ($row["IS_NULLABLE"] == "YES"),
+				"auto_increment" => ($row["EXTRA"] == "auto_increment"),
+				"on_update" => (preg_match('~^on update (.+)~i', $row["EXTRA"], $match) ? $match[1] : ""), //! available since MySQL 5.1.23
+				"collation" => $row["COLLATION_NAME"],
+				"privileges" => array_flip(preg_split('~, *~', $row["PRIVILEGES"])),
+				"comment" => $row["COLUMN_COMMENT"],
+				"primary" => ($row["COLUMN_KEY"] == "PRI"),
+			);
+		}
+		return $return;
 	}
 
 	/** Get information about fields
@@ -727,10 +759,12 @@ if (!defined("DRIVER")) {
 	* @param string
 	* @return bool
 	*/
-	function move_tables($tables, $views, $target) {
+	function move_tables($tables, $views, $target, $target_table = "") {
 		$rename = array();
+		if ((count($tables) + count($views)) > 1)
+			$target_table = "";
 		foreach (array_merge($tables, $views) as $table) { // views will report SQL error
-			$rename[] = table($table) . " TO " . idf_escape($target) . "." . table($table);
+			$rename[] = table($table) . " TO " . idf_escape($target) . "." . (empty($target_table) ? table($table) : table($target_table));
 		}
 		return queries("RENAME TABLE " . implode(", ", $rename));
 		//! move triggers
@@ -742,10 +776,12 @@ if (!defined("DRIVER")) {
 	* @param string
 	* @return bool
 	*/
-	function copy_tables($tables, $views, $target) {
+	function copy_tables($tables, $views, $target, $target_table = "") {
+		if ((count($tables) + count($views)) > 1)
+			$target_table = "";
 		queries("SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO'");
 		foreach ($tables as $table) {
-			$name = ($target == DB ? table("copy_$table") : idf_escape($target) . "." . table($table));
+			$name = ($target == DB && (empty($target_table) || $target_table == $table) ? table("copy_$table") : idf_escape($target) . "." . (empty($target_table) ? table($table) : table($target_table)) );
 			if (!queries("\nDROP TABLE IF EXISTS $name")
 				|| !queries("CREATE TABLE $name LIKE " . table($table))
 				|| !queries("INSERT INTO $name SELECT * FROM " . table($table))
@@ -754,7 +790,7 @@ if (!defined("DRIVER")) {
 			}
 		}
 		foreach ($views as $table) {
-			$name = ($target == DB ? table("copy_$table") : idf_escape($target) . "." . table($table));
+			$name = ($target == DB && (empty($target_table) || $target_table == $table) ? table("copy_$table") : idf_escape($target) . "." . (empty($target_table) ? table($table) : table($target_table)) );
 			$view = view($table);
 			if (!queries("DROP VIEW IF EXISTS $name")
 				|| !queries("CREATE VIEW $name AS $view[select]") //! USE to avoid db.table

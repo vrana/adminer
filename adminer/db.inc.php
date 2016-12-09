@@ -4,6 +4,7 @@ $tables_views = array_merge((array) $_POST["tables"], (array) $_POST["views"]);
 if ($tables_views && !$error && !$_POST["search"]) {
 	$result = true;
 	$message = "";
+	$redirect_replace = null;
 	if ($jush == "sql" && count($_POST["tables"]) > 1 && ($_POST["drop"] || $_POST["truncate"] || $_POST["copy"])) {
 		queries("SET foreign_key_checks = 0"); // allows to truncate or drop several tables at once
 	}
@@ -14,10 +15,12 @@ if ($tables_views && !$error && !$_POST["search"]) {
 		}
 		$message = lang('Tables have been truncated.');
 	} elseif ($_POST["move"]) {
-		$result = move_tables((array) $_POST["tables"], (array) $_POST["views"], $_POST["target"]);
+		$result = move_tables((array) $_POST["tables"], (array) $_POST["views"], $_POST["target"], $_POST["target_table"]);
 		$message = lang('Tables have been moved.');
+		if (((count($_POST["tables"]) + count($_POST["views"])) == 1) && ($_POST["target"] == DB))
+			$redirect_replace = array( "/(&table=)[^&]+/", "\\1".$_POST["target_table"] );
 	} elseif ($_POST["copy"]) {
-		$result = copy_tables((array) $_POST["tables"], (array) $_POST["views"], $_POST["target"]);
+		$result = copy_tables((array) $_POST["tables"], (array) $_POST["views"], $_POST["target"], $_POST["target_table"]);
 		$message = lang('Tables have been copied.');
 	} elseif ($_POST["drop"]) {
 		if ($_POST["views"]) {
@@ -41,10 +44,17 @@ if ($tables_views && !$error && !$_POST["search"]) {
 		}
 	}
 
-	queries_redirect(substr(ME, 0, -1), $message, $result);
+	if (isset($_POST["redirect"]))
+		$redirect = $_POST["redirect"];
+	else
+		$redirect = substr(ME, 0, -1);
+//	queries_redirect(substr(ME, 0, -1), $message, $result);
+	if ($redirect_replace)
+		$redirect = preg_replace($redirect_replace[0], $redirect_replace[1], $redirect);
+	queries_redirect($redirect, $message, $result);
 }
 
-page_header(($_GET["ns"] == "" ? lang('Database') . ": " . h(DB) : lang('Schema') . ": " . h($_GET["ns"])), $error, true);
+page_header(($_GET["ns"] == "" ? lang('Database') : lang('Schema') ), $error, true, $_GET["ns"] == "" ? h(DB) : h($_GET["ns"]));
 
 if ($adminer->homepage()) {
 	if ($_GET["ns"] !== "") {

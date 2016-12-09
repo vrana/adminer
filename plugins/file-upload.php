@@ -23,15 +23,16 @@ class AdminerFileUpload {
 	}
 
 	function editInput($table, $field, $attrs, $value) {
-		if (preg_match('~(.*)_path$~', $field["field"])) {
-			return "<input type='file' name='fields-$field[field]'>";
+		if (preg_match('~(.*)_path$~', $field["field"], $regs)) {
+			return "<a href='$this->displayPath$_GET[edit]/$regs[1]-$value'>" . $value . "</a><br /><input type='file' name='fields-$field[field]'>";
 		}
 	}
 
 	function processInput($field, $value, $function = "") {
-		if (preg_match('~(.*)_path$~', $field["field"], $regs)) {
+		$name = "fields-$field[field]";
+		// check $_FILES[$name], because search by this field does not have $_FILES
+		if (isset($_FILES[$name]) && preg_match('~(.*)_path$~', $field["field"], $regs)) {
 			$table = ($_GET["edit"] != "" ? $_GET["edit"] : $_GET["select"]);
-			$name = "fields-$field[field]";
 			if ($_FILES[$name]["error"] || !preg_match("~(\\.($this->extensions))?\$~", $_FILES[$name]["name"], $regs2)) {
 				return false;
 			}

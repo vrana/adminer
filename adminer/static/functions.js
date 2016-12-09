@@ -311,9 +311,37 @@ function selectAddRow(field) {
 	for (var i=0; i < inputs.length; i++) {
 		inputs[i].name = inputs[i].name.replace(/[a-z]\[\d+/, '$&1');
 		inputs[i].value = '';
-		inputs[i].className = '';
+		if (inputs[i].type != "image")
+			inputs[i].className = '';
 	}
 	field.parentNode.parentNode.appendChild(row);
+}
+
+function selectSearchRemoveRow(el) {
+	var search_row = el.parentNode;
+	var search_rows = search_row.parentNode;
+
+	var selects = search_rows.getElementsByTagName('select');
+	var inputs = search_rows.getElementsByTagName('input');
+
+	if (selects.length > 2) {	// 1 row has 2 selects
+		// remove current row
+		search_rows.removeChild(search_row);
+	} else {
+		// hide search fieldset
+		toggle(search_rows.id);
+
+		// clear values
+		for (var i=0; i < selects.length; i++)
+			selects[i].selectedIndex = 0;
+		for (var i=0; i < inputs.length; i++)
+			inputs[i].value = "";
+	}
+
+	// restore possibility to append searches
+	inputs[ inputs.length-2 ].onchange = function() {
+		selectAddRow(this);
+	};
 }
 
 /** Prevent onsearch handler on Enter
@@ -370,7 +398,7 @@ function selectSearch(name) {
 		div.firstChild.value = name;
 		div.firstChild.onchange();
 	}
-	div.lastChild.focus();
+	div.getElementsByTagName("INPUT")[0].focus();
 }
 
 

@@ -18,7 +18,8 @@ if ($_POST && !$error) {
 	}
 }
 
-page_header($_GET["ns"] != "" ? lang('Alter schema') : lang('Create schema'), $error);
+page_header($_GET["ns"] != "" ? lang('Alter schema') : lang('Create schema'), $error, array(), h(DB . ($_GET["ns"] ? ".$_GET[ns]" : "")));
+$adminer->homepage();
 
 if (!$row) {
 	$row["name"] = $_GET["ns"];

@@ -27,6 +27,7 @@ input[type=image] { vertical-align: middle; }
 input.default { box-shadow: 1px 1px 1px #777; }
 input.required { box-shadow: 1px 1px 1px red; }
 input.maxlength { box-shadow: 1px 1px 1px red; }
+select:disabled { background-color: #ebebe4; }	/* Chrome fix */
 .block { display: block; }
 .version { color: #777; font-size: 67%; }
 .js .hidden, .nojs .jsonly { display: none; }
@@ -53,6 +54,8 @@ input.maxlength { box-shadow: 1px 1px 1px red; }
 .active { font-weight: bold; }
 .sqlarea { width: 98%; }
 .icon { width: 18px; height: 18px; background-color: navy; }
+button.icon { padding: 0; border: 0; cursor:pointer; }
+button.icon img { vertical-align: top; }
 .icon:hover { background-color: red; }
 .size { width: 6ex; }
 .help { cursor: help; }
