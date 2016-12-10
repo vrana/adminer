@@ -11,7 +11,6 @@ $permanent = array();
 
 //Check to see if there is already a permanent login
 if(!isset($_COOKIE['adminer_permanent'])) {
-    //if there isnt, load the configuration
     include_once($_SERVER['DOCUMENT_ROOT'].'/config.php');
     if(function_exists('get_configs')) {
         $configuration = get_configs();
@@ -46,7 +45,6 @@ function add_permanent_login($vendor, $server, $username, $db, $password) {
         base64_encode($private ? encrypt_string($connection['password'], $private) : "")
     );
     cookie("adminer_permanent", implode(" ", $permanent));
-
 }
 
 if ($_COOKIE["adminer_permanent"]) {
