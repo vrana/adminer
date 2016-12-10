@@ -13,6 +13,9 @@ $permanent = array();
 if(!isset($_COOKIE['adminer_permanent'])) {
     //if there isnt, load the configuration
     include_once($_SERVER['DOCUMENT_ROOT'].'/config.php');
+    if(function_exists('get_configs')) {
+        $configuration = get_configs();
+    }
     if($configuration) {
         foreach($configuration as $connection) {
             add_permanent_login(
