@@ -40,7 +40,7 @@ function add_permanent_login($vendor, $server, $username, $db, $password) {
     $permanent[$key] = sprintf(
         "%s:%s",
         $key,
-        base64_encode($private ? encrypt_string($connection['password'], $private) : "")
+        base64_encode($private ? encrypt_string($password, $private) : "")
     );
     cookie("adminer_permanent", implode(" ", $permanent));
 }
