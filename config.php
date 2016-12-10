@@ -1,6 +1,6 @@
 <?php
 
-function get_config() {
+function get_configs() {
     return [
         'localhost' => [
             'vendor' => 'server',
@@ -8,6 +8,6 @@ function get_config() {
             'username' => 'root',
             'db' => '',
             'password' => ''
-        ]
+        ],
     ];
-} 
+}
