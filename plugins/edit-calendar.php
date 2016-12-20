@@ -36,8 +36,8 @@ class AdminerEditCalendar {
 	function editInput($table, $field, $attrs, $value) {
 		if (preg_match("~date|time~", $field["type"])) {
 			$dateFormat = "changeYear: true, dateFormat: 'yy-mm-dd'"; //! yy-mm-dd regional
-			$timeFormat = "showSecond: true, timeFormat: 'hh:mm:ss'";
-			return "<input id='fields-" . h($field["field"]) . "' value='" . h($value) . "'" . (+$field["length"] ? " maxlength='" . (+$field["length"]) . "'" : "") . "$attrs><script type='text/javascript'>jQuery('#fields-" . js_escape($field["field"]) . "')."
+			$timeFormat = "showSecond: true, timeFormat: 'HH:mm:ss.lcZ', timeInput: true";
+			return "<input id='fields-" . h($field["field"]) . "' value='" . h($value) . "'" . (@+$field["length"] ? " maxlength='" . (+$field["length"]) . "'" : "") . "$attrs><script type='text/javascript'>jQuery('#fields-" . js_escape($field["field"]) . "')."
 				. ($field["type"] == "time" ? "timepicker({ $timeFormat })"
 				: (preg_match("~time~", $field["type"]) ? "datetimepicker({ $dateFormat, $timeFormat })"
 				: "datepicker({ $dateFormat })"
