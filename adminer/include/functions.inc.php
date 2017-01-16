@@ -1215,7 +1215,7 @@ function slow_query($query) {
 	$db = $adminer->database();
 	$timeout = $adminer->queryTimeout();
 	if (support("kill") && is_object($connection2 = connect()) && ($db == "" || $connection2->select_db($db))) {
-		$kill = $connection2->result("SELECT CONNECTION_ID()"); // MySQL and MySQLi can use thread_id but it's not in PDO_MySQL
+		$kill = $connection2->result(connection_id()); // MySQL and MySQLi can use thread_id but it's not in PDO_MySQL
 		?>
 <script type="text/javascript">
 var timeout = setTimeout(function () {

@@ -638,6 +638,10 @@ AND typelem = 0"
 		return queries("SELECT pg_terminate_backend(" . number($val).")");
 	}
 
+	function connection_id(){
+		return "SELECT pg_backend_pid()";
+	}
+
 	function max_connections() {
 		global $connection;
 		return $connection->result("SHOW max_connections");
