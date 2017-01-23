@@ -69,7 +69,7 @@ function remove_slashes($process, $filter = false) {
 */
 function bracket_escape($idf, $back = false) {
 	// escape brackets inside name="x[]"
-	static $trans = array(':' => ':1', ']' => ':2', '[' => ':3');
+	static $trans = array(':' => ':1', ']' => ':2', '[' => ':3', '"' => ':4');
 	return strtr($idf, ($back ? array_flip($trans) : $trans));
 }
 
