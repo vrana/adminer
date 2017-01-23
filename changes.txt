@@ -1,5 +1,5 @@
 Adminer 4.2.6-dev:
-Add accessibility labels to Create Table fields
+Add accessibility labels
 Make maxlength in edit fields a soft limit
 Add Cache-Control: immutable to static files
 
