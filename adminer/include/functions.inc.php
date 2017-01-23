@@ -112,7 +112,7 @@ function nl_br($string) {
 * @param string
 * @param string
 * @param string
-* @return string
+* @param string
 * @return string
 */
 function checkbox($name, $value, $checked, $label = "", $onclick = "", $class = "", $labelled_by = "") {
@@ -154,11 +154,15 @@ function optionlist($options, $selected = null, $use_keys = false) {
 * @param array
 * @param string
 * @param string true for no onchange, false for radio
+* @param string
 * @return string
 */
-function html_select($name, $options, $value = "", $onchange = true) {
+function html_select($name, $options, $value = "", $onchange = true, $labelled_by = "") {
 	if ($onchange) {
-		return "<select name='" . h($name) . "'" . (is_string($onchange) ? ' onchange="' . h($onchange) . '"' : "") . ">" . optionlist($options, $value) . "</select>";
+		return "<select name='" . h($name) . "'"
+			. (is_string($onchange) ? ' onchange="' . h($onchange) . '"' : "")
+			. ($labelled_by ? " aria-labelledby='$labelled_by'" : "")
+			. ">" . optionlist($options, $value) . "</select>";
 	}
 	$return = "";
 	foreach ($options as $key => $val) {
