@@ -94,7 +94,7 @@ if (!$row) {
 <table cellspacing="0" class="nowrap">
 <thead><tr>
 <th><?php echo lang('Index Type'); ?>
-<th><input type="submit" style="left: -1000px; position: absolute;"><?php echo lang('Column (length)'); ?>
+<th><input type="submit" class="wayoff"><?php echo lang('Column (length)'); ?>
 <th><?php echo lang('Name'); ?>
 <th><noscript><input type='image' class='icon' name='add[0]' src='../adminer/static/plus.gif' alt='+' title='<?php echo lang('Add next'); ?>'></noscript>&nbsp;
 </thead>
