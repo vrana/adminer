@@ -1019,6 +1019,11 @@ if (!defined("DRIVER")) {
 		return queries("KILL " . number($val));
 	}
 
+	//needed kill support
+	function connection_id(){
+		return "SELECT CONNECTION_ID()";
+	}
+
 	function max_connections() {
 		global $connection;
 		return $connection->result("SELECT @@max_connections");
