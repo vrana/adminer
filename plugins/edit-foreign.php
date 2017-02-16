@@ -26,7 +26,11 @@ class AdminerEditForeign {
 				$id = $foreignKey["target"][0];
 				$options = &$values[$target][$id];
 				if (!$options) {
-					$options = array("" => "") + get_vals("SELECT " . idf_escape($id) . " FROM " . table($target) . " ORDER BY 1");
+					$limit = "";
+					if ($this->_limit > 0) {
+						$limit = " LIMIT " . ($this->_limit + 1);
+					}
+					$options = array("" => "") + get_vals("SELECT " . idf_escape($id) . " FROM " . table($target) . " ORDER BY 1" . $limit);
 					if ($this->_limit && count($options) - 1 > $this->_limit) {
 						return;
 					}
