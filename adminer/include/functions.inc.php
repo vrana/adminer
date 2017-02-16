@@ -243,7 +243,7 @@ function json_row($key, $val = null) {
 		echo "{";
 	}
 	if ($key != "") {
-		echo ($first ? "" : ",") . "\n\t\"" . addcslashes($key, "\r\n\"\\/") . '": ' . ($val !== null ? '"' . addcslashes($val, "\r\n\"\\/") . '"' : 'undefined');
+		echo ($first ? "" : ",") . "\n\t\"" . addcslashes($key, "\r\n\"\\/") . '": ' . ($val !== null ? '"' . addcslashes($val, "\r\n\"\\/") . '"' : 'null');
 		$first = false;
 	} else {
 		echo "\n}\n";
