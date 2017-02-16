@@ -892,7 +892,7 @@ bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 
 			$name = $this->tableName($status);
 			echo (support("table") || support("indexes")
 				? '<a href="' . h(ME) . 'table=' . urlencode($table) . '"'
-					. bold(in_array($table, array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"])), (is_view($status) ? "view" : ""), "structure")
+					. bold(in_array($table, array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"])), (is_view($status) ? "view" : "structure"))
 					. " title='" . lang('Show structure') . "'>$name</a>"
 				: "<span>$name</span>"
 			) . "<br>\n";
