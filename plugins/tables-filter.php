@@ -13,11 +13,13 @@ class AdminerTablesFilter {
 <script type="text/javascript">
 function tablesFilter(value) {
 	var tables = document.getElementById('tables').getElementsByTagName('span');
+	var re = new RegExp(value);
 	for (var i = tables.length; i--; ) {
 		var a = tables[i].children[1];
 		var text = a.innerText || a.textContent;
-		tables[i].className = (text.indexOf(value) == -1 ? 'hidden' : '');
-		a.innerHTML = text.replace(value, '<b>' + value + '</b>');
+		var mat = text.match(re);
+		tables[i].className = (mat === null ? 'hidden' : '');
+		a.innerHTML = (mat === null ? text : text.replace(mat[0], '<b>' + mat[0] + '</b>'));
 	}
 }
 </script>
