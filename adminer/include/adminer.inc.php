@@ -246,6 +246,45 @@ focus(document.getElementById('username'));
 		return $val;
 	}
 
+	/** Print table structure in tabular format
+	 * @param array data about individual fields
+	 * @return null
+	 */
+	function tableStructurePrint($fields) {
+		echo "<table cellspacing='0'>\n";
+		echo "<thead><tr><th>" . lang('Column') . "<td>" . lang('Type') . (support("comment") ? "<td>" . lang('Comment') : "") . "</thead>\n";
+		foreach ($fields as $field) {
+			echo "<tr" . odd() . "><th>" . h($field["field"]);
+			echo "<td><span title='" . h($field["collation"]) . "'>" . h($field["full_type"]) . "</span>";
+			echo ($field["null"] ? " <i>NULL</i>" : "");
+			echo ($field["auto_increment"] ? " <i>" . lang('Auto Increment') . "</i>" : "");
+			echo (isset($field["default"]) ? " <span title='" . lang('Default value') . "'>[<b>" . h($field["default"]) . "</b>]</span>" : "");
+			echo (support("comment") ? "<td>" . nbsp($field["comment"]) : "");
+			echo "\n";
+		}
+		echo "</table>\n";
+	}
+
+	/** Print list of indexes on table on tabular format
+	 * @Param array data about all indexes on a table
+	 * @return null
+	 */
+	function tableIndexesPrint($indexes) {
+		echo "<table cellspacing='0'>\n";
+		foreach ($indexes as $name => $index) {
+			ksort($index["columns"]); // enforce correct columns order
+			$print = array();
+			foreach ($index["columns"] as $key => $val) {
+				$print[] = "<i>" . h($val) . "</i>"
+					. ($index["lengths"][$key] ? "(" . $index["lengths"][$key] . ")" : "")
+					. ($index["descs"][$key] ? " DESC" : "")
+				;
+			}
+			echo "<tr title='" . h($name) . "'><th>$index[type]<td>" . implode(", ", $print) . "\n";
+		}
+		echo "</table>\n";
+	}
+
 	/** Print columns box in select
 	* @param array result of selectColumnsProcess()[0]
 	* @param array selectable columns
