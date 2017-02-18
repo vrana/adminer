@@ -239,7 +239,7 @@ function checkboxClick(event, el) {
 function setHtml(id, html) {
 	var el = document.getElementById(id);
 	if (el) {
-		if (html == undefined) {
+		if (html == null) {
 			el.parentNode.innerHTML = '&nbsp;';
 		} else {
 			el.innerHTML = html;
