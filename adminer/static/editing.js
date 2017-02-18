@@ -277,21 +277,20 @@ function editingRemoveRow(button, name) {
 * @return boolean Success
 */
 function editingMoveRow(button, dir){
-	var row = parentTag(button, 'tr');
-	var table = row.parentNode;
-	var tags = table.getElementsByTagName('tr');
-	for (var i=0; i < tags.length; i++) {
-		if (tags[i] == row) {
-			if (dir && i) {
-				table.removeChild(row);
-				table.insertBefore(row, tags[i - 1]);
-			} else if (!dir && i + 1 < tags.length) {
-				table.removeChild(row);
-				table.insertBefore(row, tags[i + 1]);
-			}
-			break;
-		}
+	if (typeof button.nextElementSibling === 'undefined') {
+		return false;
 	}
+
+	var row = parentTag(button, 'tr');
+
+	if (dir) {
+		row.parentNode.insertBefore(row, row.previousElementSibling);
+	} else if (row.nextElementSibling) {
+		row.parentNode.insertBefore(row, row.nextElementSibling.nextElementSibling);
+	} else {
+		row.parentNode.insertBefore(row, row.parentNode.firstChild);
+	}
+
 	return true;
 }
 
