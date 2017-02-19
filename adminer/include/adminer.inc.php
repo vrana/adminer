@@ -197,6 +197,15 @@ focus(document.getElementById('username'));
 		;
 	}
 
+	/** Query printed in SQL command before execution
+	* @param string query to be executed
+	* @return string
+	*/
+	function sqlCommandQuery($query)
+	{
+		return shorten_utf8(trim($query), 1000);
+	}
+
 	/** Description of a row in a table
 	* @param string
 	* @return string SQL expression, empty string for no description
