@@ -18,9 +18,10 @@ img { vertical-align: middle; margin: 0; padding: 0; }
 .message { color: black; background: #dedede; padding: .5em .8em; border: 1px solid black; }
 #menu { overflow: scroll; position: absolute; top: 0; left: 0; width: 270px; white-space: nowrap; background: #FFE594 url('data:image/gif;base64,R0lGODlhXgEBAIIAAPzabPzijvzihPzefvzmnPzedPzmlPzadCwAAAAAXgEBAAIDYEi63P5wGTXJvNZew7sJBNiBwWeWaPoFbNq+cCzPs8DaeJDvuGAPOh9wIBgWAwMjMblsOpnQqHRKrRaY1+sguz1sB4esN0wulM+HtNqMZqsBafgBTp/PAfQ8fs/v+/8ACQA7') top left repeat-y; height: 100%; _height: 650px; border: 1px solid #a3a3a3; }
 #menu form { margin: 0; }
-#menu p { text-align: center; font-size: 11px; }
-#menu p a { color: black; }
-#menu p a:hover { color: #626262; text-decoration: none; }
+#menu p, #tables li { text-align: center; font-size: 11px; }
+#menu p a, #tables li a { color: black; }
+#menu p a:hover, #tables li a:hover { color: #626262; text-decoration: none; }
+#tables a, #tables span { background: #FFE594; }
 #content { margin: 1.5em 0 0 293px; padding: 10px 20px 20px 0; }
 #lang { margin: 0; padding: 0; text-align: center; font-size: 10px; width: 270px; background-color: #d9dadb; border-bottom: 1px solid black; }
 #lang a { color: black; font-weight: bold; }

@@ -290,7 +290,7 @@ table code {
 	color: #FFF;
 }
 
-#menu p {
+#menu p, #tables {
 	border: none;
 	margin: 0 0 4px;
 	padding: 0 0 4px;

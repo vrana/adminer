@@ -268,7 +268,7 @@ td.nowrap {
     padding: 0 0 30px 0;
     background: #f1f1f1;
 }
-#menu p {
+#menu p, #tables {
     margin: 0;
     padding: .8em 1em;
     border-bottom: 1px solid #c7c7c7;

@@ -46,7 +46,7 @@ border:5px solid #ccc;margin:0}
 #menu a:hover{background:#333;color:#fff;border-color:#333}
 #menu a.h1,#menu a.h1:hover{display:block;height:0;width:175px;padding:40px 0 0 0;overflow:hidden;float:left;border:0;margin:0;
 outline:0;background:url(//www.bradezone.com/random/adminer_logo.gif) no-repeat;line-height:32px}
-#menu p{white-space:nowrap;border:0;padding:0 0 4px 0;margin:0 0 4px 0}
+#menu p,#tables{white-space:nowrap;border:0;padding:0 0 4px 0;margin:0 0 4px 0}
 #breadcrumb{background:#333;color:#fff;position:fixed;top:0;left:320px;width:100%;line-height:40px;padding:0;z-index:1;margin:0}
 #breadcrumb a{color:#ff9}
 #breadcrumb a:hover{background:transparent;color:#ff9;border-color:#ff9}

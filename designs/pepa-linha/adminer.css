@@ -264,7 +264,7 @@ p code + a:visited:hover {
 	color: #34567c;
 }
 
-#menu p {
+#menu p, #tables {
 	border: 0;
 	padding: 0;
 }
