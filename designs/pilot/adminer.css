@@ -39,10 +39,10 @@
 	padding: 0;
 }
 
-p#tables {
+#tables {
 	margin: 0;
 	position: absolute;
-	top: 108px;
+	top: 118px;
 	bottom: 0;
 	left: 0;
 	padding: 0;
@@ -51,7 +51,12 @@ p#tables {
 	width: 270px;
 }
 
-p#tables a {
+#tables li {
+    position: relative;
+    height: 23px;
+}
+
+#tables a {
 	display: block;
 	margin: 0;
 	padding: 0;
@@ -59,13 +64,13 @@ p#tables a {
 	margin-top: 5px;
 }
 
-p#tables a[href*="select"] {
+#tables a[href*="select"] {
 	position: absolute;
 	left: 10px;
 	width: 50px;
 }
 
-p#tables a[href*="table"] {
+#tables a[href*="table"] {
 	position: absolute;
 	left: 65px;
 	width: 200px;

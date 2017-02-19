@@ -497,7 +497,7 @@ h1 {
 #dbs span {
 	display: none;
 }
-#menu p {
+#menu p, #tables {
 	padding: 0;
 	margin: 1.5em 0 0;
 	border-bottom-style: none;

@@ -106,7 +106,7 @@ img {vertical-align: middle; margin: 0; padding: 0;}
 #breadcrumb {margin: 0; height: 21px; display: block; position: absolute; top: 0; left: 300px; background-color: #f1f1f1; border: 1px solid #E3E3E3; padding: 2px 12px; line-height: 1.25em }
 #menu {position: absolute; padding: 10px; margin: 0; top: 28px; left: 0; width: 250px; background-color: #f1f1f1; border: 1px solid #E3E3E3;}
 #menu form {margin: 0;}
-#menu p {padding-left: 8px; font-size: 10pt; border-bottom: none;}
+#menu p, #tables {padding-left: 8px; font-size: 10pt; border-bottom: none;}
 #menu form p {padding-left: 0; text-align: left;}
 h1 .h1:hover {text-decoration: underline;} 
 h1, h2 {font: italic normal normal 24px/29px Georgia, "Times New Roman", "Bitstream Charter", Times, serif; margin: 0; padding: 14px 15px 3px 10px; line-height: 35px; text-shadow: rgba(255,255,255,1) 0 1px 0px; background: none;}
