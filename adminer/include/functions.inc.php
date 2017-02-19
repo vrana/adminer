@@ -907,7 +907,7 @@ function input($field, $value, $function) {
 				$attrs .= " cols='30' rows='$rows'" . ($rows == 1 ? " style='height: 1.2em;'" : ""); // 1.2em - line-height
 			}
 			echo "<textarea$attrs>" . h($value) . '</textarea>';
-		} elseif ($function == "json") {
+		} elseif ($function == "json" || $field["type"] == "jsonb" || $field["type"] == "json") {
 			echo "<textarea$attrs cols='50' rows='12' class='jush-js'>" . h($value) . '</textarea>';
 		} else {
 			// int(3) is only a display hint
