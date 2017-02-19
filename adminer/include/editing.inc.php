@@ -277,8 +277,8 @@ echo checkbox("fields[$i][has_default]", 1, $field["has_default"], "", "", "", "
 		echo "<td>";
 		echo (support("move_col") ?
 			"<input type='image' class='icon' name='add[$i]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "' onclick='return !editingAddRow(this, 1);'>&nbsp;"
-			. "<input type='image' class='icon' name='up[$i]' src='../adminer/static/up.gif' alt='^' title='" . lang('Move up') . "'>&nbsp;"
-			. "<input type='image' class='icon' name='down[$i]' src='../adminer/static/down.gif' alt='v' title='" . lang('Move down') . "'>&nbsp;"
+			. "<input type='image' class='icon' name='up[$i]' src='../adminer/static/up.gif' alt='^' title='" . lang('Move up') . "' onclick='return !editingMoveRow(this, 1);'>&nbsp;"
+			. "<input type='image' class='icon' name='down[$i]' src='../adminer/static/down.gif' alt='v' title='" . lang('Move down') . "' onclick='return !editingMoveRow(this, 0);'>&nbsp;"
 		: "");
 		echo ($orig == "" || support("drop_col") ? "<input type='image' class='icon' name='drop_col[$i]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "' onclick=\"return !editingRemoveRow(this, 'fields\$1[field]');\">" : "");
 		echo "\n";
@@ -290,7 +290,6 @@ echo checkbox("fields[$i][has_default]", 1, $field["has_default"], "", "", "", "
 * @return bool
 */
 function process_fields(&$fields) {
-	ksort($fields);
 	$offset = 0;
 	if ($_POST["up"]) {
 		$last = 0;
