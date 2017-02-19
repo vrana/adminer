@@ -431,9 +431,9 @@ function create_routine($routine, $row) {
 }
 
 /** Remove current user definer from SQL command
- * @param string
- * @return string
- */
+* @param string
+* @return string
+*/
 function remove_definer($query) {
 	return preg_replace('~^([A-Z =]+) DEFINER=`' . preg_replace('~@(.*)~', '`@`(%|\\1)', logged_user()) . '`~', '\\1', $query); //! proper escaping of user
 }
