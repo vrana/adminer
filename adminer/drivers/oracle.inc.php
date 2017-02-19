@@ -121,12 +121,12 @@ if (isset($_GET["oracle"])) {
 			var $extension = "PDO_OCI";
 
 			function connect($server, $username, $password) {
-				$this->dsn("oci:dbname=//$server;charset=AL32UTF8", $username, $password);
+				$this->dsn("oci:dbname=$server;charset=AL32UTF8", $username, $password);
 				return true;
 			}
 
 			function select_db($database) {
-				return true;
+                return $database;
 			}
 		}
 
@@ -135,6 +135,41 @@ if (isset($_GET["oracle"])) {
 
 
 	class Min_Driver extends Min_SQL {
+
+        function insert($table, $set) {
+            return parent::insert($table, $set);
+        }
+
+        function insertUpdate($table, $rows, $primary) {
+
+            $columns = array_keys(reset($rows));
+            $prefix = "INSERT INTO " . table($table) . " (" . implode(", ", $columns) . ") VALUES\n";
+            $values = array();
+            foreach ($columns as $key) {
+                $values[$key] = "$key = VALUES($key)";
+            }
+            $suffix = "\nON DUPLICATE KEY UPDATE " . implode(", ", $values);
+            $values = array();
+            $length = 0;
+            foreach ($rows as $set) {
+                $q = "MERGE INTO ".$table." d
+                    USING (SELECT ".$primary." from ".$table.") s
+                    ON (d.".$primary." = s.".$primary.")
+                    WHEN MATCHED THEN UPDATE SET d.name = s.name
+                    WHEN NOT MATCHED THEN INSERT (id, name) VALUES (s.id, s.name);";
+                $value = "(" . implode(", ", $set) . ")";
+                if ($values && (strlen($prefix) + $length + strlen($value) + strlen($suffix) > 1e6)) { // 1e6 - default max_allowed_packet
+                    if (!queries($prefix . implode(",\n", $values) . $suffix)) {
+                        return false;
+                    }
+                    $values = array();
+                    $length = 0;
+                }
+                $values[] = $value;
+                $length += strlen($value) + 2; // 2 - strlen(",\n")
+            }
+            return queries($prefix . implode(",\n", $values) . $suffix);
+        }
 
 		//! support empty $set in insert()
 
@@ -158,14 +193,14 @@ if (isset($_GET["oracle"])) {
 		global $adminer;
 		$connection = new Min_DB;
 		$credentials = $adminer->credentials();
-		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
+		if ($connection->connect(DB, $credentials[1], $credentials[2])) {
 			return $connection;
 		}
 		return $connection->error;
 	}
 
 	function get_databases() {
-		return get_vals("SELECT tablespace_name FROM user_tablespaces");
+		return get_vals("select sys_context('userenv','instance_name') from dual");
 	}
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
@@ -194,7 +229,7 @@ if (isset($_GET["oracle"])) {
 	}
 
 	function tables_list() {
-		return get_key_vals("SELECT table_name, 'table' FROM all_tables WHERE tablespace_name = " . q(DB) . "
+		return get_key_vals("SELECT table_name, 'table' FROM all_tables WHERE owner = " .q(get_schema()). "
 UNION SELECT view_name, 'view' FROM user_views
 ORDER BY 1"
 		); //! views don't have schema
@@ -207,7 +242,7 @@ ORDER BY 1"
 	function table_status($name = "") {
 		$return = array();
 		$search = q($name);
-		foreach (get_rows('SELECT table_name "Name", \'table\' "Engine", avg_row_len * num_rows "Data_length", num_rows "Rows" FROM all_tables WHERE tablespace_name = ' . q(DB) . ($name != "" ? " AND table_name = $search" : "") . "
+		foreach (get_rows('SELECT table_name "Name", tablespace_name "Engine", avg_row_len * num_rows "Data_length", num_rows "Rows" FROM all_tables WHERE owner = ' . q(get_schema()) . ($name != "" ? " AND table_name = $search" : "") . "
 UNION SELECT view_name, 'view', 0, 0 FROM user_views" . ($name != "" ? " WHERE view_name = $search" : "") . "
 ORDER BY 1"
 		) as $row) {
@@ -359,11 +394,14 @@ AND c_src.TABLE_NAME = " . q($table);
 	}
 
 	function schemas() {
-		return get_vals("SELECT DISTINCT owner FROM dba_segments WHERE owner IN (SELECT username FROM dba_users WHERE default_tablespace NOT IN ('SYSTEM','SYSAUX'))");
+		return get_vals("SELECT username FROM all_users ORDER BY username");
 	}
 
 	function get_schema() {
 		global $connection;
+        if ($_GET["ns"] != "") {
+            return $_GET["ns"];
+        }
 		return $connection->result("SELECT sys_context('USERENV', 'SESSION_USER') FROM dual");
 	}
 

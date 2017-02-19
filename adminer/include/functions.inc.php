@@ -411,14 +411,19 @@ function where($where, $fields = array()) {
 	foreach ((array) $where["where"] as $key => $val) {
 		$key = bracket_escape($key, 1); // 1 - back
 		$column = escape_key($key);
-		$return[] = $column
-			. (($jush == "sql" && preg_match('~^[0-9]*\\.[0-9]*$~', $val)) || $jush == "mssql"
-				? " LIKE " . q(addcslashes($val, "%_\\"))
-				: " = " . unconvert_field($fields[$key], q($val))
-			) // LIKE because of floats but slow with ints, in MS SQL because of text
-		; //! enum and set
-		if ($jush == "sql" && preg_match('~char|text~', $fields[$key]["type"]) && preg_match("~[^ -@]~", $val)) { // not just [a-z] to catch non-ASCII characters
-			$return[] = "$column = " . q($val) . " COLLATE " . charset($connection) . "_bin";
+		if ($jush == "oracle" && $fields[$key]["type"] == "clob") {
+            $return[] = " To_Char(Dbms_Lob.SubStr($column,4000)) = " . q($val);
+        }
+        else {
+			$return[] = $column
+				. (($jush == "sql" && preg_match('~^[0-9]*\\.[0-9]*$~', $val)) || $jush == "mssql"
+					? " LIKE " . q(addcslashes($val, "%_\\"))
+					: " = " . unconvert_field($fields[$key], q($val))
+				) // LIKE because of floats but slow with ints, in MS SQL because of text
+			; //! enum and set
+			if ($jush == "sql" && preg_match('~char|text~', $fields[$key]["type"]) && preg_match("~[^ -@]~", $val)) { // not just [a-z] to catch non-ASCII characters
+				$return[] = "$column = " . q($val) . " COLLATE " . charset($connection) . "_bin";
+			}
 		}
 	}
 	foreach ((array) $where["null"] as $key) {
