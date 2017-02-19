@@ -13,15 +13,13 @@ if (isset($_GET["mongodb"])) {
 	define("DRIVER", "mongodb");
 
 	if (class_exists('MongoDb\Driver\Manager')) {
-		class Min_DB
-		{
+		class Min_DB {
 			var $extension = "MongoDb", $error, $last_id;
 			/** @var Manager */
 			var $_link;
 			var $_db, $_db_name;
 
-			function connect($server, $username, $password)
-			{
+			function connect($server, $username, $password) {
 				global $adminer;
 				$db = $adminer->database();
 				$options = array();
@@ -43,13 +41,11 @@ if (isset($_GET["mongodb"])) {
 				}
 			}
 
-			function query($query)
-			{
+			function query($query) {
 				return false;
 			}
 
-			function select_db($database)
-			{
+			function select_db($database) {
 				try {
 					$this->_db_name = $database;
 
@@ -61,19 +57,16 @@ if (isset($_GET["mongodb"])) {
 				}
 			}
 
-			function quote($string)
-			{
+			function quote($string) {
 				return $string;
 			}
 
 		}
 
-		class Min_Result
-		{
+		class Min_Result {
 			var $num_rows, $_rows = array(), $_offset = 0, $_charset = array();
 
-			function __construct($result)
-			{
+			function __construct($result) {
 				foreach ($result as $item) {
 					$row = array();
 					foreach ($item as $key => $val) {
@@ -102,8 +95,7 @@ if (isset($_GET["mongodb"])) {
 				$this->num_rows = $result->count;
 			}
 
-			function fetch_assoc()
-			{
+			function fetch_assoc() {
 				$row = current($this->_rows);
 				if (!$row) {
 					return $row;
@@ -117,8 +109,7 @@ if (isset($_GET["mongodb"])) {
 				return $return;
 			}
 
-			function fetch_row()
-			{
+			function fetch_row() {
 				$return = $this->fetch_assoc();
 				if (!$return) {
 					return $return;
@@ -127,8 +118,7 @@ if (isset($_GET["mongodb"])) {
 				return array_values($return);
 			}
 
-			function fetch_field()
-			{
+			function fetch_field() {
 				$keys = array_keys($this->_rows[0]);
 				$name = $keys[$this->_offset++];
 
@@ -142,12 +132,10 @@ if (isset($_GET["mongodb"])) {
 	}
 
 
-	class Min_Driver extends Min_SQL
-	{
+	class Min_Driver extends Min_SQL {
 		public $primary = "_id";
 
-		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false)
-		{
+		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
 			global $connection;
 			$select = ($select == array("*")
 				? array()
@@ -174,8 +162,7 @@ if (isset($_GET["mongodb"])) {
 			return new Min_Result($results);
 		}
 
-		function update($table, $set, $queryWhere, $limit = 0, $separator = "\n")
-		{
+		function update($table, $set, $queryWhere, $limit = 0, $separator = "\n") {
 			global $connection;
 			$db = $connection->_db_name;
 			$where = sql_query_where_parser($queryWhere);
@@ -201,8 +188,7 @@ if (isset($_GET["mongodb"])) {
 			return true;
 		}
 
-		function delete($table, $queryWhere, $limit = 0)
-		{
+		function delete($table, $queryWhere, $limit = 0) {
 			global $connection;
 			$db = $connection->_db_name;
 			$where = sql_query_where_parser($queryWhere);
@@ -214,8 +200,7 @@ if (isset($_GET["mongodb"])) {
 			return true;
 		}
 
-		function insert($table, $set)
-		{
+		function insert($table, $set) {
 			global $connection;
 			$db = $connection->_db_name;
 			$bulk = new BulkWrite(array());
@@ -231,8 +216,7 @@ if (isset($_GET["mongodb"])) {
 	}
 
 
-	function connect()
-	{
+	function connect() {
 		global $adminer;
 		$connection = new Min_DB;
 		$credentials = $adminer->credentials();
@@ -243,23 +227,20 @@ if (isset($_GET["mongodb"])) {
 		return $connection->error;
 	}
 
-	function error()
-	{
+	function error() {
 		global $connection;
 
 		return h($connection->error);
 	}
 
-	function logged_user()
-	{
+	function logged_user() {
 		global $adminer;
 		$credentials = $adminer->credentials();
 
 		return $credentials[1];
 	}
 
-	function get_databases($flush)
-	{
+	function get_databases($flush) {
 		/** @var $connection Min_DB */
 		global $connection;
 		$return = array();
@@ -274,23 +255,19 @@ if (isset($_GET["mongodb"])) {
 		return $return;
 	}
 
-	function collations()
-	{
+	function collations() {
 		return array();
 	}
 
-	function db_collation($db, $collations)
-	{
+	function db_collation($db, $collations) {
 	}
 
-	function count_tables($databases)
-	{
+	function count_tables($databases) {
 		$return = array();
 		return $return;
 	}
 
-	function tables_list()
-	{
+	function tables_list() {
 		global $connection;
 		$command = new Command(array('listCollections' => 1));
 		$results = $connection->_link->executeCommand($connection->_db_name, $command);
@@ -302,8 +279,7 @@ if (isset($_GET["mongodb"])) {
 		return $collections;
 	}
 
-	function table_status($name = "", $fast = false)
-	{
+	function table_status($name = "", $fast = false) {
 		$return = array();
 		foreach (tables_list() as $table => $type) {
 			$return[$table] = array("Name" => $table);
@@ -315,21 +291,17 @@ if (isset($_GET["mongodb"])) {
 		return $return;
 	}
 
-	function information_schema()
-	{
+	function information_schema() {
 	}
 
-	function is_view($table_status)
-	{
+	function is_view($table_status) {
 	}
 
-	function drop_databases($databases)
-	{
+	function drop_databases($databases) {
 		return false;
 	}
 
-	function indexes($table, $connection2 = null)
-	{
+	function indexes($table, $connection2 = null) {
 		global $connection;
 		$return = array();
 		$command = new Command(array('listIndexes' => $table));
@@ -353,8 +325,7 @@ if (isset($_GET["mongodb"])) {
 		return $return;
 	}
 
-	function fields($table)
-	{
+	function fields($table) {
 		$fields = fields_from_edit();
 		if (!count($fields)) {
 			global $driver;
@@ -380,31 +351,25 @@ if (isset($_GET["mongodb"])) {
 		return $fields;
 	}
 
-	function convert_field($field)
-	{
+	function convert_field($field) {
 	}
 
-	function unconvert_field($field, $return)
-	{
+	function unconvert_field($field, $return) {
 		return $return;
 	}
 
-	function foreign_keys($table)
-	{
+	function foreign_keys($table) {
 		return array();
 	}
 
-	function fk_support($table_status)
-	{
+	function fk_support($table_status) {
 	}
 
-	function engines()
-	{
+	function engines() {
 		return array();
 	}
 
-	function found_rows($table_status, $where)
-	{
+	function found_rows($table_status, $where) {
 		global $connection;
 		$where = where_to_query($where);
 		$command = new Command(array('count' => $table_status['Name'], 'query' => $where));
@@ -424,8 +389,7 @@ if (isset($_GET["mongodb"])) {
 		$collation,
 		$auto_increment,
 		$partitioning
-	)
-	{
+	) {
 		global $connection;
 		if ($table == "") {
 			$connection->_db->createCollection($name);
@@ -435,8 +399,7 @@ if (isset($_GET["mongodb"])) {
 		return false;
 	}
 
-	function drop_tables($tables)
-	{
+	function drop_tables($tables) {
 		global $connection;
 		foreach ($tables as $table) {
 			$response = $connection->_db->selectCollection($table)->drop();
@@ -448,8 +411,7 @@ if (isset($_GET["mongodb"])) {
 		return true;
 	}
 
-	function truncate_tables($tables)
-	{
+	function truncate_tables($tables) {
 		global $connection;
 		foreach ($tables as $table) {
 			$response = $connection->_db->selectCollection($table)->remove();
@@ -461,8 +423,7 @@ if (isset($_GET["mongodb"])) {
 		return true;
 	}
 
-	function alter_indexes($table, $alter)
-	{
+	function alter_indexes($table, $alter) {
 		global $connection;
 		foreach ($alter as $val) {
 			list($type, $name, $set) = $val;
@@ -493,30 +454,25 @@ if (isset($_GET["mongodb"])) {
 		return true;
 	}
 
-	function last_id()
-	{
+	function last_id() {
 		global $connection;
 
 		return $connection->last_id;
 	}
 
-	function table($idf)
-	{
+	function table($idf) {
 		return $idf;
 	}
 
-	function idf_escape($idf)
-	{
+	function idf_escape($idf) {
 		return $idf;
 	}
 
-	function support($feature)
-	{
+	function support($feature) {
 		return preg_match("~database|indexes~", $feature);
 	}
 
-	function sql_query_where_parser($queryWhere)
-	{
+	function sql_query_where_parser($queryWhere) {
 		$queryWhere = trim(preg_replace('/WHERE[\s]?[(]?\(?/', '', $queryWhere));
 		$queryWhere = preg_replace('/\)\)\)$/', ')', $queryWhere);
 		$wheres = explode(' AND ', $queryWhere);
@@ -533,8 +489,7 @@ if (isset($_GET["mongodb"])) {
 		return where_to_query($where, $wheresOr);
 	}
 
-	function where_to_query($whereAnd = array(), $whereOr = array())
-	{
+	function where_to_query($whereAnd = array(), $whereOr = array()) {
 		global $operators;
 		$data = array();
 		foreach (array('and' => $whereAnd, 'or' => $whereOr) as $type => $where) {
