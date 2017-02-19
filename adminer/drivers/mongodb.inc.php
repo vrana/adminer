@@ -9,7 +9,7 @@ use MongoDB\Driver\Query;
 $drivers["mongodb"] = "MongoDB PHP7 (beta)";
 
 if (isset($_GET["mongodb"])) {
-	$possible_drivers = ["mongodb"];
+	$possible_drivers = array("mongodb");
 	define("DRIVER", "mongodb");
 
 	if (class_exists('MongoDb\Driver\Manager')) {
@@ -24,7 +24,7 @@ if (isset($_GET["mongodb"])) {
 			{
 				global $adminer;
 				$db = $adminer->database();
-				$options = [];
+				$options = array();
 				if ($username != "") {
 					$options["username"] = $username;
 					$options["password"] = $password;
@@ -70,12 +70,12 @@ if (isset($_GET["mongodb"])) {
 
 		class Min_Result
 		{
-			var $num_rows, $_rows = [], $_offset = 0, $_charset = [];
+			var $num_rows, $_rows = array(), $_offset = 0, $_charset = array();
 
 			function __construct($result)
 			{
 				foreach ($result as $item) {
-					$row = [];
+					$row = array();
 					foreach ($item as $key => $val) {
 						if (is_a($val, 'MongoDB\BSON\Binary')) {
 							$this->_charset[$key] = 63;
@@ -108,7 +108,7 @@ if (isset($_GET["mongodb"])) {
 				if (!$row) {
 					return $row;
 				}
-				$return = [];
+				$return = array();
 				foreach ($this->_rows[0] as $key => $val) {
 					$return[$key] = $row[$key];
 				}
@@ -132,10 +132,10 @@ if (isset($_GET["mongodb"])) {
 				$keys = array_keys($this->_rows[0]);
 				$name = $keys[$this->_offset++];
 
-				return (object)[
+				return (object)array(
 					'name' => $name,
 					'charsetnr' => $this->_charset[$name],
-				];
+				);
 			}
 
 		}
@@ -146,18 +146,18 @@ if (isset($_GET["mongodb"])) {
 	{
 		public $primary = "_id";
 
-		function select($table, $select, $where, $group, $order = [], $limit = 1, $page = 0, $print = false)
+		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false)
 		{
 			global $connection;
-			$select = ($select == ["*"]
-				? []
+			$select = ($select == array("*")
+				? array()
 				: array_fill_keys($select, 1)
 			);
 			if (count($select) && !isset($select['_id'])) {
 				$select['_id'] = 0;
 			}
 			$where = where_to_query($where);
-			$sort = [];
+			$sort = array();
 			foreach ($order as $val) {
 				$val = preg_replace('~ DESC$~', '', $val, 1, $count);
 				$sort[$val] = ($count ? -1 : 1);
@@ -167,7 +167,7 @@ if (isset($_GET["mongodb"])) {
 			}
 			$limit = min(200, max(1, (int)$limit));
 			$skip = $page * $limit;
-			$query = new Query($where, ['projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort]);
+			$query = new Query($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort));
 
 			$results = $connection->_link->executeQuery("{$connection->_db_name}.$table", $query);
 
@@ -179,22 +179,22 @@ if (isset($_GET["mongodb"])) {
 			global $connection;
 			$db = $connection->_db_name;
 			$where = sql_query_where_parser($queryWhere);
-			$bulk = new BulkWrite([]);
+			$bulk = new BulkWrite(array());
 			if (isset($set['_id'])) {
 				unset($set['_id']);
 			}
-			$removeFields = [];
+			$removeFields = array();
 			foreach ($set as $key => $value) {
 				if ($value == 'NULL') {
 					$removeFields[$key] = 1;
 					unset($set[$key]);
 				}
 			}
-			$update = ['$set' => $set];
+			$update = array('$set' => $set);
 			if (count($removeFields)) {
 				$update['$unset'] = $removeFields;
 			}
-			$bulk->update($where, $update, ['upsert' => false]);
+			$bulk->update($where, $update, array('upsert' => false));
 			$results = $connection->_link->executeBulkWrite("$db.$table", $bulk);
 			$connection->affected_rows = $results->getModifiedCount();
 
@@ -206,8 +206,8 @@ if (isset($_GET["mongodb"])) {
 			global $connection;
 			$db = $connection->_db_name;
 			$where = sql_query_where_parser($queryWhere);
-			$bulk = new BulkWrite([]);
-			$bulk->delete($where, ['limit' => $limit]);
+			$bulk = new BulkWrite(array());
+			$bulk->delete($where, array('limit' => $limit));
 			$results = $connection->_link->executeBulkWrite("$db.$table", $bulk);
 			$connection->affected_rows = $results->getDeletedCount();
 
@@ -218,7 +218,7 @@ if (isset($_GET["mongodb"])) {
 		{
 			global $connection;
 			$db = $connection->_db_name;
-			$bulk = new BulkWrite([]);
+			$bulk = new BulkWrite(array());
 			if (isset($set['_id']) && empty($set['_id'])) {
 				unset($set['_id']);
 			}
@@ -262,8 +262,8 @@ if (isset($_GET["mongodb"])) {
 	{
 		/** @var $connection Min_DB */
 		global $connection;
-		$return = [];
-		$command = new Command(['listDatabases' => 1]);
+		$return = array();
+		$command = new Command(array('listDatabases' => 1));
 		$results = $connection->_link->executeCommand('admin', $command);
 		foreach ($results as $dbs) {
 			foreach ($dbs->databases as $db) {
@@ -276,7 +276,7 @@ if (isset($_GET["mongodb"])) {
 
 	function collations()
 	{
-		return [];
+		return array();
 	}
 
 	function db_collation($db, $collations)
@@ -285,16 +285,16 @@ if (isset($_GET["mongodb"])) {
 
 	function count_tables($databases)
 	{
-		$return = [];
+		$return = array();
 		return $return;
 	}
 
 	function tables_list()
 	{
 		global $connection;
-		$command = new Command(['listCollections' => 1]);
+		$command = new Command(array('listCollections' => 1));
 		$results = $connection->_link->executeCommand($connection->_db_name, $command);
-		$collections = [];
+		$collections = array();
 		foreach ($results as $result) {
 			$collections[$result->name] = 'table';
 		}
@@ -304,9 +304,9 @@ if (isset($_GET["mongodb"])) {
 
 	function table_status($name = "", $fast = false)
 	{
-		$return = [];
+		$return = array();
 		foreach (tables_list() as $table => $type) {
-			$return[$table] = ["Name" => $table];
+			$return[$table] = array("Name" => $table);
 			if ($name == $table) {
 				return $return[$table];
 			}
@@ -331,23 +331,23 @@ if (isset($_GET["mongodb"])) {
 	function indexes($table, $connection2 = null)
 	{
 		global $connection;
-		$return = [];
-		$command = new Command(['listIndexes' => $table]);
+		$return = array();
+		$command = new Command(array('listIndexes' => $table));
 		$results = $connection->_link->executeCommand($connection->_db_name, $command);
 
 		foreach ($results as $index) {
-			$descs = [];
-			$columns = [];
+			$descs = array();
+			$columns = array();
 			foreach (get_object_vars($index->key) as $column => $type) {
 				$descs[] = ($type == -1 ? '1' : null);
 				$columns[] = $column;
 			}
-			$return[$index->name] = [
+			$return[$index->name] = array(
 				"type" => ($index->name == "_id_" ? "PRIMARY" : (isset($index->unique) ? "UNIQUE" : "INDEX")),
 				"columns" => $columns,
-				"lengths" => [],
+				"lengths" => array(),
 				"descs" => $descs,
-			];
+			);
 		}
 
 		return $return;
@@ -358,21 +358,21 @@ if (isset($_GET["mongodb"])) {
 		$fields = fields_from_edit();
 		if (!count($fields)) {
 			global $driver;
-			$result = $driver->select($table, ["*"], null, null, [], 10);
+			$result = $driver->select($table, array("*"), null, null, array(), 10);
 			while ($row = $result->fetch_assoc()) {
 				foreach ($row as $key => $val) {
 					$row[$key] = null;
-					$fields[$key] = [
+					$fields[$key] = array(
 						"field" => $key,
 						"type" => "string",
 						"null" => ($key != $driver->primary),
 						"auto_increment" => ($key == $driver->primary),
-						"privileges" => [
+						"privileges" => array(
 							"insert" => 1,
 							"select" => 1,
 							"update" => 1,
-						],
-					];
+						),
+					);
 				}
 			}
 		}
@@ -391,7 +391,7 @@ if (isset($_GET["mongodb"])) {
 
 	function foreign_keys($table)
 	{
-		return [];
+		return array();
 	}
 
 	function fk_support($table_status)
@@ -400,17 +400,18 @@ if (isset($_GET["mongodb"])) {
 
 	function engines()
 	{
-		return [];
+		return array();
 	}
 
 	function found_rows($table_status, $where)
 	{
 		global $connection;
 		$where = where_to_query($where);
-		$command = new Command(['count' => $table_status['Name'], 'query' => $where]);
+		$command = new Command(array('count' => $table_status['Name'], 'query' => $where));
 		$results = $connection->_link->executeCommand($connection->_db_name, $command);
 
-		return $results->toArray()[0]->n;
+		$toArray = $results->toArray();
+		return $toArray[0]->n;
 	}
 
 	function alter_table(
@@ -431,6 +432,7 @@ if (isset($_GET["mongodb"])) {
 
 			return true;
 		}
+		return false;
 	}
 
 	function drop_tables($tables)
@@ -465,20 +467,20 @@ if (isset($_GET["mongodb"])) {
 		foreach ($alter as $val) {
 			list($type, $name, $set) = $val;
 			if ($set == "DROP") {
-				$return = $connection->_db->command(["deleteIndexes" => $table, "index" => $name]);
+				$return = $connection->_db->command(array("deleteIndexes" => $table, "index" => $name));
 			} else {
-				$columns = [];
+				$columns = array();
 				foreach ($set as $column) {
 					$column = preg_replace('~ DESC$~', '', $column, 1, $count);
 					$columns[$column] = ($count ? -1 : 1);
 				}
 				$return = $connection->_db->selectCollection($table)->ensureIndex(
 					$columns,
-					[
+					array(
 						"unique" => ($type == "UNIQUE"),
 						"name" => $name,
 						//! "sparse"
-					]
+					)
 				);
 			}
 			if ($return['errmsg']) {
@@ -519,23 +521,23 @@ if (isset($_GET["mongodb"])) {
 		$queryWhere = preg_replace('/\)\)\)$/', ')', $queryWhere);
 		$wheres = explode(' AND ', $queryWhere);
 		$wheresOr = explode(') OR (', $queryWhere);
-		$where = [];
+		$where = array();
 		foreach ($wheres as $whereStr) {
 			$where[] = trim($whereStr);
 		}
 		if (count($wheresOr) == 1) {
-			$wheresOr = [];
+			$wheresOr = array();
 		} elseif (count($wheresOr) > 1) {
-			$where = [];
+			$where = array();
 		}
 		return where_to_query($where, $wheresOr);
 	}
 
-	function where_to_query($whereAnd = [], $whereOr = [])
+	function where_to_query($whereAnd = array(), $whereOr = array())
 	{
 		global $operators;
-		$data = [];
-		foreach (['and' => $whereAnd, 'or' => $whereOr] as $type => $where) {
+		$data = array();
+		foreach (array('and' => $whereAnd, 'or' => $whereOr) as $type => $where) {
 			if (is_array($where)) {
 				foreach ($where as $expression) {
 					list($col, $op, $val) = explode(" ", $expression, 3);
@@ -547,6 +549,7 @@ if (isset($_GET["mongodb"])) {
 					if (!in_array($op, $operators)) {
 						continue;
 					}
+					$dateTime = (new \DateTime($val));
 					switch ($op) {
 						case '=':
 							$op = '$eq';
@@ -595,35 +598,35 @@ if (isset($_GET["mongodb"])) {
 							break;
 						case '(date)=':
 							$op = '$eq';
-							$val = new UTCDatetime((new \DateTime($val))->getTimestamp() * 1000);
+							$val = new UTCDatetime($dateTime->getTimestamp() * 1000);
 							break;
 						case '(date)!=':
 							$op = '$ne';
-							$val = new UTCDatetime((new \DateTime($val))->getTimestamp() * 1000);
+							$val = new UTCDatetime($dateTime->getTimestamp() * 1000);
 							break;
 						case '(date)>':
 							$op = '$gt';
-							$val = new UTCDatetime((new \DateTime($val))->getTimestamp() * 1000);
+							$val = new UTCDatetime($dateTime->getTimestamp() * 1000);
 							break;
 						case '(date)<':
 							$op = '$lt';
-							$val = new UTCDatetime((new \DateTime($val))->getTimestamp() * 1000);
+							$val = new UTCDatetime($dateTime->getTimestamp() * 1000);
 							break;
 						case '(date)>=':
 							$op = '$gte';
-							$val = new UTCDatetime((new \DateTime($val))->getTimestamp() * 1000);
+							$val = new UTCDatetime($dateTime->getTimestamp() * 1000);
 							break;
 						case '(date)<=':
 							$op = '$lte';
-							$val = new UTCDatetime((new \DateTime($val))->getTimestamp() * 1000);
+							$val = new UTCDatetime($dateTime->getTimestamp() * 1000);
 							break;
 						default:
 							continue;
 					}
 					if ($type == 'and') {
-						$data['$and'][] = [$col => [$op => $val]];
+						$data['$and'][] = array($col => array($op => $val));
 					} elseif ($type == 'or') {
-						$data['$or'][] = [$col => [$op => $val]];
+						$data['$or'][] = array($col => array($op => $val));
 					}
 
 				}
@@ -634,7 +637,7 @@ if (isset($_GET["mongodb"])) {
 	}
 
 	$jush = "mongodb";
-	$operators = [
+	$operators = array(
 		"=",
 		"!=",
 		">",
@@ -654,8 +657,8 @@ if (isset($_GET["mongodb"])) {
 		"(date)<",
 		"(date)>=",
 		"(date)<=",
-	];
-	$functions = [];
-	$grouping = [];
-	$edit_functions = [["json"]];
+	);
+	$functions = array();
+	$grouping = array();
+	$edit_functions = array(array("json"));
 }
