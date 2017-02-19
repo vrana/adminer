@@ -504,7 +504,6 @@ if (isset($_GET["mongodb"])) {
 					if (!in_array($op, $operators)) {
 						continue;
 					}
-					$dateTime = (new \DateTime($val));
 					switch ($op) {
 						case '=':
 							$op = '$eq';
@@ -553,26 +552,32 @@ if (isset($_GET["mongodb"])) {
 							break;
 						case '(date)=':
 							$op = '$eq';
+							$dateTime = (new \DateTime($val));
 							$val = new UTCDatetime($dateTime->getTimestamp() * 1000);
 							break;
 						case '(date)!=':
 							$op = '$ne';
+							$dateTime = (new \DateTime($val));
 							$val = new UTCDatetime($dateTime->getTimestamp() * 1000);
 							break;
 						case '(date)>':
 							$op = '$gt';
+							$dateTime = (new \DateTime($val));
 							$val = new UTCDatetime($dateTime->getTimestamp() * 1000);
 							break;
 						case '(date)<':
 							$op = '$lt';
+							$dateTime = (new \DateTime($val));
 							$val = new UTCDatetime($dateTime->getTimestamp() * 1000);
 							break;
 						case '(date)>=':
 							$op = '$gte';
+							$dateTime = (new \DateTime($val));
 							$val = new UTCDatetime($dateTime->getTimestamp() * 1000);
 							break;
 						case '(date)<=':
 							$op = '$lte';
+							$dateTime = (new \DateTime($val));
 							$val = new UTCDatetime($dateTime->getTimestamp() * 1000);
 							break;
 						default:
