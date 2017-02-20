@@ -412,10 +412,10 @@ function where($where, $fields = array()) {
 		$key = bracket_escape($key, 1); // 1 - back
 		$column = escape_key($key);
 		$return[] = $column
-			. (($jush == "sql" && preg_match('~^[0-9]*\\.[0-9]*$~', $val)) || $jush == "mssql"
-				? " LIKE " . q(addcslashes($val, "%_\\"))
+			. ($jush == "sql" && preg_match('~^[0-9]*\\.[0-9]*$~', $val) ? " LIKE " . q(addcslashes($val, "%_\\"))
+				: ($jush == "mssql" ? " LIKE " . q(preg_replace('~[_%[]~', '[\0]', $val))
 				: " = " . unconvert_field($fields[$key], q($val))
-			) // LIKE because of floats but slow with ints, in MS SQL because of text
+			)) // LIKE because of floats but slow with ints, in MS SQL because of text
 		; //! enum and set
 		if ($jush == "sql" && preg_match('~char|text~', $fields[$key]["type"]) && preg_match("~[^ -@]~", $val)) { // not just [a-z] to catch non-ASCII characters
 			$return[] = "$column = " . q($val) . " COLLATE " . charset($connection) . "_bin";
