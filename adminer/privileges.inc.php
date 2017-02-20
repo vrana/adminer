@@ -1,6 +1,8 @@
 <?php
 page_header(lang('Privileges'));
 
+echo '<p class="links"><a href="' . h(ME) . 'user=">' . lang('Create user') . "</a>";
+
 $result = $connection->query("SELECT User, Host FROM mysql." . (DB == "" ? "user" : "db WHERE " . q(DB) . " LIKE Db") . " ORDER BY Host, User");
 $grant = $result;
 if (!$result) {
@@ -25,5 +27,3 @@ if (!$grant || DB != "") {
 
 echo "</table>\n";
 echo "</form>\n";
-
-echo '<p class="links"><a href="' . h(ME) . 'user=">' . lang('Create user') . "</a>";
