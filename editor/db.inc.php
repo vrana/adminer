@@ -8,7 +8,7 @@ if ($adminer->homepage()) {
 		search_tables();
 	}
 	echo "<table cellspacing='0' class='nowrap checkable' onclick='tableClick(event);'>\n";
-	echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck(this, /^tables\[/);"><th>' . lang('Table') . '<td>' . lang('Rows') . "</thead>\n";
+	echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck(this, /^tables\[/);" class="jsonly"><th>' . lang('Table') . '<td>' . lang('Rows') . "</thead>\n";
 	
 	foreach (table_status() as $table => $row) {
 		$name = $adminer->tableName($row);
