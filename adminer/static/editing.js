@@ -271,6 +271,22 @@ function editingRemoveRow(button, name) {
 	return true;
 }
 
+/** Move table row for field
+* @param HTMLInputElement
+* @param boolean direction to move row, true for up or false for down
+* @return boolean
+*/
+function editingMoveRow(button, dir){
+	var row = parentTag(button, 'tr');
+	if (!('nextElementSibling' in row)) {
+		return false;
+	}
+	row.parentNode.insertBefore(row, dir
+		? row.previousElementSibling
+		: row.nextElementSibling ? row.nextElementSibling.nextElementSibling : row.parentNode.firstChild);
+	return true;
+}
+
 var lastType = '';
 
 /** Clear length and hide collation or unsigned

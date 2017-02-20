@@ -8,7 +8,7 @@
 $drivers["mssql"] = "MS SQL";
 
 if (isset($_GET["mssql"])) {
-	$possible_drivers = array("SQLSRV", "MSSQL");
+	$possible_drivers = array("SQLSRV", "MSSQL", "PDO_DBLIB");
 	define("DRIVER", "mssql");
 	if (extension_loaded("sqlsrv")) {
 		class Min_DB {
@@ -109,11 +109,11 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function fetch_assoc() {
-				return $this->_convert(sqlsrv_fetch_array($this->_result, SQLSRV_FETCH_ASSOC, SQLSRV_SCROLL_NEXT));
+				return $this->_convert(sqlsrv_fetch_array($this->_result, SQLSRV_FETCH_ASSOC));
 			}
 
 			function fetch_row() {
-				return $this->_convert(sqlsrv_fetch_array($this->_result, SQLSRV_FETCH_NUMERIC, SQLSRV_SCROLL_NEXT));
+				return $this->_convert(sqlsrv_fetch_array($this->_result, SQLSRV_FETCH_NUMERIC));
 			}
 
 			function fetch_field() {
@@ -164,7 +164,7 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function query($query, $unbuffered = false) {
-				$result = mssql_query($query, $this->_link); //! $unbuffered
+				$result = @mssql_query($query, $this->_link); //! $unbuffered
 				$this->error = "";
 				if (!$result) {
 					$this->error = mssql_get_last_message();
@@ -186,7 +186,7 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function next_result() {
-				return mssql_next_result($this->_result);
+				return mssql_next_result($this->_result->_result);
 			}
 
 			function result($query, $field = 0) {
@@ -234,8 +234,21 @@ if (isset($_GET["mssql"])) {
 			}
 		}
 
-	}
+	} elseif (extension_loaded("pdo_dblib")) {
+		class Min_DB extends Min_PDO {
+			var $extension = "PDO_DBLIB";
 
+			function connect($server, $username, $password) {
+				$this->dsn("dblib:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\\d)~', ';port=\\1', $server)), $username, $password);
+				return true;
+			}
+
+			function select_db($database) {
+				// database selection is separated from the connection so dbname in DSN can't be used
+				return $this->query("USE " . idf_escape($database));
+			}
+		}
+	}
 
 
 	class Min_Driver extends Min_SQL {
@@ -288,7 +301,7 @@ if (isset($_GET["mssql"])) {
 	}
 
 	function get_databases() {
-		return get_vals("EXEC sp_databases");
+		return get_vals("SELECT name FROM sys.databases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')");
 	}
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {

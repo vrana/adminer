@@ -29,7 +29,7 @@ if (!$error && $_POST) {
 		$call[] = (isset($out[$key]) ? "@" . idf_escape($field["field"]) : $val);
 	}
 	
-	$query = (isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . idf_escape($PROCEDURE) . "(" . implode(", ", $call) . ")";
+	$query = (isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . table($PROCEDURE) . "(" . implode(", ", $call) . ")";
 	echo "<p><code class='jush-$jush'>" . h($query) . "</code> <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>\n";
 	
 	if (!$connection->multi_query($query)) {

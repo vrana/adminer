@@ -60,13 +60,13 @@ $referencable = array_keys(array_filter(table_status('', true), 'fk_support'));
 <input type="hidden" name="change-js" value="">
 <noscript><p><input type="submit" name="change" value="<?php echo lang('Change'); ?>"></noscript>
 <table cellspacing="0">
-<thead><tr><th><?php echo lang('Source'); ?><th><?php echo lang('Target'); ?></thead>
+<thead><tr><th id="label-source"><?php echo lang('Source'); ?><th id="label-target"><?php echo lang('Target'); ?></thead>
 <?php
 $j = 0;
 foreach ($row["source"] as $key => $val) {
 	echo "<tr>";
-	echo "<td>" . html_select("source[" . (+$key) . "]", array(-1 => "") + $source, $val, ($j == count($row["source"]) - 1 ? "foreignAddRow(this);" : 1));
-	echo "<td>" . html_select("target[" . (+$key) . "]", $target, $row["target"][$key]);
+	echo "<td>" . html_select("source[" . (+$key) . "]", array(-1 => "") + $source, $val, ($j == count($row["source"]) - 1 ? "foreignAddRow(this);" : 1), "label-source");
+	echo "<td>" . html_select("target[" . (+$key) . "]", $target, $row["target"][$key], 1, "label-target");
 	$j++;
 }
 ?>

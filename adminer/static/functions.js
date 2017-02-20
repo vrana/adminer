@@ -239,7 +239,7 @@ function checkboxClick(event, el) {
 function setHtml(id, html) {
 	var el = document.getElementById(id);
 	if (el) {
-		if (html == undefined) {
+		if (html == null) {
 			el.parentNode.innerHTML = '&nbsp;';
 		} else {
 			el.innerHTML = html;
@@ -310,8 +310,12 @@ function selectAddRow(field) {
 	var inputs = row.getElementsByTagName('input');
 	for (var i=0; i < inputs.length; i++) {
 		inputs[i].name = inputs[i].name.replace(/[a-z]\[\d+/, '$&1');
-		inputs[i].value = '';
 		inputs[i].className = '';
+		if (inputs[i].type == 'checkbox') {
+			inputs[i].checked = false;
+		} else {
+			inputs[i].value = '';
+		}
 	}
 	field.parentNode.parentNode.appendChild(row);
 }
@@ -460,16 +464,17 @@ function functionChange(select) {
 	if (selectValue(select)) {
 		if (input.origType === undefined) {
 			input.origType = input.type;
-			input.origMaxLength = input.maxLength;
+			input.origMaxLength = input.getAttribute('data-maxlength');
 		}
-		input.removeAttribute('maxlength');
+		input.removeAttribute('data-maxlength');
 		input.type = 'text';
 	} else if (input.origType) {
 		input.type = input.origType;
 		if (input.origMaxLength >= 0) {
-			input.maxLength = input.origMaxLength;
+			input.setAttribute('data-maxlength', input.origMaxLength);
 		}
 	}
+	oninput({target: input});
 	helpClose();
 }
 
@@ -793,3 +798,9 @@ function cloneNode(el) {
 	setupSubmitHighlight(el2);
 	return el2;
 }
+
+oninput = function (event) {
+	var target = event.target;
+	var maxLength = target.getAttribute('data-maxlength');
+	alterClass(target, 'maxlength', target.value && maxLength != null && target.value.length > maxLength); // maxLength could be 0
+};

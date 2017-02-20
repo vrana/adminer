@@ -19,7 +19,7 @@ if (extension_loaded('pdo')) {
 				auth_error($ex->getMessage());
 			}
 			$this->setAttribute(13, array('Min_PDOStatement')); // 13 - PDO::ATTR_STATEMENT_CLASS
-			$this->server_info = $this->getAttribute(4); // 4 - PDO::ATTR_SERVER_VERSION
+			$this->server_info = @$this->getAttribute(4); // 4 - PDO::ATTR_SERVER_VERSION
 		}
 		
 		/*abstract function select_db($database);*/

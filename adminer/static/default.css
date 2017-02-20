@@ -26,6 +26,8 @@ pre, textarea { font: 100%/1.25 monospace; }
 input[type=image] { vertical-align: middle; }
 input.default { box-shadow: 1px 1px 1px #777; }
 input.required { box-shadow: 1px 1px 1px red; }
+input.maxlength { box-shadow: 1px 1px 1px red; }
+input.wayoff { left: -1000px; position: absolute; }
 .block { display: block; }
 .version { color: #777; font-size: 67%; }
 .js .hidden, .nojs .jsonly { display: none; }
@@ -60,7 +62,8 @@ input.required { box-shadow: 1px 1px 1px red; }
 .logout { margin-top: .5em; position: absolute; top: 0; right: 0; }
 .loadmore { margin-left: 1ex; }
 #menu { position: absolute; margin: 10px 0 0; padding: 0 0 30px 0; top: 2em; left: 0; width: 19em; }
-#menu p { padding: .8em 1em; margin: 0; border-bottom: 1px solid #ccc; }
+#menu p, #tables { padding: .8em 1em; margin: 0; border-bottom: 1px solid #ccc; }
+#tables li{ list-style: none; }
 #dbs { overflow: hidden; }
 #logins, #tables { white-space: nowrap; overflow: auto; }
 #logins a, #tables a, #tables span { background: #fff; }
@@ -79,6 +82,8 @@ input.required { box-shadow: 1px 1px 1px red; }
 .rtl .logout { left: 0; right: auto; }
 .rtl #content { margin: 2em 21em 0 0; padding: 10px 0 20px 20px; }
 .rtl #breadcrumb { left: auto; right: 21em; margin: 0 -18px 0 0; }
+.rtl .pages { left: auto; right: 21em; }
+.rtl input.wayoff { left: auto; right: -1000px; }
 .rtl #lang, .rtl #menu { left: auto; right: 0; }
 
 @media all and (max-device-width: 880px) {
@@ -87,6 +92,7 @@ input.required { box-shadow: 1px 1px 1px red; }
 	#content { margin-left: 10px; }
 	#lang { position: static; border-top: 1px solid #999; }
 	#breadcrumb { left: auto; }
+	.rtl .pages { right: auto; }
 	.rtl #content { margin-right: 10px; }
 	.rtl #breadcrumb { right: auto; }
 }

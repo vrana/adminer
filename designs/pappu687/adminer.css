@@ -25,7 +25,7 @@ a,a:visited {
 	padding:3px 1px;
 }
 #dbs span{
-color:white;
+	color:white;
 }
 
 #content table thead span, #content table thead a {
@@ -286,6 +286,10 @@ input[name=logout]:hover {
 	color:red;	
 }
 
+.logout {
+	z-index:3;
+}
+
 .js .column {
 	background:#ecf0f1;
 }
@@ -363,4 +367,12 @@ table:after
   transform: rotate(3deg);
   right: 10px;
   left: auto;
+}
+
+i {
+	font-style: italic;
+	color: gray;
+	font-size: 90%;
+	font-family: monospace;
+	border: 1px silver solid;
 }

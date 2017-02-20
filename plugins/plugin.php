@@ -177,6 +177,11 @@ class AdminerPlugin extends Adminer {
 		return $this->_applyPlugin(__FUNCTION__, $args);
 	}
 
+	function sqlCommandQuery($query) {
+		$args = func_get_args();
+		return $this->_applyPlugin(__FUNCTION__, $args);
+	}
+
 	function rowDescription($table) {
 		$args = func_get_args();
 		return $this->_applyPlugin(__FUNCTION__, $args);
@@ -198,6 +203,16 @@ class AdminerPlugin extends Adminer {
 	}
 
 	function editVal($val, $field) {
+		$args = func_get_args();
+		return $this->_applyPlugin(__FUNCTION__, $args);
+	}
+
+	function tableStructurePrint($fields) {
+		$args = func_get_args();
+		return $this->_applyPlugin(__FUNCTION__, $args);
+	}
+
+	function tableIndexesPrint($indexes) {
 		$args = func_get_args();
 		return $this->_applyPlugin(__FUNCTION__, $args);
 	}
