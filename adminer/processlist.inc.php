@@ -9,6 +9,9 @@ if (support("kill") && $_POST && !$error) {
 	queries_redirect(ME . "processlist=", lang('%d process(es) have been killed.', $killed), $killed || !$_POST["kill"]);
 }
 
+if (isset($_GET["autorefresh"]) && !$error) {
+	header("Refresh: " . intval($_GET["autorefresh"]));
+}
 page_header(lang('Process list'), $error);
 ?>
 
@@ -59,7 +62,7 @@ if (isset($_GET["showfull"])) {
 ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>
-<?php if (isset($_GET["autorefresh"])) { ?>
+<?php if (isset($_GET["autorefresh"]) && !$error) { ?>
 <a href="<?php echo remove_from_uri("autorefresh"); ?>"><?php echo lang('Stop auto refresh'); ?></a>
 <?php } else { ?>
 <form action="">

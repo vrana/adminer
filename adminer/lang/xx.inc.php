@@ -43,6 +43,8 @@ $translations = array(
 	'Kill' => 'Xx',
 	'Hide full' => 'Xx',
 	'Show full' => 'Xx',
+	'Auto refresh' => 'Xx',
+	'Stop auto refresh' => 'Xx',
 	
 	'Variables' => 'Xx',
 	'Status' => 'Xx',
