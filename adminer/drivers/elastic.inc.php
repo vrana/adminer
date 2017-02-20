@@ -59,7 +59,8 @@ if (isset($_GET["elastic"])) {
 			}
 
 			function connect($server, $username, $password) {
-				$this->_url = "http://$username:$password@$server/";
+				preg_match('~^(https?://)?(.+)~', $server, $match);
+				$this->_url = ($match[1] ? $match[1] : "http://") . "$username:$password@$match[2]/";
 				$return = $this->query('');
 				if ($return) {
 					$this->server_info = $return['version']['number'];
