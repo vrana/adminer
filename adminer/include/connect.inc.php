@@ -12,7 +12,7 @@ function connect_error() {
 		page_header(lang('Select database'), $error, false);
 		echo "<p class='links'>\n";
 		foreach (array(
-			'database' => lang('Create new database'),
+			'database' => lang('Create database'),
 			'privileges' => lang('Privileges'),
 			'processlist' => lang('Process list'),
 			'variables' => lang('Variables'),

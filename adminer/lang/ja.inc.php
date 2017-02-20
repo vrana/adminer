@@ -8,7 +8,6 @@ $translations = array(
 	'Password' => 'パスワード',
 	'Select database' => 'データベースを選択してください',
 	'Invalid database.' => '不正なデータベース',
-	'Create new database' => '新規にデータベースを作成',
 	'Table has been dropped.' => 'テーブルを削除しました',
 	'Table has been altered.' => 'テーブルを変更しました',
 	'Table has been created.' => 'テーブルを作成しました',

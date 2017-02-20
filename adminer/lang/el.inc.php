@@ -83,7 +83,6 @@ $translations = array(
 	'Use' => 'χρήση',
 	'Select database' => 'Επιλέξτε Β.Δ.',
 	'Invalid database.' => 'Άκυρη Β.Δ.',
-	'Create new database' => 'Δημιουργία νέας Β.Δ.',
 	'Database has been dropped.' => 'Η Β.Δ. διαγράφηκε.',
 	'Databases have been dropped.' => 'Οι Β.Δ. διαγράφηκαν.',
 	'Database has been created.' => 'Η Β.Δ. δημιουργήθηκε.',

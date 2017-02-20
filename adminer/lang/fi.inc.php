@@ -83,7 +83,6 @@ $translations = array(
 	'Use' => 'Käytä',
 	'Select database' => 'Valitse tietokanta',
 	'Invalid database.' => 'Tietokanta ei kelpaa.',
-	'Create new database' => 'Luo uusi tietokanta',
 	'Database has been dropped.' => 'Tietokanta on poistettu.',
 	'Databases have been dropped.' => 'Tietokannat on poistettu.',
 	'Database has been created.' => 'Tietokanta on luotu.',

@@ -77,7 +77,6 @@ $translations = array(
 	'Use' => 'Kullan',
 	'Select database' => 'Veri tabanı seç',
 	'Invalid database.' => 'Geçersiz veri tabanı.',
-	'Create new database' => 'Yeni veri tabanı oluştur',
 	'Database has been dropped.' => 'Veri tabanı silindi.',
 	'Databases have been dropped.' => 'Veritabanları silindi.',
 	'Database has been created.' => 'Veri tabanı oluşturuldu.',

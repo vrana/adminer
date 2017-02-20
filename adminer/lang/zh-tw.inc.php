@@ -8,7 +8,6 @@ $translations = array(
 	'Password' => '密碼',
 	'Select database' => '選擇資料庫',
 	'Invalid database.' => '無效的資料庫。',
-	'Create new database' => '建立新資料庫',
 	'Table has been altered.' => '資料表已修改。',
 	'Table has been created.' => '資料表已修改。',
 	'Alter table' => '修改資料表',

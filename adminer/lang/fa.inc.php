@@ -81,7 +81,6 @@ $translations = array(
 	'Use' => 'استفاده',
 	'Select database' => 'انتخاب پایگاه داده',
 	'Invalid database.' => 'پایگاه داده نامعتبر.',
-	'Create new database' => 'ایجاد پایگاه داده جدید',
 	'Database has been dropped.' => 'پایگاه داده حذف شد.',
 	'Databases have been dropped.' => 'پایگاه های داده حذف شدند.',
 	'Database has been created.' => 'پایگاه داده ایجاد شد.',

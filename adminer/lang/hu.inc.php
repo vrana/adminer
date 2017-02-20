@@ -8,7 +8,6 @@ $translations = array(
 	'Password' => 'Jelszó',
 	'Select database' => 'Adatbázis kiválasztása',
 	'Invalid database.' => 'Érvénytelen adatbázis.',
-	'Create new database' => 'Új adatbázis',
 	'Table has been dropped.' => 'A tábla eldobva.',
 	'Table has been altered.' => 'A tábla módosult.',
 	'Table has been created.' => 'A tábla létrejött.',

@@ -8,7 +8,6 @@ $translations = array(
 	'Password' => 'Contrasinal',
 	'Select database' => 'Seleccionar Base de datos',
 	'Invalid database.' => 'Base de datos incorrecta.',
-	'Create new database' => 'Crear nova base de datos',
 	'Table has been dropped.' => 'Eliminouse a táboa.',
 	'Table has been altered.' => 'Modificouse a táboa.',
 	'Table has been created.' => 'Creouse a táboa.',

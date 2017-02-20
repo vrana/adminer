@@ -88,7 +88,6 @@ $translations = array(
 	'Use' => 'Vybrat',
 	'Select database' => 'Vybrat databázi',
 	'Invalid database.' => 'Nesprávná databáze.',
-	'Create new database' => 'Vytvořit novou databázi',
 	'Database has been dropped.' => 'Databáze byla odstraněna.',
 	'Databases have been dropped.' => 'Databáze byly odstraněny.',
 	'Database has been created.' => 'Databáze byla vytvořena.',

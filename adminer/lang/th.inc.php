@@ -8,7 +8,6 @@ $translations = array(
 	'Password' => 'รหัสผ่าน',
 	'Select database' => 'เลือกฐานข้อมูล',
 	'Invalid database.' => 'ฐานข้อมูลไม่ถูกต้อง.',
-	'Create new database' => 'สร้างฐานข้อมูลใหม่',
 	'Table has been dropped.' => 'ลบตารางแล้ว.',
 	'Table has been altered.' => 'แก้ไขตารางแล้ว.',
 	'Table has been created.' => 'สร้างตารางใหม่แล้ว.',

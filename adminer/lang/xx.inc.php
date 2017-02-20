@@ -89,7 +89,6 @@ $translations = array(
 	'Use' => 'Xx',
 	'Select database' => 'Xx',
 	'Invalid database.' => 'Xx.',
-	'Create new database' => 'Xx',
 	'Database has been dropped.' => 'Xx.',
 	'Databases have been dropped.' => 'Xx.',
 	'Database has been created.' => 'Xx.',

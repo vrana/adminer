@@ -8,7 +8,6 @@ $translations = array(
 	'Password' => 'Contrasenya',
 	'Select database' => 'Selecciona base de dades',
 	'Invalid database.' => 'Base de dades invàlida.',
-	'Create new database' => 'Crea una nova base de dades',
 	'Table has been dropped.' => 'S\'ha suprimit la taula.',
 	'Table has been altered.' => 'S\'ha modificat la taula.',
 	'Table has been created.' => 'S\'ha creat la taula.',

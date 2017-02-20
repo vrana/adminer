@@ -8,7 +8,6 @@ $translations = array(
 	'Password' => 'Parola',
 	'Select database' => 'Alege baza de date',
 	'Invalid database.' => 'Bază de deate invalidă.',
-	'Create new database' => 'Crează o bază de date nouă',
 	'Table has been dropped.' => 'Tabelul a fost șters.',
 	'Table has been altered.' => 'Tabelul a fost modificat.',
 	'Table has been created.' => 'Tabelul a fost creat.',

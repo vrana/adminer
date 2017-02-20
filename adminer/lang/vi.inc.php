@@ -80,7 +80,6 @@ $translations = array(
 	'Use' => 'Sử dụng',
 	'Select database' => 'Chọn CSDL',
 	'Invalid database.' => 'CSDL sai.',
-	'Create new database' => 'Tạo CSDL',
 	'Database has been dropped.' => 'CSDL đã bị xoá.',
 	'Databases have been dropped.' => 'Các CSDL đã bị xoá.',
 	'Database has been created.' => 'Đã tạo CSDL.',
