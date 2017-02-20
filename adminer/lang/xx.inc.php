@@ -185,13 +185,12 @@ $translations = array(
 	'Values' => 'Xx',
 	
 	'View' => 'Xx',
-	'Materialized View' => 'Xx',
+	'Materialized view' => 'Xx',
 	'View has been dropped.' => 'Xx.',
 	'View has been altered.' => 'Xx.',
 	'View has been created.' => 'Xx.',
 	'Alter view' => 'Xx',
 	'Create view' => 'Xx',
-	'Create materialized view' => 'Xx',
 	
 	'Indexes' => 'Xx',
 	'Indexes have been altered.' => 'Xx.',

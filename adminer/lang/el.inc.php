@@ -183,13 +183,12 @@ $translations = array(
 	'Values' => 'Τιμές',
 	
 	'View' => 'Προβολή',
-	'Materialized View' => 'Υλοποιημένη Προβολή',
+	'Materialized view' => 'Υλοποιημένη προβολή',
 	'View has been dropped.' => 'Η προβολή διαγράφηκε.',
 	'View has been altered.' => 'Η προβολή τροποποιήθηκε.',
 	'View has been created.' => 'Η προβολή δημιουργήθηκε.',
 	'Alter view' => 'Τροποποίηση προβολής',
 	'Create view' => 'Δημιουργία προβολής',
-	'Create materialized view' => 'Δημιουργία Υλοποιημένης προβολής',
 	
 	'Indexes' => 'Δείκτες',
 	'Indexes have been altered.' => 'Οι δείκτες τροποποιήθηκαν.',

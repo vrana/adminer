@@ -181,13 +181,12 @@ $translations = array(
 	'Values' => 'مقادیر',
 	
 	'View' => 'نمایش',
-	'Materialized View' => 'نمایه مادی',
+	'Materialized view' => 'نمایه مادی',
 	'View has been dropped.' => 'نمایش حذف شد.',
 	'View has been altered.' => 'نمایش ویرایش شد.',
 	'View has been created.' => 'نمایش ایجاد شد.',
 	'Alter view' => 'حذف نمایش',
 	'Create view' => 'ایجاد نمایش',
-	'Create materialized view' => 'ایجاد نمایه مادی',
 	
 	'Indexes' => 'ایندکسها',
 	'Indexes have been altered.' => 'ایندکسها ویرایش شدند.',

@@ -184,13 +184,12 @@ $translations = array(
 	'Values' => 'Hodnoty',
 	
 	'View' => 'Pohled',
-	'Materialized View' => 'Materializovaný pohled',
+	'Materialized view' => 'Materializovaný pohled',
 	'View has been dropped.' => 'Pohled byl odstraněn.',
 	'View has been altered.' => 'Pohled byl změněn.',
 	'View has been created.' => 'Pohled byl vytvořen.',
 	'Alter view' => 'Pozměnit pohled',
 	'Create view' => 'Vytvořit pohled',
-	'Create materialized view' => 'Vytvořit materializovaný pohled',
 	
 	'Indexes' => 'Indexy',
 	'Indexes have been altered.' => 'Indexy byly změněny.',

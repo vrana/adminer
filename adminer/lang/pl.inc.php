@@ -182,13 +182,12 @@ $translations = array(
 	'Values' => 'Wartości',
 	
 	'View' => 'Perspektywa',
-	'Materialized View' => 'Zmaterializowana perspektywa',
+	'Materialized view' => 'Zmaterializowana perspektywa',
 	'View has been dropped.' => 'Perspektywa została usunięta.',
 	'View has been altered.' => 'Perspektywa została zmieniona.',
 	'View has been created.' => 'Perspektywa została utworzona.',
 	'Alter view' => 'Zmień perspektywę',
 	'Create view' => 'Utwórz perspektywę',
-	'Create materialized view' => 'Utwórz zmaterializowaną perspektywę',
 	
 	'Indexes' => 'Indeksy',
 	'Indexes have been altered.' => 'Indeksy zostały zmienione.',
