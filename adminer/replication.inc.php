@@ -18,7 +18,7 @@ if (!empty($slave_replication_status)) {
 		echo "<table cellspacing='0'>\n";
 		foreach ($slave as $key => $val) {
 			echo "<tr>";
-			echo "<th>" . h($key);
+			echo "<th>" . h($key) . doc_link(array("sql" => "show-slave-status.html#slavestatus_" . strtolower($key)));
 			echo "<td>" . nbsp($val);
 		}
 		echo "</table>\n";
