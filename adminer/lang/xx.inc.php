@@ -41,6 +41,10 @@ $translations = array(
 	'Process list' => 'Xx',
 	'%d process(es) have been killed.' => array('Xx.', 'Xx.'),
 	'Kill' => 'Xx',
+	'Hide full' => 'Xx',
+	'Show full' => 'Xx',
+	'Auto refresh' => 'Xx',
+	'Stop auto refresh' => 'Xx',
 	
 	'Variables' => 'Xx',
 	'Status' => 'Xx',
