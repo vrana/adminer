@@ -890,6 +890,9 @@ function input($field, $value, $function) {
 		$input = $adminer->editInput($_GET["edit"], $field, $attrs, $value); // usage in call is without a table
 		if ($input != "") {
 			echo $input;
+		} elseif (preg_match('~bool~', $field["type"])) {
+			return "<input type='hidden' name='fields[$field[field]]' value='0'>" .
+				"<input type='checkbox'" . (in_array(strtolower($value), ['1',  't',  'true',  'y',  'yes',  'on']) ? " checked='checked'" : "") . " value='1' name='fields[$field[field]]' $attrs>";
 		} elseif ($field["type"] == "set") { //! 64 bits
 			preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
 			foreach ($matches[1] as $i => $val) {
