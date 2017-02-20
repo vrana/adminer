@@ -5,6 +5,9 @@ $table_status = table_status($TABLE, true);
 if (preg_match('~MyISAM|M?aria' . ($connection->server_info >= 5.6 ? '|InnoDB' : '') . '~i', $table_status["Engine"])) {
 	$index_types[] = "FULLTEXT";
 }
+if (preg_match('~MyISAM|M?aria' . ($connection->server_info >= 5.7 ? '|InnoDB' : '') . '~i', $table_status["Engine"])) {
+	$index_types[] = "SPATIAL";
+}
 $indexes = indexes($TABLE);
 $primary = array();
 if ($jush == "mongo") { // doesn't support primary key
