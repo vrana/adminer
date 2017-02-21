@@ -134,7 +134,7 @@ function put_file_lang($match) {
 		case "' . $lang . '": $compressed = "' . add_quo_slashes(lzw_compress(implode("\n", $translation_ids))) . '"; break;';
 	}
 	$translations_version = crc32($return);
-	return '$translations = &$_SESSION["translations"];
+	return '$translations = $_SESSION["translations"];
 if ($_SESSION["translations_version"] != ' . $translations_version . ') {
 	$translations = array();
 	$_SESSION["translations_version"] = ' . $translations_version . ';
@@ -152,6 +152,7 @@ function get_translations($lang) {
 
 if (!$translations) {
 	$translations = get_translations($LANG);
+	$_SESSION["translations"] = $translations;
 }
 ';
 }
