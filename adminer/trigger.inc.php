@@ -47,3 +47,17 @@ page_header(($name != "" ? lang('Alter trigger') . ": " . h($name) : lang('Creat
 <?php if ($name != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo confirm(); ?>><?php } ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>
+
+<?php
+if(preg_match_all('~EXECUTE (PROCEDURE|FUNCTION) (\w+)\W~i', $row["Statement"], $matches, PREG_SET_ORDER)) {
+	echo '<h3>' . lang('Used routines'). ':</h3>';
+	echo '<table>';
+
+	foreach($matches as $row) {
+		echo '<tr><td>';
+		echo '<a href="' . h(ME) . 'procedure=' . urlencode($row[2]) . '">' . h($row[2]) . '</a>';
+		echo '</td></tr>';
+	}
+
+	echo '</table>';
+}
