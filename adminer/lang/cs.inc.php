@@ -11,7 +11,7 @@ $translations = array(
 	'Logged as: %s' => 'Přihlášen jako: %s',
 	'Logout successful.' => 'Odhlášení proběhlo v pořádku.',
 	'Invalid credentials.' => 'Neplatné přihlašovací údaje.',
-	'Implement %s method to use SQLite.' => 'Pro přihlášení k SQLite implementujte metodu %s.',
+	'<a href="https://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to use SQLite.' => 'Pro přihlášení k SQLite <a href="https://www.adminer.org/cs/extension/" target="_blank">implementujte</a> metodu %s.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Příliš mnoho pokusů o přihlášení, zkuste to znovu za %d minutu.', 'Příliš mnoho pokusů o přihlášení, zkuste to znovu za %d minuty.', 'Příliš mnoho pokusů o přihlášení, zkuste to znovu za %d minut.'),
 	'Master password expired. <a href="https://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to make it permanent.' => 'Platnost hlavního hesla vypršela. <a href="https://www.adminer.org/cs/extension/" target="_blank">Implementujte</a> metodu %s, aby platilo stále.',
 	'Language' => 'Jazyk',

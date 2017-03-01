@@ -120,7 +120,6 @@ function unset_permanent() {
 */
 function auth_error($error) {
 	global $adminer, $has_token;
-	$error = h($error);
 	$session_name = session_name();
 	if (isset($_GET["username"])) {
 		header("HTTP/1.1 403 Forbidden"); // 401 requires sending WWW-Authenticate header
@@ -168,7 +167,7 @@ if (isset($_GET["username"])) {
 $driver = new Min_Driver($connection);
 
 if (!is_object($connection) || ($login = $adminer->login($_GET["username"], get_password())) !== true) {
-	auth_error((is_string($connection) ? $connection : (is_string($login) ? $login : lang('Invalid credentials.'))));
+	auth_error((is_string($connection) ? h($connection) : (is_string($login) ? $login : lang('Invalid credentials.'))));
 }
 
 if ($auth && $_POST["token"]) {

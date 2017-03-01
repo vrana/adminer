@@ -110,7 +110,7 @@ focus(document.getElementById('username'));
 	function login($login, $password) {
 		global $jush;
 		if ($jush == "sqlite") {
-			return lang('Implement %s method to use SQLite.', 'login()');
+			return lang('<a href="https://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to use SQLite.', '<code>login()</code>');
 		}
 		return true;
 	}

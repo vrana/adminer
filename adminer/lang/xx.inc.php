@@ -11,7 +11,7 @@ $translations = array(
 	'Logged as: %s' => 'Xx',
 	'Logout successful.' => 'Xx.',
 	'Invalid credentials.' => 'Xx.',
-	'Implement %s method to use SQLite.' => 'Xx.',
+	'<a href="https://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to use SQLite.' => 'Xx.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Xx.', 'Xx.'),
 	'Master password expired. <a href="https://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to make it permanent.' => 'Xx.',
 	'Language' => 'Xx',
