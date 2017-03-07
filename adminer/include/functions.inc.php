@@ -477,18 +477,12 @@ function convert_fields($columns, $fields, $select = array()) {
 */
 function cookie($name, $value, $lifetime = 2592000) { // 2592000 - 30 days
 	global $HTTPS;
-	$params = array(
-		$name,
-		(preg_match("~\n~", $value) ? "" : $value), // HTTP Response Splitting protection in PHP < 5.1.2
-		($lifetime ? time() + $lifetime : 0),
-		preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]),
-		"",
-		$HTTPS
+	return header("Set-Cookie: $name=" . urlencode($value)
+		. ($lifetime ? "; expires=" . gmdate("D, d M Y H:i:s", time() + $lifetime) . " GMT" : "")
+		. "; path=" . preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"])
+		. ($HTTPS ? "; secure" : "")
+		. "; HttpOnly; SameSite=lax"
 	);
-	if (version_compare(PHP_VERSION, '5.2.0') >= 0) {
-		$params[] = true; // HttpOnly
-	}
-	return call_user_func_array('setcookie', $params);
 }
 
 /** Restart stopped session
