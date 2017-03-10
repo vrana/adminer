@@ -241,7 +241,7 @@ focus(document.getElementById('username'));
 	function selectVal($val, $link, $field, $original) {
 		$return = ($val === null ? "<i>NULL</i>" : (preg_match("~char|binary~", $field["type"]) && !preg_match("~var~", $field["type"]) ? "<code>$val</code>" : $val));
 		if (preg_match('~blob|bytea|raw|file~', $field["type"]) && !is_utf8($val)) {
-			$return = lang('%d byte(s)', strlen($original));
+			$return = "<i>" . lang('%d byte(s)', strlen($original)) . "</i>";
 		}
 		return ($link ? "<a href='" . h($link) . "'" . (is_url($link) ? " rel='noreferrer'" : "") . ">$return</a>" : $return);
 	}
