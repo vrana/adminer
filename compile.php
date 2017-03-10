@@ -378,7 +378,7 @@ if ($driver) {
 	if (count($drivers) == 1) {
 		$file = str_replace('<?php echo html_select("auth[driver]", $drivers, DRIVER); ?>', "<input type='hidden' name='auth[driver]' value='" . ($driver == "mysql" ? "server" : $driver) . "'>" . reset($drivers), $file);
 	}
-	$file = preg_replace('(;../externals/jush/modules/jush-(?!textarea\.|txt\.|' . preg_quote($driver == "mysql" ? "sql" : $driver) . '\.)[^.]+.js)', '', $file);
+	$file = preg_replace('(;../externals/jush/modules/jush-(?!textarea\.|txt\.|js\.|' . preg_quote($driver == "mysql" ? "sql" : $driver) . '\.)[^.]+.js)', '', $file);
 }
 if ($project == "editor") {
 	$file = preg_replace('~;../externals/jush/jush.css~', '', $file);
@@ -396,6 +396,7 @@ if ($_SESSION["lang"]) {
 $file = str_replace('<script type="text/javascript" src="static/editing.js"></script>' . "\n", "", $file);
 $file = str_replace('<script type="text/javascript" src="../externals/jush/modules/jush-textarea.js"></script>' . "\n", "", $file);
 $file = str_replace('<script type="text/javascript" src="../externals/jush/modules/jush-txt.js"></script>' . "\n", "", $file);
+$file = str_replace('<script type="text/javascript" src="../externals/jush/modules/jush-js.js"></script>' . "\n", "", $file);
 $file = str_replace('<script type="text/javascript" src="../externals/jush/modules/jush-<?php echo $jush; ?>.js"></script>' . "\n", "", $file);
 $file = str_replace('<link rel="stylesheet" type="text/css" href="../externals/jush/jush.css">' . "\n", "", $file);
 $file = preg_replace_callback("~compile_file\\('([^']+)'(?:, '([^']*)')?\\)~", 'compile_file', $file); // integrate static files

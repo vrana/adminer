@@ -243,6 +243,9 @@ focus(document.getElementById('username'));
 		if (preg_match('~blob|bytea|raw|file~', $field["type"]) && !is_utf8($val)) {
 			$return = "<i>" . lang('%d byte(s)', strlen($original)) . "</i>";
 		}
+		if (preg_match('~json~', $field["type"])) {
+			$return = "<code class='jush-js'>$return</code>";
+		}
 		return ($link ? "<a href='" . h($link) . "'" . (is_url($link) ? " rel='noreferrer'" : "") . ">$return</a>" : $return);
 	}
 
@@ -855,11 +858,14 @@ focus(document.getElementById('username'));
 				$connection->select_db(DB);
 				$tables = table_status('', true);
 			}
-			if (support("sql")) {
-				?>
+			?>
 <script type="text/javascript" src="../externals/jush/modules/jush.js"></script>
 <script type="text/javascript" src="../externals/jush/modules/jush-textarea.js"></script>
 <script type="text/javascript" src="../externals/jush/modules/jush-txt.js"></script>
+<script type="text/javascript" src="../externals/jush/modules/jush-js.js"></script>
+<?php
+			if (support("sql")) {
+				?>
 <script type="text/javascript" src="../externals/jush/modules/jush-<?php echo $jush; ?>.js"></script>
 <script type="text/javascript">
 <?php
