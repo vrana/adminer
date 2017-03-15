@@ -1,11 +1,11 @@
 Adminer 4.3.0-dev:
-Add accessibility labels
 Make maxlength in edit fields a soft limit
+Add accessibility labels
 Add Cache-Control: immutable to static files
-MySQL: Add dedicated view for replication status
-MySQL: Support spatial indexes
 MySQL: Support MySQL 8
 MySQL: Support JSON data type
+MySQL: Add dedicated view for replication status
+MySQL: Support spatial indexes
 PostgreSQL: Export
 PostgreSQL: Don't treat partial indexes as unique
 MS SQL: Support pdo_dblib
