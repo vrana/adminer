@@ -1,4 +1,4 @@
-Adminer 4.3.0-dev:
+Adminer 4.3.0 (released 2017-03-15):
 Make maxlength in edit fields a soft limit
 Add accessibility labels
 Add Cache-Control: immutable to static files
