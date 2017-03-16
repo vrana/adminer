@@ -48,6 +48,10 @@ if (!defined("DRIVER")) {
 			function quote($string) {
 				return "'" . $this->escape_string($string) . "'";
 			}
+
+            		function set_charset($charset) {
+                		$this->query("SET NAMES $charset");
+            		}
 		}
 
 	} elseif (extension_loaded("mysql") && !(ini_get("sql.safe_mode") && extension_loaded("pdo_mysql"))) {
