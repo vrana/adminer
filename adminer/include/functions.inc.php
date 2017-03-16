@@ -1061,7 +1061,7 @@ function dump_csv($row) {
 * @return string
 */
 function apply_sql_function($function, $column) {
-	return ($function ? ($function == "unixepoch" ? "DATETIME($column, '$function')" : ($function == "count distinct" ? "COUNT(DISTINCT " : strtoupper("$function(")) . "$column)") : $column);
+	return ($function ? ($function == "unixepoch" ? "DATETIME($column, '$function')" : ($function == "count distinct" ? "COUNT(DISTINCT " :  ($function == "group_concat distinct" ? "GROUP_CONCAT(DISTINCT " : strtoupper("$function("))) . "$column)" ) : $column);
 }
 
 /** Get path of the temporary directory

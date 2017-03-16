@@ -122,7 +122,7 @@ function selectFieldChange(form) {
 				}
 			}
 			if ((match = /^(columns.+)fun\]/.exec(select.name))) {
-				if (/^(avg|count|count distinct|group_concat|max|min|sum)$/.test(col)) {
+				if (/^(avg|count|count distinct|group_concat|group_concat distinct|max|min|sum)$/.test(col)) {
 					group = true;
 				}
 				var val = selectValue(form[match[1] + 'col]']);
