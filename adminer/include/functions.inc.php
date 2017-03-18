@@ -41,6 +41,19 @@ function number($val) {
   return preg_replace('~[^0-9]+~', '', $val);
 }
 
+/** Convert bytes to easy to read format
+* @param int
+* @param int
+* @return string
+*/
+function format_bytes($bytes, $precision = 0) { 
+    $units = array('B', 'KB', 'MB', 'GB', 'TB'); 
+    $bytes = max($bytes, 0); 
+    $pow = floor(($bytes ? log($bytes) : 0) / log(1024)); 
+    $bytes /= pow(1024, $pow);
+    return round($bytes, $precision) . ' ' . $units[$pow]; 
+}
+
 /** Disable magic_quotes_gpc
 * @param array e.g. (&$_GET, &$_POST, &$_COOKIE)
 * @param bool whether to leave values as is
