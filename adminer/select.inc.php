@@ -315,8 +315,11 @@ if (!$columns && support("table")) {
 						$href = remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key);
 						$desc = "&desc%5B0%5D=1";
 						echo '<th onmouseover="columnMouse(this);" onmouseout="columnMouse(this, \' hidden\');">';
-						echo '<a href="' . h($href . ($order[0] == $column || $order[0] == $key || (!$order && $is_group && $group[0] == $column) ? $desc : '')) . '">'; // $order[0] == $key - COUNT(*)
-						echo apply_sql_function($val["fun"], $name) . "</a>"; //! columns looking like functions
+						if (isset($field['comment']) && $field['comment'] != '') {
+						  echo '<a title="'.$field['comment'].'">?</a> ';
+						}
+						echo '<a title="'.$field['comment'].'" href="' . h($href . ($order[0] == $column || $order[0] == $key || (!$order && $is_group && $group[0] == $column) ? $desc : '')) . '">'; // $order[0] == $key - COUNT(*)
+						echo apply_sql_function($val["fun"], $field['field']) . "</a>"; //! columns looking like functions
 						echo "<span class='column hidden'>";
 						echo "<a href='" . h($href . $desc) . "' title='" . lang('descending') . "' class='text'> ↓</a>";
 						if (!$val["fun"]) {
