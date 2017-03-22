@@ -116,7 +116,48 @@ if (isset($_GET["firebird"])) {
 	class Min_Driver extends Min_SQL {
 	}
 
+    /** Convert field in select and edit
+     * @param array one element from fields()
+     * @return string
+     */
+    function convert_field($field) {
+        if (preg_match("~binary~", $field["type"])) {
+            return "HEX(" . idf_escape($field["field"]) . ")";
+        }
+        if ($field["type"] == "bit") {
+            return "BIN(" . idf_escape($field["field"]) . " + 0)"; // + 0 is required outside MySQLnd
+        }
+        if (preg_match("~geometry|point|linestring|polygon~", $field["type"])) {
+            return "AsWKT(" . idf_escape($field["field"]) . ")";
+        }
+    }
 
+    /** Convert value in edit after applying functions back
+     * @param array one element from fields()
+     * @param string
+     * @return string
+     */
+    function unconvert_field($field, $return) {
+        if (preg_match("~binary~", $field["type"])) {
+            $return = "UNHEX($return)";
+        }
+        if ($field["type"] == "bit") {
+            $return = "CONV($return, 2, 10) + 0";
+        }
+        if (preg_match("~geometry|point|linestring|polygon~", $field["type"])) {
+            $return = "GeomFromText($return)";
+        }
+        return $return;
+    }
+
+    /** Get approximate number of rows
+     * @param array
+     * @param array
+     * @return int or null if approximate number can't be retrieved
+     */
+    function found_rows($table_status, $where) {
+        return ($where || $table_status["Engine"] != "InnoDB" ? null : $table_status["Rows"]);
+    }
 
 	function idf_escape($idf) {
 		return '"' . str_replace('"', '""', $idf) . '"';
