@@ -3,7 +3,8 @@
  *
  * Klemens Häckel [http://clickdimension.wordpress.com/]
  *
- * update 2014-01
+ * update 2017-03
+ * adapted for adminer 4.3.0
  *
  * new remaster based on style for WT-NMP 13.12
  *
@@ -77,7 +78,7 @@ html>/**/body input[name="logout"], #logout {
     right: 8px;
     text-indent: 8px;
     top: 6px;
-    width: 80px;
+    width: 120px;
     position:fixed;
     z-index: 10;
 }
@@ -154,10 +155,10 @@ html>/**/body form>table a[href*="&edit="][href*="&where"] {
 }
 
 /* Select data */
-html>/**/body #tables li a[href*="&select="], html>/**/body .links a[href*="&select="] {
+html>/**/body #menu li a[href*="&select="], html>/**/body .links a[href*="&select="] {
     background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAdVJREFUeNqck8tO21AQhn8bB8ehRe0SUEBOlIsSVFGqqlK3oey6K+9A96wTKU/RFU/AG7CrKhAg7gmKiJKIplFWqItWIQEfuzOT2LmsSo408j+2/5lvjo+1rULhM4AFTLfahuu6i3vF4rdp3F/y+W3DVUrzKNk8BTzPC4IKS3h8Hc0Hz49zr8BeXSml8wu8PsU1uW7EhjpHOmd7wX1fs4e9hnIcTUkBDfs1DzGjS5N1pPOGRR3bLjR6ztoNNJm9ebDXcBxnjMD99YCdzGvJT25v8T6ZFH1QLuNjNiv6++UlESyDvSMEEIKcCZzX6zLvXDiMo0pFZn5hWfhxfS2aF3sCAkUvDwmA1ZUVyS9qNawnEn0aKvQhkxF9WCqBPUIgBSYISnd3QmCZJs6qVekaYZqbmzGCfoGnp2AEnyAdjUpeajTwJh4XfU778S6d7tNQISlA3rFN9AkqzaYQmLOzuKIxuGuYaE4H++F/RvbqVEVXE+cgsbSEFFH0Hh+RtW2sxmLo9npYoy/yNpUajkBeo9ftzkwSVFstIeBVpjH8rhc0xigBe43f9/dmKBTCburv4ISb//VvsYe9mmXbX/VIZHman8ntdH7y0BbFSwrjmX6H4s8/AQYAQChL+KIinhAAAAAASUVORK5CYII=") no-repeat left bottom
 }
-html>/**/body #tables li a[href*="&select="] {
+html>/**/body #menu li a[href*="&select="] {
     clear: left;
     display: block;
     float: left;
@@ -316,7 +317,7 @@ fieldset {
     background: transparent;
     font-size: .9em; 
     left: auto;
-    right: 90px;
+    right: 120px;
     position:fixed;
     z-index: 10;
     padding-top: 2px;
