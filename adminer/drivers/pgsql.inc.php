@@ -186,12 +186,20 @@ if (isset($_GET["pgsql"])) {
 	}
 
 	function connect() {
-		global $adminer;
+		global $adminer, $types, $structured_types;
 		$connection = new Min_DB;
 		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
 			if ($connection->server_info >= 9) {
 				$connection->query("SET application_name = 'Adminer'");
+				if ($connection->server_info >= 9.2) {
+					$structured_types[lang('Strings')][] = "json";
+					$types["json"] = 4294967295;
+					if ($connection->server_info >= 9.2) {
+						$structured_types[lang('Strings')][] = "jsonb";
+						$types["jsonb"] = 4294967295;
+					}
+				}
 			}
 			return $connection;
 		}
