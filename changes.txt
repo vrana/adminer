@@ -1,3 +1,6 @@
+Adminer 4.3.1-dev:
+PostgreSQL: Fix index size computation in PostgreSQL < 9.0 (regression from 4.3.0)
+
 Adminer 4.3.0 (released 2017-03-15):
 Make maxlength in edit fields a soft limit
 Add accessibility labels
