@@ -195,7 +195,7 @@ if (isset($_GET["pgsql"])) {
 				if ($connection->server_info >= 9.2) {
 					$structured_types[lang('Strings')][] = "json";
 					$types["json"] = 4294967295;
-					if ($connection->server_info >= 9.2) {
+					if ($connection->server_info >= 9.4) {
 						$structured_types[lang('Strings')][] = "jsonb";
 						$types["jsonb"] = 4294967295;
 					}
