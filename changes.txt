@@ -1,5 +1,6 @@
 Adminer 4.3.1-dev:
 Fix permanent login after logout (bug #539)
+Fix SQL command autofocus (regression from 4.0.0)
 PostgreSQL: Support JSON and JSONB data types
 PostgreSQL: Fix index size computation in PostgreSQL < 9.0 (regression from 4.3.0)
 PostgreSQL: Fix nullable fields in export
