@@ -481,8 +481,8 @@ function cookie($name, $value, $lifetime = 2592000) { // 2592000 - 30 days
 		. ($lifetime ? "; expires=" . gmdate("D, d M Y H:i:s", time() + $lifetime) . " GMT" : "")
 		. "; path=" . preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"])
 		. ($HTTPS ? "; secure" : "")
-		. "; HttpOnly; SameSite=lax"
-	);
+		. "; HttpOnly; SameSite=lax",
+		false);
 }
 
 /** Restart stopped session
