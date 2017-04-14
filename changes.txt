@@ -1,4 +1,4 @@
-Adminer 4.3.1-dev:
+Adminer 4.3.1 (released 2017-04-14):
 Fix permanent login after logout (bug #539)
 Fix SQL command autofocus (regression from 4.0.0)
 PostgreSQL: Support JSON and JSONB data types
