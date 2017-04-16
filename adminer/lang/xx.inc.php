@@ -10,6 +10,7 @@ $translations = array(
 	'Logout' => 'Xx',
 	'Logged as: %s' => 'Xx',
 	'Logout successful.' => 'Xx.',
+	'Thanks for using Adminer, consider <a href="%s">donating</a>.' => 'Xx.',
 	'Invalid credentials.' => 'Xx.',
 	'<a href="https://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to use SQLite.' => 'Xx.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Xx.', 'Xx.'),
