@@ -165,7 +165,7 @@ if (isset($_GET["oracle"])) {
 	}
 
 	function get_databases() {
-		return get_vals("SELECT tablespace_name FROM user_tablespaces");
+		return get_vals("SELECT distinct tablespace_name FROM all_tables where tablespace_name is not null");
 	}
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
@@ -359,7 +359,7 @@ AND c_src.TABLE_NAME = " . q($table);
 	}
 
 	function schemas() {
-		return get_vals("SELECT DISTINCT owner FROM dba_segments WHERE owner IN (SELECT username FROM dba_users WHERE default_tablespace NOT IN ('SYSTEM','SYSAUX'))");
+		return get_vals("SELECT DISTINCT owner FROM all_tables where owner not IN ('SYSTEM','SYS')");
 	}
 
 	function get_schema() {
