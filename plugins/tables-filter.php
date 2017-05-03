@@ -9,13 +9,20 @@
 class AdminerTablesFilter {
 	function tablesPrint($tables) { ?>
 <p class="jsonly"><input id="filter-field" onkeyup="tablesFilterInput();" autocomplete="off">
-<p id='tables' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>
+<ul id='tables' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>
 <?php
-foreach ($tables as $table => $type) {
-	echo '<span data-table-name="'.h($table).'"><a href="'.h(ME).'select='.urlencode($table).'"'.bold($_GET["select"] == $table).">".lang('select')."</a> ";
-	echo '<a href="'.h(ME).'table='.urlencode($table).'"'.bold($_GET["table"] == $table).">".h($table)."</a><br></span>\n";
+foreach ($tables as $table => $status) {
+	echo '<li data-table-name="' . h($table) . '"><a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table || $_GET["edit"] == $table, "select") . ">" . lang('select') . "</a> ";
+	$name = h($status["Name"]);
+	echo (support("table") || support("indexes")
+		? '<a href="' . h(ME) . 'table=' . urlencode($table) . '"'
+			. bold(in_array($table, array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"])), (is_view($status) ? "view" : "structure"))
+			. " title='" . lang('Show structure') . "'>$name</a>"
+		: "<span>$name</span>"
+	) . "\n";
 }
 ?>
+</ul>
 <script type="text/javascript">
 var tablesFilterTimeout = null;
 var tablesFilterValue = '';
@@ -33,7 +40,7 @@ function tablesFilter(){
 	if (sessionStorage) {
 		sessionStorage.setItem('adminer_tables_filter', value);
 	}
-	var tables = document.getElementById('tables').getElementsByTagName('span');
+	var tables = document.getElementById('tables').getElementsByTagName('li');
 	for (var i = 0; i < tables.length; i++) {
 		var a = tables[i].getElementsByTagName('a')[1];
 		var text = tables[i].getAttribute('data-table-name');
