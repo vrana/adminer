@@ -1,5 +1,4 @@
 <?php
-
 /** Use filter in tables list
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
