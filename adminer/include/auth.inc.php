@@ -8,6 +8,43 @@ if (!$has_token) {
 $token = get_token(); ///< @var string CSRF protection
 
 $permanent = array();
+
+//Check to see if there is already a permanent login
+if(!isset($_COOKIE['adminer_permanent'])) {
+    include_once($_SERVER['DOCUMENT_ROOT'].'/config.php');
+    if(function_exists('get_configs')) {
+        $configuration = get_configs();
+        foreach($configuration as $connection) {
+            add_permanent_login(
+                $connection['vendor'],
+                $connection['server'],
+                $connection['username'],
+                $connection['db'],
+                $connection['password']
+            );
+        }
+    }
+}
+
+function add_permanent_login($vendor, $server, $username, $db, $password) {
+    global $adminer;
+    $key = sprintf(
+            "%s-%s-%s-%s",
+            base64_encode($vendor),
+            base64_encode($server),
+            base64_encode($username),
+            base64_encode($db)
+        );
+    $private = $adminer->permanentLogin(true);
+	set_password($vendor, $server, $username, $password);
+    $permanent[$key] = sprintf(
+        "%s:%s",
+        $key,
+        base64_encode($private ? encrypt_string($password, $private) : "")
+    );
+    cookie("adminer_permanent", implode(" ", $permanent));
+}
+
 if ($_COOKIE["adminer_permanent"]) {
 	foreach (explode(" ", $_COOKIE["adminer_permanent"]) as $val) {
 		list($key) = explode(":", $val);
@@ -62,13 +99,9 @@ if ($auth) {
 	$username = $auth["username"];
 	$password = (string) $auth["password"];
 	$db = $auth["db"];
-	set_password($vendor, $server, $username, $password);
 	$_SESSION["db"][$vendor][$server][$username][$db] = true;
 	if ($auth["permanent"]) {
-		$key = base64_encode($vendor) . "-" . base64_encode($server) . "-" . base64_encode($username) . "-" . base64_encode($db);
-		$private = $adminer->permanentLogin(true);
-		$permanent[$key] = "$key:" . base64_encode($private ? encrypt_string($password, $private) : "");
-		cookie("adminer_permanent", implode(" ", $permanent));
+        add_permanent_login($vendor, $server, $username, $db, $password);
 	}
 	if (count($_POST) == 1 // 1 - auth
 		|| DRIVER != $vendor
