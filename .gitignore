@@ -2,3 +2,4 @@
 /adminer*.php
 /editor*.php
 /vendor/
+.idea/
