@@ -1,3 +1,6 @@
+Adminer 4.3.2-dev:
+PostgreSQL: Sort table names (regression from 4.3.1)
+
 Adminer 4.3.1 (released 2017-04-14):
 Fix permanent login after logout (bug #539)
 Fix SQL command autofocus (regression from 4.0.0)

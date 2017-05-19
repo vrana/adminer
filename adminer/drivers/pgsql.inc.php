@@ -256,7 +256,7 @@ ORDER BY 1";
 FROM pg_class c
 JOIN pg_namespace n ON(n.nspname = current_schema() AND n.oid = c.relnamespace)
 WHERE relkind IN ('r', 'm', 'v')
-" . ($name != "" ? "AND relname = " . q($name) : "ORDER BY c.oid")
+" . ($name != "" ? "AND relname = " . q($name) : "ORDER BY relname")
 		) as $row) { //! Index_length, Auto_increment
 			$return[$row["Name"]] = $row;
 		}
