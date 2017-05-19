@@ -62,6 +62,17 @@ if ($auth) {
 	$username = $auth["username"];
 	$password = (string) $auth["password"];
 	$db = $auth["db"];
+
+	// Recognize URLs like mysql://username:password@example.com/my_db?options
+    $schemes = array('mssql', 'pdo_sqlsrv', 'mysql', 'mysql2', 'pdo_mysql', 'pgsql', 'postgres', 'postgresql', 'pdo_pgsql', 'pdo_oci', 'oci');
+    $split = preg_split('#[:/@?]#', $server);
+    if (strpos($server, '://') > 0  &&  count($split) >= 7 && in_array($split[0], $schemes)) {
+        $username = $split[3];
+        $password = $split[4];
+        $server = $split[5];
+        $db = $split[6];
+    }
+
 	set_password($vendor, $server, $username, $password);
 	$_SESSION["db"][$vendor][$server][$username][$db] = true;
 	if ($auth["permanent"]) {
