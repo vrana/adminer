@@ -521,7 +521,9 @@ function db_size($db) {
 	foreach (table_status() as $table_status) {
 		$return += $table_status["Data_length"] + $table_status["Index_length"];
 	}
-	return format_number($return);
+	$size = ['B','kB','MB','GB','TB','PB','EB','ZB','YB'];
+	$factor = floor((strlen($return) - 1) / 3);
+	return sprintf("%.2f", $bytes / pow(1024, $factor)) . @$size[$factor];
 }
 
 /** Print SET NAMES if utf8mb4 might be needed
