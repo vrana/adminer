@@ -1,4 +1,5 @@
 Adminer 4.3.2-dev:
+MySQL: Remove dedicated view for replication status (added in 4.3.0)
 PostgreSQL: Sort table names (regression from 4.3.1)
 
 Adminer 4.3.1 (released 2017-04-14):

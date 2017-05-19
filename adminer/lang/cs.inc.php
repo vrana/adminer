@@ -46,10 +46,6 @@ $translations = array(
 	'Variables' => 'Proměnné',
 	'Status' => 'Stav',
 	
-	'Replication' => 'Replikace',
-	'Master status' => 'Master status',
-	'Slave status' => 'Slave status',
-	
 	'SQL command' => 'SQL příkaz',
 	'%d query(s) executed OK.' => array('%d příkaz proběhl v pořádku.', '%d příkazy proběhly v pořádku.', '%d příkazů proběhlo v pořádku.'),
 	'Query executed OK, %d row(s) affected.' => array('Příkaz proběhl v pořádku, byl změněn %d záznam.', 'Příkaz proběhl v pořádku, byly změněny %d záznamy.', 'Příkaz proběhl v pořádku, bylo změněno %d záznamů.'),
@@ -340,8 +336,4 @@ $translations = array(
 	'Type has been dropped.' => 'Typ byl odstraněn.',
 	'Type has been created.' => 'Typ byl vytvořen.',
 	'Alter type' => 'Pozměnit typ',
-
-	'Replication' => null,
-	'Master status' => null,
-	'Slave status' => null,
 );

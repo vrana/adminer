@@ -46,10 +46,6 @@ $translations = array(
 	'Variables' => 'Xx',
 	'Status' => 'Xx',
 	
-	'Replication' => 'Xx',
-	'Master status' => 'Xx',
-	'Slave status' => 'Xx',
-	
 	'SQL command' => 'Xx',
 	'%d query(s) executed OK.' => array('Xx.', 'Xx.'),
 	'Query executed OK, %d row(s) affected.' => array('Xx.', 'Xx.'),
