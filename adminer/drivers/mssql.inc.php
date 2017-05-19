@@ -239,7 +239,7 @@ if (isset($_GET["mssql"])) {
 			var $extension = "PDO_DBLIB";
 
 			function connect($server, $username, $password) {
-				$this->dsn("dblib:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\\d)~', ';port=\\1', $server)), $username, $password);
+				$this->dsn("dblib:charset=utf8;host=" . $server), $username, $password);
 				return true;
 			}
 
