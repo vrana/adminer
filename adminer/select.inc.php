@@ -442,6 +442,8 @@ if (!$columns && support("table")) {
 			if ($_GET["page"] != "last") {
 				if (!+$limit) {
 					$found_rows = count($rows);
+				} elseif ($jush == "mongodb") {
+					$found_rows = found_rows($table_status, $where);
 				} elseif ($jush != "sql" || !$is_group) {
 					$found_rows = ($is_group ? false : found_rows($table_status, $where));
 					if ($found_rows < max(1e4, 2 * ($page + 1) * $limit)) {
