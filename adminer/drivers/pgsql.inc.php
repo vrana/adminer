@@ -600,6 +600,11 @@ AND typelem = 0"
 		return get_vals("SELECT nspname FROM pg_namespace ORDER BY nspname");
 	}
 
+	function count_schemas() {
+		global $connection;
+		return $connection->result("SELECT COUNT(*) FROM pg_namespace");
+	}
+
 	function get_schema() {
 		global $connection;
 		return $connection->result("SELECT current_schema()");
