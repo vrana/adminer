@@ -11,11 +11,19 @@ class AdminerLoginServers {
 	var $servers, $driver;
 	
 	/** Set supported servers
-	* @param array array($domain) or array($domain => $description) or array($category => array())
+	* @param array|string array($domain) or array($domain => $description) or array($category => array()) or path to file with server list
 	* @param string
 	*/
 	function __construct($servers, $driver = "server") {
-		$this->servers = $servers;
+		if (is_string($servers)) {
+			if (pathinfo($servers, 4) == "json") {
+				$this->servers = json_decode(file_get_contents($servers), true);
+			} else {
+				$this->servers = include($servers);
+			}
+		} else {
+			$this->servers = $servers;
+		}
 		$this->driver = $driver;
 	}
 	
