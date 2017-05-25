@@ -9,20 +9,6 @@
 class AdminerTablesFilter {
 	function tablesPrint($tables) { ?>
 <p class="jsonly"><input id="filter-field" onkeyup="tablesFilterInput();" autocomplete="off">
-<ul id='tables' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>
-<?php
-foreach ($tables as $table => $status) {
-	echo '<li data-table-name="' . h($table) . '"><a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table || $_GET["edit"] == $table, "select") . ">" . lang('select') . "</a> ";
-	$name = h($status["Name"]);
-	echo (support("table") || support("indexes")
-		? '<a href="' . h(ME) . 'table=' . urlencode($table) . '"'
-			. bold(in_array($table, array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"])), (is_view($status) ? "view" : "structure"))
-			. " title='" . lang('Show structure') . "'>$name</a>"
-		: "<span>$name</span>"
-	) . "\n";
-}
-?>
-</ul>
 <script type="text/javascript">
 var tablesFilterTimeout = null;
 var tablesFilterValue = '';
@@ -64,10 +50,27 @@ if (sessionStorage){
 	db = db.options[db.selectedIndex].text;
 	if (db == sessionStorage.getItem('adminer_tables_filter_db') && sessionStorage.getItem('adminer_tables_filter')){
 		document.getElementById('filter-field').value = sessionStorage.getItem('adminer_tables_filter');
-		tablesFilter();
 	}
 	sessionStorage.setItem('adminer_tables_filter_db', db);
 }
+</script>
+<ul id='tables' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>
+<?php
+foreach ($tables as $table => $status) {
+	echo '<li data-table-name="' . h($table) . '"><a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table || $_GET["edit"] == $table, "select") . ">" . lang('select') . "</a> ";
+	$name = h($status["Name"]);
+	echo (support("table") || support("indexes")
+		? '<a href="' . h(ME) . 'table=' . urlencode($table) . '"'
+			. bold(in_array($table, array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"])), (is_view($status) ? "view" : "structure"))
+			. " title='" . lang('Show structure') . "'>$name</a>"
+		: "<span>$name</span>"
+	) . "\n";
+}
+?>
+</ul>
+<script>
+tablesFilterValue = '';
+tablesFilter();
 </script>
 <?php
 		return true;
