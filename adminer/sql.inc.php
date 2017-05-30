@@ -1,7 +1,6 @@
 <?php
 if (!$error && $_POST["export"]) {
 	dump_headers("sql");
-	$adminer->dumpTable("", "");
 	$adminer->dumpData("", "table", $_POST["query"]);
 	exit;
 }
