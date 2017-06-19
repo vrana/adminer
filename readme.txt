@@ -15,3 +15,8 @@ adminer/sqlite.php - Development version of Adminer with SQLite allowed
 compile.php - Create a single file version
 lang.php - Update translations
 tests/selenium.html - Selenium test suite
+
+-------
+
+(Adminer-THemes-ALpha) Experimental Themes in 0ne FiLe (adminer-themes.php)...
+Thread: https://sourceforge.net/p/adminer/discussion/960419/thread/f7c00697/
