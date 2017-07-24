@@ -11,7 +11,7 @@
  *             Software, and to permit persons to whom the Software is furnished to do so,
  *             subject to the following conditions:
  *
- *             The above copyright notice and this permission notice shall be 
+ *             The above copyright notice and this permission notice shall be
  *             included in all copies or substantial portions of the Software.
  *
  *             THE SOFTWARE IS PROVIDED �AS IS�, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
@@ -73,3 +73,4 @@ a:hover{color:#28c}
 a[title='Show structure'],#tables a[title='Show structure']{border:0;background:0;color:#369}
 .jush a{border:0;background:0;margin:0;padding:0}
 a.active,a.active:link,a.active:hover{text-decoration:underline}
+#tables li{clear: both;}
