@@ -544,7 +544,7 @@ if (!defined("DRIVER")) {
 	* @param string
 	* @return array array("select" => )
 	*/
-	function view($name) {
+	function adminer_view($name) {
 		global $connection;
 		return array("select" => preg_replace('~^(?:[^`]|`[^`]*`)*\\s+AS\\s+~isU', '', $connection->result("SHOW CREATE VIEW " . table($name), 1)));
 	}
@@ -760,7 +760,7 @@ if (!defined("DRIVER")) {
 		}
 		foreach ($views as $table) {
 			$name = ($target == DB ? table("copy_$table") : idf_escape($target) . "." . table($table));
-			$view = view($table);
+			$view = adminer_view($table);
 			if (!queries("DROP VIEW IF EXISTS $name")
 				|| !queries("CREATE VIEW $name AS $view[select]") //! USE to avoid db.table
 			) {

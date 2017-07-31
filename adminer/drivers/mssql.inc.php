@@ -404,7 +404,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 		return $return;
 	}
 
-	function view($name) {
+	function adminer_view($name) {
 		global $connection;
 		return array("select" => preg_replace('~^(?:[^[]|\\[[^]]*])*\\s+AS\\s+~isU', '', $connection->result("SELECT VIEW_DEFINITION FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = SCHEMA_NAME() AND TABLE_NAME = " . q($name))));
 	}

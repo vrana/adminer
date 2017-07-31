@@ -388,7 +388,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return $return;
 	}
 
-	function view($name) {
+	function adminer_view($name) {
 		global $connection;
 		return array("select" => preg_replace('~^(?:[^`"[]+|`[^`]*`|"[^"]*")* AS\\s+~iU', '', $connection->result("SELECT sql FROM sqlite_master WHERE name = " . q($name)))); //! identifiers may be inside []
 	}

@@ -96,7 +96,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 
 		$message = lang('Table has been altered.');
 		if ($TABLE == "") {
-			cookie("adminer_engine", $row["Engine"]);
+			adminer_cookie("adminer_engine", $row["Engine"]);
 			$message = lang('Table has been created.');
 		}
 		$name = trim($row["name"]);

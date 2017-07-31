@@ -74,7 +74,7 @@ if ($_POST && !$error) {
 	}
 
 	if ($_POST["export"]) {
-		cookie("adminer_import", "output=" . urlencode($_POST["output"]) . "&format=" . urlencode($_POST["format"]));
+		adminer_cookie("adminer_import", "output=" . urlencode($_POST["output"]) . "&format=" . urlencode($_POST["format"]));
 		dump_headers($TABLE);
 		$adminer->dumpTable($TABLE, "");
 		if (!is_array($_POST["check"]) || $unselected === array()) {
@@ -181,7 +181,7 @@ if ($_POST && !$error) {
 		} elseif (!preg_match('~~u', $file)) {
 			$error = lang('File must be in UTF-8 encoding.');
 		} else {
-			cookie("adminer_import", "output=" . urlencode($adminer_import["output"]) . "&format=" . urlencode($_POST["separator"]));
+			adminer_cookie("adminer_import", "output=" . urlencode($adminer_import["output"]) . "&format=" . urlencode($_POST["separator"]));
 			$result = true;
 			$cols = array_keys($fields);
 			preg_match_all('~(?>"[^"]*"|[^"\\r\\n]+)+~', $file, $matches);

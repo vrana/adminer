@@ -64,7 +64,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 		$alter[] = array($existing["type"], $name, "DROP");
 	}
 	if (!$alter) {
-		redirect(ME . "table=" . urlencode($TABLE));
+		adminer_redirect(ME . "table=" . urlencode($TABLE));
 	}
 	queries_redirect(ME . "table=" . urlencode($TABLE), lang('Indexes have been altered.'), alter_indexes($TABLE, $alter));
 }

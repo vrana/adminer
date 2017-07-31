@@ -6,7 +6,7 @@ if ($_POST && !$error) {
 	foreach (array("output", "format", "db_style", "routines", "events", "table_style", "auto_increment", "triggers", "data_style") as $key) {
 		$cookie .= "&$key=" . urlencode($_POST[$key]);
 	}
-	cookie("adminer_export", substr($cookie, 1));
+	adminer_cookie("adminer_export", substr($cookie, 1));
 	$tables = array_flip((array) $_POST["tables"]) + array_flip((array) $_POST["data"]);
 	$ext = dump_headers(
 		(count($tables) == 1 ? key($tables) : DB),

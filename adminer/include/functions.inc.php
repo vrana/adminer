@@ -475,7 +475,7 @@ function convert_fields($columns, $fields, $select = array()) {
 * @param int number of seconds, 0 for session cookie
 * @return bool
 */
-function cookie($name, $value, $lifetime = 2592000) { // 2592000 - 30 days
+function adminer_cookie($name, $value, $lifetime = 2592000) { // 2592000 - 30 days
 	global $HTTPS;
 	return header("Set-Cookie: $name=" . urlencode($value)
 		. ($lifetime ? "; expires=" . gmdate("D, d M Y H:i:s", time() + $lifetime) . " GMT" : "")
@@ -551,7 +551,7 @@ function is_ajax() {
 * @param string
 * @return null
 */
-function redirect($location, $message = null) {
+function adminer_redirect($location, $message = null) {
 	if ($message !== null) {
 		restart_session();
 		$_SESSION["messages"][preg_replace('~^[^?]*~', '', ($location !== null ? $location : $_SERVER["REQUEST_URI"]))][] = $message;
@@ -591,7 +591,7 @@ function query_redirect($query, $location, $message, $redirect = true, $execute 
 		return false;
 	}
 	if ($redirect) {
-		redirect($location, $message . $sql);
+		adminer_redirect($location, $message . $sql);
 	}
 	return true;
 }

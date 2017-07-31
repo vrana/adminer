@@ -358,7 +358,7 @@ ORDER BY conkey, conname") as $row) {
 		return $return;
 	}
 
-	function view($name) {
+	function adminer_view($name) {
 		global $connection;
 		return array("select" => trim($connection->result("SELECT pg_get_viewdef(" . q($name) . ")")));
 	}
