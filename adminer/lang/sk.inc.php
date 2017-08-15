@@ -265,4 +265,5 @@ $translations = array(
 	'Permanent link' => 'Permanentný odkaz',
 	'Edit all' => 'Upraviť všetko',
 	'HH:MM:SS' => 'HH:MM:SS',
+	'Filename' => 'Názov súboru',
 );

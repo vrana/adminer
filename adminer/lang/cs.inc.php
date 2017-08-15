@@ -336,4 +336,5 @@ $translations = array(
 	'Type has been dropped.' => 'Typ byl odstraněn.',
 	'Type has been created.' => 'Typ byl vytvořen.',
 	'Alter type' => 'Pozměnit typ',
+	'Filename' => 'Název souboru',
 );
