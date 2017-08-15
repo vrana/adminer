@@ -7,9 +7,13 @@ if ($_POST && !$error) {
 		$cookie .= "&$key=" . urlencode($_POST[$key]);
 	}
 	cookie("adminer_export", substr($cookie, 1));
+    $filename = DB;
+    if ($_POST['output'] != 'text') {
+        $filename = preg_replace('/[^a-zA-Z0-9\-\._]/','', $_POST['filename']);
+    }
 	$tables = array_flip((array) $_POST["tables"]) + array_flip((array) $_POST["data"]);
 	$ext = dump_headers(
-		(count($tables) == 1 ? key($tables) : DB),
+		(count($tables) == 1 ? key($tables) : $filename),
 		(DB == "" || count($tables) > 1));
 	$is_sql = preg_match('~sql~', $_POST["format"]);
 
@@ -160,7 +164,9 @@ echo "<tr><th>" . lang('Tables') . "<td>" . html_select('table_style', $table_st
 echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style, $row["data_style"]);
 ?>
 </table>
-<p><input type="submit" value="<?php echo lang('Export'); ?>">
+<p>
+<input type="text" name="filename" value="<?php echo $_GET['db']; ?>" placeholder="<?php echo lang('Filename'); ?>" title="<?php echo lang('Filename'); ?>">
+<input type="submit" value="<?php echo lang('Export'); ?>">
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 
 <table cellspacing="0">
