@@ -1,7 +1,7 @@
 Adminer 4.3.2-dev:
-MySQL: Don't set time zone from PHP, fixes DST
 MySQL: Remove dedicated view for replication status (added in 4.3.0)
 PostgreSQL: Sort table names (regression from 4.3.1)
+Editor: Don't set time zone from PHP, fixes DST
 
 Adminer 4.3.1 (released 2017-04-14):
 Fix permanent login after logout (bug #539)
