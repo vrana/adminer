@@ -67,8 +67,6 @@ focus(document.getElementById('username'));
 	}
 
 	function login($login, $password) {
-		global $connection;
-		$connection->query("SET time_zone = " . q(substr_replace(@date("O"), ":", -2, 0))); // date("P") available since PHP 5.1.3, @ - requires date.timezone since PHP 5.3.0
 		return true;
 	}
 
