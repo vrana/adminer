@@ -955,6 +955,18 @@ bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 
 		echo "</ul>\n";
 	}
 
+
+	/**
+	 * Set the schema search path before executing a query in PostgreSQL.
+	 * Return an array of schema names, -1 for all schemas, or an empty array to disable this feature.
+	 * 
+	 * @param $schemas
+	 * @return array
+	 */
+	function setPgSqlQuerySearchPath($schemas = array()) {
+		return $schemas;
+	}
+
 }
 
 $adminer = (function_exists('adminer_object') ? adminer_object() : new Adminer);

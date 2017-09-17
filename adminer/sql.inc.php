@@ -206,6 +206,7 @@ if (!isset($_GET["import"])) {
 	} elseif ($_GET["history"] != "") {
 		$q = $history[$_GET["history"]][0];
 	}
+	input_for_query_search_path();
 	echo "<p>";
 	textarea("query", $q, 20);
 	echo ($_POST ? "" : "<script type='text/javascript'>document.getElementsByTagName('textarea')[0].focus();</script>\n");

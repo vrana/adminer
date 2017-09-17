@@ -70,6 +70,8 @@ if (isset($_GET["pgsql"])) {
 			}
 
 			function multi_query($query) {
+                $this->set_query_search_path();
+
 				return $this->_result = $this->query($query);
 			}
 
@@ -83,12 +85,46 @@ if (isset($_GET["pgsql"])) {
 			}
 
 			function result($query, $field = 0) {
+                $this->set_query_search_path();
+
 				$result = $this->query($query);
 				if (!$result || !$result->num_rows) {
 					return false;
 				}
 				return pg_fetch_result($result->_result, 0, $field);
 			}
+
+			function set_query_search_path() {
+                global $connection;
+
+                $schemas = $connection->pgsql_query_search_path_override();
+
+                if(!empty($schemas)) {
+                    $this->query('SET search_path TO ' . pg_escape_string($this->_link, $schemas));
+                }
+
+                return true;
+            }
+
+            function pgsql_query_search_path_override() {
+                global $adminer;
+
+                $query_search_path = $adminer->setPgSqlQuerySearchPath();
+                $post_search_path = isset($_POST["search_path"]) ? (string)filter_var($_POST["search_path"], FILTER_SANITIZE_STRING) : false;
+                $allow_search_path_override = (!empty($query_search_path));
+
+                $schemas = array();
+
+                if ($query_search_path == -1 && $allow_search_path_override && !$post_search_path) {
+                    $schemas = schemas();
+                } elseif (is_array($query_search_path) && $allow_search_path_override && !$post_search_path) {
+                    $schemas = $query_search_path;
+                } elseif ($post_search_path && $allow_search_path_override) {
+                    $schemas = explode(',', $post_search_path);
+                }
+
+                return implode(',', $schemas);
+            }
 		}
 
 		class Min_Result {

@@ -130,6 +130,32 @@ function textarea($name, $value, $rows = 10, $cols = 80) {
 	echo "</textarea>";
 }
 
+
+/** Set the "Search Path" editable textbox values, if enabled
+ * @param array $schemas
+ * @return bool
+ */
+function input_for_query_search_path() {
+	global $connection;
+
+	$schemas = $connection->pgsql_query_search_path_override();
+
+	if (!empty($schemas)) {
+		echo "
+			<div style='display: block; margin: .8em 20px 0 0;'>
+				<p>
+					<label for='search_path'>Schema search path:</label>
+				</p>
+				<input style='width: 98%;' name='search_path' value='$schemas' />
+			</div>
+		";
+		return true;
+	}
+
+	return null;
+}
+
+
 /** Print table columns for type edit
 * @param string
 * @param array
