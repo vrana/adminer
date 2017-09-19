@@ -15,3 +15,12 @@ adminer/sqlite.php - Development version of Adminer with SQLite allowed
 compile.php - Create a single file version
 lang.php - Update translations
 tests/selenium.html - Selenium test suite
+
+
+
+### CEGO Notes:
+
+#### How to compile:
+$ git submodule init
+$ git submodule update
+$ composer compile
