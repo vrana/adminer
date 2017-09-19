@@ -223,7 +223,7 @@ if (!defined("DRIVER")) {
 			var $extension = "PDO_MySQL";
 
 			function connect($server, $username, $password) {
-				$this->dsn("mysql:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\\d)~', ';port=\\1', $server)), $username, $password);
+				$this->dsn("mysql:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\\d)~', ';port=\\1', $server)), $username, $password, array(PDO::MYSQL_ATTR_SSL_CA => '/etc/mysql/ssl/ca.pem'));
 				return true;
 			}
 
