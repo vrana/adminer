@@ -85,8 +85,6 @@ if (isset($_GET["pgsql"])) {
 			}
 
 			function result($query, $field = 0) {
-                $this->set_query_search_path();
-
 				$result = $this->query($query);
 				if (!$result || !$result->num_rows) {
 					return false;
@@ -288,11 +286,10 @@ ORDER BY 1";
 
 	function table_status($name = "") {
         global $connection;
-        $schema = !empty($_GET['ns']) ? "'" . pg_escape_string($connection->_link, $_GET['ns']) . "'" : 'current_schema()';
 		$return = array();
 		foreach (get_rows("SELECT c.relname AS \"Name\", CASE c.relkind WHEN 'r' THEN 'table' WHEN 'm' THEN 'materialized view' ELSE 'view' END AS \"Engine\", pg_relation_size(c.oid) AS \"Data_length\", pg_total_relation_size(c.oid) - pg_relation_size(c.oid) AS \"Index_length\", obj_description(c.oid, 'pg_class') AS \"Comment\", c.relhasoids::int AS \"Oid\", c.reltuples as \"Rows\", n.nspname
 FROM pg_class c
-JOIN pg_namespace n ON(n.nspname = $schema AND n.oid = c.relnamespace)
+JOIN pg_namespace n ON(n.nspname = current_schema() AND n.oid = c.relnamespace)
 WHERE relkind IN ('r', 'm', 'v')
 " . ($name != "" ? "AND relname = " . q($name) : "ORDER BY relname")
 		) as $row) { //! Index_length, Auto_increment
