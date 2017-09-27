@@ -537,6 +537,10 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		return $ext;
 	}
 
+	function loadWebfilePath() {
+		return "adminer.sql";
+	}
+
 	function homepage() {
 		return true;
 	}
