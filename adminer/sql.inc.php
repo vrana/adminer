@@ -21,9 +21,10 @@ if (!$error && $_POST) {
 	if (!isset($_GET["import"])) {
 		$query = $_POST["query"];
 	} elseif ($_POST["webfile"]) {
-		$fp = @fopen((file_exists("adminer.sql")
-			? "adminer.sql"
-			: "compress.zlib://adminer.sql.gz"
+		$sql_file_path = $adminer->importServerPath();
+		$fp = @fopen((file_exists($sql_file_path)
+			? $sql_file_path
+			: "compress.zlib://{$sql_file_path}.gz"
 		), "rb");
 		$query = ($fp ? fread($fp, 1e6) : false);
 	} else {
@@ -220,7 +221,7 @@ if (!isset($_GET["import"])) {
 	);
 	echo "</div></fieldset>\n";
 	echo "<fieldset><legend>" . lang('From server') . "</legend><div>";
-	echo lang('Webserver file %s', "<code>adminer.sql" . (extension_loaded("zlib") ? "[.gz]" : "") . "</code>");
+	echo lang('Webserver file %s', "<code>" . h($adminer->importServerPath()) . (extension_loaded("zlib") ? "[.gz]" : "") . "</code>");
 	echo ' <input type="submit" name="webfile" value="' . lang('Run file') . '">';
 	echo "</div></fieldset>\n";
 	echo "<p>";

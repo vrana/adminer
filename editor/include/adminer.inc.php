@@ -549,6 +549,9 @@ qsl('div').onclick = whisperClick;", "")
 		return $ext;
 	}
 
+	function importServerPath() {
+	}
+
 	function homepage() {
 		return true;
 	}

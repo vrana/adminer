@@ -850,6 +850,13 @@ class Adminer {
 		return $ext;
 	}
 
+	/** Set the path of the file for webserver load
+	* @return string path of the sql dump file
+	*/
+	function importServerPath() {
+		return "adminer.sql";
+	}
+
 	/** Print homepage
 	* @return bool whether to print default homepage
 	*/
