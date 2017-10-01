@@ -75,7 +75,7 @@ focus(document.getElementById('username'));
 	}
 
 	function fieldName($field, $order = 0) {
-		return h($field["comment"] != "" ? $field["comment"] : $field["field"]);
+		return h(preg_replace('~\s+\[.*\]$~', '', ($field["comment"] != "" ? $field["comment"] : $field["field"])));
 	}
 
 	function selectLinks($tableStatus, $set = "") {
@@ -477,6 +477,10 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			return "<input type='password' value='" . h($value) . "'$attrs>";
 		}
 		return '';
+	}
+
+	function editHint($table, $field, $value) {
+		return (preg_match('~\s+(\[.*\])$~', ($field["comment"] != "" ? $field["comment"] : $field["field"]), $match) ? h(" $match[1]") : '');
 	}
 
 	function processInput($field, $value, $function = "") {

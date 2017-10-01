@@ -920,6 +920,7 @@ function input($field, $value, $function) {
 				. "$attrs>"
 			;
 		}
+		echo $adminer->editHint($_GET["edit"], $field, $value);
 	}
 }
 
