@@ -49,7 +49,7 @@ if ($_GET["val"] && is_ajax()) {
 	exit;
 }
 
-if ($_POST && !$error) {
+if ($_POST && !$error && !$_POST["hide_menu"]) {
 	$where_check = $where;
 	if (!$_POST["all"] && is_array($_POST["check"])) {
 		$checks = array();
