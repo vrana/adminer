@@ -68,7 +68,8 @@ input.wayoff { left: -1000px; position: absolute; }
 #logins, #tables { white-space: nowrap; overflow: auto; }
 #logins a, #tables a, #tables span { background: #fff; }
 #content { margin: 2em 0 0 21em; padding: 10px 20px 20px 0; }
-#lang { position: absolute; top: 0; left: 0; line-height: 1.8em; padding: .3em 1em; }
+#lang { position: absolute; top: 0; left: 0; line-height: 1.8em; padding: .3em 4em; }
+#hide_menu_button { position: absolute; top: 0; left: 0; line-height: 1.8em; padding: .3em 1em; }
 #breadcrumb { white-space: nowrap; position: absolute; top: 0; left: 21em; background: #eee; height: 2em; line-height: 1.8em; padding: 0 1em; margin: 0 0 0 -18px; }
 #h1 { color: #777; text-decoration: none; font-style: italic; }
 #version { font-size: 67%; color: red; }
@@ -90,7 +91,8 @@ input.wayoff { left: -1000px; position: absolute; }
 	.pages { left: auto; }
 	#menu { position: static; width: auto; }
 	#content { margin-left: 10px; }
-	#lang { position: static; border-top: 1px solid #999; }
+	#hide_menu_button { position: relative; top: -1.7em; display: inline; }
+	#lang { position: relative; border-top: 1px solid #999; display: inline; }
 	#breadcrumb { left: auto; }
 	.rtl .pages { right: auto; }
 	.rtl #content { margin-right: 10px; }
@@ -98,7 +100,7 @@ input.wayoff { left: -1000px; position: absolute; }
 }
 
 @media print {
-	#lang, #menu { display: none; }
+	#lang, #hide_menu_button, #menu { display: none; }
 	#content { margin-left: 1em; }
 	#breadcrumb { left: 1em; }
 	.nowrap td, .nowrap th, td.nowrap { white-space: normal; }

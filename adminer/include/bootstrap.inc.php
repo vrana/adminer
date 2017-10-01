@@ -79,6 +79,15 @@ define("ME", preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) 
 	. (DB != "" ? 'db=' . urlencode(DB) . '&' . (isset($_GET["ns"]) ? "ns=" . urlencode($_GET["ns"]) . "&" : "") : '')
 );
 
+//Hide menu button procedure
+if (isset($_POST["hide_menu"])) {
+    if ($_SESSION["hide_menu"]) {
+        $_SESSION["hide_menu"] = false;
+    } else {
+        $_SESSION["hide_menu"] = true;
+    }
+}
+
 include "../adminer/include/version.inc.php";
 include "./include/adminer.inc.php";
 include "../adminer/include/design.inc.php";

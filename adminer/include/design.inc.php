@@ -42,7 +42,7 @@ var offlineMessage = '<?php echo js_escape(lang('You are offline.')); ?>';
 
 <div id="help" class="jush-<?php echo $jush; ?> jsonly hidden" onmouseover="helpOpen = 1;" onmouseout="helpMouseout(this, event);"></div>
 
-<div id="content">
+<div id="content" <?php echo $_SESSION["hide_menu"] ? 'style = "margin-left: 10px;"' : '' ; ?> >
 <?php
 	if ($breadcrumb !== null) {
 		$link = substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1);
@@ -121,6 +121,12 @@ function page_footer($missing = "") {
 </div>
 
 <?php switch_lang(); ?>
+<form action="" method="post">
+<div id="hide_menu_button">
+<input type="submit" name="hide_menu" value="&#9776;" id="hide_menu">
+<input type="hidden" name="token" value="<?php echo $token; ?>">
+</div>
+</form>
 <?php if ($missing != "auth") { ?>
 <form action="" method="post">
 <p class="logout">
@@ -129,7 +135,7 @@ function page_footer($missing = "") {
 </p>
 </form>
 <?php } ?>
-<div id="menu">
+<div id="menu" <?php echo $_SESSION["hide_menu"] ? 'class = "hidden"' : ''; ?> >
 <?php $adminer->navigation($missing); ?>
 </div>
 <script type="text/javascript">setupSubmitHighlight(document);</script>
