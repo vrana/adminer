@@ -108,6 +108,7 @@ if (isset($_GET["elastic"])) {
 
 		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
 			global $adminer;
+
 			$data = array();
 			$query = "$table/_search";
 			if ($select != array("*")) {
@@ -176,6 +177,17 @@ if (isset($_GET["elastic"])) {
 			return new Min_Result($return);
 		}
 
+		function update($type, $record, $queryWhere) {
+			$parts = preg_split('/ *= */', $queryWhere);
+
+			if (count($parts) === 2) {
+				$id = trim($parts[1]);
+				$query = "{$type}/{$id}";
+				return $this->_conn->query($query, $record, 'POST');
+			}
+
+			return false;
+		}
 	}
 
 
