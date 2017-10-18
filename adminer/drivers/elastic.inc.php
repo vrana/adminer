@@ -20,6 +20,7 @@ if (isset($_GET["elastic"])) {
 				$file = @file_get_contents($this->_url  . '/' . ltrim($path, '/'), false, stream_context_create(array('http' => array(
 					'method' => $method,
 					'content' => json_encode($content),
+					'header' => 'Content-type:application/json',
 					'ignore_errors' => 1, // available since PHP 5.2.10
 				))));
 				if (!$file) {
