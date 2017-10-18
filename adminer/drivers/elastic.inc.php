@@ -292,7 +292,7 @@ if (isset($_GET["elastic"])) {
 	function table_status($name = "", $fast = false) {
 		global $connection;
 		$search = $connection->query("_search?search_type=count", array(
-			"facets" => array(
+			"aggregations" => array(
 				"count_by_type" => array(
 					"terms" => array(
 						"field" => "_type",
@@ -302,13 +302,14 @@ if (isset($_GET["elastic"])) {
 		), "POST");
 		$return = array();
 		if ($search) {
-			foreach ($search["facets"]["count_by_type"]["terms"] as $table) {
-				$return[$table["term"]] = array(
-					"Name" => $table["term"],
+			$tables = $search["aggregations"]["count_by_type"]["buckets"];
+			foreach ( $tables as $table) {
+				$return[$table["key"]] = array(
+					"Name" => $table["key"],
 					"Engine" => "table",
-					"Rows" => $table["count"],
+					"Rows" => $table["doc_count"],
 				);
-				if ($name != "" && $name == $table["term"]) {
+				if ($name != "" && $name == $table["key"]) {
 					return $return[$name];
 				}
 			}
