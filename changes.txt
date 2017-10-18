@@ -2,6 +2,7 @@ Adminer 4.4.1-dev:
 Adminer: Fix Search data in tables (regression from 4.4.0)
 CSP: Allow any images, media and fonts, disallow base-uri
 SQLite: Enable foreign key checks
+Elasticsearch: Insert, update, delete
 
 Adminer 4.4.0 (released 2018-01-17):
 Add Content Security Policy
