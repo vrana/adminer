@@ -197,6 +197,35 @@ if (isset($_GET["elastic"])) {
 			$this->_conn->last_id = $response['_id'];
 			return $response['created'];
 		}
+
+		function delete($type, $queryWhere) {
+			$ids = array();
+
+			if (is_array($_GET["where"]) && !empty($_GET["where"]["_id"])) {
+				$ids[] = $_GET["where"]["_id"];
+			}
+
+			if (is_array($_POST['check'])) {
+				foreach ($_POST['check'] as $check) {
+					$parts = preg_split('/ *= */', $check);
+					if (count($parts) === 2) {
+						$ids[] = trim($parts[1]);
+					}
+				}
+			}
+
+			$this->_conn->affected_rows = 0;
+			foreach ($ids as $id) {
+				$query = "{$type}/{$id}";
+				$response = $this->_conn->query($query, '{}', 'DELETE');
+
+				if (is_array($response) && $response['found'] == true) {
+					$this->_conn->affected_rows++;
+				}
+			}
+
+			return $this->_conn->affected_rows;
+		}
 	}
 
 
