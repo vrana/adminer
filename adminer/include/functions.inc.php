@@ -689,10 +689,14 @@ function get_file($key, $decompress = false) {
 		}
 		$name = $file["name"][$key];
 		$tmp_name = $file["tmp_name"][$key];
-		$content = file_get_contents($decompress && preg_match('~\\.gz$~', $name)
-			? "compress.zlib://$tmp_name"
-			: $tmp_name
-		); //! may not be reachable because of open_basedir
+		if ($decompress) {
+			if (preg_match('~\\.gz$~', $name)) {
+				$tmp_name = "compress.zlib://$tmp_name";
+			} elseif (preg_match('~\\.bz2$~', $name)) {
+				$tmp_name = "compress.bzip2://$tmp_name";
+			}
+		}
+		$content = file_get_contents($tmp_name); //! may not be reachable because of open_basedir
 		if ($decompress) {
 			$start = substr($content, 0, 3);
 			if (function_exists("iconv") && preg_match("~^\xFE\xFF|^\xFF\xFE~", $start, $regs)) { // not ternary operator to save memory
