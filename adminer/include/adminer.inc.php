@@ -626,6 +626,16 @@ focus(document.getElementById('username'));
 		return "";
 	}
 
+	/** Get hint for edit field
+	* @param string table name
+	* @param array single field from fields()
+	* @param string
+	* @return string
+	*/
+	function editHint($table, $field, $value) {
+		return "";
+	}
+
 	/** Process sent input
 	* @param array single field from fields()
 	* @param string
