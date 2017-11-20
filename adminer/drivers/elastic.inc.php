@@ -388,7 +388,7 @@ if (isset($_GET["elastic"])) {
 		return null;
 	}
 
-	/** Create database
+	/** Create index
 	* @param string
 	* @return mixed
 	*/
@@ -397,7 +397,7 @@ if (isset($_GET["elastic"])) {
 		return $connection->rootQuery(urlencode($db), null, 'PUT');
 	}
 
-	/** Drop databases
+	/** Remove index
 	* @param array
 	* @return mixed
 	*/
@@ -406,7 +406,31 @@ if (isset($_GET["elastic"])) {
 		return $connection->rootQuery(urlencode(implode(',', $databases)), array(), 'DELETE');
 	}
 
-	/** Drop tables
+	/** Alter type
+	* @param array
+	* @return mixed
+	*/
+	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
+		global $connection;
+
+		$properties = array();
+		foreach($fields as $f) {
+			$field_name = trim($f[1][0]);
+			$field_type = trim($f[1][1] ?: "text");
+
+			$properties[$field_name] = array(
+				'type' => $field_type
+			);
+		}
+
+		if(!empty($properties)) {
+			$properties = array('properties' => $properties);
+		}
+
+		return $connection->query("_mapping/{$name}", $properties, 'PUT');
+	}
+
+	/** Drop types
 	* @param array
 	* @return bool
 	*/
@@ -429,4 +453,16 @@ if (isset($_GET["elastic"])) {
 	$functions = array();
 	$grouping = array();
 	$edit_functions = array(array("json"));
+
+	$types = array(); ///< @var array ($type => $maximum_unsigned_length, ...)
+	$structured_types = array(); ///< @var array ($description => array($type, ...), ...)
+	foreach (array(
+		lang('Numbers') => array("long" => 3, "integer" => 5, "short" => 8, "byte" => 10, "double" => 20, "float" => 66, "half_float" => 12, "scaled_float" => 21),
+		lang('Date and time') => array("date" => 10),
+		lang('Strings') => array("string" => 65535, "text" => 65535),
+		lang('Binary') => array( "binary" => 255),
+	) as $key => $val) {
+		$types += $val;
+		$structured_types[$key] = array_keys($val);
+	}
 }
