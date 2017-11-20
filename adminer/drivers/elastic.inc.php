@@ -19,7 +19,7 @@ if (isset($_GET["elastic"])) {
 				@ini_set('track_errors', 1); // @ - may be disabled
 				$file = @file_get_contents($this->_url  . '/' . ltrim($path, '/'), false, stream_context_create(array('http' => array(
 					'method' => $method,
-					'content' => json_encode($content),
+					'content' => $content === null ? $content : json_encode($content),
 					'header' => 'Content-type:application/json',
 					'ignore_errors' => 1, // available since PHP 5.2.10
 				))));
@@ -61,7 +61,7 @@ if (isset($_GET["elastic"])) {
 
 			function connect($server, $username, $password) {
 				preg_match('~^(https?://)?(.*)~', $server, $match);
-				$this->_url = ($match[1] ? $match[1] : "http://") . "$username:$password@$match[2]/";
+				$this->_url = ($match[1] ? $match[1] : "http://") . "$username:$password@$match[2]";
 				$return = $this->query('');
 				if ($return) {
 					$this->server_info = $return['version']['number'];
@@ -394,7 +394,7 @@ if (isset($_GET["elastic"])) {
 	*/
 	function create_database($db) {
 		global $connection;
-		return $connection->rootQuery(urlencode($db), array(), 'PUT');
+		return $connection->rootQuery(urlencode($db), null, 'PUT');
 	}
 
 	/** Drop databases
