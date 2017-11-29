@@ -183,7 +183,7 @@ if (isset($_GET["elastic"])) {
 
 			if (count($parts) === 2) {
 				$id = trim($parts[1]);
-				$query = "{$type}/{$id}";
+				$query = $type . '/' . $id;
 				return $this->_conn->query($query, $record, 'POST');
 			}
 
@@ -193,7 +193,7 @@ if (isset($_GET["elastic"])) {
 		function insert($type, $record) {
 			$id = ""; // TODO: User should be able to inform _id
 
-			$query = "{$type}/{$id}";
+			$query = $type . '/' . $id;
 			$response = $this->_conn->query($query, $record, 'POST');
 			$this->_conn->last_id = $response['_id'];
 			return $response['created'];
