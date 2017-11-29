@@ -2,4 +2,7 @@ language: php
 php:
   - '5.4'
   - '7.1'
-script: git diff --name-only $TRAVIS_COMMIT_RANGE | grep '\.php$' | xargs -n1 -P8 php -l | grep -v 'No syntax errors'; test $? -eq 1
+script:
+  - php compile.php
+  - find -name "*.php" -exec php -l {} \;
+
