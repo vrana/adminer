@@ -252,6 +252,8 @@ if (isset($_GET["elastic"])) {
 	}
 
 	function get_databases() {
+		$_GET['dbsize'] = 1;
+
 		global $connection;
 		$return = $connection->rootQuery('_aliases');
 		if ($return) {
@@ -274,10 +276,17 @@ if (isset($_GET["elastic"])) {
 
 	function count_tables($databases) {
 		global $connection;
-		$return = $connection->query('_mapping');
-		if ($return) {
-			$return = array_map('count', $return);
+		$return = array();
+		$result = $connection->query('_stats');
+
+		if (!(empty($result) || empty($result['indices']))) {
+			$indices = $result['indices'];
+			foreach($indices as $indice => $stats) {
+				$indexing = $stats['total']['indexing'];
+				$return[ $indice ] = $indexing['index_total'];
+			}
 		}
+
 		return $return;
 	}
 
@@ -292,15 +301,18 @@ if (isset($_GET["elastic"])) {
 
 	function table_status($name = "", $fast = false) {
 		global $connection;
-		$search = $connection->query("_search?search_type=count", array(
+
+		$search = $connection->query("_search", array(
+			"size" => 0,
 			"aggregations" => array(
 				"count_by_type" => array(
 					"terms" => array(
-						"field" => "_type",
+						"field" => "_type"
 					)
 				)
 			)
 		), "POST");
+
 		$return = array();
 		if ($search) {
 			$tables = $search["aggregations"]["count_by_type"]["buckets"];
