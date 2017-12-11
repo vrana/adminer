@@ -6,6 +6,7 @@ PostgreSQL: Respect NULL default value
 PostgreSQL: Do not export triggers if not requested
 PostgreSQL: Export DROP SEQUENCE if dropping table
 Elasticsearch: Insert, update, delete
+MongoDB: Support mongodb PHP extension
 
 Adminer 4.4.0 (released 2018-01-17):
 Add Content Security Policy
