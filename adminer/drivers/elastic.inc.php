@@ -301,13 +301,9 @@ if (isset($_GET["elastic"])) {
 
 	function table_status($name = "", $fast = false) {
 		global $connection;
-<<<<<<< HEAD
-		$search = $connection->query("_search?search_type=count", array(
-=======
 
 		$search = $connection->query("_search", array(
 			"size" => 0,
->>>>>>> elastic
 			"aggregations" => array(
 				"count_by_type" => array(
 					"terms" => array(
