@@ -5,6 +5,7 @@ SQLite: Enable foreign key checks
 PostgreSQL: Respect NULL default value
 PostgreSQL: Do not export triggers if not requested
 PostgreSQL: Export DROP SEQUENCE if dropping table
+MS SQL: Support freetds
 Elasticsearch: Insert, update, delete
 MongoDB: Support mongodb PHP extension
 
