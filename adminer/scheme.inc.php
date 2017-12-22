@@ -3,8 +3,8 @@ $row = $_POST;
 
 if ($_POST && !$error) {
 	$link = preg_replace('~ns=[^&]*&~', '', ME) . "ns=";
-	if ($_POST["drop"]) {
-		query_redirect("DROP SCHEMA " . idf_escape($_GET["ns"]), $link, lang('Schema has been dropped.'));
+	if ($_POST["drop"] || $_POST["drop_cascade"]) {
+		query_redirect("DROP SCHEMA " . idf_escape($_GET["ns"]) . ($jush == "pgsql" && $_POST["drop_cascade"]?" CASCADE":""), $link, lang('Schema has been dropped.'));
 	} else {
 		$name = trim($row["name"]);
 		$link .= urlencode($name);
@@ -32,6 +32,9 @@ if (!$row) {
 <?php
 if ($_GET["ns"] != "") {
 	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm() . ">\n";
+	if ($jush == 'pgsql') {
+		echo "<input type='submit' name='drop_cascade' value='" . lang('Drop cascade') . "'" . confirm() . ">\n";
+	}
 }
 ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
