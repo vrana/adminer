@@ -280,7 +280,7 @@ function pageClick(href, page, event) {
 function menuOver(el, event) {
 	var a = getTarget(event);
 	if (isTag(a, 'a|span') && a.offsetLeft + a.offsetWidth > a.parentNode.offsetWidth - 15) { // 15 - ellipsis
-		el.style.overflow = 'visible';
+		el.style.overflow = 'scroll';
 	}
 }
 
@@ -288,10 +288,29 @@ function menuOver(el, event) {
 * @param HTMLElement
 */
 function menuOut(el) {
-	el.style.overflow = 'auto';
+	el.style.overflow = 'scroll';
 }
 
-
+/** Auto scroll the menu when a table be selected
+*/
+function menuAutoScroll() {
+	var params      = window.location.search;
+	var paramsArray = params.split('&');
+	var tableName   = '';
+	paramsArray.map(function (v) {
+		var tmp = v.split('=');
+		if (tmp[0] === 'table') {
+			tableName = tmp[1];
+		}
+	});
+	if (tableName === '') {
+		return;
+	}
+	
+	var table  = document.getElementsByClassName(tableName);
+	var tables = document.getElementById('tables');
+	tables.scrollTop = table[0].offsetTop - 500;
+}
 
 /** Add row in select fieldset
 * @param HTMLSelectElement
