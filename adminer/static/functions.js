@@ -565,7 +565,7 @@ function ajax(url, callback, data, message) {
 */
 function ajaxSetHtml(url) {
 	return ajax(url, function (request) {
-		var data = eval('(' + request.responseText + ')');
+		var data = window.JSON ? JSON.parse(request.responseText) : eval('(' + request.responseText + ')');
 		for (var key in data) {
 			setHtml(key, data[key]);
 		}
