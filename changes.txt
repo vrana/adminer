@@ -6,6 +6,7 @@ PostgreSQL: Sort table names (regression from 4.3.1)
 Editor: Don't set time zone from PHP, fixes DST
 Editor: Display field comment's text inside [] only in edit form
 Editor: Fix doubleclick on database page
+Customization: Always send security headers
 Hebrew translation
 
 Adminer 4.3.1 (released 2017-04-14):

@@ -65,10 +65,9 @@ class Adminer {
 	}
 
 	/** Headers to send before HTML output
-	* @return bool true to send security headers
+	* @return null
 	*/
 	function headers() {
-		return true;
 	}
 
 	/** Print HTML code inside <head>

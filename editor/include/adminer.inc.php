@@ -45,7 +45,6 @@ class Adminer {
 	}
 
 	function headers() {
-		return true;
 	}
 
 	function head() {

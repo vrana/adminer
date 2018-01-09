@@ -20,11 +20,9 @@ class AdminerFrames {
 	function headers() {
 		if ($this->sameOrigin) {
 			header("X-Frame-Options: SameOrigin");
+		} elseif (function_exists('header_remove')) {
+			header_remove("X-Frame-Options");
 		}
-		header("X-XSS-Protection: 0");
-		header("X-Content-Type-Options: nosniff");
-		header("Referrer-Policy: origin-when-cross-origin");
-		return false;
 	}
 	
 }
