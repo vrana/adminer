@@ -1,4 +1,5 @@
 Adminer 4.3.2-dev:
+Add Content Security Policy
 Add nosniff header
 PHP 7.1: Prevent warning when using empty limit
 MySQL: Remove dedicated view for replication status (added in 4.3.0)
