@@ -47,6 +47,10 @@ class Adminer {
 	function headers() {
 	}
 
+	function csp() {
+		return csp();
+	}
+
 	function head() {
 		return true;
 	}

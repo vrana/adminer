@@ -70,6 +70,13 @@ class Adminer {
 	function headers() {
 	}
 
+	/** Get Content Security Policy headers
+	* @return array directive name in key, allowed sources in value
+	*/
+	function csp() {
+		return csp();
+	}
+
 	/** Print HTML code inside <head>
 	* @return bool true to link adminer.css if exists
 	*/

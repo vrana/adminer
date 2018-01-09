@@ -91,8 +91,27 @@ function page_headers() {
 	header("X-XSS-Protection: 0"); // prevents introducing XSS in IE8 by removing safe parts of the page
 	header("X-Content-Type-Options: nosniff");
 	header("Referrer-Policy: origin-when-cross-origin");
-	header("Content-Security-Policy: default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; frame-src https://www.adminer.org; form-action 'self'");
+	$csp = array();
+	foreach ($adminer->csp() as $key => $val) {
+		$csp[] = "$key $val";
+	}
+	header("Content-Security-Policy: " . implode("; ", $csp));
 	$adminer->headers();
+}
+
+/** Get Content Security Policy headers
+* @return array directive name in key, allowed sources in value
+*/
+function csp() {
+	return array(
+		"default-src" => "'none'",
+		"script-src" => "'self' 'unsafe-inline'",
+		"style-src" => "'self' 'unsafe-inline'",
+		"connect-src" => "'self'",
+		"img-src" => "'self' data:",
+		"frame-src" => "https://www.adminer.org",
+		"form-action" => "'self'",
+	);
 }
 
 /** Print flash and error messages
