@@ -1,4 +1,5 @@
 Adminer 4.3.2-dev:
+Add nosniff header
 PHP 7.1: Prevent warning when using empty limit
 MySQL: Remove dedicated view for replication status (added in 4.3.0)
 PostgreSQL: Sort table names (regression from 4.3.1)
