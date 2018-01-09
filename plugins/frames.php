@@ -22,6 +22,7 @@ class AdminerFrames {
 			header("X-Frame-Options: SameOrigin");
 		}
 		header("X-XSS-Protection: 0");
+		header("Referrer-Policy: origin-when-cross-origin");
 		return false;
 	}
 	

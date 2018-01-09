@@ -20,7 +20,6 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <html lang="<?php echo $LANG; ?>" dir="<?php echo lang('ltr'); ?>">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="robots" content="noindex">
-<meta name="referrer" content="origin-when-crossorigin">
 <title><?php echo $title_page; ?></title>
 <link rel="stylesheet" type="text/css" href="../adminer/static/default.css">
 <script src="../adminer/static/functions.js"></script>
@@ -91,6 +90,7 @@ function page_headers() {
 	if ($adminer->headers()) {
 		header("X-Frame-Options: deny"); // ClickJacking protection in IE8, Safari 4, Chrome 2, Firefox 3.6.9
 		header("X-XSS-Protection: 0"); // prevents introducing XSS in IE8 by removing safe parts of the page
+		header("Referrer-Policy: origin-when-cross-origin");
 	}
 }
 
