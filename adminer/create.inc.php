@@ -163,7 +163,7 @@ foreach ($engines as $engine) {
 <p>
 <?php if (support("columns") || $TABLE == "") { ?>
 <?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo h($row["name"]); ?>" autocapitalize="off">
-<?php if ($TABLE == "" && !$_POST) { ?><script type='text/javascript'>focus(document.getElementById('form')['name']);</script><?php } ?>
+<?php if ($TABLE == "" && !$_POST) { ?><script type='text/javascript'>focus(qs('#form')['name']);</script><?php } ?>
 <?php echo ($engines ? "<select name='Engine' onchange='helpClose();'" . on_help("getTarget(event).value", 1) . ">" . optionlist(array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) . "</select>" : ""); ?>
  <?php echo ($collations && !preg_match("~sqlite|mssql~", $jush) ? html_select("Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]) : ""); ?>
  <input type="submit" value="<?php echo lang('Save'); ?>">

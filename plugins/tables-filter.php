@@ -28,7 +28,7 @@ var tablesFilterTimeout = null;
 var tablesFilterValue = '';
 
 function tablesFilter(){
-	var value = document.getElementById('filter-field').value.toLowerCase();
+	var value = qs('#filter-field').value.toLowerCase();
 	if (value == tablesFilterValue) {
 		return;
 	}
@@ -40,7 +40,7 @@ function tablesFilter(){
 	if (sessionStorage) {
 		sessionStorage.setItem('adminer_tables_filter', value);
 	}
-	var tables = document.getElementById('tables').getElementsByTagName('li');
+	var tables = qs('#tables').getElementsByTagName('li');
 	for (var i = 0; i < tables.length; i++) {
 		var a = tables[i].getElementsByTagName('a')[1];
 		var text = tables[i].getAttribute('data-table-name');
@@ -60,10 +60,10 @@ function tablesFilterInput() {
 }
 
 if (sessionStorage){
-	var db = document.getElementById('dbs').getElementsByTagName('select')[0];
+	var db = qs('#dbs').getElementsByTagName('select')[0];
 	db = db.options[db.selectedIndex].text;
 	if (db == sessionStorage.getItem('adminer_tables_filter_db') && sessionStorage.getItem('adminer_tables_filter')){
-		document.getElementById('filter-field').value = sessionStorage.getItem('adminer_tables_filter');
+		qs('#filter-field').value = sessionStorage.getItem('adminer_tables_filter');
 		tablesFilter();
 	}
 	sessionStorage.setItem('adminer_tables_filter_db', db);

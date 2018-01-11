@@ -59,7 +59,7 @@ class Adminer {
 <tr><th><?php echo lang('Password'); ?><td><input type="password" name="auth[password]">
 </table>
 <script type="text/javascript">
-focus(document.getElementById('username'));
+focus(qs('#username'));
 </script>
 <?php
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
@@ -399,7 +399,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 				$field = idf_escape($_POST["email_field"]);
 				$subject = $_POST["email_subject"];
 				$message = $_POST["email_message"];
-				preg_match_all('~\\{\\$([a-z0-9_]+)\\}~i', "$subject.$message", $matches); // allows {$name} in subject or message
+				preg_match_all('~\\{\\$('#' + [a-z0-9_]+)\\}~i', "$subject.$message", $matches); // allows {$name} in subject or message
 				$rows = get_rows("SELECT DISTINCT $field" . ($matches[1] ? ", " . implode(", ", array_map('idf_escape', array_unique($matches[1]))) : "") . " FROM " . table($_GET["select"])
 					. " WHERE $field IS NOT NULL AND $field != ''"
 					. ($where ? " AND " . implode(" AND ", $where) : "")
@@ -488,7 +488,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			return "$function()";
 		}
 		$return = $value;
-		if (preg_match('~date|timestamp~', $field["type"]) && preg_match('(^' . str_replace('\\$1', '(?P<p1>\\d*)', preg_replace('~(\\\\\\$([2-6]))~', '(?P<p\\2>\\d{1,2})', preg_quote(lang('$1-$3-$5')))) . '(.*))', $value, $match)) {
+		if (preg_match('~date|timestamp~', $field["type"]) && preg_match('(^' . str_replace('\\$1', '(?P<p1>\\d*)', preg_replace('~(\\\\\\$('#' + [2-6]))~', '(?P<p\\2>\\d{1,2})', preg_quote(lang('$1-$3-$5')))) . '(.*))', $value, $match)) {
 			$return = ($match["p1"] != "" ? $match["p1"] : ($match["p2"] != "" ? ($match["p2"] < 70 ? 20 : 19) . $match["p2"] : gmdate("Y"))) . "-$match[p3]$match[p4]-$match[p5]$match[p6]" . end($match);
 		}
 		$return = ($field["type"] == "bit" && preg_match('~^[0-9]+$~', $value) ? $return : q($return));

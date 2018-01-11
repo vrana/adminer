@@ -338,7 +338,7 @@ function editingLengthChange(el) {
 function editingLengthFocus(field) {
 	var td = field.parentNode;
 	if (/(enum|set)$/.test(selectValue(td.previousSibling.firstChild))) {
-		var edit = document.getElementById('enum-edit');
+		var edit = qs('#enum-edit');
 		var val = field.value;
 		edit.value = (/^'.+'$/.test(val) ? val.substr(1, val.length - 2).replace(/','/g, "\n").replace(/''/g, "'") : val); //! doesn't handle 'a'',''b' correctly
 		td.appendChild(edit);
@@ -364,7 +364,7 @@ function editingLengthBlur(edit) {
 * @param number
 */
 function columnShow(checked, column) {
-	var trs = document.getElementById('edit-fields').getElementsByTagName('tr');
+	var trs = qs('#edit-fields').getElementsByTagName('tr');
 	for (var i=0; i < trs.length; i++) {
 		alterClass(trs[i].getElementsByTagName('td')[column], 'hidden', !checked);
 	}
@@ -374,7 +374,7 @@ function columnShow(checked, column) {
 */
 function editingHideDefaults() {
 	if (innerWidth < document.documentElement.scrollWidth) {
-		document.getElementById('form')['defaults'].checked = false;
+		qs('#form')['defaults'].checked = false;
 		columnShow(false, 5);
 	}
 }
@@ -385,7 +385,7 @@ function editingHideDefaults() {
 function partitionByChange(el) {
 	var partitionTable = /RANGE|LIST/.test(selectValue(el));
 	alterClass(el.form['partitions'], 'hidden', partitionTable || !el.selectedIndex);
-	alterClass(document.getElementById('partition-table'), 'hidden', !partitionTable);
+	alterClass(qs('#partition-table'), 'hidden', !partitionTable);
 	helpClose();
 }
 
@@ -533,7 +533,7 @@ function schemaMousemove(ev) {
 		var lineSet = { };
 		for (var i=0; i < divs.length; i++) {
 			if (divs[i].className == 'references') {
-				var div2 = document.getElementById((/^refs/.test(divs[i].id) ? 'refd' : 'refs') + divs[i].id.substr(4));
+				var div2 = qs('#' + (/^refs/.test(divs[i].id) ? 'refd' : 'refs') + divs[i].id.substr(4));
 				var ref = (tablePos[divs[i].title] ? tablePos[divs[i].title] : [ div2.parentNode.offsetTop / em, 0 ]);
 				var left1 = -1;
 				var id = divs[i].id.replace(/^ref.(.+)-.+/, '$1');
@@ -546,7 +546,7 @@ function schemaMousemove(ev) {
 					div2.getElementsByTagName('div')[0].style.width = -left2 + 'em';
 				}
 				if (!lineSet[id]) {
-					var line = document.getElementById(divs[i].id.replace(/^....(.+)-.+$/, 'refl$1'));
+					var line = qs('#' + divs[i].id.replace(/^....(.+)-.+$/, 'refl$1'));
 					var top1 = top + divs[i].offsetTop / em;
 					var top2 = top + div2.offsetTop / em;
 					if (divs[i].parentNode != div2.parentNode) {
@@ -578,7 +578,7 @@ function schemaMouseup(ev, db) {
 			s += '_' + key + ':' + Math.round(tablePos[key][0] * 10000) / 10000 + 'x' + Math.round(tablePos[key][1] * 10000) / 10000;
 		}
 		s = encodeURIComponent(s.substr(1));
-		var link = document.getElementById('schema-link');
+		var link = qs('#schema-link');
 		link.href = link.href.replace(/[^=]+$/, '') + s;
 		cookie('adminer_schema-' + db + '=' + s, 30); //! special chars in db
 	}
@@ -600,7 +600,7 @@ function helpMouseover(el, event, text, side) {
 		helpClose();
 	} else if (window.jush && (!helpIgnore || el != target)) {
 		helpOpen = 1;
-		var help = document.getElementById('help');
+		var help = qs('#help');
 		help.innerHTML = text;
 		jush.highlight_tag([ help ]);
 		alterClass(help, 'hidden');
@@ -628,5 +628,5 @@ function helpMouseout(el, event) {
 /** Close help
 */
 function helpClose() {
-	alterClass(document.getElementById('help'), 'hidden', true);
+	alterClass(qs('#help'), 'hidden', true);
 }

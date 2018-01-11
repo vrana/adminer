@@ -1383,7 +1383,7 @@ function edit_form($TABLE, $fields, $row, $update) {
 		}
 	}
 	echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "'" . confirm() . ">\n"
-		: ($_POST || !$fields ? "" : "<script type='text/javascript'>focus(document.getElementById('form').getElementsByTagName('td')[1].firstChild);</script>\n")
+		: ($_POST || !$fields ? "" : "<script type='text/javascript'>focus(qs('#form').getElementsByTagName('td')[1].firstChild);</script>\n")
 	);
 	if (isset($_GET["select"])) {
 		hidden_fields(array("check" => (array) $_POST["check"], "clone" => $_POST["clone"], "all" => $_POST["all"]));

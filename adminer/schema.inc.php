@@ -51,7 +51,7 @@ foreach (table_status('', true) as $table => $table_status) {
 <div id="schema" style="height: <?php echo $top; ?>em;" onselectstart="return false;">
 <script type="text/javascript">
 var tablePos = {<?php echo implode(",", $table_pos_js) . "\n"; ?>};
-var em = document.getElementById('schema').offsetHeight / <?php echo $top; ?>;
+var em = qs('#schema').offsetHeight / <?php echo $top; ?>;
 document.onmousemove = schemaMousemove;
 document.onmouseup = function (ev) {
 	schemaMouseup(ev, '<?php echo js_escape(DB); ?>');

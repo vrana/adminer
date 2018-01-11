@@ -1,4 +1,12 @@
 
+/** Get first element by selector
+* @param string
+* @return HTMLElement
+*/
+function qs(selector) {
+	return document.querySelector(selector);
+}
+
 /** Add or remove CSS class
 * @param HTMLElement
 * @param string
@@ -15,7 +23,7 @@ function alterClass(el, className, enable) {
 * @return boolean
 */
 function toggle(id) {
-	var el = document.getElementById(id);
+	var el = qs('#' + id);
 	el.className = (el.className == 'hidden' ? '' : 'hidden');
 	return true;
 }
@@ -54,7 +62,7 @@ function verifyVersion(current) {
 			}
 		}, false);
 	}
-	document.getElementById('version').appendChild(iframe);
+	qs('#version').appendChild(iframe);
 }
 
 /** Get value of select
@@ -108,7 +116,7 @@ function trCheck(el) {
 */
 function selectCount(id, count) {
 	setHtml(id, (count === '' ? '' : '(' + (count + '').replace(/\B(?=(\d{3})+$)/g, ' ') + ')'));
-	var inputs = document.getElementById(id).parentNode.parentNode.getElementsByTagName('input');
+	var inputs = qs('#' + id).parentNode.parentNode.getElementsByTagName('input');
 	for (var i = 0; i < inputs.length; i++) {
 		var input = inputs[i];
 		if (input.type == 'submit') {
@@ -149,7 +157,7 @@ function tableCheck() {
 * @param string
 */
 function formUncheck(id) {
-	var el = document.getElementById(id);
+	var el = qs('#' + id);
 	el.checked = false;
 	trCheck(el);
 }
@@ -237,7 +245,7 @@ function checkboxClick(event, el) {
 * @param string undefined to set parentNode to &nbsp;
 */
 function setHtml(id, html) {
-	var el = document.getElementById(id);
+	var el = qs('#' + id);
 	if (el) {
 		if (html == null) {
 			el.parentNode.innerHTML = '&nbsp;';
@@ -361,7 +369,7 @@ function columnMouse(el, className) {
  * @param string
  */
 function selectSearch(name) {
-	var el = document.getElementById('fieldset-search');
+	var el = qs('#fieldset-search');
 	el.className = '';
 	var divs = el.getElementsByTagName('div');
 	for (var i=0; i < divs.length; i++) {
@@ -514,7 +522,7 @@ function fieldChange(field) {
 function ajax(url, callback, data, message) {
 	var request = (window.XMLHttpRequest ? new XMLHttpRequest() : (window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') : false));
 	if (request) {
-		var ajaxStatus = document.getElementById('ajaxstatus');
+		var ajaxStatus = qs('#ajaxstatus');
 		if (message) {
 			ajaxStatus.innerHTML = '<div class="message">' + message + '</div>';
 			ajaxStatus.className = ajaxStatus.className.replace(/ hidden/g, '');
@@ -584,7 +592,7 @@ function ajaxForm(form, message, button) {
 	return ajax(url, function (request) {
 		setHtml('ajaxstatus', request.responseText);
 		if (window.jush) {
-			jush.highlight_tag(document.getElementById('ajaxstatus').getElementsByTagName('code'), 0);
+			jush.highlight_tag(qs('#ajaxstatus').getElementsByTagName('code'), 0);
 		}
 	}, data, message);
 }
@@ -678,7 +686,7 @@ function selectLoadMore(a, limit, loading) {
 		return ajax(href, function (request) {
 			var tbody = document.createElement('tbody');
 			tbody.innerHTML = request.responseText;
-			document.getElementById('table').appendChild(tbody);
+			qs('#table').appendChild(tbody);
 			if (tbody.children.length < limit) {
 				a.parentNode.removeChild(a);
 			} else {

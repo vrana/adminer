@@ -95,7 +95,7 @@ class Adminer {
 <tr><th><?php echo lang('Database'); ?><td><input name="auth[db]" value="<?php echo h($_GET["db"]); ?>" autocapitalize="off">
 </table>
 <script type="text/javascript">
-focus(document.getElementById('username'));
+focus(qs('#username'));
 </script>
 <?php
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
@@ -413,7 +413,7 @@ focus(document.getElementById('username'));
 			json_row($key);
 		}
 		echo ";\n";
-		echo "selectFieldChange(document.getElementById('form'));\n";
+		echo "selectFieldChange(qs('#form'));\n";
 		echo "</script>\n";
 		echo "</div></fieldset>\n";
 	}
