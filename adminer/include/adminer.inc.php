@@ -94,7 +94,7 @@ class Adminer {
 <tr><th><?php echo lang('Password'); ?><td><input type="password" name="auth[password]">
 <tr><th><?php echo lang('Database'); ?><td><input name="auth[db]" value="<?php echo h($_GET["db"]); ?>" autocapitalize="off">
 </table>
-<script type="text/javascript">
+<script>
 focus(qs('#username'));
 </script>
 <?php
@@ -399,7 +399,7 @@ focus(qs('#username'));
 		echo "<fieldset><legend>" . lang('Action') . "</legend><div>";
 		echo "<input type='submit' value='" . lang('Select') . "'>";
 		echo " <span id='noindex' title='" . lang('Full table scan') . "'></span>";
-		echo "<script type='text/javascript'>\n";
+		echo "<script>\n";
 		echo "var indexColumns = ";
 		$columns = array();
 		foreach ($indexes as $index) {
@@ -869,15 +869,15 @@ focus(qs('#username'));
 				$tables = table_status('', true);
 			}
 			?>
-<script type="text/javascript" src="../externals/jush/modules/jush.js"></script>
-<script type="text/javascript" src="../externals/jush/modules/jush-textarea.js"></script>
-<script type="text/javascript" src="../externals/jush/modules/jush-txt.js"></script>
-<script type="text/javascript" src="../externals/jush/modules/jush-js.js"></script>
+<script src="../externals/jush/modules/jush.js"></script>
+<script src="../externals/jush/modules/jush-textarea.js"></script>
+<script src="../externals/jush/modules/jush-txt.js"></script>
+<script src="../externals/jush/modules/jush-js.js"></script>
 <?php
 			if (support("sql")) {
 				?>
-<script type="text/javascript" src="../externals/jush/modules/jush-<?php echo $jush; ?>.js"></script>
-<script type="text/javascript">
+<script src="../externals/jush/modules/jush-<?php echo $jush; ?>.js"></script>
+<script>
 <?php
 				if ($tables) {
 					$links = array();

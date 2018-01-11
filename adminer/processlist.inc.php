@@ -44,7 +44,7 @@ foreach (process_list() as $i => $row) {
 }
 ?>
 </table>
-<script type='text/javascript'>tableCheck();</script>
+<script>tableCheck();</script>
 <p>
 <?php
 if (support("kill")) {

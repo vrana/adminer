@@ -58,7 +58,7 @@ class Adminer {
 <tr><th><?php echo lang('Username'); ?><td><input type="hidden" name="auth[driver]" value="server"><input name="auth[username]" id="username" value="<?php echo h($_GET["username"]); ?>" autocapitalize="off">
 <tr><th><?php echo lang('Password'); ?><td><input type="password" name="auth[password]">
 </table>
-<script type="text/javascript">
+<script>
 focus(qs('#username'));
 </script>
 <?php

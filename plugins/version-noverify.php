@@ -10,7 +10,7 @@ class AdminerVersionNoverify {
 	
 	function navigation($missing) {
 		?>
-<script type="text/javascript">
+<script>
 verifyVersion = function () {
 };
 </script>

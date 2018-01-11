@@ -19,13 +19,12 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <!DOCTYPE html>
 <html lang="<?php echo $LANG; ?>" dir="<?php echo lang('ltr'); ?>">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta http-equiv="Content-Script-Type" content="text/javascript">
 <meta name="robots" content="noindex">
 <meta name="referrer" content="origin-when-crossorigin">
 <title><?php echo $title_page; ?></title>
 <link rel="stylesheet" type="text/css" href="../adminer/static/default.css">
-<script type="text/javascript" src="../adminer/static/functions.js"></script>
-<script type="text/javascript" src="static/editing.js"></script>
+<script src="../adminer/static/functions.js"></script>
+<script src="static/editing.js"></script>
 <?php if ($adminer->head()) { ?>
 <link rel="shortcut icon" type="image/x-icon" href="../adminer/static/favicon.ico">
 <link rel="apple-touch-icon" href="../adminer/static/favicon.ico">
@@ -35,7 +34,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <?php } ?>
 
 <body class="<?php echo lang('ltr'); ?> nojs" onkeydown="bodyKeydown(event);" onclick="bodyClick(event);"<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " onload=\"verifyVersion('$VERSION');\""); ?>>
-<script type="text/javascript">
+<script>
 document.body.className = document.body.className.replace(/ nojs/, ' js');
 var offlineMessage = '<?php echo js_escape(lang('You are offline.')); ?>';
 </script>
@@ -132,6 +131,6 @@ function page_footer($missing = "") {
 <div id="menu">
 <?php $adminer->navigation($missing); ?>
 </div>
-<script type="text/javascript">setupSubmitHighlight(document);</script>
+<script>setupSubmitHighlight(document);</script>
 <?php
 }

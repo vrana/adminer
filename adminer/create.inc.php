@@ -163,7 +163,7 @@ foreach ($engines as $engine) {
 <p>
 <?php if (support("columns") || $TABLE == "") { ?>
 <?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo h($row["name"]); ?>" autocapitalize="off">
-<?php if ($TABLE == "" && !$_POST) { ?><script type='text/javascript'>focus(qs('#form')['name']);</script><?php } ?>
+<?php if ($TABLE == "" && !$_POST) { ?><script>focus(qs('#form')['name']);</script><?php } ?>
 <?php echo ($engines ? "<select name='Engine' onchange='helpClose();'" . on_help("getTarget(event).value", 1) . ">" . optionlist(array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) . "</select>" : ""); ?>
  <?php echo ($collations && !preg_match("~sqlite|mssql~", $jush) ? html_select("Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]) : ""); ?>
  <input type="submit" value="<?php echo lang('Save'); ?>">
@@ -187,7 +187,7 @@ edit_fields($row["fields"], $collations, "TABLE", $foreign_keys, $comments);
 <p>
 <?php echo lang('Auto Increment'); ?>: <input type="number" name="Auto_increment" size="6" value="<?php echo h($row["Auto_increment"]); ?>">
 <?php echo checkbox("defaults", 1, true, lang('Default values'), "columnShow(this.checked, 5)", "jsonly"); ?>
-<?php if (!$_POST["defaults"]) { ?><script type="text/javascript">editingHideDefaults()</script><?php } ?>
+<?php if (!$_POST["defaults"]) { ?><script>editingHideDefaults()</script><?php } ?>
 <?php echo (support("comment")
 	? "<label><input type='checkbox' name='comments' value='1' class='jsonly' onclick=\"columnShow(this.checked, 6); toggle('Comment'); if (this.checked) this.form['Comment'].focus();\"" . ($comments ? " checked" : "") . ">" . lang('Comment') . "</label>"
 		. ' <input name="Comment" id="Comment" value="' . h($row["Comment"]) . '" maxlength="' . ($connection->server_info >= 5.5 ? 2048 : 60) . '"' . ($comments ? '' : ' class="hidden"') . '>'

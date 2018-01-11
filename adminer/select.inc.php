@@ -519,7 +519,7 @@ if (!$columns && support("table")) {
 				echo "</div></fieldset>\n";
 			}
 
-			echo (!$group && $select ? "" : "<script type='text/javascript'>tableCheck();</script>\n");
+			echo (!$group && $select ? "" : "<script>tableCheck();</script>\n");
 		}
 
 		if ($adminer->selectImportPrint()) {

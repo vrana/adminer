@@ -14,7 +14,7 @@ class AdminerLoginSqlite {
 
 	function loginForm() {
 		?>
-<script type="text/javascript">
+<script>
 addEventListener('load', function () {
 	var driver = qs('name="auth[driver]"');
 	if (isTag(driver, 'select')) {

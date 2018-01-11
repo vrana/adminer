@@ -140,7 +140,7 @@ if ($adminer->homepage()) {
 				echo "</div></fieldset>\n";
 			}
 			echo "</form>\n";
-			echo "<script type='text/javascript'>tableCheck();</script>\n";
+			echo "<script>tableCheck();</script>\n";
 		}
 
 		echo '<p class="links"><a href="' . h(ME) . 'create=">' . lang('Create table') . "</a>\n";
@@ -221,7 +221,7 @@ if ($adminer->homepage()) {
 		}
 
 		if ($tables_list) {
-			echo "<script type='text/javascript'>ajaxSetHtml('" . js_escape(ME) . "script=db');</script>\n";
+			echo "<script>ajaxSetHtml('" . js_escape(ME) . "script=db');</script>\n";
 		}
 	}
 }

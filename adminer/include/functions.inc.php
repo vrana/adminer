@@ -1215,7 +1215,7 @@ function slow_query($query) {
 	if (support("kill") && is_object($connection2 = connect()) && ($db == "" || $connection2->select_db($db))) {
 		$kill = $connection2->result(connection_id()); // MySQL and MySQLi can use thread_id but it's not in PDO_MySQL
 		?>
-<script type="text/javascript">
+<script>
 var timeout = setTimeout(function () {
 	ajax('<?php echo js_escape(ME); ?>script=kill', function () {
 	}, 'token=<?php echo $token; ?>&kill=<?php echo $kill; ?>');
@@ -1229,7 +1229,7 @@ var timeout = setTimeout(function () {
 	flush();
 	$return = @get_key_vals($query, $connection2, $timeout); // @ - may be killed
 	if ($connection2) {
-		echo "<script type='text/javascript'>clearTimeout(timeout);</script>\n";
+		echo "<script>clearTimeout(timeout);</script>\n";
 		ob_flush();
 		flush();
 	}
@@ -1383,7 +1383,7 @@ function edit_form($TABLE, $fields, $row, $update) {
 		}
 	}
 	echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "'" . confirm() . ">\n"
-		: ($_POST || !$fields ? "" : "<script type='text/javascript'>focus(qsa('td', qs('#form'))[1].firstChild);</script>\n")
+		: ($_POST || !$fields ? "" : "<script>focus(qsa('td', qs('#form'))[1].firstChild);</script>\n")
 	);
 	if (isset($_GET["select"])) {
 		hidden_fields(array("check" => (array) $_POST["check"], "clone" => $_POST["clone"], "all" => $_POST["all"]));

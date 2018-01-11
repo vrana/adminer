@@ -22,7 +22,7 @@ class AdminerWymeditor {
 
 	function head() {
 		foreach ($this->scripts as $script) {
-			echo "<script type='text/javascript' src='" . h($script) . "'></script>\n";
+			echo "<script src='" . h($script) . "'></script>\n";
 		}
 	}
 
@@ -55,7 +55,7 @@ class AdminerWymeditor {
 				$lang = get_lang();
 				$lang = ($lang == "zh" || $lang == "zh-tw" ? "zh_cn" : $lang);
 			}
-			return "<textarea$attrs id='fields-" . h($field["field"]) . "' rows='12' cols='50'>" . h($value) . "</textarea><script type='text/javascript'>
+			return "<textarea$attrs id='fields-" . h($field["field"]) . "' rows='12' cols='50'>" . h($value) . "</textarea><script>
 jQuery('#fields-" . js_escape($field["field"]) . "').wymeditor({ updateSelector: '#form [type=\"submit\"]', lang: '$lang'" . ($this->options ? ", $this->options" : "") . " });
 </script>";
 		}

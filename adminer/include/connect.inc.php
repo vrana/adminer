@@ -61,7 +61,7 @@ function connect_error() {
 					. "</div></fieldset>\n"
 				: ""
 			);
-			echo "<script type='text/javascript'>tableCheck();</script>\n";
+			echo "<script>tableCheck();</script>\n";
 			echo "<input type='hidden' name='token' value='$token'>\n";
 			echo "</form>\n";
 		}

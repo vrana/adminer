@@ -21,6 +21,6 @@ if ($adminer->homepage()) {
 	}
 	
 	echo "</table>\n";
-	echo "<script type='text/javascript'>tableCheck();</script>\n";
+	echo "<script>tableCheck();</script>\n";
 	echo "</form>\n";
 }

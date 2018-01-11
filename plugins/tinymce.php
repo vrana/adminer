@@ -28,8 +28,8 @@ class AdminerTinymce {
 			}
 		}
 		?>
-<script type="text/javascript" src="<?php echo h($this->path); ?>"></script>
-<script type="text/javascript">
+<script src="<?php echo h($this->path); ?>"></script>
+<script>
 tinyMCE.init({
 	mode: 'none',
 	theme: 'advanced',
@@ -68,7 +68,7 @@ tinyMCE.init({
 
 	function editInput($table, $field, $attrs, $value) {
 		if (preg_match("~text~", $field["type"]) && preg_match("~_html~", $field["field"])) {
-			return "<textarea$attrs id='fields-" . h($field["field"]) . "' rows='12' cols='50'>" . h($value) . "</textarea><script type='text/javascript'>
+			return "<textarea$attrs id='fields-" . h($field["field"]) . "' rows='12' cols='50'>" . h($value) . "</textarea><script>
 tinyMCE.remove(tinyMCE.get('fields-" . js_escape($field["field"]) . "') || { });
 tinyMCE.execCommand('mceAddControl', true, 'fields-" . js_escape($field["field"]) . "');
 qs('#form').onsubmit = function () {

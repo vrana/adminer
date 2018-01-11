@@ -66,7 +66,7 @@ echo ($_POST["add_x"] || strpos($name, "\n")
 	'mssql' => "ms187963.aspx",
 )) : "");
 ?>
-<script type='text/javascript'>focus(qs('#name'));</script>
+<script>focus(qs('#name'));</script>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php
 if (DB != "") {

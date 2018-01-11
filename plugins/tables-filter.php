@@ -23,7 +23,7 @@ foreach ($tables as $table => $status) {
 }
 ?>
 </ul>
-<script type="text/javascript">
+<script>
 var tablesFilterTimeout = null;
 var tablesFilterValue = '';
 
