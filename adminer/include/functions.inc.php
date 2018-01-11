@@ -172,12 +172,12 @@ function html_select($name, $options, $value = "", $onchange = true, $labelled_b
 }
 
 /** Generate HTML <select> or <input> if $options are empty
- * @param string
- * @param array
- * @param string
- * @param string
- * @return string
- */
+* @param string
+* @param array
+* @param string
+* @param string
+* @return string
+*/
 function select_input($attrs, $options, $value = "", $placeholder = "") {
 	return ($options
 		? "<select$attrs><option value=''>$placeholder" . optionlist($options, $value, true) . "</select>"

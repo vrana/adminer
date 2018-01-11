@@ -87,20 +87,20 @@ function selectValue(select) {
 }
 
 /** Verify if element has a specified tag name
- * @param HTMLElement
- * @param string regular expression
- * @return bool
- */
+* @param HTMLElement
+* @param string regular expression
+* @return bool
+*/
 function isTag(el, tag) {
 	var re = new RegExp('^(' + tag + ')$', 'i');
 	return re.test(el.tagName);
 }
 
 /** Get parent node with specified tag name
- * @param HTMLElement
- * @param string regular expression
- * @return HTMLElement
- */
+* @param HTMLElement
+* @param string regular expression
+* @return HTMLElement
+*/
 function parentTag(el, tag) {
 	while (el && !isTag(el, tag)) {
 		el = el.parentNode;
@@ -218,9 +218,9 @@ function tableClick(event, click) {
 var lastChecked;
 
 /** Shift-click on checkbox for multiple selection.
- * @param MouseEvent
- * @param HTMLInputElement
- */
+* @param MouseEvent
+* @param HTMLInputElement
+*/
 function checkboxClick(event, el) {
 	if (!el.name) {
 		return;
@@ -360,9 +360,9 @@ function selectSearchSearch(el) {
 
 
 /** Toggles column context menu
- * @param HTMLElement
- * @param [string] extra class name
- */
+* @param HTMLElement
+* @param [string] extra class name
+*/
 function columnMouse(el, className) {
 	var spans = qsa('span', el);
 	for (var i=0; i < spans.length; i++) {
@@ -375,8 +375,8 @@ function columnMouse(el, className) {
 
 
 /** Fill column in search field
- * @param string
- */
+* @param string
+*/
 function selectSearch(name) {
 	var el = qs('#fieldset-search');
 	el.className = '';
