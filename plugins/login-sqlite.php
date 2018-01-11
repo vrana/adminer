@@ -16,14 +16,14 @@ class AdminerLoginSqlite {
 		?>
 <script type="text/javascript">
 addEventListener('load', function () {
-	var driver = document.getElementsByName('auth[driver]')[0];
+	var driver = qs('name="auth[driver]"');
 	if (isTag(driver, 'select')) {
 		driver.onchange = function () {
 			var trs = parentTag(driver, 'table').rows;
 			for (var i=1; i < trs.length - 1; i++) {
 				var disabled = /sqlite/.test(driver.value);
 				alterClass(trs[i], 'hidden', disabled);
-				trs[i].getElementsByTagName('input')[0].disabled = disabled;
+				trs[i].querySelector('input').disabled = disabled;
 			}
 		};
 	}

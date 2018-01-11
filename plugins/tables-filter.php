@@ -60,7 +60,7 @@ function tablesFilterInput() {
 }
 
 if (sessionStorage){
-	var db = qs('#dbs').getElementsByTagName('select')[0];
+	var db = qs('#dbs').querySelector('select');
 	db = db.options[db.selectedIndex].text;
 	if (db == sessionStorage.getItem('adminer_tables_filter_db') && sessionStorage.getItem('adminer_tables_filter')){
 		qs('#filter-field').value = sessionStorage.getItem('adminer_tables_filter');

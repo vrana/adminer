@@ -540,10 +540,10 @@ function schemaMousemove(ev) {
 				if (divs[i].parentNode != div2.parentNode) {
 					left1 = Math.min(0, ref[1] - left) - 1;
 					divs[i].style.left = left1 + 'em';
-					divs[i].getElementsByTagName('div')[0].style.width = -left1 + 'em';
+					divs[i].querySelector('div').style.width = -left1 + 'em';
 					var left2 = Math.min(0, left - ref[1]) - 1;
 					div2.style.left = left2 + 'em';
-					div2.getElementsByTagName('div')[0].style.width = -left2 + 'em';
+					div2.querySelector('div').style.width = -left2 + 'em';
 				}
 				if (!lineSet[id]) {
 					var line = qs('#' + divs[i].id.replace(/^....(.+)-.+$/, 'refl$1'));
@@ -551,7 +551,7 @@ function schemaMousemove(ev) {
 					var top2 = top + div2.offsetTop / em;
 					if (divs[i].parentNode != div2.parentNode) {
 						top2 += ref[0] - top;
-						line.getElementsByTagName('div')[0].style.height = Math.abs(top1 - top2) + 'em';
+						line.querySelector('div').style.height = Math.abs(top1 - top2) + 'em';
 					}
 					line.style.left = (left + left1) + 'em';
 					line.style.top = Math.min(top1, top2) + 'em';
