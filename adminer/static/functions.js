@@ -172,13 +172,13 @@ function formUncheck(id) {
 }
 
 /** Get number of checked elements matching given name
+* @param HTMLInputElement
 * @param RegExp
 * @return number
-* @this HTMLInputElement
 */
-function formChecked(name) {
+function formChecked(el, name) {
 	var checked = 0;
-	var elems = this.form.elements;
+	var elems = el.form.elements;
 	for (var i=0; i < elems.length; i++) {
 		if (name.test(elems[i].name) && elems[i].checked) {
 			checked++;
