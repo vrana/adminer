@@ -288,7 +288,7 @@ if (!$columns && support("table")) {
 		}
 
 		// use count($rows) without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
-		if ($_GET["page"] != "last" && +$limit && $group && $is_group && $jush == "sql") {
+		if ($_GET["page"] != "last" && $limit != "" && $group && $is_group && $jush == "sql") {
 			$found_rows = $connection->result(" SELECT FOUND_ROWS()"); // space to allow mysql.trace_mode
 		}
 
@@ -440,7 +440,7 @@ if (!$columns && support("table")) {
 		if (($rows || $page) && !is_ajax()) {
 			$exact_count = true;
 			if ($_GET["page"] != "last") {
-				if (!+$limit) {
+				if ($limit == "") {
 					$found_rows = count($rows);
 				} elseif ($jush != "sql" || !$is_group) {
 					$found_rows = ($is_group ? false : found_rows($table_status, $where));
@@ -453,7 +453,7 @@ if (!$columns && support("table")) {
 				}
 			}
 
-			if (+$limit && ($found_rows === false || $found_rows > $limit || $page)) {
+			if ($limit != "" && ($found_rows === false || $found_rows > $limit || $page)) {
 				echo "<p class='pages'>";
 				// display first, previous 4, next 4 and last page
 				$max_page = ($found_rows === false
