@@ -23,7 +23,7 @@ function bodyLoad(version) {
 			jush.custom_links = jushLinks;
 		}
 		jush.highlight_tag('code', 0);
-		var tags = document.getElementsByTagName('textarea');
+		var tags = qsa('textarea', document);
 		for (var i = 0; i < tags.length; i++) {
 			if (/(^|\s)jush-/.test(tags[i].className)) {
 				var pre = jush.textarea(tags[i]);
@@ -98,14 +98,14 @@ function dbChange(el) {
 */
 function selectFieldChange(form) {
 	var ok = (function () {
-		var inputs = form.getElementsByTagName('input');
+		var inputs = qsa('input', form);
 		for (var i=0; i < inputs.length; i++) {
 			if (inputs[i].value && /^fulltext/.test(inputs[i].name)) {
 				return true;
 			}
 		}
 		var ok = form.limit.value;
-		var selects = form.getElementsByTagName('select');
+		var selects = qsa('select', form);
 		var group = false;
 		var columns = {};
 		for (var i=0; i < selects.length; i++) {
@@ -218,14 +218,14 @@ function editingAddRow(button, focus) {
 	var x = match[0] + (match[2] ? added.substr(match[2].length) : added) + '1';
 	var row = parentTag(button, 'tr');
 	var row2 = cloneNode(row);
-	var tags = row.getElementsByTagName('select');
-	var tags2 = row2.getElementsByTagName('select');
+	var tags = qsa('select', row);
+	var tags2 = qsa('select', row2);
 	for (var i=0; i < tags.length; i++) {
 		tags2[i].name = tags[i].name.replace(/[0-9.]+/, x);
 		tags2[i].selectedIndex = tags[i].selectedIndex;
 	}
-	tags = row.getElementsByTagName('input');
-	tags2 = row2.getElementsByTagName('input');
+	tags = qsa('input', row);
+	tags2 = qsa('input', row2);
 	var input = tags2[0]; // IE loose tags2 after insertBefore()
 	for (var i=0; i < tags.length; i++) {
 		if (tags[i].name == 'auto_increment_col') {
@@ -364,9 +364,9 @@ function editingLengthBlur(edit) {
 * @param number
 */
 function columnShow(checked, column) {
-	var trs = qs('#edit-fields').getElementsByTagName('tr');
+	var trs = qsa('tr', qs('#edit-fields'));
 	for (var i=0; i < trs.length; i++) {
-		alterClass(trs[i].getElementsByTagName('td')[column], 'hidden', !checked);
+		alterClass(qsa('td', trs[i])[column], 'hidden', !checked);
 	}
 }
 
@@ -407,7 +407,7 @@ function partitionNameChange(el) {
 function foreignAddRow(field) {
 	field.onchange = function () { };
 	var row = cloneNode(parentTag(field, 'tr'));
-	var selects = row.getElementsByTagName('select');
+	var selects = qsa('select', row);
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/\]/, '1$&');
 		selects[i].selectedIndex = 0;
@@ -423,12 +423,12 @@ function foreignAddRow(field) {
 function indexesAddRow(field) {
 	field.onchange = function () { };
 	var row = cloneNode(parentTag(field, 'tr'));
-	var selects = row.getElementsByTagName('select');
+	var selects = qsa('select', row);
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/indexes\[\d+/, '$&1');
 		selects[i].selectedIndex = 0;
 	}
-	var inputs = row.getElementsByTagName('input');
+	var inputs = qsa('input', row);
 	for (var i=0; i < inputs.length; i++) {
 		inputs[i].name = inputs[i].name.replace(/indexes\[\d+/, '$&1');
 		inputs[i].value = '';
@@ -443,7 +443,7 @@ function indexesAddRow(field) {
 function indexesChangeColumn(field, prefix) {
 	var names = [];
 	for (var tag in { 'select': 1, 'input': 1 }) {
-		var columns = parentTag(field, 'td').getElementsByTagName(tag);
+		var columns = qsa(tag, parentTag(field, 'td'));
 		for (var i=0; i < columns.length; i++) {
 			if (/\[columns\]/.test(columns[i].name)) {
 				var value = selectValue(columns[i]);
@@ -472,13 +472,13 @@ function indexesAddColumn(field, prefix) {
 		select.onchange();
 	}
 	var column = cloneNode(field.parentNode);
-	var selects = column.getElementsByTagName('select');
+	var selects = qsa('select', column);
 	for (var i = 0; i < selects.length; i++) {
 		select = selects[i];
 		select.name = select.name.replace(/\]\[\d+/, '$&1');
 		select.selectedIndex = 0;
 	}
-	var inputs = column.getElementsByTagName('input');
+	var inputs = qsa('input', column);
 	for (var i = 0; i < inputs.length; i++) {
 		var input = inputs[i];
 		input.name = input.name.replace(/\]\[\d+/, '$&1');
@@ -529,7 +529,7 @@ function schemaMousemove(ev) {
 		ev = ev || event;
 		var left = (ev.clientX - x) / em;
 		var top = (ev.clientY - y) / em;
-		var divs = that.getElementsByTagName('div');
+		var divs = qsa('div', that);
 		var lineSet = { };
 		for (var i=0; i < divs.length; i++) {
 			if (divs[i].className == 'references') {

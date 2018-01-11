@@ -7,6 +7,15 @@ function qs(selector) {
 	return document.querySelector(selector);
 }
 
+/** Get all elements by selector
+* @param string
+* @param HTMLElement
+* @return NodeList
+*/
+function qsa(selector, context) {
+	return context.querySelectorAll(selector);
+}
+
 /** Add or remove CSS class
 * @param HTMLElement
 * @param string
@@ -116,7 +125,7 @@ function trCheck(el) {
 */
 function selectCount(id, count) {
 	setHtml(id, (count === '' ? '' : '(' + (count + '').replace(/\B(?=(\d{3})+$)/g, ' ') + ')'));
-	var inputs = qs('#' + id).parentNode.parentNode.getElementsByTagName('input');
+	var inputs = qsa('input', qs('#' + id).parentNode.parentNode);
 	for (var i = 0; i < inputs.length; i++) {
 		var input = inputs[i];
 		if (input.type == 'submit') {
@@ -142,10 +151,10 @@ function formCheck(el, name) {
 /** Check all rows in <table class="checkable">
 */
 function tableCheck() {
-	var tables = document.getElementsByTagName('table');
+	var tables = qsa('table', document);
 	for (var i=0; i < tables.length; i++) {
 		if (/(^|\s)checkable(\s|$)/.test(tables[i].className)) {
-			var trs = tables[i].getElementsByTagName('tr');
+			var trs = qsa('tr', tables[i]);
 			for (var j=0; j < trs.length; j++) {
 				trCheck(trs[j].firstChild.firstChild);
 			}
@@ -218,7 +227,7 @@ function checkboxClick(event, el) {
 	}
 	if (event.shiftKey && (!lastChecked || lastChecked.name == el.name)) {
 		var checked = (lastChecked ? lastChecked.checked : true);
-		var inputs = parentTag(el, 'table').getElementsByTagName('input');
+		var inputs = qsa('input', parentTag(el, 'table'));
 		var checking = !lastChecked;
 		for (var i=0; i < inputs.length; i++) {
 			var input = inputs[i];
@@ -310,12 +319,12 @@ function selectAddRow(field) {
 	};
 	field.onchange();
 	var row = cloneNode(field.parentNode);
-	var selects = row.getElementsByTagName('select');
+	var selects = qsa('select', row);
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/[a-z]\[\d+/, '$&1');
 		selects[i].selectedIndex = 0;
 	}
-	var inputs = row.getElementsByTagName('input');
+	var inputs = qsa('input', row);
 	for (var i=0; i < inputs.length; i++) {
 		inputs[i].name = inputs[i].name.replace(/[a-z]\[\d+/, '$&1');
 		inputs[i].className = '';
@@ -355,7 +364,7 @@ function selectSearchSearch(el) {
  * @param [string] extra class name
  */
 function columnMouse(el, className) {
-	var spans = el.getElementsByTagName('span');
+	var spans = qsa('span', el);
 	for (var i=0; i < spans.length; i++) {
 		if (/column/.test(spans[i].className)) {
 			spans[i].className = 'column' + (className || '');
@@ -371,7 +380,7 @@ function columnMouse(el, className) {
 function selectSearch(name) {
 	var el = qs('#fieldset-search');
 	el.className = '';
-	var divs = el.getElementsByTagName('div');
+	var divs = qsa('div', el);
 	for (var i=0; i < divs.length; i++) {
 		var div = divs[i];
 		if (isTag(div.firstChild, 'select') && selectValue(div.firstChild) == name) {
@@ -501,7 +510,7 @@ function keyupChange() {
 */
 function fieldChange(field) {
 	var row = cloneNode(parentTag(field, 'tr'));
-	var inputs = row.getElementsByTagName('input');
+	var inputs = qsa('input', row);
 	for (var i = 0; i < inputs.length; i++) {
 		inputs[i].value = '';
 	}
@@ -592,7 +601,7 @@ function ajaxForm(form, message, button) {
 	return ajax(url, function (request) {
 		setHtml('ajaxstatus', request.responseText);
 		if (window.jush) {
-			jush.highlight_tag(qs('#ajaxstatus').getElementsByTagName('code'), 0);
+			jush.highlight_tag(qsa('code', qs('#ajaxstatus')), 0);
 		}
 	}, data, message);
 }
@@ -635,7 +644,7 @@ function selectClick(td, event, text, warning) {
 		});
 		input.rows = rows;
 	}
-	if (value == '\u00A0' || td.getElementsByTagName('i').length) { // &nbsp; or i - NULL
+	if (value == '\u00A0' || qsa('i', td).length) { // &nbsp; or i - NULL
 		value = '';
 	}
 	if (document.selection) {
@@ -719,7 +728,7 @@ function eventStop(event) {
 */
 function setupSubmitHighlight(parent) {
 	for (var key in { input: 1, select: 1, textarea: 1 }) {
-		var inputs = parent.getElementsByTagName(key);
+		var inputs = qsa(key, parent);
 		for (var i = 0; i < inputs.length; i++) {
 			setupSubmitHighlightInput(inputs[i])
 		}
@@ -764,7 +773,7 @@ function findDefaultSubmit(el) {
 	if (el.jushTextarea) {
 		el = el.jushTextarea;
 	}
-	var inputs = el.form.getElementsByTagName('input');
+	var inputs = qsa('input', el.form);
 	for (var i = 0; i < inputs.length; i++) {
 		var input = inputs[i];
 		if (input.type == 'submit' && !input.style.zIndex) {

@@ -40,9 +40,9 @@ function tablesFilter(){
 	if (sessionStorage) {
 		sessionStorage.setItem('adminer_tables_filter', value);
 	}
-	var tables = qs('#tables').getElementsByTagName('li');
+	var tables = qsa('li', qs('#tables'));
 	for (var i = 0; i < tables.length; i++) {
-		var a = tables[i].getElementsByTagName('a')[1];
+		var a = qsa('a', tables[i])[1];
 		var text = tables[i].getAttribute('data-table-name');
 		if (value == '') {
 			tables[i].className = '';
