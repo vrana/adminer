@@ -113,14 +113,14 @@ if ($primary) {
 $j = 1;
 foreach ($row["indexes"] as $index) {
 	if (!$_POST["drop_col"] || $j != key($_POST["drop_col"])) {
-		echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) ? "indexesAddRow(this);" : 1), "label-type");
+		echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) ? "indexesAddRow.call(this);" : 1), "label-type");
 
 		echo "<td>";
 		ksort($index["columns"]);
 		$i = 1;
 		foreach ($index["columns"] as $key => $column) {
 			echo "<span>" . select_input(
-				" name='indexes[$j][columns][$i]' onchange=\"" . ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . "(this, '" . h(js_escape($jush == "sql" ? "" : $_GET["indexes"] . "_")) . "');\" title='" . lang('Column') . "'",
+				" name='indexes[$j][columns][$i]' onchange=\"" . ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . ".call(this, '" . h(js_escape($jush == "sql" ? "" : $_GET["indexes"] . "_")) . "');\" title='" . lang('Column') . "'",
 				($fields ? array_combine($fields, $fields) : $fields),
 				$column
 			);
@@ -131,7 +131,7 @@ foreach ($row["indexes"] as $index) {
 		}
 
 		echo "<td><input name='indexes[$j][name]' value='" . h($index["name"]) . "' autocapitalize='off' aria-labelledby='label-name'>\n";
-		echo "<td><input type='image' class='icon' name='drop_col[$j]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "' onclick=\"return !editingRemoveRow(this, 'indexes\$1[type]');\">\n";
+		echo "<td><input type='image' class='icon' name='drop_col[$j]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "' onclick=\"return !editingRemoveRow.call(this, 'indexes\$1[type]');\">\n";
 	}
 	$j++;
 }

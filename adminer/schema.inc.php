@@ -59,7 +59,7 @@ document.onmouseup = function (ev) {
 </script>
 <?php
 foreach ($schema as $name => $table) {
-	echo "<div class='table' style='top: " . $table["pos"][0] . "em; left: " . $table["pos"][1] . "em;' onmousedown='schemaMousedown(this, event);'>";
+	echo "<div class='table' style='top: " . $table["pos"][0] . "em; left: " . $table["pos"][1] . "em;' onmousedown='schemaMousedown.call(this, event);'>";
 	echo '<a href="' . h(ME) . 'table=' . urlencode($name) . '"><b>' . h($name) . "</b></a>";
 	
 	foreach ($table["fields"] as $field) {

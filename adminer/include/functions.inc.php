@@ -878,7 +878,7 @@ function input($field, $value, $function) {
 		$attrs .= $onchange;
 		$has_function = (in_array($function, $functions) || isset($functions[$function]));
 		echo (count($functions) > 1
-			? "<select name='function[$name]' onchange='functionChange(this);'" . on_help("getTarget(event).value.replace(/^SQL\$/, '')", 1) . ">" . optionlist($functions, $function === null || $has_function ? $function : "") . "</select>"
+			? "<select name='function[$name]' onchange='functionChange.call(this);'" . on_help("getTarget(event).value.replace(/^SQL\$/, '')", 1) . ">" . optionlist($functions, $function === null || $has_function ? $function : "") . "</select>"
 			: nbsp(reset($functions))
 		) . '<td>';
 		$input = $adminer->editInput($_GET["edit"], $field, $attrs, $value); // usage in call is without a table
@@ -1296,7 +1296,7 @@ function lzw_decompress($binary) {
 * @return string
 */
 function on_help($command, $side = 0) {
-	return " onmouseover='helpMouseover(this, event, " . h($command) . ", $side);' onmouseout='helpMouseout(this, event);'";
+	return " onmouseover='helpMouseover.call(this, event, " . h($command) . ", $side);' onmouseout='helpMouseout.call(this, event);'";
 }
 
 /** Print edit data form
@@ -1364,7 +1364,7 @@ function edit_form($TABLE, $fields, $row, $update) {
 		}
 		if (!support("table")) {
 			echo "<tr>"
-				. "<th><input name='field_keys[]' onkeyup='keyupChange.call(this);' onchange='fieldChange(this);' value=''>" // needs empty value for keyupChange()
+				. "<th><input name='field_keys[]' onkeyup='keyupChange.call(this);' onchange='fieldChange.call(this);' value=''>" // needs empty value for keyupChange()
 				. "<td class='function'>" . html_select("field_funs[]", $adminer->editFunctions(array("null" => isset($_GET["select"]))))
 				. "<td><input name='field_vals[]'>"
 				. "\n"

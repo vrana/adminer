@@ -64,7 +64,7 @@ if ($adminer->homepage()) {
 			}
 			$doc_link = doc_link(array('sql' => 'show-table-status.html'));
 			echo "<table cellspacing='0' class='nowrap checkable' onclick='tableClick(event);' ondblclick='tableClick(event, true);'>\n";
-			echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck(this, /^(tables|views)\[/);" class="jsonly">';
+			echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck.call(this, /^(tables|views)\[/);" class="jsonly">';
 			echo '<th>' . lang('Table');
 			echo '<td>' . lang('Engine') . doc_link(array('sql' => 'storage-engines.html'));
 			echo '<td>' . lang('Collation') . doc_link(array('sql' => 'charset-mysql.html'));
@@ -135,7 +135,7 @@ if ($adminer->homepage()) {
 					echo (support("copy") ? " <input type='submit' name='copy' value='" . lang('Copy') . "'>" : "");
 					echo "\n";
 				}
-				echo "<input type='hidden' name='all' value='' onclick=\"selectCount('selected', formChecked(this, /^(tables|views)\[/));" . (support("table") ? " selectCount('selected2', formChecked(this, /^tables\[/) || $tables);" : "") . "\">\n"; // used by trCheck()
+				echo "<input type='hidden' name='all' value='' onclick=\"selectCount('selected', formChecked.call(this, /^(tables|views)\[/));" . (support("table") ? " selectCount('selected2', formChecked.call(this, /^tables\[/) || $tables);" : "") . "\">\n"; // used by trCheck()
 				echo "<input type='hidden' name='token' value='$token'>\n";
 				echo "</div></fieldset>\n";
 			}

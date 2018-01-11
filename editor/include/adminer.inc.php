@@ -242,13 +242,13 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			if (($val["col"] == "" || $columns[$val["col"]]) && "$val[col]$val[val]" != "") {
 				echo "<div><select name='where[$i][col]'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
 				echo html_select("where[$i][op]", array(-1 => "") + $this->operators, $val["op"]);
-				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' onkeydown='selectSearchKeydown(this, event);' onsearch='selectSearchSearch(this);'></div>\n";
+				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' onkeydown='selectSearchKeydown.call(this, event);' onsearch='selectSearchSearch.call(this);'></div>\n";
 				$i++;
 			}
 		}
 		echo "<div><select name='where[$i][col]' onchange='this.nextSibling.nextSibling.onchange();'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, null, true) . "</select>";
 		echo html_select("where[$i][op]", array(-1 => "") + $this->operators);
-		echo "<input type='search' name='where[$i][val]' onchange='selectAddRow(this);' onsearch='selectSearch(this);'></div>\n";
+		echo "<input type='search' name='where[$i][val]' onchange='selectAddRow.call(this);' onsearch='selectSearchSearch.call(this);'></div>\n";
 		echo "</div></fieldset>\n";
 	}
 
@@ -457,7 +457,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		if ($options !== null) {
 			return (is_array($options)
 				? "<select$attrs>" . optionlist($options, $value, true) . "</select>"
-				:  "<input value='" . h($value) . "'$attrs class='hidden'><input value='" . h($options) . "' class='jsonly' onkeyup=\"whisper('" . h(ME . "script=complete&source=" . urlencode($table) . "&field=" . urlencode($field["field"])) . "&value=', this);\"><div onclick='return whisperClick(event, this.previousSibling);'></div>"
+				:  "<input value='" . h($value) . "'$attrs class='hidden'><input value='" . h($options) . "' class='jsonly' onkeyup=\"whisper.call(this, '" . h(ME . "script=complete&source=" . urlencode($table) . "&field=" . urlencode($field["field"])) . "&value=');\"><div onclick='return whisperClick(event, this.previousSibling);'></div>"
 			);
 		}
 		if (like_bool($field)) {
@@ -559,7 +559,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 				foreach ($servers[""] as $username => $password) {
 					if ($password !== null) {
 						if ($first) {
-							echo "<p id='logins' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";
+							echo "<p id='logins' onmouseover='menuOver.call(this, event);' onmouseout='menuOut.call(this);'>\n";
 							$first = false;
 						}
 						echo "<a href='" . h(auth_url($vendor, "", $username)) . "'>" . ($username != "" ? h($username) : "<i>" . lang('empty') . "</i>") . "</a><br>\n";
@@ -583,7 +583,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	}
 
 	function tablesPrint($tables) {
-		echo "<p id='tables' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";
+		echo "<p id='tables' onmouseover='menuOver.call(this, event);' onmouseout='menuOut.call(this);'>\n";
 		foreach ($tables as $row) {
 			$name = $this->tableName($row);
 			if (isset($row["Engine"]) && $name != "") { // ignore views and tables without name

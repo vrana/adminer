@@ -135,14 +135,14 @@ function selectCount(id, count) {
 }
 
 /** Check all elements matching given name
-* @param HTMLInputElement
 * @param RegExp
+* @this HTMLInputElement
 */
-function formCheck(el, name) {
-	var elems = el.form.elements;
+function formCheck(name) {
+	var elems = this.form.elements;
 	for (var i=0; i < elems.length; i++) {
 		if (name.test(elems[i].name)) {
-			elems[i].checked = el.checked;
+			elems[i].checked = this.checked;
 			trCheck(elems[i]);
 		}
 	}
@@ -172,13 +172,13 @@ function formUncheck(id) {
 }
 
 /** Get number of checked elements matching given name
-* @param HTMLInputElement
 * @param RegExp
 * @return number
+* @this HTMLInputElement
 */
-function formChecked(el, name) {
+function formChecked(name) {
 	var checked = 0;
-	var elems = el.form.elements;
+	var elems = this.form.elements;
 	for (var i=0; i < elems.length; i++) {
 		if (name.test(elems[i].name) && elems[i].checked) {
 			checked++;
@@ -199,7 +199,7 @@ function tableClick(event, click) {
 			if (el.type != 'checkbox') {
 				return;
 			}
-			checkboxClick(event, el);
+			checkboxClick.call(el, event);
 			click = false;
 		}
 		el = el.parentNode;
@@ -219,24 +219,24 @@ var lastChecked;
 
 /** Shift-click on checkbox for multiple selection.
 * @param MouseEvent
-* @param HTMLInputElement
+* @this HTMLInputElement
 */
-function checkboxClick(event, el) {
-	if (!el.name) {
+function checkboxClick(event) {
+	if (!this.name) {
 		return;
 	}
-	if (event.shiftKey && (!lastChecked || lastChecked.name == el.name)) {
+	if (event.shiftKey && (!lastChecked || lastChecked.name == this.name)) {
 		var checked = (lastChecked ? lastChecked.checked : true);
-		var inputs = qsa('input', parentTag(el, 'table'));
+		var inputs = qsa('input', parentTag(this, 'table'));
 		var checking = !lastChecked;
 		for (var i=0; i < inputs.length; i++) {
 			var input = inputs[i];
-			if (input.name === el.name) {
+			if (input.name === this.name) {
 				if (checking) {
 					input.checked = checked;
 					trCheck(input);
 				}
-				if (input === el || input === lastChecked) {
+				if (input === this || input === lastChecked) {
 					if (checking) {
 						break;
 					}
@@ -245,7 +245,7 @@ function checkboxClick(event, el) {
 			}
 		}
 	} else {
-		lastChecked = el;
+		lastChecked = this;
 	}
 }
 
@@ -291,29 +291,30 @@ function pageClick(href, page, event) {
 
 
 /** Display items in menu
-* @param HTMLElement
 * @param MouseEvent
+* @this HTMLElement
 */
-function menuOver(el, event) {
+function menuOver(event) {
 	var a = getTarget(event);
 	if (isTag(a, 'a|span') && a.offsetLeft + a.offsetWidth > a.parentNode.offsetWidth - 15) { // 15 - ellipsis
-		el.style.overflow = 'visible';
+		this.style.overflow = 'visible';
 	}
 }
 
 /** Hide items in menu
-* @param HTMLElement
+* @this HTMLElement
 */
-function menuOut(el) {
-	el.style.overflow = 'auto';
+function menuOut() {
+	this.style.overflow = 'auto';
 }
 
 
 
 /** Add row in select fieldset
-* @param HTMLSelectElement
+* @this HTMLSelectElement
 */
-function selectAddRow(field) {
+function selectAddRow() {
+	var field = this;
 	field.onchange = function () {
 		selectFieldChange(field.form);
 	};
@@ -338,33 +339,33 @@ function selectAddRow(field) {
 }
 
 /** Prevent onsearch handler on Enter
-* @param HTMLInputElement
 * @param KeyboardEvent
+* @this HTMLInputElement
 */
-function selectSearchKeydown(el, event) {
+function selectSearchKeydown(event) {
 	if (event.keyCode == 13 || event.keyCode == 10) {
-		el.onsearch = function () {
+		this.onsearch = function () {
 		};
 	}
 }
 
 /** Clear column name after resetting search
-* @param HTMLInputElement
+* @this HTMLInputElement
 */
-function selectSearchSearch(el) {
-	if (!el.value) {
-		el.parentNode.firstChild.selectedIndex = 0;
+function selectSearchSearch() {
+	if (!this.value) {
+		this.parentNode.firstChild.selectedIndex = 0;
 	}
 }
 
 
 
 /** Toggles column context menu
-* @param HTMLElement
 * @param [string] extra class name
+* @this HTMLElement
 */
-function columnMouse(el, className) {
-	var spans = qsa('span', el);
+function columnMouse(className) {
+	var spans = qsa('span', this);
 	for (var i=0; i < spans.length; i++) {
 		if (/column/.test(spans[i].className)) {
 			spans[i].className = 'column' + (className || '');
@@ -474,11 +475,11 @@ function editingKeydown(event) {
 }
 
 /** Disable maxlength for functions
-* @param HTMLSelectElement
+* @this HTMLSelectElement
 */
-function functionChange(select) {
-	var input = select.form[select.name.replace(/^function/, 'fields')];
-	if (selectValue(select)) {
+function functionChange() {
+	var input = this.form[this.name.replace(/^function/, 'fields')];
+	if (selectValue(this)) {
 		if (input.origType === undefined) {
 			input.origType = input.type;
 			input.origMaxLength = input.getAttribute('data-maxlength');
@@ -506,17 +507,17 @@ function keyupChange() {
 }
 
 /** Add new field in schema-less edit
-* @param HTMLInputElement
+* @this HTMLInputElement
 */
-function fieldChange(field) {
-	var row = cloneNode(parentTag(field, 'tr'));
+function fieldChange() {
+	var row = cloneNode(parentTag(this, 'tr'));
 	var inputs = qsa('input', row);
 	for (var i = 0; i < inputs.length; i++) {
 		inputs[i].value = '';
 	}
 	// keep value in <select> (function)
-	parentTag(field, 'table').appendChild(row);
-	field.onchange = function () { };
+	parentTag(this, 'table').appendChild(row);
+	this.onchange = function () { };
 }
 
 
@@ -609,12 +610,13 @@ function ajaxForm(form, message, button) {
 
 
 /** Display edit field
-* @param HTMLElement
 * @param MouseEvent
 * @param number display textarea instead of input, 2 - load long text
 * @param string warning to display
+* @this HTMLElement
 */
-function selectClick(td, event, text, warning) {
+function selectClick(event, text, warning) {
+	var td = this;
 	var target = getTarget(event);
 	if (!isCtrl(event) || isTag(td.firstChild, 'input|textarea') || isTag(target, 'a')) {
 		return;
@@ -681,12 +683,13 @@ function selectClick(td, event, text, warning) {
 
 
 /** Load and display next page in select
-* @param HTMLLinkElement
 * @param number
 * @param string
 * @return boolean
+* @this HTMLLinkElement
 */
-function selectLoadMore(a, limit, loading) {
+function selectLoadMore(limit, loading) {
+	var a = this;
 	var title = a.innerHTML;
 	var href = a.href;
 	a.innerHTML = loading;

@@ -309,7 +309,7 @@ focus(qs('#username'));
 		$select[""] = array();
 		foreach ($select as $key => $val) {
 			$val = $_GET["columns"][$key];
-			$column = select_input(" name='columns[$i][col]' onchange='" . ($key !== ""  ? "selectFieldChange(this.form)" : "selectAddRow(this)") . ";'", $columns, $val["col"]);
+			$column = select_input(" name='columns[$i][col]' onchange='" . ($key !== ""  ? "selectFieldChange(this.form)" : "selectAddRow.call(this)") . ";'", $columns, $val["col"]);
 			echo "<div>" . ($functions || $grouping ? "<select name='columns[$i][fun]' onchange='helpClose();" . ($key !== "" ? "" : " this.nextSibling.nextSibling.onchange();") . "'"
 				. on_help("getTarget(event).value && getTarget(event).value.replace(/ |\$/, '(') + ')'", 1) . ">" . optionlist(array(-1 => "") + array_filter(array(lang('Functions') => $functions, lang('Aggregation') => $grouping)), $val["fun"]) . "</select>"
 				. "($column)" : $column) . "</div>\n";
@@ -342,7 +342,7 @@ focus(qs('#username'));
 			if (!$val || ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators))) {
 				echo "<div>" . select_input(" name='where[$i][col]' onchange='$change_next'", $columns, $val["col"], "(" . lang('anywhere') . ")");
 				echo html_select("where[$i][op]", $this->operators, $val["op"], $change_next);
-				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' onchange='" . ($val ? "selectFieldChange(this.form)" : "selectAddRow(this)") . ";' onkeydown='selectSearchKeydown(this, event);' onsearch='selectSearchSearch(this);'></div>\n";
+				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' onchange='" . ($val ? "selectFieldChange(this.form)" : "selectAddRow.call(this)") . ";' onkeydown='selectSearchKeydown.call(this, event);' onsearch='selectSearchSearch.call(this);'></div>\n";
 			}
 		}
 		echo "</div></fieldset>\n";
@@ -364,7 +364,7 @@ focus(qs('#username'));
 				$i++;
 			}
 		}
-		echo "<div>" . select_input(" name='order[$i]' onchange='selectAddRow(this);'", $columns);
+		echo "<div>" . select_input(" name='order[$i]' onchange='selectAddRow.call(this);'", $columns);
 		echo checkbox("desc[$i]", 1, false, lang('descending')) . "</div>\n";
 		echo "</div></fieldset>\n";
 	}
@@ -852,7 +852,7 @@ focus(qs('#username'));
 					foreach ($usernames as $username => $password) {
 						if ($password !== null) {
 							if ($first) {
-								echo "<p id='logins' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";
+								echo "<p id='logins' onmouseover='menuOver.call(this, event);' onmouseout='menuOut.call(this);'>\n";
 								$first = false;
 							}
 							$dbs = $_SESSION["db"][$vendor][$server][$username];
@@ -924,7 +924,7 @@ bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 
 <p id="dbs">
 <?php
 		hidden_fields_get();
-		$db_events = " onmousedown='dbMouseDown(event, this);' onchange='dbChange(this);'";
+		$db_events = " onmousedown='dbMouseDown.call(this, event);' onchange='dbChange.call(this);'";
 		echo "<span title='" . lang('database') . "'>DB</span>: " . ($databases
 			? "<select name='db'$db_events>" . optionlist(array("" => "") + $databases, DB) . "</select>"
 			: '<input name="db" value="' . h(DB) . '" autocapitalize="off">'
@@ -951,7 +951,7 @@ bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 
 	* @return null
 	*/
 	function tablesPrint($tables) {
-		echo "<ul id='tables' onmouseover='menuOver(this, event);' onmouseout='menuOut(this);'>\n";
+		echo "<ul id='tables' onmouseover='menuOver.call(this, event);' onmouseout='menuOut.call(this);'>\n";
 		foreach ($tables as $table => $status) {
 			echo '<li><a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table || $_GET["edit"] == $table, "select") . ">" . lang('select') . "</a> ";
 			$name = $this->tableName($status);

@@ -21,7 +21,8 @@ function whisperClick(event, field) {
 	}
 }
 
-function whisper(url, field) {
+function whisper(url) {
+	var field = this;
 	if (field.orig != field.value) { // ignore arrows, Shift, ...
 		field.orig = field.value;
 		field.previousSibling.value = field.value; // accept number, reject string

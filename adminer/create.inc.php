@@ -204,7 +204,7 @@ if (support("partitioning")) {
 	print_fieldset("partition", lang('Partition by'), $row["partition_by"]);
 	?>
 <p>
-<?php echo "<select name='partition_by' onchange='partitionByChange(this);'" . on_help("getTarget(event).value.replace(/./, 'PARTITION BY \$&')", 1) . ">" . optionlist(array("" => "") + $partition_by, $row["partition_by"]) . "</select>"; ?>
+<?php echo "<select name='partition_by' onchange='partitionByChange.call(this);'" . on_help("getTarget(event).value.replace(/./, 'PARTITION BY \$&')", 1) . ">" . optionlist(array("" => "") + $partition_by, $row["partition_by"]) . "</select>"; ?>
 (<input name="partition" value="<?php echo h($row["partition"]); ?>">)
 <?php echo lang('Partitions'); ?>: <input type="number" name="partitions" class="size<?php echo ($partition_table || !$row["partition_by"] ? " hidden" : ""); ?>" value="<?php echo h($row["partitions"]); ?>">
 <table cellspacing="0" id="partition-table"<?php echo ($partition_table ? "" : " class='hidden'"); ?>>
@@ -212,7 +212,7 @@ if (support("partitioning")) {
 <?php
 foreach ($row["partition_names"] as $key => $val) {
 	echo '<tr>';
-	echo '<td><input name="partition_names[]" value="' . h($val) . '"' . ($key == count($row["partition_names"]) - 1 ? ' onchange="partitionNameChange(this);"' : '') . ' autocapitalize="off">';
+	echo '<td><input name="partition_names[]" value="' . h($val) . '"' . ($key == count($row["partition_names"]) - 1 ? ' onchange="partitionNameChange.call(this);"' : '') . ' autocapitalize="off">';
 	echo '<td><input name="partition_values[]" value="' . h($row["partition_values"][$key]) . '">';
 }
 ?>

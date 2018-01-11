@@ -150,7 +150,7 @@ if ($foreign_keys) {
 }
 echo optionlist($structured_types, $type);
 ?></select>
-<td><input name="<?php echo h($key); ?>[length]" value="<?php echo h($field["length"]); ?>" size="3" onfocus="editingLengthFocus(this);"<?php echo (!$field["length"] && preg_match('~var(char|binary)$~', $type) ? " class='required'" : ""); ?> onchange="editingLengthChange(this);" onkeyup="this.onchange();" aria-labelledby="label-length"><td class="options"><?php //! type="number" with enabled JavaScript
+<td><input name="<?php echo h($key); ?>[length]" value="<?php echo h($field["length"]); ?>" size="3" onfocus="editingLengthFocus.call(this);"<?php echo (!$field["length"] && preg_match('~var(char|binary)$~', $type) ? " class='required'" : ""); ?> onchange="editingLengthChange.call(this);" onkeyup="this.onchange();" aria-labelledby="label-length"><td class="options"><?php //! type="number" with enabled JavaScript
 	echo "<select name='" . h($key) . "[collation]'" . (preg_match('~(char|text|enum|set)$~', $type) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>';
 	echo ($unsigned ? "<select name='" . h($key) . "[unsigned]'" . (!$type || preg_match('~((^|[^o])int|float|double|decimal)$~', $type) ? "" : " class='hidden'") . '><option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
 	echo (isset($field['on_update']) ? "<select name='" . h($key) . "[on_update]'" . (preg_match('~timestamp|datetime~', $type) ? "" : " class='hidden'") . '>' . optionlist(array("" => "(" . lang('ON UPDATE') . ")", "CURRENT_TIMESTAMP"), $field["on_update"]) . '</select>' : '');
@@ -239,7 +239,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 <thead><tr class="wrap">
 <?php if ($type == "PROCEDURE") { ?><td>&nbsp;<?php } ?>
 <th id="label-name"><?php echo ($type == "TABLE" ? lang('Column name') : lang('Parameter name')); ?>
-<td id="label-type"><?php echo lang('Type'); ?><textarea id="enum-edit" rows="4" cols="12" wrap="off" style="display: none;" onblur="editingLengthBlur(this);"></textarea>
+<td id="label-type"><?php echo lang('Type'); ?><textarea id="enum-edit" rows="4" cols="12" wrap="off" style="display: none;" onblur="editingLengthBlur.call(this);"></textarea>
 <td id="label-length"><?php echo lang('Length'); ?>
 <td><?php echo lang('Options'); /* no label required, options have their own label */ ?>
 <?php if ($type == "TABLE") { ?>
@@ -264,7 +264,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 		?>
 <tr<?php echo ($display ? "" : " style='display: none;'"); ?>>
 <?php echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", explode("|", $inout), $field["inout"]) : ""); ?>
-<th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo h($field["field"]); ?>" onchange="editingNameChange(this);<?php echo ($field["field"] != "" || count($fields) > 1 ? '' : ' editingAddRow(this);" onkeyup="if (this.value) editingAddRow(this);'); ?>" maxlength="64" autocapitalize="off" aria-labelledby="label-name"><?php } ?>
+<th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo h($field["field"]); ?>" onchange="editingNameChange.call(this);<?php echo ($field["field"] != "" || count($fields) > 1 ? '' : ' editingAddRow.call(this);" onkeyup="if (this.value) editingAddRow.call(this);'); ?>" maxlength="64" autocapitalize="off" aria-labelledby="label-name"><?php } ?>
 <input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo h($orig); ?>">
 <?php edit_type("fields[$i]", $field, $collations, $foreign_keys); ?>
 <?php if ($type == "TABLE") { ?>
@@ -276,11 +276,11 @@ echo checkbox("fields[$i][has_default]", 1, $field["has_default"], "", "", "", "
 <?php
 		echo "<td>";
 		echo (support("move_col") ?
-			"<input type='image' class='icon' name='add[$i]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "' onclick='return !editingAddRow(this, 1);'>&nbsp;"
-			. "<input type='image' class='icon' name='up[$i]' src='../adminer/static/up.gif' alt='^' title='" . lang('Move up') . "' onclick='return !editingMoveRow(this, 1);'>&nbsp;"
-			. "<input type='image' class='icon' name='down[$i]' src='../adminer/static/down.gif' alt='v' title='" . lang('Move down') . "' onclick='return !editingMoveRow(this, 0);'>&nbsp;"
+			"<input type='image' class='icon' name='add[$i]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "' onclick='return !editingAddRow.call(this, 1);'>&nbsp;"
+			. "<input type='image' class='icon' name='up[$i]' src='../adminer/static/up.gif' alt='^' title='" . lang('Move up') . "' onclick='return !editingMoveRow.call(this, 1);'>&nbsp;"
+			. "<input type='image' class='icon' name='down[$i]' src='../adminer/static/down.gif' alt='v' title='" . lang('Move down') . "' onclick='return !editingMoveRow.call(this, 0);'>&nbsp;"
 		: "");
-		echo ($orig == "" || support("drop_col") ? "<input type='image' class='icon' name='drop_col[$i]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "' onclick=\"return !editingRemoveRow(this, 'fields\$1[field]');\">" : "");
+		echo ($orig == "" || support("drop_col") ? "<input type='image' class='icon' name='drop_col[$i]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "' onclick=\"return !editingRemoveRow.call(this, 'fields\$1[field]');\">" : "");
 		echo "\n";
 	}
 }
