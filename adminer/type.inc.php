@@ -22,7 +22,7 @@ if (!$row) {
 <p>
 <?php
 if ($TYPE != "") {
-	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm() . ">\n";
+	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'>" . confirm() . "\n";
 } else {
 	echo "<input name='name' value='" . h($row['name']) . "' autocapitalize='off'>\n";
 	textarea("as", $row["as"]);

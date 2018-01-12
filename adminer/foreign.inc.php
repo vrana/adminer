@@ -86,6 +86,6 @@ foreach ($row["source"] as $key => $val) {
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <noscript><p><input type="submit" name="add" value="<?php echo lang('Add column'); ?>"></noscript>
 <?php } ?>
-<?php if ($name != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo confirm(); ?>><?php } ?>
+<?php if ($name != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(); ?><?php } ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

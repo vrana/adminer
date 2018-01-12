@@ -189,10 +189,11 @@ function select_input($attrs, $options, $value = "", $onchange = "", $placeholde
 }
 
 /** Get onclick confirmation
+* @param string
 * @return string
 */
-function confirm() {
-	return " onclick=\"return confirm('" . lang('Are you sure?') . "');\"";
+function confirm($selector = "qsl('input')") {
+	return "<script>$selector.onclick = function () { return confirm('" . lang('Are you sure?') . "'); };</script>";
 }
 
 /** Print header for hidden fieldset (close by </div></fieldset>)
@@ -1385,7 +1386,7 @@ function edit_form($TABLE, $fields, $row, $update) {
 			) . "' title='Ctrl+Shift+Enter'>\n";
 		}
 	}
-	echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "'" . confirm() . ">\n"
+	echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "'>" . confirm() . "\n"
 		: ($_POST || !$fields ? "" : "<script>focus(qsa('td', qs('#form'))[1].firstChild);</script>\n")
 	);
 	if (isset($_GET["select"])) {

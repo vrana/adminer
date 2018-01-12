@@ -125,8 +125,8 @@ if ($adminer->homepage()) {
 					. "<input type='submit' name='check' value='" . lang('Check') . "'" . on_help("'CHECK TABLE'") . "> "
 					. "<input type='submit' name='repair' value='" . lang('Repair') . "'" . on_help("'REPAIR TABLE'") . "> "
 				: "")))
-				. "<input type='submit' name='truncate' value='" . lang('Truncate') . "'" . confirm() . on_help($jush == "sqlite" ? "'DELETE'" : "'TRUNCATE" . ($jush == "pgsql" ? "'" : " TABLE'")) . "> "
-				. "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm() . on_help("'DROP TABLE'") . ">\n";
+				. "<input type='submit' name='truncate' value='" . lang('Truncate') . "'" . on_help($jush == "sqlite" ? "'DELETE'" : "'TRUNCATE" . ($jush == "pgsql" ? "'" : " TABLE'")) . "> " . confirm()
+				. "<input type='submit' name='drop' value='" . lang('Drop') . "'" . on_help("'DROP TABLE'") . ">" . confirm() . "\n";
 				$databases = (support("scheme") ? $adminer->schemas() : $adminer->databases());
 				if (count($databases) != 1 && $jush != "sqlite") {
 					$db = (isset($_POST["target"]) ? $_POST["target"] : (support("scheme") ? $_GET["ns"] : DB));

@@ -70,7 +70,7 @@ echo ($_POST["add_x"] || strpos($name, "\n")
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php
 if (DB != "") {
-	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm() . ">\n";
+	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'>" . confirm() . "\n";
 } elseif (!$_POST["add_x"] && $_GET["db"] == "") {
 	echo "<input type='image' class='icon' name='add' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>\n";
 }

@@ -28,7 +28,7 @@ if (!$row) {
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php
 if ($SEQUENCE != "") {
-	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm() . ">\n";
+	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'>" . confirm() . "\n";
 }
 ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
