@@ -258,14 +258,14 @@ function editingAddRow(focus) {
 
 /** Remove table row for field
 * @param string
-* @return boolean
+* @return boolean false
 * @this HTMLInputElement
 */
 function editingRemoveRow(name) {
 	var field = formField(this.form, this.name.replace(/[^\[]+(.+)/, name));
 	field.parentNode.removeChild(field);
 	parentTag(this, 'tr').style.display = 'none';
-	return true;
+	return false;
 }
 
 /** Move table row for field

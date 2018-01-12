@@ -132,7 +132,7 @@ foreach ($row["indexes"] as $index) {
 		}
 
 		echo "<td><input name='indexes[$j][name]' value='" . h($index["name"]) . "' autocapitalize='off' aria-labelledby='label-name'>\n";
-		echo "<td><input type='image' class='icon' name='drop_col[$j]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "' onclick=\"return !editingRemoveRow.call(this, 'indexes\$1[type]');\">\n";
+		echo "<td><input type='image' class='icon' name='drop_col[$j]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "' onclick=\"return editingRemoveRow.call(this, 'indexes\$1[type]');\">\n";
 	}
 	$j++;
 }
