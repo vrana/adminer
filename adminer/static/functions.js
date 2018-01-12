@@ -549,7 +549,7 @@ function fieldChange() {
 	}
 	// keep value in <select> (function)
 	parentTag(this, 'table').appendChild(row);
-	this.onchange = function () { };
+	this.oninput = function () { };
 }
 
 
