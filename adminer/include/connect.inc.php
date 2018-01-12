@@ -36,7 +36,7 @@ function connect_error() {
 				. "<th>" . lang('Database') . " - <a href='" . h(ME) . "refresh=1'>" . lang('Refresh') . "</a>"
 				. "<td>" . lang('Collation')
 				. "<td>" . lang('Tables')
-				. "<td>" . lang('Size') . " - <a href='" . h(ME) . "dbsize=1' onclick=\"return ajaxSetHtml('" . h(js_escape(ME)) . "script=connect');\">" . lang('Compute') . "</a>"
+				. "<td>" . lang('Size') . " - <a href='" . h(ME) . "dbsize=1'>" . lang('Compute') . "</a><script>qsl('a').onclick = partial(ajaxSetHtml, '" . js_escape(ME) . "script=connect');</script>"
 				. "</thead>\n"
 			;
 			
@@ -57,7 +57,7 @@ function connect_error() {
 			echo "</table>\n";
 			echo (support("database")
 				? "<fieldset><legend>" . lang('Selected') . " <span id='selected'></span></legend><div>\n"
-					. "<input type='hidden' name='all' value='' onclick=\"selectCount('selected', formChecked(this, /^db/));\">\n" // used by trCheck()
+					. "<input type='hidden' name='all' value=''><script>qsl('input').onclick = function () { selectCount('selected', formChecked(this, /^db/)); };</script>\n" // used by trCheck()
 					. "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm() . ">\n"
 					. "</div></fieldset>\n"
 				: ""

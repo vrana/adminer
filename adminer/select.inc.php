@@ -465,7 +465,7 @@ if (!$columns && support("table")) {
 				);
 				if ($jush != "simpledb") {
 					echo '<a href="' . h(remove_from_uri("page")) . '">' . lang('Page') . "</a>:";
-					echo "<script>qsl('a').onclick = function () { pageClick(this.href, +prompt('" . lang('Page') . "', '" . ($page + 1) . "')); return false; }</script>\n";
+					echo "<script>qsl('a').onclick = function () { pageClick(this.href, +prompt('" . lang('Page') . "', '" . ($page + 1) . "')); return false; };</script>\n";
 					echo pagination(0, $page) . ($page > 5 ? " ..." : "");
 					for ($i = max(1, $page - 4); $i < min($max_page, $page + 5); $i++) {
 						echo pagination($i, $page);

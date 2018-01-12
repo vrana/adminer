@@ -119,8 +119,8 @@ function checkbox($name, $value, $checked, $label = "", $onclick = "", $class = 
 	$return = "<input type='checkbox' name='$name' value='" . h($value) . "'"
 		. ($checked ? " checked" : "")
 		. ($labelled_by ? " aria-labelledby='$labelled_by'" : "")
-		. ($onclick ? ' onclick="' . h($onclick) . '"' : '')
 		. ">"
+		. ($onclick ? "<script>qsl('input').onclick = function () { $onclick };</script>" : "")
 	;
 	return ($label != "" || $class ? "<label" . ($class ? " class='$class'" : "") . ">$return" . h($label) . "</label>" : $return);
 }
@@ -160,9 +160,10 @@ function optionlist($options, $selected = null, $use_keys = false) {
 function html_select($name, $options, $value = "", $onchange = true, $labelled_by = "") {
 	if ($onchange) {
 		return "<select name='" . h($name) . "'"
-			. (is_string($onchange) ? ' onchange="' . h($onchange) . '"' : "")
 			. ($labelled_by ? " aria-labelledby='$labelled_by'" : "")
-			. ">" . optionlist($options, $value) . "</select>";
+			. ">" . optionlist($options, $value) . "</select>"
+			. (is_string($onchange) ? "<script>qsl('select').onchange = function () { $onchange };</script>" : "")
+		;
 	}
 	$return = "";
 	foreach ($options as $key => $val) {
