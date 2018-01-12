@@ -603,10 +603,10 @@ function ajax(url, callback, data, message) {
 
 /** Use setHtml(key, value) for JSON response
 * @param string
-* @return XMLHttpRequest or false in case of an error
+* @return boolean false for success
 */
 function ajaxSetHtml(url) {
-	return ajax(url, function (request) {
+	return !ajax(url, function (request) {
 		var data = window.JSON ? JSON.parse(request.responseText) : eval('(' + request.responseText + ')');
 		for (var key in data) {
 			setHtml(key, data[key]);
