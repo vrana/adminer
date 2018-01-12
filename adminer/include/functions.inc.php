@@ -1381,7 +1381,8 @@ function edit_form($TABLE, $fields, $row, $update) {
 		}
 		if (!support("table")) {
 			echo "<tr>"
-				. "<th><input name='field_keys[]' onkeyup='keyupChange.call(this);' onchange='fieldChange.call(this);' value=''>" // needs empty value for keyupChange()
+				. "<th><input name='field_keys[]' value=''>" // needs empty value for keyupChange()
+				. script("mixin(qsl('input'), {onkeyup: keyupChange, onchange: fieldChange});")
 				. "<td class='function'>" . html_select("field_funs[]", $adminer->editFunctions(array("null" => isset($_GET["select"]))))
 				. "<td><input name='field_vals[]'>"
 				. "\n"
@@ -1394,9 +1395,10 @@ function edit_form($TABLE, $fields, $row, $update) {
 		echo "<input type='submit' value='" . lang('Save') . "'>\n";
 		if (!isset($_GET["select"])) {
 			echo "<input type='submit' name='insert' value='" . ($update
-				? lang('Save and continue edit') . "' onclick='return !ajaxForm(this.form, \"" . lang('Saving') . '...", this)'
+				? lang('Save and continue edit')
 				: lang('Save and insert next')
 			) . "' title='Ctrl+Shift+Enter'>\n";
+			echo ($update ? script("qsl('input').onclick = function () { return !ajaxForm(this.form, '" . lang('Saving') . "...', this); };") : "");
 		}
 	}
 	echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "'>" . confirm() . "\n"

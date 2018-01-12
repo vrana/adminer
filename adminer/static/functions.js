@@ -357,9 +357,9 @@ function menuOut() {
 */
 function selectAddRow() {
 	var field = this;
+	var row = cloneNode(field.parentNode);
 	field.onchange = selectFieldChange;
 	field.onchange();
-	var row = cloneNode(field.parentNode);
 	var selects = qsa('select', row);
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/[a-z]\[\d+/, '$&1');
@@ -861,8 +861,10 @@ function cloneNode(el) {
 	var origEls = qsa(selector, el);
 	var cloneEls = qsa(selector, el2);
 	for (var i=0; i < origEls.length; i++) {
-		if (origEls[i].onchange) {
-			cloneEls[i].onchange = origEls[i].onchange;
+		for (var key in {onchange: 1, onkeydown: 1, onsearch: 1}) {
+			if (origEls[i][key]) {
+				cloneEls[i][key] = origEls[i][key];
+			}
 		}
 	}
 	setupSubmitHighlight(el2);

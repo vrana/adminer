@@ -313,9 +313,15 @@ class Adminer {
 		$select[""] = array();
 		foreach ($select as $key => $val) {
 			$val = $_GET["columns"][$key];
-			$column = select_input(" name='columns[$i][col]' onchange='" . ($key !== ""  ? "selectFieldChange" : "selectAddRow") . ".call(this);'", $columns, $val["col"]);
-			echo "<div>" . ($functions || $grouping ? "<select name='columns[$i][fun]' onchange='helpClose();" . ($key !== "" ? "" : " this.nextSibling.nextSibling.onchange();") . "'"
+			$column = select_input(
+				" name='columns[$i][col]'",
+				$columns,
+				$val["col"],
+				($key !== ""  ? "selectFieldChange" : "selectAddRow")
+			);
+			echo "<div>" . ($functions || $grouping ? "<select name='columns[$i][fun]'"
 				. on_help("getTarget(event).value && getTarget(event).value.replace(/ |\$/, '(') + ')'", 1) . ">" . optionlist(array(-1 => "") + array_filter(array(lang('Functions') => $functions, lang('Aggregation') => $grouping)), $val["fun"]) . "</select>"
+				. script("qsl('select').onchange = function () { helpClose();" . ($key !== "" ? "" : " this.nextSibling.nextSibling.nextSibling.onchange();") . " };", "")
 				. "($column)" : $column) . "</div>\n";
 			$i++;
 		}
@@ -341,13 +347,21 @@ class Adminer {
 		}
 		$_GET["where"] = (array) $_GET["where"];
 		reset($_GET["where"]);
-		$change_next = "this.nextSibling.onchange();";
+		$change_next = "this.parentNode.firstChild.onchange();";
 		for ($i = 0; $i <= count($_GET["where"]); $i++) {
 			list(, $val) = each($_GET["where"]);
 			if (!$val || ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators))) {
-				echo "<div>" . select_input(" name='where[$i][col]' onchange='$change_next'", $columns, $val["col"], "", "(" . lang('anywhere') . ")");
+				echo "<div>" . select_input(
+					" name='where[$i][col]'",
+					$columns,
+					$val["col"],
+					($val ? "selectFieldChange" : "selectAddRow"),
+					"(" . lang('anywhere') . ")"
+				);
 				echo html_select("where[$i][op]", $this->operators, $val["op"], $change_next);
-				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' onchange='" . ($val ? "selectFieldChange" : "selectAddRow") . ".call(this);' onkeydown='selectSearchKeydown.call(this, event);' onsearch='selectSearchSearch.call(this);'></div>\n";
+				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'>";
+				echo script("mixin(qsl('input'), {onchange: function () { $change_next }, onkeydown: selectSearchKeydown, onsearch: selectSearchSearch});", "");
+				echo "</div>\n";
 			}
 		}
 		echo "</div></fieldset>\n";
@@ -369,7 +383,7 @@ class Adminer {
 				$i++;
 			}
 		}
-		echo "<div>" . select_input(" name='order[$i]' onchange='selectAddRow.call(this);'", $columns);
+		echo "<div>" . select_input(" name='order[$i]'", $columns, "", "selectAddRow");
 		echo checkbox("desc[$i]", 1, false, lang('descending')) . "</div>\n";
 		echo "</div></fieldset>\n";
 	}
