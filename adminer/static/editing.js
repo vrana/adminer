@@ -524,11 +524,10 @@ function schemaMousedown(event) {
 /** Move object
 * @param MouseEvent
 */
-function schemaMousemove(ev) {
+function schemaMousemove(event) {
 	if (that !== undefined) {
-		ev = ev || event;
-		var left = (ev.clientX - x) / em;
-		var top = (ev.clientY - y) / em;
+		var left = (event.clientX - x) / em;
+		var top = (event.clientY - y) / em;
 		var divs = qsa('div', that);
 		var lineSet = { };
 		for (var i=0; i < divs.length; i++) {
@@ -568,10 +567,9 @@ function schemaMousemove(ev) {
 * @param MouseEvent
 * @param string
 */
-function schemaMouseup(ev, db) {
+function schemaMouseup(event, db) {
 	if (that !== undefined) {
-		ev = ev || event;
-		tablePos[that.firstChild.firstChild.firstChild.data] = [ (ev.clientY - y) / em, (ev.clientX - x) / em ];
+		tablePos[that.firstChild.firstChild.firstChild.data] = [ (event.clientY - y) / em, (event.clientX - x) / em ];
 		that = undefined;
 		var s = '';
 		for (var key in tablePos) {
