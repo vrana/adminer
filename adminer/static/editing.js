@@ -392,7 +392,6 @@ function partitionByChange() {
 function partitionNameChange() {
 	var row = cloneNode(parentTag(this, 'tr'));
 	row.firstChild.firstChild.value = '';
-	row.firstChild.firstChild.onchange = this.onchange;
 	parentTag(this, 'table').appendChild(row);
 	this.onchange = function () {};
 }
@@ -473,9 +472,6 @@ function indexesAddColumn(prefix) {
 		select = selects[i];
 		select.name = select.name.replace(/\]\[\d+/, '$&1');
 		select.selectedIndex = 0;
-		if (!i) {
-			select.onchange = field.onchange;
-		}
 	}
 	field.onchange = partial(indexesChangeColumn, prefix);
 	var inputs = qsa('input', column);

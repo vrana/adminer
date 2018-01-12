@@ -857,6 +857,14 @@ function focus(el) {
 */
 function cloneNode(el) {
 	var el2 = el.cloneNode(true);
+	var selector = 'input, select';
+	var origEls = qsa(selector, el);
+	var cloneEls = qsa(selector, el2);
+	for (var i=0; i < origEls.length; i++) {
+		if (origEls[i].onchange) {
+			cloneEls[i].onchange = origEls[i].onchange;
+		}
+	}
 	setupSubmitHighlight(el2);
 	return el2;
 }
