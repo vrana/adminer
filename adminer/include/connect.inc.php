@@ -29,7 +29,8 @@ function connect_error() {
 			$scheme = support("scheme");
 			$collations = collations();
 			echo "<form action='' method='post'>\n";
-			echo "<table cellspacing='0' class='checkable' onclick='tableClick(event);' ondblclick='tableClick(event, true);'>\n";
+			echo "<table cellspacing='0' class='checkable'>\n";
+			echo "<script>mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});</script>\n";
 			echo "<thead><tr>"
 				. (support("database") ? "<td>&nbsp;" : "")
 				. "<th>" . lang('Database') . " - <a href='" . h(ME) . "refresh=1'>" . lang('Refresh') . "</a>"

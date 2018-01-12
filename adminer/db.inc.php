@@ -63,7 +63,8 @@ if ($adminer->homepage()) {
 				}
 			}
 			$doc_link = doc_link(array('sql' => 'show-table-status.html'));
-			echo "<table cellspacing='0' class='nowrap checkable' onclick='tableClick(event);' ondblclick='tableClick(event, true);'>\n";
+			echo "<table cellspacing='0' class='nowrap checkable'>\n";
+			echo "<script>mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});</script>\n";
 			echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck.call(this, /^(tables|views)\[/);" class="jsonly">';
 			echo '<th>' . lang('Table');
 			echo '<td>' . lang('Engine') . doc_link(array('sql' => 'storage-engines.html'));

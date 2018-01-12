@@ -960,7 +960,7 @@ bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 
 	* @return null
 	*/
 	function tablesPrint($tables) {
-		echo "<ul id='tables' onmouseover='menuOver.call(this, event);' onmouseout='menuOut.call(this);'>\n";
+		echo "<ul id='tables'><script>mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});</script>\n";
 		foreach ($tables as $table => $status) {
 			echo '<li><a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table || $_GET["edit"] == $table, "select") . ">" . lang('select') . "</a> ";
 			$name = $this->tableName($status);
