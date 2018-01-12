@@ -194,7 +194,7 @@ function select_input($attrs, $options, $value = "", $onchange = "", $placeholde
 	return "<$tag$attrs" . ($options
 		? "><option value=''>$placeholder" . optionlist($options, $value, true) . "</select>"
 		: " size='10' value='" . h($value) . "' placeholder='$placeholder'>"
-	) . ($onchange ? script("qsl('$tag').onchange = $onchange;", "") : "");
+	) . ($onchange ? script("qsl('$tag').onchange = $onchange;", "") : ""); //! use oninput for input
 }
 
 /** Get onclick confirmation

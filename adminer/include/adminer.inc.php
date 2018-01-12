@@ -341,7 +341,7 @@ class Adminer {
 			if ($index["type"] == "FULLTEXT") {
 				echo "(<i>" . implode("</i>, <i>", array_map('h', $index["columns"])) . "</i>) AGAINST";
 				echo " <input type='search' name='fulltext[$i]' value='" . h($_GET["fulltext"][$i]) . "'>";
-				echo script("qsl('input').onchange = selectFieldChange;", "");
+				echo script("qsl('input').oninput = selectFieldChange;", "");
 				echo checkbox("boolean[$i]", 1, isset($_GET["boolean"][$i]), "BOOL");
 				echo "<br>\n";
 			}
@@ -361,7 +361,7 @@ class Adminer {
 				);
 				echo html_select("where[$i][op]", $this->operators, $val["op"], $change_next);
 				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'>";
-				echo script("mixin(qsl('input'), {onchange: function () { $change_next }, onkeydown: selectSearchKeydown, onsearch: selectSearchSearch});", "");
+				echo script("mixin(qsl('input'), {oninput: function () { $change_next }, onkeydown: selectSearchKeydown, onsearch: selectSearchSearch});", "");
 				echo "</div>\n";
 			}
 		}
@@ -396,7 +396,7 @@ class Adminer {
 	function selectLimitPrint($limit) {
 		echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
 		echo "<input type='number' name='limit' class='size' value='" . h($limit) . "'>";
-		echo script("qsl('input').onchange = selectFieldChange;", "");
+		echo script("qsl('input').oninput = selectFieldChange;", "");
 		echo "</div></fieldset>\n";
 	}
 

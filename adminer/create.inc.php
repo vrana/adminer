@@ -214,7 +214,7 @@ if (support("partitioning")) {
 foreach ($row["partition_names"] as $key => $val) {
 	echo '<tr>';
 	echo '<td><input name="partition_names[]" value="' . h($val) . '" autocapitalize="off">';
-	echo ($key == count($row["partition_names"]) - 1 ? script("qsl('input').onchange = partitionNameChange;") : '');
+	echo ($key == count($row["partition_names"]) - 1 ? script("qsl('input').oninput = partitionNameChange;") : '');
 	echo '<td><input name="partition_values[]" value="' . h($row["partition_values"][$key]) . '">';
 }
 ?>

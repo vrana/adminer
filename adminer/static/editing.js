@@ -298,7 +298,7 @@ function editingTypeChange() {
 			)) {
 				el.value = '';
 			}
-			el.onchange.apply(el);
+			el.oninput.apply(el);
 		}
 		if (lastType == 'timestamp' && el.name == name + '[has_default]' && /timestamp/i.test(formField(type.form, name + '[default]').value)) {
 			el.checked = false;
@@ -390,7 +390,7 @@ function partitionNameChange() {
 	var row = cloneNode(parentTag(this, 'tr'));
 	row.firstChild.firstChild.value = '';
 	parentTag(this, 'table').appendChild(row);
-	this.onchange = function () {};
+	this.oninput = function () {};
 }
 
 
