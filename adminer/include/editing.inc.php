@@ -141,7 +141,7 @@ function edit_type($key, $field, $collations, $foreign_keys = array()) {
 	global $structured_types, $types, $unsigned, $on_actions;
 	$type = $field["type"];
 	?>
-<td><select name="<?php echo h($key); ?>[type]" class="type" onfocus="lastType = selectValue(this);" onchange="editingTypeChange(this);"<?php echo on_help("getTarget(event).value", 1); ?> aria-labelledby="label-type"><?php
+<td><select name="<?php echo h($key); ?>[type]" class="type" onfocus="lastType = selectValue(this);" onchange="editingTypeChange(this);" aria-labelledby="label-type"><?php
 if ($type && !isset($types[$type]) && !isset($foreign_keys[$type])) {
 	array_unshift($structured_types, $type);
 }
@@ -150,6 +150,7 @@ if ($foreign_keys) {
 }
 echo optionlist($structured_types, $type);
 ?></select>
+<?php echo on_help("getTarget(event).value", 1); ?>
 <td><input name="<?php echo h($key); ?>[length]" value="<?php echo h($field["length"]); ?>" size="3" onfocus="editingLengthFocus.call(this);"<?php echo (!$field["length"] && preg_match('~var(char|binary)$~', $type) ? " class='required'" : ""); ?> onchange="editingLengthChange.call(this);" onkeyup="this.onchange();" aria-labelledby="label-length"><td class="options"><?php //! type="number" with enabled JavaScript
 	echo "<select name='" . h($key) . "[collation]'" . (preg_match('~(char|text|enum|set)$~', $type) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>';
 	echo ($unsigned ? "<select name='" . h($key) . "[unsigned]'" . (!$type || preg_match('~((^|[^o])int|float|double|decimal)$~', $type) ? "" : " class='hidden'") . '><option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');

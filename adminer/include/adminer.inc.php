@@ -319,8 +319,9 @@ class Adminer {
 				$val["col"],
 				($key !== ""  ? "selectFieldChange" : "selectAddRow")
 			);
-			echo "<div>" . ($functions || $grouping ? "<select name='columns[$i][fun]'"
-				. on_help("getTarget(event).value && getTarget(event).value.replace(/ |\$/, '(') + ')'", 1) . ">" . optionlist(array(-1 => "") + array_filter(array(lang('Functions') => $functions, lang('Aggregation') => $grouping)), $val["fun"]) . "</select>"
+			echo "<div>" . ($functions || $grouping ? "<select name='columns[$i][fun]'>"
+				. optionlist(array(-1 => "") + array_filter(array(lang('Functions') => $functions, lang('Aggregation') => $grouping)), $val["fun"]) . "</select>"
+				. on_help("getTarget(event).value && getTarget(event).value.replace(/ |\$/, '(') + ')'", 1)
 				. script("qsl('select').onchange = function () { helpClose();" . ($key !== "" ? "" : " this.nextSibling.nextSibling.nextSibling.onchange();") . " };", "")
 				. "($column)" : $column) . "</div>\n";
 			$i++;

@@ -894,7 +894,8 @@ function input($field, $value, $function) {
 		$attrs .= $onchange;
 		$has_function = (in_array($function, $functions) || isset($functions[$function]));
 		echo (count($functions) > 1
-			? "<select name='function[$name]'" . on_help("getTarget(event).value.replace(/^SQL\$/, '')", 1) . ">" . optionlist($functions, $function === null || $has_function ? $function : "") . "</select>"
+			? "<select name='function[$name]'>" . optionlist($functions, $function === null || $has_function ? $function : "") . "</select>"
+				. on_help("getTarget(event).value.replace(/^SQL\$/, '')", 1)
 				. script("qsl('select').onchange = functionChange;", "")
 			: nbsp(reset($functions))
 		) . '<td>';
@@ -1313,7 +1314,7 @@ function lzw_decompress($binary) {
 * @return string
 */
 function on_help($command, $side = 0) {
-	return " onmouseover='helpMouseover.call(this, event, " . h($command) . ", $side);' onmouseout='helpMouseout.call(this, event);'";
+	return script("mixin(qsl('select, input'), {onmouseover: function (event) { helpMouseover.call(this, event, $command, $side) }, onmouseout: helpMouseout});", "");
 }
 
 /** Print edit data form
