@@ -392,6 +392,7 @@ function partitionByChange() {
 function partitionNameChange() {
 	var row = cloneNode(parentTag(this, 'tr'));
 	row.firstChild.firstChild.value = '';
+	row.firstChild.firstChild.onchange = this.onchange;
 	parentTag(this, 'table').appendChild(row);
 	this.onchange = function () {};
 }
