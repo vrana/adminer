@@ -81,6 +81,15 @@ function charset($connection) {
 	return (version_compare($connection->server_info, "5.5.3") >= 0 ? "utf8mb4" : "utf8"); // SHOW CHARSET would require an extra query
 }
 
+/** Return <script> element
+* @param string
+* @param string
+* @return string
+*/
+function script($source, $trailing = "\n") {
+	return "<script>$source</script>$newline";
+}
+
 /** Escape for HTML
 * @param string
 * @return string
@@ -120,7 +129,7 @@ function checkbox($name, $value, $checked, $label = "", $onclick = "", $class = 
 		. ($checked ? " checked" : "")
 		. ($labelled_by ? " aria-labelledby='$labelled_by'" : "")
 		. ">"
-		. ($onclick ? "<script>qsl('input').onclick = function () { $onclick };</script>" : "")
+		. ($onclick ? script("qsl('input').onclick = function () { $onclick };", "") : "")
 	;
 	return ($label != "" || $class ? "<label" . ($class ? " class='$class'" : "") . ">$return" . h($label) . "</label>" : $return);
 }
@@ -162,7 +171,7 @@ function html_select($name, $options, $value = "", $onchange = true, $labelled_b
 		return "<select name='" . h($name) . "'"
 			. ($labelled_by ? " aria-labelledby='$labelled_by'" : "")
 			. ">" . optionlist($options, $value) . "</select>"
-			. (is_string($onchange) ? "<script>qsl('select').onchange = function () { $onchange };</script>" : "")
+			. (is_string($onchange) ? script("qsl('select').onchange = function () { $onchange };", "") : "")
 		;
 	}
 	$return = "";
@@ -185,7 +194,7 @@ function select_input($attrs, $options, $value = "", $onchange = "", $placeholde
 	return "<$tag$attrs" . ($options
 		? "><option value=''>$placeholder" . optionlist($options, $value, true) . "</select>"
 		: " size='10' value='" . h($value) . "' placeholder='$placeholder'>"
-	) . ($onchange ? "<script>qsl('$tag').onchange = $onchange;</script>" : "");
+	) . ($onchange ? script("qsl('$tag').onchange = $onchange;", "") : "");
 }
 
 /** Get onclick confirmation
@@ -193,7 +202,7 @@ function select_input($attrs, $options, $value = "", $onchange = "", $placeholde
 * @return string
 */
 function confirm($selector = "qsl('input')") {
-	return "<script>$selector.onclick = function () { return confirm('" . lang('Are you sure?') . "'); };</script>";
+	return script("$selector.onclick = function () { return confirm('" . lang('Are you sure?') . "'); };", "");
 }
 
 /** Print header for hidden fieldset (close by </div></fieldset>)
@@ -205,7 +214,7 @@ function confirm($selector = "qsl('input')") {
 function print_fieldset($id, $legend, $visible = false) {
 	echo "<fieldset><legend>";
 	echo "<a href='#fieldset-$id'>$legend</a>";
-	echo "<script>qsl('a').onclick = partial(toggle, 'fieldset-$id');</script>";
+	echo script("qsl('a').onclick = partial(toggle, 'fieldset-$id');", "");
 	echo "</legend>";
 	echo "<div id='fieldset-$id'" . ($visible ? "" : " class='hidden'") . ">\n";
 }
@@ -885,7 +894,8 @@ function input($field, $value, $function) {
 		$attrs .= $onchange;
 		$has_function = (in_array($function, $functions) || isset($functions[$function]));
 		echo (count($functions) > 1
-			? "<select name='function[$name]'" . on_help("getTarget(event).value.replace(/^SQL\$/, '')", 1) . ">" . optionlist($functions, $function === null || $has_function ? $function : "") . "</select><script>qsl('select').onchange = functionChange;</script>"
+			? "<select name='function[$name]'" . on_help("getTarget(event).value.replace(/^SQL\$/, '')", 1) . ">" . optionlist($functions, $function === null || $has_function ? $function : "") . "</select>"
+				. script("qsl('select').onchange = functionChange;", "")
 			: nbsp(reset($functions))
 		) . '<td>';
 		$input = $adminer->editInput($_GET["edit"], $field, $attrs, $value); // usage in call is without a table
@@ -1236,7 +1246,7 @@ var timeout = setTimeout(function () {
 	flush();
 	$return = @get_key_vals($query, $connection2, $timeout); // @ - may be killed
 	if ($connection2) {
-		echo "<script>clearTimeout(timeout);</script>\n";
+		echo script("clearTimeout(timeout);");
 		ob_flush();
 		flush();
 	}
@@ -1390,7 +1400,7 @@ function edit_form($TABLE, $fields, $row, $update) {
 		}
 	}
 	echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "'>" . confirm() . "\n"
-		: ($_POST || !$fields ? "" : "<script>focus(qsa('td', qs('#form'))[1].firstChild);</script>\n")
+		: ($_POST || !$fields ? "" : script("focus(qsa('td', qs('#form'))[1].firstChild);"))
 	);
 	if (isset($_GET["select"])) {
 		hidden_fields(array("check" => (array) $_POST["check"], "clone" => $_POST["clone"], "all" => $_POST["all"]));

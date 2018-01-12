@@ -65,8 +65,8 @@ echo ($_POST["add_x"] || strpos($name, "\n")
 	'sql' => "charset-charsets.html",
 	'mssql' => "ms187963.aspx",
 )) : "");
+echo script("focus(qs('#name'));");
 ?>
-<script>focus(qs('#name'));</script>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php
 if (DB != "") {

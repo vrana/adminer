@@ -30,13 +30,13 @@ function connect_error() {
 			$collations = collations();
 			echo "<form action='' method='post'>\n";
 			echo "<table cellspacing='0' class='checkable'>\n";
-			echo "<script>mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});</script>\n";
+			echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
 			echo "<thead><tr>"
 				. (support("database") ? "<td>&nbsp;" : "")
 				. "<th>" . lang('Database') . " - <a href='" . h(ME) . "refresh=1'>" . lang('Refresh') . "</a>"
 				. "<td>" . lang('Collation')
 				. "<td>" . lang('Tables')
-				. "<td>" . lang('Size') . " - <a href='" . h(ME) . "dbsize=1'>" . lang('Compute') . "</a><script>qsl('a').onclick = partial(ajaxSetHtml, '" . js_escape(ME) . "script=connect');</script>"
+				. "<td>" . lang('Size') . " - <a href='" . h(ME) . "dbsize=1'>" . lang('Compute') . "</a>" . script("qsl('a').onclick = partial(ajaxSetHtml, '" . js_escape(ME) . "script=connect');", "")
 				. "</thead>\n"
 			;
 			
@@ -57,12 +57,12 @@ function connect_error() {
 			echo "</table>\n";
 			echo (support("database")
 				? "<fieldset><legend>" . lang('Selected') . " <span id='selected'></span></legend><div>\n"
-					. "<input type='hidden' name='all' value=''><script>qsl('input').onclick = function () { selectCount('selected', formChecked(this, /^db/)); };</script>\n" // used by trCheck()
+					. "<input type='hidden' name='all' value=''>" . script("qsl('input').onclick = function () { selectCount('selected', formChecked(this, /^db/)); };") // used by trCheck()
 					. "<input type='submit' name='drop' value='" . lang('Drop') . "'>" . confirm() . "\n"
 					. "</div></fieldset>\n"
 				: ""
 			);
-			echo "<script>tableCheck();</script>\n";
+			echo script("tableCheck();");
 			echo "<input type='hidden' name='token' value='$token'>\n";
 			echo "</form>\n";
 		}

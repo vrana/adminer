@@ -64,7 +64,7 @@ if ($adminer->homepage()) {
 			}
 			$doc_link = doc_link(array('sql' => 'show-table-status.html'));
 			echo "<table cellspacing='0' class='nowrap checkable'>\n";
-			echo "<script>mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});</script>\n";
+			echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
 			echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck.call(this, /^(tables|views)\[/);" class="jsonly">';
 			echo '<th>' . lang('Table');
 			echo '<td>' . lang('Engine') . doc_link(array('sql' => 'storage-engines.html'));
@@ -141,7 +141,7 @@ if ($adminer->homepage()) {
 				echo "</div></fieldset>\n";
 			}
 			echo "</form>\n";
-			echo "<script>tableCheck();</script>\n";
+			echo script("tableCheck();");
 		}
 
 		echo '<p class="links"><a href="' . h(ME) . 'create=">' . lang('Create table') . "</a>\n";
@@ -222,7 +222,7 @@ if ($adminer->homepage()) {
 		}
 
 		if ($tables_list) {
-			echo "<script>ajaxSetHtml('" . js_escape(ME) . "script=db');</script>\n";
+			echo script("ajaxSetHtml('" . js_escape(ME) . "script=db');");
 		}
 	}
 }

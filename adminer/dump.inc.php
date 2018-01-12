@@ -189,7 +189,7 @@ if (DB != "") {
 	echo $views;
 
 	if ($tables_list) {
-		echo "<script>ajaxSetHtml('" . js_escape(ME) . "script=db');</script>\n";
+		echo script("ajaxSetHtml('" . js_escape(ME) . "script=db');");
 	}
 
 } else {

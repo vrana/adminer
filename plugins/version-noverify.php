@@ -9,12 +9,7 @@
 class AdminerVersionNoverify {
 	
 	function navigation($missing) {
-		?>
-<script>
-verifyVersion = function () {
-};
-</script>
-<?php
+		echo script("verifyVersion = function () {};");
 	}
 	
 }

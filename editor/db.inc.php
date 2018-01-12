@@ -8,7 +8,7 @@ if ($adminer->homepage()) {
 		search_tables();
 	}
 	echo "<table cellspacing='0' class='nowrap checkable'>\n";
-	echo "<script>mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});</script>\n";
+	echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
 	echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck.call(this, /^tables\[/);" class="jsonly"><th>' . lang('Table') . '<td>' . lang('Rows') . "</thead>\n";
 	
 	foreach (table_status() as $table => $row) {
@@ -22,6 +22,6 @@ if ($adminer->homepage()) {
 	}
 	
 	echo "</table>\n";
-	echo "<script>tableCheck();</script>\n";
+	echo script("tableCheck();");
 	echo "</form>\n";
 }

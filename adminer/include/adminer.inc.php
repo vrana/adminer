@@ -100,10 +100,8 @@ class Adminer {
 <tr><th><?php echo lang('Password'); ?><td><input type="password" name="auth[password]">
 <tr><th><?php echo lang('Database'); ?><td><input name="auth[db]" value="<?php echo h($_GET["db"]); ?>" autocapitalize="off">
 </table>
-<script>
-focus(qs('#username'));
-</script>
 <?php
+		echo script("focus(qs('#username'));"); 
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
 		echo checkbox("auth[permanent]", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
 	}
@@ -336,7 +334,7 @@ focus(qs('#username'));
 			if ($index["type"] == "FULLTEXT") {
 				echo "(<i>" . implode("</i>, <i>", array_map('h', $index["columns"])) . "</i>) AGAINST";
 				echo " <input type='search' name='fulltext[$i]' value='" . h($_GET["fulltext"][$i]) . "'>";
-				echo "<script>qsl('input').onchange = selectFieldChange;</script>";
+				echo script("qsl('input').onchange = selectFieldChange;", "");
 				echo checkbox("boolean[$i]", 1, isset($_GET["boolean"][$i]), "BOOL");
 				echo "<br>\n";
 			}
@@ -383,7 +381,7 @@ focus(qs('#username'));
 	function selectLimitPrint($limit) {
 		echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
 		echo "<input type='number' name='limit' class='size' value='" . h($limit) . "'>";
-		echo "<script>qsl('input').onchange = selectFieldChange;</script>";
+		echo script("qsl('input').onchange = selectFieldChange;", "");
 		echo "</div></fieldset>\n";
 	}
 
@@ -585,7 +583,7 @@ focus(qs('#username'));
 		}
 		$history[$_GET["db"]][] = array($query, time(), $time); // not DB - $_GET["db"] is changed in database.inc.php //! respect $_GET["ns"]
 		return " <span class='time'>" . @date("H:i:s") . "</span>" // @ - time zone may be not set
-			. " <a href='#$id'>" . lang('SQL command') . "</a><script>qsl('a').onclick = partial(toggle, '$id');</script>"
+			. " <a href='#$id'>" . lang('SQL command') . "</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "")
 			. "<div id='$id' class='hidden'><pre><code class='jush-$jush'>" . shorten_utf8($query, 1000) . '</code></pre>'
 			. ($time ? " <span class='time'>($time)</span>" : '')
 			. (support("sql") ? '<p><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a>' : '')
@@ -861,7 +859,7 @@ focus(qs('#username'));
 					foreach ($usernames as $username => $password) {
 						if ($password !== null) {
 							if ($first) {
-								echo "<p id='logins'><script>mixin(qs('#logins'), {onmouseover: menuOver, onmouseout: menuOut});</script>\n";
+								echo "<p id='logins'>" . script("mixin(qs('#logins'), {onmouseover: menuOver, onmouseout: menuOut});");
 								$first = false;
 							}
 							$dbs = $_SESSION["db"][$vendor][$server][$username];
@@ -933,7 +931,7 @@ bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 
 <p id="dbs">
 <?php
 		hidden_fields_get();
-		$db_events = "<script>mixin(qsl('select'), {onmousedown: dbMouseDown, onchange: dbChange});</script>";
+		$db_events = script("mixin(qsl('select'), {onmousedown: dbMouseDown, onchange: dbChange});", "");
 		echo "<span title='" . lang('database') . "'>DB</span>: " . ($databases
 			? "<select name='db'>" . optionlist(array("" => "") + $databases, DB) . "</select>$db_events"
 			: '<input name="db" value="' . h(DB) . '" autocapitalize="off">'
@@ -960,7 +958,7 @@ bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 
 	* @return null
 	*/
 	function tablesPrint($tables) {
-		echo "<ul id='tables'><script>mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});</script>\n";
+		echo "<ul id='tables'>" . script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
 		foreach ($tables as $table => $status) {
 			echo '<li><a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table || $_GET["edit"] == $table, "select") . ">" . lang('select') . "</a> ";
 			$name = $this->tableName($status);

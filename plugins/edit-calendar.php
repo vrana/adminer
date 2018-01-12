@@ -28,7 +28,7 @@ class AdminerEditCalendar {
 			$lang = ($lang == "zh" ? "zh-CN" : ($lang == "zh-tw" ? "zh-TW" : $lang));
 			if ($lang != "en" && file_exists(sprintf($this->langPath, $lang))) {
 				printf("<script src='$this->langPath'></script>\n", $lang);
-				echo "<script>jQuery(function () { jQuery.timepicker.setDefaults(jQuery.datepicker.regional['$lang']); });</script>\n";
+				echo script("jQuery(function () { jQuery.timepicker.setDefaults(jQuery.datepicker.regional['$lang']); });");
 			}
 		}
 	}
@@ -37,11 +37,12 @@ class AdminerEditCalendar {
 		if (preg_match("~date|time~", $field["type"])) {
 			$dateFormat = "changeYear: true, dateFormat: 'yy-mm-dd'"; //! yy-mm-dd regional
 			$timeFormat = "showSecond: true, timeFormat: 'HH:mm:ss.lcZ', timeInput: true";
-			return "<input id='fields-" . h($field["field"]) . "' value='" . h($value) . "'" . (@+$field["length"] ? " maxlength='" . (+$field["length"]) . "'" : "") . "$attrs><script>jQuery('#fields-" . js_escape($field["field"]) . "')."
+			return "<input id='fields-" . h($field["field"]) . "' value='" . h($value) . "'" . (@+$field["length"] ? " maxlength='" . (+$field["length"]) . "'" : "") . "$attrs>" . script(
+				"jQuery('#fields-" . js_escape($field["field"]) . "')."
 				. ($field["type"] == "time" ? "timepicker({ $timeFormat })"
-				: (preg_match("~time~", $field["type"]) ? "datetimepicker({ $dateFormat, $timeFormat })"
-				: "datepicker({ $dateFormat })"
-			)) . ";</script>";
+					: (preg_match("~time~", $field["type"]) ? "datetimepicker({ $dateFormat, $timeFormat })"
+						: "datepicker({ $dateFormat })"
+					)) . ";");
 		}
 	}
 

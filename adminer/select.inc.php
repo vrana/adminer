@@ -298,8 +298,11 @@ if (!$columns && support("table")) {
 			$backward_keys = $adminer->backwardKeys($TABLE, $table_name);
 
 			echo "<table id='table' cellspacing='0' class='nowrap checkable'>";
-			echo "<script>mixin(qs('#table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true), onkeydown: editingKeydown});</script>\n";
-			echo "<thead><tr>" . (!$group && $select ? "" : "<td><input type='checkbox' id='all-page' class='jsonly'><script>qs('#all-page').onclick = partial(formCheck, /check/);</script> <a href='" . h($_GET["modify"] ? remove_from_uri("modify") : $_SERVER["REQUEST_URI"] . "&modify=1") . "'>" . lang('Modify') . "</a>");
+			echo script("mixin(qs('#table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true), onkeydown: editingKeydown});");
+			echo "<thead><tr>" . (!$group && $select
+				? ""
+				: "<td><input type='checkbox' id='all-page' class='jsonly'>" . script("qs('#all-page').onclick = partial(formCheck, /check/);", "")
+					. " <a href='" . h($_GET["modify"] ? remove_from_uri("modify") : $_SERVER["REQUEST_URI"] . "&modify=1") . "'>" . lang('Modify') . "</a>");
 			$names = array();
 			$functions = array();
 			reset($select);
@@ -315,14 +318,14 @@ if (!$columns && support("table")) {
 						$column = idf_escape($key);
 						$href = remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key);
 						$desc = "&desc%5B0%5D=1";
-						echo "<th><script>mixin(qsl('th'), {onmouseover: partial(columnMouse), onmouseout: partial(columnMouse, ' hidden')});</script>";
+						echo "<th>" . script("mixin(qsl('th'), {onmouseover: partial(columnMouse), onmouseout: partial(columnMouse, ' hidden')});", "");
 						echo '<a href="' . h($href . ($order[0] == $column || $order[0] == $key || (!$order && $is_group && $group[0] == $column) ? $desc : '')) . '">'; // $order[0] == $key - COUNT(*)
 						echo apply_sql_function($val["fun"], $name) . "</a>"; //! columns looking like functions
 						echo "<span class='column hidden'>";
 						echo "<a href='" . h($href . $desc) . "' title='" . lang('descending') . "' class='text'> ↓</a>";
 						if (!$val["fun"]) {
 							echo '<a href="#fieldset-search" title="' . lang('Search') . '" class="text jsonly"> =</a>';
-							echo "<script>qsl('a').onclick = partial(selectSearch, '" . h(js_escape($key)) . "');</script>";
+							echo script("qsl('a').onclick = partial(selectSearch, '" . js_escape($key) . "');");
 						}
 						echo "</span>";
 					}
@@ -422,7 +425,7 @@ if (!$columns && support("table")) {
 						} else {
 							$long = strpos($val, "<i>...</i>");
 							echo "<td id='$id'>$val</td>";
-							echo "<script>qsl('td').onclick = partialArg(selectClick, " . ($long ? 2 : ($text ? 1 : 0)) . ($editable ? "" : ", '" . h(lang('Use edit link to modify this value.')) . "'") . ");</script>";
+							echo script("qsl('td').onclick = partialArg(selectClick, " . ($long ? 2 : ($text ? 1 : 0)) . ($editable ? "" : ", '" . h(lang('Use edit link to modify this value.')) . "'") . ");", "");
 						}
 					}
 				}
@@ -465,7 +468,7 @@ if (!$columns && support("table")) {
 				);
 				if ($jush != "simpledb") {
 					echo '<a href="' . h(remove_from_uri("page")) . '">' . lang('Page') . "</a>:";
-					echo "<script>qsl('a').onclick = function () { pageClick(this.href, +prompt('" . lang('Page') . "', '" . ($page + 1) . "')); return false; };</script>\n";
+					echo script("qsl('a').onclick = function () { pageClick(this.href, +prompt('" . lang('Page') . "', '" . ($page + 1) . "')); return false; };");
 					echo pagination(0, $page) . ($page > 5 ? " ..." : "");
 					for ($i = max(1, $page - 4); $i < min($max_page, $page + 5); $i++) {
 						echo pagination($i, $page);
@@ -479,7 +482,7 @@ if (!$columns && support("table")) {
 					}
 					echo (($found_rows === false ? count($rows) + 1 : $found_rows - $page * $limit) > $limit
 						? ' <a href="' . h(remove_from_uri("page") . "&page=" . ($page + 1)) . '" class="loadmore">' . lang('Load more data') . '</a>'
-							. "<script>qsl('a').onclick = partial(selectLoadMore, " . (+$limit) . ", '" . lang('Loading') . "...');</script>"
+							. script("qsl('a').onclick = partial(selectLoadMore, " . (+$limit) . ", '" . lang('Loading') . "...');", "")
 						: ''
 					);
 				} else {
@@ -524,7 +527,7 @@ if (!$columns && support("table")) {
 				echo "</div></fieldset>\n";
 			}
 
-			echo (!$group && $select ? "" : "<script>tableCheck();</script>\n");
+			echo (!$group && $select ? "" : script("tableCheck();"));
 		}
 
 		if ($adminer->selectImportPrint()) {

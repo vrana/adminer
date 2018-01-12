@@ -68,7 +68,7 @@ tinyMCE.init({
 
 	function editInput($table, $field, $attrs, $value) {
 		if (preg_match("~text~", $field["type"]) && preg_match("~_html~", $field["field"])) {
-			return "<textarea$attrs id='fields-" . h($field["field"]) . "' rows='12' cols='50'>" . h($value) . "</textarea><script>
+			return "<textarea$attrs id='fields-" . h($field["field"]) . "' rows='12' cols='50'>" . h($value) . "</textarea>" . script("
 tinyMCE.remove(tinyMCE.get('fields-" . js_escape($field["field"]) . "') || { });
 tinyMCE.execCommand('mceAddControl', true, 'fields-" . js_escape($field["field"]) . "');
 qs('#form').onsubmit = function () {
@@ -76,7 +76,7 @@ qs('#form').onsubmit = function () {
 		ed.remove();
 	});
 };
-</script>";
+");
 		}
 	}
 
