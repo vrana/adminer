@@ -287,9 +287,10 @@ function editingMoveRow(dir){
 var lastType = '';
 
 /** Clear length and hide collation or unsigned
-* @param HTMLSelectElement
+* @this HTMLSelectElement
 */
-function editingTypeChange(type) {
+function editingTypeChange() {
+	var type = this;
 	var name = type.name.substr(0, type.name.length - 6);
 	var text = selectValue(type);
 	for (var i=0; i < type.form.elements.length; i++) {
