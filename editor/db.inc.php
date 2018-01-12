@@ -9,7 +9,11 @@ if ($adminer->homepage()) {
 	}
 	echo "<table cellspacing='0' class='nowrap checkable'>\n";
 	echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
-	echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck.call(this, /^tables\[/);" class="jsonly"><th>' . lang('Table') . '<td>' . lang('Rows') . "</thead>\n";
+	echo '<thead><tr class="wrap">';
+	echo '<td><input id="check-all" type="checkbox" class="jsonly">' . script("qs('#check-all').onclick = partial(formCheck, /^tables\[/);", "");
+	echo '<th>' . lang('Table');
+	echo '<td>' . lang('Rows');
+	echo "</thead>\n";
 	
 	foreach (table_status() as $table => $row) {
 		$name = $adminer->tableName($row);
