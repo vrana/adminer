@@ -584,7 +584,8 @@ focus(qs('#username'));
 			$query = preg_replace('~[\x80-\xFF]+$~', '', substr($query, 0, 1e6)) . "\n..."; // [\x80-\xFF] - valid UTF-8, \n - can end by one-line comment
 		}
 		$history[$_GET["db"]][] = array($query, time(), $time); // not DB - $_GET["db"] is changed in database.inc.php //! respect $_GET["ns"]
-		return " <span class='time'>" . @date("H:i:s") . "</span> <a href='#$id' onclick=\"return toggle('$id');\">" . lang('SQL command') . "</a>" // @ - time zone may be not set
+		return " <span class='time'>" . @date("H:i:s") . "</span>" // @ - time zone may be not set
+			. " <a href='#$id'>" . lang('SQL command') . "</a><script>qsl('a').onclick = partial(toggle, '$id');</script>"
 			. "<div id='$id' class='hidden'><pre><code class='jush-$jush'>" . shorten_utf8($query, 1000) . '</code></pre>'
 			. ($time ? " <span class='time'>($time)</span>" : '')
 			. (support("sql") ? '<p><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a>' : '')
@@ -860,7 +861,7 @@ focus(qs('#username'));
 					foreach ($usernames as $username => $password) {
 						if ($password !== null) {
 							if ($first) {
-								echo "<p id='logins' onmouseover='menuOver.call(this, event);' onmouseout='menuOut.call(this);'>\n";
+								echo "<p id='logins'><script>mixin(qs('#logins'), {onmouseover: menuOver, onmouseout: menuOut});</script>\n";
 								$first = false;
 							}
 							$dbs = $_SESSION["db"][$vendor][$server][$username];
@@ -932,15 +933,15 @@ bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 
 <p id="dbs">
 <?php
 		hidden_fields_get();
-		$db_events = " onmousedown='dbMouseDown.call(this, event);' onchange='dbChange.call(this);'";
+		$db_events = "<script>mixin(qsl('select'), {onmousedown: dbMouseDown, onchange: dbChange});</script>";
 		echo "<span title='" . lang('database') . "'>DB</span>: " . ($databases
-			? "<select name='db'$db_events>" . optionlist(array("" => "") + $databases, DB) . "</select>"
+			? "<select name='db'>" . optionlist(array("" => "") + $databases, DB) . "</select>$db_events"
 			: '<input name="db" value="' . h(DB) . '" autocapitalize="off">'
 		);
 		echo "<input type='submit' value='" . lang('Use') . "'" . ($databases ? " class='hidden'" : "") . ">\n";
 		if ($missing != "db" && DB != "" && $connection->select_db(DB)) {
 			if (support("scheme")) {
-				echo "<br>" . lang('Schema') . ": <select name='ns'$db_events>" . optionlist(array("" => "") + $adminer->schemas(), $_GET["ns"]) . "</select>";
+				echo "<br>" . lang('Schema') . ": <select name='ns'>" . optionlist(array("" => "") + $adminer->schemas(), $_GET["ns"]) . "</select>$db_events";
 				if ($_GET["ns"] != "") {
 					set_schema($_GET["ns"]);
 				}
