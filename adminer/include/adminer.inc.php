@@ -335,7 +335,8 @@ focus(qs('#username'));
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT") {
 				echo "(<i>" . implode("</i>, <i>", array_map('h', $index["columns"])) . "</i>) AGAINST";
-				echo " <input type='search' name='fulltext[$i]' value='" . h($_GET["fulltext"][$i]) . "' onchange='selectFieldChange.call(this);'>";
+				echo " <input type='search' name='fulltext[$i]' value='" . h($_GET["fulltext"][$i]) . "'>";
+				echo "<script>qsl('input').onchange = selectFieldChange;</script>";
 				echo checkbox("boolean[$i]", 1, isset($_GET["boolean"][$i]), "BOOL");
 				echo "<br>\n";
 			}
@@ -365,7 +366,7 @@ focus(qs('#username'));
 		$i = 0;
 		foreach ((array) $_GET["order"] as $key => $val) {
 			if ($val != "") {
-				echo "<div>" . select_input(" name='order[$i]' onchange='selectFieldChange.call(this);'", $columns, $val);
+				echo "<div>" . select_input(" name='order[$i]'", $columns, $val, "selectFieldChange");
 				echo checkbox("desc[$i]", 1, isset($_GET["desc"][$key]), lang('descending')) . "</div>\n";
 				$i++;
 			}
@@ -381,7 +382,8 @@ focus(qs('#username'));
 	*/
 	function selectLimitPrint($limit) {
 		echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
-		echo "<input type='number' name='limit' class='size' value='" . h($limit) . "' onchange='selectFieldChange.call(this);'>";
+		echo "<input type='number' name='limit' class='size' value='" . h($limit) . "'>";
+		echo "<script>qsl('input').onchange = selectFieldChange;</script>";
 		echo "</div></fieldset>\n";
 	}
 
