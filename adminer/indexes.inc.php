@@ -120,9 +120,10 @@ foreach ($row["indexes"] as $index) {
 		$i = 1;
 		foreach ($index["columns"] as $key => $column) {
 			echo "<span>" . select_input(
-				" name='indexes[$j][columns][$i]' onchange=\"" . ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . ".call(this, '" . h(js_escape($jush == "sql" ? "" : $_GET["indexes"] . "_")) . "');\" title='" . lang('Column') . "'",
+				" name='indexes[$j][columns][$i]' title='" . lang('Column') . "'",
 				($fields ? array_combine($fields, $fields) : $fields),
-				$column
+				$column,
+				"partial(" . ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . ", '" . js_escape($jush == "sql" ? "" : $_GET["indexes"] . "_") . "')"
 			);
 			echo ($jush == "sql" || $jush == "mssql" ? "<input type='number' name='indexes[$j][lengths][$i]' class='size' value='" . h($index["lengths"][$key]) . "' title='" . lang('Length') . "'>" : "");
 			echo ($jush != "sql" ? checkbox("indexes[$j][descs][$i]", 1, $index["descs"][$key], lang('descending')) : "");

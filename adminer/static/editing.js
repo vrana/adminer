@@ -458,7 +458,6 @@ function indexesChangeColumn(prefix) {
 */
 function indexesAddColumn(prefix) {
 	var field = this;
-	field.onchange = partial(indexesChangeColumn, prefix);
 	var select = field.form[field.name.replace(/\].*/, '][type]')];
 	if (!select.selectedIndex) {
 		while (selectValue(select) != "INDEX" && select.selectedIndex < select.options.length) {
@@ -472,7 +471,11 @@ function indexesAddColumn(prefix) {
 		select = selects[i];
 		select.name = select.name.replace(/\]\[\d+/, '$&1');
 		select.selectedIndex = 0;
+		if (!i) {
+			select.onchange = field.onchange;
+		}
 	}
+	field.onchange = partial(indexesChangeColumn, prefix);
 	var inputs = qsa('input', column);
 	for (var i = 0; i < inputs.length; i++) {
 		var input = inputs[i];

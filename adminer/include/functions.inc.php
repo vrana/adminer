@@ -176,13 +176,15 @@ function html_select($name, $options, $value = "", $onchange = true, $labelled_b
 * @param array
 * @param string
 * @param string
+* @param string
 * @return string
 */
-function select_input($attrs, $options, $value = "", $placeholder = "") {
-	return ($options
-		? "<select$attrs><option value=''>$placeholder" . optionlist($options, $value, true) . "</select>"
-		: "<input$attrs size='10' value='" . h($value) . "' placeholder='$placeholder'>"
-	);
+function select_input($attrs, $options, $value = "", $onchange = "", $placeholder = "") {
+	$tag = ($options ? "select" : "input");
+	return "<$tag$attrs" . ($options
+		? "><option value=''>$placeholder" . optionlist($options, $value, true) . "</select>"
+		: " size='10' value='" . h($value) . "' placeholder='$placeholder'>"
+	) . ($onchange ? "<script>qsl('$tag').onchange = $onchange;</script>" : "");
 }
 
 /** Get onclick confirmation
