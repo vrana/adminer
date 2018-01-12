@@ -53,14 +53,13 @@ foreach (table_status('', true) as $table => $table_status) {
 var tablePos = {<?php echo implode(",", $table_pos_js) . "\n"; ?>};
 var em = qs('#schema').offsetHeight / <?php echo $top; ?>;
 document.onmousemove = schemaMousemove;
-document.onmouseup = function (ev) {
-	schemaMouseup(ev, '<?php echo js_escape(DB); ?>');
-};
+document.onmouseup = partialArg(schemaMouseup, '<?php echo js_escape(DB); ?>');
 </script>
 <?php
 foreach ($schema as $name => $table) {
-	echo "<div class='table' style='top: " . $table["pos"][0] . "em; left: " . $table["pos"][1] . "em;' onmousedown='schemaMousedown.call(this, event);'>";
+	echo "<div class='table' style='top: " . $table["pos"][0] . "em; left: " . $table["pos"][1] . "em;'>";
 	echo '<a href="' . h(ME) . 'table=' . urlencode($name) . '"><b>' . h($name) . "</b></a>";
+	echo script("qsl('div').onmousedown = schemaMousedown;");
 	
 	foreach ($table["fields"] as $field) {
 		$val = '<span' . type_class($field["type"]) . ' title="' . h($field["full_type"] . ($field["null"] ? " NULL" : '')) . '">' . h($field["field"]) . '</span>';
