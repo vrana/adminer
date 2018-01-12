@@ -7,6 +7,15 @@ function qs(selector) {
 	return document.querySelector(selector);
 }
 
+/** Get last element by selector
+* @param string
+* @return HTMLElement
+*/
+function qsl(selector) {
+	var els = qsa(selector, document);
+	return els[els.length - 1];
+}
+
 /** Get all elements by selector
 * @param string
 * @param HTMLElement
@@ -14,6 +23,41 @@ function qs(selector) {
 */
 function qsa(selector, context) {
 	return context.querySelectorAll(selector);
+}
+
+/** Return a function calling fn with the next arguments
+* @param function
+* @param ...
+* @return function with preserved this
+*/
+function partial(fn) {
+	var args = Array.apply(null, arguments).slice(1);
+	return function () {
+		return fn.apply(this, args);
+	};
+}
+
+/** Return a function calling fn with the first parameter and then the next arguments
+* @param function
+* @param ...
+* @return function with preserved this
+*/
+function partialArg(fn) {
+	var args = Array.apply(null, arguments);
+	return function (arg) {
+		args[0] = arg;
+		return fn.apply(this, args);
+	};
+}
+
+/** Assign values from source to target
+* @param Object
+* @param Object
+*/
+function mixin(target, source) {
+	for (var key in source) {
+		target[key] = source[key];
+	}
 }
 
 /** Add or remove CSS class
@@ -279,12 +323,10 @@ function nodePosition(el) {
 /** Go to the specified page
 * @param string
 * @param string
-* @param [MouseEvent]
 */
-function pageClick(href, page, event) {
+function pageClick(href, page) {
 	if (!isNaN(page) && page) {
-		href += (page != 1 ? '&page=' + (page - 1) : '');
-		location.href = href;
+		location.href = href + (page != 1 ? '&page=' + (page - 1) : '');
 	}
 }
 
@@ -377,6 +419,7 @@ function columnMouse(className) {
 
 /** Fill column in search field
 * @param string
+* @return boolean false
 */
 function selectSearch(name) {
 	var el = qs('#fieldset-search');
@@ -393,6 +436,7 @@ function selectSearch(name) {
 		div.firstChild.onchange();
 	}
 	div.lastChild.focus();
+	return false;
 }
 
 
@@ -685,7 +729,7 @@ function selectClick(event, text, warning) {
 /** Load and display next page in select
 * @param number
 * @param string
-* @return boolean
+* @return boolean false for success
 * @this HTMLLinkElement
 */
 function selectLoadMore(limit, loading) {
@@ -695,7 +739,7 @@ function selectLoadMore(limit, loading) {
 	a.innerHTML = loading;
 	if (href) {
 		a.removeAttribute('href');
-		return ajax(href, function (request) {
+		return !ajax(href, function (request) {
 			var tbody = document.createElement('tbody');
 			tbody.innerHTML = request.responseText;
 			qs('#table').appendChild(tbody);
