@@ -32,8 +32,9 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <?php } ?>
 <?php } ?>
 
-<body class="<?php echo lang('ltr'); ?> nojs" onkeydown="bodyKeydown(event);" onclick="bodyClick(event);"<?php echo (isset($_COOKIE["adminer_version"]) ? "" : " onload=\"verifyVersion('$VERSION');\""); ?>>
+<body class="<?php echo lang('ltr'); ?> nojs">
 <script>
+mixin(document.body, {onkeydown: bodyKeydown, onclick: bodyClick<?php echo (isset($_COOKIE["adminer_version"]) ? "" : ", onload: partial(verifyVersion, '$VERSION')"); ?>});
 document.body.className = document.body.className.replace(/ nojs/, ' js');
 var offlineMessage = '<?php echo js_escape(lang('You are offline.')); ?>';
 </script>

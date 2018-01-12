@@ -48,8 +48,9 @@ foreach (table_status('', true) as $table => $table_status) {
 }
 
 ?>
-<div id="schema" style="height: <?php echo $top; ?>em;" onselectstart="return false;">
+<div id="schema" style="height: <?php echo $top; ?>em;">
 <script>
+qs('#schema').onselectstart = function () { return false; };
 var tablePos = {<?php echo implode(",", $table_pos_js) . "\n"; ?>};
 var em = qs('#schema').offsetHeight / <?php echo $top; ?>;
 document.onmousemove = schemaMousemove;
