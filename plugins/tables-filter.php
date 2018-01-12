@@ -8,7 +8,7 @@
 */
 class AdminerTablesFilter {
 	function tablesPrint($tables) { ?>
-<p class="jsonly"><input id="filter-field" onkeyup="tablesFilterInput();" autocomplete="off">
+<p class="jsonly"><input id="filter-field" oninput="tablesFilterInput();" autocomplete="off">
 <ul id='tables' onmouseover='menuOver.call(this, event);' onmouseout='menuOut.call(this);'>
 <?php
 foreach ($tables as $table => $status) {

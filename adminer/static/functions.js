@@ -538,16 +538,6 @@ function functionChange() {
 	helpClose();
 }
 
-/** Call this.onchange() if value changes
-* @this HTMLInputElement
-*/
-function keyupChange() {
-	if (this.value != this.getAttribute('value')) {
-		this.onchange();
-		this.setAttribute('value', this.value);
-	}
-}
-
 /** Add new field in schema-less edit
 * @this HTMLInputElement
 */
@@ -861,7 +851,7 @@ function cloneNode(el) {
 	var origEls = qsa(selector, el);
 	var cloneEls = qsa(selector, el2);
 	for (var i=0; i < origEls.length; i++) {
-		for (var key in {onchange: 1, onkeydown: 1, onsearch: 1}) {
+		for (var key in {onchange: 1, onkeydown: 1, onsearch: 1, oninput: 1}) {
 			if (origEls[i][key]) {
 				cloneEls[i][key] = origEls[i][key];
 			}

@@ -241,14 +241,10 @@ function editingAddRow(focus) {
 			tags2[i].checked = false;
 		}
 	}
-	tags[0].onchange = editingNameChange;
-	tags[0].onkeyup = function () {
-	};
+	tags[0].oninput = editingNameChange;
 	row.parentNode.insertBefore(row2, row.nextSibling);
 	if (focus) {
-		input.onchange = editingNameChange;
-		input.onkeyup = function () {
-		};
+		input.oninput = editingNameChange;
 		input.focus();
 	}
 	added += '0';

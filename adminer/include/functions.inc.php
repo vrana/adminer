@@ -890,7 +890,7 @@ function input($field, $value, $function) {
 			}
 			$first++;
 		}
-		$onchange = ($first ? " onchange=\"var f = this.form['function[" . h(js_escape(bracket_escape($field["field"]))) . "]']; if ($first > f.selectedIndex) f.selectedIndex = $first;\" onkeyup='keyupChange.call(this);'" : "");
+		$onchange = ($first ? " oninput=\"var f = this.form['function[" . h(js_escape(bracket_escape($field["field"]))) . "]']; if ($first > f.selectedIndex) f.selectedIndex = $first;\"" : "");
 		$attrs .= $onchange;
 		$has_function = (in_array($function, $functions) || isset($functions[$function]));
 		echo (count($functions) > 1
@@ -1382,8 +1382,8 @@ function edit_form($TABLE, $fields, $row, $update) {
 		}
 		if (!support("table")) {
 			echo "<tr>"
-				. "<th><input name='field_keys[]' value=''>" // needs empty value for keyupChange()
-				. script("mixin(qsl('input'), {onkeyup: keyupChange, onchange: fieldChange});")
+				. "<th><input name='field_keys[]'>"
+				. script("qsl('input').oninput = fieldChange;")
 				. "<td class='function'>" . html_select("field_funs[]", $adminer->editFunctions(array("null" => isset($_GET["select"]))))
 				. "<td><input name='field_vals[]'>"
 				. "\n"
