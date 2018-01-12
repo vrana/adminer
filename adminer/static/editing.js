@@ -211,7 +211,7 @@ function editingNameChange() {
 
 /** Add table row for next field
 * @param boolean
-* @return boolean
+* @return boolean false
 * @this HTMLInputElement
 */
 function editingAddRow(focus) {
@@ -249,7 +249,7 @@ function editingAddRow(focus) {
 	}
 	added += '0';
 	rowCount++;
-	return true;
+	return false;
 }
 
 /** Remove table row for field
@@ -266,18 +266,18 @@ function editingRemoveRow(name) {
 
 /** Move table row for field
 * @param boolean direction to move row, true for up or false for down
-* @return boolean
+* @return boolean false for success
 * @this HTMLInputElement
 */
 function editingMoveRow(dir){
 	var row = parentTag(this, 'tr');
 	if (!('nextElementSibling' in row)) {
-		return false;
+		return true;
 	}
 	row.parentNode.insertBefore(row, dir
 		? row.previousElementSibling
 		: row.nextElementSibling ? row.nextElementSibling.nextElementSibling : row.parentNode.firstChild);
-	return true;
+	return false;
 }
 
 var lastType = '';
