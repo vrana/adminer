@@ -458,9 +458,7 @@ function indexesChangeColumn(prefix) {
 */
 function indexesAddColumn(prefix) {
 	var field = this;
-	field.onchange = function () {
-		indexesChangeColumn(field, prefix);
-	};
+	field.onchange = partial(indexesChangeColumn, prefix);
 	var select = field.form[field.name.replace(/\].*/, '][type]')];
 	if (!select.selectedIndex) {
 		while (selectValue(select) != "INDEX" && select.selectedIndex < select.options.length) {
