@@ -538,6 +538,17 @@ function functionChange() {
 	helpClose();
 }
 
+/** Skip 'original' when typing
+* @param number
+* @this HTMLTableCellElement
+*/
+function skipOriginal(first) {
+	var fnSelect = this.previousSibling.firstChild;
+	if (fnSelect.selectedIndex < first) {
+		fnSelect.selectedIndex = first;
+	}
+}
+
 /** Add new field in schema-less edit
 * @this HTMLInputElement
 */

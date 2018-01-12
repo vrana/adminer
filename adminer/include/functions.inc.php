@@ -883,15 +883,6 @@ function input($field, $value, $function) {
 	if ($field["type"] == "enum") {
 		echo nbsp($functions[""]) . "<td>" . $adminer->editInput($_GET["edit"], $field, $attrs, $value);
 	} else {
-		$first = 0;
-		foreach ($functions as $key => $val) {
-			if ($key === "" || !$val) {
-				break;
-			}
-			$first++;
-		}
-		$onchange = ($first ? " oninput=\"var f = this.form['function[" . h(js_escape(bracket_escape($field["field"]))) . "]']; if ($first > f.selectedIndex) f.selectedIndex = $first;\"" : "");
-		$attrs .= $onchange;
 		$has_function = (in_array($function, $functions) || isset($functions[$function]));
 		echo (count($functions) > 1
 			? "<select name='function[$name]'>" . optionlist($functions, $function === null || $has_function ? $function : "") . "</select>"
@@ -910,10 +901,10 @@ function input($field, $value, $function) {
 			foreach ($matches[1] as $i => $val) {
 				$val = stripcslashes(str_replace("''", "'", $val));
 				$checked = (is_int($value) ? ($value >> $i) & 1 : in_array($val, explode(",", $value), true));
-				echo " <label><input type='checkbox' name='fields[$name][$i]' value='" . (1 << $i) . "'" . ($checked ? ' checked' : '') . "$onchange>" . h($adminer->editVal($val, $field)) . '</label>';
+				echo " <label><input type='checkbox' name='fields[$name][$i]' value='" . (1 << $i) . "'" . ($checked ? ' checked' : '') . ">" . h($adminer->editVal($val, $field)) . '</label>';
 			}
 		} elseif (preg_match('~blob|bytea|raw|file~', $field["type"]) && ini_bool("file_uploads")) {
-			echo "<input type='file' name='fields-$name'$onchange>";
+			echo "<input type='file' name='fields-$name'>";
 		} elseif (($text = preg_match('~text|lob~', $field["type"])) || preg_match("~\n~", $value)) {
 			if ($text && $jush != "sqlite") {
 				$attrs .= " cols='50' rows='12'";
@@ -939,6 +930,17 @@ function input($field, $value, $function) {
 			;
 		}
 		echo $adminer->editHint($_GET["edit"], $field, $value);
+		// skip 'original'
+		$first = 0;
+		foreach ($functions as $key => $val) {
+			if ($key === "" || !$val) {
+				break;
+			}
+			$first++;
+		}
+		if ($first) {
+			echo script("mixin(qsl('td'), {onchange: partial(skipOriginal, $first), oninput: function () { this.onchange(); }});");
+		}
 	}
 }
 
