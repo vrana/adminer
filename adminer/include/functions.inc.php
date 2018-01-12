@@ -885,7 +885,7 @@ function input($field, $value, $function) {
 		$attrs .= $onchange;
 		$has_function = (in_array($function, $functions) || isset($functions[$function]));
 		echo (count($functions) > 1
-			? "<select name='function[$name]' onchange='functionChange.call(this);'" . on_help("getTarget(event).value.replace(/^SQL\$/, '')", 1) . ">" . optionlist($functions, $function === null || $has_function ? $function : "") . "</select>"
+			? "<select name='function[$name]'" . on_help("getTarget(event).value.replace(/^SQL\$/, '')", 1) . ">" . optionlist($functions, $function === null || $has_function ? $function : "") . "</select><script>qsl('select').onchange = functionChange;</script>"
 			: nbsp(reset($functions))
 		) . '<td>';
 		$input = $adminer->editInput($_GET["edit"], $field, $attrs, $value); // usage in call is without a table
