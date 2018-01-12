@@ -28,7 +28,7 @@ class AdminerEmailTable {
 	function selectEmailPrint($emailFields, $columns) {
 		if ($emailFields) {
 			print_fieldset("email", ('E-mail'));
-			echo "<div onkeydown=\"eventStop(event); return bodyKeydown(event, 'email');\">\n";
+			echo "<div onkeydown=\"return bodyKeydown(event, 'email');\">\n";
 			echo "<p>" . ('From') . ": <input name='email_from' value='" . h($_POST ? $_POST["email_from"] : $_COOKIE["adminer_email"]) . "'>\n";
 			echo ('Subject') . ": <select name='email_id'><option>" . optionlist(get_key_vals("SELECT $this->id, $this->title FROM $this->table ORDER BY $this->title"), $_POST["email_id"], true) . "</select>\n";
 			echo "<p>" . ('Attachments') . ": <input type='file' name='email_files[]' onchange=\"this.onchange = function () { }; var el = this.cloneNode(true); el.value = ''; this.parentNode.appendChild(el);\">";

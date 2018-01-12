@@ -462,6 +462,7 @@ function getTarget(event) {
 * @return boolean
 */
 function bodyKeydown(event, button) {
+	eventStop(event);
 	var target = getTarget(event);
 	if (target.jushTextarea) {
 		target = target.jushTextarea;
@@ -510,7 +511,6 @@ function editingKeydown(event) {
 		return false;
 	}
 	if (event.shiftKey && !bodyKeydown(event, 'insert')) {
-		eventStop(event);
 		return false;
 	}
 	return true;
