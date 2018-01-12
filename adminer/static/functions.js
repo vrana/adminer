@@ -357,9 +357,7 @@ function menuOut() {
 */
 function selectAddRow() {
 	var field = this;
-	field.onchange = function () {
-		selectFieldChange(field.form);
-	};
+	field.onchange = selectFieldChange;
 	field.onchange();
 	var row = cloneNode(field.parentNode);
 	var selects = qsa('select', row);

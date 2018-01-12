@@ -315,7 +315,7 @@ focus(qs('#username'));
 		$select[""] = array();
 		foreach ($select as $key => $val) {
 			$val = $_GET["columns"][$key];
-			$column = select_input(" name='columns[$i][col]' onchange='" . ($key !== ""  ? "selectFieldChange(this.form)" : "selectAddRow.call(this)") . ";'", $columns, $val["col"]);
+			$column = select_input(" name='columns[$i][col]' onchange='" . ($key !== ""  ? "selectFieldChange" : "selectAddRow") . ".call(this);'", $columns, $val["col"]);
 			echo "<div>" . ($functions || $grouping ? "<select name='columns[$i][fun]' onchange='helpClose();" . ($key !== "" ? "" : " this.nextSibling.nextSibling.onchange();") . "'"
 				. on_help("getTarget(event).value && getTarget(event).value.replace(/ |\$/, '(') + ')'", 1) . ">" . optionlist(array(-1 => "") + array_filter(array(lang('Functions') => $functions, lang('Aggregation') => $grouping)), $val["fun"]) . "</select>"
 				. "($column)" : $column) . "</div>\n";
@@ -335,7 +335,7 @@ focus(qs('#username'));
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT") {
 				echo "(<i>" . implode("</i>, <i>", array_map('h', $index["columns"])) . "</i>) AGAINST";
-				echo " <input type='search' name='fulltext[$i]' value='" . h($_GET["fulltext"][$i]) . "' onchange='selectFieldChange(this.form);'>";
+				echo " <input type='search' name='fulltext[$i]' value='" . h($_GET["fulltext"][$i]) . "' onchange='selectFieldChange.call(this);'>";
 				echo checkbox("boolean[$i]", 1, isset($_GET["boolean"][$i]), "BOOL");
 				echo "<br>\n";
 			}
@@ -348,7 +348,7 @@ focus(qs('#username'));
 			if (!$val || ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators))) {
 				echo "<div>" . select_input(" name='where[$i][col]' onchange='$change_next'", $columns, $val["col"], "", "(" . lang('anywhere') . ")");
 				echo html_select("where[$i][op]", $this->operators, $val["op"], $change_next);
-				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' onchange='" . ($val ? "selectFieldChange(this.form)" : "selectAddRow.call(this)") . ";' onkeydown='selectSearchKeydown.call(this, event);' onsearch='selectSearchSearch.call(this);'></div>\n";
+				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' onchange='" . ($val ? "selectFieldChange" : "selectAddRow") . ".call(this);' onkeydown='selectSearchKeydown.call(this, event);' onsearch='selectSearchSearch.call(this);'></div>\n";
 			}
 		}
 		echo "</div></fieldset>\n";
@@ -365,7 +365,7 @@ focus(qs('#username'));
 		$i = 0;
 		foreach ((array) $_GET["order"] as $key => $val) {
 			if ($val != "") {
-				echo "<div>" . select_input(" name='order[$i]' onchange='selectFieldChange(this.form);'", $columns, $val);
+				echo "<div>" . select_input(" name='order[$i]' onchange='selectFieldChange.call(this);'", $columns, $val);
 				echo checkbox("desc[$i]", 1, isset($_GET["desc"][$key]), lang('descending')) . "</div>\n";
 				$i++;
 			}
@@ -381,7 +381,7 @@ focus(qs('#username'));
 	*/
 	function selectLimitPrint($limit) {
 		echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
-		echo "<input type='number' name='limit' class='size' value='" . h($limit) . "' onchange='selectFieldChange(this.form);'>";
+		echo "<input type='number' name='limit' class='size' value='" . h($limit) . "' onchange='selectFieldChange.call(this);'>";
 		echo "</div></fieldset>\n";
 	}
 
@@ -419,7 +419,7 @@ focus(qs('#username'));
 			json_row($key);
 		}
 		echo ";\n";
-		echo "selectFieldChange(qs('#form'));\n";
+		echo "selectFieldChange.call(qs('#form')['select']);\n";
 		echo "</script>\n";
 		echo "</div></fieldset>\n";
 	}

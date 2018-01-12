@@ -94,9 +94,10 @@ function dbChange() {
 
 
 /** Check whether the query will be executed with index
-* @param HTMLFormElement
+* @this HTMLElement
 */
-function selectFieldChange(form) {
+function selectFieldChange() {
+	var form = this.form;
 	var ok = (function () {
 		var inputs = qsa('input', form);
 		for (var i=0; i < inputs.length; i++) {
