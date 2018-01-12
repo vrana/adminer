@@ -73,12 +73,12 @@ function alterClass(el, className, enable) {
 
 /** Toggle visibility
 * @param string
-* @return boolean
+* @return boolean false
 */
 function toggle(id) {
 	var el = qs('#' + id);
 	el.className = (el.className == 'hidden' ? '' : 'hidden');
-	return true;
+	return false;
 }
 
 /** Set permanent cookie

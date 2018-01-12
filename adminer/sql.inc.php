@@ -137,7 +137,7 @@ if (!$error && $_POST) {
 										echo "<p>" . ($num_rows ? ($limit && $num_rows > $limit ? lang('%d / ', $limit) : "") . lang('%d row(s)', $num_rows) : "");
 										echo $time;
 										$id = "export-$commands";
-										$export = ", <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('Export') . "</a><span id='$id' class='hidden'>: "
+										$export = ", <a href='#$id' onclick=\"return toggle('$id');\">" . lang('Export') . "</a><span id='$id' class='hidden'>: "
 											. html_select("output", $adminer->dumpOutput(), $adminer_export["output"]) . " "
 											. html_select("format", $dump_format, $adminer_export["format"])
 											. "<input type='hidden' name='query' value='" . h($q) . "'>"
@@ -145,7 +145,7 @@ if (!$error && $_POST) {
 										;
 										if ($connection2 && preg_match("~^($space|\\()*+SELECT\\b~i", $q) && ($explain = explain($connection2, $q))) {
 											$id = "explain-$commands";
-											echo ", <a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>$export";
+											echo ", <a href='#$id' onclick=\"return toggle('$id');\">EXPLAIN</a>$export";
 											echo "<div id='$id' class='hidden'>\n";
 											select($explain, $connection2, $orgtables);
 											echo "</div>\n";

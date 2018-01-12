@@ -202,7 +202,7 @@ function confirm() {
 * @return null
 */
 function print_fieldset($id, $legend, $visible = false, $onclick = "") {
-	echo "<fieldset><legend><a href='#fieldset-$id' onclick=\"" . h($onclick) . "return !toggle('fieldset-$id');\">$legend</a></legend><div id='fieldset-$id'" . ($visible ? "" : " class='hidden'") . ">\n";
+	echo "<fieldset><legend><a href='#fieldset-$id' onclick=\"" . h($onclick) . "return toggle('fieldset-$id');\">$legend</a></legend><div id='fieldset-$id'" . ($visible ? "" : " class='hidden'") . ">\n";
 }
 
 /** Return class='active' if $bold is true
