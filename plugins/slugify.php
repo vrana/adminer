@@ -34,7 +34,16 @@ class AdminerSlugify {
 			}
 			$slug = $slugify[$field["field"]];
 			if ($slug !== null) {
-				return "<input value='" . h($value) . "' maxlength='$field[length]' size='40'$attrs onchange=\"var find = '$this->from'; var repl = '$this->to'; this.form['fields[$slug]'].value = this.value.toLowerCase().replace(new RegExp('[' + find + ']', 'g'), function (str) { return repl[find.indexOf(str)]; }).replace(/[^a-z0-9_]+/g, '-').replace(/^-|-\$/g, '').substr(0, $field[length]);\">";
+				return "<input value='" . h($value) . "' maxlength='$field[length]' size='40'$attrs>"
+					. script("qsl('input').onchange = function () {
+	var find = '$this->from';
+	var repl = '$this->to';
+	this.form['fields[$slug]'].value = this.value.toLowerCase()
+		.replace(new RegExp('[' + find + ']', 'g'), function (str) { return repl[find.indexOf(str)]; })
+		.replace(/[^a-z0-9_]+/g, '-')
+		.replace(/^-|-\$/g, '')
+		.substr(0, $field[length]);
+};");
 			}
 		}
 	}

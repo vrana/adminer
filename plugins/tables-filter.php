@@ -8,9 +8,10 @@
 */
 class AdminerTablesFilter {
 	function tablesPrint($tables) { ?>
-<p class="jsonly"><input id="filter-field" oninput="tablesFilterInput();" autocomplete="off">
-<ul id='tables' onmouseover='menuOver.call(this, event);' onmouseout='menuOut.call(this);'>
+<p class="jsonly"><input id="filter-field" autocomplete="off"><?php echo script("qs('#filter-field').oninput = tablesFilterInput;"); ?>
+<ul id='tables'>
 <?php
+echo script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
 foreach ($tables as $table => $status) {
 	echo '<li data-table-name="' . h($table) . '"><a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table || $_GET["edit"] == $table, "select") . ">" . lang('select') . "</a> ";
 	$name = h($status["Name"]);
