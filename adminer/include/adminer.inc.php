@@ -598,7 +598,7 @@ class Adminer {
 		}
 		$history[$_GET["db"]][] = array($query, time(), $time); // not DB - $_GET["db"] is changed in database.inc.php //! respect $_GET["ns"]
 		return " <span class='time'>" . @date("H:i:s") . "</span>" // @ - time zone may be not set
-			. " <a href='#$id'>" . lang('SQL command') . "</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "")
+			. " <a href='#$id' class='toggle'>" . lang('SQL command') . "</a>"
 			. "<div id='$id' class='hidden'><pre><code class='jush-$jush'>" . shorten_utf8($query, 1000) . '</code></pre>'
 			. ($time ? " <span class='time'>($time)</span>" : '')
 			. (support("sql") ? '<p><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a>' : '')

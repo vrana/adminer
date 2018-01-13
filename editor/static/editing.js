@@ -1,5 +1,8 @@
 // Editor specific functions
 
+function messagesPrint() {
+}
+
 function selectFieldChange() {
 }
 

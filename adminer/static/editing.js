@@ -60,6 +60,15 @@ function typePassword(el, disable) {
 	}
 }
 
+/** Install toggle handler
+*/
+function messagesPrint() {
+	var els = qsa('.toggle', document);
+	for (var i = 0; i < els.length; i++) {
+		els[i].onclick = partial(toggle, els[i].getAttribute('href').substr(1));
+	}
+}
+
 
 
 var dbCtrl;
