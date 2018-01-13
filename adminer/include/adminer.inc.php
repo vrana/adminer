@@ -890,15 +890,13 @@ class Adminer {
 				$connection->select_db(DB);
 				$tables = table_status('', true);
 			}
-			?>
-<script src="../externals/jush/modules/jush.js"></script>
-<script src="../externals/jush/modules/jush-textarea.js"></script>
-<script src="../externals/jush/modules/jush-txt.js"></script>
-<script src="../externals/jush/modules/jush-js.js"></script>
-<?php
+			echo script_src("../externals/jush/modules/jush.js");
+			echo script_src("../externals/jush/modules/jush-textarea.js");
+			echo script_src("../externals/jush/modules/jush-txt.js");
+			echo script_src("../externals/jush/modules/jush-js.js");
 			if (support("sql")) {
+				echo script_src("../externals/jush/modules/jush-$jush.js");
 				?>
-<script src="../externals/jush/modules/jush-<?php echo $jush; ?>.js"></script>
 <script>
 <?php
 				if ($tables) {

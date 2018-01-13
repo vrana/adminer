@@ -90,6 +90,14 @@ function script($source, $trailing = "\n") {
 	return "<script>$source</script>$trailing";
 }
 
+/** Return <script src> element
+* @param string
+* @return string
+*/
+function script_src($url) {
+	return "<script src='" . h($url) . "'></script>\n";
+}
+
 /** Escape for HTML
 * @param string
 * @return string

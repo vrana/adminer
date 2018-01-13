@@ -22,7 +22,7 @@ class AdminerWymeditor {
 
 	function head() {
 		foreach ($this->scripts as $script) {
-			echo "<script src='" . h($script) . "'></script>\n";
+			echo script_src($script);
 		}
 	}
 

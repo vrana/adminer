@@ -16,7 +16,14 @@ class AdminerEditCalendar {
 	* @param string text to append before first calendar usage
 	* @param string path to language file, %s stands for language code
 	*/
-	function __construct($prepend = "<script src='jquery-ui/jquery.js'></script>\n<script src='jquery-ui/jquery-ui.js'></script>\n<script src='jquery-ui/jquery-ui-timepicker-addon.js'></script>\n<link rel='stylesheet' type='text/css' href='jquery-ui/jquery-ui.css'>\n", $langPath = "jquery-ui/i18n/jquery.ui.datepicker-%s.js") {
+	function __construct($prepend = null, $langPath = "jquery-ui/i18n/jquery.ui.datepicker-%s.js") {
+		if ($prepend === null) {
+			$prepend = "<link rel='stylesheet' type='text/css' href='jquery-ui/jquery-ui.css'>\n"
+				. script_src("jquery-ui/jquery.js")
+				. script_src("jquery-ui/jquery-ui.js")
+				. script_src("jquery-ui/jquery-ui-timepicker-addon.js")
+			;
+		}
 		$this->prepend = $prepend;
 		$this->langPath = $langPath;
 	}
@@ -27,7 +34,7 @@ class AdminerEditCalendar {
 			$lang = get_lang();
 			$lang = ($lang == "zh" ? "zh-CN" : ($lang == "zh-tw" ? "zh-TW" : $lang));
 			if ($lang != "en" && file_exists(sprintf($this->langPath, $lang))) {
-				printf("<script src='$this->langPath'></script>\n", $lang);
+				echo script_src(sprintf($this->langPath, $lang));
 				echo script("jQuery(function () { jQuery.timepicker.setDefaults(jQuery.datepicker.regional['$lang']); });");
 			}
 		}

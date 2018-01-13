@@ -27,8 +27,8 @@ class AdminerTinymce {
 				$lang = "en";
 			}
 		}
+		echo script_src($this->path);
 		?>
-<script src="<?php echo h($this->path); ?>"></script>
 <script>
 tinyMCE.init({
 	mode: 'none',
