@@ -151,7 +151,7 @@ if ($foreign_keys) {
 echo optionlist($structured_types, $type);
 ?></select>
 <?php echo on_help("getTarget(event).value", 1); ?>
-<?php echo script("mixin(qsl('select'), {onfocus: function () { lastType = selectValue(this); }, onchange: editingTypeChange});"); ?>
+<?php echo script("mixin(qsl('select'), {onfocus: function () { lastType = selectValue(this); }, onchange: editingTypeChange});", ""); ?>
 <td><input name="<?php echo h($key); ?>[length]" value="<?php echo h($field["length"]); ?>" size="3"<?php echo (!$field["length"] && preg_match('~var(char|binary)$~', $type) ? " class='required'" : ""); ?> aria-labelledby="label-length"><?php echo script("mixin(qsl('input'), {onfocus: editingLengthFocus, oninput: editingLengthChange});", ""); ?><td class="options"><?php //! type="number" with enabled JavaScript
 	echo "<select name='" . h($key) . "[collation]'" . (preg_match('~(char|text|enum|set)$~', $type) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>';
 	echo ($unsigned ? "<select name='" . h($key) . "[unsigned]'" . (!$type || preg_match('~((^|[^o])int|float|double|decimal)$~', $type) ? "" : " class='hidden'") . '><option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
@@ -267,7 +267,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 		?>
 <tr<?php echo ($display ? "" : " style='display: none;'"); ?>>
 <?php echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", explode("|", $inout), $field["inout"]) : ""); ?>
-<th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo h($field["field"]); ?>" maxlength="64" autocapitalize="off" aria-labelledby="label-name"><?php echo script("qsl('input').oninput = function () { editingNameChange.call(this);" . ($field["field"] != "" || count($fields) > 1 ? "" : " editingAddRow.call(this);") . " };"); ?><?php } ?>
+<th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo h($field["field"]); ?>" maxlength="64" autocapitalize="off" aria-labelledby="label-name"><?php echo script("qsl('input').oninput = function () { editingNameChange.call(this);" . ($field["field"] != "" || count($fields) > 1 ? "" : " editingAddRow.call(this);") . " };", ""); ?><?php } ?>
 <input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo h($orig); ?>">
 <?php edit_type("fields[$i]", $field, $collations, $foreign_keys); ?>
 <?php if ($type == "TABLE") { ?>
@@ -279,12 +279,11 @@ echo checkbox("fields[$i][has_default]", 1, $field["has_default"], "", "", "", "
 <?php
 		echo "<td>";
 		echo (support("move_col") ?
-			"<input type='image' class='icon' name='add[$i]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>&nbsp;" . script("qsl('input').onclick = partial(editingAddRow, 1);")
-			. "<input type='image' class='icon' name='up[$i]' src='../adminer/static/up.gif' alt='^' title='" . lang('Move up') . "'>&nbsp;" . script("qsl('input').onclick = partial(editingMoveRow, 1);")
-			. "<input type='image' class='icon' name='down[$i]' src='../adminer/static/down.gif' alt='v' title='" . lang('Move down') . "'>&nbsp;" . script("qsl('input').onclick = partial(editingMoveRow, 0);")
+			"<input type='image' class='icon' name='add[$i]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>&nbsp;" . script("qsl('input').onclick = partial(editingAddRow, 1);", "")
+			. "<input type='image' class='icon' name='up[$i]' src='../adminer/static/up.gif' alt='^' title='" . lang('Move up') . "'>&nbsp;" . script("qsl('input').onclick = partial(editingMoveRow, 1);", "")
+			. "<input type='image' class='icon' name='down[$i]' src='../adminer/static/down.gif' alt='v' title='" . lang('Move down') . "'>&nbsp;" . script("qsl('input').onclick = partial(editingMoveRow, 0);", "")
 		: "");
 		echo ($orig == "" || support("drop_col") ? "<input type='image' class='icon' name='drop_col[$i]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "'>" . script("qsl('input').onclick = partial(editingRemoveRow, 'fields\$1[field]');") : "");
-		echo "\n";
 	}
 }
 
