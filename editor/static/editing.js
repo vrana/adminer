@@ -39,3 +39,13 @@ function whisper(url) {
 		});
 	}
 }
+
+/** Add new attachment field
+* @this HTMLInputElement
+*/
+function emailFileChange() {
+	this.onchange = function () { };
+	var el = this.cloneNode(true);
+	el.value = '';
+	this.parentNode.appendChild(el);
+}
