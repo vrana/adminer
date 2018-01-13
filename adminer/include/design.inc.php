@@ -97,7 +97,9 @@ function page_headers() {
 	foreach ($adminer->csp() as $key => $val) {
 		$csp[] = "$key $val";
 	}
-	header("Content-Security-Policy: " . implode("; ", $csp));
+	if ($csp) {
+		header("Content-Security-Policy: " . implode("; ", $csp));
+	}
 	$adminer->headers();
 }
 
