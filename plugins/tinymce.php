@@ -29,7 +29,7 @@ class AdminerTinymce {
 		}
 		echo script_src($this->path);
 		?>
-<script>
+<script<?php echo nonce(); ?>>
 tinyMCE.init({
 	mode: 'none',
 	theme: 'advanced',

@@ -14,7 +14,7 @@ class AdminerLoginSqlite {
 
 	function loginForm() {
 		?>
-<script>
+<script<?php echo nonce(); ?>>
 addEventListener('load', function () {
 	var driver = qs('name="auth[driver]"');
 	if (isTag(driver, 'select')) {

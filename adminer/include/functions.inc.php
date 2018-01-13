@@ -87,7 +87,7 @@ function charset($connection) {
 * @return string
 */
 function script($source, $trailing = "\n") {
-	return "<script>$source</script>$trailing";
+	return "<script" . nonce() . ">$source</script>$trailing";
 }
 
 /** Return <script src> element
@@ -95,7 +95,14 @@ function script($source, $trailing = "\n") {
 * @return string
 */
 function script_src($url) {
-	return "<script src='" . h($url) . "'></script>\n";
+	return "<script src='" . h($url) . "'" . nonce() . "></script>\n";
+}
+
+/** Get a nonce="" attribute with CSP nonce
+* @return string
+*/
+function nonce() {
+	return ' nonce="' . get_nonce() . '"';
 }
 
 /** Escape for HTML
@@ -1242,7 +1249,7 @@ function slow_query($query) {
 	if (support("kill") && is_object($connection2 = connect()) && ($db == "" || $connection2->select_db($db))) {
 		$kill = $connection2->result(connection_id()); // MySQL and MySQLi can use thread_id but it's not in PDO_MySQL
 		?>
-<script>
+<script<?php echo nonce(); ?>>
 var timeout = setTimeout(function () {
 	ajax('<?php echo js_escape(ME); ?>script=kill', function () {
 	}, 'token=<?php echo $token; ?>&kill=<?php echo $kill; ?>');

@@ -33,7 +33,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <?php } ?>
 
 <body class="<?php echo lang('ltr'); ?> nojs">
-<script>
+<script<?php echo nonce(); ?>>
 mixin(document.body, {onkeydown: bodyKeydown, onclick: bodyClick<?php echo (isset($_COOKIE["adminer_version"]) ? "" : ", onload: partial(verifyVersion, '$VERSION')"); ?>});
 document.body.className = document.body.className.replace(/ nojs/, ' js');
 var offlineMessage = '<?php echo js_escape(lang('You are offline.')); ?>';
@@ -109,13 +109,24 @@ function page_headers() {
 function csp() {
 	return array(
 		"default-src" => "'none'",
-		"script-src" => "'self' 'unsafe-inline'",
+		"script-src" => "'self' 'unsafe-inline' 'nonce-" . get_nonce() . "' 'strict-dynamic'", // 'self' is a fallback for browsers not supporting 'strict-dynamic', 'unsafe-inline' is a fallback for browsers not supporting 'nonce-'
 		"style-src" => "'self' 'unsafe-inline'",
 		"connect-src" => "'self'",
 		"img-src" => "'self' data:",
 		"frame-src" => "https://www.adminer.org",
 		"form-action" => "'self'",
 	);
+}
+
+/** Get a CSP nonce
+* @return string Base64 value
+*/
+function get_nonce() {
+	static $nonce;
+	if (!$nonce) {
+		$nonce = base64_encode(rand_string());
+	}
+	return $nonce;
 }
 
 /** Print flash and error messages

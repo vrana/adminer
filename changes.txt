@@ -1,5 +1,6 @@
-Adminer 4.3.2-dev:
+Adminer 4.4.0-dev:
 Add Content Security Policy
+Disallow scripts without nonce
 Add nosniff header
 PHP 7.1: Prevent warning when using empty limit
 MySQL: Remove dedicated view for replication status (added in 4.3.0)

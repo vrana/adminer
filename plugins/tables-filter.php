@@ -24,7 +24,7 @@ foreach ($tables as $table => $status) {
 }
 ?>
 </ul>
-<script>
+<script<?php echo nonce(); ?>>
 var tablesFilterTimeout = null;
 var tablesFilterValue = '';
 

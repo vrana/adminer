@@ -420,7 +420,7 @@ class Adminer {
 		echo "<fieldset><legend>" . lang('Action') . "</legend><div>";
 		echo "<input type='submit' value='" . lang('Select') . "'>";
 		echo " <span id='noindex' title='" . lang('Full table scan') . "'></span>";
-		echo "<script>\n";
+		echo "<script" . nonce() . ">\n";
 		echo "var indexColumns = ";
 		$columns = array();
 		foreach ($indexes as $index) {
@@ -897,7 +897,7 @@ class Adminer {
 			if (support("sql")) {
 				echo script_src("../externals/jush/modules/jush-$jush.js");
 				?>
-<script>
+<script<?php echo nonce(); ?>>
 <?php
 				if ($tables) {
 					$links = array();
