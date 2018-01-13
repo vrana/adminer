@@ -87,7 +87,7 @@ function charset($connection) {
 * @return string
 */
 function script($source, $trailing = "\n") {
-	return "<script>$source</script>$newline";
+	return "<script>$source</script>$trailing";
 }
 
 /** Escape for HTML
