@@ -314,7 +314,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			echo "<p>" . script("qsl('p').onkeydown = partialArg(bodyKeydown, 'email_append');", "") . html_select("email_addition", $columns, $_POST["email_addition"]) . "<input type='submit' name='email_append' value='" . lang('Insert') . "'>\n"; //! JavaScript
 			echo "<p>" . lang('Attachments') . ": <input type='file' name='email_files[]'>" . script("qsl('input').onchange = emailFileChange;");
 			echo "<p>" . (count($emailFields) == 1 ? '<input type="hidden" name="email_field" value="' . h(key($emailFields)) . '">' : html_select("email_field", $emailFields));
-			echo "<input type='submit' name='email' value='" . lang('Send') . "' onclick=\"return this.form['delete'].onclick();\">\n";
+			echo "<input type='submit' name='email' value='" . lang('Send') . "'>" . confirm();
 			echo "</div>\n";
 			echo "</div></fieldset>\n";
 		}
@@ -567,7 +567,8 @@ qsl('div').onclick = whisperClick;", "")
 				foreach ($servers[""] as $username => $password) {
 					if ($password !== null) {
 						if ($first) {
-							echo "<p id='logins' onmouseover='menuOver.call(this, event);' onmouseout='menuOut.call(this);'>\n";
+							echo "<p id='logins'>";
+							echo script("mixin(qs('#logins'), {onmouseover: menuOver, onmouseout: menuOut});");
 							$first = false;
 						}
 						echo "<a href='" . h(auth_url($vendor, "", $username)) . "'>" . ($username != "" ? h($username) : "<i>" . lang('empty') . "</i>") . "</a><br>\n";
@@ -591,7 +592,8 @@ qsl('div').onclick = whisperClick;", "")
 	}
 
 	function tablesPrint($tables) {
-		echo "<p id='tables' onmouseover='menuOver.call(this, event);' onmouseout='menuOut.call(this);'>\n";
+		echo "<p id='tables'>";
+		echo script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
 		foreach ($tables as $row) {
 			$name = $this->tableName($row);
 			if (isset($row["Engine"]) && $name != "") { // ignore views and tables without name
