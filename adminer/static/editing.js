@@ -357,7 +357,7 @@ function editingLengthFocus() {
 function editingLengthBlur() {
 	var field = this.parentNode.firstChild;
 	var val = this.value;
-	field.value = (/^'[^\n]+'$/.test(val) ? val : "'" + val.replace(/\n+$/, '').replace(/'/g, "''").replace(/\n/g, "','") + "'");
+	field.value = (/^'[^\n]+'$/.test(val) ? val : val && "'" + val.replace(/\n+$/, '').replace(/'/g, "''").replace(/\n/g, "','") + "'");
 	field.style.display = 'inline';
 	this.style.display = 'none';
 }
