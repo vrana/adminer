@@ -169,11 +169,14 @@ function trCheck(el) {
 */
 function selectCount(id, count) {
 	setHtml(id, (count === '' ? '' : '(' + (count + '').replace(/\B(?=(\d{3})+$)/g, ' ') + ')'));
-	var inputs = qsa('input', qs('#' + id).parentNode.parentNode);
-	for (var i = 0; i < inputs.length; i++) {
-		var input = inputs[i];
-		if (input.type == 'submit') {
-			input.disabled = (count == '0');
+	var el = qs('#' + id);
+	if (el) {
+		var inputs = qsa('input', el.parentNode.parentNode);
+		for (var i = 0; i < inputs.length; i++) {
+			var input = inputs[i];
+			if (input.type == 'submit') {
+				input.disabled = (count == '0');
+			}
 		}
 	}
 }
