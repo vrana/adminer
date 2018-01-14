@@ -322,7 +322,7 @@ class Adminer {
 			echo "<div>" . ($functions || $grouping ? "<select name='columns[$i][fun]'>"
 				. optionlist(array(-1 => "") + array_filter(array(lang('Functions') => $functions, lang('Aggregation') => $grouping)), $val["fun"]) . "</select>"
 				. on_help("getTarget(event).value && getTarget(event).value.replace(/ |\$/, '(') + ')'", 1)
-				. script("qsl('select').onchange = function () { helpClose();" . ($key !== "" ? "" : " this.nextSibling.nextSibling.nextSibling.onchange();") . " };", "")
+				. script("qsl('select').onchange = function () { helpClose();" . ($key !== "" ? "" : " qsl('select, input', this.parentNode).onchange();") . " };", "")
 				. "($column)" : $column) . "</div>\n";
 			$i++;
 		}

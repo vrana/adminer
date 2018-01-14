@@ -9,10 +9,11 @@ function qs(selector) {
 
 /** Get last element by selector
 * @param string
+* @param [HTMLElement] defaults to document
 * @return HTMLElement
 */
-function qsl(selector) {
-	var els = qsa(selector, document);
+function qsl(selector, context) {
+	var els = qsa(selector, context || document);
 	return els[els.length - 1];
 }
 
