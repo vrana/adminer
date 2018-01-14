@@ -865,9 +865,10 @@ function cloneNode(el) {
 	var origEls = qsa(selector, el);
 	var cloneEls = qsa(selector, el2);
 	for (var i=0; i < origEls.length; i++) {
-		for (var key in {onchange: 1, onkeydown: 1, onsearch: 1, oninput: 1, onclick: 1}) {
-			if (origEls[i][key]) {
-				cloneEls[i][key] = origEls[i][key];
+		var origEl = origEls[i];
+		for (var key in origEl) {
+			if (/^on/.test(key) && origEl[key]) {
+				cloneEls[i][key] = origEl[key];
 			}
 		}
 	}
