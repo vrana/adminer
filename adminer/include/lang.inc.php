@@ -2,13 +2,13 @@
 // not used in a single language version
 
 $langs = array(
-	'en' => 'English', // Jakub Vrána - http://www.vrana.cz
+	'en' => 'English', // Jakub Vrána - https://www.vrana.cz
 	'ar' => 'العربية', // Y.M Amine - Algeria - nbr7@live.fr
 	'bg' => 'Български', // Deyan Delchev
 	'bn' => 'বাংলা', // Dipak Kumar - dipak.ndc@gmail.com
 	'bs' => 'Bosanski', // Emir Kurtovic
 	'ca' => 'Català', // Joan Llosas
-	'cs' => 'Čeština', // Jakub Vrána - http://www.vrana.cz
+	'cs' => 'Čeština', // Jakub Vrána - https://www.vrana.cz
 	'da' => 'Dansk', // Jarne W. Beutnagel - jarne@beutnagel.dk
 	'de' => 'Deutsch', // Klemens Häckel - http://clickdimension.wordpress.com
 	'el' => 'Ελληνικά', // Dimitrios T. Tanis - jtanis@tanisfood.gr
