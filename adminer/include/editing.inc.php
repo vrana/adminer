@@ -492,11 +492,11 @@ function ini_bytes($ini) {
 function doc_link($paths) {
 	global $jush, $connection;
 	$urls = array(
-		'sql' => "http://dev.mysql.com/doc/refman/" . substr($connection->server_info, 0, 3) . "/en/",
-		'sqlite' => "http://www.sqlite.org/",
-		'pgsql' => "http://www.postgresql.org/docs/" . substr($connection->server_info, 0, 3) . "/static/",
-		'mssql' => "http://msdn.microsoft.com/library/",
-		'oracle' => "http://download.oracle.com/docs/cd/B19306_01/server.102/b14200/",
+		'sql' => "https://dev.mysql.com/doc/refman/" . substr($connection->server_info, 0, 3) . "/en/",
+		'sqlite' => "https://www.sqlite.org/",
+		'pgsql' => "https://www.postgresql.org/docs/" . substr($connection->server_info, 0, 3) . "/static/",
+		'mssql' => "https://msdn.microsoft.com/library/",
+		'oracle' => "https://download.oracle.com/docs/cd/B19306_01/server.102/b14200/",
 	);
 	return ($paths[$jush] ? "<a href='$urls[$jush]$paths[$jush]' target='_blank' rel='noreferrer'><sup>?</sup></a>" : "");
 }
