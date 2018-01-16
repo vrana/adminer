@@ -2,6 +2,7 @@ Adminer 4.4.0-dev:
 Add Content Security Policy
 Disallow scripts without nonce
 Rate limit password-less login attempts from the same IP address
+Disallow connecting to privileged ports
 Add nosniff header
 PHP 7.1: Prevent warning when using empty limit
 MySQL: Remove dedicated view for replication status (added in 4.3.0)

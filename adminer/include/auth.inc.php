@@ -165,6 +165,10 @@ if (isset($_GET["username"])) {
 		page_footer("auth");
 		exit;
 	}
+	list($host, $port) = explode(":", SERVER, 2);
+	if (is_numeric($port) && $port < 1024) {
+		auth_error('Connecting to privileged ports is not allowed.');
+	}
 	check_invalid_login();
 	$connection = connect();
 }

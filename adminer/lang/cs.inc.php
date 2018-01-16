@@ -20,6 +20,7 @@ $translations = array(
 	'If you did not send this request from Adminer then close this page.' => 'Pokud jste tento požadavek neposlali z Adminera, tak tuto stránku zavřete.',
 	'No extension' => 'Žádné rozšíření',
 	'None of the supported PHP extensions (%s) are available.' => 'Není dostupné žádné z podporovaných PHP rozšíření (%s).',
+	'Connecting to privileged ports is not allowed.' => 'Připojování k privilegovaným portům není povoleno.',
 	'Session support must be enabled.' => 'Session proměnné musí být povolené.',
 	'Session expired, please login again.' => 'Session vypršela, přihlašte se prosím znovu.',
 	'%s version: %s through PHP extension %s' => 'Verze %s: %s přes PHP rozšíření %s',
