@@ -36,8 +36,8 @@ if (!strpos($_SERVER["REQUEST_URI"], '?') && $_SERVER["QUERY_STRING"] != "") { /
 $HTTPS = $_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off");
 
 @ini_set("session.use_trans_sid", false); // protect links in export, @ - may be disabled
-session_cache_limiter(""); // to allow restarting session and to not send Cache-Control: no-store
 if (!defined("SID")) {
+	session_cache_limiter(""); // to allow restarting session
 	session_name("adminer_sid"); // use specific session name to get own namespace
 	$params = array(0, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]), "", $HTTPS);
 	if (version_compare(PHP_VERSION, '5.2.0') >= 0) {
