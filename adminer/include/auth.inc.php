@@ -48,14 +48,18 @@ function add_invalid_login() {
 	fclose($fp);
 }
 
-$auth = $_POST["auth"];
-if ($auth) {
+function check_invalid_login() {
+	global $adminer;
 	$invalids = unserialize(@file_get_contents(get_temp_dir() . "/adminer.invalid")); // @ - may not exist
 	$invalid = $invalids[$adminer->bruteForceKey()];
 	$next_attempt = ($invalid[1] > 30 ? $invalid[0] - time() : 0); // allow 30 invalid attempts
 	if ($next_attempt > 0) { //! do the same with permanent login
 		auth_error(lang('Too many unsuccessful logins, try again in %d minute(s).', ceil($next_attempt / 60)));
 	}
+}
+
+$auth = $_POST["auth"];
+if ($auth) {
 	session_regenerate_id(); // defense against session fixation
 	$vendor = $auth["driver"];
 	$server = $auth["server"];
@@ -161,6 +165,7 @@ if (isset($_GET["username"])) {
 		page_footer("auth");
 		exit;
 	}
+	check_invalid_login();
 	$connection = connect();
 }
 
