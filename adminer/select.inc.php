@@ -226,7 +226,7 @@ $set = null;
 if (isset($rights["insert"]) || !support("table")) {
 	$set = "";
 	foreach ((array) $_GET["where"] as $val) {
-		if (count($foreign_keys[$val["col"]]) == 1 && ($val["op"] == "="
+		if ($foreign_keys[$val["col"]] && count($foreign_keys[$val["col"]]) == 1 && ($val["op"] == "="
 			|| (!$val["op"] && !preg_match('~[_%]~', $val["val"])) // LIKE in Editor
 		)) {
 			$set .= "&set" . urlencode("[" . bracket_escape($val["col"]) . "]") . "=" . urlencode($val["val"]);

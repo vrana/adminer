@@ -592,6 +592,9 @@ class Adminer {
 		global $jush;
 		restart_session();
 		$history = &get_session("queries");
+		if (!$history[$_GET["db"]]) {
+			$history[$_GET["db"]] = array();
+		}
 		$id = "sql-" . count($history[$_GET["db"]]);
 		if (strlen($query) > 1e6) {
 			$query = preg_replace('~[\x80-\xFF]+$~', '', substr($query, 0, 1e6)) . "\n..."; // [\x80-\xFF] - valid UTF-8, \n - can end by one-line comment

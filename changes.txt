@@ -5,6 +5,7 @@ Rate limit password-less login attempts from the same IP address
 Disallow connecting to privileged ports
 Add nosniff header
 PHP 7.1: Prevent warning when using empty limit
+PHP 7.2: Prevent warning when searching in select
 MySQL: Remove dedicated view for replication status (added in 4.3.0)
 PostgreSQL: Sort table names (regression from 4.3.1)
 Editor: Don't set time zone from PHP, fixes DST
