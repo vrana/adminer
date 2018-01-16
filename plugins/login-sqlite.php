@@ -7,14 +7,14 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerLoginSqlite {
-	var $login;
-	var $password_hash;
+	/** @access protected */
+	var $login, $password_hash;
 	
-	/** 
+	/** Set allowed credentials
 	* @param string
 	* @param string result of password_hash
 	*/
-	function AdminerLoginSqlite($login, $password_hash) {
+	function __construct($login, $password_hash) {
 		$this->login = $login;
 		$this->password_hash = $password_hash;
 	}
