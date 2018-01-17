@@ -1,4 +1,4 @@
-Adminer 4.4.0-dev:
+Adminer 4.4.0 (released 2018-01-17):
 Add Content Security Policy
 Disallow scripts without nonce
 Rate limit password-less login attempts from the same IP address
