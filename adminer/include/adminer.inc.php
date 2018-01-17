@@ -71,7 +71,7 @@ class Adminer {
 	}
 
 	/** Get Content Security Policy headers
-	* @return array directive name in key, allowed sources in value
+	* @return array of arrays with directive name in key, allowed sources in value
 	*/
 	function csp() {
 		return csp();
