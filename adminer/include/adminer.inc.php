@@ -495,6 +495,9 @@ class Adminer {
 			}
 		}
 		foreach ((array) $_GET["where"] as $val) {
+			if ($val["op"] == "") {
+				$val["op"] = "LIKE %%";
+			}
 			if ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators)) {
 				$cond = " $val[op]";
 				if (preg_match('~IN$~', $val["op"])) {
