@@ -15,6 +15,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 					$this->_link = new SQLite3($filename);
 					$version = $this->_link->version();
 					$this->server_info = $version["versionString"];
+					$this->_link->querySingle('PRAGMA foreign_keys = ON');
 				}
 
 				function query($query) {
