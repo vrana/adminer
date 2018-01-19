@@ -8,22 +8,6 @@
 */
 class AdminerTablesFilter {
 	function tablesPrint($tables) { ?>
-<p class="jsonly"><input id="filter-field" autocomplete="off"><?php echo script("qs('#filter-field').oninput = tablesFilterInput;"); ?>
-<ul id='tables'>
-<?php
-echo script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
-foreach ($tables as $table => $status) {
-	echo '<li data-table-name="' . h($table) . '"><a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table || $_GET["edit"] == $table, "select") . ">" . lang('select') . "</a> ";
-	$name = h($status["Name"]);
-	echo (support("table") || support("indexes")
-		? '<a href="' . h(ME) . 'table=' . urlencode($table) . '"'
-			. bold(in_array($table, array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"])), (is_view($status) ? "view" : "structure"))
-			. " title='" . lang('Show structure') . "'>$name</a>"
-		: "<span>$name</span>"
-	) . "\n";
-}
-?>
-</ul>
 <script<?php echo nonce(); ?>>
 var tablesFilterTimeout = null;
 var tablesFilterValue = '';
@@ -70,6 +54,22 @@ if (sessionStorage){
 	sessionStorage.setItem('adminer_tables_filter_db', db);
 }
 </script>
+<p class="jsonly"><input id="filter-field" autocomplete="off"><?php echo script("qs('#filter-field').oninput = tablesFilterInput;"); ?>
+<ul id='tables'>
+<?php
+echo script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
+foreach ($tables as $table => $status) {
+	echo '<li data-table-name="' . h($table) . '"><a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table || $_GET["edit"] == $table, "select") . ">" . lang('select') . "</a> ";
+	$name = h($status["Name"]);
+	echo (support("table") || support("indexes")
+		? '<a href="' . h(ME) . 'table=' . urlencode($table) . '"'
+			. bold(in_array($table, array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"])), (is_view($status) ? "view" : "structure"))
+			. " title='" . lang('Show structure') . "'>$name</a>"
+		: "<span>$name</span>"
+	) . "\n";
+}
+?>
+</ul>
 <?php
 		return true;
 	}

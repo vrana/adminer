@@ -823,6 +823,9 @@ function findDefaultSubmit(el) {
 	if (el.jushTextarea) {
 		el = el.jushTextarea;
 	}
+	if (!el.form) {
+		return null;
+	}
 	var inputs = qsa('input', el.form);
 	for (var i = 0; i < inputs.length; i++) {
 		var input = inputs[i];
