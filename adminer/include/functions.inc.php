@@ -360,9 +360,10 @@ function get_vals($query, $column = 0) {
 * @param string
 * @param Min_DB
 * @param float
+* @param bool
 * @return array
 */
-function get_key_vals($query, $connection2 = null, $timeout = 0) {
+function get_key_vals($query, $connection2 = null, $timeout = 0, $set_keys = true) {
 	global $connection;
 	if (!is_object($connection2)) {
 		$connection2 = $connection;
@@ -373,7 +374,11 @@ function get_key_vals($query, $connection2 = null, $timeout = 0) {
 	$connection2->timeout = 0;
 	if (is_object($result)) {
 		while ($row = $result->fetch_row()) {
-			$return[$row[0]] = $row[1];
+			if ($set_keys) {
+				$return[$row[0]] = $row[1];
+			} else {
+				$return[] = $row[0];
+			}
 		}
 	}
 	return $return;
@@ -1261,13 +1266,13 @@ var timeout = setTimeout(function () {
 	}
 	ob_flush();
 	flush();
-	$return = @get_key_vals($query, $connection2, $timeout); // @ - may be killed
+	$return = @get_key_vals($query, $connection2, $timeout, false); // @ - may be killed
 	if ($connection2) {
 		echo script("clearTimeout(timeout);");
 		ob_flush();
 		flush();
 	}
-	return array_keys($return);
+	return $return;
 }
 
 /** Generate BREACH resistant CSRF token
