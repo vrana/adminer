@@ -73,3 +73,4 @@ a:hover{color:#28c}
 a[title='Show structure'],#tables a[title='Show structure']{border:0;background:0;color:#369}
 .jush a{border:0;background:0;margin:0;padding:0}
 a.active,a.active:link,a.active:hover{text-decoration:underline}
+#tables li{clear: both;}
