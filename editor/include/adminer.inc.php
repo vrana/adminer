@@ -592,17 +592,19 @@ qsl('div').onclick = whisperClick;", "")
 	}
 
 	function tablesPrint($tables) {
-		echo "<p id='tables'>";
+		echo "<ul id='tables'>";
 		echo script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
 		foreach ($tables as $row) {
+			echo '<li>';
 			$name = $this->tableName($row);
 			if (isset($row["Engine"]) && $name != "") { // ignore views and tables without name
 				echo "<a href='" . h(ME) . 'select=' . urlencode($row["Name"]) . "'"
 					. bold($_GET["select"] == $row["Name"] || $_GET["edit"] == $row["Name"], "select")
-					. " title='" . lang('Select data') . "'>$name</a><br>\n"
+					. " title='" . lang('Select data') . "'>$name</a>\n"
 				;
 			}
 		}
+		echo "</ul>\n";
 	}
 
 	function _foreignColumn($foreignKeys, $column) {
