@@ -437,7 +437,7 @@ function selectSearch(name) {
 		div.firstChild.value = name;
 		div.firstChild.onchange();
 	}
-	div.lastChild.focus();
+	qs('[name$="[val]"]', div).focus();
 	return false;
 }
 
