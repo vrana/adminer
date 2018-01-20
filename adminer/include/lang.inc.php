@@ -2,13 +2,13 @@
 // not used in a single language version
 
 $langs = array(
-	'en' => 'English', // Jakub Vrána - http://www.vrana.cz
+	'en' => 'English', // Jakub Vrána - https://www.vrana.cz
 	'ar' => 'العربية', // Y.M Amine - Algeria - nbr7@live.fr
 	'bg' => 'Български', // Deyan Delchev
 	'bn' => 'বাংলা', // Dipak Kumar - dipak.ndc@gmail.com
 	'bs' => 'Bosanski', // Emir Kurtovic
 	'ca' => 'Català', // Joan Llosas
-	'cs' => 'Čeština', // Jakub Vrána - http://www.vrana.cz
+	'cs' => 'Čeština', // Jakub Vrána - https://www.vrana.cz
 	'da' => 'Dansk', // Jarne W. Beutnagel - jarne@beutnagel.dk
 	'de' => 'Deutsch', // Klemens Häckel - http://clickdimension.wordpress.com
 	'el' => 'Ελληνικά', // Dimitrios T. Tanis - jtanis@tanisfood.gr
@@ -18,6 +18,7 @@ $langs = array(
 	'fi' => 'Suomi', // Finnish - Kari Eveli - http://www.lexitec.fi/
 	'fr' => 'Français', // Francis Gagné, Aurélien Royer
 	'gl' => 'Galego', // Eduardo Penabad Ramos
+	'he' => 'עברית', // Binyamin Yawitz - https://stuff-group.com/
 	'hu' => 'Magyar', // Borsos Szilárd (Borsosfi) - http://www.borsosfi.hu, info@borsosfi.hu
 	'id' => 'Bahasa Indonesia', // Ivan Lanin - http://ivan.lanin.org
 	'it' => 'Italiano', // Alessandro Fiorotto, Paolo Asperti
@@ -30,7 +31,7 @@ $langs = array(
 	'pt' => 'Português', // André Dias
 	'pt-br' => 'Português (Brazil)', // Gian Live - gian@live.com, Davi Alexandre davi@davialexandre.com.br, RobertoPC - http://www.robertopc.com.br
 	'ro' => 'Limba Română', // .nick .messing - dot.nick.dot.messing@gmail.com
-	'ru' => 'Русский язык', // Maksim Izmaylov
+	'ru' => 'Русский', // Maksim Izmaylov; Andre Polykanine - https://github.com/Oire/
 	'sk' => 'Slovenčina', // Ivan Suchy - http://www.ivansuchy.com, Juraj Krivda - http://www.jstudio.cz
 	'sl' => 'Slovenski', // Matej Ferlan - www.itdinamik.com, matej.ferlan@itdinamik.com
 	'sr' => 'Српски', // Nikola Radovanović - cobisimo@gmail.com

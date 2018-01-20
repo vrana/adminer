@@ -8,7 +8,6 @@ $translations = array(
 	'Password' => '비밀번호',
 	'Select database' => '데이터베이스를 선택하십시오.',
 	'Invalid database.' => '잘못된 데이터베이스입니다.',
-	'Create new database' => '새 데이터베이스 만들기',
 	'Table has been dropped.' => '테이블을 삭제했습니다.',
 	'Table has been altered.' => '테이블을 변경했습니다.',
 	'Table has been created.' => '테이블을 만들었습니다.',

@@ -77,7 +77,6 @@ $translations = array(
 	'Use' => 'Naudoti',
 	'Select database' => 'Pasirinkti duomenų bazę',
 	'Invalid database.' => 'Neteisinga duomenų bazė.',
-	'Create new database' => 'Sukurti naują duomenų bazę',
 	'Database has been dropped.' => 'Duomenų bazė panaikinta.',
 	'Databases have been dropped.' => 'Duomenų bazės panaikintos.',
 	'Database has been created.' => 'Duomenų bazė sukurta.',

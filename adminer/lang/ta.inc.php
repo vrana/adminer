@@ -8,7 +8,6 @@ $translations = array(
 	'Password' => 'க‌ட‌வுச்சொல்',
 	'Select database' => 'த‌க‌வ‌ல்த‌ள‌த்தை தேர்வு செய்',
 	'Invalid database.' => 'த‌க‌வ‌ல்த‌ள‌ம் ச‌ரியானதல்ல‌.',
-	'Create new database' => 'புதிய‌ த‌க‌வ‌ல்த‌ள‌த்தை உருவாக்கு',
 	'Table has been dropped.' => 'அட்ட‌வ‌ணை நீக்க‌ப்ப‌ட்ட‌து.',
 	'Table has been altered.' => 'அட்ட‌வணை மாற்ற‌ப்ப‌ட்ட‌து.',
 	'Table has been created.' => 'அட்ட‌வ‌ணை உருவாக்க‌ப்ப‌ட்ட‌து.',

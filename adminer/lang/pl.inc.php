@@ -82,7 +82,6 @@ $translations = array(
 	'Use' => 'Wybierz',
 	'Select database' => 'Wybierz bazę danych',
 	'Invalid database.' => 'Nie znaleziono bazy danych.',
-	'Create new database' => 'Utwórz nową bazę danych',
 	'Database has been dropped.' => 'Baza danych została usunięta.',
 	'Databases have been dropped.' => 'Bazy danych zostały usunięte.',
 	'Database has been created.' => 'Baza danych została utworzona.',
@@ -182,13 +181,12 @@ $translations = array(
 	'Values' => 'Wartości',
 	
 	'View' => 'Perspektywa',
-	'Materialized View' => 'Zmaterializowana perspektywa',
+	'Materialized view' => 'Zmaterializowana perspektywa',
 	'View has been dropped.' => 'Perspektywa została usunięta.',
 	'View has been altered.' => 'Perspektywa została zmieniona.',
 	'View has been created.' => 'Perspektywa została utworzona.',
 	'Alter view' => 'Zmień perspektywę',
 	'Create view' => 'Utwórz perspektywę',
-	'Create materialized view' => 'Utwórz zmaterializowaną perspektywę',
 	
 	'Indexes' => 'Indeksy',
 	'Indexes have been altered.' => 'Indeksy zostały zmienione.',

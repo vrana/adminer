@@ -10,8 +10,8 @@ h2 { font-size: 150%; margin: 0 0 20px -18px; padding: .8em 1em; border-bottom: 
 h3 { font-weight: normal; font-size: 130%; margin: 1em 0 0; }
 form { margin: 0; }
 td table { width: 100%; margin: 0; }
-table { margin: 1em 20px 0 0; border: 0; border-top: 1px solid #999; border-left: 1px solid #999; font-size: 90%; }
-td, th { border: 0; border-right: 1px solid #999; border-bottom: 1px solid #999; padding: .2em .3em; }
+table { margin: 1em 20px 0 0; border-collapse: collapse; font-size: 90%; }
+td, th { border: 1px solid #999; padding: .2em .3em; }
 th { background: #eee; text-align: left; }
 thead th { text-align: center; padding: .2em .5em; }
 thead td, thead th { background: #ddf; }

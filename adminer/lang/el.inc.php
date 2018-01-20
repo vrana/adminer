@@ -83,7 +83,6 @@ $translations = array(
 	'Use' => 'χρήση',
 	'Select database' => 'Επιλέξτε Β.Δ.',
 	'Invalid database.' => 'Άκυρη Β.Δ.',
-	'Create new database' => 'Δημιουργία νέας Β.Δ.',
 	'Database has been dropped.' => 'Η Β.Δ. διαγράφηκε.',
 	'Databases have been dropped.' => 'Οι Β.Δ. διαγράφηκαν.',
 	'Database has been created.' => 'Η Β.Δ. δημιουργήθηκε.',
@@ -183,13 +182,12 @@ $translations = array(
 	'Values' => 'Τιμές',
 	
 	'View' => 'Προβολή',
-	'Materialized View' => 'Υλοποιημένη Προβολή',
+	'Materialized view' => 'Υλοποιημένη προβολή',
 	'View has been dropped.' => 'Η προβολή διαγράφηκε.',
 	'View has been altered.' => 'Η προβολή τροποποιήθηκε.',
 	'View has been created.' => 'Η προβολή δημιουργήθηκε.',
 	'Alter view' => 'Τροποποίηση προβολής',
 	'Create view' => 'Δημιουργία προβολής',
-	'Create materialized view' => 'Δημιουργία Υλοποιημένης προβολής',
 	
 	'Indexes' => 'Δείκτες',
 	'Indexes have been altered.' => 'Οι δείκτες τροποποιήθηκαν.',

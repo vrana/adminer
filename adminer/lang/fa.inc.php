@@ -81,7 +81,6 @@ $translations = array(
 	'Use' => 'استفاده',
 	'Select database' => 'انتخاب پایگاه داده',
 	'Invalid database.' => 'پایگاه داده نامعتبر.',
-	'Create new database' => 'ایجاد پایگاه داده جدید',
 	'Database has been dropped.' => 'پایگاه داده حذف شد.',
 	'Databases have been dropped.' => 'پایگاه های داده حذف شدند.',
 	'Database has been created.' => 'پایگاه داده ایجاد شد.',
@@ -181,13 +180,12 @@ $translations = array(
 	'Values' => 'مقادیر',
 	
 	'View' => 'نمایش',
-	'Materialized View' => 'نمایه مادی',
+	'Materialized view' => 'نمایه مادی',
 	'View has been dropped.' => 'نمایش حذف شد.',
 	'View has been altered.' => 'نمایش ویرایش شد.',
 	'View has been created.' => 'نمایش ایجاد شد.',
 	'Alter view' => 'حذف نمایش',
 	'Create view' => 'ایجاد نمایش',
-	'Create materialized view' => 'ایجاد نمایه مادی',
 	
 	'Indexes' => 'ایندکسها',
 	'Indexes have been altered.' => 'ایندکسها ویرایش شدند.',

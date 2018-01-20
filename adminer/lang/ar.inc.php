@@ -8,7 +8,6 @@ $translations = array(
 	'Password' => 'كلمة المرور',
 	'Select database' => 'اختر قاعدة البيانات',
 	'Invalid database.' => 'قاعدة البيانات غير صالحة.',
-	'Create new database' => 'أنشئ فاعدة بيانات جديدة',
 	'Table has been dropped.' => 'تم حذف الجدول.',
 	'Table has been altered.' => 'تم تعديل الجدول.',
 	'Table has been created.' => 'تم إنشاء الجدول.',

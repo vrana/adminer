@@ -83,7 +83,6 @@ $translations = array(
 	'Use' => 'Käytä',
 	'Select database' => 'Valitse tietokanta',
 	'Invalid database.' => 'Tietokanta ei kelpaa.',
-	'Create new database' => 'Luo uusi tietokanta',
 	'Database has been dropped.' => 'Tietokanta on poistettu.',
 	'Databases have been dropped.' => 'Tietokannat on poistettu.',
 	'Database has been created.' => 'Tietokanta on luotu.',
@@ -183,13 +182,12 @@ $translations = array(
 	'Values' => 'Arvot',
 	
 	'View' => 'Näkymä',
-	'Materialized View' => 'Materialisoitunut näkymä',
+	'Materialized view' => 'Materialisoitunut näkymä',
 	'View has been dropped.' => 'Näkymä on poistettu.',
 	'View has been altered.' => 'Näkymää on muutettu.',
 	'View has been created.' => 'Näkymä on luotu.',
 	'Alter view' => 'Muuta näkymää',
 	'Create view' => 'Luo näkymä',
-	'Create materialized view' => 'Luo materialisoitunut näkymä',
 	
 	'Indexes' => 'Indeksit',
 	'Indexes have been altered.' => 'Indeksejä on muutettu.',

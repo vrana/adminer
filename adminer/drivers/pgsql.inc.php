@@ -186,12 +186,20 @@ if (isset($_GET["pgsql"])) {
 	}
 
 	function connect() {
-		global $adminer;
+		global $adminer, $types, $structured_types;
 		$connection = new Min_DB;
 		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
 			if ($connection->server_info >= 9) {
 				$connection->query("SET application_name = 'Adminer'");
+				if ($connection->server_info >= 9.2) {
+					$structured_types[lang('Strings')][] = "json";
+					$types["json"] = 4294967295;
+					if ($connection->server_info >= 9.4) {
+						$structured_types[lang('Strings')][] = "jsonb";
+						$types["jsonb"] = 4294967295;
+					}
+				}
 			}
 			return $connection;
 		}
@@ -244,10 +252,10 @@ ORDER BY 1";
 
 	function table_status($name = "") {
 		$return = array();
-		foreach (get_rows("SELECT c.relname AS \"Name\", CASE c.relkind WHEN 'r' THEN 'table' ELSE 'view' END AS \"Engine\", pg_relation_size(c.oid) AS \"Data_length\", pg_indexes_size(oid) AS \"Index_length\", obj_description(c.oid, 'pg_class') AS \"Comment\", c.relhasoids::int AS \"Oid\", c.reltuples as \"Rows\", n.nspname
+		foreach (get_rows("SELECT c.relname AS \"Name\", CASE c.relkind WHEN 'r' THEN 'table' WHEN 'm' THEN 'materialized view' ELSE 'view' END AS \"Engine\", pg_relation_size(c.oid) AS \"Data_length\", pg_total_relation_size(c.oid) - pg_relation_size(c.oid) AS \"Index_length\", obj_description(c.oid, 'pg_class') AS \"Comment\", c.relhasoids::int AS \"Oid\", c.reltuples as \"Rows\", n.nspname
 FROM pg_class c
 JOIN pg_namespace n ON(n.nspname = current_schema() AND n.oid = c.relnamespace)
-WHERE relkind IN ('r','v')
+WHERE relkind IN ('r', 'm', 'v')
 " . ($name != "" ? "AND relname = " . q($name) : "ORDER BY relname")
 		) as $row) { //! Index_length, Auto_increment
 			$return[$row["Name"]] = $row;
@@ -352,7 +360,7 @@ ORDER BY conkey, conname") as $row) {
 
 	function view($name) {
 		global $connection;
-		return array("select" => $connection->result("SELECT pg_get_viewdef(" . q($name) . ")"));
+		return array("select" => trim($connection->result("SELECT pg_get_viewdef(" . q($name) . ")")));
 	}
 
 	function collations() {
@@ -638,7 +646,7 @@ AND typelem = 0"
 		foreach ($fields as $field_name => $field) {
 			$part = idf_escape($field['field']) . ' ' . $field['full_type']
 				. (is_null($field['default']) ? "" : " DEFAULT $field[default]")
-				. ($field['attnotnull'] ? "" : " NOT NULL");
+				. ($field['attnotnull'] ? " NOT NULL" : "");
 			$return_parts[] = $part;
 
 			// sequences for fields

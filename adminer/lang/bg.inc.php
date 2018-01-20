@@ -82,7 +82,6 @@ $translations = array(
 	'Use' => 'Избор',
 	'Select database' => 'Избор на база данни',
 	'Invalid database.' => 'Невалидна база данни.',
-	'Create new database' => 'Нова база данни',
 	'Database has been dropped.' => 'Базата данни беше премахната.',
 	'Databases have been dropped.' => 'Базите данни бяха премехнати.',
 	'Database has been created.' => 'Базата данни беше създадена.',
@@ -182,13 +181,12 @@ $translations = array(
 	'Values' => 'Стойности',
 	
 	'View' => 'Изглед',
-	'Materialized View' => 'Запаметен изглед',
+	'Materialized view' => 'Запаметен изглед',
 	'View has been dropped.' => 'Изгледа беше премахнат.',
 	'View has been altered.' => 'Изгледа беше променен.',
 	'View has been created.' => 'Изгледа беше създаден.',
 	'Alter view' => 'Промяна на изглед',
 	'Create view' => 'Създаване на изглед',
-	'Create materialized view' => 'Създаване на запаметен изглед',
 	
 	'Indexes' => 'Индекси',
 	'Indexes have been altered.' => 'Индексите бяха променени.',

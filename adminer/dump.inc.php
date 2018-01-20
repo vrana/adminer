@@ -169,8 +169,8 @@ $prefixes = array();
 if (DB != "") {
 	$checked = ($TABLE != "" ? "" : " checked");
 	echo "<thead><tr>";
-	echo "<th style='text-align: left;'><label class='block'><input type='checkbox' id='check-tables'$checked onclick='formCheck(this, /^tables\\[/);'>" . lang('Tables') . "</label>";
-	echo "<th style='text-align: right;'><label class='block'>" . lang('Data') . "<input type='checkbox' id='check-data'$checked onclick='formCheck(this, /^data\\[/);'></label>";
+	echo "<th style='text-align: left;'><label class='block'><input type='checkbox' id='check-tables'$checked>" . lang('Tables') . "</label>" . script("qs('#check-tables').onclick = partial(formCheck, /^tables\\[/);", "");
+	echo "<th style='text-align: right;'><label class='block'>" . lang('Data') . "<input type='checkbox' id='check-data'$checked></label>" . script("qs('#check-data').onclick = partial(formCheck, /^data\\[/);", "");
 	echo "</thead>\n";
 
 	$views = "";
@@ -178,22 +178,25 @@ if (DB != "") {
 	foreach ($tables_list as $name => $type) {
 		$prefix = preg_replace('~_.*~', '', $name);
 		$checked = ($TABLE == "" || $TABLE == (substr($TABLE, -1) == "%" ? "$prefix%" : $name)); //! % may be part of table name
-		$print = "<tr><td>" . checkbox("tables[]", $name, $checked, $name, "checkboxClick(event, this); formUncheck('check-tables');", "block");
+		$print = "<tr><td>" . checkbox("tables[]", $name, $checked, $name, "checkboxClick.call(this, event); formUncheck('check-tables');", "block");
 		if ($type !== null && !preg_match('~table~i', $type)) {
 			$views .= "$print\n";
 		} else {
-			echo "$print<td align='right'><label class='block'><span id='Rows-" . h($name) . "'></span>" . checkbox("data[]", $name, $checked, "", "checkboxClick(event, this); formUncheck('check-data');") . "</label>\n";
+			echo "$print<td align='right'><label class='block'><span id='Rows-" . h($name) . "'></span>" . checkbox("data[]", $name, $checked, "", "checkboxClick.call(this, event); formUncheck('check-data');") . "</label>\n";
 		}
 		$prefixes[$prefix]++;
 	}
 	echo $views;
 
 	if ($tables_list) {
-		echo "<script type='text/javascript'>ajaxSetHtml('" . js_escape(ME) . "script=db');</script>\n";
+		echo script("ajaxSetHtml('" . js_escape(ME) . "script=db');");
 	}
 
 } else {
-	echo "<thead><tr><th style='text-align: left;'><label class='block'><input type='checkbox' id='check-databases'" . ($TABLE == "" ? " checked" : "") . " onclick='formCheck(this, /^databases\\[/);'>" . lang('Database') . "</label></thead>\n";
+	echo "<thead><tr><th style='text-align: left;'>";
+	echo "<label class='block'><input type='checkbox' id='check-databases'" . ($TABLE == "" ? " checked" : "") . ">" . lang('Database') . "</label>";
+	echo script("qs('#check-databases').onclick = partial(formCheck, /^databases\\[/);", "");
+	echo "</thead>\n";
 	$databases = $adminer->databases();
 	if ($databases) {
 		foreach ($databases as $db) {

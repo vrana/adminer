@@ -23,7 +23,7 @@ function bodyLoad(version) {
 			jush.custom_links = jushLinks;
 		}
 		jush.highlight_tag('code', 0);
-		var tags = document.getElementsByTagName('textarea');
+		var tags = qsa('textarea', document);
 		for (var i = 0; i < tags.length; i++) {
 			if (/(^|\s)jush-/.test(tags[i].className)) {
 				var pre = jush.textarea(tags[i]);
@@ -60,6 +60,15 @@ function typePassword(el, disable) {
 	}
 }
 
+/** Install toggle handler
+*/
+function messagesPrint() {
+	var els = qsa('.toggle', document);
+	for (var i = 0; i < els.length; i++) {
+		els[i].onclick = partial(toggle, els[i].getAttribute('href').substr(1));
+	}
+}
+
 
 
 var dbCtrl;
@@ -67,45 +76,46 @@ var dbPrevious = {};
 
 /** Check if database should be opened to a new window
 * @param MouseEvent
-* @param HTMLSelectElement
+* @this HTMLSelectElement
 */
-function dbMouseDown(event, el) {
+function dbMouseDown(event) {
 	dbCtrl = isCtrl(event);
-	if (dbPrevious[el.name] == undefined) {
-		dbPrevious[el.name] = el.value;
+	if (dbPrevious[this.name] == undefined) {
+		dbPrevious[this.name] = this.value;
 	}
 }
 
 /** Load database after selecting it
-* @param HTMLSelectElement
+* @this HTMLSelectElement
 */
-function dbChange(el) {
+function dbChange() {
 	if (dbCtrl) {
-		el.form.target = '_blank';
+		this.form.target = '_blank';
 	}
-	el.form.submit();
-	el.form.target = '';
-	if (dbCtrl && dbPrevious[el.name] != undefined) {
-		el.value = dbPrevious[el.name];
-		dbPrevious[el.name] = undefined;
+	this.form.submit();
+	this.form.target = '';
+	if (dbCtrl && dbPrevious[this.name] != undefined) {
+		this.value = dbPrevious[this.name];
+		dbPrevious[this.name] = undefined;
 	}
 }
 
 
 
 /** Check whether the query will be executed with index
-* @param HTMLFormElement
+* @this HTMLElement
 */
-function selectFieldChange(form) {
+function selectFieldChange() {
+	var form = this.form;
 	var ok = (function () {
-		var inputs = form.getElementsByTagName('input');
+		var inputs = qsa('input', form);
 		for (var i=0; i < inputs.length; i++) {
 			if (inputs[i].value && /^fulltext/.test(inputs[i].name)) {
 				return true;
 			}
 		}
 		var ok = form.limit.value;
-		var selects = form.getElementsByTagName('select');
+		var selects = qsa('select', form);
 		var group = false;
 		var columns = {};
 		for (var i=0; i < selects.length; i++) {
@@ -172,14 +182,14 @@ function idfEscape(s) {
 }
 
 /** Detect foreign key
-* @param HTMLInputElement
+* @this HTMLInputElement
 */
-function editingNameChange(field) {
-	var name = field.name.substr(0, field.name.length - 7);
-	var type = formField(field.form, name + '[type]');
+function editingNameChange() {
+	var name = this.name.substr(0, this.name.length - 7);
+	var type = formField(this.form, name + '[type]');
 	var opts = type.options;
 	var candidate; // don't select anything with ambiguous match (like column `id`)
-	var val = field.value;
+	var val = this.value;
 	for (var i = opts.length; i--; ) {
 		var match = /(.+)`(.+)/.exec(opts[i].value);
 		if (!match) { // common type
@@ -209,23 +219,23 @@ function editingNameChange(field) {
 }
 
 /** Add table row for next field
-* @param HTMLInputElement
 * @param boolean
-* @return boolean
+* @return boolean false
+* @this HTMLInputElement
 */
-function editingAddRow(button, focus) {
-	var match = /(\d+)(\.\d+)?/.exec(button.name);
+function editingAddRow(focus) {
+	var match = /(\d+)(\.\d+)?/.exec(this.name);
 	var x = match[0] + (match[2] ? added.substr(match[2].length) : added) + '1';
-	var row = parentTag(button, 'tr');
+	var row = parentTag(this, 'tr');
 	var row2 = cloneNode(row);
-	var tags = row.getElementsByTagName('select');
-	var tags2 = row2.getElementsByTagName('select');
+	var tags = qsa('select', row);
+	var tags2 = qsa('select', row2);
 	for (var i=0; i < tags.length; i++) {
 		tags2[i].name = tags[i].name.replace(/[0-9.]+/, x);
 		tags2[i].selectedIndex = tags[i].selectedIndex;
 	}
-	tags = row.getElementsByTagName('input');
-	tags2 = row2.getElementsByTagName('input');
+	tags = qsa('input', row);
+	tags2 = qsa('input', row2);
 	var input = tags2[0]; // IE loose tags2 after insertBefore()
 	for (var i=0; i < tags.length; i++) {
 		if (tags[i].name == 'auto_increment_col') {
@@ -240,59 +250,52 @@ function editingAddRow(button, focus) {
 			tags2[i].checked = false;
 		}
 	}
-	tags[0].onchange = function () {
-		editingNameChange(tags[0]);
-	};
-	tags[0].onkeyup = function () {
-	};
+	tags[0].oninput = editingNameChange;
 	row.parentNode.insertBefore(row2, row.nextSibling);
 	if (focus) {
-		input.onchange = function () {
-			editingNameChange(input);
-		};
-		input.onkeyup = function () {
-		};
+		input.oninput = editingNameChange;
 		input.focus();
 	}
 	added += '0';
 	rowCount++;
-	return true;
+	return false;
 }
 
 /** Remove table row for field
-* @param HTMLInputElement
 * @param string
-* @return boolean
+* @return boolean false
+* @this HTMLInputElement
 */
-function editingRemoveRow(button, name) {
-	var field = formField(button.form, button.name.replace(/[^\[]+(.+)/, name));
+function editingRemoveRow(name) {
+	var field = formField(this.form, this.name.replace(/[^\[]+(.+)/, name));
 	field.parentNode.removeChild(field);
-	parentTag(button, 'tr').style.display = 'none';
-	return true;
+	parentTag(this, 'tr').style.display = 'none';
+	return false;
 }
 
 /** Move table row for field
-* @param HTMLInputElement
 * @param boolean direction to move row, true for up or false for down
-* @return boolean
+* @return boolean false for success
+* @this HTMLInputElement
 */
-function editingMoveRow(button, dir){
-	var row = parentTag(button, 'tr');
+function editingMoveRow(dir){
+	var row = parentTag(this, 'tr');
 	if (!('nextElementSibling' in row)) {
-		return false;
+		return true;
 	}
 	row.parentNode.insertBefore(row, dir
 		? row.previousElementSibling
 		: row.nextElementSibling ? row.nextElementSibling.nextElementSibling : row.parentNode.firstChild);
-	return true;
+	return false;
 }
 
 var lastType = '';
 
 /** Clear length and hide collation or unsigned
-* @param HTMLSelectElement
+* @this HTMLSelectElement
 */
-function editingTypeChange(type) {
+function editingTypeChange() {
+	var type = this;
 	var name = type.name.substr(0, type.name.length - 6);
 	var text = selectValue(type);
 	for (var i=0; i < type.form.elements.length; i++) {
@@ -304,7 +307,7 @@ function editingTypeChange(type) {
 			)) {
 				el.value = '';
 			}
-			el.onchange.apply(el);
+			el.oninput.apply(el);
 		}
 		if (lastType == 'timestamp' && el.name == name + '[has_default]' && /timestamp/i.test(formField(type.form, name + '[default]').value)) {
 			el.checked = false;
@@ -326,37 +329,37 @@ function editingTypeChange(type) {
 }
 
 /** Mark length as required
-* @param HTMLInputElement
+* @this HTMLInputElement
 */
-function editingLengthChange(el) {
-	alterClass(el, 'required', !el.value.length && /var(char|binary)$/.test(selectValue(el.parentNode.previousSibling.firstChild)));
+function editingLengthChange() {
+	alterClass(this, 'required', !this.value.length && /var(char|binary)$/.test(selectValue(this.parentNode.previousSibling.firstChild)));
 }
 
 /** Edit enum or set
-* @param HTMLInputElement
+* @this HTMLInputElement
 */
-function editingLengthFocus(field) {
-	var td = field.parentNode;
+function editingLengthFocus() {
+	var td = this.parentNode;
 	if (/(enum|set)$/.test(selectValue(td.previousSibling.firstChild))) {
-		var edit = document.getElementById('enum-edit');
-		var val = field.value;
+		var edit = qs('#enum-edit');
+		var val = this.value;
 		edit.value = (/^'.+'$/.test(val) ? val.substr(1, val.length - 2).replace(/','/g, "\n").replace(/''/g, "'") : val); //! doesn't handle 'a'',''b' correctly
 		td.appendChild(edit);
-		field.style.display = 'none';
+		this.style.display = 'none';
 		edit.style.display = 'inline';
 		edit.focus();
 	}
 }
 
 /** Finish editing of enum or set
-* @param HTMLTextAreaElement
+* @this HTMLTextAreaElement
 */
-function editingLengthBlur(edit) {
-	var field = edit.parentNode.firstChild;
-	var val = edit.value;
-	field.value = (/^'[^\n]+'$/.test(val) ? val : "'" + val.replace(/\n+$/, '').replace(/'/g, "''").replace(/\n/g, "','") + "'");
+function editingLengthBlur() {
+	var field = this.parentNode.firstChild;
+	var val = this.value;
+	field.value = (/^'[^\n]+'$/.test(val) ? val : val && "'" + val.replace(/\n+$/, '').replace(/'/g, "''").replace(/\n/g, "','") + "'");
 	field.style.display = 'inline';
-	edit.style.display = 'none';
+	this.style.display = 'none';
 }
 
 /** Show or hide selected table column
@@ -364,9 +367,9 @@ function editingLengthBlur(edit) {
 * @param number
 */
 function columnShow(checked, column) {
-	var trs = document.getElementById('edit-fields').getElementsByTagName('tr');
+	var trs = qsa('tr', qs('#edit-fields'));
 	for (var i=0; i < trs.length; i++) {
-		alterClass(trs[i].getElementsByTagName('td')[column], 'hidden', !checked);
+		alterClass(qsa('td', trs[i])[column], 'hidden', !checked);
 	}
 }
 
@@ -374,76 +377,76 @@ function columnShow(checked, column) {
 */
 function editingHideDefaults() {
 	if (innerWidth < document.documentElement.scrollWidth) {
-		document.getElementById('form')['defaults'].checked = false;
+		qs('#form')['defaults'].checked = false;
 		columnShow(false, 5);
 	}
 }
 
 /** Display partition options
-* @param HTMLSelectElement
+* @this HTMLSelectElement
 */
-function partitionByChange(el) {
-	var partitionTable = /RANGE|LIST/.test(selectValue(el));
-	alterClass(el.form['partitions'], 'hidden', partitionTable || !el.selectedIndex);
-	alterClass(document.getElementById('partition-table'), 'hidden', !partitionTable);
+function partitionByChange() {
+	var partitionTable = /RANGE|LIST/.test(selectValue(this));
+	alterClass(this.form['partitions'], 'hidden', partitionTable || !this.selectedIndex);
+	alterClass(qs('#partition-table'), 'hidden', !partitionTable);
 	helpClose();
 }
 
 /** Add next partition row
-* @param HTMLInputElement
+* @this HTMLInputElement
 */
-function partitionNameChange(el) {
-	var row = cloneNode(parentTag(el, 'tr'));
+function partitionNameChange() {
+	var row = cloneNode(parentTag(this, 'tr'));
 	row.firstChild.firstChild.value = '';
-	parentTag(el, 'table').appendChild(row);
-	el.onchange = function () {};
+	parentTag(this, 'table').appendChild(row);
+	this.oninput = function () {};
 }
 
 
 
 /** Add row for foreign key
-* @param HTMLSelectElement
+* @this HTMLSelectElement
 */
-function foreignAddRow(field) {
-	field.onchange = function () { };
-	var row = cloneNode(parentTag(field, 'tr'));
-	var selects = row.getElementsByTagName('select');
+function foreignAddRow() {
+	this.onchange = function () { };
+	var row = cloneNode(parentTag(this, 'tr'));
+	var selects = qsa('select', row);
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/\]/, '1$&');
 		selects[i].selectedIndex = 0;
 	}
-	parentTag(field, 'table').appendChild(row);
+	parentTag(this, 'table').appendChild(row);
 }
 
 
 
 /** Add row for indexes
-* @param HTMLSelectElement
+* @this HTMLSelectElement
 */
-function indexesAddRow(field) {
-	field.onchange = function () { };
-	var row = cloneNode(parentTag(field, 'tr'));
-	var selects = row.getElementsByTagName('select');
+function indexesAddRow() {
+	this.onchange = function () { };
+	var row = cloneNode(parentTag(this, 'tr'));
+	var selects = qsa('select', row);
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/indexes\[\d+/, '$&1');
 		selects[i].selectedIndex = 0;
 	}
-	var inputs = row.getElementsByTagName('input');
+	var inputs = qsa('input', row);
 	for (var i=0; i < inputs.length; i++) {
 		inputs[i].name = inputs[i].name.replace(/indexes\[\d+/, '$&1');
 		inputs[i].value = '';
 	}
-	parentTag(field, 'table').appendChild(row);
+	parentTag(this, 'table').appendChild(row);
 }
 
 /** Change column in index
-* @param HTMLSelectElement
 * @param string name prefix
+* @this HTMLSelectElement
 */
-function indexesChangeColumn(field, prefix) {
+function indexesChangeColumn(prefix) {
 	var names = [];
 	for (var tag in { 'select': 1, 'input': 1 }) {
-		var columns = parentTag(field, 'td').getElementsByTagName(tag);
+		var columns = qsa(tag, parentTag(this, 'td'));
 		for (var i=0; i < columns.length; i++) {
 			if (/\[columns\]/.test(columns[i].name)) {
 				var value = selectValue(columns[i]);
@@ -453,17 +456,15 @@ function indexesChangeColumn(field, prefix) {
 			}
 		}
 	}
-	field.form[field.name.replace(/\].*/, '][name]')].value = prefix + names.join('_');
+	this.form[this.name.replace(/\].*/, '][name]')].value = prefix + names.join('_');
 }
 
 /** Add column for index
-* @param HTMLSelectElement
 * @param string name prefix
+* @this HTMLSelectElement
 */
-function indexesAddColumn(field, prefix) {
-	field.onchange = function () {
-		indexesChangeColumn(field, prefix);
-	};
+function indexesAddColumn(prefix) {
+	var field = this;
 	var select = field.form[field.name.replace(/\].*/, '][type]')];
 	if (!select.selectedIndex) {
 		while (selectValue(select) != "INDEX" && select.selectedIndex < select.options.length) {
@@ -472,13 +473,14 @@ function indexesAddColumn(field, prefix) {
 		select.onchange();
 	}
 	var column = cloneNode(field.parentNode);
-	var selects = column.getElementsByTagName('select');
+	var selects = qsa('select', column);
 	for (var i = 0; i < selects.length; i++) {
 		select = selects[i];
 		select.name = select.name.replace(/\]\[\d+/, '$&1');
 		select.selectedIndex = 0;
 	}
-	var inputs = column.getElementsByTagName('input');
+	field.onchange = partial(indexesChangeColumn, prefix);
+	var inputs = qsa('input', column);
 	for (var i = 0; i < inputs.length; i++) {
 		var input = inputs[i];
 		input.name = input.name.replace(/\]\[\d+/, '$&1');
@@ -510,48 +512,47 @@ function triggerChange(tableRe, table, form) {
 var that, x, y; // em and tablePos defined in schema.inc.php
 
 /** Get mouse position
-* @param HTMLElement
 * @param MouseEvent
+* @this HTMLElement
 */
-function schemaMousedown(el, event) {
+function schemaMousedown(event) {
 	if ((event.which ? event.which : event.button) == 1) {
-		that = el;
-		x = event.clientX - el.offsetLeft;
-		y = event.clientY - el.offsetTop;
+		that = this;
+		x = event.clientX - this.offsetLeft;
+		y = event.clientY - this.offsetTop;
 	}
 }
 
 /** Move object
 * @param MouseEvent
 */
-function schemaMousemove(ev) {
+function schemaMousemove(event) {
 	if (that !== undefined) {
-		ev = ev || event;
-		var left = (ev.clientX - x) / em;
-		var top = (ev.clientY - y) / em;
-		var divs = that.getElementsByTagName('div');
+		var left = (event.clientX - x) / em;
+		var top = (event.clientY - y) / em;
+		var divs = qsa('div', that);
 		var lineSet = { };
 		for (var i=0; i < divs.length; i++) {
 			if (divs[i].className == 'references') {
-				var div2 = document.getElementById((/^refs/.test(divs[i].id) ? 'refd' : 'refs') + divs[i].id.substr(4));
+				var div2 = qs('[id="' + (/^refs/.test(divs[i].id) ? 'refd' : 'refs') + divs[i].id.substr(4) + '"]');
 				var ref = (tablePos[divs[i].title] ? tablePos[divs[i].title] : [ div2.parentNode.offsetTop / em, 0 ]);
 				var left1 = -1;
 				var id = divs[i].id.replace(/^ref.(.+)-.+/, '$1');
 				if (divs[i].parentNode != div2.parentNode) {
 					left1 = Math.min(0, ref[1] - left) - 1;
 					divs[i].style.left = left1 + 'em';
-					divs[i].getElementsByTagName('div')[0].style.width = -left1 + 'em';
+					divs[i].querySelector('div').style.width = -left1 + 'em';
 					var left2 = Math.min(0, left - ref[1]) - 1;
 					div2.style.left = left2 + 'em';
-					div2.getElementsByTagName('div')[0].style.width = -left2 + 'em';
+					div2.querySelector('div').style.width = -left2 + 'em';
 				}
 				if (!lineSet[id]) {
-					var line = document.getElementById(divs[i].id.replace(/^....(.+)-.+$/, 'refl$1'));
+					var line = qs('[id="' + divs[i].id.replace(/^....(.+)-.+$/, 'refl$1') + '"]');
 					var top1 = top + divs[i].offsetTop / em;
 					var top2 = top + div2.offsetTop / em;
 					if (divs[i].parentNode != div2.parentNode) {
 						top2 += ref[0] - top;
-						line.getElementsByTagName('div')[0].style.height = Math.abs(top1 - top2) + 'em';
+						line.querySelector('div').style.height = Math.abs(top1 - top2) + 'em';
 					}
 					line.style.left = (left + left1) + 'em';
 					line.style.top = Math.min(top1, top2) + 'em';
@@ -568,17 +569,16 @@ function schemaMousemove(ev) {
 * @param MouseEvent
 * @param string
 */
-function schemaMouseup(ev, db) {
+function schemaMouseup(event, db) {
 	if (that !== undefined) {
-		ev = ev || event;
-		tablePos[that.firstChild.firstChild.firstChild.data] = [ (ev.clientY - y) / em, (ev.clientX - x) / em ];
+		tablePos[that.firstChild.firstChild.firstChild.data] = [ (event.clientY - y) / em, (event.clientX - x) / em ];
 		that = undefined;
 		var s = '';
 		for (var key in tablePos) {
 			s += '_' + key + ':' + Math.round(tablePos[key][0] * 10000) / 10000 + 'x' + Math.round(tablePos[key][1] * 10000) / 10000;
 		}
 		s = encodeURIComponent(s.substr(1));
-		var link = document.getElementById('schema-link');
+		var link = qs('#schema-link');
 		link.href = link.href.replace(/[^=]+$/, '') + s;
 		cookie('adminer_schema-' + db + '=' + s, 30); //! special chars in db
 	}
@@ -589,18 +589,18 @@ function schemaMouseup(ev, db) {
 var helpOpen, helpIgnore; // when mouse outs <option> then it mouse overs border of <select> - ignore it
 
 /** Display help
-* @param HTMLElement
 * @param MouseEvent
 * @param string
 * @param bool display on left side (otherwise on top)
+* @this HTMLElement
 */
-function helpMouseover(el, event, text, side) {
+function helpMouseover(event, text, side) {
 	var target = getTarget(event);
 	if (!text) {
 		helpClose();
-	} else if (window.jush && (!helpIgnore || el != target)) {
+	} else if (window.jush && (!helpIgnore || this != target)) {
 		helpOpen = 1;
-		var help = document.getElementById('help');
+		var help = qs('#help');
 		help.innerHTML = text;
 		jush.highlight_tag([ help ]);
 		alterClass(help, 'hidden');
@@ -612,12 +612,12 @@ function helpMouseover(el, event, text, side) {
 }
 
 /** Close help after timeout
-* @param HTMLElement
 * @param MouseEvent
+* @this HTMLElement
 */
-function helpMouseout(el, event) {
+function helpMouseout(event) {
 	helpOpen = 0;
-	helpIgnore = (el != getTarget(event));
+	helpIgnore = (this != getTarget(event));
 	setTimeout(function () {
 		if (!helpOpen) {
 			helpClose();
@@ -628,5 +628,5 @@ function helpMouseout(el, event) {
 /** Close help
 */
 function helpClose() {
-	alterClass(document.getElementById('help'), 'hidden', true);
+	alterClass(qs('#help'), 'hidden', true);
 }

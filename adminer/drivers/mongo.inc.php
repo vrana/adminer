@@ -129,7 +129,7 @@ if (isset($_GET["mongo"])) {
 			return new Min_Result($this->_conn->_db->selectCollection($table)
 				->find(array(), $select)
 				->sort($sort)
-				->limit(+$limit)
+				->limit($limit != "" ? +$limit : 0)
 				->skip($page * $limit)
 			);
 		}

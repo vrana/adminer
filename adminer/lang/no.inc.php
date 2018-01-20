@@ -68,7 +68,6 @@ $translations = array(
 	'Use' => 'Bruk',
 	'Select database' => 'Velg database',
 	'Invalid database.' => 'Ugyldig database.',
-	'Create new database' => 'Lag ny database',
 	'Database has been dropped.' => 'Databasen har blitt slettet.',
 	'Databases have been dropped.' => 'Databasene har blitt slettet.',
 	'Database has been created.' => 'Databasen er opprettet.',

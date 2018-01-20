@@ -1,4 +1,66 @@
 
+/** Get first element by selector
+* @param string
+* @return HTMLElement
+*/
+function qs(selector) {
+	return document.querySelector(selector);
+}
+
+/** Get last element by selector
+* @param string
+* @param [HTMLElement] defaults to document
+* @return HTMLElement
+*/
+function qsl(selector, context) {
+	var els = qsa(selector, context || document);
+	return els[els.length - 1];
+}
+
+/** Get all elements by selector
+* @param string
+* @param HTMLElement
+* @return NodeList
+*/
+function qsa(selector, context) {
+	return context.querySelectorAll(selector);
+}
+
+/** Return a function calling fn with the next arguments
+* @param function
+* @param ...
+* @return function with preserved this
+*/
+function partial(fn) {
+	var args = Array.apply(null, arguments).slice(1);
+	return function () {
+		return fn.apply(this, args);
+	};
+}
+
+/** Return a function calling fn with the first parameter and then the next arguments
+* @param function
+* @param ...
+* @return function with preserved this
+*/
+function partialArg(fn) {
+	var args = Array.apply(null, arguments);
+	return function (arg) {
+		args[0] = arg;
+		return fn.apply(this, args);
+	};
+}
+
+/** Assign values from source to target
+* @param Object
+* @param Object
+*/
+function mixin(target, source) {
+	for (var key in source) {
+		target[key] = source[key];
+	}
+}
+
 /** Add or remove CSS class
 * @param HTMLElement
 * @param string
@@ -12,12 +74,12 @@ function alterClass(el, className, enable) {
 
 /** Toggle visibility
 * @param string
-* @return boolean
+* @return boolean false
 */
 function toggle(id) {
-	var el = document.getElementById(id);
+	var el = qs('#' + id);
 	el.className = (el.className == 'hidden' ? '' : 'hidden');
-	return true;
+	return false;
 }
 
 /** Set permanent cookie
@@ -54,7 +116,7 @@ function verifyVersion(current) {
 			}
 		}, false);
 	}
-	document.getElementById('version').appendChild(iframe);
+	qs('#version').appendChild(iframe);
 }
 
 /** Get value of select
@@ -70,20 +132,20 @@ function selectValue(select) {
 }
 
 /** Verify if element has a specified tag name
- * @param HTMLElement
- * @param string regular expression
- * @return bool
- */
+* @param HTMLElement
+* @param string regular expression
+* @return bool
+*/
 function isTag(el, tag) {
 	var re = new RegExp('^(' + tag + ')$', 'i');
 	return re.test(el.tagName);
 }
 
 /** Get parent node with specified tag name
- * @param HTMLElement
- * @param string regular expression
- * @return HTMLElement
- */
+* @param HTMLElement
+* @param string regular expression
+* @return HTMLElement
+*/
 function parentTag(el, tag) {
 	while (el && !isTag(el, tag)) {
 		el = el.parentNode;
@@ -108,24 +170,27 @@ function trCheck(el) {
 */
 function selectCount(id, count) {
 	setHtml(id, (count === '' ? '' : '(' + (count + '').replace(/\B(?=(\d{3})+$)/g, ' ') + ')'));
-	var inputs = document.getElementById(id).parentNode.parentNode.getElementsByTagName('input');
-	for (var i = 0; i < inputs.length; i++) {
-		var input = inputs[i];
-		if (input.type == 'submit') {
-			input.disabled = (count == '0');
+	var el = qs('#' + id);
+	if (el) {
+		var inputs = qsa('input', el.parentNode.parentNode);
+		for (var i = 0; i < inputs.length; i++) {
+			var input = inputs[i];
+			if (input.type == 'submit') {
+				input.disabled = (count == '0');
+			}
 		}
 	}
 }
 
 /** Check all elements matching given name
-* @param HTMLInputElement
 * @param RegExp
+* @this HTMLInputElement
 */
-function formCheck(el, name) {
-	var elems = el.form.elements;
+function formCheck(name) {
+	var elems = this.form.elements;
 	for (var i=0; i < elems.length; i++) {
 		if (name.test(elems[i].name)) {
-			elems[i].checked = el.checked;
+			elems[i].checked = this.checked;
 			trCheck(elems[i]);
 		}
 	}
@@ -134,10 +199,10 @@ function formCheck(el, name) {
 /** Check all rows in <table class="checkable">
 */
 function tableCheck() {
-	var tables = document.getElementsByTagName('table');
+	var tables = qsa('table', document);
 	for (var i=0; i < tables.length; i++) {
 		if (/(^|\s)checkable(\s|$)/.test(tables[i].className)) {
-			var trs = tables[i].getElementsByTagName('tr');
+			var trs = qsa('tr', tables[i]);
 			for (var j=0; j < trs.length; j++) {
 				trCheck(trs[j].firstChild.firstChild);
 			}
@@ -149,7 +214,7 @@ function tableCheck() {
 * @param string
 */
 function formUncheck(id) {
-	var el = document.getElementById(id);
+	var el = qs('#' + id);
 	el.checked = false;
 	trCheck(el);
 }
@@ -182,7 +247,7 @@ function tableClick(event, click) {
 			if (el.type != 'checkbox') {
 				return;
 			}
-			checkboxClick(event, el);
+			checkboxClick.call(el, event);
 			click = false;
 		}
 		el = el.parentNode;
@@ -201,25 +266,25 @@ function tableClick(event, click) {
 var lastChecked;
 
 /** Shift-click on checkbox for multiple selection.
- * @param MouseEvent
- * @param HTMLInputElement
- */
-function checkboxClick(event, el) {
-	if (!el.name) {
+* @param MouseEvent
+* @this HTMLInputElement
+*/
+function checkboxClick(event) {
+	if (!this.name) {
 		return;
 	}
-	if (event.shiftKey && (!lastChecked || lastChecked.name == el.name)) {
+	if (event.shiftKey && (!lastChecked || lastChecked.name == this.name)) {
 		var checked = (lastChecked ? lastChecked.checked : true);
-		var inputs = parentTag(el, 'table').getElementsByTagName('input');
+		var inputs = qsa('input', parentTag(this, 'table'));
 		var checking = !lastChecked;
 		for (var i=0; i < inputs.length; i++) {
 			var input = inputs[i];
-			if (input.name === el.name) {
+			if (input.name === this.name) {
 				if (checking) {
 					input.checked = checked;
 					trCheck(input);
 				}
-				if (input === el || input === lastChecked) {
+				if (input === this || input === lastChecked) {
 					if (checking) {
 						break;
 					}
@@ -228,7 +293,7 @@ function checkboxClick(event, el) {
 			}
 		}
 	} else {
-		lastChecked = el;
+		lastChecked = this;
 	}
 }
 
@@ -237,7 +302,7 @@ function checkboxClick(event, el) {
 * @param string undefined to set parentNode to &nbsp;
 */
 function setHtml(id, html) {
-	var el = document.getElementById(id);
+	var el = qs('#' + id);
 	if (el) {
 		if (html == null) {
 			el.parentNode.innerHTML = '&nbsp;';
@@ -262,52 +327,49 @@ function nodePosition(el) {
 /** Go to the specified page
 * @param string
 * @param string
-* @param [MouseEvent]
 */
-function pageClick(href, page, event) {
+function pageClick(href, page) {
 	if (!isNaN(page) && page) {
-		href += (page != 1 ? '&page=' + (page - 1) : '');
-		location.href = href;
+		location.href = href + (page != 1 ? '&page=' + (page - 1) : '');
 	}
 }
 
 
 
 /** Display items in menu
-* @param HTMLElement
 * @param MouseEvent
+* @this HTMLElement
 */
-function menuOver(el, event) {
+function menuOver(event) {
 	var a = getTarget(event);
 	if (isTag(a, 'a|span') && a.offsetLeft + a.offsetWidth > a.parentNode.offsetWidth - 15) { // 15 - ellipsis
-		el.style.overflow = 'visible';
+		this.style.overflow = 'visible';
 	}
 }
 
 /** Hide items in menu
-* @param HTMLElement
+* @this HTMLElement
 */
-function menuOut(el) {
-	el.style.overflow = 'auto';
+function menuOut() {
+	this.style.overflow = 'auto';
 }
 
 
 
 /** Add row in select fieldset
-* @param HTMLSelectElement
+* @this HTMLSelectElement
 */
-function selectAddRow(field) {
-	field.onchange = function () {
-		selectFieldChange(field.form);
-	};
-	field.onchange();
+function selectAddRow() {
+	var field = this;
 	var row = cloneNode(field.parentNode);
-	var selects = row.getElementsByTagName('select');
+	field.onchange = selectFieldChange;
+	field.onchange();
+	var selects = qsa('select', row);
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/[a-z]\[\d+/, '$&1');
 		selects[i].selectedIndex = 0;
 	}
-	var inputs = row.getElementsByTagName('input');
+	var inputs = qsa('input', row);
 	for (var i=0; i < inputs.length; i++) {
 		inputs[i].name = inputs[i].name.replace(/[a-z]\[\d+/, '$&1');
 		inputs[i].className = '';
@@ -321,33 +383,33 @@ function selectAddRow(field) {
 }
 
 /** Prevent onsearch handler on Enter
-* @param HTMLInputElement
 * @param KeyboardEvent
+* @this HTMLInputElement
 */
-function selectSearchKeydown(el, event) {
+function selectSearchKeydown(event) {
 	if (event.keyCode == 13 || event.keyCode == 10) {
-		el.onsearch = function () {
+		this.onsearch = function () {
 		};
 	}
 }
 
 /** Clear column name after resetting search
-* @param HTMLInputElement
+* @this HTMLInputElement
 */
-function selectSearchSearch(el) {
-	if (!el.value) {
-		el.parentNode.firstChild.selectedIndex = 0;
+function selectSearchSearch() {
+	if (!this.value) {
+		this.parentNode.firstChild.selectedIndex = 0;
 	}
 }
 
 
 
 /** Toggles column context menu
- * @param HTMLElement
- * @param [string] extra class name
- */
-function columnMouse(el, className) {
-	var spans = el.getElementsByTagName('span');
+* @param [string] extra class name
+* @this HTMLElement
+*/
+function columnMouse(className) {
+	var spans = qsa('span', this);
 	for (var i=0; i < spans.length; i++) {
 		if (/column/.test(spans[i].className)) {
 			spans[i].className = 'column' + (className || '');
@@ -358,12 +420,13 @@ function columnMouse(el, className) {
 
 
 /** Fill column in search field
- * @param string
- */
+* @param string
+* @return boolean false
+*/
 function selectSearch(name) {
-	var el = document.getElementById('fieldset-search');
+	var el = qs('#fieldset-search');
 	el.className = '';
-	var divs = el.getElementsByTagName('div');
+	var divs = qsa('div', el);
 	for (var i=0; i < divs.length; i++) {
 		var div = divs[i];
 		if (isTag(div.firstChild, 'select') && selectValue(div.firstChild) == name) {
@@ -375,6 +438,7 @@ function selectSearch(name) {
 		div.firstChild.onchange();
 	}
 	div.lastChild.focus();
+	return false;
 }
 
 
@@ -402,6 +466,7 @@ function getTarget(event) {
 * @return boolean
 */
 function bodyKeydown(event, button) {
+	eventStop(event);
 	var target = getTarget(event);
 	if (target.jushTextarea) {
 		target = target.jushTextarea;
@@ -450,18 +515,17 @@ function editingKeydown(event) {
 		return false;
 	}
 	if (event.shiftKey && !bodyKeydown(event, 'insert')) {
-		eventStop(event);
 		return false;
 	}
 	return true;
 }
 
 /** Disable maxlength for functions
-* @param HTMLSelectElement
+* @this HTMLSelectElement
 */
-function functionChange(select) {
-	var input = select.form[select.name.replace(/^function/, 'fields')];
-	if (selectValue(select)) {
+function functionChange() {
+	var input = this.form[this.name.replace(/^function/, 'fields')];
+	if (selectValue(this)) {
 		if (input.origType === undefined) {
 			input.origType = input.type;
 			input.origMaxLength = input.getAttribute('data-maxlength');
@@ -478,28 +542,29 @@ function functionChange(select) {
 	helpClose();
 }
 
-/** Call this.onchange() if value changes
-* @this HTMLInputElement
+/** Skip 'original' when typing
+* @param number
+* @this HTMLTableCellElement
 */
-function keyupChange() {
-	if (this.value != this.getAttribute('value')) {
-		this.onchange();
-		this.setAttribute('value', this.value);
+function skipOriginal(first) {
+	var fnSelect = this.previousSibling.firstChild;
+	if (fnSelect.selectedIndex < first) {
+		fnSelect.selectedIndex = first;
 	}
 }
 
 /** Add new field in schema-less edit
-* @param HTMLInputElement
+* @this HTMLInputElement
 */
-function fieldChange(field) {
-	var row = cloneNode(parentTag(field, 'tr'));
-	var inputs = row.getElementsByTagName('input');
+function fieldChange() {
+	var row = cloneNode(parentTag(this, 'tr'));
+	var inputs = qsa('input', row);
 	for (var i = 0; i < inputs.length; i++) {
 		inputs[i].value = '';
 	}
 	// keep value in <select> (function)
-	parentTag(field, 'table').appendChild(row);
-	field.onchange = function () { };
+	parentTag(this, 'table').appendChild(row);
+	this.oninput = function () { };
 }
 
 
@@ -514,7 +579,7 @@ function fieldChange(field) {
 function ajax(url, callback, data, message) {
 	var request = (window.XMLHttpRequest ? new XMLHttpRequest() : (window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') : false));
 	if (request) {
-		var ajaxStatus = document.getElementById('ajaxstatus');
+		var ajaxStatus = qs('#ajaxstatus');
 		if (message) {
 			ajaxStatus.innerHTML = '<div class="message">' + message + '</div>';
 			ajaxStatus.className = ajaxStatus.className.replace(/ hidden/g, '');
@@ -543,11 +608,11 @@ function ajax(url, callback, data, message) {
 
 /** Use setHtml(key, value) for JSON response
 * @param string
-* @return XMLHttpRequest or false in case of an error
+* @return boolean false for success
 */
 function ajaxSetHtml(url) {
-	return ajax(url, function (request) {
-		var data = eval('(' + request.responseText + ')');
+	return !ajax(url, function (request) {
+		var data = window.JSON ? JSON.parse(request.responseText) : eval('(' + request.responseText + ')');
 		for (var key in data) {
 			setHtml(key, data[key]);
 		}
@@ -584,7 +649,7 @@ function ajaxForm(form, message, button) {
 	return ajax(url, function (request) {
 		setHtml('ajaxstatus', request.responseText);
 		if (window.jush) {
-			jush.highlight_tag(document.getElementById('ajaxstatus').getElementsByTagName('code'), 0);
+			jush.highlight_tag(qsa('code', qs('#ajaxstatus')), 0);
 		}
 	}, data, message);
 }
@@ -592,12 +657,13 @@ function ajaxForm(form, message, button) {
 
 
 /** Display edit field
-* @param HTMLElement
 * @param MouseEvent
 * @param number display textarea instead of input, 2 - load long text
 * @param string warning to display
+* @this HTMLElement
 */
-function selectClick(td, event, text, warning) {
+function selectClick(event, text, warning) {
+	var td = this;
 	var target = getTarget(event);
 	if (!isCtrl(event) || isTag(td.firstChild, 'input|textarea') || isTag(target, 'a')) {
 		return;
@@ -627,7 +693,7 @@ function selectClick(td, event, text, warning) {
 		});
 		input.rows = rows;
 	}
-	if (value == '\u00A0' || td.getElementsByTagName('i').length) { // &nbsp; or i - NULL
+	if (value == '\u00A0' || qsa('i', td).length) { // &nbsp; or i - NULL
 		value = '';
 	}
 	if (document.selection) {
@@ -664,21 +730,22 @@ function selectClick(td, event, text, warning) {
 
 
 /** Load and display next page in select
-* @param HTMLLinkElement
 * @param number
 * @param string
-* @return boolean
+* @return boolean false for success
+* @this HTMLLinkElement
 */
-function selectLoadMore(a, limit, loading) {
+function selectLoadMore(limit, loading) {
+	var a = this;
 	var title = a.innerHTML;
 	var href = a.href;
 	a.innerHTML = loading;
 	if (href) {
 		a.removeAttribute('href');
-		return ajax(href, function (request) {
+		return !ajax(href, function (request) {
 			var tbody = document.createElement('tbody');
 			tbody.innerHTML = request.responseText;
-			document.getElementById('table').appendChild(tbody);
+			qs('#table').appendChild(tbody);
 			if (tbody.children.length < limit) {
 				a.parentNode.removeChild(a);
 			} else {
@@ -711,7 +778,7 @@ function eventStop(event) {
 */
 function setupSubmitHighlight(parent) {
 	for (var key in { input: 1, select: 1, textarea: 1 }) {
-		var inputs = parent.getElementsByTagName(key);
+		var inputs = qsa(key, parent);
 		for (var i = 0; i < inputs.length; i++) {
 			setupSubmitHighlightInput(inputs[i])
 		}
@@ -756,7 +823,10 @@ function findDefaultSubmit(el) {
 	if (el.jushTextarea) {
 		el = el.jushTextarea;
 	}
-	var inputs = el.form.getElementsByTagName('input');
+	if (!el.form) {
+		return null;
+	}
+	var inputs = qsa('input', el.form);
 	for (var i = 0; i < inputs.length; i++) {
 		var input = inputs[i];
 		if (input.type == 'submit' && !input.style.zIndex) {
@@ -795,6 +865,17 @@ function focus(el) {
 */
 function cloneNode(el) {
 	var el2 = el.cloneNode(true);
+	var selector = 'input, select';
+	var origEls = qsa(selector, el);
+	var cloneEls = qsa(selector, el2);
+	for (var i=0; i < origEls.length; i++) {
+		var origEl = origEls[i];
+		for (var key in origEl) {
+			if (/^on/.test(key) && origEl[key]) {
+				cloneEls[i][key] = origEl[key];
+			}
+		}
+	}
 	setupSubmitHighlight(el2);
 	return el2;
 }

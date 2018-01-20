@@ -40,10 +40,10 @@ page_header(($name != "" ? lang('Alter trigger') . ": " . h($name) : lang('Creat
 <tr><th><?php echo lang('Type'); ?><td><?php echo html_select("Type", $trigger_options["Type"], $row["Type"]); ?>
 </table>
 <p><?php echo lang('Name'); ?>: <input name="Trigger" value="<?php echo h($row["Trigger"]); ?>" maxlength="64" autocapitalize="off">
-<script type="text/javascript">document.getElementById('form')['Timing'].onchange();</script>
+<?php echo script("qs('#form')['Timing'].onchange();"); ?>
 <p><?php textarea("Statement", $row["Statement"]); ?>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
-<?php if ($name != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo confirm(); ?>><?php } ?>
+<?php if ($name != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(); ?><?php } ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

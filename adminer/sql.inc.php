@@ -137,7 +137,7 @@ if (!$error && $_POST) {
 										echo "<p>" . ($num_rows ? ($limit && $num_rows > $limit ? lang('%d / ', $limit) : "") . lang('%d row(s)', $num_rows) : "");
 										echo $time;
 										$id = "export-$commands";
-										$export = ", <a href='#$id' onclick=\"return !toggle('$id');\">" . lang('Export') . "</a><span id='$id' class='hidden'>: "
+										$export = ", <a href='#$id'>" . lang('Export') . "</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "") . "<span id='$id' class='hidden'>: "
 											. html_select("output", $adminer->dumpOutput(), $adminer_export["output"]) . " "
 											. html_select("format", $dump_format, $adminer_export["format"])
 											. "<input type='hidden' name='query' value='" . h($q) . "'>"
@@ -145,7 +145,7 @@ if (!$error && $_POST) {
 										;
 										if ($connection2 && preg_match("~^($space|\\()*+SELECT\\b~i", $q) && ($explain = explain($connection2, $q))) {
 											$id = "explain-$commands";
-											echo ", <a href='#$id' onclick=\"return !toggle('$id');\">EXPLAIN</a>$export";
+											echo ", <a href='#$id'>EXPLAIN</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "") . $export;
 											echo "<div id='$id' class='hidden'>\n";
 											select($explain, $connection2, $orgtables);
 											echo "</div>\n";
@@ -208,7 +208,7 @@ if (!isset($_GET["import"])) {
 	}
 	echo "<p>";
 	textarea("query", $q, 20);
-	echo ($_POST ? "" : "<script type='text/javascript'>focus(document.getElementsByTagName('textarea')[0]);</script>\n");
+	echo ($_POST ? "" : script("qs('textarea').focus();"));
 	echo "<p>$execute\n";
 	echo lang('Limit rows') . ": <input type='number' name='limit' class='size' value='" . h($_POST ? $_POST["limit"] : $_GET["limit"]) . "'>\n";
 	

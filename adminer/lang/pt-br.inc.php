@@ -8,7 +8,6 @@ $translations = array(
 	'Password' => 'Senha',
 	'Select database' => 'Selecionar Base de dados',
 	'Invalid database.' => 'Base de dados inválida.',
-	'Create new database' => 'Criar nova base de dados',
 	'Table has been dropped.' => 'A Tabela foi eliminada.',
 	'Table has been altered.' => 'A Tabela foi alterada.',
 	'Table has been created.' => 'A Tabela foi criada.',

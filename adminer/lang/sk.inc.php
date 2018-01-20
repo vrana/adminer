@@ -8,7 +8,6 @@ $translations = array(
 	'Password' => 'Heslo',
 	'Select database' => 'Vybrať databázu',
 	'Invalid database.' => 'Nesprávna databáza.',
-	'Create new database' => 'Vytvoriť novú databázu',
 	'Table has been dropped.' => 'Tabuľka bola odstránená.',
 	'Table has been altered.' => 'Tabuľka bola zmenená.',
 	'Table has been created.' => 'Tabuľka bola vytvorená.',

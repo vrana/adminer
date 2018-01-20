@@ -1,10 +1,45 @@
-Adminer 4.2.6-dev:
-Add accessibility labels
+Adminer 4.4.1-dev:
+Adminer: Fix Search data in tables (regression from 4.4.0)
+CSP: Allow any images, media and fonts, disallow base-uri
+SQLite: Enable foreign key checks
+Elasticsearch: Insert, update, delete
+
+Adminer 4.4.0 (released 2018-01-17):
+Add Content Security Policy
+Disallow scripts without nonce
+Rate limit password-less login attempts from the same IP address
+Disallow connecting to privileged ports
+Add nosniff header
+PHP 7.1: Prevent warning when using empty limit
+PHP 7.2: Prevent warning when searching in select
+MySQL: Remove dedicated view for replication status (added in 4.3.0)
+PostgreSQL: Sort table names (regression from 4.3.1)
+Editor: Don't set time zone from PHP, fixes DST
+Editor: Display field comment's text inside [] only in edit form
+Editor: Fix doubleclick on database page
+Editor: Fix Search data in tables
+Customization: Always send security headers
+Hebrew translation
+
+Adminer 4.3.1 (released 2017-04-14):
+Fix permanent login after logout (bug #539)
+Fix SQL command autofocus (regression from 4.0.0)
+PostgreSQL: Support JSON and JSONB data types
+PostgreSQL: Fix index size computation in PostgreSQL < 9.0 (regression from 4.3.0)
+PostgreSQL: Fix nullable fields in export
+
+Adminer 4.3.0 (released 2017-03-15):
 Make maxlength in edit fields a soft limit
+Add accessibility labels
 Add Cache-Control: immutable to static files
+MySQL: Support MySQL 8
+MySQL: Support JSON data type
+MySQL: Add dedicated view for replication status
+MySQL: Support spatial indexes
 PostgreSQL: Export
 PostgreSQL: Don't treat partial indexes as unique
 MS SQL: Support pdo_dblib
+Elasticsearch: Support HTTPS by inputting https://server
 
 Adminer 4.2.5 (released 2016-06-01):
 Fix remote execution in SQLite query

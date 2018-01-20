@@ -301,12 +301,16 @@ if (!defined("DRIVER")) {
 	* @return mixed Min_DB or string for error
 	*/
 	function connect() {
-		global $adminer;
+		global $adminer, $types, $structured_types;
 		$connection = new Min_DB;
 		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
 			$connection->set_charset(charset($connection)); // available in MySQLi since PHP 5.0.5
 			$connection->query("SET sql_quote_show_create = 1, autocommit = 1");
+			if (version_compare($connection->server_info, '5.7.8') >= 0) {
+				$structured_types[lang('Strings')][] = "json";
+				$types["json"] = 4294967295;
+			}
 			return $connection;
 		}
 		$return = $connection->error;
@@ -429,7 +433,7 @@ if (!defined("DRIVER")) {
 		global $connection;
 		$return = array();
 		foreach (get_rows($fast && $connection->server_info >= 5
-			? "SELECT TABLE_NAME AS Name, Engine, TABLE_COMMENT AS Comment FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() " . ($name != "" ? "AND TABLE_NAME = " . q($name) : "ORDER BY Name")
+			? "SELECT TABLE_NAME AS Name, ENGINE AS Engine, TABLE_COMMENT AS Comment FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() " . ($name != "" ? "AND TABLE_NAME = " . q($name) : "ORDER BY Name")
 			: "SHOW TABLE STATUS" . ($name != "" ? " LIKE " . q(addcslashes($name, "%_\\")) : "")
 		) as $row) {
 			if ($row["Engine"] == "InnoDB") {
@@ -500,10 +504,11 @@ if (!defined("DRIVER")) {
 	function indexes($table, $connection2 = null) {
 		$return = array();
 		foreach (get_rows("SHOW INDEX FROM " . table($table), $connection2) as $row) {
-			$return[$row["Key_name"]]["type"] = ($row["Key_name"] == "PRIMARY" ? "PRIMARY" : ($row["Index_type"] == "FULLTEXT" ? "FULLTEXT" : ($row["Non_unique"] ? "INDEX" : "UNIQUE")));
-			$return[$row["Key_name"]]["columns"][] = $row["Column_name"];
-			$return[$row["Key_name"]]["lengths"][] = $row["Sub_part"];
-			$return[$row["Key_name"]]["descs"][] = null;
+			$name = $row["Key_name"];
+			$return[$name]["type"] = ($name == "PRIMARY" ? "PRIMARY" : ($row["Index_type"] == "FULLTEXT" ? "FULLTEXT" : ($row["Non_unique"] ? ($row["Index_type"] == "SPATIAL" ? "SPATIAL" : "INDEX") : "UNIQUE")));
+			$return[$name]["columns"][] = $row["Column_name"];
+			$return[$name]["lengths"][] = ($row["Index_type"] == "SPATIAL" ? null : $row["Sub_part"]);
+			$return[$name]["descs"][] = null;
 		}
 		return $return;
 	}
@@ -1012,7 +1017,7 @@ if (!defined("DRIVER")) {
 	*/
 	function support($feature) {
 		global $connection;
-		return !preg_match("~scheme|sequence|type|view_trigger" . ($connection->server_info < 5.1 ? "|event|partitioning" . ($connection->server_info < 5 ? "|routine|trigger|view" : "") : "") . "~", $feature);
+		return !preg_match("~scheme|sequence|type|view_trigger|materializedview" . ($connection->server_info < 5.1 ? "|event|partitioning" . ($connection->server_info < 5 ? "|routine|trigger|view" : "") : "") . "~", $feature);
 	}
 
 	function kill_process($val) {

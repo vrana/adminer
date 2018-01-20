@@ -48,14 +48,18 @@ function add_invalid_login() {
 	fclose($fp);
 }
 
-$auth = $_POST["auth"];
-if ($auth) {
+function check_invalid_login() {
+	global $adminer;
 	$invalids = unserialize(@file_get_contents(get_temp_dir() . "/adminer.invalid")); // @ - may not exist
 	$invalid = $invalids[$adminer->bruteForceKey()];
 	$next_attempt = ($invalid[1] > 30 ? $invalid[0] - time() : 0); // allow 30 invalid attempts
 	if ($next_attempt > 0) { //! do the same with permanent login
 		auth_error(lang('Too many unsuccessful logins, try again in %d minute(s).', ceil($next_attempt / 60)));
 	}
+}
+
+$auth = $_POST["auth"];
+if ($auth) {
 	session_regenerate_id(); // defense against session fixation
 	$vendor = $auth["driver"];
 	$server = $auth["server"];
@@ -89,7 +93,7 @@ if ($auth) {
 			set_session($key, null);
 		}
 		unset_permanent();
-		redirect(substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1), lang('Logout successful.'));
+		redirect(substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1), lang('Logout successful.') . ' ' . lang('Thanks for using Adminer, consider <a href="%s">donating</a>.', 'https://sourceforge.net/donate/index.php?group_id=264133'));
 	}
 	
 } elseif ($permanent && !$_SESSION["pwds"]) {
@@ -120,7 +124,6 @@ function unset_permanent() {
 */
 function auth_error($error) {
 	global $adminer, $has_token;
-	$error = h($error);
 	$session_name = session_name();
 	if (isset($_GET["username"])) {
 		header("HTTP/1.1 403 Forbidden"); // 401 requires sending WWW-Authenticate header
@@ -162,13 +165,18 @@ if (isset($_GET["username"])) {
 		page_footer("auth");
 		exit;
 	}
+	list($host, $port) = explode(":", SERVER, 2);
+	if (is_numeric($port) && $port < 1024) {
+		auth_error('Connecting to privileged ports is not allowed.');
+	}
+	check_invalid_login();
 	$connection = connect();
 }
 
 $driver = new Min_Driver($connection);
 
 if (!is_object($connection) || ($login = $adminer->login($_GET["username"], get_password())) !== true) {
-	auth_error((is_string($connection) ? $connection : (is_string($login) ? $login : lang('Invalid credentials.'))));
+	auth_error((is_string($connection) ? h($connection) : (is_string($login) ? $login : lang('Invalid credentials.'))));
 }
 
 if ($auth && $_POST["token"]) {

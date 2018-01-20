@@ -77,7 +77,6 @@ $translations = array(
 	'Use' => 'Gunakan',
 	'Select database' => 'Pilih basis data',
 	'Invalid database.' => 'Basis data tidak sah.',
-	'Create new database' => 'Buat basis data baru',
 	'Database has been dropped.' => 'Basis data berhasil dihapus.',
 	'Databases have been dropped.' => 'Basis data berhasil dihapus.',
 	'Database has been created.' => 'Basis data berhasil dibuat.',

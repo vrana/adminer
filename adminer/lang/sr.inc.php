@@ -77,7 +77,6 @@ $translations = array(
 	'Use' => 'Користи',
 	'Select database' => 'Изаберите базу',
 	'Invalid database.' => 'Неисправна база података.',
-	'Create new database' => 'Направи нову базу података',
 	'Database has been dropped.' => 'База података је избрисана.',
 	'Databases have been dropped.' => 'Базњ података су избрисане.',
 	'Database has been created.' => 'База података је креирана.',

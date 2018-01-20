@@ -4,7 +4,7 @@ $tables_views = array_merge((array) $_POST["tables"], (array) $_POST["views"]);
 if ($tables_views && !$error && !$_POST["search"]) {
 	$result = true;
 	$message = "";
-	if ($jush == "sql" && count($_POST["tables"]) > 1 && ($_POST["drop"] || $_POST["truncate"] || $_POST["copy"])) {
+	if ($jush == "sql" && $_POST["tables"] && count($_POST["tables"]) > 1 && ($_POST["drop"] || $_POST["truncate"] || $_POST["copy"])) {
 		queries("SET foreign_key_checks = 0"); // allows to truncate or drop several tables at once
 	}
 
@@ -56,16 +56,19 @@ if ($adminer->homepage()) {
 			echo "<form action='' method='post'>\n";
 			if (support("table")) {
 				echo "<fieldset><legend>" . lang('Search data in tables') . " <span id='selected2'></span></legend><div>";
-				echo "<input type='search' name='query' value='" . h($_POST["query"]) . "'> <input type='submit' name='search' value='" . lang('Search') . "'>\n";
+				echo "<input type='search' name='query' value='" . h($_POST["query"]) . "'>";
+				echo script("qsl('input').onkeydown = partialArg(bodyKeydown, 'search');", "");
+				echo " <input type='submit' name='search' value='" . lang('Search') . "'>\n";
 				echo "</div></fieldset>\n";
 				if ($_POST["search"] && $_POST["query"] != "") {
 					search_tables();
 				}
 			}
-			echo "<table cellspacing='0' class='nowrap checkable' onclick='tableClick(event);' ondblclick='tableClick(event, true);'>\n";
-
-			echo '<thead><tr class="wrap"><td><input id="check-all" type="checkbox" onclick="formCheck(this, /^(tables|views)\[/);">';
 			$doc_link = doc_link(array('sql' => 'show-table-status.html'));
+			echo "<table cellspacing='0' class='nowrap checkable'>\n";
+			echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
+			echo '<thead><tr class="wrap">';
+			echo '<td><input id="check-all" type="checkbox" class="jsonly">' . script("qs('#check-all').onclick = partial(formCheck, /^(tables|views)\[/);", "");
 			echo '<th>' . lang('Table');
 			echo '<td>' . lang('Engine') . doc_link(array('sql' => 'storage-engines.html'));
 			echo '<td>' . lang('Collation') . doc_link(array('sql' => 'charset-mysql.html'));
@@ -84,7 +87,7 @@ if ($adminer->homepage()) {
 				echo '<tr' . odd() . '><td>' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array($name, $tables_views, true), "", "formUncheck('check-all');", "", $id);
 				echo '<th>' . (support("table") || support("indexes") ? "<a href='" . h(ME) . "table=" . urlencode($name) . "' title='" . lang('Show structure') . "' id='$id'>" . h($name) . '</a>' : h($name));
 				if ($view) {
-					echo '<td colspan="6"><a href="' . h(ME) . "view=" . urlencode($name) . '" title="' . lang('Alter view') . '">' . (preg_match('~materialized~i', $type) ? lang('Materialized View') : lang('View')) . '</a>';
+					echo '<td colspan="6"><a href="' . h(ME) . "view=" . urlencode($name) . '" title="' . lang('Alter view') . '">' . (preg_match('~materialized~i', $type) ? lang('Materialized view') : lang('View')) . '</a>';
 					echo '<td align="right"><a href="' . h(ME) . "select=" . urlencode($name) . '" title="' . lang('Select data') . '">?</a>';
 				} else {
 					foreach (array(
@@ -116,17 +119,17 @@ if ($adminer->homepage()) {
 
 			echo "</table>\n";
 			if (!information_schema(DB)) {
-				$vacuum = "<input type='submit' value='" . lang('Vacuum') . "'" . on_help("'VACUUM'") . "> ";
-				$optimize = "<input type='submit' name='optimize' value='" . lang('Optimize') . "'" . on_help($jush == "sql" ? "'OPTIMIZE TABLE'" : "'VACUUM OPTIMIZE'") . "> ";
+				$vacuum = "<input type='submit' value='" . lang('Vacuum') . "'> " . on_help("'VACUUM'");
+				$optimize = "<input type='submit' name='optimize' value='" . lang('Optimize') . "'> " . on_help($jush == "sql" ? "'OPTIMIZE TABLE'" : "'VACUUM OPTIMIZE'");
 				echo "<fieldset><legend>" . lang('Selected') . " <span id='selected'></span></legend><div>"
 				. ($jush == "sqlite" ? $vacuum
 				: ($jush == "pgsql" ? $vacuum . $optimize
-				: ($jush == "sql" ? "<input type='submit' value='" . lang('Analyze') . "'" . on_help("'ANALYZE TABLE'") . "> " . $optimize
-					. "<input type='submit' name='check' value='" . lang('Check') . "'" . on_help("'CHECK TABLE'") . "> "
-					. "<input type='submit' name='repair' value='" . lang('Repair') . "'" . on_help("'REPAIR TABLE'") . "> "
+				: ($jush == "sql" ? "<input type='submit' value='" . lang('Analyze') . "'> " . on_help("'ANALYZE TABLE'") . $optimize
+					. "<input type='submit' name='check' value='" . lang('Check') . "'> " . on_help("'CHECK TABLE'")
+					. "<input type='submit' name='repair' value='" . lang('Repair') . "'> " . on_help("'REPAIR TABLE'")
 				: "")))
-				. "<input type='submit' name='truncate' value='" . lang('Truncate') . "'" . confirm() . on_help($jush == "sqlite" ? "'DELETE'" : "'TRUNCATE" . ($jush == "pgsql" ? "'" : " TABLE'")) . "> "
-				. "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm() . on_help("'DROP TABLE'") . ">\n";
+				. "<input type='submit' name='truncate' value='" . lang('Truncate') . "'> " . on_help($jush == "sqlite" ? "'DELETE'" : "'TRUNCATE" . ($jush == "pgsql" ? "'" : " TABLE'")) . confirm()
+				. "<input type='submit' name='drop' value='" . lang('Drop') . "'>" . on_help("'DROP TABLE'") . confirm() . "\n";
 				$databases = (support("scheme") ? $adminer->schemas() : $adminer->databases());
 				if (count($databases) != 1 && $jush != "sqlite") {
 					$db = (isset($_POST["target"]) ? $_POST["target"] : (support("scheme") ? $_GET["ns"] : DB));
@@ -136,17 +139,17 @@ if ($adminer->homepage()) {
 					echo (support("copy") ? " <input type='submit' name='copy' value='" . lang('Copy') . "'>" : "");
 					echo "\n";
 				}
-				echo "<input type='hidden' name='all' value='' onclick=\"selectCount('selected', formChecked(this, /^(tables|views)\[/));" . (support("table") ? " selectCount('selected2', formChecked(this, /^tables\[/) || $tables);" : "") . "\">\n"; // used by trCheck()
+				echo "<input type='hidden' name='all' value=''>"; // used by trCheck()
+				echo script("qsl('input').onclick = function () { selectCount('selected', formChecked(this, /^(tables|views)\[/));" . (support("table") ? " selectCount('selected2', formChecked(this, /^tables\[/) || $tables);" : "") . " }");
 				echo "<input type='hidden' name='token' value='$token'>\n";
 				echo "</div></fieldset>\n";
 			}
 			echo "</form>\n";
-			echo "<script type='text/javascript'>tableCheck();</script>\n";
+			echo script("tableCheck();");
 		}
 
 		echo '<p class="links"><a href="' . h(ME) . 'create=">' . lang('Create table') . "</a>\n";
 		echo (support("view") ? '<a href="' . h(ME) . 'view=">' . lang('Create view') . "</a>\n" : "");
-		echo (support("materializedview") ? '<a href="' . h(ME) . 'view=&amp;materialized=1">' . lang('Create materialized view') . "</a>\n" : "");
 
 		if (support("routine")) {
 			echo "<h3 id='routines'>" . lang('Routines') . "</h3>\n";
@@ -223,7 +226,7 @@ if ($adminer->homepage()) {
 		}
 
 		if ($tables_list) {
-			echo "<script type='text/javascript'>ajaxSetHtml('" . js_escape(ME) . "script=db');</script>\n";
+			echo script("ajaxSetHtml('" . js_escape(ME) . "script=db');");
 		}
 	}
 }
