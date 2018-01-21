@@ -339,11 +339,11 @@ class Adminer {
 		print_fieldset("search", lang('Search'), $where);
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT") {
-				echo "(<i>" . implode("</i>, <i>", array_map('h', $index["columns"])) . "</i>) AGAINST";
+				echo "<div>(<i>" . implode("</i>, <i>", array_map('h', $index["columns"])) . "</i>) AGAINST";
 				echo " <input type='search' name='fulltext[$i]' value='" . h($_GET["fulltext"][$i]) . "'>";
 				echo script("qsl('input').oninput = selectFieldChange;", "");
 				echo checkbox("boolean[$i]", 1, isset($_GET["boolean"][$i]), "BOOL");
-				echo "<br>\n";
+				echo "</div>\n";
 			}
 		}
 		$_GET["where"] = (array) $_GET["where"];
