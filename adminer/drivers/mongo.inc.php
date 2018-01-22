@@ -2,7 +2,7 @@
 $drivers["mongo"] = "MongoDB (beta)";
 
 if (isset($_GET["mongo"])) {
-	$possible_drivers = array("mongo");
+	$possible_drivers = array("mongo", "mongodb");
 	define("DRIVER", "mongo");
 
 	if (class_exists('MongoDB')) {
