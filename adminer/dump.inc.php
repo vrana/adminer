@@ -92,7 +92,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 							$fields = fields($name);
 							$adminer->dumpData($name, $_POST["data_style"], "SELECT *" . convert_fields($fields, $fields) . " FROM " . table($name));
 						}
-						if ($is_sql && $_POST["triggers"] && $table && ($triggers = trigger_sql($name, $_POST["table_style"]))) {
+						if ($is_sql && $_POST["triggers"] && $table && ($triggers = trigger_sql($name))) {
 							echo "\nDELIMITER ;;\n$triggers\nDELIMITER ;\n";
 						}
 

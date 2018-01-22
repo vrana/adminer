@@ -706,11 +706,10 @@ AND typelem = 0"
 
 	/** Get SQL commands to create triggers
 	* @param string
-	* @param string
 	* @return string
 	*/
 	//@TODO
-	function trigger_sql($table, $style) {
+	function trigger_sql($table) {
 		$return = "";
 		//foreach (get_rows("SHOW TRIGGERS LIKE " . q(addcslashes($table, "%_\\")), null, "-- ") as $row) {
 		//	$return .= "\n" . ($style == 'CREATE+ALTER' ? "DROP TRIGGER IF EXISTS " . idf_escape($row["Trigger"]) . ";;\n" : "")
