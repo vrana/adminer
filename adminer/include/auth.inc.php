@@ -171,9 +171,8 @@ if (isset($_GET["username"])) {
 	}
 	check_invalid_login();
 	$connection = connect();
+	$driver = new Min_Driver($connection);
 }
-
-$driver = new Min_Driver($connection);
 
 if (!is_object($connection) || ($login = $adminer->login($_GET["username"], get_password())) !== true) {
 	auth_error((is_string($connection) ? h($connection) : (is_string($login) ? $login : lang('Invalid credentials.'))));
