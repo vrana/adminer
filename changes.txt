@@ -3,6 +3,7 @@ Adminer: Fix Search data in tables (regression from 4.4.0)
 CSP: Allow any styles, images, media and fonts, disallow base-uri
 SQLite: Enable foreign key checks
 PostgreSQL: Respect NULL default value
+PostgreSQL: Do not export triggers if not requested
 Elasticsearch: Insert, update, delete
 
 Adminer 4.4.0 (released 2018-01-17):

@@ -617,11 +617,6 @@ AND typelem = 0"
 		return $return;
 	}
 
-	/** Get SQL command to create table
-	* @param string
-	* @param bool
-	* @return string
-	*/
 	function create_sql($table, $auto_increment) {
 		global $connection;
 		$return = '';
@@ -634,7 +629,6 @@ AND typelem = 0"
 		ksort($indexes);
 		$fkeys = foreign_keys($table);
 		ksort($fkeys);
-		$triggers = triggers($table);
 
 		if (!$status || empty($fields)) {
 			return false;
@@ -695,29 +689,17 @@ AND typelem = 0"
 			}
 		}
 
-		// triggers
-		foreach ($triggers as $trg_id => $trg) {
-			$trigger = trigger($trg_id, $status['Name']);
-			$return .= "\n\nCREATE TRIGGER " . idf_escape($trigger['Trigger']) . " $trigger[Timing] $trigger[Events] ON " . idf_escape($status["nspname"]) . "." . idf_escape($status['Name']) . " $trigger[Type] $trigger[Statement];";
-		}
-
 		return rtrim($return, ';');
 	}
 
-	/** Get SQL commands to create triggers
-	* @param string
-	* @return string
-	*/
-	//@TODO
 	function trigger_sql($table) {
+		$status = table_status($table);
 		$return = "";
-		//foreach (get_rows("SHOW TRIGGERS LIKE " . q(addcslashes($table, "%_\\")), null, "-- ") as $row) {
-		//	$return .= "\n" . ($style == 'CREATE+ALTER' ? "DROP TRIGGER IF EXISTS " . idf_escape($row["Trigger"]) . ";;\n" : "")
-		//		. "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . table($row["Table"]) . " FOR EACH ROW\n$row[Statement];;\n";
-		//}
-		//return $return;
-
-		return false;
+		foreach (triggers($table) as $trg_id => $trg) {
+			$trigger = trigger($trg_id, $status['Name']);
+			$return .= "\nCREATE TRIGGER " . idf_escape($trigger['Trigger']) . " $trigger[Timing] $trigger[Events] ON " . idf_escape($status["nspname"]) . "." . idf_escape($status['Name']) . " $trigger[Type] $trigger[Statement];;\n";
+		}
+		return $return;
 	}
 
 
