@@ -267,7 +267,7 @@ class Adminer {
 	* @return null
 	*/
 	function tableStructurePrint($fields) {
-		echo "<table cellspacing='0'>\n";
+		echo "<table cellspacing='0' class='nowrap'>\n";
 		echo "<thead><tr><th>" . lang('Column') . "<td>" . lang('Type') . (support("comment") ? "<td>" . lang('Comment') : "") . "</thead>\n";
 		foreach ($fields as $field) {
 			echo "<tr" . odd() . "><th>" . h($field["field"]);
