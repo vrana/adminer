@@ -376,7 +376,7 @@ if ($driver) {
 		}
 	}
 	if (count($drivers) == 1) {
-		$file = str_replace('<?php echo html_select("auth[driver]", $drivers, DRIVER); ?>', "<input type='hidden' name='auth[driver]' value='" . ($driver == "mysql" ? "server" : $driver) . "'>" . reset($drivers), $file);
+		$file = str_replace('<?php echo html_select("auth[driver]", $drivers, DRIVER) . "\n"; ?>', "<input type='hidden' name='auth[driver]' value='" . ($driver == "mysql" ? "server" : $driver) . "'>" . reset($drivers), $file);
 	}
 	$file = preg_replace('(;../externals/jush/modules/jush-(?!textarea\.|txt\.|js\.|' . preg_quote($driver == "mysql" ? "sql" : $driver) . '\.)[^.]+.js)', '', $file);
 }
