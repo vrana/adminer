@@ -327,10 +327,12 @@ if ($_SERVER["argv"][1]) {
 }
 
 // check function definition in drivers
-$filename = dirname(__FILE__) . "/adminer/drivers/mysql.inc.php";
-preg_match_all('~\\bfunction ([^(]+)~', file_get_contents($filename), $matches); //! respect context (extension, class)
+$file = file_get_contents(dirname(__FILE__) . "/adminer/drivers/mysql.inc.php");
+$file = preg_replace('~( *)class Min_Driver.*}~sU', '', $file);
+preg_match_all('~\\bfunction ([^(]+)~', $file, $matches); //! respect context (extension, class)
 $functions = array_combine($matches[1], $matches[0]);
-unset($functions["__destruct"], $functions["Min_DB"], $functions["Min_Result"], $functions["Min_Driver"]);
+//! do not warn about functions without declared support()
+unset($functions["__construct"], $functions["__destruct"], $functions["set_charset"]);
 foreach (glob(dirname(__FILE__) . "/adminer/drivers/" . ($driver ? $driver : "*") . ".inc.php") as $filename) {
 	if ($filename != "mysql.inc.php") {
 		$file = file_get_contents($filename);
