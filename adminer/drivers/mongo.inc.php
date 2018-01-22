@@ -274,7 +274,7 @@ if (isset($_GET["mongo"])) {
 								(is_a($val, 'MongoDB\BSON\UTCDatetime') ? $val->toDateTime()->format('Y-m-d H:i:s') :
 									(is_a($val, 'MongoDB\BSON\Binary') ? $val->bin : //! allow downloading
 										(is_a($val, 'MongoDB\BSON\Regex') ? strval($val) :
-											(is_object($val) ? json_encode($val, JSON_UNESCAPED_UNICODE) :
+											(is_object($val) ? json_encode($val, 256) : // 256 = JSON_UNESCAPED_UNICODE
 												$val // MongoMinKey, MongoMaxKey
 											)))));
 					}
@@ -342,10 +342,10 @@ if (isset($_GET["mongo"])) {
 				if (isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit'] > 0) {
 					$limit = $_GET['limit'];
 				}
-				$limit = min(200, max(1, (int)$limit));
+				$limit = min(200, max(1, (int) $limit));
 				$skip = $page * $limit;
 				$query = new MongoDB\Driver\Query($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort));
-				$results = $connection->_link->executeQuery("{$connection->_db_name}.$table", $query);
+				$results = $connection->_link->executeQuery("$connection->_db_name.$table", $query);
 				return new Min_Result($results);
 			}
 
@@ -521,6 +521,14 @@ if (isset($_GET["mongo"])) {
 						if (!in_array($op, $operators)) {
 							continue;
 						}
+						if (preg_match('~^\(f\)(.+)~', $op, $match)) {
+							$val = (float) $val;
+							$op = $match[1];
+						} elseif (preg_match('~^\(date\)(.+)~', $op, $match)) {
+							$dateTime = new \DateTime($val);
+							$val = new MongoDB\BSON\UTCDatetime($dateTime->getTimestamp() * 1000);
+							$op = $match[1];
+						}
 						switch ($op) {
 							case '=':
 								$op = '$eq';
@@ -542,60 +550,6 @@ if (isset($_GET["mongo"])) {
 								break;
 							case 'regex':
 								$op = '$regex';
-								break;
-							case '(f)=':
-								$op = '$eq';
-								$val = (float)$val;
-								break;
-							case '(f)!=':
-								$op = '$ne';
-								$val = (float)$val;
-								break;
-							case '(f)>':
-								$op = '$gt';
-								$val = (float)$val;
-								break;
-							case '(f)<':
-								$op = '$lt';
-								$val = (float)$val;
-								break;
-							case '(f)>=':
-								$op = '$gte';
-								$val = (float)$val;
-								break;
-							case '(f)<=':
-								$op = '$lte';
-								$val = (float)$val;
-								break;
-							case '(date)=':
-								$op = '$eq';
-								$dateTime = (new \DateTime($val));
-								$val = new MongoDB\BSON\UTCDatetime($dateTime->getTimestamp() * 1000);
-								break;
-							case '(date)!=':
-								$op = '$ne';
-								$dateTime = (new \DateTime($val));
-								$val = new MongoDB\BSON\UTCDatetime($dateTime->getTimestamp() * 1000);
-								break;
-							case '(date)>':
-								$op = '$gt';
-								$dateTime = (new \DateTime($val));
-								$val = new MongoDB\BSON\UTCDatetime($dateTime->getTimestamp() * 1000);
-								break;
-							case '(date)<':
-								$op = '$lt';
-								$dateTime = (new \DateTime($val));
-								$val = new MongoDB\BSON\UTCDatetime($dateTime->getTimestamp() * 1000);
-								break;
-							case '(date)>=':
-								$op = '$gte';
-								$dateTime = (new \DateTime($val));
-								$val = new MongoDB\BSON\UTCDatetime($dateTime->getTimestamp() * 1000);
-								break;
-							case '(date)<=':
-								$op = '$lte';
-								$dateTime = (new \DateTime($val));
-								$val = new MongoDB\BSON\UTCDatetime($dateTime->getTimestamp() * 1000);
 								break;
 							default:
 								continue;
