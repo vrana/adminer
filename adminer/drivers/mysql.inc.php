@@ -981,6 +981,7 @@ if (!defined("DRIVER")) {
 	* @return string
 	*/
 	function convert_field($field) {
+		global $connection;
 		if (preg_match("~binary~", $field["type"])) {
 			return "HEX(" . idf_escape($field["field"]) . ")";
 		}
@@ -988,7 +989,7 @@ if (!defined("DRIVER")) {
 			return "BIN(" . idf_escape($field["field"]) . " + 0)"; // + 0 is required outside MySQLnd
 		}
 		if (preg_match("~geometry|point|linestring|polygon~", $field["type"])) {
-			return "AsWKT(" . idf_escape($field["field"]) . ")";
+			return ($connection->server_info >= 8 ? "ST_" : "") . "AsWKT(" . idf_escape($field["field"]) . ")";
 		}
 	}
 
