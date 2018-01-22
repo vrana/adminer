@@ -231,7 +231,8 @@ if (isset($_GET["mongo"])) {
 					$options["db"] = $db;
 				}
 				try {
-					$this->_link = new MongoDB\Driver\Manager("mongodb://$server", $options);
+					$class = 'MongoDB\Driver\Manager';
+					$this->_link = new $class("mongodb://$server", $options);
 					return true;
 				} catch (Exception $ex) {
 					$this->error = $ex->getMessage();
@@ -344,7 +345,8 @@ if (isset($_GET["mongo"])) {
 				}
 				$limit = min(200, max(1, (int) $limit));
 				$skip = $page * $limit;
-				$query = new MongoDB\Driver\Query($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort));
+				$class = 'MongoDB\Driver\Query';
+				$query = new $class($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort));
 				$results = $connection->_link->executeQuery("$connection->_db_name.$table", $query);
 				return new Min_Result($results);
 			}
@@ -353,7 +355,8 @@ if (isset($_GET["mongo"])) {
 				global $connection;
 				$db = $connection->_db_name;
 				$where = sql_query_where_parser($queryWhere);
-				$bulk = new MongoDB\Driver\BulkWrite(array());
+				$class = 'MongoDB\Driver\BulkWrite';
+				$bulk = new $class(array());
 				if (isset($set['_id'])) {
 					unset($set['_id']);
 				}
@@ -378,7 +381,8 @@ if (isset($_GET["mongo"])) {
 				global $connection;
 				$db = $connection->_db_name;
 				$where = sql_query_where_parser($queryWhere);
-				$bulk = new MongoDB\Driver\BulkWrite(array());
+				$class = 'MongoDB\Driver\BulkWrite';
+				$bulk = new $class(array());
 				$bulk->delete($where, array('limit' => $limit));
 				$results = $connection->_link->executeBulkWrite("$db.$table", $bulk);
 				$connection->affected_rows = $results->getDeletedCount();
@@ -388,7 +392,8 @@ if (isset($_GET["mongo"])) {
 			function insert($table, $set) {
 				global $connection;
 				$db = $connection->_db_name;
-				$bulk = new MongoDB\Driver\BulkWrite(array());
+				$class = 'MongoDB\Driver\BulkWrite';
+				$bulk = new $class(array());
 				if (isset($set['_id']) && empty($set['_id'])) {
 					unset($set['_id']);
 				}
@@ -403,7 +408,8 @@ if (isset($_GET["mongo"])) {
 			/** @var $connection Min_DB */
 			global $connection;
 			$return = array();
-			$command = new MongoDB\Driver\Command(array('listDatabases' => 1));
+			$class = 'MongoDB\Driver\Command';
+			$command = new $class(array('listDatabases' => 1));
 			$results = $connection->_link->executeCommand('admin', $command);
 			foreach ($results as $dbs) {
 				foreach ($dbs->databases as $db) {
@@ -420,7 +426,8 @@ if (isset($_GET["mongo"])) {
 
 		function tables_list() {
 			global $connection;
-			$command = new MongoDB\Driver\Command(array('listCollections' => 1));
+			$class = 'MongoDB\Driver\Command';
+			$command = new $class(array('listCollections' => 1));
 			$results = $connection->_link->executeCommand($connection->_db_name, $command);
 			$collections = array();
 			foreach ($results as $result) {
@@ -436,7 +443,8 @@ if (isset($_GET["mongo"])) {
 		function indexes($table, $connection2 = null) {
 			global $connection;
 			$return = array();
-			$command = new MongoDB\Driver\Command(array('listIndexes' => $table));
+			$class = 'MongoDB\Driver\Command';
+			$command = new $class(array('listIndexes' => $table));
 			$results = $connection->_link->executeCommand($connection->_db_name, $command);
 			foreach ($results as $index) {
 				$descs = array();
@@ -483,7 +491,8 @@ if (isset($_GET["mongo"])) {
 		function found_rows($table_status, $where) {
 			global $connection;
 			$where = where_to_query($where);
-			$command = new MongoDB\Driver\Command(array('count' => $table_status['Name'], 'query' => $where));
+			$class = 'MongoDB\Driver\Command';
+			$command = new $class(array('count' => $table_status['Name'], 'query' => $where));
 			$results = $connection->_link->executeCommand($connection->_db_name, $command);
 			$toArray = $results->toArray();
 			return $toArray[0]->n;
@@ -516,7 +525,8 @@ if (isset($_GET["mongo"])) {
 						if ($col == "_id") {
 							$val = str_replace('MongoDB\BSON\ObjectID("', "", $val);
 							$val = str_replace('")', "", $val);
-							$val = new MongoDB\BSON\ObjectID($val);
+							$class = 'MongoDB\BSON\ObjectID';
+							$val = new $class($val);
 						}
 						if (!in_array($op, $operators)) {
 							continue;
@@ -525,8 +535,9 @@ if (isset($_GET["mongo"])) {
 							$val = (float) $val;
 							$op = $match[1];
 						} elseif (preg_match('~^\(date\)(.+)~', $op, $match)) {
-							$dateTime = new \DateTime($val);
-							$val = new MongoDB\BSON\UTCDatetime($dateTime->getTimestamp() * 1000);
+							$dateTime = new DateTime($val);
+							$class = 'MongoDB\BSON\UTCDatetime';
+							$val = new $class($dateTime->getTimestamp() * 1000);
 							$op = $match[1];
 						}
 						switch ($op) {
