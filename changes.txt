@@ -1,6 +1,6 @@
 Adminer 4.4.1-dev:
 Adminer: Fix Search data in tables (regression from 4.4.0)
-CSP: Allow any images, media and fonts, disallow base-uri
+CSP: Allow any styles, images, media and fonts, disallow base-uri
 SQLite: Enable foreign key checks
 PostgreSQL: Respect NULL default value
 Elasticsearch: Insert, update, delete

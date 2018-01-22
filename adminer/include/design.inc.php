@@ -110,7 +110,6 @@ function csp() {
 	return array(
 		array(
 			"script-src" => "'self' 'unsafe-inline' 'nonce-" . get_nonce() . "' 'strict-dynamic'", // 'self' is a fallback for browsers not supporting 'strict-dynamic', 'unsafe-inline' is a fallback for browsers not supporting 'nonce-'
-			"style-src" => "'self' 'unsafe-inline'",
 			"connect-src" => "'self'",
 			"frame-src" => "https://www.adminer.org",
 			"object-src" => "'none'",
