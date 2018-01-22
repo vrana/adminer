@@ -17,7 +17,7 @@ if (isset($_GET["elastic"])) {
 			 */
 			function rootQuery($path, $content = array(), $method = 'GET') {
 				@ini_set('track_errors', 1); // @ - may be disabled
-				$file = @file_get_contents($this->_url  . '/' . ltrim($path, '/'), false, stream_context_create(array('http' => array(
+				$file = @file_get_contents("$this->_url/" . ltrim($path, '/'), false, stream_context_create(array('http' => array(
 					'method' => $method,
 					'content' => $content === null ? $content : json_encode($content),
 					'header' => 'Content-Type: application/json',
@@ -157,7 +157,7 @@ if (isset($_GET["elastic"])) {
 			foreach ($search['hits']['hits'] as $hit) {
 				$row = array();
 				if ($select == array("*")) {
-				  $row["_id"] = $hit["_id"];
+					$row["_id"] = $hit["_id"];
 				}
 				$fields = $hit['_source'];
 				if ($select != array("*")) {

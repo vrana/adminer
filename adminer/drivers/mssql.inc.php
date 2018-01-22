@@ -314,7 +314,7 @@ if (isset($_GET["mssql"])) {
 
 	function db_collation($db, $collations) {
 		global $connection;
-		return $connection->result("SELECT collation_name FROM sys.databases WHERE name =  " . q($db));
+		return $connection->result("SELECT collation_name FROM sys.databases WHERE name = " . q($db));
 	}
 
 	function engines() {

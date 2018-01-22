@@ -38,7 +38,7 @@ function escape_string($val) {
 * @return string
 */
 function number($val) {
-  return preg_replace('~[^0-9]+~', '', $val);
+	return preg_replace('~[^0-9]+~', '', $val);
 }
 
 /** Disable magic_quotes_gpc
@@ -791,7 +791,7 @@ function shorten_utf8($string, $length = 80, $suffix = "") {
 * @return string
 */
 function format_number($val) {
-  return strtr(number_format($val, 0, ".", lang(',')), preg_split('~~u', lang('0123456789'), -1, PREG_SPLIT_NO_EMPTY));
+	return strtr(number_format($val, 0, ".", lang(',')), preg_split('~~u', lang('0123456789'), -1, PREG_SPLIT_NO_EMPTY));
 }
 
 /** Generate friendly URL
@@ -915,7 +915,7 @@ function input($field, $value, $function) {
 			echo $input;
 		} elseif (preg_match('~bool~', $field["type"])) {
 			echo "<input type='hidden'$attrs value='0'>" .
-				"<input type='checkbox'" . (in_array(strtolower($value), array('1',  't',  'true',  'y',  'yes',  'on')) ? " checked='checked'" : "") . "$attrs value='1'>";
+				"<input type='checkbox'" . (in_array(strtolower($value), array('1', 't', 'true', 'y', 'yes', 'on')) ? " checked='checked'" : "") . "$attrs value='1'>";
 		} elseif ($field["type"] == "set") { //! 64 bits
 			preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
 			foreach ($matches[1] as $i => $val) {

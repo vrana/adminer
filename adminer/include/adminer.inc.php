@@ -317,7 +317,7 @@ class Adminer {
 				" name='columns[$i][col]'",
 				$columns,
 				$val["col"],
-				($key !== ""  ? "selectFieldChange" : "selectAddRow")
+				($key !== "" ? "selectFieldChange" : "selectAddRow")
 			);
 			echo "<div>" . ($functions || $grouping ? "<select name='columns[$i][fun]'>"
 				. optionlist(array(-1 => "") + array_filter(array(lang('Functions') => $functions, lang('Aggregation') => $grouping)), $val["fun"]) . "</select>"
