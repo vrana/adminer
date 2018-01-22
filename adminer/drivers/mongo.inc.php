@@ -147,29 +147,6 @@ if (isset($_GET["mongo"])) {
 		}
 	}
 
-
-
-	function connect() {
-		global $adminer;
-		$connection = new Min_DB;
-		$credentials = $adminer->credentials();
-		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
-			return $connection;
-		}
-		return $connection->error;
-	}
-
-	function error() {
-		global $connection;
-		return h($connection->error);
-	}
-
-	function logged_user() {
-		global $adminer;
-		$credentials = $adminer->credentials();
-		return $credentials[1];
-	}
-
 	function get_databases($flush) {
 		global $connection;
 		$return = array();
@@ -178,13 +155,6 @@ if (isset($_GET["mongo"])) {
 			$return[] = $db['name'];
 		}
 		return $return;
-	}
-
-	function collations() {
-		return array();
-	}
-
-	function db_collation($db, $collations) {
 	}
 
 	function count_tables($databases) {
@@ -199,23 +169,6 @@ if (isset($_GET["mongo"])) {
 	function tables_list() {
 		global $connection;
 		return array_fill_keys($connection->_db->getCollectionNames(true), 'table');
-	}
-
-	function table_status($name = "", $fast = false) {
-		$return = array();
-		foreach (tables_list() as $table => $type) {
-			$return[$table] = array("Name" => $table);
-			if ($name == $table) {
-				return $return[$table];
-			}
-		}
-		return $return;
-	}
-
-	function information_schema() {
-	}
-
-	function is_view($table_status) {
 	}
 
 	function drop_databases($databases) {
@@ -251,108 +204,13 @@ if (isset($_GET["mongo"])) {
 		return fields_from_edit();
 	}
 
-	function convert_field($field) {
-	}
-
-	function unconvert_field($field, $return) {
-		return $return;
-	}
-
-	function foreign_keys($table) {
-		return array();
-	}
-
-	function fk_support($table_status) {
-	}
-
-	function engines() {
-		return array();
-	}
-
 	function found_rows($table_status, $where) {
 		global $connection;
 		//! don't call count_rows()
 		return $connection->_db->selectCollection($_GET["select"])->count($where);
 	}
 
-	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
-		global $connection;
-		if ($table == "") {
-			$connection->_db->createCollection($name);
-			return true;
-		}
-	}
-
-	function drop_tables($tables) {
-		global $connection;
-		foreach ($tables as $table) {
-			$response = $connection->_db->selectCollection($table)->drop();
-			if (!$response['ok']) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	function truncate_tables($tables) {
-		global $connection;
-		foreach ($tables as $table) {
-			$response = $connection->_db->selectCollection($table)->remove();
-			if (!$response['ok']) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	function alter_indexes($table, $alter) {
-		global $connection;
-		foreach ($alter as $val) {
-			list($type, $name, $set) = $val;
-			if ($set == "DROP") {
-				$return = $connection->_db->command(array("deleteIndexes" => $table, "index" => $name));
-			} else {
-				$columns = array();
-				foreach ($set as $column) {
-					$column = preg_replace('~ DESC$~', '', $column, 1, $count);
-					$columns[$column] = ($count ? -1 : 1);
-				}
-				$return = $connection->_db->selectCollection($table)->ensureIndex($columns, array(
-					"unique" => ($type == "UNIQUE"),
-					"name" => $name,
-					//! "sparse"
-				));
-			}
-			if ($return['errmsg']) {
-				$connection->error = $return['errmsg'];
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	function last_id() {
-		global $connection;
-		return $connection->last_id;
-	}
-
-	function table($idf) {
-		return $idf;
-	}
-
-	function idf_escape($idf) {
-		return $idf;
-	}
-
-	function support($feature) {
-		return preg_match("~database|indexes~", $feature);
-	}
-
-	$jush = "mongo";
 	$operators = array("=");
-	$functions = array();
-	$grouping = array();
-	$edit_functions = array(array("json"));
 	
 	} elseif (class_exists('MongoDb\Driver\Manager')) {
 		class Min_DB {
@@ -556,31 +414,6 @@ if (isset($_GET["mongo"])) {
 			}
 		}
 
-
-		function connect() {
-			global $adminer;
-			$connection = new Min_DB;
-			$credentials = $adminer->credentials();
-			if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
-				return $connection;
-			}
-
-			return $connection->error;
-		}
-
-		function error() {
-			global $connection;
-
-			return h($connection->error);
-		}
-
-		function logged_user() {
-			global $adminer;
-			$credentials = $adminer->credentials();
-
-			return $credentials[1];
-		}
-
 		function get_databases($flush) {
 			/** @var $connection Min_DB */
 			global $connection;
@@ -594,13 +427,6 @@ if (isset($_GET["mongo"])) {
 			}
 
 			return $return;
-		}
-
-		function collations() {
-			return array();
-		}
-
-		function db_collation($db, $collations) {
 		}
 
 		function count_tables($databases) {
@@ -618,24 +444,6 @@ if (isset($_GET["mongo"])) {
 			}
 
 			return $collections;
-		}
-
-		function table_status($name = "", $fast = false) {
-			$return = array();
-			foreach (tables_list() as $table => $type) {
-				$return[$table] = array("Name" => $table);
-				if ($name == $table) {
-					return $return[$table];
-				}
-			}
-
-			return $return;
-		}
-
-		function information_schema() {
-		}
-
-		function is_view($table_status) {
 		}
 
 		function drop_databases($databases) {
@@ -692,24 +500,6 @@ if (isset($_GET["mongo"])) {
 			return $fields;
 		}
 
-		function convert_field($field) {
-		}
-
-		function unconvert_field($field, $return) {
-			return $return;
-		}
-
-		function foreign_keys($table) {
-			return array();
-		}
-
-		function fk_support($table_status) {
-		}
-
-		function engines() {
-			return array();
-		}
-
 		function found_rows($table_status, $where) {
 			global $connection;
 			$where = where_to_query($where);
@@ -718,99 +508,6 @@ if (isset($_GET["mongo"])) {
 
 			$toArray = $results->toArray();
 			return $toArray[0]->n;
-		}
-
-		function alter_table(
-			$table,
-			$name,
-			$fields,
-			$foreign,
-			$comment,
-			$engine,
-			$collation,
-			$auto_increment,
-			$partitioning
-		) {
-			global $connection;
-			if ($table == "") {
-				$connection->_db->createCollection($name);
-
-				return true;
-			}
-			return false;
-		}
-
-		function drop_tables($tables) {
-			global $connection;
-			foreach ($tables as $table) {
-				$response = $connection->_db->selectCollection($table)->drop();
-				if (!$response['ok']) {
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		function truncate_tables($tables) {
-			global $connection;
-			foreach ($tables as $table) {
-				$response = $connection->_db->selectCollection($table)->remove();
-				if (!$response['ok']) {
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		function alter_indexes($table, $alter) {
-			global $connection;
-			foreach ($alter as $val) {
-				list($type, $name, $set) = $val;
-				if ($set == "DROP") {
-					$return = $connection->_db->command(array("deleteIndexes" => $table, "index" => $name));
-				} else {
-					$columns = array();
-					foreach ($set as $column) {
-						$column = preg_replace('~ DESC$~', '', $column, 1, $count);
-						$columns[$column] = ($count ? -1 : 1);
-					}
-					$return = $connection->_db->selectCollection($table)->ensureIndex(
-						$columns,
-						array(
-							"unique" => ($type == "UNIQUE"),
-							"name" => $name,
-							//! "sparse"
-						)
-					);
-				}
-				if ($return['errmsg']) {
-					$connection->error = $return['errmsg'];
-
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		function last_id() {
-			global $connection;
-
-			return $connection->last_id;
-		}
-
-		function table($idf) {
-			return $idf;
-		}
-
-		function idf_escape($idf) {
-			return $idf;
-		}
-
-		function support($feature) {
-			return preg_match("~database|indexes~", $feature);
 		}
 
 		function sql_query_where_parser($queryWhere) {
@@ -937,7 +634,6 @@ if (isset($_GET["mongo"])) {
 			return $data;
 		}
 
-		$jush = "mongodb";
 		$operators = array(
 			"=",
 			"!=",
@@ -959,8 +655,146 @@ if (isset($_GET["mongo"])) {
 			"(date)>=",
 			"(date)<=",
 		);
-		$functions = array();
-		$grouping = array();
-		$edit_functions = array(array("json"));
 	}
+
+	function table($idf) {
+		return $idf;
+	}
+
+	function idf_escape($idf) {
+		return $idf;
+	}
+
+	function table_status($name = "", $fast = false) {
+		$return = array();
+		foreach (tables_list() as $table => $type) {
+			$return[$table] = array("Name" => $table);
+			if ($name == $table) {
+				return $return[$table];
+			}
+		}
+		return $return;
+	}
+
+	function last_id() {
+		global $connection;
+		return $connection->last_id;
+	}
+
+	function error() {
+		global $connection;
+		return h($connection->error);
+	}
+
+	function collations() {
+		return array();
+	}
+
+	function logged_user() {
+		global $adminer;
+		$credentials = $adminer->credentials();
+		return $credentials[1];
+	}
+
+	function connect() {
+		global $adminer;
+		$connection = new Min_DB;
+		$credentials = $adminer->credentials();
+		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
+			return $connection;
+		}
+		return $connection->error;
+	}
+
+	function alter_indexes($table, $alter) {
+		global $connection;
+		foreach ($alter as $val) {
+			list($type, $name, $set) = $val;
+			if ($set == "DROP") {
+				$return = $connection->_db->command(array("deleteIndexes" => $table, "index" => $name));
+			} else {
+				$columns = array();
+				foreach ($set as $column) {
+					$column = preg_replace('~ DESC$~', '', $column, 1, $count);
+					$columns[$column] = ($count ? -1 : 1);
+				}
+				$return = $connection->_db->selectCollection($table)->ensureIndex($columns, array(
+					"unique" => ($type == "UNIQUE"),
+					"name" => $name,
+					//! "sparse"
+				));
+			}
+			if ($return['errmsg']) {
+				$connection->error = $return['errmsg'];
+				return false;
+			}
+		}
+		return true;
+	}
+
+	function support($feature) {
+		return preg_match("~database|indexes~", $feature);
+	}
+
+	function db_collation($db, $collations) {
+	}
+
+	function information_schema() {
+	}
+
+	function is_view($table_status) {
+	}
+
+	function convert_field($field) {
+	}
+
+	function unconvert_field($field, $return) {
+		return $return;
+	}
+
+	function foreign_keys($table) {
+		return array();
+	}
+
+	function fk_support($table_status) {
+	}
+
+	function engines() {
+		return array();
+	}
+
+	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
+		global $connection;
+		if ($table == "") {
+			$connection->_db->createCollection($name);
+			return true;
+		}
+	}
+
+	function drop_tables($tables) {
+		global $connection;
+		foreach ($tables as $table) {
+			$response = $connection->_db->selectCollection($table)->drop();
+			if (!$response['ok']) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	function truncate_tables($tables) {
+		global $connection;
+		foreach ($tables as $table) {
+			$response = $connection->_db->selectCollection($table)->remove();
+			if (!$response['ok']) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	$jush = "mongo";
+	$functions = array();
+	$grouping = array();
+	$edit_functions = array(array("json"));
 }
