@@ -715,7 +715,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return true;
 	}
 
-	function create_sql($table, $auto_increment) {
+	function create_sql($table, $auto_increment, $style) {
 		global $connection;
 		$return = $connection->result("SELECT sql FROM sqlite_master WHERE type IN ('table', 'view') AND name = " . q($table));
 		foreach (indexes($table) as $name => $index) {

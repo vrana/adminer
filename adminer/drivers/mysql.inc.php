@@ -915,9 +915,10 @@ if (!defined("DRIVER")) {
 	/** Get SQL command to create table
 	* @param string
 	* @param bool
+	* @param string
 	* @return string
 	*/
-	function create_sql($table, $auto_increment) {
+	function create_sql($table, $auto_increment, $style) {
 		global $connection;
 		$return = $connection->result("SHOW CREATE TABLE " . table($table), 1);
 		if (!$auto_increment) {

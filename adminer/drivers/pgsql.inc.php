@@ -617,7 +617,7 @@ AND typelem = 0"
 		return $return;
 	}
 
-	function create_sql($table, $auto_increment) {
+	function create_sql($table, $auto_increment, $style) {
 		global $connection;
 		$return = '';
 		$return_parts = array();
@@ -647,7 +647,8 @@ AND typelem = 0"
 			if (preg_match('~nextval\(\'([^\']+)\'\)~', $field['default'], $matches)) {
 				$sequence_name = $matches[1];
 				$sq = reset(get_rows("SELECT * FROM $sequence_name"));
-				$sequences[] = "CREATE SEQUENCE $sequence_name INCREMENT $sq[increment_by] MINVALUE $sq[min_value] MAXVALUE $sq[max_value] START " . ($auto_increment ? $sq['last_value'] : 1) . " CACHE $sq[cache_value];";
+				$sequences[] = ($style == "DROP+CREATE" ? "DROP SEQUENCE $sequence_name;\n" : "")
+					. "CREATE SEQUENCE $sequence_name INCREMENT $sq[increment_by] MINVALUE $sq[min_value] MAXVALUE $sq[max_value] START " . ($auto_increment ? $sq['last_value'] : 1) . " CACHE $sq[cache_value];";
 			}
 		}
 

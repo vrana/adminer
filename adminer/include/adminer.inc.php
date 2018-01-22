@@ -737,7 +737,7 @@ class Adminer {
 				}
 				$create = "CREATE TABLE " . table($table) . " (" . implode(", ", $fields) . ")";
 			} else {
-				$create = create_sql($table, $_POST["auto_increment"]);
+				$create = create_sql($table, $_POST["auto_increment"], $style);
 			}
 			set_utf8mb4($create);
 			if ($style && $create) {
