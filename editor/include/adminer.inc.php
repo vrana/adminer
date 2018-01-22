@@ -549,6 +549,10 @@ qsl('div').onclick = whisperClick;", "")
 		return $ext;
 	}
 
+	function loadWebfilePath() {
+		return "adminer.sql";
+	}
+
 	function homepage() {
 		return true;
 	}

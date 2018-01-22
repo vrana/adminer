@@ -831,6 +831,13 @@ class Adminer {
 		return friendly_url($identifier != "" ? $identifier : (SERVER != "" ? SERVER : "localhost"));
 	}
 
+	/** Set the path of the file for webserver load
+	* @return string path of the sql dump file
+	*/
+	function loadWebfilePath() {
+		return "adminer.sql";
+	}
+
 	/** Send headers for export
 	* @param string
 	* @param bool
