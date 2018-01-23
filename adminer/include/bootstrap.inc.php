@@ -54,7 +54,7 @@ if (get_magic_quotes_runtime()) {
 }
 @set_time_limit(0); // @ - can be disabled
 @ini_set("zend.ze1_compatibility_mode", false); // @ - deprecated
-@ini_set("precision", 20); // @ - can be disabled
+@ini_set("precision", 17); // @ - can be disabled, 17 - internal PHP precision
 
 include "../adminer/include/lang.inc.php";
 include "../adminer/lang/$LANG.inc.php";
