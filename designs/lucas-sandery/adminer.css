@@ -259,7 +259,7 @@ th {
 }
 td:last-child,
 th:last-child {
-	border-style: none;
+	border-right-style: none;
 }
 thead th,
 thead td {
