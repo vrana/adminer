@@ -11,6 +11,7 @@ PostgreSQL: Export DROP SEQUENCE if dropping table
 MS SQL: Support freetds
 Elasticsearch: Insert, update, delete
 MongoDB: Support mongodb PHP extension
+Editor: Fix displaying of false values in PostgreSQL (bug #568)
 
 Adminer 4.4.0 (released 2018-01-17):
 Add Content Security Policy

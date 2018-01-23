@@ -183,7 +183,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			}
 		}
 		if (like_bool($field) && $return != "&nbsp;") { // bool
-			$return = ($val ? lang('yes') : lang('no'));
+			$return = (preg_match('~^(1|t|true|y|yes|on)$~i', $value) ? lang('yes') : lang('no'));
 		}
 		if ($link) {
 			$return = "<a href='$link'" . (is_url($link) ? " rel='noreferrer'" : "") . ">$return</a>";
