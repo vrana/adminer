@@ -55,6 +55,15 @@ class Adminer {
 		return true;
 	}
 
+	function css() {
+		$return = array();
+		$filename = "adminer.css";
+		if (file_exists($filename)) {
+			$return[] = $filename;
+		}
+		return $return;
+	}
+
 	function loginForm() {
 		?>
 <table cellspacing="0">

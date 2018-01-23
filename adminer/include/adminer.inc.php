@@ -78,13 +78,25 @@ class Adminer {
 	}
 
 	/** Print HTML code inside <head>
-	* @return bool true to link adminer.css if exists
+	* @return bool true to link favicon.ico and adminer.css if exists
 	*/
 	function head() {
 		?>
 <link rel="stylesheet" type="text/css" href="../externals/jush/jush.css">
 <?php
 		return true;
+	}
+
+	/** Get URLs of the CSS files
+	* @return array of strings
+	*/
+	function css() {
+		$return = array();
+		$filename = "adminer.css";
+		if (file_exists($filename)) {
+			$return[] = $filename;
+		}
+		return $return;
 	}
 
 	/** Print login form
