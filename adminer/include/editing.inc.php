@@ -498,7 +498,7 @@ function doc_link($paths) {
 		'mssql' => "https://msdn.microsoft.com/library/",
 		'oracle' => "https://download.oracle.com/docs/cd/B19306_01/server.102/b14200/",
 	);
-	return ($paths[$jush] ? "<a href='$urls[$jush]$paths[$jush]' target='_blank' rel='noreferrer'><sup>?</sup></a>" : "");
+	return ($paths[$jush] ? "<a href='$urls[$jush]$paths[$jush]'" . target_blank() . "><sup>?</sup></a>" : "");
 }
 
 /** Wrap gzencode() for usage in ob_start()

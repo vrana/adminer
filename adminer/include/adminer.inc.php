@@ -9,7 +9,7 @@ class Adminer {
 	* @return string HTML code
 	*/
 	function name() {
-		return "<a href='https://www.adminer.org/' target='_blank' id='h1'>Adminer</a>";
+		return "<a href='https://www.adminer.org/'" . target_blank() . " id='h1'>Adminer</a>";
 	}
 
 	/** Connection parameters
@@ -126,7 +126,7 @@ class Adminer {
 	function login($login, $password) {
 		global $jush;
 		if ($jush == "sqlite") {
-			return lang('<a href="https://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to use SQLite.', '<code>login()</code>');
+			return lang('<a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to use SQLite.', target_blank(), '<code>login()</code>');
 		}
 		return true;
 	}
@@ -889,7 +889,7 @@ class Adminer {
 		?>
 <h1>
 <?php echo $this->name(); ?> <span class="version"><?php echo $VERSION; ?></span>
-<a href="https://www.adminer.org/#download" target="_blank" id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
+<a href="https://www.adminer.org/#download"<?php echo target_blank(); ?> id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
 </h1>
 <?php
 		if ($missing == "auth") {

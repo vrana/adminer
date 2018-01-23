@@ -1,6 +1,7 @@
 Adminer 4.4.1-dev:
 Display newlines in column comments (bug #573)
 Support current_timestamp() as default of time fields (bug #572)
+Hide window.opener from pages opened in a new window (bug #561)
 Adminer: Fix Search data in tables (regression from 4.4.0)
 CSP: Allow any styles, images, media and fonts, disallow base-uri
 MySQL: Support geometry in MySQL 8 (bug #574)

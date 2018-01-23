@@ -4,7 +4,7 @@ class Adminer {
 	var $_values = array();
 
 	function name() {
-		return "<a href='https://www.adminer.org/editor/' target='_blank' id='h1'>" . lang('Editor') . "</a>";
+		return "<a href='https://www.adminer.org/editor/'" . target_blank() . " id='h1'>" . lang('Editor') . "</a>";
 	}
 
 	//! driver, ns
@@ -570,7 +570,7 @@ qsl('div').onclick = whisperClick;", "")
 		?>
 <h1>
 <?php echo $this->name(); ?> <span class="version"><?php echo $VERSION; ?></span>
-<a href="https://www.adminer.org/editor/#download" target="_blank" id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
+<a href="https://www.adminer.org/editor/#download"<?php echo target_blank(); ?> id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
 </h1>
 <?php
 		if ($missing == "auth") {

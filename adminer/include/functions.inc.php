@@ -105,6 +105,13 @@ function nonce() {
 	return ' nonce="' . get_nonce() . '"';
 }
 
+/** Get a target="_blank" attribute
+* @return string
+*/
+function target_blank() {
+	return ' target="_blank" rel="noopener"';
+}
+
 /** Escape for HTML
 * @param string
 * @return string

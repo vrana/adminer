@@ -12,7 +12,7 @@ $translations = array(
 	'Logout successful.' => 'Uloskirjautuminen onnistui.',
 	'Invalid credentials.' => 'Virheelliset kirjautumistiedot.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Liian monta epäonnistunutta sisäänkirjautumisyritystä, kokeile uudestaan %d minuutin kuluttua.', 'Liian monta epäonnistunutta sisäänkirjautumisyritystä, kokeile uudestaan %d minuutin kuluttua.'),
-	'Master password expired. <a href="https://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to make it permanent.' => 'Master-salasana ei ole enää voimassa. <a href="https://www.adminer.org/en/extension/" target="_blank">Toteuta</a> %s-metodi sen tekemiseksi pysyväksi.',
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Master-salasana ei ole enää voimassa. <a href="https://www.adminer.org/en/extension/"%s>Toteuta</a> %s-metodi sen tekemiseksi pysyväksi.',
 	'Language' => 'Kieli',
 	'Invalid CSRF token. Send the form again.' => 'Virheellinen CSRF-vastamerkki. Lähetä lomake uudelleen.',
 	'If you did not send this request from Adminer then close this page.' => 'Jollet lähettänyt tämä pyyntö Adminerista, sulje tämä sivu.',
