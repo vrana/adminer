@@ -7,6 +7,7 @@ CSP: Allow any styles, images, media and fonts, disallow base-uri
 MySQL: Support geometry in MySQL 8 (bug #574)
 SQLite: Enable foreign key checks
 PostgreSQL: Respect NULL default value
+PostgreSQL: Display foreign tables (bug #576)
 PostgreSQL: Do not export triggers if not requested
 PostgreSQL: Export DROP SEQUENCE if dropping table
 MS SQL: Support freetds
