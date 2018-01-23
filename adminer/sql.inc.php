@@ -24,7 +24,7 @@ if (!$error && $_POST) {
 		$sql_file_path = $adminer->importServerPath();
 		$fp = @fopen((file_exists($sql_file_path)
 			? $sql_file_path
-			: "compress.zlib://{$sql_file_path}.gz"
+			: "compress.zlib://$sql_file_path.gz"
 		), "rb");
 		$query = ($fp ? fread($fp, 1e6) : false);
 	} else {
