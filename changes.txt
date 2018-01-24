@@ -1,4 +1,4 @@
-Adminer 4.4.1-dev:
+Adminer 4.5.0-dev:
 Display newlines in column comments (bug #573)
 Support current_timestamp() as default of time fields (bug #572)
 Hide window.opener from pages opened in a new window (bug #561)
