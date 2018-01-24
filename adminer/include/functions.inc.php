@@ -1142,6 +1142,7 @@ function file_open_lock($filename) {
 		if (!$fp) {
 			return;
 		}
+		chmod($filename, 0660);
 	}
 	flock($fp, LOCK_EX);
 	return $fp;
