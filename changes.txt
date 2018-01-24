@@ -15,6 +15,7 @@ PostgreSQL: Do not export triggers if not requested
 PostgreSQL: Export DROP SEQUENCE if dropping table
 PostgreSQL: Display boolean values as code (bug #562)
 MS SQL: Support freetds
+non-MySQL: Avoid CONVERT() (bug #509)
 Elasticsearch: Insert, update, delete
 MongoDB: Support mongodb PHP extension
 Editor: Fix displaying of false values in PostgreSQL (bug #568)

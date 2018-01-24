@@ -535,7 +535,7 @@ class Adminer {
 							&& (!preg_match("~[\x80-\xFF]~", $val["val"]) || $is_text)
 						) {
 							$name = idf_escape($name);
-							$cols[] = ($jush == "sql" && $is_text && !preg_match("~^utf8_~", $field["collation"]) ? "CONVERT($name USING " . charset($connection) . ")" : $name);
+							$cols[] = ($jush == "sql" && $is_text && !preg_match("~^utf8~", $field["collation"]) ? "CONVERT($name USING " . charset($connection) . ")" : $name);
 						}
 					}
 					$return[] = ($cols ? "(" . implode("$cond OR ", $cols) . "$cond)" : "0");
