@@ -115,7 +115,7 @@ function verifyVersion(current, url, token) {
 				if (match) {
 					cookie('adminer_version=' + match[1], 1);
 					ajax(url + 'script=version', function () {
-					}, 'version=' + match[1] + '&token=' + token);
+					}, event.data + '&token=' + token);
 				}
 			}
 		}, false);
