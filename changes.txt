@@ -1,4 +1,4 @@
-Adminer 4.5.0-dev:
+Adminer 4.5.0 (released 2018-01-24):
 Display name of the object in confirmation when dropping it
 Display newlines in column comments (bug #573)
 Support current_timestamp() as default of time fields (bug #572)
