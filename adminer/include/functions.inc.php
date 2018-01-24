@@ -1131,6 +1131,34 @@ function get_temp_dir() {
 	return $return;
 }
 
+/** Open and exclusively lock a file
+* @param string
+* @return resource or null for error
+*/
+function file_open_lock($filename) {
+	$fp = @fopen($filename, "r+"); // @ - may not exist
+	if (!$fp) { // c+ is available since PHP 5.2.6
+		$fp = @fopen($filename, "w"); // @ - may not be writable
+		if (!$fp) {
+			return;
+		}
+	}
+	flock($fp, LOCK_EX);
+	return $fp;
+}
+
+/** Write and unlock a file
+* @param resource
+* @param string
+*/
+function file_write_unlock($fp, $data) {
+	rewind($fp);
+	fwrite($fp, $data);
+	ftruncate($fp, strlen($data));
+	flock($fp, LOCK_UN);
+	fclose($fp);
+}
+
 /** Read password from file adminer.key in temporary directory or create one
 * @param bool
 * @return string or false if the file can not be created

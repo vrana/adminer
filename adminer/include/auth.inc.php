@@ -17,15 +17,10 @@ if ($_COOKIE["adminer_permanent"]) {
 
 function add_invalid_login() {
 	global $adminer;
-	$filename = get_temp_dir() . "/adminer.invalid";
-	$fp = @fopen($filename, "r+"); // @ - may not exist
-	if (!$fp) { // c+ is available since PHP 5.2.6
-		$fp = @fopen($filename, "w"); // @ - may not be writable
-		if (!$fp) {
-			return;
-		}
+	$fp = file_open_lock(get_temp_dir() . "/adminer.invalid");
+	if (!$fp) {
+		return;
 	}
-	flock($fp, LOCK_EX);
 	$invalids = unserialize(stream_get_contents($fp));
 	$time = time();
 	if ($invalids) {
@@ -40,19 +35,14 @@ function add_invalid_login() {
 		$invalid = array($time + 30*60, 0); // active for 30 minutes
 	}
 	$invalid[1]++;
-	$serialized = serialize($invalids);
-	rewind($fp);
-	fwrite($fp, $serialized);
-	ftruncate($fp, strlen($serialized));
-	flock($fp, LOCK_UN);
-	fclose($fp);
+	file_write_unlock($fp, serialize($invalids));
 }
 
 function check_invalid_login() {
 	global $adminer;
 	$invalids = unserialize(@file_get_contents(get_temp_dir() . "/adminer.invalid")); // @ - may not exist
 	$invalid = $invalids[$adminer->bruteForceKey()];
-	$next_attempt = ($invalid[1] > 30 ? $invalid[0] - time() : 0); // allow 30 invalid attempts
+	$next_attempt = ($invalid[1] > 29 ? $invalid[0] - time() : 0); // allow 30 invalid attempts
 	if ($next_attempt > 0) { //! do the same with permanent login
 		auth_error(lang('Too many unsuccessful logins, try again in %d minute(s).', ceil($next_attempt / 60)));
 	}
