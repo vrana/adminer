@@ -225,7 +225,7 @@ function select_input($attrs, $options, $value = "", $onchange = "", $placeholde
 * @return string
 */
 function confirm($message = "", $selector = "qsl('input')") {
-	return script("$selector.onclick = function () { return confirm('" . ($message ? js_escape($message) . ". " : "") . lang('Are you sure?') . "'); };", "");
+	return script("$selector.onclick = function () { return confirm('" . ($message ? js_escape($message) : lang('Are you sure?')) . "'); };", "");
 }
 
 /** Print header for hidden fieldset (close by </div></fieldset>)

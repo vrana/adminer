@@ -171,6 +171,7 @@ $translations = array(
 	'Default value' => 'Výchozí hodnota',
 	'Default values' => 'Výchozí hodnoty',
 	'Drop' => 'Odstranit',
+	'Drop %s?' => 'Odstranit %s?',
 	'Are you sure?' => 'Opravdu?',
 	'Size' => 'Velikost',
 	'Compute' => 'Spočítat',
