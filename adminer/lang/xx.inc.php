@@ -20,6 +20,7 @@ $translations = array(
 	'If you did not send this request from Adminer then close this page.' => 'Xx.',
 	'No extension' => 'Xx',
 	'None of the supported PHP extensions (%s) are available.' => 'Xx.',
+	'Connecting to privileged ports is not allowed.' => 'Xx.',
 	'Session support must be enabled.' => 'Xx.',
 	'Session expired, please login again.' => 'Xx.',
 	'%s version: %s through PHP extension %s' => 'Xx',
