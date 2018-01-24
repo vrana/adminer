@@ -1293,7 +1293,7 @@ function slow_query($query) {
 <script<?php echo nonce(); ?>>
 var timeout = setTimeout(function () {
 	ajax('<?php echo js_escape(ME); ?>script=kill', function () {
-	}, 'token=<?php echo $token; ?>&kill=<?php echo $kill; ?>');
+	}, 'kill=<?php echo $kill; ?>&token=<?php echo $token; ?>');
 }, <?php echo 1000 * $timeout; ?>);
 </script>
 <?php
