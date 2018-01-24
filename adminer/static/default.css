@@ -19,7 +19,7 @@ fieldset { display: inline; vertical-align: top; padding: .5em .8em; margin: .8e
 p { margin: .8em 20px 0 0; }
 img { vertical-align: middle; border: 0; }
 td img { max-width: 200px; max-height: 200px; }
-code { background: #eee; }
+code { background: #eee; padding: 2px 4px; }
 tbody tr:hover td, tbody tr:hover th { background: #eee; }
 pre { margin: 1em 0 0; }
 pre, textarea { font: 100%/1.25 monospace; }
