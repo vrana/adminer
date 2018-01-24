@@ -33,8 +33,16 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <?php } ?>
 
 <body class="<?php echo lang('ltr'); ?> nojs">
+<?php
+	$filename = get_temp_dir() . "/adminer.version";
+	if (!$_COOKIE["adminer_version"] && file_exists($filename) && filemtime($filename) + 86400 > time()) { // 86400 - 1 day in seconds
+		$_COOKIE["adminer_version"] = file_get_contents($filename); // doesn't need to send to the browser
+	}
+	?>
 <script<?php echo nonce(); ?>>
-mixin(document.body, {onkeydown: bodyKeydown, onclick: bodyClick<?php echo (isset($_COOKIE["adminer_version"]) ? "" : ", onload: partial(verifyVersion, '$VERSION')"); ?>});
+mixin(document.body, {onkeydown: bodyKeydown, onclick: bodyClick<?php
+	echo (isset($_COOKIE["adminer_version"]) ? "" : ", onload: partial(verifyVersion, '$VERSION', '" . js_escape(ME) . "', '" . get_token() . "')"); // $token may be empty in auth.inc.php
+	?>});
 document.body.className = document.body.className.replace(/ nojs/, ' js');
 var offlineMessage = '<?php echo js_escape(lang('You are offline.')); ?>';
 </script>

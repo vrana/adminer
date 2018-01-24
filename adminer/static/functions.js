@@ -95,8 +95,10 @@ function cookie(assign, days) {
 
 /** Verify current Adminer version
 * @param string
+* @param string own URL base
+* @param string
 */
-function verifyVersion(current) {
+function verifyVersion(current, url, token) {
 	cookie('adminer_version=0', 1);
 	var iframe = document.createElement('iframe');
 	iframe.src = 'https://www.adminer.org/version/?current=' + current;
@@ -112,6 +114,8 @@ function verifyVersion(current) {
 				var match = /version=(.+)/.exec(event.data);
 				if (match) {
 					cookie('adminer_version=' + match[1], 1);
+					ajax(url + 'script=version', function () {
+					}, 'version=' + match[1] + '&token=' + token);
 				}
 			}
 		}, false);
