@@ -2,10 +2,18 @@
 $TABLE = $_GET["indexes"];
 $index_types = array("PRIMARY", "UNIQUE", "INDEX");
 $table_status = table_status($TABLE, true);
-if (preg_match('~MyISAM|M?aria' . ($connection->server_info >= 5.6 ? '|InnoDB' : '') . '~i', $table_status["Engine"])) {
+$server_info = $connection->server_info;
+$fulltext = ($server_info >= 5.6);
+$spatial = ($server_info >= 5.7);
+if (preg_match('~([\d.]+)-MariaDB~', $server_info, $match)) {
+	$server_info = $match[1];
+	$fulltext = (version_compare($server_info, '10.0.5') >= 0);
+	$spatial = (version_compare($server_info, '10.2.2') >= 0);
+}
+if (preg_match('~MyISAM|M?aria' . ($fulltext ? '|InnoDB' : '') . '~i', $table_status["Engine"])) {
 	$index_types[] = "FULLTEXT";
 }
-if (preg_match('~MyISAM|M?aria' . ($connection->server_info >= 5.7 ? '|InnoDB' : '') . '~i', $table_status["Engine"])) {
+if (preg_match('~MyISAM|M?aria' . ($spatial ? '|InnoDB' : '') . '~i', $table_status["Engine"])) {
 	$index_types[] = "SPATIAL";
 }
 $indexes = indexes($TABLE);
