@@ -1,3 +1,6 @@
+Adminer 4.5.1-dev:
+Fix counting selected rows after going back to select page
+
 Adminer 4.5.0 (released 2018-01-24):
 Display name of the object in confirmation when dropping it
 Display newlines in column comments (bug #573)

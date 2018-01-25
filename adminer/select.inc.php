@@ -527,7 +527,6 @@ if (!$columns && support("table")) {
 				echo "</div></fieldset>\n";
 			}
 
-			echo (!$group && $select ? "" : script("tableCheck();"));
 		}
 
 		if ($adminer->selectImportPrint()) {
@@ -542,6 +541,7 @@ if (!$columns && support("table")) {
 
 		echo "<p><input type='hidden' name='token' value='$token'></p>\n";
 		echo "</form>\n";
+		echo (!$group && $select ? "" : script("tableCheck();"));
 	}
 }
 
