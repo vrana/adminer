@@ -412,7 +412,7 @@ if (isset($_GET["elastic"])) {
 		$properties = array();
 		foreach($fields as $f) {
 			$field_name = trim($f[1][0]);
-			$field_type = trim($f[1][1] ? "" : "text");
+			$field_type = trim($f[1][1] ? $f[1][1] : "text");
 			$properties[$field_name] = array(
 				'type' => $field_type
 			);
