@@ -25,6 +25,7 @@ $langs = array(
 	'ja' => '日本語', // Hitoshi Ozawa - http://sourceforge.jp/projects/oss-ja-jpn/releases/
 	'ko' => '한국어', // dalli - skcha67@gmail.com
 	'lt' => 'Lietuvių', // Paulius Leščinskas - http://www.lescinskas.lt
+	'ms' => 'Bahasa Melayu', // Pisyek
 	'nl' => 'Nederlands', // Maarten Balliauw - http://blog.maartenballiauw.be
 	'no' => 'Norsk', // Iver Odin Kvello, mupublishing.com
 	'pl' => 'Polski', // Radosław Kowalewski - http://srsbiz.pl/
