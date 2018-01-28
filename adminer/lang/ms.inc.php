@@ -70,9 +70,9 @@ $translations = array(
     'File uploads are disabled.' => 'Muat naik fail dihalang.',
     'Unable to upload a file.' => 'Muat naik fail gagal.',
     'Maximum allowed file size is %sB.' => 'Saiz fail maksimum yang dibenarkan adalah %sB.',
-    'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Xx.',
-    'You can upload a big SQL file via FTP and import it from server.' => 'Xx.',
-    'You are offline.' => 'Xx.',
+    'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Data POST terlalu besar. Kecilkan data atau tingkatkan tetapan %s.',
+    'You can upload a big SQL file via FTP and import it from server.' => 'Anda boleh muat naik fail SQL yang besar melalui FTP dan import melalui pelayan.',
+    'You are offline.' => 'Anda sedang offline.',
 
     'Export' => 'Eksport',
     'Output' => 'Pengeluaran',
