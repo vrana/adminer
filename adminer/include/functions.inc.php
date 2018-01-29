@@ -76,11 +76,15 @@ function bracket_escape($idf, $back = false) {
 /** Check if connection has at least the given version
 * @param string required version
 * @param string required MariaDB version
+* @param Min_DB defaults to $connection
 * @return bool
 */
-function min_version($version, $maria_db = "") {
+function min_version($version, $maria_db = "", $connection2 = null) {
 	global $connection;
-	$server_info = $connection->server_info;
+	if (!$connection2) {
+		$connection2 = $connection;
+	}
+	$server_info = $connection2->server_info;
 	if ($maria_db && preg_match('~([\d.]+)-MariaDB~', $server_info, $match)) {
 		$server_info = $match[1];
 		$version = $maria_db;
