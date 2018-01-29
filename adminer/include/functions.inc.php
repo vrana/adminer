@@ -73,6 +73,21 @@ function bracket_escape($idf, $back = false) {
 	return strtr($idf, ($back ? array_flip($trans) : $trans));
 }
 
+/** Check if connection has at least the given version
+* @param string required version
+* @param string required MariaDB version
+* @return bool
+*/
+function min_version($version, $maria_db = "") {
+	global $connection;
+	$server_info = $connection->server_info;
+	if ($maria_db && preg_match('~([\d.]+)-MariaDB~', $server_info, $match)) {
+		$server_info = $match[1];
+		$version = $maria_db;
+	}
+	return (version_compare($server_info, $version) >= 0);
+}
+
 /** Get connection charset
 * @param Min_DB
 * @return string
