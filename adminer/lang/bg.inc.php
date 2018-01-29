@@ -12,7 +12,7 @@ $translations = array(
 	'Logout successful.' => 'Излизането е успешно.',
 	'Invalid credentials.' => 'Невалидни потребителски данни.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Прекалено много неуспешни опити за вход, опитайте пак след %d минута.', 'Прекалено много неуспешни опити за вход, опитайте пак след %d минути.'),
-	'Master password expired. <a href="https://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to make it permanent.' => 'Главната парола вече е невалидна. <a href="https://www.adminer.org/en/extension/" target="_blank">Изберете</a> %s метод, за да я направите постоянна.',
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Главната парола вече е невалидна. <a href="https://www.adminer.org/en/extension/"%s>Изберете</a> %s метод, за да я направите постоянна.',
 	'Language' => 'Език',
 	'Invalid CSRF token. Send the form again.' => 'Невалиден шифроващ ключ. Попълнете и изпратете формуляра отново.',
 	'If you did not send this request from Adminer then close this page.' => 'Ако не сте изпратили тази заявка през Adminer, затворете тази страница.',

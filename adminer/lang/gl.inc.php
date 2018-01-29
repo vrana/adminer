@@ -278,7 +278,7 @@ $translations = array(
 	'Default value' => 'Valor por defecto',
 	'Full table scan' => 'Escaneo completo da táboa',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Demasiados intentos de conexión, intentao de novo en %d minuto', 'Demasiados intentos de conexión, intentao de novo en %d minutos'),
-	'Master password expired. <a href="https://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to make it permanent.' => 'O contrasinal principal caducou. <a href="https://www.adminer.org/en/extension/" target="_blank">Implementa</a> o método %s para facelo permanente.',
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'O contrasinal principal caducou. <a href="https://www.adminer.org/en/extension/"%s>Implementa</a> o método %s para facelo permanente.',
 	'If you did not send this request from Adminer then close this page.' => 'Se non enviaches esta petición dende o Adminer entón pecha esta páxina',
 	'You can upload a big SQL file via FTP and import it from server.' => 'Podes subir un ficheiro SQL de gran tamaño vía FTP e importalo dende o servidor',
 	'Size' => 'Tamaño',

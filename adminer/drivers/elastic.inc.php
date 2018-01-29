@@ -17,9 +17,10 @@ if (isset($_GET["elastic"])) {
 			 */
 			function rootQuery($path, $content = array(), $method = 'GET') {
 				@ini_set('track_errors', 1); // @ - may be disabled
-				$file = @file_get_contents($this->_url  . '/' . ltrim($path, '/'), false, stream_context_create(array('http' => array(
+				$file = @file_get_contents("$this->_url/" . ltrim($path, '/'), false, stream_context_create(array('http' => array(
 					'method' => $method,
-					'content' => json_encode($content),
+					'content' => $content === null ? $content : json_encode($content),
+					'header' => 'Content-Type: application/json',
 					'ignore_errors' => 1, // available since PHP 5.2.10
 				))));
 				if (!$file) {
@@ -60,7 +61,7 @@ if (isset($_GET["elastic"])) {
 
 			function connect($server, $username, $password) {
 				preg_match('~^(https?://)?(.*)~', $server, $match);
-				$this->_url = ($match[1] ? $match[1] : "http://") . "$username:$password@$match[2]/";
+				$this->_url = ($match[1] ? $match[1] : "http://") . "$username:$password@$match[2]";
 				$return = $this->query('');
 				if ($return) {
 					$this->server_info = $return['version']['number'];
@@ -156,7 +157,7 @@ if (isset($_GET["elastic"])) {
 			foreach ($search['hits']['hits'] as $hit) {
 				$row = array();
 				if ($select == array("*")) {
-				  $row["_id"] = $hit["_id"];
+					$row["_id"] = $hit["_id"];
 				}
 				$fields = $hit['_source'];
 				if ($select != array("*")) {
@@ -176,6 +177,47 @@ if (isset($_GET["elastic"])) {
 			return new Min_Result($return);
 		}
 
+		function update($type, $record, $queryWhere) {
+			$parts = preg_split('~ *= *~', $queryWhere);
+			if (count($parts) == 2) {
+				$id = trim($parts[1]);
+				$query = "$type/$id";
+				return $this->_conn->query($query, $record, 'POST');
+			}
+			return false;
+		}
+
+		function insert($type, $record) {
+			$id = ""; //! user should be able to inform _id
+			$query = "$type/$id";
+			$response = $this->_conn->query($query, $record, 'POST');
+			$this->_conn->last_id = $response['_id'];
+			return $response['created'];
+		}
+
+		function delete($type, $queryWhere) {
+			$ids = array();
+			if (is_array($_GET["where"]) && $_GET["where"]["_id"]) {
+				$ids[] = $_GET["where"]["_id"];
+			}
+			if (is_array($_POST['check'])) {
+				foreach ($_POST['check'] as $check) {
+					$parts = preg_split('~ *= *~', $check);
+					if (count($parts) == 2) {
+						$ids[] = trim($parts[1]);
+					}
+				}
+			}
+			$this->_conn->affected_rows = 0;
+			foreach ($ids as $id) {
+				$query = "{$type}/{$id}";
+				$response = $this->_conn->query($query, '{}', 'DELETE');
+				if (is_array($response) && $response['found'] == true) {
+					$this->_conn->affected_rows++;
+				}
+			}
+			return $this->_conn->affected_rows;
+		}
 	}
 
 
@@ -223,9 +265,14 @@ if (isset($_GET["elastic"])) {
 
 	function count_tables($databases) {
 		global $connection;
-		$return = $connection->query('_mapping');
-		if ($return) {
-			$return = array_map('count', $return);
+		$return = array();
+		$result = $connection->query('_stats');
+		if ($result && $result['indices']) {
+			$indices = $result['indices'];
+			foreach($indices as $indice => $stats) {
+				$indexing = $stats['total']['indexing'];
+				$return[$indice] = $indexing['index_total'];
+			}
 		}
 		return $return;
 	}
@@ -241,24 +288,26 @@ if (isset($_GET["elastic"])) {
 
 	function table_status($name = "", $fast = false) {
 		global $connection;
-		$search = $connection->query("_search?search_type=count", array(
-			"facets" => array(
+		$search = $connection->query("_search", array(
+			"size" => 0,
+			"aggregations" => array(
 				"count_by_type" => array(
 					"terms" => array(
-						"field" => "_type",
+						"field" => "_type"
 					)
 				)
 			)
 		), "POST");
 		$return = array();
 		if ($search) {
-			foreach ($search["facets"]["count_by_type"]["terms"] as $table) {
-				$return[$table["term"]] = array(
-					"Name" => $table["term"],
+			$tables = $search["aggregations"]["count_by_type"]["buckets"];
+			foreach ($tables as $table) {
+				$return[$table["key"]] = array(
+					"Name" => $table["key"],
 					"Engine" => "table",
-					"Rows" => $table["count"],
+					"Rows" => $table["doc_count"],
 				);
-				if ($name != "" && $name == $table["term"]) {
+				if ($name != "" && $name == $table["key"]) {
 					return $return[$name];
 				}
 			}
@@ -336,16 +385,16 @@ if (isset($_GET["elastic"])) {
 		return null;
 	}
 
-	/** Create database
+	/** Create index
 	* @param string
 	* @return mixed
 	*/
 	function create_database($db) {
 		global $connection;
-		return $connection->rootQuery(urlencode($db), array(), 'PUT');
+		return $connection->rootQuery(urlencode($db), null, 'PUT');
 	}
 
-	/** Drop databases
+	/** Remove index
 	* @param array
 	* @return mixed
 	*/
@@ -354,7 +403,27 @@ if (isset($_GET["elastic"])) {
 		return $connection->rootQuery(urlencode(implode(',', $databases)), array(), 'DELETE');
 	}
 
-	/** Drop tables
+	/** Alter type
+	* @param array
+	* @return mixed
+	*/
+	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
+		global $connection;
+		$properties = array();
+		foreach($fields as $f) {
+			$field_name = trim($f[1][0]);
+			$field_type = trim($f[1][1] ? $f[1][1] : "text");
+			$properties[$field_name] = array(
+				'type' => $field_type
+			);
+		}
+		if (!empty($properties)) {
+			$properties = array('properties' => $properties);
+		}
+		return $connection->query("_mapping/{$name}", $properties, 'PUT');
+	}
+
+	/** Drop types
 	* @param array
 	* @return bool
 	*/
@@ -367,9 +436,25 @@ if (isset($_GET["elastic"])) {
 		return $return;
 	}
 
+	function last_id() {
+		global $connection;
+		return $connection->last_id;
+	}
+
 	$jush = "elastic";
 	$operators = array("=", "query");
 	$functions = array();
 	$grouping = array();
 	$edit_functions = array(array("json"));
+	$types = array(); ///< @var array ($type => $maximum_unsigned_length, ...)
+	$structured_types = array(); ///< @var array ($description => array($type, ...), ...)
+	foreach (array(
+		lang('Numbers') => array("long" => 3, "integer" => 5, "short" => 8, "byte" => 10, "double" => 20, "float" => 66, "half_float" => 12, "scaled_float" => 21),
+		lang('Date and time') => array("date" => 10),
+		lang('Strings') => array("string" => 65535, "text" => 65535),
+		lang('Binary') => array("binary" => 255),
+	) as $key => $val) {
+		$types += $val;
+		$structured_types[$key] = array_keys($val);
+	}
 }

@@ -11,7 +11,7 @@ page_header(($fields && is_view($table_status) ? $table_status['Engine'] == 'mat
 $adminer->selectLinks($table_status);
 $comment = $table_status["Comment"];
 if ($comment != "") {
-	echo "<p>" . lang('Comment') . ": " . h($comment) . "\n";
+	echo "<p class='nowrap'>" . lang('Comment') . ": " . h($comment) . "\n";
 }
 
 if ($fields) {

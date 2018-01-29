@@ -226,7 +226,7 @@ $set = null;
 if (isset($rights["insert"]) || !support("table")) {
 	$set = "";
 	foreach ((array) $_GET["where"] as $val) {
-		if (count($foreign_keys[$val["col"]]) == 1 && ($val["op"] == "="
+		if ($foreign_keys[$val["col"]] && count($foreign_keys[$val["col"]]) == 1 && ($val["op"] == "="
 			|| (!$val["op"] && !preg_match('~[_%]~', $val["val"])) // LIKE in Editor
 		)) {
 			$set .= "&set" . urlencode("[" . bracket_escape($val["col"]) . "]") . "=" . urlencode($val["val"]);
@@ -288,7 +288,7 @@ if (!$columns && support("table")) {
 		}
 
 		// use count($rows) without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
-		if ($_GET["page"] != "last" && +$limit && $group && $is_group && $jush == "sql") {
+		if ($_GET["page"] != "last" && $limit != "" && $group && $is_group && $jush == "sql") {
 			$found_rows = $connection->result(" SELECT FOUND_ROWS()"); // space to allow mysql.trace_mode
 		}
 
@@ -297,8 +297,12 @@ if (!$columns && support("table")) {
 		} else {
 			$backward_keys = $adminer->backwardKeys($TABLE, $table_name);
 
-			echo "<table id='table' cellspacing='0' class='nowrap checkable' onclick='tableClick(event);' ondblclick='tableClick(event, true);' onkeydown='return editingKeydown(event);'>\n";
-			echo "<thead><tr>" . (!$group && $select ? "" : "<td><input type='checkbox' id='all-page' onclick='formCheck(this, /check/);' class='jsonly'> <a href='" . h($_GET["modify"] ? remove_from_uri("modify") : $_SERVER["REQUEST_URI"] . "&modify=1") . "'>" . lang('Modify') . "</a>");
+			echo "<table id='table' cellspacing='0' class='nowrap checkable'>";
+			echo script("mixin(qs('#table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true), onkeydown: editingKeydown});");
+			echo "<thead><tr>" . (!$group && $select
+				? ""
+				: "<td><input type='checkbox' id='all-page' class='jsonly'>" . script("qs('#all-page').onclick = partial(formCheck, /check/);", "")
+					. " <a href='" . h($_GET["modify"] ? remove_from_uri("modify") : $_SERVER["REQUEST_URI"] . "&modify=1") . "'>" . lang('Modify') . "</a>");
 			$names = array();
 			$functions = array();
 			reset($select);
@@ -314,13 +318,14 @@ if (!$columns && support("table")) {
 						$column = idf_escape($key);
 						$href = remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key);
 						$desc = "&desc%5B0%5D=1";
-						echo '<th onmouseover="columnMouse(this);" onmouseout="columnMouse(this, \' hidden\');">';
+						echo "<th>" . script("mixin(qsl('th'), {onmouseover: partial(columnMouse), onmouseout: partial(columnMouse, ' hidden')});", "");
 						echo '<a href="' . h($href . ($order[0] == $column || $order[0] == $key || (!$order && $is_group && $group[0] == $column) ? $desc : '')) . '">'; // $order[0] == $key - COUNT(*)
 						echo apply_sql_function($val["fun"], $name) . "</a>"; //! columns looking like functions
 						echo "<span class='column hidden'>";
 						echo "<a href='" . h($href . $desc) . "' title='" . lang('descending') . "' class='text'> ↓</a>";
 						if (!$val["fun"]) {
-							echo '<a href="#fieldset-search" onclick="selectSearch(\'' . h(js_escape($key)) . '\'); return false;" title="' . lang('Search') . '" class="text jsonly"> =</a>';
+							echo '<a href="#fieldset-search" title="' . lang('Search') . '" class="text jsonly"> =</a>';
+							echo script("qsl('a').onclick = partial(selectSearch, '" . js_escape($key) . "');");
 						}
 						echo "</span>";
 					}
@@ -359,9 +364,9 @@ if (!$columns && support("table")) {
 				}
 				$unique_idf = "";
 				foreach ($unique_array as $key => $val) {
-					if (($jush == "sql" || $jush == "pgsql") && strlen($val) > 64) {
+					if (($jush == "sql" || $jush == "pgsql") && preg_match('~char|text|enum|set~', $fields[$key]["type"]) && strlen($val) > 64) {
 						$key = (strpos($key, '(') ? $key : idf_escape($key)); //! columns looking like functions
-						$key = "MD5(" . ($jush == 'sql' && preg_match("~^utf8_~", $fields[$key]["collation"]) ? $key : "CONVERT($key USING " . charset($connection) . ")") . ")";
+						$key = "MD5(" . ($jush != 'sql' || preg_match("~^utf8~", $fields[$key]["collation"]) ? $key : "CONVERT($key USING " . charset($connection) . ")") . ")";
 						$val = md5($val);
 					}
 					$unique_idf .= "&" . ($val !== null ? urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($val) : "null%5B%5D=" . urlencode($key));
@@ -419,7 +424,8 @@ if (!$columns && support("table")) {
 							echo "<td>" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>");
 						} else {
 							$long = strpos($val, "<i>...</i>");
-							echo "<td id='$id' onclick=\"selectClick(this, event, " . ($long ? 2 : ($text ? 1 : 0)) . ($editable ? "" : ", '" . h(lang('Use edit link to modify this value.')) . "'") . ");\">$val";
+							echo "<td id='$id'>$val</td>";
+							echo script("qsl('td').onclick = partialArg(selectClick, " . ($long ? 2 : ($text ? 1 : 0)) . ($editable ? "" : ", '" . h(lang('Use edit link to modify this value.')) . "'") . ");", "");
 						}
 					}
 				}
@@ -440,7 +446,7 @@ if (!$columns && support("table")) {
 		if (($rows || $page) && !is_ajax()) {
 			$exact_count = true;
 			if ($_GET["page"] != "last") {
-				if (!+$limit) {
+				if ($limit == "") {
 					$found_rows = count($rows);
 				} elseif ($jush != "sql" || !$is_group) {
 					$found_rows = ($is_group ? false : found_rows($table_status, $where));
@@ -453,7 +459,7 @@ if (!$columns && support("table")) {
 				}
 			}
 
-			if (+$limit && ($found_rows === false || $found_rows > $limit || $page)) {
+			if ($limit != "" && ($found_rows === false || $found_rows > $limit || $page)) {
 				echo "<p class='pages'>";
 				// display first, previous 4, next 4 and last page
 				$max_page = ($found_rows === false
@@ -461,7 +467,8 @@ if (!$columns && support("table")) {
 					: floor(($found_rows - 1) / $limit)
 				);
 				if ($jush != "simpledb") {
-					echo '<a href="' . h(remove_from_uri("page")) . "\" onclick=\"pageClick(this.href, +prompt('" . lang('Page') . "', '" . ($page + 1) . "'), event); return false;\">" . lang('Page') . "</a>:";
+					echo '<a href="' . h(remove_from_uri("page")) . '">' . lang('Page') . "</a>:";
+					echo script("qsl('a').onclick = function () { pageClick(this.href, +prompt('" . lang('Page') . "', '" . ($page + 1) . "')); return false; };");
 					echo pagination(0, $page) . ($page > 5 ? " ..." : "");
 					for ($i = max(1, $page - 4); $i < min($max_page, $page + 5); $i++) {
 						echo pagination($i, $page);
@@ -474,7 +481,8 @@ if (!$columns && support("table")) {
 						);
 					}
 					echo (($found_rows === false ? count($rows) + 1 : $found_rows - $page * $limit) > $limit
-						? ' <a href="' . h(remove_from_uri("page") . "&page=" . ($page + 1)) . '" onclick="return !selectLoadMore(this, ' . (+$limit) . ', \'' . lang('Loading') . '...\');" class="loadmore">' . lang('Load more data') . '</a>'
+						? ' <a href="' . h(remove_from_uri("page") . "&page=" . ($page + 1)) . '" class="loadmore">' . lang('Load more data') . '</a>'
+							. script("qsl('a').onclick = partial(selectLoadMore, " . (+$limit) . ", '" . lang('Loading') . "...');", "")
 						: ''
 					);
 				} else {
@@ -498,7 +506,7 @@ if (!$columns && support("table")) {
 <fieldset><legend><?php echo lang('Selected'); ?> <span id="selected"></span></legend><div>
 <input type="submit" name="edit" value="<?php echo lang('Edit'); ?>">
 <input type="submit" name="clone" value="<?php echo lang('Clone'); ?>">
-<input type="submit" name="delete" value="<?php echo lang('Delete'); ?>"<?php echo confirm(); ?>>
+<input type="submit" name="delete" value="<?php echo lang('Delete'); ?>"><?php echo confirm(); ?>
 </div></fieldset>
 <?php
 			}
@@ -519,7 +527,6 @@ if (!$columns && support("table")) {
 				echo "</div></fieldset>\n";
 			}
 
-			echo (!$group && $select ? "" : "<script type='text/javascript'>tableCheck();</script>\n");
 		}
 
 		if ($adminer->selectImportPrint()) {
@@ -534,6 +541,7 @@ if (!$columns && support("table")) {
 
 		echo "<p><input type='hidden' name='token' value='$token'></p>\n";
 		echo "</form>\n";
+		echo (!$group && $select ? "" : script("tableCheck();"));
 	}
 }
 

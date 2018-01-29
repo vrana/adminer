@@ -4,8 +4,8 @@
 * @link https://www.adminer.org/plugins/#use
 * @uses TinyMCE, http://tinymce.moxiecode.com/
 * @author Jakub Vrana, https://www.vrana.cz/
-* @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
-* @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
+* @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
+* @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerTinymce {
 	/** @access protected */
@@ -27,9 +27,9 @@ class AdminerTinymce {
 				$lang = "en";
 			}
 		}
+		echo script_src($this->path);
 		?>
-<script type="text/javascript" src="<?php echo h($this->path); ?>"></script>
-<script type="text/javascript">
+<script<?php echo nonce(); ?>>
 tinyMCE.init({
 	mode: 'none',
 	theme: 'advanced',
@@ -68,15 +68,15 @@ tinyMCE.init({
 
 	function editInput($table, $field, $attrs, $value) {
 		if (preg_match("~text~", $field["type"]) && preg_match("~_html~", $field["field"])) {
-			return "<textarea$attrs id='fields-" . h($field["field"]) . "' rows='12' cols='50'>" . h($value) . "</textarea><script type='text/javascript'>
+			return "<textarea$attrs id='fields-" . h($field["field"]) . "' rows='12' cols='50'>" . h($value) . "</textarea>" . script("
 tinyMCE.remove(tinyMCE.get('fields-" . js_escape($field["field"]) . "') || { });
 tinyMCE.execCommand('mceAddControl', true, 'fields-" . js_escape($field["field"]) . "');
-document.getElementById('form').onsubmit = function () {
+qs('#form').onsubmit = function () {
 	tinyMCE.each(tinyMCE.editors, function (ed) {
 		ed.remove();
 	});
 };
-</script>";
+");
 		}
 	}
 

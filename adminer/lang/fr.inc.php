@@ -274,7 +274,7 @@ $translations = array(
 	'File must be in UTF-8 encoding.' => 'Les fichiers doivent être encodés en UTF-8.',
 	'Full table scan' => 'Scan de toute la table',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Trop de connexions échouées, essayez à nouveau dans %d minute.', 'Trop de connexions échouées, essayez à nouveau dans %d minutes.'),
-	'Master password expired. <a href="https://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to make it permanent.' => 'Le mot de passe a expiré. <a href="https://www.adminer.org/en/extension/" target="_blank">Implémentez</a> la méthode %s afin de le rendre permanent.',
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Le mot de passe a expiré. <a href="https://www.adminer.org/en/extension/"%s>Implémentez</a> la méthode %s afin de le rendre permanent.',
 	'You can upload a big SQL file via FTP and import it from server.' => 'Vous pouvez uploader un gros fichier SQL par FTP et ensuite l\'importer depuis le serveur.',
 	'Size' => 'Taille',
 	'Compute' => 'Calcul',

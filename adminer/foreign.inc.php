@@ -67,7 +67,7 @@ $referencable = array_keys(array_filter(table_status('', true), 'fk_support'));
 $j = 0;
 foreach ($row["source"] as $key => $val) {
 	echo "<tr>";
-	echo "<td>" . html_select("source[" . (+$key) . "]", array(-1 => "") + $source, $val, ($j == count($row["source"]) - 1 ? "foreignAddRow(this);" : 1), "label-source");
+	echo "<td>" . html_select("source[" . (+$key) . "]", array(-1 => "") + $source, $val, ($j == count($row["source"]) - 1 ? "foreignAddRow.call(this);" : 1), "label-source");
 	echo "<td>" . html_select("target[" . (+$key) . "]", $target, $row["target"][$key], 1, "label-target");
 	$j++;
 }
@@ -86,6 +86,6 @@ foreach ($row["source"] as $key => $val) {
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <noscript><p><input type="submit" name="add" value="<?php echo lang('Add column'); ?>"></noscript>
 <?php } ?>
-<?php if ($name != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo confirm(); ?>><?php } ?>
+<?php if ($name != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $name)); ?><?php } ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

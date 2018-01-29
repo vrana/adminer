@@ -65,12 +65,12 @@ echo ($_POST["add_x"] || strpos($name, "\n")
 	'sql' => "charset-charsets.html",
 	'mssql' => "ms187963.aspx",
 )) : "");
+echo script("focus(qs('#name'));");
 ?>
-<script type='text/javascript'>focus(document.getElementById('name'));</script>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php
 if (DB != "") {
-	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm() . ">\n";
+	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'>" . confirm(lang('Drop %s?', DB)) . "\n";
 } elseif (!$_POST["add_x"] && $_GET["db"] == "") {
 	echo "<input type='image' class='icon' name='add' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>\n";
 }

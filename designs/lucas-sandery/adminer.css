@@ -73,8 +73,11 @@ input[type="button"] {
 	margin-right: 0;
 	color: #fff;
 }
-.error {
+.error, .error b {
 	background: #ae1010;
+}
+.error b {
+	font-weight: bold;
 }
 .message {
 	background: #379f17;
@@ -259,7 +262,7 @@ th {
 }
 td:last-child,
 th:last-child {
-	border-style: none;
+	border-right-style: none;
 }
 thead th,
 thead td {

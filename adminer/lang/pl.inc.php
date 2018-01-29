@@ -12,7 +12,7 @@ $translations = array(
 	'Logout successful.' => 'Wylogowano pomyślnie.',
 	'Invalid credentials.' => 'Nieprawidłowe dane logowania.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Za dużo nieudanych prób logowania, spróbuj ponownie za %d minutę.', 'Za dużo nieudanych prób logowania, spróbuj ponownie za %d minuty.', 'Za dużo nieudanych prób logowania, spróbuj ponownie za %d minut.'),
-	'Master password expired. <a href="https://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to make it permanent.' => 'Ważność hasła głównego wygasła. <a href="https://www.adminer.org/pl/extension/" target="_blank">Zaimplementuj</a> własną metodę %s, aby ustawić je na stałe.',
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Ważność hasła głównego wygasła. <a href="https://www.adminer.org/pl/extension/"%s>Zaimplementuj</a> własną metodę %s, aby ustawić je na stałe.',
 	'Language' => 'Język',
 	'Invalid CSRF token. Send the form again.' => 'Nieprawidłowy token CSRF. Spróbuj wysłać formularz ponownie.',
 	'If you did not send this request from Adminer then close this page.' => 'Jeżeli nie wywołałeś tej strony z Adminera, zamknij to okno.',

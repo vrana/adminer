@@ -1,6 +1,47 @@
-Adminer 4.3.2-dev:
+Adminer 4.5.1-dev:
+Fix counting selected rows after going back to select page
+PHP <5.3 compatibility even with Elasticsearch enabled
+
+Adminer 4.5.0 (released 2018-01-24):
+Display name of the object in confirmation when dropping it
+Display newlines in column comments (bug #573)
+Support current_timestamp() as default of time fields (bug #572)
+Hide window.opener from pages opened in a new window (bug #561)
+Display error when getting row to edit
+Store current Adminer version server-side to avoid excessive requests
+Adminer: Fix Search data in tables (regression from 4.4.0)
+CSP: Allow any styles, images, media and fonts, disallow base-uri
+MySQL: Support geometry in MySQL 8 (bug #574)
+MySQL: Support routines with comments in parameters (bug #460)
+MariaDB: Support fulltext and spatial indexes in InnoDB (bug #583)
+SQLite: Enable foreign key checks
+PostgreSQL: Respect NULL default value
+PostgreSQL: Display foreign tables (bug #576)
+PostgreSQL: Do not export triggers if not requested
+PostgreSQL: Export DROP SEQUENCE if dropping table
+PostgreSQL: Display boolean values as code (bug #562)
+MS SQL: Support freetds
+non-MySQL: Avoid CONVERT() (bug #509)
+Elasticsearch: Insert, update, delete
+MongoDB: Support mongodb PHP extension
+Editor: Fix displaying of false values in PostgreSQL (bug #568)
+
+Adminer 4.4.0 (released 2018-01-17):
+Add Content Security Policy
+Disallow scripts without nonce
+Rate limit password-less login attempts from the same IP address
+Disallow connecting to privileged ports
+Add nosniff header
+PHP 7.1: Prevent warning when using empty limit
+PHP 7.2: Prevent warning when searching in select
 MySQL: Remove dedicated view for replication status (added in 4.3.0)
 PostgreSQL: Sort table names (regression from 4.3.1)
+Editor: Don't set time zone from PHP, fixes DST
+Editor: Display field comment's text inside [] only in edit form
+Editor: Fix doubleclick on database page
+Editor: Fix Search data in tables
+Customization: Always send security headers
+Hebrew translation
 
 Adminer 4.3.1 (released 2017-04-14):
 Fix permanent login after logout (bug #539)

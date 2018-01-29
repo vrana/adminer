@@ -283,6 +283,6 @@ $translations = array(
 	'Saving' => 'Speichere',
 	'yes' => 'ja',
 	'no' => 'nein',
-	'Master password expired. <a href="https://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to make it permanent.' => 'Das Master-Passwort ist abgelaufen.  <a href="https://www.adminer.org/de/extension/" target="_blank">Implementieren</a> Sie die %s Methode, um es permanent zu machen.',
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Das Master-Passwort ist abgelaufen. <a href="https://www.adminer.org/de/extension/"%s>Implementieren</a> Sie die %s Methode, um es permanent zu machen.',
 	'%d / ' => '%d / ',
 );

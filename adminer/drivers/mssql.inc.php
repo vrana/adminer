@@ -314,7 +314,7 @@ if (isset($_GET["mssql"])) {
 
 	function db_collation($db, $collations) {
 		global $connection;
-		return $connection->result("SELECT collation_name FROM sys.databases WHERE name =  " . q($db));
+		return $connection->result("SELECT collation_name FROM sys.databases WHERE name = " . q($db));
 	}
 
 	function engines() {
@@ -361,7 +361,7 @@ if (isset($_GET["mssql"])) {
 
 	function fields($table) {
 		$return = array();
-		foreach (get_rows("SELECT c.*, t.name type, d.definition [default]
+		foreach (get_rows("SELECT c.max_length, c.precision, c.scale, c.name, c.is_nullable, c.is_identity, c.collation_name, t.name type, CAST(d.definition as text) [default]
 FROM sys.all_columns c
 JOIN sys.all_objects o ON c.object_id = o.object_id
 JOIN sys.types t ON c.user_type_id = t.user_type_id

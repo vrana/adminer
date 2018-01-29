@@ -184,11 +184,13 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 
 			function __construct() {
 				parent::__construct(":memory:");
+				$this->query("PRAGMA foreign_keys = 1");
 			}
 
 			function select_db($filename) {
 				if (is_readable($filename) && $this->query("ATTACH " . $this->quote(preg_match("~(^[/\\\\]|:)~", $filename) ? $filename : dirname($_SERVER["SCRIPT_FILENAME"]) . "/$filename") . " AS a")) { // is_readable - SQLite 3
 					parent::__construct($filename);
+					$this->query("PRAGMA foreign_keys = 1");
 					return true;
 				}
 				return false;
@@ -713,7 +715,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return true;
 	}
 
-	function create_sql($table, $auto_increment) {
+	function create_sql($table, $auto_increment, $style) {
 		global $connection;
 		$return = $connection->result("SELECT sql FROM sqlite_master WHERE type IN ('table', 'view') AND name = " . q($table));
 		foreach (indexes($table) as $name => $index) {
@@ -732,7 +734,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	function use_sql($database) {
 	}
 
-	function trigger_sql($table, $style) {
+	function trigger_sql($table) {
 		return implode(get_vals("SELECT sql || ';;\n' FROM sqlite_master WHERE type = 'trigger' AND tbl_name = " . q($table)));
 	}
 

@@ -813,8 +813,9 @@ if (!defined("DRIVER")) {
 	function routine($name, $type) {
 		global $connection, $enum_length, $inout, $types;
 		$aliases = array("bool", "boolean", "integer", "double precision", "real", "dec", "numeric", "fixed", "national char", "national varchar");
+		$space = "(?:\\s|/\\*[\s\S]*?\\*/|(?:#|-- )[^\n]*\n?|--\r?\n)";
 		$type_pattern = "((" . implode("|", array_merge(array_keys($types), $aliases)) . ")\\b(?:\\s*\\(((?:[^'\")]|$enum_length)++)\\))?\\s*(zerofill\\s*)?(unsigned(?:\\s+zerofill)?)?)(?:\\s*(?:CHARSET|CHARACTER\\s+SET)\\s*['\"]?([^'\"\\s,]+)['\"]?)?";
-		$pattern = "\\s*(" . ($type == "FUNCTION" ? "" : $inout) . ")?\\s*(?:`((?:[^`]|``)*)`\\s*|\\b(\\S+)\\s+)$type_pattern";
+		$pattern = "$space*(" . ($type == "FUNCTION" ? "" : $inout) . ")?\\s*(?:`((?:[^`]|``)*)`\\s*|\\b(\\S+)\\s+)$type_pattern";
 		$create = $connection->result("SHOW CREATE $type " . idf_escape($name), 2);
 		preg_match("~\\(((?:$pattern\\s*,?)*)\\)\\s*" . ($type == "FUNCTION" ? "RETURNS\\s+$type_pattern\\s+" : "") . "(.*)~is", $create, $match);
 		$fields = array();
@@ -915,9 +916,10 @@ if (!defined("DRIVER")) {
 	/** Get SQL command to create table
 	* @param string
 	* @param bool
+	* @param string
 	* @return string
 	*/
-	function create_sql($table, $auto_increment) {
+	function create_sql($table, $auto_increment, $style) {
 		global $connection;
 		$return = $connection->result("SHOW CREATE TABLE " . table($table), 1);
 		if (!$auto_increment) {
@@ -944,14 +946,12 @@ if (!defined("DRIVER")) {
 
 	/** Get SQL commands to create triggers
 	* @param string
-	* @param string
 	* @return string
 	*/
-	function trigger_sql($table, $style) {
+	function trigger_sql($table) {
 		$return = "";
 		foreach (get_rows("SHOW TRIGGERS LIKE " . q(addcslashes($table, "%_\\")), null, "-- ") as $row) {
-			$return .= "\n" . ($style == 'CREATE+ALTER' ? "DROP TRIGGER IF EXISTS " . idf_escape($row["Trigger"]) . ";;\n" : "")
-			. "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . table($row["Table"]) . " FOR EACH ROW\n$row[Statement];;\n";
+			$return .= "\nCREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . table($row["Table"]) . " FOR EACH ROW\n$row[Statement];;\n";
 		}
 		return $return;
 	}
@@ -982,6 +982,7 @@ if (!defined("DRIVER")) {
 	* @return string
 	*/
 	function convert_field($field) {
+		global $connection;
 		if (preg_match("~binary~", $field["type"])) {
 			return "HEX(" . idf_escape($field["field"]) . ")";
 		}
@@ -989,7 +990,7 @@ if (!defined("DRIVER")) {
 			return "BIN(" . idf_escape($field["field"]) . " + 0)"; // + 0 is required outside MySQLnd
 		}
 		if (preg_match("~geometry|point|linestring|polygon~", $field["type"])) {
-			return "AsWKT(" . idf_escape($field["field"]) . ")";
+			return ($connection->server_info >= 8 ? "ST_" : "") . "AsWKT(" . idf_escape($field["field"]) . ")";
 		}
 	}
 

@@ -2,13 +2,13 @@
 // not used in a single language version
 
 $langs = array(
-	'en' => 'English', // Jakub Vrána - http://www.vrana.cz
+	'en' => 'English', // Jakub Vrána - https://www.vrana.cz
 	'ar' => 'العربية', // Y.M Amine - Algeria - nbr7@live.fr
 	'bg' => 'Български', // Deyan Delchev
 	'bn' => 'বাংলা', // Dipak Kumar - dipak.ndc@gmail.com
 	'bs' => 'Bosanski', // Emir Kurtovic
 	'ca' => 'Català', // Joan Llosas
-	'cs' => 'Čeština', // Jakub Vrána - http://www.vrana.cz
+	'cs' => 'Čeština', // Jakub Vrána - https://www.vrana.cz
 	'da' => 'Dansk', // Jarne W. Beutnagel - jarne@beutnagel.dk
 	'de' => 'Deutsch', // Klemens Häckel - http://clickdimension.wordpress.com
 	'el' => 'Ελληνικά', // Dimitrios T. Tanis - jtanis@tanisfood.gr
@@ -18,6 +18,7 @@ $langs = array(
 	'fi' => 'Suomi', // Finnish - Kari Eveli - http://www.lexitec.fi/
 	'fr' => 'Français', // Francis Gagné, Aurélien Royer
 	'gl' => 'Galego', // Eduardo Penabad Ramos
+	'he' => 'עברית', // Binyamin Yawitz - https://stuff-group.com/
 	'hu' => 'Magyar', // Borsos Szilárd (Borsosfi) - http://www.borsosfi.hu, info@borsosfi.hu
 	'id' => 'Bahasa Indonesia', // Ivan Lanin - http://ivan.lanin.org
 	'it' => 'Italiano', // Alessandro Fiorotto, Paolo Asperti
@@ -35,7 +36,7 @@ $langs = array(
 	'sl' => 'Slovenski', // Matej Ferlan - www.itdinamik.com, matej.ferlan@itdinamik.com
 	'sr' => 'Српски', // Nikola Radovanović - cobisimo@gmail.com
 	'ta' => 'த‌மிழ்', // G. Sampath Kumar, Chennai, India, sampathkumar11@gmail.com
-	'th' => 'ภาษาไทย', // Panya  Saraphi, elect.tu@gmail.com - http://www.opencart2u.com/
+	'th' => 'ภาษาไทย', // Panya Saraphi, elect.tu@gmail.com - http://www.opencart2u.com/
 	'tr' => 'Türkçe', // Bilgehan Korkmaz - turktron.com
 	'uk' => 'Українська', // Valerii Kryzhov
 	'vi' => 'Tiếng Việt', // Giang Manh @ manhgd google mail

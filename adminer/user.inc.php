@@ -135,7 +135,7 @@ if ($_POST) {
 <tr><th><?php echo lang('Server'); ?><td><input name="host" maxlength="60" value="<?php echo h($row["host"]); ?>" autocapitalize="off">
 <tr><th><?php echo lang('Username'); ?><td><input name="user" maxlength="16" value="<?php echo h($row["user"]); ?>" autocapitalize="off">
 <tr><th><?php echo lang('Password'); ?><td><input name="pass" id="pass" value="<?php echo h($row["pass"]); ?>">
-<?php if (!$row["hashed"]) { ?><script type="text/javascript">typePassword(document.getElementById('pass'));</script><?php } ?>
+<?php if (!$row["hashed"]) { echo script("typePassword(qs('#pass'));"); } ?>
 <?php echo checkbox("hashed", 1, $row["hashed"], lang('Hashed'), "typePassword(this.form['pass'], this.checked);"); ?>
 </table>
 
@@ -169,7 +169,11 @@ foreach (array(
 			} elseif (isset($_GET["grant"])) {
 				echo "<td><select name=$name><option><option value='1'" . ($value ? " selected" : "") . ">" . lang('Grant') . "<option value='0'" . ($value == "0" ? " selected" : "") . ">" . lang('Revoke') . "</select>";
 			} else {
-				echo "<td align='center'><label class='block'><input type='checkbox' name=$name value='1'" . ($value ? " checked" : "") . ($privilege == "All privileges" ? " id='grants-$i-all'" : ($privilege == "Grant option" ? "" : " onclick=\"if (this.checked) formUncheck('grants-$i-all');\"")) . "></label>"; //! uncheck all except grant if all is checked
+				echo "<td align='center'><label class='block'>";
+				echo "<input type='checkbox' name=$name value='1'" . ($value ? " checked" : "") . ($privilege == "All privileges"
+					? " id='grants-$i-all'>" //! uncheck all except grant if all is checked
+					: ">" . ($privilege == "Grant option" ? "" : script("qsl('input').onclick = function () { if (this.checked) formUncheck('grants-$i-all'); };")));
+				echo "</label>";
 			}
 			$i++;
 		}
@@ -180,6 +184,6 @@ echo "</table>\n";
 ?>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
-<?php if (isset($_GET["host"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo confirm(); ?>><?php } ?>
+<?php if (isset($_GET["host"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', "$USER@$_GET[host]")); ?><?php } ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

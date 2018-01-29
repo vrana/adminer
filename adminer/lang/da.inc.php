@@ -10,7 +10,7 @@ $translations = array(
 	'Logged as: %s' => 'Logget ind som: %s',
 	'Logout successful.' => 'Log af vellykket.',
 	'Invalid credentials.' => 'Ugyldige log ind oplysninger.',
-	'Master password expired. <a href="https://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to make it permanent.' => 'Master-kodeordet er udløbet. <a href="https://www.adminer.org/en/extension/" target="_blank">Implementer</a> en metode for %s for at gøre det permanent.',
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Master-kodeordet er udløbet. <a href="https://www.adminer.org/en/extension/"%s>Implementer</a> en metode for %s for at gøre det permanent.',
 	'Language' => 'Sprog',
 	'Invalid CSRF token. Send the form again.' => 'Ugyldigt CSRF-token - Genindsend formen.',
 	'No extension' => 'Ingen udvidelse',

@@ -255,7 +255,7 @@ ORDER BY 1";
 		foreach (get_rows("SELECT c.relname AS \"Name\", CASE c.relkind WHEN 'r' THEN 'table' WHEN 'm' THEN 'materialized view' ELSE 'view' END AS \"Engine\", pg_relation_size(c.oid) AS \"Data_length\", pg_total_relation_size(c.oid) - pg_relation_size(c.oid) AS \"Index_length\", obj_description(c.oid, 'pg_class') AS \"Comment\", c.relhasoids::int AS \"Oid\", c.reltuples as \"Rows\", n.nspname
 FROM pg_class c
 JOIN pg_namespace n ON(n.nspname = current_schema() AND n.oid = c.relnamespace)
-WHERE relkind IN ('r', 'm', 'v')
+WHERE relkind IN ('r', 'm', 'v', 'f')
 " . ($name != "" ? "AND relname = " . q($name) : "ORDER BY relname")
 		) as $row) { //! Index_length, Auto_increment
 			$return[$row["Name"]] = $row;
@@ -304,7 +304,7 @@ ORDER BY a.attnum"
 			$row["auto_increment"] = preg_match('~^nextval\\(~i', $row["default"]);
 			$row["privileges"] = array("insert" => 1, "select" => 1, "update" => 1);
 			if (preg_match('~(.+)::[^)]+(.*)~', $row["default"], $match)) {
-				$row["default"] = ($match[1][0] == "'" ? idf_unescape($match[1]) : $match[1]) . $match[2];
+				$row["default"] = ($match[1] == "NULL" ? null : (($match[1][0] == "'" ? idf_unescape($match[1]) : $match[1]) . $match[2]));
 			}
 			$return[$row["field"]] = $row;
 		}
@@ -617,12 +617,7 @@ AND typelem = 0"
 		return $return;
 	}
 
-	/** Get SQL command to create table
-	* @param string
-	* @param bool
-	* @return string
-	*/
-	function create_sql($table, $auto_increment) {
+	function create_sql($table, $auto_increment, $style) {
 		global $connection;
 		$return = '';
 		$return_parts = array();
@@ -634,7 +629,6 @@ AND typelem = 0"
 		ksort($indexes);
 		$fkeys = foreign_keys($table);
 		ksort($fkeys);
-		$triggers = triggers($table);
 
 		if (!$status || empty($fields)) {
 			return false;
@@ -653,7 +647,8 @@ AND typelem = 0"
 			if (preg_match('~nextval\(\'([^\']+)\'\)~', $field['default'], $matches)) {
 				$sequence_name = $matches[1];
 				$sq = reset(get_rows("SELECT * FROM $sequence_name"));
-				$sequences[] = "CREATE SEQUENCE $sequence_name INCREMENT $sq[increment_by] MINVALUE $sq[min_value] MAXVALUE $sq[max_value] START " . ($auto_increment ? $sq['last_value'] : 1) . " CACHE $sq[cache_value];";
+				$sequences[] = ($style == "DROP+CREATE" ? "DROP SEQUENCE $sequence_name;\n" : "")
+					. "CREATE SEQUENCE $sequence_name INCREMENT $sq[increment_by] MINVALUE $sq[min_value] MAXVALUE $sq[max_value] START " . ($auto_increment ? $sq['last_value'] : 1) . " CACHE $sq[cache_value];";
 			}
 		}
 
@@ -695,30 +690,17 @@ AND typelem = 0"
 			}
 		}
 
-		// triggers
-		foreach ($triggers as $trg_id => $trg) {
-			$trigger = trigger($trg_id, $status['Name']);
-			$return .= "\n\nCREATE TRIGGER " . idf_escape($trigger['Trigger']) . " $trigger[Timing] $trigger[Events] ON " . idf_escape($status["nspname"]) . "." . idf_escape($status['Name']) . " $trigger[Type] $trigger[Statement];";
-		}
-
 		return rtrim($return, ';');
 	}
 
-	/** Get SQL commands to create triggers
-	* @param string
-	* @param string
-	* @return string
-	*/
-	//@TODO
-	function trigger_sql($table, $style) {
+	function trigger_sql($table) {
+		$status = table_status($table);
 		$return = "";
-		//foreach (get_rows("SHOW TRIGGERS LIKE " . q(addcslashes($table, "%_\\")), null, "-- ") as $row) {
-		//    $return .= "\n" . ($style == 'CREATE+ALTER' ? "DROP TRIGGER IF EXISTS " . idf_escape($row["Trigger"]) . ";;\n" : "")
-		//    . "CREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . table($row["Table"]) . " FOR EACH ROW\n$row[Statement];;\n";
-		//}
-		//return $return;
-
-		return false;
+		foreach (triggers($table) as $trg_id => $trg) {
+			$trigger = trigger($trg_id, $status['Name']);
+			$return .= "\nCREATE TRIGGER " . idf_escape($trigger['Trigger']) . " $trigger[Timing] $trigger[Events] ON " . idf_escape($status["nspname"]) . "." . idf_escape($status['Name']) . " $trigger[Type] $trigger[Statement];;\n";
+		}
+		return $return;
 	}
 
 
