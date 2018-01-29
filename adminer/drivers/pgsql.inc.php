@@ -713,8 +713,7 @@ AND typelem = 0"
 	}
 
 	function process_list() {
-		global $connection;
-		return get_rows("SELECT * FROM pg_stat_activity ORDER BY " . ($connection->server_info < 9.2 ? "procpid" : "pid"));
+		return get_rows("SELECT * FROM pg_stat_activity ORDER BY " . (min_version(9.2) ? "pid" : "procpid"));
 	}
 
 	function show_status() {
@@ -728,8 +727,7 @@ AND typelem = 0"
 	}
 
 	function support($feature) {
-		global $connection;
-		return preg_match('~^(database|table|columns|sql|indexes|comment|view|' . ($connection->server_info >= 9.3 ? 'materializedview|' : '') . 'scheme|processlist|sequence|trigger|type|variables|drop_col|kill|dump)$~', $feature); //! routine|
+		return preg_match('~^(database|table|columns|sql|indexes|comment|view|' . (min_version(9.3) ? 'materializedview|' : '') . 'scheme|processlist|sequence|trigger|type|variables|drop_col|kill|dump)$~', $feature); //! routine|
 	}
 
 	function kill_process($val) {

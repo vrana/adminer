@@ -93,7 +93,7 @@ function min_version($version, $maria_db = "") {
 * @return string
 */
 function charset($connection) {
-	return (version_compare($connection->server_info, "5.5.3") >= 0 ? "utf8mb4" : "utf8"); // SHOW CHARSET would require an extra query
+	return (min_version("5.5.3") ? "utf8mb4" : "utf8"); // SHOW CHARSET would require an extra query
 }
 
 /** Return <script> element
@@ -906,7 +906,7 @@ function enum_input($type, $attrs, $field, $value, $empty = null) {
 * @return null
 */
 function input($field, $value, $function) {
-	global $connection, $types, $adminer, $jush;
+	global $types, $adminer, $jush;
 	$name = h(bracket_escape($field["field"]));
 	echo "<td class='function'>";
 	if (is_array($value) && !$function) {
@@ -961,7 +961,7 @@ function input($field, $value, $function) {
 		} else {
 			// int(3) is only a display hint
 			$maxlength = (!preg_match('~int~', $field["type"]) && preg_match('~^(\\d+)(,(\\d+))?$~', $field["length"], $match) ? ((preg_match("~binary~", $field["type"]) ? 2 : 1) * $match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) : ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0));
-			if ($jush == 'sql' && $connection->server_info >= 5.6 && preg_match('~time~', $field["type"])) {
+			if ($jush == 'sql' && min_version(5.6) && preg_match('~time~', $field["type"])) {
 				$maxlength += 7; // microtime
 			}
 			// type='date' and type='time' display localized value which may be confusing, type='datetime' uses 'T' as date and time separator

@@ -325,11 +325,10 @@ if (!defined("DRIVER")) {
 	* @return array
 	*/
 	function get_databases($flush) {
-		global $connection;
 		// SHOW DATABASES can take a very long time so it is cached
 		$return = get_session("dbs");
 		if ($return === null) {
-			$query = ($connection->server_info >= 5
+			$query = (min_version(5)
 				? "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA"
 				: "SHOW DATABASES"
 			); // SHOW DATABASES can be disabled by skip_show_database
@@ -405,8 +404,7 @@ if (!defined("DRIVER")) {
 	* @return array array($name => $type)
 	*/
 	function tables_list() {
-		global $connection;
-		return get_key_vals($connection->server_info >= 5
+		return get_key_vals(min_version(5)
 			? "SELECT TABLE_NAME, TABLE_TYPE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() ORDER BY TABLE_NAME"
 			: "SHOW TABLES"
 		);
@@ -430,9 +428,8 @@ if (!defined("DRIVER")) {
 	* @return array array($name => array("Name" => , "Engine" => , "Comment" => , "Oid" => , "Rows" => , "Collation" => , "Auto_increment" => , "Data_length" => , "Index_length" => , "Data_free" => )) or only inner array with $name
 	*/
 	function table_status($name = "", $fast = false) {
-		global $connection;
 		$return = array();
-		foreach (get_rows($fast && $connection->server_info >= 5
+		foreach (get_rows($fast && min_version(5)
 			? "SELECT TABLE_NAME AS Name, ENGINE AS Engine, TABLE_COMMENT AS Comment FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() " . ($name != "" ? "AND TABLE_NAME = " . q($name) : "ORDER BY Name")
 			: "SHOW TABLE STATUS" . ($name != "" ? " LIKE " . q(addcslashes($name, "%_\\")) : "")
 		) as $row) {
@@ -464,9 +461,8 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function fk_support($table_status) {
-		global $connection;
 		return preg_match('~InnoDB|IBMDB2I~i', $table_status["Engine"])
-			|| (preg_match('~NDB~i', $table_status["Engine"]) && $connection->server_info >= 5.6);
+			|| (preg_match('~NDB~i', $table_status["Engine"]) && min_version(5.6));
 	}
 
 	/** Get information about fields
@@ -573,9 +569,8 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function information_schema($db) {
-		global $connection;
-		return ($connection->server_info >= 5 && $db == "information_schema")
-			|| ($connection->server_info >= 5.5 && $db == "performance_schema");
+		return (min_version(5) && $db == "information_schema")
+			|| (min_version(5.5) && $db == "performance_schema");
 	}
 
 	/** Get escaped error message
@@ -872,7 +867,7 @@ if (!defined("DRIVER")) {
 	* @return Min_Result
 	*/
 	function explain($connection, $query) {
-		return $connection->query("EXPLAIN " . ($connection->server_info >= 5.1 ? "PARTITIONS " : "") . $query);
+		return $connection->query("EXPLAIN " . (min_version(5.1) ? "PARTITIONS " : "") . $query);
 	}
 
 	/** Get approximate number of rows
@@ -982,7 +977,6 @@ if (!defined("DRIVER")) {
 	* @return string
 	*/
 	function convert_field($field) {
-		global $connection;
 		if (preg_match("~binary~", $field["type"])) {
 			return "HEX(" . idf_escape($field["field"]) . ")";
 		}
@@ -990,7 +984,7 @@ if (!defined("DRIVER")) {
 			return "BIN(" . idf_escape($field["field"]) . " + 0)"; // + 0 is required outside MySQLnd
 		}
 		if (preg_match("~geometry|point|linestring|polygon~", $field["type"])) {
-			return ($connection->server_info >= 8 ? "ST_" : "") . "AsWKT(" . idf_escape($field["field"]) . ")";
+			return (min_version(8) ? "ST_" : "") . "AsWKT(" . idf_escape($field["field"]) . ")";
 		}
 	}
 
@@ -1017,8 +1011,7 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function support($feature) {
-		global $connection;
-		return !preg_match("~scheme|sequence|type|view_trigger|materializedview" . ($connection->server_info < 5.1 ? "|event|partitioning" . ($connection->server_info < 5 ? "|routine|trigger|view" : "") : "") . "~", $feature);
+		return !preg_match("~scheme|sequence|type|view_trigger|materializedview" . (min_version(5.1) ? "" : "|event|partitioning" . (min_version(5) ? "" : "|routine|trigger|view")) . "~", $feature);
 	}
 
 	function kill_process($val) {

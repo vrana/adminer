@@ -61,7 +61,7 @@ if ($_POST && !$error) {
 		$created = false;
 		if (!$error) {
 			if ($old_user != $new_user) {
-				$created = queries(($connection->server_info < 5 ? "GRANT USAGE ON *.* TO" : "CREATE USER") . " $new_user IDENTIFIED BY PASSWORD " . q($pass));
+				$created = queries((min_version(5) ? "CREATE USER" : "GRANT USAGE ON *.* TO") . " $new_user IDENTIFIED BY PASSWORD " . q($pass));
 				$error = !$created;
 			} elseif ($pass != $old_pass) {
 				queries("SET PASSWORD FOR $new_user = " . q($pass));
