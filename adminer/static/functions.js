@@ -1,10 +1,11 @@
 
 /** Get first element by selector
 * @param string
+* @param [HTMLElement] defaults to document
 * @return HTMLElement
 */
-function qs(selector) {
-	return document.querySelector(selector);
+function qs(selector, context) {
+	return (context || document).querySelector(selector);
 }
 
 /** Get last element by selector
