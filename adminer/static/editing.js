@@ -5,7 +5,7 @@
 */
 function bodyLoad(version) {
 	if (window.jush) {
-		jush.create_links = ' target="_blank" rel="noopener"';
+		jush.create_links = ' target="_blank" rel="noreferrer noopener"';
 		if (version) {
 			for (var key in jush.urls) {
 				var obj = jush.urls;

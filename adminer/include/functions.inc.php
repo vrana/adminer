@@ -128,7 +128,7 @@ function nonce() {
 * @return string
 */
 function target_blank() {
-	return ' target="_blank" rel="noopener"';
+	return ' target="_blank" rel="noreferrer noopener"';
 }
 
 /** Escape for HTML
@@ -1215,7 +1215,7 @@ function rand_string() {
 * @return string HTML
 */
 function select_value($val, $link, $field, $text_length) {
-	global $adminer, $HTTPS;
+	global $adminer;
 	if (is_array($val)) {
 		$return = "";
 		foreach ($val as $k => $v) {
@@ -1233,11 +1233,8 @@ function select_value($val, $link, $field, $text_length) {
 		if (is_mail($val)) {
 			$link = "mailto:$val";
 		}
-		if ($protocol = is_url($val)) {
-			$link = (($protocol == "http" && $HTTPS) || preg_match('~WebKit|Firefox~i', $_SERVER["HTTP_USER_AGENT"]) // WebKit supports noreferrer since 2009, Firefox since version 38
-				? $val // HTTP links from HTTPS pages don't receive Referer automatically
-				: "https://www.adminer.org/redirect/?url=" . urlencode($val) // intermediate page to hide Referer
-			);
+		if (is_url($val)) {
+			$link = $val; // IE 11 and all modern browsers hide referrer
 		}
 	}
 	$return = $adminer->editVal($val, $field);
@@ -1268,11 +1265,11 @@ function is_mail($email) {
 
 /** Check whether the string is URL address
 * @param string
-* @return string "http", "https" or ""
+* @return bool
 */
 function is_url($string) {
 	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component //! IDN
-	return (preg_match("~^(https?)://($domain?\\.)+$domain(:\\d+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string, $match) ? strtolower($match[1]) : ""); //! restrict path, query and fragment characters
+	return preg_match("~^(https?)://($domain?\\.)+$domain(:\\d+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string); //! restrict path, query and fragment characters
 }
 
 /** Check if field should be shortened

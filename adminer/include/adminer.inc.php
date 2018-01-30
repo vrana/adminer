@@ -262,7 +262,7 @@ class Adminer {
 		if (preg_match('~json~', $field["type"])) {
 			$return = "<code class='jush-js'>$return</code>";
 		}
-		return ($link ? "<a href='" . h($link) . "'" . (is_url($link) ? " rel='noreferrer'" : "") . ">$return</a>" : $return);
+		return ($link ? "<a href='" . h($link) . "'" . (is_url($link) ? target_blank() : "") . ">$return</a>" : $return);
 	}
 
 	/** Value conversion used in select and edit
