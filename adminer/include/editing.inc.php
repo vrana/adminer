@@ -143,7 +143,7 @@ function edit_type($key, $field, $collations, $foreign_keys = array(), $extra_ty
 	$type = $field["type"];
 	?>
 <td><select name="<?php echo h($key); ?>[type]" class="type" aria-labelledby="label-type"><?php
-if ($type && !isset($types[$type], $foreign_keys[$type]) && !in_array($type, $extra_types)) {
+if ($type && !isset($types[$type]) && !isset($foreign_keys[$type]) && !in_array($type, $extra_types)) {
 	$extra_types[] = $type;
 }
 if ($foreign_keys) {
