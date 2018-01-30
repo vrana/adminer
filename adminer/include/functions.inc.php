@@ -97,7 +97,7 @@ function min_version($version, $maria_db = "", $connection2 = null) {
 * @return string
 */
 function charset($connection) {
-	return (min_version("5.5.3") ? "utf8mb4" : "utf8"); // SHOW CHARSET would require an extra query
+	return (min_version("5.5.3", 0, $connection) ? "utf8mb4" : "utf8"); // SHOW CHARSET would require an extra query
 }
 
 /** Return <script> element
