@@ -300,6 +300,10 @@ function compile_file($match) {
 	return '"' . add_quo_slashes($file) . '"';
 }
 
+function min_version() {
+	return true;
+}
+
 $project = "adminer";
 if ($_SERVER["argv"][1] == "editor") {
 	$project = "editor";
