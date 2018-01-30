@@ -135,20 +135,21 @@ function textarea($name, $value, $rows = 10, $cols = 80) {
 * @param array
 * @param array
 * @param array returned by referencable_primary()
+* @param array extra types to prepend
 * @return null
 */
-function edit_type($key, $field, $collations, $foreign_keys = array()) {
+function edit_type($key, $field, $collations, $foreign_keys = array(), $extra_types = array()) {
 	global $structured_types, $types, $unsigned, $on_actions;
 	$type = $field["type"];
 	?>
 <td><select name="<?php echo h($key); ?>[type]" class="type" aria-labelledby="label-type"><?php
-if ($type && !isset($types[$type]) && !isset($foreign_keys[$type])) {
-	array_unshift($structured_types, $type);
+if ($type && !isset($types[$type], $foreign_keys[$type]) && !in_array($type, $extra_types)) {
+	$extra_types[] = $type;
 }
 if ($foreign_keys) {
 	$structured_types[lang('Foreign keys')] = $foreign_keys;
 }
-echo optionlist($structured_types, $type);
+echo optionlist(array_merge($extra_types, $structured_types), $type);
 ?></select>
 <?php echo on_help("getTarget(event).value", 1); ?>
 <?php echo script("mixin(qsl('select'), {onfocus: function () { lastType = selectValue(this); }, onchange: editingTypeChange});", ""); ?>
