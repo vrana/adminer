@@ -413,7 +413,7 @@ function create_trigger($on, $row) {
 * @return string
 */
 function create_routine($routine, $row) {
-	global $inout;
+	global $inout, $jush;
 	$set = array();
 	$fields = (array) $row["fields"];
 	ksort($fields); // enforce fields order
@@ -422,13 +422,13 @@ function create_routine($routine, $row) {
 			$set[] = (preg_match("~^($inout)\$~", $field["inout"]) ? "$field[inout] " : "") . idf_escape($field["field"]) . process_type($field, "CHARACTER SET");
 		}
 	}
+	$definition = rtrim("\n$row[definition]", ";");
 	return "CREATE $routine "
 		. idf_escape(trim($row["name"]))
 		. " (" . implode(", ", $set) . ")"
 		. (isset($_GET["function"]) ? " RETURNS" . process_type($row["returns"], "CHARACTER SET") : "")
 		. ($row["language"] ? " LANGUAGE $row[language]" : "")
-		. rtrim("\n$row[definition]", ";")
-		. ";"
+		. ($jush == "pgsql" ? " AS " . q($definition) : "$definition;")
 	;
 }
 

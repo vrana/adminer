@@ -541,30 +541,36 @@ ORDER BY conkey, conname") as $row) {
 		);
 	}
 
-	/*
 	function routine($name, $type) {
-		//! there can be more functions with the same name differing only in parameters, it must be also passed to DROP FUNCTION
-		//! no procedures, only functions
-		//! different syntax of CREATE FUNCTION
-		$rows = get_rows('SELECT pg_catalog.format_type(p.prorettype, NULL) AS "returns", p.prosrc AS "definition"
-FROM pg_catalog.pg_namespace n
-JOIN pg_catalog.pg_proc p ON p.pronamespace = n.oid
-WHERE n.nspname = current_schema() AND p.proname = ' . q($name));
-		$rows[0]["fields"] = array(); //!
-		return $rows[0];
+		$rows = get_rows('SELECT routine_definition AS definition, LOWER(external_language) AS language, *
+FROM information_schema.routines
+WHERE routine_schema = current_schema() AND specific_name = ' . q($name));
+		$return = $rows[0];
+		$return["returns"] = array("type" => $return["type_udt_name"]);
+		$return["fields"] = get_rows('SELECT parameter_name AS field, data_type AS type, character_maximum_length AS length, parameter_mode AS inout
+FROM information_schema.parameters
+WHERE specific_schema = current_schema() AND specific_name = ' . q($name) . '
+ORDER BY ordinal_position');
+		return $return;
 	}
-	*/
 
 	function routines() {
-		return get_rows('SELECT p.proname AS "ROUTINE_NAME", p.proargtypes AS "ROUTINE_TYPE", pg_catalog.format_type(p.prorettype, NULL) AS "DTD_IDENTIFIER"
-FROM pg_catalog.pg_namespace n
-JOIN pg_catalog.pg_proc p ON p.pronamespace = n.oid
-WHERE n.nspname = current_schema()
-ORDER BY p.proname');
+		return get_rows('SELECT specific_name AS "SPECIFIC_NAME", routine_type AS "ROUTINE_TYPE", routine_name AS "ROUTINE_NAME", type_udt_name AS "DTD_IDENTIFIER"
+FROM information_schema.routines
+WHERE routine_schema = current_schema()
+ORDER BY SPECIFIC_NAME');
 	}
 
 	function routine_languages() {
-		return get_vals("SELECT langname FROM pg_catalog.pg_language");
+		return get_vals("SELECT LOWER(lanname) FROM pg_catalog.pg_language");
+	}
+
+	function routine_id($name, $row) {
+		$return = array();
+		foreach ($row["fields"] as $field) {
+			$return[] = $field["type"];
+		}
+		return idf_escape($name) . "(" . implode(", ", $return) . ")";
 	}
 
 	function last_id() {
@@ -727,7 +733,7 @@ AND typelem = 0"
 	}
 
 	function support($feature) {
-		return preg_match('~^(database|table|columns|sql|indexes|comment|view|' . (min_version(9.3) ? 'materializedview|' : '') . 'scheme|processlist|sequence|trigger|type|variables|drop_col|kill|dump)$~', $feature); //! routine|
+		return preg_match('~^(database|table|columns|sql|indexes|comment|view|' . (min_version(9.3) ? 'materializedview|' : '') . 'scheme|routine|processlist|sequence|trigger|type|variables|drop_col|kill|dump)$~', $feature);
 	}
 
 	function kill_process($val) {

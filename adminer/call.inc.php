@@ -1,8 +1,8 @@
 <?php
-$PROCEDURE = $_GET["call"];
+$PROCEDURE = ($_GET["name"] ? $_GET["name"] : $_GET["call"]);
 page_header(lang('Call') . ": " . h($PROCEDURE), $error);
 
-$routine = routine($PROCEDURE, (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE"));
+$routine = routine($_GET["call"], (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE"));
 $in = array();
 $out = array();
 foreach ($routine["fields"] as $i => $field) {

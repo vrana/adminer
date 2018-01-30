@@ -840,10 +840,10 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Get list of routines
-	* @return array ("ROUTINE_TYPE" => , "ROUTINE_NAME" => , "DTD_IDENTIFIER" => )
+	* @return array ("SPECIFIC_NAME" => , "ROUTINE_NAME" => , "ROUTINE_TYPE" => , "DTD_IDENTIFIER" => )
 	*/
 	function routines() {
-		return get_rows("SELECT ROUTINE_NAME, ROUTINE_TYPE, DTD_IDENTIFIER FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . q(DB));
+		return get_rows("SELECT ROUTINE_NAME AS SPECIFIC_NAME, ROUTINE_NAME, ROUTINE_TYPE, DTD_IDENTIFIER FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . q(DB));
 	}
 
 	/** Get list of available routine languages
@@ -851,6 +851,15 @@ if (!defined("DRIVER")) {
 	*/
 	function routine_languages() {
 		return array(); // "SQL" not required
+	}
+
+	/** Get routine signature
+	* @param string
+	* @param array result of routine()
+	* @return string
+	*/
+	function routine_id($name, $row) {
+		return idf_escape($name);
 	}
 
 	/** Get last auto increment ID
