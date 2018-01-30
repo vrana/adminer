@@ -198,12 +198,7 @@ function process_field($field, $type_field) {
 		idf_escape(trim($field["field"])),
 		process_type($type_field),
 		($field["null"] ? " NULL" : " NOT NULL"), // NULL for timestamp
-		(isset($default) ? " DEFAULT " . (
-			(preg_match('~time~', $field["type"]) && preg_match('~^(now\(\)|CURRENT_TIMESTAMP(\(\)))?$~i', $default))
-			|| ($jush == "sqlite" && preg_match('~^CURRENT_(TIME|TIMESTAMP|DATE)$~i', $default))
-			|| ($field["type"] == "bit" && preg_match("~^([0-9]+|b'[0-1]+')\$~", $default))
-			|| ($jush == "pgsql" && preg_match("~^[a-z]+\\(('[^']*')+\\)\$~", $default))
-			? $default : q($default)) : ""),
+		(isset($default) ? " DEFAULT " . (preg_match('~char|binary|text|enum|set~', $field["type"]) && !preg_match('~^\\d*\\.?\\d+$~', $default) ? q($default) : $default) : ""),
 		(preg_match('~timestamp|datetime~', $field["type"]) && $field["on_update"] ? " ON UPDATE $field[on_update]" : ""),
 		(support("comment") && $field["comment"] != "" ? " COMMENT " . q($field["comment"]) : ""),
 		($field["auto_increment"] ? auto_increment() : null),

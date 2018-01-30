@@ -1,6 +1,7 @@
 Adminer 4.5.1-dev:
 Fix counting selected rows after going back to select page
 PHP <5.3 compatibility even with Elasticsearch enabled
+Fully support functions in default values
 MariaDB: Support JSON since MariaDB 10.2
 PostgreSQL: Support functions
 PostgreSQL: Allow editing views with uppercase letters (bug #467)
