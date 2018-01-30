@@ -307,7 +307,7 @@ if (!defined("DRIVER")) {
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
 			$connection->set_charset(charset($connection)); // available in MySQLi since PHP 5.0.5
 			$connection->query("SET sql_quote_show_create = 1, autocommit = 1");
-			if (min_version('5.7.8', 10.2, $connection) >= 0) {
+			if (min_version('5.7.8', 10.2, $connection)) {
 				$structured_types[lang('Strings')][] = "json";
 				$types["json"] = 4294967295;
 			}
