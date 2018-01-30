@@ -2,10 +2,10 @@
 $drivers["simpledb"] = "SimpleDB";
 
 if (isset($_GET["simpledb"])) {
-	$possible_drivers = array("SimpleXML");
+	$possible_drivers = array("SimpleXML + allow_url_fopen");
 	define("DRIVER", "simpledb");
 
-	if (class_exists('SimpleXMLElement')) {
+	if (class_exists('SimpleXMLElement') && ini_bool('allow_url_fopen')) {
 		class Min_DB {
 			var $extension = "SimpleXML", $server_info = '2009-04-15', $error, $timeout, $next, $affected_rows, $_result;
 

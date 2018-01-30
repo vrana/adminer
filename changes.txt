@@ -2,6 +2,7 @@ Adminer 4.5.1-dev:
 Fix counting selected rows after going back to select page
 PHP <5.3 compatibility even with Elasticsearch enabled
 MariaDB: Support JSON since MariaDB 10.2
+SimpleDB: Document that allow_url_fopen is required
 Malay translation
 
 Adminer 4.5.0 (released 2018-01-24):
