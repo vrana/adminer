@@ -99,12 +99,25 @@
 		return queries("BEGIN");
 	}
 	
+	/** Commit transaction
+	* @return bool
+	*/
 	function commit() {
 		return queries("COMMIT");
 	}
 	
+	/** Rollback transaction
+	* @return bool
+	*/
 	function rollback() {
 		return queries("ROLLBACK");
+	}
+	
+	/** Get warnings about the last command
+	* @return resource or false
+	*/
+	function warnings() {
+		return false;
 	}
 	
 }

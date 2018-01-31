@@ -276,6 +276,10 @@ if (!defined("DRIVER")) {
 			}
 			return queries($prefix . implode(",\n", $values) . $suffix);
 		}
+		
+		function warnings() {
+			return $this->_conn->query("SHOW WARNINGS");
+		}
 
 	}
 

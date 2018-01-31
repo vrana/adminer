@@ -52,6 +52,7 @@ $translations = array(
 	'Query executed OK, %d row(s) affected.' => array('Xx, %d.', 'Xx, %d.'),
 	'No commands to execute.' => 'Xx.',
 	'Error in query' => 'Xx',
+	'Warnings' => 'Xx',
 	'ATTACH queries are not supported.' => 'Xx.',
 	'Execute' => 'Xx',
 	'Stop on error' => 'Xx',

@@ -415,7 +415,7 @@ function get_key_vals($query, $connection2 = null, $timeout = 0, $set_keys = tru
 * @param string
 * @param Min_DB
 * @param string
-* @return array associative
+* @return array of associative arrays
 */
 function get_rows($query, $connection2 = null, $error = "<p class='error'>") {
 	global $connection;
