@@ -33,6 +33,9 @@ if (!$_SERVER["REQUEST_URI"]) { // IIS 5 compatibility
 if (!strpos($_SERVER["REQUEST_URI"], '?') && $_SERVER["QUERY_STRING"] != "") { // IIS 7 compatibility
 	$_SERVER["REQUEST_URI"] .= "?$_SERVER[QUERY_STRING]";
 }
+if ($_SERVER["HTTP_X_FORWARDED_PREFIX"]) {
+	$_SERVER["REQUEST_URI"] = $_SERVER["HTTP_X_FORWARDED_PREFIX"] . $_SERVER["REQUEST_URI"];
+}
 $HTTPS = $_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off");
 
 @ini_set("session.use_trans_sid", false); // protect links in export, @ - may be disabled
