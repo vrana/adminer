@@ -198,7 +198,7 @@ function process_field($field, $type_field) {
 		idf_escape(trim($field["field"])),
 		process_type($type_field),
 		($field["null"] ? " NULL" : " NOT NULL"), // NULL for timestamp
-		(isset($default) ? " DEFAULT " . (preg_match('~char|binary|text|enum|set~', $field["type"]) || preg_match('~^[\\d.]+[^\\d.]~', $default) ? q($default) : $default) : ""),
+		(isset($default) ? " DEFAULT " . (preg_match('~char|binary|text|enum|set~', $field["type"]) || preg_match('~^(?![a-z])~i', $default) ? q($default) : $default) : ""),
 		(preg_match('~timestamp|datetime~', $field["type"]) && $field["on_update"] ? " ON UPDATE $field[on_update]" : ""),
 		(support("comment") && $field["comment"] != "" ? " COMMENT " . q($field["comment"]) : ""),
 		($field["auto_increment"] ? auto_increment() : null),
