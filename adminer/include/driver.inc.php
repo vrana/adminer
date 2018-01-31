@@ -114,7 +114,7 @@
 	}
 	
 	/** Get warnings about the last command
-	* @return resource or false
+	* @return Min_Result or false
 	*/
 	function warnings() {
 		return false;
