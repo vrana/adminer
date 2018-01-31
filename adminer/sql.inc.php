@@ -135,6 +135,8 @@ if (!$error && $_POST) {
 									if ($warnings && $warnings->num_rows) {
 										$time .= ", <a href='#$warnings_id'>" . lang('Warnings') . "</a>" . script("qsl('a').onclick = partial(toggle, '$warnings_id');", "");
 									}
+									$explain = null;
+									$explain_id = "explain-$commands";
 									if (is_object($result)) {
 										$limit = $_POST["limit"];
 										$orgtables = select($result, $connection2, array(), $limit);
@@ -143,23 +145,17 @@ if (!$error && $_POST) {
 											$num_rows = $result->num_rows;
 											echo "<p>" . ($num_rows ? ($limit && $num_rows > $limit ? lang('%d / ', $limit) : "") . lang('%d row(s)', $num_rows) : "");
 											echo $time;
+											if ($connection2 && preg_match("~^($space|\\()*+SELECT\\b~i", $q) && ($explain = explain($connection2, $q))) {
+												echo ", <a href='#$explain_id'>EXPLAIN</a>" . script("qsl('a').onclick = partial(toggle, '$explain_id');", "");
+											}
 											$id = "export-$commands";
-											$export = ", <a href='#$id'>" . lang('Export') . "</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "") . "<span id='$id' class='hidden'>: "
+											echo ", <a href='#$id'>" . lang('Export') . "</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "") . "<span id='$id' class='hidden'>: "
 												. html_select("output", $adminer->dumpOutput(), $adminer_export["output"]) . " "
 												. html_select("format", $dump_format, $adminer_export["format"])
 												. "<input type='hidden' name='query' value='" . h($q) . "'>"
 												. " <input type='submit' name='export' value='" . lang('Export') . "'><input type='hidden' name='token' value='$token'></span>\n"
+												. "</form>\n"
 											;
-											if ($connection2 && preg_match("~^($space|\\()*+SELECT\\b~i", $q) && ($explain = explain($connection2, $q))) {
-												$id = "explain-$commands";
-												echo ", <a href='#$id'>EXPLAIN</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "") . $export;
-												echo "<div id='$id' class='hidden'>\n";
-												select($explain, $connection2, $orgtables);
-												echo "</div>\n";
-											} else {
-												echo $export;
-											}
-											echo "</form>\n";
 										}
 
 									} else {
@@ -172,9 +168,14 @@ if (!$error && $_POST) {
 											echo "<p class='message' title='" . h($connection->info) . "'>" . lang('Query executed OK, %d row(s) affected.', $connection->affected_rows) . "$time\n";
 										}
 									}
-									if ($warnings && $warnings->num_rows && (!$_POST["only_errors"] || is_object($result))) {
+									if ($warnings && $warnings->num_rows && !$_POST["only_errors"]) {
 										echo "<div id='$warnings_id' class='hidden'>\n";
 										select($warnings);
+										echo "</div>\n";
+									}
+									if ($explain) {
+										echo "<div id='$explain_id' class='hidden'>\n";
+										select($explain, $connection2, $orgtables);
 										echo "</div>\n";
 									}
 								}
