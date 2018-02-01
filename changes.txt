@@ -4,6 +4,7 @@ PHP <5.3 compatibility even with Elasticsearch enabled
 Fully support functions in default values
 Stop redirecting links via adminer.org
 Support X-Forwarded-Prefix
+Display options for timestamp columns when creating a new table
 MySQL, PostgreSQL: Display warnings
 MariaDB: Support JSON since MariaDB 10.2
 PostgreSQL: Support functions

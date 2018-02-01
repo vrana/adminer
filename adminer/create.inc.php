@@ -120,7 +120,7 @@ page_header(($TABLE != "" ? lang('Alter table') : lang('Create table')), $error,
 if (!$_POST) {
 	$row = array(
 		"Engine" => $_COOKIE["adminer_engine"],
-		"fields" => array(array("field" => "", "type" => (isset($types["int"]) ? "int" : (isset($types["integer"]) ? "integer" : "")))),
+		"fields" => array(array("field" => "", "type" => (isset($types["int"]) ? "int" : (isset($types["integer"]) ? "integer" : "")), "on_update" => "")),
 		"partition_names" => array(""),
 	);
 
