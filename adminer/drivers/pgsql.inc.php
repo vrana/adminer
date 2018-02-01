@@ -173,6 +173,10 @@ if (isset($_GET["pgsql"])) {
 			return true;
 		}
 
+		function warnings() {
+			return h(pg_last_notice($this->_conn->_link));
+		}
+
 	}
 
 

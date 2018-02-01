@@ -4,7 +4,7 @@ PHP <5.3 compatibility even with Elasticsearch enabled
 Fully support functions in default values
 Stop redirecting links via adminer.org
 Support X-Forwarded-Prefix
-MySQL: Display warnings
+MySQL, PostgreSQL: Display warnings
 MariaDB: Support JSON since MariaDB 10.2
 PostgreSQL: Support functions
 PostgreSQL: Allow editing views with uppercase letters (bug #467)
