@@ -1292,7 +1292,7 @@ function count_rows($table, $where, $is_group, $group) {
 	$query = " FROM " . table($table) . ($where ? " WHERE " . implode(" AND ", $where) : "");
 	return ($is_group && ($jush == "sql" || count($group) == 1)
 		? "SELECT COUNT(DISTINCT " . implode(", ", $group) . ")$query"
-		: "SELECT COUNT(*)" . ($is_group ? " FROM (SELECT 1$query$group_by) x" : $query)
+		: "SELECT COUNT(*)" . ($is_group ? " FROM (SELECT 1$query GROUP BY " . implode(", ", $group) . ") x" : $query)
 	);
 }
 
