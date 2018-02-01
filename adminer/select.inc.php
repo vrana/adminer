@@ -5,9 +5,6 @@ $indexes = indexes($TABLE);
 $fields = fields($TABLE);
 $foreign_keys = column_foreign_keys($TABLE);
 $oid = $table_status["Oid"];
-if ($oid) {
-	$indexes[] = array("type" => "PRIMARY", "columns" => array($oid));
-}
 parse_str($_COOKIE["adminer_import"], $adminer_import);
 
 $rights = array(); // privilege => 0
@@ -44,6 +41,24 @@ if ($_GET["val"] && is_ajax()) {
 	exit;
 }
 
+$primary = $unselected = null;
+foreach ($indexes as $index) {
+	if ($index["type"] == "PRIMARY") {
+		$primary = array_flip($index["columns"]);
+		$unselected = ($select ? $primary : array());
+		foreach ($unselected as $key => $val) {
+			if (in_array(idf_escape($key), $select)) {
+				unset($unselected[$key]);
+			}
+		}
+		break;
+	}
+}
+if ($oid && $unselected === null) {
+	$primary = $unselected = array($oid => 0);
+	$indexes[] = array("type" => "PRIMARY", "columns" => array($oid));
+}
+
 if ($_POST && !$error) {
 	$where_check = $where;
 	if (!$_POST["all"] && is_array($_POST["check"])) {
@@ -54,20 +69,6 @@ if ($_POST && !$error) {
 		$where_check[] = "((" . implode(") OR (", $checks) . "))";
 	}
 	$where_check = ($where_check ? "\nWHERE " . implode(" AND ", $where_check) : "");
-	$primary = $unselected = null;
-	foreach ($indexes as $index) {
-		if ($index["type"] == "PRIMARY") {
-			$primary = array_flip($index["columns"]);
-			$unselected = ($select ? $primary : array());
-			break;
-		}
-	}
-	foreach ((array) $unselected as $key => $val) {
-		if (in_array(idf_escape($key), $select)) {
-			unset($unselected[$key]);
-		}
-	}
-
 	if ($_POST["export"]) {
 		cookie("adminer_import", "output=" . urlencode($_POST["output"]) . "&format=" . urlencode($_POST["format"]));
 		dump_headers($TABLE);
@@ -258,14 +259,12 @@ if (!$columns && support("table")) {
 	}
 
 	$select2 = $select;
+	$group2 = $group;
 	if (!$select2) {
 		$select2[] = "*";
 		$convert_fields = convert_fields($columns, $fields, $select);
 		if ($convert_fields) {
 			$select2[] = substr($convert_fields, 2);
-		}
-		if ($oid) {
-			$select2[] = $oid;
 		}
 	}
 	foreach ($select as $key => $val) {
@@ -274,7 +273,15 @@ if (!$columns && support("table")) {
 			$select2[$key] = "$as AS $val";
 		}
 	}
-	$result = $driver->select($TABLE, $select2, $where, $group, $order, $limit, $page, true);
+	if (!$is_group && $unselected) {
+		foreach ($unselected as $key => $val) {
+			$select2[] = idf_escape($key);
+			if ($group2) {
+				$group2[] = idf_escape($key);
+			}
+		}
+	}
+	$result = $driver->select($TABLE, $select2, $where, $group2, $order, $limit, $page, true);
 
 	if (!$result) {
 		echo "<p class='error'>" . error() . "\n";
@@ -313,7 +320,7 @@ if (!$columns && support("table")) {
 			reset($select);
 			$rank = 1;
 			foreach ($rows[0] as $key => $val) {
-				if ($key != $oid) {
+				if (!isset($unselected[$key])) {
 					$val = $_GET["columns"][key($select)];
 					$field = $fields[$select ? ($val ? $val["col"] : current($select)) : $key];
 					$name = ($field ? $adminer->fieldName($field, $rank) : ($val["fun"] ? "*" : $key));

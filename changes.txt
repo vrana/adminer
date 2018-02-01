@@ -5,6 +5,7 @@ Fully support functions in default values
 Stop redirecting links via adminer.org
 Support X-Forwarded-Prefix
 Display options for timestamp columns when creating a new table
+Use primary key to edit rows even if not selected
 MySQL, PostgreSQL: Display warnings
 MySQL: Add floor and ceil select functions
 MySQL: Add FIND_IN_SET search operator
