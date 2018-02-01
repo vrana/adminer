@@ -616,19 +616,30 @@ class Adminer {
 	* @return string
 	*/
 	function messageQuery($query, $time) {
-		global $jush;
+		global $jush, $driver;
 		restart_session();
 		$history = &get_session("queries");
 		if (!$history[$_GET["db"]]) {
 			$history[$_GET["db"]] = array();
 		}
-		$id = "sql-" . count($history[$_GET["db"]]);
 		if (strlen($query) > 1e6) {
 			$query = preg_replace('~[\x80-\xFF]+$~', '', substr($query, 0, 1e6)) . "\n..."; // [\x80-\xFF] - valid UTF-8, \n - can end by one-line comment
 		}
 		$history[$_GET["db"]][] = array($query, time(), $time); // not DB - $_GET["db"] is changed in database.inc.php //! respect $_GET["ns"]
-		return " <span class='time'>" . @date("H:i:s") . "</span>" // @ - time zone may be not set
+		$return = " <span class='time'>" . @date("H:i:s") . "</span>"; // @ - time zone may be not set
+		$warnings = $driver->warnings();
+		$print = "";
+		if ($warnings && $warnings->num_rows) {
+			$id = "warnings-" . count($history[$_GET["db"]]);
+			$return .= " <a href='#$id' class='toggle'>" . lang('Warnings') . "</a>,";
+			ob_start();
+			select($warnings); // select() usually needs to print a big table progressively
+			$print = "<div id='$id' class='hidden'>\n" . ob_get_clean() . "</div>\n";
+		}
+		$id = "sql-" . count($history[$_GET["db"]]);
+		return $return
 			. " <a href='#$id' class='toggle'>" . lang('SQL command') . "</a>"
+			. $print
 			. "<div id='$id' class='hidden'><pre><code class='jush-$jush'>" . shorten_utf8($query, 1000) . '</code></pre>'
 			. ($time ? " <span class='time'>($time)</span>" : '')
 			. (support("sql") ? '<p><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a>' : '')

@@ -37,6 +37,7 @@ input.wayoff { left: -1000px; position: absolute; }
 .error { color: red; background: #fee; }
 .error b { background: #fff; font-weight: normal; }
 .message { color: green; background: #efe; }
+.message table { color: #000; background: #fff; }
 .error, .message { padding: .5em .8em; margin: 1em 20px 0 0; }
 .char { color: #007F00; }
 .date { color: #7F007F; }
