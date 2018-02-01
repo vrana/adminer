@@ -308,8 +308,8 @@ if (isset($_GET["mssql"])) {
 		return ($limit !== null ? " TOP (" . ($limit + $offset) . ")" : "") . " $query$where"; // seek later
 	}
 
-	function limit1($table, $query, $where) {
-		return limit($query, $where, 1);
+	function limit1($table, $query, $where, $separator = "\n") {
+		return limit($query, $where, 1, 0, $separator);
 	}
 
 	function db_collation($db, $collations) {

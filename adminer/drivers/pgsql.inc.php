@@ -226,10 +226,10 @@ if (isset($_GET["pgsql"])) {
 		return " $query$where" . ($limit !== null ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
 	}
 
-	function limit1($table, $query, $where) {
+	function limit1($table, $query, $where, $separator = "\n") {
 		return (preg_match('~^INTO~', $query)
-			? limit($query, $where, 1)
-			: " $query WHERE ctid = (SELECT ctid FROM " . table($table) . "$where LIMIT 1)"
+			? limit($query, $where, 1, 0, $separator)
+			: " $query WHERE ctid = (SELECT ctid FROM " . table($table) . $where . $separator . "LIMIT 1)"
 		);
 	}
 

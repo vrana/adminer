@@ -365,10 +365,11 @@ if (!defined("DRIVER")) {
 	* @param string
 	* @param string everything after UPDATE or DELETE
 	* @param string
+	* @param string
 	* @return string
 	*/
-	function limit1($table, $query, $where) {
-		return limit($query, $where, 1);
+	function limit1($table, $query, $where, $separator = "\n") {
+		return limit($query, $where, 1, 0, $separator);
 	}
 
 	/** Get database collation

@@ -175,7 +175,7 @@ if (isset($_GET["oracle"])) {
 		));
 	}
 
-	function limit1($table, $query, $where) {
+	function limit1($table, $query, $where, $separator = "\n") {
 		return " $query$where"; //! limit
 	}
 

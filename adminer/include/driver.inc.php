@@ -67,7 +67,7 @@
 			$values[] = "$key = $val";
 		}
 		$query = table($table) . " SET$separator" . implode(",$separator", $values);
-		return queries("UPDATE" . ($limit ? limit1($table, $query, $queryWhere) : " $query$queryWhere"));
+		return queries("UPDATE" . ($limit ? limit1($table, $query, $queryWhere, $separator) : " $query$queryWhere"));
 	}
 	
 	/** Insert data into table
