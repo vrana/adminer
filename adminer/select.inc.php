@@ -260,13 +260,19 @@ if (!$columns && support("table")) {
 	$select2 = $select;
 	if (!$select2) {
 		$select2[] = "*";
+		$convert_fields = convert_fields($columns, $fields, $select);
+		if ($convert_fields) {
+			$select2[] = substr($convert_fields, 2);
+		}
 		if ($oid) {
 			$select2[] = $oid;
 		}
 	}
-	$convert_fields = convert_fields($columns, $fields, $select);
-	if ($convert_fields) {
-		$select2[] = substr($convert_fields, 2);
+	foreach ($select as $key => $val) {
+		$field = $fields[idf_unescape($val)];
+		if ($field && ($as = convert_field($field))) {
+			$select2[$key] = "$as AS $val";
+		}
 	}
 	$result = $driver->select($TABLE, $select2, $where, $group, $order, $limit, $page, true);
 
