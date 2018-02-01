@@ -30,9 +30,11 @@ if (!$error && $_POST) {
 	}
 	
 	$query = (isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . table($PROCEDURE) . "(" . implode(", ", $call) . ")";
-	echo "<p><code class='jush-$jush'>" . h($query) . "</code> <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>\n";
+	$start = microtime(true);
+	$result = $connection->multi_query($query);
+	echo $adminer->selectQuery($query, $start);
 	
-	if (!$connection->multi_query($query)) {
+	if (!$result) {
 		echo "<p class='error'>" . error() . "\n";
 	} else {
 		$connection2 = connect();

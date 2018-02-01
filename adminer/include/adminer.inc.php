@@ -207,7 +207,7 @@ class Adminer {
 	*/
 	function selectQuery($query, $start) {
 		global $jush, $driver;
-		$return = "<p><code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code> <span class='time'>(" . format_time($time) . ")</span>"
+		$return = "<p><code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code> <span class='time'>(" . format_time($start) . ")</span>"
 			. (support("sql") ? " <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>" : "")
 		;
 		$print = "</p>\n"; // required for IE9 inline edit
