@@ -32,7 +32,7 @@ if (!$error && $_POST) {
 	$query = (isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . table($PROCEDURE) . "(" . implode(", ", $call) . ")";
 	$start = microtime(true);
 	$result = $connection->multi_query($query);
-	echo $adminer->selectQuery($query, $start);
+	echo $adminer->selectQuery($query, $start, !$result);
 	
 	if (!$result) {
 		echo "<p class='error'>" . error() . "\n";

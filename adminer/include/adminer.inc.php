@@ -203,13 +203,13 @@ class Adminer {
 	/** Query printed in select before execution
 	* @param string query to be executed
 	* @param float start time of the query
+	* @param bool
 	* @return string
 	*/
-	function selectQuery($query, $start) {
+	function selectQuery($query, $start, $failed = false) {
 		global $jush, $driver;
 		$return = "</p>\n"; // required for IE9 inline edit
-		$warnings = $driver->warnings();
-		if ($warnings) {
+		if (!$failed && ($warnings = $driver->warnings())) {
 			$id = "warnings";
 			$return = ", <a href='#$id'>" . lang('Warnings') . "</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "")
 				. "$return<div id='$id' class='hidden'>\n$warnings</div>\n"
@@ -609,9 +609,10 @@ class Adminer {
 	/** Query printed after execution in the message
 	* @param string executed query
 	* @param string elapsed time
+	* @param bool
 	* @return string
 	*/
-	function messageQuery($query, $time) {
+	function messageQuery($query, $time, $failed = false) {
 		global $jush, $driver;
 		restart_session();
 		$history = &get_session("queries");
@@ -624,8 +625,7 @@ class Adminer {
 		$history[$_GET["db"]][] = array($query, time(), $time); // not DB - $_GET["db"] is changed in database.inc.php //! respect $_GET["ns"]
 		$sql_id = "sql-" . count($history[$_GET["db"]]);
 		$return = "<a href='#$sql_id' class='toggle'>" . lang('SQL command') . "</a>\n";
-		$warnings = $driver->warnings();
-		if ($warnings) {
+		if (!$failed && ($warnings = $driver->warnings())) {
 			$id = "warnings-" . count($history[$_GET["db"]]);
 			$return = "<a href='#$id' class='toggle'>" . lang('Warnings') . "</a>, $return<div id='$id' class='hidden'>\n$warnings</div>\n";
 		}

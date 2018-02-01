@@ -647,7 +647,7 @@ function query_redirect($query, $location, $message, $redirect = true, $execute 
 	}
 	$sql = "";
 	if ($query) {
-		$sql = $adminer->messageQuery($query, $time);
+		$sql = $adminer->messageQuery($query, $time, $failed);
 	}
 	if ($failed) {
 		$error = error() . $sql . script("messagesPrint();");

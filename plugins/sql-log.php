@@ -17,7 +17,7 @@ class AdminerSqlLog {
 		$this->filename = $filename;
 	}
 	
-	function messageQuery($query, $time) {
+	function messageQuery($query, $time, $failed = false) {
 		$this->_log($query);
 	}
 

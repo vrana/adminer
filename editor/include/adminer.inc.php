@@ -140,7 +140,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		}
 	}
 
-	function selectQuery($query, $start) {
+	function selectQuery($query, $start, $failed = false) {
 		return "<!--\n" . str_replace("--", "--><!-- ", $query) . "\n(" . format_time($start) . ")\n-->\n";
 	}
 
@@ -440,7 +440,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		return "";
 	}
 
-	function messageQuery($query, $time) {
+	function messageQuery($query, $time, $failed = false) {
 		return " <span class='time'>" . @date("H:i:s") . "</span><!--\n" . str_replace("--", "--><!-- ", $query) . "\n" . ($time ? "($time)\n" : "") . "-->";
 	}
 

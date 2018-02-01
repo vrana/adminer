@@ -30,7 +30,7 @@ class AdminerMasterSlave {
 		}
 	}
 
-	function messageQuery($query, $time) {
+	function messageQuery($query, $time, $failed = false) {
 		//! doesn't work with sql.inc.php
 		$connection = connection();
 		$result = $connection->query('SHOW MASTER STATUS');

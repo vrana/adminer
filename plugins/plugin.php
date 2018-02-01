@@ -182,7 +182,7 @@ class AdminerPlugin extends Adminer {
 		return $this->_applyPlugin(__FUNCTION__, $args);
 	}
 
-	function selectQuery($query, $start) {
+	function selectQuery($query, $start, $failed = false) {
 		$args = func_get_args();
 		return $this->_applyPlugin(__FUNCTION__, $args);
 	}
@@ -307,7 +307,7 @@ class AdminerPlugin extends Adminer {
 		return $this->_applyPlugin(__FUNCTION__, $args);
 	}
 
-	function messageQuery($query, $time) {
+	function messageQuery($query, $time, $failed = false) {
 		$args = func_get_args();
 		return $this->_applyPlugin(__FUNCTION__, $args);
 	}
