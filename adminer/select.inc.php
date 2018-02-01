@@ -4,9 +4,8 @@ $table_status = table_status1($TABLE);
 $indexes = indexes($TABLE);
 $fields = fields($TABLE);
 $foreign_keys = column_foreign_keys($TABLE);
-$oid = "";
-if ($table_status["Oid"]) {
-	$oid = ($jush == "sqlite" ? "rowid" : "oid");
+$oid = $table_status["Oid"];
+if ($oid) {
 	$indexes[] = array("type" => "PRIMARY", "columns" => array($oid));
 }
 parse_str($_COOKIE["adminer_import"], $adminer_import);
