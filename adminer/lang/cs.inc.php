@@ -84,6 +84,7 @@ $translations = array(
 	
 	'Database' => 'Databáze',
 	'database' => 'databáze',
+	'DB' => 'DB',
 	'Use' => 'Vybrat',
 	'Select database' => 'Vybrat databázi',
 	'Invalid database.' => 'Nesprávná databáze.',

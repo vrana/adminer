@@ -85,6 +85,7 @@ $translations = array(
 	
 	'Database' => 'Xx',
 	'database' => 'xx',
+	'DB' => 'XX',
 	'Use' => 'Xx',
 	'Select database' => 'Xx',
 	'Invalid database.' => 'Xx.',
