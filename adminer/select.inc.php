@@ -445,8 +445,8 @@ if (!$columns && support("table")) {
 		if (($rows || $page) && !is_ajax()) {
 			$exact_count = true;
 			if ($_GET["page"] != "last") {
-				if ($limit == "") {
-					$found_rows = count($rows);
+				if ($limit == "" || (count($rows) < $limit && ($rows || !$page))) {
+					$found_rows = ($page ? $page * $limit : 0) + count($rows);
 				} elseif ($jush != "sql" || !$is_group) {
 					$found_rows = ($is_group ? false : found_rows($table_status, $where));
 					if ($found_rows < max(1e4, 2 * ($page + 1) * $limit)) {
