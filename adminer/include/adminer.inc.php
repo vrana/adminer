@@ -948,7 +948,7 @@ class Adminer {
 					}
 				}
 				?>
-bodyLoad('<?php echo (is_object($connection) ? substr($connection->server_info, 0, 3) : ""); ?>');
+bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\\d\\.?\\d).*~s', '\\1', $connection->server_info) : ""); ?>');
 </script>
 <?php
 			}

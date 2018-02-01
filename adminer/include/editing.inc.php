@@ -487,10 +487,11 @@ function ini_bytes($ini) {
 */
 function doc_link($paths) {
 	global $jush, $connection;
+	$version = preg_replace('~^(\\d\\.?\\d).*~s', '\\1', $connection->server_info);
 	$urls = array(
-		'sql' => "https://dev.mysql.com/doc/refman/" . substr($connection->server_info, 0, 3) . "/en/",
+		'sql' => "https://dev.mysql.com/doc/refman/$version/en/",
 		'sqlite' => "https://www.sqlite.org/",
-		'pgsql' => "https://www.postgresql.org/docs/" . substr($connection->server_info, 0, 3) . "/static/",
+		'pgsql' => "https://www.postgresql.org/docs/$version/static/",
 		'mssql' => "https://msdn.microsoft.com/library/",
 		'oracle' => "https://download.oracle.com/docs/cd/B19306_01/server.102/b14200/",
 	);
