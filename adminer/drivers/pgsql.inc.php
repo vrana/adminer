@@ -89,6 +89,10 @@ if (isset($_GET["pgsql"])) {
 				}
 				return pg_fetch_result($result->_result, 0, $field);
 			}
+
+			function warnings() {
+				return h(pg_last_notice($this->_link)); // second parameter is available since PHP 7.1.0
+			}
 		}
 
 		class Min_Result {
@@ -143,6 +147,10 @@ if (isset($_GET["pgsql"])) {
 				return ($adminer->database() == $database);
 			}
 
+			function warnings() {
+				return ''; // not implemented in PDO_PgSQL as of PHP 7.2.1
+			}
+
 			function close() {
 			}
 		}
@@ -174,7 +182,7 @@ if (isset($_GET["pgsql"])) {
 		}
 
 		function warnings() {
-			return h(pg_last_notice($this->_conn->_link));
+			return $this->_conn->warnings();
 		}
 
 	}
