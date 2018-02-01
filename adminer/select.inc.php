@@ -29,10 +29,6 @@ $is_group = count($group) < count($select);
 $where = $adminer->selectSearchProcess($fields, $indexes);
 $order = $adminer->selectOrderProcess($fields, $indexes);
 $limit = $adminer->selectLimitProcess();
-$from = ($select ? implode(", ", $select) : "*" . ($oid ? ", $oid" : ""))
-	. convert_fields($columns, $fields, $select)
-	. "\nFROM " . table($TABLE);
-$group_by = ($group && $is_group ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : "");
 
 if ($_GET["val"] && is_ajax()) {
 	header("Content-Type: text/plain; charset=utf-8");
@@ -76,6 +72,10 @@ if ($_POST && !$error) {
 		cookie("adminer_import", "output=" . urlencode($_POST["output"]) . "&format=" . urlencode($_POST["format"]));
 		dump_headers($TABLE);
 		$adminer->dumpTable($TABLE, "");
+		$from = ($select ? implode(", ", $select) : "*")
+			. convert_fields($columns, $fields, $select)
+			. "\nFROM " . table($TABLE);
+		$group_by = ($group && $is_group ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : "");
 		if (!is_array($_POST["check"]) || $unselected === array()) {
 			$query = "SELECT $from$where_check$group_by";
 		} else {
