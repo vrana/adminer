@@ -212,12 +212,10 @@ class Adminer {
 		;
 		$print = "</p>\n"; // required for IE9 inline edit
 		$warnings = $driver->warnings();
-		if ($warnings && $warnings->num_rows) {
+		if ($warnings) {
 			$id = "warnings";
-			ob_start();
-			select($warnings); // select() usually needs to print a big table progressively
 			$return .= ", <a href='#$id'>" . lang('Warnings') . "</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "")
-				. "$print<div id='$id' class='hidden'>\n" . ob_get_clean() . "</div>\n"
+				. "$print<div id='$id' class='hidden'>\n$warnings</div>\n"
 			;
 		} else {
 			$return .= $print;
@@ -629,16 +627,13 @@ class Adminer {
 		$return = " <span class='time'>" . @date("H:i:s") . "</span>"; // @ - time zone may be not set
 		$warnings = $driver->warnings();
 		$print = "";
-		if ($warnings && $warnings->num_rows) {
+		if ($warnings) {
 			$id = "warnings-" . count($history[$_GET["db"]]);
 			$return .= " <a href='#$id' class='toggle'>" . lang('Warnings') . "</a>,";
-			ob_start();
-			select($warnings); // select() usually needs to print a big table progressively
-			$print = "<div id='$id' class='hidden'>\n" . ob_get_clean() . "</div>\n";
+			$print = "<div id='$id' class='hidden'>\n$warnings</div>\n";
 		}
 		$id = "sql-" . count($history[$_GET["db"]]);
-		return $return
-			. " <a href='#$id' class='toggle'>" . lang('SQL command') . "</a>"
+		return "$return <a href='#$id' class='toggle'>" . lang('SQL command') . "</a>"
 			. $print
 			. "<div id='$id' class='hidden'><pre><code class='jush-$jush'>" . shorten_utf8($query, 1000) . '</code></pre>'
 			. ($time ? " <span class='time'>($time)</span>" : '')

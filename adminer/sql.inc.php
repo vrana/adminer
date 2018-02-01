@@ -130,9 +130,9 @@ if (!$error && $_POST) {
 									$time = " <span class='time'>(" . format_time($start) . ")</span>"
 										. (strlen($q) < 1000 ? " <a href='" . h(ME) . "sql=" . urlencode(trim($q)) . "'>" . lang('Edit') . "</a>" : "") // 1000 - maximum length of encoded URL in IE is 2083 characters
 									;
-									$warnings = $driver->warnings();
-									$warnings_id = "warnings-$commands";
-									if ($warnings && $warnings->num_rows) {
+									$warnings = ($_POST["only_errors"] ? "" : $driver->warnings());
+									if ($warnings) {
+										$warnings_id = "warnings-$commands";
 										$time .= ", <a href='#$warnings_id'>" . lang('Warnings') . "</a>" . script("qsl('a').onclick = partial(toggle, '$warnings_id');", "");
 									}
 									$explain = null;
@@ -168,11 +168,7 @@ if (!$error && $_POST) {
 											echo "<p class='message' title='" . h($connection->info) . "'>" . lang('Query executed OK, %d row(s) affected.', $connection->affected_rows) . "$time\n";
 										}
 									}
-									if ($warnings && $warnings->num_rows && !$_POST["only_errors"]) {
-										echo "<div id='$warnings_id' class='hidden'>\n";
-										select($warnings);
-										echo "</div>\n";
-									}
+									echo ($warnings ? "<div id='$warnings_id' class='hidden'>\n$warnings</div>\n" : "");
 									if ($explain) {
 										echo "<div id='$explain_id' class='hidden'>\n";
 										select($explain, $connection2, $orgtables);

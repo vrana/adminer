@@ -114,10 +114,10 @@
 	}
 	
 	/** Get warnings about the last command
-	* @return Min_Result or false
+	* @return string HTML
 	*/
 	function warnings() {
-		return false;
+		return '';
 	}
 	
 }

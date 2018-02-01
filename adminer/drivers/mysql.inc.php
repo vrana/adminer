@@ -278,7 +278,12 @@ if (!defined("DRIVER")) {
 		}
 		
 		function warnings() {
-			return $this->_conn->query("SHOW WARNINGS");
+			$result = $this->_conn->query("SHOW WARNINGS");
+			if ($result && $result->num_rows) {
+				ob_start();
+				select($result); // select() usually needs to print a big table progressively
+				return ob_get_clean();
+			}
 		}
 
 	}
