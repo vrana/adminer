@@ -226,8 +226,8 @@ if (isset($_GET["pgsql"])) {
 		return " $query$where" . ($limit !== null ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
 	}
 
-	function limit1($query, $where) {
-		return " $query$where";
+	function limit1($table, $query, $where) {
+		return (preg_match('~^INTO~', $query) ? limit($query, $where, 1) : "$query WHERE ctid = (SELECT ctid FROM " . table($table) . "$where LIMIT 1)");
 	}
 
 	function db_collation($db, $collations) {

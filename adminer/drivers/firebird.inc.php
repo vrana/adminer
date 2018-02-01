@@ -147,7 +147,7 @@ if (isset($_GET["firebird"])) {
 		return $return;
 	}
 
-	function limit1($query, $where) {
+	function limit1($table, $query, $where) {
 		return limit($query, $where, 1);
 	}
 

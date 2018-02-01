@@ -362,11 +362,12 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Formulate SQL modification query with limit 1
+	* @param string
 	* @param string everything after UPDATE or DELETE
 	* @param string
 	* @return string
 	*/
-	function limit1($query, $where) {
+	function limit1($table, $query, $where) {
 		return limit($query, $where, 1);
 	}
 

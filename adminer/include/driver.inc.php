@@ -50,7 +50,7 @@
 	*/
 	function delete($table, $queryWhere, $limit = 0) {
 		$query = "FROM " . table($table);
-		return queries("DELETE" . ($limit ? limit1($query, $queryWhere) : " $query$queryWhere"));
+		return queries("DELETE" . ($limit ? limit1($table, $query, $queryWhere) : " $query$queryWhere"));
 	}
 	
 	/** Update data in table
@@ -67,7 +67,7 @@
 			$values[] = "$key = $val";
 		}
 		$query = table($table) . " SET$separator" . implode(",$separator", $values);
-		return queries("UPDATE" . ($limit ? limit1($query, $queryWhere) : " $query$queryWhere"));
+		return queries("UPDATE" . ($limit ? limit1($table, $query, $queryWhere) : " $query$queryWhere"));
 	}
 	
 	/** Insert data into table

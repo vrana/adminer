@@ -175,8 +175,8 @@ if (isset($_GET["oracle"])) {
 		));
 	}
 
-	function limit1($query, $where) {
-		return " $query$where";
+	function limit1($table, $query, $where) {
+		return " $query$where"; //! limit
 	}
 
 	function db_collation($db, $collations) {
