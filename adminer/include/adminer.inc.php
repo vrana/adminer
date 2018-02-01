@@ -202,12 +202,12 @@ class Adminer {
 
 	/** Query printed in select before execution
 	* @param string query to be executed
-	* @param string elapsed time
+	* @param float start time of the query
 	* @return string
 	*/
-	function selectQuery($query, $time) {
+	function selectQuery($query, $start) {
 		global $jush, $driver;
-		$return = "<p><code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code> <span class='time'>($time)</span>"
+		$return = "<p><code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code> <span class='time'>(" . format_time($time) . ")</span>"
 			. (support("sql") ? " <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>" : "")
 		;
 		$print = "</p>\n"; // required for IE9 inline edit

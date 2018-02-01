@@ -148,7 +148,7 @@ if (isset($_GET["elastic"])) {
 			$start = microtime(true);
 			$search = $this->_conn->query($query, $data);
 			if ($print) {
-				echo $adminer->selectQuery("$query: " . print_r($data, true), format_time($start));
+				echo $adminer->selectQuery("$query: " . print_r($data, true), $start);
 			}
 			if (!$search) {
 				return false;

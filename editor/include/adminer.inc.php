@@ -140,8 +140,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		}
 	}
 
-	function selectQuery($query, $time) {
-		return "<!--\n" . str_replace("--", "--><!-- ", $query) . "\n($time)\n-->\n";
+	function selectQuery($query, $start) {
+		return "<!--\n" . str_replace("--", "--><!-- ", $query) . "\n(" . format_time($start) . ")\n-->\n";
 	}
 
 	function rowDescription($table) {
