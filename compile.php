@@ -354,7 +354,6 @@ $features = array("call" => "routine", "dump", "event", "privileges", "procedure
 $lang_ids = array(); // global variable simplifies usage in a callback function
 $file = file_get_contents(dirname(__FILE__) . "/$project/index.php");
 if ($driver) {
-	$connection = (object) array("server_info" => 5.1); // MySQL support is version specific
 	$_GET[$driver] = true; // to load the driver
 	include_once dirname(__FILE__) . "/adminer/drivers/$driver.inc.php";
 	foreach ($features as $key => $feature) {
