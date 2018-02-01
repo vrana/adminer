@@ -6,6 +6,7 @@ Stop redirecting links via adminer.org
 Support X-Forwarded-Prefix
 Display options for timestamp columns when creating a new table
 MySQL, PostgreSQL: Display warnings
+MySQL: Add floor and ceil functions
 MariaDB: Support JSON since MariaDB 10.2
 PostgreSQL: Support functions
 PostgreSQL: Allow editing views with uppercase letters (bug #467)
