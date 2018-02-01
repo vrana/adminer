@@ -207,20 +207,18 @@ class Adminer {
 	*/
 	function selectQuery($query, $start) {
 		global $jush, $driver;
-		$return = "<p><code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code> <span class='time'>(" . format_time($start) . ")</span>"
-			. (support("sql") ? " <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>" : "")
-		;
-		$print = "</p>\n"; // required for IE9 inline edit
+		$return = "</p>\n"; // required for IE9 inline edit
 		$warnings = $driver->warnings();
 		if ($warnings) {
 			$id = "warnings";
-			$return .= ", <a href='#$id'>" . lang('Warnings') . "</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "")
-				. "$print<div id='$id' class='hidden'>\n$warnings</div>\n"
+			$return = ", <a href='#$id'>" . lang('Warnings') . "</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "")
+				. "$return<div id='$id' class='hidden'>\n$warnings</div>\n"
 			;
-		} else {
-			$return .= $print;
 		}
-		return $return;
+		return "<p><code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code> <span class='time'>(" . format_time($start) . ")</span>"
+			. (support("sql") ? " <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>" : "")
+			. $return
+		;
 	}
 
 	/** Query printed in SQL command before execution
@@ -624,18 +622,15 @@ class Adminer {
 			$query = preg_replace('~[\x80-\xFF]+$~', '', substr($query, 0, 1e6)) . "\n..."; // [\x80-\xFF] - valid UTF-8, \n - can end by one-line comment
 		}
 		$history[$_GET["db"]][] = array($query, time(), $time); // not DB - $_GET["db"] is changed in database.inc.php //! respect $_GET["ns"]
-		$return = " <span class='time'>" . @date("H:i:s") . "</span>"; // @ - time zone may be not set
+		$return = "<a href='#$id' class='toggle'>" . lang('SQL command') . "</a>\n";
 		$warnings = $driver->warnings();
-		$print = "";
 		if ($warnings) {
 			$id = "warnings-" . count($history[$_GET["db"]]);
-			$return .= " <a href='#$id' class='toggle'>" . lang('Warnings') . "</a>,";
-			$print = "<div id='$id' class='hidden'>\n$warnings</div>\n";
+			$return = "<a href='#$id' class='toggle'>" . lang('Warnings') . "</a>, $return<div id='$id' class='hidden'>\n$warnings</div>\n";
 		}
 		$id = "sql-" . count($history[$_GET["db"]]);
-		return "$return <a href='#$id' class='toggle'>" . lang('SQL command') . "</a>"
-			. $print
-			. "<div id='$id' class='hidden'><pre><code class='jush-$jush'>" . shorten_utf8($query, 1000) . '</code></pre>'
+		return " <span class='time'>" . @date("H:i:s") . "</span>" // @ - time zone may be not set
+			. " $return<div id='$id' class='hidden'><pre><code class='jush-$jush'>" . shorten_utf8($query, 1000) . "</code></pre>"
 			. ($time ? " <span class='time'>($time)</span>" : '')
 			. (support("sql") ? '<p><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a>' : '')
 			. '</div>'
