@@ -519,6 +519,7 @@ class Adminer {
 				$val["op"] = "LIKE %%";
 			}
 			if ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators)) {
+				$prefix = "";
 				$cond = " $val[op]";
 				if (preg_match('~IN$~', $val["op"])) {
 					$in = process_length($val["val"]);
@@ -529,11 +530,14 @@ class Adminer {
 					$cond = " LIKE " . $this->processInput($fields[$val["col"]], "%$val[val]%");
 				} elseif ($val["op"] == "ILIKE %%") {
 					$cond = " ILIKE " . $this->processInput($fields[$val["col"]], "%$val[val]%");
+				} elseif ($val["op"] == "FIND_IN_SET") {
+					$prefix = "$val[op](" . q($val["val"]) . ", ";
+					$cond = ")";
 				} elseif (!preg_match('~NULL$~', $val["op"])) {
 					$cond .= " " . $this->processInput($fields[$val["col"]], $val["val"]);
 				}
 				if ($val["col"] != "") {
-					$return[] = idf_escape($val["col"]) . $cond;
+					$return[] = $prefix . idf_escape($val["col"]) . $cond;
 				} else {
 					// find anywhere
 					$cols = array();
@@ -543,10 +547,10 @@ class Adminer {
 							&& (!preg_match("~[\x80-\xFF]~", $val["val"]) || $is_text)
 						) {
 							$name = idf_escape($name);
-							$cols[] = ($jush == "sql" && $is_text && !preg_match("~^utf8~", $field["collation"]) ? "CONVERT($name USING " . charset($connection) . ")" : $name);
+							$cols[] = $prefix . ($jush == "sql" && $is_text && !preg_match("~^utf8~", $field["collation"]) ? "CONVERT($name USING " . charset($connection) . ")" : $name) . $cond;
 						}
 					}
-					$return[] = ($cols ? "(" . implode("$cond OR ", $cols) . "$cond)" : "0");
+					$return[] = ($cols ? "(" . implode(" OR ", $cols) . ")" : "0");
 				}
 			}
 		}
