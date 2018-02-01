@@ -206,11 +206,23 @@ class Adminer {
 	* @return string
 	*/
 	function selectQuery($query, $time) {
-		global $jush;
-		return "<p><code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code> <span class='time'>($time)</span>"
+		global $jush, $driver;
+		$return = "<p><code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code> <span class='time'>($time)</span>"
 			. (support("sql") ? " <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>" : "")
-			. "</p>" // </p> - required for IE9 inline edit
 		;
+		$print = "</p>\n"; // required for IE9 inline edit
+		$warnings = $driver->warnings();
+		if ($warnings && $warnings->num_rows) {
+			$id = "warnings";
+			ob_start();
+			select($warnings); // select() usually needs to print a big table progressively
+			$return .= ", <a href='#$id'>" . lang('Warnings') . "</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "")
+				. "$print<div id='$id' class='hidden'>\n" . ob_get_clean() . "</div>\n"
+			;
+		} else {
+			$return .= $print;
+		}
+		return $return;
 	}
 
 	/** Query printed in SQL command before execution
