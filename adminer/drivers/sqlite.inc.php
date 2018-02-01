@@ -271,9 +271,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	function table_status($name = "") {
 		global $connection;
 		$return = array();
-		foreach (get_rows("SELECT name AS Name, type AS Engine FROM sqlite_master WHERE type IN ('table', 'view') " . ($name != "" ? "AND name = " . q($name) : "ORDER BY name")) as $row) {
-			$row["Oid"] = 1;
-			$row["Auto_increment"] = "";
+		foreach (get_rows("SELECT name AS Name, type AS Engine, 1 AS Oid, '' AS Auto_increment FROM sqlite_master WHERE type IN ('table', 'view') " . ($name != "" ? "AND name = " . q($name) : "ORDER BY name")) as $row) {
 			$row["Rows"] = $connection->result("SELECT COUNT(*) FROM " . idf_escape($row["Name"]));
 			$return[$row["Name"]] = $row;
 		}
