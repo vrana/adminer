@@ -124,7 +124,7 @@ if ($_POST && !$error) {
 							? $driver->delete($TABLE, $where2, 1)
 							: ($_POST["clone"]
 								? queries("INSERT" . limit1($query, $where2))
-								: $driver->update($TABLE, $set, $where2)
+								: $driver->update($TABLE, $set, $where2, 1)
 							)
 						);
 						if (!$result) {
