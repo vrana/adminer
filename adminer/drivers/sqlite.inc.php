@@ -244,7 +244,10 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 
 	function limit1($table, $query, $where) {
 		global $connection;
-		return ($connection->result("SELECT sqlite_compileoption_used('ENABLE_UPDATE_DELETE_LIMIT')") ? limit($query, $where, 1) : " $query$where"); //! limit
+		return (preg_match('~^INTO~', $query) || $connection->result("SELECT sqlite_compileoption_used('ENABLE_UPDATE_DELETE_LIMIT')")
+			? limit($query, $where, 1)
+			: " $query WHERE rowid = (SELECT rowid FROM " . table($table) . "$where LIMIT 1)"
+		);
 	}
 
 	function db_collation($db, $collations) {

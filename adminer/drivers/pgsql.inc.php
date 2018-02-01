@@ -227,7 +227,10 @@ if (isset($_GET["pgsql"])) {
 	}
 
 	function limit1($table, $query, $where) {
-		return (preg_match('~^INTO~', $query) ? limit($query, $where, 1) : "$query WHERE ctid = (SELECT ctid FROM " . table($table) . "$where LIMIT 1)");
+		return (preg_match('~^INTO~', $query)
+			? limit($query, $where, 1)
+			: " $query WHERE ctid = (SELECT ctid FROM " . table($table) . "$where LIMIT 1)"
+		);
 	}
 
 	function db_collation($db, $collations) {

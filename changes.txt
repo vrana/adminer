@@ -9,8 +9,8 @@ MySQL, PostgreSQL: Display warnings
 MySQL: Add floor and ceil select functions
 MySQL: Add FIND_IN_SET search operator
 MariaDB: Support JSON since MariaDB 10.2
+SQLite, PostgreSQL: Limit rows in data manipulation without unique key
 PostgreSQL: Support routines
-PostgreSQL: Limit rows in data manipulation without unique key
 PostgreSQL: Allow editing views with uppercase letters (bug #467)
 PostgreSQL: Allow now() as default value (bug #525)
 SimpleDB: Document that allow_url_fopen is required
