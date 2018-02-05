@@ -54,7 +54,7 @@ foreach ($indexes as $index) {
 		break;
 	}
 }
-if ($oid && $unselected === null) {
+if ($oid && !$primary) {
 	$primary = $unselected = array($oid => 0);
 	$indexes[] = array("type" => "PRIMARY", "columns" => array($oid));
 }
@@ -77,7 +77,7 @@ if ($_POST && !$error) {
 			. convert_fields($columns, $fields, $select)
 			. "\nFROM " . table($TABLE);
 		$group_by = ($group && $is_group ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : "");
-		if (!is_array($_POST["check"]) || $unselected === array()) {
+		if (!is_array($_POST["check"]) || $primary) {
 			$query = "SELECT $from$where_check$group_by";
 		} else {
 			$union = array();
@@ -108,7 +108,7 @@ if ($_POST && !$error) {
 				if ($_POST["clone"]) {
 					$query = "INTO " . table($TABLE) . " (" . implode(", ", array_keys($set)) . ")\nSELECT " . implode(", ", $set) . "\nFROM " . table($TABLE);
 				}
-				if ($_POST["all"] || ($unselected === array() && is_array($_POST["check"])) || $is_group) {
+				if ($_POST["all"] || ($primary && is_array($_POST["check"])) || $is_group) {
 					$result = ($_POST["delete"]
 						? $driver->delete($TABLE, $where_check)
 						: ($_POST["clone"]
@@ -165,7 +165,7 @@ if ($_POST && !$error) {
 						$TABLE,
 						$set,
 						" WHERE " . ($where ? implode(" AND ", $where) . " AND " : "") . where_check($unique_idf, $fields),
-						!($is_group || $unselected === array()),
+						!$is_group && !$primary,
 						" "
 					);
 					if (!$result) {

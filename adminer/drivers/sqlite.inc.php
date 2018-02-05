@@ -246,7 +246,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		global $connection;
 		return (preg_match('~^INTO~', $query) || $connection->result("SELECT sqlite_compileoption_used('ENABLE_UPDATE_DELETE_LIMIT')")
 			? limit($query, $where, 1, 0, $separator)
-			: " $query WHERE rowid = (SELECT rowid FROM " . table($table) . $where . $separator . "LIMIT 1)"
+			: " $query WHERE rowid = (SELECT rowid FROM " . table($table) . $where . $separator . "LIMIT 1)" //! use primary key in tables with WITHOUT rowid
 		);
 	}
 
