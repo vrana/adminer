@@ -27,6 +27,8 @@ SQLite:
 Copy tables
 Delimiter in export and SQL command
 Backward keys in Editor
+Delete PRIMARY KEY from a table with auto increment
+"PRIMARY (`id`)" and "UNIQUE (id)" indexes shown for tables with auto increment
 
 PostgreSQL:
 Display number of schemas in databases overview
