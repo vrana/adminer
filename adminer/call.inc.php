@@ -32,6 +32,7 @@ if (!$error && $_POST) {
 	$query = (isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . table($PROCEDURE) . "(" . implode(", ", $call) . ")";
 	$start = microtime(true);
 	$result = $connection->multi_query($query);
+	$affected = $connection->affected_rows; // getting warnigns overwrites this
 	echo $adminer->selectQuery($query, $start, !$result);
 	
 	if (!$result) {
@@ -47,7 +48,7 @@ if (!$error && $_POST) {
 			if (is_object($result)) {
 				select($result, $connection2);
 			} else {
-				echo "<p class='message'>" . lang('Routine has been called, %d row(s) affected.', $connection->affected_rows) . "\n";
+				echo "<p class='message'>" . lang('Routine has been called, %d row(s) affected.', $affected) . "\n";
 			}
 		} while ($connection->next_result());
 		

@@ -278,9 +278,7 @@ if (!defined("DRIVER")) {
 		}
 		
 		function warnings() {
-			$affected = $this->_conn->affected_rows;
 			$result = $this->_conn->query("SHOW WARNINGS");
-			$this->_conn->affected_rows = $affected;
 			if ($result && $result->num_rows) {
 				ob_start();
 				select($result); // select() usually needs to print a big table progressively
