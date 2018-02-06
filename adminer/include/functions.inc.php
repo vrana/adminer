@@ -1089,9 +1089,8 @@ function search_tables() {
 					echo "<ul>\n";
 					$found = true;
 				}
-				echo "<li>" . ($result
-					? "<a href='" . h(ME . "select=" . urlencode($table) . "&where[0][op]=" . urlencode($_GET["where"][0]["op"]) . "&where[0][val]=" . urlencode($_GET["where"][0]["val"])) . "'>$name</a>\n"
-					: "$name: <span class='error'>" . error() . "</span>\n");
+				$print = "<a href='" . h(ME . "select=" . urlencode($table) . "&where[0][op]=" . urlencode($_GET["where"][0]["op"]) . "&where[0][val]=" . urlencode($_GET["where"][0]["val"])) . "'>$name</a>";
+				echo "<li>" . ($result ? $print : "<p class='error'>$print: " . error()) . "\n";
 			}
 		}
 	}
