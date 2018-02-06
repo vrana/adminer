@@ -360,7 +360,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 						}
 					}
 				}
-				$return[] = ($conds ? "(" . implode(" OR ", $conds) . ")" : "0");
+				$return[] = ($conds ? "(" . implode(" OR ", $conds) . ")" : "1 = 0");
 			}
 		}
 		return $return;

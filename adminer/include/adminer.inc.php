@@ -550,7 +550,7 @@ class Adminer {
 							$cols[] = $prefix . ($jush == "sql" && $is_text && !preg_match("~^utf8~", $field["collation"]) ? "CONVERT($name USING " . charset($connection) . ")" : $name) . $cond;
 						}
 					}
-					$return[] = ($cols ? "(" . implode(" OR ", $cols) . ")" : "0");
+					$return[] = ($cols ? "(" . implode(" OR ", $cols) . ")" : "1 = 0");
 				}
 			}
 		}
