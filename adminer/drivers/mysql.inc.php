@@ -1021,7 +1021,7 @@ if (!defined("DRIVER")) {
 			$return = "CONV($return, 2, 10) + 0";
 		}
 		if (preg_match("~geometry|point|linestring|polygon~", $field["type"])) {
-			$return = "GeomFromText($return)";
+			$return = (min_version(8) ? "ST_" : "") . "GeomFromText($return)";
 		}
 		return $return;
 	}
