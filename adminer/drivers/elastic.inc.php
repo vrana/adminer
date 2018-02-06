@@ -269,7 +269,7 @@ if (isset($_GET["elastic"])) {
 		$result = $connection->query('_stats');
 		if ($result && $result['indices']) {
 			$indices = $result['indices'];
-			foreach($indices as $indice => $stats) {
+			foreach ($indices as $indice => $stats) {
 				$indexing = $stats['total']['indexing'];
 				$return[$indice] = $indexing['index_total'];
 			}
@@ -410,7 +410,7 @@ if (isset($_GET["elastic"])) {
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
 		global $connection;
 		$properties = array();
-		foreach($fields as $f) {
+		foreach ($fields as $f) {
 			$field_name = trim($f[1][0]);
 			$field_type = trim($f[1][1] ? $f[1][1] : "text");
 			$properties[$field_name] = array(
