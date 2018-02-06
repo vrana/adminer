@@ -672,18 +672,6 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		);
 	}
 
-	function routine($name, $type) {
-		// not supported by SQLite
-	}
-
-	function routines() {
-		// not supported by SQLite
-	}
-
-	function routine_languages() {
-		// not supported by SQLite
-	}
-
 	function begin() {
 		return queries("BEGIN");
 	}
