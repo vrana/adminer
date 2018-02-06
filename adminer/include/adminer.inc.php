@@ -543,7 +543,7 @@ class Adminer {
 					$cols = array();
 					foreach ($fields as $name => $field) {
 						$is_text = preg_match('~char|text|enum|set~', $field["type"]);
-						if ((is_numeric($val["val"]) || !preg_match('~(^|[^o])int|float|double|decimal|bit~', $field["type"]))
+						if ((is_numeric($val["val"]) || !preg_match('~' . number_type() . '|bit~', $field["type"]))
 							&& (!preg_match("~[\x80-\xFF]~", $val["val"]) || $is_text)
 						) {
 							$name = idf_escape($name);
@@ -828,7 +828,7 @@ class Adminer {
 						foreach ($row as $key => $val) {
 							$field = $fields[$key];
 							$row[$key] = ($val !== null
-								? unconvert_field($field, preg_match('~(^|[^o])int|float|double|decimal~', $field["type"]) && $val != '' ? $val : q($val))
+								? unconvert_field($field, preg_match('~' . number_type() . '~', $field["type"]) && $val != '' ? $val : q($val))
 								: "NULL"
 							);
 						}

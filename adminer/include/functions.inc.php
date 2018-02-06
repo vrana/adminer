@@ -41,6 +41,13 @@ function number($val) {
 	return preg_replace('~[^0-9]+~', '', $val);
 }
 
+/** Get regular expression to match numeric types
+* @return string
+*/
+function number_type() {
+	return '(?<!o)int(?!er)|numeric|real|float|double|decimal|money'; // not point, not interval
+}
+
 /** Disable magic_quotes_gpc
 * @param array e.g. (&$_GET, &$_POST, &$_COOKIE)
 * @param bool whether to leave values as is
@@ -970,7 +977,7 @@ function input($field, $value, $function) {
 			}
 			// type='date' and type='time' display localized value which may be confusing, type='datetime' uses 'T' as date and time separator
 			echo "<input"
-				. ((!$has_function || $function === "") && preg_match('~(?<!o)int~', $field["type"]) && !preg_match('~\[\]~', $field["full_type"]) ? " type='number'" : "")
+				. ((!$has_function || $function === "") && preg_match('~(?<!o)int(?!er)~', $field["type"]) && !preg_match('~\[\]~', $field["full_type"]) ? " type='number'" : "")
 				. " value='" . h($value) . "'" . ($maxlength ? " data-maxlength='$maxlength'" : "")
 				. (preg_match('~char|binary~', $field["type"]) && $maxlength > 20 ? " size='40'" : "")
 				. "$attrs>"

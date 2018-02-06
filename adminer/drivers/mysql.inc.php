@@ -1071,7 +1071,7 @@ if (!defined("DRIVER")) {
 			"binary" => "md5/sha1",
 			"date|time" => "now",
 		), array(
-			"(^|[^o])int|float|double|decimal" => "+/-", // not point
+			number_type() => "+/-",
 			"date" => "+ interval/- interval",
 			"time" => "addtime/subtime",
 			"char|text" => "concat",

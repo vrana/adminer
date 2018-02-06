@@ -316,7 +316,7 @@ function editingTypeChange() {
 			alterClass(el, 'hidden', !/(char|text|enum|set)$/.test(text));
 		}
 		if (el.name == name + '[unsigned]') {
-			alterClass(el, 'hidden', !/((^|[^o])int|float|double|decimal)$/.test(text));
+			alterClass(el, 'hidden', !/(^|[^o])int(?!er)|numeric|real|float|double|decimal|money/.test(text));
 		}
 		if (el.name == name + '[on_update]') {
 			alterClass(el, 'hidden', !/timestamp|datetime/.test(text)); // MySQL supports datetime since 5.6.5

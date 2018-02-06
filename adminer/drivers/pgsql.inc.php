@@ -789,7 +789,7 @@ AND typelem = 0"
 			"char" => "md5",
 			"date|time" => "now",
 		), array(
-			"int|numeric|real|money" => "+/-",
+			number_type() => "+/-",
 			"date|time" => "+ interval/- interval", //! escape
 			"char|text" => "||",
 		)
