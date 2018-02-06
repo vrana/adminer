@@ -1079,22 +1079,19 @@ function fields_from_edit() {
 function search_tables() {
 	global $adminer, $connection;
 	$_GET["where"][0]["val"] = $_POST["query"];
-	$found = false;
+	$sep = "<ul>\n";
 	foreach (table_status('', true) as $table => $table_status) {
 		$name = $adminer->tableName($table_status);
 		if (isset($table_status["Engine"]) && $name != "" && (!$_POST["tables"] || in_array($table, $_POST["tables"]))) {
 			$result = $connection->query("SELECT" . limit("1 FROM " . table($table), " WHERE " . implode(" AND ", $adminer->selectSearchProcess(fields($table), array())), 1));
 			if (!$result || $result->fetch_row()) {
-				if (!$found) {
-					echo "<ul>\n";
-					$found = true;
-				}
 				$print = "<a href='" . h(ME . "select=" . urlencode($table) . "&where[0][op]=" . urlencode($_GET["where"][0]["op"]) . "&where[0][val]=" . urlencode($_GET["where"][0]["val"])) . "'>$name</a>";
-				echo "<li>" . ($result ? $print : "<p class='error'>$print: " . error()) . "\n";
+				echo "$sep<li>" . ($result ? $print : "<p class='error'>$print: " . error()) . "\n";
+				$sep = "";
 			}
 		}
 	}
-	echo ($found ? "</ul>" : "<p class='message'>" . lang('No tables.')) . "\n";
+	echo ($sep ? "<p class='message'>" . lang('No tables.') : "</ul>") . "\n";
 }
 
 /** Send headers for export
