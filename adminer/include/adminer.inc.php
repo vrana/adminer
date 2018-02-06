@@ -366,9 +366,8 @@ class Adminer {
 				echo "</div>\n";
 			}
 		}
-		$_GET["where"][] = array();
 		$change_next = "this.parentNode.firstChild.onchange();";
-		foreach ($_GET["where"] as $i => $val) {
+		foreach (array_merge((array) $_GET["where"], array(array())) as $i => $val) {
 			if (!$val || ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators))) {
 				echo "<div>" . select_input(
 					" name='where[$i][col]'",
