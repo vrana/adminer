@@ -45,7 +45,7 @@ function number($val) {
 * @return string
 */
 function number_type() {
-	return '(?<!o)int(?!er)|numeric|real|float|double|decimal|money'; // not point, not interval
+	return '((?<!o)int(?!er)|numeric|real|float|double|decimal|money)'; // not point, not interval
 }
 
 /** Disable magic_quotes_gpc

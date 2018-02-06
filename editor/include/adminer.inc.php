@@ -197,7 +197,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		if ($link) {
 			$return = "<a href='$link'" . (is_url($link) ? target_blank() : "") . ">$return</a>";
 		}
-		if (!$link && !like_bool($field) && preg_match('~' . number_type() . '~', $field["type"])) {
+		if (!$link && !like_bool($field) && preg_match(number_type(), $field["type"])) {
 			$return = "<div class='number'>$return</div>"; // Firefox doesn't support <colgroup>
 		} elseif (preg_match('~date~', $field["type"])) {
 			$return = "<div class='datetime'>$return</div>";
@@ -342,7 +342,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			if (($key < 0 ? "" : $col) . $val != "") {
 				$conds = array();
 				foreach (($col != "" ? array($col => $fields[$col]) : $fields) as $name => $field) {
-					if ($col != "" || is_numeric($val) || !preg_match('~' . number_type() . '~', $field["type"])) {
+					if ($col != "" || is_numeric($val) || !preg_match(number_type(), $field["type"])) {
 						$name = idf_escape($name);
 						if ($col != "" && $field["type"] == "enum") {
 							$conds[] = (in_array(0, $val) ? "$name IS NULL OR " : "") . "$name IN (" . implode(", ", array_map('intval', $val)) . ")";
