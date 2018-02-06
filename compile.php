@@ -21,7 +21,7 @@ function remove_lang($match) {
 	$idf = strtr($match[2], array("\\'" => "'", "\\\\" => "\\"));
 	$s = ($translations[$idf] ? $translations[$idf] : $idf);
 	if ($match[3] == ",") { // lang() has parameters
-		return "$match[1]" . (is_array($s) ? "lang(array('" . implode("', '", array_map('add_apo_slashes', $s)) . "')," : "sprintf('" . add_apo_slashes($s) . "',");
+		return $match[1] . (is_array($s) ? "lang(array('" . implode("', '", array_map('add_apo_slashes', $s)) . "')," : "sprintf('" . add_apo_slashes($s) . "',");
 	}
 	return ($match[1] && $match[4] ? $s : "$match[1]'" . add_apo_slashes($s) . "'$match[4]");
 }
