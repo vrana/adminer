@@ -304,6 +304,10 @@ function min_version() {
 	return true;
 }
 
+function number_type() {
+	return '';
+}
+
 $project = "adminer";
 if ($_SERVER["argv"][1] == "editor") {
 	$project = "editor";
