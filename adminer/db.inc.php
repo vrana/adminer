@@ -61,6 +61,7 @@ if ($adminer->homepage()) {
 				echo " <input type='submit' name='search' value='" . lang('Search') . "'>\n";
 				echo "</div></fieldset>\n";
 				if ($_POST["search"] && $_POST["query"] != "") {
+					$_GET["where"][0]["op"] = "LIKE %%";
 					search_tables();
 				}
 			}

@@ -512,9 +512,6 @@ class Adminer {
 			}
 		}
 		foreach ((array) $_GET["where"] as $key => $val) {
-			if ($val["op"] == "") {
-				$val["op"] = $_GET["where"][$key]["op"] = "LIKE %%";
-			}
 			if ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators)) {
 				$prefix = "";
 				$cond = " $val[op]";
