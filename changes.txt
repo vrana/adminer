@@ -5,6 +5,7 @@ PostgreSQL: Support binary files in bytea fields
 PostgreSQL: Cast to string when searching using LIKE (bug #325)
 PostgreSQL: Don't treat interval type as number (bug #474)
 PostgreSQL: Fix condition for selecting no rows
+PostgreSQL: Support TRUNCATE+INSERT export
 
 Adminer 4.6.0 (released 2018-02-05):
 Fix counting selected rows after going back to select page

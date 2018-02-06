@@ -747,6 +747,10 @@ AND typelem = 0"
 		return rtrim($return, ';');
 	}
 
+	function truncate_sql($table) {
+		return "TRUNCATE " . table($table);
+	}
+
 	function trigger_sql($table) {
 		$status = table_status($table);
 		$return = "";
