@@ -62,6 +62,7 @@ input.wayoff { left: -1000px; position: absolute; }
 .links a { white-space: nowrap; margin-right: 20px; }
 .logout { margin-top: .5em; position: absolute; top: 0; right: 0; }
 .loadmore { margin-left: 1ex; }
+/* .edit used in designs */
 #menu { position: absolute; margin: 10px 0 0; padding: 0 0 30px 0; top: 2em; left: 0; width: 19em; }
 #menu p, #tables { padding: .8em 1em; margin: 0; border-bottom: 1px solid #ccc; }
 #tables li{ list-style: none; }
