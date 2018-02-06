@@ -26,6 +26,6 @@ if ($adminer->homepage()) {
 	}
 	
 	echo "</table>\n";
-	echo script("tableCheck();");
 	echo "</form>\n";
+	echo script("tableCheck();");
 }
