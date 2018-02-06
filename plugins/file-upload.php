@@ -24,7 +24,7 @@ class AdminerFileUpload {
 
 	function editInput($table, $field, $attrs, $value) {
 		if (preg_match('~(.*)_path$~', $field["field"])) {
-			return "<input type='file' name='fields-$field[field]'>";
+			return "<input type='file'$attrs>";
 		}
 	}
 
