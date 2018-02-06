@@ -58,6 +58,7 @@ mixin(document.body, {onkeydown: bodyKeydown, onclick: bodyClick<?php
 	?>});
 document.body.className = document.body.className.replace(/ nojs/, ' js');
 var offlineMessage = '<?php echo js_escape(lang('You are offline.')); ?>';
+var thousandsSeparator = '<?php echo js_escape(lang(',')); ?>';
 </script>
 
 <div id="help" class="jush-<?php echo $jush; ?> jsonly hidden"></div>

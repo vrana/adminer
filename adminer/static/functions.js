@@ -172,9 +172,10 @@ function trCheck(el) {
 /** Fill number of selected items
 * @param string
 * @param string
+* @uses thousandsSeparator
 */
 function selectCount(id, count) {
-	setHtml(id, (count === '' ? '' : '(' + (count + '').replace(/\B(?=(\d{3})+$)/g, ' ') + ')'));
+	setHtml(id, (count === '' ? '' : '(' + (count + '').replace(/\B(?=(\d{3})+$)/g, thousandsSeparator) + ')'));
 	var el = qs('#' + id);
 	if (el) {
 		var inputs = qsa('input', el.parentNode.parentNode);
@@ -580,6 +581,7 @@ function fieldChange() {
 * @param [string]
 * @param [string]
 * @return XMLHttpRequest or false in case of an error
+* @uses offlineMessage
 */
 function ajax(url, callback, data, message) {
 	var request = (window.XMLHttpRequest ? new XMLHttpRequest() : (window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') : false));
