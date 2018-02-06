@@ -512,9 +512,9 @@ class Adminer {
 				$return[] = "MATCH (" . implode(", ", array_map('idf_escape', $index["columns"])) . ") AGAINST (" . q($_GET["fulltext"][$i]) . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
 			}
 		}
-		foreach ((array) $_GET["where"] as $val) {
+		foreach ((array) $_GET["where"] as $key => $val) {
 			if ($val["op"] == "") {
-				$val["op"] = "LIKE %%";
+				$val["op"] = $_GET["where"][$key]["op"] = "LIKE %%";
 			}
 			if ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators)) {
 				$prefix = "";
