@@ -69,7 +69,7 @@ SELECT @adminer_alter;
 	
 	function dumpTable($table, $style, $is_view = false) {
 		if ($_POST["format"] == "sql_alter") {
-			$create = create_sql($table, $_POST["auto_increment"]);
+			$create = create_sql($table, $_POST["auto_increment"], $style);
 			if ($is_view) {
 				echo substr_replace($create, " OR REPLACE", 6, 0) . ";\n\n";
 			} else {
