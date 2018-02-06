@@ -37,7 +37,11 @@ if (isset($_GET["pgsql"])) {
 			}
 
 			function quote($string) {
-				return "'" . pg_escape_string($this->_link, $string) . "'"; //! bytea
+				return "'" . pg_escape_string($this->_link, $string) . "'";
+			}
+
+			function quoteBinary($string) {
+				return "'" . pg_escape_bytea($this->_link, $string) . "'";
 			}
 
 			function select_db($database) {
@@ -147,6 +151,10 @@ if (isset($_GET["pgsql"])) {
 				return ($adminer->database() == $database);
 			}
 
+			function quoteBinary($s) {
+				return q($s);
+			}
+
 			function warnings() {
 				return ''; // not implemented in PDO_PgSQL as of PHP 7.2.1
 			}
@@ -186,6 +194,10 @@ if (isset($_GET["pgsql"])) {
 				? $idf
 				: "CAST($idf AS text)"
 			);
+		}
+
+		function quoteBinary($s) {
+			return $this->_conn->quoteBinary($s);
 		}
 
 		function warnings() {

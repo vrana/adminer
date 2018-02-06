@@ -123,6 +123,14 @@
 		return $idf;
 	}
 	
+	/** Quote binary string
+	* @param string
+	* @return string
+	*/
+	function quoteBinary($s) {
+		return q($s);
+	}
+	
 	/** Get warnings about the last command
 	* @return string HTML
 	*/

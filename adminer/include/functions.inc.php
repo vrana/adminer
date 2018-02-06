@@ -1003,7 +1003,7 @@ function input($field, $value, $function) {
 * @return string or false to leave the original value
 */
 function process_input($field) {
-	global $adminer;
+	global $adminer, $driver;
 	$idf = bracket_escape($field["field"]);
 	$function = $_POST["function"][$idf];
 	$value = $_POST["fields"][$idf];
@@ -1041,7 +1041,7 @@ function process_input($field) {
 		if (!is_string($file)) {
 			return false; //! report errors
 		}
-		return q($file);
+		return $driver->quoteBinary($file);
 	}
 	return $adminer->processInput($field, $value, $function);
 }
