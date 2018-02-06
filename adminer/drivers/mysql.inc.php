@@ -277,7 +277,7 @@ if (!defined("DRIVER")) {
 			return queries($prefix . implode(",\n", $values) . $suffix);
 		}
 		
-		function convertSearch($idf, $field) {
+		function convertSearch($idf, $val, $field) {
 			return (preg_match('~char|text|enum|set~', $field["type"]) && !preg_match("~^utf8~", $field["collation"])
 				? "CONVERT($idf USING " . charset($this->_conn) . ")"
 				: $idf

@@ -534,7 +534,7 @@ class Adminer {
 					$cond .= " " . $this->processInput($fields[$val["col"]], $val["val"]);
 				}
 				if ($val["col"] != "") {
-					$return[] = $prefix . $driver->convertSearch(idf_escape($val["col"]), $fields[$val["col"]]) . $cond;
+					$return[] = $prefix . $driver->convertSearch(idf_escape($val["col"]), $val, $fields[$val["col"]]) . $cond;
 				} else {
 					// find anywhere
 					$cols = array();
@@ -542,7 +542,7 @@ class Adminer {
 						if ((is_numeric($val["val"]) || !preg_match('~' . number_type() . '|bit~', $field["type"]))
 							&& (!preg_match("~[\x80-\xFF]~", $val["val"]) || preg_match('~char|text|enum|set~', $field["type"]))
 						) {
-							$cols[] = $prefix . $driver->convertSearch(idf_escape($name), $field) . $cond;
+							$cols[] = $prefix . $driver->convertSearch(idf_escape($name), $val, $field) . $cond;
 						}
 					}
 					$return[] = ($cols ? "(" . implode(" OR ", $cols) . ")" : "1 = 0");

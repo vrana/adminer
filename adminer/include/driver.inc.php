@@ -114,11 +114,12 @@
 	}
 	
 	/** Convert column to be searchable
-	* @param string escaped name
+	* @param string escaped column name
+	* @param array array("op" => , "val" => )
 	* @param array
 	* @return string
 	*/
-	function convertSearch($idf, $field) {
+	function convertSearch($idf, $val, $field) {
 		return $idf;
 	}
 	
