@@ -113,6 +113,15 @@
 		return queries("ROLLBACK");
 	}
 	
+	/** Convert column to be searchable
+	* @param string escaped name
+	* @param array
+	* @return string
+	*/
+	function convertSearch($idf, $field) {
+		return $idf;
+	}
+	
 	/** Get warnings about the last command
 	* @return string HTML
 	*/

@@ -504,7 +504,7 @@ class Adminer {
 	* @return array expressions to join by AND
 	*/
 	function selectSearchProcess($fields, $indexes) {
-		global $connection, $jush;
+		global $connection, $driver;
 		$return = array();
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT" && $_GET["fulltext"][$i] != "") {
@@ -534,17 +534,15 @@ class Adminer {
 					$cond .= " " . $this->processInput($fields[$val["col"]], $val["val"]);
 				}
 				if ($val["col"] != "") {
-					$return[] = $prefix . idf_escape($val["col"]) . $cond;
+					$return[] = $prefix . $driver->convertSearch(idf_escape($val["col"]), $fields[$val["col"]]) . $cond;
 				} else {
 					// find anywhere
 					$cols = array();
 					foreach ($fields as $name => $field) {
-						$is_text = preg_match('~char|text|enum|set~', $field["type"]);
 						if ((is_numeric($val["val"]) || !preg_match('~' . number_type() . '|bit~', $field["type"]))
-							&& (!preg_match("~[\x80-\xFF]~", $val["val"]) || $is_text)
+							&& (!preg_match("~[\x80-\xFF]~", $val["val"]) || preg_match('~char|text|enum|set~', $field["type"]))
 						) {
-							$name = idf_escape($name);
-							$cols[] = $prefix . ($jush == "sql" && $is_text && !preg_match("~^utf8~", $field["collation"]) ? "CONVERT($name USING " . charset($connection) . ")" : $name) . $cond;
+							$cols[] = $prefix . $driver->convertSearch(idf_escape($name), $field) . $cond;
 						}
 					}
 					$return[] = ($cols ? "(" . implode(" OR ", $cols) . ")" : "1 = 0");

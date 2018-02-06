@@ -277,6 +277,13 @@ if (!defined("DRIVER")) {
 			return queries($prefix . implode(",\n", $values) . $suffix);
 		}
 		
+		function convertSearch($idf, $field) {
+			return (preg_match('~char|text|enum|set~', $field["type"]) && !preg_match("~^utf8~", $field["collation"])
+				? "CONVERT($idf USING " . charset($this->_conn) . ")"
+				: $idf
+			);
+		}
+		
 		function warnings() {
 			$result = $this->_conn->query("SHOW WARNINGS");
 			if ($result && $result->num_rows) {
