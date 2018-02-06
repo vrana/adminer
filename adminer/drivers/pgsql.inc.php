@@ -40,6 +40,10 @@ if (isset($_GET["pgsql"])) {
 				return "'" . pg_escape_string($this->_link, $string) . "'";
 			}
 
+			function value($val, $field) {
+				return ($field["type"] == "bytea" ? pg_unescape_bytea($val) : $val);
+			}
+
 			function quoteBinary($string) {
 				return "'" . pg_escape_bytea($this->_link, $string) . "'";
 			}
@@ -151,6 +155,10 @@ if (isset($_GET["pgsql"])) {
 				return ($adminer->database() == $database);
 			}
 
+			function value($val, $field) {
+				return $val;
+			}
+
 			function quoteBinary($s) {
 				return q($s);
 			}
@@ -194,6 +202,10 @@ if (isset($_GET["pgsql"])) {
 				? $idf
 				: "CAST($idf AS text)"
 			);
+		}
+
+		function value($val, $field) {
+			return $this->_conn->value($val, $field);
 		}
 
 		function quoteBinary($s) {

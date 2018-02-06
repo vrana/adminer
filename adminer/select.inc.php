@@ -391,6 +391,7 @@ if (!$columns && support("table")) {
 				foreach ($row as $key => $val) {
 					if (isset($names[$key])) {
 						$field = $fields[$key];
+						$val = $driver->value($val, $field);
 						if ($val != "" && (!isset($email_fields[$key]) || $email_fields[$key] != "")) {
 							$email_fields[$key] = (is_mail($val) ? $names[$key] : ""); //! filled e-mails can be contained on other pages
 						}

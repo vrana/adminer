@@ -122,7 +122,16 @@
 	function convertSearch($idf, $val, $field) {
 		return $idf;
 	}
-	
+
+	/** Convert value returned by database to actual value
+	* @param string
+	* @param array
+	* @return string
+	*/
+	function value($val, $field) {
+		return $val;
+	}
+
 	/** Quote binary string
 	* @param string
 	* @return string
