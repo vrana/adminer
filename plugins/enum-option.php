@@ -14,6 +14,9 @@ class AdminerEnumOption {
 			$selected = $value;
 			if (isset($_GET["select"])) {
 				$options[-1] = lang('original');
+				if ($selected === null) {
+					$selected = -1;
+				}
 			}
 			if ($field["null"]) {
 				$options[""] = "NULL";
