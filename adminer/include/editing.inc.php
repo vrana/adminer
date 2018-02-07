@@ -234,7 +234,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 	global $inout;
 	$fields = array_values($fields);
 	?>
-<thead><tr class="wrap">
+<thead><tr>
 <?php if ($type == "PROCEDURE") { ?><td>&nbsp;<?php } ?>
 <th id="label-name"><?php echo ($type == "TABLE" ? lang('Column name') : lang('Parameter name')); ?>
 <td id="label-type"><?php echo lang('Type'); ?><textarea id="enum-edit" rows="4" cols="12" wrap="off" style="display: none;"></textarea><?php echo script("qs('#enum-edit').onblur = editingLengthBlur;"); ?>
