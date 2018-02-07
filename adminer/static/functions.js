@@ -273,6 +273,10 @@ function tableClick(event, click) {
 		el.checked = !el.checked;
 		el.onclick && el.onclick();
 	}
+	if (el.name == 'check[]') {
+		el.form['all'].checked = false;
+		formUncheck('all-page');
+	}
 	trCheck(el);
 }
 
