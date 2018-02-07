@@ -666,7 +666,7 @@ function ajaxForm(form, message, button) {
 /** Display edit field
 * @param MouseEvent
 * @param number display textarea instead of input, 2 - load long text
-* @param string warning to display
+* @param [string] warning to display
 * @this HTMLElement
 */
 function selectClick(event, text, warning) {
