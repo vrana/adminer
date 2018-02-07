@@ -507,6 +507,9 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		if ($table != "") {
 			if (!$fields) {
 				foreach (fields($table) as $key => $field) {
+					if ($indexes) {
+						$field["auto_increment"] = 0;
+					}
 					$fields[] = process_field($field, $field);
 					$originals[$key] = idf_escape($key);
 				}
