@@ -16,6 +16,14 @@ function adminer() {
 	return $adminer;
 }
 
+/** Get Adminer version
+* @return string
+*/
+function version() {
+	global $VERSION;
+	return $VERSION;
+}
+
 /** Unescape database identifier
 * @param string text inside ``
 * @return string
