@@ -440,8 +440,10 @@ if (!$columns && support("table")) {
 							echo "<td>" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>");
 						} else {
 							$long = strpos($val, "<i>...</i>");
-							echo "<td id='$id'>$val</td>";
-							echo script("qsl('td').onclick = partialArg(selectClick, " . ($long ? 2 : ($text ? 1 : 0)) . ($editable ? "" : ", '" . h(lang('Use edit link to modify this value.')) . "'") . ");", "");
+							echo "<td id='$id' data-text='" . ($long ? 2 : ($text ? 1 : 0)) . "'"
+								. ($editable ? "" : " data-warning='" . h(lang('Use edit link to modify this value.')) . "'")
+								. ">$val</td>"
+							;
 						}
 					}
 				}

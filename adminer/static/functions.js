@@ -246,6 +246,13 @@ function formChecked(el, name) {
 * @param [boolean] force click
 */
 function tableClick(event, click) {
+	var td = parentTag(getTarget(event), 'td');
+	var text;
+	if (td && (text = td.getAttribute('data-text'))) {
+		if (selectClick.call(td, event, +text, td.getAttribute('data-warning'))) {
+			return;
+		}
+	}
 	click = (click || !window.getSelection || getSelection().isCollapsed);
 	var el = getTarget(event);
 	while (!isTag(el, 'tr')) {
@@ -667,6 +674,7 @@ function ajaxForm(form, message, button) {
 * @param MouseEvent
 * @param number display textarea instead of input, 2 - load long text
 * @param [string] warning to display
+* @return boolean
 * @this HTMLElement
 */
 function selectClick(event, text, warning) {
@@ -676,7 +684,8 @@ function selectClick(event, text, warning) {
 		return;
 	}
 	if (warning) {
-		return alert(warning);
+		alert(warning);
+		return true;
 	}
 	var original = td.innerHTML;
 	text = text || /\n/.test(original);
@@ -732,6 +741,7 @@ function selectClick(event, text, warning) {
 		range.moveEnd('character', -input.value.length + pos);
 		range.select();
 	}
+	return true;
 }
 
 
