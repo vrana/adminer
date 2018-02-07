@@ -461,7 +461,9 @@ if (!$columns && support("table")) {
 			echo "</table>\n";
 		}
 
+		echo "<div class='footer'>\n";
 		if (($rows || $page) && !is_ajax()) {
+			echo "<p>\n";
 			$exact_count = true;
 			if ($_GET["page"] != "last") {
 				if ($limit == "" || (count($rows) < $limit && ($rows || !$page))) {
@@ -478,7 +480,6 @@ if (!$columns && support("table")) {
 			}
 
 			if ($limit != "" && ($found_rows === false || $found_rows > $limit || $page)) {
-				echo "<p class='pages'>";
 				// display first, previous 4, next 4 and last page
 				$max_page = ($found_rows === false
 					? $page + (count($rows) >= $limit ? 2 : 1)
@@ -509,9 +510,9 @@ if (!$columns && support("table")) {
 					echo ($page ? pagination($page, $page) : "");
 					echo ($max_page > $page ? pagination($page + 1, $page) . ($max_page > $page + 1 ? " ..." : "") : "");
 				}
+				echo "\n";
 			}
 
-			echo "<p class='count'>\n";
 			echo ($found_rows !== false ? "(" . ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) . ") " : "");
 			$display_rows = ($exact_count ? "" : "~ ") . $found_rows;
 			echo checkbox("all", 1, 0, lang('whole result'), "var checked = formChecked(this, /check/); selectCount('selected', this.checked ? '$display_rows' : checked); selectCount('selected2', this.checked || !checked ? '$display_rows' : checked);") . "\n";
@@ -556,8 +557,9 @@ if (!$columns && support("table")) {
 		}
 
 		$adminer->selectEmailPrint(array_filter($email_fields, 'strlen'), $columns);
+		echo "<input type='hidden' name='token' value='$token'>\n";
+		echo "</div>\n";
 
-		echo "<p><input type='hidden' name='token' value='$token'></p>\n";
 		echo "</form>\n";
 		echo (!$group && $select ? "" : script("tableCheck();"));
 	}
