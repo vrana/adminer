@@ -13,6 +13,9 @@ class Adminer {
 		return array(SERVER, $_GET["username"], get_password());
 	}
 
+	function connectSsl() {
+	}
+
 	function permanentLogin($create = false) {
 		return password_file($create);
 	}

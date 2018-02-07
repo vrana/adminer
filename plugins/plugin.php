@@ -97,6 +97,11 @@ class AdminerPlugin extends Adminer {
 		return $this->_applyPlugin(__FUNCTION__, $args);
 	}
 
+	function connectSsl() {
+		$args = func_get_args();
+		return $this->_applyPlugin(__FUNCTION__, $args);
+	}
+
 	function permanentLogin($create = false) {
 		$args = func_get_args();
 		return $this->_applyPlugin(__FUNCTION__, $args);

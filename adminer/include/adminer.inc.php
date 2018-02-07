@@ -19,6 +19,12 @@ class Adminer {
 		return array(SERVER, $_GET["username"], get_password());
 	}
 
+	/** Get SSL connection options
+	* @return array array("key" => filename, "cert" => filename, "ca" => filename) or null
+	*/
+	function connectSsl() {
+	}
+
 	/** Get key used for permanent login
 	* @param bool
 	* @return string cryptic string which gets combined with password or false in case of an error
