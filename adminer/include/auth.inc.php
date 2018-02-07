@@ -166,7 +166,7 @@ if (isset($_GET["username"])) {
 
 $login = null;
 if (!is_object($connection) || ($login = $adminer->login($_GET["username"], get_password())) !== true) {
-	auth_error((is_string($connection) && $connection != "" ? h($connection) : (is_string($login) ? $login : lang('Invalid credentials.'))));
+	auth_error((is_string($connection) ? h($connection) : (is_string($login) ? $login : lang('Invalid credentials.'))));
 }
 
 if ($auth && $_POST["token"]) {
