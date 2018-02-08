@@ -244,12 +244,12 @@ if (isset($_GET["pgsql"])) {
 		$connection = new Min_DB;
 		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
-			if (min_version(9, 0, $connection)) {
+			if (min_version('9', 0, $connection)) {
 				$connection->query("SET application_name = 'Adminer'");
-				if (min_version(9.2, 0, $connection)) {
+				if (min_version('9.2', 0, $connection)) {
 					$structured_types[lang('Strings')][] = "json";
 					$types["json"] = 4294967295;
-					if (min_version(9.4, 0, $connection)) {
+					if (min_version('9.4', 0, $connection)) {
 						$structured_types[lang('Strings')][] = "jsonb";
 						$types["jsonb"] = 4294967295;
 					}
@@ -782,7 +782,7 @@ AND typelem = 0"
 	}
 
 	function process_list() {
-		return get_rows("SELECT * FROM pg_stat_activity ORDER BY " . (min_version(9.2) ? "pid" : "procpid"));
+		return get_rows("SELECT * FROM pg_stat_activity ORDER BY " . (min_version('9.2') ? "pid" : "procpid"));
 	}
 
 	function show_status() {
@@ -796,7 +796,7 @@ AND typelem = 0"
 	}
 
 	function support($feature) {
-		return preg_match('~^(database|table|columns|sql|indexes|comment|view|' . (min_version(9.3) ? 'materializedview|' : '') . 'scheme|routine|processlist|sequence|trigger|type|variables|drop_col|kill|dump)$~', $feature);
+		return preg_match('~^(database|table|columns|sql|indexes|comment|view|' . (min_version('9.3') ? 'materializedview|' : '') . 'scheme|routine|processlist|sequence|trigger|type|variables|drop_col|kill|dump)$~', $feature);
 	}
 
 	function kill_process($val) {
