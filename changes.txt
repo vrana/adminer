@@ -1,4 +1,4 @@
-Adminer 4.6.1-dev:
+Adminer 4.6.1 (released 2018-02-09):
 Sticky position of table actions
 Speed up rendering of long tables (regression from 4.4.0)
 Display notification about performing action after relogin
