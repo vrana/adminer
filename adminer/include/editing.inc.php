@@ -50,7 +50,10 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 				}
 				$types[$j] = $field->type;
 				echo "<th" . ($orgtable != "" || $field->name != $orgname ? " title='" . h(($orgtable != "" ? "$orgtable." : "") . $orgname) . "'" : "") . ">" . h($name)
-					. ($orgtables ? doc_link(array('sql' => "explain-output.html#explain_" . strtolower($name))) : "")
+					. ($orgtables ? doc_link(array(
+						'sql' => "explain-output.html#explain_" . strtolower($name),
+						'mariadb' => "explain/#the-columns-in-explain-select",
+					)) : "")
 				;
 			}
 			echo "</thead>\n";
@@ -244,6 +247,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 <td id="label-null">NULL
 <td><input type="radio" name="auto_increment_col" value=""><acronym id="label-ai" title="<?php echo lang('Auto Increment'); ?>">AI</acronym><?php echo doc_link(array(
 	'sql' => "example-auto-increment.html",
+	'mariadb' => "auto_increment/",
 	'sqlite' => "autoinc.html",
 	'pgsql' => "datatype.html#DATATYPE-SERIAL",
 	'mssql' => "ms186775.aspx",
@@ -488,7 +492,8 @@ function ini_bytes($ini) {
 */
 function doc_link($paths, $text = "<sup>?</sup>") {
 	global $jush, $connection;
-	$version = preg_replace('~^(\\d\\.?\\d).*~s', '\\1', $connection->server_info);
+	$server_info = $connection->server_info;
+	$version = preg_replace('~^(\\d\\.?\\d).*~s', '\\1', $server_info); // two most significant digits
 	$urls = array(
 		'sql' => "https://dev.mysql.com/doc/refman/$version/en/",
 		'sqlite' => "https://www.sqlite.org/",
@@ -496,6 +501,10 @@ function doc_link($paths, $text = "<sup>?</sup>") {
 		'mssql' => "https://msdn.microsoft.com/library/",
 		'oracle' => "https://download.oracle.com/docs/cd/B19306_01/server.102/b14200/",
 	);
+	if (preg_match('~MariaDB~', $server_info)) {
+		$urls['sql'] = "https://mariadb.com/kb/en/library/";
+		$paths['sql'] = (isset($paths['mariadb']) ? $paths['mariadb'] : str_replace(".html", "/", $paths['sql']));
+	}
 	return ($paths[$jush] ? "<a href='$urls[$jush]$paths[$jush]'" . target_blank() . ">$text</a>" : "");
 }
 

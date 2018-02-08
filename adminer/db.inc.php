@@ -72,11 +72,11 @@ if ($adminer->homepage()) {
 			echo '<td><input id="check-all" type="checkbox" class="jsonly">' . script("qs('#check-all').onclick = partial(formCheck, /^(tables|views)\[/);", "");
 			echo '<th>' . lang('Table');
 			echo '<td>' . lang('Engine') . doc_link(array('sql' => 'storage-engines.html'));
-			echo '<td>' . lang('Collation') . doc_link(array('sql' => 'charset-mysql.html'));
+			echo '<td>' . lang('Collation') . doc_link(array('sql' => 'charset-charsets.html', 'mariadb' => 'supported-character-sets-and-collations/'));
 			echo '<td>' . lang('Data Length') . $doc_link;
 			echo '<td>' . lang('Index Length') . $doc_link;
 			echo '<td>' . lang('Data Free') . $doc_link;
-			echo '<td>' . lang('Auto Increment') . doc_link(array('sql' => 'example-auto-increment.html'));
+			echo '<td>' . lang('Auto Increment') . doc_link(array('sql' => 'example-auto-increment.html', 'mariadb' => 'auto_increment/'));
 			echo '<td>' . lang('Rows') . $doc_link;
 			echo (support("comment") ? '<td>' . lang('Comment') . $doc_link : '');
 			echo "</thead>\n";

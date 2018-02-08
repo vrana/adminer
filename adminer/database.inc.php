@@ -63,6 +63,7 @@ echo ($_POST["add_x"] || strpos($name, "\n")
 	: '<input name="name" id="name" value="' . h($name) . '" maxlength="64" autocapitalize="off">'
 ) . "\n" . ($collations ? html_select("collation", array("" => "(" . lang('collation') . ")") + $collations, $row["collation"]) . doc_link(array(
 	'sql' => "charset-charsets.html",
+	'mariadb' => "supported-character-sets-and-collations/",
 	'mssql' => "ms187963.aspx",
 )) : "");
 echo script("focus(qs('#name'));");

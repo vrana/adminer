@@ -78,6 +78,7 @@ foreach ($row["source"] as $key => $val) {
  <?php echo lang('ON UPDATE'); ?>: <?php echo html_select("on_update", array(-1 => "") + explode("|", $on_actions), $row["on_update"]); ?>
 <?php echo doc_link(array(
 	'sql' => "innodb-foreign-key-constraints.html",
+	'mariadb' => "foreign-keys/",
 	'pgsql' => "sql-createtable.html#SQL-CREATETABLE-REFERENCES",
 	'mssql' => "ms174979.aspx",
 	'oracle' => "clauses002.htm#sthref2903",

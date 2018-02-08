@@ -315,11 +315,12 @@ if (!defined("DRIVER")) {
 		}
 
 		function tableHelp($name) {
+			$maria = preg_match('~MariaDB~', $this->_conn->server_info);
 			if (information_schema(DB)) {
-				return strtolower(str_replace("_", "-", $name)) . "-table.html";
+				return strtolower(($maria ? "information-schema-$name-table/" : str_replace("_", "-", $name) . "-table.html"));
 			}
 			if (DB == "mysql") {
-				return "system-database.html"; //! more precise link
+				return ($maria ? "mysql$name-table/" : "system-database.html"); //! more precise link
 			}
 		}
 

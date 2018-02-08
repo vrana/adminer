@@ -4,6 +4,7 @@ Sticky position of table actions
 Add system tables help links
 MySQL: Support non-utf8 charset in search in column
 MySQL: Support geometry in MySQL 8 (bug #574)
+MariaDB: Links to documentation
 SQLite: Allow deleting PRIMARY KEY from tables with auto increment
 PostgreSQL: Support binary files in bytea fields
 PostgreSQL: Don't treat interval type as number (bug #474)
