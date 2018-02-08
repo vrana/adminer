@@ -277,6 +277,9 @@ function tableClick(event, click) {
 		el.form['all'].checked = false;
 		formUncheck('all-page');
 	}
+	if (/^(tables|views)\[\]$/.test(el.name)) {
+		formUncheck('check-all');
+	}
 	trCheck(el);
 }
 
