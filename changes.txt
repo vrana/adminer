@@ -1,6 +1,6 @@
 Adminer 4.6.1-dev:
-Speed up rendering of long tables (regression from 4.4.0)
 Sticky position of table actions
+Speed up rendering of long tables (regression from 4.4.0)
 Add system tables help links
 MySQL: Support non-utf8 charset in search in column
 MySQL: Support geometry in MySQL 8 (bug #574)
