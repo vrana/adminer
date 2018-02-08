@@ -411,7 +411,12 @@ function partitionNameChange() {
 function dumpClick(event) {
 	var el = parentTag(getTarget(event), 'label');
 	if (el) {
-		checkboxClick.call(el.firstChild, event);
+		el = qs('input', el);
+		var match = /(.+)\[\]$/.exec(el.name);
+		if (match) {
+			checkboxClick.call(el, event);
+			formUncheck('check-' + match[1]);
+		}
 	}
 }
 
