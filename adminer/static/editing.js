@@ -404,6 +404,19 @@ function partitionNameChange() {
 
 
 
+/** Uncheck 'all' checkbox
+* @param MouseEvent
+* @this HTMLTableElement
+*/
+function dumpClick(event) {
+	var el = parentTag(getTarget(event), 'label');
+	if (el) {
+		checkboxClick.call(el.firstChild, event);
+	}
+}
+
+
+
 /** Add row for foreign key
 * @this HTMLSelectElement
 */

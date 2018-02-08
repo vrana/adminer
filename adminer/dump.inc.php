@@ -165,6 +165,7 @@ echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style,
 
 <table cellspacing="0">
 <?php
+echo script("qsl('table').onclick = dumpClick;");
 $prefixes = array();
 if (DB != "") {
 	$checked = ($TABLE != "" ? "" : " checked");
@@ -178,11 +179,11 @@ if (DB != "") {
 	foreach ($tables_list as $name => $type) {
 		$prefix = preg_replace('~_.*~', '', $name);
 		$checked = ($TABLE == "" || $TABLE == (substr($TABLE, -1) == "%" ? "$prefix%" : $name)); //! % may be part of table name
-		$print = "<tr><td>" . checkbox("tables[]", $name, $checked, $name, "checkboxClick.call(this, event); formUncheck('check-tables');", "block");
+		$print = "<tr><td>" . checkbox("tables[]", $name, $checked, $name, "formUncheck('check-tables');", "block");
 		if ($type !== null && !preg_match('~table~i', $type)) {
 			$views .= "$print\n";
 		} else {
-			echo "$print<td align='right'><label class='block'><span id='Rows-" . h($name) . "'></span>" . checkbox("data[]", $name, $checked, "", "checkboxClick.call(this, event); formUncheck('check-data');") . "</label>\n";
+			echo "$print<td align='right'><label class='block'><span id='Rows-" . h($name) . "'></span>" . checkbox("data[]", $name, $checked, "", "formUncheck('check-data');") . "</label>\n";
 		}
 		$prefixes[$prefix]++;
 	}
