@@ -2,8 +2,9 @@
 
 /** Load syntax highlighting
 * @param string first three characters of database system version
+* @param [boolean]
 */
-function bodyLoad(version) {
+function bodyLoad(version, maria) {
 	if (window.jush) {
 		jush.create_links = ' target="_blank" rel="noreferrer noopener"';
 		if (version) {
@@ -12,8 +13,14 @@ function bodyLoad(version) {
 				if (typeof obj[key] != 'string') {
 					obj = obj[key];
 					key = 0;
+					if (maria) {
+						for (var i = 1; i < obj.length; i++) {
+							obj[i] = obj[i].replace(/\.html/, '/');
+						}
+					}
 				}
 				obj[key] = obj[key]
+					.replace(/dev\.mysql\.com\/doc\/mysql\/en\//, (maria ? 'mariadb.com/kb/en/library/' : '$&')) // MariaDB
 					.replace(/\/doc\/mysql/, '/doc/refman/' + version) // MySQL
 					.replace(/\/docs\/current/, '/docs/' + version) // PostgreSQL
 				;

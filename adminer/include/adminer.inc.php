@@ -960,8 +960,9 @@ class Adminer {
 						echo "jushLinks.$val = jushLinks.$jush;\n";
 					}
 				}
+				$server_info = $connection->server_info;
 				?>
-bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\\d\\.?\\d).*~s', '\\1', $connection->server_info) : ""); ?>');
+bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\\d\\.?\\d).*~s', '\\1', $server_info) : ""); ?>'<?php echo (preg_match('~MariaDB~', $server_info) ? ", true" : ""); ?>);
 </script>
 <?php
 			}
