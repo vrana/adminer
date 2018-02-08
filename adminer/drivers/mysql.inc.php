@@ -314,6 +314,15 @@ if (!defined("DRIVER")) {
 			}
 		}
 
+		function tableHelp($name) {
+			if (information_schema(DB)) {
+				return strtolower(str_replace("_", "-", $name)) . "-table.html";
+			}
+			if (DB == "mysql") {
+				return "system-database.html"; //! more precise link
+			}
+		}
+
 	}
 
 

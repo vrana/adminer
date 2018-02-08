@@ -483,9 +483,10 @@ function ini_bytes($ini) {
 
 /** Create link to database documentation
 * @param array $jush => $path
+* @param string HTML code
 * @return string HTML code
 */
-function doc_link($paths) {
+function doc_link($paths, $text = "<sup>?</sup>") {
 	global $jush, $connection;
 	$version = preg_replace('~^(\\d\\.?\\d).*~s', '\\1', $connection->server_info);
 	$urls = array(
@@ -495,7 +496,7 @@ function doc_link($paths) {
 		'mssql' => "https://msdn.microsoft.com/library/",
 		'oracle' => "https://download.oracle.com/docs/cd/B19306_01/server.102/b14200/",
 	);
-	return ($paths[$jush] ? "<a href='$urls[$jush]$paths[$jush]'" . target_blank() . "><sup>?</sup></a>" : "");
+	return ($paths[$jush] ? "<a href='$urls[$jush]$paths[$jush]'" . target_blank() . ">$text</a>" : "");
 }
 
 /** Wrap gzencode() for usage in ob_start()

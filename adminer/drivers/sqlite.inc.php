@@ -218,6 +218,15 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			return queries("REPLACE INTO " . table($table) . " (" . implode(", ", array_keys(reset($rows))) . ") VALUES\n" . implode(",\n", $values));
 		}
 
+		function tableHelp($name) {
+			if ($name == "sqlite_sequence") {
+				return "fileformat2.html#seqtab";
+			}
+			if ($name == "sqlite_master") {
+				return "fileformat2.html#$name";
+			}
+		}
+
 	}
 
 

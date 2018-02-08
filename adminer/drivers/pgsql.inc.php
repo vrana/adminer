@@ -216,6 +216,17 @@ if (isset($_GET["pgsql"])) {
 			return $this->_conn->warnings();
 		}
 
+		function tableHelp($name) {
+			$links = array(
+				"information_schema" => "infoschema",
+				"pg_catalog" => "catalog",
+			);
+			$link = $links[$_GET["ns"]];
+			if ($link) {
+				return "$link-" . str_replace("_", "-", $name) . ".html";
+			}
+		}
+
 	}
 
 

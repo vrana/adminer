@@ -160,6 +160,7 @@ class Adminer {
 	* @return null
 	*/
 	function selectLinks($tableStatus, $set = "") {
+		global $jush, $driver;
 		echo '<p class="links">';
 		$links = array("select" => lang('Select data'));
 		if (support("table") || support("indexes")) {
@@ -175,9 +176,11 @@ class Adminer {
 		if ($set !== null) {
 			$links["edit"] = lang('New item');
 		}
+		$name = $tableStatus["Name"];
 		foreach ($links as $key => $val) {
-			echo " <a href='" . h(ME) . "$key=" . urlencode($tableStatus["Name"]) . ($key == "edit" ? $set : "") . "'" . bold(isset($_GET[$key])) . ">$val</a>";
+			echo " <a href='" . h(ME) . "$key=" . urlencode($name) . ($key == "edit" ? $set : "") . "'" . bold(isset($_GET[$key])) . ">$val</a>";
 		}
+		echo doc_link(array($jush => $driver->tableHelp($name)), "?");
 		echo "\n";
 	}
 

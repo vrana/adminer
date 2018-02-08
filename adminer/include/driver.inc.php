@@ -147,4 +147,11 @@
 		return '';
 	}
 	
+	/** Get help link for table
+	* @param string
+	* @return string relative URL or null
+	*/
+	function tableHelp($name) {
+	}
+	
 }
