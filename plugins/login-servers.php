@@ -19,6 +19,10 @@ class AdminerLoginServers {
 		$this->driver = $driver;
 	}
 	
+	function serverName($server) {
+		return h($this->servers[$server]);
+	}
+	
 	function login($login, $password) {
 		// check if server is allowed
 		foreach ($this->servers as $key => $val) {

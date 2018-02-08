@@ -70,7 +70,8 @@ var thousandsSeparator = '<?php echo js_escape(lang(',')); ?>';
 		$link = substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1);
 		echo '<p id="breadcrumb"><a href="' . h($link ? $link : ".") . '">' . $drivers[DRIVER] . '</a> &raquo; ';
 		$link = substr(preg_replace('~\b(db|ns)=[^&]*&~', '', ME), 0, -1);
-		$server = (SERVER != "" ? h(SERVER) : lang('Server'));
+		$server = $adminer->serverName(SERVER);
+		$server = ($server != "" ? $server : lang('Server'));
 		if ($breadcrumb === false) {
 			echo "$server\n";
 		} else {

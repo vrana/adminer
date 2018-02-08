@@ -39,6 +39,14 @@ class Adminer {
 	function bruteForceKey() {
 		return $_SERVER["REMOTE_ADDR"];
 	}
+	
+	/** Get server name displayed in breadcrumbs
+	* @param string
+	* @return string HTML code or null
+	*/
+	function serverName($server) {
+		return h($server);
+	}
 
 	/** Identifier of selected database
 	* @return string
@@ -922,7 +930,7 @@ class Adminer {
 							}
 							$dbs = $_SESSION["db"][$vendor][$server][$username];
 							foreach (($dbs ? array_keys($dbs) : array("")) as $db) {
-								echo "<a href='" . h(auth_url($vendor, $server, $username, $db)) . "'>($drivers[$vendor]) " . h($username . ($server != "" ? "@$server" : "") . ($db != "" ? " - $db" : "")) . "</a><br>\n";
+								echo "<a href='" . h(auth_url($vendor, $server, $username, $db)) . "'>($drivers[$vendor]) " . h($username . ($server != "" ? "@" . $this->serverName($server) : "") . ($db != "" ? " - $db" : "")) . "</a><br>\n";
 							}
 						}
 					}
