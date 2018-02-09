@@ -16,3 +16,5 @@ adminer/designs.php - Development version of Adminer with adminer.css switcher
 compile.php - Create a single file version
 lang.php - Update translations
 tests/selenium.html - Selenium test suite
+
+If downloaded from Git, run: git submodule update --init
