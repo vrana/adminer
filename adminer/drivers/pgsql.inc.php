@@ -704,16 +704,21 @@ AND typelem = 0"
 		// fields' definitions
 		foreach ($fields as $field_name => $field) {
 			$part = idf_escape($field['field']) . ' ' . $field['full_type']
-				. (is_null($field['default']) ? "" : " DEFAULT $field[default]")
+				. (is_null($field['default']) ? "" : (strpos($field['full_type'], 'character varying') === 0 ? " DEFAULT '$field[default]'" : " DEFAULT $field[default]"))
 				. ($field['attnotnull'] ? " NOT NULL" : "");
 			$return_parts[] = $part;
 
 			// sequences for fields
 			if (preg_match('~nextval\(\'([^\']+)\'\)~', $field['default'], $matches)) {
 				$sequence_name = $matches[1];
-				$sq = reset(get_rows("SELECT * FROM $sequence_name"));
-				$sequences[] = ($style == "DROP+CREATE" ? "DROP SEQUENCE $sequence_name;\n" : "")
-					. "CREATE SEQUENCE $sequence_name INCREMENT $sq[increment_by] MINVALUE $sq[min_value] MAXVALUE $sq[max_value] START " . ($auto_increment ? $sq['last_value'] : 1) . " CACHE $sq[cache_value];";
+				if ($connection->server_info >= 10) {
+					$sqi = reset(get_rows("SELECT * FROM PG_SEQUENCES WHERE SEQUENCENAME = '$sequence_name'"));
+					$sqv = reset(get_rows("SELECT * FROM $sequence_name"));
+					$sequences[] = "CREATE SEQUENCE $sequence_name INCREMENT $sqi[increment_by] MINVALUE $sqi[min_value] MAXVALUE $sqi[max_value] START " . ($auto_increment ? $sqv['last_value'] : 1) . " CACHE $sqi[cache_size];";
+				} else {
+					$sq = reset(get_rows("SELECT * FROM $sequence_name"));
+					$sequences[] = "CREATE SEQUENCE $sequence_name INCREMENT $sq[increment_by] MINVALUE $sq[min_value] MAXVALUE $sq[max_value] START " . ($auto_increment ? $sq['last_value'] : 1) . " CACHE $sq[cache_value];";
+				}
 			}
 		}
 
