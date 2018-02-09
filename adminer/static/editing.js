@@ -224,6 +224,16 @@ function editingClick(event) {
 	}
 }
 
+/** Handle input on fields editing
+* @param InputEvent
+*/
+function editingInput(event) {
+	var el = getTarget(event);
+	if (/\[default\]$/.test(el.name)) {
+		 el.previousSibling.checked = true;
+	}
+}
+
 /** Detect foreign key
 * @this HTMLInputElement
 */
