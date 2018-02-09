@@ -187,7 +187,7 @@ edit_fields($row["fields"], $collations, "TABLE", $foreign_keys, $comments);
 <p>
 <?php echo lang('Auto Increment'); ?>: <input type="number" name="Auto_increment" size="6" value="<?php echo h($row["Auto_increment"]); ?>">
 <?php echo checkbox("defaults", 1, !$_POST || $_POST["defaults"], lang('Default values'), "columnShow(this.checked, 5)", "jsonly"); ?>
-<?php if (!$_POST) { echo script("editingHideDefaults();"); } ?>
+<?php echo ($_POST ? "" : script("editingHideDefaults();")); ?>
 <?php echo (support("comment")
 	? "<label><input type='checkbox' name='comments' value='1' class='jsonly'" . ($comments ? " checked" : "") . ">" . lang('Comment') . "</label>"
 		. script("qsl('input').onclick = partial(editingCommentsClick, true);")

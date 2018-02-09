@@ -385,7 +385,6 @@ function columnShow(checked, column) {
 function editingHideDefaults() {
 	if (innerWidth < document.documentElement.scrollWidth) {
 		qs('#form')['defaults'].checked = false;
-		columnShow(false, 5);
 	}
 }
 
