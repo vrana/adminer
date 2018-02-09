@@ -1291,7 +1291,7 @@ function is_url($string) {
 * @return bool
 */
 function is_shortable($field) {
-	return preg_match('~char|text|lob|geometry|point|linestring|polygon|string|bytea~', $field["type"]);
+	return preg_match('~char|text|json|lob|geometry|point|linestring|polygon|string|bytea~', $field["type"]);
 }
 
 /** Get query to compute number of found rows
