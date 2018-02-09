@@ -711,7 +711,10 @@ AND typelem = 0"
 			// sequences for fields
 			if (preg_match('~nextval\(\'([^\']+)\'\)~', $field['default'], $matches)) {
 				$sequence_name = $matches[1];
-				$sq = reset(get_rows("SELECT * FROM $sequence_name"));
+				$sq = reset(get_rows(min_version(10)
+					? "SELECT *, cache_size AS cache_value FROM pg_sequences WHERE schemaname = current_schema() AND sequencename = " . q($sequence_name)
+					: "SELECT * FROM $sequence_name"
+				));
 				$sequences[] = ($style == "DROP+CREATE" ? "DROP SEQUENCE $sequence_name;\n" : "")
 					. "CREATE SEQUENCE $sequence_name INCREMENT $sq[increment_by] MINVALUE $sq[min_value] MAXVALUE $sq[max_value] START " . ($auto_increment ? $sq['last_value'] : 1) . " CACHE $sq[cache_value];";
 			}

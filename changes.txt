@@ -1,5 +1,6 @@
 Adminer 4.6.2-dev:
 Shorten JSON values in select (bug #594)
+PostgreSQL: Fix exporting sequences in PostgreSQL 10
 
 Adminer 4.6.1 (released 2018-02-09):
 Sticky position of table actions
