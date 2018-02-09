@@ -234,7 +234,7 @@ $translations = array(
 	'last' => 'poslijednja',
 	'Loading' => 'Učitavam',
 	'Load more data' => 'Učitavam još podataka',
-	'whole result' => 'ceo rezultat',
+	'Whole result' => 'Ceo rezultat',
 	'%d byte(s)' => array('%d bajt', '%d bajta', '%d bajtova'),
 
 	'Import' => 'Uvoz',

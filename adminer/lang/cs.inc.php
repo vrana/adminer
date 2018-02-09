@@ -253,7 +253,7 @@ $translations = array(
 	'last' => 'poslední',
 	'Load more data' => 'Nahrát další data',
 	'Loading' => 'Nahrává se',
-	'whole result' => 'celý výsledek',
+	'Whole result' => 'Celý výsledek',
 	'%d byte(s)' => array('%d bajt', '%d bajty', '%d bajtů'),
 	
 	'Import' => 'Import',

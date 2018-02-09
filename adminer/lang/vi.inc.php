@@ -238,7 +238,7 @@ $translations = array(
 	'last' => 'cuối',
 	'Load more data' => 'Xem thêm dữ liệu',
 	'Loading' => 'Đang nạp',
-	'whole result' => 'toàn bộ kết quả',
+	'Whole result' => 'Toàn bộ kết quả',
 	'%d byte(s)' => '%d byte(s)',
 	
 	'Import' => 'Nhập khẩu',

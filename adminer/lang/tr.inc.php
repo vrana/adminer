@@ -233,7 +233,7 @@ $translations = array(
 	'last' => 'son',
 	'Load more data' => 'Daha fazla veri yükle',
 	'Loading' => 'Yükleniyor',
-	'whole result' => 'tüm sonuç',
+	'Whole result' => 'Tüm sonuç',
 	'%d byte(s)' => array('%d bayt', '%d bayt'),
 
 	'Import' => 'İçeri Aktar',

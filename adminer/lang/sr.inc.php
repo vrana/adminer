@@ -233,7 +233,7 @@ $translations = array(
 	'last' => 'последња',
 	'Loading' => 'Учитавам',
 	'Load more data' => 'Учитавам још података',
-	'whole result' => 'цео резултат',
+	'Whole result' => 'Цео резултат',
 	'%d byte(s)' => array('%d бајт', '%d бајта', '%d бајтова'),
 
 	'Import' => 'Увоз',

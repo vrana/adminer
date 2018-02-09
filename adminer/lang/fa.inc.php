@@ -244,7 +244,7 @@ $translations = array(
 	'last' => 'آخری',
 	'Load more data' => 'بارگزاری اطلاعات بیشتر',
 	'Loading' => 'در حال بارگزاری',
-	'whole result' => 'همه نتایج',
+	'Whole result' => 'همه نتایج',
 	'%d byte(s)' => array('%d بایت', '%d بایت'),
 	
 	'Import' => 'وارد کردن',

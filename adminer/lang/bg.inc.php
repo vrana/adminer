@@ -245,7 +245,7 @@ $translations = array(
 	'last' => 'последен',
 	'Load more data' => 'Зареждане на повече данни',
 	'Loading' => 'Зареждане',
-	'whole result' => 'пълен резултат',
+	'Whole result' => 'Пълен резултат',
 	'%d byte(s)' => array('%d байт', '%d байта'),
 	
 	'Import' => 'Импорт',

@@ -251,7 +251,7 @@ $translations = array(
 	'last' => 'akhir',
 	'Load more data' => 'Load lebih data',
 	'Loading' => 'Loading',
-	'whole result' => 'keputusan keseluruhan',
+	'Whole result' => 'Keputusan keseluruhan',
 	'%d byte(s)' => array('%d byte', '%d bytes'),
 
 	'Import' => 'Import',

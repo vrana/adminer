@@ -254,7 +254,7 @@ $translations = array(
 	'last' => 'xx',
 	'Load more data' => 'Xx',
 	'Loading' => 'Xx',
-	'whole result' => 'xx',
+	'Whole result' => 'Xx',
 	'%d byte(s)' => array('%d xx', '%d xx'),
 	
 	'Import' => 'Xx',

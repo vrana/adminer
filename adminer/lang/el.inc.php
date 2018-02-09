@@ -246,7 +246,7 @@ $translations = array(
 	'last' => 'τελευταία',
 	'Load more data' => 'Φόρτωση κι άλλων δεδομένων',
 	'Loading' => 'Φορτώνει',
-	'whole result' => 'όλο το αποτέλεσμα',
+	'Whole result' => 'Όλο το αποτέλεσμα',
 	'%d byte(s)' => array('%d byte', '%d bytes'),
 	
 	'Import' => 'Εισαγωγή',

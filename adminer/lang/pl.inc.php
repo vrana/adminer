@@ -250,7 +250,7 @@ $translations = array(
 	'last' => 'ostatni',
 	'Load more data' => 'Wczytaj więcej danych',
 	'Loading' => 'Wczytywanie',
-	'whole result' => 'wybierz wszystkie',
+	'Whole result' => 'Wybierz wszystkie',
 	'%d byte(s)' => array('%d bajt', '%d bajty', '%d bajtów'),
 	
 	'Import' => 'Import',

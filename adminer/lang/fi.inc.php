@@ -246,7 +246,7 @@ $translations = array(
 	'last' => 'viimeinen',
 	'Load more data' => 'Lataa lisää dataa',
 	'Loading' => 'Ladataan',
-	'whole result' => 'koko tulos',
+	'Whole result' => 'Koko tulos',
 	'%d byte(s)' => array('%d tavu', '%d tavua'),
 	
 	'Import' => 'Tuonti',
