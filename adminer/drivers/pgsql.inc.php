@@ -715,7 +715,7 @@ AND typelem = 0"
 					? "SELECT *, cache_size AS cache_value FROM pg_sequences WHERE schemaname = current_schema() AND sequencename = " . q($sequence_name)
 					: "SELECT * FROM $sequence_name"
 				));
-				$sequences[] = ($style == "DROP+CREATE" ? "DROP SEQUENCE $sequence_name;\n" : "")
+				$sequences[] = ($style == "DROP+CREATE" ? "DROP SEQUENCE IF EXISTS $sequence_name;\n" : "")
 					. "CREATE SEQUENCE $sequence_name INCREMENT $sq[increment_by] MINVALUE $sq[min_value] MAXVALUE $sq[max_value] START " . ($auto_increment ? $sq['last_value'] : 1) . " CACHE $sq[cache_value];";
 			}
 		}

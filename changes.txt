@@ -4,6 +4,7 @@ Shorten JSON values in select (bug #594)
 Speed up alter table (regression from 4.4.0)
 PostgreSQL: Fix exporting string default values
 PostgreSQL: Fix exporting sequences in PostgreSQL 10
+PostgreSQL: Add IF EXISTS to DROP SEQUENCE in export (bug #595)
 
 Adminer 4.6.1 (released 2018-02-09):
 Sticky position of table actions
