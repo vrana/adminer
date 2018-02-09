@@ -188,6 +188,42 @@ function idfEscape(s) {
 	return s.replace(/`/, '``');
 }
 
+
+
+/** Handle clicks on fields editing
+* @param MouseEvent
+* @return boolean false to cancel action
+*/
+function editingClick(event) {
+	var el = getTarget(event);
+	if (!isTag(el, 'input')) {
+		el = parentTag(target, 'label');
+		el = el && qs('input', el);
+	}
+	if (el) {
+		var name = el.name;
+		if (/^add\[/.test(name)) {
+			editingAddRow.call(el, 1);
+		} else if (/^up\[/.test(name)) {
+			editingMoveRow.call(el, 1);
+		} else if (/^down\[/.test(name)) {
+			editingMoveRow.call(el);
+		} else if (/^drop_col\[/.test(name)) {
+			editingRemoveRow.call(el, 'fields\$1[field]');
+		} else {
+			if (name == 'auto_increment_col') {
+				var field = el.form['fields[' + el.value + '][field]'];
+				if (!field.value) {
+					field.value = 'id';
+					field.oninput();
+				}
+			}
+			return;
+		}
+		return false;
+	}
+}
+
 /** Detect foreign key
 * @this HTMLInputElement
 */
@@ -269,7 +305,7 @@ function editingAddRow(focus) {
 }
 
 /** Remove table row for field
-* @param string
+* @param string regular expression replacement
 * @return boolean false
 * @this HTMLInputElement
 */
@@ -281,16 +317,16 @@ function editingRemoveRow(name) {
 }
 
 /** Move table row for field
-* @param boolean direction to move row, true for up or false for down
+* @param [boolean]
 * @return boolean false for success
 * @this HTMLInputElement
 */
-function editingMoveRow(dir){
+function editingMoveRow(up){
 	var row = parentTag(this, 'tr');
 	if (!('nextElementSibling' in row)) {
 		return true;
 	}
-	row.parentNode.insertBefore(row, dir
+	row.parentNode.insertBefore(row, up
 		? row.previousElementSibling
 		: row.nextElementSibling ? row.nextElementSibling.nextElementSibling : row.parentNode.firstChild);
 	return false;
