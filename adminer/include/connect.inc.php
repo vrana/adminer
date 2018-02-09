@@ -46,7 +46,7 @@ function connect_error() {
 				$root = h(ME) . "db=" . urlencode($db);
 				$id = h("Db-" . $db);
 				echo "<tr" . odd() . ">" . (support("database") ? "<td>" . checkbox("db[]", $db, in_array($db, (array) $_POST["db"]), "", "", "", $id) : "");
-				echo "<th><a href='$root' id='$db'>" . h($db) . "</a>";
+				echo "<th><a href='$root' id='$id'>" . h($db) . "</a>";
 				$collation = nbsp(db_collation($db, $collations));
 				echo "<td>" . (support("database") ? "<a href='$root" . ($scheme ? "&amp;ns=" : "") . "&amp;database=' title='" . lang('Alter database') . "'>$collation</a>" : $collation);
 				echo "<td align='right'><a href='$root&amp;schema=' id='tables-" . h($db) . "' title='" . lang('Database schema') . "'>" . ($_GET["dbsize"] ? $tables : "?") . "</a>";
