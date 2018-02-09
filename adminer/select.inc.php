@@ -462,7 +462,6 @@ if (!$columns && support("table")) {
 		}
 
 		if (!is_ajax()) {
-			echo "<div class='footer'><div>\n";
 			if ($rows || $page) {
 				$exact_count = true;
 				if ($_GET["page"] != "last") {
@@ -513,10 +512,15 @@ if (!$columns && support("table")) {
 					}
 					echo "\n";
 				}
-
-				echo ($found_rows !== false ? "(" . ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) . ") " : "");
+			}
+			
+			echo "<div class='footer'><div>\n";
+			if ($rows || $page) {
+				echo "<fieldset>";
+				echo "<legend>" . lang('whole result') . "</legend>";
 				$display_rows = ($exact_count ? "" : "~ ") . $found_rows;
-				echo checkbox("all", 1, 0, lang('whole result'), "var checked = formChecked(this, /check/); selectCount('selected', this.checked ? '$display_rows' : checked); selectCount('selected2', this.checked || !checked ? '$display_rows' : checked);") . "\n";
+				echo checkbox("all", 1, 0, ($found_rows !== false ? ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) : ""), "var checked = formChecked(this, /check/); selectCount('selected', this.checked ? '$display_rows' : checked); selectCount('selected2', this.checked || !checked ? '$display_rows' : checked);") . "\n";
+				echo "</fieldset>\n";
 
 				if ($adminer->selectCommandPrint()) {
 					?>

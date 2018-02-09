@@ -59,7 +59,7 @@ input.wayoff { left: -1000px; position: absolute; }
 .size { width: 6ex; }
 .help { cursor: help; }
 .footer { position: sticky; bottom: 0; border-top: 20px solid rgba(255, 255, 255, .7); border-image: linear-gradient(rgba(255, 255, 255, .2), #fff) 100% 0; }
-.footer > div { background: #fff; padding: 1px 0 .5em; }
+.footer > div { background: #fff; padding: 0 0 .5em; }
 .links a { white-space: nowrap; margin-right: 20px; }
 .logout { margin-top: .5em; position: absolute; top: 0; right: 0; }
 .loadmore { margin-left: 1ex; }
