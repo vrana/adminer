@@ -1,4 +1,5 @@
 Adminer 4.6.2-dev:
+Semi-transparent border on table actions
 Shorten JSON values in select (bug #594)
 PostgreSQL: Fix exporting sequences in PostgreSQL 10
 

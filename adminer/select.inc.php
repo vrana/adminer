@@ -461,7 +461,7 @@ if (!$columns && support("table")) {
 			echo "</table>\n";
 		}
 
-		echo "<div class='footer'>\n";
+		echo "<div class='footer'><div>\n";
 		if (($rows || $page) && !is_ajax()) {
 			echo "<p>\n";
 			$exact_count = true;
@@ -558,7 +558,7 @@ if (!$columns && support("table")) {
 
 		$adminer->selectEmailPrint(array_filter($email_fields, 'strlen'), $columns);
 		echo "<input type='hidden' name='token' value='$token'>\n";
-		echo "</div>\n";
+		echo "</div></div>\n";
 
 		echo "</form>\n";
 		echo (!$group && $select ? "" : script("tableCheck();"));

@@ -120,7 +120,7 @@ if ($adminer->homepage()) {
 
 			echo "</table>\n";
 			if (!information_schema(DB)) {
-				echo "<div class='footer'>\n";
+				echo "<div class='footer'><div>\n";
 				$vacuum = "<input type='submit' value='" . lang('Vacuum') . "'> " . on_help("'VACUUM'");
 				$optimize = "<input type='submit' name='optimize' value='" . lang('Optimize') . "'> " . on_help($jush == "sql" ? "'OPTIMIZE TABLE'" : "'VACUUM OPTIMIZE'");
 				echo "<fieldset><legend>" . lang('Selected') . " <span id='selected'></span></legend><div>"
@@ -145,7 +145,7 @@ if ($adminer->homepage()) {
 				echo script("qsl('input').onclick = function () { selectCount('selected', formChecked(this, /^(tables|views)\[/));" . (support("table") ? " selectCount('selected2', formChecked(this, /^tables\[/) || $tables);" : "") . " }");
 				echo "<input type='hidden' name='token' value='$token'>\n";
 				echo "</div></fieldset>\n";
-				echo "</div>\n";
+				echo "</div></div>\n";
 			}
 			echo "</form>\n";
 			echo script("tableCheck();");
