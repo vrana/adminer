@@ -287,8 +287,8 @@ echo checkbox("fields[$i][has_default]", 1, $field["has_default"], "", "", "", "
 		echo "<td>";
 		echo (support("move_col") ?
 			"<input type='image' class='icon' name='add[$i]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>&nbsp;" . script("qsl('input').onclick = partial(editingAddRow, 1);", "")
-			. "<input type='image' class='icon' name='up[$i]' src='../adminer/static/up.gif' alt='^' title='" . lang('Move up') . "'>&nbsp;" . script("qsl('input').onclick = partial(editingMoveRow, 1);", "")
-			. "<input type='image' class='icon' name='down[$i]' src='../adminer/static/down.gif' alt='v' title='" . lang('Move down') . "'>&nbsp;" . script("qsl('input').onclick = partial(editingMoveRow, 0);", "")
+			. "<input type='image' class='icon' name='up[$i]' src='../adminer/static/up.gif' alt='↑' title='" . lang('Move up') . "'>&nbsp;" . script("qsl('input').onclick = partial(editingMoveRow, 1);", "")
+			. "<input type='image' class='icon' name='down[$i]' src='../adminer/static/down.gif' alt='↓' title='" . lang('Move down') . "'>&nbsp;" . script("qsl('input').onclick = partial(editingMoveRow, 0);", "")
 		: "");
 		echo ($orig == "" || support("drop_col") ? "<input type='image' class='icon' name='drop_col[$i]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "'>" . script("qsl('input').onclick = partial(editingRemoveRow, 'fields\$1[field]');") : "");
 	}
