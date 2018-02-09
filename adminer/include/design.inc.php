@@ -32,7 +32,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <?php } ?>
 <?php } ?>
 
-<body class="<?php echo lang('ltr'); ?> nojs">
+<body class="<?php echo lang('ltr'); ?> nojs <?php echo $GLOBALS['project']; ?>">
 <?php
 	$filename = get_temp_dir() . "/adminer.version";
 	if (!$_COOKIE["adminer_version"] && function_exists('openssl_verify') && file_exists($filename) && filemtime($filename) + 86400 > time()) { // 86400 - 1 day in seconds

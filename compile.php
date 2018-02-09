@@ -57,6 +57,7 @@ header("Cache-Control: immutable");
 		}
 	}
 	if (basename($match[2]) != "lang.inc.php" || !$_SESSION["lang"]) {
+		$return = str_replace('<?php echo $GLOBALS[\'project\']; ?>', $project, $return);
 		if (basename($match[2]) == "lang.inc.php") {
 			$return = str_replace('function lang($idf, $number = null) {', 'function lang($idf, $number = null) {
 	if (is_string($idf)) { // compiled version uses numbers, string comes from a plugin
@@ -372,6 +373,7 @@ include dirname(__FILE__) . "/adminer/include/driver.inc.php";
 $features = array("call" => "routine", "dump", "event", "privileges", "procedure" => "routine", "processlist", "routine", "scheme", "sequence", "status", "trigger", "type", "user" => "privileges", "variables", "view");
 $lang_ids = array(); // global variable simplifies usage in a callback function
 $file = file_get_contents(dirname(__FILE__) . "/$project/index.php");
+$file = preg_replace('/\\$GLOBALS\\[\'project\'\\][^;]+;\\s+/', '', $file);
 if ($driver) {
 	$_GET[$driver] = true; // to load the driver
 	include_once dirname(__FILE__) . "/adminer/drivers/$driver.inc.php";
