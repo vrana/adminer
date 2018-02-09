@@ -704,7 +704,7 @@ AND typelem = 0"
 		// fields' definitions
 		foreach ($fields as $field_name => $field) {
 			$part = idf_escape($field['field']) . ' ' . $field['full_type']
-				. (is_null($field['default']) ? "" : " DEFAULT $field[default]")
+				. (is_null($field['default']) ? "" : (strpos($field['full_type'], 'character varying') === 0 ? " DEFAULT '$field[default]'" : " DEFAULT $field[default]"))
 				. ($field['attnotnull'] ? " NOT NULL" : "");
 			$return_parts[] = $part;
 
