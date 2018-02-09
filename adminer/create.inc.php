@@ -190,8 +190,8 @@ edit_fields($row["fields"], $collations, "TABLE", $foreign_keys, $comments);
 <?php if (!$_POST["defaults"]) { echo script("editingHideDefaults();"); } ?>
 <?php echo (support("comment")
 	? "<label><input type='checkbox' name='comments' value='1' class='jsonly'" . ($comments ? " checked" : "") . ">" . lang('Comment') . "</label>"
-		. script("qsl('input').onclick = function () { columnShow(this.checked, 6); toggle('Comment'); if (this.checked) this.form['Comment'].focus(); };")
-		. ' <input name="Comment" id="Comment" value="' . h($row["Comment"]) . '" maxlength="' . (min_version(5.5) ? 2048 : 60) . '"' . ($comments ? '' : ' class="hidden"') . '>'
+		. script("qsl('input').onclick = partial(editingCommentsClick, true);")
+		. ' <input name="Comment" value="' . h($row["Comment"]) . '" maxlength="' . (min_version(5.5) ? 2048 : 60) . '"' . ($comments ? '' : ' class="hidden"') . '>'
 	: '')
 ; ?>
 <p>
@@ -225,3 +225,4 @@ foreach ($row["partition_names"] as $key => $val) {
 ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>
+<?php echo script("qs('#form')['defaults'].onclick();" . (support("comment") ? " editingCommentsClick.call(qs('#form')['comments']);" : "")); ?>

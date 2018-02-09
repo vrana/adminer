@@ -409,6 +409,19 @@ function partitionNameChange() {
 	this.oninput = function () {};
 }
 
+/** Show or hide comment fields
+* @param [boolean] whether to focus Comment if checked
+* @this HTMLInputElement
+*/
+function editingCommentsClick(focus) {
+	var comment = this.form['Comment'];
+	columnShow(this.checked, 6);
+	alterClass(comment, 'hidden', !this.checked);
+	if (focus && this.checked) {
+		comment.focus();
+	}
+}
+
 
 
 /** Uncheck 'all' checkbox
