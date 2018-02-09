@@ -62,7 +62,10 @@ class AdminerPlugin extends Adminer {
 		$return = $this->_callParent($function, $args);
 		foreach ($this->plugins as $plugin) {
 			if (method_exists($plugin, $function)) {
-				$return += call_user_func_array(array($plugin, $function), $args);
+				$value = call_user_func_array(array($plugin, $function), $args);
+				if ($value) {
+					$return += $value;
+				}
 			}
 		}
 		return $return;
