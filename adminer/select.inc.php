@@ -463,7 +463,6 @@ if (!$columns && support("table")) {
 
 		echo "<div class='footer'><div>\n";
 		if (($rows || $page) && !is_ajax()) {
-			echo "<p>\n";
 			$exact_count = true;
 			if ($_GET["page"] != "last") {
 				if ($limit == "" || (count($rows) < $limit && ($rows || !$page))) {
@@ -480,6 +479,7 @@ if (!$columns && support("table")) {
 			}
 
 			if ($limit != "" && ($found_rows === false || $found_rows > $limit || $page)) {
+				echo "<p>\n";
 				// display first, previous 4, next 4 and last page
 				$max_page = ($found_rows === false
 					? $page + (count($rows) >= $limit ? 2 : 1)
