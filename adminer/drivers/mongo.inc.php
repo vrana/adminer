@@ -1,5 +1,5 @@
 <?php
-$drivers["mongo"] = "MongoDB (beta)";
+$drivers["mongo"] = "MongoDB";
 
 if (isset($_GET["mongo"])) {
 	$possible_drivers = array("mongo", "mongodb");

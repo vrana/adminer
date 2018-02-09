@@ -5,7 +5,7 @@
 * @author Jakub Vrana
 */
 
-$drivers["mssql"] = "MS SQL";
+$drivers["mssql"] = "MS SQL (beta)";
 
 if (isset($_GET["mssql"])) {
 	$possible_drivers = array("SQLSRV", "MSSQL", "PDO_DBLIB");

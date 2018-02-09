@@ -1,5 +1,5 @@
 <?php
-$drivers["oracle"] = "Oracle";
+$drivers["oracle"] = "Oracle (beta)";
 
 if (isset($_GET["oracle"])) {
 	$possible_drivers = array("OCI8", "PDO_OCI");
