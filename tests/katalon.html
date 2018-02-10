@@ -1222,6 +1222,47 @@ END</td>
 </tbody></table>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
+<tr><td rowspan="1" colspan="3">Warnings</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>http://localhost:8000/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums<datalist><option>http://localhost:8000/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//a[contains(text(),'=')])[2]<datalist><option>xpath=(//a[contains(text(),'=')])[2]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=where[0][val]<datalist><option>name=where[0][val]</option></datalist></td>
+	<td>1.2.3</td>
+</tr>
+<tr>
+	<td>submit</td>
+	<td>id=form<datalist><option>id=form</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Warnings<datalist><option>link=Warnings</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='warnings']/table/tbody/tr/td[3]<datalist><option>//div[@id='warnings']/table/tbody/tr/td[3]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='warnings']/table/tbody/tr/td[3]<datalist><option>//div[@id='warnings']/table/tbody/tr/td[3]</option></datalist></td>
+	<td>Data truncated for column 'interpret' at row 1</td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
 <tr><td rowspan="1" colspan="3">Editor</td></tr>
 </thead>
 <tbody>
