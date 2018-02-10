@@ -15,6 +15,6 @@ adminer/sqlite.php - Development version of Adminer with SQLite allowed
 adminer/designs.php - Development version of Adminer with adminer.css switcher
 compile.php - Create a single file version
 lang.php - Update translations
-tests/selenium.html - Selenium test suite
+tests/katalon.html - Katalon Automation Recorder test suite
 
-If downloaded from Git, run: git submodule update --init
+If downloaded from Git then run: git submodule update --init
