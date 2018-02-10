@@ -1334,6 +1334,237 @@ END</td>
 </tbody></table>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
+<tr><td rowspan="1" colspan="3">SQLite</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>http://localhost:8000/adminer/sqlite.php<datalist><option>http://localhost:8000/adminer/sqlite.php</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=auth[driver]<datalist><option>name=auth[driver]</option></datalist></td>
+	<td>label=SQLite 3</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=username<datalist><option>id=username</option></datalist></td>
+	<td>admin</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=auth[password]<datalist><option>name=auth[password]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=input[type="submit"]<datalist><option>css=input[type="submit"]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Create database<datalist><option>link=Create database</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=name<datalist><option>id=name</option></datalist></td>
+	<td>adminer_test</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=input[type="submit"]<datalist><option>css=input[type="submit"]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Please use one of the extensions<datalist><option>Please use one of the extensions</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=name<datalist><option>id=name</option></datalist></td>
+	<td>adminer_test.sqlite</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=input[type="submit"]<datalist><option>css=input[type="submit"]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Database has been created.<datalist><option>Database has been created.</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Create table<datalist><option>link=Create table</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=name<datalist><option>name=name</option></datalist></td>
+	<td>interprets</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=label.block &gt; input[name="auto_increment_col"]<datalist><option>css=label.block &gt; input[name="auto_increment_col"]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=fields[1.1][field]<datalist><option>name=fields[1.1][field]</option></datalist></td>
+	<td>name</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=fields[1.1][type]<datalist><option>name=fields[1.1][type]</option></datalist></td>
+	<td>label=text</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@value='Save'])[2]<datalist><option>xpath=(//input[@value='Save'])[2]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Table has been created.<datalist><option>Table has been created.</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=New item<datalist><option>link=New item</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=fields[name]<datalist><option>name=fields[name]</option></datalist></td>
+	<td>Michael Jackson</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=input[type="submit"]<datalist><option>css=input[type="submit"]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Item 1 has been inserted.<datalist><option>Item 1 has been inserted.</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Create table<datalist><option>link=Create table</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=name<datalist><option>name=name</option></datalist></td>
+	<td>albums</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=label.block &gt; input[name="auto_increment_col"]<datalist><option>css=label.block &gt; input[name="auto_increment_col"]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=fields[1.1][field]<datalist><option>name=fields[1.1][field]</option></datalist></td>
+	<td>interpret</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=fields[1.1][on_delete]<datalist><option>name=fields[1.1][on_delete]</option></datalist></td>
+	<td>label=CASCADE</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=fields[1.11][field]<datalist><option>name=fields[1.11][field]</option></datalist></td>
+	<td>title</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=fields[1.11][type]<datalist><option>name=fields[1.11][type]</option></datalist></td>
+	<td>label=text</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@value='Save'])[2]<datalist><option>xpath=(//input[@value='Save'])[2]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>interprets(id)<datalist><option>interprets(id)</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=New item<datalist><option>link=New item</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=fields[interpret]<datalist><option>name=fields[interpret]</option></datalist></td>
+	<td>1</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=fields[title]<datalist><option>name=fields[title]</option></datalist></td>
+	<td>Dangerous</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=input[type="submit"]<datalist><option>css=input[type="submit"]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=1<datalist><option>link=1</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Select: interprets<datalist><option>Select: interprets</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=adminer_test.sqlite<datalist><option>link=adminer_test.sqlite</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Alter database<datalist><option>link=Alter database</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>chooseOkOnNextConfirmation</td>
+	<td>Drop adminer_test.sqlite?<datalist><option>Drop adminer_test.sqlite?</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=drop<datalist><option>name=drop</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Database has been dropped.<datalist><option>Database has been dropped.</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=logout<datalist><option>id=logout</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Thanks for using Adminer, consider donating.<datalist><option>Thanks for using Adminer, consider donating.</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
 <tr><td rowspan="1" colspan="3">Logout</td></tr>
 </thead>
 <tbody>
