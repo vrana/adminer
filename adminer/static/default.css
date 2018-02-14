@@ -23,7 +23,7 @@ code { background: #eee; }
 tbody tr:hover td, tbody tr:hover th { background: #eee; }
 pre { margin: 1em 0 0; }
 pre, textarea { font: 100%/1.25 monospace; }
-input[type=image] { vertical-align: middle; }
+input { vertical-align: middle; }
 input.default { box-shadow: 1px 1px 1px #777; }
 input.required { box-shadow: 1px 1px 1px red; }
 input.maxlength { box-shadow: 1px 1px 1px red; }
