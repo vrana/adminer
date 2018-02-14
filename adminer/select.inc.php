@@ -556,10 +556,9 @@ if (!$columns && support("table")) {
 					echo "</div></fieldset>\n";
 				}
 
+				$adminer->selectEmailPrint(array_filter($email_fields, 'strlen'), $columns);
 			}
 
-			$adminer->selectEmailPrint(array_filter($email_fields, 'strlen'), $columns);
-			echo "<input type='hidden' name='token' value='$token'>\n";
 			echo "</div></div>\n";
 
 			if ($adminer->selectImportPrint()) {
@@ -574,6 +573,7 @@ if (!$columns && support("table")) {
 				echo "</div>";
 			}
 
+			echo "<input type='hidden' name='token' value='$token'>\n";
 			echo "</form>\n";
 			echo (!$group && $select ? "" : script("tableCheck();"));
 		}
