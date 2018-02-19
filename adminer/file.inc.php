@@ -1,4 +1,5 @@
 <?php
+//! rewrite in compile.php to cache moderately with -dev version
 if ($_SERVER["HTTP_IF_MODIFIED_SINCE"]) {
 	header("HTTP/1.1 304 Not Modified");
 	exit;
