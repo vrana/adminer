@@ -6,6 +6,7 @@ Store current version before authentication and in Editor
 PostgreSQL: Fix exporting string default values
 PostgreSQL: Fix exporting sequences in PostgreSQL 10
 PostgreSQL: Add IF EXISTS to DROP SEQUENCE in export (bug #595)
+Editor: Fix displaying of true boolean values (regression from 4.5.0)
 
 Adminer 4.6.1 (released 2018-02-09):
 Sticky position of table actions
