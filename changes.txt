@@ -2,6 +2,7 @@ Adminer 4.6.2-dev:
 Semi-transparent border on table actions
 Shorten JSON values in select (bug #594)
 Speed up alter table (regression from 4.4.0)
+Store current version before authentication and in Editor
 PostgreSQL: Fix exporting string default values
 PostgreSQL: Fix exporting sequences in PostgreSQL 10
 PostgreSQL: Add IF EXISTS to DROP SEQUENCE in export (bug #595)

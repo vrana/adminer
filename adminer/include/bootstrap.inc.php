@@ -25,6 +25,14 @@ if (isset($_GET["file"])) {
 
 include "../adminer/include/functions.inc.php";
 
+if ($_GET["script"] == "version") {
+	$fp = file_open_lock(get_temp_dir() . "/adminer.version");
+	if ($fp) {
+		file_write_unlock($fp, serialize(array("signature" => $_POST["signature"], "version" => $_POST["version"])));
+	}
+	exit;
+}
+
 global $adminer, $connection, $drivers, $edit_functions, $enum_length, $error, $functions, $grouping, $HTTPS, $inout, $jush, $LANG, $langs, $on_actions, $permanent, $structured_types, $has_token, $token, $translations, $types, $unsigned, $VERSION; // allows including Adminer inside a function
 
 if (!$_SERVER["REQUEST_URI"]) { // IIS 5 compatibility

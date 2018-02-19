@@ -34,12 +34,6 @@ if ($_GET["script"] == "db") {
 } elseif ($_GET["script"] == "kill") {
 	$connection->query("KILL " . number($_POST["kill"]));
 
-} elseif ($_GET["script"] == "version") {
-	$fp = file_open_lock(get_temp_dir() . "/adminer.version");
-	if ($fp) {
-		file_write_unlock($fp, serialize(array("signature" => $_POST["signature"], "version" => $_POST["version"])));
-	}
-
 } else { // connect
 	foreach (count_tables($adminer->databases()) as $db => $val) {
 		json_row("tables-$db", $val);
