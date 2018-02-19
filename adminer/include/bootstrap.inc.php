@@ -18,12 +18,12 @@ if (function_exists("mb_internal_encoding")) {
 	mb_internal_encoding("8bit");
 }
 
+include "../adminer/include/functions.inc.php";
+
 // used only in compiled file
 if (isset($_GET["file"])) {
 	include "../adminer/file.inc.php";
 }
-
-include "../adminer/include/functions.inc.php";
 
 if ($_GET["script"] == "version") {
 	$fp = file_open_lock(get_temp_dir() . "/adminer.version");
