@@ -575,7 +575,7 @@ class Adminer {
 		$return = array();
 		foreach ((array) $_GET["order"] as $key => $val) {
 			if ($val != "") {
-				$return[] = (preg_match('~^((COUNT\\(DISTINCT |[A-Z0-9_]+\\()(`(?:[^`]|``)+`|"(?:[^"]|"")+")\\)|COUNT\\(\\*\\))$~', $val) ? $val : idf_escape($val)) //! MS SQL uses []
+				$return[] = (preg_match('~^((COUNT\(DISTINCT |[A-Z0-9_]+\()(`(?:[^`]|``)+`|"(?:[^"]|"")+")\)|COUNT\(\*\))$~', $val) ? $val : idf_escape($val)) //! MS SQL uses []
 					. (isset($_GET["desc"][$key]) ? " DESC" : "")
 				;
 			}
@@ -718,7 +718,7 @@ class Adminer {
 			$return = "$function()";
 		} elseif (preg_match('~^current_(date|timestamp)$~', $function)) {
 			$return = $function;
-		} elseif (preg_match('~^([+-]|\\|\\|)$~', $function)) {
+		} elseif (preg_match('~^([+-]|\|\|)$~', $function)) {
 			$return = idf_escape($name) . " $function $return";
 		} elseif (preg_match('~^[+-] interval$~', $function)) {
 			$return = idf_escape($name) . " $function " . (preg_match("~^(\\d+|'[0-9.: -]') [A-Z_]+\$~i", $value) ? $value : $return);
@@ -962,7 +962,7 @@ class Adminer {
 				}
 				$server_info = $connection->server_info;
 				?>
-bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\\d\\.?\\d).*~s', '\\1', $server_info) : ""); ?>'<?php echo (preg_match('~MariaDB~', $server_info) ? ", true" : ""); ?>);
+bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '\1', $server_info) : ""); ?>'<?php echo (preg_match('~MariaDB~', $server_info) ? ", true" : ""); ?>);
 </script>
 <?php
 			}

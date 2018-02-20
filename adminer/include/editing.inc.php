@@ -358,7 +358,7 @@ function grant($grant, $privileges, $columns, $on) {
 			: queries("$grant ALL PRIVILEGES$on") && queries("$grant GRANT OPTION$on")
 		);
 	}
-	return queries("$grant " . preg_replace('~(GRANT OPTION)\\([^)]*\\)~', '\\1', implode("$columns, ", $privileges) . $columns) . $on);
+	return queries("$grant " . preg_replace('~(GRANT OPTION)\([^)]*\)~', '\1', implode("$columns, ", $privileges) . $columns) . $on);
 }
 
 /** Drop old object and create a new one
@@ -441,7 +441,7 @@ function create_routine($routine, $row) {
 * @return string
 */
 function remove_definer($query) {
-	return preg_replace('~^([A-Z =]+) DEFINER=`' . preg_replace('~@(.*)~', '`@`(%|\\1)', logged_user()) . '`~', '\\1', $query); //! proper escaping of user
+	return preg_replace('~^([A-Z =]+) DEFINER=`' . preg_replace('~@(.*)~', '`@`(%|\1)', logged_user()) . '`~', '\1', $query); //! proper escaping of user
 }
 
 /** Format foreign key to use in SQL query
@@ -497,7 +497,7 @@ function ini_bytes($ini) {
 function doc_link($paths, $text = "<sup>?</sup>") {
 	global $jush, $connection;
 	$server_info = $connection->server_info;
-	$version = preg_replace('~^(\\d\\.?\\d).*~s', '\\1', $server_info); // two most significant digits
+	$version = preg_replace('~^(\d\.?\d).*~s', '\1', $server_info); // two most significant digits
 	$urls = array(
 		'sql' => "https://dev.mysql.com/doc/refman/$version/en/",
 		'sqlite' => "https://www.sqlite.org/",

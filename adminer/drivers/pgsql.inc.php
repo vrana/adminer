@@ -358,7 +358,7 @@ ORDER BY a.attnum"
 				$row["full_type"] = $row["type"] . $length . $addon . $array;
 			}
 			$row["null"] = !$row["attnotnull"];
-			$row["auto_increment"] = preg_match('~^nextval\\(~i', $row["default"]);
+			$row["auto_increment"] = preg_match('~^nextval\(~i', $row["default"]);
 			$row["privileges"] = array("insert" => 1, "select" => 1, "update" => 1);
 			if (preg_match('~(.+)::[^)]+(.*)~', $row["default"], $match)) {
 				$row["default"] = ($match[1] == "NULL" ? null : (($match[1][0] == "'" ? idf_unescape($match[1]) : $match[1]) . $match[2]));
@@ -434,8 +434,8 @@ WHERE table_schema = current_schema() AND table_name = " . q($name))));
 	function error() {
 		global $connection;
 		$return = h($connection->error);
-		if (preg_match('~^(.*\\n)?([^\\n]*)\\n( *)\\^(\\n.*)?$~s', $return, $match)) {
-			$return = $match[1] . preg_replace('~((?:[^&]|&[^;]*;){' . strlen($match[3]) . '})(.*)~', '\\1<b>\\2</b>', $match[2]) . $match[4];
+		if (preg_match('~^(.*\n)?([^\n]*)\n( *)\^(\n.*)?$~s', $return, $match)) {
+			$return = $match[1] . preg_replace('~((?:[^&]|&[^;]*;){' . strlen($match[3]) . '})(.*)~', '\1<b>\2</b>', $match[2]) . $match[4];
 		}
 		return nl_br($return);
 	}

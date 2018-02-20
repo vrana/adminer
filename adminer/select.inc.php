@@ -184,7 +184,7 @@ if ($_POST && !$error) {
 			cookie("adminer_import", "output=" . urlencode($adminer_import["output"]) . "&format=" . urlencode($_POST["separator"]));
 			$result = true;
 			$cols = array_keys($fields);
-			preg_match_all('~(?>"[^"]*"|[^"\\r\\n]+)+~', $file, $matches);
+			preg_match_all('~(?>"[^"]*"|[^"\r\n]+)+~', $file, $matches);
 			$affected = count($matches[0]);
 			$driver->begin();
 			$separator = ($_POST["separator"] == "csv" ? "," : ($_POST["separator"] == "tsv" ? "\t" : ";"));
@@ -369,7 +369,7 @@ if (!$columns && support("table")) {
 				if (!$unique_array) {
 					$unique_array = array();
 					foreach ($rows[$n] as $key => $val) {
-						if (!preg_match('~^(COUNT\\((\\*|(DISTINCT )?`(?:[^`]|``)+`)\\)|(AVG|GROUP_CONCAT|MAX|MIN|SUM)\\(`(?:[^`]|``)+`\\))$~', $key)) { //! columns looking like functions
+						if (!preg_match('~^(COUNT\((\*|(DISTINCT )?`(?:[^`]|``)+`)\)|(AVG|GROUP_CONCAT|MAX|MIN|SUM)\(`(?:[^`]|``)+`\))$~', $key)) { //! columns looking like functions
 							$unique_array[$key] = $val;
 						}
 					}
@@ -407,9 +407,9 @@ if (!$columns && support("table")) {
 									foreach ($foreign_key["source"] as $i => $source) {
 										$link .= where_link($i, $foreign_key["target"][$i], $rows[$n][$source]);
 									}
-									$link = ($foreign_key["db"] != "" ? preg_replace('~([?&]db=)[^&]+~', '\\1' . urlencode($foreign_key["db"]), ME) : ME) . 'select=' . urlencode($foreign_key["table"]) . $link; // InnoDB supports non-UNIQUE keys
+									$link = ($foreign_key["db"] != "" ? preg_replace('~([?&]db=)[^&]+~', '\1' . urlencode($foreign_key["db"]), ME) : ME) . 'select=' . urlencode($foreign_key["table"]) . $link; // InnoDB supports non-UNIQUE keys
 									if ($foreign_key["ns"]) {
-										$link = preg_replace('~([?&]ns=)[^&]+~', '\\1' . urlencode($foreign_key["ns"]), $link);
+										$link = preg_replace('~([?&]ns=)[^&]+~', '\1' . urlencode($foreign_key["ns"]), $link);
 									}
 									if (count($foreign_key["source"]) == 1) {
 										break;

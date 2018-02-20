@@ -482,7 +482,7 @@ function where($where, $fields = array()) {
 		$key = bracket_escape($key, 1); // 1 - back
 		$column = escape_key($key);
 		$return[] = $column
-			. ($jush == "sql" && preg_match('~^[0-9]*\\.[0-9]*$~', $val) ? " LIKE " . q(addcslashes($val, "%_\\"))
+			. ($jush == "sql" && preg_match('~^[0-9]*\.[0-9]*$~', $val) ? " LIKE " . q(addcslashes($val, "%_\\"))
 				: ($jush == "mssql" ? " LIKE " . q(preg_replace('~[_%[]~', '[\0]', $val))
 				: " = " . unconvert_field($fields[$key], q($val))
 			)) // LIKE because of floats but slow with ints, in MS SQL because of text
@@ -549,7 +549,7 @@ function cookie($name, $value, $lifetime = 2592000) { // 2592000 - 30 days
 	global $HTTPS;
 	return header("Set-Cookie: $name=" . urlencode($value)
 		. ($lifetime ? "; expires=" . gmdate("D, d M Y H:i:s", time() + $lifetime) . " GMT" : "")
-		. "; path=" . preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"])
+		. "; path=" . preg_replace('~\?.*~', '', $_SERVER["REQUEST_URI"])
 		. ($HTTPS ? "; secure" : "")
 		. "; HttpOnly; SameSite=lax",
 		false);
@@ -599,7 +599,7 @@ function set_session($key, $val) {
 */
 function auth_url($vendor, $server, $username, $db = null) {
 	global $drivers;
-	preg_match('~([^?]*)\\??(.*)~', remove_from_uri(implode("|", array_keys($drivers)) . "|username|" . ($db !== null ? "db|" : "") . session_name()), $match);
+	preg_match('~([^?]*)\??(.*)~', remove_from_uri(implode("|", array_keys($drivers)) . "|username|" . ($db !== null ? "db|" : "") . session_name()), $match);
 	return "$match[1]?"
 		. (sid() ? SID . "&" : "")
 		. ($vendor != "server" || $server != "" ? urlencode($vendor) . "=" . urlencode($server) . "&" : "")
@@ -759,7 +759,7 @@ function get_file($key, $decompress = false) {
 		}
 		$name = $file["name"][$key];
 		$tmp_name = $file["tmp_name"][$key];
-		$content = file_get_contents($decompress && preg_match('~\\.gz$~', $name)
+		$content = file_get_contents($decompress && preg_match('~\.gz$~', $name)
 			? "compress.zlib://$tmp_name"
 			: $tmp_name
 		); //! may not be reachable because of open_basedir
@@ -804,7 +804,7 @@ function repeat_pattern($pattern, $length) {
 */
 function is_utf8($val) {
 	// don't print control chars except \t\r\n
-	return (preg_match('~~u', $val) && !preg_match('~[\\0-\\x8\\xB\\xC\\xE-\\x1F]~', $val));
+	return (preg_match('~~u', $val) && !preg_match('~[\0-\x8\xB\xC\xE-\x1F]~', $val));
 }
 
 /** Shorten UTF-8 string
@@ -974,7 +974,7 @@ function input($field, $value, $function) {
 			echo "<textarea$attrs cols='50' rows='12' class='jush-js'>" . h($value) . '</textarea>';
 		} else {
 			// int(3) is only a display hint
-			$maxlength = (!preg_match('~int~', $field["type"]) && preg_match('~^(\\d+)(,(\\d+))?$~', $field["length"], $match) ? ((preg_match("~binary~", $field["type"]) ? 2 : 1) * $match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) : ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0));
+			$maxlength = (!preg_match('~int~', $field["type"]) && preg_match('~^(\d+)(,(\d+))?$~', $field["length"], $match) ? ((preg_match("~binary~", $field["type"]) ? 2 : 1) * $match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) : ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0));
 			if ($jush == 'sql' && min_version(5.6) && preg_match('~time~', $field["type"])) {
 				$maxlength += 7; // microtime
 			}
