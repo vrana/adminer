@@ -154,14 +154,6 @@ function h($string) {
 	return str_replace("\0", "&#0;", htmlspecialchars($string, ENT_QUOTES, 'utf-8'));
 }
 
-/** Escape for TD
-* @param string
-* @return string
-*/
-function nbsp($string) {
-	return (trim($string) != "" ? h($string) : "&nbsp;");
-}
-
 /** Convert \n to <br>
 * @param string
 * @return string
@@ -946,14 +938,14 @@ function input($field, $value, $function) {
 	$functions = (isset($_GET["select"]) || $reset ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
 	$attrs = " name='fields[$name]'";
 	if ($field["type"] == "enum") {
-		echo nbsp($functions[""]) . "<td>" . $adminer->editInput($_GET["edit"], $field, $attrs, $value);
+		echo h($functions[""]) . "<td>" . $adminer->editInput($_GET["edit"], $field, $attrs, $value);
 	} else {
 		$has_function = (in_array($function, $functions) || isset($functions[$function]));
 		echo (count($functions) > 1
 			? "<select name='function[$name]'>" . optionlist($functions, $function === null || $has_function ? $function : "") . "</select>"
 				. on_help("getTarget(event).value.replace(/^SQL\$/, '')", 1)
 				. script("qsl('select').onchange = functionChange;", "")
-			: nbsp(reset($functions))
+			: h(reset($functions))
 		) . '<td>';
 		$input = $adminer->editInput($_GET["edit"], $field, $attrs, $value); // usage in call is without a table
 		if ($input != "") {
@@ -1253,9 +1245,7 @@ function select_value($val, $link, $field, $text_length) {
 	}
 	$return = $adminer->editVal($val, $field);
 	if ($return !== null) {
-		if ($return === "") { // === - may be int
-			$return = "&nbsp;";
-		} elseif (!is_utf8($return)) {
+		if (!is_utf8($return)) {
 			$return = "\0"; // htmlspecialchars of binary data returns an empty string
 		} elseif ($text_length != "" && is_shortable($field)) {
 			$return = shorten_utf8($return, max(0, +$text_length)); // usage of LEFT() would reduce traffic but complicate query - expected average speedup: .001 s VS .01 s on local network

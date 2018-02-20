@@ -189,7 +189,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	}
 
 	function selectVal($val, $link, $field, $original) {
-		$return = ($val === null ? "&nbsp;" : $val);
+		$return = $val;
 		$link = h($link);
 		if (preg_match('~blob|bytea~', $field["type"]) && !is_utf8($val)) {
 			$return = lang('%d byte(s)', strlen($original));
@@ -197,7 +197,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 				$return = "<img src='$link' alt='$return'>";
 			}
 		}
-		if (like_bool($field) && $return != "&nbsp;") { // bool
+		if (like_bool($field) && $return != "") { // bool
 			$return = (preg_match('~^(1|t|true|y|yes|on)$~i', $val) ? lang('yes') : lang('no'));
 		}
 		if ($link) {

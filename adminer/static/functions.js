@@ -319,13 +319,13 @@ function checkboxClick(event) {
 
 /** Set HTML code of an element
 * @param string
-* @param string undefined to set parentNode to &nbsp;
+* @param string undefined to set parentNode to empty string
 */
 function setHtml(id, html) {
 	var el = qs('#' + id);
 	if (el) {
 		if (html == null) {
-			el.parentNode.innerHTML = '&nbsp;';
+			el.parentNode.innerHTML = '';
 		} else {
 			el.innerHTML = html;
 		}
@@ -716,7 +716,7 @@ function selectClick(event, text, warning) {
 		});
 		input.rows = rows;
 	}
-	if (value == '\u00A0' || qsa('i', td).length) { // &nbsp; or i - NULL
+	if (qsa('i', td).length) { // <i> - NULL
 		value = '';
 	}
 	if (document.selection) {

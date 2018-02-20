@@ -165,7 +165,7 @@ foreach (array(
 			$name = "'grants[$i][" . h(strtoupper($privilege)) . "]'";
 			$value = $grant[strtoupper($privilege)];
 			if ($context == "Server Admin" && $object != (isset($grants["*.*"]) ? "*.*" : ".*")) {
-				echo "<td>&nbsp;";
+				echo "<td>";
 			} elseif (isset($_GET["grant"])) {
 				echo "<td><select name=$name><option><option value='1'" . ($value ? " selected" : "") . ">" . lang('Grant') . "<option value='0'" . ($value == "0" ? " selected" : "") . ">" . lang('Revoke') . "</select>";
 			} else {

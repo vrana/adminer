@@ -28,7 +28,7 @@ class AdminerWymeditor {
 
 	function selectVal(&$val, $link, $field, $original) {
 		// copied from tinymce.php
-		if (preg_match("~_html~", $field["field"]) && $val != '&nbsp;') {
+		if (preg_match("~_html~", $field["field"]) && $val != '') {
 			$shortened = (substr($val, -10) == "<i>...</i>");
 			if ($shortened) {
 				$val = substr($val, 0, -10);

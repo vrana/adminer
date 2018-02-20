@@ -64,8 +64,6 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 				$val = "<i>NULL</i>";
 			} elseif ($blobs[$key] && !is_utf8($val)) {
 				$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>"; //! link to download
-			} elseif (!strlen($val)) { // strlen - SQLite can return int
-				$val = "&nbsp;"; // some content to print a border
 			} else {
 				$val = h($val);
 				if ($types[$key] == 254) { // 254 - char
@@ -245,7 +243,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 	$fields = array_values($fields);
 	?>
 <thead><tr>
-<?php if ($type == "PROCEDURE") { ?><td>&nbsp;<?php } ?>
+<?php if ($type == "PROCEDURE") { ?><td><?php } ?>
 <th id="label-name"><?php echo ($type == "TABLE" ? lang('Column name') : lang('Parameter name')); ?>
 <td id="label-type"><?php echo lang('Type'); ?><textarea id="enum-edit" rows="4" cols="12" wrap="off" style="display: none;"></textarea><?php echo script("qs('#enum-edit').onblur = editingLengthBlur;"); ?>
 <td id="label-length"><?php echo lang('Length'); ?>
@@ -285,9 +283,9 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 		}
 		echo "<td>";
 		echo (support("move_col") ?
-			"<input type='image' class='icon' name='add[$i]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>&nbsp;"
-			. "<input type='image' class='icon' name='up[$i]' src='../adminer/static/up.gif' alt='↑' title='" . lang('Move up') . "'>&nbsp;"
-			. "<input type='image' class='icon' name='down[$i]' src='../adminer/static/down.gif' alt='↓' title='" . lang('Move down') . "'>&nbsp;"
+			"<input type='image' class='icon' name='add[$i]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'> "
+			. "<input type='image' class='icon' name='up[$i]' src='../adminer/static/up.gif' alt='↑' title='" . lang('Move up') . "'> "
+			. "<input type='image' class='icon' name='down[$i]' src='../adminer/static/down.gif' alt='↓' title='" . lang('Move down') . "'> "
 		: "");
 		echo ($orig == "" || support("drop_col") ? "<input type='image' class='icon' name='drop_col[$i]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "'>" : "");
 	}
