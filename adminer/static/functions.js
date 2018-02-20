@@ -205,14 +205,9 @@ function formCheck(name) {
 /** Check all rows in <table class="checkable">
 */
 function tableCheck() {
-	var tables = qsa('table', document);
-	for (var i=0; i < tables.length; i++) {
-		if (/(^|\s)checkable(\s|$)/.test(tables[i].className)) {
-			var trs = qsa('tr', tables[i]);
-			for (var j=0; j < trs.length; j++) {
-				trCheck(trs[j].firstChild.firstChild);
-			}
-		}
+	var inputs = qsa('table.checkable td:first-child input', document);
+	for (var i=0; i < inputs.length; i++) {
+		trCheck(inputs[i]);
 	}
 }
 
