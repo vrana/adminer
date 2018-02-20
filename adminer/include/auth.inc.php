@@ -158,9 +158,7 @@ if (isset($_GET["username"]) && !class_exists("Min_DB")) {
 	exit;
 }
 
-if (!ini_bool("session.use_cookies") || @ini_set("session.use_cookies", false) !== false) { // @ - may be disabled
-	session_write_close(); // improves concurrency if a user opens several pages at once, may be restarted later
-}
+stop_session(true);
 
 if (isset($_GET["username"])) {
 	list($host, $port) = explode(":", SERVER, 2);

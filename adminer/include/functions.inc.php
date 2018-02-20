@@ -564,12 +564,13 @@ function restart_session() {
 	}
 }
 
-/** Stop session if it would be possible to restart it later
+/** Stop session if possible
+* @param bool
 * @return null
 */
-function stop_session() {
-	if (!ini_bool("session.use_cookies")) {
-		session_write_close();
+function stop_session($force = false) {
+	if (!ini_bool("session.use_cookies") || ($force && @ini_set("session.use_cookies", false) !== false)) { // @ - may be disabled
+		session_write_close(); // improves concurrency if a user opens several pages at once, may be restarted later
 	}
 }
 
