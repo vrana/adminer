@@ -172,7 +172,8 @@ html> body #content form table thead span.column > a.text {
 html>/**/body #content th a[href*="&db="],           /* Databases and Table column */
 html>/**/body #content td a[href*="&view="],         /* Alter view */
 html>/**/body #content td a[href*="&select="],       /* Select view */
-html>/**/body #content table a[href*="&table="] {    /* Show structure */
+html>/**/body #content table a[href*="&table="],     /* Show structure */
+html>/**/body #content table td a[href*="&edit="][href*="&where"] { /* Modify single rows (without icon, after executing SQL) */
 	float: left;
 	width: 100%;
 	height: 17px;
@@ -206,7 +207,7 @@ html>/**/body #content form table thead>tr>td a[href*="&select="] {
 	float: none;
 }
 /* Modify single rows (icon in each row) */
-html>/**/body #content table a[href*="&edit="][href*="&where"] {
+html>/**/body #content table a.edit[href*="&edit="][href*="&where"] {
 	display: inline-block;
 	width: 0px;
 	height: 19px;
