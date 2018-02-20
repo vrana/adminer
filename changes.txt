@@ -1,4 +1,4 @@
-Adminer 4.6.2-dev:
+Adminer 4.6.2 (released 2018-02-20):
 Semi-transparent border on table actions
 Shorten JSON values in select (bug #594)
 Speed up alter table (regression from 4.4.0)
