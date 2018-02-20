@@ -36,11 +36,26 @@ function lang_ids($match) {
 }
 
 function put_file($match) {
-	global $project;
+	global $project, $VERSION;
 	if (basename($match[2]) == '$LANG.inc.php') {
 		return $match[0]; // processed later
 	}
 	$return = file_get_contents(dirname(__FILE__) . "/$project/$match[2]");
+	if (basename($match[2]) == "file.inc.php") {
+		$return = str_replace("\n// caching headers added in compile.php", (preg_match('~-dev$~', $VERSION) ? '' : '
+if ($_SERVER["HTTP_IF_MODIFIED_SINCE"]) {
+	header("HTTP/1.1 304 Not Modified");
+	exit;
+}
+
+header("Expires: " . gmdate("D, d M Y H:i:s", time() + 365*24*60*60) . " GMT");
+header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+header("Cache-Control: immutable");
+'), $return, $count);
+		if (!$count) {
+			echo "adminer/file.inc.php: Caching headers placeholder not found\n";
+		}
+	}
 	if (basename($match[2]) != "lang.inc.php" || !$_SESSION["lang"]) {
 		if (basename($match[2]) == "lang.inc.php") {
 			$return = str_replace('function lang($idf, $number = null) {', 'function lang($idf, $number = null) {
