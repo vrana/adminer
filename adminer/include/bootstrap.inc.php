@@ -95,11 +95,6 @@ include "./include/adminer.inc.php";
 include "../adminer/include/design.inc.php";
 include "../adminer/include/xxtea.inc.php";
 include "../adminer/include/auth.inc.php";
-
-if (!ini_bool("session.use_cookies") || @ini_set("session.use_cookies", false) !== false) { // @ - may be disabled
-	session_write_close(); // improves concurrency if a user opens several pages at once, may be restarted later
-}
-
 include "./include/editing.inc.php";
 include "./include/connect.inc.php";
 
