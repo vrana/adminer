@@ -155,10 +155,6 @@ if (isset($_GET["pgsql"])) {
 				return ($adminer->database() == $database);
 			}
 
-			function value($val, $field) {
-				return $val;
-			}
-
 			function quoteBinary($s) {
 				return q($s);
 			}
@@ -202,10 +198,6 @@ if (isset($_GET["pgsql"])) {
 				? $idf
 				: "CAST($idf AS text)"
 			);
-		}
-
-		function value($val, $field) {
-			return $this->_conn->value($val, $field);
 		}
 
 		function quoteBinary($s) {

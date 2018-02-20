@@ -1,4 +1,5 @@
 Adminer 4.6.3-dev:
+PDO: Support binary fields download
 
 Adminer 4.6.2 (released 2018-02-20):
 Semi-transparent border on table actions

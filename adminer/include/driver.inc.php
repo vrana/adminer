@@ -129,7 +129,10 @@
 	* @return string
 	*/
 	function value($val, $field) {
-		return $val;
+		return (method_exists($this->_conn, 'value')
+			? $this->_conn->value($val, $field)
+			: (is_resource($val) ? stream_get_contents($val) : $val)
+		);
 	}
 
 	/** Quote binary string
