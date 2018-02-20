@@ -390,8 +390,8 @@ if ($driver) {
 	$file = preg_replace('(;../externals/jush/modules/jush-(?!textarea\.|txt\.|js\.|' . preg_quote($driver == "mysql" ? "sql" : $driver) . '\.)[^.]+.js)', '', $file);
 }
 if ($project == "editor") {
-	$file = preg_replace('~;../externals/jush/jush.css~', '', $file);
-	$file = preg_replace('~;?../externals/jush/modules/jush[^.]*.js~', '', $file);
+	$file = preg_replace('~;.\.\/externals/jush/jush\.css~', '', $file);
+	$file = preg_replace('~compile_file\(\'\.\./(externals/jush/modules/jush\.js|adminer/static/[^.]+\.gif)[^)]+\)~', "''", $file);
 }
 $file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
 $file = preg_replace_callback('~\b(include|require) "([^"]*\$LANG.inc.php)";~', 'put_file_lang', $file);
