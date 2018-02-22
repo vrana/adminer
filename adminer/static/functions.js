@@ -317,7 +317,7 @@ function checkboxClick(event) {
 * @param string undefined to set parentNode to empty string
 */
 function setHtml(id, html) {
-	var el = qs('#' + id);
+	var el = qs('[id="' + id.replace(/[\\"]/g, '\\$&') + '"]'); // database name is used as ID
 	if (el) {
 		if (html == null) {
 			el.parentNode.innerHTML = '';

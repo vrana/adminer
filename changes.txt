@@ -1,5 +1,6 @@
 Adminer 4.6.3-dev:
 Stop session before connecting
+Fix displaying info about non-alphabetical objects (bug #599)
 PDO: Support binary fields download
 
 Adminer 4.6.2 (released 2018-02-20):
