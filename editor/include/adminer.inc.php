@@ -72,15 +72,15 @@ class Adminer {
 
 	function loginForm() {
 		echo "<table cellspacing='0'>\n";
-		echo $this->loginFormField('username', '<tr><th>' . lang('Username') . '<td><input type="hidden" name="auth[driver]" value="server"><input name="auth[username]" id="username" value="' . h($_GET["username"]) . '" autocapitalize="off">' . script("focus(qs('#username'));"));
-		echo $this->loginFormField('password', '<tr><th>' . lang('Password') . '<td><input type="password" name="auth[password]">' . "\n");
+		echo $this->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', '<input type="hidden" name="auth[driver]" value="server"><input name="auth[username]" id="username" value="' . h($_GET["username"]) . '" autocapitalize="off">' . script("focus(qs('#username'));"));
+		echo $this->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]">' . "\n");
 		echo "</table>\n";
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
 		echo checkbox("auth[permanent]", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
 	}
 
-	function loginFormField($name, $default) {
-		return $default;
+	function loginFormField($name, $heading, $value) {
+		return $heading . $value;
 	}
 
 	function login($login, $password) {

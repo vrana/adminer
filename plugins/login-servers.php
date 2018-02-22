@@ -8,48 +8,35 @@
 */
 class AdminerLoginServers {
 	/** @access protected */
-	var $servers, $driver;
+	var $servers;
 	
 	/** Set supported servers
-	* @param array array($domain) or array($domain => $description) or array($category => array())
-	* @param string
+	* @param array array($description => array("server" => , "driver" => "server|pgsql|sqlite|..."))
 	*/
-	function __construct($servers, $driver = "server") {
+	function __construct($servers) {
 		$this->servers = $servers;
-		$this->driver = $driver;
+		if ($_POST["auth"]) {
+			$key = $_POST["auth"]["server"];
+			$_POST["auth"]["driver"] = $this->servers[$key]["driver"];
+		}
 	}
 	
-	function serverName($server) {
-		return h($this->servers[$server]);
+	function credentials() {
+		return array($this->servers[SERVER]["server"], $_GET["username"], get_password());
 	}
 	
 	function login($login, $password) {
-		// check if server is allowed
-		foreach ($this->servers as $key => $val) {
-			$servers = $val;
-			if (!is_array($val)) {
-				$servers = array($key => $val);
-			}
-			foreach ($servers as $k => $v) {
-				if ((is_string($k) ? $k : $v) == SERVER) {
-					return;
-				}
-			}
+		if (!$this->servers[SERVER]) {
+			return false;
 		}
-		return false;
 	}
 	
-	function loginForm() {
-		?>
-<table cellspacing="0">
-<tr><th><?php echo lang('Server'); ?><td><input type="hidden" name="auth[driver]" value="<?php echo $this->driver; ?>"><select name="auth[server]"><?php echo optionlist($this->servers, SERVER); ?></select>
-<tr><th><?php echo lang('Username'); ?><td><input id="username" name="auth[username]" value="<?php echo h($_GET["username"]); ?>">
-<tr><th><?php echo lang('Password'); ?><td><input type="password" name="auth[password]">
-</table>
-<p><input type="submit" value="<?php echo lang('Login'); ?>">
-<?php
-		echo checkbox("auth[permanent]", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
-		return true;
+	function loginFormField($name, $heading, $value) {
+		if ($name == 'driver') {
+			return '';
+		} elseif ($name == 'server') {
+			return $heading . "<select name='auth[server]'>" . optionlist(array_keys($this->servers), SERVER) . "</select>\n";
+		}
 	}
 	
 }

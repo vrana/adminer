@@ -119,11 +119,11 @@ class Adminer {
 	function loginForm() {
 		global $drivers;
 		echo "<table cellspacing='0'>\n";
-		echo $this->loginFormField('driver', '<tr><th>' . lang('System') . '<td>' . html_select("auth[driver]", $drivers, DRIVER) . "\n");
-		echo $this->loginFormField('server', '<tr><th>' . lang('Server') . '<td><input name="auth[server]" value="' . h(SERVER) . '" title="hostname[:port]" placeholder="localhost" autocapitalize="off">' . "\n");
-		echo $this->loginFormField('username', '<tr><th>' . lang('Username') . '<td><input name="auth[username]" id="username" value="' . h($_GET["username"]) . '" autocapitalize="off">' . script("focus(qs('#username'));"));
-		echo $this->loginFormField('password', '<tr><th>' . lang('Password') . '<td><input type="password" name="auth[password]">' . "\n");
-		echo $this->loginFormField('db', '<tr><th>' . lang('Database') . '<td><input name="auth[db]" value="' . h($_GET["db"]) . '" autocapitalize="off">' . "\n");
+		echo $this->loginFormField('driver', '<tr><th>' . lang('System') . '<td>', html_select("auth[driver]", $drivers, DRIVER) . "\n");
+		echo $this->loginFormField('server', '<tr><th>' . lang('Server') . '<td>', '<input name="auth[server]" value="' . h(SERVER) . '" title="hostname[:port]" placeholder="localhost" autocapitalize="off">' . "\n");
+		echo $this->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', '<input name="auth[username]" id="username" value="' . h($_GET["username"]) . '" autocapitalize="off">' . script("focus(qs('#username'));"));
+		echo $this->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]">' . "\n");
+		echo $this->loginFormField('db', '<tr><th>' . lang('Database') . '<td>', '<input name="auth[db]" value="' . h($_GET["db"]) . '" autocapitalize="off">' . "\n");
 		echo "</table>\n";
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
 		echo checkbox("auth[permanent]", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
@@ -132,10 +132,11 @@ class Adminer {
 	/** Get login form field
 	* @param string
 	* @param string HTML
+	* @param string HTML
 	* @return string
 	*/
-	function loginFormField($name, $default) {
-		return $default;
+	function loginFormField($name, $heading, $value) {
+		return $heading . $value;
 	}
 
 	/** Authorize the user
