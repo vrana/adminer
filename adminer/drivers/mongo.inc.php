@@ -171,6 +171,10 @@ if (isset($_GET["mongo"])) {
 			return array_fill_keys($connection->_db->getCollectionNames(true), 'table');
 		}
 
+		function create_database($db, $collation) {
+			return true;
+		}
+
 		function drop_databases($databases) {
 			global $connection;
 			foreach ($databases as $db) {
@@ -434,6 +438,10 @@ if (isset($_GET["mongo"])) {
 				$collections[$result->name] = 'table';
 			}
 			return $collections;
+		}
+
+		function create_database($db, $collation) {
+			return true;
 		}
 
 		function drop_databases($databases) {
