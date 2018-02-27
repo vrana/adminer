@@ -28,7 +28,7 @@ if (isset($_GET["mongo"])) {
 					return false;
 				}
 			}
-			
+
 			function query($query) {
 				return false;
 			}
@@ -114,7 +114,7 @@ if (isset($_GET["mongo"])) {
 
 		class Min_Driver extends Min_SQL {
 			public $primary = "_id";
-			
+
 			function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
 				$select = ($select == array("*")
 					? array()
@@ -132,7 +132,7 @@ if (isset($_GET["mongo"])) {
 					->skip($page * $limit)
 				);
 			}
-			
+
 			function insert($table, $set) {
 				try {
 					$return = $this->_conn->_db->selectCollection($table)->insert($set);
@@ -169,6 +169,10 @@ if (isset($_GET["mongo"])) {
 		function tables_list() {
 			global $connection;
 			return array_fill_keys($connection->_db->getCollectionNames(true), 'table');
+		}
+
+		function create_database($db, $collation) {
+			return true;
 		}
 
 		function drop_databases($databases) {
@@ -434,6 +438,10 @@ if (isset($_GET["mongo"])) {
 				$collections[$result->name] = 'table';
 			}
 			return $collections;
+		}
+
+		function create_database($db, $collation) {
+			return true;
 		}
 
 		function drop_databases($databases) {
