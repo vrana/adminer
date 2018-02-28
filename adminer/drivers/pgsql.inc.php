@@ -195,8 +195,7 @@ if (isset($_GET["pgsql"])) {
 
 		function convertSearch($idf, $val, $field) {
 			return (preg_match('~char|text'
-					. (is_numeric($val["val"]) && !preg_match('~LIKE~', $val["op"]) ? '|' . number_type() : '')
-					. (!preg_match('~LIKE~', $val["op"]) ? '|date|timestamp' : '')
+					. (!preg_match('~LIKE~', $val["op"]) ? '|date|timestamp' . (is_numeric($val["val"]) ? '|' . number_type() : '') : '')
 					. '~', $field["type"])
 				? $idf
 				: "CAST($idf AS text)"
