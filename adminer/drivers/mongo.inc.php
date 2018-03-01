@@ -516,7 +516,7 @@ if (isset($_GET["mongo"])) {
 		}
 
 		function where_to_query($whereAnd = array(), $whereOr = array()) {
-			global $operators;
+			global $adminer;
 			$data = array();
 			foreach (array('and' => $whereAnd, 'or' => $whereOr) as $type => $where) {
 				if (is_array($where)) {
@@ -528,7 +528,7 @@ if (isset($_GET["mongo"])) {
 							$class = 'MongoDB\BSON\ObjectID';
 							$val = new $class($val);
 						}
-						if (!in_array($op, $operators)) {
+						if (!in_array($op, $adminer->operators)) {
 							continue;
 						}
 						if (preg_match('~^\(f\)(.+)~', $op, $match)) {
