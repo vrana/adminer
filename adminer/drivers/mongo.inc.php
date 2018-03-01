@@ -405,7 +405,7 @@ if (isset($_GET["mongo"])) {
 		}
 
 		function get_databases($flush) {
-			/** @var $connection Min_DB */
+			/** @var Min_DB */
 			global $connection;
 			$return = array();
 			$class = 'MongoDB\Driver\Command';
