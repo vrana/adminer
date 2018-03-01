@@ -71,15 +71,16 @@ class Adminer {
 	}
 
 	function loginForm() {
-		?>
-<table cellspacing="0">
-<tr><th><?php echo lang('Username'); ?><td><input type="hidden" name="auth[driver]" value="server"><input name="auth[username]" id="username" value="<?php echo h($_GET["username"]); ?>" autocapitalize="off">
-<tr><th><?php echo lang('Password'); ?><td><input type="password" name="auth[password]">
-</table>
-<?php
-		echo script("focus(qs('#username'));");
+		echo "<table cellspacing='0'>\n";
+		echo $this->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', '<input type="hidden" name="auth[driver]" value="server"><input name="auth[username]" id="username" value="' . h($_GET["username"]) . '" autocapitalize="off">' . script("focus(qs('#username'));"));
+		echo $this->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]">' . "\n");
+		echo "</table>\n";
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
 		echo checkbox("auth[permanent]", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
+	}
+
+	function loginFormField($name, $heading, $value) {
+		return $heading . $value;
 	}
 
 	function login($login, $password) {
@@ -189,7 +190,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 	}
 
 	function selectVal($val, $link, $field, $original) {
-		$return = ($val === null ? "&nbsp;" : $val);
+		$return = $val;
 		$link = h($link);
 		if (preg_match('~blob|bytea~', $field["type"]) && !is_utf8($val)) {
 			$return = lang('%d byte(s)', strlen($original));
@@ -197,8 +198,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 				$return = "<img src='$link' alt='$return'>";
 			}
 		}
-		if (like_bool($field) && $return != "&nbsp;") { // bool
-			$return = (preg_match('~^(1|t|true|y|yes|on)$~i', $value) ? lang('yes') : lang('no'));
+		if (like_bool($field) && $return != "") { // bool
+			$return = (preg_match('~^(1|t|true|y|yes|on)$~i', $val) ? lang('yes') : lang('no'));
 		}
 		if ($link) {
 			$return = "<a href='$link'" . (is_url($link) ? target_blank() : "") . ">$return</a>";
@@ -213,7 +214,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 
 	function editVal($val, $field) {
 		if (preg_match('~date|timestamp~', $field["type"]) && $val !== null) {
-			return preg_replace('~^(\\d{2}(\\d+))-(0?(\\d+))-(0?(\\d+))~', lang('$1-$3-$5'), $val);
+			return preg_replace('~^(\d{2}(\d+))-(0?(\d+))-(0?(\d+))~', lang('$1-$3-$5'), $val);
 		}
 		return $val;
 	}
@@ -418,7 +419,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 				$field = idf_escape($_POST["email_field"]);
 				$subject = $_POST["email_subject"];
 				$message = $_POST["email_message"];
-				preg_match_all('~\\{\\$([a-z0-9_]+)\\}~i', "$subject.$message", $matches); // allows {$name} in subject or message
+				preg_match_all('~\{\$([a-z0-9_]+)\}~i', "$subject.$message", $matches); // allows {$name} in subject or message
 				$rows = get_rows("SELECT DISTINCT $field" . ($matches[1] ? ", " . implode(", ", array_map('idf_escape', array_unique($matches[1]))) : "") . " FROM " . table($_GET["select"])
 					. " WHERE $field IS NOT NULL AND $field != ''"
 					. ($where ? " AND " . implode(" AND ", $where) : "")
@@ -511,7 +512,7 @@ qsl('div').onclick = whisperClick;", "")
 			return "$function()";
 		}
 		$return = $value;
-		if (preg_match('~date|timestamp~', $field["type"]) && preg_match('(^' . str_replace('\\$1', '(?P<p1>\\d*)', preg_replace('~(\\\\\\$([2-6]))~', '(?P<p\\2>\\d{1,2})', preg_quote(lang('$1-$3-$5')))) . '(.*))', $value, $match)) {
+		if (preg_match('~date|timestamp~', $field["type"]) && preg_match('(^' . str_replace('\$1', '(?P<p1>\d*)', preg_replace('~(\\\\\\$([2-6]))~', '(?P<p\2>\d{1,2})', preg_quote(lang('$1-$3-$5')))) . '(.*))', $value, $match)) {
 			$return = ($match["p1"] != "" ? $match["p1"] : ($match["p2"] != "" ? ($match["p2"] < 70 ? 20 : 19) . $match["p2"] : gmdate("Y"))) . "-$match[p3]$match[p4]-$match[p5]$match[p6]" . end($match);
 		}
 		$return = ($field["type"] == "bit" && preg_match('~^[0-9]+$~', $value) ? $return : q($return));

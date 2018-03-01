@@ -118,18 +118,25 @@ class Adminer {
 	*/
 	function loginForm() {
 		global $drivers;
-		?>
-<table cellspacing="0">
-<tr><th><?php echo lang('System'); ?><td><?php echo html_select("auth[driver]", $drivers, DRIVER) . "\n"; ?>
-<tr><th><?php echo lang('Server'); ?><td><input name="auth[server]" value="<?php echo h(SERVER); ?>" title="hostname[:port]" placeholder="localhost" autocapitalize="off">
-<tr><th><?php echo lang('Username'); ?><td><input name="auth[username]" id="username" value="<?php echo h($_GET["username"]); ?>" autocapitalize="off">
-<tr><th><?php echo lang('Password'); ?><td><input type="password" name="auth[password]">
-<tr><th><?php echo lang('Database'); ?><td><input name="auth[db]" value="<?php echo h($_GET["db"]); ?>" autocapitalize="off">
-</table>
-<?php
-		echo script("focus(qs('#username'));"); 
+		echo "<table cellspacing='0'>\n";
+		echo $this->loginFormField('driver', '<tr><th>' . lang('System') . '<td>', html_select("auth[driver]", $drivers, DRIVER) . "\n");
+		echo $this->loginFormField('server', '<tr><th>' . lang('Server') . '<td>', '<input name="auth[server]" value="' . h(SERVER) . '" title="hostname[:port]" placeholder="localhost" autocapitalize="off">' . "\n");
+		echo $this->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', '<input name="auth[username]" id="username" value="' . h($_GET["username"]) . '" autocapitalize="off">' . script("focus(qs('#username'));"));
+		echo $this->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]">' . "\n");
+		echo $this->loginFormField('db', '<tr><th>' . lang('Database') . '<td>', '<input name="auth[db]" value="' . h($_GET["db"]) . '" autocapitalize="off">' . "\n");
+		echo "</table>\n";
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
 		echo checkbox("auth[permanent]", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
+	}
+	
+	/** Get login form field
+	* @param string
+	* @param string HTML
+	* @param string HTML
+	* @return string
+	*/
+	function loginFormField($name, $heading, $value) {
+		return $heading . $value;
 	}
 
 	/** Authorize the user
@@ -312,7 +319,7 @@ class Adminer {
 			echo ($field["null"] ? " <i>NULL</i>" : "");
 			echo ($field["auto_increment"] ? " <i>" . lang('Auto Increment') . "</i>" : "");
 			echo (isset($field["default"]) ? " <span title='" . lang('Default value') . "'>[<b>" . h($field["default"]) . "</b>]</span>" : "");
-			echo (support("comment") ? "<td>" . nbsp($field["comment"]) : "");
+			echo (support("comment") ? "<td>" . h($field["comment"]) : "");
 			echo "\n";
 		}
 		echo "</table>\n";
@@ -575,7 +582,7 @@ class Adminer {
 		$return = array();
 		foreach ((array) $_GET["order"] as $key => $val) {
 			if ($val != "") {
-				$return[] = (preg_match('~^((COUNT\\(DISTINCT |[A-Z0-9_]+\\()(`(?:[^`]|``)+`|"(?:[^"]|"")+")\\)|COUNT\\(\\*\\))$~', $val) ? $val : idf_escape($val)) //! MS SQL uses []
+				$return[] = (preg_match('~^((COUNT\(DISTINCT |[A-Z0-9_]+\()(`(?:[^`]|``)+`|"(?:[^"]|"")+")\)|COUNT\(\*\))$~', $val) ? $val : idf_escape($val)) //! MS SQL uses []
 					. (isset($_GET["desc"][$key]) ? " DESC" : "")
 				;
 			}
@@ -718,7 +725,7 @@ class Adminer {
 			$return = "$function()";
 		} elseif (preg_match('~^current_(date|timestamp)$~', $function)) {
 			$return = $function;
-		} elseif (preg_match('~^([+-]|\\|\\|)$~', $function)) {
+		} elseif (preg_match('~^([+-]|\|\|)$~', $function)) {
 			$return = idf_escape($name) . " $function $return";
 		} elseif (preg_match('~^[+-] interval$~', $function)) {
 			$return = idf_escape($name) . " $function " . (preg_match("~^(\\d+|'[0-9.: -]') [A-Z_]+\$~i", $value) ? $value : $return);
@@ -962,7 +969,7 @@ class Adminer {
 				}
 				$server_info = $connection->server_info;
 				?>
-bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\\d\\.?\\d).*~s', '\\1', $server_info) : ""); ?>'<?php echo (preg_match('~MariaDB~', $server_info) ? ", true" : ""); ?>);
+bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '\1', $server_info) : ""); ?>'<?php echo (preg_match('~MariaDB~', $server_info) ? ", true" : ""); ?>);
 </script>
 <?php
 			}

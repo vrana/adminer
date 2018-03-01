@@ -240,7 +240,7 @@ if (!defined("DRIVER")) {
 					);
 				}
 				$this->dsn(
-					"mysql:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\\d)~', ';port=\\1', $server)),
+					"mysql:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\d)~', ';port=\1', $server)),
 					$username,
 					$password,
 					$options
@@ -484,7 +484,7 @@ if (!defined("DRIVER")) {
 		) as $row) {
 			if ($row["Engine"] == "InnoDB") {
 				// ignore internal comment, unnecessary since MySQL 5.1.21
-				$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["Comment"]);
+				$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\1', $row["Comment"]);
 			}
 			if (!isset($row["Engine"])) {
 				$row["Comment"] = "";
@@ -521,7 +521,7 @@ if (!defined("DRIVER")) {
 	function fields($table) {
 		$return = array();
 		foreach (get_rows("SHOW FULL COLUMNS FROM " . table($table)) as $row) {
-			preg_match('~^([^( ]+)(?:\\((.+)\\))?( unsigned)?( zerofill)?$~', $row["Type"], $match);
+			preg_match('~^([^( ]+)(?:\((.+)\))?( unsigned)?( zerofill)?$~', $row["Type"], $match);
 			$return[$row["Field"]] = array(
 				"field" => $row["Field"],
 				"full_type" => $row["Type"],
@@ -591,7 +591,7 @@ if (!defined("DRIVER")) {
 	*/
 	function view($name) {
 		global $connection;
-		return array("select" => preg_replace('~^(?:[^`]|`[^`]*`)*\\s+AS\\s+~isU', '', $connection->result("SHOW CREATE VIEW " . table($name), 1)));
+		return array("select" => preg_replace('~^(?:[^`]|`[^`]*`)*\s+AS\s+~isU', '', $connection->result("SHOW CREATE VIEW " . table($name), 1)));
 	}
 
 	/** Get sorted grouped list of collations
@@ -870,7 +870,7 @@ if (!defined("DRIVER")) {
 				"field" => $name,
 				"type" => strtolower($param[5]),
 				"length" => preg_replace_callback("~$enum_length~s", 'normalize_enum', $param[6]),
-				"unsigned" => strtolower(preg_replace('~\\s+~', ' ', trim("$param[8] $param[7]"))),
+				"unsigned" => strtolower(preg_replace('~\s+~', ' ', trim("$param[8] $param[7]"))),
 				"null" => 1,
 				"full_type" => $param[4],
 				"inout" => strtoupper($param[1]),
@@ -976,7 +976,7 @@ if (!defined("DRIVER")) {
 		global $connection;
 		$return = $connection->result("SHOW CREATE TABLE " . table($table), 1);
 		if (!$auto_increment) {
-			$return = preg_replace('~ AUTO_INCREMENT=\\d+~', '', $return); //! skip comments
+			$return = preg_replace('~ AUTO_INCREMENT=\d+~', '', $return); //! skip comments
 		}
 		return $return;
 	}
@@ -1105,7 +1105,7 @@ if (!defined("DRIVER")) {
 	$grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum"); ///< @var array grouping functions used in select
 	$edit_functions = array( ///< @var array of array("$type|$type2" => "$function/$function2") functions used in editing, [0] - edit and insert, [1] - edit only
 		array(
-			"char" => "md5/sha1/password/encrypt/uuid", //! JavaScript for disabling maxlength
+			"char" => "md5/sha1/password/encrypt/uuid",
 			"binary" => "md5/sha1",
 			"date|time" => "now",
 		), array(

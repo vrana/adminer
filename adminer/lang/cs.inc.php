@@ -10,7 +10,7 @@ $translations = array(
 	'Logout' => 'Odhlásit',
 	'Logged as: %s' => 'Přihlášen jako: %s',
 	'Logout successful.' => 'Odhlášení proběhlo v pořádku.',
-	'Thanks for using Adminer, consider <a href="%s">donating</a>.' => 'Díky za použití Admineru, zvažte <a href="%s">příspěvek</a>.',
+	'Thanks for using Adminer, consider <a href="%s">donating</a>.' => 'Díky za použití Admineru, <a href="%s">příspějte</a> na vývoj.',
 	'Invalid credentials.' => 'Neplatné přihlašovací údaje.',
 	'<a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to use SQLite.' => 'Pro přihlášení k SQLite <a href="https://www.adminer.org/cs/extension/"%s>implementujte</a> metodu %s.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Příliš mnoho pokusů o přihlášení, zkuste to znovu za %d minutu.', 'Příliš mnoho pokusů o přihlášení, zkuste to znovu za %d minuty.', 'Příliš mnoho pokusů o přihlášení, zkuste to znovu za %d minut.'),

@@ -18,12 +18,20 @@ if (function_exists("mb_internal_encoding")) {
 	mb_internal_encoding("8bit");
 }
 
+include "../adminer/include/functions.inc.php";
+
 // used only in compiled file
 if (isset($_GET["file"])) {
 	include "../adminer/file.inc.php";
 }
 
-include "../adminer/include/functions.inc.php";
+if ($_GET["script"] == "version") {
+	$fp = file_open_lock(get_temp_dir() . "/adminer.version");
+	if ($fp) {
+		file_write_unlock($fp, serialize(array("signature" => $_POST["signature"], "version" => $_POST["version"])));
+	}
+	exit;
+}
 
 global $adminer, $connection, $drivers, $edit_functions, $enum_length, $error, $functions, $grouping, $HTTPS, $inout, $jush, $LANG, $langs, $on_actions, $permanent, $structured_types, $has_token, $token, $translations, $types, $unsigned, $VERSION; // allows including Adminer inside a function
 
@@ -42,7 +50,7 @@ $HTTPS = $_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off");
 if (!defined("SID")) {
 	session_cache_limiter(""); // to allow restarting session
 	session_name("adminer_sid"); // use specific session name to get own namespace
-	$params = array(0, preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"]), "", $HTTPS);
+	$params = array(0, preg_replace('~\?.*~', '', $_SERVER["REQUEST_URI"]), "", $HTTPS);
 	if (version_compare(PHP_VERSION, '5.2.0') >= 0) {
 		$params[] = true; // HttpOnly
 	}
@@ -75,7 +83,7 @@ include "../adminer/drivers/mysql.inc.php"; // must be included as last driver
 
 define("SERVER", $_GET[DRIVER]); // read from pgsql=localhost
 define("DB", $_GET["db"]); // for the sake of speed and size
-define("ME", preg_replace('~^[^?]*/([^?]*).*~', '\\1', $_SERVER["REQUEST_URI"]) . '?'
+define("ME", preg_replace('~^[^?]*/([^?]*).*~', '\1', $_SERVER["REQUEST_URI"]) . '?'
 	. (sid() ? SID . '&' : '')
 	. (SERVER !== null ? DRIVER . "=" . urlencode(SERVER) . '&' : '')
 	. (isset($_GET["username"]) ? "username=" . urlencode($_GET["username"]) . '&' : '')
@@ -87,11 +95,6 @@ include "./include/adminer.inc.php";
 include "../adminer/include/design.inc.php";
 include "../adminer/include/xxtea.inc.php";
 include "../adminer/include/auth.inc.php";
-
-if (!ini_bool("session.use_cookies") || @ini_set("session.use_cookies", false) !== false) { // @ - may be disabled
-	session_write_close(); // improves concurrency if a user opens several pages at once, may be restarted later
-}
-
 include "./include/editing.inc.php";
 include "./include/connect.inc.php";
 

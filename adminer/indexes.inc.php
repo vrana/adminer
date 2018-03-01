@@ -99,7 +99,7 @@ if (!$row) {
 <th id="label-type"><?php echo lang('Index Type'); ?>
 <th><input type="submit" class="wayoff"><?php echo lang('Column (length)'); ?>
 <th id="label-name"><?php echo lang('Name'); ?>
-<th><noscript><input type='image' class='icon' name='add[0]' src='../adminer/static/plus.gif' alt='+' title='<?php echo lang('Add next'); ?>'></noscript>&nbsp;
+<th><noscript><?php echo "<input type='image' class='icon' name='add[0]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>"; ?></noscript>
 </thead>
 <?php
 if ($primary) {
