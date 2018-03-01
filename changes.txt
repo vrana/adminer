@@ -8,7 +8,7 @@ PostgreSQL: Do not cast date/time searches to text
 Adminer 4.6.2 (released 2018-02-20):
 Semi-transparent border on table actions
 Shorten JSON values in select (bug #594)
-Speed up alter table (regression from 4.4.0)
+Speed up alter table form (regression from 4.4.0)
 Store current version without authentication and in Editor
 PostgreSQL: Fix exporting string default values
 PostgreSQL: Fix exporting sequences in PostgreSQL 10
