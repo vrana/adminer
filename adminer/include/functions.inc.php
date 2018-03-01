@@ -49,6 +49,15 @@ function number($val) {
 	return preg_replace('~[^0-9]+~', '', $val);
 }
 
+/** Check update availability
+* @param string current version
+* @return string latest version
+*/
+function update_availability_status($current_version, $latest_version) {
+	$current_version = str_replace('-dev', '', $current_version);
+	return version_compare($current_version, $latest_version) < 0 ? h($latest_version) : "";
+}
+
 /** Get regular expression to match numeric types
 * @return string
 */
