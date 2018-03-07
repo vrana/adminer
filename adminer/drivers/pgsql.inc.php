@@ -199,8 +199,8 @@ if (isset($_GET["pgsql"])) {
 
 		function convertSearch($idf, $val, $field) {
 			return (preg_match('~char|text' . (is_numeric($val["val"]) && !preg_match('~LIKE~', $val["op"]) ? '|' . number_type() : '') . '~', $field["type"])
-				? $idf
-				: "CAST($idf AS text)"
+				? "CAST($idf AS text)"
+				: $idf
 			);
 		}
 
