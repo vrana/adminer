@@ -28,7 +28,7 @@ class AdminerWymeditor {
 
 	function selectVal(&$val, $link, $field, $original) {
 		// copied from tinymce.php
-		if (preg_match("~_html~", $field["field"]) && $val != '&nbsp;') {
+		if (preg_match("~_html~", $field["field"]) && $val != '') {
 			$shortened = (substr($val, -10) == "<i>...</i>");
 			if ($shortened) {
 				$val = substr($val, 0, -10);
@@ -41,7 +41,7 @@ class AdminerWymeditor {
 			if (class_exists('DOMDocument')) { // close all opened tags
 				$dom = new DOMDocument;
 				if (@$dom->loadHTML("<meta http-equiv='Content-Type' content='text/html; charset=utf-8'></head>$val")) { // @ - $val can contain errors
-					$val = preg_replace('~.*<body[^>]*>(.*)</body>.*~is', '\\1', $dom->saveHTML());
+					$val = preg_replace('~.*<body[^>]*>(.*)</body>.*~is', '\1', $dom->saveHTML());
 				}
 			}
 		}

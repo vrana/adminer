@@ -21,7 +21,7 @@ $i = -1;
 foreach (process_list() as $i => $row) {
 
 	if (!$i) {
-		echo "<thead><tr lang='en'>" . (support("kill") ? "<th>&nbsp;" : "");
+		echo "<thead><tr lang='en'>" . (support("kill") ? "<th>" : "");
 		foreach ($row as $key => $val) {
 			echo "<th>$key" . doc_link(array(
 				'sql' => "show-processlist.html#processlist_" . strtolower($key),
@@ -38,7 +38,7 @@ foreach (process_list() as $i => $row) {
 			($jush == "pgsql" && $key == "current_query" && $val != "<IDLE>") ||
 			($jush == "oracle" && $key == "sql_text" && $val != "")
 			? "<code class='jush-$jush'>" . shorten_utf8($val, 100, "</code>") . ' <a href="' . h(ME . ($row["db"] != "" ? "db=" . urlencode($row["db"]) . "&" : "") . "sql=" . urlencode($val)) . '">' . lang('Clone') . '</a>'
-			: nbsp($val)
+			: h($val)
 		);
 	}
 	echo "\n";

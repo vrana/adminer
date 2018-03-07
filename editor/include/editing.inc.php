@@ -25,7 +25,7 @@ function send_mail($email, $subject, $message, $from = "", $files = array()) {
 		if (!$val) {
 			$attachments .= "--$boundary$eol"
 				. "Content-Type: " . str_replace("\n", "", $files["type"][$key]) . $eol
-				. "Content-Disposition: attachment; filename=\"" . preg_replace('~["\\n]~', '', $files["name"][$key]) . "\"$eol"
+				. "Content-Disposition: attachment; filename=\"" . preg_replace('~["\n]~', '', $files["name"][$key]) . "\"$eol"
 				. "Content-Transfer-Encoding: base64$eol$eol"
 				. chunk_split(base64_encode(file_get_contents($files["tmp_name"][$key])), 76, $eol) . $eol
 			;

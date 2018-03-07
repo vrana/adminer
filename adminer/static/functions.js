@@ -205,14 +205,9 @@ function formCheck(name) {
 /** Check all rows in <table class="checkable">
 */
 function tableCheck() {
-	var tables = qsa('table', document);
-	for (var i=0; i < tables.length; i++) {
-		if (/(^|\s)checkable(\s|$)/.test(tables[i].className)) {
-			var trs = qsa('tr', tables[i]);
-			for (var j=0; j < trs.length; j++) {
-				trCheck(trs[j].firstChild.firstChild);
-			}
-		}
+	var inputs = qsa('table.checkable td:first-child input', document);
+	for (var i=0; i < inputs.length; i++) {
+		trCheck(inputs[i]);
 	}
 }
 
@@ -319,13 +314,13 @@ function checkboxClick(event) {
 
 /** Set HTML code of an element
 * @param string
-* @param string undefined to set parentNode to &nbsp;
+* @param string undefined to set parentNode to empty string
 */
 function setHtml(id, html) {
-	var el = qs('#' + id);
+	var el = qs('[id="' + id.replace(/[\\"]/g, '\\$&') + '"]'); // database name is used as ID
 	if (el) {
 		if (html == null) {
-			el.parentNode.innerHTML = '&nbsp;';
+			el.parentNode.innerHTML = '';
 		} else {
 			el.innerHTML = html;
 		}
@@ -716,7 +711,7 @@ function selectClick(event, text, warning) {
 		});
 		input.rows = rows;
 	}
-	if (value == '\u00A0' || qsa('i', td).length) { // &nbsp; or i - NULL
+	if (qsa('i', td).length) { // <i> - NULL
 		value = '';
 	}
 	if (document.selection) {

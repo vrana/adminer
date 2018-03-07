@@ -4,10 +4,10 @@ header("Content-Type: text/javascript; charset=utf-8");
 if ($_GET["script"] == "db") {
 	$sums = array("Data_length" => 0, "Index_length" => 0, "Data_free" => 0);
 	foreach (table_status() as $name => $table_status) {
-		json_row("Comment-$name", nbsp($table_status["Comment"]));
+		json_row("Comment-$name", h($table_status["Comment"]));
 		if (!is_view($table_status)) {
 			foreach (array("Engine", "Collation") as $key) {
-				json_row("$key-$name", nbsp($table_status[$key]));
+				json_row("$key-$name", h($table_status[$key]));
 			}
 			foreach ($sums + array("Auto_increment" => 0, "Rows" => 0) as $key => $val) {
 				if ($table_status[$key] != "") {
@@ -33,12 +33,6 @@ if ($_GET["script"] == "db") {
 
 } elseif ($_GET["script"] == "kill") {
 	$connection->query("KILL " . number($_POST["kill"]));
-
-} elseif ($_GET["script"] == "version") {
-	$fp = file_open_lock(get_temp_dir() . "/adminer.version");
-	if ($fp) {
-		file_write_unlock($fp, serialize(array("signature" => $_POST["signature"], "version" => $_POST["version"])));
-	}
 
 } else { // connect
 	foreach (count_tables($adminer->databases()) as $db => $val) {

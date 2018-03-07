@@ -47,7 +47,7 @@ if ($_POST) {
 } elseif ($jush == "sql") {
 	// propose database name with limited privileges
 	foreach (get_vals("SHOW GRANTS") as $grant) {
-		if (preg_match('~ ON (`(([^\\\\`]|``|\\\\.)*)%`\\.\\*)?~', $grant, $match) && $match[1]) {
+		if (preg_match('~ ON (`(([^\\\\`]|``|\\\\.)*)%`\.\*)?~', $grant, $match) && $match[1]) {
 			$name = stripcslashes(idf_unescape("`$match[2]`"));
 			break;
 		}

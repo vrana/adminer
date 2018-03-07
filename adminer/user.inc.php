@@ -29,7 +29,7 @@ $old_pass = "";
 
 if (isset($_GET["host"]) && ($result = $connection->query("SHOW GRANTS FOR " . q($USER) . "@" . q($_GET["host"])))) { //! use information_schema for MySQL 5 - column names in column privileges are not escaped
 	while ($row = $result->fetch_row()) {
-		if (preg_match('~GRANT (.*) ON (.*) TO ~', $row[0], $match) && preg_match_all('~ *([^(,]*[^ ,(])( *\\([^)]+\\))?~', $match[1], $matches, PREG_SET_ORDER)) { //! escape the part between ON and TO
+		if (preg_match('~GRANT (.*) ON (.*) TO ~', $row[0], $match) && preg_match_all('~ *([^(,]*[^ ,(])( *\([^)]+\))?~', $match[1], $matches, PREG_SET_ORDER)) { //! escape the part between ON and TO
 			foreach ($matches as $val) {
 				if ($val[1] != "USAGE") {
 					$grants["$match[2]$val[2]"][$val[1]] = true;
@@ -84,7 +84,7 @@ if ($_POST && !$error) {
 					$grant = array_diff($grant, $old_grant);
 					unset($grants[$object]);
 				}
-				if (preg_match('~^(.+)\\s*(\\(.*\\))?$~U', $object, $match) && (
+				if (preg_match('~^(.+)\s*(\(.*\))?$~U', $object, $match) && (
 					!grant("REVOKE", $revoke, $match[2], " ON $match[1] FROM $new_user") //! SQL injection
 					|| !grant("GRANT", $grant, $match[2], " ON $match[1] TO $new_user")
 				)) {
@@ -99,7 +99,7 @@ if ($_POST && !$error) {
 				queries("DROP USER $old_user");
 			} elseif (!isset($_GET["grant"])) {
 				foreach ($grants as $object => $revoke) {
-					if (preg_match('~^(.+)(\\(.*\\))?$~U', $object, $match)) {
+					if (preg_match('~^(.+)(\(.*\))?$~U', $object, $match)) {
 						grant("REVOKE", array_keys($revoke), $match[2], " ON $match[1] FROM $new_user");
 					}
 				}
@@ -165,7 +165,7 @@ foreach (array(
 			$name = "'grants[$i][" . h(strtoupper($privilege)) . "]'";
 			$value = $grant[strtoupper($privilege)];
 			if ($context == "Server Admin" && $object != (isset($grants["*.*"]) ? "*.*" : ".*")) {
-				echo "<td>&nbsp;";
+				echo "<td>";
 			} elseif (isset($_GET["grant"])) {
 				echo "<td><select name=$name><option><option value='1'" . ($value ? " selected" : "") . ">" . lang('Grant') . "<option value='0'" . ($value == "0" ? " selected" : "") . ">" . lang('Revoke') . "</select>";
 			} else {

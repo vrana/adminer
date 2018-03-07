@@ -120,6 +120,7 @@ function auth_error($error) {
 		if (($_COOKIE[$session_name] || $_GET[$session_name]) && !$has_token) {
 			$error = lang('Session expired, please login again.');
 		} else {
+			restart_session();
 			add_invalid_login();
 			$password = get_password();
 			if ($password !== null) {
@@ -149,14 +150,17 @@ function auth_error($error) {
 	exit;
 }
 
+if (isset($_GET["username"]) && !class_exists("Min_DB")) {
+	unset($_SESSION["pwds"][DRIVER]);
+	unset_permanent();
+	page_header(lang('No extension'), lang('None of the supported PHP extensions (%s) are available.', implode(", ", $possible_drivers)), false);
+	page_footer("auth");
+	exit;
+}
+
+stop_session(true);
+
 if (isset($_GET["username"])) {
-	if (!class_exists("Min_DB")) {
-		unset($_SESSION["pwds"][DRIVER]);
-		unset_permanent();
-		page_header(lang('No extension'), lang('None of the supported PHP extensions (%s) are available.', implode(", ", $possible_drivers)), false);
-		page_footer("auth");
-		exit;
-	}
 	list($host, $port) = explode(":", SERVER, 2);
 	if (is_numeric($port) && $port < 1024) {
 		auth_error(lang('Connecting to privileged ports is not allowed.'));

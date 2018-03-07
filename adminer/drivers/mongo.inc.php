@@ -171,6 +171,10 @@ if (isset($_GET["mongo"])) {
 			return array_fill_keys($connection->_db->getCollectionNames(true), 'table');
 		}
 
+		function create_database($db, $collation) {
+			return true;
+		}
+
 		function drop_databases($databases) {
 			global $connection;
 			foreach ($databases as $db) {
@@ -405,7 +409,7 @@ if (isset($_GET["mongo"])) {
 		}
 
 		function get_databases($flush) {
-			/** @var $connection Min_DB */
+			/** @var Min_DB */
 			global $connection;
 			$return = array();
 			$class = 'MongoDB\Driver\Command';
@@ -434,6 +438,10 @@ if (isset($_GET["mongo"])) {
 				$collections[$result->name] = 'table';
 			}
 			return $collections;
+		}
+
+		function create_database($db, $collation) {
+			return true;
 		}
 
 		function drop_databases($databases) {
@@ -516,7 +524,7 @@ if (isset($_GET["mongo"])) {
 		}
 
 		function where_to_query($whereAnd = array(), $whereOr = array()) {
-			global $operators;
+			global $adminer;
 			$data = array();
 			foreach (array('and' => $whereAnd, 'or' => $whereOr) as $type => $where) {
 				if (is_array($where)) {
@@ -528,7 +536,7 @@ if (isset($_GET["mongo"])) {
 							$class = 'MongoDB\BSON\ObjectID';
 							$val = new $class($val);
 						}
-						if (!in_array($op, $operators)) {
+						if (!in_array($op, $adminer->operators)) {
 							continue;
 						}
 						if (preg_match('~^\(f\)(.+)~', $op, $match)) {
