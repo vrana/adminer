@@ -6,6 +6,7 @@ Fix displaying info about non-alphabetical objects (bug #599)
 PDO: Support binary fields download
 MySQL: Use CONVERT() only when searching for non-ASCII (bug #603)
 PostgreSQL: Do not cast date/time searches to text
+PostgreSQL: Add SQL operator to search
 
 Adminer 4.6.2 (released 2018-02-20):
 Semi-transparent border on table actions

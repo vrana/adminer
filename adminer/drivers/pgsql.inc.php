@@ -217,7 +217,7 @@ if (isset($_GET["pgsql"])) {
 		function convertSearch($idf, $val, $field) {
 			return (preg_match('~char|text'
 					. (!preg_match('~LIKE~', $val["op"]) ? '|date|time(stamp)?' . (is_numeric($val["val"]) ? '|' . number_type() : '') : '')
-					. '~', $field["type"])
+					. '~', $field["type"]) || $val["op"] == "SQL"
 				? $idf
 				: "CAST($idf AS text)"
 			);
@@ -845,7 +845,7 @@ AND typelem = 0"
 		$structured_types[$key] = array_keys($val);
 	}
 	$unsigned = array();
-	$operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"); // no "SQL" to avoid SQL injection
+	$operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
 	$functions = array("char_length", "lower", "round", "to_hex", "to_timestamp", "upper");
 	$grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 	$edit_functions = array(
