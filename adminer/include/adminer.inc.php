@@ -75,7 +75,7 @@ class Adminer {
 	* @return float number of seconds
 	*/
 	function queryTimeout() {
-		return 5;
+		return 2;
 	}
 
 	/** Headers to send before HTML output
