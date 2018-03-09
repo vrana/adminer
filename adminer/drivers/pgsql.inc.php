@@ -193,6 +193,11 @@ if (isset($_GET["pgsql"])) {
 			return true;
 		}
 
+		function slowQuery($query, $timeout) {
+			// BEGIN, COMMIT - automatically wrapped into a transaction by pg_query but not by PDO
+			return "BEGIN; SET LOCAL statement_timeout = " . (1000 * $timeout) . "; $query; COMMIT";
+		}
+
 		function convertSearch($idf, $val, $field) {
 			return (preg_match('~char|text'
 					. (!preg_match('~LIKE~', $val["op"]) ? '|date|time(stamp)?' . (is_numeric($val["val"]) ? '|' . number_type() : '') : '')

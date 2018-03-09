@@ -19,6 +19,7 @@ if (isset($_GET["simpledb"])) {
 					$params['NextToken'] = $this->next;
 				}
 				$result = sdb_request_all('Select', 'Item', $params, $this->timeout); //! respect $unbuffered
+				$this->timeout = 0;
 				if ($result === false) {
 					return $result;
 				}
@@ -235,6 +236,11 @@ if (isset($_GET["simpledb"])) {
 
 		function rollback() {
 			return false;
+		}
+		
+		function slowQuery($query, $timeout) {
+			$this->_conn->timeout = $timeout;
+			return $query;
 		}
 
 	}
