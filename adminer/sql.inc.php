@@ -225,13 +225,14 @@ if (!isset($_GET["import"])) {
 	
 } else {
 	echo "<fieldset><legend>" . lang('File upload') . "</legend><div>";
+	$gz = (extension_loaded("zlib") ? "[.gz]" : "");
 	echo (ini_bool("file_uploads")
-		? "SQL (&lt; " . ini_get("upload_max_filesize") . "B): <input type='file' name='sql_file[]' multiple>\n$execute" // ignore post_max_size because it is for all form fields together and bytes computing would be necessary
+		? "SQL$gz (&lt; " . ini_get("upload_max_filesize") . "B): <input type='file' name='sql_file[]' multiple>\n$execute" // ignore post_max_size because it is for all form fields together and bytes computing would be necessary
 		: lang('File uploads are disabled.')
 	);
 	echo "</div></fieldset>\n";
 	echo "<fieldset><legend>" . lang('From server') . "</legend><div>";
-	echo lang('Webserver file %s', "<code>" . h($adminer->importServerPath()) . (extension_loaded("zlib") ? "[.gz]" : "") . "</code>");
+	echo lang('Webserver file %s', "<code>" . h($adminer->importServerPath()) . "$gz</code>");
 	echo ' <input type="submit" name="webfile" value="' . lang('Run file') . '">';
 	echo "</div></fieldset>\n";
 	echo "<p>";
