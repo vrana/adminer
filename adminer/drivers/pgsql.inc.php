@@ -217,7 +217,7 @@ if (isset($_GET["pgsql"])) {
 		function convertSearch($idf, $val, $field) {
 			return (preg_match('~char|text'
 					. (!preg_match('~LIKE~', $val["op"]) ? '|date|time(stamp)?' . (is_numeric($val["val"]) ? '|' . number_type() : '') : '')
-					. '~', $field["type"]) || $val["op"] == "SQL"
+					. '~', $field["type"])
 				? $idf
 				: "CAST($idf AS text)"
 			);
@@ -286,7 +286,7 @@ if (isset($_GET["pgsql"])) {
 	function limit1($table, $query, $where, $separator = "\n") {
 		return (preg_match('~^INTO~', $query)
 			? limit($query, $where, 1, 0, $separator)
-			: " $query WHERE ctid = (SELECT ctid FROM " . table($table) . $where . $separator . "LIMIT 1)"
+			: " $query" . (is_view(table_status1($table)) ? $where : " WHERE ctid = (SELECT ctid FROM " . table($table) . $where . $separator . "LIMIT 1)")
 		);
 	}
 
@@ -845,7 +845,7 @@ AND typelem = 0"
 		$structured_types[$key] = array_keys($val);
 	}
 	$unsigned = array();
-	$operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
+	$operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"); // no "SQL" to avoid SQL injection
 	$functions = array("char_length", "lower", "round", "to_hex", "to_timestamp", "upper");
 	$grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 	$edit_functions = array(
