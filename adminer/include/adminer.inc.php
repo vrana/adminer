@@ -560,7 +560,7 @@ class Adminer {
 					// find anywhere
 					$cols = array();
 					foreach ($fields as $name => $field) {
-						if ((is_numeric($val["val"]) || !preg_match('~' . number_type() . '|bit~', $field["type"]))
+						if ((preg_match('~^[-\d.' . (preg_match('~IN$~', $val["op"]) ? ',' : '') . ']+$~', $val["val"]) || !preg_match('~' . number_type() . '|bit~', $field["type"]))
 							&& (!preg_match("~[\x80-\xFF]~", $val["val"]) || preg_match('~char|text|enum|set~', $field["type"]))
 						) {
 							$cols[] = $prefix . $driver->convertSearch(idf_escape($name), $val, $field) . $cond;
