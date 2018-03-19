@@ -1135,7 +1135,22 @@ function dump_csv($row) {
 * @return string
 */
 function apply_sql_function($function, $column) {
-	return ($function ? ($function == "unixepoch" ? "DATETIME($column, '$function')" : ($function == "count distinct" ? "COUNT(DISTINCT " : strtoupper("$function(")) . "$column)") : $column);
+    if (!$function) {
+        return $column;
+    }
+    switch ($function) {
+        case "unixepoch":
+            return "DATETIME($column, '$function')";
+        case "count distinct":
+            return "COUNT(DISTINCT $column)";
+        case "epoch":
+            return "EXTRACT(epoch FROM $column)";
+        case "string_agg":
+            return "STRING_AGG($column::text, ', ')";
+        case "string_agg_uniq":
+            return "STRING_AGG(DISTINCT $column::text, ', ')";
+    }
+	return strtoupper("$function") . "($column)";
 }
 
 /** Get path of the temporary directory
