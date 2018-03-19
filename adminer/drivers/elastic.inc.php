@@ -177,7 +177,8 @@ if (isset($_GET["elastic"])) {
 			return new Min_Result($return);
 		}
 
-		function update($type, $record, $queryWhere) {
+		function update($type, $record, $queryWhere, $limit = 0, $separator = "\n") {
+			//! use $limit
 			$parts = preg_split('~ *= *~', $queryWhere);
 			if (count($parts) == 2) {
 				$id = trim($parts[1]);
@@ -195,7 +196,8 @@ if (isset($_GET["elastic"])) {
 			return $response['created'];
 		}
 
-		function delete($type, $queryWhere) {
+		function delete($type, $queryWhere, $limit = 0) {
+			//! use $limit
 			$ids = array();
 			if (is_array($_GET["where"]) && $_GET["where"]["_id"]) {
 				$ids[] = $_GET["where"]["_id"];

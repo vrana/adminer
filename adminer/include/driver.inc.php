@@ -113,6 +113,14 @@
 		return queries("ROLLBACK");
 	}
 	
+	/** Return query with a timeout
+	* @param string
+	* @param int seconds
+	* @return string or null if the driver doesn't support query timeouts
+	*/
+	function slowQuery($query, $timeout) {
+	}
+	
 	/** Convert column to be searchable
 	* @param string escaped column name
 	* @param array array("op" => , "val" => )

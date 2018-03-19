@@ -273,7 +273,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 
 	function tables_list() {
-		return get_key_vals("SELECT name, type FROM sqlite_master WHERE type IN ('table', 'view') ORDER BY (name = 'sqlite_sequence'), name", 1);
+		return get_key_vals("SELECT name, type FROM sqlite_master WHERE type IN ('table', 'view') ORDER BY (name = 'sqlite_sequence'), name");
 	}
 
 	function count_tables($databases) {

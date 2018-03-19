@@ -298,6 +298,16 @@ if (!defined("DRIVER")) {
 			return queries($prefix . implode(",\n", $values) . $suffix);
 		}
 		
+		function slowQuery($query, $timeout) {
+			if (min_version('5.7.8', '10.1.2')) {
+				if (preg_match('~MariaDB~', $this->_conn->server_info)) {
+					return "SET STATEMENT max_statement_time=$timeout FOR $query";
+				} elseif (preg_match('~^(SELECT\b)(.+)~is', $query, $match)) {
+					return "$match[1] /*+ MAX_EXECUTION_TIME(" . ($timeout * 1000) . ") */ $match[2]";
+				}
+			}
+		}
+
 		function convertSearch($idf, $val, $field) {
 			return (preg_match('~char|text|enum|set~', $field["type"]) && !preg_match("~^utf8~", $field["collation"]) && preg_match('~[\x80-\xFF]~', $val['val'])
 				? "CONVERT($idf USING " . charset($this->_conn) . ")"

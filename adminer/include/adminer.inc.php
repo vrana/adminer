@@ -75,7 +75,7 @@ class Adminer {
 	* @return float number of seconds
 	*/
 	function queryTimeout() {
-		return 5;
+		return 2;
 	}
 
 	/** Headers to send before HTML output
@@ -560,7 +560,7 @@ class Adminer {
 					// find anywhere
 					$cols = array();
 					foreach ($fields as $name => $field) {
-						if ((is_numeric($val["val"]) || !preg_match('~' . number_type() . '|bit~', $field["type"]))
+						if ((preg_match('~^[-\d.' . (preg_match('~IN$~', $val["op"]) ? ',' : '') . ']+$~', $val["val"]) || !preg_match('~' . number_type() . '|bit~', $field["type"]))
 							&& (!preg_match("~[\x80-\xFF]~", $val["val"]) || preg_match('~char|text|enum|set~', $field["type"]))
 						) {
 							$cols[] = $prefix . $driver->convertSearch(idf_escape($name), $val, $field) . $cond;
@@ -1020,11 +1020,12 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 				}
 			}
 		}
-		echo (isset($_GET["sql"]) ? '<input type="hidden" name="sql" value="">'
-			: (isset($_GET["schema"]) ? '<input type="hidden" name="schema" value="">'
-			: (isset($_GET["dump"]) ? '<input type="hidden" name="dump" value="">'
-			: (isset($_GET["privileges"]) ? '<input type="hidden" name="privileges" value="">'
-		: ""))));
+		foreach (array("import", "sql", "schema", "dump", "privileges") as $val) {
+			if (isset($_GET[$val])) {
+				echo "<input type='hidden' name='$val' value=''>";
+				break;
+			}
+		}
 		echo "</p></form>\n";
 	}
 

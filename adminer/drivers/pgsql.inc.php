@@ -6,7 +6,7 @@ if (isset($_GET["pgsql"])) {
 	define("DRIVER", "pgsql");
 	if (extension_loaded("pgsql")) {
 		class Min_DB {
-			var $extension = "PgSQL", $_link, $_result, $_string, $_database = true, $server_info, $affected_rows, $error;
+			var $extension = "PgSQL", $_link, $_result, $_string, $_database = true, $server_info, $affected_rows, $error, $timeout;
 
 			function _error($errno, $error) {
 				if (ini_bool("html_errors")) {
@@ -69,12 +69,18 @@ if (isset($_GET["pgsql"])) {
 				$this->error = "";
 				if (!$result) {
 					$this->error = pg_last_error($this->_link);
-					return false;
+					$return = false;
 				} elseif (!pg_num_fields($result)) {
 					$this->affected_rows = pg_affected_rows($result);
-					return true;
+					$return = true;
+				} else {
+					$return = new Min_Result($result);
 				}
-				return new Min_Result($result);
+				if ($this->timeout) {
+					$this->timeout = 0;
+					$this->query("RESET statement_timeout");
+				}
+				return $return;
 			}
 
 			function multi_query($query) {
@@ -139,7 +145,7 @@ if (isset($_GET["pgsql"])) {
 
 	} elseif (extension_loaded("pdo_pgsql")) {
 		class Min_DB extends Min_PDO {
-			var $extension = "PDO_PgSQL";
+			var $extension = "PDO_PgSQL", $timeout;
 
 			function connect($server, $username, $password) {
 				global $adminer;
@@ -157,6 +163,15 @@ if (isset($_GET["pgsql"])) {
 
 			function quoteBinary($s) {
 				return q($s);
+			}
+
+			function query($query, $unbuffered = false) {
+				$return = parent::query($query, $unbuffered);
+				if ($this->timeout) {
+					$this->timeout = 0;
+					parent::query("RESET statement_timeout");
+				}
+				return $return;
 			}
 
 			function warnings() {
@@ -193,9 +208,15 @@ if (isset($_GET["pgsql"])) {
 			return true;
 		}
 
+		function slowQuery($query, $timeout) {
+			$this->_conn->query("SET statement_timeout = " . (1000 * $timeout));
+			$this->_conn->timeout = 1000 * $timeout;
+			return $query;
+		}
+
 		function convertSearch($idf, $val, $field) {
 			return (preg_match('~char|text'
-					. (!preg_match('~LIKE~', $val["op"]) ? '|date|time(stamp)?' . (is_numeric($val["val"]) ? '|' . number_type() : '') : '')
+					. (!preg_match('~LIKE~', $val["op"]) ? '|date|time(stamp)?|boolean|' . number_type() : '')
 					. '~', $field["type"])
 				? $idf
 				: "CAST($idf AS text)"
@@ -265,7 +286,7 @@ if (isset($_GET["pgsql"])) {
 	function limit1($table, $query, $where, $separator = "\n") {
 		return (preg_match('~^INTO~', $query)
 			? limit($query, $where, 1, 0, $separator)
-			: " $query WHERE ctid = (SELECT ctid FROM " . table($table) . $where . $separator . "LIMIT 1)"
+			: " $query" . (is_view(table_status1($table)) ? $where : " WHERE ctid = (SELECT ctid FROM " . table($table) . $where . $separator . "LIMIT 1)")
 		);
 	}
 
