@@ -161,6 +161,7 @@ if (isset($_GET["username"]) && !class_exists("Min_DB")) {
 stop_session(true);
 
 if (isset($_GET["username"])) {
+	global $driver;
 	list($host, $port) = explode(":", SERVER, 2);
 	if (is_numeric($port) && $port < 1024) {
 		auth_error(lang('Connecting to privileged ports is not allowed.'));
