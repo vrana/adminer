@@ -101,12 +101,15 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 		}
 		$name = trim($row["name"]);
 
+		// custom variable $comment for whitespace trimming
+		$comment = trim($row['Comment']);
+
 		queries_redirect(ME . (support("table") ? "table=" : "select=") . urlencode($name), $message, alter_table(
 			$TABLE,
 			$name,
 			($jush == "sqlite" && ($use_all_fields || $foreign) ? $all_fields : $fields),
 			$foreign,
-			($row["Comment"] != $table_status["Comment"] ? $row["Comment"] : null),
+			($comment != $table_status["Comment"] ? $comment : null),
 			($row["Engine"] && $row["Engine"] != $table_status["Engine"] ? $row["Engine"] : ""),
 			($row["Collation"] && $row["Collation"] != $table_status["Collation"] ? $row["Collation"] : ""),
 			($row["Auto_increment"] != "" ? number($row["Auto_increment"]) : ""),
@@ -186,14 +189,12 @@ edit_fields($row["fields"], $collations, "TABLE", $foreign_keys, $comments);
 </table>
 <p>
 <?php echo lang('Auto Increment'); ?>: <input type="number" name="Auto_increment" size="6" value="<?php echo h($row["Auto_increment"]); ?>">
+<!-- Custom code start -->
+<?php echo lang('Table comment'); ?>: <input type="text" name="Comment" id="tableComment" value="<?php echo h($row["Comment"]); ?>" maxlength="<?php $connection->server_info >= 5.5 ? 2048 : 60 ?>" >
+<!-- Custom code end -->
 <?php echo checkbox("defaults", 1, !$_POST || $_POST["defaults"], lang('Default values'), "columnShow(this.checked, 5)", "jsonly"); ?>
 <?php echo ($_POST ? "" : script("editingHideDefaults();")); ?>
-<?php echo (support("comment")
-	? "<label><input type='checkbox' name='comments' value='1' class='jsonly'" . ($comments ? " checked" : "") . ">" . lang('Comment') . "</label>"
-		. script("qsl('input').onclick = partial(editingCommentsClick, true);")
-		. ' <input name="Comment" value="' . h($row["Comment"]) . '" maxlength="' . (min_version(5.5) ? 2048 : 60) . '"' . ($comments ? '' : ' class="hidden"') . '>'
-	: '')
-; ?>
+
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php } ?>
@@ -225,4 +226,10 @@ foreach ($row["partition_names"] as $key => $val) {
 ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>
-<?php echo script("qs('#form')['defaults'].onclick();" . (support("comment") ? " editingCommentsClick.call(qs('#form')['comments']);" : "")); ?>
+
+<!-- Custom code start -->
+<script type="text/javascript" <?php echo nonce(); ?>>
+	showComments();
+	checkComments();
+</script>
+<!-- Custom code end -->

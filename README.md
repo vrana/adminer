@@ -1,5 +1,5 @@
-Adminer - Database management in a single PHP file
-Adminer Editor - Data manipulation for end-users
+### Adminer - Database management in a single PHP file
+### Adminer Editor - Data manipulation for end-users
 
 https://www.adminer.org/
 Supports: MySQL, MariaDB, PostgreSQL, SQLite, MS SQL, Oracle, SimpleDB, Elasticsearch, MongoDB, Firebird

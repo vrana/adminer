@@ -426,6 +426,160 @@ function columnShow(checked, column) {
 	}
 }
 
+// Custom code start
+/** 
+ * Show comment input fields for table and columns
+ */
+function showComments() {
+	var thElement = document.querySelector("thead td#label-comment");
+	var tbElement = document.querySelector("input[aria-labelledby='label-comment']");
+	var columnComment = document.querySelectorAll("input[aria-labelledby='label-comment']");
+	var errorElement = document.querySelector('.error');
+	
+	// Removing hidden class
+	thElement.classList.remove('hidden');
+	tbElement.parentElement.classList.remove('hidden');
+
+	// Removing hidden class if error element exists
+	if(errorElement) {
+		for (var i = 0; i < columnComment.length; i++) {
+			columnComment[i].parentElement.classList.remove('hidden');
+		}
+	}
+}
+
+/** 
+ * Check if table name field and comment fields are filled in
+ */
+function checkComments() {
+	var form = document.querySelector('#form');
+
+	/** Event listener for submit (Enter or via Save button) */
+	form.addEventListener('submit', function(e) {
+		var columnComment = document.querySelectorAll("input[aria-labelledby='label-comment']");
+		var columnName = document.querySelectorAll("input[aria-labelledby='label-name']");
+		var tblName = document.querySelector("input[name='name']");
+		var tableComment = document.querySelector("input#tableComment");
+		var columnNames = [];
+		var row = [];
+		
+		// function for checking duplicate values in array
+		var findDuplicates = (arr) => arr.filter((item, index) => arr.indexOf(item) != index);
+
+		// trim table & column comments
+		var tableCommentVal = tableComment.value.trim();
+		tableComment.value = tableCommentVal;
+
+		for(var i = 0; i < columnComment.length; i++) {
+			var commentVal = columnComment[i].value.trim();
+
+			columnComment[i].value = commentVal;
+		}
+		
+		// check for empty column comment fields and push it to "row" array
+		for(var i = 0; i < columnName.length; i++) {
+			var nameValue = columnName[i].value;
+			var cmntValue = columnComment[i].value;
+			
+			if(nameValue && !cmntValue) {
+				row.push(nameValue);
+			}
+		}
+		
+		// check if table name field is filled in
+		if(!tblName.value) {
+			alert('Incorrect table name!');
+			e.preventDefault();
+		}
+		
+		// check if column name already exists
+		for(var i = 0; i < columnName.length; i++) {
+			columnNames.push(columnName[i].value);
+		}
+
+		if(findDuplicates(columnNames) != '') {
+			alert(`Duplicate column name '${findDuplicates(columnNames)}'!`);
+			e.preventDefault();
+		}
+
+		// check if table & column comments exists
+		if(!tableComment.value && row != '') {
+			alert(`Enter table comment and enter field comments for column name '${row}'!`);
+			e.preventDefault();
+		} else if(!tableComment.value) {
+			alert('Enter table comment!');
+			e.preventDefault();
+		} else if(row != '') {
+			alert(`Enter field comments for column name '${row}'!`);
+			e.preventDefault();
+		}
+	});
+
+	/** Event listener for Ctrl + Enter combination */
+	form.addEventListener('keydown', function(e) {
+		if((e.keyCode == 10 || e.keyCode == 13) && e.ctrlKey) {
+			var columnComment = document.querySelectorAll("input[aria-labelledby='label-comment']");
+			var columnName = document.querySelectorAll("input[aria-labelledby='label-name']");
+			var tblName = document.querySelector("input[name='name']");
+			var tableComment = document.querySelector("input#tableComment");
+			var columnNames = [];
+			var row = [];
+			
+			// function for checking duplicate values in array
+			var findDuplicates = (arr) => arr.filter((item, index) => arr.indexOf(item) != index);
+			
+			// trim table & column comments
+			var tableCommentVal = tableComment.value.trim();
+			tableComment.value = tableCommentVal;
+
+			for(var i = 0; i < columnComment.length; i++) {
+				var commentVal = columnComment[i].value.trim();
+
+				columnComment[i].value = commentVal;
+			}
+
+			// check for empty column comment fields and push it to "row" array
+			for(var i = 0; i < columnName.length; i++) {
+				var nameValue = columnName[i].value;
+				var cmntValue = columnComment[i].value;
+
+				if(nameValue && !cmntValue) {
+					row.push(nameValue);
+				}
+			}
+
+			// check if table name field is filled in
+			if(!tblName.value) {
+				alert('Incorrect table name!');
+				e.stopPropagation();
+			}
+
+			// check if column name already exists
+			for(var i = 0; i < columnName.length; i++) {
+				columnNames.push(columnName[i].value);
+			}
+
+			if(findDuplicates(columnNames) != '') {
+				alert(`Duplicate column name '${findDuplicates(columnNames)}'!`);
+				e.stopPropagation();
+			}
+
+			// check if table & column comments exists	
+			if(!tableComment.value && row != '') {
+				alert(`Enter table comment and enter field comments for column name '${row}'!`);
+				e.stopPropagation();
+			} else if(!tableComment.value) {
+				alert('Enter table comment!');
+				e.stopPropagation();
+			} else if(row != '') {
+				alert(`Enter field comments for column name '${row}'!`);
+				e.stopPropagation();
+			}
+		}
+	});
+}
+// Custom code end
+
 /** Hide column with default values in narrow window
 */
 function editingHideDefaults() {
