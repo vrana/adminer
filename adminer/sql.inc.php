@@ -178,7 +178,7 @@ if (!$error && $_POST) {
 								}
 
 								$start = microtime(true);
-							} while ($connection->next_result());
+							} while ($connection->more_results() && $connection->next_result());
 						}
 
 						$query = substr($query, $offset);
