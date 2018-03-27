@@ -167,7 +167,6 @@ if (isset($_GET["username"])) {
 	}
 	check_invalid_login();
 	$connection = connect();
-	global $driver;
 	$driver = new Min_Driver($connection);
 }
 
