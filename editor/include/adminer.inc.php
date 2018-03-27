@@ -537,7 +537,13 @@ qsl('div').onclick = whisperClick;", "")
 	function dumpDatabase($db) {
 	}
 
-	function dumpTable() {
+	/** Export table structure
+	* @param string
+	* @param string
+	* @param int 0 table, 1 view, 2 temporary view table
+	* @return null prints data
+	*/
+	function dumpTable($table, $style, $is_view = 0) {
 		echo "\xef\xbb\xbf"; // UTF-8 byte order mark
 	}
 

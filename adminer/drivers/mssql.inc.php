@@ -24,7 +24,14 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function connect($server, $username, $password) {
-				$this->_link = @sqlsrv_connect($server, array("UID" => $username, "PWD" => $password, "CharacterSet" => "UTF-8"));
+				$server_info = explode(':', $server, 2);
+				if (count($server_info) == 2) {
+					$server_name = implode(', ', $server_info);
+				}
+				else {
+					$server_name = $server;
+				}
+				$this->_link = @sqlsrv_connect($server_name, array("UID" => $username, "PWD" => $password, "CharacterSet" => "UTF-8"));
 				if ($this->_link) {
 					$info = sqlsrv_server_info($this->_link);
 					$this->server_info = $info['SQLServerVersion'];
