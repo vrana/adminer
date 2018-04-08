@@ -5,6 +5,7 @@ Stop session before connecting
 Simplify running slow queries
 Decrease timeout for running slow queries from 5 seconds to 2 seconds
 Fix displaying info about non-alphabetical objects (bug #599)
+Use secure cookies on HTTP if session.cookie_secure is set
 PDO: Support binary fields download
 MySQL: Use CONVERT() only when searching for non-ASCII (bug #603)
 PostgreSQL: Add SQL operator to search
