@@ -8,15 +8,17 @@
 */
 class AdminerLoginSqlite {
 	/** @access protected */
-	var $login, $password_hash;
+	var $login, $password_hash, $known_dbs;
 	
 	/** Set allowed credentials
 	* @param string
 	* @param string result of password_hash
+	* @param array list of paths to known databases
 	*/
-	function __construct($login, $password_hash) {
+	function __construct($login, $password_hash, $known_dbs) {
 		$this->login = $login;
 		$this->password_hash = $password_hash;
+		$this->known_dbs = $known_dbs;
 	}
 	
 	function login($login, $password) {
@@ -24,6 +26,13 @@ class AdminerLoginSqlite {
 			return true;
 		}
 		return $this->login == $login && password_verify($password, $this->password_hash);
+	}
+	
+	function databases($flush = true) {
+		if (isset($_GET['sqlite']) && isset($this->known_dbs)) {
+			return $this->known_dbs;
+		}
+		return get_databases($flush);
 	}
 
 }
