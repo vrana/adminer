@@ -128,23 +128,10 @@ if (isset($_GET["elastic"])) {
 					$data["from"] = ($page * $limit);
 				}
 			}
-			foreach ($where as $val) {
-				list($col,$op,$val) = explode(" ",$val,3);
-				if ($col == "_id") {
-					$data["query"]["ids"]["values"][] = $val;
-				}
-				elseif ($col . $val != "") {
-					$term = array("term" => array(($col != "" ? $col : "_all") => $val));
-					if ($op == "=") {
-						$data["query"]["filtered"]["filter"]["and"][] = $term;
-					} else {
-						$data["query"]["filtered"]["query"]["bool"]["must"][] = $term;
-					}
-				}
+			if (!empty($where)) {
+				$data['query'] = $where;
 			}
-			if ($data["query"] && !$data["query"]["filtered"]["query"] && !$data["query"]["ids"]) {
-				$data["query"]["filtered"]["query"] = array("match_all" => array());
-			}
+
 			$start = microtime(true);
 			$search = $this->_conn->query($query, $data);
 			if ($print) {
@@ -222,13 +209,92 @@ if (isset($_GET["elastic"])) {
 		}
 	}
 
+	class ES_Adminer_Decorator {
+		private $adminer;
 
+		public function __construct($adminer) {
+			$this->adminer = $adminer;
+		}
+
+		public function __call($name, $arguments) {
+			return call_user_func_array(
+				array($this->adminer, $name),
+				$arguments ?: array()
+			);
+		}
+
+		public function __get($name) {
+			return $this->adminer->{$name};
+		}
+
+		public function __set($name, $value) {
+			if (property_exists($this->adminer, $name)) {
+				$this->adminer->{$name} = $value;
+			} else {
+				$this->{$name} = $value;
+			}
+		}
+
+		function selectSearchProcess($fields, $indexes) {
+			global $connection, $driver;
+
+			$fields_name = array_keys($fields);
+			$conditions = !empty($_GET["where"]) ? (array) $_GET["where"] : array();
+
+			$query = array();
+			$query_ids = array('values' => array());
+			$query_bool = array();
+
+			foreach ($conditions as $cond) {
+				$is_ok = is_array($cond) && count($cond) === 3;
+				$is_ok = $is_ok && isset($cond['col'], $cond['op'], $cond['val']);
+				
+				$op = $cond['op'] ?: 'match';
+				$field = trim($cond['col']);
+				$value = trim($cond['val']);
+
+				$is_ok = $is_ok && (isset($this->operators[$op]) || in_array($op, $this->operators));
+				$is_ok = $is_ok && "${field}${value}" !== '';
+
+				if (!$is_ok) {
+					continue;
+				}
+
+				if ( $field === '_id' ) {
+					$query_ids['values'][] = $value;
+				} else if ( !empty($field) ) {
+					$query_bool[] = array( "$op" => array( "$field" => $value ));
+				} else {
+					$should = array();
+					foreach ($fields_name as $field_name) {
+						$should[] = array( "$op" => array( "$field_name" => $value ));
+					}
+					if (!empty($should)) {
+						$query_bool[] = array('bool' => array('should' => $should));
+					}
+				}
+			}
+
+			if ( !empty($query_ids['values']) ) {
+				$query['ids'] = $query_ids;
+
+			} else if ( !empty($query_bool) ) {
+				$query_bool_type = 'must'; //count($query_bool) > 1 ? 'should' : 'must';
+				$query['bool'] = array("$query_bool_type" => $query_bool);
+
+			}
+
+			return $query;
+		}
+	}
 
 	function connect() {
 		global $adminer;
 		$connection = new Min_DB;
 		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
+			$es_adminer = new ES_Adminer_Decorator($adminer);
+			$adminer = $es_adminer;
 			return $connection;
 		}
 		return $connection->error;
@@ -444,7 +510,13 @@ if (isset($_GET["elastic"])) {
 	}
 
 	$jush = "elastic";
-	$operators = array("=", "query");
+	$operators = array(
+		"match",
+		"term",
+		"wildcard",
+		"regexp"
+	);
+
 	$functions = array();
 	$grouping = array();
 	$edit_functions = array(array("json"));
