@@ -10,7 +10,7 @@ if (isset($_GET["mongo"])) {
 			var $extension = "Mongo", $server_info = MongoClient::VERSION, $error, $last_id, $_link, $_db;
 
 			function connect($uri, $options) {
-				$this->_link = @new MongoClient($uri, $options);
+				return @new MongoClient($uri, $options);
 			}
 			
 			function query($query) {
@@ -205,7 +205,7 @@ if (isset($_GET["mongo"])) {
 
 			function connect($uri, $options) {
 				$class = 'MongoDB\Driver\Manager';
-				$this->_link = new $class($uri, $options);
+				return new $class($uri, $options);
 			}
 
 			function query($query) {
@@ -619,7 +619,7 @@ if (isset($_GET["mongo"])) {
 			$options["db"] = $db;
 		}
 		try {
-			$connection->connect("mongodb://$server", $options);
+			$connection->_link = $connection->connect("mongodb://$server", $options);
 			return $connection;
 		} catch (Exception $ex) {
 			$connection->error = $ex->getMessage();
