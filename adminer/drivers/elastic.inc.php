@@ -2,10 +2,10 @@
 $drivers["elastic"] = "Elasticsearch (beta)";
 
 if (isset($_GET["elastic"])) {
-	$possible_drivers = array("json");
+	$possible_drivers = array("json + allow_url_fopen");
 	define("DRIVER", "elastic");
 
-	if (function_exists('json_decode')) {
+	if (function_exists('json_decode') && ini_bool('allow_url_fopen')) {
 		class Min_DB {
 			var $extension = "JSON", $server_info, $errno, $error, $_url;
 
