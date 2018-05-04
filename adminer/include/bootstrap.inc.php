@@ -44,7 +44,7 @@ if (!strpos($_SERVER["REQUEST_URI"], '?') && $_SERVER["QUERY_STRING"] != "") { /
 if ($_SERVER["HTTP_X_FORWARDED_PREFIX"]) {
 	$_SERVER["REQUEST_URI"] = $_SERVER["HTTP_X_FORWARDED_PREFIX"] . $_SERVER["REQUEST_URI"];
 }
-$HTTPS = $_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off");
+$HTTPS = ini_get('session.cookie_secure') || ($_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off"));
 
 @ini_set("session.use_trans_sid", false); // protect links in export, @ - may be disabled
 if (!defined("SID")) {
