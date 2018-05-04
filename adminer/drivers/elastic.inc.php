@@ -328,32 +328,18 @@ if (isset($_GET["elastic"])) {
 					);
 				}
 
-				$is_ok = is_array($cond) && count($cond) === 3;
-				$is_ok = $is_ok && isset($cond['col'], $cond['op'], $cond['val']);
-				
-				$op = $cond['op'] ?: 'match';
-				$field = trim($cond['col']);
-				$value = trim($cond['val']);
-
-				$is_ok = $is_ok && (isset($this->operators[$op]) || in_array($op, $this->operators));
-				$is_ok = $is_ok && "${field}${value}" !== '';
-
-				if (!$is_ok) {
+				if (!is_array($cond) || (empty($cond['col']) && empty($cond['val'])) ) {
 					continue;
 				}
 
+				$op =    empty($cond['op'])  ? 'match' : trim($cond['op']);
+				$field = empty($cond['col']) ? '_all'  : trim($cond['col']);
+				$value = empty($cond['val']) ? ''      : trim($cond['val']);
+
 				if ( $field === '_id' ) {
 					$query_ids['values'][] = $value;
-				} else if ( !empty($field) ) {
-					$query_bool[] = array( "$op" => array( "$field" => $value ));
 				} else {
-					$should = array();
-					foreach ($fields as $f) {
-						$should[] = array( "$op" => array( "$f" => $value ));
-					}
-					if (!empty($should)) {
-						$query_bool[] = array('bool' => array('should' => $should));
-					}
+					$query_bool[] = array( "$op" => array( "$field" => $value ));
 				}
 			}
 
