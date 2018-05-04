@@ -7,7 +7,7 @@ if (isset($_GET["mongo"])) {
 
 	if (class_exists('MongoDB')) {
 		class Min_DB {
-			var $extension = "Mongo", $error, $last_id, $_link, $_db;
+			var $extension = "Mongo", $server_info = MongoClient::VERSION, $error, $last_id, $_link, $_db;
 
 			function connect($server, $username, $password) {
 				global $adminer;
@@ -218,7 +218,7 @@ if (isset($_GET["mongo"])) {
 
 	} elseif (class_exists('MongoDB\Driver\Manager')) {
 		class Min_DB {
-			var $extension = "MongoDB", $error, $last_id;
+			var $extension = "MongoDB", $server_info = MONGODB_VERSION, $error, $last_id;
 			/** @var MongoDB\Driver\Manager */
 			var $_link;
 			var $_db, $_db_name;
