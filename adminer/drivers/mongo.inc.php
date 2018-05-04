@@ -622,8 +622,7 @@ if (isset($_GET["mongo"])) {
 			$connection->_link = $connection->connect("mongodb://$server", $options);
 			return $connection;
 		} catch (Exception $ex) {
-			$connection->error = $ex->getMessage();
-			return $connection->error;
+			return $ex->getMessage();
 		}
 	}
 
