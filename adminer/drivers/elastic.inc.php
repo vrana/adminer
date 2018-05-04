@@ -5,6 +5,62 @@ if (isset($_GET["elastic"])) {
 	$possible_drivers = array("json");
 	define("DRIVER", "elastic");
 
+	class AdminerDriverFilter {
+		private static $instance = null;
+		private $filters = null;
+
+		private function __construct() {
+			$this->filters = array();
+		}
+
+		public static function getInstance() {
+			if (self::$instance === null) {
+				self::$instance = new self();
+			}
+			return self::$instance;
+		}
+
+		public function add($name, $callback, $priority=10) {
+			if (empty($this->filters[ $name ])) {
+				$this->filters[ $name ] = array();
+			}
+			$this->filters[ $name ][ ] = array($callback, $priority);
+		}
+
+		public function run($name, $subject) {
+			if (empty($this->filters[ $name ])) {
+				return $subject;
+			}
+			foreach ($this->filters[ $name ] as $filter) {
+				list($callback, $priority) = $filter;
+				$subject = call_user_func($callback, $subject);
+			}
+			return $subject;
+		}
+
+		public function del($name, $func=null) {
+			if (empty($this->filters[ $name ])) {
+				return;
+			}
+
+			if (empty($func)) {
+				unset($this->filters[ $name ]);
+				return;
+			}
+
+			$filters = array();
+			foreach ($this->filters[ $name ] as $filter) {
+				list($callback, $priority) = $filter;
+				if ( $callback !== $func ) {
+					$filters[] = $filter;
+				}
+			}
+		}
+	}
+
+	global $filterer;
+	$filterer = AdminerDriverFilter::getInstance();
+
 	if (function_exists('json_decode')) {
 		class Min_DB {
 			var $extension = "JSON", $server_info, $errno, $error, $_url;
@@ -56,7 +112,16 @@ if (isset($_GET["elastic"])) {
 			 * @return mixed
 			 */
 			function query($path, $content = array(), $method = 'GET') {
-				return $this->rootQuery(($this->_db != "" ? "$this->_db/" : "/") . ltrim($path, '/'), $content, $method);
+				global $filterer;
+				$queryInfo = $filterer->run('pre_db_query', array(
+					'db' => ($this->_db != "" ? "$this->_db/" : "/"),
+					'path' => ltrim($path, '/'),
+					'content' => $content,
+					'method' => $method
+				));
+				extract($queryInfo);
+				$result = $this->rootQuery($db . $path, $content, $method);
+				return $filterer->run('db_query_result', $result);
 			}
 
 			function connect($server, $username, $password) {
@@ -371,6 +436,10 @@ if (isset($_GET["elastic"])) {
 		return $return;
 	}
 
+	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
+		return array($limit, $offset);
+	}
+
 	function table_status($name = "", $fast = false) {
 		global $connection;
 		$search = $connection->query("_search", array(
@@ -448,8 +517,9 @@ if (isset($_GET["elastic"])) {
 		return array();
 	}
 
-	function table($idf) {
-		return $idf;
+	function table($table) {
+		global $filterer;
+		return $filterer->run('table_selected', $table);
 	}
 
 	function idf_escape($idf) {
@@ -525,6 +595,47 @@ if (isset($_GET["elastic"])) {
 		global $connection;
 		return $connection->last_id;
 	}
+
+	$filterer->add('table_selected', function($table){
+		global $connection;
+		$connection->currentTable = $table;
+		return $table;
+	});
+
+	$filterer->add('pre_db_query', function($subject) use ($filterer) {
+		global $connection;
+
+		$should_rewrite_path = strpos($subject['path'], 'SELECT') === 0
+			&& !empty($_POST['query'])
+			&& !empty($_POST['search'])
+			&& !empty($_GET)
+			&& !empty($_GET['where'][0]['val'])
+			&& empty($subject['content'])
+			&& $_GET['where'][0]['val'] === $_POST['query'];
+
+		if ($should_rewrite_path) {
+			$subject['path'] = "{$connection->currentTable}/_search";
+			$subject['content'] = array(
+				"size" => 0,
+				"query" => array(
+					"match" => array(
+						"_all" => $_POST['query']
+					)
+				)
+			);
+			$_GET["where"][0]["op"] = 'match';
+
+			$filterer->add('db_query_result', function($result) use ($filterer) {
+				$filterer->del('db_query_result');
+				$row = array('total' => 0);
+				if ( !empty($result['hits']['total']) ) {
+					$row['total'] = $result['hits']['total'];
+				}
+				return new Min_Result(array($row));
+			});
+		}
+		return $subject;
+	});
 
 	$jush = "elastic";
 	$operators = array(
