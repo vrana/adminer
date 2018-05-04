@@ -12,7 +12,6 @@ $translations = array(
 	'Logout successful.' => 'Wylogowano pomyślnie.',
 	'Thanks for using Adminer, consider <a href="%s">donating</a>.' => 'Dziękujemy za używanie Adminera, rozważ proszę <a href="%s">dotację</a>.',
 	'Invalid credentials.' => 'Nieprawidłowe dane logowania.',
-	'<a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to use SQLite.' => '<a href="https://www.adminer.org/pl/extension/"%s>Zaimplementuj</a> metodę %s aby użyć SQLite.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Za dużo nieudanych prób logowania, spróbuj ponownie za %d minutę.', 'Za dużo nieudanych prób logowania, spróbuj ponownie za %d minuty.', 'Za dużo nieudanych prób logowania, spróbuj ponownie za %d minut.'),
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Ważność hasła głównego wygasła. <a href="https://www.adminer.org/pl/extension/"%s>Zaimplementuj</a> własną metodę %s, aby ustawić je na stałe.',
 	'Language' => 'Język',

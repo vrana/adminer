@@ -12,7 +12,6 @@ $translations = array(
 	'Logout successful.' => 'Oturum başarıyla sonlandı.',
 	'Thanks for using Adminer, consider <a href="%s">donating</a>.' => 'Adminer kullandığınız için teşekkür ederiz <a href="%s">bağış yapmayı düşünün</a>.',
 	'Invalid credentials.' => 'Geçersiz kimlik bilgileri.',
-	'<a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to use SQLite.' => 'SQLite kullanmak için <a href="https://www.adminer.org/en/extension/"%s>%s metodunu</a> kullanın.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Çok fazla oturum açma denemesi yapıldı.', '%d Dakika sonra tekrar deneyiniz.'),
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Ana şifrenin süresi doldu. Kalıcı olması için <a href="https://www.adminer.org/en/extension/"%s>%s medodunu</a> kullanın.',
 	'Language' => 'Dil',

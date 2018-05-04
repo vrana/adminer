@@ -248,6 +248,11 @@ if (isset($_GET["simpledb"])) {
 
 
 	function connect() {
+		global $adminer;
+		list(, , $password) = $adminer->credentials();
+		if ($password != "") {
+			return lang('Database does not support password.');
+		}
 		return new Min_DB;
 	}
 

@@ -12,7 +12,6 @@ $translations = array(
 	'Logout successful.' => 'Log keluar berjaya.',
 	'Thanks for using Adminer, consider <a href="%s">donating</a>.' => 'Terima kasih kerana menggunakan Adminer, pertimbangkan untuk <a href="%s">menderma</a>.',
 	'Invalid credentials.' => 'Akses tidak sah.',
-	'<a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to use SQLite.' => '<a href="https://www.adminer.org/en/extension/"%s>Gunakan</a> cara %s untuk menggunakan SQLite.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'Terlalu banyak percubaan log masuk yang gagal, sila cuba lagi dalam masa %d minit.',
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Kata laluan utama telah luput. <a href="https://www.adminer.org/en/extension/"%s>Gunakan</a> cara %s untuk mengekalkannya.',
 	'Language' => 'Bahasa',

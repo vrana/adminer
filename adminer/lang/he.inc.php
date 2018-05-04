@@ -276,7 +276,6 @@ $translations = array(
 	'ATTACH queries are not supported.' => 'שאילתת ATTACH אינה נתמכת',
 	'%d / ' => '%d / ',
 	'Limit rows' => 'הגבל שורות',
-	'<a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to use SQLite.' => '<a href="https://www.adminer.org/en/extension/"%s>התקן</a> את תוסף SQLite בשביל להתחבר',
 	'Default value' => 'ערך ברירת מחדל',
 	'Full table scan' => 'סריקה טבלה מלאה',
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'יותר מידי נסיונות כניסה נכשלו, אנא נסה עוד %d דקות',

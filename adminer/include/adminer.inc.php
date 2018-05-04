@@ -145,9 +145,8 @@ class Adminer {
 	* @return mixed true for success, string for error message, false for unknown error
 	*/
 	function login($login, $password) {
-		global $jush;
-		if ($jush == "sqlite") {
-			return lang('<a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to use SQLite.', target_blank(), '<code>login()</code>');
+		if ($password == "") { //! password is optional in Elastic and Mongo
+			return lang('<a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to use password-less database.', target_blank(), '<code>login()</code>');
 		}
 		return true;
 	}

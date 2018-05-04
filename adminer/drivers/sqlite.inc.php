@@ -240,6 +240,11 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 
 	function connect() {
+		global $adminer;
+		list(, , $password) = $adminer->credentials();
+		if ($password != "") {
+			return lang('Database does not support password.');
+		}
 		return new Min_DB;
 	}
 

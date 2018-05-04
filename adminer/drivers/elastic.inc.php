@@ -227,8 +227,11 @@ if (isset($_GET["elastic"])) {
 	function connect() {
 		global $adminer;
 		$connection = new Min_DB;
-		$credentials = $adminer->credentials();
-		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
+		list($server, $username, $password) = $adminer->credentials();
+		if ($password != "" && $connection->connect($server, $username, "")) {
+			return lang('Database does not support password.');
+		}
+		if ($connection->connect($server, $username, $password)) {
 			return $connection;
 		}
 		return $connection->error;
