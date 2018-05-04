@@ -111,9 +111,20 @@ if (isset($_GET["elastic"])) {
 			global $adminer;
 			$data = array();
 			$query = "$table/_search";
-			if ($select != array("*")) {
-				$data["fields"] = $select;
+
+			// edit
+			if( empty($_GET['edit']) ) {
+				if ($select != array("*")) {
+					$data["fields"] = $select;
+				}
+
+				if (!empty($where)) {
+					$data['query'] = $where;
+				}
+			} else {
+				$data['query'] = $adminer->parseWhereQuerystring($group);
 			}
+
 			if ($order) {
 				$sort = array();
 				foreach ($order as $col) {
@@ -127,9 +138,6 @@ if (isset($_GET["elastic"])) {
 				if ($page) {
 					$data["from"] = ($page * $limit);
 				}
-			}
-			if (!empty($where)) {
-				$data['query'] = $where;
 			}
 
 			$start = microtime(true);
@@ -147,7 +155,7 @@ if (isset($_GET["elastic"])) {
 					$row["_id"] = $hit["_id"];
 				}
 				$fields = $hit['_source'];
-				if ($select != array("*")) {
+				if ($select != array("*") && !empty($hit['fields'])) {
 					$fields = array();
 					foreach ($select as $key) {
 						$fields[$key] = $hit['fields'][$key];
@@ -236,16 +244,25 @@ if (isset($_GET["elastic"])) {
 		}
 
 		function selectSearchProcess($fields, $indexes) {
-			global $connection, $driver;
+			return $this->parseWhereQuerystring( array_keys($fields) );
+		}
 
-			$fields_name = array_keys($fields);
+		function parseWhereQuerystring($fields) {
 			$conditions = !empty($_GET["where"]) ? (array) $_GET["where"] : array();
 
 			$query = array();
 			$query_ids = array('values' => array());
 			$query_bool = array();
 
-			foreach ($conditions as $cond) {
+			foreach ($conditions as $index => $cond) {
+				if ( !is_numeric($index) && is_string($cond) ) {
+					$cond = array(
+						'col' => $index,
+						'val' => $cond,
+						'op' => 'term'
+					);
+				}
+
 				$is_ok = is_array($cond) && count($cond) === 3;
 				$is_ok = $is_ok && isset($cond['col'], $cond['op'], $cond['val']);
 				
@@ -266,8 +283,8 @@ if (isset($_GET["elastic"])) {
 					$query_bool[] = array( "$op" => array( "$field" => $value ));
 				} else {
 					$should = array();
-					foreach ($fields_name as $field_name) {
-						$should[] = array( "$op" => array( "$field_name" => $value ));
+					foreach ($fields as $f) {
+						$should[] = array( "$op" => array( "$f" => $value ));
 					}
 					if (!empty($should)) {
 						$query_bool[] = array('bool' => array('should' => $should));
