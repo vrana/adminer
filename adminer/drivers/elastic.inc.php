@@ -5,6 +5,11 @@ if (isset($_GET["elastic"])) {
 	$possible_drivers = array("json");
 	define("DRIVER", "elastic");
 
+	/**
+	 * A filter system, similar to WordPress filters. Ideally, this class should
+	 * live on Adminer bootstrap or functions, but to avoid break stable code for
+	 * other drivers, it is still here.
+	 */
 	class AdminerDriverFilter {
 		private static $instance = null;
 		private $filters = null;
@@ -20,6 +25,13 @@ if (isset($_GET["elastic"])) {
 			return self::$instance;
 		}
 
+		/**
+		 * Add callback filter to specidied filter name.
+		 * 
+		 * @param string  $name     the filter chain name
+		 * @param mixed  $callback  the same for call_user_func
+		 * @param integer $priority used to sort callback order
+		 */
 		public function add($name, $callback, $priority=10) {
 			if (empty($this->filters[ $name ])) {
 				$this->filters[ $name ] = array();
@@ -27,6 +39,13 @@ if (isset($_GET["elastic"])) {
 			$this->filters[ $name ][ ] = array($callback, $priority);
 		}
 
+		/**
+		 * Run the filters on chain of specidied name
+		 * 
+		 * @param  string $name   the filter chain name
+		 * @param  mixed $subject the argument passed to callback
+		 * @return mixed          the result of applying the chain over $subject
+		 */
 		public function run($name, $subject) {
 			if (empty($this->filters[ $name ])) {
 				return $subject;
@@ -38,6 +57,11 @@ if (isset($_GET["elastic"])) {
 			return $subject;
 		}
 
+		/**
+		 * Remove a function or entire filter chain of specidied name
+		 * @param  string $name the chain name
+		 * @param  mixed $func the callback to be removed
+		 */
 		public function del($name, $func=null) {
 			if (empty($this->filters[ $name ])) {
 				return;
@@ -585,12 +609,20 @@ if (isset($_GET["elastic"])) {
 		return $connection->last_id;
 	}
 
+	/**
+	 * Add a property on connection whenever a table is selected by `table`
+	 * function from adminer. This piece supports the next filter `pre_db_query`.
+	 */
 	$filterer->add('table_selected', function($table){
 		global $connection;
 		$connection->currentTable = $table;
 		return $table;
 	});
 
+	/*
+	 * This filter is intended to fix wrong arguments sent to $connection->query
+	 * by `search_tables` function on adminer/include/functions:1087
+	 */
 	$filterer->add('pre_db_query', function($subject) use ($filterer) {
 		global $connection;
 
