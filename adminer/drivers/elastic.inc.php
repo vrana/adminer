@@ -50,6 +50,11 @@ if (isset($_GET["elastic"])) {
 			if (empty($this->filters[ $name ])) {
 				return $subject;
 			}
+
+			usort($this->filters[ $name ], function($a, $b) {
+				return $a[1] === $b[1] ? 0 : ( $a[1] < $b[1] ? -1 : 1 ); 
+			});
+
 			foreach ($this->filters[ $name ] as $filter) {
 				list($callback, $priority) = $filter;
 				$subject = call_user_func($callback, $subject);
