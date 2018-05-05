@@ -161,7 +161,10 @@ if (isset($_GET["elastic"])) {
 			}
 
 			function fetch_row() {
-				return array_values($this->fetch_assoc());
+				$array = $this->fetch_assoc();
+				if(is_array($array)) {
+					return array_values($array);
+				}
 			}
 
 		}
@@ -613,11 +616,11 @@ if (isset($_GET["elastic"])) {
 
 			$filterer->add('db_query_result', function($result) use ($filterer) {
 				$filterer->del('db_query_result');
-				$row = array('total' => 0);
-				if ( !empty($result['hits']['total']) ) {
-					$row['total'] = $result['hits']['total'];
-				}
-				return new Min_Result(array($row));
+				$total = $result['hits']['total'];
+
+				return $total > 0
+					? new Min_Result(array( array('total' => $total) ))
+					: new Min_Result(array());
 			});
 		}
 		return $subject;
