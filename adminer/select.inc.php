@@ -296,6 +296,10 @@ if (!$columns && support("table")) {
 			if ($page && $jush == "oracle") {
 				unset($row["RNUM"]);
 			}
+			// Do not display SSMA_TimeStamp
+			if ($page && $jush == "mssql") {
+				unset($row["SSMA_TimeStamp"]);
+			}
 			$rows[] = $row;
 		}
 
@@ -380,6 +384,12 @@ if (!$columns && support("table")) {
 						$key = (strpos($key, '(') ? $key : idf_escape($key)); //! columns looking like functions
 						$key = "MD5(" . ($jush != 'sql' || preg_match("~^utf8~", $fields[$key]["collation"]) ? $key : "CONVERT($key USING " . charset($connection) . ")") . ")";
 						$val = md5($val);
+					}
+					// Do not use SSMA_TimeStamp in query.
+					// The SQL Server Migration Assistant for Office Access automatically
+					// adds a column named SSMA_TimeStamp to any tables containing data types that could affect updatability
+					if ($jush == "mssql" && $fields[$key]["type"] == 'timestamp' && $fields[$key]["field"] == 'SSMA_TimeStamp') {
+						continue;
 					}
 					$unique_idf .= "&" . ($val !== null ? urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($val) : "null%5B%5D=" . urlencode($key));
 				}
