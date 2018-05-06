@@ -485,7 +485,7 @@ qsl('div').onclick = whisperClick;", "")
 			);
 		}
 		if (like_bool($field)) {
-			return '<input type="checkbox" value="' . h($value ? $value : 1) . '"' . ($value ? ' checked' : '') . "$attrs>";
+			return '<input type="checkbox" value="' . h($value ? $value : 1) . '"' . (preg_match('~^(1|t|true|y|yes|on)$~i', $value) ? ' checked' : '') . "$attrs>";
 		}
 		$hint = "";
 		if (preg_match('~time~', $field["type"])) {

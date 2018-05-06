@@ -9,6 +9,7 @@ MySQL: Use CONVERT() only when searching for non-ASCII (bug #603)
 PostgreSQL: Add SQL operator to search
 PostgreSQL: Fix editing data in views (bug #605, regression from 4.6.0)
 PostgreSQL: Do not cast date/time/number searches to text
+Editor: Do not check boolean checkboxes with false in PostgreSQL (bug #607)
 
 Adminer 4.6.2 (released 2018-02-20):
 Semi-transparent border on table actions
