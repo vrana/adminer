@@ -395,13 +395,31 @@ function editingLengthFocus() {
 	var td = this.parentNode;
 	if (/(enum|set)$/.test(selectValue(td.previousSibling.firstChild))) {
 		var edit = qs('#enum-edit');
-		var val = this.value;
-		edit.value = (/^'.+'$/.test(val) ? val.substr(1, val.length - 2).replace(/','/g, "\n").replace(/''/g, "'") : val); //! doesn't handle 'a'',''b' correctly
+		edit.value = enumValues(this.value);
 		td.appendChild(edit);
 		this.style.display = 'none';
 		edit.style.display = 'inline';
 		edit.focus();
 	}
+}
+
+/** Get enum values
+* @param string
+* @return string values separated by newlines
+*/
+function enumValues(s) {
+	var re = /(^|,)\s*'(([^\\']|\\.|'')*)'\s*/g;
+	var result = [];
+	var offset = 0;
+	var match;
+	while (match = re.exec(s)) {
+		if (offset != match.index) {
+			break;
+		}
+		result.push(match[2].replace(/'(')|\\(.)/g, '$1$2'));
+		offset += match[0].length;
+	}
+	return (offset == s.length ? result.join('\n') : s);
 }
 
 /** Finish editing of enum or set
