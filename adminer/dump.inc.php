@@ -181,7 +181,7 @@ if (DB != "") {
 		$checked = ($TABLE == "" || $TABLE == (substr($TABLE, -1) == "%" ? "$prefix%" : $name)); //! % may be part of table name
 		$print = "<tr><td>" . checkbox("tables[]", $name, $checked, $name, "", "block");
 		if ($type !== null && !preg_match('~table~i', $type)) {
-			$views .= "$print\n";
+			$views .= "$print<td align='right'>" . lang('Non-Exportable') . "\n";
 		} else {
 			echo "$print<td align='right'><label class='block'><span id='Rows-" . h($name) . "'></span>" . checkbox("data[]", $name, $checked) . "</label>\n";
 		}
