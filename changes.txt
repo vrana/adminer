@@ -1,5 +1,6 @@
 Adminer 4.6.3-dev:
 Disallow using password-less databases
+Copy triggers when copying table
 Stop session before connecting
 Simplify running slow queries
 Decrease timeout for running slow queries from 5 seconds to 2 seconds
