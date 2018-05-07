@@ -12,7 +12,7 @@ $translations = array(
 	'Logout successful.' => 'Odhlášení proběhlo v pořádku.',
 	'Thanks for using Adminer, consider <a href="%s">donating</a>.' => 'Díky za použití Admineru, <a href="%s">příspějte</a> na vývoj.',
 	'Invalid credentials.' => 'Neplatné přihlašovací údaje.',
-	'<a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to use password-less database.' => 'Pro přihlášení bez hesla <a href="https://www.adminer.org/cs/extension/"%s>implementujte</a> metodu %s.',
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer nepodporuje přístup k databázi bez hesla, <a href="https://www.adminer.org/cs/password/"%s>více informací</a>.',
 	'Database does not support password.' => 'Databáze nepodporuje heslo.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Příliš mnoho pokusů o přihlášení, zkuste to znovu za %d minutu.', 'Příliš mnoho pokusů o přihlášení, zkuste to znovu za %d minuty.', 'Příliš mnoho pokusů o přihlášení, zkuste to znovu za %d minut.'),
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Platnost hlavního hesla vypršela. <a href="https://www.adminer.org/cs/extension/"%s>Implementujte</a> metodu %s, aby platilo stále.',

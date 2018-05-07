@@ -12,7 +12,7 @@ $translations = array(
 	'Logout successful.' => 'Xx.',
 	'Thanks for using Adminer, consider <a href="%s">donating</a>.' => 'Xx <a href="%s">xx</a>.',
 	'Invalid credentials.' => 'Xx.',
-	'<a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to use password-less database.' => '<a href="https://www.adminer.org/en/extension/"%s>Xx</a> %s xx.',
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Xx, <a href="https://www.adminer.org/en/password/"%s>xx</a>.',
 	'Database does not support password.' => 'Xx.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Xx %d.', 'Xx %d.'),
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => '<a href="https://www.adminer.org/en/extension/"%s>Xx</a> %s xx.',
