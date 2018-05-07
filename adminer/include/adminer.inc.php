@@ -61,7 +61,9 @@ class Adminer {
 	* @return array
 	*/
 	function databases($flush = true) {
-		return get_databases($flush);
+		$ret = get_databases($flush);
+		natsort($ret);
+		return $ret;
 	}
 
 	/** Get list of schemas
