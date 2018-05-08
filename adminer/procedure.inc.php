@@ -38,7 +38,7 @@ $routine_languages = routine_languages();
 <p><?php echo lang('Name'); ?>: <input name="name" value="<?php echo h($row["name"]); ?>" maxlength="64" autocapitalize="off">
 <?php echo ($routine_languages ? lang('Language') . ": " . html_select("language", $routine_languages, $row["language"]) . "\n" : ""); ?>
 <input type="submit" value="<?php echo lang('Save'); ?>">
-<table cellspacing="0" class="nowrap">
+<table cellspacing="0" class="data nowrap">
 <?php
 edit_fields($row["fields"], $collations, $routine);
 if (isset($_GET["function"])) {

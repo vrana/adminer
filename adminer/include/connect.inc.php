@@ -29,7 +29,7 @@ function connect_error() {
 			$scheme = support("scheme");
 			$collations = collations();
 			echo "<form action='' method='post'>\n";
-			echo "<table cellspacing='0' class='checkable'>\n";
+			echo "<table cellspacing='0' class='data checkable'>\n";
 			echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
 			echo "<thead><tr>"
 				. (support("database") ? "<td>" : "")

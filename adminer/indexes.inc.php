@@ -94,7 +94,7 @@ if (!$row) {
 ?>
 
 <form action="" method="post">
-<table cellspacing="0" class="nowrap">
+<table cellspacing="0" class="data nowrap">
 <thead><tr>
 <th id="label-type"><?php echo lang('Index Type'); ?>
 <th><input type="submit" class="wayoff"><?php echo lang('Column (length)'); ?>

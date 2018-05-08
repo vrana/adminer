@@ -7,7 +7,7 @@ if ($adminer->homepage()) {
 	if ($_POST["query"] != "") {
 		search_tables();
 	}
-	echo "<table cellspacing='0' class='nowrap checkable'>\n";
+	echo "<table cellspacing='0' class='data nowrap checkable'>\n";
 	echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
 	echo '<thead><tr class="wrap">';
 	echo '<td><input id="check-all" type="checkbox" class="jsonly">' . script("qs('#check-all').onclick = partial(formCheck, /^tables\[/);", "");

@@ -170,7 +170,7 @@ foreach ($engines as $engine) {
 <?php } ?>
 
 <?php if (support("columns")) { ?>
-<table cellspacing="0" id="edit-fields" class="nowrap">
+<table cellspacing="0" id="edit-fields" class="data nowrap">
 <?php
 $comments = ($_POST ? $_POST["comments"] : $row["Comment"] != "");
 if (!$_POST && !$comments) {
@@ -208,7 +208,7 @@ if (support("partitioning")) {
 <?php echo "<select name='partition_by'>" . optionlist(array("" => "") + $partition_by, $row["partition_by"]) . "</select>" . on_help("getTarget(event).value.replace(/./, 'PARTITION BY \$&')", 1) . script("qsl('select').onchange = partitionByChange;"); ?>
 (<input name="partition" value="<?php echo h($row["partition"]); ?>">)
 <?php echo lang('Partitions'); ?>: <input type="number" name="partitions" class="size<?php echo ($partition_table || !$row["partition_by"] ? " hidden" : ""); ?>" value="<?php echo h($row["partitions"]); ?>">
-<table cellspacing="0" id="partition-table"<?php echo ($partition_table ? "" : " class='hidden'"); ?>>
+<table cellspacing="0" id="partition-table" class="data <?php echo ($partition_table ? "" : " hidden"); ?>">
 <thead><tr><th><?php echo lang('Partition name'); ?><th><?php echo lang('Values'); ?></thead>
 <?php
 foreach ($row["partition_names"] as $key => $val) {
