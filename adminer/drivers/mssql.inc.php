@@ -147,6 +147,10 @@ if (isset($_GET["mssql"])) {
 				$this->_link = @mssql_connect($server, $username, $password);
 				if ($this->_link) {
 					$result = $this->query("SELECT SERVERPROPERTY('ProductLevel'), SERVERPROPERTY('Edition')");
+					if (!$result) {
+						$this->error = mssql_get_last_message();
+						return false;
+					}
 					$row = $result->fetch_row();
 					$this->server_info = $this->result("sp_server_info 2", 2) . " [$row[0]] $row[1]";
 				} else {
