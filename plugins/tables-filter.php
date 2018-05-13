@@ -27,8 +27,17 @@ function tablesFilter(){
 	}
 	var tables = qsa('li', qs('#tables'));
 	for (var i = 0; i < tables.length; i++) {
-		var a = qsa('a', tables[i])[1];
+		var a = null;
 		var text = tables[i].getAttribute('data-table-name');
+		if (text == null) {
+			a = qsa('a', tables[i])[1];
+			text = a.innerHTML.trim();
+
+			tables[i].setAttribute('data-table-name', text);
+			a.setAttribute('data-link', 'main');
+		} else {
+			a = qs('a[data-link="main"]', tables[i]);
+		}
 		if (value == '') {
 			tables[i].className = '';
 			a.innerHTML = text;
@@ -55,22 +64,6 @@ if (sessionStorage){
 }
 </script>
 <p class="jsonly"><input id="filter-field" autocomplete="off"><?php echo script("qs('#filter-field').oninput = tablesFilterInput;"); ?>
-<ul id='tables'>
 <?php
-echo script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
-foreach ($tables as $table => $status) {
-	echo '<li data-table-name="' . h($table) . '"><a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table || $_GET["edit"] == $table, "select") . ">" . lang('select') . "</a> ";
-	$name = h($status["Name"]);
-	echo (support("table") || support("indexes")
-		? '<a href="' . h(ME) . 'table=' . urlencode($table) . '"'
-			. bold(in_array($table, array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"])), (is_view($status) ? "view" : "structure"))
-			. " title='" . lang('Show structure') . "'>$name</a>"
-		: "<span>$name</span>"
-	) . "\n";
-}
-?>
-</ul>
-<?php
-		return true;
 	}
 }
