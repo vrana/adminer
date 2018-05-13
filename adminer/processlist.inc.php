@@ -13,7 +13,7 @@ page_header(lang('Process list'), $error);
 ?>
 
 <form action="" method="post">
-<table cellspacing="0" class="nowrap checkable">
+<table cellspacing="0" class="data nowrap checkable">
 <?php
 echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
 // HTML valid because there is always at least one process

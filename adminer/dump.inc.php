@@ -163,7 +163,7 @@ echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style,
 <p><input type="submit" value="<?php echo lang('Export'); ?>">
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 
-<table cellspacing="0">
+<table cellspacing="0" class="data">
 <?php
 echo script("qsl('table').onclick = dumpClick;");
 $prefixes = array();

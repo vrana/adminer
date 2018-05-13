@@ -33,7 +33,7 @@ if (!is_view($table_status)) {
 		echo "<h3 id='foreign-keys'>" . lang('Foreign keys') . "</h3>\n";
 		$foreign_keys = foreign_keys($TABLE);
 		if ($foreign_keys) {
-			echo "<table cellspacing='0'>\n";
+			echo "<table cellspacing='0' class='data'>\n";
 			echo "<thead><tr><th>" . lang('Source') . "<td>" . lang('Target') . "<td>" . lang('ON DELETE') . "<td>" . lang('ON UPDATE') . "<td></thead>\n";
 			foreach ($foreign_keys as $name => $foreign_key) {
 				echo "<tr title='" . h($name) . "'>";
