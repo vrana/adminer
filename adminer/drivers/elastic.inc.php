@@ -129,7 +129,7 @@ if (isset($_GET["elastic"])) {
 				}
 			}
 			foreach ($where as $val) {
-				list($col,$op,$val) = explode(" ",$val,3);
+				list($col, $op, $val) = explode(" ", $val, 3);
 				if ($col == "_id") {
 					$data["query"]["ids"]["values"][] = $val;
 				}
