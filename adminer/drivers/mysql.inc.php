@@ -574,7 +574,7 @@ if (!defined("DRIVER")) {
 	*/
 	function foreign_keys($table) {
 		global $connection, $on_actions;
-		static $pattern = '`(?:[^`]|``)+`';
+		static $pattern = '(?:`(?:[^`]|``)+`)|(?:"(?:[^"]|"")+")';
 		$return = array();
 		$create_table = $connection->result("SHOW CREATE TABLE " . table($table), 1);
 		if ($create_table) {
