@@ -12,6 +12,7 @@ MySQL: Order database names in MySQL 8 (bug #613)
 PostgreSQL: Add SQL operator to search
 PostgreSQL: Fix editing data in views (bug #605, regression from 4.6.0)
 PostgreSQL: Do not cast date/time/number/uuid searches to text (bug #608)
+PostgreSQL: Export false as 0 in PDO (bug #619)
 MS SQL: Support port with sqlsrc
 Editor: Do not check boolean checkboxes with false in PostgreSQL (bug #607)
 
