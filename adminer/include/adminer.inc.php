@@ -751,7 +751,7 @@ class Adminer {
 	* @return array empty to disable export
 	*/
 	function dumpFormat() {
-		return array('sql' => 'SQL', 'csv' => 'CSV,', 'csv;' => 'CSV;', 'tsv' => 'TSV');
+		return array('sql' => 'SQL', 'csv' => 'CSV,', 'csv;' => 'CSV;', 'tsv' => 'TSV', 'php' => 'PHP', 'json' => 'JSON');
 	}
 
 	/** Export database structure
@@ -819,7 +819,10 @@ class Adminer {
 				$keys = array();
 				$suffix = "";
 				$fetch_function = ($table != '' ? 'fetch_assoc' : 'fetch_row');
+				$rows = array();
+				$i = 0;
 				while ($row = $result->$fetch_function()) {
+					$i++;
 					if (!$keys) {
 						$values = array();
 						foreach ($row as $val) {
@@ -830,7 +833,20 @@ class Adminer {
 						}
 						$suffix = ($style == "INSERT+UPDATE" ? "\nON DUPLICATE KEY UPDATE " . implode(", ", $values) : "") . ";\n";
 					}
-					if ($_POST["format"] != "sql") {
+					if ($_POST["format"] == "php") {
+						if ($i === 1) {
+							echo "array (\n";
+						}
+						var_export(array_combine($keys, $row));
+						echo ",\n";
+					} elseif ($_POST["format"] == "json") {
+						if ($i === 1) {
+							echo "[\n";
+						} else {
+							echo ",\n";
+						}
+						echo json_encode(array_combine($keys, $row), defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0);
+					} elseif ($_POST["format"] != "sql") {
 						if ($style == "table") {
 							dump_csv($keys);
 							$style = "INSERT";
@@ -856,6 +872,13 @@ class Adminer {
 							echo $buffer . $suffix;
 							$buffer = $insert . $s;
 						}
+					}
+				}
+				if ($i) {
+					if ($_POST["format"] == "php") {
+						echo ");\n";
+					} elseif ($_POST["format"] == "json") {
+						echo "\n]\n";
 					}
 				}
 				if ($buffer) {
