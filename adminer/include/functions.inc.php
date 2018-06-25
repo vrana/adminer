@@ -1136,23 +1136,43 @@ function apply_sql_function($function, $column) {
 }
 
 /** Get path of the temporary directory
-* @return string
+* @return boolean|string
 */
 function get_temp_dir() {
-	$return = ini_get("upload_tmp_dir"); // session_save_path() may contain other storage path
-	if (!$return) {
-		if (function_exists('sys_get_temp_dir')) {
-			$return = sys_get_temp_dir();
-		} else {
-			$filename = @tempnam("", ""); // @ - temp directory can be disabled by open_basedir
-			if (!$filename) {
-				return false;
-			}
-			$return = dirname($filename);
-			unlink($filename);
-		}
+
+	/**
+	 * User specified temporary directories ordered
+	 * by the likelihood of being writeable and unaffected
+	 * by open_basedir restrictions.
+	 * 
+	 * @var array
+	 */
+	$paths = array(
+		ini_get('sys_temp_dir'), // PHP 5.5.0+
+		ini_get('upload_tmp_dir'),
+		ini_get('session.save_path')
+	);
+
+	// PHP 5.2.1+
+	if (function_exists('sys_get_temp_dir'))
+		$paths[] = sys_get_temp_dir();
+
+	foreach ($paths as $path) {
+
+		if ($path && @is_writable($path))
+			return $path;
+
 	}
-	return $return;
+
+	// try system temporary directory if above failed
+	$path = @tempnam('', '');
+
+	if ($path) {
+		unlink($path);
+		return dirname($path);
+	}
+
+	return false;
 }
 
 /** Open and exclusively lock a file
