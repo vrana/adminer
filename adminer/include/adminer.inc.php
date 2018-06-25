@@ -819,7 +819,6 @@ class Adminer {
 				$keys = array();
 				$suffix = "";
 				$fetch_function = ($table != '' ? 'fetch_assoc' : 'fetch_row');
-				$rows = array();
 				$i = 0;
 				while ($row = $result->$fetch_function()) {
 					$i++;
@@ -834,17 +833,10 @@ class Adminer {
 						$suffix = ($style == "INSERT+UPDATE" ? "\nON DUPLICATE KEY UPDATE " . implode(", ", $values) : "") . ";\n";
 					}
 					if ($_POST["format"] == "php") {
-						if ($i === 1) {
-							echo "array (\n";
-						}
+						echo $i == 1 ? "array (\n" : ",\n";
 						var_export(array_combine($keys, $row));
-						echo ",\n";
 					} elseif ($_POST["format"] == "json") {
-						if ($i === 1) {
-							echo "[\n";
-						} else {
-							echo ",\n";
-						}
+						echo $i == 1 ? "[\n" : ",\n";
 						echo json_encode(array_combine($keys, $row), defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT : 0);
 					} elseif ($_POST["format"] != "sql") {
 						if ($style == "table") {
@@ -874,12 +866,8 @@ class Adminer {
 						}
 					}
 				}
-				if ($i) {
-					if ($_POST["format"] == "php") {
-						echo ");\n";
-					} elseif ($_POST["format"] == "json") {
-						echo "\n]\n";
-					}
+				if ($i && in_array($_POST["format"], array("php", "json"))) {
+					echo $_POST["format"] == "php" ? ",\n);\n" : "\n]\n";
 				}
 				if ($buffer) {
 					echo $buffer . $suffix;
