@@ -833,7 +833,7 @@ class Adminer {
 						$suffix = ($style == "INSERT+UPDATE" ? "\nON DUPLICATE KEY UPDATE " . implode(", ", $values) : "") . ";\n";
 					}
 					if ($_POST["format"] == "php") {
-						echo $i == 1 ? "array (\n" : ",\n";
+						echo $i == 1 ? "<?php\n\nreturn array (\n" : ",\n";
 						var_export(array_combine($keys, $row));
 					} elseif ($_POST["format"] == "json") {
 						echo $i == 1 ? "[\n" : ",\n";
@@ -893,7 +893,11 @@ class Adminer {
 	*/
 	function dumpHeaders($identifier, $multi_table = false) {
 		$output = $_POST["output"];
-		$ext = (preg_match('~sql~', $_POST["format"]) ? "sql" : ($multi_table ? "tar" : "csv")); // multiple CSV packed to TAR
+		if ($_POST["format"] == "php" || $_POST["format"] == "json") {
+			$ext = $_POST["format"];
+		} else {
+			$ext = (preg_match('~sql~', $_POST["format"]) ? "sql" : ($multi_table ? "tar" : "csv")); // multiple CSV packed to TAR
+		}
 		header("Content-Type: " .
 			($output == "gz" ? "application/x-gzip" :
 			($ext == "tar" ? "application/x-tar" :
