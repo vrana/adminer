@@ -30,6 +30,7 @@ if (!defined("DRIVER")) {
 					(!is_numeric($port) ? $port : $socket),
 					($ssl ? 64 : 0) // 64 - MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT (not available before PHP 5.6.16)
 				);
+				$this->options(MYSQLI_OPT_LOCAL_INFILE, false);
 				return $return;
 			}
 
@@ -56,7 +57,7 @@ if (!defined("DRIVER")) {
 			}
 		}
 
-	} elseif (extension_loaded("mysql") && !(ini_get("sql.safe_mode") && extension_loaded("pdo_mysql"))) {
+	} elseif (extension_loaded("mysql") && !((ini_bool("sql.safe_mode") || ini_bool("mysql.allow_local_infile")) && extension_loaded("pdo_mysql"))) {
 		class Min_DB {
 			var
 				$extension = "MySQL", ///< @var string extension name
@@ -74,6 +75,10 @@ if (!defined("DRIVER")) {
 			* @return bool
 			*/
 			function connect($server, $username, $password) {
+				if (ini_bool("mysql.allow_local_infile")) {
+					$this->error = lang('Disable %s or enable %s or %s extensions.', "'mysql.allow_local_infile'", "MySQLi", "PDO_MySQL");
+					return false;
+				}
 				$this->_link = @mysql_connect(
 					($server != "" ? $server : ini_get("mysql.default_host")),
 					("$server$username" != "" ? $username : ini_get("mysql.default_user")),
@@ -230,10 +235,10 @@ if (!defined("DRIVER")) {
 
 			function connect($server, $username, $password) {
 				global $adminer;
-				$options = array();
+				$options = array(PDO::MYSQL_ATTR_LOCAL_INFILE => false);
 				$ssl = $adminer->connectSsl();
 				if ($ssl) {
-					$options = array(
+					$options += array(
 						PDO::MYSQL_ATTR_SSL_KEY => $ssl['key'],
 						PDO::MYSQL_ATTR_SSL_CERT => $ssl['cert'],
 						PDO::MYSQL_ATTR_SSL_CA => $ssl['ca'],

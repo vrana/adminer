@@ -7,6 +7,7 @@ Decrease timeout for running slow queries from 5 seconds to 2 seconds
 Fix displaying info about non-alphabetical objects (bug #599)
 Use secure cookies on HTTP if session.cookie_secure is set
 PDO: Support binary fields download
+MySQL: Disallow LOAD DATA LOCAL INFILE
 MySQL: Use CONVERT() only when searching for non-ASCII (bug #603)
 MySQL: Order database names in MySQL 8 (bug #613)
 PostgreSQL: Add SQL operator to search
