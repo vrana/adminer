@@ -29,6 +29,9 @@ if (extension_loaded('pdo')) {
 			$this->error = "";
 			if (!$result) {
 				list(, $this->errno, $this->error) = $this->errorInfo();
+				if (!$this->error) {
+					$this->error = lang('Unknown error.');
+				}
 				return false;
 			}
 			$this->store_result($result);
