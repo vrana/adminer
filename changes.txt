@@ -13,7 +13,7 @@ MySQL: Order database names in MySQL 8 (bug #613)
 PostgreSQL: Fix editing data in views (bug #605, regression from 4.6.0)
 PostgreSQL: Do not cast date/time/number/uuid searches to text (bug #608)
 PostgreSQL: Export false as 0 in PDO (bug #619)
-MS SQL: Support port with sqlsrc
+MS SQL: Support port with sqlsrv
 Editor: Do not check boolean checkboxes with false in PostgreSQL (bug #607)
 
 Adminer 4.6.2 (released 2018-02-20):
