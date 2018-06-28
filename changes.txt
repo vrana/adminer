@@ -1,4 +1,4 @@
-Adminer 4.6.3-dev:
+Adminer 4.6.3 (released 2018-06-28):
 Disallow using password-less databases
 Copy triggers when copying table
 Stop session before connecting
