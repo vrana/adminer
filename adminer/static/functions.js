@@ -143,7 +143,7 @@ function selectValue(select) {
 */
 function isTag(el, tag) {
 	var re = new RegExp('^(' + tag + ')$', 'i');
-	return re.test(el.tagName);
+	return el && re.test(el.tagName);
 }
 
 /** Get parent node with specified tag name
@@ -702,7 +702,7 @@ function selectClick(event, text, warning) {
 		}
 	};
 	var pos = event.rangeOffset;
-	var value = td.firstChild.alt || td.textContent || td.innerText;
+	var value = (td.firstChild && td.firstChild.alt) || td.textContent || td.innerText;
 	input.style.width = Math.max(td.clientWidth - 14, 20) + 'px'; // 14 = 2 * (td.border + td.padding + input.border)
 	if (text) {
 		var rows = 1;
