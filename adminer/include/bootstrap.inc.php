@@ -47,7 +47,7 @@ if ($_SERVER["HTTP_X_FORWARDED_PREFIX"]) {
 $HTTPS = ($_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off")) || ini_bool("session.cookie_secure"); // session.cookie_secure could be set on HTTP if we are behind a reverse proxy
 
 @ini_set("session.use_trans_sid", false); // protect links in export, @ - may be disabled
-if (!defined("SID")) {
+if (session_status() != PHP_SESSION_ACTIVE) {
 	session_cache_limiter(""); // to allow restarting session
 	session_name("adminer_sid"); // use specific session name to get own namespace
 	$params = array(0, preg_replace('~\?.*~', '', $_SERVER["REQUEST_URI"]), "", $HTTPS);
