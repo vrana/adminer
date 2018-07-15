@@ -540,20 +540,22 @@ function editingKeydown(event) {
 */
 function functionChange() {
 	var input = this.form[this.name.replace(/^function/, 'fields')];
-	if (selectValue(this)) {
-		if (input.origType === undefined) {
-			input.origType = input.type;
-			input.origMaxLength = input.getAttribute('data-maxlength');
+	if (input) { // undefined with the set data type
+		if (selectValue(this)) {
+			if (input.origType === undefined) {
+				input.origType = input.type;
+				input.origMaxLength = input.getAttribute('data-maxlength');
+			}
+			input.removeAttribute('data-maxlength');
+			input.type = 'text';
+		} else if (input.origType) {
+			input.type = input.origType;
+			if (input.origMaxLength >= 0) {
+				input.setAttribute('data-maxlength', input.origMaxLength);
+			}
 		}
-		input.removeAttribute('data-maxlength');
-		input.type = 'text';
-	} else if (input.origType) {
-		input.type = input.origType;
-		if (input.origMaxLength >= 0) {
-			input.setAttribute('data-maxlength', input.origMaxLength);
-		}
+		oninput({target: input});
 	}
-	oninput({target: input});
 	helpClose();
 }
 
