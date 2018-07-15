@@ -140,7 +140,7 @@ if (!$error && $_POST) {
 									$explain_id = "explain-$commands";
 									if (is_object($result)) {
 										$limit = $_POST["limit"];
-										$orgtables = select($result, $connection2, array(), $limit);
+										$orgtables = $_POST["no_data"] ? array() : select($result, $connection2, array(), $limit);
 										if (!$_POST["only_errors"]) {
 											echo "<form action='' method='post'>\n";
 											$num_rows = $result->num_rows;
@@ -240,6 +240,7 @@ if (!isset($_GET["import"])) {
 
 echo checkbox("error_stops", 1, ($_POST ? $_POST["error_stops"] : isset($_GET["import"])), lang('Stop on error')) . "\n";
 echo checkbox("only_errors", 1, ($_POST ? $_POST["only_errors"] : isset($_GET["import"])), lang('Show only errors')) . "\n";
+echo checkbox("no_data", 1, ($_POST ? $_POST["no_data"] : 0), lang('Without data')) . "\n";
 echo "<input type='hidden' name='token' value='$token'>\n";
 
 if (!isset($_GET["import"]) && $history) {
