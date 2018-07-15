@@ -55,8 +55,8 @@ function whisperClick(event) {
 * @this HTMLInputElement
 */
 function emailFileChange() {
-	this.onchange = function () { };
 	var el = this.cloneNode(true);
+	this.onchange = function () { };
 	el.value = '';
 	this.parentNode.appendChild(el);
 }

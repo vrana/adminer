@@ -60,7 +60,7 @@ if ($_POST) {
 <?php
 echo ($_POST["add_x"] || strpos($name, "\n")
 	? '<textarea id="name" name="name" rows="10" cols="40">' . h($name) . '</textarea><br>'
-	: '<input name="name" id="name" value="' . h($name) . '" maxlength="64" autocapitalize="off">'
+	: '<input name="name" id="name" value="' . h($name) . '" data-maxlength="64" autocapitalize="off">'
 ) . "\n" . ($collations ? html_select("collation", array("" => "(" . lang('collation') . ")") + $collations, $row["collation"]) . doc_link(array(
 	'sql' => "charset-charsets.html",
 	'mariadb' => "supported-character-sets-and-collations/",

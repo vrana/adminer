@@ -34,7 +34,7 @@ class AdminerSlugify {
 			}
 			$slug = $slugify[$field["field"]];
 			if ($slug !== null) {
-				return "<input value='" . h($value) . "' maxlength='$field[length]' size='40'$attrs>"
+				return "<input value='" . h($value) . "' data-maxlength='$field[length]' size='40'$attrs>"
 					. script("qsl('input').onchange = function () {
 	var find = '$this->from';
 	var repl = '$this->to';
