@@ -509,8 +509,8 @@ function dumpClick(event) {
 * @this HTMLSelectElement
 */
 function foreignAddRow() {
-	this.onchange = function () { };
 	var row = cloneNode(parentTag(this, 'tr'));
+	this.onchange = function () { };
 	var selects = qsa('select', row);
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/\]/, '1$&');
@@ -525,8 +525,8 @@ function foreignAddRow() {
 * @this HTMLSelectElement
 */
 function indexesAddRow() {
-	this.onchange = function () { };
 	var row = cloneNode(parentTag(this, 'tr'));
+	this.onchange = function () { };
 	var selects = qsa('select', row);
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/indexes\[\d+/, '$&1');
