@@ -162,7 +162,7 @@ foreach ($engines as $engine) {
 <form action="" method="post" id="form">
 <p>
 <?php if (support("columns") || $TABLE == "") { ?>
-<?php echo lang('Table name'); ?>: <input name="name" maxlength="64" value="<?php echo h($row["name"]); ?>" autocapitalize="off">
+<?php echo lang('Table name'); ?>: <input name="name" data-maxlength="64" value="<?php echo h($row["name"]); ?>" autocapitalize="off">
 <?php if ($TABLE == "" && !$_POST) { echo script("focus(qs('#form')['name']);"); } ?>
 <?php echo ($engines ? "<select name='Engine'>" . optionlist(array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) . "</select>" . on_help("getTarget(event).value", 1) . script("qsl('select').onchange = helpClose;") : ""); ?>
  <?php echo ($collations && !preg_match("~sqlite|mssql~", $jush) ? html_select("Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]) : ""); ?>
@@ -191,7 +191,7 @@ edit_fields($row["fields"], $collations, "TABLE", $foreign_keys, $comments);
 <?php echo (support("comment")
 	? "<label><input type='checkbox' name='comments' value='1' class='jsonly'" . ($comments ? " checked" : "") . ">" . lang('Comment') . "</label>"
 		. script("qsl('input').onclick = partial(editingCommentsClick, true);")
-		. ' <input name="Comment" value="' . h($row["Comment"]) . '" maxlength="' . (min_version(5.5) ? 2048 : 60) . '"' . ($comments ? '' : ' class="hidden"') . '>'
+		. ' <input name="Comment" value="' . h($row["Comment"]) . '" data-maxlength="' . (min_version(5.5) ? 2048 : 60) . '"' . ($comments ? '' : ' class="hidden"') . '>'
 	: '')
 ; ?>
 <p>
