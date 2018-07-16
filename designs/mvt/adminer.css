@@ -70,7 +70,6 @@ a:hover {
 
 abbr[title] {
 	border-bottom: none;
-	text-decoration: underline;
 	text-decoration: underline dotted;
 }
 
@@ -368,7 +367,6 @@ input[type=checkbox], input[type=radio] {
 
 input[name*=length], input[name=limit] {
 	width: 3em;
-	xtext-align: right
 }
 
 input[name=text_length] {
@@ -379,7 +377,7 @@ code {
 	background: #f0ffe1;
 	border: 1px dashed #d5f1b9;
 	padding: 2px 4px;
-	font-family: Monaco, "Courier New"
+	font-family: Monaco, "Courier New", monospace;
 }
 
 code a:hover {
@@ -430,6 +428,10 @@ thead td acronym, thead td sup, thead th acronym, thead th sup {
 
 tr.odd td {
 	background: #fcfaf5
+}
+
+.nowrap td, .nowrap th, td.nowrap, p.nowrap {
+	white-space: nowrap;
 }
 
 #content tbody tr.checked td, tr.checked.odd td {
@@ -512,11 +514,13 @@ tr.odd td {
 	width: 20rem;
 	margin: 0
 }
+
 #tables {
 	padding: 0 0 0 5px;
 	margin: 0;
 	list-style: none;
 }
+
 #menu a, #tables .select {
 	display: inline-block;
 	vertical-align: middle;
@@ -631,10 +635,12 @@ input[type=submit]:active {
 	color: transparent;
 	margin-right: 0;
 }
+
 #tables .structure {
-	min-width: 	calc(100% - 5px - 25px);
+	min-width: calc(100% - 5px - 25px);
 	padding-left: 5px;
 }
+
 #tables .structure.active, #tables .select.active + .structure {
 	background-color: #1a5fa5;
 }
@@ -748,7 +754,7 @@ table tbody input ~ a[href*="&edit="][href*="&where"] {
 }
 
 .js .hidden {
-	display: inline
+	display: initial;
 }
 
 .js input.hidden, .js td.hidden {
