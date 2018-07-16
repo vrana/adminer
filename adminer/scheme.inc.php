@@ -13,7 +13,7 @@ if ($_POST && !$error) {
 		} elseif ($_GET["ns"] != $name) {
 			query_redirect("ALTER SCHEMA " . idf_escape($_GET["ns"]) . " RENAME TO " . idf_escape($name), $link, lang('Schema has been altered.')); //! sp_rename in MS SQL
 		} else {
-			redirect($link);
+			adminer_redirect($link);
 		}
 	}
 }

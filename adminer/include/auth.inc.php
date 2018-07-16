@@ -62,7 +62,7 @@ if ($auth) {
 		$key = base64_encode($vendor) . "-" . base64_encode($server) . "-" . base64_encode($username) . "-" . base64_encode($db);
 		$private = $adminer->permanentLogin(true);
 		$permanent[$key] = "$key:" . base64_encode($private ? encrypt_string($password, $private) : "");
-		cookie("adminer_permanent", implode(" ", $permanent));
+		adminer_cookie("adminer_permanent", implode(" ", $permanent));
 	}
 	if (count($_POST) == 1 // 1 - auth
 		|| DRIVER != $vendor
@@ -70,7 +70,7 @@ if ($auth) {
 		|| $_GET["username"] !== $username // "0" == "00"
 		|| DB != $db
 	) {
-		redirect(auth_url($vendor, $server, $username, $db));
+		adminer_redirect(auth_url($vendor, $server, $username, $db));
 	}
 	
 } elseif ($_POST["logout"]) {
@@ -83,7 +83,7 @@ if ($auth) {
 			set_session($key, null);
 		}
 		unset_permanent();
-		redirect(substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1), lang('Logout successful.') . ' ' . lang('Thanks for using Adminer, consider <a href="%s">donating</a>.', 'https://sourceforge.net/donate/index.php?group_id=264133'));
+		adminer_redirect(substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1), lang('Logout successful.') . ' ' . lang('Thanks for using Adminer, consider <a href="%s">donating</a>.', 'https://sourceforge.net/donate/index.php?group_id=264133'));
 	}
 	
 } elseif ($permanent && !$_SESSION["pwds"]) {
@@ -105,7 +105,7 @@ function unset_permanent() {
 			unset($permanent[$key]);
 		}
 	}
-	cookie("adminer_permanent", implode(" ", $permanent));
+	adminer_cookie("adminer_permanent", implode(" ", $permanent));
 }
 
 /** Renders an error message and a login form
@@ -136,7 +136,7 @@ function auth_error($error) {
 		$error = lang('Session support must be enabled.');
 	}
 	$params = session_get_cookie_params();
-	cookie("adminer_key", ($_COOKIE["adminer_key"] ? $_COOKIE["adminer_key"] : rand_string()), $params["lifetime"]);
+	adminer_cookie("adminer_key", ($_COOKIE["adminer_key"] ? $_COOKIE["adminer_key"] : rand_string()), $params["lifetime"]);
 	page_header(lang('Login'), $error, null);
 	echo "<form action='' method='post'>\n";
 	echo "<div>";

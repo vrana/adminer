@@ -30,7 +30,7 @@ if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP c
 	} else {
 		// alter database
 		if (!$row["collation"]) {
-			redirect(substr(ME, 0, -1));
+			adminer_redirect(substr(ME, 0, -1));
 		}
 		query_redirect("ALTER DATABASE " . idf_escape($name) . (preg_match('~^[a-z0-9_]+$~i', $row["collation"]) ? " COLLATE $row[collation]" : ""), substr(ME, 0, -1), lang('Database has been altered.'));
 	}

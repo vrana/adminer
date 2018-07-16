@@ -39,7 +39,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 
 		if ($update) {
 			if (!$set) {
-				redirect($location);
+				adminer_redirect($location);
 			}
 			queries_redirect(
 				$location,

@@ -430,7 +430,7 @@ ORDER BY conkey, conname") as $row) {
 		return $return;
 	}
 
-	function view($name) {
+	function adminer_view($name) {
 		global $connection;
 		return array("select" => trim($connection->result("SELECT view_definition
 FROM information_schema.views

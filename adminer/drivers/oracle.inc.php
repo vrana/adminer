@@ -268,7 +268,7 @@ ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
 		return $return;
 	}
 
-	function view($name) {
+	function adminer_view($name) {
 		$rows = get_rows('SELECT text "select" FROM user_views WHERE view_name = ' . q($name));
 		return reset($rows);
 	}

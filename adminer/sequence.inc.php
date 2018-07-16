@@ -12,7 +12,7 @@ if ($_POST && !$error) {
 	} elseif ($SEQUENCE != $name) {
 		query_redirect("ALTER SEQUENCE " . idf_escape($SEQUENCE) . " RENAME TO " . idf_escape($name), $link, lang('Sequence has been altered.'));
 	} else {
-		redirect($link);
+		adminer_redirect($link);
 	}
 }
 

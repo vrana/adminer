@@ -88,7 +88,7 @@ function toggle(id) {
 * @param number
 * @param string optional
 */
-function cookie(assign, days) {
+function adminer_cookie(assign, days) {
 	var date = new Date();
 	date.setDate(date.getDate() + days);
 	document.cookie = assign + '; expires=' + date;
@@ -100,7 +100,7 @@ function cookie(assign, days) {
 * @param string
 */
 function verifyVersion(current, url, token) {
-	cookie('adminer_version=0', 1);
+	adminer_cookie('adminer_version=0', 1);
 	var iframe = document.createElement('iframe');
 	iframe.src = 'https://www.adminer.org/version/?current=' + current;
 	iframe.frameBorder = 0;
@@ -114,7 +114,7 @@ function verifyVersion(current, url, token) {
 			if (event.origin == 'https://www.adminer.org') {
 				var match = /version=(.+)/.exec(event.data);
 				if (match) {
-					cookie('adminer_version=' + match[1], 1);
+					adminer_cookie('adminer_version=' + match[1], 1);
 					ajax(url + 'script=version', function () {
 					}, event.data + '&token=' + token);
 				}
