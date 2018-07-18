@@ -5,6 +5,16 @@
  */
 class AdminerPrettyJsonColumn
 {
+    /**
+     * @var AdminerPlugin
+     */
+    protected $adminer;
+
+    public function __construct($adminer)
+    {
+        $this->adminer = $adminer;
+    }
+
     private function _testJson($value)
     {
         if ((substr($value, 0, 1) == '{' || substr($value, 0, 1) == '[') && ($json = json_decode($value, true))) {
@@ -23,5 +33,16 @@ class AdminerPrettyJsonColumn
 HTML;
         }
         return '';
+    }
+
+    function processInput($field, $value, $function = '')
+    {
+        if ($function === '') {
+            $json = $this->_testJson($value);
+            if ($json !== $value) {
+                $value = json_encode($json);
+            }
+        }
+        return $this->adminer->_callParent('processInput', [$field, $value, $function]);
     }
 }
