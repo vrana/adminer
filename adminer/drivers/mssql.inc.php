@@ -24,10 +24,10 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function connect($server, $username, $password) {
-			    $connectionInfo = array("UID" => $username, "PWD" => $password, "CharacterSet" => "UTF-8");
-			    if (isset($_GET['db'])) {
-			        $connectionInfo['Database'] = $_GET['db'];
-                }
+				$connectionInfo = array("UID" => $username, "PWD" => $password, "CharacterSet" => "UTF-8");
+				if (isset($_GET['db'])) {
+					$connectionInfo['Database'] = $_GET['db'];
+				}
 				$this->_link = @sqlsrv_connect(preg_replace('~:~', ',', $server), $connectionInfo);
 				if ($this->_link) {
 					$info = sqlsrv_server_info($this->_link);
