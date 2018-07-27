@@ -71,7 +71,7 @@ class Adminer {
 	}
 
 	function loginForm() {
-		echo "<table cellspacing='0'>\n";
+		echo "<table cellspacing='0' class='layout'>\n";
 		echo $this->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', '<input type="hidden" name="auth[driver]" value="server"><input name="auth[username]" id="username" value="' . h($_GET["username"]) . '" autocapitalize="off">' . script("focus(qs('#username'));"));
 		echo $this->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]">' . "\n");
 		echo "</table>\n";

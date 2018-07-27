@@ -126,7 +126,7 @@ page_header(lang('Export'), $error, ($_GET["export"] != "" ? array("table" => $_
 ?>
 
 <form action="" method="post">
-<table cellspacing="0">
+<table cellspacing="0" class="layout">
 <?php
 $db_style = array('', 'USE', 'DROP+CREATE', 'CREATE');
 $table_style = array('', 'DROP+CREATE', 'CREATE');
