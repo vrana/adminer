@@ -846,8 +846,8 @@ AND typelem = 0"
 	}
 	$unsigned = array();
 	$operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"); // no "SQL" to avoid SQL injection
-	$functions = array("char_length", "lower", "round", "to_hex", "to_timestamp", "upper", "epoch", "date");
-	$grouping = array("avg", "count", "count distinct", "max", "min", "sum", "array_agg", "jsonb_agg", "string_agg", "string_agg_uniq");
+	$functions = array("char_length", "lower", "round", "to_hex", "to_timestamp", "upper");
+	$grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 	$edit_functions = array(
 		array(
 			"char" => "md5",
