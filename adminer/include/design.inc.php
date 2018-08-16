@@ -23,7 +23,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <title><?php echo $title_page; ?></title>
 <link rel="stylesheet" type="text/css" href="../adminer/static/default.css">
 <?php echo script_src("../adminer/static/functions.js"); ?>
-<?php echo script_src("static/editing.js"); ?>
+<?php echo script_src("../adminer/static/editing.js"); ?>
 <?php if ($adminer->head()) { ?>
 <link rel="shortcut icon" type="image/x-icon" href="../adminer/static/favicon.ico">
 <link rel="apple-touch-icon" href="../adminer/static/favicon.ico">
