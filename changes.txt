@@ -1,4 +1,4 @@
-Adminer 4.6.4-dev:
+Adminer 4.7.0-dev:
 Warn when using password with leading or trailing spaces
 Fix inline editing of empty cells (regression from 4.6.3)
 Allow adding more than two indexes and forign key columns at a time (regression from 4.4.0)
@@ -7,6 +7,7 @@ Increase username maxlength to 80 (bug #623)
 Make maxlength in all fields a soft limit
 MySQL: Support foreign keys created with ANSI quotes (bug #620)
 MSSQL: Pass database when connecting
+ClickHouse: Connect, databases list, tables list, select, SQL command
 
 Adminer 4.6.3 (released 2018-06-28):
 Disallow using password-less databases
