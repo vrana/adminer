@@ -906,3 +906,29 @@ oninput = function (event) {
 	var maxLength = target.getAttribute('data-maxlength');
 	alterClass(target, 'maxlength', target.value && maxLength != null && target.value.length > maxLength); // maxLength could be 0
 };
+
+function txtQueryTableOnKeyUp(e) {
+    var a = qs("#tables");
+    var textToSearch = selectValue(qs("#txtQueryTable")).toLocaleLowerCase();
+    var regex = new RegExp(textToSearch, 'i');
+
+    var tables = document.querySelectorAll("#tables .structure");
+
+    for (var i=0; i< tables.length; i++) {
+        var item = tables[i];
+
+        if (textToSearch.length == 0) {
+            item.parentNode.classList.remove("hidden");
+        } else {
+            var text = item.innerHTML;
+
+            text = text.toLowerCase().replace(new RegExp("_", 'g'), "");
+            if (regex.test(text)) {
+                item.parentNode.classList.remove("hidden");
+            } else {
+                item.parentNode.classList.add("hidden");
+            }
+        }
+
+    }
+}
