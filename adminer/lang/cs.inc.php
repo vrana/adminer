@@ -10,7 +10,7 @@ $translations = array(
 	'Logout' => 'Odhlásit',
 	'Logged as: %s' => 'Přihlášen jako: %s',
 	'Logout successful.' => 'Odhlášení proběhlo v pořádku.',
-	'Thanks for using Adminer, consider <a href="%s">donating</a>.' => 'Díky za použití Admineru, <a href="%s">příspějte</a> na vývoj.',
+	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Díky za použití Admineru, <a href="https://www.adminer.org/cs/donation/">přispějte</a> na vývoj.',
 	'Invalid credentials.' => 'Neplatné přihlašovací údaje.',
 	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer nepodporuje přístup k databázi bez hesla, <a href="https://www.adminer.org/cs/password/"%s>více informací</a>.',
 	'Database does not support password.' => 'Databáze nepodporuje heslo.',
