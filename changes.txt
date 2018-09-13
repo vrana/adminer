@@ -1,4 +1,5 @@
 Adminer 4.6.4-dev:
+Warn when using password with leading or trailing spaces
 Fix inline editing of empty cells (regression from 4.6.3)
 Allow adding more than two indexes and forign key columns at a time (regression from 4.4.0)
 Fix function change with set data type

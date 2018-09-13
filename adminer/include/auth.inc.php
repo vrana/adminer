@@ -172,7 +172,8 @@ if (isset($_GET["username"])) {
 
 $login = null;
 if (!is_object($connection) || ($login = $adminer->login($_GET["username"], get_password())) !== true) {
-	auth_error((is_string($connection) ? h($connection) : (is_string($login) ? $login : lang('Invalid credentials.'))));
+	$error = (is_string($connection) ? h($connection) : (is_string($login) ? $login : lang('Invalid credentials.')));
+	auth_error($error . (preg_match('~^ | $~', get_password()) ? '<br>' . lang('There is a space in the input password which might be the cause.') : ''));
 }
 
 if ($auth && $_POST["token"]) {
