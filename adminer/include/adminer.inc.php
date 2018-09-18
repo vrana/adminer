@@ -1034,6 +1034,7 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 	*/
 	function tablesPrint($tables) {
 		echo "<ul id='tables'>" . script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
+	    echo '<input style="width: 100%" type="search" id="txtQueryTable" value="">'. script("qs('#txtQueryTable').onkeyup = txtQueryTableOnKeyUp;");
 		foreach ($tables as $table => $status) {
 			$name = $this->tableName($status);
 			if ($name != "") {
