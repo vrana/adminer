@@ -51,7 +51,7 @@ if (!defined("DRIVER")) {
 				$row = $result->fetch_array();
 				return $row[$field];
 			}
-			
+
 			function quote($string) {
 				return "'" . $this->escape_string($string) . "'";
 			}
@@ -302,7 +302,7 @@ if (!defined("DRIVER")) {
 			}
 			return queries($prefix . implode(",\n", $values) . $suffix);
 		}
-		
+
 		function slowQuery($query, $timeout) {
 			if (min_version('5.7.8', '10.1.2')) {
 				if (preg_match('~MariaDB~', $this->_conn->server_info)) {
@@ -319,7 +319,7 @@ if (!defined("DRIVER")) {
 				: $idf
 			);
 		}
-		
+
 		function warnings() {
 			$result = $this->_conn->query("SHOW WARNINGS");
 			if ($result && $result->num_rows) {
@@ -535,22 +535,28 @@ if (!defined("DRIVER")) {
 	*/
 	function fields($table) {
 		$return = array();
-		foreach (get_rows("SHOW FULL COLUMNS FROM " . table($table)) as $row) {
-			preg_match('~^([^( ]+)(?:\((.+)\))?( unsigned)?( zerofill)?$~', $row["Type"], $match);
-			$return[$row["Field"]] = array(
-				"field" => $row["Field"],
-				"full_type" => $row["Type"],
+		$rows = get_rows("SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = " . q($table));
+
+		foreach ($rows as $row) {
+			preg_match('~^([^( ]+)(?:\((.+)\))?( unsigned)?( zerofill)?$~', $row["COLUMN_TYPE"], $match);
+			$return[$row["COLUMN_NAME"]] = array(
+				"field" => $row["COLUMN_NAME"],
+				"full_type" => $row["COLUMN_TYPE"],
 				"type" => $match[1],
 				"length" => $match[2],
 				"unsigned" => ltrim($match[3] . $match[4]),
-				"default" => ($row["Default"] != "" || preg_match("~char|set~", $match[1]) ? $row["Default"] : null),
-				"null" => ($row["Null"] == "YES"),
-				"auto_increment" => ($row["Extra"] == "auto_increment"),
-				"on_update" => (preg_match('~^on update (.+)~i', $row["Extra"], $match) ? $match[1] : ""), //! available since MySQL 5.1.23
-				"collation" => $row["Collation"],
-				"privileges" => array_flip(preg_split('~, *~', $row["Privileges"])),
-				"comment" => $row["Comment"],
-				"primary" => ($row["Key"] == "PRI"),
+				"default" => isset($row["COLUMN_DEFAULT"]) ? trim($row["COLUMN_DEFAULT"], "'") : null, // COLUMN_DEFAULT => "'my_value'"
+				"null" => ($row["IS_NULLABLE"] == "YES"),
+				"auto_increment" => ($row["EXTRA"] == "auto_increment"),
+				"on_update" => (preg_match('~^on update (.+)~i', $row["EXTRA"], $match) ? $match[1] : ""), //! available since MySQL 5.1.23
+				"collation" => $row["COLLATION_NAME"],
+				"privileges" => array_flip(preg_split('~, *~', $row["PRIVILEGES"])),
+				"comment" => $row["COLUMN_COMMENT"],
+				"primary" => ($row["COLUMN_KEY"] == "PRI"),
+				"virtual" => isset($row["EXTRA"])
+					? ($row["EXTRA"] == "STORED GENERATED" ? 'STORED' : ($row["EXTRA"] == "VIRTUAL GENERATED" ? 'VIRTUAL' : false))
+					: false,
+				"expression" => isset($row['GENERATION_EXPRESSION']) ? $row['GENERATION_EXPRESSION'] : null
 			);
 		}
 		return $return;

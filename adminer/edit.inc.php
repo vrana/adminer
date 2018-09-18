@@ -7,6 +7,9 @@ foreach ($fields as $name => $field) {
 	if (!isset($field["privileges"][$update ? "update" : "insert"]) || $adminer->fieldName($field) == "") {
 		unset($fields[$name]);
 	}
+	if (!empty($field['virtual'])) {
+		unset($fields[$name]);
+	}
 }
 
 if ($_POST && !$error && !isset($_GET["select"])) {

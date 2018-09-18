@@ -1422,6 +1422,8 @@ function edit_form($TABLE, $fields, $row, $update) {
 		echo "<table cellspacing='0'>" . script("qsl('table').onkeydown = editingKeydown;");
 
 		foreach ($fields as $name => $field) {
+			if (!empty($field['virtual'])) continue;
+
 			echo "<tr><th>" . $adminer->fieldName($field);
 			$default = $_GET["set"][bracket_escape($name)];
 			if ($default === null) {
@@ -1437,7 +1439,7 @@ function edit_form($TABLE, $fields, $row, $update) {
 				)
 				: (!$update && $field["auto_increment"]
 					? ""
-					: (isset($_GET["select"]) ? false : $default)
+					: (isset($_GET["select"]) ? false : (empty($field["null"]) ? $default : null))
 				)
 			);
 			if (!$_POST["save"] && is_string($value)) {

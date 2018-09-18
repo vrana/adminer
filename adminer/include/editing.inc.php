@@ -151,14 +151,14 @@ if ($foreign_keys) {
 	$structured_types[lang('Foreign keys')] = $foreign_keys;
 }
 echo optionlist(array_merge($extra_types, $structured_types), $type);
-?></select>
-<?php echo on_help("getTarget(event).value", 1); ?>
-<?php echo script("mixin(qsl('select'), {onfocus: function () { lastType = selectValue(this); }, onchange: editingTypeChange});", ""); ?>
+?></select><!--
+--><?php echo on_help("getTarget(event).value", 1); ?><!--
+--><?php echo script("mixin(qsl('select'), {onfocus: function () { lastType = selectValue(this); }, onchange: editingTypeChange});", ""); ?>
 <td><input name="<?php echo h($key); ?>[length]" value="<?php echo h($field["length"]); ?>" size="3"<?php echo (!$field["length"] && preg_match('~var(char|binary)$~', $type) ? " class='required'" : ""); //! type="number" with enabled JavaScript ?> aria-labelledby="label-length"><?php echo script("mixin(qsl('input'), {onfocus: editingLengthFocus, oninput: editingLengthChange});", ""); ?><td class="options"><?php
 	echo "<select name='" . h($key) . "[collation]'" . (preg_match('~(char|text|enum|set)$~', $type) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>';
 	echo ($unsigned ? "<select name='" . h($key) . "[unsigned]'" . (!$type || preg_match(number_type(), $type) ? "" : " class='hidden'") . '><option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
 	echo (isset($field['on_update']) ? "<select name='" . h($key) . "[on_update]'" . (preg_match('~timestamp|datetime~', $type) ? "" : " class='hidden'") . '>' . optionlist(array("" => "(" . lang('ON UPDATE') . ")", "CURRENT_TIMESTAMP"), $field["on_update"]) . '</select>' : '');
-	echo ($foreign_keys ? "<select name='" . h($key) . "[on_delete]'" . (preg_match("~`~", $type) ? "" : " class='hidden'") . "><option value=''>(" . lang('ON DELETE') . ")" . optionlist(explode("|", $on_actions), $field["on_delete"]) . "</select> " : " "); // space for IE
+	echo ($foreign_keys ? "<select name='" . h($key) . "[on_delete]'" . (preg_match("~`~", $type) ? "" : " class='hidden'") . "><option value=''>(" . lang('ON DELETE') . ")" . optionlist(explode("|", $on_actions), $field["on_delete"]) . "</select> " : " "); // space for IE ?></td><?php
 }
 
 /** Filter length value including enums
@@ -180,7 +180,7 @@ function process_length($length) {
 */
 function process_type($field, $collate = "COLLATE") {
 	global $unsigned;
-	return " $field[type]"
+	return " {$field['type']}"
 		. process_length($field["length"])
 		. (preg_match(number_type(), $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
 		. (preg_match('~char|text|enum|set~', $field["type"]) && $field["collation"] ? " $collate " . q($field["collation"]) : "")
@@ -193,9 +193,18 @@ function process_type($field, $collate = "COLLATE") {
 * @return array array("field", "type", "NULL", "DEFAULT", "ON UPDATE", "COMMENT", "AUTO_INCREMENT")
 */
 function process_field($field, $type_field) {
+	if (isset($field['virtual']) && $field['virtual']) {
+		return array(
+			idf_escape(trim($field["field"])),
+			process_type($field),
+			" {$field['virtual']}",
+			(support("comment") && $field["comment"] != "" ? " COMMENT " . q($field["comment"]) : ""),
+		);
+	}
+
 	return array(
 		idf_escape(trim($field["field"])),
-		process_type($type_field),
+		process_type($type_field ? $type_field : $field),
 		($field["null"] ? " NULL" : " NOT NULL"), // NULL for timestamp
 		default_value($field),
 		(preg_match('~timestamp|datetime~', $field["type"]) && $field["on_update"] ? " ON UPDATE $field[on_update]" : ""),
@@ -210,7 +219,19 @@ function process_field($field, $type_field) {
 */
 function default_value($field) {
 	$default = $field["default"];
-	return ($default === null ? "" : " DEFAULT " . (preg_match('~char|binary|text|enum|set~', $field["type"]) || preg_match('~^(?![a-z])~i', $default) ? q($default) : $default));
+	$is_def_null = false;
+	if (isset($field['null']) && $field['null']) {
+		if (strtoupper($default) === 'NULL') $is_def_null = true;
+	}
+	$default = is_null($default) ? null : (
+		$is_def_null ? 'NULL' : (
+			preg_match('~char|binary|text|enum|set~', $field["type"]) || preg_match('~^(?![a-z])~i', $default)
+			? q($default)
+			: $default
+		)
+	);
+
+	return $default === null ? "" : " DEFAULT {$default}";
 }
 
 /** Get type class to use in CSS
@@ -239,28 +260,30 @@ function type_class($type) {
 * @return null
 */
 function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = array(), $comments = false) {
-	global $inout;
+	global $inout, $jush;
 	$fields = array_values($fields);
 	?>
 <thead><tr>
 <?php if ($type == "PROCEDURE") { ?><td><?php } ?>
-<th id="label-name"><?php echo ($type == "TABLE" ? lang('Column name') : lang('Parameter name')); ?>
-<td id="label-type"><?php echo lang('Type'); ?><textarea id="enum-edit" rows="4" cols="12" wrap="off" style="display: none;"></textarea><?php echo script("qs('#enum-edit').onblur = editingLengthBlur;"); ?>
-<td id="label-length"><?php echo lang('Length'); ?>
-<td><?php echo lang('Options'); /* no label required, options have their own label */ ?>
+<th id="label-name"><?php echo ($type == "TABLE" ? lang('Column name') : lang('Parameter name')); ?></th>
+<td id="label-type"><?php echo lang('Type'); ?><textarea id="enum-edit" rows="4" cols="12" wrap="off" style="display: none;"></textarea><?php echo script("qs('#enum-edit').onblur = editingLengthBlur;"); ?></td>
+<td id="label-length"><?php echo lang('Length'); ?></td>
+<td><?php echo lang('Options'); /* no label required, options have their own label */ ?></td>
 <?php if ($type == "TABLE") { ?>
-<td id="label-null">NULL
+<td id="label-null">NULL</td>
 <td><input type="radio" name="auto_increment_col" value=""><acronym id="label-ai" title="<?php echo lang('Auto Increment'); ?>">AI</acronym><?php echo doc_link(array(
 	'sql' => "example-auto-increment.html",
 	'mariadb' => "auto_increment/",
 	'sqlite' => "autoinc.html",
 	'pgsql' => "datatype.html#DATATYPE-SERIAL",
 	'mssql' => "ms186775.aspx",
-)); ?>
-<td id="label-default"><?php echo lang('Default value'); ?>
-<?php echo (support("comment") ? "<td id='label-comment'" . ($comments ? "" : " class='hidden'") . ">" . lang('Comment') : ""); ?>
+)); ?></td>
+<td id="label-default"><?php echo lang('Default value'); ?></td>
+<?php if (support("comment")) { ?>
+<td id='label-comment' class="<?=$comments ? "" : "hidden" ?>"><?php echo lang('Comment')?></td>
 <?php } ?>
-<td><?php echo "<input type='image' class='icon' name='add[" . (support("move_col") ? 0 : count($fields)) . "]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>" . script("row_count = " . count($fields) . ";"); ?>
+<?php } ?>
+<td><?php echo "<input type='image' class='icon' name='add[" . (support("move_col") ? 0 : count($fields)) . "]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>" . script("row_count = " . count($fields) . ";"); ?></td>
 </thead>
 <tbody>
 <?php
@@ -271,15 +294,32 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 		$display = (isset($_POST["add"][$i-1]) || (isset($field["field"]) && !$_POST["drop_col"][$i])) && (support("drop_col") || $orig == "");
 		?>
 <tr<?php echo ($display ? "" : " style='display: none;'"); ?>>
-<?php echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", explode("|", $inout), $field["inout"]) : ""); ?>
-<th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo h($field["field"]); ?>" data-maxlength="64" autocapitalize="off" aria-labelledby="label-name"><?php echo script("qsl('input').oninput = function () { editingNameChange.call(this);" . ($field["field"] != "" || count($fields) > 1 ? "" : " editingAddRow.call(this);") . " };", ""); ?><?php } ?>
-<input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo h($orig); ?>">
-<?php edit_type("fields[$i]", $field, $collations, $foreign_keys); ?>
+<?php echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", explode("|", $inout), $field["inout"]) . '</td>' : ""); ?>
+<th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo h($field["field"]); ?>" data-maxlength="64" autocapitalize="off" aria-labelledby="label-name"><?php echo script("qsl('input').oninput = function () { editingNameChange.call(this);" . ($field["field"] != "" || count($fields) > 1 ? "" : " editingAddRow.call(this);") . " };", ""); ?><?php } ?><!--
+--><input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo h($orig); ?>"><!--
+--><?php edit_type("fields[$i]", $field, $collations, $foreign_keys); ?></th>
 <?php if ($type == "TABLE") { ?>
-<td><?php echo checkbox("fields[$i][null]", 1, $field["null"], "", "", "block", "label-null"); ?>
-<td><label class="block"><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked<?php } ?> aria-labelledby="label-ai"></label><td><?php
-			echo checkbox("fields[$i][has_default]", 1, $field["has_default"], "", "", "", "label-default"); ?><input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["default"]); ?>" aria-labelledby="label-default"><?php
-			echo (support("comment") ? "<td" . ($comments ? "" : " class='hidden'") . "><input name='fields[$i][comment]' value='" . h($field["comment"]) . "' data-maxlength='" . (min_version(5.5) ? 1024 : 255) . "' aria-labelledby='label-comment'>" : "");
+<td><?php echo checkbox("fields[$i][null]", 1, $field["null"], "", "", "block", "label-null"); ?></td>
+<td><label class="block"><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked<?php } ?> aria-labelledby="label-ai"></label></td>
+<td><select name="fields[<?php echo $i ?>][has_default]">
+	<option selected value="0">
+	<option <?php echo $field["has_default"] ? 'selected' : '' ?> value="1">default
+	<?php if ($jush == 'sql') { ?>
+		<optgroup label="Virtual column">
+			<option <?php echo $field["virtual"] == 'STORED' ? 'selected' : '' ?> value="STORED">stored
+			<option <?php echo $field["virtual"] == 'VIRTUAL' ? 'selected' : '' ?> value="VIRTUAL">virtual
+		</optgroup>
+	<?php } ?>
+</select><?php
+if ($field['virtual']) {
+	?><input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["expression"]); ?>" aria-labelledby="label-default"><?php
+} else {
+	?><input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["default"]); ?>" aria-labelledby="label-default"><?php
+}
+?></td><?php
+if (support("comment")) { ?>
+<td class="<?=($comments ? "" : "hidden") ?>"><input name="fields[<?php echo $i ?>][comment] ?>" value="<?php echo h($field["comment"]) ?>" data-maxlength="<?php echo (min_version(5.5) ? 1024 : 255) ?>" aria-labelledby='label-comment'></td>
+<?php }
 		}
 		echo "<td>";
 		echo (support("move_col") ?
@@ -288,6 +328,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 			. "<input type='image' class='icon' name='down[$i]' src='../adminer/static/down.gif' alt='↓' title='" . lang('Move down') . "'> "
 		: "");
 		echo ($orig == "" || support("drop_col") ? "<input type='image' class='icon' name='drop_col[$i]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "'>" : "");
+		echo "</td>";
 	}
 }
 

@@ -39,7 +39,7 @@ class Adminer {
 	function bruteForceKey() {
 		return $_SERVER["REMOTE_ADDR"];
 	}
-	
+
 	/** Get server name displayed in breadcrumbs
 	* @param string
 	* @return string HTML code or null
@@ -128,7 +128,7 @@ class Adminer {
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
 		echo checkbox("auth[permanent]", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
 	}
-	
+
 	/** Get login form field
 	* @param string
 	* @param string HTML
@@ -824,6 +824,12 @@ class Adminer {
 						$values = array();
 						foreach ($row as $val) {
 							$field = $result->fetch_field();
+							if ($_POST["format"] == "sql") {
+								//skip virtual columns
+								if ($f = (isset($fields[$field->name]) ? $fields[$field->name] : null)) {
+									if ($f['virtual']) continue;
+								}
+							}
 							$keys[] = $field->name;
 							$key = idf_escape($field->name);
 							$values[] = "$key = VALUES($key)";
@@ -842,6 +848,11 @@ class Adminer {
 						}
 						foreach ($row as $key => $val) {
 							$field = $fields[$key];
+							//skip virtual columns
+							if ($field['virtual']) {
+								unset($row[$key]);
+								continue;
+							}
 							$row[$key] = ($val !== null
 								? unconvert_field($field, preg_match(number_type(), $field["type"]) && $val != '' ? $val : q(($val === false ? 0 : $val)))
 								: "NULL"
