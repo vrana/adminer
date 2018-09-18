@@ -39,7 +39,7 @@ class Adminer {
 	function bruteForceKey() {
 		return $_SERVER["REMOTE_ADDR"];
 	}
-	
+
 	/** Get server name displayed in breadcrumbs
 	* @param string
 	* @return string HTML code or null
@@ -128,7 +128,7 @@ class Adminer {
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
 		echo checkbox("auth[permanent]", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
 	}
-	
+
 	/** Get login form field
 	* @param string
 	* @param string HTML
@@ -192,7 +192,8 @@ class Adminer {
 		}
 		$name = $tableStatus["Name"];
 		foreach ($links as $key => $val) {
-			echo " <a href='" . h(ME) . "$key=" . urlencode($name) . ($key == "edit" ? $set : "") . "'" . bold(isset($_GET[$key])) . ">$val</a>";
+			$active = bold(isset($_GET[$key]));
+			echo " <a href='" . h(ME) . "$key=" . urlencode($name) . ($key == "edit" ? $set : "") . "' class='link_{$key} {$active}'>$val</a>";
 		}
 		echo doc_link(array($jush => $driver->tableHelp($name)), "?");
 		echo "\n";
@@ -914,7 +915,7 @@ class Adminer {
 
 	/** Prints navigation after Adminer title
 	* @param string can be "auth" if there is no database connection, "db" if there is no database selected, "ns" with invalid schema
-	* @return null
+	* @return void
 	*/
 	function navigation($missing) {
 		global $VERSION, $jush, $drivers, $connection;
@@ -973,16 +974,30 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 <?php
 			}
 			$this->databasesPrint($missing);
+
+			echo "<p class='links'>";
 			if (DB == "" || !$missing) {
-				echo "<p class='links'>" . (support("sql") ? "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"]) && !isset($_GET["import"])) . ">" . lang('SQL command') . "</a>\n<a href='" . h(ME) . "import='" . bold(isset($_GET["import"])) . ">" . lang('Import') . "</a>\n" : "") . "";
+				if (support("sql")) {
+					$active = bold(isset($_GET["sql"]) && !isset($_GET["import"]));
+					echo "<a href='" . h(ME) . "sql=' class='link_sql {$active}'>" . lang('SQL command') . "</a>\n";
+
+					$active = bold(isset($_GET["import"]));
+					echo "<a href='" . h(ME) . "import=' class='link_import {$active}'>" . lang('Import') . "</a>\n";
+				}
 				if (support("dump")) {
-					echo "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . lang('Export') . "</a>\n";
+					$active = bold(isset($_GET["dump"]));
+					echo "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump' class='link_dump {$active}'>" . lang('Export') . "</a>\n";
 				}
 			}
 			if ($_GET["ns"] !== "" && !$missing && DB != "") {
-				echo '<a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create table') . "</a>\n";
+				$active = bold($_GET["create"] === "");
+				echo "<a href='" . h(ME) . "create=' class='link_create {$active}'>" . lang('Create table') . "</a>\n";
+			}
+			echo "</p>";
+
+			if ($_GET["ns"] !== "" && !$missing && DB != "") {
 				if (!$tables) {
-					echo "<p class='message'>" . lang('No tables.') . "\n";
+					echo "<p class='message'>" . lang('No tables.') . "</p>\n";
 				} else {
 					$this->tablesPrint($tables);
 				}
@@ -1030,20 +1045,27 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 
 	/** Prints table list in menu
 	* @param array result of table_status('', true)
-	* @return null
+	* @return void
 	*/
 	function tablesPrint($tables) {
 		echo "<ul id='tables'>" . script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
 		foreach ($tables as $table => $status) {
 			$name = $this->tableName($status);
 			if ($name != "") {
-				echo '<li><a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table || $_GET["edit"] == $table, "select") . ">" . lang('select') . "</a> ";
-				echo (support("table") || support("indexes")
-					? '<a href="' . h(ME) . 'table=' . urlencode($table) . '"'
-						. bold(in_array($table, array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"])), (is_view($status) ? "view" : "structure"))
-						. " title='" . lang('Show structure') . "'>$name</a>"
-					: "<span>$name</span>"
-				) . "\n";
+				echo '<li>';
+
+				$active = bold($_GET["select"] == $table || $_GET["edit"] == $table);
+				echo "<a href='" . h(ME) . "select=" . urlencode($table) . "' class='select {$active}'>" . lang('select') . "</a> ";
+
+				if (support("table") || support("indexes")) {
+					$status = is_view($status) ? "view" : "structure";
+					$active = bold(in_array($table, array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"])));
+					echo '<a href="' . h(ME) . 'table=' . urlencode($table) . '"'
+						. " class='{$status} {$active}'"
+						. " title='" . lang('Show structure') . "'>$name</a>\n";
+				} else {
+					echo "<span>$name</span>\n";
+				}
 			}
 		}
 		echo "</ul>\n";

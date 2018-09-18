@@ -23,7 +23,7 @@ class Adminer {
 	function bruteForceKey() {
 		return $_SERVER["REMOTE_ADDR"];
 	}
-	
+
 	function serverName($server) {
 	}
 
@@ -617,8 +617,9 @@ qsl('div').onclick = whisperClick;", "")
 			echo '<li>';
 			$name = $this->tableName($row);
 			if (isset($row["Engine"]) && $name != "") { // ignore views and tables without name
+				$active = bold($_GET["select"] == $row["Name"] || $_GET["edit"] == $row["Name"]);
 				echo "<a href='" . h(ME) . 'select=' . urlencode($row["Name"]) . "'"
-					. bold($_GET["select"] == $row["Name"] || $_GET["edit"] == $row["Name"], "select")
+					. " class='select {$active}'"
 					. " title='" . lang('Select data') . "'>$name</a>\n"
 				;
 			}
