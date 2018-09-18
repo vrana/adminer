@@ -23,7 +23,7 @@ class Adminer {
 	function bruteForceKey() {
 		return $_SERVER["REMOTE_ADDR"];
 	}
-	
+
 	function serverName($server) {
 	}
 
@@ -611,7 +611,7 @@ qsl('div').onclick = whisperClick;", "")
 	}
 
 	function tablesPrint($tables) {
-		echo "<ul id='tables'>";
+		echo "<ul id='tables' data-mode='editor'>";
 		echo script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
 		foreach ($tables as $row) {
 			echo '<li>';
