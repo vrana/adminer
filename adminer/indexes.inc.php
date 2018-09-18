@@ -1,91 +1,144 @@
 <?php
 $TABLE = $_GET["indexes"];
-$index_types = array("PRIMARY", "UNIQUE", "INDEX", "FULLTEXT");
+$index_types = array("PRIMARY", "UNIQUE", "INDEX");
+$table_status = table_status($TABLE, true);
+if (preg_match('~MyISAM|M?aria' . (min_version(5.6, '10.0.5') ? '|InnoDB' : '') . '~i', $table_status["Engine"])) {
+	$index_types[] = "FULLTEXT";
+}
+if (preg_match('~MyISAM|M?aria' . (min_version(5.7, '10.2.2') ? '|InnoDB' : '') . '~i', $table_status["Engine"])) {
+	$index_types[] = "SPATIAL";
+}
 $indexes = indexes($TABLE);
-if ($_POST && !$error && !$_POST["add"]) {
+$primary = array();
+if ($jush == "mongo") { // doesn't support primary key
+	$primary = $indexes["_id_"];
+	unset($index_types[0]);
+	unset($indexes["_id_"]);
+}
+$row = $_POST;
+
+if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 	$alter = array();
-	foreach ($_POST["indexes"] as $index) {
+	foreach ($row["indexes"] as $index) {
+		$name = $index["name"];
 		if (in_array($index["type"], $index_types)) {
 			$columns = array();
 			$lengths = array();
+			$descs = array();
 			$set = array();
 			ksort($index["columns"]);
 			foreach ($index["columns"] as $key => $column) {
 				if ($column != "") {
 					$length = $index["lengths"][$key];
-					$set[] = idf_escape($column) . ($length ? "(" . intval($length) . ")" : "");
-					$columns[count($columns) + 1] = $column;
-					$lengths[count($lengths) + 1] = ($length ? $length : null);
+					$desc = $index["descs"][$key];
+					$set[] = idf_escape($column) . ($length ? "(" . (+$length) . ")" : "") . ($desc ? " DESC" : "");
+					$columns[] = $column;
+					$lengths[] = ($length ? $length : null);
+					$descs[] = $desc;
 				}
 			}
+
 			if ($columns) {
-				foreach ($indexes as $name => $existing) {
+				$existing = $indexes[$name];
+				if ($existing) {
 					ksort($existing["columns"]);
 					ksort($existing["lengths"]);
-					if ($index["type"] == $existing["type"] && $existing["columns"] === $columns && $existing["lengths"] === $lengths) {
+					ksort($existing["descs"]);
+					if ($index["type"] == $existing["type"]
+						&& array_values($existing["columns"]) === $columns
+						&& (!$existing["lengths"] || array_values($existing["lengths"]) === $lengths)
+						&& array_values($existing["descs"]) === $descs
+					) {
 						// skip existing index
 						unset($indexes[$name]);
-						continue 2;
+						continue;
 					}
 				}
-				$alter[] = "\nADD $index[type]" . ($index["type"] == "PRIMARY" ? " KEY" : "") . " (" . implode(", ", $set) . ")";
+				$alter[] = array($index["type"], $name, $set);
 			}
 		}
 	}
+
 	// drop removed indexes
 	foreach ($indexes as $name => $existing) {
-		$alter[] = "\nDROP INDEX " . idf_escape($name);
+		$alter[] = array($existing["type"], $name, "DROP");
 	}
 	if (!$alter) {
 		redirect(ME . "table=" . urlencode($TABLE));
 	}
-	query_redirect("ALTER TABLE " . idf_escape($TABLE) . implode(",", $alter), ME . "table=" . urlencode($TABLE), lang('Indexes have been altered.'));
+	queries_redirect(ME . "table=" . urlencode($TABLE), lang('Indexes have been altered.'), alter_indexes($TABLE, $alter));
 }
 
-page_header(lang('Indexes'), $error, array("table" => $TABLE), $TABLE);
+page_header(lang('Indexes'), $error, array("table" => $TABLE), h($TABLE));
 
 $fields = array_keys(fields($TABLE));
-$row = array("indexes" => $indexes);
-if ($_POST) {
-	$row = $_POST;
-	if ($_POST["add"]) {
-		foreach ($row["indexes"] as $key => $index) {
-			if ($index["columns"][count($index["columns"])] != "") {
-				$row["indexes"][$key]["columns"][] = "";
-			}
-		}
-		$index = end($row["indexes"]);
-		if ($index["type"] || array_filter($index["columns"], 'strlen') || array_filter($index["lengths"], 'strlen')) {
-			$row["indexes"][] = array("columns" => array(1 => ""));
-		}
-	}
-} else {
+if ($_POST["add"]) {
 	foreach ($row["indexes"] as $key => $index) {
-		$row["indexes"][$key]["columns"][] = "";
+		if ($index["columns"][count($index["columns"])] != "") {
+			$row["indexes"][$key]["columns"][] = "";
+		}
 	}
-	$row["indexes"][] = array("columns" => array(1 => ""));
+	$index = end($row["indexes"]);
+	if ($index["type"] || array_filter($index["columns"], 'strlen')) {
+		$row["indexes"][] = array("columns" => array(1 => ""));
+	}
+}
+if (!$row) {
+	foreach ($indexes as $key => $index) {
+		$indexes[$key]["name"] = $key;
+		$indexes[$key]["columns"][] = "";
+	}
+	$indexes[] = array("columns" => array(1 => ""));
+	$row["indexes"] = $indexes;
 }
 ?>
 
 <form action="" method="post">
-<table cellspacing="0">
-<thead><tr><th><?php echo lang('Index Type'); ?><th><?php echo lang('Column (length)'); ?></thead>
+<table cellspacing="0" class="nowrap">
+<thead><tr>
+<th id="label-type"><?php echo lang('Index Type'); ?>
+<th><input type="submit" class="wayoff"><?php echo lang('Column (length)'); ?>
+<th id="label-name"><?php echo lang('Name'); ?>
+<th><noscript><?php echo "<input type='image' class='icon' name='add[0]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>"; ?></noscript>
+</thead>
 <?php
-$j = 0;
-foreach ($row["indexes"] as $index) {
-	echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) - 1 ? "indexesAddRow(this);" : 1)) . "<td>\n";
-	ksort($index["columns"]);
-	foreach ($index["columns"] as $i => $column) {
-		echo "<span>" . html_select("indexes[$j][columns][$i]", array(-1 => "") + $fields, $column, ($i == count($index["columns"]) ? "indexesAddColumn(this);" : 1));
-		echo "<input name='indexes[$j][lengths][$i]' size='2' value='" . h($index["lengths"][$i]) . "'> </span>\n";
+if ($primary) {
+	echo "<tr><td>PRIMARY<td>";
+	foreach ($primary["columns"] as $key => $column) {
+		echo select_input(" disabled", $fields, $column);
+		echo "<label><input disabled type='checkbox'>" . lang('descending') . "</label> ";
 	}
-	echo "\n";
+	echo "<td><td>\n";
+}
+$j = 1;
+foreach ($row["indexes"] as $index) {
+	if (!$_POST["drop_col"] || $j != key($_POST["drop_col"])) {
+		echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) ? "indexesAddRow.call(this);" : 1), "label-type");
+
+		echo "<td>";
+		ksort($index["columns"]);
+		$i = 1;
+		foreach ($index["columns"] as $key => $column) {
+			echo "<span>" . select_input(
+				" name='indexes[$j][columns][$i]' title='" . lang('Column') . "'",
+				($fields ? array_combine($fields, $fields) : $fields),
+				$column,
+				"partial(" . ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . ", '" . js_escape($jush == "sql" ? "" : $_GET["indexes"] . "_") . "')"
+			);
+			echo ($jush == "sql" || $jush == "mssql" ? "<input type='number' name='indexes[$j][lengths][$i]' class='size' value='" . h($index["lengths"][$key]) . "' title='" . lang('Length') . "'>" : "");
+			echo ($jush != "sql" ? checkbox("indexes[$j][descs][$i]", 1, $index["descs"][$key], lang('descending')) : "");
+			echo " </span>";
+			$i++;
+		}
+
+		echo "<td><input name='indexes[$j][name]' value='" . h($index["name"]) . "' autocapitalize='off' aria-labelledby='label-name'>\n";
+		echo "<td><input type='image' class='icon' name='drop_col[$j]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "'>" . script("qsl('input').onclick = partial(editingRemoveRow, 'indexes\$1[type]');");
+	}
 	$j++;
 }
 ?>
 </table>
 <p>
-<input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Save'); ?>">
-<noscript><p><input type="submit" name="add" value="<?php echo lang('Add next'); ?>"></noscript>
+<input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

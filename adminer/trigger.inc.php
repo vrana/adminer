@@ -1,42 +1,49 @@
 <?php
 $TABLE = $_GET["trigger"];
-$trigger_time = array("BEFORE", "AFTER");
-$trigger_event = array("INSERT", "UPDATE", "DELETE");
+$name = $_GET["name"];
+$trigger_options = trigger_options();
+$row = (array) trigger($name) + array("Trigger" => $TABLE . "_bi");
 
-$dropped = false;
-if ($_POST && !$error && in_array($_POST["Timing"], $trigger_time) && in_array($_POST["Event"], $trigger_event)) {
-	$dropped = drop_create(
-		"DROP TRIGGER " . idf_escape($_GET["name"]),
-		"CREATE TRIGGER " . idf_escape($_POST["Trigger"]) . " $_POST[Timing] $_POST[Event] ON " . idf_escape($TABLE) . " FOR EACH ROW\n$_POST[Statement]",
-		ME . "table=" . urlencode($TABLE),
-		lang('Trigger has been dropped.'),
-		lang('Trigger has been altered.'),
-		lang('Trigger has been created.'),
-		$_GET["name"]
-	);
-}
-
-page_header(($_GET["name"] != "" ? lang('Alter trigger') . ": " . h($_GET["name"]) : lang('Create trigger')), $error, array("table" => $TABLE));
-
-$row = array("Trigger" => $TABLE . "_bi");
 if ($_POST) {
+	if (!$error && in_array($_POST["Timing"], $trigger_options["Timing"]) && in_array($_POST["Event"], $trigger_options["Event"]) && in_array($_POST["Type"], $trigger_options["Type"])) {
+		// don't use drop_create() because there may not be more triggers for the same action
+		$on = " ON " . table($TABLE);
+		$drop = "DROP TRIGGER " . idf_escape($name) . ($jush == "pgsql" ? $on : "");
+		$location = ME . "table=" . urlencode($TABLE);
+		if ($_POST["drop"]) {
+			query_redirect($drop, $location, lang('Trigger has been dropped.'));
+		} else {
+			if ($name != "") {
+				queries($drop);
+			}
+			queries_redirect(
+				$location,
+				($name != "" ? lang('Trigger has been altered.') : lang('Trigger has been created.')),
+				queries(create_trigger($on, $_POST))
+			);
+			if ($name != "") {
+				queries(create_trigger($on, $row + array("Type" => reset($trigger_options["Type"]))));
+			}
+		}
+	}
 	$row = $_POST;
-} elseif ($_GET["name"] != "") {
-	$result = $connection->query("SHOW TRIGGERS WHERE `Trigger` = " . $connection->quote($_GET["name"]));
-	$row = $result->fetch_assoc();
 }
+
+page_header(($name != "" ? lang('Alter trigger') . ": " . h($name) : lang('Create trigger')), $error, array("table" => $TABLE));
 ?>
 
 <form action="" method="post" id="form">
-<table cellspacing="0">
-<tr><th><?php echo lang('Time'); ?><td><?php echo html_select("Timing", $trigger_time, $row["Timing"], "if (/^" . h(preg_quote($TABLE, "/")) . "_[ba][iud]$/.test(this.form['Trigger'].value)) this.form['Trigger'].value = '" . h(addcslashes($TABLE, "\r\n'\\")) . "_' + selectValue(this).charAt(0).toLowerCase() + selectValue(this.form['Event']).charAt(0).toLowerCase();"); ?>
-<tr><th><?php echo lang('Event'); ?><td><?php echo html_select("Event", $trigger_event, $row["Event"], "this.form['Timing'].onchange();"); ?>
-<tr><th><?php echo lang('Name'); ?><td><input name="Trigger" value="<?php echo h($row["Trigger"]); ?>" maxlength="64">
+<table cellspacing="0" class="layout">
+<tr><th><?php echo lang('Time'); ?><td><?php echo html_select("Timing", $trigger_options["Timing"], $row["Timing"], "triggerChange(/^" . preg_quote($TABLE, "/") . "_[ba][iud]$/, '" . js_escape($TABLE) . "', this.form);"); ?>
+<tr><th><?php echo lang('Event'); ?><td><?php echo html_select("Event", $trigger_options["Event"], $row["Event"], "this.form['Timing'].onchange();"); ?>
+<?php echo (in_array("UPDATE OF", $trigger_options["Event"]) ? " <input name='Of' value='" . h($row["Of"]) . "' class='hidden'>": ""); ?>
+<tr><th><?php echo lang('Type'); ?><td><?php echo html_select("Type", $trigger_options["Type"], $row["Type"]); ?>
 </table>
-<p><textarea name="Statement" rows="10" cols="80" style="width: 98%;"><?php echo h($row["Statement"]); ?></textarea>
+<p><?php echo lang('Name'); ?>: <input name="Trigger" value="<?php echo h($row["Trigger"]); ?>" data-maxlength="64" autocapitalize="off">
+<?php echo script("qs('#form')['Timing'].onchange();"); ?>
+<p><?php textarea("Statement", $row["Statement"]); ?>
 <p>
-<input type="hidden" name="token" value="<?php echo $token; ?>">
-<?php if ($dropped) { ?><input type="hidden" name="dropped" value="1"><?php } ?>
 <input type="submit" value="<?php echo lang('Save'); ?>">
-<?php if ($_GET["name"] != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
+<?php if ($name != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $name)); ?><?php } ?>
+<input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

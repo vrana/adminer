@@ -1,0 +1,982 @@
+/** theme "easy on the eyes" for Adminer by p.galkaev@miraidenshi-tech.jp */
+
+@import url(//fonts.googleapis.com/css?family=Source+Sans+Pro:400,900);
+
+/* reset
+   ----------------------------------------------------------------------- */
+
+*,
+*:after,
+*:before {
+	margin: 0;
+	padding: 0;
+	outline: none;
+	cursor: default;
+	-webkit-appearance: none;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+/* for font awesome */
+*:not(.fa) {
+	font-family: 'Source Sans Pro', sans-serif;
+}
+
+#logins a, #tables a, #tables span {
+  background: none;
+}
+
+p,
+form
+{
+	margin: 0;
+	margin-bottom: 20px;
+	font-size: 14px;
+}
+
+p:last-child,
+form:last-child
+{
+	margin-bottom: 0;
+}
+
+.type,
+.options select
+{
+	width: 100%;
+}
+
+sup{
+	display: none;
+}
+
+/* js tooltip
+   ----------------------------------------------------------------------- */
+
+.js .column {
+	position: absolute;
+	padding: 0;
+	margin-top: 0;
+	top: 50px;
+	z-index: 9;
+	left: 0px;
+	width: 100%;
+}
+
+.js .column:not(.hidden){
+	display: flex;
+}
+
+.js .column a{
+	text-align: center;
+	color: black;
+	font-weight: bold;
+	flex-grow: 1;
+	background: #fb4;
+	height: 40px;
+	line-height: 40px;
+	font-size: 15px;
+	font-weight: normal;
+}
+
+.js .column a:hover{
+	background-color: gold;
+	color: black;
+}
+
+#help {
+	position: absolute;
+	border: none;
+	background: #fb4;
+	font-family: monospace;
+	z-index: 1;
+	font-size: 14px;
+	line-height: 30px;
+	padding: 0;
+}
+
+#help a{
+	color: black;
+	height: 100%;
+	display: block;
+	padding: 0 10px;
+}
+
+#help a:hover{
+	background-color: gold;
+}
+
+#help, .js .column{
+	display: none;
+}
+
+/* error and message
+   ----------------------------------------------------------------------- */
+
+.error, .message {
+	padding: 5px 15px 7px;
+	margin: 10px 0;
+	font-size: 14px;
+	display: table;
+	border-radius: 3px;
+	color: white;
+}
+
+.error{
+	background-color: crimson;
+}
+
+.message{
+	background-color: seagreen;
+}
+
+/* scroll bar
+   ----------------------------------------------------------------------- */
+
+::selection {
+	background-color: #2a65ae;
+}
+/*
+::-moz-selection {
+	background-color: #333;
+}*/
+
+/* scroll bar
+   ----------------------------------------------------------------------- */
+
+::-webkit-scrollbar {
+	background-color: black;
+	cursor: pointer;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: #555;
+	cursor: pointer;
+}
+
+::-webkit-scrollbar:vertical{
+	width: 6px;
+}
+
+::-webkit-scrollbar-thumb:vertical{
+	border-left: 0px solid black;
+	width: 6px;
+}
+
+::-webkit-scrollbar:horizontal{
+	height: 6px;
+}
+
+::-webkit-scrollbar-thumb:horizontal{
+	border-top: 0px solid black;
+	height: 6px;
+}
+
+::-webkit-scrollbar-corner{
+	color: black;
+	background-color: black;
+	border-color: black;
+}
+
+::-webkit-resizer{
+	background-color: #555;
+	border-radius: 100%;
+}
+
+/* html and body
+   ----------------------------------------------------------------------- */
+
+html,
+body {
+	width: 100%;
+	height: 100%;
+    max-height: 100%;
+    overflow: hidden;
+
+}
+
+body{
+	min-height: 100%;
+	font-size: 14px;
+	position: relative;
+	color: #ccc;
+	background-color: black;
+	overflow: hidden;
+	display: flex;
+	flex-wrap: nowrap;
+	font: inherit;
+}
+
+/* headings
+   ----------------------------------------------------------------------- */
+
+h1{
+	font-size: 24px;
+	margin: 0;
+	padding: 0 18px;
+	border-bottom: 1px solid #444;
+	font-weight: bold;
+	height: 70px;
+	line-height: 70px;
+	color: #555;
+	background: none;
+}
+
+h2{
+	font-size: 24px; 
+	margin: 0; 
+	padding: 0;
+	padding-left: 50px;
+	border-bottom: 1px solid #333;
+	color: #2CC990;
+	font-weight: bold;
+	background: none;
+	height: 70px;
+	line-height: 70px;
+	text-transform: uppercase;
+}
+
+h3{
+	font-weight: bold;
+	font-size: 24px;
+	margin: 40px 0 10px;
+	color: #2CC990;
+	padding-bottom: 5px;
+}
+
+/* links
+   ----------------------------------------------------------------------- */
+
+a{
+	color: inherit;
+	cursor: pointer;
+}
+
+a:hover, a:visited{
+	color: inherit;
+}
+
+a:link:hover, a:visited:hover {
+	color: inherit;
+	text-decoration: none;
+}
+
+/* table
+   ----------------------------------------------------------------------- */
+
+table{
+	margin: 0;
+	margin-bottom: 20px;
+	border: 0;
+	border-collapse: collapse;
+	font-size: 13px;
+	width: 100%;
+	/*table-layout: fixed;*/
+}
+
+tr:hover th,
+.checked th
+{
+	background: #333 !important;
+	color: #ddd;
+	border-color: none;
+}
+
+tr:hover td,
+.checked td
+{
+	background: #222 !important;
+	color: #ddd;
+	border-color: none;
+}
+
+.links + table tr:hover th{
+	color: #ddd;
+	background: #336f5a !important;
+}
+
+.links + table tr:hover td{
+	background: #2CC990 !important;
+	color: #333;
+}
+
+p + table{
+	margin-top: 20px;
+}
+
+tr{
+	padding-bottom: 1px;
+}
+
+td, th {
+	border: 0;
+	border-right: 1px solid #333;
+	padding: 0 12px;
+	line-height: 30px;
+	position: relative;
+}
+
+td:last-child,
+th:last-child{
+	border-right: none;
+}
+
+th{
+	position: relative;
+	background: #222;
+	font-weight: normal;
+	width: 17%;
+	border-left: 5px solid #336f5a;
+	border-bottom: 1px solid rgba(255, 255, 255, .13);
+	color: #999;
+}
+
+.checkable td:first-child{
+	background: #222;
+	border-right-style: solid;
+}
+
+table.checkable th{
+	border-left: none;
+}
+
+td{
+	background: #000;
+	border-bottom: 1px solid rgba(255, 255, 255, .1);
+}
+
+.odd th{
+	background: #222;
+}
+
+.odd td{
+	background: #000;
+}
+
+thead td,
+thead th
+{
+	background: transparent !important;
+	color: #ccc;
+	border-right-style: dashed;
+	font-weight: bold;
+}
+
+table#edit-fields td,
+table#edit-fields th
+{
+	padding: 0;
+	padding-left: 5px;
+}
+
+table#edit-fields thead th,
+table#edit-fields thead td
+{
+	padding-left: 10px;
+}
+
+thead tr:hover th,
+thead tr:hover td,
+.links + table thead tr:hover th,
+.links + table thead tr:hover td,
+table#edit-fields thead tr:hover th,
+table#edit-fields thead tr:hover td
+{
+	background-color: transparent !important;
+	color: inherit !important;
+	border-bottom: 1px solid rgba(255, 255, 255, .1) !important;
+}
+
+thead tr:hover th{
+	border-bottom: 1px solid rgba(255, 255, 255, .13) !important;
+}
+
+thead th {
+	border-left-color: transparent;
+	text-align: left;
+	padding: 10px;
+}
+
+/* form
+   ----------------------------------------------------------------------- */
+
+input,
+select,
+textarea
+{
+	color: #333;
+	font-size: 15px;
+	height: 30px;
+	background-color: #ddd;
+	border: none;
+	border-radius: 3px;
+	line-height: 28px;
+	cursor: pointer;
+	padding: 0;
+	padding-left: 10px;
+	-webkit-appearance: none;
+	outline: none;
+}
+
+input:hover,
+select:hover,
+input:focus,
+select:focus
+{
+	background-color: #bbb;
+}
+
+th input,
+td input,
+th select,
+td select,
+td textarea
+{
+	background-color: transparent;
+	color: pink;
+	width: 100%;
+	display: inline;
+	border-left: 1px dashed #555;
+	border-radius: 0;
+}
+
+th input:hover,
+th select:hover,
+td input:hover,
+td select:hover,
+th input:focus,
+th select:focus,
+td input:focus,
+td select:focus
+{
+	background-color: rgba(255, 255, 255, .15);
+}
+
+th input[type='checkbox'],
+th input[type='radio'],
+td input[type='checkbox'],
+td input[type='radio']{
+	border-left: none;
+	background-color: transparent !important;
+}
+
+
+td input + a,
+td input + a:visited
+{
+	text-transform: uppercase;
+	margin-left: 5px;
+	color: dodgerblue;
+	font-size: 12px;
+	font-weight: normal;
+}
+
+td input + a:hover{
+	color: lightskyblue !important;
+}
+
+input.icon{
+	padding-left: 0;
+}
+
+input.icon::after{
+	content: '';
+}
+
+th select,
+td select
+{
+	color: lightcoral;
+}
+
+input[type='number'] {
+	min-width: 55px;
+}
+
+/* radio */
+input[type='radio']{
+	-webkit-appearance: radio;
+	width: 18px;
+	height: 18px;
+	vertical-align: middle;
+	margin-left: 8px;
+	margin-right: 0;	
+}
+
+/* checkbox */
+input[type='checkbox']{
+	width: 30px;
+	height: 30px;
+	margin-right: 6px;
+	position: relative;
+	border-radius: 2px;
+	margin-left: 20px;
+}
+
+input[type=checkbox]:hover{
+	border-color: white;
+}
+
+input[type=checkbox]::after {
+	cursor: pointer;
+	position: absolute;
+	content: '×';
+	left: 17%;
+	top: 4.5%;
+	color: #ccc;
+	font-size: 35px;
+	font-family: sans-serif;
+	font-weight: bold;
+}
+
+input[type=checkbox]:hover::after {
+	color: #aaa;
+}
+
+input[type=checkbox]:checked::after {
+	color: #333;
+}
+
+td input[type='checkbox'],
+th input[type='checkbox']
+{
+	margin-left: 10px;
+	margin-right: 26px;
+}
+
+td input[type='checkbox']::after{
+	left: 10%;
+	top: -2px;
+	color: #333;
+}
+
+td input[type='checkbox']:hover::after{
+	color: #555;
+}
+
+td input[type='checkbox']:checked::after{
+	color: #ddd;
+}
+
+p input:first-child{
+	margin-left: 8px;
+}
+
+label{
+	line-height: 27px;
+	font-size: 14px;
+}
+
+th label{
+	line-height: 35px;
+}
+
+label input {
+	vertical-align: top;
+}
+
+/* submit */
+input[type='submit']{
+	color: white;
+	background-color: royalblue;
+	padding: 0 25px;
+	margin-right: 20px;
+	border-radius: 2px;
+}
+
+input[type='submit']:hover{
+	background-color: #214ac5;
+}
+
+/* select */
+select{
+	padding-left: 6px;
+}
+
+/* textarea */
+textarea{
+	min-height: 150px;
+	width: 100%;
+}
+
+/* fieldset */
+fieldset {
+	display: inline;
+	vertical-align: top;
+	padding: 4px 7px 7px;
+	margin: 0 5px 10px;
+	border: 1px dashed #555;
+	border-radius: 2px;
+	min-height: 60px;
+}
+
+fieldset > div{
+	display: flex;
+}
+
+fieldset > div * + p{
+	margin-left: 10px;
+}
+
+fieldset > div > div{
+	margin-left: 10px;
+}
+
+fieldset > div > div:first-child{
+	margin-left: 0;
+}
+
+fieldset > div input,
+fieldset > div select
+{
+	margin-right: 5px;
+}
+
+fieldset > div input[type='checkbox']{
+	margin-left: 5px;
+}
+
+fieldset input{
+	flex-grow: 1;
+}
+
+fieldset input[type='submit']{
+	margin-right: 10px;
+}
+
+fieldset input[type='submit']:last-of-type{
+	margin-right: 0;
+}
+
+legend{
+	font-size: 14px;
+	background-color: #000;
+	padding: 0 3px;
+	color: #999;
+}
+
+/* menu
+   ----------------------------------------------------------------------- */
+
+#menu{
+	height: 100%;
+	width: 300px;
+	background-color: #333;
+	position: relative;
+	order: 1;
+	flex-grow: 0;
+	flex-shrink: 0;
+	margin: 0;
+	padding: 0;
+	top: 0;
+	overflow-y: overlay;
+}
+
+#menu p {
+	padding: 18px;
+	margin: 0;
+	border-bottom: 1px solid #444;
+}
+
+/* logo */
+#h1{
+	color: #555;
+	text-decoration: none;
+	font-style: inherit;
+}
+
+.version {
+  color: #555;
+  font-size: inherit;
+}
+
+/* db select */
+#dbs select{
+	width: 228px;
+	margin-left: 8px;
+}
+
+/* links */
+#menu .links{
+	padding-top: 0;
+	padding-bottom: 10px;
+}
+
+#menu .links a:nth-child(even){
+	margin-left: 6px;
+}
+
+#menu .links a{
+	display: inline-block;
+	vertical-align: top;
+	width: 127px;
+	height: 31px;
+	margin: 0;
+	margin-bottom: 10px;
+	border: 1px solid #555;
+	line-height: 27px;
+	text-align: center;
+	text-transform: uppercase;
+	font-size: 12px;
+	border-radius: 3px;
+	color: #999;
+}
+
+#menu .links a.active,
+#menu .links a:hover
+{
+	border: 1px solid #ccc;
+	font-weight: normal;
+	color: inherit;
+}
+
+/* tables */
+#tables{
+	border-bottom: none;
+	line-height: 20px;
+	padding: 18px 0;
+	overflow-y: auto !important;
+}
+
+#tables br{
+	display: none;
+}
+
+#tables a {
+	float: right;
+	padding: 5px 18px 9px;
+	line-height: 17px;
+	color: #2CC990;
+	font-size: 13px;
+}
+
+#tables a[title] {
+	float: none;
+	display: block;
+	color: inherit;
+	font-size: 14px;
+}
+
+#tables a.select.active,
+#tables a.select:hover
+{
+	color: #fba;
+}
+
+#tables a[title]:hover,
+#tables a.active,
+#tables a.select:hover + a,
+#tables a.select.active + a
+{
+	background-color: #555;
+	font-weight: normal;
+}
+
+/* content
+   ----------------------------------------------------------------------- */
+
+#content{
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	padding-left: 50px;
+	padding-right: 50px;
+	padding-bottom: 30px;
+	overflow-y: auto !important;
+	order: 2;
+	flex-grow: 1;
+}
+
+#breadcrumb{
+	position: relative;
+	display: none;
+}
+
+#content h2{
+	margin-left: -50px;
+}
+
+/* links */
+#content .links a,
+code.jush-sql ~ a,
+#fieldset-history > a:first-child
+{
+	display: inline-block;
+	height: 32px;
+	line-height: 30px;
+	padding: 0 10px;
+	border: 1px solid #666;
+	border-radius: 3px;
+	font-size: 12px;
+	text-transform: uppercase;
+}
+
+#content .links a:hover,
+code.jush-sql ~ a:hover,
+#fieldset-history > a:first-child:hover
+{
+	color: #eee;
+	border-color: #eee;
+}
+
+#ajaxstatus + *{
+	margin-top: 18px;
+}
+
+#ajaxstatus + *.links {
+	margin-top: 0 !important;
+	height: 65px;
+	line-height: 55px;
+	margin-bottom: 0;
+}
+
+#ajaxstatus + .links a{
+	white-space: nowrap;
+	margin-right: 20px;
+	padding: 0;
+	padding-bottom: 5px;
+	border: 0;
+	border-radius: 0;
+	font-size: 15px;
+	font-weight: bold;
+}
+
+#ajaxstatus + .links a.active,
+#ajaxstatus + .links a:hover
+{
+	border-bottom: 1px solid;
+	border-color: inherit;
+	color: inherit;
+}
+
+/* fieldset search */
+#fieldset-search > div > *{
+	margin-right: 5px;
+	margin-bottom: 5px;
+}
+
+/* fieldset search */
+#fieldset-partition p{
+	margin-bottom: 0;
+}
+
+/* feldset history */
+#fieldset-history{
+	flex-wrap: wrap;
+}
+
+#fieldset-history i{
+	display: none;
+}
+
+#fieldset-history input[type='submit']{
+	flex-grow: 0;
+	order: 1;
+	margin-top: 1px;
+	margin-left: 17px;
+}
+
+#fieldset-history > div a:last-child{
+	order: 2;
+}
+
+#fieldset-history > a{
+	flex-grow: 0;
+	flex-basis: 5%;
+	min-width: 45px;
+	text-align: center;
+	margin-bottom: 10px;
+	margin-left: 5px;
+}
+
+#fieldset-history > .time{
+	flex-grow: 0;
+	flex-basis: 5%;
+	text-align: center;
+	line-height: 29px;
+}
+
+#fieldset-history > code{
+	flex-grow: 1;
+	flex-basis: 89%;
+	line-height: 29px;
+}
+
+#fieldset-history > .time{
+	flex-grow: 0;
+	flex-basis: 5%;
+	text-align: center;
+}
+
+/* sql
+   ----------------------------------------------------------------------- */
+
+.sqlarea{
+	border: 1px solid #444 !important;
+	width: 100% !important;
+	padding: 12px 15px !important;
+	font-size: 15px;
+	margin-bottom: 20px;
+}
+
+.jush-sql_code{
+	color: #fafafa !important;
+	font-family: 'Source Sans Pro', sans-serif !important;
+}
+
+.jush a, .jush a:visited{
+	color: #fba;
+	font-weight: normal;
+}
+
+.jush a:hover{
+	color: #fba;
+	cursor: pointer;
+}
+
+.jush-php_quo, .jush-quo, .jush-quo_one, .jush-php_eot, .jush-apo, .jush-sql_apo, .jush-sqlite_apo, .jush-sql_quo, .jush-sql_eot{
+	color: aquamarine;
+}
+
+.jush-bac, .jush-php_bac, .jush-bra, .jush-mssql_bra, .jush-sqlite_quo{
+	color: plum;
+}
+
+.jush-num, .jush-clr{
+	color: #85E2FF;
+}
+
+code {
+	background: #000;
+	font-size: 14px;
+}
+
+code.jush-sql ~ a{
+	position: relative;
+	margin-left: 5px;
+	/*margin-top: 20px;
+	margin-bottom: 20px;	*/
+}
+
+code.jush-sql ~ a:first-of-type{
+	margin-left: 30px;
+}
+
+code.jush-sql ~ a:first-of-type::before{
+	content: '◀';
+	color: #555;
+	position: absolute;
+	left: -22px;
+	font-size: 22px;
+	top: -1px;
+}
+
+/* logout form
+   ----------------------------------------------------------------------- */
+
+body > form{
+	position: absolute;
+}

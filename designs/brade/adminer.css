@@ -1,0 +1,62 @@
+/* CSS by Brade - www.bradezone.com */
+*{margin:0;padding:0}
+body{font:13px/18px Helvetica,Arial,sans-serif;background:#fff;color:#333}
+/* generic */
+a,a:visited{color:#06c;text-decoration:none;border-bottom:1px dotted}
+a:hover{border-bottom:1px solid #06c;background:#06c;color:#fff}
+p{padding-bottom:4px;margin-bottom:4px}
+h1{font-size:18px;font-weight:bold;padding-bottom:0px;height:40px;padding:0 0 8px 0;color:#666;border:0}
+h2{font:32px Georgia,serif;padding:10px 0 8px;margin:0;background:transparent;border:0;color:#333}
+h3{font-size:18px;font-weight:bold;padding:4px 0;margin:0}
+form#form{overflow:hidden}
+fieldset{float:left;min-height:48px;padding:0 4px 4px 4px;border:1px solid #ccc;margin-bottom:8px;margin-right:4px}
+fieldset div{margin-top:4px}
+input,select,textarea{font:13px Helvetica,Arial,sans-serif;color:#555;border:1px solid #999;padding:3px}
+input[type=submit]{background:#ccc;padding:2px;cursor:pointer;color:#333}
+input[type=submit]:hover{background:#bbb}
+input[type=image],input[type=checkbox]{border:0;padding:0}
+label input[type=checkbox],td input[type=radio],td span select{margin-right:4px}
+select{border:1px solid #999;padding:2px}
+fieldset select{margin-right:4px}
+option{padding:0 5px}
+optgroup{font-size:11px}
+code{background:#eee;padding:2px 4px;font:16px/20px Courier,monospace}
+code a:hover{background:transparent}
+table{margin:4px 0 8px;border:1px solid #ccc;font-size:inherit}
+tbody tr:hover td,tbody tr:hover th{background:#eee}
+thead tr:hover td,thead tr:hover th{background:#ddd}
+th,td{text-align:left;padding:2px 4px;vertical-align:top;font-weight:normal;border:1px dotted #ccc;border-width:0 0 0 1px;
+margin:0;background:inherit}
+thead th,thead td{white-space:nowrap;font-weight:bold;background:#ddd;border-color:#ddd}
+th:first-child,td:first-child{border-color:transparent;white-space:nowrap}
+td[align=right]{text-align:right}
+table code{font-size:13px;line-height:18px}
+.hidden{display:none}
+.error,.message{padding:0;background:transparent;font-weight:bold}
+.error{color:#c00}
+.message{color:#090}
+/* specific */
+#content{margin:0 0 0 320px;padding:50px 20px 40px 0;height:100%}
+#content:after{content:'.';clear:both;height:0;overflow:hidden;display:block}
+#lang{background:#333;color:#fff;position:fixed;top:0;left:0;width:100%;padding:0 20px 0 40px;line-height:40px;height:40px}
+#lang select{border-color:#333}
+#menu{background:#eee;position:fixed;top:60px;bottom:20px;overflow:auto;left:20px;width:240px;padding:10px 15px;
+border:5px solid #ccc;margin:0}
+#menu a{color:#333;margin-right:4px}
+#menu a:hover{background:#333;color:#fff;border-color:#333}
+#menu a.h1,#menu a.h1:hover{display:block;height:0;width:175px;padding:40px 0 0 0;overflow:hidden;float:left;border:0;margin:0;
+outline:0;background:url(//www.bradezone.com/random/adminer_logo.gif) no-repeat;line-height:32px}
+#menu p,#tables{white-space:nowrap;border:0;padding:0 0 4px 0;margin:0 0 4px 0}
+#breadcrumb{background:#333;color:#fff;position:fixed;top:0;left:320px;width:100%;line-height:40px;padding:0;z-index:1;margin:0}
+#breadcrumb a{color:#ff9}
+#breadcrumb a:hover{background:transparent;color:#ff9;border-color:#ff9}
+#schema .table{padding:4px 8px;background:#f3f3f3}
+/* IE hacks */
+*+html th:first-child,*+html td:first-child{border-color:inherit;white-space:inherit}
+* html #lang,* html #menu,* html #breadcrumb{position:absolute}
+* html #lang{padding-top:10px;height:30px}
+* html form#form{height:100%}
+#logins a,#tables a{background: none}
+#logout{color:#333;text-decoration:none;border-bottom:1px dotted}
+#logout:hover{border-color:#333;background:#333;color:#fff}
+.js .column{background:#ddd}

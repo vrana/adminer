@@ -1,0 +1,562 @@
+/* CSS by Nicu I. - www.nicu.me */
+@import url('//fonts.googleapis.com/css?family=Roboto:400,700,300');
+body {
+    font: 16px/1.25 'Roboto', Verdana, Arial, Helvetica, sans-serif;
+    margin: 0;
+    color: #000;
+    background: #fff;
+}
+a {
+    text-decoration: none;
+    color: #246db3;
+}
+a:visited {
+    color: #225584;
+}
+a:link:hover,
+a:visited:hover {
+    text-decoration: underline;
+    color: #f44;
+}
+a.text:hover {
+    text-decoration: none;
+}
+a.jush-help:hover {
+    color: inherit;
+}
+h1 {
+    font-size: 150%;
+    font-weight: normal;
+    margin: 0;
+    padding: .8em .7em;
+    color: #f44;
+    border-bottom: 0 solid #999;
+    background: transparent;
+}
+h2 {
+    font-size: 29px;
+    font-weight: 300;
+    margin: 0 0 20px -18px;
+    padding: .5em .6em;
+    color: #000;
+    border-bottom: 0 solid #000;
+    background: transparent;
+}
+h3 {
+    font-size: 130%;
+    font-weight: normal;
+    margin: 1em 0 0;
+}
+form {
+    margin: 0;
+}
+td table {
+    width: 100%;
+    margin: 0;
+}
+table {
+    font-size: 90%;
+    margin: 1em 20px 0 0;
+    border: 0;
+    border-top: 1px solid #d2d2d2;
+    border-left: 0 solid #d2d2d2;
+}
+td {
+    padding: .2em .3em;
+    border: 0;
+    border-right: 0 solid #d2d2d2;
+    border-bottom: 1px solid #d2d2d2;
+}
+th {
+    padding: .2em .3em;
+    border: 0;
+    border-right: 1px solid #d2d2d2;
+    border-bottom: 1px solid #d2d2d2;
+}
+th {
+    text-align: left;
+    background: #eaeaea;
+}
+thead td {
+    padding: .2em .5em;
+    text-align: center;
+    border-right: 1px solid #d2d2d2;
+    border-left: 1px solid #d2d2d2;
+}
+thead td,
+thead th {
+    background: #eaeaea;
+}
+fieldset {
+    display: inline;
+    margin: .8em .5em 0 0;
+    padding: .5em .8em;
+    vertical-align: top;
+    border: 1px solid #999;
+}
+p {
+    margin: .8em 20px 0 0;
+}
+img {
+    vertical-align: middle;
+    border: 0;
+}
+td img {
+    max-width: 200px;
+    max-height: 200px;
+}
+code {
+    font-size: 14px;
+    padding: 1px;
+    background: #eee;
+}
+tbody tr:hover td,
+tbody tr:hover th {
+    background: #eee;
+}
+pre {
+    margin: 1em 0 0;
+}
+pre,
+textarea,
+input,
+select {
+    font: 14px/1.25 'Roboto', Verdana, Arial, Helvetica, sans-serif;
+}
+input[type=image] {
+    vertical-align: middle;
+}
+input.default {
+    box-shadow: 1px 1px 1px #777;
+}
+input.required {
+    box-shadow: 1px 1px 1px red;
+}
+.block {
+    display: block;
+}
+.version {
+    font-size: 67%;
+    padding: 0 3px;
+    color: #777;
+}
+.js .hidden,
+.nojs .jsonly {
+    display: none;
+}
+.js .column {
+    position: absolute;
+    margin-top: -.27em;
+    padding: .27em 1ex .3em 0;
+    background: #ddf5ff;
+}
+.nowrap td,
+.nowrap th,
+td.nowrap {
+    white-space: pre;
+}
+.wrap td {
+    white-space: normal;
+}
+.error {
+    color: red;
+    background: #fee;
+}
+.error b {
+    font-weight: normal;
+    background: #fff;
+}
+.message {
+    color: green;
+    background: #efe;
+}
+.error,
+.message {
+    margin: 1em 20px 0 0;
+    padding: .5em .8em;
+}
+.char {
+    color: #007f00;
+}
+.date {
+    color: #7f007f;
+}
+.enum {
+    color: #007f7f;
+}
+.binary {
+    color: red;
+}
+.odd td {
+    background: transparent;
+}
+.js .checkable .checked td,
+.js .checkable .checked th {
+    background: #ddf;
+}
+.time {
+    font-size: 70%;
+    color: silver;
+}
+.function {
+    text-align: right;
+}
+.number {
+    text-align: right;
+}
+.datetime {
+    text-align: right;
+}
+.type {
+    width: 15ex;
+    width: auto\9;
+}
+.options select {
+    width: 20ex;
+    width: auto\9;
+}
+.view {
+    font-style: italic;
+}
+.active {
+    font-weight: bold;
+}
+.sqlarea {
+    width: 98%;
+}
+.icon {
+    width: 18px;
+    height: 18px;
+    background-color: navy;
+}
+.icon:hover {
+    background-color: red;
+}
+.size {
+    width: 6ex;
+}
+.help {
+    cursor: help;
+}
+.pages {
+    position: fixed;
+    bottom: 0;
+    left: 21em;
+    padding: 5px;
+    border: 1px solid #999;
+    background: #f1f1f1;
+}
+.links a {
+    margin-right: 20px;
+    white-space: nowrap;
+}
+.logout {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: .5em;
+}
+.loadmore {
+    margin-left: 1ex;
+}
+#menu {
+    position: absolute;
+    top: -1em;
+    left: 0;
+    width: 19em;
+    margin: 10px 0 0;
+    padding: 0 0 30px 0;
+    background: #f1f1f1;
+}
+#menu p, #tables {
+    margin: 0;
+    padding: .8em 1em;
+    border-bottom: 1px solid #c7c7c7;
+}
+#dbs {
+    overflow: hidden;
+}
+#logins,
+#tables {
+    overflow: auto;
+    white-space: nowrap;
+}
+#logins a,
+#tables a,
+#tables span {
+    background: transparent;
+}
+#content {
+    margin: 2em 0 0 21em;
+    padding: 10px 20px 20px 0;
+}
+#lang {
+    line-height: 1.8em;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: .3em 1em;
+}
+#breadcrumb {
+    font-size: 12px;
+    line-height: 1.8em;
+    position: absolute;
+    top: 8px;
+    left: 27em;
+    height: 2em;
+    margin: 0 0 0 0;
+    padding: 0 1em;
+    white-space: nowrap;
+    background: transparent;
+}
+#h1 {
+    font-style: normal;
+    text-decoration: none;
+    color: #f44;
+}
+#version {
+    font-size: 67%;
+    color: red;
+}
+#schema {
+    position: relative;
+    margin-left: 60px;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+}
+#schema .table {
+    position: absolute;
+    padding: 0 2px;
+    cursor: move;
+    border: 1px solid silver;
+}
+#schema .references {
+    position: absolute;
+}
+#help {
+    font-family: monospace;
+    position: absolute;
+    z-index: 1;
+    padding: 5px;
+    border: 1px solid #999;
+    background: #eee;
+}
+.rtl h2 {
+    margin: 0 -18px 20px 0;
+}
+.rtl p,
+.rtl table,
+.rtl .error,
+.rtl .message {
+    margin: 1em 0 0 20px;
+}
+.rtl .logout {
+    right: auto;
+    left: 0;
+}
+.rtl #content {
+    margin: 2em 21em 0 0;
+    padding: 10px 0 20px 20px;
+}
+.rtl #breadcrumb {
+    right: 21em;
+    left: auto;
+    margin: 0 -18px 0 0;
+}
+.rtl #lang,
+.rtl #menu {
+    right: 0;
+    left: auto;
+}
+@media all and (max-device-width:880px) {
+    .pages {
+        left: auto;
+    }
+    #menu {
+        position: static;
+        width: auto;
+    }
+    #content {
+        margin-left: 10px;
+    }
+    #lang {
+        position: static;
+        border-top: 1px solid #999;
+    }
+    #breadcrumb {
+        left: auto;
+    }
+    .rtl #content {
+        margin-right: 10px;
+    }
+    .rtl #breadcrumb {
+        right: auto;
+    }
+}
+@media print {
+    #lang,
+    #menu {
+        display: none;
+    }
+    #content {
+        margin-left: 1em;
+    }
+    #breadcrumb {
+        left: 1em;
+    }
+    .nowrap td,
+    .nowrap th,
+    td.nowrap {
+        white-space: normal;
+    }
+}
+.jush {
+    color: black;
+}
+.jush-htm_com,
+.jush-com,
+.jush-com_code,
+.jush-one,
+.jush-php_doc,
+.jush-php_com,
+.jush-php_one,
+.jush-js_one,
+.jush-js_doc {
+    color: gray;
+}
+.jush-php,
+.jush-php_new,
+.jush-php_fun {
+    color: #003;
+    background-color: #fff0f0;
+}
+.jush-php_quo,
+.jush-quo,
+.jush-quo_one,
+.jush-php_eot,
+.jush-apo,
+.jush-sql_apo,
+.jush-sqlite_apo,
+.jush-sql_quo,
+.jush-sql_eot {
+    color: green;
+}
+.jush-php_apo {
+    color: #009f00;
+}
+.jush-php_quo_var,
+.jush-php_var,
+.jush-sql_var {
+    font-style: italic;
+}
+.jush-php_apo .jush-php_quo_var,
+.jush-php_apo .jush-php_var {
+    font-style: normal;
+}
+.jush-php_halt2 {
+    color: black;
+    background-color: white;
+}
+.jush-tag_css,
+.jush-att_css .jush-att_quo,
+.jush-att_css .jush-att_apo,
+.jush-att_css .jush-att_val {
+    color: black;
+    background-color: #ffffe0;
+}
+.jush-tag_js,
+.jush-att_js .jush-att_quo,
+.jush-att_js .jush-att_apo,
+.jush-att_js .jush-att_val,
+.jush-css_js {
+    color: black;
+    background-color: #f0f0ff;
+}
+.jush-tag,
+.jush-xml_tag {
+    color: navy;
+}
+.jush-att,
+.jush-xml_att,
+.jush-att_js,
+.jush-att_css,
+.jush-att_http {
+    color: teal;
+}
+.jush-att_quo,
+.jush-att_apo,
+.jush-att_val {
+    color: purple;
+}
+.jush-ent {
+    color: purple;
+}
+.jush-js_key,
+.jush-js_key .jush-quo,
+.jush-js_key .jush-apo {
+    color: purple;
+}
+.jush-js_reg {
+    color: navy;
+}
+.jush-php_sql .jush-php_quo,
+.jush-php_sql .jush-php_apo,
+.jush-php_sqlite .jush-php_quo,
+.jush-php_sqlite .jush-php_apo,
+.jush-php_pgsql .jush-php_quo,
+.jush-php_pgsql .jush-php_apo,
+.jush-php_mssql .jush-php_quo,
+.jush-php_mssql .jush-php_apo,
+.jush-php_oracle .jush-php_quo,
+.jush-php_oracle .jush-php_apo {
+    background-color: #ffbbb0;
+}
+.jush-bac,
+.jush-php_bac,
+.jush-bra,
+.jush-mssql_bra,
+.jush-sqlite_quo {
+    color: red;
+}
+.jush-num,
+.jush-clr {
+    color: #007f7f;
+}
+.jush a {
+    color: navy;
+}
+.jush a.jush-help {
+    cursor: help;
+}
+.jush-sql a,
+.jush-sql_code a,
+.jush-sqlite a,
+.jush-pgsql a,
+.jush-mssql a,
+.jush-oracle a,
+.jush-simpledb a {
+    font-weight: bold;
+}
+.jush-php_sql .jush-php_quo a,
+.jush-php_sql .jush-php_apo a {
+    font-weight: normal;
+}
+.jush-tag a,
+.jush-att a,
+.jush-apo a,
+.jush-quo a,
+.jush-php_apo a,
+.jush-php_quo a,
+.jush-php_eot2 a {
+    color: inherit;
+    color: expression(parentNode.currentStyle.color);
+}
+a.jush-custom:link,
+a.jush-custom:visited {
+    font-weight: normal;
+    color: inherit;
+    color: expression(parentNode.currentStyle.color);
+}
+.jush p {
+    margin: 0;
+}

@@ -1,0 +1,259 @@
+* {
+	font: 13px/1.5 Verdana, 'Geneva CE', lucida, sans-serif;
+	color:#333333;
+	margin:0px;
+	padding:0px;
+}
+
+a,a:visited {
+	color:#006aeb;
+	text-decoration:none;
+	padding:3px 1px;
+}
+
+#content table thead span, #content table thead a {
+	font-weight:bold;
+	color:black;
+}
+
+#content table thead a:hover {
+	background:none;
+	text-decoration:underline;
+	color:black;
+}
+
+a:hover {
+	color:white;
+	background:#006aeb;
+}
+
+h1 {
+	font-size:1.9em;
+	font-weight:normal;
+	background:white;
+	color:#1e5eb6;
+	border-bottom:1px solid #f4f4f4;
+
+	padding:20px;
+	margin:0px;
+}
+
+#menu h1 {
+	padding:0px 0px 5px 20px;
+	background:none;
+}
+
+h2,h3 {
+	font-size:1.5em;
+	font-weight:normal;
+	background:white;
+	color:#1e5eb6;
+	border-bottom:1px solid #f4f4f4;
+
+	padding:20px 0px;
+	margin:0px;
+}
+
+fieldset {
+	padding:5px;
+	border:1px solid #f4f4f4;
+}
+
+input,select,textarea {
+	border:1px solid #e5e5e5;
+	margin:1px;
+	padding:3px;
+}
+
+input[type=submit] {
+	color:white;
+	background:#3390e6;
+	padding:3px 10px;
+	cursor:pointer;
+	border:0px solid;
+}
+
+input[type=submit]:hover{
+	background:blue;
+}
+
+input[type=checkbox]{
+	margin-right:5px;
+}
+
+input[type=image] {
+	border:1px solid #d0cdc4;
+}
+
+input[type=checkbox],input[type=radio]{
+	border:1px solid #e5e5e5;
+	padding:2px 5px;
+}
+
+code{
+	background:#f0ffe1;
+	border:1px dashed #d5f1b9;
+	padding:2px 4px;
+	font-family:"Courier New";
+}
+code a:hover{background:transparent}
+
+table{
+	margin:10px 0px;
+	border:1px solid #d0cdc4;
+	border-collapse:collapse;
+}
+
+tbody tr:hover td,tbody tr:hover th{
+	background:#edf4ff
+}
+
+thead th, thead td {
+	text-align:center;
+	vertical-align:middle;
+	font-weight:bold;
+	white-space:nowrap;
+	background:#f2eee1;
+	color:#808080;
+}
+
+th,td{
+	border:1px solid #d0cdc4;
+	padding:3px 6px;
+	vertical-align:top;
+}
+
+th a {
+	font-weight:bold;
+	padding-bottom:0px;
+}
+
+th {
+	background:white;
+}
+
+tr.odd td {
+	background:#fcfaf5;
+}
+
+#content tbody tr.checked td, tr.checked.odd td {
+	background:#fbe2e2;
+	color:red;
+}
+
+.hidden{
+	display:none
+}
+
+.error,.message{
+	padding:0px;
+	background:transparent;
+	font-weight:bold
+}
+
+.error{
+	color:#c00
+}
+
+.message{
+	color:#090
+}
+
+#content{
+	margin:0px 0px 0px 320px;
+	padding:50px 20px 40px 0px;
+	height:100%;
+}
+
+#lang {
+	background:#f2eee1;
+	color:#808080;
+	position:fixed;
+	top:0px;
+	left:0px;
+	width:100%;
+	padding:10px 20px;
+	z-index:1;
+}
+
+#breadcrumb {
+	position:fixed;
+	top:0px;
+	left:300px;
+	background:#f2eee1;
+	z-index:2;
+	width:100%;
+	padding:10px;
+}
+
+#menu {
+	background:#fcfaf5;
+	position:fixed;
+	top:-10px;
+	padding:20px;
+	padding-top:40px;
+	bottom:0px;
+	overflow:auto;
+	left:0px;
+	width:240px;
+	border-right:5px solid #f2eee1;
+}
+
+#schema .table {
+	padding:5px;
+	background:#fcfaf5;
+	border:1px solid #d0cdc4;
+}
+
+#schema .table b {
+	color:#006aeb;
+	font-weight:bold;
+	text-decoration:underline;
+}
+
+#schema .table b:hover {
+	color:white;
+}
+
+input[name=logout] {
+	color:#fce2e2;
+	background:#d73e3e;
+}
+
+input[name=logout]:hover {
+	background:#ea0202;
+}
+
+#logins a, #tables a { 
+	background:none;
+}
+
+#logins a:hover, #tables a:hover { 
+	background:#006aeb;
+}
+
+#logout {
+	color:#006aeb;
+	text-decoration:none;
+}
+
+#logout:hover {
+	color:white;
+	background:#006aeb;
+}
+
+.js .column {
+	background:#f2eee1;
+}
+
+#content table thead a.text:hover {
+	text-decoration:none;
+}
+
+#version, .version {
+	font-size:50%;
+}
+
+#h1:hover {
+	color:white;
+}

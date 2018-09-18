@@ -13,7 +13,7 @@ function xhtml_open_tags($s) {
 	$return = array();
 	preg_match_all('~<([^>]+)~', $s, $matches);
 	foreach ($matches[1] as $val) {
-		if ($val{0} == "/") {
+		if ($val[0] == "/") {
 			array_pop($return);
 		} elseif (substr($val, -1) != "/") {
 			$return[] = $val;
@@ -33,7 +33,7 @@ if (!extension_loaded("xdebug")) {
 	$filename = $_GET["coverage"];
 	$coverage = (file_exists($coverage_filename) ? unserialize(file_get_contents($coverage_filename)) : array());
 	$file = explode("<br />", highlight_file($filename, true));
-	unset($prev_color);
+	$prev_color = null;
 	$s = "";
 	for ($l=0; $l <= count($file); $l++) {
 		$line = $file[$l];
@@ -43,10 +43,10 @@ if (!extension_loaded("xdebug")) {
 			case -2: $color = "Silver"; break; // dead code
 			case null: $color = ""; break; // not executable
 		}
-		if (!isset($prev_color)) {
+		if ($prev_color === null) {
 			$prev_color = $color;
 		}
-		if ($prev_color != $color || !isset($line)) {
+		if ($prev_color != $color || $line === null) {
 			echo "<div" . ($prev_color ? " style='background-color: $prev_color;'" : "") . ">$s";
 			$open_tags = xhtml_open_tags($s);
 			foreach (array_reverse($open_tags) as $tag) {

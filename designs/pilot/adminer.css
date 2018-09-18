@@ -1,0 +1,121 @@
+#menu {
+	margin: 0;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	width: 270px;
+	padding: 0;
+	border-right: 1px #ccc solid;
+}
+
+#menu p {
+	margin: 0;
+	padding: 4px 10px;
+}
+
+#menu p select {
+	width: 100%;
+}
+
+#menu h1 {
+	height: 25px;
+	padding: 0 10px;
+	margin: 0;
+	line-height: 20px;
+	display: block;
+}
+
+#menu h1 a {
+	font-size: 13px;
+}
+
+#menu h1 .version {
+	font-size: 9px;
+}
+
+#menu * {
+	margin: 0;
+	padding: 0;
+}
+
+#tables {
+	margin: 0;
+	position: absolute;
+	top: 118px;
+	bottom: 0;
+	left: 0;
+	padding: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+	width: 270px;
+}
+
+#tables li {
+    position: relative;
+    height: 23px;
+}
+
+#tables a {
+	display: block;
+	margin: 0;
+	padding: 0;
+	text-decoration: none;
+	margin-top: 5px;
+}
+
+#tables a[href*="select"] {
+	position: absolute;
+	left: 10px;
+	width: 50px;
+}
+
+#tables a[href*="table"] {
+	position: absolute;
+	left: 65px;
+	width: 200px;
+}
+
+#lang {
+	top: -1px;
+	right: 2px;
+	left: auto;
+	margin: 0;
+	padding: 0;
+	z-index: 10;
+}
+
+#content {
+	margin: 0;
+	padding: 0 10px 10px 10px;
+	position: absolute;
+	left: 270px;
+	right: 0;
+	top: 82px;
+	bottom: 0;
+	overflow: auto;
+}
+
+#content h2 {
+	display: block;
+	margin: 0;
+	padding: 0;
+	height: 55px;
+	position: fixed;
+	left: 270px;
+	right: 0;
+	top: 26px;
+	line-height: 55px;
+	padding-left: 10px;
+	border-bottom: 1px solid #ccc;
+}
+
+#breadcrumb {
+	position: fixed;
+	left: 270px;
+	right: 0;
+	top: 0;
+	height: 25px;
+	margin: 0;
+	border-bottom: 1px solid #999;
+}

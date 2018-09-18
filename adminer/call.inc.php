@@ -1,8 +1,8 @@
 <?php
-$PROCEDURE = $_GET["call"];
+$PROCEDURE = ($_GET["name"] ? $_GET["name"] : $_GET["call"]);
 page_header(lang('Call') . ": " . h($PROCEDURE), $error);
 
-$routine = routine($PROCEDURE, (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE"));
+$routine = routine($_GET["call"], (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE"));
 $in = array();
 $out = array();
 foreach ($routine["fields"] as $i => $field) {
@@ -28,17 +28,30 @@ if (!$error && $_POST) {
 		}
 		$call[] = (isset($out[$key]) ? "@" . idf_escape($field["field"]) : $val);
 	}
-	if (!$connection->multi_query((isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . idf_escape($PROCEDURE) . "(" . implode(", ", $call) . ")")) {
+	
+	$query = (isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . table($PROCEDURE) . "(" . implode(", ", $call) . ")";
+	$start = microtime(true);
+	$result = $connection->multi_query($query);
+	$affected = $connection->affected_rows; // getting warnigns overwrites this
+	echo $adminer->selectQuery($query, $start, !$result);
+	
+	if (!$result) {
 		echo "<p class='error'>" . error() . "\n";
 	} else {
+		$connection2 = connect();
+		if (is_object($connection2)) {
+			$connection2->select_db(DB);
+		}
+		
 		do {
 			$result = $connection->store_result();
 			if (is_object($result)) {
-				select($result);
+				select($result, $connection2);
 			} else {
-				echo "<p class='message'>" . lang('Routine has been called, %d row(s) affected.', $connection->affected_rows) . "\n";
+				echo "<p class='message'>" . lang('Routine has been called, %d row(s) affected.', $affected) . "\n";
 			}
 		} while ($connection->next_result());
+		
 		if ($out) {
 			select($connection->query("SELECT " . implode(", ", $out)));
 		}
@@ -49,13 +62,19 @@ if (!$error && $_POST) {
 <form action="" method="post">
 <?php
 if ($in) {
-	echo "<table cellspacing='0'>\n";
+	echo "<table cellspacing='0' class='layout'>\n";
 	foreach ($in as $key) {
 		$field = $routine["fields"][$key];
-		echo "<tr><th>" . h($field["field"]);
-		$value = $_POST["fields"][$key];
-		if ($value != "" && ereg("enum|set", $field["type"])) {
-			$value = intval($value);
+		$name = $field["field"];
+		echo "<tr><th>" . $adminer->fieldName($field);
+		$value = $_POST["fields"][$name];
+		if ($value != "") {
+			if ($field["type"] == "enum") {
+				$value = +$value;
+			}
+			if ($field["type"] == "set") {
+				$value = array_sum($value);
+			}
 		}
 		input($field, $value, (string) $_POST["function"][$name]); // param name can be empty
 		echo "\n";
@@ -64,6 +83,6 @@ if ($in) {
 }
 ?>
 <p>
-<input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Call'); ?>">
+<input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

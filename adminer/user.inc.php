@@ -1,8 +1,7 @@
 <?php
 $USER = $_GET["user"];
 $privileges = array("" => array("All privileges" => ""));
-$result = $connection->query("SHOW PRIVILEGES");
-while ($row = $result->fetch_assoc()) {
+foreach (get_rows("SHOW PRIVILEGES") as $row) {
 	foreach (explode(",", ($row["Privilege"] == "Grant option" ? "" : $row["Context"])) as $context) {
 		$privileges[$context][$row["Privilege"]] = $row["Comment"];
 	}
@@ -27,14 +26,15 @@ if ($_POST) {
 }
 $grants = array();
 $old_pass = "";
-if (isset($_GET["host"]) && ($result = $connection->query("SHOW GRANTS FOR " . $connection->quote($USER) . "@" . $connection->quote($_GET["host"])))) { //! use information_schema for MySQL 5 - column names in column privileges are not escaped
+
+if (isset($_GET["host"]) && ($result = $connection->query("SHOW GRANTS FOR " . q($USER) . "@" . q($_GET["host"])))) { //! use information_schema for MySQL 5 - column names in column privileges are not escaped
 	while ($row = $result->fetch_row()) {
-		if (preg_match('~GRANT (.*) ON (.*) TO ~', $row[0], $match) && preg_match_all('~ *([^(,]*[^ ,(])( *\\([^)]+\\))?~', $match[1], $matches, PREG_SET_ORDER)) { //! escape the part between ON and TO
+		if (preg_match('~GRANT (.*) ON (.*) TO ~', $row[0], $match) && preg_match_all('~ *([^(,]*[^ ,(])( *\([^)]+\))?~', $match[1], $matches, PREG_SET_ORDER)) { //! escape the part between ON and TO
 			foreach ($matches as $val) {
 				if ($val[1] != "USAGE") {
 					$grants["$match[2]$val[2]"][$val[1]] = true;
 				}
-				if (ereg(' WITH GRANT OPTION', $row[0])) { //! don't check inside strings and identifiers
+				if (preg_match('~ WITH GRANT OPTION~', $row[0])) { //! don't check inside strings and identifiers
 					$grants["$match[2]$val[2]"]["GRANT OPTION"] = true;
 				}
 			}
@@ -46,17 +46,28 @@ if (isset($_GET["host"]) && ($result = $connection->query("SHOW GRANTS FOR " . $
 }
 
 if ($_POST && !$error) {
-	$old_user = (isset($_GET["host"]) ? $connection->quote($USER) . "@" . $connection->quote($_GET["host"]) : "''");
-	$new_user = $connection->quote($_POST["user"]) . "@" . $connection->quote($_POST["host"]); // if $_GET["host"] is not set then $new_user is always different
-	$pass = $connection->quote($_POST["pass"]);
+	$old_user = (isset($_GET["host"]) ? q($USER) . "@" . q($_GET["host"]) : "''");
 	if ($_POST["drop"]) {
 		query_redirect("DROP USER $old_user", ME . "privileges=", lang('User has been dropped.'));
 	} else {
-		if ($old_user != $new_user) {
-			$error = !queries(($connection->server_info < 5 ? "GRANT USAGE ON *.* TO" : "CREATE USER") . " $new_user IDENTIFIED BY" . ($_POST["hashed"] ? " PASSWORD" : "") . " $pass");
-		} elseif ($_POST["pass"] != $old_pass || !$_POST["hashed"]) {
-			queries("SET PASSWORD FOR $new_user = " . ($_POST["hashed"] ? $pass : "PASSWORD($pass)"));
+		$new_user = q($_POST["user"]) . "@" . q($_POST["host"]); // if $_GET["host"] is not set then $new_user is always different
+		$pass = $_POST["pass"];
+		if ($pass != '' && !$_POST["hashed"]) {
+			// compute hash in a separate query so that plain text password is not saved to history
+			$pass = $connection->result("SELECT PASSWORD(" . q($pass) . ")");
+			$error = !$pass;
 		}
+
+		$created = false;
+		if (!$error) {
+			if ($old_user != $new_user) {
+				$created = queries((min_version(5) ? "CREATE USER" : "GRANT USAGE ON *.* TO") . " $new_user IDENTIFIED BY PASSWORD " . q($pass));
+				$error = !$created;
+			} elseif ($pass != $old_pass) {
+				queries("SET PASSWORD FOR $new_user = " . q($pass));
+			}
+		}
+
 		if (!$error) {
 			$revoke = array();
 			foreach ($new_grants as $object => $grant) {
@@ -73,7 +84,7 @@ if ($_POST && !$error) {
 					$grant = array_diff($grant, $old_grant);
 					unset($grants[$object]);
 				}
-				if (preg_match('~^(.+)\\s*(\\(.*\\))?$~U', $object, $match) && (
+				if (preg_match('~^(.+)\s*(\(.*\))?$~U', $object, $match) && (
 					!grant("REVOKE", $revoke, $match[2], " ON $match[1] FROM $new_user") //! SQL injection
 					|| !grant("GRANT", $grant, $match[2], " ON $match[1] TO $new_user")
 				)) {
@@ -82,19 +93,22 @@ if ($_POST && !$error) {
 				}
 			}
 		}
+
 		if (!$error && isset($_GET["host"])) {
 			if ($old_user != $new_user) {
 				queries("DROP USER $old_user");
 			} elseif (!isset($_GET["grant"])) {
 				foreach ($grants as $object => $revoke) {
-					if (preg_match('~^(.+)(\\(.*\\))?$~U', $object, $match)) {
+					if (preg_match('~^(.+)(\(.*\))?$~U', $object, $match)) {
 						grant("REVOKE", array_keys($revoke), $match[2], " ON $match[1] FROM $new_user");
 					}
 				}
 			}
 		}
+
 		queries_redirect(ME . "privileges=", (isset($_GET["host"]) ? lang('User has been altered.') : lang('User has been created.')), !$error);
-		if ($old_user != $new_user) {
+
+		if ($created) {
 			// delete new user in case of an error
 			$connection->query("DROP USER $new_user");
 		}
@@ -107,32 +121,35 @@ if ($_POST) {
 	$row = $_POST;
 	$grants = $new_grants;
 } else {
-	$row = $_GET + array("host" => $connection->result($connection->query("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', -1)"))); // create user on the same domain by default
+	$row = $_GET + array("host" => $connection->result("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', -1)")); // create user on the same domain by default
 	$row["pass"] = $old_pass;
-	$row["hashed"] = true;
-	$grants[""] = true;
+	if ($old_pass != "") {
+		$row["hashed"] = true;
+	}
+	$grants[(DB == "" || $grants ? "" : idf_escape(addcslashes(DB, "%_\\"))) . ".*"] = array();
 }
 
 ?>
 <form action="" method="post">
-<table cellspacing="0">
-<tr><th><?php echo lang('Username'); ?><td><input name="user" maxlength="16" value="<?php echo h($row["user"]); ?>">
-<tr><th><?php echo lang('Server'); ?><td><input name="host" maxlength="60" value="<?php echo h($row["host"]); ?>">
-<tr><th><?php echo lang('Password'); ?><td><input id="pass" name="pass" value="<?php echo h($row["pass"]); ?>">
-<?php if (!$row["hashed"]) { ?><script type="text/javascript">typePassword(document.getElementById('pass'));</script><?php } ?>
+<table cellspacing="0" class="layout">
+<tr><th><?php echo lang('Server'); ?><td><input name="host" data-maxlength="60" value="<?php echo h($row["host"]); ?>" autocapitalize="off">
+<tr><th><?php echo lang('Username'); ?><td><input name="user" data-maxlength="80" value="<?php echo h($row["user"]); ?>" autocapitalize="off">
+<tr><th><?php echo lang('Password'); ?><td><input name="pass" id="pass" value="<?php echo h($row["pass"]); ?>" autocomplete="new-password">
+<?php if (!$row["hashed"]) { echo script("typePassword(qs('#pass'));"); } ?>
 <?php echo checkbox("hashed", 1, $row["hashed"], lang('Hashed'), "typePassword(this.form['pass'], this.checked);"); ?>
 </table>
 
 <?php
 //! MAX_* limits, REQUIRE
 echo "<table cellspacing='0'>\n";
-echo "<thead><tr><th colspan='2'><a href='http://dev.mysql.com/doc/refman/" . substr($connection->server_info, 0, 3) . "/en/grant.html'>" . lang('Privileges') . "</a>";
+echo "<thead><tr><th colspan='2'>" . lang('Privileges') . doc_link(array('sql' => "grant.html#priv_level"));
 $i = 0;
 foreach ($grants as $object => $grant) {
-	echo '<th>' . ($object != "*.*" ? "<input name='objects[$i]' value='" . h($object) . "' size='10'>" : "<input type='hidden' name='objects[$i]' value='*.*' size='10'>*.*"); //! separate db, table, columns, PROCEDURE|FUNCTION, routine
+	echo '<th>' . ($object != "*.*" ? "<input name='objects[$i]' value='" . h($object) . "' size='10' autocapitalize='off'>" : "<input type='hidden' name='objects[$i]' value='*.*' size='10'>*.*"); //! separate db, table, columns, PROCEDURE|FUNCTION, routine
 	$i++;
 }
 echo "</thead>\n";
+
 foreach (array(
 	"" => "",
 	"Server Admin" => lang('Server'),
@@ -147,21 +164,26 @@ foreach (array(
 		foreach ($grants as $object => $grant) {
 			$name = "'grants[$i][" . h(strtoupper($privilege)) . "]'";
 			$value = $grant[strtoupper($privilege)];
-			if ($context == "Server Admin" && $object != (isset($grants["*.*"]) ? "*.*" : "")) {
-				echo "<td>&nbsp;";
+			if ($context == "Server Admin" && $object != (isset($grants["*.*"]) ? "*.*" : ".*")) {
+				echo "<td>";
 			} elseif (isset($_GET["grant"])) {
 				echo "<td><select name=$name><option><option value='1'" . ($value ? " selected" : "") . ">" . lang('Grant') . "<option value='0'" . ($value == "0" ? " selected" : "") . ">" . lang('Revoke') . "</select>";
 			} else {
-				echo "<td align='center'><input type='checkbox' name=$name value='1'" . ($value ? " checked" : "") . ($privilege == "All privileges" ? " id='grants-$i-all'" : ($privilege == "Grant option" ? "" : " onclick=\"if (this.checked) formUncheck('grants-$i-all');\"")) . ">"; //! uncheck all except grant if all is checked
+				echo "<td align='center'><label class='block'>";
+				echo "<input type='checkbox' name=$name value='1'" . ($value ? " checked" : "") . ($privilege == "All privileges"
+					? " id='grants-$i-all'>" //! uncheck all except grant if all is checked
+					: ">" . ($privilege == "Grant option" ? "" : script("qsl('input').onclick = function () { if (this.checked) formUncheck('grants-$i-all'); };")));
+				echo "</label>";
 			}
 			$i++;
 		}
 	}
 }
+
 echo "</table>\n";
 ?>
 <p>
-<input type="hidden" name="token" value="<?php echo $token; ?>">
 <input type="submit" value="<?php echo lang('Save'); ?>">
-<?php if (isset($_GET["host"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"<?php echo $confirm; ?>><?php } ?>
+<?php if (isset($_GET["host"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', "$USER@$_GET[host]")); ?><?php } ?>
+<input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

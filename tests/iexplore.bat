@@ -1,1 +1,0 @@
-java -jar "C:\Program Files\Selenium\selenium-server.jar" -htmlSuite "*iexplore" http://localhost "%CD%\selenium.html" results.html

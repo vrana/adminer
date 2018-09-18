@@ -1,0 +1,29 @@
+/* Redesigned by Janamou - September 2008 */
+
+body { color: #000; background-color: #fff; line-height: 1.25em; font-family: Verdana, Arial, Helvetica, sans-serif; margin: 0; font-size: 90%; }
+a { color: black; }
+a:visited { color: black; }
+a:hover { color: #626262; text-decoration: none; }
+h1 { margin: 0; padding: 5px; }
+h2 { margin: 0; padding: 7px 0px 7px 10px; border: 1px solid #a3a3a3; font-weight: normal; background: #FCE28E url('data:image/gif;base64,R0lGODlhEAAiAIMAAP/nnf/nn//nof/kk//llP/ab//Zav/aa/7aagAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAAEAAiAAMERBDISSsIOOvNu/9gKI5k6VnoJKxs6wpmmsayZQ54jhN8zxfAoHBYMBiPyKTyeGg6m4iodEpFLK/YrHbL7Xq/4LB4LI4AADs=') top left repeat-x; margin-bottom: 20px; }
+h3 { font-weight: normal; font-size: 130%; margin: .8em 0; }
+table { margin: 0 20px .8em 0; border: 0; border-top: 1px solid #999; border-left: 1px solid #999; font-size: 90%; }
+td, th { margin-bottom: 1em; border: 0; border-right: 1px solid #999; border-bottom: 1px solid #999; padding: .2em .3em; }
+th { background: black; color: white; }
+th a, th a:visited { color: white; text-decoration: none; }
+th a:hover { color: #626262; }
+fieldset { display: inline; vertical-align: top; padding: .5em .8em; margin: 0 .5em .5em 0; border: 1px solid #999; }
+img { vertical-align: middle; margin: 0; padding: 0; }
+.error { color: red; background: #fee; padding: .5em .8em; border: 1px solid red; }
+.message { color: black; background: #dedede; padding: .5em .8em; border: 1px solid black; }
+#menu { overflow: scroll; position: absolute; top: 0; left: 0; width: 270px; white-space: nowrap; background: #FFE594 url('data:image/gif;base64,R0lGODlhXgEBAIIAAPzabPzijvzihPzefvzmnPzedPzmlPzadCwAAAAAXgEBAAIDYEi63P5wGTXJvNZew7sJBNiBwWeWaPoFbNq+cCzPs8DaeJDvuGAPOh9wIBgWAwMjMblsOpnQqHRKrRaY1+sguz1sB4esN0wulM+HtNqMZqsBafgBTp/PAfQ8fs/v+/8ACQA7') top left repeat-y; height: 100%; _height: 650px; border: 1px solid #a3a3a3; }
+#menu form { margin: 0; }
+#menu p, #tables li { text-align: center; font-size: 11px; }
+#menu p a, #tables li a { color: black; }
+#menu p a:hover, #tables li a:hover { color: #626262; text-decoration: none; }
+#tables a, #tables span { background: #FFE594; }
+#content { margin: 1.5em 0 0 293px; padding: 10px 20px 20px 0; }
+#lang { margin: 0; padding: 0; text-align: center; font-size: 10px; width: 270px; background-color: #d9dadb; border-bottom: 1px solid black; }
+#lang a { color: black; font-weight: bold; }
+#breadcrumb { position: absolute; top: 0; left: 293px; background: #d9dadb; font-size: 10px; margin: 0; padding: 2px 5px 2px 5px; }
+#breadcrumb a { color: black; }

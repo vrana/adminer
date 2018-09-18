@@ -2,11 +2,15 @@
 $status = isset($_GET["status"]);
 page_header($status ? lang('Status') : lang('Variables'));
 
-$result = $connection->query($status ? "SHOW STATUS" : "SHOW VARIABLES");
-echo "<table cellspacing='0'>\n";
-while ($row = $result->fetch_assoc()) {
-	echo "<tr>";
-	echo "<th><code class='jush-" . ($status ? "sqlstatus" : "sqlset") . "'>" . h($row["Variable_name"]) . "</code>";
-	echo "<td>" . nbsp($row["Value"]);
+$variables = ($status ? show_status() : show_variables());
+if (!$variables) {
+	echo "<p class='message'>" . lang('No rows.') . "\n";
+} else {
+	echo "<table cellspacing='0'>\n";
+	foreach ($variables as $key => $val) {
+		echo "<tr>";
+		echo "<th><code class='jush-" . $jush . ($status ? "status" : "set") . "'>" . h($key) . "</code>";
+		echo "<td>" . h($val);
+	}
+	echo "</table>\n";
 }
-echo "</table>\n";

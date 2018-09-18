@@ -1,29 +1,37 @@
 <?php
 // PDO can be used in several database drivers
 if (extension_loaded('pdo')) {
-	class Min_PDO extends PDO {
-		var $_result, $server_info, $affected_rows, $error;
+	/*abstract*/ class Min_PDO extends PDO {
+		var $_result, $server_info, $affected_rows, $errno, $error;
 		
 		function __construct() {
+			global $adminer;
+			$pos = array_search("SQL", $adminer->operators);
+			if ($pos !== false) {
+				unset($adminer->operators[$pos]);
+			}
 		}
 		
-		function dsn($dsn, $username, $password) {
-			set_exception_handler('auth_error'); // try/catch is not compatible with PHP 4
-			parent::__construct($dsn, $username, $password);
-			restore_exception_handler();
-			$this->setAttribute(13, array('Min_PDOStatement')); // PDO::ATTR_STATEMENT_CLASS
+		function dsn($dsn, $username, $password, $options = array()) {
+			try {
+				parent::__construct($dsn, $username, $password, $options);
+			} catch (Exception $ex) {
+				auth_error(h($ex->getMessage()));
+			}
+			$this->setAttribute(13, array('Min_PDOStatement')); // 13 - PDO::ATTR_STATEMENT_CLASS
+			$this->server_info = @$this->getAttribute(4); // 4 - PDO::ATTR_SERVER_VERSION
 		}
 		
-		function select_db($database) {
-			// database selection is separated from the connection so dbname in DSN can't be used
-			return $this->query("USE " . idf_escape($database));
-		}
+		/*abstract function select_db($database);*/
 		
 		function query($query, $unbuffered = false) {
 			$result = parent::query($query);
+			$this->error = "";
 			if (!$result) {
-				$errorInfo = $this->errorInfo();
-				$this->error = $errorInfo[2];
+				list(, $this->errno, $this->error) = $this->errorInfo();
+				if (!$this->error) {
+					$this->error = lang('Unknown error.');
+				}
 				return false;
 			}
 			$this->store_result($result);
@@ -37,6 +45,9 @@ if (extension_loaded('pdo')) {
 		function store_result($result = null) {
 			if (!$result) {
 				$result = $this->_result;
+				if (!$result) {
+					return false;
+				}
 			}
 			if ($result->columnCount()) {
 				$result->num_rows = $result->rowCount(); // is not guaranteed to work with all drivers
@@ -47,10 +58,15 @@ if (extension_loaded('pdo')) {
 		}
 		
 		function next_result() {
-			return $this->_result->nextRowset();
+			if (!$this->_result) {
+				return false;
+			}
+			$this->_result->_offset = 0;
+			return @$this->_result->nextRowset(); // @ - PDO_PgSQL doesn't support it
 		}
 		
-		function result($result, $field = 0) {
+		function result($query, $field = 0) {
+			$result = $this->query($query);
 			if (!$result) {
 				return false;
 			}
@@ -74,8 +90,10 @@ if (extension_loaded('pdo')) {
 			$row = (object) $this->getColumnMeta($this->_offset++);
 			$row->orgtable = $row->table;
 			$row->orgname = $row->name;
-			$row->charsetnr = (in_array("blob", $row->flags) ? 63 : 0);
+			$row->charsetnr = (in_array("blob", (array) $row->flags) ? 63 : 0);
 			return $row;
 		}
 	}
 }
+
+$drivers = array();

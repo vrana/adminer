@@ -1,5 +1,5 @@
 <?php
-/** PHP implementation of XXTEA encryption algorithm.
+/** PHP implementation of XXTEA encryption algorithm
 * @author Ma Bingyao <andot@ujn.edu.cn>
 * @link http://www.coolcode.cn/?action=show&id=128
 */
@@ -78,6 +78,9 @@ function encrypt_string($str, $key) {
 function decrypt_string($str, $key) {
 	if ($str == "") {
 		return "";
+	}
+	if (!$key) {
+		return false;
 	}
 	$key = array_values(unpack("V*", pack("H*", md5($key))));
 	$v = str2long($str, false);
