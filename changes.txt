@@ -8,6 +8,7 @@ Make maxlength in all fields a soft limit
 MySQL: Support foreign keys created with ANSI quotes (bug #620)
 MSSQL: Pass database when connecting
 ClickHouse: Connect, databases list, tables list, select, SQL command
+Georgian translation
 
 Adminer 4.6.3 (released 2018-06-28):
 Disallow using password-less databases
