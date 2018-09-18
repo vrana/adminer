@@ -63,7 +63,7 @@ if (isset($_GET["clickhouse"])) {
 		}
 
 		function quote($string) {
-			return "'$string'";
+			return "'" . addcslashes($string, "\\'") . "'";
 		}
 
 		function multi_query($query) {
@@ -242,7 +242,7 @@ if (isset($_GET["clickhouse"])) {
 	function table_status($name = "", $fast = false) {
 		global $connection;
 		$return = array();
-		$tables = get_rows("SELECT name, engine FROM system.tables WHERE database = '{$connection->_db}'");
+		$tables = get_rows("SELECT name, engine FROM system.tables WHERE database = " . q($connection->_db));
 		foreach ($tables as $table) {
 			$return[$table['name']] = array(
 				'Name' => $table['name'],
