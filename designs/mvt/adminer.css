@@ -648,6 +648,17 @@ table tbody input ~ a[href*="&edit="][href*="&where"] {
 	margin-right: 0;
 }
 
+/* editor */
+#tables .select[title] {
+	height: auto;
+	padding: 3px 20px;
+	overflow: visible;
+	width: auto;
+	text-decoration: none;
+	line-height: inherit;
+	color: white;
+}
+
 #tables .structure {
 	min-width: calc(100% - 5px - 25px);
 	padding-left: 5px;
