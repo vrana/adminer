@@ -180,7 +180,7 @@ function process_length($length) {
 */
 function process_type($field, $collate = "COLLATE") {
 	global $unsigned;
-	return " {$field['type']}"
+	return " $field[type]"
 		. process_length($field["length"])
 		. (preg_match(number_type(), $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
 		. (preg_match('~char|text|enum|set~', $field["type"]) && $field["collation"] ? " $collate " . q($field["collation"]) : "")
@@ -197,14 +197,14 @@ function process_field($field, $type_field) {
 		return array(
 			idf_escape(trim($field["field"])),
 			process_type($field),
-			" {$field['virtual']}",
+			" $field[virtual]",
 			(support("comment") && $field["comment"] != "" ? " COMMENT " . q($field["comment"]) : ""),
 		);
 	}
 
 	return array(
 		idf_escape(trim($field["field"])),
-		process_type($type_field ? $type_field : $field),
+		process_type($type_field),
 		($field["null"] ? " NULL" : " NOT NULL"), // NULL for timestamp
 		default_value($field),
 		(preg_match('~timestamp|datetime~', $field["type"]) && $field["on_update"] ? " ON UPDATE $field[on_update]" : ""),
@@ -225,13 +225,11 @@ function default_value($field) {
 	}
 	$default = is_null($default) ? null : (
 		$is_def_null ? 'NULL' : (
-			preg_match('~char|binary|text|enum|set~', $field["type"]) || preg_match('~^(?![a-z])~i', $default)
-			? q($default)
-			: $default
+			preg_match('~char|binary|text|enum|set~', $field["type"]) || preg_match('~^(?![a-z])~i', $default) ? q($default) : $default
 		)
 	);
 
-	return $default === null ? "" : " DEFAULT {$default}";
+	return $default === null ? "" : " DEFAULT $default";
 }
 
 /** Get type class to use in CSS
@@ -279,9 +277,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 	'mssql' => "ms186775.aspx",
 )); ?></td>
 <td id="label-default"><?php echo lang('Default value'); ?></td>
-<?php if (support("comment")) { ?>
-<td id='label-comment' class="<?=$comments ? "" : "hidden" ?>"><?php echo lang('Comment')?></td>
-<?php } ?>
+<?php echo (support("comment") ? "<td id='label-comment'" . ($comments ? "" : " class='hidden'") . ">" . lang('Comment') . "</td>": ""); ?>
 <?php } ?>
 <td><?php echo "<input type='image' class='icon' name='add[" . (support("move_col") ? 0 : count($fields)) . "]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>" . script("row_count = " . count($fields) . ";"); ?></td>
 </thead>
@@ -302,14 +298,14 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 <td><?php echo checkbox("fields[$i][null]", 1, $field["null"], "", "", "block", "label-null"); ?></td>
 <td><label class="block"><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked<?php } ?> aria-labelledby="label-ai"></label></td>
 <td><select name="fields[<?php echo $i ?>][has_default]">
-	<option selected value="0">
-	<option <?php echo $field["has_default"] ? 'selected' : '' ?> value="1">default
-	<?php if ($jush == 'sql') { ?>
-		<optgroup label="Virtual column">
-			<option <?php echo $field["virtual"] == 'STORED' ? 'selected' : '' ?> value="STORED">stored
-			<option <?php echo $field["virtual"] == 'VIRTUAL' ? 'selected' : '' ?> value="VIRTUAL">virtual
-		</optgroup>
-	<?php } ?>
+<option selected value="0">
+<option <?php echo $field["has_default"] ? 'selected' : '' ?> value="1">default
+<?php if ($jush == 'sql') { ?>
+<optgroup label="Virtual column">
+<option <?php echo $field["virtual"] == 'STORED' ? 'selected' : '' ?> value="STORED">stored
+<option <?php echo $field["virtual"] == 'VIRTUAL' ? 'selected' : '' ?> value="VIRTUAL">virtual
+</optgroup>
+<?php } ?>
 </select><?php
 if ($field['virtual']) {
 	?><input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["expression"]); ?>" aria-labelledby="label-default"><?php
@@ -317,9 +313,7 @@ if ($field['virtual']) {
 	?><input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["default"]); ?>" aria-labelledby="label-default"><?php
 }
 ?></td><?php
-if (support("comment")) { ?>
-<td class="<?=($comments ? "" : "hidden") ?>"><input name="fields[<?php echo $i ?>][comment] ?>" value="<?php echo h($field["comment"]) ?>" data-maxlength="<?php echo (min_version(5.5) ? 1024 : 255) ?>" aria-labelledby='label-comment'></td>
-<?php }
+			echo (support("comment") ? "<td" . ($comments ? "" : " class='hidden'") . "><input name='fields[$i][comment]' value='" . h($field["comment"]) . "' data-maxlength='" . (min_version(5.5) ? 1024 : 255) . "' aria-labelledby='label-comment'></td>" : "");
 		}
 		echo "<td>";
 		echo (support("move_col") ?

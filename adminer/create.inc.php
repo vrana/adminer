@@ -45,20 +45,19 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 				if (!$field["has_default"]) {
 					$field["default"] = null;
 				} elseif (($field["has_default"] == 'STORED') || ($field["has_default"] == 'VIRTUAL')) {
-					$field["virtual"] = "GENERATED ALWAYS AS ({$field['default']}) {$field['has_default']}";
+					$field["virtual"] = "GENERATED ALWAYS AS ($field[default]) $field[has_default]";
+					$field["collation"] = $field["default"] = null;
+				}
+				if ($orig_field['virtual']) {
+					$orig_field["virtual"] = "GENERATED ALWAYS AS ($orig_field[expression]) $orig_field[virtual]";
 					$field["collation"] = $field["default"] = null;
 				}
 				if ($key == $row["auto_increment_col"]) {
 					$field["auto_increment"] = true;
 				}
-				if ($orig_field['virtual']) {
-					$orig_field["virtual"] = "GENERATED ALWAYS AS ({$orig_field['expression']}) {$orig_field['virtual']}";
-					$orig_field["collation"] = null;
-				}
-
 				$process_field = process_field($field, $type_field);
 				$all_fields[] = array($field["orig"], $process_field, $after);
-				if ($process_field != process_field($orig_field, null)) {
+				if ($process_field != process_field($orig_field, $orig_field)) {
 					$fields[] = array($field["orig"], $process_field, $after);
 					if ($field["orig"] != "" || $after) {
 						$use_all_fields = true;

@@ -827,7 +827,9 @@ class Adminer {
 							if ($_POST["format"] == "sql") {
 								//skip virtual columns
 								if ($f = (isset($fields[$field->name]) ? $fields[$field->name] : null)) {
-									if ($f['virtual']) continue;
+									if ($f['virtual']) {
+										continue;
+									}
 								}
 							}
 							$keys[] = $field->name;
