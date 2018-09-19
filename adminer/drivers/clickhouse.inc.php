@@ -154,33 +154,12 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
-		$alter = array();
 		foreach ($fields as $field) {
 			if ($field[1][2] === " NULL") {
 				$field[1][1] = " Nullable({$field[1][1]})";
 			}
 			unset($field[1][2]);
-			$alter[] = ($field[1]
-				? ($table != "" ? ($field[0] != "" ? "CHANGE " . idf_escape($field[0]) : "ADD") : " ") . " " . implode($field[1])
-				: "DROP " . idf_escape($field[0])
-			);
 		}
-		$alter = array_merge($alter, $foreign);
-		$status = ($comment !== null ? " COMMENT=" . q($comment) : "")
-			. ($engine ? " ENGINE=" . q($engine) : "")
-			. ($collation ? " COLLATE " . q($collation) : "")
-			. ($auto_increment != "" ? " AUTO_INCREMENT=$auto_increment" : "")
-		;
-		if ($table == "") {
-			return queries("CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)$status$partitioning");
-		}
-		if ($table != $name) {
-			$alter[] = "RENAME TO " . table($name);
-		}
-		if ($status) {
-			$alter[] = ltrim($status);
-		}
-		return ($alter || $partitioning ? queries("ALTER TABLE " . table($table) . "\n" . implode(",\n", $alter) . $partitioning) : true);
 	}
 
 	function truncate_tables($tables) {
