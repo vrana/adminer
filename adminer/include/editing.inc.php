@@ -193,11 +193,11 @@ function process_type($field, $collate = "COLLATE") {
 * @return array array("field", "type", "NULL", "DEFAULT", "ON UPDATE", "COMMENT", "AUTO_INCREMENT")
 */
 function process_field($field, $type_field) {
-	if (isset($field['virtual']) && $field['virtual']) {
+	if (in_array($field["has_default"], array('STORED', 'VIRTUAL'))) {
 		return array(
 			idf_escape(trim($field["field"])),
 			process_type($field),
-			" $field[virtual]",
+			" $field[default]",
 			(support("comment") && $field["comment"] != "" ? " COMMENT " . q($field["comment"]) : ""),
 		);
 	}
@@ -302,17 +302,13 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 <option <?php echo $field["has_default"] ? 'selected' : '' ?> value="1">default
 <?php if ($jush == 'sql') { ?>
 <optgroup label="Virtual column">
-<option <?php echo $field["virtual"] == 'STORED' ? 'selected' : '' ?> value="STORED">stored
-<option <?php echo $field["virtual"] == 'VIRTUAL' ? 'selected' : '' ?> value="VIRTUAL">virtual
+<option <?php echo $field["has_default"] === 'STORED' ? 'selected' : '' ?> value="STORED">stored
+<option <?php echo $field["has_default"] === 'VIRTUAL' ? 'selected' : '' ?> value="VIRTUAL">virtual
 </optgroup>
 <?php } ?>
-</select><?php
-if ($field['virtual']) {
-	?><input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["expression"]); ?>" aria-labelledby="label-default"><?php
-} else {
-	?><input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["default"]); ?>" aria-labelledby="label-default"><?php
-}
-?></td><?php
+</select><!--
+--><input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["default"]); ?>" aria-labelledby="label-default"><!--
+--></td><?php
 			echo (support("comment") ? "<td" . ($comments ? "" : " class='hidden'") . "><input name='fields[$i][comment]' value='" . h($field["comment"]) . "' data-maxlength='" . (min_version(5.5) ? 1024 : 255) . "' aria-labelledby='label-comment'></td>" : "");
 		}
 		echo "<td>";

@@ -1422,7 +1422,7 @@ function edit_form($TABLE, $fields, $row, $update) {
 		echo "<table cellspacing='0'>" . script("qsl('table').onkeydown = editingKeydown;");
 
 		foreach ($fields as $name => $field) {
-			if (!empty($field['virtual'])) {
+			if (in_array($field["has_default"], array('STORED', 'VIRTUAL'))) {
 				continue;
 			}
 			echo "<tr><th>" . $adminer->fieldName($field);

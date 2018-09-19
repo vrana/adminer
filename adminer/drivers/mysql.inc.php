@@ -552,12 +552,16 @@ if (!defined("DRIVER")) {
 				"collation" => $row["COLLATION_NAME"],
 				"privileges" => array_flip(preg_split('~, *~', $row["PRIVILEGES"])),
 				"comment" => $row["COLUMN_COMMENT"],
-				"primary" => ($row["COLUMN_KEY"] == "PRI"),
-				"virtual" => isset($row["EXTRA"])
-					? ($row["EXTRA"] == "STORED GENERATED" ? 'STORED' : ($row["EXTRA"] == "VIRTUAL GENERATED" ? 'VIRTUAL' : false))
-					: false,
-				"expression" => isset($row['GENERATION_EXPRESSION']) ? $row['GENERATION_EXPRESSION'] : null
+				"primary" => ($row["COLUMN_KEY"] == "PRI")
 			);
+
+			$virtual = isset($row["EXTRA"])
+				? ($row["EXTRA"] == "STORED GENERATED" ? 'STORED' : ($row["EXTRA"] == "VIRTUAL GENERATED" ? 'VIRTUAL' : false))
+				: false;
+			if ($virtual) {
+				$return[$row["COLUMN_NAME"]]["has_default"] = $virtual;
+				$return[$row["COLUMN_NAME"]]["default"] = isset($row['GENERATION_EXPRESSION']) ? $row['GENERATION_EXPRESSION'] : null;
+			}
 		}
 		return $return;
 	}

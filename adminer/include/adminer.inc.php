@@ -811,6 +811,12 @@ class Adminer {
 					echo truncate_sql($table) . ";\n";
 				}
 				$fields = fields($table);
+				foreach ($fields as $name => $field) {
+					//exclude virtual columns
+					if (in_array($field["has_default"], array('STORED', 'VIRTUAL'))) {
+						$fields[$name] = false;
+					}
+				}
 			}
 			$result = $connection->query($query, 1); // 1 - MYSQLI_USE_RESULT //! enum and set as numbers
 			if ($result) {
@@ -826,10 +832,8 @@ class Adminer {
 							$field = $result->fetch_field();
 							if ($_POST["format"] == "sql") {
 								//skip virtual columns
-								if ($f = (isset($fields[$field->name]) ? $fields[$field->name] : null)) {
-									if ($f['virtual']) {
-										continue;
-									}
+								if (!$f = (isset($fields[$field->name]) ? $fields[$field->name] : null)) {
+									continue;
 								}
 							}
 							$keys[] = $field->name;
@@ -851,7 +855,7 @@ class Adminer {
 						foreach ($row as $key => $val) {
 							$field = $fields[$key];
 							//skip virtual columns
-							if ($field['virtual']) {
+							if (!$field) {
 								unset($row[$key]);
 								continue;
 							}

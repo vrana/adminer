@@ -7,7 +7,7 @@ foreach ($fields as $name => $field) {
 	if (!isset($field["privileges"][$update ? "update" : "insert"]) || $adminer->fieldName($field) == "") {
 		unset($fields[$name]);
 	}
-	if (!empty($field['virtual'])) {
+	if (in_array($field["has_default"], array('STORED', 'VIRTUAL'))) {
 		unset($fields[$name]);
 	}
 }
