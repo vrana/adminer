@@ -6,6 +6,7 @@ Fix function change with set data type
 Increase username maxlength to 80 (bug #623)
 Make maxlength in all fields a soft limit
 MySQL: Support foreign keys created with ANSI quotes (bug #620)
+PostgreSQL: Quote array values in export (bug #621)
 MSSQL: Pass database when connecting
 ClickHouse: Connect, databases list, tables list, select, SQL command
 Georgian translation
