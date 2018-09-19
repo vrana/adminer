@@ -51,9 +51,6 @@ if (isset($_GET["clickhouse"])) {
 			preg_match('~^(https?://)?(.*)~', $server, $match);
 			$this->_url = ($match[1] ? $match[1] : "http://") . "$username:$password@$match[2]";
 			$return = $this->query('SELECT 1');
-			if ($return) {
-				//$this->server_info = $return['version']['number'];
-			}
 			return (bool) $return;
 		}
 
