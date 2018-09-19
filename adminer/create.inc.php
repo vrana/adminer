@@ -138,7 +138,7 @@ if (!$_POST) {
 			$row["Auto_increment"] = "";
 		}
 		foreach ($orig_fields as $field) {
-			$field["has_default"] = isset($field["has_default"]) ? $field["has_default"] : isset($field["default"]);
+			$field["has_default"] = isset($field["has_default"]) ? $field["has_default"] : $field["default"];
 			$row["fields"][] = $field;
 		}
 

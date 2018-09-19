@@ -1440,7 +1440,7 @@ function edit_form($TABLE, $fields, $row, $update) {
 				)
 				: (!$update && $field["auto_increment"]
 					? ""
-					: (isset($_GET["select"]) ? false : (empty($field["null"]) ? $default : null))
+					: (isset($_GET["select"]) ? false : $default)
 				)
 			);
 			if (!$_POST["save"] && is_string($value)) {

@@ -51,7 +51,7 @@ if (!defined("DRIVER")) {
 				$row = $result->fetch_array();
 				return $row[$field];
 			}
-
+			
 			function quote($string) {
 				return "'" . $this->escape_string($string) . "'";
 			}
@@ -302,7 +302,7 @@ if (!defined("DRIVER")) {
 			}
 			return queries($prefix . implode(",\n", $values) . $suffix);
 		}
-
+		
 		function slowQuery($query, $timeout) {
 			if (min_version('5.7.8', '10.1.2')) {
 				if (preg_match('~MariaDB~', $this->_conn->server_info)) {
@@ -319,7 +319,7 @@ if (!defined("DRIVER")) {
 				: $idf
 			);
 		}
-
+		
 		function warnings() {
 			$result = $this->_conn->query("SHOW WARNINGS");
 			if ($result && $result->num_rows) {
@@ -545,7 +545,7 @@ if (!defined("DRIVER")) {
 				"type" => $match[1],
 				"length" => $match[2],
 				"unsigned" => ltrim($match[3] . $match[4]),
-				"default" => isset($row["COLUMN_DEFAULT"]) ? trim($row["COLUMN_DEFAULT"], "'") : null, // COLUMN_DEFAULT => "'my_value'"
+				"default" => ($row["COLUMN_DEFAULT"] != "" || preg_match("~char|set~", $match[1])) ? trim($row["COLUMN_DEFAULT"], "'") : null, // COLUMN_DEFAULT => "'my_value'"
 				"null" => ($row["IS_NULLABLE"] == "YES"),
 				"auto_increment" => ($row["EXTRA"] == "auto_increment"),
 				"on_update" => (preg_match('~^on update (.+)~i', $row["EXTRA"], $match) ? $match[1] : ""), //! available since MySQL 5.1.23
@@ -555,10 +555,7 @@ if (!defined("DRIVER")) {
 				"primary" => ($row["COLUMN_KEY"] == "PRI")
 			);
 
-			$virtual = isset($row["EXTRA"])
-				? ($row["EXTRA"] == "STORED GENERATED" ? 'STORED' : ($row["EXTRA"] == "VIRTUAL GENERATED" ? 'VIRTUAL' : false))
-				: false;
-			if ($virtual) {
+			if ($virtual = $row["EXTRA"] == "STORED GENERATED" ? 'STORED' : ($row["EXTRA"] == "VIRTUAL GENERATED" ? 'VIRTUAL' : false)) {
 				$return[$row["COLUMN_NAME"]]["has_default"] = $virtual;
 				$return[$row["COLUMN_NAME"]]["default"] = isset($row['GENERATION_EXPRESSION']) ? $row['GENERATION_EXPRESSION'] : null;
 			}

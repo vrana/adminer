@@ -39,7 +39,7 @@ class Adminer {
 	function bruteForceKey() {
 		return $_SERVER["REMOTE_ADDR"];
 	}
-
+	
 	/** Get server name displayed in breadcrumbs
 	* @param string
 	* @return string HTML code or null
@@ -128,7 +128,7 @@ class Adminer {
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
 		echo checkbox("auth[permanent]", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
 	}
-
+	
 	/** Get login form field
 	* @param string
 	* @param string HTML
@@ -832,7 +832,7 @@ class Adminer {
 							$field = $result->fetch_field();
 							if ($_POST["format"] == "sql") {
 								//skip virtual columns
-								if (!$f = (isset($fields[$field->name]) ? $fields[$field->name] : null)) {
+								if (!$fields[$field->name]) {
 									continue;
 								}
 							}
