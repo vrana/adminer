@@ -231,10 +231,12 @@ if (!isset($_GET["import"])) {
 		: lang('File uploads are disabled.')
 	);
 	echo "</div></fieldset>\n";
-	echo "<fieldset><legend>" . lang('From server') . "</legend><div>";
-	echo lang('Webserver file %s', "<code>" . h($adminer->importServerPath()) . "$gz</code>");
-	echo ' <input type="submit" name="webfile" value="' . lang('Run file') . '">';
-	echo "</div></fieldset>\n";
+	if ($adminer->importServerPath()) {
+		echo "<fieldset><legend>" . lang('From server') . "</legend><div>";
+		echo lang('Webserver file %s', "<code>" . h($adminer->importServerPath()) . "$gz</code>");
+		echo ' <input type="submit" name="webfile" value="' . lang('Run file') . '">';
+		echo "</div></fieldset>\n";
+	}
 	echo "<p>";
 }
 
