@@ -595,6 +595,23 @@ function indexesAddColumn(prefix) {
 
 
 
+/** Updates the form action
+* @param HTMLFormElement
+* @param string
+*/
+function sqlSubmit(form, root) {
+	if (encodeURIComponent(form['query'].value).length < 2e3) {
+		form.action = root
+			+ '&sql=' + encodeURIComponent(form['query'].value)
+			+ (form['limit'].value ? '&limit=' + +form['limit'].value : '')
+			+ (form['error_stops'].checked ? '&error_stops=1' : '')
+			+ (form['only_errors'].checked ? '&only_errors=1' : '')
+		;
+	}
+}
+
+
+
 /** Handle changing trigger time or event
 * @param RegExp
 * @param string

@@ -491,6 +491,9 @@ function bodyKeydown(event, button) {
 		if (button) {
 			target.form[button].click();
 		} else {
+			if (target.form.onsubmit) {
+				target.form.onsubmit();
+			}
 			target.form.submit();
 		}
 		target.focus();

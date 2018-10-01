@@ -219,7 +219,7 @@ if (!isset($_GET["import"])) {
 	}
 	echo "<p>";
 	textarea("query", $q, 20);
-	echo ($_POST ? "" : script("qs('textarea').focus();"));
+	echo script(($_POST ? "" : "qs('textarea').focus();\n") . "qs('#form').onsubmit = partial(sqlSubmit, qs('#form'), '" . remove_from_uri("sql|limit|error_stops|only_errors") . "');");
 	echo "<p>$execute\n";
 	echo lang('Limit rows') . ": <input type='number' name='limit' class='size' value='" . h($_POST ? $_POST["limit"] : $_GET["limit"]) . "'>\n";
 	
