@@ -55,7 +55,6 @@ class AdminerPlugin extends Adminer {
 		if($this->propagation) {
 			foreach ($this->plugins as $plugin) {
 				if (method_exists($plugin, $function)) {
-					$this->propagation = false;
 					switch (count($args)) { // call_user_func_array() doesn't work well with references
 						case 0: $return = $plugin->$function(); break;
 						case 1: $return = $plugin->$function($args[0]); break;
@@ -66,13 +65,13 @@ class AdminerPlugin extends Adminer {
 						case 6: $return = $plugin->$function($args[0], $args[1], $args[2], $args[3], $args[4], $args[5]); break;
 						default: trigger_error('Too many parameters.', E_USER_WARNING);
 					}
-					$this->propagation = true;
 					if ($return !== null) {
 						return $return;
 					}
 				}
 			}
 		}
+		$this->propagation = true;
 		return $this->_callParent($function, $args);
 	}
 	
@@ -81,15 +80,14 @@ class AdminerPlugin extends Adminer {
 			$return = $this->_callParent($function, $args);
 			foreach ($this->plugins as $plugin) {
 				if (method_exists($plugin, $function)) {
-					$this->propagation = false;
 					$value = call_user_func_array(array($plugin, $function), $args);
 					if ($value) {
 						$return += $value;
 					}
-					$this->propagation = true;
 				}
 			}
 		}
+		$this->propagation = true;
 		return $return;
 	}
 	
