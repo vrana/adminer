@@ -7,6 +7,13 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerPlugin extends Adminer {
+	/**
+	 * propagation allows plugins to run and call parent methods from a reference to the adminer instance
+	 * this is useful for doing things in a plugin before AND/OR after calling adminer function
+	 *
+	 * @access protected
+	 */
+	var $propagation=true;
 	/** @access protected */
 	var $plugins;
 	
@@ -32,26 +39,37 @@ class AdminerPlugin extends Adminer {
 		$this->plugins = $plugins;
 		//! it is possible to use ReflectionObject to find out which plugins defines which methods at once
 	}
-	
+
+	/** Register additional plugin after instantiating the class
+	 * @param $plugin
+	 */
+	function addPlugin($plugin){
+		$this->plugins[] = $plugin;
+	}
+
 	function _callParent($function, $args) {
 		return call_user_func_array(array('parent', $function), $args);
 	}
 	
 	function _applyPlugin($function, $args) {
-		foreach ($this->plugins as $plugin) {
-			if (method_exists($plugin, $function)) {
-				switch (count($args)) { // call_user_func_array() doesn't work well with references
-					case 0: $return = $plugin->$function(); break;
-					case 1: $return = $plugin->$function($args[0]); break;
-					case 2: $return = $plugin->$function($args[0], $args[1]); break;
-					case 3: $return = $plugin->$function($args[0], $args[1], $args[2]); break;
-					case 4: $return = $plugin->$function($args[0], $args[1], $args[2], $args[3]); break;
-					case 5: $return = $plugin->$function($args[0], $args[1], $args[2], $args[3], $args[4]); break;
-					case 6: $return = $plugin->$function($args[0], $args[1], $args[2], $args[3], $args[4], $args[5]); break;
-					default: trigger_error('Too many parameters.', E_USER_WARNING);
-				}
-				if ($return !== null) {
-					return $return;
+		if($this->propagation) {
+			foreach ($this->plugins as $plugin) {
+				if (method_exists($plugin, $function)) {
+					$this->propagation = false;
+					switch (count($args)) { // call_user_func_array() doesn't work well with references
+						case 0: $return = $plugin->$function(); break;
+						case 1: $return = $plugin->$function($args[0]); break;
+						case 2: $return = $plugin->$function($args[0], $args[1]); break;
+						case 3: $return = $plugin->$function($args[0], $args[1], $args[2]); break;
+						case 4: $return = $plugin->$function($args[0], $args[1], $args[2], $args[3]); break;
+						case 5: $return = $plugin->$function($args[0], $args[1], $args[2], $args[3], $args[4]); break;
+						case 6: $return = $plugin->$function($args[0], $args[1], $args[2], $args[3], $args[4], $args[5]); break;
+						default: trigger_error('Too many parameters.', E_USER_WARNING);
+					}
+					$this->propagation = true;
+					if ($return !== null) {
+						return $return;
+					}
 				}
 			}
 		}
@@ -59,12 +77,16 @@ class AdminerPlugin extends Adminer {
 	}
 	
 	function _appendPlugin($function, $args) {
-		$return = $this->_callParent($function, $args);
-		foreach ($this->plugins as $plugin) {
-			if (method_exists($plugin, $function)) {
-				$value = call_user_func_array(array($plugin, $function), $args);
-				if ($value) {
-					$return += $value;
+		if($this->propagation) {
+			$return = $this->_callParent($function, $args);
+			foreach ($this->plugins as $plugin) {
+				if (method_exists($plugin, $function)) {
+					$this->propagation = false;
+					$value = call_user_func_array(array($plugin, $function), $args);
+					if ($value) {
+						$return += $value;
+					}
+					$this->propagation = true;
 				}
 			}
 		}
