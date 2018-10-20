@@ -188,11 +188,11 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function drop_views($views) {
-		return queries("DROP VIEW " . implode(", ", array_map('table', $views)));
+		return drop_tables($views);
 	}
 
 	function drop_tables($tables) {
-		return queries("DROP TABLE " . implode(", ", array_map('table', $tables)));
+		return apply_queries("DROP TABLE", $tables);
 	}
 
 	function connect() {

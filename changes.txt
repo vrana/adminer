@@ -13,6 +13,7 @@ PostgreSQL: Quote array values in export (bug #621)
 MSSQL: Pass database when connecting
 ClickHouse: Connect, databases list, tables list, select, SQL command
 ClickHouse: Support for experimental ALTER DELETE and ALTER UPDATE
+ClickHouse: Fix for drop multiple tables and views
 Georgian translation
 
 Adminer 4.6.3 (released 2018-06-28):
