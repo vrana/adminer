@@ -359,7 +359,7 @@ if (isset($_GET["clickhouse"])) {
 	$types = array();
 	$structured_types = array();
 	foreach (array( //! arrays
-		lang('Numbers') => array("Int8" => 3, "Int16" => 5, "Int32" => 10, "Int64" => 19, "UInt8" => 3, "UInt16" => 5, "UInt32" => 10, "UInt64" => 20, "Float32" => 7, "Float64" => 16),
+		lang('Numbers') => array("Int8" => 3, "Int16" => 5, "Int32" => 10, "Int64" => 19, "UInt8" => 3, "UInt16" => 5, "UInt32" => 10, "UInt64" => 20, "Float32" => 7, "Float64" => 16, 'Decimal' => 38, 'Decimal32' => 9, 'Decimal64' => 18, 'Decimal128' => 38),
 		lang('Date and time') => array("Date" => 13, "DateTime" => 20),
 		lang('Strings') => array("String" => 0),
 		lang('Binary') => array("FixedString" => 0),
@@ -368,7 +368,7 @@ if (isset($_GET["clickhouse"])) {
 		$structured_types[$key] = array_keys($val);
 	}
 	$unsigned = array();
-	$operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL");
+	$operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
 	$functions = array();
 	$grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 	$edit_functions = array();

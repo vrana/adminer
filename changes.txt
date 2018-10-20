@@ -12,8 +12,9 @@ MySQL: Recognize ON UPDATE current_timestamp() (bug #632)
 PostgreSQL: Quote array values in export (bug #621)
 MSSQL: Pass database when connecting
 ClickHouse: Connect, databases list, tables list, select, SQL command
-ClickHouse: Support for experimental ALTER DELETE and ALTER UPDATE
+ClickHouse: Support for experimental ALTER DELETE and ALTER UPDATE (since ClickHouse 18.1.0 release)
 ClickHouse: Fix for drop multiple tables and views
+ClickHouse: Support for Decimal types (since ClickHouse 18.12.13 release)
 Georgian translation
 
 Adminer 4.6.3 (released 2018-06-28):
