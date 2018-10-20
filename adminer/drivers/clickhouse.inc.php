@@ -12,12 +12,12 @@ if (isset($_GET["clickhouse"])) {
 			@ini_set('track_errors', 1); // @ - may be disabled
 			$file = @file_get_contents("$this->_url/?database=$db", false, stream_context_create(array('http' => array(
 				'method' => 'POST',
-				'content' => stripos($query, 'insert') === 0 ? $query : "$query FORMAT JSONCompact",
+                'content' => $this->is_query_select_like($query) ? ($query.' FORMAT JSONCompact') : $query,
 				'header' => 'Content-type: application/x-www-form-urlencoded',
 				'ignore_errors' => 1, // available since PHP 5.2.10
 			))));
 
-			if (!$file) {
+			if ($file === false) {
 				$this->error = $php_errormsg;
 				return $file;
 			}
@@ -42,6 +42,10 @@ if (isset($_GET["clickhouse"])) {
 			}
 			return new Min_Result($return);
 		}
+
+        function is_query_select_like($query) {
+            return (bool) preg_match('~^(select|show)~i', $query);
+        }
 
 		function query($query) {
 			return $this->rootQuery($this->_db, $query);
