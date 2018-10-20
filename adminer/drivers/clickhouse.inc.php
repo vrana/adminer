@@ -122,6 +122,18 @@ if (isset($_GET["clickhouse"])) {
 
 
 	class Min_Driver extends Min_SQL {
+        function delete($table, $queryWhere, $limit = 0) {
+            return queries("ALTER TABLE " . table($table) . "DELETE $queryWhere");
+        }
+
+        function update($table, $set, $queryWhere, $limit = 0, $separator = "\n") {
+            $values = array();
+            foreach ($set as $key => $val) {
+                $values[] = "$key = $val";
+            }
+            $query = "$separator" . implode(",$separator", $values);
+            return queries("ALTER TABLE ".table($table)." UPDATE $query$queryWhere");
+        }
 	}
 
 	function idf_escape($idf) {
@@ -334,6 +346,10 @@ if (isset($_GET["clickhouse"])) {
 	function auto_increment() {
 		return '';
 	}
+
+    function last_id() {
+        return 0; // ClickHouse doesn't have it
+    }
 
 	function support($feature) {
 		return preg_match("~^(columns|sql|status|table)$~", $feature);

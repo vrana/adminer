@@ -12,6 +12,7 @@ MySQL: Recognize ON UPDATE current_timestamp() (bug #632)
 PostgreSQL: Quote array values in export (bug #621)
 MSSQL: Pass database when connecting
 ClickHouse: Connect, databases list, tables list, select, SQL command
+ClickHouse: Support for experimental ALTER DELETE and ALTER UPDATE
 Georgian translation
 
 Adminer 4.6.3 (released 2018-06-28):
