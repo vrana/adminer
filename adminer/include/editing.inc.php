@@ -17,6 +17,7 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 	odd(''); // reset odd for each result
 	for ($i=0; (!$limit || $i < $limit) && ($row = $result->fetch_row()); $i++) {
 		if (!$i) {
+			echo "<div style='overflow-x: auto;'>\n";
 			echo "<table cellspacing='0' class='nowrap'>\n";
 			echo "<thead><tr>";
 			for ($j=0; $j < count($row); $j++) {
@@ -85,7 +86,7 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 			echo "<td>$val";
 		}
 	}
-	echo ($i ? "</table>" : "<p class='message'>" . lang('No rows.')) . "\n";
+	echo ($i ? "</table></div>" : "<p class='message'>" . lang('No rows.')) . "\n";
 	return $return;
 }
 

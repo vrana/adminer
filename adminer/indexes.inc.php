@@ -94,6 +94,7 @@ if (!$row) {
 ?>
 
 <form action="" method="post">
+<div style="overflow-x: auto;">
 <table cellspacing="0" class="nowrap">
 <thead><tr>
 <th id="label-type"><?php echo lang('Index Type'); ?>
@@ -138,6 +139,7 @@ foreach ($row["indexes"] as $index) {
 }
 ?>
 </table>
+</div>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <input type="hidden" name="token" value="<?php echo $token; ?>">

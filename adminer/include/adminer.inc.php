@@ -310,6 +310,7 @@ class Adminer {
 	* @return null
 	*/
 	function tableStructurePrint($fields) {
+		echo "<div style='overflow-x: auto;'>\n";
 		echo "<table cellspacing='0' class='nowrap'>\n";
 		echo "<thead><tr><th>" . lang('Column') . "<td>" . lang('Type') . (support("comment") ? "<td>" . lang('Comment') : "") . "</thead>\n";
 		foreach ($fields as $field) {
@@ -322,6 +323,7 @@ class Adminer {
 			echo "\n";
 		}
 		echo "</table>\n";
+		echo "</div>\n";
 	}
 
 	/** Print list of indexes on table in tabular format
