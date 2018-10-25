@@ -309,6 +309,7 @@ if (!$columns && support("table")) {
 		} else {
 			$backward_keys = $adminer->backwardKeys($TABLE, $table_name);
 
+			echo "<div style='overflow-x: auto;'>";
 			echo "<table id='table' cellspacing='0' class='nowrap checkable'>";
 			echo script("mixin(qs('#table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true), onkeydown: editingKeydown});");
 			echo "<thead><tr>" . (!$group && $select
@@ -459,6 +460,7 @@ if (!$columns && support("table")) {
 				exit;
 			}
 			echo "</table>\n";
+			echo "</div>\n";
 		}
 
 		if (!is_ajax()) {
