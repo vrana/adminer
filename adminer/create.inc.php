@@ -170,7 +170,7 @@ foreach ($engines as $engine) {
 <?php } ?>
 
 <?php if (support("columns")) { ?>
-<div style="overflow-x: auto;">
+<div class="scrollable">
 <table cellspacing="0" id="edit-fields" class="nowrap">
 <?php
 $comments = ($_POST ? $_POST["comments"] : $row["Comment"] != "");

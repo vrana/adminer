@@ -7,7 +7,7 @@ if ($adminer->homepage()) {
 	if ($_POST["query"] != "") {
 		search_tables();
 	}
-	echo "<div style='overflow-x: auto;'>\n";
+	echo "<div class='scrollable'>\n";
 	echo "<table cellspacing='0' class='nowrap checkable'>\n";
 	echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
 	echo '<thead><tr class="wrap">';

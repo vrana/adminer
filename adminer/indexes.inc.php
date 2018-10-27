@@ -94,7 +94,7 @@ if (!$row) {
 ?>
 
 <form action="" method="post">
-<div style="overflow-x: auto;">
+<div class="scrollable">
 <table cellspacing="0" class="nowrap">
 <thead><tr>
 <th id="label-type"><?php echo lang('Index Type'); ?>

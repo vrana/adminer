@@ -66,7 +66,7 @@ if ($adminer->homepage()) {
 				}
 			}
 			$doc_link = doc_link(array('sql' => 'show-table-status.html'));
-			echo "<div style='overflow-x: auto;'>\n";
+			echo "<div class='scrollable'>\n";
 			echo "<table cellspacing='0' class='nowrap checkable'>\n";
 			echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
 			echo '<thead><tr class="wrap">';

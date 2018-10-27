@@ -17,7 +17,7 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 	odd(''); // reset odd for each result
 	for ($i=0; (!$limit || $i < $limit) && ($row = $result->fetch_row()); $i++) {
 		if (!$i) {
-			echo "<div style='overflow-x: auto;'>\n";
+			echo "<div class='scrollable'>\n";
 			echo "<table cellspacing='0' class='nowrap'>\n";
 			echo "<thead><tr>";
 			for ($j=0; $j < count($row); $j++) {
