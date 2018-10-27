@@ -10,6 +10,7 @@ Make maxlength in all fields a soft limit
 MySQL: Support foreign keys created with ANSI quotes (bug #620)
 MySQL: Recognize ON UPDATE current_timestamp() (bug #632, bug #638)
 PostgreSQL: Quote array values in export (bug #621)
+PostgreSQL: Export DESC indexes (bug #639)
 MSSQL: Pass database when connecting
 ClickHouse: Connect, databases list, tables list, select, SQL command
 Georgian translation

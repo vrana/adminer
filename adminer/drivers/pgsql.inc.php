@@ -758,7 +758,11 @@ AND typelem = 0"
 		// "basic" indexes after table definition
 		foreach ($indexes as $index_name => $index) {
 			if ($index['type'] == 'INDEX') {
-				$return .= "\n\nCREATE INDEX " . idf_escape($index_name) . " ON " . idf_escape($status['nspname']) . "." . idf_escape($status['Name']) . " USING btree (" . implode(', ', array_map('idf_escape', $index['columns'])) . ");";
+				$columns = array();
+				foreach ($index['columns'] as $key => $val) {
+					$columns[] = idf_escape($val) . ($index['descs'][$key] ? " DESC" : "");
+				}
+				$return .= "\n\nCREATE INDEX " . idf_escape($index_name) . " ON " . idf_escape($status['nspname']) . "." . idf_escape($status['Name']) . " USING btree (" . implode(', ', $columns) . ");";
 			}
 		}
 
