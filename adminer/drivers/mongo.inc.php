@@ -662,7 +662,7 @@ if (isset($_GET["mongo"])) {
 	}
 
 	function support($feature) {
-		return preg_match("~database|indexes~", $feature);
+		return preg_match("~database|indexes|descidx~", $feature);
 	}
 
 	function db_collation($db, $collations) {

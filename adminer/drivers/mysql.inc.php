@@ -1083,11 +1083,11 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Check whether a feature is supported
-	* @param string "comment", "copy", "database", "drop_col", "dump", "event", "kill", "materializedview", "partitioning", "privileges", "procedure", "processlist", "routine", "scheme", "sequence", "status", "table", "trigger", "type", "variables", "view", "view_trigger"
+	* @param string "comment", "copy", "database", "descidx", "drop_col", "dump", "event", "indexes", "kill", "materializedview", "partitioning", "privileges", "procedure", "processlist", "routine", "scheme", "sequence", "status", "table", "trigger", "type", "variables", "view", "view_trigger"
 	* @return bool
 	*/
 	function support($feature) {
-		return !preg_match("~scheme|sequence|type|view_trigger|materializedview" . (min_version(5.1) ? "" : "|event|partitioning" . (min_version(5) ? "" : "|routine|trigger|view")) . "~", $feature);
+		return !preg_match("~scheme|sequence|type|view_trigger|materializedview" . (min_version(8) ? "" : "|descidx" . (min_version(5.1) ? "" : "|event|partitioning" . (min_version(5) ? "" : "|routine|trigger|view"))) . "~", $feature);
 	}
 
 	function kill_process($val) {
