@@ -484,7 +484,7 @@ if (!$columns && support("table")) {
 				if ($pagination) {
 					echo (($found_rows === false ? count($rows) + 1 : $found_rows - $page * $limit) > $limit
 						? '<p><a href="' . h(remove_from_uri("page") . "&page=" . ($page + 1)) . '" class="loadmore">' . lang('Load more data') . '</a>'
-							. script("qsl('a').onclick = partial(selectLoadMore, " . (+$limit) . ", '" . lang('Loading') . "...');", "")
+							. script("qsl('a').onclick = partial(selectLoadMore, " . (+$limit) . ", '" . lang('Loading') . "&hellip;');", "")
 						: ''
 					);
 					echo "\n";
@@ -503,12 +503,12 @@ if (!$columns && support("table")) {
 					if ($jush != "simpledb") {
 						echo "<legend><a href='" . h(remove_from_uri("page")) . "'>" . lang('Page') . "</a></legend>";
 						echo script("qsl('a').onclick = function () { pageClick(this.href, +prompt('" . lang('Page') . "', '" . ($page + 1) . "')); return false; };");
-						echo pagination(0, $page) . ($page > 5 ? " ..." : "");
+						echo pagination(0, $page) . ($page > 5 ? " &hellip;" : "");
 						for ($i = max(1, $page - 4); $i < min($max_page, $page + 5); $i++) {
 							echo pagination($i, $page);
 						}
 						if ($max_page > 0) {
-							echo ($page + 5 < $max_page ? " ..." : "");
+							echo ($page + 5 < $max_page ? " &hellip;" : "");
 							echo ($exact_count && $found_rows !== false
 								? pagination($max_page, $page)
 								: " <a href='" . h(remove_from_uri("page") . "&page=last") . "' title='~$max_page'>" . lang('last') . "</a>"
@@ -516,9 +516,9 @@ if (!$columns && support("table")) {
 						}
 					} else {
 						echo "<legend>" . lang('Page') . "</legend>";
-						echo pagination(0, $page) . ($page > 1 ? " ..." : "");
+						echo pagination(0, $page) . ($page > 1 ? " &hellip;" : "");
 						echo ($page ? pagination($page, $page) : "");
-						echo ($max_page > $page ? pagination($page + 1, $page) . ($max_page > $page + 1 ? " ..." : "") : "");
+						echo ($max_page > $page ? pagination($page + 1, $page) . ($max_page > $page + 1 ? " &hellip;" : "") : "");
 					}
 					echo "</fieldset>\n";
 				}

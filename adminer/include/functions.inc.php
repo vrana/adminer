@@ -1476,7 +1476,7 @@ function edit_form($TABLE, $fields, $row, $update) {
 				? lang('Save and continue edit')
 				: lang('Save and insert next')
 			) . "' title='Ctrl+Shift+Enter'>\n";
-			echo ($update ? script("qsl('input').onclick = function () { return !ajaxForm(this.form, '" . lang('Saving') . "...', this); };") : "");
+			echo ($update ? script("qsl('input').onclick = function () { return !ajaxForm(this.form, '" . lang('Saving') . "&hellip;', this); };") : "");
 		}
 	}
 	echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "'>" . confirm() . "\n"
