@@ -440,7 +440,7 @@ if (!$columns && support("table")) {
 							$h_value = h($value !== null ? $value : $row[$key]);
 							echo "<td>" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>");
 						} else {
-							$long = strpos($val, "<i>...</i>");
+							$long = strpos($val, "<i>&hellip;</i>");
 							echo "<td id='$id' data-text='" . ($long ? 2 : ($text ? 1 : 0)) . "'"
 								. ($editable ? "" : " data-warning='" . h(lang('Use edit link to modify this value.')) . "'")
 								. ">$val</td>"

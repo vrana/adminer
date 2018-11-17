@@ -815,7 +815,7 @@ function shorten_utf8($string, $length = 80, $suffix = "") {
 	if (!preg_match("(^(" . repeat_pattern("[\t\r\n -\x{10FFFF}]", $length) . ")($)?)u", $string, $match)) { // ~s causes trash in $match[2] under some PHP versions, (.|\n) is slow
 		preg_match("(^(" . repeat_pattern("[\t\r\n -~]", $length) . ")($)?)", $string, $match);
 	}
-	return h($match[1]) . $suffix . (isset($match[2]) ? "" : "<i>...</i>");
+	return h($match[1]) . $suffix . (isset($match[2]) ? "" : "<i>&hellip;</i>");
 }
 
 /** Format decimal number

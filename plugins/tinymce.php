@@ -40,14 +40,14 @@ tinyMCE.init({
 
 	function selectVal(&$val, $link, $field, $original) {
 		if (preg_match("~_html~", $field["field"]) && $val != '') {
-			$shortened = (substr($val, -10) == "<i>...</i>");
+			$shortened = (substr($val, -15) == "<i>&hellip;</i>");
 			if ($shortened) {
-				$val = substr($val, 0, -10);
+				$val = substr($val, 0, -15);
 			}
 			//! shorten with regard to HTML tags - http://php.vrana.cz/zkraceni-textu-s-xhtml-znackami.php
 			$val = preg_replace('~<[^>]*$~', '', html_entity_decode($val, ENT_QUOTES)); // remove ending incomplete tag (text can be shortened)
 			if ($shortened) {
-				$val .= "<i>...</i>";
+				$val .= "<i>&hellip;</i>";
 			}
 			if (class_exists('DOMDocument')) { // close all opened tags
 				$dom = new DOMDocument;
