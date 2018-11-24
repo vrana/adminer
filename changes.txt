@@ -1,7 +1,7 @@
 Adminer 4.7.0-dev:
 Simplify storing executed SQL queries to bookmarks
 Warn when using password with leading or trailing spaces
-Hide import from server if no path
+Hide import from server if importServerPath() returns an empty string
 Fix inline editing of empty cells (regression from 4.6.3)
 Allow adding more than two indexes and forign key columns at a time (regression from 4.4.0)
 Avoid overwriting existing tables when copying tables (bug #642)
