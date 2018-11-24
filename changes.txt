@@ -1,4 +1,4 @@
-Adminer 4.7.0-dev:
+Adminer 4.7.0 (released 2018-11-24):
 Simplify storing executed SQL queries to bookmarks
 Warn when using password with leading or trailing spaces
 Hide import from server if importServerPath() returns an empty string
