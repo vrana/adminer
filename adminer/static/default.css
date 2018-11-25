@@ -90,7 +90,7 @@ input.wayoff { left: -1000px; position: absolute; }
 .rtl input.wayoff { left: auto; right: -1000px; }
 .rtl #lang, .rtl #menu { left: auto; right: 0; }
 
-@media all and (max-device-width: 880px) {
+@media all and (max-width: 880px) {
 	.pages { left: auto; }
 	#menu { position: static; width: auto; }
 	#content { margin-left: 10px; }

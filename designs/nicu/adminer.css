@@ -368,7 +368,7 @@ td.nowrap {
     right: 0;
     left: auto;
 }
-@media all and (max-device-width:880px) {
+@media all and (max-width: 880px) {
     .pages {
         left: auto;
     }
