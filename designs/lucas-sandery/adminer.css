@@ -708,7 +708,7 @@ input[type="file"]:disabled::-moz-file-upload-button {
 	margin-left: 0;
 }
 
-@media all and (max-device-width: 880px) {
+@media all and (max-width: 880px) {
 	body {
 		padding-bottom: 2em;
 	}
