@@ -244,7 +244,7 @@ td, th {
     border-color: #bbb;
     border-width: 0 1px 1px 0;
 }
-#tables a {
+#logins a, #tables a {
     height: 18px;
     line-height: 18px;
 }
@@ -270,7 +270,7 @@ a, a:visited {
     padding-bottom: 0;
     top: 0;
 }
-#tables a, #tables span {
+#logins a, #tables a, #tables span {
     background: #fafafa;
 }
 /*** Forms ***/

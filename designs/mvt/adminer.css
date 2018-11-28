@@ -557,7 +557,7 @@ table tbody input ~ a[href*="&edit="][href*="&where"] {
 	top: 0;
 }
 
-#tables {
+#logins, #tables {
 	padding: 0 0 0 5px;
 	margin: 0;
 	list-style: none;
@@ -588,7 +588,7 @@ table tbody input ~ a[href*="&edit="][href*="&where"] {
 	font-size: 11px;
 }
 
-#menu a, #tables .select {
+#menu a, #logins a, #tables .select {
 	display: inline-block;
 	vertical-align: middle;
 	margin-right: 5px
