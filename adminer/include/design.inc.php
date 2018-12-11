@@ -17,6 +17,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	$title_page = strip_tags($title_all . (SERVER != "" && SERVER != "localhost" ? h(" - " . SERVER) : "") . " - " . $adminer->name());
 	?>
 <!DOCTYPE html>
+<head>
 <html lang="<?php echo $LANG; ?>" dir="<?php echo lang('ltr'); ?>">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="robots" content="noindex">
@@ -31,7 +32,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <link rel="stylesheet" type="text/css" href="<?php echo h($css); ?>">
 <?php } ?>
 <?php } ?>
-
+</head>
 <body class="<?php echo lang('ltr'); ?> nojs">
 <?php
 	$filename = get_temp_dir() . "/adminer.version";
@@ -193,3 +194,6 @@ function page_footer($missing = "") {
 <?php
 	echo script("setupSubmitHighlight(document);");
 }
+?>
+</body>
+</html>
