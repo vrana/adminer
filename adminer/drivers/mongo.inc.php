@@ -526,7 +526,7 @@ if (isset($_GET["mongo"])) {
 								$op = '$regex';
 								break;
 							default:
-								continue;
+								continue 2;
 						}
 						if ($type == 'and') {
 							$data['$and'][] = array($col => array($op => $val));
