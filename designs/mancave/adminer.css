@@ -794,7 +794,7 @@ legend{
 }
 
 /* tables */
-#tables{
+#logins, #tables{
 	border-bottom: none;
 	line-height: 20px;
 	padding: 18px 0;
@@ -820,12 +820,21 @@ legend{
 	font-size: 14px;
 }
 
+#logins a {
+	display: block;
+	padding: 5px 18px;
+	line-height: 14px;
+	color: #F1E5B3;
+	font-size: 14px;
+}
+
 #tables a.select.active,
 #tables a.select:hover
 {
 	color: red;
 }
 
+#logins a:hover,
 #tables a[title]:hover,
 #tables a.active,
 #tables a.select:hover + a,

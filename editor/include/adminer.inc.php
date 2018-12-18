@@ -586,11 +586,11 @@ qsl('div').onclick = whisperClick;", "")
 				foreach ($servers[""] as $username => $password) {
 					if ($password !== null) {
 						if ($first) {
-							echo "<p id='logins'>";
+							echo "<ul id='logins'>";
 							echo script("mixin(qs('#logins'), {onmouseover: menuOver, onmouseout: menuOut});");
 							$first = false;
 						}
-						echo "<a href='" . h(auth_url($vendor, "", $username)) . "'>" . ($username != "" ? h($username) : "<i>" . lang('empty') . "</i>") . "</a><br>\n";
+						echo "<li><a href='" . h(auth_url($vendor, "", $username)) . "'>" . ($username != "" ? h($username) : "<i>" . lang('empty') . "</i>") . "</a>\n";
 					}
 				}
 			}

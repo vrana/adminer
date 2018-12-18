@@ -429,7 +429,7 @@ td, th {
 	border-width: 0 1px 1px 0;
 	font-size: 0.83em;   /* x-small;  font size */
 }
-#tables a {
+#logins a, #tables a {
 	height: 18px;
 	line-height: 18px;
 }
