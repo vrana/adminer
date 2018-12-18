@@ -1,5 +1,6 @@
 Adminer 4.7.1-dev:
 Add autocomplete attributes to login form
+PHP <5.4 compatibility even with ClickHouse enabled (regression from 4.7.0)
 
 Adminer 4.7.0 (released 2018-11-24):
 Simplify storing executed SQL queries to bookmarks
