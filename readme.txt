@@ -18,3 +18,29 @@ lang.php - Update translations
 tests/katalon.html - Katalon Automation Recorder test suite
 
 If downloaded from Git then run: git submodule update --init
+
+If you like to use adminer with (Docker)[https://www.docker.com/get-started], e.g. with a postgres image
+
+Example adminer-stack.yml for postgres:
+
+    version: '3.1'
+
+    services:
+
+      db:
+        image: postgres
+        restart: always
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+
+      adminer:
+        image: adminer
+        restart: always
+        ports:
+          - 8080:8080
+
+Run 
+    $ docker stack deploy -c adminer-stack.yml postgres (or docker-compose -f stack.yml up)
+    
+wait for it to initialize completely, and visit (swarm)[http://swarm-ip:8080], (localhost:8080)[http://localhost:8080], or your http://host-ip:8080 (as appropriate).
