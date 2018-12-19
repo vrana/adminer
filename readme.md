@@ -47,4 +47,4 @@ Run
 
     $ docker stack deploy -c adminer-stack.yml postgres (or docker-compose -f stack.yml up)
     
-wait for it to initialize completely, and visit (swarm)[http://swarm-ip:8080], (localhost:8080)[http://localhost:8080], or your http://host-ip:8080 (as appropriate).
+wait for it to initialize completely, and visit [swarm](http://swarm-ip:8080), [localhost:8080](http://localhost:8080), or your http://host-ip:8080 (as appropriate).
