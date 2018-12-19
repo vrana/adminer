@@ -22,7 +22,7 @@ If downloaded from Git then run:
 
     $ git submodule update --init
 
-If you like to use adminer with (Docker)[https://www.docker.com/get-started], e.g. with a postgres image
+If you like to use adminer with [Docker](https://www.docker.com/get-started), e.g. with a "postgres image"
 
 Example [adminer-stack.yml](adminer-stack.yml) for [postgres](https://hub.docker.com/_/postgres/):
 
