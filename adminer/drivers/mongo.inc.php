@@ -620,7 +620,7 @@ if (isset($_GET["mongo"])) {
 		}
 		try {
 			$connection->_link = $connection->connect("mongodb://$server", $options);
-			if ($password != "") {
+			if ($password === "") {
 				$options["password"] = "";
 				try {
 					$connection->connect("mongodb://$server", $options);
