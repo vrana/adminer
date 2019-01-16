@@ -82,6 +82,18 @@ function messagesPrint() {
 
 
 
+/** Hide or show some login rows for selected driver	
+* @param HTMLSelectElement	
+*/	
+function loginDriver(driver) {	
+	var trs = parentTag(driver, 'table').rows;	
+	var disabled = /sqlite/.test(selectValue(driver));	
+	alterClass(trs[1], 'hidden', disabled);	// 1 - row with server
+	trs[1].getElementsByTagName('input')[0].disabled = disabled;	
+}
+
+
+
 var dbCtrl;
 var dbPrevious = {};
 
