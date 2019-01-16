@@ -17,7 +17,8 @@ function bodyLoad(version, maria) {
 						for (var i = 1; i < obj.length; i++) {
 							obj[i] = obj[i]
 								.replace(/\.html/, '/')
-								.replace(/(numeric)(-type-overview)/, (maria ? '$1-data$2' : '$&')) // MariaDB
+								.replace(/(numeric)(-type-overview)/, '$1-data$2')
+								.replace(/#statvar_.*/, '#$$1')
 							;
 						}
 					}
