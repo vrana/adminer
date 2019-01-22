@@ -3,14 +3,14 @@
  *
  * Klemens Häckel [http://clickdimension.wordpress.com/]
  *
- * update 2018-02
- * adapted for adminer 4.6.1
- *
  * new remaster based on style for WT-NMP 13.12
  *
  * Created by Miroslav Pokorný [http://fuch.cz].
  * Icons by Yusuke Kamiyamane [http://p.yusukekamiyamane.com/] (some of them were modified).
  * Slightly inspired by themes created by Martin Hořínek and Klemens Häckel.
+ *
+ * updated 2018-02 by Jan [http://cloux.org]
+ *  - fixes and usability improvements for Adminer 4.6.1
  *
  */
 
@@ -139,10 +139,15 @@ html>/**/body #menu li a[href*="&select="]:link:hover {
 
 /* Menu - Show structure */
 html>/**/body #menu li a[href*="&table="] {
-	width: 263px;
+	width: 280px;
 	float: left;
 }
-
+/* Hide "new version" link in the top bar */
+/*
+html>body #menu h1 a#version {
+	display: none;
+}
+*/
 
 /*** Tables and views ***/
 /* set default alignment to left */
@@ -388,7 +393,7 @@ h2 {
 	display: none;
 }
 #content {
-	margin-left: 325px;
+	margin-left: 355px;
 }
 .tabs {
 	margin: 12px auto 10px auto;
@@ -458,7 +463,7 @@ a:link:hover, a:visited:hover {
 #menu {
 	background-color: #f8f8f8;
 	box-shadow: 0px 0px 3px rgba(0,0,0,0.50) !important;
-	width: 310px;
+	width: 330px;
 	margin: 0;
 	top: 0;
 	padding-bottom: 0;
