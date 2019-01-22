@@ -3,6 +3,7 @@ Display the tables scrollbar (bug #647)
 Add autocomplete attributes to login form
 PHP <5.4 compatibility even with ClickHouse enabled (regression from 4.7.0)
 SQLite: Hide server field in login form
+Editor: Allow disabling boolean fields in PostgreSQL (bug #640)
 
 Adminer 4.7.0 (released 2018-11-24):
 Simplify storing executed SQL queries to bookmarks

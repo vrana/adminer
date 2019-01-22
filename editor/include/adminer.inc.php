@@ -485,7 +485,7 @@ qsl('div').onclick = whisperClick;", "")
 			);
 		}
 		if (like_bool($field)) {
-			return '<input type="checkbox" value="' . h($value ? $value : 1) . '"' . (preg_match('~^(1|t|true|y|yes|on)$~i', $value) ? ' checked' : '') . "$attrs>";
+			return '<input type="checkbox" value="1"' . (preg_match('~^(1|t|true|y|yes|on)$~i', $value) ? ' checked' : '') . "$attrs>";
 		}
 		$hint = "";
 		if (preg_match('~time~', $field["type"])) {
@@ -517,7 +517,7 @@ qsl('div').onclick = whisperClick;", "")
 		}
 		$return = ($field["type"] == "bit" && preg_match('~^[0-9]+$~', $value) ? $return : q($return));
 		if ($value == "" && like_bool($field)) {
-			$return = "0";
+			$return = "'0'";
 		} elseif ($value == "" && ($field["null"] || !preg_match('~char|text~', $field["type"]))) {
 			$return = "NULL";
 		} elseif (preg_match('~^(md5|sha1)$~', $function)) {
