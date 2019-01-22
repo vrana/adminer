@@ -460,14 +460,6 @@ function columnShow(checked, column) {
 	}
 }
 
-/** Hide column with default values in narrow window
-*/
-function editingHideDefaults() {
-	if (innerWidth < document.documentElement.scrollWidth) {
-		qs('#form')['defaults'].checked = false;
-	}
-}
-
 /** Display partition options
 * @this HTMLSelectElement
 */
@@ -489,14 +481,14 @@ function partitionNameChange() {
 }
 
 /** Show or hide comment fields
+* @param HTMLInputElement
 * @param [boolean] whether to focus Comment if checked
-* @this HTMLInputElement
 */
-function editingCommentsClick(focus) {
-	var comment = this.form['Comment'];
-	columnShow(this.checked, 6);
-	alterClass(comment, 'hidden', !this.checked);
-	if (focus && this.checked) {
+function editingCommentsClick(el, focus) {
+	var comment = el.form['Comment'];
+	columnShow(el.checked, 6);
+	alterClass(comment, 'hidden', !el.checked);
+	if (focus && el.checked) {
 		comment.focus();
 	}
 }
