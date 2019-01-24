@@ -1,4 +1,4 @@
-Adminer 4.7.1-dev:
+Adminer 4.7.1 (released 2019-01-24):
 Display the tables scrollbar (bug #647)
 Remember visible columns in Create Table form (bug #493)
 Add autocomplete attributes to login form
