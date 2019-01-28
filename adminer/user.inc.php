@@ -52,7 +52,7 @@ if ($_POST && !$error) {
 	} else {
 		$new_user = q($_POST["user"]) . "@" . q($_POST["host"]); // if $_GET["host"] is not set then $new_user is always different
 		$pass = $_POST["pass"];
-		if ($pass != '' && !$_POST["hashed"]) {
+		if ($pass != '' && !$_POST["hashed"] && !min_version(8)) {
 			// compute hash in a separate query so that plain text password is not saved to history
 			$pass = $connection->result("SELECT PASSWORD(" . q($pass) . ")");
 			$error = !$pass;
@@ -61,7 +61,7 @@ if ($_POST && !$error) {
 		$created = false;
 		if (!$error) {
 			if ($old_user != $new_user) {
-				$created = queries((min_version(5) ? "CREATE USER" : "GRANT USAGE ON *.* TO") . " $new_user IDENTIFIED BY PASSWORD " . q($pass));
+				$created = queries((min_version(5) ? "CREATE USER" : "GRANT USAGE ON *.* TO") . " $new_user IDENTIFIED BY " . (min_version(8) ? "" : "PASSWORD ") . q($pass));
 				$error = !$created;
 			} elseif ($pass != $old_pass) {
 				queries("SET PASSWORD FOR $new_user = " . q($pass));
@@ -136,7 +136,7 @@ if ($_POST) {
 <tr><th><?php echo lang('Username'); ?><td><input name="user" data-maxlength="80" value="<?php echo h($row["user"]); ?>" autocapitalize="off">
 <tr><th><?php echo lang('Password'); ?><td><input name="pass" id="pass" value="<?php echo h($row["pass"]); ?>" autocomplete="new-password">
 <?php if (!$row["hashed"]) { echo script("typePassword(qs('#pass'));"); } ?>
-<?php echo checkbox("hashed", 1, $row["hashed"], lang('Hashed'), "typePassword(this.form['pass'], this.checked);"); ?>
+<?php echo (min_version(8) ? "" : checkbox("hashed", 1, $row["hashed"], lang('Hashed'), "typePassword(this.form['pass'], this.checked);")); ?>
 </table>
 
 <?php

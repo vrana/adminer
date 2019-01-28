@@ -1,3 +1,6 @@
+Adminer 4.7.2-dev:
+MySQL: Fix creating users and changing password in MySQL 8 (bug #663)
+
 Adminer 4.7.1 (released 2019-01-24):
 Display the tables scrollbar (bug #647)
 Remember visible columns in Create Table form (bug #493)
