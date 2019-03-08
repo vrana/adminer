@@ -336,7 +336,7 @@ p code + a:visited:hover {
 
 #tables {
 	max-height: 100%;
-	margin: 0 -15px !important;
+	margin: 32px -15px !important;
 	position: absolute;
 	left: 15px;
 	right: 15px;
@@ -575,7 +575,7 @@ label {
 	top: 55px;
 	right: 100%;
 	z-index: 10;
-	margin-right: -331px;
+	margin-right: -340px;
 	line-height: normal;
 	padding: 0;
 	left: auto;

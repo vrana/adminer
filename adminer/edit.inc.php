@@ -1,7 +1,7 @@
 <?php
 $TABLE = $_GET["edit"];
 $fields = fields($TABLE);
-$where = (isset($_GET["select"]) ? (count($_POST["check"]) == 1 ? where_check($_POST["check"][0], $fields) : "") : where($_GET, $fields));
+$where = (isset($_GET["select"]) ? ($_POST["check"] && count($_POST["check"]) == 1 ? where_check($_POST["check"][0], $fields) : "") : where($_GET, $fields));
 $update = (isset($_GET["select"]) ? $_POST["edit"] : $where);
 foreach ($fields as $name => $field) {
 	if (!isset($field["privileges"][$update ? "update" : "insert"]) || $adminer->fieldName($field) == "") {
@@ -82,9 +82,13 @@ if ($_POST["save"]) {
 	}
 	if ($select) {
 		$result = $driver->select($TABLE, $select, array($where), $select, array(), (isset($_GET["select"]) ? 2 : 1));
-		$row = $result->fetch_assoc();
-		if (!$row) { // MySQLi returns null
-			$row = false;
+		if (!$result) {
+			$error = error();
+		} else {
+			$row = $result->fetch_assoc();
+			if (!$row) { // MySQLi returns null
+				$row = false;
+			}
 		}
 		if (isset($_GET["select"]) && (!$row || $result->fetch_assoc())) { // $result->num_rows != 1 isn't available in all drivers
 			$row = null;

@@ -16,6 +16,14 @@ function adminer() {
 	return $adminer;
 }
 
+/** Get Adminer version
+* @return string
+*/
+function version() {
+	global $VERSION;
+	return $VERSION;
+}
+
 /** Unescape database identifier
 * @param string text inside ``
 * @return string
@@ -38,7 +46,14 @@ function escape_string($val) {
 * @return string
 */
 function number($val) {
-  return preg_replace('~[^0-9]+~', '', $val);
+	return preg_replace('~[^0-9]+~', '', $val);
+}
+
+/** Get regular expression to match numeric types
+* @return string
+*/
+function number_type() {
+	return '((?<!o)int(?!er)|numeric|real|float|double|decimal|money)'; // not point, not interval
 }
 
 /** Disable magic_quotes_gpc
@@ -73,12 +88,62 @@ function bracket_escape($idf, $back = false) {
 	return strtr($idf, ($back ? array_flip($trans) : $trans));
 }
 
+/** Check if connection has at least the given version
+* @param string required version
+* @param string required MariaDB version
+* @param Min_DB defaults to $connection
+* @return bool
+*/
+function min_version($version, $maria_db = "", $connection2 = null) {
+	global $connection;
+	if (!$connection2) {
+		$connection2 = $connection;
+	}
+	$server_info = $connection2->server_info;
+	if ($maria_db && preg_match('~([\d.]+)-MariaDB~', $server_info, $match)) {
+		$server_info = $match[1];
+		$version = $maria_db;
+	}
+	return (version_compare($server_info, $version) >= 0);
+}
+
 /** Get connection charset
 * @param Min_DB
 * @return string
 */
 function charset($connection) {
-	return (version_compare($connection->server_info, "5.5.3") >= 0 ? "utf8mb4" : "utf8"); // SHOW CHARSET would require an extra query
+	return (min_version("5.5.3", 0, $connection) ? "utf8mb4" : "utf8"); // SHOW CHARSET would require an extra query
+}
+
+/** Return <script> element
+* @param string
+* @param string
+* @return string
+*/
+function script($source, $trailing = "\n") {
+	return "<script" . nonce() . ">$source</script>$trailing";
+}
+
+/** Return <script src> element
+* @param string
+* @return string
+*/
+function script_src($url) {
+	return "<script src='" . h($url) . "'" . nonce() . "></script>\n";
+}
+
+/** Get a nonce="" attribute with CSP nonce
+* @return string
+*/
+function nonce() {
+	return ' nonce="' . get_nonce() . '"';
+}
+
+/** Get a target="_blank" attribute
+* @return string
+*/
+function target_blank() {
+	return ' target="_blank" rel="noreferrer noopener"';
 }
 
 /** Escape for HTML
@@ -87,14 +152,6 @@ function charset($connection) {
 */
 function h($string) {
 	return str_replace("\0", "&#0;", htmlspecialchars($string, ENT_QUOTES, 'utf-8'));
-}
-
-/** Escape for TD
-* @param string
-* @return string
-*/
-function nbsp($string) {
-	return (trim($string) != "" ? h($string) : "&nbsp;");
 }
 
 /** Convert \n to <br>
@@ -119,8 +176,8 @@ function checkbox($name, $value, $checked, $label = "", $onclick = "", $class = 
 	$return = "<input type='checkbox' name='$name' value='" . h($value) . "'"
 		. ($checked ? " checked" : "")
 		. ($labelled_by ? " aria-labelledby='$labelled_by'" : "")
-		. ($onclick ? ' onclick="' . h($onclick) . '"' : '')
 		. ">"
+		. ($onclick ? script("qsl('input').onclick = function () { $onclick };", "") : "")
 	;
 	return ($label != "" || $class ? "<label" . ($class ? " class='$class'" : "") . ">$return" . h($label) . "</label>" : $return);
 }
@@ -160,9 +217,10 @@ function optionlist($options, $selected = null, $use_keys = false) {
 function html_select($name, $options, $value = "", $onchange = true, $labelled_by = "") {
 	if ($onchange) {
 		return "<select name='" . h($name) . "'"
-			. (is_string($onchange) ? ' onchange="' . h($onchange) . '"' : "")
 			. ($labelled_by ? " aria-labelledby='$labelled_by'" : "")
-			. ">" . optionlist($options, $value) . "</select>";
+			. ">" . optionlist($options, $value) . "</select>"
+			. (is_string($onchange) ? script("qsl('select').onchange = function () { $onchange };", "") : "")
+		;
 	}
 	$return = "";
 	foreach ($options as $key => $val) {
@@ -172,35 +230,42 @@ function html_select($name, $options, $value = "", $onchange = true, $labelled_b
 }
 
 /** Generate HTML <select> or <input> if $options are empty
- * @param string
- * @param array
- * @param string
- * @param string
- * @return string
- */
-function select_input($attrs, $options, $value = "", $placeholder = "") {
-	return ($options
-		? "<select$attrs><option value=''>$placeholder" . optionlist($options, $value, true) . "</select>"
-		: "<input$attrs size='10' value='" . h($value) . "' placeholder='$placeholder'>"
-	);
+* @param string
+* @param array
+* @param string
+* @param string
+* @param string
+* @return string
+*/
+function select_input($attrs, $options, $value = "", $onchange = "", $placeholder = "") {
+	$tag = ($options ? "select" : "input");
+	return "<$tag$attrs" . ($options
+		? "><option value=''>$placeholder" . optionlist($options, $value, true) . "</select>"
+		: " size='10' value='" . h($value) . "' placeholder='$placeholder'>"
+	) . ($onchange ? script("qsl('$tag').onchange = $onchange;", "") : ""); //! use oninput for input
 }
 
 /** Get onclick confirmation
+* @param string
+* @param string
 * @return string
 */
-function confirm() {
-	return " onclick=\"return confirm('" . lang('Are you sure?') . "');\"";
+function confirm($message = "", $selector = "qsl('input')") {
+	return script("$selector.onclick = function () { return confirm('" . ($message ? js_escape($message) : lang('Are you sure?')) . "'); };", "");
 }
 
 /** Print header for hidden fieldset (close by </div></fieldset>)
 * @param string
 * @param string
 * @param bool
-* @param string
 * @return null
 */
-function print_fieldset($id, $legend, $visible = false, $onclick = "") {
-	echo "<fieldset><legend><a href='#fieldset-$id' onclick=\"" . h($onclick) . "return !toggle('fieldset-$id');\">$legend</a></legend><div id='fieldset-$id'" . ($visible ? "" : " class='hidden'") . ">\n";
+function print_fieldset($id, $legend, $visible = false) {
+	echo "<fieldset><legend>";
+	echo "<a href='#fieldset-$id'>$legend</a>";
+	echo script("qsl('a').onclick = partial(toggle, 'fieldset-$id');", "");
+	echo "</legend>";
+	echo "<div id='fieldset-$id'" . ($visible ? "" : " class='hidden'") . ">\n";
 }
 
 /** Return class='active' if $bold is true
@@ -328,21 +393,23 @@ function get_vals($query, $column = 0) {
 /** Get keys from first column and values from second
 * @param string
 * @param Min_DB
-* @param float
+* @param bool
 * @return array
 */
-function get_key_vals($query, $connection2 = null, $timeout = 0) {
+function get_key_vals($query, $connection2 = null, $set_keys = true) {
 	global $connection;
 	if (!is_object($connection2)) {
 		$connection2 = $connection;
 	}
 	$return = array();
-	$connection2->timeout = $timeout;
 	$result = $connection2->query($query);
-	$connection2->timeout = 0;
 	if (is_object($result)) {
 		while ($row = $result->fetch_row()) {
-			$return[$row[0]] = $row[1];
+			if ($set_keys) {
+				$return[$row[0]] = $row[1];
+			} else {
+				$return[] = $row[0];
+			}
 		}
 	}
 	return $return;
@@ -352,7 +419,7 @@ function get_key_vals($query, $connection2 = null, $timeout = 0) {
 * @param string
 * @param Min_DB
 * @param string
-* @return array associative
+* @return array of associative arrays
 */
 function get_rows($query, $connection2 = null, $error = "<p class='error'>") {
 	global $connection;
@@ -412,7 +479,7 @@ function where($where, $fields = array()) {
 		$key = bracket_escape($key, 1); // 1 - back
 		$column = escape_key($key);
 		$return[] = $column
-			. ($jush == "sql" && preg_match('~^[0-9]*\\.[0-9]*$~', $val) ? " LIKE " . q(addcslashes($val, "%_\\"))
+			. ($jush == "sql" && preg_match('~^[0-9]*\.[0-9]*$~', $val) ? " LIKE " . q(addcslashes($val, "%_\\"))
 				: ($jush == "mssql" ? " LIKE " . q(preg_replace('~[_%[]~', '[\0]', $val))
 				: " = " . unconvert_field($fields[$key], q($val))
 			)) // LIKE because of floats but slow with ints, in MS SQL because of text
@@ -479,7 +546,7 @@ function cookie($name, $value, $lifetime = 2592000) { // 2592000 - 30 days
 	global $HTTPS;
 	return header("Set-Cookie: $name=" . urlencode($value)
 		. ($lifetime ? "; expires=" . gmdate("D, d M Y H:i:s", time() + $lifetime) . " GMT" : "")
-		. "; path=" . preg_replace('~\\?.*~', '', $_SERVER["REQUEST_URI"])
+		. "; path=" . preg_replace('~\?.*~', '', $_SERVER["REQUEST_URI"])
 		. ($HTTPS ? "; secure" : "")
 		. "; HttpOnly; SameSite=lax",
 		false);
@@ -494,12 +561,13 @@ function restart_session() {
 	}
 }
 
-/** Stop session if it would be possible to restart it later
+/** Stop session if possible
+* @param bool
 * @return null
 */
-function stop_session() {
-	if (!ini_bool("session.use_cookies")) {
-		session_write_close();
+function stop_session($force = false) {
+	if (!ini_bool("session.use_cookies") || ($force && @ini_set("session.use_cookies", false) !== false)) { // @ - may be disabled
+		session_write_close(); // improves concurrency if a user opens several pages at once, may be restarted later
 	}
 }
 
@@ -529,7 +597,7 @@ function set_session($key, $val) {
 */
 function auth_url($vendor, $server, $username, $db = null) {
 	global $drivers;
-	preg_match('~([^?]*)\\??(.*)~', remove_from_uri(implode("|", array_keys($drivers)) . "|username|" . ($db !== null ? "db|" : "") . session_name()), $match);
+	preg_match('~([^?]*)\??(.*)~', remove_from_uri(implode("|", array_keys($drivers)) . "|username|" . ($db !== null ? "db|" : "") . session_name()), $match);
 	return "$match[1]?"
 		. (sid() ? SID . "&" : "")
 		. ($vendor != "server" || $server != "" ? urlencode($vendor) . "=" . urlencode($server) . "&" : "")
@@ -584,10 +652,10 @@ function query_redirect($query, $location, $message, $redirect = true, $execute 
 	}
 	$sql = "";
 	if ($query) {
-		$sql = $adminer->messageQuery($query, $time);
+		$sql = $adminer->messageQuery($query, $time, $failed);
 	}
 	if ($failed) {
-		$error = error() . $sql;
+		$error = error() . $sql . script("messagesPrint();");
 		return false;
 	}
 	if ($redirect) {
@@ -689,7 +757,7 @@ function get_file($key, $decompress = false) {
 		}
 		$name = $file["name"][$key];
 		$tmp_name = $file["tmp_name"][$key];
-		$content = file_get_contents($decompress && preg_match('~\\.gz$~', $name)
+		$content = file_get_contents($decompress && preg_match('~\.gz$~', $name)
 			? "compress.zlib://$tmp_name"
 			: $tmp_name
 		); //! may not be reachable because of open_basedir
@@ -734,7 +802,7 @@ function repeat_pattern($pattern, $length) {
 */
 function is_utf8($val) {
 	// don't print control chars except \t\r\n
-	return (preg_match('~~u', $val) && !preg_match('~[\\0-\\x8\\xB\\xC\\xE-\\x1F]~', $val));
+	return (preg_match('~~u', $val) && !preg_match('~[\0-\x8\xB\xC\xE-\x1F]~', $val));
 }
 
 /** Shorten UTF-8 string
@@ -747,7 +815,7 @@ function shorten_utf8($string, $length = 80, $suffix = "") {
 	if (!preg_match("(^(" . repeat_pattern("[\t\r\n -\x{10FFFF}]", $length) . ")($)?)u", $string, $match)) { // ~s causes trash in $match[2] under some PHP versions, (.|\n) is slow
 		preg_match("(^(" . repeat_pattern("[\t\r\n -~]", $length) . ")($)?)", $string, $match);
 	}
-	return h($match[1]) . $suffix . (isset($match[2]) ? "" : "<i>...</i>");
+	return h($match[1]) . $suffix . (isset($match[2]) ? "" : "<i>…</i>");
 }
 
 /** Format decimal number
@@ -755,7 +823,7 @@ function shorten_utf8($string, $length = 80, $suffix = "") {
 * @return string
 */
 function format_number($val) {
-  return strtr(number_format($val, 0, ".", lang(',')), preg_split('~~u', lang('0123456789'), -1, PREG_SPLIT_NO_EMPTY));
+	return strtr(number_format($val, 0, ".", lang(',')), preg_split('~~u', lang('0123456789'), -1, PREG_SPLIT_NO_EMPTY));
 }
 
 /** Generate friendly URL
@@ -770,9 +838,10 @@ function friendly_url($val) {
 /** Print hidden fields
 * @param array
 * @param array
-* @return null
+* @return bool
 */
 function hidden_fields($process, $ignore = array()) {
+	$return = false;
 	while (list($key, $val) = each($process)) {
 		if (!in_array($key, $ignore)) {
 			if (is_array($val)) {
@@ -780,10 +849,12 @@ function hidden_fields($process, $ignore = array()) {
 					$process[$key . "[$k]"] = $v;
 				}
 			} else {
+				$return = true;
 				echo '<input type="hidden" name="' . h($key) . '" value="' . h($val) . '">';
 			}
 		}
 	}
+	return $return;
 }
 
 /** Print hidden fields for GET forms
@@ -847,7 +918,7 @@ function enum_input($type, $attrs, $field, $value, $empty = null) {
 * @return null
 */
 function input($field, $value, $function) {
-	global $connection, $types, $adminer, $jush;
+	global $types, $adminer, $jush;
 	$name = h(bracket_escape($field["field"]));
 	echo "<td class='function'>";
 	if (is_array($value) && !$function) {
@@ -865,37 +936,30 @@ function input($field, $value, $function) {
 	$functions = (isset($_GET["select"]) || $reset ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
 	$attrs = " name='fields[$name]'";
 	if ($field["type"] == "enum") {
-		echo nbsp($functions[""]) . "<td>" . $adminer->editInput($_GET["edit"], $field, $attrs, $value);
+		echo h($functions[""]) . "<td>" . $adminer->editInput($_GET["edit"], $field, $attrs, $value);
 	} else {
-		$first = 0;
-		foreach ($functions as $key => $val) {
-			if ($key === "" || !$val) {
-				break;
-			}
-			$first++;
-		}
-		$onchange = ($first ? " onchange=\"var f = this.form['function[" . h(js_escape(bracket_escape($field["field"]))) . "]']; if ($first > f.selectedIndex) f.selectedIndex = $first;\" onkeyup='keyupChange.call(this);'" : "");
-		$attrs .= $onchange;
 		$has_function = (in_array($function, $functions) || isset($functions[$function]));
 		echo (count($functions) > 1
-			? "<select name='function[$name]' onchange='functionChange(this);'" . on_help("getTarget(event).value.replace(/^SQL\$/, '')", 1) . ">" . optionlist($functions, $function === null || $has_function ? $function : "") . "</select>"
-			: nbsp(reset($functions))
+			? "<select name='function[$name]'>" . optionlist($functions, $function === null || $has_function ? $function : "") . "</select>"
+				. on_help("getTarget(event).value.replace(/^SQL\$/, '')", 1)
+				. script("qsl('select').onchange = functionChange;", "")
+			: h(reset($functions))
 		) . '<td>';
 		$input = $adminer->editInput($_GET["edit"], $field, $attrs, $value); // usage in call is without a table
 		if ($input != "") {
 			echo $input;
 		} elseif (preg_match('~bool~', $field["type"])) {
 			echo "<input type='hidden'$attrs value='0'>" .
-				"<input type='checkbox'" . (in_array(strtolower($value), array('1',  't',  'true',  'y',  'yes',  'on')) ? " checked='checked'" : "") . "$attrs value='1'>";
+				"<input type='checkbox'" . (preg_match('~^(1|t|true|y|yes|on)$~i', $value) ? " checked='checked'" : "") . "$attrs value='1'>";
 		} elseif ($field["type"] == "set") { //! 64 bits
 			preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
 			foreach ($matches[1] as $i => $val) {
 				$val = stripcslashes(str_replace("''", "'", $val));
 				$checked = (is_int($value) ? ($value >> $i) & 1 : in_array($val, explode(",", $value), true));
-				echo " <label><input type='checkbox' name='fields[$name][$i]' value='" . (1 << $i) . "'" . ($checked ? ' checked' : '') . "$onchange>" . h($adminer->editVal($val, $field)) . '</label>';
+				echo " <label><input type='checkbox' name='fields[$name][$i]' value='" . (1 << $i) . "'" . ($checked ? ' checked' : '') . ">" . h($adminer->editVal($val, $field)) . '</label>';
 			}
 		} elseif (preg_match('~blob|bytea|raw|file~', $field["type"]) && ini_bool("file_uploads")) {
-			echo "<input type='file' name='fields-$name'$onchange>";
+			echo "<input type='file' name='fields-$name'>";
 		} elseif (($text = preg_match('~text|lob~', $field["type"])) || preg_match("~\n~", $value)) {
 			if ($text && $jush != "sqlite") {
 				$attrs .= " cols='50' rows='12'";
@@ -908,19 +972,30 @@ function input($field, $value, $function) {
 			echo "<textarea$attrs cols='50' rows='12' class='jush-js'>" . h($value) . '</textarea>';
 		} else {
 			// int(3) is only a display hint
-			$maxlength = (!preg_match('~int~', $field["type"]) && preg_match('~^(\\d+)(,(\\d+))?$~', $field["length"], $match) ? ((preg_match("~binary~", $field["type"]) ? 2 : 1) * $match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) : ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0));
-			if ($jush == 'sql' && $connection->server_info >= 5.6 && preg_match('~time~', $field["type"])) {
+			$maxlength = (!preg_match('~int~', $field["type"]) && preg_match('~^(\d+)(,(\d+))?$~', $field["length"], $match) ? ((preg_match("~binary~", $field["type"]) ? 2 : 1) * $match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0)) : ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0));
+			if ($jush == 'sql' && min_version(5.6) && preg_match('~time~', $field["type"])) {
 				$maxlength += 7; // microtime
 			}
 			// type='date' and type='time' display localized value which may be confusing, type='datetime' uses 'T' as date and time separator
 			echo "<input"
-				. ((!$has_function || $function === "") && preg_match('~(?<!o)int~', $field["type"]) && !preg_match('~\[\]~', $field["full_type"]) ? " type='number'" : "")
+				. ((!$has_function || $function === "") && preg_match('~(?<!o)int(?!er)~', $field["type"]) && !preg_match('~\[\]~', $field["full_type"]) ? " type='number'" : "")
 				. " value='" . h($value) . "'" . ($maxlength ? " data-maxlength='$maxlength'" : "")
 				. (preg_match('~char|binary~', $field["type"]) && $maxlength > 20 ? " size='40'" : "")
 				. "$attrs>"
 			;
 		}
 		echo $adminer->editHint($_GET["edit"], $field, $value);
+		// skip 'original'
+		$first = 0;
+		foreach ($functions as $key => $val) {
+			if ($key === "" || !$val) {
+				break;
+			}
+			$first++;
+		}
+		if ($first) {
+			echo script("mixin(qsl('td'), {onchange: partial(skipOriginal, $first), oninput: function () { this.onchange(); }});");
+		}
 	}
 }
 
@@ -929,7 +1004,7 @@ function input($field, $value, $function) {
 * @return string or false to leave the original value
 */
 function process_input($field) {
-	global $adminer;
+	global $adminer, $driver;
 	$idf = bracket_escape($field["field"]);
 	$function = $_POST["function"][$idf];
 	$value = $_POST["fields"][$idf];
@@ -946,7 +1021,7 @@ function process_input($field) {
 		return null;
 	}
 	if ($function == "orig") {
-		return ($field["on_update"] == "CURRENT_TIMESTAMP" ? idf_escape($field["field"]) : false);
+		return (preg_match('~^CURRENT_TIMESTAMP~i', $field["on_update"]) ? idf_escape($field["field"]) : false);
 	}
 	if ($function == "NULL") {
 		return "NULL";
@@ -967,7 +1042,7 @@ function process_input($field) {
 		if (!is_string($file)) {
 			return false; //! report errors
 		}
-		return q($file);
+		return $driver->quoteBinary($file);
 	}
 	return $adminer->processInput($field, $value, $function);
 }
@@ -1004,25 +1079,20 @@ function fields_from_edit() {
 */
 function search_tables() {
 	global $adminer, $connection;
-	$_GET["where"][0]["op"] = "LIKE %%";
 	$_GET["where"][0]["val"] = $_POST["query"];
-	$found = false;
+	$sep = "<ul>\n";
 	foreach (table_status('', true) as $table => $table_status) {
 		$name = $adminer->tableName($table_status);
 		if (isset($table_status["Engine"]) && $name != "" && (!$_POST["tables"] || in_array($table, $_POST["tables"]))) {
 			$result = $connection->query("SELECT" . limit("1 FROM " . table($table), " WHERE " . implode(" AND ", $adminer->selectSearchProcess(fields($table), array())), 1));
 			if (!$result || $result->fetch_row()) {
-				if (!$found) {
-					echo "<ul>\n";
-					$found = true;
-				}
-				echo "<li>" . ($result
-					? "<a href='" . h(ME . "select=" . urlencode($table) . "&where[0][op]=" . urlencode($_GET["where"][0]["op"]) . "&where[0][val]=" . urlencode($_GET["where"][0]["val"])) . "'>$name</a>\n"
-					: "$name: <span class='error'>" . error() . "</span>\n");
+				$print = "<a href='" . h(ME . "select=" . urlencode($table) . "&where[0][op]=" . urlencode($_GET["where"][0]["op"]) . "&where[0][val]=" . urlencode($_GET["where"][0]["val"])) . "'>$name</a>";
+				echo "$sep<li>" . ($result ? $print : "<p class='error'>$print: " . error()) . "\n";
+				$sep = "";
 			}
 		}
 	}
-	echo ($found ? "</ul>" : "<p class='message'>" . lang('No tables.')) . "\n";
+	echo ($sep ? "<p class='message'>" . lang('No tables.') : "</ul>") . "\n";
 }
 
 /** Send headers for export
@@ -1085,6 +1155,35 @@ function get_temp_dir() {
 	return $return;
 }
 
+/** Open and exclusively lock a file
+* @param string
+* @return resource or null for error
+*/
+function file_open_lock($filename) {
+	$fp = @fopen($filename, "r+"); // @ - may not exist
+	if (!$fp) { // c+ is available since PHP 5.2.6
+		$fp = @fopen($filename, "w"); // @ - may not be writable
+		if (!$fp) {
+			return;
+		}
+		chmod($filename, 0660);
+	}
+	flock($fp, LOCK_EX);
+	return $fp;
+}
+
+/** Write and unlock a file
+* @param resource
+* @param string
+*/
+function file_write_unlock($fp, $data) {
+	rewind($fp);
+	fwrite($fp, $data);
+	ftruncate($fp, strlen($data));
+	flock($fp, LOCK_UN);
+	fclose($fp);
+}
+
 /** Read password from file adminer.key in temporary directory or create one
 * @param bool
 * @return string or false if the file can not be created
@@ -1120,7 +1219,7 @@ function rand_string() {
 * @return string HTML
 */
 function select_value($val, $link, $field, $text_length) {
-	global $adminer, $HTTPS;
+	global $adminer;
 	if (is_array($val)) {
 		$return = "";
 		foreach ($val as $k => $v) {
@@ -1138,18 +1237,13 @@ function select_value($val, $link, $field, $text_length) {
 		if (is_mail($val)) {
 			$link = "mailto:$val";
 		}
-		if ($protocol = is_url($val)) {
-			$link = (($protocol == "http" && $HTTPS) || preg_match('~WebKit|Firefox~i', $_SERVER["HTTP_USER_AGENT"]) // WebKit supports noreferrer since 2009, Firefox since version 38
-				? $val // HTTP links from HTTPS pages don't receive Referer automatically
-				: "https://www.adminer.org/redirect/?url=" . urlencode($val) // intermediate page to hide Referer
-			);
+		if (is_url($val)) {
+			$link = $val; // IE 11 and all modern browsers hide referrer
 		}
 	}
 	$return = $adminer->editVal($val, $field);
 	if ($return !== null) {
-		if ($return === "") { // === - may be int
-			$return = "&nbsp;";
-		} elseif (!is_utf8($return)) {
+		if (!is_utf8($return)) {
 			$return = "\0"; // htmlspecialchars of binary data returns an empty string
 		} elseif ($text_length != "" && is_shortable($field)) {
 			$return = shorten_utf8($return, max(0, +$text_length)); // usage of LEFT() would reduce traffic but complicate query - expected average speedup: .001 s VS .01 s on local network
@@ -1173,11 +1267,11 @@ function is_mail($email) {
 
 /** Check whether the string is URL address
 * @param string
-* @return string "http", "https" or ""
+* @return bool
 */
 function is_url($string) {
 	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component //! IDN
-	return (preg_match("~^(https?)://($domain?\\.)+$domain(:\\d+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string, $match) ? strtolower($match[1]) : ""); //! restrict path, query and fragment characters
+	return preg_match("~^(https?)://($domain?\\.)+$domain(:\\d+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string); //! restrict path, query and fragment characters
 }
 
 /** Check if field should be shortened
@@ -1185,7 +1279,7 @@ function is_url($string) {
 * @return bool
 */
 function is_shortable($field) {
-	return preg_match('~char|text|lob|geometry|point|linestring|polygon|string|bytea~', $field["type"]);
+	return preg_match('~char|text|json|lob|geometry|point|linestring|polygon|string|bytea~', $field["type"]);
 }
 
 /** Get query to compute number of found rows
@@ -1200,7 +1294,7 @@ function count_rows($table, $where, $is_group, $group) {
 	$query = " FROM " . table($table) . ($where ? " WHERE " . implode(" AND ", $where) : "");
 	return ($is_group && ($jush == "sql" || count($group) == 1)
 		? "SELECT COUNT(DISTINCT " . implode(", ", $group) . ")$query"
-		: "SELECT COUNT(*)" . ($is_group ? " FROM (SELECT 1$query$group_by) x" : $query)
+		: "SELECT COUNT(*)" . ($is_group ? " FROM (SELECT 1$query GROUP BY " . implode(", ", $group) . ") x" : $query)
 	);
 }
 
@@ -1209,16 +1303,17 @@ function count_rows($table, $where, $is_group, $group) {
 * @return array of strings
 */
 function slow_query($query) {
-	global $adminer, $token;
+	global $adminer, $token, $driver;
 	$db = $adminer->database();
 	$timeout = $adminer->queryTimeout();
-	if (support("kill") && is_object($connection2 = connect()) && ($db == "" || $connection2->select_db($db))) {
+	$slow_query = $driver->slowQuery($query, $timeout);
+	if (!$slow_query && support("kill") && is_object($connection2 = connect()) && ($db == "" || $connection2->select_db($db))) {
 		$kill = $connection2->result(connection_id()); // MySQL and MySQLi can use thread_id but it's not in PDO_MySQL
 		?>
-<script type="text/javascript">
+<script<?php echo nonce(); ?>>
 var timeout = setTimeout(function () {
 	ajax('<?php echo js_escape(ME); ?>script=kill', function () {
-	}, 'token=<?php echo $token; ?>&kill=<?php echo $kill; ?>');
+	}, 'kill=<?php echo $kill; ?>&token=<?php echo $token; ?>');
 }, <?php echo 1000 * $timeout; ?>);
 </script>
 <?php
@@ -1227,13 +1322,13 @@ var timeout = setTimeout(function () {
 	}
 	ob_flush();
 	flush();
-	$return = @get_key_vals($query, $connection2, $timeout); // @ - may be killed
+	$return = @get_key_vals(($slow_query ? $slow_query : $query), $connection2, false); // @ - may be killed
 	if ($connection2) {
-		echo "<script type='text/javascript'>clearTimeout(timeout);</script>\n";
+		echo script("clearTimeout(timeout);");
 		ob_flush();
 		flush();
 	}
-	return array_keys($return);
+	return $return;
 }
 
 /** Generate BREACH resistant CSRF token
@@ -1296,7 +1391,7 @@ function lzw_decompress($binary) {
 * @return string
 */
 function on_help($command, $side = 0) {
-	return " onmouseover='helpMouseover(this, event, " . h($command) . ", $side);' onmouseout='helpMouseout(this, event);'";
+	return script("mixin(qsl('select, input'), {onmouseover: function (event) { helpMouseover.call(this, event, $command, $side) }, onmouseout: helpMouseout});", "");
 }
 
 /** Print edit data form
@@ -1324,7 +1419,7 @@ function edit_form($TABLE, $fields, $row, $update) {
 	if (!$fields) {
 		echo "<p class='error'>" . lang('You have no privileges to update this table.') . "\n";
 	} else {
-		echo "<table cellspacing='0' onkeydown='return editingKeydown(event);'>\n";
+		echo "<table cellspacing='0' class='layout'>" . script("qsl('table').onkeydown = editingKeydown;");
 
 		foreach ($fields as $name => $field) {
 			echo "<tr><th>" . $adminer->fieldName($field);
@@ -1350,12 +1445,12 @@ function edit_form($TABLE, $fields, $row, $update) {
 			}
 			$function = ($_POST["save"]
 				? (string) $_POST["function"][$name]
-				: ($update && $field["on_update"] == "CURRENT_TIMESTAMP"
+				: ($update && preg_match('~^CURRENT_TIMESTAMP~i', $field["on_update"])
 					? "now"
 					: ($value === false ? null : ($value !== null ? '' : 'NULL'))
 				)
 			);
-			if (preg_match("~time~", $field["type"]) && $value == "CURRENT_TIMESTAMP") {
+			if (preg_match("~time~", $field["type"]) && preg_match('~^CURRENT_TIMESTAMP~i', $value)) {
 				$value = "";
 				$function = "now";
 			}
@@ -1364,7 +1459,8 @@ function edit_form($TABLE, $fields, $row, $update) {
 		}
 		if (!support("table")) {
 			echo "<tr>"
-				. "<th><input name='field_keys[]' onkeyup='keyupChange.call(this);' onchange='fieldChange(this);' value=''>" // needs empty value for keyupChange()
+				. "<th><input name='field_keys[]'>"
+				. script("qsl('input').oninput = fieldChange;")
 				. "<td class='function'>" . html_select("field_funs[]", $adminer->editFunctions(array("null" => isset($_GET["select"]))))
 				. "<td><input name='field_vals[]'>"
 				. "\n"
@@ -1377,13 +1473,14 @@ function edit_form($TABLE, $fields, $row, $update) {
 		echo "<input type='submit' value='" . lang('Save') . "'>\n";
 		if (!isset($_GET["select"])) {
 			echo "<input type='submit' name='insert' value='" . ($update
-				? lang('Save and continue edit') . "' onclick='return !ajaxForm(this.form, \"" . lang('Saving') . '...", this)'
+				? lang('Save and continue edit')
 				: lang('Save and insert next')
 			) . "' title='Ctrl+Shift+Enter'>\n";
+			echo ($update ? script("qsl('input').onclick = function () { return !ajaxForm(this.form, '" . lang('Saving') . "…', this); };") : "");
 		}
 	}
-	echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "'" . confirm() . ">\n"
-		: ($_POST || !$fields ? "" : "<script type='text/javascript'>focus(document.getElementById('form').getElementsByTagName('td')[1].firstChild);</script>\n")
+	echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "'>" . confirm() . "\n"
+		: ($_POST || !$fields ? "" : script("focus(qsa('td', qs('#form'))[1].firstChild);"))
 	);
 	if (isset($_GET["select"])) {
 		hidden_fields(array("check" => (array) $_POST["check"], "clone" => $_POST["clone"], "all" => $_POST["all"]));

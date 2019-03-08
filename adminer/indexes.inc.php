@@ -2,10 +2,10 @@
 $TABLE = $_GET["indexes"];
 $index_types = array("PRIMARY", "UNIQUE", "INDEX");
 $table_status = table_status($TABLE, true);
-if (preg_match('~MyISAM|M?aria' . ($connection->server_info >= 5.6 ? '|InnoDB' : '') . '~i', $table_status["Engine"])) {
+if (preg_match('~MyISAM|M?aria' . (min_version(5.6, '10.0.5') ? '|InnoDB' : '') . '~i', $table_status["Engine"])) {
 	$index_types[] = "FULLTEXT";
 }
-if (preg_match('~MyISAM|M?aria' . ($connection->server_info >= 5.7 ? '|InnoDB' : '') . '~i', $table_status["Engine"])) {
+if (preg_match('~MyISAM|M?aria' . (min_version(5.7, '10.2.2') ? '|InnoDB' : '') . '~i', $table_status["Engine"])) {
 	$index_types[] = "SPATIAL";
 }
 $indexes = indexes($TABLE);
@@ -94,12 +94,13 @@ if (!$row) {
 ?>
 
 <form action="" method="post">
+<div class="scrollable">
 <table cellspacing="0" class="nowrap">
 <thead><tr>
 <th id="label-type"><?php echo lang('Index Type'); ?>
 <th><input type="submit" class="wayoff"><?php echo lang('Column (length)'); ?>
 <th id="label-name"><?php echo lang('Name'); ?>
-<th><noscript><input type='image' class='icon' name='add[0]' src='../adminer/static/plus.gif' alt='+' title='<?php echo lang('Add next'); ?>'></noscript>&nbsp;
+<th><noscript><?php echo "<input type='image' class='icon' name='add[0]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>"; ?></noscript>
 </thead>
 <?php
 if ($primary) {
@@ -113,30 +114,32 @@ if ($primary) {
 $j = 1;
 foreach ($row["indexes"] as $index) {
 	if (!$_POST["drop_col"] || $j != key($_POST["drop_col"])) {
-		echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) ? "indexesAddRow(this);" : 1), "label-type");
+		echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) ? "indexesAddRow.call(this);" : 1), "label-type");
 
 		echo "<td>";
 		ksort($index["columns"]);
 		$i = 1;
 		foreach ($index["columns"] as $key => $column) {
 			echo "<span>" . select_input(
-				" name='indexes[$j][columns][$i]' onchange=\"" . ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . "(this, '" . h(js_escape($jush == "sql" ? "" : $_GET["indexes"] . "_")) . "');\" title='" . lang('Column') . "'",
+				" name='indexes[$j][columns][$i]' title='" . lang('Column') . "'",
 				($fields ? array_combine($fields, $fields) : $fields),
-				$column
+				$column,
+				"partial(" . ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . ", '" . js_escape($jush == "sql" ? "" : $_GET["indexes"] . "_") . "')"
 			);
 			echo ($jush == "sql" || $jush == "mssql" ? "<input type='number' name='indexes[$j][lengths][$i]' class='size' value='" . h($index["lengths"][$key]) . "' title='" . lang('Length') . "'>" : "");
-			echo ($jush != "sql" ? checkbox("indexes[$j][descs][$i]", 1, $index["descs"][$key], lang('descending')) : "");
+			echo (support("descidx") ? checkbox("indexes[$j][descs][$i]", 1, $index["descs"][$key], lang('descending')) : "");
 			echo " </span>";
 			$i++;
 		}
 
 		echo "<td><input name='indexes[$j][name]' value='" . h($index["name"]) . "' autocapitalize='off' aria-labelledby='label-name'>\n";
-		echo "<td><input type='image' class='icon' name='drop_col[$j]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "' onclick=\"return !editingRemoveRow(this, 'indexes\$1[type]');\">\n";
+		echo "<td><input type='image' class='icon' name='drop_col[$j]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "'>" . script("qsl('input').onclick = partial(editingRemoveRow, 'indexes\$1[type]');");
 	}
 	$j++;
 }
 ?>
 </table>
+</div>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <input type="hidden" name="token" value="<?php echo $token; ?>">

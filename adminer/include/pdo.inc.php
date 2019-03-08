@@ -12,9 +12,9 @@ if (extension_loaded('pdo')) {
 			}
 		}
 		
-		function dsn($dsn, $username, $password) {
+		function dsn($dsn, $username, $password, $options = array()) {
 			try {
-				parent::__construct($dsn, $username, $password);
+				parent::__construct($dsn, $username, $password, $options);
 			} catch (Exception $ex) {
 				auth_error(h($ex->getMessage()));
 			}
@@ -29,6 +29,9 @@ if (extension_loaded('pdo')) {
 			$this->error = "";
 			if (!$result) {
 				list(, $this->errno, $this->error) = $this->errorInfo();
+				if (!$this->error) {
+					$this->error = lang('Unknown error.');
+				}
 				return false;
 			}
 			$this->store_result($result);

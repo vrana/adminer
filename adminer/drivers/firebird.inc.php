@@ -147,8 +147,8 @@ if (isset($_GET["firebird"])) {
 		return $return;
 	}
 
-	function limit1($query, $where) {
-		return limit($query, $where, 1);
+	function limit1($table, $query, $where, $separator = "\n") {
+		return limit($query, $where, 1, 0, $separator);
 	}
 
 	function db_collation($db, $collations) {

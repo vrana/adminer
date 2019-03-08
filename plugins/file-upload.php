@@ -4,8 +4,8 @@
 /** Edit fields ending with "_path" by <input type="file"> and link to the uploaded files from select
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
-* @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
-* @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
+* @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
+* @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerFileUpload {
 	/** @access protected */
@@ -24,7 +24,7 @@ class AdminerFileUpload {
 
 	function editInput($table, $field, $attrs, $value) {
 		if (preg_match('~(.*)_path$~', $field["field"])) {
-			return "<input type='file' name='fields-$field[field]'>";
+			return "<input type='file'$attrs>";
 		}
 	}
 
@@ -45,7 +45,7 @@ class AdminerFileUpload {
 	}
 
 	function selectVal($val, &$link, $field, $original) {
-		if ($val != "&nbsp;" && preg_match('~(.*)_path$~', $field["field"], $regs)) {
+		if ($val != "" && preg_match('~(.*)_path$~', $field["field"], $regs)) {
 			$link = "$this->displayPath$_GET[select]/$regs[1]-$val";
 		}
 	}

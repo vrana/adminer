@@ -27,7 +27,7 @@
 		$query = $adminer->selectQueryBuild($select, $where, $group, $order, $limit, $page);
 		if (!$query) {
 			$query = "SELECT" . limit(
-				($_GET["page"] != "last" && +$limit && $group && $is_group && $jush == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . implode(", ", $select) . "\nFROM " . table($table),
+				($_GET["page"] != "last" && $limit != "" && $group && $is_group && $jush == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . implode(", ", $select) . "\nFROM " . table($table),
 				($where ? "\nWHERE " . implode(" AND ", $where) : "") . ($group && $is_group ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : ""),
 				($limit != "" ? +$limit : null),
 				($page ? $limit * $page : 0),
@@ -37,7 +37,7 @@
 		$start = microtime(true);
 		$return = $this->_conn->query($query);
 		if ($print) {
-			echo $adminer->selectQuery($query, format_time($start));
+			echo $adminer->selectQuery($query, $start, !$return);
 		}
 		return $return;
 	}
@@ -50,7 +50,7 @@
 	*/
 	function delete($table, $queryWhere, $limit = 0) {
 		$query = "FROM " . table($table);
-		return queries("DELETE" . ($limit ? limit1($query, $queryWhere) : " $query$queryWhere"));
+		return queries("DELETE" . ($limit ? limit1($table, $query, $queryWhere) : " $query$queryWhere"));
 	}
 	
 	/** Update data in table
@@ -67,7 +67,7 @@
 			$values[] = "$key = $val";
 		}
 		$query = table($table) . " SET$separator" . implode(",$separator", $values);
-		return queries("UPDATE" . ($limit ? limit1($query, $queryWhere) : " $query$queryWhere"));
+		return queries("UPDATE" . ($limit ? limit1($table, $query, $queryWhere, $separator) : " $query$queryWhere"));
 	}
 	
 	/** Insert data into table
@@ -99,12 +99,70 @@
 		return queries("BEGIN");
 	}
 	
+	/** Commit transaction
+	* @return bool
+	*/
 	function commit() {
 		return queries("COMMIT");
 	}
 	
+	/** Rollback transaction
+	* @return bool
+	*/
 	function rollback() {
 		return queries("ROLLBACK");
+	}
+	
+	/** Return query with a timeout
+	* @param string
+	* @param int seconds
+	* @return string or null if the driver doesn't support query timeouts
+	*/
+	function slowQuery($query, $timeout) {
+	}
+	
+	/** Convert column to be searchable
+	* @param string escaped column name
+	* @param array array("op" => , "val" => )
+	* @param array
+	* @return string
+	*/
+	function convertSearch($idf, $val, $field) {
+		return $idf;
+	}
+
+	/** Convert value returned by database to actual value
+	* @param string
+	* @param array
+	* @return string
+	*/
+	function value($val, $field) {
+		return (method_exists($this->_conn, 'value')
+			? $this->_conn->value($val, $field)
+			: (is_resource($val) ? stream_get_contents($val) : $val)
+		);
+	}
+
+	/** Quote binary string
+	* @param string
+	* @return string
+	*/
+	function quoteBinary($s) {
+		return q($s);
+	}
+	
+	/** Get warnings about the last command
+	* @return string HTML
+	*/
+	function warnings() {
+		return '';
+	}
+	
+	/** Get help link for table
+	* @param string
+	* @return string relative URL or null
+	*/
+	function tableHelp($name) {
 	}
 	
 }
