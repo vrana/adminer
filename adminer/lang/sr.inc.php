@@ -231,9 +231,9 @@ $translations = array(
 	'%d row(s)' => array('%d ред', '%d реда', '%d редова'),
 	'Page' => 'Страна',
 	'last' => 'последња',
-	'Loading'  => 'Учитавам',
-	'Load more data'  => 'Учитавам још података',
-	'whole result' => 'цео резултат',
+	'Loading' => 'Учитавам',
+	'Load more data' => 'Учитавам још података',
+	'Whole result' => 'Цео резултат',
 	'%d byte(s)' => array('%d бајт', '%d бајта', '%d бајтова'),
 
 	'Import' => 'Увоз',

@@ -3,8 +3,8 @@
 /** Expanded table structure output
 * @link https://www.adminer.org/plugins/#use
 * @author Matthew Gamble, https://www.matthewgamble.net/
-* @license http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
-* @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
+* @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
+* @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerTableStructure {
 
@@ -13,7 +13,8 @@ class AdminerTableStructure {
 	* @return bool
 	*/
 	function tableStructurePrint($fields) {
-		echo "<table cellspacing='0'>\n";
+		echo "<div class='scrollable'>\n";
+		echo "<table cellspacing='0' class='nowrap'>\n";
 		echo "<thead><tr><th>" . lang('Column') . "<th>" . lang('Type') . "<th>" . lang('Nullable') . "<th>" . lang('Default') . (support("comment") ? "<th>" . lang('Comment') : "") . "</thead>\n";
 		foreach ($fields as $field) {
 			echo "<tr" . odd() . "><th>" . h($field["field"]) . ($field["primary"] ? " (PRIMARY)" : "");
@@ -21,11 +22,12 @@ class AdminerTableStructure {
 			echo ($field["auto_increment"] ? " <i>" . lang('Auto Increment') . "</i>" : "");
 			echo ($field["collation"] ? " <i>" . h($field["collation"]) . "</i>" : "");
 			echo "<td>" . ($field["null"] ? lang('Yes') : lang('No'));
-			echo "<td>" . (isset($field["default"]) ? h($field["default"]) : "&nbsp;");
-			echo (support("comment") ? "<td>" . nbsp($field["comment"]) : "");
+			echo "<td>" . h($field["default"]);
+			echo (support("comment") ? "<td>" . h($field["comment"]) : "");
 			echo "\n";
 		}
 		echo "</table>\n";
+		echo "</div>\n";
 		return true;
 	}
 }

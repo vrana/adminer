@@ -6,5 +6,5 @@ header("Content-Disposition: attachment; filename=" . friendly_url("$TABLE-" . i
 $select = array(idf_escape($_GET["field"]));
 $result = $driver->select($TABLE, $select, array(where($_GET, $fields)), $select);
 $row = ($result ? $result->fetch_row() : array());
-echo $row[0];
+echo $driver->value($row[0], $fields[$_GET["field"]]);
 exit; // don't output footer

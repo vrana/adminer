@@ -1,0 +1,1608 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+	<title>katalon</title>
+</head>
+<body>
+<!-- The tests don't work with jush-textarea.js. Delete it first. -->
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Login</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/coverage.php?coverage=0<datalist><option>/coverage.php?coverage=0</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC<datalist><option>/adminer/?username=ODBC</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=lang<datalist><option>name=lang</option></datalist></td>
+	<td>label=English</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=#lang &gt; input[type="submit"]<datalist><option>css=#lang &gt; input[type="submit"]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Logged as<datalist><option>Logged as</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=SQL command<datalist><option>link=SQL command</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;sql=DROP+DATABASE+IF+EXISTS+adminer_test<datalist><option>/adminer/?username=ODBC&amp;sql=DROP+DATABASE+IF+EXISTS+adminer_test</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Execute']<datalist><option>//input[@value='Execute']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Query executed OK<datalist><option>Query executed OK</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Create database</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC<datalist><option>/adminer/?username=ODBC</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Create database<datalist><option>link=Create database</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name<datalist><option>name</option></datalist></td>
+	<td>adminer_test</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>collation<datalist><option>collation</option></datalist></td>
+	<td>label=utf8_general_ci</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Database has been created.<datalist><option>Database has been created.</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Create table</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;db=adminer_test<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Create table<datalist><option>link=Create table</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name<datalist><option>name</option></datalist></td>
+	<td>interprets</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>Engine<datalist><option>Engine</option></datalist></td>
+	<td>label=InnoDB</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[1][field]<datalist><option>fields[1][field]</option></datalist></td>
+	<td>id</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>fields[1][type]<datalist><option>fields[1][type]</option></datalist></td>
+	<td>label=int</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@name='auto_increment_col' and @value='1']<datalist><option>//input[@name='auto_increment_col' and @value='1']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[1.1][field]<datalist><option>fields[1.1][field]</option></datalist></td>
+	<td>name</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>fields[1.1][type]<datalist><option>fields[1.1][type]</option></datalist></td>
+	<td>label=varchar</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[1.1][length]<datalist><option>fields[1.1][length]</option></datalist></td>
+	<td>50</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=comments<datalist><option>name=comments</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[1.1][comment]<datalist><option>fields[1.1][comment]</option></datalist></td>
+	<td>Interpret</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>Comment<datalist><option>Comment</option></datalist></td>
+	<td>Interprets</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Table has been created.<datalist><option>Table has been created.</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Create index</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Alter indexes<datalist><option>link=Alter indexes</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>indexes[2][type]<datalist><option>indexes[2][type]</option></datalist></td>
+	<td>label=PRIMARY</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>indexes[2][columns][1]<datalist><option>indexes[2][columns][1]</option></datalist></td>
+	<td>label=name</td>
+</tr>
+<tr>
+	<td>verifyValue</td>
+	<td>name=indexes[2][name]<datalist><option>name=indexes[2][name]</option></datalist></td>
+	<td>name</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Multiple primary key defined<datalist><option>Multiple primary key defined</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>indexes[2][type]<datalist><option>indexes[2][type]</option></datalist></td>
+	<td>label=INDEX</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Indexes have been altered.<datalist><option>Indexes have been altered.</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Partitioning</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Alter table<datalist><option>link=Alter table</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>partition_by<datalist><option>partition_by</option></datalist></td>
+	<td>label=HASH</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Partition by<datalist><option>link=Partition by</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>partition<datalist><option>partition</option></datalist></td>
+	<td>id</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>partitions<datalist><option>partitions</option></datalist></td>
+	<td>2</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Table has been altered.<datalist><option>Table has been altered.</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Alter table<datalist><option>link=Alter table</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>partition_by<datalist><option>partition_by</option></datalist></td>
+	<td>label=RANGE</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>partition_values[]<datalist><option>partition_values[]</option></datalist></td>
+	<td>10</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Table has been altered.<datalist><option>Table has been altered.</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Alter table<datalist><option>link=Alter table</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>partition_by<datalist><option>partition_by</option></datalist></td>
+	<td>label=</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Table has been altered.<datalist><option>Table has been altered.</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Create table 2</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets&amp;lang=en<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets&amp;lang=en</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Create table<datalist><option>link=Create table</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name<datalist><option>name</option></datalist></td>
+	<td>albums</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[1][field]<datalist><option>fields[1][field]</option></datalist></td>
+	<td>id</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>fields[1][type]<datalist><option>fields[1][type]</option></datalist></td>
+	<td>label=int</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@name='auto_increment_col' and @value='1']<datalist><option>//input[@name='auto_increment_col' and @value='1']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[1.1][field]<datalist><option>fields[1.1][field]</option></datalist></td>
+	<td>interpret</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>fields[1.1][type]<datalist><option>fields[1.1][type]</option></datalist></td>
+	<td>label=int</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[1.11][field]<datalist><option>fields[1.11][field]</option></datalist></td>
+	<td>title</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>fields[1.11][type]<datalist><option>fields[1.11][type]</option></datalist></td>
+	<td>label=varchar</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[1.11][length]<datalist><option>fields[1.11][length]</option></datalist></td>
+	<td>50</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=comments<datalist><option>name=comments</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[1.1][comment]<datalist><option>fields[1.1][comment]</option></datalist></td>
+	<td>Interpret</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[1.11][comment]<datalist><option>fields[1.11][comment]</option></datalist></td>
+	<td>Album</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>Comment<datalist><option>Comment</option></datalist></td>
+	<td>Albums</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Table has been created.<datalist><option>Table has been created.</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Foreign key</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Add foreign key<datalist><option>link=Add foreign key</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>selectAndWait</td>
+	<td>table<datalist><option>table</option></datalist></td>
+	<td>label=interprets</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>source[0]<datalist><option>source[0]</option></datalist></td>
+	<td>label=interpret</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Foreign key has been created.<datalist><option>Foreign key has been created.</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Alter table</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Alter table<datalist><option>link=Alter table</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>add[2]<datalist><option>add[2]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[2.1][field]<datalist><option>fields[2.1][field]</option></datalist></td>
+	<td>albums</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>fields[2.1][type]<datalist><option>fields[2.1][type]</option></datalist></td>
+	<td>label=int</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[2.1][length]<datalist><option>fields[2.1][length]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>uncheck</td>
+	<td>name=defaults<datalist><option>name=defaults</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=defaults<datalist><option>name=defaults</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=fields[2.1][default]<datalist><option>name=fields[2.1][default]</option></datalist></td>
+	<td>0</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Table has been altered.<datalist><option>Table has been altered.</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Create trigger</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;db=adminer_test&amp;trigger=albums<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;trigger=albums</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>Timing<datalist><option>Timing</option></datalist></td>
+	<td>label=AFTER</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>Statement<datalist><option>Statement</option></datalist></td>
+	<td>UPDATE interprets SET albums = albums + 1 WHERE id = NEW.interpret</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Trigger has been created.<datalist><option>Trigger has been created.</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Create view</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;db=adminer_test&amp;view=<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;view=</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>select<datalist><option>select</option></datalist></td>
+	<td>SELECT albums.id, albums.title, interprets.name
+FROM albums
+LEFT JOIN interprets ON albums.interpret = interprets.id</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name<datalist><option>name</option></datalist></td>
+	<td>albums_interprets</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>View has been created.<datalist><option>View has been created.</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Insert</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;db=adminer_test&amp;edit=interprets<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;edit=interprets</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[name]<datalist><option>fields[name]</option></datalist></td>
+	<td>Michael Jackson</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Item 1 has been inserted.<datalist><option>Item 1 has been inserted.</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;db=adminer_test&amp;edit=albums<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;edit=albums</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[interpret]<datalist><option>fields[interpret]</option></datalist></td>
+	<td>1</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[title]<datalist><option>fields[title]</option></datalist></td>
+	<td>Dangerous</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Item 1 has been inserted.<datalist><option>Item 1 has been inserted.</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Clone</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>check[]<datalist><option>check[]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>clone<datalist><option>clone</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[title]<datalist><option>fields[title]</option></datalist></td>
+	<td>Black and White</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Item 2 has been inserted.<datalist><option>Item 2 has been inserted.</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Explain</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Edit<datalist><option>link=Edit</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Execute']<datalist><option>//input[@value='Execute']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Explain<datalist><option>link=Explain</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>possible_keys<datalist><option>possible_keys</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Reference</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=1<datalist><option>link=1</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Michael Jackson<datalist><option>Michael Jackson</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Update</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;db=adminer_test&amp;edit=albums&amp;where%5Bid%5D=2<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;edit=albums&amp;where%5Bid%5D=2</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[title]<datalist><option>fields[title]</option></datalist></td>
+	<td>Black or White</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Item has been updated.<datalist><option>Item has been updated.</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Delete</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@name='check[]' and @value='where%5Bid%5D=2']<datalist><option>//input[@name='check[]' and @value='where%5Bid%5D=2']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForChecked</td>
+	<td>//input[@name='check[]' and @value='where%5Bid%5D=2']<datalist><option>//input[@name='check[]' and @value='where%5Bid%5D=2']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>chooseOkOnNextConfirmation</td>
+	<td>Are you sure?<datalist><option>Are you sure?</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>delete<datalist><option>delete</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>1 item has been affected.<datalist><option>1 item has been affected.</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Truncate</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>all<datalist><option>all</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForChecked</td>
+	<td>all<datalist><option>all</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>chooseOkOnNextConfirmation</td>
+	<td>Are you sure?<datalist><option>Are you sure?</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>delete<datalist><option>delete</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>No rows.<datalist><option>No rows.</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Privileges</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;user=<datalist><option>/adminer/?username=ODBC&amp;user=</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>user<datalist><option>user</option></datalist></td>
+	<td>adminer_test</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>objects[0]<datalist><option>objects[0]</option></datalist></td>
+	<td>adminer_test.*</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>grants[0][ALTER]<datalist><option>grants[0][ALTER]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>grants[0][CREATE]<datalist><option>grants[0][CREATE]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@name='grants[0][CREATE VIEW]']<datalist><option>//input[@name='grants[0][CREATE VIEW]']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>grants[0][DELETE]<datalist><option>grants[0][DELETE]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>grants[0][DROP]<datalist><option>grants[0][DROP]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>grants[0][INDEX]<datalist><option>grants[0][INDEX]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>grants[0][INSERT]<datalist><option>grants[0][INSERT]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>grants[0][REFERENCES]<datalist><option>grants[0][REFERENCES]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>grants[0][SELECT]<datalist><option>grants[0][SELECT]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@name='grants[0][SHOW VIEW]']<datalist><option>//input[@name='grants[0][SHOW VIEW]']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>grants[0][UPDATE]<datalist><option>grants[0][UPDATE]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@name='grants[0][CREATE TEMPORARY TABLES]']<datalist><option>//input[@name='grants[0][CREATE TEMPORARY TABLES]']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@name='grants[0][LOCK TABLES]']<datalist><option>//input[@name='grants[0][LOCK TABLES]']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@name='grants[0][CREATE ROUTINE]']<datalist><option>//input[@name='grants[0][CREATE ROUTINE]']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>User has been created.<datalist><option>User has been created.</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='content']/form/table/tbody/tr[td[1]='adminer_test']/td[3]/a<datalist><option>//div[@id='content']/form/table/tbody/tr[td[1]='adminer_test']/td[3]/a</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>chooseOkOnNextConfirmation</td>
+	<td>Drop adminer_test@localhost?<datalist><option>Drop adminer_test@localhost?</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>drop<datalist><option>drop</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>User has been dropped.<datalist><option>User has been dropped.</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Process list</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;processlist=<datalist><option>/adminer/?username=ODBC&amp;processlist=</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>SHOW FULL PROCESSLIST<datalist><option>SHOW FULL PROCESSLIST</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Export</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;db=adminer_test&amp;dump=<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;dump=</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>output<datalist><option>output</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>format<datalist><option>format</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>table_style<datalist><option>table_style</option></datalist></td>
+	<td>label=DROP+CREATE</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>data_style<datalist><option>data_style</option></datalist></td>
+	<td>label=INSERT</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Export']<datalist><option>//input[@value='Export']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>CREATE TABLE `interprets`<datalist><option>CREATE TABLE `interprets`</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>CREATE TRIGGER `albums_ai`<datalist><option>CREATE TRIGGER `albums_ai`</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>INSERT INTO `interprets`<datalist><option>INSERT INTO `interprets`</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>VIEW `albums_interprets`<datalist><option>VIEW `albums_interprets`</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Events</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;db=adminer_test&amp;event=<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;event=</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>EVENT_NAME<datalist><option>EVENT_NAME</option></datalist></td>
+	<td>no_albums</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>INTERVAL_FIELD<datalist><option>INTERVAL_FIELD</option></datalist></td>
+	<td>label=DAY</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>INTERVAL_VALUE<datalist><option>INTERVAL_VALUE</option></datalist></td>
+	<td>1</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>ON_COMPLETION<datalist><option>ON_COMPLETION</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>EVENT_DEFINITION<datalist><option>EVENT_DEFINITION</option></datalist></td>
+	<td>DELETE FROM albums WHERE interprets = 0</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Event has been created.<datalist><option>Event has been created.</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Alter<datalist><option>link=Alter</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>chooseOkOnNextConfirmation</td>
+	<td>Drop no_albums?<datalist><option>Drop no_albums?</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>drop<datalist><option>drop</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Event has been dropped.<datalist><option>Event has been dropped.</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Procedures</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;db=adminer_test&amp;procedure=<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;procedure=</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>add[0]<datalist><option>add[0]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[1][field]<datalist><option>fields[1][field]</option></datalist></td>
+	<td>interpret_name</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>fields[1][type]<datalist><option>fields[1][type]</option></datalist></td>
+	<td>label=varchar</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[1][length]<datalist><option>fields[1][length]</option></datalist></td>
+	<td>50</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[1.1][field]<datalist><option>fields[1.1][field]</option></datalist></td>
+	<td>album_title</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>fields[1.1][type]<datalist><option>fields[1.1][type]</option></datalist></td>
+	<td>label=varchar</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[1.1][length]<datalist><option>fields[1.1][length]</option></datalist></td>
+	<td>50</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>definition<datalist><option>definition</option></datalist></td>
+	<td>BEGIN
+SELECT id INTO @interpret FROM interprets WHERE name = interpret_name;
+IF @interpret IS NULL THEN
+    INSERT INTO interprets (name) VALUES (interpret_name);
+    SET @interpret = LAST_INSERT_ID();
+END IF;
+INSERT INTO albums (interpret, title) VALUES (@interpret, album_title);
+END</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name<datalist><option>name</option></datalist></td>
+	<td>insert_album</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Routine has been created.<datalist><option>Routine has been created.</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=insert_album<datalist><option>link=insert_album</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[interpret_name]<datalist><option>fields[interpret_name]</option></datalist></td>
+	<td>Michael Jackson</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[album_title]<datalist><option>fields[album_title]</option></datalist></td>
+	<td>Dangerous</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Call']<datalist><option>//input[@value='Call']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Routine has been called, 1 row affected.<datalist><option>Routine has been called, 1 row affected.</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=adminer_test<datalist><option>link=adminer_test</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Alter<datalist><option>link=Alter</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>chooseOkOnNextConfirmation</td>
+	<td>Drop insert_album?<datalist><option>Drop insert_album?</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>drop<datalist><option>drop</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Routine has been dropped.<datalist><option>Routine has been dropped.</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Variables</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;variables=<datalist><option>/adminer/?username=ODBC&amp;variables=</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>basedir<datalist><option>basedir</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">History</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;sql=<datalist><option>/adminer/?username=ODBC&amp;sql=</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>DROP DATABASE IF EXISTS adminer_test<datalist><option>DROP DATABASE IF EXISTS adminer_test</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Warnings</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//a[contains(text(),'=')])[3]<datalist><option>xpath=(//a[contains(text(),'=')])[3]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=where[0][val]<datalist><option>name=where[0][val]</option></datalist></td>
+	<td>1.2.3</td>
+</tr>
+<tr>
+	<td>submit</td>
+	<td>id=form<datalist><option>id=form</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Warnings<datalist><option>link=Warnings</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='warnings']/table/tbody/tr/td[3]<datalist><option>//div[@id='warnings']/table/tbody/tr/td[3]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='warnings']/table/tbody/tr/td[3]<datalist><option>//div[@id='warnings']/table/tbody/tr/td[3]</option></datalist></td>
+	<td>Truncated incorrect DOUBLE value: '1.2.3'</td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Editor</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/editor/example.php?username=admin<datalist><option>/editor/example.php?username=admin</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=lang<datalist><option>name=lang</option></datalist></td>
+	<td>label=English</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=#lang &gt; input[type="submit"]<datalist><option>css=#lang &gt; input[type="submit"]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Interprets<datalist><option>link=Interprets</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=New item<datalist><option>link=New item</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[name]<datalist><option>fields[name]</option></datalist></td>
+	<td>Michael Jackson</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='content']/form[2]/table/tbody/tr[1]/td[3]/a<datalist><option>//div[@id='content']/form[2]/table/tbody/tr[1]/td[3]/a</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=New item<datalist><option>link=New item</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>fields[title]<datalist><option>fields[title]</option></datalist></td>
+	<td>Dangerous</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Item 4 has been inserted.<datalist><option>Item 4 has been inserted.</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>logout<datalist><option>logout</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">SQLite</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/sqlite.php<datalist><option>/adminer/sqlite.php</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=auth[driver]<datalist><option>name=auth[driver]</option></datalist></td>
+	<td>label=SQLite 3</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=username<datalist><option>id=username</option></datalist></td>
+	<td>admin</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=auth[password]<datalist><option>name=auth[password]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=input[type="submit"]<datalist><option>css=input[type="submit"]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Create database<datalist><option>link=Create database</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=name<datalist><option>id=name</option></datalist></td>
+	<td>adminer_test</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=input[type="submit"]<datalist><option>css=input[type="submit"]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Please use one of the extensions<datalist><option>Please use one of the extensions</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=name<datalist><option>id=name</option></datalist></td>
+	<td>adminer_test.sqlite</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=input[type="submit"]<datalist><option>css=input[type="submit"]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Database has been created.<datalist><option>Database has been created.</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Create table<datalist><option>link=Create table</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=name<datalist><option>name=name</option></datalist></td>
+	<td>interprets</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=label.block &gt; input[name="auto_increment_col"]<datalist><option>css=label.block &gt; input[name="auto_increment_col"]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=fields[1.1][field]<datalist><option>name=fields[1.1][field]</option></datalist></td>
+	<td>name</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=fields[1.1][type]<datalist><option>name=fields[1.1][type]</option></datalist></td>
+	<td>label=text</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@value='Save'])[2]<datalist><option>xpath=(//input[@value='Save'])[2]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Table has been created.<datalist><option>Table has been created.</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=New item<datalist><option>link=New item</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=fields[name]<datalist><option>name=fields[name]</option></datalist></td>
+	<td>Michael Jackson</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=input[type="submit"]<datalist><option>css=input[type="submit"]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Item 1 has been inserted.<datalist><option>Item 1 has been inserted.</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Create table<datalist><option>link=Create table</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=name<datalist><option>name=name</option></datalist></td>
+	<td>albums</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=label.block &gt; input[name="auto_increment_col"]<datalist><option>css=label.block &gt; input[name="auto_increment_col"]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=fields[1.1][field]<datalist><option>name=fields[1.1][field]</option></datalist></td>
+	<td>interpret</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=fields[1.1][on_delete]<datalist><option>name=fields[1.1][on_delete]</option></datalist></td>
+	<td>label=CASCADE</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=fields[1.11][field]<datalist><option>name=fields[1.11][field]</option></datalist></td>
+	<td>title</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=fields[1.11][type]<datalist><option>name=fields[1.11][type]</option></datalist></td>
+	<td>label=text</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@value='Save'])[2]<datalist><option>xpath=(//input[@value='Save'])[2]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>interprets(id)<datalist><option>interprets(id)</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=New item<datalist><option>link=New item</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=fields[interpret]<datalist><option>name=fields[interpret]</option></datalist></td>
+	<td>1</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=fields[title]<datalist><option>name=fields[title]</option></datalist></td>
+	<td>Dangerous</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=input[type="submit"]<datalist><option>css=input[type="submit"]</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=1<datalist><option>link=1</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Select: interprets<datalist><option>Select: interprets</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=adminer_test.sqlite<datalist><option>link=adminer_test.sqlite</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Alter database<datalist><option>link=Alter database</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>chooseOkOnNextConfirmation</td>
+	<td>Drop adminer_test.sqlite?<datalist><option>Drop adminer_test.sqlite?</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=drop<datalist><option>name=drop</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Database has been dropped.<datalist><option>Database has been dropped.</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=logout<datalist><option>id=logout</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Thanks for using Adminer, consider donating.<datalist><option>Thanks for using Adminer, consider donating.</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Logout</td></tr>
+</thead>
+<tbody>
+<tr>
+	<td>open</td>
+	<td>/adminer/?username=ODBC<datalist><option>/adminer/?username=ODBC</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>logout<datalist><option>logout</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Logout successful.<datalist><option>Logout successful.</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>selectAndWait</td>
+	<td>//select[@name='lang']<datalist><option>//select[@name='lang']</option></datalist></td>
+	<td>label=Čeština</td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Přihlásit se<datalist><option>Přihlásit se</option></datalist></td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/coverage.php<datalist><option>/coverage.php</option></datalist></td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

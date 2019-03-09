@@ -1,8 +1,8 @@
 <?php
-$PROCEDURE = $_GET["call"];
+$PROCEDURE = ($_GET["name"] ? $_GET["name"] : $_GET["call"]);
 page_header(lang('Call') . ": " . h($PROCEDURE), $error);
 
-$routine = routine($PROCEDURE, (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE"));
+$routine = routine($_GET["call"], (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE"));
 $in = array();
 $out = array();
 foreach ($routine["fields"] as $i => $field) {
@@ -30,9 +30,12 @@ if (!$error && $_POST) {
 	}
 	
 	$query = (isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . table($PROCEDURE) . "(" . implode(", ", $call) . ")";
-	echo "<p><code class='jush-$jush'>" . h($query) . "</code> <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>\n";
+	$start = microtime(true);
+	$result = $connection->multi_query($query);
+	$affected = $connection->affected_rows; // getting warnigns overwrites this
+	echo $adminer->selectQuery($query, $start, !$result);
 	
-	if (!$connection->multi_query($query)) {
+	if (!$result) {
 		echo "<p class='error'>" . error() . "\n";
 	} else {
 		$connection2 = connect();
@@ -45,7 +48,7 @@ if (!$error && $_POST) {
 			if (is_object($result)) {
 				select($result, $connection2);
 			} else {
-				echo "<p class='message'>" . lang('Routine has been called, %d row(s) affected.', $connection->affected_rows) . "\n";
+				echo "<p class='message'>" . lang('Routine has been called, %d row(s) affected.', $affected) . "\n";
 			}
 		} while ($connection->next_result());
 		
@@ -59,7 +62,7 @@ if (!$error && $_POST) {
 <form action="" method="post">
 <?php
 if ($in) {
-	echo "<table cellspacing='0'>\n";
+	echo "<table cellspacing='0' class='layout'>\n";
 	foreach ($in as $key) {
 		$field = $routine["fields"][$key];
 		$name = $field["field"];

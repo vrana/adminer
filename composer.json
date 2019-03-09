@@ -23,7 +23,7 @@
     },
     "license": [
         "Apache-2.0",
-        "GPL-2.0"
+        "GPL-2.0-only"
     ],
     "scripts": {
         "compile": "php compile.php"

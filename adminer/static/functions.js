@@ -1,10 +1,21 @@
 
 /** Get first element by selector
 * @param string
+* @param [HTMLElement] defaults to document
 * @return HTMLElement
 */
-function qs(selector) {
-	return document.querySelector(selector);
+function qs(selector, context) {
+	return (context || document).querySelector(selector);
+}
+
+/** Get last element by selector
+* @param string
+* @param [HTMLElement] defaults to document
+* @return HTMLElement
+*/
+function qsl(selector, context) {
+	var els = qsa(selector, context || document);
+	return els[els.length - 1];
 }
 
 /** Get all elements by selector
@@ -14,6 +25,41 @@ function qs(selector) {
 */
 function qsa(selector, context) {
 	return context.querySelectorAll(selector);
+}
+
+/** Return a function calling fn with the next arguments
+* @param function
+* @param ...
+* @return function with preserved this
+*/
+function partial(fn) {
+	var args = Array.apply(null, arguments).slice(1);
+	return function () {
+		return fn.apply(this, args);
+	};
+}
+
+/** Return a function calling fn with the first parameter and then the next arguments
+* @param function
+* @param ...
+* @return function with preserved this
+*/
+function partialArg(fn) {
+	var args = Array.apply(null, arguments);
+	return function (arg) {
+		args[0] = arg;
+		return fn.apply(this, args);
+	};
+}
+
+/** Assign values from source to target
+* @param Object
+* @param Object
+*/
+function mixin(target, source) {
+	for (var key in source) {
+		target[key] = source[key];
+	}
 }
 
 /** Add or remove CSS class
@@ -29,12 +75,12 @@ function alterClass(el, className, enable) {
 
 /** Toggle visibility
 * @param string
-* @return boolean
+* @return boolean false
 */
 function toggle(id) {
 	var el = qs('#' + id);
 	el.className = (el.className == 'hidden' ? '' : 'hidden');
-	return true;
+	return false;
 }
 
 /** Set permanent cookie
@@ -50,8 +96,10 @@ function cookie(assign, days) {
 
 /** Verify current Adminer version
 * @param string
+* @param string own URL base
+* @param string
 */
-function verifyVersion(current) {
+function verifyVersion(current, url, token) {
 	cookie('adminer_version=0', 1);
 	var iframe = document.createElement('iframe');
 	iframe.src = 'https://www.adminer.org/version/?current=' + current;
@@ -67,6 +115,8 @@ function verifyVersion(current) {
 				var match = /version=(.+)/.exec(event.data);
 				if (match) {
 					cookie('adminer_version=' + match[1], 1);
+					ajax(url + 'script=version', function () {
+					}, event.data + '&token=' + token);
 				}
 			}
 		}, false);
@@ -93,7 +143,7 @@ function selectValue(select) {
 */
 function isTag(el, tag) {
 	var re = new RegExp('^(' + tag + ')$', 'i');
-	return re.test(el.tagName);
+	return el && re.test(el.tagName);
 }
 
 /** Get parent node with specified tag name
@@ -122,14 +172,18 @@ function trCheck(el) {
 /** Fill number of selected items
 * @param string
 * @param string
+* @uses thousandsSeparator
 */
 function selectCount(id, count) {
-	setHtml(id, (count === '' ? '' : '(' + (count + '').replace(/\B(?=(\d{3})+$)/g, ' ') + ')'));
-	var inputs = qsa('input', qs('#' + id).parentNode.parentNode);
-	for (var i = 0; i < inputs.length; i++) {
-		var input = inputs[i];
-		if (input.type == 'submit') {
-			input.disabled = (count == '0');
+	setHtml(id, (count === '' ? '' : '(' + (count + '').replace(/\B(?=(\d{3})+$)/g, thousandsSeparator) + ')'));
+	var el = qs('#' + id);
+	if (el) {
+		var inputs = qsa('input', el.parentNode.parentNode);
+		for (var i = 0; i < inputs.length; i++) {
+			var input = inputs[i];
+			if (input.type == 'submit') {
+				input.disabled = (count == '0');
+			}
 		}
 	}
 }
@@ -151,14 +205,9 @@ function formCheck(name) {
 /** Check all rows in <table class="checkable">
 */
 function tableCheck() {
-	var tables = qsa('table', document);
-	for (var i=0; i < tables.length; i++) {
-		if (/(^|\s)checkable(\s|$)/.test(tables[i].className)) {
-			var trs = qsa('tr', tables[i]);
-			for (var j=0; j < trs.length; j++) {
-				trCheck(trs[j].firstChild.firstChild);
-			}
-		}
+	var inputs = qsa('table.checkable td:first-child input', document);
+	for (var i=0; i < inputs.length; i++) {
+		trCheck(inputs[i]);
 	}
 }
 
@@ -192,6 +241,13 @@ function formChecked(el, name) {
 * @param [boolean] force click
 */
 function tableClick(event, click) {
+	var td = parentTag(getTarget(event), 'td');
+	var text;
+	if (td && (text = td.getAttribute('data-text'))) {
+		if (selectClick.call(td, event, +text, td.getAttribute('data-warning'))) {
+			return;
+		}
+	}
 	click = (click || !window.getSelection || getSelection().isCollapsed);
 	var el = getTarget(event);
 	while (!isTag(el, 'tr')) {
@@ -211,6 +267,13 @@ function tableClick(event, click) {
 	if (click) {
 		el.checked = !el.checked;
 		el.onclick && el.onclick();
+	}
+	if (el.name == 'check[]') {
+		el.form['all'].checked = false;
+		formUncheck('all-page');
+	}
+	if (/^(tables|views)\[\]$/.test(el.name)) {
+		formUncheck('check-all');
 	}
 	trCheck(el);
 }
@@ -251,13 +314,13 @@ function checkboxClick(event) {
 
 /** Set HTML code of an element
 * @param string
-* @param string undefined to set parentNode to &nbsp;
+* @param string undefined to set parentNode to empty string
 */
 function setHtml(id, html) {
-	var el = qs('#' + id);
+	var el = qs('[id="' + id.replace(/[\\"]/g, '\\$&') + '"]'); // database name is used as ID
 	if (el) {
 		if (html == null) {
-			el.parentNode.innerHTML = '&nbsp;';
+			el.parentNode.innerHTML = '';
 		} else {
 			el.innerHTML = html;
 		}
@@ -279,12 +342,10 @@ function nodePosition(el) {
 /** Go to the specified page
 * @param string
 * @param string
-* @param [MouseEvent]
 */
-function pageClick(href, page, event) {
+function pageClick(href, page) {
 	if (!isNaN(page) && page) {
-		href += (page != 1 ? '&page=' + (page - 1) : '');
-		location.href = href;
+		location.href = href + (page != 1 ? '&page=' + (page - 1) : '');
 	}
 }
 
@@ -315,11 +376,9 @@ function menuOut() {
 */
 function selectAddRow() {
 	var field = this;
-	field.onchange = function () {
-		selectFieldChange(field.form);
-	};
-	field.onchange();
 	var row = cloneNode(field.parentNode);
+	field.onchange = selectFieldChange;
+	field.onchange();
 	var selects = qsa('select', row);
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/[a-z]\[\d+/, '$&1');
@@ -377,6 +436,7 @@ function columnMouse(className) {
 
 /** Fill column in search field
 * @param string
+* @return boolean false
 */
 function selectSearch(name) {
 	var el = qs('#fieldset-search');
@@ -392,7 +452,8 @@ function selectSearch(name) {
 		div.firstChild.value = name;
 		div.firstChild.onchange();
 	}
-	div.lastChild.focus();
+	qs('[name$="[val]"]', div).focus();
+	return false;
 }
 
 
@@ -420,6 +481,7 @@ function getTarget(event) {
 * @return boolean
 */
 function bodyKeydown(event, button) {
+	eventStop(event);
 	var target = getTarget(event);
 	if (target.jushTextarea) {
 		target = target.jushTextarea;
@@ -429,6 +491,9 @@ function bodyKeydown(event, button) {
 		if (button) {
 			target.form[button].click();
 		} else {
+			if (target.form.onsubmit) {
+				target.form.onsubmit();
+			}
 			target.form.submit();
 		}
 		target.focus();
@@ -468,7 +533,6 @@ function editingKeydown(event) {
 		return false;
 	}
 	if (event.shiftKey && !bodyKeydown(event, 'insert')) {
-		eventStop(event);
 		return false;
 	}
 	return true;
@@ -479,30 +543,33 @@ function editingKeydown(event) {
 */
 function functionChange() {
 	var input = this.form[this.name.replace(/^function/, 'fields')];
-	if (selectValue(this)) {
-		if (input.origType === undefined) {
-			input.origType = input.type;
-			input.origMaxLength = input.getAttribute('data-maxlength');
+	if (input) { // undefined with the set data type
+		if (selectValue(this)) {
+			if (input.origType === undefined) {
+				input.origType = input.type;
+				input.origMaxLength = input.getAttribute('data-maxlength');
+			}
+			input.removeAttribute('data-maxlength');
+			input.type = 'text';
+		} else if (input.origType) {
+			input.type = input.origType;
+			if (input.origMaxLength >= 0) {
+				input.setAttribute('data-maxlength', input.origMaxLength);
+			}
 		}
-		input.removeAttribute('data-maxlength');
-		input.type = 'text';
-	} else if (input.origType) {
-		input.type = input.origType;
-		if (input.origMaxLength >= 0) {
-			input.setAttribute('data-maxlength', input.origMaxLength);
-		}
+		oninput({target: input});
 	}
-	oninput({target: input});
 	helpClose();
 }
 
-/** Call this.onchange() if value changes
-* @this HTMLInputElement
+/** Skip 'original' when typing
+* @param number
+* @this HTMLTableCellElement
 */
-function keyupChange() {
-	if (this.value != this.getAttribute('value')) {
-		this.onchange();
-		this.setAttribute('value', this.value);
+function skipOriginal(first) {
+	var fnSelect = this.previousSibling.firstChild;
+	if (fnSelect.selectedIndex < first) {
+		fnSelect.selectedIndex = first;
 	}
 }
 
@@ -517,7 +584,7 @@ function fieldChange() {
 	}
 	// keep value in <select> (function)
 	parentTag(this, 'table').appendChild(row);
-	this.onchange = function () { };
+	this.oninput = function () { };
 }
 
 
@@ -528,6 +595,7 @@ function fieldChange() {
 * @param [string]
 * @param [string]
 * @return XMLHttpRequest or false in case of an error
+* @uses offlineMessage
 */
 function ajax(url, callback, data, message) {
 	var request = (window.XMLHttpRequest ? new XMLHttpRequest() : (window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') : false));
@@ -561,10 +629,10 @@ function ajax(url, callback, data, message) {
 
 /** Use setHtml(key, value) for JSON response
 * @param string
-* @return XMLHttpRequest or false in case of an error
+* @return boolean false for success
 */
 function ajaxSetHtml(url) {
-	return ajax(url, function (request) {
+	return !ajax(url, function (request) {
 		var data = window.JSON ? JSON.parse(request.responseText) : eval('(' + request.responseText + ')');
 		for (var key in data) {
 			setHtml(key, data[key]);
@@ -612,7 +680,8 @@ function ajaxForm(form, message, button) {
 /** Display edit field
 * @param MouseEvent
 * @param number display textarea instead of input, 2 - load long text
-* @param string warning to display
+* @param [string] warning to display
+* @return boolean
 * @this HTMLElement
 */
 function selectClick(event, text, warning) {
@@ -622,7 +691,8 @@ function selectClick(event, text, warning) {
 		return;
 	}
 	if (warning) {
-		return alert(warning);
+		alert(warning);
+		return true;
 	}
 	var original = td.innerHTML;
 	text = text || /\n/.test(original);
@@ -637,7 +707,7 @@ function selectClick(event, text, warning) {
 		}
 	};
 	var pos = event.rangeOffset;
-	var value = td.firstChild.alt || td.textContent || td.innerText;
+	var value = (td.firstChild && td.firstChild.alt) || td.textContent || td.innerText;
 	input.style.width = Math.max(td.clientWidth - 14, 20) + 'px'; // 14 = 2 * (td.border + td.padding + input.border)
 	if (text) {
 		var rows = 1;
@@ -646,7 +716,7 @@ function selectClick(event, text, warning) {
 		});
 		input.rows = rows;
 	}
-	if (value == '\u00A0' || qsa('i', td).length) { // &nbsp; or i - NULL
+	if (qsa('i', td).length) { // <i> - NULL
 		value = '';
 	}
 	if (document.selection) {
@@ -678,6 +748,7 @@ function selectClick(event, text, warning) {
 		range.moveEnd('character', -input.value.length + pos);
 		range.select();
 	}
+	return true;
 }
 
 
@@ -685,7 +756,7 @@ function selectClick(event, text, warning) {
 /** Load and display next page in select
 * @param number
 * @param string
-* @return boolean
+* @return boolean false for success
 * @this HTMLLinkElement
 */
 function selectLoadMore(limit, loading) {
@@ -695,7 +766,7 @@ function selectLoadMore(limit, loading) {
 	a.innerHTML = loading;
 	if (href) {
 		a.removeAttribute('href');
-		return ajax(href, function (request) {
+		return !ajax(href, function (request) {
 			var tbody = document.createElement('tbody');
 			tbody.innerHTML = request.responseText;
 			qs('#table').appendChild(tbody);
@@ -776,6 +847,9 @@ function findDefaultSubmit(el) {
 	if (el.jushTextarea) {
 		el = el.jushTextarea;
 	}
+	if (!el.form) {
+		return null;
+	}
 	var inputs = qsa('input', el.form);
 	for (var i = 0; i < inputs.length; i++) {
 		var input = inputs[i];
@@ -815,6 +889,17 @@ function focus(el) {
 */
 function cloneNode(el) {
 	var el2 = el.cloneNode(true);
+	var selector = 'input, select';
+	var origEls = qsa(selector, el);
+	var cloneEls = qsa(selector, el2);
+	for (var i=0; i < origEls.length; i++) {
+		var origEl = origEls[i];
+		for (var key in origEl) {
+			if (/^on/.test(key) && origEl[key]) {
+				cloneEls[i][key] = origEl[key];
+			}
+		}
+	}
 	setupSubmitHighlight(el2);
 	return el2;
 }

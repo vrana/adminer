@@ -1,5 +1,5 @@
 <?php
-$drivers["oracle"] = "Oracle";
+$drivers["oracle"] = "Oracle (beta)";
 
 if (isset($_GET["oracle"])) {
 	$possible_drivers = array("OCI8", "PDO_OCI");
@@ -175,8 +175,8 @@ if (isset($_GET["oracle"])) {
 		));
 	}
 
-	function limit1($query, $where) {
-		return " $query$where";
+	function limit1($table, $query, $where, $separator = "\n") {
+		return " $query$where"; //! limit
 	}
 
 	function db_collation($db, $collations) {
@@ -398,7 +398,7 @@ ORDER BY PROCESS
 	}
 
 	function support($feature) {
-		return preg_match('~^(columns|database|drop_col|indexes|processlist|scheme|sql|status|table|variables|view|view_trigger)$~', $feature); //!
+		return preg_match('~^(columns|database|drop_col|indexes|descidx|processlist|scheme|sql|status|table|variables|view|view_trigger)$~', $feature); //!
 	}
 
 	$jush = "oracle";
