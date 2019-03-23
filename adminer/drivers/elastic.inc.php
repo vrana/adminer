@@ -84,7 +84,7 @@ if (isset($_GET["elastic"])) {
 			var $num_rows, $_rows;
 
 			function __construct($rows) {
-				$this->num_rows = count($this->_rows);
+				$this->num_rows = count($rows);
 				$this->_rows = $rows;
 				reset($this->_rows);
 			}
