@@ -5,6 +5,7 @@ Allow overwriting tables when copying them
 Cache busting for adminer.css
 MySQL: Fix creating users and changing password in MySQL 8 (bug #663)
 MySQL: Pass SRID to GeomFromText
+Elasticsearch: Fix setting number of rows
 
 Adminer 4.7.1 (released 2019-01-24):
 Display the tables scrollbar (bug #647)
