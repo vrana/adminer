@@ -342,10 +342,18 @@ ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row) {
 
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
 		$alter = $drop = array();
+		$orig_fields = ($table ? fields($table) : array());
 		foreach ($fields as $field) {
 			$val = $field[1];
 			if ($val && $field[0] != "" && idf_escape($field[0]) != $val[0]) {
 				queries("ALTER TABLE " . table($table) . " RENAME COLUMN " . idf_escape($field[0]) . " TO $val[0]");
+			}
+			$orig_field = $orig_fields[$field[0]];
+			if ($val && $orig_field) {
+				$old = process_field($orig_field, $orig_field);
+				if ($val[2] == $old[2]) {
+					$val[2] = "";
+				}
 			}
 			if ($val) {
 				$alter[] = ($table != "" ? ($field[0] != "" ? "MODIFY (" : "ADD (") : "  ") . implode($val) . ($table != "" ? ")" : ""); //! error with name change only
