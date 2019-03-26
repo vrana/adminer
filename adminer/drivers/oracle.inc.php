@@ -200,7 +200,12 @@ ORDER BY 1"
 	}
 
 	function count_tables($databases) {
-		return array();
+		global $connection;
+		$return = array();
+		foreach ($databases as $db) {
+			$return[$db] = $connection->result("SELECT COUNT(*) FROM all_tables WHERE tablespace_name = " . q($db));
+		}
+		return $return;
 	}
 
 	function table_status($name = "") {
