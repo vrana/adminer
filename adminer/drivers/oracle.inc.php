@@ -141,6 +141,25 @@ if (isset($_GET["oracle"])) {
 			return true; // automatic start
 		}
 
+		function insertUpdate($table, $rows, $primary) {
+			global $connection;
+			foreach ($rows as $set) {
+				$update = array();
+				$where = array();
+				foreach ($set as $key => $val) {
+					$update[] = "$key = $val";
+					if (isset($primary[idf_unescape($key)])) {
+						$where[] = "$key = $val";
+					}
+				}
+				if (!(($where && queries("UPDATE " . table($table) . " SET " . implode(", ", $update) . " WHERE " . implode(" AND ", $where)) && $connection->affected_rows)
+					|| queries("INSERT INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ")")
+				)) {
+					return false;
+				}
+			}
+			return true;
+		}
 	}
 
 
