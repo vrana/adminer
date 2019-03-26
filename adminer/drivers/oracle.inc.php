@@ -273,7 +273,7 @@ ORDER BY 1"
 			$type = $row["DATA_TYPE"];
 			$length = "$row[DATA_PRECISION],$row[DATA_SCALE]";
 			if ($length == ",") {
-				$length = $row["DATA_LENGTH"];
+				$length = $row["CHAR_COL_DECL_LENGTH"];
 			} //! int
 			$return[$row["COLUMN_NAME"]] = array(
 				"field" => $row["COLUMN_NAME"],
