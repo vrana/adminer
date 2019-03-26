@@ -336,6 +336,10 @@ ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row) {
 	function found_rows($table_status, $where) {
 	}
 
+	function auto_increment() {
+		return "";
+	}
+
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
 		$alter = $drop = array();
 		foreach ($fields as $field) {
