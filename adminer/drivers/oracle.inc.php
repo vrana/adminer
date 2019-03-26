@@ -295,11 +295,11 @@ ORDER BY 1"
 	function indexes($table, $connection2 = null) {
 		$return = array();
 		$owner = where_owner(" AND ", "aic.table_owner");
-		foreach (get_rows("SELECT uic.*, uc.constraint_type
-FROM user_ind_columns uic
-LEFT JOIN user_constraints uc ON uic.index_name = uc.constraint_name AND uic.table_name = uc.table_name
-WHERE uic.table_name = " . q($table) . "$owner
-ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
+		foreach (get_rows("SELECT aic.*, ac.constraint_type
+FROM all_ind_columns aic
+LEFT JOIN all_constraints ac ON aic.index_name = ac.constraint_name AND aic.table_name = ac.table_name AND aic.index_owner = ac.owner
+WHERE aic.table_name = " . q($table) . "$owner
+ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row) {
 			$index_name = $row["INDEX_NAME"];
 			$return[$index_name]["type"] = ($row["CONSTRAINT_TYPE"] == "P" ? "PRIMARY" : ($row["CONSTRAINT_TYPE"] == "U" ? "UNIQUE" : "INDEX"));
 			$return[$index_name]["columns"][] = $row["COLUMN_NAME"];
