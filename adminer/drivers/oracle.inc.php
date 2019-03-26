@@ -192,9 +192,23 @@ if (isset($_GET["oracle"])) {
 		return $connection->result("SELECT USER FROM DUAL");
 	}
 
+	function where_owner($prefix, $owner = "owner") {
+		if (!$_GET["ns"]) {
+			return '';
+		}
+		return "$prefix$owner = sys_context('USERENV', 'CURRENT_SCHEMA')";
+	}
+
+	function views_table($columns) {
+		$owner = where_owner('');
+		return "(SELECT $columns FROM all_views WHERE " . ($owner ? $owner : "rownum < 0") . ")";
+	}
+
 	function tables_list() {
-		return get_key_vals("SELECT table_name, 'table' FROM all_tables WHERE tablespace_name = " . q(DB) . "
-UNION SELECT view_name, 'view' FROM user_views
+		$view = views_table("view_name");
+		$owner = where_owner(" AND ");
+		return get_key_vals("SELECT table_name, 'table' FROM all_tables WHERE tablespace_name = " . q(DB) . "$owner
+UNION SELECT view_name, 'view' FROM $view
 ORDER BY 1"
 		); //! views don't have schema
 	}
@@ -211,8 +225,10 @@ ORDER BY 1"
 	function table_status($name = "") {
 		$return = array();
 		$search = q($name);
-		foreach (get_rows('SELECT table_name "Name", \'table\' "Engine", avg_row_len * num_rows "Data_length", num_rows "Rows" FROM all_tables WHERE tablespace_name = ' . q(DB) . ($name != "" ? " AND table_name = $search" : "") . "
-UNION SELECT view_name, 'view', 0, 0 FROM user_views" . ($name != "" ? " WHERE view_name = $search" : "") . "
+		$view = views_table("view_name");
+		$owner = where_owner(" AND ");
+		foreach (get_rows('SELECT table_name "Name", \'table\' "Engine", avg_row_len * num_rows "Data_length", num_rows "Rows" FROM all_tables WHERE tablespace_name = ' . q(DB) . $owner . ($name != "" ? " AND table_name = $search" : "") . "
+UNION SELECT view_name, 'view', 0, 0 FROM $view" . ($name != "" ? " WHERE view_name = $search" : "") . "
 ORDER BY 1"
 		) as $row) {
 			if ($name != "") {
@@ -233,7 +249,8 @@ ORDER BY 1"
 
 	function fields($table) {
 		$return = array();
-		foreach (get_rows("SELECT * FROM all_tab_columns WHERE table_name = " . q($table) . " ORDER BY column_id") as $row) {
+		$owner = where_owner(" AND ");
+		foreach (get_rows("SELECT * FROM all_tab_columns WHERE table_name = " . q($table) . "$owner ORDER BY column_id") as $row) {
 			$type = $row["DATA_TYPE"];
 			$length = "$row[DATA_PRECISION],$row[DATA_SCALE]";
 			if ($length == ",") {
@@ -258,10 +275,11 @@ ORDER BY 1"
 
 	function indexes($table, $connection2 = null) {
 		$return = array();
+		$owner = where_owner(" AND ", "aic.table_owner");
 		foreach (get_rows("SELECT uic.*, uc.constraint_type
 FROM user_ind_columns uic
 LEFT JOIN user_constraints uc ON uic.index_name = uc.constraint_name AND uic.table_name = uc.table_name
-WHERE uic.table_name = " . q($table) . "
+WHERE uic.table_name = " . q($table) . "$owner
 ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
 			$index_name = $row["INDEX_NAME"];
 			$return[$index_name]["type"] = ($row["CONSTRAINT_TYPE"] == "P" ? "PRIMARY" : ($row["CONSTRAINT_TYPE"] == "U" ? "UNIQUE" : "INDEX"));
@@ -273,7 +291,8 @@ ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
 	}
 
 	function view($name) {
-		$rows = get_rows('SELECT text "select" FROM user_views WHERE view_name = ' . q($name));
+		$view = views_table("view_name, text");
+		$rows = get_rows('SELECT text "select" FROM ' . $view . ' WHERE view_name = ' . q($name));
 		return reset($rows);
 	}
 
