@@ -370,6 +370,38 @@ ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row) {
 		;
 	}
 
+	function alter_indexes($table, $alter) {
+		$create = array();
+		$drop = array();
+		$queries = array();
+		foreach ($alter as $val) {
+			$val[2] = preg_replace('~ DESC$~', '', $val[2]);
+			if ($val[0] != "INDEX") {
+				//! descending UNIQUE indexes results in syntax error
+				$create[] = ($val[2] == "DROP"
+					? "\nDROP CONSTRAINT " . idf_escape($val[1])
+					: "\nADD" . ($val[1] != "" ? " CONSTRAINT " . idf_escape($val[1]) : "") . " $val[0] " . ($val[0] == "PRIMARY" ? "KEY " : "") . "(" . implode(", ", $val[2]) . ")"
+				);
+			} elseif ($val[2] == "DROP") {
+				$drop[] = idf_escape($val[1]);
+			} else {
+				$queries[] = "CREATE INDEX " . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_")) . " ON " . table($table) . " (" . implode(", ", $val[2]) . ")";
+			}
+		}
+		if ($create) {
+			array_unshift($queries, "ALTER TABLE " . table($table) . implode(",", $create));
+		}
+		if ($drop) {
+			array_unshift($queries, "DROP INDEX " . implode(", ", $drop));
+		}
+		foreach ($queries as $query) {
+			if (!queries($query)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	function foreign_keys($table) {
 		$return = array();
 		$query = "SELECT c_list.CONSTRAINT_NAME as NAME,
