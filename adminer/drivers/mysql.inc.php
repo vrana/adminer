@@ -51,6 +51,14 @@ if (!defined("DRIVER")) {
 				$row = $result->fetch_array();
 				return $row[$field];
 			}
+
+			function next_result( ) {
+				if(parent::more_results()) {
+					return parent::next_result();
+				} else { // No more results
+					return false;
+				}
+			}
 			
 			function quote($string) {
 				return "'" . $this->escape_string($string) . "'";
