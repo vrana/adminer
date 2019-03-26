@@ -183,7 +183,7 @@ if (isset($_GET["oracle"])) {
 	}
 
 	function get_databases() {
-		return get_vals("SELECT tablespace_name FROM user_tablespaces");
+		return get_vals("SELECT tablespace_name FROM user_tablespaces ORDER BY 1");
 	}
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
