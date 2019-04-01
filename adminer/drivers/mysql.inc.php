@@ -1079,7 +1079,7 @@ if (!defined("DRIVER")) {
 			$return = "CONV($return, 2, 10) + 0";
 		}
 		if (preg_match("~geometry|point|linestring|polygon~", $field["type"])) {
-			$return = (min_version(8) ? "ST_" : "") . "GeomFromText($return)";
+			$return = (min_version(8) ? "ST_" : "") . "GeomFromText($return, SRID($field[field]))";
 		}
 		return $return;
 	}

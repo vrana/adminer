@@ -3,6 +3,7 @@ Do not attempt logging in without password (bug #676)
 Stretch footer over the whole table width (bug #624)
 Allow overwriting tables when copying them
 MySQL: Fix creating users and changing password in MySQL 8 (bug #663)
+MySQL: Pass SRID to GeomFromText
 
 Adminer 4.7.1 (released 2019-01-24):
 Display the tables scrollbar (bug #647)
