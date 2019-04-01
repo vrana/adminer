@@ -108,7 +108,7 @@ class Adminer {
 		$return = array();
 		$filename = "adminer.css";
 		if (file_exists($filename)) {
-            $return[] = $filename. '?'.hash_file ('CRC32', $filename , FALSE );
+			$return[] = $filename. '?'.hash_file ('CRC32', $filename , FALSE );
 		}
 		return $return;
 	}
