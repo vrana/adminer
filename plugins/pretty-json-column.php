@@ -6,7 +6,7 @@ class AdminerPrettyJsonColumn {
 	/** @var AdminerPlugin */
 	protected $adminer;
 
-	public function __construct($adminer) {
+	public function __construct($adminer = null) {
 		$this->adminer = $adminer;
 	}
 
