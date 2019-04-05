@@ -238,11 +238,15 @@ if (!defined("DRIVER")) {
 				$options = array(PDO::MYSQL_ATTR_LOCAL_INFILE => false);
 				$ssl = $adminer->connectSsl();
 				if ($ssl) {
-					$options += array(
-						PDO::MYSQL_ATTR_SSL_KEY => $ssl['key'],
-						PDO::MYSQL_ATTR_SSL_CERT => $ssl['cert'],
-						PDO::MYSQL_ATTR_SSL_CA => $ssl['ca'],
-					);
+                    if(!empty($ssl['key'])){
+                        $options[PDO::MYSQL_ATTR_SSL_KEY] = $ssl['key'];
+                    }
+                    if(!empty($ssl['cert'])){
+                        $options[PDO::MYSQL_ATTR_SSL_CERT] = $ssl['cert'];
+                    }
+                    if(!empty($ssl['ca'])){
+                        $options[PDO::MYSQL_ATTR_SSL_CA] = $ssl['ca'];
+                    }
 				}
 				$this->dsn(
 					"mysql:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\d)~', ';port=\1', $server)),
