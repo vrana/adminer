@@ -815,7 +815,7 @@ function shorten_utf8($string, $length = 80, $suffix = "") {
 	if (!preg_match("(^(" . repeat_pattern("[\t\r\n -\x{10FFFF}]", $length) . ")($)?)u", $string, $match)) { // ~s causes trash in $match[2] under some PHP versions, (.|\n) is slow
 		preg_match("(^(" . repeat_pattern("[\t\r\n -~]", $length) . ")($)?)", $string, $match);
 	}
-	return h($match[1]) . $suffix . (isset($match[2]) ? "" : "<i>...</i>");
+	return h($match[1]) . $suffix . (isset($match[2]) ? "" : "<i>…</i>");
 }
 
 /** Format decimal number
@@ -1021,7 +1021,7 @@ function process_input($field) {
 		return null;
 	}
 	if ($function == "orig") {
-		return ($field["on_update"] == "CURRENT_TIMESTAMP" ? idf_escape($field["field"]) : false);
+		return (preg_match('~^CURRENT_TIMESTAMP~i', $field["on_update"]) ? idf_escape($field["field"]) : false);
 	}
 	if ($function == "NULL") {
 		return "NULL";
@@ -1419,7 +1419,7 @@ function edit_form($TABLE, $fields, $row, $update) {
 	if (!$fields) {
 		echo "<p class='error'>" . lang('You have no privileges to update this table.') . "\n";
 	} else {
-		echo "<table cellspacing='0'>" . script("qsl('table').onkeydown = editingKeydown;");
+		echo "<table cellspacing='0' class='layout'>" . script("qsl('table').onkeydown = editingKeydown;");
 
 		foreach ($fields as $name => $field) {
 			echo "<tr><th>" . $adminer->fieldName($field);
@@ -1445,12 +1445,12 @@ function edit_form($TABLE, $fields, $row, $update) {
 			}
 			$function = ($_POST["save"]
 				? (string) $_POST["function"][$name]
-				: ($update && $field["on_update"] == "CURRENT_TIMESTAMP"
+				: ($update && preg_match('~^CURRENT_TIMESTAMP~i', $field["on_update"])
 					? "now"
 					: ($value === false ? null : ($value !== null ? '' : 'NULL'))
 				)
 			);
-			if (preg_match("~time~", $field["type"]) && $value == "CURRENT_TIMESTAMP") {
+			if (preg_match("~time~", $field["type"]) && preg_match('~^CURRENT_TIMESTAMP~i', $value)) {
 				$value = "";
 				$function = "now";
 			}
@@ -1476,7 +1476,7 @@ function edit_form($TABLE, $fields, $row, $update) {
 				? lang('Save and continue edit')
 				: lang('Save and insert next')
 			) . "' title='Ctrl+Shift+Enter'>\n";
-			echo ($update ? script("qsl('input').onclick = function () { return !ajaxForm(this.form, '" . lang('Saving') . "...', this); };") : "");
+			echo ($update ? script("qsl('input').onclick = function () { return !ajaxForm(this.form, '" . lang('Saving') . "…', this); };") : "");
 		}
 	}
 	echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "'>" . confirm() . "\n"

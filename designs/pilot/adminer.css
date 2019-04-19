@@ -51,9 +51,15 @@
 	width: 270px;
 }
 
-#tables li {
+#logins li, #tables li {
     position: relative;
     height: 23px;
+}
+
+#logins a {
+	display: block;
+	margin-top: 5px;
+	padding: 0 10px;
 }
 
 #tables a {

@@ -219,7 +219,7 @@ if (!isset($_GET["import"])) {
 	}
 	echo "<p>";
 	textarea("query", $q, 20);
-	echo ($_POST ? "" : script("qs('textarea').focus();"));
+	echo script(($_POST ? "" : "qs('textarea').focus();\n") . "qs('#form').onsubmit = partial(sqlSubmit, qs('#form'), '" . remove_from_uri("sql|limit|error_stops|only_errors") . "');");
 	echo "<p>$execute\n";
 	echo lang('Limit rows') . ": <input type='number' name='limit' class='size' value='" . h($_POST ? $_POST["limit"] : $_GET["limit"]) . "'>\n";
 	
@@ -231,10 +231,13 @@ if (!isset($_GET["import"])) {
 		: lang('File uploads are disabled.')
 	);
 	echo "</div></fieldset>\n";
-	echo "<fieldset><legend>" . lang('From server') . "</legend><div>";
-	echo lang('Webserver file %s', "<code>" . h($adminer->importServerPath()) . "$gz</code>");
-	echo ' <input type="submit" name="webfile" value="' . lang('Run file') . '">';
-	echo "</div></fieldset>\n";
+	$importServerPath = $adminer->importServerPath();
+	if ($importServerPath) {
+		echo "<fieldset><legend>" . lang('From server') . "</legend><div>";
+		echo lang('Webserver file %s', "<code>" . h($importServerPath) . "$gz</code>");
+		echo ' <input type="submit" name="webfile" value="' . lang('Run file') . '">';
+		echo "</div></fieldset>\n";
+	}
 	echo "<p>";
 }
 

@@ -66,6 +66,7 @@ if ($adminer->homepage()) {
 				}
 			}
 			$doc_link = doc_link(array('sql' => 'show-table-status.html'));
+			echo "<div class='scrollable'>\n";
 			echo "<table cellspacing='0' class='nowrap checkable'>\n";
 			echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
 			echo '<thead><tr class="wrap">';
@@ -119,6 +120,7 @@ if ($adminer->homepage()) {
 			}
 
 			echo "</table>\n";
+			echo "</div>\n";
 			if (!information_schema(DB)) {
 				echo "<div class='footer'><div>\n";
 				$vacuum = "<input type='submit' value='" . lang('Vacuum') . "'> " . on_help("'VACUUM'");

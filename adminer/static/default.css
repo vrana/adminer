@@ -66,8 +66,8 @@ input.wayoff { left: -1000px; position: absolute; }
 .loadmore { margin-left: 1ex; }
 /* .edit used in designs */
 #menu { position: absolute; margin: 10px 0 0; padding: 0 0 30px 0; top: 2em; left: 0; width: 19em; }
-#menu p, #tables { padding: .8em 1em; margin: 0; border-bottom: 1px solid #ccc; }
-#tables li{ list-style: none; }
+#menu p, #logins, #tables { padding: .8em 1em; margin: 0; border-bottom: 1px solid #ccc; }
+#logins li, #tables li { list-style: none; }
 #dbs { overflow: hidden; }
 #logins, #tables { white-space: nowrap; overflow: auto; }
 #logins a, #tables a, #tables span { background: #fff; }

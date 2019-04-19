@@ -24,7 +24,13 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function connect($server, $username, $password) {
-				$this->_link = @sqlsrv_connect(preg_replace('~:~', ',', $server), array("UID" => $username, "PWD" => $password, "CharacterSet" => "UTF-8"));
+				global $adminer;
+				$db = $adminer->database();
+				$connection_info = array("UID" => $username, "PWD" => $password, "CharacterSet" => "UTF-8");
+				if ($db != "") {
+					$connection_info["Database"] = $db;
+				}
+				$this->_link = @sqlsrv_connect(preg_replace('~:~', ',', $server), $connection_info);
 				if ($this->_link) {
 					$info = sqlsrv_server_info($this->_link);
 					$this->server_info = $info['SQLServerVersion'];
@@ -626,7 +632,7 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)
 	}
 
 	function support($feature) {
-		return preg_match('~^(columns|database|drop_col|indexes|scheme|sql|table|trigger|view|view_trigger)$~', $feature); //! routine|
+		return preg_match('~^(columns|database|drop_col|indexes|descidx|scheme|sql|table|trigger|view|view_trigger)$~', $feature); //! routine|
 	}
 
 	$jush = "mssql";

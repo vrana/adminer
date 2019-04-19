@@ -10,7 +10,7 @@ $translations = array(
 	'Logout' => 'Çıkış',
 	'Logged as: %s' => '%s olarak giriş yapıldı.',
 	'Logout successful.' => 'Oturum başarıyla sonlandı.',
-	'Thanks for using Adminer, consider <a href="%s">donating</a>.' => 'Adminer kullandığınız için teşekkür ederiz <a href="%s">bağış yapmayı düşünün</a>.',
+	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Adminer kullandığınız için teşekkür ederiz <a href="https://www.adminer.org/en/donation/">bağış yapmayı düşünün</a>.',
 	'Invalid credentials.' => 'Geçersiz kimlik bilgileri.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Çok fazla oturum açma denemesi yapıldı.', '%d Dakika sonra tekrar deneyiniz.'),
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Ana şifrenin süresi doldu. Kalıcı olması için <a href="https://www.adminer.org/en/extension/"%s>%s medodunu</a> kullanın.',

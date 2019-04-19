@@ -7,6 +7,7 @@ if ($adminer->homepage()) {
 	if ($_POST["query"] != "") {
 		search_tables();
 	}
+	echo "<div class='scrollable'>\n";
 	echo "<table cellspacing='0' class='nowrap checkable'>\n";
 	echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
 	echo '<thead><tr class="wrap">';
@@ -26,6 +27,7 @@ if ($adminer->homepage()) {
 	}
 	
 	echo "</table>\n";
+	echo "</div>\n";
 	echo "</form>\n";
 	echo script("tableCheck();");
 }

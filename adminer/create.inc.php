@@ -27,6 +27,10 @@ if ($row["auto_increment_col"]) {
 	$row["fields"][$row["auto_increment_col"]]["auto_increment"] = true;
 }
 
+if ($_POST) {
+	set_adminer_settings(array("comments" => $_POST["comments"], "defaults" => $_POST["defaults"]));
+}
+
 if ($_POST && !process_fields($row["fields"]) && !$error) {
 	if ($_POST["drop"]) {
 		queries_redirect(substr(ME, 0, -1), lang('Table has been dropped.'), drop_tables(array($TABLE)));
@@ -170,28 +174,19 @@ foreach ($engines as $engine) {
 <?php } ?>
 
 <?php if (support("columns")) { ?>
+<div class="scrollable">
 <table cellspacing="0" id="edit-fields" class="nowrap">
 <?php
-$comments = ($_POST ? $_POST["comments"] : $row["Comment"] != "");
-if (!$_POST && !$comments) {
-	foreach ($row["fields"] as $field) {
-		if ($field["comment"] != "") {
-			$comments = true;
-			break;
-		}
-	}
-}
-edit_fields($row["fields"], $collations, "TABLE", $foreign_keys, $comments);
+edit_fields($row["fields"], $collations, "TABLE", $foreign_keys);
 ?>
 </table>
+</div>
 <p>
 <?php echo lang('Auto Increment'); ?>: <input type="number" name="Auto_increment" size="6" value="<?php echo h($row["Auto_increment"]); ?>">
-<?php echo checkbox("defaults", 1, !$_POST || $_POST["defaults"], lang('Default values'), "columnShow(this.checked, 5)", "jsonly"); ?>
-<?php echo ($_POST ? "" : script("editingHideDefaults();")); ?>
+<?php echo checkbox("defaults", 1, ($_POST ? $_POST["defaults"] : adminer_setting("defaults")), lang('Default values'), "columnShow(this.checked, 5)", "jsonly"); ?>
 <?php echo (support("comment")
-	? "<label><input type='checkbox' name='comments' value='1' class='jsonly'" . ($comments ? " checked" : "") . ">" . lang('Comment') . "</label>"
-		. script("qsl('input').onclick = partial(editingCommentsClick, true);")
-		. ' <input name="Comment" value="' . h($row["Comment"]) . '" data-maxlength="' . (min_version(5.5) ? 2048 : 60) . '"' . ($comments ? '' : ' class="hidden"') . '>'
+	? checkbox("comments", 1, ($_POST ? $_POST["comments"] : adminer_setting("comments")), lang('Comment'), "editingCommentsClick(this, true);", "jsonly")
+		. ' <input name="Comment" value="' . h($row["Comment"]) . '" data-maxlength="' . (min_version(5.5) ? 2048 : 60) . '">'
 	: '')
 ; ?>
 <p>
@@ -225,4 +220,4 @@ foreach ($row["partition_names"] as $key => $val) {
 ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>
-<?php echo script("qs('#form')['defaults'].onclick();" . (support("comment") ? " editingCommentsClick.call(qs('#form')['comments']);" : "")); ?>
+<?php echo script("qs('#form')['defaults'].onclick();" . (support("comment") ? " editingCommentsClick(qs('#form')['comments']);" : "")); ?>

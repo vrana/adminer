@@ -177,11 +177,11 @@ h3 {
     top: 38px;
     width: 180px;
     background-color: #DEF; }
-#menu p, #tables {
+#menu p, #logins, #tables {
     padding-left: 8px;
     font-size: 10pt;
     border-bottom: none; }
-#tables a, #tables span {
+#logins a, #tables a, #tables span {
     background: #DEF;
 }
 

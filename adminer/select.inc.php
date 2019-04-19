@@ -309,6 +309,7 @@ if (!$columns && support("table")) {
 		} else {
 			$backward_keys = $adminer->backwardKeys($TABLE, $table_name);
 
+			echo "<div class='scrollable'>";
 			echo "<table id='table' cellspacing='0' class='nowrap checkable'>";
 			echo script("mixin(qs('#table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true), onkeydown: editingKeydown});");
 			echo "<thead><tr>" . (!$group && $select
@@ -439,7 +440,7 @@ if (!$columns && support("table")) {
 							$h_value = h($value !== null ? $value : $row[$key]);
 							echo "<td>" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>");
 						} else {
-							$long = strpos($val, "<i>...</i>");
+							$long = strpos($val, "<i>…</i>");
 							echo "<td id='$id' data-text='" . ($long ? 2 : ($text ? 1 : 0)) . "'"
 								. ($editable ? "" : " data-warning='" . h(lang('Use edit link to modify this value.')) . "'")
 								. ">$val</td>"
@@ -459,6 +460,7 @@ if (!$columns && support("table")) {
 				exit;
 			}
 			echo "</table>\n";
+			echo "</div>\n";
 		}
 
 		if (!is_ajax()) {
@@ -482,7 +484,7 @@ if (!$columns && support("table")) {
 				if ($pagination) {
 					echo (($found_rows === false ? count($rows) + 1 : $found_rows - $page * $limit) > $limit
 						? '<p><a href="' . h(remove_from_uri("page") . "&page=" . ($page + 1)) . '" class="loadmore">' . lang('Load more data') . '</a>'
-							. script("qsl('a').onclick = partial(selectLoadMore, " . (+$limit) . ", '" . lang('Loading') . "...');", "")
+							. script("qsl('a').onclick = partial(selectLoadMore, " . (+$limit) . ", '" . lang('Loading') . "…');", "")
 						: ''
 					);
 					echo "\n";
@@ -501,12 +503,12 @@ if (!$columns && support("table")) {
 					if ($jush != "simpledb") {
 						echo "<legend><a href='" . h(remove_from_uri("page")) . "'>" . lang('Page') . "</a></legend>";
 						echo script("qsl('a').onclick = function () { pageClick(this.href, +prompt('" . lang('Page') . "', '" . ($page + 1) . "')); return false; };");
-						echo pagination(0, $page) . ($page > 5 ? " ..." : "");
+						echo pagination(0, $page) . ($page > 5 ? " …" : "");
 						for ($i = max(1, $page - 4); $i < min($max_page, $page + 5); $i++) {
 							echo pagination($i, $page);
 						}
 						if ($max_page > 0) {
-							echo ($page + 5 < $max_page ? " ..." : "");
+							echo ($page + 5 < $max_page ? " …" : "");
 							echo ($exact_count && $found_rows !== false
 								? pagination($max_page, $page)
 								: " <a href='" . h(remove_from_uri("page") . "&page=last") . "' title='~$max_page'>" . lang('last') . "</a>"
@@ -514,9 +516,9 @@ if (!$columns && support("table")) {
 						}
 					} else {
 						echo "<legend>" . lang('Page') . "</legend>";
-						echo pagination(0, $page) . ($page > 1 ? " ..." : "");
+						echo pagination(0, $page) . ($page > 1 ? " …" : "");
 						echo ($page ? pagination($page, $page) : "");
-						echo ($max_page > $page ? pagination($page + 1, $page) . ($max_page > $page + 1 ? " ..." : "") : "");
+						echo ($max_page > $page ? pagination($page + 1, $page) . ($max_page > $page + 1 ? " …" : "") : "");
 					}
 					echo "</fieldset>\n";
 				}

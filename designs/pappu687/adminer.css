@@ -232,7 +232,7 @@ tr.odd td {
 	border-right:2px solid #34495e;
 }
 
-#menu p, #tables{
+#menu p, #logins, #tables{
 	border-bottom:1px solid rgb(85, 112, 139);
 }
 

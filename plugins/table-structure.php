@@ -13,6 +13,7 @@ class AdminerTableStructure {
 	* @return bool
 	*/
 	function tableStructurePrint($fields) {
+		echo "<div class='scrollable'>\n";
 		echo "<table cellspacing='0' class='nowrap'>\n";
 		echo "<thead><tr><th>" . lang('Column') . "<th>" . lang('Type') . "<th>" . lang('Nullable') . "<th>" . lang('Default') . (support("comment") ? "<th>" . lang('Comment') : "") . "</thead>\n";
 		foreach ($fields as $field) {
@@ -26,6 +27,7 @@ class AdminerTableStructure {
 			echo "\n";
 		}
 		echo "</table>\n";
+		echo "</div>\n";
 		return true;
 	}
 }
