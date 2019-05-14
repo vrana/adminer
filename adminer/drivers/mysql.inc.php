@@ -810,7 +810,8 @@ if (!defined("DRIVER")) {
 		queries("SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO'");
 		foreach ($tables as $table) {
 			$name = ($target == DB ? table("copy_$table") : idf_escape($target) . "." . table($table));
-			if (!queries("CREATE TABLE $name LIKE " . table($table))
+			if (($_POST["overwrite"] && !queries("\nDROP TABLE IF EXISTS $name"))
+				|| !queries("CREATE TABLE $name LIKE " . table($table))
 				|| !queries("INSERT INTO $name SELECT * FROM " . table($table))
 			) {
 				return false;
@@ -825,7 +826,8 @@ if (!defined("DRIVER")) {
 		foreach ($views as $table) {
 			$name = ($target == DB ? table("copy_$table") : idf_escape($target) . "." . table($table));
 			$view = view($table);
-			if (!queries("CREATE VIEW $name AS $view[select]")) { //! USE to avoid db.table
+			if (($_POST["overwrite"] && !queries("DROP VIEW IF EXISTS $name"))
+				|| !queries("CREATE VIEW $name AS $view[select]")) { //! USE to avoid db.table
 				return false;
 			}
 		}

@@ -128,6 +128,7 @@ $translations = array(
 	'Tables have been moved.' => 'Xx.',
 	'Copy' => 'Xx',
 	'Tables have been copied.' => 'Xx.',
+	'overwrite' => 'xx',
 	
 	'Routines' => 'Xx',
 	'Routine has been called, %d row(s) affected.' => array('Xx, %d.', 'Xx, %d.'),
