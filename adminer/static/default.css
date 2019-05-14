@@ -1,5 +1,5 @@
 /** @author Ondrej Valka, http://valka.info */
-body { color: #000; background: #fff; font: 90%/1.25 Verdana, Arial, Helvetica, sans-serif; margin: 0; }
+body { color: #000; background: #fff; font: 90%/1.25 Verdana, Arial, Helvetica, sans-serif; margin: 0; width: -moz-fit-content; width: fit-content; }
 a { color: blue; text-decoration: none; }
 a:visited { color: navy; }
 a:link:hover, a:visited:hover { color: red; text-decoration: underline; }
