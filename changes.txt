@@ -1,4 +1,5 @@
 Adminer 4.7.2-dev:
+Do not attempt logging in without password (bug #676)
 MySQL: Fix creating users and changing password in MySQL 8 (bug #663)
 
 Adminer 4.7.1 (released 2019-01-24):

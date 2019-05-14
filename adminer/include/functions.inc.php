@@ -351,7 +351,7 @@ function set_password($vendor, $server, $username, $password) {
 }
 
 /** Get password from session
-* @return string
+* @return string or null for missing password or false for expired password
 */
 function get_password() {
 	$return = get_session("pwds");
