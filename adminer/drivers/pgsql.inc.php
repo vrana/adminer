@@ -507,7 +507,7 @@ WHERE table_schema = current_schema() AND table_name = " . q($name))));
 					}
 				}
 				if ($field[0] != "" || $val5 != "") {
-					$queries[] = "COMMENT ON COLUMN " . table($table) . ".$val[0] IS " . ($val5 != "" ? substr($val5, 9) : "''");
+					$queries[] = "COMMENT ON COLUMN " . table(($table == "" ? $name : $table)) . ".$val[0] IS " . ($val5 != "" ? substr($val5, 9) : "''");
 				}
 			}
 		}
