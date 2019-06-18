@@ -620,6 +620,9 @@ function ajax(url, callback, data, message) {
 					ajaxStatus.innerHTML = (request.status ? request.responseText : '<div class="error">' + offlineMessage + '</div>');
 					ajaxStatus.className = ajaxStatus.className.replace(/ hidden/g, '');
 				}
+				// Register the "SQL command" button to expand the hidden SQL editor when clicked.
+				// This had been attempted to called using an inline script tag in the innerHTML but it doesn't execute. So let's call it here after the innerHTML has been set.
+				messagesPrint();
 			}
 		};
 		request.send(data);
