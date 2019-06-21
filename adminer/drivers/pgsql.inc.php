@@ -759,7 +759,12 @@ AND typelem = 0"
 			$return_parts[] = "CONSTRAINT " . idf_escape($fkey_name) . " $fkey[definition] " . ($fkey['deferrable'] ? 'DEFERRABLE' : 'NOT DEFERRABLE');
 		}
 
-		$return .= implode(",\n    ", $return_parts) . "\n) WITH (oids = " . ($status['Oid'] ? 'true' : 'false') . ");";
+		$return .= implode(",\n    ", $return_parts) . "\n)";
+
+		// Postgres 12 removed WITH OIDS support
+		if (version_compare($connection->server_info, 12) < 0) {
+			$return .= " WITH (oids = " . ($status['Oid'] ? 'true' : 'false') . ");";
+		}
 
 		// "basic" indexes after table definition
 		foreach ($indexes as $index_name => $index) {
