@@ -44,11 +44,14 @@ if (!defined("DRIVER")) {
 			}
 
 			function result($query, $field = 0) {
+				$start=microtime(true);
 				$result = $this->query($query);
 				if (!$result) {
 					return false;
 				}
 				$row = $result->fetch_array();
+				$end=microtime(true);
+				$GLOBALS['querylog'][]=array($query,$start,$end);
 				return $row[$field];
 			}
 			
@@ -175,10 +178,13 @@ if (!defined("DRIVER")) {
 			* @return string
 			*/
 			function result($query, $field = 0) {
+				$start=microtime(true);
 				$result = $this->query($query);
 				if (!$result || !$result->num_rows) {
 					return false;
 				}
+				$end=microtime(true);
+				$GLOBALS['querylog'][]=array($query,$start,$end);
 				return mysql_result($result->_result, 0, $field);
 			}
 		}
@@ -575,12 +581,45 @@ if (!defined("DRIVER")) {
 
 	/** Get foreign keys in table
 	* @param string
-	* @return array array($name => array("db" => , "ns" => , "table" => , "source" => array(), "target" => array(), "on_delete" => , "on_update" => ))
+	* @return array array($name => array("db" => , "table" => , "source" => array(), "target" => array(), "on_delete" => , "on_update" => ))
 	*/
 	function foreign_keys($table) {
 		global $connection, $on_actions;
-		static $pattern = '(?:`(?:[^`]|``)+`)|(?:"(?:[^"]|"")+")';
+
 		$return = array();
+
+		# I tried also with group by and group_concat(), but that didn't work out as expected.
+		foreach (get_rows('
+	SELECT kcu.position_in_unique_constraint, kcu.constraint_name, kcu.constraint_schema, kcu.table_name,
+	kcu.referenced_table_schema, kcu.referenced_table_name, kcu.column_name, kcu.referenced_column_name,
+	rc.update_rule, rc.delete_rule
+	FROM information_schema.key_column_usage kcu
+	JOIN information_schema.referential_constraints rc ON kcu.constraint_schema=rc.constraint_schema AND kcu.constraint_name=rc.constraint_name
+	WHERE kcu.table_schema = DATABASE()
+	AND kcu.table_name = "'.$table.'"
+	ORDER BY kcu.constraint_name ASC, position_in_unique_constraint ASC', $connection) as $r) {
+
+			if($r['position_in_unique_constraint'] == 1){
+				$return[$r['constraint_name']] = array(
+					# set db value also for pseudo cross db referential relations, a little fix to schema.inc.php required too to accept values here.
+					# other drivers or plugins might support schema layouts with multiple databases or even other sources.
+					#"db" => $r['constraint_schema'],
+					"db" => null, # stick to the original not setting 'db' until handled well at usage locations of this function
+					"table" => $r['referenced_table_name'],
+					"source" => array($r['column_name']), # fkfield 1
+					"target" => array($r['referenced_column_name']), # pkfield 1
+					"on_delete" => $r['delete_rule'],
+					"on_update" => $r['update_rule']
+				);
+			} else {
+				$return[$r['constraint_name']]['source'][]=$r['column_name']; # fkfield n
+				$return[$r['constraint_name']]['target'][]=$r['referenced_column_name']; # pkfield n
+			}
+		}
+		return $return;
+
+		# old 4.7.1 code
+		static $pattern = '(?:`(?:[^`]|``)+`)|(?:"(?:[^"]|"")+")';
 		$create_table = $connection->result("SHOW CREATE TABLE " . table($table), 1);
 		if ($create_table) {
 			preg_match_all("~CONSTRAINT ($pattern) FOREIGN KEY ?\\(((?:$pattern,? ?)+)\\) REFERENCES ($pattern)(?:\\.($pattern))? \\(((?:$pattern,? ?)+)\\)(?: ON DELETE ($on_actions))?(?: ON UPDATE ($on_actions))?~", $create_table, $matches, PREG_SET_ORDER);
