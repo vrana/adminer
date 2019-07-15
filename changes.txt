@@ -2,6 +2,7 @@ Adminer 4.7.2-dev:
 Do not attempt logging in without password (bug #676)
 Stretch footer over the whole table width (bug #624)
 Allow overwriting tables when copying them
+Fix displaying SQL command after Save and continue edit
 Cache busting for adminer.css
 MySQL: Fix displaying multi-columns foreign keys (bug #675)
 MySQL: Fix creating users and changing password in MySQL 8 (bug #663)

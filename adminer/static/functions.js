@@ -672,6 +672,7 @@ function ajaxForm(form, message, button) {
 		if (window.jush) {
 			jush.highlight_tag(qsa('code', qs('#ajaxstatus')), 0);
 		}
+		messagesPrint(qs('#ajaxstatus'));
 	}, data, message);
 }
 
