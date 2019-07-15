@@ -438,9 +438,7 @@ ORDER BY conkey, conname") as $row) {
 
 	function view($name) {
 		global $connection;
-		return array("select" => trim($connection->result("SELECT view_definition
-FROM information_schema.views
-WHERE table_schema = current_schema() AND table_name = " . q($name))));
+		return array("select" => trim($connection->result("SELECT pg_get_viewdef(" . $connection->result("SELECT oid FROM pg_class WHERE relname = " . q($name)) . ")")));
 	}
 
 	function collations() {
