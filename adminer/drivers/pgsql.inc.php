@@ -483,6 +483,9 @@ WHERE table_schema = current_schema() AND table_name = " . q($name))));
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
 		$alter = array();
 		$queries = array();
+		if ($table != "" && $table != $name) {
+			$queries[] = "ALTER TABLE " . table($table) . " RENAME TO " . table($name);
+		}
 		foreach ($fields as $field) {
 			$column = idf_escape($field[0]);
 			$val = $field[1];
@@ -498,7 +501,7 @@ WHERE table_schema = current_schema() AND table_name = " . q($name))));
 					$alter[] = ($table != "" ? "ADD " : "  ") . implode($val);
 				} else {
 					if ($column != $val[0]) {
-						$queries[] = "ALTER TABLE " . table($table) . " RENAME $column TO $val[0]";
+						$queries[] = "ALTER TABLE " . table($name) . " RENAME $column TO $val[0]";
 					}
 					$alter[] = "ALTER $column TYPE$val[1]";
 					if (!$val[6]) {
@@ -507,7 +510,7 @@ WHERE table_schema = current_schema() AND table_name = " . q($name))));
 					}
 				}
 				if ($field[0] != "" || $val5 != "") {
-					$queries[] = "COMMENT ON COLUMN " . table($table) . ".$val[0] IS " . ($val5 != "" ? substr($val5, 9) : "''");
+					$queries[] = "COMMENT ON COLUMN " . table($name) . ".$val[0] IS " . ($val5 != "" ? substr($val5, 9) : "''");
 				}
 			}
 		}
@@ -516,9 +519,6 @@ WHERE table_schema = current_schema() AND table_name = " . q($name))));
 			array_unshift($queries, "CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)");
 		} elseif ($alter) {
 			array_unshift($queries, "ALTER TABLE " . table($table) . "\n" . implode(",\n", $alter));
-		}
-		if ($table != "" && $table != $name) {
-			$queries[] = "ALTER TABLE " . table($table) . " RENAME TO " . table($name);
 		}
 		if ($table != "" || $comment != "") {
 			$queries[] = "COMMENT ON TABLE " . table($name) . " IS " . q($comment);

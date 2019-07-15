@@ -6,6 +6,7 @@ Cache busting for adminer.css
 MySQL: Fix displaying multi-columns foreign keys (bug #675)
 MySQL: Fix creating users and changing password in MySQL 8 (bug #663)
 MySQL: Pass SRID to GeomFromText
+PostgreSQL: Fix setting column comments on new table
 Elasticsearch: Fix setting number of rows
 
 Adminer 4.7.1 (released 2019-01-24):
