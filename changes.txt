@@ -9,6 +9,7 @@ MySQL: Fix creating users and changing password in MySQL 8 (bug #663)
 MySQL: Pass SRID to GeomFromText
 PostgreSQL: Fix setting column comments on new table
 PostgreSQL: Display definitions of materialized views (bug #682)
+PostgreSQL: Fix table status in PostgreSQL 12 (bug #683)
 MS SQL: Support comments
 Elasticsearch: Fix setting number of rows
 
