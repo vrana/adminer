@@ -928,12 +928,13 @@ class Adminer {
 <?php
 		if ($missing == "auth") {
 			$first = true;
+			echo "<ul id='logins'>\n";
 			foreach ((array) $_SESSION["pwds"] as $vendor => $servers) {
 				foreach ($servers as $server => $usernames) {
 					foreach ($usernames as $username => $password) {
 						if ($password !== null) {
 							if ($first) {
-								echo "<ul id='logins'>" . script("mixin(qs('#logins'), {onmouseover: menuOver, onmouseout: menuOut});");
+								echo  script("mixin(qs('#logins'), {onmouseover: menuOver, onmouseout: menuOut});");
 								$first = false;
 							}
 							$dbs = $_SESSION["db"][$vendor][$server][$username];
@@ -944,6 +945,7 @@ class Adminer {
 					}
 				}
 			}
+			echo "\n</ul>";
 		} else {
 			if ($_GET["ns"] !== "" && !$missing && DB != "") {
 				$connection->select_db(DB);
