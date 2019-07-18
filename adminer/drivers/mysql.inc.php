@@ -583,8 +583,8 @@ if (!defined("DRIVER")) {
 	*/
 	function foreign_keys($table) {
 		$return = array();
-		foreach (get_rows("SELECT * FROM information_schema.REFERENTIAL_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = " . q(DB) . " AND TABLE_NAME = " . q($table)) as $row) {
-			$columns = get_key_vals("SELECT COLUMN_NAME, REFERENCED_COLUMN_NAME FROM information_schema.KEY_COLUMN_USAGE WHERE CONSTRAINT_SCHEMA = " . q(DB) . " AND CONSTRAINT_NAME = " . q($row["CONSTRAINT_NAME"]) . " ORDER BY ORDINAL_POSITION");
+		foreach (get_rows("SELECT * FROM information_schema.REFERENTIAL_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = DATABASE() AND TABLE_NAME = " . q($table)) as $row) {
+			$columns = get_key_vals("SELECT COLUMN_NAME, REFERENCED_COLUMN_NAME FROM information_schema.KEY_COLUMN_USAGE WHERE CONSTRAINT_SCHEMA = DATABASE() AND CONSTRAINT_NAME = " . q($row["CONSTRAINT_NAME"]) . " ORDER BY ORDINAL_POSITION");
 			$db = $row["UNIQUE_CONSTRAINT_SCHEMA"];
 			$return[$row["CONSTRAINT_NAME"]] = array(
 				"db" => ($db == DB ? "" : $db),
