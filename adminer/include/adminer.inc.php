@@ -927,25 +927,23 @@ class Adminer {
 </h1>
 <?php
 		if ($missing == "auth") {
-			$first = true;
-			echo "<ul id='logins'>\n";
+			$lastlogins = '';
 			foreach ((array) $_SESSION["pwds"] as $vendor => $servers) {
 				foreach ($servers as $server => $usernames) {
 					foreach ($usernames as $username => $password) {
 						if ($password !== null) {
-							if ($first) {
-								echo  script("mixin(qs('#logins'), {onmouseover: menuOver, onmouseout: menuOut});");
-								$first = false;
-							}
 							$dbs = $_SESSION["db"][$vendor][$server][$username];
 							foreach (($dbs ? array_keys($dbs) : array("")) as $db) {
-								echo "<li><a href='" . h(auth_url($vendor, $server, $username, $db)) . "'>($drivers[$vendor]) " . h($username . ($server != "" ? "@" . $this->serverName($server) : "") . ($db != "" ? " - $db" : "")) . "</a>\n";
+								$lastlogins .= "<li><a href='" . h(auth_url($vendor, $server, $username, $db)) . "'>($drivers[$vendor]) " . h($username . ($server != "" ? "@" . $this->serverName($server) : "") . ($db != "" ? " - $db" : "")) . "</a></li>\n";
 							}
 						}
 					}
 				}
 			}
-			echo "\n</ul>";
+			if ($lastlogins != '') {
+				echo "<ul id='logins'>\n" . $lastlogins . "</ul>";
+				echo  script("mixin(qs('#logins'), {onmouseover: menuOver, onmouseout: menuOut});");
+			}
 		} else {
 			if ($_GET["ns"] !== "" && !$missing && DB != "") {
 				$connection->select_db(DB);
