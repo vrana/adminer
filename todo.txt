@@ -1,3 +1,9 @@
+When add/editing table definition, also show a select for UPDATE , not only for the DELETE constraint.
+
+[diagram] alternatives to 4k cookie limit for storing schema coords (plugins)
+[diagram] alternative to 2k url limit for perma link of schema coords (no problem with a serverside diagram storage plugin ?diagram_id=123)
+[export] handle  PHP's max_vars_limit (default 1000) for databases with many tables (2 vars for each table + fixed form vars)
+
 Transactions in export
 Create view and routine options
 Variables editation
@@ -30,6 +36,7 @@ SQLite:
 Copy tables
 Delimiter in export and SQL command
 Backward keys in Editor
+[export] handle special sql_sequence table (first/last? - not between normal tables sqldump)
 
 PostgreSQL:
 Display number of schemas in databases overview
