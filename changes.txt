@@ -1,4 +1,4 @@
-Adminer 4.7.2-dev:
+Adminer 4.7.2 (released 2019-07-18):
 Do not attempt logging in without password (bug #676)
 Stretch footer over the whole table width (bug #624)
 Allow overwriting tables when copying them
