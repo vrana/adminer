@@ -730,7 +730,7 @@ AND typelem = 0"
 		ksort($fkeys);
 
 		foreach ($fkeys as $fkey_name => $fkey) {
-			$return .= "ALTER TABLE ONLY " . idf_escape($status['nspname']) . "." . idf_escape($status['Name']) . " ADD CONSTRAINT " . idf_escape($fkey_name) . " $fkey[definition] " . ($fkey['deferrable'] ? 'DEFERRABLE' : 'NOT DEFERRABLE');
+			$return .= "ALTER TABLE ONLY " . idf_escape($status['nspname']) . "." . idf_escape($status['Name']) . " ADD CONSTRAINT " . idf_escape($fkey_name) . " $fkey[definition] " . ($fkey['deferrable'] ? 'DEFERRABLE' : 'NOT DEFERRABLE') . ";\n";
 		}
 
 		return $return;
@@ -793,8 +793,6 @@ AND typelem = 0"
 			$return_parts[] = "CONSTRAINT " . idf_escape($conname) . " CHECK " . $consrc;
 		}
 
-//$return .= "\n\n" . var_export($constraints, true) . "\n\n";
-
 		$return .= implode(",\n    ", $return_parts) . "\n) WITH (oids = " . ($status['Oid'] ? 'true' : 'false') . ");";
 
 		// "basic" indexes after table definition
@@ -818,9 +816,6 @@ AND typelem = 0"
 				$return .= "\n\nCOMMENT ON COLUMN " . idf_escape($status['nspname']) . "." . idf_escape($status['Name']) . "." . idf_escape($field_name) . " IS " . q($field['comment']) . ";";
 			}
 		}
-
-$return .= "\n\n-- FKs\n";
-$return .= foreign_keys_sql($table);
 
 		return rtrim($return, ';');
 	}
