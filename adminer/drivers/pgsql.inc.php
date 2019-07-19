@@ -718,6 +718,24 @@ AND typelem = 0"
 		return $return;
 	}
 
+	// create_sql() produces CREATE TABLE without FK CONSTRAINTs
+        // foreign_keys_sql() produces all FK CONSTRAINTs as ALTER TABLE ... ADD CONSTRAINT
+        // so that all FKs can be added after all tables have been created,
+        // avoiding any need to reorder CREATE TABLE statements in order of their FK dependencies
+	function foreign_keys_sql($table) {
+		$return = '';
+
+		$status = table_status($table);
+		$fkeys = foreign_keys($table);
+		ksort($fkeys);
+
+		foreach ($fkeys as $fkey_name => $fkey) {
+			$return .= "ALTER TABLE ONLY " . idf_escape($status['nspname']) . "." . idf_escape($status['Name']) . " ADD CONSTRAINT " . idf_escape($fkey_name) . " $fkey[definition] " . ($fkey['deferrable'] ? 'DEFERRABLE' : 'NOT DEFERRABLE');
+		}
+
+		return $return;
+	}
+
 	function create_sql($table, $auto_increment, $style) {
 		global $connection;
 		$return = '';
@@ -728,8 +746,6 @@ AND typelem = 0"
 		$fields = fields($table);
 		$indexes = indexes($table);
 		ksort($indexes);
-		$fkeys = foreign_keys($table);
-		ksort($fkeys);
 		$constraints = constraints($table);
 
 		if (!$status || empty($fields)) {
@@ -770,10 +786,7 @@ AND typelem = 0"
 			}
 		}
 
-		// foreign keys
-		foreach ($fkeys as $fkey_name => $fkey) {
-			$return_parts[] = "CONSTRAINT " . idf_escape($fkey_name) . " $fkey[definition] " . ($fkey['deferrable'] ? 'DEFERRABLE' : 'NOT DEFERRABLE');
-		}
+ 		// for foreign keys, see foreign_keys_sql($table)
 
 		//constraints
 		foreach ($constraints as $conname => $consrc) {
@@ -805,6 +818,9 @@ AND typelem = 0"
 				$return .= "\n\nCOMMENT ON COLUMN " . idf_escape($status['nspname']) . "." . idf_escape($status['Name']) . "." . idf_escape($field_name) . " IS " . q($field['comment']) . ";";
 			}
 		}
+
+$return .= "\n\n-- FKs\n";
+$return .= foreign_keys_sql($table);
 
 		return rtrim($return, ';');
 	}
