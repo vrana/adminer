@@ -105,6 +105,16 @@ SET foreign_key_checks = 0;
 					}
 				}
 
+				// add FKs after creating tables (except in MySQL which uses SET FOREIGN_KEY_CHECKS=0)
+				if (function_exists('foreign_keys_sql')) {
+					foreach (table_status('', true) as $name => $table_status) {
+						$table = (DB == "" || in_array($name, (array) $_POST["tables"]));
+						if ($table && !is_view($table_status)) {
+							echo foreign_keys_sql($name);
+						}
+					}
+				}
+
 				foreach ($views as $view) {
 					$adminer->dumpTable($view, $_POST["table_style"], 1);
 				}

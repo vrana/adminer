@@ -436,6 +436,23 @@ ORDER BY conkey, conname") as $row) {
 		return $return;
 	}
 
+	function constraints($table) {
+		global $on_actions;
+		$return = array();
+		foreach (get_rows("SELECT conname, consrc
+FROM pg_catalog.pg_constraint
+INNER JOIN pg_catalog.pg_namespace ON pg_constraint.connamespace = pg_namespace.oid
+INNER JOIN pg_catalog.pg_class ON pg_constraint.conrelid = pg_class.oid AND pg_constraint.connamespace = pg_class.relnamespace
+WHERE pg_constraint.contype = 'c'
+AND conrelid != 0 -- handle only CONSTRAINTs here, not TYPES
+AND nspname = current_schema()
+AND relname = " . q($table) . "
+ORDER BY connamespace, conname") as $row) {
+			$return[$row['conname']] = $row['consrc'];
+		}
+		return $return;
+	}
+
 	function view($name) {
 		global $connection;
 		return array("select" => trim($connection->result("SELECT pg_get_viewdef(" . $connection->result("SELECT oid FROM pg_class WHERE relname = " . q($name)) . ")")));
@@ -704,6 +721,23 @@ AND typelem = 0"
 		return $return;
 	}
 
+	// create_sql() produces CREATE TABLE without FK CONSTRAINTs
+	// foreign_keys_sql() produces all FK CONSTRAINTs as ALTER TABLE ... ADD CONSTRAINT
+	// so that all FKs can be added after all tables have been created, avoiding any need to reorder CREATE TABLE statements in order of their FK dependencies
+	function foreign_keys_sql($table) {
+		$return = "";
+
+		$status = table_status($table);
+		$fkeys = foreign_keys($table);
+		ksort($fkeys);
+
+		foreach ($fkeys as $fkey_name => $fkey) {
+			$return .= "ALTER TABLE ONLY " . idf_escape($status['nspname']) . "." . idf_escape($status['Name']) . " ADD CONSTRAINT " . idf_escape($fkey_name) . " $fkey[definition] " . ($fkey['deferrable'] ? 'DEFERRABLE' : 'NOT DEFERRABLE') . ";\n";
+		}
+
+		return ($return ? "$return\n" : $return);
+	}
+
 	function create_sql($table, $auto_increment, $style) {
 		global $connection;
 		$return = '';
@@ -718,8 +752,7 @@ AND typelem = 0"
 		$fields = fields($table);
 		$indexes = indexes($table);
 		ksort($indexes);
-		$fkeys = foreign_keys($table);
-		ksort($fkeys);
+		$constraints = constraints($table);
 
 		if (!$status || empty($fields)) {
 			return false;
@@ -759,9 +792,8 @@ AND typelem = 0"
 			}
 		}
 
-		// foreign keys
-		foreach ($fkeys as $fkey_name => $fkey) {
-			$return_parts[] = "CONSTRAINT " . idf_escape($fkey_name) . " $fkey[definition] " . ($fkey['deferrable'] ? 'DEFERRABLE' : 'NOT DEFERRABLE');
+		foreach ($constraints as $conname => $consrc) {
+			$return_parts[] = "CONSTRAINT " . idf_escape($conname) . " CHECK $consrc";
 		}
 
 		$return .= implode(",\n    ", $return_parts) . "\n) WITH (oids = " . ($status['Oid'] ? 'true' : 'false') . ");";
