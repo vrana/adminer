@@ -18,6 +18,3 @@ lang.php - Update translations
 tests/katalon.html - Katalon Automation Recorder test suite
 
 If downloaded from Git then run: git submodule update --init
-
-(Adminer-THemes-ALpha) Experimental Themes in 0ne FiLe (adminer-themes.php)...
-Thread: https://sourceforge.net/p/adminer/discussion/960419/thread/f7c00697/
