@@ -110,6 +110,11 @@ class AdminerPlugin extends Adminer {
 		return $this->_applyPlugin(__FUNCTION__, $args);
 	}
 
+	function bruteForceKey() {
+		$args = func_get_args();
+		return $this->_applyPlugin(__FUNCTION__, $args);
+	}
+
 	function serverName($server) {
 		$args = func_get_args();
 		return $this->_applyPlugin(__FUNCTION__, $args);

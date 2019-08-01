@@ -1,5 +1,17 @@
-Adminer 4.7.2-dev:
+Adminer 4.7.2 (released 2019-07-18):
+Do not attempt logging in without password (bug #676)
+Stretch footer over the whole table width (bug #624)
+Allow overwriting tables when copying them
+Fix displaying SQL command after Save and continue edit
+Cache busting for adminer.css
+MySQL: Fix displaying multi-columns foreign keys (bug #675)
 MySQL: Fix creating users and changing password in MySQL 8 (bug #663)
+MySQL: Pass SRID to GeomFromText
+PostgreSQL: Fix setting column comments on new table
+PostgreSQL: Display definitions of materialized views (bug #682)
+PostgreSQL: Fix table status in PostgreSQL 12 (bug #683)
+MS SQL: Support comments
+Elasticsearch: Fix setting number of rows
 
 Adminer 4.7.1 (released 2019-01-24):
 Display the tables scrollbar (bug #647)

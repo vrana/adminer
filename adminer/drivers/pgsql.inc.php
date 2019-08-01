@@ -324,7 +324,7 @@ ORDER BY 1";
 
 	function table_status($name = "") {
 		$return = array();
-		foreach (get_rows("SELECT c.relname AS \"Name\", CASE c.relkind WHEN 'r' THEN 'table' WHEN 'm' THEN 'materialized view' ELSE 'view' END AS \"Engine\", pg_relation_size(c.oid) AS \"Data_length\", pg_total_relation_size(c.oid) - pg_relation_size(c.oid) AS \"Index_length\", obj_description(c.oid, 'pg_class') AS \"Comment\", CASE WHEN c.relhasoids THEN 'oid' ELSE '' END AS \"Oid\", c.reltuples as \"Rows\", n.nspname
+		foreach (get_rows("SELECT c.relname AS \"Name\", CASE c.relkind WHEN 'r' THEN 'table' WHEN 'm' THEN 'materialized view' ELSE 'view' END AS \"Engine\", pg_relation_size(c.oid) AS \"Data_length\", pg_total_relation_size(c.oid) - pg_relation_size(c.oid) AS \"Index_length\", obj_description(c.oid, 'pg_class') AS \"Comment\", " . (min_version(12) ? "''" : "CASE WHEN c.relhasoids THEN 'oid' ELSE '' END") . " AS \"Oid\", c.reltuples as \"Rows\", n.nspname
 FROM pg_class c
 JOIN pg_namespace n ON(n.nspname = current_schema() AND n.oid = c.relnamespace)
 WHERE relkind IN ('r', 'm', 'v', 'f')
@@ -438,9 +438,7 @@ ORDER BY conkey, conname") as $row) {
 
 	function view($name) {
 		global $connection;
-		return array("select" => trim($connection->result("SELECT view_definition
-FROM information_schema.views
-WHERE table_schema = current_schema() AND table_name = " . q($name))));
+		return array("select" => trim($connection->result("SELECT pg_get_viewdef(" . $connection->result("SELECT oid FROM pg_class WHERE relname = " . q($name)) . ")")));
 	}
 
 	function collations() {
@@ -483,6 +481,9 @@ WHERE table_schema = current_schema() AND table_name = " . q($name))));
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
 		$alter = array();
 		$queries = array();
+		if ($table != "" && $table != $name) {
+			$queries[] = "ALTER TABLE " . table($table) . " RENAME TO " . table($name);
+		}
 		foreach ($fields as $field) {
 			$column = idf_escape($field[0]);
 			$val = $field[1];
@@ -498,7 +499,7 @@ WHERE table_schema = current_schema() AND table_name = " . q($name))));
 					$alter[] = ($table != "" ? "ADD " : "  ") . implode($val);
 				} else {
 					if ($column != $val[0]) {
-						$queries[] = "ALTER TABLE " . table($table) . " RENAME $column TO $val[0]";
+						$queries[] = "ALTER TABLE " . table($name) . " RENAME $column TO $val[0]";
 					}
 					$alter[] = "ALTER $column TYPE$val[1]";
 					if (!$val[6]) {
@@ -507,7 +508,7 @@ WHERE table_schema = current_schema() AND table_name = " . q($name))));
 					}
 				}
 				if ($field[0] != "" || $val5 != "") {
-					$queries[] = "COMMENT ON COLUMN " . table($table) . ".$val[0] IS " . ($val5 != "" ? substr($val5, 9) : "''");
+					$queries[] = "COMMENT ON COLUMN " . table($name) . ".$val[0] IS " . ($val5 != "" ? substr($val5, 9) : "''");
 				}
 			}
 		}
@@ -516,9 +517,6 @@ WHERE table_schema = current_schema() AND table_name = " . q($name))));
 			array_unshift($queries, "CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)");
 		} elseif ($alter) {
 			array_unshift($queries, "ALTER TABLE " . table($table) . "\n" . implode(",\n", $alter));
-		}
-		if ($table != "" && $table != $name) {
-			$queries[] = "ALTER TABLE " . table($table) . " RENAME TO " . table($name);
 		}
 		if ($table != "" || $comment != "") {
 			$queries[] = "COMMENT ON TABLE " . table($name) . " IS " . q($comment);

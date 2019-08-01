@@ -84,7 +84,7 @@ if (isset($_GET["elastic"])) {
 			var $num_rows, $_rows;
 
 			function __construct($rows) {
-				$this->num_rows = count($this->_rows);
+				$this->num_rows = count($rows);
 				$this->_rows = $rows;
 				reset($this->_rows);
 			}
@@ -148,7 +148,7 @@ if (isset($_GET["elastic"])) {
 			$start = microtime(true);
 			$search = $this->_conn->query($query, $data);
 			if ($print) {
-				echo $adminer->selectQuery("$query: " . print_r($data, true), $start, !$search);
+				echo $adminer->selectQuery("$query: " . json_encode($data), $start, !$search);
 			}
 			if (!$search) {
 				return false;

@@ -108,7 +108,7 @@ class Adminer {
 		$return = array();
 		$filename = "adminer.css";
 		if (file_exists($filename)) {
-			$return[] = $filename;
+			$return[] = "$filename?v=" . crc32(file_get_contents($filename));
 		}
 		return $return;
 	}
@@ -927,22 +927,21 @@ class Adminer {
 </h1>
 <?php
 		if ($missing == "auth") {
-			$first = true;
+			$output = "";
 			foreach ((array) $_SESSION["pwds"] as $vendor => $servers) {
 				foreach ($servers as $server => $usernames) {
 					foreach ($usernames as $username => $password) {
 						if ($password !== null) {
-							if ($first) {
-								echo "<ul id='logins'>" . script("mixin(qs('#logins'), {onmouseover: menuOver, onmouseout: menuOut});");
-								$first = false;
-							}
 							$dbs = $_SESSION["db"][$vendor][$server][$username];
 							foreach (($dbs ? array_keys($dbs) : array("")) as $db) {
-								echo "<li><a href='" . h(auth_url($vendor, $server, $username, $db)) . "'>($drivers[$vendor]) " . h($username . ($server != "" ? "@" . $this->serverName($server) : "") . ($db != "" ? " - $db" : "")) . "</a>\n";
+								$output .= "<li><a href='" . h(auth_url($vendor, $server, $username, $db)) . "'>($drivers[$vendor]) " . h($username . ($server != "" ? "@" . $this->serverName($server) : "") . ($db != "" ? " - $db" : "")) . "</a>\n";
 							}
 						}
 					}
 				}
+			}
+			if ($output) {
+				echo "<ul id='logins'>\n$output</ul>\n" . script("mixin(qs('#logins'), {onmouseover: menuOver, onmouseout: menuOut});");
 			}
 		} else {
 			if ($_GET["ns"] !== "" && !$missing && DB != "") {

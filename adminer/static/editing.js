@@ -72,9 +72,10 @@ function typePassword(el, disable) {
 }
 
 /** Install toggle handler
+* @param [HTMLElement]
 */
-function messagesPrint() {
-	var els = qsa('.toggle', document);
+function messagesPrint(el) {
+	var els = qsa('.toggle', el || document);
 	for (var i = 0; i < els.length; i++) {
 		els[i].onclick = partial(toggle, els[i].getAttribute('href').substr(1));
 	}

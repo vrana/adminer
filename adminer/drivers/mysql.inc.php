@@ -238,11 +238,15 @@ if (!defined("DRIVER")) {
 				$options = array(PDO::MYSQL_ATTR_LOCAL_INFILE => false);
 				$ssl = $adminer->connectSsl();
 				if ($ssl) {
-					$options += array(
-						PDO::MYSQL_ATTR_SSL_KEY => $ssl['key'],
-						PDO::MYSQL_ATTR_SSL_CERT => $ssl['cert'],
-						PDO::MYSQL_ATTR_SSL_CA => $ssl['ca'],
-					);
+					if (!empty($ssl['key'])) {
+						$options[PDO::MYSQL_ATTR_SSL_KEY] = $ssl['key'];
+					}
+					if (!empty($ssl['cert'])) {
+						$options[PDO::MYSQL_ATTR_SSL_CERT] = $ssl['cert'];
+					}
+					if (!empty($ssl['ca'])) {
+						$options[PDO::MYSQL_ATTR_SSL_CA] = $ssl['ca'];
+					}
 				}
 				$this->dsn(
 					"mysql:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\d)~', ';port=\1', $server)),
@@ -578,24 +582,18 @@ if (!defined("DRIVER")) {
 	* @return array array($name => array("db" => , "ns" => , "table" => , "source" => array(), "target" => array(), "on_delete" => , "on_update" => ))
 	*/
 	function foreign_keys($table) {
-		global $connection, $on_actions;
-		static $pattern = '(?:`(?:[^`]|``)+`)|(?:"(?:[^"]|"")+")';
 		$return = array();
-		$create_table = $connection->result("SHOW CREATE TABLE " . table($table), 1);
-		if ($create_table) {
-			preg_match_all("~CONSTRAINT ($pattern) FOREIGN KEY ?\\(((?:$pattern,? ?)+)\\) REFERENCES ($pattern)(?:\\.($pattern))? \\(((?:$pattern,? ?)+)\\)(?: ON DELETE ($on_actions))?(?: ON UPDATE ($on_actions))?~", $create_table, $matches, PREG_SET_ORDER);
-			foreach ($matches as $match) {
-				preg_match_all("~$pattern~", $match[2], $source);
-				preg_match_all("~$pattern~", $match[5], $target);
-				$return[idf_unescape($match[1])] = array(
-					"db" => idf_unescape($match[4] != "" ? $match[3] : $match[4]),
-					"table" => idf_unescape($match[4] != "" ? $match[4] : $match[3]),
-					"source" => array_map('idf_unescape', $source[0]),
-					"target" => array_map('idf_unescape', $target[0]),
-					"on_delete" => ($match[6] ? $match[6] : "RESTRICT"),
-					"on_update" => ($match[7] ? $match[7] : "RESTRICT"),
-				);
-			}
+		foreach (get_rows("SELECT * FROM information_schema.REFERENTIAL_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = DATABASE() AND TABLE_NAME = " . q($table)) as $row) {
+			$columns = get_key_vals("SELECT COLUMN_NAME, REFERENCED_COLUMN_NAME FROM information_schema.KEY_COLUMN_USAGE WHERE CONSTRAINT_SCHEMA = DATABASE() AND CONSTRAINT_NAME = " . q($row["CONSTRAINT_NAME"]) . " ORDER BY ORDINAL_POSITION");
+			$db = $row["UNIQUE_CONSTRAINT_SCHEMA"];
+			$return[$row["CONSTRAINT_NAME"]] = array(
+				"db" => ($db == DB ? "" : $db),
+				"table" => $row["REFERENCED_TABLE_NAME"],
+				"source" => array_keys($columns),
+				"target" => array_values($columns),
+				"on_delete" => $row["DELETE_RULE"],
+				"on_update" => $row["UPDATE_RULE"],
+			);
 		}
 		return $return;
 	}
@@ -810,7 +808,8 @@ if (!defined("DRIVER")) {
 		queries("SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO'");
 		foreach ($tables as $table) {
 			$name = ($target == DB ? table("copy_$table") : idf_escape($target) . "." . table($table));
-			if (!queries("CREATE TABLE $name LIKE " . table($table))
+			if (($_POST["overwrite"] && !queries("\nDROP TABLE IF EXISTS $name"))
+				|| !queries("CREATE TABLE $name LIKE " . table($table))
 				|| !queries("INSERT INTO $name SELECT * FROM " . table($table))
 			) {
 				return false;
@@ -825,7 +824,8 @@ if (!defined("DRIVER")) {
 		foreach ($views as $table) {
 			$name = ($target == DB ? table("copy_$table") : idf_escape($target) . "." . table($table));
 			$view = view($table);
-			if (!queries("CREATE VIEW $name AS $view[select]")) { //! USE to avoid db.table
+			if (($_POST["overwrite"] && !queries("DROP VIEW IF EXISTS $name"))
+				|| !queries("CREATE VIEW $name AS $view[select]")) { //! USE to avoid db.table
 				return false;
 			}
 		}
@@ -1077,7 +1077,7 @@ if (!defined("DRIVER")) {
 			$return = "CONV($return, 2, 10) + 0";
 		}
 		if (preg_match("~geometry|point|linestring|polygon~", $field["type"])) {
-			$return = (min_version(8) ? "ST_" : "") . "GeomFromText($return)";
+			$return = (min_version(8) ? "ST_" : "") . "GeomFromText($return, SRID($field[field]))";
 		}
 		return $return;
 	}
