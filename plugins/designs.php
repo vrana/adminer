@@ -13,7 +13,15 @@ class AdminerDesigns {
 	/**
 	* @param array URL in key, name in value
 	*/
-	function __construct($designs) {
+	function __construct($designs = null) {
+		if ($designs === NULL) {
+			foreach (glob("../designs/*", GLOB_ONLYDIR) as $filename) {
+				if (is_file($filename."/adminer.css")) {
+					$designs[] = basename($filename);
+				}
+			}
+			$this->designs = $designs;
+		}
 		$this->designs = $designs;
 	}
 	
@@ -27,15 +35,18 @@ class AdminerDesigns {
 	
 	function css() {
 		$return = array();
-		if (array_key_exists($_SESSION["design"], $this->designs)) {
-			$return[] = $_SESSION["design"];
+		if ($this->designs === NULL) {
+			$this->designs = array();
+		}
+		if (in_array($_SESSION["design"], $this->designs)) {
+			$return[] = "../designs/".$_SESSION["design"]."/adminer.css";
 		}
 		return $return;
 	}
 	
 	function navigation($missing) {
 		echo "<form action='' method='post' style='position: fixed; bottom: .5em; right: .5em;'>";
-		echo html_select("design", array("" => "(design)") + $this->designs, $_SESSION["design"], "this.form.submit();");
+		echo html_select("design", array("" => "(".lang('Design').")") + $this->designs, $_SESSION["design"], "this.form.submit();");
 		echo '<input type="hidden" name="token" value="' . get_token() . '">';
 		echo "</form>\n";
 	}

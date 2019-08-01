@@ -28,6 +28,9 @@ function adminer_object() {
 		new AdminerEnumOption,
 		new AdminerTablesFilter,
 		new AdminerEditForeign,
+		
+		new AdminerDesigns(), # Show all (default)
+		//~ new AdminerDesigns(array("hever", "lucas-sandery", "mancave")), # Or, show limited AdminerDesigns via theme name.
 	);
 	
 	/* It is possible to combine customization and plugins:

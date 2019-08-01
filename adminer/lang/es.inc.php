@@ -265,4 +265,5 @@ $translations = array(
 	'Permanent link' => 'Enlace permanente',
 	'Edit all' => 'Editar todos',
 	'HH:MM:SS' => 'HH:MM:SS',
+	'Design' => 'Diseño',
 );
