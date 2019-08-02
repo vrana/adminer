@@ -1,6 +1,6 @@
 /*
   
-  VERSION: adminer-theme-mancave2-2.0.alpha
+  VERSION: adminer-theme-mancave2-2.1.alpha
   
   AUTHORS: panreach@gmail.com, dev@monolithforge.com //NOTE: CREDITS below that we stole from ;-)
   
@@ -244,6 +244,8 @@ h1{
 	line-height: 70px;
 	color: #555;
 	background: none;
+	position: relative;
+	top: 12px;
 }
 
 h2{
@@ -717,6 +719,10 @@ legend{
 	color: #999;
 }
 
+.footer legend {
+	background-color: #49526D;
+}
+
 /* menu
    ----------------------------------------------------------------------- */
 
@@ -751,7 +757,7 @@ legend{
 
 .version {
   color: #555;
-  font-size: inherit;
+  font-size: 18px;
 }
 
 /* db select */
@@ -1196,3 +1202,13 @@ html/*\*/>/*/*/body table a[href*="&edit="][href*="&where"]:hover::before {
 
 .pages {background:#817F5A;}
 
+.footer, .footer>div {
+	background-color: #49526D;
+	opacity: .9;
+}
+.footer {
+	border-image: none;
+	padding: 20px 12px 0px;
+	border: 1px #BBB dashed;
+	margin: 12px;
+}
