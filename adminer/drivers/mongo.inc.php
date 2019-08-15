@@ -618,6 +618,9 @@ if (isset($_GET["mongo"])) {
 		if ($db != "") {
 			$options["db"] = $db;
 		}
+		if (($auth_source = getenv("MONGO_AUTH_SOURCE"))) {
+			$options["authSource"] = $auth_source;
+		}
 		try {
 			$connection->_link = $connection->connect("mongodb://$server", $options);
 			if ($password != "") {
