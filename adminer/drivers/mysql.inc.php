@@ -555,6 +555,7 @@ if (!defined("DRIVER")) {
 				"privileges" => array_flip(preg_split('~, *~', $row["Privileges"])),
 				"comment" => $row["Comment"],
 				"primary" => ($row["Key"] == "PRI"),
+				"generated" => in_array($row["Extra"], array("STORED GENERATED", "VIRTUAL GENERATED"))
 			);
 		}
 		return $return;
