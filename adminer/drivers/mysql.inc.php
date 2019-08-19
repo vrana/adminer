@@ -555,7 +555,8 @@ if (!defined("DRIVER")) {
 				"privileges" => array_flip(preg_split('~, *~', $row["Privileges"])),
 				"comment" => $row["Comment"],
 				"primary" => ($row["Key"] == "PRI"),
-				"generated" => preg_match('~ GENERATED$~', $row["Extra"]),
+				// https://mariadb.com/kb/en/library/show-columns/, https://dev.mysql.com/doc/refman/8.0/en/show-columns.html
+				"generated" => preg_match('~^(VIRTUAL|PERSISTENT)~', $row["Extra"]),
 			);
 		}
 		return $return;
