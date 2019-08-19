@@ -583,18 +583,24 @@ if (!defined("DRIVER")) {
 	* @return array array($name => array("db" => , "ns" => , "table" => , "source" => array(), "target" => array(), "on_delete" => , "on_update" => ))
 	*/
 	function foreign_keys($table) {
+		global $connection, $on_actions;
+		static $pattern = '(?:`(?:[^`]|``)+`|(?:"(?:[^"]|"")+"))';
 		$return = array();
-		foreach (get_rows("SELECT * FROM information_schema.REFERENTIAL_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = DATABASE() AND TABLE_NAME = " . q($table)) as $row) {
-			$columns = get_key_vals("SELECT COLUMN_NAME, REFERENCED_COLUMN_NAME FROM information_schema.KEY_COLUMN_USAGE WHERE CONSTRAINT_SCHEMA = DATABASE() AND CONSTRAINT_NAME = " . q($row["CONSTRAINT_NAME"]) . " ORDER BY ORDINAL_POSITION");
-			$db = $row["UNIQUE_CONSTRAINT_SCHEMA"];
-			$return[$row["CONSTRAINT_NAME"]] = array(
-				"db" => ($db == DB ? "" : $db),
-				"table" => $row["REFERENCED_TABLE_NAME"],
-				"source" => array_keys($columns),
-				"target" => array_values($columns),
-				"on_delete" => $row["DELETE_RULE"],
-				"on_update" => $row["UPDATE_RULE"],
-			);
+		$create_table = $connection->result("SHOW CREATE TABLE " . table($table), 1);
+		if ($create_table) {
+			preg_match_all("~CONSTRAINT ($pattern) FOREIGN KEY ?\\(((?:$pattern,? ?)+)\\) REFERENCES ($pattern)(?:\\.($pattern))? \\(((?:$pattern,? ?)+)\\)(?: ON DELETE ($on_actions))?(?: ON UPDATE ($on_actions))?~", $create_table, $matches, PREG_SET_ORDER);
+			foreach ($matches as $match) {
+				preg_match_all("~$pattern~", $match[2], $source);
+				preg_match_all("~$pattern~", $match[5], $target);
+				$return[idf_unescape($match[1])] = array(
+					"db" => idf_unescape($match[4] != "" ? $match[3] : $match[4]),
+					"table" => idf_unescape($match[4] != "" ? $match[4] : $match[3]),
+					"source" => array_map('idf_unescape', $source[0]),
+					"target" => array_map('idf_unescape', $target[0]),
+					"on_delete" => ($match[6] ? $match[6] : "RESTRICT"),
+					"on_update" => ($match[7] ? $match[7] : "RESTRICT"),
+				);
+			}
 		}
 		return $return;
 	}

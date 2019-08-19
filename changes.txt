@@ -1,4 +1,5 @@
 Adminer 4.7.3-dev:
+MySQL: Speed up displaying tables in large databases (bug #700)
 MySQL: Skip editing generated columns
 SQLite: Quote strings stored in integer columns in export (bug #696)
 
@@ -8,7 +9,7 @@ Stretch footer over the whole table width (bug #624)
 Allow overwriting tables when copying them
 Fix displaying SQL command after Save and continue edit
 Cache busting for adminer.css
-MySQL: Fix displaying multi-columns foreign keys (bug #675)
+MySQL: Fix displaying multi-columns foreign keys (bug #675, regression from 4.7.0)
 MySQL: Fix creating users and changing password in MySQL 8 (bug #663)
 MySQL: Pass SRID to GeomFromText
 PostgreSQL: Fix setting column comments on new table
