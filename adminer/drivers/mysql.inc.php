@@ -555,8 +555,8 @@ if (!defined("DRIVER")) {
 				"privileges" => array_flip(preg_split('~, *~', $row["Privileges"])),
 				"comment" => $row["Comment"],
 				"primary" => ($row["Key"] == "PRI"),
-				// https://mariadb.com/kb/en/library/show-columns/, https://dev.mysql.com/doc/refman/8.0/en/show-columns.html
-				"generated" => preg_match('~^(VIRTUAL|PERSISTENT)~', $row["Extra"]),
+				// https://mariadb.com/kb/en/library/show-columns/, https://github.com/vrana/adminer/pull/359#pullrequestreview-276677186
+				"generated" => preg_match('~^(VIRTUAL|PERSISTENT|STORED)~', $row["Extra"]),
 			);
 		}
 		return $return;
