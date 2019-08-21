@@ -482,6 +482,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
+		global $connection;
 		$use_all_fields = ($table == "" || $foreign);
 		foreach ($fields as $field) {
 			if ($field[0] != "" || !$field[1] || $field[2]) {
@@ -512,7 +513,12 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			return false;
 		}
 		if ($auto_increment) {
+			queries("BEGIN");
 			queries("UPDATE sqlite_sequence SET seq = $auto_increment WHERE name = " . q($name)); // ignores error
+			if (!$connection->affected_rows) {
+				queries("INSERT INTO sqlite_sequence (name, seq) VALUES (" . q($name) . ", $auto_increment)");
+			}
+			queries("COMMIT");
 		}
 		return true;
 	}
