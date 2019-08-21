@@ -674,7 +674,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		$return = array();
 		$trigger_options = trigger_options();
 		foreach (get_rows("SELECT * FROM sqlite_master WHERE type = 'trigger' AND tbl_name = " . q($table)) as $row) {
-			preg_match('~^CREATE\s+TRIGGER\s*(?:[^`"\s]+|`[^`]*`|"[^"]*")+\s*(' . implode("|", $trigger_options["Timing"]) . ')\s*(.*)\s+ON\b~iU', $row["sql"], $match);
+			preg_match('~^CREATE\s+TRIGGER\s*(?:[^`"\s]+|`[^`]*`|"[^"]*")+\s*(' . implode("|", $trigger_options["Timing"]) . ')\s*(.*?)\s+ON\b~i', $row["sql"], $match);
 			$return[$row["name"]] = array($match[1], $match[2]);
 		}
 		return $return;
