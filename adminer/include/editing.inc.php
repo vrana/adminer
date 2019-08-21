@@ -470,12 +470,17 @@ function remove_definer($query) {
 }
 
 /** Format foreign key to use in SQL query
-* @param array ("table" => string, "source" => array, "target" => array, "on_delete" => one of $on_actions, "on_update" => one of $on_actions)
+* @param array ("db" => string, "ns" => string, "table" => string, "source" => array, "target" => array, "on_delete" => one of $on_actions, "on_update" => one of $on_actions)
 * @return string
 */
 function format_foreign_key($foreign_key) {
 	global $on_actions;
-	return " FOREIGN KEY (" . implode(", ", array_map('idf_escape', $foreign_key["source"])) . ") REFERENCES " . table($foreign_key["table"])
+	$db = $foreign_key["db"];
+	$ns = $foreign_key["ns"];
+	return " FOREIGN KEY (" . implode(", ", array_map('idf_escape', $foreign_key["source"])) . ") REFERENCES "
+		. ($db != "" && $db != $_GET["db"] ? idf_escape($db) . "." : "")
+		. ($ns != "" && $ns != $_GET["ns"] ? idf_escape($ns) . "." : "")
+		. table($foreign_key["table"])
 		. " (" . implode(", ", array_map('idf_escape', $foreign_key["target"])) . ")" //! reuse $name - check in older MySQL versions
 		. (preg_match("~^($on_actions)\$~", $foreign_key["on_delete"]) ? " ON DELETE $foreign_key[on_delete]" : "")
 		. (preg_match("~^($on_actions)\$~", $foreign_key["on_update"]) ? " ON UPDATE $foreign_key[on_update]" : "")

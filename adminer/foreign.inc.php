@@ -53,13 +53,29 @@ if ($_POST) {
 <form action="" method="post">
 <p>
 <?php
-if ($row["db"] == "" && $row["ns"] == "") {
-	$source = array_keys(fields($TABLE)); //! no text and blob
-	$target = ($TABLE === $row["table"] ? $source : array_keys(fields($row["table"])));
-	$referencable = array_keys(array_filter(table_status('', true), 'fk_support'));
-	echo lang('Target table') . ": ";
-	echo html_select("table", $referencable, $row["table"], "this.form['change-js'].value = '1'; this.form.submit();");
-	?>
+$source = array_keys(fields($TABLE)); //! no text and blob
+if ($row["db"] != "") {
+	$connection->select_db($row["db"]);
+}
+if ($row["ns"] != "") {
+	set_schema($row["ns"]);
+}
+$target = ($TABLE === $row["table"] ? $source : array_keys(fields($row["table"])));
+$referencable = array_keys(array_filter(table_status('', true), 'fk_support'));
+$onchange = "this.form['change-js'].value = '1'; this.form.submit();";
+echo lang('Target table') . ": " . html_select("table", $referencable, $row["table"], $onchange) . "\n";
+if ($jush == "pgsql") {
+	echo lang('Schema') . ": " . html_select("ns", $adminer->schemas(), $row["ns"] ? $row["ns"] : $_GET["ns"], $onchange);
+} elseif ($jush != "sqlite") {
+	$dbs = array();
+	foreach ($adminer->databases() as $db) {
+		if (!information_schema($db)) {
+			$dbs[] = $db;
+		}
+	}
+	echo lang('DB') . ": " . html_select("db", $dbs, $row["db"] ? $row["db"] : $_GET["db"], $onchange);
+}
+?>
 <input type="hidden" name="change-js" value="">
 <noscript><p><input type="submit" name="change" value="<?php echo lang('Change'); ?>"></noscript>
 <table cellspacing="0">
@@ -87,7 +103,6 @@ foreach ($row["source"] as $key => $val) {
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <noscript><p><input type="submit" name="add" value="<?php echo lang('Add column'); ?>"></noscript>
-<?php } ?>
 <?php if ($name != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $name)); ?><?php } ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>
