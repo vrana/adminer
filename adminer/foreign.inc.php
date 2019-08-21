@@ -51,7 +51,6 @@ if ($_POST) {
 ?>
 
 <form action="" method="post">
-<p>
 <?php
 $source = array_keys(fields($TABLE)); //! no text and blob
 if ($row["db"] != "") {
@@ -63,7 +62,7 @@ if ($row["ns"] != "") {
 $target = ($TABLE === $row["table"] ? $source : array_keys(fields($row["table"])));
 $referencable = array_keys(array_filter(table_status('', true), 'fk_support'));
 $onchange = "this.form['change-js'].value = '1'; this.form.submit();";
-echo lang('Target table') . ": " . html_select("table", $referencable, $row["table"], $onchange) . "\n";
+echo "<p>" . lang('Target table') . ": " . html_select("table", $referencable, $row["table"], $onchange) . "\n";
 if ($jush == "pgsql") {
 	echo lang('Schema') . ": " . html_select("ns", $adminer->schemas(), $row["ns"] ? $row["ns"] : $_GET["ns"], $onchange);
 } elseif ($jush != "sqlite") {
