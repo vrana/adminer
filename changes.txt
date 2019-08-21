@@ -1,5 +1,5 @@
 Adminer 4.7.3-dev:
-MySQL: Speed up displaying tables in large databases (bug #700)
+MySQL: Speed up displaying tables in large databases (bug #700, regression from 4.7.2)
 MySQL: Allow editing rows identified by negative floats (bug #695)
 MySQL: Skip editing generated columns
 SQLite: Quote strings stored in integer columns in export (bug #696)
