@@ -6,6 +6,7 @@ SQLite: Quote strings stored in integer columns in export (bug #696)
 SQLite: Handle error in altering table (bug #697)
 SQLite: Allow setting auto increment for empty tables
 SQLite: Preserve auto increment when recreating table
+MS SQL: Support foreign keys to other DB
 
 Adminer 4.7.2 (released 2019-07-18):
 Do not attempt logging in without password (bug #676)

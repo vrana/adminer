@@ -542,6 +542,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 		$return = array();
 		foreach (get_rows("EXEC sp_fkeys @fktable_name = " . q($table)) as $row) {
 			$foreign_key = &$return[$row["FK_NAME"]];
+			$foreign_key["db"] = $row["PKTABLE_QUALIFIER"];
 			$foreign_key["table"] = $row["PKTABLE_NAME"];
 			$foreign_key["source"][] = $row["FKCOLUMN_NAME"];
 			$foreign_key["target"][] = $row["PKCOLUMN_NAME"];
