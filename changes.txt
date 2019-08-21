@@ -3,6 +3,7 @@ MySQL: Speed up displaying tables in large databases (bug #700)
 MySQL: Allow editing rows identified by negative floats (bug #695)
 MySQL: Skip editing generated columns
 SQLite: Quote strings stored in integer columns in export (bug #696)
+SQLite: Handle error in altering table (bug #697)
 
 Adminer 4.7.2 (released 2019-07-18):
 Do not attempt logging in without password (bug #676)

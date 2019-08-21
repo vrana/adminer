@@ -591,11 +591,10 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 				$trigger = trigger($trigger_name);
 				$triggers[] = "CREATE TRIGGER " . idf_escape($trigger_name) . " " . implode(" ", $timing_event) . " ON " . table($name) . "\n$trigger[Statement]";
 			}
-			if (!queries("DROP TABLE " . table($table))) { // drop before creating indexes and triggers to allow using old names
-				return false;
-			}
-			queries("ALTER TABLE " . table("adminer_$name") . " RENAME TO " . table($name));
-			if (!alter_indexes($name, $indexes)) {
+			if (!queries("DROP TABLE " . table($table)) // drop before creating indexes and triggers to allow using old names
+				|| !queries("ALTER TABLE " . table("adminer_$name") . " RENAME TO " . table($name))
+				|| !alter_indexes($name, $indexes)
+			) {
 				return false;
 			}
 			foreach ($triggers as $trigger) {
