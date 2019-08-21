@@ -585,12 +585,13 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			$fields[$key] = "  " . implode($field);
 		}
 		$fields = array_merge($fields, array_filter($foreign));
-		if (!queries("CREATE TABLE " . table($table != "" ? "adminer_$name" : $name) . " (\n" . implode(",\n", $fields) . "\n)")) {
+		$temp_name = ($table == $name ? "adminer_$name" : $name);
+		if (!queries("CREATE TABLE " . table($temp_name) . " (\n" . implode(",\n", $fields) . "\n)")) {
 			// implicit ROLLBACK to not overwrite $connection->error
 			return false;
 		}
 		if ($table != "") {
-			if ($originals && !queries("INSERT INTO " . table("adminer_$name") . " (" . implode(", ", $originals) . ") SELECT " . implode(", ", array_map('idf_escape', array_keys($originals))) . " FROM " . table($table))) {
+			if ($originals && !queries("INSERT INTO " . table($temp_name) . " (" . implode(", ", $originals) . ") SELECT " . implode(", ", array_map('idf_escape', array_keys($originals))) . " FROM " . table($table))) {
 				return false;
 			}
 			$triggers = array();
@@ -600,7 +601,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			}
 			$auto_increment = $auto_increment ? 0 : $connection->result("SELECT seq FROM sqlite_sequence WHERE name = " . q($table)); // if $auto_increment is set then it will be updated later
 			if (!queries("DROP TABLE " . table($table)) // drop before creating indexes and triggers to allow using old names
-				|| !queries("ALTER TABLE " . table("adminer_$name") . " RENAME TO " . table($name))
+				|| ($table == $name && !queries("ALTER TABLE " . table($temp_name) . " RENAME TO " . table($name)))
 				|| !alter_indexes($name, $indexes)
 			) {
 				return false;
