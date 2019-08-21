@@ -509,7 +509,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			if ($table != $name && !queries("ALTER TABLE " . table($table) . " RENAME TO " . table($name))) {
 				return false;
 			}
-		} elseif (!recreate_table($table, $name, $alter, $originals, $foreign)) {
+		} elseif (!recreate_table($table, $name, $alter, $originals, $foreign, $auto_increment)) {
 			return false;
 		}
 		if ($auto_increment) {
@@ -523,7 +523,8 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return true;
 	}
 
-	function recreate_table($table, $name, $fields, $originals, $foreign, $indexes = array()) {
+	function recreate_table($table, $name, $fields, $originals, $foreign, $auto_increment, $indexes = array()) {
+		global $connection;
 		if ($table != "") {
 			if (!$fields) {
 				foreach (fields($table) as $key => $field) {
@@ -597,11 +598,15 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 				$trigger = trigger($trigger_name);
 				$triggers[] = "CREATE TRIGGER " . idf_escape($trigger_name) . " " . implode(" ", $timing_event) . " ON " . table($name) . "\n$trigger[Statement]";
 			}
+			$auto_increment = $auto_increment ? 0 : $connection->result("SELECT seq FROM sqlite_sequence WHERE name = " . q($table)); // if $auto_increment is set then it will be updated later
 			if (!queries("DROP TABLE " . table($table)) // drop before creating indexes and triggers to allow using old names
 				|| !queries("ALTER TABLE " . table("adminer_$name") . " RENAME TO " . table($name))
 				|| !alter_indexes($name, $indexes)
 			) {
 				return false;
+			}
+			if ($auto_increment) {
+				queries("UPDATE sqlite_sequence SET seq = $auto_increment WHERE name = " . q($name)); // ignores error
 			}
 			foreach ($triggers as $trigger) {
 				if (!queries($trigger)) {
@@ -624,7 +629,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	function alter_indexes($table, $alter) {
 		foreach ($alter as $primary) {
 			if ($primary[0] == "PRIMARY") {
-				return recreate_table($table, $table, array(), array(), array(), $alter);
+				return recreate_table($table, $table, array(), array(), array(), 0, $alter);
 			}
 		}
 		foreach (array_reverse($alter) as $val) {
