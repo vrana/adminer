@@ -48,17 +48,18 @@ if ($_POST) {
 	$row["table"] = $TABLE;
 	$row["source"] = array("");
 }
-
-$source = array_keys(fields($TABLE)); //! no text and blob
-$target = ($TABLE === $row["table"] ? $source : array_keys(fields($row["table"])));
-$referencable = array_keys(array_filter(table_status('', true), 'fk_support'));
 ?>
 
 <form action="" method="post">
 <p>
-<?php if ($row["db"] == "" && $row["ns"] == "") { ?>
-<?php echo lang('Target table'); ?>:
-<?php echo html_select("table", $referencable, $row["table"], "this.form['change-js'].value = '1'; this.form.submit();"); ?>
+<?php
+if ($row["db"] == "" && $row["ns"] == "") {
+	$source = array_keys(fields($TABLE)); //! no text and blob
+	$target = ($TABLE === $row["table"] ? $source : array_keys(fields($row["table"])));
+	$referencable = array_keys(array_filter(table_status('', true), 'fk_support'));
+	echo lang('Target table') . ": ";
+	echo html_select("table", $referencable, $row["table"], "this.form['change-js'].value = '1'; this.form.submit();");
+	?>
 <input type="hidden" name="change-js" value="">
 <noscript><p><input type="submit" name="change" value="<?php echo lang('Change'); ?>"></noscript>
 <table cellspacing="0">
