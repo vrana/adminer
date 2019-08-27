@@ -27,7 +27,7 @@ foreach (process_list() as $i => $row) {
 			echo "<th>$key" . doc_link(array(
 				'sql' => "show-processlist.html#processlist_" . strtolower($key),
 				'pgsql' => "monitoring-stats.html#PG-STAT-ACTIVITY-VIEW",
-				'oracle' => "../b14237/dynviews_2088.htm",
+				'oracle' => "REFRN30223",
 			));
 		}
 		echo "</thead>\n";
