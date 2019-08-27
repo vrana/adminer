@@ -1,5 +1,6 @@
 Adminer 4.7.3-dev:
 Allow editing foreign keys pointing to tables in other database/schema (bug #694)
+Fix blocking of concurrent instances in PHP >7.2 (bug #703)
 MySQL: Speed up displaying tables in large databases (bug #700, regression from 4.7.2)
 MySQL: Allow editing rows identified by negative floats (bug #695)
 MySQL: Skip editing generated columns
