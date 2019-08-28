@@ -65,7 +65,6 @@ if ($adminer->homepage()) {
 					search_tables();
 				}
 			}
-			$doc_link = doc_link(array('sql' => 'show-table-status.html'));
 			echo "<div class='scrollable'>\n";
 			echo "<table cellspacing='0' class='nowrap checkable'>\n";
 			echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
@@ -76,7 +75,7 @@ if ($adminer->homepage()) {
 			echo '<td>' . lang('Collation') . doc_link(array('sql' => 'charset-charsets.html', 'mariadb' => 'supported-character-sets-and-collations/'));
 			echo '<td>' . lang('Data Length') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-admin.html#FUNCTIONS-ADMIN-DBOBJECT', 'oracle' => 'REFRN20286'));
 			echo '<td>' . lang('Index Length') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-admin.html#FUNCTIONS-ADMIN-DBOBJECT'));
-			echo '<td>' . lang('Data Free') . $doc_link;
+			echo '<td>' . lang('Data Free') . doc_link(array('sql' => 'show-table-status.html'));
 			echo '<td>' . lang('Auto Increment') . doc_link(array('sql' => 'example-auto-increment.html', 'mariadb' => 'auto_increment/'));
 			echo '<td>' . lang('Rows') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'catalog-pg-class.html#CATALOG-PG-CLASS', 'oracle' => 'REFRN20286'));
 			echo (support("comment") ? '<td>' . lang('Comment') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-info.html#FUNCTIONS-INFO-COMMENT-TABLE')) : '');
