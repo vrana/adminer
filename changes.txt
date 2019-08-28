@@ -1,3 +1,5 @@
+Adminer 4.7.4-dev:
+
 Adminer 4.7.3 (released 2019-08-27):
 Allow editing foreign keys pointing to tables in other database/schema (bug #694)
 Fix blocking of concurrent instances in PHP >7.2 (bug #703)
