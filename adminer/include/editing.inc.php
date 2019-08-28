@@ -531,7 +531,7 @@ function doc_link($paths, $text = "<sup>?</sup>") {
 	$urls = array(
 		'sql' => "https://dev.mysql.com/doc/refman/$version/en/",
 		'sqlite' => "https://www.sqlite.org/",
-		'pgsql' => "https://www.postgresql.org/docs/$version/static/",
+		'pgsql' => "https://www.postgresql.org/docs/$version/",
 		'mssql' => "https://msdn.microsoft.com/library/",
 		'oracle' => "https://www.oracle.com/pls/topic/lookup?ctx=db" . preg_replace('~^.* (\d+)\.(\d+)\.\d+\.\d+\.\d+.*~s', '\1\2', $server_info) . "&id=",
 	);
