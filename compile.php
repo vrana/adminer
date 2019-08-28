@@ -403,6 +403,12 @@ if ($driver) {
 		$file = str_replace('<?php echo html_select("auth[driver]", $drivers, DRIVER) . "\n"; ?>', "<input type='hidden' name='auth[driver]' value='" . ($driver == "mysql" ? "server" : $driver) . "'>" . reset($drivers), $file);
 	}
 	$file = preg_replace('(;../externals/jush/modules/jush-(?!textarea\.|txt\.|js\.|' . preg_quote($driver == "mysql" ? "sql" : $driver) . '\.)[^.]+.js)', '', $file);
+	$file = preg_replace_callback('~doc_link\(array\((.*)\)\)~sU', function ($match) use ($driver) {
+		list(, $links) = $match;
+		$links = preg_replace("~'(?!(" . ($driver == "mysql" ? "sql|mariadb" : $driver) . ")')[^']*' => [^,]*,?~", '', $links);
+		return (trim($links) ? "doc_link(array($links))" : "''");
+	}, $file);
+	//! strip doc_link() definition
 }
 if ($project == "editor") {
 	$file = preg_replace('~;.\.\/externals/jush/jush\.css~', '', $file);
