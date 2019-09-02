@@ -65,7 +65,7 @@ if ($adminer->homepage()) {
 					search_tables();
 				}
 			}
-			$doc_link = doc_link(array('sql' => 'show-table-status.html'));
+			echo "<div class='scrollable'>\n";
 			echo "<table cellspacing='0' class='nowrap checkable'>\n";
 			echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
 			echo '<thead><tr class="wrap">';
@@ -73,12 +73,12 @@ if ($adminer->homepage()) {
 			echo '<th>' . lang('Table');
 			echo '<td>' . lang('Engine') . doc_link(array('sql' => 'storage-engines.html'));
 			echo '<td>' . lang('Collation') . doc_link(array('sql' => 'charset-charsets.html', 'mariadb' => 'supported-character-sets-and-collations/'));
-			echo '<td>' . lang('Data Length') . $doc_link;
-			echo '<td>' . lang('Index Length') . $doc_link;
-			echo '<td>' . lang('Data Free') . $doc_link;
+			echo '<td>' . lang('Data Length') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-admin.html#FUNCTIONS-ADMIN-DBOBJECT', 'oracle' => 'REFRN20286'));
+			echo '<td>' . lang('Index Length') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-admin.html#FUNCTIONS-ADMIN-DBOBJECT'));
+			echo '<td>' . lang('Data Free') . doc_link(array('sql' => 'show-table-status.html'));
 			echo '<td>' . lang('Auto Increment') . doc_link(array('sql' => 'example-auto-increment.html', 'mariadb' => 'auto_increment/'));
-			echo '<td>' . lang('Rows') . $doc_link;
-			echo (support("comment") ? '<td>' . lang('Comment') . $doc_link : '');
+			echo '<td>' . lang('Rows') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'catalog-pg-class.html#CATALOG-PG-CLASS', 'oracle' => 'REFRN20286'));
+			echo (support("comment") ? '<td>' . lang('Comment') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-info.html#FUNCTIONS-INFO-COMMENT-TABLE')) : '');
 			echo "</thead>\n";
 
 			$tables = 0;
@@ -104,21 +104,22 @@ if ($adminer->homepage()) {
 						echo ($link ? "<td align='right'>" . (support("table") || $key == "Rows" || (support("indexes") && $key != "Data_length")
 							? "<a href='" . h(ME . "$link[0]=") . urlencode($name) . "'$id title='$link[1]'>?</a>"
 							: "<span$id>?</span>"
-						) : "<td id='$key-" . h($name) . "'>&nbsp;");
+						) : "<td id='$key-" . h($name) . "'>");
 					}
 					$tables++;
 				}
-				echo (support("comment") ? "<td id='Comment-" . h($name) . "'>&nbsp;" : "");
+				echo (support("comment") ? "<td id='Comment-" . h($name) . "'>" : "");
 			}
 
-			echo "<tr><td>&nbsp;<th>" . lang('%d in total', count($tables_list));
-			echo "<td>" . nbsp($jush == "sql" ? $connection->result("SELECT @@storage_engine") : "");
-			echo "<td>" . nbsp(db_collation(DB, collations()));
+			echo "<tr><td><th>" . lang('%d in total', count($tables_list));
+			echo "<td>" . h($jush == "sql" ? $connection->result("SELECT @@storage_engine") : "");
+			echo "<td>" . h(db_collation(DB, collations()));
 			foreach (array("Data_length", "Index_length", "Data_free") as $key) {
-				echo "<td align='right' id='sum-$key'>&nbsp;";
+				echo "<td align='right' id='sum-$key'>";
 			}
 
 			echo "</table>\n";
+			echo "</div>\n";
 			if (!information_schema(DB)) {
 				echo "<div class='footer'><div>\n";
 				$vacuum = "<input type='submit' value='" . lang('Vacuum') . "'> " . on_help("'VACUUM'");
@@ -138,7 +139,7 @@ if ($adminer->homepage()) {
 					echo "<p>" . lang('Move to other database') . ": ";
 					echo ($databases ? html_select("target", $databases, $db) : '<input name="target" value="' . h($db) . '" autocapitalize="off">');
 					echo " <input type='submit' name='move' value='" . lang('Move') . "'>";
-					echo (support("copy") ? " <input type='submit' name='copy' value='" . lang('Copy') . "'>" : "");
+					echo (support("copy") ? " <input type='submit' name='copy' value='" . lang('Copy') . "'> " . checkbox("overwrite", 1, $_POST["overwrite"], lang('overwrite')) : "");
 					echo "\n";
 				}
 				echo "<input type='hidden' name='all' value=''>"; // used by trCheck()
@@ -159,7 +160,7 @@ if ($adminer->homepage()) {
 			$routines = routines();
 			if ($routines) {
 				echo "<table cellspacing='0'>\n";
-				echo '<thead><tr><th>' . lang('Name') . '<td>' . lang('Type') . '<td>' . lang('Return type') . "<td>&nbsp;</thead>\n";
+				echo '<thead><tr><th>' . lang('Name') . '<td>' . lang('Type') . '<td>' . lang('Return type') . "<td></thead>\n";
 				odd('');
 				foreach ($routines as $row) {
 					$name = ($row["SPECIFIC_NAME"] == $row["ROUTINE_NAME"] ? "" : "&name=" . urlencode($row["ROUTINE_NAME"])); // not computed on the pages to be able to print the header first

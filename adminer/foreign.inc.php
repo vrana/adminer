@@ -48,17 +48,33 @@ if ($_POST) {
 	$row["table"] = $TABLE;
 	$row["source"] = array("");
 }
-
-$source = array_keys(fields($TABLE)); //! no text and blob
-$target = ($TABLE === $row["table"] ? $source : array_keys(fields($row["table"])));
-$referencable = array_keys(array_filter(table_status('', true), 'fk_support'));
 ?>
 
 <form action="" method="post">
-<p>
-<?php if ($row["db"] == "" && $row["ns"] == "") { ?>
-<?php echo lang('Target table'); ?>:
-<?php echo html_select("table", $referencable, $row["table"], "this.form['change-js'].value = '1'; this.form.submit();"); ?>
+<?php
+$source = array_keys(fields($TABLE)); //! no text and blob
+if ($row["db"] != "") {
+	$connection->select_db($row["db"]);
+}
+if ($row["ns"] != "") {
+	set_schema($row["ns"]);
+}
+$referencable = array_keys(array_filter(table_status('', true), 'fk_support'));
+$target = ($TABLE === $row["table"] ? $source : array_keys(fields(in_array($row["table"], $referencable) ? $row["table"] : reset($referencable))));
+$onchange = "this.form['change-js'].value = '1'; this.form.submit();";
+echo "<p>" . lang('Target table') . ": " . html_select("table", $referencable, $row["table"], $onchange) . "\n";
+if ($jush == "pgsql") {
+	echo lang('Schema') . ": " . html_select("ns", $adminer->schemas(), $row["ns"] != "" ? $row["ns"] : $_GET["ns"], $onchange);
+} elseif ($jush != "sqlite") {
+	$dbs = array();
+	foreach ($adminer->databases() as $db) {
+		if (!information_schema($db)) {
+			$dbs[] = $db;
+		}
+	}
+	echo lang('DB') . ": " . html_select("db", $dbs, $row["db"] != "" ? $row["db"] : $_GET["db"], $onchange);
+}
+?>
 <input type="hidden" name="change-js" value="">
 <noscript><p><input type="submit" name="change" value="<?php echo lang('Change'); ?>"></noscript>
 <table cellspacing="0">
@@ -81,12 +97,11 @@ foreach ($row["source"] as $key => $val) {
 	'mariadb' => "foreign-keys/",
 	'pgsql' => "sql-createtable.html#SQL-CREATETABLE-REFERENCES",
 	'mssql' => "ms174979.aspx",
-	'oracle' => "clauses002.htm#sthref2903",
+	'oracle' => "https://docs.oracle.com/cd/B19306_01/server.102/b14200/clauses002.htm#sthref2903",
 )); ?>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <noscript><p><input type="submit" name="add" value="<?php echo lang('Add column'); ?>"></noscript>
-<?php } ?>
 <?php if ($name != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $name)); ?><?php } ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

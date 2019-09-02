@@ -24,7 +24,13 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function connect($server, $username, $password) {
-				$this->_link = @sqlsrv_connect($server, array("UID" => $username, "PWD" => $password, "CharacterSet" => "UTF-8"));
+				global $adminer;
+				$db = $adminer->database();
+				$connection_info = array("UID" => $username, "PWD" => $password, "CharacterSet" => "UTF-8");
+				if ($db != "") {
+					$connection_info["Database"] = $db;
+				}
+				$this->_link = @sqlsrv_connect(preg_replace('~:~', ',', $server), $connection_info);
 				if ($this->_link) {
 					$info = sqlsrv_server_info($this->_link);
 					$this->server_info = $info['SQLServerVersion'];
@@ -147,8 +153,10 @@ if (isset($_GET["mssql"])) {
 				$this->_link = @mssql_connect($server, $username, $password);
 				if ($this->_link) {
 					$result = $this->query("SELECT SERVERPROPERTY('ProductLevel'), SERVERPROPERTY('Edition')");
-					$row = $result->fetch_row();
-					$this->server_info = $this->result("sp_server_info 2", 2) . " [$row[0]] $row[1]";
+					if ($result) {
+						$row = $result->fetch_row();
+						$this->server_info = $this->result("sp_server_info 2", 2) . " [$row[0]] $row[1]";
+					}
 				} else {
 					$this->error = mssql_get_last_message();
 				}
@@ -239,7 +247,7 @@ if (isset($_GET["mssql"])) {
 			var $extension = "PDO_DBLIB";
 
 			function connect($server, $username, $password) {
-				$this->dsn("dblib:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\\d)~', ';port=\\1', $server)), $username, $password);
+				$this->dsn("dblib:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\d)~', ';port=\1', $server)), $username, $password);
 				return true;
 			}
 
@@ -342,7 +350,7 @@ if (isset($_GET["mssql"])) {
 
 	function table_status($name = "") {
 		$return = array();
-		foreach (get_rows("SELECT name AS Name, type_desc AS Engine FROM sys.all_objects WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V') " . ($name != "" ? "AND name = " . q($name) : "ORDER BY name")) as $row) {
+		foreach (get_rows("SELECT ao.name AS Name, ao.type_desc AS Engine, (SELECT value FROM fn_listextendedproperty(default, 'SCHEMA', schema_name(schema_id), 'TABLE', ao.name, null, null)) AS Comment FROM sys.all_objects AS ao WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V') " . ($name != "" ? "AND name = " . q($name) : "ORDER BY name")) as $row) {
 			if ($name != "") {
 				return $row;
 			}
@@ -360,6 +368,7 @@ if (isset($_GET["mssql"])) {
 	}
 
 	function fields($table) {
+		$comments = get_key_vals("SELECT objname, cast(value as varchar) FROM fn_listextendedproperty('MS_DESCRIPTION', 'schema', " . q(get_schema()) . ", 'table', " . q($table) . ", 'column', NULL)");
 		$return = array();
 		foreach (get_rows("SELECT c.max_length, c.precision, c.scale, c.name, c.is_nullable, c.is_identity, c.collation_name, t.name type, CAST(d.definition as text) [default]
 FROM sys.all_columns c
@@ -381,6 +390,7 @@ WHERE o.schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND o.type IN ('S', 'U', 
 				"collation" => $row["collation_name"],
 				"privileges" => array("insert" => 1, "select" => 1, "update" => 1),
 				"primary" => $row["is_identity"], //! or indexes.is_primary_key
+				"comment" => $comments[$row["name"]],
 			);
 		}
 		return $return;
@@ -406,7 +416,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 
 	function view($name) {
 		global $connection;
-		return array("select" => preg_replace('~^(?:[^[]|\\[[^]]*])*\\s+AS\\s+~isU', '', $connection->result("SELECT VIEW_DEFINITION FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = SCHEMA_NAME() AND TABLE_NAME = " . q($name))));
+		return array("select" => preg_replace('~^(?:[^[]|\[[^]]*])*\s+AS\s+~isU', '', $connection->result("SELECT VIEW_DEFINITION FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = SCHEMA_NAME() AND TABLE_NAME = " . q($name))));
 	}
 
 	function collations() {
@@ -423,7 +433,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 
 	function error() {
 		global $connection;
-		return nl_br(h(preg_replace('~^(\\[[^]]*])+~m', '', $connection->error)));
+		return nl_br(h(preg_replace('~^(\[[^]]*])+~m', '', $connection->error)));
 	}
 
 	function create_database($db, $collation) {
@@ -448,13 +458,16 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
 		$alter = array();
+		$comments = array();
 		foreach ($fields as $field) {
 			$column = idf_escape($field[0]);
 			$val = $field[1];
 			if (!$val) {
 				$alter["DROP"][] = " COLUMN $column";
 			} else {
-				$val[1] = preg_replace("~( COLLATE )'(\\w+)'~", "\\1\\2", $val[1]);
+				$val[1] = preg_replace("~( COLLATE )'(\\w+)'~", '\1\2', $val[1]);
+				$comments[$field[0]] = $val[5];
+				unset($val[5]);
 				if ($field[0] == "") {
 					$alter["ADD"][] = "\n  " . implode("", $val) . ($table == "" ? substr($foreign[$val[0]], 16 + strlen($val[0])) : ""); // 16 - strlen("  FOREIGN KEY ()")
 				} else {
@@ -479,6 +492,11 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 			if (!queries("ALTER TABLE " . idf_escape($name) . " $key" . implode(",", $val))) {
 				return false;
 			}
+		}
+		foreach ($comments as $key => $val) {
+			$comment = substr($val, 9); // 9 - strlen(" COMMENT ")
+			queries("EXEC sp_dropextendedproperty @name = N'MS_Description', @level0type = N'Schema', @level0name = " . q(get_schema()) . ", @level1type = N'Table',  @level1name = " . q($name) . ", @level2type = N'Column', @level2name = " . q($key));
+			queries("EXEC sp_addextendedproperty @name = N'MS_Description', @value = " . $comment . ", @level0type = N'Schema', @level0name = " . q(get_schema()) . ", @level1type = N'Table',  @level1name = " . q($name) . ", @level2type = N'Column', @level2name = " . q($key));
 		}
 		return true;
 	}
@@ -524,6 +542,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 		$return = array();
 		foreach (get_rows("EXEC sp_fkeys @fktable_name = " . q($table)) as $row) {
 			$foreign_key = &$return[$row["FK_NAME"]];
+			$foreign_key["db"] = $row["PKTABLE_QUALIFIER"];
 			$foreign_key["table"] = $row["PKTABLE_NAME"];
 			$foreign_key["source"][] = $row["FKCOLUMN_NAME"];
 			$foreign_key["target"][] = $row["PKCOLUMN_NAME"];
@@ -561,7 +580,7 @@ WHERE s.xtype = 'TR' AND s.name = " . q($name)
 		); // triggers are not schema-scoped
 		$return = reset($rows);
 		if ($return) {
-			$return["Statement"] = preg_replace('~^.+\\s+AS\\s+~isU', '', $return["text"]); //! identifiers, comments
+			$return["Statement"] = preg_replace('~^.+\s+AS\s+~isU', '', $return["text"]); //! identifiers, comments
 		}
 		return $return;
 	}
@@ -624,7 +643,7 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)
 	}
 
 	function support($feature) {
-		return preg_match('~^(columns|database|drop_col|indexes|scheme|sql|table|trigger|view|view_trigger)$~', $feature); //! routine|
+		return preg_match('~^(comment|columns|database|drop_col|indexes|descidx|scheme|sql|table|trigger|view|view_trigger)$~', $feature); //! routine|
 	}
 
 	$jush = "mssql";

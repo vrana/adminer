@@ -28,20 +28,22 @@ class AdminerWymeditor {
 
 	function selectVal(&$val, $link, $field, $original) {
 		// copied from tinymce.php
-		if (preg_match("~_html~", $field["field"]) && $val != '&nbsp;') {
-			$shortened = (substr($val, -10) == "<i>...</i>");
+		if (preg_match("~_html~", $field["field"]) && $val != '') {
+			$ellipsis = "<i>…</i>";
+			$length = strlen($ellipsis);
+			$shortened = (substr($val, -$length) == $ellipsis);
 			if ($shortened) {
-				$val = substr($val, 0, -10);
+				$val = substr($val, 0, -$length);
 			}
 			//! shorten with regard to HTML tags - http://php.vrana.cz/zkraceni-textu-s-xhtml-znackami.php
 			$val = preg_replace('~<[^>]*$~', '', html_entity_decode($val, ENT_QUOTES)); // remove ending incomplete tag (text can be shortened)
 			if ($shortened) {
-				$val .= "<i>...</i>";
+				$val .= $ellipsis;
 			}
 			if (class_exists('DOMDocument')) { // close all opened tags
 				$dom = new DOMDocument;
 				if (@$dom->loadHTML("<meta http-equiv='Content-Type' content='text/html; charset=utf-8'></head>$val")) { // @ - $val can contain errors
-					$val = preg_replace('~.*<body[^>]*>(.*)</body>.*~is', '\\1', $dom->saveHTML());
+					$val = preg_replace('~.*<body[^>]*>(.*)</body>.*~is', '\1', $dom->saveHTML());
 				}
 			}
 		}

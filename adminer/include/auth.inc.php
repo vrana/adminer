@@ -83,7 +83,7 @@ if ($auth) {
 			set_session($key, null);
 		}
 		unset_permanent();
-		redirect(substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1), lang('Logout successful.') . ' ' . lang('Thanks for using Adminer, consider <a href="%s">donating</a>.', 'https://sourceforge.net/donate/index.php?group_id=264133'));
+		redirect(substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1), lang('Logout successful.') . ' ' . lang('Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.'));
 	}
 	
 } elseif ($permanent && !$_SESSION["pwds"]) {
@@ -120,6 +120,7 @@ function auth_error($error) {
 		if (($_COOKIE[$session_name] || $_GET[$session_name]) && !$has_token) {
 			$error = lang('Session expired, please login again.');
 		} else {
+			restart_session();
 			add_invalid_login();
 			$password = get_password();
 			if ($password !== null) {
@@ -149,14 +150,17 @@ function auth_error($error) {
 	exit;
 }
 
-if (isset($_GET["username"])) {
-	if (!class_exists("Min_DB")) {
-		unset($_SESSION["pwds"][DRIVER]);
-		unset_permanent();
-		page_header(lang('No extension'), lang('None of the supported PHP extensions (%s) are available.', implode(", ", $possible_drivers)), false);
-		page_footer("auth");
-		exit;
-	}
+if (isset($_GET["username"]) && !class_exists("Min_DB")) {
+	unset($_SESSION["pwds"][DRIVER]);
+	unset_permanent();
+	page_header(lang('No extension'), lang('None of the supported PHP extensions (%s) are available.', implode(", ", $possible_drivers)), false);
+	page_footer("auth");
+	exit;
+}
+
+stop_session(true);
+
+if (isset($_GET["username"]) && is_string(get_password())) {
 	list($host, $port) = explode(":", SERVER, 2);
 	if (is_numeric($port) && $port < 1024) {
 		auth_error(lang('Connecting to privileged ports is not allowed.'));
@@ -168,7 +172,8 @@ if (isset($_GET["username"])) {
 
 $login = null;
 if (!is_object($connection) || ($login = $adminer->login($_GET["username"], get_password())) !== true) {
-	auth_error((is_string($connection) ? h($connection) : (is_string($login) ? $login : lang('Invalid credentials.'))));
+	$error = (is_string($connection) ? h($connection) : (is_string($login) ? $login : lang('Invalid credentials.')));
+	auth_error($error . (preg_match('~^ | $~', get_password()) ? '<br>' . lang('There is a space in the input password which might be the cause.') : ''));
 }
 
 if ($auth && $_POST["token"]) {

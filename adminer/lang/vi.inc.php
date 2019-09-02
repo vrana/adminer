@@ -206,8 +206,8 @@ $translations = array(
 	'ON UPDATE' => 'Khi cập nhật',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Cột gốc và cột đích phải cùng kiểu, phải đặt chỉ mục trong cột đích và dữ liệu tham chiếu phải tồn tại.',
 	
-	'Triggers' => 'xx',
-	'Add trigger' => 'xx',
+	'Triggers' => 'Phản xạ',
+	'Add trigger' => 'Thêm phản xạ',
 	'Trigger has been dropped.' => 'Đã xoá phản xạ.',
 	'Trigger has been altered.' => 'Đã sửa phản xạ.',
 	'Trigger has been created.' => 'Đã tạo phản xạ.',
@@ -308,12 +308,12 @@ $translations = array(
 	'Schema has been dropped.' => 'Đã xoá schema.',
 	'Schema has been created.' => 'Đã tạo schema.',
 	'Schema has been altered.' => 'Đã thay đổi schema.',
-	'Schema' => 'schema',
-	'Invalid schema.' => 'Schema khong hợp lệ.',
+	'Schema' => 'Schema',
+	'Invalid schema.' => 'Schema không hợp lệ.',
 	
 	// PostgreSQL sequences support
 	'Sequences' => 'Dãy số',
-	'Create sequence' => 'Tạo đãy số',
+	'Create sequence' => 'Tạo dãy số',
 	'Sequence has been dropped.' => 'Dãy số đã bị xoá.',
 	'Sequence has been created.' => 'Đã tạo dãy số.',
 	'Sequence has been altered.' => 'Đã sửa dãy số.',

@@ -2,10 +2,10 @@
 $drivers["elastic"] = "Elasticsearch (beta)";
 
 if (isset($_GET["elastic"])) {
-	$possible_drivers = array("json");
+	$possible_drivers = array("json + allow_url_fopen");
 	define("DRIVER", "elastic");
 
-	if (function_exists('json_decode')) {
+	if (function_exists('json_decode') && ini_bool('allow_url_fopen')) {
 		class Min_DB {
 			var $extension = "JSON", $server_info, $errno, $error, $_url;
 
@@ -84,7 +84,7 @@ if (isset($_GET["elastic"])) {
 			var $num_rows, $_rows;
 
 			function __construct($rows) {
-				$this->num_rows = count($this->_rows);
+				$this->num_rows = count($rows);
 				$this->_rows = $rows;
 				reset($this->_rows);
 			}
@@ -129,7 +129,7 @@ if (isset($_GET["elastic"])) {
 				}
 			}
 			foreach ($where as $val) {
-				list($col,$op,$val) = explode(" ",$val,3);
+				list($col, $op, $val) = explode(" ", $val, 3);
 				if ($col == "_id") {
 					$data["query"]["ids"]["values"][] = $val;
 				}
@@ -148,7 +148,7 @@ if (isset($_GET["elastic"])) {
 			$start = microtime(true);
 			$search = $this->_conn->query($query, $data);
 			if ($print) {
-				echo $adminer->selectQuery("$query: " . print_r($data, true), $start, !$search);
+				echo $adminer->selectQuery("$query: " . json_encode($data), $start, !$search);
 			}
 			if (!$search) {
 				return false;
@@ -177,7 +177,8 @@ if (isset($_GET["elastic"])) {
 			return new Min_Result($return);
 		}
 
-		function update($type, $record, $queryWhere) {
+		function update($type, $record, $queryWhere, $limit = 0, $separator = "\n") {
+			//! use $limit
 			$parts = preg_split('~ *= *~', $queryWhere);
 			if (count($parts) == 2) {
 				$id = trim($parts[1]);
@@ -195,7 +196,8 @@ if (isset($_GET["elastic"])) {
 			return $response['created'];
 		}
 
-		function delete($type, $queryWhere) {
+		function delete($type, $queryWhere, $limit = 0) {
+			//! use $limit
 			$ids = array();
 			if (is_array($_GET["where"]) && $_GET["where"]["_id"]) {
 				$ids[] = $_GET["where"]["_id"];
@@ -225,8 +227,11 @@ if (isset($_GET["elastic"])) {
 	function connect() {
 		global $adminer;
 		$connection = new Min_DB;
-		$credentials = $adminer->credentials();
-		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
+		list($server, $username, $password) = $adminer->credentials();
+		if ($password != "" && $connection->connect($server, $username, "")) {
+			return lang('Database does not support password.');
+		}
+		if ($connection->connect($server, $username, $password)) {
 			return $connection;
 		}
 		return $connection->error;

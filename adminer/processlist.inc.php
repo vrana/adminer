@@ -13,6 +13,7 @@ page_header(lang('Process list'), $error);
 ?>
 
 <form action="" method="post">
+<div class="scrollable">
 <table cellspacing="0" class="nowrap checkable">
 <?php
 echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
@@ -21,12 +22,12 @@ $i = -1;
 foreach (process_list() as $i => $row) {
 
 	if (!$i) {
-		echo "<thead><tr lang='en'>" . (support("kill") ? "<th>&nbsp;" : "");
+		echo "<thead><tr lang='en'>" . (support("kill") ? "<th>" : "");
 		foreach ($row as $key => $val) {
 			echo "<th>$key" . doc_link(array(
 				'sql' => "show-processlist.html#processlist_" . strtolower($key),
 				'pgsql' => "monitoring-stats.html#PG-STAT-ACTIVITY-VIEW",
-				'oracle' => "../b14237/dynviews_2088.htm",
+				'oracle' => "REFRN30223",
 			));
 		}
 		echo "</thead>\n";
@@ -38,13 +39,14 @@ foreach (process_list() as $i => $row) {
 			($jush == "pgsql" && $key == "current_query" && $val != "<IDLE>") ||
 			($jush == "oracle" && $key == "sql_text" && $val != "")
 			? "<code class='jush-$jush'>" . shorten_utf8($val, 100, "</code>") . ' <a href="' . h(ME . ($row["db"] != "" ? "db=" . urlencode($row["db"]) . "&" : "") . "sql=" . urlencode($val)) . '">' . lang('Clone') . '</a>'
-			: nbsp($val)
+			: h($val)
 		);
 	}
 	echo "\n";
 }
 ?>
 </table>
+</div>
 <p>
 <?php
 if (support("kill")) {

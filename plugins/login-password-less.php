@@ -1,29 +1,31 @@
 <?php
 
-/** Enable login for SQLite
+/** Enable login for password-less database
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
-class AdminerLoginSqlite {
+class AdminerLoginPasswordLess {
 	/** @access protected */
-	var $login, $password_hash;
+	var $password_hash;
 	
-	/** Set allowed credentials
-	* @param string
+	/** Set allowed password
 	* @param string result of password_hash
 	*/
-	function __construct($login, $password_hash) {
-		$this->login = $login;
+	function __construct($password_hash) {
 		$this->password_hash = $password_hash;
+	}
+
+	function credentials() {
+		$password = get_password();
+		return array(SERVER, $_GET["username"], (password_verify($password, $this->password_hash) ? "" : $password));
 	}
 	
 	function login($login, $password) {
-		if (DRIVER != "sqlite" && DRIVER != "sqlite2") {
+		if ($password != "") {
 			return true;
 		}
-		return $this->login == $login && password_verify($password, $this->password_hash);
 	}
 
 }

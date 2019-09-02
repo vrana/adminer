@@ -94,12 +94,13 @@ if (!$row) {
 ?>
 
 <form action="" method="post">
+<div class="scrollable">
 <table cellspacing="0" class="nowrap">
 <thead><tr>
 <th id="label-type"><?php echo lang('Index Type'); ?>
 <th><input type="submit" class="wayoff"><?php echo lang('Column (length)'); ?>
 <th id="label-name"><?php echo lang('Name'); ?>
-<th><noscript><input type='image' class='icon' name='add[0]' src='../adminer/static/plus.gif' alt='+' title='<?php echo lang('Add next'); ?>'></noscript>&nbsp;
+<th><noscript><?php echo "<input type='image' class='icon' name='add[0]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>"; ?></noscript>
 </thead>
 <?php
 if ($primary) {
@@ -126,7 +127,7 @@ foreach ($row["indexes"] as $index) {
 				"partial(" . ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . ", '" . js_escape($jush == "sql" ? "" : $_GET["indexes"] . "_") . "')"
 			);
 			echo ($jush == "sql" || $jush == "mssql" ? "<input type='number' name='indexes[$j][lengths][$i]' class='size' value='" . h($index["lengths"][$key]) . "' title='" . lang('Length') . "'>" : "");
-			echo ($jush != "sql" ? checkbox("indexes[$j][descs][$i]", 1, $index["descs"][$key], lang('descending')) : "");
+			echo (support("descidx") ? checkbox("indexes[$j][descs][$i]", 1, $index["descs"][$key], lang('descending')) : "");
 			echo " </span>";
 			$i++;
 		}
@@ -138,6 +139,7 @@ foreach ($row["indexes"] as $index) {
 }
 ?>
 </table>
+</div>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <input type="hidden" name="token" value="<?php echo $token; ?>">

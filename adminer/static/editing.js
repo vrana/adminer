@@ -15,7 +15,11 @@ function bodyLoad(version, maria) {
 					key = 0;
 					if (maria) {
 						for (var i = 1; i < obj.length; i++) {
-							obj[i] = obj[i].replace(/\.html/, '/');
+							obj[i] = obj[i]
+								.replace(/\.html/, '/')
+								.replace(/(numeric)(-type-overview)/, '$1-data$2')
+								.replace(/#statvar_.*/, '#$$1')
+							;
 						}
 					}
 				}
@@ -68,12 +72,25 @@ function typePassword(el, disable) {
 }
 
 /** Install toggle handler
+* @param [HTMLElement]
 */
-function messagesPrint() {
-	var els = qsa('.toggle', document);
+function messagesPrint(el) {
+	var els = qsa('.toggle', el || document);
 	for (var i = 0; i < els.length; i++) {
 		els[i].onclick = partial(toggle, els[i].getAttribute('href').substr(1));
 	}
+}
+
+
+
+/** Hide or show some login rows for selected driver	
+* @param HTMLSelectElement	
+*/	
+function loginDriver(driver) {	
+	var trs = parentTag(driver, 'table').rows;	
+	var disabled = /sqlite/.test(selectValue(driver));	
+	alterClass(trs[1], 'hidden', disabled);	// 1 - row with server
+	trs[1].getElementsByTagName('input')[0].disabled = disabled;	
 }
 
 
@@ -395,13 +412,31 @@ function editingLengthFocus() {
 	var td = this.parentNode;
 	if (/(enum|set)$/.test(selectValue(td.previousSibling.firstChild))) {
 		var edit = qs('#enum-edit');
-		var val = this.value;
-		edit.value = (/^'.+'$/.test(val) ? val.substr(1, val.length - 2).replace(/','/g, "\n").replace(/''/g, "'") : val); //! doesn't handle 'a'',''b' correctly
+		edit.value = enumValues(this.value);
 		td.appendChild(edit);
 		this.style.display = 'none';
 		edit.style.display = 'inline';
 		edit.focus();
 	}
+}
+
+/** Get enum values
+* @param string
+* @return string values separated by newlines
+*/
+function enumValues(s) {
+	var re = /(^|,)\s*'(([^\\']|\\.|'')*)'\s*/g;
+	var result = [];
+	var offset = 0;
+	var match;
+	while (match = re.exec(s)) {
+		if (offset != match.index) {
+			break;
+		}
+		result.push(match[2].replace(/'(')|\\(.)/g, '$1$2'));
+		offset += match[0].length;
+	}
+	return (offset == s.length ? result.join('\n') : s);
 }
 
 /** Finish editing of enum or set
@@ -410,7 +445,7 @@ function editingLengthFocus() {
 function editingLengthBlur() {
 	var field = this.parentNode.firstChild;
 	var val = this.value;
-	field.value = (/^'[^\n]+'$/.test(val) ? val : val && "'" + val.replace(/\n+$/, '').replace(/'/g, "''").replace(/\n/g, "','") + "'");
+	field.value = (/^'[^\n]+'$/.test(val) ? val : val && "'" + val.replace(/\n+$/, '').replace(/'/g, "''").replace(/\\/g, '\\\\').replace(/\n/g, "','") + "'");
 	field.style.display = 'inline';
 	this.style.display = 'none';
 }
@@ -423,14 +458,6 @@ function columnShow(checked, column) {
 	var trs = qsa('tr', qs('#edit-fields'));
 	for (var i=0; i < trs.length; i++) {
 		alterClass(qsa('td', trs[i])[column], 'hidden', !checked);
-	}
-}
-
-/** Hide column with default values in narrow window
-*/
-function editingHideDefaults() {
-	if (innerWidth < document.documentElement.scrollWidth) {
-		qs('#form')['defaults'].checked = false;
 	}
 }
 
@@ -455,14 +482,14 @@ function partitionNameChange() {
 }
 
 /** Show or hide comment fields
+* @param HTMLInputElement
 * @param [boolean] whether to focus Comment if checked
-* @this HTMLInputElement
 */
-function editingCommentsClick(focus) {
-	var comment = this.form['Comment'];
-	columnShow(this.checked, 6);
-	alterClass(comment, 'hidden', !this.checked);
-	if (focus && this.checked) {
+function editingCommentsClick(el, focus) {
+	var comment = el.form['Comment'];
+	columnShow(el.checked, 6);
+	alterClass(comment, 'hidden', !el.checked);
+	if (focus && el.checked) {
 		comment.focus();
 	}
 }
@@ -491,8 +518,8 @@ function dumpClick(event) {
 * @this HTMLSelectElement
 */
 function foreignAddRow() {
-	this.onchange = function () { };
 	var row = cloneNode(parentTag(this, 'tr'));
+	this.onchange = function () { };
 	var selects = qsa('select', row);
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/\]/, '1$&');
@@ -507,8 +534,8 @@ function foreignAddRow() {
 * @this HTMLSelectElement
 */
 function indexesAddRow() {
-	this.onchange = function () { };
 	var row = cloneNode(parentTag(this, 'tr'));
+	this.onchange = function () { };
 	var selects = qsa('select', row);
 	for (var i=0; i < selects.length; i++) {
 		selects[i].name = selects[i].name.replace(/indexes\[\d+/, '$&1');
@@ -573,6 +600,23 @@ function indexesAddColumn(prefix) {
 	}
 	parentTag(field, 'td').appendChild(column);
 	field.onchange();
+}
+
+
+
+/** Updates the form action
+* @param HTMLFormElement
+* @param string
+*/
+function sqlSubmit(form, root) {
+	if (encodeURIComponent(form['query'].value).length < 2e3) {
+		form.action = root
+			+ '&sql=' + encodeURIComponent(form['query'].value)
+			+ (form['limit'].value ? '&limit=' + +form['limit'].value : '')
+			+ (form['error_stops'].checked ? '&error_stops=1' : '')
+			+ (form['only_errors'].checked ? '&only_errors=1' : '')
+		;
+	}
 }
 
 

@@ -143,7 +143,7 @@ function selectValue(select) {
 */
 function isTag(el, tag) {
 	var re = new RegExp('^(' + tag + ')$', 'i');
-	return re.test(el.tagName);
+	return el && re.test(el.tagName);
 }
 
 /** Get parent node with specified tag name
@@ -205,14 +205,9 @@ function formCheck(name) {
 /** Check all rows in <table class="checkable">
 */
 function tableCheck() {
-	var tables = qsa('table', document);
-	for (var i=0; i < tables.length; i++) {
-		if (/(^|\s)checkable(\s|$)/.test(tables[i].className)) {
-			var trs = qsa('tr', tables[i]);
-			for (var j=0; j < trs.length; j++) {
-				trCheck(trs[j].firstChild.firstChild);
-			}
-		}
+	var inputs = qsa('table.checkable td:first-child input', document);
+	for (var i=0; i < inputs.length; i++) {
+		trCheck(inputs[i]);
 	}
 }
 
@@ -319,13 +314,13 @@ function checkboxClick(event) {
 
 /** Set HTML code of an element
 * @param string
-* @param string undefined to set parentNode to &nbsp;
+* @param string undefined to set parentNode to empty string
 */
 function setHtml(id, html) {
-	var el = qs('#' + id);
+	var el = qs('[id="' + id.replace(/[\\"]/g, '\\$&') + '"]'); // database name is used as ID
 	if (el) {
 		if (html == null) {
-			el.parentNode.innerHTML = '&nbsp;';
+			el.parentNode.innerHTML = '';
 		} else {
 			el.innerHTML = html;
 		}
@@ -496,6 +491,9 @@ function bodyKeydown(event, button) {
 		if (button) {
 			target.form[button].click();
 		} else {
+			if (target.form.onsubmit) {
+				target.form.onsubmit();
+			}
 			target.form.submit();
 		}
 		target.focus();
@@ -545,20 +543,22 @@ function editingKeydown(event) {
 */
 function functionChange() {
 	var input = this.form[this.name.replace(/^function/, 'fields')];
-	if (selectValue(this)) {
-		if (input.origType === undefined) {
-			input.origType = input.type;
-			input.origMaxLength = input.getAttribute('data-maxlength');
+	if (input) { // undefined with the set data type
+		if (selectValue(this)) {
+			if (input.origType === undefined) {
+				input.origType = input.type;
+				input.origMaxLength = input.getAttribute('data-maxlength');
+			}
+			input.removeAttribute('data-maxlength');
+			input.type = 'text';
+		} else if (input.origType) {
+			input.type = input.origType;
+			if (input.origMaxLength >= 0) {
+				input.setAttribute('data-maxlength', input.origMaxLength);
+			}
 		}
-		input.removeAttribute('data-maxlength');
-		input.type = 'text';
-	} else if (input.origType) {
-		input.type = input.origType;
-		if (input.origMaxLength >= 0) {
-			input.setAttribute('data-maxlength', input.origMaxLength);
-		}
+		oninput({target: input});
 	}
-	oninput({target: input});
 	helpClose();
 }
 
@@ -672,6 +672,7 @@ function ajaxForm(form, message, button) {
 		if (window.jush) {
 			jush.highlight_tag(qsa('code', qs('#ajaxstatus')), 0);
 		}
+		messagesPrint(qs('#ajaxstatus'));
 	}, data, message);
 }
 
@@ -707,7 +708,7 @@ function selectClick(event, text, warning) {
 		}
 	};
 	var pos = event.rangeOffset;
-	var value = td.firstChild.alt || td.textContent || td.innerText;
+	var value = (td.firstChild && td.firstChild.alt) || td.textContent || td.innerText;
 	input.style.width = Math.max(td.clientWidth - 14, 20) + 'px'; // 14 = 2 * (td.border + td.padding + input.border)
 	if (text) {
 		var rows = 1;
@@ -716,7 +717,7 @@ function selectClick(event, text, warning) {
 		});
 		input.rows = rows;
 	}
-	if (value == '\u00A0' || qsa('i', td).length) { // &nbsp; or i - NULL
+	if (qsa('i', td).length) { // <i> - NULL
 		value = '';
 	}
 	if (document.selection) {

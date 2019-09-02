@@ -23,6 +23,7 @@ $langs = array(
 	'id' => 'Bahasa Indonesia', // Ivan Lanin - http://ivan.lanin.org
 	'it' => 'Italiano', // Alessandro Fiorotto, Paolo Asperti
 	'ja' => '日本語', // Hitoshi Ozawa - http://sourceforge.jp/projects/oss-ja-jpn/releases/
+	'ka' => 'ქართული', // Saba Khmaladze skhmaladze@uglt.org
 	'ko' => '한국어', // dalli - skcha67@gmail.com
 	'lt' => 'Lietuvių', // Paulius Leščinskas - http://www.lescinskas.lt
 	'ms' => 'Bahasa Melayu', // Pisyek

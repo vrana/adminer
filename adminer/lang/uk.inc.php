@@ -268,7 +268,7 @@ $translations = array(
 	// data type descriptions
 	'Numbers' => 'Числа',
 	'Date and time' => 'Дата і час',
-	'Strings' => 'Радки',
+	'Strings' => 'Рядки',
 	'Binary' => 'Двійкові',
 	'Lists' => 'Списки',
 	'Network' => 'Мережа',

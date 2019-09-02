@@ -6,7 +6,7 @@ if (isset($_GET["pgsql"])) {
 	define("DRIVER", "pgsql");
 	if (extension_loaded("pgsql")) {
 		class Min_DB {
-			var $extension = "PgSQL", $_link, $_result, $_string, $_database = true, $server_info, $affected_rows, $error;
+			var $extension = "PgSQL", $_link, $_result, $_string, $_database = true, $server_info, $affected_rows, $error, $timeout;
 
 			function _error($errno, $error) {
 				if (ini_bool("html_errors")) {
@@ -69,12 +69,18 @@ if (isset($_GET["pgsql"])) {
 				$this->error = "";
 				if (!$result) {
 					$this->error = pg_last_error($this->_link);
-					return false;
+					$return = false;
 				} elseif (!pg_num_fields($result)) {
 					$this->affected_rows = pg_affected_rows($result);
-					return true;
+					$return = true;
+				} else {
+					$return = new Min_Result($result);
 				}
-				return new Min_Result($result);
+				if ($this->timeout) {
+					$this->timeout = 0;
+					$this->query("RESET statement_timeout");
+				}
+				return $return;
 			}
 
 			function multi_query($query) {
@@ -139,7 +145,7 @@ if (isset($_GET["pgsql"])) {
 
 	} elseif (extension_loaded("pdo_pgsql")) {
 		class Min_DB extends Min_PDO {
-			var $extension = "PDO_PgSQL";
+			var $extension = "PDO_PgSQL", $timeout;
 
 			function connect($server, $username, $password) {
 				global $adminer;
@@ -155,12 +161,17 @@ if (isset($_GET["pgsql"])) {
 				return ($adminer->database() == $database);
 			}
 
-			function value($val, $field) {
-				return $val;
-			}
-
 			function quoteBinary($s) {
 				return q($s);
+			}
+
+			function query($query, $unbuffered = false) {
+				$return = parent::query($query, $unbuffered);
+				if ($this->timeout) {
+					$this->timeout = 0;
+					parent::query("RESET statement_timeout");
+				}
+				return $return;
 			}
 
 			function warnings() {
@@ -197,15 +208,19 @@ if (isset($_GET["pgsql"])) {
 			return true;
 		}
 
+		function slowQuery($query, $timeout) {
+			$this->_conn->query("SET statement_timeout = " . (1000 * $timeout));
+			$this->_conn->timeout = 1000 * $timeout;
+			return $query;
+		}
+
 		function convertSearch($idf, $val, $field) {
-			return (preg_match('~char|text' . (is_numeric($val["val"]) && !preg_match('~LIKE~', $val["op"]) ? '|' . number_type() : '') . '~', $field["type"])
+			return (preg_match('~char|text'
+					. (!preg_match('~LIKE~', $val["op"]) ? '|date|time(stamp)?|boolean|uuid|' . number_type() : '')
+					. '~', $field["type"])
 				? $idf
 				: "CAST($idf AS text)"
 			);
-		}
-
-		function value($val, $field) {
-			return $this->_conn->value($val, $field);
 		}
 
 		function quoteBinary($s) {
@@ -271,7 +286,7 @@ if (isset($_GET["pgsql"])) {
 	function limit1($table, $query, $where, $separator = "\n") {
 		return (preg_match('~^INTO~', $query)
 			? limit($query, $where, 1, 0, $separator)
-			: " $query WHERE ctid = (SELECT ctid FROM " . table($table) . $where . $separator . "LIMIT 1)"
+			: " $query" . (is_view(table_status1($table)) ? $where : " WHERE ctid = (SELECT ctid FROM " . table($table) . $where . $separator . "LIMIT 1)")
 		);
 	}
 
@@ -309,7 +324,7 @@ ORDER BY 1";
 
 	function table_status($name = "") {
 		$return = array();
-		foreach (get_rows("SELECT c.relname AS \"Name\", CASE c.relkind WHEN 'r' THEN 'table' WHEN 'm' THEN 'materialized view' ELSE 'view' END AS \"Engine\", pg_relation_size(c.oid) AS \"Data_length\", pg_total_relation_size(c.oid) - pg_relation_size(c.oid) AS \"Index_length\", obj_description(c.oid, 'pg_class') AS \"Comment\", CASE WHEN c.relhasoids THEN 'oid' ELSE '' END AS \"Oid\", c.reltuples as \"Rows\", n.nspname
+		foreach (get_rows("SELECT c.relname AS \"Name\", CASE c.relkind WHEN 'r' THEN 'table' WHEN 'm' THEN 'materialized view' ELSE 'view' END AS \"Engine\", pg_relation_size(c.oid) AS \"Data_length\", pg_total_relation_size(c.oid) - pg_relation_size(c.oid) AS \"Index_length\", obj_description(c.oid, 'pg_class') AS \"Comment\", " . (min_version(12) ? "''" : "CASE WHEN c.relhasoids THEN 'oid' ELSE '' END") . " AS \"Oid\", c.reltuples as \"Rows\", n.nspname
 FROM pg_class c
 JOIN pg_namespace n ON(n.nspname = current_schema() AND n.oid = c.relnamespace)
 WHERE relkind IN ('r', 'm', 'v', 'f')
@@ -334,7 +349,10 @@ WHERE relkind IN ('r', 'm', 'v', 'f')
 			'timestamp without time zone' => 'timestamp',
 			'timestamp with time zone' => 'timestamptz',
 		);
-		foreach (get_rows("SELECT a.attname AS field, format_type(a.atttypid, a.atttypmod) AS full_type, d.adsrc AS default, a.attnotnull::int, col_description(c.oid, a.attnum) AS comment
+
+		$identity_column = min_version(10) ? "(a.attidentity = 'd')::int" : '0';
+
+		foreach (get_rows("SELECT a.attname AS field, format_type(a.atttypid, a.atttypmod) AS full_type, d.adsrc AS default, a.attnotnull::int, col_description(c.oid, a.attnum) AS comment, $identity_column AS identity
 FROM pg_class c
 JOIN pg_namespace n ON c.relnamespace = n.oid
 JOIN pg_attribute a ON c.oid = a.attrelid
@@ -357,8 +375,11 @@ ORDER BY a.attnum"
 				$row["type"] = $type;
 				$row["full_type"] = $row["type"] . $length . $addon . $array;
 			}
+			if ($row['identity']) {
+				$row['default'] = 'GENERATED BY DEFAULT AS IDENTITY';
+			}
 			$row["null"] = !$row["attnotnull"];
-			$row["auto_increment"] = preg_match('~^nextval\\(~i', $row["default"]);
+			$row["auto_increment"] = $row['identity'] || preg_match('~^nextval\(~i', $row["default"]);
 			$row["privileges"] = array("insert" => 1, "select" => 1, "update" => 1);
 			if (preg_match('~(.+)::[^)]+(.*)~', $row["default"], $match)) {
 				$row["default"] = ($match[1] == "NULL" ? null : (($match[1][0] == "'" ? idf_unescape($match[1]) : $match[1]) . $match[2]));
@@ -417,9 +438,7 @@ ORDER BY conkey, conname") as $row) {
 
 	function view($name) {
 		global $connection;
-		return array("select" => trim($connection->result("SELECT view_definition
-FROM information_schema.views
-WHERE table_schema = current_schema() AND table_name = " . q($name))));
+		return array("select" => trim($connection->result("SELECT pg_get_viewdef(" . $connection->result("SELECT oid FROM pg_class WHERE relname = " . q($name)) . ")")));
 	}
 
 	function collations() {
@@ -434,8 +453,8 @@ WHERE table_schema = current_schema() AND table_name = " . q($name))));
 	function error() {
 		global $connection;
 		$return = h($connection->error);
-		if (preg_match('~^(.*\\n)?([^\\n]*)\\n( *)\\^(\\n.*)?$~s', $return, $match)) {
-			$return = $match[1] . preg_replace('~((?:[^&]|&[^;]*;){' . strlen($match[3]) . '})(.*)~', '\\1<b>\\2</b>', $match[2]) . $match[4];
+		if (preg_match('~^(.*\n)?([^\n]*)\n( *)\^(\n.*)?$~s', $return, $match)) {
+			$return = $match[1] . preg_replace('~((?:[^&]|&[^;]*;){' . strlen($match[3]) . '})(.*)~', '\1<b>\2</b>', $match[2]) . $match[4];
 		}
 		return nl_br($return);
 	}
@@ -462,6 +481,9 @@ WHERE table_schema = current_schema() AND table_name = " . q($name))));
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
 		$alter = array();
 		$queries = array();
+		if ($table != "" && $table != $name) {
+			$queries[] = "ALTER TABLE " . table($table) . " RENAME TO " . table($name);
+		}
 		foreach ($fields as $field) {
 			$column = idf_escape($field[0]);
 			$val = $field[1];
@@ -477,7 +499,7 @@ WHERE table_schema = current_schema() AND table_name = " . q($name))));
 					$alter[] = ($table != "" ? "ADD " : "  ") . implode($val);
 				} else {
 					if ($column != $val[0]) {
-						$queries[] = "ALTER TABLE " . table($table) . " RENAME $column TO $val[0]";
+						$queries[] = "ALTER TABLE " . table($name) . " RENAME $column TO $val[0]";
 					}
 					$alter[] = "ALTER $column TYPE$val[1]";
 					if (!$val[6]) {
@@ -486,7 +508,7 @@ WHERE table_schema = current_schema() AND table_name = " . q($name))));
 					}
 				}
 				if ($field[0] != "" || $val5 != "") {
-					$queries[] = "COMMENT ON COLUMN " . table($table) . ".$val[0] IS " . ($val5 != "" ? substr($val5, 9) : "''");
+					$queries[] = "COMMENT ON COLUMN " . table($name) . ".$val[0] IS " . ($val5 != "" ? substr($val5, 9) : "''");
 				}
 			}
 		}
@@ -495,9 +517,6 @@ WHERE table_schema = current_schema() AND table_name = " . q($name))));
 			array_unshift($queries, "CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)");
 		} elseif ($alter) {
 			array_unshift($queries, "ALTER TABLE " . table($table) . "\n" . implode(",\n", $alter));
-		}
-		if ($table != "" && $table != $name) {
-			$queries[] = "ALTER TABLE " . table($table) . " RENAME TO " . table($name);
 		}
 		if ($table != "" || $comment != "") {
 			$queries[] = "COMMENT ON TABLE " . table($name) . " IS " . q($comment);
@@ -743,7 +762,11 @@ AND typelem = 0"
 		// "basic" indexes after table definition
 		foreach ($indexes as $index_name => $index) {
 			if ($index['type'] == 'INDEX') {
-				$return .= "\n\nCREATE INDEX " . idf_escape($index_name) . " ON " . idf_escape($status['nspname']) . "." . idf_escape($status['Name']) . " USING btree (" . implode(', ', array_map('idf_escape', $index['columns'])) . ");";
+				$columns = array();
+				foreach ($index['columns'] as $key => $val) {
+					$columns[] = idf_escape($val) . ($index['descs'][$key] ? " DESC" : "");
+				}
+				$return .= "\n\nCREATE INDEX " . idf_escape($index_name) . " ON " . idf_escape($status['nspname']) . "." . idf_escape($status['Name']) . " USING btree (" . implode(', ', $columns) . ");";
 			}
 		}
 
@@ -799,7 +822,7 @@ AND typelem = 0"
 	}
 
 	function support($feature) {
-		return preg_match('~^(database|table|columns|sql|indexes|comment|view|' . (min_version(9.3) ? 'materializedview|' : '') . 'scheme|routine|processlist|sequence|trigger|type|variables|drop_col|kill|dump)$~', $feature);
+		return preg_match('~^(database|table|columns|sql|indexes|descidx|comment|view|' . (min_version(9.3) ? 'materializedview|' : '') . 'scheme|routine|processlist|sequence|trigger|type|variables|drop_col|kill|dump)$~', $feature);
 	}
 
 	function kill_process($val) {
@@ -830,7 +853,7 @@ AND typelem = 0"
 		$structured_types[$key] = array_keys($val);
 	}
 	$unsigned = array();
-	$operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"); // no "SQL" to avoid SQL injection
+	$operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"); // no "SQL" to avoid CSRF
 	$functions = array("char_length", "lower", "round", "to_hex", "to_timestamp", "upper");
 	$grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 	$edit_functions = array(

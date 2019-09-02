@@ -113,6 +113,14 @@
 		return queries("ROLLBACK");
 	}
 	
+	/** Return query with a timeout
+	* @param string
+	* @param int seconds
+	* @return string or null if the driver doesn't support query timeouts
+	*/
+	function slowQuery($query, $timeout) {
+	}
+	
 	/** Convert column to be searchable
 	* @param string escaped column name
 	* @param array array("op" => , "val" => )
@@ -129,7 +137,10 @@
 	* @return string
 	*/
 	function value($val, $field) {
-		return $val;
+		return (method_exists($this->_conn, 'value')
+			? $this->_conn->value($val, $field)
+			: (is_resource($val) ? stream_get_contents($val) : $val)
+		);
 	}
 
 	/** Quote binary string

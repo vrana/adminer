@@ -7,26 +7,10 @@ if (isset($_GET["mongo"])) {
 
 	if (class_exists('MongoDB')) {
 		class Min_DB {
-			var $extension = "Mongo", $error, $last_id, $_link, $_db;
+			var $extension = "Mongo", $server_info = MongoClient::VERSION, $error, $last_id, $_link, $_db;
 
-			function connect($server, $username, $password) {
-				global $adminer;
-				$db = $adminer->database();
-				$options = array();
-				if ($username != "") {
-					$options["username"] = $username;
-					$options["password"] = $password;
-				}
-				if ($db != "") {
-					$options["db"] = $db;
-				}
-				try {
-					$this->_link = @new MongoClient("mongodb://$server", $options);
-					return true;
-				} catch (Exception $ex) {
-					$this->error = $ex->getMessage();
-					return false;
-				}
+			function connect($uri, $options) {
+				return @new MongoClient($uri, $options);
 			}
 			
 			function query($query) {
@@ -214,30 +198,14 @@ if (isset($_GET["mongo"])) {
 
 	} elseif (class_exists('MongoDB\Driver\Manager')) {
 		class Min_DB {
-			var $extension = "MongoDB", $error, $last_id;
+			var $extension = "MongoDB", $server_info = MONGODB_VERSION, $error, $last_id;
 			/** @var MongoDB\Driver\Manager */
 			var $_link;
 			var $_db, $_db_name;
 
-			function connect($server, $username, $password) {
-				global $adminer;
-				$db = $adminer->database();
-				$options = array();
-				if ($username != "") {
-					$options["username"] = $username;
-					$options["password"] = $password;
-				}
-				if ($db != "") {
-					$options["db"] = $db;
-				}
-				try {
-					$class = 'MongoDB\Driver\Manager';
-					$this->_link = new $class("mongodb://$server", $options);
-					return true;
-				} catch (Exception $ex) {
-					$this->error = $ex->getMessage();
-					return false;
-				}
+			function connect($uri, $options) {
+				$class = 'MongoDB\Driver\Manager';
+				return new $class($uri, $options);
 			}
 
 			function query($query) {
@@ -245,13 +213,8 @@ if (isset($_GET["mongo"])) {
 			}
 
 			function select_db($database) {
-				try {
-					$this->_db_name = $database;
-					return true;
-				} catch (Exception $ex) {
-					$this->error = $ex->getMessage();
-					return false;
-				}
+				$this->_db_name = $database;
+				return true;
 			}
 
 			function quote($string) {
@@ -405,7 +368,7 @@ if (isset($_GET["mongo"])) {
 		}
 
 		function get_databases($flush) {
-			/** @var $connection Min_DB */
+			/** @var Min_DB */
 			global $connection;
 			$return = array();
 			$class = 'MongoDB\Driver\Command';
@@ -516,7 +479,7 @@ if (isset($_GET["mongo"])) {
 		}
 
 		function where_to_query($whereAnd = array(), $whereOr = array()) {
-			global $operators;
+			global $adminer;
 			$data = array();
 			foreach (array('and' => $whereAnd, 'or' => $whereOr) as $type => $where) {
 				if (is_array($where)) {
@@ -528,7 +491,7 @@ if (isset($_GET["mongo"])) {
 							$class = 'MongoDB\BSON\ObjectID';
 							$val = new $class($val);
 						}
-						if (!in_array($op, $operators)) {
+						if (!in_array($op, $adminer->operators)) {
 							continue;
 						}
 						if (preg_match('~^\(f\)(.+)~', $op, $match)) {
@@ -563,7 +526,7 @@ if (isset($_GET["mongo"])) {
 								$op = '$regex';
 								break;
 							default:
-								continue;
+								continue 2;
 						}
 						if ($type == 'and') {
 							$data['$and'][] = array($col => array($op => $val));
@@ -618,6 +581,10 @@ if (isset($_GET["mongo"])) {
 		return $return;
 	}
 
+	function create_database($db, $collation) {
+		return true;
+	}
+
 	function last_id() {
 		global $connection;
 		return $connection->last_id;
@@ -641,11 +608,34 @@ if (isset($_GET["mongo"])) {
 	function connect() {
 		global $adminer;
 		$connection = new Min_DB;
-		$credentials = $adminer->credentials();
-		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
-			return $connection;
+		list($server, $username, $password) = $adminer->credentials();
+		$options = array();
+		if ($username . $password != "") {
+			$options["username"] = $username;
+			$options["password"] = $password;
 		}
-		return $connection->error;
+		$db = $adminer->database();
+		if ($db != "") {
+			$options["db"] = $db;
+		}
+		if (($auth_source = getenv("MONGO_AUTH_SOURCE"))) {
+			$options["authSource"] = $auth_source;
+		}
+		try {
+			$connection->_link = $connection->connect("mongodb://$server", $options);
+			if ($password != "") {
+				$options["password"] = "";
+				try {
+					$connection->connect("mongodb://$server", $options);
+					return lang('Database does not support password.');
+				} catch (Exception $ex) {
+					// this is what we want
+				}
+			}
+			return $connection;
+		} catch (Exception $ex) {
+			return $ex->getMessage();
+		}
 	}
 
 	function alter_indexes($table, $alter) {
@@ -675,7 +665,7 @@ if (isset($_GET["mongo"])) {
 	}
 
 	function support($feature) {
-		return preg_match("~database|indexes~", $feature);
+		return preg_match("~database|indexes|descidx~", $feature);
 	}
 
 	function db_collation($db, $collations) {

@@ -17,6 +17,7 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 	odd(''); // reset odd for each result
 	for ($i=0; (!$limit || $i < $limit) && ($row = $result->fetch_row()); $i++) {
 		if (!$i) {
+			echo "<div class='scrollable'>\n";
 			echo "<table cellspacing='0' class='nowrap'>\n";
 			echo "<thead><tr>";
 			for ($j=0; $j < count($row); $j++) {
@@ -64,8 +65,6 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 				$val = "<i>NULL</i>";
 			} elseif ($blobs[$key] && !is_utf8($val)) {
 				$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>"; //! link to download
-			} elseif (!strlen($val)) { // strlen - SQLite can return int
-				$val = "&nbsp;"; // some content to print a border
 			} else {
 				$val = h($val);
 				if ($types[$key] == 254) { // 254 - char
@@ -87,7 +86,7 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 			echo "<td>$val";
 		}
 	}
-	echo ($i ? "</table>" : "<p class='message'>" . lang('No rows.')) . "\n";
+	echo ($i ? "</table>\n</div>" : "<p class='message'>" . lang('No rows.')) . "\n";
 	return $return;
 }
 
@@ -111,6 +110,31 @@ function referencable_primary($self) {
 		}
 	}
 	return $return;
+}
+
+/** Get settings stored in a cookie
+* @return array
+*/
+function adminer_settings() {
+	parse_str($_COOKIE["adminer_settings"], $settings);
+	return $settings;
+}
+
+/** Get setting stored in a cookie
+* @param string
+* @return array
+*/
+function adminer_setting($key) {
+	$settings = adminer_settings();
+	return $settings[$key];
+}
+
+/** Store settings to a cookie
+* @param array
+* @return bool
+*/
+function set_adminer_settings($settings) {
+	return cookie("adminer_settings", http_build_query($settings + adminer_settings()));
 }
 
 /** Print SQL <textarea> tag
@@ -156,10 +180,10 @@ echo optionlist(array_merge($extra_types, $structured_types), $type);
 ?></select>
 <?php echo on_help("getTarget(event).value", 1); ?>
 <?php echo script("mixin(qsl('select'), {onfocus: function () { lastType = selectValue(this); }, onchange: editingTypeChange});", ""); ?>
-<td><input name="<?php echo h($key); ?>[length]" value="<?php echo h($field["length"]); ?>" size="3"<?php echo (!$field["length"] && preg_match('~var(char|binary)$~', $type) ? " class='required'" : ""); ?> aria-labelledby="label-length"><?php echo script("mixin(qsl('input'), {onfocus: editingLengthFocus, oninput: editingLengthChange});", ""); ?><td class="options"><?php //! type="number" with enabled JavaScript
+<td><input name="<?php echo h($key); ?>[length]" value="<?php echo h($field["length"]); ?>" size="3"<?php echo (!$field["length"] && preg_match('~var(char|binary)$~', $type) ? " class='required'" : ""); //! type="number" with enabled JavaScript ?> aria-labelledby="label-length"><?php echo script("mixin(qsl('input'), {onfocus: editingLengthFocus, oninput: editingLengthChange});", ""); ?><td class="options"><?php
 	echo "<select name='" . h($key) . "[collation]'" . (preg_match('~(char|text|enum|set)$~', $type) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>';
 	echo ($unsigned ? "<select name='" . h($key) . "[unsigned]'" . (!$type || preg_match(number_type(), $type) ? "" : " class='hidden'") . '><option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
-	echo (isset($field['on_update']) ? "<select name='" . h($key) . "[on_update]'" . (preg_match('~timestamp|datetime~', $type) ? "" : " class='hidden'") . '>' . optionlist(array("" => "(" . lang('ON UPDATE') . ")", "CURRENT_TIMESTAMP"), $field["on_update"]) . '</select>' : '');
+	echo (isset($field['on_update']) ? "<select name='" . h($key) . "[on_update]'" . (preg_match('~timestamp|datetime~', $type) ? "" : " class='hidden'") . '>' . optionlist(array("" => "(" . lang('ON UPDATE') . ")", "CURRENT_TIMESTAMP"), (preg_match('~^CURRENT_TIMESTAMP~i', $field["on_update"]) ? "CURRENT_TIMESTAMP" : $field["on_update"])) . '</select>' : '');
 	echo ($foreign_keys ? "<select name='" . h($key) . "[on_delete]'" . (preg_match("~`~", $type) ? "" : " class='hidden'") . "><option value=''>(" . lang('ON DELETE') . ")" . optionlist(explode("|", $on_actions), $field["on_delete"]) . "</select> " : " "); // space for IE
 }
 
@@ -237,15 +261,14 @@ function type_class($type) {
 * @param array
 * @param string TABLE or PROCEDURE
 * @param array returned by referencable_primary()
-* @param bool display comments column
 * @return null
 */
-function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = array(), $comments = false) {
+function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = array()) {
 	global $inout;
 	$fields = array_values($fields);
 	?>
 <thead><tr>
-<?php if ($type == "PROCEDURE") { ?><td>&nbsp;<?php } ?>
+<?php if ($type == "PROCEDURE") { ?><td><?php } ?>
 <th id="label-name"><?php echo ($type == "TABLE" ? lang('Column name') : lang('Parameter name')); ?>
 <td id="label-type"><?php echo lang('Type'); ?><textarea id="enum-edit" rows="4" cols="12" wrap="off" style="display: none;"></textarea><?php echo script("qs('#enum-edit').onblur = editingLengthBlur;"); ?>
 <td id="label-length"><?php echo lang('Length'); ?>
@@ -260,7 +283,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 	'mssql' => "ms186775.aspx",
 )); ?>
 <td id="label-default"><?php echo lang('Default value'); ?>
-<?php echo (support("comment") ? "<td id='label-comment'" . ($comments ? "" : " class='hidden'") . ">" . lang('Comment') : ""); ?>
+<?php echo (support("comment") ? "<td id='label-comment'>" . lang('Comment') : ""); ?>
 <?php } ?>
 <td><?php echo "<input type='image' class='icon' name='add[" . (support("move_col") ? 0 : count($fields)) . "]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>" . script("row_count = " . count($fields) . ";"); ?>
 </thead>
@@ -274,20 +297,20 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 		?>
 <tr<?php echo ($display ? "" : " style='display: none;'"); ?>>
 <?php echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", explode("|", $inout), $field["inout"]) : ""); ?>
-<th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo h($field["field"]); ?>" maxlength="64" autocapitalize="off" aria-labelledby="label-name"><?php echo script("qsl('input').oninput = function () { editingNameChange.call(this);" . ($field["field"] != "" || count($fields) > 1 ? "" : " editingAddRow.call(this);") . " };", ""); ?><?php } ?>
+<th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo h($field["field"]); ?>" data-maxlength="64" autocapitalize="off" aria-labelledby="label-name"><?php echo script("qsl('input').oninput = function () { editingNameChange.call(this);" . ($field["field"] != "" || count($fields) > 1 ? "" : " editingAddRow.call(this);") . " };", ""); ?><?php } ?>
 <input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo h($orig); ?>">
 <?php edit_type("fields[$i]", $field, $collations, $foreign_keys); ?>
 <?php if ($type == "TABLE") { ?>
 <td><?php echo checkbox("fields[$i][null]", 1, $field["null"], "", "", "block", "label-null"); ?>
 <td><label class="block"><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked<?php } ?> aria-labelledby="label-ai"></label><td><?php
 			echo checkbox("fields[$i][has_default]", 1, $field["has_default"], "", "", "", "label-default"); ?><input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["default"]); ?>" aria-labelledby="label-default"><?php
-			echo (support("comment") ? "<td" . ($comments ? "" : " class='hidden'") . "><input name='fields[$i][comment]' value='" . h($field["comment"]) . "' maxlength='" . (min_version(5.5) ? 1024 : 255) . "' aria-labelledby='label-comment'>" : "");
+			echo (support("comment") ? "<td><input name='fields[$i][comment]' value='" . h($field["comment"]) . "' data-maxlength='" . (min_version(5.5) ? 1024 : 255) . "' aria-labelledby='label-comment'>" : "");
 		}
 		echo "<td>";
 		echo (support("move_col") ?
-			"<input type='image' class='icon' name='add[$i]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>&nbsp;"
-			. "<input type='image' class='icon' name='up[$i]' src='../adminer/static/up.gif' alt='↑' title='" . lang('Move up') . "'>&nbsp;"
-			. "<input type='image' class='icon' name='down[$i]' src='../adminer/static/down.gif' alt='↓' title='" . lang('Move down') . "'>&nbsp;"
+			"<input type='image' class='icon' name='add[$i]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'> "
+			. "<input type='image' class='icon' name='up[$i]' src='../adminer/static/up.gif' alt='↑' title='" . lang('Move up') . "'> "
+			. "<input type='image' class='icon' name='down[$i]' src='../adminer/static/down.gif' alt='↓' title='" . lang('Move down') . "'> "
 		: "");
 		echo ($orig == "" || support("drop_col") ? "<input type='image' class='icon' name='drop_col[$i]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "'>" : "");
 	}
@@ -360,7 +383,7 @@ function grant($grant, $privileges, $columns, $on) {
 			: queries("$grant ALL PRIVILEGES$on") && queries("$grant GRANT OPTION$on")
 		);
 	}
-	return queries("$grant " . preg_replace('~(GRANT OPTION)\\([^)]*\\)~', '\\1', implode("$columns, ", $privileges) . $columns) . $on);
+	return queries("$grant " . preg_replace('~(GRANT OPTION)\([^)]*\)~', '\1', implode("$columns, ", $privileges) . $columns) . $on);
 }
 
 /** Drop old object and create a new one
@@ -443,16 +466,21 @@ function create_routine($routine, $row) {
 * @return string
 */
 function remove_definer($query) {
-	return preg_replace('~^([A-Z =]+) DEFINER=`' . preg_replace('~@(.*)~', '`@`(%|\\1)', logged_user()) . '`~', '\\1', $query); //! proper escaping of user
+	return preg_replace('~^([A-Z =]+) DEFINER=`' . preg_replace('~@(.*)~', '`@`(%|\1)', logged_user()) . '`~', '\1', $query); //! proper escaping of user
 }
 
 /** Format foreign key to use in SQL query
-* @param array ("table" => string, "source" => array, "target" => array, "on_delete" => one of $on_actions, "on_update" => one of $on_actions)
+* @param array ("db" => string, "ns" => string, "table" => string, "source" => array, "target" => array, "on_delete" => one of $on_actions, "on_update" => one of $on_actions)
 * @return string
 */
 function format_foreign_key($foreign_key) {
 	global $on_actions;
-	return " FOREIGN KEY (" . implode(", ", array_map('idf_escape', $foreign_key["source"])) . ") REFERENCES " . table($foreign_key["table"])
+	$db = $foreign_key["db"];
+	$ns = $foreign_key["ns"];
+	return " FOREIGN KEY (" . implode(", ", array_map('idf_escape', $foreign_key["source"])) . ") REFERENCES "
+		. ($db != "" && $db != $_GET["db"] ? idf_escape($db) . "." : "")
+		. ($ns != "" && $ns != $_GET["ns"] ? idf_escape($ns) . "." : "")
+		. table($foreign_key["table"])
 		. " (" . implode(", ", array_map('idf_escape', $foreign_key["target"])) . ")" //! reuse $name - check in older MySQL versions
 		. (preg_match("~^($on_actions)\$~", $foreign_key["on_delete"]) ? " ON DELETE $foreign_key[on_delete]" : "")
 		. (preg_match("~^($on_actions)\$~", $foreign_key["on_update"]) ? " ON UPDATE $foreign_key[on_update]" : "")
@@ -499,13 +527,13 @@ function ini_bytes($ini) {
 function doc_link($paths, $text = "<sup>?</sup>") {
 	global $jush, $connection;
 	$server_info = $connection->server_info;
-	$version = preg_replace('~^(\\d\\.?\\d).*~s', '\\1', $server_info); // two most significant digits
+	$version = preg_replace('~^(\d\.?\d).*~s', '\1', $server_info); // two most significant digits
 	$urls = array(
 		'sql' => "https://dev.mysql.com/doc/refman/$version/en/",
 		'sqlite' => "https://www.sqlite.org/",
-		'pgsql' => "https://www.postgresql.org/docs/$version/static/",
+		'pgsql' => "https://www.postgresql.org/docs/$version/",
 		'mssql' => "https://msdn.microsoft.com/library/",
-		'oracle' => "https://download.oracle.com/docs/cd/B19306_01/server.102/b14200/",
+		'oracle' => "https://www.oracle.com/pls/topic/lookup?ctx=db" . preg_replace('~^.* (\d+)\.(\d+)\.\d+\.\d+\.\d+.*~s', '\1\2', $server_info) . "&id=",
 	);
 	if (preg_match('~MariaDB~', $server_info)) {
 		$urls['sql'] = "https://mariadb.com/kb/en/library/";

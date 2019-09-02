@@ -30,7 +30,7 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 		IF NOT done THEN
 			CASE _table_name";
 		foreach (get_rows($query) as $row) {
-			$comment = q($row["ENGINE"] == "InnoDB" ? preg_replace('~(?:(.+); )?InnoDB free: .*~', '\\1', $row["TABLE_COMMENT"]) : $row["TABLE_COMMENT"]);
+			$comment = q($row["ENGINE"] == "InnoDB" ? preg_replace('~(?:(.+); )?InnoDB free: .*~', '\1', $row["TABLE_COMMENT"]) : $row["TABLE_COMMENT"]);
 			echo "
 			WHEN " . q($row["TABLE_NAME"]) . " THEN
 				" . (isset($row["ENGINE"]) ? "IF _engine != '$row[ENGINE]' OR _table_collation != '$row[TABLE_COLLATION]' OR _table_comment != $comment THEN

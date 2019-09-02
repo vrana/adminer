@@ -276,7 +276,6 @@ $translations = array(
 	'ATTACH queries are not supported.' => 'ATTACH-запросы не поддерживаются.',
 	'%d / ' => '%d / ',
 	'Limit rows' => 'Лимит строк',
-	'<a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to use SQLite.' => '<a href="https://www.adminer.org/en/extension/"%s>Реализуйте</a> метод %s, чтобы использовать SQLite.',
 	'Default value' => 'Значение по умолчанию',
 	'Full table scan' => 'Анализ полной таблицы',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Слишком много неудачных попыток входа. Попробуйте снова через %d минуту.', 'Слишком много неудачных попыток входа. Попробуйте снова через %d минуты.', 'Слишком много неудачных попыток входа. Попробуйте снова через %d минут.'),
