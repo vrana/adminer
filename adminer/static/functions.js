@@ -14,17 +14,17 @@ function qs(selector, context) {
 * @return HTMLElement
 */
 function qsl(selector, context) {
-	var els = qsa(selector, context || document);
+	var els = qsa(selector, context);
 	return els[els.length - 1];
 }
 
 /** Get all elements by selector
 * @param string
-* @param HTMLElement
+* @param [HTMLElement] defaults to document
 * @return NodeList
 */
 function qsa(selector, context) {
-	return context.querySelectorAll(selector);
+	return (context || document).querySelectorAll(selector);
 }
 
 /** Return a function calling fn with the next arguments
@@ -205,7 +205,7 @@ function formCheck(name) {
 /** Check all rows in <table class="checkable">
 */
 function tableCheck() {
-	var inputs = qsa('table.checkable td:first-child input', document);
+	var inputs = qsa('table.checkable td:first-child input');
 	for (var i=0; i < inputs.length; i++) {
 		trCheck(inputs[i]);
 	}

@@ -34,7 +34,7 @@ function bodyLoad(version, maria) {
 			jush.custom_links = jushLinks;
 		}
 		jush.highlight_tag('code', 0);
-		var tags = qsa('textarea', document);
+		var tags = qsa('textarea');
 		for (var i = 0; i < tags.length; i++) {
 			if (/(^|\s)jush-/.test(tags[i].className)) {
 				var pre = jush.textarea(tags[i]);
@@ -75,7 +75,7 @@ function typePassword(el, disable) {
 * @param [HTMLElement]
 */
 function messagesPrint(el) {
-	var els = qsa('.toggle', el || document);
+	var els = qsa('.toggle', el);
 	for (var i = 0; i < els.length; i++) {
 		els[i].onclick = partial(toggle, els[i].getAttribute('href').substr(1));
 	}
