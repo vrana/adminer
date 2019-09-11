@@ -1,4 +1,7 @@
 /*
+A colourful RTL-friendly theme.
+Update from https://github.com/vrana/adminer/raw/master/designs/lucas-sandery/adminer.css
+
 Icons from http://FlatIcon.com:
 "Translation" by Freepik
 "Power" by Vectors Market
@@ -16,9 +19,9 @@ html {
 	height: 100%;
 }
 body {
+	width: 100%;
 	min-height: 100%;
 	display: flex;
-	align-items: stretch;
 	background: #41658a;
 }
 p {
@@ -145,52 +148,45 @@ th > code {
 	white-space: nowrap;
 }
 #content,
-#content > form:last-of-type,
-#menu {
-	box-sizing: border-box;
-	display: flex;
-	flex-direction: column;
-}
-#content,
 #menu,
 .rtl #content,
 .rtl #menu {
 	margin: 0;
 	padding: 0 20px 1.5em;
+	box-sizing: border-box;
 }
 #content {
 	order: 2;
 	flex: 1 1 auto;
+	max-width: calc(100% - 20em);
+}
+#content,
+.footer {
+	background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 340.6 491.8' width='56px' height='81px'%3E%3Cpolygon fill='%2370a37f' fill-opacity='0.05' points='229.9,208.7 170.5,243 111,208.7 111,140 170.5,105.7 229.9,140'/%3E%3Cpolygon fill='%2370a37f' fill-opacity='0.05' points='0,305.3 59.5,339.6 59.5,408.3 0,442.6'/%3E%3Cpolygon fill='%2370a37f' fill-opacity='0.05' points='342.8,442.6 283.3,408.3 283.3,339.6 342.8,305.3'/%3E%3Cpolygon fill='%2379b473' fill-opacity='0.05' points='91.6,0 0,52.9 0,0'/%3E%3Cpolygon fill='%2379b473' fill-opacity='0.05' points='340.6,0 340.6,52.9 248.8,0'/%3E%3Cpolygon fill='%2379b473' fill-opacity='0.05' points='21.4,264.6 102.8,311.6 102.8,431.7 -1.2,491.8 0,544.5 149.7,458.1 149.1,285.1 68.2,236.7 68.2,116.6 172.2,56.5 276.2,116.6 276.2,236.7 192.5,285 192.5,337.1 192.5,337.1 192.5,458.1 342.2,544.5 341,491.8 237,431.7 237,311.6 320.8,263.3 320.8,90.2 171.1,3.8 21.4,90.2'/%3E%3C/svg%3E") fixed;
+}
+.scrollable {
 	overflow: auto;
-	background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 340.6 491.8' width='56px' height='81px'%3E%3Cpolygon fill='%2370a37f' fill-opacity='0.05' points='229.9,208.7 170.5,243 111,208.7 111,140 170.5,105.7 229.9,140'/%3E%3Cpolygon fill='%2370a37f' fill-opacity='0.05' points='0,305.3 59.5,339.6 59.5,408.3 0,442.6'/%3E%3Cpolygon fill='%2370a37f' fill-opacity='0.05' points='342.8,442.6 283.3,408.3 283.3,339.6 342.8,305.3'/%3E%3Cpolygon fill='%2379b473' fill-opacity='0.05' points='91.6,0 0,52.9 0,0'/%3E%3Cpolygon fill='%2379b473' fill-opacity='0.05' points='340.6,0 340.6,52.9 248.8,0'/%3E%3Cpolygon fill='%2379b473' fill-opacity='0.05' points='21.4,264.6 102.8,311.6 102.8,431.7 -1.2,491.8 0,544.5 149.7,458.1 149.1,285.1 68.2,236.7 68.2,116.6 172.2,56.5 276.2,116.6 276.2,236.7 192.5,285 192.5,337.1 192.5,337.1 192.5,458.1 342.2,544.5 341,491.8 237,431.7 237,311.6 320.8,263.3 320.8,90.2 171.1,3.8 21.4,90.2'/%3E%3C/svg%3E");
 }
-#content > *,
-#content > form:last-of-type > *,
-#menu > * {
-	flex: 0 0 auto;
-}
-#content > form:last-of-type {
-	flex: 1 0 auto;
-}
-#content > .scrollable,
-#content > form:last-of-type > .scrollable {
-	flex: 1 1 2em;
-	overflow: auto;
+h1,
+h2,
+#breadcrumb {
+	position: sticky;
+	top: 0;
+	z-index: 1;
 }
 #breadcrumb {
-	position: relative;
-	z-index: 1;
+	z-index: 2;
 	white-space: normal;
 	background: #70a37f;
 	color: #fff;
 	padding: 0.1em 2.5em 0.1em 20px;
 	height: auto;
 	margin: 0 -20px -2em;
-	top: auto;
 	left: auto;
 }
 .rtl #breadcrumb {
 	right: auto;
+	left: 0;
 	margin: 0 -20px -2em;
 	padding-right: 20px;
 	padding-left: 2.5em;
@@ -222,7 +218,6 @@ h2 a {
 }
 h2 {
 	background: #79b473;
-	position: relative;
 }
 h2 + *,
 h2 + .hidden + *,
@@ -236,7 +231,6 @@ h3 {
 }
 fieldset {
 	display: inline-block;
-	align-self: flex-start;
 }
 .rtl fieldset {
 	margin-right: 0;
@@ -382,9 +376,11 @@ tbody tr:nth-child(n):hover th {
 	margin-left: -0.4em;
 }
 .footer {
-	position: static;
-	margin: 0.8em 0 0;
+	margin: 0;
+	padding-top: 1em;
 	border-style: none;
+	-webkit-mask-image: linear-gradient(rgba(255, 255, 255, 0), #fff 1em);
+	mask-image: linear-gradient(rgba(255, 255, 255, 0), #fff 1em);
 }
 .footer > div {
 	background: transparent;
@@ -392,6 +388,7 @@ tbody tr:nth-child(n):hover th {
 }
 #lang,
 .logout {
+	z-index: 3;
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
@@ -400,13 +397,9 @@ tbody tr:nth-child(n):hover th {
 }
 #lang {
 	left: 18em;
-	z-index: 1;
 }
 .rtl #lang {
 	right: 18em;
-}
-.logout {
-	z-index: 2;
 }
 .rtl .logout {
 	margin: 0;
@@ -449,8 +442,11 @@ tbody tr:nth-child(n):hover th {
 	background-color: #ec5f12;
 }
 #menu {
-	position: static;
+	position: relative;
+	top: 0;
+	width: auto;
 	flex: 0 0 20em;
+	max-width: 20em;
 }
 h1 {
 	background: #414073;
@@ -479,10 +475,12 @@ h1 {
 #dbs span {
 	display: none;
 }
+#menu p {
+	margin: 1.5em 0 0;
+}
 #menu p,
 #logins,
 #tables {
-	margin: 1.5em 0 0;
 	padding: 0;
 	border-bottom-style: none;
 }
@@ -543,49 +541,62 @@ button:disabled {
 	clear: both;
 }
 #menu .links a {
-	flex: 1 1 35%;
+	flex: 1 1 7em;
 	margin: 5px;
 }
 #logins,
 #tables {
-	flex: 1 1 2em;
-	overflow: auto !important;
+	margin: 0.7em -20px -20px;
+	padding: 0 20px	20px;
+	overflow: hidden !important;
+}
+#logins:hover,
+#tables:hover {
+	overflow: visible !important;
+}
+#logins li,
+#tables li {
+	background: #41658a;
 }
 #logins a,
 #tables a,
 #tables span {
-	background: transparent;
+	background: #41658a;
 	color: #fff;
+	padding: 0.2em 0.4em 0.3em 0;
+}
+.rtl #logins a,
+.rtl #tables a,
+.rtl #tables span {
+	padding-left: 0.4em;
+	padding-right: 0;
 }
 #logins {
 	line-height: 2;
 }
 #tables a.select {
 	display: inline-block;
-	vertical-align:	middle;
-	width: 1em;
-	height: 1em;
+	position:	relative;
+	width: 1.13em;
+	height: 1.3em;
 	overflow: hidden;
 	background: transparent;
 	color: transparent;
-	position: relative;
-	margin: 0.3em;
-	margin-left: 0;
+	margin-left: -0.2em;
+	white-space: nowrap;
+	padding: 0.1em 0.2em;
+	top: 0.4em;
 }
 .rtl #tables a.select {
-	margin-left: 0.3em;
-	margin-right: 0;
+	margin-left: 0;
+	margin-right: -0.2em;
 }
-#tables a.select:after {
+#tables a.select:before {
 	content: ' ';
 	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' width='512px' height='512px' viewBox='0 0 16 16'%3E%3Cg%3E%3Cpath fill='%23FFFFFF' d='M0 1v15h16v-15h-16zM5 15h-4v-2h4v2zM5 12h-4v-2h4v2zM5 9h-4v-2h4v2zM5 6h-4v-2h4v2zM10 15h-4v-2h4v2zM10 12h-4v-2h4v2zM10 9h-4v-2h4v2zM10 6h-4v-2h4v2zM15 15h-4v-2h4v2zM15 12h-4v-2h4v2zM15 9h-4v-2h4v2zM15 6h-4v-2h4v2z'/%3E%3C/g%3E%3C/svg%3E") center no-repeat;
 	background-size: contain;
 	display: block;
-	width: 100%;
 	height: 100%;
-	position: absolute;
-	left: 0;
-	top: -0.1em;
 }
 #tables a.select:hover,
 #tables a.select:focus,
@@ -629,7 +640,7 @@ button:disabled {
 	.rtl #menu,
 	#content,
 	#menu {
-		/*! margin: 0; */
+		max-width: none;
 		padding: 0 10px 2em;
 		width: auto;
 	}
@@ -679,5 +690,10 @@ button:disabled {
 		right: auto;
 		margin-left: 0;
 		margin-right: auto;
+	}
+	#logins,
+	#tables {
+		margin: 0.7em -10px -10px;
+		padding: 0 10px	10px;
 	}
 }
