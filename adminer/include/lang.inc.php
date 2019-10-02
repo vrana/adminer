@@ -37,6 +37,7 @@ $langs = array(
 	'sk' => 'Slovenčina', // Ivan Suchy - http://www.ivansuchy.com, Juraj Krivda - http://www.jstudio.cz
 	'sl' => 'Slovenski', // Matej Ferlan - www.itdinamik.com, matej.ferlan@itdinamik.com
 	'sr' => 'Српски', // Nikola Radovanović - cobisimo@gmail.com
+	'sv' => 'Svenska', // rasmusolle - https://github.com/rasmusolle
 	'ta' => 'த‌மிழ்', // G. Sampath Kumar, Chennai, India, sampathkumar11@gmail.com
 	'th' => 'ภาษาไทย', // Panya Saraphi, elect.tu@gmail.com - http://www.opencart2u.com/
 	'tr' => 'Türkçe', // Bilgehan Korkmaz - turktron.com
