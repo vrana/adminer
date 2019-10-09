@@ -1,6 +1,7 @@
 Adminer 4.7.5-dev:
 Add id="" to cells with failed inline edit (bug #708)
 PostgreSQL, Oracle: Set schema for EXPLAIN queries in SQL command (bug #706)
+ClickHouse: SQL command
 Swedish translation
 
 Adminer 4.7.4 (released 2019-10-22):

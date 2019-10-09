@@ -27,6 +27,10 @@ if (isset($_GET["clickhouse"])) {
 			}
 			$return = json_decode($file, true);
 			if ($return === null) {
+				if (!$this->isQuerySelectLike($query) && $file === '') {
+					return true;
+				}
+
 				$this->errno = json_last_error();
 				if (function_exists('json_last_error_msg')) {
 					$this->error = json_last_error_msg();
@@ -123,6 +127,9 @@ if (isset($_GET["clickhouse"])) {
 
 	class Min_Driver extends Min_SQL {
 		function delete($table, $queryWhere, $limit = 0) {
+			if ($queryWhere === '') {
+				$queryWhere = 'WHERE 1=1';
+			}
 			return queries("ALTER TABLE " . table($table) . " DELETE $queryWhere");
 		}
 
@@ -154,12 +161,43 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
+		$alter = $order = array();
 		foreach ($fields as $field) {
 			if ($field[1][2] === " NULL") {
 				$field[1][1] = " Nullable({$field[1][1]})";
+			} elseif ($field[1][2] === ' NOT NULL') {
+				$field[1][2] = '';
 			}
-			unset($field[1][2]);
+
+			if ($field[1][3]) {
+				$field[1][3] = '';
+			}
+
+			$alter[] = ($field[1]
+				? ($table != "" ? ($field[0] != "" ? "MODIFY COLUMN " : "ADD COLUMN ") : " ") . implode($field[1])
+				: "DROP COLUMN " . idf_escape($field[0])
+			);
+
+			$order[] = $field[1][0];
 		}
+
+		$alter = array_merge($alter, $foreign);
+		$status = ($engine ? " ENGINE " . $engine : "");
+		if ($table == "") {
+			return queries("CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)$status$partitioning" . ' ORDER BY (' . implode(',', $order) . ')');
+		}
+		if ($table != $name) {
+			$result = queries("RENAME TABLE " . table($table) . " TO " . table($name));
+			if ($alter) {
+				$table = $name;
+			} else {
+				return $result;
+			}
+		}
+		if ($status) {
+			$alter[] = ltrim($status);
+		}
+		return ($alter || $partitioning ? queries("ALTER TABLE " . table($table) . "\n" . implode(",\n", $alter) . $partitioning) : true);
 	}
 
 	function truncate_tables($tables) {
@@ -331,7 +369,7 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function support($feature) {
-		return preg_match("~^(columns|sql|status|table)$~", $feature);
+		return preg_match("~^(columns|sql|status|table|drop_col)$~", $feature);
 	}
 
 	$jush = "clickhouse";
