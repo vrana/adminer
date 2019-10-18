@@ -1,5 +1,6 @@
 Adminer 4.7.5-dev:
 Add id="" to cells with failed inline edit (bug #708)
+PostgreSQL: Fix getting default value in PostgreSQL 12 (bug #719)
 PostgreSQL, Oracle: Set schema for EXPLAIN queries in SQL command (bug #706)
 ClickHouse: SQL command
 Swedish translation
