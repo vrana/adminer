@@ -1,4 +1,4 @@
-Adminer 4.7.4-dev:
+Adminer 4.7.4 (released 2019-10-22):
 Fix XSS if Adminer is accessible at URL /data:
 
 Adminer 4.7.3 (released 2019-08-27):
