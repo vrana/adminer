@@ -128,6 +128,7 @@ $translations = array(
 	'Tables have been moved.' => '已轉移資料表。',
 	'Copy' => '複製',
 	'Tables have been copied.' => '資料表已經複製',
+	'overwrite' => '覆蓋',
 	
 	'Routines' => '程序',
 	'Routine has been called, %d row(s) affected.' => '程序已被執行，%d 行被影響',
