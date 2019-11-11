@@ -67,7 +67,7 @@ SELECT @adminer_alter;
 		}
 	}
 	
-	function dumpTable($table, $style, $is_view = false) {
+	function dumpTable($table, $style, $is_view = 0) {
 		if ($_POST["format"] == "sql_alter") {
 			$create = create_sql($table, $_POST["auto_increment"], $style);
 			if ($is_view) {

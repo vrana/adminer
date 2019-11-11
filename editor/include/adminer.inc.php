@@ -537,7 +537,7 @@ qsl('div').onclick = whisperClick;", "")
 	function dumpDatabase($db) {
 	}
 
-	function dumpTable() {
+	function dumpTable($table, $style, $is_view = 0) {
 		echo "\xef\xbb\xbf"; // UTF-8 byte order mark
 	}
 
