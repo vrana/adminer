@@ -367,9 +367,12 @@ AND c_src.TABLE_NAME = " . q($table);
 		return $connection->result("SELECT sys_context('USERENV', 'SESSION_USER') FROM dual");
 	}
 
-	function set_schema($scheme) {
+	function set_schema($scheme, $connection2 = null) {
 		global $connection;
-		return $connection->query("ALTER SESSION SET CURRENT_SCHEMA = " . idf_escape($scheme));
+		if (!$connection2) {
+			$connection2 = $connection;
+		}
+		return $connection2->query("ALTER SESSION SET CURRENT_SCHEMA = " . idf_escape($scheme));
 	}
 
 	function show_variables() {

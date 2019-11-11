@@ -986,9 +986,10 @@ if (!defined("DRIVER")) {
 
 	/** Set current schema
 	* @param string
+	* @param Min_DB
 	* @return bool
 	*/
-	function set_schema($schema) {
+	function set_schema($schema, $connection2 = null) {
 		return true;
 	}
 

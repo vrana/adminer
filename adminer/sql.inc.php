@@ -53,6 +53,9 @@ if (!$error && $_POST) {
 		$connection2 = connect(); // connection for exploring indexes and EXPLAIN (to not replace FOUND_ROWS()) //! PDO - silent error
 		if (is_object($connection2) && DB != "") {
 			$connection2->select_db(DB);
+			if ($_GET["ns"] != "") {
+				set_schema($_GET["ns"], $connection2);
+			}
 		}
 		$commands = 0;
 		$errors = array();
