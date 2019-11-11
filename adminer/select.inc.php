@@ -436,12 +436,13 @@ if (!$columns && support("table")) {
 						$value = $_POST["val"][$unique_idf][bracket_escape($key)];
 						$editable = !is_array($row[$key]) && is_utf8($val) && $rows[$n][$key] == $row[$key] && !$functions[$key];
 						$text = preg_match('~text|lob~', $field["type"]);
+						echo "<td id='$id'";
 						if (($_GET["modify"] && $editable) || $value !== null) {
 							$h_value = h($value !== null ? $value : $row[$key]);
-							echo "<td>" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>");
+							echo ">" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>");
 						} else {
 							$long = strpos($val, "<i>…</i>");
-							echo "<td id='$id' data-text='" . ($long ? 2 : ($text ? 1 : 0)) . "'"
+							echo " data-text='" . ($long ? 2 : ($text ? 1 : 0)) . "'"
 								. ($editable ? "" : " data-warning='" . h(lang('Use edit link to modify this value.')) . "'")
 								. ">$val</td>"
 							;
