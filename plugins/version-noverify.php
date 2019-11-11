@@ -8,8 +8,9 @@
 */
 class AdminerVersionNoverify {
 	
-	function navigation($missing) {
+	function head() {
 		echo script("verifyVersion = function () {};");
+		return true;
 	}
 	
 }
