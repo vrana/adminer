@@ -18,8 +18,8 @@ if ($_POST && !$error) {
 		if ($jush == "sql") {
 			echo "SET NAMES utf8;
 SET time_zone = '+00:00';
-" . ($_POST["data_style"] ? "SET foreign_key_checks = 0;
-SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
+SET foreign_key_checks = 0;
+" . ($_POST["data_style"] ? "SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 " : "") . "
 ";
 			$connection->query("SET time_zone = '+00:00';");
