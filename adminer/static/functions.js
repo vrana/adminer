@@ -444,7 +444,8 @@ function selectSearch(name) {
 	var divs = qsa('div', el);
 	for (var i=0; i < divs.length; i++) {
 		var div = divs[i];
-		if (isTag(div.firstChild, 'select') && selectValue(div.firstChild) == name) {
+		var el = qs('[name$="[col]"]', div);
+		if (el && selectValue(el) == name) {
 			break;
 		}
 	}

@@ -1,5 +1,6 @@
 Adminer 4.7.6-dev:
 MySQL: Always set foreign_key_checks in export
+Editor: Fix focusing foreign key search in select
 
 Adminer 4.7.5 (released 2019-11-13):
 Add id="" to cells with failed inline edit (bug #708)
