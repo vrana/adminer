@@ -221,4 +221,3 @@ foreach ($row["partition_names"] as $key => $val) {
 ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>
-<?php echo script("qs('#form')['defaults'].onclick();" . (support("comment") ? " editingCommentsClick(qs('#form')['comments']);" : "")); ?>

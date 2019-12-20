@@ -263,6 +263,8 @@ function type_class($type) {
 function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = array()) {
 	global $inout;
 	$fields = array_values($fields);
+	$default_class = (($_POST ? $_POST["defaults"] : adminer_setting("defaults")) ? "" : " class='hidden'");
+	$comment_class = (($_POST ? $_POST["comments"] : adminer_setting("comments")) ? "" : " class='hidden'");
 	?>
 <thead><tr>
 <?php if ($type == "PROCEDURE") { ?><td><?php } ?>
@@ -279,8 +281,8 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 	'pgsql' => "datatype.html#DATATYPE-SERIAL",
 	'mssql' => "ms186775.aspx",
 )); ?>
-<td id="label-default"><?php echo lang('Default value'); ?>
-<?php echo (support("comment") ? "<td id='label-comment'>" . lang('Comment') : ""); ?>
+<td id="label-default"<?php echo $default_class; ?>><?php echo lang('Default value'); ?>
+<?php echo (support("comment") ? "<td id='label-comment'$comment_class>" . lang('Comment') : ""); ?>
 <?php } ?>
 <td><?php echo "<input type='image' class='icon' name='add[" . (support("move_col") ? 0 : count($fields)) . "]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>" . script("row_count = " . count($fields) . ";"); ?>
 </thead>
@@ -298,9 +300,9 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 <input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo h($orig); ?>"><?php edit_type("fields[$i]", $field, $collations, $foreign_keys); ?>
 <?php if ($type == "TABLE") { ?>
 <td><?php echo checkbox("fields[$i][null]", 1, $field["null"], "", "", "block", "label-null"); ?>
-<td><label class="block"><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked<?php } ?> aria-labelledby="label-ai"></label><td><?php
+<td><label class="block"><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked<?php } ?> aria-labelledby="label-ai"></label><td<?php echo $default_class; ?>><?php
 			echo checkbox("fields[$i][has_default]", 1, $field["has_default"], "", "", "", "label-default"); ?><input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["default"]); ?>" aria-labelledby="label-default"><?php
-			echo (support("comment") ? "<td><input name='fields[$i][comment]' value='" . h($field["comment"]) . "' data-maxlength='" . (min_version(5.5) ? 1024 : 255) . "' aria-labelledby='label-comment'>" : "");
+			echo (support("comment") ? "<td$comment_class><input name='fields[$i][comment]' value='" . h($field["comment"]) . "' data-maxlength='" . (min_version(5.5) ? 1024 : 255) . "' aria-labelledby='label-comment'>" : "");
 		}
 		echo "<td>";
 		echo (support("move_col") ?
