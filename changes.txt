@@ -1,4 +1,5 @@
 Adminer 4.7.6-dev:
+Speed up alter table form (regression from 4.4.0)
 Fix clicking on non-input fields in alter table (regression from 4.6.2)
 MySQL: Always set foreign_key_checks in export
 Editor: Fix focusing foreign key search in select
@@ -686,7 +687,7 @@ Print ALTER export instead of executing it
 Click on row selects it
 Fix Editor date format
 Fix long SQL query crash (bug #2839231)
-Speedup of simple alter table
+Speed up simple alter table
 Traditional Chinese translation
 
 Adminer 2.0.0 (released 2009-08-06):

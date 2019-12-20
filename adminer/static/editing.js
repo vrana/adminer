@@ -207,6 +207,33 @@ function idfEscape(s) {
 
 
 
+/** Set up event handlers for edit_fields().
+*/
+function editFields() {
+	var els = qsa('[name$="[field]"]');
+	for (var i = 0; i < els.length; i++) {
+		els[i].oninput = function () {
+			editingNameChange.call(this);
+			if (!this.defaultValue) {
+				editingAddRow.call(this);
+			}
+		}
+	}
+	els = qsa('[name$="[length]"]');
+	for (var i = 0; i < els.length; i++) {
+		mixin(els[i], {onfocus: editingLengthFocus, oninput: editingLengthChange});
+	}
+	els = qsa('[name$="[type]"]');
+	for (var i = 0; i < els.length; i++) {
+		mixin(els[i], {
+			onfocus: function () { lastType = selectValue(this); },
+			onchange: editingTypeChange,
+			onmouseover: function (event) { helpMouseover.call(this, event, getTarget(event).value, 1) },
+			onmouseout: helpMouseout
+		});
+	}
+}
+
 /** Handle clicks on fields editing
 * @param MouseEvent
 * @return boolean false to cancel action
@@ -289,7 +316,7 @@ function editingNameChange() {
 }
 
 /** Add table row for next field
-* @param boolean
+* @param [boolean]
 * @return boolean false
 * @this HTMLInputElement
 */
