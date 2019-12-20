@@ -214,7 +214,7 @@ function idfEscape(s) {
 function editingClick(event) {
 	var el = getTarget(event);
 	if (!isTag(el, 'input')) {
-		el = parentTag(target, 'label');
+		el = parentTag(el, 'label');
 		el = el && qs('input', el);
 	}
 	if (el) {

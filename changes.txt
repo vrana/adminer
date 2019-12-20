@@ -1,4 +1,5 @@
 Adminer 4.7.6-dev:
+Fix clicking on non-input fields in alter table (regression from 4.6.2)
 MySQL: Always set foreign_key_checks in export
 Editor: Fix focusing foreign key search in select
 
