@@ -2,6 +2,7 @@ Adminer 4.7.6-dev:
 Speed up alter table form (regression from 4.4.0)
 Fix clicking on non-input fields in alter table (regression from 4.6.2)
 Display time of procedure execution
+Disallow connecting to ports > 65535 (bug #730)
 MySQL: Always set foreign_key_checks in export
 Editor: Fix focusing foreign key search in select
 

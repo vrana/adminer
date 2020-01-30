@@ -162,7 +162,7 @@ stop_session(true);
 
 if (isset($_GET["username"]) && is_string(get_password())) {
 	list($host, $port) = explode(":", SERVER, 2);
-	if (is_numeric($port) && $port < 1024) {
+	if (is_numeric($port) && ($port < 1024 || $port > 65535)) {
 		auth_error(lang('Connecting to privileged ports is not allowed.'));
 	}
 	check_invalid_login();
