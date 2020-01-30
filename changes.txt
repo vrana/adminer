@@ -4,6 +4,7 @@ Fix clicking on non-input fields in alter table (regression from 4.6.2)
 Display time of procedure execution
 Disallow connecting to ports > 65535 (bug #730)
 MySQL: Always set foreign_key_checks in export
+PostgreSQL: Support exporting views
 Editor: Fix focusing foreign key search in select
 
 Adminer 4.7.5 (released 2019-11-13):

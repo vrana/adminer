@@ -711,6 +711,10 @@ AND typelem = 0"
 		$sequences = array();
 
 		$status = table_status($table);
+		if (is_view($status)) {
+			$view = view($table);
+			return rtrim("CREATE VIEW " . idf_escape($table) . " AS $view[select]", ";");
+		}
 		$fields = fields($table);
 		$indexes = indexes($table);
 		ksort($indexes);
