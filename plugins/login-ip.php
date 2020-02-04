@@ -29,7 +29,7 @@ class AdminerLoginIp {
 				}
 				if ($_SERVER["HTTP_X_FORWARDED_FOR"]) {
 					foreach ($this->forwarded_for as $forwarded_for) {
-						if (strncasecmp(preg_replace('~.*, *~', '', $_SERVER["HTTP_X_FORWARDED_FOR"]), $forwarded_for, strlen($forwarded_for))) {
+						if (strncasecmp(preg_replace('~.*, *~', '', $_SERVER["HTTP_X_FORWARDED_FOR"]), $forwarded_for, strlen($forwarded_for)) == 0) {
 							return true;
 						}
 					}
