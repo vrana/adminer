@@ -18,7 +18,7 @@ class AdminerDisableTables {
         ];
 
         $select = filter_input(INPUT_GET, 'table', FILTER_SANITIZE_STRING);
-        if(isset($select) && $disabledTables[$select]) die('Access Denied.');
+        if(isset($select) && $disabledTables[$select]) die(h('Access Denied.'));
 
         if($disabledTables[$tableStatus['Name']]){
             return false;
