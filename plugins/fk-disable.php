@@ -17,37 +17,39 @@ class AdminerFkDisable
         return $this->deleteAllBetween($beginning, $end, str_replace($textToDelete, '', $string)); // recursion to ensure all occurrences are replaced
     }
 
-	public function head(){
-		if (!isset($_GET['sql'])) {
-			return;
-		}
+    public function head(){
+        $sql = filter_input(INPUT_GET, 'sql');
+        if (!isset($sql)) {
+            return;
+        }
 
-		$query = trim($_POST['query']);
+        $query = trim(filter_input(INPUT_POST, 'query'));
 
-		if($_POST['fk_disable']){
-		    if($query) {
+        if(filter_input(INPUT_POST, 'fk_disable')){
+            if($query) {
                 $query = trim($this->deleteAllBetween("-- FK:D0", "-- FK:D1", $query));
-                $_POST['query'] = "-- FK:D0\nSET FOREIGN_KEY_CHECKS=0;\n-- FK:D1\n\n{$query}\n\n-- FK:D0\nSET FOREIGN_KEY_CHECKS=1;\n-- FK:D1";
+
+                $_POST['query'] = "-- FK:D0\nSET FOREIGN_KEY_CHECKS=0;\n-- FK:D1\n\n{$query}\n\n-- FK:D0\n;SET FOREIGN_KEY_CHECKS=1;\n-- FK:D1";
             }
             $fk_disable_checked = ($_POST['fk_disable']) ? 'checked="checked"' : "";
         }
 
-    ?>
+        ?>
 
-    <script<?php echo nonce();?> type="text/javascript">
+        <script<?php echo nonce();?> type="text/javascript">
 
-        function domReady(fn) {
-            document.addEventListener("DOMContentLoaded", fn);
-            if (document.readyState === "interactive" || document.readyState === "complete" ) {
-                fn();
+            function domReady(fn) {
+                document.addEventListener("DOMContentLoaded", fn);
+                if (document.readyState === "interactive" || document.readyState === "complete" ) {
+                    fn();
+                }
             }
-        }
 
-        domReady(() => {
-            document.querySelectorAll('#form p')[1].insertAdjacentHTML('beforeend', '<label><input type="checkbox" name="fk_disable" value="1" <?= $fk_disable_checked ?> /><?= h('Disable Foreign Keys') ?></label>')
-        })
+            domReady(() => {
+                document.querySelectorAll('#form p')[1].insertAdjacentHTML('beforeend', '<label><input type="checkbox" name="fk_disable" value="1" <?= $fk_disable_checked ?> /><?= h('Disable Foreign Keys') ?></label>')
+            })
 
-    </script>
-    <?php
-	}
+        </script>
+        <?php
+    }
 }
