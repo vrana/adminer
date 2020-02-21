@@ -28,6 +28,7 @@ function adminer_object() {
 		new AdminerEnumOption,
 		new AdminerTablesFilter,
 		new AdminerEditForeign,
+		new AdminerCustomizeThemeBasedOnServer,
 	);
 	
 	/* It is possible to combine customization and plugins:
