@@ -46,7 +46,7 @@ class AdminerFkDisable
             }
 
             domReady(() => {
-                document.querySelectorAll('#form p')[1].insertAdjacentHTML('beforeend', '<label><input type="checkbox" name="fk_disable" value="1" <?= $fk_disable_checked ?> /><?= h('Disable Foreign Keys') ?></label>')
+                document.querySelectorAll('#form p')[1].insertAdjacentHTML('beforeend', '<label><input type="checkbox" name="fk_disable" value="1" <?= $fk_disable_checked ?> /><?= lang('Disable Foreign Keys') ?></label>')
             })
 
         </script>
