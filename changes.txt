@@ -5,6 +5,7 @@ PostgreSQL: Export all FKs after all CREATE TABLE (PR #351)
 PostgreSQL: Fix dollar-quoted syntax highlighting (bug #738)
 PostgreSQL: Do not show view definition from other schema (PR #392)
 PostgreSQL 10: Support GENERATED ALWAYS BY IDENTITY (PR #386)
+MS SQL: Don't truncate comments to 30 chars (PR #376)
 Re-enable PHP warnings (regression from 4.7.8)
 
 Adminer 4.7.8 (released 2020-12-06):
