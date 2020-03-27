@@ -531,7 +531,7 @@ qsl('div').onclick = whisperClick;", "")
 	}
 
 	function dumpFormat() {
-		return array('csv' => 'CSV,', 'csv;' => 'CSV;', 'tsv' => 'TSV');
+		return array('csv' => 'CSV,', 'csv;' => 'CSV;', 'tsv' => 'TSV', 'jira' => 'JIRA table');
 	}
 
 	function dumpDatabase($db) {
@@ -545,12 +545,14 @@ qsl('div').onclick = whisperClick;", "")
 		global $connection;
 		$result = $connection->query($query, 1); // 1 - MYSQLI_USE_RESULT
 		if ($result) {
+			$is_header = TRUE;
 			while ($row = $result->fetch_assoc()) {
 				if ($style == "table") {
-					dump_csv(array_keys($row));
+					dump_csv(array_keys($row), $is_header);
 					$style = "INSERT";
 				}
-				dump_csv($row);
+				dump_csv($row, $is_header);
+				$is_header = FALSE;
 			}
 		}
 	}

@@ -1121,13 +1121,14 @@ function dump_headers($identifier, $multi_table = false) {
 * @param array
 * @return null
 */
-function dump_csv($row) {
+function dump_csv($row, $is_header = FALSE) {
 	foreach ($row as $key => $val) {
 		if (preg_match("~[\"\n,;\t]~", $val) || $val === "") {
 			$row[$key] = '"' . str_replace('"', '""', $val) . '"';
 		}
 	}
-	echo implode(($_POST["format"] == "csv" ? "," : ($_POST["format"] == "tsv" ? "\t" : ";")), $row) . "\r\n";
+	$separator = ['csv' => ',', 'csv;' => ';', 'tsv' => "\t", 'jira' => $is_header ? '||' : '|'][$_POST['format']];
+	echo ($_POST['format'] === 'jira' ? $separator : '') . implode($separator, $row) . ($_POST['format'] === 'jira' ? $separator : '') . "\r\n";
 }
 
 /** Apply SQL function

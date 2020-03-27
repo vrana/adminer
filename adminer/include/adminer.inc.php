@@ -753,7 +753,7 @@ class Adminer {
 	* @return array empty to disable export
 	*/
 	function dumpFormat() {
-		return array('sql' => 'SQL', 'csv' => 'CSV,', 'csv;' => 'CSV;', 'tsv' => 'TSV');
+		return array('sql' => 'SQL', 'csv' => 'CSV,', 'csv;' => 'CSV;', 'tsv' => 'TSV', 'jira' => 'JIRA table');
 	}
 
 	/** Export database structure
@@ -773,7 +773,7 @@ class Adminer {
 		if ($_POST["format"] != "sql") {
 			echo "\xef\xbb\xbf"; // UTF-8 byte order mark
 			if ($style) {
-				dump_csv(array_keys(fields($table)));
+				dump_csv(array_keys(fields($table)), TRUE);
 			}
 		} else {
 			if ($is_view == 2) {
@@ -834,7 +834,7 @@ class Adminer {
 					}
 					if ($_POST["format"] != "sql") {
 						if ($style == "table") {
-							dump_csv($keys);
+							dump_csv($keys, TRUE);
 							$style = "INSERT";
 						}
 						dump_csv($row);
