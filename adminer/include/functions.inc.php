@@ -944,7 +944,7 @@ function input($field, $value, $function) {
 	} else {
 		$has_function = (in_array($function, $functions) || isset($functions[$function]));
 		echo (count($functions) > 1
-			? "<select name='function[$name]'>" . optionlist($functions, $function === null || $has_function ? $function : "") . "</select>"
+			? "<select name='function[$name]'>" . optionlist($functions, ($function === null || $has_function) && !is_bool($value) ? $function : "") . "</select>"
 				. on_help("getTarget(event).value.replace(/^SQL\$/, '')", 1)
 				. script("qsl('select').onchange = functionChange;", "")
 			: h(reset($functions))
