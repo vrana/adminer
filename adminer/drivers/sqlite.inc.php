@@ -774,10 +774,17 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 
 	function convert_field($field) {
+		if ($field["type"] === 'blob') {
+			return "HEX(" . idf_escape($field["field"]) . ")";
+		}
 	}
 
 	function unconvert_field($field, $return) {
-		return $return;
+		if ($field["type"] === 'blob') {
+			return "X$return";
+		}
+
+        return $return;
 	}
 
 	function support($feature) {
