@@ -398,10 +398,7 @@ if (!$columns && support("table")) {
 						}
 
 						$link = "";
-						if (preg_match('~blob|bytea|raw|file~', $field["type"]) && $val != "") {
-							$link = ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . $unique_idf;
-						}
-						if (!$link && $val !== null) { // link related items
+						if ($val !== null) { // link related items
 							foreach ((array) $foreign_keys[$key] as $foreign_key) {
 								if (count($foreign_keys[$key]) == 1 || end($foreign_key["source"]) == $key) {
 									$link = "";
@@ -417,6 +414,9 @@ if (!$columns && support("table")) {
 									}
 								}
 							}
+						}
+						if (!$link && preg_match('~blob|bytea|raw|file~', $field["type"]) && $val != "") {
+							$link = ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . $unique_idf;
 						}
 						if ($key == "COUNT(*)") { //! columns looking like functions
 							$link = ME . "select=" . urlencode($TABLE);
