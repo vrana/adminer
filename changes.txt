@@ -2,6 +2,7 @@ Adminer 4.7.9-dev:
 Elasticsearch, ClickHouse: Do not print response if HTTP code is not 200
 PostgreSQL: Export all FKs after all CREATE TABLE (PR #351)
 PostgreSQL: Fix dollar-quoted syntax highlighting (bug #738)
+PostgreSQL 10: Support GENERATED ALWAYS BY IDENTITY (PR #386)
 Re-enable PHP warnings (regression from 4.7.8)
 
 Adminer 4.7.8 (released 2020-12-06):
