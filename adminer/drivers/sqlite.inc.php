@@ -12,7 +12,12 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 				var $extension = "SQLite3", $server_info, $affected_rows, $errno, $error, $_link;
 
 				function __construct($filename) {
-					$this->_link = new SQLite3($filename);
+					$key = get_password();
+					if ($key != "") {
+						$this->_link = new SQLite3($filename, SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE, $key);
+					} else {
+						$this->_link = new SQLite3($filename);
+					}
 					$version = $this->_link->version();
 					$this->server_info = $version["versionString"];
 				}
@@ -188,7 +193,12 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			}
 
 			function select_db($filename) {
-				if (is_readable($filename) && $this->query("ATTACH " . $this->quote(preg_match("~(^[/\\\\]|:)~", $filename) ? $filename : dirname($_SERVER["SCRIPT_FILENAME"]) . "/$filename") . " AS a")) { // is_readable - SQLite 3
+				$key = get_password();
+				$with_key = "";
+				if ($key != "") {
+					$with_key = " KEY '" . $key . "'";
+				}
+				if (is_readable($filename) && $this->query("ATTACH " . $this->quote(preg_match("~(^[/\\\\]|:)~", $filename) ? $filename : dirname($_SERVER["SCRIPT_FILENAME"]) . "/$filename") . " AS a" . $with_key)) { // is_readable - SQLite 3
 					parent::__construct($filename);
 					$this->query("PRAGMA foreign_keys = 1");
 					return true;
@@ -241,8 +251,15 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 
 	function connect() {
 		global $adminer;
-		list(, , $password) = $adminer->credentials();
-		if ($password != "") {
+		list($server, ,$password) = $adminer->credentials();
+		if ($server == "locksafe") {
+			if (!isset($_GET["sqlite"])) {
+				return lang('Only SQLite3 supports "locksafe" as the server.');
+			}
+			if ($password == "") {
+				return lang('Password should not be empty when the server is "locksafe"');
+			}
+		} else if ($password != "") {
 			return lang('Database does not support password.');
 		}
 		return new Min_DB;
