@@ -1,4 +1,4 @@
-Adminer 4.7.7-dev:
+Adminer 4.7.7 (released 2020-05-11):
 Fix open redirect if Adminer is accessible at //adminer.php%2F@
 
 Adminer 4.7.6 (released 2020-01-31):
