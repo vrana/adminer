@@ -725,7 +725,7 @@ function format_time($start) {
 * @return string
 */
 function relative_uri() {
-	return preg_replace('~^[^?]*/([^?]*)~', '\1', $_SERVER["REQUEST_URI"]);
+	return str_replace(":", "%3a", preg_replace('~^[^?]*/([^?]*)~', '\1', $_SERVER["REQUEST_URI"]));
 }
 
 /** Remove parameter from query string
