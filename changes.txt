@@ -1,4 +1,5 @@
 Adminer 4.7.7-dev:
+Fix open redirect if Adminer is accessible at //adminer.php%2F@
 
 Adminer 4.7.6 (released 2020-01-31):
 Speed up alter table form (regression from 4.4.0)

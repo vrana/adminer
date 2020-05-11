@@ -721,12 +721,19 @@ function format_time($start) {
 	return lang('%.3f s', max(0, microtime(true) - $start));
 }
 
+/** Get relative REQUEST_URI
+* @return string
+*/
+function relative_uri() {
+	return preg_replace('~^[^?]*/([^?]*)~', '\1', $_SERVER["REQUEST_URI"]);
+}
+
 /** Remove parameter from query string
 * @param string
 * @return string
 */
 function remove_from_uri($param = "") {
-	return substr(preg_replace("~(?<=[?&])($param" . (SID ? "" : "|" . session_name()) . ")=[^&]*&~", '', "$_SERVER[REQUEST_URI]&"), 0, -1);
+	return substr(preg_replace("~(?<=[?&])($param" . (SID ? "" : "|" . session_name()) . ")=[^&]*&~", '', relative_uri() . "&"), 0, -1);
 }
 
 /** Generate page number for pagination
