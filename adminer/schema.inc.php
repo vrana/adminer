@@ -19,9 +19,9 @@ foreach (table_status('', true) as $table => $table_status) {
 	if (is_view($table_status)) {
 		continue;
 	}
-    if ($drivers[DRIVER] == 'SQLite 3' && $table_status['Name'] == 'sqlite_sequence') {
-        continue;
-    }
+	if ($drivers[DRIVER] == 'SQLite 3' && $table_status['Name'] == 'sqlite_sequence') {
+		continue;
+	}
 	$pos = 0;
 	$schema[$table]["fields"] = array();
 	foreach (fields($table) as $name => $field) {
