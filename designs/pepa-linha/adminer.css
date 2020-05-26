@@ -481,7 +481,6 @@ table:not(#table) input[type="text"],
 table:not(#table) input[type="search"],
 table:not(#table) textarea {
 	min-width: 280px;
-	width: calc(100vw - 800px);
 }
 
 input[type=submit],
