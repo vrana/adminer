@@ -353,7 +353,7 @@ p code + a:visited:hover {
 
 #tables a {
 	float: right;
-	padding: 6px 15px;
+	padding: 2px 15px;
 }
 
 .rtl #tables a {
@@ -363,6 +363,8 @@ p code + a:visited:hover {
 #tables a[title] {
 	float: none;
 	display: block;
+	overflow: hidden;
+	width: calc(100% - 125px);
 }
 
 .rtl #tables a:first-child,
@@ -372,11 +374,15 @@ p code + a:visited:hover {
 	margin-left: 15px;
 }
 
+#tables li:hover {
+    background: #EEE;
+}
+
 #tables a:hover,
-#tables a:hover + a,
 #tables a.active,
 #tables a.active + a {
-	background: #fff;
+	background: #EEE;
+	display: inline-table;
 	color: #2e84e4;
 }
 
@@ -472,8 +478,10 @@ table:not(#table) input[type="password"],
 table:not(#table) input[type="tel"],
 table:not(#table) input[type="url"],
 table:not(#table) input[type="text"],
-table:not(#table) input[type="search"] {
+table:not(#table) input[type="search"],
+table:not(#table) textarea {
 	min-width: 280px;
+	width: calc(100vw - 800px);
 }
 
 input[type=submit],
