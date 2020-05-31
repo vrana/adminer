@@ -3,6 +3,7 @@ Elasticsearch, ClickHouse: Do not print response if HTTP code is not 200
 MySQL: Do not export names in quotes with sql_mode='ANSI_QUOTES' (bug #749)
 PostgreSQL: Export all FKs after all CREATE TABLE (PR #351)
 PostgreSQL: Fix dollar-quoted syntax highlighting (bug #738)
+PostgreSQL: Do not show view definition from other schema (PR #392)
 PostgreSQL 10: Support GENERATED ALWAYS BY IDENTITY (PR #386)
 Re-enable PHP warnings (regression from 4.7.8)
 
