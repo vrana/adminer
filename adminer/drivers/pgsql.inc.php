@@ -292,7 +292,7 @@ if (isset($_GET["pgsql"])) {
 
 	function db_collation($db, $collations) {
 		global $connection;
-		return $connection->result("SHOW LC_COLLATE"); //! respect $db
+		return $connection->result("SELECT datcollate FROM pg_database WHERE datname = " . q($db));
 	}
 
 	function engines() {
