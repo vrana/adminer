@@ -13,6 +13,7 @@ PostgreSQL: Do not show view definition from other schema (PR #392)
 PostgreSQL: Use bigserial for bigint auto increment (bug #765, regression from 3.0.0)
 PostgreSQL PDO: Support PgBouncer, unsupport PostgreSQL < 9.1 (bug #771)
 PostgreSQL 10: Support GENERATED ALWAYS BY IDENTITY (PR #386)
+PostgreSQL 10: Support partitioned tables (PR #396)
 PostgreSQL 11: Create PRIMARY KEY for auto increment columns
 SQLite: Set busy_timeout to 500
 MS SQL: Don't truncate comments to 30 chars (PR #376)
