@@ -623,15 +623,6 @@ if (isset($_GET["mongo"])) {
 		}
 		try {
 			$connection->_link = $connection->connect("mongodb://$server", $options);
-			if ($password != "") {
-				$options["password"] = "";
-				try {
-					$connection->connect("mongodb://$server", $options);
-					return lang('Database does not support password.');
-				} catch (Exception $ex) {
-					// this is what we want
-				}
-			}
 			return $connection;
 		} catch (Exception $ex) {
 			return $ex->getMessage();
