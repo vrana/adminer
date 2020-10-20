@@ -48,7 +48,7 @@ function check_invalid_login() {
 	}
 }
 
-$auth = $_POST["auth"];
+$auth = isset($_POST["auth"]) ? $_POST["auth"] : null;
 if ($auth) {
 	session_regenerate_id(); // defense against session fixation
 	$vendor = $auth["driver"];
