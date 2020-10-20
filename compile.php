@@ -1,8 +1,16 @@
 #!/usr/bin/env php
 <?php
-error_reporting(6135); // errors and warnings
+error_reporting(6133); // errors
 include dirname(__FILE__) . "/adminer/include/version.inc.php";
 include dirname(__FILE__) . "/externals/JsShrink/jsShrink.php";
+
+if (!function_exists("each")) {
+	function each(&$arr) {
+		$key = key($arr);
+		next($arr);
+		return $key === null ? false : array($key, $arr[$key]);
+	}
+}
 
 function add_apo_slashes($s) {
 	return addcslashes($s, "\\'");
@@ -233,7 +241,7 @@ function php_shrink($input) {
 		$short_variables[$key] = short_identifier($number, $chars); // could use also numbers and \x7f-\xff
 	}
 	
-	$set = array_flip(preg_split('//', '!"#$%&\'()*+,-./:;<=>?@[\]^`{|}'));
+	$set = array_flip(preg_split('//', '!"#$%&\'()*+,-./:;<=>?@[]^`{|}'));
 	$space = '';
 	$output = '';
 	$in_echo = false;

@@ -62,7 +62,7 @@ function number_type() {
 * @return null modified in place
 */
 function remove_slashes($process, $filter = false) {
-	if (get_magic_quotes_gpc()) {
+	if (function_exists("get_magic_quotes_gpc") && get_magic_quotes_gpc()) {
 		while (list($key, $val) = each($process)) {
 			foreach ($val as $k => $v) {
 				unset($process[$key][$k]);
