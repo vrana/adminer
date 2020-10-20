@@ -104,7 +104,7 @@ $LANG = "en";
 if (isset($_COOKIE["adminer_lang"]) && isset($langs[$_COOKIE["adminer_lang"]])) {
 	cookie("adminer_lang", $_COOKIE["adminer_lang"]);
 	$LANG = $_COOKIE["adminer_lang"];
-} elseif (isset($langs[$_SESSION["lang"]])) {
+} elseif (isset($_SESSION["lang"]) && isset($langs[$_SESSION["lang"]])) {
 	$LANG = $_SESSION["lang"];
 } else {
 	$accept_language = array();
