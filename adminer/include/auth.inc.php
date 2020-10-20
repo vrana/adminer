@@ -73,7 +73,7 @@ if ($auth) {
 		redirect(auth_url($vendor, $server, $username, $db));
 	}
 	
-} elseif ($_POST["logout"]) {
+} elseif (isset($_POST["logout"])) {
 	if ($has_token && !verify_token()) {
 		page_header(lang('Logout'), lang('Invalid CSRF token. Send the form again.'));
 		page_footer("db");
