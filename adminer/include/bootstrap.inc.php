@@ -82,7 +82,7 @@ include "../adminer/drivers/elastic.inc.php";
 include "../adminer/drivers/clickhouse.inc.php";
 include "../adminer/drivers/mysql.inc.php"; // must be included as last driver
 
-define("SERVER", $_GET[DRIVER]); // read from pgsql=localhost
+define("SERVER", isset($_GET[DRIVER]) ? $_GET[DRIVER] : ''); // read from pgsql=localhost
 define("DB", isset($_GET["db"]) ? $_GET["db"] : ''); // for the sake of speed and size
 define("ME", str_replace(":", "%3a", preg_replace('~\?.*~', '', relative_uri())) . '?'
 	. (sid() ? SID . '&' : '')
