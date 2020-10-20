@@ -41,7 +41,7 @@ if (!$_SERVER["REQUEST_URI"]) { // IIS 5 compatibility
 if (!strpos($_SERVER["REQUEST_URI"], '?') && isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] != "") { // IIS 7 compatibility
 	$_SERVER["REQUEST_URI"] .= "?$_SERVER[QUERY_STRING]";
 }
-if ($_SERVER["HTTP_X_FORWARDED_PREFIX"]) {
+if (isset($_SERVER["HTTP_X_FORWARDED_PREFIX"]) && $_SERVER["HTTP_X_FORWARDED_PREFIX"]) {
 	$_SERVER["REQUEST_URI"] = $_SERVER["HTTP_X_FORWARDED_PREFIX"] . $_SERVER["REQUEST_URI"];
 }
 $HTTPS = ($_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off")) || ini_bool("session.cookie_secure"); // session.cookie_secure could be set on HTTP if we are behind a reverse proxy
