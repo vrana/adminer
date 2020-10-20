@@ -101,7 +101,7 @@ if (isset($_POST["lang"]) && verify_token()) { // $error not yet available
 }
 
 $LANG = "en";
-if (isset($langs[$_COOKIE["adminer_lang"]])) {
+if (isset($_COOKIE["adminer_lang"]) && isset($langs[$_COOKIE["adminer_lang"]])) {
 	cookie("adminer_lang", $_COOKIE["adminer_lang"]);
 	$LANG = $_COOKIE["adminer_lang"];
 } elseif (isset($langs[$_SESSION["lang"]])) {
