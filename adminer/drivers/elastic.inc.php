@@ -7,7 +7,8 @@ if (isset($_GET["elastic"])) {
 
 	if (function_exists('json_decode') && ini_bool('allow_url_fopen')) {
 		class Min_DB {
-			var $extension = "JSON", $server_info, $errno, $error, $_url;
+			var $extension = "JSON", $server_info, $errno, $error;
+			var $_url, $_db, $_single_mapping;
 
 			/** Performs query
 			 * @param string
@@ -65,6 +66,7 @@ if (isset($_GET["elastic"])) {
 				$return = $this->query('');
 				if ($return) {
 					$this->server_info = $return['version']['number'];
+					$this->_single_mapping = version_compare($this->server_info, "6", ">=");
 				}
 				return (bool) $return;
 			}
@@ -284,6 +286,11 @@ if (isset($_GET["elastic"])) {
 
 	function tables_list() {
 		global $connection;
+
+		if ($connection->_single_mapping) {
+			return array('_doc' => 'table');
+		}
+
 		$return = $connection->query('_mapping');
 		if ($return) {
 			$return = array_fill_keys(array_keys($return[$connection->_db]["mappings"]), 'table');
@@ -339,25 +346,35 @@ if (isset($_GET["elastic"])) {
 
 	function fields($table) {
 		global $connection;
-		$result = $connection->query("$table/_mapping");
-		$return = array();
-		if ($result) {
-			$mappings = $result[$table]['properties'];
-			if (!$mappings) {
-				$mappings = $result[$connection->_db]['mappings'][$table]['properties'];
+
+		$mappings = null;
+		if ($connection->_single_mapping) {
+			$result = $connection->query("_mapping");
+			if ($result) {
+				$mappings = $result[$connection->_db]['mappings']['properties'];
 			}
-			if ($mappings) {
-				foreach ($mappings as $name => $field) {
-					$return[$name] = array(
-						"field" => $name,
-						"full_type" => $field["type"],
-						"type" => $field["type"],
-						"privileges" => array("insert" => 1, "select" => 1, "update" => 1),
-					);
-					if ($field["properties"]) { // only leaf fields can be edited
-						unset($return[$name]["privileges"]["insert"]);
-						unset($return[$name]["privileges"]["update"]);
-					}
+		} else {
+			$result = $connection->query("$table/_mapping");
+			if ($result) {
+				$mappings = $result[$table]['properties'];
+				if (!$mappings) {
+					$mappings = $result[$connection->_db]['mappings'][$table]['properties'];
+				}
+			}
+		}
+
+		$return = array();
+		if ($mappings) {
+			foreach ($mappings as $name => $field) {
+				$return[$name] = array(
+					"field" => $name,
+					"full_type" => $field["type"],
+					"type" => $field["type"],
+					"privileges" => array("insert" => 1, "select" => 1, "update" => 1),
+				);
+				if ($field["properties"]) { // only leaf fields can be edited
+					unset($return[$name]["privileges"]["insert"]);
+					unset($return[$name]["privileges"]["update"]);
 				}
 			}
 		}
