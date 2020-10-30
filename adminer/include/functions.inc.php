@@ -197,7 +197,7 @@ function optionlist($options, $selected = null, $use_keys = false) {
 			$opts = $v;
 		}
 		foreach ($opts as $key => $val) {
-			$return .= '<option' . ($use_keys || is_string($key) ? ' value="' . h($key) . '"' : '') . (($use_keys || is_string($key) ? (string) $key : $val) === $selected ? ' selected' : '') . '>' . h($val);
+			$return .= '<option' . ($use_keys || is_string($key) ? ' value="' . h($key) . '"' : '') . (($use_keys || is_string($key) ? (string) $key : $val) === $selected ? ' selected' : '') . '>' . h($val) . '</option>';
 		}
 		if (is_array($v)) {
 			$return .= '</optgroup>';
@@ -599,7 +599,7 @@ function set_session($key, $val) {
 * @param string
 * @return string
 */
-function auth_url($vendor, $server, $username, $db = null) {
+function auth_url($vendor, $server, $username, $db = null, $color = null) {
 	global $drivers;
 	preg_match('~([^?]*)\??(.*)~', remove_from_uri(implode("|", array_keys($drivers)) . "|username|" . ($db !== null ? "db|" : "") . session_name()), $match);
 	return "$match[1]?"
@@ -607,6 +607,7 @@ function auth_url($vendor, $server, $username, $db = null) {
 		. ($vendor != "server" || $server != "" ? urlencode($vendor) . "=" . urlencode($server) . "&" : "")
 		. "username=" . urlencode($username)
 		. ($db != "" ? "&db=" . urlencode($db) : "")
+		. ($color != "" ? "&color=" . urlencode($color) : "")
 		. ($match[2] ? "&$match[2]" : "")
 	;
 }

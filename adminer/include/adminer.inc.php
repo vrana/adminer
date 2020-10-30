@@ -2,6 +2,19 @@
 // any method change in this file should be transferred to editor/include/adminer.inc.php and plugins/plugin.php
 
 class Adminer {
+
+	/** Colors for <h2> */
+	static  $KNOWN_COLORS = array(
+		"" => "",
+		"red" => "#cc444b",
+		"orange" => "#f77f00",
+		"yellow" => "#ffe45e",
+		"green" => "#60d394",
+		"blue" => "#79addc",
+		"purple" => "#c287e8",
+		"pink" => "#ff85c8",
+		"grey" => "#cdced3");
+
 	/** @var array operators used in select, null for all operators */
 	var $operators;
 
@@ -124,6 +137,7 @@ class Adminer {
 		echo $this->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', '<input name="auth[username]" id="username" value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">' . script("focus(qs('#username')); qs('#username').form['auth[driver]'].onchange();"));
 		echo $this->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]" autocomplete="current-password">' . "\n");
 		echo $this->loginFormField('db', '<tr><th>' . lang('Database') . '<td>', '<input name="auth[db]" value="' . h($_GET["db"]) . '" autocapitalize="off">' . "\n");
+		echo $this->loginFormField('color', '<tr><th>' . lang('Color') . '<td>', html_select("auth[color]", array_keys(Adminer::$KNOWN_COLORS), $_GET["color"]));
 		echo "</table>\n";
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
 		echo checkbox("auth[permanent]", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";

@@ -56,6 +56,7 @@ if ($auth) {
 	$username = $auth["username"];
 	$password = (string) $auth["password"];
 	$db = $auth["db"];
+	$color = $auth["color"];
 	set_password($vendor, $server, $username, $password);
 	$_SESSION["db"][$vendor][$server][$username][$db] = true;
 	if ($auth["permanent"]) {
@@ -70,7 +71,7 @@ if ($auth) {
 		|| $_GET["username"] !== $username // "0" == "00"
 		|| DB != $db
 	) {
-		redirect(auth_url($vendor, $server, $username, $db));
+		redirect(auth_url($vendor, $server, $username, $db, $color));
 	}
 	
 } elseif ($_POST["logout"]) {
@@ -79,7 +80,7 @@ if ($auth) {
 		page_footer("db");
 		exit;
 	} else {
-		foreach (array("pwds", "db", "dbs", "queries") as $key) {
+		foreach (array("color", "pwds", "db", "dbs", "queries") as $key) {
 			set_session($key, null);
 		}
 		unset_permanent();
@@ -95,6 +96,10 @@ if ($auth) {
 		set_password($vendor, $server, $username, decrypt_string(base64_decode($cipher), $private));
 		$_SESSION["db"][$vendor][$server][$username][$db] = true;
 	}
+}
+
+if (isset($_GET["color"])) {
+	set_session("color", $_GET["color"]);
 }
 
 function unset_permanent() {

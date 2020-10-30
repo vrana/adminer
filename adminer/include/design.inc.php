@@ -93,7 +93,9 @@ var thousandsSeparator = '<?php echo js_escape(lang(',')); ?>';
 			echo "$title\n";
 		}
 	}
-	echo "<h2>$title_all</h2>\n";
+
+	$color = Adminer::$KNOWN_COLORS[get_session("color")];
+	echo "<h2".(empty($color) ? "" : " style=\"background: $color\"").">$title_all</h2>\n";
 	echo "<div id='ajaxstatus' class='jsonly hidden'></div>\n";
 	restart_session();
 	page_messages($error);

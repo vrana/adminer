@@ -288,4 +288,5 @@ $translations = array(
 	'Default value' => 'Valeur par défaut',
 	'If you did not send this request from Adminer then close this page.' => 'Si vous n\'avez pas envoyé cette requête depuis Adminer, alors fermez cette page.',
 	'You are offline.' => 'Vous êtes hors ligne.',
+	'Color' => 'Couleur'
 );
