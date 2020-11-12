@@ -84,7 +84,11 @@ include "../adminer/drivers/mysql.inc.php"; // must be included as last driver
 
 define("SERVER", $_GET[DRIVER]); // read from pgsql=localhost
 define("DB", $_GET["db"]); // for the sake of speed and size
+if (!defined('MEQPFX')) {
+	define('MEQPFX', '');
+}
 define("ME", str_replace(":", "%3a", preg_replace('~\?.*~', '', relative_uri())) . '?'
+	. MEQPFX
 	. (sid() ? SID . '&' : '')
 	. (SERVER !== null ? DRIVER . "=" . urlencode(SERVER) . '&' : '')
 	. (isset($_GET["username"]) ? "username=" . urlencode($_GET["username"]) . '&' : '')
