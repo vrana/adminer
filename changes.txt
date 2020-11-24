@@ -17,6 +17,7 @@ PostgreSQL 10: Support partitioned tables (PR #396)
 PostgreSQL 11: Create PRIMARY KEY for auto increment columns
 SQLite: Set busy_timeout to 500
 MS SQL: Don't truncate comments to 30 chars (PR #376)
+MongoDB: Fix password-less check in the mongo extension (PR #405)
 Editor: Cast to string when searching (bug #325)
 Re-enable PHP warnings (regression from 4.7.8)
 
