@@ -194,6 +194,10 @@ if (isset($_GET["mongo"])) {
 			return $connection->_db->selectCollection($_GET["select"])->count($where);
 		}
 
+        function ping($link) {
+            return true;
+        }
+
 		$operators = array("=");
 
 	} elseif (class_exists('MongoDB\Driver\Manager')) {
@@ -220,7 +224,6 @@ if (isset($_GET["mongo"])) {
 			function quote($string) {
 				return $string;
 			}
-
 		}
 
 		class Min_Result {
@@ -539,6 +542,12 @@ if (isset($_GET["mongo"])) {
 			return $data;
 		}
 
+        function ping($link) {
+            $class = 'MongoDB\Driver\Command';
+            $link->executeCommand('admin',new $class(['ping' => 1]));
+            return true;
+        }
+
 		$operators = array(
 			"=",
 			"!=",
@@ -626,7 +635,7 @@ if (isset($_GET["mongo"])) {
 			if ($password != "") {
 				$options["password"] = "";
 				try {
-					$connection->connect("mongodb://$server", $options);
+					ping($connection->connect("mongodb://$server", $options));
 					return lang('Database does not support password.');
 				} catch (Exception $ex) {
 					// this is what we want
