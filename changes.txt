@@ -1,5 +1,6 @@
 Adminer 4.7.8-dev:
 Support PHP 8
+Disallow connecting to privileged ports (bug #769)
 
 Adminer 4.7.7 (released 2020-05-11):
 Fix open redirect if Adminer is accessible at //adminer.php%2F@
