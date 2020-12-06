@@ -267,7 +267,7 @@ if (!defined("DRIVER")) {
 			}
 
 			function query($query, $unbuffered = false) {
-				$this->setAttribute(1000, !$unbuffered); // 1000 - PDO::MYSQL_ATTR_USE_BUFFERED_QUERY
+				$this->pdo->setAttribute(1000, !$unbuffered); // 1000 - PDO::MYSQL_ATTR_USE_BUFFERED_QUERY
 				return parent::query($query, $unbuffered);
 			}
 		}
