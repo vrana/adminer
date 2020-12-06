@@ -1,4 +1,4 @@
-Adminer 4.7.8-dev:
+Adminer 4.7.8 (released 2020-12-06):
 Support PHP 8
 Disallow connecting to privileged ports (bug #769)
 
