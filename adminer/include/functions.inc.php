@@ -849,19 +849,18 @@ function friendly_url($val) {
 /** Print hidden fields
 * @param array
 * @param array
+* @param string
 * @return bool
 */
-function hidden_fields($process, $ignore = array()) {
+function hidden_fields($process, $ignore = array(), $prefix = '') {
 	$return = false;
-	while (list($key, $val) = each($process)) {
+	foreach ($process as $key => $val) {
 		if (!in_array($key, $ignore)) {
 			if (is_array($val)) {
-				foreach ($val as $k => $v) {
-					$process[$key . "[$k]"] = $v;
-				}
+				hidden_fields($val, array(), $key);
 			} else {
 				$return = true;
-				echo '<input type="hidden" name="' . h($key) . '" value="' . h($val) . '">';
+				echo '<input type="hidden" name="' . h($prefix ? $prefix . "[$key]" : $key) . '" value="' . h($val) . '">';
 			}
 		}
 	}
