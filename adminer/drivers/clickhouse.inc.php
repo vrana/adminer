@@ -306,7 +306,7 @@ if (isset($_GET["clickhouse"])) {
 	function fields($table) {
 		$return = array();
 		$result = get_rows("SELECT name, type, default_expression FROM system.columns WHERE " . idf_escape('table') . " = " . q($table));
-		foreach($result as $row) {
+		foreach ($result as $row) {
 			$type = trim($row['type']);
 			$nullable = strpos($type, 'Nullable(') === 0;
 			$return[trim($row['name'])] = array(
