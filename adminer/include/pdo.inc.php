@@ -24,6 +24,10 @@ if (extension_loaded('pdo')) {
 		
 		/*abstract function select_db($database);*/
 		
+		function quote($string) {
+			return $this->pdo->quote($string);
+		}
+		
 		function query($query, $unbuffered = false) {
 			$result = $this->pdo->query($query);
 			$this->error = "";
