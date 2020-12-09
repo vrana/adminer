@@ -1,6 +1,11 @@
 #!/usr/bin/env php
 <?php
-error_reporting(6133); // errors
+function adminer_errors($errno, $errstr) {
+	return !!preg_match('~^(Trying to access array offset on value of type null|Undefined array key)~', $errstr);
+}
+
+error_reporting(6135); // errors and warnings
+set_error_handler('adminer_errors', 2); // 2 - E_WARNING
 include dirname(__FILE__) . "/adminer/include/version.inc.php";
 include dirname(__FILE__) . "/externals/JsShrink/jsShrink.php";
 
@@ -100,7 +105,7 @@ function lzw_compress($string) {
 	$word = "";
 	$codes = array();
 	for ($i=0; $i <= strlen($string); $i++) {
-		$x = $string[$i];
+		$x = @$string[$i];
 		if (strlen($x) && isset($dictionary[$word . $x])) {
 			$word .= $x;
 		} elseif ($i) {
