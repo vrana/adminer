@@ -1061,6 +1061,12 @@ if (!defined("DRIVER")) {
 	* @return string
 	*/
 	function convert_field($field) {
+		if (min_version(8) && ($field["type"] === "datetime" || $field["type"] === "timestamp")) {
+			return "DATE_FORMAT(" . idf_escape($field["field"]) . ", '%Y-%m-%d %H:%i:%s')";
+		}
+		if (min_version(8) && $field["type"] === "date") {
+			return "DATE_FORMAT(" . idf_escape($field["field"]) . ", '%Y-%m-%d')";
+		}
 		if (preg_match("~binary~", $field["type"])) {
 			return "HEX(" . idf_escape($field["field"]) . ")";
 		}
