@@ -1038,7 +1038,10 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 		foreach ($tables as $table => $status) {
 			$name = $this->tableName($status);
 			if ($name != "") {
-				echo '<li><a href="' . h(ME) . 'select=' . urlencode($table) . '"' . bold($_GET["select"] == $table || $_GET["edit"] == $table, "select") . ">" . lang('select') . "</a> ";
+				echo '<li><a href="' . h(ME) . 'select=' . urlencode($table) . '"'
+					. bold($_GET["select"] == $table || $_GET["edit"] == $table, "select")
+					. " title='" . lang('Select data') . "'>" . lang('select') . "</a> "
+				;
 				echo (support("table") || support("indexes")
 					? '<a href="' . h(ME) . 'table=' . urlencode($table) . '"'
 						. bold(in_array($table, array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"])), (is_view($status) ? "view" : "structure"))
