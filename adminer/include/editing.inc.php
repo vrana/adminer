@@ -61,6 +61,20 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 		}
 		echo "<tr" . odd() . ">";
 		foreach ($row as $key => $val) {
+			$link = "";
+			if (isset($links[$key]) && !$columns[$links[$key]]) {
+				if ($orgtables && $jush == "sql") { // MySQL EXPLAIN
+					$table = $row[array_search("table=", $links)];
+					$link = ME . $links[$key] . urlencode($orgtables[$table] != "" ? $orgtables[$table] : $table);
+				} else {
+					$link = ME . "edit=" . urlencode($links[$key]);
+					foreach ($indexes[$links[$key]] as $col => $j) {
+						$link .= "&where" . urlencode("[" . bracket_escape($col) . "]") . "=" . urlencode($row[$j]);
+					}
+				}
+			} elseif (is_url($val)) {
+				$link = $val;
+			}
 			if ($val === null) {
 				$val = "<i>NULL</i>";
 			} elseif ($blobs[$key] && !is_utf8($val)) {
@@ -71,17 +85,8 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 					$val = "<code>$val</code>";
 				}
 			}
-			if (isset($links[$key]) && !$columns[$links[$key]]) {
-				if ($orgtables && $jush == "sql") { // MySQL EXPLAIN
-					$table = $row[array_search("table=", $links)];
-					$link = $links[$key] . urlencode($orgtables[$table] != "" ? $orgtables[$table] : $table);
-				} else {
-					$link = "edit=" . urlencode($links[$key]);
-					foreach ($indexes[$links[$key]] as $col => $j) {
-						$link .= "&where" . urlencode("[" . bracket_escape($col) . "]") . "=" . urlencode($row[$j]);
-					}
-				}
-				$val = "<a href='" . h(ME . $link) . "'>$val</a>";
+			if ($link) {
+				$val = "<a href='" . h($link) . "'" . (is_url($link) ? target_blank() : '') . ">$val</a>";
 			}
 			echo "<td>$val";
 		}
