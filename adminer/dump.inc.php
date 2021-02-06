@@ -22,7 +22,8 @@ SET foreign_key_checks = 0;
 " . ($_POST["data_style"] ? "SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 " : "") . "
 ";
-			$connection->query("SET time_zone = '+00:00';");
+			$connection->query("SET time_zone = '+00:00'");
+			$connection->query("SET sql_mode = ''");
 		}
 	}
 

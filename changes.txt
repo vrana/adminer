@@ -1,5 +1,6 @@
 Adminer 4.7.9-dev:
 Elasticsearch, ClickHouse: Do not print response if HTTP code is not 200
+MySQL: Do not export names in quotes with sql_mode='ANSI_QUOTES' (bug #749)
 PostgreSQL: Export all FKs after all CREATE TABLE (PR #351)
 PostgreSQL: Fix dollar-quoted syntax highlighting (bug #738)
 PostgreSQL 10: Support GENERATED ALWAYS BY IDENTITY (PR #386)
