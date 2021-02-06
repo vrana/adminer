@@ -672,7 +672,7 @@ class Adminer {
 						$return .= "/$val";
 					}
 				}
-				if ($key && !preg_match('~set|blob|bytea|raw|file~', $field["type"])) {
+				if ($key && !preg_match('~set|blob|bytea|raw|file|bool~', $field["type"])) {
 					$return .= "/SQL";
 				}
 			}
