@@ -1,7 +1,7 @@
 <?php
 
 /** Require One-Time Password at login
-* You can generate the secret and install it into Google Authenticator e.g. with https://github.com/sonata-project/GoogleAuthenticator
+* You can generate the secret and install it into Google Authenticator e.g. with https://github.com/sonata-project/GoogleAuthenticator or https://php.vrana.cz/jednorazove-heslo.php
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
