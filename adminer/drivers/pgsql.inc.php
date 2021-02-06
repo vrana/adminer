@@ -491,7 +491,7 @@ ORDER BY connamespace, conname") as $row) {
 	}
 
 	function auto_increment() {
-		return "";
+		return (min_version(11) ? " PRIMARY KEY" : "");
 	}
 
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {

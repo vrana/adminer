@@ -8,6 +8,7 @@ PostgreSQL: Do not show view definition from other schema (PR #392)
 PostgreSQL: Use bigserial for bigint auto increment (bug #765, regression from 3.0.0)
 PostgreSQL PDO: Support PgBouncer, unsupport PostgreSQL < 9.1 (bug #771)
 PostgreSQL 10: Support GENERATED ALWAYS BY IDENTITY (PR #386)
+PostgreSQL 11: Create PRIMARY KEY for auto increment columns
 MS SQL: Don't truncate comments to 30 chars (PR #376)
 Editor: Cast to string when searching (bug #325)
 Re-enable PHP warnings (regression from 4.7.8)
