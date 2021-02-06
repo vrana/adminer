@@ -150,8 +150,7 @@ if (isset($_GET["pgsql"])) {
 			function connect($server, $username, $password) {
 				global $adminer;
 				$db = $adminer->database();
-				$string = "pgsql:host='" . str_replace(":", "' port='", addcslashes($server, "'\\")) . "' options='-c client_encoding=utf8'";
-				$this->dsn("$string dbname='" . ($db != "" ? addcslashes($db, "'\\") : "postgres") . "'", $username, $password);
+				$this->dsn("pgsql:host='" . str_replace(":", "' port='", addcslashes($server, "'\\")) . "' client_encoding=utf8 dbname='" . ($db != "" ? addcslashes($db, "'\\") : "postgres") . "'", $username, $password); //! client_encoding is supported since 9.1 but we can't yet use min_version here
 				//! connect without DB in case of an error
 				return true;
 			}
