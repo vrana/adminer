@@ -510,7 +510,7 @@ ORDER BY connamespace, conname") as $row) {
 				$val5 = $val[5];
 				unset($val[5]);
 				if (isset($val[6]) && $field[0] == "") { // auto_increment
-					$val[1] = ($val[1] == "bigint" ? " big" : " ") . "serial";
+					$val[1] = ($val[1] == " bigint" ? " big" : " ") . "serial";
 				}
 				if ($field[0] == "") {
 					$alter[] = ($table != "" ? "ADD " : "  ") . implode($val);
