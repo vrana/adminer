@@ -4,6 +4,7 @@ Elasticsearch, ClickHouse: Do not print response if HTTP code is not 200
 Don't syntax highlight during IME composition (bug #747)
 MySQL: Do not export names in quotes with sql_mode='ANSI_QUOTES' (bug #749)
 MySQL: Avoid error in PHP 8 when connecting to socket (PR #409)
+MySQL: Don't quote default value of text fields (bug #779)
 PostgreSQL: Export all FKs after all CREATE TABLE (PR #351)
 PostgreSQL: Fix dollar-quoted syntax highlighting (bug #738)
 PostgreSQL: Do not show view definition from other schema (PR #392)
