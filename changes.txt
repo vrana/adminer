@@ -21,6 +21,7 @@ MS SQL: Don't truncate comments to 30 chars (PR #376)
 Elasticsearch 6: Fix displaying type mapping (PR #402)
 MongoDB: Fix password-less check in the mongo extension (PR #405)
 Editor: Cast to string when searching (bug #325)
+Editor: Avoid trailing dot in export filename
 Re-enable PHP warnings (regression from 4.7.8)
 
 Adminer 4.7.8 (released 2020-12-06):
