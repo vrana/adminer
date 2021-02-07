@@ -2,6 +2,7 @@ Adminer 4.7.9-dev:
 Fix XSS in browsers which don't encode URL parameters (bug #775, regression from 4.7.0)
 Elasticsearch, ClickHouse: Do not print response if HTTP code is not 200
 Don't syntax highlight during IME composition (bug #747)
+Quote values with leading and trailing zeroes in CSV export (bug #777)
 MySQL: Do not export names in quotes with sql_mode='ANSI_QUOTES' (bug #749)
 MySQL: Avoid error in PHP 8 when connecting to socket (PR #409)
 MySQL: Don't quote default value of text fields (bug #779)
