@@ -73,18 +73,12 @@ if ($auth) {
 		redirect(auth_url($vendor, $server, $username, $db));
 	}
 	
-} elseif ($_POST["logout"]) {
-	if ($has_token && !verify_token()) {
-		page_header(lang('Logout'), lang('Invalid CSRF token. Send the form again.'));
-		page_footer("db");
-		exit;
-	} else {
-		foreach (array("pwds", "db", "dbs", "queries") as $key) {
-			set_session($key, null);
-		}
-		unset_permanent();
-		redirect(substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1), lang('Logout successful.') . ' ' . lang('Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.'));
+} elseif ($_POST["logout"] && (!$has_token || verify_token())) {
+	foreach (array("pwds", "db", "dbs", "queries") as $key) {
+		set_session($key, null);
 	}
+	unset_permanent();
+	redirect(substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1), lang('Logout successful.') . ' ' . lang('Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.'));
 	
 } elseif ($permanent && !$_SESSION["pwds"]) {
 	session_regenerate_id();
@@ -174,6 +168,12 @@ $login = null;
 if (!is_object($connection) || ($login = $adminer->login($_GET["username"], get_password())) !== true) {
 	$error = (is_string($connection) ? h($connection) : (is_string($login) ? $login : lang('Invalid credentials.')));
 	auth_error($error . (preg_match('~^ | $~', get_password()) ? '<br>' . lang('There is a space in the input password which might be the cause.') : ''));
+}
+
+if ($_POST["logout"] && $has_token && !verify_token()) {
+	page_header(lang('Logout'), lang('Invalid CSRF token. Send the form again.'));
+	page_footer("db");
+	exit;
 }
 
 if ($auth && $_POST["token"]) {
