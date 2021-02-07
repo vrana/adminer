@@ -5,6 +5,7 @@ Don't syntax highlight during IME composition (bug #747)
 Quote values with leading and trailing zeroes in CSV export (bug #777)
 Link URLs in SQL command (PR #411)
 Fix displayed foreign key columns from other DB (bug #766)
+Re-enable PHP warnings (regression from 4.7.8)
 MySQL: Do not export names in quotes with sql_mode='ANSI_QUOTES' (bug #749)
 MySQL: Avoid error in PHP 8 when connecting to socket (PR #409)
 MySQL: Don't quote default value of text fields (bug #779)
@@ -22,7 +23,6 @@ Elasticsearch 6: Fix displaying type mapping (PR #402)
 MongoDB: Fix password-less check in the mongo extension (PR #405)
 Editor: Cast to string when searching (bug #325)
 Editor: Avoid trailing dot in export filename
-Re-enable PHP warnings (regression from 4.7.8)
 
 Adminer 4.7.8 (released 2020-12-06):
 Support PHP 8
