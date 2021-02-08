@@ -1,4 +1,5 @@
 Adminer 4.7.10-dev:
+Skip date columns for non-date values in search anywhere
 Add DB version to comment in export
 Support PHP 8 in create table (regression from 4.7.9)
 
