@@ -1,4 +1,5 @@
 Adminer 4.7.10-dev:
+Support function default values in insert (bug #713)
 Allow SQL pseudo-function in insert
 Skip date columns for non-date values in search anywhere
 Add DB version to comment in export

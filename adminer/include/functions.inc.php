@@ -1461,6 +1461,9 @@ function edit_form($table, $fields, $row, $update) {
 					: ($value === false ? null : ($value !== null ? '' : 'NULL'))
 				)
 			);
+			if (!$_POST && !$update && $value == $field["default"] && preg_match('~^[\w.]+\(~', $value)) {
+				$function = "SQL";
+			}
 			if (preg_match("~time~", $field["type"]) && preg_match('~^CURRENT_TIMESTAMP~i', $value)) {
 				$value = "";
 				$function = "now";
