@@ -623,7 +623,7 @@ ORDER BY connamespace, conname") as $row) {
 
 	function triggers($table) {
 		$return = array();
-		foreach (get_rows("SELECT * FROM information_schema.triggers WHERE event_object_table = " . q($table)) as $row) {
+		foreach (get_rows("SELECT * FROM information_schema.triggers WHERE trigger_schema = current_schema() AND event_object_table = " . q($table)) as $row) {
 			$return[$row["trigger_name"]] = array($row["action_timing"], $row["event_manipulation"]);
 		}
 		return $return;
