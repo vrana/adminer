@@ -950,7 +950,7 @@ if (!defined("DRIVER")) {
 	* @return Min_Result
 	*/
 	function explain($connection, $query) {
-		return $connection->query("EXPLAIN " . (min_version(5.1) ? "PARTITIONS " : "") . $query);
+		return $connection->query("EXPLAIN " . (min_version(5.1) && !min_version(5.7) ? "PARTITIONS " : "") . $query);
 	}
 
 	/** Get approximate number of rows

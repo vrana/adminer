@@ -2,6 +2,7 @@ Adminer 4.7.10-dev:
 Skip date columns for non-date values in search anywhere
 Add DB version to comment in export
 Support PHP 8 in create table (regression from 4.7.9)
+MySQL 8: Fix EXPLAIN in SQL command
 
 Adminer 4.7.9 (released 2021-02-07):
 Fix XSS in browsers which don't encode URL parameters (bug #775, regression from 4.7.0)
