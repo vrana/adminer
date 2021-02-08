@@ -676,8 +676,9 @@ class Adminer {
 	function editFunctions($field) {
 		global $edit_functions;
 		$return = ($field["null"] ? "NULL/" : "");
+		$update = isset($_GET["select"]) || where($_GET);
 		foreach ($edit_functions as $key => $functions) {
-			if (!$key || (!isset($_GET["call"]) && (isset($_GET["select"]) || where($_GET)))) { // relative functions
+			if (!$key || (!isset($_GET["call"]) && $update)) { // relative functions
 				foreach ($functions as $pattern => $val) {
 					if (!$pattern || preg_match("~$pattern~", $field["type"])) {
 						$return .= "/$val";
@@ -688,7 +689,7 @@ class Adminer {
 				}
 			}
 		}
-		if ($field["auto_increment"] && !isset($_GET["select"]) && !where($_GET)) {
+		if ($field["auto_increment"] && !$update) {
 			$return = lang('Auto Increment');
 		}
 		return explode("/", $return);
