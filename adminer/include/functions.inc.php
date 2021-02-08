@@ -1444,7 +1444,7 @@ function edit_form($table, $fields, $row, $update) {
 			$value = ($row !== null
 				? ($row[$name] != "" && $jush == "sql" && preg_match("~enum|set~", $field["type"])
 					? (is_array($row[$name]) ? array_sum($row[$name]) : +$row[$name])
-					: $row[$name]
+					: (is_bool($row[$name]) ? +$row[$name] : $row[$name])
 				)
 				: (!$update && $field["auto_increment"]
 					? ""
