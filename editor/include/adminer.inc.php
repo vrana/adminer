@@ -452,6 +452,9 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		return " <span class='time'>" . @date("H:i:s") . "</span><!--\n" . str_replace("--", "--><!-- ", $query) . "\n" . ($time ? "($time)\n" : "") . "-->";
 	}
 
+	function editRowPrint($table, $fields, $row, $update) {
+	}
+
 	function editFunctions($field) {
 		$return = array();
 		if ($field["null"] && preg_match('~blob~', $field["type"])) {

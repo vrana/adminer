@@ -1411,15 +1411,16 @@ function on_help($command, $side = 0) {
 * @param bool
 * @return null
 */
-function edit_form($TABLE, $fields, $row, $update) {
+function edit_form($table, $fields, $row, $update) {
 	global $adminer, $jush, $token, $error;
-	$table_name = $adminer->tableName(table_status1($TABLE, true));
+	$table_name = $adminer->tableName(table_status1($table, true));
 	page_header(
 		($update ? lang('Edit') : lang('Insert')),
 		$error,
-		array("select" => array($TABLE, $table_name)),
+		array("select" => array($table, $table_name)),
 		$table_name
 	);
+	$adminer->editRowPrint($table, $fields, $row, $update);
 	if ($row === false) {
 		echo "<p class='error'>" . lang('No rows.') . "\n";
 	}

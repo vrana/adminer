@@ -83,6 +83,9 @@ class AdminerPlugin extends Adminer {
 		return $this->_appendPlugin(__FUNCTION__, $args);
 	}
 
+	function editRowPrint($table, $fields, $row, $update) {
+	}
+
 	function editFunctions($field) {
 		$args = func_get_args();
 		return $this->_appendPlugin(__FUNCTION__, $args);

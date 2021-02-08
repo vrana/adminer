@@ -480,7 +480,7 @@ class Adminer {
 		echo "</script>\n";
 		echo "</div></fieldset>\n";
 	}
-
+	
 	/** Print command box in select
 	* @return bool whether to print default commands
 	*/
@@ -657,6 +657,16 @@ class Adminer {
 			. (support("sql") ? '<p><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a>' : '')
 			. '</div>'
 		;
+	}
+
+	/** Print before edit form
+	* @param string
+	* @param array
+	* @param mixed
+	* @param bool
+	* @return null
+	*/
+	function editRowPrint($table, $fields, $row, $update) {
 	}
 
 	/** Functions displayed in edit form
