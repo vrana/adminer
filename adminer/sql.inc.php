@@ -222,7 +222,7 @@ if (!isset($_GET["import"])) {
 	}
 	echo "<p>";
 	textarea("query", $q, 20);
-	echo script(($_POST ? "" : "qs('textarea').focus();\n") . "qs('#form').onsubmit = partial(sqlSubmit, qs('#form'), '" . remove_from_uri("sql|limit|error_stops|only_errors") . "');");
+	echo script(($_POST ? "" : "qs('textarea').focus();\n") . "qs('#form').onsubmit = partial(sqlSubmit, qs('#form'), '" . js_escape(remove_from_uri("sql|limit|error_stops|only_errors|history")) . "');");
 	echo "<p>$execute\n";
 	echo lang('Limit rows') . ": <input type='number' name='limit' class='size' value='" . h($_POST ? $_POST["limit"] : $_GET["limit"]) . "'>\n";
 	
@@ -244,8 +244,8 @@ if (!isset($_GET["import"])) {
 	echo "<p>";
 }
 
-echo checkbox("error_stops", 1, ($_POST ? $_POST["error_stops"] : isset($_GET["import"])), lang('Stop on error')) . "\n";
-echo checkbox("only_errors", 1, ($_POST ? $_POST["only_errors"] : isset($_GET["import"])), lang('Show only errors')) . "\n";
+echo checkbox("error_stops", 1, ($_POST ? $_POST["error_stops"] : isset($_GET["import"]) || $_GET["error_stops"]), lang('Stop on error')) . "\n";
+echo checkbox("only_errors", 1, ($_POST ? $_POST["only_errors"] : isset($_GET["import"]) || $_GET["only_errors"]), lang('Show only errors')) . "\n";
 echo "<input type='hidden' name='token' value='$token'>\n";
 
 if (!isset($_GET["import"]) && $history) {

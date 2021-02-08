@@ -22,7 +22,7 @@ if (isset($_GET["clickhouse"])) {
 				return $file;
 			}
 			if (!preg_match('~^HTTP/[0-9.]+ 2~i', $http_response_header[0])) {
-				$this->error = $file;
+				$this->error = lang('Invalid credentials.') . " $http_response_header[0]";
 				return false;
 			}
 			$return = json_decode($file, true);
@@ -306,7 +306,7 @@ if (isset($_GET["clickhouse"])) {
 	function fields($table) {
 		$return = array();
 		$result = get_rows("SELECT name, type, default_expression FROM system.columns WHERE " . idf_escape('table') . " = " . q($table));
-		foreach($result as $row) {
+		foreach ($result as $row) {
 			$type = trim($row['type']);
 			$nullable = strpos($type, 'Nullable(') === 0;
 			$return[trim($row['name'])] = array(

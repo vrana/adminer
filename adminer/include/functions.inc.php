@@ -62,7 +62,7 @@ function number_type() {
 * @return null modified in place
 */
 function remove_slashes($process, $filter = false) {
-	if (get_magic_quotes_gpc()) {
+	if (function_exists("get_magic_quotes_gpc") && get_magic_quotes_gpc()) {
 		while (list($key, $val) = each($process)) {
 			foreach ($val as $k => $v) {
 				unset($process[$key][$k]);
@@ -721,12 +721,19 @@ function format_time($start) {
 	return lang('%.3f s', max(0, microtime(true) - $start));
 }
 
+/** Get relative REQUEST_URI
+* @return string
+*/
+function relative_uri() {
+	return str_replace(":", "%3a", preg_replace('~^[^?]*/([^?]*)~', '\1', $_SERVER["REQUEST_URI"]));
+}
+
 /** Remove parameter from query string
 * @param string
 * @return string
 */
 function remove_from_uri($param = "") {
-	return substr(preg_replace("~(?<=[?&])($param" . (SID ? "" : "|" . session_name()) . ")=[^&]*&~", '', "$_SERVER[REQUEST_URI]&"), 0, -1);
+	return substr(preg_replace("~(?<=[?&])($param" . (SID ? "" : "|" . session_name()) . ")=[^&]*&~", '', relative_uri() . "&"), 0, -1);
 }
 
 /** Generate page number for pagination
@@ -842,19 +849,18 @@ function friendly_url($val) {
 /** Print hidden fields
 * @param array
 * @param array
+* @param string
 * @return bool
 */
-function hidden_fields($process, $ignore = array()) {
+function hidden_fields($process, $ignore = array(), $prefix = '') {
 	$return = false;
-	while (list($key, $val) = each($process)) {
+	foreach ($process as $key => $val) {
 		if (!in_array($key, $ignore)) {
 			if (is_array($val)) {
-				foreach ($val as $k => $v) {
-					$process[$key . "[$k]"] = $v;
-				}
+				hidden_fields($val, array(), $key);
 			} else {
 				$return = true;
-				echo '<input type="hidden" name="' . h($key) . '" value="' . h($val) . '">';
+				echo '<input type="hidden" name="' . h($prefix ? $prefix . "[$key]" : $key) . '" value="' . h($val) . '">';
 			}
 		}
 	}
@@ -1109,7 +1115,7 @@ function dump_headers($identifier, $multi_table = false) {
 	$return = $adminer->dumpHeaders($identifier, $multi_table);
 	$output = $_POST["output"];
 	if ($output != "text") {
-		header("Content-Disposition: attachment; filename=" . $adminer->dumpFilename($identifier) . ".$return" . ($output != "file" && !preg_match('~[^0-9a-z]~', $output) ? ".$output" : ""));
+		header("Content-Disposition: attachment; filename=" . $adminer->dumpFilename($identifier) . ".$return" . ($output != "file" && preg_match('~^[0-9a-z]+$~', $output) ? ".$output" : ""));
 	}
 	session_write_close();
 	ob_flush();
@@ -1123,7 +1129,7 @@ function dump_headers($identifier, $multi_table = false) {
 */
 function dump_csv($row) {
 	foreach ($row as $key => $val) {
-		if (preg_match("~[\"\n,;\t]~", $val) || $val === "") {
+		if (preg_match('~["\n,;\t]|^0|\.\d*0$~', $val) || $val === "") {
 			$row[$key] = '"' . str_replace('"', '""', $val) . '"';
 		}
 	}

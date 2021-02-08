@@ -1,5 +1,10 @@
 <?php
+function adminer_errors($errno, $errstr) {
+	return !!preg_match('~^(Trying to access array offset on value of type null|Undefined array key)~', $errstr);
+}
+
 error_reporting(6135); // errors and warnings
+set_error_handler('adminer_errors', 2); // 2 - E_WARNING
 
 include "../adminer/include/coverage.inc.php";
 
@@ -60,7 +65,7 @@ if (!defined("SID")) {
 
 // disable magic quotes to be able to use database escaping function
 remove_slashes(array(&$_GET, &$_POST, &$_COOKIE), $filter);
-if (get_magic_quotes_runtime()) {
+if (function_exists("get_magic_quotes_runtime") && get_magic_quotes_runtime()) {
 	set_magic_quotes_runtime(false);
 }
 @set_time_limit(0); // @ - can be disabled
@@ -84,7 +89,7 @@ include "../adminer/drivers/mysql.inc.php"; // must be included as last driver
 
 define("SERVER", $_GET[DRIVER]); // read from pgsql=localhost
 define("DB", $_GET["db"]); // for the sake of speed and size
-define("ME", str_replace(":", "%3a", preg_replace('~^[^?]*/([^?]*).*~', '\1', $_SERVER["REQUEST_URI"])) . '?'
+define("ME", preg_replace('~\?.*~', '', relative_uri()) . '?'
 	. (sid() ? SID . '&' : '')
 	. (SERVER !== null ? DRIVER . "=" . urlencode(SERVER) . '&' : '')
 	. (isset($_GET["username"]) ? "username=" . urlencode($_GET["username"]) . '&' : '')

@@ -17,14 +17,14 @@ function bodyLoad(version, maria) {
 						for (var i = 1; i < obj.length; i++) {
 							obj[i] = obj[i]
 								.replace(/\.html/, '/')
-								.replace(/(numeric)(-type-overview)/, '$1-data$2')
+								.replace(/-type-syntax/, '-data-types')
+								.replace(/numeric-(data-types)/, '$1-$&')
 								.replace(/#statvar_.*/, '#$$1')
 							;
 						}
 					}
 				}
-				obj[key] = obj[key]
-					.replace(/dev\.mysql\.com\/doc\/mysql\/en\//, (maria ? 'mariadb.com/kb/en/library/' : '$&')) // MariaDB
+				obj[key] = (maria ? obj[key].replace(/dev\.mysql\.com\/doc\/mysql\/en\//, 'mariadb.com/kb/en/library/') : obj[key]) // MariaDB
 					.replace(/\/doc\/mysql/, '/doc/refman/' + version) // MySQL
 					.replace(/\/docs\/current/, '/docs/' + version) // PostgreSQL
 				;

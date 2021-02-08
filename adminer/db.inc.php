@@ -112,7 +112,7 @@ if ($adminer->homepage()) {
 			}
 
 			echo "<tr><td><th>" . lang('%d in total', count($tables_list));
-			echo "<td>" . h($jush == "sql" ? $connection->result("SELECT @@storage_engine") : "");
+			echo "<td>" . h($jush == "sql" ? $connection->result("SELECT @@default_storage_engine") : "");
 			echo "<td>" . h(db_collation(DB, collations()));
 			foreach (array("Data_length", "Index_length", "Data_free") as $key) {
 				echo "<td align='right' id='sum-$key'>";

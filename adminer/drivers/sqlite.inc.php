@@ -191,6 +191,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 				if (is_readable($filename) && $this->query("ATTACH " . $this->quote(preg_match("~(^[/\\\\]|:)~", $filename) ? $filename : dirname($_SERVER["SCRIPT_FILENAME"]) . "/$filename") . " AS a")) { // is_readable - SQLite 3
 					parent::__construct($filename);
 					$this->query("PRAGMA foreign_keys = 1");
+					$this->query("PRAGMA busy_timeout = 500");
 					return true;
 				}
 				return false;

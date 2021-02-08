@@ -22,7 +22,8 @@ SET foreign_key_checks = 0;
 " . ($_POST["data_style"] ? "SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 " : "") . "
 ";
-			$connection->query("SET time_zone = '+00:00';");
+			$connection->query("SET time_zone = '+00:00'");
+			$connection->query("SET sql_mode = ''");
 		}
 	}
 
@@ -101,6 +102,16 @@ SET foreign_key_checks = 0;
 							tar_file((DB != "" ? "" : "$db/") . "$name.csv", $tmp_file);
 						} elseif ($is_sql) {
 							echo "\n";
+						}
+					}
+				}
+
+				// add FKs after creating tables (except in MySQL which uses SET FOREIGN_KEY_CHECKS=0)
+				if (function_exists('foreign_keys_sql')) {
+					foreach (table_status('', true) as $name => $table_status) {
+						$table = (DB == "" || in_array($name, (array) $_POST["tables"]));
+						if ($table && !is_view($table_status)) {
+							echo foreign_keys_sql($name);
 						}
 					}
 				}

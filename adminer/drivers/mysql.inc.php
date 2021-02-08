@@ -267,7 +267,7 @@ if (!defined("DRIVER")) {
 			}
 
 			function query($query, $unbuffered = false) {
-				$this->setAttribute(1000, !$unbuffered); // 1000 - PDO::MYSQL_ATTR_USE_BUFFERED_QUERY
+				$this->pdo->setAttribute(1000, !$unbuffered); // 1000 - PDO::MYSQL_ATTR_USE_BUFFERED_QUERY
 				return parent::query($query, $unbuffered);
 			}
 		}
@@ -547,7 +547,7 @@ if (!defined("DRIVER")) {
 				"type" => $match[1],
 				"length" => $match[2],
 				"unsigned" => ltrim($match[3] . $match[4]),
-				"default" => ($row["Default"] != "" || preg_match("~char|set~", $match[1]) ? $row["Default"] : null),
+				"default" => ($row["Default"] != "" || preg_match("~char|set~", $match[1]) ? (preg_match('~text~', $match[1]) ? stripslashes(preg_replace("~^'(.*)'\$~", '\1', $row["Default"])) : $row["Default"]) : null),
 				"null" => ($row["Null"] == "YES"),
 				"auto_increment" => ($row["Extra"] == "auto_increment"),
 				"on_update" => (preg_match('~^on update (.+)~i', $row["Extra"], $match) ? $match[1] : ""), //! available since MySQL 5.1.23

@@ -5,198 +5,7 @@ if (isset($_GET["mongo"])) {
 	$possible_drivers = array("mongo", "mongodb");
 	define("DRIVER", "mongo");
 
-	if (class_exists('MongoDB')) {
-		class Min_DB {
-			var $extension = "Mongo", $server_info = MongoClient::VERSION, $error, $last_id, $_link, $_db;
-
-			function connect($uri, $options) {
-				return @new MongoClient($uri, $options);
-			}
-			
-			function query($query) {
-				return false;
-			}
-
-			function select_db($database) {
-				try {
-					$this->_db = $this->_link->selectDB($database);
-					return true;
-				} catch (Exception $ex) {
-					$this->error = $ex->getMessage();
-					return false;
-				}
-			}
-
-			function quote($string) {
-				return $string;
-			}
-
-		}
-
-		class Min_Result {
-			var $num_rows, $_rows = array(), $_offset = 0, $_charset = array();
-
-			function __construct($result) {
-				foreach ($result as $item) {
-					$row = array();
-					foreach ($item as $key => $val) {
-						if (is_a($val, 'MongoBinData')) {
-							$this->_charset[$key] = 63;
-						}
-						$row[$key] =
-							(is_a($val, 'MongoId') ? 'ObjectId("' . strval($val) . '")' :
-							(is_a($val, 'MongoDate') ? gmdate("Y-m-d H:i:s", $val->sec) . " GMT" :
-							(is_a($val, 'MongoBinData') ? $val->bin : //! allow downloading
-							(is_a($val, 'MongoRegex') ? strval($val) :
-							(is_object($val) ? get_class($val) : // MongoMinKey, MongoMaxKey
-							$val
-						)))));
-					}
-					$this->_rows[] = $row;
-					foreach ($row as $key => $val) {
-						if (!isset($this->_rows[0][$key])) {
-							$this->_rows[0][$key] = null;
-						}
-					}
-				}
-				$this->num_rows = count($this->_rows);
-			}
-
-			function fetch_assoc() {
-				$row = current($this->_rows);
-				if (!$row) {
-					return $row;
-				}
-				$return = array();
-				foreach ($this->_rows[0] as $key => $val) {
-					$return[$key] = $row[$key];
-				}
-				next($this->_rows);
-				return $return;
-			}
-
-			function fetch_row() {
-				$return = $this->fetch_assoc();
-				if (!$return) {
-					return $return;
-				}
-				return array_values($return);
-			}
-
-			function fetch_field() {
-				$keys = array_keys($this->_rows[0]);
-				$name = $keys[$this->_offset++];
-				return (object) array(
-					'name' => $name,
-					'charsetnr' => $this->_charset[$name],
-				);
-			}
-
-		}
-
-
-
-		class Min_Driver extends Min_SQL {
-			public $primary = "_id";
-			
-			function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
-				$select = ($select == array("*")
-					? array()
-					: array_fill_keys($select, true)
-				);
-				$sort = array();
-				foreach ($order as $val) {
-					$val = preg_replace('~ DESC$~', '', $val, 1, $count);
-					$sort[$val] = ($count ? -1 : 1);
-				}
-				return new Min_Result($this->_conn->_db->selectCollection($table)
-					->find(array(), $select)
-					->sort($sort)
-					->limit($limit != "" ? +$limit : 0)
-					->skip($page * $limit)
-				);
-			}
-			
-			function insert($table, $set) {
-				try {
-					$return = $this->_conn->_db->selectCollection($table)->insert($set);
-					$this->_conn->errno = $return['code'];
-					$this->_conn->error = $return['err'];
-					$this->_conn->last_id = $set['_id'];
-					return !$return['err'];
-				} catch (Exception $ex) {
-					$this->_conn->error = $ex->getMessage();
-					return false;
-				}
-			}
-		}
-
-		function get_databases($flush) {
-			global $connection;
-			$return = array();
-			$dbs = $connection->_link->listDBs();
-			foreach ($dbs['databases'] as $db) {
-				$return[] = $db['name'];
-			}
-			return $return;
-		}
-
-		function count_tables($databases) {
-			global $connection;
-			$return = array();
-			foreach ($databases as $db) {
-				$return[$db] = count($connection->_link->selectDB($db)->getCollectionNames(true));
-			}
-			return $return;
-		}
-
-		function tables_list() {
-			global $connection;
-			return array_fill_keys($connection->_db->getCollectionNames(true), 'table');
-		}
-
-		function drop_databases($databases) {
-			global $connection;
-			foreach ($databases as $db) {
-				$response = $connection->_link->selectDB($db)->drop();
-				if (!$response['ok']) {
-					return false;
-				}
-			}
-			return true;
-		}
-
-		function indexes($table, $connection2 = null) {
-			global $connection;
-			$return = array();
-			foreach ($connection->_db->selectCollection($table)->getIndexInfo() as $index) {
-				$descs = array();
-				foreach ($index["key"] as $column => $type) {
-					$descs[] = ($type == -1 ? '1' : null);
-				}
-				$return[$index["name"]] = array(
-					"type" => ($index["name"] == "_id_" ? "PRIMARY" : ($index["unique"] ? "UNIQUE" : "INDEX")),
-					"columns" => array_keys($index["key"]),
-					"lengths" => array(),
-					"descs" => $descs,
-				);
-			}
-			return $return;
-		}
-
-		function fields($table) {
-			return fields_from_edit();
-		}
-
-		function found_rows($table_status, $where) {
-			global $connection;
-			//! don't call count_rows()
-			return $connection->_db->selectCollection($_GET["select"])->count($where);
-		}
-
-		$operators = array("=");
-
-	} elseif (class_exists('MongoDB\Driver\Manager')) {
+	if (class_exists('MongoDB\Driver\Manager')) {
 		class Min_DB {
 			var $extension = "MongoDB", $server_info = MONGODB_VERSION, $error, $last_id;
 			/** @var MongoDB\Driver\Manager */
@@ -221,6 +30,10 @@ if (isset($_GET["mongo"])) {
 				return $string;
 			}
 
+			function ping($link) {
+				$class = 'MongoDB\Driver\Command';
+				$link->executeCommand('admin', new $class(array('ping' => 1)));
+			}
 		}
 
 		class Min_Result {
@@ -560,6 +373,199 @@ if (isset($_GET["mongo"])) {
 			"(date)>=",
 			"(date)<=",
 		);
+	} elseif (class_exists('MongoDB')) {
+		class Min_DB {
+			var $extension = "Mongo", $server_info = MongoClient::VERSION, $error, $last_id, $_link, $_db;
+
+			function connect($uri, $options) {
+				return @new MongoClient($uri, $options);
+			}
+			
+			function query($query) {
+				return false;
+			}
+
+			function select_db($database) {
+				try {
+					$this->_db = $this->_link->selectDB($database);
+					return true;
+				} catch (Exception $ex) {
+					$this->error = $ex->getMessage();
+					return false;
+				}
+			}
+
+			function quote($string) {
+				return $string;
+			}
+
+			function ping($link) {
+			}
+		}
+
+		class Min_Result {
+			var $num_rows, $_rows = array(), $_offset = 0, $_charset = array();
+
+			function __construct($result) {
+				foreach ($result as $item) {
+					$row = array();
+					foreach ($item as $key => $val) {
+						if (is_a($val, 'MongoBinData')) {
+							$this->_charset[$key] = 63;
+						}
+						$row[$key] =
+							(is_a($val, 'MongoId') ? 'ObjectId("' . strval($val) . '")' :
+							(is_a($val, 'MongoDate') ? gmdate("Y-m-d H:i:s", $val->sec) . " GMT" :
+							(is_a($val, 'MongoBinData') ? $val->bin : //! allow downloading
+							(is_a($val, 'MongoRegex') ? strval($val) :
+							(is_object($val) ? get_class($val) : // MongoMinKey, MongoMaxKey
+							$val
+						)))));
+					}
+					$this->_rows[] = $row;
+					foreach ($row as $key => $val) {
+						if (!isset($this->_rows[0][$key])) {
+							$this->_rows[0][$key] = null;
+						}
+					}
+				}
+				$this->num_rows = count($this->_rows);
+			}
+
+			function fetch_assoc() {
+				$row = current($this->_rows);
+				if (!$row) {
+					return $row;
+				}
+				$return = array();
+				foreach ($this->_rows[0] as $key => $val) {
+					$return[$key] = $row[$key];
+				}
+				next($this->_rows);
+				return $return;
+			}
+
+			function fetch_row() {
+				$return = $this->fetch_assoc();
+				if (!$return) {
+					return $return;
+				}
+				return array_values($return);
+			}
+
+			function fetch_field() {
+				$keys = array_keys($this->_rows[0]);
+				$name = $keys[$this->_offset++];
+				return (object) array(
+					'name' => $name,
+					'charsetnr' => $this->_charset[$name],
+				);
+			}
+
+		}
+
+
+
+		class Min_Driver extends Min_SQL {
+			public $primary = "_id";
+			
+			function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
+				$select = ($select == array("*")
+					? array()
+					: array_fill_keys($select, true)
+				);
+				$sort = array();
+				foreach ($order as $val) {
+					$val = preg_replace('~ DESC$~', '', $val, 1, $count);
+					$sort[$val] = ($count ? -1 : 1);
+				}
+				return new Min_Result($this->_conn->_db->selectCollection($table)
+					->find(array(), $select)
+					->sort($sort)
+					->limit($limit != "" ? +$limit : 0)
+					->skip($page * $limit)
+				);
+			}
+			
+			function insert($table, $set) {
+				try {
+					$return = $this->_conn->_db->selectCollection($table)->insert($set);
+					$this->_conn->errno = $return['code'];
+					$this->_conn->error = $return['err'];
+					$this->_conn->last_id = $set['_id'];
+					return !$return['err'];
+				} catch (Exception $ex) {
+					$this->_conn->error = $ex->getMessage();
+					return false;
+				}
+			}
+		}
+
+		function get_databases($flush) {
+			global $connection;
+			$return = array();
+			$dbs = $connection->_link->listDBs();
+			foreach ($dbs['databases'] as $db) {
+				$return[] = $db['name'];
+			}
+			return $return;
+		}
+
+		function count_tables($databases) {
+			global $connection;
+			$return = array();
+			foreach ($databases as $db) {
+				$return[$db] = count($connection->_link->selectDB($db)->getCollectionNames(true));
+			}
+			return $return;
+		}
+
+		function tables_list() {
+			global $connection;
+			return array_fill_keys($connection->_db->getCollectionNames(true), 'table');
+		}
+
+		function drop_databases($databases) {
+			global $connection;
+			foreach ($databases as $db) {
+				$response = $connection->_link->selectDB($db)->drop();
+				if (!$response['ok']) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		function indexes($table, $connection2 = null) {
+			global $connection;
+			$return = array();
+			foreach ($connection->_db->selectCollection($table)->getIndexInfo() as $index) {
+				$descs = array();
+				foreach ($index["key"] as $column => $type) {
+					$descs[] = ($type == -1 ? '1' : null);
+				}
+				$return[$index["name"]] = array(
+					"type" => ($index["name"] == "_id_" ? "PRIMARY" : ($index["unique"] ? "UNIQUE" : "INDEX")),
+					"columns" => array_keys($index["key"]),
+					"lengths" => array(),
+					"descs" => $descs,
+				);
+			}
+			return $return;
+		}
+
+		function fields($table) {
+			return fields_from_edit();
+		}
+
+		function found_rows($table_status, $where) {
+			global $connection;
+			//! don't call count_rows()
+			return $connection->_db->selectCollection($_GET["select"])->count($where);
+		}
+
+		$operators = array("=");
+
 	}
 
 	function table($idf) {
@@ -626,7 +632,7 @@ if (isset($_GET["mongo"])) {
 			if ($password != "") {
 				$options["password"] = "";
 				try {
-					$connection->connect("mongodb://$server", $options);
+					$connection->ping($connection->connect("mongodb://$server", $options));
 					return lang('Database does not support password.');
 				} catch (Exception $ex) {
 					// this is what we want
