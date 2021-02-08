@@ -684,9 +684,9 @@ class Adminer {
 						$return .= "/$val";
 					}
 				}
-				if ($key && !preg_match('~set|blob|bytea|raw|file|bool~', $field["type"])) {
-					$return .= "/SQL";
-				}
+			}
+			if ($key && !preg_match('~set|blob|bytea|raw|file|bool~', $field["type"])) {
+				$return .= "/SQL";
 			}
 		}
 		if ($field["auto_increment"] && !$update) {
