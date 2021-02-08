@@ -1,3 +1,6 @@
+Adminer 4.7.10-dev:
+Add DB version to comment in export
+
 Adminer 4.7.9 (released 2021-02-07):
 Fix XSS in browsers which don't encode URL parameters (bug #775, regression from 4.7.0)
 Elasticsearch, ClickHouse: Do not print response if HTTP code is not 200
