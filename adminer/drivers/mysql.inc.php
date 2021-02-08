@@ -2,7 +2,6 @@
 $drivers = array("server" => "MySQL") + $drivers;
 
 if (!defined("DRIVER")) {
-	$possible_drivers = array("MySQLi", "MySQL", "PDO_MySQL");
 	define("DRIVER", "server"); // server - backwards compatibility
 	// MySQLi supports everything, MySQL doesn't support multiple result sets, PDO_MySQL doesn't support orgtable
 	if (extension_loaded("mysqli")) {
@@ -1111,34 +1110,44 @@ if (!defined("DRIVER")) {
 		return $connection->result("SELECT @@max_connections");
 	}
 
-	$jush = "sql"; ///< @var string JUSH identifier
-	$types = array(); ///< @var array ($type => $maximum_unsigned_length, ...)
-	$structured_types = array(); ///< @var array ($description => array($type, ...), ...)
-	foreach (array(
-		lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "mediumint" => 8, "int" => 10, "bigint" => 20, "decimal" => 66, "float" => 12, "double" => 21),
-		lang('Date and time') => array("date" => 10, "datetime" => 19, "timestamp" => 19, "time" => 10, "year" => 4),
-		lang('Strings') => array("char" => 255, "varchar" => 65535, "tinytext" => 255, "text" => 65535, "mediumtext" => 16777215, "longtext" => 4294967295),
-		lang('Lists') => array("enum" => 65535, "set" => 64),
-		lang('Binary') => array("bit" => 20, "binary" => 255, "varbinary" => 65535, "tinyblob" => 255, "blob" => 65535, "mediumblob" => 16777215, "longblob" => 4294967295),
-		lang('Geometry') => array("geometry" => 0, "point" => 0, "linestring" => 0, "polygon" => 0, "multipoint" => 0, "multilinestring" => 0, "multipolygon" => 0, "geometrycollection" => 0),
-	) as $key => $val) {
-		$types += $val;
-		$structured_types[$key] = array_keys($val);
+	/** Get driver config
+	* @return array array('possible_drivers' => , 'jush' => , 'types' => , 'structured_types' => , 'unsigned' => , 'operators' => , 'functions' => , 'grouping' => , 'edit_functions' => )
+	*/
+	function driver_config() {
+		$types = array(); ///< @var array ($type => $maximum_unsigned_length, ...)
+		$structured_types = array(); ///< @var array ($description => array($type, ...), ...)
+		foreach (array(
+			lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "mediumint" => 8, "int" => 10, "bigint" => 20, "decimal" => 66, "float" => 12, "double" => 21),
+			lang('Date and time') => array("date" => 10, "datetime" => 19, "timestamp" => 19, "time" => 10, "year" => 4),
+			lang('Strings') => array("char" => 255, "varchar" => 65535, "tinytext" => 255, "text" => 65535, "mediumtext" => 16777215, "longtext" => 4294967295),
+			lang('Lists') => array("enum" => 65535, "set" => 64),
+			lang('Binary') => array("bit" => 20, "binary" => 255, "varbinary" => 65535, "tinyblob" => 255, "blob" => 65535, "mediumblob" => 16777215, "longblob" => 4294967295),
+			lang('Geometry') => array("geometry" => 0, "point" => 0, "linestring" => 0, "polygon" => 0, "multipoint" => 0, "multilinestring" => 0, "multipolygon" => 0, "geometrycollection" => 0),
+		) as $key => $val) {
+			$types += $val;
+			$structured_types[$key] = array_keys($val);
+		}
+		return array(
+			'possible_drivers' => array("MySQLi", "MySQL", "PDO_MySQL"),
+			'jush' => "sql", ///< @var string JUSH identifier
+			'types' => $types,
+			'structured_types' => $structured_types,
+			'unsigned' => array("unsigned", "zerofill", "unsigned zerofill"), ///< @var array number variants
+			'operators' => array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "FIND_IN_SET", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL"), ///< @var array operators used in select
+			'functions' => array("char_length", "date", "from_unixtime", "lower", "round", "floor", "ceil", "sec_to_time", "time_to_sec", "upper"), ///< @var array functions used in select
+			'grouping' => array("avg", "count", "count distinct", "group_concat", "max", "min", "sum"), ///< @var array grouping functions used in select
+			'edit_functions' => array( ///< @var array of array("$type|$type2" => "$function/$function2") functions used in editing, [0] - edit and insert, [1] - edit only
+				array(
+					"char" => "md5/sha1/password/encrypt/uuid",
+					"binary" => "md5/sha1",
+					"date|time" => "now",
+				), array(
+					number_type() => "+/-",
+					"date" => "+ interval/- interval",
+					"time" => "addtime/subtime",
+					"char|text" => "concat",
+				)
+			),
+		);
 	}
-	$unsigned = array("unsigned", "zerofill", "unsigned zerofill"); ///< @var array number variants
-	$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "FIND_IN_SET", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL"); ///< @var array operators used in select
-	$functions = array("char_length", "date", "from_unixtime", "lower", "round", "floor", "ceil", "sec_to_time", "time_to_sec", "upper"); ///< @var array functions used in select
-	$grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum"); ///< @var array grouping functions used in select
-	$edit_functions = array( ///< @var array of array("$type|$type2" => "$function/$function2") functions used in editing, [0] - edit and insert, [1] - edit only
-		array(
-			"char" => "md5/sha1/password/encrypt/uuid",
-			"binary" => "md5/sha1",
-			"date|time" => "now",
-		), array(
-			number_type() => "+/-",
-			"date" => "+ interval/- interval",
-			"time" => "addtime/subtime",
-			"char|text" => "concat",
-		)
-	);
 }

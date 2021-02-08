@@ -3,7 +3,6 @@ $drivers["sqlite"] = "SQLite 3";
 $drivers["sqlite2"] = "SQLite 2";
 
 if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
-	$possible_drivers = array((isset($_GET["sqlite"]) ? "SQLite3" : "SQLite"), "PDO_SQLite");
 	define("DRIVER", (isset($_GET["sqlite"]) ? "sqlite" : "sqlite2"));
 	if (class_exists(isset($_GET["sqlite"]) ? "SQLite3" : "SQLiteDatabase")) {
 		if (isset($_GET["sqlite"])) {
@@ -785,20 +784,25 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return preg_match('~^(columns|database|drop_col|dump|indexes|descidx|move_col|sql|status|table|trigger|variables|view|view_trigger)$~', $feature);
 	}
 
-	$jush = "sqlite";
-	$types = array("integer" => 0, "real" => 0, "numeric" => 0, "text" => 0, "blob" => 0);
-	$structured_types = array_keys($types);
-	$unsigned = array();
-	$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL"); // REGEXP can be user defined function
-	$functions = array("hex", "length", "lower", "round", "unixepoch", "upper");
-	$grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
-	$edit_functions = array(
-		array(
-			// "text" => "date('now')/time('now')/datetime('now')",
-		), array(
-			"integer|real|numeric" => "+/-",
-			// "text" => "date/time/datetime",
-			"text" => "||",
-		)
-	);
+	function driver_config() {
+		return array(
+			'possible_drivers' => array((isset($_GET["sqlite"]) ? "SQLite3" : "SQLite"), "PDO_SQLite"),
+			'jush' => "sqlite",
+			'types' => array("integer" => 0, "real" => 0, "numeric" => 0, "text" => 0, "blob" => 0),
+			'structured_types' => array_keys($types),
+			'unsigned' => array(),
+			'operators' => array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL"), // REGEXP can be user defined function
+			'functions' => array("hex", "length", "lower", "round", "unixepoch", "upper"),
+			'grouping' => array("avg", "count", "count distinct", "group_concat", "max", "min", "sum"),
+			'edit_functions' => array(
+				array(
+					// "text" => "date('now')/time('now')/datetime('now')",
+				), array(
+					"integer|real|numeric" => "+/-",
+					// "text" => "date/time/datetime",
+					"text" => "||",
+				)
+			),
+		);
+	}
 }

@@ -2,7 +2,6 @@
 $drivers["elastic"] = "Elasticsearch (beta)";
 
 if (isset($_GET["elastic"])) {
-	$possible_drivers = array("json + allow_url_fopen");
 	define("DRIVER", "elastic");
 
 	if (function_exists('json_decode') && ini_bool('allow_url_fopen')) {
@@ -461,20 +460,27 @@ if (isset($_GET["elastic"])) {
 		return $connection->last_id;
 	}
 
-	$jush = "elastic";
-	$operators = array("=", "query");
-	$functions = array();
-	$grouping = array();
-	$edit_functions = array(array("json"));
-	$types = array(); ///< @var array ($type => $maximum_unsigned_length, ...)
-	$structured_types = array(); ///< @var array ($description => array($type, ...), ...)
-	foreach (array(
-		lang('Numbers') => array("long" => 3, "integer" => 5, "short" => 8, "byte" => 10, "double" => 20, "float" => 66, "half_float" => 12, "scaled_float" => 21),
-		lang('Date and time') => array("date" => 10),
-		lang('Strings') => array("string" => 65535, "text" => 65535),
-		lang('Binary') => array("binary" => 255),
-	) as $key => $val) {
-		$types += $val;
-		$structured_types[$key] = array_keys($val);
+	function driver_config() {
+		$types = array();
+		$structured_types = array();
+		foreach (array(
+			lang('Numbers') => array("long" => 3, "integer" => 5, "short" => 8, "byte" => 10, "double" => 20, "float" => 66, "half_float" => 12, "scaled_float" => 21),
+			lang('Date and time') => array("date" => 10),
+			lang('Strings') => array("string" => 65535, "text" => 65535),
+			lang('Binary') => array("binary" => 255),
+		) as $key => $val) {
+			$types += $val;
+			$structured_types[$key] = array_keys($val);
+		}
+		return array(
+			'possible_drivers' => array("json + allow_url_fopen"),
+			'jush' => "elastic",
+			'operators' => array("=", "query"),
+			'functions' => array(),
+			'grouping' => array(),
+			'edit_functions' => array(array("json")),
+			'types' => $types,
+			'structured_types' => $structured_types,
+		);
 	}
 }

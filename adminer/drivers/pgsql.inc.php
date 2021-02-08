@@ -2,7 +2,6 @@
 $drivers["pgsql"] = "PostgreSQL";
 
 if (isset($_GET["pgsql"])) {
-	$possible_drivers = array("PgSQL", "PDO_PgSQL");
 	define("DRIVER", "pgsql");
 	if (extension_loaded("pgsql")) {
 		class Min_DB {
@@ -879,32 +878,39 @@ AND typelem = 0"
 		return $connection->result("SHOW max_connections");
 	}
 
-	$jush = "pgsql";
-	$types = array();
-	$structured_types = array();
-	foreach (array( //! arrays
-		lang('Numbers') => array("smallint" => 5, "integer" => 10, "bigint" => 19, "boolean" => 1, "numeric" => 0, "real" => 7, "double precision" => 16, "money" => 20),
-		lang('Date and time') => array("date" => 13, "time" => 17, "timestamp" => 20, "timestamptz" => 21, "interval" => 0),
-		lang('Strings') => array("character" => 0, "character varying" => 0, "text" => 0, "tsquery" => 0, "tsvector" => 0, "uuid" => 0, "xml" => 0),
-		lang('Binary') => array("bit" => 0, "bit varying" => 0, "bytea" => 0),
-		lang('Network') => array("cidr" => 43, "inet" => 43, "macaddr" => 17, "txid_snapshot" => 0),
-		lang('Geometry') => array("box" => 0, "circle" => 0, "line" => 0, "lseg" => 0, "path" => 0, "point" => 0, "polygon" => 0),
-	) as $key => $val) { //! can be retrieved from pg_type
-		$types += $val;
-		$structured_types[$key] = array_keys($val);
+	function driver_config() {
+		$types = array();
+		$structured_types = array();
+		foreach (array( //! arrays
+			lang('Numbers') => array("smallint" => 5, "integer" => 10, "bigint" => 19, "boolean" => 1, "numeric" => 0, "real" => 7, "double precision" => 16, "money" => 20),
+			lang('Date and time') => array("date" => 13, "time" => 17, "timestamp" => 20, "timestamptz" => 21, "interval" => 0),
+			lang('Strings') => array("character" => 0, "character varying" => 0, "text" => 0, "tsquery" => 0, "tsvector" => 0, "uuid" => 0, "xml" => 0),
+			lang('Binary') => array("bit" => 0, "bit varying" => 0, "bytea" => 0),
+			lang('Network') => array("cidr" => 43, "inet" => 43, "macaddr" => 17, "txid_snapshot" => 0),
+			lang('Geometry') => array("box" => 0, "circle" => 0, "line" => 0, "lseg" => 0, "path" => 0, "point" => 0, "polygon" => 0),
+		) as $key => $val) { //! can be retrieved from pg_type
+			$types += $val;
+			$structured_types[$key] = array_keys($val);
+		}
+		return array(
+			'possible_drivers' => array("PgSQL", "PDO_PgSQL"),
+			'jush' => "pgsql",
+			'types' => $types,
+			'structured_types' => $structured_types,
+			'unsigned' => array(),
+			'operators' => array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"), // no "SQL" to avoid CSRF
+			'functions' => array("char_length", "lower", "round", "to_hex", "to_timestamp", "upper"),
+			'grouping' => array("avg", "count", "count distinct", "max", "min", "sum"),
+			'edit_functions' => array(
+				array(
+					"char" => "md5",
+					"date|time" => "now",
+				), array(
+					number_type() => "+/-",
+					"date|time" => "+ interval/- interval", //! escape
+					"char|text" => "||",
+				)
+			),
+		);
 	}
-	$unsigned = array();
-	$operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"); // no "SQL" to avoid CSRF
-	$functions = array("char_length", "lower", "round", "to_hex", "to_timestamp", "upper");
-	$grouping = array("avg", "count", "count distinct", "max", "min", "sum");
-	$edit_functions = array(
-		array(
-			"char" => "md5",
-			"date|time" => "now",
-		), array(
-			number_type() => "+/-",
-			"date|time" => "+ interval/- interval", //! escape
-			"char|text" => "||",
-		)
-	);
 }

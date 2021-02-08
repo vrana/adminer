@@ -2,7 +2,6 @@
 $drivers["oracle"] = "Oracle (beta)";
 
 if (isset($_GET["oracle"])) {
-	$possible_drivers = array("OCI8", "PDO_OCI");
 	define("DRIVER", "oracle");
 	if (extension_loaded("oci8")) {
 		class Min_DB {
@@ -404,30 +403,37 @@ ORDER BY PROCESS
 		return preg_match('~^(columns|database|drop_col|indexes|descidx|processlist|scheme|sql|status|table|variables|view|view_trigger)$~', $feature); //!
 	}
 
-	$jush = "oracle";
-	$types = array();
-	$structured_types = array();
-	foreach (array(
-		lang('Numbers') => array("number" => 38, "binary_float" => 12, "binary_double" => 21),
-		lang('Date and time') => array("date" => 10, "timestamp" => 29, "interval year" => 12, "interval day" => 28), //! year(), day() to second()
-		lang('Strings') => array("char" => 2000, "varchar2" => 4000, "nchar" => 2000, "nvarchar2" => 4000, "clob" => 4294967295, "nclob" => 4294967295),
-		lang('Binary') => array("raw" => 2000, "long raw" => 2147483648, "blob" => 4294967295, "bfile" => 4294967296),
-	) as $key => $val) {
-		$types += $val;
-		$structured_types[$key] = array_keys($val);
+	function driver_config() {
+		$types = array();
+		$structured_types = array();
+		foreach (array(
+			lang('Numbers') => array("number" => 38, "binary_float" => 12, "binary_double" => 21),
+			lang('Date and time') => array("date" => 10, "timestamp" => 29, "interval year" => 12, "interval day" => 28), //! year(), day() to second()
+			lang('Strings') => array("char" => 2000, "varchar2" => 4000, "nchar" => 2000, "nvarchar2" => 4000, "clob" => 4294967295, "nclob" => 4294967295),
+			lang('Binary') => array("raw" => 2000, "long raw" => 2147483648, "blob" => 4294967295, "bfile" => 4294967296),
+		) as $key => $val) {
+			$types += $val;
+			$structured_types[$key] = array_keys($val);
+		}
+		return array(
+			'possible_drivers' => array("OCI8", "PDO_OCI"),
+			'jush' => "oracle",
+			'types' => $types,
+			'structured_types' => $structured_types,
+			'unsigned' => array(),
+			'operators' => array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL"),
+			'functions' => array("length", "lower", "round", "upper"),
+			'grouping' => array("avg", "count", "count distinct", "max", "min", "sum"),
+			'edit_functions' => array(
+				array( //! no parentheses
+					"date" => "current_date",
+					"timestamp" => "current_timestamp",
+				), array(
+					"number|float|double" => "+/-",
+					"date|timestamp" => "+ interval/- interval",
+					"char|clob" => "||",
+				)
+			),
+		);
 	}
-	$unsigned = array();
-	$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL");
-	$functions = array("length", "lower", "round", "upper");
-	$grouping = array("avg", "count", "count distinct", "max", "min", "sum");
-	$edit_functions = array(
-		array( //! no parentheses
-			"date" => "current_date",
-			"timestamp" => "current_timestamp",
-		), array(
-			"number|float|double" => "+/-",
-			"date|timestamp" => "+ interval/- interval",
-			"char|clob" => "||",
-		)
-	);
 }

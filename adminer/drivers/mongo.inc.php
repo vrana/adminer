@@ -2,7 +2,6 @@
 $drivers["mongo"] = "MongoDB";
 
 if (isset($_GET["mongo"])) {
-	$possible_drivers = array("mongo", "mongodb");
 	define("DRIVER", "mongo");
 
 	if (class_exists('MongoDB\Driver\Manager')) {
@@ -731,8 +730,13 @@ if (isset($_GET["mongo"])) {
 		return true;
 	}
 
-	$jush = "mongo";
-	$functions = array();
-	$grouping = array();
-	$edit_functions = array(array("json"));
+	function driver_config() {
+		return array(
+			'possible_drivers' => array("mongo", "mongodb"),
+			'jush' => "mongo",
+			'functions' => array(),
+			'grouping' => array(),
+			'edit_functions' => array(array("json")),
+		);
+	}
 }
