@@ -54,7 +54,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 				}
 				$process_field = process_field($field, $type_field);
 				$all_fields[] = array($field["orig"], $process_field, $after);
-				if ($process_field != process_field($orig_field, $orig_field)) {
+				if (!$orig_field || $process_field != process_field($orig_field, $orig_field)) {
 					$fields[] = array($field["orig"], $process_field, $after);
 					if ($field["orig"] != "" || $after) {
 						$use_all_fields = true;
