@@ -1,5 +1,5 @@
 <?php
-$drivers["clickhouse"] = "ClickHouse (alpha)";
+add_driver("clickhouse", "ClickHouse (alpha)");
 
 if (isset($_GET["clickhouse"])) {
 	define("DRIVER", "clickhouse");

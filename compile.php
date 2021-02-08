@@ -41,7 +41,7 @@ function lang_ids($match) {
 }
 
 function put_file($match) {
-	global $project, $VERSION;
+	global $project, $VERSION, $driver;
 	if (basename($match[2]) == '$LANG.inc.php') {
 		return $match[0]; // processed later
 	}
@@ -60,6 +60,9 @@ header("Cache-Control: immutable");
 		if (!$count) {
 			echo "adminer/file.inc.php: Caching headers placeholder not found\n";
 		}
+	}
+	if ($driver && dirname($match[2]) == "../adminer/drivers") {
+		$return = preg_replace('~^if \(isset\(\$_GET\["' . $driver . '"]\)\) \{(.*)^}~ms', '\1', $return);
 	}
 	if (basename($match[2]) != "lang.inc.php" || !$_SESSION["lang"]) {
 		if (basename($match[2]) == "lang.inc.php") {

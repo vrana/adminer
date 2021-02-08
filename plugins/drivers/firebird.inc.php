@@ -3,8 +3,8 @@
 * @author Steve Krämer
 */
 
-$drivers['firebird'] = 'Firebird (alpha)';
-	
+add_driver('firebird', 'Firebird (alpha)');
+
 if (isset($_GET["firebird"])) {
 	define("DRIVER", "firebird");
 

@@ -1,5 +1,5 @@
 <?php
-$drivers["simpledb"] = "SimpleDB";
+add_driver("simpledb", "SimpleDB");
 
 if (isset($_GET["simpledb"])) {
 	define("DRIVER", "simpledb");

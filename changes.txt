@@ -9,6 +9,7 @@ PostgreSQL: Create PRIMARY KEY for auto increment columns
 PostgreSQL: Avoid exporting empty sequence last value (bug #768)
 PostgreSQL: Fix multi-parameter functions in default values (bug #736)
 PostgreSQL PDO: Do not select NULL function for false values in edit
+SimpleDB, Firebird, ClickHouse: Move to plugin
 
 Adminer 4.7.9 (released 2021-02-07):
 Fix XSS in browsers which don't encode URL parameters (bug #775, regression from 4.7.0)

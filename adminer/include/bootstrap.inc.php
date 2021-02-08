@@ -80,11 +80,9 @@ include "../adminer/drivers/sqlite.inc.php";
 include "../adminer/drivers/pgsql.inc.php";
 include "../adminer/drivers/oracle.inc.php";
 include "../adminer/drivers/mssql.inc.php";
-include "../adminer/drivers/firebird.inc.php";
-include "../adminer/drivers/simpledb.inc.php";
 include "../adminer/drivers/mongo.inc.php";
 include "../adminer/drivers/elastic.inc.php";
-include "../adminer/drivers/clickhouse.inc.php";
+include "./include/adminer.inc.php";
 include "../adminer/drivers/mysql.inc.php"; // must be included as last driver
 
 $config = driver_config();
@@ -108,7 +106,6 @@ define("ME", preg_replace('~\?.*~', '', relative_uri()) . '?'
 );
 
 include "../adminer/include/version.inc.php";
-include "./include/adminer.inc.php";
 include "../adminer/include/design.inc.php";
 include "../adminer/include/xxtea.inc.php";
 include "../adminer/include/auth.inc.php";

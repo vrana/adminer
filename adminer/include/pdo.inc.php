@@ -100,5 +100,3 @@ if (extension_loaded('pdo')) {
 		}
 	}
 }
-
-$drivers = array();
