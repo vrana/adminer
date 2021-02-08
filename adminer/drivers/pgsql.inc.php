@@ -380,7 +380,7 @@ ORDER BY a.attnum"
 			$row["null"] = !$row["attnotnull"];
 			$row["auto_increment"] = $row['identity'] || preg_match('~^nextval\(~i', $row["default"]);
 			$row["privileges"] = array("insert" => 1, "select" => 1, "update" => 1);
-			if (preg_match('~(.+)::[^)]+(.*)~', $row["default"], $match)) {
+			if (preg_match('~(.+)::[^,)]+(.*)~', $row["default"], $match)) {
 				$row["default"] = ($match[1] == "NULL" ? null : (($match[1][0] == "'" ? idf_unescape($match[1]) : $match[1]) . $match[2]));
 			}
 			$return[$row["field"]] = $row;
