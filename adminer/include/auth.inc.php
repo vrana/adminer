@@ -119,7 +119,7 @@ function auth_error($error) {
 			$password = get_password();
 			if ($password !== null) {
 				if ($password === false) {
-					$error .= '<br>' . lang('Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.', target_blank(), '<code>permanentLogin()</code>');
+					$error .= ($error ? '<br>' : '') . lang('Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.', target_blank(), '<code>permanentLogin()</code>');
 				}
 				set_password(DRIVER, SERVER, $_GET["username"], null);
 			}
