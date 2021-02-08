@@ -1097,14 +1097,24 @@ if (!defined("DRIVER")) {
 		return !preg_match("~scheme|sequence|type|view_trigger|materializedview" . (min_version(8) ? "" : "|descidx" . (min_version(5.1) ? "" : "|event|partitioning" . (min_version(5) ? "" : "|routine|trigger|view"))) . "~", $feature);
 	}
 
+	/** Kill a process
+	* @param int
+	* @return bool
+	*/
 	function kill_process($val) {
 		return queries("KILL " . number($val));
 	}
 
+	/** Return query to get connection ID
+	* @return string
+	*/
 	function connection_id(){
 		return "SELECT CONNECTION_ID()";
 	}
 
+	/** Get maximum number of connections
+	* @return int
+	*/
 	function max_connections() {
 		global $connection;
 		return $connection->result("SELECT @@max_connections");
