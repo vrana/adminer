@@ -491,7 +491,7 @@ ORDER BY connamespace, conname") as $row) {
 	}
 
 	function auto_increment() {
-		return (min_version(11) ? " PRIMARY KEY" : "");
+		return "";
 	}
 
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
@@ -508,11 +508,14 @@ ORDER BY connamespace, conname") as $row) {
 			} else {
 				$val5 = $val[5];
 				unset($val[5]);
-				if (isset($val[6]) && $field[0] == "") { // auto_increment
-					$val[1] = ($val[1] == " bigint" ? " big" : ($val[1] == " smallint" ? " small" : " ")) . "serial";
-				}
 				if ($field[0] == "") {
+					if (isset($val[6])) { // auto_increment
+						$val[1] = ($val[1] == " bigint" ? " big" : ($val[1] == " smallint" ? " small" : " ")) . "serial";
+					}
 					$alter[] = ($table != "" ? "ADD " : "  ") . implode($val);
+					if (isset($val[6])) {
+						$alter[] = ($table != "" ? "ADD" : " ") . " PRIMARY KEY ($val[0])";
+					}
 				} else {
 					if ($column != $val[0]) {
 						$queries[] = "ALTER TABLE " . table($name) . " RENAME $column TO $val[0]";
