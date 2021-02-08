@@ -7,6 +7,7 @@ Support PHP 8 in create table (regression from 4.7.9)
 MySQL 8: Fix EXPLAIN in SQL command
 PostgreSQL: Create PRIMARY KEY for auto increment columns
 PostgreSQL: Avoid exporting empty sequence last value (bug #768)
+PostgreSQL: Do not show triggers from other schemas (PR #412)
 PostgreSQL: Fix multi-parameter functions in default values (bug #736)
 PostgreSQL PDO: Do not select NULL function for false values in edit
 SimpleDB, Firebird, ClickHouse: Move to plugin
