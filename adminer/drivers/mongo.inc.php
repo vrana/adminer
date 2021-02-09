@@ -6,7 +6,7 @@ if (isset($_GET["mongo"])) {
 
 	if (class_exists('MongoDB\Driver\Manager')) {
 		class Min_DB {
-			var $extension = "MongoDB", $server_info = MONGODB_VERSION, $error, $last_id;
+			var $extension = "MongoDB", $server_info = MONGODB_VERSION, $affected_rows, $error, $last_id;
 			/** @var MongoDB\Driver\Manager */
 			var $_link;
 			var $_db, $_db_name;
@@ -24,6 +24,17 @@ if (isset($_GET["mongo"])) {
 				} catch (Exception $e) {
 					$this->error = $e->getMessage();
 					return array();
+				}
+			}
+			
+			function executeBulkWrite($namespace, $bulk, $counter) {
+				try {
+					$results = $this->_link->executeBulkWrite($namespace, $bulk);
+					$this->affected_rows = $results->$counter();
+					return true;
+				} catch (Exception $e) {
+					$this->error = $e->getMessage();
+					return false;
 				}
 			}
 
@@ -156,9 +167,7 @@ if (isset($_GET["mongo"])) {
 					$update['$unset'] = $removeFields;
 				}
 				$bulk->update($where, $update, array('upsert' => false));
-				$results = $connection->_link->executeBulkWrite("$db.$table", $bulk);
-				$connection->affected_rows = $results->getModifiedCount();
-				return true;
+				return $connection->executeBulkWrite("$db.$table", $bulk, 'getModifiedCount');
 			}
 
 			function delete($table, $queryWhere, $limit = 0) {
@@ -168,9 +177,7 @@ if (isset($_GET["mongo"])) {
 				$class = 'MongoDB\Driver\BulkWrite';
 				$bulk = new $class(array());
 				$bulk->delete($where, array('limit' => $limit));
-				$results = $connection->_link->executeBulkWrite("$db.$table", $bulk);
-				$connection->affected_rows = $results->getDeletedCount();
-				return true;
+				return $connection->executeBulkWrite("$db.$table", $bulk, 'getDeletedCount');
 			}
 
 			function insert($table, $set) {
@@ -182,9 +189,7 @@ if (isset($_GET["mongo"])) {
 					unset($set['_id']);
 				}
 				$bulk->insert($set);
-				$results = $connection->_link->executeBulkWrite("$db.$table", $bulk);
-				$connection->affected_rows = $results->getInsertedCount();
-				return true;
+				return $connection->executeBulkWrite("$db.$table", $bulk, 'getInsertedCount');
 			}
 		}
 
