@@ -128,7 +128,7 @@ if (isset($_GET["mongo"])) {
 				$skip = $page * $limit;
 				$class = 'MongoDB\Driver\Query';
 				try {
-					return new Min_Result($this->_link->executeQuery("$connection->_db_name.$table", new $class($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort))));
+					return new Min_Result($connection->_link->executeQuery("$connection->_db_name.$table", new $class($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort))));
 				} catch (Exception $e) {
 					$connection->error = $e->getMessage();
 					return false;
@@ -189,7 +189,6 @@ if (isset($_GET["mongo"])) {
 		}
 
 		function get_databases($flush) {
-			/** @var Min_DB */
 			global $connection;
 			$return = array();
 			foreach ($connection->executeCommand('admin', array('listDatabases' => 1)) as $dbs) {
@@ -239,24 +238,26 @@ if (isset($_GET["mongo"])) {
 		}
 
 		function fields($table) {
+			global $driver;
 			$fields = fields_from_edit();
-			if (!count($fields)) {
-				global $driver;
+			if (!$fields) {
 				$result = $driver->select($table, array("*"), null, null, array(), 10);
-				while ($row = $result->fetch_assoc()) {
-					foreach ($row as $key => $val) {
-						$row[$key] = null;
-						$fields[$key] = array(
-							"field" => $key,
-							"type" => "string",
-							"null" => ($key != $driver->primary),
-							"auto_increment" => ($key == $driver->primary),
-							"privileges" => array(
-								"insert" => 1,
-								"select" => 1,
-								"update" => 1,
-							),
-						);
+				if ($result) {
+					while ($row = $result->fetch_assoc()) {
+						foreach ($row as $key => $val) {
+							$row[$key] = null;
+							$fields[$key] = array(
+								"field" => $key,
+								"type" => "string",
+								"null" => ($key != $driver->primary),
+								"auto_increment" => ($key == $driver->primary),
+								"privileges" => array(
+									"insert" => 1,
+									"select" => 1,
+									"update" => 1,
+								),
+							);
+						}
 					}
 				}
 			}
