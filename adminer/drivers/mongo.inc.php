@@ -13,11 +13,30 @@ if (isset($_GET["mongo"])) {
 
 			function connect($uri, $options) {
 				$class = 'MongoDB\Driver\Manager';
-				$return = new $class($uri, $options);
-				execute_command($return, 'admin', array('ping' => 1));
-				return $return;
+				$this->_link = new $class($uri, $options);
+				$this->executeCommand('admin', array('ping' => 1));
 			}
 			
+			function executeCommand($db, $command) {
+				$class = 'MongoDB\Driver\Command';
+				try {
+					return $this->_link->executeCommand($db, new $class($command));
+				} catch (Exception $e) {
+					$this->error = $e->getMessage();
+					return array();
+				}
+			}
+
+			function executeQuery($db, $command) {
+				$class = 'MongoDB\Driver\Query';
+				try {
+					return $this->_link->executeQuery($db, new $class($command));
+				} catch (Exception $e) {
+					$this->error = $e->getMessage();
+					return array();
+				}
+			}
+
 			function query($query) {
 				return false;
 			}
@@ -117,9 +136,7 @@ if (isset($_GET["mongo"])) {
 				}
 				$limit = min(200, max(1, (int) $limit));
 				$skip = $page * $limit;
-				$class = 'MongoDB\Driver\Query';
-				$query = new $class($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort));
-				$results = $connection->_link->executeQuery("$connection->_db_name.$table", $query);
+				$results = $connection->executeQuery("$connection->_db_name.$table", array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort));
 				return new Min_Result($results);
 			}
 
@@ -176,16 +193,11 @@ if (isset($_GET["mongo"])) {
 			}
 		}
 
-		function execute_command($link, $db, $command) {
-			$class = 'MongoDB\Driver\Command';
-			return $link->executeCommand($db, new $class($command));
-		}
-
 		function get_databases($flush) {
 			/** @var Min_DB */
 			global $connection;
 			$return = array();
-			foreach (execute_command($connection->_link, 'admin', array('listDatabases' => 1)) as $dbs) {
+			foreach ($connection->executeCommand('admin', array('listDatabases' => 1)) as $dbs) {
 				foreach ($dbs->databases as $db) {
 					$return[] = $db->name;
 				}
@@ -201,7 +213,7 @@ if (isset($_GET["mongo"])) {
 		function tables_list() {
 			global $connection;
 			$collections = array();
-			foreach (execute_command($connection->_link, $connection->_db_name, array('listCollections' => 1)) as $result) {
+			foreach ($connection->executeCommand($connection->_db_name, array('listCollections' => 1)) as $result) {
 				$collections[$result->name] = 'table';
 			}
 			return $collections;
@@ -214,7 +226,7 @@ if (isset($_GET["mongo"])) {
 		function indexes($table, $connection2 = null) {
 			global $connection;
 			$return = array();
-			foreach (execute_command($connection->_link, $connection->_db_name, array('listIndexes' => $table)) as $index) {
+			foreach ($connection->executeCommand($connection->_db_name, array('listIndexes' => $table)) as $index) {
 				$descs = array();
 				$columns = array();
 				foreach (get_object_vars($index->key) as $column => $type) {
@@ -259,7 +271,7 @@ if (isset($_GET["mongo"])) {
 		function found_rows($table_status, $where) {
 			global $connection;
 			$where = where_to_query($where);
-			$toArray = execute_command($connection->_link, $connection->_db_name, array('count' => $table_status['Name'], 'query' => $where))->toArray();
+			$toArray = $connection->executeCommand($connection->_db_name, array('count' => $table_status['Name'], 'query' => $where))->toArray();
 			return $toArray[0]->n;
 		}
 
@@ -362,12 +374,17 @@ if (isset($_GET["mongo"])) {
 			"(date)>=",
 			"(date)<=",
 		);
+	
 	} elseif (class_exists('MongoDB')) {
 		class Min_DB {
 			var $extension = "Mongo", $server_info = MongoClient::VERSION, $error, $last_id, $_link, $_db;
 
 			function connect($uri, $options) {
-				return @new MongoClient($uri, $options);
+				try {
+					return new MongoClient($uri, $options);
+				} catch (Exception $e) {
+					$this->error = $e->getMessage();
+				}
 			}
 			
 			function query($query) {
@@ -613,21 +630,19 @@ if (isset($_GET["mongo"])) {
 		if (($auth_source = getenv("MONGO_AUTH_SOURCE"))) {
 			$options["authSource"] = $auth_source;
 		}
-		try {
-			$connection->_link = $connection->connect("mongodb://$server", $options);
-			if ($password != "") {
-				$options["password"] = "";
-				try {
-					$connection->connect("mongodb://$server", $options);
-					return lang('Database does not support password.');
-				} catch (Exception $ex) {
-					// this is what we want
-				}
-			}
-			return $connection;
-		} catch (Exception $ex) {
-			return $ex->getMessage();
+		$connection->connect("mongodb://$server", $options);
+		if ($connection->error) {
+			return $connection->error;
 		}
+		if ($password != "") {
+			$options["password"] = "";
+			$connection2 = new Min_DB;
+			$connection2->connect("mongodb://$server", $options);
+			if (!$connection2->error) {
+				return lang('Database does not support password.');
+			}
+		}
+		return $connection;
 	}
 
 	function alter_indexes($table, $alter) {
