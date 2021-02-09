@@ -9,6 +9,7 @@ PostgreSQL: Create PRIMARY KEY for auto increment columns
 PostgreSQL: Avoid exporting empty sequence last value (bug #768)
 PostgreSQL: Do not show triggers from other schemas (PR #412)
 PostgreSQL: Fix multi-parameter functions in default values (bug #736)
+PostgreSQL: Fix displaying NULL bytea fields
 PostgreSQL PDO: Do not select NULL function for false values in edit
 Oracle: Alter indexes
 Oracle: Count tables
