@@ -736,6 +736,7 @@ if (isset($_GET["mongo"])) {
 		return array(
 			'possible_drivers' => array("mongo", "mongodb"),
 			'jush' => "mongo",
+			'operators' => array(""),
 			'functions' => array(),
 			'grouping' => array(),
 			'edit_functions' => array(array("json")),
