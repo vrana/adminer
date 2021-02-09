@@ -300,10 +300,8 @@ if (isset($_GET["mongo"])) {
 				if (is_array($where)) {
 					foreach ($where as $expression) {
 						list($col, $op, $val) = explode(" ", $expression, 3);
-						if ($col == "_id") {
-							$val = str_replace('MongoDB\BSON\ObjectID("', "", $val);
-							$val = str_replace('")', "", $val);
-							$class = 'MongoDB\BSON\ObjectID';
+						if ($col == "_id" && preg_match('~^(MongoDB\\\\BSON\\\\ObjectID)\("(.+)"\)$~', $val, $match)) {
+							list(, $class, $val) = $match;
 							$val = new $class($val);
 						}
 						if (!in_array($op, $adminer->operators)) {
