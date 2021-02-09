@@ -177,7 +177,6 @@ if (isset($_GET["mongo"])) {
 				$class = 'MongoDB\Driver\BulkWrite';
 				$bulk = new $class(array());
 				$bulk->delete($where, array('limit' => $limit));
-				var_dump($where);
 				return $connection->executeBulkWrite("$db.$table", $bulk, 'getDeletedCount');
 			}
 
@@ -186,7 +185,7 @@ if (isset($_GET["mongo"])) {
 				$db = $connection->_db_name;
 				$class = 'MongoDB\Driver\BulkWrite';
 				$bulk = new $class(array());
-				if (isset($set['_id']) && empty($set['_id'])) {
+				if ($set['_id'] == '') {
 					unset($set['_id']);
 				}
 				$bulk->insert($set);
