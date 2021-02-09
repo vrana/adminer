@@ -58,7 +58,7 @@ if (isset($_GET["mongo"])) {
 						}
 					}
 				}
-				$this->num_rows = $result->count;
+				$this->num_rows = count($this->_rows);
 			}
 
 			function fetch_assoc() {
