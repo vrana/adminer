@@ -14,11 +14,10 @@ if (isset($_GET["mongo"])) {
 			function connect($uri, $options) {
 				$class = 'MongoDB\Driver\Manager';
 				$return = new $class($uri, $options);
-				$class = 'MongoDB\Driver\Command';
-				$return->executeCommand('admin', new $class(array('ping' => 1)));
+				execute_command($return, 'admin', array('ping' => 1));
 				return $return;
 			}
-
+			
 			function query($query) {
 				return false;
 			}
@@ -177,14 +176,16 @@ if (isset($_GET["mongo"])) {
 			}
 		}
 
+		function execute_command($link, $db, $command) {
+			$class = 'MongoDB\Driver\Command';
+			return $link->executeCommand($db, new $class($command));
+		}
+
 		function get_databases($flush) {
 			/** @var Min_DB */
 			global $connection;
 			$return = array();
-			$class = 'MongoDB\Driver\Command';
-			$command = new $class(array('listDatabases' => 1));
-			$results = $connection->_link->executeCommand('admin', $command);
-			foreach ($results as $dbs) {
+			foreach (execute_command($connection->_link, 'admin', array('listDatabases' => 1)) as $dbs) {
 				foreach ($dbs->databases as $db) {
 					$return[] = $db->name;
 				}
@@ -199,11 +200,8 @@ if (isset($_GET["mongo"])) {
 
 		function tables_list() {
 			global $connection;
-			$class = 'MongoDB\Driver\Command';
-			$command = new $class(array('listCollections' => 1));
-			$results = $connection->_link->executeCommand($connection->_db_name, $command);
 			$collections = array();
-			foreach ($results as $result) {
+			foreach (execute_command($connection->_link, $connection->_db_name, array('listCollections' => 1)) as $result) {
 				$collections[$result->name] = 'table';
 			}
 			return $collections;
@@ -216,10 +214,7 @@ if (isset($_GET["mongo"])) {
 		function indexes($table, $connection2 = null) {
 			global $connection;
 			$return = array();
-			$class = 'MongoDB\Driver\Command';
-			$command = new $class(array('listIndexes' => $table));
-			$results = $connection->_link->executeCommand($connection->_db_name, $command);
-			foreach ($results as $index) {
+			foreach (execute_command($connection->_link, $connection->_db_name, array('listIndexes' => $table)) as $index) {
 				$descs = array();
 				$columns = array();
 				foreach (get_object_vars($index->key) as $column => $type) {
@@ -264,10 +259,7 @@ if (isset($_GET["mongo"])) {
 		function found_rows($table_status, $where) {
 			global $connection;
 			$where = where_to_query($where);
-			$class = 'MongoDB\Driver\Command';
-			$command = new $class(array('count' => $table_status['Name'], 'query' => $where));
-			$results = $connection->_link->executeCommand($connection->_db_name, $command);
-			$toArray = $results->toArray();
+			$toArray = execute_command($connection->_link, $connection->_db_name, array('count' => $table_status['Name'], 'query' => $where))->toArray();
 			return $toArray[0]->n;
 		}
 
