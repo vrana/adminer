@@ -381,7 +381,16 @@ if (isset($_GET["mongo"])) {
 
 			function connect($uri, $options) {
 				try {
-					return new MongoClient($uri, $options);
+					$this->_link = new MongoClient($uri, $options);
+					if ($options["password"] != "") {
+						$options["password"] = "";
+						try {
+							new MongoClient($uri, $options);
+							$this->error = lang('Database does not support password.');
+						} catch (Exception $e) {
+							// this is what we want
+						}
+					}
 				} catch (Exception $e) {
 					$this->error = $e->getMessage();
 				}
@@ -633,14 +642,6 @@ if (isset($_GET["mongo"])) {
 		$connection->connect("mongodb://$server", $options);
 		if ($connection->error) {
 			return $connection->error;
-		}
-		if ($password != "") {
-			$options["password"] = "";
-			$connection2 = new Min_DB;
-			$connection2->connect("mongodb://$server", $options);
-			if (!$connection2->error) {
-				return lang('Database does not support password.');
-			}
 		}
 		return $connection;
 	}
