@@ -13,7 +13,10 @@ if (isset($_GET["mongo"])) {
 
 			function connect($uri, $options) {
 				$class = 'MongoDB\Driver\Manager';
-				return new $class($uri, $options);
+				$return = new $class($uri, $options);
+				$class = 'MongoDB\Driver\Command';
+				$return->executeCommand('admin', new $class(array('ping' => 1)));
+				return $return;
 			}
 
 			function query($query) {
@@ -27,11 +30,6 @@ if (isset($_GET["mongo"])) {
 
 			function quote($string) {
 				return $string;
-			}
-
-			function ping($link) {
-				$class = 'MongoDB\Driver\Command';
-				$link->executeCommand('admin', new $class(array('ping' => 1)));
 			}
 		}
 
@@ -397,9 +395,6 @@ if (isset($_GET["mongo"])) {
 			function quote($string) {
 				return $string;
 			}
-
-			function ping($link) {
-			}
 		}
 
 		class Min_Result {
@@ -631,7 +626,7 @@ if (isset($_GET["mongo"])) {
 			if ($password != "") {
 				$options["password"] = "";
 				try {
-					$connection->ping($connection->connect("mongodb://$server", $options));
+					$connection->connect("mongodb://$server", $options);
 					return lang('Database does not support password.');
 				} catch (Exception $ex) {
 					// this is what we want
