@@ -45,7 +45,7 @@ if (isset($_GET["mongo"])) {
 						$row[$key] =
 							(is_a($val, 'MongoDB\BSON\ObjectID') ? 'MongoDB\BSON\ObjectID("' . strval($val) . '")' :
 								(is_a($val, 'MongoDB\BSON\UTCDatetime') ? $val->toDateTime()->format('Y-m-d H:i:s') :
-									(is_a($val, 'MongoDB\BSON\Binary') ? $val->bin : //! allow downloading
+									(is_a($val, 'MongoDB\BSON\Binary') ? $val->getData() : //! allow downloading
 										(is_a($val, 'MongoDB\BSON\Regex') ? strval($val) :
 											(is_object($val) ? json_encode($val, 256) : // 256 = JSON_UNESCAPED_UNICODE
 												$val // MongoMinKey, MongoMaxKey
