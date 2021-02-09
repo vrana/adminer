@@ -27,10 +27,10 @@ if (isset($_GET["mongo"])) {
 				}
 			}
 
-			function executeQuery($db, $command) {
+			function executeQuery($namespace, $where, $command) {
 				$class = 'MongoDB\Driver\Query';
 				try {
-					return $this->_link->executeQuery($db, new $class($command));
+					return $this->_link->executeQuery($namespace, new $class($where, $command));
 				} catch (Exception $e) {
 					$this->error = $e->getMessage();
 					return array();
@@ -136,7 +136,7 @@ if (isset($_GET["mongo"])) {
 				}
 				$limit = min(200, max(1, (int) $limit));
 				$skip = $page * $limit;
-				$results = $connection->executeQuery("$connection->_db_name.$table", array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort));
+				$results = $connection->executeQuery("$connection->_db_name.$table", $where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort));
 				return new Min_Result($results);
 			}
 
