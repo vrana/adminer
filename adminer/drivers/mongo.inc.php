@@ -52,13 +52,13 @@ if (isset($_GET["mongo"])) {
 							$this->_charset[$key] = 63;
 						}
 						$row[$key] =
-							(is_a($val, 'MongoDB\BSON\ObjectID') ? 'MongoDB\BSON\ObjectID("' . strval($val) . '")' :
-								(is_a($val, 'MongoDB\BSON\UTCDatetime') ? $val->toDateTime()->format('Y-m-d H:i:s') :
-									(is_a($val, 'MongoDB\BSON\Binary') ? $val->getData() : //! allow downloading
-										(is_a($val, 'MongoDB\BSON\Regex') ? strval($val) :
-											(is_object($val) || is_array($val) ? json_encode($val, 256) : // 256 = JSON_UNESCAPED_UNICODE
-												$val // MongoMinKey, MongoMaxKey
-											)))));
+							(is_a($val, 'MongoDB\BSON\ObjectID') ? 'MongoDB\BSON\ObjectID("' . "$val\")" :
+							(is_a($val, 'MongoDB\BSON\UTCDatetime') ? $val->toDateTime()->format('Y-m-d H:i:s') :
+							(is_a($val, 'MongoDB\BSON\Binary') ? $val->getData() : //! allow downloading
+							(is_a($val, 'MongoDB\BSON\Regex') ? "$val" :
+							(is_object($val) || is_array($val) ? json_encode($val, 256) : // 256 = JSON_UNESCAPED_UNICODE
+							$val // MongoMinKey, MongoMaxKey
+						)))));
 					}
 					$this->_rows[] = $row;
 					foreach ($row as $key => $val) {
@@ -421,10 +421,10 @@ if (isset($_GET["mongo"])) {
 							$this->_charset[$key] = 63;
 						}
 						$row[$key] =
-							(is_a($val, 'MongoId') ? 'ObjectId("' . strval($val) . '")' :
+							(is_a($val, 'MongoId') ? "ObjectId(\"$va\")" :
 							(is_a($val, 'MongoDate') ? gmdate("Y-m-d H:i:s", $val->sec) . " GMT" :
 							(is_a($val, 'MongoBinData') ? $val->bin : //! allow downloading
-							(is_a($val, 'MongoRegex') ? strval($val) :
+							(is_a($val, 'MongoRegex') ? "$val" :
 							(is_object($val) ? get_class($val) : // MongoMinKey, MongoMaxKey
 							$val
 						)))));
