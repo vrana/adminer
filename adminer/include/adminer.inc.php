@@ -1066,8 +1066,3 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 	}
 
 }
-
-$adminer = (function_exists('adminer_object') ? adminer_object() : new Adminer);
-if ($adminer->operators === null) {
-	$adminer->operators = $operators;
-}
