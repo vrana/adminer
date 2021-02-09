@@ -735,10 +735,11 @@ if (isset($_GET["mongo"])) {
 	}
 
 	function driver_config() {
+		global $operators;
 		return array(
 			'possible_drivers' => array("mongo", "mongodb"),
 			'jush' => "mongo",
-			'operators' => array(""),
+			'operators' => $operators,
 			'functions' => array(),
 			'grouping' => array(),
 			'edit_functions' => array(array("json")),
