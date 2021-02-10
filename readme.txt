@@ -2,7 +2,7 @@ Adminer - Database management in a single PHP file
 Adminer Editor - Data manipulation for end-users
 
 https://www.adminer.org/
-Supports: MySQL, MariaDB, PostgreSQL, SQLite, MS SQL, Oracle, SimpleDB, Elasticsearch, MongoDB, Firebird
+Supports: MySQL, MariaDB, PostgreSQL, SQLite, MS SQL, Oracle, Elasticsearch, MongoDB, SimpleDB (plugin), Firebird (plugin), ClickHouse (plugin)
 Requirements: PHP 5+
 Apache License 2.0 or GPL 2
 
