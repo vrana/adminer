@@ -6,6 +6,7 @@ if (isset($_GET["oracle"])) {
 	if (extension_loaded("oci8")) {
 		class Min_DB {
 			var $extension = "oci8", $_link, $_result, $server_info, $affected_rows, $errno, $error;
+			var $_current_db;
 
 			function _error($errno, $error) {
 				if (ini_bool("html_errors")) {
@@ -31,6 +32,7 @@ if (isset($_GET["oracle"])) {
 			}
 
 			function select_db($database) {
+				$this->_current_db = $database;
 				return true;
 			}
 
@@ -51,6 +53,7 @@ if (isset($_GET["oracle"])) {
 						return new Min_Result($result);
 					}
 					$this->affected_rows = oci_num_rows($result);
+					oci_free_statement($result);
 				}
 				return $return;
 			}
@@ -118,6 +121,7 @@ if (isset($_GET["oracle"])) {
 	} elseif (extension_loaded("pdo_oci")) {
 		class Min_DB extends Min_PDO {
 			var $extension = "PDO_OCI";
+			var $_current_db;
 
 			function connect($server, $username, $password) {
 				$this->dsn("oci:dbname=//$server;charset=AL32UTF8", $username, $password);
@@ -125,6 +129,7 @@ if (isset($_GET["oracle"])) {
 			}
 
 			function select_db($database) {
+				$this->_current_db = $database;
 				return true;
 			}
 		}
@@ -211,6 +216,13 @@ if (isset($_GET["oracle"])) {
 		return $connection->result("SELECT USER FROM DUAL");
 	}
 
+	function get_current_db() {
+		global $connection;
+		$db = $connection->_current_db ? $connection->_current_db : DB;
+		unset($connection->_current_db);
+		return $db;
+	}
+
 	function where_owner($prefix, $owner = "owner") {
 		if (!$_GET["ns"]) {
 			return '';
@@ -244,9 +256,10 @@ ORDER BY 1"
 	function table_status($name = "") {
 		$return = array();
 		$search = q($name);
+		$db = get_current_db();
 		$view = views_table("view_name");
 		$owner = where_owner(" AND ");
-		foreach (get_rows('SELECT table_name "Name", \'table\' "Engine", avg_row_len * num_rows "Data_length", num_rows "Rows" FROM all_tables WHERE tablespace_name = ' . q(DB) . $owner . ($name != "" ? " AND table_name = $search" : "") . "
+		foreach (get_rows('SELECT table_name "Name", \'table\' "Engine", avg_row_len * num_rows "Data_length", num_rows "Rows" FROM all_tables WHERE tablespace_name = ' . q($db) . $owner . ($name != "" ? " AND table_name = $search" : "") . "
 UNION SELECT view_name, 'view', 0, 0 FROM $view" . ($name != "" ? " WHERE view_name = $search" : "") . "
 ORDER BY 1"
 		) as $row) {
@@ -488,7 +501,7 @@ ORDER BY PROCESS
 	}
 
 	function support($feature) {
-		return preg_match('~^(columns|database|drop_col|indexes|descidx|processlist|scheme|sql|status|table|variables|view$~', $feature); //!
+		return preg_match('~^(columns|database|drop_col|indexes|descidx|processlist|scheme|sql|status|table|variables|view)$~', $feature); //!
 	}
 
 	function driver_config() {
