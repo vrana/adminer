@@ -2,7 +2,7 @@ Enable drivers in this directory like this:
 
 <?php
 function adminer_object() {
-	include "./plugins/drivers/simpledb.inc.php"; // the driver is enabled just by including
+	include "./plugins/drivers/simpledb.php"; // the driver is enabled just by including
 	return new Adminer; // or return AdminerPlugin if you want to use other plugins
 }
 

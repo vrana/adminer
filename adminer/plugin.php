@@ -9,7 +9,7 @@ function adminer_object() {
 	}
 	
 	// enable extra drivers just by including them
-	//~ include "../plugins/drivers/simpledb.inc.php";
+	//~ include "../plugins/drivers/simpledb.php";
 	
 	$plugins = array(
 		// specify enabled plugins here
