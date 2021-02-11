@@ -393,7 +393,7 @@
    float: none;
  }
  
- #tables a[title] {
+ #tables .structure, #tables .view {
    float: none;
    display: block;
  }

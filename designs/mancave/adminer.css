@@ -819,7 +819,7 @@ legend{
 	font-size: 13px;
 }
 
-#tables a[title] {
+#tables .structure, #tables .view {
 	float: none;
 	display: block;
 	color: #F1E5B3;

@@ -360,7 +360,7 @@ p code + a:visited:hover {
 	float: none;
 }
 
-#tables a[title] {
+#tables .structure, #tables .view {
 	float: none;
 	display: block;
 }
