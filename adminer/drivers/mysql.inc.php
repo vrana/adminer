@@ -678,17 +678,17 @@ if (!defined("DRIVER")) {
 	function rename_database($name, $collation) {
 		$return = false;
 		if (create_database($name, $collation)) {
-			//! move triggers
-			$rename = array();
+			$tables = array();
+			$views = array();
 			foreach (tables_list() as $table => $type) {
-				$rename[] = table($table) . " TO " . idf_escape($name) . "." . table($table);
+				if ($type == 'VIEW') {
+					$views[] = $table;
+				} else {
+					$tables[] = $table;
+				}
 			}
-			$return = (!$rename || queries("RENAME TABLE " . implode(", ", $rename)));
-			if ($return) {
-				queries("DROP DATABASE " . idf_escape(DB));
-			}
-			restart_session();
-			set_session("dbs", null);
+			$return = (!$tables && !$views) || move_tables($tables, $views, $name);
+			drop_databases($return ? array(DB) : array());
 		}
 		return $return;
 	}
