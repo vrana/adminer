@@ -797,12 +797,27 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function move_tables($tables, $views, $target) {
+		global $connection;
 		$rename = array();
-		foreach (array_merge($tables, $views) as $table) { // views will report SQL error
+		foreach ($tables as $table) {
 			$rename[] = table($table) . " TO " . idf_escape($target) . "." . table($table);
 		}
-		return queries("RENAME TABLE " . implode(", ", $rename));
+		if (!$rename || queries("RENAME TABLE " . implode(", ", $rename))) {
+			$definitions = array();
+			foreach ($views as $table) {
+				$definitions[table($table)] = view($table);
+			}
+			$connection->select_db($target);
+			$db = idf_escape(DB);
+			foreach ($definitions as $name => $view) {
+				if (!queries("CREATE VIEW $name AS " . str_replace(" $db.", " ", $view["select"])) || !queries("DROP VIEW $db.$name")) {
+					return false;
+				}
+			}
+			return true;
+		}
 		//! move triggers
+		return false;
 	}
 
 	/** Copy tables to other schema

@@ -1,5 +1,6 @@
 Adminer 4.8.1-dev:
 Fix more PHP 8 warnings (bug #781)
+MySQL: Allow moving views to other DB and renaming DB with views (bug #783)
 
 Adminer 4.8.0 (released 2021-02-10):
 Support function default values in insert (bug #713)
