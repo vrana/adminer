@@ -956,6 +956,7 @@ class Adminer {
 				echo "<ul id='logins'>\n$output</ul>\n" . script("mixin(qs('#logins'), {onmouseover: menuOver, onmouseout: menuOut});");
 			}
 		} else {
+			$tables = array();
 			if ($_GET["ns"] !== "" && !$missing && DB != "") {
 				$connection->select_db(DB);
 				$tables = table_status('', true);
