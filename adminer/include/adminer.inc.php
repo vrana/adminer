@@ -1025,8 +1025,8 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 			: "<input name='db' value='" . h(DB) . "' autocapitalize='off'>\n"
 		);
 		echo "<input type='submit' value='" . lang('Use') . "'" . ($databases ? " class='hidden'" : "") . ">\n";
-		if ($missing != "db" && DB != "" && $connection->select_db(DB)) {
-			if (support("scheme")) {
+		if (support("scheme")) {
+			if ($missing != "db" && DB != "" && $connection->select_db(DB)) {
 				echo "<br>" . lang('Schema') . ": <select name='ns'>" . optionlist(array("" => "") + $adminer->schemas(), $_GET["ns"]) . "</select>$db_events";
 				if ($_GET["ns"] != "") {
 					set_schema($_GET["ns"]);

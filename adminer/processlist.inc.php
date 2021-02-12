@@ -1,12 +1,14 @@
 <?php
-if (support("kill") && $_POST && !$error) {
-	$killed = 0;
-	foreach ((array) $_POST["kill"] as $val) {
-		if (kill_process($val)) {
-			$killed++;
+if (support("kill")) {
+	if ($_POST && !$error) {
+		$killed = 0;
+		foreach ((array) $_POST["kill"] as $val) {
+			if (kill_process($val)) {
+				$killed++;
+			}
 		}
+		queries_redirect(ME . "processlist=", lang('%d process(es) have been killed.', $killed), $killed || !$_POST["kill"]);
 	}
-	queries_redirect(ME . "processlist=", lang('%d process(es) have been killed.', $killed), $killed || !$_POST["kill"]);
 }
 
 page_header(lang('Process list'), $error);

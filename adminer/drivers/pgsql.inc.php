@@ -304,7 +304,7 @@ if (isset($_GET["pgsql"])) {
 
 	function tables_list() {
 		$query = "SELECT table_name, table_type FROM information_schema.tables WHERE table_schema = current_schema()";
-		if (support('materializedview')) {
+		if (support('materializedview')) { // ' - support("materializedview") could be removed by compile.php
 			$query .= "
 UNION ALL
 SELECT matviewname, 'MATERIALIZED VIEW'
