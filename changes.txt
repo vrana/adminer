@@ -1,3 +1,5 @@
+Adminer 4.8.1-dev:
+
 Adminer 4.8.0 (released 2021-02-10):
 Support function default values in insert (bug #713)
 Allow SQL pseudo-function in insert

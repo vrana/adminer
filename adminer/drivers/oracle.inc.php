@@ -308,16 +308,23 @@ ORDER BY 1"
 	function indexes($table, $connection2 = null) {
 		$return = array();
 		$owner = where_owner(" AND ", "aic.table_owner");
-		foreach (get_rows("SELECT aic.*, ac.constraint_type
+		foreach (get_rows("SELECT aic.*, ac.constraint_type, atc.data_default
 FROM all_ind_columns aic
 LEFT JOIN all_constraints ac ON aic.index_name = ac.constraint_name AND aic.table_name = ac.table_name AND aic.index_owner = ac.owner
+LEFT JOIN all_tab_cols atc ON aic.column_name = atc.column_name AND aic.table_name = atc.table_name AND aic.index_owner = atc.owner
 WHERE aic.table_name = " . q($table) . "$owner
 ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row) {
 			$index_name = $row["INDEX_NAME"];
+			$column_name = $row["DATA_DEFAULT"];
+			if ($column_name) {
+				$column_name = idf_unescape($column_name);
+			} else {
+				$column_name = $row["COLUMN_NAME"];
+			}
 			$return[$index_name]["type"] = ($row["CONSTRAINT_TYPE"] == "P" ? "PRIMARY" : ($row["CONSTRAINT_TYPE"] == "U" ? "UNIQUE" : "INDEX"));
-			$return[$index_name]["columns"][] = $row["COLUMN_NAME"];
+			$return[$index_name]["columns"][] = $column_name;
 			$return[$index_name]["lengths"][] = ($row["CHAR_LENGTH"] && $row["CHAR_LENGTH"] != $row["COLUMN_LENGTH"] ? $row["CHAR_LENGTH"] : null);
-			$return[$index_name]["descs"][] = ($row["DESCEND"] ? '1' : null);
+			$return[$index_name]["descs"][] = ($row["DESCEND"] && $row["DESCEND"] == "DESC" ? '1' : null);
 		}
 		return $return;
 	}
@@ -384,25 +391,22 @@ ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row) {
 	}
 
 	function alter_indexes($table, $alter) {
-		$create = array();
 		$drop = array();
 		$queries = array();
 		foreach ($alter as $val) {
-			$val[2] = preg_replace('~ DESC$~', '', $val[2]);
 			if ($val[0] != "INDEX") {
 				//! descending UNIQUE indexes results in syntax error
-				$create[] = ($val[2] == "DROP"
+				$val[2] = preg_replace('~ DESC$~', '', $val[2]);
+				$create = ($val[2] == "DROP"
 					? "\nDROP CONSTRAINT " . idf_escape($val[1])
 					: "\nADD" . ($val[1] != "" ? " CONSTRAINT " . idf_escape($val[1]) : "") . " $val[0] " . ($val[0] == "PRIMARY" ? "KEY " : "") . "(" . implode(", ", $val[2]) . ")"
 				);
+				array_unshift($queries, "ALTER TABLE " . table($table) . $create);
 			} elseif ($val[2] == "DROP") {
 				$drop[] = idf_escape($val[1]);
 			} else {
 				$queries[] = "CREATE INDEX " . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_")) . " ON " . table($table) . " (" . implode(", ", $val[2]) . ")";
 			}
-		}
-		if ($create) {
-			array_unshift($queries, "ALTER TABLE " . table($table) . implode(",", $create));
 		}
 		if ($drop) {
 			array_unshift($queries, "DROP INDEX " . implode(", ", $drop));
