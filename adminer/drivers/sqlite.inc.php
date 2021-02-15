@@ -785,10 +785,11 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 
 	function driver_config() {
+		$types = array("integer" => 0, "real" => 0, "numeric" => 0, "text" => 0, "blob" => 0);
 		return array(
 			'possible_drivers' => array((isset($_GET["sqlite"]) ? "SQLite3" : "SQLite"), "PDO_SQLite"),
 			'jush' => "sqlite",
-			'types' => array("integer" => 0, "real" => 0, "numeric" => 0, "text" => 0, "blob" => 0),
+			'types' => $types,
 			'structured_types' => array_keys($types),
 			'unsigned' => array(),
 			'operators' => array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL"), // REGEXP can be user defined function
