@@ -348,9 +348,7 @@ WHERE relkind IN ('r', 'm', 'v', 'f', 'p')
 			'timestamp with time zone' => 'timestamptz',
 		);
 
-		$identity_column = min_version(10) ? 'a.attidentity' : '0';
-
-		foreach (get_rows("SELECT a.attname AS field, format_type(a.atttypid, a.atttypmod) AS full_type, pg_get_expr(d.adbin, d.adrelid) AS default, a.attnotnull::int, col_description(c.oid, a.attnum) AS comment, $identity_column AS identity
+		foreach (get_rows("SELECT a.attname AS field, format_type(a.atttypid, a.atttypmod) AS full_type, pg_get_expr(d.adbin, d.adrelid) AS default, a.attnotnull::int, col_description(c.oid, a.attnum) AS comment" . (min_version(10) ? ", a.attidentity" : "") . "
 FROM pg_class c
 JOIN pg_namespace n ON c.relnamespace = n.oid
 JOIN pg_attribute a ON c.oid = a.attrelid
@@ -373,11 +371,11 @@ ORDER BY a.attnum"
 				$row["type"] = $type;
 				$row["full_type"] = $row["type"] . $length . $addon . $array;
 			}
-			if (in_array($row['identity'], array('a', 'd'))) {
-				$row['default'] = 'GENERATED ' . ($row['identity'] == 'd' ? 'BY DEFAULT' : 'ALWAYS') . ' AS IDENTITY';
+			if (in_array($row['attidentity'], array('a', 'd'))) {
+				$row['default'] = 'GENERATED ' . ($row['attidentity'] == 'd' ? 'BY DEFAULT' : 'ALWAYS') . ' AS IDENTITY';
 			}
 			$row["null"] = !$row["attnotnull"];
-			$row["auto_increment"] = $row['identity'] || preg_match('~^nextval\(~i', $row["default"]);
+			$row["auto_increment"] = $row['attidentity'] || preg_match('~^nextval\(~i', $row["default"]);
 			$row["privileges"] = array("insert" => 1, "select" => 1, "update" => 1);
 			if (preg_match('~(.+)::[^,)]+(.*)~', $row["default"], $match)) {
 				$row["default"] = ($match[1] == "NULL" ? null : (($match[1][0] == "'" ? idf_unescape($match[1]) : $match[1]) . $match[2]));
