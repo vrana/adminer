@@ -316,11 +316,7 @@ WHERE aic.table_name = " . q($table) . "$owner
 ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row) {
 			$index_name = $row["INDEX_NAME"];
 			$column_name = $row["DATA_DEFAULT"];
-			if ($column_name) {
-				$column_name = idf_unescape($column_name);
-			} else {
-				$column_name = $row["COLUMN_NAME"];
-			}
+			$column_name = ($column_name ? trim($column_name, '"') : $row["COLUMN_NAME"]); // trim - possibly wrapped in quotes but never contains quotes inside
 			$return[$index_name]["type"] = ($row["CONSTRAINT_TYPE"] == "P" ? "PRIMARY" : ($row["CONSTRAINT_TYPE"] == "U" ? "UNIQUE" : "INDEX"));
 			$return[$index_name]["columns"][] = $column_name;
 			$return[$index_name]["lengths"][] = ($row["CHAR_LENGTH"] && $row["CHAR_LENGTH"] != $row["COLUMN_LENGTH"] ? $row["CHAR_LENGTH"] : null);
