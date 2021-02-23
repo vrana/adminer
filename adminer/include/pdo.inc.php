@@ -18,7 +18,7 @@ if (extension_loaded('pdo')) {
 			} catch (Exception $ex) {
 				auth_error(h($ex->getMessage()));
 			}
-			$this->pdo->setAttribute(3, 1); // 3 - PDO::ATTR_ERRMODE, 1 - PDO::ERRMODE_WARNING
+			$this->pdo->setAttribute(3, 0); // 3 - PDO::ATTR_ERRMODE, 0 - PDO::ERRMODE_SILENT
 			$this->pdo->setAttribute(13, array('Min_PDOStatement')); // 13 - PDO::ATTR_STATEMENT_CLASS
 			$this->server_info = @$this->pdo->getAttribute(4); // 4 - PDO::ATTR_SERVER_VERSION
 		}

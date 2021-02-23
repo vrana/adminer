@@ -1,5 +1,6 @@
 Adminer 4.8.1-dev:
 Fix more PHP 8 warnings (bug #781)
+Avoid PHP warnings with PDO drivers (bug #786, regression from 4.7.8)
 MySQL: Allow moving views to other DB and renaming DB with views (bug #783)
 PostgreSQL < 10 PDO: Avoid displaying GENERATED ALWAYS BY IDENTITY everywhere (bug #785, regression from 4.7.9)
 SQLite: Fix displayed types (bug #784, regression from 4.8.0)
