@@ -13,14 +13,14 @@ if (extension_loaded('pdo')) {
 		}
 		
 		function dsn($dsn, $username, $password, $options = array()) {
+			$options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_SILENT;
+			$options[PDO::ATTR_STATEMENT_CLASS] = array('Min_PDOStatement');
 			try {
 				$this->pdo = new PDO($dsn, $username, $password, $options);
 			} catch (Exception $ex) {
 				auth_error(h($ex->getMessage()));
 			}
-			$this->pdo->setAttribute(3, 0); // 3 - PDO::ATTR_ERRMODE, 0 - PDO::ERRMODE_SILENT
-			$this->pdo->setAttribute(13, array('Min_PDOStatement')); // 13 - PDO::ATTR_STATEMENT_CLASS
-			$this->server_info = @$this->pdo->getAttribute(4); // 4 - PDO::ATTR_SERVER_VERSION
+			$this->server_info = @$this->pdo->getAttribute(PDO::ATTR_SERVER_VERSION);
 		}
 		
 		/*abstract function select_db($database);*/
@@ -84,11 +84,11 @@ if (extension_loaded('pdo')) {
 		var $_offset = 0, $num_rows;
 		
 		function fetch_assoc() {
-			return $this->fetch(2); // PDO::FETCH_ASSOC
+			return $this->fetch(PDO::FETCH_ASSOC);
 		}
 		
 		function fetch_row() {
-			return $this->fetch(3); // PDO::FETCH_NUM
+			return $this->fetch(PDO::FETCH_NUM);
 		}
 		
 		function fetch_field() {
