@@ -805,7 +805,7 @@ Use \n in SQL commands
 
 phpMinAdmin 1.10.1 (released 2009-05-07):
 Highlight odd and hover rows
-Partition editing comfort (bug #2783446)
+Partition editing comfort (bug #12)
 Allow full length in limited int
 
 phpMinAdmin 1.10.0 (released 2009-04-28):
@@ -892,7 +892,7 @@ phpMinAdmin 1.4.0 (released 2007-08-15):
 Privileges
 New design
 Dutch translation
-Use NULL for auto_increment (bug #1768966)
+Use NULL for auto_increment (bug #1)
 Fix dropping procedure parameters
 
 phpMinAdmin 1.3.2 (released 2007-08-06):
