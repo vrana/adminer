@@ -83,7 +83,7 @@ if ($adminer->homepage()) {
 
 			$tables = 0;
 			foreach ($tables_list as $name => $type) {
-				$view = ($type !== null && !preg_match('~table~i', $type));
+				$view = ($type !== null && !preg_match('~table|sequence~i', $type));
 				$id = h("Table-" . $name);
 				echo '<tr' . odd() . '><td>' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array($name, $tables_views, true), "", "", "", $id);
 				echo '<th>' . (support("table") || support("indexes") ? "<a href='" . h(ME) . "table=" . urlencode($name) . "' title='" . lang('Show structure') . "' id='$id'>" . h($name) . '</a>' : h($name));
