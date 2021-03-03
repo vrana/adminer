@@ -430,7 +430,7 @@ function drop_create($drop, $create, $drop_created, $test, $drop_test, $location
 */
 function create_trigger($on, $row) {
 	global $jush;
-	$timing_event = " $row[Timing] $row[Event]" . ($row["Event"] == "UPDATE OF" ? " " . idf_escape($row["Of"]) : "");
+	$timing_event = " $row[Timing] $row[Event]" . (preg_match('~ OF~', $row["Event"]) ? " $row[Of]" : ""); // SQL injection
 	return "CREATE TRIGGER "
 		. idf_escape($row["Trigger"])
 		. ($jush == "mssql" ? $on . $timing_event : $timing_event . $on)

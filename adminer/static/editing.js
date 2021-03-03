@@ -658,7 +658,7 @@ function triggerChange(tableRe, table, form) {
 	if (tableRe.test(form['Trigger'].value)) {
 		form['Trigger'].value = table + '_' + (selectValue(form['Timing']).charAt(0) + formEvent.charAt(0)).toLowerCase();
 	}
-	alterClass(form['Of'], 'hidden', formEvent != 'UPDATE OF');
+	alterClass(form['Of'], 'hidden', !/ OF/.test(formEvent));
 }
 
 

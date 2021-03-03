@@ -608,21 +608,34 @@ ORDER BY connamespace, conname") as $row) {
 		return true;
 	}
 
-	function trigger($name, $table = null) {
+	function trigger($name, $table) {
 		if ($name == "") {
 			return array("Statement" => "EXECUTE PROCEDURE ()");
 		}
-		if ($table === null) {
-			$table = $_GET['trigger'];
+		$columns = array();
+		$where = "WHERE trigger_schema = current_schema() AND event_object_table = " . q($table) . " AND trigger_name = " . q($name);
+		foreach (get_rows("SELECT * FROM information_schema.triggered_update_columns $where") as $row) {
+			$columns[] = $row["event_object_column"];
 		}
-		$rows = get_rows('SELECT t.trigger_name AS "Trigger", t.action_timing AS "Timing", (SELECT STRING_AGG(event_manipulation, \' OR \') FROM information_schema.triggers WHERE event_object_table = t.event_object_table AND trigger_name = t.trigger_name ) AS "Events", t.event_manipulation AS "Event", \'FOR EACH \' || t.action_orientation AS "Type", t.action_statement AS "Statement" FROM information_schema.triggers t WHERE t.event_object_table = ' . q($table) . ' AND t.trigger_name = ' . q($name));
-		return reset($rows);
+		$return = array();
+		foreach (get_rows('SELECT trigger_name AS "Trigger", action_timing AS "Timing", event_manipulation AS "Event", \'FOR EACH \' || action_orientation AS "Type", action_statement AS "Statement" FROM information_schema.triggers ' . "$where ORDER BY event_manipulation DESC") as $row) {
+			if ($columns && $row["Event"] == "UPDATE") {
+				$row["Event"] .= " OF";
+			}
+			$row["Of"] = implode(", ", $columns);
+			if ($return) {
+				$row["Event"] .= " OR $return[Event]";
+			}
+			$return = $row;
+		}
+		return $return;
 	}
 
 	function triggers($table) {
 		$return = array();
 		foreach (get_rows("SELECT * FROM information_schema.triggers WHERE trigger_schema = current_schema() AND event_object_table = " . q($table)) as $row) {
-			$return[$row["trigger_name"]] = array($row["action_timing"], $row["event_manipulation"]);
+			$trigger = trigger($row["trigger_name"], $table);
+			$return[$trigger["Trigger"]] = array($trigger["Timing"], $trigger["Event"]);
 		}
 		return $return;
 	}
@@ -630,7 +643,7 @@ ORDER BY connamespace, conname") as $row) {
 	function trigger_options() {
 		return array(
 			"Timing" => array("BEFORE", "AFTER"),
-			"Event" => array("INSERT", "UPDATE", "DELETE"),
+			"Event" => array("INSERT", "UPDATE", "UPDATE OF", "DELETE", "INSERT OR UPDATE", "INSERT OR UPDATE OF", "DELETE OR INSERT", "DELETE OR UPDATE", "DELETE OR UPDATE OF", "DELETE OR INSERT OR UPDATE", "DELETE OR INSERT OR UPDATE OF"),
 			"Type" => array("FOR EACH ROW", "FOR EACH STATEMENT"),
 		);
 	}
@@ -831,7 +844,7 @@ AND typelem = 0"
 		$return = "";
 		foreach (triggers($table) as $trg_id => $trg) {
 			$trigger = trigger($trg_id, $status['Name']);
-			$return .= "\nCREATE TRIGGER " . idf_escape($trigger['Trigger']) . " $trigger[Timing] $trigger[Events] ON " . idf_escape($status["nspname"]) . "." . idf_escape($status['Name']) . " $trigger[Type] $trigger[Statement];;\n";
+			$return .= "\nCREATE TRIGGER " . idf_escape($trigger['Trigger']) . " $trigger[Timing] $trigger[Event] ON " . idf_escape($status["nspname"]) . "." . idf_escape($status['Name']) . " $trigger[Type] $trigger[Statement];;\n";
 		}
 		return $return;
 	}
