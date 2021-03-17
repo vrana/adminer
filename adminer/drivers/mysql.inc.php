@@ -1100,7 +1100,13 @@ if (!defined("DRIVER")) {
 		}
 		if (preg_match("~geometry|point|linestring|polygon~", $field["type"])) {
 			$prefix = (min_version(8) ? "ST_" : "");
-			$return = "${prefix}GeomFromText($return, ${prefix}SRID($field[field]))";
+			$return = sprintf(
+				'%sGeomFromText(%s, %sSRID(%s))',
+				$prefix,
+				$return,
+				$prefix,
+				$field['field']
+			);
 		}
 		return $return;
 	}
