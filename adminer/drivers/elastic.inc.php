@@ -27,7 +27,12 @@ if (isset($_GET["elastic"])) {
 					return $file;
 				}
 				if (!preg_match('~^HTTP/[0-9.]+ 2~i', $http_response_header[0])) {
-					$this->error = lang('Invalid credentials.') . " $http_response_header[0]";
+					$return = json_decode($file, true);
+					if ($return === null) {
+						$this->error = lang('Invalid credentials.') . " $http_response_header[0]";
+					} else {
+						$this->error = $return['error']['root_cause'][0]['type'] . ": " . $return['error']['root_cause'][0]['reason'];
+					}
 					return false;
 				}
 				$return = json_decode($file, true);
