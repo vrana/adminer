@@ -130,9 +130,25 @@ if (isset($_GET["elastic"])) {
 				}
 			}
 			foreach ($where as $val) {
-				list($col, $op, $val) = explode(" ", $val, 3);
-				if ($col . $val != "") {
-					$term = array(($col != "" ? $col : "_all") => $val);
+				if (preg_match('~^\((.+ OR .+)\)$~', $val, $matches)) {
+					$parts = explode(" OR ", $matches[1]);
+					$terms = array();
+					foreach ($parts as $part) {
+						list($col, $op, $val) = explode(" ", $part, 3);
+						$term = array($col => $val);
+						if ($op == "=") {
+							$terms[] = array("term" => $term);
+						} elseif (in_array($op, array("must", "should", "must_not"))) {
+							$data["query"]["bool"][$op][]["match"] = $term;
+						}
+					}
+
+					if (!empty($terms)) {
+						$data["query"]["bool"]["filter"][]["bool"]["should"] = $terms;
+					}
+				} else {
+					list($col, $op, $val) = explode(" ", $val, 3);
+					$term = array($col => $val);
 					if ($op == "=") {
 						$data["query"]["bool"]["filter"][] = array("term" => $term);
 					} elseif (in_array($op, array("must", "should", "must_not"))) {
@@ -366,19 +382,21 @@ if (isset($_GET["elastic"])) {
 		);
 
 		foreach ($mappings as $name => $field) {
-			$return[$name] = array(
-				"field" => $name,
-				"full_type" => $field["type"],
-				"type" => $field["type"],
-				"privileges" => array(
-					"insert" => 1,
-					"select" => 1,
-					"update" => 1,
-				),
-			);
-			if ($field["properties"]) { // only leaf fields can be edited
-				unset($return[$name]["privileges"]["insert"]);
-				unset($return[$name]["privileges"]["update"]);
+			if (!isset($field["index"]) || $field["index"]) {
+				$return[$name] = array(
+					"field" => $name,
+					"full_type" => $field["type"],
+					"type" => $field["type"],
+					"privileges" => array(
+						"insert" => 1,
+						"select" => 1,
+						"update" => 1,
+					),
+				);
+				if ($field["properties"]) { // only leaf fields can be edited
+					unset($return[$name]["privileges"]["insert"]);
+					unset($return[$name]["privileges"]["update"]);
+				}
 			}
 		}
 		return $return;
