@@ -114,7 +114,7 @@ if (isset($_GET["elastic"])) {
 		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
 			global $adminer;
 			$data = array();
-			$query = "$table/_search";
+			$query = (min_version(6) ? "" : "$table/") . "_search";
 			if ($select != array("*")) {
 				$data["fields"] = $select;
 			}
@@ -134,20 +134,14 @@ if (isset($_GET["elastic"])) {
 			}
 			foreach ($where as $val) {
 				list($col, $op, $val) = explode(" ", $val, 3);
-				if ($col == "_id") {
-					$data["query"]["ids"]["values"][] = $val;
-				}
-				elseif ($col . $val != "") {
-					$term = array("term" => array(($col != "" ? $col : "_all") => $val));
+				if ($col . $val != "") {
+					$term = array(($col != "" ? $col : "_all") => $val);
 					if ($op == "=") {
-						$data["query"]["filtered"]["filter"]["and"][] = $term;
-					} else {
-						$data["query"]["filtered"]["query"]["bool"]["must"][] = $term;
+						$data["query"]["bool"]["filter"][] = array("term" => $term);
+					} elseif (in_array($op, array("must", "should", "must_not"))) {
+						$data["query"]["bool"][$op][]["match"] = $term;
 					}
 				}
-			}
-			if ($data["query"] && !$data["query"]["filtered"]["query"] && !$data["query"]["ids"]) {
-				$data["query"]["filtered"]["query"] = array("match_all" => array());
 			}
 			$start = microtime(true);
 			$search = $this->_conn->query($query, $data);
@@ -167,7 +161,7 @@ if (isset($_GET["elastic"])) {
 				if ($select != array("*")) {
 					$fields = array();
 					foreach ($select as $key) {
-						$fields[$key] = $hit['fields'][$key];
+						$fields[$key] = $key == "_id" ? [$hit["_id"]] : $hit['fields'][$key];
 					}
 				}
 				foreach ($fields as $key => $val) {
@@ -365,25 +359,31 @@ if (isset($_GET["elastic"])) {
 			}
 		}
 
-		$return = array();
-		if ($mappings) {
-			foreach ($mappings as $name => $field) {
-				$return[$name] = array(
-					"field" => $name,
-					"full_type" => $field["type"],
-					"type" => $field["type"],
-					"privileges" => array(
-						"insert" => 1,
-						"select" => 1,
-						"update" => 1,
-						"where" => !isset($field["index"]) || $field["index"] ?: null,
-						"order" => $field["type"] != "text" ?: null
-					),
-				);
-				if ($field["properties"]) { // only leaf fields can be edited
-					unset($return[$name]["privileges"]["insert"]);
-					unset($return[$name]["privileges"]["update"]);
-				}
+		$return = array(
+			"_id" => array(
+				"field" => "_id",
+				"full_type" => "text",
+				"type" => "text",
+				"privileges" => array("insert" => 1, "select" => 1, "where" => 1, "order" => 1),
+			)
+		);
+
+		foreach ($mappings as $name => $field) {
+			$return[$name] = array(
+				"field" => $name,
+				"full_type" => $field["type"],
+				"type" => $field["type"],
+				"privileges" => array(
+					"insert" => 1,
+					"select" => 1,
+					"update" => 1,
+					"where" => !isset($field["index"]) || $field["index"] ?: null,
+					"order" => $field["type"] != "text" ?: null
+				),
+			);
+			if ($field["properties"]) { // only leaf fields can be edited
+				unset($return[$name]["privileges"]["insert"]);
+				unset($return[$name]["privileges"]["update"]);
 			}
 		}
 		return $return;
@@ -486,7 +486,7 @@ if (isset($_GET["elastic"])) {
 		return array(
 			'possible_drivers' => array("json + allow_url_fopen"),
 			'jush' => "elastic",
-			'operators' => array("=", "query"),
+			'operators' => array("=", "must", "should", "must_not"),
 			'functions' => array(),
 			'grouping' => array(),
 			'edit_functions' => array(array("json")),
