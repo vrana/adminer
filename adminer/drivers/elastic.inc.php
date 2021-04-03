@@ -111,7 +111,7 @@ if (isset($_GET["elastic"])) {
 		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
 			global $adminer;
 			$data = array();
-			$query = (min_version(6) ? "" : "$table/") . "_search";
+			$query = (min_version(7) ? "" : "$table/") . "_search";
 			if ($select != array("*")) {
 				$data["fields"] = $select;
 			}
@@ -296,7 +296,7 @@ if (isset($_GET["elastic"])) {
 	function tables_list() {
 		global $connection;
 
-		if (min_version(6)) {
+		if (min_version(7)) {
 			return array('_doc' => 'table');
 		}
 
@@ -357,7 +357,7 @@ if (isset($_GET["elastic"])) {
 		global $connection;
 
 		$mappings = array();
-		if (min_version(6)) {
+		if (min_version(7)) {
 			$result = $connection->query("_mapping");
 			if ($result) {
 				$mappings = $result[$connection->_db]['mappings']['properties'];
