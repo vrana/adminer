@@ -57,6 +57,14 @@ if (isset($_GET["elastic"])) {
 			 * @return mixed
 			 */
 			function query($path, $content = array(), $method = 'GET') {
+				// Support for global search through all tables
+				if ($path != "" && $path[0] == "S" && preg_match('/SELECT 1 FROM ([^ ]+) WHERE (.+) LIMIT ([0-9]+)/', $path, $matches)) {
+					global $driver;
+
+					$where = explode(" AND ", $matches[2]);
+
+					return $driver->select($matches[1], array("*"), $where, null, array(), $matches[3]);
+				}
 				return $this->rootQuery(($this->_db != "" ? "$this->_db/" : "/") . ltrim($path, '/'), $content, $method);
 			}
 
@@ -97,7 +105,9 @@ if (isset($_GET["elastic"])) {
 			}
 
 			function fetch_row() {
-				return array_values($this->fetch_assoc());
+				$row = $this->fetch_assoc();
+
+				return $row ? array_values($row) : false;
 			}
 
 		}
@@ -231,6 +241,10 @@ if (isset($_GET["elastic"])) {
 			}
 			return $this->_conn->affected_rows;
 		}
+
+		function convertOperator($operator) {
+			return $operator == "LIKE %%" ? "should" : $operator;
+		}
 	}
 
 
@@ -266,6 +280,10 @@ if (isset($_GET["elastic"])) {
 			sort($return, SORT_STRING);
 		}
 		return $return;
+	}
+
+	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
+		return " $query$where" . ($limit !== null ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
 	}
 
 	function collations() {
