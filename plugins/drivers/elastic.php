@@ -471,11 +471,6 @@ if (isset($_GET["elastic"])) {
 		);
 
 		foreach ($mappings as $name => $field) {
-			$has_index = !isset($field["index"]) || $field["index"];
-
-			// TODO: privileges: where => $has_index
-			// TODO: privileges: sort => $field["type"] != "text"
-
 			$result[$name] = array(
 				"field" => $name,
 				"full_type" => $field["type"],

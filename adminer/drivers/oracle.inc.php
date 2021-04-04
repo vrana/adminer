@@ -334,7 +334,7 @@ ORDER BY 1") as $row
 				"null" => ($row["NULLABLE"] == "Y"),
 				//! "auto_increment" => false,
 				//! "collation" => $row["CHARACTER_SET_NAME"],
-				"privileges" => array("insert" => 1, "select" => 1, "update" => 1),
+				"privileges" => array("insert" => 1, "select" => 1, "update" => 1, "where" => 1),
 				//! "comment" => $row["Comment"],
 				//! "primary" => ($row["Key"] == "PRI"),
 			);

@@ -1069,7 +1069,7 @@ function fields_from_edit() {
 		$name = bracket_escape($key, 1); // 1 - back
 		$return[$name] = array(
 			"field" => $name,
-			"privileges" => array("insert" => 1, "update" => 1),
+			"privileges" => array("insert" => 1, "update" => 1, "where" => 1),
 			"null" => 1,
 			"auto_increment" => ($key == $driver->primary),
 		);

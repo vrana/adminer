@@ -254,7 +254,7 @@ ORDER BY r.RDB$FIELD_POSITION';
 				"null" => (trim($row["FIELD_NOT_NULL_CONSTRAINT"]) == "YES"),
 				"auto_increment" => '0',
 				"collation" => trim($row["FIELD_COLLATION"]),
-				"privileges" => array("insert" => 1, "select" => 1, "update" => 1),
+				"privileges" => array("insert" => 1, "select" => 1, "update" => 1, "where" => 1),
 				"comment" => trim($row["FIELD_DESCRIPTION"]),
 			);
 		}
