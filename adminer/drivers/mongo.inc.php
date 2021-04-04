@@ -463,6 +463,7 @@ if (isset($_GET["mongo"])) {
 									"insert" => 1,
 									"select" => 1,
 									"update" => 1,
+									"where" => 1,
 								),
 							);
 						}
