@@ -266,7 +266,7 @@ if (isset($_GET["sqlite"])) {
 				"full_type" => $type,
 				"default" => (preg_match("~^'(.*)'$~", $default, $match) ? str_replace("''", "'", $match[1]) : ($default == "NULL" ? null : $default)),
 				"null" => !$row["notnull"],
-				"privileges" => array("select" => 1, "insert" => 1, "update" => 1, "where" => 1),
+				"privileges" => array("select" => 1, "insert" => 1, "update" => 1, "where" => 1, "order" => 1),
 				"primary" => $row["pk"],
 			);
 			if ($row["pk"]) {

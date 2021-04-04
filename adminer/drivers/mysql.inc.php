@@ -613,7 +613,7 @@ if (!defined('Adminer\DRIVER')) {
 				"auto_increment" => ($extra == "auto_increment"),
 				"on_update" => (preg_match('~\bon update (\w+)~i', $extra, $match) ? $match[1] : ""), //! available since MySQL 5.1.23
 				"collation" => $row["COLLATION_NAME"],
-				"privileges" => array_flip(explode(",", "$row[PRIVILEGES],where")),
+				"privileges" => array_flip(explode(",", "$row[PRIVILEGES],where,order")),
 				"comment" => $row["COLUMN_COMMENT"],
 				"primary" => ($row["COLUMN_KEY"] == "PRI"),
 				"generated" => ($generated[1] == "PERSISTENT" ? "STORED" : $generated[1]),

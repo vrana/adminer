@@ -15,7 +15,6 @@ Skinnable plus.gif and other images - http://typo3.org/extensions/repository/vie
 
 https://github.com/vrana/adminer/compare/master...adminneo-org:adminneo:main
 Add drag-n-drop moving of rows in table editing
-Elasticsearch: Add support for "order" field privilege
 Elasticsearch: New condition operators as the combination of query type and match type
 
 Editor:

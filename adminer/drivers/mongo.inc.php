@@ -182,6 +182,7 @@ if (isset($_GET["mongo"])) {
 									"select" => 1,
 									"update" => 1,
 									"where" => 1,
+									"order" => 1,
 								),
 							);
 						}

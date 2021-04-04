@@ -1,7 +1,7 @@
 Adminer dev:
 PostgreSQL: Fix setting NULL and original value on enum (bug #884)
 CockroachDB: Add support via PostgreSQL driver
-Elasticsearch: Add support for "where" field privilege
+Elasticsearch: Add support for "where" and "order" field privilege
 
 Adminer 5.0.1 (released 2025-03-07):
 Fix bulk operations with tables (regression from 5.0.0)
