@@ -316,7 +316,7 @@ if (isset($_GET["clickhouse"])) {
 				"default" => trim($row['default_expression']),
 				"null" => $nullable,
 				"auto_increment" => '0',
-				"privileges" => array("insert" => 1, "select" => 1, "update" => 0),
+				"privileges" => array("insert" => 1, "select" => 1, "update" => 0, "where" => 1),
 			);
 		}
 
