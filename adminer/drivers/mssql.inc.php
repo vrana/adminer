@@ -387,7 +387,7 @@ WHERE o.schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND o.type IN ('S', 'U', 
 				"null" => $row["is_nullable"],
 				"auto_increment" => $row["is_identity"],
 				"collation" => $row["collation_name"],
-				"privileges" => array("insert" => 1, "select" => 1, "update" => 1, "where" => 1),
+				"privileges" => array("insert" => 1, "select" => 1, "update" => 1, "where" => 1, "order" => 1),
 				"primary" => $row["is_identity"], //! or indexes.is_primary_key
 				"comment" => $comments[$row["name"]],
 			);

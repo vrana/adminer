@@ -551,7 +551,7 @@ if (!defined("DRIVER")) {
 				"auto_increment" => ($row["Extra"] == "auto_increment"),
 				"on_update" => (preg_match('~^on update (.+)~i', $row["Extra"], $match) ? $match[1] : ""), //! available since MySQL 5.1.23
 				"collation" => $row["Collation"],
-				"privileges" => array_flip(preg_split('~, *~', $row["Privileges"])) + ["where" => 1],
+				"privileges" => array_flip(preg_split('~, *~', $row["Privileges"])) + ["where" => 1, "order" => 1],
 				"comment" => $row["Comment"],
 				"primary" => ($row["Key"] == "PRI"),
 				// https://mariadb.com/kb/en/library/show-columns/, https://github.com/vrana/adminer/pull/359#pullrequestreview-276677186

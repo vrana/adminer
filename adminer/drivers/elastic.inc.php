@@ -372,6 +372,7 @@ if (isset($_GET["elastic"])) {
 						"select" => 1,
 						"update" => 1,
 						"where" => !isset($field["index"]) || $field["index"] ?: null,
+						"order" => $field["type"] != "text" ?: null
 					),
 				);
 				if ($field["properties"]) { // only leaf fields can be edited
