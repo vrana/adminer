@@ -364,8 +364,54 @@ if (!$columns && support("table")) {
 				}
 				ob_end_clean();
 			}
-
+			
+			
+			/**
+			* mb * 
+			* flat-group: inserting a line as spacer to group records by selected order value  
+			* examples see git PR, 
+			* 2DO: add as option 
+			*/
+			$fg = array();
+			
 			foreach ($adminer->rowDescriptions($rows, $foreign_keys) as $n => $row) {
+				
+				/** flat-group: set key **/
+				if(!$fg['skip'] && !$fg['k']){
+					$ar = array_keys($row);
+					foreach($ar as $gp => $gk){
+						if($order[0]){
+							if(strpos($order[0], $gk) !== false){
+								$fg['k'] = $gk;
+								$fg['pos'] = $gp;	
+								break;		
+							}			
+						} else {
+							if(strpos('record_id.form_id.', $gk) !== false){
+								$fg['k'] = $gk;
+								$fg['pos'] = $gp;
+								break;
+							}
+						}	
+					}
+					if(!$fg['k']){
+						$fg['skip'] = true;	
+					}
+				}
+
+				/** flat-group: insert row **/				
+				if($fg['k']){
+					if($fg['v'] != $row[$fg['k']]){
+						$fg['v'] = $row[$fg['k']]; 
+						//col position
+						$cp = '';
+						for($gn = 0; $gn <= $fg['pos']; $gn++){
+							$cp .= '<td></td>';	
+						}
+						echo '<tr>'.$cp.'<td style="background-color:#fcfba3">'.$fg['k'].': '.$fg['v'].'</td></tr>';
+					}
+				}
+				
 				$unique_array = unique_array($rows[$n], $indexes);
 				if (!$unique_array) {
 					$unique_array = array();
