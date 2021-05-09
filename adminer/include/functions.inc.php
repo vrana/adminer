@@ -1484,7 +1484,14 @@ function edit_form($table, $fields, $row, $update) {
 	}
 	echo "<p>\n";
 	if ($fields) {
-		echo "<input type='submit' value='" . lang('Save') . "'>\n";
+		echo "<input type='submit' name='insert' value='" . lang('Save') . "'>\n";
+		echo script("qsl('input').onclick = function () {
+			
+			ajaxFormSilent(this.form, '" . lang('Save') . "…', this);
+			window.location.href = window.location.href.replace('&edit', '&select');
+			return false;
+		};");
+
 		if (!isset($_GET["select"])) {
 			echo "<input type='submit' name='insert' value='" . ($update
 				? lang('Save and continue edit')

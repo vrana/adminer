@@ -648,19 +648,7 @@ function ajaxSetHtml(url) {
 * @return boolean
 */
 function ajaxForm(form, message, button) {
-	var data = [];
-	var els = form.elements;
-	for (var i = 0; i < els.length; i++) {
-		var el = els[i];
-		if (el.name && !el.disabled) {
-			if (/^file$/i.test(el.type) && el.value) {
-				return false;
-			}
-			if (!/^(checkbox|radio|submit|file)$/i.test(el.type) || el.checked || el == button) {
-				data.push(encodeURIComponent(el.name) + '=' + encodeURIComponent(isTag(el, 'select') ? selectValue(el) : el.value));
-			}
-		}
-	}
+	data = getFormData(form, button);
 	data = data.join('&');
 	
 	var url = form.action;
@@ -911,3 +899,49 @@ oninput = function (event) {
 	var maxLength = target.getAttribute('data-maxlength');
 	alterClass(target, 'maxlength', target.value && maxLength != null && target.value.length > maxLength); // maxLength could be 0
 };
+
+
+/** Save form contents through AJAX
+* @param HTMLFormElement
+* @param string
+* @param [HTMLInputElement]
+* @return boolean
+*/
+function ajaxFormSilent(form, message, button) {
+	data = getFormData(form, button);
+	data = data.join('&');
+	
+	var url = form.action;
+	if (!/post/i.test(form.method)) {
+		url = url.replace(/\?.*/, '') + '?' + data;
+		data = '';
+	}
+	return ajax(url, function (request) {
+		button.disabled = false;
+
+	}, data, message);
+}
+
+/** Get form contents
+* @param HTMLFormElement
+* @param [HTMLInputElement]
+* @return array
+*/
+
+function getFormData(form, button) {
+	var data = [];
+	var els = form.elements;
+	for (var i = 0; i < els.length; i++) {
+		var el = els[i];
+		if (el.name && !el.disabled) {
+			if (/^file$/i.test(el.type) && el.value) {
+				return false;
+			}
+			if (!/^(checkbox|radio|submit|file)$/i.test(el.type) || el.checked || el == button) {
+				data.push(encodeURIComponent(el.name) + '=' + encodeURIComponent(isTag(el, 'select') ? selectValue(el) : el.value));
+			}
+		}
+	}
+
+	return data;
+}
