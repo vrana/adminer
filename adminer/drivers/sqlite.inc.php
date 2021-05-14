@@ -140,7 +140,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 					}
 					$return = array();
 					foreach ($row as $key => $val) {
-						$return[($key[0] == '"' ? idf_unescape($key) : $key)] = $val;
+						$return[idf_unescape($key)] = $val;
 					}
 					return $return;
 				}
@@ -676,7 +676,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return array(
 			"Timing" => strtoupper($match[1]),
 			"Event" => strtoupper($match[2]) . ($of ? " OF" : ""),
-			"Of" => ($of[0] == '`' || $of[0] == '"' ? idf_unescape($of) : $of),
+			"Of" => idf_unescape($of),
 			"Trigger" => $name,
 			"Statement" => $match[4],
 		);

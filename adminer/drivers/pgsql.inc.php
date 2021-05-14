@@ -378,7 +378,7 @@ ORDER BY a.attnum"
 			$row["auto_increment"] = $row['attidentity'] || preg_match('~^nextval\(~i', $row["default"]);
 			$row["privileges"] = array("insert" => 1, "select" => 1, "update" => 1);
 			if (preg_match('~(.+)::[^,)]+(.*)~', $row["default"], $match)) {
-				$row["default"] = ($match[1] == "NULL" ? null : (($match[1][0] == "'" ? idf_unescape($match[1]) : $match[1]) . $match[2]));
+				$row["default"] = ($match[1] == "NULL" ? null : idf_unescape($match[1]) . $match[2]);
 			}
 			$return[$row["field"]] = $row;
 		}
@@ -418,12 +418,12 @@ WHERE conrelid = (SELECT pc.oid FROM pg_class AS pc INNER JOIN pg_namespace AS p
 AND contype = 'f'::char
 ORDER BY conkey, conname") as $row) {
 			if (preg_match('~FOREIGN KEY\s*\((.+)\)\s*REFERENCES (.+)\((.+)\)(.*)$~iA', $row['definition'], $match)) {
-				$row['source'] = array_map('trim', explode(',', $match[1]));
+				$row['source'] = array_map('idf_unescape', array_map('trim', explode(',', $match[1])));
 				if (preg_match('~^(("([^"]|"")+"|[^"]+)\.)?"?("([^"]|"")+"|[^"]+)$~', $match[2], $match2)) {
-					$row['ns'] = str_replace('""', '"', preg_replace('~^"(.+)"$~', '\1', $match2[2]));
-					$row['table'] = str_replace('""', '"', preg_replace('~^"(.+)"$~', '\1', $match2[4]));
+					$row['ns'] = idf_unescape($match2[2]);
+					$row['table'] = idf_unescape($match2[4]);
 				}
-				$row['target'] = array_map('trim', explode(',', $match[3]));
+				$row['target'] = array_map('idf_unescape', array_map('trim', explode(',', $match[3])));
 				$row['on_delete'] = (preg_match("~ON DELETE ($on_actions)~", $match[4], $match2) ? $match2[1] : 'NO ACTION');
 				$row['on_update'] = (preg_match("~ON UPDATE ($on_actions)~", $match[4], $match2) ? $match2[1] : 'NO ACTION');
 				$return[$row['conname']] = $row;

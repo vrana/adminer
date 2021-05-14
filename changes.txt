@@ -5,6 +5,7 @@ MySQL: Allow moving views to other DB and renaming DB with views (bug #783)
 MariaDB: Do not treat sequences as views (PR #416)
 PostgreSQL: Support UPDATE OF triggers (bug #789)
 PostgreSQL: Support triggers with more events (OR)
+PostgreSQL: Fix parsing of foreign keys with non-ASCII column names
 PostgreSQL < 10 PDO: Avoid displaying GENERATED ALWAYS BY IDENTITY everywhere (bug #785, regression from 4.7.9)
 SQLite: Fix displayed types (bug #784, regression from 4.8.0)
 
