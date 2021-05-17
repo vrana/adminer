@@ -1,4 +1,5 @@
 Adminer 4.16.0-dev:
+Oracle: Include tables granted by other user
 
 Adminer 4.15.0:
 Escape unknown field in select
