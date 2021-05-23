@@ -185,11 +185,17 @@ edit_fields($row["fields"], $collations, "TABLE", $foreign_keys);
 <p>
 <?php echo lang('Auto Increment'); ?>: <input type="number" name="Auto_increment" size="6" value="<?php echo h($row["Auto_increment"]); ?>">
 <?php echo checkbox("defaults", 1, ($_POST ? $_POST["defaults"] : adminer_setting("defaults")), lang('Default values'), "columnShow(this.checked, 5)", "jsonly"); ?>
-<?php echo (support("comment")
-	? checkbox("comments", 1, ($_POST ? $_POST["comments"] : adminer_setting("comments")), lang('Comment'), "editingCommentsClick(this, true);", "jsonly")
-		. ' <input name="Comment" value="' . h($row["Comment"]) . '" data-maxlength="' . (min_version(5.5) ? 2048 : 60) . '">'
+<?php
+$comments = ($_POST ? $_POST["comments"] : adminer_setting("comments"));
+echo (support("comment")
+	? checkbox("comments", 1, $comments, lang('Comment'), "editingCommentsClick(this, true);", "jsonly")
+		. ' ' . (preg_match('~\n~', $row["Comment"])
+			? "<textarea name='Comment' rows='2' cols='20'" . ($comments ? "" : " class='hidden'") . ">" . h($row["Comment"]) . "</textarea>"
+			: '<input name="Comment" value="' . h($row["Comment"]) . '" data-maxlength="' . (min_version(5.5) ? 2048 : 60) . '"' . ($comments ? "" : " class='hidden'") . '>'
+		)
 	: '')
-; ?>
+;
+?>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php } ?>
