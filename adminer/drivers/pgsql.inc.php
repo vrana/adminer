@@ -534,7 +534,7 @@ ORDER BY connamespace, conname") as $row) {
 		} elseif ($alter) {
 			array_unshift($queries, "ALTER TABLE " . table($table) . "\n" . implode(",\n", $alter));
 		}
-		if ($table != "" || $comment != "") {
+		if ($comment !== null) {
 			$queries[] = "COMMENT ON TABLE " . table($name) . " IS " . q($comment);
 		}
 		if ($auto_increment != "") {
