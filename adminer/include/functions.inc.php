@@ -29,7 +29,7 @@ function version() {
 * @return string
 */
 function idf_unescape($idf) {
-	if (!preg_match('~^[`\'"]~', $idf)) {
+	if (!preg_match('~^[`\'"[]~', $idf)) {
 		return $idf;
 	}
 	$last = substr($idf, -1);
