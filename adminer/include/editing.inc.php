@@ -20,8 +20,14 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 			echo "<div class='scrollable'>\n";
 			echo "<table cellspacing='0' class='nowrap'>\n";
 			echo "<thead><tr>";
+			$fieldproperties=['name','orgtable','orgname','table','charsetnr','type'];
 			for ($j=0; $j < count($row); $j++) {
 				$field = $result->fetch_field();
+				foreach ($fieldproperties as $fieldproperty) {
+                    			if(!isset($field->$fieldproperty)) {
+                        			$field->$fieldproperty = null;
+                    			}
+                		}
 				$name = $field->name;
 				$orgtable = $field->orgtable;
 				$orgname = $field->orgname;
