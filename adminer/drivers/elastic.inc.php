@@ -27,7 +27,12 @@ if (isset($_GET["elastic"])) {
 					return $file;
 				}
 				if (!preg_match('~^HTTP/[0-9.]+ 2~i', $http_response_header[0])) {
-					$this->error = lang('Invalid credentials.') . " $http_response_header[0]";
+					$return = json_decode($file, true);
+					if ($return === null) {
+						$this->error = lang('Invalid credentials.') . " $http_response_header[0]";
+					} else {
+						$this->error = $return['error']['root_cause'][0]['type'] . ": " . $return['error']['root_cause'][0]['reason'];
+					}
 					return false;
 				}
 				$return = json_decode($file, true);
@@ -55,6 +60,15 @@ if (isset($_GET["elastic"])) {
 			 * @return mixed
 			 */
 			function query($path, $content = array(), $method = 'GET') {
+				// Support for global search through all tables
+				if ($path[0] == "S" && preg_match('/SELECT 1 FROM ([^ ]+) WHERE (.+) LIMIT ([0-9]+)/', $path, $matches)) {
+					global $driver;
+
+					$where = explode(" AND ", $matches[2]);
+
+					return $driver->select($matches[1], array("*"), $where, null, array(), $matches[3]);
+				}
+
 				return $this->rootQuery(($this->_db != "" ? "$this->_db/" : "/") . ltrim($path, '/'), $content, $method);
 			}
 
@@ -95,7 +109,9 @@ if (isset($_GET["elastic"])) {
 			}
 
 			function fetch_row() {
-				return array_values($this->fetch_assoc());
+				$row = $this->fetch_assoc();
+
+				return $row ? array_values($row) : false;
 			}
 
 		}
@@ -109,7 +125,7 @@ if (isset($_GET["elastic"])) {
 		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
 			global $adminer;
 			$data = array();
-			$query = "$table/_search";
+			$query = (min_version(7) ? "" : "$table/") . "_search";
 			if ($select != array("*")) {
 				$data["fields"] = $select;
 			}
@@ -128,21 +144,31 @@ if (isset($_GET["elastic"])) {
 				}
 			}
 			foreach ($where as $val) {
-				list($col, $op, $val) = explode(" ", $val, 3);
-				if ($col == "_id") {
-					$data["query"]["ids"]["values"][] = $val;
-				}
-				elseif ($col . $val != "") {
-					$term = array("term" => array(($col != "" ? $col : "_all") => $val));
+				if (preg_match('~^\((.+ OR .+)\)$~', $val, $matches)) {
+					$parts = explode(" OR ", $matches[1]);
+					$terms = array();
+					foreach ($parts as $part) {
+						list($col, $op, $val) = explode(" ", $part, 3);
+						$term = array($col => $val);
+						if ($op == "=") {
+							$terms[] = array("term" => $term);
+						} elseif (in_array($op, array("must", "should", "must_not"))) {
+							$data["query"]["bool"][$op][]["match"] = $term;
+						}
+					}
+
+					if (!empty($terms)) {
+						$data["query"]["bool"]["filter"][]["bool"]["should"] = $terms;
+					}
+				} else {
+					list($col, $op, $val) = explode(" ", $val, 3);
+					$term = array($col => $val);
 					if ($op == "=") {
-						$data["query"]["filtered"]["filter"]["and"][] = $term;
-					} else {
-						$data["query"]["filtered"]["query"]["bool"]["must"][] = $term;
+						$data["query"]["bool"]["filter"][] = array("term" => $term);
+					} elseif (in_array($op, array("must", "should", "must_not"))) {
+						$data["query"]["bool"][$op][]["match"] = $term;
 					}
 				}
-			}
-			if ($data["query"] && !$data["query"]["filtered"]["query"] && !$data["query"]["ids"]) {
-				$data["query"]["filtered"]["query"] = array("match_all" => array());
 			}
 			$start = microtime(true);
 			$search = $this->_conn->query($query, $data);
@@ -162,7 +188,7 @@ if (isset($_GET["elastic"])) {
 				if ($select != array("*")) {
 					$fields = array();
 					foreach ($select as $key) {
-						$fields[$key] = $hit['fields'][$key];
+						$fields[$key] = $key == "_id" ? [$hit["_id"]] : $hit['fields'][$key];
 					}
 				}
 				foreach ($fields as $key => $val) {
@@ -219,6 +245,10 @@ if (isset($_GET["elastic"])) {
 			}
 			return $this->_conn->affected_rows;
 		}
+
+		function convertOperator($operator) {
+			return $operator == "LIKE %%" ? "should" : $operator;
+		}
 	}
 
 
@@ -256,6 +286,10 @@ if (isset($_GET["elastic"])) {
 		return $return;
 	}
 
+	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
+		return " $query$where" . ($limit !== null ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
+	}
+
 	function collations() {
 		return array();
 	}
@@ -284,7 +318,7 @@ if (isset($_GET["elastic"])) {
 	function tables_list() {
 		global $connection;
 
-		if (min_version(6)) {
+		if (min_version(7)) {
 			return array('_doc' => 'table');
 		}
 
@@ -345,7 +379,7 @@ if (isset($_GET["elastic"])) {
 		global $connection;
 
 		$mappings = array();
-		if (min_version(6)) {
+		if (min_version(7)) {
 			$result = $connection->query("_mapping");
 			if ($result) {
 				$mappings = $result[$connection->_db]['mappings']['properties'];
@@ -360,19 +394,33 @@ if (isset($_GET["elastic"])) {
 			}
 		}
 
-		$return = array();
-		if ($mappings) {
-			foreach ($mappings as $name => $field) {
-				$return[$name] = array(
-					"field" => $name,
-					"full_type" => $field["type"],
-					"type" => $field["type"],
-					"privileges" => array("insert" => 1, "select" => 1, "update" => 1),
-				);
-				if ($field["properties"]) { // only leaf fields can be edited
-					unset($return[$name]["privileges"]["insert"]);
-					unset($return[$name]["privileges"]["update"]);
-				}
+		$return = array(
+			"_id" => array(
+				"field" => "_id",
+				"full_type" => "text",
+				"type" => "text",
+				"privileges" => array("insert" => 1, "select" => 1, "where" => 1, "order" => 1),
+			)
+		);
+
+		foreach ($mappings as $name => $field) {
+			if (isset($field["index"]) && !$field["index"]) continue;
+
+			$return[$name] = array(
+				"field" => $name,
+				"full_type" => $field["type"],
+				"type" => $field["type"],
+				"privileges" => array(
+					"insert" => 1,
+					"select" => 1,
+					"update" => 1,
+					"where" => !isset($field["index"]) || $field["index"] ?: null,
+					"order" => $field["type"] != "text" ?: null
+				),
+			);
+			if ($field["properties"]) { // only leaf fields can be edited
+				unset($return[$name]["privileges"]["insert"]);
+				unset($return[$name]["privileges"]["update"]);
 			}
 		}
 		return $return;
@@ -475,7 +523,7 @@ if (isset($_GET["elastic"])) {
 		return array(
 			'possible_drivers' => array("json + allow_url_fopen"),
 			'jush' => "elastic",
-			'operators' => array("=", "query"),
+			'operators' => array("=", "must", "should", "must_not"),
 			'functions' => array(),
 			'grouping' => array(),
 			'edit_functions' => array(array("json")),
