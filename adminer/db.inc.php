@@ -60,8 +60,8 @@ if ($adminer->homepage()) {
 				echo script("qsl('input').onkeydown = partialArg(bodyKeydown, 'search');", "");
 				echo " <input type='submit' name='search' value='" . lang('Search') . "'>\n";
 				if ($adminer->operator_regexp !== null) {
-					echo "<p><label><input type='checkbox' name='regexp' value='1'" . (empty($_POST['regexp']) ? '' : ' checked') . '>';
-					echo lang('as a regular expression') . "</label></p>\n";
+					echo "<p><label><input type='checkbox' name='regexp' value='1'" . (empty($_POST['regexp']) ? '' : ' checked') . '>' . lang('as a regular expression') . '</label>';
+					echo doc_link(array('sql' => 'regexp.html', 'pgsql' => 'functions-matching.html#FUNCTIONS-POSIX-REGEXP')) . "</p>\n";
 				}
 				echo "</div></fieldset>\n";
 				if ($_POST["search"] && $_POST["query"] != "") {
