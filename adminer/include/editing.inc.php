@@ -283,7 +283,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 	'sql' => "example-auto-increment.html",
 	'mariadb' => "auto_increment/",
 	'sqlite' => "autoinc.html",
-	'pgsql' => "datatype.html#DATATYPE-SERIAL",
+	'pgsql' => "datatype-numeric.html#DATATYPE-SERIAL",
 	'mssql' => "ms186775.aspx",
 )); ?>
 <td id="label-default"<?php echo $default_class; ?>><?php echo lang('Default value'); ?>
