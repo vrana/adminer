@@ -908,12 +908,15 @@ class Adminer {
 		return $ext;
 	}
 
-	/** Set the path of the file for webserver load
-	* @return string path of the sql dump file
-	*/
-	function importServerPath() {
-		return "adminer.sql";
-	}
+
+    /**
+     * List of files to import
+     * @return array
+     */
+    function importFiles() {
+        return glob(__DIR__ .'/*.{sql}', GLOB_BRACE);
+    }
+
 
 	/** Print homepage
 	* @return bool whether to print default homepage

@@ -20,8 +20,8 @@ if (!$error && $_POST) {
 	$fp = false;
 	if (!isset($_GET["import"])) {
 		$query = $_POST["query"];
-	} elseif ($_POST["webfile"]) {
-		$sql_file_path = $adminer->importServerPath();
+	} elseif ($_POST["webfile"] and isset($_POST["webfilename"])) {
+		$sql_file_path = $_POST["webfilename"];
 		$fp = @fopen((file_exists($sql_file_path)
 			? $sql_file_path
 			: "compress.zlib://$sql_file_path.gz"
@@ -234,10 +234,18 @@ if (!isset($_GET["import"])) {
 		: lang('File uploads are disabled.')
 	);
 	echo "</div></fieldset>\n";
-	$importServerPath = $adminer->importServerPath();
-	if ($importServerPath) {
+	$importFiles = $adminer->importFiles();
+	if ($importFiles) {
 		echo "<fieldset><legend>" . lang('From server') . "</legend><div>";
-		echo lang('Webserver file %s', "<code>" . h($importServerPath) . "$gz</code>");
+		$options = null;
+		foreach ($importFiles as $filename) {
+            $options .='<option value="'.$filename.'">'.$filename.'</option>';
+        }
+		echo '
+		<select name="webfilename" />
+		  '.$options.'
+		</select>
+		';
 		echo ' <input type="submit" name="webfile" value="' . lang('Run file') . '">';
 		echo "</div></fieldset>\n";
 	}
