@@ -710,7 +710,7 @@ AND typelem = 0"
 	}
 
 	function schemas() {
-		return get_vals("SELECT nspname FROM pg_namespace ORDER BY nspname");
+		return get_vals("SELECT nspname FROM pg_namespace WHERE nspname NOT LIKE 'pg_temp_%' AND nspname NOT LIKE 'pg_toast_temp_%' ORDER BY nspname");
 	}
 
 	function get_schema() {
