@@ -523,9 +523,9 @@ function tar_file($filename, $tmp_file) {
 function ini_bytes($ini) {
 	$val = ini_get($ini);
 	switch (strtolower(substr($val, -1))) {
-		case 'g': $val *= 1024; // no break
-		case 'm': $val *= 1024; // no break
-		case 'k': $val *= 1024;
+		case 'g': $val = (int)$val * 1024; // no break
+		case 'm': $val = (int)$val * 1024; // no break
+		case 'k': $val = (int)$val * 1024;
 	}
 	return $val;
 }
