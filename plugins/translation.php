@@ -10,7 +10,7 @@ CREATE TABLE translation (
 );
 */
 
-/** Translate all table and field comments, enum and set values from the translation table (inserts new translations)
+/** Translate all table and field comments, enum and set values in Editor from the translation table (inserts new translations)
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0

@@ -20,7 +20,7 @@ class AdminerDumpPhp {
 		}
 	}
 
-	function dumpTable($table) {
+	function dumpTable($table, $style, $is_view = 0) {
 		if ($_POST['format'] == 'php') {
 			$this->output[$table] = array();
 			if (!$this->shutdown_callback) {

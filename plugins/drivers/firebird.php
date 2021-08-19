@@ -3,10 +3,9 @@
 * @author Steve Krämer
 */
 
-$drivers['firebird'] = 'Firebird (alpha)';
-	
+add_driver('firebird', 'Firebird (alpha)');
+
 if (isset($_GET["firebird"])) {
-	$possible_drivers = array("interbase");
 	define("DRIVER", "firebird");
 
 	if (extension_loaded("interbase") ) {
@@ -312,9 +311,14 @@ ORDER BY RDB$INDEX_SEGMENTS.RDB$FIELD_POSITION';
 		return preg_match("~^(columns|sql|status|table)$~", $feature);
 	}
 
-	$jush = "firebird";
-	$operators = array("=");
-	$functions = array();
-	$grouping = array();
-	$edit_functions = array();
+	function driver_config() {
+		return array(
+			'possible_drivers' => array("interbase"),
+			'jush' => "firebird",
+			'operators' => array("="),
+			'functions' => array(),
+			'grouping' => array(),
+			'edit_functions' => array(),
+		);
+	}
 }

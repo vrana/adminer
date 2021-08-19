@@ -48,6 +48,7 @@ if (isset($_GET["function"])) {
 }
 ?>
 </table>
+<?php echo script("editFields();"); ?>
 </div>
 <p><?php textarea("definition", $row["definition"]); ?>
 <p>

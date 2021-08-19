@@ -14,7 +14,7 @@ class AdminerDumpXml {
 		return array('xml' => 'XML');
 	}
 
-	function dumpTable($table, $style, $is_view = false) {
+	function dumpTable($table, $style, $is_view = 0) {
 		if ($_POST["format"] == "xml") {
 			return true;
 		}

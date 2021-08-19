@@ -89,14 +89,16 @@ if (!(DB != "" ? $connection->select_db(DB) : isset($_GET["sql"]) || isset($_GET
 	exit;
 }
 
-if (support("scheme") && DB != "" && $_GET["ns"] !== "") {
-	if (!isset($_GET["ns"])) {
-		redirect(preg_replace('~ns=[^&]*&~', '', ME) . "ns=" . get_schema());
-	}
-	if (!set_schema($_GET["ns"])) {
-		header("HTTP/1.1 404 Not Found");
-		page_header(lang('Schema') . ": " . h($_GET["ns"]), lang('Invalid schema.'), true);
-		page_footer("ns");
-		exit;
+if (support("scheme")) {
+	if (DB != "" && $_GET["ns"] !== "") {
+		if (!isset($_GET["ns"])) {
+			redirect(preg_replace('~ns=[^&]*&~', '', ME) . "ns=" . get_schema());
+		}
+		if (!set_schema($_GET["ns"])) {
+			header("HTTP/1.1 404 Not Found");
+			page_header(lang('Schema') . ": " . h($_GET["ns"]), lang('Invalid schema.'), true);
+			page_footer("ns");
+			exit;
+		}
 	}
 }

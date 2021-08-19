@@ -1,5 +1,5 @@
 <?php
-$drivers["clickhouse"] = "ClickHouse (alpha)";
+add_driver("clickhouse", "ClickHouse (alpha)");
 
 if (isset($_GET["clickhouse"])) {
 	define("DRIVER", "clickhouse");
@@ -22,11 +22,15 @@ if (isset($_GET["clickhouse"])) {
 				return $file;
 			}
 			if (!preg_match('~^HTTP/[0-9.]+ 2~i', $http_response_header[0])) {
-				$this->error = $file;
+				$this->error = lang('Invalid credentials.') . " $http_response_header[0]";
 				return false;
 			}
 			$return = json_decode($file, true);
 			if ($return === null) {
+				if (!$this->isQuerySelectLike($query) && $file === '') {
+					return true;
+				}
+
 				$this->errno = json_last_error();
 				if (function_exists('json_last_error_msg')) {
 					$this->error = json_last_error_msg();
@@ -123,6 +127,9 @@ if (isset($_GET["clickhouse"])) {
 
 	class Min_Driver extends Min_SQL {
 		function delete($table, $queryWhere, $limit = 0) {
+			if ($queryWhere === '') {
+				$queryWhere = 'WHERE 1=1';
+			}
 			return queries("ALTER TABLE " . table($table) . " DELETE $queryWhere");
 		}
 
@@ -154,12 +161,43 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
+		$alter = $order = array();
 		foreach ($fields as $field) {
 			if ($field[1][2] === " NULL") {
 				$field[1][1] = " Nullable({$field[1][1]})";
+			} elseif ($field[1][2] === ' NOT NULL') {
+				$field[1][2] = '';
 			}
-			unset($field[1][2]);
+
+			if ($field[1][3]) {
+				$field[1][3] = '';
+			}
+
+			$alter[] = ($field[1]
+				? ($table != "" ? ($field[0] != "" ? "MODIFY COLUMN " : "ADD COLUMN ") : " ") . implode($field[1])
+				: "DROP COLUMN " . idf_escape($field[0])
+			);
+
+			$order[] = $field[1][0];
 		}
+
+		$alter = array_merge($alter, $foreign);
+		$status = ($engine ? " ENGINE " . $engine : "");
+		if ($table == "") {
+			return queries("CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)$status$partitioning" . ' ORDER BY (' . implode(',', $order) . ')');
+		}
+		if ($table != $name) {
+			$result = queries("RENAME TABLE " . table($table) . " TO " . table($name));
+			if ($alter) {
+				$table = $name;
+			} else {
+				return $result;
+			}
+		}
+		if ($status) {
+			$alter[] = ltrim($status);
+		}
+		return ($alter || $partitioning ? queries("ALTER TABLE " . table($table) . "\n" . implode(",\n", $alter) . $partitioning) : true);
 	}
 
 	function truncate_tables($tables) {
@@ -268,7 +306,7 @@ if (isset($_GET["clickhouse"])) {
 	function fields($table) {
 		$return = array();
 		$result = get_rows("SELECT name, type, default_expression FROM system.columns WHERE " . idf_escape('table') . " = " . q($table));
-		foreach($result as $row) {
+		foreach ($result as $row) {
 			$type = trim($row['type']);
 			$nullable = strpos($type, 'Nullable(') === 0;
 			$return[trim($row['name'])] = array(
@@ -331,24 +369,30 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function support($feature) {
-		return preg_match("~^(columns|sql|status|table)$~", $feature);
+		return preg_match("~^(columns|sql|status|table|drop_col)$~", $feature);
 	}
 
-	$jush = "clickhouse";
-	$types = array();
-	$structured_types = array();
-	foreach (array( //! arrays
-		lang('Numbers') => array("Int8" => 3, "Int16" => 5, "Int32" => 10, "Int64" => 19, "UInt8" => 3, "UInt16" => 5, "UInt32" => 10, "UInt64" => 20, "Float32" => 7, "Float64" => 16, 'Decimal' => 38, 'Decimal32' => 9, 'Decimal64' => 18, 'Decimal128' => 38),
-		lang('Date and time') => array("Date" => 13, "DateTime" => 20),
-		lang('Strings') => array("String" => 0),
-		lang('Binary') => array("FixedString" => 0),
-	) as $key => $val) {
-		$types += $val;
-		$structured_types[$key] = array_keys($val);
+	function driver_config() {
+		$types = array();
+		$structured_types = array();
+		foreach (array( //! arrays
+			lang('Numbers') => array("Int8" => 3, "Int16" => 5, "Int32" => 10, "Int64" => 19, "UInt8" => 3, "UInt16" => 5, "UInt32" => 10, "UInt64" => 20, "Float32" => 7, "Float64" => 16, 'Decimal' => 38, 'Decimal32' => 9, 'Decimal64' => 18, 'Decimal128' => 38),
+			lang('Date and time') => array("Date" => 13, "DateTime" => 20),
+			lang('Strings') => array("String" => 0),
+			lang('Binary') => array("FixedString" => 0),
+		) as $key => $val) {
+			$types += $val;
+			$structured_types[$key] = array_keys($val);
+		}
+		return array(
+			'jush' => "clickhouse",
+			'types' => $types,
+			'structured_types' => $structured_types,
+			'unsigned' => array(),
+			'operators' => array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL"),
+			'functions' => array(),
+			'grouping' => array("avg", "count", "count distinct", "max", "min", "sum"),
+			'edit_functions' => array(),
+		);
 	}
-	$unsigned = array();
-	$operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
-	$functions = array();
-	$grouping = array("avg", "count", "count distinct", "max", "min", "sum");
-	$edit_functions = array();
 }

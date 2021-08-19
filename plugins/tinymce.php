@@ -40,8 +40,8 @@ tinyMCE.init({
 
 	function selectVal(&$val, $link, $field, $original) {
 		if (preg_match("~_html~", $field["field"]) && $val != '') {
-		    $ellipsis = "<i>…</i>";
-		    $length = strlen($ellipsis);
+			$ellipsis = "<i>…</i>";
+			$length = strlen($ellipsis);
 			$shortened = (substr($val, -$length) == $ellipsis);
 			if ($shortened) {
 				$val = substr($val, 0, -$length);

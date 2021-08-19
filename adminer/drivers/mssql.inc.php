@@ -8,7 +8,6 @@
 $drivers["mssql"] = "MS SQL (beta)";
 
 if (isset($_GET["mssql"])) {
-	$possible_drivers = array("SQLSRV", "MSSQL", "PDO_DBLIB");
 	define("DRIVER", "mssql");
 	if (extension_loaded("sqlsrv")) {
 		class Min_DB {
@@ -350,7 +349,7 @@ if (isset($_GET["mssql"])) {
 
 	function table_status($name = "") {
 		$return = array();
-		foreach (get_rows("SELECT name AS Name, type_desc AS Engine FROM sys.all_objects WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V') " . ($name != "" ? "AND name = " . q($name) : "ORDER BY name")) as $row) {
+		foreach (get_rows("SELECT ao.name AS Name, ao.type_desc AS Engine, (SELECT value FROM fn_listextendedproperty(default, 'SCHEMA', schema_name(schema_id), 'TABLE', ao.name, null, null)) AS Comment FROM sys.all_objects AS ao WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V') " . ($name != "" ? "AND name = " . q($name) : "ORDER BY name")) as $row) {
 			if ($name != "") {
 				return $row;
 			}
@@ -368,6 +367,7 @@ if (isset($_GET["mssql"])) {
 	}
 
 	function fields($table) {
+		$comments = get_key_vals("SELECT objname, cast(value as varchar(max)) FROM fn_listextendedproperty('MS_DESCRIPTION', 'schema', " . q(get_schema()) . ", 'table', " . q($table) . ", 'column', NULL)");
 		$return = array();
 		foreach (get_rows("SELECT c.max_length, c.precision, c.scale, c.name, c.is_nullable, c.is_identity, c.collation_name, t.name type, CAST(d.definition as text) [default]
 FROM sys.all_columns c
@@ -389,6 +389,7 @@ WHERE o.schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND o.type IN ('S', 'U', 
 				"collation" => $row["collation_name"],
 				"privileges" => array("insert" => 1, "select" => 1, "update" => 1),
 				"primary" => $row["is_identity"], //! or indexes.is_primary_key
+				"comment" => $comments[$row["name"]],
 			);
 		}
 		return $return;
@@ -456,6 +457,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
 		$alter = array();
+		$comments = array();
 		foreach ($fields as $field) {
 			$column = idf_escape($field[0]);
 			$val = $field[1];
@@ -463,6 +465,8 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 				$alter["DROP"][] = " COLUMN $column";
 			} else {
 				$val[1] = preg_replace("~( COLLATE )'(\\w+)'~", '\1\2', $val[1]);
+				$comments[$field[0]] = $val[5];
+				unset($val[5]);
 				if ($field[0] == "") {
 					$alter["ADD"][] = "\n  " . implode("", $val) . ($table == "" ? substr($foreign[$val[0]], 16 + strlen($val[0])) : ""); // 16 - strlen("  FOREIGN KEY ()")
 				} else {
@@ -487,6 +491,11 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 			if (!queries("ALTER TABLE " . idf_escape($name) . " $key" . implode(",", $val))) {
 				return false;
 			}
+		}
+		foreach ($comments as $key => $val) {
+			$comment = substr($val, 9); // 9 - strlen(" COMMENT ")
+			queries("EXEC sp_dropextendedproperty @name = N'MS_Description', @level0type = N'Schema', @level0name = " . q(get_schema()) . ", @level1type = N'Table', @level1name = " . q($name) . ", @level2type = N'Column', @level2name = " . q($key));
+			queries("EXEC sp_addextendedproperty @name = N'MS_Description', @value = " . $comment . ", @level0type = N'Schema', @level0name = " . q(get_schema()) . ", @level1type = N'Table', @level1name = " . q($name) . ", @level2type = N'Column', @level2name = " . q($key));
 		}
 		return true;
 	}
@@ -532,6 +541,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 		$return = array();
 		foreach (get_rows("EXEC sp_fkeys @fktable_name = " . q($table)) as $row) {
 			$foreign_key = &$return[$row["FK_NAME"]];
+			$foreign_key["db"] = $row["PKTABLE_QUALIFIER"];
 			$foreign_key["table"] = $row["PKTABLE_NAME"];
 			$foreign_key["source"][] = $row["FKCOLUMN_NAME"];
 			$foreign_key["target"][] = $row["PKCOLUMN_NAME"];
@@ -632,31 +642,38 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)
 	}
 
 	function support($feature) {
-		return preg_match('~^(columns|database|drop_col|indexes|descidx|scheme|sql|table|trigger|view|view_trigger)$~', $feature); //! routine|
+		return preg_match('~^(comment|columns|database|drop_col|indexes|descidx|scheme|sql|table|trigger|view|view_trigger)$~', $feature); //! routine|
 	}
 
-	$jush = "mssql";
-	$types = array();
-	$structured_types = array();
-	foreach (array( //! use sys.types
-		lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "int" => 10, "bigint" => 20, "bit" => 1, "decimal" => 0, "real" => 12, "float" => 53, "smallmoney" => 10, "money" => 20),
-		lang('Date and time') => array("date" => 10, "smalldatetime" => 19, "datetime" => 19, "datetime2" => 19, "time" => 8, "datetimeoffset" => 10),
-		lang('Strings') => array("char" => 8000, "varchar" => 8000, "text" => 2147483647, "nchar" => 4000, "nvarchar" => 4000, "ntext" => 1073741823),
-		lang('Binary') => array("binary" => 8000, "varbinary" => 8000, "image" => 2147483647),
-	) as $key => $val) {
-		$types += $val;
-		$structured_types[$key] = array_keys($val);
+	function driver_config() {
+		$types = array();
+		$structured_types = array();
+		foreach (array( //! use sys.types
+			lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "int" => 10, "bigint" => 20, "bit" => 1, "decimal" => 0, "real" => 12, "float" => 53, "smallmoney" => 10, "money" => 20),
+			lang('Date and time') => array("date" => 10, "smalldatetime" => 19, "datetime" => 19, "datetime2" => 19, "time" => 8, "datetimeoffset" => 10),
+			lang('Strings') => array("char" => 8000, "varchar" => 8000, "text" => 2147483647, "nchar" => 4000, "nvarchar" => 4000, "ntext" => 1073741823),
+			lang('Binary') => array("binary" => 8000, "varbinary" => 8000, "image" => 2147483647),
+		) as $key => $val) {
+			$types += $val;
+			$structured_types[$key] = array_keys($val);
+		}
+		return array(
+			'possible_drivers' => array("SQLSRV", "MSSQL", "PDO_DBLIB"),
+			'jush' => "mssql",
+			'types' => $types,
+			'structured_types' => $structured_types,
+			'unsigned' => array(),
+			'operators' => array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"),
+			'functions' => array("len", "lower", "round", "upper"),
+			'grouping' => array("avg", "count", "count distinct", "max", "min", "sum"),
+			'edit_functions' => array(
+				array(
+					"date|time" => "getdate",
+				), array(
+					"int|decimal|real|float|money|datetime" => "+/-",
+					"char|text" => "+",
+				)
+			),
+		);
 	}
-	$unsigned = array();
-	$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL");
-	$functions = array("len", "lower", "round", "upper");
-	$grouping = array("avg", "count", "count distinct", "max", "min", "sum");
-	$edit_functions = array(
-		array(
-			"date|time" => "getdate",
-		), array(
-			"int|decimal|real|float|money|datetime" => "+/-",
-			"char|text" => "+",
-		)
-	);
 }
