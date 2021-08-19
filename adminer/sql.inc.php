@@ -32,7 +32,7 @@ if (!$error && $_POST) {
 	}
 
 	if (is_string($query)) { // get_file() returns error as number, fread() as false
-		if (function_exists('memory_get_usage')) {
+		if (function_exists('memory_get_usage') && ini_bytes("memory_limit") != "-1") {
 			@ini_set("memory_limit", max(ini_bytes("memory_limit"), 2 * strlen($query) + memory_get_usage() + 8e6)); // @ - may be disabled, 2 - substr and trim, 8e6 - other variables
 		}
 
