@@ -16,12 +16,17 @@ if (isset($_GET["elastic"])) {
 			 */
 			function rootQuery($path, $content = array(), $method = 'GET') {
 				@ini_set('track_errors', 1); // @ - may be disabled
-				$file = @file_get_contents("$this->_url/" . ltrim($path, '/'), false, stream_context_create(array('http' => array(
+				$opts = array( 'http'=>array(
 					'method' => $method,
-					'content' => $content === null ? $content : json_encode($content),
-					'header' => 'Content-Type: application/json',
 					'ignore_errors' => 1, // available since PHP 5.2.10
-				))));
+					));
+				if ($method != 'GET') {
+					$opts['http']['content'] = $content === null ? $content : json_encode($content);
+					$opts['http']['header'] = 'Content-Type: application/json';
+				}
+				$context = stream_context_create($opts);
+				$file = @file_get_contents("$this->_url/" . ltrim($path, '/'), false, $context);
+
 				if (!$file) {
 					$this->error = $php_errormsg;
 					return $file;
