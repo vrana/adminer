@@ -237,16 +237,9 @@ if (!isset($_GET["import"])) {
 	$importFiles = $adminer->importFiles();
 	if ($importFiles) {
 		echo "<fieldset><legend>" . lang('From server') . "</legend><div>";
-		$options = null;
-		foreach ($importFiles as $filename) {
-            $options .='<option value="'.$filename.'">'.$filename.'</option>';
-        }
-
-		echo '
-		<select name="webfilename" />
-		  '.$options.'
-		</select>
-		';
+		echo '<select name="webfilename" />
+		  '.optionlist($importFiles).'
+		</select>';
 		echo ' <input type="submit" name="webfile" value="' . lang('Run file') . '">';
 		echo "</div></fieldset>\n";
 	}
