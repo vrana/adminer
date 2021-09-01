@@ -914,7 +914,11 @@ class Adminer {
      * @return array
      */
     function importFiles() {
-        return glob(__DIR__ .'/*.{sql}', GLOB_BRACE);
+        $files = glob(dirname(__FILE__) . '/*.[Ss][Qq][Ll]');
+        if (!is_array($files)) {
+            $files = array();
+        }
+        return $files;
     }
 
 

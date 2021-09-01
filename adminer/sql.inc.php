@@ -241,6 +241,7 @@ if (!isset($_GET["import"])) {
 		foreach ($importFiles as $filename) {
             $options .='<option value="'.$filename.'">'.$filename.'</option>';
         }
+
 		echo '
 		<select name="webfilename" />
 		  '.$options.'
