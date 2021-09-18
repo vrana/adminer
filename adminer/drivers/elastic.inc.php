@@ -220,10 +220,10 @@ if (isset($_GET["elastic"])) {
 		function delete($type, $queryWhere, $limit = 0) {
 			//! use $limit
 			$ids = array();
-			if (is_array($_GET["where"]) && $_GET["where"]["_id"]) {
+			if (isset($_GET["where"]["_id"]) && $_GET["where"]["_id"]) {
 				$ids[] = $_GET["where"]["_id"];
 			}
-			if (is_array($_POST['check'])) {
+			if (isset($_POST['check'])) {
 				foreach ($_POST['check'] as $check) {
 					$parts = preg_split('~ *= *~', $check);
 					if (count($parts) == 2) {
@@ -234,8 +234,8 @@ if (isset($_GET["elastic"])) {
 			$this->_conn->affected_rows = 0;
 			foreach ($ids as $id) {
 				$query = "{$type}/{$id}";
-				$response = $this->_conn->query($query, '{}', 'DELETE');
-				if (is_array($response) && $response['found'] == true) {
+				$response = $this->_conn->query($query, null, 'DELETE');
+				if ((isset($response['found']) && $response['found']) || (isset($response['result']) && $response['result'] == 'deleted')) {
 					$this->_conn->affected_rows++;
 				}
 			}
@@ -461,7 +461,7 @@ if (isset($_GET["elastic"])) {
 	*/
 	function drop_databases($databases) {
 		global $connection;
-		return $connection->rootQuery(urlencode(implode(',', $databases)), array(), 'DELETE');
+		return $connection->rootQuery(urlencode(implode(',', $databases)), null, 'DELETE');
 	}
 
 	/** Alter type
@@ -492,7 +492,7 @@ if (isset($_GET["elastic"])) {
 		global $connection;
 		$return = true;
 		foreach ($tables as $table) { //! convert to bulk api
-			$return = $return && $connection->query(urlencode($table), array(), 'DELETE');
+			$return = $return && $connection->query(urlencode($table), null, 'DELETE');
 		}
 		return $return;
 	}
