@@ -474,7 +474,7 @@ if (isset($_GET["elastic"])) {
 	*/
 	function drop_databases($databases) {
 		global $connection;
-		return $connection->rootQuery(urlencode(implode(',', $databases)), array(), 'DELETE');
+		return $connection->rootQuery(urlencode(implode(',', $databases)), null, 'DELETE');
 	}
 
 	/** Alter type
@@ -505,7 +505,7 @@ if (isset($_GET["elastic"])) {
 		global $connection;
 		$return = true;
 		foreach ($tables as $table) { //! convert to bulk api
-			$return = $return && $connection->query(urlencode($table), array(), 'DELETE');
+			$return = $return && $connection->query(urlencode($table), null, 'DELETE');
 		}
 		return $return;
 	}
