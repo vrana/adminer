@@ -14,7 +14,7 @@ if (isset($_GET["elastic"])) {
 			 * @param string
 			 * @return mixed
 			 */
-			function rootQuery($path, $content = array(), $method = 'GET') {
+			function rootQuery($path, $content = null, $method = 'GET') {
 				@ini_set('track_errors', 1); // @ - may be disabled
 				$file = @file_get_contents("$this->_url/" . ltrim($path, '/'), false, stream_context_create(array('http' => array(
 					'method' => $method,
@@ -59,7 +59,7 @@ if (isset($_GET["elastic"])) {
 			 * @param string
 			 * @return mixed
 			 */
-			function query($path, $content = array(), $method = 'GET') {
+			function query($path, $content = null, $method = 'GET') {
 				// Support for global search through all tables
 				if ($path[0] == "S" && preg_match('/SELECT 1 FROM ([^ ]+) WHERE (.+) LIMIT ([0-9]+)/', $path, $matches)) {
 					global $driver;
@@ -467,7 +467,7 @@ if (isset($_GET["elastic"])) {
 	*/
 	function drop_databases($databases) {
 		global $connection;
-		return $connection->rootQuery(urlencode(implode(',', $databases)), array(), 'DELETE');
+		return $connection->rootQuery(urlencode(implode(',', $databases)), null, 'DELETE');
 	}
 
 	/** Alter type
@@ -498,7 +498,7 @@ if (isset($_GET["elastic"])) {
 		global $connection;
 		$return = true;
 		foreach ($tables as $table) { //! convert to bulk api
-			$return = $return && $connection->query(urlencode($table), array(), 'DELETE');
+			$return = $return && $connection->query(urlencode($table), null, 'DELETE');
 		}
 		return $return;
 	}
