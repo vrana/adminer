@@ -49,7 +49,7 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 				if ($field->charsetnr == 63) { // 63 - binary
 					$blobs[$j] = true;
 				}
-				$types[$j] = $field->type;
+				$types[$j] = isset($field->type) ? $field->type : null;
 				echo "<th" . ($orgtable != "" || $field->name != $orgname ? " title='" . h(($orgtable != "" ? "$orgtable." : "") . $orgname) . "'" : "") . ">" . h($name)
 					. ($orgtables ? doc_link(array(
 						'sql' => "explain-output.html#explain_" . strtolower($name),
