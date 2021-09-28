@@ -173,9 +173,9 @@ function page_messages($error) {
 * @param string "auth", "db", "ns"
 * @return null
 */
-function page_footer($missing = "") {
-	global $adminer, $token;
-	?>
+function page_footer($missing = "")
+{
+    global $adminer, $token; ?>
 </div>
 
 <?php switch_lang(); ?>
@@ -190,6 +190,8 @@ function page_footer($missing = "") {
 <div id="menu">
 <?php $adminer->navigation($missing); ?>
 </div>
+<?php echo script("setupSubmitHighlight(document);"); ?>
+</body>
+</html>
 <?php
-	echo script("setupSubmitHighlight(document);");
 }
