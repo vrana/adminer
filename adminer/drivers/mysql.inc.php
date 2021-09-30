@@ -27,7 +27,7 @@ if (!defined("DRIVER")) {
 					$database,
 					(is_numeric($port) ? $port : ini_get("mysqli.default_port")),
 					(!is_numeric($port) ? $port : $socket),
-					($ssl ? 64 : 0) // 64 - MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT (not available before PHP 5.6.16)
+					($ssl?$ssl['cflags'] ?? 64 : 0) // 64 - MYSQLI_CLIENT_SSL (not available before PHP 5.6.16)
 				);
 				$this->options(MYSQLI_OPT_LOCAL_INFILE, false);
 				return $return;
