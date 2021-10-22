@@ -43,7 +43,7 @@ if (isset($_GET["pgsql"])) {
 			}
 
 			function quote($string) {
-				return "'" . pg_escape_string($this->_link, $string) . "'";
+				return pg_escape_literal($this->_link, $string);
 			}
 
 			function value($val, $field) {
@@ -792,7 +792,7 @@ AND typelem = 0"
 		$return = "CREATE TABLE " . idf_escape($status['nspname']) . "." . idf_escape($status['Name']) . " (\n    ";
 
 		// fields' definitions
-		foreach ($fields as $field_name => $field) {
+		foreach ($fields as $field) {
 			$part = idf_escape($field['field']) . ' ' . $field['full_type']
 				. default_value($field)
 				. ($field['attnotnull'] ? " NOT NULL" : "");
@@ -801,10 +801,11 @@ AND typelem = 0"
 			// sequences for fields
 			if (preg_match('~nextval\(\'([^\']+)\'\)~', $field['default'], $matches)) {
 				$sequence_name = $matches[1];
-				$sq = reset(get_rows(min_version(10)
-					? "SELECT *, cache_size AS cache_value FROM pg_sequences WHERE schemaname = current_schema() AND sequencename = " . q($sequence_name)
+				$rows = get_rows(min_version(10)
+					? "SELECT *, cache_size AS cache_value FROM pg_sequences WHERE schemaname = current_schema() AND sequencename = " . q(idf_unescape($sequence_name))
 					: "SELECT * FROM $sequence_name"
-				));
+				);
+				$sq = reset($rows);
 				$sequences[] = ($style == "DROP+CREATE" ? "DROP SEQUENCE IF EXISTS $sequence_name;\n" : "")
 					. "CREATE SEQUENCE $sequence_name INCREMENT $sq[increment_by] MINVALUE $sq[min_value] MAXVALUE $sq[max_value]" . ($auto_increment && $sq['last_value'] ? " START $sq[last_value]" : "") . " CACHE $sq[cache_value];";
 			}
