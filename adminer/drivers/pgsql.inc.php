@@ -783,7 +783,7 @@ AND typelem = 0"
 			if (preg_match('~nextval\(\'([^\']+)\'\)~', $field['default'], $matches)) {
 				$sequence_name = $matches[1];
 				$sq = reset(get_rows(min_version(10)
-					? "SELECT *, cache_size AS cache_value FROM pg_sequences WHERE schemaname = current_schema() AND sequencename = " . q($sequence_name)
+					? "SELECT *, cache_size AS cache_value FROM pg_sequences WHERE schemaname = current_schema() AND sequencename = " . q(preg_replace('/^"(.+)"$/', "$1", $sequence_name))
 					: "SELECT * FROM $sequence_name"
 				));
 				$sequences[] = ($style == "DROP+CREATE" ? "DROP SEQUENCE IF EXISTS $sequence_name;\n" : "")
