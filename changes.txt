@@ -1,3 +1,7 @@
+Adminer 4.9.2-dev:
+PostgreSQL: Fix exporting CREATE TABLE query with GENERATED default values
+PostgreSQL: Fix exporting CREATE TABLE with sequence default value
+
 Adminer 4.9.1:
 Support PHP 8.3
 PostgreSQL: Show only accessible databases
