@@ -88,6 +88,9 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 			if ($link) {
 				$val = "<a href='" . h($link) . "'" . (is_url($link) ? target_blank() : '') . ">$val</a>";
 			}
+			elseif (is_url($val)) {
+				$val = "<a href='" . h($val) . "'" . target_blank() .">$val</a>";
+			}
 			echo "<td>$val";
 		}
 	}
