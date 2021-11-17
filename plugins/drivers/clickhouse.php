@@ -90,8 +90,14 @@ if (isset($_GET["clickhouse"])) {
 		var $num_rows, $_rows, $columns, $meta, $_offset = 0;
 
 		function __construct($result) {
+			foreach ($result['data'] as $item) {
+				$row = array();
+				foreach ($item as $key => $val) {
+					$row[$key] = is_scalar($val) ? $val : json_encode($val, 256); // 256 - JSON_UNESCAPED_UNICODE
+				}
+				$this->_rows[] = $row;
+			}
 			$this->num_rows = $result['rows'];
-			$this->_rows = $result['data'];
 			$this->meta = $result['meta'];
 			$this->columns = array_column($this->meta, 'name');
 			reset($this->_rows);
