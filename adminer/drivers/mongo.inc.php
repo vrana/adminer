@@ -217,7 +217,7 @@ if (isset($_GET["mongo"])) {
 			function connect($uri, $options) {
 				$class = 'MongoDB\Driver\Manager';
 				$this->_link = new $class($uri, $options);
-				$this->executeCommand('admin', array('ping' => 1));
+				$this->executeCommand($options["db"], array('ping' => 1));
 			}
 			
 			function executeCommand($db, $command) {
@@ -399,7 +399,7 @@ if (isset($_GET["mongo"])) {
 		function get_databases($flush) {
 			global $connection;
 			$return = array();
-			foreach ($connection->executeCommand('admin', array('listDatabases' => 1)) as $dbs) {
+			foreach ($connection->executeCommand($connection->_db_name, array('listDatabases' => 1)) as $dbs) {
 				foreach ($dbs->databases as $db) {
 					$return[] = $db->name;
 				}
