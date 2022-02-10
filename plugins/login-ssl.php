@@ -11,7 +11,7 @@ class AdminerLoginSsl {
 	var $ssl;
 
 	/**
-	* @param array MySQL: ["key" => filename, "cert" => filename, "ca" => filename], PostgresSQL: ["mode" => sslmode]
+	* @param array MySQL: ["key" => filename, "cert" => filename, "ca" => filename, "verify" => bool], PostgresSQL: ["mode" => sslmode]
 	*/
 	function __construct($ssl) {
 		$this->ssl = $ssl;
