@@ -246,6 +246,9 @@ if (!defined("DRIVER")) {
 					if (!empty($ssl['ca'])) {
 						$options[PDO::MYSQL_ATTR_SSL_CA] = $ssl['ca'];
 					}
+					if (!empty($ssl['verify'])) {
+						$options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = $ssl['verify'];
+					}
 				}
 				$this->dsn(
 					"mysql:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\d)~', ';port=\1', $server)),
