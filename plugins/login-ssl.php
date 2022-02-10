@@ -11,7 +11,7 @@ class AdminerLoginSsl {
 	var $ssl;
 	
 	/** 
-	* @param array array("key" => filename, "cert" => filename, "ca" => filename)
+	* @param array array("key" => filename, "cert" => filename, "ca" => filename, "verify" => true | false)
 	*/
 	function __construct($ssl) {
 		$this->ssl = $ssl;
