@@ -40,7 +40,8 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function quote($string) {
-				return "'" . str_replace("'", "''", $string) . "'";
+				$unicode = strlen($string) != strlen(utf8_decode($string));
+				return ($unicode ? "N" : "") . "'" . str_replace("'", "''", $string) . "'";
 			}
 
 			function select_db($database) {
@@ -163,7 +164,8 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function quote($string) {
-				return "'" . str_replace("'", "''", $string) . "'";
+				$unicode = strlen($string) != strlen(utf8_decode($string));
+				return ($unicode ? "N" : "") . "'" . str_replace("'", "''", $string) . "'";
 			}
 
 			function select_db($database) {
