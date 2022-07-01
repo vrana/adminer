@@ -535,7 +535,7 @@ input[type="file"]::-ms-browse {
 	background: #4c3957;
 	color: #fff;
 	padding: 0.5em 0.8em 0.6em;
-	margin: 0;
+	margin: 0 0.5em;
 	border-style: none;
 	cursor: pointer;
 }
@@ -557,7 +557,7 @@ input[type="file"]::-webkit-file-upload-button {
 	background: #4c3957;
 	color: #fff;
 	padding: 0.5em 0.8em 0.6em;
-	margin: 0;
+	margin: 0 0.5em;
 	border-style: none;
 	cursor: pointer;
 }
@@ -571,24 +571,24 @@ input[type="file"]:disabled::-webkit-file-upload-button {
 	background-color: rgba(76, 57, 87, 0.35);
 	cursor: not-allowed;
 }
-input[type="file"]::-moz-file-upload-button {
+input[type="file"]::file-selector-button {
 	display: inline-block;
 	font-size: 85%;
 	text-align: center;
 	background: #4c3957;
 	color: #fff;
 	padding: 0.5em 0.8em 0.6em;
-	margin: 0;
+	margin: 0 0.5em;
 	border-style: none;
 	cursor: pointer;
 }
-input[type="file"]:hover::-moz-file-upload-button,
-input[type="file"]:focus::-moz-file-upload-button {
+input[type="file"]:hover::file-selector-button,
+input[type="file"]:focus::file-selector-button {
 	color: #fff;
 	background: #ec5f12;
 	text-decoration: none;
 }
-input[type="file"]:disabled::-moz-file-upload-button {
+input[type="file"]:disabled::file-selector-button {
 	background-color: rgba(76, 57, 87, 0.35);
 	cursor: not-allowed;
 }
