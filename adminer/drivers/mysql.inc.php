@@ -854,6 +854,18 @@ if (!defined("DRIVER")) {
 		return true;
 	}
 
+	/** Get defined check constraints
+	* @param string
+	* @return array array($name => $statement)
+	*/
+	function check_constraints($table) {
+		$return = array();
+		foreach (get_rows("SELECT `CONSTRAINT_NAME`, `CHECK_CLAUSE` FROM `information_schema`.`CHECK_CONSTRAINTS` WHERE `CONSTRAINT_SCHEMA` = " . q(addcslashes(DB, "%_\\")) . " AND `TABLE_NAME` = " . q(addcslashes($table, "%_\\")) . " AND `LEVEL` = 'Table';") as $row) {
+			$return[$row["CONSTRAINT_NAME"]] = $row["CHECK_CLAUSE"];
+		}
+		return $return;
+	}
+
 	/** Get information about trigger
 	* @param string trigger name
 	* @return array array("Trigger" => , "Timing" => , "Event" => , "Of" => , "Type" => , "Statement" => )
@@ -1106,11 +1118,11 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Check whether a feature is supported
-	* @param string "comment", "copy", "database", "descidx", "drop_col", "dump", "event", "indexes", "kill", "materializedview", "partitioning", "privileges", "procedure", "processlist", "routine", "scheme", "sequence", "status", "table", "trigger", "type", "variables", "view", "view_trigger"
+	* @param string "check", "comment", "copy", "database", "descidx", "drop_col", "dump", "event", "indexes", "kill", "materializedview", "partitioning", "privileges", "procedure", "processlist", "routine", "scheme", "sequence", "status", "table", "trigger", "type", "variables", "view", "view_check", "view_trigger"
 	* @return bool
 	*/
 	function support($feature) {
-		return !preg_match("~scheme|sequence|type|view_trigger|materializedview" . (min_version(8) ? "" : "|descidx" . (min_version(5.1) ? "" : "|event|partitioning" . (min_version(5) ? "" : "|routine|trigger|view"))) . "~", $feature);
+		return !preg_match("~scheme|sequence|type|view_trigger|materializedview" . (min_version(8) ? "|check|view_check" : "|descidx" . (min_version(5.1) ? "" : "|event|partitioning" . (min_version(5) ? "" : "|routine|trigger|view"))) . "~", $feature);
 	}
 
 	/** Kill a process

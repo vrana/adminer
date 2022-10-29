@@ -53,6 +53,19 @@ if (!is_view($table_status)) {
 	}
 }
 
+if (support(is_view($table_status) ? "view_check" : "check")) {
+	echo "<h3 id='check_constraints'>" . lang('Check Constraints') . "</h3>\n";
+	$check_constraints = check_constraints($TABLE);
+	if ($check_constraints) {
+		echo "<table cellspacing='0'>\n";
+		echo "<thead><tr><th>" . h(lang("Name")) . "<td>" . h(lang("Clause")) . "\n";
+		foreach ($check_constraints as $key => $val) {
+			echo "<tr><td>" . h($key) . "<td><code class='jush-sql jush'>" . h($val) . "\n";
+		}
+		echo "</table>\n";
+	}
+}
+
 if (support(is_view($table_status) ? "view_trigger" : "trigger")) {
 	echo "<h3 id='triggers'>" . lang('Triggers') . "</h3>\n";
 	$triggers = triggers($TABLE);
