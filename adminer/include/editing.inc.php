@@ -423,6 +423,20 @@ function drop_create($drop, $create, $drop_created, $test, $drop_test, $location
 	}
 }
 
+/** Generate SQL query for creating check constraint
+* @param string table name
+* @param string check constraint name
+* @param string check constraint clause
+* @return string sql query
+*/
+function create_check_constraint($table, $name, $clause) {
+	if ($name == "") {
+		return "ALTER TABLE " . idf_escape($table) . " ADD CHECK ($clause);"; // <-- warning! sql injection!
+	} else {
+		return "ALTER TABLE " . idf_escape($table) . " ADD CONSTRAINT " . idf_escape($name) . " CHECK ($clause);"; // <-- warning! sql injection!
+	}
+}
+
 /** Generate SQL query for creating trigger
 * @param string
 * @param array result of trigger()

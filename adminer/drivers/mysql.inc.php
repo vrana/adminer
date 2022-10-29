@@ -854,13 +854,26 @@ if (!defined("DRIVER")) {
 		return true;
 	}
 
+	/** Get clause of check constraint
+	* @param string check constraint name
+	* @param string table name
+	* @return string clause
+	*/
+	function check_constraint($name, $table) {
+		if ($name == "") {
+			return "";
+		}
+		$rows = get_rows("SELECT `CHECK_CLAUSE` FROM `information_schema`.`CHECK_CONSTRAINTS` WHERE `CONSTRAINT_SCHEMA` = " . q(addcslashes(DB, "%_")) . " AND `TABLE_NAME` = " . q(addcslashes($table, "%\\")) . " AND `CONSTRAINT_NAME` = " . q(addcslashes($name, "%\\")) . " AND `LEVEL` = 'Table'");
+		return reset($rows)["CHECK_CLAUSE"];
+	}
+
 	/** Get defined check constraints
 	* @param string
 	* @return array array($name => $statement)
 	*/
 	function check_constraints($table) {
 		$return = array();
-		foreach (get_rows("SELECT `CONSTRAINT_NAME`, `CHECK_CLAUSE` FROM `information_schema`.`CHECK_CONSTRAINTS` WHERE `CONSTRAINT_SCHEMA` = " . q(addcslashes(DB, "%_\\")) . " AND `TABLE_NAME` = " . q(addcslashes($table, "%_\\")) . " AND `LEVEL` = 'Table';") as $row) {
+		foreach (get_rows("SELECT `CONSTRAINT_NAME`, `CHECK_CLAUSE` FROM `information_schema`.`CHECK_CONSTRAINTS` WHERE `CONSTRAINT_SCHEMA` = " . q(addcslashes(DB, "%\\")) . " AND `TABLE_NAME` = " . q(addcslashes($table, "%\\")) . " AND `LEVEL` = 'Table'") as $row) {
 			$return[$row["CONSTRAINT_NAME"]] = $row["CHECK_CLAUSE"];
 		}
 		return $return;
@@ -1118,11 +1131,11 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Check whether a feature is supported
-	* @param string "check", "comment", "copy", "database", "descidx", "drop_col", "dump", "event", "indexes", "kill", "materializedview", "partitioning", "privileges", "procedure", "processlist", "routine", "scheme", "sequence", "status", "table", "trigger", "type", "variables", "view", "view_check", "view_trigger"
+	* @param string "check", "comment", "copy", "database", "descidx", "drop_col", "dump", "event", "indexes", "kill", "materializedview", "partitioning", "privileges", "procedure", "processlist", "routine", "scheme", "sequence", "status", "table", "trigger", "type", "variables", "view", "view_trigger"
 	* @return bool
 	*/
 	function support($feature) {
-		return !preg_match("~scheme|sequence|type|view_trigger|materializedview" . (min_version(8) ? "|check|view_check" : "|descidx" . (min_version(5.1) ? "" : "|event|partitioning" . (min_version(5) ? "" : "|routine|trigger|view"))) . "~", $feature);
+		return !preg_match("~scheme|sequence|type|view_trigger|materializedview" . (min_version(8) ? "|check" : "|descidx" . (min_version(5.1) ? "" : "|event|partitioning" . (min_version(5) ? "" : "|routine|trigger|view"))) . "~", $feature);
 	}
 
 	/** Kill a process

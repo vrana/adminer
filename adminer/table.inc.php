@@ -51,18 +51,19 @@ if (!is_view($table_status)) {
 		}
 		echo '<p class="links"><a href="' . h(ME) . 'foreign=' . urlencode($TABLE) . '">' . lang('Add foreign key') . "</a>\n";
 	}
-}
-
-if (support(is_view($table_status) ? "view_check" : "check")) {
-	echo "<h3 id='check_constraints'>" . lang('Check Constraints') . "</h3>\n";
-	$check_constraints = check_constraints($TABLE);
-	if ($check_constraints) {
-		echo "<table cellspacing='0'>\n";
-		echo "<thead><tr><th>" . h(lang("Name")) . "<td>" . h(lang("Clause")) . "\n";
-		foreach ($check_constraints as $key => $val) {
-			echo "<tr><td>" . h($key) . "<td><code class='jush-sql jush'>" . h($val) . "\n";
+	
+	if (support("check")) {
+		echo "<h3 id='check_constraints'>" . lang('Check Constraints') . "</h3>\n";
+		$check_constraints = check_constraints($TABLE);
+		if ($check_constraints) {
+			echo "<table cellspacing='0'>\n";
+			echo "<thead><tr><th>" . h(lang("Name")) . "<td>" . h(lang("Clause")) . "<td>\n";
+			foreach ($check_constraints as $key => $val) {
+				echo "<tr><td>" . h($key) . "<td><code class='jush-sql jush'>" . h($val) . "<td><a href='" . h(ME . 'checkconstraint=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "'>" . lang('Alter') . "</a>\n";
+			}
+			echo "</table>\n";
 		}
-		echo "</table>\n";
+		echo '<p class="links"><a href="' . h(ME) . 'checkconstraint=' . urlencode($TABLE) . '">' . lang('Add check constraint') . "</a>\n";
 	}
 }
 
