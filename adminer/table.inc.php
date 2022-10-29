@@ -48,13 +48,30 @@ if (!is_view($table_status)) {
 					. "</a>"
 				;
 				echo "(<i>" . implode("</i>, <i>", array_map('h', $foreign_key["target"])) . "</i>)";
-				echo "<td>" . h($foreign_key["on_delete"]) . "\n";
-				echo "<td>" . h($foreign_key["on_update"]) . "\n";
+				echo "<td>" . h($foreign_key["on_delete"]);
+				echo "<td>" . h($foreign_key["on_update"]);
 				echo '<td><a href="' . h(ME . 'foreign=' . urlencode($TABLE) . '&name=' . urlencode($name)) . '">' . lang('Alter') . '</a>';
+				echo "\n";
 			}
 			echo "</table>\n";
 		}
 		echo '<p class="links"><a href="' . h(ME) . 'foreign=' . urlencode($TABLE) . '">' . lang('Add foreign key') . "</a>\n";
+	}
+
+	if (support("check")) {
+		echo "<h3 id='checks'>" . lang('Checks') . "</h3>\n";
+		$check_constraints = check_constraints($TABLE);
+		if ($check_constraints) {
+			echo "<table cellspacing='0'>\n";
+			foreach ($check_constraints as $key => $val) {
+				echo "<tr title='" . h($key) . "'>";
+				echo "<td><code class='jush-$jush'>" . h($val);
+				echo "<td><a href='" . h(ME . 'check=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "'>" . lang('Alter') . "</a>";
+				echo "\n";
+			}
+			echo "</table>\n";
+		}
+		echo '<p class="links"><a href="' . h(ME) . 'check=' . urlencode($TABLE) . '">' . lang('Create check') . "</a>\n";
 	}
 }
 

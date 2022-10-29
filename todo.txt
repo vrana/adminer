@@ -30,7 +30,6 @@ Rank, Tree structure
 
 MySQL:
 Data longer than max_allowed_packet can be sent by mysqli_stmt_send_long_data()
-Check constraints: https://github.com/vrana/adminer/pull/458
 
 MariaDB:
 Documentation links

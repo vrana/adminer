@@ -864,6 +864,18 @@ if (!defined("DRIVER")) {
 		return true;
 	}
 
+	/** Get defined check constraints
+	* @param string
+	* @return array array($name => $statement)
+	*/
+	function check_constraints($table) {
+		// MariaDB contains CHECK_CONSTRAINTS.TABLE_NAME, MySQL not
+		return get_key_vals("SELECT c.CONSTRAINT_NAME, c.CHECK_CLAUSE
+FROM information_schema.CHECK_CONSTRAINTS c
+JOIN information_schema.TABLE_CONSTRAINTS t ON c.CONSTRAINT_SCHEMA = t.CONSTRAINT_SCHEMA AND c.CONSTRAINT_NAME = t.CONSTRAINT_NAME
+WHERE c.CONSTRAINT_SCHEMA = " . q(DB) . " AND t.TABLE_NAME = " . q($table));
+	}
+
 	/** Get information about trigger
 	* @param string trigger name
 	* @return array array("Trigger" => , "Timing" => , "Event" => , "Of" => , "Type" => , "Statement" => )
@@ -1128,11 +1140,11 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Check whether a feature is supported
-	* @param string "comment", "copy", "database", "descidx", "drop_col", "dump", "event", "indexes", "kill", "materializedview", "partitioning", "privileges", "procedure", "processlist", "routine", "scheme", "sequence", "status", "table", "trigger", "type", "variables", "view", "view_trigger"
+	* @param string "check", "comment", "copy", "database", "descidx", "drop_col", "dump", "event", "indexes", "kill", "materializedview", "partitioning", "privileges", "procedure", "processlist", "routine", "scheme", "sequence", "status", "table", "trigger", "type", "variables", "view", "view_trigger"
 	* @return bool
 	*/
 	function support($feature) {
-		return !preg_match("~scheme|sequence|type|view_trigger|materializedview" . (min_version(8) ? "" : "|descidx" . (min_version(5.1) ? "" : "|event|partitioning" . (min_version(5) ? "" : "|routine|trigger|view"))) . "~", $feature);
+		return !preg_match("~scheme|sequence|type|view_trigger|materializedview" . (min_version(8) ? "" : "|descidx" . (min_version(5.1) ? "" : "|event|partitioning" . (min_version(5) ? "" : "|routine|trigger|view"))) . (min_version('8.0.16', '10.2.1') ? "" : "|check") . "~", $feature);
 	}
 
 	/** Kill a process

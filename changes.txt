@@ -1,5 +1,6 @@
-Adminer 4.16.1-dev:
+Adminer 4.17.0-dev:
 Hide index column options by default
+MySQL: Support CHECK constraint
 PostgreSQL: Link user defined types
 PostgreSQL: Constraint enum values in editing (bug #270)
 SQLite: Show all supported pragmas in Variables
