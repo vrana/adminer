@@ -863,7 +863,7 @@ if (!defined("DRIVER")) {
 		if ($name == "") {
 			return "";
 		}
-		$rows = get_rows("SELECT `CHECK_CLAUSE` FROM `information_schema`.`CHECK_CONSTRAINTS` WHERE `CONSTRAINT_SCHEMA` = " . q(addcslashes(DB, "%_")) . " AND `TABLE_NAME` = " . q(addcslashes($table, "%\\")) . " AND `CONSTRAINT_NAME` = " . q(addcslashes($name, "%\\")) . " AND `LEVEL` = 'Table'");
+		$rows = get_rows("SELECT `CHECK_CLAUSE` FROM `information_schema`.`CHECK_CONSTRAINTS` WHERE `CONSTRAINT_SCHEMA` = " . q(DB) . " AND `TABLE_NAME` = " . q($table) . " AND `CONSTRAINT_NAME` = " . q($name) . " AND `LEVEL` = 'Table'");
 		return reset($rows)["CHECK_CLAUSE"];
 	}
 
@@ -873,7 +873,7 @@ if (!defined("DRIVER")) {
 	*/
 	function check_constraints($table) {
 		$return = array();
-		foreach (get_rows("SELECT `CONSTRAINT_NAME`, `CHECK_CLAUSE` FROM `information_schema`.`CHECK_CONSTRAINTS` WHERE `CONSTRAINT_SCHEMA` = " . q(addcslashes(DB, "%\\")) . " AND `TABLE_NAME` = " . q(addcslashes($table, "%\\")) . " AND `LEVEL` = 'Table'") as $row) {
+		foreach (get_rows("SELECT `CONSTRAINT_NAME`, `CHECK_CLAUSE` FROM `information_schema`.`CHECK_CONSTRAINTS` WHERE `CONSTRAINT_SCHEMA` = " . q(DB) . " AND `TABLE_NAME` = " . q($table) . " AND `LEVEL` = 'Table'") as $row) {
 			$return[$row["CONSTRAINT_NAME"]] = $row["CHECK_CLAUSE"];
 		}
 		return $return;
