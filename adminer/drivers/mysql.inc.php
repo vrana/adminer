@@ -1135,7 +1135,14 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function support($feature) {
-		return !preg_match("~scheme|sequence|type|view_trigger|materializedview" . (min_version(8) ? "|check" : "|descidx" . (min_version(5.1) ? "" : "|event|partitioning" . (min_version(5) ? "" : "|routine|trigger|view"))) . "~", $feature);
+		static $supports_check_constraints = null;
+		if (is_null($supports_check_constraints)) {
+			$supports_check_constraints = get_rows("SELECT COUNT(*) FROM `TABLES` WHERE `TABLE_SCHEMA` = 'information_schema' AND `TABLE_NAME` = 'CHECK_CONSTRAINTS'");
+			$supports_check_constraints = reset($supports_check_constraints)[0];
+			$supports_check_constraints = $supports_check_constraints > 0;
+		}
+
+		return !preg_match("~scheme|sequence|type|view_trigger|materializedview" . (min_version(8) ? "" : "|descidx" . (min_version(5.1) ? "" : "|event|partitioning" . (min_version(5) ? "" : "|routine|trigger|view"))) . ($supports_check_constraints ? "|check" : "") . "~", $feature);
 	}
 
 	/** Kill a process
