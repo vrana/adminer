@@ -831,7 +831,7 @@ class Adminer {
 				$insert = "";
 				$buffer = "";
 				$keys = array();
-                $keysWithoutGenerated = array();
+				$keysWithoutGenerated = array();
 				$suffix = "";
 				$fetch_function = ($table != '' ? 'fetch_assoc' : 'fetch_row');
 				while ($row = $result->$fetch_function()) {
@@ -840,9 +840,9 @@ class Adminer {
 						foreach ($row as $val) {
 							$field = $result->fetch_field();
 							$keys[] = $field->name;
-                            if (isset($fields[$field->name]) && !$fields[$field->name]['generated']) {
-                                $keysWithoutGenerated[] = $field->name;
-                            }
+							if (isset($fields[$field->name]) && !$fields[$field->name]['generated']) {
+								$keysWithoutGenerated[] = $field->name;
+							}
 							$key = idf_escape($field->name);
 							$values[] = "$key = VALUES($key)";
 						}
@@ -858,16 +858,16 @@ class Adminer {
 						if (!$insert) {
 							$insert = "INSERT INTO " . table($table) . " (" . implode(", ", array_map('idf_escape', ($jush == 'sql') ? $keysWithoutGenerated : $keys)) . ") VALUES";
 						}
-                        $rowWithoutGenerated = array();
+						$rowWithoutGenerated = array();
 						foreach ($row as $key => $val) {
 							$field = $fields[$key];
 							$row[$key] = ($val !== null
 								? unconvert_field($field, preg_match(number_type(), $field["type"]) && !preg_match('~\[~', $field["full_type"]) && is_numeric($val) ? $val : q(($val === false ? 0 : $val)))
 								: "NULL"
 							);
-                            if (in_array($key, $keysWithoutGenerated)) {
-                                $rowWithoutGenerated[$key] = $row[$key];
-                            }
+							if (in_array($key, $keysWithoutGenerated)) {
+								$rowWithoutGenerated[$key] = $row[$key];
+							}
 						}
 						$s = ($max_packet ? "\n" : " ") . "(" . implode(",\t", ($jush == 'sql') ? $rowWithoutGenerated : $row) . ")";
 						if (!$buffer) {
