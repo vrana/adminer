@@ -61,6 +61,10 @@ if (isset($_GET["download"])) {
 	include "./type.inc.php";
 } elseif (isset($_GET["trigger"])) {
 	include "./trigger.inc.php";
+} elseif (isset($_GET["filter"])) {
+	include "./filter.inc.php";
+} elseif (isset($_GET["model"])) {
+	include "./model.inc.php";
 } elseif (isset($_GET["user"])) {
 	include "./user.inc.php";
 } elseif (isset($_GET["processlist"])) {

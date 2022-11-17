@@ -162,6 +162,43 @@ function textarea($name, $value, $rows = 10, $cols = 80) {
 	echo "</textarea>";
 }
 
+/** Print SQL <textarea> tag
+* @param string
+* @param string or array in which case [0] of every element is used
+* @param int
+* @param int
+* @return null
+*/
+function monaco($name, $value, $rows = 10, $cols = 80, $language = 'json') {
+	global $jush;
+	echo '<div id="monaco_' . $name .
+		'" style="height:' . ($rows/7.5*10) . 'em;border:1px solid black;"></div>';
+	echo "<textarea style='display:none;' name='" . h($name) . "' rows='$rows' cols='$cols' class='sqlarea jush-$jush' spellcheck='false' wrap='off'>";
+	if (is_array($value)) {
+		foreach ($value as $val) { // not implode() to save memory
+			echo h($val[0]) . "\n\n\n"; // $val == array($query, $time, $elapsed)
+		}
+	} else {
+		echo h($value);
+	}
+	echo "</textarea>";
+	echo "<script>monacoEditor.then(monaco => {
+		const editor = monaco.editor.create(document.getElementById('monaco_" . $name . "'), {
+			value: " . json_encode($value, JSON_UNESCAPED_UNICODE) . ",
+			language: '" . $language . "',
+			automaticLayout: true,
+			minimap: {
+				enabled: false
+			},
+		});
+		editor.onDidChangeModelContent(() => {
+			form['" . $name . "'].value = editor.getValue();
+		});
+	});
+	</script>";
+}
+
+
 /** Print table columns for type edit
 * @param string
 * @param array
