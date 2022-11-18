@@ -29,13 +29,13 @@ page_header(($name != "" ? lang('Alter model') . ": " . h($name) : lang('Create 
 $model_base = json_encode(model_from_table($TABLE, $name), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 ?>
 
-<form action="" method="post" id="form" style="width:40rem;">
+<form action="" method="post" id="form" style="width:60rem;">
 	<p><?php echo lang('Name'); ?>: <input
 			name="Name"
 			value="<?php echo h($row["Name"]); ?>"
 			data-maxlength="64" autocapitalize="off">
 		<?php echo script("qs('#form')['Timing'].onchange();"); ?>
-	<p><?php monaco("Model", $row["Model"], 15); ?>
+	<p><?php monaco("Model", $row["Model"], 25); ?>
     <p style="display:none;"><textarea rows="10" cols="80" disabled class="sqlarea jush-sql" spellcheck="false" wrap="off"><?= h($model_base) ?></textarea>
 	<p>
 		<input type="submit"
