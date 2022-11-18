@@ -8,20 +8,29 @@
 */
 class AdminerDatabaseHide {
 	protected $disabled;
+	protected $enabled;
 	
 	/**
 	* @param array case insensitive database names in values
 	*/
-	function __construct($disabled) {
+	function __construct($disabled, $enabled = null) {
 		$this->disabled = array_map('strtolower', $disabled);
+        if ($enabled) {
+            $this->enabled = array_map('strtolower', $enabled);
+        }
 	}
 	
 	function databases($flush = true) {
 		$return = array();
+		// filter disables databases
 		foreach (get_databases($flush) as $db) {
 			if (!in_array(strtolower($db), $this->disabled)) {
 				$return[] = $db;
 			}
+		}
+		// filter enables databases
+		if ($this->enabled) {
+			$return = array_intersect($return, $this->enabled);
 		}
 		return $return;
 	}
