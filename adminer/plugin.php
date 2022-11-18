@@ -13,7 +13,7 @@ function adminer_object() {
 	
 	$plugins = array(
 		// specify enabled plugins here
-		new AdminerDatabaseHide(array('information_schema')),
+		new AdminerDatabaseHide(array('information_schema'), array('auditoria')),
 		new AdminerDumpJson,
 		new AdminerDumpBz2,
 		new AdminerDumpZip,
