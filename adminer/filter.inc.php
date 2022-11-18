@@ -29,7 +29,7 @@ page_header(($name != "" ? lang('Alter filter') . ": " . h($name) : lang('Create
 			value="<?php echo h($row["Name"]); ?>"
 			data-maxlength="64" autocapitalize="off">
 		<?php echo script("qs('#form')['Timing'].onchange();"); ?>
-	<p>[<?php monaco("Filter", $row["Filter"], 15, 40, "sql"); ?>]</p>
+	<p><?php monaco("Filter", $row["Filter"], 15, 40, "sql"); ?></p>
 	<p>
 		<input type="submit"
 			value="<?php echo lang('Save'); ?>">
