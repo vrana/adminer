@@ -1,5 +1,5 @@
 <?php
-$ob_path = getenv('OB_PATH') ?? '/home/david/projects/ob3/microservices';
+$ob_path = getenv('OB_PATH') ?: '/home/david/projects/ob3/microservices';
 function ob_parse_class($file)
 {
 	$dir = __DIR__;

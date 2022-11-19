@@ -76,7 +76,7 @@ if (support(is_view($table_status) ? "view_trigger" : "trigger")) {
 		}
 		echo "</table>\n";
 	}
-	echo '<p class="links"><a href="' . h(ME) . 'trigger=' . urlencode($TABLE) . '">' . lang('Add model') . "</a>\n";
+	echo '<p class="links"><a href="' . h(ME) . 'model=' . urlencode($TABLE) . '">' . lang('Add model') . "</a>\n";
 }
 
 if (support(is_view($table_status) ? "view_trigger" : "trigger")) {
@@ -89,5 +89,5 @@ if (support(is_view($table_status) ? "view_trigger" : "trigger")) {
 		}
 		echo "</table>\n";
 	}
-	echo '<p class="links"><a href="' . h(ME) . 'trigger=' . urlencode($TABLE) . '">' . lang('Add filter') . "</a>\n";
+	echo '<p class="links"><a href="' . h(ME) . 'filter=' . urlencode($TABLE) . '">' . lang('Add filter') . "</a>\n";
 }
