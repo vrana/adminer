@@ -30,19 +30,31 @@ $model_base = json_encode(model_from_table($TABLE, $name), JSON_UNESCAPED_UNICOD
 ?>
 
 <form action="" method="post" id="form" style="width:60rem;">
-	<p><?php echo lang('Name'); ?>: <input
-			name="Name"
-			value="<?php echo h($row["Name"]); ?>"
-			data-maxlength="64" autocapitalize="off">
-		<?php echo script("qs('#form')['Timing'].onchange();"); ?>
-	<p><?php monaco("Model", $row["Model"], 25); ?>
-    <p style="display:none;"><textarea rows="10" cols="80" disabled class="sqlarea jush-sql" spellcheck="false" wrap="off"><?= h($model_base) ?></textarea>
-	<p>
-		<input type="submit"
-			value="<?php echo lang('Save'); ?>">
-		<?php if ($name != "") { ?><input
-			type="submit" name="drop"
-			value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $name)); ?><?php } ?>
-		<input type="hidden" name="token"
-			value="<?php echo $token; ?>">
+    <p><?php echo lang('Name'); ?>: <input
+            name="Name"
+            value="<?php echo h($row["Name"]); ?>"
+            data-maxlength="64" autocapitalize="off">
+        <?php echo script("qs('#form')['Timing'].onchange();"); ?>
+    <p><?php monaco("Model", $row["Model"], 25); ?>
+    <p>
+        <input type="submit"
+            value="<?php echo lang('Save'); ?>">
+        <?php if ($name != "") { ?><input
+            type="submit" name="drop"
+            value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $name)); ?><?php } ?>
+        <input type="hidden" name="token"
+            value="<?php echo $token; ?>">
+        <input type="button"
+            value="<?php echo lang('Reset'); ?>"
+            onclick="resetModel()">
+    </p>
 </form>
+
+<script>
+    function resetModel() {
+        const
+            model_base = <?=json_encode($model_base, JSON_UNESCAPED_UNICODE)?> ;
+        console.log(model_base);
+        window.monaco_Model.setValue(model_base);
+    }
+</script>

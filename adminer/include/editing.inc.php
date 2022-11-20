@@ -194,6 +194,7 @@ function monaco($name, $value, $rows = 10, $cols = 80, $language = 'json') {
 		editor.onDidChangeModelContent(() => {
 			form['" . $name . "'].value = editor.getValue();
 		});
+		window.monaco_" . $name . " = editor;
 	});
 	</script>";
 }
