@@ -82,6 +82,7 @@ include "../adminer/drivers/oracle.inc.php";
 include "../adminer/drivers/mssql.inc.php";
 include "../adminer/drivers/mongo.inc.php";
 include "../adminer/drivers/elastic.inc.php";
+include "../adminer/drivers/cockroachdb.inc.php";
 include "./include/adminer.inc.php";
 $adminer = (function_exists('adminer_object') ? adminer_object() : new Adminer);
 include "../adminer/drivers/mysql.inc.php"; // must be included as last driver
