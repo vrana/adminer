@@ -377,6 +377,9 @@ foreach (glob(dirname(__FILE__) . "/adminer/drivers/" . ($driver ? $driver : "*"
 		$file = file_get_contents($filename);
 		foreach ($functions as $val) {
 			if (!strpos($file, "$val(")) {
+				if (!defined('STDERR')) {
+					define('STDERR', fopen('php://stderr', 'w'));
+				}
 				fprintf(STDERR, "Missing $val in $filename\n");
 			}
 		}
