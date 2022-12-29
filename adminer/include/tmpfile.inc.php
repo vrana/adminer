@@ -15,6 +15,13 @@ class TmpFile {
 			$this->handler = fopen($temp_file, "w+");	
 		}
 	}
+
+	function __destruct() {
+		if (!function_exists('tmpfile')) {
+			$temp_file_metadata = stream_get_meta_data ( $this->handler );
+			unlink ($temp_file_metadata['uri']);
+		}
+	}
 	
 	function write($contents) {
 		$this->size += strlen($contents);
