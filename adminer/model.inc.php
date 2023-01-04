@@ -1,6 +1,6 @@
 <?php
 $TABLE = $_GET["model"];
-$name = $_GET["name"];
+$name = $_GET["name"] ?? $_POST["Name"];
 $row = (array) model($name, $TABLE);
 
 if ($_POST) {

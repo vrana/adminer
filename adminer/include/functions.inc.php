@@ -192,10 +192,26 @@ function model_from_table($table, $model = '') {
 			$attributes[$field['field']] = $multiple ? "{$t}.{$field['field']}" : $field['field'];
 		}
 	}
+	$create = [];
+	foreach ($attributes as $key => $val) {
+		if ($key == $primary) {
+			continue;
+		}
+		$create[$val] = ":$key";
+	}
+	$update = [];
+	foreach ($attributes as $key => $val) {
+		if ($key == $primary) {
+			continue;
+		}
+		$update[$val] = ":$key";
+	}
 	return [
 		'table' => $table,
 		'id' => $primary,
 		'attributes' => $attributes,
+		'create' => $create,
+		'update' => $update,
 	];
 }
 /** Get database connection
