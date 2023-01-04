@@ -27,6 +27,12 @@ if ($_POST) {
 
 page_header(($name != "" ? lang('Alter model') . ": " . h($name) : lang('Create model')), $error, ["table" => $TABLE]);
 $model_base = json_encode(model_from_table($TABLE, $name), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+if ($row["Model"] === '{}') {
+    $row["Model"] = $model_base;
+}
+if (empty($row["Name"])) {
+    $row["Name"] = $TABLE;
+}
 ?>
 
 <form action="" method="post" id="form" style="width:60rem;">

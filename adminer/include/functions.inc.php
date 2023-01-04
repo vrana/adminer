@@ -166,8 +166,18 @@ function model_from_table($table, $model = '') {
 	foreach ($fields as $field) {
 		$attributes[$field['field']] = $field['field'];
 		if ($field['primary'] || $field['auto_increment']) {
-			$primary = $field;
+			$primary = $field['field'];
 			break;
+		}
+	}
+	// If no primary key found find by index
+	if (!$primary) {
+		$indexes = indexes($table);
+		foreach ($indexes as $index) {
+			if ($index['type'] == 'PRIMARY') {
+				$primary = $index['columns'][0];
+				break;
+			}
 		}
 	}
 	// Prepare attributes
@@ -184,7 +194,7 @@ function model_from_table($table, $model = '') {
 	}
 	return [
 		'table' => $table,
-		'id' => $primary['field'],
+		'id' => $primary,
 		'attributes' => $attributes,
 	];
 }
