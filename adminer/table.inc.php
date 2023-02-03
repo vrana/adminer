@@ -53,7 +53,7 @@ if (!is_view($table_status)) {
 	}
 	
 	if (support("check")) {
-		echo "<h3 id='check_constraints'>" . lang('Check Constraints') . "</h3>\n";
+		echo "<h3 id='check_constraints'>" . lang('Check constraints') . "</h3>\n";
 		$check_constraints = check_constraints($TABLE);
 		if ($check_constraints) {
 			echo "<table cellspacing='0'>\n";
