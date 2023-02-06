@@ -57,7 +57,7 @@ if (!is_view($table_status)) {
 		$check_constraints = check_constraints($TABLE);
 		if ($check_constraints) {
 			echo "<table cellspacing='0'>\n";
-			echo "<thead><tr><th>" . h(lang("Name")) . "<td>" . h(lang("Clause")) . "<td>\n";
+			echo "<thead><tr><th>" . h(lang("Name")) . "<td>" . h(lang("Clause")) . "<td></thead>\n";
 			foreach ($check_constraints as $key => $val) {
 				echo "<tr><td>" . h($key) . "<td><code class='jush-sql jush'>" . h($val) . "<td><a href='" . h(ME . 'checkconstraint=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "'>" . lang('Alter') . "</a>\n";
 			}
