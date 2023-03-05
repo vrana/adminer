@@ -65,3 +65,29 @@ if (support(is_view($table_status) ? "view_trigger" : "trigger")) {
 	}
 	echo '<p class="links"><a href="' . h(ME) . 'trigger=' . urlencode($TABLE) . '">' . lang('Add trigger') . "</a>\n";
 }
+
+if (support(is_view($table_status) ? "view_trigger" : "trigger")) {
+	echo "<h3 id='models'>" . lang('Models') . "</h3>\n";
+	$models = get_table_models($TABLE);
+	if ($models) {
+		echo "<table cellspacing='0'>\n";
+		foreach ($models as $key => $model) {
+			echo "<tr valign='top'><th>"  . h($key) . "<td><a href='" . h(ME . 'model=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "'>" . lang('Alter') . "</a>\n";
+		}
+		echo "</table>\n";
+	}
+	echo '<p class="links"><a href="' . h(ME) . 'model=' . urlencode($TABLE) . '">' . lang('Add model') . "</a>\n";
+}
+
+if (support(is_view($table_status) ? "view_trigger" : "trigger")) {
+	echo "<h3 id='filters'>" . lang('Filters') . "</h3>\n";
+	$filters = filters($TABLE);
+	if ($filters) {
+		echo "<table cellspacing='0'>\n";
+		foreach ($filters as $key => $val) {
+			echo "<tr valign='top'><th>"  . h($key) . "<td><a href='" . h(ME . 'filter=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "'>" . lang('Alter') . "</a>\n";
+		}
+		echo "</table>\n";
+	}
+	echo '<p class="links"><a href="' . h(ME) . 'filter=' . urlencode($TABLE) . '">' . lang('Add filter') . "</a>\n";
+}

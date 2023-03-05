@@ -97,6 +97,20 @@ class Adminer {
 	function head() {
 		?>
 <link rel="stylesheet" type="text/css" href="../externals/jush/jush.css">
+<link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/editor/editor.main.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/loader.min.js"></script>
+<script>
+	window.monacoEditor = new Promise((resolve) => {
+		// on load content
+		window.addEventListener('load', function() {
+			// require is provided by loader.min.js.
+			require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs' }});
+			require(["vs/editor/editor.main"], () => {
+				resolve(monaco);
+			});
+		});
+	});
+</script>
 <?php
 		return true;
 	}

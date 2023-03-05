@@ -1,4 +1,219 @@
 <?php
+$ob_path = getenv('OB_PATH') ?: '/home/david/projects/ob3/microservices';
+function ob_parse_class($file)
+{
+	$dir = __DIR__;
+	$res = (array) json_decode(exec("php {$dir}/load_class.php {$file}"), true);
+	$res['instance'] = (object) $res['instance'];
+	return $res;
+	
+	global $ob_path;
+	static $loaded;
+	// clear file cache
+	clearstatcache();
+	if (!isset($loaded[$file])) {
+		$cwd = getcwd();
+		chdir($ob_path);
+		$loaded[$file] = eval('?>' . file_get_contents($file));
+		chdir($cwd);
+	}
+	$class = $loaded[$file];
+	if (is_string($class) && class_exists($class)) {
+		$instance = new $class;
+		return [
+			'class' => $class,
+			'instance' => $instance,
+		];
+	} else {
+		return false;
+	}
+}
+function ob_save_class($file, $model)
+{
+	$class = $model['class'];
+	$instance = $model['instance'];
+	$code = <<<EOT
+	<?php
+
+	class $class
+	{\n
+	EOT;
+	foreach ($instance as $key => $value) {
+		$value = var_export2($value, 1);
+		$code .= <<<EOT
+			public \${$key} = $value;\n
+		EOT;
+	}
+	$code .= <<<EOT
+	}
+	
+	return {$class}::class;\n
+	EOT;
+	file_put_contents($file, str_replace("\t", '    ', $code));
+}
+function dd(...$args) {
+	var_dump(...$args);
+	die;
+}
+/**
+ * Get filters from project.
+ */
+function filters($table) {
+	global $ob_path;
+	$model = ob_parse_class("{$ob_path}/{$table}.php");
+	return $model['instance']->filters ?? [];
+}
+function filter($name, $table) {
+	global $ob_path;
+	$model = ob_parse_class("{$ob_path}/{$table}.php");
+	return [
+		'Name' => $name,
+		'Filter' => $model['instance']->filters[$name] ?? '',
+	];
+}
+function filter_drop($table, $name) {
+	global $ob_path;
+	$file = "{$ob_path}/{$table}.php";
+	$model = ob_parse_class($file);
+	unset($model['instance']->filters[$name]);
+	ob_save_class($file, $model);
+}
+function filter_save($table, $name, $new_name, $filter) {
+	global $ob_path;
+	$file = "{$ob_path}/{$table}.php";
+	$model = ob_parse_class($file);
+	unset($model['instance']->filters[$name]);
+	$model['instance']->filters[$new_name] = $filter;
+	ob_save_class($file, $model);
+}
+function model_save($model_name, $new_model_name, $instance) {
+	global $ob_path;
+	if ($model_name !== $new_model_name) {
+		unlink("{$ob_path}/{$model_name}.php");
+	}
+	$class = ucfirst(camel_case($new_model_name));
+	$model = [
+		'class' => $class,
+		'instance' => $instance,
+	];
+	$file = "{$ob_path}/{$new_model_name}.php";
+	ob_save_class($file, $model);
+}
+function camel_case($str) {
+	$str = str_replace(' ', '', ucwords($str, " \t\r\n\f\v_"));
+	$str[0] = strtolower($str[0]);
+	return $str;
+}
+function var_export2($value, $indent = 0) {
+	$indent = str_repeat("\t", $indent);
+	if (is_array($value)) {
+		$code = "[\n";
+		foreach ($value as $key => $val) {
+			if (is_numeric($key)) {
+				$code .= $indent . "\t" . var_export2($val, $indent + 1) . ",\n";
+			} else {
+				$code .= $indent . "\t" . var_export($key, true) . " => " . var_export2($val, $indent + 1) . ",\n";
+			}
+		}
+		$code .= $indent . "]";
+	} else {
+		$code = var_export($value, true);
+	}
+	return $code;
+}
+function get_table_models($table) {
+	global $ob_path;
+	$find = "{$ob_path}/*.php";
+	$files = glob($find);
+	$models = [];
+	foreach ($files as $file) {
+		$model = ob_parse_class($file);
+		if (!$model) {
+			continue;
+		}
+		$name = basename($file, '.php');
+		if ($model['instance']->table == $table) {
+			$models[$name] = $model;
+		}
+	}
+	return $models;
+}
+function model($model) {
+	global $ob_path;
+	$m = ob_parse_class("{$ob_path}/{$model}.php");
+	return [
+		'Name' => $model,
+		'Class' => $m['class'],
+		'Model' => json_encode($m['instance'], JSON_PRETTY_PRINT),
+	];
+}
+function model_from_table($table, $model = '') {
+	global $ob_path;
+	$tables = [$table];
+	if ($model) {
+		$m = ob_parse_class("{$ob_path}/{$model}.php");
+		if (isset($m['instance']->join)) {
+			// get tables in join
+			if (preg_match_all('/join\s+([a-z0-9_]+)/i', $m['instance']->join, $matches)) {
+				$tables = array_merge($tables, $matches[1]);
+				$tables = array_unique($tables);
+			}
+		}
+	}
+	// Find field with primary key or auto_increment
+	$primary = null;
+	$fields = fields($table);
+	foreach ($fields as $field) {
+		$attributes[$field['field']] = $field['field'];
+		if ($field['primary'] || $field['auto_increment']) {
+			$primary = $field['field'];
+			break;
+		}
+	}
+	// If no primary key found find by index
+	if (!$primary) {
+		$indexes = indexes($table);
+		foreach ($indexes as $index) {
+			if ($index['type'] == 'PRIMARY') {
+				$primary = $index['columns'][0];
+				break;
+			}
+		}
+	}
+	// Prepare attributes
+	$attributes = [];
+	$multiple = count($tables) > 1;
+	foreach ($tables as $t) {
+		$fields = fields($t);
+		foreach ($fields as $field) {
+			if (isset($attributes[$field['field']])) {
+				continue;
+			}
+			$attributes[$field['field']] = $multiple ? "{$t}.{$field['field']}" : $field['field'];
+		}
+	}
+	$create = [];
+	foreach ($attributes as $key => $val) {
+		if ($key == $primary) {
+			continue;
+		}
+		$create[$val] = ":$key";
+	}
+	$update = [];
+	foreach ($attributes as $key => $val) {
+		if ($key == $primary) {
+			continue;
+		}
+		$update[$val] = ":$key";
+	}
+	return [
+		'table' => $table,
+		'id' => $primary,
+		'attributes' => $attributes,
+		'create' => $create,
+		'update' => $update,
+	];
+}
 /** Get database connection
 * @return Min_DB
 */
