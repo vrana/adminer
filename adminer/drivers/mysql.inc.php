@@ -578,6 +578,15 @@ if (!defined("DRIVER")) {
 		return $return;
 	}
 
+	/**
+	 * return list of supported index methods first one is default
+	 * @return string[]
+	 */
+	function index_methods()
+	{
+		return array();
+	}
+
 	/** Get foreign keys in table
 	* @param string
 	* @return array array($name => array("db" => , "ns" => , "table" => , "source" => array(), "target" => array(), "on_delete" => , "on_update" => ))
