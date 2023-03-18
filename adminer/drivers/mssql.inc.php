@@ -362,6 +362,15 @@ if (isset($_GET["mssql"])) {
 		return $table_status["Engine"] == "VIEW";
 	}
 
+	/**
+	 * Check if given table support indexes
+	 * @param $table_status
+	 * @return bool
+	 */
+	function index_support($table_status) {
+		return !is_view($table_status);
+	}
+
 	function fk_support($table_status) {
 		return true;
 	}

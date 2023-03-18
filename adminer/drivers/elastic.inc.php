@@ -335,6 +335,15 @@ if (isset($_GET["elastic"])) {
 	function is_view($table_status) {
 	}
 
+	/**
+	 * Check if given table support indexes
+	 * @param $table_status
+	 * @return bool
+	 */
+	function index_support($table_status) {
+		return false;
+	}
+
 	function indexes($table, $connection2 = null) {
 		return array(
 			array("type" => "PRIMARY", "columns" => array("_id")),
