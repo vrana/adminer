@@ -413,6 +413,15 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 		return $return;
 	}
 
+	/**
+	 * return list of supported index methods first one is default
+	 * @return string[]
+	 */
+	function index_methods()
+	{
+		return array();
+	}
+
 	function view($name) {
 		global $connection;
 		return array("select" => preg_replace('~^(?:[^[]|\[[^]]*])*\s+AS\s+~isU', '', $connection->result("SELECT VIEW_DEFINITION FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = SCHEMA_NAME() AND TABLE_NAME = " . q($name))));

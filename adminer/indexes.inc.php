@@ -25,6 +25,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 			$columns = array();
 			$lengths = array();
 			$descs = array();
+			$indexMethod = array_key_exists("method", $index) && in_array($index["method"], index_methods()) ? $index["method"] : "";
 			$set = array();
 			ksort($index["columns"]);
 			foreach ($index["columns"] as $key => $column) {
@@ -48,13 +49,14 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 						&& array_values($existing["columns"]) === $columns
 						&& (!$existing["lengths"] || array_values($existing["lengths"]) === $lengths)
 						&& array_values($existing["descs"]) === $descs
+						&& (array_key_exists("method", $existing) && $existing["method"] === $indexMethod)
 					) {
 						// skip existing index
 						unset($indexes[$name]);
 						continue;
 					}
 				}
-				$alter[] = array($index["type"], $name, $set);
+				$alter[] = array($index["type"], $name, $set, $indexMethod);
 			}
 		}
 	}
@@ -98,6 +100,10 @@ if (!$row) {
 <table cellspacing="0" class="nowrap">
 <thead><tr>
 <th id="label-type"><?php echo lang('Index Type'); ?>
+<?php
+if (index_methods())
+    echo "<th id=\"label-method\">".lang('Index method');
+?>
 <th><input type="submit" class="wayoff"><?php echo lang('Column (length)'); ?>
 <th id="label-name"><?php echo lang('Name'); ?>
 <th><noscript><?php echo "<input type='image' class='icon' name='add[0]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>"; ?></noscript>
@@ -115,7 +121,9 @@ $j = 1;
 foreach ($row["indexes"] as $index) {
 	if (!$_POST["drop_col"] || $j != key($_POST["drop_col"])) {
 		echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) ? "indexesAddRow.call(this);" : 1), "label-type");
-
+        if (index_methods()){
+			echo "<td>".html_select("indexes[$j][method]", [""] + index_methods(), $index['method'], $onchange = true, "label-method");
+        }
 		echo "<td>";
 		ksort($index["columns"]);
 		$i = 1;

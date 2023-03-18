@@ -341,6 +341,15 @@ if (isset($_GET["elastic"])) {
 		);
 	}
 
+	/**
+	 * return list of supported index methods first one is default
+	 * @return string[]
+	 */
+	function index_methods()
+	{
+		return array();
+	}
+
 	function fields($table) {
 		global $connection;
 

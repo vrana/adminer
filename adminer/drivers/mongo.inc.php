@@ -195,6 +195,15 @@ if (isset($_GET["mongo"])) {
 			return $return;
 		}
 
+		/**
+		 * return list of supported index methods first one is default
+		 * @return string[]
+		 */
+		function index_methods()
+		{
+			return array();
+		}
+
 		function fields($table) {
 			return fields_from_edit();
 		}
@@ -443,6 +452,22 @@ if (isset($_GET["mongo"])) {
 				);
 			}
 			return $return;
+		}
+
+		/**
+		 * return list of supported index methods first one is default
+		 * @return string[]
+		 */
+		function index_methods()
+		{
+			return array(
+				"",
+				"btree",
+				"hash",
+				"gin",
+				"gist",
+				"brin"
+			);
 		}
 
 		function fields($table) {

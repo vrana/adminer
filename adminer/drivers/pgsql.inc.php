@@ -393,10 +393,11 @@ ORDER BY a.attnum"
 		$return = array();
 		$table_oid = $connection2->result("SELECT oid FROM pg_class WHERE relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema()) AND relname = " . q($table));
 		$columns = get_key_vals("SELECT attnum, attname FROM pg_attribute WHERE attrelid = $table_oid AND attnum > 0", $connection2);
-		foreach (get_rows("SELECT relname, indisunique::int, indisprimary::int, indkey, indoption, (indpred IS NOT NULL)::int as indispartial FROM pg_index i, pg_class ci WHERE i.indrelid = $table_oid AND ci.oid = i.indexrelid", $connection2) as $row) {
+		foreach (get_rows("SELECT relname, indisunique::int, indisprimary::int, indkey, indoption, (indpred IS NOT NULL)::int as indispartial, am.amname as method FROM pg_index i, pg_class ci, pg_am am WHERE i.indrelid = $table_oid AND am.oid = ci.relam AND ci.oid = i.indexrelid ORDER BY indisprimary DESC", $connection2) as $row) {
 			$relname = $row["relname"];
 			$return[$relname]["type"] = ($row["indispartial"] ? "INDEX" : ($row["indisprimary"] ? "PRIMARY" : ($row["indisunique"] ? "UNIQUE" : "INDEX")));
 			$return[$relname]["columns"] = array();
+			$return[$relname]["method"] = $row["method"];
 			foreach (explode(" ", $row["indkey"]) as $indkey) {
 				$return[$relname]["columns"][] = $columns[$indkey];
 			}
@@ -407,6 +408,26 @@ ORDER BY a.attnum"
 			$return[$relname]["lengths"] = array();
 		}
 		return $return;
+	}
+
+	/**
+	 * return list of supported index methods first one is default
+	 * @return string[]
+	 */
+	function index_methods()
+	{
+		return array(
+			"btree",
+			"hash",
+			"gin",
+			"gist",
+			"brin"
+		);
+	}
+
+	function tableIndexesPrint()
+	{
+
 	}
 
 	function foreign_keys($table) {
@@ -562,7 +583,12 @@ ORDER BY connamespace, conname") as $row) {
 			} elseif ($val[2] == "DROP") {
 				$drop[] = idf_escape($val[1]);
 			} else {
-				$queries[] = "CREATE INDEX " . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_")) . " ON " . table($table) . " (" . implode(", ", $val[2]) . ")";
+				$usingSqlPart = "";
+				if ($val[3])
+				{
+					$usingSqlPart = "USING ".$val[3];
+				}
+				$queries[] = "CREATE INDEX " . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_")) . " ON " . table($table) . " $usingSqlPart (" . implode(", ", $val[2]) . ")";
 			}
 		}
 		if ($create) {
