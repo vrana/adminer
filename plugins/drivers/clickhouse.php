@@ -327,6 +327,15 @@ if (isset($_GET["clickhouse"])) {
 		return array();
 	}
 
+	/**
+	 * return list of supported index methods first one is default
+	 * @return string[]
+	 */
+	function index_methods()
+	{
+		return array();
+	}
+
 	function foreign_keys($table) {
 		return array();
 	}
