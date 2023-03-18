@@ -523,6 +523,15 @@ if (!defined("DRIVER")) {
 		return $table_status["Engine"] === null;
 	}
 
+	/**
+	 * Check if given table support indexes
+	 * @param $table_status
+	 * @return bool
+	 */
+	function index_support($table_status) {
+		return !is_view($table_status);
+	}
+
 	/** Check if table supports foreign keys
 	* @param array result of table_status
 	* @return bool

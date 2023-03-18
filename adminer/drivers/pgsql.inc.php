@@ -337,6 +337,15 @@ WHERE relkind IN ('r', 'm', 'v', 'f', 'p')
 		return in_array($table_status["Engine"], array("view", "materialized view"));
 	}
 
+	/**
+	 * Check if given table support indexes
+	 * @param $table_status
+	 * @return bool
+	 */
+	function index_support($table_status){
+		return $table_status["Engine"] != "view";
+	}
+
 	function fk_support($table_status) {
 		return true;
 	}

@@ -200,6 +200,15 @@ if (isset($_GET["firebird"])) {
 		return false;
 	}
 
+	/**
+	 * Check if given table support indexes
+	 * @param $table_status
+	 * @return bool
+	 */
+	function index_support($table_status) {
+		return !is_view($table_status);
+	}
+
 	function fk_support($table_status) {
 		return preg_match('~InnoDB|IBMDB2I~i', $table_status["Engine"]);
 	}

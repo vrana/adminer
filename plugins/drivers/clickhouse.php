@@ -289,6 +289,15 @@ if (isset($_GET["clickhouse"])) {
 		return false;
 	}
 
+	/**
+	 * Check if given table support indexes
+	 * @param $table_status
+	 * @return bool
+	 */
+	function index_support($table_status) {
+		return !is_view($table_status);
+	}
+
 	function fk_support($table_status) {
 		return false;
 	}

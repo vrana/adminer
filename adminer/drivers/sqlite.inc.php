@@ -302,6 +302,14 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return $table_status["Engine"] == "view";
 	}
 
+	/**
+	 * Check if given table support indexes
+	 * @param $table_status
+	 * @return bool
+	 */
+	function index_support($table_status) {
+		return !is_view($table_status);
+	}
 	function fk_support($table_status) {
 		global $connection;
 		return !$connection->result("SELECT sqlite_compileoption_used('OMIT_FOREIGN_KEY')");
