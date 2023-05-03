@@ -12,7 +12,7 @@ if ($_GET["script"] == "db") {
 			foreach ($sums + array("Auto_increment" => 0, "Rows" => 0) as $key => $val) {
 				if ($table_status[$key] != "") {
 					$val = format_number($table_status[$key]);
-					json_row("$key-$name", ($key == "Rows" && $val && $table_status["Engine"] == ($sql == "pgsql" ? "table" : "InnoDB")
+					json_row("$key-$name", ($key == "Rows" && $val && $table_status["Engine"] == ($jush == "pgsql" ? "table" : "InnoDB")
 						? "~ $val"
 						: $val
 					));
