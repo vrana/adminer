@@ -1,0 +1,22 @@
+name: publish docs
+on:
+  push:
+    branches:
+      - feature/docs
+
+jobs:
+  build:
+    name: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout main
+        uses: actions/checkout@v2
+        with:
+          ref: feature/docs
+
+      - name: deploy docs
+        uses: mhausenblas/mkdocs-deploy-gh-pages@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CUSTOM_DOMAIN: docs.adminerevo.org
+          EXTRA_PACKAGES: build-base
