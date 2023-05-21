@@ -196,7 +196,7 @@ function php_shrink($input) {
 	$short_variables = array();
 	$shortening = true;
 	$tokens = token_get_all($input);
-	
+
 	// remove unnecessary { }
 	//! change also `while () { if () {;} }` to `while () if () ;` but be careful about `if () { if () { } } else { }
 	$shorten = 0;
@@ -223,13 +223,13 @@ function php_shrink($input) {
 		}
 	}
 	$tokens = array_values($tokens);
-	
+
 	foreach ($tokens as $i => $token) {
 		if ($token[0] === T_VARIABLE && !isset($special_variables[$token[1]])) {
 			$short_variables[$token[1]]++;
 		}
 	}
-	
+
 	arsort($short_variables);
 	$chars = implode(range('a', 'z')) . '_' . implode(range('A', 'Z'));
 	// preserve variable names between versions if possible
@@ -240,7 +240,7 @@ function php_shrink($input) {
 	foreach (array_keys($short_variables) as $number => $key) {
 		$short_variables[$key] = short_identifier($number, $chars); // could use also numbers and \x7f-\xff
 	}
-	
+
 	$set = array_flip(preg_split('//', '!"#$%&\'()*+,-./:;<=>?@[]^`{|}'));
 	$space = '';
 	$output = '';
@@ -377,9 +377,6 @@ foreach (glob(dirname(__FILE__) . "/adminer/drivers/" . ($driver ? $driver : "*"
 		$file = file_get_contents($filename);
 		foreach ($functions as $val) {
 			if (!strpos($file, "$val(")) {
-				if (!defined('STDERR')) {
-					define('STDERR', fopen('php://stderr', 'w'));
-				}
 				fprintf(STDERR, "Missing $val in $filename\n");
 			}
 		}

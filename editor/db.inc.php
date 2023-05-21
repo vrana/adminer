@@ -15,7 +15,7 @@ if ($adminer->homepage()) {
 	echo '<th>' . lang('Table');
 	echo '<td>' . lang('Rows');
 	echo "</thead>\n";
-	
+
 	foreach (table_status() as $table => $row) {
 		$name = $adminer->tableName($row);
 		if (isset($row["Engine"]) && $name != "") {
@@ -25,7 +25,7 @@ if ($adminer->homepage()) {
 			echo "<td align='right'><a href='" . h(ME . "edit=") . urlencode($table) . "'>" . ($row["Engine"] == "InnoDB" && $val ? "~ $val" : $val) . "</a>";
 		}
 	}
-	
+
 	echo "</table>\n";
 	echo "</div>\n";
 	echo "</form>\n";
