@@ -206,6 +206,7 @@ if (isset($_GET["mongo"])) {
 		}
 
 		$operators = array("=");
+		$operator_regexp = null;
 
 	} elseif (class_exists('MongoDB\Driver\Manager')) {
 		class Min_DB {
@@ -576,6 +577,7 @@ if (isset($_GET["mongo"])) {
 			"(date)<=",
 		);
 
+		$operator_regexp = 'regex';
 	}
 
 	function table($idf) {
@@ -732,11 +734,12 @@ if (isset($_GET["mongo"])) {
 	}
 
 	function driver_config() {
-		global $operators;
+		global $operators, $operator_regexp;
 		return array(
 			'possible_drivers' => array("mongo", "mongodb"),
 			'jush' => "mongo",
 			'operators' => $operators,
+			'operator_regexp' => $operator_regexp,
 			'functions' => array(),
 			'grouping' => array(),
 			'edit_functions' => array(array("json")),
