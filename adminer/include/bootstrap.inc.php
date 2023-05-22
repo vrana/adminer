@@ -93,11 +93,14 @@ $types = $config['types'];
 $structured_types = $config['structured_types'];
 $unsigned = $config['unsigned'];
 $operators = $config['operators'];
+$operator_regexp = $config['operator_regexp'];
 $functions = $config['functions'];
 $grouping = $config['grouping'];
 $edit_functions = $config['edit_functions'];
+
 if ($adminer->operators === null) {
 	$adminer->operators = $operators;
+	$adminer->operator_regexp = $operator_regexp;
 }
 
 define("SERVER", $_GET[DRIVER]); // read from pgsql=localhost

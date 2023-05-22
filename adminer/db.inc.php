@@ -59,9 +59,13 @@ if ($adminer->homepage()) {
 				echo "<input type='search' name='query' value='" . h($_POST["query"]) . "'>";
 				echo script("qsl('input').onkeydown = partialArg(bodyKeydown, 'search');", "");
 				echo " <input type='submit' name='search' value='" . lang('Search') . "'>\n";
+				if ($adminer->operator_regexp !== null) {
+					echo "<p><label><input type='checkbox' name='regexp' value='1'" . (empty($_POST['regexp']) ? '' : ' checked') . '>' . lang('as a regular expression') . '</label>';
+					echo doc_link(['sql' => 'regexp.html', 'pgsql' => 'functions-matching.html#FUNCTIONS-POSIX-REGEXP']) . "</p>\n";
+				}
 				echo "</div></fieldset>\n";
 				if ($_POST["search"] && $_POST["query"] != "") {
-					$_GET["where"][0]["op"] = $driver->convertOperator("LIKE %%");
+					$_GET["where"][0]["op"] = $driver->convertOperator($adminer->operator_regexp !== null && !empty($_POST['regexp']) ? $adminer->operator_regexp : "LIKE %%");
 					search_tables();
 				}
 			}

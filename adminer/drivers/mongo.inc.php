@@ -24,7 +24,7 @@ if (isset($_GET["mongo"])) {
 					$this->error = $e->getMessage();
 				}
 			}
-			
+
 			function query($query) {
 				return false;
 			}
@@ -109,7 +109,7 @@ if (isset($_GET["mongo"])) {
 
 		class Min_Driver extends Min_SQL {
 			public $primary = "_id";
-			
+
 			function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
 				$select = ($select == array("*")
 					? array()
@@ -127,7 +127,7 @@ if (isset($_GET["mongo"])) {
 					->skip($page * $limit)
 				);
 			}
-			
+
 			function insert($table, $set) {
 				try {
 					$return = $this->_conn->_db->selectCollection($table)->insert($set);
@@ -206,6 +206,7 @@ if (isset($_GET["mongo"])) {
 		}
 
 		$operators = array("=");
+		$operator_regexp = null;
 
 	} elseif (class_exists('MongoDB\Driver\Manager')) {
 		class Min_DB {
@@ -219,7 +220,7 @@ if (isset($_GET["mongo"])) {
 				$this->_link = new $class($uri, $options);
 				$this->executeCommand('admin', array('ping' => 1));
 			}
-			
+
 			function executeCommand($db, $command) {
 				$class = 'MongoDB\Driver\Command';
 				try {
@@ -229,7 +230,7 @@ if (isset($_GET["mongo"])) {
 					return array();
 				}
 			}
-			
+
 			function executeBulkWrite($namespace, $bulk, $counter) {
 				try {
 					$results = $this->_link->executeBulkWrite($namespace, $bulk);
@@ -577,7 +578,8 @@ if (isset($_GET["mongo"])) {
 			"(date)>=",
 			"(date)<=",
 		);
-	
+
+		$operator_regexp = 'regex';
 	}
 
 	function table($idf) {
@@ -734,11 +736,12 @@ if (isset($_GET["mongo"])) {
 	}
 
 	function driver_config() {
-		global $operators;
+		global $operators, $operator_regexp;
 		return array(
 			'possible_drivers' => array("mongo", "mongodb"),
 			'jush' => "mongo",
 			'operators' => $operators,
+			'operator_regexp' => $operator_regexp,
 			'functions' => array(),
 			'grouping' => array(),
 			'edit_functions' => array(array("json")),

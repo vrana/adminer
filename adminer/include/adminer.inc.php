@@ -3,7 +3,9 @@
 
 class Adminer {
 	/** @var array operators used in select, null for all operators */
-	var $operators;
+	var $operators = null;
+	/** @var string operator for regular expression condition */
+	var $operator_regexp = null;
 
 	/** Name in title and navigation
 	* @return string HTML code
