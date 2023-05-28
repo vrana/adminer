@@ -192,4 +192,5 @@ function page_footer($missing = "") {
 </div>
 <?php
 	echo script("setupSubmitHighlight(document);");
+	echo script("setupCopyToClipboard(document);");
 }
