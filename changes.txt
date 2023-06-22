@@ -6,6 +6,7 @@ SQLite: Remove support for SQLite version 2
 MS SQL: Support export (bug #480)
 MS SQL: Display foreign keys ON UPDATE and ON DELETE
 MS SQL: Fix altering foreign key
+MS SQL PDO: Support offset
 MS SQL: Remove support for MSSQL extension
 MongoDB: Remove support for deprecated extension mongo
 

@@ -98,5 +98,11 @@ if (extension_loaded('pdo')) {
 			$row->charsetnr = (in_array("blob", (array) $row->flags) ? 63 : 0);
 			return $row;
 		}
+
+		function seek($offset) {
+			for ($i=0; $i < $offset; $i++) {
+				$this->fetch();
+			}
+		}
 	}
 }
