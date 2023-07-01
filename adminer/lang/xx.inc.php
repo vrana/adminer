@@ -10,7 +10,6 @@ $translations = array(
 	'Logout' => 'Xx',
 	'Logged as: %s' => 'Xx: %s',
 	'Logout successful.' => 'Xx.',
-	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Xx <a href="https://www.adminer.org/en/donation/">xx</a>.',
 	'Invalid credentials.' => 'Xx.',
 	'There is a space in the input password which might be the cause.' => 'Xx.',
 	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Xx, <a href="https://www.adminer.org/en/password/"%s>xx</a>.',
@@ -346,4 +345,9 @@ $translations = array(
 	'Type has been dropped.' => 'Xx.',
 	'Type has been created.' => 'Xx.',
 	'Alter type' => 'Xx',
+
+	'as a regular expression' => null,
+	'Copy to clipboard' => null,
+
+	// 'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => null,
 );

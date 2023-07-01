@@ -10,7 +10,6 @@ $translations = array(
 	'Logout' => 'Çıkış',
 	'Logged as: %s' => '%s olarak giriş yapıldı.',
 	'Logout successful.' => 'Oturum başarıyla sonlandı.',
-	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Adminer kullandığınız için teşekkür ederiz <a href="https://www.adminer.org/en/donation/">bağış yapmayı düşünün</a>.',
 	'Invalid credentials.' => 'Geçersiz kimlik bilgileri.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Çok fazla oturum açma denemesi yapıldı.', '%d Dakika sonra tekrar deneyiniz.'),
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Ana şifrenin süresi doldu. Kalıcı olması için <a href="https://www.adminer.org/en/extension/"%s>%s medodunu</a> kullanın.',
@@ -340,4 +339,15 @@ $translations = array(
 	'Type has been dropped.' => 'Tür silindi.',
 	'Type has been created.' => 'Tür oluşturuldu.',
 	'Alter type' => 'Türü değiştir',
+
+	'as a regular expression' => null,
+	'overwrite' => null,
+	'Copy to clipboard' => null,
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => null,
+	'There is a space in the input password which might be the cause.' => null,
+	'Unknown error.' => null,
+	'Database does not support password.' => null,
+	'Disable %s or enable %s or %s extensions.' => null,
+
+	// 'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => null,
 );
