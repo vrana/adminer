@@ -662,7 +662,7 @@ function ajaxForm(form, message, button) {
 		}
 	}
 	data = data.join('&');
-	
+
 	var url = form.action;
 	if (!/post/i.test(form.method)) {
 		url = url.replace(/\?.*/, '') + '?' + data;
@@ -861,7 +861,29 @@ function findDefaultSubmit(el) {
 	}
 }
 
+/** Initialize the copy to clipboard feature
+ * @param HTMLElement
+ */
+function setupCopyToClipboard(document) {
+	var node = document.querySelector("a.copy-to-clipboard");
+	if (node) {
+		node.addEventListener("click", function() {
+			copyToClipboard(document.querySelector("code.copy-to-clipboard"));
+		});
+	}
+}
 
+/** Copy element's content in clipboard
+ * @param HTMLElement
+ */
+function copyToClipboard(el) {
+	var range = document.createRange();
+	range.selectNode(el);
+	window.getSelection().removeAllRanges();
+	window.getSelection().addRange(range);
+	document.execCommand("copy");
+	window.getSelection().removeAllRanges();
+}
 
 /** Add event listener
 * @param HTMLElement
