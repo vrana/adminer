@@ -333,8 +333,6 @@ $translations = array(
 	'Type has been dropped.' => 'Tyyppi poistettiin.',
 	'Type has been created.' => 'Tyyppi luotiin.',
 	'Alter type' => 'Muuta tyyppiä',
-
-	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Kiitos, kun käytät Admineriä, voit <a href="https://www.adminer.org/en/donation/">tehdä lahjoituksen tästä</a>.',
 	'Drop %s?' => 'Poistetaanko %s?',
 	'overwrite' => 'kirjoittaen päälle',
 	'DB' => 'TK',
@@ -347,4 +345,9 @@ $translations = array(
 	'Unknown error.' => 'Tuntematon virhe.',
 	'Database does not support password.' => 'Tietokanta ei tue salasanaa.',
 	'Disable %s or enable %s or %s extensions.' => 'Poista käytöstä %s tai ota käyttöön laajennus %s tai %s.',
+
+	'as a regular expression' => null,
+	'Copy to clipboard' => null,
+
+	// 'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => null,
 );

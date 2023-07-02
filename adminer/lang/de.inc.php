@@ -2,7 +2,6 @@
 $translations = array(
 	'Login' => 'Login',
 	'Logout successful.' => 'Abmeldung erfolgreich.',
-	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Danke, dass Sie Adminer genutzt haben. <a href="https://www.adminer.org/de/donation/">Spenden willkommen!</a>',
 	'Invalid credentials.' => 'Ungültige Anmelde-Informationen.',
 	'Server' => 'Server',
 	'Username' => 'Benutzer',
@@ -286,4 +285,24 @@ $translations = array(
 	'no' => 'nein',
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Das Master-Passwort ist abgelaufen. <a href="https://www.adminer.org/de/extension/"%s>Implementieren</a> Sie die %s Methode, um es permanent zu machen.',
 	'%d / ' => '%d / ',
+
+	'Drop %s?' => null,
+	'as a regular expression' => null,
+	'Materialized view' => null,
+	'Vacuum' => null,
+	'overwrite' => null,
+	'DB' => null,
+	'Copy to clipboard' => null,
+	'ATTACH queries are not supported.' => null,
+	'Warnings' => null,
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => null,
+	'Full table scan' => null,
+	'The action will be performed after successful login with the same credentials.' => null,
+	'Connecting to privileged ports is not allowed.' => null,
+	'There is a space in the input password which might be the cause.' => null,
+	'Unknown error.' => null,
+	'Database does not support password.' => null,
+	'Disable %s or enable %s or %s extensions.' => null,
+
+	// 'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => null,
 );

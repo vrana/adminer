@@ -10,7 +10,6 @@ $translations = array(
 	'Logout' => 'Wyloguj',
 	'Logged as: %s' => 'Zalogowany jako: %s',
 	'Logout successful.' => 'Wylogowano pomyślnie.',
-	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Dziękujemy za używanie Adminera, rozważ proszę <a href="https://www.adminer.org/pl/donation/">dotację</a>.',
 	'Invalid credentials.' => 'Nieprawidłowe dane logowania.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Za dużo nieudanych prób logowania, spróbuj ponownie za %d minutę.', 'Za dużo nieudanych prób logowania, spróbuj ponownie za %d minuty.', 'Za dużo nieudanych prób logowania, spróbuj ponownie za %d minut.'),
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Ważność hasła głównego wygasła. <a href="https://www.adminer.org/pl/extension/"%s>Zaimplementuj</a> własną metodę %s, aby ustawić je na stałe.',
@@ -337,4 +336,18 @@ $translations = array(
 	'Type has been dropped.' => 'Typ został usunięty.',
 	'Type has been created.' => 'Typ został utworzony.',
 	'Alter type' => 'Zmień typ',
+
+	'as a regular expression' => null,
+	'overwrite' => null,
+	'DB' => null,
+	'Copy to clipboard' => null,
+	'Warnings' => null,
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => null,
+	'The action will be performed after successful login with the same credentials.' => null,
+	'There is a space in the input password which might be the cause.' => null,
+	'Unknown error.' => null,
+	'Database does not support password.' => null,
+	'Disable %s or enable %s or %s extensions.' => null,
+
+	// 'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => null,
 );

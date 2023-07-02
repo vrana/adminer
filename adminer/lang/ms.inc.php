@@ -10,7 +10,6 @@ $translations = array(
 	'Logout' => 'Log keluar',
 	'Logged as: %s' => 'Log masuk sebagai: %s',
 	'Logout successful.' => 'Log keluar berjaya.',
-	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Terima kasih kerana menggunakan Adminer, pertimbangkan untuk <a href="https://www.adminer.org/en/donation/">menderma</a>.',
 	'Invalid credentials.' => 'Akses tidak sah.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'Terlalu banyak percubaan log masuk yang gagal, sila cuba lagi dalam masa %d minit.',
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Kata laluan utama telah luput. <a href="https://www.adminer.org/en/extension/"%s>Gunakan</a> cara %s untuk mengekalkannya.',
@@ -337,4 +336,18 @@ $translations = array(
 	'Type has been dropped.' => 'Jenis telah dijatuhkan.',
 	'Type has been created.' => 'Jenis telah dibuat.',
 	'Alter type' => 'Ubah jenis',
+
+	'as a regular expression' => null,
+	'overwrite' => null,
+	'DB' => null,
+	'Copy to clipboard' => null,
+	'Warnings' => null,
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => null,
+	'The action will be performed after successful login with the same credentials.' => null,
+	'There is a space in the input password which might be the cause.' => null,
+	'Unknown error.' => null,
+	'Database does not support password.' => null,
+	'Disable %s or enable %s or %s extensions.' => null,
+
+	// 'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => null,
 );
