@@ -30,6 +30,7 @@ input.required { box-shadow: 1px 1px 1px red; }
 input.maxlength { box-shadow: 1px 1px 1px red; }
 input.wayoff { left: -1000px; position: absolute; }
 input[type='submit'] { padding-left: 10px; padding-right: 10px; }
+select { border-radius: 5px; padding: 2px; vertical-align: middle;; }
 .block { display: block; }
 .version { color: #777; font-size: 50%; }
 .js .hidden, .nojs .jsonly { display: none; }
