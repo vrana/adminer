@@ -192,6 +192,9 @@ class Adminer {
 		}
 		$name = $tableStatus["Name"];
 		foreach ($links as $key => $val) {
+			if ($key !== array_key_first($links)) {
+				echo "|";
+			}
 			echo " <a href='" . h(ME) . "$key=" . urlencode($name) . ($key == "edit" ? $set : "") . "'" . bold(isset($_GET[$key])) . ">$val</a>";
 		}
 		echo doc_link(array($jush => $driver->tableHelp($name)), "?");
