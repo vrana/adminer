@@ -193,7 +193,7 @@ class Adminer {
 		$name = $tableStatus["Name"];
 		foreach ($links as $key => $val) {
 			if ($key !== array_key_first($links)) {
-				echo "|";
+				echo " | ";
 			}
 			echo " <a href='" . h(ME) . "$key=" . urlencode($name) . ($key == "edit" ? $set : "") . "'" . bold(isset($_GET[$key])) . ">$val</a>";
 		}
@@ -243,7 +243,7 @@ class Adminer {
 		}
 		return "<p class='links'><code class='jush-$jush copy-to-clipboard'>" . h(str_replace("\n", " ", $query)) . "</code> <span class='time'>(" . format_time($start) . ")</span>"
 			. (support("sql") ? " <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>" : "")
-			. " <a href='#' class='copy-to-clipboard'>" . lang('Copy to clipboard') . "</a>"
+			. " | <a href='#' class='copy-to-clipboard'>" . lang('Copy to clipboard') . "</a>"
 			. $return
 		;
 	}
@@ -658,7 +658,7 @@ class Adminer {
 		return " <span class='time'>" . @date("H:i:s") . "</span>" // @ - time zone may be not set
 			. " $return<div id='$sql_id' class='hidden'><pre><code class='jush-$jush copy-to-clipboard'>" . shorten_utf8($query, 1000) . "</code></pre>"
 			. ($time ? " <span class='time'>($time)</span>" : '')
-			. (support("sql") ? '<p class="links"><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a> <a href="#" class="copy-to-clipboard">' . lang('Copy to clipboard') . '</a>' : '')
+			. (support("sql") ? '<p class="links"><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a> | <a href="#" class="copy-to-clipboard">' . lang('Copy to clipboard') . '</a>' : '')
 			. '</div>'
 		;
 	}
@@ -992,13 +992,13 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 			}
 			$this->databasesPrint($missing);
 			if (DB == "" || !$missing) {
-				echo "<p class='links'>" . (support("sql") ? "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"]) && !isset($_GET["import"])) . ">" . lang('SQL command') . "</a>\n<a href='" . h(ME) . "import='" . bold(isset($_GET["import"])) . ">" . lang('Import') . "</a>\n" : "") . "";
+				echo "<p class='links'>" . (support("sql") ? "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"]) && !isset($_GET["import"])) . ">" . lang('SQL command') . "</a>\n | <a href='" . h(ME) . "import='" . bold(isset($_GET["import"])) . ">" . lang('Import') . "</a>\n" : "") . "";
 				if (support("dump")) {
-					echo "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . lang('Export') . "</a>\n";
+					echo " | <a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . lang('Export') . "</a>\n";
 				}
 			}
 			if ($_GET["ns"] !== "" && !$missing && DB != "") {
-				echo '<a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create table') . "</a>\n";
+				echo '<br><a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create table') . "</a>\n";
 				if (!$tables) {
 					echo "<p class='message'>" . lang('No tables.') . "\n";
 				} else {
