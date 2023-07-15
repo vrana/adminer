@@ -924,9 +924,9 @@ class Adminer {
 	*/
 	function homepage() {
 		echo '<p class="links">' . ($_GET["ns"] == "" && support("database") ? '<a href="' . h(ME) . 'database=">' . lang('Alter database') . "</a>\n" : "");
-		echo (support("scheme") ? "<a href='" . h(ME) . "scheme='>" . ($_GET["ns"] != "" ? lang('Alter schema') : lang('Create schema')) . "</a>\n" : "");
-		echo ($_GET["ns"] !== "" ? '<a href="' . h(ME) . 'schema=">' . lang('Database schema') . "</a>\n" : "");
-		echo (support("privileges") ? "<a href='" . h(ME) . "privileges='>" . lang('Privileges') . "</a>\n" : "");
+		echo (support("scheme") ? " | <a href='" . h(ME) . "scheme='>" . ($_GET["ns"] != "" ? lang('Alter schema') : lang('Create schema')) . "</a>\n" : "");
+		echo ($_GET["ns"] !== "" ? ' | <a href="' . h(ME) . 'schema=">' . lang('Database schema') . "</a>\n" : "");
+		echo (support("privileges") ? " | <a href='" . h(ME) . "privileges='>" . lang('Privileges') . "</a>\n" : "");
 		return true;
 	}
 

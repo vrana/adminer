@@ -11,14 +11,18 @@ function connect_error() {
 
 		page_header(lang('Select database'), $error, false);
 		echo "<p class='links'>\n";
-		foreach (array(
+		$links = array(
 			'database' => lang('Create database'),
 			'privileges' => lang('Privileges'),
 			'processlist' => lang('Process list'),
 			'variables' => lang('Variables'),
 			'status' => lang('Status'),
-		) as $key => $val) {
+		);
+		foreach ($links as $key => $val) {
 			if (support($key)) {
+				if ($key !== array_key_first($links)) {
+					echo " | ";
+				}
 				echo "<a href='" . h(ME) . "$key='>$val</a>\n";
 			}
 		}
