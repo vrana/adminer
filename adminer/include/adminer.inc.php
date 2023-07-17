@@ -241,8 +241,8 @@ class Adminer {
 				. "$return<div id='$id' class='hidden'>\n$warnings</div>\n"
 			;
 		}
-		return "<p class='links'><code class='jush-$jush copy-to-clipboard'>" . h(str_replace("\n", " ", $query)) . "</code> <span class='time'>(" . format_time($start) . ")</span>"
-			. (support("sql") ? " <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>" : "")
+		return "<p class='links' style='margin-bottom: 25px;'><code class='jush-$jush copy-to-clipboard'>" . h(str_replace("\n", " ", $query)) . "</code> <span class='time'>(" . format_time($start) . ")</span>"
+			. (support("sql") ? "<br><a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>" : "")
 			. " | <a href='#' class='copy-to-clipboard'>" . lang('Copy to clipboard') . "</a>"
 			. $return
 		;
