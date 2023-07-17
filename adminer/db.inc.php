@@ -178,7 +178,7 @@ if ($adminer->homepage()) {
 				echo "</table>\n";
 			}
 			echo '<p class="links">'
-				. (support("procedure") ? '<a href="' . h(ME) . 'procedure=">' . lang('Create procedure') . '</a>' : '')
+				. (support("procedure") ? '<a href="' . h(ME) . 'procedure=">' . lang('Create procedure') . '</a> | ' : '')
 				. '<a href="' . h(ME) . 'function=">' . lang('Create function') . "</a>\n"
 			;
 		}
