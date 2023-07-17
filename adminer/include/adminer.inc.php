@@ -1022,21 +1022,26 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 <form action="">
 <p id="dbs">
 <?php
+		echo "<table style='width: 100%;'><tr><td style='border: none;'>";
 		hidden_fields_get();
 		$db_events = script("mixin(qsl('select'), {onmousedown: dbMouseDown, onchange: dbChange});");
-		echo "<span title='" . lang('database') . "'>" . lang('DB') . "</span>: " . ($databases
-			? "<select name='db'>" . optionlist(array("" => "") + $databases, DB) . "</select>$db_events"
+		echo "<span title='" . lang('database') . "'>" . lang('DB') . "</span>:</td><td style='border: none;'>" . ($databases
+			? "<select name='db' style='width: 100%;'>" . optionlist(array("" => "") + $databases, DB) . "</select>$db_events"
 			: "<input name='db' value='" . h(DB) . "' autocapitalize='off'>\n"
 		);
 		echo "<input type='submit' value='" . lang('Use') . "'" . ($databases ? " class='hidden'" : "") . ">\n";
+		echo "</td></tr>";
 		if (support("scheme")) {
 			if ($missing != "db" && DB != "" && $connection->select_db(DB)) {
-				echo "<br>" . lang('Schema') . ": <select name='ns'>" . optionlist(array("" => "") + $adminer->schemas(), $_GET["ns"]) . "</select>$db_events";
+				echo "<tr><td style='border: none;'>";
+				echo lang('Schema') . ":</td><td style='border: none;'><select name='ns' style='width: 100%;'>" . optionlist(array("" => "") + $adminer->schemas(), $_GET["ns"]) . "</select>$db_events";
 				if ($_GET["ns"] != "") {
 					set_schema($_GET["ns"]);
 				}
+				echo "</td></tr>";
 			}
 		}
+		echo "</table>";
 		foreach (array("import", "sql", "schema", "dump", "privileges") as $val) {
 			if (isset($_GET[$val])) {
 				echo "<input type='hidden' name='$val' value=''>";
