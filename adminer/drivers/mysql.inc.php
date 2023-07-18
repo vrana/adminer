@@ -50,7 +50,7 @@ if (!defined("DRIVER")) {
 				$row = $result->fetch_array();
 				return $row[$field];
 			}
-			
+
 			function quote($string) {
 				return "'" . $this->escape_string($string) . "'";
 			}
@@ -305,7 +305,7 @@ if (!defined("DRIVER")) {
 			}
 			return queries($prefix . implode(",\n", $values) . $suffix);
 		}
-		
+
 		function slowQuery($query, $timeout) {
 			if (min_version('5.7.8', '10.1.2')) {
 				if (preg_match('~MariaDB~', $this->_conn->server_info)) {
@@ -322,7 +322,7 @@ if (!defined("DRIVER")) {
 				: $idf
 			);
 		}
-		
+
 		function warnings() {
 			$result = $this->_conn->query("SHOW WARNINGS");
 			if ($result && $result->num_rows) {
@@ -1160,7 +1160,7 @@ if (!defined("DRIVER")) {
 			'structured_types' => $structured_types,
 			'unsigned' => array("unsigned", "zerofill", "unsigned zerofill"), ///< @var array number variants
 			'operators' => array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "FIND_IN_SET", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL"), ///< @var array operators used in select
-			'functions' => array("char_length", "date", "from_unixtime", "unix_timestamp", "lower", "round", "floor", "ceil", "sec_to_time", "time_to_sec", "upper"), ///< @var array functions used in select
+			'functions' => array("char_length", "date", "distinct", "from_unixtime", "unix_timestamp", "lower", "round", "floor", "ceil", "sec_to_time", "time_to_sec", "upper"), ///< @var array functions used in select
 			'operator_regexp' => 'REGEXP',
 			'grouping' => array("avg", "count", "count distinct", "group_concat", "max", "min", "sum"), ///< @var array grouping functions used in select
 			'edit_functions' => array( ///< @var array of array("$type|$type2" => "$function/$function2") functions used in editing, [0] - edit and insert, [1] - edit only
