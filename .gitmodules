@@ -9,4 +9,4 @@
 	url = https://github.com/Niyko/Hydra-Dark-Theme-for-Adminer
 [submodule "designs/pepa-linha-dark"]
 	path = designs/pepa-linha-dark
-	url = https://github.com/pepa-linha/Adminer-Design-Dark/
+	url = git@github.com:pepa-linha/Adminer-Design-Dark.git
