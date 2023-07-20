@@ -5,11 +5,18 @@ nav:
   - Home: index.md
 theme:
   name: material
+  logo: assets/logo-shield-white.svg
   features:
     - navigation.tabs
     - navigation.top
     - toc.integrate
     - content.code.annotate
+  favicon: assets/favicon.png
+extra_css:
+  - assets/local.css
+markdown_extensions:
+  - attr_list
+  - md_in_html
 repo_url: https://github.com/adminerevo/adminerevo
 extra:
   social:
