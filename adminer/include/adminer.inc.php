@@ -176,27 +176,26 @@ class Adminer {
 	function selectLinks($tableStatus, $set = "") {
 		global $jush, $driver;
 		echo '<p class="links">';
-		$links = array("select" => lang('Select data'));
+		$actions = array("select" => lang('Select data'));
 		if (support("table") || support("indexes")) {
-			$links["table"] = lang('Show structure');
+			$actions["table"] = lang('Show structure');
 		}
 		if (support("table")) {
 			if (is_view($tableStatus)) {
-				$links["view"] = lang('Alter view');
+				$actions["view"] = lang('Alter view');
 			} else {
-				$links["create"] = lang('Alter table');
+				$actions["create"] = lang('Alter table');
 			}
 		}
 		if ($set !== null) {
-			$links["edit"] = lang('New item');
+			$actions["edit"] = lang('New item');
 		}
 		$name = $tableStatus["Name"];
-		foreach ($links as $key => $val) {
-			if ($key !== array_key_first($links)) {
-				echo " | ";
-			}
-			echo " <a href='" . h(ME) . "$key=" . urlencode($name) . ($key == "edit" ? $set : "") . "'" . bold(isset($_GET[$key])) . ">$val</a>";
+		$links = [];
+		foreach ($actions as $key => $val) {
+			$links[] = "<a href='" . h(ME) . "$key=" . urlencode($name) . ($key == "edit" ? $set : "") . "'" . bold(isset($_GET[$key])) . ">$val</a>";
 		}
+		echo generate_linksbar($links);
 		echo doc_link(array($jush => $driver->tableHelp($name)), "?");
 		echo "\n";
 	}
@@ -655,10 +654,15 @@ class Adminer {
 			$id = "warnings-" . count($history[$_GET["db"]]);
 			$return = "<a href='#$id' class='toggle'>" . lang('Warnings') . "</a>, $return<div id='$id' class='hidden'>\n$warnings</div>\n";
 		}
+		$links = [];
+		if (support("sql")) {
+			$links[] = '<a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a>';
+			$links[] = '<a href="#" class="copy-to-clipboard">' . lang('Copy to clipboard') . '</a>';
+		}
 		return " <span class='time'>" . @date("H:i:s") . "</span>" // @ - time zone may be not set
 			. " $return<div id='$sql_id' class='hidden'><pre><code class='jush-$jush copy-to-clipboard'>" . shorten_utf8($query, 1000) . "</code></pre>"
 			. ($time ? " <span class='time'>($time)</span>" : '')
-			. (support("sql") ? '<p class="links"><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a> | <a href="#" class="copy-to-clipboard">' . lang('Copy to clipboard') . '</a>' : '')
+			. generate_linksbar($links)
 			. '</div>'
 		;
 	}
@@ -923,10 +927,20 @@ class Adminer {
 	* @return bool whether to print default homepage
 	*/
 	function homepage() {
-		echo '<p class="links">' . ($_GET["ns"] == "" && support("database") ? '<a href="' . h(ME) . 'database=">' . lang('Alter database') . "</a>\n" : "");
-		echo (support("scheme") ? " | <a href='" . h(ME) . "scheme='>" . ($_GET["ns"] != "" ? lang('Alter schema') : lang('Create schema')) . "</a>\n" : "");
-		echo ($_GET["ns"] !== "" ? ' | <a href="' . h(ME) . 'schema=">' . lang('Database schema') . "</a>\n" : "");
-		echo (support("privileges") ? " | <a href='" . h(ME) . "privileges='>" . lang('Privileges') . "</a>\n" : "");
+		$links = [];
+		if ($_GET["ns"] == "" && support("database")) {
+			$links[] = '<a href="' . h(ME) . 'database=">' . lang('Alter database') . '</a>';
+		}
+		if (support("scheme")) {
+			$links[] = "<a href='" . h(ME) . "scheme='>" . ($_GET["ns"] != "" ? lang('Alter schema') : lang('Create schema')) . "</a>";
+		}
+		if ($_GET["ns"] !== "") {
+			$links[] = '<a href="' . h(ME) . 'schema=">' . lang('Database schema') . '</a>';
+		}
+		if (support("privileges")) {
+			$links[] = "<a href='" . h(ME) . "privileges='>" . lang('Privileges') . "</a>";
+		}
+		echo generate_linksbar($links);
 		return true;
 	}
 
@@ -1028,7 +1042,7 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 <form action="">
 <p id="dbs">
 <?php
-		echo "<table style='width: 100%;'><tr><td style='border: none;'>";
+		echo "<table><tr><td style='border: none;'>";
 		hidden_fields_get();
 		$db_events = script("mixin(qsl('select'), {onmousedown: dbMouseDown, onchange: dbChange});");
 		echo "<span title='" . lang('database') . "'>" . lang('DB') . "</span>:</td><td style='border: none;'>" . ($databases
@@ -1054,7 +1068,6 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 				break;
 			}
 		}
-		echo "</p></form>\n";
 	}
 
 	/** Prints table list in menu
@@ -1082,3 +1095,6 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 	}
 
 }
+?>
+</p>
+</form>

@@ -272,14 +272,14 @@ function print_fieldset($id, $legend, $visible = false) {
 }
 
 function generate_linksbar($links) {
-	$linksbar = "<p class='links'>\n";
+	$linksbar = "<p class='links'>";
 	foreach ($links as $key => $link) {
 		if ($key !== key(array_keys($links))) {
-			$linksbar .= " | ";
+			$linksbar .= "<span class='separator'>|</span>";
 		}
-		$linksbar .= $link . "\n";
+		$linksbar .= $link;
 	}
-	$linksbar .= "</p>\n";
+	$linksbar .= "</p>";
 	return $linksbar;
 }
 
