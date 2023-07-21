@@ -953,7 +953,6 @@ class Adminer {
 		?>
 <h1>
 <?php echo $this->name(); ?> <span class="version"><?php echo $VERSION; ?></span>
-<a href="https://www.adminer.org/#download"<?php echo target_blank(); ?> id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
 </h1>
 <?php
 		if ($missing == "auth") {
@@ -1040,7 +1039,6 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 		}
 		?>
 <form action="">
-<p id="dbs">
 <?php
 		echo "<table><tr><td style='border: none;'>";
 		hidden_fields_get();
@@ -1096,5 +1094,3 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 
 }
 ?>
-</p>
-</form>
