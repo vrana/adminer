@@ -234,18 +234,18 @@ class Adminer {
 	*/
 	function selectQuery($query, $start, $failed = false) {
 		global $jush, $driver;
-		$return = "</p>\n"; // required for IE9 inline edit
 		if (!$failed && ($warnings = $driver->warnings())) {
 			$id = "warnings";
 			$return = ", <a href='#$id'>" . lang('Warnings') . "</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "")
 				. "$return<div id='$id' class='hidden'>\n$warnings</div>\n"
 			;
 		}
-		return "<p class='links' style='margin-bottom: 25px;'><code class='jush-$jush copy-to-clipboard'>" . h(str_replace("\n", " ", $query)) . "</code> <span class='time'>(" . format_time($start) . ")</span>"
-			. (support("sql") ? "<br><a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>" : "")
-			. " | <a href='#' class='copy-to-clipboard'>" . lang('Copy to clipboard') . "</a>"
-			. $return
-		;
+		$links = [
+			(support("sql") ? "<a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>" : ""),
+			"<a href='#' class='copy-to-clipboard'>" . lang('Copy to clipboard') . "</a>",
+		];
+		return "<code class='jush-$jush copy-to-clipboard'>" . h(str_replace("\n", " ", $query)) . "</code> <span class='time'>(" . format_time($start) . ")</span>"
+			. generate_linksbar($links);
 	}
 
 	/** Query printed in SQL command before execution
@@ -991,14 +991,20 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 <?php
 			}
 			$this->databasesPrint($missing);
+			$links = [];
 			if (DB == "" || !$missing) {
-				echo "<p class='links'>" . (support("sql") ? "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"]) && !isset($_GET["import"])) . ">" . lang('SQL command') . "</a>\n | <a href='" . h(ME) . "import='" . bold(isset($_GET["import"])) . ">" . lang('Import') . "</a>\n" : "") . "";
+				if (support("sql")) {
+					$links[] = "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"]) && !isset($_GET["import"])) . ">" . lang('SQL command') . "</a>";
+					$links[] = "<a href='" . h(ME) . "import='" . bold(isset($_GET["import"])) . ">" . lang('Import') . "</a>";
+				}
 				if (support("dump")) {
-					echo " | <a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . lang('Export') . "</a>\n";
+					$links[] = "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . lang('Export') . "</a>";
 				}
 			}
+			echo generate_linksbar($links);
+
 			if ($_GET["ns"] !== "" && !$missing && DB != "") {
-				echo '<br><a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create table') . "</a>\n";
+				echo generate_linksbar(['<a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create table') . "</a>"]);
 				if (!$tables) {
 					echo "<p class='message'>" . lang('No tables.') . "\n";
 				} else {

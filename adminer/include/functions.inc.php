@@ -271,6 +271,18 @@ function print_fieldset($id, $legend, $visible = false) {
 	echo "<div id='fieldset-$id'" . ($visible ? "" : " class='hidden'") . ">\n";
 }
 
+function generate_linksbar($links) {
+	$linksbar = "<p class='links'>\n";
+	foreach ($links as $key => $link) {
+		if ($key !== key(array_keys($links))) {
+			$linksbar .= " | ";
+		}
+		$linksbar .= $link . "\n";
+	}
+	$linksbar .= "</p>\n";
+	return $linksbar;
+}
+
 /** Return class='active' if $bold is true
 * @param bool
 * @param string

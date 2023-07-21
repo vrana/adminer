@@ -195,7 +195,7 @@ if ($adminer->homepage()) {
 				}
 				echo "</table>\n";
 			}
-			echo "<p class='links'><a href='" . h(ME) . "sequence='>" . lang('Create sequence') . "</a>\n";
+			echo generate_linksbar(["<a href='" . h(ME) . "sequence='>" . lang('Create sequence') . "</a>"]);
 		}
 
 		if (support("type")) {
@@ -210,7 +210,7 @@ if ($adminer->homepage()) {
 				}
 				echo "</table>\n";
 			}
-			echo "<p class='links'><a href='" . h(ME) . "type='>" . lang('Create type') . "</a>\n";
+			echo generate_linksbar(["<a href='" . h(ME) . "type='>" . lang('Create type') . "</a>"]);
 		}
 
 		if (support("event")) {

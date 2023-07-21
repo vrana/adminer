@@ -10,22 +10,20 @@ function connect_error() {
 		}
 
 		page_header(lang('Select database'), $error, false);
-		echo "<p class='links'>\n";
-		$links = array(
+		$actions = [
 			'database' => lang('Create database'),
 			'privileges' => lang('Privileges'),
 			'processlist' => lang('Process list'),
 			'variables' => lang('Variables'),
 			'status' => lang('Status'),
-		);
-		foreach ($links as $key => $val) {
+		];
+		$links = [];
+		foreach ($actions as $key => $val) {
 			if (support($key)) {
-				if ($key !== array_key_first($links)) {
-					echo " | ";
-				}
-				echo "<a href='" . h(ME) . "$key='>$val</a>\n";
+				$links[] = "<a href='" . h(ME) . "$key='>$val</a>";
 			}
 		}
+		echo generate_linksbar($links);
 		echo "<p>" . lang('%s version: %s through PHP extension %s', $drivers[DRIVER], "<b>" . h($connection->server_info) . "</b>", "<b>$connection->extension</b>") . "\n";
 		echo "<p>" . lang('Logged as: %s', "<b>" . h(logged_user()) . "</b>") . "\n";
 		$databases = $adminer->databases();
