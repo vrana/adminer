@@ -1,0 +1,39 @@
+/* With thanks to the excellent paperless-ngx project for the inspiration */
+/* See https://docs.paperless-ngx.com/ for more information */
+
+:root > * {
+    --md-primary-fg-color: #2d4159;
+    --md-primary-fg-color--dark: #2d4159;
+    --md-primary-fg-color--light: #2d4159;
+    --md-accent-fg-color: #4e6683;
+    --md-typeset-a-color: #2d3159;
+}
+
+@media (min-width: 400px) {
+    .grid-left {
+        width: 33%;
+        float: left;
+    }
+
+    .grid-right {
+        width: 62%;
+        margin-left: 4%;
+        float: left;
+    }
+}
+
+.grid-right > p {
+    margin-bottom: 2rem;
+}
+
+.grid-left p {
+    margin: 0;
+}
+
+.index-callout {
+    margin-right: .5rem;
+}
+
+.clear {
+	clear: both;
+}

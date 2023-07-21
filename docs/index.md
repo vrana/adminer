@@ -1,8 +1,22 @@
-AdminerEvo is a web-based database management interface, with a focus on
-security, user experience, performance, functionality and size.
+<div class="grid-left" markdown>
+![image](assets/logo.svg){.index-logo}
+</div>
 
+<div class="grid-right" markdown>
+<p>
+<b>AdminerEvo</b> is a web-based database management interface, with a focus on
+security, user experience, performance, functionality and size.
+</p>
+
+<p>
 It is available for download as a single self-contained PHP file, making it easy
 to deploy anywhere.
+</p>
+
+[Download](https://github.com/adminerevo/adminerevo){ .md-button .md-button--secondary target=\_blank }
+</div>
+
+<div class="clear"></div>
 
 AdminerEvo works out of the box with MySQL, MariaDB, PostgreSQL, SQLite, MS SQL,
 Oracle, Elasticsearch and MongoDB. In addition, there are plugins for
