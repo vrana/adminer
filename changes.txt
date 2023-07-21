@@ -1,8 +1,16 @@
-Adminer 4.8.2-dev:
+Adminer 4.8.2 (released 2023-07-21):
 Support multi-line table comments
 MySQL: Use ST_SRID() instead of SRID() for MySQL 8 (PR #418)
 PostgreSQL: Don't reset table comments (regression from 4.2.0)
 PostgreSQL PDO: Allow editing rows identified by boolean column (PR #380)
+Enable regular expressions when searching data (PR #15)
+Function to retrieve driver name (PR #14)
+Add unix_timestamp to functions for mysql (PR #12)
+Latvian language translation (PR #9)
+Added function DISTINCT to db supporting it
+Fixed undefined variable
+Implemented Copy to clipboard
+Given a visual identity to AdminerEvo keeping backward compatibility
 
 Adminer 4.8.1 (released 2021-05-14):
 Internet Explorer or PDO in Adminer 4.7.8-4.8.0: Fix XSS in doc_link (bug #797)
@@ -99,7 +107,7 @@ SQLite: Handle error in altering table (bug #697)
 SQLite: Allow setting auto increment for empty tables
 SQLite: Preserve auto increment when recreating table
 MS SQL: Support foreign keys to other DB
-MongoDB: Allow setting authSource from environment variable 
+MongoDB: Allow setting authSource from environment variable
 
 Adminer 4.7.2 (released 2019-07-18):
 Do not attempt logging in without password (bug #676)
