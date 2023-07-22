@@ -300,4 +300,5 @@ $translations = array(
 	'There is a space in the input password which might be the cause.' => 'В введеном пароле есть пробел, это может быть причиною.',
 	'Unknown error.' => 'Неизвестная ошибка.',
 	'Database does not support password.' => 'База данных не поддерживает пароль.',
+	'Disable %s or enable %s or %s extensions.' => 'Отключите %s или включите расширения %s или %s.',
 );
