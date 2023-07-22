@@ -301,5 +301,5 @@ $translations = array(
 	'Unknown error.' => 'Неизвестная ошибка.',
 	'Database does not support password.' => 'База данных не поддерживает пароль.',
 
-	'Disable %s or enable %s or %s extensions.' => null,
+	'Disable %s or enable %s or %s extensions.' => 'Отключите %s или включите расширения %s или %s.',
 );
