@@ -300,9 +300,9 @@ $translations = array(
 	'Unknown error.' => 'Неизвестная ошибка.',
 	'Database does not support password.' => 'База данных не поддерживает пароль.',
 
-	'as a regular expression' => null,
-	'Copy to clipboard' => null,
-	'Disable %s or enable %s or %s extensions.' => null,
+	'as a regular expression' => 'как регулярное выражение',
+	'Copy to clipboard' => 'Скопировать в буфер обмена',
+	'Disable %s or enable %s or %s extensions.' => 'Отключите %s или включите расширения %s или %s.',
 
-	// 'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => null,
+	
 );
