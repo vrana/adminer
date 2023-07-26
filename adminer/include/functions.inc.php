@@ -1285,9 +1285,9 @@ function select_value($val, $link, $field, $text_length) {
 */
 function is_mail($email) {
 	$atom = '[-a-z0-9!#$%&\'*+/=?^_`{|}~]'; // characters of local-name
-	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component
-	$pattern = "$atom+(\\.$atom+)*@($domain?\\.)+$domain";
-	return is_string($email) && preg_match("(^$pattern(,\\s*$pattern)*\$)i", $email);
+	$domain = '[[:alnum:]](?:[-[:alnum:]]{0,61}[[:alnum:]])'; // one domain component
+	$pattern = "$atom+(?:\\.$atom+)*@(?:$domain?\\.)+$domain";
+	return is_string($email) && preg_match("(^$pattern(?:,\\s*$pattern)*\$)i", $email);
 }
 
 /** Check whether the string is URL address
@@ -1295,8 +1295,47 @@ function is_mail($email) {
 * @return bool
 */
 function is_url($string) {
-	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component //! IDN
-	return preg_match("~^(https?)://($domain?\\.)+$domain(:\\d+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string); //! restrict path, query and fragment characters
+	// only recognises punycode IDNs
+	return (bool) preg_match(
+		'~^
+			https?://                 # scheme
+			(?:
+				# IPv6 in square brackets
+				\[(?:
+					(?:[[:xdigit:]]{1,4}:){7}[[:xdigit:]]{1,4} |             # 1:2:3:4:5:6:7:8
+					(?:[[:xdigit:]]{1,4}:){1,7}: |                           # 1::                             1:2:3:4:5:6:7::
+					(?:[[:xdigit:]]{1,4}:){1,6}:[[:xdigit:]]{1,4} |          # 1::8            1:2:3:4:5:6::8  1:2:3:4:5:6::8
+					(?:[[:xdigit:]]{1,4}:){1,5}(?::[[:xdigit:]]{1,4}){1,2} | # 1::7:8          1:2:3:4:5::7:8  1:2:3:4:5::8
+					(?:[[:xdigit:]]{1,4}:){1,4}(?::[[:xdigit:]]{1,4}){1,3} | # 1::6:7:8        1:2:3:4::6:7:8  1:2:3:4::8
+					(?:[[:xdigit:]]{1,4}:){1,3}(?::[[:xdigit:]]{1,4}){1,4} | # 1::5:6:7:8      1:2:3::5:6:7:8  1:2:3::8
+					(?:[[:xdigit:]]{1,4}:){1,2}(?::[[:xdigit:]]{1,4}){1,5} | # 1::4:5:6:7:8    1:2::4:5:6:7:8  1:2::8
+					[[:xdigit:]]{1,4}:(?::[[:xdigit:]]{1,4}){1,6} |          # 1::3:4:5:6:7:8  1::3:4:5:6:7:8  1::8
+					:(?::[[:xdigit:]]{1,4}){1,7} |                           # ::2:3:4:5:6:7:8 ::2:3:4:5:6:7:8 ::8
+					fe80:(?::[[:xdigit:]]{0,4}){0,4}%[[:alnum:]]+ |          # fe80::7:8%eth0  fe80::7:8%1     (link-local IPv6 addresses with zone index)
+					::(?:ffff(?::0{1,4})?:)?
+						(?:(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])\.){3}
+						(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])
+						(?<!\b0\.0\.0\.0) |                                  # ::255.255.255.255  ::ffff:255.255.255.255 ::ffff:0:255.255.255.255  (IPv4-mapped IPv6 addresses and IPv4-translated addresses)
+					(?:[[:xdigit:]]{1,4}:){1,4}:
+						(?:(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])\.){3}
+						(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])
+						(?<!\b0\.0\.0\.0)                                    # 2001:db8:3:4::192.0.2.33  64:ff9b::192.0.2.33 (IPv4-Embedded IPv6 Address)
+				)\] |
+				# IPv4
+				(?:(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])\.){3}
+					(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])
+					(?<!\b0\.0\.0\.0) |                                      # 0.0.0.0 excluded for URLs
+				# domain
+				[_[:alnum:]](?:[-_[:alnum:]]{0,61}[_[:alnum:]])?
+					(?:\.[_[:alnum:]](?:[-_[:alnum:]]{0,61}[_[:alnum:]])?)*
+			)                         # host
+			(?::(?:[1-9]\d{0,3})?\d)? # port
+			(?:/[^\s?\#]*)?           # path
+			(?:\?[^\s\#]*)?           # query
+			(?:\#\S*)?                # fragment
+			$~xi',
+		$string
+	);
 }
 
 /** Check if field should be shortened
