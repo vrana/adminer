@@ -1,5 +1,6 @@
 Adminer 4.9.1-dev:
 Support PHP 8.3
+PostgreSQL: Show only accessible databases
 
 Adminer 4.9.0:
 Validate connection to server in HTTP based drivers
