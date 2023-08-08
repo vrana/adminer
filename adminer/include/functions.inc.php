@@ -617,8 +617,10 @@ function auth_url($vendor, $server, $username, $db = null) {
 /** Find whether it is an AJAX request
 * @return bool
 */
-function is_ajax() {
-	return ($_SERVER["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest");
+if ( ! function_exists( 'is_ajax' ) ) {
+	function is_ajax() {
+		return ($_SERVER["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest");
+	}
 }
 
 /** Send Location header and exit
