@@ -7,6 +7,7 @@ Adminer 4.9.0-dev:
 - Add new Elasticsearch 7 driver.
 - Set saving to file as a default export option.
 - Improve URL and email detection.
+- Fix AdminerVersionNoverify plugin blocking other plugins to modify HTML head.
 - Update composer.json.
 
 Adminer 4.8.2 (released 2024-03-16):
