@@ -22,7 +22,7 @@ foreach ($fields as $key => $field) {
 }
 
 list($select, $group) = $adminer->selectColumnsProcess($columns, $indexes);
-$is_group = count($group) < count($select);
+$is_group = count($group) < count($select) || strstr($select[0], "DISTINCT");
 $where = $adminer->selectSearchProcess($fields, $indexes);
 $order = $adminer->selectOrderProcess($fields, $indexes);
 $limit = $adminer->selectLimitProcess();
