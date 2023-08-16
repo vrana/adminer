@@ -1,3 +1,5 @@
+This project is no longer maintained, please use AdminerEvo (https://github.com/adminerevo/adminerevo).
+
 Adminer - Database management in a single PHP file
 Adminer Editor - Data manipulation for end-users
 
