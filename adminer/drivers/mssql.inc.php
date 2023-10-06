@@ -29,6 +29,14 @@ if (isset($_GET["mssql"])) {
 				if ($db != "") {
 					$connection_info["Database"] = $db;
 				}
+                $ssl = $adminer->connectSsl();
+                $options = ['TrustServerCertificate', 'Encrypt'];
+                foreach ($options as $k) {
+                    $connection_info[$k] = false;
+                    if (isset($ssl[$k])) {
+                        $connection_info[$k] = (bool)$ssl[$k];
+                    }
+                }
 				$this->_link = @sqlsrv_connect(preg_replace('~:~', ',', $server), $connection_info);
 				if ($this->_link) {
 					$info = sqlsrv_server_info($this->_link);
