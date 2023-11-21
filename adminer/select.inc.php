@@ -253,6 +253,7 @@ if (!$columns && support("table")) {
 	hidden_fields_get();
 	echo (DB != "" ? '<input type="hidden" name="db" value="' . h(DB) . '">' . (isset($_GET["ns"]) ? '<input type="hidden" name="ns" value="' . h($_GET["ns"]) . '">' : "") : ""); // not used in Editor
 	echo '<input type="hidden" name="select" value="' . h($TABLE) . '">';
+	echo '<input type="submit" value="' . h(lang('Select')) . '">'; # hidden default submit so filter remove buttons aren't "clicked" on submission from enter key
 	echo "</div>\n";
 	$adminer->selectColumnsPrint($select, $columns);
 	$adminer->selectSearchPrint($where, $search_columns, $indexes);

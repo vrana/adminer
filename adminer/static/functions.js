@@ -450,30 +450,59 @@ function menuOut() {
 
 
 
-/** Add row in select fieldset
-* @this HTMLSelectElement
-*/
+/**
+ * Adds row in select fieldset.
+ *
+ * @this HTMLSelectElement
+ */
 function selectAddRow() {
-	var field = this;
-	var row = cloneNode(field.parentNode);
+	const field = this;
+	const row = cloneNode(field.parentNode);
+
 	field.onchange = selectFieldChange;
 	field.onchange();
-	var selects = qsa('select', row);
-	for (var i=0; i < selects.length; i++) {
-		selects[i].name = selects[i].name.replace(/[a-z]\[\d+/, '$&1');
-		selects[i].selectedIndex = 0;
+
+	const selects = qsa('select', row);
+	for (const select of selects) {
+		select.name = select.name.replace(/[a-z]\[\d+/, '$&1');
+		select.selectedIndex = 0;
 	}
-	var inputs = qsa('input', row);
-	for (var i=0; i < inputs.length; i++) {
-		inputs[i].name = inputs[i].name.replace(/[a-z]\[\d+/, '$&1');
-		inputs[i].className = '';
-		if (inputs[i].type === 'checkbox') {
-			inputs[i].checked = false;
+
+	const inputs = qsa('input', row);
+	for (const input of inputs) {
+		// Skip buttons.
+		if (input.type === 'image') {
+			continue;
+		}
+
+		input.name = input.name.replace(/[a-z]\[\d+/, '$&1');
+		input.className = '';
+		if (input.type === 'checkbox') {
+			input.checked = false;
 		} else {
-			inputs[i].value = '';
+			input.value = '';
 		}
 	}
+
+	const buttons = qsa('.icon', row);
+	for (const button of buttons) {
+		button.onclick = selectRemoveRow;
+	}
+
 	field.parentNode.parentNode.appendChild(row);
+}
+
+/**
+ * Removes a row in select fieldset.
+ *
+ * @this HTMLInputElement
+ */
+function selectRemoveRow() {
+	const row = this.parentNode;
+
+	row.parentNode.removeChild(row);
+
+	return false;
 }
 
 /** Prevent onsearch handler on Enter
