@@ -27,7 +27,7 @@ if (!defined("DRIVER")) {
 					$database,
 					(is_numeric($port) ? $port : ini_get("mysqli.default_port")),
 					(!is_numeric($port) ? $port : $socket),
-					($ssl ? 64 : 0) // 64 - MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT (not available before PHP 5.6.16)
+					($ssl ? (empty($ssl['cert']) ? 2048 : 64) : 0) // 2048 - MYSQLI_CLIENT_SSL, 64 - MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT (not available before PHP 5.6.16)
 				);
 				$this->options(MYSQLI_OPT_LOCAL_INFILE, false);
 				return $return;
@@ -50,7 +50,7 @@ if (!defined("DRIVER")) {
 				$row = $result->fetch_array();
 				return $row[$field];
 			}
-			
+
 			function quote($string) {
 				return "'" . $this->escape_string($string) . "'";
 			}
@@ -308,7 +308,7 @@ if (!defined("DRIVER")) {
 			}
 			return queries($prefix . implode(",\n", $values) . $suffix);
 		}
-		
+
 		function slowQuery($query, $timeout) {
 			if (min_version('5.7.8', '10.1.2')) {
 				if (preg_match('~MariaDB~', $this->_conn->server_info)) {
@@ -325,7 +325,7 @@ if (!defined("DRIVER")) {
 				: $idf
 			);
 		}
-		
+
 		function warnings() {
 			$result = $this->_conn->query("SHOW WARNINGS");
 			if ($result && $result->num_rows) {
