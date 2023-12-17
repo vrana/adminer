@@ -1,11 +1,5 @@
 <?php
-function adminer_errors($errno, $errstr) {
-	return !!preg_match('~^(Trying to access array offset on value of type null|Undefined array key)~', $errstr);
-}
-
-error_reporting(6135); // errors and warnings
-set_error_handler('adminer_errors', E_WARNING);
-
+include "../adminer/include/version.inc.php";
 include "../adminer/include/coverage.inc.php";
 
 // disable filter.default
@@ -108,7 +102,6 @@ define("ME", preg_replace('~\?.*~', '', relative_uri()) . '?'
 	. (DB != "" ? 'db=' . urlencode(DB) . '&' . (isset($_GET["ns"]) ? "ns=" . urlencode($_GET["ns"]) . "&" : "") : '')
 );
 
-include "../adminer/include/version.inc.php";
 include "../adminer/include/design.inc.php";
 include "../adminer/include/xxtea.inc.php";
 include "../adminer/include/auth.inc.php";

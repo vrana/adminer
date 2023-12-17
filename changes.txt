@@ -1,3 +1,6 @@
+Adminer 4.9.1-dev:
+Support PHP 8.3
+
 Adminer 4.9.0:
 Validate connection to server in HTTP based drivers
 Elasticsearch 5: Make unusable driver usable again, move it to plugins
