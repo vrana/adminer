@@ -16,6 +16,68 @@ if (!$error && $_POST["clear"]) {
 
 page_header((isset($_GET["import"]) ? lang('Import') : lang('SQL command')), $error);
 
+?>
+
+<form action="" method="post" enctype="multipart/form-data" id="form">
+
+<?php
+$execute = "<input type='submit' value='" . lang('Execute') . "' title='Ctrl+Enter'>";
+if (!isset($_GET["import"])) {
+	$q = $_GET["sql"]; // overwrite $q from if ($_POST) to save memory
+	if ($_POST) {
+		$q = $_POST["query"];
+	} elseif ($_GET["history"] == "all") {
+		$q = $history;
+	} elseif ($_GET["history"] != "") {
+		$q = $history[$_GET["history"]][0];
+	}
+	echo "<p>";
+	textarea("query", $q, 20);
+	echo script(($_POST ? "" : "qs('textarea').focus();\n") . "qs('#form').onsubmit = partial(sqlSubmit, qs('#form'), '" . js_escape(remove_from_uri("sql|limit|error_stops|only_errors|history")) . "');");
+	echo "<p>$execute\n";
+	echo lang('Limit rows') . ": <input type='number' name='limit' class='size' value='" . h($_POST ? $_POST["limit"] : $_GET["limit"]) . "'>\n";
+	
+} else {
+	echo "<fieldset><legend>" . lang('File upload') . "</legend><div>";
+	$gz = (extension_loaded("zlib") ? "[.gz]" : "");
+	echo (ini_bool("file_uploads")
+		? "SQL$gz (&lt; " . ini_get("upload_max_filesize") . "B): <input type='file' name='sql_file[]' multiple>\n$execute" // ignore post_max_size because it is for all form fields together and bytes computing would be necessary
+		: lang('File uploads are disabled.')
+	);
+	echo "</div></fieldset>\n";
+	$importServerPath = $adminer->importServerPath();
+	if ($importServerPath) {
+		echo "<fieldset><legend>" . lang('From server') . "</legend><div>";
+		echo lang('Webserver file %s', "<code>" . h($importServerPath) . "$gz</code>");
+		echo ' <input type="submit" name="webfile" value="' . lang('Run file') . '">';
+		echo "</div></fieldset>\n";
+	}
+	echo "<p>";
+}
+
+echo checkbox("error_stops", 1, ($_POST ? $_POST["error_stops"] : isset($_GET["import"]) || $_GET["error_stops"]), lang('Stop on error')) . "\n";
+echo checkbox("only_errors", 1, ($_POST ? $_POST["only_errors"] : isset($_GET["import"]) || $_GET["only_errors"]), lang('Show only errors')) . "\n";
+echo "<input type='hidden' name='token' value='$token'>\n";
+
+if (!isset($_GET["import"]) && $history) {
+	print_fieldset("history", lang('History'), $_GET["history"] != "");
+	for ($val = end($history); $val; $val = prev($history)) { // not array_reverse() to save memory
+		$key = key($history);
+		list($q, $time, $elapsed) = $val;
+		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . "</a>"
+			. " <span class='time' title='" . @date('Y-m-d', $time) . "'>" . @date("H:i:s", $time) . "</span>" // @ - time zone may be not set
+			. " <code class='jush-$jush'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace('~^(#|-- ).*~m', '', $q)))), 80, "</code>")
+			. ($elapsed ? " <span class='time'>($elapsed)</span>" : "")
+			. "<br>\n"
+		;
+	}
+	echo "<input type='submit' name='clear' value='" . lang('Clear') . "'>\n";
+	echo "<a href='" . h(ME . "sql=&history=all") . "'>" . lang('Edit all') . "</a>\n";
+	echo "</div></fieldset>\n";
+}
+
+echo "</form>";
+
 if (!$error && $_POST) {
 	$fp = false;
 	if (!isset($_GET["import"])) {
@@ -206,63 +268,3 @@ if (!$error && $_POST) {
 		echo "<p class='error'>" . upload_error($query) . "\n";
 	}
 }
-?>
-
-<form action="" method="post" enctype="multipart/form-data" id="form">
-<?php
-$execute = "<input type='submit' value='" . lang('Execute') . "' title='Ctrl+Enter'>";
-if (!isset($_GET["import"])) {
-	$q = $_GET["sql"]; // overwrite $q from if ($_POST) to save memory
-	if ($_POST) {
-		$q = $_POST["query"];
-	} elseif ($_GET["history"] == "all") {
-		$q = $history;
-	} elseif ($_GET["history"] != "") {
-		$q = $history[$_GET["history"]][0];
-	}
-	echo "<p>";
-	textarea("query", $q, 20);
-	echo script(($_POST ? "" : "qs('textarea').focus();\n") . "qs('#form').onsubmit = partial(sqlSubmit, qs('#form'), '" . js_escape(remove_from_uri("sql|limit|error_stops|only_errors|history")) . "');");
-	echo "<p>$execute\n";
-	echo lang('Limit rows') . ": <input type='number' name='limit' class='size' value='" . h($_POST ? $_POST["limit"] : $_GET["limit"]) . "'>\n";
-	
-} else {
-	echo "<fieldset><legend>" . lang('File upload') . "</legend><div>";
-	$gz = (extension_loaded("zlib") ? "[.gz]" : "");
-	echo (ini_bool("file_uploads")
-		? "SQL$gz (&lt; " . ini_get("upload_max_filesize") . "B): <input type='file' name='sql_file[]' multiple>\n$execute" // ignore post_max_size because it is for all form fields together and bytes computing would be necessary
-		: lang('File uploads are disabled.')
-	);
-	echo "</div></fieldset>\n";
-	$importServerPath = $adminer->importServerPath();
-	if ($importServerPath) {
-		echo "<fieldset><legend>" . lang('From server') . "</legend><div>";
-		echo lang('Webserver file %s', "<code>" . h($importServerPath) . "$gz</code>");
-		echo ' <input type="submit" name="webfile" value="' . lang('Run file') . '">';
-		echo "</div></fieldset>\n";
-	}
-	echo "<p>";
-}
-
-echo checkbox("error_stops", 1, ($_POST ? $_POST["error_stops"] : isset($_GET["import"]) || $_GET["error_stops"]), lang('Stop on error')) . "\n";
-echo checkbox("only_errors", 1, ($_POST ? $_POST["only_errors"] : isset($_GET["import"]) || $_GET["only_errors"]), lang('Show only errors')) . "\n";
-echo "<input type='hidden' name='token' value='$token'>\n";
-
-if (!isset($_GET["import"]) && $history) {
-	print_fieldset("history", lang('History'), $_GET["history"] != "");
-	for ($val = end($history); $val; $val = prev($history)) { // not array_reverse() to save memory
-		$key = key($history);
-		list($q, $time, $elapsed) = $val;
-		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . "</a>"
-			. " <span class='time' title='" . @date('Y-m-d', $time) . "'>" . @date("H:i:s", $time) . "</span>" // @ - time zone may be not set
-			. " <code class='jush-$jush'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace('~^(#|-- ).*~m', '', $q)))), 80, "</code>")
-			. ($elapsed ? " <span class='time'>($elapsed)</span>" : "")
-			. "<br>\n"
-		;
-	}
-	echo "<input type='submit' name='clear' value='" . lang('Clear') . "'>\n";
-	echo "<a href='" . h(ME . "sql=&history=all") . "'>" . lang('Edit all') . "</a>\n";
-	echo "</div></fieldset>\n";
-}
-?>
-</form>
