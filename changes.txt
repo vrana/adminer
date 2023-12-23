@@ -9,6 +9,7 @@ Adminer 4.9.0-dev:
 - Improve URL and email detection.
 - Fix AdminerVersionNoverify plugin blocking other plugins to modify HTML head.
 - Fix several bugs and security issues in AdminerFileUpload plugin.
+- Skip dump of generated columns.
 - Update composer.json.
 
 Adminer 4.8.2 (released 2024-03-16):
