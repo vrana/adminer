@@ -831,6 +831,7 @@ class Adminer {
 				$insert = "";
 				$buffer = "";
 				$keys = array();
+				$generated = array();
 				$suffix = "";
 				$fetch_function = ($table != '' ? 'fetch_assoc' : 'fetch_row');
 				while ($row = $result->$fetch_function()) {
@@ -838,6 +839,10 @@ class Adminer {
 						$values = array();
 						foreach ($row as $val) {
 							$field = $result->fetch_field();
+							if ($fields[$field->name]['generated']) {
+								$generated[$field->name] = true;
+								continue;
+							}
 							$keys[] = $field->name;
 							$key = idf_escape($field->name);
 							$values[] = "$key = VALUES($key)";
@@ -855,6 +860,10 @@ class Adminer {
 							$insert = "INSERT INTO " . table($table) . " (" . implode(", ", array_map('idf_escape', $keys)) . ") VALUES";
 						}
 						foreach ($row as $key => $val) {
+							if ($generated[$key]) {
+								unset($row[$key]);
+								continue;
+							}
 							$field = $fields[$key];
 							$row[$key] = ($val !== null
 								? unconvert_field($field, preg_match(number_type(), $field["type"]) && !preg_match('~\[~', $field["full_type"]) && is_numeric($val) ? $val : q(($val === false ? 0 : $val)))
