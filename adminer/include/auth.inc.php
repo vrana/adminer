@@ -15,6 +15,58 @@ if ($_COOKIE["adminer_permanent"]) {
 	}
 }
 
+function validate_server_input() {
+	if (SERVER == "") {
+		return;
+	}
+
+	$parts = parse_url(SERVER);
+	if (!$parts) {
+		auth_error(lang('Invalid credentials.'));
+	}
+
+	// Check proper URL parts.
+	if (isset($parts['user']) || isset($parts['pass']) || isset($parts['query']) || isset($parts['fragment'])) {
+		auth_error(lang('Invalid credentials.'));
+	}
+
+	// Allow only HTTP/S scheme.
+	if (isset($parts['scheme']) && !preg_match('~^(https?)$~i', $parts['scheme'])) {
+		auth_error(lang('Invalid credentials.'));
+	}
+
+	// Allow only host without a path. Note that "localhost" is parsed as path.
+	$host = (isset($parts['host']) ? $parts['host'] : '') . (isset($parts['path']) ? $parts['path'] : '');
+	if (strpos(rtrim($host, '/'), '/') !== false) {
+		auth_error(lang('Invalid credentials.'));
+	}
+
+	// Check privileged ports.
+	if (isset($parts['port']) && ($parts['port'] < 1024 || $parts['port'] > 65535)) {
+		auth_error(lang('Connecting to privileged ports is not allowed.'));
+	}
+}
+
+/**
+ * @param string $server
+ * @param string $username
+ * @param string $password
+ * @param string $defaultServer
+ * @param int|null $defaultPort
+ * @return string
+ */
+function build_http_url($server, $username, $password, $defaultServer, $defaultPort = null) {
+	if (!preg_match('~^(https?://)?([^:]*)(:\d+)?$~', rtrim($server, '/'), $matches)) {
+		$this->error = lang('Invalid credentials.');
+		return false;
+	}
+
+	return ($matches[1] ?: "http://") .
+		($username !== "" || $password !== "" ? "$username:$password@" : "") .
+		($matches[2] !== "" ? $matches[2] : $defaultServer) .
+		(isset($matches[3]) ? $matches[3] : ($defaultPort ? ":$defaultPort" : ""));
+}
+
 function add_invalid_login() {
 	global $adminer;
 	$fp = file_open_lock(get_temp_dir() . "/adminer.invalid");
@@ -52,7 +104,7 @@ $auth = $_POST["auth"];
 if ($auth) {
 	session_regenerate_id(); // defense against session fixation
 	$vendor = $auth["driver"];
-	$server = $auth["server"];
+	$server = trim($auth["server"]);
 	$username = $auth["username"];
 	$password = (string) $auth["password"];
 	$db = $auth["db"];
@@ -72,14 +124,14 @@ if ($auth) {
 	) {
 		redirect(auth_url($vendor, $server, $username, $db));
 	}
-	
+
 } elseif ($_POST["logout"] && (!$has_token || verify_token())) {
 	foreach (array("pwds", "db", "dbs", "queries") as $key) {
 		set_session($key, null);
 	}
 	unset_permanent();
 	redirect(substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1), lang('Logout successful.') . ' ' . lang('Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.'));
-	
+
 } elseif ($permanent && !$_SESSION["pwds"]) {
 	session_regenerate_id();
 	$private = $adminer->permanentLogin();
@@ -155,11 +207,9 @@ if (isset($_GET["username"]) && !class_exists("Min_DB")) {
 stop_session(true);
 
 if (isset($_GET["username"]) && is_string(get_password())) {
-	list($host, $port) = explode(":", SERVER, 2);
-	if (preg_match('~^\s*([-+]?\d+)~', $port, $match) && ($match[1] < 1024 || $match[1] > 65535)) { // is_numeric('80#') would still connect to port 80
-		auth_error(lang('Connecting to privileged ports is not allowed.'));
-	}
+	validate_server_input();
 	check_invalid_login();
+
 	$connection = connect();
 	$driver = new Min_Driver($connection);
 }
@@ -199,7 +249,7 @@ if ($_POST) {
 			: lang('Invalid CSRF token. Send the form again.') . ' ' . lang('If you did not send this request from Adminer then close this page.')
 		);
 	}
-	
+
 } elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
 	// posted form with no data means that post_max_size exceeded because Adminer always sends token at least
 	$error = lang('Too big POST data. Reduce the data or increase the %s configuration directive.', "'post_max_size'");

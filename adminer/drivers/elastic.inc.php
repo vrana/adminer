@@ -58,9 +58,15 @@ if (isset($_GET["elastic"])) {
 				return $this->rootQuery(($this->_db != "" ? "$this->_db/" : "/") . ltrim($path, '/'), $content, $method);
 			}
 
+			/**
+			 * @param string $server
+			 * @param string $username
+			 * @param string $password
+			 * @return bool
+			 */
 			function connect($server, $username, $password) {
-				preg_match('~^(https?://)?(.*)~', $server, $match);
-				$this->_url = ($match[1] ? $match[1] : "http://") . "$username:$password@$match[2]";
+				$this->_url = build_http_url($server, $username, $password, "localhost", 9200);
+
 				$return = $this->query('');
 				if ($return) {
 					$this->server_info = $return['version']['number'];

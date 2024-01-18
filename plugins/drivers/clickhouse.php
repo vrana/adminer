@@ -55,9 +55,15 @@ if (isset($_GET["clickhouse"])) {
 			return $this->rootQuery($this->_db, $query);
 		}
 
+		/**
+		 * @param string $server
+		 * @param string $username
+		 * @param string $password
+		 * @return bool
+		 */
 		function connect($server, $username, $password) {
-			preg_match('~^(https?://)?(.*)~', $server, $match);
-			$this->_url = ($match[1] ? $match[1] : "http://") . "$username:$password@$match[2]";
+			$this->_url = build_http_url($server, $username, $password, "localhost", 8123);
+
 			$return = $this->query('SELECT 1');
 			return (bool) $return;
 		}
