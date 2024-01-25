@@ -6,13 +6,49 @@ if (isset($_GET["simpledb"])) {
 
 	if (class_exists('SimpleXMLElement') && ini_bool('allow_url_fopen')) {
 		class Min_DB {
-			var $extension = "SimpleXML", $server_info = '2009-04-15', $error, $timeout, $next, $affected_rows, $_result;
+			var $extension = "SimpleXML", $server_info = '2009-04-15', $error, $timeout, $next, $affected_rows, $_url, $_result;
+
+			/**
+			 * @param string $server
+			 * @param string $password
+			 * @return bool
+			 */
+			function connect($server, $password) {
+				if ($server == '' || $password == '') {
+					$this->error = lang('Invalid credentials.');
+					return false;
+				}
+
+				$parts = parse_url($server);
+
+				if (!$parts || !isset($parts['host']) || !preg_match('~^sdb\.([a-z0-9-]+\.)?amazonaws\.com$~i', $parts['host']) ||
+					isset($parts['port'])
+				) {
+					$this->error = lang('Invalid credentials.');
+					return false;
+				}
+
+				$this->_url = build_http_url($server, '', '', '');
+
+				return (bool) $this->workaroundLoginRequest('ListDomains', ['MaxNumberOfDomains' => 1]);
+			}
+
+			// FIXME: This is so wrong :-( Move sdb_request to Min_DB!
+			private function workaroundLoginRequest($action, $params = array()) {
+				global $connection;
+
+				$connection = $this;
+				$result = sdb_request($action, $params);
+				$connection = null;
+
+				return $result;
+			}
 
 			function select_db($database) {
 				return ($database == "domain");
 			}
 
-			function query($query, $unbuffered = false) {
+			function query($query) {
 				$params = array('SelectExpression' => $query, 'ConsistentRead' => 'true');
 				if ($this->next) {
 					$params['NextToken'] = $this->next;
@@ -248,11 +284,15 @@ if (isset($_GET["simpledb"])) {
 
 	function connect() {
 		global $adminer;
-		list(, , $password) = $adminer->credentials();
-		if ($password != "") {
-			return lang('Database does not support password.');
+
+		$connection = new Min_DB;
+
+		list($server, , $password) = $adminer->credentials();
+		if ($connection->connect($server, $password)) {
+			return $connection;
 		}
-		return new Min_DB;
+
+		return $connection->error;
 	}
 
 	function support($feature) {
@@ -422,7 +462,8 @@ if (isset($_GET["simpledb"])) {
 		$query = str_replace('%7E', '~', substr($query, 1));
 		$query .= "&Signature=" . urlencode(base64_encode(hmac('sha1', "POST\n" . preg_replace('~^https?://~', '', $host) . "\n/\n$query", $secret, true)));
 		@ini_set('track_errors', 1); // @ - may be disabled
-		$file = @file_get_contents((preg_match('~^https?://~', $host) ? $host : "http://$host"), false, stream_context_create(array('http' => array(
+
+		$file = @file_get_contents($connection->_url, false, stream_context_create(array('http' => array(
 			'method' => 'POST', // may not fit in URL with GET
 			'content' => $query,
 			'ignore_errors' => 1,
@@ -430,7 +471,7 @@ if (isset($_GET["simpledb"])) {
 			'max_redirects' => 0,
 		))));
 		if (!$file) {
-			$connection->error = $php_errormsg;
+			$connection->error = error_get_last()['message'];
 			return false;
 		}
 		libxml_use_internal_errors(true);
