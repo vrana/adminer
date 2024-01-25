@@ -18,9 +18,11 @@ if (isset($_GET["elastic"])) {
 				@ini_set('track_errors', 1); // @ - may be disabled
 				$file = @file_get_contents("$this->_url/" . ltrim($path, '/'), false, stream_context_create(array('http' => array(
 					'method' => $method,
-					'content' => $content === null ? $content : json_encode($content),
-					'header' => 'Content-Type: application/json',
-					'ignore_errors' => 1, // available since PHP 5.2.10
+					'content' => $content !== null ? json_encode($content) : null,
+					'header' => $content !== null ? 'Content-Type: application/json' : [],
+					'ignore_errors' => 1,
+					'follow_location' => 0,
+					'max_redirects' => 0,
 				))));
 				if (!$file) {
 					$this->error = $php_errormsg;
