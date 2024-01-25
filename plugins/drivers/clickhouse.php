@@ -15,6 +15,8 @@ if (isset($_GET["clickhouse"])) {
 				'content' => $this->isQuerySelectLike($query) ? "$query FORMAT JSONCompact" : $query,
 				'header' => 'Content-type: application/x-www-form-urlencoded',
 				'ignore_errors' => 1, // available since PHP 5.2.10
+				'follow_location' => 0,
+				'max_redirects' => 0,
 			))));
 
 			if ($file === false) {
