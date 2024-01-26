@@ -25,7 +25,7 @@ if (isset($_GET["clickhouse"])) {
 			))));
 
 			if ($file === false) {
-				$this->error = lang('Invalid credentials.');
+				$this->error = lang('Invalid server or credentials.');
 				return false;
 			}
 
@@ -37,7 +37,7 @@ if (isset($_GET["clickhouse"])) {
 					}
 				}
 
-				$this->error = lang('Invalid credentials.');
+				$this->error = lang('Invalid server or credentials.');
 				return false;
 			}
 
@@ -47,12 +47,12 @@ if (isset($_GET["clickhouse"])) {
 
 			$return = json_decode($file, true);
 			if ($return === null) {
-				$this->error = lang('Invalid credentials.');
+				$this->error = lang('Invalid server or credentials.');
 				return false;
 			}
 
 			if (!isset($return['rows']) || !isset($return['data']) || !isset($return['meta'])) {
-				$this->error = lang('Invalid credentials.');
+				$this->error = lang('Invalid server or credentials.');
 				return false;
 			}
 

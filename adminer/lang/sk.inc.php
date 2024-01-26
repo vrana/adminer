@@ -2,7 +2,7 @@
 $translations = array(
 	'Login' => 'Prihlásiť sa',
 	'Logout successful.' => 'Odhlásenie prebehlo v poriadku.',
-	'Invalid credentials.' => 'Neplatné prihlasovacie údaje.',
+	'Invalid server or credentials.' => 'Neplatný server alebo prihlasovacie údaje.',
 	'Server' => 'Server',
 	'Username' => 'Používateľ',
 	'Password' => 'Heslo',

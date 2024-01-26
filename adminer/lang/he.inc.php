@@ -2,7 +2,7 @@
 $translations = array(
 	'Login' => 'התחברות',
 	'Logout successful.' => 'ההתחברות הצליחה',
-	'Invalid credentials.' => 'פרטי התחברות שגויים',
+	'Invalid server or credentials.' => null,
 	'Server' => 'שרת',
 	'Username' => 'שם משתמש',
 	'Password' => 'סיסמה',

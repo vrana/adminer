@@ -26,13 +26,13 @@ if (isset($_GET["elastic"])) {
 				))));
 
 				if ($file === false) {
-					$this->error = lang('Invalid credentials.');
+					$this->error = lang('Invalid server or credentials.');
 					return false;
 				}
 
 				$return = json_decode($file, true);
 				if ($return === null) {
-					$this->error = lang('Invalid credentials.');
+					$this->error = lang('Invalid server or credentials.');
 					return false;
 				}
 
@@ -40,7 +40,7 @@ if (isset($_GET["elastic"])) {
 					if (isset($return['error']['root_cause'][0]['type'])) {
 						$this->error = $return['error']['root_cause'][0]['type'] . ": " . $return['error']['root_cause'][0]['reason'];
 					} else {
-						$this->error = lang('Invalid credentials.');
+						$this->error = lang('Invalid server or credentials.');
 					}
 					return false;
 				}
@@ -73,7 +73,7 @@ if (isset($_GET["elastic"])) {
 				}
 
 				if (!isset($return['version']['number'])) {
-					$this->error = lang('Invalid credentials.');
+					$this->error = lang('Invalid server or credentials.');
 					return false;
 				}
 

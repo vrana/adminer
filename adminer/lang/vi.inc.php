@@ -10,7 +10,7 @@ $translations = array(
 	'Logout' => 'Thoát',
 	'Logged as: %s' => 'Vào dưới tên: %s',
 	'Logout successful.' => 'Đã thoát xong.',
-	'Invalid credentials.' => 'Tài khoản sai.',
+	'Invalid server or credentials.' => null,
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'Bạn gõ sai tài khoản quá nhiều lần, hãy thử lại sau %d phút nữa.',
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Mật khẩu đã hết hạn. <a href="https://www.adminer.org/en/extension/"%s>Thử cách làm</a> để giữ cố định.',
 	'Language' => 'Ngôn ngữ',

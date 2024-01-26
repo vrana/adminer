@@ -2,7 +2,7 @@
 $translations = array(
 	'Login' => 'ログイン',
 	'Logout successful.' => 'ログアウト',
-	'Invalid credentials.' => '不正なログイン',
+	'Invalid server or credentials.' => null,
 	'Server' => 'サーバ',
 	'Username' => 'ユーザ名',
 	'Password' => 'パスワード',

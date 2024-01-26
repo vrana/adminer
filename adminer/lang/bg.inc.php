@@ -10,7 +10,7 @@ $translations = array(
 	'Logout' => 'Изход',
 	'Logged as: %s' => 'Текущ потребител: %s',
 	'Logout successful.' => 'Излизането е успешно.',
-	'Invalid credentials.' => 'Невалидни потребителски данни.',
+	'Invalid server or credentials.' => null,
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Прекалено много неуспешни опити за вход, опитайте пак след %d минута.', 'Прекалено много неуспешни опити за вход, опитайте пак след %d минути.'),
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Главната парола вече е невалидна. <a href="https://www.adminer.org/en/extension/"%s>Изберете</a> %s метод, за да я направите постоянна.',
 	'Language' => 'Език',

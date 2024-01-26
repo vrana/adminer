@@ -2,7 +2,7 @@
 $translations = array(
 	'Login' => 'লগইন',
 	'Logout successful.' => 'সফলভাবে লগআউট হয়েছে।',
-	'Invalid credentials.' => 'ভুল পাসওয়ার্ড।',
+	'Invalid server or credentials.' => null,
 	'Server' => 'সার্ভার',
 	'Username' => 'ইউজারের নাম',
 	'Password' => 'পাসওয়ার্ড',

@@ -2,7 +2,7 @@
 $translations = array(
 	'Login' => 'Intră',
 	'Logout successful.' => 'Ați ieșit cu succes.',
-	'Invalid credentials.' => 'Numele de utilizator sau parola este greșită.',
+	'Invalid server or credentials.' => null,
 	'Server' => 'Server',
 	'Username' => 'Nume de utilizator',
 	'Password' => 'Parola',

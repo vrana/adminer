@@ -10,7 +10,7 @@ $translations = array(
 	'Logout' => 'خروج',
 	'Logged as: %s' => 'ورود به عنوان: %s',
 	'Logout successful.' => 'با موفقیت خارج شدید.',
-	'Invalid credentials.' => 'اعتبار سنجی نامعتبر.',
+	'Invalid server or credentials.' => null,
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('ورودهای ناموفق بیش از حد، %d دقیقه دیگر تلاش نمایید.', 'ورودهای ناموفق بیش از حد، %d دقیقه دیگر تلاش نمایید.'),
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'رمز اصلی باطل شده است. روش %s را <a href="https://www.adminer.org/en/extension/"%s>پیاده سازی</a> کرده تا آن را دائمی سازید.',
 	'Language' => 'زبان',

@@ -22,23 +22,23 @@ function validate_server_input() {
 
 	$parts = parse_url(SERVER);
 	if (!$parts) {
-		auth_error(lang('Invalid credentials.'));
+		auth_error(lang('Invalid server or credentials.'));
 	}
 
 	// Check proper URL parts.
 	if (isset($parts['user']) || isset($parts['pass']) || isset($parts['query']) || isset($parts['fragment'])) {
-		auth_error(lang('Invalid credentials.'));
+		auth_error(lang('Invalid server or credentials.'));
 	}
 
 	// Allow only HTTP/S scheme.
 	if (isset($parts['scheme']) && !preg_match('~^(https?)$~i', $parts['scheme'])) {
-		auth_error(lang('Invalid credentials.'));
+		auth_error(lang('Invalid server or credentials.'));
 	}
 
 	// Allow only host without a path. Note that "localhost" is parsed as path.
 	$host = (isset($parts['host']) ? $parts['host'] : '') . (isset($parts['path']) ? $parts['path'] : '');
 	if (strpos(rtrim($host, '/'), '/') !== false) {
-		auth_error(lang('Invalid credentials.'));
+		auth_error(lang('Invalid server or credentials.'));
 	}
 
 	// Check privileged ports.
@@ -57,7 +57,7 @@ function validate_server_input() {
  */
 function build_http_url($server, $username, $password, $defaultServer, $defaultPort = null) {
 	if (!preg_match('~^(https?://)?([^:]*)(:\d+)?$~', rtrim($server, '/'), $matches)) {
-		$this->error = lang('Invalid credentials.');
+		$this->error = lang('Invalid server or credentials.');
 		return false;
 	}
 
@@ -216,7 +216,7 @@ if (isset($_GET["username"]) && is_string(get_password())) {
 
 $login = null;
 if (!is_object($connection) || ($login = $adminer->login($_GET["username"], get_password())) !== true) {
-	$error = (is_string($connection) ? h($connection) : (is_string($login) ? $login : lang('Invalid credentials.')));
+	$error = (is_string($connection) ? h($connection) : (is_string($login) ? $login : lang('Invalid server or credentials.')));
 	auth_error($error . (preg_match('~^ | $~', get_password()) ? '<br>' . lang('There is a space in the input password which might be the cause.') : ''));
 }
 

@@ -15,7 +15,7 @@ if (isset($_GET["simpledb"])) {
 			 */
 			function connect($server, $password) {
 				if ($server == '' || $password == '') {
-					$this->error = lang('Invalid credentials.');
+					$this->error = lang('Invalid server or credentials.');
 					return false;
 				}
 
@@ -24,7 +24,7 @@ if (isset($_GET["simpledb"])) {
 				if (!$parts || !isset($parts['host']) || !preg_match('~^sdb\.([a-z0-9-]+\.)?amazonaws\.com$~i', $parts['host']) ||
 					isset($parts['port'])
 				) {
-					$this->error = lang('Invalid credentials.');
+					$this->error = lang('Invalid server or credentials.');
 					return false;
 				}
 

@@ -2,7 +2,7 @@
 $translations = array(
 	'Login' => 'Authentification',
 	'Logout successful.' => 'Au revoir !',
-	'Invalid credentials.' => 'Authentification échouée.',
+	'Invalid server or credentials.' => null,
 	'Server' => 'Serveur',
 	'Username' => 'Utilisateur',
 	'Password' => 'Mot de passe',

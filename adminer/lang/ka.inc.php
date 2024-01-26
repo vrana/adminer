@@ -2,7 +2,7 @@
 $translations = array(
 	'Login' => 'შესვლა',
 	'Logout successful.' => 'გამოხვედით სისტემიდან.',
-	'Invalid credentials.' => 'არასწორი მომხმარებელი ან პაროლი.',
+	'Invalid server or credentials.' => null,
 	'Server' => 'სერვერი',
 	'Username' => 'მომხმარებელი',
 	'Password' => 'პაროლი',

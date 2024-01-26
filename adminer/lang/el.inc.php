@@ -10,7 +10,7 @@ $translations = array(
 	'Logout' => 'Αποσύνδεση',
 	'Logged as: %s' => 'Συνδεθήκατε ως %s',
 	'Logout successful.' => 'Αποσυνδεθήκατε με επιτυχία.',
-	'Invalid credentials.' => 'Εσφαλμένα Διαπιστευτήρια.',
+	'Invalid server or credentials.' => null,
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Επανειλημμένες ανεπιτυχείς προσπάθειες σύνδεσης, δοκιμάστε ξανά σε %s λεπτό.', 'Επανειλημμένες ανεπιτυχείς προσπάθειες σύνδεσης, δοκιμάστε ξανά σε %s λεπτά.'),
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Έληξε ο Κύριος Κωδικός. <a href="https://www.adminer.org/en/extension/"%s>Ενεργοποιήστε</a> τη μέθοδο %s για να τον κάνετε μόνιμο.',
 	'Language' => 'Γλώσσα',
