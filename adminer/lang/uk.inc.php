@@ -343,4 +343,8 @@ $translations = array(
 	'Saving' => 'Збереження',
 	'Unknown error.' => 'Невідома помилка.',
 	'Database does not support password.' => 'База даних не підтримує пароль.',
+
+	'Vacuum' => null,
+	'%d / ' => array(),
+	'Disable %s or enable %s or %s extensions.' => null,
 );

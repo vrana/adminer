@@ -290,4 +290,16 @@ $translations = array(
 	'Saving' => 'שומר',
 	'yes' => 'כן',
 	'no' => 'לא',
+
+	'Drop %s?' => null,
+	'overwrite' => null,
+	'DB' => null,
+	'Warnings' => null,
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => null,
+	'The action will be performed after successful login with the same credentials.' => null,
+	'Connecting to privileged ports is not allowed.' => null,
+	'There is a space in the input password which might be the cause.' => null,
+	'Unknown error.' => null,
+	'Database does not support password.' => null,
+	'Disable %s or enable %s or %s extensions.' => null,
 );

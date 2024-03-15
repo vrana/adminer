@@ -300,4 +300,6 @@ $translations = array(
 	'Unknown error.' => 'უცნობი შეცდომა.',
 	'Database does not support password.' => 'ბაზაში არაა მხარდაჭერილი პაროლი.',
 	'Disable %s or enable %s or %s extensions.' => 'გათიშეთ %s ან ჩართეთ %s ან %s გაფართოება.',
+
+	'overwrite' => null,
 );

@@ -340,4 +340,11 @@ $translations = array(
 	'Type has been dropped.' => 'Tür silindi.',
 	'Type has been created.' => 'Tür oluşturuldu.',
 	'Alter type' => 'Türü değiştir',
+
+	'overwrite' => null,
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => null,
+	'There is a space in the input password which might be the cause.' => null,
+	'Unknown error.' => null,
+	'Database does not support password.' => null,
+	'Disable %s or enable %s or %s extensions.' => null,
 );
