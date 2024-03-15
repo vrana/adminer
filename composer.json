@@ -25,6 +25,11 @@
         "Apache-2.0",
         "GPL-2.0-only"
     ],
+    "require": {
+        "php": ">=5.6",
+        "ext-pdo": "*",
+        "ext-json": "*"
+    },
     "scripts": {
         "compile": "php compile.php"
     }
