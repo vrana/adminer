@@ -2,7 +2,7 @@
 $translations = array(
 	'Login' => 'Ieiet',
 	'Logout successful.' => 'Jūs veiksmīgi izgājāt no sistēmas.',
-	'Invalid credentials.' => 'Nepareizs lietotāja vārds vai parole.',
+	'Invalid server or credentials.' => null,
 	'Server' => 'Serveris',
 	'Username' => 'Lietotājs',
 	'Password' => 'Parole',

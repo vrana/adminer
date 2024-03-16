@@ -2,7 +2,7 @@
 $translations = array(
 	'Login' => 'நுழை',
 	'Logout successful.' => 'வெற்றிக‌ர‌மாய் வெளியேறியாயிற்று.',
-	'Invalid credentials.' => 'ச‌ரியான‌ விப‌ர‌ங்க‌ள் இல்லை.',
+	'Invalid server or credentials.' => null,
 	'Server' => 'வ‌ழ‌ங்கி (Server)',
 	'Username' => 'ப‌ய‌னாள‌ர் (User)',
 	'Password' => 'க‌ட‌வுச்சொல்',

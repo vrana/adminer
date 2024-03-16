@@ -2,7 +2,7 @@
 $translations = array(
 	'Login' => 'Войти',
 	'Logout successful.' => 'Вы успешно покинули систему.',
-	'Invalid credentials.' => 'Неправильное имя пользователя или пароль.',
+	'Invalid server or credentials.' => null,
 	'Server' => 'Сервер',
 	'Username' => 'Имя пользователя',
 	'Password' => 'Пароль',

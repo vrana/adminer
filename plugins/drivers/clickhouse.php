@@ -8,56 +8,78 @@ if (isset($_GET["clickhouse"])) {
 		var $extension = "JSON", $server_info, $errno, $_result, $error, $_url;
 		var $_db = 'default';
 
+		/**
+		 * @param string $db
+		 * @param string $query
+		 * @return Min_Result|bool
+		 */
 		function rootQuery($db, $query) {
 			@ini_set('track_errors', 1); // @ - may be disabled
 			$file = @file_get_contents("$this->_url/?database=$db", false, stream_context_create(array('http' => array(
 				'method' => 'POST',
 				'content' => $this->isQuerySelectLike($query) ? "$query FORMAT JSONCompact" : $query,
 				'header' => 'Content-type: application/x-www-form-urlencoded',
-				'ignore_errors' => 1, // available since PHP 5.2.10
+				'ignore_errors' => 1,
+				'follow_location' => 0,
+				'max_redirects' => 0,
 			))));
 
 			if ($file === false) {
-				$this->error = $php_errormsg;
-				return $file;
-			}
-			if (!preg_match('~^HTTP/[0-9.]+ 2~i', $http_response_header[0])) {
-				$this->error = lang('Invalid credentials.') . " $http_response_header[0]";
+				$this->error = lang('Invalid server or credentials.');
 				return false;
 			}
-			$return = json_decode($file, true);
-			if ($return === null) {
-				if (!$this->isQuerySelectLike($query) && $file === '') {
-					return true;
-				}
 
-				$this->errno = json_last_error();
-				if (function_exists('json_last_error_msg')) {
-					$this->error = json_last_error_msg();
-				} else {
-					$constants = get_defined_constants(true);
-					foreach ($constants['json'] as $name => $value) {
-						if ($value == $this->errno && preg_match('~^JSON_ERROR_~', $name)) {
-							$this->error = $name;
-							break;
-						}
+			if (!preg_match('~^HTTP/[0-9.]+ 2~i', $http_response_header[0])) {
+				foreach ($http_response_header as $header) {
+					if (preg_match('~^X-ClickHouse-Exception-Code:~i', $header)) {
+						$this->error = preg_replace('~\(version [^(]+\(.+$~', '', $file);
+						return false;
 					}
 				}
+
+				$this->error = lang('Invalid server or credentials.');
+				return false;
 			}
-			return new Min_Result($return);
+
+			if (!$this->isQuerySelectLike($query) && $file === '') {
+				return true;
+			}
+
+			$return = json_decode($file, true);
+			if ($return === null) {
+				$this->error = lang('Invalid server or credentials.');
+				return false;
+			}
+
+			if (!isset($return['rows']) || !isset($return['data']) || !isset($return['meta'])) {
+				$this->error = lang('Invalid server or credentials.');
+				return false;
+			}
+
+			return new Min_Result($return['rows'], $return['data'], $return['meta']);
 		}
 
 		function isQuerySelectLike($query) {
 			return (bool) preg_match('~^(select|show)~i', $query);
 		}
 
+		/**
+		 * @param string $query
+		 * @return bool|Min_Result
+		 */
 		function query($query) {
 			return $this->rootQuery($this->_db, $query);
 		}
 
+		/**
+		 * @param string $server
+		 * @param string $username
+		 * @param string $password
+		 * @return bool
+		 */
 		function connect($server, $username, $password) {
-			preg_match('~^(https?://)?(.*)~', $server, $match);
-			$this->_url = ($match[1] ? $match[1] : "http://") . "$username:$password@$match[2]";
+			$this->_url = build_http_url($server, $username, $password, "localhost", 8123);
+
 			$return = $this->query('SELECT 1');
 			return (bool) $return;
 		}
@@ -92,11 +114,17 @@ if (isset($_GET["clickhouse"])) {
 	class Min_Result {
 		var $num_rows, $_rows, $columns, $meta, $_offset = 0;
 
-		function __construct($result) {
-			$this->num_rows = $result['rows'];
-			$this->_rows = $result['data'];
-			$this->meta = $result['meta'];
-			$this->columns = array_column($this->meta, 'name');
+		/**
+		 * @param int $rows
+		 * @param array[] $data
+		 * @param array[] $meta
+		 */
+		function __construct($rows, array $data, array $meta) {
+			$this->num_rows = $rows;
+			$this->_rows = $data;
+			$this->meta = $meta;
+			$this->columns = array_column($meta, 'name');
+
 			reset($this->_rows);
 		}
 

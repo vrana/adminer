@@ -9,7 +9,7 @@ $translations = array(
 	'Logout' => 'Logg ut',
 	'Logged as: %s' => 'Logget inn som: %s',
 	'Logout successful.' => 'Utlogging vellykket.',
-	'Invalid credentials.' => 'Ugylding innloggingsinformasjon.',
+	'Invalid server or credentials.' => null,
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Master-passord er utløpt. <a href="https://www.adminer.org/en/extension/"%s>Implementer</a> en metode for %s for å gjøre det permanent.',
 	'Language' => 'Språk',
 	'Invalid CSRF token. Send the form again.' => 'Ugylding CSRF-token - Send inn skjemaet igjen.',

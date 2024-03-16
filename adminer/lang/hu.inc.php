@@ -2,7 +2,7 @@
 $translations = array(
 	'Login' => 'Belépés',
 	'Logout successful.' => 'Sikeres kilépés.',
-	'Invalid credentials.' => 'Érvénytelen adatok.',
+	'Invalid server or credentials.' => null,
 	'Server' => 'Szerver',
 	'Username' => 'Felhasználó',
 	'Password' => 'Jelszó',

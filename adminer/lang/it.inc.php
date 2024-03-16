@@ -2,7 +2,7 @@
 $translations = array(
 	'Login' => 'Autenticazione',
 	'Logout successful.' => 'Uscita effettuata con successo.',
-	'Invalid credentials.' => 'Credenziali non valide.',
+	'Invalid server or credentials.' => 'Server o credenziali non valide.',
 	'Server' => 'Server',
 	'Username' => 'Utente',
 	'Password' => 'Password',

@@ -2,7 +2,7 @@
 $translations = array(
 	'Login' => 'Logi sisse',
 	'Logout successful.' => 'Väljalogimine õnnestus.',
-	'Invalid credentials.' => 'Ebakorrektsed andmed.',
+	'Invalid server or credentials.' => null,
 	'Server' => 'Server',
 	'Username' => 'Kasutajanimi',
 	'Password' => 'Parool',

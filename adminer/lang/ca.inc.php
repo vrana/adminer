@@ -2,7 +2,7 @@
 $translations = array(
 	'Login' => 'Inicia la sessió',
 	'Logout successful.' => 'Desconnexió correcta.',
-	'Invalid credentials.' => 'Credencials invàlides.',
+	'Invalid server or credentials.' => null,
 	'Server' => 'Servidor',
 	'Username' => 'Nom d\'usuari',
 	'Password' => 'Contrasenya',
