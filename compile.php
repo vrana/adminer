@@ -7,7 +7,7 @@ function adminer_errors($errno, $errstr) {
 error_reporting(6135); // errors and warnings
 set_error_handler('adminer_errors', E_WARNING);
 include dirname(__FILE__) . "/adminer/include/version.inc.php";
-include dirname(__FILE__) . "/externals/JsShrink/jsShrink.php";
+include dirname(__FILE__) . "/vendor/vrana/jsshrink/jsShrink.php";
 
 function add_apo_slashes($s) {
 	return addcslashes($s, "\\'");

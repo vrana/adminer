@@ -28,9 +28,21 @@
     "require": {
         "php": ">=5.6",
         "ext-pdo": "*",
-        "ext-json": "*"
+        "ext-json": "*",
+        "vrana/jush": "@dev",
+        "vrana/jsshrink": "@dev"
     },
     "scripts": {
         "compile": "php compile.php"
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/vrana/jush.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/vrana/jsshrink.git"
+        }
+    ]
 }
