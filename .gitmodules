@@ -1,9 +1,9 @@
 [submodule "jush"]
 	path = externals/jush
-	url = git://github.com/vrana/jush
+	url = https://github.com/vrana/jush
 [submodule "JsShrink"]
 	path = externals/JsShrink
-	url = git://github.com/vrana/JsShrink
+	url = https://github.com/vrana/JsShrink
 [submodule "designs/hydra"]
 	path = designs/hydra
 	url = https://github.com/Niyko/Hydra-Dark-Theme-for-Adminer
