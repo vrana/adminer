@@ -5,6 +5,7 @@ Adminer 4.9.0-dev:
 - Update hydra and pepa-lintha-dark themes.
 - Elasticsearch 5: Make unusable driver usable again, move it to plugins.
 - Add new Elasticsearch 7 driver.
+- Set saving to file as a default export option.
 
 Adminer 4.8.2 (released 2024-03-16):
 Support multi-line table comments

@@ -213,7 +213,7 @@ function optionlist($options, $selected = null, $use_keys = false) {
 * @param string
 * @param array
 * @param string
-* @param string true for no onchange, false for radio
+* @param string|bool true for no onchange, false for radio
 * @param string
 * @return string
 */

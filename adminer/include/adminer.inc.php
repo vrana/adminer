@@ -755,10 +755,11 @@ class Adminer {
 	* @return array
 	*/
 	function dumpOutput() {
-		$return = array('text' => lang('open'), 'file' => lang('save'));
+		$return = array('file' => lang('save'), 'text' => lang('open'));
 		if (function_exists('gzencode')) {
 			$return['gz'] = 'gzip';
 		}
+
 		return $return;
 	}
 

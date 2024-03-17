@@ -147,16 +147,14 @@ if ($jush == "sql") { //! use insertUpdate() in all drivers
 }
 parse_str($_COOKIE["adminer_export"], $row);
 if (!$row) {
-	$row = array("output" => "text", "format" => "sql", "db_style" => (DB != "" ? "" : "CREATE"), "table_style" => "DROP+CREATE", "data_style" => "INSERT");
+	$row = array("output" => "file", "format" => "sql", "db_style" => (DB != "" ? "" : "CREATE"), "table_style" => "DROP+CREATE", "data_style" => "INSERT");
 }
 if (!isset($row["events"])) { // backwards compatibility
 	$row["routines"] = $row["events"] = ($_GET["dump"] == "");
 	$row["triggers"] = $row["table_style"];
 }
 
-echo "<tr><th>" . lang('Output') . "<td>" . html_select("output", $adminer->dumpOutput(), $row["output"], 0) . "\n"; // 0 - radio
-
-echo "<tr><th>" . lang('Format') . "<td>" . html_select("format", $adminer->dumpFormat(), $row["format"], 0) . "\n"; // 0 - radio
+echo "<tr><th>" . lang('Format') . "<td>" . html_select("format", $adminer->dumpFormat(), $row["format"], false) . "\n"; // false = radio
 
 echo ($jush == "sqlite" ? "" : "<tr><th>" . lang('Database') . "<td>" . html_select('db_style', $db_style, $row["db_style"])
 	. (support("routine") ? checkbox("routines", 1, $row["routines"], lang('Routines')) : "")
@@ -169,6 +167,9 @@ echo "<tr><th>" . lang('Tables') . "<td>" . html_select('table_style', $table_st
 ;
 
 echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style, $row["data_style"]);
+
+echo "<tr><th>" . lang('Output') . "<td>" . html_select("output", $adminer->dumpOutput(), $row["output"], false) . "\n"; // false = radio
+
 ?>
 </table>
 <p><input type="submit" value="<?php echo lang('Export'); ?>">
