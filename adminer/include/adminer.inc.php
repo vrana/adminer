@@ -96,7 +96,7 @@ class Adminer {
 	*/
 	function head() {
 		?>
-<link rel="stylesheet" type="text/css" href="../externals/jush/jush.css">
+<link rel="stylesheet" type="text/css" href="../vendor/vrana/jush/jush.css">
 <?php
 		return true;
 	}
@@ -963,12 +963,12 @@ class Adminer {
 				$connection->select_db(DB);
 				$tables = table_status('', true);
 			}
-			echo script_src("../externals/jush/modules/jush.js");
-			echo script_src("../externals/jush/modules/jush-textarea.js");
-			echo script_src("../externals/jush/modules/jush-txt.js");
-			echo script_src("../externals/jush/modules/jush-js.js");
+			echo script_src("../vendor/vrana/jush/modules/jush.js");
+			echo script_src("../vendor/vrana/jush/modules/jush-textarea.js");
+			echo script_src("../vendor/vrana/jush/modules/jush-txt.js");
+			echo script_src("../vendor/vrana/jush/modules/jush-js.js");
 			if (support("sql")) {
-				echo script_src("../externals/jush/modules/jush-$jush.js");
+				echo script_src("../vendor/vrana/jush/modules/jush-$jush.js");
 				?>
 <script<?php echo nonce(); ?>>
 <?php
