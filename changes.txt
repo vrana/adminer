@@ -3,6 +3,8 @@ Adminer 4.9.0-dev:
 - Validate connection to server in HTTP based drivers.
 - Move dependencies from submodules to Composer.
 - Update hydra and pepa-lintha-dark themes.
+- Elasticsearch 5: Make unusable driver usable again, move it to plugins.
+- Add new Elasticsearch 7 driver.
 
 Adminer 4.8.2 (released 2024-03-16):
 Support multi-line table comments
