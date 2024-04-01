@@ -34,7 +34,7 @@ if (isset($_GET["file"])) {
 if ($_GET["script"] == "version") {
 	$file = open_file_with_lock(get_temp_dir() . "/adminer.version");
 	if ($file) {
-		write_and_unlock_file($file, serialize(["signature" => $_POST["signature"], "version" => $_POST["version"]]));
+		write_and_unlock_file($file, serialize(["version" => $_POST["version"]]));
 	}
 	exit;
 }

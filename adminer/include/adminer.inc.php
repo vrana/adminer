@@ -1021,7 +1021,9 @@ class Adminer {
     <?php if ($missing != "auth"): ?>
 	<span class="version">
 		<?php echo $VERSION; ?>
-		<a href="https://www.adminer.org/#download"<?php echo target_blank(); ?> id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
+		<a href="https://github.com/pematon/adminer/releases"<?php echo target_blank(); ?> id="version">
+			<?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?>
+		</a>
 	</span>
     <?php endif; ?>
 </h1>

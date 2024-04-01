@@ -15,6 +15,14 @@ function page_header($title, $error = "", $breadcrumb = [], $title2 = "") {
 	}
 	$title_all = $title . ($title2 != "" ? ": $title2" : "");
 	$title_page = strip_tags($title_all . (SERVER != "" && SERVER != "localhost" ? h(" - " . SERVER) : "") . " - " . $adminer->name());
+
+	// Load Adminer version from file if cookie is missing.
+	$filename = get_temp_dir() . "/adminer.version";
+	if (!$_COOKIE["adminer_version"] && file_exists($filename) && filemtime($filename) + 86400 > time()) { // 86400 - 1 day in seconds
+		$data = unserialize(file_get_contents($filename));
+		$_COOKIE["adminer_version"] = $data["version"];
+		cookie("adminer_version", $data["version"], 24 * 3600);
+	}
 	?>
 <!DOCTYPE html>
 <html lang="<?php echo $LANG; ?>" dir="<?php echo lang('ltr'); ?>">
@@ -33,32 +41,16 @@ function page_header($title, $error = "", $breadcrumb = [], $title2 = "") {
 <?php } ?>
 
 <body class="<?php echo lang('ltr'); ?> nojs">
-<?php
-	$filename = get_temp_dir() . "/adminer.version";
-	if (!$_COOKIE["adminer_version"] && function_exists('openssl_verify') && file_exists($filename) && filemtime($filename) + 86400 > time()) { // 86400 - 1 day in seconds
-		$version = unserialize(file_get_contents($filename));
-		$public = "-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwqWOVuF5uw7/+Z70djoK
-RlHIZFZPO0uYRezq90+7Amk+FDNd7KkL5eDve+vHRJBLAszF/7XKXe11xwliIsFs
-DFWQlsABVZB3oisKCBEuI71J4kPH8dKGEWR9jDHFw3cWmoH3PmqImX6FISWbG3B8
-h7FIx3jEaw5ckVPVTeo5JRm/1DZzJxjyDenXvBQ/6o9DgZKeNDgxwKzH+sw9/YCO
-jHnq1cFpOIISzARlrHMa/43YfeNRAm/tsBXjSxembBPo7aQZLAWHmaj5+K19H10B
-nCpz9Y++cipkVEiKRGih4ZEvjoFysEOdRLj6WiD/uUNky4xGeA6LaJqh5XpkFkcQ
-fQIDAQAB
------END PUBLIC KEY-----
-";
-		if (openssl_verify($version["version"], base64_decode($version["signature"]), $public) == 1) {
-			$_COOKIE["adminer_version"] = $version["version"]; // doesn't need to send to the browser
-		}
-	}
-	?>
 <script<?php echo nonce(); ?>>
-mixin(document.body, {onkeydown: bodyKeydown, onclick: bodyClick<?php
-	echo (isset($_COOKIE["adminer_version"]) ? "" : ", onload: partial(verifyVersion, '$VERSION', '" . js_escape(ME) . "', '" . get_token() . "')"); // $token may be empty in auth.inc.php
-	?>});
-document.body.className = document.body.className.replace(/ nojs/, ' js');
-var offlineMessage = '<?php echo js_escape(lang('You are offline.')); ?>';
-var thousandsSeparator = '<?php echo js_escape(lang(',')); ?>';
+	document.body.onkeydown = bodyKeydown;
+	document.body.onclick = bodyClick;
+	<?php if (!isset($_COOKIE["adminer_version"])): ?>
+	document.body.onload = function () { verifyVersion('<?php echo $VERSION; ?>', '<?php echo js_escape(ME); ?>', '<?php echo get_token(); ?>') };
+	<?php endif; ?>
+	document.body.className = document.body.className.replace(/ nojs/, ' js');
+
+	var offlineMessage = '<?php echo js_escape(lang('You are offline.')); ?>';
+	var thousandsSeparator = '<?php echo js_escape(lang(',')); ?>';
 </script>
 
 <div id="help" class="jush-<?php echo $jush; ?> jsonly hidden"></div>
@@ -140,20 +132,24 @@ function page_headers() {
 	$adminer->headers();
 }
 
-/** Get Content Security Policy headers
-* @return array of arrays with directive name in key, allowed sources in value
-*/
+/**
+ * Gets Content Security Policy headers.
+ *
+ * @return array of arrays with directive name in key, allowed sources in value
+ * @throws \Random\RandomException
+ */
 function csp() {
-	return array(
-		array(
-			"script-src" => "'self' 'unsafe-inline' 'nonce-" . get_nonce() . "' 'strict-dynamic'", // 'self' is a fallback for browsers not supporting 'strict-dynamic', 'unsafe-inline' is a fallback for browsers not supporting 'nonce-'
-			"connect-src" => "'self'",
-			"frame-src" => "https://www.adminer.org",
+	return [
+		[
+			// 'self' is a fallback for browsers not supporting 'strict-dynamic', 'unsafe-inline' is a fallback for browsers not supporting 'nonce-'
+			"script-src" => "'self' 'unsafe-inline' 'nonce-" . get_nonce() . "' 'strict-dynamic'",
+			"connect-src" => "'self' https://api.github.com/repos/pematon/adminer/releases/latest",
+			"frame-src" => "'self'",
 			"object-src" => "'none'",
 			"base-uri" => "'none'",
 			"form-action" => "'self'",
-		),
-	);
+		],
+	];
 }
 
 /**
