@@ -87,7 +87,7 @@ if (!$error && $_POST) {
 								$query .= fread($fp, 1e5);
 							} else {
 								$offset = $match[0][1] + strlen($s);
-								if ($s[0] != "\\") {
+								if (!$s || $s[0] != "\\") {
 									break;
 								}
 							}
