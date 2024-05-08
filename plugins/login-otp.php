@@ -24,7 +24,7 @@ class AdminerLoginOtp {
 		if ($name == 'password') {
 			return $heading . $value
 				. "<tr><th><acronym title='One Time Password' lang='en'>OTP</acronym>"
-				. "<td><input type='number' name='auth[otp]' value='" . h($_SESSION["otp"]) . "' size='6' autocomplete='off'>\n"
+				. "<td><input type='number' name='auth[otp]' value='" . h($_SESSION["otp"]) . "' size='6' autocomplete='one-time-code'>\n"
 			;
 		}
 	}
