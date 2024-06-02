@@ -81,7 +81,17 @@ if (!$error && $_POST) {
 					$offset = $pos + strlen($found);
 
 					if ($found && rtrim($found) != $delimiter) { // find matching quote or comment end
-						while (preg_match('(' . ($found == '/*' ? '\*/' : ($found == '[' ? ']' : (preg_match('~^-- |^#~', $found) ? "\n" : preg_quote($found) . "|\\\\."))) . '|$)s', $query, $match, PREG_OFFSET_CAPTURE, $offset)) { //! respect sql_mode NO_BACKSLASH_ESCAPES
+						$c_style = $pos > 0 && substr($query, $pos - 1, 1) == 'E';
+						$pattern = '(' . (
+							$found == '/*'
+								? '\*/'
+								: ($found == '['
+									? ']'
+									: (preg_match('~^-- |^#~', $found)
+										? "\n"
+										: preg_quote($found) . "|\\\\" . ($c_style ? "." : "[^']")))
+						) . '|$)s';
+						while (preg_match($pattern, $query, $match, PREG_OFFSET_CAPTURE, $offset)) { //! respect sql_mode NO_BACKSLASH_ESCAPES
 							$s = $match[0][0];
 							if (!$s && $fp && !feof($fp)) {
 								$query .= fread($fp, 1e5);
@@ -225,7 +235,7 @@ if (!isset($_GET["import"])) {
 	echo script(($_POST ? "" : "qs('textarea').focus();\n") . "qs('#form').onsubmit = partial(sqlSubmit, qs('#form'), '" . js_escape(remove_from_uri("sql|limit|error_stops|only_errors|history")) . "');");
 	echo "<p>$execute\n";
 	echo lang('Limit rows') . ": <input type='number' name='limit' class='size' value='" . h($_POST ? $_POST["limit"] : $_GET["limit"]) . "'>\n";
-	
+
 } else {
 	echo "<fieldset><legend>" . lang('File upload') . "</legend><div>";
 	$gz = (extension_loaded("zlib") ? "[.gz]" : "");
