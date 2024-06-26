@@ -8,6 +8,9 @@ function adminer_object() {
 		include_once $filename;
 	}
 	
+	// enable extra drivers just by including them
+	//~ include "../plugins/drivers/simpledb.php";
+	
 	$plugins = array(
 		// specify enabled plugins here
 		new AdminerDatabaseHide(array('information_schema')),

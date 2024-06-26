@@ -1,8 +1,7 @@
 <?php
-$drivers["mongo"] = "MongoDB";
+$drivers["mongo"] = "MongoDB (alpha)";
 
 if (isset($_GET["mongo"])) {
-	$possible_drivers = array("mongo", "mongodb");
 	define("DRIVER", "mongo");
 
 	if (class_exists('MongoDB')) {
@@ -10,7 +9,20 @@ if (isset($_GET["mongo"])) {
 			var $extension = "Mongo", $server_info = MongoClient::VERSION, $error, $last_id, $_link, $_db;
 
 			function connect($uri, $options) {
-				return @new MongoClient($uri, $options);
+				try {
+					$this->_link = new MongoClient($uri, $options);
+					if ($options["password"] != "") {
+						$options["password"] = "";
+						try {
+							new MongoClient($uri, $options);
+							$this->error = lang('Database does not support password.');
+						} catch (Exception $e) {
+							// this is what we want
+						}
+					}
+				} catch (Exception $e) {
+					$this->error = $e->getMessage();
+				}
 			}
 			
 			function query($query) {
@@ -30,7 +42,6 @@ if (isset($_GET["mongo"])) {
 			function quote($string) {
 				return $string;
 			}
-
 		}
 
 		class Min_Result {
@@ -44,10 +55,10 @@ if (isset($_GET["mongo"])) {
 							$this->_charset[$key] = 63;
 						}
 						$row[$key] =
-							(is_a($val, 'MongoId') ? 'ObjectId("' . strval($val) . '")' :
+							(is_a($val, 'MongoId') ? "ObjectId(\"$val\")" :
 							(is_a($val, 'MongoDate') ? gmdate("Y-m-d H:i:s", $val->sec) . " GMT" :
 							(is_a($val, 'MongoBinData') ? $val->bin : //! allow downloading
-							(is_a($val, 'MongoRegex') ? strval($val) :
+							(is_a($val, 'MongoRegex') ? "$val" :
 							(is_object($val) ? get_class($val) : // MongoMinKey, MongoMaxKey
 							$val
 						)))));
@@ -198,14 +209,36 @@ if (isset($_GET["mongo"])) {
 
 	} elseif (class_exists('MongoDB\Driver\Manager')) {
 		class Min_DB {
-			var $extension = "MongoDB", $server_info = MONGODB_VERSION, $error, $last_id;
+			var $extension = "MongoDB", $server_info = MONGODB_VERSION, $affected_rows, $error, $last_id;
 			/** @var MongoDB\Driver\Manager */
 			var $_link;
 			var $_db, $_db_name;
 
 			function connect($uri, $options) {
 				$class = 'MongoDB\Driver\Manager';
-				return new $class($uri, $options);
+				$this->_link = new $class($uri, $options);
+				$this->executeCommand('admin', array('ping' => 1));
+			}
+			
+			function executeCommand($db, $command) {
+				$class = 'MongoDB\Driver\Command';
+				try {
+					return $this->_link->executeCommand($db, new $class($command));
+				} catch (Exception $e) {
+					$this->error = $e->getMessage();
+					return array();
+				}
+			}
+			
+			function executeBulkWrite($namespace, $bulk, $counter) {
+				try {
+					$results = $this->_link->executeBulkWrite($namespace, $bulk);
+					$this->affected_rows = $results->$counter();
+					return true;
+				} catch (Exception $e) {
+					$this->error = $e->getMessage();
+					return false;
+				}
 			}
 
 			function query($query) {
@@ -220,7 +253,6 @@ if (isset($_GET["mongo"])) {
 			function quote($string) {
 				return $string;
 			}
-
 		}
 
 		class Min_Result {
@@ -234,13 +266,13 @@ if (isset($_GET["mongo"])) {
 							$this->_charset[$key] = 63;
 						}
 						$row[$key] =
-							(is_a($val, 'MongoDB\BSON\ObjectID') ? 'MongoDB\BSON\ObjectID("' . strval($val) . '")' :
-								(is_a($val, 'MongoDB\BSON\UTCDatetime') ? $val->toDateTime()->format('Y-m-d H:i:s') :
-									(is_a($val, 'MongoDB\BSON\Binary') ? $val->bin : //! allow downloading
-										(is_a($val, 'MongoDB\BSON\Regex') ? strval($val) :
-											(is_object($val) ? json_encode($val, 256) : // 256 = JSON_UNESCAPED_UNICODE
-												$val // MongoMinKey, MongoMaxKey
-											)))));
+							(is_a($val, 'MongoDB\BSON\ObjectID') ? 'MongoDB\BSON\ObjectID("' . "$val\")" :
+							(is_a($val, 'MongoDB\BSON\UTCDatetime') ? $val->toDateTime()->format('Y-m-d H:i:s') :
+							(is_a($val, 'MongoDB\BSON\Binary') ? $val->getData() : //! allow downloading
+							(is_a($val, 'MongoDB\BSON\Regex') ? "$val" :
+							(is_object($val) || is_array($val) ? json_encode($val, 256) : // 256 = JSON_UNESCAPED_UNICODE
+							$val // MongoMinKey, MongoMaxKey
+						)))));
 					}
 					$this->_rows[] = $row;
 					foreach ($row as $key => $val) {
@@ -249,7 +281,7 @@ if (isset($_GET["mongo"])) {
 						}
 					}
 				}
-				$this->num_rows = $result->count;
+				$this->num_rows = count($this->_rows);
 			}
 
 			function fetch_assoc() {
@@ -309,9 +341,12 @@ if (isset($_GET["mongo"])) {
 				$limit = min(200, max(1, (int) $limit));
 				$skip = $page * $limit;
 				$class = 'MongoDB\Driver\Query';
-				$query = new $class($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort));
-				$results = $connection->_link->executeQuery("$connection->_db_name.$table", $query);
-				return new Min_Result($results);
+				try {
+					return new Min_Result($connection->_link->executeQuery("$connection->_db_name.$table", new $class($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort))));
+				} catch (Exception $e) {
+					$connection->error = $e->getMessage();
+					return false;
+				}
 			}
 
 			function update($table, $set, $queryWhere, $limit = 0, $separator = "\n") {
@@ -335,9 +370,7 @@ if (isset($_GET["mongo"])) {
 					$update['$unset'] = $removeFields;
 				}
 				$bulk->update($where, $update, array('upsert' => false));
-				$results = $connection->_link->executeBulkWrite("$db.$table", $bulk);
-				$connection->affected_rows = $results->getModifiedCount();
-				return true;
+				return $connection->executeBulkWrite("$db.$table", $bulk, 'getModifiedCount');
 			}
 
 			function delete($table, $queryWhere, $limit = 0) {
@@ -347,9 +380,7 @@ if (isset($_GET["mongo"])) {
 				$class = 'MongoDB\Driver\BulkWrite';
 				$bulk = new $class(array());
 				$bulk->delete($where, array('limit' => $limit));
-				$results = $connection->_link->executeBulkWrite("$db.$table", $bulk);
-				$connection->affected_rows = $results->getDeletedCount();
-				return true;
+				return $connection->executeBulkWrite("$db.$table", $bulk, 'getDeletedCount');
 			}
 
 			function insert($table, $set) {
@@ -357,24 +388,18 @@ if (isset($_GET["mongo"])) {
 				$db = $connection->_db_name;
 				$class = 'MongoDB\Driver\BulkWrite';
 				$bulk = new $class(array());
-				if (isset($set['_id']) && empty($set['_id'])) {
+				if ($set['_id'] == '') {
 					unset($set['_id']);
 				}
 				$bulk->insert($set);
-				$results = $connection->_link->executeBulkWrite("$db.$table", $bulk);
-				$connection->affected_rows = $results->getInsertedCount();
-				return true;
+				return $connection->executeBulkWrite("$db.$table", $bulk, 'getInsertedCount');
 			}
 		}
 
 		function get_databases($flush) {
-			/** @var Min_DB */
 			global $connection;
 			$return = array();
-			$class = 'MongoDB\Driver\Command';
-			$command = new $class(array('listDatabases' => 1));
-			$results = $connection->_link->executeCommand('admin', $command);
-			foreach ($results as $dbs) {
+			foreach ($connection->executeCommand('admin', array('listDatabases' => 1)) as $dbs) {
 				foreach ($dbs->databases as $db) {
 					$return[] = $db->name;
 				}
@@ -389,11 +414,8 @@ if (isset($_GET["mongo"])) {
 
 		function tables_list() {
 			global $connection;
-			$class = 'MongoDB\Driver\Command';
-			$command = new $class(array('listCollections' => 1));
-			$results = $connection->_link->executeCommand($connection->_db_name, $command);
 			$collections = array();
-			foreach ($results as $result) {
+			foreach ($connection->executeCommand($connection->_db_name, array('listCollections' => 1)) as $result) {
 				$collections[$result->name] = 'table';
 			}
 			return $collections;
@@ -406,10 +428,7 @@ if (isset($_GET["mongo"])) {
 		function indexes($table, $connection2 = null) {
 			global $connection;
 			$return = array();
-			$class = 'MongoDB\Driver\Command';
-			$command = new $class(array('listIndexes' => $table));
-			$results = $connection->_link->executeCommand($connection->_db_name, $command);
-			foreach ($results as $index) {
+			foreach ($connection->executeCommand($connection->_db_name, array('listIndexes' => $table)) as $index) {
 				$descs = array();
 				$columns = array();
 				foreach (get_object_vars($index->key) as $column => $type) {
@@ -427,24 +446,26 @@ if (isset($_GET["mongo"])) {
 		}
 
 		function fields($table) {
+			global $driver;
 			$fields = fields_from_edit();
-			if (!count($fields)) {
-				global $driver;
+			if (!$fields) {
 				$result = $driver->select($table, array("*"), null, null, array(), 10);
-				while ($row = $result->fetch_assoc()) {
-					foreach ($row as $key => $val) {
-						$row[$key] = null;
-						$fields[$key] = array(
-							"field" => $key,
-							"type" => "string",
-							"null" => ($key != $driver->primary),
-							"auto_increment" => ($key == $driver->primary),
-							"privileges" => array(
-								"insert" => 1,
-								"select" => 1,
-								"update" => 1,
-							),
-						);
+				if ($result) {
+					while ($row = $result->fetch_assoc()) {
+						foreach ($row as $key => $val) {
+							$row[$key] = null;
+							$fields[$key] = array(
+								"field" => $key,
+								"type" => "string",
+								"null" => ($key != $driver->primary),
+								"auto_increment" => ($key == $driver->primary),
+								"privileges" => array(
+									"insert" => 1,
+									"select" => 1,
+									"update" => 1,
+								),
+							);
+						}
 					}
 				}
 			}
@@ -454,16 +475,12 @@ if (isset($_GET["mongo"])) {
 		function found_rows($table_status, $where) {
 			global $connection;
 			$where = where_to_query($where);
-			$class = 'MongoDB\Driver\Command';
-			$command = new $class(array('count' => $table_status['Name'], 'query' => $where));
-			$results = $connection->_link->executeCommand($connection->_db_name, $command);
-			$toArray = $results->toArray();
+			$toArray = $connection->executeCommand($connection->_db_name, array('count' => $table_status['Name'], 'query' => $where))->toArray();
 			return $toArray[0]->n;
 		}
 
 		function sql_query_where_parser($queryWhere) {
-			$queryWhere = trim(preg_replace('/WHERE[\s]?[(]?\(?/', '', $queryWhere));
-			$queryWhere = preg_replace('/\)\)\)$/', ')', $queryWhere);
+			$queryWhere = preg_replace('~^\sWHERE \(?\(?(.+?)\)?\)?$~', '\1', $queryWhere);
 			$wheres = explode(' AND ', $queryWhere);
 			$wheresOr = explode(') OR (', $queryWhere);
 			$where = array();
@@ -485,10 +502,8 @@ if (isset($_GET["mongo"])) {
 				if (is_array($where)) {
 					foreach ($where as $expression) {
 						list($col, $op, $val) = explode(" ", $expression, 3);
-						if ($col == "_id") {
-							$val = str_replace('MongoDB\BSON\ObjectID("', "", $val);
-							$val = str_replace('")', "", $val);
-							$class = 'MongoDB\BSON\ObjectID';
+						if ($col == "_id" && preg_match('~^(MongoDB\\\\BSON\\\\ObjectID)\("(.+)"\)$~', $val, $match)) {
+							list(, $class, $val) = $match;
 							$val = new $class($val);
 						}
 						if (!in_array($op, $adminer->operators)) {
@@ -560,6 +575,7 @@ if (isset($_GET["mongo"])) {
 			"(date)>=",
 			"(date)<=",
 		);
+	
 	}
 
 	function table($idf) {
@@ -621,21 +637,11 @@ if (isset($_GET["mongo"])) {
 		if (($auth_source = getenv("MONGO_AUTH_SOURCE"))) {
 			$options["authSource"] = $auth_source;
 		}
-		try {
-			$connection->_link = $connection->connect("mongodb://$server", $options);
-			if ($password != "") {
-				$options["password"] = "";
-				try {
-					$connection->connect("mongodb://$server", $options);
-					return lang('Database does not support password.');
-				} catch (Exception $ex) {
-					// this is what we want
-				}
-			}
-			return $connection;
-		} catch (Exception $ex) {
-			return $ex->getMessage();
+		$connection->connect("mongodb://$server", $options);
+		if ($connection->error) {
+			return $connection->error;
 		}
+		return $connection;
 	}
 
 	function alter_indexes($table, $alter) {
@@ -725,8 +731,15 @@ if (isset($_GET["mongo"])) {
 		return true;
 	}
 
-	$jush = "mongo";
-	$functions = array();
-	$grouping = array();
-	$edit_functions = array(array("json"));
+	function driver_config() {
+		global $operators;
+		return array(
+			'possible_drivers' => array("mongo", "mongodb"),
+			'jush' => "mongo",
+			'operators' => $operators,
+			'functions' => array(),
+			'grouping' => array(),
+			'edit_functions' => array(array("json")),
+		);
+	}
 }

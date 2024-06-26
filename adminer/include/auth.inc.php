@@ -41,7 +41,7 @@ function add_invalid_login() {
 function check_invalid_login() {
 	global $adminer;
 	$invalids = unserialize(@file_get_contents(get_temp_dir() . "/adminer.invalid")); // @ - may not exist
-	$invalid = $invalids[$adminer->bruteForceKey()];
+	$invalid = ($invalids ? $invalids[$adminer->bruteForceKey()] : array());
 	$next_attempt = ($invalid[1] > 29 ? $invalid[0] - time() : 0); // allow 30 invalid attempts
 	if ($next_attempt > 0) { //! do the same with permanent login
 		auth_error(lang('Too many unsuccessful logins, try again in %d minute(s).', ceil($next_attempt / 60)));
@@ -73,18 +73,12 @@ if ($auth) {
 		redirect(auth_url($vendor, $server, $username, $db));
 	}
 	
-} elseif ($_POST["logout"]) {
-	if ($has_token && !verify_token()) {
-		page_header(lang('Logout'), lang('Invalid CSRF token. Send the form again.'));
-		page_footer("db");
-		exit;
-	} else {
-		foreach (array("pwds", "db", "dbs", "queries") as $key) {
-			set_session($key, null);
-		}
-		unset_permanent();
-		redirect(substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1), lang('Logout successful.') . ' ' . lang('Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.'));
+} elseif ($_POST["logout"] && (!$has_token || verify_token())) {
+	foreach (array("pwds", "db", "dbs", "queries") as $key) {
+		set_session($key, null);
 	}
+	unset_permanent();
+	redirect(substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1), lang('Logout successful.') . ' ' . lang('Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.'));
 	
 } elseif ($permanent && !$_SESSION["pwds"]) {
 	session_regenerate_id();
@@ -125,7 +119,7 @@ function auth_error($error) {
 			$password = get_password();
 			if ($password !== null) {
 				if ($password === false) {
-					$error .= '<br>' . lang('Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.', target_blank(), '<code>permanentLogin()</code>');
+					$error .= ($error ? '<br>' : '') . lang('Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.', target_blank(), '<code>permanentLogin()</code>');
 				}
 				set_password(DRIVER, SERVER, $_GET["username"], null);
 			}
@@ -162,7 +156,7 @@ stop_session(true);
 
 if (isset($_GET["username"]) && is_string(get_password())) {
 	list($host, $port) = explode(":", SERVER, 2);
-	if (is_numeric($port) && $port < 1024) {
+	if (preg_match('~^\s*([-+]?\d+)~', $port, $match) && ($match[1] < 1024 || $match[1] > 65535)) { // is_numeric('80#') would still connect to port 80
 		auth_error(lang('Connecting to privileged ports is not allowed.'));
 	}
 	check_invalid_login();
@@ -174,6 +168,12 @@ $login = null;
 if (!is_object($connection) || ($login = $adminer->login($_GET["username"], get_password())) !== true) {
 	$error = (is_string($connection) ? h($connection) : (is_string($login) ? $login : lang('Invalid credentials.')));
 	auth_error($error . (preg_match('~^ | $~', get_password()) ? '<br>' . lang('There is a space in the input password which might be the cause.') : ''));
+}
+
+if ($_POST["logout"] && $has_token && !verify_token()) {
+	page_header(lang('Logout'), lang('Invalid CSRF token. Send the form again.'));
+	page_footer("db");
+	exit;
 }
 
 if ($auth && $_POST["token"]) {

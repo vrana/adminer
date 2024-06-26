@@ -333,4 +333,18 @@ $translations = array(
 	'Type has been dropped.' => 'Tyyppi poistettiin.',
 	'Type has been created.' => 'Tyyppi luotiin.',
 	'Alter type' => 'Muuta tyyppiä',
+
+	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Kiitos, kun käytät Admineriä, voit <a href="https://www.adminer.org/en/donation/">tehdä lahjoituksen tästä</a>.',
+	'Drop %s?' => 'Poistetaanko %s?',
+	'overwrite' => 'kirjoittaen päälle',
+	'DB' => 'TK',
+	'ATTACH queries are not supported.' => 'ATTACH-komennolla tehtyjä kyselyjä ei tueta.',
+	'Warnings' => 'Varoitukset',
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer ei tue pääsyä tietokantaan ilman salasanaa, katso tarkemmin <a href="https://www.adminer.org/en/password/"%s>täältä</a>.',
+	'The action will be performed after successful login with the same credentials.' => 'Toiminto suoritetaan sen jälkeen, kun on onnistuttu kirjautumaan samoilla käyttäjätunnuksilla uudestaan.',
+	'Connecting to privileged ports is not allowed.' => 'Yhteydet etuoikeutettuihin portteihin eivät ole sallittuja.',
+	'There is a space in the input password which might be the cause.' => 'Syynä voi olla syötetyssä salasanassa oleva välilyönti.',
+	'Unknown error.' => 'Tuntematon virhe.',
+	'Database does not support password.' => 'Tietokanta ei tue salasanaa.',
+	'Disable %s or enable %s or %s extensions.' => 'Poista käytöstä %s tai ota käyttöön laajennus %s tai %s.',
 );

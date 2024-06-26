@@ -1,0 +1,729 @@
+/* 
+ * Theme by Douglas Damasio [http://github.com/douglasdamasio]
+ * Based on Pepa Linha
+ * Color syntax inspired by Dracula Theme [https://draculatheme.com/]
+ * @version 1.0 (June 2020)
+ */
+ @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600&family=Ubuntu:wght@500;700&display=swap');
+
+ :root {
+  --color-darkBackground: #282a36;
+  --color-darkCurrentLine: #44475a;
+  --color-darkForeground: #f8f8f2;
+  --color-darkComment: #6272a4;
+  --color-darkCyan: #8be9fd;
+  --color-darkGreen: #50fa7b;
+  --color-darkOrange: #ffb86c;
+  --color-darkPink: #ff79c6;
+  --color-darkPurple: #bd93f9;
+  --color-darkRed: #ff5555;
+  --color-darkYellow: #f1fa8c;
+
+  --color-darkTitleSite: #bcc2cd;
+  --color-darkDraculaSite: #383a59;
+  --color-darkDraculaVSCode: #22222c;
+}
+ html,
+ body {
+   height: 100%;
+   background: var(--color-darkBackground);
+ }
+ 
+ body {
+  font-family: 'Source Sans Pro', sans-serif;
+ }
+
+ div {
+   color: var(--color-darkForeground);
+ }
+ 
+ h1 {
+   margin: 0;
+   padding: 0;
+   background: none;
+   border: 0;
+ }
+ 
+ h2 {
+   margin: 0;
+   padding: 0;
+   background: none;
+   border: 0;
+   font-family: 'Ubuntu', sans-serif;
+   font-size: 32px;
+   font-weight: 700;
+   color: var(--color-darkPink);
+   border-bottom: 1px solid var(--color-darkComment);
+   padding-bottom: 6px;
+   margin-bottom: 40px;
+ }
+ 
+ .rtl h2 {
+   margin: 0;
+   margin-bottom: 40px;
+ }
+ 
+ h3 {
+   font-size: 22px;
+   margin: 0 0 10px;
+   border-bottom: 1px solid var(--color-darkComment);
+   padding: 0;
+   padding-bottom: 6px;
+   color: var(--color-darkGreen);
+
+ }
+ 
+ p {
+   margin: 0;
+   margin-bottom: 15px;
+   align-items: center;
+   color: var(--color-darkForeground);
+ }
+ 
+ a {
+   color:var(--color-darkPink);
+   text-decoration:none;
+ }
+ 
+ a:visited {
+   color: var(--color-darkPurple);
+ }
+ 
+ a:link:hover,
+ a:visited:hover {
+   color: var(--color-darkPink);
+   text-decoration:underline; 
+ }
+ 
+ 
+ a[href*=charsets] {
+   display: none;
+ }
+ 
+ table {
+   border: 0;
+   margin: 0;
+   margin-top: 15px;
+ }
+ 
+ th, td {
+   border: 0;
+   padding: 6px;
+   color: var(--color-darkOrange);
+ }
+ 
+ th {
+   background: none;
+   color: var(--color-darkCyan);
+   font-weight: normal;
+ }
+ 
+ tbody tr:hover td,
+ tbody tr:hover th {
+   background: var(--color-darkCurrentLine);
+ }
+ 
+ table:not(.checkable) th {
+   min-width: 120px;
+ }
+ 
+ thead td,
+ thead th {
+   background: var(--color-darkComment);
+ }
+ 
+ thead td,
+ thead td a,
+ thead td a:link:hover,
+ thead td a:visited,
+ thead td a:visited:hover,
+ thead th,
+ thead th a,
+ thead th a:link:hover,
+ thead th a:visited,
+ thead th a:visited:hover {
+   color: var(--color-darkForeground);
+ }
+ 
+ table.checkable,
+ p.links + table,
+ pre + table,
+ #edit-fields,
+ p + table,
+ h3 + table {
+   border: 1px solid var(--color-darkCurrentLine);
+   margin-bottom: 15px;
+ }
+ 
+ table.checkable tbody tr:hover td,
+ table.checkable tbody tr:hover th {
+   background: var(--color-darkCurrentLine);
+ }
+ 
+ .js .checkable .checked td,
+ .js .checkable .checked th {
+   background: var(--color-darkDraculaSite);
+ }
+ 
+ .js .checkable thead .checked td,
+ .js .checkable thead .checked th {
+   background: var(--color-darkPurple);
+ }
+ 
+ .odd th,
+ .odd td {
+   background: var(--color-darkDraculaVSCode);
+ }
+ 
+ fieldset {
+   display: inline-block;
+   padding: 15px;
+   padding-top: 5px;
+   margin: 0 0 15px;
+   border: 0;
+   background: var(--color-darkBackground);
+ }
+ 
+ fieldset select {
+   margin-right: 5px;
+ }
+ 
+ fieldset input[type=button],
+ fieldset input[type=submit],
+ fieldset p {
+   margin-bottom: 0;
+ }
+ 
+ fieldset div p {
+   margin-top: 10px;
+ }
+ 
+ legend {
+   display: inline-block;
+   padding: 6px 15px;
+   margin: 0 0 0 -15px;
+   background: var(--color-darkDraculaSite);
+   font-family: 'Source Sans Pro', sans-serif;
+   color: var(--color-darkOrange);
+ }
+ 
+ legend a,
+ legend a:link:hover {
+   color: var(--color-darkOrange);
+   text-decoration: underline;
+ }
+ 
+ code {
+   background: none;
+ }
+ 
+ p code,
+ pre code,
+ pre[contenteditable=true] {
+   padding: 10px 15px;
+   display: block;
+   font-size: 17px;
+   margin-bottom: 15px;
+ }
+ 
+ p code + a,
+ p code + a:link:hover,
+ p code + a:visited:hover {
+   margin-left: 15px;
+   position: relative;
+   top: -20px;
+   color: var(--color-darkOrange);
+   font-size: 12px;
+   text-decoration: underline;
+   text-transform: lowercase;
+ }
+ 
+ #content {
+   margin: 0;
+   margin-left: 400px;
+   margin-right: 54px;
+   padding: 0;
+   padding-top: 50px;
+ }
+ 
+ #content > p {
+   margin-bottom: 15px;
+   color: var(--color-darkForeground);
+ }
+ 
+ .rtl #content {
+   margin: 0;
+   margin-left: 54px;
+   margin-right: 400px;
+   padding: 0;
+   padding-top: 50px;
+ }
+ 
+ #menu {
+   width: 347px;
+   border-right: 1px solid var(--color-darkBackground);
+   box-shadow: inset -1px 0 0 #000000b4;
+   margin: 0;
+   padding: 0;
+   top: 0;
+   background: var(--color-darkDraculaVSCode);
+   bottom: 0;
+   position: fixed;
+   padding: 0 15px;
+   box-sizing: border-box;
+ }
+ 
+ #menu h1 {
+   background: none left top no-repeat;
+   /* background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAD0AAAAyCAIAAABgVkRrAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYxIDY0LjE0MDk0OSwgMjAxMC8xMi8wNy0xMDo1NzowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNS4xIFdpbmRvd3MiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NTA0RDI5NkM5QkRGMTFFMzg4ODNEQjEzNjY5NzJEMEEiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NTA0RDI5NkQ5QkRGMTFFMzg4ODNEQjEzNjY5NzJEMEEiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo1MDREMjk2QTlCREYxMUUzODg4M0RCMTM2Njk3MkQwQSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo1MDREMjk2QjlCREYxMUUzODg4M0RCMTM2Njk3MkQwQSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PnG4emkAAASXSURBVHja7Fk9aNtAFL6EDKKUoqGDySRKB1FC8dDBdCgeOmQoIUMG0yGE0EFT8dDBUwidPJQQQgcNpYROGjKI0sFDB9GhaMhgSgcPpWgqHjqYYsINJfQ7PfV0tmX9JI4Sgx+HI8f26bt3733fe6elIf/LbqwdHbJWS1wYBrMstrXJVg36ZJnNhQWBWMB9k+215gq3tDeHBH3pRseJtC8ee2ezEzd62+ncDH/DhS+ttC88qbMPDntaj952uyvXD3q7ETvyyE77pq5HFz9614r7V8C2GnBezBgp9tGNl3ffzIjvwZ9B//dA7Mz3YPLTyl29UhE+MI0KW9YKh2yjwQZichEAjsNu6WlUqNqkvwHUO+0BJeD2gn4hJFXTwAIw6jUzYxlwHkCTvWqy1+0Ct7FtsPh/3Ofc9brOJ5+8ezHr9gKMcGpWf2SK8bhKk48sA1kIOiODmzc2c8U0DLrzwhI5ypjA3fsZtNrOgPP4y5pmGJXamqHd1kQMTIkENYpwEfQHEW7GsGkYZse393ewb+Y9IwE0PJcOejQ2pFgK3Li3BI14hZM269XKaiXPVPodHUOs6l48o/+t5wO038OcQGztHzd31uPfUEgQdCQi3JkfumLLHa9LoK2tunPQtJ6v5wQ9zWoPzebupms34QKxmZNJAugIDzJE+V4rbTrDSMYtr3AD+H5WFIfZ0lIFPu50otiF7zfW2dlgquKccTFWRxYQ8wlFJOVTdc2gAChq/V99vxdgD7O5CIBO/Yi/P3vsUY2dOOxBdSrzIBm2dxJwq+hlaiId9dua5OlEv/IhH0vKvAYXfvUjvUTFB2STeinJu91Oxo3Eh58onwRXcB7zWkGj/Maa9203+9soPIyWEKBEkQdc8veo+sS4wQkYzV1Bi+A1Ee5DnhO33BxsSw1/wszGPHkXmqI7yIQzPvnvhPqEFjAWtSq7j7n2YplwSctVV8F/FXazbN76nQXu68btfe3Odmqwahl5Ca6tel0UVdnVc6pRBX/JkrgYn0RCY0cdAMhYvGYxHbEklbJ++FoqD8LTUiwTlZLEha55WKOmSybWTCXD1eJG8dnc4XAYqmdgmoRFyp/ZqqHbgMiD8qGXZeAOs1RD9YyhBgBVTgL3cMTHwKd2xyUL50qmTI5p/oK/F7jnEjeycLZTFz02SrKlaSPGbe0fOx+9mbTGcMHhe/fwuFMGn4Dy7BMPA3oBGkZrbIDgcp9JgK37YYtZjmSuqApH9yPRcTp+TM939THOpkaYroMguRuSE14tbuegif11vS58poYm7i1vn6fdxF6hMoNk4leIvTJ0B1FhPQ/PxM45eZ2HGjkY8jHXqptghGJJqqmKVHn1oCr4k93xgr8XuOcZ9zmf7dQym68Et6QFcFaBk7EsQ5fdfuteHW7xPM3asyVh05EkxFJITMHuGDUCukxwvOz3YI31mtWoX7TRXkrDjQhBLeFOHBtQQ6n/f8TDlAd/6mNBP7xO7Ecbz2qNjfrl6qoU3Mr5Qa4j9yyLHqZd7jwjL241QQFdPiJTdT7RsBuapslzi5mqVSHcKXYetcZlSelU3P8EGADW25uhkIE0mQAAAABJRU5ErkJggg==); */
+   background-image: url();
+   line-height: 50px;
+   padding-left: 50px;
+   padding-top: 9px;
+   /* text-transform: lowercase; */
+   margin: 25px 0 10px 16px;
+ }
+ 
+ 
+ #menu h1 a {
+   font-style: normal;
+ }
+ 
+ #menu h1 .version {
+   color: var(--color-darkPurple);
+ }
+ 
+ #menu a {
+   color: var(--color-darkForeground);
+ }
+ 
+ #menu p, #tables {
+   border: 0;
+   padding: 0;
+ }
+ 
+ #menu #dbs {
+   background: var(--color-darkDraculaVSCode);
+   padding: 0 15px 15px;
+   border: 1px solid var(--color-darkForeground);
+   border-bottom: 0;
+   box-sizing: border-box;
+   color: var(--color-darkCyan);
+ }
+ 
+ #menu #dbs select {
+   outline: 0;
+   border-color: var(--color-darkComment);
+   width: 100%;
+ }
+ 
+ #menu p.links {
+   margin: 0 0 15px;
+   border: 1px solid var(--color-darkForeground);
+   border-top: 0;
+   text-align: center;
+   display: table;
+   width: 100%;
+   box-sizing: border-box;
+ }
+ 
+ #menu p.links a {
+   padding: 8px;
+   margin: 0;
+   display: table-cell;
+   font-size: 12px;
+ }
+ 
+ #menu p.links a:hover {
+   color: var(--color-darkPink);
+ }
+ 
+ #menu p.links a.active {
+   font-weight: normal;
+   background: var(--color-darkCurrentLine);
+   color: var(--color-darkYellow);
+ }
+ 
+ #content p.links {
+   margin: -10px 0 15px;
+ }
+ 
+ #content p.links a {
+   padding: 8px;
+   margin: 0;
+   display: table-cell;
+   border: 1px solid var(--color-darkBackground);
+ }
+ 
+ #content p.links a,
+ #content p.links a:visited,
+ #content p.links a:hover {
+   color: var(--color-darkCyan);
+ }
+ 
+ #content p.links a.active {
+   font-weight: normal;
+   border: 1px solid var(--color-darkTitleSite);
+   background: var(--color-darkCurrentLine);
+ }
+ 
+ #tables {
+   max-height: 100%;
+   margin: 32px -15px !important;
+   position: absolute;
+   left: 15px;
+   right: 15px;
+   bottom: 0;
+   top: 220px;
+   overflow: hidden !important;
+   overflow-y: auto !important;
+ }
+ 
+ .rtl #tables {
+   overflow: hidden !important;
+   overflow-y: auto !important;
+ }
+ 
+ #tables a {
+   float: right;
+   padding: 6px 15px;
+ }
+ 
+ .rtl #tables a {
+   float: none;
+ }
+ 
+ #tables .structure, #tables .view {
+   float: none;
+   display: block;
+ }
+ 
+ .rtl #tables a:first-child,
+ .rtl #tables br + a {
+   float: left;
+   display: block;
+   margin-left: 15px;
+ }
+ 
+ #tables a:hover,
+ #tables a:hover + a,
+ #tables a.active,
+ #tables a.active + a {
+   background: var(--color-darkBackground);
+   color: var(--color-darkPink);
+ }
+
+ #tables br {
+   display: none;
+ }
+ 
+ .js .column {
+   background: var(--color-darkDraculaVSCode);
+ }
+ 
+ .js .checked .column {
+   background: var(--color-darkDraculaVSCode);
+ }
+ 
+ .pages {
+   left: 400px;
+   background: var(--color-darkCyan);
+   color: var(--color-darkBackground);
+   font-weight: bold;
+   border: 0;
+   display: inline-block;
+   position: static;
+ }
+ 
+ .pages a,
+ .pages a:link,
+ .pages a:link:hover,
+ .pages a:visited,
+ .pages a:visited:hover {
+   color: var(--color-darkBackground);
+   font-weight: normal;
+ }
+ 
+ #breadcrumb {
+   margin: 0;
+   left: 400px;
+   background: none;
+   padding: 0;
+   padding-top: 25px;
+   font-size: 12px;
+ }
+ 
+ #breadcrumb a {
+   color: var(--color-darkForeground);
+   text-decoration: underline;
+ }
+ 
+ #breadcrumb,
+ #breadcrumb a:hover {
+   color: var(--color-darkTitleSite);
+ }
+ 
+ .rtl #breadcrumb {
+   margin: 0;
+   padding: 0;
+   padding-top: 25px;
+   right: 400px;
+ }
+ 
+ .logout,
+ .rtl .logout {
+   top: 30px;
+   right: 54px;
+   margin: 0;
+ }
+ 
+ .rtl .logout {
+   right: auto;
+   left: 54px;
+ }
+ 
+ input:not([type]),
+ input[type="color"],
+ input[type="email"],
+ input[type="number"],
+ input[type="password"],
+ input[type="tel"],
+ input[type="url"],
+ input[type="text"],
+ input[type="search"] {
+   border: 1px solid var(--color-darkCurrentLine);
+   background-color: var(--color-darkBackground);
+   padding: 6px;
+   margin: 0;
+   box-sizing: border-box;
+   color: var(--color-darkForeground);
+ }
+ 
+ table:not(#table) input:not([type]),
+ table:not(#table) input[type="color"],
+ table:not(#table) input[type="email"],
+ table:not(#table) input[type="number"],
+ table:not(#table) input[type="password"],
+ table:not(#table) input[type="tel"],
+ table:not(#table) input[type="url"],
+ table:not(#table) input[type="text"],
+ table:not(#table) input[type="search"] {
+   min-width: 280px;
+ }
+ 
+ input[type=submit],
+ input[type=button] {
+   border: 0;
+   padding: 7px 12px;
+   cursor: pointer;
+   outline: 0;
+   box-shadow: none;
+   background: var(--color-darkGreen);
+   color: var(--color-darkBackground);
+   font-weight: bold;
+   margin-bottom: 5px;
+   transition: background .4s ease;
+   border-radius: 5px;
+   margin-top: 20px;
+ }
+ 
+ input[type=submit][disabled],
+ input[type=button][disabled] {
+   background: var(--color-darkTitleSite) !important;
+   color: var(--color-darkBackground);
+   cursor: not-allowed;
+ }
+ 
+ input[type=submit]:hover,
+ input[type=button]:hover,
+ input[type=submit]:focus,
+ input[type=button]:focus {
+   background: var(--color-darkGreen);
+   opacity: 0.8;
+ }
+ 
+ .logout input[type=submit] {
+   background: var(--color-darkRed);
+   color: var(--color-darkForeground);
+ }
+ 
+ .logout input[type=submit]:hover {
+   background: var(--color-darkRed);
+   opacity: 0.8;
+ }
+ 
+ input.default,
+ input.default {
+   box-shadow: none;
+   background: var(--color-darkGreen);
+   color: var(--color-darkDraculaVSCode);
+   font-weight: bold;
+ }
+ 
+ select {
+   box-sizing: border-box;
+   margin: 0;
+   padding: 6px 0;
+   border: 1px solid var(--color-darkCurrentLine);
+   background-color: var(--color-darkBackground);
+   color: var(--color-darkForeground);
+ }
+ 
+ label {
+   cursor: pointer;
+   margin: 18px;
+   color: var(--color-darkOrange);
+ }
+ 
+ .error,
+ .message {
+   margin: 0;
+   margin-bottom: 15px;
+   background: var(--color-darkCurrentLine);
+   color: var(--color-darkRed);
+ }
+ 
+ #logins a,
+ #tables a,
+ #tables span {
+   background: none;
+ }
+ 
+ #form > p {
+   margin-bottom: 15px;
+   color: var(--color-darkForeground);
+ }
+ 
+
+ #schema .table {
+   padding: 6px;
+ }
+ 
+ #schema .table a {
+   display: block;
+   margin: -6px;
+   margin-bottom: 6px;
+   padding: 6px;
+   color: var(--color-darkBackground);
+   background: var(--color-darkPurple);
+ }
+ 
+ #schema .table br {
+   display: none;
+ }
+ 
+ #schema .table span {
+   display: block;
+   margin-bottom: 1px solid var(--color-darkDraculaVSCode);
+ }
+ 
+ #lang {
+   position: fixed;
+   top: 55px;
+   right: 100%;
+   z-index: 10;
+   margin-right: -340px;
+   line-height: normal;
+   padding: 0;
+   left: auto;
+   font-size: 0;
+ }
+ 
+ #lang select {
+   font-size: 12px;
+   padding: 0;
+   text-align: right;
+   border: 0;
+   background: none;
+   -webkit-appearance: none;
+   -moz-appearance: none;
+   appearance: none;
+   cursor: pointer;
+   outline: 0;
+ }
+ 
+ #lang select option {
+   text-align: right;
+ }
+ 
+ .rtl #lang {
+   margin-right: 0;
+   left: 100%;
+   margin-left: -261px;
+   right: auto;
+ }
+ 
+ .jush {
+   color: var(--color-darkForeground);
+ }
+ 
+ .jush a {
+   color: var(--color-darkPurple);
+ }
+ 
+ .jush-sql a,
+ .jush-sql_code a,
+ .jush-sqlite a,
+ .jush-pgsql a,
+ .jush-mssql a,
+ .jush-oracle a,
+ .jush-simpledb a {
+   font-weight: normal;
+ }
+ 
+ .jush-bac,
+ .jush-php_bac,
+ .jush-bra,
+ .jush-mssql_bra,
+ .jush-sqlite_quo {
+   color: var(--color-darkYellow);
+ }
+ 
+ .jush-php_quo,
+ .jush-quo,
+ .jush-quo_one,
+ .jush-php_eot,
+ .jush-apo,
+ .jush-sql_apo,
+ .jush-sqlite_apo,
+ .jush-sql_quo,
+ .jush-sql_eot {
+   color: var(--color-darkOrange);
+ }
+ 
+ .jush-num,
+ .jush-clr {
+   color: var(--color-darkPurple);
+ }
+ 
+ @media print {
+   .logout {
+     display: none;
+   }
+   
+   #breadcrumb {
+     position: static;
+   }
+   
+   #content {
+     margin: 0;
+   }
+ }
+
+ .footer {
+  position: sticky;
+  bottom: 0;
+  margin-right: -20px;
+  border-top: 20px solid var(--color-darkBackground);
+  border-image: var(--color-darkBackground) 100% 0;
+  border-image-source: var(--color-darkBackground);
+  border-image-slice: 100% 0;
+  border-image-width: 1;
+  border-image-outset: 0;
+  border-image-repeat: stretch;
+}
+
+ .footer > div {
+  background: var(--color-darkBackground);
+  padding: 0 0 .5em;
+}

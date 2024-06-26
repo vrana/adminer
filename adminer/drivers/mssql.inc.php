@@ -8,7 +8,6 @@
 $drivers["mssql"] = "MS SQL (beta)";
 
 if (isset($_GET["mssql"])) {
-	$possible_drivers = array("SQLSRV", "MSSQL", "PDO_DBLIB");
 	define("DRIVER", "mssql");
 	if (extension_loaded("sqlsrv")) {
 		class Min_DB {
@@ -368,7 +367,7 @@ if (isset($_GET["mssql"])) {
 	}
 
 	function fields($table) {
-		$comments = get_key_vals("SELECT objname, cast(value as varchar) FROM fn_listextendedproperty('MS_DESCRIPTION', 'schema', " . q(get_schema()) . ", 'table', " . q($table) . ", 'column', NULL)");
+		$comments = get_key_vals("SELECT objname, cast(value as varchar(max)) FROM fn_listextendedproperty('MS_DESCRIPTION', 'schema', " . q(get_schema()) . ", 'table', " . q($table) . ", 'column', NULL)");
 		$return = array();
 		foreach (get_rows("SELECT c.max_length, c.precision, c.scale, c.name, c.is_nullable, c.is_identity, c.collation_name, t.name type, CAST(d.definition as text) [default]
 FROM sys.all_columns c
@@ -495,8 +494,8 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 		}
 		foreach ($comments as $key => $val) {
 			$comment = substr($val, 9); // 9 - strlen(" COMMENT ")
-			queries("EXEC sp_dropextendedproperty @name = N'MS_Description', @level0type = N'Schema', @level0name = " . q(get_schema()) . ", @level1type = N'Table',  @level1name = " . q($name) . ", @level2type = N'Column', @level2name = " . q($key));
-			queries("EXEC sp_addextendedproperty @name = N'MS_Description', @value = " . $comment . ", @level0type = N'Schema', @level0name = " . q(get_schema()) . ", @level1type = N'Table',  @level1name = " . q($name) . ", @level2type = N'Column', @level2name = " . q($key));
+			queries("EXEC sp_dropextendedproperty @name = N'MS_Description', @level0type = N'Schema', @level0name = " . q(get_schema()) . ", @level1type = N'Table', @level1name = " . q($name) . ", @level2type = N'Column', @level2name = " . q($key));
+			queries("EXEC sp_addextendedproperty @name = N'MS_Description', @value = " . $comment . ", @level0type = N'Schema', @level0name = " . q(get_schema()) . ", @level1type = N'Table', @level1name = " . q($name) . ", @level2type = N'Column', @level2name = " . q($key));
 		}
 		return true;
 	}
@@ -646,28 +645,35 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)
 		return preg_match('~^(comment|columns|database|drop_col|indexes|descidx|scheme|sql|table|trigger|view|view_trigger)$~', $feature); //! routine|
 	}
 
-	$jush = "mssql";
-	$types = array();
-	$structured_types = array();
-	foreach (array( //! use sys.types
-		lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "int" => 10, "bigint" => 20, "bit" => 1, "decimal" => 0, "real" => 12, "float" => 53, "smallmoney" => 10, "money" => 20),
-		lang('Date and time') => array("date" => 10, "smalldatetime" => 19, "datetime" => 19, "datetime2" => 19, "time" => 8, "datetimeoffset" => 10),
-		lang('Strings') => array("char" => 8000, "varchar" => 8000, "text" => 2147483647, "nchar" => 4000, "nvarchar" => 4000, "ntext" => 1073741823),
-		lang('Binary') => array("binary" => 8000, "varbinary" => 8000, "image" => 2147483647),
-	) as $key => $val) {
-		$types += $val;
-		$structured_types[$key] = array_keys($val);
+	function driver_config() {
+		$types = array();
+		$structured_types = array();
+		foreach (array( //! use sys.types
+			lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "int" => 10, "bigint" => 20, "bit" => 1, "decimal" => 0, "real" => 12, "float" => 53, "smallmoney" => 10, "money" => 20),
+			lang('Date and time') => array("date" => 10, "smalldatetime" => 19, "datetime" => 19, "datetime2" => 19, "time" => 8, "datetimeoffset" => 10),
+			lang('Strings') => array("char" => 8000, "varchar" => 8000, "text" => 2147483647, "nchar" => 4000, "nvarchar" => 4000, "ntext" => 1073741823),
+			lang('Binary') => array("binary" => 8000, "varbinary" => 8000, "image" => 2147483647),
+		) as $key => $val) {
+			$types += $val;
+			$structured_types[$key] = array_keys($val);
+		}
+		return array(
+			'possible_drivers' => array("SQLSRV", "MSSQL", "PDO_DBLIB"),
+			'jush' => "mssql",
+			'types' => $types,
+			'structured_types' => $structured_types,
+			'unsigned' => array(),
+			'operators' => array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"),
+			'functions' => array("len", "lower", "round", "upper"),
+			'grouping' => array("avg", "count", "count distinct", "max", "min", "sum"),
+			'edit_functions' => array(
+				array(
+					"date|time" => "getdate",
+				), array(
+					"int|decimal|real|float|money|datetime" => "+/-",
+					"char|text" => "+",
+				)
+			),
+		);
 	}
-	$unsigned = array();
-	$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL");
-	$functions = array("len", "lower", "round", "upper");
-	$grouping = array("avg", "count", "count distinct", "max", "min", "sum");
-	$edit_functions = array(
-		array(
-			"date|time" => "getdate",
-		), array(
-			"int|decimal|real|float|money|datetime" => "+/-",
-			"char|text" => "+",
-		)
-	);
 }

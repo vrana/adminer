@@ -1,5 +1,5 @@
 <?php
-$drivers["clickhouse"] = "ClickHouse (alpha)";
+add_driver("clickhouse", "ClickHouse (alpha)");
 
 if (isset($_GET["clickhouse"])) {
 	define("DRIVER", "clickhouse");
@@ -22,7 +22,7 @@ if (isset($_GET["clickhouse"])) {
 				return $file;
 			}
 			if (!preg_match('~^HTTP/[0-9.]+ 2~i', $http_response_header[0])) {
-				$this->error = $file;
+				$this->error = lang('Invalid credentials.') . " $http_response_header[0]";
 				return false;
 			}
 			$return = json_decode($file, true);
@@ -306,7 +306,7 @@ if (isset($_GET["clickhouse"])) {
 	function fields($table) {
 		$return = array();
 		$result = get_rows("SELECT name, type, default_expression FROM system.columns WHERE " . idf_escape('table') . " = " . q($table));
-		foreach($result as $row) {
+		foreach ($result as $row) {
 			$type = trim($row['type']);
 			$nullable = strpos($type, 'Nullable(') === 0;
 			$return[trim($row['name'])] = array(
@@ -372,21 +372,27 @@ if (isset($_GET["clickhouse"])) {
 		return preg_match("~^(columns|sql|status|table|drop_col)$~", $feature);
 	}
 
-	$jush = "clickhouse";
-	$types = array();
-	$structured_types = array();
-	foreach (array( //! arrays
-		lang('Numbers') => array("Int8" => 3, "Int16" => 5, "Int32" => 10, "Int64" => 19, "UInt8" => 3, "UInt16" => 5, "UInt32" => 10, "UInt64" => 20, "Float32" => 7, "Float64" => 16, 'Decimal' => 38, 'Decimal32' => 9, 'Decimal64' => 18, 'Decimal128' => 38),
-		lang('Date and time') => array("Date" => 13, "DateTime" => 20),
-		lang('Strings') => array("String" => 0),
-		lang('Binary') => array("FixedString" => 0),
-	) as $key => $val) {
-		$types += $val;
-		$structured_types[$key] = array_keys($val);
+	function driver_config() {
+		$types = array();
+		$structured_types = array();
+		foreach (array( //! arrays
+			lang('Numbers') => array("Int8" => 3, "Int16" => 5, "Int32" => 10, "Int64" => 19, "UInt8" => 3, "UInt16" => 5, "UInt32" => 10, "UInt64" => 20, "Float32" => 7, "Float64" => 16, 'Decimal' => 38, 'Decimal32' => 9, 'Decimal64' => 18, 'Decimal128' => 38),
+			lang('Date and time') => array("Date" => 13, "DateTime" => 20),
+			lang('Strings') => array("String" => 0),
+			lang('Binary') => array("FixedString" => 0),
+		) as $key => $val) {
+			$types += $val;
+			$structured_types[$key] = array_keys($val);
+		}
+		return array(
+			'jush' => "clickhouse",
+			'types' => $types,
+			'structured_types' => $structured_types,
+			'unsigned' => array(),
+			'operators' => array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL"),
+			'functions' => array(),
+			'grouping' => array("avg", "count", "count distinct", "max", "min", "sum"),
+			'edit_functions' => array(),
+		);
 	}
-	$unsigned = array();
-	$operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
-	$functions = array();
-	$grouping = array("avg", "count", "count distinct", "max", "min", "sum");
-	$edit_functions = array();
 }

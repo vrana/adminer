@@ -1,7 +1,81 @@
-Adminer 4.7.6-dev:
+Adminer 4.8.2-dev:
+Support multi-line table comments
+MySQL: Use ST_SRID() instead of SRID() for MySQL 8 (PR #418)
+PostgreSQL: Don't reset table comments (regression from 4.2.0)
+PostgreSQL PDO: Allow editing rows identified by boolean column (PR #380)
+
+Adminer 4.8.1 (released 2021-05-14):
+Internet Explorer or PDO in Adminer 4.7.8-4.8.0: Fix XSS in doc_link (bug #797)
+Fix more PHP 8 warnings (bug #781)
+Avoid PHP warnings with PDO drivers (bug #786, regression from 4.7.8)
+MySQL: Allow moving views to other DB and renaming DB with views (bug #783)
+MariaDB: Do not treat sequences as views (PR #416)
+PostgreSQL: Support UPDATE OF triggers (bug #789)
+PostgreSQL: Support triggers with more events (OR)
+PostgreSQL: Fix parsing of foreign keys with non-ASCII column names
+PostgreSQL < 10 PDO: Avoid displaying GENERATED ALWAYS BY IDENTITY everywhere (bug #785, regression from 4.7.9)
+SQLite: Fix displayed types (bug #784, regression from 4.8.0)
+
+Adminer 4.8.0 (released 2021-02-10):
+Support function default values in insert (bug #713)
+Allow SQL pseudo-function in insert
+Skip date columns for non-date values in search anywhere
+Add DB version to comment in export
+Support PHP 8 in create table (regression from 4.7.9)
+MySQL 8: Fix EXPLAIN in SQL command
+PostgreSQL: Create PRIMARY KEY for auto increment columns
+PostgreSQL: Avoid exporting empty sequence last value (bug #768)
+PostgreSQL: Do not show triggers from other schemas (PR #412)
+PostgreSQL: Fix multi-parameter functions in default values (bug #736)
+PostgreSQL: Fix displaying NULL bytea fields
+PostgreSQL PDO: Do not select NULL function for false values in edit
+Oracle: Alter indexes
+Oracle: Count tables
+Oracle: Import from CSV
+Oracle: Fix column size with string type
+MongoDB: Handle errors
+SimpleDB, Firebird, ClickHouse: Move to plugin
+
+Adminer 4.7.9 (released 2021-02-07):
+Fix XSS in browsers which don't encode URL parameters (bug #775, regression from 4.7.0)
+Elasticsearch, ClickHouse: Do not print response if HTTP code is not 200
+Don't syntax highlight during IME composition (bug #747)
+Quote values with leading and trailing zeroes in CSV export (bug #777)
+Link URLs in SQL command (PR #411)
+Fix displayed foreign key columns from other DB (bug #766)
+Re-enable PHP warnings (regression from 4.7.8)
+MySQL: Do not export names in quotes with sql_mode='ANSI_QUOTES' (bug #749)
+MySQL: Avoid error in PHP 8 when connecting to socket (PR #409)
+MySQL: Don't quote default value of text fields (bug #779)
+PostgreSQL: Export all FKs after all CREATE TABLE (PR #351)
+PostgreSQL: Fix dollar-quoted syntax highlighting (bug #738)
+PostgreSQL: Do not show view definition from other schema (PR #392)
+PostgreSQL: Use bigserial for bigint auto increment (bug #765, regression from 3.0.0)
+PostgreSQL PDO: Support PgBouncer, unsupport PostgreSQL < 9.1 (bug #771)
+PostgreSQL 10: Support GENERATED ALWAYS BY IDENTITY (PR #386)
+PostgreSQL 10: Support partitioned tables (PR #396)
+PostgreSQL 11: Create PRIMARY KEY for auto increment columns
+SQLite: Set busy_timeout to 500
+MS SQL: Don't truncate comments to 30 chars (PR #376)
+Elasticsearch 6: Fix displaying type mapping (PR #402)
+MongoDB: Fix password-less check in the mongo extension (PR #405)
+Editor: Cast to string when searching (bug #325)
+Editor: Avoid trailing dot in export filename
+
+Adminer 4.7.8 (released 2020-12-06):
+Support PHP 8
+Disallow connecting to privileged ports (bug #769)
+
+Adminer 4.7.7 (released 2020-05-11):
+Fix open redirect if Adminer is accessible at //adminer.php%2F@
+
+Adminer 4.7.6 (released 2020-01-31):
 Speed up alter table form (regression from 4.4.0)
 Fix clicking on non-input fields in alter table (regression from 4.6.2)
+Display time of procedure execution
+Disallow connecting to ports > 65535 (bug #730)
 MySQL: Always set foreign_key_checks in export
+PostgreSQL: Support exporting views
 Editor: Fix focusing foreign key search in select
 
 Adminer 4.7.5 (released 2019-11-13):
@@ -325,7 +399,7 @@ Adminer 3.7.1 (released 2013-06-29):
 Increase click target for checkboxes
 Use shadow for highlighting default button
 Don't use LIMIT 1 if inline updating unique row
-Don't check previous checkbox on added column in create table (bug #3614245)
+Don't check previous checkbox on added column in create table (bug #326)
 Order table list by name
 Verify UTF-8 encoding of CSV import
 Notify user about expired master password for permanent login
@@ -336,7 +410,7 @@ Display error on invalid alter table and view pages
 MySQL: Speed up updating rows without numeric or UTF-8 primary key
 Non-MySQL: Descending indexes
 PostgreSQL: Fix detecting oid column in PDO
-PostgreSQL: Handle timestamp types (bug #3614086)
+PostgreSQL: Handle timestamp types (bug #324)
 Add Korean translation
 
 Adminer 3.7.0 (released 2013-05-19):
@@ -349,9 +423,9 @@ Disable SQL export when applying functions in select
 Allow using lang() in plugins (customization)
 Remove bzip2 compression support
 Constraint memory used in TAR export
-Allow exporting views dependent on each other (bug #3459151)
-Fix resetting search (bug #3612507)
-Don't use LIMIT 1 if updating unique row (bug #3613109)
+Allow exporting views dependent on each other (bug #214)
+Fix resetting search (bug #318)
+Don't use LIMIT 1 if updating unique row (bug #320)
 Restrict editing rows without unique identifier to search results
 Display navigation bellow main content on mobile browsers
 Get number of rows on export page asynchronously
@@ -359,7 +433,7 @@ Respect 'whole result' even if some rows are checked (bug #339 since Adminer 3.7
 MySQL: Optimize create table page and Editor navigation
 MySQL: Display bit type as binary number
 MySQL: Improve export of binary data types
-MySQL: Fix handling of POINT data type (bug #3582578)
+MySQL: Fix handling of POINT data type (bug #282)
 MySQL: Don't export binary and geometry columns twice in select
 MySQL: Fix EXPLAIN in MySQL < 5.1, bug since Adminer 3.6.4
 SQLite: Export views
@@ -374,11 +448,11 @@ Recover original view, trigger, routine if creating fails
 Do not store plain text password to history in creating user
 Selectable ON UPDATE CURRENT_TIMESTAMP field in create table
 Open database to a new window after selecting it with Ctrl
-Clear column name after resetting search (bug #3601200)
-Explain partitions in SQL query (bug #3600150)
-Allow loading more data with inline edit (bug #3605531)
-Stay on the same page after deleting rows (bug #3605845)
-Respect checked tables in export filename (bug #3245464)
+Clear column name after resetting search (bug #296)
+Explain partitions in SQL query (bug #294)
+Allow loading more data with inline edit (bug #299)
+Stay on the same page after deleting rows (bug #301)
+Respect checked tables in export filename (bug #133)
 Respect PHP configuration max_input_vars
 Fix unsetting permanent login after logout
 Disable autocapitalize in identifiers on mobile browsers
@@ -463,11 +537,11 @@ Ukrainian translation
 Bengali translation
 
 Adminer 3.3.4 (released 2012-03-07):
-Foreign keys default actions (bug #3397606)
+Foreign keys default actions (bug #188)
 SET DEFAULT foreign key action
 Fix minor parser bug in SQL command with webserver file
 Ctrl+click on button opens form to a blank window
-Trim table and column names (bug #3405309)
+Trim table and column names (bug #195)
 Error message with no response from server in AJAX
 Esc to cancel AJAX request
 Move AJAX loading indicator to the right
@@ -479,9 +553,9 @@ Ability to disable export (customization)
 Extensible list of databases (customization)
 MySQL: set autocommit after connect
 SQLite, PostgreSQL: vacuum
-SQLite, PostgreSQL: don't use LIKE for numbers (bug #3420408)
+SQLite, PostgreSQL: don't use LIKE for numbers (bug #202)
 PostgreSQL: fix alter foreign key
-PostgreSQL over PDO: connect if the eponymous database does not exist (bug #3391619)
+PostgreSQL over PDO: connect if the eponymous database does not exist (bug #185)
 Boolean search (Editor)
 Persian translation
 
@@ -509,8 +583,8 @@ Adminer 3.3.0 (released 2011-07-19):
 Use Esc to disable in-place edit
 Shortcut for database privileges
 Editable index names
-Append new index with auto index selection (bug #3282127)
-Preserve original timestamp value in multiple update (bug #3312614)
+Append new index with auto index selection (bug #138)
+Preserve original timestamp value in multiple update (bug #158)
 Bit type default value
 Display foreign key name in tooltip
 Display default column value in table overview
@@ -524,7 +598,7 @@ Display foreign keys from other schemas (PostgreSQL)
 Pagination support (Oracle)
 Autocomplete for big foreign keys (Editor)
 Display name of the referenced record in PostgreSQL (Editor)
-Prefer NULL to empty string (Editor, bug #3323800)
+Prefer NULL to empty string (Editor, bug #162)
 Display searched columns (Editor)
 Customizable favicon (customization)
 Method name can return a link (customization)
@@ -536,8 +610,8 @@ Fix AJAX history after reload
 
 Adminer 3.2.1 (released 2011-03-23):
 Ability to save expression in edit
-Respect default database collation (bug #3191489)
-Don't export triggers without table (bug #3193489)
+Respect default database collation (bug #119)
+Don't export triggers without table (bug #123)
 Esc to focus next field in Tab textarea
 Send forms by Ctrl+Enter on <select>
 Enum editor and textarea Ctrl+Enter working in IE
@@ -560,8 +634,8 @@ Get long texts and slow information by AJAX
 Most links and forms by AJAX in browsers with support for history.pushState
 Copy tables
 Ability to search by expression in select
-Export SQL command result (bug #3116854)
-Focus first field with insert (bug #3126501)
+Export SQL command result (bug #99)
+Focus first field with insert (bug #106)
 Permanent link in schema
 Display total time in show only errors mode in SQL command
 History: edit all
@@ -574,7 +648,7 @@ Utilize oids in PostgreSQL
 Homepage customization
 Use IN for search in numeric fields (Editor)
 Use password input for _md5 and _sha1 fields (Editor)
-Work without session.use_cookies (bug #3138640)
+Work without session.use_cookies (bug #107)
 Fix saving schema to cookie in Opera
 Portuguese, Slovenian and Turkish translation
 
@@ -587,10 +661,10 @@ Recognize $$ strings in SQL command (PostgreSQL)
 Highlight and edit SQL command in processlist
 Always display all drivers
 Timestamp at the end of export
-Link to refresh database cache (bug #3102451)
+Link to refresh database cache (bug #96)
 Support for virtual foreign keys
 Disable XSS "protection" of IE8
-Immunity against zend.ze1_compatibility_mode (bug #3089645)
+Immunity against zend.ze1_compatibility_mode (bug #86)
 Fix last page with empty result set
 Arabic translation and RTL support
 Dual licensing: Apache or GPL
@@ -638,7 +712,7 @@ Add Drop button to Alter pages (regression from 2.0.0)
 Link COUNT(*) result to listing
 Newlines in select query edit
 Return to referrer after edit
-Respect session.auto_start (bug #2967284)
+Respect session.auto_start (bug #42)
 
 Adminer 2.3.0 (released 2010-02-26):
 Support for permanent login (customization required)
@@ -667,7 +741,7 @@ Link URLs in select
 Display number of manipulated rows in JS confirm
 Set required memory in SQL command
 Fix removed default in ALTER
-Display whitespace in texts (bug #2858042)
+Display whitespace in texts (bug #11)
 ClickJacking protection in modern browsers
 E-mail attachments (Editor)
 Optional year in date (Editor)
@@ -686,7 +760,7 @@ Use ON DUPLICATE KEY UPDATE for CSV import
 Print ALTER export instead of executing it
 Click on row selects it
 Fix Editor date format
-Fix long SQL query crash (bug #2839231)
+Fix long SQL query crash (bug #3)
 Speed up simple alter table
 Traditional Chinese translation
 
@@ -742,7 +816,7 @@ Use \n in SQL commands
 
 phpMinAdmin 1.10.1 (released 2009-05-07):
 Highlight odd and hover rows
-Partition editing comfort (bug #2783446)
+Partition editing comfort (bug #12)
 Allow full length in limited int
 
 phpMinAdmin 1.10.0 (released 2009-04-28):
@@ -829,7 +903,7 @@ phpMinAdmin 1.4.0 (released 2007-08-15):
 Privileges
 New design
 Dutch translation
-Use NULL for auto_increment (bug #1768966)
+Use NULL for auto_increment (bug #1)
 Fix dropping procedure parameters
 
 phpMinAdmin 1.3.2 (released 2007-08-06):

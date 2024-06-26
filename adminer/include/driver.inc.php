@@ -1,4 +1,15 @@
 <?php
+$drivers = array();
+
+/** Add a driver
+* @param string
+* @param string
+* @return null
+*/
+function add_driver($id, $name) {
+	global $drivers;
+	$drivers[$id] = $name;
+}
 
 /*abstract*/ class Min_SQL {
 	var $_conn;

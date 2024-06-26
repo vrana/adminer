@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
@@ -150,7 +150,7 @@
 	<td>50</td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>check</td>
 	<td>name=comments<datalist><option>name=comments</option></datalist></td>
 	<td></td>
 </tr>
@@ -383,7 +383,7 @@
 	<td>50</td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>check</td>
 	<td>name=comments<datalist><option>name=comments</option></datalist></td>
 	<td></td>
 </tr>
@@ -420,7 +420,7 @@
 <tbody>
 <tr>
 	<td>open</td>
-	<td>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets</option></datalist></td>
+	<td>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=albums<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=albums</option></datalist></td>
 	<td></td>
 </tr>
 <tr>
@@ -485,12 +485,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>uncheck</td>
-	<td>name=defaults<datalist><option>name=defaults</option></datalist></td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
+	<td>check</td>
 	<td>name=defaults<datalist><option>name=defaults</option></datalist></td>
 	<td></td>
 </tr>
@@ -539,6 +534,7 @@
 	<td>verifyTextPresent</td>
 	<td>Trigger has been created.<datalist><option>Trigger has been created.</option></datalist></td>
 	<td></td>
+</tr>
 </tr>
 </tbody></table>
 <table cellpadding="1" cellspacing="1" border="1">
@@ -1237,7 +1233,7 @@ END</td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>xpath=(//a[contains(text(),'=')])[3]<datalist><option>xpath=(//a[contains(text(),'=')])[3]</option></datalist></td>
+	<td>xpath=(//a[contains(text(),'=')])[1]<datalist><option>xpath=(//a[contains(text(),'=')])[1]</option></datalist></td>
 	<td></td>
 </tr>
 <tr>
@@ -1256,13 +1252,8 @@ END</td>
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>//div[@id='warnings']/table/tbody/tr/td[3]<datalist><option>//div[@id='warnings']/table/tbody/tr/td[3]</option></datalist></td>
-	<td></td>
-</tr>
-<tr>
 	<td>verifyText</td>
-	<td>//div[@id='warnings']/table/tbody/tr/td[3]<datalist><option>//div[@id='warnings']/table/tbody/tr/td[3]</option></datalist></td>
+	<td>//div[@id='warnings']/div/table/tbody/tr/td[3]<datalist><option>//div[@id='warnings']/div/table/tbody/tr/td[3]</option></datalist></td>
 	<td>Truncated incorrect DOUBLE value: '1.2.3'</td>
 </tr>
 </tbody></table>

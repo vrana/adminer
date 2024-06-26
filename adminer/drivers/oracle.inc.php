@@ -2,11 +2,11 @@
 $drivers["oracle"] = "Oracle (beta)";
 
 if (isset($_GET["oracle"])) {
-	$possible_drivers = array("OCI8", "PDO_OCI");
 	define("DRIVER", "oracle");
 	if (extension_loaded("oci8")) {
 		class Min_DB {
 			var $extension = "oci8", $_link, $_result, $server_info, $affected_rows, $errno, $error;
+			var $_current_db;
 
 			function _error($errno, $error) {
 				if (ini_bool("html_errors")) {
@@ -32,6 +32,7 @@ if (isset($_GET["oracle"])) {
 			}
 
 			function select_db($database) {
+				$this->_current_db = $database;
 				return true;
 			}
 
@@ -52,6 +53,7 @@ if (isset($_GET["oracle"])) {
 						return new Min_Result($result);
 					}
 					$this->affected_rows = oci_num_rows($result);
+					oci_free_statement($result);
 				}
 				return $return;
 			}
@@ -119,6 +121,7 @@ if (isset($_GET["oracle"])) {
 	} elseif (extension_loaded("pdo_oci")) {
 		class Min_DB extends Min_PDO {
 			var $extension = "PDO_OCI";
+			var $_current_db;
 
 			function connect($server, $username, $password) {
 				$this->dsn("oci:dbname=//$server;charset=AL32UTF8", $username, $password);
@@ -126,6 +129,7 @@ if (isset($_GET["oracle"])) {
 			}
 
 			function select_db($database) {
+				$this->_current_db = $database;
 				return true;
 			}
 		}
@@ -142,6 +146,25 @@ if (isset($_GET["oracle"])) {
 			return true; // automatic start
 		}
 
+		function insertUpdate($table, $rows, $primary) {
+			global $connection;
+			foreach ($rows as $set) {
+				$update = array();
+				$where = array();
+				foreach ($set as $key => $val) {
+					$update[] = "$key = $val";
+					if (isset($primary[idf_unescape($key)])) {
+						$where[] = "$key = $val";
+					}
+				}
+				if (!(($where && queries("UPDATE " . table($table) . " SET " . implode(", ", $update) . " WHERE " . implode(" AND ", $where)) && $connection->affected_rows)
+					|| queries("INSERT INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ")")
+				)) {
+					return false;
+				}
+			}
+			return true;
+		}
 	}
 
 
@@ -165,7 +188,7 @@ if (isset($_GET["oracle"])) {
 	}
 
 	function get_databases() {
-		return get_vals("SELECT tablespace_name FROM user_tablespaces");
+		return get_vals("SELECT tablespace_name FROM user_tablespaces ORDER BY 1");
 	}
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
@@ -193,22 +216,51 @@ if (isset($_GET["oracle"])) {
 		return $connection->result("SELECT USER FROM DUAL");
 	}
 
+	function get_current_db() {
+		global $connection;
+		$db = $connection->_current_db ? $connection->_current_db : DB;
+		unset($connection->_current_db);
+		return $db;
+	}
+
+	function where_owner($prefix, $owner = "owner") {
+		if (!$_GET["ns"]) {
+			return '';
+		}
+		return "$prefix$owner = sys_context('USERENV', 'CURRENT_SCHEMA')";
+	}
+
+	function views_table($columns) {
+		$owner = where_owner('');
+		return "(SELECT $columns FROM all_views WHERE " . ($owner ? $owner : "rownum < 0") . ")";
+	}
+
 	function tables_list() {
-		return get_key_vals("SELECT table_name, 'table' FROM all_tables WHERE tablespace_name = " . q(DB) . "
-UNION SELECT view_name, 'view' FROM user_views
+		$view = views_table("view_name");
+		$owner = where_owner(" AND ");
+		return get_key_vals("SELECT table_name, 'table' FROM all_tables WHERE tablespace_name = " . q(DB) . "$owner
+UNION SELECT view_name, 'view' FROM $view
 ORDER BY 1"
 		); //! views don't have schema
 	}
 
 	function count_tables($databases) {
-		return array();
+		global $connection;
+		$return = array();
+		foreach ($databases as $db) {
+			$return[$db] = $connection->result("SELECT COUNT(*) FROM all_tables WHERE tablespace_name = " . q($db));
+		}
+		return $return;
 	}
 
 	function table_status($name = "") {
 		$return = array();
 		$search = q($name);
-		foreach (get_rows('SELECT table_name "Name", \'table\' "Engine", avg_row_len * num_rows "Data_length", num_rows "Rows" FROM all_tables WHERE tablespace_name = ' . q(DB) . ($name != "" ? " AND table_name = $search" : "") . "
-UNION SELECT view_name, 'view', 0, 0 FROM user_views" . ($name != "" ? " WHERE view_name = $search" : "") . "
+		$db = get_current_db();
+		$view = views_table("view_name");
+		$owner = where_owner(" AND ");
+		foreach (get_rows('SELECT table_name "Name", \'table\' "Engine", avg_row_len * num_rows "Data_length", num_rows "Rows" FROM all_tables WHERE tablespace_name = ' . q($db) . $owner . ($name != "" ? " AND table_name = $search" : "") . "
+UNION SELECT view_name, 'view', 0, 0 FROM $view" . ($name != "" ? " WHERE view_name = $search" : "") . "
 ORDER BY 1"
 		) as $row) {
 			if ($name != "") {
@@ -229,11 +281,12 @@ ORDER BY 1"
 
 	function fields($table) {
 		$return = array();
-		foreach (get_rows("SELECT * FROM all_tab_columns WHERE table_name = " . q($table) . " ORDER BY column_id") as $row) {
+		$owner = where_owner(" AND ");
+		foreach (get_rows("SELECT * FROM all_tab_columns WHERE table_name = " . q($table) . "$owner ORDER BY column_id") as $row) {
 			$type = $row["DATA_TYPE"];
 			$length = "$row[DATA_PRECISION],$row[DATA_SCALE]";
 			if ($length == ",") {
-				$length = $row["DATA_LENGTH"];
+				$length = $row["CHAR_COL_DECL_LENGTH"];
 			} //! int
 			$return[$row["COLUMN_NAME"]] = array(
 				"field" => $row["COLUMN_NAME"],
@@ -254,22 +307,27 @@ ORDER BY 1"
 
 	function indexes($table, $connection2 = null) {
 		$return = array();
-		foreach (get_rows("SELECT uic.*, uc.constraint_type
-FROM user_ind_columns uic
-LEFT JOIN user_constraints uc ON uic.index_name = uc.constraint_name AND uic.table_name = uc.table_name
-WHERE uic.table_name = " . q($table) . "
-ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
+		$owner = where_owner(" AND ", "aic.table_owner");
+		foreach (get_rows("SELECT aic.*, ac.constraint_type, atc.data_default
+FROM all_ind_columns aic
+LEFT JOIN all_constraints ac ON aic.index_name = ac.constraint_name AND aic.table_name = ac.table_name AND aic.index_owner = ac.owner
+LEFT JOIN all_tab_cols atc ON aic.column_name = atc.column_name AND aic.table_name = atc.table_name AND aic.index_owner = atc.owner
+WHERE aic.table_name = " . q($table) . "$owner
+ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row) {
 			$index_name = $row["INDEX_NAME"];
+			$column_name = $row["DATA_DEFAULT"];
+			$column_name = ($column_name ? trim($column_name, '"') : $row["COLUMN_NAME"]); // trim - possibly wrapped in quotes but never contains quotes inside
 			$return[$index_name]["type"] = ($row["CONSTRAINT_TYPE"] == "P" ? "PRIMARY" : ($row["CONSTRAINT_TYPE"] == "U" ? "UNIQUE" : "INDEX"));
-			$return[$index_name]["columns"][] = $row["COLUMN_NAME"];
+			$return[$index_name]["columns"][] = $column_name;
 			$return[$index_name]["lengths"][] = ($row["CHAR_LENGTH"] && $row["CHAR_LENGTH"] != $row["COLUMN_LENGTH"] ? $row["CHAR_LENGTH"] : null);
-			$return[$index_name]["descs"][] = ($row["DESCEND"] ? '1' : null);
+			$return[$index_name]["descs"][] = ($row["DESCEND"] && $row["DESCEND"] == "DESC" ? '1' : null);
 		}
 		return $return;
 	}
 
 	function view($name) {
-		$rows = get_rows('SELECT text "select" FROM user_views WHERE view_name = ' . q($name));
+		$view = views_table("view_name, text");
+		$rows = get_rows('SELECT text "select" FROM ' . $view . ' WHERE view_name = ' . q($name));
 		return reset($rows);
 	}
 
@@ -294,12 +352,24 @@ ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
 	function found_rows($table_status, $where) {
 	}
 
+	function auto_increment() {
+		return "";
+	}
+
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
 		$alter = $drop = array();
+		$orig_fields = ($table ? fields($table) : array());
 		foreach ($fields as $field) {
 			$val = $field[1];
 			if ($val && $field[0] != "" && idf_escape($field[0]) != $val[0]) {
 				queries("ALTER TABLE " . table($table) . " RENAME COLUMN " . idf_escape($field[0]) . " TO $val[0]");
+			}
+			$orig_field = $orig_fields[$field[0]];
+			if ($val && $orig_field) {
+				$old = process_field($orig_field, $orig_field);
+				if ($val[2] == $old[2]) {
+					$val[2] = "";
+				}
 			}
 			if ($val) {
 				$alter[] = ($table != "" ? ($field[0] != "" ? "MODIFY (" : "ADD (") : "  ") . implode($val) . ($table != "" ? ")" : ""); //! error with name change only
@@ -314,6 +384,35 @@ ORDER BY uc.constraint_type, uic.column_position", $connection2) as $row) {
 			&& (!$drop || queries("ALTER TABLE " . table($table) . " DROP (" . implode(", ", $drop) . ")"))
 			&& ($table == $name || queries("ALTER TABLE " . table($table) . " RENAME TO " . table($name)))
 		;
+	}
+
+	function alter_indexes($table, $alter) {
+		$drop = array();
+		$queries = array();
+		foreach ($alter as $val) {
+			if ($val[0] != "INDEX") {
+				//! descending UNIQUE indexes results in syntax error
+				$val[2] = preg_replace('~ DESC$~', '', $val[2]);
+				$create = ($val[2] == "DROP"
+					? "\nDROP CONSTRAINT " . idf_escape($val[1])
+					: "\nADD" . ($val[1] != "" ? " CONSTRAINT " . idf_escape($val[1]) : "") . " $val[0] " . ($val[0] == "PRIMARY" ? "KEY " : "") . "(" . implode(", ", $val[2]) . ")"
+				);
+				array_unshift($queries, "ALTER TABLE " . table($table) . $create);
+			} elseif ($val[2] == "DROP") {
+				$drop[] = idf_escape($val[1]);
+			} else {
+				$queries[] = "CREATE INDEX " . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_")) . " ON " . table($table) . " (" . implode(", ", $val[2]) . ")";
+			}
+		}
+		if ($drop) {
+			array_unshift($queries, "DROP INDEX " . implode(", ", $drop));
+		}
+		foreach ($queries as $query) {
+			if (!queries($query)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	function foreign_keys($table) {
@@ -359,7 +458,8 @@ AND c_src.TABLE_NAME = " . q($table);
 	}
 
 	function schemas() {
-		return get_vals("SELECT DISTINCT owner FROM dba_segments WHERE owner IN (SELECT username FROM dba_users WHERE default_tablespace NOT IN ('SYSTEM','SYSAUX'))");
+		$return = get_vals("SELECT DISTINCT owner FROM dba_segments WHERE owner IN (SELECT username FROM dba_users WHERE default_tablespace NOT IN ('SYSTEM','SYSAUX')) ORDER BY 1");
+		return ($return ? $return : get_vals("SELECT DISTINCT owner FROM all_tables WHERE tablespace_name = " . q(DB) . " ORDER BY 1"));
 	}
 
 	function get_schema() {
@@ -401,33 +501,40 @@ ORDER BY PROCESS
 	}
 
 	function support($feature) {
-		return preg_match('~^(columns|database|drop_col|indexes|descidx|processlist|scheme|sql|status|table|variables|view|view_trigger)$~', $feature); //!
+		return preg_match('~^(columns|database|drop_col|indexes|descidx|processlist|scheme|sql|status|table|variables|view)$~', $feature); //!
 	}
 
-	$jush = "oracle";
-	$types = array();
-	$structured_types = array();
-	foreach (array(
-		lang('Numbers') => array("number" => 38, "binary_float" => 12, "binary_double" => 21),
-		lang('Date and time') => array("date" => 10, "timestamp" => 29, "interval year" => 12, "interval day" => 28), //! year(), day() to second()
-		lang('Strings') => array("char" => 2000, "varchar2" => 4000, "nchar" => 2000, "nvarchar2" => 4000, "clob" => 4294967295, "nclob" => 4294967295),
-		lang('Binary') => array("raw" => 2000, "long raw" => 2147483648, "blob" => 4294967295, "bfile" => 4294967296),
-	) as $key => $val) {
-		$types += $val;
-		$structured_types[$key] = array_keys($val);
+	function driver_config() {
+		$types = array();
+		$structured_types = array();
+		foreach (array(
+			lang('Numbers') => array("number" => 38, "binary_float" => 12, "binary_double" => 21),
+			lang('Date and time') => array("date" => 10, "timestamp" => 29, "interval year" => 12, "interval day" => 28), //! year(), day() to second()
+			lang('Strings') => array("char" => 2000, "varchar2" => 4000, "nchar" => 2000, "nvarchar2" => 4000, "clob" => 4294967295, "nclob" => 4294967295),
+			lang('Binary') => array("raw" => 2000, "long raw" => 2147483648, "blob" => 4294967295, "bfile" => 4294967296),
+		) as $key => $val) {
+			$types += $val;
+			$structured_types[$key] = array_keys($val);
+		}
+		return array(
+			'possible_drivers' => array("OCI8", "PDO_OCI"),
+			'jush' => "oracle",
+			'types' => $types,
+			'structured_types' => $structured_types,
+			'unsigned' => array(),
+			'operators' => array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL"),
+			'functions' => array("length", "lower", "round", "upper"),
+			'grouping' => array("avg", "count", "count distinct", "max", "min", "sum"),
+			'edit_functions' => array(
+				array( //! no parentheses
+					"date" => "current_date",
+					"timestamp" => "current_timestamp",
+				), array(
+					"number|float|double" => "+/-",
+					"date|timestamp" => "+ interval/- interval",
+					"char|clob" => "||",
+				)
+			),
+		);
 	}
-	$unsigned = array();
-	$operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL");
-	$functions = array("length", "lower", "round", "upper");
-	$grouping = array("avg", "count", "count distinct", "max", "min", "sum");
-	$edit_functions = array(
-		array( //! no parentheses
-			"date" => "current_date",
-			"timestamp" => "current_timestamp",
-		), array(
-			"number|float|double" => "+/-",
-			"date|timestamp" => "+ interval/- interval",
-			"char|clob" => "||",
-		)
-	);
 }

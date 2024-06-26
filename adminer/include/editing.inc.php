@@ -61,6 +61,20 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 		}
 		echo "<tr" . odd() . ">";
 		foreach ($row as $key => $val) {
+			$link = "";
+			if (isset($links[$key]) && !$columns[$links[$key]]) {
+				if ($orgtables && $jush == "sql") { // MySQL EXPLAIN
+					$table = $row[array_search("table=", $links)];
+					$link = ME . $links[$key] . urlencode($orgtables[$table] != "" ? $orgtables[$table] : $table);
+				} else {
+					$link = ME . "edit=" . urlencode($links[$key]);
+					foreach ($indexes[$links[$key]] as $col => $j) {
+						$link .= "&where" . urlencode("[" . bracket_escape($col) . "]") . "=" . urlencode($row[$j]);
+					}
+				}
+			} elseif (is_url($val)) {
+				$link = $val;
+			}
 			if ($val === null) {
 				$val = "<i>NULL</i>";
 			} elseif ($blobs[$key] && !is_utf8($val)) {
@@ -71,17 +85,8 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 					$val = "<code>$val</code>";
 				}
 			}
-			if (isset($links[$key]) && !$columns[$links[$key]]) {
-				if ($orgtables && $jush == "sql") { // MySQL EXPLAIN
-					$table = $row[array_search("table=", $links)];
-					$link = $links[$key] . urlencode($orgtables[$table] != "" ? $orgtables[$table] : $table);
-				} else {
-					$link = "edit=" . urlencode($links[$key]);
-					foreach ($indexes[$links[$key]] as $col => $j) {
-						$link .= "&where" . urlencode("[" . bracket_escape($col) . "]") . "=" . urlencode($row[$j]);
-					}
-				}
-				$val = "<a href='" . h(ME . $link) . "'>$val</a>";
+			if ($link) {
+				$val = "<a href='" . h($link) . "'" . (is_url($link) ? target_blank() : '') . ">$val</a>";
 			}
 			echo "<td>$val";
 		}
@@ -146,7 +151,7 @@ function set_adminer_settings($settings) {
 */
 function textarea($name, $value, $rows = 10, $cols = 80) {
 	global $jush;
-	echo "<textarea name='$name' rows='$rows' cols='$cols' class='sqlarea jush-$jush' spellcheck='false' wrap='off'>";
+	echo "<textarea name='" . h($name) . "' rows='$rows' cols='$cols' class='sqlarea jush-$jush' spellcheck='false' wrap='off'>";
 	if (is_array($value)) {
 		foreach ($value as $val) { // not implode() to save memory
 			echo h($val[0]) . "\n\n\n"; // $val == array($query, $time, $elapsed)
@@ -425,7 +430,7 @@ function drop_create($drop, $create, $drop_created, $test, $drop_test, $location
 */
 function create_trigger($on, $row) {
 	global $jush;
-	$timing_event = " $row[Timing] $row[Event]" . ($row["Event"] == "UPDATE OF" ? " " . idf_escape($row["Of"]) : "");
+	$timing_event = " $row[Timing] $row[Event]" . (preg_match('~ OF~', $row["Event"]) ? " $row[Of]" : ""); // SQL injection
 	return "CREATE TRIGGER "
 		. idf_escape($row["Trigger"])
 		. ($jush == "mssql" ? $on . $timing_event : $timing_event . $on)
@@ -537,7 +542,7 @@ function doc_link($paths, $text = "<sup>?</sup>") {
 		$urls['sql'] = "https://mariadb.com/kb/en/library/";
 		$paths['sql'] = (isset($paths['mariadb']) ? $paths['mariadb'] : str_replace(".html", "/", $paths['sql']));
 	}
-	return ($paths[$jush] ? "<a href='$urls[$jush]$paths[$jush]'" . target_blank() . ">$text</a>" : "");
+	return ($paths[$jush] ? "<a href='" . h($urls[$jush] . $paths[$jush]) . "'" . target_blank() . ">$text</a>" : "");
 }
 
 /** Wrap gzencode() for usage in ob_start()

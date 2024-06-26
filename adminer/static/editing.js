@@ -17,14 +17,14 @@ function bodyLoad(version, maria) {
 						for (var i = 1; i < obj.length; i++) {
 							obj[i] = obj[i]
 								.replace(/\.html/, '/')
-								.replace(/(numeric)(-type-overview)/, '$1-data$2')
+								.replace(/-type-syntax/, '-data-types')
+								.replace(/numeric-(data-types)/, '$1-$&')
 								.replace(/#statvar_.*/, '#$$1')
 							;
 						}
 					}
 				}
-				obj[key] = obj[key]
-					.replace(/dev\.mysql\.com\/doc\/mysql\/en\//, (maria ? 'mariadb.com/kb/en/library/' : '$&')) // MariaDB
+				obj[key] = (maria ? obj[key].replace(/dev\.mysql\.com\/doc\/mysql\/en\//, 'mariadb.com/kb/en/library/') : obj[key]) // MariaDB
 					.replace(/\/doc\/mysql/, '/doc/refman/' + version) // MySQL
 					.replace(/\/docs\/current/, '/docs/' + version) // PostgreSQL
 				;
@@ -658,7 +658,7 @@ function triggerChange(tableRe, table, form) {
 	if (tableRe.test(form['Trigger'].value)) {
 		form['Trigger'].value = table + '_' + (selectValue(form['Timing']).charAt(0) + formEvent.charAt(0)).toLowerCase();
 	}
-	alterClass(form['Of'], 'hidden', formEvent != 'UPDATE OF');
+	alterClass(form['Of'], 'hidden', !/ OF/.test(formEvent));
 }
 
 

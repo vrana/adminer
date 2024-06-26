@@ -1,6 +1,11 @@
 #!/usr/bin/env php
 <?php
+function adminer_errors($errno, $errstr) {
+	return !!preg_match('~^(Trying to access array offset on value of type null|Undefined array key)~', $errstr);
+}
+
 error_reporting(6135); // errors and warnings
+set_error_handler('adminer_errors', E_WARNING);
 include dirname(__FILE__) . "/adminer/include/version.inc.php";
 include dirname(__FILE__) . "/externals/JsShrink/jsShrink.php";
 
@@ -36,7 +41,7 @@ function lang_ids($match) {
 }
 
 function put_file($match) {
-	global $project, $VERSION;
+	global $project, $VERSION, $driver;
 	if (basename($match[2]) == '$LANG.inc.php') {
 		return $match[0]; // processed later
 	}
@@ -55,6 +60,9 @@ header("Cache-Control: immutable");
 		if (!$count) {
 			echo "adminer/file.inc.php: Caching headers placeholder not found\n";
 		}
+	}
+	if ($driver && dirname($match[2]) == "../adminer/drivers") {
+		$return = preg_replace('~^if \(isset\(\$_GET\["' . $driver . '"]\)\) \{(.*)^}~ms', '\1', $return);
 	}
 	if (basename($match[2]) != "lang.inc.php" || !$_SESSION["lang"]) {
 		if (basename($match[2]) == "lang.inc.php") {
@@ -100,7 +108,7 @@ function lzw_compress($string) {
 	$word = "";
 	$codes = array();
 	for ($i=0; $i <= strlen($string); $i++) {
-		$x = $string[$i];
+		$x = @$string[$i];
 		if (strlen($x) && isset($dictionary[$word . $x])) {
 			$word .= $x;
 		} elseif ($i) {
@@ -233,7 +241,7 @@ function php_shrink($input) {
 		$short_variables[$key] = short_identifier($number, $chars); // could use also numbers and \x7f-\xff
 	}
 	
-	$set = array_flip(preg_split('//', '!"#$%&\'()*+,-./:;<=>?@[\]^`{|}'));
+	$set = array_flip(preg_split('//', '!"#$%&\'()*+,-./:;<=>?@[]^`{|}'));
 	$space = '';
 	$output = '';
 	$in_echo = false;
@@ -313,6 +321,14 @@ function compile_file($match) {
 		$file = call_user_func($callback, $file);
 	}
 	return '"' . add_quo_slashes($file) . '"';
+}
+
+if (!function_exists("each")) {
+	function each(&$arr) {
+		$key = key($arr);
+		next($arr);
+		return $key === null ? false : array($key, $arr[$key]);
+	}
 }
 
 function min_version() {

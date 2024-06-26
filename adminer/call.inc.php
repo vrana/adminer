@@ -48,7 +48,9 @@ if (!$error && $_POST) {
 			if (is_object($result)) {
 				select($result, $connection2);
 			} else {
-				echo "<p class='message'>" . lang('Routine has been called, %d row(s) affected.', $affected) . "\n";
+				echo "<p class='message'>" . lang('Routine has been called, %d row(s) affected.', $affected)
+					. " <span class='time'>" . @date("H:i:s") . "</span>\n" // @ - time zone may be not set
+				;
 			}
 		} while ($connection->next_result());
 		

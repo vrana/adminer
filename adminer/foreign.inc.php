@@ -60,7 +60,7 @@ if ($row["ns"] != "") {
 	set_schema($row["ns"]);
 }
 $referencable = array_keys(array_filter(table_status('', true), 'fk_support'));
-$target = ($TABLE === $row["table"] ? $source : array_keys(fields(in_array($row["table"], $referencable) ? $row["table"] : reset($referencable))));
+$target = array_keys(fields(in_array($row["table"], $referencable) ? $row["table"] : reset($referencable)));
 $onchange = "this.form['change-js'].value = '1'; this.form.submit();";
 echo "<p>" . lang('Target table') . ": " . html_select("table", $referencable, $row["table"], $onchange) . "\n";
 if ($jush == "pgsql") {

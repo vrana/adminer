@@ -2,7 +2,7 @@ Transactions in export
 Create view and routine options
 Variables editation
 Blob download and image display in edit form (important for Editor with hidden fields in select and SQL command)
-Add title to Logout, edit (in select) and select (in menu) for style "hever"
+Add title to Logout and edit (in select) for style "hever"
 Export by GET parameters
 Draggable columns in alter table (thanks to Michal Manak)
 <option class> for system databases and schemas - information_schema and driver-specific (thanks to Vaclav Novotny)

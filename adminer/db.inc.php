@@ -83,7 +83,7 @@ if ($adminer->homepage()) {
 
 			$tables = 0;
 			foreach ($tables_list as $name => $type) {
-				$view = ($type !== null && !preg_match('~table~i', $type));
+				$view = ($type !== null && !preg_match('~table|sequence~i', $type));
 				$id = h("Table-" . $name);
 				echo '<tr' . odd() . '><td>' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array($name, $tables_views, true), "", "", "", $id);
 				echo '<th>' . (support("table") || support("indexes") ? "<a href='" . h(ME) . "table=" . urlencode($name) . "' title='" . lang('Show structure') . "' id='$id'>" . h($name) . '</a>' : h($name));
@@ -112,7 +112,7 @@ if ($adminer->homepage()) {
 			}
 
 			echo "<tr><td><th>" . lang('%d in total', count($tables_list));
-			echo "<td>" . h($jush == "sql" ? $connection->result("SELECT @@storage_engine") : "");
+			echo "<td>" . h($jush == "sql" ? $connection->result("SELECT @@default_storage_engine") : "");
 			echo "<td>" . h(db_collation(DB, collations()));
 			foreach (array("Data_length", "Index_length", "Data_free") as $key) {
 				echo "<td align='right' id='sum-$key'>";

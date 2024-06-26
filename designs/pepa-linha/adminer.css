@@ -1,7 +1,6 @@
 /*
  * Theme by Pepa Linha [http://webdream.cz]
  * JUSH color syntax inspired by NetBeans
- * @version 0.2 (February 2014)
  */
 
 html,
@@ -360,7 +359,7 @@ p code + a:visited:hover {
 	float: none;
 }
 
-#tables a[title] {
+#tables .structure, #tables .view {
 	float: none;
 	display: block;
 }

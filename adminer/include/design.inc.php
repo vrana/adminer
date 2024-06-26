@@ -75,7 +75,7 @@ var thousandsSeparator = '<?php echo js_escape(lang(',')); ?>';
 		if ($breadcrumb === false) {
 			echo "$server\n";
 		} else {
-			echo "<a href='" . ($link ? h($link) : ".") . "' accesskey='1' title='Alt+Shift+1'>$server</a> &raquo; ";
+			echo "<a href='" . h($link) . "' accesskey='1' title='Alt+Shift+1'>$server</a> &raquo; ";
 			if ($_GET["ns"] != "" || (DB != "" && is_array($breadcrumb))) {
 				echo '<a href="' . h($link . "&db=" . urlencode(DB) . (support("scheme") ? "&ns=" : "")) . '">' . h(DB) . '</a> &raquo; ';
 			}

@@ -1,5 +1,10 @@
 <?php
+function adminer_errors($errno, $errstr) {
+	return !!preg_match('~^(Trying to access array offset on value of type null|Undefined array key)~', $errstr);
+}
+
 error_reporting(6135); // errors and warnings
+set_error_handler('adminer_errors', E_WARNING);
 
 include "../adminer/include/coverage.inc.php";
 
@@ -60,7 +65,7 @@ if (!defined("SID")) {
 
 // disable magic quotes to be able to use database escaping function
 remove_slashes(array(&$_GET, &$_POST, &$_COOKIE), $filter);
-if (get_magic_quotes_runtime()) {
+if (function_exists("get_magic_quotes_runtime") && get_magic_quotes_runtime()) {
 	set_magic_quotes_runtime(false);
 }
 @set_time_limit(0); // @ - can be disabled
@@ -75,16 +80,29 @@ include "../adminer/drivers/sqlite.inc.php";
 include "../adminer/drivers/pgsql.inc.php";
 include "../adminer/drivers/oracle.inc.php";
 include "../adminer/drivers/mssql.inc.php";
-include "../adminer/drivers/firebird.inc.php";
-include "../adminer/drivers/simpledb.inc.php";
 include "../adminer/drivers/mongo.inc.php";
 include "../adminer/drivers/elastic.inc.php";
-include "../adminer/drivers/clickhouse.inc.php";
+include "./include/adminer.inc.php";
+$adminer = (function_exists('adminer_object') ? adminer_object() : new Adminer);
 include "../adminer/drivers/mysql.inc.php"; // must be included as last driver
+
+$config = driver_config();
+$possible_drivers = $config['possible_drivers'];
+$jush = $config['jush'];
+$types = $config['types'];
+$structured_types = $config['structured_types'];
+$unsigned = $config['unsigned'];
+$operators = $config['operators'];
+$functions = $config['functions'];
+$grouping = $config['grouping'];
+$edit_functions = $config['edit_functions'];
+if ($adminer->operators === null) {
+	$adminer->operators = $operators;
+}
 
 define("SERVER", $_GET[DRIVER]); // read from pgsql=localhost
 define("DB", $_GET["db"]); // for the sake of speed and size
-define("ME", str_replace(":", "%3a", preg_replace('~^[^?]*/([^?]*).*~', '\1', $_SERVER["REQUEST_URI"])) . '?'
+define("ME", preg_replace('~\?.*~', '', relative_uri()) . '?'
 	. (sid() ? SID . '&' : '')
 	. (SERVER !== null ? DRIVER . "=" . urlencode(SERVER) . '&' : '')
 	. (isset($_GET["username"]) ? "username=" . urlencode($_GET["username"]) . '&' : '')
@@ -92,7 +110,6 @@ define("ME", str_replace(":", "%3a", preg_replace('~^[^?]*/([^?]*).*~', '\1', $_
 );
 
 include "../adminer/include/version.inc.php";
-include "./include/adminer.inc.php";
 include "../adminer/include/design.inc.php";
 include "../adminer/include/xxtea.inc.php";
 include "../adminer/include/auth.inc.php";

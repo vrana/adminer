@@ -23,13 +23,13 @@ class AdminerLoginIp {
 
 	function login($login, $password) {
 		foreach ($this->ips as $ip) {
-			if (strncasecmp($_SERVER["REMOTE_ADDR"], $ip, strlen($ip))) {
+			if (strncasecmp($_SERVER["REMOTE_ADDR"], $ip, strlen($ip)) == 0) {
 				if (!$this->forwarded_for) {
 					return true;
 				}
 				if ($_SERVER["HTTP_X_FORWARDED_FOR"]) {
 					foreach ($this->forwarded_for as $forwarded_for) {
-						if (strncasecmp(preg_replace('~.*, *~', '', $_SERVER["HTTP_X_FORWARDED_FOR"]), $forwarded_for, strlen($forwarded_for))) {
+						if (strncasecmp(preg_replace('~.*, *~', '', $_SERVER["HTTP_X_FORWARDED_FOR"]), $forwarded_for, strlen($forwarded_for)) == 0) {
 							return true;
 						}
 					}
