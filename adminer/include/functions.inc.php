@@ -477,24 +477,36 @@ function escape_key($key) {
 */
 function where($where, $fields = array()) {
 	global $connection, $jush;
-	$return = array();
+
+	$conditions = [];
+
 	foreach ((array) $where["where"] as $key => $val) {
 		$key = bracket_escape($key, 1); // 1 - back
 		$column = escape_key($key);
-		$return[] = $column
-			. ($jush == "sql" && is_numeric($val) && preg_match('~\.~', $val) ? " LIKE " . q($val) // LIKE because of floats but slow with ints
-				: ($jush == "mssql" ? " LIKE " . q(preg_replace('~[_%[]~', '[\0]', $val)) // LIKE because of text
-				: " = " . unconvert_field($fields[$key], q($val))
-			))
-		; //! enum and set
-		if ($jush == "sql" && preg_match('~char|text~', $fields[$key]["type"]) && preg_match("~[^ -@]~", $val)) { // not just [a-z] to catch non-ASCII characters
-			$return[] = "$column = " . q($val) . " COLLATE " . charset($connection) . "_bin";
+
+		if ($jush == "sql" && $fields[$key]["type"] == "json") {
+			$conditions[] = "$column = CAST(" . q($val) . " AS JSON)";
+		} elseif ($jush == "sql" && is_numeric($val) && strpos($val, ".") !== false) {
+			// LIKE because of floats but slow with ints.
+			$conditions[] = "$column LIKE " . q($val);
+		} elseif ($jush == "mssql") {
+			// LIKE because of text.
+			$conditions[] = "$column LIKE " . q(preg_replace('~[_%[]~', '[\0]', $val));
+		} else {
+			$conditions[] = "$column = " . unconvert_field($fields[$key], q($val));
+		}
+
+		// Not just [a-z] to catch non-ASCII characters.
+		if ($jush == "sql" && preg_match('~char|text~', $fields[$key]["type"]) && preg_match("~[^ -@]~", $val)) {
+			$conditions[] = "$column = " . q($val) . " COLLATE " . charset($connection) . "_bin";
 		}
 	}
+
 	foreach ((array) $where["null"] as $key) {
-		$return[] = escape_key($key) . " IS NULL";
+		$conditions[] = escape_key($key) . " IS NULL";
 	}
-	return implode(" AND ", $return);
+
+	return implode(" AND ", $conditions);
 }
 
 /** Create SQL condition from query string
