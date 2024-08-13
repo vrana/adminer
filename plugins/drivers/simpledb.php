@@ -280,7 +280,14 @@ if (isset($_GET["simpledb"])) {
 
 	}
 
-
+	/**
+	 * @param string $hostPath
+	 * @return bool
+	 */
+	function is_server_host_valid($hostPath)
+	{
+		return strpos(rtrim($hostPath, '/'), '/') === false;
+	}
 
 	function connect() {
 		global $adminer;

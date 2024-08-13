@@ -240,6 +240,15 @@ if (isset($_GET["clickhouse"])) {
 		return apply_queries("DROP TABLE", $tables);
 	}
 
+	/**
+	 * @param string $hostPath
+	 * @return bool
+	 */
+	function is_server_host_valid($hostPath)
+	{
+		return strpos(rtrim($hostPath, '/'), '/') === false;
+	}
+
 	function connect() {
 		global $adminer;
 		$connection = new Min_DB;

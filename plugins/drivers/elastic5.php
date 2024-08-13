@@ -273,6 +273,15 @@ if (isset($_GET["elastic5"])) {
 		}
 	}
 
+	/**
+	 * @param string $hostPath
+	 * @return bool
+	 */
+	function is_server_host_valid($hostPath)
+	{
+		return strpos(rtrim($hostPath, '/'), '/') === false;
+	}
+
 	function connect() {
 		$connection = new Min_DB;
 

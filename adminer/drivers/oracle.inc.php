@@ -167,7 +167,14 @@ if (isset($_GET["oracle"])) {
 		}
 	}
 
-
+	/**
+	 * @param string $hostPath
+	 * @return bool
+	 */
+	function is_server_host_valid($hostPath) {
+		// EasyConnect host+path format: host[/[service_name][:server_type][/instance_name]]
+		return (bool)preg_match('~^[^/]+(/([^/:]+)?(:[^/:]+)?(/[^/:]+)?)?$~', $hostPath);
+	}
 
 	function idf_escape($idf) {
 		return '"' . str_replace('"', '""', $idf) . '"';
