@@ -1250,7 +1250,7 @@ function select_value($val, $link, $field, $text_length) {
 		if (is_mail($val)) {
 			$link = "mailto:$val";
 		}
-		if (is_url($val)) {
+		if (is_web_url($val)) {
 			$link = $val; // IE 11 and all modern browsers hide referrer
 		}
 	}
@@ -1271,20 +1271,32 @@ function select_value($val, $link, $field, $text_length) {
 * @param string
 * @return bool
 */
-function is_mail($email) {
-	$atom = '[-a-z0-9!#$%&\'*+/=?^_`{|}~]'; // characters of local-name
-	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component
-	$pattern = "$atom+(\\.$atom+)*@($domain?\\.)+$domain";
-	return is_string($email) && preg_match("(^$pattern(,\\s*$pattern)*\$)i", $email);
+function is_mail($value) {
+	return is_string($value) && filter_var($value, FILTER_VALIDATE_EMAIL);
 }
 
-/** Check whether the string is URL address
+/** Check whether the string is web URL address
 * @param string
 * @return bool
 */
-function is_url($string) {
-	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component //! IDN
-	return preg_match("~^(https?)://($domain?\\.)+$domain(:\\d+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string); //! restrict path, query and fragment characters
+function is_web_url($value) {
+	if (!is_string($value) || !preg_match('~^https?://~i', $value)) {
+		return false;
+	}
+
+	$components = parse_url($value);
+    if (!$components) {
+        return false;
+    }
+
+    // Encode URL path. If path was encoded already, it will be encoded twice, but we are OK with that.
+	$encodedParts = array_map('urlencode', explode('/', $components['path']));
+	$url = str_replace($components['path'], implode('/', $encodedParts), $value);
+
+	parse_str($components['query'], $params);
+	$url = str_replace($components['query'], http_build_query($params), $url);
+
+	return (bool)filter_var($url, FILTER_VALIDATE_URL);
 }
 
 /** Check if field should be shortened

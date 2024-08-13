@@ -6,6 +6,7 @@ Adminer 4.9.0-dev:
 - Elasticsearch 5: Make unusable driver usable again, move it to plugins.
 - Add new Elasticsearch 7 driver.
 - Set saving to file as a default export option.
+- Improve URL and email detection.
 - Update composer.json.
 
 Adminer 4.8.2 (released 2024-03-16):

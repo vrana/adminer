@@ -202,7 +202,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			$return = (preg_match('~^(1|t|true|y|yes|on)$~i', $val) ? lang('yes') : lang('no'));
 		}
 		if ($link) {
-			$return = "<a href='$link'" . (is_url($link) ? target_blank() : "") . ">$return</a>";
+			$return = "<a href='$link'" . (is_web_url($link) ? target_blank() : "") . ">$return</a>";
 		}
 		if (!$link && !like_bool($field) && preg_match(number_type(), $field["type"])) {
 			$return = "<div class='number'>$return</div>"; // Firefox doesn't support <colgroup>

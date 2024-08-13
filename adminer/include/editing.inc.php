@@ -72,7 +72,7 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 						$link .= "&where" . urlencode("[" . bracket_escape($col) . "]") . "=" . urlencode($row[$j]);
 					}
 				}
-			} elseif (is_url($val)) {
+			} elseif (is_web_url($val)) {
 				$link = $val;
 			}
 			if ($val === null) {
@@ -86,7 +86,7 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 				}
 			}
 			if ($link) {
-				$val = "<a href='" . h($link) . "'" . (is_url($link) ? target_blank() : '') . ">$val</a>";
+				$val = "<a href='" . h($link) . "'" . (is_web_url($link) ? target_blank() : '') . ">$val</a>";
 			}
 			echo "<td>$val";
 		}
