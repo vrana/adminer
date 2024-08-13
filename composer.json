@@ -32,6 +32,25 @@
         "vrana/jush": "@dev",
         "vrana/jsshrink": "@dev"
     },
+    "suggest": {
+        "ext-zlib": "*",
+        "ext-suhosin": "*",
+        "ext-mysqli": "*",
+        "ext-mysql": "*",
+        "ext-pgsql": "*",
+        "ext-mongo": "*",
+        "ext-sqlsrv": "*",
+        "ext-mssql": "*",
+        "ext-oci8": "*",
+        "ext-interbase": "*",
+        "ext-pdo_pgsql": "*",
+        "ext-pdo_dblib": "*",
+        "ext-pdo_sqlite": "*",
+        "ext-pdo_oci": "*"
+    },
+    "require-dev": {
+        "ext-xdebug": "*"
+    },
     "scripts": {
         "compile": "php compile.php"
     },
