@@ -231,17 +231,25 @@ class Adminer {
 	*/
 	function selectQuery($query, $start, $failed = false) {
 		global $jush, $driver;
-		$return = "</p>\n"; // required for IE9 inline edit
+
+        $supportSql = support("sql");
+
+		$result = "<p>"
+            . "<code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code> "
+            . "<span class='time'>(" . format_time($start) . ")</span>"
+			. ($supportSql ? " <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>" : "");
+
 		if (!$failed && ($warnings = $driver->warnings())) {
 			$id = "warnings";
-			$return = ", <a href='#$id'>" . lang('Warnings') . "</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "")
-				. "$return<div id='$id' class='hidden'>\n$warnings</div>\n"
-			;
+			$result = ($supportSql ? "," : "")
+                . " <a href='#$id'>" . lang('Warnings') . "</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "")
+                . "</p>\n"
+                . "<div id='$id' class='hidden'>\n$warnings</div>\n";
+		} else {
+			$result .= "</p>\n";
 		}
-		return "<p><code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code> <span class='time'>(" . format_time($start) . ")</span>"
-			. (support("sql") ? " <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>" : "")
-			. $return
-		;
+
+        return $result;
 	}
 
 	/** Query printed in SQL command before execution
