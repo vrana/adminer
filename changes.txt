@@ -8,6 +8,7 @@ Adminer 4.9.0-dev:
 - Set saving to file as a default export option.
 - Improve URL and email detection.
 - Fix AdminerVersionNoverify plugin blocking other plugins to modify HTML head.
+- Fix several bugs and security issues in AdminerFileUpload plugin.
 - Update composer.json.
 
 Adminer 4.8.2 (released 2024-03-16):
