@@ -1,4 +1,4 @@
-Adminer 4.9.0-dev:
+Adminer 4.9.0:
 Validate connection to server in HTTP based drivers
 Elasticsearch 5: Make unusable driver usable again, move it to plugins
 Add new Elasticsearch 7 driver
