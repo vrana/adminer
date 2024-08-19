@@ -1,4 +1,4 @@
-Adminer 4.9.0-dev:
+Adminer 4.9 (released 2024-08-19):
 - Validate server input in login form.
 - Validate connection to server in HTTP based drivers.
 - Move dependencies from submodules to Composer.
