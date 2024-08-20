@@ -3,3 +3,4 @@
 /editor*.php
 /vendor/
 /composer.lock
+/temp

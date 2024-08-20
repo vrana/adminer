@@ -11,6 +11,7 @@ Adminer 4.9.0-dev:
 - Fix several bugs and security issues in AdminerFileUpload plugin.
 - Skip dump of generated columns.
 - Update composer.json.
+- Add script for exporting compiled adminer variants.
 
 Adminer 4.8.2 (released 2024-03-16):
 Support multi-line table comments
