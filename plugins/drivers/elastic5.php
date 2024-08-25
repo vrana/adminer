@@ -132,7 +132,7 @@ if (isset($_GET["elastic5"])) {
 		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
 			$data = array();
 			if ($select != array("*")) {
-				$data["fields"] = $select;
+				$data["fields"] = array_values($select);
 			}
 
 			if ($order) {
