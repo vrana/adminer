@@ -366,7 +366,7 @@ function menuOver(event) {
 * @this HTMLElement
 */
 function menuOut() {
-	this.style.overflow = 'auto';
+	this.style.overflow = 'hidden';
 }
 
 
@@ -662,7 +662,7 @@ function ajaxForm(form, message, button) {
 		}
 	}
 	data = data.join('&');
-	
+
 	var url = form.action;
 	if (!/post/i.test(form.method)) {
 		url = url.replace(/\?.*/, '') + '?' + data;
