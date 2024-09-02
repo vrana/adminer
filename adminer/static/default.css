@@ -69,7 +69,7 @@ input.wayoff { left: -1000px; position: absolute; }
 #menu p, #logins, #tables { padding: .8em 1em; margin: 0; border-bottom: 1px solid #ccc; }
 #logins li, #tables li { list-style: none; }
 #dbs { overflow: hidden; }
-#logins, #tables { white-space: nowrap; overflow: auto; }
+#logins, #tables { white-space: nowrap; overflow: hidden; }
 #logins a, #tables a, #tables span { background: #fff; }
 #content { margin: 2em 0 0 21em; padding: 10px 20px 20px 0; }
 #lang { position: absolute; top: 0; left: 0; line-height: 1.8em; padding: .3em 1em; }
