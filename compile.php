@@ -196,7 +196,7 @@ function php_shrink($input) {
 	$short_variables = array();
 	$shortening = true;
 	$tokens = token_get_all($input);
-	
+
 	// remove unnecessary { }
 	//! change also `while () { if () {;} }` to `while () if () ;` but be careful about `if () { if () { } } else { }
 	$shorten = 0;
@@ -223,13 +223,13 @@ function php_shrink($input) {
 		}
 	}
 	$tokens = array_values($tokens);
-	
+
 	foreach ($tokens as $i => $token) {
 		if ($token[0] === T_VARIABLE && !isset($special_variables[$token[1]])) {
 			$short_variables[$token[1]]++;
 		}
 	}
-	
+
 	arsort($short_variables);
 	$chars = implode(range('a', 'z')) . '_' . implode(range('A', 'Z'));
 	// preserve variable names between versions if possible
@@ -240,7 +240,7 @@ function php_shrink($input) {
 	foreach (array_keys($short_variables) as $number => $key) {
 		$short_variables[$key] = short_identifier($number, $chars); // could use also numbers and \x7f-\xff
 	}
-	
+
 	$set = array_flip(preg_split('//', '!"#$%&\'()*+,-./:;<=>?@[]^`{|}'));
 	$space = '';
 	$output = '';
@@ -418,7 +418,7 @@ if ($driver) {
 	if (count($drivers) == 1) {
 		$file = str_replace('<?php echo html_select("auth[driver]", $drivers, DRIVER) . "\n"; ?>', "<input type='hidden' name='auth[driver]' value='" . ($driver == "mysql" ? "server" : $driver) . "'>" . reset($drivers), $file);
 	}
-	$file = preg_replace('(;../vendor/vrana/jush/modules/jush-(?!textarea\.|txt\.|js\.|' . preg_quote($driver == "mysql" ? "sql" : $driver) . '\.)[^.]+.js)', '', $file);
+	$file = preg_replace('(;\.\./vendor/vrana/jush/modules/jush-(?!textarea\.|txt\.|js\.|' . preg_quote($driver == "mysql" ? "sql" : $driver) . '\.)[^.]+.js)', '', $file);
 	$file = preg_replace_callback('~doc_link\(array\((.*)\)\)~sU', function ($match) use ($driver) {
 		list(, $links) = $match;
 		$links = preg_replace("~'(?!(" . ($driver == "mysql" ? "sql|mariadb" : $driver) . ")')[^']*' => [^,]*,?~", '', $links);
@@ -427,8 +427,8 @@ if ($driver) {
 	//! strip doc_link() definition
 }
 if ($project == "editor") {
-	$file = preg_replace('~;.\.\/externals/jush/jush\.css~', '', $file);
-	$file = preg_replace('~compile_file\(\'\.\./(externals/jush/modules/jush\.js|adminer/static/[^.]+\.gif)[^)]+\)~', "''", $file);
+	$file = preg_replace('~;\.\./vendor/vrana/jush/jush\.css~', '', $file);
+	$file = preg_replace('~compile_file\(\'\.\./(vendor/vrana/jush/modules/jush\.js|adminer/static/[^.]+\.gif)[^)]+\)~', "''", $file);
 }
 $file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
 $file = preg_replace_callback('~\b(include|require) "([^"]*\$LANG.inc.php)";~', 'put_file_lang', $file);
@@ -440,14 +440,14 @@ if ($_SESSION["lang"]) {
 	$file = str_replace('<?php echo $LANG; ?>', $_SESSION["lang"], $file);
 }
 $file = str_replace('<?php echo script_src("static/editing.js"); ?>' . "\n", "", $file);
-$file = preg_replace('~\s+echo script_src\("\.\./externals/jush/modules/jush-(textarea|txt|js|\$jush)\.js"\);~', '', $file);
+$file = preg_replace('~\s+echo script_src\("\.\./vendor/vrana/jush/modules/jush-(textarea|txt|js|\$jush)\.js"\);~', '', $file);
 $file = str_replace('<link rel="stylesheet" type="text/css" href="../vendor/vrana/jush/jush.css">' . "\n", "", $file);
 $file = preg_replace_callback("~compile_file\\('([^']+)'(?:, '([^']*)')?\\)~", 'compile_file', $file); // integrate static files
 $replace = 'preg_replace("~\\\\\\\\?.*~", "", ME) . "?file=\1&version=' . substr(md5(microtime()), 0, 8) . '"';
 $file = preg_replace('~\.\./adminer/static/(default\.css|favicon\.ico)~', '<?php echo h(' . $replace . '); ?>', $file);
 $file = preg_replace('~"\.\./adminer/static/(functions\.js)"~', $replace, $file);
 $file = preg_replace('~\.\./adminer/static/([^\'"]*)~', '" . h(' . $replace . ') . "', $file);
-$file = preg_replace('~"\.\./externals/jush/modules/(jush\.js)"~', $replace, $file);
+$file = preg_replace('~"\.\./vendor/vrana/jush/modules/(jush\.js)"~', $replace, $file);
 $file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
 $file = php_shrink($file);
 
