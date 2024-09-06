@@ -374,7 +374,7 @@ thead td, thead th {
 	padding: 7px 2px;
 }
 
-thead td acronym, thead td sup, thead th acronym, thead th sup {
+thead td abbr, thead td sup, thead th acronym, thead th sup {
 	color: #cdf
 }
 

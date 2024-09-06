@@ -279,7 +279,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 <td><?php echo lang('Options'); /* no label required, options have their own label */ ?>
 <?php if ($type == "TABLE") { ?>
 <td id="label-null">NULL
-<td><input type="radio" name="auto_increment_col" value=""><acronym id="label-ai" title="<?php echo lang('Auto Increment'); ?>">AI</acronym><?php echo doc_link(array(
+<td><input type="radio" name="auto_increment_col" value=""><abbr id="label-ai" title="<?php echo lang('Auto Increment'); ?>">AI</abbr><?php echo doc_link(array(
 	'sql' => "example-auto-increment.html",
 	'mariadb' => "auto_increment/",
 	'sqlite' => "autoinc.html",
