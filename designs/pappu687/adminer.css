@@ -1,7 +1,7 @@
 /*
-FLAT UI Flavored Adminer Theme by M. Mahbubur Rahman (mahbub@mahbubblog.com) 
+FLAT UI Flavored Adminer Theme by M. Mahbubur Rahman (mahbub@mahbubblog.com)
 Screenshot : http://d.pr/i/cznH
-Based on work by : Lukáš Brandejs	
+Based on work by : Lukáš Brandejs
 https://raw.github.com/vrana/adminer/master/designs/ng9/adminer.css
 */
 
@@ -119,7 +119,7 @@ code a:hover{background:transparent}
 table{
 	margin:10px 0px;
 	border:1px solid #E6E6E6;
-	background-color:#FFFFFF;	
+	background-color:#FFFFFF;
 }
 
 tbody tr:hover td,tbody tr:hover th{
@@ -133,17 +133,17 @@ thead th, thead td {
 	white-space:nowrap;
 	border-right:1px solid #34495e;
 	background:#34495e;
-	color:#FFFFFF;	
+	color:#FFFFFF;
 	padding-right:10px;
 }
-thead th acronym, thead td acronym, thead th sup, thead td sup{
+thead th abbr, thead td acronym, thead th sup, thead td sup{
 	color:#CCDDFF;
 }
 
 th,td{
 	border:1px solid rgba(233,233,233,.3);
 	padding:3px 6px;
-	vertical-align:top;	
+	vertical-align:top;
 }
 
 th a {
@@ -269,12 +269,12 @@ input[name=logout]:hover {
 	background:#ea0202;
 }
 
-#logins a, #tables a { 
+#logins a, #tables a {
 	background:none;
 }
 
-#logins a:hover, #tables a:hover { 
-	
+#logins a:hover, #tables a:hover {
+
 }
 
 #logout {
@@ -283,7 +283,7 @@ input[name=logout]:hover {
 }
 
 #logout:hover {
-	color:red;	
+	color:red;
 }
 
 .logout {
@@ -308,14 +308,14 @@ input[name=logout]:hover {
 
 
 input[type=submit] {
-	font-size:13px;	
+	font-size:13px;
 	font-weight:normal;
 	-moz-border-radius:1px;
 	-webkit-border-radius:1px;
 	border-radius:1px;
 	border:0px solid #469df5;
 	padding:4px 12px;
-	text-decoration:none;	
+	text-decoration:none;
 	background-color:#65ADC3;
 	color:#ffffff;
 	display:inline-block;
@@ -324,7 +324,7 @@ input[type=submit] {
  	-moz-box-shadow:inset 0px 0px 0px 0px #cae3fc;
  	box-shadow:inset 0px 0px 0px 0px #cae3fc;
 }
-input[type=submit]:hover {	
+input[type=submit]:hover {
 	background-color:#34495e;
 	text-shadow:0px 1px 0px #000;
 }
