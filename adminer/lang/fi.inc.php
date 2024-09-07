@@ -22,10 +22,10 @@ $translations = array(
 	'Session expired, please login again.' => 'Istunto vanhentunut, kirjaudu uudelleen.',
 	'%s version: %s through PHP extension %s' => '%s versio: %s PHP-laajennuksella %s',
 	'Refresh' => 'Virkistä',
-	
+
 	// text direction - 'ltr' or 'rtl'
 	'ltr' => 'ltr',
-	
+
 	'Privileges' => 'Oikeudet',
 	'Create user' => 'Luo käyttäjä',
 	'User has been dropped.' => 'Käyttäjä poistettiin.',
@@ -36,14 +36,14 @@ $translations = array(
 	'Routine' => 'Rutiini',
 	'Grant' => 'Myönnä',
 	'Revoke' => 'Kiellä',
-	
+
 	'Process list' => 'Prosessilista',
 	'%d process(es) have been killed.' => array('%d prosessi lopetettu.', '%d prosessia lopetettu..'),
 	'Kill' => 'Lopeta',
-	
+
 	'Variables' => 'Muuttujat',
 	'Status' => 'Tila',
-	
+
 	'SQL command' => 'SQL-komento',
 	'%d query(s) executed OK.' => array('%d kysely onnistui.', '%d kyselyä onnistui.'),
 	'Query executed OK, %d row(s) affected.' => array('Kysely onnistui, kohdistui %d riviin.', 'Kysely onnistui, kohdistui %d riviin.'),
@@ -57,7 +57,7 @@ $translations = array(
 	'History' => 'Historia',
 	'Clear' => 'Tyhjennä',
 	'Edit all' => 'Muokkaa kaikkia',
-	
+
 	'File upload' => 'Tiedoston lataus palvelimelle',
 	'From server' => 'Verkkopalvelimella Adminer-kansiossa oleva tiedosto',
 	'Webserver file %s' => 'Verkkopalvelintiedosto %s',
@@ -69,7 +69,7 @@ $translations = array(
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Liian suuri POST-datamäärä. Pienennä dataa tai kasvata arvoa %s konfigurointitiedostossa.',
 	'You can upload a big SQL file via FTP and import it from server.' => 'Voit ladata suuren SQL-tiedoston FTP:n kautta ja tuoda sen sitten palvelimelta.',
 	'You are offline.' => 'Olet offline-tilassa.',
-	
+
 	'Export' => 'Vienti',
 	'Output' => 'Tulos',
 	'open' => 'avaa',
@@ -77,7 +77,7 @@ $translations = array(
 	'Saving' => 'Tallennetaan',
 	'Format' => 'Muoto',
 	'Data' => 'Data',
-	
+
 	'Database' => 'Tietokanta',
 	'database' => 'tietokanta',
 	'Use' => 'Käytä',
@@ -91,10 +91,10 @@ $translations = array(
 	'Alter database' => 'Muuta tietokantaa',
 	'Create database' => 'Luo tietokanta',
 	'Database schema' => 'Tietokantakaava',
-	
+
 	// link to current database schema layout
 	'Permanent link' => 'Pysyvä linkki',
-	
+
 	// thousands separator - must contain single byte
 	',' => ',',
 	'0123456789' => '0123456789',
@@ -117,7 +117,7 @@ $translations = array(
 	'Tables have been moved.' => 'Taulut on siirretty.',
 	'Copy' => 'Kopioi',
 	'Tables have been copied.' => 'Taulut on kopioitu.',
-	
+
 	'Routines' => 'Rutiinit',
 	'Routine has been called, %d row(s) affected.' => array('Rutiini kutsuttu, kohdistui %d riviin.', 'Rutiini kutsuttu, kohdistui %d riviin.'),
 	'Call' => 'Kutsua',
@@ -130,7 +130,7 @@ $translations = array(
 	'Alter function' => 'Muuta funktiota',
 	'Alter procedure' => 'Muuta proseduuria',
 	'Return type' => 'Palautustyyppi',
-	
+
 	'Events' => 'Tapahtumat',
 	'Event has been dropped.' => 'Tapahtuma on poistettu.',
 	'Event has been altered.' => 'Tapahtumaa on muutettu.',
@@ -143,7 +143,7 @@ $translations = array(
 	'Start' => 'Aloitus',
 	'End' => 'Lopetus',
 	'On completion preserve' => 'Säilytä, kun valmis',
-	
+
 	'Tables' => 'Taulut',
 	'Tables and views' => 'Taulut ja näkymät',
 	'Table' => 'Taulu',
@@ -175,12 +175,12 @@ $translations = array(
 	'Move down' => 'Siirrä alas',
 	'Remove' => 'Poista',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Kenttien sallittu enimmäismäärä ylitetty. Kasvata arvoa %s.',
-	
+
 	'Partition by' => 'Osioi arvolla',
 	'Partitions' => 'Osiot',
 	'Partition name' => 'Osion nimi',
 	'Values' => 'Arvot',
-	
+
 	'View' => 'Näkymä',
 	'Materialized view' => 'Materialisoitunut näkymä',
 	'View has been dropped.' => 'Näkymä on poistettu.',
@@ -188,14 +188,14 @@ $translations = array(
 	'View has been created.' => 'Näkymä on luotu.',
 	'Alter view' => 'Muuta näkymää',
 	'Create view' => 'Luo näkymä',
-	
+
 	'Indexes' => 'Indeksit',
 	'Indexes have been altered.' => 'Indeksejä on muutettu.',
 	'Alter indexes' => 'Muuta indeksejä',
 	'Add next' => 'Lisää seuraava',
 	'Index Type' => 'Indeksityyppi',
 	'Column (length)' => 'Sarake (pituus)',
-	
+
 	'Foreign keys' => 'Vieraat avaimet',
 	'Foreign key' => 'Vieras avain',
 	'Foreign key has been dropped.' => 'Vieras avain on poistettu.',
@@ -211,7 +211,7 @@ $translations = array(
 	'ON DELETE' => 'ON DELETE',
 	'ON UPDATE' => 'ON UPDATE',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Lähde- ja kohdesarakkeiden tulee olla samaa tietotyyppiä, kohdesarakkeisiin tulee olla indeksi ja dataa, johon viitataan, täytyy olla.',
-	
+
 	'Triggers' => 'Liipaisimet',
 	'Add trigger' => 'Lisää liipaisin',
 	'Trigger has been dropped.' => 'Liipaisin on poistettu.',
@@ -222,7 +222,7 @@ $translations = array(
 	'Time' => 'Aika',
 	'Event' => 'Tapahtuma',
 	'Name' => 'Nimi',
-	
+
 	'select' => 'valitse',
 	'Select' => 'Valitse',
 	'Select data' => 'Valitse data',
@@ -248,16 +248,16 @@ $translations = array(
 	'Loading' => 'Ladataan',
 	'Whole result' => 'Koko tulos',
 	'%d byte(s)' => array('%d tavu', '%d tavua'),
-	
+
 	'Import' => 'Tuonti',
 	'%d row(s) have been imported.' => array('%d rivi tuotiin.', '%d riviä tuotiin.'),
 	'File must be in UTF-8 encoding.' => 'Tiedoston täytyy olla UTF-8-muodossa.',
-	
+
 	// in-place editing in select
 	'Modify' => 'Muuta',
 	'Ctrl+click on a value to modify it.' => 'Ctrl+napsauta arvoa muuttaaksesi.',
 	'Use edit link to modify this value.' => 'Käytä muokkaa-linkkiä muuttaaksesi tätä arvoa.',
-	
+
 	// %s can contain auto-increment value
 	'Item%s has been inserted.' => 'Tietue%s lisättiin.',
 	'Item has been deleted.' => 'Tietue poistettiin.',
@@ -277,14 +277,14 @@ $translations = array(
 	'Clone' => 'Kloonaa',
 	'Delete' => 'Poista',
 	'You have no privileges to update this table.' => 'Sinulla ei ole oikeutta päivittää tätä taulua.',
-	
+
 	'E-mail' => 'S-posti',
 	'From' => 'Lähettäjä',
 	'Subject' => 'Aihe',
 	'Attachments' => 'Liitteet',
 	'Send' => 'Lähetä',
 	'%d e-mail(s) have been sent.' => array('% sähköpostiviestiä lähetetty.', '% sähköpostiviestiä lähetetty.'),
-	
+
 	// data type descriptions
 	'Numbers' => 'Numerot',
 	'Date and time' => 'Päiväys ja aika',
@@ -294,7 +294,7 @@ $translations = array(
 	'Network' => 'Verkko',
 	'Geometry' => 'Geometria',
 	'Relations' => 'Suhteet',
-	
+
 	'Editor' => 'Editori',
 	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
 	'$1-$3-$5' => '$5.$3.$1',
@@ -305,11 +305,11 @@ $translations = array(
 	'now' => 'nyt',
 	'yes' => 'kyllä',
 	'no' => 'ei',
-	
+
 	// general SQLite error in create, drop or rename database
 	'File exists.' => 'Tiedosto on olemassa.',
 	'Please use one of the extensions %s.' => 'Käytä jotain %s-laajennuksista.',
-	
+
 	// PostgreSQL and MS SQL schema support
 	'Alter schema' => 'Muuta kaavaa',
 	'Create schema' => 'Luo kaava',
@@ -318,7 +318,7 @@ $translations = array(
 	'Schema has been altered.' => 'Kaavaa muutettiin.',
 	'Schema' => 'Kaava',
 	'Invalid schema.' => 'Kaava ei kelpaa.',
-	
+
 	// PostgreSQL sequences support
 	'Sequences' => 'Sekvenssit',
 	'Create sequence' => 'Luo sekvenssi',
@@ -326,7 +326,7 @@ $translations = array(
 	'Sequence has been created.' => 'Sekvenssi on luotu.',
 	'Sequence has been altered.' => 'Sekvenssiä on muutettu.',
 	'Alter sequence' => 'Muuta sekvenssiä',
-	
+
 	// PostgreSQL user types support
 	'User types' => 'Käyttäjän tyypit',
 	'Create type' => 'Luo tyyppi',
@@ -347,4 +347,12 @@ $translations = array(
 	'Unknown error.' => 'Tuntematon virhe.',
 	'Database does not support password.' => 'Tietokanta ei tue salasanaa.',
 	'Disable %s or enable %s or %s extensions.' => 'Poista käytöstä %s tai ota käyttöön laajennus %s tai %s.',
+
+	'Columns' => null,
+	'Nullable' => null,
+	'Default' => null,
+	'Yes' => 'Kyllä',
+	'No' => 'Ei',
+	'One Time Password' => null,
+	'Invalid OTP code.' => null,
 );

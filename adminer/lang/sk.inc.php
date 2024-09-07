@@ -265,7 +265,6 @@ $translations = array(
 	'Permanent link' => 'Permanentný odkaz',
 	'Edit all' => 'Upraviť všetko',
 	'HH:MM:SS' => 'HH:MM:SS',
-
 	'Drop %s?' => 'Odstrániť %s?',
 	'Tables have been optimized.' => 'Tabuľky boli optimalizované.',
 	'Materialized view' => 'Materializovaný pohľad',
@@ -302,4 +301,11 @@ $translations = array(
 	'Disable %s or enable %s or %s extensions.' => 'Zakážte %s alebo povoľte rozšírenie %s alebo %s.',
 	'yes' => 'áno',
 	'no' => 'nie',
+	'Yes' => 'Áno',
+	'No' => 'Nie',
+	'Columns' => 'Stĺpce',
+	'Nullable' => 'Povolené null',
+	'Default' => 'Predvolené',
+	'One Time Password' => 'Jednorázové heslo',
+	'Invalid OTP code.' => 'Neplatný kód OTP.',
 );

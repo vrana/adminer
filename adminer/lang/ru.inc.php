@@ -287,8 +287,8 @@ $translations = array(
 	'You are offline.' => 'Вы не выполнили вход.',
 	'You have no privileges to update this table.' => 'У вас нет прав на обновление этой таблицы.',
 	'Saving' => 'Сохранение',
-	'yes' => 'Да',
-	'no' => 'Нет',
+	'yes' => 'да',
+	'no' => 'нет',
 	'Drop %s?' => 'Удалить %s?',
 	'overwrite' => 'перезаписать',
 	'DB' => 'DB',
@@ -302,4 +302,12 @@ $translations = array(
 	'Database does not support password.' => 'База данных не поддерживает пароль.',
 
 	'Disable %s or enable %s or %s extensions.' => 'Отключите %s или включите расширения %s или %s.',
+
+	'Columns' => null,
+	'Nullable' => null,
+	'Default' => null,
+	'Yes' => 'Да',
+	'No' => 'Нет',
+	'One Time Password' => null,
+	'Invalid OTP code.' => null,
 );

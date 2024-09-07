@@ -285,10 +285,10 @@ $translations = array(
 	'Size' => 'Izmērs',
 	'Compute' => 'Izskaitļot',
 	'You are offline.' => 'Jūs est bezsasaistē.',
-	'You have no privileges to update this table.' => 'jums nav pieejas labot šo tabulu.',
+	'You have no privileges to update this table.' => 'Jums nav pieejas labot šo tabulu.',
 	'Saving' => 'Saglabāšana',
-	'yes' => 'Jā',
-	'no' => 'Nē',
+	'yes' => 'jā',
+	'no' => 'nē',
 	'Drop %s?' => 'Dzēst %s?',
 	'overwrite' => 'pārrakstīt',
 	'DB' => 'DB',
@@ -302,4 +302,12 @@ $translations = array(
 	'Database does not support password.' => 'Datubāze neatbalsta paroli.',
 
 	'Disable %s or enable %s or %s extensions.' => null,
+
+	'Columns' => null,
+	'Nullable' => null,
+	'Default' => null,
+	'Yes' => 'Jā',
+	'No' => 'Nē',
+	'One Time Password' => null,
+	'Invalid OTP code.' => null,
 );

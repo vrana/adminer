@@ -22,10 +22,10 @@ $translations = array(
 	'Session expired, please login again.' => 'Η συνεδρία έληξε, παρακαλώ συνδεθείτε ξανά.',
 	'%s version: %s through PHP extension %s' => '%s έκδοση: %s μέσω επέκτασης PHP %s',
 	'Refresh' => 'Ανανέωση',
-	
+
 	// text direction - 'ltr' or 'rtl'
 	'ltr' => 'ltr',
-	
+
 	'Privileges' => 'Δικαιώματα',
 	'Create user' => 'Δημιουργία Χρήστη',
 	'User has been dropped.' => 'Ο Χρήστης διαγράφηκε.',
@@ -36,14 +36,14 @@ $translations = array(
 	'Routine' => 'Ρουτίνα',
 	'Grant' => 'Παραχώρηση',
 	'Revoke' => 'Ανάκληση',
-	
+
 	'Process list' => 'Λίστα διεργασιών',
 	'%d process(es) have been killed.' => array('Τερματίστηκε %d διεργασία.', 'Τερματίστηκαν %d διεργασίες.'),
 	'Kill' => 'Τερματισμός',
-	
+
 	'Variables' => 'Μεταβλητές',
 	'Status' => 'Κατάσταση',
-	
+
 	'SQL command' => 'Εντολή SQL',
 	'%d query(s) executed OK.' => array('Το ερώτημα %d εκτελέστηκε ΟΚ.', 'Τα ερώτηματα %d εκτελέστηκαν ΟΚ.'),
 	'Query executed OK, %d row(s) affected.' => array('Το ερώτημα εκτελέστηκε ΟΚ, επηρεάστηκε %d σειρά.', 'Το ερώτημα εκτελέστηκε ΟΚ, επηρεάστηκαν %d σειρές.'),
@@ -57,7 +57,7 @@ $translations = array(
 	'History' => 'Ιστορικό',
 	'Clear' => 'Καθαρισμός',
 	'Edit all' => 'Επεξεργασία όλων',
-	
+
 	'File upload' => 'Μεταφόρτωση αρχείου',
 	'From server' => 'Από διακομιστή',
 	'Webserver file %s' => 'Αρχείο %s από διακομιστή web',
@@ -69,7 +69,7 @@ $translations = array(
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Πολλά δεδομένα POST. Μείωστε τα περιεχόμενα ή αυξήστε την σχετική ρύθμιση %s.',
 	'You can upload a big SQL file via FTP and import it from server.' => 'Μπορείτε να μεταφορτώσετε ένα μεγάλο αρχείο SQL μέσω FTP και να το εισάγετε από το διακομιστή.',
 	'You are offline.' => 'Βρίσκεστε εκτός σύνδεσης.',
-	
+
 	'Export' => 'Εξαγωγή',
 	'Output' => 'Αποτέλεσμα',
 	'open' => 'άνοιγμα',
@@ -77,7 +77,7 @@ $translations = array(
 	'Saving' => 'Γίνεται Αποθήκευση',
 	'Format' => 'Μορφή',
 	'Data' => 'Δεδομένα',
-	
+
 	'Database' => 'Β. Δεδομένων',
 	'database' => 'β. δεδομένων',
 	'Use' => 'χρήση',
@@ -91,10 +91,10 @@ $translations = array(
 	'Alter database' => 'Τροποποίηση Β.Δ.',
 	'Create database' => 'Δημιουργία Β.Δ.',
 	'Database schema' => 'Σχήμα Β.Δ.',
-	
+
 	// link to current database schema layout
 	'Permanent link' => 'Μόνιμος Σύνδεσμος',
-	
+
 	// thousands separator - must contain single byte
 	',' => '.',
 	'0123456789' => '0123456789',
@@ -117,7 +117,7 @@ $translations = array(
 	'Tables have been moved.' => 'Οι πίνακες μεταφέρθηκαν.',
 	'Copy' => 'Αντιγραφή',
 	'Tables have been copied.' => 'Οι πίνακες αντιγράφηκαν.',
-	
+
 	'Routines' => 'Ρουτίνες',
 	'Routine has been called, %d row(s) affected.' => array('Η ρουτίνα εκτελέστηκε, επηρεάστηκε %d σειρά.', 'Η ρουτίνα εκτελέστηκε, επηρεάστηκαν %d σειρές.'),
 	'Call' => 'Εκτέλεση',
@@ -130,7 +130,7 @@ $translations = array(
 	'Alter function' => 'Τροποποίηση λειτουργίας',
 	'Alter procedure' => 'Τροποποίηση διαδικασίας',
 	'Return type' => 'Επιστρεφόμενος τύπος',
-	
+
 	'Events' => 'Γεγονός',
 	'Event has been dropped.' => 'Το γεγονός διαγράφηκε.',
 	'Event has been altered.' => 'Το γεγονός τροποποιήθηκε.',
@@ -143,7 +143,7 @@ $translations = array(
 	'Start' => 'Έναρξη',
 	'End' => 'Λήξη',
 	'On completion preserve' => 'Κατά την ολοκλήρωση διατήρησε',
-	
+
 	'Tables' => 'Πίνακες',
 	'Tables and views' => 'Πίνακες και Προβολές',
 	'Table' => 'Πίνακας',
@@ -175,12 +175,12 @@ $translations = array(
 	'Move down' => 'Μετακίνηση προς τα κάτω',
 	'Remove' => 'Αφαίρεση',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Υπέρβαση μέγιστου επιτρεπόμενου αριθμού πεδίων. Παρακαλώ αυξήστε %s.',
-	
+
 	'Partition by' => 'Τμηματοποίηση ανά',
 	'Partitions' => 'Τμήματα',
 	'Partition name' => 'Όνομα Τμήματος',
 	'Values' => 'Τιμές',
-	
+
 	'View' => 'Προβολή',
 	'Materialized view' => 'Υλοποιημένη προβολή',
 	'View has been dropped.' => 'Η προβολή διαγράφηκε.',
@@ -188,14 +188,14 @@ $translations = array(
 	'View has been created.' => 'Η προβολή δημιουργήθηκε.',
 	'Alter view' => 'Τροποποίηση προβολής',
 	'Create view' => 'Δημιουργία προβολής',
-	
+
 	'Indexes' => 'Δείκτες',
 	'Indexes have been altered.' => 'Οι δείκτες τροποποιήθηκαν.',
 	'Alter indexes' => 'Τροποποίηση δεικτών',
 	'Add next' => 'Προσθήκη επόμενου',
 	'Index Type' => 'Τύπος δείκτη',
 	'Column (length)' => 'Στήλη (μήκος)',
-	
+
 	'Foreign keys' => 'Εξαρτημένα κλειδιά',
 	'Foreign key' => 'Εξαρτημένο κλειδί',
 	'Foreign key has been dropped.' => 'Το εξαρτημένο κλειδί διαγράφηκε.',
@@ -211,7 +211,7 @@ $translations = array(
 	'ON DELETE' => 'ΚΑΤΑ ΤΗ ΔΙΑΓΡΑΦΗ',
 	'ON UPDATE' => 'ΚΑΤΑ ΤΗΝ ΑΛΛΑΓΗ',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Οι στήλες στην πηγή και το στόχο πρέπει να έχουν τον ίδιο τύπο, πρέπει να υπάρχει δείκτης στη στήλη στόχο και να υπάρχουν εξαρτημένα δεδομένα.',
-	
+
 	'Triggers' => 'Εναύσματα',
 	'Add trigger' => 'Προσθήκη εναύσματος',
 	'Trigger has been dropped.' => 'Το έναυσμα διαγράφηκε.',
@@ -222,7 +222,7 @@ $translations = array(
 	'Time' => 'Ώρα',
 	'Event' => 'Γεγονός',
 	'Name' => 'Όνομα',
-	
+
 	'select' => 'επιλογή',
 	'Select' => 'Επιλογή',
 	'Select data' => 'Επιλέξτε δεδομένα',
@@ -248,16 +248,16 @@ $translations = array(
 	'Loading' => 'Φορτώνει',
 	'Whole result' => 'Όλο το αποτέλεσμα',
 	'%d byte(s)' => array('%d byte', '%d bytes'),
-	
+
 	'Import' => 'Εισαγωγή',
 	'%d row(s) have been imported.' => array('$d σειρά εισήχθη.', '%d σειρές εισήχθησαν.'),
 	'File must be in UTF-8 encoding.' => 'Το αρχείο πρέπει να έχει κωδικοποίηση UTF-8.',
-	
+
 	// in-place editing in select
 	'Modify' => 'Τροποποίηση',
 	'Ctrl+click on a value to modify it.' => 'Πιέστε Ctrl+click σε μια τιμή για να την τροποποιήσετε.',
 	'Use edit link to modify this value.' => 'Χρησιμοποιήστε το σύνδεσμο επεξεργασία για να τροποποιήσετε την τιμή.',
-	
+
 	// %s can contain auto-increment value
 	'Item%s has been inserted.' => 'Η εγγραφή%s εισήχθη.',
 	'Item has been deleted.' => 'Η εγγραφή διαγράφηκε.',
@@ -277,14 +277,14 @@ $translations = array(
 	'Clone' => 'Κλωνοποίηση',
 	'Delete' => 'Διαγραφή',
 	'You have no privileges to update this table.' => 'Δεν έχετε δικαίωμα να τροποποιήσετε αυτό τον πίνακα.',
-	
+
 	'E-mail' => 'E-mail',
 	'From' => 'Από',
 	'Subject' => 'Θέμα',
 	'Attachments' => 'Συνημμένα',
 	'Send' => 'Αποστολή',
 	'%d e-mail(s) have been sent.' => array('%d e-mail απεστάλη.', '%d e-mail απεστάλησαν.'),
-	
+
 	// data type descriptions
 	'Numbers' => 'Αριθμοί',
 	'Date and time' => 'Ημερομηνία και ώρα',
@@ -294,7 +294,7 @@ $translations = array(
 	'Network' => 'Δίκτυο',
 	'Geometry' => 'Γεωμετρία',
 	'Relations' => 'Συσχετήσεις',
-	
+
 	'Editor' => 'Επεξεργαστής',
 	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
 	'$1-$3-$5' => '$5/$3/$1',
@@ -305,11 +305,11 @@ $translations = array(
 	'now' => 'τώρα',
 	'yes' => 'ναι',
 	'no' => 'όχι',
-	
+
 	// general SQLite error in create, drop or rename database
 	'File exists.' => 'Το αρχείο υπάρχει.',
 	'Please use one of the extensions %s.' => 'Παρακαλώ χρησιμοποιείστε μια από τις επεκτάσεις %s.',
-	
+
 	// PostgreSQL and MS SQL schema support
 	'Alter schema' => 'Τροποποίηση σχήματος',
 	'Create schema' => 'Δημιουργία σχήματος',
@@ -318,7 +318,7 @@ $translations = array(
 	'Schema has been altered.' => 'Το σχήμα τροποποιήθηκε.',
 	'Schema' => 'Σχήμα',
 	'Invalid schema.' => 'Άκυρο σχήμα.',
-	
+
 	// PostgreSQL sequences support
 	'Sequences' => 'Αλληλουχία',
 	'Create sequence' => 'Δημιουργία αλληλουχίας',
@@ -326,7 +326,7 @@ $translations = array(
 	'Sequence has been created.' => 'Η αλληλουχία δημιουργήθηκε.',
 	'Sequence has been altered.' => 'Η αλληλουχία τροποποιήθηκε.',
 	'Alter sequence' => 'Τροποποίηση αλληλουχίας',
-	
+
 	// PostgreSQL user types support
 	'User types' => 'Τύποι χρήστη',
 	'Create type' => 'Δημιουργία τύπου',
@@ -347,4 +347,12 @@ $translations = array(
 	'Unknown error.' => null,
 	'Database does not support password.' => null,
 	'Disable %s or enable %s or %s extensions.' => null,
+
+	'Columns' => null,
+	'Nullable' => null,
+	'Default' => null,
+	'Yes' => null,
+	'No' => null,
+	'One Time Password' => null,
+	'Invalid OTP code.' => null,
 );

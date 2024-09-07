@@ -2,7 +2,7 @@
 <?php
 error_reporting(6135); // errors and warnings
 unset($_COOKIE["adminer_lang"]);
-$_SESSION["lang"] = $_SERVER["argv"][1]; // Adminer functions read language from session
+$_SESSION["lang"] = isset($_SERVER["argv"][1]) ? $_SERVER["argv"][1] : null; // Adminer functions read language from session
 if (isset($_SESSION["lang"])) {
 	include dirname(__FILE__) . "/adminer/include/lang.inc.php";
 	if (isset($_SERVER["argv"][2]) || (!isset($langs[$_SESSION["lang"]]) && $_SESSION["lang"] != "xx")) {
@@ -17,7 +17,9 @@ foreach (array_merge(
 	glob(dirname(__FILE__) . "/adminer/include/*.php"),
 	glob(dirname(__FILE__) . "/adminer/drivers/*.php"),
 	glob(dirname(__FILE__) . "/editor/*.php"),
-	glob(dirname(__FILE__) . "/editor/include/*.php")
+	glob(dirname(__FILE__) . "/editor/include/*.php"),
+	glob(dirname(__FILE__) . "/plugins/*.php"),
+	glob(dirname(__FILE__) . "/plugins/drivers/*.php")
 ) as $filename) {
 	$file = file_get_contents($filename);
 	if (preg_match_all("~lang\\(('(?:[^\\\\']+|\\\\.)*')([),])~", $file, $matches)) { // lang() always uses apostrophes

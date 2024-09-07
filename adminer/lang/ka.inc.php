@@ -302,4 +302,12 @@ $translations = array(
 	'Disable %s or enable %s or %s extensions.' => 'გათიშეთ %s ან ჩართეთ %s ან %s გაფართოება.',
 
 	'overwrite' => null,
+
+	'Columns' => null,
+	'Nullable' => null,
+	'Default' => null,
+	'Yes' => null,
+	'No' => null,
+	'One Time Password' => null,
+	'Invalid OTP code.' => null,
 );

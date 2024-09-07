@@ -302,4 +302,12 @@ $translations = array(
 	'yes' => null,
 	'no' => null,
 	'HH:MM:SS' => null,
+
+	'Columns' => null,
+	'Nullable' => null,
+	'Default' => null,
+	'Yes' => null,
+	'No' => null,
+	'One Time Password' => null,
+	'Invalid OTP code.' => null,
 );

@@ -346,4 +346,12 @@ $translations = array(
 	'Type has been dropped.' => 'Typ har, typ, tagits bort.',
 	'Type has been created.' => 'Typ har skapats.',
 	'Alter type' => 'Ändra typ',
+
+	'Columns' => null,
+	'Nullable' => null,
+	'Default' => null,
+	'Yes' => 'Ja',
+	'No' => 'Nej',
+	'One Time Password' => null,
+	'Invalid OTP code.' => null,
 );

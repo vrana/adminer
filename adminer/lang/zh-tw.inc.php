@@ -29,10 +29,10 @@ $translations = array(
 	'The action will be performed after successful login with the same credentials.' => '此操作將在成功使用相同的憑據登錄後執行。',
 	'%s version: %s through PHP extension %s' => '%s 版本：%s 透過 PHP 擴充模組 %s',
 	'Refresh' => '重新載入',
-	
+
 	// text direction - 'ltr' or 'rtl'
 	'ltr' => 'ltr',
-	
+
 	'Privileges' => '權限',
 	'Create user' => '建立使用者',
 	'User has been dropped.' => '已刪除使用者。',
@@ -43,14 +43,14 @@ $translations = array(
 	'Routine' => '程序',
 	'Grant' => '授權',
 	'Revoke' => '廢除',
-	
+
 	'Process list' => '處理程序列表',
 	'%d process(es) have been killed.' => '%d 個 Process(es) 被終止',
 	'Kill' => '終止',
-	
+
 	'Variables' => '變數',
 	'Status' => '狀態',
-	
+
 	'SQL command' => 'SQL 命令',
 	'%d query(s) executed OK.' => '已順利執行 %d 個查詢。',
 	'Query executed OK, %d row(s) affected.' => '執行查詢 OK，%d 行受影響。',
@@ -67,7 +67,7 @@ $translations = array(
 	'History' => '紀錄',
 	'Clear' => '清除',
 	'Edit all' => '編輯全部',
-	
+
 	'File upload' => '檔案上傳',
 	'From server' => '從伺服器',
 	'Webserver file %s' => '網頁伺服器檔案 %s',
@@ -79,7 +79,7 @@ $translations = array(
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'POST 資料太大。減少資料或者增加 %s 的設定值。',
 	'You can upload a big SQL file via FTP and import it from server.' => '您可以通過FTP上傳大型SQL檔並從伺服器導入。',
 	'You are offline.' => '您離線了。',
-	
+
 	'Export' => '匯出',
 	'Output' => '輸出',
 	'open' => '打開',
@@ -87,7 +87,7 @@ $translations = array(
 	'Saving' => '保存中',
 	'Format' => '格式',
 	'Data' => '資料',
-	
+
 	'Database' => '資料庫',
 	'database' => '資料庫',
 	'DB' => '資料庫',
@@ -102,10 +102,10 @@ $translations = array(
 	'Alter database' => '修改資料庫',
 	'Create database' => '建立資料庫',
 	'Database schema' => '資料庫結構',
-	
+
 	// link to current database schema layout
 	'Permanent link' => '永久連結',
-	
+
 	// thousands separator - must contain single byte
 	',' => ',',
 	'0123456789' => '0123456789',
@@ -129,7 +129,7 @@ $translations = array(
 	'Copy' => '複製',
 	'Tables have been copied.' => '資料表已經複製',
 	'overwrite' => '覆蓋',
-	
+
 	'Routines' => '程序',
 	'Routine has been called, %d row(s) affected.' => '程序已被執行，%d 行被影響',
 	'Call' => '呼叫',
@@ -142,7 +142,7 @@ $translations = array(
 	'Alter function' => '修改函式',
 	'Alter procedure' => '修改預存程序',
 	'Return type' => '回傳類型',
-	
+
 	'Events' => '事件',
 	'Event has been dropped.' => '已刪除事件。',
 	'Event has been altered.' => '已修改事件。',
@@ -155,7 +155,7 @@ $translations = array(
 	'Start' => '開始',
 	'End' => '結束',
 	'On completion preserve' => '在完成後儲存',
-	
+
 	'Tables' => '資料表',
 	'Tables and views' => '資料表和檢視表',
 	'Table' => '資料表',
@@ -188,12 +188,12 @@ $translations = array(
 	'Move down' => '下移',
 	'Remove' => '移除',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => '超過允許的字段數量的最大值。請增加 %s。',
-	
+
 	'Partition by' => '分區類型',
 	'Partitions' => '分區',
 	'Partition name' => '分區名稱',
 	'Values' => '值',
-	
+
 	'View' => '檢視表',
 	'Materialized view' => '物化視圖',
 	'View has been dropped.' => '已刪除檢視表。',
@@ -201,14 +201,14 @@ $translations = array(
 	'View has been created.' => '已建立檢視表。',
 	'Alter view' => '修改檢視表',
 	'Create view' => '建立檢視表',
-	
+
 	'Indexes' => '索引',
 	'Indexes have been altered.' => '已修改索引。',
 	'Alter indexes' => '修改索引',
 	'Add next' => '新增下一筆',
 	'Index Type' => '索引類型',
 	'Column (length)' => '欄位（長度）',
-	
+
 	'Foreign keys' => '外來鍵',
 	'Foreign key' => '外來鍵',
 	'Foreign key has been dropped.' => '已刪除外來鍵。',
@@ -224,7 +224,7 @@ $translations = array(
 	'ON DELETE' => 'ON DELETE',
 	'ON UPDATE' => 'ON UPDATE',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => '來源列和目標列必須具有相同的資料類型，在目標列上必須有一個索引並且引用的資料必須存在。',
-	
+
 	'Triggers' => '觸發器',
 	'Add trigger' => '建立觸發器',
 	'Trigger has been dropped.' => '已刪除觸發器。',
@@ -235,7 +235,7 @@ $translations = array(
 	'Time' => '時間',
 	'Event' => '事件',
 	'Name' => '名稱',
-	
+
 	'select' => '選擇',
 	'Select' => '選擇',
 	'Select data' => '選擇資料',
@@ -261,16 +261,16 @@ $translations = array(
 	'Loading' => '載入中',
 	'Whole result' => '所有結果',
 	'%d byte(s)' => '%d byte(s)',
-	
+
 	'Import' => '匯入',
 	'%d row(s) have been imported.' => '已匯入 %d 行。',
 	'File must be in UTF-8 encoding.' => '檔必須使用UTF-8編碼。',
-	
+
 	// in-place editing in select
 	'Modify' => '修改',
 	'Ctrl+click on a value to modify it.' => '按住Ctrl並按一下某個值進行修改。',
 	'Use edit link to modify this value.' => '使用編輯連結來修改。',
-	
+
 	// %s can contain auto-increment value
 	'Item%s has been inserted.' => '已新增項目 %s。',
 	'Item has been deleted.' => '該項目已被刪除',
@@ -290,14 +290,14 @@ $translations = array(
 	'Clone' => '複製',
 	'Delete' => '刪除',
 	'You have no privileges to update this table.' => '您沒有許可權更新這個資料表。',
-	
+
 	'E-mail' => '電子郵件',
 	'From' => '來自',
 	'Subject' => '主旨',
 	'Attachments' => '附件',
 	'Send' => '寄出',
 	'%d e-mail(s) have been sent.' => '已寄出 %d 封郵件。',
-	
+
 	// data type descriptions
 	'Numbers' => '數字',
 	'Date and time' => '日期時間',
@@ -307,7 +307,7 @@ $translations = array(
 	'Network' => '網路',
 	'Geometry' => '幾何',
 	'Relations' => '關聯',
-	
+
 	'Editor' => '編輯器',
 	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
 	'$1-$3-$5' => '$1.$3.$5',
@@ -318,11 +318,11 @@ $translations = array(
 	'now' => '現在',
 	'yes' => '是',
 	'no' => '否',
-	
+
 	// general SQLite error in create, drop or rename database
 	'File exists.' => '檔案已存在。',
 	'Please use one of the extensions %s.' => '請使用下列其中一個擴充模組 %s。',
-	
+
 	// PostgreSQL and MS SQL schema support
 	'Alter schema' => '修改資料表結構',
 	'Create schema' => '建立資料表結構',
@@ -331,7 +331,7 @@ $translations = array(
 	'Schema has been altered.' => '已修改資料表結構。',
 	'Schema' => '資料表結構',
 	'Invalid schema.' => '無效的資料表結構。',
-	
+
 	// PostgreSQL sequences support
 	'Sequences' => '序列',
 	'Create sequence' => '建立序列',
@@ -339,11 +339,20 @@ $translations = array(
 	'Sequence has been created.' => '已建立序列。',
 	'Sequence has been altered.' => '已修改序列。',
 	'Alter sequence' => '修改序列',
-	
+
 	// PostgreSQL user types support
 	'User types' => '使用者類型',
 	'Create type' => '建立類型',
 	'Type has been dropped.' => '已刪除類型。',
 	'Type has been created.' => '已建立類型。',
 	'Alter type' => '修改類型',
+
+	// Plugins
+	'Columns' => null,
+	'Nullable' => null,
+	'Default' => null,
+	'Yes' => null,
+	'No' => null,
+	'One Time Password' => null,
+	'Invalid OTP code.' => null,
 );

@@ -302,4 +302,12 @@ $translations = array(
 	'Unknown error.' => null,
 	'Database does not support password.' => null,
 	'Disable %s or enable %s or %s extensions.' => null,
+
+	'Columns' => null,
+	'Nullable' => null,
+	'Default' => null,
+	'Yes' => 'Ja',
+	'No' => 'Nei',
+	'One Time Password' => null,
+	'Invalid OTP code.' => null,
 );

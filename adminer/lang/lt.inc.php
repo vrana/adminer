@@ -19,10 +19,10 @@ $translations = array(
 	'Session expired, please login again.' => 'Sesijos galiojimas baigėsi. Prisijunkite iš naujo.',
 	'%s version: %s through PHP extension %s' => '%s versija: %s per PHP plėtinį %s',
 	'Refresh' => 'Atnaujinti',
-	
+
 	// text direction - 'ltr' or 'rtl'
 	'ltr' => 'ltr',
-	
+
 	'Privileges' => 'Privilegijos',
 	'Create user' => 'Sukurti vartotoją',
 	'User has been dropped.' => 'Vartotojas ištrintas.',
@@ -33,14 +33,14 @@ $translations = array(
 	'Routine' => 'Procedūra',
 	'Grant' => 'Suteikti',
 	'Revoke' => 'Atšaukti',
-	
+
 	'Process list' => 'Procesų sąrašas',
 	'%d process(es) have been killed.' => array('%d procesas nutrauktas.', '%d procesai nutraukti.', '%d procesų nutraukta.'),
 	'Kill' => 'Nutraukti',
-	
+
 	'Variables' => 'Kintamieji',
 	'Status' => 'Būsena',
-	
+
 	'SQL command' => 'SQL užklausa',
 	'%d query(s) executed OK.' => array('%d užklausa įvykdyta.', '%d užklausos įvykdytos.', '%d užklausų įvykdyta.'),
 	'Query executed OK, %d row(s) affected.' => array('Užklausa įvykdyta. Pakeistas %d įrašas.', 'Užklausa įvykdyta. Pakeisti %d įrašai.', 'Užklausa įvykdyta. Pakeista %d įrašų.'),
@@ -54,7 +54,7 @@ $translations = array(
 	'History' => 'Istorija',
 	'Clear' => 'Išvalyti',
 	'Edit all' => 'Redaguoti visus',
-	
+
 	'File upload' => 'Failo įkėlimas',
 	'From server' => 'Iš serverio',
 	'Webserver file %s' => 'Failas %s iš serverio',
@@ -64,14 +64,14 @@ $translations = array(
 	'Unable to upload a file.' => 'Nepavyko įkelti failo.',
 	'Maximum allowed file size is %sB.' => 'Maksimalus failo dydis - %sB.',
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Per daug POST duomenų. Sumažinkite duomenų kiekį arba padidinkite konfigūracijos nustatymą %s.',
-	
+
 	'Export' => 'Eksportas',
 	'Output' => 'Išvestis',
 	'open' => 'atidaryti',
 	'save' => 'išsaugoti',
 	'Format' => 'Formatas',
 	'Data' => 'Duomenys',
-	
+
 	'Database' => 'Duomenų bazė',
 	'database' => 'duomenų bazė',
 	'Use' => 'Naudoti',
@@ -85,10 +85,10 @@ $translations = array(
 	'Alter database' => 'Redaguoti duomenų bazę',
 	'Create database' => 'Sukurti duomenų bazę',
 	'Database schema' => 'Duomenų bazės schema',
-	
+
 	// link to current database schema layout
 	'Permanent link' => 'Pastovi nuoroda',
-	
+
 	// thousands separator - must contain single byte
 	',' => ' ',
 	'0123456789' => '0123456789',
@@ -110,7 +110,7 @@ $translations = array(
 	'Tables have been moved.' => 'Lentelės perkeltos.',
 	'Copy' => 'Kopijuoti',
 	'Tables have been copied.' => 'Lentelės nukopijuotos.',
-	
+
 	'Routines' => 'Procedūros',
 	'Routine has been called, %d row(s) affected.' => array('Procedūra įvykdyta. %d įrašas pakeistas.', 'Procedūra įvykdyta. %d įrašai pakeisti.', 'Procedūra įvykdyta. %d įrašų pakeista.'),
 	'Call' => 'Vykdyti',
@@ -123,7 +123,7 @@ $translations = array(
 	'Alter function' => 'Keisti funkciją',
 	'Alter procedure' => 'Keiskti procedūrą',
 	'Return type' => 'Grąžinimo tipas',
-	
+
 	'Events' => 'Įvykiai',
 	'Event has been dropped.' => 'Įvykis pašalintas.',
 	'Event has been altered.' => 'Įvykis pakeistas.',
@@ -136,7 +136,7 @@ $translations = array(
 	'Start' => 'Pradžia',
 	'End' => 'Pabaiga',
 	'On completion preserve' => 'Įvykdžius išsaugoti',
-	
+
 	'Tables' => 'Lentelės',
 	'Tables and views' => 'Lentelės ir vaizdai',
 	'Table' => 'Lentelė',
@@ -164,26 +164,26 @@ $translations = array(
 	'Move down' => 'Perkelti žemyn',
 	'Remove' => 'Pašalinti',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Viršytas maksimalus leidžiamų stulpelių kiekis. Padidinkite %s.',
-	
+
 	'Partition by' => 'Skirstyti pagal',
 	'Partitions' => 'Skirsniai',
 	'Partition name' => 'Skirsnio pavadinimas',
 	'Values' => 'Reikšmės',
-	
+
 	'View' => 'Vaizdas',
 	'View has been dropped.' => 'Vaizdas pašalintas.',
 	'View has been altered.' => 'Vaizdas pakeistas.',
 	'View has been created.' => 'Vaizdas sukurtas.',
 	'Alter view' => 'Redaguoti vaizdą',
 	'Create view' => 'Sukurti vaizdą',
-	
+
 	'Indexes' => 'Indeksai',
 	'Indexes have been altered.' => 'Indeksai pakeisti.',
 	'Alter indexes' => 'Redaguoti indeksus',
 	'Add next' => 'Pridėti kitą',
 	'Index Type' => 'Indekso tipas',
 	'Column (length)' => 'Stulpelis (ilgis)',
-	
+
 	'Foreign keys' => 'Išoriniai raktai',
 	'Foreign key' => 'Išorinis raktas',
 	'Foreign key has been dropped.' => 'Išorinis raktas pašalintas.',
@@ -199,7 +199,7 @@ $translations = array(
 	'ON DELETE' => 'Ištrinant',
 	'ON UPDATE' => 'Atnaujinant',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Šaltinio ir tikslinis stulpelis turi būti to paties tipo, tiksliniame stulpelyje turi būti naudojamas indeksas ir duomenys turi egzistuoti.',
-	
+
 	'Triggers' => 'Trigeriai',
 	'Add trigger' => 'Pridėti trigerį',
 	'Trigger has been dropped.' => 'Trigeris pašalintas.',
@@ -210,7 +210,7 @@ $translations = array(
 	'Time' => 'Laikas',
 	'Event' => 'Įvykis',
 	'Name' => 'Pavadinimas',
-	
+
 	'select' => 'atrinkti',
 	'Select' => 'Atrinkti',
 	'Select data' => 'Atrinkti duomenis',
@@ -231,13 +231,13 @@ $translations = array(
 	'last' => 'paskutinis',
 	'Whole result' => 'Visas rezultatas',
 	'%d byte(s)' => array('%d baitas', '%d baigai', '%d baitų'),
-	
+
 	'Import' => 'Importas',
 	'%d row(s) have been imported.' => array('%d įrašas įkelta.', '%d įrašai įkelti.', '%d įrašų įkelta.'),
-	
+
 	// in-place editing in select
 	'Use edit link to modify this value.' => 'Norėdami redaguoti reikšmę naudokite redagavimo nuorodą.',
-	
+
 	// %s can contain auto-increment value
 	'Item%s has been inserted.' => 'Įrašas%s sukurtas.',
 	'Item has been deleted.' => 'Įrašas ištrintas.',
@@ -255,14 +255,14 @@ $translations = array(
 	'Save and insert next' => 'Išsaugoti ir įrašyti kitą',
 	'Clone' => 'Klonuoti',
 	'Delete' => 'Trinti',
-	
+
 	'E-mail' => 'El. paštas',
 	'From' => 'Nuo',
 	'Subject' => 'Antraštė',
 	'Attachments' => 'Priedai',
 	'Send' => 'Siųsti',
 	'%d e-mail(s) have been sent.' => array('Išsiųstas %d laiškas.', 'Išsiųsti %d laiškai.', 'Išsiųsta %d laiškų.'),
-	
+
 	// data type descriptions
 	'Numbers' => 'Skaičiai',
 	'Date and time' => 'Data ir laikas',
@@ -272,7 +272,7 @@ $translations = array(
 	'Network' => 'Tinklas',
 	'Geometry' => 'Geometrija',
 	'Relations' => 'Ryšiai',
-	
+
 	'Editor' => 'Redaktorius',
 	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
 	'$1-$3-$5' => '$1-$3-$5',
@@ -281,11 +281,11 @@ $translations = array(
 	// hint for time format - use language equivalents for hour, minute and second shortcuts
 	'HH:MM:SS' => 'HH:MM:SS',
 	'now' => 'dabar',
-	
+
 	// general SQLite error in create, drop or rename database
 	'File exists.' => 'Failas egzistuoja.',
 	'Please use one of the extensions %s.' => 'Naudokite vieną iš plėtinių %s.',
-	
+
 	// PostgreSQL and MS SQL schema support
 	'Alter schema' => 'Keisti schemą',
 	'Create schema' => 'Sukurti schemą',
@@ -294,7 +294,7 @@ $translations = array(
 	'Schema has been altered.' => 'Schema pakeista.',
 	'Schema' => 'Schema',
 	'Invalid schema.' => 'Neteisinga schema.',
-	
+
 	// PostgreSQL sequences support
 	'Sequences' => 'Sekos',
 	'Create sequence' => 'Sukurti seką',
@@ -302,7 +302,7 @@ $translations = array(
 	'Sequence has been created.' => 'Seka sukurta.',
 	'Sequence has been altered.' => 'Seka pakeista.',
 	'Alter sequence' => 'Keisti seką',
-	
+
 	// PostgreSQL user types support
 	'User types' => 'Vartotojų tipai',
 	'Create type' => 'Sukurti tipą',
@@ -347,4 +347,12 @@ $translations = array(
 	'Disable %s or enable %s or %s extensions.' => null,
 	'yes' => null,
 	'no' => null,
+
+	'Columns' => null,
+	'Nullable' => null,
+	'Default' => null,
+	'Yes' => null,
+	'No' => null,
+	'One Time Password' => null,
+	'Invalid OTP code.' => null,
 );

@@ -302,4 +302,12 @@ $translations = array(
 	'Disable %s or enable %s or %s extensions.' => null,
 	'yes' => null,
 	'no' => null,
+
+	'Columns' => null,
+	'Nullable' => null,
+	'Default' => null,
+	'Yes' => null,
+	'No' => null,
+	'One Time Password' => null,
+	'Invalid OTP code.' => null,
 );

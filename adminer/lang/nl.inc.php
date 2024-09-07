@@ -302,4 +302,12 @@ $translations = array(
 	'Disable %s or enable %s or %s extensions.' => 'Schakel %s uit or schakel extensies %s of %s in.',
 	'yes' => 'ja',
 	'no' => 'neen',
+
+	'Columns' => null,
+	'Nullable' => null,
+	'Default' => null,
+	'Yes' => 'Ja',
+	'No' => 'Neen',
+	'One Time Password' => null,
+	'Invalid OTP code.' => null,
 );

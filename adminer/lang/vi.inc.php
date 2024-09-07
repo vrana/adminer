@@ -21,10 +21,10 @@ $translations = array(
 	'Session expired, please login again.' => 'Phiên làm việc đã hết, hãy đăng nhập lại.',
 	'%s version: %s through PHP extension %s' => 'Phiên bản %s: %s (PHP extension: %s)',
 	'Refresh' => 'Làm mới',
-	
+
 	// text direction - 'ltr' or 'rtl'
 	'ltr' => 'ltr',
-	
+
 	'Privileges' => 'Quyền truy cập',
 	'Create user' => 'Tạo người dùng',
 	'User has been dropped.' => 'Đã xoá người dùng.',
@@ -35,14 +35,14 @@ $translations = array(
 	'Routine' => 'Hàm tích hợp',
 	'Grant' => 'Cấp quyền',
 	'Revoke' => 'Tước quyền',
-	
+
 	'Process list' => 'Danh sách tiến trình',
 	'%d process(es) have been killed.' => '%d tiến trình đã dừng.',
 	'Kill' => 'Dừng',
-	
+
 	'Variables' => 'Biến',
 	'Status' => 'Trạng thái',
-	
+
 	'SQL command' => 'Câu lệnh SQL',
 	'%d query(s) executed OK.' => '%d câu lệnh đã chạy thành công.',
 	'Query executed OK, %d row(s) affected.' => 'Đã thực hiện xong, ảnh hưởng đến %d dòng.',
@@ -56,7 +56,7 @@ $translations = array(
 	'History' => 'Lịch sử',
 	'Clear' => 'Xoá',
 	'Edit all' => 'Sửa tất cả',
-	
+
 	'File upload' => 'Tải tệp lên',
 	'From server' => 'Dùng tệp trên máy chủ',
 	'Webserver file %s' => 'Tệp trên máy chủ',
@@ -67,14 +67,14 @@ $translations = array(
 	'Maximum allowed file size is %sB.' => 'Kích thước tệp tối đa là %sB.',
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Dữ liệu tải lên/POST quá lớn. Hãy giảm kích thước tệp hoặc tăng cấu hình (hiện tại %s).',
 	'You can upload a big SQL file via FTP and import it from server.' => 'Bạn có thể tải tệp lên dùng FTP và nhập vào cơ sở dữ liệu.',
-	
+
 	'Export' => 'Xuất',
 	'Output' => 'Kết quả',
 	'open' => 'xem',
 	'save' => 'lưu',
 	'Format' => 'Định dạng',
 	'Data' => 'Dữ liệu',
-	
+
 	'Database' => 'Cơ sở dữ liệu',
 	'database' => 'cơ sở dữ liệu',
 	'Use' => 'Sử dụng',
@@ -88,10 +88,10 @@ $translations = array(
 	'Alter database' => 'Thay đổi CSDL',
 	'Create database' => 'Tạo CSDL',
 	'Database schema' => 'Cấu trúc CSDL',
-	
+
 	// link to current database schema layout
 	'Permanent link' => 'Liên kết cố định',
-	
+
 	// thousands separator - must contain single byte
 	',' => ',',
 	'0123456789' => '0123456789',
@@ -114,7 +114,7 @@ $translations = array(
 	'Tables have been moved.' => 'Bảng.',
 	'Copy' => 'Sao chép',
 	'Tables have been copied.' => 'Bảng đã được sao chép.',
-	
+
 	'Routines' => 'Routines',
 	'Routine has been called, %d row(s) affected.' => 'Đã chạy routine, thay đổi %d dòng.',
 	'Call' => 'Gọi',
@@ -139,7 +139,7 @@ $translations = array(
 	'Start' => 'Bắt đầu',
 	'End' => 'Kết thúc',
 	'On completion preserve' => 'Khi kết thúc, duy trì',
-	
+
 	'Tables' => 'Các bảng',
 	'Tables and views' => 'Bảng và khung nhìn',
 	'Table' => 'Bảng',
@@ -170,26 +170,26 @@ $translations = array(
 	'Move down' => 'Chuyển xuống dưới',
 	'Remove' => 'Xoá',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Thiết lập %s cần tăng thêm. (Đã vượt giới hạnố trường tối đa cho phép trong một biểu mẫu).',
-	
+
 	'Partition by' => 'Phân chia bằng',
 	'Partitions' => 'Phân hoạch',
 	'Partition name' => 'Tên phân hoạch',
 	'Values' => 'Giá trị',
-	
+
 	'View' => 'Khung nhìn',
 	'View has been dropped.' => 'Khung nhìn đã bị xoá.',
 	'View has been altered.' => 'Khung nhìn đã được sửa.',
 	'View has been created.' => 'Khung nhìn đã được tạo.',
 	'Alter view' => 'Sửa khung nhìn',
 	'Create view' => 'Tạo khung nhìn',
-	
+
 	'Indexes' => 'Chỉ mục',
 	'Indexes have been altered.' => 'Chỉ mục đã được sửa.',
 	'Alter indexes' => 'Sửa chỉ mục',
 	'Add next' => 'Thêm tiếp',
 	'Index Type' => 'Loại chỉ mục',
 	'Column (length)' => 'Cột (độ dài)',
-	
+
 	'Foreign keys' => 'Các khoá ngoại',
 	'Foreign key' => 'Khoá ngoại',
 	'Foreign key has been dropped.' => 'Khoá ngoại đã bị xoá.',
@@ -205,7 +205,7 @@ $translations = array(
 	'ON DELETE' => 'Khi xoá',
 	'ON UPDATE' => 'Khi cập nhật',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Cột gốc và cột đích phải cùng kiểu, phải đặt chỉ mục trong cột đích và dữ liệu tham chiếu phải tồn tại.',
-	
+
 	'Triggers' => 'Phản xạ',
 	'Add trigger' => 'Thêm phản xạ',
 	'Trigger has been dropped.' => 'Đã xoá phản xạ.',
@@ -216,7 +216,7 @@ $translations = array(
 	'Time' => 'Thời gian',
 	'Event' => 'Sự kiện',
 	'Name' => 'Tên',
-	
+
 	'select' => 'xem',
 	'Select' => 'Xem',
 	'Select data' => 'Xem dữ liệu',
@@ -240,16 +240,16 @@ $translations = array(
 	'Loading' => 'Đang nạp',
 	'Whole result' => 'Toàn bộ kết quả',
 	'%d byte(s)' => '%d byte(s)',
-	
+
 	'Import' => 'Nhập khẩu',
 	'%d row(s) have been imported.' => 'Đã nhập % dòng dữ liệu.',
 	'File must be in UTF-8 encoding.' => 'Tệp phải mã hoá bằng chuẩn UTF-8.',
-	
+
 	// in-place editing in select
 	'Modify' => 'Sửa',
 	'Ctrl+click on a value to modify it.' => 'Nhấn Ctrl và bấm vào giá trị để sửa.',
 	'Use edit link to modify this value.' => 'Dùng nút sửa để thay đổi giá trị này.',
-	
+
 	// %s can contain auto-increment value
 	'Item%s has been inserted.' => 'Đã thêm%s.',
 	'Item has been deleted.' => 'Đã xoá.',
@@ -269,14 +269,14 @@ $translations = array(
 	'Clone' => 'Sao chép',
 	'Delete' => 'Xoá',
 	'You have no privileges to update this table.' => 'Bạn không có quyền sửa bảng này.',
-	
+
 	'E-mail' => 'Địa chỉ email',
 	'From' => 'Người gửi',
 	'Subject' => 'Chủ đề',
 	'Attachments' => 'Đính kèm',
 	'Send' => 'Gửi',
 	'%d e-mail(s) have been sent.' => '%d thư đã gửi.',
-	
+
 	// data type descriptions
 	'Numbers' => 'Số',
 	'Date and time' => 'Ngày giờ',
@@ -286,7 +286,7 @@ $translations = array(
 	'Network' => 'Mạng',
 	'Geometry' => 'Toạ độ',
 	'Relations' => 'Quan hệ',
-	
+
 	'Editor' => 'Biên tập',
 	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
 	'$1-$3-$5' => '$1-$3-$5',
@@ -297,11 +297,11 @@ $translations = array(
 	'now' => 'hiện tại',
 	'yes' => 'có',
 	'no' => 'không',
-	
+
 	// general SQLite error in create, drop or rename database
 	'File exists.' => 'Tệp đã có rồi.',
 	'Please use one of the extensions %s.' => 'Cần phải dùng một trong các phần mở rộng sau: %s.',
-	
+
 	// PostgreSQL and MS SQL schema support
 	'Alter schema' => 'Thay đổi schema',
 	'Create schema' => 'Tạo schema',
@@ -310,7 +310,7 @@ $translations = array(
 	'Schema has been altered.' => 'Đã thay đổi schema.',
 	'Schema' => 'Schema',
 	'Invalid schema.' => 'Schema không hợp lệ.',
-	
+
 	// PostgreSQL sequences support
 	'Sequences' => 'Dãy số',
 	'Create sequence' => 'Tạo dãy số',
@@ -318,7 +318,7 @@ $translations = array(
 	'Sequence has been created.' => 'Đã tạo dãy số.',
 	'Sequence has been altered.' => 'Đã sửa dãy số.',
 	'Alter sequence' => 'Thay đổi dãy số',
-	
+
 	// PostgreSQL user types support
 	'User types' => 'Kiểu tự định nghĩa',
 	'Create type' => 'Tạo kiểu',
@@ -346,4 +346,12 @@ $translations = array(
 	'Unknown error.' => null,
 	'Database does not support password.' => null,
 	'Disable %s or enable %s or %s extensions.' => null,
+
+	'Columns' => null,
+	'Nullable' => null,
+	'Default' => null,
+	'Yes' => 'Có',
+	'No' => 'Không',
+	'One Time Password' => null,
+	'Invalid OTP code.' => null,
 );

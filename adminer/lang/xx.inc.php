@@ -29,10 +29,10 @@ $translations = array(
 	'The action will be performed after successful login with the same credentials.' => 'Xx.',
 	'%s version: %s through PHP extension %s' => '%s xx: %s xx %s',
 	'Refresh' => 'Xx',
-	
+
 	// text direction - 'ltr' or 'rtl'
 	'ltr' => 'xx',
-	
+
 	'Privileges' => 'Xx',
 	'Create user' => 'Xx',
 	'User has been dropped.' => 'Xx.',
@@ -43,14 +43,14 @@ $translations = array(
 	'Routine' => 'Xx',
 	'Grant' => 'Xx',
 	'Revoke' => 'Xx',
-	
+
 	'Process list' => 'Xx',
 	'%d process(es) have been killed.' => array('%d xx.', '%d xx.'),
 	'Kill' => 'Xx',
-	
+
 	'Variables' => 'Xx',
 	'Status' => 'Xx',
-	
+
 	'SQL command' => 'Xx',
 	'%d query(s) executed OK.' => array('%d xx.', '%d xx.'),
 	'Query executed OK, %d row(s) affected.' => array('Xx, %d.', 'Xx, %d.'),
@@ -67,7 +67,7 @@ $translations = array(
 	'History' => 'Xx',
 	'Clear' => 'Xx',
 	'Edit all' => 'Xx',
-	
+
 	'File upload' => 'Xx',
 	'From server' => 'Xx',
 	'Webserver file %s' => 'Xx %s',
@@ -79,7 +79,7 @@ $translations = array(
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Xx %s.',
 	'You can upload a big SQL file via FTP and import it from server.' => 'Xx.',
 	'You are offline.' => 'Xx.',
-	
+
 	'Export' => 'Xx',
 	'Output' => 'Xx',
 	'open' => 'xx',
@@ -87,7 +87,7 @@ $translations = array(
 	'Saving' => 'Xx',
 	'Format' => 'Xx',
 	'Data' => 'Xx',
-	
+
 	'Database' => 'Xx',
 	'database' => 'xx',
 	'DB' => 'XX',
@@ -102,10 +102,10 @@ $translations = array(
 	'Alter database' => 'Xx',
 	'Create database' => 'Xx',
 	'Database schema' => 'Xx',
-	
+
 	// link to current database schema layout
 	'Permanent link' => 'Xx',
-	
+
 	// thousands separator - must contain single byte
 	',' => 'x',
 	'0123456789' => 'xxxxxxxxxx',
@@ -129,7 +129,7 @@ $translations = array(
 	'Copy' => 'Xx',
 	'Tables have been copied.' => 'Xx.',
 	'overwrite' => 'xx',
-	
+
 	'Routines' => 'Xx',
 	'Routine has been called, %d row(s) affected.' => array('Xx, %d.', 'Xx, %d.'),
 	'Call' => 'Xx',
@@ -142,7 +142,7 @@ $translations = array(
 	'Alter function' => 'Xx',
 	'Alter procedure' => 'Xx',
 	'Return type' => 'Xx',
-	
+
 	'Events' => 'Xx',
 	'Event has been dropped.' => 'Xx.',
 	'Event has been altered.' => 'Xx.',
@@ -155,7 +155,7 @@ $translations = array(
 	'Start' => 'Xx',
 	'End' => 'Xx',
 	'On completion preserve' => 'Xx',
-	
+
 	'Tables' => 'Xx',
 	'Tables and views' => 'Xx',
 	'Table' => 'Xx',
@@ -188,12 +188,12 @@ $translations = array(
 	'Move down' => 'Xx',
 	'Remove' => 'Xx',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Xx %s.',
-	
+
 	'Partition by' => 'Xx',
 	'Partitions' => 'Xx',
 	'Partition name' => 'Xx',
 	'Values' => 'Xx',
-	
+
 	'View' => 'Xx',
 	'Materialized view' => 'Xx',
 	'View has been dropped.' => 'Xx.',
@@ -201,14 +201,14 @@ $translations = array(
 	'View has been created.' => 'Xx.',
 	'Alter view' => 'Xx',
 	'Create view' => 'Xx',
-	
+
 	'Indexes' => 'Xx',
 	'Indexes have been altered.' => 'Xx.',
 	'Alter indexes' => 'Xx',
 	'Add next' => 'Xx',
 	'Index Type' => 'Xx',
 	'Column (length)' => 'Xx',
-	
+
 	'Foreign keys' => 'Xx',
 	'Foreign key' => 'Xx',
 	'Foreign key has been dropped.' => 'Xx.',
@@ -224,7 +224,7 @@ $translations = array(
 	'ON DELETE' => 'Xx',
 	'ON UPDATE' => 'Xx',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Xx.',
-	
+
 	'Triggers' => 'Xx',
 	'Add trigger' => 'Xx',
 	'Trigger has been dropped.' => 'Xx.',
@@ -235,7 +235,7 @@ $translations = array(
 	'Time' => 'Xx',
 	'Event' => 'Xx',
 	'Name' => 'Xx',
-	
+
 	'select' => 'xx',
 	'Select' => 'Xx',
 	'Select data' => 'Xx',
@@ -261,16 +261,16 @@ $translations = array(
 	'Loading' => 'Xx',
 	'Whole result' => 'Xx',
 	'%d byte(s)' => array('%d xx', '%d xx'),
-	
+
 	'Import' => 'Xx',
 	'%d row(s) have been imported.' => array('%d xx.', '%d xx.'),
 	'File must be in UTF-8 encoding.' => 'Xx.',
-	
+
 	// in-place editing in select
 	'Modify' => 'Xx',
 	'Ctrl+click on a value to modify it.' => 'Xx.',
 	'Use edit link to modify this value.' => 'Xx.',
-	
+
 	// %s can contain auto-increment value
 	'Item%s has been inserted.' => 'Xx%s.',
 	'Item has been deleted.' => 'Xx.',
@@ -290,14 +290,14 @@ $translations = array(
 	'Clone' => 'Xx',
 	'Delete' => 'Xx',
 	'You have no privileges to update this table.' => 'Xx.',
-	
+
 	'E-mail' => 'Xx',
 	'From' => 'Xx',
 	'Subject' => 'Xx',
 	'Attachments' => 'Xx',
 	'Send' => 'Xx',
 	'%d e-mail(s) have been sent.' => array('%d xx.', '%d xx.'),
-	
+
 	// data type descriptions
 	'Numbers' => 'Xx',
 	'Date and time' => 'Xx',
@@ -307,7 +307,7 @@ $translations = array(
 	'Network' => 'Xx',
 	'Geometry' => 'Xx',
 	'Relations' => 'Xx',
-	
+
 	'Editor' => 'Xx',
 	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
 	'$1-$3-$5' => 'xx',
@@ -318,11 +318,11 @@ $translations = array(
 	'now' => 'xx',
 	'yes' => 'xx',
 	'no' => 'xx',
-	
+
 	// general SQLite error in create, drop or rename database
 	'File exists.' => 'Xx.',
 	'Please use one of the extensions %s.' => 'Xx %s.',
-	
+
 	// PostgreSQL and MS SQL schema support
 	'Alter schema' => 'Xx',
 	'Create schema' => 'Xx',
@@ -331,7 +331,7 @@ $translations = array(
 	'Schema has been altered.' => 'Xx.',
 	'Schema' => 'Xx',
 	'Invalid schema.' => 'Xx.',
-	
+
 	// PostgreSQL sequences support
 	'Sequences' => 'Xx',
 	'Create sequence' => 'Xx',
@@ -339,11 +339,20 @@ $translations = array(
 	'Sequence has been created.' => 'Xx.',
 	'Sequence has been altered.' => 'Xx.',
 	'Alter sequence' => 'Xx',
-	
+
 	// PostgreSQL user types support
 	'User types' => 'Xx',
 	'Create type' => 'Xx',
 	'Type has been dropped.' => 'Xx.',
 	'Type has been created.' => 'Xx.',
 	'Alter type' => 'Xx',
+
+	// Plugins
+	'Columns' => 'Xx',
+	'Nullable' => 'Xx',
+	'Default' => 'Xx',
+	'Yes' => 'Xx',
+	'No' => 'Xx',
+	'One Time Password' => 'Xx',
+	'Invalid OTP code.' => 'Xx.',
 );
