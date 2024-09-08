@@ -21,11 +21,11 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 			echo "<table cellspacing='0' class='nowrap'>\n";
 			echo "<thead><tr>";
 			for ($j=0; $j < count($row); $j++) {
-				$field = $result->fetch_field();
-				$name = $field->name;
-				$orgtable = $field->orgtable;
-				$orgname = $field->orgname;
-				$return[$field->table] = $orgtable;
+				$field = (array)$result->fetch_field();
+				$name = $field["name"];
+				$orgtable = $field["orgtable"];
+				$orgname = $field["orgname"];
+				$return[$field["table"]] = $orgtable;
 				if ($orgtables && $jush == "sql") { // MySQL EXPLAIN
 					$links[$j] = ($name == "table" ? "table=" : ($name == "possible_keys" ? "indexes=" : null));
 				} elseif ($orgtable != "") {
@@ -46,11 +46,11 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 						$links[$j] = $orgtable;
 					}
 				}
-				if ($field->charsetnr == 63) { // 63 - binary
+				if ($field["charsetnr"] == 63) { // 63 - binary
 					$blobs[$j] = true;
 				}
-				$types[$j] = $field->type;
-				echo "<th" . ($orgtable != "" || $field->name != $orgname ? " title='" . h(($orgtable != "" ? "$orgtable." : "") . $orgname) . "'" : "") . ">" . h($name)
+				$types[$j] = $field["type"];
+				echo "<th" . ($orgtable != "" || $field["name"] != $orgname ? " title='" . h(($orgtable != "" ? "$orgtable." : "") . $orgname) . "'" : "") . ">" . h($name)
 					. ($orgtables ? doc_link(array(
 						'sql' => "explain-output.html#explain_" . strtolower($name),
 						'mariadb' => "explain/#the-columns-in-explain-select",
