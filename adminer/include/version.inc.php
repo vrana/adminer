@@ -1,5 +1,5 @@
 <?php
-$VERSION = "4.9.1-dev";
+$VERSION = "4.9.1";
 
 function adminer_errors($errno, $errstr) {
 	return !!preg_match('~^(Trying to access array offset on( value of type)? null|Undefined (array key|property))~', $errstr);
