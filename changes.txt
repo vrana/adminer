@@ -1,3 +1,19 @@
+Adminer 4.9.1 (released 2024-09-09):
+- Compatibility with PHP 8.3.
+- Fix compiling jush external files.
+- Improved displaying of long table names in menu.
+- Replace deprecated <acronym> with <abbr>.
+- Add support for translations in plugins.
+- Add .editorconfig file.
+- MySQL: Add unix_timestamp to functions.
+- PostgreSQL: Show only accessible databases.
+- PostgreSQL: Make data length calculation more accurate.
+- PostgreSQL: Fix documentation link for SERIAL type.
+- PostgreSQL: Fix undefined properties on PHP 8.
+- Elasticsearch: Fix field selection.
+- AdminerEditForeign: Refactor and fix the plugin.
+- AdminerLoginOtp: Autocomplete hints for OTP input field, code refactoring.
+
 Adminer 4.9 (released 2024-08-19):
 - Validate server input in login form.
 - Validate connection to server in HTTP based drivers.
@@ -116,7 +132,7 @@ SQLite: Handle error in altering table (bug #697)
 SQLite: Allow setting auto increment for empty tables
 SQLite: Preserve auto increment when recreating table
 MS SQL: Support foreign keys to other DB
-MongoDB: Allow setting authSource from environment variable 
+MongoDB: Allow setting authSource from environment variable
 
 Adminer 4.7.2 (released 2019-07-18):
 Do not attempt logging in without password (bug #676)
