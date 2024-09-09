@@ -978,7 +978,7 @@ function input($field, $value, $function) {
 				$attrs .= " cols='50' rows='12'";
 			} else {
 				$rows = min(12, substr_count($value, "\n") + 1);
-				$attrs .= " cols='30' rows='$rows'" . ($rows == 1 ? " style='height: 1.2em;'" : ""); // 1.2em - line-height
+				$attrs .= " cols='30' rows='$rows'";
 			}
 			echo "<textarea$attrs>" . h($value) . '</textarea>';
 		} elseif ($function == "json" || preg_match('~^jsonb?$~', $field["type"])) {
