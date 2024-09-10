@@ -213,12 +213,12 @@ if (isset($_GET["pgsql"])) {
 		}
 
 		function convertSearch($idf, $val, $field) {
-			return (preg_match('~char|text'
-					. (!preg_match('~LIKE~', $val["op"]) ? '|date|time(stamp)?|boolean|uuid|' . number_type() : '')
-					. '~', $field["type"])
-				? $idf
-				: "CAST($idf AS text)"
-			);
+			$textTypes = "char|text";
+			if (strpos($val["op"], "LIKE") === false) {
+				$textTypes .= "|date|time(stamp)?|boolean|uuid|inet|cidr|macaddr|" . number_type();
+			}
+
+			return (preg_match("~$textTypes~", $field["type"]) ? $idf : "CAST($idf AS text)");
 		}
 
 		function quoteBinary($s) {
@@ -899,7 +899,7 @@ AND typelem = 0"
 			lang('Date and time') => array("date" => 13, "time" => 17, "timestamp" => 20, "timestamptz" => 21, "interval" => 0),
 			lang('Strings') => array("character" => 0, "character varying" => 0, "text" => 0, "tsquery" => 0, "tsvector" => 0, "uuid" => 0, "xml" => 0),
 			lang('Binary') => array("bit" => 0, "bit varying" => 0, "bytea" => 0),
-			lang('Network') => array("cidr" => 43, "inet" => 43, "macaddr" => 17, "txid_snapshot" => 0),
+			lang('Network') => array("cidr" => 43, "inet" => 43, "macaddr" => 17, "macaddr8" => 23, "txid_snapshot" => 0),
 			lang('Geometry') => array("box" => 0, "circle" => 0, "line" => 0, "lseg" => 0, "path" => 0, "point" => 0, "polygon" => 0),
 		) as $key => $val) { //! can be retrieved from pg_type
 			$types += $val;
