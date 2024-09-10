@@ -50,7 +50,7 @@ if (!defined("DRIVER")) {
 				$row = $result->fetch_array();
 				return $row[$field];
 			}
-			
+
 			function quote($string) {
 				return "'" . $this->escape_string($string) . "'";
 			}
@@ -305,7 +305,7 @@ if (!defined("DRIVER")) {
 			}
 			return queries($prefix . implode(",\n", $values) . $suffix);
 		}
-		
+
 		function slowQuery($query, $timeout) {
 			if (min_version('5.7.8', '10.1.2')) {
 				if (preg_match('~MariaDB~', $this->_conn->server_info)) {
@@ -322,7 +322,7 @@ if (!defined("DRIVER")) {
 				: $idf
 			);
 		}
-		
+
 		function warnings() {
 			$result = $this->_conn->query("SHOW WARNINGS");
 			if ($result && $result->num_rows) {
@@ -1054,6 +1054,19 @@ if (!defined("DRIVER")) {
 	*/
 	function show_variables() {
 		return get_key_vals("SHOW VARIABLES");
+	}
+
+	/**
+	 * @return bool
+	 */
+	function is_strict_mode() {
+		static $strictMode = null;
+
+		if ($strictMode === null) {
+			$strictMode = (bool)preg_match('~STRICT_(TRANS|ALL)_TABLES~', get_key_vals("SHOW VARIABLES LIKE 'sql_mode'")["sql_mode"]);
+		}
+
+		return $strictMode;
 	}
 
 	/** Get process list

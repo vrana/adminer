@@ -7,7 +7,7 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerEnumOption {
-	
+
 	function editInput($table, $field, $attrs, $value) {
 		if ($field["type"] == "enum") {
 			$options = array();
@@ -24,7 +24,9 @@ class AdminerEnumOption {
 					$selected = "";
 				}
 			}
-			$options[0] = lang('empty');
+			if (!is_strict_mode()) {
+				$options[0] = lang('empty');
+			}
 			preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
 			foreach ($matches[1] as $i => $val) {
 				$val = stripcslashes(str_replace("''", "'", $val));
@@ -36,5 +38,5 @@ class AdminerEnumOption {
 			return "<select$attrs>" . optionlist($options, (string) $selected, 1) . "</select>"; // 1 - use keys
 		}
 	}
-	
+
 }
