@@ -39,7 +39,7 @@ class Adminer {
 	function bruteForceKey() {
 		return $_SERVER["REMOTE_ADDR"];
 	}
-	
+
 	/** Get server name displayed in breadcrumbs
 	* @param string
 	* @return string HTML code or null
@@ -128,7 +128,7 @@ class Adminer {
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
 		echo checkbox("auth[permanent]", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
 	}
-	
+
 	/** Get login form field
 	* @param string
 	* @param string HTML
@@ -488,7 +488,7 @@ class Adminer {
 		echo "</script>\n";
 		echo "</div></fieldset>\n";
 	}
-	
+
 	/** Print command box in select
 	* @return bool whether to print default commands
 	*/
@@ -537,50 +537,60 @@ class Adminer {
 	* @return array expressions to join by AND
 	*/
 	function selectSearchProcess($fields, $indexes) {
-		global $connection, $driver;
-		$return = array();
+		global $driver;
+
+		$return = [];
+
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT" && $_GET["fulltext"][$i] != "") {
 				$return[] = "MATCH (" . implode(", ", array_map('idf_escape', $index["columns"])) . ") AGAINST (" . q($_GET["fulltext"][$i]) . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
 			}
 		}
-		foreach ((array) $_GET["where"] as $key => $val) {
-			if ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators)) {
+
+		foreach ((array) $_GET["where"] as $where) {
+			$col = $where["col"];
+			$op = $where["op"];
+			$val = $where["val"];
+
+			if ("$col$val" != "" && in_array($op, $this->operators)) {
 				$prefix = "";
-				$cond = " $val[op]";
-				if (preg_match('~IN$~', $val["op"])) {
-					$in = process_length($val["val"]);
+				$cond = " $op";
+
+				if (preg_match('~IN$~', $op)) {
+					$in = process_length($val);
 					$cond .= " " . ($in != "" ? $in : "(NULL)");
-				} elseif ($val["op"] == "SQL") {
-					$cond = " $val[val]"; // SQL injection
-				} elseif ($val["op"] == "LIKE %%") {
-					$cond = " LIKE " . $this->processInput($fields[$val["col"]], "%$val[val]%");
-				} elseif ($val["op"] == "ILIKE %%") {
-					$cond = " ILIKE " . $this->processInput($fields[$val["col"]], "%$val[val]%");
-				} elseif ($val["op"] == "FIND_IN_SET") {
-					$prefix = "$val[op](" . q($val["val"]) . ", ";
+				} elseif ($op == "SQL") {
+					$cond = " $val"; // SQL injection
+				} elseif ($op == "LIKE %%") {
+					$cond = " LIKE " . $this->processInput($fields[$col], "%$val%");
+				} elseif ($op == "ILIKE %%") {
+					$cond = " ILIKE " . $this->processInput($fields[$col], "%$val%");
+				} elseif ($op == "FIND_IN_SET") {
+					$prefix = "$op(" . q($val) . ", ";
 					$cond = ")";
-				} elseif (!preg_match('~NULL$~', $val["op"])) {
-					$cond .= " " . $this->processInput($fields[$val["col"]], $val["val"]);
+				} elseif (!preg_match('~NULL$~', $op)) {
+					$cond .= " " . $this->processInput($fields[$col], $val);
 				}
-				if ($val["col"] != "") {
-					$return[] = $prefix . $driver->convertSearch(idf_escape($val["col"]), $val, $fields[$val["col"]]) . $cond;
+
+				if ($col != "") {
+					$return[] = $prefix . $driver->convertSearch(idf_escape($col), $where, $fields[$col]) . $cond;
 				} else {
 					// find anywhere
 					$cols = array();
 					foreach ($fields as $name => $field) {
 						if (isset($field["privileges"]["where"])
-                            && (preg_match('~^[-\d.' . (preg_match('~IN$~', $val["op"]) ? ',' : '') . ']+$~', $val["val"]) || !preg_match('~' . number_type() . '|bit~', $field["type"]))
-							&& (!preg_match("~[\x80-\xFF]~", $val["val"]) || preg_match('~char|text|enum|set~', $field["type"]))
-							&& (!preg_match('~date|timestamp~', $field["type"]) || preg_match('~^\d+-\d+-\d+~', $val["val"]))
+                            && (preg_match('~^[-\d.' . (preg_match('~IN$~', $op) ? ',' : '') . ']+$~', $val) || !preg_match('~' . number_type() . '|bit~', $field["type"]))
+							&& (!preg_match("~[\x80-\xFF]~", $val) || preg_match('~char|text|enum|set~', $field["type"]))
+							&& (!preg_match('~date|timestamp~', $field["type"]) || preg_match('~^\d+-\d+-\d+~', $val))
 						) {
-							$cols[] = $prefix . $driver->convertSearch(idf_escape($name), $val, $field) . $cond;
+							$cols[] = $prefix . $driver->convertSearch(idf_escape($name), $where, $field) . $cond;
 						}
 					}
 					$return[] = ($cols ? "(" . implode(" OR ", $cols) . ")" : "1 = 0");
 				}
 			}
 		}
+
 		return $return;
 	}
 
