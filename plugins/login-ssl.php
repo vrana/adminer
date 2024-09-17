@@ -1,6 +1,6 @@
 <?php
 
-/** Connect to MySQL using SSL
+/** Connect to MySQL or PostgreSQL using SSL
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
@@ -9,14 +9,14 @@
 class AdminerLoginSsl {
 	/** @access protected */
 	var $ssl;
-	
-	/** 
-	* @param array array("key" => filename, "cert" => filename, "ca" => filename)
+
+	/**
+	* @param array MySQL: ["key" => filename, "cert" => filename, "ca" => filename], PostgresSQL: ["mode" => sslmode]
 	*/
 	function __construct($ssl) {
 		$this->ssl = $ssl;
 	}
-	
+
 	function connectSsl() {
 		return $this->ssl;
 	}

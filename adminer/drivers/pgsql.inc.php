@@ -20,6 +20,10 @@ if (isset($_GET["pgsql"])) {
 				$db = $adminer->database();
 				set_error_handler(array($this, '_error'));
 				$this->_string = "host='" . str_replace(":", "' port='", addcslashes($server, "'\\")) . "' user='" . addcslashes($username, "'\\") . "' password='" . addcslashes($password, "'\\") . "'";
+				$ssl = $adminer->connectSsl();
+				if (isset($ssl["mode"])) {
+					$this->_string .= " sslmode='" . $ssl["mode"] . "'";
+				}
 				$this->_link = @pg_connect("$this->_string dbname='" . ($db != "" ? addcslashes($db, "'\\") : "postgres") . "'", PGSQL_CONNECT_FORCE_NEW);
 				if (!$this->_link && $db != "") {
 					// try to connect directly with database for performance
@@ -149,8 +153,13 @@ if (isset($_GET["pgsql"])) {
 			function connect($server, $username, $password) {
 				global $adminer;
 				$db = $adminer->database();
-				$this->dsn("pgsql:host='" . str_replace(":", "' port='", addcslashes($server, "'\\")) . "' client_encoding=utf8 dbname='" . ($db != "" ? addcslashes($db, "'\\") : "postgres") . "'", $username, $password); //! client_encoding is supported since 9.1 but we can't yet use min_version here
-				//! connect without DB in case of an error
+				//! client_encoding is supported since 9.1, but we can't yet use min_version here
+				$dsn = "pgsql:host='" . str_replace(":", "' port='", addcslashes($server, "'\\")) . "' client_encoding=utf8 dbname='" . ($db != "" ? addcslashes($db, "'\\") : "postgres") . "'";
+				$ssl = $adminer->connectSsl();
+				if (isset($ssl["mode"])) {
+					$dsn .= " sslmode='" . $ssl["mode"] . "'";
+				}
+				$this->dsn($dsn, $username, $password);
 				return true;
 			}
 
