@@ -16,10 +16,17 @@ if (!defined("DRIVER")) {
 				global $adminer;
 				mysqli_report(MYSQLI_REPORT_OFF); // stays between requests, not required since PHP 5.3.4
 				list($host, $port) = explode(":", $server, 2); // part after : is used for port or socket
+
 				$ssl = $adminer->connectSsl();
-				if ($ssl) {
-					$this->ssl_set($ssl['key'], $ssl['cert'], $ssl['ca'], '', '');
+				if (isset($ssl['key']) || isset($ssl['cert']) || isset($ssl['ca'])) {
+					$this->ssl_set(
+						isset($ssl['key']) ? $ssl['key'] : null,
+						isset($ssl['cert']) ? $ssl['cert'] : null,
+						isset($ssl['ca']) ? $ssl['ca'] : null,
+						null, null
+					);
 				}
+
 				$return = @$this->real_connect(
 					($server != "" ? $host : ini_get("mysqli.default_host")),
 					($server . $username != "" ? $username : ini_get("mysqli.default_user")),
@@ -234,25 +241,23 @@ if (!defined("DRIVER")) {
 
 			function connect($server, $username, $password) {
 				global $adminer;
-				$options = array(PDO::MYSQL_ATTR_LOCAL_INFILE => false);
+
+				$dsn = "mysql:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\d)~', ';port=\1', $server));
+
+				$options = [PDO::MYSQL_ATTR_LOCAL_INFILE => false];
 				$ssl = $adminer->connectSsl();
-				if ($ssl) {
-					if (!empty($ssl['key'])) {
-						$options[PDO::MYSQL_ATTR_SSL_KEY] = $ssl['key'];
-					}
-					if (!empty($ssl['cert'])) {
-						$options[PDO::MYSQL_ATTR_SSL_CERT] = $ssl['cert'];
-					}
-					if (!empty($ssl['ca'])) {
-						$options[PDO::MYSQL_ATTR_SSL_CA] = $ssl['ca'];
-					}
+				if (isset($ssl['key'])) {
+					$options[PDO::MYSQL_ATTR_SSL_KEY] = $ssl['key'];
 				}
-				$this->dsn(
-					"mysql:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\d)~', ';port=\1', $server)),
-					$username,
-					$password,
-					$options
-				);
+				if (isset($ssl['cert'])) {
+					$options[PDO::MYSQL_ATTR_SSL_CERT] = $ssl['cert'];
+				}
+				if (isset($ssl['ca'])) {
+					$options[PDO::MYSQL_ATTR_SSL_CA] = $ssl['ca'];
+				}
+
+				$this->dsn($dsn, $username, $password, $options);
+
 				return true;
 			}
 
