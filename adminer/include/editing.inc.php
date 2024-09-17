@@ -238,7 +238,10 @@ function process_field($field, $type_field) {
 */
 function default_value($field) {
 	$default = $field["default"];
-	return ($default === null ? "" : " DEFAULT " . (preg_match('~char|binary|text|enum|set~', $field["type"]) || preg_match('~^(?![a-z])~i', $default) ? q($default) : $default));
+	return ($default === null ? "" : " DEFAULT " .
+		(!preg_match('~^GENERATED ~i', $default) && (preg_match('~char|binary|text|enum|set~', $field["type"]) || preg_match('~^(?![a-z])~i', $default))
+		? q($default) : $default)
+	);
 }
 
 /** Get type class to use in CSS
