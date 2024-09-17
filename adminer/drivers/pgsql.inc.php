@@ -212,9 +212,9 @@ if (isset($_GET["pgsql"])) {
 			return $query;
 		}
 
-		function convertSearch($idf, $val, $field) {
+		function convertSearch($idf, array $where, array $field) {
 			$textTypes = "char|text";
-			if (strpos($val["op"], "LIKE") === false) {
+			if (strpos($where["op"], "LIKE") === false) {
 				$textTypes .= "|date|time(stamp)?|boolean|uuid|inet|cidr|macaddr|" . number_type();
 			}
 

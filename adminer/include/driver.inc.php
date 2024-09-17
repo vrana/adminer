@@ -13,14 +13,14 @@ function add_driver($id, $name) {
 
 /*abstract*/ class Min_SQL {
 	var $_conn;
-	
+
 	/** Create object for performing database operations
 	* @param Min_DB
 	*/
 	function __construct($connection) {
 		$this->_conn = $connection;
 	}
-	
+
 	/** Select data from table
 	* @param string
 	* @param array result of $adminer->selectColumnsProcess()[0]
@@ -52,7 +52,7 @@ function add_driver($id, $name) {
 		}
 		return $return;
 	}
-	
+
 	/** Delete data from table
 	* @param string
 	* @param string " WHERE ..."
@@ -63,7 +63,7 @@ function add_driver($id, $name) {
 		$query = "FROM " . table($table);
 		return queries("DELETE" . ($limit ? limit1($table, $query, $queryWhere) : " $query$queryWhere"));
 	}
-	
+
 	/** Update data in table
 	* @param string
 	* @param array escaped columns in keys, quoted data in values
@@ -80,7 +80,7 @@ function add_driver($id, $name) {
 		$query = table($table) . " SET$separator" . implode(",$separator", $values);
 		return queries("UPDATE" . ($limit ? limit1($table, $query, $queryWhere, $separator) : " $query$queryWhere"));
 	}
-	
+
 	/** Insert data into table
 	* @param string
 	* @param array escaped columns in keys, quoted data in values
@@ -92,7 +92,7 @@ function add_driver($id, $name) {
 			: " DEFAULT VALUES"
 		));
 	}
-	
+
 	/** Insert or update data in table
 	* @param string
 	* @param array
@@ -102,28 +102,28 @@ function add_driver($id, $name) {
 	/*abstract*/ function insertUpdate($table, $rows, $primary) {
 		return false;
 	}
-	
+
 	/** Begin transaction
 	* @return bool
 	*/
 	function begin() {
 		return queries("BEGIN");
 	}
-	
+
 	/** Commit transaction
 	* @return bool
 	*/
 	function commit() {
 		return queries("COMMIT");
 	}
-	
+
 	/** Rollback transaction
 	* @return bool
 	*/
 	function rollback() {
 		return queries("ROLLBACK");
 	}
-	
+
 	/** Return query with a timeout
 	* @param string
 	* @param int seconds
@@ -131,14 +131,14 @@ function add_driver($id, $name) {
 	*/
 	function slowQuery($query, $timeout) {
 	}
-	
+
 	/** Convert column to be searchable
 	* @param string escaped column name
 	* @param array array("op" => , "val" => )
 	* @param array
 	* @return string
 	*/
-	function convertSearch($idf, $val, $field) {
+	function convertSearch($idf, array $where, array $field) {
 		return $idf;
 	}
 
@@ -169,19 +169,19 @@ function add_driver($id, $name) {
 	function quoteBinary($s) {
 		return q($s);
 	}
-	
+
 	/** Get warnings about the last command
 	* @return string HTML
 	*/
 	function warnings() {
 		return '';
 	}
-	
+
 	/** Get help link for table
 	* @param string
 	* @return string relative URL or null
 	*/
 	function tableHelp($name) {
 	}
-	
+
 }

@@ -316,8 +316,8 @@ if (!defined("DRIVER")) {
 			}
 		}
 
-		function convertSearch($idf, $val, $field) {
-			return (preg_match('~char|text|enum|set~', $field["type"]) && !preg_match("~^utf8~", $field["collation"]) && preg_match('~[\x80-\xFF]~', $val['val'])
+		function convertSearch($idf, array $where, array $field) {
+			return (preg_match('~char|text|enum|set~', $field["type"]) && !preg_match("~^utf8~", $field["collation"]) && preg_match('~[\x80-\xFF]~', $where['val'])
 				? "CONVERT($idf USING " . charset($this->_conn) . ")"
 				: $idf
 			);

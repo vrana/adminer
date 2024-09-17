@@ -23,7 +23,7 @@ class Adminer {
 	function bruteForceKey() {
 		return $_SERVER["REMOTE_ADDR"];
 	}
-	
+
 	function serverName($server) {
 	}
 
@@ -342,35 +342,44 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 
 	function selectSearchProcess($fields, $indexes) {
 		global $driver;
-		$return = array();
+
+		$return = [];
+
 		foreach ((array) $_GET["where"] as $key => $where) {
 			$col = $where["col"];
 			$op = $where["op"];
 			$val = $where["val"];
+
 			if (($key < 0 ? "" : $col) . $val != "") {
 				$conds = array();
+
 				foreach (($col != "" ? array($col => $fields[$col]) : $fields) as $name => $field) {
 					if ($col != "" || is_numeric($val) || !preg_match(number_type(), $field["type"])) {
 						$name = idf_escape($name);
+
 						if ($col != "" && $field["type"] == "enum") {
 							$conds[] = (in_array(0, $val) ? "$name IS NULL OR " : "") . "$name IN (" . implode(", ", array_map('intval', $val)) . ")";
 						} else {
 							$text_type = preg_match('~char|text|enum|set~', $field["type"]);
 							$value = $this->processInput($field, (!$op && $text_type && preg_match('~^[^%]+$~', $val) ? "%$val%" : $val));
+
 							$conds[] = $driver->convertSearch($name, $val, $field) . ($value == "NULL" ? " IS" . ($op == ">=" ? " NOT" : "") . " $value"
 								: (in_array($op, $this->operators) || $op == "=" ? " $op $value"
 								: ($text_type ? " LIKE $value"
 								: " IN (" . str_replace(",", "', '", $value) . ")"
 							)));
+
 							if ($key < 0 && $val == "0") {
 								$conds[] = "$name IS NULL";
 							}
 						}
 					}
 				}
+
 				$return[] = ($conds ? "(" . implode(" OR ", $conds) . ")" : "1 = 0");
 			}
 		}
+
 		return $return;
 	}
 
