@@ -1,6 +1,8 @@
 Adminer 4.9.2-dev:
+PostgreSQL: Fix search fields configuration (regression from 4.9.0)
 PostgreSQL: Fix exporting CREATE TABLE query with GENERATED default values
 PostgreSQL: Fix exporting CREATE TABLE with sequence default value
+PostgreSQL: Fix search condition for network address types, add macaddr8 type
 
 Adminer 4.9.1:
 Support PHP 8.3
