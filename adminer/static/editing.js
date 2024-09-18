@@ -54,7 +54,7 @@ function bodyLoad(version, maria) {
 function formField(form, name) {
 	// required in IE < 8, form.elements[name] doesn't work
 	for (var i=0; i < form.length; i++) {
-		if (form[i].name == name) {
+		if (form[i].name === name) {
 			return form[i];
 		}
 	}
@@ -83,14 +83,14 @@ function messagesPrint(el) {
 
 
 
-/** Hide or show some login rows for selected driver	
-* @param HTMLSelectElement	
-*/	
-function loginDriver(driver) {	
-	var trs = parentTag(driver, 'table').rows;	
-	var disabled = /sqlite/.test(selectValue(driver));	
+/** Hide or show some login rows for selected driver
+* @param HTMLSelectElement
+*/
+function loginDriver(driver) {
+	var trs = parentTag(driver, 'table').rows;
+	var disabled = /sqlite/.test(selectValue(driver));
 	alterClass(trs[1], 'hidden', disabled);	// 1 - row with server
-	trs[1].getElementsByTagName('input')[0].disabled = disabled;	
+	trs[1].getElementsByTagName('input')[0].disabled = disabled;
 }
 
 
@@ -104,7 +104,7 @@ var dbPrevious = {};
 */
 function dbMouseDown(event) {
 	dbCtrl = isCtrl(event);
-	if (dbPrevious[this.name] == undefined) {
+	if (dbPrevious[this.name] === undefined) {
 		dbPrevious[this.name] = this.value;
 	}
 }
@@ -118,7 +118,7 @@ function dbChange() {
 	}
 	this.form.submit();
 	this.form.target = '';
-	if (dbCtrl && dbPrevious[this.name] != undefined) {
+	if (dbCtrl && dbPrevious[this.name] !== undefined) {
 		this.value = dbPrevious[this.name];
 		dbPrevious[this.name] = undefined;
 	}
@@ -145,23 +145,23 @@ function selectFieldChange() {
 		for (var i=0; i < selects.length; i++) {
 			var select = selects[i];
 			var col = selectValue(select);
-			var match = /^(where.+)col\]/.exec(select.name);
+			var match = /^(where.+)col]/.exec(select.name);
 			if (match) {
 				var op = selectValue(form[match[1] + 'op]']);
 				var val = form[match[1] + 'val]'].value;
-				if (col in indexColumns && (!/LIKE|REGEXP/.test(op) || (op == 'LIKE' && val.charAt(0) != '%'))) {
+				if (col in indexColumns && (!/LIKE|REGEXP/.test(op) || (op === 'LIKE' && val.charAt(0) !== '%'))) {
 					return true;
 				} else if (col || val) {
 					ok = false;
 				}
 			}
-			if ((match = /^(columns.+)fun\]/.exec(select.name))) {
+			if ((match = /^(columns.+)fun]/.exec(select.name))) {
 				if (/^(avg|count|count distinct|group_concat|max|min|sum)$/.test(col)) {
 					group = true;
 				}
 				var val = selectValue(form[match[1] + 'col]']);
 				if (val) {
-					columns[col && col != 'count' ? '' : val] = 1;
+					columns[col && col !== 'count' ? '' : val] = 1;
 				}
 			}
 			if (col && /^order/.test(select.name)) {
@@ -194,7 +194,7 @@ var added = '.', rowCount;
 * @return boolean
 */
 function delimiterEqual(val, a, b) {
-	return (val == a + '_' + b || val == a + b || val == a + b.charAt(0).toUpperCase() + b.substr(1));
+	return (val === a + '_' + b || val === a + b || val === a + b.charAt(0).toUpperCase() + b.substr(1));
 }
 
 /** Escape string to use as identifier
@@ -255,7 +255,7 @@ function editingClick(event) {
 		} else if (/^drop_col\[/.test(name)) {
 			editingRemoveRow.call(el, 'fields\$1[field]');
 		} else {
-			if (name == 'auto_increment_col') {
+			if (name === 'auto_increment_col') {
 				var field = el.form['fields[' + el.value + '][field]'];
 				if (!field.value) {
 					field.value = 'id';
@@ -273,7 +273,7 @@ function editingClick(event) {
 */
 function editingInput(event) {
 	var el = getTarget(event);
-	if (/\[default\]$/.test(el.name)) {
+	if (/\[default]$/.test(el.name)) {
 		 el.previousSibling.checked = true;
 	}
 }
@@ -290,7 +290,7 @@ function editingNameChange() {
 	for (var i = opts.length; i--; ) {
 		var match = /(.+)`(.+)/.exec(opts[i].value);
 		if (!match) { // common type
-			if (candidate && i == opts.length - 2 && val == opts[candidate].value.replace(/.+`/, '') && name == 'fields[1]') { // single target table, link to column, first field - probably `id`
+			if (candidate && i === opts.length - 2 && val === opts[candidate].value.replace(/.+`/, '') && name === 'fields[1]') { // single target table, link to column, first field - probably `id`
 				return;
 			}
 			break;
@@ -300,7 +300,7 @@ function editingNameChange() {
 		var tables = [ table, table.replace(/s$/, ''), table.replace(/es$/, '') ];
 		for (var j=0; j < tables.length; j++) {
 			table = tables[j];
-			if (val == column || val == table || delimiterEqual(val, table, column) || delimiterEqual(val, column, table)) {
+			if (val === column || val === table || delimiterEqual(val, table, column) || delimiterEqual(val, column, table)) {
 				if (candidate) {
 					return;
 				}
@@ -335,7 +335,7 @@ function editingAddRow(focus) {
 	tags2 = qsa('input', row2);
 	var input = tags2[0]; // IE loose tags2 after insertBefore()
 	for (var i=0; i < tags.length; i++) {
-		if (tags[i].name == 'auto_increment_col') {
+		if (tags[i].name === 'auto_increment_col') {
 			tags2[i].value = x;
 			tags2[i].checked = false;
 		}
@@ -397,7 +397,7 @@ function editingTypeChange() {
 	var text = selectValue(type);
 	for (var i=0; i < type.form.elements.length; i++) {
 		var el = type.form.elements[i];
-		if (el.name == name + '[length]') {
+		if (el.name === name + '[length]') {
 			if (!(
 				(/(char|binary)$/.test(lastType) && /(char|binary)$/.test(text))
 				|| (/(enum|set)$/.test(lastType) && /(enum|set)$/.test(text))
@@ -406,19 +406,19 @@ function editingTypeChange() {
 			}
 			el.oninput.apply(el);
 		}
-		if (lastType == 'timestamp' && el.name == name + '[has_default]' && /timestamp/i.test(formField(type.form, name + '[default]').value)) {
+		if (lastType === 'timestamp' && el.name == name + '[has_default]' && /timestamp/i.test(formField(type.form, name + '[default]').value)) {
 			el.checked = false;
 		}
-		if (el.name == name + '[collation]') {
+		if (el.name === name + '[collation]') {
 			alterClass(el, 'hidden', !/(char|text|enum|set)$/.test(text));
 		}
-		if (el.name == name + '[unsigned]') {
+		if (el.name === name + '[unsigned]') {
 			alterClass(el, 'hidden', !/(^|[^o])int(?!er)|numeric|real|float|double|decimal|money/.test(text));
 		}
-		if (el.name == name + '[on_update]') {
+		if (el.name === name + '[on_update]') {
 			alterClass(el, 'hidden', !/timestamp|datetime/.test(text)); // MySQL supports datetime since 5.6.5
 		}
-		if (el.name == name + '[on_delete]') {
+		if (el.name === name + '[on_delete]') {
 			alterClass(el, 'hidden', !/`/.test(text));
 		}
 	}
@@ -457,13 +457,13 @@ function enumValues(s) {
 	var offset = 0;
 	var match;
 	while (match = re.exec(s)) {
-		if (offset != match.index) {
+		if (offset !== match.index) {
 			break;
 		}
 		result.push(match[2].replace(/'(')|\\(.)/g, '$1$2'));
 		offset += match[0].length;
 	}
-	return (offset == s.length ? result.join('\n') : s);
+	return (offset === s.length ? result.join('\n') : s);
 }
 
 /** Finish editing of enum or set
@@ -531,7 +531,7 @@ function dumpClick(event) {
 	var el = parentTag(getTarget(event), 'label');
 	if (el) {
 		el = qs('input', el);
-		var match = /(.+)\[\]$/.exec(el.name);
+		var match = /(.+)\[]$/.exec(el.name);
 		if (match) {
 			checkboxClick.call(el, event);
 			formUncheck('check-' + match[1]);
@@ -549,7 +549,7 @@ function foreignAddRow() {
 	this.onchange = function () { };
 	var selects = qsa('select', row);
 	for (var i=0; i < selects.length; i++) {
-		selects[i].name = selects[i].name.replace(/\]/, '1$&');
+		selects[i].name = selects[i].name.replace(']', '1]');
 		selects[i].selectedIndex = 0;
 	}
 	parentTag(this, 'table').appendChild(row);
@@ -585,7 +585,7 @@ function indexesChangeColumn(prefix) {
 	for (var tag in { 'select': 1, 'input': 1 }) {
 		var columns = qsa(tag, parentTag(this, 'td'));
 		for (var i=0; i < columns.length; i++) {
-			if (/\[columns\]/.test(columns[i].name)) {
+			if (/\[columns]/.test(columns[i].name)) {
 				var value = selectValue(columns[i]);
 				if (value) {
 					names.push(value);
@@ -593,7 +593,7 @@ function indexesChangeColumn(prefix) {
 			}
 		}
 	}
-	this.form[this.name.replace(/\].*/, '][name]')].value = prefix + names.join('_');
+	this.form[this.name.replace(/].*/, '][name]')].value = prefix + names.join('_');
 }
 
 /** Add column for index
@@ -602,9 +602,9 @@ function indexesChangeColumn(prefix) {
 */
 function indexesAddColumn(prefix) {
 	var field = this;
-	var select = field.form[field.name.replace(/\].*/, '][type]')];
+	var select = field.form[field.name.replace(/].*/, '][type]')];
 	if (!select.selectedIndex) {
-		while (selectValue(select) != "INDEX" && select.selectedIndex < select.options.length) {
+		while (selectValue(select) !== "INDEX" && select.selectedIndex < select.options.length) {
 			select.selectedIndex++;
 		}
 		select.onchange();
@@ -613,15 +613,15 @@ function indexesAddColumn(prefix) {
 	var selects = qsa('select', column);
 	for (var i = 0; i < selects.length; i++) {
 		select = selects[i];
-		select.name = select.name.replace(/\]\[\d+/, '$&1');
+		select.name = select.name.replace(/]\[\d+/, '$&1');
 		select.selectedIndex = 0;
 	}
 	field.onchange = partial(indexesChangeColumn, prefix);
 	var inputs = qsa('input', column);
 	for (var i = 0; i < inputs.length; i++) {
 		var input = inputs[i];
-		input.name = input.name.replace(/\]\[\d+/, '$&1');
-		if (input.type != 'checkbox') {
+		input.name = input.name.replace(/]\[\d+/, '$&1');
+		if (input.type !== 'checkbox') {
 			input.value = '';
 		}
 	}
@@ -670,7 +670,7 @@ var that, x, y; // em and tablePos defined in schema.inc.php
 * @this HTMLElement
 */
 function schemaMousedown(event) {
-	if ((event.which ? event.which : event.button) == 1) {
+	if ((event.which ? event.which : event.button) === 1) {
 		that = this;
 		x = event.clientX - this.offsetLeft;
 		y = event.clientY - this.offsetTop;
@@ -687,12 +687,12 @@ function schemaMousemove(event) {
 		var divs = qsa('div', that);
 		var lineSet = { };
 		for (var i=0; i < divs.length; i++) {
-			if (divs[i].className == 'references') {
+			if (divs[i].className === 'references') {
 				var div2 = qs('[id="' + (/^refs/.test(divs[i].id) ? 'refd' : 'refs') + divs[i].id.substr(4) + '"]');
 				var ref = (tablePos[divs[i].title] ? tablePos[divs[i].title] : [ div2.parentNode.offsetTop / em, 0 ]);
 				var left1 = -1;
 				var id = divs[i].id.replace(/^ref.(.+)-.+/, '$1');
-				if (divs[i].parentNode != div2.parentNode) {
+				if (divs[i].parentNode !== div2.parentNode) {
 					left1 = Math.min(0, ref[1] - left) - 1;
 					divs[i].style.left = left1 + 'em';
 					divs[i].querySelector('div').style.width = -left1 + 'em';
@@ -704,7 +704,7 @@ function schemaMousemove(event) {
 					var line = qs('[id="' + divs[i].id.replace(/^....(.+)-.+$/, 'refl$1') + '"]');
 					var top1 = top + divs[i].offsetTop / em;
 					var top2 = top + div2.offsetTop / em;
-					if (divs[i].parentNode != div2.parentNode) {
+					if (divs[i].parentNode !== div2.parentNode) {
 						top2 += ref[0] - top;
 						line.querySelector('div').style.height = Math.abs(top1 - top2) + 'em';
 					}
@@ -752,7 +752,7 @@ function helpMouseover(event, text, side) {
 	var target = getTarget(event);
 	if (!text) {
 		helpClose();
-	} else if (window.jush && (!helpIgnore || this != target)) {
+	} else if (window.jush && (!helpIgnore || this !== target)) {
 		helpOpen = 1;
 		var help = qs('#help');
 		help.innerHTML = text;
@@ -771,7 +771,7 @@ function helpMouseover(event, text, side) {
 */
 function helpMouseout(event) {
 	helpOpen = 0;
-	helpIgnore = (this != getTarget(event));
+	helpIgnore = (this !== getTarget(event));
 	setTimeout(function () {
 		if (!helpOpen) {
 			helpClose();

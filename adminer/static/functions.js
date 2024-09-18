@@ -4,7 +4,7 @@
 * @param [HTMLElement] defaults to document
 * @return HTMLElement
 */
-function qs(selector, context) {
+function qs(selector, context = null) {
 	return (context || document).querySelector(selector);
 }
 
@@ -13,7 +13,7 @@ function qs(selector, context) {
 * @param [HTMLElement] defaults to document
 * @return HTMLElement
 */
-function qsl(selector, context) {
+function qsl(selector, context = null) {
 	var els = qsa(selector, context);
 	return els[els.length - 1];
 }
@@ -23,7 +23,7 @@ function qsl(selector, context) {
 * @param [HTMLElement] defaults to document
 * @return NodeList
 */
-function qsa(selector, context) {
+function qsa(selector, context = null) {
 	return (context || document).querySelectorAll(selector);
 }
 
@@ -79,7 +79,7 @@ function alterClass(el, className, enable) {
 */
 function toggle(id) {
 	var el = qs('#' + id);
-	el.className = (el.className == 'hidden' ? '' : 'hidden');
+	el.className = (el.className === 'hidden' ? '' : 'hidden');
 	return false;
 }
 
@@ -111,7 +111,7 @@ function verifyVersion(current, url, token) {
 	if (window.postMessage && window.addEventListener) {
 		iframe.style.display = 'none';
 		addEventListener('message', function (event) {
-			if (event.origin == 'https://www.adminer.org') {
+			if (event.origin === 'https://www.adminer.org') {
 				var match = /version=(.+)/.exec(event.data);
 				if (match) {
 					cookie('adminer_version=' + match[1], 1);
@@ -139,7 +139,7 @@ function selectValue(select) {
 /** Verify if element has a specified tag name
 * @param HTMLElement
 * @param string regular expression
-* @return bool
+* @return boolean
 */
 function isTag(el, tag) {
 	var re = new RegExp('^(' + tag + ')$', 'i');
@@ -181,8 +181,8 @@ function selectCount(id, count) {
 		var inputs = qsa('input', el.parentNode.parentNode);
 		for (var i = 0; i < inputs.length; i++) {
 			var input = inputs[i];
-			if (input.type == 'submit') {
-				input.disabled = (count == '0');
+			if (input.type === 'submit') {
+				input.disabled = (count === '0');
 			}
 		}
 	}
@@ -252,7 +252,7 @@ function tableClick(event, click) {
 	var el = getTarget(event);
 	while (!isTag(el, 'tr')) {
 		if (isTag(el, 'table|a|input|textarea')) {
-			if (el.type != 'checkbox') {
+			if (el.type !== 'checkbox') {
 				return;
 			}
 			checkboxClick.call(el, event);
@@ -268,7 +268,7 @@ function tableClick(event, click) {
 		el.checked = !el.checked;
 		el.onclick && el.onclick();
 	}
-	if (el.name == 'check[]') {
+	if (el.name === 'check[]') {
 		el.form['all'].checked = false;
 		formUncheck('all-page');
 	}
@@ -288,7 +288,7 @@ function checkboxClick(event) {
 	if (!this.name) {
 		return;
 	}
-	if (event.shiftKey && (!lastChecked || lastChecked.name == this.name)) {
+	if (event.shiftKey && (!lastChecked || lastChecked.name === this.name)) {
 		var checked = (lastChecked ? lastChecked.checked : true);
 		var inputs = qsa('input', parentTag(this, 'table'));
 		var checking = !lastChecked;
@@ -333,7 +333,7 @@ function setHtml(id, html) {
 */
 function nodePosition(el) {
 	var pos = 0;
-	while (el = el.previousSibling) {
+	while ((el = el.previousSibling)) {
 		pos++;
 	}
 	return pos;
@@ -345,7 +345,7 @@ function nodePosition(el) {
 */
 function pageClick(href, page) {
 	if (!isNaN(page) && page) {
-		location.href = href + (page != 1 ? '&page=' + (page - 1) : '');
+		location.href = href + (page !== 1 ? '&page=' + (page - 1) : '');
 	}
 }
 
@@ -388,7 +388,7 @@ function selectAddRow() {
 	for (var i=0; i < inputs.length; i++) {
 		inputs[i].name = inputs[i].name.replace(/[a-z]\[\d+/, '$&1');
 		inputs[i].className = '';
-		if (inputs[i].type == 'checkbox') {
+		if (inputs[i].type === 'checkbox') {
 			inputs[i].checked = false;
 		} else {
 			inputs[i].value = '';
@@ -402,7 +402,7 @@ function selectAddRow() {
 * @this HTMLInputElement
 */
 function selectSearchKeydown(event) {
-	if (event.keyCode == 13 || event.keyCode == 10) {
+	if (event.keyCode === 13 || event.keyCode === 10) {
 		this.onsearch = function () {
 		};
 	}
@@ -445,11 +445,11 @@ function selectSearch(name) {
 	for (var i=0; i < divs.length; i++) {
 		var div = divs[i];
 		var el = qs('[name$="[col]"]', div);
-		if (el && selectValue(el) == name) {
+		if (el && selectValue(el) === name) {
 			break;
 		}
 	}
-	if (i == divs.length) {
+	if (i === divs.length) {
 		div.firstChild.value = name;
 		div.firstChild.onchange();
 	}
@@ -487,7 +487,7 @@ function bodyKeydown(event, button) {
 	if (target.jushTextarea) {
 		target = target.jushTextarea;
 	}
-	if (isCtrl(event) && (event.keyCode == 13 || event.keyCode == 10) && isTag(target, 'select|textarea|input')) { // 13|10 - Enter
+	if (isCtrl(event) && (event.keyCode === 13 || event.keyCode === 10) && isTag(target, 'select|textarea|input')) { // 13|10 - Enter
 		target.blur();
 		if (button) {
 			target.form[button].click();
@@ -508,7 +508,7 @@ function bodyKeydown(event, button) {
 */
 function bodyClick(event) {
 	var target = getTarget(event);
-	if ((isCtrl(event) || event.shiftKey) && target.type == 'submit' && isTag(target, 'input')) {
+	if ((isCtrl(event) || event.shiftKey) && target.type === 'submit' && isTag(target, 'input')) {
 		target.form.target = '_blank';
 		setTimeout(function () {
 			// if (isCtrl(event)) { focus(); } doesn't work
@@ -524,9 +524,9 @@ function bodyClick(event) {
 * @return boolean
 */
 function editingKeydown(event) {
-	if ((event.keyCode == 40 || event.keyCode == 38) && isCtrl(event)) { // 40 - Down, 38 - Up
+	if ((event.keyCode === 40 || event.keyCode === 38) && isCtrl(event)) { // 40 - Down, 38 - Up
 		var target = getTarget(event);
-		var sibling = (event.keyCode == 40 ? 'nextSibling' : 'previousSibling');
+		var sibling = (event.keyCode === 40 ? 'nextSibling' : 'previousSibling');
 		var el = target.parentNode.parentNode[sibling];
 		if (el && (isTag(el, 'tr') || (el = el[sibling])) && isTag(el, 'tr') && (el = el.childNodes[nodePosition(target.parentNode)]) && (el = el.childNodes[nodePosition(target)])) {
 			el.focus();
@@ -614,7 +614,7 @@ function ajax(url, callback, data, message) {
 		}
 		request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 		request.onreadystatechange = function () {
-			if (request.readyState == 4) {
+			if (request.readyState === 4) {
 				if (/^2/.test(request.status)) {
 					callback(request);
 				} else {
@@ -656,7 +656,7 @@ function ajaxForm(form, message, button) {
 			if (/^file$/i.test(el.type) && el.value) {
 				return false;
 			}
-			if (!/^(checkbox|radio|submit|file)$/i.test(el.type) || el.checked || el == button) {
+			if (!/^(checkbox|radio|submit|file)$/i.test(el.type) || el.checked || el === button) {
 				data.push(encodeURIComponent(el.name) + '=' + encodeURIComponent(isTag(el, 'select') ? selectValue(el) : el.value));
 			}
 		}
@@ -703,7 +703,7 @@ function selectClick(event, text, warning) {
 		if (!event) {
 			event = window.event;
 		}
-		if (event.keyCode == 27 && !event.shiftKey && !event.altKey && !isCtrl(event)) { // 27 - Esc
+		if (event.keyCode === 27 && !event.shiftKey && !event.altKey && !isCtrl(event)) { // 27 - Esc
 			inputBlur.apply(input);
 			td.innerHTML = original;
 		}
@@ -733,7 +733,7 @@ function selectClick(event, text, warning) {
 	td.appendChild(input);
 	setupSubmitHighlight(td);
 	input.focus();
-	if (text == 2) { // long text
+	if (text === 2) { // long text
 		return ajax(location.href + '&' + encodeURIComponent(td.id) + '=', function (request) {
 			if (request.responseText) {
 				input.value = request.responseText;
@@ -855,7 +855,7 @@ function findDefaultSubmit(el) {
 	var inputs = qsa('input', el.form);
 	for (var i = 0; i < inputs.length; i++) {
 		var input = inputs[i];
-		if (input.type == 'submit' && !input.style.zIndex) {
+		if (input.type === 'submit' && !input.style.zIndex) {
 			return input;
 		}
 	}
