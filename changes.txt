@@ -1,3 +1,15 @@
+Adminer 4.9.2 (released 2024-09-18):
+- Fix textarea height for single-line inputs (used typically for SQLite text field).
+- Fix undefined property in error message if driver does not support error number (e.g. PostgreSQL).
+- PostgreSQL: Fix search fields configuration (regression from 4.9).
+- PostgreSQL: Fix search condition for network address types, add macaddr8 type.
+- PostgreSQL: Fix exporting CREATE TABLE query with GENERATED default values.
+- PostgreSQL: Fix exporting CREATE TABLE query with sequence default value.
+- PostgreSQL: Allow to set connection's sslmode with AdminerLoginSsl plugin.
+- MySQL: Do not show 'empty' enum value in strict mode.
+- Editor: Fix searching in tables.
+- Function to retrieve driver name that can be used in plugins.
+
 Adminer 4.9.1 (released 2024-09-09):
 - Compatibility with PHP 8.3.
 - Fix compiling jush external files.
