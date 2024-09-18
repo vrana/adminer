@@ -83,14 +83,14 @@ function messagesPrint(el) {
 
 
 
-/** Hide or show some login rows for selected driver	
-* @param HTMLSelectElement	
-*/	
-function loginDriver(driver) {	
-	var trs = parentTag(driver, 'table').rows;	
-	var disabled = /sqlite/.test(selectValue(driver));	
+/** Hide or show some login rows for selected driver
+* @param HTMLSelectElement
+*/
+function loginDriver(driver) {
+	var trs = parentTag(driver, 'table').rows;
+	var disabled = /sqlite/.test(selectValue(driver));
 	alterClass(trs[1], 'hidden', disabled);	// 1 - row with server
-	trs[1].getElementsByTagName('input')[0].disabled = disabled;	
+	trs[1].getElementsByTagName('input')[0].disabled = disabled;
 }
 
 
@@ -145,7 +145,7 @@ function selectFieldChange() {
 		for (var i=0; i < selects.length; i++) {
 			var select = selects[i];
 			var col = selectValue(select);
-			var match = /^(where.+)col\]/.exec(select.name);
+			var match = /^(where.+)col]/.exec(select.name);
 			if (match) {
 				var op = selectValue(form[match[1] + 'op]']);
 				var val = form[match[1] + 'val]'].value;
@@ -155,7 +155,7 @@ function selectFieldChange() {
 					ok = false;
 				}
 			}
-			if ((match = /^(columns.+)fun\]/.exec(select.name))) {
+			if ((match = /^(columns.+)fun]/.exec(select.name))) {
 				if (/^(avg|count|count distinct|group_concat|max|min|sum)$/.test(col)) {
 					group = true;
 				}
@@ -273,7 +273,7 @@ function editingClick(event) {
 */
 function editingInput(event) {
 	var el = getTarget(event);
-	if (/\[default\]$/.test(el.name)) {
+	if (/\[default]$/.test(el.name)) {
 		 el.previousSibling.checked = true;
 	}
 }
@@ -531,7 +531,7 @@ function dumpClick(event) {
 	var el = parentTag(getTarget(event), 'label');
 	if (el) {
 		el = qs('input', el);
-		var match = /(.+)\[\]$/.exec(el.name);
+		var match = /(.+)\[]$/.exec(el.name);
 		if (match) {
 			checkboxClick.call(el, event);
 			formUncheck('check-' + match[1]);
@@ -549,7 +549,7 @@ function foreignAddRow() {
 	this.onchange = function () { };
 	var selects = qsa('select', row);
 	for (var i=0; i < selects.length; i++) {
-		selects[i].name = selects[i].name.replace(/\]/, '1$&');
+		selects[i].name = selects[i].name.replace(']', '1]');
 		selects[i].selectedIndex = 0;
 	}
 	parentTag(this, 'table').appendChild(row);
@@ -585,7 +585,7 @@ function indexesChangeColumn(prefix) {
 	for (var tag in { 'select': 1, 'input': 1 }) {
 		var columns = qsa(tag, parentTag(this, 'td'));
 		for (var i=0; i < columns.length; i++) {
-			if (/\[columns\]/.test(columns[i].name)) {
+			if (/\[columns]/.test(columns[i].name)) {
 				var value = selectValue(columns[i]);
 				if (value) {
 					names.push(value);
@@ -593,7 +593,7 @@ function indexesChangeColumn(prefix) {
 			}
 		}
 	}
-	this.form[this.name.replace(/\].*/, '][name]')].value = prefix + names.join('_');
+	this.form[this.name.replace(/].*/, '][name]')].value = prefix + names.join('_');
 }
 
 /** Add column for index
@@ -602,7 +602,7 @@ function indexesChangeColumn(prefix) {
 */
 function indexesAddColumn(prefix) {
 	var field = this;
-	var select = field.form[field.name.replace(/\].*/, '][type]')];
+	var select = field.form[field.name.replace(/].*/, '][type]')];
 	if (!select.selectedIndex) {
 		while (selectValue(select) != "INDEX" && select.selectedIndex < select.options.length) {
 			select.selectedIndex++;
@@ -613,14 +613,14 @@ function indexesAddColumn(prefix) {
 	var selects = qsa('select', column);
 	for (var i = 0; i < selects.length; i++) {
 		select = selects[i];
-		select.name = select.name.replace(/\]\[\d+/, '$&1');
+		select.name = select.name.replace(/]\[\d+/, '$&1');
 		select.selectedIndex = 0;
 	}
 	field.onchange = partial(indexesChangeColumn, prefix);
 	var inputs = qsa('input', column);
 	for (var i = 0; i < inputs.length; i++) {
 		var input = inputs[i];
-		input.name = input.name.replace(/\]\[\d+/, '$&1');
+		input.name = input.name.replace(/]\[\d+/, '$&1');
 		if (input.type != 'checkbox') {
 			input.value = '';
 		}

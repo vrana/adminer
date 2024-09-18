@@ -139,7 +139,7 @@ function selectValue(select) {
 /** Verify if element has a specified tag name
 * @param HTMLElement
 * @param string regular expression
-* @return bool
+* @return boolean
 */
 function isTag(el, tag) {
 	var re = new RegExp('^(' + tag + ')$', 'i');
@@ -333,7 +333,7 @@ function setHtml(id, html) {
 */
 function nodePosition(el) {
 	var pos = 0;
-	while (el = el.previousSibling) {
+	while ((el = el.previousSibling)) {
 		pos++;
 	}
 	return pos;
