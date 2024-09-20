@@ -479,6 +479,10 @@ AND c_src.TABLE_NAME = " . q($table);
 		return get_key_vals('SELECT name, display_value FROM v$parameter');
 	}
 
+	function is_c_style_escapes() {
+		return true;
+	}
+
 	function process_list() {
 		return get_rows('SELECT sess.process AS "process", sess.username AS "user", sess.schemaname AS "schema", sess.status AS "status", sess.wait_class AS "wait_class", sess.seconds_in_wait AS "seconds_in_wait", sql.sql_text AS "sql_text", sess.machine AS "machine", sess.port AS "port"
 FROM v$session sess LEFT OUTER JOIN v$sql sql

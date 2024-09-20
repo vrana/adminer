@@ -630,6 +630,10 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)
 		return array();
 	}
 
+	function is_c_style_escapes() {
+		return true;
+	}
+
 	function show_status() {
 		return array();
 	}

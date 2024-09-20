@@ -764,6 +764,10 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return $return;
 	}
 
+	function is_c_style_escapes() {
+		return true;
+	}
+
 	function show_status() {
 		$return = array();
 		foreach (get_vals("PRAGMA compile_options") as $option) {
