@@ -1074,6 +1074,16 @@ if (!defined("DRIVER")) {
 		return $strictMode;
 	}
 
+	function is_c_style_escapes() {
+		static $c_style = null;
+
+		if ($c_style === null) {
+			$c_style = strpos(get_key_vals("SHOW VARIABLES LIKE 'sql_mode'")["sql_mode"], 'NO_BACKSLASH_ESCAPES') === false;
+		}
+
+		return $c_style;
+	}
+
 	/** Get process list
 	* @return array ($row)
 	*/

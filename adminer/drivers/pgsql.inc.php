@@ -885,6 +885,16 @@ AND typelem = 0"
 		return false;
 	}
 
+	function is_c_style_escapes() {
+		static $c_style = null;
+
+		if ($c_style === null) {
+			$c_style = get_vals("SHOW standard_conforming_strings")[0] == "off";
+		}
+
+		return $c_style;
+	}
+
 	function process_list() {
 		return get_rows("SELECT * FROM pg_stat_activity ORDER BY " . (min_version(9.2) ? "pid" : "procpid"));
 	}
@@ -949,6 +959,7 @@ AND typelem = 0"
 					"char|text" => "||",
 				)
 			),
+			'c_style_escapes' => true,
 		);
 	}
 }
