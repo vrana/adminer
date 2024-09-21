@@ -6,6 +6,7 @@ function adminer_errors($errno, $errstr) {
 error_reporting(6135); // errors and warnings
 set_error_handler('adminer_errors', E_WARNING);
 
+include "../adminer/include/debug.inc.php";
 include "../adminer/include/coverage.inc.php";
 
 // disable filter.default
