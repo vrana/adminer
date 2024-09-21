@@ -221,6 +221,11 @@ function process_type($field, $collate = "COLLATE") {
 * @return array array("field", "type", "NULL", "DEFAULT", "ON UPDATE", "COMMENT", "AUTO_INCREMENT")
 */
 function process_field($field, $type_field) {
+	// MariaDB exports CURRENT_TIMESTAMP as a function.
+	if ($field["on_update"]) {
+		$field["on_update"] = str_ireplace("current_timestamp()", "CURRENT_TIMESTAMP", $field["on_update"]);
+	}
+
 	return array(
 		idf_escape(trim($field["field"])),
 		process_type($type_field),
@@ -240,7 +245,7 @@ function default_value($field) {
 	$default = $field["default"];
 	return ($default === null ? "" : " DEFAULT " .
 		(!preg_match('~^GENERATED ~i', $default) && (preg_match('~char|binary|text|enum|set~', $field["type"]) || preg_match('~^(?![a-z])~i', $default))
-		? q($default) : $default)
+		? q($default) : str_ireplace("current_timestamp()", "CURRENT_TIMESTAMP", $default))
 	);
 }
 

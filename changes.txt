@@ -1,4 +1,7 @@
-Adminer 4.9.2-dev:
+Adminer 4.9.3-dev:
+MariaDB: Support current_timestamp()
+
+Adminer 4.9.2:
 PostgreSQL: Fix search fields configuration (regression from 4.9.0)
 PostgreSQL: Fix exporting CREATE TABLE query with GENERATED default values
 PostgreSQL: Fix exporting CREATE TABLE with sequence default value
