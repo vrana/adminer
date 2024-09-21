@@ -1111,6 +1111,27 @@ function search_tables() {
 	echo ($sep ? "<p class='message'>" . lang('No tables.') : "</ul>") . "\n";
 }
 
+/**
+ * @param string $table
+ * @return array
+ */
+function get_partitions_info($table) {
+	global $connection;
+
+	$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . q(DB) . " AND TABLE_NAME = " . q($table);
+
+	$result = $connection->query("SELECT PARTITION_METHOD, PARTITION_EXPRESSION, PARTITION_ORDINAL_POSITION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
+
+	$info = [];
+	list($info["partition_by"], $info["partition"],  $info["partitions"]) = $result->fetch_row();
+
+	$partitions = get_key_vals("SELECT PARTITION_NAME, PARTITION_DESCRIPTION $from AND PARTITION_NAME != '' ORDER BY PARTITION_ORDINAL_POSITION");
+	$info["partition_names"] = array_keys($partitions);
+	$info["partition_values"] = array_values($partitions);
+
+	return $info;
+}
+
 /** Send headers for export
 * @param string
 * @param bool

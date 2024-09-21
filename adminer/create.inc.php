@@ -82,20 +82,39 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 		}
 
 		$partitioning = "";
-		if ($partition_by[$row["partition_by"]]) {
-			$partitions = array();
-			if ($row["partition_by"] == 'RANGE' || $row["partition_by"] == 'LIST') {
-				foreach (array_filter($row["partition_names"]) as $key => $val) {
-					$value = $row["partition_values"][$key];
-					$partitions[] = "\n  PARTITION " . idf_escape($val) . " VALUES " . ($row["partition_by"] == 'RANGE' ? "LESS THAN" : "IN") . ($value != "" ? " ($value)" : " MAXVALUE"); //! SQL injection
+		if (support("partitioning")) {
+			if (isset($partition_by[$row["partition_by"]])) {
+				$params = array_filter($row, function ($key) {
+					return preg_match('~^partition~', $key);
+				}, ARRAY_FILTER_USE_KEY);
+
+				foreach ($params["partition_names"] as $key => $name) {
+					if ($name === "") {
+						unset($params["partition_names"][$key]);
+						unset($params["partition_values"][$key]);
+					}
 				}
+
+				if ($params != get_partitions_info($TABLE)) {
+					$partitions = [];
+					if ($params["partition_by"] == 'RANGE' || $params["partition_by"] == 'LIST') {
+						foreach ($params["partition_names"] as $key => $name) {
+							$value = $params["partition_values"][$key];
+							$partitions[] = "\n  PARTITION " . idf_escape($name) . " VALUES " . ($params["partition_by"] == 'RANGE' ? "LESS THAN" : "IN") . ($value != "" ? " ($value)" : " MAXVALUE"); //! SQL injection
+						}
+					}
+
+					// $params["partition"] can be expression, not only column
+					$partitioning .= "\nPARTITION BY {$params["partition_by"]}({$params["partition"]})";
+					if ($partitions) {
+						$partitioning .= " (" . implode(",", $partitions) . "\n)";
+					} elseif ($params["partitions"]) {
+						$partitioning .= " PARTITIONS " . (int)$params["partitions"];
+					}
+				}
+			} elseif (preg_match("~partitioned~", $table_status["Create_options"])) {
+				$partitioning .= "\nREMOVE PARTITIONING";
 			}
-			$partitioning .= "\nPARTITION BY $row[partition_by]($row[partition])" . ($partitions // $row["partition"] can be expression, not only column
-				? " (" . implode(",", $partitions) . "\n)"
-				: ($row["partitions"] ? " PARTITIONS " . (+$row["partitions"]) : "")
-			);
-		} elseif (support("partitioning") && preg_match("~partitioned~", $table_status["Create_options"])) {
-			$partitioning .= "\nREMOVE PARTITIONING";
 		}
 
 		$message = lang('Table has been altered.');
@@ -141,13 +160,9 @@ if (!$_POST) {
 		}
 
 		if (support("partitioning")) {
-			$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . q(DB) . " AND TABLE_NAME = " . q($TABLE);
-			$result = $connection->query("SELECT PARTITION_METHOD, PARTITION_ORDINAL_POSITION, PARTITION_EXPRESSION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
-			list($row["partition_by"], $row["partitions"], $row["partition"]) = $result->fetch_row();
-			$partitions = get_key_vals("SELECT PARTITION_NAME, PARTITION_DESCRIPTION $from AND PARTITION_NAME != '' ORDER BY PARTITION_ORDINAL_POSITION");
-			$partitions[""] = "";
-			$row["partition_names"] = array_keys($partitions);
-			$row["partition_values"] = array_values($partitions);
+			$row += get_partitions_info($TABLE);
+			$row["partition_names"][] = "";
+			$row["partition_values"][] = "";
 		}
 	}
 }
