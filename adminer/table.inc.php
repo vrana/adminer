@@ -28,10 +28,20 @@ if ($comment != "") {
 if ($fields) {
 	$adminer->tableStructurePrint($fields);
 
+	if (is_view($table_status)) {
+		$editLink = '<p class="links"><a href="' . h(ME) . 'view=' . urlencode($TABLE) . '">' . lang('Alter view') . "</a>\n";
+	} else {
+		$editLink = '<p class="links"><a href="' . h(ME) . 'create=' . urlencode($TABLE) . '">' . lang('Alter table') . "</a>\n";
+	}
+	echo $editLink;
+
 	if (support("partitioning") && preg_match("~partitioned~", $table_status["Create_options"])) {
 		echo "<h3 id='partition-by'>" . lang('Partition by') . "</h3>\n";
+
 		$partitions_info = get_partitions_info($TABLE);
 		$adminer->tablePartitionsPrint($partitions_info);
+
+		echo $editLink;
 	}
 }
 

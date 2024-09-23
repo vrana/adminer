@@ -366,9 +366,12 @@ class Adminer {
 	*/
 	function tableIndexesPrint($indexes) {
 		echo "<table cellspacing='0'>\n";
+		echo "<thead><tr><th>" . lang('Type') . "</th><td>" . lang('Column (length)') . "</td></tr></thead>\n";
+
 		foreach ($indexes as $name => $index) {
 			ksort($index["columns"]); // enforce correct columns order
-			$print = array();
+			$print = [];
+
 			foreach ($index["columns"] as $key => $val) {
 				$print[] = "<i>" . h($val) . "</i>"
 					. ($index["lengths"][$key] ? "(" . $index["lengths"][$key] . ")" : "")
@@ -377,6 +380,7 @@ class Adminer {
 			}
 			echo "<tr title='" . h($name) . "'><th>$index[type]<td>" . implode(", ", $print) . "\n";
 		}
+
 		echo "</table>\n";
 	}
 
