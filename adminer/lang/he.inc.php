@@ -188,6 +188,7 @@ $translations = array(
 	'Clone' => 'שכפל',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'הגעת למספר השדות המרבי. בבקשה הגדל את %s',
 	'Partition by' => 'מחיצות ע"י',
+	'Partition' => null,
 	'Partitions' => 'מחיצות',
 	'Partition name' => 'שם מחיצה',
 	'Values' => 'ערכים',

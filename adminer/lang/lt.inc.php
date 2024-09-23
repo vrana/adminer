@@ -166,6 +166,7 @@ $translations = array(
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Viršytas maksimalus leidžiamų stulpelių kiekis. Padidinkite %s.',
 
 	'Partition by' => 'Skirstyti pagal',
+	'Partition' => null,
 	'Partitions' => 'Skirsniai',
 	'Partition name' => 'Skirsnio pavadinimas',
 	'Values' => 'Reikšmės',

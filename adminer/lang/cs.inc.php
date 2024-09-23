@@ -189,6 +189,7 @@ $translations = array(
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Byl překročen maximální povolený počet polí. Zvyšte prosím %s.',
 
 	'Partition by' => 'Rozdělit podle',
+	'Partition' => 'Oddíl',
 	'Partitions' => 'Oddíly',
 	'Partition name' => 'Název oddílu',
 	'Values' => 'Hodnoty',

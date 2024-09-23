@@ -189,6 +189,7 @@ $translations = array(
 	'Tables have been dropped.' => 'Таблицы были удалены.',
 	'Clone' => 'Клонировать',
 	'Partition by' => 'Разделить по',
+	'Partition' => null,
 	'Partitions' => 'Разделы',
 	'Partition name' => 'Название раздела',
 	'Values' => 'Параметры',

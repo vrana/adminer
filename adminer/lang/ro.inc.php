@@ -189,6 +189,7 @@ $translations = array(
 	'Tables have been dropped.' => 'Tabelele au fost șterse.',
 	'Clone' => 'Clonează',
 	'Partition by' => 'Împarte',
+	'Partition' => null,
 	'Partitions' => 'Secțiuni',
 	'Partition name' => 'Denumirea secțiunii',
 	'Values' => 'Parametru',

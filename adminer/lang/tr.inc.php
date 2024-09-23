@@ -184,6 +184,7 @@ $translations = array(
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'İzin verilen en fazla alan sayısı aşıldı. Lütfen %s değerlerini artırın.',
 
 	'Partition by' => 'Bununla bölümle',
+	'Partition' => null,
 	'Partitions' => 'Bölümler',
 	'Partition name' => 'Bölüm adı',
 	'Values' => 'Değerler',

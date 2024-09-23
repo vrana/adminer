@@ -191,6 +191,7 @@ $translations = array(
 	'Clone' => 'Klonen',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Die maximal erlaubte Anzahl der Felder ist überschritten. Bitte %s erhöhen.',
 	'Partition by' => 'Partitionieren um',
+	'Partition' => 'Partition',
 	'Partitions' => 'Partitionen',
 	'Partition name' => 'Name der Partition',
 	'Values' => 'Werte',

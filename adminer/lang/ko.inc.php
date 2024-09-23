@@ -172,6 +172,7 @@ $translations = array(
 	'Parameter name' => '매개변수 이름',
 	'Partition by' => '파티션',
 	'Partition name' => '파티션 이름',
+	'Partition' => null,
 	'Partitions' => '파티션',
 	'Password' => '비밀번호',
 	'Permanent link' => '영구적으로 링크',

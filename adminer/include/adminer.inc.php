@@ -338,6 +338,28 @@ class Adminer {
 		echo "</div>\n";
 	}
 
+	function tablePartitionsPrint($partition_info) {
+		$showList = $partition_info["partition_by"] == "RANGE" || $partition_info["partition_by"] == "LIST";
+
+		echo "<p>";
+		echo "<code>{$partition_info["partition_by"]} ({$partition_info["partition"]})</code>";
+		if (!$showList) {
+			echo " " . lang('Partitions') . ": " . h($partition_info["partitions"]);
+		}
+		echo "</p>";
+
+		if ($showList) {
+			echo "<table cellspacing='0'>\n";
+			echo "<thead><tr><th>" . lang('Partition') . "</th><td>" . lang('Values') . "</td></tr></thead>\n";
+
+			foreach ($partition_info["partition_names"] as $key => $name) {
+				echo "<tr><th>" . h($name) . "</th><td>" . h($partition_info["partition_values"][$key]) . "\n";
+			}
+
+			echo "</table>\n";
+		}
+	}
+
 	/** Print list of indexes on table in tabular format
 	* @param array data about all indexes on a table
 	* @return null

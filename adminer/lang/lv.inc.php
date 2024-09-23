@@ -189,6 +189,7 @@ $translations = array(
 	'Tables have been dropped.' => 'Tabulas dzēstas.',
 	'Clone' => 'Klonēt',
 	'Partition by' => 'Sadalīt pēc',
+	'Partition' => null,
 	'Partitions' => 'Partīcijas',
 	'Partition name' => 'Partīcijas nosaukums',
 	'Values' => 'Vērtības',

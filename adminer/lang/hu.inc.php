@@ -189,6 +189,7 @@ $translations = array(
 	'Tables have been dropped.' => 'Táblák eldobva.',
 	'Clone' => 'Klónoz',
 	'Partition by' => 'Particionálás ezzel',
+	'Partition' => null,
 	'Partitions' => 'Particiók',
 	'Partition name' => 'Partició neve',
 	'Values' => 'Értékek',

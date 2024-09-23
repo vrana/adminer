@@ -180,6 +180,7 @@ $translations = array(
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Przekroczono maksymalną liczbę pól. Zwiększ %s.',
 
 	'Partition by' => 'Partycjonowanie',
+	'Partition' => null,
 	'Partitions' => 'Partycje',
 	'Partition name' => 'Nazwa partycji',
 	'Values' => 'Wartości',

@@ -190,6 +190,7 @@ $translations = array(
 	'Clone' => 'Kloon',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Maksimaalne väljade arv ületatud. Palun suurendage %s.',
 	'Partition by' => 'Partitsiooni',
+	'Partition' => null,
 	'Partitions' => 'Partitsioonid',
 	'Partition name' => 'Partitsiooni nimi',
 	'Values' => 'Väärtused',

@@ -177,6 +177,7 @@ $translations = array(
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Υπέρβαση μέγιστου επιτρεπόμενου αριθμού πεδίων. Παρακαλώ αυξήστε %s.',
 
 	'Partition by' => 'Τμηματοποίηση ανά',
+	'Partition' => null,
 	'Partitions' => 'Τμήματα',
 	'Partition name' => 'Όνομα Τμήματος',
 	'Values' => 'Τιμές',

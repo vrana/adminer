@@ -891,7 +891,7 @@ function hidden_fields_get() {
 */
 function table_status1($table, $fast = false) {
 	$return = table_status($table, $fast);
-	return ($return ? $return : array("Name" => $table));
+	return ($return ?: array("Name" => $table));
 }
 
 /** Find out foreign keys for each column

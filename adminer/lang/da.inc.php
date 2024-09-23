@@ -151,6 +151,7 @@ $translations = array(
 	'Remove' => 'Fjern',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Maksimum antal feltnavne overskredet - øg venligst %s.',
 	'Partition by' => 'Partition ved',
+	'Partition' => null,
 	'Partitions' => 'Partitioner',
 	'Partition name' => 'Partitionsnavn',
 	'Values' => 'Værdier',

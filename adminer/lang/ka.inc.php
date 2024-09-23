@@ -187,6 +187,7 @@ $translations = array(
 	'Tables have been dropped.' => 'ცხრილები წაიშალა.',
 	'Clone' => 'კლონირება',
 	'Partition by' => 'დაყოფა',
+	'Partition' => null,
 	'Partitions' => 'დანაყოფები',
 	'Partition name' => 'დანაყოფის სახელი',
 	'Values' => 'პარამეტრები',

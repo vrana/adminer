@@ -175,6 +175,7 @@ $translations = array(
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'حداکثر تعداد فیلدهای مجاز اشباع شد. لطفا %s را افزایش دهید.',
 
 	'Partition by' => 'بخشبندی توسط',
+	'Partition' => null,
 	'Partitions' => 'بخشبندیها',
 	'Partition name' => 'نام بخش',
 	'Values' => 'مقادیر',

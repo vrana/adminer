@@ -172,6 +172,7 @@ $translations = array(
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Thiết lập %s cần tăng thêm. (Đã vượt giới hạnố trường tối đa cho phép trong một biểu mẫu).',
 
 	'Partition by' => 'Phân chia bằng',
+	'Partition' => null,
 	'Partitions' => 'Phân hoạch',
 	'Partition name' => 'Tên phân hoạch',
 	'Values' => 'Giá trị',

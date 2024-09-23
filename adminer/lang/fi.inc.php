@@ -177,6 +177,7 @@ $translations = array(
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Kenttien sallittu enimmäismäärä ylitetty. Kasvata arvoa %s.',
 
 	'Partition by' => 'Osioi arvolla',
+	'Partition' => null,
 	'Partitions' => 'Osiot',
 	'Partition name' => 'Osion nimi',
 	'Values' => 'Arvot',

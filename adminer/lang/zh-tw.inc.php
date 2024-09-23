@@ -190,6 +190,7 @@ $translations = array(
 	'Maximum number of allowed fields exceeded. Please increase %s.' => '超過允許的字段數量的最大值。請增加 %s。',
 
 	'Partition by' => '分區類型',
+	'Partition' => null,
 	'Partitions' => '分區',
 	'Partition name' => '分區名稱',
 	'Values' => '值',

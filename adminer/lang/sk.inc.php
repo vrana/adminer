@@ -190,6 +190,7 @@ $translations = array(
 	'Whole result' => 'Celý výsledok',
 	'Clone' => 'Klonovať',
 	'Partition by' => 'Rozdeliť podľa',
+	'Partition' => 'Oddiel',
 	'Partitions' => 'Oddiely',
 	'Partition name' => 'Názov oddielu',
 	'Values' => 'Hodnoty',

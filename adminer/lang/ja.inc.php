@@ -189,6 +189,7 @@ $translations = array(
 	'Clone' => 'クローン',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => '定義可能な最大フィールド数を越えました。%s を増やしてください。',
 	'Partition by' => 'パーティション',
+	'Partition' => null,
 	'Partitions' => 'パーティション',
 	'Partition name' => 'パーティション名',
 	'Values' => '値',

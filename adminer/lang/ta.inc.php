@@ -187,6 +187,7 @@ $translations = array(
 	'Clone' => 'ந‌க‌லி (Clone)',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'அனும‌திக்க‌ப்ப‌ட்ட‌ அதிக‌ப‌ட்ச‌ கோப்புக‌ளின் எண்ணிக்கை மீற‌ப்ப‌ட்ட‌து. த‌ய‌வு செய்து %s ம‌ற்றும் %s யை அதிக‌ரிக்க‌வும்.',
 	'Partition by' => 'பிரித்த‌து',
+	'Partition' => null,
 	'Partitions' => 'பிரிவுக‌ள்',
 	'Partition name' => 'பிரிவின் பெய‌ர்',
 	'Values' => 'ம‌திப்புக‌ள்',

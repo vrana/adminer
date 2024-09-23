@@ -189,6 +189,7 @@ $translations = array(
 	'Tables have been dropped.' => 'S\'han suprimit les taules.',
 	'Clone' => 'Clona',
 	'Partition by' => 'Fes particions segons',
+	'Partition' => null,
 	'Partitions' => 'Particions',
 	'Partition name' => 'Nom de la partició',
 	'Values' => 'Valors',

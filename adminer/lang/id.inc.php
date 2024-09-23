@@ -167,6 +167,7 @@ $translations = array(
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Sudah lebih dumlah ruas maksimum yang diizinkan. Harap naikkan %s.',
 
 	'Partition by' => 'Partisi menurut',
+	'Partition' => null,
 	'Partitions' => 'Partisi',
 	'Partition name' => 'Nama partisi',
 	'Values' => 'Nilai',

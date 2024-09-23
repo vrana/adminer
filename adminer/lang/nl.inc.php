@@ -191,6 +191,7 @@ $translations = array(
 	'Clone' => 'Dupliceer',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Maximum aantal velden bereikt. Verhoog %s.',
 	'Partition by' => 'Partitioneren op',
+	'Partition' => null,
 	'Partitions' => 'Partities',
 	'Partition name' => 'Partitie naam',
 	'Values' => 'Waarden',

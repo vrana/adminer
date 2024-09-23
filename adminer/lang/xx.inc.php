@@ -190,6 +190,7 @@ $translations = array(
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Xx %s.',
 
 	'Partition by' => 'Xx',
+	'Partition' => 'Xx',
 	'Partitions' => 'Xx',
 	'Partition name' => 'Xx',
 	'Values' => 'Xx',
