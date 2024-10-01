@@ -948,13 +948,14 @@ function input($field, $value, $function) {
 		$function = null;
 	}
 	$functions = (isset($_GET["select"]) || $reset ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
-	$attrs = " name='fields[$name]'";
+	$disabled = stripos($field["default"], "GENERATED ALWAYS AS ") === 0 ? " disabled=''" : "";
+	$attrs = " name='fields[$name]'$disabled";
 	if ($field["type"] == "enum") {
 		echo h($functions[""]) . "<td>" . $adminer->editInput($_GET["edit"], $field, $attrs, $value);
 	} else {
 		$has_function = (in_array($function, $functions) || isset($functions[$function]));
 		echo (count($functions) > 1
-			? "<select name='function[$name]'>" . optionlist($functions, $function === null || $has_function ? $function : "") . "</select>"
+			? "<select name='function[$name]'$disabled>" . optionlist($functions, $function === null || $has_function ? $function : "") . "</select>"
 				. on_help("getTarget(event).value.replace(/^SQL\$/, '')", 1)
 				. script("qsl('select').onchange = functionChange;", "")
 			: h(reset($functions))
@@ -1019,6 +1020,11 @@ function input($field, $value, $function) {
 */
 function process_input($field) {
 	global $adminer, $driver;
+
+	if (stripos($field["default"], "GENERATED ALWAYS AS ") === 0) {
+		return null;
+	}
+
 	$idf = bracket_escape($field["field"]);
 	$function = $_POST["function"][$idf];
 	$value = $_POST["fields"][$idf];
