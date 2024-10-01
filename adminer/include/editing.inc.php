@@ -245,7 +245,7 @@ function default_value($field) {
 	$default = $field["default"];
 	if ($default === null) return "";
 
-	if (preg_match('~^GENERATED ~i', $default)) {
+	if (stripos($default, "GENERATED ") === 0) {
 		return " $default";
 	}
 
