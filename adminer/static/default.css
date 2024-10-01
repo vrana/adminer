@@ -22,13 +22,13 @@ fieldset { display: inline; vertical-align: top; padding: .5em .8em; margin: .8e
 p { margin: .8em 20px 0 0; }
 img { vertical-align: middle; border: 0; }
 td img { max-width: 200px; max-height: 200px; }
-code { background: #eee; }
 tbody tr:hover td, tbody tr:hover th { background: #eee; }
+code { font-size: 110%; padding: 1px 2px; background: #eee; }
 pre { margin: 1em 0 0; }
 td pre { margin: 0; }
-pre, textarea { font: 100%/1.25 monospace; }
+pre, textarea { font: 110%/1.25 monospace; }
 pre.jush { background: #fff; }
-pre code { display: block; }
+pre code { display: block; font-size: 100%; }
 input, textarea { box-sizing: border-box; }
 input, select { vertical-align: middle; }
 input[type="radio"] { vertical-align: text-bottom; }
