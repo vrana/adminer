@@ -211,13 +211,21 @@ function tableCheck() {
 	}
 }
 
-/** Uncheck single element
-* @param string
-*/
+/**
+ * Uncheck single element.
+ */
 function formUncheck(id) {
-	var el = qs('#' + id);
-	el.checked = false;
-	trCheck(el);
+	formUncheckAll("#" + id);
+}
+
+/**
+ * Uncheck elements matched by selector.
+ */
+function formUncheckAll(selector) {
+	for (const element of qsa(selector)) {
+		element.checked = false;
+		trCheck(element);
+	}
 }
 
 /** Get number of checked elements matching given name

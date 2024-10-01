@@ -384,25 +384,43 @@ function normalize_enum($match) {
 	return "'" . str_replace("'", "''", addcslashes(stripcslashes(str_replace($match[0][0] . $match[0][0], $match[0][0], substr($match[0], 1, -1))), '\\')) . "'";
 }
 
-/** Issue grant or revoke commands
-* @param string GRANT or REVOKE
-* @param array
-* @param string
-* @param string
-* @return bool
-*/
-function grant($grant, $privileges, $columns, $on) {
-	if (!$privileges) {
-		return true;
+/**
+ * Issue grant or revoke commands.
+ *
+ * @param bool $grant
+ * @param array $privileges
+ * @param string $columns
+ * @param string $on
+ * @param string $user
+ *
+ * @return bool
+ */
+function grant($grant, array $privileges, $columns, $on, $user) {
+	if (!$privileges) return true;
+
+	if ($privileges == ["ALL PRIVILEGES", "GRANT OPTION"]) {
+		if ($grant) {
+			return (bool) queries("GRANT ALL PRIVILEGES ON $on TO $user WITH GRANT OPTION");
+		} else {
+			return queries("REVOKE ALL PRIVILEGES ON $on FROM $user") &&
+				queries("REVOKE GRANT OPTION ON $on FROM $user");
+		}
 	}
-	if ($privileges == array("ALL PRIVILEGES", "GRANT OPTION")) {
-		// can't be granted or revoked together
-		return ($grant == "GRANT"
-			? queries("$grant ALL PRIVILEGES$on WITH GRANT OPTION")
-			: queries("$grant ALL PRIVILEGES$on") && queries("$grant GRANT OPTION$on")
-		);
+
+	if ($privileges == ["GRANT OPTION", "PROXY"]) {
+		if ($grant) {
+			return (bool) queries("GRANT PROXY ON $on TO $user WITH GRANT OPTION");
+		} else {
+			return (bool) queries("REVOKE PROXY ON $on FROM $user");
+		}
 	}
-	return queries("$grant " . preg_replace('~(GRANT OPTION)\([^)]*\)~', '\1', implode("$columns, ", $privileges) . $columns) . $on);
+
+	return (bool) queries(
+		($grant ? "GRANT " : "REVOKE ") .
+		preg_replace('~(GRANT OPTION)\([^)]*\)~', '$1', implode("$columns, ", $privileges) . $columns) .
+		" ON $on " .
+		($grant ? "TO " : "FROM ") . $user
+	);
 }
 
 /** Drop old object and create a new one

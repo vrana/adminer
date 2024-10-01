@@ -85,8 +85,8 @@ if ($_POST && !$error) {
 					unset($grants[$object]);
 				}
 				if (preg_match('~^(.+)\s*(\(.*\))?$~U', $object, $match) && (
-					!grant("REVOKE", $revoke, $match[2], " ON $match[1] FROM $new_user") //! SQL injection
-					|| !grant("GRANT", $grant, $match[2], " ON $match[1] TO $new_user")
+					!grant(false, $revoke, $match[2], $match[1], $new_user) //! SQL injection
+					|| !grant(true, $grant, $match[2], $match[1], $new_user)
 				)) {
 					$error = true;
 					break;
@@ -100,7 +100,7 @@ if ($_POST && !$error) {
 			} elseif (!isset($_GET["grant"])) {
 				foreach ($grants as $object => $revoke) {
 					if (preg_match('~^(.+)(\(.*\))?$~U', $object, $match)) {
-						grant("REVOKE", array_keys($revoke), $match[2], " ON $match[1] FROM $new_user");
+						grant(false, array_keys($revoke), $match[2], $match[1], $new_user);
 					}
 				}
 			}
@@ -150,33 +150,63 @@ foreach ($grants as $object => $grant) {
 }
 echo "</thead>\n";
 
-foreach (array(
+foreach ([
 	"" => "",
 	"Server Admin" => lang('Server'),
 	"Databases" => lang('Database'),
 	"Tables" => lang('Table'),
 	"Columns" => lang('Column'),
 	"Procedures" => lang('Routine'),
-) as $context => $desc) {
+ ] as $context => $desc) {
 	foreach ((array) $privileges[$context] as $privilege => $comment) {
-		echo "<tr" . odd() . "><td" . ($desc ? ">$desc<td" : " colspan='2'") . ' lang="en" title="' . h($comment) . '">' . h($privilege);
+		echo "<tr" . odd() . ">";
+		if ($desc) {
+			echo "<td>$desc</td>";
+		}
+		echo "<td" . (!$desc ? " colspan='2'" : "") . ' lang="en" title="' . h($comment) . '">' . h($privilege) . "</td>";
+
 		$i = 0;
+
 		foreach ($grants as $object => $grant) {
 			$name = "'grants[$i][" . h(strtoupper($privilege)) . "]'";
 			$value = $grant[strtoupper($privilege)];
-			if ($context == "Server Admin" && $object != (isset($grants["*.*"]) ? "*.*" : ".*")) {
-				echo "<td>";
+
+			$proxiedUser = strpos($object, "@") !== false;
+			$newObject = $object == ".*";
+			$allPrivileges = $privilege == "All privileges";
+			$grantOption = $privilege == "Grant option";
+
+			if ($object == "*.*" && $privilege == "Proxy") {
+				echo "<td></td>";
+			} elseif ($proxiedUser && $privilege != "Proxy" && !$grantOption) {
+				echo "<td></td>";
+			} elseif ($context == "Server Admin" && $object != (isset($grants["*.*"]) ? "*.*" : ".*") && !(($proxiedUser || $newObject) && $privilege == "Proxy")) {
+				echo "<td></td>";
 			} elseif (isset($_GET["grant"])) {
-				echo "<td><select name=$name><option><option value='1'" . ($value ? " selected" : "") . ">" . lang('Grant') . "<option value='0'" . ($value == "0" ? " selected" : "") . ">" . lang('Revoke') . "</select>";
+				echo "<td><select name=$name>" .
+					"<option></option>" .
+					"<option value='1'" . ($value ? " selected" : "") . ">" . lang('Grant') . "</option>" .
+					"<option value='0'" . ($value == "0" ? " selected" : "") . ">" . lang('Revoke') . "</option>" .
+					"</select></td>";
 			} else {
-				echo "<td align='center'><label class='block'>";
-				echo "<input type='checkbox' name=$name value='1'" . ($value ? " checked" : "") . ($privilege == "All privileges"
-					? " id='grants-$i-all'>" //! uncheck all except grant if all is checked
-					: ">" . ($privilege == "Grant option" ? "" : script("qsl('input').onclick = function () { if (this.checked) formUncheck('grants-$i-all'); };")));
+				echo "<td class='center'><label class='block'>";
+				echo "<input type='checkbox' name=$name value='1'" .
+					($value ? " checked" : "") .
+					($allPrivileges ? " id='grants-$i-all'" : (!$grantOption ? " class='grants-$i'" : "")) .
+					">";
+
+				if ($allPrivileges) {
+					echo script("qsl('input').onclick = function () { if (this.checked) formUncheckAll('.grants-$i'); };");
+				} elseif (!$grantOption) {
+					echo script("qsl('input').onclick = function () { if (this.checked) formUncheck('grants-$i-all'); };");
+				}
 				echo "</label>";
 			}
+
 			$i++;
 		}
+
+		echo "</tr>";
 	}
 }
 
