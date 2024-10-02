@@ -1,5 +1,9 @@
-Adminer 4.9.3-dev:
+Adminer 4.9.3:
+MySQL, PostgreSQL: Fix queries splitting and string constants
+MySQL: Fix where clause for JSON column
+MySQL: Do not include unchanged PARTITION BY definition into ALTER TABLE query
 MariaDB: Support current_timestamp()
+PostgreSQL: Fix editing record that contains a field with GENERATED ALWAYS default value
 
 Adminer 4.9.2:
 PostgreSQL: Fix search fields configuration (regression from 4.9.0)
