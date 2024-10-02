@@ -963,7 +963,7 @@ function input($field, $value, $function) {
 	echo "<td class='function'>";
 
 	if ($field["type"] == "enum") {
-		echo h($functions[""]) . "<td>" . $adminer->editInput($_GET["edit"], $field, $attrs, $value);
+		echo h($functions[""]) . "<td>" . $adminer->editInput($_GET["edit"], $field, $attrs, $value, $function);
 	} else {
 		$has_function = (in_array($function, $functions) || isset($functions[$function]));
 		echo (count($functions) > 1
@@ -972,7 +972,7 @@ function input($field, $value, $function) {
 				. script("qsl('select').onchange = functionChange;", "")
 			: h(reset($functions))
 		) . '<td>';
-		$input = $adminer->editInput($_GET["edit"], $field, $attrs, $value); // usage in call is without a table
+		$input = $adminer->editInput($_GET["edit"], $field, $attrs, $value, $function); // usage in call is without a table
 		if ($input != "") {
 			echo $input;
 		} elseif (preg_match('~bool~', $field["type"])) {
@@ -1006,7 +1006,8 @@ function input($field, $value, $function) {
 			// type='date' and type='time' display localized value which may be confusing, type='datetime' uses 'T' as date and time separator
 			echo "<input"
 				. ((!$has_function || $function === "") && preg_match('~(?<!o)int(?!er)~', $field["type"]) && !preg_match('~\[\]~', $field["full_type"]) ? " type='number'" : "")
-				. " value='" . h($value) . "'" . ($maxlength ? " data-maxlength='$maxlength'" : "")
+				. ($function != "now" ? " value='" . h($value) . "'" : " data-last-value='" . h($value) . "'")
+				. ($maxlength ? " data-maxlength='$maxlength'" : "")
 				. (preg_match('~char|binary~', $field["type"]) && $maxlength > 20 ? " size='40'" : "")
 				. "$attrs>"
 			;
@@ -1020,9 +1021,7 @@ function input($field, $value, $function) {
 			}
 			$first++;
 		}
-		if ($first) {
-			echo script("mixin(qsl('td'), {onchange: partial(skipOriginal, $first), oninput: function () { this.onchange(); }});");
-		}
+		echo script("mixin(qsl('td'), {onchange: partial(skipOriginal, $first), oninput: function () { this.onchange(); }});");
 	}
 }
 

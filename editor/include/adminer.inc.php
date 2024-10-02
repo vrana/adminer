@@ -483,7 +483,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		return $return;
 	}
 
-	function editInput($table, $field, $attrs, $value) {
+	function editInput($table, $field, $attrs, $value, $function) {
 		if ($field["type"] == "enum") {
 			return (isset($_GET["select"]) ? "<label><input type='radio'$attrs value='-1' checked><i>" . lang('original') . "</i></label> " : "")
 				. enum_input("radio", $attrs, $field, ($value || isset($_GET["select"]) ? $value : 0), ($field["null"] ? "" : null))
@@ -511,7 +511,9 @@ qsl('div').onclick = whisperClick;", "")
 			$hint = lang('[yyyy]-mm-dd') . ($hint ? " [$hint]" : "");
 		}
 		if ($hint) {
-			return "<input value='" . h($value) . "'$attrs> ($hint)"; //! maxlength
+			return "<input"
+				. ($function != "now" ? " value='" . h($value) . "'" : " data-last-value='" . h($value) . "'")
+				. "$attrs> ($hint)"; //! maxlength
 		}
 		if (preg_match('~_(md5|sha1)$~i', $field["field"])) {
 			return "<input type='password' value='" . h($value) . "'$attrs>";

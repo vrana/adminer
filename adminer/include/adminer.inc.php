@@ -751,7 +751,7 @@ class Adminer {
 	* @param string
 	* @return string custom input field or empty string for default
 	*/
-	function editInput($table, $field, $attrs, $value) {
+	function editInput($table, $field, $attrs, $value, $function) {
 		if ($field["type"] == "enum") {
 			return (isset($_GET["select"]) ? "<label><input type='radio'$attrs value='-1' checked><i>" . lang('original') . "</i></label> " : "")
 				. ($field["null"] ? "<label><input type='radio'$attrs value=''" . ($value !== null || isset($_GET["select"]) ? "" : " checked") . "><i>NULL</i></label> " : "")

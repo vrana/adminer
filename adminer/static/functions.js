@@ -547,37 +547,62 @@ function editingKeydown(event) {
 	return true;
 }
 
-/** Disable maxlength for functions
-* @this HTMLSelectElement
-*/
+/**
+ * Disables maxlength for functions and manages value visibility.
+ *
+ * @this HTMLSelectElement
+ */
 function functionChange() {
-	var input = this.form[this.name.replace(/^function/, 'fields')];
-	if (input) { // undefined with the set data type
-		if (selectValue(this)) {
-			if (input.origType === undefined) {
-				input.origType = input.type;
-				input.origMaxLength = input.getAttribute('data-maxlength');
-			}
-			input.removeAttribute('data-maxlength');
-			input.type = 'text';
-		} else if (input.origType) {
-			input.type = input.origType;
-			if (input.origMaxLength >= 0) {
-				input.setAttribute('data-maxlength', input.origMaxLength);
-			}
-		}
-		oninput({target: input});
+	const input = this.form[this.name.replace(/^function/, 'fields')];
+	const value = selectValue(this);
+
+	// Undefined with the set data type.
+	if (!input) {
+		helpClose();
+		return;
 	}
+
+	if (value) {
+		if (input.origType === undefined) {
+			input.origType = input.type;
+			input.origMaxLength = input.getAttribute('data-maxlength');
+		}
+
+		input.removeAttribute('data-maxlength');
+		input.type = 'text';
+	} else if (input.origType) {
+		input.type = input.origType;
+		if (input.origMaxLength >= 0) {
+			input.setAttribute('data-maxlength', input.origMaxLength);
+		}
+	}
+
+	// Hide input value if it will be not used by selected function.
+	if (value === "NULL" || value === "now") {
+		if (input.value !== "") {
+			input.dataset.lastValue = input.value;
+			input.value = "";
+		}
+	} else if (input.dataset.lastValue) {
+		input.value = input.dataset.lastValue;
+	}
+
+	oninput({target: input});
+
 	helpClose();
 }
 
-/** Skip 'original' when typing
-* @param number
-* @this HTMLTableCellElement
-*/
+/**
+ * Unset 'original', 'NULL' and 'now' functions when typing.
+ *
+ * @param first number
+ * @this HTMLTableCellElement
+ */
 function skipOriginal(first) {
-	var fnSelect = this.previousSibling.firstChild;
-	if (fnSelect.selectedIndex < first) {
+	const fnSelect = this.previousSibling.firstChild;
+	const value = selectValue(fnSelect);
+
+	if (fnSelect.selectedIndex < first || value === "NULL" || value === "now") {
 		fnSelect.selectedIndex = first;
 	}
 }
