@@ -1,3 +1,17 @@
+Adminer 4.9.3 (released 2024-10-02):
+- MySQL, PostgreSQL: Fix queries splitting and string constants.
+- MySQL: Fix where clause for JSON column.
+- MySQL: Fix editing user's proxy privilege, refactoring.
+- MariaDB: Fix comparing CURRENT_TIMESTAMP definition while altering a table.
+- PostgreSQL: Fix editing record that contains a field with GENERATED ALWAYS default value.
+- Fix using undefined Min_DB::info property.
+- Do not include unchanged PARTITION BY definition into ALTER TABLE query.
+- Do not limit unlimited memory while executing queries.
+- Fix number conversion warning while reading INI settings.
+- Hide invalid edit form if table record is not found.
+- CSS: Fix background color of <pre> used as edit field.
+- CSS: Bigger font size for code blocks.
+
 Adminer 4.9.2 (released 2024-09-18):
 - Fix textarea height for single-line inputs (used typically for SQLite text field).
 - Fix undefined property in error message if driver does not support error number (e.g. PostgreSQL).
