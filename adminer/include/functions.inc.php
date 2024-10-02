@@ -1485,6 +1485,7 @@ function edit_form($table, $fields, $row, $update) {
 	$adminer->editRowPrint($table, $fields, $row, $update);
 	if ($row === false) {
 		echo "<p class='error'>" . lang('No rows.') . "\n";
+		return;
 	}
 	?>
 <form action="" method="post" enctype="multipart/form-data" id="form">
