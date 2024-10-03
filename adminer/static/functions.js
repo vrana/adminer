@@ -708,9 +708,13 @@ function selectClick(event, text, warning) {
 			td.innerHTML = original;
 		}
 	};
-	var pos = event.rangeOffset;
-	var value = (td.firstChild && td.firstChild.alt) || td.textContent || td.innerText;
-	input.style.width = Math.max(td.clientWidth - 14, 20) + 'px'; // 14 = 2 * (td.border + td.padding + input.border)
+
+	let pos = event.rangeOffset;
+	let value = (td.firstChild && td.firstChild.alt) || td.textContent || td.innerText;
+	const tdStyle = window.getComputedStyle(td, null);
+
+	input.style.width = Math.max(td.clientWidth - parseFloat(tdStyle.paddingLeft) - parseFloat(tdStyle.paddingRight), 20) + 'px';
+
 	if (text) {
 		var rows = 1;
 		value.replace(/\n/g, function () {
