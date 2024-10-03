@@ -9,7 +9,12 @@ $name = $adminer->tableName($table_status);
 
 page_header(($fields && is_view($table_status) ? $table_status['Engine'] == 'materialized view' ? lang('Materialized view') : lang('View') : lang('Table')) . ": " . ($name != "" ? $name : h($TABLE)), $error);
 
-$adminer->selectLinks($table_status);
+$rights = array();
+foreach ($fields as $key => $field) {
+	$rights += $field["privileges"];
+}
+$adminer->selectLinks($table_status, (isset($rights["insert"]) || !support("table") ? "" : null));
+
 $comment = $table_status["Comment"];
 if ($comment != "") {
 	echo "<p class='nowrap'>" . lang('Comment') . ": " . h($comment) . "\n";
@@ -28,7 +33,7 @@ if (!is_view($table_status)) {
 		}
 		echo '<p class="links"><a href="' . h(ME) . 'indexes=' . urlencode($TABLE) . '">' . lang('Alter indexes') . "</a>\n";
 	}
-	
+
 	if (fk_support($table_status)) {
 		echo "<h3 id='foreign-keys'>" . lang('Foreign keys') . "</h3>\n";
 		$foreign_keys = foreign_keys($TABLE);
