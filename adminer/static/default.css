@@ -25,6 +25,7 @@ pre { margin: 1em 0 0; }
 pre code { display: block; font-size: 100%; }
 pre, textarea { font: 110%/1.25 monospace; }
 pre.jush { background: #fff; }
+input, textarea { box-sizing: border-box; }
 input, select { vertical-align: middle; }
 input.default { box-shadow: 1px 1px 1px #777; }
 input.required { box-shadow: 1px 1px 1px red; }
