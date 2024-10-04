@@ -126,7 +126,14 @@ if ($_POST) {
 	if ($old_pass != "") {
 		$row["hashed"] = true;
 	}
-	$grants[(DB == "" || $grants ? "" : idf_escape(addcslashes(DB, "%_\\"))) . ".*"] = array();
+
+	if ($grants) {
+		$grants[".*"] = [];
+	} elseif (DB != "") {
+		$grants[idf_escape(addcslashes(DB, "%_\\")) . ".*"] = [];
+	} else {
+		$grants["*.* "] = []; // Space is added to force editing mode.
+	}
 }
 
 ?>
@@ -142,13 +149,21 @@ if ($_POST) {
 <?php
 //! MAX_* limits, REQUIRE
 echo "<table cellspacing='0'>\n";
-echo "<thead><tr><th colspan='2'>" . lang('Privileges') . doc_link(array('sql' => "grant.html#priv_level"));
+
+echo "<thead><tr><th colspan='2'>" . lang('Privileges') . doc_link(array('sql' => "grant.html#priv_level")) . "</th>";
 $i = 0;
 foreach ($grants as $object => $grant) {
-	echo '<th>' . ($object != "*.*" ? "<input name='objects[$i]' value='" . h($object) . "' size='10' autocapitalize='off'>" : "<input type='hidden' name='objects[$i]' value='*.*' size='10'>*.*"); //! separate db, table, columns, PROCEDURE|FUNCTION, routine
+	echo "<th>";
+	//! separate db, table, columns, PROCEDURE|FUNCTION, routine
+	if ($object == "*.*") {
+		echo "<input type='hidden' name='objects[$i]' value='*.*' size='10'>*.*";
+	} else {
+		echo "<input name='objects[$i]' value='" . h(trim($object)) . "' size='10' autocapitalize='off'>";
+	}
+	echo "</th>";
 	$i++;
 }
-echo "</thead>\n";
+echo "</tr></thead>\n";
 
 foreach ([
 	"" => "",
