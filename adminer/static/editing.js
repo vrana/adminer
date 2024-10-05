@@ -103,6 +103,13 @@ var dbPrevious = {};
 * @this HTMLSelectElement
 */
 function dbMouseDown(event) {
+	// Firefox: mouse-down event does not contain pressed key information for OPTION.
+	// Chrome: mouse-down event has inherited key information from SELECT.
+	// So we ignore the event for OPTION to work Ctrl+click correctly everywhere.
+	if (event.target.tagName == "OPTION") {
+		return;
+	}
+
 	dbCtrl = isCtrl(event);
 	if (dbPrevious[this.name] == undefined) {
 		dbPrevious[this.name] = this.value;
