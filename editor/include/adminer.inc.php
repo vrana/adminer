@@ -623,6 +623,7 @@ qsl('div').onclick = whisperClick;", "")
 				if (!$table_status) {
 					echo "<p class='message'>" . lang('No tables.') . "\n";
 				} else {
+					$this->printTablesFilter();
 					$this->tablesPrint($table_status);
 				}
 			}
@@ -632,19 +633,32 @@ qsl('div').onclick = whisperClick;", "")
 	function databasesPrint($missing) {
 	}
 
-	function tablesPrint($tables) {
-		echo "<ul id='tables'>";
-		echo script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
+	function printTablesFilter()
+	{
+		global $adminer;
+
+		echo "<div class='tables-filter jsonly'>"
+			. "<input id='tables-filter' autocomplete='off' placeholder='" . lang('Table') . "'>"
+			. script("initTablesFilter(" . json_encode($adminer->database()) . ");")
+			. "</div>\n";
+	}
+
+	function tablesPrint(array $tables) {
+		echo "<ul id='tables'>" . script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
+
 		foreach ($tables as $row) {
-			echo '<li>';
-			$name = $this->tableName($row);
-			if (isset($row["Engine"]) && $name != "") { // ignore views and tables without name
-				echo "<a href='" . h(ME) . 'select=' . urlencode($row["Name"]) . "'"
-					. bold($_GET["select"] == $row["Name"] || $_GET["edit"] == $row["Name"], "select")
-					. " title='" . lang('Select data') . "'>$name</a>\n"
-				;
+			// Skip views and tables without a name.
+			if (!isset($row["Engine"]) || ($name = $this->tableName($row)) == "") {
+				continue;
 			}
+
+			$active = $_GET["select"] == $row["Name"] || $_GET["edit"] == $row["Name"];
+
+			echo '<li><a href="' . h(ME) . 'select=' . urlencode($row["Name"]) . '"'
+				. bold($active, "select")
+				. " title='" . lang('Select data') . "'  data-main='true'>$name</a></li>\n";
 		}
+
 		echo "</ul>\n";
 	}
 
@@ -658,6 +672,8 @@ qsl('div').onclick = whisperClick;", "")
 				}
 			}
 		}
+
+		return null;
 	}
 
 	function _foreignKeyOptions($table, $column, $value = null) {

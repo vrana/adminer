@@ -31,6 +31,7 @@ input.default { box-shadow: 1px 1px 1px #777; }
 input.required { box-shadow: 1px 1px 1px red; }
 input.maxlength { box-shadow: 1px 1px 1px red; }
 input.wayoff { left: -1000px; position: absolute; }
+input::placeholder { color: #000; opacity: 0.4; }
 .center { text-align: center; }
 .block { display: block; }
 .version { color: #777; font-size: 67%; }
@@ -68,6 +69,7 @@ input.wayoff { left: -1000px; position: absolute; }
 .links a { white-space: nowrap; margin-right: 20px; }
 .logout { margin-top: .5em; position: absolute; top: 0; right: 0; }
 .loadmore { margin-left: 1ex; }
+.tables-filter { padding: .8em 1em 0; }
 /* .edit used in designs */
 #menu { position: absolute; margin: 10px 0 0; padding: 0 0 30px 0; top: 2em; left: 0; width: 19em; }
 #menu p, #logins, #tables { padding: .8em 1em; margin: 0; border-bottom: 1px solid #ccc; }
@@ -83,6 +85,7 @@ input.wayoff { left: -1000px; position: absolute; }
 #schema { margin-left: 60px; position: relative; -moz-user-select: none; -webkit-user-select: none; }
 #schema .table { border: 1px solid silver; padding: 0 2px; cursor: move; position: absolute; }
 #schema .references { position: absolute; }
+#tables-filter { width: 100%; }
 #help { position: absolute; border: 1px solid #999; background: #eee; padding: 5px; font-family: monospace; z-index: 1; }
 
 .rtl h2 { margin: 0 -18px 20px 0; }

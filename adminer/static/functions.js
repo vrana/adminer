@@ -357,7 +357,78 @@ function pageClick(href, page) {
 	}
 }
 
+let tablesFilterTimeout = null;
+let tablesFilterValue = '';
 
+function initTablesFilter(dbName) {
+	if (sessionStorage) {
+		document.addEventListener('DOMContentLoaded', function () {
+			if (dbName === sessionStorage.getItem('adminer_tables_filter_db') && sessionStorage.getItem('adminer_tables_filter')) {
+				qs('#tables-filter').value = sessionStorage.getItem('adminer_tables_filter');
+				filterTables();
+			} else {
+				sessionStorage.removeItem('adminer_tables_filter');
+			}
+
+			sessionStorage.setItem('adminer_tables_filter_db', dbName);
+		});
+	}
+
+	const filterInput = qs('#tables-filter');
+	filterInput.addEventListener('input', function () {
+		window.clearTimeout(tablesFilterTimeout);
+		tablesFilterTimeout = window.setTimeout(filterTables, 200);
+	});
+
+	document.body.addEventListener('keydown', function(event) {
+		if (isCtrl(event) && event.shiftKey && event.key.toUpperCase() === 'F') {
+			filterInput.focus();
+			filterInput.select();
+
+			event.preventDefault();
+		}
+	});
+}
+
+function filterTables() {
+	const value = qs('#tables-filter').value.toLowerCase();
+	if (value === tablesFilterValue) {
+		return;
+	}
+	tablesFilterValue = value;
+
+	let reg
+	if (value !== '') {
+		const valueExp = (`${value}`).replace(/[\\.+*?\[^\]$(){}=!<>|:]/g, '\\$&');
+		reg = new RegExp(`(${valueExp})`, 'gi');
+	}
+
+	if (sessionStorage) {
+		sessionStorage.setItem('adminer_tables_filter', value);
+	}
+
+	const tables = qsa('#tables li');
+	for (let i = 0; i < tables.length; i++) {
+		let a = qs('a[data-main="true"], span[data-main="true"]', tables[i]);
+
+		let tableName = tables[i].dataset.tableName;
+		if (tableName == null) {
+			tableName = a.innerHTML.trim();
+
+			tables[i].dataset.tableName = tableName;
+		}
+
+		if (value === "") {
+			tables[i].classList.remove('hidden');
+			a.innerHTML = tableName;
+		} else if (tableName.toLowerCase().indexOf(value) >= 0) {
+			tables[i].classList.remove('hidden');
+			a.innerHTML = tableName.replace(reg, '<strong>$1</strong>');
+		} else {
+			tables[i].classList.add('hidden');
+		}
+	}
+}
 
 /** Display items in menu
 * @param MouseEvent

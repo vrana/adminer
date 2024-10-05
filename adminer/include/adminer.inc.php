@@ -1062,6 +1062,7 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 				if (!$tables) {
 					echo "<p class='message'>" . lang('No tables.') . "\n";
 				} else {
+					$this->printTablesFilter();
 					$this->tablesPrint($tables);
 				}
 			}
@@ -1106,28 +1107,51 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 		echo "</p></form>\n";
 	}
 
-	/** Prints table list in menu
-	* @param array result of table_status('', true)
-	* @return null
-	*/
-	function tablesPrint($tables) {
+	function printTablesFilter()
+	{
+		global $adminer;
+
+		echo "<div class='tables-filter jsonly'>"
+			. "<input id='tables-filter' autocomplete='off' placeholder='" . lang('Table') . "'>"
+			. script("initTablesFilter(" . json_encode($adminer->database()) . ");")
+			. "</div>\n";
+	}
+
+	/**
+	 * Prints table list in menu.
+	 *
+	 * @param array $tables Result of table_status('', true)
+	 * @return null
+	 */
+	function tablesPrint(array $tables) {
 		echo "<ul id='tables'>" . script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
+
 		foreach ($tables as $table => $status) {
 			$name = $this->tableName($status);
 			if ($name != "") {
+				$active = $table == $_GET["select"] || $table == $_GET["edit"];
+
 				echo '<li><a href="' . h(ME) . 'select=' . urlencode($table) . '"'
-					. bold($_GET["select"] == $table || $_GET["edit"] == $table, "select")
-					. " title='" . lang('Select data') . "'>" . lang('select') . "</a> "
-				;
-				echo (support("table") || support("indexes")
-					? '<a href="' . h(ME) . 'table=' . urlencode($table) . '"'
-						. bold(in_array($table, array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"])), (is_view($status) ? "view" : "structure"))
-						. " title='" . lang('Show structure') . "'>$name</a>"
-					: "<span>$name</span>"
-				) . "\n";
+					. bold($active, "select")
+					. " title='" . lang('Select data') . "'>" . lang('select') . "</a> ";
+
+				if (support("table") || support("indexes")) {
+					$active = in_array($table, [$_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"]]);
+					$class = is_view($status) ? "view" : "structure";
+
+					echo '<a href="' . h(ME) . 'table=' . urlencode($table) . '"' . bold($active, $class)
+						. " title='" . lang('Show structure') . "' data-main='true'>$name</a>";
+				} else {
+					echo "<span data-main='true'>$name</span>";
+				}
+
+				echo "</li>\n";
 			}
 		}
+
 		echo "</ul>\n";
+
+		return null;
 	}
 
 }
