@@ -1069,42 +1069,50 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 		}
 	}
 
-	/** Prints databases list in menu
-	* @param string
-	* @return null
-	*/
+	/**
+	 * Prints databases select in menu.
+	 *
+	 * @param $missing string
+	 * @return null
+	 */
 	function databasesPrint($missing) {
 		global $adminer, $connection;
+
 		$databases = $this->databases();
 		if (DB && $databases && !in_array(DB, $databases)) {
 			array_unshift($databases, DB);
 		}
-		?>
-<form action="">
-<p id="dbs">
-<?php
+
+		echo "<form action=''><p id='dbs'>";
 		hidden_fields_get();
-		$db_events = script("mixin(qsl('select'), {onmousedown: dbMouseDown, onchange: dbChange});");
-		echo "<span title='" . lang('database') . "'>" . lang('DB') . "</span>: " . ($databases
-			? "<select name='db'>" . optionlist(array("" => "") + $databases, DB) . "</select>$db_events"
-			: "<input name='db' value='" . h(DB) . "' autocapitalize='off'>\n"
-		);
+
+		if ($databases) {
+			echo "<select id='database-select' name='db'>" . optionlist(["" => lang('Database')] + $databases, DB) . "</select>"
+				. script("mixin(qs('#database-select'), {onmousedown: dbMouseDown, onchange: dbChange});");
+		} else {
+			echo "<input id='database-select' name='db' value='" . h(DB) . "' autocapitalize='off'>\n";
+		}
 		echo "<input type='submit' value='" . lang('Use') . "'" . ($databases ? " class='hidden'" : "") . ">\n";
-		if (support("scheme")) {
-			if ($missing != "db" && DB != "" && $connection->select_db(DB)) {
-				echo "<br>" . lang('Schema') . ": <select name='ns'>" . optionlist(array("" => "") + $adminer->schemas(), $_GET["ns"]) . "</select>$db_events";
-				if ($_GET["ns"] != "") {
-					set_schema($_GET["ns"]);
-				}
+
+		if (support("scheme") && $missing != "db" && DB != "" && $connection->select_db(DB)) {
+			echo "<br><select id='scheme-select' name='ns'>" . optionlist(["" => lang('Schema')] + $adminer->schemas(), $_GET["ns"]) . "</select>"
+				. script("mixin(qs('#scheme-select'), {onmousedown: dbMouseDown, onchange: dbChange});");
+
+			if ($_GET["ns"] != "") {
+				set_schema($_GET["ns"]);
 			}
 		}
-		foreach (array("import", "sql", "schema", "dump", "privileges") as $val) {
+
+		foreach (["import", "sql", "schema", "dump", "privileges"] as $val) {
 			if (isset($_GET[$val])) {
 				echo "<input type='hidden' name='$val' value=''>";
 				break;
 			}
 		}
+
 		echo "</p></form>\n";
+
+		return null;
 	}
 
 	function printTablesFilter()

@@ -25,7 +25,7 @@ pre { margin: 1em 0 0; }
 pre code { display: block; font-size: 100%; }
 pre, textarea { font: 110%/1.25 monospace; }
 pre.jush { background: #fff; }
-input, textarea { box-sizing: border-box; }
+input, textarea, select { box-sizing: border-box; }
 input, select { vertical-align: middle; }
 input.default { box-shadow: 1px 1px 1px #777; }
 input.required { box-shadow: 1px 1px 1px red; }
@@ -85,7 +85,7 @@ input::placeholder { color: #000; opacity: 0.4; }
 #schema { margin-left: 60px; position: relative; -moz-user-select: none; -webkit-user-select: none; }
 #schema .table { border: 1px solid silver; padding: 0 2px; cursor: move; position: absolute; }
 #schema .references { position: absolute; }
-#tables-filter { width: 100%; }
+#tables-filter, #database-select, #scheme-select { width: 100%; }
 #help { position: absolute; border: 1px solid #999; background: #eee; padding: 5px; font-family: monospace; z-index: 1; }
 
 .rtl h2 { margin: 0 -18px 20px 0; }
