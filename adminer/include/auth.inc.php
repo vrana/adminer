@@ -82,11 +82,11 @@ function build_http_url($server, $username, $password, $defaultServer, $defaultP
 
 function add_invalid_login() {
 	global $adminer;
-	$fp = file_open_lock(get_temp_dir() . "/adminer.invalid");
-	if (!$fp) {
+	$file = open_file_with_lock(get_temp_dir() . "/adminer.invalid");
+	if (!$file) {
 		return;
 	}
-	$invalids = unserialize(stream_get_contents($fp));
+	$invalids = unserialize(stream_get_contents($file));
 	$time = time();
 	if ($invalids) {
 		foreach ($invalids as $ip => $val) {
@@ -100,7 +100,7 @@ function add_invalid_login() {
 		$invalid = array($time + 30*60, 0); // active for 30 minutes
 	}
 	$invalid[1]++;
-	file_write_unlock($fp, serialize($invalids));
+	write_and_unlock_file($file, serialize($invalids));
 }
 
 function check_invalid_login() {

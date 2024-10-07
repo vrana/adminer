@@ -1215,33 +1215,42 @@ function get_temp_dir() {
 	return $return;
 }
 
-/** Open and exclusively lock a file
-* @param string
-* @return resource or null for error
-*/
-function file_open_lock($filename) {
-	$fp = @fopen($filename, "r+"); // @ - may not exist
-	if (!$fp) { // c+ is available since PHP 5.2.6
-		$fp = @fopen($filename, "w"); // @ - may not be writable
-		if (!$fp) {
-			return;
-		}
-		chmod($filename, 0660);
+/**
+ * Opens and exclusively lock a file.
+ *
+ * @param string $filename
+ * @return resource|null
+ */
+function open_file_with_lock($filename)
+{
+	$file = fopen($filename, "c+");
+	if (!$file) {
+		return null;
 	}
-	flock($fp, LOCK_EX);
-	return $fp;
+
+	chmod($filename, 0660);
+
+	if (!flock($file, LOCK_EX)) {
+		fclose($file);
+		return null;
+	}
+
+	return $file;
 }
 
-/** Write and unlock a file
-* @param resource
-* @param string
-*/
-function file_write_unlock($fp, $data) {
-	rewind($fp);
-	fwrite($fp, $data);
-	ftruncate($fp, strlen($data));
-	flock($fp, LOCK_UN);
-	fclose($fp);
+/**
+ * Writes and unlocks a file.
+ *
+ * @param resource $file
+ * @param string $data
+ */
+function write_and_unlock_file($file, $data)
+{
+	rewind($file);
+	fwrite($file, $data);
+	ftruncate($file, strlen($data));
+	flock($file, LOCK_UN);
+	fclose($file);
 }
 
 /**
