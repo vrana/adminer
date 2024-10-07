@@ -105,8 +105,11 @@ function add_invalid_login() {
 
 function check_invalid_login() {
 	global $adminer;
-	$invalids = unserialize(@file_get_contents(get_temp_dir() . "/adminer.invalid")); // @ - may not exist
-	$invalid = ($invalids ? $invalids[$adminer->bruteForceKey()] : array());
+
+	$filename = get_temp_dir() . "/adminer.invalid";
+	$invalids = file_exists($filename) ? unserialize(file_get_contents($filename)) : [];
+	$invalid = ($invalids ? $invalids[$adminer->bruteForceKey()] : []);
+
 	$next_attempt = ($invalid[1] > 29 ? $invalid[0] - time() : 0); // allow 30 invalid attempts
 	if ($next_attempt > 0) { //! do the same with permanent login
 		auth_error(lang('Too many unsuccessful logins, try again in %d minute(s).', ceil($next_attempt / 60)));

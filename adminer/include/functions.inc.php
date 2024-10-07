@@ -1244,23 +1244,28 @@ function file_write_unlock($fp, $data) {
 	fclose($fp);
 }
 
-/** Read password from file adminer.key in temporary directory or create one
-* @param bool
-* @return string or false if the file can not be created
-*/
+/**
+ * Reads password from file adminer.key in temporary directory or create one.
+ *
+ * @param $create bool
+ * @return string|false Returns false if the file can not be created.
+ */
 function password_file($create) {
 	$filename = get_temp_dir() . "/adminer.key";
-	$return = @file_get_contents($filename); // @ - may not exist
+
+	$return = file_exists($filename) ? file_get_contents($filename) : false;
 	if ($return || !$create) {
 		return $return;
 	}
-	$fp = @fopen($filename, "w"); // @ - can have insufficient rights //! is not atomic
-	if ($fp) {
+
+	$file = @fopen($filename, "w"); // @ - can have insufficient rights //! is not atomic
+	if ($file) {
 		chmod($filename, 0660);
 		$return = rand_string();
-		fwrite($fp, $return);
-		fclose($fp);
+		fwrite($file, $return);
+		fclose($file);
 	}
+
 	return $return;
 }
 
