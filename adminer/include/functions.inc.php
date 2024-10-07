@@ -819,6 +819,13 @@ function file_write_unlock($fp, $data) {
 	rewind($fp);
 	fwrite($fp, $data);
 	ftruncate($fp, strlen($data));
+	file_unlock($fp);
+}
+
+/** Unlock and close a file
+* @param resource
+*/
+function file_unlock($fp) {
 	flock($fp, LOCK_UN);
 	fclose($fp);
 }
@@ -829,16 +836,19 @@ function file_write_unlock($fp, $data) {
 */
 function password_file($create) {
 	$filename = get_temp_dir() . "/adminer.key";
-	$return = @file_get_contents($filename); // @ - may not exist
-	if ($return || !$create) {
-		return $return;
+	if (!$create && !file_exists($filename)) {
+		return false;
 	}
-	$fp = @fopen($filename, "w"); // @ - can have insufficient rights //! is not atomic
-	if ($fp) {
-		chmod($filename, 0660);
+	$fp = file_open_lock($filename);
+	if (!$fp) {
+		return false;
+	}
+	$return = stream_get_contents($fp);
+	if (!$return) {
 		$return = rand_string();
-		fwrite($fp, $return);
-		fclose($fp);
+		file_write_unlock($fp, $return);
+	} else {
+		file_unlock($fp);
 	}
 	return $return;
 }
