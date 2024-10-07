@@ -1,4 +1,5 @@
 <?php
+
 $connection = '';
 
 $has_token = $_SESSION["token"];
@@ -171,9 +172,10 @@ function unset_permanent() {
 }
 
 /** Renders an error message and a login form
-* @param string plain text
-* @return null exits
-*/
+ * @param string plain text
+ * @return null exits
+ * @throws \Random\RandomException
+ */
 function auth_error($error) {
 	global $adminer, $has_token;
 	$session_name = session_name();
@@ -198,7 +200,7 @@ function auth_error($error) {
 		$error = lang('Session support must be enabled.');
 	}
 	$params = session_get_cookie_params();
-	cookie("adminer_key", ($_COOKIE["adminer_key"] ? $_COOKIE["adminer_key"] : rand_string()), $params["lifetime"]);
+	cookie("adminer_key", ($_COOKIE["adminer_key"] ?: get_random_string()), $params["lifetime"]);
 	page_header(lang('Login'), $error, null);
 	echo "<form action='' method='post'>\n";
 	echo "<div>";

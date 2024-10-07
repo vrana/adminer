@@ -16,8 +16,11 @@ class Adminer {
 	function connectSsl() {
 	}
 
+	/**
+	 * @throws \Random\RandomException
+	 */
 	function permanentLogin($create = false) {
-		return password_file($create);
+		return get_private_key($create);
 	}
 
 	function bruteForceKey() {

@@ -1,4 +1,5 @@
 <?php
+
 /** Get database connection
 * @return Min_DB
 */
@@ -1249,6 +1250,17 @@ function write_and_unlock_file($file, $data)
 	rewind($file);
 	fwrite($file, $data);
 	ftruncate($file, strlen($data));
+
+	unlock_file($file);
+}
+
+/**
+ * Unlocks and closes the file.
+ *
+ * @param resource $file
+ */
+function unlock_file($file)
+{
 	flock($file, LOCK_UN);
 	fclose($file);
 }
@@ -1258,31 +1270,44 @@ function write_and_unlock_file($file, $data)
  *
  * @param $create bool
  * @return string|false Returns false if the file can not be created.
+ * @throws \Random\RandomException
  */
-function password_file($create) {
+function get_private_key($create)
+{
 	$filename = get_temp_dir() . "/adminer.key";
 
-	$return = file_exists($filename) ? file_get_contents($filename) : false;
-	if ($return || !$create) {
-		return $return;
+	if (!$create && !file_exists($filename)) {
+		return false;
 	}
 
-	$file = @fopen($filename, "w"); // @ - can have insufficient rights //! is not atomic
-	if ($file) {
-		chmod($filename, 0660);
-		$return = rand_string();
-		fwrite($file, $return);
-		fclose($file);
+	$file = open_file_with_lock($filename);
+	if (!$file) {
+		return false;
 	}
 
-	return $return;
+	$key = stream_get_contents($file);
+	if (!$key) {
+		$key = get_random_string();
+		write_and_unlock_file($file, $key);
+	} else {
+		unlock_file($file);
+	}
+
+	return $key;
 }
 
-/** Get a random string
-* @return string 32 hexadecimal characters
-*/
-function rand_string() {
-	return md5(uniqid(mt_rand(), true));
+/**
+ * Returns a random 32 characters long string.
+ *
+ * @param $binary bool
+ * @return string
+ * @throws \Random\RandomException
+ */
+function get_random_string($binary = false)
+{
+	$bytes = function_exists('random_bytes') ? random_bytes(32) : uniqid(mt_rand(), true);
+
+	return $binary ? $bytes : md5($bytes);
 }
 
 /** Format value to use in select

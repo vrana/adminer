@@ -142,14 +142,20 @@ function csp() {
 	);
 }
 
-/** Get a CSP nonce
-* @return string Base64 value
-*/
-function get_nonce() {
+/**
+ * Gets a CSP nonce.
+ *
+ * @return string Base64 value.
+ * @throws \Random\RandomException
+ */
+function get_nonce()
+{
 	static $nonce;
+
 	if (!$nonce) {
-		$nonce = base64_encode(rand_string());
+		$nonce = base64_encode(get_random_string(true));
 	}
+
 	return $nonce;
 }
 
