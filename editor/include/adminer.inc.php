@@ -582,6 +582,7 @@ qsl('div').onclick = whisperClick;", "")
 	}
 
 	function importServerPath() {
+		return null;
 	}
 
 	function homepage() {

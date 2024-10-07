@@ -941,9 +941,11 @@ class Adminer {
 		return $ext;
 	}
 
-	/** Set the path of the file for webserver load
-	* @return string path of the sql dump file
-	*/
+	/**
+	 * Gets the path of the file for webserver load.
+	 *
+	 * @return string Path of the sql import file.
+	 */
 	function importServerPath() {
 		return "adminer.sql";
 	}
