@@ -799,15 +799,15 @@ function get_temp_dir() {
 * @return resource or null for error
 */
 function file_open_lock($filename) {
-	$fp = @fopen($filename, "r+"); // @ - may not exist
-	if (!$fp) { // c+ is available since PHP 5.2.6
-		$fp = @fopen($filename, "w"); // @ - may not be writable
-		if (!$fp) {
-			return;
-		}
-		chmod($filename, 0660);
+	$fp = @fopen($filename, "c+"); // @ - may not be writable
+	if (!$fp) {
+		return;
 	}
-	flock($fp, LOCK_EX);
+	chmod($filename, 0660);
+	if (!flock($fp, LOCK_EX)) {
+		fclose($fp);
+		return;
+	}
 	return $fp;
 }
 
