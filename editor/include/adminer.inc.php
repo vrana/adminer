@@ -347,7 +347,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 			$col = $where["col"];
 			$op = $where["op"];
 			$val = $where["val"];
-			if (($key < 0 ? "" : $col) . $val != "") {
+			if (($key >= 0 && $col != "") || $val != "") {
 				$conds = array();
 				foreach (($col != "" ? array($col => $fields[$col]) : $fields) as $name => $field) {
 					if ($col != "" || is_numeric($val) || !preg_match(number_type(), $field["type"])) {
