@@ -158,14 +158,6 @@ function h($string) {
 	return str_replace("\0", "&#0;", htmlspecialchars($string, ENT_QUOTES, 'utf-8'));
 }
 
-/** Convert \n to <br>
-* @param string
-* @return string
-*/
-function nl_br($string) {
-	return str_replace("\n", "<br>", $string); // nl2br() uses XHTML before PHP 5.3
-}
-
 /** Generate HTML checkbox
 * @param string
 * @param string
@@ -956,7 +948,7 @@ function input($field, $value, $function) {
 		if (version_compare(PHP_VERSION, 5.4) >= 0) {
 			$args[] = JSON_PRETTY_PRINT;
 		}
-		$value = call_user_func_array('json_encode', $args); //! requires PHP 5.2
+		$value = call_user_func_array('json_encode', $args);
 		$function = "json";
 	}
 	$reset = ($jush == "mssql" && $field["auto_increment"]);

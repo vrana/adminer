@@ -488,7 +488,7 @@ ORDER BY connamespace, conname") as $row) {
 		if (preg_match('~^(.*\n)?([^\n]*)\n( *)\^(\n.*)?$~s', $return, $match)) {
 			$return = $match[1] . preg_replace('~((?:[^&]|&[^;]*;){' . strlen($match[3]) . '})(.*)~', '\1<b>\2</b>', $match[2]) . $match[4];
 		}
-		return nl_br($return);
+		return nl2br($return);
 	}
 
 	function create_database($db, $collation) {

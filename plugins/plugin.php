@@ -7,36 +7,31 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerPlugin extends Adminer {
-	/** @access protected */
-	var $plugins;
-	
-	function _findRootClass($class) { // is_subclass_of(string, string) is available since PHP 5.0.3
-		do {
-			$return = $class;
-		} while ($class = get_parent_class($class));
-		return $return;
-	}
-	
-	/** Register plugins
-	* @param array object instances or null to register all classes starting by 'Adminer'
-	*/
-	function __construct($plugins) {
+	protected $plugins;
+
+	/**
+	 * Registers plugins.
+	 * @param array $plugins Object instances or null to register all classes starting by 'Adminer'.
+	 */
+	function __construct(array $plugins = null)
+	{
 		if ($plugins === null) {
-			$plugins = array();
+			$plugins = [];
 			foreach (get_declared_classes() as $class) {
-				if (preg_match('~^Adminer.~i', $class) && strcasecmp($this->_findRootClass($class), 'Adminer')) { //! can use interface
+				if (preg_match('~^Adminer.~i', $class) && !is_subclass_of($class, 'Adminer')) { //! can use interface
 					$plugins[$class] = new $class;
 				}
 			}
 		}
+
 		$this->plugins = $plugins;
 		//! it is possible to use ReflectionObject to find out which plugins defines which methods at once
 	}
-	
+
 	function _callParent($function, $args) {
 		return call_user_func_array(array('parent', $function), $args);
 	}
-	
+
 	function _applyPlugin($function, $args) {
 		foreach ($this->plugins as $plugin) {
 			if (method_exists($plugin, $function)) {
@@ -57,7 +52,7 @@ class AdminerPlugin extends Adminer {
 		}
 		return $this->_callParent($function, $args);
 	}
-	
+
 	function _appendPlugin($function, $args) {
 		$return = $this->_callParent($function, $args);
 		foreach ($this->plugins as $plugin) {
@@ -70,14 +65,14 @@ class AdminerPlugin extends Adminer {
 		}
 		return $return;
 	}
-	
+
 	// appendPlugin
-	
+
 	function dumpFormat() {
 		$args = func_get_args();
 		return $this->_appendPlugin(__FUNCTION__, $args);
 	}
-	
+
 	function dumpOutput() {
 		$args = func_get_args();
 		return $this->_appendPlugin(__FUNCTION__, $args);
@@ -94,7 +89,7 @@ class AdminerPlugin extends Adminer {
 	}
 
 	// applyPlugin
-	
+
 	function name() {
 		$args = func_get_args();
 		return $this->_applyPlugin(__FUNCTION__, $args);

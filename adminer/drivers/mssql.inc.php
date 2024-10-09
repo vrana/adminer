@@ -432,7 +432,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 
 	function error() {
 		global $connection;
-		return nl_br(h(preg_replace('~^(\[[^]]*])+~m', '', $connection->error)));
+		return nl2br(h(preg_replace('~^(\[[^]]*])+~m', '', $connection->error)));
 	}
 
 	function create_database($db, $collation) {

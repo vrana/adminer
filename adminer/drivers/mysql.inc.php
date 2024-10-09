@@ -14,7 +14,7 @@ if (!defined("DRIVER")) {
 
 			function connect($server = "", $username = "", $password = "", $database = null, $port = null, $socket = null) {
 				global $adminer;
-				mysqli_report(MYSQLI_REPORT_OFF); // stays between requests, not required since PHP 5.3.4
+				mysqli_report(MYSQLI_REPORT_OFF);
 				list($host, $port) = explode(":", $server, 2); // part after : is used for port or socket
 
 				$ssl = $adminer->connectSsl();
@@ -34,7 +34,7 @@ if (!defined("DRIVER")) {
 					$database,
 					(is_numeric($port) ? $port : ini_get("mysqli.default_port")),
 					(!is_numeric($port) ? $port : $socket),
-					($ssl ? 64 : 0) // 64 - MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT (not available before PHP 5.6.16)
+					($ssl ? MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT : 0)
 				);
 				$this->options(MYSQLI_OPT_LOCAL_INFILE, false);
 				return $return;
@@ -262,7 +262,7 @@ if (!defined("DRIVER")) {
 			}
 
 			function set_charset($charset) {
-				$this->query("SET NAMES $charset"); // charset in DSN is ignored before PHP 5.3.6
+				$this->query("SET NAMES $charset");
 			}
 
 			function select_db($database) {
@@ -375,7 +375,7 @@ if (!defined("DRIVER")) {
 		$connection = new Min_DB;
 		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
-			$connection->set_charset(charset($connection)); // available in MySQLi since PHP 5.0.5
+			$connection->set_charset(charset($connection));
 			$connection->query("SET sql_quote_show_create = 1, autocommit = 1");
 			if (min_version('5.7.8', 10.2, $connection)) {
 				$structured_types[lang('Strings')][] = "json";
