@@ -1,3 +1,9 @@
+Adminer 4.9.4:
+Unify displaying of 'New item' action based on privileges
+Firefox: Fix opening a database to the new browser's tab with Ctrl+click
+Editor: Fix array conversion to string (issue adminerneo#3).
+Editor: Fix building links with array parameters
+
 Adminer 4.9.3:
 MySQL, PostgreSQL: Fix queries splitting and string constants
 MySQL: Fix where clause for JSON column
