@@ -232,14 +232,16 @@ if (is_ajax()) {
 
 $set = null;
 if (isset($rights["insert"]) || !support("table")) {
-	$set = "";
+	$params = [];
 	foreach ((array) $_GET["where"] as $val) {
-		if ($foreign_keys[$val["col"]] && count($foreign_keys[$val["col"]]) == 1 && ($val["op"] == "="
-			|| (!$val["op"] && !preg_match('~[_%]~', $val["val"])) // LIKE in Editor
+		if (isset($foreign_keys[$val["col"]]) && count($foreign_keys[$val["col"]]) == 1
+			&& ($val["op"] == "=" || (!$val["op"] && (is_array($val["val"]) || !preg_match('~[_%]~', $val["val"]))) // LIKE in Editor
 		)) {
-			$set .= "&set" . urlencode("[" . bracket_escape($val["col"]) . "]") . "=" . urlencode($val["val"]);
+			$params["set" . "[" . bracket_escape($val["col"]) . "]"] = $val["val"];
 		}
 	}
+
+	$set = $params ? "&" . http_build_query($params) : "";
 }
 $adminer->selectLinks($table_status, $set);
 
@@ -446,7 +448,7 @@ if (!$columns && support("table")) {
 								$link .= where_link($i++, $k, $v);
 							}
 						}
-						
+
 						$val = select_value($val, $link, $field, $text_length);
 						$id = h("val[$unique_idf][" . bracket_escape($key) . "]");
 						$value = $_POST["val"][$unique_idf][bracket_escape($key)];
@@ -507,7 +509,7 @@ if (!$columns && support("table")) {
 					echo "\n";
 				}
 			}
-			
+
 			echo "<div class='footer'><div>\n";
 			if ($rows || $page) {
 				if ($pagination) {
@@ -539,7 +541,7 @@ if (!$columns && support("table")) {
 					}
 					echo "</fieldset>\n";
 				}
-				
+
 				echo "<fieldset>";
 				echo "<legend>" . lang('Whole result') . "</legend>";
 				$display_rows = ($exact_count ? "" : "~ ") . $found_rows;
