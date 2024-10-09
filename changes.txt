@@ -1,3 +1,14 @@
+Adminer 4.9.4 (released 2024-10-09):
+- Fix the width of inline edit field.
+- Unify displaying of 'New item' action based on privileges.
+- Better default value for object definition (*.*) while creating new database user.
+- Firefox: Fix opening a database to the new browser's tab with Ctrl+click.
+- Remove suppressing errors while reading local files.
+- More secure random strings on PHP 7+.
+- Editor: Fix array conversion to string (issue #3).
+- Editor: Fix building links with array parameters.
+- Clean up the code for PHP < 5.6.
+
 Adminer 4.9.3 (released 2024-10-02):
 - MySQL, PostgreSQL: Fix queries splitting and string constants.
 - MySQL: Fix where clause for JSON column.
