@@ -1,5 +1,6 @@
 <?php
 $translations = array(
+	'Home' => null,
 	'Login' => 'Intră',
 	'Logout successful.' => 'Ați ieșit cu succes.',
 	'Invalid server or credentials.' => null,

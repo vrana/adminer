@@ -1,5 +1,6 @@
 <?php
 $translations = array(
+	'Home' => 'Domov',
 	'Login' => 'Prihlásiť sa',
 	'Logout successful.' => 'Odhlásenie prebehlo v poriadku.',
 	'Invalid server or credentials.' => 'Neplatný server alebo prihlasovacie údaje.',

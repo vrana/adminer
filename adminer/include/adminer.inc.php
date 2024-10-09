@@ -1010,7 +1010,14 @@ class Adminer {
 						if ($password !== null) {
 							$dbs = $_SESSION["db"][$vendor][$server][$username];
 							foreach (($dbs ? array_keys($dbs) : array("")) as $db) {
-								$output .= "<li><a href='" . h(auth_url($vendor, $server, $username, $db)) . "'>($drivers[$vendor]) " . h($username . ($server != "" ? "@" . $this->serverName($server) : "") . ($db != "" ? " - $db" : "")) . "</a>\n";
+								$output .= "<li><a href='" . h(auth_url($vendor, $server, $username, $db)) . "'>"
+									. h($drivers[$vendor])
+									. ($username != "" || $server != "" ? " - " : "")
+									. h($username)
+									. ($username != "" && $server != "" ? "@" : "")
+									. ($server != "" ? h($this->serverName($server)) : "")
+									. ($db != "" ? h(" - $db") : "")
+									. "</a></li>\n";
 							}
 						}
 					}

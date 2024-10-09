@@ -1,5 +1,6 @@
 <?php
 $translations = array(
+	'Home' => null,
 	'System' => 'System',
 	'Server' => 'Server',
 	'Username' => 'Brukernavn',

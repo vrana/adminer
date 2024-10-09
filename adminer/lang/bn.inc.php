@@ -1,5 +1,6 @@
 <?php
 $translations = array(
+	'Home' => null,
 	'Login' => 'লগইন',
 	'Logout successful.' => 'সফলভাবে লগআউট হয়েছে।',
 	'Invalid server or credentials.' => null,

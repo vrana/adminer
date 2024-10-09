@@ -1,5 +1,6 @@
 <?php
 $translations = array(
+	'Home' => null,
 	'Login' => 'Conectar',
 	'Logout successful.' => 'Pechouse a sesión con éxito.',
 	'Invalid server or credentials.' => null,

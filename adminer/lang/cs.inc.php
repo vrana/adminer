@@ -1,6 +1,7 @@
 <?php
 $translations = array(
 	// label for database system selection (MySQL, SQLite, ...)
+	'Home' => 'Domů',
 	'System' => 'Systém',
 	'Server' => 'Server',
 	'Username' => 'Uživatel',
