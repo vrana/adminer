@@ -318,6 +318,11 @@ class Adminer {
 	* @return string
 	*/
 	function editVal($val, $field) {
+		// Format Elasticsearch boolean value, but do not touch PostgreSQL boolean that use string value 't' or 'f'.
+		if ($field["type"] == "boolean" && is_bool($val)) {
+			return $val ? "true" : "false";
+		}
+
 		return $val;
 	}
 
@@ -627,6 +632,8 @@ class Adminer {
                             && (preg_match('~^[-\d.' . (preg_match('~IN$~', $op) ? ',' : '') . ']+$~', $val) || !preg_match('~' . number_type() . '|bit~', $field["type"]))
 							&& (!preg_match("~[\x80-\xFF]~", $val) || preg_match('~char|text|enum|set~', $field["type"]))
 							&& (!preg_match('~date|timestamp~', $field["type"]) || preg_match('~^\d+-\d+-\d+~', $val))
+							&& (!preg_match('~^elastic~', DRIVER) || $field["type"] != "boolean" || preg_match('~true|false~', $val)) // Elasticsearch needs boolean value properly formatted.
+							&& (!preg_match('~^elastic~', DRIVER) || strpos($op, "regexp") === false || preg_match('~text|keyword~', $field["type"])) // Elasticsearch can use regexp only on text and keyword fields.
 						) {
 							$cols[] = $prefix . $driver->convertSearch(idf_escape($name), $where, $field) . $cond;
 						}

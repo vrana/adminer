@@ -155,28 +155,12 @@ if (isset($_GET["elastic"])) {
 			foreach ($where as $val) {
 				if (preg_match('~^\((.+ OR .+)\)$~', $val, $matches)) {
 					$parts = explode(" OR ", $matches[1]);
-					$terms = array();
-					foreach ($parts as $part) {
-						list($col, $op, $val) = explode(" ", $part, 3);
-						$term = array($col => $val);
-						if ($op == "=") {
-							$terms[] = array("term" => $term);
-						} elseif (in_array($op, array("must", "should", "must_not"))) {
-							$data["query"]["bool"][$op][]["match"] = $term;
-						}
-					}
 
-					if (!empty($terms)) {
-						$data["query"]["bool"]["filter"][]["bool"]["should"] = $terms;
+					foreach ($parts as $part) {
+						$this->addQueryCondition($part, $data);
 					}
 				} else {
-					list($col, $op, $val) = explode(" ", $val, 3);
-					$term = array($col => $val);
-					if ($op == "=") {
-						$data["query"]["bool"]["filter"][] = array("term" => $term);
-					} elseif (in_array($op, array("must", "should", "must_not"))) {
-						$data["query"]["bool"][$op][]["match"] = $term;
-					}
+					$this->addQueryCondition($val, $data);
 				}
 			}
 
@@ -214,6 +198,33 @@ if (isset($_GET["elastic"])) {
 			}
 
 			return new Min_Result($return);
+		}
+
+		private  function addQueryCondition($val, &$data)
+		{
+			list($col, $op, $val) = explode(" ", $val, 3);
+
+			if (!preg_match('~^([^(]+)\(([^)]+)\)$~', $op, $matches)) {
+				return;
+			}
+			$queryType = $matches[1]; // must, should, must_not
+			$matchType = $matches[2]; // term, match, regexp
+
+			if ($matchType == "regexp") {
+				$data["query"]["bool"][$queryType][] = [
+					"regexp" => [
+						$col => [
+							"value" => $val,
+							"flags" => "ALL",
+							"case_insensitive" => true,
+						]
+					]
+				];
+			} else {
+				$data["query"]["bool"][$queryType][] = [
+					$matchType => [$col => $val]
+				];
+			}
 		}
 
 		function update($type, $record, $queryWhere, $limit = 0, $separator = "\n") {
@@ -448,18 +459,13 @@ if (isset($_GET["elastic"])) {
 		$result = array(
 			"_id" => array(
 				"field" => "_id",
-				"full_type" => "text",
-				"type" => "text",
+				"full_type" => "_id",
+				"type" => "_id",
 				"privileges" => array("insert" => 1, "select" => 1, "where" => 1, "order" => 1),
 			)
 		);
 
 		foreach ($mappings as $name => $field) {
-			$has_index = !isset($field["index"]) || $field["index"];
-
-			// TODO: privileges: where => $has_index
-			// TODO: privileges: sort => $field["type"] != "text"
-
 			$result[$name] = array(
 				"field" => $name,
 				"full_type" => $field["type"],
@@ -564,9 +570,9 @@ if (isset($_GET["elastic"])) {
 		$structured_types = array();
 
 		foreach (array(
-			lang('Numbers') => array("long" => 3, "integer" => 5, "short" => 8, "byte" => 10, "double" => 20, "float" => 66, "half_float" => 12, "scaled_float" => 21),
+			lang('Numbers') => array("long" => 3, "integer" => 5, "short" => 8, "byte" => 10, "double" => 20, "float" => 66, "half_float" => 12, "scaled_float" => 21, "boolean" => 1),
 			lang('Date and time') => array("date" => 10),
-			lang('Strings') => array("string" => 65535, "text" => 65535),
+			lang('Strings') => array("string" => 65535, "text" => 65535, "keyword" => 65535),
 			lang('Binary') => array("binary" => 255),
 		) as $key => $val) {
 			$types += $val;
@@ -576,8 +582,13 @@ if (isset($_GET["elastic"])) {
 		return array(
 			'possible_drivers' => array("json + allow_url_fopen"),
 			'jush' => "elastic",
-			'operators' => array("=", "must", "should", "must_not"),
-			'operator_like' => "should",
+			'operators' => array(
+				"must(term)", "must(match)", "must(regexp)",
+				"should(term)", "should(match)", "should(regexp)",
+				"must_not(term)", "must_not(match)", "must_not(regexp)",
+			),
+			'operator_like' => "should(match)",
+			'operator_regexp' => "should(regexp)",
 			'functions' => array(),
 			'grouping' => array(),
 			'edit_functions' => array(array("json")),
