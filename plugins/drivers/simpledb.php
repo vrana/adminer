@@ -514,6 +514,7 @@ if (isset($_GET["simpledb"])) {
 			'possible_drivers' => array("SimpleXML + allow_url_fopen"),
 			'jush' => "simpledb",
 			'operators' => array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "IS NOT NULL"),
+			'operator_like' => "LIKE %%",
 			'functions' => array(),
 			'grouping' => array("count"),
 			'edit_functions' => array(array("json")),

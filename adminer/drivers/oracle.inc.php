@@ -541,6 +541,7 @@ ORDER BY PROCESS
 			'structured_types' => $structured_types,
 			'unsigned' => array(),
 			'operators' => array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL"),
+			'operator_like' => "LIKE %%",
 			'functions' => array("length", "lower", "round", "upper"),
 			'grouping' => array("avg", "count", "count distinct", "max", "min", "sum"),
 			'edit_functions' => array(

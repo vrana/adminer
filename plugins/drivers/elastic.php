@@ -265,10 +265,6 @@ if (isset($_GET["elastic"])) {
 
 			return $this->_conn->affected_rows;
 		}
-
-		function convertOperator($operator) {
-			return $operator == "LIKE %%" ? "should" : $operator;
-		}
 	}
 
 	function connect() {
@@ -581,6 +577,7 @@ if (isset($_GET["elastic"])) {
 			'possible_drivers' => array("json + allow_url_fopen"),
 			'jush' => "elastic",
 			'operators' => array("=", "must", "should", "must_not"),
+			'operator_like' => "should",
 			'functions' => array(),
 			'grouping' => array(),
 			'edit_functions' => array(array("json")),

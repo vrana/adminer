@@ -4,6 +4,8 @@
 class Adminer {
 	/** @var array operators used in select, null for all operators */
 	var $operators = null;
+	/** @var string operator for LIKE condition */
+	var $operator_like = null;
 	/** @var string operator for regular expression condition */
 	var $operator_regexp = null;
 

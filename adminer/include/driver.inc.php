@@ -151,14 +151,6 @@ function get_driver($id) {
 		return $idf;
 	}
 
-	/** Convert operator so it can be used in search
-	 * @param string $operator
-	 * @return string
-	 */
-	function convertOperator($operator) {
-		return $operator;
-	}
-
 	/** Convert value returned by database to actual value
 	* @param string
 	* @param array

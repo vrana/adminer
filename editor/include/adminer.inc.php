@@ -1,6 +1,7 @@
 <?php
 class Adminer {
 	var $operators = array("<=", ">=");
+	var $operator_like = null;
 	var $operator_regexp = null;
 	var $_values = array();
 
