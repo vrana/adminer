@@ -224,11 +224,11 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		return $val;
 	}
 
-	function selectColumnsPrint($select, $columns) {
+	function selectColumnsPrint(array $select, array $columns) {
 		// can allow grouping functions by indexes
 	}
 
-	function selectSearchPrint($where, $columns, $indexes) {
+	function selectSearchPrint(array $where, array $columns, array $indexes) {
 		$where = (array) $_GET["where"];
 		echo '<fieldset id="fieldset-search"><legend>' . lang('Search') . "</legend><div>\n";
 		$keys = array();
@@ -265,7 +265,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 				echo "<div><select name='where[$i][col]'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
 				echo html_select("where[$i][op]", array(-1 => "") + $this->operators, $val["op"]);
 				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'>" . script("mixin(qsl('input'), {onkeydown: selectSearchKeydown, onsearch: selectSearchSearch});", "");
-				echo " <input type='image' src='../adminer/static/cross.gif' class='jsonly icon' title='" . h(lang('Remove')) . "' alt='x'>" . script('qsl(".icon").onclick = selectRemoveRow;', "");
+				echo " <input type='image' src='../adminer/static/cross.gif' class='jsonly icon remove' title='" . h(lang('Remove')) . "' alt='x'>" . script('qsl("#fieldset-search .remove").onclick = selectRemoveRow;', "");
 				echo "</div>\n";
 				$i++;
 			}
@@ -275,13 +275,13 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 		echo html_select("where[$i][op]", array(-1 => "") + $this->operators);
 		echo "<input type='search' name='where[$i][val]'>";
 		echo script("mixin(qsl('input'), {onchange: function () { this.parentNode.firstChild.onchange(); }, onsearch: selectSearchSearch});");
-		echo " <input type='image' src='../adminer/static/cross.gif' class='jsonly icon' title='" . h(lang('Remove')) . "' alt='x'>";
-		echo script('qsl(".icon").onclick = selectRemoveRow;', "");
+		echo " <input type='image' src='../adminer/static/cross.gif' class='jsonly icon remove' title='" . h(lang('Remove')) . "' alt='x'>";
+		echo script('qsl("#fieldset-search .remove").onclick = selectRemoveRow;', "");
 		echo "</div>";
 		echo "</div></fieldset>\n";
 	}
 
-	function selectOrderPrint($order, $columns, $indexes) {
+	function selectOrderPrint(array $order, array $columns, array $indexes) {
 		//! desc
 		$orders = array();
 		foreach ($indexes as $key => $index) {

@@ -1,4 +1,15 @@
 
+/**
+ * Returns the element found by given identifier.
+ *
+ * @param {string} id
+ * @param {?HTMLElement} context Defaults to document.
+ * @return {?HTMLElement}
+ */
+function gid(id, context = null) {
+	return (context || document).getElementById(id);
+}
+
 /** Get first element by selector
 * @param string
 * @param [HTMLElement] defaults to document
@@ -73,13 +84,15 @@ function alterClass(el, className, enable) {
 	}
 }
 
-/** Toggle visibility
-* @param string
-* @return boolean false
-*/
+/**
+ * Toggles visibility of element with ID.
+ *
+ * @param {string} id
+ * @return {boolean} Always false.
+ */
 function toggle(id) {
-	var el = qs('#' + id);
-	el.className = (el.className === 'hidden' ? '' : 'hidden');
+	gid(id).classList.toggle("hidden");
+
 	return false;
 }
 
@@ -450,14 +463,15 @@ function menuOut() {
 /**
  * Adds row in select fieldset.
  *
+ * @param {Event} event
  * @this HTMLSelectElement
  */
-function selectAddRow() {
+function selectAddRow(event) {
 	const field = this;
 	const row = cloneNode(field.parentNode);
 
 	field.onchange = selectFieldChange;
-	field.onchange();
+	field.onchange(event);
 
 	const selects = qsa('select', row);
 	for (const select of selects) {
@@ -486,13 +500,19 @@ function selectAddRow() {
 		button.onclick = selectRemoveRow;
 	}
 
-	field.parentNode.parentNode.appendChild(row);
+	const parent = field.parentNode.parentNode;
+	if (parent.classList.contains("sortable")) {
+		initSortableRow(field.parentElement);
+	}
+
+	parent.appendChild(row);
 }
 
 /**
  * Removes a row in select fieldset.
  *
  * @this HTMLInputElement
+ * @return {boolean} Always false.
  */
 function selectRemoveRow() {
 	const row = this.parentNode;
@@ -521,6 +541,95 @@ function selectSearchSearch() {
 		this.parentNode.firstChild.selectedIndex = 0;
 	}
 }
+
+// Sorting.
+(function() {
+	let placeholderRow, draggingRow, nextRow;
+	let startY, maxY;
+
+	/**
+	 * Initializes sortable list of DIV elements.
+	 *
+	 * @param {string} parentId
+	 */
+	window.initSortable = function(parentSelector) {
+		const parent = qs(parentSelector);
+		if (!parent) return;
+
+		for (const row of parent.children) {
+			if (!row.classList.contains("no-sort")) {
+				initSortableRow(row);
+			}
+		}
+	};
+
+	/**
+	 * Initializes one row of sortable parent.
+	 *
+	 * @param {HTMLElement} row
+	 */
+	window.initSortableRow = function(row) {
+		row.classList.remove("no-sort");
+
+		const handle = qs(".handle", row);
+		handle.addEventListener("mousedown", (event) => {
+			event.preventDefault();
+
+			const parent = row.parentNode;
+			startY = event.clientY - row.offsetTop;
+			maxY = parent.offsetHeight - row.offsetHeight;
+
+			placeholderRow = row.cloneNode(true);
+			placeholderRow.classList.add("placeholder");
+			placeholderRow.style.top = (event.clientY - startY) + "px";
+			parent.insertBefore(placeholderRow, row);
+
+			draggingRow = row;
+			draggingRow.classList.add("dragging");
+			parent.insertBefore(draggingRow, parent.firstChild);
+
+			nextRow = placeholderRow.nextElementSibling;
+
+			updateSorting(event);
+
+			window.addEventListener("mousemove", updateSorting);
+
+			window.addEventListener("mouseup", () => {
+				draggingRow.classList.remove("dragging");
+				parent.insertBefore(draggingRow, placeholderRow);
+				placeholderRow.remove();
+
+				window.removeEventListener("mousemove", updateSorting);
+			}, { once: true });
+		});
+	};
+
+	function updateSorting(event) {
+		let top = Math.min(Math.max(event.clientY - startY, 0), maxY);
+		draggingRow.style.top = top + "px";
+
+		let sibling;
+		if (top > placeholderRow.offsetTop + placeholderRow.offsetHeight / 2) {
+			sibling = !nextRow.classList.contains("no-sort") ? nextRow.nextElementSibling : nextRow;
+		} else if (top + placeholderRow.offsetHeight < placeholderRow.offsetTop + placeholderRow.offsetHeight / 2) {
+			sibling = placeholderRow.previousElementSibling;
+		} else {
+			sibling = nextRow;
+		}
+
+		if (sibling !== nextRow) {
+			const parent = placeholderRow.parentNode;
+
+			nextRow = sibling;
+			if (sibling) {
+				parent.insertBefore(placeholderRow, nextRow);
+			} else {
+				parent.appendChild(placeholderRow);
+			}
+		}
+	}
+})();
+
 
 
 

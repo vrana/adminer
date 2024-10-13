@@ -393,100 +393,123 @@ class Adminer {
 		echo "</table>\n";
 	}
 
-	/** Print columns box in select
-	* @param array result of selectColumnsProcess()[0]
-	* @param array selectable columns
-	* @return null
-	*/
-	function selectColumnsPrint($select, $columns) {
+	/**
+	 * Prints columns box in select filter.
+	 *
+	 * @param array $select result of selectColumnsProcess()[0]
+	 * @param array $columns selectable columns
+	 */
+	function selectColumnsPrint(array $select, array $columns) {
 		global $functions, $grouping;
-		print_fieldset("select", lang('Select'), $select);
+
+		print_fieldset("select", lang('Select'), $select, true);
+
+		$_GET["columns"][""] = [];
 		$i = 0;
-		$select[""] = array();
-		foreach ($select as $key => $val) {
-			$val = $_GET["columns"][$key];
+
+		foreach ($_GET["columns"] as $key => $val) {
+			if ($key != "" && $val["col"] == "") continue;
+
 			$column = select_input(
-				" name='columns[$i][col]'",
+				"name='columns[$i][col]'",
 				$columns,
 				$val["col"],
-				($key !== "" ? "selectFieldChange" : "selectAddRow")
+				$key !== "" ? "selectFieldChange" : "selectAddRow"
 			);
-			echo "<div>" . ($functions || $grouping ? "<select name='columns[$i][fun]'>"
-				. optionlist(array(-1 => "") + array_filter(array(lang('Functions') => $functions, lang('Aggregation') => $grouping)), $val["fun"]) . "</select>"
-				. on_help("getTarget(event).value && getTarget(event).value.replace(/ |\$/, '(') + ')'", 1)
-				. script("qsl('select').onchange = function () { helpClose();" . ($key !== "" ? "" : " qsl('select, input', this.parentNode).onchange();") . " };", "")
-				. "($column)" : $column)
-				. " <input type='image' src='../adminer/static/cross.gif' class='jsonly icon' title='" . h(lang('Remove')) . "' alt='x'>"
-				. script('qsl(".icon").onclick = selectRemoveRow;', "")
-				. "</div>\n";
+
+			echo "<div ", ($key != "" ? "" : "class='no-sort'"), ">",
+				"<span class='jsonly handle'>=</span>";
+
+			if ($functions || $grouping) {
+				echo "<select name='columns[$i][fun]'>",
+					optionlist([-1 => ""] + array_filter([lang('Functions') => $functions, lang('Aggregation') => $grouping]), $val["fun"]),
+					"</select>",
+					on_help("getTarget(event).value && getTarget(event).value.replace(/ |\$/, '(') + ')'", 1),
+					script("qsl('select').onchange = (event) => { helpClose();" . ($key !== "" ? "" : " qsl('select, input:not(.remove)', event.target.parentNode).onchange();") . " };", ""),
+					"($column)";
+			} else {
+				echo $column;
+			}
+
+			echo " <input type='image' src='../adminer/static/cross.gif' class='jsonly icon remove' title='" . h(lang('Remove')) . "' alt='x'>",
+				script("qsl('#fieldset-select .remove').onclick = selectRemoveRow;", ""),
+				"</div>\n";
+
 			$i++;
 		}
-		echo "</div></fieldset>\n";
+
+		echo "</div>", script("initSortable('#fieldset-select');"), "</fieldset>\n";
 	}
 
-	/** Print search box in select
-	* @param array result of selectSearchProcess()
-	* @param array selectable columns
-	* @param array
-	* @return null
-	*/
-	function selectSearchPrint($where, $columns, $indexes) {
+	/**
+	 * Prints search box in select.
+	 *
+	 * @param array $where result of selectSearchProcess()
+	 * @param array $columns selectable columns
+	 */
+	function selectSearchPrint(array $where, array $columns, array $indexes) {
 		print_fieldset("search", lang('Search'), $where);
+
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT") {
-				echo "<div>(<i>" . implode("</i>, <i>", array_map('h', $index["columns"])) . "</i>) AGAINST";
-				echo " <input type='search' name='fulltext[$i]' value='" . h($_GET["fulltext"][$i]) . "'>";
-				echo script("qsl('input').oninput = selectFieldChange;", "");
-				echo checkbox("boolean[$i]", 1, isset($_GET["boolean"][$i]), "BOOL");
-				echo "</div>\n";
+				echo "<div>(<i>" . implode("</i>, <i>", array_map('h', $index["columns"])) . "</i>) AGAINST",
+					" <input type='search' name='fulltext[$i]' value='" . h($_GET["fulltext"][$i]) . "'>",
+					script("qsl('input').oninput = selectFieldChange;", ""),
+					checkbox("boolean[$i]", 1, isset($_GET["boolean"][$i]), "BOOL"),
+					"</div>\n";
 			}
 		}
+
 		$change_next = "this.parentNode.firstChild.onchange();";
 		foreach (array_merge((array) $_GET["where"], array(array())) as $i => $val) {
 			if (!$val || ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators))) {
-				echo "<div>" . select_input(
-					" name='where[$i][col]'",
-					$columns,
-					$val["col"],
-					($val ? "selectFieldChange" : "selectAddRow"),
-					"(" . lang('anywhere') . ")"
-				);
-				echo html_select("where[$i][op]", $this->operators, $val["op"], $change_next);
-				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'>";
-				echo script("mixin(qsl('input'), {oninput: function () { $change_next }, onkeydown: selectSearchKeydown, onsearch: selectSearchSearch});", "");
-				echo " <input type='image' src='../adminer/static/cross.gif' class='jsonly icon' title='" . h(lang('Remove')) . "' alt='x'>";
-				echo script('qsl(".icon").onclick = selectRemoveRow;', "");
-				echo "</div>\n";
+				echo "<div>",
+					select_input(
+						" name='where[$i][col]'",
+						$columns,
+						$val["col"],
+						($val ? "selectFieldChange" : "selectAddRow"),
+						"(" . lang('anywhere') . ")"
+					),
+					html_select("where[$i][op]", $this->operators, $val["op"], $change_next),
+					"<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'>",
+					script("mixin(qsl('input'), {oninput: function () { $change_next }, onkeydown: selectSearchKeydown, onsearch: selectSearchSearch});", ""),
+					" <input type='image' src='../adminer/static/cross.gif' class='jsonly icon remove' title='" . h(lang('Remove')) . "' alt='x'>",
+					script('qsl("#fieldset-search .remove").onclick = selectRemoveRow;', ""),
+					"</div>\n";
 			}
 		}
+
 		echo "</div></fieldset>\n";
 	}
 
-	/** Print order box in select
-	* @param array result of selectOrderProcess()
-	* @param array selectable columns
-	* @param array
-	* @return null
-	*/
-	function selectOrderPrint($order, $columns, $indexes) {
-		print_fieldset("sort", lang('Sort'), $order);
+	/**
+	 * Prints order box in select filter.
+	 *
+	 * @param array $order result of selectOrderProcess()
+	 * @param array $columns selectable columns
+	 */
+	function selectOrderPrint(array $order, array $columns, array $indexes) {
+		print_fieldset("sort", lang('Sort'), $order, true);
+
+		$_GET["order"][""] = "";
 		$i = 0;
+
 		foreach ((array) $_GET["order"] as $key => $val) {
-			if ($val != "") {
-				echo "<div>" . select_input(" name='order[$i]'", $columns, $val, "selectFieldChange");
-				echo checkbox("desc[$i]", 1, isset($_GET["desc"][$key]), lang('descending'));
-				echo " <input type='image' src='../adminer/static/cross.gif' class='jsonly icon' title='" . h(lang('Remove')) . "' alt='x'>";
-				echo script('qsl(".icon").onclick = selectRemoveRow;', "");
-				echo "</div>\n";
-				$i++;
-			}
+			if ($key != "" && $val == "") continue;
+
+			echo "<div ", ($key != "" ? "" : "class='no-sort'"), ">",
+				"<span class='jsonly handle'>=</span>",
+				select_input("name='order[$i]'", $columns, $val, $key !== "" ? "selectFieldChange" : "selectAddRow"),
+				checkbox("desc[$i]", 1, isset($_GET["desc"][$key]), lang('descending')),
+				" <input type='image' src='../adminer/static/cross.gif' class='jsonly icon remove' title='" . h(lang('Remove')) . "' alt='x'>",
+				script('qsl("#fieldset-sort .remove").onclick = selectRemoveRow;', ""),
+				"</div>\n";
+
+			$i++;
 		}
-		echo "<div>" . select_input(" name='order[$i]'", $columns, "", "selectAddRow");
-		echo checkbox("desc[$i]", 1, false, lang('descending'));
-		echo " <input type='image' src='../adminer/static/cross.gif' class='jsonly icon' title='" . h(lang('Remove')) . "' alt='x'>";
-		echo script('qsl(".icon").onclick = selectRemoveRow;', "");
-		echo "</div>\n";
-		echo "</div></fieldset>\n";
+
+		echo "</div>", script("initSortable('#fieldset-sort');"), "</fieldset>\n";
 	}
 
 	/** Print limit box in select

@@ -71,6 +71,12 @@ input::placeholder { color: #000; opacity: 0.4; }
 .logout { margin-top: .5em; position: absolute; top: 0; right: 0; }
 .loadmore { margin-left: 1ex; }
 .tables-filter { padding: .8em 1em 0; }
+.handle { display: inline-block; width: 18px; height: 18px; padding-right: 5px; vertical-align: middle; overflow: hidden; font-size: 130%; text-align: center; line-height: 16px; opacity: 0.2; cursor: grab; }
+.sortable { position: relative; }
+.sortable .no-sort .handle { opacity: 0; cursor: default; }
+.placeholder { opacity: 0; }
+.dragging { position: absolute; z-index: 1; }
+.dragging .handle { cursor: grabbing; }
 /* .edit used in designs */
 #menu { position: absolute; margin: 10px 0 0; padding: 0 0 30px 0; top: 2em; left: 0; width: 19em; }
 #menu p, #logins, #tables { padding: .8em 1em; margin: 0; border-bottom: 1px solid #ccc; }
@@ -88,7 +94,7 @@ input::placeholder { color: #000; opacity: 0.4; }
 #schema .references { position: absolute; }
 #tables-filter, #database-select, #scheme-select { width: 100%; }
 #help { position: absolute; border: 1px solid #999; background: #eee; padding: 5px; font-family: monospace; z-index: 1; }
-#fieldset-select div:last-child > .icon, #fieldset-search div:last-child > .icon, #fieldset-sort div:last-child > .icon { display: none; }
+#fieldset-select div:last-child > .remove, #fieldset-search div:last-child > .remove, #fieldset-sort div:last-child > .remove { display: none; }
 
 .rtl h2 { margin: 0 -18px 20px 0; }
 .rtl p, .rtl table, .rtl .error, .rtl .message { margin: 1em 0 0 20px; }

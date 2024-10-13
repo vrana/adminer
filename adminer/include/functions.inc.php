@@ -235,7 +235,7 @@ function html_select($name, $options, $value = "", $onchange = true, $labelled_b
 */
 function select_input($attrs, $options, $value = "", $onchange = "", $placeholder = "") {
 	$tag = ($options ? "select" : "input");
-	return "<$tag$attrs" . ($options
+	return "<$tag $attrs" . ($options
 		? "><option value=''>$placeholder" . optionlist($options, $value, true) . "</select>"
 		: " size='10' value='" . h($value) . "' placeholder='$placeholder'>"
 	) . ($onchange ? script("qsl('$tag').onchange = $onchange;", "") : ""); //! use oninput for input
@@ -254,14 +254,13 @@ function confirm($message = "", $selector = "qsl('input')") {
 * @param string
 * @param string
 * @param bool
-* @return null
 */
-function print_fieldset($id, $legend, $visible = false) {
+function print_fieldset($id, $legend, $visible = false, $sortable = false) {
 	echo "<fieldset><legend>";
 	echo "<a href='#fieldset-$id'>$legend</a>";
 	echo script("qsl('a').onclick = partial(toggle, 'fieldset-$id');", "");
 	echo "</legend>";
-	echo "<div id='fieldset-$id'" . ($visible ? "" : " class='hidden'") . ">\n";
+	echo "<div id='fieldset-$id' class='" . ($visible ? "" : "hidden") . ($sortable ? " sortable" : "") . "'>\n";
 }
 
 /** Return class='active' if $bold is true
