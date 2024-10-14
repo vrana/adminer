@@ -996,18 +996,26 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 <?php
 			}
 			$this->databasesPrint($missing);
+			$actions = array();
 			if (DB == "" || !$missing) {
-				echo "<p class='links'>" . (support("sql") ? "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"]) && !isset($_GET["import"])) . ">" . lang('SQL command') . "</a>\n<a href='" . h(ME) . "import='" . bold(isset($_GET["import"])) . ">" . lang('Import') . "</a>\n" : "") . "";
+				if (support("sql")) {
+					$actions[] = "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"]) && !isset($_GET["import"])) . ">" . lang('SQL command') . "</a>";
+					$actions[] = "<a href='" . h(ME) . "import='" . bold(isset($_GET["import"])) . ">" . lang('Import') . "</a>";
+				}
 				if (support("dump")) {
-					echo "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . lang('Export') . "</a>\n";
+					$actions[] = "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . lang('Export') . "</a>";
 				}
 			}
-			if ($_GET["ns"] !== "" && !$missing && DB != "") {
-				echo '<a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create table') . "</a>\n";
-				if (!$tables) {
-					echo "<p class='message'>" . lang('No tables.') . "\n";
-				} else {
+			$in_db = $_GET["ns"] !== "" && !$missing && DB != "";
+			if ($in_db) {
+				$actions[] = '<a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create table') . "</a>";
+			}
+			echo ($actions ? "<p class='links'>\n" . implode("\n", $actions) . "\n" : "");
+			if ($in_db) {
+				if ($tables) {
 					$this->tablesPrint($tables);
+				} else {
+					echo "<p class='message'>" . lang('No tables.') . "</p>\n";
 				}
 			}
 		}
