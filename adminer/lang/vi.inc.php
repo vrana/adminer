@@ -227,6 +227,7 @@ $translations = array(
 	'Search' => 'Tìm kiếm',
 	'anywhere' => 'bất cứ đâu',
 	'Search data in tables' => 'Tìm kiếm dữ liệu trong các bảng',
+	'as a regular expression' => null,
 	'Sort' => 'Sắp xếp',
 	'descending' => 'giảm dần',
 	'Limit' => 'Giới hạn',

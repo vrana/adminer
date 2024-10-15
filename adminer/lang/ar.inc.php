@@ -225,6 +225,7 @@ $translations = array(
 	'Databases have been dropped.' => 'تم حذف قواعد البيانات.',
 	'Database has been dropped.' => 'تم حذف قاعدة البيانات.',
 	'Search data in tables' => 'بحث في الجداول',
+	'as a regular expression' => null,
 	'Schema' => 'المخطط',
 	'Alter schema' => 'تعديل المخطط',
 	'Create schema' => 'إنشاء مخطط',

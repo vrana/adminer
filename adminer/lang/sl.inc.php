@@ -217,6 +217,7 @@ $translations = array(
 	'Search' => 'Išči',
 	'anywhere' => 'kjerkoli',
 	'Search data in tables' => 'Išče podatke po tabelah',
+	'as a regular expression' => null,
 	'Sort' => 'Sortiraj',
 	'descending' => 'padajoče',
 	'Limit' => 'Limita',

@@ -226,6 +226,7 @@ $translations = array(
 	'Permanent login' => 'Logare permanentă',
 	'Databases have been dropped.' => 'Bazele de date au fost șterse.',
 	'Search data in tables' => 'Caută în tabele',
+	'as a regular expression' => null,
 	'Schema' => 'Schema',
 	'Alter schema' => 'Modifică schema',
 	'Create schema' => 'Crează o schemă',

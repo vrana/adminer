@@ -223,6 +223,7 @@ $translations = array(
 	'Search' => 'Pretraga',
 	'anywhere' => 'bilo gdje',
 	'Search data in tables' => 'Pretraži podatke u tabelama',
+	'as a regular expression' => null,
 	'Sort' => 'Poređaj',
 	'descending' => 'opadajuće',
 	'Limit' => 'Granica',

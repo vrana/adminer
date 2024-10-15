@@ -201,6 +201,7 @@ $translations = array(
 	'Search' => 'Søk',
 	'anywhere' => 'hvorsomhelst',
 	'Search data in tables' => 'Søk data i tabeller',
+	'as a regular expression' => null,
 	'Sort' => 'Sorter',
 	'descending' => 'minkende',
 	'Limit' => 'Skranke',

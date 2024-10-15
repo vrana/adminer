@@ -231,6 +231,7 @@ $translations = array(
 	'Search' => 'جستجو',
 	'anywhere' => 'هرکجا',
 	'Search data in tables' => 'جستجوی داده در جدول',
+	'as a regular expression' => null,
 	'Sort' => 'مرتب کردن',
 	'descending' => 'نزولی',
 	'Limit' => 'محدودیت',

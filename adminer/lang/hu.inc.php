@@ -252,6 +252,7 @@ $translations = array(
 	'Type has been created.' => 'Típus létrehozva.',
 	'Alter type' => 'Típus módosítása',
 	'Search data in tables' => 'Keresés a táblákban',
+	'as a regular expression' => null,
 	'From server' => 'Szerverről',
 	'empty' => 'üres',
 	'now' => 'most',

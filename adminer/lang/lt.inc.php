@@ -221,6 +221,7 @@ $translations = array(
 	'Search' => 'Ieškoti',
 	'anywhere' => 'visur',
 	'Search data in tables' => 'Ieškoti duomenų lentelėse',
+	'as a regular expression' => null,
 	'Sort' => 'Rikiuoti',
 	'descending' => 'mažėjimo tvarka',
 	'Limit' => 'Limitas',

@@ -225,6 +225,7 @@ $translations = array(
 	'Databases have been dropped.' => 'Les bases de données ont été supprimées.',
 	'Database has been dropped.' => 'La base de données a été supprimée.',
 	'Search data in tables' => 'Rechercher dans les tables',
+	'as a regular expression' => 'sous forme d\'expression régulière',
 	'Schema' => 'Schéma',
 	'Alter schema' => 'Modifier le schéma',
 	'Create schema' => 'Créer un schéma',

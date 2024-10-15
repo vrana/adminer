@@ -246,6 +246,7 @@ $translations = array(
 	'Search' => 'Sök',
 	'anywhere' => 'överallt',
 	'Search data in tables' => 'Sök data i tabeller',
+	'as a regular expression' => null,
 	'Sort' => 'Sortera',
 	'descending' => 'Fallande',
 	'Limit' => 'Begränsning',

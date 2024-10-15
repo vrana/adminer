@@ -226,6 +226,7 @@ $translations = array(
 	'Permanent login' => 'স্থায়ী লগইন',
 	'Databases have been dropped.' => 'ডাটাবেজসমূহ মুছে ফেলা হয়েছে।',
 	'Search data in tables' => 'টেবিলে তথ্য খুঁজুন',
+	'as a regular expression' => null,
 	'Schema' => 'স্কিমা',
 	'Alter schema' => 'স্কিমা পরিবর্তন করো',
 	'Create schema' => 'স্কিমা তৈরী করো',

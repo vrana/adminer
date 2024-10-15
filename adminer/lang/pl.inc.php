@@ -236,6 +236,7 @@ $translations = array(
 	'Search' => 'Szukaj',
 	'anywhere' => 'gdziekolwiek',
 	'Search data in tables' => 'Wyszukaj we wszystkich tabelach',
+	'as a regular expression' => null,
 	'Sort' => 'Sortuj',
 	'descending' => 'malejąco',
 	'Limit' => 'Limit',

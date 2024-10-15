@@ -253,6 +253,7 @@ $translations = array(
 	'Type has been created.' => 'S\'ha creat el tipus.',
 	'Alter type' => 'Modifica el tipus',
 	'Search data in tables' => 'Cerca dades en les taules',
+	'as a regular expression' => null,
 	'From server' => 'En el servidor',
 	'empty' => 'buit',
 	'now' => 'ara',

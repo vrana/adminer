@@ -226,6 +226,7 @@ $translations = array(
 	'Permanent login' => 'Login permanente',
 	'Databases have been dropped.' => 'A Base de dados foi apagada.',
 	'Search data in tables' => 'Buscar dados nas Tabelas',
+	'as a regular expression' => null,
 	'Schema' => 'Esquema',
 	'Alter schema' => 'Alterar esquema',
 	'Create schema' => 'Criar esquema',

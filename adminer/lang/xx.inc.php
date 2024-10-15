@@ -246,6 +246,7 @@ $translations = array(
 	'Search' => 'Xx',
 	'anywhere' => 'xx',
 	'Search data in tables' => 'Xx',
+	'as a regular expression' => 'xx',
 	'Sort' => 'Xx',
 	'descending' => 'xx',
 	'Limit' => 'Xx',

@@ -246,6 +246,7 @@ $translations = array(
 	'Search' => '搜尋',
 	'anywhere' => '任意位置',
 	'Search data in tables' => '在資料庫搜尋',
+	'as a regular expression' => null,
 	'Sort' => '排序',
 	'descending' => '降冪 (遞減)',
 	'Limit' => '限定',

@@ -222,6 +222,7 @@ $translations = array(
 	'Search' => 'Пошук',
 	'anywhere' => 'будь-де',
 	'Search data in tables' => 'Шукати дані в таблицях',
+	'as a regular expression' => null,
 	'Sort' => 'Сортувати',
 	'descending' => 'по спаданню',
 	'Limit' => 'Обмеження',

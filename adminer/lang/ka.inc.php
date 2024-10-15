@@ -222,6 +222,7 @@ $translations = array(
 	'Permanent login' => 'სისტემაში დარჩენა',
 	'Databases have been dropped.' => 'ბაზა წაიშალა.',
 	'Search data in tables' => 'ცხრილებში ძებნა',
+	'as a regular expression' => null,
 	'Schema' => 'სქემა',
 	'Alter schema' => 'სქემის შეცვლა',
 	'Create schema' => 'ახალი სქემა',

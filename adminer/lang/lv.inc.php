@@ -226,6 +226,7 @@ $translations = array(
 	'Permanent login' => 'Atcerēties mani',
 	'Databases have been dropped.' => 'Datubāzes dzēstas.',
 	'Search data in tables' => 'Meklēt tabulās',
+	'as a regular expression' => null,
 	'Schema' => 'Shēma',
 	'Alter schema' => 'Izmainīt shēmu',
 	'Create schema' => 'Jauna shēma',

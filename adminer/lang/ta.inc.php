@@ -226,6 +226,7 @@ $translations = array(
 	'Alter schema' => 'அமைப்புமுறையை மாற்று',
 	'Create schema' => 'அமைப்புமுறையை உருவாக்கு',
 	'Search data in tables' => 'த‌க‌வ‌லை அட்ட‌வ‌ணையில் தேடு',
+	'as a regular expression' => null,
 	'Sequences' => 'வ‌ரிசைமுறை',
 	'Create sequence' => 'வ‌ரிசைமுறையை உருவாக்கு',
 	'User types' => 'ப‌ய‌னாள‌ர் வ‌கைக‌ள்',

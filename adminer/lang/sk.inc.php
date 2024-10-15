@@ -226,6 +226,7 @@ $translations = array(
 	'Permanent login' => 'Trvalé prihlásenie',
 	'%d in total' => '%d celkom',
 	'Search data in tables' => 'Vyhľadať dáta v tabuľkách',
+	'as a regular expression' => 'ako regulárny výraz',
 	'Alter schema' => 'Pozmeniť schému',
 	'Create schema' => 'Vytvoriť schému',
 	'Schema has been dropped.' => 'Schéma bola odstránená.',

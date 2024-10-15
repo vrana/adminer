@@ -233,6 +233,7 @@ $translations = array(
 	'Search' => 'Αναζήτηση',
 	'anywhere' => 'παντού',
 	'Search data in tables' => 'Αναζήτηση δεδομένων στους πίνακες',
+	'as a regular expression' => null,
 	'Sort' => 'Ταξινόμηση',
 	'descending' => 'Φθίνουσα',
 	'Limit' => 'Όριο',

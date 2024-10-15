@@ -227,6 +227,7 @@ $translations = array(
 	'Permanent login' => '永続的にログイン',
 	'Databases have been dropped.' => 'データベースを削除しました',
 	'Search data in tables' => 'データを検索する',
+	'as a regular expression' => null,
 	'Schema' => 'スキーマ',
 	'Alter schema' => 'スキーマ変更',
 	'Create schema' => 'スキーマ追加',

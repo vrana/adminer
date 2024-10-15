@@ -245,6 +245,7 @@ $translations = array(
 	'Search' => 'Vyhledat',
 	'anywhere' => 'kdekoliv',
 	'Search data in tables' => 'Vyhledat data v tabulkách',
+	'as a regular expression' => 'jako regulární výraz',
 	'Sort' => 'Seřadit',
 	'descending' => 'sestupně',
 	'Limit' => 'Limit',

@@ -232,6 +232,7 @@ $translations = array(
 	'Search' => 'Търсене',
 	'anywhere' => 'навсякъде',
 	'Search data in tables' => 'Търсене на данни в таблиците',
+	'as a regular expression' => null,
 	'Sort' => 'Сортиране',
 	'descending' => 'низходящо',
 	'Limit' => 'Редове',

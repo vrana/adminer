@@ -237,6 +237,7 @@ $translations = array(
 	'Search' => 'Cari',
 	'anywhere' => 'di mana-mana',
 	'Search data in tables' => 'Cari data dalam jadual',
+	'as a regular expression' => null,
 	'Sort' => 'Susun',
 	'descending' => 'menurun',
 	'Limit' => 'Had',

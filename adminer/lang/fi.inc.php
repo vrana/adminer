@@ -233,6 +233,7 @@ $translations = array(
 	'Search' => 'Hae',
 	'anywhere' => 'kaikkialta',
 	'Search data in tables' => 'Hae dataa tauluista',
+	'as a regular expression' => null,
 	'Sort' => 'Lajittele',
 	'descending' => 'alenevasti',
 	'Limit' => 'Raja',

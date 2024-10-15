@@ -240,6 +240,7 @@ $translations = array(
 	'Search' => 'Ara',
 	'anywhere' => 'hiçbir yerde',
 	'Search data in tables' => 'Tablolarda veri ara',
+	'as a regular expression' => null,
 	'Sort' => 'Sırala',
 	'descending' => 'Azalan',
 	'Limit' => 'Limit',

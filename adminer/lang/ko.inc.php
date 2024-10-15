@@ -206,6 +206,7 @@ $translations = array(
 	'Schema has been dropped.' => '스키마를 삭제했습니다.',
 	'Schema' => '스키마',
 	'Search data in tables' => '테이블 내 데이터 검색',
+	'as a regular expression' => null,
 	'Search' => '검색',
 	'Select data' => '데이터를 선택하십시오.',
 	'Select database' => '데이터베이스를 선택하십시오.',

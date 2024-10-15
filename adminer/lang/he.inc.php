@@ -225,6 +225,7 @@ $translations = array(
 	'Databases have been dropped.' => 'מסד הנתונים הושלך',
 	'Database has been dropped.' => 'מסד הנתונים הושלך',
 	'Search data in tables' => 'חפש מידע בטבלאות',
+	'as a regular expression' => null,
 	'Schema' => 'סכמה',
 	'Alter schema' => 'שנה סכמה',
 	'Create schema' => 'צור סכמה',
