@@ -61,7 +61,7 @@ if ($adminer->homepage()) {
 				echo " <input type='submit' name='search' value='" . lang('Search') . "'>\n";
 				if ($adminer->operator_regexp !== null) {
 					echo "<p><label><input type='checkbox' name='regexp' value='1'" . (empty($_POST['regexp']) ? '' : ' checked') . '>' . lang('as a regular expression') . '</label>';
-					echo doc_link(['sql' => 'regexp.html', 'pgsql' => 'functions-matching.html#FUNCTIONS-POSIX-REGEXP']) . "</p>\n";
+					echo doc_link(['sql' => 'regexp.html', 'pgsql' => 'functions-matching.html#FUNCTIONS-POSIX-REGEXP', 'elastic' => "regexp-syntax.html"]) . "</p>\n";
 				}
 				echo "</div></fieldset>\n";
 				if ($_POST["search"] && $_POST["query"] != "") {
