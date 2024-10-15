@@ -163,7 +163,7 @@ if ($adminer->homepage()) {
 			echo "<h3 id='routines'>" . lang('Routines') . "</h3>\n";
 			$routines = routines();
 			if ($routines) {
-				echo "<table cellspacing='0'>\n";
+				echo "<table>\n";
 				echo '<thead><tr><th>' . lang('Name') . '<td>' . lang('Type') . '<td>' . lang('Return type') . "<td></thead>\n";
 				odd('');
 				foreach ($routines as $row) {
@@ -186,7 +186,7 @@ if ($adminer->homepage()) {
 			echo "<h3 id='sequences'>" . lang('Sequences') . "</h3>\n";
 			$sequences = get_vals("SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = current_schema() ORDER BY sequence_name");
 			if ($sequences) {
-				echo "<table cellspacing='0'>\n";
+				echo "<table>\n";
 				echo "<thead><tr><th>" . lang('Name') . "</thead>\n";
 				odd('');
 				foreach ($sequences as $val) {
@@ -201,7 +201,7 @@ if ($adminer->homepage()) {
 			echo "<h3 id='user-types'>" . lang('User types') . "</h3>\n";
 			$user_types = types();
 			if ($user_types) {
-				echo "<table cellspacing='0'>\n";
+				echo "<table>\n";
 				echo "<thead><tr><th>" . lang('Name') . "</thead>\n";
 				odd('');
 				foreach ($user_types as $val) {
@@ -216,7 +216,7 @@ if ($adminer->homepage()) {
 			echo "<h3 id='events'>" . lang('Events') . "</h3>\n";
 			$rows = get_rows("SHOW EVENTS");
 			if ($rows) {
-				echo "<table cellspacing='0'>\n";
+				echo "<table>\n";
 				echo "<thead><tr><th>" . lang('Name') . "<td>" . lang('Schedule') . "<td>" . lang('Start') . "<td>" . lang('End') . "<td></thead>\n";
 				foreach ($rows as $row) {
 					echo "<tr>";

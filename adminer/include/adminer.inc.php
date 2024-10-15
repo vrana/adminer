@@ -358,7 +358,7 @@ class Adminer {
 		echo "</p>";
 
 		if ($showList) {
-			echo "<table cellspacing='0'>\n";
+			echo "<table>\n";
 			echo "<thead><tr><th>" . lang('Partition') . "</th><td>" . lang('Values') . "</td></tr></thead>\n";
 
 			foreach ($partition_info["partition_names"] as $key => $name) {
@@ -374,7 +374,7 @@ class Adminer {
 	* @return null
 	*/
 	function tableIndexesPrint($indexes) {
-		echo "<table cellspacing='0'>\n";
+		echo "<table>\n";
 		echo "<thead><tr><th>" . lang('Type') . "</th><td>" . lang('Column (length)') . "</td></tr></thead>\n";
 
 		foreach ($indexes as $name => $index) {

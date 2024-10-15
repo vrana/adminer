@@ -148,7 +148,7 @@ if ($_POST) {
 
 <?php
 //! MAX_* limits, REQUIRE
-echo "<table cellspacing='0'>\n";
+echo "<table>\n";
 
 echo "<thead><tr><th colspan='2'>" . lang('Privileges') . doc_link(array('sql' => "grant.html#priv_level")) . "</th>";
 $i = 0;

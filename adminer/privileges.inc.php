@@ -14,7 +14,7 @@ echo "<form action=''><p>\n";
 hidden_fields_get();
 echo "<input type='hidden' name='db' value='" . h(DB) . "'>\n";
 echo ($grant ? "" : "<input type='hidden' name='grant' value=''>\n");
-echo "<table cellspacing='0'>\n";
+echo "<table>\n";
 echo "<thead><tr><th>" . lang('Username') . "<th>" . lang('Server') . "<th></thead>\n";
 
 while ($row = $result->fetch_assoc()) {

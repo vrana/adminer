@@ -13,7 +13,7 @@ class AdminerTableIndexesStructure {
 	* @return bool
 	*/
 	function tableIndexesPrint($indexes) {
-		echo "<table cellspacing='0'>\n";
+		echo "<table>\n";
 		echo "<thead><tr><th>" . lang('Name') . "<th>" . lang('Type') . "<th>" . lang('Columns') . "</thead>\n";
 		foreach ($indexes as $name => $index) {
 			echo "<tr><th>" . h($name) . "<td>" . $index['type'];

@@ -62,7 +62,7 @@ if (!extension_loaded("xdebug")) {
 	if (file_exists($coverage_filename)) {
 		// display list of files
 		$coverage = unserialize(file_get_contents($coverage_filename));
-		echo "<table border='1' cellspacing='0'>\n";
+		echo "<table>\n";
 		foreach (array_merge(glob("adminer/*.php"), glob("adminer/include/*.php"), glob("editor/*.php"), glob("editor/include/*.php")) as $filename) {
 			$cov = $coverage[realpath($filename)];
 			$ratio = 0;

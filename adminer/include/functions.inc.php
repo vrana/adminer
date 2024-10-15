@@ -1318,7 +1318,7 @@ function select_value($val, $link, $field, $text_length) {
 				. "<td>" . select_value($v, $link, $field, $text_length)
 			;
 		}
-		return "<table cellspacing='0'>$return</table>";
+		return "<table>$return</table>";
 	}
 	if (!$link) {
 		$link = $adminer->selectLink($val, $field);
