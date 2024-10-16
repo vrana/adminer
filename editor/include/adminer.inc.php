@@ -580,8 +580,11 @@ qsl('div').onclick = whisperClick;", "")
 		global $VERSION;
 		?>
 <h1>
-<?php echo $this->name(); ?> <span class="version"><?php echo $VERSION; ?></span>
-<a href="https://www.adminer.org/editor/#download"<?php echo target_blank(); ?> id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
+<?php echo $this->name(); ?>
+<span class="version">
+<?php echo $VERSION; ?>
+ <a href="https://www.adminer.org/editor/#download"<?php echo target_blank(); ?> id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
+</span>
 </h1>
 <?php
 		if ($missing == "auth") {
