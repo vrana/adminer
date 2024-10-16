@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
-error_reporting(6135); // errors and warnings
+include dirname(__FILE__) . "/adminer/include/errors.inc.php";
+
 unset($_COOKIE["adminer_lang"]);
 $_SESSION["lang"] = $_SERVER["argv"][1]; // Adminer functions read language from session
 if (isset($_SESSION["lang"])) {

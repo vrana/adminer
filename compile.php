@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 include dirname(__FILE__) . "/adminer/include/version.inc.php";
+include dirname(__FILE__) . "/adminer/include/errors.inc.php";
 include dirname(__FILE__) . "/externals/JsShrink/jsShrink.php";
 
 function add_apo_slashes($s) {
