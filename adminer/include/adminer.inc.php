@@ -1019,8 +1019,10 @@ class Adminer {
 <h1>
     <?php echo $this->name(); ?>
     <?php if ($missing != "auth"): ?>
-    <span class="version"><?php echo $VERSION; ?></span>
-    <a href="https://www.adminer.org/#download"<?php echo target_blank(); ?> id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
+	<span class="version">
+		<?php echo $VERSION; ?>
+		<a href="https://www.adminer.org/#download"<?php echo target_blank(); ?> id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
+	</span>
     <?php endif; ?>
 </h1>
 <?php
