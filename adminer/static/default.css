@@ -25,7 +25,7 @@ pre code { display: block; font-size: 100%; }
 pre, textarea { font: 110%/1.25 monospace; }
 pre.jush { background: #fff; }
 input, textarea, select { box-sizing: border-box; }
-input, select { vertical-align: middle; }
+input:not([type="radio"]), select { vertical-align: middle; }
 input[type="number"] { -moz-appearance: textfield; }
 input::-webkit-inner-spin-button { -webkit-appearance: none; }
 input.default { box-shadow: 1px 1px 1px #777; }
@@ -38,7 +38,8 @@ input::placeholder { color: #000; opacity: 0.4; }
 .version { color: #777; font-size: 62%; }
 .js .hidden, .nojs .jsonly { display: none; }
 .js .column { position: absolute; background: #ddf; padding: .27em 1ex .3em 0; margin-top: -.27em; }
-.nowrap td, .nowrap th, td.nowrap, p.nowrap { white-space: pre; }
+.nowrap { white-space: nowrap; }
+p.nowrap { white-space: pre; }
 .wrap td { white-space: normal; }
 .error { color: red; background: #fee; }
 .error b { background: #fff; font-weight: normal; }
