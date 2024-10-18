@@ -544,8 +544,8 @@ function selectSearchSearch() {
 
 // Sorting.
 (function() {
-	let placeholderRow, draggingRow, nextRow;
-	let startY, maxY;
+	let placeholderRow, nextRow, dragHelper;
+	let startY, minY, maxY;
 
 	/**
 	 * Initializes sortable list of DIV elements.
@@ -576,27 +576,52 @@ function selectSearchSearch() {
 			event.preventDefault();
 
 			const parent = row.parentNode;
-			startY = event.clientY - row.offsetTop;
-			maxY = parent.offsetHeight - row.offsetHeight;
+			startY = event.clientY - getOffsetTop(row);
+			minY = getOffsetTop(parent);
+			maxY = minY + parent.offsetHeight - row.offsetHeight;
 
 			placeholderRow = row.cloneNode(true);
 			placeholderRow.classList.add("placeholder");
-			placeholderRow.style.top = (event.clientY - startY) + "px";
 			parent.insertBefore(placeholderRow, row);
 
-			draggingRow = row;
-			draggingRow.classList.add("dragging");
-			parent.insertBefore(draggingRow, parent.firstChild);
+			nextRow = row.nextElementSibling;
 
-			nextRow = placeholderRow.nextElementSibling;
+			let top = event.clientY - startY;
+			let left = getOffsetLeft(row);
+			let width = row.getBoundingClientRect().width;
 
-			updateSorting(event);
+			if (row.tagName === "TR") {
+				const firstChild = row.firstElementChild;
+				const borderWidth = (firstChild.offsetWidth - firstChild.clientWidth) / 2;
+				const borderHeight = (firstChild.offsetHeight - firstChild.clientHeight) / 2;
+
+				minY -= borderHeight;
+				maxY -= borderHeight;
+				top -= borderHeight;
+				left -= borderWidth;
+				width += 2 * borderWidth;
+
+				for (const child of row.children) {
+					child.style.width = child.getBoundingClientRect().width + "px";
+				}
+
+				dragHelper = document.createElement("table");
+				dragHelper.appendChild(row);
+			} else {
+				dragHelper = row;
+			}
+
+			dragHelper.style.top = `${top}px`;
+			dragHelper.style.left = `${left}px`;
+			dragHelper.style.width = `${width}px`;
+			dragHelper.classList.add("dragging");
+			document.body.appendChild(dragHelper);
 
 			window.addEventListener("mousemove", updateSorting);
 
 			window.addEventListener("mouseup", () => {
-				draggingRow.classList.remove("dragging");
-				parent.insertBefore(draggingRow, placeholderRow);
+				dragHelper.classList.remove("dragging");
+				parent.insertBefore(dragHelper.tagName === "TABLE" ? dragHelper.firstChild : dragHelper, placeholderRow);
 				placeholderRow.remove();
 
 				window.removeEventListener("mousemove", updateSorting);
@@ -605,8 +630,11 @@ function selectSearchSearch() {
 	};
 
 	function updateSorting(event) {
-		let top = Math.min(Math.max(event.clientY - startY, 0), maxY);
-		draggingRow.style.top = top + "px";
+		let top = Math.min(Math.max(event.clientY - startY, minY), maxY);
+		dragHelper.style.top = `${top}px`;
+
+		const parent = placeholderRow.parentNode;
+		top = top - minY + parent.offsetTop;
 
 		let sibling;
 		if (top > placeholderRow.offsetTop + placeholderRow.offsetHeight / 2) {
@@ -1147,6 +1175,18 @@ function cloneNode(el) {
 	}
 	setupSubmitHighlight(el2);
 	return el2;
+}
+
+function getOffsetTop(element) {
+	let box = element.getBoundingClientRect();
+
+	return box.top + window.scrollY;
+}
+
+function getOffsetLeft(element) {
+	let box = element.getBoundingClientRect();
+
+	return box.left + window.scrollX;
 }
 
 oninput = function (event) {

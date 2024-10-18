@@ -253,10 +253,6 @@ function editingClick(event) {
 		var name = el.name;
 		if (/^add\[/.test(name)) {
 			editingAddRow.call(el, 1);
-		} else if (/^up\[/.test(name)) {
-			editingMoveRow.call(el, 1);
-		} else if (/^down\[/.test(name)) {
-			editingMoveRow.call(el);
 		} else if (/^drop_col\[/.test(name)) {
 			editingRemoveRow.call(el, 'fields\$1[field]');
 		} else {
@@ -353,7 +349,10 @@ function editingAddRow(focus) {
 		}
 	}
 	tags[0].oninput = editingNameChange;
+
+	initSortableRow(row2);
 	row.parentNode.insertBefore(row2, row.nextSibling);
+
 	if (focus) {
 		input.oninput = editingNameChange;
 		input.focus();
@@ -372,22 +371,6 @@ function editingRemoveRow(name) {
 	var field = formField(this.form, this.name.replace(/[^\[]+(.+)/, name));
 	field.parentNode.removeChild(field);
 	parentTag(this, 'tr').style.display = 'none';
-	return false;
-}
-
-/** Move table row for field
-* @param [boolean]
-* @return boolean false for success
-* @this HTMLInputElement
-*/
-function editingMoveRow(up){
-	var row = parentTag(this, 'tr');
-	if (!('nextElementSibling' in row)) {
-		return true;
-	}
-	row.parentNode.insertBefore(row, up
-		? row.previousElementSibling
-		: row.nextElementSibling ? row.nextElementSibling.nextElementSibling : row.parentNode.firstChild);
 	return false;
 }
 

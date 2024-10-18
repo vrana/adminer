@@ -250,11 +250,11 @@ function confirm($message = "", $selector = "qsl('input')") {
 	return script("$selector.onclick = function () { return confirm('" . ($message ? js_escape($message) : lang('Are you sure?')) . "'); };", "");
 }
 
-/** Print header for hidden fieldset (close by </div></fieldset>)
-* @param string
-* @param string
-* @param bool
-*/
+/**
+ * Prints header for hidden fieldset (close by </div></fieldset>)
+ * @param $id string
+ * @param $legend string
+ */
 function print_fieldset($id, $legend, $visible = false, $sortable = false) {
 	echo "<fieldset><legend>";
 	echo "<a href='#fieldset-$id'>$legend</a>";

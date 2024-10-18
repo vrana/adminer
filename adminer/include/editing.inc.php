@@ -288,7 +288,14 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", $foreign
 	?>
 
 <thead><tr>
-	<?php if ($type == "PROCEDURE") { ?><td></td><?php } ?>
+	<?php
+		if (support("move_col")) {
+			echo "<td class='jsonly'></td>";
+		}
+		if ($type == "PROCEDURE") {
+			echo "<td></td>";
+		}
+	?>
 	<th id="label-name"><?php echo ($type == "TABLE" ? lang('Column name') : lang('Parameter name')); ?></th>
 	<td id="label-type"><?php echo lang('Type'); ?><textarea id="enum-edit" rows="4" cols="12" wrap="off" style="display: none;"></textarea><?php echo script("qs('#enum-edit').onblur = editingLengthBlur;"); ?></td>
 	<td id="label-length"><?php echo lang('Length'); ?></td>
@@ -308,9 +315,9 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", $foreign
 	<?php } ?>
 	<td><?php echo "<input type='image' class='icon' name='add[" . (support("move_col") ? 0 : count($fields)) . "]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>" . script("row_count = " . count($fields) . ";"); ?></td>
 </tr></thead>
-<tbody>
 <?php
-	echo script("mixin(qsl('tbody'), {onclick: editingClick, onkeydown: editingKeydown, oninput: editingInput});");
+	echo "<tbody>\n";
+
 	foreach ($fields as $i => $field) {
 		$i++;
 		$orig = $field[($_POST ? "orig" : "field")];
@@ -319,6 +326,9 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", $foreign
 		$style = $display ? "" : "style='display: none;'";
 		echo "<tr $style>\n";
 
+		if (support("move_col")) {
+			echo "<th class='handle jsonly'></th>";
+		}
 		if ($type == "PROCEDURE") {
 			echo "<td>", html_select("fields[$i][inout]", explode("|", $inout), $field["inout"]), "</td>\n";
 		}
@@ -353,14 +363,17 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", $foreign
 		echo "<td>";
 		if (support("move_col")) {
 			echo "<input type='image' class='icon' name='add[$i]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'> ",
-				"<input type='image' class='icon' name='up[$i]' src='../adminer/static/up.gif' alt='↑' title='" . lang('Move up') . "'> ",
-				"<input type='image' class='icon' name='down[$i]' src='../adminer/static/down.gif' alt='↓' title='" . lang('Move down') . "'> ";
+				"<input type='image' class='icon hidden' name='up[$i]' src='../adminer/static/up.gif' alt='↑' title='" . lang('Move up') . "'> ",
+				"<input type='image' class='icon hidden' name='down[$i]' src='../adminer/static/down.gif' alt='↓' title='" . lang('Move down') . "'> ";
 		}
 		if ($orig == "" || support("drop_col")) {
 			echo "<input type='image' class='icon' name='drop_col[$i]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "'>";
 		}
 		echo "</td>\n</tr>\n";
 	}
+
+	echo "</tbody>";
+	echo script("mixin(qs('#edit-fields tbody'), {onclick: editingClick, onkeydown: editingKeydown, oninput: editingInput}); initSortable('#edit-fields tbody');");
 }
 
 /** Move fields up and down or add field
