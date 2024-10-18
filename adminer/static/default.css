@@ -26,6 +26,8 @@ pre, textarea { font: 110%/1.25 monospace; }
 pre.jush { background: #fff; }
 input, textarea, select { box-sizing: border-box; }
 input, select { vertical-align: middle; }
+input[type="number"] { -moz-appearance: textfield; }
+input::-webkit-inner-spin-button { -webkit-appearance: none; }
 input.default { box-shadow: 1px 1px 1px #777; }
 input.required { box-shadow: 1px 1px 1px red; }
 input.maxlength { box-shadow: 1px 1px 1px red; }
