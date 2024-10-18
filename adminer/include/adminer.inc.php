@@ -249,7 +249,7 @@ class Adminer {
 
 		if (!$failed && ($warnings = $driver->warnings())) {
 			$id = "warnings";
-			$result = ($supportSql ? "," : "")
+			$result .= ($supportSql ? "," : "")
                 . " <a href='#$id'>" . lang('Warnings') . "</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "")
                 . "</p>\n"
                 . "<div id='$id' class='hidden'>\n$warnings</div>\n";
