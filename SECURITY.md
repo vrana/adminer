@@ -1,11 +1,11 @@
-# Security Policy
+# Reporting security issues
 
-## Supported Versions
+To report a security issue, please [open a draft security advisory](https://github.com/pematon/adminer/security/advisories).
 
-I support only the last published version and the last development version (last commit).
+Security issues are handled with top priority. Once acknowledged, a fix should be available and new version released
+as soon as possible. Security advisories will be made public after a fix and new version have been released,
+or the advisory has been declined.
 
-## Reporting a Vulnerability
+## Supported versions
 
-To report a vulnerability, create a private bug at https://sourceforge.net/p/adminer/bugs-and-features/new/?private=1.
-
-I handle security issues with top priority. If you don't hear from me in a week then please ping the bug. Once I accept the bug, the fix should be available and new version released within days. I will mark the bug as public after releasing a new version or declining the bug.
+Only the last published version and the last development version (last commit) are supported.
