@@ -250,17 +250,17 @@ class AdminerPlugin extends Adminer {
 		return $this->_applyPlugin(__FUNCTION__, $args);
 	}
 
-	function selectColumnsPrint(array $select, array $columns) {
+	function selectColumnsPrint($select,$columns) {
 		$args = func_get_args();
 		return $this->_applyPlugin(__FUNCTION__, $args);
 	}
 
-	function selectSearchPrint(array $where, array $columns, array $indexes) {
+	function selectSearchPrint($where, $columns, $indexes) {
 		$args = func_get_args();
 		return $this->_applyPlugin(__FUNCTION__, $args);
 	}
 
-	function selectOrderPrint(array $order, array $columns, array $indexes) {
+	function selectOrderPrint($order, $columns, $indexes) {
 		$args = func_get_args();
 		return $this->_applyPlugin(__FUNCTION__, $args);
 	}
@@ -395,7 +395,7 @@ class AdminerPlugin extends Adminer {
 		return $this->_applyPlugin(__FUNCTION__, $args);
 	}
 
-	function tablesPrint(array $tables) {
+	function tablesPrint($tables) {
 		$args = func_get_args();
 		return $this->_applyPlugin(__FUNCTION__, $args);
 	}
