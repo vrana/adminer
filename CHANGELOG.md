@@ -1,5 +1,34 @@
 # Changelog
 
+## Adminer 4.10 (2024-10-22)
+
+### UI changes and improvements
+- Add drag-n-drop moving of rows in table selection filter
+- Add drag-n-drop moving of rows in table editing
+- Add removal buttons to table selection filter
+- Integrate tables-filter plugin into the base code
+- Full width design for database select box
+- Add 'Home' to breadcrumb navigation
+- Print username next to the logout button
+- Show partitioning info in table structure page
+- Show second link for editing a table under the table view
+- Add table head to the list of indexes
+- Hide edited value if selected function will not use it
+- Hide arrow buttons in number input fields
+- Do not display empty action links in main menu
+- Remove deprecated HTML table parameters
+- Remove option to hide default values
+
+### Functional enhancements
+- Enable regular expressions when searching data in all tables
+- Elasticsearch: New condition operators as the combination of query type and match type
+- Elasticsearch: Proper formatting of boolean values
+- Plugin to auto-include adminer.js when present
+- Check new version against GitHub pages
+
+### Bugfixes
+- Fix missing SQL statement if warnings are printed (regression from 4.9)
+
 ## Adminer 4.9.4 (2024-10-09)
 - Fix the width of inline edit field
 - Unify displaying of 'New item' action based on privileges
