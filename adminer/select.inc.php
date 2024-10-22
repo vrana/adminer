@@ -353,10 +353,10 @@ if (!$columns && support("table")) {
 						}
 						echo "<span class='column hidden'>";
 						if ($sortable) {
-							echo "<a href='" . h($href . $desc) . "' title='" . lang('descending') . "' class='text'> ↓</a>";
+							echo "<a href='" . h($href . $desc) . "' title='" . lang('descending') . "' class='text'> ↓</a>";
 						}
 						if (!$val["fun"] && isset($field["privileges"]["where"])) {
-							echo '<a href="#fieldset-search" title="' . lang('Search') . '" class="text jsonly"> =</a>';
+							echo '<a href="#fieldset-search" title="' . lang('Search') . '" class="text jsonly"> =</a>';
 							echo script("qsl('a').onclick = partial(selectSearch, '" . js_escape($key) . "');");
 						}
 						echo "</span>";

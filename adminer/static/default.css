@@ -1,7 +1,7 @@
 /** @author Ondrej Valka, http://valka.info */
 body { color: #000; background: #fff; font: 90%/1.25 Verdana, Arial, Helvetica, sans-serif; margin: 0; width: -moz-fit-content; width: fit-content; }
 a { color: blue; text-decoration: none; }
-a:hover { color: red; text-decoration: underline; }
+a:link:hover { color: red; text-decoration: underline; }
 a.text:hover { text-decoration: none; }
 a.jush-help:hover { color: inherit; }
 h1 { font-size: 150%; margin: 0; padding: .8em 1em; border-bottom: 1px solid #999; font-weight: normal; color: #777; background: #eee; }
@@ -25,7 +25,7 @@ pre code { display: block; font-size: 100%; }
 pre, textarea { font: 110%/1.25 monospace; }
 pre.jush { background: #fff; }
 input, textarea, select { box-sizing: border-box; }
-input:not([type="radio"]), select { vertical-align: middle; }
+input[type="image"] { vertical-align: middle; margin-top: -3px; }
 input[type="number"] { -moz-appearance: textfield; }
 input::-webkit-inner-spin-button { -webkit-appearance: none; }
 input.default { box-shadow: 1px 1px 1px #777; }
@@ -76,7 +76,8 @@ p.nowrap { white-space: pre; }
 .handle:before { content: "="; display: inline-block; width: 18px; height: 18px; overflow: hidden; font-size: 130%; text-align: center; line-height: 16px; opacity: 0.2; }
 span.handle { display: inline-block; width: 18px; height: 18px; padding-right: .3em; }
 th.handle:before { vertical-align: middle; }
-.no-sort .handle { cursor: default; opacity: 0; }
+.no-sort .handle { cursor: default; }
+.no-sort .handle:before { content: "•"; font-size: 100%; }
 .placeholder { opacity: 0; }
 .dragging { position: absolute; margin: 0; background: #fff; }
 .dragging * { cursor: grabbing; }
