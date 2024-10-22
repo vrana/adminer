@@ -1,3 +1,7 @@
+Adminer 4.10.0:
+Print username next to the logout button
+Do not display empty action links in main menu
+
 Adminer 4.9.4:
 Unify displaying of 'New item' action based on privileges
 Firefox: Fix opening a database to the new browser's tab with Ctrl+click
