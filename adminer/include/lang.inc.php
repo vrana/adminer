@@ -87,11 +87,11 @@ function lang($idf, $number = null) {
 
 function switch_lang() {
 	global $LANG, $langs;
-	echo "<form action='' method='post'>\n<div id='lang'>";
+	echo "<div id='lang'><form action='' method='post'>\n";
 	echo lang('Language') . ": " . html_select("lang", $langs, $LANG, "this.form.submit();");
 	echo " <input type='submit' value='" . lang('Use') . "' class='hidden'>\n";
 	echo "<input type='hidden' name='token' value='" . get_token() . "'>\n"; // $token may be empty in auth.inc.php
-	echo "</div>\n</form>\n";
+	echo "</form></div>\n";
 }
 
 if (isset($_POST["lang"]) && verify_token()) { // $error not yet available

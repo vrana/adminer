@@ -69,7 +69,7 @@ p.nowrap { white-space: pre; }
 .footer > div { background: #fff; padding: 0 0 .5em; }
 .footer fieldset { margin-top: 0; }
 .links a { white-space: nowrap; margin-right: 20px; }
-.logout { margin-top: .5em; position: absolute; top: 0; right: 0; }
+.logout { margin: .5em 20px 0 0; position: absolute; top: 0; right: 0; }
 .loadmore { margin-left: 1ex; }
 .tables-filter { padding: .8em 1em 0; }
 .handle { cursor: grab; vertical-align: middle; }

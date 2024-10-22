@@ -187,29 +187,36 @@ function page_messages($error) {
 
 /**
  * Prints HTML footer.
+ *
  * @param $missing string "auth", "db", "ns"
  */
 function page_footer($missing = "")
 {
 	global $adminer, $token;
+
+	echo "</div>"; // #content
+
+	echo "<div id='footer'>\n";
+	switch_lang();
+
+	if ($missing != "auth") {
 	?>
-</div>
 
-<?php switch_lang(); ?>
-<?php if ($missing != "auth") { ?>
-<form action="" method="post">
-	<p class="logout">
-		<?php echo h($_GET["username"]); ?>
-		<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" id="logout">
-		<input type="hidden" name="token" value="<?php echo $token; ?>">
-	</p>
-</form>
-<?php } ?>
-
-<div id="menu">
-<?php $adminer->navigation($missing); ?>
-</div>
+	<div class="logout">
+		<form action="" method="post">
+			<?php echo h($_GET["username"]); ?>
+			<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" id="logout">
+			<input type="hidden" name="token" value="<?php echo $token; ?>">
+		</form>
+	</div>
 
 <?php
+	}
+	echo "</div>\n";
+
+	echo "<div id='menu'>\n";
+	$adminer->navigation($missing);
+	echo "</div>\n";
+
 	echo script("setupSubmitHighlight(document);");
 }
