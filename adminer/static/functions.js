@@ -621,6 +621,10 @@ function selectSearchSearch() {
 
 			window.addEventListener("mouseup", () => {
 				dragHelper.classList.remove("dragging");
+				dragHelper.style.top = null;
+				dragHelper.style.left = null;
+				dragHelper.style.width = null;
+
 				parent.insertBefore(dragHelper.tagName === "TABLE" ? dragHelper.firstChild : dragHelper, placeholderRow);
 				placeholderRow.remove();
 
