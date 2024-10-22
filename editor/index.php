@@ -1,11 +1,14 @@
 <?php
-/** Adminer Editor - Compact database editor
-* @link https://www.adminer.org/
-* @author Jakub Vrana, https://www.vrana.cz/
-* @copyright 2009 Jakub Vrana
-* @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
-* @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
-*/
+/**
+ * Adminer Editor - Compact database editor for end-users
+ *
+ * @link https://github.com/pematon/adminer
+ * @author Jakub Vrana (https://www.vrana.cz/)
+ * @author Peter Knut
+ * @copyright 2009-2021 Jakub Vrana, 2024 Peter Knut
+ * @license Apache License, Version 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
+ * @license GNU General Public License, version 2 (https://www.gnu.org/licenses/gpl-2.0.html)
+ */
 
 include "../adminer/include/bootstrap.inc.php";
 $drivers[DRIVER] = lang('Login');
