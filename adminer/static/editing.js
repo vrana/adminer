@@ -16,17 +16,22 @@ function bodyLoad(version, maria) {
 					if (maria) {
 						for (var i = 1; i < obj.length; i++) {
 							obj[i] = obj[i]
-								.replace(/\.html/, '/')
-								.replace(/-type-syntax/, '-data-types')
+								.replace('.html', '/')
+								.replace('-type-syntax', '-data-types')
 								.replace(/numeric-(data-types)/, '$1-$&')
-								.replace(/#statvar_.*/, '#$$1')
+								.replace(/replication-options-(master|binary-log)\//, 'replication-and-binary-log-system-variables/')
+								.replace('server-options/', 'server-system-variables/')
+								.replace('innodb-parameters/', 'innodb-system-variables/')
+								.replace(/#(statvar|sysvar|option_mysqld)_(.*)/, '#$2')
+								.replace(/#sysvar_(.*)/, '#$1')
 							;
 						}
 					}
 				}
-				obj[key] = (maria ? obj[key].replace(/dev\.mysql\.com\/doc\/mysql\/en\//, 'mariadb.com/kb/en/library/') : obj[key]) // MariaDB
-					.replace(/\/doc\/mysql/, '/doc/refman/' + version) // MySQL
-					.replace(/\/docs\/current/, '/docs/' + version) // PostgreSQL
+
+				obj[key] = (maria ? obj[key].replace('dev.mysql.com/doc/mysql/en/', 'mariadb.com/kb/en/') : obj[key]) // MariaDB
+					.replace('/doc/mysql/', '/doc/refman/' + version) // MySQL
+					.replace('/docs/current/', '/docs/' + version) // PostgreSQL
 				;
 			}
 		}
