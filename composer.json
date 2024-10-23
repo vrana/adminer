@@ -29,7 +29,7 @@
         "php": "5.6 - 8.3",
         "ext-pdo": "*",
         "ext-json": "*",
-        "vrana/jush": "@dev",
+        "vrana/jush": "2.0.*",
         "vrana/jsshrink": "@dev"
     },
     "suggest": {
@@ -57,7 +57,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/vrana/jush.git"
+            "url": "https://github.com/pematon/jush.git"
         },
         {
             "type": "vcs",
