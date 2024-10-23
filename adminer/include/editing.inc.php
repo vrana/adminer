@@ -621,7 +621,7 @@ function doc_link(array $paths, $text = "<sup>?</sup>") {
 	];
 
 	if (preg_match('~MariaDB~', $server_info)) {
-		$urls['sql'] = "https://mariadb.com/kb/en/library/";
+		$urls['sql'] = "https://mariadb.com/kb/en/";
 		$paths['sql'] = (isset($paths['mariadb']) ? $paths['mariadb'] : str_replace(".html", "/", $paths['sql']));
 	}
 
