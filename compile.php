@@ -439,13 +439,14 @@ if ($_SESSION["lang"]) {
 	$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
 	$file = str_replace('<?php echo $LANG; ?>', $_SESSION["lang"], $file);
 }
-$file = str_replace('<?php echo script_src("static/editing.js"); ?>' . "\n", "", $file);
+$file = str_replace('<?php echo script_src("static/editing.js?" . filemtime("../adminer/static/editing.js")); ?>' . "\n", "", $file);
 $file = preg_replace('~\s+echo script_src\("\.\./vendor/vrana/jush/modules/jush-(textarea|txt|js|\$jush)\.js"\);~', '', $file);
 $file = str_replace('<link rel="stylesheet" type="text/css" href="../vendor/vrana/jush/jush.css">' . "\n", "", $file);
 $file = preg_replace_callback("~compile_file\\('([^']+)'(?:, '([^']*)')?\\)~", 'compile_file', $file); // integrate static files
 $replace = 'preg_replace("~\\\\\\\\?.*~", "", ME) . "?file=\1&version=' . substr(md5(microtime()), 0, 8) . '"';
-$file = preg_replace('~\.\./adminer/static/(default\.css|favicon\.ico)~', '<?php echo h(' . $replace . '); ?>', $file);
-$file = preg_replace('~"\.\./adminer/static/(functions\.js)"~', $replace, $file);
+$file = preg_replace('~\.\./adminer/static/(favicon\.ico)~', '<?php echo h(' . $replace . '); ?>', $file);
+$file = preg_replace('~\.\./adminer/static/(default\.css)\?.*default.css"\);\s+\?>~', '<?php echo h(' . $replace . '); ?>', $file);
+$file = preg_replace('~"\.\./adminer/static/(functions\.js)\?".*functions.js"\)~', $replace, $file);
 $file = preg_replace('~\.\./adminer/static/([^\'"]*)~', '" . h(' . $replace . ') . "', $file);
 $file = preg_replace('~"\.\./vendor/vrana/jush/modules/(jush\.js)"~', $replace, $file);
 $file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
