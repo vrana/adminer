@@ -572,69 +572,69 @@ function selectSearchSearch() {
 		row.classList.remove("no-sort");
 
 		const handle = qs(".handle", row);
-		handle.addEventListener("mousedown", (event) => {
-			event.preventDefault();
-
-			const parent = row.parentNode;
-			startY = event.clientY - getOffsetTop(row);
-			minY = getOffsetTop(parent);
-			maxY = minY + parent.offsetHeight - row.offsetHeight;
-
-			placeholderRow = row.cloneNode(true);
-			placeholderRow.classList.add("placeholder");
-			parent.insertBefore(placeholderRow, row);
-
-			nextRow = row.nextElementSibling;
-
-			let top = event.clientY - startY;
-			let left = getOffsetLeft(row);
-			let width = row.getBoundingClientRect().width;
-
-			if (row.tagName === "TR") {
-				const firstChild = row.firstElementChild;
-				const borderWidth = (firstChild.offsetWidth - firstChild.clientWidth) / 2;
-				const borderHeight = (firstChild.offsetHeight - firstChild.clientHeight) / 2;
-
-				minY -= borderHeight;
-				maxY -= borderHeight;
-				top -= borderHeight;
-				left -= borderWidth;
-				width += 2 * borderWidth;
-
-				for (const child of row.children) {
-					child.style.width = child.getBoundingClientRect().width + "px";
-				}
-
-				dragHelper = document.createElement("table");
-				dragHelper.appendChild(row);
-			} else {
-				dragHelper = row;
-			}
-
-			dragHelper.style.top = `${top}px`;
-			dragHelper.style.left = `${left}px`;
-			dragHelper.style.width = `${width}px`;
-			dragHelper.classList.add("dragging");
-			document.body.appendChild(dragHelper);
-
-			window.addEventListener("mousemove", updateSorting);
-
-			window.addEventListener("mouseup", () => {
-				dragHelper.classList.remove("dragging");
-				dragHelper.style.top = null;
-				dragHelper.style.left = null;
-				dragHelper.style.width = null;
-
-				parent.insertBefore(dragHelper.tagName === "TABLE" ? dragHelper.firstChild : dragHelper, placeholderRow);
-				placeholderRow.remove();
-
-				window.removeEventListener("mousemove", updateSorting);
-			}, { once: true });
-		});
+		handle.addEventListener("mousedown", (event) => { startSorting(row, event) });
+		handle.addEventListener("touchstart", (event) => { startSorting(row, event) });
 	};
 
+	function startSorting(row, event) {
+		event.preventDefault();
+
+		const pointerY = getPointerY(event);
+
+		const parent = row.parentNode;
+		startY = pointerY - getOffsetTop(row);
+		minY = getOffsetTop(parent);
+		maxY = minY + parent.offsetHeight - row.offsetHeight;
+
+		placeholderRow = row.cloneNode(true);
+		placeholderRow.classList.add("placeholder");
+		parent.insertBefore(placeholderRow, row);
+
+		nextRow = row.nextElementSibling;
+
+		let top = pointerY - startY;
+		let left = getOffsetLeft(row);
+		let width = row.getBoundingClientRect().width;
+
+		if (row.tagName === "TR") {
+			const firstChild = row.firstElementChild;
+			const borderWidth = (firstChild.offsetWidth - firstChild.clientWidth) / 2;
+			const borderHeight = (firstChild.offsetHeight - firstChild.clientHeight) / 2;
+
+			minY -= borderHeight;
+			maxY -= borderHeight;
+			top -= borderHeight;
+			left -= borderWidth;
+			width += 2 * borderWidth;
+
+			for (const child of row.children) {
+				child.style.width = child.getBoundingClientRect().width + "px";
+			}
+
+			dragHelper = document.createElement("table");
+			dragHelper.appendChild(row);
+		} else {
+			dragHelper = row;
+		}
+
+		dragHelper.style.top = `${top}px`;
+		dragHelper.style.left = `${left}px`;
+		dragHelper.style.width = `${width}px`;
+		dragHelper.classList.add("dragging");
+		document.body.appendChild(dragHelper);
+
+		window.addEventListener("mousemove", updateSorting);
+		window.addEventListener("touchmove", updateSorting);
+
+		window.addEventListener("mouseup", finishSorting);
+		window.addEventListener("touchend", finishSorting);
+		window.addEventListener("touchcancel", finishSorting);
+	}
+
 	function updateSorting(event) {
-		let top = Math.min(Math.max(event.clientY - startY, minY), maxY);
+		const pointerY = getPointerY(event);
+
+		let top = Math.min(Math.max(pointerY - startY, minY), maxY);
 		dragHelper.style.top = `${top}px`;
 
 		const parent = placeholderRow.parentNode;
@@ -658,6 +658,32 @@ function selectSearchSearch() {
 			} else {
 				parent.appendChild(placeholderRow);
 			}
+		}
+	}
+
+	function finishSorting() {
+		dragHelper.classList.remove("dragging");
+		dragHelper.style.top = null;
+		dragHelper.style.left = null;
+		dragHelper.style.width = null;
+
+		placeholderRow.parentNode.insertBefore(dragHelper.tagName === "TABLE" ? dragHelper.firstChild : dragHelper, placeholderRow);
+		placeholderRow.remove();
+
+		window.removeEventListener("mousemove", updateSorting);
+		window.removeEventListener("touchmove", updateSorting);
+
+		window.removeEventListener("mouseup", finishSorting);
+		window.removeEventListener("touchend", finishSorting);
+		window.removeEventListener("touchcancel", finishSorting);
+	}
+
+	function getPointerY(event) {
+		if (event.type.includes("touch")) {
+			const touch = event.touches[0] || event.changedTouches[0];
+			return touch.clientY;
+		} else {
+			return event.clientY;
 		}
 	}
 })();
