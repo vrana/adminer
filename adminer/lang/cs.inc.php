@@ -256,8 +256,8 @@ $translations = array(
 	'%d row(s)' => array('%d řádek', '%d řádky', '%d řádků'),
 	'Page' => 'Stránka',
 	'last' => 'poslední',
-	'Load more data' => 'Nahrát další data',
-	'Loading' => 'Nahrává se',
+	'Load more data' => 'Načíst další data',
+	'Loading' => 'Načítá se',
 	'Whole result' => 'Celý výsledek',
 	'%d byte(s)' => array('%d bajt', '%d bajty', '%d bajtů'),
 	
