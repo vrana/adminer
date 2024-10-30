@@ -47,7 +47,28 @@ if ($tables_views && !$error && !$_POST["search"]) {
 page_header(($_GET["ns"] == "" ? lang('Database') . ": " . h(DB) : lang('Schema') . ": " . h($_GET["ns"])), $error, true);
 
 if ($adminer->homepage()) {
-	if ($_GET["ns"] !== "") {
+	if ($_GET["ns"] === "") {
+		echo "<h3 id='schemas'>" . lang('Schemas') . "</h3>\n";
+		$schemas = schemas();
+		if (!$schemas) {
+			echo "<p class='message'>" . lang('No schemas.') . "\n";
+		} else {
+			// TODO: Checkboxes for batch dropping of schemas.
+			echo "<div class='scrollable'>\n",
+				"<table class='nowrap'>\n",
+				'<thead><tr class="wrap">',
+				'<th>', lang('Schema'), "</th>",
+				'</tr></thead>';
+
+			foreach ($schemas as $name) {
+				echo "<tr", odd(), ">",
+					"<th><a href='", h(ME), "ns=" . urlencode($name), "' title='", lang('Show schema'), "'>" . h($name) . "</a></th>",
+					"</tr>";
+			}
+
+			echo '</table></div>';
+		}
+	} else {
 		echo "<h3 id='tables-views'>" . lang('Tables and views') . "</h3>\n";
 		$tables_list = tables_list();
 		if (!$tables_list) {
@@ -186,12 +207,16 @@ if ($adminer->homepage()) {
 			echo "<h3 id='sequences'>" . lang('Sequences') . "</h3>\n";
 			$sequences = get_vals("SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = current_schema() ORDER BY sequence_name");
 			if ($sequences) {
-				echo "<table>\n";
-				echo "<thead><tr><th>" . lang('Name') . "</thead>\n";
+				echo "<table>\n",
+					"<thead><tr><th>", lang('Name'), "</th><td></td></tr></thead>\n";
+
 				odd('');
 				foreach ($sequences as $val) {
-					echo "<tr" . odd() . "><th><a href='" . h(ME) . "sequence=" . urlencode($val) . "'>" . h($val) . "</a>\n";
+					echo "<tr", odd(), ">",
+						"<th>", h($val), "</th>",
+						"<td><a href='", h(ME), "sequence=", urlencode($val), "'>", lang('Alter'), "</a></td>\n";
 				}
+
 				echo "</table>\n";
 			}
 			echo "<p class='links'><a href='" . h(ME) . "sequence='>" . lang('Create sequence') . "</a>\n";
@@ -201,12 +226,16 @@ if ($adminer->homepage()) {
 			echo "<h3 id='user-types'>" . lang('User types') . "</h3>\n";
 			$user_types = types();
 			if ($user_types) {
-				echo "<table>\n";
-				echo "<thead><tr><th>" . lang('Name') . "</thead>\n";
+				echo "<table>\n",
+					"<thead><tr><th>", lang('Name'), "</th><td></td></tr></thead>\n";
+
 				odd('');
 				foreach ($user_types as $val) {
-					echo "<tr" . odd() . "><th><a href='" . h(ME) . "type=" . urlencode($val) . "'>" . h($val) . "</a>\n";
+					echo "<tr", odd(), ">",
+						"<th>", h($val), "</th>",
+						"<td><a href='", h(ME), "type=", urlencode($val), "'>", lang('Alter'), "</a></td>\n";
 				}
+
 				echo "</table>\n";
 			}
 			echo "<p class='links'><a href='" . h(ME) . "type='>" . lang('Create type') . "</a>\n";
