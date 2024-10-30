@@ -1,5 +1,18 @@
 # Changelog
 
+## Adminer 4.11 (2024-10-30)
+- Support drag-n-drop moving on touch screens
+- Fix drag-n-drop moving of function parameters
+- Update project information in comments
+- Update CS and SK translations
+- Show help popup after a short delay
+- PostgreSQL: Show list of schemas in database, unify lists of sequences and user types
+- MariaDB: Fix several links to documentation pages
+- MySQL: Fix highlighting current table in menu on macOS
+- MS SQL: Prefix Unicode strings with 'N' so they are treated correctly
+- Fix printing error message while validating server URL
+- Small CSS tuning
+
 ## Adminer 4.10 (2024-10-22)
 
 ### UI changes and improvements
