@@ -508,6 +508,8 @@ if (!defined("DRIVER")) {
 				$row["Comment"] = "";
 			}
 			if ($name != "") {
+				// MariaDB: Table name is returned as lowercase on macOS, so we fix it here.
+				$row["Name"] = $name;
 				return $row;
 			}
 			$return[$row["Name"]] = $row;
