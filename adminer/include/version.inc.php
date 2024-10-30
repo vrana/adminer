@@ -1,2 +1,2 @@
 <?php
-$VERSION = "4.10.1-dev";
+$VERSION = "4.11.0";

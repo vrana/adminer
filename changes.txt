@@ -1,3 +1,8 @@
+Adminer 4.11.0:
+MySQL: Fix highlighting current table in menu on macOS
+MariaDB: Fix several links to documentation pages
+MS SQL: Prefix Unicode strings with 'N' so they are treated correctly
+
 Adminer 4.10.0:
 Print username next to the logout button
 Do not display empty action links in main menu
