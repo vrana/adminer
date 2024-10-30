@@ -500,11 +500,14 @@ if (!defined("DRIVER")) {
 	* @return array array($name => array("Name" => , "Engine" => , "Comment" => , "Oid" => , "Rows" => , "Collation" => , "Auto_increment" => , "Data_length" => , "Index_length" => , "Data_free" => )) or only inner array with $name
 	*/
 	function table_status($name = "", $fast = false) {
-		$return = array();
-		foreach (get_rows($fast && min_version(5)
-			? "SELECT TABLE_NAME AS Name, ENGINE AS Engine, CREATE_OPTIONS AS Create_options, TABLE_COMMENT AS Comment FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() " . ($name != "" ? "AND TABLE_NAME = " . q($name) : "ORDER BY Name")
-			: "SHOW TABLE STATUS" . ($name != "" ? " LIKE " . q(addcslashes($name, "%_\\")) : "")
-		) as $row) {
+		if ($fast && min_version(5)) {
+			$query = "SELECT TABLE_NAME AS Name, ENGINE AS Engine, CREATE_OPTIONS AS Create_options, TABLE_COMMENT AS Comment FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() " . ($name != "" ? "AND TABLE_NAME = " . q($name) : "ORDER BY Name");
+		} else {
+			$query = "SHOW TABLE STATUS" . ($name != "" ? " LIKE " . q(addcslashes($name, "%_\\")) : "");
+		}
+
+		$tables = [];
+		foreach (get_rows($query) as $row) {
 			if ($row["Engine"] == "InnoDB") {
 				// ignore internal comment, unnecessary since MySQL 5.1.21
 				$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\1', $row["Comment"]);
@@ -513,11 +516,15 @@ if (!defined("DRIVER")) {
 				$row["Comment"] = "";
 			}
 			if ($name != "") {
+				// MariaDB: Table name is returned as lowercase on macOS, so we fix it here.
+				$row["Name"] = $name;
 				return $row;
 			}
-			$return[$row["Name"]] = $row;
+
+			$tables[$row["Name"]] = $row;
 		}
-		return $return;
+
+		return $tables;
 	}
 
 	/** Find out whether the identifier is view
