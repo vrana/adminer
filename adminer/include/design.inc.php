@@ -54,7 +54,7 @@ function page_header($title, $error = "", $breadcrumb = [], $title2 = "") {
 </script>
 
 <div id="help" class="jush-<?php echo $jush; ?> jsonly hidden"></div>
-<?php echo script("mixin(qs('#help'), {onmouseover: function () { helpOpen = 1; }, onmouseout: helpMouseout});"); ?>
+<?php echo script("initHelpPopup();"); ?>
 
 <div id="content">
 <?php

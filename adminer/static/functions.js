@@ -544,13 +544,13 @@ function selectSearchSearch() {
 
 // Sorting.
 (function() {
-	let placeholderRow, nextRow, dragHelper;
+	let placeholderRow = null, nextRow = null, dragHelper = null;
 	let startY, minY, maxY;
 
 	/**
 	 * Initializes sortable list of DIV elements.
 	 *
-	 * @param {string} parentId
+	 * @param {string} parentSelector
 	 */
 	window.initSortable = function(parentSelector) {
 		const parent = qs(parentSelector);
@@ -574,6 +574,10 @@ function selectSearchSearch() {
 		const handle = qs(".handle", row);
 		handle.addEventListener("mousedown", (event) => { startSorting(row, event) });
 		handle.addEventListener("touchstart", (event) => { startSorting(row, event) });
+	};
+
+	window.isSorting = function () {
+		return dragHelper !== null;
 	};
 
 	function startSorting(row, event) {
@@ -669,6 +673,8 @@ function selectSearchSearch() {
 
 		placeholderRow.parentNode.insertBefore(dragHelper.tagName === "TABLE" ? dragHelper.firstChild : dragHelper, placeholderRow);
 		placeholderRow.remove();
+
+		placeholderRow = nextRow = dragHelper = null;
 
 		window.removeEventListener("mousemove", updateSorting);
 		window.removeEventListener("touchmove", updateSorting);
@@ -822,7 +828,6 @@ function functionChange() {
 
 	// Undefined with the set data type.
 	if (!input) {
-		helpClose();
 		return;
 	}
 
@@ -852,8 +857,6 @@ function functionChange() {
 	}
 
 	oninput({target: input});
-
-	helpClose();
 }
 
 /**

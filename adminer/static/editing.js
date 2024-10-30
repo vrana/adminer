@@ -236,11 +236,13 @@ function editFields() {
 	els = qsa('[name$="[type]"]');
 	for (var i = 0; i < els.length; i++) {
 		mixin(els[i], {
-			onfocus: function () { lastType = selectValue(this); },
+			onfocus: () => {
+				lastType = selectValue(this);
+			},
 			onchange: editingTypeChange,
-			onmouseover: function (event) { helpMouseover.call(this, event, getTarget(event).value, 1) },
-			onmouseout: helpMouseout
 		});
+
+		initHelpFor(els[i], (value) => { return value; }, true);
 	}
 }
 
@@ -415,7 +417,6 @@ function editingTypeChange() {
 			alterClass(el, 'hidden', !/`/.test(text));
 		}
 	}
-	helpClose();
 }
 
 /** Mark length as required
@@ -488,7 +489,6 @@ function partitionByChange() {
 	var partitionTable = /RANGE|LIST/.test(selectValue(this));
 	alterClass(this.form['partitions'], 'hidden', partitionTable || !this.selectedIndex);
 	alterClass(qs('#partition-table'), 'hidden', !partitionTable);
-	helpClose();
 }
 
 /** Add next partition row
@@ -732,48 +732,107 @@ function schemaMouseup(event, db) {
 }
 
 
+// Help.
+(function() {
+	let openTimeout = null;
+	let closeTimeout = null;
+	let helpVisible = false;
 
-var helpOpen, helpIgnore; // when mouse outs <option> then it mouse overs border of <select> - ignore it
+	window.initHelpPopup = function () {
+		const help = gid("help");
 
-/** Display help
-* @param MouseEvent
-* @param string
-* @param bool display on left side (otherwise on top)
-* @this HTMLElement
-*/
-function helpMouseover(event, text, side) {
-	var target = getTarget(event);
-	if (!text) {
-		helpClose();
-	} else if (window.jush && (!helpIgnore || this !== target)) {
-		helpOpen = 1;
-		var help = qs('#help');
-		help.innerHTML = text;
-		jush.highlight_tag([ help ]);
-		alterClass(help, 'hidden');
-		var rect = target.getBoundingClientRect();
-		var body = document.documentElement;
-		help.style.top = (body.scrollTop + rect.top - (side ? (help.offsetHeight - target.offsetHeight) / 2 : help.offsetHeight)) + 'px';
-		help.style.left = (body.scrollLeft + rect.left - (side ? help.offsetWidth : (help.offsetWidth - target.offsetWidth) / 2)) + 'px';
-	}
-}
+		help.addEventListener("mouseenter", () => {
+			clearTimeout(closeTimeout);
+			closeTimeout = null;
+		});
 
-/** Close help after timeout
-* @param MouseEvent
-* @this HTMLElement
-*/
-function helpMouseout(event) {
-	helpOpen = 0;
-	helpIgnore = (this !== getTarget(event));
-	setTimeout(function () {
-		if (!helpOpen) {
-			helpClose();
+		help.addEventListener("mouseleave", hideHelp);
+	};
+
+	/**
+	 * @param {HTMLElement} element
+	 * @param {string|function} content
+	 * @param {boolean} side Displays on left side (otherwise on top).
+	 */
+	window.initHelpFor = function(element, content, side = false) {
+		const withCallback = typeof content === "function";
+
+		element.addEventListener("mouseenter", (event) => {
+			showHelp(event.target, withCallback ? content(event.target.value) : content, side)
+		});
+
+		element.addEventListener("mouseleave", hideHelp);
+		element.addEventListener("blur", hideHelp);
+
+		if (withCallback) {
+			element.addEventListener("change", hideHelp);
 		}
-	}, 200);
-}
+	};
 
-/** Close help
-*/
-function helpClose() {
-	alterClass(qs('#help'), 'hidden', true);
-}
+	/**
+	 * Displays help popup after a small delay.
+	 *
+	 * @param {HTMLElement} element
+	 * @param {string} text
+	 * @param {boolean} side display on left side (otherwise on top)
+	 */
+	function showHelp(element, text, side) {
+		if (!text) {
+			hideHelp();
+			return;
+		}
+
+		if (isSorting() || !window.jush) {
+			return;
+		}
+
+		clearTimeout(openTimeout);
+		openTimeout = null;
+		clearTimeout(closeTimeout);
+		closeTimeout = null;
+
+		const help = gid("help");
+		help.innerHTML = text;
+		jush.highlight_tag([help]);
+
+		// Display help briefly to calculate position properly.
+		help.classList.remove("hidden");
+
+		const rect = element.getBoundingClientRect();
+		const root = document.documentElement;
+
+		help.style.top = (root.scrollTop + rect.top - (side ? (help.offsetHeight - element.offsetHeight) / 2 : help.offsetHeight)) + 'px';
+		help.style.left = (root.scrollLeft + rect.left - (side ? help.offsetWidth : (help.offsetWidth - element.offsetWidth) / 2)) + 'px';
+
+		if (helpVisible) {
+			return;
+		}
+
+		help.classList.add("hidden");
+
+		openTimeout = setTimeout(() => {
+			gid("help").classList.remove("hidden");
+
+			helpVisible = true;
+			openTimeout = null;
+		}, 600);
+	}
+
+	/**
+	 * Closes the help popup after a small delay.
+	 */
+	function hideHelp() {
+		if (openTimeout) {
+			clearTimeout(openTimeout);
+			openTimeout = null;
+			return;
+		}
+
+		closeTimeout = setTimeout(() => {
+			gid("help").classList.add("hidden");
+
+			helpVisible = false;
+			closeTimeout = null;
+		}, 200);
+	}
+})();

@@ -424,8 +424,8 @@ class Adminer {
 				echo "<select name='columns[$i][fun]'>",
 					optionlist([-1 => ""] + array_filter([lang('Functions') => $functions, lang('Aggregation') => $grouping]), $val["fun"]),
 					"</select>",
-					on_help("getTarget(event).value && getTarget(event).value.replace(/ |\$/, '(') + ')'", 1),
-					script("qsl('select').onchange = (event) => { helpClose();" . ($key !== "" ? "" : " qsl('select, input:not(.remove)', event.target.parentNode).onchange();") . " };", ""),
+					help_script_command("value && value.replace(/ |\$/, '(') + ')'", true),
+					script("qsl('select').onchange = (event) => { " . ($key !== "" ? "" : " qsl('select, input:not(.remove)', event.target.parentNode).onchange();") . " };", ""),
 					"($column)";
 			} else {
 				echo $column;

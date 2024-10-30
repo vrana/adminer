@@ -6,13 +6,14 @@ function messagesPrint() {
 function selectFieldChange() {
 }
 
-var helpOpen;
+// Help.
+(function() {
+	window.initHelpPopup = function () {
+	};
 
-function helpMouseover() {
-}
-
-function helpMouseout() {
-}
+	window.initHelpFor = function(element, content, side = false) {
+	};
+})();
 
 /** Display typeahead
 * @param string

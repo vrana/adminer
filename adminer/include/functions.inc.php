@@ -967,7 +967,7 @@ function input($field, $value, $function) {
 		$has_function = (in_array($function, $functions) || isset($functions[$function]));
 		echo (count($functions) > 1
 			? "<select name='function[$name]' $disabled>" . optionlist($functions, $function === null || $has_function ? $function : "") . "</select>"
-				. on_help("getTarget(event).value.replace(/^SQL\$/, '')", 1)
+				. help_script_command("value.replace(/^SQL\$/, '')", true)
 				. script("qsl('select').onchange = functionChange;", "")
 			: h(reset($functions))
 		) . '<td>';
@@ -1486,13 +1486,26 @@ function lzw_decompress($binary) {
 	return $return;
 }
 
-/** Return events to display help on mouse over
-* @param string JS expression
-* @param bool JS expression
-* @return string
-*/
-function on_help($command, $side = 0) {
-	return script("mixin(qsl('select, input'), {onmouseover: function (event) { helpMouseover.call(this, event, $command, $side) }, onmouseout: helpMouseout});", "");
+/**
+ * @param string $text Help text.
+ * @param bool $side Side position.
+ *
+ * @return string
+ */
+function help_script($text, $side = false)
+{
+	return script("initHelpFor(qsl('select, input'), '" . h($text) . "', $side);", "");
+}
+
+/**
+ * @param string $command JS expression for returning the help text.
+ * @param bool $side Side position.
+ *
+ * @return string
+ */
+function help_script_command($command, $side = false)
+{
+	return script("initHelpFor(qsl('select, input'), (value) => { return $command; }, $side);", "");
 }
 
 /** Print edit data form
