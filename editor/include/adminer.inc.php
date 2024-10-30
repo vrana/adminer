@@ -77,7 +77,7 @@ class Adminer {
 
 	function loginForm() {
 		echo "<table cellspacing='0' class='layout'>\n";
-		echo $this->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', '<input type="hidden" name="auth[driver]" value="server"><input name="auth[username]" id="username" value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">' . script("focus(qs('#username'));"));
+		echo $this->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', '<input type="hidden" name="auth[driver]" value="server"><input name="auth[username]" id="username" value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">' . script("focus(gid('username'));"));
 		echo $this->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]" autocomplete="current-password">' . "\n");
 		echo "</table>\n";
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
@@ -620,7 +620,7 @@ qsl('div').onclick = whisperClick;", "")
 					if ($password !== null) {
 						if ($first) {
 							echo "<ul id='logins'>";
-							echo script("mixin(qs('#logins'), {onmouseover: menuOver, onmouseout: menuOut});");
+							echo script("mixin(gid('logins'), {onmouseover: menuOver, onmouseout: menuOut});");
 							$first = false;
 						}
 						echo "<li><a href='" . h(auth_url($vendor, "", $username)) . "'>" . ($username != "" ? h($username) : "<i>" . lang('empty') . "</i>") . "</a>\n";
@@ -655,7 +655,7 @@ qsl('div').onclick = whisperClick;", "")
 	}
 
 	function tablesPrint($tables) {
-		echo "<ul id='tables'>" . script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
+		echo "<ul id='tables'>" . script("mixin(gid('tables'), {onmouseover: menuOver, onmouseout: menuOut});");
 
 		foreach ($tables as $row) {
 			// Skip views and tables without a name.

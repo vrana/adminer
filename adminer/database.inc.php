@@ -66,7 +66,7 @@ echo ($_POST["add_x"] || strpos($name, "\n")
 	'mariadb' => "supported-character-sets-and-collations/",
 	'mssql' => "ms187963.aspx",
 )) : "");
-echo script("focus(qs('#name'));");
+echo script("focus(gid('name'));");
 ?>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php

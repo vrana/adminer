@@ -142,7 +142,7 @@ if ($_POST) {
 <tr><th><?php echo lang('Server'); ?><td><input name="host" data-maxlength="60" value="<?php echo h($row["host"]); ?>" autocapitalize="off">
 <tr><th><?php echo lang('Username'); ?><td><input name="user" data-maxlength="80" value="<?php echo h($row["user"]); ?>" autocapitalize="off">
 <tr><th><?php echo lang('Password'); ?><td><input name="pass" id="pass" value="<?php echo h($row["pass"]); ?>" autocomplete="new-password">
-<?php if (!$row["hashed"]) { echo script("typePassword(qs('#pass'));"); } ?>
+<?php if (!$row["hashed"]) { echo script("typePassword(gid('pass'));"); } ?>
 <?php echo (min_version(8) ? "" : checkbox("hashed", 1, $row["hashed"], lang('Hashed'), "typePassword(this.form['pass'], this.checked);")); ?>
 </table>
 

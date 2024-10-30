@@ -73,17 +73,6 @@ function mixin(target, source) {
 	}
 }
 
-/** Add or remove CSS class
-* @param HTMLElement
-* @param string
-* @param [bool]
-*/
-function alterClass(el, className, enable) {
-	if (el) {
-		el.className = el.className.replace(RegExp('(^|\\s)' + className + '(\\s|$)'), '$2') + (enable ? ' ' + className : '');
-	}
-}
-
 /**
  * Toggles visibility of element with ID.
  *
@@ -129,7 +118,7 @@ function verifyVersion(currentVersion, baseUrl, token) {
 		ajax(baseUrl + 'script=version', function () {}, data);
 
 		if (currentVersion !== version) {
-			qs('#version').innerText = version;
+			gid('version').innerText = version;
 		}
 	});
 }
@@ -173,7 +162,7 @@ function parentTag(el, tag) {
 */
 function trCheck(el) {
 	var tr = parentTag(el, 'tr');
-	alterClass(tr, 'checked', el.checked);
+	tr.classList.toggle('checked', el.checked);
 	if (el.form && el.form['all'] && el.form['all'].onclick) { // Opera treats form.all as document.all
 		el.form['all'].onclick();
 	}
@@ -186,7 +175,7 @@ function trCheck(el) {
 */
 function selectCount(id, count) {
 	setHtml(id, (count === '' ? '' : '(' + (count + '').replace(/\B(?=(\d{3})+$)/g, thousandsSeparator) + ')'));
-	var el = qs('#' + id);
+	var el = gid(id);
 	if (el) {
 		var inputs = qsa('input', el.parentNode.parentNode);
 		for (var i = 0; i < inputs.length; i++) {
@@ -259,7 +248,7 @@ function formChecked(el, name) {
 * @param [boolean] force click
 */
 function tableClick(event, click) {
-	var td = parentTag(getTarget(event), 'td');
+	var td = parentTag(event.target, 'td');
 	var text;
 	if (td && (text = td.getAttribute('data-text'))) {
 		if (selectClick.call(td, event, +text, td.getAttribute('data-warning'))) {
@@ -267,7 +256,7 @@ function tableClick(event, click) {
 		}
 	}
 	click = (click || !window.getSelection || getSelection().isCollapsed);
-	var el = getTarget(event);
+	var el = event.target;
 	while (!isTag(el, 'tr')) {
 		if (isTag(el, 'table|a|input|textarea')) {
 			if (el.type !== 'checkbox') {
@@ -374,7 +363,7 @@ function initTablesFilter(dbName) {
 	if (sessionStorage) {
 		document.addEventListener('DOMContentLoaded', function () {
 			if (dbName === sessionStorage.getItem('adminer_tables_filter_db') && sessionStorage.getItem('adminer_tables_filter')) {
-				qs('#tables-filter').value = sessionStorage.getItem('adminer_tables_filter');
+				gid('tables-filter').value = sessionStorage.getItem('adminer_tables_filter');
 				filterTables();
 			} else {
 				sessionStorage.removeItem('adminer_tables_filter');
@@ -384,7 +373,7 @@ function initTablesFilter(dbName) {
 		});
 	}
 
-	const filterInput = qs('#tables-filter');
+	const filterInput = gid('tables-filter');
 	filterInput.addEventListener('input', function () {
 		window.clearTimeout(tablesFilterTimeout);
 		tablesFilterTimeout = window.setTimeout(filterTables, 200);
@@ -401,7 +390,7 @@ function initTablesFilter(dbName) {
 }
 
 function filterTables() {
-	const value = qs('#tables-filter').value.toLowerCase();
+	const value = gid('tables-filter').value.toLowerCase();
 	if (value === tablesFilterValue) {
 		return;
 	}
@@ -445,7 +434,7 @@ function filterTables() {
 * @this HTMLElement
 */
 function menuOver(event) {
-	var a = getTarget(event);
+	var a = event.target;
 	if (isTag(a, 'a|span') && a.offsetLeft + a.offsetWidth > a.parentNode.offsetWidth - 15) { // 15 - ellipsis
 		this.style.overflow = 'visible';
 	}
@@ -717,7 +706,7 @@ function columnMouse(className) {
 * @return boolean false
 */
 function selectSearch(name) {
-	var el = qs('#fieldset-search');
+	var el = gid('fieldset-search');
 	el.className = '';
 	var divs = qsa('div', el);
 	for (var i=0; i < divs.length; i++) {
@@ -744,16 +733,6 @@ function isCtrl(event) {
 	return (event.ctrlKey || event.metaKey) && !event.altKey; // shiftKey allowed
 }
 
-/** Return event target
-* @param Event
-* @return HTMLElement
-*/
-function getTarget(event) {
-	return event.target || event.srcElement;
-}
-
-
-
 /** Send form by Ctrl+Enter on <select> and <textarea>
 * @param KeyboardEvent
 * @param [string]
@@ -761,7 +740,7 @@ function getTarget(event) {
 */
 function bodyKeydown(event, button) {
 	eventStop(event);
-	var target = getTarget(event);
+	var target = event.target;
 	if (target.jushTextarea) {
 		target = target.jushTextarea;
 	}
@@ -785,7 +764,7 @@ function bodyKeydown(event, button) {
 * @param MouseEvent
 */
 function bodyClick(event) {
-	var target = getTarget(event);
+	var target = event.target;
 	if ((isCtrl(event) || event.shiftKey) && target.type === 'submit' && isTag(target, 'input')) {
 		target.form.target = '_blank';
 		setTimeout(function () {
@@ -803,7 +782,7 @@ function bodyClick(event) {
 */
 function editingKeydown(event) {
 	if ((event.keyCode === 40 || event.keyCode === 38) && isCtrl(event)) { // 40 - Down, 38 - Up
-		var target = getTarget(event);
+		var target = event.target;
 		var sibling = (event.keyCode === 40 ? 'nextSibling' : 'previousSibling');
 		var el = target.parentNode.parentNode[sibling];
 		if (el && (isTag(el, 'tr') || (el = el[sibling])) && isTag(el, 'tr') && (el = el.childNodes[nodePosition(target.parentNode)]) && (el = el.childNodes[nodePosition(target)])) {
@@ -901,7 +880,7 @@ function fieldChange() {
 function ajax(url, callback, data, message) {
 	var request = (window.XMLHttpRequest ? new XMLHttpRequest() : (window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') : false));
 	if (request) {
-		var ajaxStatus = qs('#ajaxstatus');
+		var ajaxStatus = gid('ajaxstatus');
 		if (message) {
 			ajaxStatus.innerHTML = '<div class="message">' + message + '</div>';
 			ajaxStatus.className = ajaxStatus.className.replace(/ hidden/g, '');
@@ -971,9 +950,9 @@ function ajaxForm(form, message, button) {
 	return ajax(url, function (request) {
 		setHtml('ajaxstatus', request.responseText);
 		if (window.jush) {
-			jush.highlight_tag(qsa('code', qs('#ajaxstatus')), 0);
+			jush.highlight_tag(qsa('code', gid('ajaxstatus')), 0);
 		}
-		messagesPrint(qs('#ajaxstatus'));
+		messagesPrint(gid('ajaxstatus'));
 	}, data, message);
 }
 
@@ -988,7 +967,7 @@ function ajaxForm(form, message, button) {
 */
 function selectClick(event, text, warning) {
 	var td = this;
-	var target = getTarget(event);
+	var target = event.target;
 	if (!isCtrl(event) || isTag(td.firstChild, 'input|textarea') || isTag(target, 'a')) {
 		return;
 	}
@@ -1075,7 +1054,7 @@ function selectLoadMore(limit, loading) {
 		return !ajax(href, function (request) {
 			var tbody = document.createElement('tbody');
 			tbody.innerHTML = request.responseText;
-			qs('#table').appendChild(tbody);
+			gid('table').appendChild(tbody);
 			if (tbody.children.length < limit) {
 				a.parentNode.removeChild(a);
 			} else {
@@ -1129,9 +1108,9 @@ function setupSubmitHighlightInput(input) {
 * @this HTMLInputElement
 */
 function inputFocus() {
-	var submit = findDefaultSubmit(this);
+	const submit = findDefaultSubmit(this);
 	if (submit) {
-		alterClass(submit, 'default', true);
+		submit.classList.toggle('default', true);
 	}
 }
 
@@ -1139,9 +1118,9 @@ function inputFocus() {
 * @this HTMLInputElement
 */
 function inputBlur() {
-	var submit = findDefaultSubmit(this);
+	const submit = findDefaultSubmit(this);
 	if (submit) {
-		alterClass(submit, 'default');
+		submit.classList.toggle('default', false);
 	}
 }
 
@@ -1223,7 +1202,9 @@ function getOffsetLeft(element) {
 }
 
 oninput = function (event) {
-	var target = event.target;
-	var maxLength = target.getAttribute('data-maxlength');
-	alterClass(target, 'maxlength', target.value && maxLength != null && target.value.length > maxLength); // maxLength could be 0
+	const target = event.target;
+	const maxLength = target.getAttribute('data-maxlength');
+
+	// maxLength could be 0
+	target.classList.toggle('maxlength', target.value && maxLength != null && target.value.length > maxLength);
 };

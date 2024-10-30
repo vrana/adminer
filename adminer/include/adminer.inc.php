@@ -129,7 +129,7 @@ class Adminer {
 		echo "<table cellspacing='0' class='layout'>\n";
 		echo $this->loginFormField('driver', '<tr><th>' . lang('System') . '<td>', html_select("auth[driver]", $drivers, DRIVER, "loginDriver(this);") . "\n");
 		echo $this->loginFormField('server', '<tr><th>' . lang('Server') . '<td>', '<input name="auth[server]" value="' . h(SERVER) . '" title="hostname[:port]" placeholder="localhost" autocapitalize="off">' . "\n");
-		echo $this->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', '<input name="auth[username]" id="username" value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">' . script("focus(qs('#username')); qs('#username').form['auth[driver]'].onchange();"));
+		echo $this->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', '<input name="auth[username]" id="username" value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">' . script("focus(gid('username')); gid('username').form['auth[driver]'].onchange();"));
 		echo $this->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]" autocomplete="current-password">' . "\n");
 		echo $this->loginFormField('db', '<tr><th>' . lang('Database') . '<td>', '<input name="auth[db]" value="' . h($_GET["db"]) . '" autocapitalize="off">' . "\n");
 		echo "</table>\n";
@@ -557,7 +557,7 @@ class Adminer {
 			json_row($key);
 		}
 		echo ";\n";
-		echo "selectFieldChange.call(qs('#form')['select']);\n";
+		echo "selectFieldChange.call(gid('form')['select']);\n";
 		echo "</script>\n";
 		echo "</div></fieldset>\n";
 	}
@@ -1073,7 +1073,7 @@ class Adminer {
 				}
 			}
 			if ($output) {
-				echo "<ul id='logins'>\n$output</ul>\n" . script("mixin(qs('#logins'), {onmouseover: menuOver, onmouseout: menuOut});");
+				echo "<ul id='logins'>\n$output</ul>\n" . script("mixin(gid('logins'), {onmouseover: menuOver, onmouseout: menuOut});");
 			}
 		} else {
 			$tables = array();
@@ -1156,7 +1156,7 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 
 		if ($databases) {
 			echo "<select id='database-select' name='db'>" . optionlist(["" => lang('Database')] + $databases, DB) . "</select>"
-				. script("mixin(qs('#database-select'), {onmousedown: dbMouseDown, onchange: dbChange});");
+				. script("mixin(gid('database-select'), {onmousedown: dbMouseDown, onchange: dbChange});");
 		} else {
 			echo "<input id='database-select' name='db' value='" . h(DB) . "' autocapitalize='off'>\n";
 		}
@@ -1164,7 +1164,7 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 
 		if (support("scheme") && $missing != "db" && DB != "" && $connection->select_db(DB)) {
 			echo "<br><select id='scheme-select' name='ns'>" . optionlist(["" => lang('Schema')] + $adminer->schemas(), $_GET["ns"]) . "</select>"
-				. script("mixin(qs('#scheme-select'), {onmousedown: dbMouseDown, onchange: dbChange});");
+				. script("mixin(gid('scheme-select'), {onmousedown: dbMouseDown, onchange: dbChange});");
 
 			if ($_GET["ns"] != "") {
 				set_schema($_GET["ns"]);
@@ -1200,7 +1200,7 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 	 * @return null
 	 */
 	function tablesPrint($tables) {
-		echo "<ul id='tables'>" . script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
+		echo "<ul id='tables'>" . script("mixin(gid('tables'), {onmouseover: menuOver, onmouseout: menuOut});");
 
 		foreach ($tables as $table => $status) {
 			$name = $this->tableName($status);

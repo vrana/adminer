@@ -88,13 +88,17 @@ function messagesPrint(el) {
 
 
 
-/** Hide or show some login rows for selected driver
-* @param HTMLSelectElement
-*/
-function loginDriver(driver) {
-	var trs = parentTag(driver, 'table').rows;
-	var disabled = /sqlite/.test(selectValue(driver));
-	alterClass(trs[1], 'hidden', disabled);	// 1 - row with server
+/**
+ * Hides or shows some login rows for selected driver.
+ *
+ * @param {HTMLSelectElement} driverSelect
+ */
+function loginDriver(driverSelect) {
+	const trs = parentTag(driverSelect, 'table').rows;
+	const disabled = /sqlite/.test(selectValue(driverSelect));
+
+	// 1 - row with server
+	trs[1].classList.toggle('hidden', disabled);
 	trs[1].getElementsByTagName('input')[0].disabled = disabled;
 }
 
@@ -251,7 +255,7 @@ function editFields() {
 * @return boolean false to cancel action
 */
 function editingClick(event) {
-	var el = getTarget(event);
+	var el = event.target;
 	if (!isTag(el, 'input')) {
 		el = parentTag(el, 'label');
 		el = el && qs('input', el);
@@ -280,7 +284,7 @@ function editingClick(event) {
 * @param InputEvent
 */
 function editingInput(event) {
-	var el = getTarget(event);
+	var el = event.target;
 	if (/\[default]$/.test(el.name)) {
 		 el.previousSibling.checked = true;
 	}
@@ -405,16 +409,17 @@ function editingTypeChange() {
 			el.checked = false;
 		}
 		if (el.name === name + '[collation]') {
-			alterClass(el, 'hidden', !/(char|text|enum|set)$/.test(text));
+			el.classList.toggle('hidden', !/(char|text|enum|set)$/.test(text));
 		}
 		if (el.name === name + '[unsigned]') {
-			alterClass(el, 'hidden', !/(^|[^o])int(?!er)|numeric|real|float|double|decimal|money/.test(text));
+			el.classList.toggle('hidden', !/(^|[^o])int(?!er)|numeric|real|float|double|decimal|money/.test(text));
 		}
 		if (el.name === name + '[on_update]') {
-			alterClass(el, 'hidden', !/timestamp|datetime/.test(text)); // MySQL supports datetime since 5.6.5
+			// MySQL supports datetime since 5.6.5.
+			el.classList.toggle('hidden', !/timestamp|datetime/.test(text));
 		}
 		if (el.name === name + '[on_delete]') {
-			alterClass(el, 'hidden', !/`/.test(text));
+			el.classList.toggle('hidden', !/`/.test(text));
 		}
 	}
 }
@@ -423,7 +428,7 @@ function editingTypeChange() {
 * @this HTMLInputElement
 */
 function editingLengthChange() {
-	alterClass(this, 'required', !this.value.length && /var(char|binary)$/.test(selectValue(this.parentNode.previousSibling.firstChild)));
+	this.classList.toggle('required', !this.value.length && /var(char|binary)$/.test(selectValue(this.parentNode.previousSibling.firstChild)));
 }
 
 /** Edit enum or set
@@ -432,7 +437,7 @@ function editingLengthChange() {
 function editingLengthFocus() {
 	var td = this.parentNode;
 	if (/(enum|set)$/.test(selectValue(td.previousSibling.firstChild))) {
-		var edit = qs('#enum-edit');
+		var edit = gid('enum-edit');
 		edit.value = enumValues(this.value);
 		td.appendChild(edit);
 		this.style.display = 'none';
@@ -476,9 +481,9 @@ function editingLengthBlur() {
 * @param number
 */
 function columnShow(checked, column) {
-	var trs = qsa('tr', qs('#edit-fields'));
+	var trs = qsa('tr', gid('edit-fields'));
 	for (var i=0; i < trs.length; i++) {
-		alterClass(qsa('td', trs[i])[column], 'hidden', !checked);
+		qsa('td', trs[i])[column].classList.toggle('hidden', !checked);
 	}
 }
 
@@ -487,8 +492,9 @@ function columnShow(checked, column) {
 */
 function partitionByChange() {
 	var partitionTable = /RANGE|LIST/.test(selectValue(this));
-	alterClass(this.form['partitions'], 'hidden', partitionTable || !this.selectedIndex);
-	alterClass(qs('#partition-table'), 'hidden', !partitionTable);
+
+	this.form['partitions'].classList.toggle('hidden', partitionTable || !this.selectedIndex);
+	gid('partition-table').classList.toggle('hidden', !partitionTable);
 }
 
 /** Add next partition row
@@ -508,7 +514,7 @@ function partitionNameChange() {
 function editingCommentsClick(el, focus) {
 	var comment = el.form['Comment'];
 	columnShow(el.checked, 6);
-	alterClass(comment, 'hidden', !el.checked);
+	comment.classList.toggle('hidden', !el.checked);
 	if (focus && el.checked) {
 		comment.focus();
 	}
@@ -521,7 +527,7 @@ function editingCommentsClick(el, focus) {
 * @this HTMLTableElement
 */
 function dumpClick(event) {
-	var el = parentTag(getTarget(event), 'label');
+	var el = parentTag(event.target, 'label');
 	if (el) {
 		el = qs('input', el);
 		var match = /(.+)\[]$/.exec(el.name);
@@ -651,7 +657,7 @@ function triggerChange(tableRe, table, form) {
 	if (tableRe.test(form['Trigger'].value)) {
 		form['Trigger'].value = table + '_' + (selectValue(form['Timing']).charAt(0) + formEvent.charAt(0)).toLowerCase();
 	}
-	alterClass(form['Of'], 'hidden', !/ OF/.test(formEvent));
+	form['Of'].classList.toggle('hidden', !/ OF/.test(formEvent));
 }
 
 
@@ -725,7 +731,7 @@ function schemaMouseup(event, db) {
 			s += '_' + key + ':' + Math.round(tablePos[key][0] * 10000) / 10000 + 'x' + Math.round(tablePos[key][1] * 10000) / 10000;
 		}
 		s = encodeURIComponent(s.substr(1));
-		var link = qs('#schema-link');
+		var link = gid('schema-link');
 		link.href = link.href.replace(/[^=]+$/, '') + s;
 		cookie('adminer_schema-' + db + '=' + s, 30); //! special chars in db
 	}

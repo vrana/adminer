@@ -43,7 +43,7 @@ function whisper(url) {
 */
 function whisperClick(event) {
 	var field = this.previousSibling;
-	var el = getTarget(event);
+	var el = event.target;
 	if (isTag(el, 'a') && !(event.button || event.shiftKey || event.altKey || isCtrl(event))) {
 		field.value = el.firstChild.data;
 		field.previousSibling.value = decodeURIComponent(el.href.replace(/.*=/, ''));

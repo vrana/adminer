@@ -182,8 +182,8 @@ $prefixes = array();
 if (DB != "") {
 	$checked = ($TABLE != "" ? "" : " checked");
 	echo "<thead><tr>";
-	echo "<th style='text-align: left;'><label class='block'><input type='checkbox' id='check-tables'$checked>" . lang('Tables') . "</label>" . script("qs('#check-tables').onclick = partial(formCheck, /^tables\\[/);", "");
-	echo "<th style='text-align: right;'><label class='block'>" . lang('Data') . "<input type='checkbox' id='check-data'$checked></label>" . script("qs('#check-data').onclick = partial(formCheck, /^data\\[/);", "");
+	echo "<th style='text-align: left;'><label class='block'><input type='checkbox' id='check-tables'$checked>" . lang('Tables') . "</label>" . script("gid('check-tables').onclick = partial(formCheck, /^tables\\[/);", "");
+	echo "<th style='text-align: right;'><label class='block'>" . lang('Data') . "<input type='checkbox' id='check-data'$checked></label>" . script("gid('check-data').onclick = partial(formCheck, /^data\\[/);", "");
 	echo "</thead>\n";
 
 	$views = "";
@@ -208,7 +208,7 @@ if (DB != "") {
 } else {
 	echo "<thead><tr><th style='text-align: left;'>";
 	echo "<label class='block'><input type='checkbox' id='check-databases'" . ($TABLE == "" ? " checked" : "") . ">" . lang('Database') . "</label>";
-	echo script("qs('#check-databases').onclick = partial(formCheck, /^databases\\[/);", "");
+	echo script("gid('check-databases').onclick = partial(formCheck, /^databases\\[/);", "");
 	echo "</thead>\n";
 	$databases = $adminer->databases();
 	if ($databases) {

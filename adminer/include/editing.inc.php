@@ -297,7 +297,7 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", $foreign
 		}
 	?>
 	<th id="label-name"><?php echo ($type == "TABLE" ? lang('Column name') : lang('Parameter name')); ?></th>
-	<td id="label-type"><?php echo lang('Type'); ?><textarea id="enum-edit" rows="4" cols="12" wrap="off" style="display: none;"></textarea><?php echo script("qs('#enum-edit').onblur = editingLengthBlur;"); ?></td>
+	<td id="label-type"><?php echo lang('Type'); ?><textarea id="enum-edit" rows="4" cols="12" wrap="off" style="display: none;"></textarea><?php echo script("gid('enum-edit').onblur = editingLengthBlur;"); ?></td>
 	<td id="label-length"><?php echo lang('Length'); ?></td>
 	<td><?php echo lang('Options'); /* no label required, options have their own label */ ?></td>
 	<?php if ($type == "TABLE") { ?>
