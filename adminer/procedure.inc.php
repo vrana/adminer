@@ -39,12 +39,16 @@ $routine_languages = routine_languages();
 <?php echo ($routine_languages ? lang('Language') . ": " . html_select("language", $routine_languages, $row["language"]) . "\n" : ""); ?>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <div class="scrollable">
-<table cellspacing="0" class="nowrap">
+<table cellspacing="0" class="nowrap" id="edit-fields">
 <?php
 edit_fields($row["fields"], $collations, $routine);
 if (isset($_GET["function"])) {
-	echo "<tr><td>" . lang('Return type');
+	echo "<tbody><tr><th></th>",
+		"<th>", lang('Return type'), "</th>";
+
 	edit_type("returns", $row["returns"], $collations, array(), ($jush == "pgsql" ? array("void", "trigger") : array()));
+
+	echo "<td></td></tr></tbody>\n";
 }
 ?>
 </table>
