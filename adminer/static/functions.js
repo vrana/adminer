@@ -484,10 +484,8 @@ function selectAddRow(event) {
 		}
 	}
 
-	const buttons = qsa('.icon', row);
-	for (const button of buttons) {
-		button.onclick = selectRemoveRow;
-	}
+	const button = qs('.remove', row);
+	button.onclick = selectRemoveRow;
 
 	const parent = field.parentNode.parentNode;
 	if (parent.classList.contains("sortable")) {
