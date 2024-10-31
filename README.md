@@ -13,8 +13,10 @@ Supported database drivers:
 
 ## Migration from original Adminer
 
-No action is needed for now. But please, read 👉 **[What to expect](#what-to-expect)** section before you decide to
-switch to this project.
+- If you use complex custom theme, you will probably need to adjust a thing or two.
+- Remove plugin AdminerTablesFilter (plugins/tables-filter.php).
+
+Please, read 👉 **[What to expect](#what-to-expect)** section before you decide to switch to this project.
 
 ## Usage
 
