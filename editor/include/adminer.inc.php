@@ -6,7 +6,7 @@ class Adminer {
 	var $_values = array();
 
 	function name() {
-		return "<a href='https://www.adminer.org/editor/'" . target_blank() . " id='h1'>" . lang('Editor') . "</a>";
+		return "<a id='h1' href='" . h(HOME_URL) . "'>" . lang('Editor') . "</a>";
 	}
 
 	//! driver, ns

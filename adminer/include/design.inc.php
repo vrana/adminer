@@ -62,8 +62,7 @@ function page_header($title, $error = "", $breadcrumb = [], $title2 = "") {
 	if ($breadcrumb !== null) {
 		echo '<p id="breadcrumb">';
 
-		$link = substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1);
-		echo '<a href="' . h($link ?: ".") . '">' . lang('Home') . '</a> » ';
+		echo '<a href="' . h(HOME_URL) . '">' . lang('Home') . '</a> » ';
 
 		$server = "";
 		if ($breadcrumb === false) {

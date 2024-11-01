@@ -113,6 +113,7 @@ define("ME", preg_replace('~\?.*~', '', relative_uri()) . '?'
 	. (isset($_GET["username"]) ? "username=" . urlencode($_GET["username"]) . '&' : '')
 	. (DB != "" ? 'db=' . urlencode(DB) . '&' . (isset($_GET["ns"]) ? "ns=" . urlencode($_GET["ns"]) . "&" : "") : '')
 );
+define("HOME_URL", substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1) ?: ".");
 
 include "../adminer/include/version.inc.php";
 include "../adminer/include/design.inc.php";
