@@ -1,5 +1,6 @@
 <?php
-$PROCEDURE = ($_GET["name"] ? $_GET["name"] : $_GET["call"]);
+
+$PROCEDURE = ($_GET["name"] ?: $_GET["call"]);
 page_header(lang('Call') . ": " . h($PROCEDURE), $error);
 
 $routine = routine($_GET["call"], (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE"));
@@ -28,13 +29,13 @@ if (!$error && $_POST) {
 		}
 		$call[] = (isset($out[$key]) ? "@" . idf_escape($field["field"]) : $val);
 	}
-	
+
 	$query = (isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . table($PROCEDURE) . "(" . implode(", ", $call) . ")";
 	$start = microtime(true);
 	$result = $connection->multi_query($query);
 	$affected = $connection->affected_rows; // getting warnigns overwrites this
 	echo $adminer->selectQuery($query, $start, !$result);
-	
+
 	if (!$result) {
 		echo "<p class='error'>" . error() . "\n";
 	} else {
@@ -42,7 +43,7 @@ if (!$error && $_POST) {
 		if (is_object($connection2)) {
 			$connection2->select_db(DB);
 		}
-		
+
 		do {
 			$result = $connection->store_result();
 			if (is_object($result)) {
@@ -53,16 +54,15 @@ if (!$error && $_POST) {
 				;
 			}
 		} while ($connection->next_result());
-		
+
 		if ($out) {
 			select($connection->query("SELECT " . implode(", ", $out)));
 		}
 	}
 }
-?>
 
-<form action="" method="post">
-<?php
+echo "<form action='' method='post'>\n";
+
 if ($in) {
 	echo "<table cellspacing='0' class='layout'>\n";
 	foreach ($in as $key) {
@@ -83,8 +83,28 @@ if ($in) {
 	}
 	echo "</table>\n";
 }
-?>
-<p>
-<input type="submit" value="<?php echo lang('Call'); ?>">
-<input type="hidden" name="token" value="<?php echo $token; ?>">
-</form>
+
+echo "<p>",
+	"<input type='submit' value='", lang('Call'), "'>",
+	"<input type='hidden' name='token' value='$token'>",
+	"</p>\n",
+	"</form>\n";
+
+$comment = $routine["comment"];
+if ($comment !== null && $comment !== "") {
+	$comment = h(trim($routine["comment"], "\n"));
+
+	// Remove indenting of all lines (used in MySQL routines in 'sys' database).
+	if (preg_match('~^ +~', $comment, $matches)) {
+		preg_match_all("~^($matches[0]|$)~m", $comment, $linesWithIndent);
+
+		if (count($linesWithIndent[0]) == substr_count($comment, "\n")) {
+			$comment = preg_replace("~^($matches[0])~m", "", $comment);
+		}
+	}
+
+	// Format common headlines (used in MySQL routines in 'sys' database).
+	$comment = preg_replace('~(^|[^\n]\n)(Description|Parameters|Example)\n~', "$1\n<strong>$2</strong>\n", $comment);
+
+	echo "<pre class='comment'>$comment</pre>\n";
+}

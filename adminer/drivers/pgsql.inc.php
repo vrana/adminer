@@ -668,23 +668,29 @@ ORDER BY connamespace, conname") as $row) {
 	}
 
 	function routine($name, $type) {
-		$rows = get_rows('SELECT routine_definition AS definition, LOWER(external_language) AS language, *
-FROM information_schema.routines
-WHERE routine_schema = current_schema() AND specific_name = ' . q($name));
-		$return = $rows[0];
-		$return["returns"] = array("type" => $return["type_udt_name"]);
-		$return["fields"] = get_rows('SELECT parameter_name AS field, data_type AS type, character_maximum_length AS length, parameter_mode AS inout
-FROM information_schema.parameters
-WHERE specific_schema = current_schema() AND specific_name = ' . q($name) . '
-ORDER BY ordinal_position');
-		return $return;
+		$info = get_rows('SELECT routine_definition, external_language, type_udt_name
+			FROM information_schema.routines
+			WHERE routine_schema = current_schema() AND specific_name = ' . q($name))[0];
+
+		$fields = get_rows('SELECT parameter_name AS field, data_type AS type, character_maximum_length AS length, parameter_mode AS inout
+			FROM information_schema.parameters
+			WHERE specific_schema = current_schema() AND specific_name = ' . q($name) . '
+			ORDER BY ordinal_position');
+
+		return [
+			"fields" => $fields,
+			"returns" => ["type" => $info["type_udt_name"]],
+			"definition" => $info["routine_definition"],
+			"language" => strtolower($info["external_language"]),
+			"comment" => null, // Comments are not supported.
+		];
 	}
 
 	function routines() {
-		return get_rows('SELECT specific_name AS "SPECIFIC_NAME", routine_type AS "ROUTINE_TYPE", routine_name AS "ROUTINE_NAME", type_udt_name AS "DTD_IDENTIFIER"
-FROM information_schema.routines
-WHERE routine_schema = current_schema()
-ORDER BY SPECIFIC_NAME');
+		return get_rows('SELECT specific_name AS "SPECIFIC_NAME", routine_name AS "ROUTINE_NAME", routine_type AS "ROUTINE_TYPE", type_udt_name AS "DTD_IDENTIFIER", null AS ROUTINE_COMMENT
+			FROM information_schema.routines
+			WHERE routine_schema = current_schema()
+			ORDER BY SPECIFIC_NAME');
 	}
 
 	function routine_languages() {

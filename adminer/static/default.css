@@ -24,6 +24,8 @@ pre { margin: 1em 0 0; }
 pre code { display: block; font-size: 100%; }
 pre, textarea { font: 110%/1.25 monospace; }
 pre.jush { background: #fff; }
+pre.comment { white-space: pre-wrap; }
+form + pre.comment { margin-top: 2em; }
 input, textarea, select { box-sizing: border-box; }
 input[type="image"] { vertical-align: middle; margin-top: -3px; }
 input[type="number"] { -moz-appearance: textfield; }

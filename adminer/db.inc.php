@@ -182,25 +182,43 @@ if ($adminer->homepage()) {
 
 		if (support("routine")) {
 			echo "<h3 id='routines'>" . lang('Routines') . "</h3>\n";
+
 			$routines = routines();
 			if ($routines) {
+				$commentsSupported = $routines[0]["ROUTINE_COMMENT"] !== null;
+
 				echo "<table>\n";
-				echo '<thead><tr><th>' . lang('Name') . '<td>' . lang('Type') . '<td>' . lang('Return type') . "<td></thead>\n";
+				echo '<thead><tr>',
+					'<th>', lang('Name'), '</th><td>', lang('Type'), '</td><td>', lang('Return type'), "</td>";
+					if ($commentsSupported) {
+						echo "<td>", lang('Comment'), "</td>";
+					}
+				echo "<td></td>",
+					"</tr></thead>\n";
+
 				odd('');
 				foreach ($routines as $row) {
-					$name = ($row["SPECIFIC_NAME"] == $row["ROUTINE_NAME"] ? "" : "&name=" . urlencode($row["ROUTINE_NAME"])); // not computed on the pages to be able to print the header first
-					echo '<tr' . odd() . '>';
-					echo '<th><a href="' . h(ME . ($row["ROUTINE_TYPE"] != "PROCEDURE" ? 'callf=' : 'call=') . urlencode($row["SPECIFIC_NAME"]) . $name) . '">' . h($row["ROUTINE_NAME"]) . '</a>';
-					echo '<td>' . h($row["ROUTINE_TYPE"]);
-					echo '<td>' . h($row["DTD_IDENTIFIER"]);
-					echo '<td><a href="' . h(ME . ($row["ROUTINE_TYPE"] != "PROCEDURE" ? 'function=' : 'procedure=') . urlencode($row["SPECIFIC_NAME"]) . $name) . '">' . lang('Alter') . "</a>";
+					// not computed on the pages to be able to print the header first
+					$name = ($row["SPECIFIC_NAME"] == $row["ROUTINE_NAME"] ? "" : "&name=" . urlencode($row["ROUTINE_NAME"]));
+
+					echo '<tr', odd(), '>',
+						'<th><a href="', h(ME . ($row["ROUTINE_TYPE"] != "PROCEDURE" ? 'callf=' : 'call=') . urlencode($row["SPECIFIC_NAME"]) . $name), '">', h($row["ROUTINE_NAME"]), '</a></th>',
+						'<td>', h($row["ROUTINE_TYPE"]), '</td>',
+						'<td>', h($row["DTD_IDENTIFIER"]), '</td>';
+
+					if ($commentsSupported) {
+						echo '<td>', shorten_utf8(preg_replace('~\s{2,}~', " ", trim($row["ROUTINE_COMMENT"])), 50), '</td>';
+					}
+
+					echo '<td><a href="' . h(ME . ($row["ROUTINE_TYPE"] != "PROCEDURE" ? 'function=' : 'procedure=') . urlencode($row["SPECIFIC_NAME"]) . $name) . '">' . lang('Alter') . "</a></td>";
 				}
+
 				echo "</table>\n";
 			}
-			echo '<p class="links">'
-				. (support("procedure") ? '<a href="' . h(ME) . 'procedure=">' . lang('Create procedure') . '</a>' : '')
-				. '<a href="' . h(ME) . 'function=">' . lang('Create function') . "</a>\n"
-			;
+
+			echo '<p class="links">',
+				(support("procedure") ? '<a href="' . h(ME) . 'procedure=">' . lang('Create procedure') . '</a>' : ''),
+				'<a href="' . h(ME) . 'function=">' . lang('Create function') . "</a>\n";
 		}
 
 		if (support("sequence")) {

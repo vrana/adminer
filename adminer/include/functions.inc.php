@@ -830,6 +830,8 @@ function is_utf8($val) {
 * @return string escaped string with appended ...
 */
 function shorten_utf8($string, $length = 80, $suffix = "") {
+	if ($string == "") return $suffix;
+
 	if (!preg_match("(^(" . repeat_pattern("[\t\r\n -\x{10FFFF}]", $length) . ")($)?)u", $string, $match)) { // ~s causes trash in $match[2] under some PHP versions, (.|\n) is slow
 		preg_match("(^(" . repeat_pattern("[\t\r\n -~]", $length) . ")($)?)", $string, $match);
 	}
