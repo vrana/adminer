@@ -13,7 +13,7 @@ class Adminer {
 	* @return string HTML code
 	*/
 	function name() {
-		return "<a href='https://www.adminer.org/'" . target_blank() . " id='h1'>Adminer</a>";
+		return "<a href='https://github.com/pematon/adminer'" . target_blank() . " id='h1'>Adminer</a>";
 	}
 
 	/** Connection parameters
