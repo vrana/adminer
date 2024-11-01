@@ -43,7 +43,8 @@ $routine_languages = routine_languages();
 <?php
 edit_fields($row["fields"], $collations, $routine);
 if (isset($_GET["function"])) {
-	echo "<tbody><tr><th></th>",
+	echo "<tbody><tr>",
+		(support("move_col") ? "<th></th>" : ""),
 		"<th>", lang('Return type'), "</th>";
 
 	edit_type("returns", $row["returns"], $collations, array(), ($jush == "pgsql" ? array("void", "trigger") : array()));
