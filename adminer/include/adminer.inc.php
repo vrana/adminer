@@ -1038,18 +1038,26 @@ class Adminer {
 	*/
 	function navigation($missing) {
 		global $VERSION, $jush, $drivers, $connection;
-		?>
+?>
+
 <h1>
-    <?php echo $this->name(); ?>
-    <?php if ($missing != "auth"): ?>
-	<span class="version">
-		<?php echo $VERSION; ?>
-		<a href="https://github.com/pematon/adminer/releases"<?php echo target_blank(); ?> id="version">
-			<?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?>
-		</a>
-	</span>
+	<?php echo $this->name(); ?>
+
+	<?php if ($missing != "auth"): ?>
+		<span class="version">
+			<?php echo $VERSION; ?>
+			<a href="https://github.com/pematon/adminer/releases"<?php echo target_blank(); ?> id="version">
+				<?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?>
+			</a>
+		</span>
+		<?php
+		if (!isset($_COOKIE["adminer_version"])) {
+			echo script("verifyVersion('" . js_escape(ME) . "', '" . get_token() . "');");
+		}
+		?>
     <?php endif; ?>
 </h1>
+
 <?php
 		if ($missing == "auth") {
 			$output = "";

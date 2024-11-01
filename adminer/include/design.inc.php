@@ -18,10 +18,11 @@ function page_header($title, $error = "", $breadcrumb = [], $title2 = "") {
 
 	// Load Adminer version from file if cookie is missing.
 	$filename = get_temp_dir() . "/adminer.version";
-	if (!$_COOKIE["adminer_version"] && file_exists($filename) && filemtime($filename) + 86400 > time()) { // 86400 - 1 day in seconds
+	if (!$_COOKIE["adminer_version"] && file_exists($filename) && ($lifetime = filemtime($filename) + 86400 - time()) > 0) { // 86400 - 1 day in seconds
 		$data = unserialize(file_get_contents($filename));
+
 		$_COOKIE["adminer_version"] = $data["version"];
-		cookie("adminer_version", $data["version"], 24 * 3600);
+		cookie("adminer_version", $data["version"], $lifetime); // Sync expiration with the file.
 	}
 	?>
 <!DOCTYPE html>
@@ -42,12 +43,12 @@ function page_header($title, $error = "", $breadcrumb = [], $title2 = "") {
 
 <body class="<?php echo lang('ltr'); ?> nojs">
 <script<?php echo nonce(); ?>>
-	document.body.onkeydown = bodyKeydown;
-	document.body.onclick = bodyClick;
-	<?php if (!isset($_COOKIE["adminer_version"])): ?>
-	document.body.onload = function () { verifyVersion('<?php echo $VERSION; ?>', '<?php echo js_escape(ME); ?>', '<?php echo get_token(); ?>') };
-	<?php endif; ?>
-	document.body.className = document.body.className.replace(/ nojs/, ' js');
+	const body = document.body;
+
+	body.onkeydown = bodyKeydown;
+	body.onclick = bodyClick;
+	body.classList.remove("nojs");
+	body.classList.add("js");
 
 	var offlineMessage = '<?php echo js_escape(lang('You are offline.')); ?>';
 	var thousandsSeparator = '<?php echo js_escape(lang(',')); ?>';
@@ -188,9 +189,9 @@ function page_messages($error) {
 /**
  * Prints HTML footer.
  *
- * @param $missing string "auth", "db", "ns"
+ * @param ?string $missing "auth", "db", "ns"
  */
-function page_footer($missing = "")
+function page_footer($missing = null)
 {
 	global $adminer, $token;
 
@@ -200,7 +201,7 @@ function page_footer($missing = "")
 	switch_lang();
 
 	if ($missing != "auth") {
-	?>
+?>
 
 	<div class="logout">
 		<form action="" method="post">

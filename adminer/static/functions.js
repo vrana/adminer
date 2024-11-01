@@ -99,14 +99,14 @@ function cookie(assign, days) {
 /**
  * Verifies current Adminer version.
  *
- * @param currentVersion string
  * @param baseUrl string
  * @param token string
  */
-function verifyVersion(currentVersion, baseUrl, token) {
+function verifyVersion(baseUrl, token) {
+	// Dummy value to prevent repeated verifications after AJAX failure.
 	cookie('adminer_version=0', 1);
 
-	ajax('https://api.github.com/repos/pematon/adminer/releases/latest', function (request) {
+	ajax('https://api.github.com/repos/pematon/adminer/releases/latest', (request) => {
 		const response = JSON.parse(request.responseText);
 
 		const version = response.tag_name.replace(/^\D*/, '');
@@ -115,12 +115,8 @@ function verifyVersion(currentVersion, baseUrl, token) {
 		cookie('adminer_version=' + version, 1);
 
 		const data = 'version=' + version + '&token=' + token;
-		ajax(baseUrl + 'script=version', function () {}, data);
-
-		if (currentVersion !== version) {
-			gid('version').innerText = version;
-		}
-	});
+		ajax(baseUrl + 'script=version', null, data);
+	}, null, null, true);
 }
 
 /** Get value of select
@@ -867,41 +863,51 @@ function fieldChange() {
 
 
 
-/** Create AJAX request
-* @param string
-* @param function (XMLHttpRequest)
-* @param [string]
-* @param [string]
-* @return XMLHttpRequest or false in case of an error
-* @uses offlineMessage
-*/
-function ajax(url, callback, data, message) {
-	var request = (window.XMLHttpRequest ? new XMLHttpRequest() : (window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') : false));
-	if (request) {
-		var ajaxStatus = gid('ajaxstatus');
-		if (message) {
-			ajaxStatus.innerHTML = '<div class="message">' + message + '</div>';
-			ajaxStatus.className = ajaxStatus.className.replace(/ hidden/g, '');
-		} else {
-			ajaxStatus.className += ' hidden';
-		}
-		request.open((data ? 'POST' : 'GET'), url);
-		if (data) {
-			request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-		}
-		request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-		request.onreadystatechange = function () {
-			if (request.readyState === 4) {
-				if (/^2/.test(request.status)) {
-					callback(request);
-				} else {
-					ajaxStatus.innerHTML = (request.status ? request.responseText : '<div class="error">' + offlineMessage + '</div>');
-					ajaxStatus.className = ajaxStatus.className.replace(/ hidden/g, '');
-				}
-			}
-		};
-		request.send(data);
+/**
+ * Sends AJAX request.
+ *
+ * @param {string} url
+ * @param {function|null} onSuccess (XMLHttpRequest)
+ * @param {string|null} data POST data.
+ * @param {string|null} progressMessage
+ * @param {boolean} failSilently
+ * @return XMLHttpRequest or false in case of an error
+ * @uses offlineMessage
+ */
+function ajax(url, onSuccess = null, data = null, progressMessage = null, failSilently = false) {
+	const ajaxStatus = gid('ajaxstatus');
+
+	if (progressMessage) {
+		ajaxStatus.innerHTML = '<div class="message">' + progressMessage + '</div>';
+		ajaxStatus.classList.remove("hidden");
+	} else {
+		ajaxStatus.classList.add("hidden");
 	}
+
+	const request = new XMLHttpRequest();
+	request.open((data ? 'POST' : 'GET'), url);
+	request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+	if (data) {
+		request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	}
+
+	request.onreadystatechange = () => {
+		if (request.readyState === 4) {
+			if (request.status >= 200 && request.status < 300) {
+				if (onSuccess) {
+					onSuccess(request);
+				}
+			} else if (failSilently) {
+				console.error(request.status ? request.responseText : "No internet connection");
+			} else {
+				ajaxStatus.innerHTML = (request.status ? request.responseText : '<div class="error">' + offlineMessage + '</div>');
+				ajaxStatus.classList.remove("hidden");
+			}
+		}
+	};
+
+	request.send(data);
+
 	return request;
 }
 
