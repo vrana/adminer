@@ -111,6 +111,7 @@ table.dragging { background: #eee; }
 .rtl .pages { left: auto; right: 21em; }
 .rtl input.wayoff { left: auto; right: -1000px; }
 .rtl #lang, .rtl #menu { left: auto; right: 0; }
+.rtl pre, .rtl code { direction: ltr; }
 
 @media all and (max-width: 880px) {
 	.pages { left: auto; }
