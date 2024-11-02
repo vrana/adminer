@@ -107,7 +107,7 @@ function min_version($version, $maria_db = "", $connection2 = null) {
 		$server_info = $match[1];
 		$version = $maria_db;
 	}
-	return (version_compare($server_info, $version) >= 0);
+	return $version && version_compare($server_info, $version) >= 0;
 }
 
 /** Get connection charset
@@ -1494,6 +1494,10 @@ function edit_form($table, $fields, $row, $update) {
 			if (preg_match("~time~", $field["type"]) && preg_match('~^CURRENT_TIMESTAMP~i', $value)) {
 				$value = "";
 				$function = "now";
+			}
+			if ($field["type"] == "uuid" && $value == "uuid()") {
+				$value = "";
+				$function = "uuid";
 			}
 			input($field, $value, $function);
 			echo "\n";
