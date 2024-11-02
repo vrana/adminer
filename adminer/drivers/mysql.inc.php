@@ -366,7 +366,7 @@ if (!defined("DRIVER")) {
 	* @return mixed Min_DB or string for error
 	*/
 	function connect() {
-		global $adminer, $types, $structured_types;
+		global $adminer, $types, $structured_types, $edit_functions;
 		$connection = new Min_DB;
 		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
@@ -376,6 +376,14 @@ if (!defined("DRIVER")) {
 				$structured_types[lang('Strings')][] = "json";
 				$types["json"] = 4294967295;
 			}
+      //add uuid data type for Mariadb >= 10.7
+      if (min_version(0, 10.7, $connection)) {
+        //data type
+        $structured_types[lang('Strings')][] = "uuid";
+        $types["uuid"] = 128;
+        //insert/update function
+        $edit_functions[0]['uuid'] = 'uuid';
+      }
 			return $connection;
 		}
 		$return = $connection->error;
