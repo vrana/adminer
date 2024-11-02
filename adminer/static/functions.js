@@ -1128,10 +1128,12 @@ function inputBlur() {
 	}
 }
 
-/** Find submit button used by Enter
-* @param HTMLElement
-* @return HTMLInputElement
-*/
+/**
+ * Finds submit button used by Enter.
+ *
+ * @param {HTMLElement} el
+ * @return {HTMLInputElement}
+ */
 function findDefaultSubmit(el) {
 	if (el.jushTextarea) {
 		el = el.jushTextarea;
@@ -1139,10 +1141,10 @@ function findDefaultSubmit(el) {
 	if (!el.form) {
 		return null;
 	}
-	var inputs = qsa('input', el.form);
-	for (var i = 0; i < inputs.length; i++) {
-		var input = inputs[i];
-		if (input.type === 'submit' && !input.style.zIndex) {
+
+	const inputs = qsa('input', el.form);
+	for (const input of inputs) {
+		if (input.type === 'submit' && !input.classList.contains("wayoff") && !input.style.zIndex) {
 			return input;
 		}
 	}
