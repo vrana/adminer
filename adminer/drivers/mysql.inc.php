@@ -371,16 +371,28 @@ if (!defined("DRIVER")) {
 	* @return mixed Min_DB or string for error
 	*/
 	function connect() {
-		global $adminer, $types, $structured_types;
+		global $adminer, $types, $structured_types, $edit_functions;
+
 		$connection = new Min_DB;
 		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
 			$connection->set_charset(charset($connection));
 			$connection->query("SET sql_quote_show_create = 1, autocommit = 1");
-			if (min_version('5.7.8', 10.2, $connection)) {
+
+			if (min_version('5.7.8', '10.2', $connection)) {
 				$structured_types[lang('Strings')][] = "json";
 				$types["json"] = 4294967295;
 			}
+
+			// UUID data type for Mariadb >= 10.7
+			if (min_version('', '10.7', $connection)) {
+				$structured_types[lang('Strings')][] = "uuid";
+				$types["uuid"] = 128;
+
+				// insert/update function
+				$edit_functions[0]['uuid'] = 'uuid';
+			}
+
 			return $connection;
 		}
 		$return = $connection->error;
