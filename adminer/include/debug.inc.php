@@ -2,9 +2,19 @@
 
 function dump($value)
 {
-	echo "<pre>";
+	$cli = PHP_SAPI == 'cli';
+
+	if (!$cli)  {
+		echo "<pre>";
+	}
+
 	var_export($value);
-	echo "</pre>\n";
+
+	if (!$cli) {
+		echo "</pre>";
+	}
+
+	echo "\n";
 }
 
 function dumpe($value)
