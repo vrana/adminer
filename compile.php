@@ -258,7 +258,7 @@ function php_shrink($input) {
 			$tokens[$i+4] = array(0, ';');
 		}
 		if ($token[0] == T_COMMENT || $token[0] == T_WHITESPACE || ($token[0] == T_DOC_COMMENT && $doc_comment)) {
-			$space = "\n";
+			$space = " ";
 		} else {
 			if ($token[0] == T_DOC_COMMENT) {
 				$doc_comment = true;
@@ -287,9 +287,13 @@ function php_shrink($input) {
 			} elseif ($token[0] === T_VARIABLE && !isset($special_variables[$token[1]])) {
 				$token[1] = '$' . $short_variables[$token[1]];
 			}
-			if (isset($set[substr($output, -1)]) || isset($set[$token[1][0]])) {
+
+			if ($token[0] == T_FUNCTION || $token[0] == T_CLASS || $token[0] == T_INTERFACE || $token[0] == T_TRAIT) {
+				$space = "\n";
+			} elseif (isset($set[substr($output, -1)]) || isset($set[$token[1][0]])) {
 				$space = '';
 			}
+
 			$output .= $space . $token[1];
 			$space = '';
 		}
