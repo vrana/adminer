@@ -197,7 +197,7 @@ function page_footer($missing = null)
 	echo "</div>"; // #content
 
 	echo "<div id='footer'>\n";
-	switch_lang();
+	language_select();
 
 	if ($missing != "auth") {
 ?>

@@ -1,7 +1,6 @@
 <?php
-// not used in a single language version
 
-$langs = array(
+$languages = [
 	'en' => 'English', // Jakub Vrána - https://www.vrana.cz
 	'ar' => 'العربية', // Y.M Amine - Algeria - nbr7@live.fr
 	'bg' => 'Български', // Deyan Delchev
@@ -25,8 +24,8 @@ $langs = array(
 	'ja' => '日本語', // Hitoshi Ozawa - http://sourceforge.jp/projects/oss-ja-jpn/releases/
 	'ka' => 'ქართული', // Saba Khmaladze skhmaladze@uglt.org
 	'ko' => '한국어', // dalli - skcha67@gmail.com
-    'lv' => 'Latviešu', // Kristaps Lediņš - https://krysits.com
-    'lt' => 'Lietuvių', // Paulius Leščinskas - http://www.lescinskas.lt
+	'lv' => 'Latviešu', // Kristaps Lediņš - https://krysits.com
+	'lt' => 'Lietuvių', // Paulius Leščinskas - http://www.lescinskas.lt
 	'ms' => 'Bahasa Melayu', // Pisyek
 	'nl' => 'Nederlands', // Maarten Balliauw - http://blog.maartenballiauw.be
 	'no' => 'Norsk', // Iver Odin Kvello, mupublishing.com
@@ -46,24 +45,59 @@ $langs = array(
 	'vi' => 'Tiếng Việt', // Giang Manh @ manhgd google mail
 	'zh' => '简体中文', // Mr. Lodar, vea - urn2.net - vea.urn2@gmail.com
 	'zh-tw' => '繁體中文', // http://tzangms.com
-);
+];
 
-/** Get current language
-* @return string
-*/
-function get_lang() {
+/**
+ * Returns the list of available languages.
+ * In compiled version, only selected languages are returned.
+ *
+ * @return array
+ */
+function get_available_languages()
+{
+	global $languages;
+	return $languages; // compile: available languages
+}
+
+/**
+ * Converts translation key into the right form.
+ * In compiled version, string keys used in plugins are dynamically translated to numeric keys.
+ *
+ * @param string|int $key
+ *
+ * @return string|int
+ */
+function convert_translation_key($key)
+{
+	return $key; // compile: convert translation key
+}
+
+/**
+ * Returns current language.
+ *
+ * @return string
+ */
+function get_lang()
+{
 	global $LANG;
 	return $LANG;
 }
 
-/** Translate string
-* @param string
-* @param int
-* @return string
-*/
-function lang($idf, $number = null) {
+/**
+ * Returns translated text.
+ *
+ * @param string|int $key Numeric key is used in compiled version.
+ * @param ?int $number
+ *
+ * @return string
+ */
+function lang($key, $number = null)
+{
 	global $LANG, $translations;
-	$translation = ($translations[$idf] ? $translations[$idf] : $idf);
+
+	$key = convert_translation_key($key);
+	$translation = $translations[$key] ?: $key;
+
 	if (is_array($translation)) {
 		$pos = ($number == 1 ? 0
 			: ($LANG == 'cs' || $LANG == 'sk' ? ($number && $number < 5 ? 1 : 2) // different forms for 1, 2-4, other
@@ -74,21 +108,39 @@ function lang($idf, $number = null) {
 			: ($LANG == 'bs' || $LANG == 'ru' || $LANG == 'sr' || $LANG == 'uk' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1 except 11, 2-4 except 12-14, other
 			: 1 // different forms for 1, other
 		))))))); // http://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
+
 		$translation = $translation[$pos];
 	}
+
 	$args = func_get_args();
 	array_shift($args);
+
 	$format = str_replace("%d", "%s", $translation);
 	if ($format != $translation) {
 		$args[0] = format_number($number);
 	}
+
 	return vsprintf($format, $args);
 }
 
-function switch_lang() {
-	global $LANG, $langs;
+function language_select()
+{
+	global $LANG, $languages;
+
+	$available_languages = get_available_languages();
+	if (count($available_languages) == 1) {
+		return;
+	}
+
+	$options = [];
+	foreach ($languages as $language => $title) {
+		if (isset($available_languages[$language])) {
+			$options[$language] = $title;
+		}
+	}
+
 	echo "<div id='lang'><form action='' method='post'>\n";
-	echo lang('Language') . ": " . html_select("lang", $langs, $LANG, "this.form.submit();");
+	echo lang('Language') . ": " . html_select("lang", $options, $LANG, "this.form.submit();");
 	echo " <input type='submit' value='" . lang('Use') . "' class='hidden'>\n";
 	echo "<input type='hidden' name='token' value='" . get_token() . "'>\n"; // $token may be empty in auth.inc.php
 	echo "</form></div>\n";
@@ -96,31 +148,37 @@ function switch_lang() {
 
 if (isset($_POST["lang"]) && verify_token()) { // $error not yet available
 	cookie("adminer_lang", $_POST["lang"]);
+
 	$_SESSION["lang"] = $_POST["lang"]; // cookies may be disabled
-	$_SESSION["translations"] = array(); // used in compiled version
+	$_SESSION["translations"] = []; // used in compiled version
+
 	redirect(remove_from_uri());
 }
 
-$LANG = "en";
-if (isset($langs[$_COOKIE["adminer_lang"]])) {
+$available_languages = get_available_languages();
+$LANG = $available_languages[0];
+
+if (isset($available_languages[$_COOKIE["adminer_lang"]])) {
 	cookie("adminer_lang", $_COOKIE["adminer_lang"]);
 	$LANG = $_COOKIE["adminer_lang"];
-} elseif (isset($langs[$_SESSION["lang"]])) {
+} elseif (isset($available_languages[$_SESSION["lang"]])) {
 	$LANG = $_SESSION["lang"];
 } else {
-	$accept_language = array();
+	$accept_language = [];
 	preg_match_all('~([-a-z]+)(;q=([0-9.]+))?~', str_replace("_", "-", strtolower($_SERVER["HTTP_ACCEPT_LANGUAGE"])), $matches, PREG_SET_ORDER);
 	foreach ($matches as $match) {
 		$accept_language[$match[1]] = (isset($match[3]) ? $match[3] : 1);
 	}
+
 	arsort($accept_language);
 	foreach ($accept_language as $key => $q) {
-		if (isset($langs[$key])) {
+		if (isset($available_languages[$key])) {
 			$LANG = $key;
 			break;
 		}
+
 		$key = preg_replace('~-.*~', '', $key);
-		if (!isset($accept_language[$key]) && isset($langs[$key])) {
+		if (!isset($accept_language[$key]) && isset($available_languages[$key])) {
 			$LANG = $key;
 			break;
 		}

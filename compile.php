@@ -6,8 +6,17 @@ function adminer_errors($errno, $errstr) {
 
 error_reporting(6135); // errors and warnings
 set_error_handler('adminer_errors', E_WARNING);
+
+include dirname(__FILE__) . "/adminer/include/debug.inc.php";
 include dirname(__FILE__) . "/adminer/include/version.inc.php";
 include dirname(__FILE__) . "/vendor/vrana/jsshrink/jsShrink.php";
+
+function is_dev_version()
+{
+	global $VERSION;
+
+	return (bool)preg_match('~-dev$~', $VERSION);
+}
 
 function add_apo_slashes($s) {
 	return addcslashes($s, "\\'");
@@ -21,85 +30,94 @@ function add_quo_slashes($s) {
 	return $return;
 }
 
-function remove_lang($match) {
-	global $translations;
-	$idf = strtr($match[2], array("\\'" => "'", "\\\\" => "\\"));
-	$s = ($translations[$idf] ? $translations[$idf] : $idf);
-	if ($match[3] == ",") { // lang() has parameters
-		return $match[1] . (is_array($s) ? "lang(array('" . implode("', '", array_map('add_apo_slashes', $s)) . "')," : "sprintf('" . add_apo_slashes($s) . "',");
-	}
-	return ($match[1] && $match[4] ? $s : "$match[1]'" . add_apo_slashes($s) . "'$match[4]");
-}
-
-function lang_ids($match) {
+function replace_lang($match) {
 	global $lang_ids;
-	$lang_id = &$lang_ids[stripslashes($match[1])];
-	if ($lang_id === null) {
-		$lang_id = count($lang_ids) - 1;
+
+	$text = stripslashes($match[1]);
+	if (!isset($lang_ids[$text])) {
+		$lang_ids[$text] = count($lang_ids);
 	}
-	return ($_SESSION["lang"] ? $match[0] : "lang($lang_id$match[2]");
+
+	return "lang($lang_ids[$text]$match[2]";
 }
 
 function put_file($match) {
-	global $project, $VERSION, $driver;
-	if (basename($match[2]) == '$LANG.inc.php') {
-		return $match[0]; // processed later
-	}
-	$return = file_get_contents(dirname(__FILE__) . "/$project/$match[2]");
-	if (basename($match[2]) == "file.inc.php") {
-		$return = str_replace("\n// caching headers added in compile.php", (preg_match('~-dev$~', $VERSION) ? '' : '
-if ($_SERVER["HTTP_IF_MODIFIED_SINCE"]) {
-	header("HTTP/1.1 304 Not Modified");
-	exit;
-}
+	global $project, $selected_languages, $driver;
 
-header("Expires: " . gmdate("D, d M Y H:i:s", time() + 365*24*60*60) . " GMT");
-header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-header("Cache-Control: immutable");
-'), $return, $count);
+	$filename = basename($match[2]);
+
+	// Skip debug functions.
+	if ($filename == 'debug.inc.php') {
+		return "";
+	}
+
+	// Language is processed later.
+	if ($filename == '$LANG.inc.php') {
+		return $match[0];
+	}
+
+	$content = file_get_contents(dirname(__FILE__) . "/$project/$match[2]");
+
+	if ($filename == "file.inc.php") {
+		$content = str_replace("\n// caching headers added in compile.php", (is_dev_version() ? '' : '
+			if ($_SERVER["HTTP_IF_MODIFIED_SINCE"]) {
+				header("HTTP/1.1 304 Not Modified");
+				exit;
+			}
+
+			header("Expires: " . gmdate("D, d M Y H:i:s", time() + 365*24*60*60) . " GMT");
+			header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+			header("Cache-Control: immutable");
+			'), $content, $count);
 		if (!$count) {
 			echo "adminer/file.inc.php: Caching headers placeholder not found\n";
 		}
 	}
-	if ($driver && dirname($match[2]) == "../adminer/drivers") {
-		$return = preg_replace('~^if \(isset\(\$_GET\["' . $driver . '"]\)\) \{(.*)^}~ms', '\1', $return);
-	}
-	if (basename($match[2]) != "lang.inc.php" || !$_SESSION["lang"]) {
-		if (basename($match[2]) == "lang.inc.php") {
-			$return = str_replace('function lang($idf, $number = null) {', 'function lang($idf, $number = null) {
-	if (is_string($idf)) { // compiled version uses numbers, string comes from a plugin
-		// English translation is closest to the original identifiers //! pluralized translations are not found
-		$pos = array_search($idf, get_translations("en")); //! this should be cached
-		if ($pos !== false) {
-			$idf = $pos;
-		}
-	}', $return, $count);
-			if (!$count) {
-				echo "lang() not found\n";
-			}
-		}
-		$tokens = token_get_all($return); // to find out the last token
-		return "?>\n$return" . (in_array($tokens[count($tokens) - 1][0], array(T_CLOSE_TAG, T_INLINE_HTML), true) ? "<?php" : "");
-	} elseif (preg_match('~\s*(\$pos = (.+\n).+;)~sU', $return, $match2)) {
-		// single language lang() is used for plural
-		return "function get_lang() {
-	return '$_SESSION[lang]';
-}
 
-function lang(\$translation, \$number = null) {
-	if (is_array(\$translation)) {
-		\$pos = $match2[2]\t\t\t: " . (preg_match("~\\\$LANG == '$_SESSION[lang]'.* \\? (.+)\n~U", $match2[1], $match3) ? $match3[1] : "1") . '
+	if ($driver && dirname($match[2]) == "../adminer/drivers") {
+		$content = preg_replace('~^if \(isset\(\$_GET\["' . $driver . '"]\)\) \{(.*)^}~ms', '\1', $content);
+	}
+
+	if ($filename == "lang.inc.php") {
+		$content = str_replace(
+			'return $key; // compile: convert translation key',
+			'static $en_translations = null;
+
+			// Convert string key used in plugins to compiled numeric key.
+			if (is_string($key)) {
+				if (!$en_translations) {
+					$en_translations = get_translations("en");
+				}
+
+				// Find text in English translations or plurals map.
+				if (($index = array_search($key, $en_translations)) !== false) {
+					$key = $index;
+				} elseif (($index = get_plural_translation_id($key)) !== null) {
+					$key = $index;
+				}
+			}
+
+			return $key;',
+			$content, $count
 		);
-		$translation = $translation[$pos];
+
+		if (!$count) {
+			echo "function lang() not found\n";
+		}
+
+		if ($selected_languages) {
+			$available_languages = array_fill_keys($selected_languages, true);
+			$content = str_replace(
+				'return $languages; // compile: available languages',
+				'return ' . var_export($available_languages, true) . ';',
+				$content
+			);
+		}
 	}
-	$translation = str_replace("%d", "%s", $translation);
-	$number = format_number($number);
-	return sprintf($translation, $number);
-}
-';
-	} else {
-		echo "lang() \$pos not found\n";
-	}
+
+	$tokens = token_get_all($content); // to find out the last token
+
+	return "?>\n$content" . (in_array($tokens[count($tokens) - 1][0], array(T_CLOSE_TAG, T_INLINE_HTML), true) ? "<?php" : "");
 }
 
 function lzw_compress($string) {
@@ -139,45 +157,73 @@ function lzw_compress($string) {
 	return $return . ($rest_length ? chr($rest << (8 - $rest_length)) : "");
 }
 
-function put_file_lang($match) {
-	global $lang_ids, $project, $langs;
-	if ($_SESSION["lang"]) {
-		return "";
-	}
-	$return = "";
-	foreach ($langs as $lang => $val) {
-		include dirname(__FILE__) . "/adminer/lang/$lang.inc.php"; // assign $translations
+function put_file_lang() {
+	global $lang_ids, $selected_languages;
+
+	$languages = array_map(function ($filename) {
+		preg_match('~/([^/.]+)\.inc\.php$~', $filename, $matches);
+		return $matches[1];
+	}, glob(dirname(__FILE__) . "/adminer/lang/*.inc.php"));
+
+	$cases = "";
+	$plurals_map = [];
+
+	foreach ($languages as $language) {
+		// Include only selected language and "en" into single language compilation.
+		// "en" is used for translations in plugins.
+		if ($selected_languages && !in_array($language, $selected_languages) && $language != "en") {
+			continue;
+		}
+
+		// Assign $translations
+		$translations = [];
+		include dirname(__FILE__) . "/adminer/lang/$language.inc.php";
+
 		$translation_ids = array_flip($lang_ids); // default translation
 		foreach ($translations as $key => $val) {
 			if ($val !== null) {
-				$translation_ids[$lang_ids[$key]] = implode("\t", (array) $val);
+				$translation_ids[$lang_ids[$key]] = $val;
+
+				if ($language == "en" && is_array($val)) {
+					$plurals_map[$key] = $lang_ids[$key];
+				}
 			}
 		}
-		$return .= '
-		case "' . $lang . '": $compressed = "' . add_quo_slashes(lzw_compress(implode("\n", $translation_ids))) . '"; break;';
-	}
-	$translations_version = crc32($return);
-	return '$translations = $_SESSION["translations"];
-if ($_SESSION["translations_version"] != ' . $translations_version . ') {
-	$translations = array();
-	$_SESSION["translations_version"] = ' . $translations_version . ';
-}
 
-function get_translations($lang) {
-	switch ($lang) {' . $return . '
+		$cases .= 'case "' . $language . '": $compressed = "' . add_quo_slashes(lzw_compress(json_encode($translation_ids, JSON_UNESCAPED_UNICODE))) . '"; break;';
 	}
-	$translations = array();
-	foreach (explode("\n", lzw_decompress($compressed)) as $val) {
-		$translations[] = (strpos($val, "\t") ? explode("\t", $val) : $val);
-	}
-	return $translations;
-}
 
-if (!$translations) {
-	$translations = get_translations($LANG);
-	$_SESSION["translations"] = $translations;
-}
-';
+	$translations_version = crc32($cases);
+
+	return '
+		function get_translations($lang) {
+			switch ($lang) {' . $cases . '}
+
+			return json_decode(lzw_decompress($compressed), true);
+		}
+
+		function get_plural_translation_id($key) {
+			$plurals_map = ' . var_export($plurals_map, true) . ';
+
+			return isset($plurals_map[$key]) ? $plurals_map[$key] : null;
+		}
+
+		$translations = $_SESSION["translations"];
+
+		if ($_SESSION["translations_version"] != ' . $translations_version . ') {
+			$translations = [];
+			$_SESSION["translations_version"] = ' . $translations_version . ';
+		}
+		if ($_SESSION["translations_language"] != $LANG) {
+			$translations = [];
+			$_SESSION["translations_language"] = $LANG;
+		}
+
+		if (!$translations) {
+			$translations = get_translations($LANG);
+			$_SESSION["translations"] = $translations;
+		}
+	';
 }
 
 function short_identifier($number, $chars) {
@@ -224,7 +270,7 @@ function php_shrink($input) {
 	}
 	$tokens = array_values($tokens);
 
-	foreach ($tokens as $i => $token) {
+	foreach ($tokens as $token) {
 		if ($token[0] === T_VARIABLE && !isset($special_variables[$token[1]])) {
 			$short_variables[$token[1]]++;
 		}
@@ -344,27 +390,31 @@ function number_type() {
 }
 
 $project = "adminer";
-if ($_SERVER["argv"][1] == "editor") {
+array_shift($argv);
+
+if ($argv[0] == "editor") {
 	$project = "editor";
-	array_shift($_SERVER["argv"]);
+	array_shift($argv);
 }
 
 $driver = "";
-if (file_exists(dirname(__FILE__) . "/adminer/drivers/" . $_SERVER["argv"][1] . ".inc.php")) {
-	$driver = $_SERVER["argv"][1];
-	array_shift($_SERVER["argv"]);
+if ($argv && file_exists(dirname(__FILE__) . "/adminer/drivers/" . $argv[0] . ".inc.php")) {
+	$driver = $argv[0];
+	array_shift($argv);
 }
 
-unset($_COOKIE["adminer_lang"]);
-$_SESSION["lang"] = $_SERVER["argv"][1]; // Adminer functions read language from session
-include dirname(__FILE__) . "/adminer/include/lang.inc.php";
-if (isset($langs[$_SESSION["lang"]])) {
-	include dirname(__FILE__) . "/adminer/lang/$_SESSION[lang].inc.php";
-	array_shift($_SERVER["argv"]);
+$selected_languages = [];
+if ($argv) {
+	$params = explode(",", $argv[0]);
+	if (file_exists(dirname(__FILE__) . "/adminer/lang/" . $params[0] . ".inc.php")) {
+		$selected_languages = $params;
+		array_shift($argv);
+	}
 }
+$single_language = count($selected_languages) == 1 ? $selected_languages[0] : null;
 
-if ($_SERVER["argv"][1]) {
-	echo "Usage: php compile.php [editor] [driver] [lang]\n";
+if ($argv) {
+	echo "Usage: php compile.php [editor] [driver] [language]\n";
 	echo "Purpose: Compile adminer[-driver][-lang].php or editor[-driver][-lang].php.\n";
 	exit(1);
 }
@@ -376,7 +426,7 @@ preg_match_all('~\bfunction ([^(]+)~', $file, $matches); //! respect context (ex
 $functions = array_combine($matches[1], $matches[0]);
 //! do not warn about functions without declared support()
 unset($functions["__construct"], $functions["__destruct"], $functions["set_charset"]);
-foreach (glob(dirname(__FILE__) . "/adminer/drivers/" . ($driver ? $driver : "*") . ".inc.php") as $filename) {
+foreach (glob(dirname(__FILE__) . "/adminer/drivers/" . ($driver ?: "*") . ".inc.php") as $filename) {
 	if ($filename != "mysql.inc.php") {
 		$file = file_get_contents($filename);
 		foreach ($functions as $val) {
@@ -389,8 +439,10 @@ foreach (glob(dirname(__FILE__) . "/adminer/drivers/" . ($driver ? $driver : "*"
 
 include dirname(__FILE__) . "/adminer/include/pdo.inc.php";
 include dirname(__FILE__) . "/adminer/include/driver.inc.php";
-$features = array("call" => "routine", "dump", "event", "privileges", "procedure" => "routine", "processlist", "routine", "scheme", "sequence", "status", "trigger", "type", "user" => "privileges", "variables", "view");
-$lang_ids = array(); // global variable simplifies usage in a callback function
+
+$features = ["call" => "routine", "dump", "event", "privileges", "procedure" => "routine", "processlist", "routine", "scheme", "sequence", "status", "trigger", "type", "user" => "privileges", "variables", "view"];
+$lang_ids = []; // global variable simplifies usage in a callback functions
+
 $file = file_get_contents(dirname(__FILE__) . "/$project/index.php");
 if ($driver) {
 	$_GET[$driver] = true; // to load the driver
@@ -413,6 +465,7 @@ if ($driver) {
 	$file = preg_replace('(include "../adminer/drivers/(?!' . preg_quote($driver) . '\.).*\s*)', '', $file);
 }
 $file = preg_replace_callback('~\b(include|require) "([^"]*)";~', 'put_file', $file); // bootstrap.inc.php
+
 if ($driver) {
 	foreach ($features as $feature) {
 		if (!support($feature)) {
@@ -430,19 +483,15 @@ if ($driver) {
 	}, $file);
 	//! strip doc_link() definition
 }
+
 if ($project == "editor") {
 	$file = preg_replace('~;\.\./vendor/vrana/jush/jush\.css~', '', $file);
 	$file = preg_replace('~compile_file\(\'\.\./(vendor/vrana/jush/modules/jush\.js|adminer/static/[^.]+\.gif)[^)]+\)~', "''", $file);
 }
-$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
+
+$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'replace_lang', $file);
 $file = preg_replace_callback('~\b(include|require) "([^"]*\$LANG.inc.php)";~', 'put_file_lang', $file);
 $file = str_replace("\r", "", $file);
-if ($_SESSION["lang"]) {
-	// single language version
-	$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
-	$file = str_replace("switch_lang();\n", "", $file);
-	$file = str_replace('<?php echo $LANG; ?>', $_SESSION["lang"], $file);
-}
 $file = str_replace('<?php echo script_src("static/editing.js?" . filemtime("../adminer/static/editing.js")); ?>' . "\n", "", $file);
 $file = preg_replace('~\s+echo script_src\("\.\./vendor/vrana/jush/modules/jush-(textarea|txt|js|\$jush)\.js"\);~', '', $file);
 $file = str_replace('<link rel="stylesheet" type="text/css" href="../vendor/vrana/jush/jush.css">' . "\n", "", $file);
@@ -456,7 +505,12 @@ $file = preg_replace('~"\.\./vendor/vrana/jush/modules/(jush\.js)"~', $replace, 
 $file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
 $file = php_shrink($file);
 
-@mkdir("temp/export", 0777, true);
-$filename = "temp/export/$project" . (preg_match('~-dev$~', $VERSION) ? "" : "-$VERSION") . ($driver ? "-$driver" : "") . ($_SESSION["lang"] ? "-$_SESSION[lang]" : "") . ".php";
+@mkdir("temp", 0777, true);
+$filename = "temp/$project"
+	. (is_dev_version() ? "" : "-$VERSION")
+	. ($driver ? "-$driver" : "")
+	. ($single_language ? "-$single_language" : "")
+	. ".php";
+
 file_put_contents($filename, $file);
 echo "$filename created (" . strlen($file) . " B).\n";
