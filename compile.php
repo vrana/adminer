@@ -42,14 +42,9 @@ function replace_lang($match) {
 }
 
 function put_file($match) {
-	global $project, $selected_languages, $driver;
+	global $project, $selected_languages, $single_driver;
 
 	$filename = basename($match[2]);
-
-	// Skip debug functions.
-	if ($filename == 'debug.inc.php') {
-		return "";
-	}
 
 	// Language is processed later.
 	if ($filename == '$LANG.inc.php') {
@@ -72,10 +67,6 @@ function put_file($match) {
 		if (!$count) {
 			echo "adminer/file.inc.php: Caching headers placeholder not found\n";
 		}
-	}
-
-	if ($driver && dirname($match[2]) == "../adminer/drivers") {
-		$content = preg_replace('~^if \(isset\(\$_GET\["' . $driver . '"]\)\) \{(.*)^}~ms', '\1', $content);
 	}
 
 	if ($filename == "lang.inc.php") {
@@ -397,11 +388,15 @@ if ($argv[0] == "editor") {
 	array_shift($argv);
 }
 
-$driver = "";
-if ($argv && file_exists(dirname(__FILE__) . "/adminer/drivers/" . $argv[0] . ".inc.php")) {
-	$driver = $argv[0];
-	array_shift($argv);
+$selected_drivers = [];
+if ($argv) {
+	$params = explode(",", $argv[0]);
+	if (file_exists(dirname(__FILE__) . "/adminer/drivers/" . $params[0] . ".inc.php")) {
+		$selected_drivers = $params;
+		array_shift($argv);
+	}
 }
+$single_driver = count($selected_drivers) == 1 ? $selected_drivers[0] : null;
 
 $selected_languages = [];
 if ($argv) {
@@ -419,20 +414,24 @@ if ($argv) {
 	exit(1);
 }
 
-// check function definition in drivers
+// Check function definition in drivers.
 $file = file_get_contents(dirname(__FILE__) . "/adminer/drivers/mysql.inc.php");
 $file = preg_replace('~class Min_Driver.*\n\t}~sU', '', $file);
 preg_match_all('~\bfunction ([^(]+)~', $file, $matches); //! respect context (extension, class)
 $functions = array_combine($matches[1], $matches[0]);
 //! do not warn about functions without declared support()
 unset($functions["__construct"], $functions["__destruct"], $functions["set_charset"]);
-foreach (glob(dirname(__FILE__) . "/adminer/drivers/" . ($driver ?: "*") . ".inc.php") as $filename) {
-	if ($filename != "mysql.inc.php") {
-		$file = file_get_contents($filename);
-		foreach ($functions as $val) {
-			if (!strpos($file, "$val(")) {
-				fprintf(STDERR, "Missing $val in $filename\n");
-			}
+
+foreach (glob(dirname(__FILE__) . "/adminer/drivers/*.inc.php") as $filename) {
+	preg_match('~/([^/.]+)\.inc\.php$~', $filename, $matches);
+	if ($matches[1] == "mysql" || ($selected_drivers && !in_array($matches[1], $selected_drivers))) {
+		continue;
+	}
+
+	$file = file_get_contents($filename);
+	foreach ($functions as $function) {
+		if (!strpos($file, "$function(")) {
+			fprintf(STDERR, "Missing $function in $filename\n");
 		}
 	}
 }
@@ -443,13 +442,17 @@ include dirname(__FILE__) . "/adminer/include/driver.inc.php";
 $features = ["call" => "routine", "dump", "event", "privileges", "procedure" => "routine", "processlist", "routine", "scheme", "sequence", "status", "trigger", "type", "user" => "privileges", "variables", "view"];
 $lang_ids = []; // global variable simplifies usage in a callback functions
 
+// Start with index.php.
 $file = file_get_contents(dirname(__FILE__) . "/$project/index.php");
-if ($driver) {
-	$_GET[$driver] = true; // to load the driver
-	include_once dirname(__FILE__) . "/adminer/drivers/$driver.inc.php";
+
+// Remove including source code for unsupported features in single-driver file.
+if ($single_driver) {
+	$_GET[$single_driver] = true; // to load the driver
+	include_once dirname(__FILE__) . "/adminer/drivers/$single_driver.inc.php";
+
 	foreach ($features as $key => $feature) {
 		if (!support($feature)) {
-			if (!is_int($key)) {
+			if (is_string($key)) {
 				$feature = $key;
 			}
 			$file = str_replace("} elseif (isset(\$_GET[\"$feature\"])) {\n\tinclude \"./$feature.inc.php\";\n", "", $file);
@@ -459,28 +462,39 @@ if ($driver) {
 		$file = str_replace("if (isset(\$_GET[\"callf\"])) {\n\t\$_GET[\"call\"] = \$_GET[\"callf\"];\n}\nif (isset(\$_GET[\"function\"])) {\n\t\$_GET[\"procedure\"] = \$_GET[\"function\"];\n}\n", "", $file);
 	}
 }
-$file = preg_replace_callback('~\b(include|require) "([^"]*)";~', 'put_file', $file);
-$file = str_replace('include "../adminer/include/coverage.inc.php";', '', $file);
-if ($driver) {
-	$file = preg_replace('(include "../adminer/drivers/(?!' . preg_quote($driver) . '\.).*\s*)', '', $file);
-}
-$file = preg_replace_callback('~\b(include|require) "([^"]*)";~', 'put_file', $file); // bootstrap.inc.php
 
-if ($driver) {
+// Compile files included into the index.php.
+$file = preg_replace_callback('~\b(include|require) "([^"]*)";~', 'put_file', $file);
+
+// Remove including debug files.
+$file = str_replace('include "../adminer/include/debug.inc.php";', '', $file);
+$file = str_replace('include "../adminer/include/coverage.inc.php";', '', $file);
+
+// Remove including unwanted drivers.
+if ($selected_drivers) {
+	$file = preg_replace_callback('~include "../adminer/drivers/([^.]+).*\n~', function ($match) use ($selected_drivers) {
+		return in_array($match[1], $selected_drivers) ? $match[0] : "";
+	}, $file);
+}
+
+// Compile files included into the bootstrap.inc.php.
+$file = preg_replace_callback('~\b(include|require) "([^"]*)";~', 'put_file', $file);
+
+if ($single_driver) {
+	// Remove source code for unsupported features.
 	foreach ($features as $feature) {
 		if (!support($feature)) {
 			$file = preg_replace("((\t*)" . preg_quote('if (support("' . $feature . '")') . ".*\n\\1\\})sU", '', $file);
 		}
 	}
-	if (count($drivers) == 1) {
-		$file = str_replace('<?php echo html_select("auth[driver]", $drivers, DRIVER) . "\n"; ?>', "<input type='hidden' name='auth[driver]' value='" . ($driver == "mysql" ? "server" : $driver) . "'>" . reset($drivers), $file);
-	}
-	$file = preg_replace('(;\.\./vendor/vrana/jush/modules/jush-(?!textarea\.|txt\.|js\.|' . preg_quote($driver == "mysql" ? "sql" : $driver) . '\.)[^.]+.js)', '', $file);
-	$file = preg_replace_callback('~doc_link\(array\((.*)\)\)~sU', function ($match) use ($driver) {
+
+	$file = preg_replace('(;\.\./vendor/vrana/jush/modules/jush-(?!textarea\.|txt\.|js\.|' . preg_quote($single_driver == "mysql" ? "sql" : $single_driver) . '\.)[^.]+.js)', '', $file);
+	$file = preg_replace_callback('~doc_link\(array\((.*)\)\)~sU', function ($match) use ($single_driver) {
 		list(, $links) = $match;
-		$links = preg_replace("~'(?!(" . ($driver == "mysql" ? "sql|mariadb" : $driver) . ")')[^']*' => [^,]*,?~", '', $links);
+		$links = preg_replace("~'(?!(" . ($single_driver == "mysql" ? "sql|mariadb" : $single_driver) . ")')[^']*' => [^,]*,?~", '', $links);
 		return (trim($links) ? "doc_link(array($links))" : "''");
 	}, $file);
+
 	//! strip doc_link() definition
 }
 
@@ -491,6 +505,7 @@ if ($project == "editor") {
 
 $file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'replace_lang', $file);
 $file = preg_replace_callback('~\b(include|require) "([^"]*\$LANG.inc.php)";~', 'put_file_lang', $file);
+
 $file = str_replace("\r", "", $file);
 $file = str_replace('<?php echo script_src("static/editing.js?" . filemtime("../adminer/static/editing.js")); ?>' . "\n", "", $file);
 $file = preg_replace('~\s+echo script_src\("\.\./vendor/vrana/jush/modules/jush-(textarea|txt|js|\$jush)\.js"\);~', '', $file);
@@ -508,7 +523,7 @@ $file = php_shrink($file);
 @mkdir("temp", 0777, true);
 $filename = "temp/$project"
 	. (is_dev_version() ? "" : "-$VERSION")
-	. ($driver ? "-$driver" : "")
+	. ($single_driver ? "-$single_driver" : "")
 	. ($single_language ? "-$single_language" : "")
 	. ".php";
 

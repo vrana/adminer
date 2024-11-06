@@ -7,13 +7,13 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerDumpAlter {
-	
+
 	function dumpFormat() {
-		if (DRIVER == 'server') {
+		if (DRIVER == 'server' || DRIVER == 'mysql') {
 			return array('sql_alter' => 'Alter');
 		}
 	}
-	
+
 	function _database() {
 		// drop old tables
 		$query = "SELECT TABLE_NAME, ENGINE, TABLE_COLLATION, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()";
@@ -52,7 +52,7 @@ DROP PROCEDURE adminer_alter;
 SELECT @adminer_alter;
 ";
 	}
-	
+
 	function dumpDatabase($db) {
 		static $first = true;
 		if ($_POST["format"] == "sql_alter") {
@@ -66,7 +66,7 @@ SELECT @adminer_alter;
 			return true;
 		}
 	}
-	
+
 	function dumpTable($table, $style, $is_view = 0) {
 		if ($_POST["format"] == "sql_alter") {
 			$create = create_sql($table, $_POST["auto_increment"], $style);
@@ -146,7 +146,7 @@ DROP PROCEDURE adminer_alter;
 			return true;
 		}
 	}
-	
+
 	function dumpData() {
 		if ($_POST["format"] == "sql_alter") {
 			return true;

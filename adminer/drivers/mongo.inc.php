@@ -205,9 +205,6 @@ if (isset($_GET["mongo"])) {
 			return $connection->_db->selectCollection($_GET["select"])->count($where);
 		}
 
-		$operators = array("=");
-		$operator_regexp = null;
-
 	} elseif (class_exists('MongoDB\Driver\Manager')) {
 		class Min_DB {
 			var $extension = "MongoDB", $server_info = MONGODB_VERSION, $affected_rows, $error, $last_id;
@@ -556,30 +553,6 @@ if (isset($_GET["mongo"])) {
 			}
 			return $data;
 		}
-
-		$operators = array(
-			"=",
-			"!=",
-			">",
-			"<",
-			">=",
-			"<=",
-			"regex",
-			"(f)=",
-			"(f)!=",
-			"(f)>",
-			"(f)<",
-			"(f)>=",
-			"(f)<=",
-			"(date)=",
-			"(date)!=",
-			"(date)>",
-			"(date)<",
-			"(date)>=",
-			"(date)<=",
-		);
-
-		$operator_regexp = 'regex';
 	}
 
 	function table($idf) {
@@ -736,7 +709,38 @@ if (isset($_GET["mongo"])) {
 	}
 
 	function driver_config() {
-		global $operators, $operator_regexp;
+		if (class_exists('MongoDB')) {
+			$operators = ["="];
+			$operator_regexp = null;
+		} elseif (class_exists('MongoDB\Driver\Manager')) {
+			$operators = [
+				"=",
+				"!=",
+				">",
+				"<",
+				">=",
+				"<=",
+				"regex",
+				"(f)=",
+				"(f)!=",
+				"(f)>",
+				"(f)<",
+				"(f)>=",
+				"(f)<=",
+				"(date)=",
+				"(date)!=",
+				"(date)>",
+				"(date)<",
+				"(date)>=",
+				"(date)<=",
+			];
+
+			$operator_regexp = 'regex';
+		} else {
+			$operators = ["="];
+			$operator_regexp = null;
+		}
+
 		return array(
 			'possible_drivers' => array("mongo", "mongodb"),
 			'jush' => "mongo",

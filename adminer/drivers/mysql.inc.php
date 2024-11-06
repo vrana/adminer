@@ -1,8 +1,8 @@
 <?php
-$drivers = array("server" => "MySQL") + $drivers;
+$drivers["mysql"] = "MySQL";
 
-if (!defined("DRIVER")) {
-	define("DRIVER", "server"); // server - backwards compatibility
+if (isset($_GET["mysql"])) {
+	define("DRIVER", "mysql");
 	// MySQLi supports everything, MySQL doesn't support multiple result sets, PDO_MySQL doesn't support orgtable
 	if (extension_loaded("mysqli")) {
 		class Min_DB extends MySQLi {

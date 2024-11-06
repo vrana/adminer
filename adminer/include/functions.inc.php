@@ -614,7 +614,7 @@ function auth_url($vendor, $server, $username, $db = null) {
 	preg_match('~([^?]*)\??(.*)~', remove_from_uri(implode("|", array_keys($drivers)) . "|username|" . ($db !== null ? "db|" : "") . session_name()), $match);
 	return "$match[1]?"
 		. (sid() ? SID . "&" : "")
-		. ($vendor != "server" || $server != "" ? urlencode($vendor) . "=" . urlencode($server) . "&" : "")
+		. urlencode($vendor) . "=" . urlencode($server) . "&"
 		. "username=" . urlencode($username)
 		. ($db != "" ? "&db=" . urlencode($db) : "")
 		. ($match[2] ? "&$match[2]" : "")

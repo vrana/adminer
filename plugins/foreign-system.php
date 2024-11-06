@@ -7,9 +7,9 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerForeignSystem {
-	
+
 	function foreignKeys($table) {
-		if (DRIVER == "server" && DB == "mysql") {
+		if ((DRIVER == "server" || DRIVER == "mysql") && DB == "mysql") {
 			switch ($table) {
 				case "columns_priv": return array(array("table" => "user", "source" => array("Host", "User"), "target" => array("Host", "User")));
 				case "db": return array(array("table" => "user", "source" => array("Host", "User"), "target" => array("Host", "User")));
@@ -52,5 +52,5 @@ class AdminerForeignSystem {
 			}
 		}
 	}
-	
+
 }

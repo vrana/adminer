@@ -73,39 +73,73 @@ if (function_exists("get_magic_quotes_runtime") && get_magic_quotes_runtime()) {
 @ini_set("zend.ze1_compatibility_mode", false); // @ - deprecated
 @ini_set("precision", 15); // @ - can be disabled, 15 - internal PHP precision
 
+// Migration for backward compatibility. This will keep MySQL users logged in.
+if (isset($_GET["username"])) {
+	// Old 'server' URL param.
+	if (isset($_GET["server"])) {
+		$_GET["mysql"] = $_GET["server"];
+		unset($_GET["server"]);
+	}
+
+	// No URL param for any driver.
+	$driver_params = array_filter(["mysql", "pgsql", "sqlite", "sqlite2", "oracle", "mssql", "mongo", "clickhouse", "elastic", "elastic5", "firebird", "simpledb"], function ($driver) {
+		return isset($_GET[$driver]);
+	});
+	if (!$driver_params) {
+		$_GET["mysql"] = "";
+	}
+
+	// Migrate session data.
+	if (isset($_SESSION["pwds"]["server"])) {
+		foreach (["pwds", "db", "dbs", "queries"] as $key) {
+			if (isset($_SESSION[$key]["server"])) {
+				$_SESSION[$key]["mysql"] = $_SESSION[$key]["server"];
+				unset($_SESSION[$key]["server"]);
+			}
+		}
+	}
+}
+
 include "../adminer/include/lang.inc.php";
 include "../adminer/lang/$LANG.inc.php";
+
 include "../adminer/include/pdo.inc.php";
 include "../adminer/include/driver.inc.php";
-include "../adminer/drivers/sqlite.inc.php";
+
+include "../adminer/drivers/mysql.inc.php";
 include "../adminer/drivers/pgsql.inc.php";
+include "../adminer/drivers/sqlite.inc.php";
 include "../adminer/drivers/oracle.inc.php";
 include "../adminer/drivers/mssql.inc.php";
 include "../adminer/drivers/mongo.inc.php";
+
 include "./include/adminer.inc.php";
-$adminer = (function_exists('adminer_object') ? adminer_object() : new Adminer);
-include "../adminer/drivers/mysql.inc.php"; // must be included as last driver
+$adminer = (function_exists('adminer_object') ? adminer_object() : new Adminer());
 
-$config = driver_config();
-$possible_drivers = $config['possible_drivers'];
-$jush = $config['jush'];
-$types = $config['types'];
-$structured_types = $config['structured_types'];
-$unsigned = $config['unsigned'];
-$operators = $config['operators'];
-$operator_like = $config['operator_like'];
-$operator_regexp = $config['operator_regexp'];
-$functions = $config['functions'];
-$grouping = $config['grouping'];
-$edit_functions = $config['edit_functions'];
+if (defined("DRIVER")) {
+	$config = driver_config();
+	$possible_drivers = $config['possible_drivers'];
+	$jush = $config['jush'];
+	$types = $config['types'];
+	$structured_types = $config['structured_types'];
+	$unsigned = $config['unsigned'];
+	$operators = $config['operators'];
+	$operator_like = $config['operator_like'];
+	$operator_regexp = $config['operator_regexp'];
+	$functions = $config['functions'];
+	$grouping = $config['grouping'];
+	$edit_functions = $config['edit_functions'];
 
-if ($adminer->operators === null) {
-	$adminer->operators = $operators;
-	$adminer->operator_like = $operator_like;
-	$adminer->operator_regexp = $operator_regexp;
+	if ($adminer->operators === null) {
+		$adminer->operators = $operators;
+		$adminer->operator_like = $operator_like;
+		$adminer->operator_regexp = $operator_regexp;
+	}
+} else {
+	define("DRIVER", null);
 }
 
-define("SERVER", $_GET[DRIVER]); // read from pgsql=localhost
+define("SERVER", DRIVER ? $_GET[DRIVER] : null); // read from pgsql=localhost
 define("DB", $_GET["db"]); // for the sake of speed and size
 define("ME", preg_replace('~\?.*~', '', relative_uri()) . '?'
 	. (sid() ? SID . '&' : '')
