@@ -823,7 +823,7 @@ AND typelem = 0"
 			}
 		}
 
-		// coments for table & fields
+		// comments for table & fields
 		if ($status['Comment']) {
 			$return .= "\n\nCOMMENT ON TABLE " . idf_escape($status['nspname']) . "." . idf_escape($status['Name']) . " IS " . q($status['Comment']) . ";";
 		}

@@ -32,7 +32,7 @@ if (!$error && $_POST) {
 	$query = (isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . table($PROCEDURE) . "(" . implode(", ", $call) . ")";
 	$start = microtime(true);
 	$result = $connection->multi_query($query);
-	$affected = $connection->affected_rows; // getting warnigns overwrites this
+	$affected = $connection->affected_rows; // getting warnings overwrites this
 	echo $adminer->selectQuery($query, $start, !$result);
 	
 	if (!$result) {

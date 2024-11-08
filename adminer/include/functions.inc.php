@@ -328,7 +328,7 @@ function ini_bool($ini) {
 	return (preg_match('~^(on|true|yes)$~i', $val) || (int) $val); // boolean values set by php_value are strings
 }
 
-/** Check if SID is neccessary
+/** Check if SID is necessary
 * @return bool
 */
 function sid() {

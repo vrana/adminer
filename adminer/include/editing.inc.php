@@ -558,7 +558,7 @@ function doc_link($paths, $text = "<sup>?</sup>") {
 * @return string
 */
 function ob_gzencode($string) {
-	// ob_start() callback recieves an optional parameter $phase but gzencode() accepts optional parameter $level
+	// ob_start() callback receives an optional parameter $phase but gzencode() accepts optional parameter $level
 	return gzencode($string);
 }
 

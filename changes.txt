@@ -471,7 +471,7 @@ Allow exporting views dependent on each other (bug #214)
 Fix resetting search (bug #318)
 Don't use LIMIT 1 if updating unique row (bug #320)
 Restrict editing rows without unique identifier to search results
-Display navigation bellow main content on mobile browsers
+Display navigation below main content on mobile browsers
 Get number of rows on export page asynchronously
 Respect 'whole result' even if some rows are checked (bug #339 since Adminer 3.7.0)
 MySQL: Optimize create table page and Editor navigation
