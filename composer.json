@@ -42,6 +42,7 @@
         "ext-mysql": "*",
         "ext-pgsql": "*",
         "ext-mongo": "*",
+        "ext-mongodb": "*",
         "ext-sqlsrv": "*",
         "ext-mssql": "*",
         "ext-oci8": "*",
