@@ -24,11 +24,26 @@ if (isset($_GET["mssql"])) {
 
 			function connect($server, $username, $password) {
 				global $adminer;
+
+				$connection_info = [
+					"UID" => $username,
+					"PWD" => $password,
+					"CharacterSet" => "UTF-8",
+				];
+
+				$ssl = $adminer->connectSsl();
+				if (isset($ssl["Encrypt"])) {
+					$connection_info["Encrypt"] = $ssl["Encrypt"];
+				}
+				if (isset($ssl["TrustServerCertificate"])) {
+					$connection_info["TrustServerCertificate"] = $ssl["TrustServerCertificate"];
+				}
+
 				$db = $adminer->database();
-				$connection_info = array("UID" => $username, "PWD" => $password, "CharacterSet" => "UTF-8");
 				if ($db != "") {
 					$connection_info["Database"] = $db;
 				}
+
 				$this->_link = @sqlsrv_connect(preg_replace('~:~', ',', $server), $connection_info);
 				if ($this->_link) {
 					$info = sqlsrv_server_info($this->_link);
@@ -36,6 +51,7 @@ if (isset($_GET["mssql"])) {
 				} else {
 					$this->_get_error();
 				}
+
 				return (bool) $this->_link;
 			}
 
