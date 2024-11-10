@@ -600,6 +600,11 @@ if (isset($_GET["mongo"])) {
 		global $adminer;
 		$connection = new Min_DB;
 		list($server, $username, $password) = $adminer->credentials();
+
+		if ($server == "") {
+			$server = "localhost:27017";
+		}
+
 		$options = array();
 		if ($username . $password != "") {
 			$options["username"] = $username;
