@@ -32,7 +32,6 @@ $translations = array(
 	'Create database' => 'ডাটাবেজ তৈরী করুন',
 	'SQL command' => 'SQL-কমান্ড',
 	'Logout' => 'লগআউট',
-	'database' => 'ডাটাবেজ',
 	'Use' => 'ব্যবহার',
 	'No tables.' => 'কোন টেবিল নাই।',
 	'select' => 'নির্বাচন',
@@ -70,7 +69,6 @@ $translations = array(
 	'Unable to select the table' => 'টেবিল নির্বাচন করতে অক্ষম',
 	'Invalid CSRF token. Send the form again.' => 'অবৈধ CSRF টোকেন। ফর্মটি আবার পাঠান।',
 	'Comment' => 'মন্তব্য',
-	'Default values' => 'ডিফল্ট মান',
 	'%d byte(s)' => array('%d বাইট', '%d বাইটসমূহ'),
 	'No commands to execute.' => 'সম্পাদন করার মত কোন নির্দেশ নেই।',
 	'Unable to upload a file.' => 'ফাইল আপলোড করা সম্ভব হচ্ছে না।',
@@ -313,4 +311,10 @@ $translations = array(
 	'No' => null,
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

@@ -32,7 +32,6 @@ $translations = array(
 	'Create database' => 'Crea una base de dades',
 	'SQL command' => 'Ordre SQL',
 	'Logout' => 'Desconnecta',
-	'database' => 'base de dades',
 	'Use' => 'Utilitza',
 	'No tables.' => 'No hi ha cap taula.',
 	'select' => 'registres',
@@ -70,7 +69,6 @@ $translations = array(
 	'Unable to select the table' => 'Impossible seleccionar la taula',
 	'Invalid CSRF token. Send the form again.' => 'Token CSRF invàlid. Torna a enviar el formulari.',
 	'Comment' => 'Comentari',
-	'Default values' => 'Valors per defecte',
 	'%d byte(s)' => array('%d byte', '%d bytes'),
 	'No commands to execute.' => 'Cap comanda per executar.',
 	'Unable to upload a file.' => 'Impossible adjuntar el fitxer.',
@@ -313,4 +311,10 @@ $translations = array(
 	'No' => null,
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

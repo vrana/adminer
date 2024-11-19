@@ -77,7 +77,6 @@ $translations = array(
 	'Data' => 'Dữ liệu',
 
 	'Database' => 'Cơ sở dữ liệu',
-	'database' => 'cơ sở dữ liệu',
 	'Use' => 'Sử dụng',
 	'Select database' => 'Chọn CSDL',
 	'Invalid database.' => 'CSDL sai.',
@@ -162,7 +161,6 @@ $translations = array(
 	'Auto Increment' => 'Tăng tự động',
 	'Options' => 'Tuỳ chọn',
 	'Comment' => 'Chú thích',
-	'Default values' => 'Giá trị mặc định',
 	'Drop' => 'Xoá',
 	'Are you sure?' => 'Bạn có chắc',
 	'Size' => 'Kích thước',
@@ -357,4 +355,10 @@ $translations = array(
 	'No' => 'Không',
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

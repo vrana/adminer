@@ -78,7 +78,6 @@ $translations = array(
 	'Data' => 'داده',
 
 	'Database' => 'پایگاه داده',
-	'database' => 'پایگاه داده',
 	'Use' => 'استفاده',
 	'Select database' => 'انتخاب پایگاه داده',
 	'Invalid database.' => 'پایگاه داده نامعتبر.',
@@ -165,7 +164,6 @@ $translations = array(
 	'Options' => 'اختیارات',
 	'Comment' => 'توضیح',
 	'Default value' => 'مقدار پیش فرض',
-	'Default values' => 'مقادیر پیش فرض',
 	'Drop' => 'حذف',
 	'Are you sure?' => 'مطمئن هستید؟',
 	'Size' => 'حجم',
@@ -358,4 +356,10 @@ $translations = array(
 	'No' => null,
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

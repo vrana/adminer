@@ -21,6 +21,8 @@ $translations = array(
 	'Language' => 'Jazyk',
 	'Invalid CSRF token. Send the form again.' => 'Neplatný token CSRF. Odešlete formulář znovu.',
 	'If you did not send this request from Adminer then close this page.' => 'Pokud jste tento požadavek neposlali z Adminera, tak tuto stránku zavřete.',
+	'No driver' => 'Žádný ovladač',
+	'Database driver not found.' => 'Databázový ovladač se nenašel.',
 	'No extension' => 'Žádné rozšíření',
 	'None of the supported PHP extensions (%s) are available.' => 'Není dostupné žádné z podporovaných PHP rozšíření (%s).',
 	'Connecting to privileged ports is not allowed.' => 'Připojování k privilegovaným portům není povoleno.',
@@ -89,7 +91,6 @@ $translations = array(
 	'Data' => 'Data',
 
 	'Database' => 'Databáze',
-	'database' => 'databáze',
 	'DB' => 'DB',
 	'Use' => 'Vybrat',
 	'Select database' => 'Vybrat databázi',
@@ -178,7 +179,6 @@ $translations = array(
 	'Options' => 'Volby',
 	'Comment' => 'Komentář',
 	'Default value' => 'Výchozí hodnota',
-	'Default values' => 'Výchozí hodnoty',
 	'Drop' => 'Odstranit',
 	'Drop %s?' => 'Odstranit %s?',
 	'Are you sure?' => 'Opravdu?',
@@ -327,12 +327,15 @@ $translations = array(
 	'Please use one of the extensions %s.' => 'Prosím použijte jednu z koncovek %s.',
 
 	// PostgreSQL and MS SQL schema support
+	'Schema' => 'Schéma',
+	'Schemas' => 'Schémy',
+	'No schemas.' => 'Žádné schémy.',
+	'Show schema' => 'Zobrazit schéma',
 	'Alter schema' => 'Pozměnit schéma',
 	'Create schema' => 'Vytvořit schéma',
 	'Schema has been dropped.' => 'Schéma bylo odstraněno.',
 	'Schema has been created.' => 'Schéma bylo vytvořeno.',
 	'Schema has been altered.' => 'Schéma bylo změněno.',
-	'Schema' => 'Schéma',
 	'Invalid schema.' => 'Nesprávné schéma.',
 
 	// PostgreSQL sequences support

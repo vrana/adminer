@@ -32,7 +32,6 @@ $translations = array(
 	'Create database' => 'Loo uus andmebaas',
 	'SQL command' => 'SQL-Päring',
 	'Logout' => 'Logi välja',
-	'database' => 'andmebaas',
 	'Use' => 'Kasuta',
 	'No tables.' => 'Tabeleid ei leitud.',
 	'select' => 'kuva',
@@ -70,7 +69,6 @@ $translations = array(
 	'Unable to select the table' => 'Tabeli valimine ebaõnnestus',
 	'Invalid CSRF token. Send the form again.' => 'Sobimatu CSRF, palun postitage vorm uuesti.',
 	'Comment' => 'Kommentaar',
-	'Default values' => 'Vaikimisi väärtused',
 	'%d byte(s)' => array('%d bait', '%d baiti'),
 	'No commands to execute.' => 'Käsk puudub.',
 	'Unable to upload a file.' => 'Faili üleslaadimine pole võimalik.',
@@ -313,4 +311,10 @@ $translations = array(
 	'No' => null,
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

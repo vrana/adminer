@@ -32,7 +32,6 @@ $translations = array(
 	'Create database' => 'สร้างฐานข้อมูล',
 	'SQL command' => 'คำสั่ง SQL',
 	'Logout' => 'ออกจากระบบ',
-	'database' => 'ฐานข้อมูล',
 	'Use' => 'ใช้งาน',
 	'No tables.' => 'ไม่พบตาราง.',
 	'select' => 'เลือก',
@@ -70,7 +69,6 @@ $translations = array(
 	'Unable to select the table' => 'ไม่สามารถเลือกตารางได้',
 	'Invalid CSRF token. Send the form again.' => 'เครื่องหมาย CSRF ไม่ถูกต้อง ส่งข้อมูลใหม่อีกครั้ง.',
 	'Comment' => 'หมายเหตุ',
-	'Default values' => 'ค่าเริ่มต้น',
 	'%d byte(s)' => '%d ไบท์',
 	'No commands to execute.' => 'ไม่มีคำสั่งที่จะประมวลผล.',
 	'Unable to upload a file.' => 'ไม่สามารถอัปโหลดไฟล์ได้.',
@@ -313,4 +311,10 @@ $translations = array(
 	'No' => null,
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

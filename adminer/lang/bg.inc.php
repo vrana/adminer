@@ -17,6 +17,8 @@ $translations = array(
 	'Language' => 'Език',
 	'Invalid CSRF token. Send the form again.' => 'Невалиден шифроващ ключ. Попълнете и изпратете формуляра отново.',
 	'If you did not send this request from Adminer then close this page.' => 'Ако не сте изпратили тази заявка през Adminer, затворете тази страница.',
+	'No driver' => null,
+	'Database driver not found.' => null,
 	'No extension' => 'Няма разширение',
 	'None of the supported PHP extensions (%s) are available.' => 'Никое от поддържаните PHP разширения (%s) не е налично.',
 	'Session support must be enabled.' => 'Поддръжката на сесии трябва да е разрешена.',
@@ -79,7 +81,6 @@ $translations = array(
 	'Data' => 'Данни',
 
 	'Database' => 'База данни',
-	'database' => 'база данни',
 	'Use' => 'Избор',
 	'Select database' => 'Избор на база данни',
 	'Invalid database.' => 'Невалидна база данни.',
@@ -166,7 +167,6 @@ $translations = array(
 	'Options' => 'Опции',
 	'Comment' => 'Коментар',
 	'Default value' => 'Стойност по подразбиране',
-	'Default values' => 'Стойности по подразбиране',
 	'Drop' => 'Премахване',
 	'Are you sure?' => 'Сигурни ли сте?',
 	'Size' => 'Големина',
@@ -314,12 +314,15 @@ $translations = array(
 	'Please use one of the extensions %s.' => 'Моля, използвайте някое от разширенията %s.',
 
 	// PostgreSQL and MS SQL schema support
+	'Schema' => 'Схема',
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
 	'Alter schema' => 'Промяна на схемата',
 	'Create schema' => 'Създаване на схема',
 	'Schema has been dropped.' => 'Схемата беше премахната.',
 	'Schema has been created.' => 'Схемата беше създадена.',
 	'Schema has been altered.' => 'Схемата беше променена.',
-	'Schema' => 'Схема',
 	'Invalid schema.' => 'Невалидна схема.',
 
 	// PostgreSQL sequences support

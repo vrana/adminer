@@ -80,7 +80,6 @@ $translations = array(
 	'Data' => 'Data',
 
 	'Database' => 'Tietokanta',
-	'database' => 'tietokanta',
 	'Use' => 'Käytä',
 	'Select database' => 'Valitse tietokanta',
 	'Invalid database.' => 'Tietokanta ei kelpaa.',
@@ -167,7 +166,6 @@ $translations = array(
 	'Options' => 'Asetukset',
 	'Comment' => 'Kommentit',
 	'Default value' => 'Oletusarvo',
-	'Default values' => 'Oletusarvot',
 	'Drop' => 'Poista',
 	'Are you sure?' => 'Oletko varma?',
 	'Size' => 'Koko',
@@ -358,4 +356,10 @@ $translations = array(
 	'No' => 'Ei',
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

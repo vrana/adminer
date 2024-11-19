@@ -74,7 +74,6 @@ $translations = array(
 	'Data' => 'Duomenys',
 
 	'Database' => 'Duomenų bazė',
-	'database' => 'duomenų bazė',
 	'Use' => 'Naudoti',
 	'Select database' => 'Pasirinkti duomenų bazę',
 	'Invalid database.' => 'Neteisinga duomenų bazė.',
@@ -158,7 +157,6 @@ $translations = array(
 	'Auto Increment' => 'Auto Increment',
 	'Options' => 'Nustatymai',
 	'Comment' => 'Komentaras',
-	'Default values' => 'Reikšmės pagal nutylėjimą',
 	'Drop' => 'Pašalinti',
 	'Are you sure?' => 'Tikrai?',
 	'Move up' => 'Perkelti į viršų',
@@ -358,4 +356,10 @@ $translations = array(
 	'No' => null,
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

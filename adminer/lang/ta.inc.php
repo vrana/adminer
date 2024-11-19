@@ -32,7 +32,6 @@ $translations = array(
 	'Create database' => 'த‌க‌வ‌ல்த‌ள‌த்தை உருவாக்கு',
 	'SQL command' => 'SQL க‌ட்ட‌ளை',
 	'Logout' => 'வெளியேறு',
-	'database' => 'த‌க‌வ‌ல்த‌ள‌ம்',
 	'Use' => 'உப‌யோகி',
 	'No tables.' => 'அட்ட‌வ‌ணை இல்லை.',
 	'select' => 'தேர்வு செய்',
@@ -69,7 +68,6 @@ $translations = array(
 	'Unable to select the table' => 'அட்ட‌வ‌ணையை தேர்வு செய்ய‌ முடிய‌வில்லை',
 	'Invalid CSRF token. Send the form again.' => 'CSRF டோக்க‌ன் செல்லாது. ப‌டிவ‌த்தை மீண்டும் அனுப்ப‌வும்.',
 	'Comment' => 'குறிப்பு',
-	'Default values' => 'உள்ளிருக்கும் (Default) ம‌திப்புக‌ள் ',
 	'%d byte(s)' => array('%d பைட்', '%d பைட்டுக‌ள்'),
 	'No commands to execute.' => 'செய‌ல் ப‌டுத்த‌ எந்த‌ க‌ட்ட‌ளைக‌ளும் இல்லை.',
 	'Unable to upload a file.' => 'கோப்பை மேலேற்ற‌ம் (upload) செய்ய‌ இயல‌வில்லை.',
@@ -313,4 +311,10 @@ $translations = array(
 	'No' => null,
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

@@ -21,6 +21,8 @@ $translations = array(
 	'Language' => 'Xx',
 	'Invalid CSRF token. Send the form again.' => 'Xx.',
 	'If you did not send this request from Adminer then close this page.' => 'Xx.',
+	'No driver' => 'Xx',
+	'Database driver not found.' => 'Xx.',
 	'No extension' => 'Xx',
 	'None of the supported PHP extensions (%s) are available.' => 'Xx (%s).',
 	'Connecting to privileged ports is not allowed.' => 'Xx.',
@@ -90,7 +92,6 @@ $translations = array(
 	'Data' => 'Xx',
 
 	'Database' => 'Xx',
-	'database' => 'xx',
 	'DB' => 'XX',
 	'Use' => 'Xx',
 	'Select database' => 'Xx',
@@ -179,7 +180,6 @@ $translations = array(
 	'Options' => 'Xx',
 	'Comment' => 'Xx',
 	'Default value' => 'Xx',
-	'Default values' => 'Xx',
 	'Drop' => 'Xx',
 	'Drop %s?' => 'Xx %s?',
 	'Are you sure?' => 'Xx?',
@@ -327,12 +327,15 @@ $translations = array(
 	'Please use one of the extensions %s.' => 'Xx %s.',
 
 	// PostgreSQL and MS SQL schema support
+	'Schema' => 'Xx',
+	'Schemas' => 'Xx',
+	'No schemas.' => 'Xx.',
+	'Show schema' => 'Xx',
 	'Alter schema' => 'Xx',
 	'Create schema' => 'Xx',
 	'Schema has been dropped.' => 'Xx.',
 	'Schema has been created.' => 'Xx.',
 	'Schema has been altered.' => 'Xx.',
-	'Schema' => 'Xx',
 	'Invalid schema.' => 'Xx.',
 
 	// PostgreSQL sequences support

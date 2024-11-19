@@ -74,7 +74,6 @@ $translations = array(
 	'Data' => 'Podaci',
 
 	'Database' => 'Baza podataka',
-	'database' => 'baza podataka',
 	'Use' => 'Koristi',
 	'Select database' => 'Izaberite bazu',
 	'Invalid database.' => 'Neispravna baza podataka.',
@@ -159,7 +158,6 @@ $translations = array(
 	'Auto Increment' => 'Auto-priraštaj',
 	'Options' => 'Opcije',
 	'Comment' => 'Komentar',
-	'Default values' => 'Podrazumijevane vrijednosti',
 	'Drop' => 'Izbriši',
 	'Are you sure?' => 'Da li ste sigurni?',
 	'Move up' => 'Pomijeri na gore',
@@ -358,4 +356,10 @@ $translations = array(
 	'No' => 'Ne',
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

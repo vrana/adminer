@@ -90,7 +90,6 @@ $translations = array(
 	'Data' => 'Data',
 
 	'Database' => 'Databas',
-	'database' => 'databas',
 	'DB' => 'DB',
 	'Use' => 'Använd',
 	'Select database' => 'Välj databas',
@@ -179,7 +178,6 @@ $translations = array(
 	'Options' => 'Inställningar',
 	'Comment' => 'Kommentar',
 	'Default value' => 'Standardvärde',
-	'Default values' => 'Standardvärden',
 	'Drop' => 'Ta bort',
 	'Drop %s?' => 'Ta bort %s?',
 	'Are you sure?' => 'Är du säker?',
@@ -357,4 +355,10 @@ $translations = array(
 	'No' => 'Nej',
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

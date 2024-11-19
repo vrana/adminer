@@ -32,7 +32,6 @@ $translations = array(
 	'Create database' => 'Crea database',
 	'SQL command' => 'Comando SQL',
 	'Logout' => 'Esci',
-	'database' => 'database',
 	'Use' => 'Usa',
 	'No tables.' => 'No tabelle.',
 	'select' => 'seleziona',
@@ -70,7 +69,6 @@ $translations = array(
 	'Unable to select the table' => 'Selezione della tabella non riuscita',
 	'Invalid CSRF token. Send the form again.' => 'Token CSRF non valido. Reinvia la richiesta.',
 	'Comment' => 'Commento',
-	'Default values' => 'Valori predefiniti',
 	'%d byte(s)' => array('%d byte', '%d bytes'),
 	'No commands to execute.' => 'Nessun commando da eseguire.',
 	'Unable to upload a file.' => 'Caricamento del file non riuscito.',
@@ -313,4 +311,10 @@ $translations = array(
 	'No' => 'No',
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

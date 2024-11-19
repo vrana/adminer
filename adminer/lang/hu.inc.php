@@ -32,7 +32,6 @@ $translations = array(
 	'Create database' => 'Adatbázis létrehozása',
 	'SQL command' => 'SQL parancs',
 	'Logout' => 'Kilépés',
-	'database' => 'adatbázis',
 	'Use' => 'Használ',
 	'No tables.' => 'Nincs tábla.',
 	'select' => 'kiválasztás',
@@ -70,7 +69,6 @@ $translations = array(
 	'Unable to select the table' => 'Nem tudom kiválasztani a táblát',
 	'Invalid CSRF token. Send the form again.' => 'Érvénytelen CSRF azonosító. Küldd újra az űrlapot.',
 	'Comment' => 'Megjegyzés',
-	'Default values' => 'Alapértelmezett értékek',
 	'%d byte(s)' => array('%d bájt', '%d bájt', '%d bájt'),
 	'No commands to execute.' => 'Nincs végrehajtható parancs.',
 	'Unable to upload a file.' => 'Nem tudom feltölteni a fájlt.',
@@ -313,4 +311,10 @@ $translations = array(
 	'No' => null,
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

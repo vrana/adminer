@@ -32,7 +32,6 @@ $translations = array(
 	'Create database' => 'Создать базу данных',
 	'SQL command' => 'SQL-запрос',
 	'Logout' => 'Выйти',
-	'database' => 'база данных',
 	'Use' => 'Выбрать',
 	'No tables.' => 'В базе данных нет таблиц.',
 	'select' => 'выбрать',
@@ -70,7 +69,6 @@ $translations = array(
 	'Unable to select the table' => 'Не удалось получить данные из таблицы',
 	'Invalid CSRF token. Send the form again.' => 'Недействительный CSRF-токен. Отправите форму ещё раз.',
 	'Comment' => 'Комментарий',
-	'Default values' => 'Значения по умолчанию',
 	'%d byte(s)' => array('%d байт', '%d байта', '%d байтов'),
 	'No commands to execute.' => 'Нет команд для выполнения.',
 	'Unable to upload a file.' => 'Не удалось загрузить файл на сервер.',
@@ -313,4 +311,10 @@ $translations = array(
 	'No' => 'Нет',
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

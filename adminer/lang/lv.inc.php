@@ -32,7 +32,6 @@ $translations = array(
 	'Create database' => 'Izveidot datubāzi',
 	'SQL command' => 'SQL pieprasījums',
 	'Logout' => 'Iziet',
-	'database' => 'datubāze',
 	'Use' => 'Lietot',
 	'No tables.' => 'Datubāzē nav tabulu.',
 	'select' => 'izvēlēties',
@@ -70,7 +69,6 @@ $translations = array(
 	'Unable to select the table' => 'Tabula nav pieejama',
 	'Invalid CSRF token. Send the form again.' => 'Nederīgs CSRF žetons. Nosūtiet formu vēl vienu reizi.',
 	'Comment' => 'Komentārs',
-	'Default values' => 'Noklusētā vērtība',
 	'%d byte(s)' => array('%d baits', '%d baiti', '%d baiti'),
 	'No commands to execute.' => 'Nav izpildāmu komandu.',
 	'Unable to upload a file.' => 'Neizdevās ielādēt failu uz servera.',
@@ -313,4 +311,10 @@ $translations = array(
 	'No' => 'Nē',
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

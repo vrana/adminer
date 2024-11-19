@@ -32,7 +32,6 @@ $translations = array(
 	'Create database' => 'Crează baza de date',
 	'SQL command' => 'SQL query',
 	'Logout' => 'Ieșire',
-	'database' => 'baza de date',
 	'Use' => 'Alege',
 	'No tables.' => 'În baza de date nu sunt tabele.',
 	'select' => 'selectează',
@@ -70,7 +69,6 @@ $translations = array(
 	'Unable to select the table' => 'Nu am putut selecta date din tabel',
 	'Invalid CSRF token. Send the form again.' => 'CSRF token imposibil. Retrimite forma.',
 	'Comment' => 'Comentariu',
-	'Default values' => 'Valoarea inițială',
 	'%d byte(s)' => array('%d octet', '%d octeți'),
 	'No commands to execute.' => 'Nu sunt comenzi de executat.',
 	'Unable to upload a file.' => 'Nu am putut încărca fișierul pe server.',
@@ -313,4 +311,10 @@ $translations = array(
 	'No' => null,
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

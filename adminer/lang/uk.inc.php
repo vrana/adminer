@@ -74,7 +74,6 @@ $translations = array(
 	'Data' => 'Дані',
 
 	'Database' => 'База даних',
-	'database' => 'база даних',
 	'Use' => 'Обрати',
 	'Select database' => 'Обрати базу даних',
 	'Invalid database.' => 'Погана база даних.',
@@ -159,7 +158,6 @@ $translations = array(
 	'Auto Increment' => 'Автоматичне збільшення',
 	'Options' => 'Опції',
 	'Comment' => 'Коментарі',
-	'Default values' => 'Значення за замовчуванням',
 	'Drop' => 'Видалити',
 	'Are you sure?' => 'Ви впевнені?',
 	'Move up' => 'Пересунути вгору',
@@ -358,4 +356,10 @@ $translations = array(
 	'No' => 'Ні',
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

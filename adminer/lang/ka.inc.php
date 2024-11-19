@@ -32,7 +32,6 @@ $translations = array(
 	'Create database' => 'ბაზის შექმნა',
 	'SQL command' => 'SQL-ბრძანება',
 	'Logout' => 'გასვლა',
-	'database' => 'ბაზა',
 	'Use' => 'არჩევა',
 	'No tables.' => 'ბაზაში ცხრილი არაა.',
 	'select' => 'არჩევა',
@@ -69,7 +68,6 @@ $translations = array(
 	'Unable to select the table' => 'ცხრილიდან ინფორმაცია ვერ მოვიპოვე',
 	'Invalid CSRF token. Send the form again.' => 'უმოქმედო CSRF-ტოკენი. ფორმის კიდევ ერთხელ გაგზავნა.',
 	'Comment' => 'კომენტარები',
-	'Default values' => 'სტანდარტული მნიშვნელობა',
 	'%d byte(s)' => '%d ბაიტი',
 	'No commands to execute.' => 'შესასრულებელი ბრძანება არაა.',
 	'Unable to upload a file.' => 'ფაილი არ აიტვირთა სერვერზე.',
@@ -313,4 +311,10 @@ $translations = array(
 	'No' => null,
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

@@ -32,7 +32,6 @@ $translations = array(
 	'Create database' => 'データベースを作成',
 	'SQL command' => 'SQLコマンド',
 	'Logout' => 'ログアウト',
-	'database' => 'データベース',
 	'Use' => '使用',
 	'No tables.' => 'テーブルがありません。',
 	'select' => '選択',
@@ -69,7 +68,6 @@ $translations = array(
 	'Unable to select the table' => 'テーブルを選択できません',
 	'Invalid CSRF token. Send the form again.' => '不正なCSRFトークン。再送信してください',
 	'Comment' => 'コメント',
-	'Default values' => '規定値',
 	'%d byte(s)' => '%d バイト',
 	'No commands to execute.' => '実行するコマンドがありません',
 	'Unable to upload a file.' => 'ファイルをアップロードできません',
@@ -313,4 +311,10 @@ $translations = array(
 	'No' => null,
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

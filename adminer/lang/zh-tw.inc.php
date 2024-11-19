@@ -90,7 +90,6 @@ $translations = array(
 	'Data' => '資料',
 
 	'Database' => '資料庫',
-	'database' => '資料庫',
 	'DB' => '資料庫',
 	'Use' => '使用',
 	'Select database' => '選擇資料庫',
@@ -179,7 +178,6 @@ $translations = array(
 	'Options' => '選項',
 	'Comment' => '註解',
 	'Default value' => '預設值',
-	'Default values' => '預設值',
 	'Drop' => '刪除',
 	'Drop %s?' => '刪除 %s?',
 	'Are you sure?' => '你確定嗎？',
@@ -358,4 +356,10 @@ $translations = array(
 	'No' => null,
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

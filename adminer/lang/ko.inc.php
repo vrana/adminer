@@ -72,11 +72,9 @@ $translations = array(
 	'Database has been dropped.' => '데이터베이스를 삭제했습니다.',
 	'Database has been renamed.' => '데이터베이스의 이름을 바꾸었습니다.',
 	'Database schema' => '데이터베이스 구조',
-	'database' => '데이터베이스',
 	'Database' => '데이터베이스',
 	'Databases have been dropped.' => '데이터베이스를 삭제했습니다.',
 	'Date and time' => '시간',
-	'Default values' => '기본값',
 	'Delete' => '삭제',
 	'descending' => '역순',
 	'Drop' => '삭제',
@@ -313,4 +311,10 @@ $translations = array(
 	'No' => null,
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

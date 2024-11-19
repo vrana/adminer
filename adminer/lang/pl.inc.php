@@ -82,7 +82,6 @@ $translations = array(
 	'Data' => 'Dane',
 
 	'Database' => 'Baza danych',
-	'database' => 'baza danych',
 	'Use' => 'Wybierz',
 	'Select database' => 'Wybierz bazę danych',
 	'Invalid database.' => 'Nie znaleziono bazy danych.',
@@ -169,7 +168,6 @@ $translations = array(
 	'Options' => 'Opcje',
 	'Comment' => 'Komentarz',
 	'Default value' => 'Wartość domyślna',
-	'Default values' => 'Wartości domyślne',
 	'Drop' => 'Usuń',
 	'Drop %s?' => 'Usunąć %s?',
 	'Are you sure?' => 'Czy jesteś pewien?',
@@ -358,4 +356,10 @@ $translations = array(
 	'No' => 'Nie',
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

@@ -85,7 +85,6 @@ $translations = array(
 	'Data' => 'Veri',
 
 	'Database' => 'Veri Tabanı',
-	'database' => 'veri tabanı',
 	'DB' => 'DB',
 	'Use' => 'Kullan',
 	'Select database' => 'Veri tabanı seç',
@@ -173,7 +172,6 @@ $translations = array(
 	'Options' => 'Seçenekler',
 	'Comment' => 'Yorum',
 	'Default value' => 'Varsayılan değer',
-	'Default values' => 'Varsayılan değerler',
 	'Drop' => 'Sil',
 	'Drop %s?' => 'Sil %s?',
 	'Are you sure?' => 'Emin misiniz?',
@@ -358,4 +356,10 @@ $translations = array(
 	'No' => 'Hayır',
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

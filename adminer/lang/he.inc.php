@@ -31,7 +31,6 @@ $translations = array(
 	'Create database' => 'צור מסד נתונים',
 	'SQL command' => 'שאילתת SQL',
 	'Logout' => 'התנתק',
-	'database' => 'מסד נתונים',
 	'Use' => 'השתמש',
 	'No tables.' => 'אין טבלאות',
 	'select' => 'בחר',
@@ -68,7 +67,6 @@ $translations = array(
 	'Unable to select the table' => 'בחירת הטבלה נכשלה',
 	'Invalid CSRF token. Send the form again.' => 'כשל באבטחת נתונים, שלח טופס שוב',
 	'Comment' => 'הערה',
-	'Default values' => 'ערכי ברירת מחדל',
 	'%d byte(s)' => '%d בתים',
 	'No commands to execute.' => 'לא נמצאו פקודות להרצה',
 	'Unable to upload a file.' => 'העלאת הקובץ נכשלה',
@@ -313,4 +311,10 @@ $translations = array(
 	'No' => null,
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

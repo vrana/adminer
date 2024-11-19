@@ -65,7 +65,6 @@ $translations = array(
 	'Format' => 'Format',
 	'Data' => 'Data',
 	'Database' => 'Database',
-	'database' => 'database',
 	'Use' => 'Bruk',
 	'Select database' => 'Velg database',
 	'Invalid database.' => 'Ugyldig database.',
@@ -144,7 +143,6 @@ $translations = array(
 	'Auto Increment' => 'Autoinkrement',
 	'Options' => 'Valg',
 	'Comment' => 'Kommentarer',
-	'Default values' => 'Standardverdier',
 	'Drop' => 'Dropp',
 	'Are you sure?' => 'Er du sikker?',
 	'Move up' => 'Flytt opp',
@@ -313,4 +311,10 @@ $translations = array(
 	'No' => 'Nei',
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

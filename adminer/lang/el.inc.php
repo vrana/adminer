@@ -80,7 +80,6 @@ $translations = array(
 	'Data' => 'Δεδομένα',
 
 	'Database' => 'Β. Δεδομένων',
-	'database' => 'β. δεδομένων',
 	'Use' => 'χρήση',
 	'Select database' => 'Επιλέξτε Β.Δ.',
 	'Invalid database.' => 'Λανθασμένη Β.Δ.',
@@ -167,7 +166,6 @@ $translations = array(
 	'Options' => 'Επιλογές',
 	'Comment' => 'Σχόλιο',
 	'Default value' => 'Προεπιλεγμένη τιμή',
-	'Default values' => 'Προεπιλεγμένες τιμές',
 	'Drop' => 'Διαγραφή',
 	'Are you sure?' => 'Είστε σίγουρος;',
 	'Size' => 'Μέγεθος',
@@ -358,4 +356,10 @@ $translations = array(
 	'No' => null,
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

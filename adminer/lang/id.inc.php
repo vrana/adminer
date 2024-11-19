@@ -74,7 +74,6 @@ $translations = array(
 	'Data' => 'Data',
 
 	'Database' => 'Basis data',
-	'database' => 'basis data',
 	'Use' => 'Gunakan',
 	'Select database' => 'Pilih basis data',
 	'Invalid database.' => 'Basis data tidak sah.',
@@ -159,7 +158,6 @@ $translations = array(
 	'Auto Increment' => 'Inkrementasi Otomatis',
 	'Options' => 'Opsi',
 	'Comment' => 'Komentar',
-	'Default values' => 'Nilai bawaan',
 	'Drop' => 'Hapus',
 	'Are you sure?' => 'Anda yakin?',
 	'Move up' => 'Naik',
@@ -358,4 +356,10 @@ $translations = array(
 	'No' => null,
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );

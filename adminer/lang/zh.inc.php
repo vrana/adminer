@@ -90,7 +90,6 @@ $translations = array(
 	'Data' => '数据',
 
 	'Database' => '数据库',
-	'database' => '数据库',
 	'DB' => '数据库',
 	'Use' => '使用',
 	'Select database' => '选择数据库',
@@ -179,7 +178,6 @@ $translations = array(
 	'Options' => '选项',
 	'Comment' => '注释',
 	'Default value' => '默认值',
-	'Default values' => '默认值',
 	'Drop' => '删除',
 	'Drop %s?' => '删除 %s?',
 	'Are you sure?' => '您确定吗？',
@@ -357,4 +355,10 @@ $translations = array(
 	'No' => null,
 	'One Time Password' => null,
 	'Invalid OTP code.' => null,
+
+	'Schemas' => null,
+	'No schemas.' => null,
+	'Show schema' => null,
+	'No driver' => null,
+	'Database driver not found.' => null,
 );
