@@ -1,4 +1,5 @@
-# Adminer
+Adminer
+=======
 
 **Adminer** is a full-featured database management tool written in PHP. It consists of a single file ready to deploy to 
 the target server. As a companion, **Adminer Editor** offers data manipulation for end-users.
@@ -7,18 +8,23 @@ Supported database drivers:
 - MySQL, MariaDB, PostgreSQL, SQLite, MS SQL, Oracle, MongoDB
 - With plugin: SimpleDB, Elasticsearch (beta), Firebird (alpha), ClickHouse (alpha)
 
-## Requirements
+Requirements
+------------
 
 - PHP 5.6+ with enabled sessions.
 
-## Migration from original Adminer
+Migration from original Adminer
+-------------------------------
 
-- If you use complex custom theme, you will probably need to adjust a thing or two.
 - Remove plugin AdminerTablesFilter (plugins/tables-filter.php).
+- If you use complex custom theme, you will probably need to adjust a thing or two.
 
-Please, read 👉 **[What to expect](#what-to-expect)** section before you decide to switch to this project.
+More information can be found in [Upgrade Guide](docs/upgrade.md).
 
-## Usage
+Please, read also 👉 **[What to expect](#what-to-expect)** section before you decide to switch to this project.
+
+Usage
+-----
 
 Download one for the latest [release files](https://github.com/pematon/adminer/releases), upload to the HTTP server 
 with PHP and enjoy 😉 If you are not satisfied with any combination of the database driver and language, you can 
@@ -30,28 +36,31 @@ download the source code and compile your own Adminer:
 
 ```shell
 # Adminer
-php compile.php <driver> <language>
+php compile.php <drivers> <languages>
 
 # Editor
-php compile.php editor <driver> <language>
+php compile.php editor <drivers> <languages>
 ```
 
 For example:
 ```shell
 php compile.php pgsql cs
+php compile.php mysql,pgsql en,de,cs,sk
 ```
 
 [Available drivers](https://github.com/pematon/adminer/tree/master/adminer/drivers), 
 [languages](https://github.com/pematon/adminer/tree/master/adminer/lang).
 
-## Security
+Security
+--------
 
 Adminer does not allow connecting to databases without a password and it rate-limits the connection attempts to protect 
 against brute-force attacks. Still, it is highly recommended to 🔒 **restrict access to Adminer** 🔒 by whitelisting IP 
 addresses allowed to connect to it, by password-protecting the access in your web server or by enabling security plugins 
 (e.g. to require an OTP).
 
-## Plugins
+Plugins
+-------
 
 * Download plugins you want and place them into the `plugins` folder.
 * Create `index.php` file specifying which plugins do you want to use.
@@ -107,7 +116,9 @@ include "./adminer.php";
 
 [Available plugins](https://github.com/pematon/adminer/tree/master/plugins).
 
-## Main project files
+Main project files
+------------------
+
 - adminer/index.php - Run development version of Adminer.
 - editor/index.php - Run development version of Adminer Editor.
 - editor/example.php - Example customization.
@@ -120,7 +131,8 @@ include "./adminer.php";
 - lang.php - Update translations.
 - tests/katalon.html - Katalon Automation Recorder test suite.
 
-## Project history
+Project history
+---------------
 
 Adminer was originally developed by Jakub Vrana, and it can be still found on [official pages](https://www.adminer.org/).
 Unfortunately, it is not maintained for several years. In the meantime, I (@peterpp) created for my company a set of
@@ -128,17 +140,20 @@ custom plugins, modern theme, fixed some bugs and practically rewrote the Elasti
 and contributed to the [AdminerEvo](https://www.adminerevo.org/) project that looked promising. However, I finally 
 decided to continue working on this fork and fulfill my own vision.
 
-## What to expect
+What to expect
+--------------
 
 Our top priority is fixing the security issues and reported bugs. But we really want to move forward and transform
 Adminer to a tool that will keep its simplicity, yet looks much better, is even easier to use and can be configured
 without requirement of additional plugins.
 
 ### Version 4.x
+
 Original design and backward compatibility is kept. Many issues were fixed, and we introduced several functional and 
 UI improvements.
 
 ### Version 5
+
 Bridges will be burned 🔥🔥🔥. It's in development already, so you [can check](https://github.com/pematon/adminer/tree/version-5) 
 what's going on. Or you can become the early adopter and help us with testing 😉
 

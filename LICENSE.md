@@ -1,4 +1,5 @@
-# Licenses
+Licenses
+========
 
 You may use Adminer under the terms of either the Apache License Version 2.0 
 or the GNU General Public License (GPL) version 2.

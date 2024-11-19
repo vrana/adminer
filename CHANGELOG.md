@@ -1,48 +1,65 @@
-# Changelog
+Changelog
+=========
 
-## Adminer 4.11 (2024-10-30)
+Adminer 4.11 (2024-10-30)
+-------------------------
+
+### New features
+
+- PostgreSQL, MS SQL: Show list of schemas in database, unify lists of sequences and user types
+
+### Changes
+
 - Support drag-n-drop moving on touch screens
-- Fix drag-n-drop moving of function parameters
 - Update project information in comments
 - Update CS and SK translations
 - Show help popup after a short delay
-- PostgreSQL: Show list of schemas in database, unify lists of sequences and user types
+- Small CSS tuning
+
+### Bugfixes
+
+- Fix drag-n-drop moving of function parameters
 - MariaDB: Fix several links to documentation pages
 - MySQL: Fix highlighting current table in menu on macOS
 - MS SQL: Prefix Unicode strings with 'N' so they are treated correctly
 - Fix printing error message while validating server URL
-- Small CSS tuning
 
-## Adminer 4.10 (2024-10-22)
+Adminer 4.10 (2024-10-22)
+-------------------------
 
-### UI changes and improvements
+### New features
+
 - Add drag-n-drop moving of rows in table selection filter
 - Add drag-n-drop moving of rows in table editing
-- Add removal buttons to table selection filter
+- Add removal buttons to table selection filter (by Roy Orbitson)
+- Enable regular expressions when searching data in all tables (by Roy Orbitson)
 - Integrate tables-filter plugin into the base code
-- Full width design for database select box
-- Add 'Home' to breadcrumb navigation
+- Plugin to auto-include adminer.js when present (by Roy Orbitson)
 - Print username next to the logout button
 - Show partitioning info in table structure page
 - Show second link for editing a table under the table view
+
+### Changes
+
+- Check new version against GitHub pages (by Adrian Jones)
+- Add 'Home' to breadcrumb navigation
+- Full width design for database select box
 - Add table head to the list of indexes
 - Hide edited value if selected function will not use it
 - Hide arrow buttons in number input fields
 - Do not display empty action links in main menu
 - Remove deprecated HTML table parameters
 - Remove option to hide default values
-
-### Functional enhancements
-- Enable regular expressions when searching data in all tables
 - Elasticsearch: New condition operators as the combination of query type and match type
 - Elasticsearch: Proper formatting of boolean values
-- Plugin to auto-include adminer.js when present
-- Check new version against GitHub pages
 
 ### Bugfixes
+
 - Fix missing SQL statement if warnings are printed (regression from 4.9)
 
-## Adminer 4.9.4 (2024-10-09)
+Adminer 4.9.4 (2024-10-09)
+--------------------------
+
 - Fix the width of inline edit field
 - Unify displaying of 'New item' action based on privileges
 - Better default value for object definition `(*.*)` while creating new database user
@@ -53,49 +70,57 @@
 - Editor: Fix building links with array parameters
 - Clean up the code for PHP < 5.6
 
-## Adminer 4.9.3 (2024-10-02)
+Adminer 4.9.3 (2024-10-02)
+--------------------------
+
 - MySQL, PostgreSQL: Fix queries splitting and string constants
-- MySQL: Fix where clause for `JSON` column
+- MySQL: Fix where clause for `JSON` column (by SeaEagle)
 - MySQL: Fix editing user's proxy privilege, refactoring
 - MariaDB: Fix comparing `CURRENT_TIMESTAMP` definition while altering a table
 - PostgreSQL: Fix editing record that contains a field with `GENERATED ALWAYS` default value
 - Fix using undefined Min_DB::info property
 - Do not include unchanged `PARTITION BY` definition into `ALTER TABLE` query
-- Do not limit unlimited memory while executing queries
+- Do not limit unlimited memory while executing queries (by Michael Graß)
 - Fix number conversion warning while reading INI settings
 - Hide invalid edit form if table record is not found
 - CSS: Fix background color of `<pre>` used as edit field
 - CSS: Bigger font size for code blocks
 
-## Adminer 4.9.2 (2024-09-18)
+Adminer 4.9.2 (2024-09-18)
+--------------------------
+
 - Fix textarea height for single-line inputs (used typically for SQLite text field)
 - Fix undefined property in error message if driver does not support error number (e.g. PostgreSQL)
 - PostgreSQL: Fix search fields configuration (regression from 4.9)
 - PostgreSQL: Fix search condition for network address types, add macaddr8 type
 - PostgreSQL: Fix exporting `CREATE TABLE` query with `GENERATED` default values
-- PostgreSQL: Fix exporting `CREATE TABLE` query with sequence default value
+- PostgreSQL: Fix exporting `CREATE TABLE` query with sequence default value (by khoazero123)
 - PostgreSQL: Allow to set connection's sslmode with AdminerLoginSsl plugin
 - MySQL: Do not show `empty` enum value in strict mode
 - Editor: Fix searching in tables
-- Function to retrieve driver name that can be used in plugins
+- Add function to retrieve driver name that can be used in plugins (by Roy Orbison)
 
-## Adminer 4.9.1 (2024-09-09)
-- Compatibility with PHP 8.3
+Adminer 4.9.1 (2024-09-09)
+--------------------------
+
+- Compatibility with PHP 8.3 (by Sneda8)
 - Fix compiling jush external files
 - Improved displaying of long table names in menu
 - Replace deprecated `<acronym>` with `<abbr>`
 - Add support for translations in plugins
 - Add .editorconfig file
-- MySQL: Add `unix_timestamp` to functions
-- PostgreSQL: Show only accessible databases
-- PostgreSQL: Make data length calculation more accurate
+- MySQL: Add `unix_timestamp` to functions (by Michal Paulovic)
+- PostgreSQL: Show only accessible databases (by Thomas Daniels)
+- PostgreSQL: Make data length calculation more accurate (by caltong)
 - PostgreSQL: Fix documentation link for `SERIAL` type
 - PostgreSQL: Fix undefined properties on PHP 8
 - Elasticsearch: Fix field selection
 - AdminerEditForeign: Refactor and fix the plugin
 - AdminerLoginOtp: Autocomplete hints for OTP input field, code refactoring
 
-## Adminer 4.9 (2024-08-19)
+Adminer 4.9 (2024-08-19)
+------------------------
+
 - Validate server input in login form
 - Validate connection to server in HTTP based drivers
 - Move dependencies from submodules to Composer
@@ -104,13 +129,16 @@
 - Add new Elasticsearch 7 driver
 - Set saving to file as a default export option
 - Improve URL and email detection
-- Fix AdminerVersionNoverify plugin blocking other plugins to modify HTML head
+- Fix AdminerVersionNoverify plugin blocking other plugins to modify HTML head (by Roy Orbitson)
 - Fix several bugs and security issues in AdminerFileUpload plugin
-- Skip dump of generated columns
+- Skip dump of generated columns (by Denitz)
+- Fix uninitialized string offset (by Adrian Jones)
 - Update composer.json
 - Add script for exporting compiled adminer variants
 
-## Adminer 4.8.2 (2024-03-16)
+Adminer 4.8.2 (2024-03-16)
+--------------------------
+
 - Support multi-line table comments
 - MySQL: Use `ST_SRID()` instead of `SRID()` for MySQL 8 (PR #418)
 - PostgreSQL: Don't reset table comments (regression from 4.2.0)
@@ -118,7 +146,9 @@
 - Update several translations: lv, bn, fr, it, nl, ru, cs, sk
 - Allow responsive styles on larger devices
 
-## Adminer 4.8.1 (2021-05-14)
+Adminer 4.8.1 (2021-05-14)
+--------------------------
+
 - Internet Explorer or PDO in ## Adminer 4.7.8-4.8.0: Fix XSS in doc_link (bug #797)
 - Fix more PHP 8 warnings (bug #781)
 - Avoid PHP warnings with PDO drivers (bug #786, regression from 4.7.8)
@@ -130,7 +160,9 @@
 - PostgreSQL < 10 PDO: Avoid displaying GENERATED ALWAYS BY IDENTITY everywhere (bug #785, regression from 4.7.9)
 - SQLite: Fix displayed types (bug #784, regression from 4.8.0)
 
-## Adminer 4.8.0 (2021-02-10)
+Adminer 4.8.0 (2021-02-10)
+--------------------------
+
 - Support function default values in insert (bug #713)
 - Allow SQL pseudo-function in insert
 - Skip date columns for non-date values in search anywhere
@@ -150,7 +182,9 @@
 - MongoDB: Handle errors
 - SimpleDB, Firebird, ClickHouse: Move to plugin
 
-## Adminer 4.7.9 (2021-02-07)
+Adminer 4.7.9 (2021-02-07)
+--------------------------
+
 - Fix XSS in browsers which don't encode URL parameters (bug #775, regression from 4.7.0)
 - Elasticsearch, ClickHouse: Do not print response if HTTP code is not 200
 - Don't syntax highlight during IME composition (bug #747)
@@ -176,14 +210,20 @@
 - Editor: Cast to string when searching (bug #325)
 - Editor: Avoid trailing dot in export filename
 
-## Adminer 4.7.8 (2020-12-06)
+Adminer 4.7.8 (2020-12-06)
+--------------------------
+
 - Support PHP 8
 - Disallow connecting to privileged ports (bug #769)
 
-## Adminer 4.7.7 (2020-05-11)
+Adminer 4.7.7 (2020-05-11)
+--------------------------
+
 - Fix open redirect if Adminer is accessible at //adminer.php%2F@
 
-## Adminer 4.7.6 (2020-01-31)
+Adminer 4.7.6 (2020-01-31)
+--------------------------
+
 - Speed up alter table form (regression from 4.4.0)
 - Fix clicking on non-input fields in alter table (regression from 4.6.2)
 - Display time of procedure execution
@@ -192,17 +232,23 @@
 - PostgreSQL: Support exporting views
 - Editor: Fix focusing foreign key search in select
 
-## Adminer 4.7.5 (2019-11-13)
+Adminer 4.7.5 (2019-11-13)
+--------------------------
+
 - Add id="" to cells with failed inline edit (bug #708)
 - PostgreSQL: Fix getting default value in PostgreSQL 12 (bug #719)
 - PostgreSQL, Oracle: Set schema for EXPLAIN queries in SQL command (bug #706)
 - ClickHouse: SQL command
 - Swedish translation
 
-## Adminer 4.7.4 (2019-10-22)
+Adminer 4.7.4 (2019-10-22)
+--------------------------
+
 - Fix XSS if Adminer is accessible at URL /data:
 
-## Adminer 4.7.3 (2019-08-27)
+Adminer 4.7.3 (2019-08-27)
+--------------------------
+
 - Allow editing foreign keys pointing to tables in other database/schema (bug #694)
 - Fix blocking of concurrent instances in PHP >7.2 (bug #703)
 - MySQL: Speed up displaying tables in large databases (bug #700, regression from 4.7.2)
@@ -215,7 +261,9 @@
 - MS SQL: Support foreign keys to other DB
 - MongoDB: Allow setting authSource from environment variable
 
-## Adminer 4.7.2 (2019-07-18)
+Adminer 4.7.2 (2019-07-18)
+--------------------------
+
 - Do not attempt logging in without password (bug #676)
 - Stretch footer over the whole table width (bug #624)
 - Allow overwriting tables when copying them
@@ -230,7 +278,9 @@
 - MS SQL: Support comments
 - Elasticsearch: Fix setting number of rows
 
-## Adminer 4.7.1 (2019-01-24)
+Adminer 4.7.1 (2019-01-24)
+--------------------------
+
 - Display the tables scrollbar (bug #647)
 - Remember visible columns in Create Table form (bug #493)
 - Add autocomplete attributes to login form
@@ -238,7 +288,9 @@
 - SQLite: Hide server field in login form
 - Editor: Allow disabling boolean fields in PostgreSQL (bug #640)
 
-## Adminer 4.7.0 (2018-11-24)
+Adminer 4.7.0 (2018-11-24)
+--------------------------
+
 - Simplify storing executed SQL queries to bookmarks
 - Warn when using password with leading or trailing spaces
 - Hide import from server if importServerPath() returns an empty string
@@ -259,7 +311,9 @@
 - ClickHouse: Connect, databases list, tables list, select, SQL command
 - Georgian translation
 
-## Adminer 4.6.3 (2018-06-28)
+Adminer 4.6.3 (2018-06-28)
+--------------------------
+
 - Disallow using password-less databases
 - Copy triggers when copying table
 - Stop session before connecting
@@ -277,7 +331,9 @@
 - MS SQL: Support port with sqlsrv
 - Editor: Do not check boolean checkboxes with false in PostgreSQL (bug #607)
 
-## Adminer 4.6.2 (2018-02-20)
+Adminer 4.6.2 (2018-02-20)
+--------------------------
+
 - Semi-transparent border on table actions
 - Shorten JSON values in select (bug #594)
 - Speed up alter table form (regression from 4.4.0)
@@ -287,7 +343,9 @@
 - PostgreSQL: Add IF EXISTS to DROP SEQUENCE in export (bug #595)
 - Editor: Fix displaying of true boolean values (regression from 4.5.0)
 
-## Adminer 4.6.1 (2018-02-09)
+Adminer 4.6.1 (2018-02-09)
+--------------------------
+
 - Sticky position of table actions
 - Speed up rendering of long tables (regression from 4.4.0)
 - Display notification about performing action after relogin
@@ -304,7 +362,9 @@
 - Customization: Support connecting to MySQL via SSL
 - Customization: Allow specifying server name displayed in breadcrumbs
 
-## Adminer 4.6.0 (2018-02-05)
+Adminer 4.6.0 (2018-02-05)
+--------------------------
+
 - Fix counting selected rows after going back to select page
 - PHP <5.3 compatibility even with Elasticsearch enabled
 - Fully support functions in default values
@@ -324,7 +384,9 @@
 - SimpleDB: Document that allow_url_fopen is required
 - Malay translation
 
-## Adminer 4.5.0 (2018-01-24)
+Adminer 4.5.0 (2018-01-24)
+--------------------------
+
 - Display name of the object in confirmation when dropping it
 - Display newlines in column comments (bug #573)
 - Support current_timestamp() as default of time fields (bug #572)
@@ -348,7 +410,9 @@
 - MongoDB: Support mongodb PHP extension
 - Editor: Fix displaying of false values in PostgreSQL (bug #568)
 
-## Adminer 4.4.0 (2018-01-17)
+Adminer 4.4.0 (2018-01-17)
+--------------------------
+
 - Add Content Security Policy
 - Disallow scripts without nonce
 - Rate limit password-less login attempts from the same IP address
@@ -365,14 +429,18 @@
 - Customization: Always send security headers
 - Hebrew translation
 
-## Adminer 4.3.1 (2017-04-14)
+Adminer 4.3.1 (2017-04-14)
+--------------------------
+
 - Fix permanent login after logout (bug #539)
 - Fix SQL command autofocus (regression from 4.0.0)
 - PostgreSQL: Support JSON and JSONB data types
 - PostgreSQL: Fix index size computation in PostgreSQL < 9.0 (regression from 4.3.0)
 - PostgreSQL: Fix nullable fields in export
 
-## Adminer 4.3.0 (2017-03-15)
+Adminer 4.3.0 (2017-03-15)
+--------------------------
+
 - Make maxlength in edit fields a soft limit
 - Add accessibility labels
 - Add Cache-Control: immutable to static files
@@ -385,34 +453,46 @@
 - MS SQL: Support pdo_dblib
 - Elasticsearch: Support HTTPS by inputting https://server
 
-## Adminer 4.2.5 (2016-06-01)
+Adminer 4.2.5 (2016-06-01)
+--------------------------
+
 - Fix remote execution in SQLite query
 - SQLite: Require credentials to use
 - PostgreSQL: Support KILL
 
-## Adminer 4.2.4 (2016-02-06)
+Adminer 4.2.4 (2016-02-06)
+--------------------------
+
 - Fix remote execution in SQLite query
 - MySQL: Support PHP 7
 - Bosnian translation
 - Finnish translation
 
-## Adminer 4.2.3 (2015-11-15)
+Adminer 4.2.3 (2015-11-15)
+--------------------------
+
 - Fix XSS in indexes (non-MySQL only)
 - Support PHP 7
 - Greek translation
 - Galician translation
 - Bulgarian translation
 
-## Adminer 4.2.2 (2015-08-05)
+Adminer 4.2.2 (2015-08-05)
+--------------------------
+
 - Fix XSS in alter table (found by HP Fortify)
 
-## Adminer 4.2.1 (2015-03-10)
+Adminer 4.2.1 (2015-03-10)
+--------------------------
+
 - Send referrer header to the same domain
 - MySQL: Fix usage of utf8mb4 if the client library doesn't support it
 - MySQL: Use utf8mb4 in export only if required
 - SQLite: Use EXPLAIN QUERY PLAN in SQL query
 
-## Adminer 4.2.0 (2015-02-07)
+Adminer 4.2.0 (2015-02-07)
+--------------------------
+
 - Fix XSS in login form (bug #436)
 - Allow limiting number of displayed rows in SQL command
 - Fix reading routine column collations
@@ -435,7 +515,9 @@
 - Firebird: Alpha version
 - Danish translation
 
-## Adminer 4.1.0 (2014-04-18)
+Adminer 4.1.0 (2014-04-18)
+--------------------------
+
 - Provide size of all databases in the overview
 - Prevent against brute force login attempts from the same IP address
 - Compute number of tables in the overview explicitly
@@ -455,18 +537,24 @@
 - Translate numbers in ar, bn, fa
 - Vietnamese translation
 
-## Adminer 4.0.3 (2014-02-01)
+Adminer 4.0.3 (2014-02-01)
+--------------------------
+
 - MongoDB: insert, truncate, indexes
 - SimpleDB, MongoDB: insert more fields at once
 - SQLite: Fix creating table and altering primary key, bug since ## Adminer 4.0.0
 - Don't store invalid credentials to session, bug since ## Adminer 4.0.0
 - Norweigan translation
 
-## Adminer 4.0.2 (2014-01-11)
+Adminer 4.0.2 (2014-01-11)
+--------------------------
+
 - Fix handling of long text in SQL textarea
 - Support paste to SQL textarea in Opera
 
-## Adminer 4.0.1 (2014-01-11)
+Adminer 4.0.1 (2014-01-11)
+--------------------------
+
 - Don't use type=number if a SQL function is used
 - Disable highlighting in textareas with long texts
 - Don't autofocus SQL textarea in Firefox
@@ -476,7 +564,9 @@
 - MongoDB: Count tables, display ObjectIds, sort, limit, offset, count rows
 - Elasticsearch: Fix compiled version, create and drop DB, drop table
 
-## Adminer 4.0.0 (2014-01-08)
+Adminer 4.0.0 (2014-01-08)
+--------------------------
+
 - Driver for SimpleDB, MongoDB and Elasticsearch
 - Highlight SQL in textareas
 - Save and continue edit by AJAX
@@ -509,7 +599,9 @@
 - Portugal Portuguese translation
 - Thai translation
 
-## Adminer 3.7.1 (2013-06-29)
+Adminer 3.7.1 (2013-06-29)
+--------------------------
+
 - Increase click target for checkboxes
 - Use shadow for highlighting default button
 - Don't use LIMIT 1 if inline updating unique row
@@ -527,7 +619,9 @@
 - PostgreSQL: Handle timestamp types (bug #324)
 - Add Korean translation
 
-## Adminer 3.7.0 (2013-05-19)
+Adminer 3.7.0 (2013-05-19)
+--------------------------
+
 - Allow more SQL files to be uploaded at the same time
 - Print run time next to executed queries
 - Don't drop original view and routine before creating the new one
@@ -553,7 +647,9 @@
 - SQLite: Export views
 - PostgreSQL: Fix swapped NULL and NOT NULL columns in PDO
 
-## Adminer 3.6.4 (2013-04-26)
+Adminer 3.6.4 (2013-04-26)
+--------------------------
+
 - Display pagination on a fixed position
 - Increase default select limit to 50
 - Display SQL edit form on Ctrl+click on the select query
@@ -576,14 +672,18 @@
 - MySQL: Link processlist documentation
 - SQLite: Export indexes
 
-## Adminer 3.6.3 (2013-01-23)
+Adminer 3.6.3 (2013-01-23)
+--------------------------
+
 - Display error code in SQL query
 - Allow specifying external links
 - Treat Meta key same as Ctrl
 - Fix XSS in displaying non-UTF-8 strings
 - Don't use type="number" for decimal numbers
 
-## Adminer 3.6.2 (2012-12-21)
+Adminer 3.6.2 (2012-12-21)
+--------------------------
+
 - Edit values by Ctrl+click instead of double click
 - Don't select row on double click
 - Support NULL in routine calls
@@ -598,10 +698,14 @@
 - PostgreSQL: Fix process list in version 9.2
 - MS SQL: Support databases starting with number
 
-## Adminer 3.6.1 (2012-09-17)
+Adminer 3.6.1 (2012-09-17)
+--------------------------
+
 - Fix compiled version on PHP with multibyte support
 
-## Adminer 3.6.0 (2012-09-16)
+Adminer 3.6.0 (2012-09-16)
+--------------------------
+
 - Load more data in select
 - Edit strings with \n in textarea
 - Time out long running database list and select count
@@ -615,11 +719,15 @@
 - selectQueryBuild() method (customization)
 - Serbian translation
 
-## Adminer 3.5.1 (2012-08-10)
+Adminer 3.5.1 (2012-08-10)
+--------------------------
+
 - Support same name fields in CSV export
 - Support Shift+click in export
 
-## Adminer 3.5.0 (2012-08-05)
+Adminer 3.5.0 (2012-08-05)
+--------------------------
+
 - Links for column search in select
 - Autohide column context menu in select
 - Autodisplay long table names in tables list
@@ -628,7 +736,9 @@
 - SQLite: Better editing in tables without primary key
 - SQLite: Display number of rows in database overview
 
-## Adminer 3.4.0 (2012-06-30)
+Adminer 3.4.0 (2012-06-30)
+--------------------------
+
 - Link to descending order
 - Shift+click on checkbox to select consecutive rows
 - Print current time next to executed SQL queries
@@ -650,7 +760,9 @@
 - Ukrainian translation
 - Bengali translation
 
-## Adminer 3.3.4 (2012-03-07)
+Adminer 3.3.4 (2012-03-07)
+--------------------------
+
 - Foreign keys default actions (bug #188)
 - SET DEFAULT foreign key action
 - Fix minor parser bug in SQL command with webserver file
@@ -673,14 +785,18 @@
 - Boolean search (Editor)
 - Persian translation
 
-## Adminer 3.3.3 (2011-08-12)
+Adminer 3.3.3 (2011-08-12)
+--------------------------
+
 - Highlight checked rows
 - Titles of links in database overview and navigation
 - Fix trigger export (SQLite)
 - Default trigger statement (SQLite, PostgreSQL)
 - Remove search by expression (PostgreSQL, MS SQL)
 
-## Adminer 3.3.2 (2011-08-08)
+Adminer 3.3.2 (2011-08-08)
+--------------------------
+
 - Display error with non-existent row in edit
 - Fix minor parser bug in SQL command with webserver file
 - Fix SQL command Stop on error
@@ -688,12 +804,16 @@
 - Fast number of rows with big tables (PostgreSQL)
 - Sort databases and schemas (PostgreSQL)
 
-## Adminer 3.3.1 (2011-07-27)
+Adminer 3.3.1 (2011-07-27)
+--------------------------
+
 - Fix XSS introduced in Adminer 3.2.0
 - Fix altering default values (PostgreSQL)
 - Process list (PostgreSQL)
 
-## Adminer 3.3.0 (2011-07-19)
+Adminer 3.3.0 (2011-07-19)
+--------------------------
+
 - Use Esc to disable in-place edit
 - Shortcut for database privileges
 - Editable index names
@@ -719,10 +839,14 @@
 - Easier sending of default headers (customization)
 - Lithuanian and Romanian translation
 
-## Adminer 3.2.2 (2011-03-28)
+Adminer 3.2.2 (2011-03-28)
+--------------------------
+
 - Fix AJAX history after reload
 
-## Adminer 3.2.1 (2011-03-23)
+Adminer 3.2.1 (2011-03-23)
+--------------------------
+
 - Ability to save expression in edit
 - Respect default database collation (bug #119)
 - Don't export triggers without table (bug #123)
@@ -743,7 +867,9 @@
 - Allow own code in `<head>` (customization)
 - Polish translation
 
-## Adminer 3.2.0 (2011-02-24)
+Adminer 3.2.0 (2011-02-24)
+--------------------------
+
 - Get long texts and slow information by AJAX
 - Most links and forms by AJAX in browsers with support for history.pushState
 - Copy tables
@@ -766,7 +892,9 @@
 - Fix saving schema to cookie in Opera
 - Portuguese, Slovenian and Turkish translation
 
-## Adminer 3.1.0 (2010-11-16)
+Adminer 3.1.0 (2010-11-16)
+--------------------------
+
 - TSV export and import
 - Customizable export
 - Option to show only errors in SQL command
@@ -783,7 +911,9 @@
 - Arabic translation and RTL support
 - Dual licensing: Apache or GPL
 
-## Adminer 3.0.1 (2010-10-18)
+Adminer 3.0.1 (2010-10-18)
+--------------------------
+
 - Send the form by Ctrl+Enter in all textareas
 - Disable creating SQLite databases with extension other than db, sdb, sqlite
 - Ability to use Adminer in a frame through customization
@@ -791,7 +921,9 @@
 - MS SQL 2005 compatibility
 - PostgreSQL: connect if the eponymous database does not exist
 
-## Adminer 3.0.0 (2010-10-15)
+Adminer 3.0.0 (2010-10-15)
+--------------------------
+
 - Drivers for MS SQL, SQLite, PostgreSQL, Oracle
 - Allow concurrent logins on the same server
 - Allow permanent login without customization
@@ -817,18 +949,24 @@
 - Defer table information in database overview to JavaScript (performance)
 - Big tables optimizations (performance)
 
-## Adminer 2.3.2 (2010-04-21)
+Adminer 2.3.2 (2010-04-21)
+--------------------------
+
 - Fix COUNT(*) link
 - Fix Save and continue edit
 
-## Adminer 2.3.1 (2010-04-06)
+Adminer 2.3.1 (2010-04-06)
+--------------------------
+
 - Add Drop button to Alter pages (regression from 2.0.0)
 - Link COUNT(*) result to listing
 - Newlines in select query edit
 - Return to referrer after edit
 - Respect session.auto_start (bug #42)
 
-## Adminer 2.3.0 (2010-02-26)
+Adminer 2.3.0 (2010-02-26)
+--------------------------
+
 - Support for permanent login (customization required)
 - Search in all tables
 - Show status variables
@@ -840,14 +978,18 @@
 - Delete length when changing type in alter table
 - Ability to check table prefix in export
 
-## Adminer 2.2.1 (2009-11-26)
+Adminer 2.2.1 (2009-11-26)
+--------------------------
+
 - Highlight current links
 - Improve concurrency
 - Move number of tables to DB info (performance)
 - Search by foreign keys (Editor)
 - Link new item in backward keys (Editor)
 
-## Adminer 2.2.0 (2009-10-20)
+Adminer 2.2.0 (2009-10-20)
+--------------------------
+
 - Database list - bulk drop, number of tables
 - Enlarge field for enum and set definition
 - Display table links above table structure
@@ -864,7 +1006,9 @@
 - Move `<h1>` to $adminer->navigation (customization)
 - Rename get_dbh to connection (customization)
 
-## Adminer 2.1.0 (2009-09-12)
+Adminer 2.1.0 (2009-09-12)
+--------------------------
+
 - Edit default values directly in table creation
 - Execute SQL file stored on server disk
 - Display EXPLAIN in SQL query
@@ -878,7 +1022,9 @@
 - Speed up simple alter table
 - Traditional Chinese translation
 
-## Adminer 2.0.0 (2009-08-06)
+Adminer 2.0.0 (2009-08-06)
+--------------------------
+
 - Editor: User friendly data editor
 - Customization: Adminer class
 - Create single column foreign key in table structure
@@ -904,10 +1050,14 @@
 - Fix CSV import
 - Fix work with default values
 
-## Adminer 1.11.1 (2009-07-03)
+Adminer 1.11.1 (2009-07-03)
+--------------------------
+
 - Fix problem with enabled Filter extension
 
-## Adminer 1.11.0 (2009-07-02)
+Adminer 1.11.0 (2009-07-02)
+--------------------------
+
 - Connection through socket by server :/path/to/socket
 - Simplify export
 - Display execution time in SQL query
@@ -928,12 +1078,16 @@
 - Automatically add new fields in table creation
 - Use \n in SQL commands
 
-## phpMinAdmin 1.10.1 (2009-05-07)
+phpMinAdmin 1.10.1 (2009-05-07)
+-------------------------------
+
 - Highlight odd and hover rows
 - Partition editing comfort (bug #12)
 - Allow full length in limited int
 
-## phpMinAdmin 1.10.0 (2009-04-28)
+phpMinAdmin 1.10.0 (2009-04-28)
+-------------------------------
+
 - Partitioning (MySQL 5.1)
 - CSV import
 - Plus and minus functions
@@ -945,10 +1099,14 @@
 - Size reduction by minification of variables and functions
 - Russian translation
 
-## phpMinAdmin 1.9.1 (2008-10-27)
+phpMinAdmin 1.9.1 (2008-10-27)
+------------------------------
+
 - Update translations
 
-## phpMinAdmin 1.9.0 (2008-10-16)
+phpMinAdmin 1.9.0 (2008-10-16)
+------------------------------
+
 - List of tables and views with maintenance commands
 - Clone rows
 - Bulk edit and clone
@@ -964,7 +1122,9 @@
 - Order by function result working also in older MySQL versions
 - Tested on IIS
 
-## phpMinAdmin 1.8.0 (2008-09-12)
+phpMinAdmin 1.8.0 (2008-09-12)
+------------------------------
+
 - Events (MySQL 5.1)
 - Access without login - accept ?username=
 - Print SQL query in select, messages and warnings
@@ -973,7 +1133,9 @@
 - Italian and Estonian translation
 - Order by COUNT(*)
 
-## phpMinAdmin 1.7.0 (2008-08-26)
+phpMinAdmin 1.7.0 (2008-08-26)
+------------------------------
+
 - Customizable export (select objects to export, SQL or CSV)
 - Ability to alter existing tables and drop old tables in export
 - Choose columns in select, aggregation
@@ -987,10 +1149,14 @@
 - Cache static files
 - Faster checking of number of results
 
-## phpMinAdmin 1.6.1 (2008-05-22)
+phpMinAdmin 1.6.1 (2008-05-22)
+------------------------------
+
 - Set session parameters only if not session.auto_start
 
-## phpMinAdmin 1.6.0 (2008-05-16)
+phpMinAdmin 1.6.0 (2008-05-16)
+------------------------------
+
 - Order of columns in table
 - Set max_allowed_packet in dump and use extended insert
 - Spanish and German translations
@@ -1002,7 +1168,9 @@
 - Last-Modified header for files
 - Several bug fixes
 
-## phpMinAdmin 1.5.0 (2008-01-09)
+phpMinAdmin 1.5.0 (2008-01-09)
+------------------------------
+
 - Mass delete
 - Vertical privileges
 - Specify connection port by colon in server
@@ -1013,14 +1181,18 @@
 - Uncheck NULL by change
 - Mark shortened fields in select
 
-## phpMinAdmin 1.4.0 (2007-08-15)
+phpMinAdmin 1.4.0 (2007-08-15)
+------------------------------
+
 - Privileges
 - New design
 - Dutch translation
 - Use NULL for auto_increment (bug #1)
 - Fix dropping procedure parameters
 
-## phpMinAdmin 1.3.2 (2007-08-06)
+phpMinAdmin 1.3.2 (2007-08-06)
+------------------------------
+
 - Next field by JavaScript in foreign keys
 - Set time zone in dump
 - Refresh lang cookie
@@ -1028,12 +1200,16 @@
 - Move vertical lines in schema properly
 - Fix maximum page in select
 
-## phpMinAdmin 1.3.1 (2007-07-31)
+phpMinAdmin 1.3.1 (2007-07-31)
+------------------------------
+
 - Move references lines in schema
 - Fix dump
 - Fix update links
 
-## phpMinAdmin 1.3.0 (2007-07-27)
+phpMinAdmin 1.3.0 (2007-07-27)
+------------------------------
+
 - Breadcrumb navigation
 - Operator IN
 - Timestamp default values
@@ -1043,13 +1219,17 @@
 - More friendly user interface
 - Slovak translation
 
-## phpMinAdmin 1.2.0 (2007-07-25)
+phpMinAdmin 1.2.0 (2007-07-25)
+------------------------------
+
 - Manipulate triggers
 - PDO Abstraction
 - Auto_increment value
 - JavaScript for adding rows
 
-## phpMinAdmin 1.1.0 (2007-07-19)
+phpMinAdmin 1.1.0 (2007-07-19)
+------------------------------
+
 - Routines manipulation
 - Views manipulation
 - Foreign keys manipulation
@@ -1060,5 +1240,7 @@
 - JavaScript for next rows in table edit
 - Cache databases list
 
-## phpMinAdmin 1.0.0 (2007-07-11)
+phpMinAdmin 1.0.0 (2007-07-11)
+------------------------------
+
 - First official release
