@@ -214,6 +214,12 @@ function auth_error($error) {
 	exit;
 }
 
+if (isset($_GET["username"]) && !DRIVER) {
+	page_header(lang('No driver'), lang('Database driver not found.'), false);
+	page_footer("auth");
+	exit;
+}
+
 if (isset($_GET["username"]) && !class_exists("Min_DB")) {
 	unset($_SESSION["pwds"][DRIVER]);
 	unset_permanent();
