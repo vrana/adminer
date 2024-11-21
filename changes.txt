@@ -1,3 +1,9 @@
+Adminer 4.12.0:
+Fix SQL query code direction if RTL language is used
+MariaDB: Add support for UUID data type
+MS SQL, MongoDB: Connect to localhost with default port if server is not specified
+MongoDB: Fix parsing WHERE condition from SQL query
+
 Adminer 4.11.0:
 MySQL: Fix highlighting current table in menu on macOS
 MariaDB: Fix several links to documentation pages
