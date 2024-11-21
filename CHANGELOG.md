@@ -1,6 +1,36 @@
 Changelog
 =========
 
+Adminer 4.12 (2024-11-21)
+-------------------------
+
+### New features
+
+- MySQL: Print comments of stored procedures and functions
+- MariaDB: Add support for UUID data type (by vukbgit)
+- MS SQL: Allow to set Encrypt and TrustServerCertificate with AdminerLoginSsl plugin (issue #5)
+- MS SQL, MongoDB: Connect to localhost with default port if server is not specified
+- Compiler: Allow to compile only selected drivers and languages
+
+### Changes
+
+- Change logo link to main page (login)
+- Enhance checking of new version
+- Update project URL and info
+- Rename 'server' driver to 'mysql'
+- Compiler: MySQL driver is no longer the required default
+- Update Spanish translations (by isaacpolaino)
+
+### Bugfixes
+
+- PostgreSQL: Fix layout of stored function parameters
+- MongoDB: Fix parsing WHERE condition from SQL query
+- Fix SQL query code direction if RTL language is used
+- Fix disappearing dragged row
+- Fix highlighting default submit button in indexes form
+- Compiler: Fix translations in plugins
+- Compiler: Fix compiled SQLite single-driver Adminer
+
 Adminer 4.11 (2024-10-30)
 -------------------------
 
