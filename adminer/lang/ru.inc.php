@@ -295,7 +295,6 @@ $translations = array(
 	'DB' => 'DB',
 	'Warnings' => 'Предупреждения',
 	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer не поддерживает доступ к базе данных без пароля, <a href="https://www.adminer.org/en/password/"%s>больше информации</a>.',
-	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Спасибо за использование Adminer, рассмотрите возможность <a href="https://www.adminer.org/en/donation/">пожертвования</a>.',
 	'The action will be performed after successful login with the same credentials.' => 'Действие будет выполнено после успешного входа в систему с теми же учетными данными.',
 	'Connecting to privileged ports is not allowed.' => 'Подключение к привилегированным портам не допускается.',
 	'There is a space in the input password which might be the cause.' => 'В введеном пароле есть пробел, это может быть причиною.',

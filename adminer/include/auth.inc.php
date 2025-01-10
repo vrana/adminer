@@ -147,7 +147,7 @@ if ($auth) {
 		set_session($key, null);
 	}
 	unset_permanent();
-	redirect(HOME_URL, lang('Logout successful.') . ' ' . lang('Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.'));
+	redirect(HOME_URL, lang('Logout successful.'));
 
 } elseif ($permanent && !$_SESSION["pwds"]) {
 	session_regenerate_id();

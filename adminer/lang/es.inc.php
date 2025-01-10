@@ -286,7 +286,6 @@ $translations = array(
 	'Default value' => 'Valor por defecto',
 	'Full table scan' => null,
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Demasiados intentos erroneos, pruebe de nuevo en %d minuto.', 'Demasiados intentos erroneos, pruebe de nuevo en %d minutos.'),
-	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => null,
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'La contraseña Maestra ha expirado. <a href="https://www.adminer.org/en/extension/"%s>Implementar</a> %s un metodo para hacerla permanente.',
 	'The action will be performed after successful login with the same credentials.' => 'La acción se realizará tras iniciar sesión de nuevo con las mismas credenciales.',
 	'Connecting to privileged ports is not allowed.' => 'La conexion a puertos especiales no está permitida.',

@@ -286,7 +286,6 @@ $translations = array(
 	'Default value' => 'Standaardwaarde',
 	'Full table scan' => 'Full table scan',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Teveel foutieve aanmeldpogingen, probeer opnieuw binnen %d minuut.', 'Teveel foutieve aanmeldpogingen, probeer opnieuw binnen %d minuten.'),
-	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => null,
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Master wachtwoord verlopen. <a href="https://www.adminer.org/en/extension/"%s>Implementeer</a> de %s methode om het permanent te maken.',
 	'The action will be performed after successful login with the same credentials.' => 'Deze actie zal uitgevoerd worden na het succesvol aanmelden met dezelfde gebruikersgegevens',
 	'Connecting to privileged ports is not allowed.' => 'Verbindingen naar geprivilegieerde poorten is niet toegestaan.',
