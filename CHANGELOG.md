@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Adminer 4.12.1 (2024-11-21)
+-------------------------
+
+### Changes
+
+- Remove donation link from logout message
+- Update German translation (by @wintstar, @odysseuscm)
+
 Adminer 4.12 (2024-11-21)
 -------------------------
 
