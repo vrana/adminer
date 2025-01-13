@@ -1,6 +1,7 @@
 /adminer/adminer.css
 /adminer*.php
 /editor*.php
+/**/compiled
 /vendor/
 /composer.lock
 /temp
