@@ -8,6 +8,7 @@ Adminer 4.12.1 (2024-11-21)
 
 - Remove donation link from logout message
 - Update German translation (by @wintstar, @odysseuscm)
+- Declare compatibility with PHP 8.4
 
 Adminer 4.12 (2024-11-21)
 -------------------------
