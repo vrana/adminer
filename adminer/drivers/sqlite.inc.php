@@ -47,7 +47,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 						return false;
 					}
 					$row = $result->_result->fetchArray();
-					return $row[$field];
+					return $row ? $row[$field] : false;
 				}
 			}
 
@@ -483,6 +483,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
 		global $connection;
+
 		$use_all_fields = ($table == "" || $foreign);
 		foreach ($fields as $field) {
 			if ($field[0] != "" || !$field[1] || $field[2]) {
@@ -490,84 +491,105 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 				break;
 			}
 		}
-		$alter = array();
-		$originals = array();
+
+		$alter_fields = [];
+		$originals = [];
+
 		foreach ($fields as $field) {
-			if ($field[1]) {
-				$alter[] = ($use_all_fields ? $field[1] : "ADD " . implode($field[1]));
-				if ($field[0] != "") {
-					$originals[$field[0]] = $field[1][0];
-				}
+			if (!$field[1]) continue;
+
+			if ($field[0] != "") {
+				$originals[$field[0]] = $field[1][0];
 			}
+
+			$alter_fields[] = ($use_all_fields ? $field[1] : "ADD " . implode($field[1]));
 		}
+
 		if (!$use_all_fields) {
-			foreach ($alter as $val) {
+			foreach ($alter_fields as $val) {
 				if (!queries("ALTER TABLE " . table($table) . " $val")) {
 					return false;
 				}
 			}
+
 			if ($table != $name && !queries("ALTER TABLE " . table($table) . " RENAME TO " . table($name))) {
 				return false;
 			}
-		} elseif (!recreate_table($table, $name, $alter, $originals, $foreign, $auto_increment)) {
+		} elseif (!recreate_table($table, $name, $alter_fields, $originals, $foreign, $auto_increment)) {
 			return false;
 		}
+
 		if ($auto_increment) {
 			queries("BEGIN");
 			queries("UPDATE sqlite_sequence SET seq = $auto_increment WHERE name = " . q($name)); // ignores error
+
 			if (!$connection->affected_rows) {
 				queries("INSERT INTO sqlite_sequence (name, seq) VALUES (" . q($name) . ", $auto_increment)");
 			}
+
 			queries("COMMIT");
 		}
+
 		return true;
 	}
 
-	function recreate_table($table, $name, $fields, $originals, $foreign, $auto_increment, $indexes = array()) {
+	function recreate_table($table, $name, $fields, $originals, $foreign, $auto_increment, $indexes = []) {
 		global $connection;
+
 		if ($table != "") {
 			if (!$fields) {
 				foreach (fields($table) as $key => $field) {
 					if ($indexes) {
 						$field["auto_increment"] = 0;
 					}
+
 					$fields[] = process_field($field, $field);
 					$originals[$key] = idf_escape($key);
 				}
 			}
+
 			$primary_key = false;
 			foreach ($fields as $field) {
 				if ($field[6]) {
 					$primary_key = true;
 				}
 			}
-			$drop_indexes = array();
+
+			$drop_indexes = [];
 			foreach ($indexes as $key => $val) {
 				if ($val[2] == "DROP") {
 					$drop_indexes[$val[1]] = true;
 					unset($indexes[$key]);
 				}
 			}
+
 			foreach (indexes($table) as $key_name => $index) {
-				$columns = array();
+				$columns = [];
 				foreach ($index["columns"] as $key => $column) {
-					if (!$originals[$column]) {
+					if (!isset($originals[$column])) {
 						continue 2;
 					}
 					$columns[] = $originals[$column] . ($index["descs"][$key] ? " DESC" : "");
 				}
+
 				if (!$drop_indexes[$key_name]) {
 					if ($index["type"] != "PRIMARY" || !$primary_key) {
+						// Remove sqlite_ prefix from internal index created by UNIQUE column constraint.
+						// This will transform column constrain to basic index.
+						$key_name = preg_replace('~^sqlite_~', "", $key_name);
+
 						$indexes[] = array($index["type"], $key_name, $columns);
 					}
 				}
 			}
+
 			foreach ($indexes as $key => $val) {
 				if ($val[0] == "PRIMARY") {
 					unset($indexes[$key]);
 					$foreign[] = "  PRIMARY KEY (" . implode(", ", $val[2]) . ")";
 				}
 			}
+
 			foreach (foreign_keys($table) as $key_name => $foreign_key) {
 				foreach ($foreign_key["source"] as $key => $column) {
 					if (!$originals[$column]) {
@@ -575,30 +597,37 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 					}
 					$foreign_key["source"][$key] = idf_unescape($originals[$column]);
 				}
+
 				if (!isset($foreign[" $key_name"])) {
 					$foreign[] = " " . format_foreign_key($foreign_key);
 				}
 			}
+
 			queries("BEGIN");
 		}
+
 		foreach ($fields as $key => $field) {
 			$fields[$key] = "  " . implode($field);
 		}
+
 		$fields = array_merge($fields, array_filter($foreign));
 		$temp_name = ($table == $name ? "adminer_$name" : $name);
 		if (!queries("CREATE TABLE " . table($temp_name) . " (\n" . implode(",\n", $fields) . "\n)")) {
 			// implicit ROLLBACK to not overwrite $connection->error
 			return false;
 		}
+
 		if ($table != "") {
 			if ($originals && !queries("INSERT INTO " . table($temp_name) . " (" . implode(", ", $originals) . ") SELECT " . implode(", ", array_map('idf_escape', array_keys($originals))) . " FROM " . table($table))) {
 				return false;
 			}
-			$triggers = array();
+
+			$triggers = [];
 			foreach (triggers($table) as $trigger_name => $timing_event) {
 				$trigger = trigger($trigger_name);
 				$triggers[] = "CREATE TRIGGER " . idf_escape($trigger_name) . " " . implode(" ", $timing_event) . " ON " . table($name) . "\n$trigger[Statement]";
 			}
+
 			$auto_increment = $auto_increment ? 0 : $connection->result("SELECT seq FROM sqlite_sequence WHERE name = " . q($table)); // if $auto_increment is set then it will be updated later
 			if (!queries("DROP TABLE " . table($table)) // drop before creating indexes and triggers to allow using old names
 				|| ($table == $name && !queries("ALTER TABLE " . table($temp_name) . " RENAME TO " . table($name)))
@@ -606,16 +635,20 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			) {
 				return false;
 			}
+
 			if ($auto_increment) {
 				queries("UPDATE sqlite_sequence SET seq = $auto_increment WHERE name = " . q($name)); // ignores error
 			}
+
 			foreach ($triggers as $trigger) {
 				if (!queries($trigger)) {
 					return false;
 				}
 			}
+
 			queries("COMMIT");
 		}
+
 		return true;
 	}
 
@@ -628,11 +661,12 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 
 	function alter_indexes($table, $alter) {
-		foreach ($alter as $primary) {
-			if ($primary[0] == "PRIMARY") {
-				return recreate_table($table, $table, array(), array(), array(), 0, $alter);
+		foreach ($alter as $index) {
+			if ($index[0] == "PRIMARY" || (preg_match('~^sqlite_~', $index[1]))) {
+				return recreate_table($table, $table, [], [], [], 0, $alter);
 			}
 		}
+
 		foreach (array_reverse($alter) as $val) {
 			if (!queries($val[2] == "DROP"
 				? "DROP INDEX " . idf_escape($val[1])
@@ -641,6 +675,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 				return false;
 			}
 		}
+
 		return true;
 	}
 
@@ -734,13 +769,17 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 
 	function create_sql($table, $auto_increment, $style) {
 		global $connection;
+
 		$return = $connection->result("SELECT sql FROM sqlite_master WHERE type IN ('table', 'view') AND name = " . q($table));
 		foreach (indexes($table) as $name => $index) {
-			if ($name == '') {
+			// Skip primary key and internal indexes.
+			if ($name == '' || strpos($name, "sqlite_") === 0) {
 				continue;
 			}
+
 			$return .= ";\n\n" . index_sql($table, $index['type'], $name, "(" . implode(", ", array_map('idf_escape', $index['columns'])) . ")");
 		}
+
 		return $return;
 	}
 
