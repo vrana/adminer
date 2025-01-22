@@ -1,14 +1,14 @@
 /*
-  
+
   VERSION: adminer-theme-mancave2-2.1.alpha
-  
+
   AUTHORS: panreach@gmail.com, dev@monolithforge.com //NOTE: CREDITS below that we stole from ;-)
-  
+
   LICENSE: www.adminer.org
-  
-  NOTES: 
+
+  NOTES:
     This (mancave-2.0-alpha) theme still needs some debugging! ;/
-    
+
 */
 
 
@@ -240,17 +240,13 @@ h1{
 	padding: 0 18px;
 	border-bottom: 1px solid #444;
 	font-weight: bold;
-	height: 70px;
-	line-height: 70px;
 	color: #555;
 	background: none;
-	position: relative;
-	top: 12px;
 }
 
 h2{
-	font-size: 24px; 
-	margin: 0; 
+	font-size: 24px;
+	margin: 0;
 	padding: 0;
 	padding-left: 50px;
 	border-bottom: 1px solid #333;
@@ -261,7 +257,7 @@ h2{
 	line-height: 77px;
 }
 
-h1, h2 {font: italic normal normal 24px/29px Georgia, "Times New Roman", "Bitstream Charter", Times, serif; margin: 0; padding: 32px 15px 3px 10px; line-height: 35px; /*text-shadow: rgba(185,185,185,1) 0 1px 0px;*/ background: none;color:#A3A3A3}
+h1, h2 {font: italic normal normal 24px/29px Georgia, "Times New Roman", "Bitstream Charter", Times, serif; margin: 0; padding: 40px 15px 3px 10px; line-height: 35px; /*text-shadow: rgba(185,185,185,1) 0 1px 0px;*/ background: none;color:#A3A3A3}
 
 h3{
 	font-weight: bold;
@@ -362,7 +358,6 @@ th{
 	position: relative;
 	background: #110236;
 	font-weight: normal;
-	width: 17%;
 	border-left: 5px solid #777;
 	border-bottom: 1px solid #777;
 	color: #eee;
@@ -456,13 +451,13 @@ textarea
 }
 
 textarea, input, select {
-    border-width: 1px; 
-    -moz-border-radius: 4px; 
-    -khtml-border-radius: 4px; 
-    -webkit-border-radius: 4px; 
-    border-radius: 4px; 
-    border-color: #5C5C5C; 
-    background-color: #49526D; 
+    border-width: 1px;
+    -moz-border-radius: 4px;
+    -khtml-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    border-color: #5C5C5C;
+    background-color: #49526D;
     color: #ccc;
 }
 
@@ -547,7 +542,7 @@ input[type='radio']{
 	height: 18px;
 	vertical-align: middle;
 	margin-left: 8px;
-	margin-right: 0;	
+	margin-right: 0;
 }
 
 /* checkbox */
@@ -634,7 +629,7 @@ label input {
 
 /* submit */
 input[type='submit']{
-	color: #999; 
+	color: #999;
 	background-color: #110236;
 	padding: 0 25px;
 	margin-right: 20px;
@@ -761,9 +756,8 @@ legend{
 }
 
 /* db select */
-#dbs select{
-	width: 228px;
-	margin-left: 8px;
+#dbs {
+	padding-left: 18px !important;
 }
 
 /* links */
@@ -869,17 +863,17 @@ legend{
 }
 
 #breadcrumb {
-    margin: 0; 
-    height: 21px; 
-    display: block; 
-    position: absolute; 
-    top: 0; 
+    margin: 0;
+    height: 21px;
+    display: block;
+    position: absolute;
+    top: 0;
     left: 300px;
-    background-color: #000; 
-    border: 1px dashed #ccc; 
+    background-color: #000;
+    border: 1px dashed #ccc;
     border-top:0;
-    padding: 2px 12px 24px 12px; 
-    line-height: 1.5em; 
+    padding: 2px 12px 24px 12px;
+    line-height: 1.5em;
     color:#800000;
     z-index:5000;
 }
@@ -1079,14 +1073,14 @@ body > form{
     top: 0;
     left: 0;
 
-    margin: 0; 
-    height: 21px; 
-    display: block; 
-    background-color: #110236; 
-    border: 1px dashed #ccc; 
+    margin: 0;
+    height: 21px;
+    display: block;
+    background-color: #110236;
+    border: 1px dashed #ccc;
     border-top:0;
-    padding: 2px 12px 36px 12px; 
-    line-height: 1.5em; 
+    padding: 2px 12px 36px 12px;
+    line-height: 1.5em;
     color:#ccc;
     z-index:5000;
 }
@@ -1096,14 +1090,14 @@ body > form{
     position: absolute;
     top: 0;
     right: 140px;
-    margin: 0; 
-    height: 21px; 
-    display: block; 
-    background-color: #110236; 
-    border: 1px dashed #ccc; 
+    margin: 0;
+    height: 21px;
+    display: block;
+    background-color: #110236;
+    border: 1px dashed #ccc;
     border-top:0;
-    padding: 2px 12px 36px 12px; 
-    line-height: 1.5em; 
+    padding: 2px 12px 36px 12px;
+    line-height: 1.5em;
     color:#ccc;
     z-index:5000;
 
@@ -1179,7 +1173,7 @@ p#tables a.select::before {
 /* edit row */
 html/*\*/>/*/*/body table input + a[href*="&edit="][href*="&where"] {
     content: '';
-    width:18px; 
+    width:18px;
     vertical-align:middle;
     display:inline-block;
     overflow:hidden;

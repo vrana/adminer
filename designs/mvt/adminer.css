@@ -403,14 +403,6 @@ tr.odd td {
 	color: #090;
 }
 
-.js .hidden {
-	display: initial;
-}
-
-.js input.hidden, .js td.hidden {
-	display: none
-}
-
 .logout {
 	top: 28px;
 }
@@ -534,13 +526,13 @@ table tbody input ~ a[href*="&edit="][href*="&where"] {
 }
 
 #lang {
-	position: absolute;
-	top: 0;
-	right: 0;
-	width: auto;
+	position: fixed;
 	line-height: 1;
-	left: initial;
-	font-size: 11px
+	font-size: 11px;
+	left: auto;
+	top: 0;
+	right: calc(100% - 20rem + 3px);
+	color: #fff;
 }
 
 #lang select {
@@ -597,7 +589,6 @@ table tbody input ~ a[href*="&edit="][href*="&where"] {
 	background: inherit;
 	color: #fff;
 	padding: 3px;
-	width: 15rem;
 }
 
 #menu select option {
@@ -614,8 +605,30 @@ table tbody input ~ a[href*="&edit="][href*="&where"] {
 	color: #fff;
 }
 
+.tables-filter {
+	padding: .8em .5em;
+}
+
+.tables-filter input {
+	color: #fff;
+	background: transparent;
+}
+
+.tables-filter input::placeholder {
+	color: #fff;
+}
+
 #logins a, #tables a {
 	background: 0 0
+}
+
+.logout {
+	position: fixed;
+	top: 0;
+	right: 0;
+	z-index: 5;
+	color: #fff;
+	margin: 2px 8px;
 }
 
 #logout {

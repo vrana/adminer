@@ -2,8 +2,8 @@
 *{margin:0;padding:0}
 body{font:13px/18px Helvetica,Arial,sans-serif;background:#fff;color:#333}
 /* generic */
-a,a:visited{color:#06c;text-decoration:none;border-bottom:1px dotted}
-a:hover{border-bottom:1px solid #06c;background:#06c;color:#fff}
+a{color:#06c;text-decoration:none;border-bottom:1px dotted}
+a:hover,a:link:hover{border-bottom:1px solid #06c;background:#06c;color:#fff}
 p{padding-bottom:4px;margin-bottom:4px}
 h1{font-size:18px;font-weight:bold;padding-bottom:0px;height:40px;padding:0 0 8px 0;color:#666;border:0}
 h2{font:32px Georgia,serif;padding:10px 0 8px;margin:0;background:transparent;border:0;color:#333}
@@ -31,6 +31,7 @@ thead th,thead td{white-space:nowrap;font-weight:bold;background:#ddd;border-col
 th:first-child,td:first-child{border-color:transparent;white-space:nowrap}
 td[align=right]{text-align:right}
 table code{font-size:13px;line-height:18px}
+.footer fieldset{float:none;}
 .hidden{display:none}
 .error,.message{padding:0;background:transparent;font-weight:bold}
 .error{color:#c00}
@@ -46,11 +47,12 @@ border:5px solid #ccc;margin:0}
 #menu a:hover{background:#333;color:#fff;border-color:#333}
 #menu a.h1,#menu a.h1:hover{display:block;height:0;width:175px;padding:40px 0 0 0;overflow:hidden;float:left;border:0;margin:0;
 outline:0;background:url(//www.bradezone.com/random/adminer_logo.gif) no-repeat;line-height:32px}
-#menu p,#logins,#tables{white-space:nowrap;border:0;padding:0 0 4px 0;margin:0 0 4px 0}
+#menu p,#logins,#tables{border:0;padding:0 0 4px 0;margin:0 0 4px 0}
 #breadcrumb{background:#333;color:#fff;position:fixed;top:0;left:320px;line-height:40px;padding:0;z-index:1;margin:0}
 #breadcrumb a{color:#ff9}
 #breadcrumb a:hover{background:transparent;color:#ff9;border-color:#ff9}
 #schema .table{padding:4px 8px;background:#f3f3f3}
+.tables-filter{padding:0;margin:10px 0;}
 /* IE hacks */
 *+html th:first-child,*+html td:first-child{border-color:inherit;white-space:inherit}
 * html #lang,* html #menu,* html #breadcrumb{position:absolute}

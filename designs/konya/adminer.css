@@ -2,11 +2,11 @@
 /* So I merged them into one file, fixed a couple of problems, added some paddings here and there, voila!
 
 /* Redesigned (iconized) by Hever [hev.cz] - June 2009, ver 0.1.3 */
-/** 
+/**
  * Alternative style for Adminer by Frank Bueltge
  * @link http://bueltge.de/
  */
- 
+
 /* Added icons */
 /* IE doesn't support inline images - using some hack that eliminate IE*/
 html/*\*/>/*/*/body .error {background:#FFEEEE url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAIsSURBVDjLpVNLSJQBEP7+h6uu62vLVAJDW1KQTMrINQ1vPQzq1GOpa9EppGOHLh0kCEKL7JBEhVCHihAsESyJiE4FWShGRmauu7KYiv6Pma+DGoFrBQ7MzGFmPr5vmDFIYj1mr1WYfrHPovA9VVOqbC7e/1rS9ZlrAVDYHig5WB0oPtBI0TNrUiC5yhP9jeF4X8NPcWfopoY48XT39PjjXeF0vWkZqOjd7LJYrmGasHPCCJbHwhS9/F8M4s8baid764Xi0Ilfp5voorpJfn2wwx/r3l77TwZUvR+qajXVn8PnvocYfXYH6k2ioOaCpaIdf11ivDcayyiMVudsOYqFb60gARJYHG9DbqQFmSVNjaO3K2NpAeK90ZCqtgcrjkP9aUCXp0moetDFEeRXnYCKXhm+uTW0CkBFu4JlxzZkFlbASz4CQGQVBFeEwZm8geyiMuRVntzsL3oXV+YMkvjRsydC1U+lhwZsWXgHb+oWVAEzIwvzyVlk5igsi7DymmHlHsFQR50rjl+981Jy1Fw6Gu0ObTtnU+cgs28AKgDiy+Awpj5OACBAhZ/qh2HOo6i+NeA73jUAML4/qWux8mt6NjW1w599CS9xb0mSEqQBEDAtwqALUmBaG5FV3oYPnTHMjAwetlWksyByaukxQg2wQ9FlccaK/OXA3/uAEUDp3rNIDQ1ctSk6kHh1/jRFoaL4M4snEMeD73gQx4M4PsT1IZ5AfYH68tZY7zv/ApRMY9mnuVMvAAAAAElFTkSuQmCC") no-repeat scroll 0.8em center; padding-left:38px;}
@@ -74,10 +74,9 @@ thead td, thead th {background-color: #DFDFDF; border: none; border-bottom: 1px 
 thead tr:hover td, thead tr:hover th {background-color: #DDD !important;}
 tr:nth-child(2n) td, tr:nth-child(2n) th, .odd td, .odd th, tr.odd {background-color: #F1F1F1;}
 tr:hover td, tr:hover th {background-color: #BCD;}
-fieldset {display: inline; vertical-align: top; padding: 2px 12px; margin: 25px 12px 12px 0; border: none; background-color: #F1F1F1; border: 1px solid #E3E3E3; position: relative; padding-top: 14px;}
+fieldset {display: inline; vertical-align: top; padding: 2px 12px; margin: 25px 12px 12px 0; border: none; background-color: #F1F1F1; border: 1px solid #E3E3E3; position: relative;}
 fieldset, x:-moz-any-link {padding-top: 4px;}
-fieldset {%padding-top: 14px;}
-legend {font-weight: 900; color: #000; position: absolute; top: -1.666em; left: -1em; padding: 0 4px;}
+legend {font-weight: 900; color: #000; position: relative; top: -0.8em; left: -1em; padding: 0 4px;}
 input[name='limit'], input[name*='length'] {width: 3em; xtext-align: right;}
 input[name='text_length'] {width: 5em;}
 select + input, select + select {margin-left: 2px;}
@@ -93,6 +92,8 @@ fieldset div {margin-bottom: 2px;}
 input[name='Comment'] { /* !!! */ width: 24em;}
 input[name='Auto_increment'] { /* !!! */width: 6em;}
 img {vertical-align: middle; margin: 0; padding: 0;}
+.footer{border-image: linear-gradient(rgba(249, 249, 249, .2), #F9F9F9) 100% 0}
+.footer > div {background-color: #F9F9F9;}
 .error {padding: 8px; color: red; background-color: #FEE;}
 .message {padding: 8px; background-color: #DDD;}
 .char {color: #070;}
@@ -108,7 +109,8 @@ img {vertical-align: middle; margin: 0; padding: 0;}
 #menu form {margin: 0;}
 #menu p, #logins, #tables {padding-left: 8px; font-size: 10pt; border-bottom: none;}
 #menu form p {padding-left: 0; text-align: left;}
-h1 .h1:hover {text-decoration: underline;} 
+#dbs, .tables-filter {padding-left:8px !important;}
+h1 .h1:hover {text-decoration: underline;}
 h1, h2 {font: italic normal normal 24px/29px Georgia, "Times New Roman", "Bitstream Charter", Times, serif; margin: 0; padding: 14px 15px 3px 10px; line-height: 35px; text-shadow: rgba(255,255,255,1) 0 1px 0px; background: none;}
 h1 {font-size: 12px;}
 h1 .h1 {font-size: 12px;}
@@ -117,8 +119,6 @@ h3 {margin: 40px 0 0; font-weight: 400; font-size: 130%;}
 #schema {margin: 1.5em 0 0 220px; position: relative;}
 #schema .table {border: 1px solid #E3E3E3; background-color: #F1F1F1; padding: 0 2px; cursor: move; position: absolute;}
 #schema .references {position: absolute;}
-.js .hidden {display: inline;}
-.js td.hidden, .js input.hidden {display: none;}
 legend a {color: #333; text-decoration: none; cursor: default;}
 legend a:hover {color: #333;}
 code {background: transparent;}

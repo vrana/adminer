@@ -22,7 +22,7 @@ a,a:visited {
 	color:black;
 }
 
-a:hover {
+a:hover, a:link:hover {
 	color:white;
 	background:#006aeb;
 }
@@ -224,12 +224,16 @@ input[name=logout]:hover {
 	background:#ea0202;
 }
 
-#logins a, #tables a { 
+#logins a, #tables a {
 	background:none;
 }
 
-#logins a:hover, #tables a:hover { 
+#logins a:hover, #tables a:hover {
 	background:#006aeb;
+}
+
+.logout {
+	z-index: 5;
 }
 
 #logout {
