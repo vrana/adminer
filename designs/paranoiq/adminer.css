@@ -8,7 +8,7 @@ body {
     font-size: 11pt; }
 body, select, option, optgroup, button {
     font-family: Calibri, Arial, Helvetica, sans-serif; } /* IE6 */
-input[type='submit'], input[type='reset'], input[type='button'], input[type='file'], 
+input[type='submit'], input[type='reset'], input[type='button'], input[type='file'],
 input[name$='[comment]'], input[name='Comment'] {
     font-family: Calibri, Arial, Helvetica, sans-serif; }
 input, textarea, pre, code, samp, kbd, var {
@@ -185,6 +185,10 @@ h3 {
     background: #DEF;
 }
 
+.tables-filter {
+	padding-left: 8px;
+}
+
 h1 {
     margin-top: 8px;
     color: #000;
@@ -221,10 +225,6 @@ h2 {
 
 
 /* -- GUI adjustments ------------------------------------------------------- */
-.js .hidden {
-    display: inline; }
-.js td.hidden, .js input.hidden {
-    display: none; }
 legend a {
     color: #000;
     text-decoration: none;
@@ -287,4 +287,3 @@ fieldset table {
 	p.tabs {
         display: none; }
 }
-

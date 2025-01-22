@@ -1,6 +1,6 @@
 /**
  * Alternative style for Adminer by Frank Bültge
- * 
+ *
  * @link     http://bueltge.de/
  * @version  02/18/2014
  */
@@ -31,14 +31,14 @@ p {
 margin: 0.8em 20px 0 5px
 }
 
-a { 
+a {
 color: #21759B;
 background: none !important;
 }
-a:visited { 
+a:visited {
 color: #21759B;
 }
-a:hover, a:hover { 
+a:hover, a:hover {
 text-decoration: none;
 color: #d54e21;
 }
@@ -55,7 +55,9 @@ a.active, a.active + a {
 	text-decoration: none;
 	font-weight: 700;
 }
-
+.icon {
+	background-color: #21759B;
+}
 form {
 margin: 0;
 padding: 0 0 0 5px;
@@ -102,7 +104,7 @@ display: table-header-group;
 vertical-align: middle;
 border-color: inherit;
 }
-thead td, thead th { 
+thead td, thead th {
 background-color: #DFDFDF;
 border: none;
 border-bottom: 1px #BBB solid;
@@ -117,12 +119,18 @@ tr:hover td, tr:hover th {
 background-color: #BCD;
 }
 
+.footer {
+border-image:linear-gradient(rgba(249, 249, 249, .2), #F9F9F9) 100% 0;
+}
+.footer > div {
+background-color: #F9F9F9;
+}
 
-fieldset { 
-display: inline; 
-vertical-align: top; 
-padding: 2px 12px; 
-margin: 25px 12px 12px 0; 
+fieldset {
+display: inline;
+vertical-align: top;
+padding: 2px 12px;
+margin: 25px 12px 12px 0;
 border: none;
 background-color: #F1F1F1;
 border: 1px solid #E3E3E3;
@@ -136,7 +144,7 @@ fieldset {
 padding-top: 14px;
 }
 legend {
-font-weight: 900; 
+font-weight: 900;
 color: #000;
 top: -1.666em;
 left: -1em;
@@ -146,7 +154,7 @@ input {
 padding: 2px 5px 1px 5px;
 }
 input[name='limit'], input[name='length'] {
-width: 3em; 
+width: 3em;
 text-align: right;
 }
 input[name='text_length'] {
@@ -203,7 +211,7 @@ input[type=button], input[type=submit] {
 	background-image:      -o-linear-gradient(top, #fff, #eee);
 	background-image:   linear-gradient(to bottom, #fff, #eee);
 	border-color: #ccc;
-	-webkit-box-shadow: inset 0 0 1px 1px rgba(255,255,255, 0.9); 
+	-webkit-box-shadow: inset 0 0 1px 1px rgba(255,255,255, 0.9);
  	box-shadow: inset 0 0 1px 1px rgba(255,255,255, 0.9);
  	color: #464646;
 	text-shadow: 1px 1px 0 #fff;
@@ -217,7 +225,7 @@ input[type=button]:focus, input[type=submit]:focus  {
 	background-image:      -o-linear-gradient(top, #fff, #eee);
 	background-image:   linear-gradient(to bottom, #fff, #eee);
 	border-color: #bbb;
-	-webkit-box-shadow: 0px 1px 1px rgba(0,0,0,.1); 
+	-webkit-box-shadow: 0px 1px 1px rgba(0,0,0,.1);
 	box-shadow: 0px 1px 1px rgba(0,0,0,.1);
 	color: #000;
 }
@@ -230,7 +238,7 @@ input[type=button]:active, input[type=submit]:active {
 	background-image:   linear-gradient(to bottom, #eee, #f9f9f9);
 	border-color: #999 #ddd #ddd #999;
 	color: #555;
-	-webkit-box-shadow: inset 1px 1px 0 rgba(50,50,50,0.1); 
+	-webkit-box-shadow: inset 1px 1px 0 rgba(50,50,50,0.1);
 	box-shadow: inset 1px 1px 0 rgba(50,50,50,0.1);
 }
 input[type=button]:focus, input[type=submit]:focus {
@@ -255,9 +263,9 @@ input[name='Auto_increment'] { /* !!! */
 width: 6em;
 }
 
-img { 
-vertical-align: middle; 
-margin: 0; 
+img {
+vertical-align: middle;
+margin: 0;
 padding: 0;
 }
 .js .column {
@@ -265,25 +273,25 @@ position: relative;
 background: none;
 padding: 0;
 }
-.error { 
-padding: 8px; 
-color: red; 
+.error {
+padding: 8px;
+color: red;
 background-color: #FEE;
 }
-.message { 
-padding: 8px;  
+.message {
+padding: 8px;
 background-color: #DDD;
 }
-.char { 
+.char {
 color: #070;
 }
-.date { 
+.date {
 color: #707;
 }
-.enum { 
+.enum {
 color: #077;
 }
-.binary { 
+.binary {
 color: red;
 }
 .jush-sql {
@@ -295,20 +303,20 @@ font-size: 11px;
 color: #333;
 }
 
-#content { 
-margin: 2px 0 0 270px; 
+#content {
+margin: 2px 0 0 270px;
 padding: 10px 20px 20px 0;
 }
 #lang {
 font-size:10px;
 height: 23px;
 width: 255px;
-display: block; 
-padding: 1px 0; 
-position: absolute; 
+display: block;
+padding: 1px 0;
+position: absolute;
 top: 0;
 left: 0;
-text-align: center; 
+text-align: center;
 background-color: #f1f1f1;
 border: 1px solid #E3E3E3;
 line-height: 1.25em;
@@ -316,43 +324,43 @@ line-height: 1.25em;
 #lang select {
 font-size: 10px;
 }
-#breadcrumb { 
-margin: 0; 
+#breadcrumb {
+margin: 0;
 height: 21px;
-display: block; 
-position: absolute; 
-top: 0; 
+display: block;
+position: absolute;
+top: 0;
 left: 270px;
 background-color: #f1f1f1;
 border: 1px solid #E3E3E3;
 padding: 2px 12px;
 line-height: 1.25em }
-#menu {  
-position: absolute; 
+#menu {
+position: absolute;
 margin: 0;
-top: 28px; 
-left: 0; 
-width: 255px; 
+top: 28px;
+left: 0;
+width: 255px;
 background-color: #f1f1f1;
 border: 1px solid #E3E3E3;
 }
-#menu form { 
+#menu form {
 margin: 0;
 }
-#menu p, #logins, #tables {
+#menu p, #logins, #tables, .tables-filter {
 padding-left: 8px;
-border-bottom: none;
-}
-#dbs {
-padding: 0 !important;
 }
 #menu form p {
 padding-left: 0;
 text-align: left;
 }
+#dbs {
+	border-bottom: none !important;
+	padding-left: 3px !important;
+}
 h1 .h1:hover {
 text-decoration: underline;
-} 
+}
 h1, h2 {
 font: italic normal normal 24px/29px Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
 margin: 0;
@@ -371,18 +379,18 @@ h3 {
 font: normal normal normal 18px/22px Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
 margin: 20px 0 0 5px;
 }
-#schema { 
+#schema {
 margin: 1.5em 0 0 220px;
 position: relative;
 }
-#schema .table { 
+#schema .table {
 border: 1px solid #E3E3E3;
 background-color: #F1F1F1;
-padding: 0 2px; 
-cursor: move; 
+padding: 0 2px;
+cursor: move;
 position: absolute;
 }
-#schema .references { 
+#schema .references {
 position: absolute;
 }
 .js .hidden {

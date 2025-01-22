@@ -225,8 +225,8 @@ h1{
 }
 
 h2{
-	font-size: 24px; 
-	margin: 0; 
+	font-size: 24px;
+	margin: 0;
 	padding: 0;
 	padding-left: 50px;
 	border-bottom: 1px solid #333;
@@ -442,6 +442,13 @@ td textarea
 	border-radius: 0;
 }
 
+th input::placeholder,
+td input::placeholder
+{
+	color: #fff;
+}
+
+
 th input:hover,
 th select:hover,
 td input:hover,
@@ -502,7 +509,7 @@ input[type='radio']{
 	height: 18px;
 	vertical-align: middle;
 	margin-left: 8px;
-	margin-right: 0;	
+	margin-right: 0;
 }
 
 /* checkbox */
@@ -657,6 +664,14 @@ legend{
 	color: #999;
 }
 
+.footer {
+	border-image: linear-gradient(rgba(0, 0, 0, .2), #000) 100% 0;
+}
+
+.footer > div{
+	background: #000;
+}
+
 /* menu
    ----------------------------------------------------------------------- */
 
@@ -690,12 +705,6 @@ legend{
 .version {
   color: #555;
   font-size: inherit;
-}
-
-/* db select */
-#dbs select{
-	width: 228px;
-	margin-left: 8px;
 }
 
 /* links */
@@ -985,6 +994,11 @@ code.jush-sql ~ a:first-of-type::before{
 /* logout form
    ----------------------------------------------------------------------- */
 
-body > form{
-	position: absolute;
+.logout {
+	z-index: 10;
+}
+
+#logout {
+	margin-right: 0;
+	margin-left: 10px;
 }
