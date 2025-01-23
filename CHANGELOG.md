@@ -1,7 +1,7 @@
 Changelog
 =========
 
-Adminer 4.12.1 (2024-11-21)
+Adminer 4.13 (2025-01-23)
 -------------------------
 
 ### Changes
@@ -9,6 +9,12 @@ Adminer 4.12.1 (2024-11-21)
 - Remove donation link from logout message
 - Update German translation (by @wintstar, @odysseuscm)
 - Declare compatibility with PHP 8.4
+- Remove too broken designs
+
+### Bugfixes
+
+- SQLite: Fix exporting and recreating tables with UNIQUE column constraint
+- Fix main visual glitches in designs
 
 Adminer 4.12 (2024-11-21)
 -------------------------
