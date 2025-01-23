@@ -22,7 +22,7 @@ Adminer 4.12 (2024-11-21)
 ### New features
 
 - MySQL: Print comments of stored procedures and functions
-- MariaDB: Add support for UUID data type (by vukbgit)
+- MariaDB: Add support for UUID data type (by @vukbgit)
 - MS SQL: Allow to set Encrypt and TrustServerCertificate with AdminerLoginSsl plugin (issue #5)
 - MS SQL, MongoDB: Connect to localhost with default port if server is not specified
 - Compiler: Allow to compile only selected drivers and languages
@@ -34,7 +34,7 @@ Adminer 4.12 (2024-11-21)
 - Update project URL and info
 - Rename 'server' driver to 'mysql'
 - Compiler: MySQL driver is no longer the required default
-- Update Spanish translations (by isaacpolaino)
+- Update Spanish translations (by @isaacpolaino)
 
 ### Bugfixes
 
@@ -76,17 +76,17 @@ Adminer 4.10 (2024-10-22)
 
 - Add drag-n-drop moving of rows in table selection filter
 - Add drag-n-drop moving of rows in table editing
-- Add removal buttons to table selection filter (by Roy Orbitson)
-- Enable regular expressions when searching data in all tables (by Roy Orbitson)
+- Add removal buttons to table selection filter (by @Roy-Orbison)
+- Enable regular expressions when searching data in all tables (by @Roy-Orbison)
 - Integrate tables-filter plugin into the base code
-- Plugin to auto-include adminer.js when present (by Roy Orbitson)
+- Plugin to auto-include adminer.js when present (by @Roy-Orbison)
 - Print username next to the logout button
 - Show partitioning info in table structure page
 - Show second link for editing a table under the table view
 
 ### Changes
 
-- Check new version against GitHub pages (by Adrian Jones)
+- Check new version against GitHub pages (by @adrianbj)
 - Add 'Home' to breadcrumb navigation
 - Full width design for database select box
 - Add table head to the list of indexes
@@ -119,13 +119,13 @@ Adminer 4.9.3 (2024-10-02)
 --------------------------
 
 - MySQL, PostgreSQL: Fix queries splitting and string constants
-- MySQL: Fix where clause for `JSON` column (by SeaEagle)
+- MySQL: Fix where clause for `JSON` column (by @SeaEagle)
 - MySQL: Fix editing user's proxy privilege, refactoring
 - MariaDB: Fix comparing `CURRENT_TIMESTAMP` definition while altering a table
 - PostgreSQL: Fix editing record that contains a field with `GENERATED ALWAYS` default value
 - Fix using undefined Min_DB::info property
 - Do not include unchanged `PARTITION BY` definition into `ALTER TABLE` query
-- Do not limit unlimited memory while executing queries (by Michael Graß)
+- Do not limit unlimited memory while executing queries (by @oksiquatzel)
 - Fix number conversion warning while reading INI settings
 - Hide invalid edit form if table record is not found
 - CSS: Fix background color of `<pre>` used as edit field
@@ -139,24 +139,24 @@ Adminer 4.9.2 (2024-09-18)
 - PostgreSQL: Fix search fields configuration (regression from 4.9)
 - PostgreSQL: Fix search condition for network address types, add macaddr8 type
 - PostgreSQL: Fix exporting `CREATE TABLE` query with `GENERATED` default values
-- PostgreSQL: Fix exporting `CREATE TABLE` query with sequence default value (by khoazero123)
+- PostgreSQL: Fix exporting `CREATE TABLE` query with sequence default value (by @khoazero123)
 - PostgreSQL: Allow to set connection's sslmode with AdminerLoginSsl plugin
 - MySQL: Do not show `empty` enum value in strict mode
 - Editor: Fix searching in tables
-- Add function to retrieve driver name that can be used in plugins (by Roy Orbison)
+- Add function to retrieve driver name that can be used in plugins (by @Roy-Orbison)
 
 Adminer 4.9.1 (2024-09-09)
 --------------------------
 
-- Compatibility with PHP 8.3 (by Sneda8)
+- Compatibility with PHP 8.3 (by @Sneda8)
 - Fix compiling jush external files
 - Improved displaying of long table names in menu
 - Replace deprecated `<acronym>` with `<abbr>`
 - Add support for translations in plugins
 - Add .editorconfig file
-- MySQL: Add `unix_timestamp` to functions (by Michal Paulovic)
-- PostgreSQL: Show only accessible databases (by Thomas Daniels)
-- PostgreSQL: Make data length calculation more accurate (by caltong)
+- MySQL: Add `unix_timestamp` to functions (by @bbaronSVK)
+- PostgreSQL: Show only accessible databases (by @thomas-daniels)
+- PostgreSQL: Make data length calculation more accurate (by @caltong)
 - PostgreSQL: Fix documentation link for `SERIAL` type
 - PostgreSQL: Fix undefined properties on PHP 8
 - Elasticsearch: Fix field selection
@@ -174,10 +174,10 @@ Adminer 4.9 (2024-08-19)
 - Add new Elasticsearch 7 driver
 - Set saving to file as a default export option
 - Improve URL and email detection
-- Fix AdminerVersionNoverify plugin blocking other plugins to modify HTML head (by Roy Orbitson)
+- Fix AdminerVersionNoverify plugin blocking other plugins to modify HTML head (by @Roy-Orbison)
 - Fix several bugs and security issues in AdminerFileUpload plugin
-- Skip dump of generated columns (by Denitz)
-- Fix uninitialized string offset (by Adrian Jones)
+- Skip dump of generated columns (by @Denitz)
+- Fix uninitialized string offset (by @adrianbj)
 - Update composer.json
 - Add script for exporting compiled adminer variants
 
@@ -189,7 +189,7 @@ Adminer 4.8.2 (2024-03-16)
 - PostgreSQL: Don't reset table comments (regression from 4.2.0)
 - PostgreSQL PDO: Allow editing rows identified by boolean column (PR #380)
 - Update several translations: lv, bn, fr, it, nl, ru, cs, sk
-- Allow responsive styles on larger devices
+- Allow responsive styles on larger devices (by @lucas-sandery)
 
 Adminer 4.8.1 (2021-05-14)
 --------------------------
