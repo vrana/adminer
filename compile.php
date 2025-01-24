@@ -520,8 +520,8 @@ $file = preg_replace('~"\.\./vendor/vrana/jush/modules/(jush\.js)"~', $replace, 
 $file = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $file);
 $file = php_shrink($file);
 
-@mkdir("temp", 0777, true);
-$filename = "temp/$project"
+@mkdir("export", 0777, true);
+$filename = "export/$project"
 	. (is_dev_version() ? "" : "-$VERSION")
 	. ($single_driver ? "-$single_driver" : "")
 	. ($single_language ? "-$single_language" : "")
