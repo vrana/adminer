@@ -156,14 +156,14 @@ if (isset($_POST["lang"]) && verify_token()) { // $error not yet available
 }
 
 $available_languages = get_available_languages();
-$LANG = $available_languages[0];
+$LANG = array_keys($available_languages)[0];
 
-if (isset($available_languages[$_COOKIE["adminer_lang"]])) {
+if (isset($_COOKIE["adminer_lang"]) && isset($available_languages[$_COOKIE["adminer_lang"]])) {
 	cookie("adminer_lang", $_COOKIE["adminer_lang"]);
 	$LANG = $_COOKIE["adminer_lang"];
 } elseif (isset($available_languages[$_SESSION["lang"]])) {
 	$LANG = $_SESSION["lang"];
-} else {
+} elseif (isset($_SERVER["HTTP_ACCEPT_LANGUAGE"])) {
 	$accept_language = [];
 	preg_match_all('~([-a-z]+)(;q=([0-9.]+))?~', str_replace("_", "-", strtolower($_SERVER["HTTP_ACCEPT_LANGUAGE"])), $matches, PREG_SET_ORDER);
 	foreach ($matches as $match) {
