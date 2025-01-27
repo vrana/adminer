@@ -10,6 +10,8 @@ Supported database drivers:
 
 AdminerNeo is based on the [Adminer](https://www.adminer.org/) project by Jakub Vrána.
 
+<img src="docs/images/screenshot.webp" width="830px" alt="Screenshot"/>
+
 Requirements
 ------------
 
