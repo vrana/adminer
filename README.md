@@ -1,20 +1,22 @@
-Adminer
-=======
+AdminerNeo
+==========
 
-**Adminer** is a full-featured database management tool written in PHP. It consists of a single file ready to deploy to 
-the target server. As a companion, **Adminer Editor** offers data manipulation for end-users.
+**AdminerNeo** is a full-featured database management tool written in PHP. It consists of a single file ready to deploy 
+to the target server. As a companion, **AdminerNeo Editor** offers data manipulation for end-users. 
 
 Supported database drivers:
 - MySQL, MariaDB, PostgreSQL, SQLite, MS SQL, Oracle, MongoDB
 - With plugin: SimpleDB, Elasticsearch (beta), Firebird (alpha), ClickHouse (alpha)
+
+AdminerNeo is based on the [Adminer](https://www.adminer.org/) project by Jakub Vrána.
 
 Requirements
 ------------
 
 - PHP 5.6+ with enabled sessions.
 
-Migration from original Adminer
--------------------------------
+Migration from Adminer
+----------------------
 
 - Remove plugin AdminerTablesFilter (plugins/tables-filter.php).
 - If you use complex custom theme, you will probably need to adjust a thing or two.
@@ -28,17 +30,17 @@ Usage
 
 Download one for the latest [release files](https://github.com/pematon/adminer/releases), upload to the HTTP server 
 with PHP and enjoy 😉 If you are not satisfied with any combination of the database driver and language, you can 
-download the source code and compile your own Adminer:
+download the source code and compile your own AdminerNeo:
 
 - Download the source code.
 - Run `composer install` to install dependencies.
 - Run compile.php:
 
 ```shell
-# Adminer
+# AdminerNeo
 php compile.php <drivers> <languages>
 
-# Editor
+# AdminerNeo Editor
 php compile.php editor <drivers> <languages>
 ```
 
@@ -54,8 +56,8 @@ php compile.php mysql,pgsql en,de,cs,sk
 Security
 --------
 
-Adminer does not allow connecting to databases without a password and it rate-limits the connection attempts to protect 
-against brute-force attacks. Still, it is highly recommended to 🔒 **restrict access to Adminer** 🔒 by whitelisting IP 
+AdminerNeo does not allow connecting to databases without a password and it rate-limits the connection attempts to protect 
+against brute-force attacks. Still, it is highly recommended to 🔒 **restrict access to AdminerNeo** 🔒 by whitelisting IP 
 addresses allowed to connect to it, by password-protecting the access in your web server or by enabling security plugins 
 (e.g. to require an OTP).
 
@@ -119,14 +121,14 @@ include "./adminer.php";
 Main project files
 ------------------
 
-- adminer/index.php - Run development version of Adminer.
-- editor/index.php - Run development version of Adminer Editor.
+- adminer/index.php - Run development version of AdminerNeo.
+- editor/index.php - Run development version of AdminerNeo Editor.
 - editor/example.php - Example customization.
-- plugins/readme.txt - Plugins for Adminer and Adminer Editor.
+- plugins/readme.txt - Plugins for AdminerNeo and AdminerNeo Editor.
 - adminer/plugin.php - Plugin demo.
-- adminer/sqlite.php - Development version of Adminer with SQLite allowed.
+- adminer/sqlite.php - Development version of AdminerNeo with SQLite allowed.
 - editor/sqlite.php - Development version of Editor with SQLite allowed.
-- adminer/designs.php - Development version of Adminer with adminer.css switcher.
+- adminer/designs.php - Development version of AdminerNeo with adminer.css switcher.
 - compile.php - Create a single file version.
 - lang.php - Update translations.
 - tests/katalon.html - Katalon Automation Recorder test suite.
@@ -134,7 +136,7 @@ Main project files
 Project history
 ---------------
 
-Adminer was originally developed by Jakub Vrana, and it can be still found on [official pages](https://www.adminer.org/).
+Adminer was originally developed by Jakub Vrána, and it can be still found on [official pages](https://www.adminer.org/).
 Unfortunately, it is not maintained for several years. In the meantime, I (@peterpp) created for my company a set of
 custom plugins, modern theme, fixed some bugs and practically rewrote the Elasticsearch driver. I also looked closely 
 and contributed to the [AdminerEvo](https://www.adminerevo.org/) project that looked promising. However, I finally 
@@ -144,7 +146,7 @@ What to expect
 --------------
 
 Our top priority is fixing the security issues and reported bugs. But we really want to move forward and transform
-Adminer to a tool that will keep its simplicity, yet looks much better, is even easier to use and can be configured
+AdminerNeo to a tool that will keep its simplicity, yet looks much better, is even easier to use and can be configured
 without requirement of additional plugins.
 
 ### Version 4.x
@@ -165,6 +167,3 @@ support dark mode, configurable color variants for production/devel environment.
 - **Plugins** - Integrate several basic plugins, enable them by optional configuration.
 - **Codebase** - Prefer code readability before minimalism, use PER coding style, add namespaces.
 - **Compilation** - Allow to export selected drivers, themes, languages and plugins into a single adminer.php file.
-
-We are also thinking to change the project's name, so people will clearly distinguish between original Adminer and 
-other forks. Any suggestions are welcome.

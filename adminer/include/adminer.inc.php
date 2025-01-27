@@ -13,7 +13,7 @@ class Adminer {
 	* @return string HTML code
 	*/
 	function name() {
-		return "<a id='h1' href='" . h(HOME_URL) . "'>Adminer</a>";
+		return "<a id='h1' href='" . h(HOME_URL) . "'>AdminerNeo</a>";
 	}
 
 	/** Connection parameters

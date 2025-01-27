@@ -1,7 +1,7 @@
 Changelog
 =========
 
-Adminer 4.13 (2025-01-23)
+AdminerNeo 4.13 (2025-01-23)
 -------------------------
 
 ### Changes
@@ -16,7 +16,7 @@ Adminer 4.13 (2025-01-23)
 - SQLite: Fix exporting and recreating tables with UNIQUE column constraint
 - Fix main visual glitches in designs
 
-Adminer 4.12 (2024-11-21)
+AdminerNeo 4.12 (2024-11-21)
 -------------------------
 
 ### New features
@@ -46,7 +46,7 @@ Adminer 4.12 (2024-11-21)
 - Compiler: Fix translations in plugins
 - Compiler: Fix compiled SQLite single-driver Adminer
 
-Adminer 4.11 (2024-10-30)
+AdminerNeo 4.11 (2024-10-30)
 -------------------------
 
 ### New features
@@ -69,7 +69,7 @@ Adminer 4.11 (2024-10-30)
 - MS SQL: Prefix Unicode strings with 'N' so they are treated correctly
 - Fix printing error message while validating server URL
 
-Adminer 4.10 (2024-10-22)
+AdminerNeo 4.10 (2024-10-22)
 -------------------------
 
 ### New features
@@ -102,7 +102,7 @@ Adminer 4.10 (2024-10-22)
 
 - Fix missing SQL statement if warnings are printed (regression from 4.9)
 
-Adminer 4.9.4 (2024-10-09)
+AdminerNeo 4.9.4 (2024-10-09)
 --------------------------
 
 - Fix the width of inline edit field
@@ -115,7 +115,7 @@ Adminer 4.9.4 (2024-10-09)
 - Editor: Fix building links with array parameters
 - Clean up the code for PHP < 5.6
 
-Adminer 4.9.3 (2024-10-02)
+AdminerNeo 4.9.3 (2024-10-02)
 --------------------------
 
 - MySQL, PostgreSQL: Fix queries splitting and string constants
@@ -131,7 +131,7 @@ Adminer 4.9.3 (2024-10-02)
 - CSS: Fix background color of `<pre>` used as edit field
 - CSS: Bigger font size for code blocks
 
-Adminer 4.9.2 (2024-09-18)
+AdminerNeo 4.9.2 (2024-09-18)
 --------------------------
 
 - Fix textarea height for single-line inputs (used typically for SQLite text field)
@@ -145,7 +145,7 @@ Adminer 4.9.2 (2024-09-18)
 - Editor: Fix searching in tables
 - Add function to retrieve driver name that can be used in plugins (by @Roy-Orbison)
 
-Adminer 4.9.1 (2024-09-09)
+AdminerNeo 4.9.1 (2024-09-09)
 --------------------------
 
 - Compatibility with PHP 8.3 (by @Sneda8)
@@ -163,7 +163,7 @@ Adminer 4.9.1 (2024-09-09)
 - AdminerEditForeign: Refactor and fix the plugin
 - AdminerLoginOtp: Autocomplete hints for OTP input field, code refactoring
 
-Adminer 4.9 (2024-08-19)
+AdminerNeo 4.9 (2024-08-19)
 ------------------------
 
 - Validate server input in login form
@@ -181,7 +181,7 @@ Adminer 4.9 (2024-08-19)
 - Update composer.json
 - Add script for exporting compiled adminer variants
 
-Adminer 4.8.2 (2024-03-16)
+AdminerNeo 4.8.2 (2024-03-16)
 --------------------------
 
 - Support multi-line table comments

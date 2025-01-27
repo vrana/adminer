@@ -1,22 +1,22 @@
 {
-    "name": "pematon/adminer",
+    "name": "adminerneo/adminerneo",
     "description": "Database management in a single PHP file.",
-    "homepage": "https://github.com/pematon/adminer",
+    "homepage": "https://github.com/adminerneo/adminerneo",
     "keywords": [
         "database"
     ],
     "support": {
-        "issues": "https://github.com/pematon/adminer/issues",
-        "forum": "https://github.com/pematon/adminer/discussions",
-        "source": "https://github.com/pematon/adminer"
+        "issues": "https://github.com/adminerneo/adminerneo/issues",
+        "forum": "https://github.com/adminerneo/adminerneo/discussions",
+        "source": "https://github.com/adminerneo/adminerneo"
     },
     "authors": [
         {
-            "name": "Jakub Vrána",
-            "homepage": "https://www.vrana.cz/"
+            "name": "Peter Knut"
         },
         {
-            "name": "Peter Knut"
+            "name": "Jakub Vrána",
+            "homepage": "https://www.vrana.cz/"
         }
     ],
     "autoload": {
@@ -61,7 +61,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/pematon/jush.git"
+            "url": "https://github.com/peterpp/jush.git"
         },
         {
             "type": "vcs",
