@@ -528,7 +528,7 @@ function selectSearchSearch() {
 // Sorting.
 (function() {
 	let placeholderRow = null, nextRow = null, dragHelper = null;
-	let startY, minY, maxY;
+	let startScrollY, startY, minY, maxY, lastPointerY;
 
 	/**
 	 * Initializes sortable list of DIV elements.
@@ -569,6 +569,7 @@ function selectSearchSearch() {
 		const pointerY = getPointerY(event);
 
 		const parent = row.parentNode;
+		startScrollY = window.scrollY;
 		startY = pointerY - getOffsetTop(row);
 		minY = getOffsetTop(parent);
 		maxY = minY + parent.offsetHeight - row.offsetHeight;
@@ -612,6 +613,7 @@ function selectSearchSearch() {
 
 		window.addEventListener("mousemove", updateSorting);
 		window.addEventListener("touchmove", updateSorting);
+		window.addEventListener("scroll", updateSorting);
 
 		window.addEventListener("mouseup", finishSorting);
 		window.addEventListener("touchend", finishSorting);
@@ -620,27 +622,51 @@ function selectSearchSearch() {
 
 	function updateSorting(event) {
 		const pointerY = getPointerY(event);
+		const scrollingBoundary = 30;
+		const speedCoefficient = 8;
 
-		let top = Math.min(Math.max(pointerY - startY, minY), maxY);
-		dragHelper.style.top = `${top}px`;
-
-		const parent = placeholderRow.parentNode;
-		top = top - minY + parent.offsetTop;
-
-		let sibling;
-		if (top > placeholderRow.offsetTop + placeholderRow.offsetHeight / 2) {
-			sibling = !nextRow.classList.contains("no-sort") ? nextRow.nextElementSibling : nextRow;
-		} else if (top + placeholderRow.offsetHeight < placeholderRow.offsetTop + placeholderRow.offsetHeight / 2) {
-			sibling = placeholderRow.previousElementSibling;
-		} else {
-			sibling = nextRow;
+		// If mouse pointer is over the top boundary, scroll page down.
+		let distance = pointerY - scrollingBoundary;
+		if (distance < 0 && window.scrollY > 0) {
+			window.scrollBy(0, distance / speedCoefficient);
+			return;
 		}
 
-		if (sibling !== nextRow) {
-			const parent = placeholderRow.parentNode;
+		// If mouse pointer is under the bottom boundary, scroll page up.
+		distance = pointerY - window.innerHeight + scrollingBoundary;
+		if (distance > 0 && window.scrollY + window.innerHeight < document.documentElement.scrollHeight) {
+			window.scrollBy(0, distance / speedCoefficient);
+			return;
+		}
 
-			nextRow = sibling;
-			if (sibling) {
+		// Move helper row to the pointer position.
+		let top = Math.min(Math.max(pointerY - startY + window.scrollY - startScrollY, minY), maxY);
+		dragHelper.style.top = `${top}px`;
+
+		// Find a new position for the placeholder.
+		const parent = placeholderRow.parentNode;
+		let oldNextRow = nextRow;
+		top = top - minY + parent.offsetTop;
+
+		let testingRow = placeholderRow;
+		do {
+			if (top > testingRow.offsetTop + testingRow.offsetHeight / 2 + 1) {
+				if (!nextRow.classList.contains("no-sort")) {
+					testingRow = nextRow;
+					nextRow = nextRow.nextElementSibling;
+				} else {
+					break;
+				}
+			} else if (top + testingRow.offsetHeight < testingRow.offsetTop + testingRow.offsetHeight / 2 - 1) {
+				nextRow = testingRow = testingRow.previousElementSibling;
+			} else {
+				break;
+			}
+		} while (nextRow);
+
+		// Move the placeholder to a new position.
+		if (nextRow !== oldNextRow) {
+			if (nextRow) {
 				parent.insertBefore(placeholderRow, nextRow);
 			} else {
 				parent.appendChild(placeholderRow);
@@ -661,6 +687,7 @@ function selectSearchSearch() {
 
 		window.removeEventListener("mousemove", updateSorting);
 		window.removeEventListener("touchmove", updateSorting);
+		window.removeEventListener("scroll", updateSorting);
 
 		window.removeEventListener("mouseup", finishSorting);
 		window.removeEventListener("touchend", finishSorting);
@@ -670,10 +697,12 @@ function selectSearchSearch() {
 	function getPointerY(event) {
 		if (event.type.includes("touch")) {
 			const touch = event.touches[0] || event.changedTouches[0];
-			return touch.clientY;
-		} else {
-			return event.clientY;
+			lastPointerY = touch.clientY;
+		} else if (event.clientY !== undefined) {
+			lastPointerY = event.clientY;
 		}
+
+		return lastPointerY;
 	}
 })();
 
