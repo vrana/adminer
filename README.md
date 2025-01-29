@@ -30,7 +30,7 @@ Please, read also 👉 **[What to expect](#what-to-expect)** section before you 
 Usage
 -----
 
-Download one for the latest [release files](https://github.com/pematon/adminer/releases), upload to the HTTP server 
+Download one for the latest [release files](https://github.com/adminerneo/adminerneo/releases), upload to the HTTP server 
 with PHP and enjoy 😉 If you are not satisfied with any combination of the database driver and language, you can 
 download the source code and compile your own AdminerNeo:
 
@@ -52,8 +52,8 @@ php compile.php pgsql cs
 php compile.php mysql,pgsql en,de,cs,sk
 ```
 
-[Available drivers](https://github.com/pematon/adminer/tree/master/adminer/drivers), 
-[languages](https://github.com/pematon/adminer/tree/master/adminer/lang).
+[Available drivers](https://github.com/adminerneo/adminerneo/tree/main/adminer/drivers), 
+[languages](https://github.com/pematon/adminer/tree/adminerneo/adminerneo/lang).
 
 Security
 --------
@@ -118,7 +118,7 @@ function adminer_object() {
 include "./adminer.php";
 ```
 
-[Available plugins](https://github.com/pematon/adminer/tree/master/plugins).
+[Available plugins](https://github.com/adminerneo/adminerneo/tree/main/plugins).
 
 Main project files
 ------------------
@@ -158,7 +158,7 @@ UI improvements.
 
 ### Version 5
 
-Bridges will be burned 🔥🔥🔥. It's in development already, so you [can check](https://github.com/pematon/adminer/tree/version-5) 
+Bridges will be burned 🔥🔥🔥. It's in development already, so you [can check](https://github.com/adminerneo/adminerneo/tree/version-5) 
 what's going on. Or you can become the early adopter and help us with testing 😉
 
 Our goals are:

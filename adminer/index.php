@@ -1,8 +1,8 @@
 <?php
 /**
- * Adminer - Database management in a single PHP file
+ * AdminerNeo - Database management in a single PHP file
  *
- * @link https://github.com/pematon/adminer
+ * @link https://github.com/adminerneo/adminerneo
  * @author Jakub Vrana (https://www.vrana.cz/)
  * @author Peter Knut
  * @copyright 2007-2021 Jakub Vrana, 2024 Peter Knut

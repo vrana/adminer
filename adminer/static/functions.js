@@ -106,7 +106,7 @@ function verifyVersion(baseUrl, token) {
 	// Dummy value to prevent repeated verifications after AJAX failure.
 	cookie('adminer_version=0', 1);
 
-	ajax('https://api.github.com/repos/pematon/adminer/releases/latest', (request) => {
+	ajax('https://api.github.com/repos/adminerneo/adminerneo/releases/latest', (request) => {
 		const response = JSON.parse(request.responseText);
 
 		const version = response.tag_name.replace(/^\D*/, '');

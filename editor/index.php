@@ -1,8 +1,8 @@
 <?php
 /**
- * Adminer Editor - Compact database editor for end-users
+ * AdminerNeo Editor - Compact database editor for end-users
  *
- * @link https://github.com/pematon/adminer
+ * @link https://github.com/adminerneo/adminerneo
  * @author Jakub Vrana (https://www.vrana.cz/)
  * @author Peter Knut
  * @copyright 2009-2021 Jakub Vrana, 2024 Peter Knut

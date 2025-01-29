@@ -1,7 +1,7 @@
 Reporting security issues
 =========================
 
-To report a security issue, please [open a draft security advisory](https://github.com/pematon/adminer/security/advisories).
+To report a security issue, please [open a draft security advisory](https://github.com/adminerneo/adminerneo/security/advisories).
 
 Security issues are handled with top priority. Once acknowledged, a fix should be available and new version released
 as soon as possible. Security advisories will be made public after a fix and new version have been released,

@@ -143,7 +143,7 @@ function csp() {
 		[
 			// 'self' is a fallback for browsers not supporting 'strict-dynamic', 'unsafe-inline' is a fallback for browsers not supporting 'nonce-'
 			"script-src" => "'self' 'unsafe-inline' 'nonce-" . get_nonce() . "' 'strict-dynamic'",
-			"connect-src" => "'self' https://api.github.com/repos/pematon/adminer/releases/latest",
+			"connect-src" => "'self' https://api.github.com/repos/adminerneo/adminerneo/releases/latest",
 			"frame-src" => "'self'",
 			"object-src" => "'none'",
 			"base-uri" => "'none'",

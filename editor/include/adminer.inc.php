@@ -608,7 +608,7 @@ qsl('div').onclick = whisperClick;", "")
 	<?php if ($missing != "auth"): ?>
 		<span class="version">
 			<?php echo $VERSION; ?>
-			<a href="https://github.com/pematon/adminer/releases"<?php echo target_blank(); ?> id="version">
+			<a href="https://github.com/adminerneo/adminerneo/releases"<?php echo target_blank(); ?> id="version">
 				<?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?>
 			</a>
 		</span>
