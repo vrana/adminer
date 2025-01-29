@@ -561,7 +561,7 @@ function foreignAddRow() {
 	this.onchange = function () { };
 	var selects = qsa('select', row);
 	for (var i=0; i < selects.length; i++) {
-		selects[i].name = selects[i].name.replace(']', '1]');
+		selects[i].name = selects[i].name.replace(/\d+]/, '1$&');
 		selects[i].selectedIndex = 0;
 	}
 	parentTag(this, 'table').appendChild(row);
