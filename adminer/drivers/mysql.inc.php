@@ -642,8 +642,17 @@ if (isset($_GET["mysql"])) {
 	* @return array
 	*/
 	function collations() {
+		global $connection;
+
 		$return = array();
-		foreach (get_rows("SHOW COLLATION") as $row) {
+
+		// Since MariaDB 10.10, one collation can be compatible with more character sets, so collations no longer have unique IDs.
+		// All combinations can be selected from information_schema.COLLATION_CHARACTER_SET_APPLICABILITY table.
+		$query = min_version('', '10.10', $connection) ?
+			"SELECT CHARACTER_SET_NAME AS Charset, FULL_COLLATION_NAME AS Collation, IS_DEFAULT AS `Default` FROM information_schema.COLLATION_CHARACTER_SET_APPLICABILITY" :
+			"SHOW COLLATION";
+
+		foreach (get_rows($query) as $row) {
 			if ($row["Default"]) {
 				$return[$row["Charset"]][-1] = $row["Collation"];
 			} else {
@@ -651,9 +660,11 @@ if (isset($_GET["mysql"])) {
 			}
 		}
 		ksort($return);
+
 		foreach ($return as $key => $val) {
 			asort($return[$key]);
 		}
+
 		return $return;
 	}
 
