@@ -753,8 +753,6 @@ AND typelem = 0"
 	}
 
 	function create_sql($table, $auto_increment, $style) {
-		global $connection;
-		$return = '';
 		$return_parts = array();
 		$sequences = array();
 
@@ -789,7 +787,10 @@ AND typelem = 0"
 					: "SELECT * FROM $sequence_name"
 				));
 				$sequences[] = ($style == "DROP+CREATE" ? "DROP SEQUENCE IF EXISTS $sequence_name;\n" : "")
-					. "CREATE SEQUENCE $sequence_name INCREMENT $sq[increment_by] MINVALUE $sq[min_value] MAXVALUE $sq[max_value]" . ($auto_increment && $sq['last_value'] ? " START $sq[last_value]" : "") . " CACHE $sq[cache_value];";
+					. "CREATE SEQUENCE $sequence_name INCREMENT $sq[increment_by] MINVALUE $sq[min_value] MAXVALUE $sq[max_value]"
+					. ($auto_increment && $sq['last_value'] ? " START " . ($sq["last_value"] + 1) : "")
+					. " CACHE $sq[cache_value];"
+				;
 			}
 		}
 
