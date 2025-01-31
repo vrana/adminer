@@ -71,6 +71,11 @@ if (isset($_GET["pgsql"])) {
 			}
 
 			function query($query, $unbuffered = false) {
+				if (!$this->_link) {
+					$this->error = "Invalid connection";
+					return false;
+				}
+
 				$result = @pg_query($this->_link, $query);
 				$this->error = "";
 				if (!$result) {
@@ -497,12 +502,17 @@ ORDER BY connamespace, conname") as $row) {
 
 	function drop_databases($databases) {
 		global $connection;
+
 		$connection->close();
+
 		return apply_queries("DROP DATABASE", $databases, 'idf_escape');
 	}
 
 	function rename_database($name, $collation) {
-		//! current database cannot be renamed
+		global $connection;
+
+		$connection->close();
+
 		return queries("ALTER DATABASE " . idf_escape(DB) . " RENAME TO " . idf_escape($name));
 	}
 
