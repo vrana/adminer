@@ -485,7 +485,8 @@ ORDER BY connamespace, conname") as $row) {
 	}
 
 	function rename_database($name, $collation) {
-		//! current database cannot be renamed
+		global $connection;
+		$connection->close();
 		return queries("ALTER DATABASE " . idf_escape(DB) . " RENAME TO " . idf_escape($name));
 	}
 
