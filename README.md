@@ -53,7 +53,7 @@ php compile.php mysql,pgsql en,de,cs,sk
 ```
 
 [Available drivers](https://github.com/adminerneo/adminerneo/tree/main/adminer/drivers), 
-[languages](https://github.com/pematon/adminer/tree/adminerneo/adminerneo/lang).
+[languages](https://github.com/adminerneo/adminerneo/tree/main/adminer/lang).
 
 Security
 --------
