@@ -65,7 +65,7 @@
         },
         {
             "type": "vcs",
-            "url": "https://github.com/vrana/jsshrink.git"
+            "url": "https://github.com/peterpp/js-shrink.git"
         }
     ]
 }
