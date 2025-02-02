@@ -1,3 +1,7 @@
+Adminer 4.14.0:
+PostgreSQL: Fix initial value of exported autoincrement
+PostgreSQL: Fix renaming a database
+
 Adminer 4.12.0:
 Fix SQL query code direction if RTL language is used
 MariaDB: Add support for UUID data type
