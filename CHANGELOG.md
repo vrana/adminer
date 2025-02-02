@@ -1,8 +1,30 @@
 Changelog
 =========
 
+AdminerNeo 4.14 (2025-02-02)
+----------------------------
+
+### Changes
+
+- Change project's name to AdminerNeo
+- Add support for page scrolling while dragging sortable rows (issue #11)
+- Update lucas-sandery theme (by @lucas-sandery)
+- Switch JsShrink library to a custom fork (issue #17)
+- Compile adminer into the "export" directory
+- Small JS tuning for better CodeQL analysis
+
+### Bugfixes
+
+- MariaDB: Fix missing uca1400 collations
+- PostgreSQL: Fix initial value of exported autoincrement
+- PostgreSQL: Fix renaming a database
+- Fix warnings in language detection
+- Fix link to language files in README.md (issue #18)
+
+Thanks for help with invalid links: @adrianbj.
+
 AdminerNeo 4.13 (2025-01-23)
--------------------------
+----------------------------
 
 ### Changes
 
@@ -17,7 +39,7 @@ AdminerNeo 4.13 (2025-01-23)
 - Fix main visual glitches in designs
 
 AdminerNeo 4.12 (2024-11-21)
--------------------------
+----------------------------
 
 ### New features
 
@@ -47,7 +69,7 @@ AdminerNeo 4.12 (2024-11-21)
 - Compiler: Fix compiled SQLite single-driver Adminer
 
 AdminerNeo 4.11 (2024-10-30)
--------------------------
+----------------------------
 
 ### New features
 
@@ -70,7 +92,7 @@ AdminerNeo 4.11 (2024-10-30)
 - Fix printing error message while validating server URL
 
 AdminerNeo 4.10 (2024-10-22)
--------------------------
+----------------------------
 
 ### New features
 
@@ -103,7 +125,7 @@ AdminerNeo 4.10 (2024-10-22)
 - Fix missing SQL statement if warnings are printed (regression from 4.9)
 
 AdminerNeo 4.9.4 (2024-10-09)
---------------------------
+-----------------------------
 
 - Fix the width of inline edit field
 - Unify displaying of 'New item' action based on privileges
@@ -116,7 +138,7 @@ AdminerNeo 4.9.4 (2024-10-09)
 - Clean up the code for PHP < 5.6
 
 AdminerNeo 4.9.3 (2024-10-02)
---------------------------
+-----------------------------
 
 - MySQL, PostgreSQL: Fix queries splitting and string constants
 - MySQL: Fix where clause for `JSON` column (by @SeaEagle)
@@ -132,7 +154,7 @@ AdminerNeo 4.9.3 (2024-10-02)
 - CSS: Bigger font size for code blocks
 
 AdminerNeo 4.9.2 (2024-09-18)
---------------------------
+-----------------------------
 
 - Fix textarea height for single-line inputs (used typically for SQLite text field)
 - Fix undefined property in error message if driver does not support error number (e.g. PostgreSQL)
@@ -146,7 +168,7 @@ AdminerNeo 4.9.2 (2024-09-18)
 - Add function to retrieve driver name that can be used in plugins (by @Roy-Orbison)
 
 AdminerNeo 4.9.1 (2024-09-09)
---------------------------
+-----------------------------
 
 - Compatibility with PHP 8.3 (by @Sneda8)
 - Fix compiling jush external files
@@ -164,7 +186,7 @@ AdminerNeo 4.9.1 (2024-09-09)
 - AdminerLoginOtp: Autocomplete hints for OTP input field, code refactoring
 
 AdminerNeo 4.9 (2024-08-19)
-------------------------
+---------------------------
 
 - Validate server input in login form
 - Validate connection to server in HTTP based drivers
@@ -182,7 +204,7 @@ AdminerNeo 4.9 (2024-08-19)
 - Add script for exporting compiled adminer variants
 
 AdminerNeo 4.8.2 (2024-03-16)
---------------------------
+-----------------------------
 
 - Support multi-line table comments
 - MySQL: Use `ST_SRID()` instead of `SRID()` for MySQL 8 (PR #418)
