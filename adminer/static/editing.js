@@ -30,7 +30,7 @@ function bodyLoad(version, maria) {
 				}
 
 				obj[key] = (maria ? obj[key].replace('dev.mysql.com/doc/mysql/en/', 'mariadb.com/kb/en/') : obj[key]) // MariaDB
-					.replace('/doc/mysql/', '/doc/refman/' + version) // MySQL
+					.replace('/doc/mysql/', '/doc/refman/' + version + '/') // MySQL
 					.replace('/docs/current/', '/docs/' + version) // PostgreSQL
 				;
 			}
