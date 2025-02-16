@@ -152,9 +152,9 @@ function get_driver($id) {
 	}
 
 	/** Convert operator so it can be used in search
-	 * @param string $operator
-	 * @return string
-	 */
+	* @param string $operator
+	* @return string
+	*/
 	function convertOperator($operator) {
 		return $operator;
 	}
