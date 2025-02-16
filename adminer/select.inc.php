@@ -224,7 +224,7 @@ if (is_ajax()) {
 
 $set = null;
 if (isset($rights["insert"]) || !support("table")) {
-	$params = [];
+	$params = array();
 	foreach ((array) $_GET["where"] as $val) {
 		if (isset($foreign_keys[$val["col"]]) && count($foreign_keys[$val["col"]]) == 1
 			&& ($val["op"] == "=" || (!$val["op"] && (is_array($val["val"]) || !preg_match('~[_%]~', $val["val"]))) // LIKE in Editor
