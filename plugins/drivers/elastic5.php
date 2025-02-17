@@ -190,7 +190,7 @@ if (isset($_GET["elastic5"])) {
 				if ($select != array("*")) {
 					$fields = array();
 					foreach ($select as $key) {
-						$fields[$key] = $key == "_id" ? [$hit["_id"]] : $hit['fields'][$key];
+						$fields[$key] = $key == "_id" ? array($hit["_id"]) : $hit['fields'][$key];
 					}
 				}
 

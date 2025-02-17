@@ -22,7 +22,7 @@ if (isset($_GET["elastic"])) {
 				$file = @file_get_contents("$this->_url/" . ltrim($path, '/'), false, stream_context_create(array('http' => array(
 					'method' => $method,
 					'content' => $content !== null ? json_encode($content) : null,
-					'header' => $content !== null ? 'Content-Type: application/json' : [],
+					'header' => $content !== null ? 'Content-Type: application/json' : array(),
 					'ignore_errors' => 1,
 					'follow_location' => 0,
 					'max_redirects' => 0,

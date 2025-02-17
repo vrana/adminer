@@ -964,8 +964,8 @@ function input($field, $value, $function) {
 		if ($input != "") {
 			echo $input;
 		} elseif (preg_match('~bool~', $field["type"])) {
-			echo "<input type='hidden'$attrs value='0'>" .
-				"<input type='checkbox'" . (preg_match('~^(1|t|true|y|yes|on)$~i', $value) ? " checked='checked'" : "") . "$attrs value='1'>";
+			echo "<input type='hidden'$attrs value='0'>"
+				. "<input type='checkbox'" . (preg_match('~^(1|t|true|y|yes|on)$~i', $value) ? " checked='checked'" : "") . "$attrs value='1'>";
 		} elseif ($field["type"] == "set") { //! 64 bits
 			preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
 			foreach ($matches[1] as $i => $val) {

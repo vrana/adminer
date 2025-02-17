@@ -248,8 +248,7 @@ class Adminer {
 	* @param string query to be executed
 	* @return string escaped query to be printed
 	*/
-	function sqlCommandQuery($query)
-	{
+	function sqlCommandQuery($query) {
 		return shorten_utf8(trim($query), 1000);
 	}
 
