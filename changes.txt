@@ -1,6 +1,7 @@
 Adminer 4.15.0-dev:
-Don't allow path in HTTP servers
-Hide error message from HTTP servers
+HTTP drivers: Don't allow path in server name
+HTTP drivers: Hide connection error message
+SimpleDB: Disable XML entity loader
 
 Adminer 4.14.0:
 Use autofocus HTML attribute

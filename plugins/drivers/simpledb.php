@@ -436,6 +436,7 @@ if (isset($_GET["simpledb"])) {
 			return false;
 		}
 		libxml_use_internal_errors(true);
+		libxml_disable_entity_loader();
 		$xml = simplexml_load_string($file);
 		if (!$xml) {
 			$error = libxml_get_last_error();
