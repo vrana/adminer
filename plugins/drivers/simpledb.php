@@ -248,7 +248,10 @@ if (isset($_GET["simpledb"])) {
 
 	function connect() {
 		global $adminer;
-		list(, , $password) = $adminer->credentials();
+		list($host, , $password) = $adminer->credentials();
+		if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $host)) {
+			return lang('Invalid server.');
+		}
 		if ($password != "") {
 			return lang('Database does not support password.');
 		}

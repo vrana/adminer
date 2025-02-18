@@ -78,20 +78,13 @@ if (isset($_GET["elastic"])) {
 			 * @return bool
 			 */
 			function connect($server, $username, $password) {
-				$this->_url = build_http_url($server, $username, $password, "localhost", 9200);
-
+				preg_match('~^(https?://)?(.*)~', $server, $match);
+				$this->_url = ($match[1] ? $match[1] : "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
 				$return = $this->query('');
-				if (!$return) {
-					return false;
+				if ($return) {
+					$this->server_info = $return['version']['number'];
 				}
-
-				if (!isset($return['version']['number'])) {
-					$this->error = lang('Invalid server or credentials.');
-					return false;
-				}
-
-				$this->server_info = $return['version']['number'];
-				return true;
+				return (bool) $return;
 			}
 
 			function select_db($database) {
@@ -275,6 +268,9 @@ if (isset($_GET["elastic"])) {
 		$connection = new Min_DB;
 
 		list($server, $username, $password) = adminer()->credentials();
+		if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
+			return lang('Invalid server.');
+		}
 		if ($password != "" && $connection->connect($server, $username, "")) {
 			return lang('Database does not support password.');
 		}

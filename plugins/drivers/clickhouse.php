@@ -59,7 +59,7 @@ if (isset($_GET["clickhouse"])) {
 
 		function connect($server, $username, $password) {
 			preg_match('~^(https?://)?(.*)~', $server, $match);
-			$this->_url = ($match[1] ? $match[1] : "http://") . "$username:$password@$match[2]";
+			$this->_url = ($match[1] ? $match[1] : "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
 			$return = $this->query('SELECT 1');
 			return (bool) $return;
 		}
@@ -217,8 +217,11 @@ if (isset($_GET["clickhouse"])) {
 	function connect() {
 		global $adminer;
 		$connection = new Min_DB;
-		$credentials = $adminer->credentials();
-		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
+		list($server, $username, $password) = $adminer->credentials();
+		if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
+			return lang('Invalid server.');
+		}
+		if ($connection->connect($server, $username, $password)) {
 			return $connection;
 		}
 		return $connection->error;
