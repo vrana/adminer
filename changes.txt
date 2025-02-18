@@ -1,4 +1,5 @@
 Adminer 4.15.0-dev:
+Escape unknown field in select
 HTTP drivers: Don't allow path in server name
 HTTP drivers: Hide connection error message
 SimpleDB: Disable XML entity loader

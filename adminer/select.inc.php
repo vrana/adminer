@@ -326,7 +326,7 @@ if (!$columns && support("table")) {
 				if (!isset($unselected[$key])) {
 					$val = $_GET["columns"][key($select)];
 					$field = $fields[$select ? ($val ? $val["col"] : current($select)) : $key];
-					$name = ($field ? $adminer->fieldName($field, $rank) : ($val["fun"] ? "*" : $key));
+					$name = ($field ? $adminer->fieldName($field, $rank) : ($val["fun"] ? "*" : h($key)));
 					if ($name != "") {
 						$rank++;
 						$names[$key] = $name;
