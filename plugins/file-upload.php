@@ -36,7 +36,7 @@ class AdminerFileUpload {
 				return false;
 			}
 			//! unlink old
-			$filename = uniqid() . $regs2[0];
+			$filename = (function_exists('random_bytes') ? bin2hex(random_bytes(8)) : uniqid("", true)) . $regs2[0];
 			if (!move_uploaded_file($_FILES[$name]["tmp_name"], "$this->uploadPath$table/$regs[1]-$filename")) {
 				return false;
 			}
