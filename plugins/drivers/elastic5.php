@@ -15,8 +15,6 @@ if (isset($_GET["elastic5"])) {
 			 * @return mixed
 			 */
 			function rootQuery($path, $content = array(), $method = 'GET') {
-				@ini_set('track_errors', 1); // @ - may be disabled
-
 				$file = @file_get_contents("$this->_url/" . ltrim($path, '/'), false, stream_context_create(array('http' => array(
 					'method' => $method,
 					'content' => $content === null ? $content : json_encode($content),
@@ -25,12 +23,8 @@ if (isset($_GET["elastic5"])) {
 					'follow_location' => 0,
 					'max_redirects' => 0,
 				))));
-				if (!$file) {
-					$this->error = $php_errormsg;
-					return $file;
-				}
-				if (!preg_match('~^HTTP/[0-9.]+ 2~i', $http_response_header[0])) {
-					$this->error = lang('Invalid credentials.') . " $http_response_header[0]";
+				if (!$file || !preg_match('~^HTTP/[0-9.]+ 2~i', $http_response_header[0])) {
+					$this->error = lang('Invalid credentials.');
 					return false;
 				}
 				$return = json_decode($file, true);

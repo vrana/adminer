@@ -1,3 +1,7 @@
+Adminer 4.15.0-dev:
+Don't allow path in HTTP servers
+Hide error message from HTTP servers
+
 Adminer 4.14.0:
 Use autofocus HTML attribute
 PostgreSQL: Fix initial value of exported autoincrement

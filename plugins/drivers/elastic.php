@@ -17,8 +17,6 @@ if (isset($_GET["elastic"])) {
 			 * @return array|false
 			 */
 			function rootQuery($path, array $content = null, $method = 'GET') {
-				@ini_set('track_errors', 1); // @ - may be disabled
-
 				$file = @file_get_contents("$this->_url/" . ltrim($path, '/'), false, stream_context_create(array('http' => array(
 					'method' => $method,
 					'content' => $content !== null ? json_encode($content) : null,

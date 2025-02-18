@@ -9,7 +9,6 @@ if (isset($_GET["clickhouse"])) {
 		var $_db = 'default';
 
 		function rootQuery($db, $query) {
-			@ini_set('track_errors', 1); // @ - may be disabled
 			$file = @file_get_contents("$this->_url/?database=$db", false, stream_context_create(array('http' => array(
 				'method' => 'POST',
 				'content' => $this->isQuerySelectLike($query) ? "$query FORMAT JSONCompact" : $query,
@@ -19,12 +18,8 @@ if (isset($_GET["clickhouse"])) {
 				'max_redirects' => 0,
 			))));
 
-			if ($file === false) {
-				$this->error = $php_errormsg;
-				return $file;
-			}
-			if (!preg_match('~^HTTP/[0-9.]+ 2~i', $http_response_header[0])) {
-				$this->error = lang('Invalid credentials.') . " $http_response_header[0]";
+			if ($file === false || !preg_match('~^HTTP/[0-9.]+ 2~i', $http_response_header[0])) {
+				$this->error = lang('Invalid credentials.');
 				return false;
 			}
 			$return = json_decode($file, true);
