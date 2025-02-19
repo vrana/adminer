@@ -1,5 +1,6 @@
 Adminer 4.16.0-dev:
 PostgreSQL: Preserve whitespace in EXPLAIN (bug #827)
+MS SQL: Foreign keys in non-default schema (bug #833)
 Oracle: Include tables granted by other user
 MongoDB: Execute commands against the selected DB
 

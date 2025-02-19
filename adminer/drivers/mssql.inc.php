@@ -546,7 +546,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 
 	function foreign_keys($table) {
 		$return = array();
-		foreach (get_rows("EXEC sp_fkeys @fktable_name = " . q($table)) as $row) {
+		foreach (get_rows("EXEC sp_fkeys @fktable_name = " . q($table) . ", @fktable_owner = " . q(get_schema())) as $row) {
 			$foreign_key = &$return[$row["FK_NAME"]];
 			$foreign_key["db"] = $row["PKTABLE_QUALIFIER"];
 			$foreign_key["table"] = $row["PKTABLE_NAME"];
