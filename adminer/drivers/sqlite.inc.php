@@ -47,7 +47,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 						return false;
 					}
 					$row = $result->_result->fetchArray();
-					return $row[$field];
+					return $row ? $row[$field] : false;
 				}
 			}
 
