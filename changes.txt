@@ -1,4 +1,5 @@
 Adminer 4.16.0-dev:
+MySQL: Fix saving bit(64) values (bug #839)
 PostgreSQL: Preserve whitespace in EXPLAIN (bug #827)
 MS SQL: Foreign keys in non-default schema (bug #833)
 Oracle: Include tables granted by other user
