@@ -1,4 +1,4 @@
-Adminer 4.15.0-dev:
+Adminer 4.15.0:
 Escape unknown field in select
 HTTP drivers: Don't allow path in server name
 HTTP drivers: Hide connection error message
