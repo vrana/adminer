@@ -210,7 +210,7 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function connect() {
-		global $adminer;
+		$adminer = adminer();
 		$connection = new Min_DB;
 		list($server, $username, $password) = $adminer->credentials();
 		if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
@@ -223,7 +223,7 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function get_databases($flush) {
-		global $connection;
+		$connection = connection();
 		$result = get_rows('SHOW DATABASES');
 
 		$return = array();
@@ -250,7 +250,7 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function logged_user() {
-		global $adminer;
+		$adminer = adminer();
 		$credentials = $adminer->credentials();
 		return $credentials[1];
 	}
@@ -270,7 +270,7 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function table_status($name = "", $fast = false) {
-		global $connection;
+		$connection = connection();
 		$return = array();
 		$tables = get_rows("SELECT name, engine FROM system.tables WHERE database = " . q($connection->_db));
 		foreach ($tables as $table) {
@@ -340,7 +340,7 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function error() {
-		global $connection;
+		$connection = connection();
 		return h($connection->error);
 	}
 

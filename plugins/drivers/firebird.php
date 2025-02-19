@@ -126,7 +126,7 @@ if (isset($_GET["firebird"])) {
 	}
 
 	function connect() {
-		global $adminer;
+		$adminer = adminer();
 		$connection = new Min_DB;
 		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
@@ -158,13 +158,13 @@ if (isset($_GET["firebird"])) {
 	}
 
 	function logged_user() {
-		global $adminer;
+		$adminer = adminer();
 		$credentials = $adminer->credentials();
 		return $credentials[1];
 	}
 
 	function tables_list() {
-		global $connection;
+		$connection = connection();
 		$query = 'SELECT RDB$RELATION_NAME FROM rdb$relations WHERE rdb$system_flag = 0';
 		$result = ibase_query($connection->_link, $query);
 		$return = array();
@@ -180,7 +180,7 @@ if (isset($_GET["firebird"])) {
 	}
 
 	function table_status($name = "", $fast = false) {
-		global $connection;
+		$connection = connection();
 		$return = array();
 		$data = tables_list();
 		foreach ($data as $index => $val) {
@@ -205,7 +205,7 @@ if (isset($_GET["firebird"])) {
 	}
 
 	function fields($table) {
-		global $connection;
+		$connection = connection();
 		$return = array();
 		$query = 'SELECT r.RDB$FIELD_NAME AS field_name,
 r.RDB$DESCRIPTION AS field_description,
@@ -287,7 +287,7 @@ ORDER BY RDB$INDEX_SEGMENTS.RDB$FIELD_POSITION';
 	}
 
 	function error() {
-		global $connection;
+		$connection = connection();
 		return h($connection->error);
 	}
 

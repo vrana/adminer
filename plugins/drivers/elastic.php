@@ -59,7 +59,7 @@ if (isset($_GET["elastic"])) {
 			function query($path, array $content = null, $method = 'GET') {
 				// Support for global search through all tables
 				if ($path != "" && $path[0] == "S" && preg_match('/SELECT 1 FROM ([^ ]+) WHERE (.+) LIMIT ([0-9]+)/', $path, $matches)) {
-					global $driver;
+					$driver = get_driver();
 
 					$where = explode(" AND ", $matches[2]);
 
