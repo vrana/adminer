@@ -13,6 +13,14 @@ Skinnable plus.gif and other images - http://typo3.org/extensions/repository/vie
 ? Aliasing of built-in functions can save 7 KB, function minification can save 7 KB, substitution of repetitive $a["a"] can save 4 KB, substitution of $_GET and friends can save 2 KB, aliasing of $connection->query can save 24 B, JS Closure compiler can save 2 KB, not enclosing HTML attribute values can save 1.2 KB, replacing \\n by \n can save .3 KB
 ? Branch binary_compile: LZW compression of all texts can save 11 KB, using chars 127-255 in minification can save 1 KB
 
+https://github.com/vrana/adminer/compare/master...adminerneo:adminerneo:main
+MySQL: Do not show 'empty' enum value in strict mode
+MySQL: Print comments of stored procedures and functions
+Add drag-n-drop moving of rows in table editing
+PostgreSQL: Add support for "where" field privilege
+PostgreSQL: Add support for "order" field privilege
+PostgreSQL: Show list of schemas in database
+
 Editor:
 Three-state checkbox for boolean searches
 JavaScript data validation - columns containing word email, url, ...
