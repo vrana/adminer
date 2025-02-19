@@ -182,7 +182,7 @@ if (!$error && $_POST) {
 									}
 									echo ($warnings ? "<div id='$warnings_id' class='hidden'>\n$warnings</div>\n" : "");
 									if ($explain) {
-										echo "<div id='$explain_id' class='hidden'>\n";
+										echo "<div id='$explain_id' class='hidden explain'>\n";
 										select($explain, $connection2, $orgtables);
 										echo "</div>\n";
 									}

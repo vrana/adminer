@@ -1,4 +1,5 @@
 Adminer 4.16.0-dev:
+PostgreSQL: Preserve whitespace in EXPLAIN (bug #827)
 Oracle: Include tables granted by other user
 
 Adminer 4.15.0:

@@ -56,6 +56,7 @@ input.wayoff { left: -1000px; position: absolute; }
 .view { font-style: italic; }
 .active { font-weight: bold; }
 .sqlarea { width: 98%; }
+.explain { white-space: pre; }
 .icon { width: 18px; height: 18px; background-color: navy; }
 .icon:hover { background-color: red; }
 .size { width: 6ex; }
