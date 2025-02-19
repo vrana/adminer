@@ -31,7 +31,6 @@ $translations = array(
 	'Create database' => 'สร้างฐานข้อมูล',
 	'SQL command' => 'คำสั่ง SQL',
 	'Logout' => 'ออกจากระบบ',
-	'database' => 'ฐานข้อมูล',
 	'Use' => 'ใช้งาน',
 	'No tables.' => 'ไม่พบตาราง.',
 	'select' => 'เลือก',

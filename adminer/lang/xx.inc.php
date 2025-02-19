@@ -89,7 +89,6 @@ $translations = array(
 	'Data' => 'Xx',
 	
 	'Database' => 'Xx',
-	'database' => 'xx',
 	'DB' => 'XX',
 	'Use' => 'Xx',
 	'Select database' => 'Xx',

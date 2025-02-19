@@ -31,7 +31,6 @@ $translations = array(
 	'Create database' => 'Izveidot datubāzi',
 	'SQL command' => 'SQL pieprasījums',
 	'Logout' => 'Iziet',
-	'database' => 'datubāze',
 	'Use' => 'Lietot',
 	'No tables.' => 'Datubāzē nav tabulu.',
 	'select' => 'izvēlēties',

@@ -30,7 +30,6 @@ $translations = array(
 	'Create database' => 'Créer une base de données',
 	'SQL command' => 'Requête SQL',
 	'Logout' => 'Déconnexion',
-	'database' => 'base de données',
 	'Use' => 'Utiliser',
 	'No tables.' => 'Aucune table.',
 	'select' => 'select',

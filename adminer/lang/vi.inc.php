@@ -76,7 +76,6 @@ $translations = array(
 	'Data' => 'Dữ liệu',
 	
 	'Database' => 'Cơ sở dữ liệu',
-	'database' => 'cơ sở dữ liệu',
 	'Use' => 'Sử dụng',
 	'Select database' => 'Chọn CSDL',
 	'Invalid database.' => 'CSDL sai.',

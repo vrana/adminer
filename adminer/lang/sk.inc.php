@@ -32,7 +32,6 @@ $translations = array(
 	'Create database' => 'Vytvoriť databázu',
 	'SQL command' => 'SQL príkaz',
 	'Logout' => 'Odhlásiť',
-	'database' => 'databáza',
 	'Use' => 'Vybrať',
 	'No tables.' => 'Žiadne tabuľky.',
 	'select' => 'vypísať',

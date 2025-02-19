@@ -31,7 +31,6 @@ $translations = array(
 	'Create database' => 'த‌க‌வ‌ல்த‌ள‌த்தை உருவாக்கு',
 	'SQL command' => 'SQL க‌ட்ட‌ளை',
 	'Logout' => 'வெளியேறு',
-	'database' => 'த‌க‌வ‌ல்த‌ள‌ம்',
 	'Use' => 'உப‌யோகி',
 	'No tables.' => 'அட்ட‌வ‌ணை இல்லை.',
 	'select' => 'தேர்வு செய்',

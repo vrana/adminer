@@ -1036,7 +1036,7 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 <?php
 		hidden_fields_get();
 		$db_events = script("mixin(qsl('select'), {onmousedown: dbMouseDown, onchange: dbChange});");
-		echo "<span title='" . lang('database') . "'>" . lang('DB') . "</span>: " . ($databases
+		echo "<span title='" . lang('Database') . "'>" . lang('DB') . "</span>: " . ($databases
 			? "<select name='db'>" . optionlist(array("" => "") + $databases, DB) . "</select>$db_events"
 			: "<input name='db' value='" . h(DB) . "' autocapitalize='off'>\n"
 		);

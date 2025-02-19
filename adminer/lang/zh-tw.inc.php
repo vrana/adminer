@@ -89,7 +89,6 @@ $translations = array(
 	'Data' => '資料',
 	
 	'Database' => '資料庫',
-	'database' => '資料庫',
 	'DB' => '資料庫',
 	'Use' => '使用',
 	'Select database' => '選擇資料庫',

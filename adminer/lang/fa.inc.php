@@ -77,7 +77,6 @@ $translations = array(
 	'Data' => 'داده',
 	
 	'Database' => 'پایگاه داده',
-	'database' => 'پایگاه داده',
 	'Use' => 'استفاده',
 	'Select database' => 'انتخاب پایگاه داده',
 	'Invalid database.' => 'پایگاه داده نامعتبر.',

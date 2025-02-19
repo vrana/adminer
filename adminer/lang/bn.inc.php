@@ -31,7 +31,6 @@ $translations = array(
 	'Create database' => 'ডাটাবেজ তৈরী করুন',
 	'SQL command' => 'SQL-কমান্ড',
 	'Logout' => 'লগআউট',
-	'database' => 'ডাটাবেজ',
 	'Use' => 'ব্যবহার',
 	'No tables.' => 'কোন টেবিল নাই।',
 	'select' => 'নির্বাচন',

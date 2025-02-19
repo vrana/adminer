@@ -89,7 +89,6 @@ $translations = array(
 	'Data' => 'Data',
 
 	'Database' => 'Databas',
-	'database' => 'databas',
 	'DB' => 'DB',
 	'Use' => 'Använd',
 	'Select database' => 'Välj databas',

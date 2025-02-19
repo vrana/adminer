@@ -31,7 +31,6 @@ $translations = array(
 	'Create database' => 'ბაზის შექმნა',
 	'SQL command' => 'SQL-ბრძანება',
 	'Logout' => 'გასვლა',
-	'database' => 'ბაზა',
 	'Use' => 'არჩევა',
 	'No tables.' => 'ბაზაში ცხრილი არაა.',
 	'select' => 'არჩევა',

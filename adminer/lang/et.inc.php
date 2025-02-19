@@ -31,7 +31,6 @@ $translations = array(
 	'Create database' => 'Loo uus andmebaas',
 	'SQL command' => 'SQL-Päring',
 	'Logout' => 'Logi välja',
-	'database' => 'andmebaas',
 	'Use' => 'Kasuta',
 	'No tables.' => 'Tabeleid ei leitud.',
 	'select' => 'kuva',

@@ -73,7 +73,6 @@ $translations = array(
 	'Data' => 'Data',
 
 	'Database' => 'Basis data',
-	'database' => 'basis data',
 	'Use' => 'Gunakan',
 	'Select database' => 'Pilih basis data',
 	'Invalid database.' => 'Basis data tidak sah.',

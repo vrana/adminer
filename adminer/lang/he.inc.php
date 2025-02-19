@@ -30,7 +30,6 @@ $translations = array(
 	'Create database' => 'צור מסד נתונים',
 	'SQL command' => 'שאילתת SQL',
 	'Logout' => 'התנתק',
-	'database' => 'מסד נתונים',
 	'Use' => 'השתמש',
 	'No tables.' => 'אין טבלאות',
 	'select' => 'בחר',

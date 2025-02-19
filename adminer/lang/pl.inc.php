@@ -81,7 +81,6 @@ $translations = array(
 	'Data' => 'Dane',
 	
 	'Database' => 'Baza danych',
-	'database' => 'baza danych',
 	'Use' => 'Wybierz',
 	'Select database' => 'Wybierz bazę danych',
 	'Invalid database.' => 'Nie znaleziono bazy danych.',

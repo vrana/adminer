@@ -30,7 +30,6 @@ $translations = array(
 	'Create database' => 'إنشاء قاعدة بيانات',
 	'SQL command' => 'استعلام SQL',
 	'Logout' => 'تسجيل الخروج',
-	'database' => 'قاعدة بيانات',
 	'Use' => 'استعمال',
 	'No tables.' => 'لا توجد جداول.',
 	'select' => 'تحديد',

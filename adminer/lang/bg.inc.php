@@ -78,7 +78,6 @@ $translations = array(
 	'Data' => 'Данни',
 	
 	'Database' => 'База данни',
-	'database' => 'база данни',
 	'Use' => 'Избор',
 	'Select database' => 'Избор на база данни',
 	'Invalid database.' => 'Невалидна база данни.',

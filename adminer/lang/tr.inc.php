@@ -84,7 +84,6 @@ $translations = array(
 	'Data' => 'Veri',
 
 	'Database' => 'Veri Tabanı',
-	'database' => 'veri tabanı',
 	'DB' => 'DB',
 	'Use' => 'Kullan',
 	'Select database' => 'Veri tabanı seç',

@@ -79,7 +79,6 @@ $translations = array(
 	'Data' => 'Δεδομένα',
 	
 	'Database' => 'Β. Δεδομένων',
-	'database' => 'β. δεδομένων',
 	'Use' => 'χρήση',
 	'Select database' => 'Επιλέξτε Β.Δ.',
 	'Invalid database.' => 'Λανθασμένη Β.Δ.',

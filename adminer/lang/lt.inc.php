@@ -73,7 +73,6 @@ $translations = array(
 	'Data' => 'Duomenys',
 	
 	'Database' => 'Duomenų bazė',
-	'database' => 'duomenų bazė',
 	'Use' => 'Naudoti',
 	'Select database' => 'Pasirinkti duomenų bazę',
 	'Invalid database.' => 'Neteisinga duomenų bazė.',

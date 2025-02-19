@@ -79,7 +79,6 @@ $translations = array(
 	'Data' => 'Data',
 	
 	'Database' => 'Tietokanta',
-	'database' => 'tietokanta',
 	'Use' => 'Käytä',
 	'Select database' => 'Valitse tietokanta',
 	'Invalid database.' => 'Tietokanta ei kelpaa.',

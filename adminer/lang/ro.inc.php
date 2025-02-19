@@ -31,7 +31,6 @@ $translations = array(
 	'Create database' => 'Crează baza de date',
 	'SQL command' => 'SQL query',
 	'Logout' => 'Ieșire',
-	'database' => 'baza de date',
 	'Use' => 'Alege',
 	'No tables.' => 'În baza de date nu sunt tabele.',
 	'select' => 'selectează',

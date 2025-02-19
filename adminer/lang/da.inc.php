@@ -64,7 +64,6 @@ $translations = array(
 	'Format' => 'Format',
 	'Data' => 'Data',
 	'Database' => 'Database',
-	'database' => 'database',
 	'Use' => 'Brug',
 	'Select database' => 'Vælg database',
 	'Invalid database.' => 'Ugyldig database.',
