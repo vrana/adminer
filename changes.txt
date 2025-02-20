@@ -2,7 +2,7 @@ Adminer 4.16.0-dev:
 MySQL: Fix saving bit(64) values (bug #839)
 PostgreSQL: Preserve whitespace in EXPLAIN (bug #827)
 PostgreSQL: Support SSL
-PostgreSQL: Support dropping auto_increment
+PostgreSQL: Support altering auto_increment (bug #761)
 SQLite: Fix altering forign keys (bug #841)
 SQLite: Fix expressions in default values (bug #860)
 MS SQL: Foreign keys in non-default schema (bug #833)

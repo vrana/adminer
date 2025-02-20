@@ -358,7 +358,6 @@ WHERE relkind IN ('r', 'm', 'v', 'f', 'p')
 			'timestamp without time zone' => 'timestamp',
 			'timestamp with time zone' => 'timestamptz',
 		);
-
 		foreach (get_rows("SELECT a.attname AS field, format_type(a.atttypid, a.atttypmod) AS full_type, pg_get_expr(d.adbin, d.adrelid) AS default, a.attnotnull::int, col_description(c.oid, a.attnum) AS comment" . (min_version(10) ? ", a.attidentity" : "") . "
 FROM pg_class c
 JOIN pg_namespace n ON c.relnamespace = n.oid
@@ -509,6 +508,7 @@ ORDER BY connamespace, conname") as $row) {
 		if ($table != "" && $table != $name) {
 			$queries[] = "ALTER TABLE " . table($table) . " RENAME TO " . table($name);
 		}
+		$sequence = "";
 		foreach ($fields as $field) {
 			$column = idf_escape($field[0]);
 			$val = $field[1];
@@ -530,10 +530,15 @@ ORDER BY connamespace, conname") as $row) {
 						$queries[] = "ALTER TABLE " . table($name) . " RENAME $column TO $val[0]";
 					}
 					$alter[] = "ALTER $column TYPE$val[1]";
-					if (!$val[6]) {
-						$alter[] = "ALTER $column " . ($val[3] ? "SET$val[3]" : "DROP DEFAULT");
-						$alter[] = "ALTER $column " . ($val[2] == " NULL" ? "DROP NOT" : "SET") . $val[2];
+					$sequence_name = $table . "_" . idf_unescape($val[0]) . "_seq";
+					$alter[] = "ALTER $column " . ($val[3] ? "SET$val[3]"
+						: (isset($val[6]) ? "SET DEFAULT nextval(" . q($sequence_name) . ")"
+						: "DROP DEFAULT"
+					));
+					if (isset($val[6])) {
+						$sequence = "CREATE SEQUENCE IF NOT EXISTS " . idf_escape($sequence_name) . " OWNED BY " . idf_escape($table) . ".$val[0]";
 					}
+					$alter[] = "ALTER $column " . ($val[2] == " NULL" ? "DROP NOT" : "SET") . $val[2];
 				}
 				if ($field[0] != "" || $val5 != "") {
 					$queries[] = "COMMENT ON COLUMN " . table($name) . ".$val[0] IS " . ($val5 != "" ? substr($val5, 9) : "''");
@@ -545,6 +550,9 @@ ORDER BY connamespace, conname") as $row) {
 			array_unshift($queries, "CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)");
 		} elseif ($alter) {
 			array_unshift($queries, "ALTER TABLE " . table($table) . "\n" . implode(",\n", $alter));
+		}
+		if ($sequence) {
+			array_unshift($queries, $sequence);
 		}
 		if ($comment !== null) {
 			$queries[] = "COMMENT ON TABLE " . table($name) . " IS " . q($comment);
