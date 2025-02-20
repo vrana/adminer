@@ -17,9 +17,9 @@ https://github.com/vrana/adminer/compare/master...adminerneo:adminerneo:main
 MySQL: Do not show 'empty' enum value in strict mode
 MySQL: Print comments of stored procedures and functions
 Add drag-n-drop moving of rows in table editing
-PostgreSQL: Add support for "where" field privilege
-PostgreSQL: Add support for "order" field privilege
 PostgreSQL: Show list of schemas in database
+Elasticsearch: Add support for "where" field privilege
+Elasticsearch: Add support for "order" field privilege
 
 Editor:
 Three-state checkbox for boolean searches
