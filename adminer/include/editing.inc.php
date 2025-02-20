@@ -294,10 +294,11 @@ function process_field($field, $type_field) {
 * @return string
 */
 function default_value($field) {
+	global $jush;
 	$default = $field["default"];
 	return ($default === null ? "" : " DEFAULT " .
 		(!preg_match('~^GENERATED ~i', $default) && (preg_match('~char|binary|text|enum|set~', $field["type"]) || preg_match('~^(?![a-z])~i', $default))
-		? q($default) : str_ireplace("current_timestamp()", "CURRENT_TIMESTAMP", $default))
+		? q($default) : str_ireplace("current_timestamp()", "CURRENT_TIMESTAMP", ($jush == "sqlite" ? "($default)" : $default)))
 	);
 }
 
