@@ -118,7 +118,13 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 					echo "
 				WHEN " . q($row["COLUMN_NAME"]) . " THEN
 					SET add_columns = REPLACE(add_columns, ', ADD $row[alter]', IF(
-						_column_default <=> $row[default] AND _is_nullable = '$row[IS_NULLABLE]' AND _collation_name <=> " . (isset($row["COLLATION_NAME"]) ? "'$row[COLLATION_NAME]'" : "NULL") . " AND _column_type = " . q($row["COLUMN_TYPE"]) . " AND _extra = '$row[EXTRA]' AND _column_comment = " . q($row["COLUMN_COMMENT"]) . " AND after = $row[after]
+						_column_default <=> $row[default]
+						AND _is_nullable = '$row[IS_NULLABLE]'
+						AND _collation_name <=> " . (isset($row["COLLATION_NAME"]) ? "'$row[COLLATION_NAME]'" : "NULL") . "
+						AND _column_type = " . q($row["COLUMN_TYPE"]) . "
+						AND _extra = '$row[EXTRA]'
+						AND _column_comment = " . q($row["COLUMN_COMMENT"]) . "
+						AND after = $row[after]
 					, '', ', MODIFY $row[alter]'));"; //! don't replace in comment
 				}
 				echo "
