@@ -89,7 +89,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 				}, ARRAY_FILTER_USE_KEY);
 
 				foreach ($params["partition_names"] as $key => $name) {
-					if ($name === "") {
+					if ($name == "") {
 						unset($params["partition_names"][$key]);
 						unset($params["partition_values"][$key]);
 					}
@@ -105,11 +105,11 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 					}
 
 					// $params["partition"] can be expression, not only column
-					$partitioning .= "\nPARTITION BY {$params["partition_by"]}({$params["partition"]})";
+					$partitioning .= "\nPARTITION BY $params[partition_by]($params[partition])";
 					if ($partitions) {
 						$partitioning .= " (" . implode(",", $partitions) . "\n)";
 					} elseif ($params["partitions"]) {
-						$partitioning .= " PARTITIONS " . (int)$params["partitions"];
+						$partitioning .= " PARTITIONS " . (+$params["partitions"]);
 					}
 				}
 			} elseif (preg_match("~partitioned~", $table_status["Create_options"])) {

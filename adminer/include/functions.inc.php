@@ -1116,7 +1116,7 @@ function search_tables() {
 }
 
 /**
-* @param string $table
+* @param string
 * @return array
 */
 function get_partitions_info($table) {
