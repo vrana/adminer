@@ -1,4 +1,6 @@
 <?php
+// This file is used both in Adminer and Adminer Editor.
+
 /** Get database connection
 * @return Min_DB
 */
@@ -232,22 +234,6 @@ function html_select($name, $options, $value = "", $onchange = true, $labelled_b
 	return $return;
 }
 
-/** Generate HTML <select> or <input> if $options are empty
-* @param string
-* @param array
-* @param string
-* @param string
-* @param string
-* @return string
-*/
-function select_input($attrs, $options, $value = "", $onchange = "", $placeholder = "") {
-	$tag = ($options ? "select" : "input");
-	return "<$tag$attrs" . ($options
-		? "><option value=''>$placeholder" . optionlist($options, $value, true) . "</select>"
-		: " size='10' value='" . h($value) . "' placeholder='$placeholder'>"
-	) . ($onchange ? script("qsl('$tag').onchange = $onchange;", "") : ""); //! use oninput for input
-}
-
 /** Get onclick confirmation
 * @param string
 * @param string
@@ -298,25 +284,6 @@ function odd($return = ' class="odd"') {
 */
 function js_escape($string) {
 	return addcslashes($string, "\r\n'\\/"); // slash for <script>
-}
-
-/** Print one row in JSON object
-* @param string or "" to close the object
-* @param string
-* @return null
-*/
-function json_row($key, $val = null) {
-	static $first = true;
-	if ($first) {
-		echo "{";
-	}
-	if ($key != "") {
-		echo ($first ? "" : ",") . "\n\t\"" . addcslashes($key, "\r\n\t\"\\/") . '": ' . ($val !== null ? '"' . addcslashes($val, "\r\n\"\\/") . '"' : 'null');
-		$first = false;
-	} else {
-		echo "\n}\n";
-		$first = true;
-	}
 }
 
 /** Get INI boolean value
@@ -1115,22 +1082,6 @@ function search_tables() {
 	echo ($sep ? "<p class='message'>" . lang('No tables.') : "</ul>") . "\n";
 }
 
-/**
-* @param string
-* @return array
-*/
-function get_partitions_info($table) {
-	global $connection;
-	$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . q(DB) . " AND TABLE_NAME = " . q($table);
-	$result = $connection->query("SELECT PARTITION_METHOD, PARTITION_EXPRESSION, PARTITION_ORDINAL_POSITION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
-	$info = array();
-	list($info["partition_by"], $info["partition"],  $info["partitions"]) = $result->fetch_row();
-	$partitions = get_key_vals("SELECT PARTITION_NAME, PARTITION_DESCRIPTION $from AND PARTITION_NAME != '' ORDER BY PARTITION_ORDINAL_POSITION");
-	$info["partition_names"] = array_keys($partitions);
-	$info["partition_values"] = array_values($partitions);
-	return $info;
-}
-
 /** Send headers for export
 * @param string
 * @param bool
@@ -1458,7 +1409,6 @@ function edit_form($table, $fields, $row, $update) {
 		echo "<p class='error'>" . lang('You have no privileges to update this table.') . "\n";
 	} else {
 		echo "<table cellspacing='0' class='layout'>" . script("qsl('table').onkeydown = editingKeydown;");
-
 		foreach ($fields as $name => $field) {
 			echo "<tr><th>" . $adminer->fieldName($field);
 			$default = $_GET["set"][bracket_escape($name)];

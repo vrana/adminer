@@ -1,4 +1,6 @@
 <?php
+// This file is not used in Adminer Editor.
+
 /** Print select result
 * @param Min_Result
 * @param Min_DB connection to examine indexes
@@ -162,6 +164,41 @@ function textarea($name, $value, $rows = 10, $cols = 80) {
 	echo "</textarea>";
 }
 
+/** Generate HTML <select> or <input> if $options are empty
+* @param string
+* @param array
+* @param string
+* @param string
+* @param string
+* @return string
+*/
+function select_input($attrs, $options, $value = "", $onchange = "", $placeholder = "") {
+	$tag = ($options ? "select" : "input");
+	return "<$tag$attrs" . ($options
+		? "><option value=''>$placeholder" . optionlist($options, $value, true) . "</select>"
+		: " size='10' value='" . h($value) . "' placeholder='$placeholder'>"
+	) . ($onchange ? script("qsl('$tag').onchange = $onchange;", "") : ""); //! use oninput for input
+}
+
+/** Print one row in JSON object
+* @param string or "" to close the object
+* @param string
+* @return null
+*/
+function json_row($key, $val = null) {
+	static $first = true;
+	if ($first) {
+		echo "{";
+	}
+	if ($key != "") {
+		echo ($first ? "" : ",") . "\n\t\"" . addcslashes($key, "\r\n\t\"\\/") . '": ' . ($val !== null ? '"' . addcslashes($val, "\r\n\"\\/") . '"' : 'null');
+		$first = false;
+	} else {
+		echo "\n}\n";
+		$first = true;
+	}
+}
+
 /** Print table columns for type edit
 * @param string
 * @param array
@@ -187,6 +224,22 @@ echo optionlist(array_merge($extra_types, $structured_types), $type);
 	echo ($unsigned ? "<select name='" . h($key) . "[unsigned]'" . (!$type || preg_match(number_type(), $type) ? "" : " class='hidden'") . '><option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
 	echo (isset($field['on_update']) ? "<select name='" . h($key) . "[on_update]'" . (preg_match('~timestamp|datetime~', $type) ? "" : " class='hidden'") . '>' . optionlist(array("" => "(" . lang('ON UPDATE') . ")", "CURRENT_TIMESTAMP"), (preg_match('~^CURRENT_TIMESTAMP~i', $field["on_update"]) ? "CURRENT_TIMESTAMP" : $field["on_update"])) . '</select>' : '');
 	echo ($foreign_keys ? "<select name='" . h($key) . "[on_delete]'" . (preg_match("~`~", $type) ? "" : " class='hidden'") . "><option value=''>(" . lang('ON DELETE') . ")" . optionlist(explode("|", $on_actions), $field["on_delete"]) . "</select> " : " "); // space for IE
+}
+
+/** Get partition info
+* @param string
+* @return array
+*/
+function get_partitions_info($table) {
+	global $connection;
+	$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . q(DB) . " AND TABLE_NAME = " . q($table);
+	$result = $connection->query("SELECT PARTITION_METHOD, PARTITION_EXPRESSION, PARTITION_ORDINAL_POSITION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
+	$return = array();
+	list($return["partition_by"], $return["partition"],  $return["partitions"]) = $result->fetch_row();
+	$partitions = get_key_vals("SELECT PARTITION_NAME, PARTITION_DESCRIPTION $from AND PARTITION_NAME != '' ORDER BY PARTITION_ORDINAL_POSITION");
+	$return["partition_names"] = array_keys($partitions);
+	$return["partition_values"] = array_values($partitions);
+	return $return;
 }
 
 /** Filter length value including enums
@@ -225,7 +278,6 @@ function process_field($field, $type_field) {
 	if ($field["on_update"]) {
 		$field["on_update"] = str_ireplace("current_timestamp()", "CURRENT_TIMESTAMP", $field["on_update"]);
 	}
-
 	return array(
 		idf_escape(trim($field["field"])),
 		process_type($type_field),
