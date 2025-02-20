@@ -1,3 +1,5 @@
+Adminer 4.16.1-dev:
+
 Adminer 4.16.0 (released 2025-02-20):
 MySQL: Fix saving bit(64) values (bug #839)
 PostgreSQL: Preserve whitespace in EXPLAIN (bug #827)
