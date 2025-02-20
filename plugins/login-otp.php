@@ -11,7 +11,7 @@ class AdminerLoginOtp {
 	var $secret;
 	
 	/** 
-	* @param string decoded secret, e.g. base32_decode("SECRET")
+	* @param string decoded secret, e.g. base64_decode("SECRET")
 	*/
 	function __construct($secret) {
 		$this->secret = $secret;
