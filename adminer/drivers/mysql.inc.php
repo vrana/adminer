@@ -338,10 +338,10 @@ if (!defined("DRIVER")) {
 		function tableHelp($name) {
 			$maria = preg_match('~MariaDB~', $this->_conn->server_info);
 			if (information_schema(DB)) {
-				return strtolower(($maria ? "information-schema-$name-table/" : str_replace("_", "-", $name) . "-table.html"));
+				return strtolower("information-schema-" . ($maria ? "$name-table/" : str_replace("_", "-", $name) . "-table.html"));
 			}
 			if (DB == "mysql") {
-				return ($maria ? "mysql$name-table/" : "system-database.html"); //! more precise link
+				return ($maria ? "mysql$name-table/" : "system-schema.html"); //! more precise link
 			}
 		}
 
