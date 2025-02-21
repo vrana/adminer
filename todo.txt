@@ -20,6 +20,7 @@ Add drag-n-drop moving of rows in table editing
 PostgreSQL: Show list of schemas in database
 Elasticsearch: Add support for "where" field privilege
 Elasticsearch: Add support for "order" field privilege
+Elasticsearch: New condition operators as the combination of query type and match type
 
 Editor:
 Three-state checkbox for boolean searches
