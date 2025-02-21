@@ -22,14 +22,14 @@ function get_driver($id) {
 
 /*abstract*/ class Min_SQL {
 	var $_conn;
-	
+
 	/** Create object for performing database operations
 	* @param Min_DB
 	*/
 	function __construct($connection) {
 		$this->_conn = $connection;
 	}
-	
+
 	/** Select data from table
 	* @param string
 	* @param array result of $adminer->selectColumnsProcess()[0]
@@ -61,7 +61,7 @@ function get_driver($id) {
 		}
 		return $return;
 	}
-	
+
 	/** Delete data from table
 	* @param string
 	* @param string " WHERE ..."
@@ -72,7 +72,7 @@ function get_driver($id) {
 		$query = "FROM " . table($table);
 		return queries("DELETE" . ($limit ? limit1($table, $query, $queryWhere) : " $query$queryWhere"));
 	}
-	
+
 	/** Update data in table
 	* @param string
 	* @param array escaped columns in keys, quoted data in values
@@ -89,7 +89,7 @@ function get_driver($id) {
 		$query = table($table) . " SET$separator" . implode(",$separator", $values);
 		return queries("UPDATE" . ($limit ? limit1($table, $query, $queryWhere, $separator) : " $query$queryWhere"));
 	}
-	
+
 	/** Insert data into table
 	* @param string
 	* @param array escaped columns in keys, quoted data in values
@@ -101,7 +101,7 @@ function get_driver($id) {
 			: " DEFAULT VALUES"
 		));
 	}
-	
+
 	/** Insert or update data in table
 	* @param string
 	* @param array
@@ -111,28 +111,28 @@ function get_driver($id) {
 	/*abstract*/ function insertUpdate($table, $rows, $primary) {
 		return false;
 	}
-	
+
 	/** Begin transaction
 	* @return bool
 	*/
 	function begin() {
 		return queries("BEGIN");
 	}
-	
+
 	/** Commit transaction
 	* @return bool
 	*/
 	function commit() {
 		return queries("COMMIT");
 	}
-	
+
 	/** Rollback transaction
 	* @return bool
 	*/
 	function rollback() {
 		return queries("ROLLBACK");
 	}
-	
+
 	/** Return query with a timeout
 	* @param string
 	* @param int seconds
@@ -140,7 +140,7 @@ function get_driver($id) {
 	*/
 	function slowQuery($query, $timeout) {
 	}
-	
+
 	/** Convert column to be searchable
 	* @param string escaped column name
 	* @param array array("op" => , "val" => )
@@ -178,19 +178,19 @@ function get_driver($id) {
 	function quoteBinary($s) {
 		return q($s);
 	}
-	
+
 	/** Get warnings about the last command
 	* @return string HTML
 	*/
 	function warnings() {
 		return '';
 	}
-	
+
 	/** Get help link for table
 	* @param string
 	* @return string relative URL or null
 	*/
 	function tableHelp($name) {
 	}
-	
+
 }

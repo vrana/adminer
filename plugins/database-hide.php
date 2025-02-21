@@ -8,14 +8,14 @@
 */
 class AdminerDatabaseHide {
 	protected $disabled;
-	
+
 	/**
 	* @param array case insensitive database names in values
 	*/
 	function __construct($disabled) {
 		$this->disabled = array_map('strtolower', $disabled);
 	}
-	
+
 	function databases($flush = true) {
 		$return = array();
 		foreach (get_databases($flush) as $db) {
@@ -25,5 +25,5 @@ class AdminerDatabaseHide {
 		}
 		return $return;
 	}
-	
+
 }

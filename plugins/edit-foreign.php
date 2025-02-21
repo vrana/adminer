@@ -8,11 +8,11 @@
 */
 class AdminerEditForeign {
 	var $_limit;
-	
+
 	function __construct($limit = 0) {
 		$this->_limit = $limit;
 	}
-	
+
 	function editInput($table, $field, $attrs, $value) {
 		static $foreignTables = array();
 		static $values = array();
@@ -39,5 +39,5 @@ class AdminerEditForeign {
 			}
 		}
 	}
-	
+
 }

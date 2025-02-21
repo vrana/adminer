@@ -42,10 +42,10 @@ $translations = array(
 	'Process list' => 'Lista procesów',
 	'%d process(es) have been killed.' => array('Przerwano %d wątek.', 'Przerwano %d wątki.', 'Przerwano %d wątków.'),
 	'Kill' => 'Przerwij wykonywanie',
-	
+
 	'Variables' => 'Zmienne',
 	'Status' => 'Status',
-	
+
 	'SQL command' => 'Zapytanie SQL',
 	'%d query(s) executed OK.' => array('Pomyślnie wykonano %d zapytanie.', 'Pomyślnie wykonano %d zapytania.', 'Pomyślnie wykonano %d zapytań.'),
 	'Query executed OK, %d row(s) affected.' => array('Zapytanie wykonane pomyślnie, zmieniono %d rekord.', 'Zapytanie wykonane pomyślnie, zmieniono %d rekordy.', 'Zapytanie wykonane pomyślnie, zmieniono %d rekordów.'),
@@ -60,7 +60,7 @@ $translations = array(
 	'History' => 'Historia',
 	'Clear' => 'Wyczyść',
 	'Edit all' => 'Edytuj wszystkie',
-	
+
 	'File upload' => 'Wgranie pliku',
 	'From server' => 'Z serwera',
 	'Webserver file %s' => 'Plik %s na serwerze',
@@ -72,14 +72,14 @@ $translations = array(
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Przesłano zbyt dużo danych. Zmniejsz objętość danych lub zwiększ zmienną konfiguracyjną %s.',
 	'You can upload a big SQL file via FTP and import it from server.' => 'Większe pliki SQL możesz wgrać na serwer poprzez FTP przed zaimportowaniem.',
 	'You are offline.' => 'Jesteś offline.',
-	
+
 	'Export' => 'Eksport',
 	'Output' => 'Rezultat',
 	'open' => 'otwórz',
 	'save' => 'zapisz',
 	'Format' => 'Format',
 	'Data' => 'Dane',
-	
+
 	'Database' => 'Baza danych',
 	'Use' => 'Wybierz',
 	'Select database' => 'Wybierz bazę danych',
@@ -92,10 +92,10 @@ $translations = array(
 	'Alter database' => 'Zmień bazę danych',
 	'Create database' => 'Utwórz bazę danych',
 	'Database schema' => 'Schemat bazy danych',
-	
+
 	// link to current database schema layout
 	'Permanent link' => 'Trwały link',
-	
+
 	// thousands separator - must contain single byte
 	',' => ' ',
 	'0123456789' => '0123456789',
@@ -118,7 +118,7 @@ $translations = array(
 	'Tables have been moved.' => 'Tabele zostały przeniesione.',
 	'Copy' => 'Kopiuj',
 	'Tables have been copied.' => 'Tabele zostały skopiowane.',
-	
+
 	'Routines' => 'Procedury i funkcje',
 	'Routine has been called, %d row(s) affected.' => array('Procedura została uruchomiona, zmieniono %d rekord.', 'Procedura została uruchomiona, zmieniono %d rekordy.', 'Procedura została uruchomiona, zmieniono %d rekordów.'),
 	'Call' => 'Uruchom',
@@ -131,7 +131,7 @@ $translations = array(
 	'Alter function' => 'Zmień funkcję',
 	'Alter procedure' => 'Zmień procedurę',
 	'Return type' => 'Zwracany typ',
-	
+
 	'Events' => 'Wydarzenia',
 	'Event has been dropped.' => 'Wydarzenie zostało usunięte.',
 	'Event has been altered.' => 'Wydarzenie zostało zmienione.',
@@ -144,7 +144,7 @@ $translations = array(
 	'Start' => 'Początek',
 	'End' => 'Koniec',
 	'On completion preserve' => 'Nie kasuj wydarzenia po przeterminowaniu',
-	
+
 	'Tables' => 'Tabele',
 	'Tables and views' => 'Tabele i perspektywy',
 	'Table' => 'Tabela',
@@ -177,12 +177,12 @@ $translations = array(
 	'Move down' => 'Przesuń w dół',
 	'Remove' => 'Usuń',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Przekroczono maksymalną liczbę pól. Zwiększ %s.',
-	
+
 	'Partition by' => 'Partycjonowanie',
 	'Partitions' => 'Partycje',
 	'Partition name' => 'Nazwa partycji',
 	'Values' => 'Wartości',
-	
+
 	'View' => 'Perspektywa',
 	'Materialized view' => 'Zmaterializowana perspektywa',
 	'View has been dropped.' => 'Perspektywa została usunięta.',
@@ -190,14 +190,14 @@ $translations = array(
 	'View has been created.' => 'Perspektywa została utworzona.',
 	'Alter view' => 'Zmień perspektywę',
 	'Create view' => 'Utwórz perspektywę',
-	
+
 	'Indexes' => 'Indeksy',
 	'Indexes have been altered.' => 'Indeksy zostały zmienione.',
 	'Alter indexes' => 'Zmień indeksy',
 	'Add next' => 'Dodaj następny',
 	'Index Type' => 'Typ indeksu',
 	'Column (length)' => 'Kolumna (długość)',
-	
+
 	'Foreign keys' => 'Klucze obce',
 	'Foreign key' => 'Klucz obcy',
 	'Foreign key has been dropped.' => 'Klucz obcy został usunięty.',
@@ -213,7 +213,7 @@ $translations = array(
 	'ON DELETE' => 'W przypadku usunięcia',
 	'ON UPDATE' => 'W przypadku zmiany',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Źródłowa i docelowa kolumna muszą być tego samego typu, powinien istnieć indeks na docelowej kolumnie oraz muszą istnieć dane referencyjne.',
-	
+
 	'Triggers' => 'Wyzwalacze',
 	'Add trigger' => 'Dodaj wyzwalacz',
 	'Trigger has been dropped.' => 'Wyzwalacz został usunięty.',
@@ -224,7 +224,7 @@ $translations = array(
 	'Time' => 'Czas',
 	'Event' => 'Wydarzenie',
 	'Name' => 'Nazwa',
-	
+
 	'select' => 'przeglądaj',
 	'Select' => 'pokaż',
 	'Select data' => 'Pokaż dane',
@@ -250,16 +250,16 @@ $translations = array(
 	'Loading' => 'Wczytywanie',
 	'Whole result' => 'Wybierz wszystkie',
 	'%d byte(s)' => array('%d bajt', '%d bajty', '%d bajtów'),
-	
+
 	'Import' => 'Import',
 	'%d row(s) have been imported.' => array('%d rekord został zaimportowany.', '%d rekordy zostały zaimportowane.', '%d rekordów zostało zaimportowanych.'),
 	'File must be in UTF-8 encoding.' => 'Kodowanie pliku musi być ustawione na UTF-8.',
-	
+
 	// in-place editing in select
 	'Modify' => 'Zmień',
 	'Ctrl+click on a value to modify it.' => 'Ctrl+kliknij wartość, aby ją edytować.',
 	'Use edit link to modify this value.' => 'Użyj linku edycji aby zmienić tę wartość.',
-	
+
 	// %s can contain auto-increment value
 	'Item%s has been inserted.' => 'Rekord%s został dodany.',
 	'Item has been deleted.' => 'Rekord został usunięty.',
@@ -280,14 +280,14 @@ $translations = array(
 	'Clone' => 'Duplikuj',
 	'Delete' => 'Usuń',
 	'You have no privileges to update this table.' => 'Brak uprawnień do edycji tej tabeli',
-	
+
 	'E-mail' => 'E-mail',
 	'From' => 'Nadawca',
 	'Subject' => 'Temat',
 	'Attachments' => 'Załączniki',
 	'Send' => 'Wyślij',
 	'%d e-mail(s) have been sent.' => array('Wysłano %d e-mail.', 'Wysłano %d e-maile.', 'Wysłano %d e-maili.'),
-	
+
 	// data type descriptions
 	'Numbers' => 'Numeryczne',
 	'Date and time' => 'Data i czas',
@@ -297,7 +297,7 @@ $translations = array(
 	'Network' => 'Sieć',
 	'Geometry' => 'Geometria',
 	'Relations' => 'Relacje',
-	
+
 	'Editor' => 'Edytor',
 	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
 	'$1-$3-$5' => '$6.$4.$1',
@@ -308,11 +308,11 @@ $translations = array(
 	'now' => 'teraz',
 	'yes' => 'tak',
 	'no' => 'nie',
-	
+
 	// general SQLite error in create, drop or rename database
 	'File exists.' => 'Plik już istnieje.',
 	'Please use one of the extensions %s.' => 'Proszę użyć jednego z rozszerzeń: %s.',
-	
+
 	// PostgreSQL and MS SQL schema support
 	'Alter schema' => 'Zmień schemat',
 	'Create schema' => 'Utwórz schemat',
@@ -321,7 +321,7 @@ $translations = array(
 	'Schema has been altered.' => 'Schemat został zmieniony.',
 	'Schema' => 'Schemat',
 	'Invalid schema.' => 'Nieprawidłowy schemat.',
-	
+
 	// PostgreSQL sequences support
 	'Sequences' => 'Sekwencje',
 	'Create sequence' => 'Utwórz sekwencję',
@@ -329,7 +329,7 @@ $translations = array(
 	'Sequence has been created.' => 'Sekwencja została utworzona.',
 	'Sequence has been altered.' => 'Sekwencja została zmieniona.',
 	'Alter sequence' => 'Zmień sekwencję',
-	
+
 	// PostgreSQL user types support
 	'User types' => 'Typy użytkownika',
 	'Create type' => 'Utwórz typ',

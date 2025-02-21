@@ -8,20 +8,20 @@
 */
 class AdminerMasterSlave {
 	private $masters = array();
-	
+
 	/**
 	* @param array ($slave => $master)
 	*/
 	function __construct($masters) {
 		$this->masters = $masters;
 	}
-	
+
 	function credentials() {
 		if ($_POST && isset($this->masters[SERVER])) {
 			return array($this->masters[SERVER], $_GET["username"], get_session("pwds"));
 		}
 	}
-	
+
 	function login($login, $password) {
 		if (!$_POST && ($master = &$_SESSION["master"])) {
 			$connection = connection();

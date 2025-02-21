@@ -305,7 +305,7 @@ if (isset($_GET["elastic5"])) {
 	function db_collation($db, $collations) {
 		//
 	}
-	
+
 	function engines() {
 		return array();
 	}

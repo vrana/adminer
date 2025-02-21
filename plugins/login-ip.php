@@ -11,7 +11,7 @@ class AdminerLoginIp {
 	var $ips;
 	/** @access protected */
 	var $forwarded_for;
-	
+
 	/** Set allowed IP addresses
 	* @param array IP address prefixes
 	* @param array X-Forwarded-For prefixes if IP address matches, empty array means anything

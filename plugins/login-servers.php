@@ -9,7 +9,7 @@
 class AdminerLoginServers {
 	/** @access protected */
 	var $servers;
-	
+
 	/** Set supported servers
 	* @param array array($description => array("server" => , "driver" => "server|pgsql|sqlite|..."))
 	*/
@@ -20,17 +20,17 @@ class AdminerLoginServers {
 			$_POST["auth"]["driver"] = $this->servers[$key]["driver"];
 		}
 	}
-	
+
 	function credentials() {
 		return array($this->servers[SERVER]["server"], $_GET["username"], get_password());
 	}
-	
+
 	function login($login, $password) {
 		if (!$this->servers[SERVER]) {
 			return false;
 		}
 	}
-	
+
 	function loginFormField($name, $heading, $value) {
 		if ($name == 'driver') {
 			return '';
@@ -38,5 +38,5 @@ class AdminerLoginServers {
 			return $heading . "<select name='auth[server]'>" . optionlist(array_keys($this->servers), SERVER) . "</select>\n";
 		}
 	}
-	
+
 }

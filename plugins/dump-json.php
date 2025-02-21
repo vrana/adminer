@@ -9,7 +9,7 @@
 class AdminerDumpJson {
 	/** @access protected */
 	var $database = false;
-	
+
 	function dumpFormat() {
 		return array('json' => 'JSON');
 	}
@@ -19,11 +19,11 @@ class AdminerDumpJson {
 			return true;
 		}
 	}
-	
+
 	function _database() {
 		echo "}\n";
 	}
-	
+
 	function dumpData($table, $style, $query) {
 		if ($_POST["format"] == "json") {
 			if ($this->database) {

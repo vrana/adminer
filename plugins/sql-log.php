@@ -9,14 +9,14 @@
 class AdminerSqlLog {
 	/** @access protected */
 	var $filename;
-	
+
 	/**
 	* @param string defaults to "$database.sql"
 	*/
 	function __construct($filename = "") {
 		$this->filename = $filename;
 	}
-	
+
 	function messageQuery($query, $time, $failed = false) {
 		$this->_log($query);
 	}
@@ -37,5 +37,5 @@ class AdminerSqlLog {
 		flock($fp, LOCK_UN);
 		fclose($fp);
 	}
-	
+
 }

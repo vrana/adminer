@@ -287,7 +287,7 @@ $translations = array(
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Platnosť hlavného hesla vypršala. <a href="https://www.adminer.org/cs/extension/"%s>Implementujte</a> metodu %s, aby platilo natrvalo.',
 	'The action will be performed after successful login with the same credentials.' => 'Akcia sa vykoná po úspešnom prihlásení s rovnakými prihlasovacími údajmi.',
 	'Connecting to privileged ports is not allowed.' => 'Pripojenie k privilegovaným portom nie je povolené.',
-	'There is a space in the input password which might be the cause.' =>  'V zadanom hesle je medzera, ktorá môže byť príčinou.',
+	'There is a space in the input password which might be the cause.' => 'V zadanom hesle je medzera, ktorá môže byť príčinou.',
 	'If you did not send this request from Adminer then close this page.' => 'Pokiaľ ste tento požiadavok neodoslali z Adminera, zatvorte túto stránku.',
 	'You can upload a big SQL file via FTP and import it from server.' => 'Veľký SQL soubor môžete nahrať pomocou FTP a importovať ho zo servera.',
 	'Size' => 'Veľkosť',

@@ -236,7 +236,7 @@ if (isset($_GET["simpledb"])) {
 		function rollback() {
 			return false;
 		}
-		
+
 		function slowQuery($query, $timeout) {
 			$this->_conn->timeout = $timeout;
 			return $query;

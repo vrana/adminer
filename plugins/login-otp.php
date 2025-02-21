@@ -9,8 +9,8 @@
 class AdminerLoginOtp {
 	/** @access protected */
 	var $secret;
-	
-	/** 
+
+	/**
 	* @param string decoded secret, e.g. base64_decode("SECRET")
 	*/
 	function __construct($secret) {
@@ -19,7 +19,7 @@ class AdminerLoginOtp {
 			$_SESSION["otp"] = (string) $_POST["auth"]["otp"];
 		}
 	}
-	
+
 	function loginFormField($name, $heading, $value) {
 		if ($name == 'password') {
 			return $heading . $value
@@ -43,7 +43,7 @@ class AdminerLoginOtp {
 			return 'Invalid OTP.';
 		}
 	}
-	
+
 	function getOtp($timeSlot) {
 		$data = str_pad(pack('N', $timeSlot), 8, "\0", STR_PAD_LEFT);
 		$hash = hash_hmac('sha1', $data, $this->secret, true);

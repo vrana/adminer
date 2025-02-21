@@ -9,7 +9,7 @@
 class AdminerDumpXml {
 	/** @access protected */
 	var $database = false;
-	
+
 	function dumpFormat() {
 		return array('xml' => 'XML');
 	}
@@ -19,11 +19,11 @@ class AdminerDumpXml {
 			return true;
 		}
 	}
-	
+
 	function _database() {
 		echo "</database>\n";
 	}
-	
+
 	function dumpData($table, $style, $query) {
 		if ($_POST["format"] == "xml") {
 			if (!$this->database) {

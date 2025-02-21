@@ -22,10 +22,10 @@ $translations = array(
 	'Session expired, please login again.' => 'Сесията е изтекла; моля, влезте отново.',
 	'%s version: %s through PHP extension %s' => '%s версия: %s през PHP разширение %s',
 	'Refresh' => 'Обновяване',
-	
+
 	// text direction - 'ltr' or 'rtl'
 	'ltr' => 'ltr',
-	
+
 	'Privileges' => 'Права',
 	'Create user' => 'Създаване на потребител',
 	'User has been dropped.' => 'Потребителя беше премахнат.',
@@ -36,14 +36,14 @@ $translations = array(
 	'Routine' => 'Процедура',
 	'Grant' => 'Осигуряване',
 	'Revoke' => 'Отнемане',
-	
+
 	'Process list' => 'Списък с процеси',
 	'%d process(es) have been killed.' => array('%d процес беше прекъснат.', '%d процеса бяха прекъснати.'),
 	'Kill' => 'Прекъсване',
-	
+
 	'Variables' => 'Променливи',
 	'Status' => 'Състояние',
-	
+
 	'SQL command' => 'SQL команда',
 	'%d query(s) executed OK.' => array('%d заявка е изпълнена.', '%d заявки са изпълнени.'),
 	'Query executed OK, %d row(s) affected.' => array('Заявката е изпълнена, %d ред е засегнат.', 'Заявката е изпълнена, %d редове са засегнати.'),
@@ -57,7 +57,7 @@ $translations = array(
 	'History' => 'Хронология',
 	'Clear' => 'Изчистване',
 	'Edit all' => 'Редактиране на всички',
-	
+
 	'File upload' => 'Прикачване на файл',
 	'From server' => 'От сървър',
 	'Webserver file %s' => 'Сървърен файл %s',
@@ -69,14 +69,14 @@ $translations = array(
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Изпратени са прекалено много данни. Намалете обема на данните или увеличете %s управляващата директива.',
 	'You can upload a big SQL file via FTP and import it from server.' => 'Можете да прикачите голям SQL файл чрез FTP и да го импортирате от сървъра.',
 	'You are offline.' => 'Вие сте офлайн.',
-	
+
 	'Export' => 'Експорт',
 	'Output' => 'Резултат',
 	'open' => 'показване',
 	'save' => 'запис',
 	'Format' => 'Формат',
 	'Data' => 'Данни',
-	
+
 	'Database' => 'База данни',
 	'Use' => 'Избор',
 	'Select database' => 'Избор на база данни',
@@ -89,10 +89,10 @@ $translations = array(
 	'Alter database' => 'Промяна на база данни',
 	'Create database' => 'Създаване на база данни',
 	'Database schema' => 'Схема на базата данни',
-	
+
 	// link to current database schema layout
 	'Permanent link' => 'Постоянна препратка',
-	
+
 	// thousands separator - must contain single byte
 	',' => ',',
 	'0123456789' => '0123456789',
@@ -115,7 +115,7 @@ $translations = array(
 	'Tables have been moved.' => 'Таблиците бяха преместени.',
 	'Copy' => 'Копиране',
 	'Tables have been copied.' => 'Таблиците бяха копирани.',
-	
+
 	'Routines' => 'Процедури',
 	'Routine has been called, %d row(s) affected.' => array('Беше приложена процедура, %d ред е засегнат.', 'Беше приложена процедура, %d редове са засегнати.'),
 	'Call' => 'Прилагане',
@@ -128,7 +128,7 @@ $translations = array(
 	'Alter function' => 'Промяна на функция',
 	'Alter procedure' => 'Промяна на процедура',
 	'Return type' => 'Резултат',
-	
+
 	'Events' => 'Събития',
 	'Event has been dropped.' => 'Събитието беше премахнато.',
 	'Event has been altered.' => 'Събитието беше променено.',
@@ -141,7 +141,7 @@ $translations = array(
 	'Start' => 'Начало',
 	'End' => 'Край',
 	'On completion preserve' => 'Запазване след завършване',
-	
+
 	'Tables' => 'Таблици',
 	'Tables and views' => 'Таблици и изгледи',
 	'Table' => 'Таблица',
@@ -173,12 +173,12 @@ $translations = array(
 	'Move down' => 'Преместване надолу',
 	'Remove' => 'Премахване',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Максималния брой полета е превишен. Моля, увеличете %s.',
-	
+
 	'Partition by' => 'Разделяне на',
 	'Partitions' => 'Раздели',
 	'Partition name' => 'Име на раздела',
 	'Values' => 'Стойности',
-	
+
 	'View' => 'Изглед',
 	'Materialized view' => 'Запаметен изглед',
 	'View has been dropped.' => 'Изгледа беше премахнат.',
@@ -186,14 +186,14 @@ $translations = array(
 	'View has been created.' => 'Изгледа беше създаден.',
 	'Alter view' => 'Промяна на изглед',
 	'Create view' => 'Създаване на изглед',
-	
+
 	'Indexes' => 'Индекси',
 	'Indexes have been altered.' => 'Индексите бяха променени.',
 	'Alter indexes' => 'Промяна на индекси',
 	'Add next' => 'Добавяне на следващ',
 	'Index Type' => 'Вид на индекса',
 	'Column (length)' => 'Колона (дължина)',
-	
+
 	'Foreign keys' => 'Препратки',
 	'Foreign key' => 'Препратка',
 	'Foreign key has been dropped.' => 'Препратката беше премахната.',
@@ -209,7 +209,7 @@ $translations = array(
 	'ON DELETE' => 'При изтриване',
 	'ON UPDATE' => 'При промяна',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Колоните източник и цел трябва да са от еднакъв вид, трябва да има индекс на колоните приемник и да има въведени данни.',
-	
+
 	'Triggers' => 'Тригери',
 	'Add trigger' => 'Добавяне на тригер',
 	'Trigger has been dropped.' => 'Тригера беше премахнат.',
@@ -220,7 +220,7 @@ $translations = array(
 	'Time' => 'Време',
 	'Event' => 'Събитие',
 	'Name' => 'Име',
-	
+
 	'select' => 'показване',
 	'Select' => 'Показване',
 	'Select data' => 'Показване на данни',
@@ -246,16 +246,16 @@ $translations = array(
 	'Loading' => 'Зареждане',
 	'Whole result' => 'Пълен резултат',
 	'%d byte(s)' => array('%d байт', '%d байта'),
-	
+
 	'Import' => 'Импорт',
 	'%d row(s) have been imported.' => array('%d ред беше импортиран.', '%d реда бяха импортирани.'),
 	'File must be in UTF-8 encoding.' => 'Файла трябва да е с UTF-8 кодировка.',
-	
+
 	// in-place editing in select
 	'Modify' => 'Промяна',
 	'Ctrl+click on a value to modify it.' => 'Ctrl+щракване в стойността, за да я промените.',
 	'Use edit link to modify this value.' => 'Използвайте "редакция" за промяна на данните.',
-	
+
 	// %s can contain auto-increment value
 	'Item%s has been inserted.' => 'Елементи%s бяха вмъкнати.',
 	'Item has been deleted.' => 'Елемента беше изтрит.',
@@ -276,14 +276,14 @@ $translations = array(
 	'Clone' => 'Клониране',
 	'Delete' => 'Изтриване',
 	'You have no privileges to update this table.' => 'Нямате праве за обновяване на таблицата.',
-	
+
 	'E-mail' => 'E-mail',
 	'From' => 'От',
 	'Subject' => 'Тема',
 	'Attachments' => 'Прикачени',
 	'Send' => 'Изпращане',
 	'%d e-mail(s) have been sent.' => array('%d писмо беше изпратено.', '%d писма бяха изпратени.'),
-	
+
 	// data type descriptions
 	'Numbers' => 'Числа',
 	'Date and time' => 'Дата и час',
@@ -293,7 +293,7 @@ $translations = array(
 	'Network' => 'Мрежа',
 	'Geometry' => 'Геометрия',
 	'Relations' => 'Зависимости',
-	
+
 	'Editor' => 'Редактор',
 	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
 	'$1-$3-$5' => '$1-$3-$5',
@@ -304,11 +304,11 @@ $translations = array(
 	'now' => 'сега',
 	'yes' => 'да',
 	'no' => 'не',
-	
+
 	// general SQLite error in create, drop or rename database
 	'File exists.' => 'Файла вече съществува.',
 	'Please use one of the extensions %s.' => 'Моля, използвайте някое от разширенията %s.',
-	
+
 	// PostgreSQL and MS SQL schema support
 	'Alter schema' => 'Промяна на схемата',
 	'Create schema' => 'Създаване на схема',
@@ -317,7 +317,7 @@ $translations = array(
 	'Schema has been altered.' => 'Схемата беше променена.',
 	'Schema' => 'Схема',
 	'Invalid schema.' => 'Невалидна схема.',
-	
+
 	// PostgreSQL sequences support
 	'Sequences' => 'Последователности',
 	'Create sequence' => 'Създаване на последователност',
@@ -325,7 +325,7 @@ $translations = array(
 	'Sequence has been created.' => 'Последователността беше създадена.',
 	'Sequence has been altered.' => 'Последователността беше променена.',
 	'Alter sequence' => 'Промяна на последователност',
-	
+
 	// PostgreSQL user types support
 	'User types' => 'Видове потребители',
 	'Create type' => 'Създаване на вид',

@@ -225,11 +225,11 @@ input[name=logout]:hover {
 	background:#ea0202;
 }
 
-#logins a, #tables a { 
+#logins a, #tables a {
 	background:none;
 }
 
-#logins a:hover, #tables a:hover { 
+#logins a:hover, #tables a:hover {
 	background:#A0522D;
 	color:white;
 }

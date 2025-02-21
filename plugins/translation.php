@@ -17,7 +17,7 @@ CREATE TABLE translation (
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerTranslation {
-	
+
 	function _translate($idf) {
 		static $translations, $lang;
 		if ($lang === null) {
@@ -37,19 +37,19 @@ class AdminerTranslation {
 		}
 		return $return;
 	}
-	
+
 	function tableName(&$tableStatus) {
 		$tableStatus["Comment"] = $this->_translate($tableStatus["Comment"]);
 	}
-	
+
 	function fieldName(&$field, $order = 0) {
 		$field["comment"] = $this->_translate($field["comment"]);
 	}
-	
+
 	function editVal(&$val, $field) {
 		if ($field["type"] == "enum") {
 			$val = $this->_translate($val);
 		}
 	}
-	
+
 }
