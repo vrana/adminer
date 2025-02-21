@@ -109,6 +109,7 @@ if ($adminer->homepage()) {
 					$tables++;
 				}
 				echo (support("comment") ? "<td id='Comment-" . h($name) . "'>" : "");
+				echo "\n";
 			}
 
 			echo "<tr><td><th>" . lang('%d in total', count($tables_list));
@@ -117,6 +118,7 @@ if ($adminer->homepage()) {
 			foreach (array("Data_length", "Index_length", "Data_free") as $key) {
 				echo "<td align='right' id='sum-$key'>";
 			}
+			echo "\n";
 
 			echo "</table>\n";
 			echo "</div>\n";
