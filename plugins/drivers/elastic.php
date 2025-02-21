@@ -537,7 +537,7 @@ if (isset($_GET["elastic"])) {
 			$properties = array('properties' => $properties);
 		}
 
-		return connection()->query("_mapping/{$name}", $properties, 'PUT');
+		return connection()->query("_mapping/$name", $properties, 'PUT');
 	}
 
 	/** Drop types

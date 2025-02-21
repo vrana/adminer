@@ -241,7 +241,7 @@ if (isset($_GET["elastic5"])) {
 			$this->_conn->affected_rows = 0;
 
 			foreach ($ids as $id) {
-				$query = "{$type}/{$id}";
+				$query = "$type/$id";
 				$response = $this->_conn->query($query, null, 'DELETE');
 				if ((isset($response['found']) && $response['found']) || (isset($response['result']) && $response['result'] == 'deleted')) {
 					$this->_conn->affected_rows++;
@@ -497,7 +497,7 @@ if (isset($_GET["elastic5"])) {
 		if (!empty($properties)) {
 			$properties = array('properties' => $properties);
 		}
-		return connection()->query("_mapping/{$name}", $properties, 'PUT');
+		return connection()->query("_mapping/$name", $properties, 'PUT');
 	}
 
 	/** Drop types
