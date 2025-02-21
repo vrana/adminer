@@ -817,8 +817,9 @@ class Adminer {
 	*/
 	function dumpData($table, $style, $query) {
 		global $connection, $jush;
-		$max_packet = ($jush == "sqlite" ? 0 : 1048576); // default, minimum is 1024
 		if ($style) {
+			$max_packet = ($jush == "sqlite" ? 0 : 1048576); // default, minimum is 1024
+			$fields = array();
 			if ($_POST["format"] == "sql") {
 				if ($style == "TRUNCATE+INSERT") {
 					echo truncate_sql($table) . ";\n";
