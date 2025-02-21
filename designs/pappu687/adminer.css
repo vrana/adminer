@@ -169,7 +169,7 @@ th {
     background:white;
 }
 
-tr.odd td {
+.odds tbody tr:nth-child(2n) td {
     background:#fcfaf5;
 }
 
@@ -181,7 +181,7 @@ tr.odd td {
 	background: #f2f2f2;
 }
 
-#content tbody tr.checked td, tr.checked.odd td {
+#content tbody tr.checked td, .odds tbody tr:nth-child(2n).checked td {
     background:#fbe2e2;
     color:red;
 }
@@ -748,7 +748,7 @@ input[type=submit] {
 label { margin: 0 8px;}
 thead td, thead th{color:#fff;}
 
-#content tbody tr.checked td, tr.checked.odd td {
+#content tbody .odds tbody tr:nth-child(2n).checked td, .odds tbody tr:nth-child(2n).checked td {
     background: #c8edff;
     color: #03A9F4;
 }

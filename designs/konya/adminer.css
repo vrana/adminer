@@ -72,7 +72,7 @@ tr:first-child th {padding-right: 30px;}
 td:first-child, th:first-child {border-left-width: 0;}
 thead td, thead th {background-color: #DFDFDF; border: none; border-bottom: 1px #BBB solid;}
 thead tr:hover td, thead tr:hover th {background-color: #DDD !important;}
-tr:nth-child(2n) td, tr:nth-child(2n) th, .odd td, .odd th, tr.odd {background-color: #F1F1F1;}
+tr:nth-child(2n) td, tr:nth-child(2n) th, .odds tbody tr:nth-child(2n) td, .odds tbody tr:nth-child(2n) th, .odds tbody tr:nth-child(2n) {background-color: #F1F1F1;}
 tr:hover td, tr:hover th {background-color: #BCD;}
 fieldset {display: inline; vertical-align: top; padding: 2px 12px; margin: 25px 12px 12px 0; border: none; background-color: #F1F1F1; border: 1px solid #E3E3E3; position: relative;}
 fieldset, x:-moz-any-link {padding-top: 4px;}

@@ -136,8 +136,8 @@ table.checkable tbody tr:hover th {
 	background: #bfb008;
 }
 
-.odd th,
-.odd td {
+.odds tbody tr:nth-child(2n) th,
+.odds tbody tr:nth-child(2n) td {
 	background: #f5f5f5;
 }
 

@@ -16,7 +16,7 @@ page_header(lang('Process list'), $error);
 
 <form action="" method="post">
 <div class="scrollable">
-<table cellspacing="0" class="nowrap checkable">
+<table cellspacing="0" class="nowrap checkable odds">
 <?php
 echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
 // HTML valid because there is always at least one process
@@ -34,7 +34,7 @@ foreach (process_list() as $i => $row) {
 		}
 		echo "</thead>\n";
 	}
-	echo "<tr" . odd() . ">" . (support("kill") ? "<td>" . checkbox("kill[]", $row[$jush == "sql" ? "Id" : "pid"], 0) : "");
+	echo "<tr>" . (support("kill") ? "<td>" . checkbox("kill[]", $row[$jush == "sql" ? "Id" : "pid"], 0) : "");
 	foreach ($row as $key => $val) {
 		echo "<td>" . (
 			($jush == "sql" && $key == "Info" && preg_match("~Query|Killed~", $row["Command"]) && $val != "") ||

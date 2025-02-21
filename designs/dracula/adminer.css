@@ -175,8 +175,8 @@
    background: var(--color-darkPurple);
  }
 
- .odd th,
- .odd td {
+ .odds tbody tr:nth-child(2n) th,
+ .odds tbody tr:nth-child(2n) td {
    background: var(--color-darkDraculaVSCode);
  }
 

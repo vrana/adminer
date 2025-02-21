@@ -310,10 +310,10 @@ class Adminer {
 	*/
 	function tableStructurePrint($fields) {
 		echo "<div class='scrollable'>\n";
-		echo "<table cellspacing='0' class='nowrap'>\n";
+		echo "<table cellspacing='0' class='nowrap odds'>\n";
 		echo "<thead><tr><th>" . lang('Column') . "<td>" . lang('Type') . (support("comment") ? "<td>" . lang('Comment') : "") . "</thead>\n";
 		foreach ($fields as $field) {
-			echo "<tr" . odd() . "><th>" . h($field["field"]);
+			echo "<tr><th>" . h($field["field"]);
 			echo "<td><span title='" . h($field["collation"]) . "'>" . h($field["full_type"]) . "</span>";
 			echo ($field["null"] ? " <i>NULL</i>" : "");
 			echo ($field["auto_increment"] ? " <i>" . lang('Auto Increment') . "</i>" : "");

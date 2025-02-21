@@ -266,18 +266,6 @@ function bold($bold, $class = "") {
 	return ($bold ? " class='active $class'" : ($class ? " class='$class'" : ""));
 }
 
-/** Generate class for odd rows
-* @param string return this for odd rows, empty to reset counter
-* @return string
-*/
-function odd($return = ' class="odd"') {
-	static $i = 0;
-	if (!$return) { // reset counter
-		$i = -1;
-	}
-	return ($i++ % 2 ? $return : '');
-}
-
 /** Escape string for JavaScript apostrophes
 * @param string
 * @return string

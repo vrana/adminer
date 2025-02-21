@@ -16,11 +16,10 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 	$blobs = array(); // colno => bool - display bytes for blobs
 	$types = array(); // colno => type - display char in <code>
 	$return = array(); // table => orgtable - mapping to use in EXPLAIN
-	odd(''); // reset odd for each result
 	for ($i=0; (!$limit || $i < $limit) && ($row = $result->fetch_row()); $i++) {
 		if (!$i) {
 			echo "<div class='scrollable'>\n";
-			echo "<table cellspacing='0' class='nowrap'>\n";
+			echo "<table cellspacing='0' class='nowrap odds'>\n";
 			echo "<thead><tr>";
 			for ($j=0; $j < count($row); $j++) {
 				$field = $result->fetch_field();
@@ -61,7 +60,7 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 			}
 			echo "</thead>\n";
 		}
-		echo "<tr" . odd() . ">";
+		echo "<tr>";
 		foreach ($row as $key => $val) {
 			$link = "";
 			if (isset($links[$key]) && !$columns[$links[$key]]) {

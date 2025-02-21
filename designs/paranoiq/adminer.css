@@ -65,7 +65,7 @@ thead td, thead th {
     border-bottom: 1px #DDD solid; }
 .nowrap tr:nth-child(2n) td, .nowrap tr:nth-child(2n) th {
     background-color: #DEF; }
-.odd td, .odd th {
+.odds tbody tr:nth-child(2n) td, .odds tbody tr:nth-child(2n) th {
     background-color: #DEF; } /* IEx */
 tr.selected td, tr.selected th {
     background-color: #ABC !important; }

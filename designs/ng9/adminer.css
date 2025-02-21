@@ -132,11 +132,11 @@ th {
 	background:white;
 }
 
-tr.odd td {
+.odds tbody tr:nth-child(2n) td {
 	background:#fcfaf5;
 }
 
-#content tbody tr.checked td, tr.checked.odd td {
+#content tbody tr.checked td, .odds tbody tr:nth-child(2n).checked td {
 	background:#fbe2e2;
 	color:red;
 }

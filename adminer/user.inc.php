@@ -141,7 +141,7 @@ if ($_POST) {
 
 <?php
 //! MAX_* limits, REQUIRE
-echo "<table cellspacing='0'>\n";
+echo "<table cellspacing='0' class='odds'>\n";
 echo "<thead><tr><th colspan='2'>" . lang('Privileges') . doc_link(array('sql' => "grant.html#priv_level"));
 $i = 0;
 foreach ($grants as $object => $grant) {
@@ -159,7 +159,7 @@ foreach (array(
 	"Procedures" => lang('Routine'),
 ) as $context => $desc) {
 	foreach ((array) $privileges[$context] as $privilege => $comment) {
-		echo "<tr" . odd() . "><td" . ($desc ? ">$desc<td" : " colspan='2'") . ' lang="en" title="' . h($comment) . '">' . h($privilege);
+		echo "<tr><td" . ($desc ? ">$desc<td" : " colspan='2'") . ' lang="en" title="' . h($comment) . '">' . h($privilege);
 		$i = 0;
 		foreach ($grants as $object => $grant) {
 			$name = "'grants[$i][" . h(strtoupper($privilege)) . "]'";

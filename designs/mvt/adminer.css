@@ -378,7 +378,7 @@ thead td abbr, thead td sup, thead th acronym, thead th sup {
 	color: #cdf
 }
 
-tr.odd td {
+.odds tbody tr:nth-child(2n) td {
 	background: #fcfaf5
 }
 
@@ -735,7 +735,7 @@ table tbody input ~ a[href*="&edit="][href*="&where"] {
 	color: #000
 }
 
-#content tbody tr.checked td, tr.checked.odd td {
+#content tbody tr.checked td, .odds tbody tr.checked:nth-child(2n) td {
 	background: #fbe2e2;
 	color: red
 }

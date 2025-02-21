@@ -312,7 +312,7 @@ if (!$columns && support("table")) {
 			$backward_keys = $adminer->backwardKeys($TABLE, $table_name);
 
 			echo "<div class='scrollable'>";
-			echo "<table id='table' cellspacing='0' class='nowrap checkable'>";
+			echo "<table id='table' cellspacing='0' class='nowrap checkable odds'>";
 			echo script("mixin(qs('#table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true), onkeydown: editingKeydown});");
 			echo "<thead><tr>" . (!$group && $select
 				? ""
@@ -361,9 +361,6 @@ if (!$columns && support("table")) {
 			echo ($backward_keys ? "<th>" . lang('Relations') : "") . "</thead>\n";
 
 			if (is_ajax()) {
-				if ($limit % 2 == 1 && $page % 2 == 1) {
-					odd();
-				}
 				ob_end_clean();
 			}
 
@@ -386,7 +383,7 @@ if (!$columns && support("table")) {
 					}
 					$unique_idf .= "&" . ($val !== null ? urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($val === false ? "f" : $val) : "null%5B%5D=" . urlencode($key));
 				}
-				echo "<tr" . odd() . ">" . (!$group && $select ? "" : "<td>"
+				echo "<tr>" . (!$group && $select ? "" : "<td>"
 					. checkbox("check[]", substr($unique_idf, 1), in_array(substr($unique_idf, 1), (array) $_POST["check"]))
 					. ($is_group || information_schema(DB) ? "" : " <a href='" . h(ME . "edit=" . urlencode($TABLE) . $unique_idf) . "' class='edit'>" . lang('edit') . "</a>")
 				);

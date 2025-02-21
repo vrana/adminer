@@ -187,7 +187,7 @@ td.nowrap {
 .binary {
     color: red;
 }
-.odd td {
+.odds tbody tr:nth-child(2n) td {
     background: transparent;
 }
 .js .checkable .checked td,

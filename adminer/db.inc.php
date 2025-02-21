@@ -66,7 +66,7 @@ if ($adminer->homepage()) {
 				}
 			}
 			echo "<div class='scrollable'>\n";
-			echo "<table cellspacing='0' class='nowrap checkable'>\n";
+			echo "<table cellspacing='0' class='nowrap checkable odds'>\n";
 			echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
 			echo '<thead><tr class="wrap">';
 			echo '<td><input id="check-all" type="checkbox" class="jsonly">' . script("qs('#check-all').onclick = partial(formCheck, /^(tables|views)\[/);", "");
@@ -85,7 +85,7 @@ if ($adminer->homepage()) {
 			foreach ($tables_list as $name => $type) {
 				$view = ($type !== null && !preg_match('~table|sequence~i', $type));
 				$id = h("Table-" . $name);
-				echo '<tr' . odd() . '><td>' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array($name, $tables_views, true), "", "", "", $id);
+				echo '<tr><td>' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array($name, $tables_views, true), "", "", "", $id);
 				echo '<th>' . (support("table") || support("indexes") ? "<a href='" . h(ME) . "table=" . urlencode($name) . "' title='" . lang('Show structure') . "' id='$id'>" . h($name) . '</a>' : h($name));
 				if ($view) {
 					echo '<td colspan="6"><a href="' . h(ME) . "view=" . urlencode($name) . '" title="' . lang('Alter view') . '">' . (preg_match('~materialized~i', $type) ? lang('Materialized view') : lang('View')) . '</a>';
@@ -159,12 +159,11 @@ if ($adminer->homepage()) {
 			echo "<h3 id='routines'>" . lang('Routines') . "</h3>\n";
 			$routines = routines();
 			if ($routines) {
-				echo "<table cellspacing='0'>\n";
+				echo "<table cellspacing='0' class='odds'>\n";
 				echo '<thead><tr><th>' . lang('Name') . '<td>' . lang('Type') . '<td>' . lang('Return type') . "<td></thead>\n";
-				odd('');
 				foreach ($routines as $row) {
 					$name = ($row["SPECIFIC_NAME"] == $row["ROUTINE_NAME"] ? "" : "&name=" . urlencode($row["ROUTINE_NAME"])); // not computed on the pages to be able to print the header first
-					echo '<tr' . odd() . '>';
+					echo '<tr>';
 					echo '<th><a href="' . h(ME . ($row["ROUTINE_TYPE"] != "PROCEDURE" ? 'callf=' : 'call=') . urlencode($row["SPECIFIC_NAME"]) . $name) . '">' . h($row["ROUTINE_NAME"]) . '</a>';
 					echo '<td>' . h($row["ROUTINE_TYPE"]);
 					echo '<td>' . h($row["DTD_IDENTIFIER"]);
@@ -182,11 +181,10 @@ if ($adminer->homepage()) {
 			echo "<h3 id='sequences'>" . lang('Sequences') . "</h3>\n";
 			$sequences = get_vals("SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = current_schema() ORDER BY sequence_name");
 			if ($sequences) {
-				echo "<table cellspacing='0'>\n";
+				echo "<table cellspacing='0' class='odds'>\n";
 				echo "<thead><tr><th>" . lang('Name') . "</thead>\n";
-				odd('');
 				foreach ($sequences as $val) {
-					echo "<tr" . odd() . "><th><a href='" . h(ME) . "sequence=" . urlencode($val) . "'>" . h($val) . "</a>\n";
+					echo "<tr><th><a href='" . h(ME) . "sequence=" . urlencode($val) . "'>" . h($val) . "</a>\n";
 				}
 				echo "</table>\n";
 			}
@@ -197,11 +195,10 @@ if ($adminer->homepage()) {
 			echo "<h3 id='user-types'>" . lang('User types') . "</h3>\n";
 			$user_types = types();
 			if ($user_types) {
-				echo "<table cellspacing='0'>\n";
+				echo "<table cellspacing='0' class='odds'>\n";
 				echo "<thead><tr><th>" . lang('Name') . "</thead>\n";
-				odd('');
 				foreach ($user_types as $val) {
-					echo "<tr" . odd() . "><th><a href='" . h(ME) . "type=" . urlencode($val) . "'>" . h($val) . "</a>\n";
+					echo "<tr><th><a href='" . h(ME) . "type=" . urlencode($val) . "'>" . h($val) . "</a>\n";
 				}
 				echo "</table>\n";
 			}

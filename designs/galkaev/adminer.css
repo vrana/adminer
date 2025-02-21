@@ -347,11 +347,11 @@ td{
 	border-bottom: 1px solid rgba(255, 255, 255, .1);
 }
 
-.odd th{
+.odds tbody tr:nth-child(2n) th{
 	background: #222;
 }
 
-.odd td{
+.odds tbody tr:nth-child(2n) td{
 	background: #000;
 }
 
