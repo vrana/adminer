@@ -486,11 +486,16 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 				if ($field[0] == "") {
 					$alter["ADD"][] = "\n  " . implode("", $val) . ($table == "" ? substr($foreign[$val[0]], 16 + strlen($val[0])) : ""); // 16 - strlen("  FOREIGN KEY ()")
 				} else {
+					$default = $val[3];
+					unset($val[3]); // default values are set separately
 					unset($val[6]); //! identity can't be removed
 					if ($column != $val[0]) {
 						queries("EXEC sp_rename " . q(table($table) . ".$column") . ", " . q(idf_unescape($val[0])) . ", 'COLUMN'");
 					}
 					$alter["ALTER COLUMN " . implode("", $val)][] = "";
+					if ($default) {
+						$alter["ADD"][] = "\n $default FOR $column";
+					}
 				}
 			}
 		}
