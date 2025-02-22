@@ -869,13 +869,13 @@ function column_foreign_keys($table) {
 * @return null
 */
 function enum_input($type, $attrs, $field, $value, $empty = null) {
-	global $adminer;
+	global $adminer, $jush;
 	preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
 	$return = ($empty !== null ? "<label><input type='$type'$attrs value='$empty'" . ((is_array($value) ? in_array($empty, $value) : $value === 0) ? " checked" : "") . "><i>" . lang('empty') . "</i></label>" : "");
 	foreach ($matches[1] as $i => $val) {
 		$val = stripcslashes(str_replace("''", "'", $val));
 		$checked = (is_int($value) ? $value == $i+1 : (is_array($value) ? in_array($i+1, $value) : $value === $val));
-		$return .= " <label><input type='$type'$attrs value='" . ($i+1) . "'" . ($checked ? ' checked' : '') . '>' . h($adminer->editVal($val, $field)) . '</label>';
+		$return .= " <label><input type='$type'$attrs value='" . ($jush == "sql" ? $i+1 : h($val)) . "'" . ($checked ? ' checked' : '') . '>' . h($adminer->editVal($val, $field)) . '</label>';
 	}
 	return $return;
 }
@@ -887,7 +887,7 @@ function enum_input($type, $attrs, $field, $value, $empty = null) {
 * @return null
 */
 function input($field, $value, $function) {
-	global $types, $adminer, $jush;
+	global $types, $structured_types, $adminer, $jush;
 	$name = h(bracket_escape($field["field"]));
 	echo "<td class='function'>";
 	if (is_array($value) && !$function) {
@@ -905,6 +905,13 @@ function input($field, $value, $function) {
 	$functions = (isset($_GET["select"]) || $reset ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
 	$disabled = stripos($field["default"], "GENERATED ALWAYS AS ") === 0 ? " disabled=''" : "";
 	$attrs = " name='fields[$name]'$disabled";
+	if ($jush == "pgsql" && in_array($field["type"], (array) $structured_types[lang('User types')])) {
+		$enums = get_vals("SELECT enumlabel FROM pg_enum WHERE enumtypid = " . $types[$field["type"]] . " ORDER BY enumsortorder");
+		if ($enums) {
+			$field["type"] = "enum";
+			$field["length"] = "'" . implode("','", array_map('addslashes', $enums)) . "'";
+		}
+	}
 	if ($field["type"] == "enum") {
 		echo h($functions[""]) . "<td>" . $adminer->editInput($_GET["edit"], $field, $attrs, $value);
 	} else {

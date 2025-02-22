@@ -729,7 +729,7 @@ ORDER BY SPECIFIC_NAME');
 	}
 
 	function types() {
-		return get_vals("SELECT typname
+		return get_key_vals("SELECT oid, typname
 FROM pg_type
 WHERE typnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema())
 AND typtype IN ('b','d','e')
@@ -752,9 +752,9 @@ AND typelem = 0"
 			$connection2 = $connection;
 		}
 		$return = $connection2->query("SET search_path TO " . idf_escape($schema));
-		foreach (types() as $type) { //! get types from current_schemas('t')
+		foreach (types() as $key => $type) { //! get types from current_schemas('t')
 			if (!isset($types[$type])) {
-				$types[$type] = 0;
+				$types[$type] = $key;
 				$structured_types[lang('User types')][] = $type;
 			}
 		}

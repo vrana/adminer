@@ -1,6 +1,7 @@
 Adminer 4.16.1-dev:
 Hide index column options by default
 PostgreSQL: Link user defined types
+PostgreSQL: Constraint enum values in editing (bug #270)
 SQLite: Show all supported pragmas in Variables
 MS SQL: Allow altering table in non-default schema (bug #405)
 MS SQL: Fix default values (bug #732, bug #733)
