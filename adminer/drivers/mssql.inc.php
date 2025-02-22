@@ -504,7 +504,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 			$alter[""] = $foreign;
 		}
 		foreach ($alter as $key => $val) {
-			if (!queries("ALTER TABLE " . idf_escape($name) . " $key" . implode(",", $val))) {
+			if (!queries("ALTER TABLE " . table($name) . " $key" . implode(",", $val))) {
 				return false;
 			}
 		}
