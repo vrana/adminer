@@ -13,9 +13,12 @@
 </thead>
 <tbody>
 <tr><td>open</td><td>/coverage.php?coverage=0<datalist><option>/coverage.php?coverage=0</option></datalist></td><td></td></tr>
-<tr><td>open</td><td>/adminer/?username=ODBC<datalist><option>/adminer/?username=ODBC</option></datalist></td><td></td></tr>
+<tr><td>open</td><td>/adminer/<datalist><option>/adminer/</option></datalist></td><td></td></tr>
 <tr><td>select</td><td>name=lang<datalist><option>name=lang</option></datalist></td><td>label=English</td></tr>
 <tr><td>clickAndWait</td><td>css=#lang &gt; input[type="submit"]<datalist><option>css=#lang &gt; input[type="submit"]</option></datalist></td><td></td></tr>
+<tr><td>type</td><td>id=username<datalist><option>id=username</option></datalist></td><td>ODBC</td></tr>
+<tr><td>type</td><td>name=auth[password]<datalist><option>name=auth[password]</option></datalist></td><td>ODBC</td></tr>
+<tr><td>clickAndWait</td><td>xpath=//input[@value='Login']<datalist><option>xpath=//input[@value='Login']</option></datalist></td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Logged as<datalist><option>Logged as</option></datalist></td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=SQL command<datalist><option>link=SQL command</option></datalist></td><td></td></tr>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;sql=DROP+DATABASE+IF+EXISTS+adminer_test<datalist><option>/adminer/?username=ODBC&amp;sql=DROP+DATABASE+IF+EXISTS+adminer_test</option></datalist></td><td></td></tr>
@@ -30,7 +33,7 @@
 <tr><td>open</td><td>/adminer/?username=ODBC<datalist><option>/adminer/?username=ODBC</option></datalist></td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Create database<datalist><option>link=Create database</option></datalist></td><td></td></tr>
 <tr><td>type</td><td>name<datalist><option>name</option></datalist></td><td>adminer_test</td></tr>
-<tr><td>select</td><td>collation<datalist><option>collation</option></datalist></td><td>label=utf8_general_ci</td></tr>
+<tr><td>select</td><td>collation<datalist><option>collation</option></datalist></td><td>label=utf8mb4_general_ci</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Database has been created.<datalist><option>Database has been created.</option></datalist></td><td></td></tr>
 </tbody></table>
@@ -99,7 +102,7 @@
 <tr><td rowspan="1" colspan="3">Create table 2</td></tr>
 </thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets&amp;lang=en<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets&amp;lang=en</option></datalist></td><td></td></tr>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets</option></datalist></td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Create table<datalist><option>link=Create table</option></datalist></td><td></td></tr>
 <tr><td>type</td><td>name<datalist><option>name</option></datalist></td><td>albums</td></tr>
 <tr><td>type</td><td>fields[1][field]<datalist><option>fields[1][field]</option></datalist></td><td>id</td></tr>
@@ -152,7 +155,7 @@
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;trigger=albums<datalist><option>/adminer/?username=ODBC&amp;db=adminer_test&amp;trigger=albums</option></datalist></td><td></td></tr>
 <tr><td>select</td><td>Timing<datalist><option>Timing</option></datalist></td><td>label=AFTER</td></tr>
-<tr><td>type</td><td>Statement<datalist><option>Statement</option></datalist></td><td>UPDATE interprets SET albums = albums + 1 WHERE id = NEW.interpret</td></tr>
+<tr><td>type</td><td>name=Statement<datalist><option>name=Statement</option></datalist></td><td>UPDATE interprets SET albums = albums + 1 WHERE id = NEW.interpret</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Trigger has been created.<datalist><option>Trigger has been created.</option></datalist></td><td></td></tr></tr>
 </tbody></table>
@@ -389,14 +392,16 @@ END</td></tr>
 <tr><td rowspan="1" colspan="3">Editor</td></tr>
 </thead>
 <tbody>
-<tr><td>open</td><td>/editor/example.php?username=admin<datalist><option>/editor/example.php?username=admin</option></datalist></td><td></td></tr>
+<tr><td>open</td><td>/editor/example.php<datalist><option>/editor/example.php</option></datalist></td><td></td></tr>
 <tr><td>select</td><td>name=lang<datalist><option>name=lang</option></datalist></td><td>label=English</td></tr>
 <tr><td>clickAndWait</td><td>css=#lang &gt; input[type="submit"]<datalist><option>css=#lang &gt; input[type="submit"]</option></datalist></td><td></td></tr>
+<tr><td>type</td><td>name=auth[username]<datalist><option>name=auth[username]</option></datalist></td><td>admin</td></tr>
+<tr><td>click</td><td>xpath=//input[@value='Login']<datalist><option>xpath=//input[@value='Login']</option></datalist></td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Interprets<datalist><option>link=Interprets</option></datalist></td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=New item<datalist><option>link=New item</option></datalist></td><td></td></tr>
 <tr><td>type</td><td>fields[name]<datalist><option>fields[name]</option></datalist></td><td>Michael Jackson</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td><td></td></tr>
-<tr><td>clickAndWait</td><td>//div[@id='content']/form[2]/table/tbody/tr[1]/td[3]/a<datalist><option>//div[@id='content']/form[2]/table/tbody/tr[1]/td[3]/a</option></datalist></td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Albums<datalist><option>link=Albums</option></datalist></td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=New item<datalist><option>link=New item</option></datalist></td><td></td></tr>
 <tr><td>type</td><td>fields[title]<datalist><option>fields[title]</option></datalist></td><td>Dangerous</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']<datalist><option>//input[@value='Save']</option></datalist></td><td></td></tr>
@@ -414,10 +419,10 @@ END</td></tr>
 <tr><td>type</td><td>name=auth[password]<datalist><option>name=auth[password]</option></datalist></td><td></td></tr>
 <tr><td>click</td><td>css=input[type="submit"]<datalist><option>css=input[type="submit"]</option></datalist></td><td></td></tr>
 <tr><td>click</td><td>link=Create database<datalist><option>link=Create database</option></datalist></td><td></td></tr>
-<tr><td>type</td><td>id=name<datalist><option>id=name</option></datalist></td><td>adminer_test</td></tr>
+<tr><td>type</td><td>name=name<datalist><option>name=name</option></datalist></td><td>adminer_test</td></tr>
 <tr><td>click</td><td>css=input[type="submit"]<datalist><option>css=input[type="submit"]</option></datalist></td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Please use one of the extensions<datalist><option>Please use one of the extensions</option></datalist></td><td></td></tr>
-<tr><td>type</td><td>id=name<datalist><option>id=name</option></datalist></td><td>adminer_test.sqlite</td></tr>
+<tr><td>type</td><td>name=name<datalist><option>name=name</option></datalist></td><td>adminer_test.sqlite</td></tr>
 <tr><td>click</td><td>css=input[type="submit"]<datalist><option>css=input[type="submit"]</option></datalist></td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Database has been created.<datalist><option>Database has been created.</option></datalist></td><td></td></tr>
 <tr><td>click</td><td>link=Create table<datalist><option>link=Create table</option></datalist></td><td></td></tr>
