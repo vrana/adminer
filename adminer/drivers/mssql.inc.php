@@ -393,7 +393,10 @@ LEFT JOIN sys.default_constraints d ON c.default_object_id = d.object_id
 WHERE o.schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND o.type IN ('S', 'U', 'V') AND o.name = " . q($table)
 		) as $row) {
 			$type = $row["type"];
-			$length = (preg_match("~char|binary~", $type) ? $row["max_length"] : ($type == "decimal" ? "$row[precision],$row[scale]" : ""));
+			$length = (preg_match("~char|binary~", $type)
+				? $row["max_length"] / ($type[0] == 'n' ? 2 : 1)
+				: ($type == "decimal" ? "$row[precision],$row[scale]" : "")
+			);
 			$return[$row["name"]] = array(
 				"field" => $row["name"],
 				"full_type" => $type . ($length ? "($length)" : ""),
