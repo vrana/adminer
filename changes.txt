@@ -1,4 +1,5 @@
 Adminer 4.16.1-dev:
+Hide index column options by default
 SQLite: Show all supported pragmas in Variables
 Editor: PDO: Select value of foreign key in edit (bug #847)
 

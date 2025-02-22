@@ -206,7 +206,7 @@ $translations = array(
 	'Alter indexes' => '修改索引',
 	'Add next' => '新增下一筆',
 	'Index Type' => '索引類型',
-	'Column (length)' => '欄位（長度）',
+	'length' => '長度',
 
 	'Foreign keys' => '外來鍵',
 	'Foreign key' => '外來鍵',

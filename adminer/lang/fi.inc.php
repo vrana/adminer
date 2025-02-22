@@ -193,7 +193,7 @@ $translations = array(
 	'Alter indexes' => 'Muuta indeksejä',
 	'Add next' => 'Lisää seuraava',
 	'Index Type' => 'Indeksityyppi',
-	'Column (length)' => 'Sarake (pituus)',
+	'length' => 'pituus',
 
 	'Foreign keys' => 'Vieraat avaimet',
 	'Foreign key' => 'Vieras avain',

@@ -205,7 +205,7 @@ $translations = array(
 	'Alter indexes' => 'Pozměnit indexy',
 	'Add next' => 'Přidat další',
 	'Index Type' => 'Typ indexu',
-	'Column (length)' => 'Sloupec (délka)',
+	'length' => 'délka',
 
 	'Foreign keys' => 'Cizí klíče',
 	'Foreign key' => 'Cizí klíč',

@@ -181,7 +181,7 @@ $translations = array(
 	'Alter indexes' => 'Redaguoti indeksus',
 	'Add next' => 'Pridėti kitą',
 	'Index Type' => 'Indekso tipas',
-	'Column (length)' => 'Stulpelis (ilgis)',
+	'length' => 'ilgis',
 
 	'Foreign keys' => 'Išoriniai raktai',
 	'Foreign key' => 'Išorinis raktas',

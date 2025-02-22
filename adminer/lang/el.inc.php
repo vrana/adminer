@@ -193,7 +193,7 @@ $translations = array(
 	'Alter indexes' => 'Τροποποίηση δεικτών',
 	'Add next' => 'Προσθήκη επόμενου',
 	'Index Type' => 'Τύπος δείκτη',
-	'Column (length)' => 'Στήλη (μήκος)',
+	'length' => 'μήκος',
 
 	'Foreign keys' => 'Εξαρτημένα κλειδιά',
 	'Foreign key' => 'Εξαρτημένο κλειδί',

@@ -182,7 +182,7 @@ $translations = array(
 	'Alter indexes' => 'Ažuriraj indekse',
 	'Add next' => 'Dodaj slijedeći',
 	'Index Type' => 'Tip indeksa',
-	'Column (length)' => 'kolumna (dužina)',
+	'length' => 'dužina',
 
 	'Foreign keys' => 'Strani ključevi',
 	'Foreign key' => 'Strani ključ',

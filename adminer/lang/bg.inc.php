@@ -192,7 +192,7 @@ $translations = array(
 	'Alter indexes' => 'Промяна на индекси',
 	'Add next' => 'Добавяне на следващ',
 	'Index Type' => 'Вид на индекса',
-	'Column (length)' => 'Колона (дължина)',
+	'length' => 'дължина',
 
 	'Foreign keys' => 'Препратки',
 	'Foreign key' => 'Препратка',

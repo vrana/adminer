@@ -200,7 +200,7 @@ $translations = array(
 	'Alter indexes' => 'İndeksleri değiştir',
 	'Add next' => 'Bundan sonra ekle',
 	'Index Type' => 'İndex Türü',
-	'Column (length)' => 'Kolon (uzunluğu)',
+	'length' => 'uzunluğu',
 
 	'Foreign keys' => 'Dış anahtarlar',
 	'Foreign key' => 'Dış anahtar',

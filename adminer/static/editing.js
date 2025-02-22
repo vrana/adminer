@@ -500,6 +500,16 @@ function columnShow(checked, column) {
 	}
 }
 
+/** Show or hide index column options
+* @param boolean
+*/
+function indexOptionsShow(checked) {
+	var options = qsa('.idxopts');
+	for (var i=0; i < options.length; i++) {
+		alterClass(options[i], 'hidden', !checked);
+	}
+}
+
 /** Display partition options
 * @this HTMLSelectElement
 */

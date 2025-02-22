@@ -16,7 +16,9 @@ if ($jush == "mongo") { // doesn't support primary key
 	unset($indexes["_id_"]);
 }
 $row = $_POST;
-
+if ($row) {
+	set_adminer_settings(array("index_options" => $row["options"]));
+}
 if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 	$alter = array();
 	foreach ($row["indexes"] as $index) {
@@ -91,6 +93,8 @@ if (!$row) {
 	$indexes[] = array("columns" => array(1 => ""));
 	$row["indexes"] = $indexes;
 }
+$lengths = ($jush == "sql" || $jush == "mssql");
+$show_options = ($_POST ? $_POST["options"] : adminer_setting("index_options"));
 ?>
 
 <form action="" method="post">
@@ -98,7 +102,12 @@ if (!$row) {
 <table cellspacing="0" class="nowrap">
 <thead><tr>
 <th id="label-type"><?php echo lang('Index Type'); ?>
-<th><input type="submit" class="wayoff"><?php echo lang('Column (length)'); ?>
+<th><input type="submit" class="wayoff"><?php
+echo lang('Column') . ($lengths ? "<span class='idxopts" . ($show_options ? "" : " hidden") . "'> (" . lang('length') . ")</span>" : "");
+if ($lengths || support("descidx")) {
+	echo checkbox("options", 1, $show_options, lang('Options'), "indexOptionsShow(this.checked)", "jsonly") . "\n";
+}
+?>
 <th id="label-name"><?php echo lang('Name'); ?>
 <th><noscript><?php echo "<input type='image' class='icon' name='add[0]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>"; ?></noscript>
 </thead>
@@ -126,9 +135,10 @@ foreach ($row["indexes"] as $index) {
 				$column,
 				"partial(" . ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . ", '" . js_escape($jush == "sql" ? "" : $_GET["indexes"] . "_") . "')"
 			);
-			echo ($jush == "sql" || $jush == "mssql" ? "<input type='number' name='indexes[$j][lengths][$i]' class='size' value='" . h($index["lengths"][$key]) . "' title='" . lang('Length') . "'>" : "");
+			echo "<span class='idxopts" . ($show_options ? "" : " hidden") . "'>";
+			echo ($lengths ? "<input type='number' name='indexes[$j][lengths][$i]' class='size' value='" . h($index["lengths"][$key]) . "' title='" . lang('Length') . "'>" : "");
 			echo (support("descidx") ? checkbox("indexes[$j][descs][$i]", 1, $index["descs"][$key], lang('descending')) : "");
-			echo " </span>";
+			echo "</span> </span>";
 			$i++;
 		}
 

@@ -196,7 +196,7 @@ $translations = array(
 	'Alter indexes' => 'Zmień indeksy',
 	'Add next' => 'Dodaj następny',
 	'Index Type' => 'Typ indeksu',
-	'Column (length)' => 'Kolumna (długość)',
+	'length' => 'długość',
 
 	'Foreign keys' => 'Klucze obce',
 	'Foreign key' => 'Klucz obcy',

@@ -206,7 +206,7 @@ $translations = array(
 	'Alter indexes' => 'Ändra index',
 	'Add next' => 'Lägg till nästa',
 	'Index Type' => 'Indextyp',
-	'Column (length)' => 'Kolumn (längd)',
+	'length' => 'längd',
 
 	'Foreign keys' => 'Främmande nycklar',
 	'Foreign key' => 'Främmande nyckel',

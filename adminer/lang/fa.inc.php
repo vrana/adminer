@@ -191,7 +191,7 @@ $translations = array(
 	'Alter indexes' => 'ویرایش ایندکسها',
 	'Add next' => 'افرودن بعدی',
 	'Index Type' => 'نوع ایندکس',
-	'Column (length)' => 'ستون (طول)',
+	'length' => 'طول',
 
 	'Foreign keys' => 'کلیدهای خارجی',
 	'Foreign key' => 'کلید خارجی',
