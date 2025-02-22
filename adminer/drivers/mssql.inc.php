@@ -5,7 +5,7 @@
 * @author Jakub Vrana
 */
 
-$drivers["mssql"] = "MS SQL (beta)";
+$drivers["mssql"] = "MS SQL";
 
 if (isset($_GET["mssql"])) {
 	define("DRIVER", "mssql");
