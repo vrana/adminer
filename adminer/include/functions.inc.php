@@ -202,7 +202,7 @@ function optionlist($options, $selected = null, $use_keys = false) {
 			$opts = $v;
 		}
 		foreach ($opts as $key => $val) {
-			$return .= '<option' . ($use_keys || is_string($key) ? ' value="' . h($key) . '"' : '') . (($use_keys || is_string($key) ? (string) $key : $val) === $selected ? ' selected' : '') . '>' . h($val);
+			$return .= '<option' . ($use_keys || is_string($key) ? ' value="' . h($key) . '"' : '') . (($use_keys || is_string($key) ? (string) $key : $val) === (string) $selected ? ' selected' : '') . '>' . h($val);
 		}
 		if (is_array($v)) {
 			$return .= '</optgroup>';

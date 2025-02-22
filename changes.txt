@@ -1,5 +1,6 @@
 Adminer 4.16.1-dev:
 SQLite: Show all supported pragmas in Variables
+Editor: PDO: Select value of foreign key in edit (bug #847)
 
 Adminer 4.16.0 (released 2025-02-20):
 MySQL: Fix saving bit(64) values (bug #839)
