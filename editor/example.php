@@ -9,8 +9,8 @@ function adminer_object() {
 		}
 
 		function credentials() {
-			// ODBC user without password on localhost
-			return array('localhost', 'ODBC', '');
+			// ODBC user with password ODBC on localhost
+			return array('localhost', 'ODBC', 'ODBC');
 		}
 
 		function database() {
