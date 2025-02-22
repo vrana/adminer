@@ -385,7 +385,7 @@ WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V')
 	function fields($table) {
 		$comments = get_key_vals("SELECT objname, cast(value as varchar(max)) FROM fn_listextendedproperty('MS_DESCRIPTION', 'schema', " . q(get_schema()) . ", 'table', " . q($table) . ", 'column', NULL)");
 		$return = array();
-		foreach (get_rows("SELECT c.max_length, c.precision, c.scale, c.name, c.is_nullable, c.is_identity, c.collation_name, t.name type, CAST(d.definition as text) [default]
+		foreach (get_rows("SELECT c.max_length, c.precision, c.scale, c.name, c.is_nullable, c.is_identity, c.collation_name, t.name type, CAST(d.definition as text) [default], d.name default_constraint
 FROM sys.all_columns c
 JOIN sys.all_objects o ON c.object_id = o.object_id
 JOIN sys.types t ON c.user_type_id = t.user_type_id
@@ -403,6 +403,7 @@ WHERE o.schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND o.type IN ('S', 'U', 
 				"type" => $type,
 				"length" => $length,
 				"default" => (preg_match("~^\('(.*)'\)$~", $row["default"], $match) ? str_replace("''", "'", $match[1]) : $row["default"]),
+				"default_constraint" => $row["default_constraint"],
 				"null" => $row["is_nullable"],
 				"auto_increment" => $row["is_identity"],
 				"collation" => $row["collation_name"],
@@ -477,6 +478,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
 		$alter = array();
 		$comments = array();
+		$orig_fields = fields($table);
 		foreach ($fields as $field) {
 			$column = idf_escape($field[0]);
 			$val = $field[1];
@@ -496,8 +498,14 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 						queries("EXEC sp_rename " . q(table($table) . ".$column") . ", " . q(idf_unescape($val[0])) . ", 'COLUMN'");
 					}
 					$alter["ALTER COLUMN " . implode("", $val)][] = "";
-					if ($default) {
-						$alter["ADD"][] = "\n $default FOR $column";
+					$orig_field = $orig_fields[$field[0]];
+					if (default_value($orig_field) != $default) {
+						if ($orig_field["default"] !== null) {
+							$alter["DROP"][] = " " . idf_escape($orig_field["default_constraint"]);
+						}
+						if ($default) {
+							$alter["ADD"][] = "\n $default FOR $column";
+						}
 					}
 				}
 			}

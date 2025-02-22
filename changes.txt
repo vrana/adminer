@@ -2,7 +2,7 @@ Adminer 4.16.1-dev:
 Hide index column options by default
 SQLite: Show all supported pragmas in Variables
 MS SQL: Allow altering table in non-default schema (bug #405)
-MS SQL: Display default values (bug #732)
+MS SQL: Fix default values (bug #732, bug #733)
 MS SQL: Fix length of nvarchar columns
 Editor: PDO: Select value of foreign key in edit (bug #847)
 
