@@ -864,18 +864,6 @@ if (!defined("DRIVER")) {
 		return true;
 	}
 
-	/** Get defined check constraints
-	* @param string
-	* @return array array($name => $statement)
-	*/
-	function check_constraints($table) {
-		// MariaDB contains CHECK_CONSTRAINTS.TABLE_NAME, MySQL not
-		return get_key_vals("SELECT c.CONSTRAINT_NAME, c.CHECK_CLAUSE
-FROM information_schema.CHECK_CONSTRAINTS c
-JOIN information_schema.TABLE_CONSTRAINTS t ON c.CONSTRAINT_SCHEMA = t.CONSTRAINT_SCHEMA AND c.CONSTRAINT_NAME = t.CONSTRAINT_NAME
-WHERE c.CONSTRAINT_SCHEMA = " . q(DB) . " AND t.TABLE_NAME = " . q($table));
-	}
-
 	/** Get information about trigger
 	* @param string trigger name
 	* @return array array("Trigger" => , "Timing" => , "Event" => , "Of" => , "Type" => , "Statement" => )
