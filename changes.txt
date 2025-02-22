@@ -1,6 +1,6 @@
 Adminer 4.17.0-dev:
 Hide index column options by default
-MySQL, PostgreSQL: Support CHECK constraint
+MySQL, PostgreSQL, MS SQL: Support CHECK constraint
 PostgreSQL: Link user defined types
 PostgreSQL: Constraint enum values in editing (bug #270)
 SQLite: Show all supported pragmas in Variables
