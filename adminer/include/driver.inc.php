@@ -143,7 +143,7 @@ function get_driver($id) {
 
 	/** Convert column to be searchable
 	* @param string escaped column name
-	* @param array array("op" => , "val" => )
+	* @param array ["op" => , "val" => ]
 	* @param array
 	* @return string
 	*/

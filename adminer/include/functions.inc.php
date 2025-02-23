@@ -851,7 +851,7 @@ function table_status1($table, $fast = false) {
 
 /** Find out foreign keys for each column
 * @param string
-* @return array array($col => array())
+* @return array [$col => array()]
 */
 function column_foreign_keys($table) {
 	global $adminer;

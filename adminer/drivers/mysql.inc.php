@@ -476,7 +476,7 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Get tables list
-	* @return array array($name => $type)
+	* @return array [$name => $type]
 	*/
 	function tables_list() {
 		return get_key_vals(min_version(5)
@@ -487,7 +487,7 @@ if (!defined("DRIVER")) {
 
 	/** Count tables in all databases
 	* @param array
-	* @return array array($db => $tables)
+	* @return array arra($db => $tables)
 	*/
 	function count_tables($databases) {
 		$return = array();
@@ -500,7 +500,7 @@ if (!defined("DRIVER")) {
 	/** Get table status
 	* @param string
 	* @param bool return only "Name", "Engine" and "Comment" fields
-	* @return array array($name => array("Name" => , "Engine" => , "Comment" => , "Oid" => , "Rows" => , "Collation" => , "Auto_increment" => , "Data_length" => , "Index_length" => , "Data_free" => )) or only inner array with $name
+	* @return array [$name => array("Name" => , "Engine" => , "Comment" => , "Oid" => , "Rows" => , "Collation" => , "Auto_increment" => , "Data_length" => , "Index_length" => , "Data_free" => )] or only inner array with $name
 	*/
 	function table_status($name = "", $fast = false) {
 		$return = array();
@@ -544,7 +544,7 @@ if (!defined("DRIVER")) {
 
 	/** Get information about fields
 	* @param string
-	* @return array array($name => array("field" => , "full_type" => , "type" => , "length" => , "unsigned" => , "default" => , "null" => , "auto_increment" => , "on_update" => , "collation" => , "privileges" => , "comment" => , "primary" => ))
+	* @return array [$name => array("field" => , "full_type" => , "type" => , "length" => , "unsigned" => , "default" => , "null" => , "auto_increment" => , "on_update" => , "collation" => , "privileges" => , "comment" => , "primary" => )]
 	*/
 	function fields($table) {
 		$return = array();
@@ -574,7 +574,7 @@ if (!defined("DRIVER")) {
 	/** Get table indexes
 	* @param string
 	* @param string Min_DB to use
-	* @return array array($key_name => array("type" => , "columns" => array(), "lengths" => array(), "descs" => array()))
+	* @return array [$key_name => array("type" => , "columns" => array(), "lengths" => array(), "descs" => array())]
 	*/
 	function indexes($table, $connection2 = null) {
 		$return = array();
@@ -590,7 +590,7 @@ if (!defined("DRIVER")) {
 
 	/** Get foreign keys in table
 	* @param string
-	* @return array array($name => array("db" => , "ns" => , "table" => , "source" => array(), "target" => array(), "on_delete" => , "on_update" => ))
+	* @return array [$name => array("db" => , "ns" => , "table" => , "source" => array(), "target" => array(), "on_delete" => , "on_update" => )]
 	*/
 	function foreign_keys($table) {
 		global $connection, $on_actions;
@@ -617,7 +617,7 @@ if (!defined("DRIVER")) {
 
 	/** Get view SELECT
 	* @param string
-	* @return array array("select" => )
+	* @return array ["select" => ]
 	*/
 	function view($name) {
 		global $connection;
@@ -866,7 +866,7 @@ if (!defined("DRIVER")) {
 
 	/** Get information about trigger
 	* @param string trigger name
-	* @return array array("Trigger" => , "Timing" => , "Event" => , "Of" => , "Type" => , "Statement" => )
+	* @return array ["Trigger" => , "Timing" => , "Event" => , "Of" => , "Type" => , "Statement" => ]
 	*/
 	function trigger($name) {
 		if ($name == "") {
@@ -878,7 +878,7 @@ if (!defined("DRIVER")) {
 
 	/** Get defined triggers
 	* @param string
-	* @return array array($name => array($timing, $event))
+	* @return array [$name => array($timing, $event)]
 	*/
 	function triggers($table) {
 		$return = array();
@@ -889,7 +889,7 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Get trigger options
-	* @return array ("Timing" => array(), "Event" => array(), "Type" => array())
+	* @return array ["Timing" => array(), "Event" => array(), "Type" => array()]
 	*/
 	function trigger_options() {
 		return array(
@@ -902,7 +902,7 @@ if (!defined("DRIVER")) {
 	/** Get information about stored routine
 	* @param string
 	* @param string "FUNCTION" or "PROCEDURE"
-	* @return array ("fields" => array("field" => , "type" => , "length" => , "unsigned" => , "inout" => , "collation" => ), "returns" => , "definition" => , "language" => )
+	* @return array ["fields" => array("field" => , "type" => , "length" => , "unsigned" => , "inout" => , "collation" => ), "returns" => , "definition" => , "language" => ]
 	*/
 	function routine($name, $type) {
 		global $connection, $enum_length, $inout, $types;
@@ -938,7 +938,7 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Get list of routines
-	* @return array ("SPECIFIC_NAME" => , "ROUTINE_NAME" => , "ROUTINE_TYPE" => , "DTD_IDENTIFIER" => )
+	* @return array ["SPECIFIC_NAME" => , "ROUTINE_NAME" => , "ROUTINE_TYPE" => , "DTD_IDENTIFIER" => ]
 	*/
 	function routines() {
 		return get_rows("SELECT ROUTINE_NAME AS SPECIFIC_NAME, ROUTINE_NAME, ROUTINE_TYPE, DTD_IDENTIFIER FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . q(DB));
@@ -1060,7 +1060,7 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Get server variables
-	* @return array ($name => $value)
+	* @return array [$name => $value]
 	*/
 	function show_variables() {
 		return get_key_vals("SHOW VARIABLES");
@@ -1080,14 +1080,14 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Get process list
-	* @return array ($row)
+	* @return array [$row]
 	*/
 	function process_list() {
 		return get_rows("SHOW FULL PROCESSLIST");
 	}
 
 	/** Get status variables
-	* @return array ($name => $value)
+	* @return array [$name => $value]
 	*/
 	function show_status() {
 		return get_key_vals("SHOW STATUS");
@@ -1160,11 +1160,11 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Get driver config
-	* @return array array('possible_drivers' => , 'jush' => , 'types' => , 'structured_types' => , 'unsigned' => , 'operators' => , 'functions' => , 'grouping' => , 'edit_functions' => )
+	* @return array ['possible_drivers' => , 'jush' => , 'types' => , 'structured_types' => , 'unsigned' => , 'operators' => , 'functions' => , 'grouping' => , 'edit_functions' => ]
 	*/
 	function driver_config() {
-		$types = array(); ///< @var array ($type => $maximum_unsigned_length, ...)
-		$structured_types = array(); ///< @var array ($description => array($type, ...), ...)
+		$types = array(); ///< @var array [$type => $maximum_unsigned_length, ...]
+		$structured_types = array(); ///< @var array [$description => array($type, ...), ...]
 		foreach (array(
 			lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "mediumint" => 8, "int" => 10, "bigint" => 20, "decimal" => 66, "float" => 12, "double" => 21),
 			lang('Date and time') => array("date" => 10, "datetime" => 19, "timestamp" => 19, "time" => 10, "year" => 4),

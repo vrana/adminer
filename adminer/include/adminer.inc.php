@@ -13,14 +13,14 @@ class Adminer {
 	}
 
 	/** Connection parameters
-	* @return array ($server, $username, $password)
+	* @return array [$server, $username, $password]
 	*/
 	function credentials() {
 		return array(SERVER, $_GET["username"], get_password());
 	}
 
 	/** Get SSL connection options
-	* @return array array("key" => filename, "cert" => filename, "ca" => filename) or null
+	* @return array ["key" => filename, "cert" => filename, "ca" => filename] or null
 	*/
 	function connectSsl() {
 	}
@@ -510,7 +510,7 @@ class Adminer {
 	/** Process columns box in select
 	* @param array selectable columns
 	* @param array
-	* @return array (array(select_expressions), array(group_expressions))
+	* @return array [array(select_expressions), array(group_expressions)]
 	*/
 	function selectColumnsProcess($columns, $indexes) {
 		global $functions, $grouping;

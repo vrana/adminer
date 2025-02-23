@@ -98,7 +98,7 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 
 /** Get referencable tables with single column primary key except self
 * @param string
-* @return array ($table_name => $field)
+* @return array [$table_name => $field]
 */
 function referencable_primary($self) {
 	$return = array(); // table_name => field
@@ -277,7 +277,7 @@ function process_type($field, $collate = "COLLATE") {
 /** Create SQL string from field
 * @param array basic field information
 * @param array information about field type
-* @return array array("field", "type", "NULL", "DEFAULT", "ON UPDATE", "COMMENT", "AUTO_INCREMENT")
+* @return array ["field", "type", "NULL", "DEFAULT", "ON UPDATE", "COMMENT", "AUTO_INCREMENT"]
 */
 function process_field($field, $type_field) {
 	// MariaDB exports CURRENT_TIMESTAMP as a function.
@@ -533,7 +533,7 @@ function create_routine($routine, $row) {
 
 /** Get defined check constraints
 * @param string
-* @return array array($name => $clause)
+* @return array [$name => $clause]
 */
 function check_constraints($table) {
 	// MariaDB contains CHECK_CONSTRAINTS.TABLE_NAME, MySQL and PostrgreSQL not
@@ -554,7 +554,7 @@ function remove_definer($query) {
 }
 
 /** Format foreign key to use in SQL query
-* @param array ("db" => string, "ns" => string, "table" => string, "source" => array, "target" => array, "on_delete" => one of $on_actions, "on_update" => one of $on_actions)
+* @param array ["db" => string, "ns" => string, "table" => string, "source" => array, "target" => array, "on_delete" => one of $on_actions, "on_update" => one of $on_actions]
 * @return string
 */
 function format_foreign_key($foreign_key) {
