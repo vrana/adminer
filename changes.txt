@@ -5,6 +5,7 @@ Print SQL errors as comments in export (regression from 3.2.0)
 MySQL, PostgreSQL, MS SQL: Support CHECK constraint
 MySQL: Show comments at routine call (bug #874)
 MySQL: Don't offer empty enum value in edit
+MySQL 9+: Support vector type
 PostgreSQL: Link user defined types
 PostgreSQL: Constraint enum values in editing (bug #270)
 PostgreSQL: Export functions

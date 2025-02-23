@@ -384,6 +384,11 @@ if (!defined("DRIVER")) {
 				$types["uuid"] = 128;
 				$edit_functions[0]['uuid'] = 'uuid';
 			}
+			if (min_version(9, '', $connection)) {
+				$structured_types[lang('Numbers')][] = "vector";
+				$types["vector"] = 16383;
+				$edit_functions[0]['vector'] = 'string_to_vector';
+			}
 			return $connection;
 		}
 		$return = $connection->error;
@@ -1166,7 +1171,7 @@ if (!defined("DRIVER")) {
 		$structured_types = array(); ///< @var array [$description => array($type, ...), ...]
 		foreach (array(
 			lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "mediumint" => 8, "int" => 10, "bigint" => 20, "decimal" => 66, "float" => 12, "double" => 21),
-			lang('Date and time') => array("date" => 10, "datetime" => 19, "timestamp" => 19, "time" => 10, "year" => 4),
+			lang('Date and time') => array("dat`e" => 10, "datetime" => 19, "timestamp" => 19, "time" => 10, "year" => 4),
 			lang('Strings') => array("char" => 255, "varchar" => 65535, "tinytext" => 255, "text" => 65535, "mediumtext" => 16777215, "longtext" => 4294967295),
 			lang('Lists') => array("enum" => 65535, "set" => 64),
 			lang('Binary') => array("bit" => 20, "binary" => 255, "varbinary" => 65535, "tinyblob" => 255, "blob" => 65535, "mediumblob" => 16777215, "longblob" => 4294967295),
