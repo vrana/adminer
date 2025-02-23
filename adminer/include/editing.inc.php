@@ -19,7 +19,7 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 	for ($i=0; (!$limit || $i < $limit) && ($row = $result->fetch_row()); $i++) {
 		if (!$i) {
 			echo "<div class='scrollable'>\n";
-			echo "<table cellspacing='0' class='nowrap odds'>\n";
+			echo "<table class='nowrap odds'>\n";
 			echo "<thead><tr>";
 			for ($j=0; $j < count($row); $j++) {
 				$field = $result->fetch_field();

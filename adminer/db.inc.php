@@ -66,7 +66,7 @@ if ($adminer->homepage()) {
 				}
 			}
 			echo "<div class='scrollable'>\n";
-			echo "<table cellspacing='0' class='nowrap checkable odds'>\n";
+			echo "<table class='nowrap checkable odds'>\n";
 			echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
 			echo '<thead><tr class="wrap">';
 			echo '<td><input id="check-all" type="checkbox" class="jsonly">' . script("qs('#check-all').onclick = partial(formCheck, /^(tables|views)\[/);", "");
@@ -161,7 +161,7 @@ if ($adminer->homepage()) {
 			echo "<h3 id='routines'>" . lang('Routines') . "</h3>\n";
 			$routines = routines();
 			if ($routines) {
-				echo "<table cellspacing='0' class='odds'>\n";
+				echo "<table class='odds'>\n";
 				echo '<thead><tr><th>' . lang('Name') . '<td>' . lang('Type') . '<td>' . lang('Return type') . "<td></thead>\n";
 				foreach ($routines as $row) {
 					$name = ($row["SPECIFIC_NAME"] == $row["ROUTINE_NAME"] ? "" : "&name=" . urlencode($row["ROUTINE_NAME"])); // not computed on the pages to be able to print the header first
@@ -183,7 +183,7 @@ if ($adminer->homepage()) {
 			echo "<h3 id='sequences'>" . lang('Sequences') . "</h3>\n";
 			$sequences = get_vals("SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = current_schema() ORDER BY sequence_name");
 			if ($sequences) {
-				echo "<table cellspacing='0' class='odds'>\n";
+				echo "<table class='odds'>\n";
 				echo "<thead><tr><th>" . lang('Name') . "</thead>\n";
 				foreach ($sequences as $val) {
 					echo "<tr><th><a href='" . h(ME) . "sequence=" . urlencode($val) . "'>" . h($val) . "</a>\n";
@@ -197,7 +197,7 @@ if ($adminer->homepage()) {
 			echo "<h3 id='user-types'>" . lang('User types') . "</h3>\n";
 			$user_types = types();
 			if ($user_types) {
-				echo "<table cellspacing='0' class='odds'>\n";
+				echo "<table class='odds'>\n";
 				echo "<thead><tr><th>" . lang('Name') . "</thead>\n";
 				foreach ($user_types as $val) {
 					echo "<tr><th><a href='" . h(ME) . "type=" . urlencode($val) . "'>" . h($val) . "</a>\n";
@@ -211,7 +211,7 @@ if ($adminer->homepage()) {
 			echo "<h3 id='events'>" . lang('Events') . "</h3>\n";
 			$rows = get_rows("SHOW EVENTS");
 			if ($rows) {
-				echo "<table cellspacing='0'>\n";
+				echo "<table>\n";
 				echo "<thead><tr><th>" . lang('Name') . "<td>" . lang('Schedule') . "<td>" . lang('Start') . "<td>" . lang('End') . "<td></thead>\n";
 				foreach ($rows as $row) {
 					echo "<tr>";

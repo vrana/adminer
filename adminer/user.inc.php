@@ -131,7 +131,7 @@ if ($_POST) {
 
 ?>
 <form action="" method="post">
-<table cellspacing="0" class="layout">
+<table class="layout">
 <tr><th><?php echo lang('Server'); ?><td><input name="host" data-maxlength="60" value="<?php echo h($row["host"]); ?>" autocapitalize="off">
 <tr><th><?php echo lang('Username'); ?><td><input name="user" data-maxlength="80" value="<?php echo h($row["user"]); ?>" autocapitalize="off">
 <tr><th><?php echo lang('Password'); ?><td><input name="pass" id="pass" value="<?php echo h($row["pass"]); ?>" autocomplete="new-password">
@@ -141,7 +141,7 @@ if ($_POST) {
 
 <?php
 //! MAX_* limits, REQUIRE
-echo "<table cellspacing='0' class='odds'>\n";
+echo "<table class='odds'>\n";
 echo "<thead><tr><th colspan='2'>" . lang('Privileges') . doc_link(array('sql' => "grant.html#priv_level"));
 $i = 0;
 foreach ($grants as $object => $grant) {

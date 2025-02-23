@@ -39,7 +39,7 @@ $routine_languages = routine_languages();
 <?php echo ($routine_languages ? lang('Language') . ": " . html_select("language", $routine_languages, $row["language"]) . "\n" : ""); ?>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <div class="scrollable">
-<table cellspacing="0" class="nowrap">
+<table class="nowrap">
 <?php
 edit_fields($row["fields"], $collations, $routine);
 if (isset($_GET["function"])) {

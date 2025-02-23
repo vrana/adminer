@@ -137,7 +137,7 @@ page_header(lang('Export'), $error, ($_GET["export"] != "" ? array("table" => $_
 ?>
 
 <form action="" method="post">
-<table cellspacing="0" class="layout">
+<table class="layout">
 <?php
 $db_style = array('', 'USE', 'DROP+CREATE', 'CREATE');
 $table_style = array('', 'DROP+CREATE', 'CREATE');
@@ -174,7 +174,7 @@ echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style,
 <p><input type="submit" value="<?php echo lang('Export'); ?>">
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 
-<table cellspacing="0">
+<table>
 <?php
 echo script("qsl('table').onclick = dumpClick;");
 $prefixes = array();

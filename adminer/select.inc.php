@@ -312,7 +312,7 @@ if (!$columns && support("table")) {
 			$backward_keys = $adminer->backwardKeys($TABLE, $table_name);
 
 			echo "<div class='scrollable'>";
-			echo "<table id='table' cellspacing='0' class='nowrap checkable odds'>";
+			echo "<table id='table' class='nowrap checkable odds'>";
 			echo script("mixin(qs('#table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true), onkeydown: editingKeydown});");
 			echo "<thead><tr>" . (!$group && $select
 				? ""

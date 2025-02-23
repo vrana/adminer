@@ -1213,7 +1213,7 @@ function select_value($val, $link, $field, $text_length) {
 				. "<td>" . select_value($v, $link, $field, $text_length)
 			;
 		}
-		return "<table cellspacing='0'>$return</table>";
+		return "<table>$return</table>";
 	}
 	if (!$link) {
 		$link = $adminer->selectLink($val, $field);
@@ -1406,7 +1406,7 @@ function edit_form($table, $fields, $row, $update) {
 	if (!$fields) {
 		echo "<p class='error'>" . lang('You have no privileges to update this table.') . "\n";
 	} else {
-		echo "<table cellspacing='0' class='layout'>" . script("qsl('table').onkeydown = editingKeydown;");
+		echo "<table class='layout'>" . script("qsl('table').onkeydown = editingKeydown;");
 		foreach ($fields as $name => $field) {
 			echo "<tr><th>" . $adminer->fieldName($field);
 			$default = $_GET["set"][bracket_escape($name)];

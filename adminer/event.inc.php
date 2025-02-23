@@ -35,7 +35,7 @@ if (!$row && $EVENT != "") {
 ?>
 
 <form action="" method="post">
-<table cellspacing="0" class="layout">
+<table class="layout">
 <tr><th><?php echo lang('Name'); ?><td><input name="EVENT_NAME" value="<?php echo h($row["EVENT_NAME"]); ?>" data-maxlength="64" autocapitalize="off">
 <tr><th title="datetime"><?php echo lang('Start'); ?><td><input name="STARTS" value="<?php echo h("$row[EXECUTE_AT]$row[STARTS]"); ?>">
 <tr><th title="datetime"><?php echo lang('End'); ?><td><input name="ENDS" value="<?php echo h($row["ENDS"]); ?>">

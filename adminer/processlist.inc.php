@@ -16,7 +16,7 @@ page_header(lang('Process list'), $error);
 
 <form action="" method="post">
 <div class="scrollable">
-<table cellspacing="0" class="nowrap checkable odds">
+<table class="nowrap checkable odds">
 <?php
 echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
 // HTML valid because there is always at least one process
