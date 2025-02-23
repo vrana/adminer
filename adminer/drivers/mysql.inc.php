@@ -926,11 +926,14 @@ if (!defined("DRIVER")) {
 				"collation" => strtolower($param[9]),
 			);
 		}
-		if ($type != "FUNCTION") {
-			return array("fields" => $fields, "definition" => $match[11]);
-		}
-		return array(
+		$return = array(
 			"fields" => $fields,
+			"comment" => $connection->result("SELECT ROUTINE_COMMENT FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . q(DB) . " AND ROUTINE_NAME = " . q($name)),
+		);
+		if ($type != "FUNCTION") {
+			return $return + array("definition" => $match[11]);
+		}
+		return $return + array(
 			"returns" => array("type" => $match[12], "length" => $match[13], "unsigned" => $match[15], "collation" => $match[16]),
 			"definition" => $match[17],
 			"language" => "SQL", // available in information_schema.ROUTINES.PARAMETER_STYLE

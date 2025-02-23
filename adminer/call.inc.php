@@ -88,3 +88,22 @@ if ($in) {
 <input type="submit" value="<?php echo lang('Call'); ?>">
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>
+
+<pre>
+<?php
+function pre_tr($s) {
+	return preg_replace('~^~m', '<tr>', preg_replace('~\|~', '<td>', preg_replace('~\|$~m', "", rtrim($s))));
+}
+$table = '(?:\+--[-+]+\+\n)';
+$row = '(?:\| .* \|\n)';
+echo
+	preg_replace_callback("~^($table?)($row)$table?($row*)$table?~m", function ($match) {
+		$first_row = pre_tr($match[2]);
+		return "<table>\n" . ($match[1] ? "<thead>$first_row</thead>\n" : $first_row) . pre_tr($match[3]) . "\n</table>";
+	},
+	preg_replace('~(\n(    -|mysql)&gt; )(.+)~', "\\1<code class='jush-sql'>\\3</code>",
+	preg_replace('~(.+)\n---+\n~', "<b>\\1</b>\n",
+	h($routine['comment'])
+)));
+?>
+</pre>
