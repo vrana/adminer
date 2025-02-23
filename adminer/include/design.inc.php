@@ -179,7 +179,10 @@ function page_footer($missing = "") {
 	?>
 </div>
 
-<?php switch_lang(); ?>
+<div id="menu">
+<?php $adminer->navigation($missing); ?>
+</div>
+
 <?php if ($missing != "auth") { ?>
 <form action="" method="post">
 <p class="logout">
@@ -189,9 +192,6 @@ function page_footer($missing = "") {
 </p>
 </form>
 <?php } ?>
-<div id="menu">
-<?php $adminer->navigation($missing); ?>
-</div>
 <?php
 	echo script("setupSubmitHighlight(document);");
 }

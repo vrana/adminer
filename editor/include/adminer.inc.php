@@ -587,6 +587,7 @@ qsl('div').onclick = whisperClick;", "")
 </span>
 </h1>
 <?php
+		switch_lang();
 		if ($missing == "auth") {
 			$first = true;
 			foreach ((array) $_SESSION["pwds"] as $vendor => $servers) {

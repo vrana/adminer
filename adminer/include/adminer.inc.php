@@ -955,6 +955,7 @@ class Adminer {
 </span>
 </h1>
 <?php
+		switch_lang();
 		if ($missing == "auth") {
 			$output = "";
 			foreach ((array) $_SESSION["pwds"] as $vendor => $servers) {

@@ -68,14 +68,14 @@ input.wayoff { left: -1000px; position: absolute; }
 .logout { margin-top: .5em; position: absolute; top: 0; right: 0; }
 .loadmore { margin-left: 1ex; }
 /* .edit used in designs */
-#menu { position: absolute; margin: 10px 0 0; padding: 0 0 30px 0; top: 2em; left: 0; width: 19em; }
+#menu { position: absolute; margin: 10px 0 0; top: 2em; left: 0; width: 19em; }
 #menu p, #logins, #tables { padding: .8em 1em; margin: 0; border-bottom: 1px solid #ccc; }
 #logins li, #tables li { list-style: none; }
 #dbs { overflow: hidden; }
 #logins, #tables { white-space: nowrap; overflow: hidden; }
 #logins a, #tables a, #tables span { background: #fff; }
 #content { margin: 2em 0 0 21em; padding: 10px 20px 20px 0; }
-#lang { position: absolute; top: 0; left: 0; line-height: 1.8em; padding: .3em 1em; }
+#lang { position: absolute; top: -2.6em; left: 0; padding: .3em 1em; }
 #breadcrumb { white-space: nowrap; position: absolute; top: 0; left: 21em; background: #eee; height: 2em; line-height: 1.8em; padding: 0 1em; margin: 0 0 0 -18px; }
 #h1 { color: #777; text-decoration: none; font-style: italic; }
 #version { color: red; }
@@ -96,10 +96,10 @@ input.wayoff { left: -1000px; position: absolute; }
 
 @media all and (max-width: 880px) {
 	.pages { left: auto; }
-	.logout { position: static; padding: 0 1em; }
+	.logout { position: static; padding: 0 1em 1em; }
 	#menu { position: static; width: auto; }
 	#content { margin-left: 10px; }
-	#lang { position: static; border-top: 1px solid #999; }
+	#lang { position: static; }
 	#breadcrumb { left: auto; }
 	.rtl .pages { right: auto; }
 	.rtl #content { margin-right: 10px; }

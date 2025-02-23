@@ -431,7 +431,7 @@ $file = str_replace("\r", "", $file);
 if ($_SESSION["lang"]) {
 	// single language version
 	$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
-	$file = str_replace("<?php switch_lang(); ?>\n", "", $file);
+	$file = str_replace("switch_lang();", "", $file);
 	$file = str_replace('<?php echo $LANG; ?>', $_SESSION["lang"], $file);
 }
 $file = str_replace('<?php echo script_src("static/editing.js"); ?>' . "\n", "", $file);
