@@ -521,13 +521,13 @@ function create_routine($routine, $row) {
 			$set[] = (preg_match("~^($inout)\$~", $field["inout"]) ? "$field[inout] " : "") . idf_escape($field["field"]) . process_type($field, "CHARACTER SET");
 		}
 	}
-	$definition = rtrim("\n$row[definition]", ";");
+	$definition = rtrim($row["definition"], ";");
 	return "CREATE $routine "
 		. idf_escape(trim($row["name"]))
 		. " (" . implode(", ", $set) . ")"
-		. (isset($_GET["function"]) ? " RETURNS" . process_type($row["returns"], "CHARACTER SET") : "")
+		. ($routine == "FUNCTION" ? " RETURNS" . process_type($row["returns"], "CHARACTER SET") : "")
 		. ($row["language"] ? " LANGUAGE $row[language]" : "")
-		. ($jush == "pgsql" ? " AS " . q($definition) : "$definition;")
+		. ($jush == "pgsql" ? " AS " . q($definition) : "\n$definition;")
 	;
 }
 

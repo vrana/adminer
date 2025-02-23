@@ -7,6 +7,7 @@ MySQL: Show comments at routine call (bug #874)
 MySQL: Don't offer empty enum value in edit
 PostgreSQL: Link user defined types
 PostgreSQL: Constraint enum values in editing (bug #270)
+PostgreSQL: Export functions
 SQLite: Show all supported pragmas in Variables
 MS SQL: Allow altering table in non-default schema (bug #405)
 MS SQL: Fix default values (bug #732, bug #733)

@@ -53,12 +53,12 @@ SET foreign_key_checks = 0;
 				$out = "";
 
 				if ($_POST["routines"]) {
-					foreach (array("FUNCTION", "PROCEDURE") as $routine) {
-						foreach (get_rows("SHOW $routine STATUS WHERE Db = " . q($db), null, "-- ") as $row) {
-							$create = remove_definer($connection->result("SHOW CREATE $routine " . idf_escape($row["Name"]), 2));
-							set_utf8mb4($create);
-							$out .= ($style != 'DROP+CREATE' ? "DROP $routine IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "") . "$create;;\n\n";
-						}
+					foreach (routines() as $row) {
+						$name = $row["ROUTINE_NAME"];
+						$routine = $row["ROUTINE_TYPE"];
+						$create = create_routine($routine, array("name" => $name) + routine($row["SPECIFIC_NAME"], $routine));
+						set_utf8mb4($create);
+						$out .= ($style != 'DROP+CREATE' ? "DROP $routine IF EXISTS " . idf_escape($name) . ";;\n" : "") . "$create;\n\n";
 					}
 				}
 
@@ -70,9 +70,7 @@ SET foreign_key_checks = 0;
 					}
 				}
 
-				if ($out) {
-					echo "DELIMITER ;;\n\n$out" . "DELIMITER ;\n\n";
-				}
+				echo ($out && $jush == 'sql' ? "DELIMITER ;;\n\n$out" . "DELIMITER ;\n\n" : $out);
 			}
 
 			if ($_POST["table_style"] || $_POST["data_style"]) {
