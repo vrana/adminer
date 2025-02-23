@@ -1,6 +1,7 @@
 Adminer 4.17.0-dev:
 Hide index column options by default
 Offer original values in multi-row editing (regression from 4.16.0)
+Print SQL errors as comments in export (regression from 3.2.0)
 MySQL, PostgreSQL, MS SQL: Support CHECK constraint
 MySQL: Show comments at routine call (bug #874)
 MySQL: Don't offer empty enum value in edit

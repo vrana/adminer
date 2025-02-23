@@ -392,7 +392,7 @@ function get_rows($query, $connection2 = null, $error = "<p class='error'>") {
 		while ($row = $result->fetch_assoc()) {
 			$return[] = $row;
 		}
-	} elseif (!$result && !is_object($connection2) && $error && defined("PAGE_HEADER")) {
+	} elseif (!$result && !is_object($connection2) && $error && (defined("PAGE_HEADER") || $error == "-- ")) {
 		echo $error . error() . "\n";
 	}
 	return $return;
