@@ -59,7 +59,7 @@ input.wayoff { left: -1000px; position: absolute; }
 .explain { white-space: pre; }
 .icon { width: 18px; height: 18px; background-color: navy; }
 .icon:hover { background-color: red; }
-.size { width: 6ex; }
+.size { width: 7ex; }
 .help { cursor: help; }
 .footer { position: sticky; bottom: 0; margin-right: -20px; border-top: 20px solid rgba(255, 255, 255, .7); border-image: linear-gradient(rgba(255, 255, 255, .2), #fff) 100% 0; }
 .footer > div { background: #fff; padding: 0 0 .5em; }
