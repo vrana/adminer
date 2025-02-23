@@ -96,6 +96,7 @@ input.wayoff { left: -1000px; position: absolute; }
 
 @media all and (max-width: 880px) {
 	.pages { left: auto; }
+	.logout { position: static; padding: 0 1em; }
 	#menu { position: static; width: auto; }
 	#content { margin-left: 10px; }
 	#lang { position: static; border-top: 1px solid #999; }
