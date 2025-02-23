@@ -1,5 +1,6 @@
 Adminer 4.17.0-dev:
 Hide index column options by default
+Offer original values in multi-row editing (regression from 4.16.0)
 MySQL, PostgreSQL, MS SQL: Support CHECK constraint
 MySQL: Don't offer empty enum value in edit
 PostgreSQL: Link user defined types
