@@ -8,6 +8,7 @@ MS SQL: Allow altering table in non-default schema (bug #405)
 MS SQL: Fix default values (bug #732, bug #733)
 MS SQL: Fix length of nvarchar columns
 Editor: PDO: Select value of foreign key in edit (bug #847)
+Mobile devices: Use device width
 
 Adminer 4.16.0 (released 2025-02-20):
 MySQL: Fix saving bit(64) values (bug #839)
