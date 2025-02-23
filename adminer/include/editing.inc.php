@@ -209,16 +209,15 @@ function json_row($key, $val = null) {
 function edit_type($key, $field, $collations, $foreign_keys = array(), $extra_types = array()) {
 	global $structured_types, $types, $unsigned, $on_actions;
 	$type = $field["type"];
-	?>
-<td><select name="<?php echo h($key); ?>[type]" class="type" aria-labelledby="label-type"><?php
-if ($type && !isset($types[$type]) && !isset($foreign_keys[$type]) && !in_array($type, $extra_types)) {
-	$extra_types[] = $type;
-}
-if ($foreign_keys) {
-	$structured_types[lang('Foreign keys')] = $foreign_keys;
-}
-echo optionlist(array_merge($extra_types, $structured_types), $type);
-?></select><td><input
+	?><td><select name="<?php echo h($key); ?>[type]" class="type" aria-labelledby="label-type"><?php
+	if ($type && !isset($types[$type]) && !isset($foreign_keys[$type]) && !in_array($type, $extra_types)) {
+		$extra_types[] = $type;
+	}
+	if ($foreign_keys) {
+		$structured_types[lang('Foreign keys')] = $foreign_keys;
+	}
+	echo optionlist(array_merge($extra_types, $structured_types), $type);
+	?></select><td><input
 	name="<?php echo h($key); ?>[length]"
 	value="<?php echo h($field["length"]); ?>"
 	size="3"
