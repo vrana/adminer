@@ -710,7 +710,7 @@ class Adminer {
 		if ($field["type"] == "enum") {
 			return (isset($_GET["select"]) ? "<label><input type='radio'$attrs value='-1' checked><i>" . lang('original') . "</i></label> " : "")
 				. ($field["null"] ? "<label><input type='radio'$attrs value=''" . ($value !== null || isset($_GET["select"]) ? "" : " checked") . "><i>NULL</i></label> " : "")
-				. enum_input("radio", $attrs, $field, $value, 0) // 0 - empty
+				. enum_input("radio", $attrs, $field, $value, $value === 0 ? 0 : null) // 0 - empty value
 			;
 		}
 		return "";
