@@ -451,9 +451,7 @@ ORDER BY conkey, conname") as $row) {
 	}
 
 	function constraints($table) {
-		global $on_actions;
-		$return = array();
-		foreach (get_rows("SELECT conname, consrc
+		return get_key_vals("SELECT conname, " . (min_version(8) ? "pg_get_constraintdef(pg_constraint.oid)" : "CONCAT('CHECK ', consrc)") . "
 FROM pg_catalog.pg_constraint
 INNER JOIN pg_catalog.pg_namespace ON pg_constraint.connamespace = pg_namespace.oid
 INNER JOIN pg_catalog.pg_class ON pg_constraint.conrelid = pg_class.oid AND pg_constraint.connamespace = pg_class.relnamespace
@@ -461,10 +459,8 @@ WHERE pg_constraint.contype = 'c'
 AND conrelid != 0 -- handle only CONSTRAINTs here, not TYPES
 AND nspname = current_schema()
 AND relname = " . q($table) . "
-ORDER BY connamespace, conname") as $row) {
-			$return[$row['conname']] = $row['consrc'];
-		}
-		return $return;
+ORDER BY connamespace, conname"
+		);
 	}
 
 	function view($name) {
@@ -834,7 +830,7 @@ AND typelem = 0"
 		}
 
 		foreach ($constraints as $conname => $consrc) {
-			$return_parts[] = "CONSTRAINT " . idf_escape($conname) . " CHECK $consrc";
+			$return_parts[] = "CONSTRAINT " . idf_escape($conname) . " $consrc";
 		}
 
 		$return .= implode(",\n    ", $return_parts) . "\n) WITH (oids = " . ($status['Oid'] ? 'true' : 'false') . ");";
