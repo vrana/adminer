@@ -1066,14 +1066,15 @@ if (!defined("DRIVER")) {
 		return get_key_vals("SHOW VARIABLES");
 	}
 
-	/** Checks if C-style escapes are supported
+	/** Check if C-style escapes are supported
 	* @return bool
 	*/
 	function is_c_style_escapes() {
-		static $c_style = null;
+		global $connection;
+		static $c_style;
 		if ($c_style === null) {
-			$variables = get_key_vals("SHOW VARIABLES LIKE 'sql_mode'");
-			$c_style = strpos($variables["sql_mode"], 'NO_BACKSLASH_ESCAPES') === false;
+			$sql_mode = $connection->result("SHOW VARIABLES LIKE 'sql_mode'", 1);
+			$c_style = (strpos($sql_mode, 'NO_BACKSLASH_ESCAPES') === false);
 		}
 		return $c_style;
 	}

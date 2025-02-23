@@ -888,10 +888,10 @@ AND typelem = 0"
 	}
 
 	function is_c_style_escapes() {
-		static $c_style = null;
+		global $connection;
+		static $c_style;
 		if ($c_style === null) {
-			$vals = get_vals("SHOW standard_conforming_strings");
-			$c_style = $vals[0] == "off";
+			$c_style = ($connection->result("SHOW standard_conforming_strings") == "off");
 		}
 		return $c_style;
 	}
