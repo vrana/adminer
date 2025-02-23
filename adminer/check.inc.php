@@ -5,7 +5,7 @@ $row = $_POST;
 
 if ($row && !$error) {
 	$result = ($name == "" || queries("ALTER TABLE " . table($TABLE) . " DROP CONSTRAINT " . idf_escape($name)));
-	if (!$row["drop"] && $result) {
+	if (!$row["drop"]) {
 		$result = queries("ALTER TABLE " . table($TABLE) . " ADD" . ($row["name"] != "" ? " CONSTRAINT " . idf_escape($row["name"]) . "" : "") . " CHECK ($row[clause])"); //! SQL injection
 	}
 	queries_redirect(
