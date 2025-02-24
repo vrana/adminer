@@ -58,6 +58,22 @@ header("Cache-Control: immutable");
 	}
 	if ($driver && dirname($match[2]) == "../adminer/drivers") {
 		$return = preg_replace('~^if \(isset\(\$_GET\["' . $driver . '"]\)\) \{(.*)^}~ms', '\1', $return);
+		// check function definition in drivers
+		if ($driver != "mysql") {
+			preg_match_all(
+				'~\bfunction ([^(]+)~',
+				preg_replace('~class Min_Driver.*\n\t}~sU', '', file_get_contents(dirname(__FILE__) . "/adminer/drivers/mysql.inc.php")),
+				$matches
+			); //! respect context (extension, class)
+			$functions = array_combine($matches[1], $matches[0]);
+			//! do not warn about functions without declared support()
+			unset($functions["__construct"], $functions["__destruct"], $functions["set_charset"]);
+			foreach ($functions as $val) {
+				if (!strpos($return, "$val(")) {
+					fprintf(STDERR, "Missing $val in $driver\n");
+				}
+			}
+		}
 	}
 	if (basename($match[2]) != "lang.inc.php" || !$_SESSION["lang"]) {
 		if (basename($match[2]) == "lang.inc.php") {
@@ -358,24 +374,6 @@ if ($_SERVER["argv"][1]) {
 	echo "Usage: php compile.php [editor] [driver] [lang]\n";
 	echo "Purpose: Compile adminer[-driver][-lang].php or editor[-driver][-lang].php.\n";
 	exit(1);
-}
-
-// check function definition in drivers
-$file = file_get_contents(dirname(__FILE__) . "/adminer/drivers/mysql.inc.php");
-$file = preg_replace('~class Min_Driver.*\n\t}~sU', '', $file);
-preg_match_all('~\bfunction ([^(]+)~', $file, $matches); //! respect context (extension, class)
-$functions = array_combine($matches[1], $matches[0]);
-//! do not warn about functions without declared support()
-unset($functions["__construct"], $functions["__destruct"], $functions["set_charset"]);
-foreach (glob(dirname(__FILE__) . "/adminer/drivers/" . ($driver ? $driver : "*") . ".inc.php") as $filename) {
-	if ($filename != "mysql.inc.php") {
-		$file = file_get_contents($filename);
-		foreach ($functions as $val) {
-			if (!strpos($file, "$val(")) {
-				fprintf(STDERR, "Missing $val in $filename\n");
-			}
-		}
-	}
 }
 
 include dirname(__FILE__) . "/adminer/include/pdo.inc.php";
