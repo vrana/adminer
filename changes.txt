@@ -1,3 +1,5 @@
+Adminer-4.17.1-dev:
+
 Adminer 4.17.0 (released 2025-02-24):
 Hide index column options by default
 Offer original values in multi-row editing (regression from 4.16.0)
