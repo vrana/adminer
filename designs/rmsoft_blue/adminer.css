@@ -81,7 +81,7 @@ code.jush-sql { background: #d8eaf4; }
 pre { background: #aac6d8; }
 textarea { font-size: 120%; }
 body { width: -moz-fit-content; width: fit-content; }
-table, td, th { border: 0; border-collapse: separate; }
+table, td, th { border: 0; }
 .ltr table { margin: 1.9em 0 0 0; }
 .rtl table { margin: 1.9em 0 0 0; }
 .rtl table tbody td, .rtl table tbody th { text-align: right; }
