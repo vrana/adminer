@@ -96,7 +96,7 @@ foreach ($row["source"] as $key => $val) {
 	'sql' => "innodb-foreign-key-constraints.html",
 	'mariadb' => "foreign-keys/",
 	'pgsql' => "sql-createtable.html#SQL-CREATETABLE-REFERENCES",
-	'mssql' => "ms174979.aspx",
+	'mssql' => "t-sql/statements/create-table-transact-sql",
 	'oracle' => "https://docs.oracle.com/cd/B19306_01/server.102/b14200/clauses002.htm#sthref2903",
 )); ?>
 <p>

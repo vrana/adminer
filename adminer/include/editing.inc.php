@@ -351,7 +351,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 	'mariadb' => "auto_increment/",
 	'sqlite' => "autoinc.html",
 	'pgsql' => "datatype-numeric.html#DATATYPE-SERIAL",
-	'mssql' => "ms186775.aspx",
+	'mssql' => "t-sql/statements/create-table-transact-sql-identity-property",
 )); ?>
 <td id="label-default"<?php echo $default_class; ?>><?php echo lang('Default value'); ?>
 <?php echo (support("comment") ? "<td id='label-comment'$comment_class>" . lang('Comment') : ""); ?>
@@ -616,7 +616,7 @@ function doc_link($paths, $text = "<sup>?</sup>") {
 		'sql' => "https://dev.mysql.com/doc/refman/$version/en/",
 		'sqlite' => "https://www.sqlite.org/",
 		'pgsql' => "https://www.postgresql.org/docs/$version/",
-		'mssql' => "https://msdn.microsoft.com/library/",
+		'mssql' => "https://learn.microsoft.com/en-us/sql/",
 		'oracle' => "https://www.oracle.com/pls/topic/lookup?ctx=db" . preg_replace('~^.* (\d+)\.(\d+)\.\d+\.\d+\.\d+.*~s', '\1\2', $server_info) . "&id=",
 	);
 	if (preg_match('~MariaDB~', $server_info)) {
