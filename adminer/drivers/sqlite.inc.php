@@ -765,7 +765,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 
 	function is_c_style_escapes() {
-		return true;
+		return false;
 	}
 
 	function show_status() {
