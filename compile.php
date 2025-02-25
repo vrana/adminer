@@ -56,7 +56,7 @@ header("Cache-Control: immutable");
 			echo "adminer/file.inc.php: Caching headers placeholder not found\n";
 		}
 	}
-	if ($driver && dirname($match[2]) == "../adminer/drivers") {
+	if ($driver && preg_match('~/drivers/~', $match[2])) {
 		$return = preg_replace('~^if \(isset\(\$_GET\["' . $driver . '"]\)\) \{(.*)^}~ms', '\1', $return);
 		// check function definition in drivers
 		if ($driver != "mysql") {
@@ -379,7 +379,11 @@ if ($_SERVER["argv"][1] == "editor") {
 }
 
 $driver = "";
-if (file_exists(__DIR__ . "/adminer/drivers/" . $_SERVER["argv"][1] . ".inc.php")) {
+$driver_path = "/adminer/drivers/" . $_SERVER["argv"][1] . ".inc.php";
+if (!file_exists(__DIR__ . $driver_path)) {
+	$driver_path = "/plugins/drivers/" . $_SERVER["argv"][1] . ".php";
+}
+if (file_exists(__DIR__ . $driver_path)) {
 	$driver = $_SERVER["argv"][1];
 	array_shift($_SERVER["argv"]);
 }
@@ -405,7 +409,7 @@ $lang_ids = array(); // global variable simplifies usage in a callback function
 $file = file_get_contents(__DIR__ . "/$project/index.php");
 if ($driver) {
 	$_GET[$driver] = true; // to load the driver
-	include_once __DIR__ . "/adminer/drivers/$driver.inc.php";
+	include_once __DIR__ . $driver_path;
 	foreach ($features as $key => $feature) {
 		if (!support($feature)) {
 			if (!is_int($key)) {
@@ -421,6 +425,9 @@ if ($driver) {
 $file = preg_replace_callback('~\b(include|require) "([^"]*)";~', 'put_file', $file);
 $file = str_replace('include "../adminer/include/coverage.inc.php";', '', $file);
 if ($driver) {
+	if (preg_match('~^/plugins/~', $driver_path)) {
+		$file = preg_replace('((include "..)/adminer/drivers/mysql.inc.php)', "\\1$driver_path", $file);
+	}
 	$file = preg_replace('(include "../adminer/drivers/(?!' . preg_quote($driver) . '\.).*\s*)', '', $file);
 }
 $file = preg_replace_callback('~\b(include|require) "([^"]*)";~', 'put_file', $file); // bootstrap.inc.php
