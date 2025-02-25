@@ -25,8 +25,10 @@ if (!$row) {
 
 <form action="" method="post">
 <p><?php echo lang('Name'); ?>: <input name="name" value="<?php echo h($row["name"]); ?>" data-maxlength="64" autocapitalize="off"><?php echo doc_link(array(
-	'sql' => 'create-table-check-constraints.html',
-	'mariadb' => 'constraint/',
+	'sql' => "create-table-check-constraints.html",
+	'mariadb' => "constraint/",
+	'pgsql' => "ddl-constraints.html#DDL-CONSTRAINTS-CHECK-CONSTRAINTS",
+	'mssql' => "relational-databases/tables/create-check-constraints",
 )); ?>
 <p><?php textarea("clause", $row["clause"]); ?>
 <p><input type="submit" value="<?php echo lang('Save'); ?>">
