@@ -1,8 +1,8 @@
 #!/usr/bin/env php
 <?php
-include dirname(__FILE__) . "/adminer/include/version.inc.php";
-include dirname(__FILE__) . "/adminer/include/errors.inc.php";
-include dirname(__FILE__) . "/externals/JsShrink/jsShrink.php";
+include __DIR__ . "/adminer/include/version.inc.php";
+include __DIR__ . "/adminer/include/errors.inc.php";
+include __DIR__ . "/externals/JsShrink/jsShrink.php";
 
 function add_apo_slashes($s) {
 	return addcslashes($s, "\\'");
@@ -40,7 +40,7 @@ function put_file($match) {
 	if (basename($match[2]) == '$LANG.inc.php') {
 		return $match[0]; // processed later
 	}
-	$return = file_get_contents(dirname(__FILE__) . "/$project/$match[2]");
+	$return = file_get_contents(__DIR__ . "/$project/$match[2]");
 	if (basename($match[2]) == "file.inc.php") {
 		$return = str_replace("\n// caching headers added in compile.php", (preg_match('~-dev$~', $VERSION) ? '' : '
 if ($_SERVER["HTTP_IF_MODIFIED_SINCE"]) {
@@ -62,7 +62,7 @@ header("Cache-Control: immutable");
 		if ($driver != "mysql") {
 			preg_match_all(
 				'~\bfunction ([^(]+)~',
-				preg_replace('~class Min_Driver.*\n\t}~sU', '', file_get_contents(dirname(__FILE__) . "/adminer/drivers/mysql.inc.php")),
+				preg_replace('~class Min_Driver.*\n\t}~sU', '', file_get_contents(__DIR__ . "/adminer/drivers/mysql.inc.php")),
 				$matches
 			); //! respect context (extension, class)
 			$functions = array_combine($matches[1], $matches[0]);
@@ -179,7 +179,7 @@ function put_file_lang($match) {
 	}
 	$return = "";
 	foreach ($langs as $lang => $val) {
-		include dirname(__FILE__) . "/adminer/lang/$lang.inc.php"; // assign $translations
+		include __DIR__ . "/adminer/lang/$lang.inc.php"; // assign $translations
 		$translation_ids = array_flip($lang_ids); // default translation
 		foreach ($translations as $key => $val) {
 			if ($val !== null) {
@@ -347,7 +347,7 @@ function compile_file($match) {
 	list(, $filenames, $callback) = $match;
 	if ($filenames != "") {
 		foreach (explode(";", $filenames) as $filename) {
-			$file .= file_get_contents(dirname(__FILE__) . "/$project/$filename");
+			$file .= file_get_contents(__DIR__ . "/$project/$filename");
 		}
 	}
 	if ($callback) {
@@ -379,16 +379,16 @@ if ($_SERVER["argv"][1] == "editor") {
 }
 
 $driver = "";
-if (file_exists(dirname(__FILE__) . "/adminer/drivers/" . $_SERVER["argv"][1] . ".inc.php")) {
+if (file_exists(__DIR__ . "/adminer/drivers/" . $_SERVER["argv"][1] . ".inc.php")) {
 	$driver = $_SERVER["argv"][1];
 	array_shift($_SERVER["argv"]);
 }
 
 unset($_COOKIE["adminer_lang"]);
 $_SESSION["lang"] = $_SERVER["argv"][1]; // Adminer functions read language from session
-include dirname(__FILE__) . "/adminer/include/lang.inc.php";
+include __DIR__ . "/adminer/include/lang.inc.php";
 if (isset($langs[$_SESSION["lang"]])) {
-	include dirname(__FILE__) . "/adminer/lang/$_SESSION[lang].inc.php";
+	include __DIR__ . "/adminer/lang/$_SESSION[lang].inc.php";
 	array_shift($_SERVER["argv"]);
 }
 
@@ -398,14 +398,14 @@ if ($_SERVER["argv"][1]) {
 	exit(1);
 }
 
-include dirname(__FILE__) . "/adminer/include/pdo.inc.php";
-include dirname(__FILE__) . "/adminer/include/driver.inc.php";
+include __DIR__ . "/adminer/include/pdo.inc.php";
+include __DIR__ . "/adminer/include/driver.inc.php";
 $features = array("check", "call" => "routine", "dump", "event", "privileges", "procedure" => "routine", "processlist", "routine", "scheme", "sequence", "status", "trigger", "type", "user" => "privileges", "variables", "view");
 $lang_ids = array(); // global variable simplifies usage in a callback function
-$file = file_get_contents(dirname(__FILE__) . "/$project/index.php");
+$file = file_get_contents(__DIR__ . "/$project/index.php");
 if ($driver) {
 	$_GET[$driver] = true; // to load the driver
-	include_once dirname(__FILE__) . "/adminer/drivers/$driver.inc.php";
+	include_once __DIR__ . "/adminer/drivers/$driver.inc.php";
 	foreach ($features as $key => $feature) {
 		if (!support($feature)) {
 			if (!is_int($key)) {
