@@ -193,4 +193,11 @@ function get_driver($id) {
 	function tableHelp($name) {
 	}
 
+	/** Check if C-style escapes are supported
+	* @return bool
+	*/
+	function hasCStyleEscapes() {
+		return false;
+	}
+
 }

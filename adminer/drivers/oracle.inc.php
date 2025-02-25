@@ -165,6 +165,11 @@ if (isset($_GET["oracle"])) {
 			}
 			return true;
 		}
+
+		function hasCStyleEscapes() {
+			return true;
+		}
+
 	}
 
 
@@ -482,10 +487,6 @@ AND c_src.TABLE_NAME = " . q($table);
 
 	function show_variables() {
 		return get_key_vals('SELECT name, display_value FROM v$parameter');
-	}
-
-	function is_c_style_escapes() {
-		return true;
 	}
 
 	function process_list() {

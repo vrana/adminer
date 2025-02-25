@@ -345,6 +345,15 @@ if (!defined("DRIVER")) {
 			}
 		}
 
+		function hasCStyleEscapes() {
+			static $c_style;
+			if ($c_style === null) {
+				$sql_mode = $this->_conn->result("SHOW VARIABLES LIKE 'sql_mode'", 1);
+				$c_style = (strpos($sql_mode, 'NO_BACKSLASH_ESCAPES') === false);
+			}
+			return $c_style;
+		}
+
 	}
 
 
@@ -1068,19 +1077,6 @@ if (!defined("DRIVER")) {
 	*/
 	function show_variables() {
 		return get_key_vals("SHOW VARIABLES");
-	}
-
-	/** Check if C-style escapes are supported
-	* @return bool
-	*/
-	function is_c_style_escapes() {
-		global $connection;
-		static $c_style;
-		if ($c_style === null) {
-			$sql_mode = $connection->result("SHOW VARIABLES LIKE 'sql_mode'", 1);
-			$c_style = (strpos($sql_mode, 'NO_BACKSLASH_ESCAPES') === false);
-		}
-		return $c_style;
 	}
 
 	/** Get process list

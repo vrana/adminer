@@ -249,6 +249,14 @@ if (isset($_GET["pgsql"])) {
 			}
 		}
 
+		function hasCStyleEscapes() {
+			static $c_style;
+			if ($c_style === null) {
+				$c_style = ($this->_conn->result("SHOW standard_conforming_strings") == "off");
+			}
+			return $c_style;
+		}
+
 	}
 
 
@@ -877,15 +885,6 @@ ORDER BY connamespace, conname"
 
 	function show_variables() {
 		return get_key_vals("SHOW ALL");
-	}
-
-	function is_c_style_escapes() {
-		global $connection;
-		static $c_style;
-		if ($c_style === null) {
-			$c_style = ($connection->result("SHOW standard_conforming_strings") == "off");
-		}
-		return $c_style;
 	}
 
 	function process_list() {
