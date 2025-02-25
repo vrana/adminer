@@ -22,7 +22,7 @@ class AdminerLoginOtp {
 
 	function loginFormField($name, $heading, $value) {
 		if ($name == 'password') {
-			return $heading . $value
+			return $heading . $value . "\n"
 				. "<tr><th><acronym title='One Time Password' lang='en'>OTP</acronym>"
 				. "<td><input type='number' name='auth[otp]' value='" . h($_SESSION["otp"]) . "' size='6' autocomplete='one-time-code' inputmode='numeric' maxlength='6' pattern='\d{6}'>\n"
 			;
