@@ -315,7 +315,7 @@ ORDER BY d.datname");
 
 	function tables_list() {
 		$query = "SELECT table_name, table_type FROM information_schema.tables WHERE table_schema = current_schema()";
-		if (support('materializedview')) { // ' - support("materializedview") could be removed by compile.php
+		if (support("materializedview")) {
 			$query .= "
 UNION ALL
 SELECT matviewname, 'MATERIALIZED VIEW'
