@@ -97,7 +97,7 @@ foreach ($row["source"] as $key => $val) {
 	'mariadb' => "foreign-keys/",
 	'pgsql' => "sql-createtable.html#SQL-CREATETABLE-REFERENCES",
 	'mssql' => "t-sql/statements/create-table-transact-sql",
-	'oracle' => "https://docs.oracle.com/cd/B19306_01/server.102/b14200/clauses002.htm#sthref2903",
+	'oracle' => "SQLRF01111",
 )); ?>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
