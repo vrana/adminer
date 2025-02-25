@@ -66,7 +66,29 @@ header("Cache-Control: immutable");
 				$matches
 			); //! respect context (extension, class)
 			$functions = array_combine($matches[1], $matches[0]);
-			//! do not warn about functions without declared support()
+			$requires = array(
+				"check" => array("check_constraints"),
+				"copy" => array("copy_tables"),
+				"database" => array("create_database", "rename_database", "drop_databases"),
+				"dump" => array("use_sql", "create_sql", "truncate_sql", "trigger_sql"),
+				"indexes" => array("indexes"),
+				"kill" => array("kill_process", "connection_id", "max_connections"),
+				"processlist" => array("process_list"),
+				"routine" => array("routines", "routine", "routine_languages", "create_routine", "routine_id"),
+				"scheme" => array("schemas", "get_schema", "set_schema"),
+				"status" => array("show_status"),
+				"table" => array("search_tables", "is_view"),
+				"trigger" => array("triggers", "trigger", "trigger_options", "trigger_sql"),
+				"type" => array("types"),
+				"variables" => array("show_variables"),
+			);
+			foreach ($requires as $support => $fns) {
+				if (!support($support)) {
+					foreach ($fns as $fn) {
+						unset($functions[$fn]);
+					}
+				}
+			}
 			unset($functions["__construct"], $functions["__destruct"], $functions["set_charset"]);
 			foreach ($functions as $val) {
 				if (!strpos($return, "$val(")) {
