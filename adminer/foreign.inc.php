@@ -4,9 +4,6 @@ $name = $_GET["name"];
 $row = $_POST;
 
 if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-js"]) {
-	$message = ($_POST["drop"] ? lang('Foreign key has been dropped.') : ($name != "" ? lang('Foreign key has been altered.') : lang('Foreign key has been created.')));
-	$location = ME . "table=" . urlencode($TABLE);
-
 	if (!$_POST["drop"]) {
 		$row["source"] = array_filter($row["source"], 'strlen');
 		ksort($row["source"]); // enforce input order
@@ -18,17 +15,19 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 	}
 
 	if ($jush == "sqlite") {
-		queries_redirect($location, $message, recreate_table($TABLE, $TABLE, array(), array(), array(" $name" => ($_POST["drop"] ? "" : " " . format_foreign_key($row)))));
+		$result = recreate_table($TABLE, $TABLE, array(), array(), array(" $name" => ($row["drop"] ? "" : " " . format_foreign_key($row))));
 	} else {
 		$alter = "ALTER TABLE " . table($TABLE);
-		$drop = "\nDROP " . ($jush == "sql" ? "FOREIGN KEY " : "CONSTRAINT ") . idf_escape($name);
-		if ($_POST["drop"]) {
-			query_redirect($alter . $drop, $location, $message);
-		} else {
-			query_redirect($alter . ($name != "" ? "$drop," : "") . "\nADD" . format_foreign_key($row), $location, $message);
-			$error = lang('Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.') . "<br>$error"; //! no partitioning
+		$result = ($name == "" || queries("$alter DROP " . ($jush == "sql" ? "FOREIGN KEY " : "CONSTRAINT ") . idf_escape($name)));
+		if (!$row["drop"]) {
+			$result = queries("$alter ADD" . format_foreign_key($row));
 		}
 	}
+	queries_redirect(
+		ME . "table=" . urlencode($TABLE),
+		($row["drop"] ? lang('Foreign key has been dropped.') : ($name != "" ? lang('Foreign key has been altered.') : lang('Foreign key has been created.'))),
+		$result
+	);
 }
 
 page_header(lang('Foreign key'), $error, array("table" => $TABLE), h($TABLE));
