@@ -1,7 +1,8 @@
-Adminer-4.17.2-dev:
+Adminer-4.18.0-dev:
 SQLite: Support CHECK constraint
 SQLite: Add command Check tables
 SQLite: Display all rows of variable values
+SQLite: Remove support for SQLite version 2
 MongoDB: Remove support for deprecated extension mongo
 
 Adminer-4.17.1 (released 2025-02-25):
