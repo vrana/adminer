@@ -9,7 +9,7 @@ if ($row && !$error) {
 	} else {
 		$result = ($name == "" || queries("ALTER TABLE " . table($TABLE) . " DROP CONSTRAINT " . idf_escape($name)));
 		if (!$row["drop"]) {
-			$result = queries("ALTER TABLE " . table($TABLE) . " ADD" . ($row["name"] != "" ? " CONSTRAINT " . idf_escape($row["name"]) . "" : "") . " CHECK ($row[clause])"); //! SQL injection
+			$result = queries("ALTER TABLE " . table($TABLE) . " ADD" . ($row["name"] != "" ? " CONSTRAINT " . idf_escape($row["name"]) : "") . " CHECK ($row[clause])"); //! SQL injection
 		}
 	}
 	queries_redirect(
