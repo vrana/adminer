@@ -56,14 +56,18 @@ if ($row["db"] != "") {
 	$connection->select_db($row["db"]);
 }
 if ($row["ns"] != "") {
+	$orig_schema = get_schema();
 	set_schema($row["ns"]);
 }
 $referencable = array_keys(array_filter(table_status('', true), 'fk_support'));
 $target = array_keys(fields(in_array($row["table"], $referencable) ? $row["table"] : reset($referencable)));
 $onchange = "this.form['change-js'].value = '1'; this.form.submit();";
 echo "<p>" . lang('Target table') . ": " . html_select("table", $referencable, $row["table"], $onchange) . "\n";
-if ($jush == "pgsql") {
+if (support("scheme")) {
 	echo lang('Schema') . ": " . html_select("ns", $adminer->schemas(), $row["ns"] != "" ? $row["ns"] : $_GET["ns"], $onchange);
+	if ($row["ns"] != "") {
+		set_schema($orig_schema);
+	}
 } elseif ($jush != "sqlite") {
 	$dbs = array();
 	foreach ($adminer->databases() as $db) {

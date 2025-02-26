@@ -477,6 +477,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 		foreach (get_rows("EXEC sp_fkeys @fktable_name = " . q($table) . ", @fktable_owner = " . q(get_schema())) as $row) {
 			$foreign_key = &$return[$row["FK_NAME"]];
 			$foreign_key["db"] = $row["PKTABLE_QUALIFIER"];
+			$foreign_key["ns"] = $row["PKTABLE_OWNER"];
 			$foreign_key["table"] = $row["PKTABLE_NAME"];
 			$foreign_key["on_update"] = $on_actions[$row["UPDATE_RULE"]];
 			$foreign_key["on_delete"] = $on_actions[$row["DELETE_RULE"]];
@@ -556,6 +557,7 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)
 	}
 
 	function set_schema($schema) {
+		$_GET["ns"] = $schema;
 		return true; // ALTER USER is permanent
 	}
 
