@@ -227,6 +227,11 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			}
 		}
 
+		function checkConstraints($table) {
+			preg_match_all('~ CHECK *(\( *(((?>[^()]*[^() ])|(?1))*) *\))~', $this->_conn->result("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table)), $matches); //! could be inside a comment
+			return array_combine($matches[2], $matches[2]);
+		}
+
 	}
 
 
@@ -523,8 +528,20 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 		return true;
 	}
 
-	function recreate_table($table, $name, $fields, $originals, $foreign, $auto_increment = 0, $indexes = array()) {
-		global $connection;
+	/** Recreate table
+	* @param string original name
+	* @param string new name
+	* @param array [process_field()], empty to preserve
+	* @param array [$original => idf_escape($new_column)], empty to preserve
+	* @param string [format_foreign_key()], empty to preserve
+	* @param int set auto_increment to this value, 0 to preserve
+	* @param array [array($type, $name, $columns)], empty to preserve
+	* @param string CHECK constraint to drop
+	* @param string CHECK constraint to add
+	* @return bool
+	*/
+	function recreate_table($table, $name, $fields, $originals, $foreign, $auto_increment = 0, $indexes = array(), $drop_check = "", $add_check = "") {
+		global $connection, $driver;
 		if ($table != "") {
 			if (!$fields) {
 				foreach (fields($table) as $key => $field) {
@@ -585,6 +602,14 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 			$fields[$key] = "  " . implode($field);
 		}
 		$fields = array_merge($fields, array_filter($foreign));
+		foreach ($driver->checkConstraints($table) as $check) {
+			if ($check != $drop_check) {
+				$fields[] = "  CHECK ($check)";
+			}
+		}
+		if ($add_check) {
+			$fields[] = "  CHECK ($add_check)";
+		}
 		$temp_name = ($table == $name ? "adminer_$name" : $name);
 		if (!queries("CREATE TABLE " . table($temp_name) . " (\n" . implode(",\n", $fields) . "\n)")) {
 			// implicit ROLLBACK to not overwrite $connection->error
@@ -785,7 +810,7 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 
 	function support($feature) {
-		return preg_match('~^(columns|database|drop_col|dump|indexes|descidx|move_col|sql|status|table|trigger|variables|view|view_trigger)$~', $feature);
+		return preg_match('~^(check|columns|database|drop_col|dump|indexes|descidx|move_col|sql|status|table|trigger|variables|view|view_trigger)$~', $feature);
 	}
 
 	function driver_config() {

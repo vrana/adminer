@@ -60,7 +60,7 @@ if (!is_view($table_status)) {
 
 	if (support("check")) {
 		echo "<h3 id='checks'>" . lang('Checks') . "</h3>\n";
-		$check_constraints = check_constraints($TABLE);
+		$check_constraints = $driver->checkConstraints($TABLE);
 		if ($check_constraints) {
 			echo "<table>\n";
 			foreach ($check_constraints as $key => $val) {

@@ -67,7 +67,6 @@ header("Cache-Control: immutable");
 			); //! respect context (extension, class)
 			$functions = array_combine($matches[1], $matches[0]);
 			$requires = array(
-				"check" => array("check_constraints"),
 				"copy" => array("copy_tables"),
 				"database" => array("create_database", "rename_database", "drop_databases"),
 				"dump" => array("use_sql", "create_sql", "truncate_sql", "trigger_sql"),
