@@ -206,12 +206,16 @@ if (isset($_GET["mssql"])) {
 			foreach ($rows as $set) {
 				$values[] = "(" . implode(", ", $set) . ")";
 			}
-			queries("SET IDENTITY_INSERT " . table($table) . " ON");
-			$return = queries("MERGE " . table($table) . " USING (VALUES\n\t" . implode(",\n\t", $values) . "\n) AS source ($columns) ON " . implode(" AND ", $where) //! source, c1 - possible conflict
-				. ($update ? "\nWHEN MATCHED THEN UPDATE SET " . implode(", ", $update) : "")
-				. "\nWHEN NOT MATCHED THEN INSERT (" . implode(", ", array_keys($set)) . ") VALUES ($columns);" // ; is mandatory
-			);
-			queries("SET IDENTITY_INSERT " . table($table) . " OFF");
+			if ($where) {
+				queries("SET IDENTITY_INSERT " . table($table) . " ON");
+				$return = queries("MERGE " . table($table) . " USING (VALUES\n\t" . implode(",\n\t", $values) . "\n) AS source ($columns) ON " . implode(" AND ", $where) //! source, c1 - possible conflict
+					. ($update ? "\nWHEN MATCHED THEN UPDATE SET " . implode(", ", $update) : "")
+					. "\nWHEN NOT MATCHED THEN INSERT (" . implode(", ", array_keys($set)) . ") VALUES ($columns);" // ; is mandatory
+				);
+				queries("SET IDENTITY_INSERT " . table($table) . " OFF");
+			} else {
+				$return = queries("INSERT INTO " . table($table) . " VALUES\n" . implode(",\n", $values));
+			}
 			return $return;
 		}
 
