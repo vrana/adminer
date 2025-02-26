@@ -27,6 +27,12 @@ if ($tables_views && !$error && !$_POST["search"]) {
 			$result = drop_tables($_POST["tables"]);
 		}
 		$message = lang('Tables have been dropped.');
+	} elseif ($jush == "sqlite" && $_POST["check"]) {
+		foreach ((array) $_POST["tables"] as $table) {
+			foreach (get_rows("PRAGMA integrity_check(" . q($table) . ")") as $row) {
+				$message .= "<b>" . h($table) . "</b>: " . h($row["integrity_check"]) . "<br>";
+			}
+		}
 	} elseif ($jush != "sql") {
 		$result = ($jush == "sqlite"
 			? queries("VACUUM")
@@ -127,9 +133,10 @@ if ($adminer->homepage()) {
 				$vacuum = "<input type='submit' value='" . lang('Vacuum') . "'> " . on_help("'VACUUM'");
 				$optimize = "<input type='submit' name='optimize' value='" . lang('Optimize') . "'> " . on_help($jush == "sql" ? "'OPTIMIZE TABLE'" : "'VACUUM OPTIMIZE'");
 				echo "<fieldset><legend>" . lang('Selected') . " <span id='selected'></span></legend><div>"
-				. ($jush == "sqlite" ? $vacuum
+				. ($jush == "sqlite" ? $vacuum . "<input type='submit' name='check' value='" . lang('Check') . "'> " . on_help("'PRAGMA integrity_check'")
 				: ($jush == "pgsql" ? $vacuum . $optimize
-				: ($jush == "sql" ? "<input type='submit' value='" . lang('Analyze') . "'> " . on_help("'ANALYZE TABLE'") . $optimize
+				: ($jush == "sql" ? "<input type='submit' value='" . lang('Analyze') . "'> " . on_help("'ANALYZE TABLE'")
+					. $optimize
 					. "<input type='submit' name='check' value='" . lang('Check') . "'> " . on_help("'CHECK TABLE'")
 					. "<input type='submit' name='repair' value='" . lang('Repair') . "'> " . on_help("'REPAIR TABLE'")
 				: "")))

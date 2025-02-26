@@ -1,4 +1,5 @@
 Adminer-4.17.2-dev:
+SQLite: Add command Check tables
 MongoDB: Remove support for deprecated extension mongo
 
 Adminer-4.17.1 (released 2025-02-25):
