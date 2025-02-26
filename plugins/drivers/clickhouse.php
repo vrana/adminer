@@ -354,18 +354,6 @@ if (isset($_GET["clickhouse"])) {
 		return array();
 	}
 
-	function schemas() {
-		return array();
-	}
-
-	function get_schema() {
-		return "";
-	}
-
-	function set_schema($schema) {
-		return true;
-	}
-
 	function auto_increment() {
 		return '';
 	}

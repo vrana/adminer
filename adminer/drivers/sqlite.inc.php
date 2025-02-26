@@ -656,18 +656,6 @@ if (isset($_GET["sqlite"])) {
 		return array();
 	}
 
-	function schemas() {
-		return array();
-	}
-
-	function get_schema() {
-		return "";
-	}
-
-	function set_schema($scheme) {
-		return true;
-	}
-
 	function create_sql($table, $auto_increment, $style) {
 		global $connection;
 		$return = $connection->result("SELECT sql FROM sqlite_master WHERE type IN ('table', 'view') AND name = " . q($table));

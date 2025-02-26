@@ -295,18 +295,6 @@ ORDER BY RDB$INDEX_SEGMENTS.RDB$FIELD_POSITION';
 		return array();
 	}
 
-	function schemas() {
-		return array();
-	}
-
-	function get_schema() {
-		return "";
-	}
-
-	function set_schema($schema) {
-		return true;
-	}
-
 	function support($feature) {
 		return preg_match("~^(columns|sql|status|table)$~", $feature);
 	}

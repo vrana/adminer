@@ -327,9 +327,6 @@ if (isset($_GET["simpledb"])) {
 	function information_schema() {
 	}
 
-	function is_view($table_status) {
-	}
-
 	function indexes($table, $connection2 = null) {
 		return array(
 			array("type" => "PRIMARY", "columns" => array("itemName()")),

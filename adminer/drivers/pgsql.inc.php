@@ -882,9 +882,6 @@ AND typelem = 0"
 		return get_rows("SELECT * FROM pg_stat_activity ORDER BY " . (min_version(9.2) ? "pid" : "procpid"));
 	}
 
-	function show_status() {
-	}
-
 	function convert_field($field) {
 	}
 

@@ -999,23 +999,21 @@ if (!defined("DRIVER")) {
 		return ($where || $table_status["Engine"] != "InnoDB" ? null : $table_status["Rows"]);
 	}
 
+	/* Not used is MySQL but checked in compile.php:
 	/** Get user defined types
 	* @return array
-	*/
 	function types() {
 		return array();
 	}
 
 	/** Get existing schemas
 	* @return array
-	*/
 	function schemas() {
 		return array();
 	}
 
 	/** Get current schema
 	* @return string
-	*/
 	function get_schema() {
 		return "";
 	}
@@ -1024,10 +1022,10 @@ if (!defined("DRIVER")) {
 	* @param string
 	* @param Min_DB
 	* @return bool
-	*/
 	function set_schema($schema, $connection2 = null) {
 		return true;
 	}
+	*/
 
 	/** Get SQL command to create table
 	* @param string

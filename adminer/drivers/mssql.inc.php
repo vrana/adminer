@@ -611,14 +611,6 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)
 		return $return;
 	}
 
-	function show_variables() {
-		return array();
-	}
-
-	function show_status() {
-		return array();
-	}
-
 	function convert_field($field) {
 	}
 

@@ -503,22 +503,6 @@ if (isset($_GET["elastic"])) {
 		return null;
 	}
 
-	/** Create index
-	 * @param string
-	 * @return mixed
-	 */
-	function create_database($db) {
-		return connection()->rootQuery(urlencode($db), null, 'PUT');
-	}
-
-	/** Remove index
-	 * @param array
-	 * @return mixed
-	 */
-	function drop_databases($databases) {
-		return connection()->rootQuery(urlencode(implode(',', $databases)), null, 'DELETE');
-	}
-
 	/** Alter type
 	 * @param array
 	 * @return mixed
