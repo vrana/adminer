@@ -52,7 +52,7 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function select_db($database) {
-				return $this->query("USE " . idf_escape($database));
+				return $this->query(use_sql($database));
 			}
 
 			function query($query, $unbuffered = false) {
@@ -163,7 +163,7 @@ if (isset($_GET["mssql"])) {
 
 			function select_db($database) {
 				// database selection is separated from the connection so dbname in DSN can't be used
-				return $this->query("USE " . idf_escape($database));
+				return $this->query(use_sql($database));
 			}
 		}
 
@@ -177,7 +177,7 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function select_db($database) {
-				return $this->query("USE " . idf_escape($database));
+				return $this->query(use_sql($database));
 			}
 		}
 	}
