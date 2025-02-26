@@ -756,10 +756,14 @@ if (isset($_GET["sqlite"]) || isset($_GET["sqlite2"])) {
 	}
 
 	function show_variables() {
-		global $connection;
 		$return = array();
 		foreach (get_rows("PRAGMA pragma_list") as $row) {
-			$return[$row["name"]] = $connection->result("PRAGMA $row[name]");
+			$name = $row["name"];
+			if ($name != "pragma_list" && $name != "compile_options") {
+				foreach (get_rows("PRAGMA $name") as $row) {
+					$return[$name] .= implode(", ", $row) . "\n";
+				}
+			}
 		}
 		return $return;
 	}

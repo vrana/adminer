@@ -10,7 +10,7 @@ if (!$variables) {
 	foreach ($variables as $key => $val) {
 		echo "<tr>";
 		echo "<th><code class='jush-" . $jush . ($status ? "status" : "set") . "'>" . h($key) . "</code>";
-		echo "<td>" . h($val);
+		echo "<td>" . nl_br(h($val));
 	}
 	echo "</table>\n";
 }
