@@ -371,6 +371,10 @@ function number_type() {
 	return '';
 }
 
+function ini_bool() {
+	return true;
+}
+
 $project = "adminer";
 if ($_SERVER["argv"][1] == "editor") {
 	$project = "editor";
