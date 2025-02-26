@@ -823,7 +823,7 @@ AND typelem = 0"
 		}
 
 		foreach ($driver->checkConstraints($table) as $conname => $consrc) {
-			$return_parts[] = "CONSTRAINT " . idf_escape($conname) . " $consrc";
+			$return_parts[] = "CONSTRAINT " . idf_escape($conname) . " CHECK $consrc";
 		}
 
 		$return .= implode(",\n    ", $return_parts) . "\n) WITH (oids = " . ($status['Oid'] ? 'true' : 'false') . ");";
