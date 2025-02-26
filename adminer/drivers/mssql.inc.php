@@ -212,7 +212,7 @@ if (isset($_GET["mssql"])) {
 				);
 				queries("SET IDENTITY_INSERT " . table($table) . " OFF");
 			} else {
-				$return = queries("INSERT INTO " . table($table) . " VALUES\n" . implode(",\n", $values));
+				$return = queries("INSERT INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ") VALUES\n" . implode(",\n", $values));
 			}
 			return $return;
 		}
