@@ -654,8 +654,54 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)
 		return true; // ALTER USER is permanent
 	}
 
+	function create_sql($table, $auto_increment, $style) {
+		global $driver;
+		if (is_view(table_status($table))) {
+			$view = view($table);
+			return "CREATE VIEW " . table($table) . " AS $view[select]";
+		}
+		$fields = array();
+		$primary = false;
+		foreach (fields($table) as $name => $field) {
+			$val = process_field($field, $field);
+			if ($val[6]) {
+				$primary = true;
+			}
+			$fields[] = implode("", $val);
+		}
+		foreach (indexes($table) as $name => $index) {
+			if (!$primary || $index["type"] != "PRIMARY") {
+				$columns = array();
+				foreach ($index["columns"] as $key => $val) {
+					$columns[] = idf_escape($val) . ($index["descs"][$key] ? " DESC" : "");
+				}
+				$name = idf_escape($name);
+				$fields[] = ($index["type"] == "INDEX" ? "INDEX $name" : "CONSTRAINT $name " . ($index["type"] == "UNIQUE" ? "UNIQUE" : "PRIMARY KEY")) . " (" . implode(", ", $columns) . ")";
+			}
+		}
+		foreach (foreign_keys($table) as $foreign) {
+			$fields[] = ltrim(format_foreign_key($foreign));
+		}
+		foreach ($driver->checkConstraints($table) as $name => $check) {
+			$fields[] = "CONSTRAINT " . idf_escape($name) . " CHECK ($check)";
+		}
+		return "CREATE TABLE " . table($table) . " (\n\t" . implode(",\n\t", $fields) . "\n)";
+	}
+
+	function truncate_sql($table) {
+		return "TRUNCATE TABLE " . table($table);
+	}
+
 	function use_sql($database) {
 		return "USE " . idf_escape($database);
+	}
+
+	function trigger_sql($table) {
+		$return = "";
+		foreach (triggers($table) as $name => $trigger) {
+			$return .= create_trigger(" ON " . table($table), trigger($name)) . ";";
+		}
+		return $return;
 	}
 
 	function show_variables() {
@@ -674,7 +720,7 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)
 	}
 
 	function support($feature) {
-		return preg_match('~^(check|comment|columns|database|drop_col|indexes|descidx|scheme|sql|table|trigger|view|view_trigger)$~', $feature); //! routine|
+		return preg_match('~^(check|comment|columns|database|drop_col|dump|indexes|descidx|scheme|sql|table|trigger|view|view_trigger)$~', $feature); //! routine|
 	}
 
 	function driver_config() {

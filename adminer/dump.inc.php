@@ -126,7 +126,7 @@ SET foreign_key_checks = 0;
 	}
 
 	if ($is_sql) {
-		echo "-- " . $connection->result("SELECT NOW()") . "\n";
+		echo "-- " . gmdate("Y-m-d H:i:s e") . "\n";
 	}
 	exit;
 }
