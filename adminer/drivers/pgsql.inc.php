@@ -238,10 +238,10 @@ if (isset($_GET["pgsql"])) {
 			return $this->_conn->warnings();
 		}
 
-		function tableHelp($name) {
+		function tableHelp($name, $is_view = false) {
 			$links = array(
 				"information_schema" => "infoschema",
-				"pg_catalog" => "catalog",
+				"pg_catalog" => ($is_view ? "view" : "catalog"),
 			);
 			$link = $links[$_GET["ns"]];
 			if ($link) {

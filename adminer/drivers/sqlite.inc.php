@@ -130,7 +130,7 @@ if (isset($_GET["sqlite"])) {
 			return queries("REPLACE INTO " . table($table) . " (" . implode(", ", array_keys(reset($rows))) . ") VALUES\n" . implode(",\n", $values));
 		}
 
-		function tableHelp($name) {
+		function tableHelp($name, $is_view = false) {
 			if ($name == "sqlite_sequence") {
 				return "fileformat2.html#seqtab";
 			}

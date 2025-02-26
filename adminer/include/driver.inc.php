@@ -188,9 +188,10 @@ function get_driver($id) {
 
 	/** Get help link for table
 	* @param string
+	* @param bool
 	* @return string relative URL or null
 	*/
-	function tableHelp($name) {
+	function tableHelp($name, $is_view = false) {
 	}
 
 	/** Check if C-style escapes are supported

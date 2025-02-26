@@ -180,8 +180,10 @@ class Adminer {
 		if (support("table") || support("indexes")) {
 			$links["table"] = lang('Show structure');
 		}
+		$is_view = false;
 		if (support("table")) {
-			if (is_view($tableStatus)) {
+			$is_view = is_view($tableStatus);
+			if ($is_view) {
 				$links["view"] = lang('Alter view');
 			} else {
 				$links["create"] = lang('Alter table');
@@ -194,7 +196,7 @@ class Adminer {
 		foreach ($links as $key => $val) {
 			echo " <a href='" . h(ME) . "$key=" . urlencode($name) . ($key == "edit" ? $set : "") . "'" . bold(isset($_GET[$key])) . ">$val</a>";
 		}
-		echo doc_link(array($jush => $driver->tableHelp($name)), "?");
+		echo doc_link(array($jush => $driver->tableHelp($name, $is_view)), "?");
 		echo "\n";
 	}
 
