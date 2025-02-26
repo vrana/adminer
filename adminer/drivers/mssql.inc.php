@@ -152,104 +152,6 @@ if (isset($_GET["mssql"])) {
 			}
 		}
 
-	} elseif (extension_loaded("mssql")) {
-		class Min_DB {
-			var $extension = "MSSQL", $_link, $_result, $server_info, $affected_rows, $error;
-
-			function connect($server, $username, $password) {
-				$this->_link = @mssql_connect($server, $username, $password);
-				if ($this->_link) {
-					$result = $this->query("SELECT SERVERPROPERTY('ProductLevel'), SERVERPROPERTY('Edition')");
-					if ($result) {
-						$row = $result->fetch_row();
-						$this->server_info = $this->result("sp_server_info 2", 2) . " [$row[0]] $row[1]";
-					}
-				} else {
-					$this->error = mssql_get_last_message();
-				}
-				return (bool) $this->_link;
-			}
-
-			function quote($string) {
-				$unicode = strlen($string) != strlen(utf8_decode($string));
-				return ($unicode ? "N" : "") . "'" . str_replace("'", "''", $string) . "'";
-			}
-
-			function select_db($database) {
-				return mssql_select_db($database);
-			}
-
-			function query($query, $unbuffered = false) {
-				$result = @mssql_query($query, $this->_link); //! $unbuffered
-				$this->error = "";
-				if (!$result) {
-					$this->error = mssql_get_last_message();
-					return false;
-				}
-				if ($result === true) {
-					$this->affected_rows = mssql_rows_affected($this->_link);
-					return true;
-				}
-				return new Min_Result($result);
-			}
-
-			function multi_query($query) {
-				return $this->_result = $this->query($query);
-			}
-
-			function store_result() {
-				return $this->_result;
-			}
-
-			function next_result() {
-				return mssql_next_result($this->_result->_result);
-			}
-
-			function result($query, $field = 0) {
-				$result = $this->query($query);
-				if (!is_object($result)) {
-					return false;
-				}
-				return mssql_result($result->_result, 0, $field);
-			}
-		}
-
-		class Min_Result {
-			var $_result, $_offset = 0, $_fields, $num_rows;
-
-			function __construct($result) {
-				$this->_result = $result;
-				$this->num_rows = mssql_num_rows($result);
-			}
-
-			function fetch_assoc() {
-				return mssql_fetch_assoc($this->_result);
-			}
-
-			function fetch_row() {
-				return mssql_fetch_row($this->_result);
-			}
-
-			function num_rows() {
-				return mssql_num_rows($this->_result);
-			}
-
-			function fetch_field() {
-				$return = mssql_fetch_field($this->_result);
-				$return->orgtable = $return->table;
-				$return->orgname = $return->name;
-				return $return;
-			}
-
-			function seek($offset) {
-				mssql_data_seek($this->_result, $offset);
-			}
-
-			function __destruct() {
-				mssql_free_result($this->_result);
-			}
-		}
-
 	} elseif (extension_loaded("pdo_dblib")) {
 		class Min_DB extends Min_PDO {
 			var $extension = "PDO_DBLIB";
@@ -741,7 +643,7 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)
 			$structured_types[$key] = array_keys($val);
 		}
 		return array(
-			'possible_drivers' => array("SQLSRV", "MSSQL", "PDO_DBLIB"),
+			'possible_drivers' => array("SQLSRV", "PDO_DBLIB"),
 			'jush' => "mssql",
 			'types' => $types,
 			'structured_types' => $structured_types,
