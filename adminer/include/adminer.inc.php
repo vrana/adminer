@@ -825,11 +825,21 @@ class Adminer {
 		if ($style) {
 			$max_packet = ($jush == "sqlite" ? 0 : 1048576); // default, minimum is 1024
 			$fields = array();
+			$identity_insert = false;
 			if ($_POST["format"] == "sql") {
 				if ($style == "TRUNCATE+INSERT") {
 					echo truncate_sql($table) . ";\n";
 				}
 				$fields = fields($table);
+				if ($jush == "mssql") {
+					foreach ($fields as $field) {
+						if ($field["auto_increment"]) {
+							echo "SET IDENTITY_INSERT " . table($table) . " ON;\n";
+							$identity_insert = true;
+							break;
+						}
+					}
+				}
 			}
 			$result = $connection->query($query, 1); // 1 - MYSQLI_USE_RESULT //! enum and set as numbers
 			if ($result) {
@@ -891,6 +901,9 @@ class Adminer {
 				}
 			} elseif ($_POST["format"] == "sql") {
 				echo "-- " . str_replace("\n", " ", $connection->error) . "\n";
+			}
+			if ($identity_insert) {
+				echo "SET IDENTITY_INSERT " . table($table) . " OFF;\n";
 			}
 		}
 	}
