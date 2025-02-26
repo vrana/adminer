@@ -920,7 +920,7 @@ Partitioning (MySQL 5.1)
 CSV import
 Plus and minus functions
 Option to stop on error in SQL command
-Cross links to select and table (bug #2236232), link new item
+Cross links to select and table (bug #5), link new item
 Suhosin compatibility
 Remove max_allowed_packet from export
 Read style from phpMinAdmin.css if exists
