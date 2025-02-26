@@ -1001,9 +1001,16 @@ if (!defined("DRIVER")) {
 
 	/* Not used is MySQL but checked in compile.php:
 	/** Get user defined types
-	* @return array
+	* @return array [$id => $name]
 	function types() {
 		return array();
+	}
+
+	/** Get values of user defined type
+	* @param int
+	* @return string
+	function type_values($id) {
+		return "";
 	}
 
 	/** Get existing schemas

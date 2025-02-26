@@ -77,7 +77,7 @@ header("Cache-Control: immutable");
 				"status" => array("show_status"),
 				"table" => array("is_view"),
 				"trigger" => array("triggers", "trigger", "trigger_options", "trigger_sql"),
-				"type" => array("types"),
+				"type" => array("types", "type_values"),
 				"variables" => array("show_variables"),
 			);
 			foreach ($requires as $support => $fns) {

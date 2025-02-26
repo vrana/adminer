@@ -730,6 +730,11 @@ AND typelem = 0"
 		);
 	}
 
+	function type_values($id) {
+		$enums = get_vals("SELECT enumlabel FROM pg_enum WHERE enumtypid = $id ORDER BY enumsortorder");
+		return ($enums ? "'" . implode("', '", array_map('addslashes', $enums)) . "'" : "");
+	}
+
 	function schemas() {
 		return get_vals("SELECT nspname FROM pg_namespace ORDER BY nspname");
 	}
