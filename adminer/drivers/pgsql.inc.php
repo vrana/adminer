@@ -780,8 +780,6 @@ AND typelem = 0"
 			return rtrim("CREATE VIEW " . idf_escape($table) . " AS $view[select]", ";");
 		}
 		$fields = fields($table);
-		$indexes = indexes($table);
-		ksort($indexes);
 
 		if (!$status || empty($fields)) {
 			return false;
@@ -816,30 +814,11 @@ AND typelem = 0"
 			$return = implode("\n\n", $sequences) . "\n\n$return";
 		}
 
-		// primary + unique keys
-		foreach ($indexes as $index_name => $index) {
-			switch($index['type']) {
-				case 'UNIQUE': $return_parts[] = "CONSTRAINT " . idf_escape($index_name) . " UNIQUE (" . implode(', ', array_map('idf_escape', $index['columns'])) . ")"; break;
-				case 'PRIMARY': $return_parts[] = "CONSTRAINT " . idf_escape($index_name) . " PRIMARY KEY (" . implode(', ', array_map('idf_escape', $index['columns'])) . ")"; break;
-			}
-		}
-
 		foreach ($driver->checkConstraints($table) as $conname => $consrc) {
 			$return_parts[] = "CONSTRAINT " . idf_escape($conname) . " $consrc";
 		}
 
 		$return .= implode(",\n    ", $return_parts) . "\n) WITH (oids = " . ($status['Oid'] ? 'true' : 'false') . ");";
-
-		// "basic" indexes after table definition
-		foreach ($indexes as $index_name => $index) {
-			if ($index['type'] == 'INDEX') {
-				$columns = array();
-				foreach ($index['columns'] as $key => $val) {
-					$columns[] = idf_escape($val) . ($index['descs'][$key] ? " DESC" : "");
-				}
-				$return .= "\n\nCREATE INDEX " . idf_escape($index_name) . " ON " . idf_escape($status['nspname']) . "." . idf_escape($status['Name']) . " USING btree (" . implode(', ', $columns) . ");";
-			}
-		}
 
 		// comments for table & fields
 		if ($status['Comment']) {
@@ -850,6 +829,10 @@ AND typelem = 0"
 			if ($field['comment']) {
 				$return .= "\n\nCOMMENT ON COLUMN " . idf_escape($status['nspname']) . "." . idf_escape($status['Name']) . "." . idf_escape($field_name) . " IS " . q($field['comment']) . ";";
 			}
+		}
+
+		foreach (get_rows("SELECT indexdef FROM pg_catalog.pg_indexes WHERE schemaname = current_schema() AND tablename = " . q($table)) as $row) {
+			$return .= "\n\n$row[indexdef];";
 		}
 
 		return rtrim($return, ';');
