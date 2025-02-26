@@ -806,7 +806,7 @@ function format_number($val) {
 */
 function friendly_url($val) {
 	// used for blobs and export
-	return preg_replace('~[^a-z0-9_]~i', '-', $val);
+	return preg_replace('~\W~i', '-', $val);
 }
 
 /** Print hidden fields
