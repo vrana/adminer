@@ -814,6 +814,14 @@ AND typelem = 0"
 			$return = implode("\n\n", $sequences) . "\n\n$return";
 		}
 
+		$primary = "";
+		foreach (indexes($table) as $index_name => $index) {
+			if ($index['type'] == 'PRIMARY') {
+				$primary = $index_name;
+				$return_parts[] = "CONSTRAINT " . idf_escape($index_name) . " PRIMARY KEY (" . implode(', ', array_map('idf_escape', $index['columns'])) . ")";
+			}
+		}
+
 		foreach ($driver->checkConstraints($table) as $conname => $consrc) {
 			$return_parts[] = "CONSTRAINT " . idf_escape($conname) . " $consrc";
 		}
@@ -831,7 +839,7 @@ AND typelem = 0"
 			}
 		}
 
-		foreach (get_rows("SELECT indexdef FROM pg_catalog.pg_indexes WHERE schemaname = current_schema() AND tablename = " . q($table), null, "-- ") as $row) {
+		foreach (get_rows("SELECT indexdef FROM pg_catalog.pg_indexes WHERE schemaname = current_schema() AND tablename = " . q($table) . ($primary ? " AND indexname != " . q($primary) : ""), null, "-- ") as $row) {
 			$return .= "\n\n$row[indexdef];";
 		}
 
