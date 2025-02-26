@@ -186,19 +186,25 @@ if (isset($_GET["mssql"])) {
 	class Min_Driver extends Min_SQL {
 
 		function insertUpdate($table, $rows, $primary) {
+			$fields = fields($table);
 			foreach ($rows as $set) {
 				$update = array();
+				$insert = array();
 				$where = array();
 				foreach ($set as $key => $val) {
-					$update[] = "$key = $val";
-					if (isset($primary[idf_unescape($key)])) {
+					$name = idf_unescape($key);
+					if (!$fields[$name]["auto_increment"]) {
+						$update[] = "$key = $val";
+						$insert[$key] = $val;
+					}
+					if (isset($primary[$name])) {
 						$where[] = "$key = $val";
 					}
 				}
 				//! can use only one query for all rows
 				if (!queries("MERGE " . table($table) . " USING (VALUES(" . implode(", ", $set) . ")) AS source (c" . implode(", c", range(1, count($set))) . ") ON " . implode(" AND ", $where) //! source, c1 - possible conflict
 					. " WHEN MATCHED THEN UPDATE SET " . implode(", ", $update)
-					. " WHEN NOT MATCHED THEN INSERT (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ");" // ; is mandatory
+					. " WHEN NOT MATCHED THEN INSERT (" . implode(", ", array_keys($insert)) . ") VALUES (" . implode(", ", $insert) . ");" // ; is mandatory
 				)) {
 					return false;
 				}
