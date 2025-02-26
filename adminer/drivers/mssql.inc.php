@@ -187,29 +187,31 @@ if (isset($_GET["mssql"])) {
 
 		function insertUpdate($table, $rows, $primary) {
 			$fields = fields($table);
-			queries("SET IDENTITY_INSERT " . table($table) . " ON");
+			$values = array();
 			foreach ($rows as $set) {
 				$update = array();
 				$where = array();
+				$columns = "c" . implode(", c", range(1, count($set)));
+				$c = 0;
 				foreach ($set as $key => $val) {
+					$c++;
 					$name = idf_unescape($key);
 					if (!$fields[$name]["auto_increment"]) {
-						$update[] = "$key = $val";
+						$update[] = "$key = c$c";
 					}
 					if (isset($primary[$name])) {
-						$where[] = "$key = $val";
+						$where[] = "$key = c$c";
 					}
 				}
-				//! can use only one query for all rows
-				if (!queries("MERGE " . table($table) . " USING (VALUES(" . implode(", ", $set) . ")) AS source (c" . implode(", c", range(1, count($set))) . ") ON " . implode(" AND ", $where) //! source, c1 - possible conflict
-					. " WHEN MATCHED THEN UPDATE SET " . implode(", ", $update)
-					. " WHEN NOT MATCHED THEN INSERT (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ");" // ; is mandatory
-				)) {
-					return false;
-				}
+				$values[] = "(" . implode(", ", $set) . ")";
 			}
+			queries("SET IDENTITY_INSERT " . table($table) . " ON");
+			$return = queries("MERGE " . table($table) . " USING (VALUES\n\t" . implode(",\n\t", $values) . "\n) AS source ($columns) ON " . implode(" AND ", $where) //! source, c1 - possible conflict
+				. "\nWHEN MATCHED THEN UPDATE SET " . implode(", ", $update)
+				. "\nWHEN NOT MATCHED THEN INSERT (" . implode(", ", array_keys($set)) . ") VALUES ($columns);" // ; is mandatory
+			);
 			queries("SET IDENTITY_INSERT " . table($table) . " OFF");
-			return true;
+			return $return;
 		}
 
 		function begin() {
