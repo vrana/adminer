@@ -600,13 +600,18 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)
 				$fields[] = ($index["type"] == "INDEX" ? "INDEX $name" : "CONSTRAINT $name " . ($index["type"] == "UNIQUE" ? "UNIQUE" : "PRIMARY KEY")) . " (" . implode(", ", $columns) . ")";
 			}
 		}
-		foreach (foreign_keys($table) as $foreign) {
-			$fields[] = ltrim(format_foreign_key($foreign));
-		}
 		foreach ($driver->checkConstraints($table) as $name => $check) {
 			$fields[] = "CONSTRAINT " . idf_escape($name) . " CHECK ($check)";
 		}
 		return "CREATE TABLE " . table($table) . " (\n\t" . implode(",\n\t", $fields) . "\n)";
+	}
+
+	function foreign_keys_sql($table) {
+		$fields = array();
+		foreach (foreign_keys($table) as $foreign) {
+			$fields[] = ltrim(format_foreign_key($foreign));
+		}
+		return ($fields ? "ALTER TABLE " . table($table) . " ADD\n\t" . implode(",\n\t", $fields) . ";\n\n" : "");
 	}
 
 	function truncate_sql($table) {
