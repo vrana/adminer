@@ -40,22 +40,22 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 				}
 			}
 
-			if ($columns) {
-				$existing = $indexes[$name];
-				if ($existing) {
-					ksort($existing["columns"]);
-					ksort($existing["lengths"]);
-					ksort($existing["descs"]);
-					if ($index["type"] == $existing["type"]
-						&& array_values($existing["columns"]) === $columns
-						&& (!$existing["lengths"] || array_values($existing["lengths"]) === $lengths)
-						&& array_values($existing["descs"]) === $descs
-					) {
-						// skip existing index
-						unset($indexes[$name]);
-						continue;
-					}
+			$existing = $indexes[$name];
+			if ($existing) {
+				ksort($existing["columns"]);
+				ksort($existing["lengths"]);
+				ksort($existing["descs"]);
+				if ($index["type"] == $existing["type"]
+					&& array_values($existing["columns"]) === $columns
+					&& (!$existing["lengths"] || array_values($existing["lengths"]) === $lengths)
+					&& array_values($existing["descs"]) === $descs
+				) {
+					// skip existing index
+					unset($indexes[$name]);
+					continue;
 				}
+			}
+			if ($columns) {
 				$alter[] = array($index["type"], $name, $set);
 			}
 		}

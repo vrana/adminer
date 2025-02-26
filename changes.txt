@@ -1,4 +1,5 @@
 Adminer dev:
+PostgreSQL: Do not alter indexes with expressions
 PostgreSQL: Fix export of indexes with expressions (bug #768)
 SQLite: Support CHECK constraint
 SQLite: Add command Check tables

@@ -423,12 +423,14 @@ ORDER BY a.attnum"
 			$relname = $row["relname"];
 			$return[$relname]["type"] = ($row["indispartial"] ? "INDEX" : ($row["indisprimary"] ? "PRIMARY" : ($row["indisunique"] ? "UNIQUE" : "INDEX")));
 			$return[$relname]["columns"] = array();
-			foreach (explode(" ", $row["indkey"]) as $indkey) {
-				$return[$relname]["columns"][] = $columns[$indkey];
-			}
 			$return[$relname]["descs"] = array();
-			foreach (explode(" ", $row["indoption"]) as $indoption) {
-				$return[$relname]["descs"][] = ($indoption & 1 ? '1' : null); // 1 - INDOPTION_DESC
+			if ($row["indkey"]) {
+				foreach (explode(" ", $row["indkey"]) as $indkey) {
+					$return[$relname]["columns"][] = $columns[$indkey];
+				}
+				foreach (explode(" ", $row["indoption"]) as $indoption) {
+					$return[$relname]["descs"][] = ($indoption & 1 ? '1' : null); // 1 - INDOPTION_DESC
+				}
 			}
 			$return[$relname]["lengths"] = array();
 		}
