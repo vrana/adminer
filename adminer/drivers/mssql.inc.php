@@ -194,12 +194,10 @@ if (isset($_GET["mssql"])) {
 			$c = 0;
 			foreach ($set as $key => $val) {
 				$c++;
-				$name = idf_unescape($key);
-				if (!$fields[$name]["auto_increment"]) {
-					$update[] = "$key = c$c";
-				}
-				if (isset($primary[$name])) {
+				if (isset($primary[idf_unescape($key)])) {
 					$where[] = "$key = c$c";
+				} else {
+					$update[] = "$key = c$c";
 				}
 			}
 			$values = array();
