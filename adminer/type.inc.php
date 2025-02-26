@@ -24,7 +24,10 @@ if (!$row) {
 if ($TYPE != "") {
 	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'>" . confirm(lang('Drop %s?', $TYPE)) . "\n";
 } else {
-	echo "<input name='name' value='" . h($row['name']) . "' autocapitalize='off'>\n";
+	echo lang('Name') . ": <input name='name' value='" . h($row['name']) . "' autocapitalize='off'>\n";
+	echo doc_link(array(
+		'pgsql' => "datatype-enum.html",
+	), "?");
 	textarea("as", $row["as"]);
 	echo "<p><input type='submit' value='" . lang('Save') . "'>\n";
 }
