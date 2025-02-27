@@ -162,6 +162,22 @@
 </tbody></table>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
+<tr><td rowspan="1" colspan="3">Check constraints</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=albums</td><td></td></tr>
+<tr><td>click</td><td>link=Create check</td><td></td></tr>
+<tr><td>type</td><td>name=clause</td><td>interpret > 0</td></tr>
+<tr><td>click</td><td>xpath=//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Check has been created.</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;check=albums&amp;name=albums_chk_1</td><td></td></tr>
+<tr><td>verifyText</td><td>name=clause</td><td>(`interpret` > 0)</td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Drop albums_chk_1?</td><td></td></tr>
+<tr><td>click</td><td>name=drop</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Check has been dropped.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
 <tr><td rowspan="1" colspan="3">Create view</td></tr>
 </thead>
 <tbody>
