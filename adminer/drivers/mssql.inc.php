@@ -192,9 +192,14 @@ if (isset($_GET["mssql"])) {
 			$set = reset($rows);
 			$columns = "c" . implode(", c", range(1, count($set)));
 			$c = 0;
+			$insert = array();
 			foreach ($set as $key => $val) {
 				$c++;
-				if (isset($primary[idf_unescape($key)])) {
+				$name = idf_unescape($key);
+				if (!$fields[$name]["auto_increment"]) {
+					$insert[$key] = "c$c";
+				}
+				if (isset($primary[$name])) {
 					$where[] = "$key = c$c";
 				} else {
 					$update[] = "$key = c$c";
@@ -205,12 +210,14 @@ if (isset($_GET["mssql"])) {
 				$values[] = "(" . implode(", ", $set) . ")";
 			}
 			if ($where) {
-				queries("SET IDENTITY_INSERT " . table($table) . " ON");
+				$identity = queries("SET IDENTITY_INSERT " . table($table) . " ON");
 				$return = queries("MERGE " . table($table) . " USING (VALUES\n\t" . implode(",\n\t", $values) . "\n) AS source ($columns) ON " . implode(" AND ", $where) //! source, c1 - possible conflict
 					. ($update ? "\nWHEN MATCHED THEN UPDATE SET " . implode(", ", $update) : "")
-					. "\nWHEN NOT MATCHED THEN INSERT (" . implode(", ", array_keys($set)) . ") VALUES ($columns);" // ; is mandatory
+					. "\nWHEN NOT MATCHED THEN INSERT (" . implode(", ", array_keys($identity ? $set : $insert)) . ") VALUES (" . ($identity ? $columns : implode(", ", $insert)) . ");" // ; is mandatory
 				);
-				queries("SET IDENTITY_INSERT " . table($table) . " OFF");
+				if ($identity) {
+					queries("SET IDENTITY_INSERT " . table($table) . " OFF");
+				}
 			} else {
 				$return = queries("INSERT INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ") VALUES\n" . implode(",\n", $values));
 			}
