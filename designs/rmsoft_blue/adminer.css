@@ -2,8 +2,8 @@
  * @package    Adminer.css - Theme CSS for Adminer   ---   [theme light]   blue    B  (with icons)
  *
  *//*!
- * @version    5.0.4.1
- * @date       Wed, 12 Mar 2025 21:35:32 +0100
+ * @version    5.0.6.1
+ * @date       Mon, 17 Mar 2025 23:32:32 +0100
  * @author     Robert Mesaros
  * @copyright  Copyright 2025 Robert Mesaros, rmSOFT, Slovakia
  * @web        https://www.rmsoft.sk
@@ -34,7 +34,9 @@
  *   Default Silk icon set 1.3 by Mark James - https://opengameart.org/content/application-silk-icon-set-13
  *   Modified icons by Robert Mesaros
  *
- */
+ */#menu{padding:0 0 30px 0}
+.ltr .logout{right:0;left:auto;margin-top:.5em}
+.rtl .logout{left:0;right:auto;margin-top:.5em}
 html{-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box}
 *,*:before,*:after{box-sizing:inherit}
 body{color:#000;background:#82a7c0;font-family:Verdana,Arial,Helvetica,sans-serif;font-weight:normal;cursor:default;margin:0}
@@ -166,10 +168,14 @@ th{background:#eee}
 a.text:hover{text-decoration:none}
 #schema{font-size:85%}
 #schema .table{background:#769eb8;border:1px solid #4e7189;padding:0 3px 3px;cursor:move;position:absolute}
-.binary{color:#a00}
-.date{color:#7f007f}
-.char{color:#007f00}
-.enum{color:#007f7f}
+#schema a{color:#1f4169}
+#schema i>span{color:#c4c6ed}
+#schema .table>span[title*=int]{color:#4a525b}
+#schema .table>span[title*=decimal]{color:#5c6671}
+#schema .binary{color:#a00}
+#schema .date{color:#7f007f}
+#schema .char{color:#086108}
+#schema .enum{color:#0d6f6f}
 span.jush{font-size:115%}
 span.jush-bac{color:#d22929}
 span.jush a:visited{color:#0b3a5a}
@@ -414,7 +420,7 @@ td a[href*="&edit="][id^=Data_free-]{background:url("data:image/png;base64,iVBOR
 td a[href*="&indexes="]{background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAKRSURBVDjLhZHfT1JhHMb9F7ptXXXR2lw/Llp3blnNZauLtmwtp15oWsu6oJZ5bKyFQiGIEIRIKoEsJtikWM1JmiQhtpieo3ISUoEINiJNE2SgT5x3ZiVZ3+15v3t/PJ89+755APJ4PJ64s7MzZDKZYDabYbFY0NvbSzq35867u7uh1WpjfD5fwXl+iixqtXoi2xfw/0ppNJrPOQC9Xp/O9vXTvCf4l7jKJkUOgIvH1bmGPlQ1D6Na+gY1Micut77FFcUoapVj5I4rnU6XCzAYDJuAmqz50hbzNdUvQJfu8d8BmUwGMzMz8Hq9oGkaHo8HbrcbTqcTDocDQ0ND+B62gzWeh8/ahPGOIkyo8ssJYCMWmXxLSwtYloXRaIRYLCag6I3rmKUKERmswyJtA5bDWKAtcElORAmgo4MMBqFQCIFAAH6/Hz6fj6RhGAasuw3xqTtIhZ4h8roZCeYpMvMjYLqqkwSgaW8nAKvVCrlcjmAwSNLIZDLM0ibEJ29jLTGCxMdaxMeuwmuoBK0t+zKmOLOHAFQqFQFEo1FEIhGEw2GSZp4x4ytTj7WkCyv+CiSDpViapjCnORJ9Lz1+cHOIcrmCAGw2G5RKJYHY9HxE3tVtmMuRDFzAt8kGsKoifJAcPvTHLzRLJAQQi8WI2FEjpvtvZmM7kJyrxGqwDIvZJH7NSTyUCnK/USgUpocdjnW73Y6+R3xMvaAw8bIVn9wlWJkrRXz8FrzqUxgZ6FsXikSJHABFUYxA0LgiFIrQc/8YsDQPtv0sBqmdcLYVY0BQgAfCetwVNK5m37pyAL9LcDE/nXIpkXLL4W4qRE/VruX++v0Htr7bFlBSsCMpqtibfnWvOG2XHh1+Xrdv93ZmTj8Aff0H4WdEl0kAAAAASUVORK5CYII=") no-repeat scroll left bottom}
 .ltr td a[href*="&indexes="]{background-position:right bottom;padding:0 20px 0 8px}
 .rtl td a[href*="&indexes="]{background-position:left bottom;padding:0 8px 0 20px}
-input[type=checkbox],input[type=radio],input[type=range],progress{accent-color:#4f7d9c}
+select,input[type=checkbox],input[type=radio],input[type=range],progress{accent-color:#4f7d9c}
 input[type=radio]{margin-bottom:5px}
 .ltr input[type=checkbox],.ltr input[type=radio],.ltr input[type=range],.ltr progress{margin-right:5px}
 .rtl input[type=checkbox],.rtl input[type=radio],.rtl input[type=range],.rtl progress{margin-left:5px}
@@ -422,10 +428,7 @@ input[type=radio]{margin-bottom:5px}
 .rtl input[type=submit]{margin-left:10px}
 .ltr table.layout label,.ltr label.jsonly{margin-left:8px}
 .rtl table.layout label,.rtl label.jsonly{margin-right:8px}
-input,button,select,.sqlarea{border-radius:3px}
 .sqlarea{background:#aac6d8;font-size:105%}
 fieldset a{line-height:unset}
 input[type=submit]{padding:2px 6px}
-#menu{padding:0 0 30px 0}
-.ltr .logout{right:0;left:auto;margin-top:.5em}
-.rtl .logout{left:0;right:auto;margin-top:.5em}
+
