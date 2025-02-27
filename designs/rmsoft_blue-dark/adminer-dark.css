@@ -2,8 +2,8 @@
  * @package    Adminer.css - Theme CSS for Adminer   ---   [theme dark]   blue    B  (with icons)
  *
  *//*!
- * @version    5.0.6.1
- * @date       Mon, 17 Mar 2025 23:32:32 +0100
+ * @version    5.1.0.1
+ * @date       Sat, 29 Mar 2025 13:55:32 +0100
  * @author     Robert Mesaros
  * @copyright  Copyright 2025 Robert Mesaros, rmSOFT, Slovakia
  * @web        https://www.rmsoft.sk
@@ -78,7 +78,7 @@ fieldset input{font-size:95%}
 .size{width:8ex}
 div.footer fieldset:first-child{color:#868d46}
 div.footer fieldset:first-child legend,div.footer fieldset:first-child div,div.footer fieldset:first-child label{color:#829bb0}
-a sup{margin-left:.2em}
+a sup{margin:0 .3em}
 #help{background:#c7e4fe}
 #help a{color:#062642}
 #help a:visited{color:#062642}
@@ -101,9 +101,7 @@ tbody a:visited{color:#396d9b}
 .links a{margin:0}
 .ltr .links a{margin-right:20px}
 .rtl .links a{margin-left:20px}
-code{background:#81a0bc;padding:.2em .5em}
-.ltr code{margin:0 13px 0 0}
-.rtl code{margin:0 0 0 13px}
+code{font-size:100%;background:#81a0bc;padding:.2em .5em}
 table code{font-size:130%;background:#154167;padding:.1em .3em}
 code.jush-sql{background:#92afc9}
 .rtl p code.jush-sql{background-position:right;clear:right;float:right}
@@ -168,7 +166,8 @@ tbody tr:hover th{background:#12324f !important}
 tbody tr.checked:hover td{background:#1a4870 !important}
 tbody tr.checked:hover th{background:#11304b !important}
 th{background:#11385a}
-#edit-fields tbody tr:hover td,#edit-fields tbody tr:hover th{background:#93b4d1 !important}
+code.jush-sqlset th,code.jush-sqlstatus th{background:#010304}
+#edit-fields tbody tr:hover td,#edit-fields tbody tr:hover th{background:#5287b5 !important}
 .js .column{position:absolute;background:#011d35;border:1px solid #316592;opacity:.9;margin-top:1.4em}
 .ltr .column{padding:.27em 1ex .3em 0;margin-left:-2.6em}
 .rtl .column{padding:.27em 0 .3em 1ex;margin-right:-2.6em}
@@ -183,9 +182,12 @@ a.text:hover{text-decoration:none}
 #schema .date{color:#a34ba3}
 #schema .char{color:#0f9f0f}
 #schema .enum{color:#07a5a5}
-span.jush{font-size:115%}
+span.jush{font-size:110%}
 span.jush-bac{color:#d22929}
-span.jush a:visited{color:#0b3559}
+span.jush a:visited{color:#000}
+code.jush-sqlset span.jush,code.jush-sqlstatus span.jush{color:#060a0d}
+code.jush-sqlset span.jush a,code.jush-sqlstatus span.jush a{color:#7198bb}
+code.jush-sqlset span.jush a:hover,code.jush-sqlstatus span.jush a:hover{color:#94b1cb}
 a.jush-help:hover,a.jush-custom:hover{color:#002240}
 .message{font-size:90%;width:fit-content;border:1px solid #7fbd7f}
 .message .time{color:#a6a6a6}
@@ -202,6 +204,8 @@ p label{font-size:90%}
 .rtl p label{margin-right:10px}
 .ltr p label input{margin-right:7px}
 .rtl p label input{margin-left:7px}
+.ltr.js p input[name=Collation]{margin-right:7px}
+.rtl.js p input[name=Collation]{margin-left:7px}
 label.block{margin:0}
 #fieldset-history input{margin:10px 0 0 0}
 #table tbody input{vertical-align:unset}
@@ -427,7 +431,7 @@ td a[href*="&edit="][id^=Data_free-]{background:url("data:image/png;base64,iVBOR
 td a[href*="&indexes="]{background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAKRSURBVDjLhZHfT1JhHMb9F7ptXXXR2lw/Llp3blnNZauLtmwtp15oWsu6oJZ5bKyFQiGIEIRIKoEsJtikWM1JmiQhtpieo3ISUoEINiJNE2SgT5x3ZiVZ3+15v3t/PJ89+755APJ4PJ64s7MzZDKZYDabYbFY0NvbSzq35867u7uh1WpjfD5fwXl+iixqtXoi2xfw/0ppNJrPOQC9Xp/O9vXTvCf4l7jKJkUOgIvH1bmGPlQ1D6Na+gY1Micut77FFcUoapVj5I4rnU6XCzAYDJuAmqz50hbzNdUvQJfu8d8BmUwGMzMz8Hq9oGkaHo8HbrcbTqcTDocDQ0ND+B62gzWeh8/ahPGOIkyo8ssJYCMWmXxLSwtYloXRaIRYLCag6I3rmKUKERmswyJtA5bDWKAtcElORAmgo4MMBqFQCIFAAH6/Hz6fj6RhGAasuw3xqTtIhZ4h8roZCeYpMvMjYLqqkwSgaW8nAKvVCrlcjmAwSNLIZDLM0ibEJ29jLTGCxMdaxMeuwmuoBK0t+zKmOLOHAFQqFQFEo1FEIhGEw2GSZp4x4ytTj7WkCyv+CiSDpViapjCnORJ9Lz1+cHOIcrmCAGw2G5RKJYHY9HxE3tVtmMuRDFzAt8kGsKoifJAcPvTHLzRLJAQQi8WI2FEjpvtvZmM7kJyrxGqwDIvZJH7NSTyUCnK/USgUpocdjnW73Y6+R3xMvaAw8bIVn9wlWJkrRXz8FrzqUxgZ6FsXikSJHABFUYxA0LgiFIrQc/8YsDQPtv0sBqmdcLYVY0BQgAfCetwVNK5m37pyAL9LcDE/nXIpkXLL4W4qRE/VruX++v0Htr7bFlBSsCMpqtibfnWvOG2XHh1+Xrdv93ZmTj8Aff0H4WdEl0kAAAAASUVORK5CYII=") no-repeat scroll left bottom}
 .ltr td a[href*="&indexes="]{background-position:right bottom;padding:0 20px 0 8px}
 .rtl td a[href*="&indexes="]{background-position:left bottom;padding:0 8px 0 20px}
-select,input:not([type=submit]){background-color:#b4c8da !important}
+select,input:not([type=submit],[type=file],[type=image]){background-color:#b4c8da !important}
 input,button,select,.sqlarea{border-radius:3px}
 select,input[type=checkbox],input[type=radio],input[type=range],progress{accent-color:#0061b5}
 input[type=radio]{margin-bottom:5px}
@@ -440,4 +444,3 @@ input[type=radio]{margin-bottom:5px}
 .sqlarea{background:#92afc9;font-size:105%}
 fieldset a{line-height:unset}
 input[type=submit]{padding:2px 6px}
-
