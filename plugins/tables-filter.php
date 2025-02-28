@@ -9,27 +9,26 @@
 class AdminerTablesFilter {
 	function tablesPrint($tables) { ?>
 <script<?php echo nonce(); ?>>
-let tablesFilterTimeout = null;
-let tablesFilterValue = '';
+var tablesFilterTimeout = null;
+var tablesFilterValue = '';
 
 function tablesFilter(){
-	const value = qs('#filter-field').value.toLowerCase();
-    qs('#filter-field-reset').style.display = (value === '' ? 'none' : '');
-	if (value === tablesFilterValue) {
+	var value = qs('#filter-field').value.toLowerCase();
+	if (value == tablesFilterValue) {
 		return;
 	}
 	tablesFilterValue = value;
-	if (value !== '') {
-		var reg = (value + '').replace(/([\\.+*?\[^\]$(){}=!<>|:])/g, '\\$1');
+	if (value != '') {
+		var reg = (value + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, '\\$1');
 		reg = new RegExp('('+ reg + ')', 'gi');
 	}
 	if (sessionStorage) {
 		sessionStorage.setItem('adminer_tables_filter', value);
 	}
-	const tables = qsa('li', qs('#tables'));
-	for (let i = 0; i < tables.length; i++) {
-		let a = null;
-		let text = tables[i].getAttribute('data-table-name');
+	var tables = qsa('li', qs('#tables'));
+	for (var i = 0; i < tables.length; i++) {
+		var a = null;
+		var text = tables[i].getAttribute('data-table-name');
 		if (text == null) {
 			a = qsa('a', tables[i])[1];
 			text = a.innerHTML.trim();
@@ -39,11 +38,11 @@ function tablesFilter(){
 		} else {
 			a = qs('a[data-link="main"]', tables[i]);
 		}
-		if (value === '') {
+		if (value == '') {
 			tables[i].className = '';
 			a.innerHTML = text;
 		} else {
-			tables[i].className = (text.toLowerCase().indexOf(value) === -1 ? 'hidden' : '');
+			tables[i].className = (text.toLowerCase().indexOf(value) == -1 ? 'hidden' : '');
 			a.innerHTML = text.replace(reg, '<strong>$1</strong>');
 		}
 	}
@@ -54,23 +53,17 @@ function tablesFilterInput() {
 	tablesFilterTimeout = window.setTimeout(tablesFilter, 200);
 }
 
-function tablesFilterReset() {
-    qs('#filter-field').value = '';
-    tablesFilter();
-}
-
 sessionStorage && document.addEventListener('DOMContentLoaded', function () {
-	let db = qs('#dbs').querySelector('select');
+	var db = qs('#dbs').querySelector('select');
 	db = db.options[db.selectedIndex].text;
-	if (db === sessionStorage.getItem('adminer_tables_filter_db') && sessionStorage.getItem('adminer_tables_filter')){
+	if (db == sessionStorage.getItem('adminer_tables_filter_db') && sessionStorage.getItem('adminer_tables_filter')){
 		qs('#filter-field').value = sessionStorage.getItem('adminer_tables_filter');
 		tablesFilter();
 	}
 	sessionStorage.setItem('adminer_tables_filter_db', db);
 });
 </script>
-<p class="jsonly"><input id="filter-field" autocomplete="off"><?php echo script("qs('#filter-field').oninput = tablesFilterInput;"); ?>
-<input type="button" id="filter-field-reset" value="x" style="display:none"><?php echo script("qs('#filter-field-reset').onclick = tablesFilterReset;"); ?>
+<p class="jsonly"><input id="filter-field" autocomplete="off" type="search"><?php echo script("qs('#filter-field').oninput = tablesFilterInput;"); ?>
 <?php
 	}
 }
