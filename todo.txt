@@ -14,9 +14,7 @@ Skinnable plus.gif and other images - http://typo3.org/extensions/repository/vie
 ? Branch binary_compile: LZW compression of all texts can save 11 KB, using chars 127-255 in minification can save 1 KB
 
 https://github.com/vrana/adminer/compare/master...adminneo-org:adminneo:main
-MySQL: Print comments of stored procedures and functions
 Add drag-n-drop moving of rows in table editing
-PostgreSQL: Show list of schemas in database
 Elasticsearch: Add support for "where" field privilege
 Elasticsearch: Add support for "order" field privilege
 Elasticsearch: New condition operators as the combination of query type and match type
