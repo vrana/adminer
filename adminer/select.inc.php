@@ -198,7 +198,7 @@ if ($_POST && !$error) {
 				} else {
 					$set = array();
 					foreach ($matches2[1] as $i => $col) {
-						$set[idf_escape($cols[$i])] = ($col == "" && $fields[$cols[$i]]["null"] ? "NULL" : q(str_replace('""', '"', preg_replace('~^"|"$~', '', $col))));
+						$set[idf_escape($cols[$i])] = ($col == "" && $fields[$cols[$i]]["null"] ? "NULL" : q(preg_match('~^".*"$~s', $col) ? str_replace('""', '"', substr($col, 1, -1)) : $col));
 					}
 					$rows[] = $set;
 				}
