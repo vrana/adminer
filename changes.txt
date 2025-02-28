@@ -1,4 +1,5 @@
 Adminer dev:
+Speed up with disabled output buffering
 PostgreSQL: Do not alter indexes with expressions
 PostgreSQL: Fix export of indexes with expressions (bug #768)
 PostgreSQL: Display ENUM types

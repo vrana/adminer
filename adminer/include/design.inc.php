@@ -1,4 +1,8 @@
 <?php
+if (!ob_get_level()) {
+	ob_start(null, 4096);
+}
+
 /** Print HTML header
 * @param string used in title, breadcrumb and heading, should be HTML escaped
 * @param string
