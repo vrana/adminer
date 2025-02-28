@@ -143,13 +143,23 @@ if (isset($_GET["elastic"])) {
 				}
 			}
 
+			$fields = null;
 			foreach ($where as $val) {
 				if (preg_match('~^\((.+ OR .+)\)$~', $val, $matches)) {
 					$parts = explode(" OR ", $matches[1]);
 					$terms = array();
+
+					if ($fields === null) {
+						$fields = fields($table);
+					}
 					foreach ($parts as $part) {
 						list($col, $op, $val) = explode(" ", $part, 3);
 						$term = array($col => $val);
+						if (isset($fields[$col]) && $fields[$col]['full_type'] == 'boolean'
+							&& $val !== 'true' && $val !== 'false'
+						) {
+							continue;
+						}
 						if ($op == "=") {
 							$terms[] = array("term" => $term);
 						} elseif (in_array($op, array("must", "should", "must_not"))) {
