@@ -100,7 +100,21 @@ if (isset($_GET["elastic"])) {
 
 			function __construct($rows) {
 				$this->num_rows = count($rows);
-				$this->_rows = $rows;
+
+				$keys = array();
+				foreach ($rows as $row) {
+					foreach ($row as $key => $val) {
+						$keys[$key] = true;
+					}
+				}
+				$this->_rows = array();
+				foreach ($rows as $row) {
+					$insert = array();
+					foreach ($keys as $key => $val) {
+						$insert[$key] = $row[$key];
+					}
+					$this->_rows[] = $insert;
+				}
 
 				reset($this->_rows);
 			}
