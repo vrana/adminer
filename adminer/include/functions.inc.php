@@ -633,7 +633,7 @@ function query_redirect($query, $location, $message, $redirect = true, $execute 
 
 /** Execute and remember query
 * @param string or null to return remembered queries, end with ';' to use DELIMITER
-* @return Min_Result or array($queries, $time) if $query = null
+* @return Min_Result or [$queries, $time] if $query = null
 */
 function queries($query) {
 	global $connection;
@@ -851,7 +851,7 @@ function table_status1($table, $fast = false) {
 
 /** Find out foreign keys for each column
 * @param string
-* @return array [$col => array()]
+* @return array [$col => []]
 */
 function column_foreign_keys($table) {
 	global $adminer;
