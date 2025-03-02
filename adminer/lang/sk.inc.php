@@ -302,4 +302,10 @@ $translations = array(
 	'Disable %s or enable %s or %s extensions.' => 'Zakážte %s alebo povoľte rozšírenie %s alebo %s.',
 	'yes' => 'áno',
 	'no' => 'nie',
+	'Checks' => 'Kontroly',
+	'Create check' => 'Vytvoriť kontrolu',
+	'Alter check' => 'Zmeniť kontrolu',
+	'Check has been created.' => 'Kontrola bola vytvorená.',
+	'Check has been altered.' => 'Kontrola bola zmenená.',
+	'Check has been dropped.' => 'Kontrola bola odstránená.',
 );
