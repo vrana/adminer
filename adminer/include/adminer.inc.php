@@ -512,7 +512,7 @@ class Adminer {
 	/** Process columns box in select
 	* @param array selectable columns
 	* @param array
-	* @return array [array(select_expressions), array(group_expressions)]
+	* @return array [[select_expressions], [group_expressions]]
 	*/
 	function selectColumnsProcess($columns, $indexes) {
 		global $functions, $grouping;

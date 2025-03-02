@@ -446,7 +446,7 @@ if (isset($_GET["sqlite"])) {
 	* @param array [$original => idf_escape($new_column)], empty to preserve
 	* @param string [format_foreign_key()], empty to preserve
 	* @param int set auto_increment to this value, 0 to preserve
-	* @param array [array($type, $name, $columns)], empty to preserve
+	* @param array [[$type, $name, $columns]], empty to preserve
 	* @param string CHECK constraint to drop
 	* @param string CHECK constraint to add
 	* @return bool

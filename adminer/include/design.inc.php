@@ -6,7 +6,7 @@ if (!ob_get_level()) {
 /** Print HTML header
 * @param string used in title, breadcrumb and heading, should be HTML escaped
 * @param string
-* @param mixed array("key" => "link", "key2" => array("link", "desc")), null for nothing, false for driver only, true for driver and server
+* @param mixed ["key" => "link", "key2" => ["link", "desc"]], null for nothing, false for driver only, true for driver and server
 * @param string used after colon in title and heading, should be HTML escaped
 * @return null
 */
