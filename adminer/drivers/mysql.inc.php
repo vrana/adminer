@@ -501,7 +501,7 @@ if (!defined("DRIVER")) {
 
 	/** Count tables in all databases
 	* @param array
-	* @return array arra($db => $tables)
+	* @return array [$db => $tables]
 	*/
 	function count_tables($databases) {
 		$return = array();
@@ -514,7 +514,7 @@ if (!defined("DRIVER")) {
 	/** Get table status
 	* @param string
 	* @param bool return only "Name", "Engine" and "Comment" fields
-	* @return array [$name => array("Name" => , "Engine" => , "Comment" => , "Oid" => , "Rows" => , "Collation" => , "Auto_increment" => , "Data_length" => , "Index_length" => , "Data_free" => )] or only inner array with $name
+	* @return array [$name => ["Name" => , "Engine" => , "Comment" => , "Oid" => , "Rows" => , "Collation" => , "Auto_increment" => , "Data_length" => , "Index_length" => , "Data_free" => ]] or only inner array with $name
 	*/
 	function table_status($name = "", $fast = false) {
 		$return = array();
@@ -558,7 +558,7 @@ if (!defined("DRIVER")) {
 
 	/** Get information about fields
 	* @param string
-	* @return array [$name => array("field" => , "full_type" => , "type" => , "length" => , "unsigned" => , "default" => , "null" => , "auto_increment" => , "on_update" => , "collation" => , "privileges" => , "comment" => , "primary" => )]
+	* @return array [$name => ["field" => , "full_type" => , "type" => , "length" => , "unsigned" => , "default" => , "null" => , "auto_increment" => , "on_update" => , "collation" => , "privileges" => , "comment" => , "primary" => ]]
 	*/
 	function fields($table) {
 		$return = array();
@@ -588,7 +588,7 @@ if (!defined("DRIVER")) {
 	/** Get table indexes
 	* @param string
 	* @param string Min_DB to use
-	* @return array [$key_name => array("type" => , "columns" => array(), "lengths" => array(), "descs" => array())]
+	* @return array [$key_name => ["type" => , "columns" => [], "lengths" => [], "descs" => []]]
 	*/
 	function indexes($table, $connection2 = null) {
 		$return = array();
@@ -604,7 +604,7 @@ if (!defined("DRIVER")) {
 
 	/** Get foreign keys in table
 	* @param string
-	* @return array [$name => array("db" => , "ns" => , "table" => , "source" => array(), "target" => array(), "on_delete" => , "on_update" => )]
+	* @return array [$name => ["db" => , "ns" => , "table" => , "source" => [], "target" => [], "on_delete" => , "on_update" => ]]
 	*/
 	function foreign_keys($table) {
 		global $connection, $on_actions;
@@ -740,7 +740,7 @@ if (!defined("DRIVER")) {
 	/** Run commands to create or alter table
 	* @param string "" to create
 	* @param string new name
-	* @param array of array($orig, $process_field, $after)
+	* @param array of [$orig, $process_field, $after]
 	* @param array of strings
 	* @param string
 	* @param string
@@ -777,7 +777,7 @@ if (!defined("DRIVER")) {
 
 	/** Run commands to alter indexes
 	* @param string escaped table name
-	* @param array of array("index type", "name", array("column definition", ...)) or array("index type", "name", "DROP")
+	* @param array of ["index type", "name", ["column definition", ...]] or ["index type", "name", "DROP"]
 	* @return bool
 	*/
 	function alter_indexes($table, $alter) {
@@ -892,7 +892,7 @@ if (!defined("DRIVER")) {
 
 	/** Get defined triggers
 	* @param string
-	* @return array [$name => array($timing, $event)]
+	* @return array [$name => [$timing, $event]]
 	*/
 	function triggers($table) {
 		$return = array();
@@ -903,7 +903,7 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Get trigger options
-	* @return array ["Timing" => array(), "Event" => array(), "Type" => array()]
+	* @return array ["Timing" => [], "Event" => [], "Type" => []]
 	*/
 	function trigger_options() {
 		return array(
@@ -916,7 +916,7 @@ if (!defined("DRIVER")) {
 	/** Get information about stored routine
 	* @param string
 	* @param string "FUNCTION" or "PROCEDURE"
-	* @return array ["fields" => array("field" => , "type" => , "length" => , "unsigned" => , "inout" => , "collation" => ), "returns" => , "definition" => , "language" => ]
+	* @return array ["fields" => ["field" => , "type" => , "length" => , "unsigned" => , "inout" => , "collation" => ], "returns" => , "definition" => , "language" => ]
 	*/
 	function routine($name, $type) {
 		global $connection, $enum_length, $inout, $types;
@@ -1169,7 +1169,7 @@ if (!defined("DRIVER")) {
 	*/
 	function driver_config() {
 		$types = array(); ///< @var array [$type => $maximum_unsigned_length, ...]
-		$structured_types = array(); ///< @var array [$description => array($type, ...), ...]
+		$structured_types = array(); ///< @var array [$description => [$type, ...], ...]
 		foreach (array(
 			lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "mediumint" => 8, "int" => 10, "bigint" => 20, "decimal" => 66, "float" => 12, "double" => 21),
 			lang('Date and time') => array("date" => 10, "datetime" => 19, "timestamp" => 19, "time" => 10, "year" => 4),
