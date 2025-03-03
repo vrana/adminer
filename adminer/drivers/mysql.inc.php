@@ -246,7 +246,7 @@ if (!defined("DRIVER")) {
 					if (!empty($ssl['ca'])) {
 						$options[PDO::MYSQL_ATTR_SSL_CA] = $ssl['ca'];
 					}
-					if (!empty($ssl['verify'])) {
+					if (isset($ssl['verify'])) {
 						$options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = $ssl['verify'];
 					}
 				}
