@@ -228,6 +228,17 @@ if (isset($_GET["mssql"])) {
 			return queries("BEGIN TRANSACTION");
 		}
 
+		function tableHelp($name, $is_view = false) {
+			$links = array(
+				"sys" => "catalog-views/sys-",
+				"INFORMATION_SCHEMA" => "information-schema-views/",
+			);
+			$link = $links[get_schema()];
+			if ($link) {
+				return "relational-databases/system-$link" . preg_replace('~_~', '-', strtolower($name)) . "-transact-sql";
+			}
+		}
+
 	}
 
 

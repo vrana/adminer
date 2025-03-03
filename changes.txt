@@ -16,6 +16,7 @@ MS SQL: Fix altering foreign key
 MS SQL PDO: Support offset
 MS SQL: Remove support for MSSQL extension
 MS SQL: Add support for PDO_SQLSRV extension
+MS SQL: Link help from sys tables
 MongoDB: Remove support for deprecated extension mongo
 
 Adminer 4.17.1 (released 2025-02-25):
