@@ -57,6 +57,8 @@ SET foreign_key_checks = 0;
 						$enums = type_values($id);
 						if ($enums) {
 							$out .= ($style != 'DROP+CREATE' ? "DROP TYPE IF EXISTS " . idf_escape($type) . ";;\n" : "") . "CREATE TYPE " . idf_escape($type) . " AS ENUM ($enums);\n\n";
+						} else {
+							$out .= "-- Could not export type $type\n\n";
 						}
 					}
 				}
