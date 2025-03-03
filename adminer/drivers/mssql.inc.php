@@ -392,7 +392,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table)
 	}
 
 	function information_schema($db) {
-		return false;
+		return get_schema() == "INFORMATION_SCHEMA";
 	}
 
 	function error() {

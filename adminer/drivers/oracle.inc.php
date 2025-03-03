@@ -346,7 +346,7 @@ ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row) {
 	}
 
 	function information_schema($db) {
-		return false;
+		return get_schema() == "INFORMATION_SCHEMA";
 	}
 
 	function error() {
