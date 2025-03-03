@@ -5,6 +5,7 @@ PostgreSQL: Do not alter indexes with expressions
 PostgreSQL: Fix export of indexes with expressions (bug #768)
 PostgreSQL: Display ENUM types
 PostgreSQL: Export ENUM types (bug #587)
+PostgreSQL: Show accessible databases to non-owners (regression from 4.9.1)
 SQLite: Support CHECK constraint
 SQLite: Add command Check tables
 SQLite: Display all rows of variable values
