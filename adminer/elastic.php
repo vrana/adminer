@@ -1,4 +1,6 @@
 <?php
+// To create Adminer just for Elasticsearch, run `../compile.php elastic`.
+
 function adminer_object() {
 	include_once "../plugins/plugin.php";
 	include_once "../plugins/login-password-less.php";
