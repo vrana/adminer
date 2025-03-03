@@ -1411,6 +1411,7 @@ function edit_form($table, $fields, $row, $update) {
 		echo "<p class='error'>" . lang('You have no privileges to update this table.') . "\n";
 	} else {
 		echo "<table class='layout'>" . script("qsl('table').onkeydown = editingKeydown;");
+		$first = 0;
 		foreach ($fields as $name => $field) {
 			echo "<tr><th>" . $adminer->fieldName($field);
 			$default = $_GET["set"][bracket_escape($name)];
@@ -1451,6 +1452,9 @@ function edit_form($table, $fields, $row, $update) {
 				$value = "";
 				$function = "uuid";
 			}
+			if ($field["auto_increment"] || $function == "now" || $function == "uuid") {
+				$first++;
+			}
 			input($field, $value, $function);
 			echo "\n";
 		}
@@ -1477,7 +1481,7 @@ function edit_form($table, $fields, $row, $update) {
 		}
 	}
 	echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "'>" . confirm() . "\n"
-		: ($_POST || !$fields ? "" : script("focus(qsa('td', qs('#form'))[1].firstChild);"))
+		: ($_POST || !$fields ? "" : script("focus(qsa('td', qs('#form'))[2*$first+1].firstChild);"))
 	);
 	if (isset($_GET["select"])) {
 		hidden_fields(array("check" => (array) $_POST["check"], "clone" => $_POST["clone"], "all" => $_POST["all"]));
