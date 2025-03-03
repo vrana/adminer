@@ -291,8 +291,8 @@ if (isset($_GET["pgsql"])) {
 	}
 
 	function get_databases() {
-		return get_vals("SELECT d.datname FROM pg_database d JOIN pg_roles r ON d.datdba = r.oid
-WHERE d.datallowconn = TRUE AND has_database_privilege(d.datname, 'CONNECT') AND pg_has_role(r.rolname, 'USAGE')
+		return get_vals("SELECT d.datname FROM pg_database d
+WHERE d.datallowconn = TRUE AND has_database_privilege(d.datname, 'CONNECT')
 ORDER BY d.datname");
 	}
 
