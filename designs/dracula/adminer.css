@@ -489,6 +489,7 @@
 	 margin-top: 0;
  }
 
+ pre.jush,
  input:not([type]),
  input[type="color"],
  input[type="email"],

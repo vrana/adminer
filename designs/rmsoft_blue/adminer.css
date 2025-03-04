@@ -99,7 +99,7 @@ code{background:#93b3c8;padding:.2em .5em}
 table code{font-size:130%;background:#bfd9eb;padding:.1em .3em}
 code.jush-sql{background:#d8e9f4}
 .rtl p code.jush-sql{background-position:right;clear:right;float:right}
-pre{background:#aac6d8 !important;padding:5px}
+pre.sqlarea{background:#aac6d8;padding:5px}
 textarea{font-size:120%}
 .ltr p.count{font-size:90%;margin:.8em 20px 8px 0}
 .rtl p.count{font-size:90%;margin:.8em 0 8px 20px}

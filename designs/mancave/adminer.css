@@ -450,6 +450,7 @@ textarea
 	outline: none;
 }
 
+pre.jush,
 textarea, input, select {
     border-width: 1px;
     -moz-border-radius: 4px;
