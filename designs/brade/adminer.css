@@ -59,6 +59,7 @@ outline:0;background:url(//www.bradezone.com/random/adminer_logo.gif) no-repeat;
 * html #lang{padding-top:10px;height:30px}
 * html form#form{height:100%}
 #logins a,#tables a{background: none}
+.logout{color:#fff}
 #logout{color:#333;text-decoration:none;border-bottom:1px dotted}
 #logout:hover{border-color:#333;background:#333;color:#fff}
 .js .column{background:#ddd}

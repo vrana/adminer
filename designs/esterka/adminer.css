@@ -216,12 +216,12 @@ th {
 	color:white;
 }
 
-input[name=logout] {
+#logout {
 	color:#fce2e2;
 	background:#d73e3e;
 }
 
-input[name=logout]:hover {
+#logout:hover {
 	background:#ea0202;
 }
 
@@ -234,14 +234,8 @@ input[name=logout]:hover {
 	color:white;
 }
 
-#logout {
-	color:#0033ff;
-	text-decoration:none;
-}
-
-#logout:hover {
-	color:white;
-	background:#0033ff;
+.logout {
+	z-index: 2;
 }
 
 .js .column {
