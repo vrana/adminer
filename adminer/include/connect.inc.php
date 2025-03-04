@@ -1,6 +1,16 @@
 <?php
-function connect_error() {
-	global $adminer, $connection, $token, $error, $drivers;
+if (isset($_GET["status"])) {
+	$_GET["variables"] = $_GET["status"];
+}
+if (isset($_GET["import"])) {
+	$_GET["sql"] = $_GET["import"];
+}
+
+if (!(DB != "" ? $connection->select_db(DB) : isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]) || isset($_GET["processlist"]) || isset($_GET["privileges"]) || isset($_GET["user"]) || isset($_GET["variables"]) || $_GET["script"] == "connect" || $_GET["script"] == "kill")) {
+	if (DB != "" || $_GET["refresh"]) {
+		restart_session();
+		set_session("dbs", null);
+	}
 	if (DB != "") {
 		header("HTTP/1.1 404 Not Found");
 		page_header(lang('Database') . ": " . h(DB), lang('Invalid database.'), true);
@@ -71,21 +81,6 @@ function connect_error() {
 	}
 
 	page_footer("db");
-}
-
-if (isset($_GET["status"])) {
-	$_GET["variables"] = $_GET["status"];
-}
-if (isset($_GET["import"])) {
-	$_GET["sql"] = $_GET["import"];
-}
-
-if (!(DB != "" ? $connection->select_db(DB) : isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]) || isset($_GET["processlist"]) || isset($_GET["privileges"]) || isset($_GET["user"]) || isset($_GET["variables"]) || $_GET["script"] == "connect" || $_GET["script"] == "kill")) {
-	if (DB != "" || $_GET["refresh"]) {
-		restart_session();
-		set_session("dbs", null);
-	}
-	connect_error(); // separate function to catch SQLite error
 	exit;
 }
 
