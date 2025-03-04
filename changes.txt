@@ -1,6 +1,7 @@
 Adminer dev:
 Speed up with disabled output buffering
 Don't autofocus computed fields in insert form
+PostgreSQL: Compute size of all databases (bug #881)
 PostgreSQL: Do not alter indexes with expressions
 PostgreSQL: Fix export of indexes with expressions (bug #768)
 PostgreSQL: Display ENUM types

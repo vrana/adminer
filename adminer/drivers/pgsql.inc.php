@@ -336,7 +336,14 @@ ORDER BY 1";
 	}
 
 	function count_tables($databases) {
-		return array(); // would require reconnect
+		global $connection;
+		$return = array();
+		foreach ($databases as $db) {
+			if ($connection->select_db($db)) {
+				$return[$db] = count(tables_list());
+			}
+		}
+		return $return;
 	}
 
 	function table_status($name = "") {
