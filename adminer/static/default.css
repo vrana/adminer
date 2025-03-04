@@ -22,6 +22,7 @@ td img { max-width: 200px; max-height: 200px; }
 code { background: #eee; }
 tbody tr:hover td, tbody tr:hover th { background: #eee; }
 pre { margin: 1em 0 0; }
+td pre { margin: 0; }
 pre, textarea { font: 100%/1.25 monospace; }
 pre.jush { background: #fff; }
 input, textarea { box-sizing: border-box; }
