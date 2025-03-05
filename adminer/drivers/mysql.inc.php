@@ -236,20 +236,20 @@ if (!defined("DRIVER")) {
 
 			function connect($server, $username, $password) {
 				global $adminer;
-				$options = array(PDO::MYSQL_ATTR_LOCAL_INFILE => false);
+				$options = array(\PDO::MYSQL_ATTR_LOCAL_INFILE => false);
 				$ssl = $adminer->connectSsl();
 				if ($ssl) {
 					if ($ssl['key']) {
-						$options[PDO::MYSQL_ATTR_SSL_KEY] = $ssl['key'];
+						$options[\PDO::MYSQL_ATTR_SSL_KEY] = $ssl['key'];
 					}
 					if ($ssl['cert']) {
-						$options[PDO::MYSQL_ATTR_SSL_CERT] = $ssl['cert'];
+						$options[\PDO::MYSQL_ATTR_SSL_CERT] = $ssl['cert'];
 					}
 					if ($ssl['ca']) {
-						$options[PDO::MYSQL_ATTR_SSL_CA] = $ssl['ca'];
+						$options[\PDO::MYSQL_ATTR_SSL_CA] = $ssl['ca'];
 					}
 					if (isset($ssl['verify'])) {
-						$options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = $ssl['verify'];
+						$options[\PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = $ssl['verify'];
 					}
 				}
 				$this->dsn(
@@ -271,7 +271,7 @@ if (!defined("DRIVER")) {
 			}
 
 			function query($query, $unbuffered = false) {
-				$this->pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, !$unbuffered);
+				$this->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, !$unbuffered);
 				return parent::query($query, $unbuffered);
 			}
 		}

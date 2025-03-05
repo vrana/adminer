@@ -15,14 +15,14 @@ if (extension_loaded('pdo')) {
 		}
 
 		function dsn($dsn, $username, $password, $options = array()) {
-			$options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_SILENT;
-			$options[PDO::ATTR_STATEMENT_CLASS] = array('PdoDbStatement');
+			$options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_SILENT;
+			$options[\PDO::ATTR_STATEMENT_CLASS] = array('Adminer\PdoDbStatement');
 			try {
-				$this->pdo = new PDO($dsn, $username, $password, $options);
+				$this->pdo = new \PDO($dsn, $username, $password, $options);
 			} catch (Exception $ex) {
 				auth_error(h($ex->getMessage()));
 			}
-			$this->server_info = @$this->pdo->getAttribute(PDO::ATTR_SERVER_VERSION);
+			$this->server_info = @$this->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION);
 		}
 
 		/*abstract function select_db($database);*/
@@ -86,11 +86,11 @@ if (extension_loaded('pdo')) {
 		var $_offset = 0, $num_rows;
 
 		function fetch_assoc() {
-			return $this->fetch(PDO::FETCH_ASSOC);
+			return $this->fetch(\PDO::FETCH_ASSOC);
 		}
 
 		function fetch_row() {
-			return $this->fetch(PDO::FETCH_NUM);
+			return $this->fetch(\PDO::FETCH_NUM);
 		}
 
 		function fetch_field() {
