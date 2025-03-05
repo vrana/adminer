@@ -110,12 +110,14 @@ class Adminer {
 
 	function backwardKeys($table, $tableName) {
 		$return = array();
-		foreach (get_rows("SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME
+		foreach (
+			get_rows("SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME
 FROM information_schema.KEY_COLUMN_USAGE
 WHERE TABLE_SCHEMA = " . q($this->database()) . "
 AND REFERENCED_TABLE_SCHEMA = " . q($this->database()) . "
 AND REFERENCED_TABLE_NAME = " . q($table) . "
-ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
+ORDER BY ORDINAL_POSITION", null, "") as $row //! requires MySQL 5
+		) {
 			$return[$row["TABLE_NAME"]]["keys"][$row["CONSTRAINT_NAME"]][$row["COLUMN_NAME"]] = $row["REFERENCED_COLUMN_NAME"];
 		}
 		foreach ($return as $key => $val) {

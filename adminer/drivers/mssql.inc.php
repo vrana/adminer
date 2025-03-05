@@ -310,9 +310,11 @@ if (isset($_GET["mssql"])) {
 
 	function table_status($name = "") {
 		$return = array();
-		foreach (get_rows("SELECT ao.name AS Name, ao.type_desc AS Engine, (SELECT value FROM fn_listextendedproperty(default, 'SCHEMA', schema_name(schema_id), 'TABLE', ao.name, null, null)) AS Comment
+		foreach (
+			get_rows("SELECT ao.name AS Name, ao.type_desc AS Engine, (SELECT value FROM fn_listextendedproperty(default, 'SCHEMA', schema_name(schema_id), 'TABLE', ao.name, null, null)) AS Comment
 FROM sys.all_objects AS ao
-WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V') " . ($name != "" ? "AND name = " . q($name) : "ORDER BY name")) as $row) {
+WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V') " . ($name != "" ? "AND name = " . q($name) : "ORDER BY name")) as $row
+		) {
 			if ($name != "") {
 				return $row;
 			}
@@ -366,11 +368,13 @@ WHERE o.schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND o.type IN ('S', 'U', 
 	function indexes($table, $connection2 = null) {
 		$return = array();
 		// sp_statistics doesn't return information about primary key
-		foreach (get_rows("SELECT i.name, key_ordinal, is_unique, is_primary_key, c.name AS column_name, is_descending_key
+		foreach (
+			get_rows("SELECT i.name, key_ordinal, is_unique, is_primary_key, c.name AS column_name, is_descending_key
 FROM sys.indexes i
 INNER JOIN sys.index_columns ic ON i.object_id = ic.object_id AND i.index_id = ic.index_id
 INNER JOIN sys.columns c ON ic.object_id = c.object_id AND ic.column_id = c.column_id
-WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row) {
+WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
+		) {
 			$name = $row["name"];
 			$return[$name]["type"] = ($row["is_primary_key"] ? "PRIMARY" : ($row["is_unique"] ? "UNIQUE" : "INDEX"));
 			$return[$name]["lengths"] = array();
@@ -492,7 +496,8 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row) {
 			} elseif (!queries(($val[0] != "PRIMARY"
 				? "CREATE $val[0] " . ($val[0] != "INDEX" ? "INDEX " : "") . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_")) . " ON " . table($table)
 				: "ALTER TABLE " . table($table) . " ADD PRIMARY KEY"
-			) . " (" . implode(", ", $val[2]) . ")")) {
+			) . " (" . implode(", ", $val[2]) . ")")
+			) {
 				return false;
 			}
 		}
@@ -679,12 +684,14 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)) as $row
 		$on_actions = str_replace('RESTRICT|', '', $on_actions);
 		$types = array();
 		$structured_types = array();
-		foreach (array( //! use sys.types
-			lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "int" => 10, "bigint" => 20, "bit" => 1, "decimal" => 0, "real" => 12, "float" => 53, "smallmoney" => 10, "money" => 20),
-			lang('Date and time') => array("date" => 10, "smalldatetime" => 19, "datetime" => 19, "datetime2" => 19, "time" => 8, "datetimeoffset" => 10),
-			lang('Strings') => array("char" => 8000, "varchar" => 8000, "text" => 2147483647, "nchar" => 4000, "nvarchar" => 4000, "ntext" => 1073741823),
-			lang('Binary') => array("binary" => 8000, "varbinary" => 8000, "image" => 2147483647),
-		) as $key => $val) {
+		foreach (
+			array( //! use sys.types
+				lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "int" => 10, "bigint" => 20, "bit" => 1, "decimal" => 0, "real" => 12, "float" => 53, "smallmoney" => 10, "money" => 20),
+				lang('Date and time') => array("date" => 10, "smalldatetime" => 19, "datetime" => 19, "datetime2" => 19, "time" => 8, "datetimeoffset" => 10),
+				lang('Strings') => array("char" => 8000, "varchar" => 8000, "text" => 2147483647, "nchar" => 4000, "nvarchar" => 4000, "ntext" => 1073741823),
+				lang('Binary') => array("binary" => 8000, "varbinary" => 8000, "image" => 2147483647),
+			) as $key => $val
+		) {
 			$types += $val;
 			$structured_types[$key] = array_keys($val);
 		}

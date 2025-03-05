@@ -297,12 +297,14 @@ if (isset($_GET["simpledb"])) {
 			if (!$fast) {
 				$meta = sdb_request('DomainMetadata', array('DomainName' => $table));
 				if ($meta) {
-					foreach (array(
-						"Rows" => "ItemCount",
-						"Data_length" => "ItemNamesSizeBytes",
-						"Index_length" => "AttributeValuesSizeBytes",
-						"Data_free" => "AttributeNamesSizeBytes",
-					) as $key => $val) {
+					foreach (
+						array(
+							"Rows" => "ItemCount",
+							"Data_length" => "ItemNamesSizeBytes",
+							"Index_length" => "AttributeValuesSizeBytes",
+							"Data_free" => "AttributeNamesSizeBytes",
+						) as $key => $val
+					) {
 						$row[$key] = (string) $meta->$val;
 					}
 				}

@@ -209,8 +209,8 @@ if (isset($_GET["pgsql"])) {
 					}
 				}
 				if (!(($where && queries("UPDATE " . table($table) . " SET " . implode(", ", $update) . " WHERE " . implode(" AND ", $where)) && $connection->affected_rows)
-					|| queries("INSERT INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ")")
-				)) {
+					|| queries("INSERT INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ")"))
+				) {
 					return false;
 				}
 			}
@@ -450,11 +450,13 @@ ORDER BY a.attnum") as $row
 	function foreign_keys($table) {
 		global $on_actions;
 		$return = array();
-		foreach (get_rows("SELECT conname, condeferrable::int AS deferrable, pg_get_constraintdef(oid) AS definition
+		foreach (
+			get_rows("SELECT conname, condeferrable::int AS deferrable, pg_get_constraintdef(oid) AS definition
 FROM pg_constraint
 WHERE conrelid = (SELECT pc.oid FROM pg_class AS pc INNER JOIN pg_namespace AS pn ON (pn.oid = pc.relnamespace) WHERE pc.relname = " . q($table) . " AND pn.nspname = current_schema())
 AND contype = 'f'::char
-ORDER BY conkey, conname") as $row) {
+ORDER BY conkey, conname") as $row
+		) {
 			if (preg_match('~FOREIGN KEY\s*\((.+)\)\s*REFERENCES (.+)\((.+)\)(.*)$~iA', $row['definition'], $match)) {
 				$row['source'] = array_map('Adminer\idf_unescape', array_map('trim', explode(',', $match[1])));
 				if (preg_match('~^(("([^"]|"")+"|[^"]+)\.)?"?("([^"]|"")+"|[^"]+)$~', $match[2], $match2)) {
@@ -721,11 +723,7 @@ ORDER BY SPECIFIC_NAME');
 
 	function found_rows($table_status, $where) {
 		global $connection;
-		if (preg_match(
-			"~ rows=([0-9]+)~",
-			$connection->result("EXPLAIN SELECT * FROM " . idf_escape($table_status["Name"]) . ($where ? " WHERE " . implode(" AND ", $where) : "")),
-			$regs
-		)) {
+		if (preg_match("~ rows=([0-9]+)~", $connection->result("EXPLAIN SELECT * FROM " . idf_escape($table_status["Name"]) . ($where ? " WHERE " . implode(" AND ", $where) : "")), $regs)) {
 			return $regs[1];
 		}
 		return false;
@@ -918,14 +916,16 @@ AND typelem = 0"
 	function driver_config() {
 		$types = array();
 		$structured_types = array();
-		foreach (array( //! arrays
-			lang('Numbers') => array("smallint" => 5, "integer" => 10, "bigint" => 19, "boolean" => 1, "numeric" => 0, "real" => 7, "double precision" => 16, "money" => 20),
-			lang('Date and time') => array("date" => 13, "time" => 17, "timestamp" => 20, "timestamptz" => 21, "interval" => 0),
-			lang('Strings') => array("character" => 0, "character varying" => 0, "text" => 0, "tsquery" => 0, "tsvector" => 0, "uuid" => 0, "xml" => 0),
-			lang('Binary') => array("bit" => 0, "bit varying" => 0, "bytea" => 0),
-			lang('Network') => array("cidr" => 43, "inet" => 43, "macaddr" => 17, "macaddr8" => 23, "txid_snapshot" => 0),
-			lang('Geometry') => array("box" => 0, "circle" => 0, "line" => 0, "lseg" => 0, "path" => 0, "point" => 0, "polygon" => 0),
-		) as $key => $val) { //! can be retrieved from pg_type
+		foreach (
+			array( //! arrays
+				lang('Numbers') => array("smallint" => 5, "integer" => 10, "bigint" => 19, "boolean" => 1, "numeric" => 0, "real" => 7, "double precision" => 16, "money" => 20),
+				lang('Date and time') => array("date" => 13, "time" => 17, "timestamp" => 20, "timestamptz" => 21, "interval" => 0),
+				lang('Strings') => array("character" => 0, "character varying" => 0, "text" => 0, "tsquery" => 0, "tsvector" => 0, "uuid" => 0, "xml" => 0),
+				lang('Binary') => array("bit" => 0, "bit varying" => 0, "bytea" => 0),
+				lang('Network') => array("cidr" => 43, "inet" => 43, "macaddr" => 17, "macaddr8" => 23, "txid_snapshot" => 0),
+				lang('Geometry') => array("box" => 0, "circle" => 0, "line" => 0, "lseg" => 0, "path" => 0, "point" => 0, "polygon" => 0),
+			) as $key => $val //! can be retrieved from pg_type
+		) {
 			$types += $val;
 			$structured_types[$key] = array_keys($val);
 		}

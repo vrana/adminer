@@ -25,7 +25,6 @@
 		<exclude name="PSR12.Classes.OpeningBraceSpace.Found"/>
 		<exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps"/>
 		<exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
-		<exclude name="PSR12.ControlStructures.ControlStructureSpacing.CloseParenthesisLine"/>
 		<exclude name="PSR12.ControlStructures.ControlStructureSpacing.FirstExpressionLine"/>
 		<exclude name="PSR12.ControlStructures.ControlStructureSpacing.LineIndent"/>
 		<exclude name="Squiz.Functions.MultiLineFunctionDeclaration.BraceOnSameLine"/><!-- Replaced by: Generic.Functions.OpeningFunctionBraceKernighanRitchie -->

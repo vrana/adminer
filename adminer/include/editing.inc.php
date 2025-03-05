@@ -315,12 +315,14 @@ function default_value($field) {
 * @return string class=''
 */
 function type_class($type) {
-	foreach (array(
-		'char' => 'text',
-		'date' => 'time|year',
-		'binary' => 'blob',
-		'enum' => 'set',
-	) as $key => $val) {
+	foreach (
+		array(
+			'char' => 'text',
+			'date' => 'time|year',
+			'binary' => 'blob',
+			'enum' => 'set',
+		) as $key => $val
+	) {
 		if (preg_match("~$key|$val~", $type)) {
 			return " class='$key'";
 		}

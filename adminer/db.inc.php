@@ -99,15 +99,17 @@ if ($adminer->homepage()) {
 					echo '<td colspan="6"><a href="' . h(ME) . "view=" . urlencode($name) . '" title="' . lang('Alter view') . '">' . (preg_match('~materialized~i', $type) ? lang('Materialized view') : lang('View')) . '</a>';
 					echo '<td align="right"><a href="' . h(ME) . "select=" . urlencode($name) . '" title="' . lang('Select data') . '">?</a>';
 				} else {
-					foreach (array(
-						"Engine" => array(),
-						"Collation" => array(),
-						"Data_length" => array("create", lang('Alter table')),
-						"Index_length" => array("indexes", lang('Alter indexes')),
-						"Data_free" => array("edit", lang('New item')),
-						"Auto_increment" => array("auto_increment=1&create", lang('Alter table')),
-						"Rows" => array("select", lang('Select data')),
-					) as $key => $link) {
+					foreach (
+						array(
+							"Engine" => array(),
+							"Collation" => array(),
+							"Data_length" => array("create", lang('Alter table')),
+							"Index_length" => array("indexes", lang('Alter indexes')),
+							"Data_free" => array("edit", lang('New item')),
+							"Auto_increment" => array("auto_increment=1&create", lang('Alter table')),
+							"Rows" => array("select", lang('Select data')),
+						) as $key => $link
+					) {
 						$id = " id='$key-" . h($name) . "'";
 						echo ($link ? "<td align='right'>" . (support("table") || $key == "Rows" || (support("indexes") && $key != "Data_length")
 							? "<a href='" . h(ME . "$link[0]=") . urlencode($name) . "'$id title='$link[1]'>?</a>"

@@ -160,8 +160,8 @@ if (isset($_GET["oracle"])) {
 					}
 				}
 				if (!(($where && queries("UPDATE " . table($table) . " SET " . implode(", ", $update) . " WHERE " . implode(" AND ", $where)) && $connection->affected_rows)
-					|| queries("INSERT INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ")")
-				)) {
+					|| queries("INSERT INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ")"))
+				) {
 					return false;
 				}
 			}
@@ -322,12 +322,14 @@ ORDER BY 1") as $row
 	function indexes($table, $connection2 = null) {
 		$return = array();
 		$owner = where_owner(" AND ", "aic.table_owner");
-		foreach (get_rows("SELECT aic.*, ac.constraint_type, atc.data_default
+		foreach (
+			get_rows("SELECT aic.*, ac.constraint_type, atc.data_default
 FROM all_ind_columns aic
 LEFT JOIN all_constraints ac ON aic.index_name = ac.constraint_name AND aic.table_name = ac.table_name AND aic.index_owner = ac.owner
 LEFT JOIN all_tab_cols atc ON aic.column_name = atc.column_name AND aic.table_name = atc.table_name AND aic.index_owner = atc.owner
 WHERE aic.table_name = " . q($table) . "$owner
-ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row) {
+ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row
+		) {
 			$index_name = $row["INDEX_NAME"];
 			$column_name = $row["DATA_DEFAULT"];
 			$column_name = ($column_name ? trim($column_name, '"') : $row["COLUMN_NAME"]); // trim - possibly wrapped in quotes but never contains quotes inside
@@ -521,12 +523,14 @@ ORDER BY PROCESS
 	function driver_config() {
 		$types = array();
 		$structured_types = array();
-		foreach (array(
-			lang('Numbers') => array("number" => 38, "binary_float" => 12, "binary_double" => 21),
-			lang('Date and time') => array("date" => 10, "timestamp" => 29, "interval year" => 12, "interval day" => 28), //! year(), day() to second()
-			lang('Strings') => array("char" => 2000, "varchar2" => 4000, "nchar" => 2000, "nvarchar2" => 4000, "clob" => 4294967295, "nclob" => 4294967295),
-			lang('Binary') => array("raw" => 2000, "long raw" => 2147483648, "blob" => 4294967295, "bfile" => 4294967296),
-		) as $key => $val) {
+		foreach (
+			array(
+				lang('Numbers') => array("number" => 38, "binary_float" => 12, "binary_double" => 21),
+				lang('Date and time') => array("date" => 10, "timestamp" => 29, "interval year" => 12, "interval day" => 28), //! year(), day() to second()
+				lang('Strings') => array("char" => 2000, "varchar2" => 4000, "nchar" => 2000, "nvarchar2" => 4000, "clob" => 4294967295, "nclob" => 4294967295),
+				lang('Binary') => array("raw" => 2000, "long raw" => 2147483648, "blob" => 4294967295, "bfile" => 4294967296),
+			) as $key => $val
+		) {
 			$types += $val;
 			$structured_types[$key] = array_keys($val);
 		}

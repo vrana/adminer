@@ -88,8 +88,8 @@ if ($_POST && !$error) {
 				}
 				if (preg_match('~^(.+)\s*(\(.*\))?$~U', $object, $match) && (
 					!grant("REVOKE", $revoke, $match[2], " ON $match[1] FROM $new_user") //! SQL injection
-					|| !grant("GRANT", $grant, $match[2], " ON $match[1] TO $new_user")
-				)) {
+					|| !grant("GRANT", $grant, $match[2], " ON $match[1] TO $new_user"))
+				) {
 					$error = true;
 					break;
 				}
@@ -152,14 +152,16 @@ foreach ($grants as $object => $grant) {
 }
 echo "</thead>\n";
 
-foreach (array(
-	"" => "",
-	"Server Admin" => lang('Server'),
-	"Databases" => lang('Database'),
-	"Tables" => lang('Table'),
-	"Columns" => lang('Column'),
-	"Procedures" => lang('Routine'),
-) as $context => $desc) {
+foreach (
+	array(
+		"" => "",
+		"Server Admin" => lang('Server'),
+		"Databases" => lang('Database'),
+		"Tables" => lang('Table'),
+		"Columns" => lang('Column'),
+		"Procedures" => lang('Routine'),
+	) as $context => $desc
+) {
 	foreach ((array) $privileges[$context] as $privilege => $comment) {
 		echo "<tr><td" . ($desc ? ">$desc<td" : " colspan='2'") . ' lang="en" title="' . h($comment) . '">' . h($privilege);
 		$i = 0;
