@@ -1152,7 +1152,7 @@ if (!defined("DRIVER")) {
 	/** Return query to get connection ID
 	* @return string
 	*/
-	function connection_id(){
+	function connection_id() {
 		return "SELECT CONNECTION_ID()";
 	}
 

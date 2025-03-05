@@ -188,8 +188,8 @@ foreach ($engines as $engine) {
 <div class="scrollable">
 <table id="edit-fields" class="nowrap">
 <?php
-edit_fields($row["fields"], $collations, "TABLE", $foreign_keys);
-?>
+	edit_fields($row["fields"], $collations, "TABLE", $foreign_keys);
+	?>
 </table>
 <?php echo script("editFields();"); ?>
 </div>
@@ -197,16 +197,16 @@ edit_fields($row["fields"], $collations, "TABLE", $foreign_keys);
 <?php echo lang('Auto Increment'); ?>: <input type="number" name="Auto_increment" class="size" value="<?php echo h($row["Auto_increment"]); ?>">
 <?php echo checkbox("defaults", 1, ($_POST ? $_POST["defaults"] : adminer_setting("defaults")), lang('Default values'), "columnShow(this.checked, 5)", "jsonly"); ?>
 <?php
-$comments = ($_POST ? $_POST["comments"] : adminer_setting("comments"));
-echo (support("comment")
-	? checkbox("comments", 1, $comments, lang('Comment'), "editingCommentsClick(this, true);", "jsonly")
-		. ' ' . (preg_match('~\n~', $row["Comment"])
-			? "<textarea name='Comment' rows='2' cols='20'" . ($comments ? "" : " class='hidden'") . ">" . h($row["Comment"]) . "</textarea>"
-			: '<input name="Comment" value="' . h($row["Comment"]) . '" data-maxlength="' . (min_version(5.5) ? 2048 : 60) . '"' . ($comments ? "" : " class='hidden'") . '>'
-		)
-	: '')
-;
-?>
+	$comments = ($_POST ? $_POST["comments"] : adminer_setting("comments"));
+	echo (support("comment")
+		? checkbox("comments", 1, $comments, lang('Comment'), "editingCommentsClick(this, true);", "jsonly")
+			. ' ' . (preg_match('~\n~', $row["Comment"])
+				? "<textarea name='Comment' rows='2' cols='20'" . ($comments ? "" : " class='hidden'") . ">" . h($row["Comment"]) . "</textarea>"
+				: '<input name="Comment" value="' . h($row["Comment"]) . '" data-maxlength="' . (min_version(5.5) ? 2048 : 60) . '"' . ($comments ? "" : " class='hidden'") . '>'
+			)
+		: '')
+	;
+	?>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php } ?>
@@ -224,13 +224,13 @@ if (support("partitioning")) {
 <table id="partition-table"<?php echo ($partition_table ? "" : " class='hidden'"); ?>>
 <thead><tr><th><?php echo lang('Partition name'); ?><th><?php echo lang('Values'); ?></thead>
 <?php
-foreach ($row["partition_names"] as $key => $val) {
-	echo '<tr>';
-	echo '<td><input name="partition_names[]" value="' . h($val) . '" autocapitalize="off">';
-	echo ($key == count($row["partition_names"]) - 1 ? script("qsl('input').oninput = partitionNameChange;") : '');
-	echo '<td><input name="partition_values[]" value="' . h($row["partition_values"][$key]) . '">';
-}
-?>
+	foreach ($row["partition_names"] as $key => $val) {
+		echo '<tr>';
+		echo '<td><input name="partition_names[]" value="' . h($val) . '" autocapitalize="off">';
+		echo ($key == count($row["partition_names"]) - 1 ? script("qsl('input').oninput = partitionNameChange;") : '');
+		echo '<td><input name="partition_values[]" value="' . h($row["partition_values"][$key]) . '">';
+	}
+	?>
 </table>
 </div></fieldset>
 <?php

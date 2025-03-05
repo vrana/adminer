@@ -526,9 +526,8 @@ if (!$columns && support("table")) {
 				echo "<fieldset>";
 				echo "<legend>" . lang('Whole result') . "</legend>";
 				$display_rows = ($exact_count ? "" : "~ ") . $found_rows;
-				echo checkbox("all", 1, 0, ($found_rows !== false ? ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) : ""),
-					"var checked = formChecked(this, /check/); selectCount('selected', this.checked ? '$display_rows' : checked); selectCount('selected2', this.checked || !checked ? '$display_rows' : checked);"
-				) . "\n";
+				$onclick = "var checked = formChecked(this, /check/); selectCount('selected', this.checked ? '$display_rows' : checked); selectCount('selected2', this.checked || !checked ? '$display_rows' : checked);";
+				echo checkbox("all", 1, 0, ($found_rows !== false ? ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) : ""), $onclick) . "\n";
 				echo "</fieldset>\n";
 
 				if ($adminer->selectCommandPrint()) {

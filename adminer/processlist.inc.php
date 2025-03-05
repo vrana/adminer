@@ -22,7 +22,6 @@ echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(ta
 // HTML valid because there is always at least one process
 $i = -1;
 foreach (process_list() as $i => $row) {
-
 	if (!$i) {
 		echo "<thead><tr lang='en'>" . (support("kill") ? "<th>" : "");
 		foreach ($row as $key => $val) {

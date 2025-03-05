@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<ruleset name="Adminer Coding Standard">
+	<description>The coding standard for Adminer.</description>
+	<arg value="s"/>
+	<arg name="parallel" value="8"/>
+
+	<file>.</file>
+	<exclude-pattern>/externals/</exclude-pattern>
+	<exclude-pattern>/designs/</exclude-pattern>
+
+	<rule ref="PSR12">
+		<exclude name="Generic.Files.LineLength"/>
+		<exclude name="Generic.Whitespace.DisallowTabIndent"/><!-- Replaced by: Generic.Whitespace.DisallowSpaceIndent -->
+		<exclude name="PSR1.Files.SideEffects.FoundWithSymbols"/>
+		<exclude name="PSR12.Files.FileHeader.SpacingAfterBlock"/>
+		<exclude name="PSR12.Operators.OperatorSpacing.NoSpaceBefore"/>
+		<exclude name="PSR12.Operators.OperatorSpacing.NoSpaceAfter"/>
+		<exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace"/>
+		<exclude name="PSR1.Classes.ClassDeclaration.MultipleClasses"/>
+		<exclude name="PSR2.Classes.ClassDeclaration.OpenBraceNewLine"/><!-- Replaced by: Generic.Classes.OpeningBraceSameLine -->
+		<exclude name="PSR2.Classes.ClassDeclaration.CloseBraceAfterBody"/>
+		<exclude name="PSR2.Classes.PropertyDeclaration.Multiple"/>
+		<exclude name="PSR2.Classes.PropertyDeclaration.VarUsed"/>
+		<exclude name="PSR2.Classes.PropertyDeclaration.ScopeMissing"/>
+		<exclude name="PSR2.Classes.PropertyDeclaration.Underscore"/>
+		<exclude name="PSR12.Classes.ClassInstantiation.MissingParentheses"/>
+		<exclude name="PSR12.Classes.OpeningBraceSpace.Found"/>
+		<exclude name="Squiz.Classes.ValidClassName.NotCamelCaps"/>
+		<exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps"/>
+		<exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
+		<exclude name="PSR2.Methods.FunctionCallSignature.SpaceBeforeCloseBracket"/>
+		<exclude name="PSR12.ControlStructures.ControlStructureSpacing.CloseParenthesisLine"/>
+		<exclude name="PSR12.ControlStructures.ControlStructureSpacing.FirstExpressionLine"/>
+		<exclude name="PSR12.ControlStructures.ControlStructureSpacing.LineIndent"/>
+		<exclude name="Squiz.Functions.MultiLineFunctionDeclaration.BraceOnSameLine"/><!-- Replaced by: Generic.Functions.OpeningFunctionBraceKernighanRitchie -->
+		<exclude name="PSR12.Properties.ConstantVisibility.NotFound"/><!-- PHP 7.1 is not required. -->
+		<exclude name="Squiz.Scope.MethodScope.Missing"/>
+		<exclude name="Squiz.WhiteSpace.ControlStructureSpacing.SpacingBeforeClose"/>
+
+		<!-- TODO: Ignore only in <?php if () { ?><?php } ?> -->
+		<exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect"/>
+		<exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact"/>
+		<exclude name="Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace"/>
+		<exclude name="Squiz.WhiteSpace.ScopeClosingBrace.ContentBefore"/>
+	</rule>
+
+	<rule ref="Generic.Classes.OpeningBraceSameLine"/>
+	<rule ref="Generic.Whitespace.DisallowSpaceIndent"/>
+	<rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie"/>
+</ruleset>

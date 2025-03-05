@@ -376,7 +376,6 @@ if (isset($_GET["mongo"])) {
 			"(date)>=",
 			"(date)<=",
 		);
-
 	}
 
 	function table($idf) {

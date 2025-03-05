@@ -238,9 +238,13 @@ function editFields() {
 	els = qsa('[name$="[type]"]');
 	for (var i = 0; i < els.length; i++) {
 		mixin(els[i], {
-			onfocus: function () { lastType = selectValue(this); },
+			onfocus: function () {
+				lastType = selectValue(this);
+			},
 			onchange: editingTypeChange,
-			onmouseover: function (event) { helpMouseover.call(this, event, getTarget(event).value, 1) },
+			onmouseover: function (event) {
+				helpMouseover.call(this, event, getTarget(event).value, 1);
+			},
 			onmouseout: helpMouseout
 		});
 	}

@@ -39,9 +39,15 @@ if (!extension_loaded("xdebug")) {
 		$line = $file[$l];
 		$color = "#C0FFC0"; // tested
 		switch ($coverage[realpath($filename)][$l+1]) {
-			case -1: $color = "#FFC0C0"; break; // untested
-			case -2: $color = "Silver"; break; // dead code
-			case null: $color = ""; break; // not executable
+			case -1: // untested
+				$color = "#FFC0C0";
+				break;
+			case -2: // dead code
+				$color = "Silver";
+				break;
+			case null: // not executable
+				$color = "";
+				break;
 		}
 		if ($prev_color === null) {
 			$prev_color = $color;

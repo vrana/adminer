@@ -8,7 +8,7 @@ add_driver('firebird', 'Firebird (alpha)');
 if (isset($_GET["firebird"])) {
 	define("DRIVER", "firebird");
 
-	if (extension_loaded("interbase") ) {
+	if (extension_loaded("interbase")) {
 		class Min_DB {
 			var
 				$extension = "Firebird",

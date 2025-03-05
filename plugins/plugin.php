@@ -10,7 +10,8 @@ class AdminerPlugin extends Adminer {
 	/** @access protected */
 	var $plugins;
 
-	function _findRootClass($class) { // is_subclass_of(string, string) is available since PHP 5.0.3
+	function _findRootClass($class) {
+		// is_subclass_of(string, string) is available since PHP 5.0.3
 		do {
 			$return = $class;
 		} while ($class = get_parent_class($class));
@@ -41,14 +42,29 @@ class AdminerPlugin extends Adminer {
 		foreach ($this->plugins as $plugin) {
 			if (method_exists($plugin, $function)) {
 				switch (count($args)) { // call_user_func_array() doesn't work well with references
-					case 0: $return = $plugin->$function(); break;
-					case 1: $return = $plugin->$function($args[0]); break;
-					case 2: $return = $plugin->$function($args[0], $args[1]); break;
-					case 3: $return = $plugin->$function($args[0], $args[1], $args[2]); break;
-					case 4: $return = $plugin->$function($args[0], $args[1], $args[2], $args[3]); break;
-					case 5: $return = $plugin->$function($args[0], $args[1], $args[2], $args[3], $args[4]); break;
-					case 6: $return = $plugin->$function($args[0], $args[1], $args[2], $args[3], $args[4], $args[5]); break;
-					default: trigger_error('Too many parameters.', E_USER_WARNING);
+					case 0:
+						$return = $plugin->$function();
+						break;
+					case 1:
+						$return = $plugin->$function($args[0]);
+						break;
+					case 2:
+						$return = $plugin->$function($args[0], $args[1]);
+						break;
+					case 3:
+						$return = $plugin->$function($args[0], $args[1], $args[2]);
+						break;
+					case 4:
+						$return = $plugin->$function($args[0], $args[1], $args[2], $args[3]);
+						break;
+					case 5:
+						$return = $plugin->$function($args[0], $args[1], $args[2], $args[3], $args[4]);
+						break;
+					case 6:
+						$return = $plugin->$function($args[0], $args[1], $args[2], $args[3], $args[4], $args[5]);
+						break;
+					default:
+						trigger_error('Too many parameters.', E_USER_WARNING);
 				}
 				if ($return !== null) {
 					return $return;

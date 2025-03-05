@@ -10,7 +10,8 @@ if ($_POST && !$error) {
 	$tables = array_flip((array) $_POST["tables"]) + array_flip((array) $_POST["data"]);
 	$ext = dump_headers(
 		(count($tables) == 1 ? key($tables) : DB),
-		(DB == "" || count($tables) > 1));
+		(DB == "" || count($tables) > 1)
+	);
 	$is_sql = preg_match('~sql~', $_POST["format"]);
 
 	if ($is_sql) {

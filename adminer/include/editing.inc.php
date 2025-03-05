@@ -370,9 +370,11 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 <?php echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", explode("|", $inout), $field["inout"]) : ""); ?>
 <th><?php if ($display) { ?><input name="fields[<?php echo $i; ?>][field]" value="<?php echo h($field["field"]); ?>" data-maxlength="64" autocapitalize="off" aria-labelledby="label-name"><?php } ?>
 <input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo h($orig); ?>"><?php edit_type("fields[$i]", $field, $collations, $foreign_keys); ?>
-<?php if ($type == "TABLE") { ?>
+<?php
+		if ($type == "TABLE") {
+			?>
 <td><?php echo checkbox("fields[$i][null]", 1, $field["null"], "", "", "block", "label-null"); ?>
-<td><label class="block"><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php if ($field["auto_increment"]) { ?> checked<?php } ?> aria-labelledby="label-ai"></label><td<?php echo $default_class; ?>><?php
+<td><label class="block"><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php echo ($field["auto_increment"] ? " checked" : ""); ?> aria-labelledby="label-ai"></label><td<?php echo $default_class; ?>><?php
 			echo checkbox("fields[$i][has_default]", 1, $field["has_default"], "", "", "", "label-default"); ?><input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["default"]); ?>" aria-labelledby="label-default"><?php
 			echo (support("comment") ? "<td$comment_class><input name='fields[$i][comment]' value='" . h($field["comment"]) . "' data-maxlength='" . (min_version(5.5) ? 1024 : 255) . "' aria-labelledby='label-comment'>" : "");
 		}
@@ -582,9 +584,12 @@ function tar_file($filename, $tmp_file) {
 function ini_bytes($ini) {
 	$val = ini_get($ini);
 	switch (strtolower(substr($val, -1))) {
-		case 'g': $val = (int)$val * 1024; // no break
-		case 'm': $val = (int)$val * 1024; // no break
-		case 'k': $val = (int)$val * 1024;
+		case 'g':
+			$val = (int)$val * 1024; // no break
+		case 'm':
+			$val = (int)$val * 1024; // no break
+		case 'k':
+			$val = (int)$val * 1024;
 	}
 	return $val;
 }

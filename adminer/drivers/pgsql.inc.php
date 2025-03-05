@@ -618,10 +618,10 @@ ORDER BY conkey, conname") as $row) {
 
 	function drop_tables($tables) {
 		foreach ($tables as $table) {
-				$status = table_status($table);
-				if (!queries("DROP " . strtoupper($status["Engine"]) . " " . table($table))) {
-					return false;
-				}
+			$status = table_status($table);
+			if (!queries("DROP " . strtoupper($status["Engine"]) . " " . table($table))) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -902,7 +902,7 @@ AND typelem = 0"
 		return queries("SELECT pg_terminate_backend(" . number($val) . ")");
 	}
 
-	function connection_id(){
+	function connection_id() {
 		return "SELECT pg_backend_pid()";
 	}
 
