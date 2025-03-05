@@ -7,6 +7,7 @@
 	<file>.</file>
 	<exclude-pattern>/externals/</exclude-pattern>
 	<exclude-pattern>/designs/</exclude-pattern>
+	<exclude-pattern>/(adminer|editor)[^/]*.php</exclude-pattern>
 
 	<rule ref="PSR12">
 		<exclude name="Generic.Files.LineLength"/>
