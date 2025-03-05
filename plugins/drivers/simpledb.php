@@ -143,7 +143,7 @@ if (isset($_GET["simpledb"])) {
 		function _extractIds($table, $queryWhere, $limit) {
 			$return = array();
 			if (preg_match_all("~itemName\(\) = (('[^']*+')+)~", $queryWhere, $matches)) {
-				$return = array_map('idf_unescape', $matches[1]);
+				$return = array_map('Adminer\idf_unescape', $matches[1]);
 			} else {
 				foreach (sdb_request_all('Select', 'Item', array('SelectExpression' => 'SELECT itemName() FROM ' . table($table) . $queryWhere . ($limit ? " LIMIT 1" : ""))) as $item) {
 					$return[] = $item->Name;

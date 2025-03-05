@@ -455,12 +455,12 @@ WHERE conrelid = (SELECT pc.oid FROM pg_class AS pc INNER JOIN pg_namespace AS p
 AND contype = 'f'::char
 ORDER BY conkey, conname") as $row) {
 			if (preg_match('~FOREIGN KEY\s*\((.+)\)\s*REFERENCES (.+)\((.+)\)(.*)$~iA', $row['definition'], $match)) {
-				$row['source'] = array_map('idf_unescape', array_map('trim', explode(',', $match[1])));
+				$row['source'] = array_map('Adminer\idf_unescape', array_map('trim', explode(',', $match[1])));
 				if (preg_match('~^(("([^"]|"")+"|[^"]+)\.)?"?("([^"]|"")+"|[^"]+)$~', $match[2], $match2)) {
 					$row['ns'] = idf_unescape($match2[2]);
 					$row['table'] = idf_unescape($match2[4]);
 				}
-				$row['target'] = array_map('idf_unescape', array_map('trim', explode(',', $match[3])));
+				$row['target'] = array_map('Adminer\idf_unescape', array_map('trim', explode(',', $match[3])));
 				$row['on_delete'] = (preg_match("~ON DELETE ($on_actions)~", $match[4], $match2) ? $match2[1] : 'NO ACTION');
 				$row['on_update'] = (preg_match("~ON UPDATE ($on_actions)~", $match[4], $match2) ? $match2[1] : 'NO ACTION');
 				$return[$row['conname']] = $row;
@@ -610,7 +610,7 @@ ORDER BY conkey, conname") as $row) {
 	}
 
 	function truncate_tables($tables) {
-		return queries("TRUNCATE " . implode(", ", array_map('table', $tables)));
+		return queries("TRUNCATE " . implode(", ", array_map('Adminer\table', $tables)));
 		return true;
 	}
 
@@ -834,7 +834,7 @@ AND typelem = 0"
 		foreach (indexes($table) as $index_name => $index) {
 			if ($index['type'] == 'PRIMARY') {
 				$primary = $index_name;
-				$return_parts[] = "CONSTRAINT " . idf_escape($index_name) . " PRIMARY KEY (" . implode(', ', array_map('idf_escape', $index['columns'])) . ")";
+				$return_parts[] = "CONSTRAINT " . idf_escape($index_name) . " PRIMARY KEY (" . implode(', ', array_map('Adminer\idf_escape', $index['columns'])) . ")";
 			}
 		}
 

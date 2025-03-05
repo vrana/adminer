@@ -61,7 +61,7 @@ if ($row["ns"] != "") {
 	$orig_schema = get_schema();
 	set_schema($row["ns"]);
 }
-$referencable = array_keys(array_filter(table_status('', true), 'fk_support'));
+$referencable = array_keys(array_filter(table_status('', true), 'Adminer\fk_support'));
 $target = array_keys(fields(in_array($row["table"], $referencable) ? $row["table"] : reset($referencable)));
 $onchange = "this.form['change-js'].value = '1'; this.form.submit();";
 echo "<p>" . lang('Target table') . ": " . html_select("table", $referencable, $row["table"], $onchange) . "\n";

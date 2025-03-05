@@ -16,5 +16,5 @@ if (extension_loaded("xdebug") && file_exists(sys_get_temp_dir() . "/adminer_cov
 		}
 	}
 	xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
-	register_shutdown_function('save_coverage');
+	register_shutdown_function('Adminer\save_coverage');
 }
