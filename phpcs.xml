@@ -42,6 +42,7 @@
 
 	<rule ref="PSR1.Classes.ClassDeclaration.MissingNamespace">
 		<exclude-pattern>plugins/[^/]+\.php</exclude-pattern>
+		<exclude-pattern>editor/(example|sqlite)\.php</exclude-pattern>
 	</rule>
 
 	<rule ref="Generic.Classes.OpeningBraceSameLine"/>
