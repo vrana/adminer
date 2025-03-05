@@ -30,6 +30,9 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 		($row["drop"] ? lang('Foreign key has been dropped.') : ($name != "" ? lang('Foreign key has been altered.') : lang('Foreign key has been created.'))),
 		$result
 	);
+	if (!$row["drop"]) {
+		$error = "$error<br>" . lang('Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.'); //! no partitioning
+	}
 }
 
 page_header(lang('Foreign key'), $error, array("table" => $TABLE), h($TABLE));
