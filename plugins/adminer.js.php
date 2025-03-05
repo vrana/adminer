@@ -13,7 +13,7 @@ class AdminerDotJs {
 
 	function head() {
 		if (file_exists(self::FILENAME)) {
-			echo script_src(self::FILENAME . "?v=" . crc32(file_get_contents(self::FILENAME))), "\n";
+			echo Adminer\script_src(self::FILENAME . "?v=" . crc32(file_get_contents(self::FILENAME))), "\n";
 		}
 	}
 }

@@ -9,7 +9,7 @@
 class AdminerTablesFilter {
 	function tablesPrint($tables) {
 		?>
-<script<?php echo nonce(); ?>>
+<script<?php echo Adminer\nonce(); ?>>
 var tablesFilterTimeout = null;
 var tablesFilterValue = '';
 
@@ -64,7 +64,7 @@ sessionStorage && document.addEventListener('DOMContentLoaded', function () {
 	sessionStorage.setItem('adminer_tables_filter_db', db);
 });
 </script>
-<p class="jsonly"><input id="filter-field" autocomplete="off" type="search"><?php echo script("qs('#filter-field').oninput = tablesFilterInput;"); ?>
+<p class="jsonly"><input id="filter-field" autocomplete="off" type="search"><?php echo Adminer\script("qs('#filter-field').oninput = tablesFilterInput;"); ?>
 <?php
 	}
 }

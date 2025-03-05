@@ -24,7 +24,7 @@ class AdminerLoginOtp {
 		if ($name == 'password') {
 			return $heading . $value . "\n"
 				. "<tr><th><acronym title='One Time Password' lang='en'>OTP</acronym>"
-				. "<td><input type='number' name='auth[otp]' value='" . h($_SESSION["otp"]) . "' size='6' autocomplete='one-time-code' inputmode='numeric' maxlength='6' pattern='\d{6}'>\n"
+				. "<td><input type='number' name='auth[otp]' value='" . Adminer\h($_SESSION["otp"]) . "' size='6' autocomplete='one-time-code' inputmode='numeric' maxlength='6' pattern='\d{6}'>\n"
 			;
 		}
 	}
@@ -34,9 +34,9 @@ class AdminerLoginOtp {
 			$timeSlot = floor(time() / 30);
 			foreach (array(0, -1, 1) as $skew) {
 				if ($_SESSION["otp"] == $this->getOtp($timeSlot + $skew)) {
-					restart_session();
+					Adminer\restart_session();
 					unset($_SESSION["otp"]);
-					stop_session();
+					Adminer\stop_session();
 					return;
 				}
 			}

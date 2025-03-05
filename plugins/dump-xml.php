@@ -28,16 +28,16 @@ class AdminerDumpXml {
 		if ($_POST["format"] == "xml") {
 			if (!$this->database) {
 				$this->database = true;
-				echo "<database name='" . h(DB) . "'>\n";
+				echo "<database name='" . Adminer\h(DB) . "'>\n";
 				register_shutdown_function(array($this, '_database'));
 			}
-			$connection = connection();
+			$connection = Adminer\connection();
 			$result = $connection->query($query, 1);
 			if ($result) {
 				while ($row = $result->fetch_assoc()) {
-					echo "\t<table name='" . h($table) . "'>\n";
+					echo "\t<table name='" . Adminer\h($table) . "'>\n";
 					foreach ($row as $key => $val) {
-						echo "\t\t<column name='" . h($key) . "'" . (isset($val) ? "" : " null='null'") . ">" . h($val) . "</column>\n";
+						echo "\t\t<column name='" . Adminer\h($key) . "'" . (isset($val) ? "" : " null='null'") . ">" . Adminer\h($val) . "</column>\n";
 					}
 					echo "\t</table>\n";
 				}

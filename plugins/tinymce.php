@@ -19,14 +19,14 @@ class AdminerTinymce {
 	}
 
 	function head() {
-		$lang = get_lang();
+		$lang = Adminer\get_lang();
 		$lang = ($lang == "zh" ? "zh-cn" : ($lang == "zh-tw" ? "zh" : $lang));
 		if (!file_exists(dirname($this->path) . "/langs/$lang.js")) {
 			$lang = "en";
 		}
-		echo script_src($this->path);
+		echo Adminer\script_src($this->path);
 		?>
-<script<?php echo nonce(); ?>>
+<script<?php echo Adminer\nonce(); ?>>
 tinyMCE.init({
 	entity_encoding: 'raw',
 	language: '<?php echo $lang; ?>'
@@ -59,9 +59,9 @@ tinyMCE.init({
 
 	function editInput($table, $field, $attrs, $value) {
 		if (preg_match("~text~", $field["type"]) && preg_match("~_html~", $field["field"])) {
-			return "<textarea$attrs id='fields-" . h($field["field"]) . "' rows='12' cols='50'>" . h($value) . "</textarea>" . script("
-tinyMCE.remove(tinyMCE.get('fields-" . js_escape($field["field"]) . "') || { });
-tinyMCE.EditorManager.execCommand('mceAddControl', true, 'fields-" . js_escape($field["field"]) . "');
+			return "<textarea$attrs id='fields-" . Adminer\h($field["field"]) . "' rows='12' cols='50'>" . Adminer\h($value) . "</textarea>" . Adminer\script("
+tinyMCE.remove(tinyMCE.get('fields-" . Adminer\js_escape($field["field"]) . "') || { });
+tinyMCE.EditorManager.execCommand('mceAddControl', true, 'fields-" . Adminer\js_escape($field["field"]) . "');
 qs('#form').onsubmit = function () {
 	tinyMCE.each(tinyMCE.editors, function (ed) {
 		ed.remove();

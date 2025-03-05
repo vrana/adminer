@@ -1,7 +1,7 @@
 <?php
 function adminer_object() {
 
-	class AdminerCds extends Adminer {
+	class AdminerCds extends Adminer\Adminer {
 
 		function name() {
 			// custom name in title and heading

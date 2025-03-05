@@ -33,7 +33,7 @@ class AdminerDumpJson {
 				echo "{\n";
 				register_shutdown_function(array($this, '_database'));
 			}
-			$connection = connection();
+			$connection = Adminer\connection();
 			$result = $connection->query($query, 1);
 			if ($result) {
 				echo '"' . addcslashes($table, "\r\n\"\\") . "\": [\n";
@@ -42,9 +42,9 @@ class AdminerDumpJson {
 					echo ($first ? "" : ", ");
 					$first = false;
 					foreach ($row as $key => $val) {
-						json_row($key, $val);
+						Adminer\json_row($key, $val);
 					}
-					json_row("");
+					Adminer\json_row("");
 				}
 				echo "]";
 			}

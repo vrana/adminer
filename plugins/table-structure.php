@@ -15,15 +15,15 @@ class AdminerTableStructure {
 	function tableStructurePrint($fields) {
 		echo "<div class='scrollable'>\n";
 		echo "<table class='nowrap odds'>\n";
-		echo "<thead><tr><th>" . lang('Column') . "<th>" . lang('Type') . "<th>" . lang('Collation') . "<th>" . lang('Nullable') . "<th>" . lang('Default') . (support("comment") ? "<th>" . lang('Comment') : "") . "</thead>\n";
+		echo "<thead><tr><th>" . Adminer\lang('Column') . "<th>" . Adminer\lang('Type') . "<th>" . Adminer\lang('Collation') . "<th>" . Adminer\lang('Nullable') . "<th>" . Adminer\lang('Default') . (support("comment") ? "<th>" . Adminer\lang('Comment') : "") . "</thead>\n";
 		foreach ($fields as $field) {
-			echo "<tr><th>" . h($field["field"]) . ($field["primary"] ? " (PRIMARY)" : "");
-			echo "<td><span>" . h($field["full_type"]) . "</span>";
-			echo ($field["auto_increment"] ? " <i>" . lang('Auto Increment') . "</i>" : "");
-			echo "<td>" . ($field["collation"] ? " <i>" . h($field["collation"]) . "</i>" : "");
-			echo "<td>" . ($field["null"] ? lang('Yes') : lang('No'));
-			echo "<td>" . h($field["default"]);
-			echo (support("comment") ? "<td>" . h($field["comment"]) : "");
+			echo "<tr><th>" . Adminer\h($field["field"]) . ($field["primary"] ? " (PRIMARY)" : "");
+			echo "<td><span>" . Adminer\h($field["full_type"]) . "</span>";
+			echo ($field["auto_increment"] ? " <i>" . Adminer\lang('Auto Increment') . "</i>" : "");
+			echo "<td>" . ($field["collation"] ? " <i>" . Adminer\h($field["collation"]) . "</i>" : "");
+			echo "<td>" . ($field["null"] ? Adminer\lang('Yes') : Adminer\lang('No'));
+			echo "<td>" . Adminer\h($field["default"]);
+			echo (support("comment") ? "<td>" . Adminer\h($field["comment"]) : "");
 			echo "\n";
 		}
 		echo "</table>\n";

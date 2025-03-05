@@ -27,7 +27,7 @@ class AdminerSqlLog {
 
 	function _log($query) {
 		if ($this->filename == "") {
-			$adminer = adminer();
+			$adminer = Adminer\adminer();
 			$this->filename = $adminer->database() . ".sql"; // no database goes to ".sql" to avoid collisions
 		}
 		$fp = fopen($this->filename, "a");

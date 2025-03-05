@@ -22,7 +22,7 @@ class AdminerLoginServers {
 	}
 
 	function credentials() {
-		return array($this->servers[SERVER]["server"], $_GET["username"], get_password());
+		return array($this->servers[SERVER]["server"], $_GET["username"], Adminer\get_password());
 	}
 
 	function login($login, $password) {
@@ -35,7 +35,7 @@ class AdminerLoginServers {
 		if ($name == 'driver') {
 			return '';
 		} elseif ($name == 'server') {
-			return $heading . "<select name='auth[server]'>" . optionlist(array_keys($this->servers), SERVER) . "</select>\n";
+			return $heading . "<select name='auth[server]'>" . Adminer\optionlist(array_keys($this->servers), SERVER) . "</select>\n";
 		}
 	}
 
