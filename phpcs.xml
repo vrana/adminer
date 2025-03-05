@@ -24,7 +24,6 @@
 		<exclude name="PSR2.Classes.PropertyDeclaration.Underscore"/>
 		<exclude name="PSR12.Classes.ClassInstantiation.MissingParentheses"/>
 		<exclude name="PSR12.Classes.OpeningBraceSpace.Found"/>
-		<exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps"/>
 		<exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
 		<exclude name="Squiz.Functions.MultiLineFunctionDeclaration.BraceOnSameLine"/><!-- Replaced by: Generic.Functions.OpeningFunctionBraceKernighanRitchie -->
 		<exclude name="PSR12.Properties.ConstantVisibility.NotFound"/><!-- PHP 7.1 is not required. -->
@@ -34,6 +33,12 @@
 		<!-- TODO: Ignore only in <?php if () { ?><?php } ?> -->
 		<exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect"/>
 		<exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact"/>
+	</rule>
+
+	<rule ref="PSR1.Methods.CamelCapsMethodName.NotCamelCaps">
+		<exclude-pattern>adminer/drivers/</exclude-pattern>
+		<exclude-pattern>adminer/include/pdo.inc.php</exclude-pattern>
+		<exclude-pattern>adminer/plugins/drivers/</exclude-pattern>
 	</rule>
 
 	<rule ref="PSR1.Classes.ClassDeclaration.MissingNamespace">
