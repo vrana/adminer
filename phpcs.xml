@@ -13,22 +13,26 @@
 		<exclude name="Generic.Files.LineLength"/>
 		<exclude name="Generic.Whitespace.DisallowTabIndent"/><!-- Replaced by: Generic.Whitespace.DisallowSpaceIndent -->
 		<exclude name="PSR1.Files.SideEffects.FoundWithSymbols"/>
-		<exclude name="PSR12.Files.FileHeader.SpacingAfterBlock"/>
 		<exclude name="PSR12.Operators.OperatorSpacing.NoSpaceBefore"/>
 		<exclude name="PSR12.Operators.OperatorSpacing.NoSpaceAfter"/>
 		<exclude name="PSR1.Classes.ClassDeclaration.MultipleClasses"/>
 		<exclude name="PSR2.Classes.ClassDeclaration.OpenBraceNewLine"/><!-- Replaced by: Generic.Classes.OpeningBraceSameLine -->
-		<exclude name="PSR2.Classes.PropertyDeclaration.Multiple"/>
-		<exclude name="PSR2.Classes.PropertyDeclaration.VarUsed"/>
-		<exclude name="PSR2.Classes.PropertyDeclaration.ScopeMissing"/>
 		<exclude name="PSR2.Classes.PropertyDeclaration.Underscore"/>
-		<exclude name="PSR12.Classes.ClassInstantiation.MissingParentheses"/>
-		<exclude name="PSR12.Classes.OpeningBraceSpace.Found"/>
 		<exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
 		<exclude name="Squiz.Functions.MultiLineFunctionDeclaration.BraceOnSameLine"/><!-- Replaced by: Generic.Functions.OpeningFunctionBraceKernighanRitchie -->
 		<exclude name="PSR12.Properties.ConstantVisibility.NotFound"/><!-- PHP 7.1 is not required. -->
-		<exclude name="Squiz.Scope.MethodScope.Missing"/>
+
+		<!-- More readable. -->
+		<exclude name="PSR12.Files.FileHeader.SpacingAfterBlock"/>
+		<exclude name="PSR12.Classes.OpeningBraceSpace.Found"/>
 		<exclude name="Squiz.WhiteSpace.ControlStructureSpacing.SpacingBeforeClose"/>
+
+		<!-- Saves bytes. -->
+		<exclude name="PSR2.Classes.PropertyDeclaration.Multiple"/>
+		<exclude name="PSR2.Classes.PropertyDeclaration.VarUsed"/>
+		<exclude name="PSR2.Classes.PropertyDeclaration.ScopeMissing"/>
+		<exclude name="PSR12.Classes.ClassInstantiation.MissingParentheses"/>
+		<exclude name="Squiz.Scope.MethodScope.Missing"/>
 
 		<!-- TODO: Ignore only in <?php if () { ?><?php } ?> -->
 		<exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect"/>
