@@ -26,7 +26,7 @@ class AdminerEditForeign {
 				$id = $foreignKey["target"][0];
 				$options = &$values[$target][$id];
 				if (!$options) {
-					$column = idf_escape($id);
+					$column = Adminer\idf_escape($id);
 					if (preg_match('~binary~', $field["type"])) {
 						$column = "HEX($column)";
 					}

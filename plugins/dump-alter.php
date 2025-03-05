@@ -34,7 +34,7 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 			echo "
 			WHEN " . Adminer\q($row["TABLE_NAME"]) . " THEN
 				" . (isset($row["ENGINE"]) ? "IF _engine != '$row[ENGINE]' OR _table_collation != '$row[TABLE_COLLATION]' OR _table_comment != $comment THEN
-					ALTER TABLE " . idf_escape($row["TABLE_NAME"]) . " ENGINE=$row[ENGINE] COLLATE=$row[TABLE_COLLATION] COMMENT=$comment;
+					ALTER TABLE " . Adminer\idf_escape($row["TABLE_NAME"]) . " ENGINE=$row[ENGINE] COLLATE=$row[TABLE_COLLATION] COMMENT=$comment;
 				END IF" : "BEGIN END") . ";";
 		}
 		echo "
@@ -92,14 +92,14 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 					$row["default"] = ($default !== null ? Adminer\q($default) : "NULL");
 					$row["after"] = Adminer\q($after); //! rgt AFTER lft, lft AFTER id doesn't work
 					$row["alter"] = Adminer\escape_string(
-						idf_escape($row["COLUMN_NAME"])
+						Adminer\idf_escape($row["COLUMN_NAME"])
 						. " $row[COLUMN_TYPE]"
 						. ($row["COLLATION_NAME"] ? " COLLATE $row[COLLATION_NAME]" : "")
 						. ($default !== null ? " DEFAULT " . ($default == "CURRENT_TIMESTAMP" ? $default : $row["default"]) : "")
 						. ($row["IS_NULLABLE"] == "YES" ? "" : " NOT NULL")
 						. ($row["EXTRA"] ? " $row[EXTRA]" : "")
 						. ($row["COLUMN_COMMENT"] ? " COMMENT " . Adminer\q($row["COLUMN_COMMENT"]) : "")
-						. ($after ? " AFTER " . idf_escape($after) : " FIRST")
+						. ($after ? " AFTER " . Adminer\idf_escape($after) : " FIRST")
 					);
 					echo ", ADD $row[alter]";
 					$fields[] = $row;
