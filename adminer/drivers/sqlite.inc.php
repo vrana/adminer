@@ -88,6 +88,10 @@ if (isset($_GET["sqlite"])) {
 			function __construct($filename) {
 				$this->dsn(DRIVER . ":$filename", "", "");
 			}
+
+			function select_db($db) {
+				return false;
+			}
 		}
 
 	}

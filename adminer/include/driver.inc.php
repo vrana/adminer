@@ -22,7 +22,7 @@ function get_driver($id) {
 	return $drivers[$id];
 }
 
-/*abstract*/ class SqlDriver {
+abstract class SqlDriver {
 	var $_conn;
 
 	/** Create object for performing database operations
@@ -110,7 +110,7 @@ function get_driver($id) {
 	* @param array of arrays with escaped columns in keys and quoted data in values
 	* @return bool
 	*/
-	/*abstract*/ function insertUpdate($table, $rows, $primary) {
+	function insertUpdate($table, $rows, $primary) {
 		return false;
 	}
 
