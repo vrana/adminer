@@ -52,11 +52,7 @@ $HTTPS = ($_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off")) || ini_bool
 if (!defined("SID")) {
 	session_cache_limiter(""); // to allow restarting session
 	session_name("adminer_sid"); // use specific session name to get own namespace
-	$params = array(0, preg_replace('~\?.*~', '', $_SERVER["REQUEST_URI"]), "", $HTTPS);
-	if (version_compare(PHP_VERSION, '5.2.0') >= 0) {
-		$params[] = true; // HttpOnly
-	}
-	call_user_func_array('session_set_cookie_params', $params); // ini_set() may be disabled
+	session_set_cookie_params(0, preg_replace('~\?.*~', '', $_SERVER["REQUEST_URI"]), "", $HTTPS, true); // ini_set() may be disabled
 	session_start();
 }
 
