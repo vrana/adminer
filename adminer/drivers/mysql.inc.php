@@ -494,7 +494,8 @@ if (!defined("DRIVER")) {
 	* @return array [$name => $type]
 	*/
 	function tables_list() {
-		return get_key_vals(min_version(5)
+		return get_key_vals(
+			min_version(5)
 			? "SELECT TABLE_NAME, TABLE_TYPE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() ORDER BY TABLE_NAME"
 			: "SHOW TABLES"
 		);
@@ -519,10 +520,13 @@ if (!defined("DRIVER")) {
 	*/
 	function table_status($name = "", $fast = false) {
 		$return = array();
-		foreach (get_rows($fast && min_version(5)
-			? "SELECT TABLE_NAME AS Name, ENGINE AS Engine, TABLE_COMMENT AS Comment FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() " . ($name != "" ? "AND TABLE_NAME = " . q($name) : "ORDER BY Name")
-			: "SHOW TABLE STATUS" . ($name != "" ? " LIKE " . q(addcslashes($name, "%_\\")) : "")
-		) as $row) {
+		foreach (
+			get_rows(
+				$fast && min_version(5)
+				? "SELECT TABLE_NAME AS Name, ENGINE AS Engine, TABLE_COMMENT AS Comment FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() " . ($name != "" ? "AND TABLE_NAME = " . q($name) : "ORDER BY Name")
+				: "SHOW TABLE STATUS" . ($name != "" ? " LIKE " . q(addcslashes($name, "%_\\")) : "")
+			) as $row
+		) {
 			if ($row["Engine"] == "InnoDB") {
 				// ignore internal comment, unnecessary since MySQL 5.1.21
 				$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\1', $row["Comment"]);

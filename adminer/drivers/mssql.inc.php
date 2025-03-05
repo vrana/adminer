@@ -213,7 +213,8 @@ if (isset($_GET["mssql"])) {
 			}
 			if ($where) {
 				$identity = queries("SET IDENTITY_INSERT " . table($table) . " ON");
-				$return = queries("MERGE " . table($table) . " USING (VALUES\n\t" . implode(",\n\t", $values) . "\n) AS source ($columns) ON " . implode(" AND ", $where) //! source, c1 - possible conflict
+				$return = queries(
+					"MERGE " . table($table) . " USING (VALUES\n\t" . implode(",\n\t", $values) . "\n) AS source ($columns) ON " . implode(" AND ", $where) //! source, c1 - possible conflict
 					. ($update ? "\nWHEN MATCHED THEN UPDATE SET " . implode(", ", $update) : "")
 					. "\nWHEN NOT MATCHED THEN INSERT (" . implode(", ", array_keys($identity ? $set : $insert)) . ") VALUES (" . ($identity ? $columns : implode(", ", $insert)) . ");" // ; is mandatory
 				);
@@ -331,13 +332,14 @@ WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V')
 	function fields($table) {
 		$comments = get_key_vals("SELECT objname, cast(value as varchar(max)) FROM fn_listextendedproperty('MS_DESCRIPTION', 'schema', " . q(get_schema()) . ", 'table', " . q($table) . ", 'column', NULL)");
 		$return = array();
-		foreach (get_rows("SELECT c.max_length, c.precision, c.scale, c.name, c.is_nullable, c.is_identity, c.collation_name, t.name type, CAST(d.definition as text) [default], d.name default_constraint
+		foreach (
+			get_rows("SELECT c.max_length, c.precision, c.scale, c.name, c.is_nullable, c.is_identity, c.collation_name, t.name type, CAST(d.definition as text) [default], d.name default_constraint
 FROM sys.all_columns c
 JOIN sys.all_objects o ON c.object_id = o.object_id
 JOIN sys.types t ON c.user_type_id = t.user_type_id
 LEFT JOIN sys.default_constraints d ON c.default_object_id = d.object_id
-WHERE o.schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND o.type IN ('S', 'U', 'V') AND o.name = " . q($table)
-		) as $row) {
+WHERE o.schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND o.type IN ('S', 'U', 'V') AND o.name = " . q($table)) as $row
+		) {
 			$type = $row["type"];
 			$length = (preg_match("~char|binary~", $type)
 				? $row["max_length"] / ($type[0] == 'n' ? 2 : 1)
@@ -550,7 +552,8 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row) {
 		if ($name == "") {
 			return array();
 		}
-		$rows = get_rows("SELECT s.name [Trigger],
+		$rows = get_rows(
+			"SELECT s.name [Trigger],
 CASE WHEN OBJECTPROPERTY(s.id, 'ExecIsInsertTrigger') = 1 THEN 'INSERT' WHEN OBJECTPROPERTY(s.id, 'ExecIsUpdateTrigger') = 1 THEN 'UPDATE' WHEN OBJECTPROPERTY(s.id, 'ExecIsDeleteTrigger') = 1 THEN 'DELETE' END [Event],
 CASE WHEN OBJECTPROPERTY(s.id, 'ExecIsInsteadOfTrigger') = 1 THEN 'INSTEAD OF' ELSE 'AFTER' END [Timing],
 c.text
@@ -567,13 +570,14 @@ WHERE s.xtype = 'TR' AND s.name = " . q($name)
 
 	function triggers($table) {
 		$return = array();
-		foreach (get_rows("SELECT sys1.name,
+		foreach (
+			get_rows("SELECT sys1.name,
 CASE WHEN OBJECTPROPERTY(sys1.id, 'ExecIsInsertTrigger') = 1 THEN 'INSERT' WHEN OBJECTPROPERTY(sys1.id, 'ExecIsUpdateTrigger') = 1 THEN 'UPDATE' WHEN OBJECTPROPERTY(sys1.id, 'ExecIsDeleteTrigger') = 1 THEN 'DELETE' END [Event],
 CASE WHEN OBJECTPROPERTY(sys1.id, 'ExecIsInsteadOfTrigger') = 1 THEN 'INSTEAD OF' ELSE 'AFTER' END [Timing]
 FROM sysobjects sys1
 JOIN sysobjects sys2 ON sys1.parent_obj = sys2.id
-WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)
-		) as $row) { // triggers are not schema-scoped
+WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)) as $row
+		) { // triggers are not schema-scoped
 			$return[$row["name"]] = array($row["Timing"], $row["Event"]);
 		}
 		return $return;

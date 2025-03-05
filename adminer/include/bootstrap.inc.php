@@ -99,11 +99,13 @@ if ($adminer->operators === null) {
 
 define("SERVER", $_GET[DRIVER]); // read from pgsql=localhost
 define("DB", $_GET["db"]); // for the sake of speed and size
-define("ME", preg_replace('~\?.*~', '', relative_uri()) . '?'
-	. (sid() ? SID . '&' : '')
-	. (SERVER !== null ? DRIVER . "=" . urlencode(SERVER) . '&' : '')
-	. (isset($_GET["username"]) ? "username=" . urlencode($_GET["username"]) . '&' : '')
-	. (DB != "" ? 'db=' . urlencode(DB) . '&' . (isset($_GET["ns"]) ? "ns=" . urlencode($_GET["ns"]) . "&" : "") : '')
+define(
+	"ME",
+	preg_replace('~\?.*~', '', relative_uri()) . '?'
+		. (sid() ? SID . '&' : '')
+		. (SERVER !== null ? DRIVER . "=" . urlencode(SERVER) . '&' : '')
+		. (isset($_GET["username"]) ? "username=" . urlencode($_GET["username"]) . '&' : '')
+		. (DB != "" ? 'db=' . urlencode(DB) . '&' . (isset($_GET["ns"]) ? "ns=" . urlencode($_GET["ns"]) . "&" : "") : '')
 );
 
 include "../adminer/include/design.inc.php";

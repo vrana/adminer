@@ -735,7 +735,8 @@ function get_file($key, $decompress = false) {
 		}
 		$name = $file["name"][$key];
 		$tmp_name = $file["tmp_name"][$key];
-		$content = file_get_contents($decompress && preg_match('~\.gz$~', $name)
+		$content = file_get_contents(
+			$decompress && preg_match('~\.gz$~', $name)
 			? "compress.zlib://$tmp_name"
 			: $tmp_name
 		); //! may not be reachable because of open_basedir

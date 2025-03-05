@@ -194,7 +194,8 @@ if (isset($_GET["oracle"])) {
 	}
 
 	function get_databases() {
-		return get_vals("SELECT DISTINCT tablespace_name FROM (
+		return get_vals(
+			"SELECT DISTINCT tablespace_name FROM (
 SELECT tablespace_name FROM user_tablespaces
 UNION SELECT tablespace_name FROM all_tables WHERE tablespace_name IS NOT NULL
 )
@@ -249,7 +250,8 @@ ORDER BY 1"
 	function tables_list() {
 		$view = views_table("view_name");
 		$owner = where_owner(" AND ");
-		return get_key_vals("SELECT table_name, 'table' FROM all_tables WHERE tablespace_name = " . q(DB) . "$owner
+		return get_key_vals(
+			"SELECT table_name, 'table' FROM all_tables WHERE tablespace_name = " . q(DB) . "$owner
 UNION SELECT view_name, 'view' FROM $view
 ORDER BY 1"
 		); //! views don't have schema
@@ -270,10 +272,11 @@ ORDER BY 1"
 		$db = get_current_db();
 		$view = views_table("view_name");
 		$owner = where_owner(" AND ");
-		foreach (get_rows('SELECT table_name "Name", \'table\' "Engine", avg_row_len * num_rows "Data_length", num_rows "Rows" FROM all_tables WHERE tablespace_name = ' . q($db) . $owner . ($name != "" ? " AND table_name = $search" : "") . "
+		foreach (
+			get_rows('SELECT table_name "Name", \'table\' "Engine", avg_row_len * num_rows "Data_length", num_rows "Rows" FROM all_tables WHERE tablespace_name = ' . q($db) . $owner . ($name != "" ? " AND table_name = $search" : "") . "
 UNION SELECT view_name, 'view', 0, 0 FROM $view" . ($name != "" ? " WHERE view_name = $search" : "") . "
-ORDER BY 1"
-		) as $row) {
+ORDER BY 1") as $row
+		) {
 			if ($name != "") {
 				return $row;
 			}

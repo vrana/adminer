@@ -349,7 +349,8 @@ ORDER BY 1";
 
 	function table_status($name = "") {
 		$return = array();
-		foreach (get_rows("SELECT
+		foreach (
+			get_rows("SELECT
 	c.relname AS \"Name\",
 	CASE c.relkind WHEN 'r' THEN 'table' WHEN 'm' THEN 'materialized view' ELSE 'view' END AS \"Engine\",
 	pg_table_size(c.oid) AS \"Data_length\",
@@ -361,8 +362,8 @@ ORDER BY 1";
 FROM pg_class c
 JOIN pg_namespace n ON(n.nspname = current_schema() AND n.oid = c.relnamespace)
 WHERE relkind IN ('r', 'm', 'v', 'f', 'p')
-" . ($name != "" ? "AND relname = " . q($name) : "ORDER BY relname")
-		) as $row) { //! Index_length, Auto_increment
+" . ($name != "" ? "AND relname = " . q($name) : "ORDER BY relname")) as $row //! Index_length, Auto_increment
+		) {
 			$return[$row["Name"]] = $row;
 		}
 		return ($name != "" ? $return[$name] : $return);
@@ -382,7 +383,8 @@ WHERE relkind IN ('r', 'm', 'v', 'f', 'p')
 			'timestamp without time zone' => 'timestamp',
 			'timestamp with time zone' => 'timestamptz',
 		);
-		foreach (get_rows("SELECT a.attname AS field, format_type(a.atttypid, a.atttypmod) AS full_type, pg_get_expr(d.adbin, d.adrelid) AS default, a.attnotnull::int, col_description(c.oid, a.attnum) AS comment" . (min_version(10) ? ", a.attidentity" : "") . "
+		foreach (
+			get_rows("SELECT a.attname AS field, format_type(a.atttypid, a.atttypmod) AS full_type, pg_get_expr(d.adbin, d.adrelid) AS default, a.attnotnull::int, col_description(c.oid, a.attnum) AS comment" . (min_version(10) ? ", a.attidentity" : "") . "
 FROM pg_class c
 JOIN pg_namespace n ON c.relnamespace = n.oid
 JOIN pg_attribute a ON c.oid = a.attrelid
@@ -391,8 +393,8 @@ WHERE c.relname = " . q($table) . "
 AND n.nspname = current_schema()
 AND NOT a.attisdropped
 AND a.attnum > 0
-ORDER BY a.attnum"
-		) as $row) {
+ORDER BY a.attnum") as $row
+		) {
 			//! collation, primary
 			preg_match('~([^([]+)(\((.*)\))?([a-z ]+)?((\[[0-9]*])*)$~', $row["full_type"], $match);
 			list(, $type, $length, $row["length"], $addon, $array) = $match;
@@ -730,7 +732,8 @@ ORDER BY SPECIFIC_NAME');
 	}
 
 	function types() {
-		return get_key_vals("SELECT oid, typname
+		return get_key_vals(
+			"SELECT oid, typname
 FROM pg_type
 WHERE typnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema())
 AND typtype IN ('b','d','e')

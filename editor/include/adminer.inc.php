@@ -423,7 +423,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 				$subject = $_POST["email_subject"];
 				$message = $_POST["email_message"];
 				preg_match_all('~\{\$([a-z0-9_]+)\}~i', "$subject.$message", $matches); // allows {$name} in subject or message
-				$rows = get_rows("SELECT DISTINCT $field" . ($matches[1] ? ", " . implode(", ", array_map('Adminer\idf_escape', array_unique($matches[1]))) : "") . " FROM " . table($_GET["select"])
+				$rows = get_rows(
+					"SELECT DISTINCT $field" . ($matches[1] ? ", " . implode(", ", array_map('Adminer\idf_escape', array_unique($matches[1]))) : "") . " FROM " . table($_GET["select"])
 					. " WHERE $field IS NOT NULL AND $field != ''"
 					. ($where ? " AND " . implode(" AND ", $where) : "")
 					. ($_POST["all"] ? "" : " AND ((" . implode(") OR (", array_map('Adminer\where_check', (array) $_POST["check"])) . "))")

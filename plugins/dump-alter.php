@@ -91,7 +91,8 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 					$default = $row["COLUMN_DEFAULT"];
 					$row["default"] = ($default !== null ? Adminer\q($default) : "NULL");
 					$row["after"] = Adminer\q($after); //! rgt AFTER lft, lft AFTER id doesn't work
-					$row["alter"] = Adminer\escape_string(idf_escape($row["COLUMN_NAME"])
+					$row["alter"] = Adminer\escape_string(
+						idf_escape($row["COLUMN_NAME"])
 						. " $row[COLUMN_TYPE]"
 						. ($row["COLLATION_NAME"] ? " COLLATE $row[COLLATION_NAME]" : "")
 						. ($default !== null ? " DEFAULT " . ($default == "CURRENT_TIMESTAMP" ? $default : $row["default"]) : "")
