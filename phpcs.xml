@@ -40,8 +40,6 @@
 		<!-- TODO: Ignore only in <?php if () { ?><?php } ?> -->
 		<exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect"/>
 		<exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact"/>
-		<exclude name="Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace"/>
-		<exclude name="Squiz.WhiteSpace.ScopeClosingBrace.ContentBefore"/>
 	</rule>
 
 	<rule ref="Generic.Classes.OpeningBraceSameLine"/>

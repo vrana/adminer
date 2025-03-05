@@ -53,6 +53,8 @@ page_header(($TABLE != "" ? lang('Alter view') : lang('Create view')), $error, a
 <p><?php textarea("select", $row["select"]); ?>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
-<?php if ($TABLE != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $TABLE)); ?><?php } ?>
+<?php if ($TABLE != "") { ?>
+<input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $TABLE)); ?>
+<?php } ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>
