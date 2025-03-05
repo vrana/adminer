@@ -17,7 +17,7 @@ class AdminerEnumTypes {
 
 		// read types and "cache" it
 		if (is_null($this->_types)) {
-			$types = types();
+			$types = Adminer\types();
 			$this->_types = array();
 
 			foreach ($types as $type) {

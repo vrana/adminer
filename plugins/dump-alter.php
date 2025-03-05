@@ -69,7 +69,7 @@ SELECT @adminer_alter;
 
 	function dumpTable($table, $style, $is_view = 0) {
 		if ($_POST["format"] == "sql_alter") {
-			$create = create_sql($table, $_POST["auto_increment"], $style);
+			$create = Adminer\create_sql($table, $_POST["auto_increment"], $style);
 			if ($is_view) {
 				echo substr_replace($create, " OR REPLACE", 6, 0) . ";\n\n";
 			} else {
@@ -140,7 +140,7 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 	UNTIL done END REPEAT;
 	CLOSE columns;
 	IF @alter_table != '' OR add_columns != '' THEN
-		SET alter_command = CONCAT(alter_command, 'ALTER TABLE " . table($table) . "', SUBSTR(CONCAT(add_columns, @alter_table), 2), ';\\n');
+		SET alter_command = CONCAT(alter_command, 'ALTER TABLE " . Adminer\table($table) . "', SUBSTR(CONCAT(add_columns, @alter_table), 2), ';\\n');
 	END IF;
 END;;
 DELIMITER ;

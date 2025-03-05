@@ -30,7 +30,7 @@ class AdminerEditForeign {
 					if (preg_match('~binary~', $field["type"])) {
 						$column = "HEX($column)";
 					}
-					$options = array("" => "") + Adminer\get_vals("SELECT $column FROM " . table($target) . " ORDER BY 1" . ($this->_limit ? " LIMIT " . ($this->_limit + 1) : ""));
+					$options = array("" => "") + Adminer\get_vals("SELECT $column FROM " . Adminer\table($target) . " ORDER BY 1" . ($this->_limit ? " LIMIT " . ($this->_limit + 1) : ""));
 					if ($this->_limit && count($options) - 1 > $this->_limit) {
 						return;
 					}
