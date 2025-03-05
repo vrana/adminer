@@ -49,5 +49,4 @@ class AdminerFileUpload {
 			$link = "$this->displayPath$_GET[select]/$regs[1]-$val";
 		}
 	}
-
 }

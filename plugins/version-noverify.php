@@ -11,5 +11,4 @@ class AdminerVersionNoverify {
 	function head() {
 		echo Adminer\script("verifyVersion = function () {};");
 	}
-
 }

@@ -355,7 +355,6 @@ if (!defined("DRIVER")) {
 			}
 			return $c_style;
 		}
-
 	}
 
 

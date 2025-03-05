@@ -70,5 +70,4 @@ qs('#form').onsubmit = function () {
 ");
 		}
 	}
-
 }

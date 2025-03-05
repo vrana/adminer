@@ -56,5 +56,4 @@ class AdminerEmailTable {
 			$_POST["email_message"] = $row[1];
 		}
 	}
-
 }

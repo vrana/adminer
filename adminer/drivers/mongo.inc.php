@@ -110,7 +110,6 @@ if (isset($_GET["mongo"])) {
 					'charsetnr' => $this->_charset[$name],
 				);
 			}
-
 		}
 
 

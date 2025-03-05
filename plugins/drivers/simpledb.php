@@ -52,7 +52,6 @@ if (isset($_GET["simpledb"])) {
 			function quote($string) {
 				return "'" . str_replace("'", "''", $string) . "'";
 			}
-
 		}
 
 		class Result {
@@ -113,7 +112,6 @@ if (isset($_GET["simpledb"])) {
 				$keys = array_keys($this->_rows[0]);
 				return (object) array('name' => $keys[$this->_offset++]);
 			}
-
 		}
 	}
 
@@ -243,7 +241,6 @@ if (isset($_GET["simpledb"])) {
 			$this->_conn->timeout = $timeout;
 			return $query;
 		}
-
 	}
 
 

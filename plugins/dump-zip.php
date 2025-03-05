@@ -41,5 +41,4 @@ class AdminerDumpZip {
 			ob_start(array($this, '_zip'));
 		}
 	}
-
 }

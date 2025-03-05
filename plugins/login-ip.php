@@ -38,5 +38,4 @@ class AdminerLoginIp {
 		}
 		return false;
 	}
-
 }

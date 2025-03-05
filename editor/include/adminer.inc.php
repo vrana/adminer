@@ -662,5 +662,4 @@ qsl('div').onclick = whisperClick;", "")
 			return $return;
 		}
 	}
-
 }

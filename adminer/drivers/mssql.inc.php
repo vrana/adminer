@@ -240,7 +240,6 @@ if (isset($_GET["mssql"])) {
 				return "relational-databases/system-$link" . preg_replace('~_~', '-', strtolower($name)) . "-transact-sql";
 			}
 		}
-
 	}
 
 

@@ -39,5 +39,4 @@ class AdminerMasterSlave {
 			$_SESSION["master"] = $result->fetch_assoc();
 		}
 	}
-
 }

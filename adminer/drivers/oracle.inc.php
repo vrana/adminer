@@ -171,7 +171,6 @@ if (isset($_GET["oracle"])) {
 		function hasCStyleEscapes() {
 			return true;
 		}
-
 	}
 
 

@@ -23,5 +23,4 @@ class AdminerLoginSsl {
 	function connectSsl() {
 		return $this->ssl;
 	}
-
 }

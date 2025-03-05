@@ -420,5 +420,4 @@ class AdminerPlugin extends Adminer\Adminer {
 		$args = func_get_args();
 		return $this->_applyPlugin(__FUNCTION__, $args);
 	}
-
 }

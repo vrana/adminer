@@ -12,5 +12,4 @@ class AdminerDumpDate {
 		$connection = Adminer\connection();
 		return Adminer\friendly_url(($identifier != "" ? $identifier : (SERVER != "" ? SERVER : "localhost")) . "-" . $connection->result("SELECT NOW()"));
 	}
-
 }

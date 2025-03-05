@@ -258,7 +258,6 @@ if (isset($_GET["pgsql"])) {
 			}
 			return $c_style;
 		}
-
 	}
 
 

@@ -43,7 +43,6 @@ function adminer_object() {
 			}
 			return "";
 		}
-
 	}
 
 	return new AdminerCds;

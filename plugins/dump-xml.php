@@ -52,5 +52,4 @@ class AdminerDumpXml {
 			return "xml";
 		}
 	}
-
 }

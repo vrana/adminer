@@ -39,5 +39,4 @@ class AdminerDesigns {
 		echo '<input type="hidden" name="token" value="' . Adminer\get_token() . '">';
 		echo "</form>\n";
 	}
-
 }

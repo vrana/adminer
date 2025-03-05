@@ -1106,5 +1106,4 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 		}
 		echo "</ul>\n";
 	}
-
 }

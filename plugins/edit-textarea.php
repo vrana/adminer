@@ -13,5 +13,4 @@ class AdminerEditTextarea {
 			return "<textarea cols='30' rows='1' style='height: 1.2em;'$attrs>" . Adminer\h($value) . '</textarea>';
 		}
 	}
-
 }

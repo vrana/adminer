@@ -54,5 +54,4 @@ class AdminerForeignSystem {
 			return $return[$table];
 		}
 	}
-
 }

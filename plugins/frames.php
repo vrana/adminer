@@ -24,5 +24,4 @@ class AdminerFrames {
 			header_remove("X-Frame-Options");
 		}
 	}
-
 }

@@ -27,5 +27,4 @@ class AdminerLoginPasswordLess {
 			return true;
 		}
 	}
-
 }

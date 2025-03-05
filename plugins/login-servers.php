@@ -38,5 +38,4 @@ class AdminerLoginServers {
 			return $heading . "<select name='auth[server]'>" . Adminer\optionlist(array_keys($this->servers), SERVER) . "</select>\n";
 		}
 	}
-
 }

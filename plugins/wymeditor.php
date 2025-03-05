@@ -59,5 +59,4 @@ jQuery('#fields-" . Adminer\js_escape($field["field"]) . "').wymeditor({ updateS
 ");
 		}
 	}
-
 }

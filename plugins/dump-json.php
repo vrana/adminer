@@ -58,5 +58,4 @@ class AdminerDumpJson {
 			return "json";
 		}
 	}
-
 }

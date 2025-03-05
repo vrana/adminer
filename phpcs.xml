@@ -17,7 +17,6 @@
 		<exclude name="PSR12.Operators.OperatorSpacing.NoSpaceAfter"/>
 		<exclude name="PSR1.Classes.ClassDeclaration.MultipleClasses"/>
 		<exclude name="PSR2.Classes.ClassDeclaration.OpenBraceNewLine"/><!-- Replaced by: Generic.Classes.OpeningBraceSameLine -->
-		<exclude name="PSR2.Classes.ClassDeclaration.CloseBraceAfterBody"/>
 		<exclude name="PSR2.Classes.PropertyDeclaration.Multiple"/>
 		<exclude name="PSR2.Classes.PropertyDeclaration.VarUsed"/>
 		<exclude name="PSR2.Classes.PropertyDeclaration.ScopeMissing"/>

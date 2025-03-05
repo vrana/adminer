@@ -25,5 +25,4 @@ class AdminerDatabaseHide {
 		}
 		return $return;
 	}
-
 }

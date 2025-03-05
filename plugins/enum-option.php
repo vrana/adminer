@@ -36,5 +36,4 @@ class AdminerEnumOption {
 			return "<select$attrs>" . Adminer\optionlist($options, (string) $selected, 1) . "</select>"; // 1 - use keys
 		}
 	}
-
 }

@@ -37,5 +37,4 @@ class AdminerDumpBz2 {
 			ob_start(array($this, '_bz2'), 1e6);
 		}
 	}
-
 }

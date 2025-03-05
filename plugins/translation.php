@@ -51,5 +51,4 @@ class AdminerTranslation {
 			$val = $this->_translate($val);
 		}
 	}
-
 }
