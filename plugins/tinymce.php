@@ -19,13 +19,10 @@ class AdminerTinymce {
 	}
 
 	function head() {
-		$lang = "en";
-		if (function_exists('get_lang')) { // since Adminer 3.2.0
-			$lang = get_lang();
-			$lang = ($lang == "zh" ? "zh-cn" : ($lang == "zh-tw" ? "zh" : $lang));
-			if (!file_exists(dirname($this->path) . "/langs/$lang.js")) {
-				$lang = "en";
-			}
+		$lang = get_lang();
+		$lang = ($lang == "zh" ? "zh-cn" : ($lang == "zh-tw" ? "zh" : $lang));
+		if (!file_exists(dirname($this->path) . "/langs/$lang.js")) {
+			$lang = "en";
 		}
 		echo script_src($this->path);
 		?>

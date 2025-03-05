@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $status = isset($_GET["status"]);
 page_header($status ? lang('Status') : lang('Variables'));
 

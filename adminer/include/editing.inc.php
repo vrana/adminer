@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 // This file is not used in Adminer Editor.
 
 /** Print select result

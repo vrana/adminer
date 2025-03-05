@@ -1,5 +1,7 @@
 #!/usr/bin/env php
 <?php
+namespace Adminer;
+
 include __DIR__ . "/adminer/include/version.inc.php";
 include __DIR__ . "/adminer/include/errors.inc.php";
 include __DIR__ . "/externals/JsShrink/jsShrink.php";

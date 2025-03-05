@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 if (isset($_GET["status"])) {
 	$_GET["variables"] = $_GET["status"];
 }

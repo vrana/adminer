@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $TABLE = $_GET["trigger"];
 $name = $_GET["name"];
 $trigger_options = trigger_options();

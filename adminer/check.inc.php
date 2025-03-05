@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $TABLE = $_GET["check"];
 $name = $_GET["name"];
 $row = $_POST;

@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $drivers["pgsql"] = "PostgreSQL";
 
 if (isset($_GET["pgsql"])) {

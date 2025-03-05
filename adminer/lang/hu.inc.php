@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $translations = array(
 	'Login' => 'Belépés',
 	'Logout successful.' => 'Sikeres kilépés.',

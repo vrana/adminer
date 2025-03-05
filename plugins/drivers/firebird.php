@@ -3,6 +3,8 @@
 * @author Steve Krämer
 */
 
+namespace Adminer;
+
 add_driver('firebird', 'Firebird (alpha)');
 
 if (isset($_GET["firebird"])) {

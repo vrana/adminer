@@ -5,6 +5,8 @@
 * @author Jakub Vrana
 */
 
+namespace Adminer;
+
 $drivers["mssql"] = "MS SQL";
 
 if (isset($_GET["mssql"])) {

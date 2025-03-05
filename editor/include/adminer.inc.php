@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 class Adminer {
 	var $operators = array("<=", ">=");
 	var $_values = array();

@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $drivers["mongo"] = "MongoDB (alpha)";
 
 if (isset($_GET["mongo"])) {

@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $drivers["sqlite"] = "SQLite";
 
 if (isset($_GET["sqlite"])) {
@@ -9,7 +11,7 @@ if (isset($_GET["sqlite"])) {
 			var $extension = "SQLite3", $server_info, $affected_rows, $errno, $error, $_link;
 
 			function __construct($filename) {
-				$this->_link = new SQLite3($filename);
+				$this->_link = new \SQLite3($filename);
 				$version = $this->_link->version();
 				$this->server_info = $version["versionString"];
 			}
@@ -90,7 +92,7 @@ if (isset($_GET["sqlite"])) {
 
 	}
 
-	if (class_exists("Min_SQLite")) {
+	if (class_exists('Adminer\Min_SQLite')) {
 		class Min_DB extends Min_SQLite {
 
 			function __construct() {

@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 if (support("kill")) {
 	if ($_POST && !$error) {
 		$killed = 0;

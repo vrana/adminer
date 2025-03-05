@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $TABLE = $_GET["dump"];
 
 if ($_POST && !$error) {

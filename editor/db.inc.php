@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 page_header(lang('Server'), "", false);
 
 if ($adminer->homepage()) {

@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $TABLE = $_GET["foreign"];
 $name = $_GET["name"];
 $row = $_POST;

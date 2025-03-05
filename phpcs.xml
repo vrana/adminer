@@ -15,7 +15,6 @@
 		<exclude name="PSR12.Files.FileHeader.SpacingAfterBlock"/>
 		<exclude name="PSR12.Operators.OperatorSpacing.NoSpaceBefore"/>
 		<exclude name="PSR12.Operators.OperatorSpacing.NoSpaceAfter"/>
-		<exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace"/>
 		<exclude name="PSR1.Classes.ClassDeclaration.MultipleClasses"/>
 		<exclude name="PSR2.Classes.ClassDeclaration.OpenBraceNewLine"/><!-- Replaced by: Generic.Classes.OpeningBraceSameLine -->
 		<exclude name="PSR2.Classes.ClassDeclaration.CloseBraceAfterBody"/>
@@ -40,6 +39,10 @@
 		<!-- TODO: Ignore only in <?php if () { ?><?php } ?> -->
 		<exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect"/>
 		<exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact"/>
+	</rule>
+
+	<rule ref="PSR1.Classes.ClassDeclaration.MissingNamespace">
+		<exclude-pattern>plugins/[^/]+\.php</exclude-pattern>
 	</rule>
 
 	<rule ref="Generic.Classes.OpeningBraceSameLine"/>

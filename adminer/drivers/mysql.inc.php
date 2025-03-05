@@ -1,11 +1,13 @@
 <?php
+namespace Adminer;
+
 $drivers = array("server" => "MySQL") + $drivers;
 
 if (!defined("DRIVER")) {
 	define("DRIVER", "server"); // server - backwards compatibility
 	// MySQLi supports everything, MySQL doesn't support multiple result sets, PDO_MySQL doesn't support orgtable
 	if (extension_loaded("mysqli")) {
-		class Min_DB extends MySQLi {
+		class Min_DB extends \MySQLi {
 			var $extension = "MySQLi";
 
 			function __construct() {

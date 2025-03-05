@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $TABLE = $_GET["table"];
 $fields = fields($TABLE);
 if (!$fields) {

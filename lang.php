@@ -1,5 +1,7 @@
 #!/usr/bin/env php
 <?php
+namespace Adminer;
+
 include __DIR__ . "/adminer/include/errors.inc.php";
 
 unset($_COOKIE["adminer_lang"]);

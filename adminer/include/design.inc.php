@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 if (!ob_get_level()) {
 	ob_start(null, 4096);
 }

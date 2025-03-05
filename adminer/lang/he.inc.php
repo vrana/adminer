@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $translations = array(
 	'Login' => 'התחברות',
 	'Logout successful.' => 'ההתחברות הצליחה',

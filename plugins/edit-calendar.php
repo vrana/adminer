@@ -30,7 +30,7 @@ class AdminerEditCalendar {
 
 	function head() {
 		echo $this->prepend;
-		if ($this->langPath && function_exists('get_lang')) { // since Adminer 3.2.0
+		if ($this->langPath) {
 			$lang = get_lang();
 			$lang = ($lang == "zh" ? "zh-CN" : ($lang == "zh-tw" ? "zh-TW" : $lang));
 			if ($lang != "en" && file_exists(sprintf($this->langPath, $lang))) {

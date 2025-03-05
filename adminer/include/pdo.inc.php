@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 // PDO can be used in several database drivers
 if (extension_loaded('pdo')) {
 	/*abstract*/ class Min_PDO {
@@ -80,7 +82,7 @@ if (extension_loaded('pdo')) {
 		}
 	}
 
-	class Min_PDOStatement extends PDOStatement {
+	class Min_PDOStatement extends \PDOStatement {
 		var $_offset = 0, $num_rows;
 
 		function fetch_assoc() {

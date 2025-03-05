@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 page_header(lang('Database schema'), "", array(), h(DB . ($_GET["ns"] ? ".$_GET[ns]" : "")));
 
 $table_pos = array();

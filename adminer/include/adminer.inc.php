@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 // any method change in this file should be transferred to editor/include/adminer.inc.php and plugins/plugin.php
 
 class Adminer {

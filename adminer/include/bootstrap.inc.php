@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 include "../adminer/include/version.inc.php";
 include "../adminer/include/errors.inc.php";
 include "../adminer/include/coverage.inc.php";

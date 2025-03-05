@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 add_driver("elastic5", "Elasticsearch 5 (beta)");
 
 if (isset($_GET["elastic5"])) {

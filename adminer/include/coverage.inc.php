@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 // coverage is used in tests and removed in compilation
 if (extension_loaded("xdebug") && file_exists(sys_get_temp_dir() . "/adminer_coverage.ser")) {
 	function save_coverage() {

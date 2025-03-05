@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 add_driver("simpledb", "SimpleDB");
 
 if (isset($_GET["simpledb"])) {
