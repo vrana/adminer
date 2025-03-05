@@ -369,8 +369,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 		$display = (isset($_POST["add"][$i-1]) || (isset($field["field"]) && !$_POST["drop_col"][$i])) && (support("drop_col") || $orig == "");
 		?>
 <tr<?php echo ($display ? "" : " style='display: none;'"); ?>>
-<?php echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", explode("|", $inout), $field["inout"]) : ""); ?>
-<th>
+<?php echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", explode("|", $inout), $field["inout"]) : "") . "<th>"; ?>
 <?php if ($display) { ?>
 <input name="fields[<?php echo $i; ?>][field]" value="<?php echo h($field["field"]); ?>" data-maxlength="64" autocapitalize="off" aria-labelledby="label-name">
 <?php } ?>
