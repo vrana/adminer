@@ -28,9 +28,6 @@ Rank, Tree structure
 MySQL:
 Data longer than max_allowed_packet can be sent by mysqli_stmt_send_long_data()
 
-MariaDB:
-Documentation links
-
 SQLite:
 Copy tables
 Delimiter in export and SQL command
@@ -40,14 +37,11 @@ PostgreSQL:
 Display number of schemas in databases overview
 Users - SELECT * FROM pg_user
 ORDER BY COUNT(*)
-Export - http://www.postgresql.org/docs/8.4/static/functions-info.html
 Column rights - http://www.postgresql.org/docs/8.4/static/functions-info.html
 
 MS SQL:
-Display default value
 Non UTF-8 character sets
 Detection of table collation
-PDO_MSSQL and PDO_SQLSRV driver with seek
 
 Oracle:
 clob comparable with string
