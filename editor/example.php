@@ -25,7 +25,7 @@ function adminer_object() {
 
 		function tableName($tableStatus) {
 			// tables without comments would return empty string and will be ignored by Adminer
-			return h($tableStatus["Comment"]);
+			return Adminer\h($tableStatus["Comment"]);
 		}
 
 		function fieldName($field, $order = 0) {
@@ -34,11 +34,11 @@ function adminer_object() {
 			}
 			// display only column with comments, first five of them plus searched columns
 			if ($order < 5) {
-				return h($field["comment"]);
+				return Adminer\h($field["comment"]);
 			}
 			foreach ((array) $_GET["where"] as $key => $where) {
 				if ($where["col"] == $field["field"] && ($key >= 0 || $where["val"] != "")) {
-					return h($field["comment"]);
+					return Adminer\h($field["comment"]);
 				}
 			}
 			return "";
