@@ -1,7 +1,5 @@
 #!/usr/bin/env php
 <?php
-namespace Adminer;
-
 include __DIR__ . "/adminer/include/errors.inc.php";
 
 unset($_COOKIE["adminer_lang"]);
@@ -59,7 +57,7 @@ foreach (glob(__DIR__ . "/adminer/lang/" . ($_SESSION["lang"] ? $_SESSION["lang"
 			}
 		}
 	}
-	$s = "<?php\n\$translations = array(\n$s);\n";
+	$s = "<?php\nnamespace Adminer;\n\n\$translations = array(\n$s);\n";
 	if ($s != $file) {
 		file_put_contents($filename, $s);
 		echo "$filename updated.\n";
