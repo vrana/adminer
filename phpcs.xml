@@ -24,7 +24,6 @@
 		<exclude name="PSR2.Classes.PropertyDeclaration.Underscore"/>
 		<exclude name="PSR12.Classes.ClassInstantiation.MissingParentheses"/>
 		<exclude name="PSR12.Classes.OpeningBraceSpace.Found"/>
-		<exclude name="Squiz.Classes.ValidClassName.NotCamelCaps"/>
 		<exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps"/>
 		<exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
 		<exclude name="PSR2.Methods.FunctionCallSignature.SpaceBeforeCloseBracket"/>

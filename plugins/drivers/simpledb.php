@@ -7,7 +7,7 @@ if (isset($_GET["simpledb"])) {
 	define("DRIVER", "simpledb");
 
 	if (class_exists('SimpleXMLElement') && ini_bool('allow_url_fopen')) {
-		class Min_DB {
+		class Db {
 			var $extension = "SimpleXML", $server_info = '2009-04-15', $error, $timeout, $next, $affected_rows, $_result;
 
 			function select_db($database) {
@@ -34,7 +34,7 @@ if (isset($_GET["simpledb"])) {
 						'Value' => $sum,
 					))));
 				}
-				return new Min_Result($result);
+				return new Result($result);
 			}
 
 			function multi_query($query) {
@@ -55,7 +55,7 @@ if (isset($_GET["simpledb"])) {
 
 		}
 
-		class Min_Result {
+		class Result {
 			var $num_rows, $_rows = array(), $_offset = 0;
 
 			function __construct($result) {
@@ -119,7 +119,7 @@ if (isset($_GET["simpledb"])) {
 
 
 
-	class Min_Driver extends Min_SQL {
+	class Driver extends SqlDriver {
 		public $primary = "itemName()";
 
 		function _chunkRequest($ids, $action, $params, $expand = array()) {
@@ -257,7 +257,7 @@ if (isset($_GET["simpledb"])) {
 		if ($password != "") {
 			return lang('Database does not support password.');
 		}
-		return new Min_DB;
+		return new Db;
 	}
 
 	function support($feature) {

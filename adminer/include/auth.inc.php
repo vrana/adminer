@@ -146,7 +146,7 @@ function auth_error($error) {
 	exit;
 }
 
-if (isset($_GET["username"]) && !class_exists('Adminer\Min_DB')) {
+if (isset($_GET["username"]) && !class_exists('Adminer\Db')) {
 	unset($_SESSION["pwds"][DRIVER]);
 	unset_permanent();
 	page_header(lang('No extension'), lang('None of the supported PHP extensions (%s) are available.', implode(", ", $possible_drivers)), false);
@@ -163,7 +163,7 @@ if (isset($_GET["username"]) && is_string(get_password())) {
 	}
 	check_invalid_login();
 	$connection = connect();
-	$driver = new Min_Driver($connection);
+	$driver = new Driver($connection);
 }
 
 $login = null;

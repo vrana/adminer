@@ -4,8 +4,8 @@ namespace Adminer;
 // This file is not used in Adminer Editor.
 
 /** Print select result
-* @param Min_Result
-* @param Min_DB connection to examine indexes
+* @param Result
+* @param Db connection to examine indexes
 * @param array
 * @param int
 * @return array $orgtables

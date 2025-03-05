@@ -7,7 +7,7 @@ if (isset($_GET["mongo"])) {
 	define("DRIVER", "mongo");
 
 	if (class_exists('MongoDB\Driver\Manager')) {
-		class Min_DB {
+		class Db {
 			var $extension = "MongoDB", $server_info = MONGODB_VERSION, $affected_rows, $error, $last_id;
 			/** @var MongoDB\Driver\Manager */
 			var $_link;
@@ -54,7 +54,7 @@ if (isset($_GET["mongo"])) {
 			}
 		}
 
-		class Min_Result {
+		class Result {
 			var $num_rows, $_rows = array(), $_offset = 0, $_charset = array();
 
 			function __construct($result) {
@@ -116,7 +116,7 @@ if (isset($_GET["mongo"])) {
 		}
 
 
-		class Min_Driver extends Min_SQL {
+		class Driver extends SqlDriver {
 			public $primary = "_id";
 
 			function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
@@ -141,7 +141,7 @@ if (isset($_GET["mongo"])) {
 				$skip = $page * $limit;
 				$class = 'MongoDB\Driver\Query';
 				try {
-					return new Min_Result($connection->_link->executeQuery("$connection->_db_name.$table", new $class($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort))));
+					return new Result($connection->_link->executeQuery("$connection->_db_name.$table", new $class($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort))));
 				} catch (Exception $e) {
 					$connection->error = $e->getMessage();
 					return false;
@@ -425,7 +425,7 @@ if (isset($_GET["mongo"])) {
 
 	function connect() {
 		global $adminer;
-		$connection = new Min_DB;
+		$connection = new Db;
 		list($server, $username, $password) = $adminer->credentials();
 
 		if ($server == "") {

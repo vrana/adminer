@@ -6,7 +6,7 @@ add_driver("clickhouse", "ClickHouse (alpha)");
 if (isset($_GET["clickhouse"])) {
 	define("DRIVER", "clickhouse");
 
-	class Min_DB {
+	class Db {
 		var $extension = "JSON", $server_info, $errno, $_result, $error, $_url;
 		var $_db = 'default';
 
@@ -43,7 +43,7 @@ if (isset($_GET["clickhouse"])) {
 					}
 				}
 			}
-			return new Min_Result($return);
+			return new Result($return);
 		}
 
 		function isQuerySelectLike($query) {
@@ -88,7 +88,7 @@ if (isset($_GET["clickhouse"])) {
 		}
 	}
 
-	class Min_Result {
+	class Result {
 		var $num_rows, $_rows, $columns, $meta, $_offset = 0;
 
 		function __construct($result) {
@@ -130,7 +130,7 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 
-	class Min_Driver extends Min_SQL {
+	class Driver extends SqlDriver {
 		function delete($table, $queryWhere, $limit = 0) {
 			if ($queryWhere === '') {
 				$queryWhere = 'WHERE 1=1';
@@ -219,7 +219,7 @@ if (isset($_GET["clickhouse"])) {
 
 	function connect() {
 		$adminer = adminer();
-		$connection = new Min_DB;
+		$connection = new Db;
 		list($server, $username, $password) = $adminer->credentials();
 		if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
 			return lang('Invalid server.');

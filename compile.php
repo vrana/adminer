@@ -63,7 +63,7 @@ header("Cache-Control: immutable");
 		if ($driver != "mysql") {
 			preg_match_all(
 				'~\bfunction ([^(]+)~',
-				preg_replace('~class Min_Driver.*\n\t}~sU', '', file_get_contents(__DIR__ . "/adminer/drivers/mysql.inc.php")),
+				preg_replace('~class Driver.*\n\t}~sU', '', file_get_contents(__DIR__ . "/adminer/drivers/mysql.inc.php")),
 				$matches
 			); //! respect context (extension, class)
 			$functions = array_combine($matches[1], $matches[0]);

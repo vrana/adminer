@@ -7,7 +7,7 @@ if (!defined("DRIVER")) {
 	define("DRIVER", "server"); // server - backwards compatibility
 	// MySQLi supports everything, MySQL doesn't support multiple result sets, PDO_MySQL doesn't support orgtable
 	if (extension_loaded("mysqli")) {
-		class Min_DB extends \MySQLi {
+		class Db extends \MySQLi {
 			var $extension = "MySQLi";
 
 			function __construct() {
@@ -59,7 +59,7 @@ if (!defined("DRIVER")) {
 		}
 
 	} elseif (extension_loaded("mysql") && !((ini_bool("sql.safe_mode") || ini_bool("mysql.allow_local_infile")) && extension_loaded("pdo_mysql"))) {
-		class Min_DB {
+		class Db {
 			var
 				$extension = "MySQL", ///< @var string extension name
 				$server_info, ///< @var string server version
@@ -129,7 +129,7 @@ if (!defined("DRIVER")) {
 			/** Send query
 			* @param string
 			* @param bool
-			* @return mixed bool or Min_Result
+			* @return mixed bool or Result
 			*/
 			function query($query, $unbuffered = false) {
 				$result = @($unbuffered ? mysql_unbuffered_query($query, $this->_link) : mysql_query($query, $this->_link)); // @ - mute mysql.trace_mode
@@ -144,7 +144,7 @@ if (!defined("DRIVER")) {
 					$this->info = mysql_info($this->_link);
 					return true;
 				}
-				return new Min_Result($result);
+				return new Result($result);
 			}
 
 			/** Send query with more resultsets
@@ -156,7 +156,7 @@ if (!defined("DRIVER")) {
 			}
 
 			/** Get current resultset
-			* @return Min_Result
+			* @return Result
 			*/
 			function store_result() {
 				return $this->_result;
@@ -184,7 +184,7 @@ if (!defined("DRIVER")) {
 			}
 		}
 
-		class Min_Result {
+		class Result {
 			var
 				$num_rows, ///< @var int number of rows in the result
 				$_result, $_offset = 0 ///< @access private
@@ -231,7 +231,7 @@ if (!defined("DRIVER")) {
 		}
 
 	} elseif (extension_loaded("pdo_mysql")) {
-		class Min_DB extends Min_PDO {
+		class Db extends PdoDb {
 			var $extension = "PDO_MySQL";
 
 			function connect($server, $username, $password) {
@@ -280,7 +280,7 @@ if (!defined("DRIVER")) {
 
 
 
-	class Min_Driver extends Min_SQL {
+	class Driver extends SqlDriver {
 
 		function insert($table, $set) {
 			return ($set ? parent::insert($table, $set) : queries("INSERT INTO " . table($table) . " ()\nVALUES ()"));
@@ -377,11 +377,11 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Connect to the database
-	* @return mixed Min_DB or string for error
+	* @return mixed Db or string for error
 	*/
 	function connect() {
 		global $adminer, $types, $structured_types, $edit_functions;
-		$connection = new Min_DB;
+		$connection = new Db;
 		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
 			$connection->set_charset(charset($connection)); // available in MySQLi since PHP 5.0.5
@@ -589,7 +589,7 @@ if (!defined("DRIVER")) {
 
 	/** Get table indexes
 	* @param string
-	* @param string Min_DB to use
+	* @param string Db to use
 	* @return array [$key_name => ["type" => , "columns" => [], "lengths" => [], "descs" => []]]
 	*/
 	function indexes($table, $connection2 = null) {
@@ -984,9 +984,9 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Explain select
-	* @param Min_DB
+	* @param Db
 	* @param string
-	* @return Min_Result
+	* @return Result
 	*/
 	function explain($connection, $query) {
 		return $connection->query("EXPLAIN " . (min_version(5.1) && !min_version(5.7) ? "PARTITIONS " : "") . $query);
@@ -1029,7 +1029,7 @@ if (!defined("DRIVER")) {
 
 	/** Set current schema
 	* @param string
-	* @param Min_DB
+	* @param Db
 	* @return bool
 	function set_schema($schema, $connection2 = null) {
 		return true;

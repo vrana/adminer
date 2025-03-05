@@ -9,7 +9,7 @@ if (isset($_GET["elastic"])) {
 	if (ini_bool('allow_url_fopen')) {
 		define("ELASTIC_DB_NAME", "elastic");
 
-		class Min_DB {
+		class Db {
 			var $extension = "JSON", $server_info, $errno, $error, $_url;
 
 			/**
@@ -96,7 +96,7 @@ if (isset($_GET["elastic"])) {
 			}
 		}
 
-		class Min_Result {
+		class Result {
 			var $num_rows, $_rows;
 
 			function __construct($rows) {
@@ -121,7 +121,7 @@ if (isset($_GET["elastic"])) {
 		}
 	}
 
-	class Min_Driver extends Min_SQL {
+	class Driver extends SqlDriver {
 
 		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
 			$data = array();
@@ -216,7 +216,7 @@ if (isset($_GET["elastic"])) {
 				$return[] = $row;
 			}
 
-			return new Min_Result($return);
+			return new Result($return);
 		}
 
 		function update($type, $record, $queryWhere, $limit = 0, $separator = "\n") {
@@ -275,7 +275,7 @@ if (isset($_GET["elastic"])) {
 	}
 
 	function connect() {
-		$connection = new Min_DB;
+		$connection = new Db;
 
 		list($server, $username, $password) = adminer()->credentials();
 		if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {

@@ -4,7 +4,7 @@ namespace Adminer;
 // This file is used both in Adminer and Adminer Editor.
 
 /** Get database connection
-* @return Min_DB
+* @return Db
 */
 function connection() {
 	// can be used in customization, $connection is minified
@@ -98,7 +98,7 @@ function bracket_escape($idf, $back = false) {
 /** Check if connection has at least the given version
 * @param string required version
 * @param string required MariaDB version
-* @param Min_DB defaults to $connection
+* @param Db defaults to $connection
 * @return bool
 */
 function min_version($version, $maria_db = "", $connection2 = null) {
@@ -115,7 +115,7 @@ function min_version($version, $maria_db = "", $connection2 = null) {
 }
 
 /** Get connection charset
-* @param Min_DB
+* @param Db
 * @return string
 */
 function charset($connection) {
@@ -356,7 +356,7 @@ function get_vals($query, $column = 0) {
 
 /** Get keys from first column and values from second
 * @param string
-* @param Min_DB
+* @param Db
 * @param bool
 * @return array
 */
@@ -381,7 +381,7 @@ function get_key_vals($query, $connection2 = null, $set_keys = true) {
 
 /** Get all rows of result
 * @param string
-* @param Min_DB
+* @param Db
 * @param string
 * @return array of associative arrays
 */
@@ -637,7 +637,7 @@ function query_redirect($query, $location, $message, $redirect = true, $execute 
 
 /** Execute and remember query
 * @param string or null to return remembered queries, end with ';' to use DELIMITER
-* @return Min_Result or [$queries, $time] if $query = null
+* @return Result or [$queries, $time] if $query = null
 */
 function queries($query) {
 	global $connection;

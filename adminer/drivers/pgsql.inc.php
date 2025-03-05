@@ -6,7 +6,7 @@ $drivers["pgsql"] = "PostgreSQL";
 if (isset($_GET["pgsql"])) {
 	define("DRIVER", "pgsql");
 	if (extension_loaded("pgsql")) {
-		class Min_DB {
+		class Db {
 			var $extension = "PgSQL", $_link, $_result, $_string, $_database = true, $server_info, $affected_rows, $error, $timeout;
 
 			function _error($errno, $error) {
@@ -79,7 +79,7 @@ if (isset($_GET["pgsql"])) {
 					$this->affected_rows = pg_affected_rows($result);
 					$return = true;
 				} else {
-					$return = new Min_Result($result);
+					$return = new Result($result);
 				}
 				if ($this->timeout) {
 					$this->timeout = 0;
@@ -114,7 +114,7 @@ if (isset($_GET["pgsql"])) {
 			}
 		}
 
-		class Min_Result {
+		class Result {
 			var $_result, $_offset = 0, $num_rows;
 
 			function __construct($result) {
@@ -149,7 +149,7 @@ if (isset($_GET["pgsql"])) {
 		}
 
 	} elseif (extension_loaded("pdo_pgsql")) {
-		class Min_DB extends Min_PDO {
+		class Db extends PdoDb {
 			var $extension = "PDO_PgSQL", $timeout;
 
 			function connect($server, $username, $password) {
@@ -195,7 +195,7 @@ if (isset($_GET["pgsql"])) {
 
 
 
-	class Min_Driver extends Min_SQL {
+	class Driver extends SqlDriver {
 
 		function insertUpdate($table, $rows, $primary) {
 			global $connection;
@@ -273,7 +273,7 @@ if (isset($_GET["pgsql"])) {
 
 	function connect() {
 		global $adminer, $types, $structured_types;
-		$connection = new Min_DB;
+		$connection = new Db;
 		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
 			if (min_version(9, 0, $connection)) {

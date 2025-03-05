@@ -7,7 +7,7 @@ if (isset($_GET["sqlite"])) {
 	define("DRIVER", "sqlite");
 	if (class_exists("SQLite3")) {
 
-		class Min_SQLite {
+		class SqliteDb {
 			var $extension = "SQLite3", $server_info, $affected_rows, $errno, $error, $_link;
 
 			function __construct($filename) {
@@ -24,7 +24,7 @@ if (isset($_GET["sqlite"])) {
 					$this->error = $this->_link->lastErrorMsg();
 					return false;
 				} elseif ($result->numColumns()) {
-					return new Min_Result($result);
+					return new Result($result);
 				}
 				$this->affected_rows = $this->_link->changes();
 				return true;
@@ -51,7 +51,7 @@ if (isset($_GET["sqlite"])) {
 			}
 		}
 
-		class Min_Result {
+		class Result {
 			var $_result, $_offset = 0, $num_rows;
 
 			function __construct($result) {
@@ -82,7 +82,7 @@ if (isset($_GET["sqlite"])) {
 		}
 
 	} elseif (extension_loaded("pdo_sqlite")) {
-		class Min_SQLite extends Min_PDO {
+		class SqliteDb extends PdoDb {
 			var $extension = "PDO_SQLite";
 
 			function __construct($filename) {
@@ -92,8 +92,8 @@ if (isset($_GET["sqlite"])) {
 
 	}
 
-	if (class_exists('Adminer\Min_SQLite')) {
-		class Min_DB extends Min_SQLite {
+	if (class_exists('Adminer\SqliteDb')) {
+		class Db extends SqliteDb {
 
 			function __construct() {
 				parent::__construct(":memory:");
@@ -122,7 +122,7 @@ if (isset($_GET["sqlite"])) {
 
 
 
-	class Min_Driver extends Min_SQL {
+	class Driver extends SqlDriver {
 
 		function insertUpdate($table, $rows, $primary) {
 			$values = array();
@@ -164,7 +164,7 @@ if (isset($_GET["sqlite"])) {
 		if ($password != "") {
 			return lang('Database does not support password.');
 		}
-		return new Min_DB;
+		return new Db;
 	}
 
 	function get_databases() {
@@ -362,7 +362,7 @@ if (isset($_GET["sqlite"])) {
 			return false;
 		}
 		try {
-			$link = new Min_SQLite($db);
+			$link = new SqliteDb($db);
 		} catch (Exception $ex) {
 			$connection->error = $ex->getMessage();
 			return false;

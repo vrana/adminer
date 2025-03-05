@@ -3,7 +3,7 @@ namespace Adminer;
 
 // PDO can be used in several database drivers
 if (extension_loaded('pdo')) {
-	/*abstract*/ class Min_PDO {
+	/*abstract*/ class PdoDb {
 		var $_result, $server_info, $affected_rows, $errno, $error, $pdo;
 
 		function __construct() {
@@ -16,7 +16,7 @@ if (extension_loaded('pdo')) {
 
 		function dsn($dsn, $username, $password, $options = array()) {
 			$options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_SILENT;
-			$options[PDO::ATTR_STATEMENT_CLASS] = array('Min_PDOStatement');
+			$options[PDO::ATTR_STATEMENT_CLASS] = array('PdoDbStatement');
 			try {
 				$this->pdo = new PDO($dsn, $username, $password, $options);
 			} catch (Exception $ex) {
@@ -82,7 +82,7 @@ if (extension_loaded('pdo')) {
 		}
 	}
 
-	class Min_PDOStatement extends \PDOStatement {
+	class PdoDbStatement extends \PDOStatement {
 		var $_offset = 0, $num_rows;
 
 		function fetch_assoc() {

@@ -11,7 +11,7 @@ if (isset($_GET["firebird"])) {
 	define("DRIVER", "firebird");
 
 	if (extension_loaded("interbase")) {
-		class Min_DB {
+		class Db {
 			var
 				$extension = "Firebird",
 				$server_info,
@@ -54,7 +54,7 @@ if (isset($_GET["firebird"])) {
 					$this->affected_rows = ibase_affected_rows($this->_link);
 					return true;
 				}
-				return new Min_Result($result);
+				return new Result($result);
 			}
 
 			function multi_query($query) {
@@ -79,7 +79,7 @@ if (isset($_GET["firebird"])) {
 			}
 		}
 
-		class Min_Result {
+		class Result {
 			var $num_rows, $_result, $_offset = 0;
 
 			function __construct($result) {
@@ -114,7 +114,7 @@ if (isset($_GET["firebird"])) {
 
 
 
-	class Min_Driver extends Min_SQL {
+	class Driver extends SqlDriver {
 	}
 
 
@@ -129,7 +129,7 @@ if (isset($_GET["firebird"])) {
 
 	function connect() {
 		$adminer = adminer();
-		$connection = new Min_DB;
+		$connection = new Db;
 		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
 			return $connection;

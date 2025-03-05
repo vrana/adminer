@@ -22,11 +22,11 @@ function get_driver($id) {
 	return $drivers[$id];
 }
 
-/*abstract*/ class Min_SQL {
+/*abstract*/ class SqlDriver {
 	var $_conn;
 
 	/** Create object for performing database operations
-	* @param Min_DB
+	* @param Db
 	*/
 	function __construct($connection) {
 		$this->_conn = $connection;
@@ -41,7 +41,7 @@ function get_driver($id) {
 	* @param int result of $adminer->selectLimitProcess()
 	* @param int index of page starting at zero
 	* @param bool whether to print the query
-	* @return Min_Result
+	* @return Result
 	*/
 	function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
 		global $adminer, $jush;
