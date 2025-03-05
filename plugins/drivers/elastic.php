@@ -157,9 +157,7 @@ if (isset($_GET["elastic"])) {
 					foreach ($parts as $part) {
 						list($col, $op, $val) = explode(" ", $part, 3);
 						$term = array($col => $val);
-						if (isset($fields[$col]) && $fields[$col]['full_type'] == 'boolean'
-							&& $val !== 'true' && $val !== 'false'
-						) {
+						if (isset($fields[$col]) && $fields[$col]['full_type'] == 'boolean' && $val !== 'true' && $val !== 'false') {
 							continue;
 						}
 						if ($op == "=") {

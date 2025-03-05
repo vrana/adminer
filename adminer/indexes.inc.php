@@ -47,7 +47,8 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 				ksort($existing["columns"]);
 				ksort($existing["lengths"]);
 				ksort($existing["descs"]);
-				if ($index["type"] == $existing["type"]
+				if (
+					$index["type"] == $existing["type"]
 					&& array_values($existing["columns"]) === $columns
 					&& (!$existing["lengths"] || array_values($existing["lengths"]) === $lengths)
 					&& array_values($existing["descs"]) === $descs

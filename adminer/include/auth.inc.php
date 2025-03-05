@@ -66,7 +66,8 @@ if ($auth) {
 		$permanent[$key] = "$key:" . base64_encode($private ? encrypt_string($password, $private) : "");
 		cookie("adminer_permanent", implode(" ", $permanent));
 	}
-	if (count($_POST) == 1 // 1 - auth
+	if (
+		count($_POST) == 1 // 1 - auth
 		|| DRIVER != $vendor
 		|| SERVER != $server
 		|| $_GET["username"] !== $username // "0" == "00"

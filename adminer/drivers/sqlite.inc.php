@@ -541,7 +541,8 @@ if (isset($_GET["sqlite"])) {
 				$triggers[] = "CREATE TRIGGER " . idf_escape($trigger_name) . " " . implode(" ", $timing_event) . " ON " . table($name) . "\n$trigger[Statement]";
 			}
 			$auto_increment = $auto_increment ? 0 : $connection->result("SELECT seq FROM sqlite_sequence WHERE name = " . q($table)); // if $auto_increment is set then it will be updated later
-			if (!queries("DROP TABLE " . table($table)) // drop before creating indexes and triggers to allow using old names
+			if (
+				!queries("DROP TABLE " . table($table)) // drop before creating indexes and triggers to allow using old names
 				|| ($table == $name && !queries("ALTER TABLE " . table($temp_name) . " RENAME TO " . table($name)))
 				|| !alter_indexes($name, $indexes)
 			) {

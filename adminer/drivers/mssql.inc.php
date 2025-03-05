@@ -493,10 +493,11 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 				} else {
 					$index[] = idf_escape($val[1]) . " ON " . table($table);
 				}
-			} elseif (!queries(($val[0] != "PRIMARY"
-				? "CREATE $val[0] " . ($val[0] != "INDEX" ? "INDEX " : "") . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_")) . " ON " . table($table)
-				: "ALTER TABLE " . table($table) . " ADD PRIMARY KEY"
-			) . " (" . implode(", ", $val[2]) . ")")
+			} elseif (
+				!queries(($val[0] != "PRIMARY"
+					? "CREATE $val[0] " . ($val[0] != "INDEX" ? "INDEX " : "") . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_")) . " ON " . table($table)
+					: "ALTER TABLE " . table($table) . " ADD PRIMARY KEY"
+				) . " (" . implode(", ", $val[2]) . ")")
 			) {
 				return false;
 			}

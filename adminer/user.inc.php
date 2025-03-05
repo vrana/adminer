@@ -86,7 +86,8 @@ if ($_POST && !$error) {
 					$grant = array_diff($grant, $old_grant);
 					unset($grants[$object]);
 				}
-				if (preg_match('~^(.+)\s*(\(.*\))?$~U', $object, $match) && (
+				if (
+					preg_match('~^(.+)\s*(\(.*\))?$~U', $object, $match) && (
 					!grant("REVOKE", $revoke, $match[2], " ON $match[1] FROM $new_user") //! SQL injection
 					|| !grant("GRANT", $grant, $match[2], " ON $match[1] TO $new_user"))
 				) {
