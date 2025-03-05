@@ -10,14 +10,6 @@ class AdminerPlugin extends Adminer\Adminer {
 	/** @access protected */
 	var $plugins;
 
-	function _findRootClass($class) {
-		// is_subclass_of(string, string) is available since PHP 5.0.3
-		do {
-			$return = $class;
-		} while ($class = get_parent_class($class));
-		return $return;
-	}
-
 	/** Register plugins
 	* @param array object instances or null to register all classes starting by 'Adminer'
 	*/
@@ -25,7 +17,7 @@ class AdminerPlugin extends Adminer\Adminer {
 		if ($plugins === null) {
 			$plugins = array();
 			foreach (get_declared_classes() as $class) {
-				if (preg_match('~^Adminer.~i', $class) && strcasecmp($this->_findRootClass($class), 'Adminer')) { //! can use interface
+				if (preg_match('~^Adminer\w~i', $class) && !is_subclass_of($class, 'Adminer\Adminer')) {
 					$plugins[$class] = new $class;
 				}
 			}
