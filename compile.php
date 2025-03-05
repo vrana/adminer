@@ -1,7 +1,5 @@
 #!/usr/bin/env php
 <?php
-namespace Adminer;
-
 include __DIR__ . "/adminer/include/version.inc.php";
 include __DIR__ . "/adminer/include/errors.inc.php";
 include __DIR__ . "/externals/JsShrink/jsShrink.php";
@@ -43,6 +41,7 @@ function put_file($match) {
 		return $match[0]; // processed later
 	}
 	$return = file_get_contents(__DIR__ . "/$project/$match[2]");
+	$return = str_replace("namespace Adminer;\n", "", $return);
 	if (basename($match[2]) == "file.inc.php") {
 		$return = str_replace("\n// caching headers added in compile.php", (preg_match('~-dev$~', $VERSION) ? '' : '
 if ($_SERVER["HTTP_IF_MODIFIED_SINCE"]) {
@@ -83,7 +82,7 @@ header("Cache-Control: immutable");
 				"variables" => array("show_variables"),
 			);
 			foreach ($requires as $support => $fns) {
-				if (!support($support)) {
+				if (!Adminer\support($support)) {
 					foreach ($fns as $fn) {
 						unset($functions[$fn]);
 					}
@@ -416,14 +415,14 @@ if ($driver) {
 	$_GET[$driver] = true; // to load the driver
 	include_once __DIR__ . $driver_path;
 	foreach ($features as $key => $feature) {
-		if (!support($feature)) {
+		if (!Adminer\support($feature)) {
 			if (!is_int($key)) {
 				$feature = $key;
 			}
 			$file = str_replace("} elseif (isset(\$_GET[\"$feature\"])) {\n\tinclude \"./$feature.inc.php\";\n", "", $file);
 		}
 	}
-	if (!support("routine")) {
+	if (!Adminer\support("routine")) {
 		$file = str_replace("if (isset(\$_GET[\"callf\"])) {\n\t\$_GET[\"call\"] = \$_GET[\"callf\"];\n}\nif (isset(\$_GET[\"function\"])) {\n\t\$_GET[\"procedure\"] = \$_GET[\"function\"];\n}\n", "", $file);
 	}
 }
@@ -438,7 +437,7 @@ if ($driver) {
 $file = preg_replace_callback('~\b(include|require) "([^"]*)";~', 'put_file', $file); // bootstrap.inc.php
 if ($driver) {
 	foreach ($features as $feature) {
-		if (!support($feature)) {
+		if (!Adminer\support($feature)) {
 			$file = preg_replace("((\t*)" . preg_quote('if (support("' . $feature . '")') . ".*\n\\1\\})sU", '', $file);
 		}
 	}
