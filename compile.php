@@ -438,7 +438,7 @@ $file = preg_replace_callback('~\b(include|require) "([^"]*)";~', 'put_file', $f
 if ($driver) {
 	foreach ($features as $feature) {
 		if (!Adminer\support($feature)) {
-			$file = preg_replace("((\t*)" . preg_quote('if (support("' . $feature . '")') . ".*\n\\1\\})sU", '', $file);
+			$file = preg_replace("((\t*)" . preg_quote('if (support("' . $feature . '")') . ".*?\n\\1\\}( else)?)s", '', $file);
 		}
 	}
 	if (count($drivers) == 1) {
