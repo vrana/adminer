@@ -19,7 +19,7 @@ function email_header($header) {
 * @return bool
 */
 function send_mail($email, $subject, $message, $from = "", $files = array()) {
-	$eol = (DIRECTORY_SEPARATOR == "/" ? "\n" : "\r\n"); // PHP_EOL available since PHP 5.0.2
+	$eol = PHP_EOL;
 	$message = str_replace("\n", $eol, wordwrap(str_replace("\r", "", "$message\n")));
 	$boundary = uniqid("boundary");
 	$attachments = "";

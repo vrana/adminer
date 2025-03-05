@@ -21,7 +21,7 @@ if (isset($_GET["elastic5"])) {
 					'method' => $method,
 					'content' => $content !== null ? json_encode($content) : $content,
 					'header' => $content !== null ? 'Content-Type: application/json' : array(),
-					'ignore_errors' => 1, // available since PHP 5.2.10
+					'ignore_errors' => 1,
 					'follow_location' => 0,
 					'max_redirects' => 0,
 				))));

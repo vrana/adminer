@@ -391,22 +391,6 @@ if (isset($_GET["simpledb"])) {
 	function last_id() {
 	}
 
-	function hmac($algo, $data, $key, $raw_output = false) {
-		// can use hash_hmac() since PHP 5.1.2
-		$blocksize = 64;
-		if (strlen($key) > $blocksize) {
-			$key = pack("H*", $algo($key));
-		}
-		$key = str_pad($key, $blocksize, "\0");
-		$k_ipad = $key ^ str_repeat("\x36", $blocksize);
-		$k_opad = $key ^ str_repeat("\x5C", $blocksize);
-		$return = $algo($k_opad . pack("H*", $algo($k_ipad . $data)));
-		if ($raw_output) {
-			$return = pack("H*", $return);
-		}
-		return $return;
-	}
-
 	function sdb_request($action, $params = array()) {
 		$adminer = adminer();
 		$connection = connection();
@@ -422,11 +406,11 @@ if (isset($_GET["simpledb"])) {
 			$query .= '&' . rawurlencode($key) . '=' . rawurlencode($val);
 		}
 		$query = str_replace('%7E', '~', substr($query, 1));
-		$query .= "&Signature=" . urlencode(base64_encode(hmac('sha1', "POST\n" . preg_replace('~^https?://~', '', $host) . "\n/\n$query", $secret, true)));
+		$query .= "&Signature=" . urlencode(base64_encode(hash_hmac('sha1', "POST\n" . preg_replace('~^https?://~', '', $host) . "\n/\n$query", $secret, true)));
 		$file = @file_get_contents((preg_match('~^https?://~', $host) ? $host : "http://$host"), false, stream_context_create(array('http' => array(
 			'method' => 'POST', // may not fit in URL with GET
 			'content' => $query,
-			'ignore_errors' => 1, // available since PHP 5.2.10
+			'ignore_errors' => 1,
 			'follow_location' => 0,
 			'max_redirects' => 0,
 		))));
