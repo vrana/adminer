@@ -119,7 +119,7 @@ if (isset($_GET["clickhouse"])) {
 
 		function fetch_field() {
 			$column = $this->_offset++;
-			$return = new stdClass;
+			$return = new \stdClass;
 			if ($column < count($this->columns)) {
 				$return->name = $this->meta[$column]['name'];
 				$return->orgname = $return->name;

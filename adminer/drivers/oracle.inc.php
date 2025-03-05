@@ -107,7 +107,7 @@ if (isset($_GET["oracle"])) {
 
 			function fetch_field() {
 				$column = $this->_offset++;
-				$return = new stdClass;
+				$return = new \stdClass;
 				$return->name = oci_field_name($this->_result, $column);
 				$return->orgname = $return->name;
 				$return->type = oci_field_type($this->_result, $column);

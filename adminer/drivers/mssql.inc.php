@@ -136,7 +136,7 @@ if (isset($_GET["mssql"])) {
 					$this->_fields = sqlsrv_field_metadata($this->_result);
 				}
 				$field = $this->_fields[$this->_offset++];
-				$return = new stdClass;
+				$return = new \stdClass;
 				$return->name = $field["Name"];
 				$return->orgname = $field["Name"];
 				$return->type = ($field["Type"] == 1 ? 254 : 0);

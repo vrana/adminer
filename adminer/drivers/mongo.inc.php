@@ -310,7 +310,7 @@ if (isset($_GET["mongo"])) {
 							$val = (float) $val;
 							$op = $match[1];
 						} elseif (preg_match('~^\(date\)(.+)~', $op, $match)) {
-							$dateTime = new DateTime($val);
+							$dateTime = new \DateTime($val);
 							$val = new \MongoDB\BSON\UTCDatetime($dateTime->getTimestamp() * 1000);
 							$op = $match[1];
 						}

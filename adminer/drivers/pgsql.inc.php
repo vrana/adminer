@@ -132,7 +132,7 @@ if (isset($_GET["pgsql"])) {
 
 			function fetch_field() {
 				$column = $this->_offset++;
-				$return = new stdClass;
+				$return = new \stdClass;
 				if (function_exists('pg_field_table')) {
 					$return->orgtable = pg_field_table($this->_result, $column);
 				}
