@@ -98,8 +98,9 @@ function pre_tr($s) {
 }
 $table = '(\+--[-+]+\+\n)';
 $row = '(\| .* \|\n)';
-echo
-	preg_replace_callback("~^$table?$row$table?($row*)$table?~m", function ($match) {
+echo preg_replace_callback(
+	"~^$table?$row$table?($row*)$table?~m",
+	function ($match) {
 		$first_row = pre_tr($match[2]);
 		return "<table>\n" . ($match[1] ? "<thead>$first_row</thead>\n" : $first_row) . pre_tr($match[4]) . "\n</table>";
 	},
@@ -107,6 +108,7 @@ echo
 		'~(\n(    -|mysql)&gt; )(.+)~',
 		"\\1<code class='jush-sql'>\\3</code>",
 		preg_replace('~(.+)\n---+\n~', "<b>\\1</b>\n", h($routine['comment']))
-	));
+	)
+);
 ?>
 </pre>

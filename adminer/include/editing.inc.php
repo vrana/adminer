@@ -591,11 +591,11 @@ function ini_bytes($ini) {
 	$val = ini_get($ini);
 	switch (strtolower(substr($val, -1))) {
 		case 'g':
-			$val = (int)$val * 1024; // no break
+			$val = (int) $val * 1024; // no break
 		case 'm':
-			$val = (int)$val * 1024; // no break
+			$val = (int) $val * 1024; // no break
 		case 'k':
-			$val = (int)$val * 1024;
+			$val = (int) $val * 1024;
 	}
 	return $val;
 }

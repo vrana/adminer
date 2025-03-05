@@ -571,9 +571,9 @@ ORDER BY conkey, conname") as $row
 		if ($comment !== null) {
 			$queries[] = "COMMENT ON TABLE " . table($name) . " IS " . q($comment);
 		}
-		if ($auto_increment != "") {
+		// if ($auto_increment != "") {
 			//! $queries[] = "SELECT setval(pg_get_serial_sequence(" . q($name) . ", ), $auto_increment)";
-		}
+		// }
 		foreach ($queries as $query) {
 			if (!queries($query)) {
 				return false;

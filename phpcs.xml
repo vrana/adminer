@@ -50,7 +50,27 @@
 		<exclude-pattern>editor/(example|sqlite)\.php</exclude-pattern>
 	</rule>
 
+	<rule ref="Generic.Arrays.DisallowShortArraySyntax"/>
 	<rule ref="Generic.Classes.OpeningBraceSameLine"/>
-	<rule ref="Generic.Whitespace.DisallowSpaceIndent"/>
+	<rule ref="Generic.CodeAnalysis.EmptyPHPStatement"/>
+	<rule ref="Generic.CodeAnalysis.EmptyStatement"/>
+	<rule ref="Generic.CodeAnalysis.ForLoopShouldBeWhileLoop"/>
+	<rule ref="Generic.CodeAnalysis.JumbledIncrementer"/>
+	<rule ref="Generic.CodeAnalysis.RequireExplicitBooleanOperatorPrecedence"/>
+	<rule ref="Generic.CodeAnalysis.UnconditionalIfStatement"/>
+	<rule ref="Generic.CodeAnalysis.UnnecessaryFinalModifier"/>
+	<rule ref="Generic.CodeAnalysis.UselessOverridingMethod"/>
+	<rule ref="Generic.Files.EndFileNewline"/>
+	<rule ref="Generic.Files.LowercasedFilename"/>
+	<rule ref="Generic.Formatting.SpaceAfterCast"/>
+	<rule ref="Generic.Functions.CallTimePassByReference"/>
 	<rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie"/>
+	<rule ref="Generic.NamingConventions.ConstructorName"/>
+	<rule ref="Generic.PHP.BacktickOperator"/>
+	<rule ref="Generic.PHP.DisallowRequestSuperglobal"/>
+	<rule ref="Generic.PHP.ForbiddenFunctions"/>
+	<rule ref="Generic.Strings.UnnecessaryHeredoc"/>
+	<rule ref="Generic.VersionControl.GitMergeConflict"/>
+	<rule ref="Generic.Whitespace.DisallowSpaceIndent"/>
+	<rule ref="Generic.WhiteSpace.LanguageConstructSpacing"/>
 </ruleset>
