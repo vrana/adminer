@@ -696,7 +696,7 @@ var that, x, y; // em and tablePos defined in schema.inc.php
 * @this HTMLElement
 */
 function schemaMousedown(event) {
-	if ((event.which ? event.which : event.button) == 1) {
+	if ((event.which || event.button) == 1) {
 		that = this;
 		x = event.clientX - this.offsetLeft;
 		y = event.clientY - this.offsetTop;
@@ -715,7 +715,7 @@ function schemaMousemove(event) {
 		for (var i=0; i < divs.length; i++) {
 			if (divs[i].className == 'references') {
 				var div2 = qs('[id="' + (/^refs/.test(divs[i].id) ? 'refd' : 'refs') + divs[i].id.substr(4) + '"]');
-				var ref = (tablePos[divs[i].title] ? tablePos[divs[i].title] : [ div2.parentNode.offsetTop / em, 0 ]);
+				var ref = (tablePos[divs[i].title] || [ div2.parentNode.offsetTop / em, 0 ]);
 				var left1 = -1;
 				var id = divs[i].id.replace(/^ref.(.+)-.+/, '$1');
 				if (divs[i].parentNode != div2.parentNode) {
