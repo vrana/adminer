@@ -35,6 +35,7 @@ abstract class SqlDriver {
 	var $grouping = array(); ///< @var array grouping functions used in select
 	var $onActions = "RESTRICT|NO ACTION|CASCADE|SET NULL|SET DEFAULT"; ///< @var string used in foreign_keys()
 	var $inout = "IN|OUT|INOUT";
+	var $enumLength = "'(?:''|[^'\\\\]|\\\\.)*'";
 
 	/** Create object for performing database operations
 	* @param Db

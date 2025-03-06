@@ -12,8 +12,6 @@ namespace Adminer;
 include "./include/bootstrap.inc.php";
 include "./include/tmpfile.inc.php";
 
-$enum_length = "'(?:''|[^'\\\\]|\\\\.)*'";
-
 if (isset($_GET["select"]) && ($_POST["edit"] || $_POST["clone"]) && !$_POST["save"]) {
 	$_GET["edit"] = $_GET["select"];
 }
