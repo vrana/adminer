@@ -20,6 +20,7 @@ MS SQL PDO: Support offset
 MS SQL: Remove support for MSSQL extension
 MS SQL: Add support for PDO_SQLSRV extension
 MS SQL: Link help from sys tables
+MS SQL: Fix highlighting columns as primary keys
 MongoDB: Remove support for deprecated extension mongo
 Elasticsearch: Fix text search on boolean fields
 Plugins: Adminer code is now in a namespace
