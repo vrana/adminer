@@ -421,7 +421,7 @@ if (isset($_GET["sqlite"])) {
 	}
 
 	function auto_increment() {
-		return " PRIMARY KEY" . (DRIVER == "sqlite" ? " AUTOINCREMENT" : "");
+		return " PRIMARY KEY AUTOINCREMENT";
 	}
 
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
