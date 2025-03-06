@@ -595,24 +595,34 @@ if (!defined('Adminer\DRIVER')) {
 	*/
 	function fields($table) {
 		$return = array();
-		foreach (get_rows("SHOW FULL COLUMNS FROM " . table($table)) as $row) {
-			preg_match('~^([^( ]+)(?:\((.+)\))?( unsigned)?( zerofill)?$~', $row["Type"], $match);
-			$return[$row["Field"]] = array(
-				"field" => $row["Field"],
-				"full_type" => $row["Type"],
+		foreach (get_rows("SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = " . q(DB) . " AND TABLE_NAME = " . q($table) . " ORDER BY ORDINAL_POSITION") as $row) {
+			$field = $row["COLUMN_NAME"];
+			$default = $row["COLUMN_DEFAULT"];
+			$type = $row["COLUMN_TYPE"];
+			// https://mariadb.com/kb/en/library/show-columns/, https://github.com/vrana/adminer/pull/359#pullrequestreview-276677186
+			$generated = preg_match('~^(VIRTUAL|PERSISTENT|STORED)~', $row["EXTRA"]);
+			preg_match('~^([^( ]+)(?:\((.+)\))?( unsigned)?( zerofill)?$~', $type, $match);
+			$return[$field] = array(
+				"field" => $field,
+				"full_type" => $type,
 				"type" => $match[1],
 				"length" => $match[2],
 				"unsigned" => ltrim($match[3] . $match[4]),
-				"default" => ($row["Default"] != "" || preg_match("~char|set~", $match[1]) ? (preg_match('~text~', $match[1]) ? stripslashes(preg_replace("~^'(.*)'\$~", '\1', $row["Default"])) : $row["Default"]) : null),
-				"null" => ($row["Null"] == "YES"),
-				"auto_increment" => ($row["Extra"] == "auto_increment"),
-				"on_update" => (preg_match('~^on update (.+)~i', $row["Extra"], $match) ? $match[1] : ""), //! available since MySQL 5.1.23
-				"collation" => $row["Collation"],
-				"privileges" => array_flip(preg_split('~, *~', $row["Privileges"])),
-				"comment" => $row["Comment"],
-				"primary" => ($row["Key"] == "PRI"),
-				// https://mariadb.com/kb/en/library/show-columns/, https://github.com/vrana/adminer/pull/359#pullrequestreview-276677186
-				"generated" => preg_match('~^(VIRTUAL|PERSISTENT|STORED)~', $row["Extra"]),
+				"default" => ($generated
+					? $row["GENERATION_EXPRESSION"]
+					: ($default != "" || preg_match("~char|set~", $match[1])
+						? (preg_match('~text~', $match[1]) ? stripslashes(preg_replace("~^'(.*)'\$~", '\1', $default)) : $default)
+						: null
+					)
+				),
+				"null" => ($row["IS_NULLABLE"] == "YES"),
+				"auto_increment" => ($row["EXTRA"] == "auto_increment"),
+				"on_update" => (preg_match('~\bon update (\w+)~i', $row["EXTRA"], $match) ? $match[1] : ""), //! available since MySQL 5.1.23
+				"collation" => $row["COLLATION_NAME"],
+				"privileges" => array_flip(explode(",", $row["PRIVILEGES"])),
+				"comment" => $row["COLUMN_COMMENT"],
+				"primary" => ($row["COLUMN_KEY"] == "PRI"),
+				"generated" => $generated,
 			);
 		}
 		return $return;
