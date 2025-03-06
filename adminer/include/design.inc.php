@@ -75,7 +75,7 @@ var thousandsSeparator = '<?php echo js_escape(lang(',')); ?>';
 <?php
 	if ($breadcrumb !== null) {
 		$link = substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1);
-		echo '<p id="breadcrumb"><a href="' . h($link ? $link : ".") . '">' . $drivers[DRIVER] . '</a> » ';
+		echo '<p id="breadcrumb"><a href="' . h($link ?: ".") . '">' . $drivers[DRIVER] . '</a> » ';
 		$link = substr(preg_replace('~\b(db|ns)=[^&]*&~', '', ME), 0, -1);
 		$server = $adminer->serverName(SERVER);
 		$server = ($server != "" ? $server : lang('Server'));

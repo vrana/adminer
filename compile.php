@@ -19,7 +19,7 @@ function add_quo_slashes($s) {
 function remove_lang($match) {
 	global $translations;
 	$idf = strtr($match[2], array("\\'" => "'", "\\\\" => "\\"));
-	$s = ($translations[$idf] ? $translations[$idf] : $idf);
+	$s = ($translations[$idf] ?: $idf);
 	if ($match[3] == ",") { // lang() has parameters
 		return $match[1] . (is_array($s) ? "lang(array('" . implode("', '", array_map('add_apo_slashes', $s)) . "')," : "sprintf('" . add_apo_slashes($s) . "',");
 	}

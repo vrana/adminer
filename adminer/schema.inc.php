@@ -5,7 +5,7 @@ page_header(lang('Database schema'), "", array(), h(DB . ($_GET["ns"] ? ".$_GET[
 
 $table_pos = array();
 $table_pos_js = array();
-$SCHEMA = ($_GET["schema"] ? $_GET["schema"] : $_COOKIE["adminer_schema-" . str_replace(".", "_", DB)]); // $_COOKIE["adminer_schema"] was used before 3.2.0 //! ':' in table name
+$SCHEMA = ($_GET["schema"] ?: $_COOKIE["adminer_schema-" . str_replace(".", "_", DB)]); // $_COOKIE["adminer_schema"] was used before 3.2.0 //! ':' in table name
 preg_match_all('~([^:]+):([-0-9.]+)x([-0-9.]+)(_|$)~', $SCHEMA, $matches, PREG_SET_ORDER);
 foreach ($matches as $i => $match) {
 	$table_pos[$match[1]] = array($match[2], $match[3]);
@@ -28,7 +28,7 @@ foreach (table_status('', true) as $table => $table_status) {
 		$field["pos"] = $pos;
 		$schema[$table]["fields"][$name] = $field;
 	}
-	$schema[$table]["pos"] = ($table_pos[$table] ? $table_pos[$table] : array($top, 0));
+	$schema[$table]["pos"] = ($table_pos[$table] ?: array($top, 0));
 	foreach ($adminer->foreignKeys($table) as $val) {
 		if (!$val["db"]) {
 			$left = $base_left;

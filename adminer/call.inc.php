@@ -1,7 +1,7 @@
 <?php
 namespace Adminer;
 
-$PROCEDURE = ($_GET["name"] ? $_GET["name"] : $_GET["call"]);
+$PROCEDURE = ($_GET["name"] ?: $_GET["call"]);
 page_header(lang('Call') . ": " . h($PROCEDURE), $error);
 
 $routine = routine($_GET["call"], (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE"));

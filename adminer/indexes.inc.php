@@ -37,7 +37,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 					$desc = $index["descs"][$key];
 					$set[] = idf_escape($column) . ($length ? "(" . (+$length) . ")" : "") . ($desc ? " DESC" : "");
 					$columns[] = $column;
-					$lengths[] = ($length ? $length : null);
+					$lengths[] = ($length ?: null);
 					$descs[] = $desc;
 				}
 			}

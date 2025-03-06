@@ -57,7 +57,7 @@ if (isset($_GET["clickhouse"])) {
 
 			function connect($server, $username, $password) {
 				preg_match('~^(https?://)?(.*)~', $server, $match);
-				$this->_url = ($match[1] ? $match[1] : "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
+				$this->_url = ($match[1] ?: "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
 				$return = $this->query('SELECT 1');
 				return (bool) $return;
 			}

@@ -78,7 +78,7 @@ if (isset($_GET["elastic"])) {
 			 */
 			function connect($server, $username, $password) {
 				preg_match('~^(https?://)?(.*)~', $server, $match);
-				$this->_url = ($match[1] ? $match[1] : "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
+				$this->_url = ($match[1] ?: "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
 				$return = $this->query('');
 				if ($return) {
 					$this->server_info = $return['version']['number'];
@@ -529,7 +529,7 @@ if (isset($_GET["elastic"])) {
 		$properties = array();
 		foreach ($fields as $f) {
 			$field_name = trim($f[1][0]);
-			$field_type = trim($f[1][1] ? $f[1][1] : "text");
+			$field_type = trim($f[1][1] ?: "text");
 			$properties[$field_name] = array(
 				'type' => $field_type
 			);

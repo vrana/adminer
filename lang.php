@@ -28,7 +28,7 @@ foreach (
 	}
 }
 
-foreach (glob(__DIR__ . "/adminer/lang/" . ($_SESSION["lang"] ? $_SESSION["lang"] : "*") . ".inc.php") as $filename) {
+foreach (glob(__DIR__ . "/adminer/lang/" . ($_SESSION["lang"] ?: "*") . ".inc.php") as $filename) {
 	$messages = $messages_all;
 	$file = file_get_contents($filename);
 	$file = str_replace("\r", "", $file);

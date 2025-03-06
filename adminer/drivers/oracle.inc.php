@@ -258,7 +258,7 @@ ORDER BY 1"
 
 	function get_current_db() {
 		global $connection;
-		$db = $connection->_current_db ? $connection->_current_db : DB;
+		$db = $connection->_current_db ?: DB;
 		unset($connection->_current_db);
 		return $db;
 	}
@@ -272,7 +272,7 @@ ORDER BY 1"
 
 	function views_table($columns) {
 		$owner = where_owner('');
-		return "(SELECT $columns FROM all_views WHERE " . ($owner ? $owner : "rownum < 0") . ")";
+		return "(SELECT $columns FROM all_views WHERE " . ($owner ?: "rownum < 0") . ")";
 	}
 
 	function tables_list() {
@@ -503,7 +503,7 @@ AND c_src.TABLE_NAME = " . q($table);
 
 	function schemas() {
 		$return = get_vals("SELECT DISTINCT owner FROM dba_segments WHERE owner IN (SELECT username FROM dba_users WHERE default_tablespace NOT IN ('SYSTEM','SYSAUX')) ORDER BY 1");
-		return ($return ? $return : get_vals("SELECT DISTINCT owner FROM all_tables WHERE tablespace_name = " . q(DB) . " ORDER BY 1"));
+		return ($return ?: get_vals("SELECT DISTINCT owner FROM all_tables WHERE tablespace_name = " . q(DB) . " ORDER BY 1"));
 	}
 
 	function get_schema() {

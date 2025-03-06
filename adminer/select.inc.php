@@ -33,7 +33,7 @@ if ($_GET["val"] && is_ajax()) {
 	header("Content-Type: text/plain; charset=utf-8");
 	foreach ($_GET["val"] as $unique_idf => $row) {
 		$as = convert_field($fields[key($row)]);
-		$select = array($as ? $as : idf_escape(key($row)));
+		$select = array($as ?: idf_escape(key($row)));
 		$where[] = where_check($unique_idf, $fields);
 		$return = $driver->select($TABLE, $select, $where, $select);
 		if ($return) {

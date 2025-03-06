@@ -439,7 +439,7 @@ if (isset($_GET["simpledb"])) {
 		}
 		$connection->error = '';
 		$tag = $action . "Result";
-		return ($xml->$tag ? $xml->$tag : true);
+		return ($xml->$tag ?: true);
 	}
 
 	function sdb_request_all($action, $tag, $params = array(), $timeout = 0) {
