@@ -196,6 +196,27 @@ if (isset($_GET["pgsql"])) {
 
 
 	class Driver extends SqlDriver {
+		function __construct($connection) {
+			parent::__construct($connection);
+			$this->types = array( //! arrays
+				lang('Numbers') => array("smallint" => 5, "integer" => 10, "bigint" => 19, "boolean" => 1, "numeric" => 0, "real" => 7, "double precision" => 16, "money" => 20),
+				lang('Date and time') => array("date" => 13, "time" => 17, "timestamp" => 20, "timestamptz" => 21, "interval" => 0),
+				lang('Strings') => array("character" => 0, "character varying" => 0, "text" => 0, "tsquery" => 0, "tsvector" => 0, "uuid" => 0, "xml" => 0),
+				lang('Binary') => array("bit" => 0, "bit varying" => 0, "bytea" => 0),
+				lang('Network') => array("cidr" => 43, "inet" => 43, "macaddr" => 17, "macaddr8" => 23, "txid_snapshot" => 0),
+				lang('Geometry') => array("box" => 0, "circle" => 0, "line" => 0, "lseg" => 0, "path" => 0, "point" => 0, "polygon" => 0),
+			);
+			if (min_version(9.2, 0, $connection)) {
+				$this->types[lang('Strings')]["json"] = 4294967295;
+				if (min_version(9.4, 0, $connection)) {
+					$this->types[lang('Strings')]["jsonb"] = 4294967295;
+				}
+			}
+		}
+
+		function setUserTypes($types) {
+			$this->types[lang('User types')] = array_flip($types);
+		}
 
 		function insertUpdate($table, $rows, $primary) {
 			global $connection;
@@ -272,20 +293,12 @@ if (isset($_GET["pgsql"])) {
 	}
 
 	function connect() {
-		global $adminer, $types, $structured_types;
+		global $adminer;
 		$connection = new Db;
 		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
 			if (min_version(9, 0, $connection)) {
 				$connection->query("SET application_name = 'Adminer'");
-				if (min_version(9.2, 0, $connection)) {
-					$structured_types[lang('Strings')][] = "json";
-					$types["json"] = 4294967295;
-					if (min_version(9.4, 0, $connection)) {
-						$structured_types[lang('Strings')][] = "jsonb";
-						$types["jsonb"] = 4294967295;
-					}
-				}
 			}
 			return $connection;
 		}
@@ -755,17 +768,12 @@ AND typelem = 0"
 	}
 
 	function set_schema($schema, $connection2 = null) {
-		global $connection, $types, $structured_types;
+		global $connection, $driver;
 		if (!$connection2) {
 			$connection2 = $connection;
 		}
 		$return = $connection2->query("SET search_path TO " . idf_escape($schema));
-		foreach (types() as $key => $type) { //! get types from current_schemas('t')
-			if (!isset($types[$type])) {
-				$types[$type] = $key;
-				$structured_types[lang('User types')][] = $type;
-			}
-		}
+		$driver->setUserTypes(types()); //! get types from current_schemas('t')
 		return $return;
 	}
 
@@ -915,26 +923,9 @@ AND typelem = 0"
 	}
 
 	function driver_config() {
-		$types = array();
-		$structured_types = array();
-		foreach (
-			array( //! arrays
-				lang('Numbers') => array("smallint" => 5, "integer" => 10, "bigint" => 19, "boolean" => 1, "numeric" => 0, "real" => 7, "double precision" => 16, "money" => 20),
-				lang('Date and time') => array("date" => 13, "time" => 17, "timestamp" => 20, "timestamptz" => 21, "interval" => 0),
-				lang('Strings') => array("character" => 0, "character varying" => 0, "text" => 0, "tsquery" => 0, "tsvector" => 0, "uuid" => 0, "xml" => 0),
-				lang('Binary') => array("bit" => 0, "bit varying" => 0, "bytea" => 0),
-				lang('Network') => array("cidr" => 43, "inet" => 43, "macaddr" => 17, "macaddr8" => 23, "txid_snapshot" => 0),
-				lang('Geometry') => array("box" => 0, "circle" => 0, "line" => 0, "lseg" => 0, "path" => 0, "point" => 0, "polygon" => 0),
-			) as $key => $val //! can be retrieved from pg_type
-		) {
-			$types += $val;
-			$structured_types[$key] = array_keys($val);
-		}
 		return array(
 			'possible_drivers' => array("PgSQL", "PDO_PgSQL"),
 			'jush' => "pgsql",
-			'types' => $types,
-			'structured_types' => $structured_types,
 			'unsigned' => array(),
 			'operators' => array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"), // no "SQL" to avoid CSRF
 			'functions' => array("char_length", "lower", "round", "to_hex", "to_timestamp", "upper"),

@@ -186,6 +186,15 @@ if (isset($_GET["mssql"])) {
 
 
 	class Driver extends SqlDriver {
+		function __construct($connection) {
+			parent::__construct($connection);
+			$this->types = array( //! use sys.types
+				lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "int" => 10, "bigint" => 20, "bit" => 1, "decimal" => 0, "real" => 12, "float" => 53, "smallmoney" => 10, "money" => 20),
+				lang('Date and time') => array("date" => 10, "smalldatetime" => 19, "datetime" => 19, "datetime2" => 19, "time" => 8, "datetimeoffset" => 10),
+				lang('Strings') => array("char" => 8000, "varchar" => 8000, "text" => 2147483647, "nchar" => 4000, "nvarchar" => 4000, "ntext" => 1073741823),
+				lang('Binary') => array("binary" => 8000, "varbinary" => 8000, "image" => 2147483647),
+			);
+		}
 
 		function insertUpdate($table, $rows, $primary) {
 			$fields = fields($table);
@@ -685,24 +694,9 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)) as $row
 	function driver_config() {
 		global $on_actions;
 		$on_actions = str_replace('RESTRICT|', '', $on_actions);
-		$types = array();
-		$structured_types = array();
-		foreach (
-			array( //! use sys.types
-				lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "int" => 10, "bigint" => 20, "bit" => 1, "decimal" => 0, "real" => 12, "float" => 53, "smallmoney" => 10, "money" => 20),
-				lang('Date and time') => array("date" => 10, "smalldatetime" => 19, "datetime" => 19, "datetime2" => 19, "time" => 8, "datetimeoffset" => 10),
-				lang('Strings') => array("char" => 8000, "varchar" => 8000, "text" => 2147483647, "nchar" => 4000, "nvarchar" => 4000, "ntext" => 1073741823),
-				lang('Binary') => array("binary" => 8000, "varbinary" => 8000, "image" => 2147483647),
-			) as $key => $val
-		) {
-			$types += $val;
-			$structured_types[$key] = array_keys($val);
-		}
 		return array(
 			'possible_drivers' => array("SQLSRV", "PDO_SQLSRV", "PDO_DBLIB"),
 			'jush' => "mssql",
-			'types' => $types,
-			'structured_types' => $structured_types,
 			'unsigned' => array(),
 			'operators' => array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"),
 			'functions' => array("len", "lower", "round", "upper"),

@@ -281,6 +281,26 @@ if (!defined("DRIVER")) {
 
 
 	class Driver extends SqlDriver {
+		function __construct($connection) {
+			parent::__construct($connection);
+			$this->types = array(
+				lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "mediumint" => 8, "int" => 10, "bigint" => 20, "decimal" => 66, "float" => 12, "double" => 21),
+				lang('Date and time') => array("date" => 10, "datetime" => 19, "timestamp" => 19, "time" => 10, "year" => 4),
+				lang('Strings') => array("char" => 255, "varchar" => 65535, "tinytext" => 255, "text" => 65535, "mediumtext" => 16777215, "longtext" => 4294967295),
+				lang('Lists') => array("enum" => 65535, "set" => 64),
+				lang('Binary') => array("bit" => 20, "binary" => 255, "varbinary" => 65535, "tinyblob" => 255, "blob" => 65535, "mediumblob" => 16777215, "longblob" => 4294967295),
+				lang('Geometry') => array("geometry" => 0, "point" => 0, "linestring" => 0, "polygon" => 0, "multipoint" => 0, "multilinestring" => 0, "multipolygon" => 0, "geometrycollection" => 0),
+			);
+			if (min_version('5.7.8', 10.2, $connection)) {
+				$this->types[lang('Strings')]["json"] = 4294967295;
+			}
+			if (min_version('', 10.7, $connection)) {
+				$this->types[lang('Strings')]["uuid"] = 128;
+			}
+			if (min_version(9, '', $connection)) {
+				$this->types[lang('Numbers')]["vector"] = 16383;
+			}
+		}
 
 		function insert($table, $set) {
 			return ($set ? parent::insert($table, $set) : queries("INSERT INTO " . table($table) . " ()\nVALUES ()"));
@@ -379,24 +399,16 @@ if (!defined("DRIVER")) {
 	* @return mixed Db or string for error
 	*/
 	function connect() {
-		global $adminer, $types, $structured_types, $edit_functions;
+		global $adminer, $edit_functions;
 		$connection = new Db;
 		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
 			$connection->set_charset(charset($connection)); // available in MySQLi since PHP 5.0.5
 			$connection->query("SET sql_quote_show_create = 1, autocommit = 1");
-			if (min_version('5.7.8', 10.2, $connection)) {
-				$structured_types[lang('Strings')][] = "json";
-				$types["json"] = 4294967295;
-			}
 			if (min_version('', 10.7, $connection)) {
-				$structured_types[lang('Strings')][] = "uuid";
-				$types["uuid"] = 128;
 				$edit_functions[0]['uuid'] = 'uuid';
 			}
 			if (min_version(9, '', $connection)) {
-				$structured_types[lang('Numbers')][] = "vector";
-				$types["vector"] = 16383;
 				$edit_functions[0]['vector'] = 'string_to_vector';
 			}
 			return $connection;
@@ -927,10 +939,10 @@ if (!defined("DRIVER")) {
 	* @return array ["fields" => ["field" => , "type" => , "length" => , "unsigned" => , "inout" => , "collation" => ], "returns" => , "definition" => , "language" => ]
 	*/
 	function routine($name, $type) {
-		global $connection, $enum_length, $inout, $types;
+		global $connection, $enum_length, $inout, $driver;
 		$aliases = array("bool", "boolean", "integer", "double precision", "real", "dec", "numeric", "fixed", "national char", "national varchar");
 		$space = "(?:\\s|/\\*[\s\S]*?\\*/|(?:#|-- )[^\n]*\n?|--\r?\n)";
-		$type_pattern = "((" . implode("|", array_merge(array_keys($types), $aliases)) . ")\\b(?:\\s*\\(((?:[^'\")]|$enum_length)++)\\))?\\s*(zerofill\\s*)?(unsigned(?:\\s+zerofill)?)?)(?:\\s*(?:CHARSET|CHARACTER\\s+SET)\\s*['\"]?([^'\"\\s,]+)['\"]?)?";
+		$type_pattern = "((" . implode("|", array_merge(array_keys($driver->types()), $aliases)) . ")\\b(?:\\s*\\(((?:[^'\")]|$enum_length)++)\\))?\\s*(zerofill\\s*)?(unsigned(?:\\s+zerofill)?)?)(?:\\s*(?:CHARSET|CHARACTER\\s+SET)\\s*['\"]?([^'\"\\s,]+)['\"]?)?";
 		$pattern = "$space*(" . ($type == "FUNCTION" ? "" : $inout) . ")?\\s*(?:`((?:[^`]|``)*)`\\s*|\\b(\\S+)\\s+)$type_pattern";
 		$create = $connection->result("SHOW CREATE $type " . idf_escape($name), 2);
 		preg_match("~\\(((?:$pattern\\s*,?)*)\\)\\s*" . ($type == "FUNCTION" ? "RETURNS\\s+$type_pattern\\s+" : "") . "(.*)~is", $create, $match);
@@ -1173,29 +1185,12 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Get driver config
-	* @return array ['possible_drivers' => , 'jush' => , 'types' => , 'structured_types' => , 'unsigned' => , 'operators' => , 'functions' => , 'grouping' => , 'edit_functions' => ]
+	* @return array ['possible_drivers' => , 'jush' => , 'unsigned' => , 'operators' => , 'functions' => , 'grouping' => , 'edit_functions' => ]
 	*/
 	function driver_config() {
-		$types = array(); ///< @var array [$type => $maximum_unsigned_length, ...]
-		$structured_types = array(); ///< @var array [$description => [$type, ...], ...]
-		foreach (
-			array(
-				lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "mediumint" => 8, "int" => 10, "bigint" => 20, "decimal" => 66, "float" => 12, "double" => 21),
-				lang('Date and time') => array("date" => 10, "datetime" => 19, "timestamp" => 19, "time" => 10, "year" => 4),
-				lang('Strings') => array("char" => 255, "varchar" => 65535, "tinytext" => 255, "text" => 65535, "mediumtext" => 16777215, "longtext" => 4294967295),
-				lang('Lists') => array("enum" => 65535, "set" => 64),
-				lang('Binary') => array("bit" => 20, "binary" => 255, "varbinary" => 65535, "tinyblob" => 255, "blob" => 65535, "mediumblob" => 16777215, "longblob" => 4294967295),
-				lang('Geometry') => array("geometry" => 0, "point" => 0, "linestring" => 0, "polygon" => 0, "multipoint" => 0, "multilinestring" => 0, "multipolygon" => 0, "geometrycollection" => 0),
-			) as $key => $val
-		) {
-			$types += $val;
-			$structured_types[$key] = array_keys($val);
-		}
 		return array(
 			'possible_drivers' => array("MySQLi", "MySQL", "PDO_MySQL"),
 			'jush' => "sql", ///< @var string JUSH identifier
-			'types' => $types,
-			'structured_types' => $structured_types,
 			'unsigned' => array("unsigned", "zerofill", "unsigned zerofill"), ///< @var array number variants
 			'operators' => array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "FIND_IN_SET", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL"), ///< @var array operators used in select
 			'functions' => array("char_length", "date", "from_unixtime", "lower", "round", "floor", "ceil", "sec_to_time", "time_to_sec", "upper"), ///< @var array functions used in select

@@ -24,12 +24,27 @@ function get_driver($id) {
 
 abstract class SqlDriver {
 	var $_conn;
+	protected $types = array(); ///< @var array [$description => [$type => $maximum_unsigned_length, ...], ...]
 
 	/** Create object for performing database operations
 	* @param Db
 	*/
 	function __construct($connection) {
 		$this->_conn = $connection;
+	}
+
+	/** Get all types
+	* @return array [$type => $maximum_unsigned_length, ...]
+	*/
+	function types() {
+		return call_user_func_array('array_merge', array_values($this->types));
+	}
+
+	/** Get structured types
+	* @return array [$description => [$type, ...], ...]
+	*/
+	function structuredTypes() {
+		return array_map('array_keys', $this->types);
 	}
 
 	/** Select data from table

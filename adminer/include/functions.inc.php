@@ -896,7 +896,7 @@ function enum_input($type, $attrs, $field, $value, $empty = null) {
 * @return null
 */
 function input($field, $value, $function) {
-	global $types, $structured_types, $adminer, $jush;
+	global $driver, $adminer, $jush;
 	$name = h(bracket_escape($field["field"]));
 	echo "<td class='function'>";
 	if (is_array($value) && !$function) {
@@ -914,6 +914,8 @@ function input($field, $value, $function) {
 	$functions = (isset($_GET["select"]) || $reset ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
 	$disabled = stripos($field["default"], "GENERATED ALWAYS AS ") === 0 ? " disabled=''" : "";
 	$attrs = " name='fields[$name]'$disabled";
+	$types = $driver->types();
+	$structured_types = $driver->structuredTypes();
 	if (in_array($field["type"], (array) $structured_types[lang('User types')])) {
 		$enums = type_values($types[$field["type"]]);
 		if ($enums) {

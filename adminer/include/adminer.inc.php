@@ -313,10 +313,11 @@ class Adminer {
 	* @return null
 	*/
 	function tableStructurePrint($fields) {
-		global $structured_types;
+		global $driver;
 		echo "<div class='scrollable'>\n";
 		echo "<table class='nowrap odds'>\n";
 		echo "<thead><tr><th>" . lang('Column') . "<td>" . lang('Type') . (support("comment") ? "<td>" . lang('Comment') : "") . "</thead>\n";
+		$structured_types = $driver->structuredTypes();
 		foreach ($fields as $field) {
 			echo "<tr><th>" . h($field["field"]);
 			$type = h($field["full_type"]);

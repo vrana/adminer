@@ -209,12 +209,13 @@ function json_row($key, $val = null) {
 * @return null
 */
 function edit_type($key, $field, $collations, $foreign_keys = array(), $extra_types = array()) {
-	global $structured_types, $types, $unsigned, $on_actions;
+	global $driver, $unsigned, $on_actions;
 	$type = $field["type"];
 	?><td><select name="<?php echo h($key); ?>[type]" class="type" aria-labelledby="label-type"><?php
-	if ($type && !isset($types[$type]) && !isset($foreign_keys[$type]) && !in_array($type, $extra_types)) {
+	if ($type && !array_key_exists($type, $driver->types()) && !isset($foreign_keys[$type]) && !in_array($type, $extra_types)) {
 		$extra_types[] = $type;
 	}
+	$structured_types = $driver->structuredTypes();
 	if ($foreign_keys) {
 		$structured_types[lang('Foreign keys')] = $foreign_keys;
 	}

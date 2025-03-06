@@ -140,6 +140,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 page_header(($TABLE != "" ? lang('Alter table') : lang('Create table')), $error, array("table" => $TABLE), h($TABLE));
 
 if (!$_POST) {
+	$types = $driver->types();
 	$row = array(
 		"Engine" => $_COOKIE["adminer_engine"],
 		"fields" => array(array("field" => "", "type" => (isset($types["int"]) ? "int" : (isset($types["integer"]) ? "integer" : "")), "on_update" => "")),

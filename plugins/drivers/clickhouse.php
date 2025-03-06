@@ -131,6 +131,16 @@ if (isset($_GET["clickhouse"])) {
 
 
 	class Driver extends SqlDriver {
+		function __construct($connection) {
+			parent::__construct($connection);
+			$this->types = array( //! arrays
+				lang('Numbers') => array("Int8" => 3, "Int16" => 5, "Int32" => 10, "Int64" => 19, "UInt8" => 3, "UInt16" => 5, "UInt32" => 10, "UInt64" => 20, "Float32" => 7, "Float64" => 16, 'Decimal' => 38, 'Decimal32' => 9, 'Decimal64' => 18, 'Decimal128' => 38),
+				lang('Date and time') => array("Date" => 13, "DateTime" => 20),
+				lang('Strings') => array("String" => 0),
+				lang('Binary') => array("FixedString" => 0),
+			);
+		}
+
 		function delete($table, $queryWhere, $limit = 0) {
 			if ($queryWhere === '') {
 				$queryWhere = 'WHERE 1=1';
@@ -369,23 +379,8 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function driver_config() {
-		$types = array();
-		$structured_types = array();
-		foreach (
-			array( //! arrays
-				lang('Numbers') => array("Int8" => 3, "Int16" => 5, "Int32" => 10, "Int64" => 19, "UInt8" => 3, "UInt16" => 5, "UInt32" => 10, "UInt64" => 20, "Float32" => 7, "Float64" => 16, 'Decimal' => 38, 'Decimal32' => 9, 'Decimal64' => 18, 'Decimal128' => 38),
-				lang('Date and time') => array("Date" => 13, "DateTime" => 20),
-				lang('Strings') => array("String" => 0),
-				lang('Binary') => array("FixedString" => 0),
-			) as $key => $val
-		) {
-			$types += $val;
-			$structured_types[$key] = array_keys($val);
-		}
 		return array(
 			'jush' => "clickhouse",
-			'types' => $types,
-			'structured_types' => $structured_types,
 			'unsigned' => array(),
 			'operators' => array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL"),
 			'functions' => array(),

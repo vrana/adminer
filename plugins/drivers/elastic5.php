@@ -113,6 +113,15 @@ if (isset($_GET["elastic5"])) {
 	}
 
 	class Driver extends SqlDriver {
+		function __construct($connection) {
+			parent::__construct($connection);
+			$this->types = array(
+				lang('Numbers') => array("long" => 3, "integer" => 5, "short" => 8, "byte" => 10, "double" => 20, "float" => 66, "half_float" => 12, "scaled_float" => 21),
+				lang('Date and time') => array("date" => 10),
+				lang('Strings') => array("string" => 65535, "text" => 65535),
+				lang('Binary') => array("binary" => 255),
+			);
+		}
 
 		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
 			$data = array();
@@ -520,21 +529,6 @@ if (isset($_GET["elastic5"])) {
 	}
 
 	function driver_config() {
-		$types = array();
-		$structured_types = array();
-
-		foreach (
-			array(
-				lang('Numbers') => array("long" => 3, "integer" => 5, "short" => 8, "byte" => 10, "double" => 20, "float" => 66, "half_float" => 12, "scaled_float" => 21),
-				lang('Date and time') => array("date" => 10),
-				lang('Strings') => array("string" => 65535, "text" => 65535),
-				lang('Binary') => array("binary" => 255),
-			) as $key => $val
-		) {
-			$types += $val;
-			$structured_types[$key] = array_keys($val);
-		}
-
 		return array(
 			'possible_drivers' => array("json + allow_url_fopen"),
 			'jush' => "elastic",
@@ -542,8 +536,6 @@ if (isset($_GET["elastic5"])) {
 			'functions' => array(),
 			'grouping' => array(),
 			'edit_functions' => array(array("json")),
-			'types' => $types,
-			'structured_types' => $structured_types,
 		);
 	}
 }
