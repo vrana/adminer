@@ -30,6 +30,7 @@ abstract class SqlDriver {
 	var $operators = array(); ///< @var array operators used in select
 	var $functions = array(); ///< @var array functions used in select
 	var $grouping = array(); ///< @var array grouping functions used in select
+	var $onActions = "RESTRICT|NO ACTION|CASCADE|SET NULL|SET DEFAULT"; ///< @var string used in foreign_keys()
 
 	/** Create object for performing database operations
 	* @param Db

@@ -35,7 +35,7 @@ if ($_GET["script"] == "version") {
 	exit;
 }
 
-global $adminer, $connection, $driver, $drivers, $enum_length, $error, $HTTPS, $inout, $jush, $LANG, $langs, $on_actions, $permanent, $has_token, $token, $translations, $VERSION; // allows including Adminer inside a function
+global $adminer, $connection, $driver, $drivers, $enum_length, $error, $HTTPS, $inout, $jush, $LANG, $langs, $permanent, $has_token, $token, $translations, $VERSION; // allows including Adminer inside a function
 
 if (!$_SERVER["REQUEST_URI"]) { // IIS 5 compatibility
 	$_SERVER["REQUEST_URI"] = $_SERVER["ORIG_PATH_INFO"];
@@ -78,7 +78,6 @@ include "./include/adminer.inc.php";
 $adminer = (function_exists('adminer_object') ? adminer_object() : new Adminer);
 include "../adminer/drivers/mysql.inc.php"; // must be included as last driver
 
-$on_actions = "RESTRICT|NO ACTION|CASCADE|SET NULL|SET DEFAULT"; ///< @var string used in foreign_keys()
 $config = driver_config();
 $possible_drivers = $config['possible_drivers'];
 $jush = $config['jush'];

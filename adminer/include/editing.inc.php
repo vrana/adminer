@@ -209,7 +209,7 @@ function json_row($key, $val = null) {
 * @return null
 */
 function edit_type($key, $field, $collations, $foreign_keys = array(), $extra_types = array()) {
-	global $driver, $on_actions;
+	global $driver;
 	$type = $field["type"];
 	?><td><select name="<?php echo h($key); ?>[type]" class="type" aria-labelledby="label-type"><?php
 	if ($type && !array_key_exists($type, $driver->types()) && !isset($foreign_keys[$type]) && !in_array($type, $extra_types)) {
@@ -232,7 +232,7 @@ function edit_type($key, $field, $collations, $foreign_keys = array(), $extra_ty
 		. optionlist(array("" => "(" . lang('ON UPDATE') . ")", "CURRENT_TIMESTAMP"), (preg_match('~^CURRENT_TIMESTAMP~i', $field["on_update"]) ? "CURRENT_TIMESTAMP" : $field["on_update"]))
 		. '</select>' : ''
 	);
-	echo ($foreign_keys ? "<select name='" . h($key) . "[on_delete]'" . (preg_match("~`~", $type) ? "" : " class='hidden'") . "><option value=''>(" . lang('ON DELETE') . ")" . optionlist(explode("|", $on_actions), $field["on_delete"]) . "</select> " : " "); // space for IE
+	echo ($foreign_keys ? "<select name='" . h($key) . "[on_delete]'" . (preg_match("~`~", $type) ? "" : " class='hidden'") . "><option value=''>(" . lang('ON DELETE') . ")" . optionlist(explode("|", $driver->onActions), $field["on_delete"]) . "</select> " : " "); // space for IE
 }
 
 /** Get partition info
@@ -553,7 +553,7 @@ function remove_definer($query) {
 * @return string
 */
 function format_foreign_key($foreign_key) {
-	global $on_actions;
+	global $driver;
 	$db = $foreign_key["db"];
 	$ns = $foreign_key["ns"];
 	return " FOREIGN KEY (" . implode(", ", array_map('Adminer\idf_escape', $foreign_key["source"])) . ") REFERENCES "
@@ -561,8 +561,8 @@ function format_foreign_key($foreign_key) {
 		. ($ns != "" && $ns != $_GET["ns"] ? idf_escape($ns) . "." : "")
 		. idf_escape($foreign_key["table"])
 		. " (" . implode(", ", array_map('Adminer\idf_escape', $foreign_key["target"])) . ")" //! reuse $name - check in older MySQL versions
-		. (preg_match("~^($on_actions)\$~", $foreign_key["on_delete"]) ? " ON DELETE $foreign_key[on_delete]" : "")
-		. (preg_match("~^($on_actions)\$~", $foreign_key["on_update"]) ? " ON UPDATE $foreign_key[on_update]" : "")
+		. (preg_match("~^($driver->onActions)\$~", $foreign_key["on_delete"]) ? " ON DELETE $foreign_key[on_delete]" : "")
+		. (preg_match("~^($driver->onActions)\$~", $foreign_key["on_update"]) ? " ON UPDATE $foreign_key[on_update]" : "")
 	;
 }
 
