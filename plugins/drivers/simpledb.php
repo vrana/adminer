@@ -4,7 +4,7 @@ namespace Adminer;
 add_driver("simpledb", "SimpleDB");
 
 if (isset($_GET["simpledb"])) {
-	define("DRIVER", "simpledb");
+	define('Adminer\DRIVER', "simpledb");
 
 	if (class_exists('SimpleXMLElement') && ini_bool('allow_url_fopen')) {
 		class Db {
@@ -290,7 +290,7 @@ if (isset($_GET["simpledb"])) {
 		foreach (sdb_request_all('ListDomains', 'DomainName') as $table) {
 			$return[(string) $table] = 'table';
 		}
-		if ($connection->error && defined("PAGE_HEADER")) {
+		if ($connection->error && defined('Adminer\PAGE_HEADER')) {
 			echo "<p class='error'>" . error() . "\n";
 		}
 		return $return;

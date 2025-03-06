@@ -10,7 +10,7 @@ namespace Adminer;
 $drivers["mssql"] = "MS SQL";
 
 if (isset($_GET["mssql"])) {
-	define("DRIVER", "mssql");
+	define('Adminer\DRIVER', "mssql");
 	if (extension_loaded("sqlsrv")) {
 		class Db {
 			var $extension = "sqlsrv", $_link, $_result, $server_info, $affected_rows, $errno, $error;

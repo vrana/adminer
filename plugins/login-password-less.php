@@ -19,7 +19,7 @@ class AdminerLoginPasswordLess {
 
 	function credentials() {
 		$password = Adminer\get_password();
-		return array(SERVER, $_GET["username"], (password_verify($password, $this->password_hash) ? "" : $password));
+		return array(Adminer\SERVER, $_GET["username"], (password_verify($password, $this->password_hash) ? "" : $password));
 	}
 
 	function login($login, $password) {

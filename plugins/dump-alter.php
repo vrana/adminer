@@ -9,7 +9,7 @@
 class AdminerDumpAlter {
 
 	function dumpFormat() {
-		if (DRIVER == 'server') {
+		if (Adminer\DRIVER == 'server') {
 			return array('sql_alter' => 'Alter');
 		}
 	}

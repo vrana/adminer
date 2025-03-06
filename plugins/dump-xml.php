@@ -28,7 +28,7 @@ class AdminerDumpXml {
 		if ($_POST["format"] == "xml") {
 			if (!$this->database) {
 				$this->database = true;
-				echo "<database name='" . Adminer\h(DB) . "'>\n";
+				echo "<database name='" . Adminer\h(Adminer\DB) . "'>\n";
 				register_shutdown_function(array($this, '_database'));
 			}
 			$connection = Adminer\connection();

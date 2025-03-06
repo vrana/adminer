@@ -4,7 +4,7 @@ namespace Adminer;
 $drivers["mongo"] = "MongoDB (alpha)";
 
 if (isset($_GET["mongo"])) {
-	define("DRIVER", "mongo");
+	define('Adminer\DRIVER', "mongo");
 
 	if (class_exists('MongoDB\Driver\Manager')) {
 		class Db {

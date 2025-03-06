@@ -4,7 +4,7 @@ namespace Adminer;
 $drivers["oracle"] = "Oracle (beta)";
 
 if (isset($_GET["oracle"])) {
-	define("DRIVER", "oracle");
+	define('Adminer\DRIVER', "oracle");
 	if (extension_loaded("oci8")) {
 		class Db {
 			var $extension = "oci8", $_link, $_result, $server_info, $affected_rows, $errno, $error;

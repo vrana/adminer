@@ -22,11 +22,11 @@ class AdminerLoginServers {
 	}
 
 	function credentials() {
-		return array($this->servers[SERVER]["server"], $_GET["username"], Adminer\get_password());
+		return array($this->servers[Adminer\SERVER]["server"], $_GET["username"], Adminer\get_password());
 	}
 
 	function login($login, $password) {
-		if (!$this->servers[SERVER]) {
+		if (!$this->servers[Adminer\SERVER]) {
 			return false;
 		}
 	}
@@ -35,7 +35,7 @@ class AdminerLoginServers {
 		if ($name == 'driver') {
 			return '';
 		} elseif ($name == 'server') {
-			return $heading . "<select name='auth[server]'>" . Adminer\optionlist(array_keys($this->servers), SERVER) . "</select>\n";
+			return $heading . "<select name='auth[server]'>" . Adminer\optionlist(array_keys($this->servers), Adminer\SERVER) . "</select>\n";
 		}
 	}
 }

@@ -4,7 +4,7 @@ namespace Adminer;
 add_driver("clickhouse", "ClickHouse (alpha)");
 
 if (isset($_GET["clickhouse"])) {
-	define("DRIVER", "clickhouse");
+	define('Adminer\DRIVER', "clickhouse");
 
 	if (ini_bool('allow_url_fopen')) {
 		class Db {

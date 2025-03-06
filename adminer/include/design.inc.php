@@ -109,7 +109,7 @@ var thousandsSeparator = '<?php echo js_escape(lang(',')); ?>';
 		$databases = null;
 	}
 	stop_session();
-	define("PAGE_HEADER", 1);
+	define('Adminer\PAGE_HEADER', 1);
 }
 
 /** Send HTTP headers

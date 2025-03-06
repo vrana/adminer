@@ -4,7 +4,7 @@ namespace Adminer;
 $drivers["sqlite"] = "SQLite";
 
 if (isset($_GET["sqlite"])) {
-	define("DRIVER", "sqlite");
+	define('Adminer\DRIVER', "sqlite");
 	if (class_exists("SQLite3")) {
 
 		class SqliteDb {

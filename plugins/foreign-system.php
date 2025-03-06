@@ -9,7 +9,7 @@
 class AdminerForeignSystem {
 
 	function foreignKeys($table) {
-		if (DRIVER == "server" && DB == "mysql") {
+		if (Adminer\DRIVER == "server" && Adminer\DB == "mysql") {
 			$return = array(
 				"columns_priv" => array(array("table" => "user", "source" => array("Host", "User"), "target" => array("Host", "User"))),
 				"db" => array(array("table" => "user", "source" => array("Host", "User"), "target" => array("Host", "User"))),
@@ -23,7 +23,7 @@ class AdminerForeignSystem {
 				"time_zone_transition_type" => array(array("table" => "time_zone", "source" => array("Time_zone_id"), "target" => array("Time_zone_id"))),
 			);
 			return $return[$table];
-		} elseif (DB == "information_schema") {
+		} elseif (Adminer\DB == "information_schema") {
 			$schemata = array("table" => "SCHEMATA", "source" => array("TABLE_CATALOG", "TABLE_SCHEMA"), "target" => array("CATALOG_NAME", "SCHEMA_NAME"));
 			$tables = array("table" => "TABLES", "source" => array("TABLE_CATALOG", "TABLE_SCHEMA", "TABLE_NAME"), "target" => array("TABLE_CATALOG", "TABLE_SCHEMA", "TABLE_NAME"));
 			$columns = array("table" => "COLUMNS", "source" => array("TABLE_CATALOG", "TABLE_SCHEMA", "TABLE_NAME", "COLUMN_NAME"), "target" => array("TABLE_CATALOG", "TABLE_SCHEMA", "TABLE_NAME", "COLUMN_NAME"));

@@ -4,10 +4,9 @@ namespace Adminer;
 add_driver("elastic", "Elasticsearch 7 (beta)");
 
 if (isset($_GET["elastic"])) {
-	define("DRIVER", "elastic");
+	define('Adminer\DRIVER', "elastic");
 
 	if (ini_bool('allow_url_fopen')) {
-		define("ELASTIC_DB_NAME", "elastic");
 
 		class Db {
 			var $extension = "JSON", $server_info, $errno, $error, $_url;
@@ -316,7 +315,7 @@ if (isset($_GET["elastic"])) {
 	}
 
 	function get_databases() {
-		return array(ELASTIC_DB_NAME);
+		return array("elastic");
 	}
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
@@ -337,15 +336,7 @@ if (isset($_GET["elastic"])) {
 
 	function count_tables($databases) {
 		$return = connection()->rootQuery('_aliases');
-		if (empty($return)) {
-			return array(
-				ELASTIC_DB_NAME => 0
-			);
-		}
-
-		return array(
-			ELASTIC_DB_NAME => count($return)
-		);
+		return array("elastic" => ($return ? count($return) : 0));
 	}
 
 	function tables_list() {

@@ -8,7 +8,7 @@ namespace Adminer;
 add_driver('firebird', 'Firebird (alpha)');
 
 if (isset($_GET["firebird"])) {
-	define("DRIVER", "firebird");
+	define('Adminer\DRIVER', "firebird");
 
 	if (extension_loaded("interbase")) {
 		class Db {

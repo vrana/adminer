@@ -4,7 +4,7 @@ namespace Adminer;
 $drivers["pgsql"] = "PostgreSQL";
 
 if (isset($_GET["pgsql"])) {
-	define("DRIVER", "pgsql");
+	define('Adminer\DRIVER', "pgsql");
 	if (extension_loaded("pgsql")) {
 		class Db {
 			var $extension = "PgSQL", $_link, $_result, $_string, $_database = true, $server_info, $affected_rows, $error, $timeout;

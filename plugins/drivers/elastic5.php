@@ -4,7 +4,7 @@ namespace Adminer;
 add_driver("elastic5", "Elasticsearch 5 (beta)");
 
 if (isset($_GET["elastic5"])) {
-	define("DRIVER", "elastic5");
+	define('Adminer\DRIVER', "elastic5");
 
 	if (ini_bool('allow_url_fopen')) {
 		class Db {
