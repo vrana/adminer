@@ -436,7 +436,7 @@ if (!$columns && support("table")) {
 						$val = select_value($val, $link, $field, $text_length);
 						$id = h("val[$unique_idf][" . bracket_escape($key) . "]");
 						$value = $_POST["val"][$unique_idf][bracket_escape($key)];
-						$editable = !is_array($row[$key]) && is_utf8($val) && $rows[$n][$key] == $row[$key] && !$functions[$key];
+						$editable = !is_array($row[$key]) && is_utf8($val) && $rows[$n][$key] == $row[$key] && !$functions[$key] && !$field["generated"];
 						$text = preg_match('~text|lob~', $field["type"]);
 						echo "<td id='$id'";
 						if (($_GET["modify"] && $editable) || $value !== null) {
@@ -446,7 +446,7 @@ if (!$columns && support("table")) {
 							$long = strpos($val, "<i>…</i>");
 							echo " data-text='" . ($long ? 2 : ($text ? 1 : 0)) . "'"
 								. ($editable ? "" : " data-warning='" . h(lang('Use edit link to modify this value.')) . "'")
-								. ">$val</td>"
+								. ">$val"
 							;
 						}
 					}
