@@ -771,6 +771,7 @@ AND typelem = 0"
 	}
 
 	function type_values($id) {
+		// to get values from type string: unnest(enum_range(NULL::"$type"))
 		$enums = get_vals("SELECT enumlabel FROM pg_enum WHERE enumtypid = $id ORDER BY enumsortorder");
 		return ($enums ? "'" . implode("', '", array_map('addslashes', $enums)) . "'" : "");
 	}
