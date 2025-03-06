@@ -99,7 +99,7 @@ if ($_POST && !$error) {
 			$affected = 0;
 			$set = array();
 			if (!$_POST["delete"]) {
-				foreach ($columns as $name => $val) { //! should check also for edit or insert privileges
+				foreach ($_POST["fields"] as $name => $val) {
 					$val = process_input($fields[$name]);
 					if ($val !== null && ($_POST["clone"] || $val !== false)) {
 						$set[idf_escape($name)] = ($val !== false ? $val : idf_escape($name));
@@ -146,7 +146,8 @@ if ($_POST && !$error) {
 			}
 			queries_redirect(remove_from_uri($_POST["all"] && $_POST["delete"] ? "page" : ""), $message, $result);
 			if (!$_POST["delete"]) {
-				edit_form($TABLE, $fields, (array) $_POST["fields"], !$_POST["clone"]);
+				$post_fields = (array) $_POST["fields"];
+				edit_form($TABLE, array_intersect_key($fields, $post_fields), $post_fields, !$_POST["clone"]);
 				page_footer();
 				exit;
 			}
