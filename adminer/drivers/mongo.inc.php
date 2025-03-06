@@ -279,6 +279,9 @@ if (isset($_GET["mongo"])) {
 
 
 	class Driver extends SqlDriver {
+		static $possibleDrivers = array("mongodb");
+		static $jush = "mongo";
+
 		var $editFunctions = array(array("json"));
 
 		var $operators = array(
@@ -531,12 +534,5 @@ if (isset($_GET["mongo"])) {
 			}
 		}
 		return true;
-	}
-
-	function driver_config() {
-		return array(
-			'possible_drivers' => array("mongodb"),
-			'jush' => "mongo",
-		);
 	}
 }

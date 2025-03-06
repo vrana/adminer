@@ -118,6 +118,9 @@ if (isset($_GET["simpledb"])) {
 
 
 	class Driver extends SqlDriver {
+		static $possibleDrivers = array("SimpleXML + allow_url_fopen");
+		static $jush = "simpledb";
+
 		var $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "IS NOT NULL");
 		var $grouping = array("count");
 
@@ -464,12 +467,5 @@ if (isset($_GET["simpledb"])) {
 			}
 		} while ($xml->NextToken);
 		return $return;
-	}
-
-	function driver_config() {
-		return array(
-			'possible_drivers' => array("SimpleXML + allow_url_fopen"),
-			'jush' => "simpledb",
-		);
 	}
 }

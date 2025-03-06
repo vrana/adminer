@@ -186,6 +186,9 @@ if (isset($_GET["mssql"])) {
 
 
 	class Driver extends SqlDriver {
+		static $possibleDrivers = array("SQLSRV", "PDO_SQLSRV", "PDO_DBLIB");
+		static $jush = "mssql";
+
 		var $editFunctions = array(
 			array(
 				"date|time" => "getdate",
@@ -703,12 +706,5 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)) as $row
 
 	function support($feature) {
 		return preg_match('~^(check|comment|columns|database|drop_col|dump|indexes|descidx|scheme|sql|table|trigger|view|view_trigger)$~', $feature); //! routine|
-	}
-
-	function driver_config() {
-		return array(
-			'possible_drivers' => array("SQLSRV", "PDO_SQLSRV", "PDO_DBLIB"),
-			'jush' => "mssql",
-		);
 	}
 }

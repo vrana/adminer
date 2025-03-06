@@ -281,6 +281,9 @@ if (!defined("DRIVER")) {
 
 
 	class Driver extends SqlDriver {
+		static $possibleDrivers = array("MySQLi", "MySQL", "PDO_MySQL");
+		static $jush = "sql"; ///< @var string JUSH identifier
+
 		var $unsigned = array("unsigned", "zerofill", "unsigned zerofill");
 		var $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "FIND_IN_SET", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL");
 		var $functions = array("char_length", "date", "from_unixtime", "lower", "round", "floor", "ceil", "sec_to_time", "time_to_sec", "upper");
@@ -1195,15 +1198,5 @@ if (!defined("DRIVER")) {
 	function max_connections() {
 		global $connection;
 		return $connection->result("SELECT @@max_connections");
-	}
-
-	/** Get driver config
-	* @return array ['possible_drivers' => , 'jush' => ]
-	*/
-	function driver_config() {
-		return array(
-			'possible_drivers' => array("MySQLi", "MySQL", "PDO_MySQL"),
-			'jush' => "sql", ///< @var string JUSH identifier
-		);
 	}
 }

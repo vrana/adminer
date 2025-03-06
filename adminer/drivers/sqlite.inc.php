@@ -127,6 +127,9 @@ if (isset($_GET["sqlite"])) {
 
 
 	class Driver extends SqlDriver {
+		static $possibleDrivers = array("SQLite3", "PDO_SQLite");
+		static $jush = "sqlite";
+
 		protected $types = array(array("integer" => 0, "real" => 0, "numeric" => 0, "text" => 0, "blob" => 0));
 
 		var $editFunctions = array(
@@ -736,12 +739,5 @@ if (isset($_GET["sqlite"])) {
 
 	function support($feature) {
 		return preg_match('~^(check|columns|database|drop_col|dump|indexes|descidx|move_col|sql|status|table|trigger|variables|view|view_trigger)$~', $feature);
-	}
-
-	function driver_config() {
-		return array(
-			'possible_drivers' => array("SQLite3", "PDO_SQLite"),
-			'jush' => "sqlite",
-		);
 	}
 }

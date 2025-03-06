@@ -78,9 +78,7 @@ include "./include/adminer.inc.php";
 $adminer = (function_exists('adminer_object') ? adminer_object() : new Adminer);
 include "../adminer/drivers/mysql.inc.php"; // must be included as last driver
 
-$config = driver_config();
-$possible_drivers = $config['possible_drivers'];
-$jush = $config['jush'];
+$jush = Driver::$jush;
 
 define("SERVER", $_GET[DRIVER]); // read from pgsql=localhost
 define("DB", $_GET["db"]); // for the sake of speed and size

@@ -131,6 +131,9 @@ if (isset($_GET["clickhouse"])) {
 
 
 	class Driver extends SqlDriver {
+		static $possibleDrivers = array("allow_url_fopen");
+		static $jush = "clickhouse";
+
 		var $operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
 		var $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 
@@ -379,11 +382,5 @@ if (isset($_GET["clickhouse"])) {
 
 	function support($feature) {
 		return preg_match("~^(columns|sql|status|table|drop_col)$~", $feature);
-	}
-
-	function driver_config() {
-		return array(
-			'jush' => "clickhouse",
-		);
 	}
 }

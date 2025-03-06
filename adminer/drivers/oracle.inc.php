@@ -141,6 +141,9 @@ if (isset($_GET["oracle"])) {
 
 
 	class Driver extends SqlDriver {
+		static $possibleDrivers = array("OCI8", "PDO_OCI");
+		static $jush = "oracle";
+
 		var $editFunctions = array(
 			array( //! no parentheses
 				"date" => "current_date",
@@ -543,12 +546,5 @@ ORDER BY PROCESS
 
 	function support($feature) {
 		return preg_match('~^(columns|database|drop_col|indexes|descidx|processlist|scheme|sql|status|table|variables|view)$~', $feature); //!
-	}
-
-	function driver_config() {
-		return array(
-			'possible_drivers' => array("OCI8", "PDO_OCI"),
-			'jush' => "oracle",
-		);
 	}
 }

@@ -196,6 +196,9 @@ if (isset($_GET["pgsql"])) {
 
 
 	class Driver extends SqlDriver {
+		static $possibleDrivers = array("PgSQL", "PDO_PgSQL");
+		static $jush = "pgsql";
+
 		var $operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"); // no "SQL" to avoid CSRF
 		var $functions = array("char_length", "lower", "round", "to_hex", "to_timestamp", "upper");
 		var $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
@@ -934,12 +937,5 @@ AND typelem = 0"
 	function max_connections() {
 		global $connection;
 		return $connection->result("SHOW max_connections");
-	}
-
-	function driver_config() {
-		return array(
-			'possible_drivers' => array("PgSQL", "PDO_PgSQL"),
-			'jush' => "pgsql",
-		);
 	}
 }

@@ -122,6 +122,9 @@ if (isset($_GET["elastic"])) {
 	}
 
 	class Driver extends SqlDriver {
+		static $possibleDrivers = array("json + allow_url_fopen");
+		static $jush = "elastic";
+
 		var $editFunctions = array(array("json"));
 		var $operators = array("=", "must", "should", "must_not");
 
@@ -563,12 +566,5 @@ if (isset($_GET["elastic"])) {
 
 	function last_id() {
 		return connection()->last_id;
-	}
-
-	function driver_config() {
-		return array(
-			'possible_drivers' => array("json + allow_url_fopen"),
-			'jush' => "elastic",
-		);
 	}
 }
