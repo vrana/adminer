@@ -437,19 +437,19 @@ function escape_key($key) {
 * @return string
 */
 function where($where, $fields = array()) {
-	global $connection, $jush;
+	global $connection;
 	$return = array();
 	foreach ((array) $where["where"] as $key => $val) {
 		$key = bracket_escape($key, 1); // 1 - back
 		$column = escape_key($key);
 		$return[] = $column
-			. ($jush == "sql" && $fields[$key]["type"] == "json" ? " = CAST(" . q($val) . " AS JSON)"
-				: ($jush == "sql" && is_numeric($val) && preg_match('~\.~', $val) ? " LIKE " . q($val) // LIKE because of floats but slow with ints
-				: ($jush == "mssql" ? " LIKE " . q(preg_replace('~[_%[]~', '[\0]', $val)) // LIKE because of text
+			. (JUSH == "sql" && $fields[$key]["type"] == "json" ? " = CAST(" . q($val) . " AS JSON)"
+				: (JUSH == "sql" && is_numeric($val) && preg_match('~\.~', $val) ? " LIKE " . q($val) // LIKE because of floats but slow with ints
+				: (JUSH == "mssql" ? " LIKE " . q(preg_replace('~[_%[]~', '[\0]', $val)) // LIKE because of text
 				: " = " . unconvert_field($fields[$key], q($val))
 			)))
 		; //! enum and set
-		if ($jush == "sql" && preg_match('~char|text~', $fields[$key]["type"]) && preg_match("~[^ -@]~", $val)) { // not just [a-z] to catch non-ASCII characters
+		if (JUSH == "sql" && preg_match('~char|text~', $fields[$key]["type"]) && preg_match("~[^ -@]~", $val)) { // not just [a-z] to catch non-ASCII characters
 			$return[] = "$column = " . q($val) . " COLLATE " . charset($connection) . "_bin";
 		}
 	}
@@ -878,13 +878,13 @@ function column_foreign_keys($table) {
 * @return null
 */
 function enum_input($type, $attrs, $field, $value, $empty = null) {
-	global $adminer, $jush;
+	global $adminer;
 	preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
 	$return = ($empty !== null ? "<label><input type='$type'$attrs value='$empty'" . ((is_array($value) ? in_array($empty, $value) : $value === 0) ? " checked" : "") . "><i>" . lang('empty') . "</i></label>" : "");
 	foreach ($matches[1] as $i => $val) {
 		$val = stripcslashes(str_replace("''", "'", $val));
 		$checked = (is_int($value) ? $value == $i+1 : (is_array($value) ? in_array($i+1, $value) : $value === $val));
-		$return .= " <label><input type='$type'$attrs value='" . ($jush == "sql" ? $i+1 : h($val)) . "'" . ($checked ? ' checked' : '') . '>' . h($adminer->editVal($val, $field)) . '</label>';
+		$return .= " <label><input type='$type'$attrs value='" . (JUSH == "sql" ? $i+1 : h($val)) . "'" . ($checked ? ' checked' : '') . '>' . h($adminer->editVal($val, $field)) . '</label>';
 	}
 	return $return;
 }
@@ -896,7 +896,7 @@ function enum_input($type, $attrs, $field, $value, $empty = null) {
 * @return null
 */
 function input($field, $value, $function) {
-	global $driver, $adminer, $jush;
+	global $driver, $adminer;
 	$name = h(bracket_escape($field["field"]));
 	echo "<td class='function'>";
 	if (is_array($value) && !$function) {
@@ -907,7 +907,7 @@ function input($field, $value, $function) {
 		$value = call_user_func_array('json_encode', $args); //! requires PHP 5.2
 		$function = "json";
 	}
-	$reset = ($jush == "mssql" && $field["auto_increment"]);
+	$reset = (JUSH == "mssql" && $field["auto_increment"]);
 	if ($reset && !$_POST["save"]) {
 		$function = null;
 	}
@@ -949,7 +949,7 @@ function input($field, $value, $function) {
 		} elseif (preg_match('~blob|bytea|raw|file~', $field["type"]) && ini_bool("file_uploads")) {
 			echo "<input type='file' name='fields-$name'>";
 		} elseif (($text = preg_match('~text|lob|memo~i', $field["type"])) || preg_match("~\n~", $value)) {
-			if ($text && $jush != "sqlite") {
+			if ($text && JUSH != "sqlite") {
 				$attrs .= " cols='50' rows='12'";
 			} else {
 				$rows = min(12, substr_count($value, "\n") + 1);
@@ -964,7 +964,7 @@ function input($field, $value, $function) {
 				? ((preg_match("~binary~", $field["type"]) ? 2 : 1) * $match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0))
 				: ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0)
 			);
-			if ($jush == 'sql' && min_version(5.6) && preg_match('~time~', $field["type"])) {
+			if (JUSH == 'sql' && min_version(5.6) && preg_match('~time~', $field["type"])) {
 				$maxlength += 7; // microtime
 			}
 			// type='date' and type='time' display localized value which may be confusing, type='datetime' uses 'T' as date and time separator
@@ -1286,9 +1286,8 @@ function is_shortable($field) {
 * @return string
 */
 function count_rows($table, $where, $is_group, $group) {
-	global $jush;
 	$query = " FROM " . table($table) . ($where ? " WHERE " . implode(" AND ", $where) : "");
-	return ($is_group && ($jush == "sql" || count($group) == 1)
+	return ($is_group && (JUSH == "sql" || count($group) == 1)
 		? "SELECT COUNT(DISTINCT " . implode(", ", $group) . ")$query"
 		: "SELECT COUNT(*)" . ($is_group ? " FROM (SELECT 1$query GROUP BY " . implode(", ", $group) . ") x" : $query)
 	);
@@ -1398,7 +1397,7 @@ function on_help($command, $side = 0) {
 * @return null
 */
 function edit_form($table, $fields, $row, $update) {
-	global $adminer, $jush, $token, $error;
+	global $adminer, $token, $error;
 	$table_name = $adminer->tableName(table_status1($table, true));
 	page_header(
 		($update ? lang('Edit') : lang('Insert')),
@@ -1429,7 +1428,7 @@ function edit_form($table, $fields, $row, $update) {
 				}
 			}
 			$value = ($row !== null
-				? ($row[$name] != "" && $jush == "sql" && preg_match("~enum|set~", $field["type"])
+				? ($row[$name] != "" && JUSH == "sql" && preg_match("~enum|set~", $field["type"])
 					? (is_array($row[$name]) ? array_sum($row[$name]) : +$row[$name])
 					: (is_bool($row[$name]) ? +$row[$name] : $row[$name])
 				)

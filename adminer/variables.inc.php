@@ -11,7 +11,7 @@ if (!$variables) {
 	echo "<table>\n";
 	foreach ($variables as $key => $val) {
 		echo "<tr>";
-		echo "<th><code class='jush-" . $jush . ($status ? "status" : "set") . "'>" . h($key) . "</code>";
+		echo "<th><code class='jush-" . JUSH . ($status ? "status" : "set") . "'>" . h($key) . "</code>";
 		echo "<td>" . nl_br(h($val));
 	}
 	echo "</table>\n";

@@ -60,7 +60,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 					}
 				}
 				if ($foreign_key !== null) {
-					$foreign[idf_escape($field["field"])] = ($TABLE != "" && $jush != "sqlite" ? "ADD" : " ") . format_foreign_key(array(
+					$foreign[idf_escape($field["field"])] = ($TABLE != "" && JUSH != "sqlite" ? "ADD" : " ") . format_foreign_key(array(
 						'table' => $foreign_keys[$field["type"]],
 						'source' => array($field["field"]),
 						'target' => array($type_field["field"]),
@@ -126,7 +126,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 		queries_redirect(ME . (support("table") ? "table=" : "select=") . urlencode($name), $message, alter_table(
 			$TABLE,
 			$name,
-			($jush == "sqlite" && ($use_all_fields || $foreign) ? $all_fields : $fields),
+			(JUSH == "sqlite" && ($use_all_fields || $foreign) ? $all_fields : $fields),
 			$foreign,
 			($row["Comment"] != $table_status["Comment"] ? $row["Comment"] : null),
 			($row["Engine"] && $row["Engine"] != $table_status["Engine"] ? $row["Engine"] : ""),
@@ -183,7 +183,7 @@ foreach ($engines as $engine) {
 <?php if (support("columns") || $TABLE == "") { ?>
 <?php echo lang('Table name'); ?>: <input name="name"<?php echo ($TABLE == "" && !$_POST ? " autofocus" : ""); ?> data-maxlength="64" value="<?php echo h($row["name"]); ?>" autocapitalize="off">
 <?php echo ($engines ? "<select name='Engine'>" . optionlist(array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) . "</select>" . on_help("getTarget(event).value", 1) . script("qsl('select').onchange = helpClose;") : ""); ?>
- <?php echo ($collations && !preg_match("~sqlite|mssql~", $jush) ? html_select("Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]) : ""); ?>
+ <?php echo ($collations && !preg_match("~sqlite|mssql~", JUSH) ? html_select("Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]) : ""); ?>
  <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php } ?>
 

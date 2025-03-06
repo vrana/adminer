@@ -69,7 +69,7 @@ if (!is_view($table_status)) {
 			echo "<table>\n";
 			foreach ($check_constraints as $key => $val) {
 				echo "<tr title='" . h($key) . "'>";
-				echo "<td><code class='jush-$jush'>" . h($val);
+				echo "<td><code class='jush-" . JUSH . "'>" . h($val);
 				echo "<td><a href='" . h(ME . 'check=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "'>" . lang('Alter') . "</a>";
 				echo "\n";
 			}

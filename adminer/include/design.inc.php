@@ -13,7 +13,7 @@ if (!ob_get_level()) {
 * @return null
 */
 function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
-	global $LANG, $VERSION, $adminer, $drivers, $jush;
+	global $LANG, $VERSION, $adminer, $drivers;
 	page_headers();
 	if (is_ajax() && $error) {
 		page_messages($error);
@@ -68,7 +68,7 @@ var offlineMessage = '<?php echo js_escape(lang('You are offline.')); ?>';
 var thousandsSeparator = '<?php echo js_escape(lang(',')); ?>';
 </script>
 
-<div id="help" class="jush-<?php echo $jush; ?> jsonly hidden"></div>
+<div id="help" class="jush-<?php echo JUSH; ?> jsonly hidden"></div>
 <?php echo script("mixin(qs('#help'), {onmouseover: function () { helpOpen = 1; }, onmouseout: helpMouseout});"); ?>
 
 <div id="content">

@@ -15,7 +15,7 @@ if ($_GET["script"] == "db") {
 				if ($table_status[$key] != "") {
 					$val = format_number($table_status[$key]);
 					if ($val >= 0) {
-						json_row("$key-$name", ($key == "Rows" && $val && $table_status["Engine"] == ($jush == "pgsql" ? "table" : "InnoDB")
+						json_row("$key-$name", ($key == "Rows" && $val && $table_status["Engine"] == (JUSH == "pgsql" ? "table" : "InnoDB")
 							? "~ $val"
 							: $val
 						));

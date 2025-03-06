@@ -11,7 +11,6 @@ namespace Adminer;
 * @return array $orgtables
 */
 function select($result, $connection2 = null, $orgtables = array(), $limit = 0) {
-	global $jush;
 	$links = array(); // colno => orgtable - create links from these columns
 	$indexes = array(); // orgtable => array(column => colno) - primary keys
 	$columns = array(); // orgtable => array(column => ) - not selected columns in primary key
@@ -29,7 +28,7 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 				$orgtable = $field->orgtable;
 				$orgname = $field->orgname;
 				$return[$field->table] = $orgtable;
-				if ($orgtables && $jush == "sql") { // MySQL EXPLAIN
+				if ($orgtables && JUSH == "sql") { // MySQL EXPLAIN
 					$links[$j] = ($name == "table" ? "table=" : ($name == "possible_keys" ? "indexes=" : null));
 				} elseif ($orgtable != "") {
 					if (!isset($indexes[$orgtable])) {
@@ -66,7 +65,7 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 		foreach ($row as $key => $val) {
 			$link = "";
 			if (isset($links[$key]) && !$columns[$links[$key]]) {
-				if ($orgtables && $jush == "sql") { // MySQL EXPLAIN
+				if ($orgtables && JUSH == "sql") { // MySQL EXPLAIN
 					$table = $row[array_search("table=", $links)];
 					$link = ME . $links[$key] . urlencode($orgtables[$table] != "" ? $orgtables[$table] : $table);
 				} else {
@@ -153,8 +152,7 @@ function set_adminer_settings($settings) {
 * @return null
 */
 function textarea($name, $value, $rows = 10, $cols = 80) {
-	global $jush;
-	echo "<textarea name='" . h($name) . "' rows='$rows' cols='$cols' class='sqlarea jush-$jush' spellcheck='false' wrap='off'>";
+	echo "<textarea name='" . h($name) . "' rows='$rows' cols='$cols' class='sqlarea jush-" . JUSH . "' spellcheck='false' wrap='off'>";
 	if (is_array($value)) {
 		foreach ($value as $val) { // not implode() to save memory
 			echo h($val[0]) . "\n\n\n"; // $val == array($query, $time, $elapsed)
@@ -269,11 +267,11 @@ function process_length($length) {
 * @return string
 */
 function process_type($field, $collate = "COLLATE") {
-	global $driver, $jush;
+	global $driver;
 	return " $field[type]"
 		. process_length($field["length"])
 		. (preg_match(number_type(), $field["type"]) && in_array($field["unsigned"], $driver->unsigned) ? " $field[unsigned]" : "")
-		. (preg_match('~char|text|enum|set~', $field["type"]) && $field["collation"] ? " $collate " . ($jush == "mssql" ? $field["collation"] : q($field["collation"])) : "")
+		. (preg_match('~char|text|enum|set~', $field["type"]) && $field["collation"] ? " $collate " . (JUSH == "mssql" ? $field["collation"] : q($field["collation"])) : "")
 	;
 }
 
@@ -303,11 +301,10 @@ function process_field($field, $type_field) {
 * @return string
 */
 function default_value($field) {
-	global $jush;
 	$default = $field["default"];
 	return ($default === null ? "" : " DEFAULT " .
 		(!preg_match('~^GENERATED ~i', $default) && (preg_match('~char|binary|text|enum|set~', $field["type"]) || preg_match('~^(?![a-z])~i', $default))
-		? q($default) : str_ireplace("current_timestamp()", "CURRENT_TIMESTAMP", ($jush == "sqlite" ? "($default)" : $default)))
+		? q($default) : str_ireplace("current_timestamp()", "CURRENT_TIMESTAMP", (JUSH == "sqlite" ? "($default)" : $default)))
 	);
 }
 
@@ -505,11 +502,10 @@ function drop_create($drop, $create, $drop_created, $test, $drop_test, $location
 * @return string
 */
 function create_trigger($on, $row) {
-	global $jush;
 	$timing_event = " $row[Timing] $row[Event]" . (preg_match('~ OF~', $row["Event"]) ? " $row[Of]" : ""); // SQL injection
 	return "CREATE TRIGGER "
 		. idf_escape($row["Trigger"])
-		. ($jush == "mssql" ? $on . $timing_event : $timing_event . $on)
+		. (JUSH == "mssql" ? $on . $timing_event : $timing_event . $on)
 		. rtrim(" $row[Type]\n$row[Statement]", ";")
 		. ";"
 	;
@@ -521,7 +517,7 @@ function create_trigger($on, $row) {
 * @return string
 */
 function create_routine($routine, $row) {
-	global $driver, $jush;
+	global $driver;
 	$set = array();
 	$fields = (array) $row["fields"];
 	ksort($fields); // enforce fields order
@@ -536,7 +532,7 @@ function create_routine($routine, $row) {
 		. " (" . implode(", ", $set) . ")"
 		. ($routine == "FUNCTION" ? " RETURNS" . process_type($row["returns"], "CHARACTER SET") : "")
 		. ($row["language"] ? " LANGUAGE $row[language]" : "")
-		. ($jush == "pgsql" ? " AS " . q($definition) : "\n$definition;")
+		. (JUSH == "pgsql" ? " AS " . q($definition) : "\n$definition;")
 	;
 }
 
@@ -602,12 +598,12 @@ function ini_bytes($ini) {
 }
 
 /** Create link to database documentation
-* @param array $jush => $path
+* @param array JUSH => $path
 * @param string HTML code
 * @return string HTML code
 */
 function doc_link($paths, $text = "<sup>?</sup>") {
-	global $jush, $connection;
+	global $connection;
 	$server_info = $connection->server_info;
 	$version = preg_replace('~^(\d\.?\d).*~s', '\1', $server_info); // two most significant digits
 	$urls = array(
@@ -621,7 +617,7 @@ function doc_link($paths, $text = "<sup>?</sup>") {
 		$urls['sql'] = "https://mariadb.com/kb/en/";
 		$paths['sql'] = (isset($paths['mariadb']) ? $paths['mariadb'] : str_replace(".html", "/", $paths['sql']));
 	}
-	return ($paths[$jush] ? "<a href='" . h($urls[$jush] . $paths[$jush] . ($jush == 'mssql' ? "?view=sql-server-ver$version" : "")) . "'" . target_blank() . ">$text</a>" : "");
+	return ($paths[JUSH] ? "<a href='" . h($urls[JUSH] . $paths[JUSH] . (JUSH == 'mssql' ? "?view=sql-server-ver$version" : "")) . "'" . target_blank() . ">$text</a>" : "");
 }
 
 /** Wrap gzencode() for usage in ob_start()

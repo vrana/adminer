@@ -35,7 +35,7 @@ if ($_GET["script"] == "version") {
 	exit;
 }
 
-global $adminer, $connection, $driver, $drivers, $error, $HTTPS, $jush, $LANG, $langs, $permanent, $has_token, $token, $translations, $VERSION; // allows including Adminer inside a function
+global $adminer, $connection, $driver, $drivers, $error, $HTTPS, $LANG, $langs, $permanent, $has_token, $token, $translations, $VERSION; // allows including Adminer inside a function
 
 if (!$_SERVER["REQUEST_URI"]) { // IIS 5 compatibility
 	$_SERVER["REQUEST_URI"] = $_SERVER["ORIG_PATH_INFO"];
@@ -78,8 +78,7 @@ include "./include/adminer.inc.php";
 $adminer = (function_exists('adminer_object') ? adminer_object() : new Adminer);
 include "../adminer/drivers/mysql.inc.php"; // must be included as last driver
 
-$jush = Driver::$jush;
-
+define('Adminer\JUSH', Driver::$jush);
 define('Adminer\SERVER', $_GET[DRIVER]); // read from pgsql=localhost
 define('Adminer\DB', $_GET["db"]); // for the sake of speed and size
 define(

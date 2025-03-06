@@ -470,7 +470,7 @@ if ($_SESSION["lang"]) {
 	$file = str_replace('<?php echo $LANG; ?>', $_SESSION["lang"], $file);
 }
 $file = str_replace('<?php echo script_src("static/editing.js"); ?>' . "\n", "", $file);
-$file = preg_replace('~\s+echo script_src\("\.\./externals/jush/modules/jush-(textarea|txt|js|\$jush)\.js"\);~', '', $file);
+$file = preg_replace('~\s+echo script_src\("\.\./externals/jush/modules/jush-(textarea|txt|js|" \. JUSH \. ")\.js"\);~', '', $file);
 $file = str_replace('<link rel="stylesheet" type="text/css" href="../externals/jush/jush.css">' . "\n", "", $file);
 $file = preg_replace_callback("~compile_file\\('([^']+)'(?:, '([^']*)')?\\)~", 'compile_file', $file); // integrate static files
 $replace = 'preg_replace("~\\\\\\\\?.*~", "", ME) . "?file=\1&version=' . $VERSION . '"';

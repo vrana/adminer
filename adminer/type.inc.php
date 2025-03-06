@@ -27,7 +27,7 @@ if ($TYPE != "") {
 	$types = $driver->types();
 	$enums = type_values($types[$TYPE]);
 	if ($enums) {
-		echo "<code class='jush-$jush'>ENUM (" . h($enums) . ")</code>\n<p>";
+		echo "<code class='jush-" . JUSH . "'>ENUM (" . h($enums) . ")</code>\n<p>";
 	}
 	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'>" . confirm(lang('Drop %s?', $TYPE)) . "\n";
 } else {

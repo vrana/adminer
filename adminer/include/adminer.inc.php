@@ -176,7 +176,7 @@ class Adminer {
 	* @return null
 	*/
 	function selectLinks($tableStatus, $set = "") {
-		global $jush, $driver;
+		global $driver;
 		echo '<p class="links">';
 		$links = array("select" => lang('Select data'));
 		if (support("table") || support("indexes")) {
@@ -198,7 +198,7 @@ class Adminer {
 		foreach ($links as $key => $val) {
 			echo " <a href='" . h(ME) . "$key=" . urlencode($name) . ($key == "edit" ? $set : "") . "'" . bold(isset($_GET[$key])) . ">$val</a>";
 		}
-		echo doc_link(array($jush => $driver->tableHelp($name, $is_view)), "?");
+		echo doc_link(array(JUSH => $driver->tableHelp($name, $is_view)), "?");
 		echo "\n";
 	}
 
@@ -234,7 +234,7 @@ class Adminer {
 	* @return string
 	*/
 	function selectQuery($query, $start, $failed = false) {
-		global $jush, $driver;
+		global $driver;
 		$return = "</p>\n"; // required for IE9 inline edit
 		if (!$failed && ($warnings = $driver->warnings())) {
 			$id = "warnings";
@@ -242,7 +242,7 @@ class Adminer {
 				. "$return<div id='$id' class='hidden'>\n$warnings</div>\n"
 			;
 		}
-		return "<p><code class='jush-$jush'>" . h(str_replace("\n", " ", $query)) . "</code> <span class='time'>(" . format_time($start) . ")</span>"
+		return "<p><code class='jush-" . JUSH . "'>" . h(str_replace("\n", " ", $query)) . "</code> <span class='time'>(" . format_time($start) . ")</span>"
 			. (support("sql") ? " <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>" : "")
 			. $return
 		;
@@ -645,7 +645,7 @@ class Adminer {
 	* @return string
 	*/
 	function messageQuery($query, $time, $failed = false) {
-		global $jush, $driver;
+		global $driver;
 		restart_session();
 		$history = &get_session("queries");
 		if (!$history[$_GET["db"]]) {
@@ -662,7 +662,7 @@ class Adminer {
 			$return = "<a href='#$id' class='toggle'>" . lang('Warnings') . "</a>, $return<div id='$id' class='hidden'>\n$warnings</div>\n";
 		}
 		return " <span class='time'>" . @date("H:i:s") . "</span>" // @ - time zone may be not set
-			. " $return<div id='$sql_id' class='hidden'><pre><code class='jush-$jush'>" . shorten_utf8($query, 1000) . "</code></pre>"
+			. " $return<div id='$sql_id' class='hidden'><pre><code class='jush-" . JUSH . "'>" . shorten_utf8($query, 1000) . "</code></pre>"
 			. ($time ? " <span class='time'>($time)</span>" : '')
 			. (support("sql") ? '<p><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a>' : '')
 			. '</div>'
@@ -827,9 +827,9 @@ class Adminer {
 	* @return null prints data
 	*/
 	function dumpData($table, $style, $query) {
-		global $connection, $jush;
+		global $connection;
 		if ($style) {
-			$max_packet = ($jush == "sqlite" ? 0 : 1048576); // default, minimum is 1024
+			$max_packet = (JUSH == "sqlite" ? 0 : 1048576); // default, minimum is 1024
 			$fields = array();
 			$identity_insert = false;
 			if ($_POST["format"] == "sql") {
@@ -837,7 +837,7 @@ class Adminer {
 					echo truncate_sql($table) . ";\n";
 				}
 				$fields = fields($table);
-				if ($jush == "mssql") {
+				if (JUSH == "mssql") {
 					foreach ($fields as $field) {
 						if ($field["auto_increment"]) {
 							echo "SET IDENTITY_INSERT " . table($table) . " ON;\n";
@@ -964,7 +964,7 @@ class Adminer {
 	* @return null
 	*/
 	function navigation($missing) {
-		global $VERSION, $jush, $drivers, $connection;
+		global $VERSION, $drivers, $connection;
 		?>
 <h1>
 <?php echo $this->name(); ?>
@@ -1003,7 +1003,7 @@ class Adminer {
 			echo script_src("../externals/jush/modules/jush-txt.js");
 			echo script_src("../externals/jush/modules/jush-js.js");
 			if (support("sql")) {
-				echo script_src("../externals/jush/modules/jush-$jush.js");
+				echo script_src("../externals/jush/modules/jush-" . JUSH . ".js");
 				?>
 <script<?php echo nonce(); ?>>
 <?php
@@ -1012,9 +1012,9 @@ class Adminer {
 					foreach ($tables as $table => $type) {
 						$links[] = preg_quote($table, '/');
 					}
-					echo "var jushLinks = { $jush: [ '" . js_escape(ME) . (support("table") ? "table=" : "select=") . "\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
+					echo "var jushLinks = { " . JUSH . ": [ '" . js_escape(ME) . (support("table") ? "table=" : "select=") . "\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
 					foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
-						echo "jushLinks.$val = jushLinks.$jush;\n";
+						echo "jushLinks.$val = jushLinks." . JUSH . ";\n";
 					}
 				}
 				$server_info = $connection->server_info;

@@ -291,21 +291,21 @@ if (!$columns && support("table")) {
 	if (!$result) {
 		echo "<p class='error'>" . error() . "\n";
 	} else {
-		if ($jush == "mssql" && $page) {
+		if (JUSH == "mssql" && $page) {
 			$result->seek($limit * $page);
 		}
 		$email_fields = array();
 		echo "<form action='' method='post' enctype='multipart/form-data'>\n";
 		$rows = array();
 		while ($row = $result->fetch_assoc()) {
-			if ($page && $jush == "oracle") {
+			if ($page && JUSH == "oracle") {
 				unset($row["RNUM"]);
 			}
 			$rows[] = $row;
 		}
 
 		// use count($rows) without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
-		if ($_GET["page"] != "last" && $limit != "" && $group && $is_group && $jush == "sql") {
+		if ($_GET["page"] != "last" && $limit != "" && $group && $is_group && JUSH == "sql") {
 			$found_rows = $connection->result(" SELECT FOUND_ROWS()"); // space to allow mysql.trace_mode
 		}
 
@@ -379,9 +379,9 @@ if (!$columns && support("table")) {
 				}
 				$unique_idf = "";
 				foreach ($unique_array as $key => $val) {
-					if (($jush == "sql" || $jush == "pgsql") && preg_match('~char|text|enum|set~', $fields[$key]["type"]) && strlen($val) > 64) {
+					if ((JUSH == "sql" || JUSH == "pgsql") && preg_match('~char|text|enum|set~', $fields[$key]["type"]) && strlen($val) > 64) {
 						$key = (strpos($key, '(') ? $key : idf_escape($key)); //! columns looking like functions
-						$key = "MD5(" . ($jush != 'sql' || preg_match("~^utf8~", $fields[$key]["collation"]) ? $key : "CONVERT($key USING " . charset($connection) . ")") . ")";
+						$key = "MD5(" . (JUSH != 'sql' || preg_match("~^utf8~", $fields[$key]["collation"]) ? $key : "CONVERT($key USING " . charset($connection) . ")") . ")";
 						$val = md5($val);
 					}
 					$unique_idf .= "&" . ($val !== null ? urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($val === false ? "f" : $val) : "null%5B%5D=" . urlencode($key));
@@ -472,7 +472,7 @@ if (!$columns && support("table")) {
 				if ($_GET["page"] != "last") {
 					if ($limit == "" || (count($rows) < $limit && ($rows || !$page))) {
 						$found_rows = ($page ? $page * $limit : 0) + count($rows);
-					} elseif ($jush != "sql" || !$is_group) {
+					} elseif (JUSH != "sql" || !$is_group) {
 						$found_rows = ($is_group ? false : found_rows($table_status, $where));
 						if ($found_rows < max(1e4, 2 * ($page + 1) * $limit)) {
 							// slow with big tables
@@ -503,7 +503,7 @@ if (!$columns && support("table")) {
 						: floor(($found_rows - 1) / $limit)
 					);
 					echo "<fieldset>";
-					if ($jush != "simpledb") {
+					if (JUSH != "simpledb") {
 						echo "<legend><a href='" . h(remove_from_uri("page")) . "'>" . lang('Page') . "</a></legend>";
 						echo script("qsl('a').onclick = function () { pageClick(this.href, +prompt('" . lang('Page') . "', '" . ($page + 1) . "')); return false; };");
 						echo pagination(0, $page) . ($page > 5 ? " …" : "");

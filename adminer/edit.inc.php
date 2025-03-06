@@ -72,7 +72,7 @@ if ($_POST["save"]) {
 			if ($_POST["clone"] && $field["auto_increment"]) {
 				$as = "''";
 			}
-			if ($jush == "sql" && preg_match("~enum|set~", $field["type"])) {
+			if (JUSH == "sql" && preg_match("~enum|set~", $field["type"])) {
 				$as = "1*" . idf_escape($name);
 			}
 			$select[] = ($as ? "$as AS " : "") . idf_escape($name);

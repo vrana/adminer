@@ -70,12 +70,12 @@ abstract class SqlDriver {
 	* @return Result
 	*/
 	function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
-		global $adminer, $jush;
+		global $adminer;
 		$is_group = (count($group) < count($select));
 		$query = $adminer->selectQueryBuild($select, $where, $group, $order, $limit, $page);
 		if (!$query) {
 			$query = "SELECT" . limit(
-				($_GET["page"] != "last" && $limit != "" && $group && $is_group && $jush == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . implode(", ", $select) . "\nFROM " . table($table),
+				($_GET["page"] != "last" && $limit != "" && $group && $is_group && JUSH == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . implode(", ", $select) . "\nFROM " . table($table),
 				($where ? "\nWHERE " . implode(" AND ", $where) : "") . ($group && $is_group ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : ""),
 				($limit != "" ? +$limit : null),
 				($page ? $limit * $page : 0),

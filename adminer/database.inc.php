@@ -46,7 +46,7 @@ if ($_POST) {
 	$name = $row["name"];
 } elseif (DB != "") {
 	$row["collation"] = db_collation(DB, $collations);
-} elseif ($jush == "sql") {
+} elseif (JUSH == "sql") {
 	// propose database name with limited privileges
 	foreach (get_vals("SHOW GRANTS") as $grant) {
 		if (preg_match('~ ON (`(([^\\\\`]|``|\\\\.)*)%`\.\*)?~', $grant, $match) && $match[1]) {

@@ -16,11 +16,11 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 		$row["target"] = $target;
 	}
 
-	if ($jush == "sqlite") {
+	if (JUSH == "sqlite") {
 		$result = recreate_table($TABLE, $TABLE, array(), array(), array(" $name" => ($row["drop"] ? "" : " " . format_foreign_key($row))));
 	} else {
 		$alter = "ALTER TABLE " . table($TABLE);
-		$result = ($name == "" || queries("$alter DROP " . ($jush == "sql" ? "FOREIGN KEY " : "CONSTRAINT ") . idf_escape($name)));
+		$result = ($name == "" || queries("$alter DROP " . (JUSH == "sql" ? "FOREIGN KEY " : "CONSTRAINT ") . idf_escape($name)));
 		if (!$row["drop"]) {
 			$result = queries("$alter ADD" . format_foreign_key($row));
 		}
@@ -76,7 +76,7 @@ if (support("scheme")) {
 	if ($row["ns"] != "") {
 		set_schema($orig_schema);
 	}
-} elseif ($jush != "sqlite") {
+} elseif (JUSH != "sqlite") {
 	$dbs = array();
 	foreach ($adminer->databases() as $db) {
 		if (!information_schema($db)) {

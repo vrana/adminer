@@ -18,7 +18,7 @@ if ($_POST && !$error) {
 
 	if ($is_sql) {
 		echo "-- Adminer $VERSION " . $drivers[DRIVER] . " " . str_replace("\n", " ", $connection->server_info) . " dump\n\n";
-		if ($jush == "sql") {
+		if (JUSH == "sql") {
 			echo "SET NAMES utf8;
 SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
@@ -85,7 +85,7 @@ SET foreign_key_checks = 0;
 					}
 				}
 
-				echo ($out && $jush == 'sql' ? "DELIMITER ;;\n\n$out" . "DELIMITER ;\n\n" : $out);
+				echo ($out && JUSH == 'sql' ? "DELIMITER ;;\n\n$out" . "DELIMITER ;\n\n" : $out);
 			}
 
 			if ($_POST["table_style"] || $_POST["data_style"]) {
@@ -155,7 +155,7 @@ page_header(lang('Export'), $error, ($_GET["export"] != "" ? array("table" => $_
 $db_style = array('', 'USE', 'DROP+CREATE', 'CREATE');
 $table_style = array('', 'DROP+CREATE', 'CREATE');
 $data_style = array('', 'TRUNCATE+INSERT', 'INSERT');
-if ($jush == "sql") { //! use insertUpdate() in all drivers
+if (JUSH == "sql") { //! use insertUpdate() in all drivers
 	$data_style[] = 'INSERT+UPDATE';
 }
 parse_str($_COOKIE["adminer_export"], $row);
@@ -171,7 +171,7 @@ echo "<tr><th>" . lang('Output') . "<td>" . html_select("output", $adminer->dump
 
 echo "<tr><th>" . lang('Format') . "<td>" . html_select("format", $adminer->dumpFormat(), $row["format"], 0) . "\n"; // 0 - radio
 
-echo ($jush == "sqlite" ? "" : "<tr><th>" . lang('Database') . "<td>" . html_select('db_style', $db_style, $row["db_style"])
+echo (JUSH == "sqlite" ? "" : "<tr><th>" . lang('Database') . "<td>" . html_select('db_style', $db_style, $row["db_style"])
 	. (support("type") ? checkbox("types", 1, $row["types"], lang('User types')) : "")
 	. (support("routine") ? checkbox("routines", 1, $row["routines"], lang('Routines')) : "")
 	. (support("event") ? checkbox("events", 1, $row["events"], lang('Events')) : "")
