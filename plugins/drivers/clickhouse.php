@@ -6,129 +6,130 @@ add_driver("clickhouse", "ClickHouse (alpha)");
 if (isset($_GET["clickhouse"])) {
 	define("DRIVER", "clickhouse");
 
-	class Db {
-		var $extension = "JSON", $server_info, $errno, $_result, $error, $_url;
-		var $_db = 'default';
+	if (ini_bool('allow_url_fopen')) {
+		class Db {
+			var $extension = "JSON", $server_info, $errno, $_result, $error, $_url;
+			var $_db = 'default';
 
-		function rootQuery($db, $query) {
-			$file = @file_get_contents("$this->_url/?database=$db", false, stream_context_create(array('http' => array(
-				'method' => 'POST',
-				'content' => $this->isQuerySelectLike($query) ? "$query FORMAT JSONCompact" : $query,
-				'header' => 'Content-type: application/x-www-form-urlencoded',
-				'ignore_errors' => 1,
-				'follow_location' => 0,
-				'max_redirects' => 0,
-			))));
+			function rootQuery($db, $query) {
+				$file = @file_get_contents("$this->_url/?database=$db", false, stream_context_create(array('http' => array(
+					'method' => 'POST',
+					'content' => $this->isQuerySelectLike($query) ? "$query FORMAT JSONCompact" : $query,
+					'header' => 'Content-type: application/x-www-form-urlencoded',
+					'ignore_errors' => 1,
+					'follow_location' => 0,
+					'max_redirects' => 0,
+				))));
 
-			if ($file === false || !preg_match('~^HTTP/[0-9.]+ 2~i', $http_response_header[0])) {
-				$this->error = lang('Invalid credentials.');
-				return false;
-			}
-			$return = json_decode($file, true);
-			if ($return === null) {
-				if (!$this->isQuerySelectLike($query) && $file === '') {
-					return true;
+				if ($file === false || !preg_match('~^HTTP/[0-9.]+ 2~i', $http_response_header[0])) {
+					$this->error = lang('Invalid credentials.');
+					return false;
 				}
+				$return = json_decode($file, true);
+				if ($return === null) {
+					if (!$this->isQuerySelectLike($query) && $file === '') {
+						return true;
+					}
 
-				$this->errno = json_last_error();
-				if (function_exists('json_last_error_msg')) {
-					$this->error = json_last_error_msg();
-				} else {
-					$constants = get_defined_constants(true);
-					foreach ($constants['json'] as $name => $value) {
-						if ($value == $this->errno && preg_match('~^JSON_ERROR_~', $name)) {
-							$this->error = $name;
-							break;
+					$this->errno = json_last_error();
+					if (function_exists('json_last_error_msg')) {
+						$this->error = json_last_error_msg();
+					} else {
+						$constants = get_defined_constants(true);
+						foreach ($constants['json'] as $name => $value) {
+							if ($value == $this->errno && preg_match('~^JSON_ERROR_~', $name)) {
+								$this->error = $name;
+								break;
+							}
 						}
 					}
 				}
+				return new Result($return);
 			}
-			return new Result($return);
+
+			function isQuerySelectLike($query) {
+				return (bool) preg_match('~^(select|show)~i', $query);
+			}
+
+			function query($query) {
+				return $this->rootQuery($this->_db, $query);
+			}
+
+			function connect($server, $username, $password) {
+				preg_match('~^(https?://)?(.*)~', $server, $match);
+				$this->_url = ($match[1] ? $match[1] : "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
+				$return = $this->query('SELECT 1');
+				return (bool) $return;
+			}
+
+			function select_db($database) {
+				$this->_db = $database;
+				return true;
+			}
+
+			function quote($string) {
+				return "'" . addcslashes($string, "\\'") . "'";
+			}
+
+			function multi_query($query) {
+				return $this->_result = $this->query($query);
+			}
+
+			function store_result() {
+				return $this->_result;
+			}
+
+			function next_result() {
+				return false;
+			}
+
+			function result($query, $field = 0) {
+				$result = $this->query($query);
+				return $result['data'];
+			}
 		}
 
-		function isQuerySelectLike($query) {
-			return (bool) preg_match('~^(select|show)~i', $query);
-		}
+		class Result {
+			var $num_rows, $_rows, $columns, $meta, $_offset = 0;
 
-		function query($query) {
-			return $this->rootQuery($this->_db, $query);
-		}
-
-		function connect($server, $username, $password) {
-			preg_match('~^(https?://)?(.*)~', $server, $match);
-			$this->_url = ($match[1] ? $match[1] : "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
-			$return = $this->query('SELECT 1');
-			return (bool) $return;
-		}
-
-		function select_db($database) {
-			$this->_db = $database;
-			return true;
-		}
-
-		function quote($string) {
-			return "'" . addcslashes($string, "\\'") . "'";
-		}
-
-		function multi_query($query) {
-			return $this->_result = $this->query($query);
-		}
-
-		function store_result() {
-			return $this->_result;
-		}
-
-		function next_result() {
-			return false;
-		}
-
-		function result($query, $field = 0) {
-			$result = $this->query($query);
-			return $result['data'];
-		}
-	}
-
-	class Result {
-		var $num_rows, $_rows, $columns, $meta, $_offset = 0;
-
-		function __construct($result) {
-			foreach ($result['data'] as $item) {
-				$row = array();
-				foreach ($item as $key => $val) {
-					$row[$key] = is_scalar($val) ? $val : json_encode($val, 256); // 256 - JSON_UNESCAPED_UNICODE
+			function __construct($result) {
+				foreach ($result['data'] as $item) {
+					$row = array();
+					foreach ($item as $key => $val) {
+						$row[$key] = is_scalar($val) ? $val : json_encode($val, 256); // 256 - JSON_UNESCAPED_UNICODE
+					}
+					$this->_rows[] = $row;
 				}
-				$this->_rows[] = $row;
+				$this->num_rows = $result['rows'];
+				$this->meta = $result['meta'];
+				$this->columns = array_column($this->meta, 'name');
+				reset($this->_rows);
 			}
-			$this->num_rows = $result['rows'];
-			$this->meta = $result['meta'];
-			$this->columns = array_column($this->meta, 'name');
-			reset($this->_rows);
-		}
 
-		function fetch_assoc() {
-			$row = current($this->_rows);
-			next($this->_rows);
-			return $row === false ? false : array_combine($this->columns, $row);
-		}
-
-		function fetch_row() {
-			$row = current($this->_rows);
-			next($this->_rows);
-			return $row;
-		}
-
-		function fetch_field() {
-			$column = $this->_offset++;
-			$return = new \stdClass;
-			if ($column < count($this->columns)) {
-				$return->name = $this->meta[$column]['name'];
-				$return->orgname = $return->name;
-				$return->type = $this->meta[$column]['type'];
+			function fetch_assoc() {
+				$row = current($this->_rows);
+				next($this->_rows);
+				return $row === false ? false : array_combine($this->columns, $row);
 			}
-			return $return;
+
+			function fetch_row() {
+				$row = current($this->_rows);
+				next($this->_rows);
+				return $row;
+			}
+
+			function fetch_field() {
+				$column = $this->_offset++;
+				$return = new \stdClass;
+				if ($column < count($this->columns)) {
+					$return->name = $this->meta[$column]['name'];
+					$return->orgname = $return->name;
+					$return->type = $this->meta[$column]['type'];
+				}
+				return $return;
+			}
 		}
 	}
-
 
 	class Driver extends SqlDriver {
 		static $possibleDrivers = array("allow_url_fopen");
