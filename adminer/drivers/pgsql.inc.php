@@ -196,6 +196,10 @@ if (isset($_GET["pgsql"])) {
 
 
 	class Driver extends SqlDriver {
+		var $operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"); // no "SQL" to avoid CSRF
+		var $functions = array("char_length", "lower", "round", "to_hex", "to_timestamp", "upper");
+		var $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
+
 		function __construct($connection) {
 			parent::__construct($connection);
 			$this->types = array( //! arrays
@@ -937,9 +941,6 @@ AND typelem = 0"
 			'possible_drivers' => array("PgSQL", "PDO_PgSQL"),
 			'jush' => "pgsql",
 			'unsigned' => array(),
-			'operators' => array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"), // no "SQL" to avoid CSRF
-			'functions' => array("char_length", "lower", "round", "to_hex", "to_timestamp", "upper"),
-			'grouping' => array("avg", "count", "count distinct", "max", "min", "sum"),
 		);
 	}
 }

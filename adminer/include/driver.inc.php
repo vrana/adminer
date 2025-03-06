@@ -26,6 +26,9 @@ abstract class SqlDriver {
 	var $_conn;
 	protected $types = array(); ///< @var array [$description => [$type => $maximum_unsigned_length, ...], ...]
 	var $editFunctions = array(); ///< @var array of ["$type|$type2" => "$function/$function2"] functions used in editing, [0] - edit and insert, [1] - edit only
+	var $operators = array(); ///< @var array operators used in select
+	var $functions = array(); ///< @var array functions used in select
+	var $grouping = array(); ///< @var array grouping functions used in select
 
 	/** Create object for performing database operations
 	* @param Db

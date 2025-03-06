@@ -123,6 +123,7 @@ if (isset($_GET["elastic"])) {
 
 	class Driver extends SqlDriver {
 		var $editFunctions = array(array("json"));
+		var $operators = array("=", "must", "should", "must_not");
 
 		function __construct($connection) {
 			parent::__construct($connection);
@@ -568,9 +569,6 @@ if (isset($_GET["elastic"])) {
 		return array(
 			'possible_drivers' => array("json + allow_url_fopen"),
 			'jush' => "elastic",
-			'operators' => array("=", "must", "should", "must_not"),
-			'functions' => array(),
-			'grouping' => array(),
 		);
 	}
 }

@@ -115,6 +115,7 @@ if (isset($_GET["firebird"])) {
 
 
 	class Driver extends SqlDriver {
+		var $operators = array("=");
 	}
 
 
@@ -305,9 +306,6 @@ ORDER BY RDB$INDEX_SEGMENTS.RDB$FIELD_POSITION';
 		return array(
 			'possible_drivers' => array("interbase"),
 			'jush' => "firebird",
-			'operators' => array("="),
-			'functions' => array(),
-			'grouping' => array(),
 		);
 	}
 }

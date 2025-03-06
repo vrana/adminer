@@ -118,6 +118,9 @@ if (isset($_GET["simpledb"])) {
 
 
 	class Driver extends SqlDriver {
+		var $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "IS NOT NULL");
+		var $grouping = array("count");
+
 		public $primary = "itemName()";
 
 		function _chunkRequest($ids, $action, $params, $expand = array()) {
@@ -467,9 +470,6 @@ if (isset($_GET["simpledb"])) {
 		return array(
 			'possible_drivers' => array("SimpleXML + allow_url_fopen"),
 			'jush' => "simpledb",
-			'operators' => array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "IS NOT NULL"),
-			'functions' => array(),
-			'grouping' => array("count"),
 		);
 	}
 }

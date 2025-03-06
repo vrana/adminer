@@ -35,7 +35,7 @@ if ($_GET["script"] == "version") {
 	exit;
 }
 
-global $adminer, $connection, $driver, $drivers, $enum_length, $error, $functions, $grouping, $HTTPS, $inout, $jush, $LANG, $langs, $on_actions, $permanent, $has_token, $token, $translations, $unsigned, $VERSION; // allows including Adminer inside a function
+global $adminer, $connection, $driver, $drivers, $enum_length, $error, $HTTPS, $inout, $jush, $LANG, $langs, $on_actions, $permanent, $has_token, $token, $translations, $unsigned, $VERSION; // allows including Adminer inside a function
 
 if (!$_SERVER["REQUEST_URI"]) { // IIS 5 compatibility
 	$_SERVER["REQUEST_URI"] = $_SERVER["ORIG_PATH_INFO"];
@@ -83,12 +83,6 @@ $config = driver_config();
 $possible_drivers = $config['possible_drivers'];
 $jush = $config['jush'];
 $unsigned = $config['unsigned'];
-$operators = $config['operators'];
-$functions = $config['functions'];
-$grouping = $config['grouping'];
-if ($adminer->operators === null) {
-	$adminer->operators = $operators;
-}
 
 define("SERVER", $_GET[DRIVER]); // read from pgsql=localhost
 define("DB", $_GET["db"]); // for the sake of speed and size

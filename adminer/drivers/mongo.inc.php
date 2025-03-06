@@ -115,6 +115,29 @@ if (isset($_GET["mongo"])) {
 
 		class Driver extends SqlDriver {
 			var $editFunctions = array(array("json"));
+
+			var $operators = array(
+				"=",
+				"!=",
+				">",
+				"<",
+				">=",
+				"<=",
+				"regex",
+				"(f)=",
+				"(f)!=",
+				"(f)>",
+				"(f)<",
+				"(f)>=",
+				"(f)<=",
+				"(date)=",
+				"(date)!=",
+				"(date)>",
+				"(date)<",
+				"(date)>=",
+				"(date)<=",
+			);
+
 			public $primary = "_id";
 
 			function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
@@ -349,28 +372,6 @@ if (isset($_GET["mongo"])) {
 			}
 			return $data;
 		}
-
-		$operators = array(
-			"=",
-			"!=",
-			">",
-			"<",
-			">=",
-			"<=",
-			"regex",
-			"(f)=",
-			"(f)!=",
-			"(f)>",
-			"(f)<",
-			"(f)>=",
-			"(f)<=",
-			"(date)=",
-			"(date)!=",
-			"(date)>",
-			"(date)<",
-			"(date)>=",
-			"(date)<=",
-		);
 	}
 
 	function table($idf) {
@@ -532,13 +533,9 @@ if (isset($_GET["mongo"])) {
 	}
 
 	function driver_config() {
-		global $operators;
 		return array(
 			'possible_drivers' => array("mongodb"),
 			'jush' => "mongo",
-			'operators' => $operators,
-			'functions' => array(),
-			'grouping' => array(),
 		);
 	}
 }

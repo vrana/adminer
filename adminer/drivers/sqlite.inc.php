@@ -139,6 +139,10 @@ if (isset($_GET["sqlite"])) {
 			)
 		);
 
+		var $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL"); // REGEXP can be user defined function
+		var $functions = array("hex", "length", "lower", "round", "unixepoch", "upper");
+		var $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
+
 		function structuredTypes() {
 			return array_keys($this->types[0]);
 		}
@@ -739,9 +743,6 @@ if (isset($_GET["sqlite"])) {
 			'possible_drivers' => array("SQLite3", "PDO_SQLite"),
 			'jush' => "sqlite",
 			'unsigned' => array(),
-			'operators' => array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL"), // REGEXP can be user defined function
-			'functions' => array("hex", "length", "lower", "round", "unixepoch", "upper"),
-			'grouping' => array("avg", "count", "count distinct", "group_concat", "max", "min", "sum"),
 		);
 	}
 }

@@ -152,6 +152,10 @@ if (isset($_GET["oracle"])) {
 			)
 		);
 
+		var $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
+		var $functions = array("length", "lower", "round", "upper");
+		var $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
+
 		function __construct($connection) {
 			parent::__construct($connection);
 			$this->types = array(
@@ -546,9 +550,6 @@ ORDER BY PROCESS
 			'possible_drivers' => array("OCI8", "PDO_OCI"),
 			'jush' => "oracle",
 			'unsigned' => array(),
-			'operators' => array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL"),
-			'functions' => array("length", "lower", "round", "upper"),
-			'grouping' => array("avg", "count", "count distinct", "max", "min", "sum"),
 		);
 	}
 }

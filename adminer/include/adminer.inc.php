@@ -361,7 +361,7 @@ class Adminer {
 	* @return null
 	*/
 	function selectColumnsPrint($select, $columns) {
-		global $functions, $grouping;
+		global $driver;
 		print_fieldset("select", lang('Select'), $select);
 		$i = 0;
 		$select[""] = array();
@@ -373,8 +373,8 @@ class Adminer {
 				$val["col"],
 				($key !== "" ? "selectFieldChange" : "selectAddRow")
 			);
-			echo "<div>" . ($functions || $grouping ? "<select name='columns[$i][fun]'>"
-				. optionlist(array(-1 => "") + array_filter(array(lang('Functions') => $functions, lang('Aggregation') => $grouping)), $val["fun"]) . "</select>"
+			echo "<div>" . ($driver->functions || $driver->grouping ? "<select name='columns[$i][fun]'>"
+				. optionlist(array(-1 => "") + array_filter(array(lang('Functions') => $driver->functions, lang('Aggregation') => $driver->grouping)), $val["fun"]) . "</select>"
 				. on_help("getTarget(event).value && getTarget(event).value.replace(/ |\$/, '(') + ')'", 1)
 				. script("qsl('select').onchange = function () { helpClose();" . ($key !== "" ? "" : " qsl('select, input', this.parentNode).onchange();") . " };", "")
 				. "($column)" : $column) . "</div>\n";
@@ -518,13 +518,13 @@ class Adminer {
 	* @return array [[select_expressions], [group_expressions]]
 	*/
 	function selectColumnsProcess($columns, $indexes) {
-		global $functions, $grouping;
+		global $driver;
 		$select = array(); // select expressions, empty for *
 		$group = array(); // expressions without aggregation - will be used for GROUP BY if an aggregation function is used
 		foreach ((array) $_GET["columns"] as $key => $val) {
-			if ($val["fun"] == "count" || ($val["col"] != "" && (!$val["fun"] || in_array($val["fun"], $functions) || in_array($val["fun"], $grouping)))) {
+			if ($val["fun"] == "count" || ($val["col"] != "" && (!$val["fun"] || in_array($val["fun"], $driver->functions) || in_array($val["fun"], $driver->grouping)))) {
 				$select[$key] = apply_sql_function($val["fun"], ($val["col"] != "" ? idf_escape($val["col"]) : "*"));
-				if (!in_array($val["fun"], $grouping)) {
+				if (!in_array($val["fun"], $driver->grouping)) {
 					$group[] = $select[$key];
 				}
 			}
