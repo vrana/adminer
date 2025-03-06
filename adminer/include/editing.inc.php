@@ -338,7 +338,7 @@ function type_class($type) {
 * @return null
 */
 function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = array()) {
-	global $inout;
+	global $driver;
 	$fields = array_values($fields);
 	$default_class = (($_POST ? $_POST["defaults"] : adminer_setting("defaults")) ? "" : " class='hidden'");
 	$comment_class = (($_POST ? $_POST["comments"] : adminer_setting("comments")) ? "" : " class='hidden'");
@@ -372,7 +372,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 		$display = (isset($_POST["add"][$i-1]) || (isset($field["field"]) && !$_POST["drop_col"][$i])) && (support("drop_col") || $orig == "");
 		?>
 <tr<?php echo ($display ? "" : " style='display: none;'"); ?>>
-<?php echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", explode("|", $inout), $field["inout"]) : "") . "<th>"; ?>
+<?php echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", explode("|", $driver->inout), $field["inout"]) : "") . "<th>"; ?>
 <?php if ($display) { ?>
 <input name="fields[<?php echo $i; ?>][field]" value="<?php echo h($field["field"]); ?>" data-maxlength="64" autocapitalize="off" aria-labelledby="label-name">
 <?php } ?>
@@ -521,13 +521,13 @@ function create_trigger($on, $row) {
 * @return string
 */
 function create_routine($routine, $row) {
-	global $inout, $jush;
+	global $driver, $jush;
 	$set = array();
 	$fields = (array) $row["fields"];
 	ksort($fields); // enforce fields order
 	foreach ($fields as $field) {
 		if ($field["field"] != "") {
-			$set[] = (preg_match("~^($inout)\$~", $field["inout"]) ? "$field[inout] " : "") . idf_escape($field["field"]) . process_type($field, "CHARACTER SET");
+			$set[] = (preg_match("~^($driver->inout)\$~", $field["inout"]) ? "$field[inout] " : "") . idf_escape($field["field"]) . process_type($field, "CHARACTER SET");
 		}
 	}
 	$definition = rtrim($row["definition"], ";");
