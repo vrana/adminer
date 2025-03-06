@@ -308,7 +308,6 @@ ORDER BY RDB$INDEX_SEGMENTS.RDB$FIELD_POSITION';
 			'operators' => array("="),
 			'functions' => array(),
 			'grouping' => array(),
-			'edit_functions' => array(),
 		);
 	}
 }

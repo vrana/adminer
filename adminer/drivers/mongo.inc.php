@@ -114,6 +114,7 @@ if (isset($_GET["mongo"])) {
 
 
 		class Driver extends SqlDriver {
+			var $editFunctions = array(array("json"));
 			public $primary = "_id";
 
 			function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
@@ -538,7 +539,6 @@ if (isset($_GET["mongo"])) {
 			'operators' => $operators,
 			'functions' => array(),
 			'grouping' => array(),
-			'edit_functions' => array(array("json")),
 		);
 	}
 }

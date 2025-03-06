@@ -113,6 +113,8 @@ if (isset($_GET["elastic5"])) {
 	}
 
 	class Driver extends SqlDriver {
+		var $editFunctions = array(array("json"));
+
 		function __construct($connection) {
 			parent::__construct($connection);
 			$this->types = array(
@@ -535,7 +537,6 @@ if (isset($_GET["elastic5"])) {
 			'operators' => array("=", "must", "should", "must_not"),
 			'functions' => array(),
 			'grouping' => array(),
-			'edit_functions' => array(array("json")),
 		);
 	}
 }

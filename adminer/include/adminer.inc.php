@@ -684,10 +684,10 @@ class Adminer {
 	* @return array
 	*/
 	function editFunctions($field) {
-		global $edit_functions;
+		global $driver;
 		$return = ($field["null"] ? "NULL/" : "");
 		$update = isset($_GET["select"]) || where($_GET);
-		foreach ($edit_functions as $key => $functions) {
+		foreach ($driver->editFunctions as $key => $functions) {
 			if (!$key || (!isset($_GET["call"]) && $update)) { // relative functions
 				foreach ($functions as $pattern => $val) {
 					if (!$pattern || preg_match("~$pattern~", $field["type"])) {

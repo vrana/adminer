@@ -25,6 +25,7 @@ function get_driver($id) {
 abstract class SqlDriver {
 	var $_conn;
 	protected $types = array(); ///< @var array [$description => [$type => $maximum_unsigned_length, ...], ...]
+	var $editFunctions = array(); ///< @var array of ["$type|$type2" => "$function/$function2"] functions used in editing, [0] - edit and insert, [1] - edit only
 
 	/** Create object for performing database operations
 	* @param Db

@@ -385,7 +385,6 @@ if (isset($_GET["clickhouse"])) {
 			'operators' => array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL"),
 			'functions' => array(),
 			'grouping' => array("avg", "count", "count distinct", "max", "min", "sum"),
-			'edit_functions' => array(),
 		);
 	}
 }

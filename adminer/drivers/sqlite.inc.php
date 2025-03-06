@@ -129,6 +129,16 @@ if (isset($_GET["sqlite"])) {
 	class Driver extends SqlDriver {
 		protected $types = array(array("integer" => 0, "real" => 0, "numeric" => 0, "text" => 0, "blob" => 0));
 
+		var $editFunctions = array(
+			array(
+				// "text" => "date('now')/time('now')/datetime('now')",
+			), array(
+				"integer|real|numeric" => "+/-",
+				// "text" => "date/time/datetime",
+				"text" => "||",
+			)
+		);
+
 		function structuredTypes() {
 			return array_keys($this->types[0]);
 		}
@@ -732,15 +742,6 @@ if (isset($_GET["sqlite"])) {
 			'operators' => array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL"), // REGEXP can be user defined function
 			'functions' => array("hex", "length", "lower", "round", "unixepoch", "upper"),
 			'grouping' => array("avg", "count", "count distinct", "group_concat", "max", "min", "sum"),
-			'edit_functions' => array(
-				array(
-					// "text" => "date('now')/time('now')/datetime('now')",
-				), array(
-					"integer|real|numeric" => "+/-",
-					// "text" => "date/time/datetime",
-					"text" => "||",
-				)
-			),
 		);
 	}
 }

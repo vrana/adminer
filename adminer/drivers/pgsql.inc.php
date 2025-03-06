@@ -212,6 +212,16 @@ if (isset($_GET["pgsql"])) {
 					$this->types[lang('Strings')]["jsonb"] = 4294967295;
 				}
 			}
+			$this->editFunctions = array(
+				array(
+					"char" => "md5",
+					"date|time" => "now",
+				), array(
+					number_type() => "+/-",
+					"date|time" => "+ interval/- interval", //! escape
+					"char|text" => "||",
+				)
+			);
 		}
 
 		function setUserTypes($types) {
@@ -930,16 +940,6 @@ AND typelem = 0"
 			'operators' => array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"), // no "SQL" to avoid CSRF
 			'functions' => array("char_length", "lower", "round", "to_hex", "to_timestamp", "upper"),
 			'grouping' => array("avg", "count", "count distinct", "max", "min", "sum"),
-			'edit_functions' => array(
-				array(
-					"char" => "md5",
-					"date|time" => "now",
-				), array(
-					number_type() => "+/-",
-					"date|time" => "+ interval/- interval", //! escape
-					"char|text" => "||",
-				)
-			),
 		);
 	}
 }

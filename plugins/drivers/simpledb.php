@@ -470,7 +470,6 @@ if (isset($_GET["simpledb"])) {
 			'operators' => array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "IS NOT NULL"),
 			'functions' => array(),
 			'grouping' => array("count"),
-			'edit_functions' => array(array("json")),
 		);
 	}
 }

@@ -291,14 +291,28 @@ if (!defined("DRIVER")) {
 				lang('Binary') => array("bit" => 20, "binary" => 255, "varbinary" => 65535, "tinyblob" => 255, "blob" => 65535, "mediumblob" => 16777215, "longblob" => 4294967295),
 				lang('Geometry') => array("geometry" => 0, "point" => 0, "linestring" => 0, "polygon" => 0, "multipoint" => 0, "multilinestring" => 0, "multipolygon" => 0, "geometrycollection" => 0),
 			);
+			$this->editFunctions = array(
+				array(
+					"char" => "md5/sha1/password/encrypt/uuid",
+					"binary" => "md5/sha1",
+					"date|time" => "now",
+				), array(
+					number_type() => "+/-",
+					"date" => "+ interval/- interval",
+					"time" => "addtime/subtime",
+					"char|text" => "concat",
+				)
+			);
 			if (min_version('5.7.8', 10.2, $connection)) {
 				$this->types[lang('Strings')]["json"] = 4294967295;
 			}
 			if (min_version('', 10.7, $connection)) {
 				$this->types[lang('Strings')]["uuid"] = 128;
+				$this->editFunctions[0]['uuid'] = 'uuid';
 			}
 			if (min_version(9, '', $connection)) {
 				$this->types[lang('Numbers')]["vector"] = 16383;
+				$this->editFunctions[0]['vector'] = 'string_to_vector';
 			}
 		}
 
@@ -399,18 +413,12 @@ if (!defined("DRIVER")) {
 	* @return mixed Db or string for error
 	*/
 	function connect() {
-		global $adminer, $edit_functions;
+		global $adminer;
 		$connection = new Db;
 		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
 			$connection->set_charset(charset($connection)); // available in MySQLi since PHP 5.0.5
 			$connection->query("SET sql_quote_show_create = 1, autocommit = 1");
-			if (min_version('', 10.7, $connection)) {
-				$edit_functions[0]['uuid'] = 'uuid';
-			}
-			if (min_version(9, '', $connection)) {
-				$edit_functions[0]['vector'] = 'string_to_vector';
-			}
 			return $connection;
 		}
 		$return = $connection->error;
@@ -1185,7 +1193,7 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Get driver config
-	* @return array ['possible_drivers' => , 'jush' => , 'unsigned' => , 'operators' => , 'functions' => , 'grouping' => , 'edit_functions' => ]
+	* @return array ['possible_drivers' => , 'jush' => , 'unsigned' => , 'operators' => , 'functions' => , 'grouping' => ]
 	*/
 	function driver_config() {
 		return array(
@@ -1195,18 +1203,6 @@ if (!defined("DRIVER")) {
 			'operators' => array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "FIND_IN_SET", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL"), ///< @var array operators used in select
 			'functions' => array("char_length", "date", "from_unixtime", "lower", "round", "floor", "ceil", "sec_to_time", "time_to_sec", "upper"), ///< @var array functions used in select
 			'grouping' => array("avg", "count", "count distinct", "group_concat", "max", "min", "sum"), ///< @var array grouping functions used in select
-			'edit_functions' => array( ///< @var array of array("$type|$type2" => "$function/$function2") functions used in editing, [0] - edit and insert, [1] - edit only
-				array(
-					"char" => "md5/sha1/password/encrypt/uuid",
-					"binary" => "md5/sha1",
-					"date|time" => "now",
-				), array(
-					number_type() => "+/-",
-					"date" => "+ interval/- interval",
-					"time" => "addtime/subtime",
-					"char|text" => "concat",
-				)
-			),
 		);
 	}
 }

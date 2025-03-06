@@ -35,7 +35,7 @@ if ($_GET["script"] == "version") {
 	exit;
 }
 
-global $adminer, $connection, $driver, $drivers, $edit_functions, $enum_length, $error, $functions, $grouping, $HTTPS, $inout, $jush, $LANG, $langs, $on_actions, $permanent, $has_token, $token, $translations, $unsigned, $VERSION; // allows including Adminer inside a function
+global $adminer, $connection, $driver, $drivers, $enum_length, $error, $functions, $grouping, $HTTPS, $inout, $jush, $LANG, $langs, $on_actions, $permanent, $has_token, $token, $translations, $unsigned, $VERSION; // allows including Adminer inside a function
 
 if (!$_SERVER["REQUEST_URI"]) { // IIS 5 compatibility
 	$_SERVER["REQUEST_URI"] = $_SERVER["ORIG_PATH_INFO"];
@@ -86,7 +86,6 @@ $unsigned = $config['unsigned'];
 $operators = $config['operators'];
 $functions = $config['functions'];
 $grouping = $config['grouping'];
-$edit_functions = $config['edit_functions'];
 if ($adminer->operators === null) {
 	$adminer->operators = $operators;
 }
