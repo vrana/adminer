@@ -6,6 +6,7 @@ PostgreSQL: Do not alter indexes with expressions
 PostgreSQL: Fix export of indexes with expressions (bug #768)
 PostgreSQL: Display ENUM types
 PostgreSQL: Export ENUM types (bug #587)
+PostgreSQL: Display ? instead of -1 rows in table overview (bug #883)
 PostgreSQL: Show accessible databases to non-owners (regression from 4.9.1)
 PostgreSQL, MS SQL, Oracle: Hide table actions for information_schema
 SQLite: Support CHECK constraint
