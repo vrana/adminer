@@ -306,7 +306,6 @@ if (isset($_GET["mongo"])) {
 		public $primary = "_id";
 
 		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
-			global $connection;
 			$select = ($select == array("*")
 				? array()
 				: array_fill_keys($select, 1)
@@ -326,7 +325,7 @@ if (isset($_GET["mongo"])) {
 			$limit = min(200, max(1, (int) $limit));
 			$skip = $page * $limit;
 			try {
-				return new Result($connection->_link->executeQuery("$connection->_db_name.$table", new \MongoDB\Driver\Query($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort))));
+				return new Result($this->_conn->_link->executeQuery("$connection->_db_name.$table", new \MongoDB\Driver\Query($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort))));
 			} catch (Exception $e) {
 				$connection->error = $e->getMessage();
 				return false;
@@ -334,8 +333,7 @@ if (isset($_GET["mongo"])) {
 		}
 
 		function update($table, $set, $queryWhere, $limit = 0, $separator = "\n") {
-			global $connection;
-			$db = $connection->_db_name;
+			$db = $this->_conn->_db_name;
 			$where = sql_query_where_parser($queryWhere);
 			$bulk = new \MongoDB\Driver\BulkWrite(array());
 			if (isset($set['_id'])) {
@@ -353,27 +351,25 @@ if (isset($_GET["mongo"])) {
 				$update['$unset'] = $removeFields;
 			}
 			$bulk->update($where, $update, array('upsert' => false));
-			return $connection->executeBulkWrite("$db.$table", $bulk, 'getModifiedCount');
+			return $this->_conn->executeBulkWrite("$db.$table", $bulk, 'getModifiedCount');
 		}
 
 		function delete($table, $queryWhere, $limit = 0) {
-			global $connection;
-			$db = $connection->_db_name;
+			$db = $this->_conn->_db_name;
 			$where = sql_query_where_parser($queryWhere);
 			$bulk = new \MongoDB\Driver\BulkWrite(array());
 			$bulk->delete($where, array('limit' => $limit));
-			return $connection->executeBulkWrite("$db.$table", $bulk, 'getDeletedCount');
+			return $this->_conn->executeBulkWrite("$db.$table", $bulk, 'getDeletedCount');
 		}
 
 		function insert($table, $set) {
-			global $connection;
-			$db = $connection->_db_name;
+			$db = $this->_conn->_db_name;
 			$bulk = new \MongoDB\Driver\BulkWrite(array());
 			if ($set['_id'] == '') {
 				unset($set['_id']);
 			}
 			$bulk->insert($set);
-			return $connection->executeBulkWrite("$db.$table", $bulk, 'getInsertedCount');
+			return $this->_conn->executeBulkWrite("$db.$table", $bulk, 'getInsertedCount');
 		}
 	}
 
