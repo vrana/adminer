@@ -3,6 +3,7 @@ Speed up with disabled output buffering
 Don't autofocus computed fields in insert form
 Skip generated columns in multi-edit (bug #882)
 MySQL: Display generated value in table structure
+MySQL: Drop support for MySQL 4
 PostgreSQL: Compute size of all databases (bug #881)
 PostgreSQL: Do not alter indexes with expressions
 PostgreSQL: Fix export of indexes with expressions (bug #768)

@@ -444,10 +444,7 @@ if (!defined('Adminer\DRIVER')) {
 		// SHOW DATABASES can take a very long time so it is cached
 		$return = get_session("dbs");
 		if ($return === null) {
-			$query = (min_version(5)
-				? "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA ORDER BY SCHEMA_NAME"
-				: "SHOW DATABASES"
-			); // SHOW DATABASES can be disabled by skip_show_database
+			$query = "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA ORDER BY SCHEMA_NAME"; // SHOW DATABASES can be disabled by skip_show_database
 			$return = ($flush ? slow_query($query) : get_vals($query));
 			restart_session();
 			set_session("dbs", $return);
@@ -522,11 +519,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @return array [$name => $type]
 	*/
 	function tables_list() {
-		return get_key_vals(
-			min_version(5)
-			? "SELECT TABLE_NAME, TABLE_TYPE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() ORDER BY TABLE_NAME"
-			: "SHOW TABLES"
-		);
+		return get_key_vals("SELECT TABLE_NAME, TABLE_TYPE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() ORDER BY TABLE_NAME");
 	}
 
 	/** Count tables in all databases
@@ -550,7 +543,7 @@ if (!defined('Adminer\DRIVER')) {
 		$return = array();
 		foreach (
 			get_rows(
-				$fast && min_version(5)
+				$fast
 				? "SELECT TABLE_NAME AS Name, ENGINE AS Engine, TABLE_COMMENT AS Comment FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() " . ($name != "" ? "AND TABLE_NAME = " . q($name) : "ORDER BY Name")
 				: "SHOW TABLE STATUS" . ($name != "" ? " LIKE " . q(addcslashes($name, "%_\\")) : "")
 			) as $row
@@ -705,7 +698,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @return bool
 	*/
 	function information_schema($db) {
-		return (min_version(5) && $db == "information_schema")
+		return ($db == "information_schema")
 			|| (min_version(5.5) && $db == "performance_schema");
 	}
 
@@ -1184,7 +1177,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @return bool
 	*/
 	function support($feature) {
-		return !preg_match("~scheme|sequence|type|view_trigger|materializedview" . (min_version(8) ? "" : "|descidx" . (min_version(5.1) ? "" : "|event|partitioning" . (min_version(5) ? "" : "|routine|trigger|view"))) . (min_version('8.0.16', '10.2.1') ? "" : "|check") . "~", $feature);
+		return !preg_match("~scheme|sequence|type|view_trigger|materializedview" . (min_version(8) ? "" : "|descidx" . (min_version(5.1) ? "" : "|event|partitioning")) . (min_version('8.0.16', '10.2.1') ? "" : "|check") . "~", $feature);
 	}
 
 	/** Kill a process
