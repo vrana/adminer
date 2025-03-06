@@ -940,7 +940,6 @@ AND typelem = 0"
 		return array(
 			'possible_drivers' => array("PgSQL", "PDO_PgSQL"),
 			'jush' => "pgsql",
-			'unsigned' => array(),
 		);
 	}
 }

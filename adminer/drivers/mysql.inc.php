@@ -281,6 +281,7 @@ if (!defined("DRIVER")) {
 
 
 	class Driver extends SqlDriver {
+		var $unsigned = array("unsigned", "zerofill", "unsigned zerofill");
 		var $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "FIND_IN_SET", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL");
 		var $functions = array("char_length", "date", "from_unixtime", "lower", "round", "floor", "ceil", "sec_to_time", "time_to_sec", "upper");
 		var $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
@@ -1197,13 +1198,12 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Get driver config
-	* @return array ['possible_drivers' => , 'jush' => , 'unsigned' => ]
+	* @return array ['possible_drivers' => , 'jush' => ]
 	*/
 	function driver_config() {
 		return array(
 			'possible_drivers' => array("MySQLi", "MySQL", "PDO_MySQL"),
 			'jush' => "sql", ///< @var string JUSH identifier
-			'unsigned' => array("unsigned", "zerofill", "unsigned zerofill"), ///< @var array number variants
 		);
 	}
 }

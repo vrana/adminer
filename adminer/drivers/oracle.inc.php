@@ -549,7 +549,6 @@ ORDER BY PROCESS
 		return array(
 			'possible_drivers' => array("OCI8", "PDO_OCI"),
 			'jush' => "oracle",
-			'unsigned' => array(),
 		);
 	}
 }

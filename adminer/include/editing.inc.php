@@ -209,7 +209,7 @@ function json_row($key, $val = null) {
 * @return null
 */
 function edit_type($key, $field, $collations, $foreign_keys = array(), $extra_types = array()) {
-	global $driver, $unsigned, $on_actions;
+	global $driver, $on_actions;
 	$type = $field["type"];
 	?><td><select name="<?php echo h($key); ?>[type]" class="type" aria-labelledby="label-type"><?php
 	if ($type && !array_key_exists($type, $driver->types()) && !isset($foreign_keys[$type]) && !in_array($type, $extra_types)) {
@@ -227,7 +227,7 @@ function edit_type($key, $field, $collations, $foreign_keys = array(), $extra_ty
 	<?php echo (!$field["length"] && preg_match('~var(char|binary)$~', $type) ? " class='required'" : ""); //! type="number" with enabled JavaScript ?>
 	aria-labelledby="label-length"><td class="options"><?php
 	echo ($collations ? "<select name='" . h($key) . "[collation]'" . (preg_match('~(char|text|enum|set)$~', $type) ? "" : " class='hidden'") . '><option value="">(' . lang('collation') . ')' . optionlist($collations, $field["collation"]) . '</select>' : '');
-	echo ($unsigned ? "<select name='" . h($key) . "[unsigned]'" . (!$type || preg_match(number_type(), $type) ? "" : " class='hidden'") . '><option>' . optionlist($unsigned, $field["unsigned"]) . '</select>' : '');
+	echo ($driver->unsigned ? "<select name='" . h($key) . "[unsigned]'" . (!$type || preg_match(number_type(), $type) ? "" : " class='hidden'") . '><option>' . optionlist($driver->unsigned, $field["unsigned"]) . '</select>' : '');
 	echo (isset($field['on_update']) ? "<select name='" . h($key) . "[on_update]'" . (preg_match('~timestamp|datetime~', $type) ? "" : " class='hidden'") . '>'
 		. optionlist(array("" => "(" . lang('ON UPDATE') . ")", "CURRENT_TIMESTAMP"), (preg_match('~^CURRENT_TIMESTAMP~i', $field["on_update"]) ? "CURRENT_TIMESTAMP" : $field["on_update"]))
 		. '</select>' : ''
@@ -269,10 +269,10 @@ function process_length($length) {
 * @return string
 */
 function process_type($field, $collate = "COLLATE") {
-	global $unsigned, $jush;
+	global $driver, $jush;
 	return " $field[type]"
 		. process_length($field["length"])
-		. (preg_match(number_type(), $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
+		. (preg_match(number_type(), $field["type"]) && in_array($field["unsigned"], $driver->unsigned) ? " $field[unsigned]" : "")
 		. (preg_match('~char|text|enum|set~', $field["type"]) && $field["collation"] ? " $collate " . ($jush == "mssql" ? $field["collation"] : q($field["collation"])) : "")
 	;
 }

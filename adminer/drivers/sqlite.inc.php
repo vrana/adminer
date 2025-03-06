@@ -742,7 +742,6 @@ if (isset($_GET["sqlite"])) {
 		return array(
 			'possible_drivers' => array("SQLite3", "PDO_SQLite"),
 			'jush' => "sqlite",
-			'unsigned' => array(),
 		);
 	}
 }
