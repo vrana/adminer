@@ -21,6 +21,7 @@ SQLite: Display all rows of variable values
 SQLite: Remove support for SQLite version 2
 MS SQL: Support export (bug #480)
 MS SQL: Display foreign keys ON UPDATE and ON DELETE
+MS SQL: Support computed columns
 MS SQL: Fix CSV import (bug #859)
 MS SQL: Fix altering foreign key
 MS SQL PDO: Support offset

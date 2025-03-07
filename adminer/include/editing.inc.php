@@ -305,9 +305,8 @@ function default_value($field) {
 	global $driver;
 	$default = $field["default"];
 	$generated = $field["generated"];
-	return (
-		$default === null ? ""
-		: (in_array($generated, $driver->generated) ? " GENERATED ALWAYS AS ($default) $generated"
+	return ($default === null ? "" : (in_array($generated, $driver->generated)
+		? (JUSH == "mssql" ? " AS ($default)" . ($generated == "VIRTUAL" ? "" : " $generated") . "" : " GENERATED ALWAYS AS ($default) $generated")
 		: " DEFAULT " . (!preg_match('~^GENERATED ~i', $default) && (preg_match('~char|binary|text|enum|set~', $field["type"]) || preg_match('~^(?![a-z])~i', $default))
 			? q($default)
 			: str_ireplace("current_timestamp()", "CURRENT_TIMESTAMP", (JUSH == "sqlite" ? "($default)" : $default))
