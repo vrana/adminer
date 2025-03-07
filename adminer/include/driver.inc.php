@@ -230,6 +230,14 @@ abstract class SqlDriver {
 		return false;
 	}
 
+	/** Check whether table supports indexes
+	* @param array result of table_status()
+	* @return bool
+	*/
+	function supportsIndex($table_status) {
+		return !is_view($table_status);
+	}
+
 	/** Get defined check constraints
 	* @param string
 	* @return array [$name => $clause]

@@ -26,16 +26,16 @@ if ($fields) {
 	$adminer->tableStructurePrint($fields);
 }
 
-if (!is_view($table_status)) {
-	if (support("indexes")) {
-		echo "<h3 id='indexes'>" . lang('Indexes') . "</h3>\n";
-		$indexes = indexes($TABLE);
-		if ($indexes) {
-			$adminer->tableIndexesPrint($indexes);
-		}
-		echo '<p class="links"><a href="' . h(ME) . 'indexes=' . urlencode($TABLE) . '">' . lang('Alter indexes') . "</a>\n";
+if (support("indexes") && $driver->supportsIndex($table_status)) {
+	echo "<h3 id='indexes'>" . lang('Indexes') . "</h3>\n";
+	$indexes = indexes($TABLE);
+	if ($indexes) {
+		$adminer->tableIndexesPrint($indexes);
 	}
+	echo '<p class="links"><a href="' . h(ME) . 'indexes=' . urlencode($TABLE) . '">' . lang('Alter indexes') . "</a>\n";
+}
 
+if (!is_view($table_status)) {
 	if (fk_support($table_status)) {
 		echo "<h3 id='foreign-keys'>" . lang('Foreign keys') . "</h3>\n";
 		$foreign_keys = foreign_keys($TABLE);

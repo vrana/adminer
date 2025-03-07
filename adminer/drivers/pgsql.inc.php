@@ -293,6 +293,10 @@ if (isset($_GET["pgsql"])) {
 			}
 		}
 
+		function supportsIndex($table_status) {
+			return $table_status["Engine"] != "view";
+		}
+
 		function hasCStyleEscapes() {
 			static $c_style;
 			if ($c_style === null) {

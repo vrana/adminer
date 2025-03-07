@@ -2,6 +2,7 @@ Adminer dev:
 Fix bulk operations with tables
 Remove duplicate columns from select (bug #670)
 MariaDB: Fix link to status variable doc (bug #658)
+PostgreSQL: Support indexes on materialized views (PR #467)
 
 Adminer 5.0.0 (released 2025-03-07):
 Speed up with disabled output buffering
