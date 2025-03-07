@@ -48,7 +48,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 			$foreign_key = $foreign_keys[$field["type"]];
 			$type_field = ($foreign_key !== null ? $referencable_primary[$foreign_key] : $field); //! can collide with user defined type
 			if ($field["field"] != "") {
-				if (!$field["has_default"]) {
+				if (!$field["generated"]) {
 					$field["default"] = null;
 				}
 				$process_field = process_field($field, $type_field);
@@ -155,7 +155,7 @@ if (!$_POST) {
 			$row["Auto_increment"] = "";
 		}
 		foreach ($orig_fields as $field) {
-			$field["has_default"] = isset($field["default"]);
+			$field["generated"] = $field["generated"] ?: (isset($field["default"]) ? "DEFAULT" : "");
 			$row["fields"][] = $field;
 		}
 

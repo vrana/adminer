@@ -290,7 +290,8 @@ function editingClick(event) {
 function editingInput(event) {
 	var el = getTarget(event);
 	if (/\[default]$/.test(el.name)) {
-		 el.previousSibling.checked = true;
+		 el.previousElementSibling.checked = true;
+		 el.previousElementSibling.selectedIndex = Math.max(el.previousElementSibling.selectedIndex, 1);
 	}
 }
 
@@ -359,8 +360,9 @@ function editingAddRow(focus) {
 		if (/\[(orig|field|comment|default)/.test(tags[i].name)) {
 			tags2[i].value = '';
 		}
-		if (/\[(has_default)/.test(tags[i].name)) {
+		if (/\[(generated)/.test(tags[i].name)) {
 			tags2[i].checked = false;
+			tags2[i].selectedIndex = 0;
 		}
 	}
 	tags[0].oninput = editingNameChange;
@@ -422,8 +424,9 @@ function editingTypeChange() {
 			}
 			el.oninput.apply(el);
 		}
-		if (lastType == 'timestamp' && el.name == name + '[has_default]' && /timestamp/i.test(formField(type.form, name + '[default]').value)) {
+		if (lastType == 'timestamp' && el.name == name + '[generated]' && /timestamp/i.test(formField(type.form, name + '[default]').value)) {
 			el.checked = false;
+			el.selectedIndex = 0;
 		}
 		if (el.name == name + '[collation]') {
 			alterClass(el, 'hidden', !/(char|text|enum|set)$/.test(text));

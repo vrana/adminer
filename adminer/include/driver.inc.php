@@ -36,6 +36,7 @@ abstract class SqlDriver {
 	var $onActions = "RESTRICT|NO ACTION|CASCADE|SET NULL|SET DEFAULT"; ///< @var string used in foreign_keys()
 	var $inout = "IN|OUT|INOUT";
 	var $enumLength = "'(?:''|[^'\\\\]|\\\\.)*'";
+	var $generated = array();
 
 	/** Create object for performing database operations
 	* @param Db

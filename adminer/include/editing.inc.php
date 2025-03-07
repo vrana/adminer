@@ -302,11 +302,17 @@ function process_field($field, $type_field) {
 * @return string
 */
 function default_value($field) {
+	global $driver;
 	$default = $field["default"];
-	return ($default === null ? "" : " DEFAULT " .
-		(!preg_match('~^GENERATED ~i', $default) && (preg_match('~char|binary|text|enum|set~', $field["type"]) || preg_match('~^(?![a-z])~i', $default))
-		? q($default) : str_ireplace("current_timestamp()", "CURRENT_TIMESTAMP", (JUSH == "sqlite" ? "($default)" : $default)))
-	);
+	$generated = $field["generated"];
+	return (
+		$default === null ? ""
+		: (in_array($generated, $driver->generated) ? " GENERATED ALWAYS AS ($default) $generated"
+		: " DEFAULT " . (!preg_match('~^GENERATED ~i', $default) && (preg_match('~char|binary|text|enum|set~', $field["type"]) || preg_match('~^(?![a-z])~i', $default))
+			? q($default)
+			: str_ireplace("current_timestamp()", "CURRENT_TIMESTAMP", (JUSH == "sqlite" ? "($default)" : $default))
+		)
+	));
 }
 
 /** Get type class to use in CSS
@@ -380,7 +386,12 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 			?>
 <td><?php echo checkbox("fields[$i][null]", 1, $field["null"], "", "", "block", "label-null"); ?>
 <td><label class="block"><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php echo ($field["auto_increment"] ? " checked" : ""); ?> aria-labelledby="label-ai"></label><td<?php echo $default_class; ?>><?php
-			echo checkbox("fields[$i][has_default]", 1, $field["has_default"], "", "", "", "label-default"); ?><input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["default"]); ?>" aria-labelledby="label-default"><?php
+			echo ($driver->generated
+				? "<select name='fields[$i][generated]'>" . optionlist(array_merge(array("", "DEFAULT"), $driver->generated), $field["generated"]) . "</select> "
+				: checkbox("fields[$i][generated]", 1, $field["generated"], "", "", "", "label-default")
+			);
+			?>
+<input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["default"]); ?>" aria-labelledby="label-default"><?php
 			echo (support("comment") ? "<td$comment_class><input name='fields[$i][comment]' value='" . h($field["comment"]) . "' data-maxlength='" . (min_version(5.5) ? 1024 : 255) . "' aria-labelledby='label-comment'>" : "");
 		}
 		echo "<td>";

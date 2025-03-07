@@ -1,5 +1,6 @@
 Adminer dev:
 Speed up with disabled output buffering
+Allow creating generated columns (bug #857)
 Don't autofocus computed fields in insert form
 Skip generated columns in multi-edit (bug #882)
 MySQL: Display generated value in table structure

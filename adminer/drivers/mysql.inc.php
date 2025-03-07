@@ -322,6 +322,9 @@ if (!defined('Adminer\DRIVER')) {
 				$this->types[lang('Numbers')]["vector"] = 16383;
 				$this->editFunctions[0]['vector'] = 'string_to_vector';
 			}
+			if (min_version(5.7, 10.2, $connection)) {
+				$this->generated = array("STORED", "VIRTUAL");
+			}
 		}
 
 		function insert($table, $set) {
@@ -592,8 +595,9 @@ if (!defined('Adminer\DRIVER')) {
 			$field = $row["COLUMN_NAME"];
 			$default = $row["COLUMN_DEFAULT"];
 			$type = $row["COLUMN_TYPE"];
+			$extra = $row["EXTRA"];
 			// https://mariadb.com/kb/en/library/show-columns/, https://github.com/vrana/adminer/pull/359#pullrequestreview-276677186
-			$generated = preg_match('~^(VIRTUAL|PERSISTENT|STORED)~', $row["EXTRA"]);
+			preg_match('~^(VIRTUAL|PERSISTENT|STORED)~', $extra, $generated);
 			preg_match('~^([^( ]+)(?:\((.+)\))?( unsigned)?( zerofill)?$~', $type, $match);
 			$return[$field] = array(
 				"field" => $field,
@@ -609,13 +613,13 @@ if (!defined('Adminer\DRIVER')) {
 					)
 				),
 				"null" => ($row["IS_NULLABLE"] == "YES"),
-				"auto_increment" => ($row["EXTRA"] == "auto_increment"),
-				"on_update" => (preg_match('~\bon update (\w+)~i', $row["EXTRA"], $match) ? $match[1] : ""), //! available since MySQL 5.1.23
+				"auto_increment" => ($extra == "auto_increment"),
+				"on_update" => (preg_match('~\bon update (\w+)~i', $extra, $match) ? $match[1] : ""), //! available since MySQL 5.1.23
 				"collation" => $row["COLLATION_NAME"],
 				"privileges" => array_flip(explode(",", $row["PRIVILEGES"])),
 				"comment" => $row["COLUMN_COMMENT"],
 				"primary" => ($row["COLUMN_KEY"] == "PRI"),
-				"generated" => $generated,
+				"generated" => ($generated[1] == "PERSISTENT" ? "STORED" : $generated[1]),
 			);
 		}
 		return $return;
@@ -788,10 +792,16 @@ if (!defined('Adminer\DRIVER')) {
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
 		$alter = array();
 		foreach ($fields as $field) {
-			$alter[] = ($field[1]
-				? ($table != "" ? ($field[0] != "" ? "CHANGE " . idf_escape($field[0]) : "ADD") : " ") . " " . implode($field[1]) . ($table != "" ? $field[2] : "")
-				: "DROP " . idf_escape($field[0])
-			);
+			if ($field[1]) {
+				$default = $field[1][3];
+				if (preg_match('~ GENERATED~', $default)) {
+					$field[1][3] = $field[1][2];
+					$field[1][2] = $default;
+				}
+				$alter[] = ($table != "" ? ($field[0] != "" ? "CHANGE " . idf_escape($field[0]) : "ADD") : " ") . " " . implode($field[1]) . ($table != "" ? $field[2] : "");
+			} else {
+				$alter[] = "DROP " . idf_escape($field[0]);
+			}
 		}
 		$alter = array_merge($alter, $foreign);
 		$status = ($comment !== null ? " COMMENT=" . q($comment) : "")
