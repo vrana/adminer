@@ -1,4 +1,4 @@
-Adminer dev:
+Adminer 5.0.1 (released 2025-03-07):
 Fix bulk operations with tables
 Remove duplicate columns from select (bug #670)
 MariaDB: Fix link to status variable doc (bug #658)
