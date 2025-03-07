@@ -10,7 +10,6 @@
 	<exclude-pattern>/(adminer|editor)[^/]*.php</exclude-pattern>
 
 	<rule ref="PSR12">
-		<exclude name="Generic.Files.LineLength"/>
 		<exclude name="Generic.Whitespace.DisallowTabIndent"/><!-- Replaced by: Generic.Whitespace.DisallowSpaceIndent -->
 		<exclude name="PSR1.Files.SideEffects.FoundWithSymbols"/>
 		<exclude name="PSR12.Operators.OperatorSpacing.NoSpaceBefore"/>
@@ -43,6 +42,13 @@
 		<exclude-pattern>adminer/drivers/</exclude-pattern>
 		<exclude-pattern>adminer/include/pdo.inc.php</exclude-pattern>
 		<exclude-pattern>adminer/plugins/drivers/</exclude-pattern>
+	</rule>
+
+	<rule ref="Generic.Files.LineLength">
+		<properties>
+			<property name="lineLimit" value="310"/>
+		</properties>
+		<exclude-pattern>adminer/lang/</exclude-pattern>
 	</rule>
 
 	<rule ref="PSR1.Classes.ClassDeclaration.MissingNamespace">

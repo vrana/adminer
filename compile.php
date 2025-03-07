@@ -346,7 +346,7 @@ function compile_file($match) {
 	$file = "";
 	list(, $filenames, $callback) = $match;
 	if ($filenames != "") {
-		foreach (explode(";", $filenames) as $filename) {
+		foreach (preg_split('~;\s*~', $filenames) as $filename) {
 			$file .= file_get_contents(__DIR__ . "/$project/$filename");
 		}
 	}
@@ -448,7 +448,7 @@ if ($driver) {
 		}
 		$file = str_replace(" . script(\"qs('#username').form['auth[driver]'].onchange();\")", "", $file);
 	}
-	$file = preg_replace('(;../externals/jush/modules/jush-(?!textarea\.|txt\.|js\.|' . preg_quote($driver == "mysql" ? "sql" : $driver) . '\.)[^.]+.js)', '', $file);
+	$file = preg_replace('(;\s*../externals/jush/modules/jush-(?!textarea\.|txt\.|js\.|' . preg_quote($driver == "mysql" ? "sql" : $driver) . '\.)[^.]+.js)', '', $file);
 	$file = preg_replace_callback('~doc_link\(array\((.*)\)\)~sU', function ($match) use ($driver) {
 		list(, $links) = $match;
 		$links = preg_replace("~'(?!(" . ($driver == "mysql" ? "sql|mariadb" : $driver) . ")')[^']*' => [^,]*,?~", '', $links);
