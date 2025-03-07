@@ -146,6 +146,13 @@ if (isset($_GET["sqlite"])) {
 		var $functions = array("hex", "length", "lower", "round", "unixepoch", "upper");
 		var $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
 
+		function __construct($connection) {
+			parent::__construct($connection);
+			if (min_version(3.31, 0, $connection)) {
+				$this->generated = array("STORED", "VIRTUAL");
+			}
+		}
+
 		function structuredTypes() {
 			return array_keys($this->types[0]);
 		}
@@ -255,7 +262,7 @@ if (isset($_GET["sqlite"])) {
 		global $connection;
 		$return = array();
 		$primary = "";
-		foreach (get_rows("PRAGMA table_info(" . table($table) . ")") as $row) {
+		foreach (get_rows("PRAGMA table_" . (min_version(3.31) ? "x" : "") . "info(" . table($table) . ")") as $row) {
 			$name = $row["name"];
 			$type = strtolower($row["type"]);
 			$default = $row["dflt_value"];
@@ -278,12 +285,19 @@ if (isset($_GET["sqlite"])) {
 			}
 		}
 		$sql = $connection->result("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table));
-		preg_match_all('~(("[^"]*+")+|[a-z0-9_]+)\s+text\s+COLLATE\s+(\'[^\']+\'|\S+)~i', $sql, $matches, PREG_SET_ORDER);
+		$idf = '(("[^"]*+")+|[a-z0-9_]+)';
+		preg_match_all('~' . $idf . '\s+text\s+COLLATE\s+(\'[^\']+\'|\S+)~i', $sql, $matches, PREG_SET_ORDER);
 		foreach ($matches as $match) {
 			$name = str_replace('""', '"', preg_replace('~^"|"$~', '', $match[1]));
 			if ($return[$name]) {
 				$return[$name]["collation"] = trim($match[3], "'");
 			}
+		}
+		preg_match_all('~' . $idf . '\s.*GENERATED ALWAYS AS \((.+)\) (STORED|VIRTUAL)~i', $sql, $matches, PREG_SET_ORDER);
+		foreach ($matches as $match) {
+			$name = str_replace('""', '"', preg_replace('~^"|"$~', '', $match[1]));
+			$return[$name]["default"] = $match[3];
+			$return[$name]["generated"] = strtoupper($match[4]);
 		}
 		return $return;
 	}
@@ -537,6 +551,9 @@ if (isset($_GET["sqlite"])) {
 			queries("BEGIN");
 		}
 		foreach ($fields as $key => $field) {
+			if (preg_match('~GENERATED~', $field[3])) {
+				unset($originals[array_search($field[0], $originals)]);
+			}
 			$fields[$key] = "  " . implode($field);
 		}
 		$fields = array_merge($fields, array_filter($foreign));

@@ -15,6 +15,7 @@ PostgreSQL: Show accessible databases to non-owners (regression from 4.9.1)
 PostgreSQL: Skip editing generated columns
 PostgreSQL, MS SQL, Oracle: Hide table actions for information_schema
 SQLite: Support CHECK constraint
+SQLite: Support generated columns
 SQLite: Add command Check tables
 SQLite: Display all rows of variable values
 SQLite: Remove support for SQLite version 2
