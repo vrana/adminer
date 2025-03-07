@@ -24,6 +24,8 @@ foreach ($fields as $key => $field) {
 }
 
 list($select, $group) = $adminer->selectColumnsProcess($columns, $indexes);
+$select = array_unique($select);
+$group = array_unique($group);
 $is_group = count($group) < count($select);
 $where = $adminer->selectSearchProcess($fields, $indexes);
 $order = $adminer->selectOrderProcess($fields, $indexes);
