@@ -1,4 +1,4 @@
-Adminer dev:
+Adminer 5.0.0 (released 2025-03-07):
 Speed up with disabled output buffering
 Allow creating generated columns (bug #857)
 Don't autofocus computed fields in insert form
