@@ -591,7 +591,7 @@ if (!defined('Adminer\DRIVER')) {
 	*/
 	function fields($table) {
 		$return = array();
-		foreach (get_rows("SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = " . q(DB) . " AND TABLE_NAME = " . q($table) . " ORDER BY ORDINAL_POSITION") as $row) {
+		foreach (get_rows("SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = " . q($table) . " ORDER BY ORDINAL_POSITION") as $row) {
 			$field = $row["COLUMN_NAME"];
 			$default = $row["COLUMN_DEFAULT"];
 			$type = $row["COLUMN_TYPE"];
@@ -991,7 +991,7 @@ if (!defined('Adminer\DRIVER')) {
 		}
 		return array(
 			"fields" => $fields,
-			"comment" => $connection->result("SELECT ROUTINE_COMMENT FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . q(DB) . " AND ROUTINE_NAME = " . q($name)),
+			"comment" => $connection->result("SELECT ROUTINE_COMMENT FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_NAME = " . q($name)),
 		) + ($type != "FUNCTION" ? array("definition" => $match[11]) : array(
 			"returns" => array("type" => $match[12], "length" => $match[13], "unsigned" => $match[15], "collation" => $match[16]),
 			"definition" => $match[17],
@@ -1003,7 +1003,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @return array ["SPECIFIC_NAME" => , "ROUTINE_NAME" => , "ROUTINE_TYPE" => , "DTD_IDENTIFIER" => ]
 	*/
 	function routines() {
-		return get_rows("SELECT ROUTINE_NAME AS SPECIFIC_NAME, ROUTINE_NAME, ROUTINE_TYPE, DTD_IDENTIFIER FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . q(DB));
+		return get_rows("SELECT ROUTINE_NAME AS SPECIFIC_NAME, ROUTINE_NAME, ROUTINE_TYPE, DTD_IDENTIFIER FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = DATABASE()");
 	}
 
 	/** Get list of available routine languages
