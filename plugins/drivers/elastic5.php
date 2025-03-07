@@ -273,10 +273,10 @@ if (isset($_GET["elastic5"])) {
 		}
 	}
 
-	function connect() {
+	function connect($credentials) {
 		$connection = new Db;
 
-		list($server, $username, $password) = adminer()->credentials();
+		list($server, $username, $password) = $credentials;
 		if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
 			return lang('Invalid server.');
 		}

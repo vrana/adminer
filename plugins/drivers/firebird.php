@@ -131,10 +131,8 @@ if (isset($_GET["firebird"])) {
 		return idf_escape($idf);
 	}
 
-	function connect() {
-		$adminer = adminer();
+	function connect($credentials) {
 		$connection = new Db;
-		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
 			return $connection;
 		}

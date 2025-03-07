@@ -190,9 +190,8 @@ if (isset($_GET["sqlite"])) {
 		return idf_escape($idf);
 	}
 
-	function connect() {
-		global $adminer;
-		list(, , $password) = $adminer->credentials();
+	function connect($credentials) {
+		list(, , $password) = $credentials;
 		if ($password != "") {
 			return lang('Database does not support password.');
 		}

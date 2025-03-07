@@ -421,12 +421,11 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Connect to the database
+	* @param array [$server, $username, $password]
 	* @return mixed Db or string for error
 	*/
-	function connect() {
-		global $adminer;
+	function connect($credentials) {
 		$connection = new Db;
-		$credentials = $adminer->credentials();
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
 			$connection->set_charset(charset($connection)); // available in MySQLi since PHP 5.0.5
 			$connection->query("SET sql_quote_show_create = 1, autocommit = 1");

@@ -280,15 +280,11 @@ if (isset($_GET["mssql"])) {
 		return ($_GET["ns"] != "" ? idf_escape($_GET["ns"]) . "." : "") . idf_escape($idf);
 	}
 
-	function connect() {
-		global $adminer;
+	function connect($credentials) {
 		$connection = new Db;
-		$credentials = $adminer->credentials();
-
 		if ($credentials[0] == "") {
 			$credentials[0] = "localhost:1433";
 		}
-
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
 			return $connection;
 		}

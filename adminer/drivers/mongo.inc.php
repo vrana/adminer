@@ -421,10 +421,10 @@ if (isset($_GET["mongo"])) {
 		return $credentials[1];
 	}
 
-	function connect() {
+	function connect($credentials) {
 		global $adminer;
 		$connection = new Db;
-		list($server, $username, $password) = $adminer->credentials();
+		list($server, $username, $password) = $credentials;
 
 		if ($server == "") {
 			$server = "localhost:27017";

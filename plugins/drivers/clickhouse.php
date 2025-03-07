@@ -234,10 +234,9 @@ if (isset($_GET["clickhouse"])) {
 		return apply_queries("DROP TABLE", $tables);
 	}
 
-	function connect() {
-		$adminer = adminer();
+	function connect($credentials) {
 		$connection = new Db;
-		list($server, $username, $password) = $adminer->credentials();
+		list($server, $username, $password) = $credentials;
 		if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
 			return lang('Invalid server.');
 		}

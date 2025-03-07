@@ -163,7 +163,7 @@ if (isset($_GET["username"]) && is_string(get_password())) {
 		auth_error(lang('Connecting to privileged ports is not allowed.'));
 	}
 	check_invalid_login();
-	$connection = connect();
+	$connection = connect($adminer->credentials());
 	$driver = new Driver($connection);
 	if ($adminer->operators === null) {
 		$adminer->operators = $driver->operators;

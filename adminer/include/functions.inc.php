@@ -1302,7 +1302,7 @@ function slow_query($query) {
 	$db = $adminer->database();
 	$timeout = $adminer->queryTimeout();
 	$slow_query = $driver->slowQuery($query, $timeout);
-	if (!$slow_query && support("kill") && is_object($connection2 = connect()) && ($db == "" || $connection2->select_db($db))) {
+	if (!$slow_query && support("kill") && is_object($connection2 = connect($adminer->credentials())) && ($db == "" || $connection2->select_db($db))) {
 		$kill = $connection2->result(connection_id()); // MySQL and MySQLi can use thread_id but it's not in PDO_MySQL
 		?>
 <script<?php echo nonce(); ?>>
