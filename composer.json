@@ -6,8 +6,8 @@
         "database"
     ],
     "support": {
-        "issues": "https://sourceforge.net/p/adminer/bugs-and-features/",
-        "forum": "https://sourceforge.net/p/adminer/discussion/",
+        "issues": "https://github.com/vrana/adminer/issues",
+        "forum": "https://github.com/vrana/adminer/discussions",
         "source": "https://github.com/vrana/adminer/"
     },
     "authors": [
