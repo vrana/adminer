@@ -1,4 +1,5 @@
 Adminer dev:
+Fix bulk operations with tables
 Remove duplicate columns from select (bug #670)
 MariaDB: Fix link to status variable doc (bug #658)
 

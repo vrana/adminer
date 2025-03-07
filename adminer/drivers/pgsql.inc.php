@@ -535,7 +535,7 @@ ORDER BY conkey, conname") as $row
 	function drop_databases($databases) {
 		global $connection;
 		$connection->close();
-		return apply_queries("DROP DATABASE", $databases, 'idf_escape');
+		return apply_queries("DROP DATABASE", $databases, 'Adminer\idf_escape');
 	}
 
 	function rename_database($name, $collation) {

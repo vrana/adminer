@@ -727,7 +727,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @return bool
 	*/
 	function drop_databases($databases) {
-		$return = apply_queries("DROP DATABASE", $databases, 'idf_escape');
+		$return = apply_queries("DROP DATABASE", $databases, 'Adminer\idf_escape');
 		restart_session();
 		set_session("dbs", null);
 		return $return;

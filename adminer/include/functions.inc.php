@@ -660,7 +660,7 @@ function queries($query) {
 * @param callback
 * @return bool
 */
-function apply_queries($query, $tables, $escape = 'table') {
+function apply_queries($query, $tables, $escape = 'Adminer\table') {
 	foreach ($tables as $table) {
 		if (!queries("$query " . $escape($table))) {
 			return false;
