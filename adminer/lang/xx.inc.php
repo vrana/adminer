@@ -23,6 +23,7 @@ $translations = array(
 	'Invalid CSRF token. Send the form again.' => 'Xx.',
 	'If you did not send this request from Adminer then close this page.' => 'Xx.',
 	'No extension' => 'Xx',
+	// %s contains the list of the extensions, e.g. 'mysqli, PDO_MySQL'
 	'None of the supported PHP extensions (%s) are available.' => 'Xx (%s).',
 	'Connecting to privileged ports is not allowed.' => 'Xx.',
 	'Disable %s or enable %s or %s extensions.' => 'Xx %s xx %s xx %s xx.',
@@ -273,7 +274,7 @@ $translations = array(
 	'Ctrl+click on a value to modify it.' => 'Xx.',
 	'Use edit link to modify this value.' => 'Xx.',
 
-	// %s can contain auto-increment value
+	// %s can contain auto-increment value, e.g. ' 123'
 	'Item%s has been inserted.' => 'Xx%s.',
 	'Item has been deleted.' => 'Xx.',
 	'Item has been updated.' => 'Xx.',
