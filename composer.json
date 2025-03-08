@@ -33,6 +33,7 @@
         "php": ">=5.3"
     },
     "scripts": {
-        "compile": "php compile.php"
+        "clean": "rm -f adminer*.php editor*.php",
+        "compile": "@php compile.php"
     }
 }
