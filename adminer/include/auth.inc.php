@@ -164,9 +164,11 @@ if (isset($_GET["username"]) && is_string(get_password())) {
 	}
 	check_invalid_login();
 	$connection = connect($adminer->credentials());
-	$driver = new Driver($connection);
-	if ($adminer->operators === null) {
-		$adminer->operators = $driver->operators;
+	if (is_object($connection)) {
+		$driver = new Driver($connection);
+		if ($adminer->operators === null) {
+			$adminer->operators = $driver->operators;
+		}
 	}
 }
 
