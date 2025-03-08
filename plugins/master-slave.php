@@ -18,7 +18,7 @@ class AdminerMasterSlave {
 
 	function credentials() {
 		if ($_POST && isset($this->masters[Adminer\SERVER])) {
-			return array($this->masters[Adminer\SERVER], $_GET["username"], get_session("pwds"));
+			return array($this->masters[Adminer\SERVER], $_GET["username"], Adminer\get_session("pwds"));
 		}
 	}
 
