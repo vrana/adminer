@@ -65,7 +65,7 @@ function mixin(target, source) {
 /** Add or remove CSS class
 * @param HTMLElement
 * @param string
-* @param [bool]
+* @param [boolean]
 */
 function alterClass(el, className, enable) {
 	if (el) {
@@ -79,7 +79,7 @@ function alterClass(el, className, enable) {
 */
 function toggle(id) {
 	var el = qs('#' + id);
-	el.className = (el.className == 'hidden' ? '' : 'hidden');
+	alterClass(el, 'hidden', !/(^|\s)hidden(\s|$)/.test(el.className));
 	return false;
 }
 
