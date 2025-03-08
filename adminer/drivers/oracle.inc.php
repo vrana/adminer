@@ -72,12 +72,12 @@ if (isset($_GET["oracle"])) {
 				return false;
 			}
 
-			function result($query, $field = 1) {
+			function result($query, $field = 0) {
 				$result = $this->query($query);
 				if (!is_object($result) || !oci_fetch($result->_result)) {
 					return false;
 				}
-				return oci_result($result->_result, $field);
+				return oci_result($result->_result, $field + 1);
 			}
 		}
 
