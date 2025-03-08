@@ -120,8 +120,8 @@ if ($_POST && !$error) {
 
 page_header((isset($_GET["host"]) ? lang('Username') . ": " . h("$USER@$_GET[host]") : lang('Create user')), $error, array("privileges" => array('', lang('Privileges'))));
 
-if ($_POST) {
-	$row = $_POST;
+$row = $_POST;
+if ($row) {
 	$grants = $new_grants;
 } else {
 	$row = $_GET + array("host" => get_val("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', -1)")); // create user on the same domain by default

@@ -328,9 +328,9 @@ if (isset($_GET["mongo"])) {
 			$limit = min(200, max(1, (int) $limit));
 			$skip = $page * $limit;
 			try {
-				return new Result($this->_conn->_link->executeQuery("$connection->_db_name.$table", new \MongoDB\Driver\Query($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort))));
+				return new Result($this->_conn->_link->executeQuery($this->_conn->_db_name . ".$table", new \MongoDB\Driver\Query($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort))));
 			} catch (Exception $e) {
-				$connection->error = $e->getMessage();
+				$this->_conn->error = $e->getMessage();
 				return false;
 			}
 		}

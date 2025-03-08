@@ -1311,6 +1311,7 @@ function slow_query($query) {
 	$db = $adminer->database();
 	$timeout = $adminer->queryTimeout();
 	$slow_query = $driver->slowQuery($query, $timeout);
+	$connection2 = null;
 	if (!$slow_query && support("kill") && is_object($connection2 = connect($adminer->credentials())) && ($db == "" || $connection2->select_db($db))) {
 		$kill = $connection2->result(connection_id()); // MySQL and MySQLi can use thread_id but it's not in PDO_MySQL
 		?>
@@ -1321,8 +1322,6 @@ var timeout = setTimeout(function () {
 }, <?php echo 1000 * $timeout; ?>);
 </script>
 <?php
-	} else {
-		$connection2 = null;
 	}
 	ob_flush();
 	flush();
@@ -1422,11 +1421,11 @@ function edit_form($table, $fields, $row, $update) {
 	?>
 <form action="" method="post" enctype="multipart/form-data" id="form">
 <?php
+	$first = 0;
 	if (!$fields) {
 		echo "<p class='error'>" . lang('You have no privileges to update this table.') . "\n";
 	} else {
 		echo "<table class='layout'>" . script("qsl('table').onkeydown = editingKeydown;");
-		$first = 0;
 		foreach ($fields as $name => $field) {
 			echo "<tr><th>" . $adminer->fieldName($field);
 			$default = $_GET["set"][bracket_escape($name)];

@@ -81,9 +81,8 @@ if ($_POST && !$error) {
 			. convert_fields($columns, $fields, $select)
 			. "\nFROM " . table($TABLE);
 		$group_by = ($group && $is_group ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : "");
-		if (!is_array($_POST["check"]) || $primary) {
-			$query = "SELECT $from$where_check$group_by";
-		} else {
+		$query = "SELECT $from$where_check$group_by";
+		if (is_array($_POST["check"]) && !$primary) {
 			$union = array();
 			foreach ($_POST["check"] as $val) {
 				// where is not unique so OR can't be used
