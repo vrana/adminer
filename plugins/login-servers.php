@@ -35,7 +35,7 @@ class AdminerLoginServers {
 		if ($name == 'driver') {
 			return '';
 		} elseif ($name == 'server') {
-			return $heading . "<select name='auth[server]'>" . Adminer\optionlist(array_keys($this->servers), Adminer\SERVER) . "</select>\n";
+			return $heading . Adminer\html_select("auth[server]", array_keys($this->servers), Adminer\SERVER) . "\n";
 		}
 	}
 }

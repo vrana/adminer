@@ -386,7 +386,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 <td><?php echo checkbox("fields[$i][null]", 1, $field["null"], "", "", "block", "label-null"); ?>
 <td><label class="block"><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php echo ($field["auto_increment"] ? " checked" : ""); ?> aria-labelledby="label-ai"></label><td<?php echo $default_class; ?>><?php
 			echo ($driver->generated
-				? "<select name='fields[$i][generated]'>" . optionlist(array_merge(array("", "DEFAULT"), $driver->generated), $field["generated"]) . "</select> "
+				? html_select("fields[$i][generated]", array_merge(array("", "DEFAULT"), $driver->generated), $field["generated"]) . " "
 				: checkbox("fields[$i][generated]", 1, $field["generated"], "", "", "", "label-default")
 			);
 			?>
