@@ -290,7 +290,7 @@ $translations = array(
 	'Selected' => 'Zaznaczone',
 	'Clone' => 'Duplikuj',
 	'Delete' => 'Usuń',
-	'You have no privileges to update this table.' => 'Brak uprawnień do edycji tej tabeli',
+	'You have no privileges to update this table.' => 'Brak uprawnień do edycji tej tabeli.',
 
 	'E-mail' => 'E-mail',
 	'From' => 'Nadawca',

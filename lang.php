@@ -32,16 +32,22 @@ foreach (glob(__DIR__ . "/adminer/lang/" . ($_SESSION["lang"] ?: "*") . ".inc.ph
 	$messages = $messages_all;
 	$file = file_get_contents($filename);
 	$file = str_replace("\r", "", $file);
-	preg_match_all("~^(\\s*(?:// [^'].*\\s+)?)(?:// )?(('(?:[^\\\\']+|\\\\.)*') => .*[^,\n]),?~m", $file, $matches, PREG_SET_ORDER);
+	preg_match_all("~^(\\s*(?:// [^'].*\\s+)?)(?:// )?(('(?:[^\\\\']+|\\\\.)*') => .*[^,\n]),?~m", $file, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
 	$s = "";
+	$lang = basename($filename, ".inc.php");
+	$fullstop = ($lang == "bn" ? '।' : (substr($lang, 0, 2) == 'zh' ? '。' : ($lang == 'he' || $lang == 'ja' ? '' : '\.')));
 	foreach ($matches as $match) {
-		if (isset($messages[$match[3]])) {
+		list(, list($indent), list($line, $offset), list($en)) = $match;
+		if (isset($messages[$en])) {
 			// keep current messages
-			$s .= "$match[1]$match[2],\n";
-			unset($messages[$match[3]]);
+			$s .= "$indent$line,\n";
+			unset($messages[$en]);
+			if ($en != "','" && $fullstop && (substr($en, -2, 1) == "." xor preg_match("~$fullstop'\)?\$~", $line))) {
+				echo "$filename:" . (substr_count($file, "\n", 0, $offset) + 1) . ":Not matching fullstop: $line\n";
+			}
 		} else {
 			// comment deprecated messages
-			$s .= "$match[1]// $match[2],\n";
+			$s .= "$indent// $line,\n";
 		}
 	}
 	if ($messages) {
