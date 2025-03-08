@@ -34,7 +34,7 @@ class Adminer {
 		if ($connection) {
 			$databases = $this->databases(false);
 			return (!$databases
-				? $connection->result("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1)") // username without the database list
+				? get_val("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1)") // username without the database list
 				: $databases[(information_schema($databases[0]) ? 1 : 0)] // first available database
 			);
 		}
@@ -652,7 +652,6 @@ qsl('div').onclick = whisperClick;", "")
 	}
 
 	function _foreignKeyOptions($table, $column, $value = null) {
-		global $connection;
 		if (list($target, $id, $name) = $this->_foreignColumn(column_foreign_keys($table), $column)) {
 			$return = &$this->_values[$target];
 			if ($return === null) {
@@ -660,7 +659,7 @@ qsl('div').onclick = whisperClick;", "")
 				$return = ($table_status["Rows"] > 1000 ? "" : array("" => "") + get_key_vals("SELECT $id, $name FROM " . table($target) . " ORDER BY 2"));
 			}
 			if (!$return && $value !== null) {
-				return $connection->result("SELECT $name FROM " . table($target) . " WHERE $id = " . q($value));
+				return get_val("SELECT $name FROM " . table($target) . " WHERE $id = " . q($value));
 			}
 			return $return;
 		}

@@ -484,9 +484,8 @@ if (!defined('Adminer\DRIVER')) {
 	* @return string
 	*/
 	function db_collation($db, $collations) {
-		global $connection;
 		$return = null;
-		$create = $connection->result("SHOW CREATE DATABASE " . idf_escape($db), 1);
+		$create = get_val("SHOW CREATE DATABASE " . idf_escape($db), 1);
 		if (preg_match('~ COLLATE ([^ ]+)~', $create, $match)) {
 			$return = $match[1];
 		} elseif (preg_match('~ CHARACTER SET ([^ ]+)~', $create, $match)) {
@@ -513,8 +512,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @return string
 	*/
 	function logged_user() {
-		global $connection;
-		return $connection->result("SELECT USER()");
+		return get_val("SELECT USER()");
 	}
 
 	/** Get tables list
@@ -646,10 +644,10 @@ if (!defined('Adminer\DRIVER')) {
 	* @return array [$name => ["db" => , "ns" => , "table" => , "source" => [], "target" => [], "on_delete" => , "on_update" => ]]
 	*/
 	function foreign_keys($table) {
-		global $connection, $driver;
+		global $driver;
 		static $pattern = '(?:`(?:[^`]|``)+`|"(?:[^"]|"")+")';
 		$return = array();
-		$create_table = $connection->result("SHOW CREATE TABLE " . table($table), 1);
+		$create_table = get_val("SHOW CREATE TABLE " . table($table), 1);
 		if ($create_table) {
 			preg_match_all("~CONSTRAINT ($pattern) FOREIGN KEY ?\\(((?:$pattern,? ?)+)\\) REFERENCES ($pattern)(?:\\.($pattern))? \\(((?:$pattern,? ?)+)\\)(?: ON DELETE ($driver->onActions))?(?: ON UPDATE ($driver->onActions))?~", $create_table, $matches, PREG_SET_ORDER);
 			foreach ($matches as $match) {
@@ -673,8 +671,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @return array ["select" => ]
 	*/
 	function view($name) {
-		global $connection;
-		return array("select" => preg_replace('~^(?:[^`]|`[^`]*`)*\s+AS\s+~isU', '', $connection->result("SHOW CREATE VIEW " . table($name), 1)));
+		return array("select" => preg_replace('~^(?:[^`]|`[^`]*`)*\s+AS\s+~isU', '', get_val("SHOW CREATE VIEW " . table($name), 1)));
 	}
 
 	/** Get sorted grouped list of collations
@@ -967,12 +964,12 @@ if (!defined('Adminer\DRIVER')) {
 	* @return array ["fields" => ["field" => , "type" => , "length" => , "unsigned" => , "inout" => , "collation" => ], "returns" => , "definition" => , "language" => ]
 	*/
 	function routine($name, $type) {
-		global $connection, $driver;
+		global $driver;
 		$aliases = array("bool", "boolean", "integer", "double precision", "real", "dec", "numeric", "fixed", "national char", "national varchar");
 		$space = "(?:\\s|/\\*[\s\S]*?\\*/|(?:#|-- )[^\n]*\n?|--\r?\n)";
 		$type_pattern = "((" . implode("|", array_merge(array_keys($driver->types()), $aliases)) . ")\\b(?:\\s*\\(((?:[^'\")]|$driver->enumLength)++)\\))?\\s*(zerofill\\s*)?(unsigned(?:\\s+zerofill)?)?)(?:\\s*(?:CHARSET|CHARACTER\\s+SET)\\s*['\"]?([^'\"\\s,]+)['\"]?)?";
 		$pattern = "$space*(" . ($type == "FUNCTION" ? "" : $driver->inout) . ")?\\s*(?:`((?:[^`]|``)*)`\\s*|\\b(\\S+)\\s+)$type_pattern";
-		$create = $connection->result("SHOW CREATE $type " . idf_escape($name), 2);
+		$create = get_val("SHOW CREATE $type " . idf_escape($name), 2);
 		preg_match("~\\(((?:$pattern\\s*,?)*)\\)\\s*" . ($type == "FUNCTION" ? "RETURNS\\s+$type_pattern\\s+" : "") . "(.*)~is", $create, $match);
 		$fields = array();
 		preg_match_all("~$pattern\\s*,?~is", $match[1], $matches, PREG_SET_ORDER);
@@ -990,7 +987,7 @@ if (!defined('Adminer\DRIVER')) {
 		}
 		return array(
 			"fields" => $fields,
-			"comment" => $connection->result("SELECT ROUTINE_COMMENT FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_NAME = " . q($name)),
+			"comment" => get_val("SELECT ROUTINE_COMMENT FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_NAME = " . q($name)),
 		) + ($type != "FUNCTION" ? array("definition" => $match[11]) : array(
 			"returns" => array("type" => $match[12], "length" => $match[13], "unsigned" => $match[15], "collation" => $match[16]),
 			"definition" => $match[17],
@@ -1025,8 +1022,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @return string
 	*/
 	function last_id() {
-		global $connection;
-		return $connection->result("SELECT LAST_INSERT_ID()"); // mysql_insert_id() truncates bigint
+		return get_val("SELECT LAST_INSERT_ID()"); // mysql_insert_id() truncates bigint
 	}
 
 	/** Explain select
@@ -1089,8 +1085,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @return string
 	*/
 	function create_sql($table, $auto_increment, $style) {
-		global $connection;
-		$return = $connection->result("SHOW CREATE TABLE " . table($table), 1);
+		$return = get_val("SHOW CREATE TABLE " . table($table), 1);
 		if (!$auto_increment) {
 			$return = preg_replace('~ AUTO_INCREMENT=\d+~', '', $return); //! skip comments
 		}
@@ -1208,7 +1203,6 @@ if (!defined('Adminer\DRIVER')) {
 	* @return int
 	*/
 	function max_connections() {
-		global $connection;
-		return $connection->result("SELECT @@max_connections");
+		return get_val("SELECT @@max_connections");
 	}
 }

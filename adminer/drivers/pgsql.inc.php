@@ -345,8 +345,7 @@ ORDER BY datname");
 	}
 
 	function db_collation($db, $collations) {
-		global $connection;
-		return $connection->result("SELECT datcollate FROM pg_database WHERE datname = " . q($db));
+		return get_val("SELECT datcollate FROM pg_database WHERE datname = " . q($db));
 	}
 
 	function engines() {
@@ -354,8 +353,7 @@ ORDER BY datname");
 	}
 
 	function logged_user() {
-		global $connection;
-		return $connection->result("SELECT user");
+		return get_val("SELECT user");
 	}
 
 	function tables_list() {
@@ -384,10 +382,9 @@ ORDER BY 1";
 	}
 
 	function table_status($name = "") {
-		global $connection;
 		static $has_size;
 		if ($has_size === null) {
-			$has_size = $connection->result("SELECT 'pg_table_size'::regproc");
+			$has_size = get_val("SELECT 'pg_table_size'::regproc");
 		}
 		$return = array();
 		foreach (
@@ -515,8 +512,7 @@ ORDER BY conkey, conname") as $row
 	}
 
 	function view($name) {
-		global $connection;
-		return array("select" => trim($connection->result("SELECT pg_get_viewdef(" . $connection->result("SELECT oid FROM pg_class WHERE relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema()) AND relname = " . q($name)) . ")")));
+		return array("select" => trim(get_val("SELECT pg_get_viewdef(" . get_val("SELECT oid FROM pg_class WHERE relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema()) AND relname = " . q($name)) . ")")));
 	}
 
 	function collations() {
@@ -764,8 +760,7 @@ ORDER BY SPECIFIC_NAME');
 	}
 
 	function found_rows($table_status, $where) {
-		global $connection;
-		if (preg_match("~ rows=([0-9]+)~", $connection->result("EXPLAIN SELECT * FROM " . idf_escape($table_status["Name"]) . ($where ? " WHERE " . implode(" AND ", $where) : "")), $regs)) {
+		if (preg_match("~ rows=([0-9]+)~", get_val("EXPLAIN SELECT * FROM " . idf_escape($table_status["Name"]) . ($where ? " WHERE " . implode(" AND ", $where) : "")), $regs)) {
 			return $regs[1];
 		}
 		return false;
@@ -792,8 +787,7 @@ AND typelem = 0"
 	}
 
 	function get_schema() {
-		global $connection;
-		return $connection->result("SELECT current_schema()");
+		return get_val("SELECT current_schema()");
 	}
 
 	function set_schema($schema, $connection2 = null) {
@@ -947,7 +941,6 @@ AND typelem = 0"
 	}
 
 	function max_connections() {
-		global $connection;
-		return $connection->result("SHOW max_connections");
+		return get_val("SHOW max_connections");
 	}
 }

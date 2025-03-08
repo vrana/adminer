@@ -262,7 +262,7 @@ if (!$columns && support("table")) {
 
 	$page = $_GET["page"];
 	if ($page == "last") {
-		$found_rows = $connection->result(count_rows($TABLE, $where, $is_group, $group));
+		$found_rows = get_val(count_rows($TABLE, $where, $is_group, $group));
 		$page = floor(max(0, $found_rows - 1) / $limit);
 	}
 
@@ -309,7 +309,7 @@ if (!$columns && support("table")) {
 
 		// use count($rows) without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
 		if ($_GET["page"] != "last" && $limit != "" && $group && $is_group && JUSH == "sql") {
-			$found_rows = $connection->result(" SELECT FOUND_ROWS()"); // space to allow mysql.trace_mode
+			$found_rows = get_val(" SELECT FOUND_ROWS()"); // space to allow mysql.trace_mode
 		}
 
 		if (!$rows) {

@@ -337,6 +337,16 @@ function q($string) {
 	return $connection->quote($string);
 }
 
+/** Get single value from database
+* @param string
+* @param int
+* @return string or false if error
+*/
+function get_val($query, $field = 0) {
+	global $connection;
+	return $connection->result($query, $field);
+}
+
 /** Get list of values from database
 * @param string
 * @param mixed

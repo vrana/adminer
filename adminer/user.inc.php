@@ -56,7 +56,7 @@ if ($_POST && !$error) {
 		$pass = $_POST["pass"];
 		if ($pass != '' && !$_POST["hashed"] && !min_version(8)) {
 			// compute hash in a separate query so that plain text password is not saved to history
-			$pass = $connection->result("SELECT PASSWORD(" . q($pass) . ")");
+			$pass = get_val("SELECT PASSWORD(" . q($pass) . ")");
 			$error = !$pass;
 		}
 
@@ -124,7 +124,7 @@ if ($_POST) {
 	$row = $_POST;
 	$grants = $new_grants;
 } else {
-	$row = $_GET + array("host" => $connection->result("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', -1)")); // create user on the same domain by default
+	$row = $_GET + array("host" => get_val("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', -1)")); // create user on the same domain by default
 	$row["pass"] = $old_pass;
 	if ($old_pass != "") {
 		$row["hashed"] = true;

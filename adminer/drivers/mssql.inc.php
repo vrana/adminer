@@ -304,8 +304,7 @@ if (isset($_GET["mssql"])) {
 	}
 
 	function db_collation($db, $collations) {
-		global $connection;
-		return $connection->result("SELECT collation_name FROM sys.databases WHERE name = " . q($db));
+		return get_val("SELECT collation_name FROM sys.databases WHERE name = " . q($db));
 	}
 
 	function engines() {
@@ -313,8 +312,7 @@ if (isset($_GET["mssql"])) {
 	}
 
 	function logged_user() {
-		global $connection;
-		return $connection->result("SELECT SUSER_NAME()");
+		return get_val("SELECT SUSER_NAME()");
 	}
 
 	function tables_list() {
@@ -326,7 +324,7 @@ if (isset($_GET["mssql"])) {
 		$return = array();
 		foreach ($databases as $db) {
 			$connection->select_db($db);
-			$return[$db] = $connection->result("SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES");
+			$return[$db] = get_val("SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES");
 		}
 		return $return;
 	}
@@ -355,10 +353,9 @@ WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V')
 	}
 
 	function fields($table) {
-		global $connection;
 		$comments = get_key_vals("SELECT objname, cast(value as varchar(max)) FROM fn_listextendedproperty('MS_DESCRIPTION', 'schema', " . q(get_schema()) . ", 'table', " . q($table) . ", 'column', NULL)");
 		$return = array();
-		$table_id = $connection->result("SELECT object_id FROM sys.all_objects WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V') AND name = " . q($table));
+		$table_id = get_val("SELECT object_id FROM sys.all_objects WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V') AND name = " . q($table));
 		foreach (
 			get_rows("SELECT c.max_length, c.precision, c.scale, c.name, c.is_nullable, c.is_identity, c.collation_name, t.name type, CAST(d.definition as text) [default], d.name default_constraint, i.is_primary_key
 FROM sys.all_columns c
@@ -415,8 +412,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 	}
 
 	function view($name) {
-		global $connection;
-		return array("select" => preg_replace('~^(?:[^[]|\[[^]]*])*\s+AS\s+~isU', '', $connection->result("SELECT VIEW_DEFINITION FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = SCHEMA_NAME() AND TABLE_NAME = " . q($name))));
+		return array("select" => preg_replace('~^(?:[^[]|\[[^]]*])*\s+AS\s+~isU', '', get_val("SELECT VIEW_DEFINITION FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = SCHEMA_NAME() AND TABLE_NAME = " . q($name))));
 	}
 
 	function collations() {
@@ -541,8 +537,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 	}
 
 	function last_id() {
-		global $connection;
-		return $connection->result("SELECT SCOPE_IDENTITY()"); // @@IDENTITY can return trigger INSERT
+		return get_val("SELECT SCOPE_IDENTITY()"); // @@IDENTITY can return trigger INSERT
 	}
 
 	function explain($connection, $query) {
@@ -635,11 +630,10 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)) as $row
 	}
 
 	function get_schema() {
-		global $connection;
 		if ($_GET["ns"] != "") {
 			return $_GET["ns"];
 		}
-		return $connection->result("SELECT SCHEMA_NAME()");
+		return get_val("SELECT SCHEMA_NAME()");
 	}
 
 	function set_schema($schema) {

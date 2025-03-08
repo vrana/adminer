@@ -207,16 +207,14 @@ if (isset($_GET["sqlite"])) {
 	}
 
 	function limit1($table, $query, $where, $separator = "\n") {
-		global $connection;
-		return (preg_match('~^INTO~', $query) || $connection->result("SELECT sqlite_compileoption_used('ENABLE_UPDATE_DELETE_LIMIT')")
+		return (preg_match('~^INTO~', $query) || get_val("SELECT sqlite_compileoption_used('ENABLE_UPDATE_DELETE_LIMIT')")
 			? limit($query, $where, 1, 0, $separator)
 			: " $query WHERE rowid = (SELECT rowid FROM " . table($table) . $where . $separator . "LIMIT 1)" //! use primary key in tables with WITHOUT rowid
 		);
 	}
 
 	function db_collation($db, $collations) {
-		global $connection;
-		return $connection->result("PRAGMA encoding"); // there is no database list so $db == DB
+		return get_val("PRAGMA encoding"); // there is no database list so $db == DB
 	}
 
 	function engines() {
@@ -236,10 +234,9 @@ if (isset($_GET["sqlite"])) {
 	}
 
 	function table_status($name = "") {
-		global $connection;
 		$return = array();
 		foreach (get_rows("SELECT name AS Name, type AS Engine, 'rowid' AS Oid, '' AS Auto_increment FROM sqlite_master WHERE type IN ('table', 'view') " . ($name != "" ? "AND name = " . q($name) : "ORDER BY name")) as $row) {
-			$row["Rows"] = $connection->result("SELECT COUNT(*) FROM " . idf_escape($row["Name"]));
+			$row["Rows"] = get_val("SELECT COUNT(*) FROM " . idf_escape($row["Name"]));
 			$return[$row["Name"]] = $row;
 		}
 		foreach (get_rows("SELECT * FROM sqlite_sequence", null, "") as $row) {
@@ -253,12 +250,10 @@ if (isset($_GET["sqlite"])) {
 	}
 
 	function fk_support($table_status) {
-		global $connection;
-		return !$connection->result("SELECT sqlite_compileoption_used('OMIT_FOREIGN_KEY')");
+		return !get_val("SELECT sqlite_compileoption_used('OMIT_FOREIGN_KEY')");
 	}
 
 	function fields($table) {
-		global $connection;
 		$return = array();
 		$primary = "";
 		foreach (get_rows("PRAGMA table_" . (min_version(3.31) ? "x" : "") . "info(" . table($table) . ")") as $row) {
@@ -283,7 +278,7 @@ if (isset($_GET["sqlite"])) {
 				$primary = $name;
 			}
 		}
-		$sql = $connection->result("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table));
+		$sql = get_val("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table));
 		$idf = '(("[^"]*+")+|[a-z0-9_]+)';
 		preg_match_all('~' . $idf . '\s+text\s+COLLATE\s+(\'[^\']+\'|\S+)~i', $sql, $matches, PREG_SET_ORDER);
 		foreach ($matches as $match) {
@@ -362,8 +357,7 @@ if (isset($_GET["sqlite"])) {
 	}
 
 	function view($name) {
-		global $connection;
-		return array("select" => preg_replace('~^(?:[^`"[]+|`[^`]*`|"[^"]*")* AS\s+~iU', '', $connection->result("SELECT sql FROM sqlite_master WHERE type = 'view' AND name = " . q($name)))); //! identifiers may be inside []
+		return array("select" => preg_replace('~^(?:[^`"[]+|`[^`]*`|"[^"]*")* AS\s+~iU', '', get_val("SELECT sql FROM sqlite_master WHERE type = 'view' AND name = " . q($name)))); //! identifiers may be inside []
 	}
 
 	function collations() {
@@ -492,7 +486,7 @@ if (isset($_GET["sqlite"])) {
 	* @return bool
 	*/
 	function recreate_table($table, $name, $fields, $originals, $foreign, $auto_increment = 0, $indexes = array(), $drop_check = "", $add_check = "") {
-		global $connection, $driver;
+		global $driver;
 		if ($table != "") {
 			if (!$fields) {
 				foreach (fields($table) as $key => $field) {
@@ -578,7 +572,7 @@ if (isset($_GET["sqlite"])) {
 				$trigger = trigger($trigger_name);
 				$triggers[] = "CREATE TRIGGER " . idf_escape($trigger_name) . " " . implode(" ", $timing_event) . " ON " . table($name) . "\n$trigger[Statement]";
 			}
-			$auto_increment = $auto_increment ? 0 : $connection->result("SELECT seq FROM sqlite_sequence WHERE name = " . q($table)); // if $auto_increment is set then it will be updated later
+			$auto_increment = $auto_increment ? 0 : get_val("SELECT seq FROM sqlite_sequence WHERE name = " . q($table)); // if $auto_increment is set then it will be updated later
 			if (
 				!queries("DROP TABLE " . table($table)) // drop before creating indexes and triggers to allow using old names
 				|| ($table == $name && !queries("ALTER TABLE " . table($temp_name) . " RENAME TO " . table($name)))
@@ -642,7 +636,6 @@ if (isset($_GET["sqlite"])) {
 	}
 
 	function trigger($name) {
-		global $connection;
 		if ($name == "") {
 			return array("Statement" => "BEGIN\n\t;\nEND");
 		}
@@ -650,7 +643,7 @@ if (isset($_GET["sqlite"])) {
 		$trigger_options = trigger_options();
 		preg_match(
 			"~^CREATE\\s+TRIGGER\\s*$idf\\s*(" . implode("|", $trigger_options["Timing"]) . ")\\s+([a-z]+)(?:\\s+OF\\s+($idf))?\\s+ON\\s*$idf\\s*(?:FOR\\s+EACH\\s+ROW\\s)?(.*)~is",
-			$connection->result("SELECT sql FROM sqlite_master WHERE type = 'trigger' AND name = " . q($name)),
+			get_val("SELECT sql FROM sqlite_master WHERE type = 'trigger' AND name = " . q($name)),
 			$match
 		);
 		$of = $match[3];
@@ -686,8 +679,7 @@ if (isset($_GET["sqlite"])) {
 	}
 
 	function last_id() {
-		global $connection;
-		return $connection->result("SELECT LAST_INSERT_ROWID()");
+		return get_val("SELECT LAST_INSERT_ROWID()");
 	}
 
 	function explain($connection, $query) {
@@ -702,8 +694,7 @@ if (isset($_GET["sqlite"])) {
 	}
 
 	function create_sql($table, $auto_increment, $style) {
-		global $connection;
-		$return = $connection->result("SELECT sql FROM sqlite_master WHERE type IN ('table', 'view') AND name = " . q($table));
+		$return = get_val("SELECT sql FROM sqlite_master WHERE type IN ('table', 'view') AND name = " . q($table));
 		foreach (indexes($table) as $name => $index) {
 			if ($name == '') {
 				continue;

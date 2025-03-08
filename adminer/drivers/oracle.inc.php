@@ -241,8 +241,7 @@ ORDER BY 1"
 	}
 
 	function db_collation($db, $collations) {
-		global $connection;
-		return $connection->result("SELECT value FROM nls_database_parameters WHERE parameter = 'NLS_CHARACTERSET'"); //! respect $db
+		return get_val("SELECT value FROM nls_database_parameters WHERE parameter = 'NLS_CHARACTERSET'"); //! respect $db
 	}
 
 	function engines() {
@@ -250,8 +249,7 @@ ORDER BY 1"
 	}
 
 	function logged_user() {
-		global $connection;
-		return $connection->result("SELECT USER FROM DUAL");
+		return get_val("SELECT USER FROM DUAL");
 	}
 
 	function get_current_db() {
@@ -284,10 +282,9 @@ ORDER BY 1"
 	}
 
 	function count_tables($databases) {
-		global $connection;
 		$return = array();
 		foreach ($databases as $db) {
-			$return[$db] = $connection->result("SELECT COUNT(*) FROM all_tables WHERE tablespace_name = " . q($db));
+			$return[$db] = get_val("SELECT COUNT(*) FROM all_tables WHERE tablespace_name = " . q($db));
 		}
 		return $return;
 	}
@@ -505,8 +502,7 @@ AND c_src.TABLE_NAME = " . q($table);
 	}
 
 	function get_schema() {
-		global $connection;
-		return $connection->result("SELECT sys_context('USERENV', 'SESSION_USER') FROM dual");
+		return get_val("SELECT sys_context('USERENV', 'SESSION_USER') FROM dual");
 	}
 
 	function set_schema($scheme, $connection2 = null) {
