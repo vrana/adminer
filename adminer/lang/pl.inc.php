@@ -15,7 +15,7 @@ $translations = array(
 	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Dziękujemy za używanie Adminera, rozważ <a href="https://www.adminer.org/pl/donation/">dotację</a>.',
 	'Invalid credentials.' => 'Nieprawidłowe dane logowania.',
 	'There is a space in the input password which might be the cause.' => 'W haśle wejściowym znajduje się spacja, która może być przyczyną.',
-	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer nie obsługuje dostępu do bazy danych bez hasła, <a href="https://www.adminer.org/cs/password/"%s>więcej informacji</a>.',
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer nie obsługuje dostępu do bazy danych bez hasła, <a href="https://www.adminer.org/pl/password/"%s>więcej informacji</a>.',
 	'Database does not support password.' => 'Baza danych nie obsługuje hasła.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Za dużo nieudanych prób logowania, spróbuj ponownie za %d minutę.', 'Za dużo nieudanych prób logowania, spróbuj ponownie za %d minuty.', 'Za dużo nieudanych prób logowania, spróbuj ponownie za %d minut.'),
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Ważność hasła głównego wygasła. <a href="https://www.adminer.org/pl/extension/"%s>Zaimplementuj</a> własną metodę %s, aby ustawić je na stałe.',
