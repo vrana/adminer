@@ -1159,7 +1159,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Convert value in edit after applying functions back
 	* @param array one element from fields()
-	* @param string
+	* @param string SQL expression
 	* @return string
 	*/
 	function unconvert_field($field, $return) {

@@ -924,14 +924,10 @@ function input($field, $value, $function) {
 	$functions = (isset($_GET["select"]) || $reset ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
 	$disabled = stripos($field["default"], "GENERATED ALWAYS AS ") === 0 ? " disabled=''" : "";
 	$attrs = " name='fields[$name]'$disabled";
-	$types = $driver->types();
-	$structured_types = $driver->structuredTypes();
-	if (in_array($field["type"], (array) $structured_types[lang('User types')])) {
-		$enums = type_values($types[$field["type"]]);
-		if ($enums) {
-			$field["type"] = "enum";
-			$field["length"] = $enums;
-		}
+	$enums = $driver->enumLength($field);
+	if ($enums) {
+		$field["type"] = "enum";
+		$field["length"] = $enums;
 	}
 	if ($field["type"] == "enum") {
 		echo h($functions[""]) . "<td>" . $adminer->editInput($_GET["edit"], $field, $attrs, $value);
@@ -970,6 +966,7 @@ function input($field, $value, $function) {
 			echo "<textarea$attrs cols='50' rows='12' class='jush-js'>" . h($value) . '</textarea>';
 		} else {
 			// int(3) is only a display hint
+			$types = $driver->types();
 			$maxlength = (!preg_match('~int~', $field["type"]) && preg_match('~^(\d+)(,(\d+))?$~', $field["length"], $match)
 				? ((preg_match("~binary~", $field["type"]) ? 2 : 1) * $match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0))
 				: ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0)
@@ -1014,13 +1011,15 @@ function process_input($field) {
 	$idf = bracket_escape($field["field"]);
 	$function = $_POST["function"][$idf];
 	$value = $_POST["fields"][$idf];
-	if ($field["type"] == "enum") {
+	if ($field["type"] == "enum" || $driver->enumLength($field)) {
 		if ($value == -1) {
 			return false;
 		}
 		if ($value == "") {
 			return "NULL";
 		}
+	}
+	if ($field["type"] == "enum") {
 		return +$value;
 	}
 	if ($field["auto_increment"] && $value == "") {

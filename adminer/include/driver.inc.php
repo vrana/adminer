@@ -59,6 +59,13 @@ abstract class SqlDriver {
 		return array_map('array_keys', $this->types);
 	}
 
+	/** Get enum values
+	* @param array
+	* @return string or null
+	*/
+	function enumLength($field) {
+	}
+
 	/** Select data from table
 	* @param string
 	* @param array result of $adminer->selectColumnsProcess()[0]

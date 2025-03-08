@@ -234,6 +234,11 @@ if (isset($_GET["pgsql"])) {
 			}
 		}
 
+		function enumLength($field) {
+			$enum = $this->types[lang('User types')][$field["type"]];
+			return ($enum ? type_values($enum) : "");
+		}
+
 		function setUserTypes($types) {
 			$this->types[lang('User types')] = array_flip($types);
 		}
