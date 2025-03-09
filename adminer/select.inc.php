@@ -405,7 +405,8 @@ if (!$columns && support("table")) {
 					. ($is_group || information_schema(DB) ? "" : " <a href='" . h(ME . "edit=" . urlencode($TABLE) . $unique_idf) . "' class='edit'>" . lang('edit') . "</a>")
 				);
 
-				foreach ($row as $key => $val) {
+				foreach ($names as $key => $dummy) {
+					$val = $row[$key] ?? null;
 					if (isset($names[$key])) {
 						$field = $fields[$key];
 						$val = $driver->value($val, $field);
