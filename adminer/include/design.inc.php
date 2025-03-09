@@ -192,7 +192,7 @@ function page_footer($missing = "") {
 <?php if ($missing != "auth") { ?>
 <form action="" method="post">
 <p class="logout">
-<?php echo h($_GET["username"]) . "\n"; ?>
+<span><?php echo h($_GET["username"]) . "\n"; ?></span>
 <input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" id="logout">
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </p>
