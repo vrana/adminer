@@ -786,12 +786,14 @@ if (!defined('Adminer\DRIVER')) {
 	* @return bool
 	*/
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
+		global $connection;
 		$alter = array();
 		foreach ($fields as $field) {
 			if ($field[1]) {
 				$default = $field[1][3];
 				if (preg_match('~ GENERATED~', $default)) {
-					$field[1][3] = $field[1][2];
+					// swap default and null
+					$field[1][3] = (preg_match('~MariaDB~', $connection->server_info) ? "" : $field[1][2]); // MariaDB doesn't support NULL on virtual columns
 					$field[1][2] = $default;
 				}
 				$alter[] = ($table != "" ? ($field[0] != "" ? "CHANGE " . idf_escape($field[0]) : "ADD") : " ") . " " . implode($field[1]) . ($table != "" ? $field[2] : "");

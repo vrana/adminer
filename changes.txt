@@ -2,6 +2,7 @@ Adminer dev:
 Fix gzip export (bug #896)
 Fix importing multiple SQL files not terminated by semicolon
 Use <datalist> for altering collations
+MariaDB: Fix creating and altering generated columns (bug #897)
 
 Adminer 5.0.2 (released 2025-03-10):
 PostgreSQL: Fix setting NULL and original value on enum (bug #884)
