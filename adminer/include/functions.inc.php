@@ -918,11 +918,7 @@ function input($field, $value, $function) {
 	$name = h(bracket_escape($field["field"]));
 	echo "<td class='function'>";
 	if (is_array($value) && !$function) {
-		$args = array($value);
-		if (version_compare(PHP_VERSION, 5.4) >= 0) {
-			$args[] = JSON_PRETTY_PRINT;
-		}
-		$value = call_user_func_array('json_encode', $args); //! requires PHP 5.2
+		$value = json_encode($value, 128); // 128 - JSON_PRETTY_PRINT available since PHP 5.4
 		$function = "json";
 	}
 	$reset = (JUSH == "mssql" && $field["auto_increment"]);
