@@ -86,6 +86,7 @@ Escape unknown field in select
 HTTP drivers: Don't allow path in server name
 HTTP drivers: Hide connection error message
 SimpleDB: Disable XML entity loader
+Latvian translation
 
 Adminer 4.14.0:
 Use autofocus HTML attribute
@@ -549,7 +550,7 @@ MySQL: Speed up updating rows without numeric or UTF-8 primary key
 Non-MySQL: Descending indexes
 PostgreSQL: Fix detecting oid column in PDO
 PostgreSQL: Handle timestamp types (bug #324)
-Add Korean translation
+Korean translation
 
 Adminer 3.7.0 (released 2013-05-19):
 Allow more SQL files to be uploaded at the same time
