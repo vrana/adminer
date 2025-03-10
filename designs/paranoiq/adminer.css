@@ -234,7 +234,7 @@ legend a:hover {
 
 select[name^="columns"] optgroup:last-child option:nth-child(3)::before {
     content: "count "; }
-select[name$="[collation]"] {
+input[name$="[collation]"] {
     max-width: 120px; }
 
 .logout a:first-child, p a {

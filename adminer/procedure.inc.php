@@ -34,6 +34,7 @@ if (!$_POST && $PROCEDURE != "") {
 $collations = get_vals("SHOW CHARACTER SET");
 sort($collations);
 $routine_languages = routine_languages();
+echo ($collations ? "<datalist id='collations'>" . optionlist($collations) . "</datalist>" : "");
 ?>
 
 <form action="" method="post" id="form">

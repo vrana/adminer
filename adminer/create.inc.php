@@ -183,7 +183,12 @@ foreach ($engines as $engine) {
 <?php if (support("columns") || $TABLE == "") { ?>
 <?php echo lang('Table name'); ?>: <input name="name"<?php echo ($TABLE == "" && !$_POST ? " autofocus" : ""); ?> data-maxlength="64" value="<?php echo h($row["name"]); ?>" autocapitalize="off">
 <?php echo ($engines ? html_select("Engine", array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) . on_help("getTarget(event).value", 1) . script("qsl('select').onchange = helpClose;") : ""); ?>
- <?php echo ($collations && !preg_match("~sqlite|mssql~", JUSH) ? html_select("Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]) : ""); ?>
+ <?php
+	if ($collations) {
+		echo "<datalist id='collations'>" . optionlist($collations) . "</datalist>";
+		echo (preg_match("~sqlite|mssql~", JUSH) ? "" : "<input list='collations' name='Collation' value='" . h($row["Collation"]) . "' placeholder='(" . lang('collation') . ")'>");
+	}
+	?>
  <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php } ?>
 

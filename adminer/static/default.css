@@ -53,8 +53,8 @@ input.wayoff { left: -1000px; position: absolute; }
 .function { text-align: right; }
 .number { text-align: right; }
 .datetime { text-align: right; }
-.type { width: 15ex; width: auto\9; }
-.options select { width: 20ex; width: auto\9; }
+.type { width: 15ex; }
+.options select, .options input { width: 20ex; }
 .view { font-style: italic; }
 .active { font-weight: bold; }
 .sqlarea { width: 98%; }
