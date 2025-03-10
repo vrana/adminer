@@ -44,7 +44,7 @@ foreach (glob(__DIR__ . "/adminer/lang/" . ($_SESSION["lang"] ?: "*") . ".inc.ph
 			unset($messages[$en]);
 			$en_fullstop = (substr($en, -2, 1) == ".");
 			//! check in array
-			if ($en != "','" && ($en_fullstop xor preg_match("~($fullstop)'\)?\$~", $line, $match))) {
+			if ($en != "','" && ($en_fullstop xor preg_match("~$fullstop'\)?\$~", $line))) {
 				if ($lang != ($en_fullstop ? "ja" : "he")) { // fullstop is optional in 'ja', forbidden in 'he'
 					echo "$filename:" . (substr_count($file, "\n", 0, $offset) + 1) . ":Not matching fullstop: $line\n";
 				}
