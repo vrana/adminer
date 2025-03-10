@@ -2,6 +2,7 @@ Adminer dev:
 Fix gzip export (bug #896)
 Fix importing multiple SQL files not terminated by semicolon
 Use <datalist> for altering collations
+MySQL: Allow setting default values of text column
 MySQL, MariaDB: Fix default values with ' (bug #895)
 MariaDB: Fix creating and altering generated columns (bug #897)
 
