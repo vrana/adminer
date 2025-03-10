@@ -167,9 +167,9 @@ if (!isset($row["events"])) { // backwards compatibility
 	$row["triggers"] = $row["table_style"];
 }
 
-echo "<tr><th>" . lang('Output') . "<td>" . html_select("output", $adminer->dumpOutput(), $row["output"], 0) . "\n"; // 0 - radio
+echo "<tr><th>" . lang('Output') . "<td>" . html_radios("output", $adminer->dumpOutput(), $row["output"]) . "\n";
 
-echo "<tr><th>" . lang('Format') . "<td>" . html_select("format", $adminer->dumpFormat(), $row["format"], 0) . "\n"; // 0 - radio
+echo "<tr><th>" . lang('Format') . "<td>" . html_radios("format", $adminer->dumpFormat(), $row["format"]) . "\n";
 
 echo (JUSH == "sqlite" ? "" : "<tr><th>" . lang('Database') . "<td>" . html_select('db_style', $db_style, $row["db_style"])
 	. (support("type") ? checkbox("types", 1, $row["types"], lang('User types')) : "")

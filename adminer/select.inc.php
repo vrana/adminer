@@ -587,7 +587,7 @@ if (!$columns && support("table")) {
 				echo script("qsl('a').onclick = partial(toggle, 'import');", "");
 				echo "<span id='import'" . ($_POST["import"] ? "" : " class='hidden'") . ">: ";
 				echo "<input type='file' name='csv_file'> ";
-				echo html_select("separator", array("csv" => "CSV,", "csv;" => "CSV;", "tsv" => "TSV"), $adminer_import["format"], 1); // 1 - select
+				echo html_select("separator", array("csv" => "CSV,", "csv;" => "CSV;", "tsv" => "TSV"), $adminer_import["format"]);
 				echo " <input type='submit' name='import' value='" . lang('Import') . "'>";
 				echo "</span>";
 				echo "</div>";
