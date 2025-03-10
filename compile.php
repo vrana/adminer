@@ -297,7 +297,7 @@ function php_shrink($input) {
 				$doc_comment = true;
 				$token[1] = substr_replace($token[1], "* @version $VERSION\n", -2, 0);
 			}
-			if ($token[0] == T_VAR) {
+			if ($token[0] == T_VAR || $token[0] == T_PUBLIC || $token[0] == T_PROTECTED || $token[0] == T_PRIVATE) {
 				$shortening = false;
 			} elseif (!$shortening) {
 				if ($token[1] == ';') {
