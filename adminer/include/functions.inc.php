@@ -891,18 +891,18 @@ function column_foreign_keys($table) {
 * @param string "radio"|"checkbox"
 * @param string
 * @param array
-* @param mixed int|string|array
+* @param mixed string|array
 * @param string
 * @return null
 */
 function enum_input($type, $attrs, $field, $value, $empty = null) {
 	global $adminer;
 	preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
-	$return = ($empty !== null ? "<label><input type='$type'$attrs value='$empty'" . ((is_array($value) ? in_array($empty, $value) : $value === 0) ? " checked" : "") . "><i>" . lang('empty') . "</i></label>" : "");
+	$return = ($empty !== null ? "<label><input type='$type'$attrs value='$empty'" . ((is_array($value) ? in_array($empty, $value) : $value === $empty) ? " checked" : "") . "><i>" . lang('empty') . "</i></label>" : "");
 	foreach ($matches[1] as $i => $val) {
 		$val = stripcslashes(str_replace("''", "'", $val));
-		$checked = (is_int($value) ? $value == $i+1 : (is_array($value) ? in_array($i+1, $value) : $value === $val));
-		$return .= " <label><input type='$type'$attrs value='" . (JUSH == "sql" ? $i+1 : h($val)) . "'" . ($checked ? ' checked' : '') . '>' . h($adminer->editVal($val, $field)) . '</label>';
+		$checked = (is_array($value) ? in_array($val, $value) : $value === $val);
+		$return .= " <label><input type='$type'$attrs value='" . h($val) . "'" . ($checked ? ' checked' : '') . '>' . h($adminer->editVal($val, $field)) . '</label>';
 	}
 	return $return;
 }
@@ -949,12 +949,12 @@ function input($field, $value, $function) {
 		} elseif (preg_match('~bool~', $field["type"])) {
 			echo "<input type='hidden'$attrs value='0'>"
 				. "<input type='checkbox'" . (preg_match('~^(1|t|true|y|yes|on)$~i', $value) ? " checked='checked'" : "") . "$attrs value='1'>";
-		} elseif ($field["type"] == "set") { //! 64 bits
+		} elseif ($field["type"] == "set") {
 			preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
 			foreach ($matches[1] as $i => $val) {
 				$val = stripcslashes(str_replace("''", "'", $val));
-				$checked = (is_int($value) ? ($value >> $i) & 1 : in_array($val, explode(",", $value), true));
-				echo " <label><input type='checkbox' name='fields[$name][$i]' value='" . (1 << $i) . "'" . ($checked ? ' checked' : '') . ">" . h($adminer->editVal($val, $field)) . '</label>';
+				$checked = in_array($val, explode(",", $value), true);
+				echo " <label><input type='checkbox' name='fields[$name][$i]' value='" . h($val) . "'" . ($checked ? ' checked' : '') . ">" . h($adminer->editVal($val, $field)) . '</label>';
 			}
 		} elseif (preg_match('~blob|bytea|raw|file~', $field["type"]) && ini_bool("file_uploads")) {
 			echo "<input type='file' name='fields-$name'>";
@@ -1023,9 +1023,6 @@ function process_input($field) {
 			return "NULL";
 		}
 	}
-	if ($field["type"] == "enum") {
-		return +$value;
-	}
 	if ($field["auto_increment"] && $value == "") {
 		return null;
 	}
@@ -1036,7 +1033,7 @@ function process_input($field) {
 		return "NULL";
 	}
 	if ($field["type"] == "set") {
-		return array_sum((array) $value);
+		$value = implode(",", (array) $value);
 	}
 	if ($function == "json") {
 		$function = "";
@@ -1440,8 +1437,8 @@ function edit_form($table, $fields, $row, $update) {
 				}
 			}
 			$value = ($row !== null
-				? ($row[$name] != "" && JUSH == "sql" && preg_match("~enum|set~", $field["type"])
-					? (is_array($row[$name]) ? array_sum($row[$name]) : +$row[$name])
+				? ($row[$name] != "" && JUSH == "sql" && preg_match("~enum|set~", $field["type"]) && is_array($row[$name])
+					? implode(",", $row[$name])
 					: (is_bool($row[$name]) ? +$row[$name] : $row[$name])
 				)
 				: (!$update && $field["auto_increment"]

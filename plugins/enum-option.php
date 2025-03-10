@@ -20,20 +20,16 @@ class AdminerEnumOption {
 			}
 			if ($field["null"]) {
 				$options[""] = "NULL";
-				if ($value === null && !isset($_GET["select"])) {
+				if ($selected === null) {
 					$selected = "";
 				}
 			}
-			$options[0] = Adminer\lang('empty');
 			preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
-			foreach ($matches[1] as $i => $val) {
+			foreach ($matches[1] as $val) {
 				$val = stripcslashes(str_replace("''", "'", $val));
-				$options[$i + 1] = $val;
-				if ($value === $val) {
-					$selected = $i + 1;
-				}
+				$options[$val] = $val;
 			}
-			return "<select$attrs>" . Adminer\optionlist($options, (string) $selected, 1) . "</select>"; // 1 - use keys
+			return "<select$attrs>" . Adminer\optionlist($options, $selected, 1) . "</select>"; // 1 - use keys
 		}
 	}
 }
