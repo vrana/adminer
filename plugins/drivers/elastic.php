@@ -245,12 +245,23 @@ if (isset($_GET["elastic"])) {
 		}
 
 		function insert($type, $record) {
-			$id = ""; //! user should be able to inform _id
-			$query = "$type/$id";
+			$query = "$type/_doc/";
+			if (isset($record["_id"]) && $record["_id"] != "NULL") {
+				$query .= $record["_id"];
+				unset($record["_id"]);
+			}
+			foreach ($record as $key => $value) {
+				if ($value == "NULL") {
+					unset($record[$key]);
+				}
+			}
 			$response = $this->_conn->query($query, $record, 'POST');
+			if ($response == false) {
+				return false;
+			}
 			$this->_conn->last_id = $response['_id'];
 
-			return $response['created'];
+			return $response['result'];
 		}
 
 		function delete($table, $queryWhere, $limit = 0) {
@@ -466,6 +477,7 @@ if (isset($_GET["elastic"])) {
 				"field" => "_id",
 				"full_type" => "text",
 				"type" => "text",
+				"null" => true,
 				"privileges" => array("insert" => 1, "select" => 1, "where" => 1, "order" => 1),
 			)
 		);
@@ -475,6 +487,7 @@ if (isset($_GET["elastic"])) {
 				"field" => $name,
 				"full_type" => $field["type"],
 				"type" => $field["type"],
+				"null" => true,
 				"privileges" => array(
 					"insert" => 1,
 					"select" => 1,
