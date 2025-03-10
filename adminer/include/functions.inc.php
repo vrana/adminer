@@ -728,9 +728,10 @@ function pagination($page, $current) {
 /** Get file contents from $_FILES
 * @param string
 * @param bool
+* @param string
 * @return mixed int for error, string otherwise
 */
-function get_file($key, $decompress = false) {
+function get_file($key, $decompress = false, $delimiter = "") {
 	$file = $_FILES[$key];
 	if (!$file) {
 		return null;
@@ -752,17 +753,17 @@ function get_file($key, $decompress = false) {
 		); //! may not be reachable because of open_basedir
 		if ($decompress) {
 			$start = substr($content, 0, 3);
-			if (function_exists("iconv") && preg_match("~^\xFE\xFF|^\xFF\xFE~", $start, $regs)) { // not ternary operator to save memory
+			if (function_exists("iconv") && preg_match("~^\xFE\xFF|^\xFF\xFE~", $start)) { // not ternary operator to save memory
 				$content = iconv("utf-16", "utf-8", $content);
 			} elseif ($start == "\xEF\xBB\xBF") { // UTF-8 BOM
 				$content = substr($content, 3);
 			}
-			$return .= $content . "\n\n";
-		} else {
-			$return .= $content;
+		}
+		$return .= $content;
+		if ($delimiter) {
+			$return .= (preg_match("($delimiter\\s*\$)", $content) ? "" : $delimiter) . "\n\n";
 		}
 	}
-	//! support SQL files not ending with semicolon
 	return $return;
 }
 

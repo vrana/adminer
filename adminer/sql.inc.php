@@ -30,7 +30,7 @@ if (!$error && $_POST) {
 		), "rb");
 		$query = ($fp ? fread($fp, 1e6) : false);
 	} else {
-		$query = get_file("sql_file", true);
+		$query = get_file("sql_file", true, ";");
 	}
 
 	if (is_string($query)) { // get_file() returns error as number, fread() as false

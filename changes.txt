@@ -1,4 +1,5 @@
 Adminer dev:
+Fix importing multiple SQL files not terminated by semicolon
 
 Adminer 5.0.2 (released 2025-03-10):
 PostgreSQL: Fix setting NULL and original value on enum (bug #884)
