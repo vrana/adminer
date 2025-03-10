@@ -1,4 +1,5 @@
 Adminer dev:
+Fix gzip export (bug #896)
 Fix importing multiple SQL files not terminated by semicolon
 Use <datalist> for altering collations
 
