@@ -299,6 +299,7 @@ if (isset($_GET["pgsql"])) {
 		}
 
 		function supportsIndex($table_status) {
+			// returns true for "materialized view"
 			return $table_status["Engine"] != "view";
 		}
 
