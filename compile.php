@@ -297,8 +297,8 @@ function php_shrink($input) {
 				$doc_comment = true;
 				$token[1] = substr_replace($token[1], "* @version $VERSION\n", -2, 0);
 			}
-			if ($token[0] == T_VAR || $token[0] == T_PUBLIC || $token[0] == T_PROTECTED || $token[0] == T_PRIVATE) {
-				if ($token[0] == T_PUBLIC && $tokens[$i+2][1][0] == '$') {
+			if ($token[0] == T_VAR || $token[0] == T_PUBLIC || $token[0] == T_PROTECTED || $token[0] == T_PRIVATE && $tokens[$i+2][1][0] == '$') {
+				if ($token[0] == T_PUBLIC) {
 					$token[1] = 'var';
 				}
 				$shortening = false;
@@ -446,7 +446,7 @@ if ($driver) {
 	}
 	if (count($drivers) == 1) {
 		$file = str_replace('html_select("auth[driver]", $drivers, DRIVER, "loginDriver(this);")', "\"<input type='hidden' name='auth[driver]' value='" . ($driver == "mysql" ? "server" : $driver) . "'>" . reset($drivers) . "\"", $file, $count);
-		if (!$count) {
+		if (!$count && $project != "editor") {
 			echo "auth[driver] form field not found\n";
 		}
 		$file = str_replace(" . script(\"qs('#username').form['auth[driver]'].onchange();\")", "", $file);
