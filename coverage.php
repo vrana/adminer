@@ -8,6 +8,8 @@
 <body>
 
 <?php
+include "./adminer/include/errors.inc.php";
+
 function xhtml_open_tags($s) {
 	// returns array of opened tags in $s
 	$return = array();
@@ -32,7 +34,7 @@ if (!extension_loaded("xdebug")) {
 	// highlight single file
 	$filename = $_GET["coverage"];
 	$coverage = (file_exists($coverage_filename) ? unserialize(file_get_contents($coverage_filename)) : array());
-	$file = explode("<br />", highlight_file($filename, true));
+	$file = explode("\n", highlight_file($filename, true));
 	$prev_color = null;
 	$s = "";
 	for ($l=0; $l <= count($file); $l++) {
@@ -62,7 +64,7 @@ if (!extension_loaded("xdebug")) {
 			$s = ($open_tags ? "<" . implode("><", $open_tags) . ">" : "");
 			$prev_color = $color;
 		}
-		$s .= "$line<br />\n";
+		$s .= "$line\n";
 	}
 } else {
 	if (file_exists($coverage_filename)) {
