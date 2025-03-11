@@ -7,7 +7,8 @@ if (isset($_GET["oracle"])) {
 	define('Adminer\DRIVER', "oracle");
 	if (extension_loaded("oci8")) {
 		class Db {
-			var $extension = "oci8", $_link, $_result, $server_info, $affected_rows, $errno, $error;
+			var $extension = "oci8", $server_info, $affected_rows, $errno, $error;
+			private $link, $result;
 			var $_current_db;
 
 			function _error($errno, $error) {
@@ -19,9 +20,9 @@ if (isset($_GET["oracle"])) {
 			}
 
 			function connect($server, $username, $password) {
-				$this->_link = @oci_new_connect($username, $password, $server, "AL32UTF8");
-				if ($this->_link) {
-					$this->server_info = oci_server_version($this->_link);
+				$this->link = @oci_new_connect($username, $password, $server, "AL32UTF8");
+				if ($this->link) {
+					$this->server_info = oci_server_version($this->link);
 					return true;
 				}
 				$error = oci_error();
@@ -39,10 +40,10 @@ if (isset($_GET["oracle"])) {
 			}
 
 			function query($query, $unbuffered = false) {
-				$result = oci_parse($this->_link, $query);
+				$result = oci_parse($this->link, $query);
 				$this->error = "";
 				if (!$result) {
-					$error = oci_error($this->_link);
+					$error = oci_error($this->link);
 					$this->errno = $error["code"];
 					$this->error = $error["message"];
 					return false;
@@ -61,11 +62,11 @@ if (isset($_GET["oracle"])) {
 			}
 
 			function multi_query($query) {
-				return $this->_result = $this->query($query);
+				return $this->result = $this->query($query);
 			}
 
 			function store_result() {
-				return $this->_result;
+				return $this->result;
 			}
 
 			function next_result() {
@@ -74,21 +75,22 @@ if (isset($_GET["oracle"])) {
 
 			function result($query, $field = 0) {
 				$result = $this->query($query);
-				if (!is_object($result) || !oci_fetch($result->_result)) {
+				if (!is_object($result) || !oci_fetch($result->result)) {
 					return false;
 				}
-				return oci_result($result->_result, $field + 1);
+				return oci_result($result->result, $field + 1);
 			}
 		}
 
 		class Result {
-			var $_result, $_offset = 1, $num_rows;
+			var $num_rows;
+			private $result, $offset = 1;
 
 			function __construct($result) {
-				$this->_result = $result;
+				$this->result = $result;
 			}
 
-			function _convert($row) {
+			private function convert($row) {
 				foreach ((array) $row as $key => $val) {
 					if (is_a($val, 'OCI-Lob')) {
 						$row[$key] = $val->load();
@@ -98,25 +100,25 @@ if (isset($_GET["oracle"])) {
 			}
 
 			function fetch_assoc() {
-				return $this->_convert(oci_fetch_assoc($this->_result));
+				return $this->convert(oci_fetch_assoc($this->result));
 			}
 
 			function fetch_row() {
-				return $this->_convert(oci_fetch_row($this->_result));
+				return $this->convert(oci_fetch_row($this->result));
 			}
 
 			function fetch_field() {
-				$column = $this->_offset++;
+				$column = $this->offset++;
 				$return = new \stdClass;
-				$return->name = oci_field_name($this->_result, $column);
+				$return->name = oci_field_name($this->result, $column);
 				$return->orgname = $return->name;
-				$return->type = oci_field_type($this->_result, $column);
+				$return->type = oci_field_type($this->result, $column);
 				$return->charsetnr = (preg_match("~raw|blob|bfile~", $return->type) ? 63 : 0); // 63 - binary
 				return $return;
 			}
 
 			function __destruct() {
-				oci_free_statement($this->_result);
+				oci_free_statement($this->result);
 			}
 		}
 

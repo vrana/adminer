@@ -18,8 +18,9 @@ if (isset($_GET["firebird"])) {
 				$affected_rows,
 				$errno,
 				$error,
-				$_link, $_result
+				$_link
 			;
+			private $result;
 
 			function connect($server, $username, $password) {
 				$this->_link = ibase_connect($server, $username, $password);
@@ -58,11 +59,11 @@ if (isset($_GET["firebird"])) {
 			}
 
 			function multi_query($query) {
-				return $this->_result = $this->query($query);
+				return $this->result = $this->query($query);
 			}
 
 			function store_result() {
-				return $this->_result;
+				return $this->result;
 			}
 
 			function next_result() {
@@ -80,23 +81,24 @@ if (isset($_GET["firebird"])) {
 		}
 
 		class Result {
-			var $num_rows, $_result, $_offset = 0;
+			var $num_rows;
+			private $result, $offset = 0;
 
 			function __construct($result) {
-				$this->_result = $result;
+				$this->result = $result;
 				// $this->num_rows = ibase_num_rows($result);
 			}
 
 			function fetch_assoc() {
-				return ibase_fetch_assoc($this->_result);
+				return ibase_fetch_assoc($this->result);
 			}
 
 			function fetch_row() {
-				return ibase_fetch_row($this->_result);
+				return ibase_fetch_row($this->result);
 			}
 
 			function fetch_field() {
-				$field = ibase_field_info($this->_result, $this->_offset++);
+				$field = ibase_field_info($this->result, $this->offset++);
 				return (object) array(
 					'name' => $field['name'],
 					'orgname' => $field['name'],
@@ -106,7 +108,7 @@ if (isset($_GET["firebird"])) {
 			}
 
 			function __destruct() {
-				ibase_free_result($this->_result);
+				ibase_free_result($this->result);
 			}
 		}
 

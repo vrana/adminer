@@ -13,7 +13,8 @@ if (isset($_GET["mssql"])) {
 	define('Adminer\DRIVER', "mssql");
 	if (extension_loaded("sqlsrv")) {
 		class Db {
-			var $extension = "sqlsrv", $_link, $_result, $server_info, $affected_rows, $errno, $error;
+			var $extension = "sqlsrv", $server_info, $affected_rows, $errno, $error;
+			private $link, $result;
 
 			function _get_error() {
 				$this->error = "";
@@ -38,14 +39,14 @@ if (isset($_GET["mssql"])) {
 				if ($db != "") {
 					$connection_info["Database"] = $db;
 				}
-				$this->_link = @sqlsrv_connect(preg_replace('~:~', ',', $server), $connection_info);
-				if ($this->_link) {
-					$info = sqlsrv_server_info($this->_link);
+				$this->link = @sqlsrv_connect(preg_replace('~:~', ',', $server), $connection_info);
+				if ($this->link) {
+					$info = sqlsrv_server_info($this->link);
 					$this->server_info = $info['SQLServerVersion'];
 				} else {
 					$this->_get_error();
 				}
-				return (bool) $this->_link;
+				return (bool) $this->link;
 			}
 
 			function quote($string) {
@@ -58,7 +59,7 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function query($query, $unbuffered = false) {
-				$result = sqlsrv_query($this->_link, $query); //! , array(), ($unbuffered ? array() : array("Scrollable" => "keyset"))
+				$result = sqlsrv_query($this->link, $query); //! , array(), ($unbuffered ? array() : array("Scrollable" => "keyset"))
 				$this->error = "";
 				if (!$result) {
 					$this->_get_error();
@@ -68,9 +69,9 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function multi_query($query) {
-				$this->_result = sqlsrv_query($this->_link, $query);
+				$this->result = sqlsrv_query($this->link, $query);
 				$this->error = "";
-				if (!$this->_result) {
+				if (!$this->result) {
 					$this->_get_error();
 					return false;
 				}
@@ -79,7 +80,7 @@ if (isset($_GET["mssql"])) {
 
 			function store_result($result = null) {
 				if (!$result) {
-					$result = $this->_result;
+					$result = $this->result;
 				}
 				if (!$result) {
 					return false;
@@ -92,7 +93,7 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function next_result() {
-				return $this->_result ? sqlsrv_next_result($this->_result) : null;
+				return $this->result ? sqlsrv_next_result($this->result) : null;
 			}
 
 			function result($query, $field = 0) {
@@ -106,10 +107,11 @@ if (isset($_GET["mssql"])) {
 		}
 
 		class Result {
-			var $_result, $_offset = 0, $_fields, $num_rows;
+			var $num_rows;
+			private $result, $offset = 0, $fields;
 
 			function __construct($result) {
-				$this->_result = $result;
+				$this->result = $result;
 				// $this->num_rows = sqlsrv_num_rows($result); // available only in scrollable results
 			}
 
@@ -124,18 +126,18 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function fetch_assoc() {
-				return $this->_convert(sqlsrv_fetch_array($this->_result, SQLSRV_FETCH_ASSOC));
+				return $this->_convert(sqlsrv_fetch_array($this->result, SQLSRV_FETCH_ASSOC));
 			}
 
 			function fetch_row() {
-				return $this->_convert(sqlsrv_fetch_array($this->_result, SQLSRV_FETCH_NUMERIC));
+				return $this->_convert(sqlsrv_fetch_array($this->result, SQLSRV_FETCH_NUMERIC));
 			}
 
 			function fetch_field() {
-				if (!$this->_fields) {
-					$this->_fields = sqlsrv_field_metadata($this->_result);
+				if (!$this->fields) {
+					$this->fields = sqlsrv_field_metadata($this->result);
 				}
-				$field = $this->_fields[$this->_offset++];
+				$field = $this->fields[$this->offset++];
 				$return = new \stdClass;
 				$return->name = $field["Name"];
 				$return->orgname = $field["Name"];
@@ -145,12 +147,12 @@ if (isset($_GET["mssql"])) {
 
 			function seek($offset) {
 				for ($i=0; $i < $offset; $i++) {
-					sqlsrv_fetch($this->_result); // SQLSRV_SCROLL_ABSOLUTE added in sqlsrv 1.1
+					sqlsrv_fetch($this->result); // SQLSRV_SCROLL_ABSOLUTE added in sqlsrv 1.1
 				}
 			}
 
 			function __destruct() {
-				sqlsrv_free_stmt($this->_result);
+				sqlsrv_free_stmt($this->result);
 			}
 		}
 

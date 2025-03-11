@@ -4,7 +4,8 @@ namespace Adminer;
 // PDO can be used in several database drivers
 if (extension_loaded('pdo')) {
 	abstract class PdoDb {
-		var $_result, $server_info, $affected_rows, $errno, $error, $pdo;
+		var $server_info, $affected_rows, $errno, $error, $pdo;
+		private $result;
 
 		function dsn($dsn, $username, $password, $options = array()) {
 			$options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_SILENT;
@@ -38,12 +39,12 @@ if (extension_loaded('pdo')) {
 		}
 
 		function multi_query($query) {
-			return $this->_result = $this->query($query);
+			return $this->result = $this->query($query);
 		}
 
 		function store_result($result = null) {
 			if (!$result) {
-				$result = $this->_result;
+				$result = $this->result;
 				if (!$result) {
 					return false;
 				}
@@ -57,11 +58,11 @@ if (extension_loaded('pdo')) {
 		}
 
 		function next_result() {
-			if (!$this->_result) {
+			if (!$this->result) {
 				return false;
 			}
-			$this->_result->_offset = 0;
-			return @$this->_result->nextRowset(); // @ - PDO_PgSQL doesn't support it
+			$this->result->_offset = 0;
+			return @$this->result->nextRowset(); // @ - PDO_PgSQL doesn't support it
 		}
 
 		function result($query, $field = 0) {

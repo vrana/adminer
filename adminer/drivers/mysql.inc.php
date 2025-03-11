@@ -65,9 +65,9 @@ if (!defined('Adminer\DRIVER')) {
 				$server_info, ///< @var string server version
 				$affected_rows, ///< @var int number of affected rows
 				$errno, ///< @var int last error code
-				$error, ///< @var string last error message
-				$_link, $_result ///< @access private
+				$error ///< @var string last error message
 			;
+			private $link, $result;
 
 			/** Connect to server
 			* @param string
@@ -80,19 +80,19 @@ if (!defined('Adminer\DRIVER')) {
 					$this->error = lang('Disable %s or enable %s or %s extensions.', "'mysql.allow_local_infile'", "MySQLi", "PDO_MySQL");
 					return false;
 				}
-				$this->_link = @mysql_connect(
+				$this->link = @mysql_connect(
 					($server != "" ? $server : ini_get("mysql.default_host")),
 					("$server$username" != "" ? $username : ini_get("mysql.default_user")),
 					("$server$username$password" != "" ? $password : ini_get("mysql.default_password")),
 					true,
 					131072 // CLIENT_MULTI_RESULTS for CALL
 				);
-				if ($this->_link) {
-					$this->server_info = mysql_get_server_info($this->_link);
+				if ($this->link) {
+					$this->server_info = mysql_get_server_info($this->link);
 				} else {
 					$this->error = mysql_error();
 				}
-				return (bool) $this->_link;
+				return (bool) $this->link;
 			}
 
 			/** Sets the client character set
@@ -101,11 +101,11 @@ if (!defined('Adminer\DRIVER')) {
 			*/
 			function set_charset($charset) {
 				if (function_exists('mysql_set_charset')) {
-					if (mysql_set_charset($charset, $this->_link)) {
+					if (mysql_set_charset($charset, $this->link)) {
 						return true;
 					}
 					// the client library may not support utf8mb4
-					mysql_set_charset('utf8', $this->_link);
+					mysql_set_charset('utf8', $this->link);
 				}
 				return $this->query("SET NAMES $charset");
 			}
@@ -115,7 +115,7 @@ if (!defined('Adminer\DRIVER')) {
 			* @return string escaped string enclosed in '
 			*/
 			function quote($string) {
-				return "'" . mysql_real_escape_string($string, $this->_link) . "'";
+				return "'" . mysql_real_escape_string($string, $this->link) . "'";
 			}
 
 			/** Select database
@@ -123,7 +123,7 @@ if (!defined('Adminer\DRIVER')) {
 			* @return bool
 			*/
 			function select_db($database) {
-				return mysql_select_db($database, $this->_link);
+				return mysql_select_db($database, $this->link);
 			}
 
 			/** Send query
@@ -132,16 +132,16 @@ if (!defined('Adminer\DRIVER')) {
 			* @return mixed bool or Result
 			*/
 			function query($query, $unbuffered = false) {
-				$result = @($unbuffered ? mysql_unbuffered_query($query, $this->_link) : mysql_query($query, $this->_link)); // @ - mute mysql.trace_mode
+				$result = @($unbuffered ? mysql_unbuffered_query($query, $this->link) : mysql_query($query, $this->link)); // @ - mute mysql.trace_mode
 				$this->error = "";
 				if (!$result) {
-					$this->errno = mysql_errno($this->_link);
-					$this->error = mysql_error($this->_link);
+					$this->errno = mysql_errno($this->link);
+					$this->error = mysql_error($this->link);
 					return false;
 				}
 				if ($result === true) {
-					$this->affected_rows = mysql_affected_rows($this->_link);
-					$this->info = mysql_info($this->_link);
+					$this->affected_rows = mysql_affected_rows($this->link);
+					$this->info = mysql_info($this->link);
 					return true;
 				}
 				return new Result($result);
@@ -152,14 +152,14 @@ if (!defined('Adminer\DRIVER')) {
 			* @return bool
 			*/
 			function multi_query($query) {
-				return $this->_result = $this->query($query);
+				return $this->result = $this->query($query);
 			}
 
 			/** Get current resultset
 			* @return Result
 			*/
 			function store_result() {
-				return $this->_result;
+				return $this->result;
 			}
 
 			/** Fetch next resultset
@@ -180,21 +180,19 @@ if (!defined('Adminer\DRIVER')) {
 				if (!$result || !$result->num_rows) {
 					return false;
 				}
-				return mysql_result($result->_result, 0, $field);
+				return mysql_result($result->result, 0, $field);
 			}
 		}
 
 		class Result {
-			var
-				$num_rows, ///< @var int number of rows in the result
-				$_result, $_offset = 0 ///< @access private
-			;
+			var $num_rows; ///< @var int number of rows in the result
+			private $result, $offset = 0;
 
 			/** Constructor
 			* @param resource
 			*/
 			function __construct($result) {
-				$this->_result = $result;
+				$this->result = $result;
 				$this->num_rows = mysql_num_rows($result);
 			}
 
@@ -202,21 +200,21 @@ if (!defined('Adminer\DRIVER')) {
 			* @return array
 			*/
 			function fetch_assoc() {
-				return mysql_fetch_assoc($this->_result);
+				return mysql_fetch_assoc($this->result);
 			}
 
 			/** Fetch next row as numbered array
 			* @return array
 			*/
 			function fetch_row() {
-				return mysql_fetch_row($this->_result);
+				return mysql_fetch_row($this->result);
 			}
 
 			/** Fetch next field
 			* @return object properties: name, type, orgtable, orgname, charsetnr
 			*/
 			function fetch_field() {
-				$return = mysql_fetch_field($this->_result, $this->_offset++); // offset required under certain conditions
+				$return = mysql_fetch_field($this->result, $this->offset++); // offset required under certain conditions
 				$return->orgtable = $return->table;
 				$return->orgname = $return->name;
 				$return->charsetnr = ($return->blob ? 63 : 0);
@@ -226,7 +224,7 @@ if (!defined('Adminer\DRIVER')) {
 			/** Free result set
 			*/
 			function __destruct() {
-				mysql_free_result($this->_result);
+				mysql_free_result($this->result);
 			}
 		}
 

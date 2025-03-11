@@ -8,11 +8,12 @@ if (isset($_GET["clickhouse"])) {
 
 	if (ini_bool('allow_url_fopen')) {
 		class Db {
-			var $extension = "JSON", $server_info, $errno, $_result, $error, $_url;
+			var $extension = "JSON", $server_info, $errno, $error;
+			private $result, $url;
 			var $_db = 'default';
 
 			function rootQuery($db, $query) {
-				$file = @file_get_contents("$this->_url/?database=$db", false, stream_context_create(array('http' => array(
+				$file = @file_get_contents("$this->url/?database=$db", false, stream_context_create(array('http' => array(
 					'method' => 'POST',
 					'content' => $this->isQuerySelectLike($query) ? "$query FORMAT JSONCompact" : $query,
 					'header' => 'Content-type: application/x-www-form-urlencoded',
@@ -57,7 +58,7 @@ if (isset($_GET["clickhouse"])) {
 
 			function connect($server, $username, $password) {
 				preg_match('~^(https?://)?(.*)~', $server, $match);
-				$this->_url = ($match[1] ?: "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
+				$this->url = ($match[1] ?: "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
 				$return = $this->query('SELECT 1');
 				return (bool) $return;
 			}
@@ -72,11 +73,11 @@ if (isset($_GET["clickhouse"])) {
 			}
 
 			function multi_query($query) {
-				return $this->_result = $this->query($query);
+				return $this->result = $this->query($query);
 			}
 
 			function store_result() {
-				return $this->_result;
+				return $this->result;
 			}
 
 			function next_result() {
@@ -90,7 +91,8 @@ if (isset($_GET["clickhouse"])) {
 		}
 
 		class Result {
-			var $num_rows, $_rows, $columns, $meta, $_offset = 0;
+			var $num_rows, $columns, $meta;
+			private $rows, $offset = 0;
 
 			function __construct($result) {
 				foreach ($result['data'] as $item) {
@@ -98,28 +100,28 @@ if (isset($_GET["clickhouse"])) {
 					foreach ($item as $key => $val) {
 						$row[$key] = is_scalar($val) ? $val : json_encode($val, 256); // 256 - JSON_UNESCAPED_UNICODE
 					}
-					$this->_rows[] = $row;
+					$this->rows[] = $row;
 				}
 				$this->num_rows = $result['rows'];
 				$this->meta = $result['meta'];
 				$this->columns = array_column($this->meta, 'name');
-				reset($this->_rows);
+				reset($this->rows);
 			}
 
 			function fetch_assoc() {
-				$row = current($this->_rows);
-				next($this->_rows);
+				$row = current($this->rows);
+				next($this->rows);
 				return $row === false ? false : array_combine($this->columns, $row);
 			}
 
 			function fetch_row() {
-				$row = current($this->_rows);
-				next($this->_rows);
+				$row = current($this->rows);
+				next($this->rows);
 				return $row;
 			}
 
 			function fetch_field() {
-				$column = $this->_offset++;
+				$column = $this->offset++;
 				$return = new \stdClass;
 				if ($column < count($this->columns)) {
 					$return->name = $this->meta[$column]['name'];

@@ -53,14 +53,15 @@ if (isset($_GET["mongo"])) {
 		}
 
 		class Result {
-			var $num_rows, $_rows = array(), $_offset = 0, $_charset = array();
+			var $num_rows;
+			private $rows = array(), $offset = 0, $charset = array();
 
 			function __construct($result) {
 				foreach ($result as $item) {
 					$row = array();
 					foreach ($item as $key => $val) {
 						if (is_a($val, 'MongoDB\BSON\Binary')) {
-							$this->_charset[$key] = 63;
+							$this->charset[$key] = 63;
 						}
 						$row[$key] =
 							(is_a($val, 'MongoDB\BSON\ObjectID') ? 'MongoDB\BSON\ObjectID("' . "$val\")" :
@@ -71,26 +72,26 @@ if (isset($_GET["mongo"])) {
 							$val // MongoMinKey, MongoMaxKey
 						)))));
 					}
-					$this->_rows[] = $row;
+					$this->rows[] = $row;
 					foreach ($row as $key => $val) {
-						if (!isset($this->_rows[0][$key])) {
-							$this->_rows[0][$key] = null;
+						if (!isset($this->rows[0][$key])) {
+							$this->rows[0][$key] = null;
 						}
 					}
 				}
-				$this->num_rows = count($this->_rows);
+				$this->num_rows = count($this->rows);
 			}
 
 			function fetch_assoc() {
-				$row = current($this->_rows);
+				$row = current($this->rows);
 				if (!$row) {
 					return $row;
 				}
 				$return = array();
-				foreach ($this->_rows[0] as $key => $val) {
+				foreach ($this->rows[0] as $key => $val) {
 					$return[$key] = $row[$key];
 				}
-				next($this->_rows);
+				next($this->rows);
 				return $return;
 			}
 
@@ -103,11 +104,11 @@ if (isset($_GET["mongo"])) {
 			}
 
 			function fetch_field() {
-				$keys = array_keys($this->_rows[0]);
-				$name = $keys[$this->_offset++];
+				$keys = array_keys($this->rows[0]);
+				$name = $keys[$this->offset++];
 				return (object) array(
 					'name' => $name,
-					'charsetnr' => $this->_charset[$name],
+					'charsetnr' => $this->charset[$name],
 				);
 			}
 		}

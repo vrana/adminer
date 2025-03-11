@@ -8,7 +8,8 @@ if (isset($_GET["simpledb"])) {
 
 	if (class_exists('SimpleXMLElement') && ini_bool('allow_url_fopen')) {
 		class Db {
-			var $extension = "SimpleXML", $server_info = '2009-04-15', $error, $timeout, $next, $affected_rows, $_result;
+			var $extension = "SimpleXML", $server_info = '2009-04-15', $error, $timeout, $next, $affected_rows;
+			private $result;
 
 			function select_db($database) {
 				return ($database == "domain");
@@ -38,11 +39,11 @@ if (isset($_GET["simpledb"])) {
 			}
 
 			function multi_query($query) {
-				return $this->_result = $this->query($query);
+				return $this->result = $this->query($query);
 			}
 
 			function store_result() {
-				return $this->_result;
+				return $this->result;
 			}
 
 			function next_result() {
@@ -55,7 +56,8 @@ if (isset($_GET["simpledb"])) {
 		}
 
 		class Result {
-			var $num_rows, $_rows = array(), $_offset = 0;
+			var $num_rows;
+			private $rows = array(), $offset = 0;
 
 			function __construct($result) {
 				foreach ($result as $item) {
@@ -73,14 +75,14 @@ if (isset($_GET["simpledb"])) {
 							$row[$name] = $value;
 						}
 					}
-					$this->_rows[] = $row;
+					$this->rows[] = $row;
 					foreach ($row as $key => $val) {
-						if (!isset($this->_rows[0][$key])) {
-							$this->_rows[0][$key] = null;
+						if (!isset($this->rows[0][$key])) {
+							$this->rows[0][$key] = null;
 						}
 					}
 				}
-				$this->num_rows = count($this->_rows);
+				$this->num_rows = count($this->rows);
 			}
 
 			function _processValue($element) {
@@ -88,15 +90,15 @@ if (isset($_GET["simpledb"])) {
 			}
 
 			function fetch_assoc() {
-				$row = current($this->_rows);
+				$row = current($this->rows);
 				if (!$row) {
 					return $row;
 				}
 				$return = array();
-				foreach ($this->_rows[0] as $key => $val) {
+				foreach ($this->rows[0] as $key => $val) {
 					$return[$key] = $row[$key];
 				}
-				next($this->_rows);
+				next($this->rows);
 				return $return;
 			}
 
@@ -109,8 +111,8 @@ if (isset($_GET["simpledb"])) {
 			}
 
 			function fetch_field() {
-				$keys = array_keys($this->_rows[0]);
-				return (object) array('name' => $keys[$this->_offset++]);
+				$keys = array_keys($this->rows[0]);
+				return (object) array('name' => $keys[$this->offset++]);
 			}
 		}
 	}

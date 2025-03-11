@@ -3,7 +3,7 @@ namespace Adminer;
 
 class Adminer {
 	var $operators = array("<=", ">=");
-	var $_values = array();
+	private $values = array();
 
 	function name() {
 		return "<a href='https://www.adminer.org/editor/'" . target_blank() . " id='h1'>" . lang('Editor') . "</a>";
@@ -175,7 +175,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row //! requires MySQL 5
 					$ids[$row[$key]] = q($row[$key]);
 				}
 				// uses constant number of queries to get the descriptions, join would be complex, multiple queries would be slow
-				$descriptions = $this->_values[$table];
+				$descriptions = $this->values[$table];
 				if (!$descriptions) {
 					$descriptions = get_key_vals("SELECT $id, $name FROM " . table($table) . " WHERE $id IN (" . implode(", ", $ids) . ")");
 				}
@@ -653,7 +653,7 @@ qsl('div').onclick = whisperClick;", "")
 
 	function _foreignKeyOptions($table, $column, $value = null) {
 		if (list($target, $id, $name) = $this->_foreignColumn(column_foreign_keys($table), $column)) {
-			$return = &$this->_values[$target];
+			$return = &$this->values[$target];
 			if ($return === null) {
 				$table_status = table_status($target);
 				$return = ($table_status["Rows"] > 1000 ? "" : array("" => "") + get_key_vals("SELECT $id, $name FROM " . table($target) . " ORDER BY 2"));

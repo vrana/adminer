@@ -9,7 +9,8 @@ if (isset($_GET["elastic"])) {
 	if (ini_bool('allow_url_fopen')) {
 
 		class Db {
-			var $extension = "JSON", $server_info, $errno, $error, $_url;
+			var $extension = "JSON", $server_info, $errno, $error;
+			private $url;
 
 			/**
 			 * @param string $path
@@ -18,7 +19,7 @@ if (isset($_GET["elastic"])) {
 			 * @return array|false
 			 */
 			function rootQuery($path, array $content = null, $method = 'GET') {
-				$file = @file_get_contents("$this->_url/" . ltrim($path, '/'), false, stream_context_create(array('http' => array(
+				$file = @file_get_contents("$this->url/" . ltrim($path, '/'), false, stream_context_create(array('http' => array(
 					'method' => $method,
 					'content' => $content !== null ? json_encode($content) : null,
 					'header' => $content !== null ? 'Content-Type: application/json' : array(),
@@ -78,7 +79,7 @@ if (isset($_GET["elastic"])) {
 			 */
 			function connect($server, $username, $password) {
 				preg_match('~^(https?://)?(.*)~', $server, $match);
-				$this->_url = ($match[1] ?: "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
+				$this->url = ($match[1] ?: "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
 				$return = $this->query('');
 				if ($return) {
 					$this->server_info = $return['version']['number'];
@@ -96,18 +97,19 @@ if (isset($_GET["elastic"])) {
 		}
 
 		class Result {
-			var $num_rows, $_rows;
+			var $num_rows;
+			private $rows;
 
 			function __construct($rows) {
 				$this->num_rows = count($rows);
-				$this->_rows = $rows;
+				$this->rows = $rows;
 
-				reset($this->_rows);
+				reset($this->rows);
 			}
 
 			function fetch_assoc() {
-				$return = current($this->_rows);
-				next($this->_rows);
+				$return = current($this->rows);
+				next($this->rows);
 
 				return $return;
 			}

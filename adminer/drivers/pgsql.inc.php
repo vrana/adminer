@@ -7,7 +7,8 @@ if (isset($_GET["pgsql"])) {
 	define('Adminer\DRIVER', "pgsql");
 	if (extension_loaded("pgsql")) {
 		class Db {
-			var $extension = "PgSQL", $_link, $_result, $_string, $_database = true, $server_info, $affected_rows, $error, $timeout;
+			var $extension = "PgSQL", $server_info, $affected_rows, $error, $timeout;
+			private $link, $result, $string, $database = true;
 
 			function _error($errno, $error) {
 				if (ini_bool("html_errors")) {
@@ -21,28 +22,28 @@ if (isset($_GET["pgsql"])) {
 				global $adminer;
 				$db = $adminer->database();
 				set_error_handler(array($this, '_error'));
-				$this->_string = "host='" . str_replace(":", "' port='", addcslashes($server, "'\\")) . "' user='" . addcslashes($username, "'\\") . "' password='" . addcslashes($password, "'\\") . "'";
+				$this->string = "host='" . str_replace(":", "' port='", addcslashes($server, "'\\")) . "' user='" . addcslashes($username, "'\\") . "' password='" . addcslashes($password, "'\\") . "'";
 				$ssl = $adminer->connectSsl();
 				if (isset($ssl["mode"])) {
-					$this->_string .= " sslmode='" . $ssl["mode"] . "'";
+					$this->string .= " sslmode='" . $ssl["mode"] . "'";
 				}
-				$this->_link = @pg_connect("$this->_string dbname='" . ($db != "" ? addcslashes($db, "'\\") : "postgres") . "'", PGSQL_CONNECT_FORCE_NEW);
-				if (!$this->_link && $db != "") {
+				$this->link = @pg_connect("$this->string dbname='" . ($db != "" ? addcslashes($db, "'\\") : "postgres") . "'", PGSQL_CONNECT_FORCE_NEW);
+				if (!$this->link && $db != "") {
 					// try to connect directly with database for performance
-					$this->_database = false;
-					$this->_link = @pg_connect("$this->_string dbname='postgres'", PGSQL_CONNECT_FORCE_NEW);
+					$this->database = false;
+					$this->link = @pg_connect("$this->string dbname='postgres'", PGSQL_CONNECT_FORCE_NEW);
 				}
 				restore_error_handler();
-				if ($this->_link) {
-					$version = pg_version($this->_link);
+				if ($this->link) {
+					$version = pg_version($this->link);
 					$this->server_info = $version["server"];
-					pg_set_client_encoding($this->_link, "UTF8");
+					pg_set_client_encoding($this->link, "UTF8");
 				}
-				return (bool) $this->_link;
+				return (bool) $this->link;
 			}
 
 			function quote($string) {
-				return pg_escape_literal($this->_link, $string);
+				return pg_escape_literal($this->link, $string);
 			}
 
 			function value($val, $field) {
@@ -50,30 +51,30 @@ if (isset($_GET["pgsql"])) {
 			}
 
 			function quoteBinary($string) {
-				return "'" . pg_escape_bytea($this->_link, $string) . "'";
+				return "'" . pg_escape_bytea($this->link, $string) . "'";
 			}
 
 			function select_db($database) {
 				global $adminer;
 				if ($database == $adminer->database()) {
-					return $this->_database;
+					return $this->database;
 				}
-				$return = @pg_connect("$this->_string dbname='" . addcslashes($database, "'\\") . "'", PGSQL_CONNECT_FORCE_NEW);
+				$return = @pg_connect("$this->string dbname='" . addcslashes($database, "'\\") . "'", PGSQL_CONNECT_FORCE_NEW);
 				if ($return) {
-					$this->_link = $return;
+					$this->link = $return;
 				}
 				return $return;
 			}
 
 			function close() {
-				$this->_link = @pg_connect("$this->_string dbname='postgres'");
+				$this->link = @pg_connect("$this->string dbname='postgres'");
 			}
 
 			function query($query, $unbuffered = false) {
-				$result = @pg_query($this->_link, $query);
+				$result = @pg_query($this->link, $query);
 				$this->error = "";
 				if (!$result) {
-					$this->error = pg_last_error($this->_link);
+					$this->error = pg_last_error($this->link);
 					$return = false;
 				} elseif (!pg_num_fields($result)) {
 					$this->affected_rows = pg_affected_rows($result);
@@ -89,11 +90,11 @@ if (isset($_GET["pgsql"])) {
 			}
 
 			function multi_query($query) {
-				return $this->_result = $this->query($query);
+				return $this->result = $this->query($query);
 			}
 
 			function store_result() {
-				return $this->_result;
+				return $this->result;
 			}
 
 			function next_result() {
@@ -106,45 +107,46 @@ if (isset($_GET["pgsql"])) {
 				if (!$result || !$result->num_rows) {
 					return false;
 				}
-				return pg_fetch_result($result->_result, 0, $field);
+				return pg_fetch_result($result->result, 0, $field);
 			}
 
 			function warnings() {
-				return h(pg_last_notice($this->_link)); // second parameter is available since PHP 7.1.0
+				return h(pg_last_notice($this->link)); // second parameter is available since PHP 7.1.0
 			}
 		}
 
 		class Result {
-			var $_result, $_offset = 0, $num_rows;
+			var $num_rows;
+			private $result, $offset = 0;
 
 			function __construct($result) {
-				$this->_result = $result;
+				$this->result = $result;
 				$this->num_rows = pg_num_rows($result);
 			}
 
 			function fetch_assoc() {
-				return pg_fetch_assoc($this->_result);
+				return pg_fetch_assoc($this->result);
 			}
 
 			function fetch_row() {
-				return pg_fetch_row($this->_result);
+				return pg_fetch_row($this->result);
 			}
 
 			function fetch_field() {
-				$column = $this->_offset++;
+				$column = $this->offset++;
 				$return = new \stdClass;
 				if (function_exists('pg_field_table')) {
-					$return->orgtable = pg_field_table($this->_result, $column);
+					$return->orgtable = pg_field_table($this->result, $column);
 				}
-				$return->name = pg_field_name($this->_result, $column);
+				$return->name = pg_field_name($this->result, $column);
 				$return->orgname = $return->name;
-				$return->type = pg_field_type($this->_result, $column);
+				$return->type = pg_field_type($this->result, $column);
 				$return->charsetnr = ($return->type == "bytea" ? 63 : 0); // 63 - binary
 				return $return;
 			}
 
 			function __destruct() {
-				pg_free_result($this->_result);
+				pg_free_result($this->result);
 			}
 		}
 
