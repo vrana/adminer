@@ -1,11 +1,13 @@
 Adminer dev:
-Fix gzip export (bug #896)
+Fix gzip export (bug #896, regression from 5.0.0)
 Fix importing multiple SQL files not terminated by semicolon
 Use <datalist> for altering collations
 MySQL: Allow setting default values of text column
 MySQL: Stop treating enum and set as numbers (bug #475)
 MySQL, MariaDB: Fix default values with ' (bug #895)
 MariaDB: Fix creating and altering generated columns (bug #897)
+Elastic: Do not pass null values on insert (PR #892)
+Elastic: Fix displaying sparse rows (PR #893)
 
 Adminer 5.0.2 (released 2025-03-10):
 PostgreSQL: Fix setting NULL and original value on enum (bug #884)
