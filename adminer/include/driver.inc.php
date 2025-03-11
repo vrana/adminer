@@ -34,9 +34,9 @@ abstract class SqlDriver {
 	public $functions = array(); ///< @var array functions used in select
 	public $grouping = array(); ///< @var array grouping functions used in select
 	public $onActions = "RESTRICT|NO ACTION|CASCADE|SET NULL|SET DEFAULT"; ///< @var string used in foreign_keys()
-	public $inout = "IN|OUT|INOUT";
-	public $enumLength = "'(?:''|[^'\\\\]|\\\\.)*'";
-	public $generated = array();
+	public $inout = "IN|OUT|INOUT"; ///< @var string used in routines
+	public $enumLength = "'(?:''|[^'\\\\]|\\\\.)*'"; ///< @var string regular expression for parsing enum lengths
+	public $generated = array(); ///< @var array allowed types of generated columns
 
 	/** Create object for performing database operations
 	* @param Db
