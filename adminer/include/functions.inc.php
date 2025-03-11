@@ -1423,6 +1423,7 @@ function edit_form($table, $fields, $row, $update) {
 <form action="" method="post" enctype="multipart/form-data" id="form">
 <?php
 	$first = 0;
+	$is_first = true;
 	if (!$fields) {
 		echo "<p class='error'>" . lang('You have no privileges to update this table.') . "\n";
 	} else {
@@ -1467,8 +1468,10 @@ function edit_form($table, $fields, $row, $update) {
 				$value = "";
 				$function = "uuid";
 			}
-			if ($field["auto_increment"] || $function == "now" || $function == "uuid") {
+			if ($is_first && ($field["auto_increment"] || $function == "now" || $function == "uuid")) {
 				$first++;
+			} else {
+				$is_first = false;
 			}
 			input($field, $value, $function);
 			echo "\n";
