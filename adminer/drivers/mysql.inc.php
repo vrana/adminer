@@ -606,7 +606,7 @@ if (!defined('Adminer\DRIVER')) {
 			}
 			if ($maria || $is_text) {
 				$default = preg_replace_callback("~^'(.*)'$~", function ($match) {
-					return str_replace("''", "'", stripslashes($match[1]));
+					return stripslashes(str_replace("''", "'", $match[1]));
 				}, $default);
 			}
 			$return[$field] = array(
