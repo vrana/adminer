@@ -612,6 +612,11 @@ if (!defined('Adminer\DRIVER')) {
 					return stripslashes(str_replace("''", "'", $match[1]));
 				}, $default);
 			}
+			if (!$maria && preg_match('~binary~', $match_type[1]) && preg_match('~^0x(\w*)$~', $default, $match)) {
+				$default = preg_replace_callback('~..~', function ($match) {
+					return chr(hexdec($match[0]));
+				}, $match[1]);
+			}
 			$return[$field] = array(
 				"field" => $field,
 				"full_type" => $type,
