@@ -1,5 +1,6 @@
 Adminer dev:
 MySQL: Display default values of binary columns
+PostgreSQL PDO: Escape bytea values (bug #218)
 
 Adminer 5.0.4 (released 2025-03-11):
 Compile: Fix shortening in private methods (regression from 5.0.3)

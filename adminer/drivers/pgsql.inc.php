@@ -50,10 +50,6 @@ if (isset($_GET["pgsql"])) {
 				return ($field["type"] == "bytea" && $val !== null ? pg_unescape_bytea($val) : $val);
 			}
 
-			function quoteBinary($string) {
-				return "'" . pg_escape_bytea($this->link, $string) . "'";
-			}
-
 			function select_db($database) {
 				global $adminer;
 				if ($database == $adminer->database()) {
@@ -173,10 +169,6 @@ if (isset($_GET["pgsql"])) {
 				return ($adminer->database() == $database);
 			}
 
-			function quoteBinary($s) {
-				return q($s);
-			}
-
 			function query($query, $unbuffered = false) {
 				$return = parent::query($query, $unbuffered);
 				if ($this->timeout) {
@@ -283,7 +275,7 @@ if (isset($_GET["pgsql"])) {
 		}
 
 		function quoteBinary($s) {
-			return $this->conn->quoteBinary($s);
+			return "'\\x" . bin2hex($s) . "'"; // available since PostgreSQL 8.1
 		}
 
 		function warnings() {
