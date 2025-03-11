@@ -7,8 +7,7 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerLoginOtp {
-	/** @access protected */
-	var $secret;
+	protected $secret;
 
 	/**
 	* @param string decoded secret, e.g. base64_decode("SECRET")

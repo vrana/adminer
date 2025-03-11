@@ -7,10 +7,10 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerEditForeign {
-	var $_limit;
+	protected $limit;
 
 	function __construct($limit = 0) {
-		$this->_limit = $limit;
+		$this->limit = $limit;
 	}
 
 	function editInput($table, $field, $attrs, $value) {
@@ -30,8 +30,8 @@ class AdminerEditForeign {
 					if (preg_match('~binary~', $field["type"])) {
 						$column = "HEX($column)";
 					}
-					$options = array("" => "") + Adminer\get_vals("SELECT $column FROM " . Adminer\table($target) . " ORDER BY 1" . ($this->_limit ? " LIMIT " . ($this->_limit + 1) : ""));
-					if ($this->_limit && count($options) - 1 > $this->_limit) {
+					$options = array("" => "") + Adminer\get_vals("SELECT $column FROM " . Adminer\table($target) . " ORDER BY 1" . ($this->limit ? " LIMIT " . ($this->limit + 1) : ""));
+					if ($this->limit && count($options) - 1 > $this->limit) {
 						return;
 					}
 				}

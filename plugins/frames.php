@@ -7,8 +7,7 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerFrames {
-	/** @access protected */
-	var $sameOrigin;
+	protected $sameOrigin;
 
 	/**
 	* @param bool allow running from the same origin only

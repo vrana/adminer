@@ -8,8 +8,7 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerDumpBz2 {
-	/** @access protected */
-	var $filename, $fp;
+	protected $filename, $fp;
 
 	function dumpOutput() {
 		if (!function_exists('bzopen')) {

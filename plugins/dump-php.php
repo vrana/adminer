@@ -6,8 +6,8 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerDumpPhp {
-	var $output = array();
-	var $shutdown_callback = false;
+	protected $output = array();
+	protected $shutdown_callback = false;
 
 	function dumpFormat() {
 		return array('php' => 'PHP');

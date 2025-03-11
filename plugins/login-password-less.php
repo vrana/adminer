@@ -7,8 +7,7 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerLoginPasswordLess {
-	/** @access protected */
-	var $password_hash;
+	protected $password_hash;
 
 	/** Set allowed password
 	* @param string result of password_hash

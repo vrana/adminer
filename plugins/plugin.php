@@ -7,8 +7,7 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerPlugin extends Adminer\Adminer {
-	/** @access protected */
-	var $plugins;
+	protected $plugins;
 
 	/** Register plugins
 	* @param array object instances or null to register all classes starting by 'Adminer'

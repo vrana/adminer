@@ -7,8 +7,7 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerDumpJson {
-	/** @access protected */
-	var $database = false;
+	protected $database = false;
 
 	function dumpFormat() {
 		return array('json' => 'JSON');

@@ -8,8 +8,7 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerFileUpload {
-	/** @access protected */
-	var $uploadPath, $displayPath, $extensions;
+	protected $uploadPath, $displayPath, $extensions;
 
 	/**
 	* @param string prefix for uploading data (create writable subdirectory for each table containing uploadable fields)
