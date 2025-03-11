@@ -16,7 +16,7 @@ if (isset($_GET["mssql"])) {
 			var $extension = "sqlsrv", $server_info, $affected_rows, $errno, $error;
 			private $link, $result;
 
-			function _get_error() {
+			private function get_error() {
 				$this->error = "";
 				foreach (sqlsrv_errors() as $error) {
 					$this->errno = $error["code"];
@@ -44,7 +44,7 @@ if (isset($_GET["mssql"])) {
 					$info = sqlsrv_server_info($this->link);
 					$this->server_info = $info['SQLServerVersion'];
 				} else {
-					$this->_get_error();
+					$this->get_error();
 				}
 				return (bool) $this->link;
 			}
@@ -62,7 +62,7 @@ if (isset($_GET["mssql"])) {
 				$result = sqlsrv_query($this->link, $query); //! , array(), ($unbuffered ? array() : array("Scrollable" => "keyset"))
 				$this->error = "";
 				if (!$result) {
-					$this->_get_error();
+					$this->get_error();
 					return false;
 				}
 				return $this->store_result($result);
@@ -72,7 +72,7 @@ if (isset($_GET["mssql"])) {
 				$this->result = sqlsrv_query($this->link, $query);
 				$this->error = "";
 				if (!$this->result) {
-					$this->_get_error();
+					$this->get_error();
 					return false;
 				}
 				return true;

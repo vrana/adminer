@@ -248,7 +248,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row //! requires MySQL 5
 				);
 				echo "</div>\n";
 				unset($columns[$name]);
-			} elseif (is_array($options = $this->_foreignKeyOptions($_GET["select"], $name))) {
+			} elseif (is_array($options = $this->foreignKeyOptions($_GET["select"], $name))) {
 				if ($fields[$name]["null"]) {
 					$options[0] = '(' . lang('empty') . ')';
 				}
@@ -482,7 +482,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row //! requires MySQL 5
 				. enum_input("radio", $attrs, $field, ($value || isset($_GET["select"]) ? $value : 0), ($field["null"] ? "" : null))
 			;
 		}
-		$options = $this->_foreignKeyOptions($table, $field["field"], $value);
+		$options = $this->foreignKeyOptions($table, $field["field"], $value);
 		if ($options !== null) {
 			return (is_array($options)
 				? "<select$attrs>" . optionlist($options, $value, true) . "</select>"
@@ -651,7 +651,7 @@ qsl('div').onclick = whisperClick;", "")
 		}
 	}
 
-	function _foreignKeyOptions($table, $column, $value = null) {
+	private function foreignKeyOptions($table, $column, $value = null) {
 		if (list($target, $id, $name) = $this->_foreignColumn(column_foreign_keys($table), $column)) {
 			$return = &$this->values[$target];
 			if ($return === null) {

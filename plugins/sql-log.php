@@ -17,14 +17,14 @@ class AdminerSqlLog {
 	}
 
 	function messageQuery($query, $time, $failed = false) {
-		$this->_log($query);
+		$this->log($query);
 	}
 
 	function sqlCommandQuery($query) {
-		$this->_log($query);
+		$this->log($query);
 	}
 
-	function _log($query) {
+	private function log($query) {
 		if ($this->filename == "") {
 			$adminer = Adminer\adminer();
 			$this->filename = $adminer->database() . ".sql"; // no database goes to ".sql" to avoid collisions

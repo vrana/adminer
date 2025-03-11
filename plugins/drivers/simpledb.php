@@ -66,8 +66,8 @@ if (isset($_GET["simpledb"])) {
 						$row['itemName()'] = (string) $item->Name;
 					}
 					foreach ($item->Attribute as $attribute) {
-						$name = $this->_processValue($attribute->Name);
-						$value = $this->_processValue($attribute->Value);
+						$name = $this->processValue($attribute->Name);
+						$value = $this->processValue($attribute->Value);
 						if (isset($row[$name])) {
 							$row[$name] = (array) $row[$name];
 							$row[$name][] = $value;
@@ -85,7 +85,7 @@ if (isset($_GET["simpledb"])) {
 				$this->num_rows = count($this->rows);
 			}
 
-			function _processValue($element) {
+			private function processValue($element) {
 				return (is_object($element) && $element['encoding'] == 'base64' ? base64_decode($element) : (string) $element);
 			}
 
@@ -128,7 +128,7 @@ if (isset($_GET["simpledb"])) {
 
 		public $primary = "itemName()";
 
-		function _chunkRequest($ids, $action, $params, $expand = array()) {
+		private function chunkRequest($ids, $action, $params, $expand = array()) {
 			$connection = connection();
 			foreach (array_chunk($ids, 25) as $chunk) {
 				$params2 = $params;
@@ -146,7 +146,7 @@ if (isset($_GET["simpledb"])) {
 			return true;
 		}
 
-		function _extractIds($table, $queryWhere, $limit) {
+		private function extractIds($table, $queryWhere, $limit) {
 			$return = array();
 			if (preg_match_all("~itemName\(\) = (('[^']*+')+)~", $queryWhere, $matches)) {
 				$return = array_map('Adminer\idf_unescape', $matches[1]);
@@ -167,8 +167,8 @@ if (isset($_GET["simpledb"])) {
 		}
 
 		function delete($table, $queryWhere, $limit = 0) {
-			return $this->_chunkRequest(
-				$this->_extractIds($table, $queryWhere, $limit),
+			return $this->chunkRequest(
+				$this->extractIds($table, $queryWhere, $limit),
 				'BatchDeleteAttributes',
 				array('DomainName' => $table)
 			);
@@ -178,7 +178,7 @@ if (isset($_GET["simpledb"])) {
 			$delete = array();
 			$insert = array();
 			$i = 0;
-			$ids = $this->_extractIds($table, $queryWhere, $limit);
+			$ids = $this->extractIds($table, $queryWhere, $limit);
 			$id = idf_unescape($set["`itemName()`"]);
 			unset($set["`itemName()`"]);
 			foreach ($set as $key => $val) {
@@ -198,8 +198,8 @@ if (isset($_GET["simpledb"])) {
 				}
 			}
 			$params = array('DomainName' => $table);
-			return (!$insert || $this->_chunkRequest(($id != "" ? array($id) : $ids), 'BatchPutAttributes', $params, $insert))
-				&& (!$delete || $this->_chunkRequest($ids, 'BatchDeleteAttributes', $params, $delete))
+			return (!$insert || $this->chunkRequest(($id != "" ? array($id) : $ids), 'BatchPutAttributes', $params, $insert))
+				&& (!$delete || $this->chunkRequest($ids, 'BatchDeleteAttributes', $params, $delete))
 			;
 		}
 

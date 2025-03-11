@@ -18,7 +18,7 @@ CREATE TABLE translation (
 */
 class AdminerTranslation {
 
-	function _translate($idf) {
+	private function translate($idf) {
 		static $translations, $lang;
 		if ($lang === null) {
 			$lang = Adminer\get_lang();
@@ -39,16 +39,16 @@ class AdminerTranslation {
 	}
 
 	function tableName(&$tableStatus) {
-		$tableStatus["Comment"] = $this->_translate($tableStatus["Comment"]);
+		$tableStatus["Comment"] = $this->translate($tableStatus["Comment"]);
 	}
 
 	function fieldName(&$field, $order = 0) {
-		$field["comment"] = $this->_translate($field["comment"]);
+		$field["comment"] = $this->translate($field["comment"]);
 	}
 
 	function editVal(&$val, $field) {
 		if ($field["type"] == "enum") {
-			$val = $this->_translate($val);
+			$val = $this->translate($val);
 		}
 	}
 }

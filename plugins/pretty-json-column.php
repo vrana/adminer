@@ -10,7 +10,7 @@ class AdminerPrettyJsonColumn {
 		$this->adminer = $adminer;
 	}
 
-	private function _testJson($value) {
+	private function testJson($value) {
 		if ((substr($value, 0, 1) == '{' || substr($value, 0, 1) == '[') && ($json = json_decode($value, true))) {
 			return $json;
 		}
@@ -18,7 +18,7 @@ class AdminerPrettyJsonColumn {
 	}
 
 	function editInput($table, $field, $attrs, $value) {
-		$json = $this->_testJson($value);
+		$json = $this->testJson($value);
 		if ($json !== $value) {
 			$jsonText = json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 			return <<<HTML
@@ -30,7 +30,7 @@ HTML;
 
 	function processInput($field, $value, $function = '') {
 		if ($function === '') {
-			$json = $this->_testJson($value);
+			$json = $this->testJson($value);
 			if ($json !== $value) {
 				$value = json_encode($json);
 			}
