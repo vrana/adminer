@@ -422,7 +422,7 @@ if (isset($_GET["simpledb"])) {
 			'max_redirects' => 0,
 		))));
 		if (!$file) {
-			$this->error = lang('Invalid credentials.');
+			$connection->error = lang('Invalid credentials.');
 			return false;
 		}
 		libxml_use_internal_errors(true);

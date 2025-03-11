@@ -108,4 +108,11 @@
 	<rule ref="Squiz.WhiteSpace.LanguageConstructSpacing"/>
 	<rule ref="Squiz.WhiteSpace.LogicalOperatorSpacing"/>
 	<rule ref="Squiz.WhiteSpace.ObjectOperatorSpacing"/>
+
+	<!--
+	This is slow and has false positives but it's useful occasionally.
+	https://github.com/PHPCompatibility/PHPCompatibility
+	<rule ref="PHPCompatibility"/>
+	<config name="testVersion" value="5.3-"/>
+	-->
 </ruleset>

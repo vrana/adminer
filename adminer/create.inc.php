@@ -83,17 +83,18 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 		$partitioning = "";
 		if (support("partitioning")) {
 			if (isset($partition_by[$row["partition_by"]])) {
-				$params = array_filter($row, function ($key) {
-					return preg_match('~^partition~', $key);
-				}, ARRAY_FILTER_USE_KEY);
-
+				$params = array();
+				foreach ($row as $key => $val) {
+					if (preg_match('~^partition~', $key)) {
+						$params[$key] = $val;
+					}
+				}
 				foreach ($params["partition_names"] as $key => $name) {
 					if ($name == "") {
 						unset($params["partition_names"][$key]);
 						unset($params["partition_values"][$key]);
 					}
 				}
-
 				if ($params != get_partitions_info($TABLE)) {
 					$partitions = array();
 					if ($params["partition_by"] == 'RANGE' || $params["partition_by"] == 'LIST') {
@@ -102,7 +103,6 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 							$partitions[] = "\n  PARTITION " . idf_escape($name) . " VALUES " . ($params["partition_by"] == 'RANGE' ? "LESS THAN" : "IN") . ($value != "" ? " ($value)" : " MAXVALUE"); //! SQL injection
 						}
 					}
-
 					// $params["partition"] can be expression, not only column
 					$partitioning .= "\nPARTITION BY $params[partition_by]($params[partition])";
 					if ($partitions) {
