@@ -41,7 +41,7 @@ function put_file($match) {
 		return $match[0]; // processed later
 	}
 	$return = file_get_contents(__DIR__ . "/$project/$match[2]");
-	$return = str_replace("namespace Adminer;\n", "", $return);
+	$return = preg_replace('~namespace Adminer;\s*~', '', $return);
 	if (basename($match[2]) == "file.inc.php") {
 		$return = str_replace("\n// caching headers added in compile.php", (preg_match('~-dev$~', $VERSION) ? '' : '
 if ($_SERVER["HTTP_IF_MODIFIED_SINCE"]) {
@@ -297,7 +297,7 @@ function php_shrink($input) {
 				$doc_comment = true;
 				$token[1] = substr_replace($token[1], "* @version $VERSION\n", -2, 0);
 			}
-			if ($token[0] == T_VAR || $token[0] == T_PUBLIC || $token[0] == T_PROTECTED || $token[0] == T_PRIVATE) {
+			if ($token[0] == T_VAR) {
 				$shortening = false;
 			} elseif (!$shortening) {
 				if ($token[1] == ';') {
