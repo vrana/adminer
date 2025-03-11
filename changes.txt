@@ -6,6 +6,7 @@ MySQL: Allow setting default values of text column
 MySQL: Stop treating enum and set as numbers (bug #475)
 MySQL, MariaDB: Fix default values with ' (bug #895)
 MariaDB: Fix creating and altering generated columns (bug #897)
+PostgreSQL: Fix "where" and "order" privileges (bug #902, regression from 5.0.2)
 SQLite: Fix creating table in compiled version (bug #901, regression from 5.0.0)
 Elastic: Do not pass null values on insert (PR #892)
 Elastic: Fix displaying sparse rows (PR #893)

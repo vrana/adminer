@@ -461,7 +461,7 @@ ORDER BY a.attnum") as $row
 			$row["generated"] = ($row["attgenerated"] == "s" ? "STORED" : "");
 			$row["null"] = !$row["attnotnull"];
 			$row["auto_increment"] = $row['attidentity'] || preg_match('~^nextval\(~i', $row["default"]);
-			$row["privileges"] = array("insert" => 1, "select" => 1, "update" => 1);
+			$row["privileges"] = array("insert" => 1, "select" => 1, "update" => 1, "where" => 1, "order" => 1);
 			if (preg_match('~(.+)::[^,)]+(.*)~', $row["default"], $match)) {
 				$row["default"] = ($match[1] == "NULL" ? null : idf_unescape($match[1]) . $match[2]);
 			}
