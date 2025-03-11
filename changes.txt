@@ -1,4 +1,4 @@
-Adminer dev:
+Adminer 5.0.3 (released 2025-03-11):
 Fix gzip export (bug #896, regression from 5.0.0)
 Fix importing multiple SQL files not terminated by semicolon
 Use <datalist> for altering collations
