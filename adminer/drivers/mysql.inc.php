@@ -600,9 +600,9 @@ if (!defined('Adminer\DRIVER')) {
 			$extra = $row["EXTRA"];
 			// https://mariadb.com/kb/en/library/show-columns/, https://github.com/vrana/adminer/pull/359#pullrequestreview-276677186
 			preg_match('~^(VIRTUAL|PERSISTENT|STORED)~', $extra, $generated);
-			preg_match('~^([^( ]+)(?:\((.+)\))?( unsigned)?( zerofill)?$~', $type, $match);
+			preg_match('~^([^( ]+)(?:\((.+)\))?( unsigned)?( zerofill)?$~', $type, $match_type);
 			$default = $row["COLUMN_DEFAULT"];
-			$is_text = preg_match('~text~', $match[1]);
+			$is_text = preg_match('~text~', $match_type[1]);
 			if (!$maria && $is_text) {
 				// default value a'b of text column is stored as _utf8mb4\'a\\\'b\' in MySQL
 				$default = preg_replace("~^(_\w+)?('.*')$~", '\2', stripslashes($default));
@@ -615,12 +615,12 @@ if (!defined('Adminer\DRIVER')) {
 			$return[$field] = array(
 				"field" => $field,
 				"full_type" => $type,
-				"type" => $match[1],
-				"length" => $match[2],
-				"unsigned" => ltrim($match[3] . $match[4]),
+				"type" => $match_type[1],
+				"length" => $match_type[2],
+				"unsigned" => ltrim($match_type[3] . $match_type[4]),
 				"default" => ($generated
 					? ($maria ? $generation : stripslashes($generation))
-					: ($default != "" || preg_match("~char|set~", $match[1]) ? $default : null)
+					: ($default != "" || preg_match("~char|set~", $match_type[1]) ? $default : null)
 				),
 				"null" => ($row["IS_NULLABLE"] == "YES"),
 				"auto_increment" => ($extra == "auto_increment"),
