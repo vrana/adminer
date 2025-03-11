@@ -115,7 +115,7 @@ if (isset($_GET["mssql"])) {
 				// $this->num_rows = sqlsrv_num_rows($result); // available only in scrollable results
 			}
 
-			function _convert($row) {
+			private function convert($row) {
 				foreach ((array) $row as $key => $val) {
 					if (is_a($val, 'DateTime')) {
 						$row[$key] = $val->format("Y-m-d H:i:s");
@@ -126,11 +126,11 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function fetch_assoc() {
-				return $this->_convert(sqlsrv_fetch_array($this->result, SQLSRV_FETCH_ASSOC));
+				return $this->convert(sqlsrv_fetch_array($this->result, SQLSRV_FETCH_ASSOC));
 			}
 
 			function fetch_row() {
-				return $this->_convert(sqlsrv_fetch_array($this->result, SQLSRV_FETCH_NUMERIC));
+				return $this->convert(sqlsrv_fetch_array($this->result, SQLSRV_FETCH_NUMERIC));
 			}
 
 			function fetch_field() {
