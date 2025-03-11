@@ -28,7 +28,6 @@
 
 		<!-- Saves bytes. -->
 		<exclude name="PSR2.Classes.PropertyDeclaration.Multiple"/>
-		<exclude name="PSR2.Classes.PropertyDeclaration.VarUsed"/>
 		<exclude name="PSR2.Classes.PropertyDeclaration.ScopeMissing"/>
 		<exclude name="PSR12.Classes.ClassInstantiation.MissingParentheses"/>
 		<exclude name="Squiz.Scope.MethodScope.Missing"/>
