@@ -4,7 +4,8 @@ namespace Adminer;
 // PDO can be used in several database drivers
 if (extension_loaded('pdo')) {
 	abstract class PdoDb {
-		public $server_info, $affected_rows, $errno, $error, $pdo;
+		public $server_info, $affected_rows, $errno, $error;
+		protected $pdo;
 		private $result;
 
 		function dsn($dsn, $username, $password, $options = array()) {
