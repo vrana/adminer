@@ -661,7 +661,6 @@ ORDER BY conkey, conname") as $row
 
 	function truncate_tables($tables) {
 		return queries("TRUNCATE " . implode(", ", array_map('Adminer\table', $tables)));
-		return true;
 	}
 
 	function drop_views($views) {

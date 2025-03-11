@@ -78,4 +78,34 @@
 	<rule ref="Generic.VersionControl.GitMergeConflict"/>
 	<rule ref="Generic.Whitespace.DisallowSpaceIndent"/>
 	<rule ref="Generic.WhiteSpace.LanguageConstructSpacing"/>
+
+	<rule ref="Squiz.Arrays.ArrayBracketSpacing"/>
+	<rule ref="Squiz.Classes.LowercaseClassKeywords"/>
+	<rule ref="Squiz.Classes.SelfMemberReference"/>
+	<rule ref="Squiz.CSS.ClassDefinitionNameSpacing"/>
+	<rule ref="Squiz.CSS.ColonSpacing"/>
+	<rule ref="Squiz.CSS.DuplicateClassDefinition"/>
+	<rule ref="Squiz.CSS.DuplicateStyleDefinition"/>
+	<rule ref="Squiz.CSS.EmptyClassDefinition"/>
+	<rule ref="Squiz.CSS.EmptyStyleDefinition"/>
+	<rule ref="Squiz.CSS.ForbiddenStyles"/>
+	<rule ref="Squiz.CSS.Indentation"/>
+	<rule ref="Squiz.CSS.MissingColon"/>
+	<rule ref="Squiz.CSS.Opacity"/>
+	<rule ref="Squiz.CSS.SemicolonSpacing"/>
+	<rule ref="Squiz.Functions.FunctionDuplicateArgument"/>
+	<rule ref="Squiz.Objects.ObjectMemberComma"/>
+	<rule ref="Squiz.Operators.IncrementDecrementUsage"/>
+	<rule ref="Squiz.Operators.ValidLogicalOperators"/>
+	<rule ref="Squiz.PHP.DiscouragedFunctions"/>
+	<rule ref="Squiz.PHP.Eval"/>
+	<rule ref="Squiz.PHP.Heredoc"/>
+	<rule ref="Squiz.PHP.InnerFunctions"/>
+	<rule ref="Squiz.PHP.LowercasePHPFunctions"/>
+	<rule ref="Squiz.PHP.NonExecutableCode"/>
+	<rule ref="Squiz.Scope.StaticThisUsage"/>
+	<rule ref="Squiz.WhiteSpace.FunctionOpeningBraceSpace"/>
+	<rule ref="Squiz.WhiteSpace.LanguageConstructSpacing"/>
+	<rule ref="Squiz.WhiteSpace.LogicalOperatorSpacing"/>
+	<rule ref="Squiz.WhiteSpace.ObjectOperatorSpacing"/>
 </ruleset>
