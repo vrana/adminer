@@ -104,10 +104,7 @@ if (isset($_GET["pgsql"])) {
 
 			function result($query, $field = 0) {
 				$result = $this->query($query);
-				if (!$result || !$result->num_rows) {
-					return false;
-				}
-				return pg_fetch_result($result->result, 0, $field);
+				return ($result ? $result->fetch_column($field) : false);
 			}
 
 			function warnings() {
@@ -130,6 +127,10 @@ if (isset($_GET["pgsql"])) {
 
 			function fetch_row() {
 				return pg_fetch_row($this->result);
+			}
+
+			function fetch_column($field) {
+				return ($this->num_rows ? pg_fetch_result($this->result, 0, $field) : false);
 			}
 
 			function fetch_field() {

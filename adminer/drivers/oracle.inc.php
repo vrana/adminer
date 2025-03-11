@@ -75,10 +75,7 @@ if (isset($_GET["oracle"])) {
 
 			function result($query, $field = 0) {
 				$result = $this->query($query);
-				if (!is_object($result) || !oci_fetch($result->result)) {
-					return false;
-				}
-				return oci_result($result->result, $field + 1);
+				return (is_object($result) ? $result->fetch_column($field) : false);
 			}
 		}
 
@@ -105,6 +102,10 @@ if (isset($_GET["oracle"])) {
 
 			function fetch_row() {
 				return $this->convert(oci_fetch_row($this->result));
+			}
+
+			function fetch_column($field) {
+				return (oci_fetch($this->result) ? oci_result($this->result, $field + 1) : false);
 			}
 
 			function fetch_field() {

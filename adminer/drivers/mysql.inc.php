@@ -177,10 +177,7 @@ if (!defined('Adminer\DRIVER')) {
 			*/
 			function result($query, $field = 0) {
 				$result = $this->query($query);
-				if (!$result || !$result->num_rows) {
-					return false;
-				}
-				return mysql_result($result->result, 0, $field);
+				return ($result ? $result->fetch_column($field) : false);
 			}
 		}
 
@@ -208,6 +205,14 @@ if (!defined('Adminer\DRIVER')) {
 			*/
 			function fetch_row() {
 				return mysql_fetch_row($this->result);
+			}
+
+			/** Fetch a single column
+			* @param int
+			* @return string or false if there are no rows
+			*/
+			function fetch_column($field) {
+				return ($this->num_rows ? mysql_result($this->result, 0, $field) : false);
 			}
 
 			/** Fetch next field
