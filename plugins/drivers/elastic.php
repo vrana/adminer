@@ -199,7 +199,7 @@ if (isset($_GET["elastic"])) {
 
 			$query = "$table/_search";
 			$start = microtime(true);
-			$search = $this->_conn->rootQuery($query, $data);
+			$search = $this->conn->rootQuery($query, $data);
 
 			if ($print) {
 				echo adminer()->selectQuery("$query: " . json_encode($data), $start, !$search);
@@ -245,7 +245,7 @@ if (isset($_GET["elastic"])) {
 				$id = trim($parts[1]);
 				$query = "$type/$id";
 
-				return $this->_conn->query($query, $record, 'POST');
+				return $this->conn->query($query, $record, 'POST');
 			}
 
 			return false;
@@ -262,11 +262,11 @@ if (isset($_GET["elastic"])) {
 					unset($record[$key]);
 				}
 			}
-			$response = $this->_conn->query($query, $record, 'POST');
+			$response = $this->conn->query($query, $record, 'POST');
 			if ($response == false) {
 				return false;
 			}
-			$this->_conn->last_id = $response['_id'];
+			$this->conn->last_id = $response['_id'];
 
 			return $response['result'];
 		}
@@ -286,17 +286,17 @@ if (isset($_GET["elastic"])) {
 				}
 			}
 
-			$this->_conn->affected_rows = 0;
+			$this->conn->affected_rows = 0;
 
 			foreach ($ids as $id) {
 				$query = "$table/_doc/$id";
-				$response = $this->_conn->query($query, null, 'DELETE');
+				$response = $this->conn->query($query, null, 'DELETE');
 				if (isset($response['result']) && $response['result'] == 'deleted') {
-					$this->_conn->affected_rows++;
+					$this->conn->affected_rows++;
 				}
 			}
 
-			return $this->_conn->affected_rows;
+			return $this->conn->affected_rows;
 		}
 
 		function convertOperator($operator) {

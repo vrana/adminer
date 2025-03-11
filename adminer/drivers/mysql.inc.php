@@ -356,7 +356,7 @@ if (!defined('Adminer\DRIVER')) {
 
 		function slowQuery($query, $timeout) {
 			if (min_version('5.7.8', '10.1.2')) {
-				if (preg_match('~MariaDB~', $this->_conn->server_info)) {
+				if (preg_match('~MariaDB~', $this->conn->server_info)) {
 					return "SET STATEMENT max_statement_time=$timeout FOR $query";
 				} elseif (preg_match('~^(SELECT\b)(.+)~is', $query, $match)) {
 					return "$match[1] /*+ MAX_EXECUTION_TIME(" . ($timeout * 1000) . ") */ $match[2]";
@@ -366,13 +366,13 @@ if (!defined('Adminer\DRIVER')) {
 
 		function convertSearch($idf, $val, $field) {
 			return (preg_match('~char|text|enum|set~', $field["type"]) && !preg_match("~^utf8~", $field["collation"]) && preg_match('~[\x80-\xFF]~', $val['val'])
-				? "CONVERT($idf USING " . charset($this->_conn) . ")"
+				? "CONVERT($idf USING " . charset($this->conn) . ")"
 				: $idf
 			);
 		}
 
 		function warnings() {
-			$result = $this->_conn->query("SHOW WARNINGS");
+			$result = $this->conn->query("SHOW WARNINGS");
 			if ($result && $result->num_rows) {
 				ob_start();
 				select($result); // select() usually needs to print a big table progressively
@@ -381,7 +381,7 @@ if (!defined('Adminer\DRIVER')) {
 		}
 
 		function tableHelp($name, $is_view = false) {
-			$maria = preg_match('~MariaDB~', $this->_conn->server_info);
+			$maria = preg_match('~MariaDB~', $this->conn->server_info);
 			if (information_schema(DB)) {
 				return strtolower("information-schema-" . ($maria ? "$name-table/" : str_replace("_", "-", $name) . "-table.html"));
 			}
@@ -393,7 +393,7 @@ if (!defined('Adminer\DRIVER')) {
 		function hasCStyleEscapes() {
 			static $c_style;
 			if ($c_style === null) {
-				$sql_mode = $this->_conn->result("SHOW VARIABLES LIKE 'sql_mode'", 1);
+				$sql_mode = $this->conn->result("SHOW VARIABLES LIKE 'sql_mode'", 1);
 				$c_style = (strpos($sql_mode, 'NO_BACKSLASH_ESCAPES') === false);
 			}
 			return $c_style;

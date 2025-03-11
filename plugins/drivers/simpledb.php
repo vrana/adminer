@@ -246,7 +246,7 @@ if (isset($_GET["simpledb"])) {
 		}
 
 		function slowQuery($query, $timeout) {
-			$this->_conn->timeout = $timeout;
+			$this->conn->timeout = $timeout;
 			return $query;
 		}
 	}

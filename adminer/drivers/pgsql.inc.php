@@ -267,8 +267,8 @@ if (isset($_GET["pgsql"])) {
 		}
 
 		function slowQuery($query, $timeout) {
-			$this->_conn->query("SET statement_timeout = " . (1000 * $timeout));
-			$this->_conn->timeout = 1000 * $timeout;
+			$this->conn->query("SET statement_timeout = " . (1000 * $timeout));
+			$this->conn->timeout = 1000 * $timeout;
 			return $query;
 		}
 
@@ -282,11 +282,11 @@ if (isset($_GET["pgsql"])) {
 		}
 
 		function quoteBinary($s) {
-			return $this->_conn->quoteBinary($s);
+			return $this->conn->quoteBinary($s);
 		}
 
 		function warnings() {
-			return $this->_conn->warnings();
+			return $this->conn->warnings();
 		}
 
 		function tableHelp($name, $is_view = false) {
@@ -308,7 +308,7 @@ if (isset($_GET["pgsql"])) {
 		function hasCStyleEscapes() {
 			static $c_style;
 			if ($c_style === null) {
-				$c_style = ($this->_conn->result("SHOW standard_conforming_strings") == "off");
+				$c_style = ($this->conn->result("SHOW standard_conforming_strings") == "off");
 			}
 			return $c_style;
 		}

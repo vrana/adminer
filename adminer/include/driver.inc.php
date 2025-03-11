@@ -26,7 +26,7 @@ abstract class SqlDriver {
 	static $possibleDrivers = array();
 	static $jush; ///< @var string JUSH identifier
 
-	var $_conn;
+	protected $conn;
 	protected $types = array(); ///< @var array [$description => [$type => $maximum_unsigned_length, ...], ...]
 	var $editFunctions = array(); ///< @var array of ["$type|$type2" => "$function/$function2"] functions used in editing, [0] - edit and insert, [1] - edit only
 	var $unsigned = array(); ///< @var array number variants
@@ -42,7 +42,7 @@ abstract class SqlDriver {
 	* @param Db
 	*/
 	function __construct($connection) {
-		$this->_conn = $connection;
+		$this->conn = $connection;
 	}
 
 	/** Get all types
@@ -91,7 +91,7 @@ abstract class SqlDriver {
 			);
 		}
 		$start = microtime(true);
-		$return = $this->_conn->query($query);
+		$return = $this->conn->query($query);
 		if ($print) {
 			echo $adminer->selectQuery($query, $start, !$return);
 		}
@@ -201,8 +201,8 @@ abstract class SqlDriver {
 	* @return string
 	*/
 	function value($val, $field) {
-		return (method_exists($this->_conn, 'value')
-			? $this->_conn->value($val, $field)
+		return (method_exists($this->conn, 'value')
+			? $this->conn->value($val, $field)
 			: (is_resource($val) ? stream_get_contents($val) : $val)
 		);
 	}

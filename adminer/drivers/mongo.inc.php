@@ -331,15 +331,15 @@ if (isset($_GET["mongo"])) {
 			$limit = min(200, max(1, (int) $limit));
 			$skip = $page * $limit;
 			try {
-				return new Result($this->_conn->_link->executeQuery($this->_conn->_db_name . ".$table", new \MongoDB\Driver\Query($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort))));
+				return new Result($this->conn->_link->executeQuery($this->conn->_db_name . ".$table", new \MongoDB\Driver\Query($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort))));
 			} catch (Exception $e) {
-				$this->_conn->error = $e->getMessage();
+				$this->conn->error = $e->getMessage();
 				return false;
 			}
 		}
 
 		function update($table, $set, $queryWhere, $limit = 0, $separator = "\n") {
-			$db = $this->_conn->_db_name;
+			$db = $this->conn->_db_name;
 			$where = sql_query_where_parser($queryWhere);
 			$bulk = new \MongoDB\Driver\BulkWrite(array());
 			if (isset($set['_id'])) {
@@ -357,25 +357,25 @@ if (isset($_GET["mongo"])) {
 				$update['$unset'] = $removeFields;
 			}
 			$bulk->update($where, $update, array('upsert' => false));
-			return $this->_conn->executeBulkWrite("$db.$table", $bulk, 'getModifiedCount');
+			return $this->conn->executeBulkWrite("$db.$table", $bulk, 'getModifiedCount');
 		}
 
 		function delete($table, $queryWhere, $limit = 0) {
-			$db = $this->_conn->_db_name;
+			$db = $this->conn->_db_name;
 			$where = sql_query_where_parser($queryWhere);
 			$bulk = new \MongoDB\Driver\BulkWrite(array());
 			$bulk->delete($where, array('limit' => $limit));
-			return $this->_conn->executeBulkWrite("$db.$table", $bulk, 'getDeletedCount');
+			return $this->conn->executeBulkWrite("$db.$table", $bulk, 'getDeletedCount');
 		}
 
 		function insert($table, $set) {
-			$db = $this->_conn->_db_name;
+			$db = $this->conn->_db_name;
 			$bulk = new \MongoDB\Driver\BulkWrite(array());
 			if ($set['_id'] == '') {
 				unset($set['_id']);
 			}
 			$bulk->insert($set);
-			return $this->_conn->executeBulkWrite("$db.$table", $bulk, 'getInsertedCount');
+			return $this->conn->executeBulkWrite("$db.$table", $bulk, 'getInsertedCount');
 		}
 	}
 
