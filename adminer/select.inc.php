@@ -100,6 +100,7 @@ if ($_POST && !$error) {
 			$query = implode(" UNION ALL ", $union);
 		}
 		$adminer->dumpData($TABLE, "table", $query);
+		$adminer->dumpFooter();
 		exit;
 	}
 

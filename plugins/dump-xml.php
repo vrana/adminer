@@ -19,16 +19,11 @@ class AdminerDumpXml {
 		}
 	}
 
-	function _database() {
-		echo "</database>\n";
-	}
-
 	function dumpData($table, $style, $query) {
 		if ($_POST["format"] == "xml") {
 			if (!$this->database) {
 				$this->database = true;
 				echo "<database name='" . Adminer\h(Adminer\DB) . "'>\n";
-				register_shutdown_function(array($this, '_database'));
 			}
 			$connection = Adminer\connection();
 			$result = $connection->query($query, 1);
@@ -49,6 +44,12 @@ class AdminerDumpXml {
 		if ($_POST["format"] == "xml") {
 			header("Content-Type: text/xml; charset=utf-8");
 			return "xml";
+		}
+	}
+
+	function dumpFooter() {
+		if ($_POST["format"] == "xml" && $this->database) {
+			echo "</database>\n";
 		}
 	}
 }

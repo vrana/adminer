@@ -945,6 +945,15 @@ class Adminer {
 		return $ext;
 	}
 
+	/** Print text after export
+	* @return null prints data
+	*/
+	function dumpFooter() {
+		if ($_POST["format"] == "sql") {
+			echo "-- " . gmdate("Y-m-d H:i:s e") . "\n";
+		}
+	}
+
 	/** Set the path of the file for webserver load
 	* @return string path of the sql dump file
 	*/

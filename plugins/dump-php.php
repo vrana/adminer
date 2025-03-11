@@ -7,7 +7,6 @@
 */
 class AdminerDumpPhp {
 	protected $output = array();
-	protected $shutdown_callback = false;
 
 	function dumpFormat() {
 		return array('php' => 'PHP');
@@ -23,10 +22,6 @@ class AdminerDumpPhp {
 	function dumpTable($table, $style, $is_view = 0) {
 		if ($_POST['format'] == 'php') {
 			$this->output[$table] = array();
-			if (!$this->shutdown_callback) {
-				$this->shutdown_callback = true;
-				register_shutdown_function(array($this, '_export'));
-			}
 			return true;
 		}
 	}
@@ -44,8 +39,11 @@ class AdminerDumpPhp {
 		}
 	}
 
-	function _export() {
-		echo "<?php\n";
-		var_export($this->output);
+	function dumpFooter() {
+		if ($_POST['format'] == 'php') {
+			echo "<?php\n";
+			var_export($this->output);
+			echo ";\n";
+		}
 	}
 }

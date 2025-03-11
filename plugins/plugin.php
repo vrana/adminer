@@ -387,6 +387,11 @@ class AdminerPlugin extends Adminer\Adminer {
 		return $this->applyPlugin(__FUNCTION__, $args);
 	}
 
+	function dumpFooter() {
+		$args = func_get_args();
+		return $this->applyPlugin(__FUNCTION__, $args);
+	}
+
 	function importServerPath() {
 		$args = func_get_args();
 		return $this->applyPlugin(__FUNCTION__, $args);

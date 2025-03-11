@@ -574,6 +574,9 @@ qsl('div').onclick = whisperClick;", "")
 		return $ext;
 	}
 
+	function dumpFooter() {
+	}
+
 	function importServerPath() {
 	}
 

@@ -19,10 +19,6 @@ class AdminerDumpJson {
 		}
 	}
 
-	function _database() {
-		echo "}\n";
-	}
-
 	function dumpData($table, $style, $query) {
 		if ($_POST["format"] == "json") {
 			if ($this->database) {
@@ -30,7 +26,6 @@ class AdminerDumpJson {
 			} else {
 				$this->database = true;
 				echo "{\n";
-				register_shutdown_function(array($this, '_database'));
 			}
 			$connection = Adminer\connection();
 			$result = $connection->query($query, 1);
@@ -55,6 +50,12 @@ class AdminerDumpJson {
 		if ($_POST["format"] == "json") {
 			header("Content-Type: application/json; charset=utf-8");
 			return "json";
+		}
+	}
+
+	function dumpFooter() {
+		if ($_POST["format"] == "json" && $this->database) {
+			echo "}\n";
 		}
 	}
 }
