@@ -15,10 +15,14 @@ if (isset($_GET["mongo"])) {
 
 			function connect($uri, $options) {
 				$this->_link = new \MongoDB\Driver\Manager($uri, $options);
-				$this->executeCommand($options["db"], array('ping' => 1));
+				$this->executeDbCommand($options["db"], array('ping' => 1));
 			}
 
-			function executeCommand($db, $command) {
+			function executeCommand($command) {
+				return $this->executeDbCommand($this->_db_name);
+			}
+
+			function executeDbCommand($db, $command) {
 				try {
 					return $this->_link->executeCommand($db, new \MongoDB\Driver\Command($command));
 				} catch (Exception $e) {
@@ -118,7 +122,7 @@ if (isset($_GET["mongo"])) {
 		function get_databases($flush) {
 			global $connection;
 			$return = array();
-			foreach ($connection->executeCommand($connection->_db_name, array('listDatabases' => 1)) as $dbs) {
+			foreach ($connection->executeCommand(array('listDatabases' => 1)) as $dbs) {
 				foreach ($dbs->databases as $db) {
 					$return[] = $db->name;
 				}
@@ -134,7 +138,7 @@ if (isset($_GET["mongo"])) {
 		function tables_list() {
 			global $connection;
 			$collections = array();
-			foreach ($connection->executeCommand($connection->_db_name, array('listCollections' => 1)) as $result) {
+			foreach ($connection->executeCommand(array('listCollections' => 1)) as $result) {
 				$collections[$result->name] = 'table';
 			}
 			return $collections;
@@ -147,7 +151,7 @@ if (isset($_GET["mongo"])) {
 		function indexes($table, $connection2 = null) {
 			global $connection;
 			$return = array();
-			foreach ($connection->executeCommand($connection->_db_name, array('listIndexes' => $table)) as $index) {
+			foreach ($connection->executeCommand(array('listIndexes' => $table)) as $index) {
 				$descs = array();
 				$columns = array();
 				foreach (get_object_vars($index->key) as $column => $type) {
@@ -196,7 +200,7 @@ if (isset($_GET["mongo"])) {
 		function found_rows($table_status, $where) {
 			global $connection;
 			$where = where_to_query($where);
-			$toArray = $connection->executeCommand($connection->_db_name, array('count' => $table_status['Name'], 'query' => $where))->toArray();
+			$toArray = $connection->executeCommand(array('count' => $table_status['Name'], 'query' => $where))->toArray();
 			return $toArray[0]->n;
 		}
 
