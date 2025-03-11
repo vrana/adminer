@@ -8,7 +8,7 @@ if (isset($_GET["sqlite"])) {
 	if (class_exists("SQLite3")) {
 
 		class SqliteDb {
-			var $extension = "SQLite3", $server_info, $affected_rows, $errno, $error;
+			public $extension = "SQLite3", $server_info, $affected_rows, $errno, $error;
 			private $link;
 
 			function __construct($filename) {
@@ -53,7 +53,7 @@ if (isset($_GET["sqlite"])) {
 		}
 
 		class Result {
-			var $num_rows;
+			public $num_rows;
 			private $result, $offset = 0;
 
 			function __construct($result) {
@@ -85,7 +85,7 @@ if (isset($_GET["sqlite"])) {
 
 	} elseif (extension_loaded("pdo_sqlite")) {
 		class SqliteDb extends PdoDb {
-			var $extension = "PDO_SQLite";
+			public $extension = "PDO_SQLite";
 
 			function __construct($filename) {
 				$this->dsn(DRIVER . ":$filename", "", "");
@@ -134,7 +134,7 @@ if (isset($_GET["sqlite"])) {
 
 		protected $types = array(array("integer" => 0, "real" => 0, "numeric" => 0, "text" => 0, "blob" => 0));
 
-		var $editFunctions = array(
+		public $editFunctions = array(
 			array(
 				// "text" => "date('now')/time('now')/datetime('now')",
 			), array(
@@ -144,9 +144,9 @@ if (isset($_GET["sqlite"])) {
 			)
 		);
 
-		var $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL"); // REGEXP can be user defined function
-		var $functions = array("hex", "length", "lower", "round", "unixepoch", "upper");
-		var $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
+		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL"); // REGEXP can be user defined function
+		public $functions = array("hex", "length", "lower", "round", "unixepoch", "upper");
+		public $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
 
 		function __construct($connection) {
 			parent::__construct($connection);

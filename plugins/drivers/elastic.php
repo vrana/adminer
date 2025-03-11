@@ -9,7 +9,7 @@ if (isset($_GET["elastic"])) {
 	if (ini_bool('allow_url_fopen')) {
 
 		class Db {
-			var $extension = "JSON", $server_info, $errno, $error;
+			public $extension = "JSON", $server_info, $errno, $error;
 			private $url;
 
 			/**
@@ -97,7 +97,7 @@ if (isset($_GET["elastic"])) {
 		}
 
 		class Result {
-			var $num_rows;
+			public $num_rows;
 			private $rows;
 
 			function __construct($rows) {
@@ -126,8 +126,8 @@ if (isset($_GET["elastic"])) {
 		static $possibleDrivers = array("json + allow_url_fopen");
 		static $jush = "elastic";
 
-		var $editFunctions = array(array("json"));
-		var $operators = array("=", "must", "should", "must_not");
+		public $editFunctions = array(array("json"));
+		public $operators = array("=", "must", "should", "must_not");
 
 		function __construct($connection) {
 			parent::__construct($connection);

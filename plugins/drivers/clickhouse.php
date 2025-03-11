@@ -8,9 +8,9 @@ if (isset($_GET["clickhouse"])) {
 
 	if (ini_bool('allow_url_fopen')) {
 		class Db {
-			var $extension = "JSON", $server_info, $errno, $error;
+			public $extension = "JSON", $server_info, $errno, $error;
+			public $_db = 'default';
 			private $result, $url;
-			var $_db = 'default';
 
 			function rootQuery($db, $query) {
 				$file = @file_get_contents("$this->url/?database=$db", false, stream_context_create(array('http' => array(
@@ -91,7 +91,7 @@ if (isset($_GET["clickhouse"])) {
 		}
 
 		class Result {
-			var $num_rows, $columns, $meta;
+			public $num_rows, $columns, $meta;
 			private $rows, $offset = 0;
 
 			function __construct($result) {
@@ -137,8 +137,8 @@ if (isset($_GET["clickhouse"])) {
 		static $possibleDrivers = array("allow_url_fopen");
 		static $jush = "clickhouse";
 
-		var $operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
-		var $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
+		public $operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
+		public $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 
 		function __construct($connection) {
 			parent::__construct($connection);

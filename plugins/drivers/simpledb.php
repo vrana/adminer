@@ -8,7 +8,7 @@ if (isset($_GET["simpledb"])) {
 
 	if (class_exists('SimpleXMLElement') && ini_bool('allow_url_fopen')) {
 		class Db {
-			var $extension = "SimpleXML", $server_info = '2009-04-15', $error, $timeout, $next, $affected_rows;
+			public $extension = "SimpleXML", $server_info = '2009-04-15', $error, $timeout, $next, $affected_rows;
 			private $result;
 
 			function select_db($database) {
@@ -56,7 +56,7 @@ if (isset($_GET["simpledb"])) {
 		}
 
 		class Result {
-			var $num_rows;
+			public $num_rows;
 			private $rows = array(), $offset = 0;
 
 			function __construct($result) {
@@ -123,8 +123,8 @@ if (isset($_GET["simpledb"])) {
 		static $possibleDrivers = array("SimpleXML + allow_url_fopen");
 		static $jush = "simpledb";
 
-		var $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "IS NOT NULL");
-		var $grouping = array("count");
+		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "IS NOT NULL");
+		public $grouping = array("count");
 
 		public $primary = "itemName()";
 

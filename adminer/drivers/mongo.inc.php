@@ -8,10 +8,10 @@ if (isset($_GET["mongo"])) {
 
 	if (class_exists('MongoDB\Driver\Manager')) {
 		class Db {
-			var $extension = "MongoDB", $server_info = MONGODB_VERSION, $affected_rows, $error, $last_id;
+			public $extension = "MongoDB", $server_info = MONGODB_VERSION, $affected_rows, $error, $last_id;
 			/** @var MongoDB\Driver\Manager */
-			var $_link;
-			var $_db, $_db_name;
+			public $_link;
+			public $_db, $_db_name;
 
 			function connect($uri, $options) {
 				$this->_link = new \MongoDB\Driver\Manager($uri, $options);
@@ -53,7 +53,7 @@ if (isset($_GET["mongo"])) {
 		}
 
 		class Result {
-			var $num_rows;
+			public $num_rows;
 			private $rows = array(), $offset = 0, $charset = array();
 
 			function __construct($result) {
@@ -285,9 +285,9 @@ if (isset($_GET["mongo"])) {
 		static $possibleDrivers = array("mongodb");
 		static $jush = "mongo";
 
-		var $editFunctions = array(array("json"));
+		public $editFunctions = array(array("json"));
 
-		var $operators = array(
+		public $operators = array(
 			"=",
 			"!=",
 			">",

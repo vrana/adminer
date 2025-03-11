@@ -2,7 +2,7 @@
 namespace Adminer;
 
 class Adminer {
-	var $operators = array("<=", ">=");
+	public $operators = array("<=", ">=");
 	private $values = array();
 
 	function name() {

@@ -28,15 +28,15 @@ abstract class SqlDriver {
 
 	protected $conn;
 	protected $types = array(); ///< @var array [$description => [$type => $maximum_unsigned_length, ...], ...]
-	var $editFunctions = array(); ///< @var array of ["$type|$type2" => "$function/$function2"] functions used in editing, [0] - edit and insert, [1] - edit only
-	var $unsigned = array(); ///< @var array number variants
-	var $operators = array(); ///< @var array operators used in select
-	var $functions = array(); ///< @var array functions used in select
-	var $grouping = array(); ///< @var array grouping functions used in select
-	var $onActions = "RESTRICT|NO ACTION|CASCADE|SET NULL|SET DEFAULT"; ///< @var string used in foreign_keys()
-	var $inout = "IN|OUT|INOUT";
-	var $enumLength = "'(?:''|[^'\\\\]|\\\\.)*'";
-	var $generated = array();
+	public $editFunctions = array(); ///< @var array of ["$type|$type2" => "$function/$function2"] functions used in editing, [0] - edit and insert, [1] - edit only
+	public $unsigned = array(); ///< @var array number variants
+	public $operators = array(); ///< @var array operators used in select
+	public $functions = array(); ///< @var array functions used in select
+	public $grouping = array(); ///< @var array grouping functions used in select
+	public $onActions = "RESTRICT|NO ACTION|CASCADE|SET NULL|SET DEFAULT"; ///< @var string used in foreign_keys()
+	public $inout = "IN|OUT|INOUT";
+	public $enumLength = "'(?:''|[^'\\\\]|\\\\.)*'";
+	public $generated = array();
 
 	/** Create object for performing database operations
 	* @param Db

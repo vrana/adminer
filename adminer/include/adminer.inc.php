@@ -5,7 +5,7 @@ namespace Adminer;
 
 class Adminer {
 	/** @var array operators used in select, null for all operators */
-	var $operators;
+	public $operators;
 
 	/** Name in title and navigation
 	* @return string HTML code

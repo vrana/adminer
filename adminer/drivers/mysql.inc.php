@@ -8,7 +8,7 @@ if (!defined('Adminer\DRIVER')) {
 	// MySQLi supports everything, MySQL doesn't support multiple result sets, PDO_MySQL doesn't support orgtable
 	if (extension_loaded("mysqli")) {
 		class Db extends \MySQLi {
-			var $extension = "MySQLi";
+			public $extension = "MySQLi";
 
 			function __construct() {
 				parent::init();
@@ -60,7 +60,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	} elseif (extension_loaded("mysql") && !((ini_bool("sql.safe_mode") || ini_bool("mysql.allow_local_infile")) && extension_loaded("pdo_mysql"))) {
 		class Db {
-			var
+			public
 				$extension = "MySQL", ///< @var string extension name
 				$server_info, ///< @var string server version
 				$affected_rows, ///< @var int number of affected rows
@@ -185,7 +185,7 @@ if (!defined('Adminer\DRIVER')) {
 		}
 
 		class Result {
-			var $num_rows; ///< @var int number of rows in the result
+			public $num_rows; ///< @var int number of rows in the result
 			private $result, $offset = 0;
 
 			/** Constructor
@@ -230,7 +230,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	} elseif (extension_loaded("pdo_mysql")) {
 		class Db extends PdoDb {
-			var $extension = "PDO_MySQL";
+			public $extension = "PDO_MySQL";
 
 			function connect($server, $username, $password) {
 				global $adminer;
@@ -282,10 +282,10 @@ if (!defined('Adminer\DRIVER')) {
 		static $possibleDrivers = array("MySQLi", "MySQL", "PDO_MySQL");
 		static $jush = "sql"; ///< @var string JUSH identifier
 
-		var $unsigned = array("unsigned", "zerofill", "unsigned zerofill");
-		var $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "FIND_IN_SET", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL");
-		var $functions = array("char_length", "date", "from_unixtime", "lower", "round", "floor", "ceil", "sec_to_time", "time_to_sec", "upper");
-		var $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
+		public $unsigned = array("unsigned", "zerofill", "unsigned zerofill");
+		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "FIND_IN_SET", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL");
+		public $functions = array("char_length", "date", "from_unixtime", "lower", "round", "floor", "ceil", "sec_to_time", "time_to_sec", "upper");
+		public $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
 
 		function __construct($connection) {
 			parent::__construct($connection);

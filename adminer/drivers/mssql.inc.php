@@ -13,7 +13,7 @@ if (isset($_GET["mssql"])) {
 	define('Adminer\DRIVER', "mssql");
 	if (extension_loaded("sqlsrv")) {
 		class Db {
-			var $extension = "sqlsrv", $server_info, $affected_rows, $errno, $error;
+			public $extension = "sqlsrv", $server_info, $affected_rows, $errno, $error;
 			private $link, $result;
 
 			private function get_error() {
@@ -107,7 +107,7 @@ if (isset($_GET["mssql"])) {
 		}
 
 		class Result {
-			var $num_rows;
+			public $num_rows;
 			private $result, $offset = 0, $fields;
 
 			function __construct($result) {
@@ -158,7 +158,7 @@ if (isset($_GET["mssql"])) {
 
 	} elseif (extension_loaded("pdo_sqlsrv")) {
 		class Db extends PdoDb {
-			var $extension = "PDO_SQLSRV";
+			public $extension = "PDO_SQLSRV";
 
 			function connect($server, $username, $password) {
 				$this->dsn("sqlsrv:Server=" . str_replace(":", ",", $server), $username, $password);
@@ -173,7 +173,7 @@ if (isset($_GET["mssql"])) {
 
 	} elseif (extension_loaded("pdo_dblib")) {
 		class Db extends PdoDb {
-			var $extension = "PDO_DBLIB";
+			public $extension = "PDO_DBLIB";
 
 			function connect($server, $username, $password) {
 				$this->dsn("dblib:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\d)~', ';port=\1', $server)), $username, $password);
@@ -191,7 +191,7 @@ if (isset($_GET["mssql"])) {
 		static $possibleDrivers = array("SQLSRV", "PDO_SQLSRV", "PDO_DBLIB");
 		static $jush = "mssql";
 
-		var $editFunctions = array(
+		public $editFunctions = array(
 			array(
 				"date|time" => "getdate",
 			), array(
@@ -200,11 +200,11 @@ if (isset($_GET["mssql"])) {
 			)
 		);
 
-		var $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL");
-		var $functions = array("len", "lower", "round", "upper");
-		var $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
-		var $onActions = "NO ACTION|CASCADE|SET NULL|SET DEFAULT";
-		var $generated = array("PERSISTED", "VIRTUAL");
+		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL");
+		public $functions = array("len", "lower", "round", "upper");
+		public $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
+		public $onActions = "NO ACTION|CASCADE|SET NULL|SET DEFAULT";
+		public $generated = array("PERSISTED", "VIRTUAL");
 
 		function __construct($connection) {
 			parent::__construct($connection);

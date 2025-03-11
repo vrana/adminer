@@ -4,7 +4,7 @@ namespace Adminer;
 // PDO can be used in several database drivers
 if (extension_loaded('pdo')) {
 	abstract class PdoDb {
-		var $server_info, $affected_rows, $errno, $error, $pdo;
+		public $server_info, $affected_rows, $errno, $error, $pdo;
 		private $result;
 
 		function dsn($dsn, $username, $password, $options = array()) {
@@ -76,7 +76,7 @@ if (extension_loaded('pdo')) {
 	}
 
 	class PdoDbStatement extends \PDOStatement {
-		var $_offset = 0, $num_rows;
+		public $_offset = 0, $num_rows;
 
 		function fetch_assoc() {
 			return $this->fetch(\PDO::FETCH_ASSOC);

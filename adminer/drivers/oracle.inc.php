@@ -7,9 +7,9 @@ if (isset($_GET["oracle"])) {
 	define('Adminer\DRIVER', "oracle");
 	if (extension_loaded("oci8")) {
 		class Db {
-			var $extension = "oci8", $server_info, $affected_rows, $errno, $error;
+			public $extension = "oci8", $server_info, $affected_rows, $errno, $error;
+			public $_current_db;
 			private $link, $result;
-			var $_current_db;
 
 			function _error($errno, $error) {
 				if (ini_bool("html_errors")) {
@@ -83,7 +83,7 @@ if (isset($_GET["oracle"])) {
 		}
 
 		class Result {
-			var $num_rows;
+			public $num_rows;
 			private $result, $offset = 1;
 
 			function __construct($result) {
@@ -124,8 +124,8 @@ if (isset($_GET["oracle"])) {
 
 	} elseif (extension_loaded("pdo_oci")) {
 		class Db extends PdoDb {
-			var $extension = "PDO_OCI";
-			var $_current_db;
+			public $extension = "PDO_OCI";
+			public $_current_db;
 
 			function connect($server, $username, $password) {
 				$this->dsn("oci:dbname=//$server;charset=AL32UTF8", $username, $password);
@@ -146,7 +146,7 @@ if (isset($_GET["oracle"])) {
 		static $possibleDrivers = array("OCI8", "PDO_OCI");
 		static $jush = "oracle";
 
-		var $editFunctions = array(
+		public $editFunctions = array(
 			array( //! no parentheses
 				"date" => "current_date",
 				"timestamp" => "current_timestamp",
@@ -157,9 +157,9 @@ if (isset($_GET["oracle"])) {
 			)
 		);
 
-		var $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
-		var $functions = array("length", "lower", "round", "upper");
-		var $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
+		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
+		public $functions = array("length", "lower", "round", "upper");
+		public $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 
 		function __construct($connection) {
 			parent::__construct($connection);

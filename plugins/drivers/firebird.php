@@ -12,7 +12,7 @@ if (isset($_GET["firebird"])) {
 
 	if (extension_loaded("interbase")) {
 		class Db {
-			var
+			public
 				$extension = "Firebird",
 				$server_info,
 				$affected_rows,
@@ -81,7 +81,7 @@ if (isset($_GET["firebird"])) {
 		}
 
 		class Result {
-			var $num_rows;
+			public $num_rows;
 			private $result, $offset = 0;
 
 			function __construct($result) {
@@ -120,7 +120,7 @@ if (isset($_GET["firebird"])) {
 		static $possibleDrivers = array("interbase");
 		static $jush = "firebird";
 
-		var $operators = array("=");
+		public $operators = array("=");
 	}
 
 
