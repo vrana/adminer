@@ -29,8 +29,7 @@ input, textarea { box-sizing: border-box; }
 input, select { vertical-align: middle; }
 input[type="radio"] { vertical-align: text-bottom; }
 input.default { box-shadow: 1px 1px 1px #777; }
-input.required { box-shadow: 1px 1px 1px red; }
-input.maxlength { box-shadow: 1px 1px 1px red; }
+input.required, input.maxlength { box-shadow: 1px 1px 1px red; }
 input.wayoff { left: -1000px; position: absolute; }
 .block { display: block; }
 .version { color: #777; font-size: 62%; }
@@ -50,9 +49,7 @@ input.wayoff { left: -1000px; position: absolute; }
 .odds tbody tr:nth-child(2n) td { background: #F5F5F5; }
 .js .checkable .checked td, .js .checkable .checked th { background: #ddf; }
 .time { color: silver; font-size: 70%; }
-.function { text-align: right; }
-.number { text-align: right; }
-.datetime { text-align: right; }
+.function, .number, .datetime { text-align: right; }
 .type { width: 15ex; }
 .options select, .options input { width: 20ex; }
 .view { font-style: italic; }
