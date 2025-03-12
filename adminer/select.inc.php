@@ -452,7 +452,7 @@ if (!$columns && support("table")) {
 						$id = h("val[$unique_idf][" . bracket_escape($key) . "]");
 						$value = $_POST["val"][$unique_idf][bracket_escape($key)];
 						$editable = !is_array($row[$key]) && is_utf8($val) && $rows[$n][$key] == $row[$key] && !$functions[$key] && !$field["generated"];
-						$text = preg_match('~text|lob~', $field["type"]);
+						$text = preg_match('~text|json|lob~', $field["type"]);
 						echo "<td id='$id'";
 						if (($_GET["modify"] && $editable) || $value !== null) {
 							$h_value = h($value !== null ? $value : $row[$key]);

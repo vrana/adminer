@@ -603,7 +603,7 @@ if (!defined('Adminer\DRIVER')) {
 			preg_match('~^([^( ]+)(?:\((.+)\))?( unsigned)?( zerofill)?$~', $type, $match_type);
 			$default = $row["COLUMN_DEFAULT"];
 			if ($default != "") {
-				$is_text = preg_match('~text~', $match_type[1]);
+				$is_text = preg_match('~text|json~', $match_type[1]);
 				if (!$maria && $is_text) {
 					// default value a'b of text column is stored as _utf8mb4\'a\\\'b\' in MySQL
 					$default = preg_replace("~^(_\w+)?('.*')$~", '\2', stripslashes($default));
