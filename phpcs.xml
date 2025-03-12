@@ -114,5 +114,15 @@
 	https://github.com/PHPCompatibility/PHPCompatibility
 	<rule ref="PHPCompatibility"/>
 	<config name="testVersion" value="5.3-"/>
+	<rule ref="PHPCompatibility.Extensions.RemovedExtensions">
+		<exclude name="PHPCompatibility.Extensions.RemovedExtensions.mysql_DeprecatedRemoved"/>
+		<exclude name="PHPCompatibility.Extensions.RemovedExtensions.ibaseRemoved"/>
+	</rule>
+	<rule ref="PHPCompatibility.Constants.RemovedConstants">
+		<exclude-pattern>adminer/plugins/drivers/firebird.php</exclude-pattern>
+	</rule>
+	<rule ref="PHPCompatibility.FunctionUse.RemovedFunctions">
+		<exclude-pattern>adminer/plugins/drivers/firebird.php</exclude-pattern>
+	</rule>
 	-->
 </ruleset>
