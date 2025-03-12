@@ -42,7 +42,7 @@ function php_shrink($input) {
 
 	arsort($short_variables);
 	$chars = implode(range('a', 'z')) . '_' . implode(range('A', 'Z'));
-	// preserve variable names between versions if possible
+	//! preserve variable names between versions if possible
 	$short_variables2 = array_splice($short_variables, strlen($chars));
 	ksort($short_variables);
 	ksort($short_variables2);
@@ -75,8 +75,8 @@ function php_shrink($input) {
 				$doc_comment = true;
 			}
 			if ($token[0] == T_VAR || $token[0] == T_PUBLIC || $token[0] == T_PROTECTED || $token[0] == T_PRIVATE) {
-				if ($token[0] == T_PUBLIC && $tokens[$i+2][1][0] == '$') {
-					$token[1] = 'var';
+				if ($token[0] == T_PUBLIC) {
+					$token[1] = ($tokens[$i+2][1][0] == '$' ? 'var' : '');
 				}
 				$shortening = false;
 			} elseif (!$shortening) {
