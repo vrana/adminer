@@ -33,9 +33,10 @@ if (!extension_loaded("xdebug")) {
 	// highlight single file
 	$filename = $_GET["coverage"];
 	$coverage = (file_exists($coverage_filename) ? unserialize(file_get_contents($coverage_filename)) : array());
-	$file = explode("\n", highlight_file($filename, true));
+	$file = explode("\n", substr(highlight_file($filename, true), 5, -6)); // unwrap <pre></pre>
 	$prev_color = null;
 	$s = "";
+	echo "<pre>";
 	for ($l=0; $l <= count($file); $l++) {
 		$line = $file[$l];
 		$color = "#C0FFC0"; // tested
@@ -59,12 +60,13 @@ if (!extension_loaded("xdebug")) {
 			foreach (array_reverse($open_tags) as $tag) {
 				echo "</" . preg_replace('~ .*~', '', $tag) . ">";
 			}
-			echo "</div>\n";
+			echo "</div>";
 			$s = ($open_tags ? "<" . implode("><", $open_tags) . ">" : "");
 			$prev_color = $color;
 		}
 		$s .= "$line\n";
 	}
+	echo "</pre>";
 } else {
 	if (file_exists($coverage_filename)) {
 		// display list of files
