@@ -6,8 +6,8 @@
         "database"
     ],
     "support": {
-        "issues": "https://sourceforge.net/p/adminer/bugs-and-features/",
-        "forum": "https://sourceforge.net/p/adminer/discussion/",
+        "issues": "https://github.com/vrana/adminer/issues",
+        "forum": "https://github.com/vrana/adminer/discussions",
         "source": "https://github.com/vrana/adminer/"
     },
     "authors": [
@@ -17,6 +17,10 @@
         }
     ],
     "autoload": {
+        "exclude-from-classmap": [
+            "adminer/drivers/",
+            "plugins/drivers/"
+        ],
         "classmap": [
             "plugins/"
         ]
@@ -25,7 +29,11 @@
         "Apache-2.0",
         "GPL-2.0-only"
     ],
+    "require": {
+        "php": ">=5.3"
+    },
     "scripts": {
-        "compile": "php compile.php"
+        "clean": "rm -f adminer*.php editor*.php",
+        "compile": "@php compile.php"
     }
 }

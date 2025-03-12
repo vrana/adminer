@@ -18,38 +18,37 @@ CREATE TABLE translation (
 */
 class AdminerTranslation {
 
-	function _translate($idf) {
+	private function translate($idf) {
 		static $translations, $lang;
 		if ($lang === null) {
-			$lang = get_lang();
+			$lang = Adminer\get_lang();
 		}
 		if ($idf == "" || $lang == "en") {
 			return $idf;
 		}
 		if ($translations === null) {
-			$translations = get_key_vals("SELECT idf, translation FROM translation WHERE language_id = " . q($lang));
+			$translations = Adminer\get_key_vals("SELECT idf, translation FROM translation WHERE language_id = " . Adminer\q($lang));
 		}
 		$return = &$translations[$idf];
 		if ($return === null) {
 			$return = $idf;
-			$connection = connection();
-			$connection->query("INSERT INTO translation (language_id, idf, translation) VALUES (" . q($lang) . ", " . q($idf) . ", " . q($idf) . ")");
+			$connection = Adminer\connection();
+			$connection->query("INSERT INTO translation (language_id, idf, translation) VALUES (" . Adminer\q($lang) . ", " . Adminer\q($idf) . ", " . Adminer\q($idf) . ")");
 		}
 		return $return;
 	}
 
 	function tableName(&$tableStatus) {
-		$tableStatus["Comment"] = $this->_translate($tableStatus["Comment"]);
+		$tableStatus["Comment"] = $this->translate($tableStatus["Comment"]);
 	}
 
 	function fieldName(&$field, $order = 0) {
-		$field["comment"] = $this->_translate($field["comment"]);
+		$field["comment"] = $this->translate($field["comment"]);
 	}
 
 	function editVal(&$val, $field) {
 		if ($field["type"] == "enum") {
-			$val = $this->_translate($val);
+			$val = $this->translate($val);
 		}
 	}
-
 }

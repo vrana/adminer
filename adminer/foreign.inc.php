@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $TABLE = $_GET["foreign"];
 $name = $_GET["name"];
 $row = $_POST;
@@ -14,11 +16,11 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 		$row["target"] = $target;
 	}
 
-	if ($jush == "sqlite") {
+	if (JUSH == "sqlite") {
 		$result = recreate_table($TABLE, $TABLE, array(), array(), array(" $name" => ($row["drop"] ? "" : " " . format_foreign_key($row))));
 	} else {
 		$alter = "ALTER TABLE " . table($TABLE);
-		$result = ($name == "" || queries("$alter DROP " . ($jush == "sql" ? "FOREIGN KEY " : "CONSTRAINT ") . idf_escape($name)));
+		$result = ($name == "" || queries("$alter DROP " . (JUSH == "sql" ? "FOREIGN KEY " : "CONSTRAINT ") . idf_escape($name)));
 		if (!$row["drop"]) {
 			$result = queries("$alter ADD" . format_foreign_key($row));
 		}
@@ -28,6 +30,9 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 		($row["drop"] ? lang('Foreign key has been dropped.') : ($name != "" ? lang('Foreign key has been altered.') : lang('Foreign key has been created.'))),
 		$result
 	);
+	if (!$row["drop"]) {
+		$error = "$error<br>" . lang('Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.'); //! no partitioning
+	}
 }
 
 page_header(lang('Foreign key'), $error, array("table" => $TABLE), h($TABLE));
@@ -59,16 +64,19 @@ if ($row["ns"] != "") {
 	$orig_schema = get_schema();
 	set_schema($row["ns"]);
 }
-$referencable = array_keys(array_filter(table_status('', true), 'fk_support'));
+$referencable = array_keys(array_filter(table_status('', true), 'Adminer\fk_support'));
 $target = array_keys(fields(in_array($row["table"], $referencable) ? $row["table"] : reset($referencable)));
 $onchange = "this.form['change-js'].value = '1'; this.form.submit();";
 echo "<p>" . lang('Target table') . ": " . html_select("table", $referencable, $row["table"], $onchange) . "\n";
 if (support("scheme")) {
-	echo lang('Schema') . ": " . html_select("ns", $adminer->schemas(), $row["ns"] != "" ? $row["ns"] : $_GET["ns"], $onchange);
+	$schemas = array_filter($adminer->schemas(), function ($schema) {
+		return !preg_match('~^information_schema$~i', $schema);
+	});
+	echo lang('Schema') . ": " . html_select("ns", $schemas, $row["ns"] != "" ? $row["ns"] : $_GET["ns"], $onchange);
 	if ($row["ns"] != "") {
 		set_schema($orig_schema);
 	}
-} elseif ($jush != "sqlite") {
+} elseif (JUSH != "sqlite") {
 	$dbs = array();
 	foreach ($adminer->databases() as $db) {
 		if (!information_schema($db)) {
@@ -86,15 +94,15 @@ if (support("scheme")) {
 $j = 0;
 foreach ($row["source"] as $key => $val) {
 	echo "<tr>";
-	echo "<td>" . html_select("source[" . (+$key) . "]", array(-1 => "") + $source, $val, ($j == count($row["source"]) - 1 ? "foreignAddRow.call(this);" : 1), "label-source");
-	echo "<td>" . html_select("target[" . (+$key) . "]", $target, $row["target"][$key], 1, "label-target");
+	echo "<td>" . html_select("source[" . (+$key) . "]", array(-1 => "") + $source, $val, ($j == count($row["source"]) - 1 ? "foreignAddRow.call(this);" : ""), "label-source");
+	echo "<td>" . html_select("target[" . (+$key) . "]", $target, $row["target"][$key], "", "label-target");
 	$j++;
 }
 ?>
 </table>
 <p>
-<?php echo lang('ON DELETE'); ?>: <?php echo html_select("on_delete", array(-1 => "") + explode("|", $on_actions), $row["on_delete"]); ?>
- <?php echo lang('ON UPDATE'); ?>: <?php echo html_select("on_update", array(-1 => "") + explode("|", $on_actions), $row["on_update"]); ?>
+<?php echo lang('ON DELETE'); ?>: <?php echo html_select("on_delete", array(-1 => "") + explode("|", $driver->onActions), $row["on_delete"]); ?>
+ <?php echo lang('ON UPDATE'); ?>: <?php echo html_select("on_update", array(-1 => "") + explode("|", $driver->onActions), $row["on_update"]); ?>
 <?php echo doc_link(array(
 	'sql' => "innodb-foreign-key-constraints.html",
 	'mariadb' => "foreign-keys/",
@@ -105,6 +113,8 @@ foreach ($row["source"] as $key => $val) {
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <noscript><p><input type="submit" name="add" value="<?php echo lang('Add column'); ?>"></noscript>
-<?php if ($name != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $name)); ?><?php } ?>
+<?php if ($name != "") { ?>
+<input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $name)); ?>
+<?php } ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

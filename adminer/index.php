@@ -7,11 +7,10 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 
+namespace Adminer;
+
 include "./include/bootstrap.inc.php";
 include "./include/tmpfile.inc.php";
-
-$enum_length = "'(?:''|[^'\\\\]|\\\\.)*'";
-$inout = "IN|OUT|INOUT";
 
 if (isset($_GET["select"]) && ($_POST["edit"] || $_POST["clone"]) && !$_POST["save"]) {
 	$_GET["edit"] = $_GET["select"];

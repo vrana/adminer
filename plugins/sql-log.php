@@ -7,8 +7,7 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerSqlLog {
-	/** @access protected */
-	var $filename;
+	protected $filename;
 
 	/**
 	* @param string defaults to "$database.sql"
@@ -18,16 +17,16 @@ class AdminerSqlLog {
 	}
 
 	function messageQuery($query, $time, $failed = false) {
-		$this->_log($query);
+		$this->log($query);
 	}
 
 	function sqlCommandQuery($query) {
-		$this->_log($query);
+		$this->log($query);
 	}
 
-	function _log($query) {
+	private function log($query) {
 		if ($this->filename == "") {
-			$adminer = adminer();
+			$adminer = Adminer\adminer();
 			$this->filename = $adminer->database() . ".sql"; // no database goes to ".sql" to avoid collisions
 		}
 		$fp = fopen($this->filename, "a");
@@ -37,5 +36,4 @@ class AdminerSqlLog {
 		flock($fp, LOCK_UN);
 		fclose($fp);
 	}
-
 }

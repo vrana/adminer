@@ -175,8 +175,8 @@
    background: var(--color-darkPurple);
  }
 
- .odds tbody tr:nth-child(2n) th,
- .odds tbody tr:nth-child(2n) td {
+ .odds tbody tr:nth-child(2n):not(.checked, :hover) th,
+ .odds tbody tr:nth-child(2n):not(.checked, :hover) td {
    background: var(--color-darkDraculaVSCode);
  }
 
@@ -489,6 +489,7 @@
 	 margin-top: 0;
  }
 
+ pre.jush,
  input:not([type]),
  input[type="color"],
  input[type="email"],

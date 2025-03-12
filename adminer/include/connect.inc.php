@@ -1,6 +1,24 @@
 <?php
-function connect_error() {
-	global $adminer, $connection, $token, $error, $drivers;
+namespace Adminer;
+
+if (isset($_GET["status"])) {
+	$_GET["variables"] = $_GET["status"];
+}
+if (isset($_GET["import"])) {
+	$_GET["sql"] = $_GET["import"];
+}
+
+if (
+	!(DB != ""
+		? $connection->select_db(DB)
+		: isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]) || isset($_GET["processlist"]) || isset($_GET["privileges"]) || isset($_GET["user"]) || isset($_GET["variables"])
+			|| $_GET["script"] == "connect" || $_GET["script"] == "kill"
+	)
+) {
+	if (DB != "" || $_GET["refresh"]) {
+		restart_session();
+		set_session("dbs", null);
+	}
 	if (DB != "") {
 		header("HTTP/1.1 404 Not Found");
 		page_header(lang('Database') . ": " . h(DB), lang('Invalid database.'), true);
@@ -11,13 +29,15 @@ function connect_error() {
 
 		page_header(lang('Select database'), $error, false);
 		echo "<p class='links'>\n";
-		foreach (array(
-			'database' => lang('Create database'),
-			'privileges' => lang('Privileges'),
-			'processlist' => lang('Process list'),
-			'variables' => lang('Variables'),
-			'status' => lang('Status'),
-		) as $key => $val) {
+		foreach (
+			array(
+				'database' => lang('Create database'),
+				'privileges' => lang('Privileges'),
+				'processlist' => lang('Process list'),
+				'variables' => lang('Variables'),
+				'status' => lang('Status'),
+			) as $key => $val
+		) {
 			if (support($key)) {
 				echo "<a href='" . h(ME) . "$key='>$val</a>\n";
 			}
@@ -33,7 +53,7 @@ function connect_error() {
 			echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
 			echo "<thead><tr>"
 				. (support("database") ? "<td>" : "")
-				. "<th>" . lang('Database') . " - <a href='" . h(ME) . "refresh=1'>" . lang('Refresh') . "</a>"
+				. "<th>" . lang('Database') . (get_session("dbs") !== null ? " - <a href='" . h(ME) . "refresh=1'>" . lang('Refresh') . "</a>" : "")
 				. "<td>" . lang('Collation')
 				. "<td>" . lang('Tables')
 				. "<td>" . lang('Size') . " - <a href='" . h(ME) . "dbsize=1'>" . lang('Compute') . "</a>" . script("qsl('a').onclick = partial(ajaxSetHtml, '" . js_escape(ME) . "script=connect');", "")
@@ -71,21 +91,6 @@ function connect_error() {
 	}
 
 	page_footer("db");
-}
-
-if (isset($_GET["status"])) {
-	$_GET["variables"] = $_GET["status"];
-}
-if (isset($_GET["import"])) {
-	$_GET["sql"] = $_GET["import"];
-}
-
-if (!(DB != "" ? $connection->select_db(DB) : isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]) || isset($_GET["processlist"]) || isset($_GET["privileges"]) || isset($_GET["user"]) || isset($_GET["variables"]) || $_GET["script"] == "connect" || $_GET["script"] == "kill")) {
-	if (DB != "" || $_GET["refresh"]) {
-		restart_session();
-		set_session("dbs", null);
-	}
-	connect_error(); // separate function to catch SQLite error
 	exit;
 }
 

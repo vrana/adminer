@@ -18,12 +18,11 @@ class AdminerDatabaseHide {
 
 	function databases($flush = true) {
 		$return = array();
-		foreach (get_databases($flush) as $db) {
+		foreach (Adminer\get_databases($flush) as $db) {
 			if (!in_array(strtolower($db), $this->disabled)) {
 				$return[] = $db;
 			}
 		}
 		return $return;
 	}
-
 }

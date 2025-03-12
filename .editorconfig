@@ -7,7 +7,7 @@ end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.{php,css,js}]
+[*.{php,css,js,xml}]
 indent_style = tab
 
 [*.json]

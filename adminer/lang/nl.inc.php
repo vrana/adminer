@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $translations = array(
 	'Login' => 'Aanmelden',
 	'Logout successful.' => 'Successvol afgemeld.',
@@ -252,7 +254,7 @@ $translations = array(
 	'Geometry' => 'Geometrie',
 	'File exists.' => 'Bestand bestaat reeds.',
 	'Attachments' => 'Bijlagen',
-	'%d query(s) executed OK.' => array('%d query succesvol uitgevoerd.', '%d querys succesvol uitgevoerd'),
+	'%d query(s) executed OK.' => array('%d query succesvol uitgevoerd.', '%d querys succesvol uitgevoerd.'),
 	'Show only errors' => 'Enkel fouten tonen',
 	'Refresh' => 'Vernieuwen',
 	'Invalid schema.' => 'Ongeldig schema.',
@@ -275,7 +277,7 @@ $translations = array(
 	'Modify' => 'Aanpassen',
 	'Load more data' => 'Meer data inladen',
 	'Loading' => 'Aan het laden',
-	'ATTACH queries are not supported.' => 'ATTACH queries worden niet ondersteund',
+	'ATTACH queries are not supported.' => 'ATTACH queries worden niet ondersteund.',
 	'Warnings' => 'Waarschuwingen',
 	'%d / ' => '%d / ',
 	'Limit rows' => 'Rijen beperken',
@@ -284,7 +286,7 @@ $translations = array(
 	'Full table scan' => 'Full table scan',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Teveel foutieve aanmeldpogingen, probeer opnieuw binnen %d minuut.', 'Teveel foutieve aanmeldpogingen, probeer opnieuw binnen %d minuten.'),
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Master wachtwoord verlopen. <a href="https://www.adminer.org/en/extension/"%s>Implementeer</a> de %s methode om het permanent te maken.',
-	'The action will be performed after successful login with the same credentials.' => 'Deze actie zal uitgevoerd worden na het succesvol aanmelden met dezelfde gebruikersgegevens',
+	'The action will be performed after successful login with the same credentials.' => 'Deze actie zal uitgevoerd worden na het succesvol aanmelden met dezelfde gebruikersgegevens.',
 	'Connecting to privileged ports is not allowed.' => 'Verbindingen naar geprivilegieerde poorten is niet toegestaan.',
 	'There is a space in the input password which might be the cause.' => 'Er staat een spatie in het wachtwoord, wat misschien de oorzaak is.',
 	'If you did not send this request from Adminer then close this page.' => 'Als u deze actie niet via Adminer hebt gedaan, gelieve deze pagina dan te sluiten.',
@@ -294,7 +296,7 @@ $translations = array(
 	'You are offline.' => 'U bent offline.',
 	'You have no privileges to update this table.' => 'U bent niet gemachtigd om deze tabel aan te passen.',
 	'Saving' => 'Opslaan',
-	'Unknown error.' => 'Onbekende fout',
+	'Unknown error.' => 'Onbekende fout.',
 	'Database does not support password.' => 'Database ondersteunt het wachtwoord niet.',
 	'Disable %s or enable %s or %s extensions.' => 'Schakel %s uit or schakel extensies %s of %s in.',
 	'yes' => 'ja',

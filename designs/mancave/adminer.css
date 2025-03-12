@@ -377,11 +377,11 @@ td{
 	border-bottom: 1px solid #777;
 }
 
-.odds tbody tr:nth-child(2n) th{
+.odds tbody tr:nth-child(2n):not(.checked, :hover) th{
 	background: #33394d;
 }
 
-.odds tbody tr:nth-child(2n) td{
+.odds tbody tr:nth-child(2n):not(.checked, :hover) td{
 	background: #33394d;
 }
 
@@ -450,6 +450,7 @@ textarea
 	outline: none;
 }
 
+pre.jush,
 textarea, input, select {
     border-width: 1px;
     -moz-border-radius: 4px;

@@ -9,8 +9,7 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerEditCalendar {
-	/** @access protected */
-	var $prepend, $langPath;
+	protected $prepend, $langPath;
 
 	/**
 	* @param string text to append before first calendar usage
@@ -19,9 +18,9 @@ class AdminerEditCalendar {
 	function __construct($prepend = null, $langPath = "jquery-ui/i18n/jquery.ui.datepicker-%s.js") {
 		if ($prepend === null) {
 			$prepend = "<link rel='stylesheet' type='text/css' href='jquery-ui/jquery-ui.css'>\n"
-				. script_src("jquery-ui/jquery.js")
-				. script_src("jquery-ui/jquery-ui.js")
-				. script_src("jquery-ui/jquery-ui-timepicker-addon.js")
+				. Adminer\script_src("jquery-ui/jquery.js")
+				. Adminer\script_src("jquery-ui/jquery-ui.js")
+				. Adminer\script_src("jquery-ui/jquery-ui-timepicker-addon.js")
 			;
 		}
 		$this->prepend = $prepend;
@@ -30,12 +29,12 @@ class AdminerEditCalendar {
 
 	function head() {
 		echo $this->prepend;
-		if ($this->langPath && function_exists('get_lang')) { // since Adminer 3.2.0
-			$lang = get_lang();
+		if ($this->langPath) {
+			$lang = Adminer\get_lang();
 			$lang = ($lang == "zh" ? "zh-CN" : ($lang == "zh-tw" ? "zh-TW" : $lang));
 			if ($lang != "en" && file_exists(sprintf($this->langPath, $lang))) {
-				echo script_src(sprintf($this->langPath, $lang));
-				echo script("jQuery(function () { jQuery.timepicker.setDefaults(jQuery.datepicker.regional['$lang']); });");
+				echo Adminer\script_src(sprintf($this->langPath, $lang));
+				echo Adminer\script("jQuery(function () { jQuery.timepicker.setDefaults(jQuery.datepicker.regional['$lang']); });");
 			}
 		}
 	}
@@ -44,13 +43,13 @@ class AdminerEditCalendar {
 		if (preg_match("~date|time~", $field["type"])) {
 			$dateFormat = "changeYear: true, dateFormat: 'yy-mm-dd'"; //! yy-mm-dd regional
 			$timeFormat = "showSecond: true, timeFormat: 'HH:mm:ss', timeInput: true";
-			return "<input id='fields-" . h($field["field"]) . "' value='" . h($value) . "'" . (@+$field["length"] ? " data-maxlength='" . (+$field["length"]) . "'" : "") . "$attrs>" . script(
-				"jQuery('#fields-" . js_escape($field["field"]) . "')."
+			return "<input id='fields-" . Adminer\h($field["field"]) . "' value='" . Adminer\h($value) . "'" . (@+$field["length"] ? " data-maxlength='" . (+$field["length"]) . "'" : "") . "$attrs>" . Adminer\script(
+				"jQuery('#fields-" . Adminer\js_escape($field["field"]) . "')."
 				. ($field["type"] == "time" ? "timepicker({ $timeFormat })"
 					: (preg_match("~time~", $field["type"]) ? "datetimepicker({ $dateFormat, $timeFormat })"
 						: "datepicker({ $dateFormat })"
-					)) . ";");
+					)) . ";"
+			);
 		}
 	}
-
 }

@@ -1,12 +1,14 @@
 <?php
+namespace Adminer;
+
 $drivers = array("server" => "MySQL") + $drivers;
 
-if (!defined("DRIVER")) {
-	define("DRIVER", "server"); // server - backwards compatibility
+if (!defined('Adminer\DRIVER')) {
+	define('Adminer\DRIVER', "server"); // server - backwards compatibility
 	// MySQLi supports everything, MySQL doesn't support multiple result sets, PDO_MySQL doesn't support orgtable
 	if (extension_loaded("mysqli")) {
-		class Min_DB extends MySQLi {
-			var $extension = "MySQLi";
+		class Db extends \MySQLi {
+			public $extension = "MySQLi";
 
 			function __construct() {
 				parent::init();
@@ -27,7 +29,7 @@ if (!defined("DRIVER")) {
 					$database,
 					(is_numeric($port) ? $port : ini_get("mysqli.default_port")),
 					(!is_numeric($port) ? $port : $socket),
-					($ssl ? (empty($ssl['cert']) ? 2048 : 64) : 0) // 2048 - MYSQLI_CLIENT_SSL, 64 - MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT (not available before PHP 5.6.16)
+					($ssl ? ($ssl['verify'] !== false ? 2048 : 64) : 0) // 2048 - MYSQLI_CLIENT_SSL, 64 - MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT (not available before PHP 5.6.16)
 				);
 				$this->options(MYSQLI_OPT_LOCAL_INFILE, false);
 				return $return;
@@ -57,15 +59,15 @@ if (!defined("DRIVER")) {
 		}
 
 	} elseif (extension_loaded("mysql") && !((ini_bool("sql.safe_mode") || ini_bool("mysql.allow_local_infile")) && extension_loaded("pdo_mysql"))) {
-		class Min_DB {
-			var
+		class Db {
+			public
 				$extension = "MySQL", ///< @var string extension name
 				$server_info, ///< @var string server version
 				$affected_rows, ///< @var int number of affected rows
 				$errno, ///< @var int last error code
-				$error, ///< @var string last error message
-				$_link, $_result ///< @access private
+				$error ///< @var string last error message
 			;
+			private $link, $result;
 
 			/** Connect to server
 			* @param string
@@ -78,19 +80,19 @@ if (!defined("DRIVER")) {
 					$this->error = lang('Disable %s or enable %s or %s extensions.', "'mysql.allow_local_infile'", "MySQLi", "PDO_MySQL");
 					return false;
 				}
-				$this->_link = @mysql_connect(
+				$this->link = @mysql_connect(
 					($server != "" ? $server : ini_get("mysql.default_host")),
 					("$server$username" != "" ? $username : ini_get("mysql.default_user")),
 					("$server$username$password" != "" ? $password : ini_get("mysql.default_password")),
 					true,
 					131072 // CLIENT_MULTI_RESULTS for CALL
 				);
-				if ($this->_link) {
-					$this->server_info = mysql_get_server_info($this->_link);
+				if ($this->link) {
+					$this->server_info = mysql_get_server_info($this->link);
 				} else {
 					$this->error = mysql_error();
 				}
-				return (bool) $this->_link;
+				return (bool) $this->link;
 			}
 
 			/** Sets the client character set
@@ -99,11 +101,11 @@ if (!defined("DRIVER")) {
 			*/
 			function set_charset($charset) {
 				if (function_exists('mysql_set_charset')) {
-					if (mysql_set_charset($charset, $this->_link)) {
+					if (mysql_set_charset($charset, $this->link)) {
 						return true;
 					}
 					// the client library may not support utf8mb4
-					mysql_set_charset('utf8', $this->_link);
+					mysql_set_charset('utf8', $this->link);
 				}
 				return $this->query("SET NAMES $charset");
 			}
@@ -113,7 +115,7 @@ if (!defined("DRIVER")) {
 			* @return string escaped string enclosed in '
 			*/
 			function quote($string) {
-				return "'" . mysql_real_escape_string($string, $this->_link) . "'";
+				return "'" . mysql_real_escape_string($string, $this->link) . "'";
 			}
 
 			/** Select database
@@ -121,28 +123,28 @@ if (!defined("DRIVER")) {
 			* @return bool
 			*/
 			function select_db($database) {
-				return mysql_select_db($database, $this->_link);
+				return mysql_select_db($database, $this->link);
 			}
 
 			/** Send query
 			* @param string
 			* @param bool
-			* @return mixed bool or Min_Result
+			* @return mixed bool or Result
 			*/
 			function query($query, $unbuffered = false) {
-				$result = @($unbuffered ? mysql_unbuffered_query($query, $this->_link) : mysql_query($query, $this->_link)); // @ - mute mysql.trace_mode
+				$result = @($unbuffered ? mysql_unbuffered_query($query, $this->link) : mysql_query($query, $this->link)); // @ - mute mysql.trace_mode
 				$this->error = "";
 				if (!$result) {
-					$this->errno = mysql_errno($this->_link);
-					$this->error = mysql_error($this->_link);
+					$this->errno = mysql_errno($this->link);
+					$this->error = mysql_error($this->link);
 					return false;
 				}
 				if ($result === true) {
-					$this->affected_rows = mysql_affected_rows($this->_link);
-					$this->info = mysql_info($this->_link);
+					$this->affected_rows = mysql_affected_rows($this->link);
+					$this->info = mysql_info($this->link);
 					return true;
 				}
-				return new Min_Result($result);
+				return new Result($result);
 			}
 
 			/** Send query with more resultsets
@@ -150,14 +152,14 @@ if (!defined("DRIVER")) {
 			* @return bool
 			*/
 			function multi_query($query) {
-				return $this->_result = $this->query($query);
+				return $this->result = $this->query($query);
 			}
 
 			/** Get current resultset
-			* @return Min_Result
+			* @return Result
 			*/
 			function store_result() {
-				return $this->_result;
+				return $this->result;
 			}
 
 			/** Fetch next resultset
@@ -175,24 +177,19 @@ if (!defined("DRIVER")) {
 			*/
 			function result($query, $field = 0) {
 				$result = $this->query($query);
-				if (!$result || !$result->num_rows) {
-					return false;
-				}
-				return mysql_result($result->_result, 0, $field);
+				return ($result ? $result->fetch_column($field) : false);
 			}
 		}
 
-		class Min_Result {
-			var
-				$num_rows, ///< @var int number of rows in the result
-				$_result, $_offset = 0 ///< @access private
-			;
+		class Result {
+			public $num_rows; ///< @var int number of rows in the result
+			private $result, $offset = 0;
 
 			/** Constructor
 			* @param resource
 			*/
 			function __construct($result) {
-				$this->_result = $result;
+				$this->result = $result;
 				$this->num_rows = mysql_num_rows($result);
 			}
 
@@ -200,21 +197,29 @@ if (!defined("DRIVER")) {
 			* @return array
 			*/
 			function fetch_assoc() {
-				return mysql_fetch_assoc($this->_result);
+				return mysql_fetch_assoc($this->result);
 			}
 
 			/** Fetch next row as numbered array
 			* @return array
 			*/
 			function fetch_row() {
-				return mysql_fetch_row($this->_result);
+				return mysql_fetch_row($this->result);
+			}
+
+			/** Fetch a single column
+			* @param int
+			* @return string or false if there are no rows
+			*/
+			function fetch_column($field) {
+				return ($this->num_rows ? mysql_result($this->result, 0, $field) : false);
 			}
 
 			/** Fetch next field
 			* @return object properties: name, type, orgtable, orgname, charsetnr
 			*/
 			function fetch_field() {
-				$return = mysql_fetch_field($this->_result, $this->_offset++); // offset required under certain conditions
+				$return = mysql_fetch_field($this->result, $this->offset++); // offset required under certain conditions
 				$return->orgtable = $return->table;
 				$return->orgname = $return->name;
 				$return->charsetnr = ($return->blob ? 63 : 0);
@@ -224,30 +229,30 @@ if (!defined("DRIVER")) {
 			/** Free result set
 			*/
 			function __destruct() {
-				mysql_free_result($this->_result);
+				mysql_free_result($this->result);
 			}
 		}
 
 	} elseif (extension_loaded("pdo_mysql")) {
-		class Min_DB extends Min_PDO {
-			var $extension = "PDO_MySQL";
+		class Db extends PdoDb {
+			public $extension = "PDO_MySQL";
 
 			function connect($server, $username, $password) {
 				global $adminer;
-				$options = array(PDO::MYSQL_ATTR_LOCAL_INFILE => false);
+				$options = array(\PDO::MYSQL_ATTR_LOCAL_INFILE => false);
 				$ssl = $adminer->connectSsl();
 				if ($ssl) {
-					if (!empty($ssl['key'])) {
-						$options[PDO::MYSQL_ATTR_SSL_KEY] = $ssl['key'];
+					if ($ssl['key']) {
+						$options[\PDO::MYSQL_ATTR_SSL_KEY] = $ssl['key'];
 					}
-					if (!empty($ssl['cert'])) {
-						$options[PDO::MYSQL_ATTR_SSL_CERT] = $ssl['cert'];
+					if ($ssl['cert']) {
+						$options[\PDO::MYSQL_ATTR_SSL_CERT] = $ssl['cert'];
 					}
-					if (!empty($ssl['ca'])) {
-						$options[PDO::MYSQL_ATTR_SSL_CA] = $ssl['ca'];
+					if ($ssl['ca']) {
+						$options[\PDO::MYSQL_ATTR_SSL_CA] = $ssl['ca'];
 					}
-					if (!empty($ssl['verify'])) {
-						$options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = $ssl['verify'];
+					if (isset($ssl['verify'])) {
+						$options[\PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = $ssl['verify'];
 					}
 				}
 				$this->dsn(
@@ -269,7 +274,7 @@ if (!defined("DRIVER")) {
 			}
 
 			function query($query, $unbuffered = false) {
-				$this->pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, !$unbuffered);
+				$this->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, !$unbuffered);
 				return parent::query($query, $unbuffered);
 			}
 		}
@@ -278,7 +283,52 @@ if (!defined("DRIVER")) {
 
 
 
-	class Min_Driver extends Min_SQL {
+	class Driver extends SqlDriver {
+		static $possibleDrivers = array("MySQLi", "MySQL", "PDO_MySQL");
+		static $jush = "sql"; ///< @var string JUSH identifier
+
+		public $unsigned = array("unsigned", "zerofill", "unsigned zerofill");
+		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "FIND_IN_SET", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL");
+		public $functions = array("char_length", "date", "from_unixtime", "lower", "round", "floor", "ceil", "sec_to_time", "time_to_sec", "upper");
+		public $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
+
+		function __construct($connection) {
+			parent::__construct($connection);
+			$this->types = array(
+				lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "mediumint" => 8, "int" => 10, "bigint" => 20, "decimal" => 66, "float" => 12, "double" => 21),
+				lang('Date and time') => array("date" => 10, "datetime" => 19, "timestamp" => 19, "time" => 10, "year" => 4),
+				lang('Strings') => array("char" => 255, "varchar" => 65535, "tinytext" => 255, "text" => 65535, "mediumtext" => 16777215, "longtext" => 4294967295),
+				lang('Lists') => array("enum" => 65535, "set" => 64),
+				lang('Binary') => array("bit" => 20, "binary" => 255, "varbinary" => 65535, "tinyblob" => 255, "blob" => 65535, "mediumblob" => 16777215, "longblob" => 4294967295),
+				lang('Geometry') => array("geometry" => 0, "point" => 0, "linestring" => 0, "polygon" => 0, "multipoint" => 0, "multilinestring" => 0, "multipolygon" => 0, "geometrycollection" => 0),
+			);
+			$this->editFunctions = array(
+				array(
+					"char" => "md5/sha1/password/encrypt/uuid",
+					"binary" => "md5/sha1",
+					"date|time" => "now",
+				), array(
+					number_type() => "+/-",
+					"date" => "+ interval/- interval",
+					"time" => "addtime/subtime",
+					"char|text" => "concat",
+				)
+			);
+			if (min_version('5.7.8', 10.2, $connection)) {
+				$this->types[lang('Strings')]["json"] = 4294967295;
+			}
+			if (min_version('', 10.7, $connection)) {
+				$this->types[lang('Strings')]["uuid"] = 128;
+				$this->editFunctions[0]['uuid'] = 'uuid';
+			}
+			if (min_version(9, '', $connection)) {
+				$this->types[lang('Numbers')]["vector"] = 16383;
+				$this->editFunctions[0]['vector'] = 'string_to_vector';
+			}
+			if (min_version(5.7, 10.2, $connection)) {
+				$this->generated = array("STORED", "VIRTUAL");
+			}
+		}
 
 		function insert($table, $set) {
 			return ($set ? parent::insert($table, $set) : queries("INSERT INTO " . table($table) . " ()\nVALUES ()"));
@@ -311,7 +361,7 @@ if (!defined("DRIVER")) {
 
 		function slowQuery($query, $timeout) {
 			if (min_version('5.7.8', '10.1.2')) {
-				if (preg_match('~MariaDB~', $this->_conn->server_info)) {
+				if (preg_match('~MariaDB~', $this->conn->server_info)) {
 					return "SET STATEMENT max_statement_time=$timeout FOR $query";
 				} elseif (preg_match('~^(SELECT\b)(.+)~is', $query, $match)) {
 					return "$match[1] /*+ MAX_EXECUTION_TIME(" . ($timeout * 1000) . ") */ $match[2]";
@@ -321,13 +371,13 @@ if (!defined("DRIVER")) {
 
 		function convertSearch($idf, $val, $field) {
 			return (preg_match('~char|text|enum|set~', $field["type"]) && !preg_match("~^utf8~", $field["collation"]) && preg_match('~[\x80-\xFF]~', $val['val'])
-				? "CONVERT($idf USING " . charset($this->_conn) . ")"
+				? "CONVERT($idf USING " . charset($this->conn) . ")"
 				: $idf
 			);
 		}
 
 		function warnings() {
-			$result = $this->_conn->query("SHOW WARNINGS");
+			$result = $this->conn->query("SHOW WARNINGS");
 			if ($result && $result->num_rows) {
 				ob_start();
 				select($result); // select() usually needs to print a big table progressively
@@ -336,7 +386,7 @@ if (!defined("DRIVER")) {
 		}
 
 		function tableHelp($name, $is_view = false) {
-			$maria = preg_match('~MariaDB~', $this->_conn->server_info);
+			$maria = preg_match('~MariaDB~', $this->conn->server_info);
 			if (information_schema(DB)) {
 				return strtolower("information-schema-" . ($maria ? "$name-table/" : str_replace("_", "-", $name) . "-table.html"));
 			}
@@ -348,12 +398,11 @@ if (!defined("DRIVER")) {
 		function hasCStyleEscapes() {
 			static $c_style;
 			if ($c_style === null) {
-				$sql_mode = $this->_conn->result("SHOW VARIABLES LIKE 'sql_mode'", 1);
+				$sql_mode = $this->conn->result("SHOW VARIABLES LIKE 'sql_mode'", 1);
 				$c_style = (strpos($sql_mode, 'NO_BACKSLASH_ESCAPES') === false);
 			}
 			return $c_style;
 		}
-
 	}
 
 
@@ -375,29 +424,14 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Connect to the database
-	* @return mixed Min_DB or string for error
+	* @param array [$server, $username, $password]
+	* @return mixed Db or string for error
 	*/
-	function connect() {
-		global $adminer, $types, $structured_types, $edit_functions;
-		$connection = new Min_DB;
-		$credentials = $adminer->credentials();
+	function connect($credentials) {
+		$connection = new Db;
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
 			$connection->set_charset(charset($connection)); // available in MySQLi since PHP 5.0.5
 			$connection->query("SET sql_quote_show_create = 1, autocommit = 1");
-			if (min_version('5.7.8', 10.2, $connection)) {
-				$structured_types[lang('Strings')][] = "json";
-				$types["json"] = 4294967295;
-			}
-			if (min_version('', 10.7, $connection)) {
-				$structured_types[lang('Strings')][] = "uuid";
-				$types["uuid"] = 128;
-				$edit_functions[0]['uuid'] = 'uuid';
-			}
-			if (min_version(9, '', $connection)) {
-				$structured_types[lang('Numbers')][] = "vector";
-				$types["vector"] = 16383;
-				$edit_functions[0]['vector'] = 'string_to_vector';
-			}
 			return $connection;
 		}
 		$return = $connection->error;
@@ -415,10 +449,7 @@ if (!defined("DRIVER")) {
 		// SHOW DATABASES can take a very long time so it is cached
 		$return = get_session("dbs");
 		if ($return === null) {
-			$query = (min_version(5)
-				? "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA ORDER BY SCHEMA_NAME"
-				: "SHOW DATABASES"
-			); // SHOW DATABASES can be disabled by skip_show_database
+			$query = "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA ORDER BY SCHEMA_NAME"; // SHOW DATABASES can be disabled by skip_show_database
 			$return = ($flush ? slow_query($query) : get_vals($query));
 			restart_session();
 			set_session("dbs", $return);
@@ -456,9 +487,8 @@ if (!defined("DRIVER")) {
 	* @return string
 	*/
 	function db_collation($db, $collations) {
-		global $connection;
 		$return = null;
-		$create = $connection->result("SHOW CREATE DATABASE " . idf_escape($db), 1);
+		$create = get_val("SHOW CREATE DATABASE " . idf_escape($db), 1);
 		if (preg_match('~ COLLATE ([^ ]+)~', $create, $match)) {
 			$return = $match[1];
 		} elseif (preg_match('~ CHARACTER SET ([^ ]+)~', $create, $match)) {
@@ -485,23 +515,19 @@ if (!defined("DRIVER")) {
 	* @return string
 	*/
 	function logged_user() {
-		global $connection;
-		return $connection->result("SELECT USER()");
+		return get_val("SELECT USER()");
 	}
 
 	/** Get tables list
 	* @return array [$name => $type]
 	*/
 	function tables_list() {
-		return get_key_vals(min_version(5)
-			? "SELECT TABLE_NAME, TABLE_TYPE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() ORDER BY TABLE_NAME"
-			: "SHOW TABLES"
-		);
+		return get_key_vals("SELECT TABLE_NAME, TABLE_TYPE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() ORDER BY TABLE_NAME");
 	}
 
 	/** Count tables in all databases
 	* @param array
-	* @return array arra($db => $tables)
+	* @return array [$db => $tables]
 	*/
 	function count_tables($databases) {
 		$return = array();
@@ -514,14 +540,17 @@ if (!defined("DRIVER")) {
 	/** Get table status
 	* @param string
 	* @param bool return only "Name", "Engine" and "Comment" fields
-	* @return array [$name => array("Name" => , "Engine" => , "Comment" => , "Oid" => , "Rows" => , "Collation" => , "Auto_increment" => , "Data_length" => , "Index_length" => , "Data_free" => )] or only inner array with $name
+	* @return array [$name => ["Name" => , "Engine" => , "Comment" => , "Oid" => , "Rows" => , "Collation" => , "Auto_increment" => , "Data_length" => , "Index_length" => , "Data_free" => ]] or only inner array with $name
 	*/
 	function table_status($name = "", $fast = false) {
 		$return = array();
-		foreach (get_rows($fast && min_version(5)
-			? "SELECT TABLE_NAME AS Name, ENGINE AS Engine, TABLE_COMMENT AS Comment FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() " . ($name != "" ? "AND TABLE_NAME = " . q($name) : "ORDER BY Name")
-			: "SHOW TABLE STATUS" . ($name != "" ? " LIKE " . q(addcslashes($name, "%_\\")) : "")
-		) as $row) {
+		foreach (
+			get_rows(
+				$fast
+				? "SELECT TABLE_NAME AS Name, ENGINE AS Engine, TABLE_COMMENT AS Comment FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() " . ($name != "" ? "AND TABLE_NAME = " . q($name) : "ORDER BY Name")
+				: "SHOW TABLE STATUS" . ($name != "" ? " LIKE " . q(addcslashes($name, "%_\\")) : "")
+			) as $row
+		) {
 			if ($row["Engine"] == "InnoDB") {
 				// ignore internal comment, unnecessary since MySQL 5.1.21
 				$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\1', $row["Comment"]);
@@ -558,28 +587,54 @@ if (!defined("DRIVER")) {
 
 	/** Get information about fields
 	* @param string
-	* @return array [$name => array("field" => , "full_type" => , "type" => , "length" => , "unsigned" => , "default" => , "null" => , "auto_increment" => , "on_update" => , "collation" => , "privileges" => , "comment" => , "primary" => )]
+	* @return array [$name => ["field" =>, "full_type" =>, "type" =>, "length" =>, "unsigned" =>, "default" =>, "null" =>, "auto_increment" =>, "on_update" =>, "collation" =>, "privileges" =>, "comment" =>, "primary" =>, "generated" =>]]
 	*/
 	function fields($table) {
+		global $connection;
+		$maria = preg_match('~MariaDB~', $connection->server_info);
 		$return = array();
-		foreach (get_rows("SHOW FULL COLUMNS FROM " . table($table)) as $row) {
-			preg_match('~^([^( ]+)(?:\((.+)\))?( unsigned)?( zerofill)?$~', $row["Type"], $match);
-			$return[$row["Field"]] = array(
-				"field" => $row["Field"],
-				"full_type" => $row["Type"],
-				"type" => $match[1],
-				"length" => $match[2],
-				"unsigned" => ltrim($match[3] . $match[4]),
-				"default" => ($row["Default"] != "" || preg_match("~char|set~", $match[1]) ? (preg_match('~text~', $match[1]) ? stripslashes(preg_replace("~^'(.*)'\$~", '\1', $row["Default"])) : $row["Default"]) : null),
-				"null" => ($row["Null"] == "YES"),
-				"auto_increment" => ($row["Extra"] == "auto_increment"),
-				"on_update" => (preg_match('~^on update (.+)~i', $row["Extra"], $match) ? $match[1] : ""), //! available since MySQL 5.1.23
-				"collation" => $row["Collation"],
-				"privileges" => array_flip(preg_split('~, *~', $row["Privileges"])),
-				"comment" => $row["Comment"],
-				"primary" => ($row["Key"] == "PRI"),
-				// https://mariadb.com/kb/en/library/show-columns/, https://github.com/vrana/adminer/pull/359#pullrequestreview-276677186
-				"generated" => preg_match('~^(VIRTUAL|PERSISTENT|STORED)~', $row["Extra"]),
+		foreach (get_rows("SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = " . q($table) . " ORDER BY ORDINAL_POSITION") as $row) {
+			$field = $row["COLUMN_NAME"];
+			$type = $row["COLUMN_TYPE"];
+			$generation = $row["GENERATION_EXPRESSION"];
+			$extra = $row["EXTRA"];
+			// https://mariadb.com/kb/en/library/show-columns/, https://github.com/vrana/adminer/pull/359#pullrequestreview-276677186
+			preg_match('~^(VIRTUAL|PERSISTENT|STORED)~', $extra, $generated);
+			preg_match('~^([^( ]+)(?:\((.+)\))?( unsigned)?( zerofill)?$~', $type, $match_type);
+			$default = $row["COLUMN_DEFAULT"];
+			if ($default != "") {
+				$is_text = preg_match('~text|json~', $match_type[1]);
+				if (!$maria && $is_text) {
+					// default value a'b of text column is stored as _utf8mb4\'a\\\'b\' in MySQL
+					$default = preg_replace("~^(_\w+)?('.*')$~", '\2', stripslashes($default));
+				}
+				if ($maria || $is_text) {
+					$default = ($default == "NULL" ? null : preg_replace_callback("~^'(.*)'$~", function ($match) {
+						return stripslashes(str_replace("''", "'", $match[1]));
+					}, $default));
+				}
+				if (!$maria && preg_match('~binary~', $match_type[1]) && preg_match('~^0x(\w*)$~', $default, $match)) {
+					$default = pack("H*", $match[1]);
+				}
+			}
+			$return[$field] = array(
+				"field" => $field,
+				"full_type" => $type,
+				"type" => $match_type[1],
+				"length" => $match_type[2],
+				"unsigned" => ltrim($match_type[3] . $match_type[4]),
+				"default" => ($generated
+					? ($maria ? $generation : stripslashes($generation))
+					: $default
+				),
+				"null" => ($row["IS_NULLABLE"] == "YES"),
+				"auto_increment" => ($extra == "auto_increment"),
+				"on_update" => (preg_match('~\bon update (\w+)~i', $extra, $match) ? $match[1] : ""), //! available since MySQL 5.1.23
+				"collation" => $row["COLLATION_NAME"],
+				"privileges" => array_flip(explode(",", "$row[PRIVILEGES],where,order")),
+				"comment" => $row["COLUMN_COMMENT"],
+				"primary" => ($row["COLUMN_KEY"] == "PRI"),
+				"generated" => ($generated[1] == "PERSISTENT" ? "STORED" : $generated[1]),
 			);
 		}
 		return $return;
@@ -587,8 +642,8 @@ if (!defined("DRIVER")) {
 
 	/** Get table indexes
 	* @param string
-	* @param string Min_DB to use
-	* @return array [$key_name => array("type" => , "columns" => array(), "lengths" => array(), "descs" => array())]
+	* @param string Db to use
+	* @return array [$key_name => ["type" => , "columns" => [], "lengths" => [], "descs" => []]]
 	*/
 	function indexes($table, $connection2 = null) {
 		$return = array();
@@ -604,25 +659,30 @@ if (!defined("DRIVER")) {
 
 	/** Get foreign keys in table
 	* @param string
-	* @return array [$name => array("db" => , "ns" => , "table" => , "source" => array(), "target" => array(), "on_delete" => , "on_update" => )]
+	* @return array [$name => ["db" => , "ns" => , "table" => , "source" => [], "target" => [], "on_delete" => , "on_update" => ]]
 	*/
 	function foreign_keys($table) {
-		global $connection, $on_actions;
+		global $driver;
 		static $pattern = '(?:`(?:[^`]|``)+`|"(?:[^"]|"")+")';
 		$return = array();
-		$create_table = $connection->result("SHOW CREATE TABLE " . table($table), 1);
+		$create_table = get_val("SHOW CREATE TABLE " . table($table), 1);
 		if ($create_table) {
-			preg_match_all("~CONSTRAINT ($pattern) FOREIGN KEY ?\\(((?:$pattern,? ?)+)\\) REFERENCES ($pattern)(?:\\.($pattern))? \\(((?:$pattern,? ?)+)\\)(?: ON DELETE ($on_actions))?(?: ON UPDATE ($on_actions))?~", $create_table, $matches, PREG_SET_ORDER);
+			preg_match_all(
+				"~CONSTRAINT ($pattern) FOREIGN KEY ?\\(((?:$pattern,? ?)+)\\) REFERENCES ($pattern)(?:\\.($pattern))? \\(((?:$pattern,? ?)+)\\)(?: ON DELETE ($driver->onActions))?(?: ON UPDATE ($driver->onActions))?~",
+				$create_table,
+				$matches,
+				PREG_SET_ORDER
+			);
 			foreach ($matches as $match) {
 				preg_match_all("~$pattern~", $match[2], $source);
 				preg_match_all("~$pattern~", $match[5], $target);
 				$return[idf_unescape($match[1])] = array(
 					"db" => idf_unescape($match[4] != "" ? $match[3] : $match[4]),
 					"table" => idf_unescape($match[4] != "" ? $match[4] : $match[3]),
-					"source" => array_map('idf_unescape', $source[0]),
-					"target" => array_map('idf_unescape', $target[0]),
-					"on_delete" => ($match[6] ? $match[6] : "RESTRICT"),
-					"on_update" => ($match[7] ? $match[7] : "RESTRICT"),
+					"source" => array_map('Adminer\idf_unescape', $source[0]),
+					"target" => array_map('Adminer\idf_unescape', $target[0]),
+					"on_delete" => ($match[6] ?: "RESTRICT"),
+					"on_update" => ($match[7] ?: "RESTRICT"),
 				);
 			}
 		}
@@ -634,8 +694,7 @@ if (!defined("DRIVER")) {
 	* @return array ["select" => ]
 	*/
 	function view($name) {
-		global $connection;
-		return array("select" => preg_replace('~^(?:[^`]|`[^`]*`)*\s+AS\s+~isU', '', $connection->result("SHOW CREATE VIEW " . table($name), 1)));
+		return array("select" => preg_replace('~^(?:[^`]|`[^`]*`)*\s+AS\s+~isU', '', get_val("SHOW CREATE VIEW " . table($name), 1)));
 	}
 
 	/** Get sorted grouped list of collations
@@ -662,7 +721,7 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function information_schema($db) {
-		return (min_version(5) && $db == "information_schema")
+		return ($db == "information_schema")
 			|| (min_version(5.5) && $db == "performance_schema");
 	}
 
@@ -688,7 +747,7 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function drop_databases($databases) {
-		$return = apply_queries("DROP DATABASE", $databases, 'idf_escape');
+		$return = apply_queries("DROP DATABASE", $databases, 'Adminer\idf_escape');
 		restart_session();
 		set_session("dbs", null);
 		return $return;
@@ -740,7 +799,7 @@ if (!defined("DRIVER")) {
 	/** Run commands to create or alter table
 	* @param string "" to create
 	* @param string new name
-	* @param array of array($orig, $process_field, $after)
+	* @param array of [$orig, $process_field, $after]
 	* @param array of strings
 	* @param string
 	* @param string
@@ -750,12 +809,20 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
+		global $connection;
 		$alter = array();
 		foreach ($fields as $field) {
-			$alter[] = ($field[1]
-				? ($table != "" ? ($field[0] != "" ? "CHANGE " . idf_escape($field[0]) : "ADD") : " ") . " " . implode($field[1]) . ($table != "" ? $field[2] : "")
-				: "DROP " . idf_escape($field[0])
-			);
+			if ($field[1]) {
+				$default = $field[1][3];
+				if (preg_match('~ GENERATED~', $default)) {
+					// swap default and null
+					$field[1][3] = (preg_match('~MariaDB~', $connection->server_info) ? "" : $field[1][2]); // MariaDB doesn't support NULL on virtual columns
+					$field[1][2] = $default;
+				}
+				$alter[] = ($table != "" ? ($field[0] != "" ? "CHANGE " . idf_escape($field[0]) : "ADD") : " ") . " " . implode($field[1]) . ($table != "" ? $field[2] : "");
+			} else {
+				$alter[] = "DROP " . idf_escape($field[0]);
+			}
 		}
 		$alter = array_merge($alter, $foreign);
 		$status = ($comment !== null ? " COMMENT=" . q($comment) : "")
@@ -777,7 +844,7 @@ if (!defined("DRIVER")) {
 
 	/** Run commands to alter indexes
 	* @param string escaped table name
-	* @param array of array("index type", "name", array("column definition", ...)) or array("index type", "name", "DROP")
+	* @param array of ["index type", "name", ["column definition", ...]] or ["index type", "name", "DROP"]
 	* @return bool
 	*/
 	function alter_indexes($table, $alter) {
@@ -803,7 +870,7 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function drop_views($views) {
-		return queries("DROP VIEW " . implode(", ", array_map('table', $views)));
+		return queries("DROP VIEW " . implode(", ", array_map('Adminer\table', $views)));
 	}
 
 	/** Drop tables
@@ -811,7 +878,7 @@ if (!defined("DRIVER")) {
 	* @return bool
 	*/
 	function drop_tables($tables) {
-		return queries("DROP TABLE " . implode(", ", array_map('table', $tables)));
+		return queries("DROP TABLE " . implode(", ", array_map('Adminer\table', $tables)));
 	}
 
 	/** Move tables to other schema
@@ -854,7 +921,8 @@ if (!defined("DRIVER")) {
 		queries("SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO'");
 		foreach ($tables as $table) {
 			$name = ($target == DB ? table("copy_$table") : idf_escape($target) . "." . table($table));
-			if (($_POST["overwrite"] && !queries("\nDROP TABLE IF EXISTS $name"))
+			if (
+				($_POST["overwrite"] && !queries("\nDROP TABLE IF EXISTS $name"))
 				|| !queries("CREATE TABLE $name LIKE " . table($table))
 				|| !queries("INSERT INTO $name SELECT * FROM " . table($table))
 			) {
@@ -870,8 +938,10 @@ if (!defined("DRIVER")) {
 		foreach ($views as $table) {
 			$name = ($target == DB ? table("copy_$table") : idf_escape($target) . "." . table($table));
 			$view = view($table);
-			if (($_POST["overwrite"] && !queries("DROP VIEW IF EXISTS $name"))
-				|| !queries("CREATE VIEW $name AS $view[select]")) { //! USE to avoid db.table
+			if (
+				($_POST["overwrite"] && !queries("DROP VIEW IF EXISTS $name"))
+				|| !queries("CREATE VIEW $name AS $view[select]") //! USE to avoid db.table
+			) {
 				return false;
 			}
 		}
@@ -892,7 +962,7 @@ if (!defined("DRIVER")) {
 
 	/** Get defined triggers
 	* @param string
-	* @return array [$name => array($timing, $event)]
+	* @return array [$name => [$timing, $event]]
 	*/
 	function triggers($table) {
 		$return = array();
@@ -903,7 +973,7 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Get trigger options
-	* @return array ["Timing" => array(), "Event" => array(), "Type" => array()]
+	* @return array ["Timing" => [], "Event" => [], "Type" => []]
 	*/
 	function trigger_options() {
 		return array(
@@ -916,15 +986,17 @@ if (!defined("DRIVER")) {
 	/** Get information about stored routine
 	* @param string
 	* @param string "FUNCTION" or "PROCEDURE"
-	* @return array ["fields" => array("field" => , "type" => , "length" => , "unsigned" => , "inout" => , "collation" => ), "returns" => , "definition" => , "language" => ]
+	* @return array ["fields" => ["field" => , "type" => , "length" => , "unsigned" => , "inout" => , "collation" => ], "returns" => , "definition" => , "language" => ]
 	*/
 	function routine($name, $type) {
-		global $connection, $enum_length, $inout, $types;
+		global $driver;
 		$aliases = array("bool", "boolean", "integer", "double precision", "real", "dec", "numeric", "fixed", "national char", "national varchar");
 		$space = "(?:\\s|/\\*[\s\S]*?\\*/|(?:#|-- )[^\n]*\n?|--\r?\n)";
-		$type_pattern = "((" . implode("|", array_merge(array_keys($types), $aliases)) . ")\\b(?:\\s*\\(((?:[^'\")]|$enum_length)++)\\))?\\s*(zerofill\\s*)?(unsigned(?:\\s+zerofill)?)?)(?:\\s*(?:CHARSET|CHARACTER\\s+SET)\\s*['\"]?([^'\"\\s,]+)['\"]?)?";
-		$pattern = "$space*(" . ($type == "FUNCTION" ? "" : $inout) . ")?\\s*(?:`((?:[^`]|``)*)`\\s*|\\b(\\S+)\\s+)$type_pattern";
-		$create = $connection->result("SHOW CREATE $type " . idf_escape($name), 2);
+		$enum = $driver->enumLength;
+		$type_pattern = "((" . implode("|", array_merge(array_keys($driver->types()), $aliases)) . ")\\b(?:\\s*\\(((?:[^'\")]|$enum)++)\\))?"
+			. "\\s*(zerofill\\s*)?(unsigned(?:\\s+zerofill)?)?)(?:\\s*(?:CHARSET|CHARACTER\\s+SET)\\s*['\"]?([^'\"\\s,]+)['\"]?)?";
+		$pattern = "$space*(" . ($type == "FUNCTION" ? "" : $driver->inout) . ")?\\s*(?:`((?:[^`]|``)*)`\\s*|\\b(\\S+)\\s+)$type_pattern";
+		$create = get_val("SHOW CREATE $type " . idf_escape($name), 2);
 		preg_match("~\\(((?:$pattern\\s*,?)*)\\)\\s*" . ($type == "FUNCTION" ? "RETURNS\\s+$type_pattern\\s+" : "") . "(.*)~is", $create, $match);
 		$fields = array();
 		preg_match_all("~$pattern\\s*,?~is", $match[1], $matches, PREG_SET_ORDER);
@@ -932,7 +1004,7 @@ if (!defined("DRIVER")) {
 			$fields[] = array(
 				"field" => str_replace("``", "`", $param[2]) . $param[3],
 				"type" => strtolower($param[5]),
-				"length" => preg_replace_callback("~$enum_length~s", 'normalize_enum', $param[6]),
+				"length" => preg_replace_callback("~$enum~s", 'Adminer\normalize_enum', $param[6]),
 				"unsigned" => strtolower(preg_replace('~\s+~', ' ', trim("$param[8] $param[7]"))),
 				"null" => 1,
 				"full_type" => $param[4],
@@ -942,7 +1014,7 @@ if (!defined("DRIVER")) {
 		}
 		return array(
 			"fields" => $fields,
-			"comment" => $connection->result("SELECT ROUTINE_COMMENT FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . q(DB) . " AND ROUTINE_NAME = " . q($name)),
+			"comment" => get_val("SELECT ROUTINE_COMMENT FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_NAME = " . q($name)),
 		) + ($type != "FUNCTION" ? array("definition" => $match[11]) : array(
 			"returns" => array("type" => $match[12], "length" => $match[13], "unsigned" => $match[15], "collation" => $match[16]),
 			"definition" => $match[17],
@@ -954,7 +1026,7 @@ if (!defined("DRIVER")) {
 	* @return array ["SPECIFIC_NAME" => , "ROUTINE_NAME" => , "ROUTINE_TYPE" => , "DTD_IDENTIFIER" => ]
 	*/
 	function routines() {
-		return get_rows("SELECT ROUTINE_NAME AS SPECIFIC_NAME, ROUTINE_NAME, ROUTINE_TYPE, DTD_IDENTIFIER FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = " . q(DB));
+		return get_rows("SELECT ROUTINE_NAME AS SPECIFIC_NAME, ROUTINE_NAME, ROUTINE_TYPE, DTD_IDENTIFIER FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = DATABASE()");
 	}
 
 	/** Get list of available routine languages
@@ -977,14 +1049,13 @@ if (!defined("DRIVER")) {
 	* @return string
 	*/
 	function last_id() {
-		global $connection;
-		return $connection->result("SELECT LAST_INSERT_ID()"); // mysql_insert_id() truncates bigint
+		return get_val("SELECT LAST_INSERT_ID()"); // mysql_insert_id() truncates bigint
 	}
 
 	/** Explain select
-	* @param Min_DB
+	* @param Db
 	* @param string
-	* @return Min_Result
+	* @return Result
 	*/
 	function explain($connection, $query) {
 		return $connection->query("EXPLAIN " . (min_version(5.1) && !min_version(5.7) ? "PARTITIONS " : "") . $query);
@@ -1027,7 +1098,7 @@ if (!defined("DRIVER")) {
 
 	/** Set current schema
 	* @param string
-	* @param Min_DB
+	* @param Db
 	* @return bool
 	function set_schema($schema, $connection2 = null) {
 		return true;
@@ -1041,8 +1112,7 @@ if (!defined("DRIVER")) {
 	* @return string
 	*/
 	function create_sql($table, $auto_increment, $style) {
-		global $connection;
-		$return = $connection->result("SHOW CREATE TABLE " . table($table), 1);
+		$return = get_val("SHOW CREATE TABLE " . table($table), 1);
 		if (!$auto_increment) {
 			$return = preg_replace('~ AUTO_INCREMENT=\d+~', '', $return); //! skip comments
 		}
@@ -1116,7 +1186,7 @@ if (!defined("DRIVER")) {
 
 	/** Convert value in edit after applying functions back
 	* @param array one element from fields()
-	* @param string
+	* @param string SQL expression
 	* @return string
 	*/
 	function unconvert_field($field, $return) {
@@ -1134,11 +1204,11 @@ if (!defined("DRIVER")) {
 	}
 
 	/** Check whether a feature is supported
-	* @param string "check", "comment", "copy", "database", "descidx", "drop_col", "dump", "event", "indexes", "kill", "materializedview", "partitioning", "privileges", "procedure", "processlist", "routine", "scheme", "sequence", "status", "table", "trigger", "type", "variables", "view", "view_trigger"
+	* @param string "check|comment|copy|database|descidx|drop_col|dump|event|indexes|kill|materializedview|partitioning|privileges|procedure|processlist|routine|scheme|sequence|status|table|trigger|type|variables|view|view_trigger"
 	* @return bool
 	*/
 	function support($feature) {
-		return !preg_match("~scheme|sequence|type|view_trigger|materializedview" . (min_version(8) ? "" : "|descidx" . (min_version(5.1) ? "" : "|event|partitioning" . (min_version(5) ? "" : "|routine|trigger|view"))) . (min_version('8.0.16', '10.2.1') ? "" : "|check") . "~", $feature);
+		return !preg_match("~scheme|sequence|type|view_trigger|materializedview" . (min_version(8) ? "" : "|descidx" . (min_version(5.1) ? "" : "|event|partitioning")) . (min_version('8.0.16', '10.2.1') ? "" : "|check") . "~", $feature);
 	}
 
 	/** Kill a process
@@ -1152,7 +1222,7 @@ if (!defined("DRIVER")) {
 	/** Return query to get connection ID
 	* @return string
 	*/
-	function connection_id(){
+	function connection_id() {
 		return "SELECT CONNECTION_ID()";
 	}
 
@@ -1160,48 +1230,6 @@ if (!defined("DRIVER")) {
 	* @return int
 	*/
 	function max_connections() {
-		global $connection;
-		return $connection->result("SELECT @@max_connections");
-	}
-
-	/** Get driver config
-	* @return array ['possible_drivers' => , 'jush' => , 'types' => , 'structured_types' => , 'unsigned' => , 'operators' => , 'functions' => , 'grouping' => , 'edit_functions' => ]
-	*/
-	function driver_config() {
-		$types = array(); ///< @var array [$type => $maximum_unsigned_length, ...]
-		$structured_types = array(); ///< @var array [$description => array($type, ...), ...]
-		foreach (array(
-			lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "mediumint" => 8, "int" => 10, "bigint" => 20, "decimal" => 66, "float" => 12, "double" => 21),
-			lang('Date and time') => array("date" => 10, "datetime" => 19, "timestamp" => 19, "time" => 10, "year" => 4),
-			lang('Strings') => array("char" => 255, "varchar" => 65535, "tinytext" => 255, "text" => 65535, "mediumtext" => 16777215, "longtext" => 4294967295),
-			lang('Lists') => array("enum" => 65535, "set" => 64),
-			lang('Binary') => array("bit" => 20, "binary" => 255, "varbinary" => 65535, "tinyblob" => 255, "blob" => 65535, "mediumblob" => 16777215, "longblob" => 4294967295),
-			lang('Geometry') => array("geometry" => 0, "point" => 0, "linestring" => 0, "polygon" => 0, "multipoint" => 0, "multilinestring" => 0, "multipolygon" => 0, "geometrycollection" => 0),
-		) as $key => $val) {
-			$types += $val;
-			$structured_types[$key] = array_keys($val);
-		}
-		return array(
-			'possible_drivers' => array("MySQLi", "MySQL", "PDO_MySQL"),
-			'jush' => "sql", ///< @var string JUSH identifier
-			'types' => $types,
-			'structured_types' => $structured_types,
-			'unsigned' => array("unsigned", "zerofill", "unsigned zerofill"), ///< @var array number variants
-			'operators' => array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "FIND_IN_SET", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL"), ///< @var array operators used in select
-			'functions' => array("char_length", "date", "from_unixtime", "lower", "round", "floor", "ceil", "sec_to_time", "time_to_sec", "upper"), ///< @var array functions used in select
-			'grouping' => array("avg", "count", "count distinct", "group_concat", "max", "min", "sum"), ///< @var array grouping functions used in select
-			'edit_functions' => array( ///< @var array of array("$type|$type2" => "$function/$function2") functions used in editing, [0] - edit and insert, [1] - edit only
-				array(
-					"char" => "md5/sha1/password/encrypt/uuid",
-					"binary" => "md5/sha1",
-					"date|time" => "now",
-				), array(
-					number_type() => "+/-",
-					"date" => "+ interval/- interval",
-					"time" => "addtime/subtime",
-					"char|text" => "concat",
-				)
-			),
-		);
+		return get_val("SELECT @@max_connections");
 	}
 }

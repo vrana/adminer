@@ -1,26 +1,30 @@
 <?php
+namespace Adminer;
+
 $drivers["mongo"] = "MongoDB (alpha)";
 
 if (isset($_GET["mongo"])) {
-	define("DRIVER", "mongo");
+	define('Adminer\DRIVER', "mongo");
 
 	if (class_exists('MongoDB\Driver\Manager')) {
-		class Min_DB {
-			var $extension = "MongoDB", $server_info = MONGODB_VERSION, $affected_rows, $error, $last_id;
+		class Db {
+			public $extension = "MongoDB", $server_info = MONGODB_VERSION, $affected_rows, $error, $last_id;
 			/** @var MongoDB\Driver\Manager */
-			var $_link;
-			var $_db, $_db_name;
+			public $_link;
+			public $_db, $_db_name;
 
 			function connect($uri, $options) {
-				$class = 'MongoDB\Driver\Manager';
-				$this->_link = new $class($uri, $options);
-				$this->executeCommand($options["db"], array('ping' => 1));
+				$this->_link = new \MongoDB\Driver\Manager($uri, $options);
+				$this->executeDbCommand($options["db"], array('ping' => 1));
 			}
 
-			function executeCommand($db, $command) {
-				$class = 'MongoDB\Driver\Command';
+			function executeCommand($command) {
+				return $this->executeDbCommand($this->_db_name);
+			}
+
+			function executeDbCommand($db, $command) {
 				try {
-					return $this->_link->executeCommand($db, new $class($command));
+					return $this->_link->executeCommand($db, new \MongoDB\Driver\Command($command));
 				} catch (Exception $e) {
 					$this->error = $e->getMessage();
 					return array();
@@ -52,15 +56,16 @@ if (isset($_GET["mongo"])) {
 			}
 		}
 
-		class Min_Result {
-			var $num_rows, $_rows = array(), $_offset = 0, $_charset = array();
+		class Result {
+			public $num_rows;
+			private $rows = array(), $offset = 0, $charset = array();
 
 			function __construct($result) {
 				foreach ($result as $item) {
 					$row = array();
 					foreach ($item as $key => $val) {
 						if (is_a($val, 'MongoDB\BSON\Binary')) {
-							$this->_charset[$key] = 63;
+							$this->charset[$key] = 63;
 						}
 						$row[$key] =
 							(is_a($val, 'MongoDB\BSON\ObjectID') ? 'MongoDB\BSON\ObjectID("' . "$val\")" :
@@ -71,26 +76,26 @@ if (isset($_GET["mongo"])) {
 							$val // MongoMinKey, MongoMaxKey
 						)))));
 					}
-					$this->_rows[] = $row;
+					$this->rows[] = $row;
 					foreach ($row as $key => $val) {
-						if (!isset($this->_rows[0][$key])) {
-							$this->_rows[0][$key] = null;
+						if (!isset($this->rows[0][$key])) {
+							$this->rows[0][$key] = null;
 						}
 					}
 				}
-				$this->num_rows = count($this->_rows);
+				$this->num_rows = count($this->rows);
 			}
 
 			function fetch_assoc() {
-				$row = current($this->_rows);
+				$row = current($this->rows);
 				if (!$row) {
 					return $row;
 				}
 				$return = array();
-				foreach ($this->_rows[0] as $key => $val) {
+				foreach ($this->rows[0] as $key => $val) {
 					$return[$key] = $row[$key];
 				}
-				next($this->_rows);
+				next($this->rows);
 				return $return;
 			}
 
@@ -103,100 +108,21 @@ if (isset($_GET["mongo"])) {
 			}
 
 			function fetch_field() {
-				$keys = array_keys($this->_rows[0]);
-				$name = $keys[$this->_offset++];
+				$keys = array_keys($this->rows[0]);
+				$name = $keys[$this->offset++];
 				return (object) array(
 					'name' => $name,
-					'charsetnr' => $this->_charset[$name],
+					'charsetnr' => $this->charset[$name],
 				);
 			}
-
 		}
 
 
-		class Min_Driver extends Min_SQL {
-			public $primary = "_id";
-
-			function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
-				global $connection;
-				$select = ($select == array("*")
-					? array()
-					: array_fill_keys($select, 1)
-				);
-				if (count($select) && !isset($select['_id'])) {
-					$select['_id'] = 0;
-				}
-				$where = where_to_query($where);
-				$sort = array();
-				foreach ($order as $val) {
-					$val = preg_replace('~ DESC$~', '', $val, 1, $count);
-					$sort[$val] = ($count ? -1 : 1);
-				}
-				if (isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit'] > 0) {
-					$limit = $_GET['limit'];
-				}
-				$limit = min(200, max(1, (int) $limit));
-				$skip = $page * $limit;
-				$class = 'MongoDB\Driver\Query';
-				try {
-					return new Min_Result($connection->_link->executeQuery("$connection->_db_name.$table", new $class($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort))));
-				} catch (Exception $e) {
-					$connection->error = $e->getMessage();
-					return false;
-				}
-			}
-
-			function update($table, $set, $queryWhere, $limit = 0, $separator = "\n") {
-				global $connection;
-				$db = $connection->_db_name;
-				$where = sql_query_where_parser($queryWhere);
-				$class = 'MongoDB\Driver\BulkWrite';
-				$bulk = new $class(array());
-				if (isset($set['_id'])) {
-					unset($set['_id']);
-				}
-				$removeFields = array();
-				foreach ($set as $key => $value) {
-					if ($value == 'NULL') {
-						$removeFields[$key] = 1;
-						unset($set[$key]);
-					}
-				}
-				$update = array('$set' => $set);
-				if (count($removeFields)) {
-					$update['$unset'] = $removeFields;
-				}
-				$bulk->update($where, $update, array('upsert' => false));
-				return $connection->executeBulkWrite("$db.$table", $bulk, 'getModifiedCount');
-			}
-
-			function delete($table, $queryWhere, $limit = 0) {
-				global $connection;
-				$db = $connection->_db_name;
-				$where = sql_query_where_parser($queryWhere);
-				$class = 'MongoDB\Driver\BulkWrite';
-				$bulk = new $class(array());
-				$bulk->delete($where, array('limit' => $limit));
-				return $connection->executeBulkWrite("$db.$table", $bulk, 'getDeletedCount');
-			}
-
-			function insert($table, $set) {
-				global $connection;
-				$db = $connection->_db_name;
-				$class = 'MongoDB\Driver\BulkWrite';
-				$bulk = new $class(array());
-				if ($set['_id'] == '') {
-					unset($set['_id']);
-				}
-				$bulk->insert($set);
-				return $connection->executeBulkWrite("$db.$table", $bulk, 'getInsertedCount');
-			}
-		}
 
 		function get_databases($flush) {
 			global $connection;
 			$return = array();
-			foreach ($connection->executeCommand($connection->_db_name, array('listDatabases' => 1)) as $dbs) {
+			foreach ($connection->executeCommand(array('listDatabases' => 1)) as $dbs) {
 				foreach ($dbs->databases as $db) {
 					$return[] = $db->name;
 				}
@@ -212,7 +138,7 @@ if (isset($_GET["mongo"])) {
 		function tables_list() {
 			global $connection;
 			$collections = array();
-			foreach ($connection->executeCommand($connection->_db_name, array('listCollections' => 1)) as $result) {
+			foreach ($connection->executeCommand(array('listCollections' => 1)) as $result) {
 				$collections[$result->name] = 'table';
 			}
 			return $collections;
@@ -225,7 +151,7 @@ if (isset($_GET["mongo"])) {
 		function indexes($table, $connection2 = null) {
 			global $connection;
 			$return = array();
-			foreach ($connection->executeCommand($connection->_db_name, array('listIndexes' => $table)) as $index) {
+			foreach ($connection->executeCommand(array('listIndexes' => $table)) as $index) {
 				$descs = array();
 				$columns = array();
 				foreach (get_object_vars($index->key) as $column => $type) {
@@ -260,6 +186,8 @@ if (isset($_GET["mongo"])) {
 									"insert" => 1,
 									"select" => 1,
 									"update" => 1,
+									"where" => 1,
+									"order" => 1,
 								),
 							);
 						}
@@ -272,7 +200,7 @@ if (isset($_GET["mongo"])) {
 		function found_rows($table_status, $where) {
 			global $connection;
 			$where = where_to_query($where);
-			$toArray = $connection->executeCommand($connection->_db_name, array('count' => $table_status['Name'], 'query' => $where))->toArray();
+			$toArray = $connection->executeCommand(array('count' => $table_status['Name'], 'query' => $where))->toArray();
 			return $toArray[0]->n;
 		}
 
@@ -314,9 +242,8 @@ if (isset($_GET["mongo"])) {
 							$val = (float) $val;
 							$op = $match[1];
 						} elseif (preg_match('~^\(date\)(.+)~', $op, $match)) {
-							$dateTime = new DateTime($val);
-							$class = 'MongoDB\BSON\UTCDatetime';
-							$val = new $class($dateTime->getTimestamp() * 1000);
+							$dateTime = new \DateTime($val);
+							$val = new \MongoDB\BSON\UTCDatetime($dateTime->getTimestamp() * 1000);
 							$op = $match[1];
 						}
 						switch ($op) {
@@ -354,8 +281,17 @@ if (isset($_GET["mongo"])) {
 			}
 			return $data;
 		}
+	}
 
-		$operators = array(
+
+
+	class Driver extends SqlDriver {
+		static $possibleDrivers = array("mongodb");
+		static $jush = "mongo";
+
+		public $editFunctions = array(array("json"));
+
+		public $operators = array(
 			"=",
 			"!=",
 			">",
@@ -377,7 +313,77 @@ if (isset($_GET["mongo"])) {
 			"(date)<=",
 		);
 
+		public $primary = "_id";
+
+		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
+			$select = ($select == array("*")
+				? array()
+				: array_fill_keys($select, 1)
+			);
+			if (count($select) && !isset($select['_id'])) {
+				$select['_id'] = 0;
+			}
+			$where = where_to_query($where);
+			$sort = array();
+			foreach ($order as $val) {
+				$val = preg_replace('~ DESC$~', '', $val, 1, $count);
+				$sort[$val] = ($count ? -1 : 1);
+			}
+			if (isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit'] > 0) {
+				$limit = $_GET['limit'];
+			}
+			$limit = min(200, max(1, (int) $limit));
+			$skip = $page * $limit;
+			try {
+				return new Result($this->conn->_link->executeQuery($this->conn->_db_name . ".$table", new \MongoDB\Driver\Query($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort))));
+			} catch (Exception $e) {
+				$this->conn->error = $e->getMessage();
+				return false;
+			}
+		}
+
+		function update($table, $set, $queryWhere, $limit = 0, $separator = "\n") {
+			$db = $this->conn->_db_name;
+			$where = sql_query_where_parser($queryWhere);
+			$bulk = new \MongoDB\Driver\BulkWrite(array());
+			if (isset($set['_id'])) {
+				unset($set['_id']);
+			}
+			$removeFields = array();
+			foreach ($set as $key => $value) {
+				if ($value == 'NULL') {
+					$removeFields[$key] = 1;
+					unset($set[$key]);
+				}
+			}
+			$update = array('$set' => $set);
+			if (count($removeFields)) {
+				$update['$unset'] = $removeFields;
+			}
+			$bulk->update($where, $update, array('upsert' => false));
+			return $this->conn->executeBulkWrite("$db.$table", $bulk, 'getModifiedCount');
+		}
+
+		function delete($table, $queryWhere, $limit = 0) {
+			$db = $this->conn->_db_name;
+			$where = sql_query_where_parser($queryWhere);
+			$bulk = new \MongoDB\Driver\BulkWrite(array());
+			$bulk->delete($where, array('limit' => $limit));
+			return $this->conn->executeBulkWrite("$db.$table", $bulk, 'getDeletedCount');
+		}
+
+		function insert($table, $set) {
+			$db = $this->conn->_db_name;
+			$bulk = new \MongoDB\Driver\BulkWrite(array());
+			if ($set['_id'] == '') {
+				unset($set['_id']);
+			}
+			$bulk->insert($set);
+			return $this->conn->executeBulkWrite("$db.$table", $bulk, 'getInsertedCount');
+		}
 	}
+
+
 
 	function table($idf) {
 		return $idf;
@@ -422,10 +428,10 @@ if (isset($_GET["mongo"])) {
 		return $credentials[1];
 	}
 
-	function connect() {
+	function connect($credentials) {
 		global $adminer;
-		$connection = new Min_DB;
-		list($server, $username, $password) = $adminer->credentials();
+		$connection = new Db;
+		list($server, $username, $password) = $credentials;
 
 		if ($server == "") {
 			$server = "localhost:27017";
@@ -535,17 +541,5 @@ if (isset($_GET["mongo"])) {
 			}
 		}
 		return true;
-	}
-
-	function driver_config() {
-		global $operators;
-		return array(
-			'possible_drivers' => array("mongodb"),
-			'jush' => "mongo",
-			'operators' => $operators,
-			'functions' => array(),
-			'grouping' => array(),
-			'edit_functions' => array(array("json")),
-		);
 	}
 }

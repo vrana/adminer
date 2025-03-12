@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $TABLE = $_GET["table"];
 $fields = fields($TABLE);
 if (!$fields) {
@@ -24,16 +26,16 @@ if ($fields) {
 	$adminer->tableStructurePrint($fields);
 }
 
-if (!is_view($table_status)) {
-	if (support("indexes")) {
-		echo "<h3 id='indexes'>" . lang('Indexes') . "</h3>\n";
-		$indexes = indexes($TABLE);
-		if ($indexes) {
-			$adminer->tableIndexesPrint($indexes);
-		}
-		echo '<p class="links"><a href="' . h(ME) . 'indexes=' . urlencode($TABLE) . '">' . lang('Alter indexes') . "</a>\n";
+if (support("indexes") && $driver->supportsIndex($table_status)) {
+	echo "<h3 id='indexes'>" . lang('Indexes') . "</h3>\n";
+	$indexes = indexes($TABLE);
+	if ($indexes) {
+		$adminer->tableIndexesPrint($indexes);
 	}
+	echo '<p class="links"><a href="' . h(ME) . 'indexes=' . urlencode($TABLE) . '">' . lang('Alter indexes') . "</a>\n";
+}
 
+if (!is_view($table_status)) {
 	if (fk_support($table_status)) {
 		echo "<h3 id='foreign-keys'>" . lang('Foreign keys') . "</h3>\n";
 		$foreign_keys = foreign_keys($TABLE);
@@ -42,14 +44,18 @@ if (!is_view($table_status)) {
 			echo "<thead><tr><th>" . lang('Source') . "<td>" . lang('Target') . "<td>" . lang('ON DELETE') . "<td>" . lang('ON UPDATE') . "<td></thead>\n";
 			foreach ($foreign_keys as $name => $foreign_key) {
 				echo "<tr title='" . h($name) . "'>";
-				echo "<th><i>" . implode("</i>, <i>", array_map('h', $foreign_key["source"])) . "</i>";
-				echo "<td><a href='" . h($foreign_key["db"] != "" ? preg_replace('~db=[^&]*~', "db=" . urlencode($foreign_key["db"]), ME) : ($foreign_key["ns"] != "" ? preg_replace('~ns=[^&]*~', "ns=" . urlencode($foreign_key["ns"]), ME) : ME)) . "table=" . urlencode($foreign_key["table"]) . "'>"
+				echo "<th><i>" . implode("</i>, <i>", array_map('Adminer\h', $foreign_key["source"])) . "</i>";
+				$link = ($foreign_key["db"] != ""
+					? preg_replace('~db=[^&]*~', "db=" . urlencode($foreign_key["db"]), ME)
+					: ($foreign_key["ns"] != "" ? preg_replace('~ns=[^&]*~', "ns=" . urlencode($foreign_key["ns"]), ME) : ME)
+				);
+				echo "<td><a href='" . h($link . "table=" . urlencode($foreign_key["table"])) . "'>"
 					. ($foreign_key["db"] != "" && $foreign_key["db"] != DB ? "<b>" . h($foreign_key["db"]) . "</b>." : "")
 					. ($foreign_key["ns"] != "" && $foreign_key["ns"] != $_GET["ns"] ? "<b>" . h($foreign_key["ns"]) . "</b>." : "")
 					. h($foreign_key["table"])
 					. "</a>"
 				;
-				echo "(<i>" . implode("</i>, <i>", array_map('h', $foreign_key["target"])) . "</i>)";
+				echo "(<i>" . implode("</i>, <i>", array_map('Adminer\h', $foreign_key["target"])) . "</i>)";
 				echo "<td>" . h($foreign_key["on_delete"]);
 				echo "<td>" . h($foreign_key["on_update"]);
 				echo '<td><a href="' . h(ME . 'foreign=' . urlencode($TABLE) . '&name=' . urlencode($name)) . '">' . lang('Alter') . '</a>';
@@ -67,7 +73,7 @@ if (!is_view($table_status)) {
 			echo "<table>\n";
 			foreach ($check_constraints as $key => $val) {
 				echo "<tr title='" . h($key) . "'>";
-				echo "<td><code class='jush-$jush'>" . h($val);
+				echo "<td><code class='jush-" . JUSH . "'>" . h($val);
 				echo "<td><a href='" . h(ME . 'check=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "'>" . lang('Alter') . "</a>";
 				echo "\n";
 			}

@@ -14,13 +14,13 @@ class AdminerTableIndexesStructure {
 	*/
 	function tableIndexesPrint($indexes) {
 		echo "<table>\n";
-		echo "<thead><tr><th>" . lang('Name') . "<th>" . lang('Type') . "<th>" . lang('Columns') . "</thead>\n";
+		echo "<thead><tr><th>" . Adminer\lang('Name') . "<th>" . Adminer\lang('Type') . "<th>" . Adminer\lang('Columns') . "</thead>\n";
 		foreach ($indexes as $name => $index) {
-			echo "<tr><th>" . h($name) . "<td>" . $index['type'];
+			echo "<tr><th>" . Adminer\h($name) . "<td>" . $index['type'];
 			ksort($index["columns"]); // enforce correct columns order
 			$print = array();
 			foreach ($index["columns"] as $key => $val) {
-				$print[] = "<i>" . h($val) . "</i>"
+				$print[] = "<i>" . Adminer\h($val) . "</i>"
 					. ($index["lengths"][$key] ? "(" . $index["lengths"][$key] . ")" : "")
 					. ($index["descs"][$key] ? " DESC" : "")
 				;

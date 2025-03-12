@@ -1,8 +1,10 @@
 <?php
+namespace Adminer;
+
 $translations = array(
 	'Login' => 'Login',
 	'Logout successful.' => 'Abmeldung erfolgreich.',
-	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Danke, dass Sie Adminer genutzt haben. <a href="https://www.adminer.org/de/donation/">Spenden willkommen!</a>',
+	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Danke, dass Sie Adminer genutzt haben. <a href="https://www.adminer.org/de/donation/">Spenden willkommen!</a>.',
 	'Invalid credentials.' => 'Ungültige Anmelde-Informationen.',
 	'Server' => 'Server',
 	'Username' => 'Benutzer',
@@ -300,4 +302,10 @@ $translations = array(
 	'Unknown error.' => 'Unbekannter Fehler.',
 	'Database does not support password.' => 'Die Datenbank unterstützt kein Passwort.',
 	'Disable %s or enable %s or %s extensions.' => 'Deaktivieren Sie %s oder aktivieren Sie die Erweiterungen %s oder %s.',
+	'Check has been dropped.' => 'Check wurde abgebrochen.',
+	'Check has been altered.' => 'Check wurde geändert.',
+	'Check has been created.' => 'Check wurde erstellt.',
+	'Alter check' => 'Check ändern',
+	'Create check' => 'Check erstellen',
+	'Checks' => 'Checks',
 );

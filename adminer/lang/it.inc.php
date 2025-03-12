@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $translations = array(
 	'Login' => 'Autenticazione',
 	'Logout successful.' => 'Uscita effettuata con successo.',
@@ -265,7 +267,7 @@ $translations = array(
 	'Edit all' => 'Modifica tutto',
 	'HH:MM:SS' => 'HH:MM:SS',
 	'Drop %s?' => 'Scartare %s?',
-	'Tables have been optimized.' => 'Le tabelle sono state ottimizzate',
+	'Tables have been optimized.' => 'Le tabelle sono state ottimizzate.',
 	'Materialized view' => 'Vista materializzata',
 	'Vacuum' => 'Aspira',
 	'Selected' => 'Selezionato',
@@ -294,7 +296,7 @@ $translations = array(
 	'You are offline.' => 'Sei disconnesso.',
 	'You have no privileges to update this table.' => 'Non hai i privilegi per aggiornare questa tabella.',
 	'Saving' => 'Salvataggio',
-	'Unknown error.' => 'Errore sconosciuto',
+	'Unknown error.' => 'Errore sconosciuto.',
 	'Database does not support password.' => 'Il database non supporta password.',
 	'Disable %s or enable %s or %s extensions.' => 'Disabilita %s o abilita %s oppure %s estensioni.',
 	'yes' => 'si',

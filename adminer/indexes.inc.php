@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $TABLE = $_GET["indexes"];
 $index_types = array("PRIMARY", "UNIQUE", "INDEX");
 $table_status = table_status($TABLE, true);
@@ -10,7 +12,7 @@ if (preg_match('~MyISAM|M?aria' . (min_version(5.7, '10.2.2') ? '|InnoDB' : '') 
 }
 $indexes = indexes($TABLE);
 $primary = array();
-if ($jush == "mongo") { // doesn't support primary key
+if (JUSH == "mongo") { // doesn't support primary key
 	$primary = $indexes["_id_"];
 	unset($index_types[0]);
 	unset($indexes["_id_"]);
@@ -35,7 +37,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 					$desc = $index["descs"][$key];
 					$set[] = idf_escape($column) . ($length ? "(" . (+$length) . ")" : "") . ($desc ? " DESC" : "");
 					$columns[] = $column;
-					$lengths[] = ($length ? $length : null);
+					$lengths[] = ($length ?: null);
 					$descs[] = $desc;
 				}
 			}
@@ -45,7 +47,8 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 				ksort($existing["columns"]);
 				ksort($existing["lengths"]);
 				ksort($existing["descs"]);
-				if ($index["type"] == $existing["type"]
+				if (
+					$index["type"] == $existing["type"]
 					&& array_values($existing["columns"]) === $columns
 					&& (!$existing["lengths"] || array_values($existing["lengths"]) === $lengths)
 					&& array_values($existing["descs"]) === $descs
@@ -93,7 +96,7 @@ if (!$row) {
 	$indexes[] = array("columns" => array(1 => ""));
 	$row["indexes"] = $indexes;
 }
-$lengths = ($jush == "sql" || $jush == "mssql");
+$lengths = (JUSH == "sql" || JUSH == "mssql");
 $show_options = ($_POST ? $_POST["options"] : adminer_setting("index_options"));
 ?>
 
@@ -123,7 +126,7 @@ if ($primary) {
 $j = 1;
 foreach ($row["indexes"] as $index) {
 	if (!$_POST["drop_col"] || $j != key($_POST["drop_col"])) {
-		echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) ? "indexesAddRow.call(this);" : 1), "label-type");
+		echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) ? "indexesAddRow.call(this);" : ""), "label-type");
 
 		echo "<td>";
 		ksort($index["columns"]);
@@ -133,7 +136,7 @@ foreach ($row["indexes"] as $index) {
 				" name='indexes[$j][columns][$i]' title='" . lang('Column') . "'",
 				($fields ? array_combine($fields, $fields) : $fields),
 				$column,
-				"partial(" . ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . ", '" . js_escape($jush == "sql" ? "" : $_GET["indexes"] . "_") . "')"
+				"partial(" . ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . ", '" . js_escape(JUSH == "sql" ? "" : $_GET["indexes"] . "_") . "')"
 			);
 			echo "<span class='idxopts" . ($show_options ? "" : " hidden") . "'>";
 			echo ($lengths ? "<input type='number' name='indexes[$j][lengths][$i]' class='size' value='" . h($index["lengths"][$key]) . "' title='" . lang('Length') . "'>" : "");

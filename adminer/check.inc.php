@@ -1,10 +1,12 @@
 <?php
+namespace Adminer;
+
 $TABLE = $_GET["check"];
 $name = $_GET["name"];
 $row = $_POST;
 
 if ($row && !$error) {
-	if ($jush == "sqlite") {
+	if (JUSH == "sqlite") {
 		$result = recreate_table($TABLE, $TABLE, array(), array(), array(), 0, array(), $name, ($row["drop"] ? "" : $row["clause"]));
 	} else {
 		$result = ($name == "" || queries("ALTER TABLE " . table($TABLE) . " DROP CONSTRAINT " . idf_escape($name)));
@@ -29,7 +31,7 @@ if (!$row) {
 
 <form action="" method="post">
 <p><?php
-if ($jush != "sqlite") {
+if (JUSH != "sqlite") {
 	echo lang('Name') . ': <input name="name" value="' . h($row["name"]) . '" data-maxlength="64" autocapitalize="off"> ';
 }
 echo doc_link(array(
@@ -42,6 +44,8 @@ echo doc_link(array(
 ?>
 <p><?php textarea("clause", $row["clause"]); ?>
 <p><input type="submit" value="<?php echo lang('Save'); ?>">
-<?php if ($name != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $name)); ?><?php } ?>
+<?php if ($name != "") { ?>
+<input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $name)); ?>
+<?php } ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

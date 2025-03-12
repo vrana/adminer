@@ -7,8 +7,7 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerDumpXml {
-	/** @access protected */
-	var $database = false;
+	protected $database = false;
 
 	function dumpFormat() {
 		return array('xml' => 'XML');
@@ -20,24 +19,19 @@ class AdminerDumpXml {
 		}
 	}
 
-	function _database() {
-		echo "</database>\n";
-	}
-
 	function dumpData($table, $style, $query) {
 		if ($_POST["format"] == "xml") {
 			if (!$this->database) {
 				$this->database = true;
-				echo "<database name='" . h(DB) . "'>\n";
-				register_shutdown_function(array($this, '_database'));
+				echo "<database name='" . Adminer\h(Adminer\DB) . "'>\n";
 			}
-			$connection = connection();
+			$connection = Adminer\connection();
 			$result = $connection->query($query, 1);
 			if ($result) {
 				while ($row = $result->fetch_assoc()) {
-					echo "\t<table name='" . h($table) . "'>\n";
+					echo "\t<table name='" . Adminer\h($table) . "'>\n";
 					foreach ($row as $key => $val) {
-						echo "\t\t<column name='" . h($key) . "'" . (isset($val) ? "" : " null='null'") . ">" . h($val) . "</column>\n";
+						echo "\t\t<column name='" . Adminer\h($key) . "'" . (isset($val) ? "" : " null='null'") . ">" . Adminer\h($val) . "</column>\n";
 					}
 					echo "\t</table>\n";
 				}
@@ -53,4 +47,9 @@ class AdminerDumpXml {
 		}
 	}
 
+	function dumpFooter() {
+		if ($_POST["format"] == "xml" && $this->database) {
+			echo "</database>\n";
+		}
+	}
 }

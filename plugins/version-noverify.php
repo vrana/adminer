@@ -9,7 +9,6 @@
 class AdminerVersionNoverify {
 
 	function head() {
-		echo script("verifyVersion = function () {};");
+		echo Adminer\script("verifyVersion = function () {};");
 	}
-
 }

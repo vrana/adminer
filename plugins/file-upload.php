@@ -8,8 +8,7 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerFileUpload {
-	/** @access protected */
-	var $uploadPath, $displayPath, $extensions;
+	protected $uploadPath, $displayPath, $extensions;
 
 	/**
 	* @param string prefix for uploading data (create writable subdirectory for each table containing uploadable fields)
@@ -40,7 +39,7 @@ class AdminerFileUpload {
 			if (!move_uploaded_file($_FILES[$name]["tmp_name"], "$this->uploadPath$table/$regs[1]-$filename")) {
 				return false;
 			}
-			return q($filename);
+			return Adminer\q($filename);
 		}
 	}
 
@@ -49,5 +48,4 @@ class AdminerFileUpload {
 			$link = "$this->displayPath$_GET[select]/$regs[1]-$val";
 		}
 	}
-
 }

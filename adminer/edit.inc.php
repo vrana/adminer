@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $TABLE = $_GET["edit"];
 $fields = fields($TABLE);
 $where = (isset($_GET["select"]) ? ($_POST["check"] && count($_POST["check"]) == 1 ? where_check($_POST["check"][0], $fields) : "") : where($_GET, $fields));
@@ -66,13 +68,7 @@ if ($_POST["save"]) {
 	$select = array();
 	foreach ($fields as $name => $field) {
 		if (isset($field["privileges"]["select"])) {
-			$as = convert_field($field);
-			if ($_POST["clone"] && $field["auto_increment"]) {
-				$as = "''";
-			}
-			if ($jush == "sql" && preg_match("~enum|set~", $field["type"])) {
-				$as = "1*" . idf_escape($name);
-			}
+			$as = ($_POST["clone"] && $field["auto_increment"] ? "''" : convert_field($field));
 			$select[] = ($as ? "$as AS " : "") . idf_escape($name);
 		}
 	}

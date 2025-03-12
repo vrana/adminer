@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 if (support("kill")) {
 	if ($_POST && !$error) {
 		$killed = 0;
@@ -22,7 +24,6 @@ echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(ta
 // HTML valid because there is always at least one process
 $i = -1;
 foreach (process_list() as $i => $row) {
-
 	if (!$i) {
 		echo "<thead><tr lang='en'>" . (support("kill") ? "<th>" : "");
 		foreach ($row as $key => $val) {
@@ -34,13 +35,13 @@ foreach (process_list() as $i => $row) {
 		}
 		echo "</thead>\n";
 	}
-	echo "<tr>" . (support("kill") ? "<td>" . checkbox("kill[]", $row[$jush == "sql" ? "Id" : "pid"], 0) : "");
+	echo "<tr>" . (support("kill") ? "<td>" . checkbox("kill[]", $row[JUSH == "sql" ? "Id" : "pid"], 0) : "");
 	foreach ($row as $key => $val) {
 		echo "<td>" . (
-			($jush == "sql" && $key == "Info" && preg_match("~Query|Killed~", $row["Command"]) && $val != "") ||
-			($jush == "pgsql" && $key == "current_query" && $val != "<IDLE>") ||
-			($jush == "oracle" && $key == "sql_text" && $val != "")
-			? "<code class='jush-$jush'>" . shorten_utf8($val, 100, "</code>") . ' <a href="' . h(ME . ($row["db"] != "" ? "db=" . urlencode($row["db"]) . "&" : "") . "sql=" . urlencode($val)) . '">' . lang('Clone') . '</a>'
+			(JUSH == "sql" && $key == "Info" && preg_match("~Query|Killed~", $row["Command"]) && $val != "") ||
+			(JUSH == "pgsql" && $key == "current_query" && $val != "<IDLE>") ||
+			(JUSH == "oracle" && $key == "sql_text" && $val != "")
+			? "<code class='jush-" . JUSH . "'>" . shorten_utf8($val, 100, "</code>") . ' <a href="' . h(ME . ($row["db"] != "" ? "db=" . urlencode($row["db"]) . "&" : "") . "sql=" . urlencode($val)) . '">' . lang('Clone') . '</a>'
 			: h($val)
 		);
 	}

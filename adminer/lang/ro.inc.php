@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $translations = array(
 	'Login' => 'Intră',
 	'Logout successful.' => 'Ați ieșit cu succes.',
@@ -259,7 +261,7 @@ $translations = array(
 	'Please use one of the extensions %s.' => 'Folosiți una din următoarele extensii %s.',
 	'now' => 'acum',
 	'ltr' => 'ltr',
-	'Tables have been copied.' => 'Tabelele au fost copiate',
+	'Tables have been copied.' => 'Tabelele au fost copiate.',
 	'Copy' => 'Copiază',
 	'Permanent link' => 'Adresă permanentă',
 	'Edit all' => 'Editează tot',

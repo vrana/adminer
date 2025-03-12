@@ -1,5 +1,7 @@
 <?php
-$PROCEDURE = ($_GET["name"] ? $_GET["name"] : $_GET["call"]);
+namespace Adminer;
+
+$PROCEDURE = ($_GET["name"] ?: $_GET["call"]);
 page_header(lang('Call') . ": " . h($PROCEDURE), $error);
 
 $routine = routine($_GET["call"], (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE"));
@@ -38,7 +40,7 @@ if (!$error && $_POST) {
 	if (!$result) {
 		echo "<p class='error'>" . error() . "\n";
 	} else {
-		$connection2 = connect();
+		$connection2 = connect($adminer->credentials());
 		if (is_object($connection2)) {
 			$connection2->select_db(DB);
 		}
@@ -71,11 +73,8 @@ if ($in) {
 		echo "<tr><th>" . $adminer->fieldName($field);
 		$value = $_POST["fields"][$name];
 		if ($value != "") {
-			if ($field["type"] == "enum") {
-				$value = +$value;
-			}
 			if ($field["type"] == "set") {
-				$value = array_sum($value);
+				$value = implode(",", $value);
 			}
 		}
 		input($field, $value, (string) $_POST["function"][$name]); // param name can be empty
@@ -96,14 +95,17 @@ function pre_tr($s) {
 }
 $table = '(\+--[-+]+\+\n)';
 $row = '(\| .* \|\n)';
-echo
-	preg_replace_callback("~^$table?$row$table?($row*)$table?~m", function ($match) {
+echo preg_replace_callback(
+	"~^$table?$row$table?($row*)$table?~m",
+	function ($match) {
 		$first_row = pre_tr($match[2]);
 		return "<table>\n" . ($match[1] ? "<thead>$first_row</thead>\n" : $first_row) . pre_tr($match[4]) . "\n</table>";
 	},
-	preg_replace('~(\n(    -|mysql)&gt; )(.+)~', "\\1<code class='jush-sql'>\\3</code>",
-	preg_replace('~(.+)\n---+\n~', "<b>\\1</b>\n",
-	h($routine['comment'])
-)));
+	preg_replace(
+		'~(\n(    -|mysql)&gt; )(.+)~',
+		"\\1<code class='jush-sql'>\\3</code>",
+		preg_replace('~(.+)\n---+\n~', "<b>\\1</b>\n", h($routine['comment']))
+	)
+);
 ?>
 </pre>

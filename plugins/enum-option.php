@@ -13,28 +13,23 @@ class AdminerEnumOption {
 			$options = array();
 			$selected = $value;
 			if (isset($_GET["select"])) {
-				$options[-1] = lang('original');
+				$options[-1] = Adminer\lang('original');
 				if ($selected === null) {
 					$selected = -1;
 				}
 			}
 			if ($field["null"]) {
 				$options[""] = "NULL";
-				if ($value === null && !isset($_GET["select"])) {
+				if ($selected === null) {
 					$selected = "";
 				}
 			}
-			$options[0] = lang('empty');
 			preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
-			foreach ($matches[1] as $i => $val) {
+			foreach ($matches[1] as $val) {
 				$val = stripcslashes(str_replace("''", "'", $val));
-				$options[$i + 1] = $val;
-				if ($value === $val) {
-					$selected = $i + 1;
-				}
+				$options[$val] = $val;
 			}
-			return "<select$attrs>" . optionlist($options, (string) $selected, 1) . "</select>"; // 1 - use keys
+			return "<select$attrs>" . Adminer\optionlist($options, $selected, 1) . "</select>"; // 1 - use keys
 		}
 	}
-
 }

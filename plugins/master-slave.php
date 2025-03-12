@@ -17,27 +17,26 @@ class AdminerMasterSlave {
 	}
 
 	function credentials() {
-		if ($_POST && isset($this->masters[SERVER])) {
-			return array($this->masters[SERVER], $_GET["username"], get_session("pwds"));
+		if ($_POST && isset($this->masters[Adminer\SERVER])) {
+			return array($this->masters[Adminer\SERVER], $_GET["username"], Adminer\get_session("pwds"));
 		}
 	}
 
 	function login($login, $password) {
 		if (!$_POST && ($master = &$_SESSION["master"])) {
-			$connection = connection();
-			$connection->query("DO MASTER_POS_WAIT('" . q($master['File']) . "', $master[Position])");
+			$connection = Adminer\connection();
+			$connection->query("DO MASTER_POS_WAIT('" . Adminer\q($master['File']) . "', $master[Position])");
 			$master = null;
 		}
 	}
 
 	function messageQuery($query, $time, $failed = false) {
 		//! doesn't work with sql.inc.php
-		$connection = connection();
+		$connection = Adminer\connection();
 		$result = $connection->query('SHOW MASTER STATUS');
 		if ($result) {
-			restart_session();
+			Adminer\restart_session();
 			$_SESSION["master"] = $result->fetch_assoc();
 		}
 	}
-
 }

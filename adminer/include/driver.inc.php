@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $drivers = array();
 
 /** Add a driver
@@ -20,14 +22,48 @@ function get_driver($id) {
 	return $drivers[$id];
 }
 
-/*abstract*/ class Min_SQL {
-	var $_conn;
+abstract class SqlDriver {
+	static $possibleDrivers = array();
+	static $jush; ///< @var string JUSH identifier
+
+	protected $conn;
+	protected $types = array(); ///< @var array [$description => [$type => $maximum_unsigned_length, ...], ...]
+	public $editFunctions = array(); ///< @var array of ["$type|$type2" => "$function/$function2"] functions used in editing, [0] - edit and insert, [1] - edit only
+	public $unsigned = array(); ///< @var array number variants
+	public $operators = array(); ///< @var array operators used in select
+	public $functions = array(); ///< @var array functions used in select
+	public $grouping = array(); ///< @var array grouping functions used in select
+	public $onActions = "RESTRICT|NO ACTION|CASCADE|SET NULL|SET DEFAULT"; ///< @var string used in foreign_keys()
+	public $inout = "IN|OUT|INOUT"; ///< @var string used in routines
+	public $enumLength = "'(?:''|[^'\\\\]|\\\\.)*'"; ///< @var string regular expression for parsing enum lengths
+	public $generated = array(); ///< @var array allowed types of generated columns
 
 	/** Create object for performing database operations
-	* @param Min_DB
+	* @param Db
 	*/
 	function __construct($connection) {
-		$this->_conn = $connection;
+		$this->conn = $connection;
+	}
+
+	/** Get all types
+	* @return array [$type => $maximum_unsigned_length, ...]
+	*/
+	function types() {
+		return call_user_func_array('array_merge', array_values($this->types));
+	}
+
+	/** Get structured types
+	* @return array [$description => [$type, ...], ...]
+	*/
+	function structuredTypes() {
+		return array_map('array_keys', $this->types);
+	}
+
+	/** Get enum values
+	* @param array
+	* @return string or null
+	*/
+	function enumLength($field) {
 	}
 
 	/** Select data from table
@@ -39,15 +75,15 @@ function get_driver($id) {
 	* @param int result of $adminer->selectLimitProcess()
 	* @param int index of page starting at zero
 	* @param bool whether to print the query
-	* @return Min_Result
+	* @return Result
 	*/
 	function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
-		global $adminer, $jush;
+		global $adminer;
 		$is_group = (count($group) < count($select));
 		$query = $adminer->selectQueryBuild($select, $where, $group, $order, $limit, $page);
 		if (!$query) {
 			$query = "SELECT" . limit(
-				($_GET["page"] != "last" && $limit != "" && $group && $is_group && $jush == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . implode(", ", $select) . "\nFROM " . table($table),
+				($_GET["page"] != "last" && $limit != "" && $group && $is_group && JUSH == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . implode(", ", $select) . "\nFROM " . table($table),
 				($where ? "\nWHERE " . implode(" AND ", $where) : "") . ($group && $is_group ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : ""),
 				($limit != "" ? +$limit : null),
 				($page ? $limit * $page : 0),
@@ -55,7 +91,7 @@ function get_driver($id) {
 			);
 		}
 		$start = microtime(true);
-		$return = $this->_conn->query($query);
+		$return = $this->conn->query($query);
 		if ($print) {
 			echo $adminer->selectQuery($query, $start, !$return);
 		}
@@ -108,7 +144,7 @@ function get_driver($id) {
 	* @param array of arrays with escaped columns in keys and quoted data in values
 	* @return bool
 	*/
-	/*abstract*/ function insertUpdate($table, $rows, $primary) {
+	function insertUpdate($table, $rows, $primary) {
 		return false;
 	}
 
@@ -165,8 +201,8 @@ function get_driver($id) {
 	* @return string
 	*/
 	function value($val, $field) {
-		return (method_exists($this->_conn, 'value')
-			? $this->_conn->value($val, $field)
+		return (method_exists($this->conn, 'value')
+			? $this->conn->value($val, $field)
 			: (is_resource($val) ? stream_get_contents($val) : $val)
 		);
 	}
@@ -201,6 +237,14 @@ function get_driver($id) {
 		return false;
 	}
 
+	/** Check whether table supports indexes
+	* @param array result of table_status()
+	* @return bool
+	*/
+	function supportsIndex($table_status) {
+		return !is_view($table_status);
+	}
+
 	/** Get defined check constraints
 	* @param string
 	* @return array [$name => $clause]
@@ -214,5 +258,4 @@ WHERE c.CONSTRAINT_SCHEMA = " . q($_GET["ns"] != "" ? $_GET["ns"] : DB) . "
 AND t.TABLE_NAME = " . q($table) . "
 AND CHECK_CLAUSE NOT LIKE '% IS NOT NULL'"); // ignore default IS NOT NULL checks in PostrgreSQL
 	}
-
 }

@@ -1,14 +1,13 @@
 <?php
 
-/** Connect to MySQL or PostgreSQL using SSL
+/** Connect to MySQL, PostgreSQL or MS SQL using SSL
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerLoginSsl {
-	/** @access protected */
-	var $ssl;
+	protected $ssl;
 
 	/**
 	* @param array
@@ -23,5 +22,4 @@ class AdminerLoginSsl {
 	function connectSsl() {
 		return $this->ssl;
 	}
-
 }

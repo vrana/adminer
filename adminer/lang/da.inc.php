@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $translations = array(
 	'System' => 'System',
 	'Server' => 'Server',

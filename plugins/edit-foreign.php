@@ -7,10 +7,10 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerEditForeign {
-	var $_limit;
+	protected $limit;
 
 	function __construct($limit = 0) {
-		$this->_limit = $limit;
+		$this->limit = $limit;
 	}
 
 	function editInput($table, $field, $attrs, $value) {
@@ -18,7 +18,7 @@ class AdminerEditForeign {
 		static $values = array();
 		$foreignKeys = &$foreignTables[$table];
 		if ($foreignKeys === null) {
-			$foreignKeys = column_foreign_keys($table);
+			$foreignKeys = Adminer\column_foreign_keys($table);
 		}
 		foreach ((array) $foreignKeys[$field["field"]] as $foreignKey) {
 			if (count($foreignKey["source"]) == 1) {
@@ -26,18 +26,17 @@ class AdminerEditForeign {
 				$id = $foreignKey["target"][0];
 				$options = &$values[$target][$id];
 				if (!$options) {
-					$column = idf_escape($id);
+					$column = Adminer\idf_escape($id);
 					if (preg_match('~binary~', $field["type"])) {
 						$column = "HEX($column)";
 					}
-					$options = array("" => "") + get_vals("SELECT $column FROM " . table($target) . " ORDER BY 1" . ($this->_limit ? " LIMIT " . ($this->_limit + 1) : ""));
-					if ($this->_limit && count($options) - 1 > $this->_limit) {
+					$options = array("" => "") + Adminer\get_vals("SELECT $column FROM " . Adminer\table($target) . " ORDER BY 1" . ($this->limit ? " LIMIT " . ($this->limit + 1) : ""));
+					if ($this->limit && count($options) - 1 > $this->limit) {
 						return;
 					}
 				}
-				return "<select$attrs>" . optionlist($options, $value) . "</select>";
+				return "<select$attrs>" . Adminer\optionlist($options, $value) . "</select>";
 			}
 		}
 	}
-
 }

@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 header("Content-Type: text/javascript; charset=utf-8");
 
 if ($_GET["script"] == "db") {
@@ -12,10 +14,12 @@ if ($_GET["script"] == "db") {
 			foreach ($sums + array("Auto_increment" => 0, "Rows" => 0) as $key => $val) {
 				if ($table_status[$key] != "") {
 					$val = format_number($table_status[$key]);
-					json_row("$key-$name", ($key == "Rows" && $val && $table_status["Engine"] == ($jush == "pgsql" ? "table" : "InnoDB")
-						? "~ $val"
-						: $val
-					));
+					if ($val >= 0) {
+						json_row("$key-$name", ($key == "Rows" && $val && $table_status["Engine"] == (JUSH == "pgsql" ? "table" : "InnoDB")
+							? "~ $val"
+							: $val
+						));
+					}
 					if (isset($sums[$key])) {
 						// ignore innodb_file_per_table because it is not active for tables created before it was enabled
 						$sums[$key] += ($table_status["Engine"] != "InnoDB" || $key != "Data_free" ? $table_status[$key] : 0);

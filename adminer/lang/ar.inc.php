@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $translations = array(
 	'Login' => 'تسجيل الدخول',
 	'Logout successful.' => 'تم تسجيل الخروج بنجاح.',
@@ -75,7 +77,7 @@ $translations = array(
 	'Routine has been called, %d row(s) affected.' => 'تم استدعاء الروتين, عدد الأسطر المعدلة %d.',
 	'Call' => 'استدعاء',
 	'No extension' => 'امتداد غير موجود',
-	'None of the supported PHP extensions (%s) are available.' => 'إمتدادات php المدعومة غير موجودة.',
+	'None of the supported PHP extensions (%s) are available.' => 'إمتدادات php (%s) المدعومة غير موجودة.',
 	'Session support must be enabled.' => 'عليك تفعيل نظام الجلسات.',
 	'Session expired, please login again.' => 'إنتهت الجلسة، من فضلك أعد تسجيل الدخول.',
 	'Text length' => 'طول النص',
@@ -169,8 +171,8 @@ $translations = array(
 	'Tables and views' => 'الجداول و العروض',
 	'Engine' => 'المحرك',
 	'Collation' => 'ترتيب',
-	'Data Length' => 'طول المعطيات.',
-	'Index Length' => 'طول المؤشر.',
+	'Data Length' => 'طول المعطيات',
+	'Index Length' => 'طول المؤشر',
 	'Data Free' => 'المساحة الحرة',
 	'Rows' => 'الأسطر',
 	',' => ',',
@@ -190,7 +192,7 @@ $translations = array(
 	'Partitions' => 'التقسيمات',
 	'Partition name' => 'اسم التقسيم',
 	'Values' => 'القيم',
-	'%d row(s) have been imported.' => 'تم استيراد %d سطرا',
+	'%d row(s) have been imported.' => 'تم استيراد %d سطرا.',
 	'anywhere' => 'في اي مكان',
 	'Import' => 'استيراد',
 	'Stop on error' => 'أوقف في حالة حدوث خطأ',
@@ -249,8 +251,8 @@ $translations = array(
 	'Network' => 'شبكة',
 	'Geometry' => 'هندسة',
 	'File exists.' => 'الملف موجود.',
-	'Attachments' => 'ملفات مرفقة.',
-	'Item%s has been inserted.' => 'تم إدراج العنصر.',
+	'Attachments' => 'ملفات مرفقة',
+	'Item%s has been inserted.' => '%sتم إدراج العنصر.',
 	'now' => 'الآن',
 	'%d query(s) executed OK.' => array('تم تنفيذ الاستعلام %d بنجاح.', 'تم تنفيذ الاستعلامات %d بنجاح.'),
 	'Show only errors' => 'إظهار الأخطاء فقط',

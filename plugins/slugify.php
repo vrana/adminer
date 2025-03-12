@@ -7,8 +7,7 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerSlugify {
-	/** @access protected */
-	var $from, $to;
+	protected $from, $to;
 
 	/**
 	* @param string find these characters ...
@@ -25,7 +24,7 @@ class AdminerSlugify {
 			if ($slugify === null) {
 				$slugify = array();
 				$prev = null;
-				foreach (fields($table) as $name => $val) {
+				foreach (Adminer\fields($table) as $name => $val) {
 					if ($prev && preg_match('~(^|_)slug(_|$)~', $name)) {
 						$slugify[$prev] = $name;
 					}
@@ -34,8 +33,8 @@ class AdminerSlugify {
 			}
 			$slug = $slugify[$field["field"]];
 			if ($slug !== null) {
-				return "<input value='" . h($value) . "' data-maxlength='$field[length]' size='40'$attrs>"
-					. script("qsl('input').onchange = function () {
+				return "<input value='" . Adminer\h($value) . "' data-maxlength='$field[length]' size='40'$attrs>"
+					. Adminer\script("qsl('input').onchange = function () {
 	var find = '$this->from';
 	var repl = '$this->to';
 	this.form['fields[$slug]'].value = this.value.toLowerCase()
@@ -47,5 +46,4 @@ class AdminerSlugify {
 			}
 		}
 	}
-
 }

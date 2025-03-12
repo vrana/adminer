@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $translations = array(
 	// label for database system selection (MySQL, SQLite, ...)
 	'System' => 'Sistem',
@@ -56,7 +58,7 @@ $translations = array(
 	'ATTACH queries are not supported.' => 'ATTACH sorguları desteklenmiyor.',
 	'Execute' => 'Çalıştır',
 	'Stop on error' => 'Hata oluşursa dur',
-	'Show only errors' => 'Sadece hataları göster.',
+	'Show only errors' => 'Sadece hataları göster',
 	// sprintf() format for time of the command
 	'%.3f s' => '%.3f s',
 	'History' => 'Geçmiş',
@@ -223,7 +225,7 @@ $translations = array(
 	'Trigger has been dropped.' => 'Tetik silindi.',
 	'Trigger has been altered.' => 'Tetik değiştirildi.',
 	'Trigger has been created.' => 'Tetik oluşturuldu.',
-	'Alter trigger' => 'Tetiği değiştir.',
+	'Alter trigger' => 'Tetiği değiştir',
 	'Create trigger' => 'Tetik oluştur',
 	'Time' => 'Zaman',
 	'Event' => 'Olay',

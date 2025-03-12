@@ -9,8 +9,6 @@
 class AdminerDumpDate {
 
 	function dumpFilename($identifier) {
-		$connection = connection();
-		return friendly_url(($identifier != "" ? $identifier : (SERVER != "" ? SERVER : "localhost")) . "-" . $connection->result("SELECT NOW()"));
+		return Adminer\friendly_url(($identifier != "" ? $identifier : (Adminer\SERVER != "" ? Adminer\SERVER : "localhost")) . "-" . Adminer\get_val("SELECT NOW()"));
 	}
-
 }

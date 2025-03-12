@@ -9,6 +9,6 @@
 class AdminerStructComments {
 
 	function fieldName(&$field, $order = 0) {
-		return '<span title="' . h($field["full_type"]) . (!empty($field["comment"]) ? ': ' . $field["comment"] : '') . '">' . h($field["field"]) . '</span>';
+		return '<span title="' . Adminer\h($field["full_type"]) . (!empty($field["comment"]) ? ': ' . $field["comment"] : '') . '">' . Adminer\h($field["field"]) . '</span>';
 	}
 }

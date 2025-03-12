@@ -1,8 +1,10 @@
 <?php
+namespace Adminer;
+
 $TABLE = $_GET["view"];
 $row = $_POST;
 $orig_type = "VIEW";
-if ($jush == "pgsql" && $TABLE != "") {
+if (JUSH == "pgsql" && $TABLE != "") {
 	$status = table_status($TABLE);
 	$orig_type = strtoupper($status["Engine"]);
 }
@@ -15,8 +17,8 @@ if ($_POST && !$error) {
 
 	$type = ($_POST["materialized"] ? "MATERIALIZED VIEW" : "VIEW");
 
-	if (!$_POST["drop"] && $TABLE == $name && $jush != "sqlite" && $type == "VIEW" && $orig_type == "VIEW") {
-		query_redirect(($jush == "mssql" ? "ALTER" : "CREATE OR REPLACE") . " VIEW " . table($name) . $as, $location, $message);
+	if (!$_POST["drop"] && $TABLE == $name && JUSH != "sqlite" && $type == "VIEW" && $orig_type == "VIEW") {
+		query_redirect((JUSH == "mssql" ? "ALTER" : "CREATE OR REPLACE") . " VIEW " . table($name) . $as, $location, $message);
 	} else {
 		$temp_name = $name . "_adminer_" . uniqid();
 		drop_create(
@@ -53,6 +55,8 @@ page_header(($TABLE != "" ? lang('Alter view') : lang('Create view')), $error, a
 <p><?php textarea("select", $row["select"]); ?>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
-<?php if ($TABLE != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $TABLE)); ?><?php } ?>
+<?php if ($TABLE != "") { ?>
+<input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $TABLE)); ?>
+<?php } ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

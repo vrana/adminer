@@ -1,10 +1,12 @@
 <?php
+namespace Adminer;
+
 $tables_views = array_merge((array) $_POST["tables"], (array) $_POST["views"]);
 
 if ($tables_views && !$error && !$_POST["search"]) {
 	$result = true;
 	$message = "";
-	if ($jush == "sql" && $_POST["tables"] && count($_POST["tables"]) > 1 && ($_POST["drop"] || $_POST["truncate"] || $_POST["copy"])) {
+	if (JUSH == "sql" && $_POST["tables"] && count($_POST["tables"]) > 1 && ($_POST["drop"] || $_POST["truncate"] || $_POST["copy"])) {
 		queries("SET foreign_key_checks = 0"); // allows to truncate or drop several tables at once
 	}
 
@@ -27,21 +29,21 @@ if ($tables_views && !$error && !$_POST["search"]) {
 			$result = drop_tables($_POST["tables"]);
 		}
 		$message = lang('Tables have been dropped.');
-	} elseif ($jush == "sqlite" && $_POST["check"]) {
+	} elseif (JUSH == "sqlite" && $_POST["check"]) {
 		foreach ((array) $_POST["tables"] as $table) {
 			foreach (get_rows("PRAGMA integrity_check(" . q($table) . ")") as $row) {
 				$message .= "<b>" . h($table) . "</b>: " . h($row["integrity_check"]) . "<br>";
 			}
 		}
-	} elseif ($jush != "sql") {
-		$result = ($jush == "sqlite"
+	} elseif (JUSH != "sql") {
+		$result = (JUSH == "sqlite"
 			? queries("VACUUM")
 			: apply_queries("VACUUM" . ($_POST["optimize"] ? "" : " ANALYZE"), $_POST["tables"])
 		);
 		$message = lang('Tables have been optimized.');
 	} elseif (!$_POST["tables"]) {
 		$message = lang('No tables.');
-	} elseif ($result = queries(($_POST["optimize"] ? "OPTIMIZE" : ($_POST["check"] ? "CHECK" : ($_POST["repair"] ? "REPAIR" : "ANALYZE"))) . " TABLE " . implode(", ", array_map('idf_escape', $_POST["tables"])))) {
+	} elseif ($result = queries(($_POST["optimize"] ? "OPTIMIZE" : ($_POST["check"] ? "CHECK" : ($_POST["repair"] ? "REPAIR" : "ANALYZE"))) . " TABLE " . implode(", ", array_map('Adminer\idf_escape', $_POST["tables"])))) {
 		while ($row = $result->fetch_assoc()) {
 			$message .= "<b>" . h($row["Table"]) . "</b>: " . h($row["Msg_text"]) . "<br>";
 		}
@@ -97,15 +99,17 @@ if ($adminer->homepage()) {
 					echo '<td colspan="6"><a href="' . h(ME) . "view=" . urlencode($name) . '" title="' . lang('Alter view') . '">' . (preg_match('~materialized~i', $type) ? lang('Materialized view') : lang('View')) . '</a>';
 					echo '<td align="right"><a href="' . h(ME) . "select=" . urlencode($name) . '" title="' . lang('Select data') . '">?</a>';
 				} else {
-					foreach (array(
-						"Engine" => array(),
-						"Collation" => array(),
-						"Data_length" => array("create", lang('Alter table')),
-						"Index_length" => array("indexes", lang('Alter indexes')),
-						"Data_free" => array("edit", lang('New item')),
-						"Auto_increment" => array("auto_increment=1&create", lang('Alter table')),
-						"Rows" => array("select", lang('Select data')),
-					) as $key => $link) {
+					foreach (
+						array(
+							"Engine" => array(),
+							"Collation" => array(),
+							"Data_length" => array("create", lang('Alter table')),
+							"Index_length" => array("indexes", lang('Alter indexes')),
+							"Data_free" => array("edit", lang('New item')),
+							"Auto_increment" => array("auto_increment=1&create", lang('Alter table')),
+							"Rows" => array("select", lang('Select data')),
+						) as $key => $link
+					) {
 						$id = " id='$key-" . h($name) . "'";
 						echo ($link ? "<td align='right'>" . (support("table") || $key == "Rows" || (support("indexes") && $key != "Data_length")
 							? "<a href='" . h(ME . "$link[0]=") . urlencode($name) . "'$id title='$link[1]'>?</a>"
@@ -119,7 +123,7 @@ if ($adminer->homepage()) {
 			}
 
 			echo "<tr><td><th>" . lang('%d in total', count($tables_list));
-			echo "<td>" . h($jush == "sql" ? $connection->result("SELECT @@default_storage_engine") : "");
+			echo "<td>" . h(JUSH == "sql" ? get_val("SELECT @@default_storage_engine") : "");
 			echo "<td>" . h(db_collation(DB, collations()));
 			foreach (array("Data_length", "Index_length", "Data_free") as $key) {
 				echo "<td align='right' id='sum-$key'>";
@@ -131,19 +135,19 @@ if ($adminer->homepage()) {
 			if (!information_schema(DB)) {
 				echo "<div class='footer'><div>\n";
 				$vacuum = "<input type='submit' value='" . lang('Vacuum') . "'> " . on_help("'VACUUM'");
-				$optimize = "<input type='submit' name='optimize' value='" . lang('Optimize') . "'> " . on_help($jush == "sql" ? "'OPTIMIZE TABLE'" : "'VACUUM OPTIMIZE'");
+				$optimize = "<input type='submit' name='optimize' value='" . lang('Optimize') . "'> " . on_help(JUSH == "sql" ? "'OPTIMIZE TABLE'" : "'VACUUM OPTIMIZE'");
 				echo "<fieldset><legend>" . lang('Selected') . " <span id='selected'></span></legend><div>"
-				. ($jush == "sqlite" ? $vacuum . "<input type='submit' name='check' value='" . lang('Check') . "'> " . on_help("'PRAGMA integrity_check'")
-				: ($jush == "pgsql" ? $vacuum . $optimize
-				: ($jush == "sql" ? "<input type='submit' value='" . lang('Analyze') . "'> " . on_help("'ANALYZE TABLE'")
+				. (JUSH == "sqlite" ? $vacuum . "<input type='submit' name='check' value='" . lang('Check') . "'> " . on_help("'PRAGMA integrity_check'")
+				: (JUSH == "pgsql" ? $vacuum . $optimize
+				: (JUSH == "sql" ? "<input type='submit' value='" . lang('Analyze') . "'> " . on_help("'ANALYZE TABLE'")
 					. $optimize
 					. "<input type='submit' name='check' value='" . lang('Check') . "'> " . on_help("'CHECK TABLE'")
 					. "<input type='submit' name='repair' value='" . lang('Repair') . "'> " . on_help("'REPAIR TABLE'")
 				: "")))
-				. "<input type='submit' name='truncate' value='" . lang('Truncate') . "'> " . on_help($jush == "sqlite" ? "'DELETE'" : "'TRUNCATE" . ($jush == "pgsql" ? "'" : " TABLE'")) . confirm()
+				. "<input type='submit' name='truncate' value='" . lang('Truncate') . "'> " . on_help(JUSH == "sqlite" ? "'DELETE'" : "'TRUNCATE" . (JUSH == "pgsql" ? "'" : " TABLE'")) . confirm()
 				. "<input type='submit' name='drop' value='" . lang('Drop') . "'>" . on_help("'DROP TABLE'") . confirm() . "\n";
 				$databases = (support("scheme") ? $adminer->schemas() : $adminer->databases());
-				if (count($databases) != 1 && $jush != "sqlite") {
+				if (count($databases) != 1 && JUSH != "sqlite") {
 					$db = (isset($_POST["target"]) ? $_POST["target"] : (support("scheme") ? $_GET["ns"] : DB));
 					echo "<p>" . lang('Move to other database') . ": ";
 					echo ($databases ? html_select("target", $databases, $db) : '<input name="target" value="' . h($db) . '" autocapitalize="off">');
@@ -228,7 +232,7 @@ if ($adminer->homepage()) {
 					echo '<td><a href="' . h(ME) . 'event=' . urlencode($row["Name"]) . '">' . lang('Alter') . '</a>';
 				}
 				echo "</table>\n";
-				$event_scheduler = $connection->result("SELECT @@event_scheduler");
+				$event_scheduler = get_val("SELECT @@event_scheduler");
 				if ($event_scheduler && $event_scheduler != "ON") {
 					echo "<p class='error'><code class='jush-sqlset'>event_scheduler</code>: " . h($event_scheduler) . "\n";
 				}

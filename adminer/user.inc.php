@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $USER = $_GET["user"];
 $privileges = array("" => array("All privileges" => ""));
 foreach (get_rows("SHOW PRIVILEGES") as $row) {
@@ -54,7 +56,7 @@ if ($_POST && !$error) {
 		$pass = $_POST["pass"];
 		if ($pass != '' && !$_POST["hashed"] && !min_version(8)) {
 			// compute hash in a separate query so that plain text password is not saved to history
-			$pass = $connection->result("SELECT PASSWORD(" . q($pass) . ")");
+			$pass = get_val("SELECT PASSWORD(" . q($pass) . ")");
 			$error = !$pass;
 		}
 
@@ -84,10 +86,11 @@ if ($_POST && !$error) {
 					$grant = array_diff($grant, $old_grant);
 					unset($grants[$object]);
 				}
-				if (preg_match('~^(.+)\s*(\(.*\))?$~U', $object, $match) && (
+				if (
+					preg_match('~^(.+)\s*(\(.*\))?$~U', $object, $match) && (
 					!grant("REVOKE", $revoke, $match[2], " ON $match[1] FROM $new_user") //! SQL injection
-					|| !grant("GRANT", $grant, $match[2], " ON $match[1] TO $new_user")
-				)) {
+					|| !grant("GRANT", $grant, $match[2], " ON $match[1] TO $new_user"))
+				) {
 					$error = true;
 					break;
 				}
@@ -117,11 +120,11 @@ if ($_POST && !$error) {
 
 page_header((isset($_GET["host"]) ? lang('Username') . ": " . h("$USER@$_GET[host]") : lang('Create user')), $error, array("privileges" => array('', lang('Privileges'))));
 
-if ($_POST) {
-	$row = $_POST;
+$row = $_POST;
+if ($row) {
 	$grants = $new_grants;
 } else {
-	$row = $_GET + array("host" => $connection->result("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', -1)")); // create user on the same domain by default
+	$row = $_GET + array("host" => get_val("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', -1)")); // create user on the same domain by default
 	$row["pass"] = $old_pass;
 	if ($old_pass != "") {
 		$row["hashed"] = true;
@@ -135,7 +138,7 @@ if ($_POST) {
 <tr><th><?php echo lang('Server'); ?><td><input name="host" data-maxlength="60" value="<?php echo h($row["host"]); ?>" autocapitalize="off">
 <tr><th><?php echo lang('Username'); ?><td><input name="user" data-maxlength="80" value="<?php echo h($row["user"]); ?>" autocapitalize="off">
 <tr><th><?php echo lang('Password'); ?><td><input name="pass" id="pass" value="<?php echo h($row["pass"]); ?>" autocomplete="new-password">
-<?php if (!$row["hashed"]) { echo script("typePassword(qs('#pass'));"); } ?>
+<?php echo ($row["hashed"] ? "" : script("typePassword(qs('#pass'));")); ?>
 <?php echo (min_version(8) ? "" : checkbox("hashed", 1, $row["hashed"], lang('Hashed'), "typePassword(this.form['pass'], this.checked);")); ?>
 </table>
 
@@ -145,19 +148,24 @@ echo "<table class='odds'>\n";
 echo "<thead><tr><th colspan='2'>" . lang('Privileges') . doc_link(array('sql' => "grant.html#priv_level"));
 $i = 0;
 foreach ($grants as $object => $grant) {
-	echo '<th>' . ($object != "*.*" ? "<input name='objects[$i]' value='" . h($object) . "' size='10' autocapitalize='off'>" : "<input type='hidden' name='objects[$i]' value='*.*' size='10'>*.*"); //! separate db, table, columns, PROCEDURE|FUNCTION, routine
+	echo '<th>' . ($object != "*.*"
+		? "<input name='objects[$i]' value='" . h($object) . "' size='10' autocapitalize='off'>"
+		: "<input type='hidden' name='objects[$i]' value='*.*' size='10'>*.*"
+	); //! separate db, table, columns, PROCEDURE|FUNCTION, routine
 	$i++;
 }
 echo "</thead>\n";
 
-foreach (array(
-	"" => "",
-	"Server Admin" => lang('Server'),
-	"Databases" => lang('Database'),
-	"Tables" => lang('Table'),
-	"Columns" => lang('Column'),
-	"Procedures" => lang('Routine'),
-) as $context => $desc) {
+foreach (
+	array(
+		"" => "",
+		"Server Admin" => lang('Server'),
+		"Databases" => lang('Database'),
+		"Tables" => lang('Table'),
+		"Columns" => lang('Column'),
+		"Procedures" => lang('Routine'),
+	) as $context => $desc
+) {
 	foreach ((array) $privileges[$context] as $privilege => $comment) {
 		echo "<tr><td" . ($desc ? ">$desc<td" : " colspan='2'") . ' lang="en" title="' . h($comment) . '">' . h($privilege);
 		$i = 0;
@@ -184,6 +192,8 @@ echo "</table>\n";
 ?>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
-<?php if (isset($_GET["host"])) { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', "$USER@$_GET[host]")); ?><?php } ?>
+<?php if (isset($_GET["host"])) { ?>
+<input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', "$USER@$_GET[host]")); ?>
+<?php } ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

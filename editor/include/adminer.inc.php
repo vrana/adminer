@@ -1,7 +1,9 @@
 <?php
+namespace Adminer;
+
 class Adminer {
-	var $operators = array("<=", ">=");
-	var $_values = array();
+	public $operators = array("<=", ">=");
+	private $values = array();
 
 	function name() {
 		return "<a href='https://www.adminer.org/editor/'" . target_blank() . " id='h1'>" . lang('Editor') . "</a>";
@@ -32,7 +34,7 @@ class Adminer {
 		if ($connection) {
 			$databases = $this->databases(false);
 			return (!$databases
-				? $connection->result("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1)") // username without the database list
+				? get_val("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1)") // username without the database list
 				: $databases[(information_schema($databases[0]) ? 1 : 0)] // first available database
 			);
 		}
@@ -88,7 +90,10 @@ class Adminer {
 	}
 
 	function tableName($tableStatus) {
-		return h($tableStatus["Comment"] != "" ? $tableStatus["Comment"] : $tableStatus["Name"]);
+		return h(isset($tableStatus["Engine"])
+			? ($tableStatus["Comment"] != "" ? $tableStatus["Comment"] : $tableStatus["Name"])
+			: "" // ignore views
+		);
 	}
 
 	function fieldName($field, $order = 0) {
@@ -108,12 +113,14 @@ class Adminer {
 
 	function backwardKeys($table, $tableName) {
 		$return = array();
-		foreach (get_rows("SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME
+		foreach (
+			get_rows("SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME
 FROM information_schema.KEY_COLUMN_USAGE
 WHERE TABLE_SCHEMA = " . q($this->database()) . "
 AND REFERENCED_TABLE_SCHEMA = " . q($this->database()) . "
 AND REFERENCED_TABLE_NAME = " . q($table) . "
-ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
+ORDER BY ORDINAL_POSITION", null, "") as $row //! requires MySQL 5
+		) {
 			$return[$row["TABLE_NAME"]]["keys"][$row["CONSTRAINT_NAME"]][$row["COLUMN_NAME"]] = $row["REFERENCED_COLUMN_NAME"];
 		}
 		foreach ($return as $key => $val) {
@@ -171,7 +178,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 					$ids[$row[$key]] = q($row[$key]);
 				}
 				// uses constant number of queries to get the descriptions, join would be complex, multiple queries would be slow
-				$descriptions = $this->_values[$table];
+				$descriptions = $this->values[$table];
 				if (!$descriptions) {
 					$descriptions = get_key_vals("SELECT $id, $name FROM " . table($table) . " WHERE $id IN (" . implode(", ", $ids) . ")");
 				}
@@ -244,7 +251,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 				);
 				echo "</div>\n";
 				unset($columns[$name]);
-			} elseif (is_array($options = $this->_foreignKeyOptions($_GET["select"], $name))) {
+			} elseif (is_array($options = $this->foreignKeyOptions($_GET["select"], $name))) {
 				if ($fields[$name]["null"]) {
 					$options[0] = '(' . lang('empty') . ')';
 				}
@@ -421,10 +428,11 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 				$subject = $_POST["email_subject"];
 				$message = $_POST["email_message"];
 				preg_match_all('~\{\$([a-z0-9_]+)\}~i', "$subject.$message", $matches); // allows {$name} in subject or message
-				$rows = get_rows("SELECT DISTINCT $field" . ($matches[1] ? ", " . implode(", ", array_map('idf_escape', array_unique($matches[1]))) : "") . " FROM " . table($_GET["select"])
+				$rows = get_rows(
+					"SELECT DISTINCT $field" . ($matches[1] ? ", " . implode(", ", array_map('Adminer\idf_escape', array_unique($matches[1]))) : "") . " FROM " . table($_GET["select"])
 					. " WHERE $field IS NOT NULL AND $field != ''"
 					. ($where ? " AND " . implode(" AND ", $where) : "")
-					. ($_POST["all"] ? "" : " AND ((" . implode(") OR (", array_map('where_check', (array) $_POST["check"])) . "))")
+					. ($_POST["all"] ? "" : " AND ((" . implode(") OR (", array_map('Adminer\where_check', (array) $_POST["check"])) . "))")
 				);
 				$fields = fields($_GET["select"]);
 				foreach ($this->rowDescriptions($rows, $foreignKeys) as $row) {
@@ -477,7 +485,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row) { //! requires MySQL 5
 				. enum_input("radio", $attrs, $field, ($value || isset($_GET["select"]) ? $value : 0), ($field["null"] ? "" : null))
 			;
 		}
-		$options = $this->_foreignKeyOptions($table, $field["field"], $value);
+		$options = $this->foreignKeyOptions($table, $field["field"], $value);
 		if ($options !== null) {
 			return (is_array($options)
 				? "<select$attrs>" . optionlist($options, $value, true) . "</select>"
@@ -569,6 +577,9 @@ qsl('div').onclick = whisperClick;", "")
 		return $ext;
 	}
 
+	function dumpFooter() {
+	}
+
 	function importServerPath() {
 	}
 
@@ -624,7 +635,7 @@ qsl('div').onclick = whisperClick;", "")
 		foreach ($tables as $row) {
 			echo '<li>';
 			$name = $this->tableName($row);
-			if (isset($row["Engine"]) && $name != "") { // ignore views and tables without name
+			if ($name != "") { // ignore tables without name
 				echo "<a href='" . h(ME) . 'select=' . urlencode($row["Name"]) . "'"
 					. bold($_GET["select"] == $row["Name"] || $_GET["edit"] == $row["Name"], "select")
 					. " title='" . lang('Select data') . "'>$name</a>\n"
@@ -646,19 +657,17 @@ qsl('div').onclick = whisperClick;", "")
 		}
 	}
 
-	function _foreignKeyOptions($table, $column, $value = null) {
-		global $connection;
+	private function foreignKeyOptions($table, $column, $value = null) {
 		if (list($target, $id, $name) = $this->_foreignColumn(column_foreign_keys($table), $column)) {
-			$return = &$this->_values[$target];
+			$return = &$this->values[$target];
 			if ($return === null) {
 				$table_status = table_status($target);
 				$return = ($table_status["Rows"] > 1000 ? "" : array("" => "") + get_key_vals("SELECT $id, $name FROM " . table($target) . " ORDER BY 2"));
 			}
 			if (!$return && $value !== null) {
-				return $connection->result("SELECT $name FROM " . table($target) . " WHERE $id = " . q($value));
+				return get_val("SELECT $name FROM " . table($target) . " WHERE $id = " . q($value));
 			}
 			return $return;
 		}
 	}
-
 }

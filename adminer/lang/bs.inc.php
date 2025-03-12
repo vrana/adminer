@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $translations = array(
 	// label for database system selection (MySQL, SQLite, ...)
 	'System' => 'Sistem',
@@ -14,7 +16,7 @@ $translations = array(
 	'Language' => 'Jezik',
 	'Invalid CSRF token. Send the form again.' => 'Nevažeći CSRF kod. Proslijedite ponovo formu.',
 	'No extension' => 'Bez dodataka',
-	'None of the supported PHP extensions (%s) are available.' => 'Nijedan od podržanih PHP dodataka nije dostupan.',
+	'None of the supported PHP extensions (%s) are available.' => 'Nijedan od podržanih PHP dodataka (%s) nije dostupan.',
 	'Session support must be enabled.' => 'Morate omogućiti podršku za sesije.',
 	'Session expired, please login again.' => 'Vaša sesija je istekla, prijavite se ponovo.',
 	'%s version: %s through PHP extension %s' => '%s verzija: %s pomoću PHP dodatka je %s',

@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 page_header(lang('Server'), "", false);
 
 if ($adminer->homepage()) {
@@ -18,7 +20,7 @@ if ($adminer->homepage()) {
 
 	foreach (table_status() as $table => $row) {
 		$name = $adminer->tableName($row);
-		if (isset($row["Engine"]) && $name != "") {
+		if ($name != "") {
 			echo '<tr><td>' . checkbox("tables[]", $table, in_array($table, (array) $_POST["tables"], true));
 			echo "<th><a href='" . h(ME) . 'select=' . urlencode($table) . "'>$name</a>";
 			$val = format_number($row["Rows"]);

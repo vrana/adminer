@@ -7,8 +7,7 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerDumpJson {
-	/** @access protected */
-	var $database = false;
+	protected $database = false;
 
 	function dumpFormat() {
 		return array('json' => 'JSON');
@@ -20,10 +19,6 @@ class AdminerDumpJson {
 		}
 	}
 
-	function _database() {
-		echo "}\n";
-	}
-
 	function dumpData($table, $style, $query) {
 		if ($_POST["format"] == "json") {
 			if ($this->database) {
@@ -31,9 +26,8 @@ class AdminerDumpJson {
 			} else {
 				$this->database = true;
 				echo "{\n";
-				register_shutdown_function(array($this, '_database'));
 			}
-			$connection = connection();
+			$connection = Adminer\connection();
 			$result = $connection->query($query, 1);
 			if ($result) {
 				echo '"' . addcslashes($table, "\r\n\"\\") . "\": [\n";
@@ -42,9 +36,9 @@ class AdminerDumpJson {
 					echo ($first ? "" : ", ");
 					$first = false;
 					foreach ($row as $key => $val) {
-						json_row($key, $val);
+						Adminer\json_row($key, $val);
 					}
-					json_row("");
+					Adminer\json_row("");
 				}
 				echo "]";
 			}
@@ -59,4 +53,9 @@ class AdminerDumpJson {
 		}
 	}
 
+	function dumpFooter() {
+		if ($_POST["format"] == "json" && $this->database) {
+			echo "}\n";
+		}
+	}
 }

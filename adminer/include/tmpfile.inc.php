@@ -1,8 +1,8 @@
 <?php
+namespace Adminer;
 
 class TmpFile {
-	var $handler;
-	var $size;
+	private $handler, $size;
 
 	function __construct() {
 		$this->handler = tmpfile();
@@ -18,5 +18,4 @@ class TmpFile {
 		fpassthru($this->handler);
 		fclose($this->handler);
 	}
-
 }

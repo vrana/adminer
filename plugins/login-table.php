@@ -16,8 +16,7 @@ CREATE TABLE login (
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerLoginTable {
-	/** @access protected */
-	var $database;
+	protected $database;
 
 	/** Set database of login table
 	* @param string
@@ -27,8 +26,6 @@ class AdminerLoginTable {
 	}
 
 	function login($login, $password) {
-		$connection = connection();
-		return (bool) $connection->result("SELECT COUNT(*) FROM " . idf_escape($this->database) . ".login WHERE login = " . q($login) . " AND password_sha1 = " . q(sha1($password)));
+		return (bool) Adminer\get_val("SELECT COUNT(*) FROM " . Adminer\idf_escape($this->database) . ".login WHERE login = " . Adminer\q($login) . " AND password_sha1 = " . Adminer\q(sha1($password)));
 	}
-
 }

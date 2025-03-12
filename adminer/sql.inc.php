@@ -1,8 +1,11 @@
 <?php
+namespace Adminer;
+
 if (!$error && $_POST["export"]) {
 	dump_headers("sql");
 	$adminer->dumpTable("", "");
 	$adminer->dumpData("", "table", $_POST["query"]);
+	$adminer->dumpFooter();
 	exit;
 }
 
@@ -28,7 +31,7 @@ if (!$error && $_POST) {
 		), "rb");
 		$query = ($fp ? fread($fp, 1e6) : false);
 	} else {
-		$query = get_file("sql_file", true);
+		$query = get_file("sql_file", true, ";");
 	}
 
 	if (is_string($query)) { // get_file() returns error as number, fread() as false
@@ -50,7 +53,7 @@ if (!$error && $_POST) {
 		$delimiter = ";";
 		$offset = 0;
 		$empty = true;
-		$connection2 = connect(); // connection for exploring indexes and EXPLAIN (to not replace FOUND_ROWS()) //! PDO - silent error
+		$connection2 = connect($adminer->credentials()); // connection for exploring indexes and EXPLAIN (to not replace FOUND_ROWS()) //! PDO - silent error
 		if (is_object($connection2) && DB != "") {
 			$connection2->select_db(DB);
 			if ($_GET["ns"] != "") {
@@ -59,7 +62,7 @@ if (!$error && $_POST) {
 		}
 		$commands = 0;
 		$errors = array();
-		$parse = '[\'"' . ($jush == "sql" ? '`#' : ($jush == "sqlite" ? '`[' : ($jush == "mssql" ? '[' : ''))) . ']|/\*|-- |$' . ($jush == "pgsql" ? '|\$[^$]*\$' : '');
+		$parse = '[\'"' . (JUSH == "sql" ? '`#' : (JUSH == "sqlite" ? '`[' : (JUSH == "mssql" ? '[' : ''))) . ']|/\*|-- |$' . (JUSH == "pgsql" ? '|\$[^$]*\$' : '');
 		$total_start = microtime(true);
 		parse_str($_COOKIE["adminer_export"], $adminer_export);
 		$dump_format = $adminer->dumpFormat();
@@ -81,7 +84,7 @@ if (!$error && $_POST) {
 					$offset = $pos + strlen($found);
 
 					if ($found && rtrim($found) != $delimiter) { // find matching quote or comment end
-						$c_style_escapes = $driver->hasCStyleEscapes() || ($jush == "pgsql" && ($pos > 0 && strtolower($query[$pos - 1]) == "e"));
+						$c_style_escapes = $driver->hasCStyleEscapes() || (JUSH == "pgsql" && ($pos > 0 && strtolower($query[$pos - 1]) == "e"));
 
 						$pattern = ($found == '/*' ? '\*/'
 							: ($found == '[' ? ']'
@@ -105,8 +108,8 @@ if (!$error && $_POST) {
 						$empty = false;
 						$q = substr($query, 0, $pos);
 						$commands++;
-						$print = "<pre id='sql-$commands'><code class='jush-$jush'>" . $adminer->sqlCommandQuery($q) . "</code></pre>\n";
-						if ($jush == "sqlite" && preg_match("~^$space*+ATTACH\\b~i", $q, $match)) {
+						$print = "<pre id='sql-$commands'><code class='jush-" . JUSH . "'>" . $adminer->sqlCommandQuery($q) . "</code></pre>\n";
+						if (JUSH == "sqlite" && preg_match("~^$space*+ATTACH\\b~i", $q, $match)) {
 							// PHP doesn't support setting SQLITE_LIMIT_ATTACHED
 							echo $print;
 							echo "<p class='error'>" . lang('ATTACH queries are not supported.') . "\n";
@@ -263,7 +266,7 @@ if (!isset($_GET["import"]) && $history) {
 		list($q, $time, $elapsed) = $val;
 		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . "</a>"
 			. " <span class='time' title='" . @date('Y-m-d', $time) . "'>" . @date("H:i:s", $time) . "</span>" // @ - time zone may be not set
-			. " <code class='jush-$jush'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace('~^(#|-- ).*~m', '', $q)))), 80, "</code>")
+			. " <code class='jush-" . JUSH . "'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace('~^(#|-- ).*~m', '', $q)))), 80, "</code>")
 			. ($elapsed ? " <span class='time'>($elapsed)</span>" : "")
 			. "<br>\n"
 		;

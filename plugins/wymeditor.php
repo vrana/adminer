@@ -8,8 +8,7 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerWymeditor {
-	/** @access protected */
-	var $scripts, $options;
+	protected $scripts, $options;
 
 	/**
 	* @param array
@@ -22,7 +21,7 @@ class AdminerWymeditor {
 
 	function head() {
 		foreach ($this->scripts as $script) {
-			echo script_src($script);
+			echo Adminer\script_src($script);
 		}
 	}
 
@@ -52,15 +51,11 @@ class AdminerWymeditor {
 	function editInput($table, $field, $attrs, $value) {
 		static $lang = "";
 		if (!$lang && preg_match("~text~", $field["type"]) && preg_match("~_html~", $field["field"])) {
-			$lang = "en";
-			if (function_exists('get_lang')) { // since Adminer 3.2.0
-				$lang = get_lang();
-				$lang = ($lang == "zh" || $lang == "zh-tw" ? "zh_cn" : $lang);
-			}
-			return "<textarea$attrs id='fields-" . h($field["field"]) . "' rows='12' cols='50'>" . h($value) . "</textarea>" . script("
-jQuery('#fields-" . js_escape($field["field"]) . "').wymeditor({ updateSelector: '#form [type=\"submit\"]', lang: '$lang'" . ($this->options ? ", $this->options" : "") . " });
+			$lang = Adminer\get_lang();
+			$lang = ($lang == "zh" || $lang == "zh-tw" ? "zh_cn" : $lang);
+			return "<textarea$attrs id='fields-" . Adminer\h($field["field"]) . "' rows='12' cols='50'>" . Adminer\h($value) . "</textarea>" . Adminer\script("
+jQuery('#fields-" . Adminer\js_escape($field["field"]) . "').wymeditor({ updateSelector: '#form [type=\"submit\"]', lang: '$lang'" . ($this->options ? ", $this->options" : "") . " });
 ");
 		}
 	}
-
 }

@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $translations = array(
 	'Login' => 'Inicia la sessió',
 	'Logout successful.' => 'Desconnexió correcta.',

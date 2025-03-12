@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $translations = array(
 	'Login' => 'Logi sisse',
 	'Logout successful.' => 'Väljalogimine õnnestus.',

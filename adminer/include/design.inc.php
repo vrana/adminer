@@ -1,13 +1,19 @@
 <?php
+namespace Adminer;
+
+if (!ob_get_level()) {
+	ob_start(null, 4096);
+}
+
 /** Print HTML header
 * @param string used in title, breadcrumb and heading, should be HTML escaped
 * @param string
-* @param mixed array("key" => "link", "key2" => array("link", "desc")), null for nothing, false for driver only, true for driver and server
+* @param mixed ["key" => "link", "key2" => ["link", "desc"]], null for nothing, false for driver only, true for driver and server
 * @param string used after colon in title and heading, should be HTML escaped
 * @return null
 */
 function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
-	global $LANG, $VERSION, $adminer, $drivers, $jush;
+	global $LANG, $VERSION, $adminer, $drivers;
 	page_headers();
 	if (is_ajax() && $error) {
 		page_messages($error);
@@ -62,14 +68,14 @@ var offlineMessage = '<?php echo js_escape(lang('You are offline.')); ?>';
 var thousandsSeparator = '<?php echo js_escape(lang(',')); ?>';
 </script>
 
-<div id="help" class="jush-<?php echo $jush; ?> jsonly hidden"></div>
+<div id="help" class="jush-<?php echo JUSH; ?> jsonly hidden"></div>
 <?php echo script("mixin(qs('#help'), {onmouseover: function () { helpOpen = 1; }, onmouseout: helpMouseout});"); ?>
 
 <div id="content">
 <?php
 	if ($breadcrumb !== null) {
 		$link = substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1);
-		echo '<p id="breadcrumb"><a href="' . h($link ? $link : ".") . '">' . $drivers[DRIVER] . '</a> » ';
+		echo '<p id="breadcrumb"><a href="' . h($link ?: ".") . '">' . $drivers[DRIVER] . '</a> » ';
 		$link = substr(preg_replace('~\b(db|ns)=[^&]*&~', '', ME), 0, -1);
 		$server = $adminer->serverName(SERVER);
 		$server = ($server != "" ? $server : lang('Server'));
@@ -103,7 +109,7 @@ var thousandsSeparator = '<?php echo js_escape(lang(',')); ?>';
 		$databases = null;
 	}
 	stop_session();
-	define("PAGE_HEADER", 1);
+	define('Adminer\PAGE_HEADER', 1);
 }
 
 /** Send HTTP headers
@@ -186,7 +192,7 @@ function page_footer($missing = "") {
 <?php if ($missing != "auth") { ?>
 <form action="" method="post">
 <p class="logout">
-<?php echo h($_GET["username"]) . "\n"; ?>
+<span><?php echo h($_GET["username"]) . "\n"; ?></span>
 <input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" id="logout">
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </p>

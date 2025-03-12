@@ -1,20 +1,74 @@
 Adminer dev:
+MySQL: Display default values of binary columns
+MySQL: Allow setting default values of json column
+MariaDB: Don't display NULL as default value (regression from 5.0.0)
+PostgreSQL PDO: Escape bytea values (bug #218)
+MS SQL: Fix editing rows with datetime column in primary key
+CSS: Add dark theme
+
+Adminer 5.0.4 (released 2025-03-11):
+Compile: Fix shortening in private methods (regression from 5.0.3)
+
+Adminer 5.0.3 (released 2025-03-11):
+Fix gzip export (bug #896, regression from 5.0.0)
+Fix importing multiple SQL files not terminated by semicolon
+Use <datalist> for altering collations
+MySQL: Allow setting default values of text column
+MySQL: Stop treating enum and set as numbers (bug #475)
+MySQL, MariaDB: Fix default values with ' (bug #895)
+MariaDB: Fix creating and altering generated columns (bug #897)
+PostgreSQL: Fix "where" and "order" privileges (bug #902, regression from 5.0.2)
+SQLite: Fix creating table in compiled version (bug #901, regression from 5.0.0)
+Elastic: Do not pass null values on insert (PR #892)
+Elastic: Fix displaying sparse rows (PR #893)
+Plugins: Add method dumpFooter()
+
+Adminer 5.0.2 (released 2025-03-10):
+PostgreSQL: Fix setting NULL and original value on enum (bug #884)
+CockroachDB: Add support via PostgreSQL driver
+Elasticsearch: Add support for "where" and "order" field privilege
+
+Adminer 5.0.1 (released 2025-03-07):
+Fix bulk operations with tables (regression from 5.0.0)
+Remove duplicate columns from select (bug #670)
+MariaDB: Fix link to status variable doc (bug #658)
+PostgreSQL: Support indexes on materialized views (PR #467)
+Elasticsearch: Drop support for version < 7
+
+Adminer 5.0.0 (released 2025-03-07):
+Speed up with disabled output buffering
+Allow creating generated columns (bug #857)
+Don't autofocus computed fields in insert form
+Skip generated columns in multi-edit (bug #882)
+MySQL: Display generated value in table structure
+MySQL: Drop support for MySQL 4
+PostgreSQL: Compute size of all databases (bug #881)
 PostgreSQL: Do not alter indexes with expressions
 PostgreSQL: Fix export of indexes with expressions (bug #768)
 PostgreSQL: Display ENUM types
 PostgreSQL: Export ENUM types (bug #587)
+PostgreSQL: Display ? instead of -1 rows in table overview (bug #883)
+PostgreSQL: Show accessible databases to non-owners (regression from 4.9.1)
+PostgreSQL: Skip editing generated columns
+PostgreSQL, MS SQL, Oracle: Hide table actions for information_schema
 SQLite: Support CHECK constraint
+SQLite: Support generated columns
 SQLite: Add command Check tables
 SQLite: Display all rows of variable values
 SQLite: Remove support for SQLite version 2
 MS SQL: Support export (bug #480)
 MS SQL: Display foreign keys ON UPDATE and ON DELETE
+MS SQL: Support computed columns
 MS SQL: Fix CSV import (bug #859)
 MS SQL: Fix altering foreign key
 MS SQL PDO: Support offset
 MS SQL: Remove support for MSSQL extension
 MS SQL: Add support for PDO_SQLSRV extension
+MS SQL: Link help from sys tables
+MS SQL: Fix highlighting columns as primary keys
 MongoDB: Remove support for deprecated extension mongo
+Elasticsearch: Fix text search on boolean fields
+Plugins: Adminer code is now in a namespace
 
 Adminer 4.17.1 (released 2025-02-25):
 MySQL: Fix typo in the date type (regression from 4.17.0)
@@ -35,7 +89,7 @@ SQLite: Show all supported pragmas in Variables
 MS SQL: Allow altering table in non-default schema (bug #405)
 MS SQL: Fix default values (bug #732, bug #733)
 MS SQL: Fix length of nvarchar columns
-Editor: PDO: Select value of foreign key in edit (bug #847)
+Editor PDO: Select value of foreign key in edit (bug #847)
 Mobile devices: Use device width
 
 Adminer 4.16.0 (released 2025-02-20):
@@ -54,6 +108,7 @@ Escape unknown field in select
 HTTP drivers: Don't allow path in server name
 HTTP drivers: Hide connection error message
 SimpleDB: Disable XML entity loader
+Latvian translation
 
 Adminer 4.14.0:
 Use autofocus HTML attribute
@@ -517,7 +572,7 @@ MySQL: Speed up updating rows without numeric or UTF-8 primary key
 Non-MySQL: Descending indexes
 PostgreSQL: Fix detecting oid column in PDO
 PostgreSQL: Handle timestamp types (bug #324)
-Add Korean translation
+Korean translation
 
 Adminer 3.7.0 (released 2013-05-19):
 Allow more SQL files to be uploaded at the same time

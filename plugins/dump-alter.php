@@ -9,12 +9,12 @@
 class AdminerDumpAlter {
 
 	function dumpFormat() {
-		if (DRIVER == 'server') {
+		if (Adminer\DRIVER == 'server') {
 			return array('sql_alter' => 'Alter');
 		}
 	}
 
-	function _database() {
+	private function database() {
 		// drop old tables
 		$query = "SELECT TABLE_NAME, ENGINE, TABLE_COLLATION, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()";
 		echo "DELIMITER ;;
@@ -29,12 +29,12 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 		FETCH tables INTO _table_name, _engine, _table_collation, _table_comment;
 		IF NOT done THEN
 			CASE _table_name";
-		foreach (get_rows($query) as $row) {
-			$comment = q($row["ENGINE"] == "InnoDB" ? preg_replace('~(?:(.+); )?InnoDB free: .*~', '\1', $row["TABLE_COMMENT"]) : $row["TABLE_COMMENT"]);
+		foreach (Adminer\get_rows($query) as $row) {
+			$comment = Adminer\q($row["ENGINE"] == "InnoDB" ? preg_replace('~(?:(.+); )?InnoDB free: .*~', '\1', $row["TABLE_COMMENT"]) : $row["TABLE_COMMENT"]);
 			echo "
-			WHEN " . q($row["TABLE_NAME"]) . " THEN
+			WHEN " . Adminer\q($row["TABLE_NAME"]) . " THEN
 				" . (isset($row["ENGINE"]) ? "IF _engine != '$row[ENGINE]' OR _table_collation != '$row[TABLE_COLLATION]' OR _table_comment != $comment THEN
-					ALTER TABLE " . idf_escape($row["TABLE_NAME"]) . " ENGINE=$row[ENGINE] COLLATE=$row[TABLE_COLLATION] COMMENT=$comment;
+					ALTER TABLE " . Adminer\idf_escape($row["TABLE_NAME"]) . " ENGINE=$row[ENGINE] COLLATE=$row[TABLE_COLLATION] COMMENT=$comment;
 				END IF" : "BEGIN END") . ";";
 		}
 		echo "
@@ -59,9 +59,8 @@ SELECT @adminer_alter;
 			if ($first) {
 				$first = false;
 				echo "SET @adminer_alter = '';\n\n";
-				register_shutdown_function(array($this, '_database'));
 			} else {
-				$this->_database();
+				$this->database();
 			}
 			return true;
 		}
@@ -69,13 +68,16 @@ SELECT @adminer_alter;
 
 	function dumpTable($table, $style, $is_view = 0) {
 		if ($_POST["format"] == "sql_alter") {
-			$create = create_sql($table, $_POST["auto_increment"], $style);
+			$create = Adminer\create_sql($table, $_POST["auto_increment"], $style);
 			if ($is_view) {
 				echo substr_replace($create, " OR REPLACE", 6, 0) . ";\n\n";
 			} else {
 				echo substr_replace($create, " IF NOT EXISTS", 12, 0) . ";\n\n";
 				// create procedure which iterates over original columns and adds new and removes old
-				$query = "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLLATION_NAME, COLUMN_TYPE, EXTRA, COLUMN_COMMENT FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = " . q($table) . " ORDER BY ORDINAL_POSITION";
+				$query = "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLLATION_NAME, COLUMN_TYPE, EXTRA, COLUMN_COMMENT
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = " . Adminer\q($table) . "
+ORDER BY ORDINAL_POSITION";
 				echo "DELIMITER ;;
 CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 	DECLARE _column_name, _collation_name, after varchar(64) DEFAULT '';
@@ -87,18 +89,19 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 	DECLARE add_columns text DEFAULT '";
 				$fields = array();
 				$after = "";
-				foreach (get_rows($query) as $row) {
+				foreach (Adminer\get_rows($query) as $row) {
 					$default = $row["COLUMN_DEFAULT"];
-					$row["default"] = ($default !== null ? q($default) : "NULL");
-					$row["after"] = q($after); //! rgt AFTER lft, lft AFTER id doesn't work
-					$row["alter"] = escape_string(idf_escape($row["COLUMN_NAME"])
+					$row["default"] = ($default !== null ? Adminer\q($default) : "NULL");
+					$row["after"] = Adminer\q($after); //! rgt AFTER lft, lft AFTER id doesn't work
+					$row["alter"] = Adminer\escape_string(
+						Adminer\idf_escape($row["COLUMN_NAME"])
 						. " $row[COLUMN_TYPE]"
 						. ($row["COLLATION_NAME"] ? " COLLATE $row[COLLATION_NAME]" : "")
 						. ($default !== null ? " DEFAULT " . ($default == "CURRENT_TIMESTAMP" ? $default : $row["default"]) : "")
 						. ($row["IS_NULLABLE"] == "YES" ? "" : " NOT NULL")
 						. ($row["EXTRA"] ? " $row[EXTRA]" : "")
-						. ($row["COLUMN_COMMENT"] ? " COMMENT " . q($row["COLUMN_COMMENT"]) : "")
-						. ($after ? " AFTER " . idf_escape($after) : " FIRST")
+						. ($row["COLUMN_COMMENT"] ? " COMMENT " . Adminer\q($row["COLUMN_COMMENT"]) : "")
+						. ($after ? " AFTER " . Adminer\idf_escape($after) : " FIRST")
 					);
 					echo ", ADD $row[alter]";
 					$fields[] = $row;
@@ -116,14 +119,14 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 			CASE _column_name";
 				foreach ($fields as $row) {
 					echo "
-				WHEN " . q($row["COLUMN_NAME"]) . " THEN
+				WHEN " . Adminer\q($row["COLUMN_NAME"]) . " THEN
 					SET add_columns = REPLACE(add_columns, ', ADD $row[alter]', IF(
 						_column_default <=> $row[default]
 						AND _is_nullable = '$row[IS_NULLABLE]'
 						AND _collation_name <=> " . (isset($row["COLLATION_NAME"]) ? "'$row[COLLATION_NAME]'" : "NULL") . "
-						AND _column_type = " . q($row["COLUMN_TYPE"]) . "
+						AND _column_type = " . Adminer\q($row["COLUMN_TYPE"]) . "
 						AND _extra = '$row[EXTRA]'
-						AND _column_comment = " . q($row["COLUMN_COMMENT"]) . "
+						AND _column_comment = " . Adminer\q($row["COLUMN_COMMENT"]) . "
 						AND after = $row[after]
 					, '', ', MODIFY $row[alter]'));"; //! don't replace in comment
 				}
@@ -139,7 +142,7 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 	UNTIL done END REPEAT;
 	CLOSE columns;
 	IF @alter_table != '' OR add_columns != '' THEN
-		SET alter_command = CONCAT(alter_command, 'ALTER TABLE " . table($table) . "', SUBSTR(CONCAT(add_columns, @alter_table), 2), ';\\n');
+		SET alter_command = CONCAT(alter_command, 'ALTER TABLE " . Adminer\table($table) . "', SUBSTR(CONCAT(add_columns, @alter_table), 2), ';\\n');
 	END IF;
 END;;
 DELIMITER ;
@@ -156,6 +159,12 @@ DROP PROCEDURE adminer_alter;
 	function dumpData() {
 		if ($_POST["format"] == "sql_alter") {
 			return true;
+		}
+	}
+
+	function dumpFooter() {
+		if ($_POST["format"] == "sql_alter") {
+			$this->database();
 		}
 	}
 }

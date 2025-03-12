@@ -1,5 +1,7 @@
 <?php
-$PROCEDURE = ($_GET["name"] ? $_GET["name"] : $_GET["procedure"]);
+namespace Adminer;
+
+$PROCEDURE = ($_GET["name"] ?: $_GET["procedure"]);
 $routine = (isset($_GET["function"]) ? "FUNCTION" : "PROCEDURE");
 $row = $_POST;
 $row["fields"] = (array) $row["fields"];
@@ -32,6 +34,7 @@ if (!$_POST && $PROCEDURE != "") {
 $collations = get_vals("SHOW CHARACTER SET");
 sort($collations);
 $routine_languages = routine_languages();
+echo ($collations ? "<datalist id='collations'>" . optionlist($collations) . "</datalist>" : "");
 ?>
 
 <form action="" method="post" id="form">
@@ -44,7 +47,7 @@ $routine_languages = routine_languages();
 edit_fields($row["fields"], $collations, $routine);
 if (isset($_GET["function"])) {
 	echo "<tr><td>" . lang('Return type');
-	edit_type("returns", $row["returns"], $collations, array(), ($jush == "pgsql" ? array("void", "trigger") : array()));
+	edit_type("returns", $row["returns"], $collations, array(), (JUSH == "pgsql" ? array("void", "trigger") : array()));
 }
 ?>
 </table>
@@ -53,6 +56,8 @@ if (isset($_GET["function"])) {
 <p><?php textarea("definition", $row["definition"]); ?>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
-<?php if ($PROCEDURE != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $PROCEDURE)); ?><?php } ?>
+<?php if ($PROCEDURE != "") { ?>
+<input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $PROCEDURE)); ?>
+<?php } ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

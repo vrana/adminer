@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $TABLE = $_GET["create"];
 $partition_by = array();
 foreach (array('HASH', 'LINEAR HASH', 'KEY', 'LINEAR KEY', 'RANGE', 'LIST') as $key) {
@@ -46,7 +48,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 			$foreign_key = $foreign_keys[$field["type"]];
 			$type_field = ($foreign_key !== null ? $referencable_primary[$foreign_key] : $field); //! can collide with user defined type
 			if ($field["field"] != "") {
-				if (!$field["has_default"]) {
+				if (!$field["generated"]) {
 					$field["default"] = null;
 				}
 				$process_field = process_field($field, $type_field);
@@ -58,7 +60,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 					}
 				}
 				if ($foreign_key !== null) {
-					$foreign[idf_escape($field["field"])] = ($TABLE != "" && $jush != "sqlite" ? "ADD" : " ") . format_foreign_key(array(
+					$foreign[idf_escape($field["field"])] = ($TABLE != "" && JUSH != "sqlite" ? "ADD" : " ") . format_foreign_key(array(
 						'table' => $foreign_keys[$field["type"]],
 						'source' => array($field["field"]),
 						'target' => array($type_field["field"]),
@@ -81,17 +83,18 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 		$partitioning = "";
 		if (support("partitioning")) {
 			if (isset($partition_by[$row["partition_by"]])) {
-				$params = array_filter($row, function ($key) {
-					return preg_match('~^partition~', $key);
-				}, ARRAY_FILTER_USE_KEY);
-
+				$params = array();
+				foreach ($row as $key => $val) {
+					if (preg_match('~^partition~', $key)) {
+						$params[$key] = $val;
+					}
+				}
 				foreach ($params["partition_names"] as $key => $name) {
 					if ($name == "") {
 						unset($params["partition_names"][$key]);
 						unset($params["partition_values"][$key]);
 					}
 				}
-
 				if ($params != get_partitions_info($TABLE)) {
 					$partitions = array();
 					if ($params["partition_by"] == 'RANGE' || $params["partition_by"] == 'LIST') {
@@ -100,7 +103,6 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 							$partitions[] = "\n  PARTITION " . idf_escape($name) . " VALUES " . ($params["partition_by"] == 'RANGE' ? "LESS THAN" : "IN") . ($value != "" ? " ($value)" : " MAXVALUE"); //! SQL injection
 						}
 					}
-
 					// $params["partition"] can be expression, not only column
 					$partitioning .= "\nPARTITION BY $params[partition_by]($params[partition])";
 					if ($partitions) {
@@ -124,7 +126,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 		queries_redirect(ME . (support("table") ? "table=" : "select=") . urlencode($name), $message, alter_table(
 			$TABLE,
 			$name,
-			($jush == "sqlite" && ($use_all_fields || $foreign) ? $all_fields : $fields),
+			(JUSH == "sqlite" && ($use_all_fields || $foreign) ? $all_fields : $fields),
 			$foreign,
 			($row["Comment"] != $table_status["Comment"] ? $row["Comment"] : null),
 			($row["Engine"] && $row["Engine"] != $table_status["Engine"] ? $row["Engine"] : ""),
@@ -138,6 +140,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 page_header(($TABLE != "" ? lang('Alter table') : lang('Create table')), $error, array("table" => $TABLE), h($TABLE));
 
 if (!$_POST) {
+	$types = $driver->types();
 	$row = array(
 		"Engine" => $_COOKIE["adminer_engine"],
 		"fields" => array(array("field" => "", "type" => (isset($types["int"]) ? "int" : (isset($types["integer"]) ? "integer" : "")), "on_update" => "")),
@@ -152,7 +155,7 @@ if (!$_POST) {
 			$row["Auto_increment"] = "";
 		}
 		foreach ($orig_fields as $field) {
-			$field["has_default"] = isset($field["default"]);
+			$field["generated"] = $field["generated"] ?: (isset($field["default"]) ? "DEFAULT" : "");
 			$row["fields"][] = $field;
 		}
 
@@ -179,8 +182,13 @@ foreach ($engines as $engine) {
 <p>
 <?php if (support("columns") || $TABLE == "") { ?>
 <?php echo lang('Table name'); ?>: <input name="name"<?php echo ($TABLE == "" && !$_POST ? " autofocus" : ""); ?> data-maxlength="64" value="<?php echo h($row["name"]); ?>" autocapitalize="off">
-<?php echo ($engines ? "<select name='Engine'>" . optionlist(array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) . "</select>" . on_help("getTarget(event).value", 1) . script("qsl('select').onchange = helpClose;") : ""); ?>
- <?php echo ($collations && !preg_match("~sqlite|mssql~", $jush) ? html_select("Collation", array("" => "(" . lang('collation') . ")") + $collations, $row["Collation"]) : ""); ?>
+<?php echo ($engines ? html_select("Engine", array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) . on_help("getTarget(event).value", 1) . script("qsl('select').onchange = helpClose;") : ""); ?>
+ <?php
+	if ($collations) {
+		echo "<datalist id='collations'>" . optionlist($collations) . "</datalist>";
+		echo (preg_match("~sqlite|mssql~", JUSH) ? "" : "<input list='collations' name='Collation' value='" . h($row["Collation"]) . "' placeholder='(" . lang('collation') . ")'>");
+	}
+	?>
  <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php } ?>
 
@@ -188,8 +196,8 @@ foreach ($engines as $engine) {
 <div class="scrollable">
 <table id="edit-fields" class="nowrap">
 <?php
-edit_fields($row["fields"], $collations, "TABLE", $foreign_keys);
-?>
+	edit_fields($row["fields"], $collations, "TABLE", $foreign_keys);
+	?>
 </table>
 <?php echo script("editFields();"); ?>
 </div>
@@ -197,40 +205,42 @@ edit_fields($row["fields"], $collations, "TABLE", $foreign_keys);
 <?php echo lang('Auto Increment'); ?>: <input type="number" name="Auto_increment" class="size" value="<?php echo h($row["Auto_increment"]); ?>">
 <?php echo checkbox("defaults", 1, ($_POST ? $_POST["defaults"] : adminer_setting("defaults")), lang('Default values'), "columnShow(this.checked, 5)", "jsonly"); ?>
 <?php
-$comments = ($_POST ? $_POST["comments"] : adminer_setting("comments"));
-echo (support("comment")
-	? checkbox("comments", 1, $comments, lang('Comment'), "editingCommentsClick(this, true);", "jsonly")
-		. ' ' . (preg_match('~\n~', $row["Comment"])
-			? "<textarea name='Comment' rows='2' cols='20'" . ($comments ? "" : " class='hidden'") . ">" . h($row["Comment"]) . "</textarea>"
-			: '<input name="Comment" value="' . h($row["Comment"]) . '" data-maxlength="' . (min_version(5.5) ? 2048 : 60) . '"' . ($comments ? "" : " class='hidden'") . '>'
-		)
-	: '')
-;
-?>
+	$comments = ($_POST ? $_POST["comments"] : adminer_setting("comments"));
+	echo (support("comment")
+		? checkbox("comments", 1, $comments, lang('Comment'), "editingCommentsClick(this, true);", "jsonly")
+			. ' ' . (preg_match('~\n~', $row["Comment"])
+				? "<textarea name='Comment' rows='2' cols='20'" . ($comments ? "" : " class='hidden'") . ">" . h($row["Comment"]) . "</textarea>"
+				: '<input name="Comment" value="' . h($row["Comment"]) . '" data-maxlength="' . (min_version(5.5) ? 2048 : 60) . '"' . ($comments ? "" : " class='hidden'") . '>'
+			)
+		: '')
+	;
+	?>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php } ?>
 
-<?php if ($TABLE != "") { ?><input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $TABLE)); ?><?php } ?>
+<?php if ($TABLE != "") { ?>
+<input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $TABLE)); ?>
+<?php } ?>
 <?php
 if (support("partitioning")) {
 	$partition_table = preg_match('~RANGE|LIST~', $row["partition_by"]);
 	print_fieldset("partition", lang('Partition by'), $row["partition_by"]);
 	?>
 <p>
-<?php echo "<select name='partition_by'>" . optionlist(array("" => "") + $partition_by, $row["partition_by"]) . "</select>" . on_help("getTarget(event).value.replace(/./, 'PARTITION BY \$&')", 1) . script("qsl('select').onchange = partitionByChange;"); ?>
+<?php echo html_select("partition_by", array("" => "") + $partition_by, $row["partition_by"]) . on_help("getTarget(event).value.replace(/./, 'PARTITION BY \$&')", 1) . script("qsl('select').onchange = partitionByChange;"); ?>
 (<input name="partition" value="<?php echo h($row["partition"]); ?>">)
 <?php echo lang('Partitions'); ?>: <input type="number" name="partitions" class="size<?php echo ($partition_table || !$row["partition_by"] ? " hidden" : ""); ?>" value="<?php echo h($row["partitions"]); ?>">
 <table id="partition-table"<?php echo ($partition_table ? "" : " class='hidden'"); ?>>
 <thead><tr><th><?php echo lang('Partition name'); ?><th><?php echo lang('Values'); ?></thead>
 <?php
-foreach ($row["partition_names"] as $key => $val) {
-	echo '<tr>';
-	echo '<td><input name="partition_names[]" value="' . h($val) . '" autocapitalize="off">';
-	echo ($key == count($row["partition_names"]) - 1 ? script("qsl('input').oninput = partitionNameChange;") : '');
-	echo '<td><input name="partition_values[]" value="' . h($row["partition_values"][$key]) . '">';
-}
-?>
+	foreach ($row["partition_names"] as $key => $val) {
+		echo '<tr>';
+		echo '<td><input name="partition_names[]" value="' . h($val) . '" autocapitalize="off">';
+		echo ($key == count($row["partition_names"]) - 1 ? script("qsl('input').oninput = partitionNameChange;") : '');
+		echo '<td><input name="partition_values[]" value="' . h($row["partition_values"][$key]) . '">';
+	}
+	?>
 </table>
 </div></fieldset>
 <?php

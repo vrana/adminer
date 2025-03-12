@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $translations = array(
 	'Login' => 'Prihlásiť sa',
 	'Logout successful.' => 'Odhlásenie prebehlo v poriadku.',
@@ -283,7 +285,7 @@ $translations = array(
 	'Default value' => 'Predvolená hodnota',
 	'Full table scan' => 'Prechod celej tabuľky',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Príliš veľa pokusov o prihlásenie, skúste to znova za %d minutu.', 'Príliš veľa pokusov o prihlásenie, skúste to znova za %d minuty.', 'Príliš veľa pokusov o prihlásenie, skúste to znova za %d minút.'),
-	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Vďaka za používanie Admineru, <a href="https://www.adminer.org/cs/donation/">prispejte</a> na vývoj.',
+	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Vďaka za používanie Admineru, <a href="https://www.adminer.org/sk/donation/">prispejte</a> na vývoj.',
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Platnosť hlavného hesla vypršala. <a href="https://www.adminer.org/cs/extension/"%s>Implementujte</a> metodu %s, aby platilo natrvalo.',
 	'The action will be performed after successful login with the same credentials.' => 'Akcia sa vykoná po úspešnom prihlásení s rovnakými prihlasovacími údajmi.',
 	'Connecting to privileged ports is not allowed.' => 'Pripojenie k privilegovaným portom nie je povolené.',
@@ -300,4 +302,10 @@ $translations = array(
 	'Disable %s or enable %s or %s extensions.' => 'Zakážte %s alebo povoľte rozšírenie %s alebo %s.',
 	'yes' => 'áno',
 	'no' => 'nie',
+	'Checks' => 'Kontroly',
+	'Create check' => 'Vytvoriť kontrolu',
+	'Alter check' => 'Zmeniť kontrolu',
+	'Check has been created.' => 'Kontrola bola vytvorená.',
+	'Check has been altered.' => 'Kontrola bola zmenená.',
+	'Check has been dropped.' => 'Kontrola bola odstránená.',
 );

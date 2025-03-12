@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $row = $_POST;
 
 if ($_POST && !$error) {

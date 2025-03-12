@@ -1,4 +1,6 @@
 <?php
+namespace Adminer;
+
 $translations = array(
 	// label for database system selection (MySQL, SQLite, ...)
 	'System' => 'Rodzaj bazy',
@@ -7,11 +9,14 @@ $translations = array(
 	'Password' => 'Hasło',
 	'Permanent login' => 'Zapamiętaj sesję',
 	'Login' => 'Zaloguj się',
-	'Logout' => 'Wyloguj',
+	'Logout' => 'Wyloguj się',
 	'Logged as: %s' => 'Zalogowany jako: %s',
 	'Logout successful.' => 'Wylogowano pomyślnie.',
-	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Dziękujemy za używanie Adminera, rozważ proszę <a href="https://www.adminer.org/pl/donation/">dotację</a>.',
+	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Dziękujemy za używanie Adminera, rozważ <a href="https://www.adminer.org/pl/donation/">dotację</a>.',
 	'Invalid credentials.' => 'Nieprawidłowe dane logowania.',
+	'There is a space in the input password which might be the cause.' => 'W haśle wejściowym znajduje się spacja, która może być przyczyną.',
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer nie obsługuje dostępu do bazy danych bez hasła, <a href="https://www.adminer.org/pl/password/"%s>więcej informacji</a>.',
+	'Database does not support password.' => 'Baza danych nie obsługuje hasła.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Za dużo nieudanych prób logowania, spróbuj ponownie za %d minutę.', 'Za dużo nieudanych prób logowania, spróbuj ponownie za %d minuty.', 'Za dużo nieudanych prób logowania, spróbuj ponownie za %d minut.'),
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Ważność hasła głównego wygasła. <a href="https://www.adminer.org/pl/extension/"%s>Zaimplementuj</a> własną metodę %s, aby ustawić je na stałe.',
 	'Language' => 'Język',
@@ -20,8 +25,10 @@ $translations = array(
 	'No extension' => 'Brak rozszerzenia',
 	'None of the supported PHP extensions (%s) are available.' => 'Żadne z rozszerzeń PHP umożliwiających połączenie się z bazą danych (%s) nie jest dostępne.',
 	'Connecting to privileged ports is not allowed.' => 'Łączenie do portów uprzywilejowanych jest niedozwolone.',
+	'Disable %s or enable %s or %s extensions.' => 'Wyłącz %s lub włącz rozszerzenia %s lub %s.',
 	'Session support must be enabled.' => 'Wymagana jest obsługa sesji w PHP.',
 	'Session expired, please login again.' => 'Sesja wygasła, zaloguj się ponownie.',
+	'The action will be performed after successful login with the same credentials.' => 'Czynność zostanie wykonana po pomyślnym zalogowaniu przy użyciu tych samych danych logowania.',
 	'%s version: %s through PHP extension %s' => 'Wersja %s: %s za pomocą %s',
 	'Refresh' => 'Odśwież',
 
@@ -51,6 +58,8 @@ $translations = array(
 	'Query executed OK, %d row(s) affected.' => array('Zapytanie wykonane pomyślnie, zmieniono %d rekord.', 'Zapytanie wykonane pomyślnie, zmieniono %d rekordy.', 'Zapytanie wykonane pomyślnie, zmieniono %d rekordów.'),
 	'No commands to execute.' => 'Nic do wykonania.',
 	'Error in query' => 'Błąd w zapytaniu',
+	'Unknown error.' => 'Nieznany błąd.',
+	'Warnings' => 'Ostrzeżenia',
 	'ATTACH queries are not supported.' => 'Zapytania ATTACH są niewspierane.',
 	'Execute' => 'Wykonaj',
 	'Stop on error' => 'Zatrzymaj w przypadku błędu',
@@ -73,7 +82,7 @@ $translations = array(
 	'You can upload a big SQL file via FTP and import it from server.' => 'Większe pliki SQL możesz wgrać na serwer poprzez FTP przed zaimportowaniem.',
 	'You are offline.' => 'Jesteś offline.',
 
-	'Export' => 'Eksport',
+	'Export' => 'Eksportuj',
 	'Output' => 'Rezultat',
 	'open' => 'otwórz',
 	'save' => 'zapisz',
@@ -81,6 +90,7 @@ $translations = array(
 	'Data' => 'Dane',
 
 	'Database' => 'Baza danych',
+	'DB' => 'BD',
 	'Use' => 'Wybierz',
 	'Select database' => 'Wybierz bazę danych',
 	'Invalid database.' => 'Nie znaleziono bazy danych.',
@@ -118,6 +128,7 @@ $translations = array(
 	'Tables have been moved.' => 'Tabele zostały przeniesione.',
 	'Copy' => 'Kopiuj',
 	'Tables have been copied.' => 'Tabele zostały skopiowane.',
+	'overwrite' => 'nadpisz',
 
 	'Routines' => 'Procedury i funkcje',
 	'Routine has been called, %d row(s) affected.' => array('Procedura została uruchomiona, zmieniono %d rekord.', 'Procedura została uruchomiona, zmieniono %d rekordy.', 'Procedura została uruchomiona, zmieniono %d rekordów.'),
@@ -163,15 +174,15 @@ $translations = array(
 	'Column name' => 'Nazwa kolumny',
 	'Type' => 'Typ',
 	'Length' => 'Długość',
-	'Auto Increment' => 'Auto Increment',
+	'Auto Increment' => 'Automatyczny przyrost',
 	'Options' => 'Opcje',
 	'Comment' => 'Komentarz',
 	'Default value' => 'Wartość domyślna',
 	'Default values' => 'Wartości domyślne',
 	'Drop' => 'Usuń',
 	'Drop %s?' => 'Usunąć %s?',
-	'Are you sure?' => 'Czy jesteś pewien?',
-	'Size' => 'Wielkość',
+	'Are you sure?' => 'Czy na pewno?',
+	'Size' => 'Rozmiar',
 	'Compute' => 'Oblicz',
 	'Move up' => 'Przesuń w górę',
 	'Move down' => 'Przesuń w dół',
@@ -251,14 +262,14 @@ $translations = array(
 	'Whole result' => 'Wybierz wszystkie',
 	'%d byte(s)' => array('%d bajt', '%d bajty', '%d bajtów'),
 
-	'Import' => 'Import',
+	'Import' => 'Importuj',
 	'%d row(s) have been imported.' => array('%d rekord został zaimportowany.', '%d rekordy zostały zaimportowane.', '%d rekordów zostało zaimportowanych.'),
 	'File must be in UTF-8 encoding.' => 'Kodowanie pliku musi być ustawione na UTF-8.',
 
 	// in-place editing in select
 	'Modify' => 'Zmień',
 	'Ctrl+click on a value to modify it.' => 'Ctrl+kliknij wartość, aby ją edytować.',
-	'Use edit link to modify this value.' => 'Użyj linku edycji aby zmienić tę wartość.',
+	'Use edit link to modify this value.' => 'Użyj linku edycji, aby zmienić tę wartość.',
 
 	// %s can contain auto-increment value
 	'Item%s has been inserted.' => 'Rekord%s został dodany.',
@@ -279,7 +290,7 @@ $translations = array(
 	'Selected' => 'Zaznaczone',
 	'Clone' => 'Duplikuj',
 	'Delete' => 'Usuń',
-	'You have no privileges to update this table.' => 'Brak uprawnień do edycji tej tabeli',
+	'You have no privileges to update this table.' => 'Brak uprawnień do edycji tej tabeli.',
 
 	'E-mail' => 'E-mail',
 	'From' => 'Nadawca',
@@ -336,4 +347,12 @@ $translations = array(
 	'Type has been dropped.' => 'Typ został usunięty.',
 	'Type has been created.' => 'Typ został utworzony.',
 	'Alter type' => 'Zmień typ',
+
+	// Table check constraints
+	'Checks' => 'Kontrole',
+	'Create check' => 'Utwórz kontrolę',
+	'Alter check' => 'Zmień kontrolę',
+	'Check has been created.' => 'Kontrola została utworzona.',
+	'Check has been altered.' => 'Kontrola została zmieniona.',
+	'Check has been dropped.' => 'Kontrola została usunięta.',
 );

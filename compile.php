@@ -19,7 +19,7 @@ function add_quo_slashes($s) {
 function remove_lang($match) {
 	global $translations;
 	$idf = strtr($match[2], array("\\'" => "'", "\\\\" => "\\"));
-	$s = ($translations[$idf] ? $translations[$idf] : $idf);
+	$s = ($translations[$idf] ?: $idf);
 	if ($match[3] == ",") { // lang() has parameters
 		return $match[1] . (is_array($s) ? "lang(array('" . implode("', '", array_map('add_apo_slashes', $s)) . "')," : "sprintf('" . add_apo_slashes($s) . "',");
 	}
@@ -41,6 +41,7 @@ function put_file($match) {
 		return $match[0]; // processed later
 	}
 	$return = file_get_contents(__DIR__ . "/$project/$match[2]");
+	$return = preg_replace('~namespace Adminer;\s*~', '', $return);
 	if (basename($match[2]) == "file.inc.php") {
 		$return = str_replace("\n// caching headers added in compile.php", (preg_match('~-dev$~', $VERSION) ? '' : '
 if ($_SERVER["HTTP_IF_MODIFIED_SINCE"]) {
@@ -62,7 +63,7 @@ header("Cache-Control: immutable");
 		if ($driver != "mysql") {
 			preg_match_all(
 				'~\bfunction ([^(]+)~',
-				preg_replace('~class Min_Driver.*\n\t}~sU', '', file_get_contents(__DIR__ . "/adminer/drivers/mysql.inc.php")),
+				preg_replace('~class Driver.*\n\t}~sU', '', file_get_contents(__DIR__ . "/adminer/drivers/mysql.inc.php")),
 				$matches
 			); //! respect context (extension, class)
 			$functions = array_combine($matches[1], $matches[0]);
@@ -81,7 +82,7 @@ header("Cache-Control: immutable");
 				"variables" => array("show_variables"),
 			);
 			foreach ($requires as $support => $fns) {
-				if (!support($support)) {
+				if (!Adminer\support($support)) {
 					foreach ($fns as $fn) {
 						unset($functions[$fn]);
 					}
@@ -277,11 +278,12 @@ function php_shrink($input) {
 	$output = '';
 	$in_echo = false;
 	$doc_comment = false; // include only first /**
-	for (reset($tokens); list($i, $token) = each($tokens); ) {
+	for (reset($tokens); list($i, $token) = each($tokens);) {
 		if (!is_array($token)) {
 			$token = array(0, $token);
 		}
-		if ($tokens[$i+2][0] === T_CLOSE_TAG && $tokens[$i+3][0] === T_INLINE_HTML && $tokens[$i+4][0] === T_OPEN_TAG
+		if (
+			$tokens[$i+2][0] === T_CLOSE_TAG && $tokens[$i+3][0] === T_INLINE_HTML && $tokens[$i+4][0] === T_OPEN_TAG
 			&& strlen(add_apo_slashes($tokens[$i+3][1])) < strlen($tokens[$i+3][1]) + 3
 		) {
 			$tokens[$i+2] = array(T_ECHO, 'echo');
@@ -295,10 +297,13 @@ function php_shrink($input) {
 				$doc_comment = true;
 				$token[1] = substr_replace($token[1], "* @version $VERSION\n", -2, 0);
 			}
-			if ($token[0] == T_VAR) {
+			if ($token[0] == T_VAR || $token[0] == T_PUBLIC || $token[0] == T_PROTECTED || $token[0] == T_PRIVATE) {
+				if ($token[0] == T_PUBLIC && $tokens[$i+2][1][0] == '$') {
+					$token[1] = 'var';
+				}
 				$shortening = false;
 			} elseif (!$shortening) {
-				if ($token[1] == ';') {
+				if ($token[1] == ';' || $token[0] == T_FUNCTION) {
 					$shortening = true;
 				}
 			} elseif ($token[0] == T_ECHO) {
@@ -344,7 +349,7 @@ function compile_file($match) {
 	$file = "";
 	list(, $filenames, $callback) = $match;
 	if ($filenames != "") {
-		foreach (explode(";", $filenames) as $filename) {
+		foreach (preg_split('~;\s*~', $filenames) as $filename) {
 			$file .= file_get_contents(__DIR__ . "/$project/$filename");
 		}
 	}
@@ -413,14 +418,14 @@ if ($driver) {
 	$_GET[$driver] = true; // to load the driver
 	include_once __DIR__ . $driver_path;
 	foreach ($features as $key => $feature) {
-		if (!support($feature)) {
+		if (!Adminer\support($feature)) {
 			if (!is_int($key)) {
 				$feature = $key;
 			}
 			$file = str_replace("} elseif (isset(\$_GET[\"$feature\"])) {\n\tinclude \"./$feature.inc.php\";\n", "", $file);
 		}
 	}
-	if (!support("routine")) {
+	if (!Adminer\support("routine")) {
 		$file = str_replace("if (isset(\$_GET[\"callf\"])) {\n\t\$_GET[\"call\"] = \$_GET[\"callf\"];\n}\nif (isset(\$_GET[\"function\"])) {\n\t\$_GET[\"procedure\"] = \$_GET[\"function\"];\n}\n", "", $file);
 	}
 }
@@ -435,18 +440,18 @@ if ($driver) {
 $file = preg_replace_callback('~\b(include|require) "([^"]*)";~', 'put_file', $file); // bootstrap.inc.php
 if ($driver) {
 	foreach ($features as $feature) {
-		if (!support($feature)) {
-			$file = preg_replace("((\t*)" . preg_quote('if (support("' . $feature . '")') . ".*\n\\1\\})sU", '', $file);
+		if (!Adminer\support($feature)) {
+			$file = preg_replace("((\t*)" . preg_quote('if (support("' . $feature . '")') . ".*?\n\\1\\}( else)?)s", '', $file);
 		}
 	}
 	if (count($drivers) == 1) {
 		$file = str_replace('html_select("auth[driver]", $drivers, DRIVER, "loginDriver(this);")', "\"<input type='hidden' name='auth[driver]' value='" . ($driver == "mysql" ? "server" : $driver) . "'>" . reset($drivers) . "\"", $file, $count);
-		if (!$count) {
+		if (!$count && $project != "editor") {
 			echo "auth[driver] form field not found\n";
 		}
 		$file = str_replace(" . script(\"qs('#username').form['auth[driver]'].onchange();\")", "", $file);
 	}
-	$file = preg_replace('(;../externals/jush/modules/jush-(?!textarea\.|txt\.|js\.|' . preg_quote($driver == "mysql" ? "sql" : $driver) . '\.)[^.]+.js)', '', $file);
+	$file = preg_replace('(;\s*../externals/jush/modules/jush-(?!textarea\.|txt\.|js\.|' . preg_quote($driver == "mysql" ? "sql" : $driver) . '\.)[^.]+.js)', '', $file);
 	$file = preg_replace_callback('~doc_link\(array\((.*)\)\)~sU', function ($match) use ($driver) {
 		list(, $links) = $match;
 		$links = preg_replace("~'(?!(" . ($driver == "mysql" ? "sql|mariadb" : $driver) . ")')[^']*' => [^,]*,?~", '', $links);
@@ -468,7 +473,7 @@ if ($_SESSION["lang"]) {
 	$file = str_replace('<?php echo $LANG; ?>', $_SESSION["lang"], $file);
 }
 $file = str_replace('<?php echo script_src("static/editing.js"); ?>' . "\n", "", $file);
-$file = preg_replace('~\s+echo script_src\("\.\./externals/jush/modules/jush-(textarea|txt|js|\$jush)\.js"\);~', '', $file);
+$file = preg_replace('~\s+echo script_src\("\.\./externals/jush/modules/jush-(textarea|txt|js|" \. JUSH \. ")\.js"\);~', '', $file);
 $file = str_replace('<link rel="stylesheet" type="text/css" href="../externals/jush/jush.css">' . "\n", "", $file);
 $file = preg_replace_callback("~compile_file\\('([^']+)'(?:, '([^']*)')?\\)~", 'compile_file', $file); // integrate static files
 $replace = 'preg_replace("~\\\\\\\\?.*~", "", ME) . "?file=\1&version=' . $VERSION . '"';
