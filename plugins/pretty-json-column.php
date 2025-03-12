@@ -1,6 +1,10 @@
 <?php
 
 /** Pretty print JSON values in edit
+* @link https://www.adminer.org/plugins/#use
+* @author Christopher Chen
+* @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
+* @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerPrettyJsonColumn {
 	private function testJson($value) {
