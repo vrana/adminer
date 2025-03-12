@@ -75,7 +75,7 @@ foreach ($schema as $name => $table) {
 			$i = 0;
 			foreach ($ref[0] as $source) {
 				echo "\n<div class='references' title='" . h($target_name) . "' id='refs$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $table["fields"][$source]["pos"] . "em; padding-top: .5em;'>"
-					. "<div style='border-top: 1px solid Gray; width: " . (-$left1) . "em;'></div></div>"
+					. "<div style='border-top: 1px solid gray; width: " . (-$left1) . "em;'></div></div>"
 				;
 			}
 		}
@@ -88,7 +88,7 @@ foreach ($schema as $name => $table) {
 			foreach ($columns as $target) {
 				echo "\n<div class='references' title='" . h($target_name) . "' id='refd$left-" . ($i++) . "'"
 					. " style='left: $left1" . "em; top: " . $table["fields"][$target]["pos"] . "em; height: 1.25em; background: url(../adminer/static/arrow.gif) no-repeat right center;'>"
-					. "<div style='height: .5em; border-bottom: 1px solid Gray; width: " . (-$left1) . "em;'></div>"
+					. "<div style='height: .5em; border-bottom: 1px solid gray; width: " . (-$left1) . "em;'></div>"
 					. "</div>"
 				;
 			}
@@ -109,7 +109,7 @@ foreach ($schema as $name => $table) {
 				$min_pos = min($min_pos, $pos1, $pos2);
 				$max_pos = max($max_pos, $pos1, $pos2);
 			}
-			echo "<div class='references' id='refl$left' style='left: $left" . "em; top: $min_pos" . "em; padding: .5em 0;'><div style='border-right: 1px solid Gray; margin-top: 1px; height: " . ($max_pos - $min_pos) . "em;'></div></div>\n";
+			echo "<div class='references' id='refl$left' style='left: $left" . "em; top: $min_pos" . "em; padding: .5em 0;'><div style='border-right: 1px solid gray; margin-top: 1px; height: " . ($max_pos - $min_pos) . "em;'></div></div>\n";
 		}
 	}
 }
