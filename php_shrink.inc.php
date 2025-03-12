@@ -1,7 +1,18 @@
 <?php
 
-// based on http://latrine.dgx.cz/jak-zredukovat-php-skripty
+/** Minify PHP code with these operations:
+* remove extra {}
+* minify variables
+* strip comments, preserve only the first doc-comment
+* join consecutive echo
+* change ?>HTML<?php to echo 'HTML' if it saves space
+* strip public visibility or change it to var
+*
+* @param string PHP code including <?php
+* @return string
+*/
 function php_shrink($input) {
+	// based on http://latrine.dgx.cz/jak-zredukovat-php-skripty
 	$special_variables = array_flip(array('$this', '$GLOBALS', '$_GET', '$_POST', '$_FILES', '$_COOKIE', '$_SESSION', '$_SERVER', '$http_response_header', '$php_errormsg'));
 	$short_variables = array();
 	$shortening = true;
