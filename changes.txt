@@ -4,6 +4,7 @@ MySQL: Allow setting default values of json column
 MariaDB: Don't display NULL as default value (regression from 5.0.0)
 PostgreSQL PDO: Escape bytea values (bug #218)
 MS SQL: Fix editing rows with datetime column in primary key
+CSS: Add dark theme
 
 Adminer 5.0.4 (released 2025-03-11):
 Compile: Fix shortening in private methods (regression from 5.0.3)
