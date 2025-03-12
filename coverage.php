@@ -29,7 +29,7 @@ if (!extension_loaded("xdebug")) {
 } elseif ($_GET["coverage"] === "0") {
 	file_put_contents($coverage_filename, serialize(array()));
 	echo "<p class='message'>Coverage started.\n";
-} elseif (preg_match('~^(adminer|editor)/(include/)?[-_.a-z0-9]+$~i', $_GET["coverage"])) {
+} elseif (preg_match('~^(adminer|editor)/(include/|drivers/)?[-_.a-z0-9]+$~i', $_GET["coverage"])) {
 	// highlight single file
 	$filename = $_GET["coverage"];
 	$coverage = (file_exists($coverage_filename) ? unserialize(file_get_contents($coverage_filename)) : array());
@@ -70,7 +70,7 @@ if (!extension_loaded("xdebug")) {
 		// display list of files
 		$coverage = unserialize(file_get_contents($coverage_filename));
 		echo "<table border='1' cellspacing='0'>\n";
-		foreach (array_merge(glob("adminer/*.php"), glob("adminer/include/*.php"), glob("editor/*.php"), glob("editor/include/*.php")) as $filename) {
+		foreach (array_merge(glob("adminer/*.php"), glob("adminer/drivers/*.php"), glob("adminer/include/*.php"), glob("editor/*.php"), glob("editor/include/*.php")) as $filename) {
 			$cov = $coverage[realpath($filename)];
 			$ratio = 0;
 			if (is_array($cov)) {
