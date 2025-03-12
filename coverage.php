@@ -1,9 +1,8 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="cs">
+<!DOCTYPE html>
+<html lang="cs">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Coverage</title>
-</head>
 
 <body>
 
@@ -26,10 +25,10 @@ function xhtml_open_tags($s) {
 
 $coverage_filename = sys_get_temp_dir() . "/adminer_coverage.ser";
 if (!extension_loaded("xdebug")) {
-	echo "<p class='error'>Xdebug has to be enabled.</p>\n";
+	echo "<p class='error'>Xdebug has to be enabled.\n";
 } elseif ($_GET["coverage"] === "0") {
 	file_put_contents($coverage_filename, serialize(array()));
-	echo "<p class='message'>Coverage started.</p>\n";
+	echo "<p class='message'>Coverage started.\n";
 } elseif (preg_match('~^(adminer|editor)/(include/)?[-_.a-z0-9]+$~i', $_GET["coverage"])) {
 	// highlight single file
 	$filename = $_GET["coverage"];
@@ -78,13 +77,9 @@ if (!extension_loaded("xdebug")) {
 				$values = array_count_values($cov);
 				$ratio = round(100 - 100 * $values[-1] / (count($cov) - $values[-2]));
 			}
-			echo "<tr><td align='right' style='background-color: " . ($ratio < 50 ? "Red" : ($ratio < 75 ? "#FFEA20" : "#A7FC9D")) . ";'>$ratio%</td><td><a href='coverage.php?coverage=$filename'>$filename</a></td></tr>\n";
+			echo "<tr><td align='right' style='background-color: " . ($ratio < 50 ? "Red" : ($ratio < 75 ? "#FFEA20" : "#A7FC9D")) . ";'>$ratio%<td><a href='coverage.php?coverage=$filename'>$filename</a>\n";
 		}
 		echo "</table>\n";
 	}
-	echo "<p><a href='coverage.php?coverage=0'>Start new coverage</a></p>\n";
+	echo "<p><a href='coverage.php?coverage=0'>Start new coverage</a>\n";
 }
-?>
-
-</body>
-</html>
