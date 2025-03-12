@@ -602,20 +602,20 @@ if (!defined('Adminer\DRIVER')) {
 			preg_match('~^(VIRTUAL|PERSISTENT|STORED)~', $extra, $generated);
 			preg_match('~^([^( ]+)(?:\((.+)\))?( unsigned)?( zerofill)?$~', $type, $match_type);
 			$default = $row["COLUMN_DEFAULT"];
-			$is_text = preg_match('~text~', $match_type[1]);
-			if (!$maria && $is_text) {
-				// default value a'b of text column is stored as _utf8mb4\'a\\\'b\' in MySQL
-				$default = preg_replace("~^(_\w+)?('.*')$~", '\2', stripslashes($default));
-			}
-			if ($maria || $is_text) {
-				$default = preg_replace_callback("~^'(.*)'$~", function ($match) {
-					return stripslashes(str_replace("''", "'", $match[1]));
-				}, $default);
-			}
-			if (!$maria && preg_match('~binary~', $match_type[1]) && preg_match('~^0x(\w*)$~', $default, $match)) {
-				$default = preg_replace_callback('~..~', function ($match) {
-					return chr(hexdec($match[0]));
-				}, $match[1]);
+			if ($default != "") {
+				$is_text = preg_match('~text~', $match_type[1]);
+				if (!$maria && $is_text) {
+					// default value a'b of text column is stored as _utf8mb4\'a\\\'b\' in MySQL
+					$default = preg_replace("~^(_\w+)?('.*')$~", '\2', stripslashes($default));
+				}
+				if ($maria || $is_text) {
+					$default = ($default == "NULL" ? null : preg_replace_callback("~^'(.*)'$~", function ($match) {
+						return stripslashes(str_replace("''", "'", $match[1]));
+					}, $default));
+				}
+				if (!$maria && preg_match('~binary~', $match_type[1]) && preg_match('~^0x(\w*)$~', $default, $match)) {
+					$default = pack("H*", $match[1]);
+				}
 			}
 			$return[$field] = array(
 				"field" => $field,
@@ -625,7 +625,7 @@ if (!defined('Adminer\DRIVER')) {
 				"unsigned" => ltrim($match_type[3] . $match_type[4]),
 				"default" => ($generated
 					? ($maria ? $generation : stripslashes($generation))
-					: ($default != "" || preg_match("~char|set~", $match_type[1]) ? $default : null)
+					: $default
 				),
 				"null" => ($row["IS_NULLABLE"] == "YES"),
 				"auto_increment" => ($extra == "auto_increment"),
