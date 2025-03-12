@@ -297,13 +297,13 @@ function php_shrink($input) {
 				$doc_comment = true;
 				$token[1] = substr_replace($token[1], "* @version $VERSION\n", -2, 0);
 			}
-			if (($token[0] == T_VAR || $token[0] == T_PUBLIC || $token[0] == T_PROTECTED || $token[0] == T_PRIVATE) && $tokens[$i+2][1][0] == '$') {
-				if ($token[0] == T_PUBLIC) {
+			if ($token[0] == T_VAR || $token[0] == T_PUBLIC || $token[0] == T_PROTECTED || $token[0] == T_PRIVATE) {
+				if ($token[0] == T_PUBLIC && $tokens[$i+2][1][0] == '$') {
 					$token[1] = 'var';
 				}
 				$shortening = false;
 			} elseif (!$shortening) {
-				if ($token[1] == ';') {
+				if ($token[1] == ';' || $token[0] == T_FUNCTION) {
 					$shortening = true;
 				}
 			} elseif ($token[0] == T_ECHO) {
