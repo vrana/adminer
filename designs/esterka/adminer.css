@@ -133,7 +133,7 @@ th {
 	background:white;
 }
 
-.odds tbody tr:nth-child(2n) td {
+.odds tbody tr:nth-child(2n):not(.checked, :hover) td {
 	background:#fcfaf5;
 }
 

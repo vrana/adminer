@@ -198,7 +198,7 @@ table label.block{padding:0}
 tr{border-bottom:1px dotted rgba(255,255,255,0.1)}
 th,td{padding:4px 10px}
 th[style="text-align: right;"] input[type="checkbox"],td[align="right"] input[type="checkbox"],th[style="text-align: right;"] input[type="radio"],td[align="right"] input[type="radio"]{margin-right:0;margin-left:5px}
-thead td,thead th,.odds tbody tr:nth-child(2n) td,tbody tr:hover td,tbody tr:hover th,.js .checkable .checked td,.js .checkable .checked th{background:transparent}
+thead td,thead th,.odds tbody tr:nth-child(2n):not(.checked, :hover),tbody tr:hover td,tbody tr:hover th,.js .checkable .checked td,.js .checkable .checked th{background:transparent}
 thead tr{background:#282b2f;border-bottom:1px solid rgba(255,255,255,0.1)}
 thead td,thead th{padding:7px 10px;background:transparent;text-align:left}
 tbody th,tbody td{vertical-align:top}

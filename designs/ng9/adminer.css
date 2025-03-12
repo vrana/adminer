@@ -132,11 +132,11 @@ th {
 	background:white;
 }
 
-.odds tbody tr:nth-child(2n) td {
+.odds tbody tr:nth-child(2n):not(.checked, :hover) td {
 	background:#fcfaf5;
 }
 
-#content tbody tr.checked td, .odds tbody tr:nth-child(2n).checked td {
+#content tbody tr.checked td, .odds tbody tr:nth-child(2n):not(.checked, :hover).checked td {
 	background:#fbe2e2;
 	color:red;
 }
