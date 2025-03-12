@@ -143,7 +143,12 @@ if (isset($_GET["clickhouse"])) {
 		function __construct($connection) {
 			parent::__construct($connection);
 			$this->types = array( //! arrays
-				lang('Numbers') => array("Int8" => 3, "Int16" => 5, "Int32" => 10, "Int64" => 19, "UInt8" => 3, "UInt16" => 5, "UInt32" => 10, "UInt64" => 20, "Float32" => 7, "Float64" => 16, 'Decimal' => 38, 'Decimal32' => 9, 'Decimal64' => 18, 'Decimal128' => 38),
+				lang('Numbers') => array(
+					"Int8" => 3, "Int16" => 5, "Int32" => 10, "Int64" => 19,
+					"UInt8" => 3, "UInt16" => 5, "UInt32" => 10, "UInt64" => 20,
+					"Float32" => 7, "Float64" => 16,
+					'Decimal' => 38, 'Decimal32' => 9, 'Decimal64' => 18, 'Decimal128' => 38,
+				),
 				lang('Date and time') => array("Date" => 13, "DateTime" => 20),
 				lang('Strings') => array("String" => 0),
 				lang('Binary') => array("FixedString" => 0),

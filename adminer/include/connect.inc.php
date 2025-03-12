@@ -8,7 +8,13 @@ if (isset($_GET["import"])) {
 	$_GET["sql"] = $_GET["import"];
 }
 
-if (!(DB != "" ? $connection->select_db(DB) : isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]) || isset($_GET["processlist"]) || isset($_GET["privileges"]) || isset($_GET["user"]) || isset($_GET["variables"]) || $_GET["script"] == "connect" || $_GET["script"] == "kill")) {
+if (
+	!(DB != ""
+		? $connection->select_db(DB)
+		: isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]) || isset($_GET["processlist"]) || isset($_GET["privileges"]) || isset($_GET["user"]) || isset($_GET["variables"])
+			|| $_GET["script"] == "connect" || $_GET["script"] == "kill"
+	)
+) {
 	if (DB != "" || $_GET["refresh"]) {
 		restart_session();
 		set_session("dbs", null);

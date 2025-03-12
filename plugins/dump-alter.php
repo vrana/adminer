@@ -74,7 +74,10 @@ SELECT @adminer_alter;
 			} else {
 				echo substr_replace($create, " IF NOT EXISTS", 12, 0) . ";\n\n";
 				// create procedure which iterates over original columns and adds new and removes old
-				$query = "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLLATION_NAME, COLUMN_TYPE, EXTRA, COLUMN_COMMENT FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = " . Adminer\q($table) . " ORDER BY ORDINAL_POSITION";
+				$query = "SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLLATION_NAME, COLUMN_TYPE, EXTRA, COLUMN_COMMENT
+FROM information_schema.COLUMNS
+WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = " . Adminer\q($table) . "
+ORDER BY ORDINAL_POSITION";
 				echo "DELIMITER ;;
 CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 	DECLARE _column_name, _collation_name, after varchar(64) DEFAULT '';

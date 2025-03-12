@@ -521,7 +521,16 @@ AND c_src.TABLE_NAME = " . q($table);
 	}
 
 	function process_list() {
-		return get_rows('SELECT sess.process AS "process", sess.username AS "user", sess.schemaname AS "schema", sess.status AS "status", sess.wait_class AS "wait_class", sess.seconds_in_wait AS "seconds_in_wait", sql.sql_text AS "sql_text", sess.machine AS "machine", sess.port AS "port"
+		return get_rows('SELECT
+	sess.process AS "process",
+	sess.username AS "user",
+	sess.schemaname AS "schema",
+	sess.status AS "status",
+	sess.wait_class AS "wait_class",
+	sess.seconds_in_wait AS "seconds_in_wait",
+	sql.sql_text AS "sql_text",
+	sess.machine AS "machine",
+	sess.port AS "port"
 FROM v$session sess LEFT OUTER JOIN v$sql sql
 ON sql.sql_id = sess.sql_id
 WHERE sess.type = \'USER\'

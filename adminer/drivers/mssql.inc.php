@@ -509,7 +509,16 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 		foreach ($comments as $key => $val) {
 			$comment = substr($val, 9); // 9 - strlen(" COMMENT ")
 			queries("EXEC sp_dropextendedproperty @name = N'MS_Description', @level0type = N'Schema', @level0name = " . q(get_schema()) . ", @level1type = N'Table', @level1name = " . q($name) . ", @level2type = N'Column', @level2name = " . q($key));
-			queries("EXEC sp_addextendedproperty @name = N'MS_Description', @value = " . $comment . ", @level0type = N'Schema', @level0name = " . q(get_schema()) . ", @level1type = N'Table', @level1name = " . q($name) . ", @level2type = N'Column', @level2name = " . q($key));
+			queries("EXEC sp_addextendedproperty
+@name = N'MS_Description',
+@value = $comment,
+@level0type = N'Schema',
+@level0name = " . q(get_schema()) . ",
+@level1type = N'Table',
+@level1name = " . q($name) . ",
+@level2type = N'Column',
+@level2name = " . q($key))
+			;
 		}
 		return true;
 	}

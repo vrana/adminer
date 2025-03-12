@@ -587,7 +587,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get information about fields
 	* @param string
-	* @return array [$name => ["field" => , "full_type" => , "type" => , "length" => , "unsigned" => , "default" => , "null" => , "auto_increment" => , "on_update" => , "collation" => , "privileges" => , "comment" => , "primary" => , "generated" => ]]
+	* @return array [$name => ["field" =>, "full_type" =>, "type" =>, "length" =>, "unsigned" =>, "default" =>, "null" =>, "auto_increment" =>, "on_update" =>, "collation" =>, "privileges" =>, "comment" =>, "primary" =>, "generated" =>]]
 	*/
 	function fields($table) {
 		global $connection;
@@ -667,7 +667,12 @@ if (!defined('Adminer\DRIVER')) {
 		$return = array();
 		$create_table = get_val("SHOW CREATE TABLE " . table($table), 1);
 		if ($create_table) {
-			preg_match_all("~CONSTRAINT ($pattern) FOREIGN KEY ?\\(((?:$pattern,? ?)+)\\) REFERENCES ($pattern)(?:\\.($pattern))? \\(((?:$pattern,? ?)+)\\)(?: ON DELETE ($driver->onActions))?(?: ON UPDATE ($driver->onActions))?~", $create_table, $matches, PREG_SET_ORDER);
+			preg_match_all(
+				"~CONSTRAINT ($pattern) FOREIGN KEY ?\\(((?:$pattern,? ?)+)\\) REFERENCES ($pattern)(?:\\.($pattern))? \\(((?:$pattern,? ?)+)\\)(?: ON DELETE ($driver->onActions))?(?: ON UPDATE ($driver->onActions))?~",
+				$create_table,
+				$matches,
+				PREG_SET_ORDER
+			);
 			foreach ($matches as $match) {
 				preg_match_all("~$pattern~", $match[2], $source);
 				preg_match_all("~$pattern~", $match[5], $target);
@@ -987,7 +992,9 @@ if (!defined('Adminer\DRIVER')) {
 		global $driver;
 		$aliases = array("bool", "boolean", "integer", "double precision", "real", "dec", "numeric", "fixed", "national char", "national varchar");
 		$space = "(?:\\s|/\\*[\s\S]*?\\*/|(?:#|-- )[^\n]*\n?|--\r?\n)";
-		$type_pattern = "((" . implode("|", array_merge(array_keys($driver->types()), $aliases)) . ")\\b(?:\\s*\\(((?:[^'\")]|$driver->enumLength)++)\\))?\\s*(zerofill\\s*)?(unsigned(?:\\s+zerofill)?)?)(?:\\s*(?:CHARSET|CHARACTER\\s+SET)\\s*['\"]?([^'\"\\s,]+)['\"]?)?";
+		$enum = $driver->enumLength;
+		$type_pattern = "((" . implode("|", array_merge(array_keys($driver->types()), $aliases)) . ")\\b(?:\\s*\\(((?:[^'\")]|$enum)++)\\))?"
+			. "\\s*(zerofill\\s*)?(unsigned(?:\\s+zerofill)?)?)(?:\\s*(?:CHARSET|CHARACTER\\s+SET)\\s*['\"]?([^'\"\\s,]+)['\"]?)?";
 		$pattern = "$space*(" . ($type == "FUNCTION" ? "" : $driver->inout) . ")?\\s*(?:`((?:[^`]|``)*)`\\s*|\\b(\\S+)\\s+)$type_pattern";
 		$create = get_val("SHOW CREATE $type " . idf_escape($name), 2);
 		preg_match("~\\(((?:$pattern\\s*,?)*)\\)\\s*" . ($type == "FUNCTION" ? "RETURNS\\s+$type_pattern\\s+" : "") . "(.*)~is", $create, $match);
@@ -997,7 +1004,7 @@ if (!defined('Adminer\DRIVER')) {
 			$fields[] = array(
 				"field" => str_replace("``", "`", $param[2]) . $param[3],
 				"type" => strtolower($param[5]),
-				"length" => preg_replace_callback("~$driver->enumLength~s", 'Adminer\normalize_enum', $param[6]),
+				"length" => preg_replace_callback("~$enum~s", 'Adminer\normalize_enum', $param[6]),
 				"unsigned" => strtolower(preg_replace('~\s+~', ' ', trim("$param[8] $param[7]"))),
 				"null" => 1,
 				"full_type" => $param[4],
@@ -1197,7 +1204,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Check whether a feature is supported
-	* @param string "check", "comment", "copy", "database", "descidx", "drop_col", "dump", "event", "indexes", "kill", "materializedview", "partitioning", "privileges", "procedure", "processlist", "routine", "scheme", "sequence", "status", "table", "trigger", "type", "variables", "view", "view_trigger"
+	* @param string "check|comment|copy|database|descidx|drop_col|dump|event|indexes|kill|materializedview|partitioning|privileges|procedure|processlist|routine|scheme|sequence|status|table|trigger|type|variables|view|view_trigger"
 	* @return bool
 	*/
 	function support($feature) {

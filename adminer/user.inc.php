@@ -148,7 +148,10 @@ echo "<table class='odds'>\n";
 echo "<thead><tr><th colspan='2'>" . lang('Privileges') . doc_link(array('sql' => "grant.html#priv_level"));
 $i = 0;
 foreach ($grants as $object => $grant) {
-	echo '<th>' . ($object != "*.*" ? "<input name='objects[$i]' value='" . h($object) . "' size='10' autocapitalize='off'>" : "<input type='hidden' name='objects[$i]' value='*.*' size='10'>*.*"); //! separate db, table, columns, PROCEDURE|FUNCTION, routine
+	echo '<th>' . ($object != "*.*"
+		? "<input name='objects[$i]' value='" . h($object) . "' size='10' autocapitalize='off'>"
+		: "<input type='hidden' name='objects[$i]' value='*.*' size='10'>*.*"
+	); //! separate db, table, columns, PROCEDURE|FUNCTION, routine
 	$i++;
 }
 echo "</thead>\n";

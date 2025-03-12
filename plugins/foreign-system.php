@@ -14,12 +14,18 @@ class AdminerForeignSystem {
 				"columns_priv" => array(array("table" => "user", "source" => array("Host", "User"), "target" => array("Host", "User"))),
 				"db" => array(array("table" => "user", "source" => array("Host", "User"), "target" => array("Host", "User"))),
 				"help_category" => array(array("table" => "help_category", "source" => array("parent_category_id"), "target" => array("help_category_id"))),
-				"help_relation" => array(array("table" => "help_topic", "source" => array("help_topic_id"), "target" => array("help_topic_id")), array("table" => "help_keyword", "source" => array("help_keyword_id"), "target" => array("help_keyword_id"))),
+				"help_relation" => array(
+					array("table" => "help_topic", "source" => array("help_topic_id"), "target" => array("help_topic_id")),
+					array("table" => "help_keyword", "source" => array("help_keyword_id"), "target" => array("help_keyword_id")),
+				),
 				"help_topic" => array(array("table" => "help_category", "source" => array("help_category_id"), "target" => array("help_category_id"))),
 				"procs_priv" => array(array("table" => "user", "source" => array("Host", "User"), "target" => array("Host", "User")), array("table" => "proc", "source" => array("Db", "Routine_name"), "target" => array("db", "name"))),
 				"tables_priv" => array(array("table" => "user", "source" => array("Host", "User"), "target" => array("Host", "User"))),
 				"time_zone_name" => array(array("table" => "time_zone", "source" => array("Time_zone_id"), "target" => array("Time_zone_id"))),
-				"time_zone_transition" => array(array("table" => "time_zone", "source" => array("Time_zone_id"), "target" => array("Time_zone_id")), array("table" => "time_zone_transition_type", "source" => array("Time_zone_id", "Transition_type_id"), "target" => array("Time_zone_id", "Transition_type_id"))),
+				"time_zone_transition" => array(
+					array("table" => "time_zone", "source" => array("Time_zone_id"), "target" => array("Time_zone_id")),
+					array("table" => "time_zone_transition_type", "source" => array("Time_zone_id", "Transition_type_id"), "target" => array("Time_zone_id", "Transition_type_id")),
+				),
 				"time_zone_transition_type" => array(array("table" => "time_zone", "source" => array("Time_zone_id"), "target" => array("Time_zone_id"))),
 			);
 			return $return[$table];

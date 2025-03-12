@@ -12,8 +12,6 @@
 	<rule ref="PSR12">
 		<exclude name="Generic.Whitespace.DisallowTabIndent"/><!-- Replaced by: Generic.Whitespace.DisallowSpaceIndent -->
 		<exclude name="PSR1.Files.SideEffects.FoundWithSymbols"/>
-		<exclude name="PSR12.Operators.OperatorSpacing.NoSpaceBefore"/>
-		<exclude name="PSR12.Operators.OperatorSpacing.NoSpaceAfter"/>
 		<exclude name="PSR1.Classes.ClassDeclaration.MultipleClasses"/>
 		<exclude name="PSR2.Classes.ClassDeclaration.OpenBraceNewLine"/><!-- Replaced by: Generic.Classes.OpeningBraceSameLine -->
 		<exclude name="PSR2.Classes.PropertyDeclaration.Underscore"/>
@@ -24,6 +22,8 @@
 		<!-- More readable. -->
 		<exclude name="PSR12.Files.FileHeader.SpacingAfterBlock"/>
 		<exclude name="PSR12.Classes.OpeningBraceSpace.Found"/>
+		<exclude name="PSR12.Operators.OperatorSpacing.NoSpaceBefore"/>
+		<exclude name="PSR12.Operators.OperatorSpacing.NoSpaceAfter"/>
 		<exclude name="Squiz.WhiteSpace.ControlStructureSpacing.SpacingBeforeClose"/>
 
 		<!-- Saves bytes. -->
@@ -45,7 +45,7 @@
 
 	<rule ref="Generic.Files.LineLength">
 		<properties>
-			<property name="lineLimit" value="310"/>
+			<property name="lineLimit" value="250"/>
 		</properties>
 		<exclude-pattern>adminer/lang/</exclude-pattern>
 	</rule>

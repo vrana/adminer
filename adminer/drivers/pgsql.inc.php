@@ -427,7 +427,14 @@ WHERE relkind IN ('r', 'm', 'v', 'f', 'p')
 			'timestamp with time zone' => 'timestamptz',
 		);
 		foreach (
-			get_rows("SELECT a.attname AS field, format_type(a.atttypid, a.atttypmod) AS full_type, pg_get_expr(d.adbin, d.adrelid) AS default, a.attnotnull::int, col_description(c.oid, a.attnum) AS comment" . (min_version(10) ? ", a.attidentity" . (min_version(12) ? ", a.attgenerated" : "") : "") . "
+			get_rows("SELECT
+	a.attname AS field,
+	format_type(a.atttypid, a.atttypmod) AS full_type,
+	pg_get_expr(d.adbin, d.adrelid) AS default,
+	a.attnotnull::int,
+	col_description(c.oid, a.attnum) AS comment" . (min_version(10) ? ",
+	a.attidentity" . (min_version(12) ? ",
+	a.attgenerated" : "") : "") . "
 FROM pg_class c
 JOIN pg_namespace n ON c.relnamespace = n.oid
 JOIN pg_attribute a ON c.oid = a.attrelid
@@ -473,7 +480,12 @@ ORDER BY a.attnum") as $row
 		$return = array();
 		$table_oid = $connection2->result("SELECT oid FROM pg_class WHERE relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema()) AND relname = " . q($table));
 		$columns = get_key_vals("SELECT attnum, attname FROM pg_attribute WHERE attrelid = $table_oid AND attnum > 0", $connection2);
-		foreach (get_rows("SELECT relname, indisunique::int, indisprimary::int, indkey, indoption, (indpred IS NOT NULL)::int as indispartial FROM pg_index i, pg_class ci WHERE i.indrelid = $table_oid AND ci.oid = i.indexrelid ORDER BY indisprimary DESC, indisunique DESC", $connection2) as $row) {
+		foreach (
+			get_rows("SELECT relname, indisunique::int, indisprimary::int, indkey, indoption, (indpred IS NOT NULL)::int as indispartial
+FROM pg_index i, pg_class ci
+WHERE i.indrelid = $table_oid AND ci.oid = i.indexrelid
+ORDER BY indisprimary DESC, indisunique DESC", $connection2) as $row
+		) {
 			$relname = $row["relname"];
 			$return[$relname]["type"] = ($row["indispartial"] ? "INDEX" : ($row["indisprimary"] ? "PRIMARY" : ($row["indisunique"] ? "UNIQUE" : "INDEX")));
 			$return[$relname]["columns"] = array();
@@ -693,7 +705,12 @@ ORDER BY conkey, conname") as $row
 			$columns[] = $row["event_object_column"];
 		}
 		$return = array();
-		foreach (get_rows('SELECT trigger_name AS "Trigger", action_timing AS "Timing", event_manipulation AS "Event", \'FOR EACH \' || action_orientation AS "Type", action_statement AS "Statement" FROM information_schema.triggers ' . "$where ORDER BY event_manipulation DESC") as $row) {
+		foreach (
+			get_rows('SELECT trigger_name AS "Trigger", action_timing AS "Timing", event_manipulation AS "Event", \'FOR EACH \' || action_orientation AS "Type", action_statement AS "Statement"
+FROM information_schema.triggers' . "
+$where
+ORDER BY event_manipulation DESC") as $row
+		) {
 			if ($columns && $row["Event"] == "UPDATE") {
 				$row["Event"] .= " OF";
 			}

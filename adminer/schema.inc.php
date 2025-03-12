@@ -74,7 +74,9 @@ foreach ($schema as $name => $table) {
 			$left1 = $left - $table_pos[$name][1];
 			$i = 0;
 			foreach ($ref[0] as $source) {
-				echo "\n<div class='references' title='" . h($target_name) . "' id='refs$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $table["fields"][$source]["pos"] . "em; padding-top: .5em;'><div style='border-top: 1px solid Gray; width: " . (-$left1) . "em;'></div></div>";
+				echo "\n<div class='references' title='" . h($target_name) . "' id='refs$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $table["fields"][$source]["pos"] . "em; padding-top: .5em;'>"
+					. "<div style='border-top: 1px solid Gray; width: " . (-$left1) . "em;'></div></div>"
+				;
 			}
 		}
 	}
@@ -84,7 +86,8 @@ foreach ($schema as $name => $table) {
 			$left1 = $left - $table_pos[$name][1];
 			$i = 0;
 			foreach ($columns as $target) {
-				echo "\n<div class='references' title='" . h($target_name) . "' id='refd$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $table["fields"][$target]["pos"] . "em; height: 1.25em; background: url(../adminer/static/arrow.gif) no-repeat right center;'>"
+				echo "\n<div class='references' title='" . h($target_name) . "' id='refd$left-" . ($i++) . "'"
+					. " style='left: $left1" . "em; top: " . $table["fields"][$target]["pos"] . "em; height: 1.25em; background: url(../adminer/static/arrow.gif) no-repeat right center;'>"
 					. "<div style='height: .5em; border-bottom: 1px solid Gray; width: " . (-$left1) . "em;'></div>"
 					. "</div>"
 				;
