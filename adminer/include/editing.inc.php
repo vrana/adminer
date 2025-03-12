@@ -124,7 +124,7 @@ function referencable_primary($self) {
 * @param string
 * @return array
 */
-function adminer_settings($cookie) {
+function get_settings($cookie) {
 	parse_str($_COOKIE[$cookie], $settings);
 	return $settings;
 }
@@ -134,8 +134,8 @@ function adminer_settings($cookie) {
 * @param string
 * @return mixed
 */
-function adminer_setting($key, $cookie = "adminer_settings") {
-	$settings = adminer_settings($cookie);
+function get_setting($key, $cookie = "adminer_settings") {
+	$settings = get_settings($cookie);
 	return $settings[$key];
 }
 
@@ -144,8 +144,8 @@ function adminer_setting($key, $cookie = "adminer_settings") {
 * @param string
 * @return bool
 */
-function set_adminer_settings($settings, $cookie = "adminer_settings") {
-	return cookie($cookie, http_build_query($settings + adminer_settings($cookie)));
+function save_settings($settings, $cookie = "adminer_settings") {
+	return cookie($cookie, http_build_query($settings + get_settings($cookie)));
 }
 
 /** Print SQL <textarea> tag
@@ -353,8 +353,8 @@ function type_class($type) {
 function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = array()) {
 	global $driver;
 	$fields = array_values($fields);
-	$default_class = (($_POST ? $_POST["defaults"] : adminer_setting("defaults")) ? "" : " class='hidden'");
-	$comment_class = (($_POST ? $_POST["comments"] : adminer_setting("comments")) ? "" : " class='hidden'");
+	$default_class = (($_POST ? $_POST["defaults"] : get_setting("defaults")) ? "" : " class='hidden'");
+	$comment_class = (($_POST ? $_POST["comments"] : get_setting("comments")) ? "" : " class='hidden'");
 	?>
 <thead><tr>
 <?php echo ($type == "PROCEDURE" ? "<td>" : ""); ?>

@@ -4,7 +4,7 @@ namespace Adminer;
 $TABLE = $_GET["dump"];
 
 if ($_POST && !$error) {
-	set_adminer_settings(
+	save_settings(
 		array_intersect_key($_POST, array_flip(array("output", "format", "db_style", "types", "routines", "events", "table_style", "auto_increment", "triggers", "data_style"))),
 		"adminer_export"
 	);
@@ -155,7 +155,7 @@ $data_style = array('', 'TRUNCATE+INSERT', 'INSERT');
 if (JUSH == "sql") { //! use insertUpdate() in all drivers
 	$data_style[] = 'INSERT+UPDATE';
 }
-$row = adminer_settings("adminer_export");
+$row = get_settings("adminer_export");
 if (!$row) {
 	$row = array("output" => "text", "format" => "sql", "db_style" => (DB != "" ? "" : "CREATE"), "table_style" => "DROP+CREATE", "data_style" => "INSERT");
 }

@@ -19,7 +19,7 @@ if (JUSH == "mongo") { // doesn't support primary key
 }
 $row = $_POST;
 if ($row) {
-	set_adminer_settings(array("index_options" => $row["options"]));
+	save_settings(array("index_options" => $row["options"]));
 }
 if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 	$alter = array();
@@ -97,7 +97,7 @@ if (!$row) {
 	$row["indexes"] = $indexes;
 }
 $lengths = (JUSH == "sql" || JUSH == "mssql");
-$show_options = ($_POST ? $_POST["options"] : adminer_setting("index_options"));
+$show_options = ($_POST ? $_POST["options"] : get_setting("index_options"));
 ?>
 
 <form action="" method="post">

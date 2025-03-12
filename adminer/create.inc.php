@@ -30,7 +30,7 @@ if ($row["auto_increment_col"]) {
 }
 
 if ($_POST) {
-	set_adminer_settings(array("comments" => $_POST["comments"], "defaults" => $_POST["defaults"]));
+	save_settings(array("comments" => $_POST["comments"], "defaults" => $_POST["defaults"]));
 }
 
 if ($_POST && !process_fields($row["fields"]) && !$error) {
@@ -203,9 +203,9 @@ foreach ($engines as $engine) {
 </div>
 <p>
 <?php echo lang('Auto Increment'); ?>: <input type="number" name="Auto_increment" class="size" value="<?php echo h($row["Auto_increment"]); ?>">
-<?php echo checkbox("defaults", 1, ($_POST ? $_POST["defaults"] : adminer_setting("defaults")), lang('Default values'), "columnShow(this.checked, 5)", "jsonly"); ?>
+<?php echo checkbox("defaults", 1, ($_POST ? $_POST["defaults"] : get_setting("defaults")), lang('Default values'), "columnShow(this.checked, 5)", "jsonly"); ?>
 <?php
-	$comments = ($_POST ? $_POST["comments"] : adminer_setting("comments"));
+	$comments = ($_POST ? $_POST["comments"] : get_setting("comments"));
 	echo (support("comment")
 		? checkbox("comments", 1, $comments, lang('Comment'), "editingCommentsClick(this, true);", "jsonly")
 			. ' ' . (preg_match('~\n~', $row["Comment"])
