@@ -90,7 +90,10 @@ class Adminer {
 	}
 
 	function tableName($tableStatus) {
-		return h($tableStatus["Comment"] != "" ? $tableStatus["Comment"] : $tableStatus["Name"]);
+		return h(isset($tableStatus["Engine"])
+			? ($tableStatus["Comment"] != "" ? $tableStatus["Comment"] : $tableStatus["Name"])
+			: "" // ignore views
+		);
 	}
 
 	function fieldName($field, $order = 0) {
@@ -632,7 +635,7 @@ qsl('div').onclick = whisperClick;", "")
 		foreach ($tables as $row) {
 			echo '<li>';
 			$name = $this->tableName($row);
-			if (isset($row["Engine"]) && $name != "") { // ignore views and tables without name
+			if ($name != "") { // ignore tables without name
 				echo "<a href='" . h(ME) . 'select=' . urlencode($row["Name"]) . "'"
 					. bold($_GET["select"] == $row["Name"] || $_GET["edit"] == $row["Name"], "select")
 					. " title='" . lang('Select data') . "'>$name</a>\n"
