@@ -25,6 +25,7 @@ pre { margin: 1em 0 0; }
 td pre { margin: 0; }
 pre, textarea { font: 100%/1.25 monospace; }
 pre.jush { background: #fff; }
+pre code { display: block; }
 input, textarea { box-sizing: border-box; }
 input, select { vertical-align: middle; }
 input[type="radio"] { vertical-align: text-bottom; }
