@@ -302,4 +302,10 @@ $translations = array(
 	'Unknown error.' => 'Unbekannter Fehler.',
 	'Database does not support password.' => 'Die Datenbank unterstützt kein Passwort.',
 	'Disable %s or enable %s or %s extensions.' => 'Deaktivieren Sie %s oder aktivieren Sie die Erweiterungen %s oder %s.',
+	'Check has been dropped.' => 'Check wurde abgebrochen.',
+	'Check has been altered.' => 'Check wurde geändert.',
+	'Check has been created.' => 'Check wurde erstellt.',
+	'Alter check' => 'Check ändern',
+	'Create check' => 'Check erstellen',
+	'Checks' => 'Checks',
 );
