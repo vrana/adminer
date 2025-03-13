@@ -287,6 +287,15 @@
 </tbody></table>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
+<tr><td rowspan="1" colspan="3">SQL command</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;sql=SELECT+122%2B1</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Execute']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>123</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
 <tr><td rowspan="1" colspan="3">Logout</td></tr>
 </thead>
 <tbody>
