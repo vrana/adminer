@@ -113,9 +113,9 @@ input.wayoff { left: -1000px; position: absolute; }
 	input.required, input.maxlength { box-shadow: 1px 1px 1px red; }
 	.version { color: #888; }
 	.js .column { background: #011d35; }
-	.error { color: red; background: #efdada; border:1px solid #e76f6f; }
+	.error { color: red; background: #efdada; border: 1px solid #e76f6f; }
 	.error b { background: #002240; }
-	.message { color: #0b860b; background: #efe; border:1px solid #7fbd7f; }
+	.message { color: #0b860b; background: #efe; border: 1px solid #7fbd7f; }
 	.message table { color: #829bb0; background: #002240; }
 	.char { color: #ff80ff; }
 	.date { color: #80ff80; }
