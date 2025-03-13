@@ -9,6 +9,9 @@ if ($_GET["file"] == "favicon.ico") {
 } elseif ($_GET["file"] == "default.css") {
 	header("Content-Type: text/css; charset=utf-8");
 	echo lzw_decompress(compile_file('../adminer/static/default.css;../externals/jush/jush.css', 'minify_css'));
+} elseif ($_GET["file"] == "dark.css") {
+	header("Content-Type: text/css; charset=utf-8");
+	echo lzw_decompress(compile_file('../adminer/static/dark.css', 'minify_css'));
 } elseif ($_GET["file"] == "functions.js") {
 	header("Content-Type: text/javascript; charset=utf-8");
 	echo lzw_decompress(compile_file('../adminer/static/functions.js;static/editing.js', 'minify_js'));

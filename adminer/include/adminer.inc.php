@@ -98,7 +98,7 @@ class Adminer {
 	*/
 	function head() {
 		?>
-<link rel="stylesheet" type="text/css" href="../externals/jush/jush.css">
+<link rel="stylesheet" href="../externals/jush/jush.css">
 <?php
 		return true;
 	}
