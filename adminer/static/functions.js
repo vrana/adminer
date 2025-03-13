@@ -568,7 +568,7 @@ function functionChange() {
 * @this HTMLTableCellElement
 */
 function skipOriginal(first) {
-	var fnSelect = this.previousSibling.firstChild;
+	var fnSelect = qs('select', this.previousSibling);
 	if (fnSelect.selectedIndex < first) {
 		fnSelect.selectedIndex = first;
 	}
