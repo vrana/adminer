@@ -6,10 +6,9 @@
 	<title>Katalon SQLite</title>
 </head>
 <body>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">SQLite</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">SQLite</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/sqlite.php</td><td></td></tr>
 <tr><td>select</td><td>name=lang</td><td>label=English</td></tr>
@@ -52,10 +51,9 @@
 <tr><td>click</td><td>link=1</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Select: interprets</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3" data-tags="">Generated columns</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3" data-tags="">Generated columns</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;create=</td><td></td></tr>
 <tr><td>type</td><td>name=name</td><td>generated</td></tr>
@@ -75,10 +73,9 @@
 <tr><td>click</td><td>xpath=//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>220</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3" data-tags="">Drop</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3" data-tags="">Drop</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;database=</td><td></td></tr>
 <tr><td>chooseOkOnNextConfirmation</td><td>Drop adminer_test.sqlite?</td><td></td></tr>
@@ -87,5 +84,6 @@
 <tr><td>click</td><td>id=logout</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Thanks for using Adminer, consider donating.</td><td></td></tr>
 </tbody></table>
+
 </body>
 </html>

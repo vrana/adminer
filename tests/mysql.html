@@ -6,10 +6,9 @@
 	<title>Katalon MySQL</title>
 </head>
 <body>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Login</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Login</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/coverage.php?coverage=0</td><td></td></tr>
 <tr><td>open</td><td>/adminer/</td><td></td></tr>
@@ -24,10 +23,9 @@
 <tr><td>clickAndWait</td><td>//input[@value='Execute']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Query executed OK</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Create database</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Create database</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Create database</td><td></td></tr>
@@ -36,10 +34,9 @@
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Database has been created.</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Create table</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Create table</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Create table</td><td></td></tr>
@@ -58,10 +55,9 @@
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Table has been created.</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Create index</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Create index</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Alter indexes</td><td></td></tr>
@@ -74,10 +70,9 @@
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Indexes have been altered.</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Partitioning</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Partitioning</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Alter table</td><td></td></tr>
@@ -97,10 +92,9 @@
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Table has been altered.</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Create table 2</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Create table 2</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Create table</td><td></td></tr>
@@ -120,10 +114,9 @@
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Table has been created.</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Foreign key</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Foreign key</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=albums</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Add foreign key</td><td></td></tr>
@@ -132,10 +125,9 @@
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Foreign key has been created.</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Alter table</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Alter table</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Alter table</td><td></td></tr>
@@ -149,10 +141,9 @@
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Table has been altered.</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Create trigger</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Create trigger</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;trigger=albums</td><td></td></tr>
 <tr><td>select</td><td>Timing</td><td>label=AFTER</td></tr>
@@ -160,10 +151,9 @@
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Trigger has been created.</td><td></td></tr></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Check constraints</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Check constraints</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=albums</td><td></td></tr>
 <tr><td>click</td><td>link=Create check</td><td></td></tr>
@@ -177,10 +167,9 @@
 <tr><td>click</td><td>name=drop</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Check has been dropped.</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Create view</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Create view</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;view=</td><td></td></tr>
 <tr><td>runScript</td><td>document.querySelector('[name="select"]').value = 'SELECT albums.id, albums.title, interprets.name FROM albums LEFT JOIN interprets ON albums.interpret = interprets.id'</td><td></td></tr>
@@ -188,10 +177,9 @@
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>View has been created.</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Insert</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Insert</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;edit=interprets</td><td></td></tr>
 <tr><td>type</td><td>fields[name]</td><td>Michael Jackson</td></tr>
@@ -203,10 +191,9 @@
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Item 1 has been inserted.</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Clone</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Clone</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</td><td></td></tr>
 <tr><td>click</td><td>check[]</td><td></td></tr>
@@ -215,10 +202,9 @@
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Item 2 has been inserted.</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Explain</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Explain</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Edit</td><td></td></tr>
@@ -226,29 +212,26 @@
 <tr><td>click</td><td>link=Explain</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>possible_keys</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Reference</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Reference</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=1</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Michael Jackson</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Update</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Update</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;edit=albums&amp;where%5Bid%5D=2</td><td></td></tr>
 <tr><td>type</td><td>fields[title]</td><td>Black or White</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Item has been updated.</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Delete</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Delete</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</td><td></td></tr>
 <tr><td>click</td><td>//input[@name='check[]' and @value='where%5Bid%5D=2']</td><td></td></tr>
@@ -257,10 +240,9 @@
 <tr><td>click</td><td>delete</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>1 item has been affected.</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Truncate</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Truncate</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</td><td></td></tr>
 <tr><td>click</td><td>all</td><td></td></tr>
@@ -269,10 +251,9 @@
 <tr><td>click</td><td>delete</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>No rows.</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Privileges</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Privileges</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;user=</td><td></td></tr>
 <tr><td>type</td><td>user</td><td>adminer_test</td></tr>
@@ -298,18 +279,16 @@
 <tr><td>click</td><td>drop</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>User has been dropped.</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Process list</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Process list</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;processlist=</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>SHOW FULL PROCESSLIST</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Export</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Export</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;dump=</td><td></td></tr>
 <tr><td>click</td><td>output</td><td></td></tr>
@@ -322,10 +301,9 @@
 <tr><td>verifyTextPresent</td><td>INSERT INTO `interprets`</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>VIEW `albums_interprets`</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Events</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Events</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;event=</td><td></td></tr>
 <tr><td>type</td><td>EVENT_NAME</td><td>no_albums</td></tr>
@@ -340,10 +318,9 @@
 <tr><td>click</td><td>drop</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Event has been dropped.</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Procedures</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Procedures</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;procedure=</td><td></td></tr>
 <tr><td>clickAndWait</td><td>add[0]</td><td></td></tr>
@@ -368,10 +345,9 @@
 <tr><td>click</td><td>drop</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Routine has been dropped.</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3" data-tags="">Generated columns</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3" data-tags="">Generated columns</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;create=</td><td></td></tr>
 <tr><td>type</td><td>name=name</td><td>generated</td></tr>
@@ -398,26 +374,23 @@
 <tr><td>verifyTextPresent</td><td>120</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>220</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Variables</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Variables</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;variables=</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>basedir</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">History</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">History</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;sql=</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>DROP DATABASE IF EXISTS adminer_test</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Warnings</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Warnings</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</td><td></td></tr>
 <tr><td>click</td><td>xpath=(//a[contains(text(),'=')])[1]</td><td></td></tr>
@@ -426,10 +399,9 @@
 <tr><td>click</td><td>link=Warnings</td><td></td></tr>
 <tr><td>verifyText</td><td>//div[@id='warnings']/div/table/tbody/tr/td[3]</td><td>Truncated incorrect DOUBLE value: '1.2.3'</td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Editor</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Editor</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/editor/example.php</td><td></td></tr>
 <tr><td>select</td><td>name=lang</td><td>label=English</td></tr>
@@ -447,10 +419,9 @@
 <tr><td>verifyTextPresent</td><td>Item 4 has been inserted.</td><td></td></tr>
 <tr><td>clickAndWait</td><td>logout</td><td></td></tr>
 </tbody></table>
+
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">Logout</td></tr>
-</thead>
+<thead><tr><td rowspan="1" colspan="3">Logout</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?username=ODBC</td><td></td></tr>
 <tr><td>clickAndWait</td><td>logout</td><td></td></tr>
@@ -459,5 +430,6 @@
 <tr><td>verifyTextPresent</td><td>Přihlásit se</td><td></td></tr>
 <tr><td>open</td><td>/coverage.php</td><td></td></tr>
 </tbody></table>
+
 </body>
 </html>
