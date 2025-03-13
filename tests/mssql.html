@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+	<title>Katalon MS SQL</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Login</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/</td><td></td></tr>
+<tr><td>select</td><td>name=lang</td><td>label=English</td></tr>
+<tr><td>clickAndWait</td><td>css=#lang &gt; input[type="submit"]</td><td></td></tr>
+<tr><td>select</td><td>name=auth[driver]</td><td>label=MS SQL</td></tr>
+<tr><td>type</td><td>name=auth[server]</td><td>(local)</td></tr>
+<tr><td>type</td><td>id=username</td><td>ODBC</td></tr>
+<tr><td>type</td><td>name=auth[password]</td><td>ODBC</td></tr>
+<tr><td>clickAndWait</td><td>xpath=//input[@value='Login']</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Create table</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?mssql=%28local%29&amp;username=ODBC&amp;db=adminer_test&amp;ns=dbo</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Create table</td><td></td></tr>
+<tr><td>type</td><td>name</td><td>interprets</td></tr>
+<tr><td>type</td><td>fields[1][field]</td><td>id</td></tr>
+<tr><td>select</td><td>fields[1][type]</td><td>label=int</td></tr>
+<tr><td>click</td><td>//input[@name='auto_increment_col' and @value='1']</td><td></td></tr>
+<tr><td>type</td><td>fields[1.1][field]</td><td>name</td></tr>
+<tr><td>select</td><td>fields[1.1][type]</td><td>label=varchar</td></tr>
+<tr><td>type</td><td>fields[1.1][length]</td><td>50</td></tr>
+<tr><td>uncheck</td><td>name=comments</td><td></td></tr>
+<tr><td>clickAndWait</td><td>name=comments</td><td></td></tr>
+<tr><td>type</td><td>fields[1.1][comment]</td><td>Interpret</td></tr>
+<tr><td>type</td><td>Comment</td><td>Interprets</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Table has been created.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Create index</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?mssql=%28local%29&amp;username=ODBC&amp;db=adminer_test&amp;ns=dbo&amp;table=interprets</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Alter indexes</td><td></td></tr>
+<tr><td>select</td><td>indexes[2][type]</td><td>label=PRIMARY</td></tr>
+<tr><td>select</td><td>indexes[2][columns][1]</td><td>label=name</td></tr>
+<tr><td>verifyValue</td><td>name=indexes[2][name]</td><td>interprets_name</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Table 'interprets' already has a primary key defined on it.</td><td></td></tr>
+<tr><td>select</td><td>indexes[2][type]</td><td>label=INDEX</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Indexes have been altered.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Create table 2</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?mssql=%28local%29&amp;username=ODBC&amp;db=adminer_test&amp;ns=dbo&amp;table=interprets</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Create table</td><td></td></tr>
+<tr><td>type</td><td>name</td><td>albums</td></tr>
+<tr><td>click</td><td>//input[@name='auto_increment_col' and @value='1']</td><td></td></tr>
+<tr><td>type</td><td>fields[1.1][field]</td><td>interpret</td></tr>
+<tr><td>select</td><td>fields[1.1][type]</td><td>label=int</td></tr>
+<tr><td>type</td><td>fields[1.11][field]</td><td>title</td></tr>
+<tr><td>select</td><td>fields[1.11][type]</td><td>label=varchar</td></tr>
+<tr><td>type</td><td>fields[1.11][length]</td><td>50</td></tr>
+<tr><td>check</td><td>name=comments</td><td></td></tr>
+<tr><td>type</td><td>fields[1.1][comment]</td><td>Interpret</td></tr>
+<tr><td>type</td><td>fields[1.11][comment]</td><td>Album</td></tr>
+<tr><td>type</td><td>Comment</td><td>Albums</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Table has been created.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Foreign key</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?mssql=%28local%29&amp;username=ODBC&amp;db=adminer_test&amp;ns=dbo&amp;table=albums</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Add foreign key</td><td></td></tr>
+<tr><td>selectAndWait</td><td>table</td><td>label=interprets</td></tr>
+<tr><td>select</td><td>source[0]</td><td>label=interpret</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Foreign key has been created.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Alter table</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?mssql=%28local%29&amp;username=ODBC&amp;db=adminer_test&amp;ns=dbo&amp;table=interprets</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Alter table</td><td></td></tr>
+<tr><td>click</td><td>add[2]</td><td></td></tr>
+<tr><td>type</td><td>fields[3][field]</td><td>albums</td></tr>
+<tr><td>select</td><td>fields[3][type]</td><td>label=int</td></tr>
+<tr><td>type</td><td>fields[3][length]</td><td></td></tr>
+<tr><td>uncheck</td><td>name=defaults</td><td></td></tr>
+<tr><td>clickAndWait</td><td>name=defaults</td><td></td></tr>
+<tr><td>type</td><td>name=fields[3][default]</td><td>0</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Table has been altered.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Check constraints</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?mssql=%28local%29&amp;username=ODBC&amp;db=adminer_test&amp;ns=dbo&amp;table=albums</td><td></td></tr>
+<tr><td>click</td><td>link=Create check</td><td></td></tr>
+<tr><td>type</td><td>name=name</td><td>albums_interpret_check</td></tr>
+<tr><td>runScript</td><td>document.querySelector('[name="clause"]').value = 'interpret > 0'</td><td></td></tr>
+<tr><td>click</td><td>xpath=//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Check has been created.</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?mssql=%28local%29&amp;username=ODBC&amp;db=adminer_test&amp;ns=dbo&amp;check=albums&amp;name=albums_interpret_check</td><td></td></tr>
+<tr><td>verifyTextPresent<td>([interpret]>(0))</td><td></td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Drop albums_interpret_check?</td><td></td></tr>
+<tr><td>click</td><td>name=drop</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Check has been dropped.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Create view</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?mssql=%28local%29&amp;username=ODBC&amp;db=adminer_test&amp;ns=dbo&amp;view=</td><td></td></tr>
+<tr><td>runScript</td><td>document.querySelector('[name="select"]').value = 'SELECT albums.id, albums.title, interprets.name FROM albums LEFT JOIN interprets ON albums.interpret = interprets.id'</td><td></td></tr>
+<tr><td>type</td><td>name</td><td>albums_interprets</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>View has been created.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Insert</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?mssql=%28local%29&amp;username=ODBC&amp;db=adminer_test&amp;ns=dbo&amp;edit=interprets</td><td></td></tr>
+<tr><td>type</td><td>fields[name]</td><td>Michael Jackson</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Item 1 has been inserted.</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?mssql=%28local%29&amp;username=ODBC&amp;db=adminer_test&amp;ns=dbo&amp;edit=albums</td><td></td></tr>
+<tr><td>type</td><td>fields[interpret]</td><td>1</td></tr>
+<tr><td>type</td><td>fields[title]</td><td>Dangerous</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Item 1 has been inserted.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Clone</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?mssql=%28local%29&amp;username=ODBC&amp;db=adminer_test&amp;ns=dbo&amp;select=albums</td><td></td></tr>
+<tr><td>click</td><td>check[]</td><td></td></tr>
+<tr><td>clickAndWait</td><td>clone</td><td></td></tr>
+<tr><td>type</td><td>fields[title]</td><td>Black and White</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Item 2 has been inserted.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Explain</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?mssql=%28local%29&amp;username=ODBC&amp;db=adminer_test&amp;ns=dbo&amp;select=albums</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Edit</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Execute']</td><td></td></tr>
+<tr><td>click</td><td>link=Explain</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Clustered Index Scan</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Reference</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?mssql=%28local%29&amp;username=ODBC&amp;db=adminer_test&amp;ns=dbo&amp;select=albums</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=1</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Michael Jackson</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Update</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?mssql=%28local%29&amp;username=ODBC&amp;db=adminer_test&amp;ns=dbo&amp;edit=albums&amp;where%5Bid%5D=2</td><td></td></tr>
+<tr><td>type</td><td>fields[title]</td><td>Black or White</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Item has been updated.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Delete</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?mssql=%28local%29&amp;username=ODBC&amp;db=adminer_test&amp;ns=dbo&amp;select=albums</td><td></td></tr>
+<tr><td>click</td><td>//input[@name='check[]' and @value='where%5Bid%5D=2']</td><td></td></tr>
+<tr><td>waitForChecked</td><td>//input[@name='check[]' and @value='where%5Bid%5D=2']</td><td></td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Are you sure?</td><td></td></tr>
+<tr><td>click</td><td>delete</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>1 item has been affected.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Truncate</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?mssql=%28local%29&amp;username=ODBC&amp;db=adminer_test&amp;ns=dbo&amp;select=albums</td><td></td></tr>
+<tr><td>click</td><td>all</td><td></td></tr>
+<tr><td>waitForChecked</td><td>all</td><td></td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Are you sure?</td><td></td></tr>
+<tr><td>click</td><td>delete</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>No rows.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Export</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?mssql=%28local%29&amp;username=ODBC&amp;db=adminer_test&amp;ns=dbo&amp;dump=</td><td></td></tr>
+<tr><td>click</td><td>output</td><td></td></tr>
+<tr><td>click</td><td>format</td><td></td></tr>
+<tr><td>select</td><td>table_style</td><td>label=DROP+CREATE</td></tr>
+<tr><td>select</td><td>data_style</td><td>label=INSERT</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Export']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>CREATE TABLE [dbo].[interprets]</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>INSERT INTO [dbo].[interprets]</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>VIEW [dbo].[albums_interprets]</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Drop</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?mssql=%28local%29&amp;username=ODBC&amp;db=adminer_test&amp;ns=dbo</td><td></td></tr>
+<tr><td>click</td><td>id=check-all</td><td></td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Are you sure?</td><td></td></tr>
+<tr><td>click</td><td>name=drop</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>No tables.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">SQL command</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?mssql=%28local%29&amp;username=ODBC&amp;sql=SELECT+122%2B1</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Execute']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>123</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Logout</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?mssql=%28local%29&amp;username=ODBC</td><td></td></tr>
+<tr><td>clickAndWait</td><td>logout</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Logout successful.</td><td></td></tr>
+<tr><td>open</td><td>/coverage.php</td><td></td></tr>
+</tbody></table>
+</body>
+</html>
