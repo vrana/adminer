@@ -2,8 +2,8 @@
  * @package    Adminer.css - Theme CSS for Adminer   ---   [theme dark]   blue    B  (with icons)
  *
  *//*!
- * @version    4.17.1.2
- * @date       Thu, 27 Feb 2025 09:28:32 +0100
+ * @version    5.0.4.1
+ * @date       Wed, 12 Mar 2025 21:35:32 +0100
  * @author     Robert Mesaros
  * @copyright  Copyright 2025 Robert Mesaros, rmSOFT, Slovakia
  * @web        https://www.rmsoft.sk
@@ -35,10 +35,6 @@
  *   Modified icons by Robert Mesaros
  *
  */
-#menu{padding:0 0 30px 0}
-.ltr .logout{right:0;left:auto;margin-top:.5em}
-.rtl .logout{left:0;right:auto;margin-top:.5em}
-.rtl table.layout tbody{direction:ltr}
 html{-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box}
 *,*:before,*:after{box-sizing:inherit}
 body{color:#829bb0;background:#002240;font-family:Verdana,Arial,Helvetica,sans-serif;font-weight:normal;cursor:default;margin:0}
@@ -50,6 +46,9 @@ img{width:100%;max-width:100%}
 #menu h1{background-color:#1d4e78}
 #menu h1{background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAdCAYAAAC9pNwMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2RpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpFODREQjFFMzE2RjRFRjExOTIyNkVEQzE2RkYzQkNDRCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozNDA3NDEwQ0Y0MkQxMUVGODA4RUNENTRFQzJENUU4RCIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozNDA3NDEwQkY0MkQxMUVGODA4RUNENTRFQzJENUU4RCIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IFdpbmRvd3MiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpFRTREQjFFMzE2RjRFRjExOTIyNkVEQzE2RkYzQkNDRCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpFODREQjFFMzE2RjRFRjExOTIyNkVEQzE2RkYzQkNDRCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Ph59M4AAAAPFSURBVHja7JZrSFNRHMDvvVvq1mNlucBK0g/lh+Us6oPrU0ERRFgRUqYUVEb2qTJ0vko0ZbMHiBT0sizSXEUfJGzN1CjBQLPCR/RwSYKp23RO3e527/r/57mxxpblhCD8w59z7t2553f+zx36Ulk5FYxkZpyiijVahUgkqnc62cu5arUGXrMl2tIkhmGuu91uGp4HXre0qB490A3C3IXfMVSQojl/QQYAHUzlNtvYPBhl2Xn5672gqBFxSmXF0WPpCTCfg+/EwUDBwkixeM4TmqZjzSbTFU1J8W00RiaTtUxMTJSfzctFd4Yq49eGJ6ekNETHxGyG50jQkWDAcoA+BqjSbDaXA/QqvBtFBWg6QGuJtSaapr7jB7AWrV0C6pguWAZurIeNFCaTqUxbUnwd3lkRAjoO0JswStApEGs1jJs4jusw9vTcEcI7LTBA3wA02mI2X/WFgvIIxCQC6EmIdQ7P898qb1Xs7O7qGiVrWWaa4C5PZopEy6RSKQfTYS8oRUYO1i3Hh4e6mlSA2sjhLHgwMdkoA04lI1noV8BVn/Nzsu/iFHTP2cIiHSTR9tNZaqYgP28/iecv4nA4ajmXi7NYLKPkcFbiDYomdcxNVVoul6s9JytzC/mYWxEVtfDQkbQKiUSyw26368/k5iTBexvZSxA0bD4Zx0An0E4B3Nfz5cu+zs4OJ+tgQwOBlfHxcSujo7MHBwfTLpZq69Cdq2NjFyWnpFaGhYVtA3hdU2PD4ecGQ78AhxjnQi6o29va1lVX3TNibAUwniSyq7PT+qKxcQjmduEHX0lQqSIgUZaOj4+FwyM2ipEP3d1msHRvQdG5GoQnqDYWAviEYDmErw/G1t7e3hAYQwiY+tm5Pn36aCdusATS+QsWDOBa8ArWInqGga6FltnQzcPDlrKvRmMTKSMRroXQ3AXd3fzq5ZCvQZ7kOnb8ONQXbYd+6/pNmBd70pXnfHPBAy8pKsojUNYruzmSEwzp0e5fwNCBFIFc7CXMZHbzIn9JT9wrJA/nVVasv8084PvVVVvftLbavIPvK6kHDqoUa9Zc+03J8V6WTike8FzpXJ4UtzUQOEIux98oCAdHzYCIJzsQw5M6s0LC+D01NIPxmQQz1D+SWfAs+D8FO1mn6w9uHUJ90zPSQOAvcdWOxERD4q5dSwjA/0KxuNmg1294/+7tGLlFuIOy+NbNG0b4s3YSSwIqyzr4Z/qnlv7+/iE/N42/FjokJBQ3lmI7JteUQK5E0Ajp6fZgLUaw0LNDp7juuomL2WCtRfkhwACjULOQ0RiwkAAAAABJRU5ErkJggg==");background-repeat:no-repeat;mix-blend-mode:difference}
 #menu h1:hover{background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAdCAYAAAC9pNwMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2RpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpFODREQjFFMzE2RjRFRjExOTIyNkVEQzE2RkYzQkNDRCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDowQUNCOTdFQkY0MkQxMUVGOUM0OUMyQTRDNjAyNzhENiIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowQUNCOTdFQUY0MkQxMUVGOUM0OUMyQTRDNjAyNzhENiIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IFdpbmRvd3MiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpFRTREQjFFMzE2RjRFRjExOTIyNkVEQzE2RkYzQkNDRCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpFODREQjFFMzE2RjRFRjExOTIyNkVEQzE2RkYzQkNDRCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pq1mg9cAAAQtSURBVHja7JZdTFxFFIDP3J9dCgqUQimQIlBSWNoCNfVBYmo0jX9Jg014aYrWFzWGRl9MTHzpiy8k2kbrm9qUWtMaY9S2RqV9ADQm9o/+pHsvhW5Lw8/iLu6PC9yfvTOeWWbbC9ktlPWRk5ydvWfmzjfnzJkzlxz+7HNYSpIeD1QEAtB2+kew8vKgwdXn9Wsw1uR7tQTg+zhjfRs0fTeazWCT71ARwLt8jANgn0nMNO+9d+82nw6VSZCj3PE1VhcDnJIBpDnG8tC0TmvYvC8N5YJ9yq6C/L4/6je9jo8eVJITOMjY9lJCdBUdn6D0Sq0+9B6alTpZ7okwNrjGrzWjPnkwHO4oJKR8h8fzJfaXcLiUA3TLWkJ+x+WvQeglhL6N5jhqZIqxbyo1vQP/z6GOW5QN8nfI/KtrOVhZLogwllIuE4xVo6eXEJo3TumFOn2oS0D/Rv23WtPfxPYxVCvU5DuL41pMAOOWbf+ENu4sWR4YgUlVBUdRQHIcKJPlEQyvGqT02mLofC6BhRrFBPuhEOAZG20HJoOvHItEJtEeQ7WXFWrFtmGq+gm4+NLL6DUF23Ei3O4hpLRKVXkY/nFBRSKDjUlVxR8+Coc7BTSEGuZZr8w7xN6nlBZhS7LBqWHc3n/kyAkxaV2osWG4RJKqrtRvOluu6S0PtvCBxCg9iZtsBSwrJBYXEdFgKTAhpFuW5aW8v4p6RoTV7Bwb23F848aLxYRUhn2NN0o13Sf6kukX6vWhT7E5zoMm+mwOTTGxgIzfCQT2+v03bcu0vNmoLa2tzTW1tR+GpsNvHeru/pVP0FlcXHG4YsMFflSweEwdjUaf/2AyeEtEhWFincMM2/XzzOxzHaOjf6HNSIP5Sio1vz8+0NcXdncslqfb2sokSSqfTSRKRMbGTkSjE6hb0GM/h+8rKvoOwTtFAiUtxkYNQqI3TYNHkztlusEwMjJsiDMXzQZ+vLCQZy1gVFQxiWQ+u9P29g/EMMxNdxsbfhm2rH4+FHWWg6s0/QC2B0W1WjBvCvxOV9fXGHUD9zn5kD1el0oy6tzPhdM1tQD9A/ydWI0+9KKA8uShYogtkkpKJ9UCsKKoW7N56pIU0HGonDaMtG4H6OkBkVBxETUmgOljNZfxiPKfb0+dfGHw8uXE4lW55bX9b7Rt3bbtC/eR4wXFJY7rHC9dG/hPQX4BD820WHVGcNn69fHUTSPL9ydXDWPFF0wKLMkSB89wcPfHn9BMA03TnF0MxgKwYnDO9/EqeBW8Cl4Ati07ufTXD0ufb/J/gBW8Ejfvbm8/375nT6kAZB6oKH+e7+196sb1azPuC33FHh87+tVd/AKxhSdZ1bJMeq73t0gwGOT3duJR6nLGr1aPx8snzuflWFxr2ULpiAt++mEfDI8CTtdsb7p2Z9tmEWIrV2+5/CfAAOVxxSK4gGWJAAAAAElFTkSuQmCC");mask-image:linear-gradient(black, transparent);-webkit-mask-image:linear-gradient(black, transparent);mix-blend-mode:unset;background-color:unset}
+.rtl table.layout tbody td{display:flex}
+.rtl table.layout~table thead th:first-child,.rtl table.layout~table tbody td:first-child{text-align:right !important}
+.rtl table.layout~table thead th:last-child,.rtl table.layout~table tbody td:last-child{text-align:left !important}
 h1{padding:.6em .4em;background:#1d4e78;border:1px solid #f2ddaf;text-align:left}
 #h1{color:#fff}
 .version{color:#ddd;margin-left:8px}
@@ -100,7 +99,7 @@ code{background:#81a0bc;padding:.2em .5em}
 table code{font-size:130%;background:#154167;padding:.1em .3em}
 code.jush-sql{background:#c5d8e9}
 .rtl p code.jush-sql{background-position:right;clear:right;float:right}
-pre.sqlarea{background:#a7c3dc;padding:5px}
+pre{background:#a7c3dc !important;padding:5px}
 textarea{font-size:120%}
 .ltr p.count{font-size:90%;margin:.8em 20px 8px 0}
 .rtl p.count{font-size:90%;margin:.8em 0 8px 20px}
@@ -120,12 +119,12 @@ table{border-spacing:0}
 table,td,th{border:0;border-collapse:separate}
 .ltr table{margin:1.9em 0 0 0}
 .rtl table{margin:1.9em 0 0 0}
-.rtl table tbody td,.rtl table tbody th{text-align:right}
+.rtl table tbody td,.rtl table tbody th{text-align:right !important}
 .ltr table thead td:first-child,.ltr table thead th:first-child{border-left:1px solid #1e5687}
 .rtl table thead td:first-child,.rtl table thead th:first-child{border-right:1px solid #1e5687}
 table thead td,table thead th{height:1.6em;border-top:1px solid #1e5687;border-bottom:1px solid #1e5687}
 .ltr table thead td,.ltr table thead th{border-right:1px solid #1e5687}
-.rtl table thead td,.rtl table thead th{border-left:1px solid #1e5687;text-align:right !important}
+.rtl table thead td,.rtl table thead th{border-left:1px solid #1e5687}
 table tbody tr:first-child td,table tbody tr:first-child th{border-top:1px solid #1e5687}
 .ltr table tbody td:first-child,.ltr table tbody th:first-child{border-left:1px solid #1e5687}
 .rtl table tbody td:first-child,.rtl table tbody th:first-child{border-right:1px solid #1e5687}
@@ -141,8 +140,8 @@ thead th a{color:#8e7d16}
 thead th a:link:hover,thead th a:visited:hover{color:#a49019}
 thead th a:visited{color:#6f6211}
 td{background:#062846}
-.odds tbody tr:nth-child(2n):not(.checked, :hover) td{background:#042541}
-.odds tbody tr:nth-child(2n):not(.checked, :hover) th{background:#103556}
+.odds tbody tr:nth-child(2n) td{background:#042541}
+.odds tbody tr:nth-child(2n) th{background:#103556}
 tbody{font-size:90%}
 tbody td{padding:.15em .3em}
 pre[id^=sql]+table tbody td{padding:.2em .3em}
@@ -422,9 +421,12 @@ input[type=radio]{margin-bottom:5px}
 .rtl input[type=checkbox],.rtl input[type=radio],.rtl input[type=range],.rtl progress{margin-left:5px}
 .ltr input[type=submit]{margin-right:10px}
 .rtl input[type=submit]{margin-left:10px}
+.ltr table.layout label,.ltr label.jsonly{margin-left:8px}
+.rtl table.layout label,.rtl label.jsonly{margin-right:8px}
 input,button,select,.sqlarea{border-radius:3px}
 .sqlarea{background:#a7c3dc;font-size:105%}
 fieldset a{line-height:unset}
 input[type=submit]{padding:2px 6px}
-.ltr table.layout label,.ltr label.jsonly{margin-left:8px}
-.rtl table.layout label,.rtl label.jsonly{margin-right:8px}
+#menu{padding:0 0 30px 0}
+.ltr .logout{right:0;left:auto;margin-top:.5em}
+.rtl .logout{left:0;right:auto;margin-top:.5em}
