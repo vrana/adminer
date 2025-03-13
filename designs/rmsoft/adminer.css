@@ -140,8 +140,8 @@ thead th a{color:#b35a00}
 thead th a:link:hover,thead th a:visited:hover{color:#d00808}
 thead th a:visited{color:#844200}
 td{background:#ebebeb}
-.odds tbody tr:nth-child(2n):not(.checked, :hover) td{background:#e0e0e0}
-.odds tbody tr:nth-child(2n):not(.checked, :hover) th{background:#ebebeb}
+.odds tbody tr:nth-child(2n) td{background:#e0e0e0}
+.odds tbody tr:nth-child(2n) th{background:#ebebeb}
 tbody{font-size:90%}
 tbody td{padding:.15em .3em}
 pre[id^=sql]+table tbody td{padding:.2em .3em}

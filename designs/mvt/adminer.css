@@ -378,7 +378,7 @@ thead td abbr, thead td sup, thead th acronym, thead th sup {
 	color: #cdf
 }
 
-.odds tbody tr:nth-child(2n):not(.checked, :hover) td {
+.odds tbody tr:nth-child(2n) {
 	background: #fcfaf5
 }
 

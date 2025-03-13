@@ -187,7 +187,7 @@ td.nowrap {
 .binary {
     color: red;
 }
-.odds tbody tr:nth-child(2n):not(.checked, :hover) td {
+.odds tbody tr:nth-child(2n) {
     background: transparent;
 }
 .js .checkable .checked td,

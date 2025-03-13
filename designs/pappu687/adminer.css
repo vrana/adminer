@@ -169,7 +169,7 @@ th {
     background:white;
 }
 
-.odds tbody tr:nth-child(2n):not(.checked, :hover) td {
+.odds tbody tr:nth-child(2n) {
     background:#fcfaf5;
 }
 
@@ -748,7 +748,7 @@ input[type=submit] {
 label { margin: 0 8px;}
 thead td, thead th{color:#fff;}
 
-#content tbody .odds tbody tr:nth-child(2n):not(:hover).checked td, .odds tbody tr:nth-child(2n):not(:hover).checked td {
+#content tbody .odds tbody tr:nth-child(2n).checked td, .odds tbody tr:nth-child(2n).checked td {
     background: #c8edff;
     color: #03A9F4;
 }
