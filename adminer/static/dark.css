@@ -1,49 +1,47 @@
 /** @author Robert Mesaros, https://www.rmsoft.sk */
 
-@media (prefers-color-scheme: dark) {
-	body { color: #829bb0; background: #002240; }
-	a { color: #517fa8; }
-	a:visited { color: #517fa8; }
-	a:link:hover, a:visited:hover { color: #9bc0e1; }
-	h1 { border-color: #5e94c1; color: #ffddbf; background: #154269; }
-	h2 { border-color: #a3bdd3; color: #000; background: #3c678d; }
-	td, th { border-color: #0e416d; }
-	th { background: #11385a; }
-	thead td, thead th { color: #a8b05f; background: #011d35; }
-	thead th a { color: #a8b05f; }
-	fieldset { border-color: #16548a; }
-	code { background: #11385a; }
-	code[class^="jush-"] { color: #002240; background: #81a0bc; padding: .2em .5em; }
-	tbody tr:hover td, tbody tr:hover th { background: #133553; }
-	pre.jush { background: #a7c3dc; }
-	input.default { box-shadow: 1px 1px 1px #888; }
-	input.required, input.maxlength { box-shadow: 1px 1px 1px red; }
-	.version { color: #888; }
-	.js .column { background: #011d35; }
-	.error { color: red; background: #efdada; border: 1px solid #e76f6f; }
-	.error b { background: #002240; }
-	.message { color: #0b860b; background: #efe; border: 1px solid #7fbd7f; }
-	.message table { color: #829bb0; background: #002240; }
-	.char { color: #a949a9; }
-	.date { color: #59c159; }
-	.enum { color: #d55c5c; }
-	.binary { color: #9bc0e1; }
-	.odds tbody tr:nth-child(2n) { background: #042541; }
-	.js .checkable .checked td, .js .checkable .checked th { background: #10395c; color: #67a4a5; }
-	.js .checkable .checked:hover td, .js .checkable .checked:hover th { background: #133553; }
-	.js .checkable .checked a { color: #67a4a5; }
-	.icon { background-color: #062642; }
-	.icon:hover { background-color: #d1394e; }
-	.footer { border-top-color: rgba(0, 34, 64, .7); border-image-source: linear-gradient(rgba(0, 34, 64, 0.2), #002240); }
-	.footer > div { background: #002240; }
-	#menu p, #logins, #tables { border-color: #326b9c; }
-	#logins a, #tables a, #tables span { background: #002240; }
-	#breadcrumb { background: #154269; }
-	#h1 { color: #ffddbf; }
-	#version { color: #d2b397; }
-	#schema .table { border-color: #093459; }
-	#help { border-color: #666; background: #c7e4fe; }
-	#schema div.table a { color: #3c7bb3; }
-	#menu .active { color: #398c8d; }
-	#edit-fields tbody tr:hover td, #edit-fields tbody tr:hover th { background: #3b6f9d; }
-}
+body { color: #829bb0; background: #002240; }
+a { color: #517fa8; }
+a:visited { color: #517fa8; }
+a:link:hover, a:visited:hover { color: #9bc0e1; }
+h1 { border-color: #5e94c1; color: #ffddbf; background: #154269; }
+h2 { border-color: #a3bdd3; color: #000; background: #3c678d; }
+td, th { border-color: #0e416d; }
+th { background: #11385a; }
+thead td, thead th { color: #a8b05f; background: #011d35; }
+thead th a { color: #a8b05f; }
+fieldset { border-color: #16548a; }
+code { background: #11385a; }
+code[class^="jush-"] { color: #002240; background: #81a0bc; padding: .2em .5em; }
+tbody tr:hover td, tbody tr:hover th { background: #133553; }
+pre.jush { background: #a7c3dc; }
+input.default { box-shadow: 1px 1px 1px #888; }
+input.required, input.maxlength { box-shadow: 1px 1px 1px red; }
+.version { color: #888; }
+.js .column { background: #011d35; }
+.error { color: red; background: #efdada; border: 1px solid #e76f6f; }
+.error b { background: #002240; }
+.message { color: #0b860b; background: #efe; border: 1px solid #7fbd7f; }
+.message table { color: #829bb0; background: #002240; }
+.char { color: #a949a9; }
+.date { color: #59c159; }
+.enum { color: #d55c5c; }
+.binary { color: #9bc0e1; }
+.odds tbody tr:nth-child(2n) { background: #042541; }
+.js .checkable .checked td, .js .checkable .checked th { background: #10395c; color: #67a4a5; }
+.js .checkable .checked:hover td, .js .checkable .checked:hover th { background: #133553; }
+.js .checkable .checked a { color: #67a4a5; }
+.icon { background-color: #062642; }
+.icon:hover { background-color: #d1394e; }
+.footer { border-top-color: rgba(0, 34, 64, .7); border-image-source: linear-gradient(rgba(0, 34, 64, 0.2), #002240); }
+.footer > div { background: #002240; }
+#menu p, #logins, #tables { border-color: #326b9c; }
+#logins a, #tables a, #tables span { background: #002240; }
+#breadcrumb { background: #154269; }
+#h1 { color: #ffddbf; }
+#version { color: #d2b397; }
+#schema .table { border-color: #093459; }
+#help { border-color: #666; background: #c7e4fe; }
+#schema div.table a { color: #3c7bb3; }
+#menu .active { color: #398c8d; }
+#edit-fields tbody tr:hover td, #edit-fields tbody tr:hover th { background: #3b6f9d; }

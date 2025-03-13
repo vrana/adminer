@@ -36,7 +36,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 			echo "<link rel='stylesheet' href='" . h($val) . "'>\n";
 		}
 	} else {
-		echo "<link rel='stylesheet' href='../adminer/static/dark.css'>\n";
+		echo "<link rel='stylesheet' media='(prefers-color-scheme: dark)' href='../adminer/static/dark.css'>\n";
 	}
 	echo script_src("../adminer/static/functions.js");
 	echo script_src("static/editing.js");
