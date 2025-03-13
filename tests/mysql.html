@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+	<title>Katalon MySQL</title>
+</head>
+<body>
+<!-- The tests don't work with jush-textarea.js. Delete it first. -->
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Login</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/coverage.php?coverage=0</td><td></td></tr>
+<tr><td>open</td><td>/adminer/</td><td></td></tr>
+<tr><td>select</td><td>name=lang</td><td>label=English</td></tr>
+<tr><td>clickAndWait</td><td>css=#lang &gt; input[type="submit"]</td><td></td></tr>
+<tr><td>type</td><td>id=username</td><td>ODBC</td></tr>
+<tr><td>type</td><td>name=auth[password]</td><td>ODBC</td></tr>
+<tr><td>clickAndWait</td><td>xpath=//input[@value='Login']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Logged as</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=SQL command</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;sql=DROP+DATABASE+IF+EXISTS+adminer_test</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Execute']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Query executed OK</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Create database</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Create database</td><td></td></tr>
+<tr><td>type</td><td>name</td><td>adminer_test</td></tr>
+<tr><td>select</td><td>collation</td><td>label=utf8mb4_general_ci</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Database has been created.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Create table</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Create table</td><td></td></tr>
+<tr><td>type</td><td>name</td><td>interprets</td></tr>
+<tr><td>select</td><td>Engine</td><td>label=InnoDB</td></tr>
+<tr><td>type</td><td>fields[1][field]</td><td>id</td></tr>
+<tr><td>select</td><td>fields[1][type]</td><td>label=int</td></tr>
+<tr><td>click</td><td>//input[@name='auto_increment_col' and @value='1']</td><td></td></tr>
+<tr><td>type</td><td>fields[1.1][field]</td><td>name</td></tr>
+<tr><td>select</td><td>fields[1.1][type]</td><td>label=varchar</td></tr>
+<tr><td>type</td><td>fields[1.1][length]</td><td>50</td></tr>
+<tr><td>uncheck</td><td>name=comments</td><td></td></tr>
+<tr><td>clickAndWait</td><td>name=comments</td><td></td></tr>
+<tr><td>type</td><td>fields[1.1][comment]</td><td>Interpret</td></tr>
+<tr><td>type</td><td>Comment</td><td>Interprets</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Table has been created.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Create index</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Alter indexes</td><td></td></tr>
+<tr><td>select</td><td>indexes[2][type]</td><td>label=PRIMARY</td></tr>
+<tr><td>select</td><td>indexes[2][columns][1]</td><td>label=name</td></tr>
+<tr><td>verifyValue</td><td>name=indexes[2][name]</td><td>name</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Multiple primary key defined</td><td></td></tr>
+<tr><td>select</td><td>indexes[2][type]</td><td>label=INDEX</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Indexes have been altered.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Partitioning</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Alter table</td><td></td></tr>
+<tr><td>select</td><td>partition_by</td><td>label=HASH</td></tr>
+<tr><td>click</td><td>link=Partition by</td><td></td></tr>
+<tr><td>type</td><td>partition</td><td>id</td></tr>
+<tr><td>type</td><td>partitions</td><td>2</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Table has been altered.</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Alter table</td><td></td></tr>
+<tr><td>select</td><td>partition_by</td><td>label=RANGE</td></tr>
+<tr><td>type</td><td>partition_values[]</td><td>10</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Table has been altered.</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Alter table</td><td></td></tr>
+<tr><td>select</td><td>partition_by</td><td>label=</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Table has been altered.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Create table 2</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Create table</td><td></td></tr>
+<tr><td>type</td><td>name</td><td>albums</td></tr>
+<tr><td>type</td><td>fields[1][field]</td><td>id</td></tr>
+<tr><td>select</td><td>fields[1][type]</td><td>label=int</td></tr>
+<tr><td>click</td><td>//input[@name='auto_increment_col' and @value='1']</td><td></td></tr>
+<tr><td>type</td><td>fields[1.1][field]</td><td>interpret</td></tr>
+<tr><td>select</td><td>fields[1.1][type]</td><td>label=int</td></tr>
+<tr><td>type</td><td>fields[1.11][field]</td><td>title</td></tr>
+<tr><td>select</td><td>fields[1.11][type]</td><td>label=varchar</td></tr>
+<tr><td>type</td><td>fields[1.11][length]</td><td>50</td></tr>
+<tr><td>check</td><td>name=comments</td><td></td></tr>
+<tr><td>type</td><td>fields[1.1][comment]</td><td>Interpret</td></tr>
+<tr><td>type</td><td>fields[1.11][comment]</td><td>Album</td></tr>
+<tr><td>type</td><td>Comment</td><td>Albums</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Table has been created.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Foreign key</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=albums</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Add foreign key</td><td></td></tr>
+<tr><td>selectAndWait</td><td>table</td><td>label=interprets</td></tr>
+<tr><td>select</td><td>source[0]</td><td>label=interpret</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Foreign key has been created.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Alter table</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=interprets</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Alter table</td><td></td></tr>
+<tr><td>click</td><td>add[2]</td><td></td></tr>
+<tr><td>type</td><td>fields[2.1][field]</td><td>albums</td></tr>
+<tr><td>select</td><td>fields[2.1][type]</td><td>label=int</td></tr>
+<tr><td>type</td><td>fields[2.1][length]</td><td></td></tr>
+<tr><td>uncheck</td><td>name=defaults</td><td></td></tr>
+<tr><td>clickAndWait</td><td>name=defaults</td><td></td></tr>
+<tr><td>type</td><td>name=fields[2.1][default]</td><td>0</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Table has been altered.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Create trigger</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;trigger=albums</td><td></td></tr>
+<tr><td>select</td><td>Timing</td><td>label=AFTER</td></tr>
+<tr><td>type</td><td>name=Statement</td><td>UPDATE interprets SET albums = albums + 1 WHERE id = NEW.interpret</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Trigger has been created.</td><td></td></tr></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Check constraints</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;table=albums</td><td></td></tr>
+<tr><td>click</td><td>link=Create check</td><td></td></tr>
+<tr><td>type</td><td>name=name</td><td>albums_interpret_check</td></tr>
+<tr><td>type</td><td>name=clause</td><td>interpret > 0</td></tr>
+<tr><td>click</td><td>xpath=//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Check has been created.</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;check=albums&amp;name=albums_interpret_check</td><td></td></tr>
+<tr><td>verifyText</td><td>name=clause</td><td>(`interpret` > 0)</td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Drop albums_interpret_check?</td><td></td></tr>
+<tr><td>click</td><td>name=drop</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Check has been dropped.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Create view</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;view=</td><td></td></tr>
+<tr><td>type</td><td>select</td><td>SELECT albums.id, albums.title, interprets.name
+FROM albums
+LEFT JOIN interprets ON albums.interpret = interprets.id</td></tr>
+<tr><td>type</td><td>name</td><td>albums_interprets</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>View has been created.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Insert</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;edit=interprets</td><td></td></tr>
+<tr><td>type</td><td>fields[name]</td><td>Michael Jackson</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Item 1 has been inserted.</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;edit=albums</td><td></td></tr>
+<tr><td>type</td><td>fields[interpret]</td><td>1</td></tr>
+<tr><td>type</td><td>fields[title]</td><td>Dangerous</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Item 1 has been inserted.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Clone</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</td><td></td></tr>
+<tr><td>click</td><td>check[]</td><td></td></tr>
+<tr><td>clickAndWait</td><td>clone</td><td></td></tr>
+<tr><td>type</td><td>fields[title]</td><td>Black and White</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Item 2 has been inserted.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Explain</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Edit</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Execute']</td><td></td></tr>
+<tr><td>click</td><td>link=Explain</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>possible_keys</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Reference</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=1</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Michael Jackson</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Update</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;edit=albums&amp;where%5Bid%5D=2</td><td></td></tr>
+<tr><td>type</td><td>fields[title]</td><td>Black or White</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Item has been updated.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Delete</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</td><td></td></tr>
+<tr><td>click</td><td>//input[@name='check[]' and @value='where%5Bid%5D=2']</td><td></td></tr>
+<tr><td>waitForChecked</td><td>//input[@name='check[]' and @value='where%5Bid%5D=2']</td><td></td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Are you sure?</td><td></td></tr>
+<tr><td>click</td><td>delete</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>1 item has been affected.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Truncate</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</td><td></td></tr>
+<tr><td>click</td><td>all</td><td></td></tr>
+<tr><td>waitForChecked</td><td>all</td><td></td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Are you sure?</td><td></td></tr>
+<tr><td>click</td><td>delete</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>No rows.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Privileges</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;user=</td><td></td></tr>
+<tr><td>type</td><td>user</td><td>adminer_test</td></tr>
+<tr><td>type</td><td>objects[0]</td><td>adminer_test.*</td></tr>
+<tr><td>click</td><td>grants[0][ALTER]</td><td></td></tr>
+<tr><td>click</td><td>grants[0][CREATE]</td><td></td></tr>
+<tr><td>click</td><td>//input[@name='grants[0][CREATE VIEW]']</td><td></td></tr>
+<tr><td>click</td><td>grants[0][DELETE]</td><td></td></tr>
+<tr><td>click</td><td>grants[0][DROP]</td><td></td></tr>
+<tr><td>click</td><td>grants[0][INDEX]</td><td></td></tr>
+<tr><td>click</td><td>grants[0][INSERT]</td><td></td></tr>
+<tr><td>click</td><td>grants[0][REFERENCES]</td><td></td></tr>
+<tr><td>click</td><td>grants[0][SELECT]</td><td></td></tr>
+<tr><td>click</td><td>//input[@name='grants[0][SHOW VIEW]']</td><td></td></tr>
+<tr><td>click</td><td>grants[0][UPDATE]</td><td></td></tr>
+<tr><td>click</td><td>//input[@name='grants[0][CREATE TEMPORARY TABLES]']</td><td></td></tr>
+<tr><td>click</td><td>//input[@name='grants[0][LOCK TABLES]']</td><td></td></tr>
+<tr><td>click</td><td>//input[@name='grants[0][CREATE ROUTINE]']</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>User has been created.</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//div[@id='content']/form/table/tbody/tr[td[1]='adminer_test']/td[3]/a</td><td></td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Drop adminer_test@localhost?</td><td></td></tr>
+<tr><td>click</td><td>drop</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>User has been dropped.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Process list</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;processlist=</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>SHOW FULL PROCESSLIST</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Export</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;dump=</td><td></td></tr>
+<tr><td>click</td><td>output</td><td></td></tr>
+<tr><td>click</td><td>format</td><td></td></tr>
+<tr><td>select</td><td>table_style</td><td>label=DROP+CREATE</td></tr>
+<tr><td>select</td><td>data_style</td><td>label=INSERT</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Export']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>CREATE TABLE `interprets`</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>CREATE TRIGGER `albums_ai`</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>INSERT INTO `interprets`</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>VIEW `albums_interprets`</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Events</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;event=</td><td></td></tr>
+<tr><td>type</td><td>EVENT_NAME</td><td>no_albums</td></tr>
+<tr><td>select</td><td>INTERVAL_FIELD</td><td>label=DAY</td></tr>
+<tr><td>type</td><td>INTERVAL_VALUE</td><td>1</td></tr>
+<tr><td>click</td><td>ON_COMPLETION</td><td></td></tr>
+<tr><td>type</td><td>EVENT_DEFINITION</td><td>DELETE FROM albums WHERE interprets = 0</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Event has been created.</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Alter</td><td></td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Drop no_albums?</td><td></td></tr>
+<tr><td>click</td><td>drop</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Event has been dropped.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Procedures</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;procedure=</td><td></td></tr>
+<tr><td>clickAndWait</td><td>add[0]</td><td></td></tr>
+<tr><td>type</td><td>fields[1][field]</td><td>interpret_name</td></tr>
+<tr><td>select</td><td>fields[1][type]</td><td>label=varchar</td></tr>
+<tr><td>type</td><td>fields[1][length]</td><td>50</td></tr>
+<tr><td>type</td><td>fields[1.1][field]</td><td>album_title</td></tr>
+<tr><td>select</td><td>fields[1.1][type]</td><td>label=varchar</td></tr>
+<tr><td>type</td><td>fields[1.1][length]</td><td>50</td></tr>
+<tr><td>type</td><td>definition</td><td>BEGIN
+SELECT id INTO @interpret FROM interprets WHERE name = interpret_name;
+IF @interpret IS NULL THEN
+    INSERT INTO interprets (name) VALUES (interpret_name);
+    SET @interpret = LAST_INSERT_ID();
+END IF;
+INSERT INTO albums (interpret, title) VALUES (@interpret, album_title);
+END</td></tr>
+<tr><td>type</td><td>name</td><td>insert_album</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Routine has been created.</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=insert_album</td><td></td></tr>
+<tr><td>type</td><td>fields[interpret_name]</td><td>Michael Jackson</td></tr>
+<tr><td>type</td><td>fields[album_title]</td><td>Dangerous</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Call']</td><td></td></tr>
+<tr><td>assertTextPresent</td><td>Routine has been called,</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=adminer_test</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Alter</td><td></td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Drop insert_album?</td><td></td></tr>
+<tr><td>click</td><td>drop</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Routine has been dropped.</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Variables</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;variables=</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>basedir</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">History</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;sql=</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>DROP DATABASE IF EXISTS adminer_test</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Warnings</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=adminer_test&amp;select=albums</td><td></td></tr>
+<tr><td>click</td><td>xpath=(//a[contains(text(),'=')])[1]</td><td></td></tr>
+<tr><td>type</td><td>name=where[0][val]</td><td>1.2.3</td></tr>
+<tr><td>submit</td><td>id=form</td><td></td></tr>
+<tr><td>click</td><td>link=Warnings</td><td></td></tr>
+<tr><td>verifyText</td><td>//div[@id='warnings']/div/table/tbody/tr/td[3]</td><td>Truncated incorrect DOUBLE value: '1.2.3'</td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Editor</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/editor/example.php</td><td></td></tr>
+<tr><td>select</td><td>name=lang</td><td>label=English</td></tr>
+<tr><td>clickAndWait</td><td>css=#lang &gt; input[type="submit"]</td><td></td></tr>
+<tr><td>type</td><td>name=auth[username]</td><td>admin</td></tr>
+<tr><td>click</td><td>xpath=//input[@value='Login']</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Interprets</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=New item</td><td></td></tr>
+<tr><td>type</td><td>fields[name]</td><td>Michael Jackson</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Albums</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=New item</td><td></td></tr>
+<tr><td>type</td><td>fields[title]</td><td>Dangerous</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Item 4 has been inserted.</td><td></td></tr>
+<tr><td>clickAndWait</td><td>logout</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Logout</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?username=ODBC</td><td></td></tr>
+<tr><td>clickAndWait</td><td>logout</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Logout successful.</td><td></td></tr>
+<tr><td>selectAndWait</td><td>//select[@name='lang']</td><td>label=Čeština</td></tr>
+<tr><td>verifyTextPresent</td><td>Přihlásit se</td><td></td></tr>
+<tr><td>open</td><td>/coverage.php</td><td></td></tr>
+</tbody></table>
+</body>
+</html>

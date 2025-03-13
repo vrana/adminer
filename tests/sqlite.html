@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+	<title>Katalon SQLite</title>
+</head>
+<body>
+<!-- The tests don't work with jush-textarea.js. Delete it first. -->
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">SQLite</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php</td><td></td></tr>
+<tr><td>select</td><td>name=lang</td><td>label=English</td></tr>
+<tr><td>clickAndWait</td><td>css=#lang &gt; input[type="submit"]</td><td></td></tr>
+<tr><td>select</td><td>name=auth[driver]</td><td>label=SQLite</td></tr>
+<tr><td>type</td><td>id=username</td><td>admin</td></tr>
+<tr><td>type</td><td>name=auth[password]</td><td>YOUR_PASSWORD_HERE</td></tr>
+<tr><td>click</td><td>css=input[type="submit"]</td><td></td></tr>
+<tr><td>click</td><td>link=Create database</td><td></td></tr>
+<tr><td>type</td><td>name=name</td><td>adminer_test</td></tr>
+<tr><td>click</td><td>css=input[type="submit"]</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Please use one of the extensions</td><td></td></tr>
+<tr><td>type</td><td>name=name</td><td>adminer_test.sqlite</td></tr>
+<tr><td>click</td><td>css=input[type="submit"]</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Database has been created.</td><td></td></tr>
+<tr><td>click</td><td>link=Create table</td><td></td></tr>
+<tr><td>type</td><td>name=name</td><td>interprets</td></tr>
+<tr><td>click</td><td>css=label.block &gt; input[name="auto_increment_col"]</td><td></td></tr>
+<tr><td>type</td><td>name=fields[1.1][field]</td><td>name</td></tr>
+<tr><td>select</td><td>name=fields[1.1][type]</td><td>label=text</td></tr>
+<tr><td>click</td><td>xpath=(//input[@value='Save'])[2]</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Table has been created.</td><td></td></tr>
+<tr><td>click</td><td>link=New item</td><td></td></tr>
+<tr><td>type</td><td>name=fields[name]</td><td>Michael Jackson</td></tr>
+<tr><td>click</td><td>css=input[type="submit"]</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Item 1 has been inserted.</td><td></td></tr>
+<tr><td>click</td><td>link=Create table</td><td></td></tr>
+<tr><td>type</td><td>name=name</td><td>albums</td></tr>
+<tr><td>click</td><td>css=label.block &gt; input[name="auto_increment_col"]</td><td></td></tr>
+<tr><td>type</td><td>name=fields[1.1][field]</td><td>interpret</td></tr>
+<tr><td>select</td><td>name=fields[1.1][on_delete]</td><td>label=CASCADE</td></tr>
+<tr><td>type</td><td>name=fields[1.11][field]</td><td>title</td></tr>
+<tr><td>select</td><td>name=fields[1.11][type]</td><td>label=text</td></tr>
+<tr><td>click</td><td>xpath=(//input[@value='Save'])[2]</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>interprets(id)</td><td></td></tr>
+<tr><td>click</td><td>link=New item</td><td></td></tr>
+<tr><td>type</td><td>name=fields[interpret]</td><td>1</td></tr>
+<tr><td>type</td><td>name=fields[title]</td><td>Dangerous</td></tr>
+<tr><td>click</td><td>css=input[type="submit"]</td><td></td></tr>
+<tr><td>click</td><td>link=1</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Select: interprets</td><td></td></tr>
+<tr><td>click</td><td>link=adminer_test.sqlite</td><td></td></tr>
+<tr><td>click</td><td>link=Alter database</td><td></td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Drop adminer_test.sqlite?</td><td></td></tr>
+<tr><td>click</td><td>name=drop</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Database has been dropped.</td><td></td></tr>
+<tr><td>click</td><td>id=logout</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Thanks for using Adminer, consider donating.</td><td></td></tr>
+</tbody></table>
+</body>
+</html>
