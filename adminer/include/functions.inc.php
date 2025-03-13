@@ -934,6 +934,7 @@ function input($field, $value, $function) {
 		$field["type"] = "enum";
 		$field["length"] = $enums;
 	}
+	echo $driver->unconvertFunction($field) . " ";
 	if ($field["type"] == "enum") {
 		echo h($functions[""]) . "<td>" . $adminer->editInput($_GET["edit"], $field, $attrs, $value);
 	} else {

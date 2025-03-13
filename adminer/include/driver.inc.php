@@ -66,6 +66,13 @@ abstract class SqlDriver {
 	function enumLength($field) {
 	}
 
+	/** Function used to convert the value inputted by user
+	* @param array
+	* @return string or null
+	*/
+	function unconvertFunction($field) {
+	}
+
 	/** Select data from table
 	* @param string
 	* @param array result of $adminer->selectColumnsProcess()[0]

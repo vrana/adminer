@@ -330,6 +330,13 @@ if (!defined('Adminer\DRIVER')) {
 			}
 		}
 
+		function unconvertFunction($field) {
+			return (preg_match("~binary~", $field["type"]) ? "<code class='jush-sql'>UNHEX</code>"
+				: ($field["type"] == "bit" ? doc_link(array('sql' => 'bit-value-literals.html'), "<code>b''</code>")
+				: (preg_match("~geometry|point|linestring|polygon~", $field["type"]) ? "<code class='jush-sql'>GeomFromText</code>"
+				: "")));
+		}
+
 		function insert($table, $set) {
 			return ($set ? parent::insert($table, $set) : queries("INSERT INTO " . table($table) . " ()\nVALUES ()"));
 		}
