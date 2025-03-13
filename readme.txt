@@ -3,7 +3,7 @@ Adminer Editor - Data manipulation for end-users
 
 https://www.adminer.org/
 
-Supports: MySQL, MariaDB, PostgreSQL, SQLite, MS SQL, CockroachDB, Oracle, MongoDB, Elasticsearch (plugin), SimpleDB (plugin), Firebird (plugin), ClickHouse (plugin)
+Supports: MySQL, MariaDB, PostgreSQL, CockroachDB, SQLite, MS SQL, Oracle, MongoDB, Elasticsearch (plugin), SimpleDB (plugin), Firebird (plugin), ClickHouse (plugin)
 Requirements: PHP 5.3+
 
 adminer/index.php - Run development version of Adminer
@@ -16,6 +16,6 @@ editor/sqlite.php - Development version of Editor with SQLite allowed
 adminer/designs.php - Development version of Adminer with adminer.css switcher
 compile.php - Create a single file version
 lang.php - Update translations
-tests/katalon.html - Katalon Automation Recorder test suite
+tests/*.html - Katalon Recorder test suites
 
 If downloaded from Git then run: git submodule update --init
