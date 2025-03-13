@@ -289,12 +289,13 @@ class Adminer {
 	* @return string
 	*/
 	function selectVal($val, $link, $field, $original) {
-		$return = ($val === null ? "<i>NULL</i>" : (preg_match("~char|binary|boolean~", $field["type"]) && !preg_match("~var~", $field["type"]) ? "<code>$val</code>" : $val));
+		$return = ($val === null ? "<i>NULL</i>"
+			: (preg_match("~char|binary|boolean~", $field["type"]) && !preg_match("~var~", $field["type"]) ? "<code>$val</code>"
+			: (preg_match('~json~', $field["type"]) ? "<code class='jush-js'>$val</code>"
+			: $val)
+		));
 		if (preg_match('~blob|bytea|raw|file~', $field["type"]) && !is_utf8($val)) {
 			$return = "<i>" . lang('%d byte(s)', strlen($original)) . "</i>";
-		}
-		if (preg_match('~json~', $field["type"])) {
-			$return = "<code class='jush-js'>$return</code>";
 		}
 		return ($link ? "<a href='" . h($link) . "'" . (is_url($link) ? target_blank() : "") . ">$return</a>" : $return);
 	}
