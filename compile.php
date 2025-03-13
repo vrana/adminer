@@ -210,7 +210,7 @@ if (!$translations) {
 }
 
 function minify_css($file) {
-	return lzw_compress(preg_replace('~\s*([:;{},])\s*~', '\1', preg_replace('~/\*.*\*/~sU', '', $file)));
+	return lzw_compress(preg_replace('~\s*([:;{},])\s*~', '\1', preg_replace('~/\*.*?\*/\s*~s', '', $file)));
 }
 
 function minify_js($file) {
