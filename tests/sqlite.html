@@ -15,7 +15,7 @@
 <tr><td>select</td><td>name=lang</td><td>label=English</td></tr>
 <tr><td>clickAndWait</td><td>css=#lang &gt; input[type="submit"]</td><td></td></tr>
 <tr><td>select</td><td>name=auth[driver]</td><td>label=SQLite</td></tr>
-<tr><td>type</td><td>id=username</td><td>admin</td></tr>
+<tr><td>type</td><td>id=username</td><td>ODBC</td></tr>
 <tr><td>type</td><td>name=auth[password]</td><td>YOUR_PASSWORD_HERE</td></tr>
 <tr><td>click</td><td>css=input[type="submit"]</td><td></td></tr>
 <tr><td>click</td><td>link=Create database</td><td></td></tr>
@@ -51,8 +51,36 @@
 <tr><td>click</td><td>css=input[type="submit"]</td><td></td></tr>
 <tr><td>click</td><td>link=1</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Select: interprets</td><td></td></tr>
-<tr><td>click</td><td>link=adminer_test.sqlite</td><td></td></tr>
-<tr><td>click</td><td>link=Alter database</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3" data-tags="">Generated columns</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;create=</td><td></td></tr>
+<tr><td>type</td><td>name=name</td><td>generated</td></tr>
+<tr><td>type</td><td>name=fields[1][field]</td><td>normal</td></tr>
+<tr><td>type</td><td>name=fields[1.1][field]</td><td>stored</td></tr>
+<tr><td>select</td><td>name=fields[1.1][generated]</td><td>label=STORED</td></tr>
+<tr><td>type</td><td>name=fields[1.1][default]</td><td>normal + 200</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>normal + 200</td><td></td></tr>
+<tr><td>click</td><td>link=Alter indexes</td><td></td></tr>
+<tr><td>select</td><td>name=indexes[2][columns][1]</td><td>label=stored</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Indexes have been altered.</td><td></td></tr>
+<tr><td>click</td><td>link=New item</td><td></td></tr>
+<tr><td>verifyTextNotPresent</td><td>stored</td><td></td></tr>
+<tr><td>type</td><td>name=fields[normal]</td><td>20</td></tr>
+<tr><td>click</td><td>xpath=//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>220</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3" data-tags="">Drop</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;database=</td><td></td></tr>
 <tr><td>chooseOkOnNextConfirmation</td><td>Drop adminer_test.sqlite?</td><td></td></tr>
 <tr><td>click</td><td>name=drop</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Database has been dropped.</td><td></td></tr>

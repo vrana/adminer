@@ -267,6 +267,29 @@
 </tbody></table>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
+<tr><td rowspan="1" colspan="3" data-tags="">Generated columns</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;create=</td><td></td></tr>
+<tr><td>type</td><td>name=name</td><td>generated</td></tr>
+<tr><td>type</td><td>name=fields[1][field]</td><td>normal</td></tr>
+<tr><td>type</td><td>name=fields[1.1][field]</td><td>stored</td></tr>
+<tr><td>select</td><td>name=fields[1.1][generated]</td><td>label=STORED</td></tr>
+<tr><td>type</td><td>name=fields[1.1][default]</td><td>normal + 200</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>normal + 200</td><td></td></tr>
+<tr><td>click</td><td>link=Alter indexes</td><td></td></tr>
+<tr><td>select</td><td>name=indexes[2][columns][1]</td><td>label=stored</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Indexes have been altered.</td><td></td></tr>
+<tr><td>click</td><td>link=New item</td><td></td></tr>
+<tr><td>verifyTextNotPresent</td><td>stored</td><td></td></tr>
+<tr><td>type</td><td>name=fields[normal]</td><td>20</td></tr>
+<tr><td>click</td><td>xpath=//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>220</td><td></td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
 <tr><td rowspan="1" colspan="3">Drop</td></tr>
 </thead>
 <tbody>
