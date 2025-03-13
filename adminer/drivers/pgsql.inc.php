@@ -952,7 +952,11 @@ AND typelem = 0"
 	}
 
 	function support($feature) {
-		return preg_match('~^(check|database|table|columns|sql|indexes|descidx|comment|view|' . (min_version(9.3) ? 'materializedview|' : '') . 'scheme|routine|processlist|sequence|trigger|type|variables|drop_col|kill|dump)$~', $feature);
+		global $connection;
+		return ($feature == "processlist"
+			? !preg_match('~CockroachDB~', $connection->server_info) // https://github.com/cockroachdb/cockroach/issues/24745
+			: preg_match('~^(check|database|table|columns|sql|indexes|descidx|comment|view|' . (min_version(9.3) ? 'materializedview|' : '') . 'scheme|routine|sequence|trigger|type|variables|drop_col|kill|dump)$~', $feature)
+		);
 	}
 
 	function kill_process($val) {
