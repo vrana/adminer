@@ -33,3 +33,4 @@ check('$ab = 1; echo "$ab";', '$a=1;echo"$a";');
 check('echo 1; echo 3;', 'echo 1,3;');
 check('echo 1; ?>2<?php echo 3;', "echo 1,'2',3;");
 check('/** preserve*/ $a; /** ignore */ /* also ignore */ // ignore too', '/** preserve*/$a;');
+check('$a = 1; ?><?php ?><?php $a = 2;', '$a=1;$a=2;');

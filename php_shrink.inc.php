@@ -13,6 +13,7 @@
 */
 function php_shrink($input) {
 	// based on http://latrine.dgx.cz/jak-zredukovat-php-skripty
+	$input = preg_replace("~<\\?php\\s*\\?>\n?|\\?>\n?<\\?php~", '', $input);
 	$special_variables = array_flip(array('$this', '$GLOBALS', '$_GET', '$_POST', '$_FILES', '$_COOKIE', '$_SESSION', '$_SERVER', '$http_response_header', '$php_errormsg'));
 	$short_variables = array();
 	$shortening = true;
