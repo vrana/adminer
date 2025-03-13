@@ -3,7 +3,8 @@ Adminer Editor - Data manipulation for end-users
 
 https://www.adminer.org/
 
-Supports: MySQL, MariaDB, PostgreSQL, CockroachDB, SQLite, MS SQL, Oracle, MongoDB, Elasticsearch (plugin), SimpleDB (plugin), Firebird (plugin), ClickHouse (plugin)
+Supports: MySQL, MariaDB, PostgreSQL, CockroachDB, SQLite, MS SQL, Oracle
+Plugins for: Elasticsearch, SimpleDB, MongoDB, Firebird, ClickHouse
 Requirements: PHP 5.3+
 
 adminer/index.php - Run development version of Adminer

@@ -1,7 +1,7 @@
 <?php
 namespace Adminer;
 
-$drivers["mongo"] = "MongoDB (alpha)";
+add_driver("mongo", "MongoDB (alpha)");
 
 if (isset($_GET["mongo"])) {
 	define('Adminer\DRIVER', "mongo");
@@ -120,9 +120,8 @@ if (isset($_GET["mongo"])) {
 
 
 		function get_databases($flush) {
-			global $connection;
 			$return = array();
-			foreach ($connection->executeCommand(array('listDatabases' => 1)) as $dbs) {
+			foreach (connection()->executeCommand(array('listDatabases' => 1)) as $dbs) {
 				foreach ($dbs->databases as $db) {
 					$return[] = $db->name;
 				}
@@ -136,9 +135,8 @@ if (isset($_GET["mongo"])) {
 		}
 
 		function tables_list() {
-			global $connection;
 			$collections = array();
-			foreach ($connection->executeCommand(array('listCollections' => 1)) as $result) {
+			foreach (connection()->executeCommand(array('listCollections' => 1)) as $result) {
 				$collections[$result->name] = 'table';
 			}
 			return $collections;
@@ -149,9 +147,8 @@ if (isset($_GET["mongo"])) {
 		}
 
 		function indexes($table, $connection2 = null) {
-			global $connection;
 			$return = array();
-			foreach ($connection->executeCommand(array('listIndexes' => $table)) as $index) {
+			foreach (connection()->executeCommand(array('listIndexes' => $table)) as $index) {
 				$descs = array();
 				$columns = array();
 				foreach (get_object_vars($index->key) as $column => $type) {
@@ -169,7 +166,7 @@ if (isset($_GET["mongo"])) {
 		}
 
 		function fields($table) {
-			global $driver;
+			$driver = get_driver();
 			$fields = fields_from_edit();
 			if (!$fields) {
 				$result = $driver->select($table, array("*"), null, null, array(), 10);
@@ -198,9 +195,8 @@ if (isset($_GET["mongo"])) {
 		}
 
 		function found_rows($table_status, $where) {
-			global $connection;
 			$where = where_to_query($where);
-			$toArray = $connection->executeCommand(array('count' => $table_status['Name'], 'query' => $where))->toArray();
+			$toArray = connection()->executeCommand(array('count' => $table_status['Name'], 'query' => $where))->toArray();
 			return $toArray[0]->n;
 		}
 
@@ -225,7 +221,6 @@ if (isset($_GET["mongo"])) {
 		}
 
 		function where_to_query($whereAnd = array(), $whereOr = array()) {
-			global $adminer;
 			$data = array();
 			foreach (array('and' => $whereAnd, 'or' => $whereOr) as $type => $where) {
 				if (is_array($where)) {
@@ -235,7 +230,7 @@ if (isset($_GET["mongo"])) {
 							list(, $class, $val) = $match;
 							$val = new $class($val);
 						}
-						if (!in_array($op, $adminer->operators)) {
+						if (!in_array($op, adminer()->operators)) {
 							continue;
 						}
 						if (preg_match('~^\(f\)(.+)~', $op, $match)) {
@@ -409,13 +404,11 @@ if (isset($_GET["mongo"])) {
 	}
 
 	function last_id() {
-		global $connection;
-		return $connection->last_id;
+		return connection()->last_id;
 	}
 
 	function error() {
-		global $connection;
-		return h($connection->error);
+		return h(connection()->error);
 	}
 
 	function collations() {
@@ -423,13 +416,11 @@ if (isset($_GET["mongo"])) {
 	}
 
 	function logged_user() {
-		global $adminer;
-		$credentials = $adminer->credentials();
+		$credentials = adminer()->credentials();
 		return $credentials[1];
 	}
 
 	function connect($credentials) {
-		global $adminer;
 		$connection = new Db;
 		list($server, $username, $password) = $credentials;
 
@@ -442,7 +433,7 @@ if (isset($_GET["mongo"])) {
 			$options["username"] = $username;
 			$options["password"] = $password;
 		}
-		$db = $adminer->database();
+		$db = adminer()->database();
 		if ($db != "") {
 			$options["db"] = $db;
 		}
@@ -457,7 +448,7 @@ if (isset($_GET["mongo"])) {
 	}
 
 	function alter_indexes($table, $alter) {
-		global $connection;
+		$connection = connection();
 		foreach ($alter as $val) {
 			list($type, $name, $set) = $val;
 			if ($set == "DROP") {
@@ -514,17 +505,15 @@ if (isset($_GET["mongo"])) {
 	}
 
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
-		global $connection;
 		if ($table == "") {
-			$connection->_db->createCollection($name);
+			connection()->_db->createCollection($name);
 			return true;
 		}
 	}
 
 	function drop_tables($tables) {
-		global $connection;
 		foreach ($tables as $table) {
-			$response = $connection->_db->selectCollection($table)->drop();
+			$response = connection()->_db->selectCollection($table)->drop();
 			if (!$response['ok']) {
 				return false;
 			}
@@ -533,9 +522,8 @@ if (isset($_GET["mongo"])) {
 	}
 
 	function truncate_tables($tables) {
-		global $connection;
 		foreach ($tables as $table) {
-			$response = $connection->_db->selectCollection($table)->remove();
+			$response = connection()->_db->selectCollection($table)->remove();
 			if (!$response['ok']) {
 				return false;
 			}
