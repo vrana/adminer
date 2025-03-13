@@ -630,7 +630,7 @@ function doc_link($paths, $text = "<sup>?</sup>") {
 		'mssql' => "https://learn.microsoft.com/en-us/sql/",
 		'oracle' => "https://www.oracle.com/pls/topic/lookup?ctx=db" . preg_replace('~^.* (\d+)\.(\d+)\.\d+\.\d+\.\d+.*~s', '\1\2', $server_info) . "&id=",
 	);
-	if (preg_match('~MariaDB~', $server_info)) {
+	if ($connection->maria) {
 		$urls['sql'] = "https://mariadb.com/kb/en/";
 		$paths['sql'] = (isset($paths['mariadb']) ? $paths['mariadb'] : str_replace(".html", "/", $paths['sql']));
 	}
