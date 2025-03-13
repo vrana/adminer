@@ -3,10 +3,10 @@ include __DIR__ . "/../adminer/include/errors.inc.php";
 include __DIR__ . "/../php_shrink.inc.php";
 
 function check($code, $expected) {
-	$shrinked = php_shrink("<?php\n$code");
-	if ("<?php\n" . preg_replace('~([^*]) ~', "\\1\n", $expected) . "" != $shrinked) {
+	$shrinked = str_replace("\n", " ", php_shrink("<?php\n$code"));
+	if ("<?php $expected" != $shrinked) {
 		$backtrace = reset(debug_backtrace());
-		echo "$backtrace[file]:$backtrace[line]:" . str_replace("\n", " ", substr($shrinked, 6)) . "\n";
+		echo "$backtrace[file]:$backtrace[line]:" . substr($shrinked, 6) . "\n";
 	}
 }
 
@@ -32,5 +32,5 @@ check('echo $_GET["a"];', 'echo$_GET["a"];');
 check('$ab = 1; echo "$ab";', '$a=1;echo"$a";');
 check('echo 1; echo 3;', 'echo 1,3;');
 check('echo 1; ?>2<?php echo 3;', "echo 1,'2',3;");
-check('/** preserve*/ $a; /** ignore */ /* also ignore */ // ignore too', '/** preserve*/$a;');
+check('/** preserve */ $a; /** ignore */ /* also ignore */ // ignore too', '/** preserve */$a;');
 check('$a = 1; ?><?php ?><?php $a = 2;', '$a=1;$a=2;');
