@@ -28,15 +28,22 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width">
 <title><?php echo $title_page; ?></title>
-<link rel="stylesheet" type="text/css" href="../adminer/static/default.css">
-<?php echo script_src("../adminer/static/functions.js"); ?>
-<?php echo script_src("static/editing.js"); ?>
+<link rel="stylesheet" href="../adminer/static/default.css">
+<?php
+	$css = $adminer->css();
+	if ($css) {
+		foreach ($css as $val) {
+			echo "<link rel='stylesheet' href='" . h($val) . "'>\n";
+		}
+	} else {
+		echo "<link rel='stylesheet' href='../adminer/static/dark.css'>\n";
+	}
+	echo script_src("../adminer/static/functions.js");
+	echo script_src("static/editing.js");
+	?>
 <?php if ($adminer->head()) { ?>
 <link rel="shortcut icon" type="image/x-icon" href="../adminer/static/favicon.ico">
 <link rel="apple-touch-icon" href="../adminer/static/favicon.ico">
-<?php foreach ($adminer->css() as $css) { ?>
-<link rel="stylesheet" type="text/css" href="<?php echo h($css); ?>">
-<?php } ?>
 <?php } ?>
 
 <body class="<?php echo lang('ltr'); ?> nojs">
