@@ -5,6 +5,7 @@ MySQL: Allow setting default values of json column
 MariaDB: Don't display NULL as default value (regression from 5.0.0)
 PostgreSQL PDO: Escape bytea values (bug #218)
 CockroachDB: Display version
+CockroachDB: Recognize unique_rowid() as auto_increment
 MS SQL: Fix editing rows with datetime column in primary key
 CSS: Add dark theme
 
