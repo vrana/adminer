@@ -326,6 +326,8 @@ if (isset($_GET["pgsql"])) {
 			if (min_version(9, 0, $connection)) {
 				$connection->query("SET application_name = 'Adminer'");
 			}
+			$crdb_version = $connection->result("SHOW crdb_version");
+			$connection->server_info .= ($crdb_version ? "-" . preg_replace('~ \(.*~', '', $crdb_version) : "");
 			return $connection;
 		}
 		return $connection->error;
