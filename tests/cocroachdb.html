@@ -6,7 +6,6 @@
 	<title>Katalon CockroachDB</title>
 </head>
 <body>
-<!-- The tests don't work with jush-textarea.js. Delete it first. -->
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
 <tr><td rowspan="1" colspan="3">Login</td></tr>
@@ -118,11 +117,11 @@
 <tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;table=albums</td><td></td></tr>
 <tr><td>click</td><td>link=Create check</td><td></td></tr>
 <tr><td>type</td><td>name=name</td><td>albums_interpret_check</td></tr>
-<tr><td>type</td><td>name=clause</td><td>interpret > 0</td></tr>
+<tr><td>runScript</td><td>document.querySelector('[name="clause"]').value = 'interpret > 0'</td><td></td></tr>
 <tr><td>click</td><td>xpath=//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Check has been created.</td><td></td></tr>
 <tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;check=albums&amp;name=albums_interpret_check</td><td></td></tr>
-<tr><td>verifyText</td><td>name=clause</td><td>((interpret > 0:::INT8))</td></tr>
+<tr><td>verifyTextPresent<td>((interpret > 0:::INT8))</td><td></td></tr>
 <tr><td>chooseOkOnNextConfirmation</td><td>Drop albums_interpret_check?</td><td></td></tr>
 <tr><td>click</td><td>name=drop</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Check has been dropped.</td><td></td></tr>
@@ -133,9 +132,7 @@
 </thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;view=</td><td></td></tr>
-<tr><td>type</td><td>select</td><td>SELECT albums.id, albums.title, interprets.name
-FROM albums
-LEFT JOIN interprets ON albums.interpret = interprets.id</td></tr>
+<tr><td>runScript</td><td>document.querySelector('[name="select"]').value = 'SELECT albums.id, albums.title, interprets.name FROM albums LEFT JOIN interprets ON albums.interpret = interprets.id'</td><td></td></tr>
 <tr><td>type</td><td>name</td><td>albums_interprets</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>View has been created.</td><td></td></tr>
@@ -252,7 +249,7 @@ LEFT JOIN interprets ON albums.interpret = interprets.id</td></tr>
 <tr><td>type</td><td>fields[1.1][field]</td><td>album_title</td></tr>
 <tr><td>select</td><td>fields[1.1][type]</td><td>label=character varying</td></tr>
 <tr><td>type</td><td>fields[1.1][length]</td><td>50</td></tr>
-<tr><td>type</td><td>definition</td><td>SELECT id FROM interprets;</td></tr>
+<tr><td>runScript</td><td>document.querySelector('[name="definition"]').value = 'SELECT id FROM interprets;'</td><td></td></tr>
 <tr><td>type</td><td>name</td><td>insert_album</td></tr>
 <tr><td>select</td><td>name=language</td><td>label=sql</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
