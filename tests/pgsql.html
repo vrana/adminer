@@ -133,6 +133,17 @@
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Materialized view</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;view=</td><td></td></tr>
+<tr><td>runScript</td><td>document.querySelector('[name="select"]').value = 'SELECT albums.id, albums.title, interprets.name FROM albums LEFT JOIN interprets ON albums.interpret = interprets.id'</td><td></td></tr>
+<tr><td>type</td><td>name</td><td>materialized_view</td></tr>
+<tr><td>click</td><td>materialized</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Materialized view</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Insert</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;edit=interprets</td><td></td></tr>
