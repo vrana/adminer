@@ -281,11 +281,13 @@
 <tr><td>type</td><td>fields[album_title]</td><td>Dangerous</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Call']</td><td></td></tr>
 <tr><td>assertTextPresent</td><td>Routine has been called,</td><td></td></tr>
+<!-- https://github.com/cockroachdb/cockroach/issues/142886
 <tr><td>clickAndWait</td><td>link=public</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Alter</td><td></td></tr>
 <tr><td>chooseOkOnNextConfirmation</td><td>Drop insert_album?</td><td></td></tr>
 <tr><td>click</td><td>drop</td><td></td></tr>
-<!-- This looks like a bug in CockroachDB, not Adminer. <tr><td>verifyTextPresent</td><td>Routine has been dropped.</td><td></td></tr> -->
+<tr><td>verifyTextPresent</td><td>Routine has been dropped.</td><td></td></tr>
+-->
 <tr><td>open</td><td>/adminer/?pgsql=localhost%3A26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;sql=DROP+PROCEDURE+%22insert_album%22</td><td></td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Execute']</td><td></td></tr>
 </tbody></table>
