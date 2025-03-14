@@ -154,6 +154,32 @@
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3" data-tags="">Enum</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>http://localhost:8080/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public</td><td></td></tr>
+<tr><td>click</td><td>link=Create type</td><td></td></tr>
+<tr><td>type</td><td>name=name</td><td>alive</td></tr>
+<tr><td>runScript</td><td>document.querySelector('[name="as"]').value = "AS ENUM('alive', 'deceased')"</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>click</td><td>link=interprets</td><td></td></tr>
+<tr><td>click</td><td>link=Alter table</td><td></td></tr>
+<tr><td>click</td><td>name=add[3]</td><td></td></tr>
+<tr><td>type</td><td>name=fields[4][field]</td><td>alive</td></tr>
+<tr><td>select</td><td>name=fields[4][type]</td><td>label=alive</td></tr>
+<tr><td>click</td><td>name=fields[4][null]</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>click</td><td>link=alive</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>'alive', 'deceased'</td><td></td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Drop alive?</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Drop']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>cannot drop type</td><td></td></tr>
+<tr><td>open</td><td>http://localhost:8080/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;edit=interprets&amp;where%5Bid%5D=1</td><td></td></tr>
+<tr><td>click</td><td>//input[@value='deceased']</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>deceased</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Explain</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;select=albums</td><td></td></tr>
