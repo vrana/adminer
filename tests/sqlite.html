@@ -29,7 +29,7 @@
 <tr><td>click</td><td>css=label.block &gt; input[name="auto_increment_col"]</td><td></td></tr>
 <tr><td>type</td><td>name=fields[1.1][field]</td><td>name</td></tr>
 <tr><td>select</td><td>name=fields[1.1][type]</td><td>label=text</td></tr>
-<tr><td>click</td><td>xpath=(//input[@value='Save'])[2]</td><td></td></tr>
+<tr><td>click</td><td>(//input[@value='Save'])[2]</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Table has been created.</td><td></td></tr>
 <tr><td>click</td><td>link=New item</td><td></td></tr>
 <tr><td>type</td><td>name=fields[name]</td><td>Michael Jackson</td></tr>
@@ -42,7 +42,7 @@
 <tr><td>select</td><td>name=fields[1.1][on_delete]</td><td>label=CASCADE</td></tr>
 <tr><td>type</td><td>name=fields[1.11][field]</td><td>title</td></tr>
 <tr><td>select</td><td>name=fields[1.11][type]</td><td>label=text</td></tr>
-<tr><td>click</td><td>xpath=(//input[@value='Save'])[2]</td><td></td></tr>
+<tr><td>click</td><td>(//input[@value='Save'])[2]</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>interprets(id)</td><td></td></tr>
 <tr><td>click</td><td>link=New item</td><td></td></tr>
 <tr><td>type</td><td>name=fields[interpret]</td><td>1</td></tr>
@@ -70,7 +70,7 @@
 <tr><td>click</td><td>link=New item</td><td></td></tr>
 <tr><td>verifyTextNotPresent</td><td>stored</td><td></td></tr>
 <tr><td>type</td><td>name=fields[normal]</td><td>20</td></tr>
-<tr><td>click</td><td>xpath=//input[@value='Save']</td><td></td></tr>
+<tr><td>click</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>220</td><td></td></tr>
 </tbody></table>
 

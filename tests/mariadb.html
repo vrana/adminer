@@ -16,7 +16,7 @@
 <tr><td>type</td><td>id=username</td><td>ODBC</td></tr>
 <tr><td>type</td><td>name=auth[server]</td><td>localhost:3307</td></tr>
 <tr><td>type</td><td>name=auth[password]</td><td>ODBC</td></tr>
-<tr><td>clickAndWait</td><td>xpath=//input[@value='Login']</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Login']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>MariaDB</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=SQL command</td><td></td></tr>
 <tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;sql=DROP+DATABASE+IF+EXISTS+adminer_test</td><td></td></tr>
@@ -159,7 +159,7 @@
 <tr><td>click</td><td>link=Create check</td><td></td></tr>
 <tr><td>type</td><td>name=name</td><td>albums_interpret_check</td></tr>
 <tr><td>runScript</td><td>document.querySelector('[name="clause"]').value = 'interpret > 0'</td><td></td></tr>
-<tr><td>click</td><td>xpath=//input[@value='Save']</td><td></td></tr>
+<tr><td>click</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Check has been created.</td><td></td></tr>
 <tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;check=albums&amp;name=albums_interpret_check</td><td></td></tr>
 <tr><td>verifyTextPresent<td>`interpret` > 0</td><td></td></tr>
@@ -370,7 +370,7 @@
 <tr><td>verifyTextNotPresent</td><td>virtual</td><td></td></tr>
 <tr><td>verifyTextNotPresent</td><td>stored</td><td></td></tr>
 <tr><td>type</td><td>name=fields[normal]</td><td>20</td></tr>
-<tr><td>click</td><td>xpath=//input[@value='Save']</td><td></td></tr>
+<tr><td>click</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>120</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>220</td><td></td></tr>
 </tbody></table>
