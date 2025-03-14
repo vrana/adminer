@@ -8,7 +8,7 @@
 <body>
 
 <table cellpadding="1" cellspacing="1" border="1">
-<thead><tr><td rowspan="1" colspan="3">SQLite</td></tr></thead>
+<thead><tr><td rowspan="1" colspan="3">Login</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/sqlite.php</td><td></td></tr>
 <tr><td>select</td><td>name=lang</td><td>label=English</td></tr>
@@ -24,32 +24,210 @@
 <tr><td>type</td><td>name=name</td><td>adminer_test.sqlite</td></tr>
 <tr><td>click</td><td>css=input[type="submit"]</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Database has been created.</td><td></td></tr>
-<tr><td>click</td><td>link=Create table</td><td></td></tr>
-<tr><td>type</td><td>name=name</td><td>interprets</td></tr>
-<tr><td>click</td><td>css=label.block &gt; input[name="auto_increment_col"]</td><td></td></tr>
-<tr><td>type</td><td>name=fields[1.1][field]</td><td>name</td></tr>
-<tr><td>select</td><td>name=fields[1.1][type]</td><td>label=text</td></tr>
-<tr><td>click</td><td>(//input[@value='Save'])[2]</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Create table</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Create table</td><td></td></tr>
+<tr><td>type</td><td>name</td><td>interprets</td></tr>
+<tr><td>type</td><td>fields[1][field]</td><td>id</td></tr>
+<tr><td>select</td><td>fields[1][type]</td><td>label=integer</td></tr>
+<tr><td>click</td><td>//input[@name='auto_increment_col' and @value='1']</td><td></td></tr>
+<tr><td>type</td><td>fields[1.1][field]</td><td>name</td></tr>
+<tr><td>select</td><td>fields[1.1][type]</td><td>label=text</td></tr>
+<tr><td>type</td><td>fields[1.1][length]</td><td>50</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Table has been created.</td><td></td></tr>
-<tr><td>click</td><td>link=New item</td><td></td></tr>
-<tr><td>type</td><td>name=fields[name]</td><td>Michael Jackson</td></tr>
-<tr><td>click</td><td>css=input[type="submit"]</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Create index</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;table=interprets</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Alter indexes</td><td></td></tr>
+<tr><td>select</td><td>indexes[2][type]</td><td>label=PRIMARY</td></tr>
+<tr><td>select</td><td>indexes[2][columns][1]</td><td>label=name</td></tr>
+<tr><td>verifyValue</td><td>name=indexes[2][name]</td><td>interprets_name</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>has more than one primary key</td><td></td></tr>
+<tr><td>select</td><td>indexes[2][type]</td><td>label=INDEX</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Indexes have been altered.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Create table 2</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;table=interprets</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Create table</td><td></td></tr>
+<tr><td>type</td><td>name</td><td>albums</td></tr>
+<tr><td>type</td><td>fields[1][field]</td><td>id</td></tr>
+<tr><td>select</td><td>fields[1][type]</td><td>label=integer</td></tr>
+<tr><td>click</td><td>//input[@name='auto_increment_col' and @value='1']</td><td></td></tr>
+<tr><td>type</td><td>fields[1.1][field]</td><td>interpret</td></tr>
+<tr><td>select</td><td>fields[1.1][type]</td><td>label=integer</td></tr>
+<tr><td>type</td><td>fields[1.11][field]</td><td>title</td></tr>
+<tr><td>select</td><td>fields[1.11][type]</td><td>label=text</td></tr>
+<tr><td>type</td><td>fields[1.11][length]</td><td>50</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Table has been created.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Foreign key</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;table=albums</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Add foreign key</td><td></td></tr>
+<tr><td>selectAndWait</td><td>table</td><td>label=interprets</td></tr>
+<tr><td>select</td><td>source[0]</td><td>label=interpret</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Foreign key has been created.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Alter table</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;table=interprets</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Alter table</td><td></td></tr>
+<tr><td>click</td><td>add[2]</td><td></td></tr>
+<tr><td>type</td><td>fields[2.1][field]</td><td>albums</td></tr>
+<tr><td>select</td><td>fields[2.1][type]</td><td>label=integer</td></tr>
+<tr><td>type</td><td>fields[2.1][length]</td><td></td></tr>
+<tr><td>uncheck</td><td>name=defaults</td><td></td></tr>
+<tr><td>clickAndWait</td><td>name=defaults</td><td></td></tr>
+<tr><td>type</td><td>name=fields[2.1][default]</td><td>0</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Table has been altered.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Create trigger</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;trigger=albums</td><td></td></tr>
+<tr><td>select</td><td>Timing</td><td>label=AFTER</td></tr>
+<tr><td>runScript</td><td>document.querySelector('[name="Statement"]').value = 'BEGIN\nUPDATE interprets SET albums = albums + 1 WHERE id = NEW.interpret';\nEND</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Trigger has been created.</td><td></td></tr></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Check constraints</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;table=albums</td><td></td></tr>
+<tr><td>click</td><td>link=Create check</td><td></td></tr>
+<tr><td>runScript</td><td>document.querySelector('[name="clause"]').value = 'interpret > 0'</td><td></td></tr>
+<tr><td>click</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Check has been created.</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=New item</td><td></td></tr>
+<tr><td>type</td><td>fields[interpret]</td><td>0</td></tr>
+<tr><td>click</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>CHECK constraint failed</td><td></td></tr>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;check=albums&amp;name=interpret+%3E+0</td><td></td></tr>
+<tr><td>verifyTextPresent<td>interpret > 0</td><td></td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Drop interpret > 0?</td><td></td></tr>
+<tr><td>click</td><td>name=drop</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Check has been dropped.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Create view</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;view=</td><td></td></tr>
+<tr><td>runScript</td><td>document.querySelector('[name="select"]').value = 'SELECT albums.id, albums.title, interprets.name FROM albums LEFT JOIN interprets ON albums.interpret = interprets.id'</td><td></td></tr>
+<tr><td>type</td><td>name</td><td>albums_interprets</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>View has been created.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Insert</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;edit=interprets</td><td></td></tr>
+<tr><td>type</td><td>fields[name]</td><td>Michael Jackson</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Item 1 has been inserted.</td><td></td></tr>
-<tr><td>click</td><td>link=Create table</td><td></td></tr>
-<tr><td>type</td><td>name=name</td><td>albums</td></tr>
-<tr><td>click</td><td>css=label.block &gt; input[name="auto_increment_col"]</td><td></td></tr>
-<tr><td>type</td><td>name=fields[1.1][field]</td><td>interpret</td></tr>
-<tr><td>select</td><td>name=fields[1.1][on_delete]</td><td>label=CASCADE</td></tr>
-<tr><td>type</td><td>name=fields[1.11][field]</td><td>title</td></tr>
-<tr><td>select</td><td>name=fields[1.11][type]</td><td>label=text</td></tr>
-<tr><td>click</td><td>(//input[@value='Save'])[2]</td><td></td></tr>
-<tr><td>verifyTextPresent</td><td>interprets(id)</td><td></td></tr>
-<tr><td>click</td><td>link=New item</td><td></td></tr>
-<tr><td>type</td><td>name=fields[interpret]</td><td>1</td></tr>
-<tr><td>type</td><td>name=fields[title]</td><td>Dangerous</td></tr>
-<tr><td>click</td><td>css=input[type="submit"]</td><td></td></tr>
-<tr><td>click</td><td>link=1</td><td></td></tr>
-<tr><td>verifyTextPresent</td><td>Select: interprets</td><td></td></tr>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;edit=albums</td><td></td></tr>
+<tr><td>type</td><td>fields[interpret]</td><td>1</td></tr>
+<tr><td>type</td><td>fields[title]</td><td>Dangerous</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Item 1 has been inserted.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Clone</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;select=albums</td><td></td></tr>
+<tr><td>click</td><td>check[]</td><td></td></tr>
+<tr><td>clickAndWait</td><td>clone</td><td></td></tr>
+<tr><td>type</td><td>fields[title]</td><td>Black and White</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Item 2 has been inserted.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Explain</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;select=albums</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Edit</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Execute']</td><td></td></tr>
+<tr><td>click</td><td>link=Explain</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>SCAN albums</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Reference</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;select=albums</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=1</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Michael Jackson</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Update</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;edit=albums&amp;where%5Bid%5D=2</td><td></td></tr>
+<tr><td>type</td><td>fields[title]</td><td>Black or White</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Item has been updated.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Delete</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;select=albums</td><td></td></tr>
+<tr><td>click</td><td>//input[@name='check[]' and @value='where%5Bid%5D=2']</td><td></td></tr>
+<tr><td>waitForChecked</td><td>//input[@name='check[]' and @value='where%5Bid%5D=2']</td><td></td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Are you sure?</td><td></td></tr>
+<tr><td>click</td><td>delete</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>1 item has been affected.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Truncate</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;select=albums</td><td></td></tr>
+<tr><td>click</td><td>all</td><td></td></tr>
+<tr><td>waitForChecked</td><td>all</td><td></td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Are you sure?</td><td></td></tr>
+<tr><td>click</td><td>delete</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>No rows.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Export</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;dump=</td><td></td></tr>
+<tr><td>click</td><td>output</td><td></td></tr>
+<tr><td>click</td><td>format</td><td></td></tr>
+<tr><td>select</td><td>table_style</td><td>label=DROP+CREATE</td></tr>
+<tr><td>select</td><td>data_style</td><td>label=INSERT</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Export']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>CREATE TABLE "interprets"</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>CREATE TRIGGER "albums_ai"</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>INSERT INTO "interprets"</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>VIEW "albums_interprets"</td><td></td></tr>
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
@@ -64,7 +242,7 @@
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>normal + 200</td><td></td></tr>
 <tr><td>click</td><td>link=Alter indexes</td><td></td></tr>
-<tr><td>select</td><td>name=indexes[2][columns][1]</td><td>label=stored</td></tr>
+<tr><td>select</td><td>name=indexes[1][columns][1]</td><td>label=stored</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Indexes have been altered.</td><td></td></tr>
 <tr><td>click</td><td>link=New item</td><td></td></tr>
@@ -72,6 +250,13 @@
 <tr><td>type</td><td>name=fields[normal]</td><td>20</td></tr>
 <tr><td>click</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>220</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Variables</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;variables=</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>integrity_check</td><td></td></tr>
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
