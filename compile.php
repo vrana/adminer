@@ -2,8 +2,8 @@
 <?php
 include __DIR__ . "/adminer/include/version.inc.php";
 include __DIR__ . "/adminer/include/errors.inc.php";
-include __DIR__ . "/php_shrink.inc.php";
 include __DIR__ . "/externals/JsShrink/jsShrink.php";
+include __DIR__ . "/externals/PhpShrink/phpShrink.php";
 
 function add_apo_slashes($s) {
 	return addcslashes($s, "\\'");
@@ -354,7 +354,9 @@ $file = preg_replace('~\.\./adminer/static/(default\.css)~', '<?php echo h(' . $
 $file = preg_replace('~"\.\./adminer/static/(functions\.js)"~', $replace, $file);
 $file = preg_replace('~\.\./adminer/static/([^\'"]*)~', '" . h(' . $replace . ') . "', $file);
 $file = preg_replace('~"\.\./externals/jush/modules/(jush\.js)"~', $replace, $file);
-$file = php_shrink($file);
+if (function_exists('phpShrink')) {
+	$file = phpShrink($file);
+}
 
 $filename = $project . (preg_match('~-dev$~', $VERSION) ? "" : "-$VERSION") . ($driver ? "-$driver" : "") . ($_SESSION["lang"] ? "-$_SESSION[lang]" : "") . ".php";
 file_put_contents($filename, $file);
