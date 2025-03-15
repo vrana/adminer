@@ -40,6 +40,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	foreach ($css as $val) {
 		echo "<link rel='stylesheet' href='" . h($val) . "'>\n";
 	}
+	// this is matched by compile.php
 	echo script_src("../adminer/static/functions.js");
 	echo script_src("static/editing.js");
 	?>

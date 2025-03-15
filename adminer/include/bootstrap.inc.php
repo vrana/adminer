@@ -3,6 +3,7 @@ namespace Adminer;
 
 include "../adminer/include/version.inc.php";
 include "../adminer/include/errors.inc.php";
+// this is matched by compile.php
 include "../adminer/include/coverage.inc.php";
 
 // disable filter.default
@@ -74,6 +75,7 @@ include "../adminer/drivers/oracle.inc.php";
 include "../adminer/drivers/mssql.inc.php";
 include "./include/adminer.inc.php";
 $adminer = (function_exists('adminer_object') ? adminer_object() : new Adminer);
+// this is matched by compile.php
 include "../adminer/drivers/mysql.inc.php"; // must be included as last driver
 
 define('Adminer\JUSH', Driver::$jush);

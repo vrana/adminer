@@ -6,6 +6,7 @@
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
+// this is matched by compile.php
 
 namespace Adminer;
 
@@ -15,6 +16,7 @@ include "./include/tmpfile.inc.php";
 if (isset($_GET["select"]) && ($_POST["edit"] || $_POST["clone"]) && !$_POST["save"]) {
 	$_GET["edit"] = $_GET["select"];
 }
+// this is matched by compile.php
 if (isset($_GET["callf"])) {
 	$_GET["call"] = $_GET["callf"];
 }

@@ -63,10 +63,12 @@ function get_lang() {
 * @param int
 * @return string
 */
+// this is matched by compile.php
 function lang($idf, $number = null) {
 	global $LANG, $translations;
 	$translation = ($translations[$idf] ?: $idf);
 	if (is_array($translation)) {
+		// this is matched by compile.php
 		$pos = ($number == 1 ? 0
 			: ($LANG == 'cs' || $LANG == 'sk' ? ($number && $number < 5 ? 1 : 2) // different forms for 1, 2-4, other
 			: ($LANG == 'fr' ? (!$number ? 0 : 1) // different forms for 0-1, other

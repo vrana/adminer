@@ -1,6 +1,7 @@
 <?php
 namespace Adminer;
 
+// this is matched by compile.php
 // caching headers added in compile.php
 
 if ($_GET["file"] == "favicon.ico") {

@@ -98,6 +98,7 @@ class Adminer {
 	* @return bool true to link favicon.ico
 	*/
 	function head($dark = null) {
+		// this is matched by compile.php
 		echo "<link rel='stylesheet' href='../externals/jush/jush.css'>\n";
 		echo ($dark !== false ? "<link rel='stylesheet'" . ($dark ? "" : " media='(prefers-color-scheme: dark)'") . " href='../externals/jush/jush-dark.css'>\n" : "");
 		return true;
@@ -123,8 +124,10 @@ class Adminer {
 	function loginForm() {
 		global $drivers;
 		echo "<table class='layout'>\n";
+		// this is matched by compile.php
 		echo $this->loginFormField('driver', '<tr><th>' . lang('System') . '<td>', html_select("auth[driver]", $drivers, DRIVER, "loginDriver(this);"));
 		echo $this->loginFormField('server', '<tr><th>' . lang('Server') . '<td>', '<input name="auth[server]" value="' . h(SERVER) . '" title="hostname[:port]" placeholder="localhost" autocapitalize="off">');
+		// this is matched by compile.php
 		echo $this->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', '<input name="auth[username]" id="username" autofocus value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">' . script("qs('#username').form['auth[driver]'].onchange();"));
 		echo $this->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]" autocomplete="current-password">');
 		echo $this->loginFormField('db', '<tr><th>' . lang('Database') . '<td>', '<input name="auth[db]" value="' . h($_GET["db"]) . '" autocapitalize="off">');
@@ -990,6 +993,7 @@ class Adminer {
 </span>
 </h1>
 <?php
+		// this is matched by compile.php
 		switch_lang();
 		if ($missing == "auth") {
 			$output = "";
@@ -1014,6 +1018,7 @@ class Adminer {
 				$connection->select_db(DB);
 				$tables = table_status('', true);
 			}
+			// this is matched by compile.php
 			echo script_src("../externals/jush/modules/jush.js");
 			echo script_src("../externals/jush/modules/jush-textarea.js");
 			echo script_src("../externals/jush/modules/jush-txt.js");
