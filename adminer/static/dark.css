@@ -13,7 +13,7 @@ thead th a { color: #a8b05f; }
 fieldset { border-color: #16548a; }
 code { background: #11385a; }
 tbody tr:hover td, tbody tr:hover th { background: #133553; }
-pre.jush { background: #a7c3dc; }
+pre.jush { background: #11385a; }
 input.default { box-shadow: 1px 1px 1px #888; }
 input.required, input.maxlength { box-shadow: 1px 1px 1px red; }
 .version { color: #888; }

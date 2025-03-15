@@ -59,15 +59,17 @@ class Adminer {
 		return csp();
 	}
 
-	function head() {
+	function head($dark = null) {
 		return true;
 	}
 
 	function css() {
 		$return = array();
-		$filename = "adminer.css";
-		if (file_exists($filename)) {
-			$return[] = $filename;
+		foreach (array("", "-dark") as $mode) {
+			$filename = "adminer$mode.css";
+			if (file_exists($filename)) {
+				$return[] = "$filename?v=" . crc32(file_get_contents($filename));
+			}
 		}
 		return $return;
 	}

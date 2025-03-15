@@ -329,7 +329,7 @@ if ($driver) {
 	//! strip doc_link() definition
 }
 if ($project == "editor") {
-	$file = preg_replace('~;.\.\/externals/jush/jush\.css~', '', $file);
+	$file = preg_replace('~;.\.\/externals/jush/jush(-dark)?\.css~', '', $file);
 	$file = preg_replace('~compile_file\(\'\.\./(externals/jush/modules/jush\.js|adminer/static/[^.]+\.gif)[^)]+\)~', "''", $file);
 }
 $file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
@@ -343,7 +343,7 @@ if ($_SESSION["lang"]) {
 }
 $file = str_replace('echo script_src("static/editing.js");' . "\n", "", $file); // merged into functions.js
 $file = preg_replace('~\s+echo script_src\("\.\./externals/jush/modules/jush-(textarea|txt|js|" \. JUSH \. ")\.js"\);~', '', $file); // merged into jush.js
-$file = str_replace('<link rel="stylesheet" href="../externals/jush/jush.css">' . "\n", "", $file); // merged into default.css
+$file = preg_replace('~echo .*/jush(-dark)?.css\'>.*~', '', $file); // merged into default.css or dark.css
 $file = preg_replace_callback("~compile_file\\('([^']+)'(?:, '([^']*)')?\\)~", 'compile_file', $file); // integrate static files
 $replace = 'preg_replace("~\\\\\\\\?.*~", "", ME) . "?file=\1&version=' . $VERSION . '"';
 $file = preg_replace('~\.\./adminer/static/(default\.css|favicon\.ico)~', '<?php echo h(' . $replace . '); ?>', $file);

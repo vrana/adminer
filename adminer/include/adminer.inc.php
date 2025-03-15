@@ -94,12 +94,12 @@ class Adminer {
 	}
 
 	/** Print HTML code inside <head>
-	* @return bool true to link favicon.ico and adminer.css if exists
+	* @param bool dark CSS: false to disable, true to force, null to base on user preferences
+	* @return bool true to link favicon.ico
 	*/
-	function head() {
-		?>
-<link rel="stylesheet" href="../externals/jush/jush.css">
-<?php
+	function head($dark = null) {
+		echo "<link rel='stylesheet' href='../externals/jush/jush.css'>\n";
+		echo ($dark !== false ? "<link rel='stylesheet'" . ($dark ? "" : " media='(prefers-color-scheme: dark)'") . " href='../externals/jush/jush-dark.css'>\n" : "");
 		return true;
 	}
 
@@ -108,9 +108,11 @@ class Adminer {
 	*/
 	function css() {
 		$return = array();
-		$filename = "adminer.css";
-		if (file_exists($filename)) {
-			$return[] = "$filename?v=" . crc32(file_get_contents($filename));
+		foreach (array("", "-dark") as $mode) {
+			$filename = "adminer$mode.css";
+			if (file_exists($filename)) {
+				$return[] = "$filename?v=" . crc32(file_get_contents($filename));
+			}
 		}
 		return $return;
 	}

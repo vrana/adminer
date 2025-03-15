@@ -31,17 +31,19 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <link rel="stylesheet" href="../adminer/static/default.css">
 <?php
 	$css = $adminer->css();
-	if ($css) {
-		foreach ($css as $val) {
-			echo "<link rel='stylesheet' href='" . h($val) . "'>\n";
-		}
-	} else {
+	$dark = ($css == array_filter($css, function ($filename) {
+		return preg_match('~-dark~', $filename);
+	}));
+	if ($dark) { // we need to load this before user styles
 		echo "<link rel='stylesheet' media='(prefers-color-scheme: dark)' href='../adminer/static/dark.css'>\n";
+	}
+	foreach ($css as $val) {
+		echo "<link rel='stylesheet' href='" . h($val) . "'>\n";
 	}
 	echo script_src("../adminer/static/functions.js");
 	echo script_src("static/editing.js");
 	?>
-<?php if ($adminer->head()) { ?>
+<?php if ($adminer->head($css ? $dark : null)) { ?>
 <link rel="shortcut icon" type="image/x-icon" href="../adminer/static/favicon.ico">
 <link rel="apple-touch-icon" href="../adminer/static/favicon.ico">
 <?php } ?>

@@ -162,7 +162,7 @@ class AdminerPlugin extends Adminer\Adminer {
 		return $this->applyPlugin(__FUNCTION__, $args);
 	}
 
-	function head() {
+	function head($dark = null) {
 		$args = func_get_args();
 		return $this->applyPlugin(__FUNCTION__, $args);
 	}

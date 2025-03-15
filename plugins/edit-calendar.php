@@ -27,7 +27,7 @@ class AdminerEditCalendar {
 		$this->langPath = $langPath;
 	}
 
-	function head() {
+	function head($dark = null) {
 		echo $this->prepend;
 		if ($this->langPath) {
 			$lang = Adminer\get_lang();

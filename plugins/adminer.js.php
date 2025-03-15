@@ -11,7 +11,7 @@
 class AdminerDotJs {
 	const FILENAME = "adminer.js";
 
-	function head() {
+	function head($dark = null) {
 		if (file_exists(self::FILENAME)) {
 			echo Adminer\script_src(self::FILENAME . "?v=" . crc32(file_get_contents(self::FILENAME))), "\n";
 		}
