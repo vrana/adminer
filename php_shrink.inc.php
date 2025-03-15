@@ -50,6 +50,9 @@ function php_shrink($input) {
 		if ($token[0] === T_VARIABLE && !isset($special_variables[$token[1]])) {
 			$short_variables[$token[1]]++;
 		}
+	}
+
+	foreach ($tokens as $i => $token) {
 		if (
 			$tokens[$i+2][0] === T_CLOSE_TAG && $tokens[$i+3][0] === T_INLINE_HTML && $tokens[$i+4][0] === T_OPEN_TAG
 			&& strlen(add_apo_slashes($tokens[$i+3][1])) < strlen($tokens[$i+3][1]) + 3
@@ -76,7 +79,11 @@ function php_shrink($input) {
 	$output = '';
 	$in_echo = false;
 	$doc_comment = false; // include only first /**
-	for (reset($tokens); list($i, $token) = each($tokens);) {
+	$next_pos = 0;
+	foreach ($tokens as $i => $token) {
+		if ($i < $next_pos) {
+			continue;
+		}
 		if (!is_array($token)) {
 			$token = array(0, $token);
 		}
@@ -99,12 +106,9 @@ function php_shrink($input) {
 				$in_echo = true;
 			} elseif ($token[1] == ';' && $in_echo) {
 				$next_echo = next_token($tokens, $i, T_ECHO, array(T_WHITESPACE, T_COMMENT));
-				for (; $i < $next_echo - 1; $i++) {
-					next($tokens);
-				}
 				if ($next_echo) {
 					// join two consecutive echos
-					next($tokens);
+					$next_pos = $next_echo + 1;
 					$token[1] = ','; // '.' would conflict with "a".1+2 and would use more memory //! remove ',' and "," but not $var","
 				} else {
 					$in_echo = false;
@@ -139,12 +143,4 @@ function short_identifier($number, $chars) {
 
 function add_apo_slashes($s) {
 	return addcslashes($s, "\\'");
-}
-
-if (!function_exists("each")) {
-	function each(&$arr) {
-		$key = key($arr);
-		next($arr);
-		return $key === null ? false : array($key, $arr[$key]);
-	}
 }
