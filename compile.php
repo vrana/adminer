@@ -117,7 +117,7 @@ header("Cache-Control: immutable");
 
 function lang(\$translation, \$number = null) {
 	if (is_array(\$translation)) {
-		\$pos = $match2[2]\t\t\t: " . (preg_match("~\\\$LANG == '$_SESSION[lang]'.* \\? (.+)\n~U", $match2[1], $match3) ? $match3[1] : "1") . '
+		\$pos = $match2[2]\t\t\t: " . (preg_match("~'$_SESSION[lang]'.* \\? (.+)\n~U", $match2[1], $match3) ? $match3[1] : "1") . '
 		);
 		$translation = $translation[$pos];
 	}
