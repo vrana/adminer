@@ -55,10 +55,10 @@ function php_shrink($input) {
 	foreach ($tokens as $i => $token) {
 		if (
 			$tokens[$i+2][0] === T_CLOSE_TAG && $tokens[$i+3][0] === T_INLINE_HTML && $tokens[$i+4][0] === T_OPEN_TAG
-			&& strlen(add_apo_slashes($tokens[$i+3][1])) < strlen($tokens[$i+3][1]) + 3
+			&& strlen(addcslashes($tokens[$i+3][1], "\\'")) < strlen($tokens[$i+3][1]) + 3
 		) {
 			$tokens[$i+2] = array(T_ECHO, 'echo');
-			$tokens[$i+3] = array(T_CONSTANT_ENCAPSED_STRING, "'" . add_apo_slashes($tokens[$i+3][1]) . "'");
+			$tokens[$i+3] = array(T_CONSTANT_ENCAPSED_STRING, "'" . addcslashes($tokens[$i+3][1], "\\'") . "'");
 			$tokens[$i+4] = array(0, ';');
 		}
 	}
@@ -139,8 +139,4 @@ function short_identifier($number, $chars) {
 		$number = floor($number / strlen($chars)) - 1;
 	}
 	return $return;
-}
-
-function add_apo_slashes($s) {
-	return addcslashes($s, "\\'");
 }

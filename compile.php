@@ -5,6 +5,10 @@ include __DIR__ . "/adminer/include/errors.inc.php";
 include __DIR__ . "/php_shrink.inc.php";
 include __DIR__ . "/externals/JsShrink/jsShrink.php";
 
+function add_apo_slashes($s) {
+	return addcslashes($s, "\\'");
+}
+
 function add_quo_slashes($s) {
 	$return = $s;
 	$return = addcslashes($return, "\n\r\$\"\\");
