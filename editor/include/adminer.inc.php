@@ -213,9 +213,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row //! requires MySQL 5
 		if ($link) {
 			$return = "<a href='$link'" . (is_url($link) ? target_blank() : "") . ">$return</a>";
 		}
-		if (!$link && !like_bool($field) && preg_match(number_type(), $field["type"])) {
-			$return = "<div class='number'>$return</div>"; // Firefox doesn't support <colgroup>
-		} elseif (preg_match('~date~', $field["type"])) {
+		// Firefox doesn't support <colgroup>
+		if (preg_match('~date~', $field["type"])) {
 			$return = "<div class='datetime'>$return</div>";
 		}
 		return $return;

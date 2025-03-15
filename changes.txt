@@ -1,4 +1,5 @@
 Adminer dev:
+Align numbers right (bug #912)
 CSS: Dark mode syntax highlighting
 SQL textarea: Open help on Ctrl+click
 Designs named adminer-dark.css use dark basic style
