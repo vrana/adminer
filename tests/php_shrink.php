@@ -13,9 +13,6 @@ function check($code, $expected) {
 //! bugs:
 check('{if (true) {} echo 1;}', '{if(true);echo 1;}');
 
-//! inefficiencies:
-check("echo 1; //\necho 2;", 'echo 1,2;');
-
 check('$ab = 1; echo $ab;', '$a=1;echo$a;');
 check('$ab = 1; $cd = 2;', '$a=1;$b=2;');
 check('define("AB", 1);', 'define("AB",1);');
@@ -37,6 +34,7 @@ check('if (true) { echo "a"; } else { echo "b"; }', 'if(true)echo"a";else echo"b
 check('echo $_GET["a"];', 'echo$_GET["a"];');
 check('$ab = 1; echo "$ab";', '$a=1;echo"$a";');
 check('echo 1; echo 3;', 'echo 1,3;');
+check('echo 1; /**/ echo 2;', 'echo 1,2;');
 check('echo 1; ?>2<?php echo 3;', "echo 1,'2',3;");
 check('/** preserve */ $a; /** ignore */ /* also ignore */ // ignore too', '/** preserve */$a;');
 check('$a = 1; ?><?php ?><?php $a = 2;', '$a=1;$a=2;');

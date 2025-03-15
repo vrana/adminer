@@ -98,11 +98,11 @@ function php_shrink($input) {
 			} elseif ($token[0] == T_ECHO) {
 				$in_echo = true;
 			} elseif ($token[1] == ';' && $in_echo) {
-				if ($tokens[$i+1][0] === T_WHITESPACE && $tokens[$i+2][0] === T_ECHO) {
+				$next_echo = next_token($tokens, $i, T_ECHO, array(T_WHITESPACE, T_COMMENT));
+				for (; $i < $next_echo - 1; $i++) {
 					next($tokens);
-					$i++;
 				}
-				if ($tokens[$i+1][0] === T_ECHO) {
+				if ($next_echo) {
 					// join two consecutive echos
 					next($tokens);
 					$token[1] = ','; // '.' would conflict with "a".1+2 and would use more memory //! remove ',' and "," but not $var","
@@ -120,6 +120,12 @@ function php_shrink($input) {
 		}
 	}
 	return $output;
+}
+
+function next_token($tokens, $i, $search, $allowed = array()) {
+	for ($i += 1; in_array($tokens[$i][0], $allowed); $i++) {
+	}
+	return ($tokens[$i][0] === $search ? $i : 0);
 }
 
 function short_identifier($number, $chars) {
