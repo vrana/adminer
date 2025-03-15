@@ -10,6 +10,12 @@ function check($code, $expected) {
 	}
 }
 
+//! bugs:
+check('{if (true) {} echo 1;}', '{if(true);echo 1;}');
+
+//! inefficiencies:
+check("echo 1; //\necho 2;", 'echo 1,2;');
+
 check('$ab = 1; echo $ab;', '$a=1;echo$a;');
 check('$ab = 1; $cd = 2;', '$a=1;$b=2;');
 check('define("AB", 1);', 'define("AB",1);');
