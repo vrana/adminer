@@ -1,7 +1,7 @@
 Adminer dev:
 CSS: Dark mode syntax highlighting
 SQL textarea: Open help on Ctrl+click
-Designs named adminer-dark.css use dark syntax highlighting
+Designs named adminer-dark.css use dark basic style
 
 Adminer 5.0.5 (released 2025-03-13):
 MySQL: Display converting function for binary, bit or geometry fields
