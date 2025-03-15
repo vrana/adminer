@@ -50,6 +50,14 @@ function php_shrink($input) {
 		if ($token[0] === T_VARIABLE && !isset($special_variables[$token[1]])) {
 			$short_variables[$token[1]]++;
 		}
+		if (
+			$tokens[$i+2][0] === T_CLOSE_TAG && $tokens[$i+3][0] === T_INLINE_HTML && $tokens[$i+4][0] === T_OPEN_TAG
+			&& strlen(add_apo_slashes($tokens[$i+3][1])) < strlen($tokens[$i+3][1]) + 3
+		) {
+			$tokens[$i+2] = array(T_ECHO, 'echo');
+			$tokens[$i+3] = array(T_CONSTANT_ENCAPSED_STRING, "'" . add_apo_slashes($tokens[$i+3][1]) . "'");
+			$tokens[$i+4] = array(0, ';');
+		}
 	}
 
 	arsort($short_variables);
@@ -71,14 +79,6 @@ function php_shrink($input) {
 	for (reset($tokens); list($i, $token) = each($tokens);) {
 		if (!is_array($token)) {
 			$token = array(0, $token);
-		}
-		if (
-			$tokens[$i+2][0] === T_CLOSE_TAG && $tokens[$i+3][0] === T_INLINE_HTML && $tokens[$i+4][0] === T_OPEN_TAG
-			&& strlen(add_apo_slashes($tokens[$i+3][1])) < strlen($tokens[$i+3][1]) + 3
-		) {
-			$tokens[$i+2] = array(T_ECHO, 'echo');
-			$tokens[$i+3] = array(T_CONSTANT_ENCAPSED_STRING, "'" . add_apo_slashes($tokens[$i+3][1]) . "'");
-			$tokens[$i+4] = array(0, ';');
 		}
 		if ($token[0] == T_COMMENT || $token[0] == T_WHITESPACE || ($token[0] == T_DOC_COMMENT && $doc_comment)) {
 			$space = "\n";
