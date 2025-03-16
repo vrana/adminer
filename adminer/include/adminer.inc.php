@@ -999,11 +999,12 @@ class Adminer {
 			$output = "";
 			foreach ((array) $_SESSION["pwds"] as $vendor => $servers) {
 				foreach ($servers as $server => $usernames) {
+					$name = h(get_setting("vendor-$server") ?: $drivers[$vendor]);
 					foreach ($usernames as $username => $password) {
 						if ($password !== null) {
 							$dbs = $_SESSION["db"][$vendor][$server][$username];
 							foreach (($dbs ? array_keys($dbs) : array("")) as $db) {
-								$output .= "<li><a href='" . h(auth_url($vendor, $server, $username, $db)) . "'>($drivers[$vendor]) " . h($username . ($server != "" ? "@" . $this->serverName($server) : "") . ($db != "" ? " - $db" : "")) . "</a>\n";
+								$output .= "<li><a href='" . h(auth_url($vendor, $server, $username, $db)) . "'>($name) " . h($username . ($server != "" ? "@" . $this->serverName($server) : "") . ($db != "" ? " - $db" : "")) . "</a>\n";
 							}
 						}
 					}

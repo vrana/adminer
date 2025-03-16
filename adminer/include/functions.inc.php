@@ -372,6 +372,34 @@ function cookie($name, $value, $lifetime = 2592000) {
 	);
 }
 
+/** Get settings stored in a cookie
+* @param string
+* @return array
+*/
+function get_settings($cookie) {
+	parse_str($_COOKIE[$cookie], $settings);
+	return $settings;
+}
+
+/** Get setting stored in a cookie
+* @param string
+* @param string
+* @return mixed
+*/
+function get_setting($key, $cookie = "adminer_settings") {
+	$settings = get_settings($cookie);
+	return $settings[$key];
+}
+
+/** Store settings to a cookie
+* @param array
+* @param string
+* @return bool
+*/
+function save_settings($settings, $cookie = "adminer_settings") {
+	return cookie($cookie, http_build_query($settings + get_settings($cookie)));
+}
+
 /** Restart stopped session
 * @return null
 */
