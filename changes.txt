@@ -1,5 +1,6 @@
 Adminer dev:
 Align numbers right (bug #912)
+Display comment in title of field
 Remember export setting at SQL command
 SQL textarea: Open help on Ctrl+click
 Security: Disallow writing temporary files to symlinks (bug #855)
