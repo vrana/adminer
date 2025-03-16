@@ -44,6 +44,9 @@ Detection of table collation
 Oracle:
 clob comparable with string
 
+CockroachDB:
+Link docs to https://www.cockroachlabs.com/docs/v24.3/create-table
+
 SimpleDB:
 Report invalid user or password
 Report API calls instead of queries
