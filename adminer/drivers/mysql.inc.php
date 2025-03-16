@@ -441,7 +441,7 @@ if (!defined('Adminer\DRIVER')) {
 			$connection->set_charset(charset($connection));
 			$connection->query("SET sql_quote_show_create = 1, autocommit = 1");
 			$connection->maria = preg_match('~MariaDB~', $connection->server_info);
-			$drivers["server"] = ($connection->maria ? "MariaDB" : "MySQL");
+			$drivers[DRIVER] = ($connection->maria ? "MariaDB" : "MySQL");
 			return $connection;
 		}
 		$return = $connection->error;

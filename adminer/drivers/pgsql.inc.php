@@ -321,6 +321,7 @@ if (isset($_GET["pgsql"])) {
 	}
 
 	function connect($credentials) {
+		global $drivers;
 		$connection = new Db;
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
 			if (min_version(9, 0, $connection)) {
@@ -328,6 +329,10 @@ if (isset($_GET["pgsql"])) {
 			}
 			$crdb_version = $connection->result("SHOW crdb_version");
 			$connection->server_info .= ($crdb_version ? "-" . preg_replace('~ \(.*~', '', $crdb_version) : "");
+			$connection->cockroach = preg_match('~CockroachDB~', $connection->server_info);
+			if ($connection->cockroach) { // we don't use "PostgreSQL / CockroachDB" by default because it's too long
+				$drivers[DRIVER] = "CockroachDB";
+			}
 			return $connection;
 		}
 		return $connection->error;
@@ -954,10 +959,10 @@ AND typelem = 0"
 
 	function support($feature) {
 		global $connection;
-		return ($feature == "processlist"
-			? !preg_match('~CockroachDB~', $connection->server_info) // https://github.com/cockroachdb/cockroach/issues/24745
-			: preg_match('~^(check|database|table|columns|sql|indexes|descidx|comment|view|' . (min_version(9.3) ? 'materializedview|' : '') . 'scheme|routine|sequence|trigger|type|variables|drop_col|kill|dump)$~', $feature)
-		);
+		return preg_match('~^(check|database|table|columns|sql|indexes|descidx|comment|view|' . (min_version(9.3) ? 'materializedview|' : '') . 'scheme|routine|sequence|trigger|type|variables|drop_col'
+			. ($connection->cockroach ? '' : '|processlist') // https://github.com/cockroachdb/cockroach/issues/24745
+			. '|kill|dump)$~', $feature)
+		;
 	}
 
 	function kill_process($val) {
