@@ -2,6 +2,7 @@ Adminer dev:
 Align numbers right (bug #912)
 Remember export setting at SQL command
 SQL textarea: Open help on Ctrl+click
+Security: Disallow writing temporary files to symlinks (bug #855)
 MariaDB: Display MariaDB instead of MySQL
 CSS: Dark mode syntax highlighting
 Designs named adminer-dark.css use dark basic style

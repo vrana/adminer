@@ -19,7 +19,17 @@ if ($_COOKIE["adminer_permanent"]) {
 
 function add_invalid_login() {
 	global $adminer;
-	$fp = file_open_lock(get_temp_dir() . "/adminer.invalid");
+	$base = get_temp_dir() . "/adminer.invalid";
+	// adminer.invalid may not be writable by us, try the files with random suffixes
+	foreach (glob("$base*") ?: array($base) as $filename) {
+		$fp = file_open_lock($filename);
+		if ($fp) {
+			break;
+		}
+	}
+	if (!$fp) {
+		$fp = file_open_lock("$base-" . rand_string());
+	}
 	if (!$fp) {
 		return;
 	}
@@ -42,7 +52,15 @@ function add_invalid_login() {
 
 function check_invalid_login() {
 	global $adminer;
-	$invalids = unserialize(@file_get_contents(get_temp_dir() . "/adminer.invalid")); // @ - may not exist
+	$invalids = array();
+	foreach (glob(get_temp_dir() . "/adminer.invalid*") as $filename) {
+		$fp = file_open_lock($filename);
+		if ($fp) {
+			$invalids = unserialize(stream_get_contents($fp));
+			file_unlock($fp);
+			break;
+		}
+	}
 	$invalid = ($invalids ? $invalids[$adminer->bruteForceKey()] : array());
 	$next_attempt = ($invalid[1] > 29 ? $invalid[0] - time() : 0); // allow 30 invalid attempts
 	if ($next_attempt > 0) { //! do the same with permanent login

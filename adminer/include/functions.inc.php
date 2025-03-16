@@ -799,6 +799,9 @@ function get_temp_dir() {
 * @return resource or null for error
 */
 function file_open_lock($filename) {
+	if (is_link($filename)) {
+		return; // https://cwe.mitre.org/data/definitions/61.html
+	}
 	$fp = @fopen($filename, "c+"); // @ - may not be writable
 	if (!$fp) {
 		return;
