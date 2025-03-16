@@ -10,19 +10,10 @@ class AdminerPlugin extends Adminer\Adminer {
 	protected $plugins;
 
 	/** Register plugins
-	* @param array object instances or null to register all classes starting by 'Adminer'
+	* @param array object instances
 	*/
 	function __construct($plugins) {
-		if ($plugins === null) {
-			$plugins = array();
-			foreach (get_declared_classes() as $class) {
-				if (preg_match('~^Adminer\w~i', $class) && !is_subclass_of($class, 'Adminer\Adminer')) {
-					$plugins[$class] = new $class;
-				}
-			}
-		}
 		$this->plugins = $plugins;
-		//! it is possible to use ReflectionObject to find out which plugins defines which methods at once
 	}
 
 	private function callParent($function, $args) {
