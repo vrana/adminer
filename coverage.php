@@ -23,7 +23,7 @@ function xhtml_open_tags($s) {
 	return $return;
 }
 
-$coverage_filename = sys_get_temp_dir() . "/adminer_coverage.ser";
+$coverage_filename = sys_get_temp_dir() . "/adminer.coverage";
 if (!extension_loaded("xdebug")) {
 	echo "<p class='error'>Xdebug has to be enabled.\n";
 } elseif ($_GET["coverage"] === "0") {

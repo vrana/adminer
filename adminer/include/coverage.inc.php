@@ -2,9 +2,9 @@
 namespace Adminer;
 
 // coverage is used in tests and removed in compilation
-if (extension_loaded("xdebug") && file_exists(sys_get_temp_dir() . "/adminer_coverage.ser")) {
+if (extension_loaded("xdebug") && file_exists(sys_get_temp_dir() . "/adminer.coverage")) {
 	function save_coverage() {
-		$coverage_filename = sys_get_temp_dir() . "/adminer_coverage.ser";
+		$coverage_filename = sys_get_temp_dir() . "/adminer.coverage";
 		$coverage = unserialize(file_get_contents($coverage_filename));
 		foreach (xdebug_get_code_coverage() as $filename => $lines) {
 			foreach ($lines as $l => $val) {
