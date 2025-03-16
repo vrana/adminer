@@ -1,7 +1,7 @@
 <?php
 namespace Adminer;
 
-$drivers = array("server" => "MySQL") + $drivers;
+$drivers = array("server" => "MySQL / MariaDB") + $drivers;
 
 if (!defined('Adminer\DRIVER')) {
 	define('Adminer\DRIVER', "server"); // server - backwards compatibility
@@ -435,11 +435,13 @@ if (!defined('Adminer\DRIVER')) {
 	* @return mixed Db or string for error
 	*/
 	function connect($credentials) {
+		global $drivers;
 		$connection = new Db;
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
-			$connection->set_charset(charset($connection)); // available in MySQLi since PHP 5.0.5
+			$connection->set_charset(charset($connection));
 			$connection->query("SET sql_quote_show_create = 1, autocommit = 1");
 			$connection->maria = preg_match('~MariaDB~', $connection->server_info);
+			$drivers["server"] = ($connection->maria ? "MariaDB" : "MySQL");
 			return $connection;
 		}
 		$return = $connection->error;
