@@ -61,7 +61,7 @@ if ($auth) {
 	set_password($vendor, $server, $username, $password);
 	$_SESSION["db"][$vendor][$server][$username][$db] = true;
 	if ($auth["permanent"]) {
-		$key = base64_encode($vendor) . "-" . base64_encode($server) . "-" . base64_encode($username) . "-" . base64_encode($db);
+		$key = implode("-", array_map('base64_encode', array($vendor, $server, $username, $db)));
 		$private = $adminer->permanentLogin(true);
 		$permanent[$key] = "$key:" . base64_encode($private ? encrypt_string($password, $private) : "");
 		cookie("adminer_permanent", implode(" ", $permanent));
