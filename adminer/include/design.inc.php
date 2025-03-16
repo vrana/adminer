@@ -66,21 +66,16 @@ fQIDAQAB
 			$_COOKIE["adminer_version"] = $version["version"]; // doesn't need to send to the browser
 		}
 	}
-	?>
-<script<?php echo nonce(); ?>>
-mixin(document.body, {onkeydown: bodyKeydown, onclick: bodyClick<?php
-	echo (isset($_COOKIE["adminer_version"]) ? "" : ", onload: partial(verifyVersion, '$VERSION', '" . js_escape(ME) . "', '" . get_token() . "')"); // $token may be empty in auth.inc.php
-	?>});
+	echo script("mixin(document.body, {onkeydown: bodyKeydown, onclick: bodyClick"
+		. (isset($_COOKIE["adminer_version"]) ? "" : ", onload: partial(verifyVersion, '$VERSION', '" . js_escape(ME) . "', '" . get_token() . "')") // $token may be empty in auth.inc.php
+		. "});
 document.body.className = document.body.className.replace(/ nojs/, ' js');
-var offlineMessage = '<?php echo js_escape(lang('You are offline.')); ?>';
-var thousandsSeparator = '<?php echo js_escape(lang(',')); ?>';
-</script>
-
-<div id="help" class="jush-<?php echo JUSH; ?> jsonly hidden"></div>
-<?php echo script("mixin(qs('#help'), {onmouseover: function () { helpOpen = 1; }, onmouseout: helpMouseout});"); ?>
-
-<div id="content">
-<?php
+var offlineMessage = '" . js_escape(lang('You are offline.')) . "';
+var thousandsSeparator = '" . js_escape(lang(',')) . "';")
+	;
+	echo "<div id='help' class='jush-" . JUSH . " jsonly hidden'></div>\n";
+	echo script("mixin(qs('#help'), {onmouseover: function () { helpOpen = 1; }, onmouseout: helpMouseout});");
+	echo "<div id='content'>\n";
 	if ($breadcrumb !== null) {
 		$link = substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1);
 		echo '<p id="breadcrumb"><a href="' . h($link ?: ".") . '">' . $drivers[DRIVER] . '</a> » ';

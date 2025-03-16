@@ -427,9 +427,7 @@ function edit_form($table, $fields, $row, $update) {
 		echo "<p class='error'>" . lang('No rows.') . "\n";
 		return;
 	}
-	?>
-<form action="" method="post" enctype="multipart/form-data" id="form">
-<?php
+	echo "<form action='' method='post' enctype='multipart/form-data' id='form'>\n";
 	if (!$fields) {
 		echo "<p class='error'>" . lang('You have no privileges to update this table.') . "\n";
 	} else {

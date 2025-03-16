@@ -73,8 +73,8 @@ if (isset($_GET["mongo"])) {
 							(is_a($val, 'MongoDB\BSON\Binary') ? $val->getData() : //! allow downloading
 							(is_a($val, 'MongoDB\BSON\Regex') ? "$val" :
 							(is_object($val) || is_array($val) ? json_encode($val, 256) : // 256 = JSON_UNESCAPED_UNICODE
-							$val // MongoMinKey, MongoMaxKey
-						)))));
+							$val))))) // MongoMinKey, MongoMaxKey
+						;
 					}
 					$this->rows[] = $row;
 					foreach ($row as $key => $val) {

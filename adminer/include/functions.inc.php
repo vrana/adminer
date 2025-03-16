@@ -299,8 +299,7 @@ function where($where, $fields = array()) {
 			. (JUSH == "sql" && $field_type == "json" ? " = CAST(" . q($val) . " AS JSON)"
 				: (JUSH == "sql" && is_numeric($val) && preg_match('~\.~', $val) ? " LIKE " . q($val) // LIKE because of floats but slow with ints
 				: (JUSH == "mssql" && strpos($field_type, "datetime") === false ? " LIKE " . q(preg_replace('~[_%[]~', '[\0]', $val)) // LIKE because of text but it does not work with datetime
-				: " = " . unconvert_field($fields[$key], q($val))
-			)))
+				: " = " . unconvert_field($fields[$key], q($val)))))
 		; //! enum and set
 		if (JUSH == "sql" && preg_match('~char|text~', $field_type) && preg_match("~[^ -@]~", $val)) { // not just [a-z] to catch non-ASCII characters
 			$return[] = "$column = " . q($val) . " COLLATE " . charset($connection) . "_bin";
@@ -961,14 +960,7 @@ function slow_query($query) {
 	$connection2 = null;
 	if (!$slow_query && support("kill") && is_object($connection2 = connect($adminer->credentials())) && ($db == "" || $connection2->select_db($db))) {
 		$kill = $connection2->result(connection_id()); // MySQL and MySQLi can use thread_id but it's not in PDO_MySQL
-		?>
-<script<?php echo nonce(); ?>>
-var timeout = setTimeout(function () {
-	ajax('<?php echo js_escape(ME); ?>script=kill', function () {
-	}, 'kill=<?php echo $kill; ?>&token=<?php echo $token; ?>');
-}, <?php echo 1000 * $timeout; ?>);
-</script>
-<?php
+		echo script("var timeout = setTimeout(function () { ajax('" . js_escape(ME) . "script=kill', function () {}, 'kill=$kill&token=$token'); }, 1000 * $timeout);");
 	}
 	ob_flush();
 	flush();

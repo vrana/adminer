@@ -180,31 +180,26 @@ foreach ($engines as $engine) {
 
 <form action="" method="post" id="form">
 <p>
-<?php if (support("columns") || $TABLE == "") { ?>
-<?php echo lang('Table name'); ?>: <input name="name"<?php echo ($TABLE == "" && !$_POST ? " autofocus" : ""); ?> data-maxlength="64" value="<?php echo h($row["name"]); ?>" autocapitalize="off">
-<?php echo ($engines ? html_select("Engine", array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) . on_help("getTarget(event).value", 1) . script("qsl('select').onchange = helpClose;") : ""); ?>
- <?php
+<?php
+if (support("columns") || $TABLE == "") {
+	echo lang('Table name') . "<input name='name'" . ($TABLE == "" && !$_POST ? " autofocus" : "") . " data-maxlength='64' value='" . h($row["name"]) . "' autocapitalize='off'>\n";
+	echo ($engines ? html_select("Engine", array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) . on_help("getTarget(event).value", 1) . script("qsl('select').onchange = helpClose;") . "\n" : "");
 	if ($collations) {
 		echo "<datalist id='collations'>" . optionlist($collations) . "</datalist>";
 		echo (preg_match("~sqlite|mssql~", JUSH) ? "" : "<input list='collations' name='Collation' value='" . h($row["Collation"]) . "' placeholder='(" . lang('collation') . ")'>");
 	}
-	?>
- <input type="submit" value="<?php echo lang('Save'); ?>">
-<?php } ?>
+	echo "<input type='submit' value='<?php echo lang('Save'); ?>'>\n";
+}
 
-<?php if (support("columns")) { ?>
-<div class="scrollable">
-<table id="edit-fields" class="nowrap">
-<?php
+if (support("columns")) {
+	echo "<div class='scrollable'>\n";
+	echo "<table id='edit-fields' class='nowrap'>\n";
 	edit_fields($row["fields"], $collations, "TABLE", $foreign_keys);
-	?>
-</table>
-<?php echo script("editFields();"); ?>
-</div>
-<p>
-<?php echo lang('Auto Increment'); ?>: <input type="number" name="Auto_increment" class="size" value="<?php echo h($row["Auto_increment"]); ?>">
-<?php echo checkbox("defaults", 1, ($_POST ? $_POST["defaults"] : get_setting("defaults")), lang('Default values'), "columnShow(this.checked, 5)", "jsonly"); ?>
-<?php
+	echo "</table>\n";
+	echo script("editFields();");
+	echo "</div>\n<p>\n";
+	echo lang('Auto Increment') . "<input type='number' name='Auto_increment' class='size' value='" . h($row["Auto_increment"]) . "'>\n";
+	echo checkbox("defaults", 1, ($_POST ? $_POST["defaults"] : get_setting("defaults")), lang('Default values'), "columnShow(this.checked, 5)", "jsonly");
 	$comments = ($_POST ? $_POST["comments"] : get_setting("comments"));
 	echo (support("comment")
 		? checkbox("comments", 1, $comments, lang('Comment'), "editingCommentsClick(this, true);", "jsonly")
@@ -226,24 +221,18 @@ foreach ($engines as $engine) {
 if (support("partitioning")) {
 	$partition_table = preg_match('~RANGE|LIST~', $row["partition_by"]);
 	print_fieldset("partition", lang('Partition by'), $row["partition_by"]);
-	?>
-<p>
-<?php echo html_select("partition_by", array("" => "") + $partition_by, $row["partition_by"]) . on_help("getTarget(event).value.replace(/./, 'PARTITION BY \$&')", 1) . script("qsl('select').onchange = partitionByChange;"); ?>
-(<input name="partition" value="<?php echo h($row["partition"]); ?>">)
-<?php echo lang('Partitions'); ?>: <input type="number" name="partitions" class="size<?php echo ($partition_table || !$row["partition_by"] ? " hidden" : ""); ?>" value="<?php echo h($row["partitions"]); ?>">
-<table id="partition-table"<?php echo ($partition_table ? "" : " class='hidden'"); ?>>
-<thead><tr><th><?php echo lang('Partition name'); ?><th><?php echo lang('Values'); ?></thead>
-<?php
+	echo "<p>" . html_select("partition_by", array("" => "") + $partition_by, $row["partition_by"]) . on_help("getTarget(event).value.replace(/./, 'PARTITION BY \$&')", 1) . script("qsl('select').onchange = partitionByChange;");
+	echo "(<input name='partition' value='" . h($row["partition"]) . "'>)\n";
+	echo lang('Partitions') . ": <input type='number' name='partitions' class='size" . ($partition_table || !$row["partition_by"] ? " hidden" : "") . "' value='" . h($row["partitions"]) . "'>\n";
+	echo "<table id='partition-table'" . ($partition_table ? "" : " class='hidden'") . ">\n";
+	echo "<thead><tr><th>" . lang('Partition name') . "<th>" . lang('Values') . "</thead>\n";
 	foreach ($row["partition_names"] as $key => $val) {
 		echo '<tr>';
 		echo '<td><input name="partition_names[]" value="' . h($val) . '" autocapitalize="off">';
 		echo ($key == count($row["partition_names"]) - 1 ? script("qsl('input').oninput = partitionNameChange;") : '');
 		echo '<td><input name="partition_values[]" value="' . h($row["partition_values"][$key]) . '">';
 	}
-	?>
-</table>
-</div></fieldset>
-<?php
+	echo "</table>\n</div></fieldset>\n";
 }
 ?>
 <input type="hidden" name="token" value="<?php echo $token; ?>">

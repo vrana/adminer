@@ -32,9 +32,17 @@
 		<exclude name="PSR12.Classes.ClassInstantiation.MissingParentheses"/>
 		<exclude name="Squiz.Scope.MethodScope.Missing"/>
 
-		<!-- TODO: Ignore only in <?php if () { ?><?php } ?> -->
+		<!-- False positives. -->
 		<exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect"/>
 		<exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact"/>
+	</rule>
+
+	<rule ref="Generic.WhiteSpace.ScopeIndent">
+		<properties>
+			<property name="ignoreIndentationTokens" type="array">
+				<element value="T_OPEN_TAG"/>
+			</property>
+		</properties>
 	</rule>
 
 	<rule ref="PSR1.Methods.CamelCapsMethodName.NotCamelCaps">

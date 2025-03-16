@@ -77,8 +77,8 @@ function lang($idf, $number = null) {
 			: ($LANG == 'lt' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1, 12-19, other
 			: ($LANG == 'lv' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number ? 1 : 2)) // different forms for 1 except 11, other, 0
 			: (in_array($LANG, array('bs', 'ru', 'sr', 'uk')) ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1 except 11, 2-4 except 12-14, other
-			: 1 // different forms for 1, other
-		)))))))); // http://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
+			: 1)))))))) // different forms for 1, other
+		; // http://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
 		$translation = $translation[$pos];
 	}
 	$args = func_get_args();

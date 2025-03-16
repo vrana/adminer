@@ -90,8 +90,8 @@ if (!$error && $_POST) {
 						$pattern = ($found == '/*' ? '\*/'
 							: ($found == '[' ? ']'
 							: (preg_match('~^-- |^#~', $found) ? "\n"
-							: preg_quote($found) . ($c_style_escapes ? "|\\\\." : "")
-						)));
+							: preg_quote($found) . ($c_style_escapes ? "|\\\\." : "")))
+						);
 
 						while (preg_match("($pattern|\$)s", $query, $match, PREG_OFFSET_CAPTURE, $offset)) {
 							$s = $match[0][0];
