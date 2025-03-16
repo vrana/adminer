@@ -18,9 +18,9 @@ class AdminerSuggestTableField
             ]
         ];
 
-		foreach (array_keys(tables_list()) as $table) {
+		foreach (array_keys(Adminer\tables_list()) as $table) {
 			$suggests['___tables___'][] = $table;
-			foreach (fields($table) as $field => $foo) {
+			foreach (Adminer\fields($table) as $field => $foo) {
 				$suggests[$table][] = $field;
 			}
 		}
@@ -39,7 +39,7 @@ class AdminerSuggestTableField
         .xborder{border: 1px inset rgb(204, 204, 204);}
         /*textarea.sqlarea {display: block!important;}*/
     </style>
-    <script<?php echo nonce(); ?> type="text/javascript">
+    <script<?php echo Adminer\nonce(); ?> type="text/javascript">
 
         function domReady(fn) {
             document.addEventListener("DOMContentLoaded", fn)
@@ -97,11 +97,11 @@ class AdminerSuggestTableField
 
             var suggests_mysql = ""
 
-            suggests_mysql += "<dt><?php echo lang('Tables') ?></dt>"
+            suggests_mysql += "<dt><?php echo Adminer\lang('Tables') ?></dt>"
             for(var k in suggests['___tables___']){
                 suggests_mysql += "<dd><a href='#' data-table='1'>"+ suggests['___tables___'][k] +"</a></dd>"
             }
-            suggests_mysql += "<dt><?php echo lang('SQL command') ?></dt>"
+            suggests_mysql += "<dt><?php echo Adminer\lang('SQL command') ?></dt>"
             for(var k in suggests['___mysql___']){
                 suggests_mysql += "<dd><a href='#' data-nobt='1'>"+ suggests['___mysql___'][k] +"</a></dd>"
             }
@@ -111,7 +111,7 @@ class AdminerSuggestTableField
                 '<div id="suggest_tablefields_container" style="height:'+ sqlarea.offsetHeight +'px;top:0;left:'+ posLeft +'px">'+
                 '<span class="noselect" id="suggest_tablefields_drag">drag</span>|'+
                 '<span class="noselect" id="suggest_tablefields_stick" data-pos-left="'+ posLeft +'px">stick</span>&nbsp;'+
-                '<input autocomplete="off" id="suggest_search" type="text" placeholder="<?php echo lang('Search') ?>..."/><dl id="suggest_tablefields" class="noselect"></dl></div>')
+                '<input autocomplete="off" id="suggest_search" type="text" placeholder="<?php echo Adminer\lang('Search') ?>..."/><dl id="suggest_tablefields" class="noselect"></dl></div>')
             compile(suggests_mysql)
 
 

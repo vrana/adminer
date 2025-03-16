@@ -18,15 +18,15 @@ class AdminerDisableTables {
         ];
 
         $select = filter_input(INPUT_GET, 'table', FILTER_SANITIZE_STRING);
-        if(isset($select) && $disabledTables[$select]) die(h('Access Denied.'));
+        if(isset($select) && $disabledTables[$select]) die(Adminer\h('Access Denied.'));
 
         if($disabledTables[$tableStatus['Name']]){
             return false;
         }
 
-        return h($tableStatus['Name']);
+        return Adminer\h($tableStatus['Name']);
         // tables without comments would return empty string and will be ignored by Adminer
-        //return h($tableStatus['Comment']);
+        //return Adminer\h($tableStatus['Comment']);
     }
 
 }
