@@ -22,6 +22,7 @@ if (function_exists("mb_internal_encoding")) {
 }
 
 include "../adminer/include/functions.inc.php";
+include "../adminer/include/html.inc.php";
 
 // used only in compiled file
 if (isset($_GET["file"])) {
