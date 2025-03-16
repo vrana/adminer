@@ -1018,31 +1018,7 @@ class Adminer {
 				$connection->select_db(DB);
 				$tables = table_status('', true);
 			}
-			// this is matched by compile.php
-			echo script_src("../externals/jush/modules/jush.js");
-			echo script_src("../externals/jush/modules/jush-textarea.js");
-			echo script_src("../externals/jush/modules/jush-txt.js");
-			echo script_src("../externals/jush/modules/jush-js.js");
-			if (support("sql")) {
-				echo script_src("../externals/jush/modules/jush-" . JUSH . ".js");
-				?>
-<script<?php echo nonce(); ?>>
-<?php
-				if ($tables) {
-					$links = array();
-					foreach ($tables as $table => $type) {
-						$links[] = preg_quote($table, '/');
-					}
-					echo "var jushLinks = { " . JUSH . ": [ '" . js_escape(ME) . (support("table") ? "table=" : "select=") . "\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
-					foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
-						echo "jushLinks.$val = jushLinks." . JUSH . ";\n";
-					}
-				}
-				?>
-bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '\1', $connection->server_info) : ""); ?>'<?php echo ($connection->maria ? ", true" : ""); ?>);
-</script>
-<?php
-			}
+			$this->syntaxHighlighting($tables);
 			$this->databasesPrint($missing);
 			$actions = array();
 			if (DB == "" || !$missing) {
@@ -1065,6 +1041,34 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 				}
 			}
 		}
+	}
+
+	/** Set up syntax highlight for code and <textarea>
+	* @param array result of table_status()
+	*/
+	function syntaxHighlighting($tables) {
+		global $connection;
+		// this is matched by compile.php
+		echo script_src("../externals/jush/modules/jush.js");
+		echo script_src("../externals/jush/modules/jush-textarea.js");
+		echo script_src("../externals/jush/modules/jush-txt.js");
+		echo script_src("../externals/jush/modules/jush-js.js");
+		if (support("sql")) {
+			echo script_src("../externals/jush/modules/jush-" . JUSH . ".js");
+			echo "<script" . nonce() . ">\n";
+			if ($tables) {
+				$links = array();
+				foreach ($tables as $table => $type) {
+					$links[] = preg_quote($table, '/');
+				}
+				echo "var jushLinks = { " . JUSH . ": [ '" . js_escape(ME) . (support("table") ? "table=" : "select=") . "\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
+				foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
+					echo "jushLinks.$val = jushLinks." . JUSH . ";\n";
+				}
+			}
+			echo "</script>\n";
+		}
+		echo script("bodyLoad('" . (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '\1', $connection->server_info) : "") . "'" . ($connection->maria ? ", true" : "") . ");");
 	}
 
 	/** Prints databases list in menu

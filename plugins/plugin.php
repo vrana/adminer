@@ -407,6 +407,11 @@ class AdminerPlugin extends Adminer\Adminer {
 		return $this->applyPlugin(__FUNCTION__, $args);
 	}
 
+	function syntaxHighlighting($tables) {
+		$args = func_get_args();
+		return $this->applyPlugin(__FUNCTION__, $args);
+	}
+
 	function databasesPrint($missing) {
 		$args = func_get_args();
 		return $this->applyPlugin(__FUNCTION__, $args);

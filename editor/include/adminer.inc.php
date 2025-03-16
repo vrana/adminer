@@ -627,6 +627,9 @@ qsl('div').onclick = whisperClick;", "")
 		}
 	}
 
+	function syntaxHighlighting($tables) {
+	}
+
 	function databasesPrint($missing) {
 	}
 
