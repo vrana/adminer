@@ -30,7 +30,9 @@ if (isset($_GET["file"])) {
 }
 
 if ($_GET["script"] == "version") {
-	$fp = file_open_lock(get_temp_dir() . "/adminer.version");
+	$filename = get_temp_dir() . "/adminer.version";
+	unlink($filename); // it may not be writable by us
+	$fp = file_open_lock($filename);
 	if ($fp) {
 		file_write_unlock($fp, serialize(array("signature" => $_POST["signature"], "version" => $_POST["version"])));
 	}
