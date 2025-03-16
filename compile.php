@@ -37,27 +37,12 @@ function lang_ids($match) {
 }
 
 function put_file($match) {
-	global $project, $VERSION, $driver;
+	global $project, $driver;
 	if (basename($match[2]) == '$LANG.inc.php') {
 		return $match[0]; // processed later
 	}
 	$return = file_get_contents(__DIR__ . "/$project/$match[2]");
 	$return = preg_replace('~namespace Adminer;\s*~', '', $return);
-	if (basename($match[2]) == "file.inc.php") {
-		$return = str_replace("\n// caching headers added in compile.php", (preg_match('~-dev$~', $VERSION) ? '' : '
-if ($_SERVER["HTTP_IF_MODIFIED_SINCE"]) {
-	header("HTTP/1.1 304 Not Modified");
-	exit;
-}
-
-header("Expires: " . gmdate("D, d M Y H:i:s", time() + 365*24*60*60) . " GMT");
-header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-header("Cache-Control: immutable");
-'), $return, $count);
-		if (!$count) {
-			echo "adminer/file.inc.php: Caching headers placeholder not found\n";
-		}
-	}
 	if ($driver && preg_match('~/drivers/~', $match[2])) {
 		$return = preg_replace('~^if \(isset\(\$_GET\["' . $driver . '"]\)\) \{(.*)^}~ms', '\1', $return);
 		// check function definition in drivers

@@ -1,8 +1,15 @@
 <?php
 namespace Adminer;
 
-// this is matched by compile.php
-// caching headers added in compile.php
+if (substr($VERSION, -4) != '-dev') {
+	if ($_SERVER["HTTP_IF_MODIFIED_SINCE"]) {
+		header("HTTP/1.1 304 Not Modified");
+		exit;
+	}
+	header("Expires: " . gmdate("D, d M Y H:i:s", time() + 365*24*60*60) . " GMT");
+	header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+	header("Cache-Control: immutable");
+}
 
 if ($_GET["file"] == "favicon.ico") {
 	header("Content-Type: image/x-icon");
