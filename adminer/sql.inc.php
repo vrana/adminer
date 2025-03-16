@@ -2,6 +2,7 @@
 namespace Adminer;
 
 if (!$error && $_POST["export"]) {
+	set_adminer_settings(array("output" => $_POST["output"], "format" => $_POST["format"]), "adminer_import");
 	dump_headers("sql");
 	$adminer->dumpTable("", "");
 	$adminer->dumpData("", "table", $_POST["query"]);
@@ -64,7 +65,7 @@ if (!$error && $_POST) {
 		$errors = array();
 		$parse = '[\'"' . (JUSH == "sql" ? '`#' : (JUSH == "sqlite" ? '`[' : (JUSH == "mssql" ? '[' : ''))) . ']|/\*|-- |$' . (JUSH == "pgsql" ? '|\$[^$]*\$' : '');
 		$total_start = microtime(true);
-		parse_str($_COOKIE["adminer_export"], $adminer_export);
+		$adminer_export = adminer_settings("adminer_import"); // this doesn't offer SQL export so we match the import/export style at select
 		$dump_format = $adminer->dumpFormat();
 		unset($dump_format["sql"]);
 

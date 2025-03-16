@@ -121,28 +121,31 @@ function referencable_primary($self) {
 }
 
 /** Get settings stored in a cookie
+* @param string
 * @return array
 */
-function adminer_settings() {
-	parse_str($_COOKIE["adminer_settings"], $settings);
+function adminer_settings($cookie) {
+	parse_str($_COOKIE[$cookie], $settings);
 	return $settings;
 }
 
 /** Get setting stored in a cookie
 * @param string
-* @return array
+* @param string
+* @return mixed
 */
-function adminer_setting($key) {
-	$settings = adminer_settings();
+function adminer_setting($key, $cookie = "adminer_settings") {
+	$settings = adminer_settings($cookie);
 	return $settings[$key];
 }
 
 /** Store settings to a cookie
 * @param array
+* @param string
 * @return bool
 */
-function set_adminer_settings($settings) {
-	return cookie("adminer_settings", http_build_query($settings + adminer_settings()));
+function set_adminer_settings($settings, $cookie = "adminer_settings") {
+	return cookie($cookie, http_build_query($settings + adminer_settings($cookie)));
 }
 
 /** Print SQL <textarea> tag

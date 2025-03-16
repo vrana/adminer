@@ -7,7 +7,7 @@ $indexes = indexes($TABLE);
 $fields = fields($TABLE);
 $foreign_keys = column_foreign_keys($TABLE);
 $oid = $table_status["Oid"];
-parse_str($_COOKIE["adminer_import"], $adminer_import);
+$adminer_import = adminer_settings("adminer_import");
 
 $rights = array(); // privilege => 0
 $columns = array(); // selectable columns
@@ -83,7 +83,7 @@ if ($_POST && !$error) {
 	}
 	$where_check = ($where_check ? "\nWHERE " . implode(" AND ", $where_check) : "");
 	if ($_POST["export"]) {
-		cookie("adminer_import", "output=" . urlencode($_POST["output"]) . "&format=" . urlencode($_POST["format"]));
+		set_adminer_settings(array("output" => $_POST["output"], "format" => $_POST["format"]), "adminer_import");
 		dump_headers($TABLE);
 		$adminer->dumpTable($TABLE, "");
 		$from = ($select ? implode(", ", $select) : "*")
@@ -195,7 +195,7 @@ if ($_POST && !$error) {
 		} elseif (!preg_match('~~u', $file)) {
 			$error = lang('File must be in UTF-8 encoding.');
 		} else {
-			cookie("adminer_import", "output=" . urlencode($adminer_import["output"]) . "&format=" . urlencode($_POST["separator"]));
+			set_adminer_settings(array("output" => $adminer_import["output"], "format" => $_POST["separator"]), "adminer_import");
 			$result = true;
 			$cols = array_keys($fields);
 			preg_match_all('~(?>"[^"]*"|[^"\r\n]+)+~', $file, $matches);
