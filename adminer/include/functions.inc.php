@@ -912,9 +912,10 @@ function enum_input($type, $attrs, $field, $value, $empty = null) {
 * @param array one field from fields()
 * @param mixed
 * @param string
+* @param bool
 * @return null
 */
-function input($field, $value, $function) {
+function input($field, $value, $function, $autofocus = false) {
 	global $driver, $adminer;
 	$name = h(bracket_escape($field["field"]));
 	echo "<td class='function'>";
@@ -928,7 +929,7 @@ function input($field, $value, $function) {
 	}
 	$functions = (isset($_GET["select"]) || $reset ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
 	$disabled = stripos($field["default"], "GENERATED ALWAYS AS ") === 0 ? " disabled=''" : "";
-	$attrs = " name='fields[$name]'$disabled";
+	$attrs = " name='fields[$name]'$disabled" . ($autofocus ? " autofocus" : "");
 	$enums = $driver->enumLength($field);
 	if ($enums) {
 		$field["type"] = "enum";
@@ -1424,12 +1425,11 @@ function edit_form($table, $fields, $row, $update) {
 	?>
 <form action="" method="post" enctype="multipart/form-data" id="form">
 <?php
-	$first = 0;
-	$is_first = true;
 	if (!$fields) {
 		echo "<p class='error'>" . lang('You have no privileges to update this table.') . "\n";
 	} else {
 		echo "<table class='layout'>" . script("qsl('table').onkeydown = editingKeydown;");
+		$autofocus = !$_POST;
 		foreach ($fields as $name => $field) {
 			echo "<tr><th>" . $adminer->fieldName($field);
 			$default = $_GET["set"][bracket_escape($name)];
@@ -1473,12 +1473,13 @@ function edit_form($table, $fields, $row, $update) {
 				$value = "";
 				$function = "uuid";
 			}
-			if ($is_first && ($field["auto_increment"] || $function == "now" || $function == "uuid")) {
-				$first++;
-			} else {
-				$is_first = false;
+			if ($autofocus !== false) {
+				$autofocus = ($field["auto_increment"] || $function == "now" || $function == "uuid" ? null : true); // null - don't autofocus this input but check the next one
 			}
-			input($field, $value, $function);
+			input($field, $value, $function, $autofocus);
+			if ($autofocus) {
+				$autofocus = false;
+			}
 			echo "\n";
 		}
 		if (!support("table")) {
@@ -1503,9 +1504,7 @@ function edit_form($table, $fields, $row, $update) {
 			echo ($update ? script("qsl('input').onclick = function () { return !ajaxForm(this.form, '" . lang('Saving') . "…', this); };") : "");
 		}
 	}
-	echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "'>" . confirm() . "\n"
-		: ($_POST || !$fields ? "" : script("focus(qsa('td', qs('#form'))[2*$first+1].firstChild);"))
-	);
+	echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "'>" . confirm() . "\n" : "");
 	if (isset($_GET["select"])) {
 		hidden_fields(array("check" => (array) $_POST["check"], "clone" => $_POST["clone"], "all" => $_POST["all"]));
 	}

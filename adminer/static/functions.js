@@ -880,16 +880,6 @@ function addEvent(el, action, handler) {
 	}
 }
 
-/** Defer focusing element
-* @param HTMLElement
-*/
-function focus(el) {
-	setTimeout(function () {
-		// this has to be an anonymous function because Firefox passes some arguments to setTimeout callback
-		el.focus();
-	}, 0);
-}
-
 /** Clone node and setup submit highlighting
 * @param HTMLElement
 * @return HTMLElement
