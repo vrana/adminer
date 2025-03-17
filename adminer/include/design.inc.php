@@ -35,7 +35,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	if ($dark !== false) {
 		echo "<link rel='stylesheet'" . ($dark ? "" : " media='(prefers-color-scheme: dark)'") . " href='../adminer/static/dark.css'>\n";
 	}
-	echo "<meta name='color-scheme' content='" . ($dark !== false ? ($dark ? "" : "light ") . "dark" : "") . "'>\n";
+	echo "<meta name='color-scheme' content='" . ($dark === null ? "light dark" : ($dark ? "dark" : "light")) . "'>\n";
 	// this is matched by compile.php
 	echo script_src("../adminer/static/functions.js");
 	echo script_src("static/editing.js");
