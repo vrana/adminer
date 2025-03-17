@@ -13,6 +13,15 @@ function add_driver($id, $name) {
 	$drivers[$id] = $name;
 }
 
+/** Get driver name
+* @param string
+* @return string
+*/
+function get_driver_name($id) {
+	global $drivers;
+	return $drivers[$id];
+}
+
 /** Get driver
 * @return Driver
 */
