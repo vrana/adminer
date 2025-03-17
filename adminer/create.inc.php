@@ -188,7 +188,7 @@ if (support("columns") || $TABLE == "") {
 		echo "<datalist id='collations'>" . optionlist($collations) . "</datalist>";
 		echo (preg_match("~sqlite|mssql~", JUSH) ? "" : "<input list='collations' name='Collation' value='" . h($row["Collation"]) . "' placeholder='(" . lang('collation') . ")'>");
 	}
-	echo "<input type='submit' value='<?php echo lang('Save'); ?>'>\n";
+	echo "<input type='submit' value='" . lang('Save') . "'>\n";
 }
 
 if (support("columns")) {
@@ -198,7 +198,7 @@ if (support("columns")) {
 	echo "</table>\n";
 	echo script("editFields();");
 	echo "</div>\n<p>\n";
-	echo lang('Auto Increment') . "<input type='number' name='Auto_increment' class='size' value='" . h($row["Auto_increment"]) . "'>\n";
+	echo lang('Auto Increment') . ": <input type='number' name='Auto_increment' class='size' value='" . h($row["Auto_increment"]) . "'>\n";
 	echo checkbox("defaults", 1, ($_POST ? $_POST["defaults"] : get_setting("defaults")), lang('Default values'), "columnShow(this.checked, 5)", "jsonly");
 	$comments = ($_POST ? $_POST["comments"] : get_setting("comments"));
 	echo (support("comment")

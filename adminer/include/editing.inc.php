@@ -357,7 +357,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 		echo "<tr" . ($display ? "" : " style='display: none;'") . ">\n";
 		echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", explode("|", $driver->inout), $field["inout"]) : "") . "<th>";
 		if ($display) {
-			echo "<input name='fields[$][field]' value='" . h($field["field"]) . "' data-maxlength='64' autocapitalize='off' aria-labelledby='label-name'>\n";
+			echo "<input name='fields[$i][field]' value='" . h($field["field"]) . "' data-maxlength='64' autocapitalize='off' aria-labelledby='label-name'>\n";
 		}
 		echo "<input type='hidden' name='fields[$i][orig]' value='" . h($orig) . "'>";
 		edit_type("fields[$i]", $field, $collations, $foreign_keys);
