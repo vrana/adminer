@@ -107,7 +107,7 @@
 <tbody>
 <tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;trigger=albums</td><td></td></tr>
 <tr><td>select</td><td>Timing</td><td>label=AFTER</td></tr>
-<tr><td>runScript</td><td>document.querySelector('[name="Statement"]').value = 'BEGIN\nUPDATE interprets SET albums = albums + 1 WHERE id = NEW.interpret';\nEND</td><td></td></tr>
+<tr><td>runScript</td><td>document.querySelector('[name="Statement"]').value = 'BEGIN\nUPDATE interprets SET albums = albums + 1 WHERE id = NEW.interpret;\nEND'</td><td></td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Trigger has been created.</td><td></td></tr></tr>
 </tbody></table>

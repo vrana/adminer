@@ -114,7 +114,7 @@
 <tr><td>clickAndWait</td><td>link=New item</td><td></td></tr>
 <tr><td>type</td><td>fields[interpret]</td><td>0</td></tr>
 <tr><td>click</td><td>//input[@value='Save']</td><td></td></tr>
-<tr><td>verifyTextPresent</td><td>failed to satisfy CHECK constraint</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>violates check constraint</td><td></td></tr>
 <tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;check=albums&amp;name=albums_interpret_check</td><td></td></tr>
 <tr><td>verifyTextPresent<td>(interpret > 0)</td><td></td></tr>
 <tr><td>chooseOkOnNextConfirmation</td><td>Drop albums_interpret_check?</td><td></td></tr>
@@ -334,7 +334,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">SQL command</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;sql=SELECT+122%2B1</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;sql=SELECT+122%2B1</td><td></td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Execute']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>123</td><td></td></tr>
 </tbody></table>

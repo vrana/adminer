@@ -164,7 +164,7 @@
 <tr><td>clickAndWait</td><td>link=New item</td><td></td></tr>
 <tr><td>type</td><td>fields[interpret]</td><td>0</td></tr>
 <tr><td>click</td><td>//input[@value='Save']</td><td></td></tr>
-<tr><td>verifyTextPresent</td><td>Check constraint 'albums_interpret_check' is violated.</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>CONSTRAINT `albums_interpret_check` failed for `adminer_test`.`albums`</td><td></td></tr>
 <tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;check=albums&amp;name=albums_interpret_check</td><td></td></tr>
 <tr><td>verifyTextPresent<td>`interpret` > 0</td><td></td></tr>
 <tr><td>chooseOkOnNextConfirmation</td><td>Drop albums_interpret_check?</td><td></td></tr>
