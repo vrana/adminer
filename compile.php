@@ -302,12 +302,15 @@ if ($vendor) {
 			$file = preg_replace("((\t*)" . preg_quote('if (support("' . $feature . '")') . ".*?\n\\1\\}( else)?)s", '', $file);
 		}
 	}
-	if (count($drivers) == 1) {
+	if ($project != "editor" && count($drivers) == 1) {
 		$file = str_replace('html_select("auth[driver]", $drivers, DRIVER, "loginDriver(this);")', "\"<input type='hidden' name='auth[driver]' value='" . ($vendor == "mysql" ? "server" : $vendor) . "'>" . reset($drivers) . "\"", $file, $count);
-		if (!$count && $project != "editor") {
+		if (!$count) {
 			echo "auth[driver] form field not found\n";
 		}
 		$file = str_replace(" . script(\"qs('#username').form['auth[driver]'].onchange();\")", "", $file);
+		if ($vendor == "sqlite") {
+			$file = str_replace(");\n\t\techo \$this->loginFormField('server', '<tr><th>' . lang('Server') . '<td>', '<input name=\"auth[server]", ' . \'<input type="hidden" name="auth[server]"', $file);
+		}
 	}
 	$file = preg_replace('(;\s*../externals/jush/modules/jush-(?!textarea\.|txt\.|js\.|' . preg_quote($vendor == "mysql" ? "sql" : $vendor) . '\.)[^.]+.js)', '', $file);
 	$file = preg_replace_callback('~doc_link\(array\((.*)\)\)~sU', function ($match) use ($vendor) {
