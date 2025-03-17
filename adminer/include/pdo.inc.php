@@ -87,6 +87,10 @@ if (extension_loaded('pdo')) {
 			return $this->fetch(\PDO::FETCH_NUM);
 		}
 
+		function fetch_column($field) {
+			return $this->fetchColumn($field);
+		}
+
 		function fetch_field() {
 			$row = (object) $this->getColumnMeta($this->_offset++);
 			$row->orgtable = $row->table;

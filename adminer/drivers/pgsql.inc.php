@@ -241,6 +241,13 @@ if (isset($_GET["pgsql"])) {
 			$this->types[lang('User types')] = array_flip($types);
 		}
 
+		function insertSql($table, $set) {
+			$auto_increment = array_filter(fields($table), function ($field) {
+				return $field['auto_increment'];
+			});
+			return parent::insertSql($table, $set) . (count($auto_increment) == 1 ? " RETURNING " . idf_escape(key($auto_increment)) : "");
+		}
+
 		function insertUpdate($table, $rows, $primary) {
 			global $connection;
 			foreach ($rows as $set) {
@@ -781,7 +788,7 @@ ORDER BY SPECIFIC_NAME');
 	}
 
 	function last_id($result) {
-		return 0; // there can be several sequences
+		return (is_object($result) ? $result->fetch_column(0) : 0);
 	}
 
 	function explain($connection, $query) {
