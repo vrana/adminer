@@ -3,7 +3,7 @@ Align numbers right (bug #912)
 Display comment in title of field
 Remember export setting at SQL command
 SQL textarea: Open help on Ctrl+click
-Security: Disallow writing temporary files to symlinks (bug #855)
+Security: Disallow writing temporary files to symlinks (bug SF-855)
 MariaDB: Display MariaDB instead of MySQL
 CSS: Dark mode syntax highlighting
 Designs named adminer-dark.css use dark basic style
@@ -14,7 +14,7 @@ MySQL: Display converting function for binary, bit or geometry fields
 MySQL: Display default values of binary columns
 MySQL: Allow setting default values of json column
 MariaDB: Don't display NULL as default value (regression from 5.0.0)
-PostgreSQL PDO: Escape bytea values (bug #218)
+PostgreSQL PDO: Escape bytea values (bug SF-218)
 CockroachDB: Display version
 CockroachDB: Recognize unique_rowid() as auto_increment
 MS SQL: Fix editing rows with datetime column in primary key
@@ -29,7 +29,7 @@ Fix gzip export (bug #896, regression from 5.0.0)
 Fix importing multiple SQL files not terminated by semicolon
 Use <datalist> for altering collations
 MySQL: Allow setting default values of text column
-MySQL: Stop treating enum and set as numbers (bug #475)
+MySQL: Stop treating enum and set as numbers (bug SF-475)
 MySQL, MariaDB: Fix default values with ' (bug #895)
 MariaDB: Fix creating and altering generated columns (bug #897)
 PostgreSQL: Fix "where" and "order" privileges (bug #902, regression from 5.0.2)
@@ -39,30 +39,30 @@ Elastic: Fix displaying sparse rows (PR #893)
 Plugins: Add method dumpFooter()
 
 Adminer 5.0.2 (released 2025-03-10):
-PostgreSQL: Fix setting NULL and original value on enum (bug #884)
+PostgreSQL: Fix setting NULL and original value on enum (bug SF-884)
 CockroachDB: Add support via PostgreSQL driver
 Elasticsearch: Add support for "where" and "order" field privilege
 
 Adminer 5.0.1 (released 2025-03-07):
 Fix bulk operations with tables (regression from 5.0.0)
-Remove duplicate columns from select (bug #670)
-MariaDB: Fix link to status variable doc (bug #658)
+Remove duplicate columns from select (bug SF-670)
+MariaDB: Fix link to status variable doc (bug SF-658)
 PostgreSQL: Support indexes on materialized views (PR #467)
 Elasticsearch: Drop support for version < 7
 
 Adminer 5.0.0 (released 2025-03-07):
 Speed up with disabled output buffering
-Allow creating generated columns (bug #857)
+Allow creating generated columns (bug SF-857)
 Don't autofocus computed fields in insert form
-Skip generated columns in multi-edit (bug #882)
+Skip generated columns in multi-edit (bug SF-882)
 MySQL: Display generated value in table structure
 MySQL: Drop support for MySQL 4
-PostgreSQL: Compute size of all databases (bug #881)
+PostgreSQL: Compute size of all databases (bug SF-881)
 PostgreSQL: Do not alter indexes with expressions
-PostgreSQL: Fix export of indexes with expressions (bug #768)
+PostgreSQL: Fix export of indexes with expressions (bug SF-768)
 PostgreSQL: Display ENUM types
-PostgreSQL: Export ENUM types (bug #587)
-PostgreSQL: Display ? instead of -1 rows in table overview (bug #883)
+PostgreSQL: Export ENUM types (bug SF-587)
+PostgreSQL: Display ? instead of -1 rows in table overview (bug SF-883)
 PostgreSQL: Show accessible databases to non-owners (regression from 4.9.1)
 PostgreSQL: Skip editing generated columns
 PostgreSQL, MS SQL, Oracle: Hide table actions for information_schema
@@ -71,10 +71,10 @@ SQLite: Support generated columns
 SQLite: Add command Check tables
 SQLite: Display all rows of variable values
 SQLite: Remove support for SQLite version 2
-MS SQL: Support export (bug #480)
+MS SQL: Support export (bug SF-480)
 MS SQL: Display foreign keys ON UPDATE and ON DELETE
 MS SQL: Support computed columns
-MS SQL: Fix CSV import (bug #859)
+MS SQL: Fix CSV import (bug SF-859)
 MS SQL: Fix altering foreign key
 MS SQL PDO: Support offset
 MS SQL: Remove support for MSSQL extension
@@ -93,28 +93,28 @@ Hide index column options by default
 Offer original values in multi-row editing (regression from 4.16.0)
 Print SQL errors as comments in export (regression from 3.2.0)
 MySQL, PostgreSQL, MS SQL: Support CHECK constraint
-MySQL: Show comments at routine call (bug #874)
+MySQL: Show comments at routine call (bug SF-874)
 MySQL: Don't offer empty enum value in edit
 MySQL 9+: Support vector type
 PostgreSQL: Link user defined types
-PostgreSQL: Constraint enum values in editing (bug #270)
+PostgreSQL: Constraint enum values in editing (bug SF-270)
 PostgreSQL: Export functions
 PostgreSQL 8+: Fix exporting table constraints
 SQLite: Show all supported pragmas in Variables
-MS SQL: Allow altering table in non-default schema (bug #405)
-MS SQL: Fix default values (bug #732, bug #733)
+MS SQL: Allow altering table in non-default schema (bug SF-405)
+MS SQL: Fix default values (bug SF-732, bug SF-733)
 MS SQL: Fix length of nvarchar columns
-Editor PDO: Select value of foreign key in edit (bug #847)
+Editor PDO: Select value of foreign key in edit (bug SF-847)
 Mobile devices: Use device width
 
 Adminer 4.16.0 (released 2025-02-20):
-MySQL: Fix saving bit(64) values (bug #839)
-PostgreSQL: Preserve whitespace in EXPLAIN (bug #827)
+MySQL: Fix saving bit(64) values (bug SF-839)
+PostgreSQL: Preserve whitespace in EXPLAIN (bug SF-827)
 PostgreSQL: Support SSL
-PostgreSQL: Support altering auto_increment (bug #761)
-SQLite: Fix altering forign keys (bug #841)
-SQLite: Fix expressions in default values (bug #860)
-MS SQL: Foreign keys in non-default schema (bug #833)
+PostgreSQL: Support altering auto_increment (bug SF-761)
+SQLite: Fix altering forign keys (bug SF-841)
+SQLite: Fix expressions in default values (bug SF-860)
+MS SQL: Foreign keys in non-default schema (bug SF-833)
 Oracle: Include tables granted by other user
 MongoDB: Execute commands against the selected DB
 
@@ -181,28 +181,28 @@ PostgreSQL: Don't reset table comments (regression from 4.2.0)
 PostgreSQL PDO: Allow editing rows identified by boolean column (PR #380)
 
 Adminer 4.8.1 (released 2021-05-14):
-Internet Explorer or PDO in Adminer 4.7.8-4.8.0: Fix XSS in doc_link (bug #797)
-Fix more PHP 8 warnings (bug #781)
-Avoid PHP warnings with PDO drivers (bug #786, regression from 4.7.8)
-MySQL: Allow moving views to other DB and renaming DB with views (bug #783)
+Internet Explorer or PDO in Adminer 4.7.8-4.8.0: Fix XSS in doc_link (bug SF-797)
+Fix more PHP 8 warnings (bug SF-781)
+Avoid PHP warnings with PDO drivers (bug SF-786, regression from 4.7.8)
+MySQL: Allow moving views to other DB and renaming DB with views (bug SF-783)
 MariaDB: Do not treat sequences as views (PR #416)
-PostgreSQL: Support UPDATE OF triggers (bug #789)
+PostgreSQL: Support UPDATE OF triggers (bug SF-789)
 PostgreSQL: Support triggers with more events (OR)
 PostgreSQL: Fix parsing of foreign keys with non-ASCII column names
-PostgreSQL < 10 PDO: Avoid displaying GENERATED ALWAYS BY IDENTITY everywhere (bug #785, regression from 4.7.9)
-SQLite: Fix displayed types (bug #784, regression from 4.8.0)
+PostgreSQL < 10 PDO: Avoid displaying GENERATED ALWAYS BY IDENTITY everywhere (bug SF-785, regression from 4.7.9)
+SQLite: Fix displayed types (bug SF-784, regression from 4.8.0)
 
 Adminer 4.8.0 (released 2021-02-10):
-Support function default values in insert (bug #713)
+Support function default values in insert (bug SF-713)
 Allow SQL pseudo-function in insert
 Skip date columns for non-date values in search anywhere
 Add DB version to comment in export
 Support PHP 8 in create table (regression from 4.7.9)
 MySQL 8: Fix EXPLAIN in SQL command
 PostgreSQL: Create PRIMARY KEY for auto increment columns
-PostgreSQL: Avoid exporting empty sequence last value (bug #768)
+PostgreSQL: Avoid exporting empty sequence last value (bug SF-768)
 PostgreSQL: Do not show triggers from other schemas (PR #412)
-PostgreSQL: Fix multi-parameter functions in default values (bug #736)
+PostgreSQL: Fix multi-parameter functions in default values (bug SF-736)
 PostgreSQL: Fix displaying NULL bytea fields
 PostgreSQL PDO: Do not select NULL function for false values in edit
 Oracle: Alter indexes
@@ -213,21 +213,21 @@ MongoDB: Handle errors
 SimpleDB, Firebird, ClickHouse: Move to plugin
 
 Adminer 4.7.9 (released 2021-02-07):
-Fix XSS in browsers which don't encode URL parameters (bug #775, regression from 4.7.0)
+Fix XSS in browsers which don't encode URL parameters (bug SF-775, regression from 4.7.0)
 Elasticsearch, ClickHouse: Do not print response if HTTP code is not 200
-Don't syntax highlight during IME composition (bug #747)
-Quote values with leading and trailing zeroes in CSV export (bug #777)
+Don't syntax highlight during IME composition (bug SF-747)
+Quote values with leading and trailing zeroes in CSV export (bug SF-777)
 Link URLs in SQL command (PR #411)
-Fix displayed foreign key columns from other DB (bug #766)
+Fix displayed foreign key columns from other DB (bug SF-766)
 Re-enable PHP warnings (regression from 4.7.8)
-MySQL: Do not export names in quotes with sql_mode='ANSI_QUOTES' (bug #749)
+MySQL: Do not export names in quotes with sql_mode='ANSI_QUOTES' (bug SF-749)
 MySQL: Avoid error in PHP 8 when connecting to socket (PR #409)
-MySQL: Don't quote default value of text fields (bug #779)
+MySQL: Don't quote default value of text fields (bug SF-779)
 PostgreSQL: Export all FKs after all CREATE TABLE (PR #351)
-PostgreSQL: Fix dollar-quoted syntax highlighting (bug #738)
+PostgreSQL: Fix dollar-quoted syntax highlighting (bug SF-738)
 PostgreSQL: Do not show view definition from other schema (PR #392)
-PostgreSQL: Use bigserial for bigint auto increment (bug #765, regression from 3.0.0)
-PostgreSQL PDO: Support PgBouncer, unsupport PostgreSQL < 9.1 (bug #771)
+PostgreSQL: Use bigserial for bigint auto increment (bug SF-765, regression from 3.0.0)
+PostgreSQL PDO: Support PgBouncer, unsupport PostgreSQL < 9.1 (bug SF-771)
 PostgreSQL 10: Support GENERATED ALWAYS BY IDENTITY (PR #386)
 PostgreSQL 10: Support partitioned tables (PR #396)
 PostgreSQL 11: Create PRIMARY KEY for auto increment columns
@@ -235,12 +235,12 @@ SQLite: Set busy_timeout to 500
 MS SQL: Don't truncate comments to 30 chars (PR #376)
 Elasticsearch 6: Fix displaying type mapping (PR #402)
 MongoDB: Fix password-less check in the mongo extension (PR #405)
-Editor: Cast to string when searching (bug #325)
+Editor: Cast to string when searching (bug SF-325)
 Editor: Avoid trailing dot in export filename
 
 Adminer 4.7.8 (released 2020-12-06):
 Support PHP 8
-Disallow connecting to privileged ports (bug #769)
+Disallow connecting to privileged ports (bug SF-769)
 
 Adminer 4.7.7 (released 2020-05-11):
 Fix open redirect if Adminer is accessible at //adminer.php%2F@
@@ -249,15 +249,15 @@ Adminer 4.7.6 (released 2020-01-31):
 Speed up alter table form (regression from 4.4.0)
 Fix clicking on non-input fields in alter table (regression from 4.6.2)
 Display time of procedure execution
-Disallow connecting to ports > 65535 (bug #730)
+Disallow connecting to ports > 65535 (bug SF-730)
 MySQL: Always set foreign_key_checks in export
 PostgreSQL: Support exporting views
 Editor: Fix focusing foreign key search in select
 
 Adminer 4.7.5 (released 2019-11-13):
-Add id="" to cells with failed inline edit (bug #708)
-PostgreSQL: Fix getting default value in PostgreSQL 12 (bug #719)
-PostgreSQL, Oracle: Set schema for EXPLAIN queries in SQL command (bug #706)
+Add id="" to cells with failed inline edit (bug SF-708)
+PostgreSQL: Fix getting default value in PostgreSQL 12 (bug SF-719)
+PostgreSQL, Oracle: Set schema for EXPLAIN queries in SQL command (bug SF-706)
 ClickHouse: SQL command
 Swedish translation
 
@@ -265,40 +265,40 @@ Adminer 4.7.4 (released 2019-10-22):
 Fix XSS if Adminer is accessible at URL /data:
 
 Adminer 4.7.3 (released 2019-08-27):
-Allow editing foreign keys pointing to tables in other database/schema (bug #694)
-Fix blocking of concurrent instances in PHP >7.2 (bug #703)
-MySQL: Speed up displaying tables in large databases (bug #700, regression from 4.7.2)
-MySQL: Allow editing rows identified by negative floats (bug #695)
+Allow editing foreign keys pointing to tables in other database/schema (bug SF-694)
+Fix blocking of concurrent instances in PHP >7.2 (bug SF-703)
+MySQL: Speed up displaying tables in large databases (bug SF-700, regression from 4.7.2)
+MySQL: Allow editing rows identified by negative floats (bug SF-695)
 MySQL: Skip editing generated columns
-SQLite: Quote strings stored in integer columns in export (bug #696)
-SQLite: Handle error in altering table (bug #697)
+SQLite: Quote strings stored in integer columns in export (bug SF-696)
+SQLite: Handle error in altering table (bug SF-697)
 SQLite: Allow setting auto increment for empty tables
 SQLite: Preserve auto increment when recreating table
 MS SQL: Support foreign keys to other DB
 MongoDB: Allow setting authSource from environment variable
 
 Adminer 4.7.2 (released 2019-07-18):
-Do not attempt logging in without password (bug #676)
-Stretch footer over the whole table width (bug #624)
+Do not attempt logging in without password (bug SF-676)
+Stretch footer over the whole table width (bug SF-624)
 Allow overwriting tables when copying them
 Fix displaying SQL command after Save and continue edit
 Cache busting for adminer.css
-MySQL: Fix displaying multi-columns foreign keys (bug #675, regression from 4.7.0)
-MySQL: Fix creating users and changing password in MySQL 8 (bug #663)
+MySQL: Fix displaying multi-columns foreign keys (bug SF-675, regression from 4.7.0)
+MySQL: Fix creating users and changing password in MySQL 8 (bug SF-663)
 MySQL: Pass SRID to GeomFromText
 PostgreSQL: Fix setting column comments on new table
-PostgreSQL: Display definitions of materialized views (bug #682)
-PostgreSQL: Fix table status in PostgreSQL 12 (bug #683)
+PostgreSQL: Display definitions of materialized views (bug SF-682)
+PostgreSQL: Fix table status in PostgreSQL 12 (bug SF-683)
 MS SQL: Support comments
 Elasticsearch: Fix setting number of rows
 
 Adminer 4.7.1 (released 2019-01-24):
-Display the tables scrollbar (bug #647)
-Remember visible columns in Create Table form (bug #493)
+Display the tables scrollbar (bug SF-647)
+Remember visible columns in Create Table form (bug SF-493)
 Add autocomplete attributes to login form
 PHP <5.4 compatibility even with ClickHouse enabled (regression from 4.7.0)
 SQLite: Hide server field in login form
-Editor: Allow disabling boolean fields in PostgreSQL (bug #640)
+Editor: Allow disabling boolean fields in PostgreSQL (bug SF-640)
 
 Adminer 4.7.0 (released 2018-11-24):
 Simplify storing executed SQL queries to bookmarks
@@ -306,16 +306,16 @@ Warn when using password with leading or trailing spaces
 Hide import from server if importServerPath() returns an empty string
 Fix inline editing of empty cells (regression from 4.6.3)
 Allow adding more than two indexes and forign key columns at a time (regression from 4.4.0)
-Avoid overwriting existing tables when copying tables (bug #642)
+Avoid overwriting existing tables when copying tables (bug SF-642)
 Fix function change with set data type
-Increase username maxlength to 80 (bug #623)
+Increase username maxlength to 80 (bug SF-623)
 Make maxlength in all fields a soft limit
 Make tables horizontally scrollable
-MySQL: Support foreign keys created with ANSI quotes (bug #620)
-MySQL: Recognize ON UPDATE current_timestamp() (bug #632, bug #638)
-MySQL: Descending indexes in MySQL 8 (bug #643)
-PostgreSQL: Quote array values in export (bug #621)
-PostgreSQL: Export DESC indexes (bug #639)
+MySQL: Support foreign keys created with ANSI quotes (bug SF-620)
+MySQL: Recognize ON UPDATE current_timestamp() (bug SF-632, bug SF-638)
+MySQL: Descending indexes in MySQL 8 (bug SF-643)
+PostgreSQL: Quote array values in export (bug SF-621)
+PostgreSQL: Export DESC indexes (bug SF-639)
 PostgreSQL: Support GENERATED BY DEFAULT AS IDENTITY in PostgreSQL 10
 MS SQL: Pass database when connecting
 ClickHouse: Connect, databases list, tables list, select, SQL command
@@ -327,26 +327,26 @@ Copy triggers when copying table
 Stop session before connecting
 Simplify running slow queries
 Decrease timeout for running slow queries from 5 seconds to 2 seconds
-Fix displaying info about non-alphabetical objects (bug #599)
+Fix displaying info about non-alphabetical objects (bug SF-599)
 Use secure cookies on HTTP if session.cookie_secure is set
 PDO: Support binary fields download
 MySQL: Disallow LOAD DATA LOCAL INFILE
-MySQL: Use CONVERT() only when searching for non-ASCII (bug #603)
-MySQL: Order database names in MySQL 8 (bug #613)
-PostgreSQL: Fix editing data in views (bug #605, regression from 4.6.0)
-PostgreSQL: Do not cast date/time/number/uuid searches to text (bug #608)
-PostgreSQL: Export false as 0 in PDO (bug #619)
+MySQL: Use CONVERT() only when searching for non-ASCII (bug SF-603)
+MySQL: Order database names in MySQL 8 (bug SF-613)
+PostgreSQL: Fix editing data in views (bug SF-605, regression from 4.6.0)
+PostgreSQL: Do not cast date/time/number/uuid searches to text (bug SF-608)
+PostgreSQL: Export false as 0 in PDO (bug SF-619)
 MS SQL: Support port with sqlsrv
-Editor: Do not check boolean checkboxes with false in PostgreSQL (bug #607)
+Editor: Do not check boolean checkboxes with false in PostgreSQL (bug SF-607)
 
 Adminer 4.6.2 (released 2018-02-20):
 Semi-transparent border on table actions
-Shorten JSON values in select (bug #594)
+Shorten JSON values in select (bug SF-594)
 Speed up alter table form (regression from 4.4.0)
 Store current version without authentication and in Editor
 PostgreSQL: Fix exporting string default values
 PostgreSQL: Fix exporting sequences in PostgreSQL 10
-PostgreSQL: Add IF EXISTS to DROP SEQUENCE in export (bug #595)
+PostgreSQL: Add IF EXISTS to DROP SEQUENCE in export (bug SF-595)
 Editor: Fix displaying of true boolean values (regression from 4.5.0)
 
 Adminer 4.6.1 (released 2018-02-09):
@@ -355,12 +355,12 @@ Speed up rendering of long tables (regression from 4.4.0)
 Display notification about performing action after relogin
 Add system tables help links
 MySQL: Support non-utf8 charset in search in column
-MySQL: Support geometry in MySQL 8 (bug #574)
+MySQL: Support geometry in MySQL 8 (bug SF-574)
 MariaDB: Links to documentation
 SQLite: Allow deleting PRIMARY KEY from tables with auto increment
 PostgreSQL: Support binary files in bytea fields
-PostgreSQL: Don't treat interval type as number (bug #474)
-PostgreSQL: Cast to string when searching using LIKE (bug #325)
+PostgreSQL: Don't treat interval type as number (bug SF-474)
+PostgreSQL: Cast to string when searching using LIKE (bug SF-325)
 PostgreSQL: Fix condition for selecting no rows
 PostgreSQL: Support TRUNCATE+INSERT export
 Customization: Support connecting to MySQL via SSL
@@ -381,34 +381,34 @@ MySQL: Add FIND_IN_SET search operator
 MariaDB: Support JSON since MariaDB 10.2
 SQLite, PostgreSQL: Limit rows in data manipulation without unique key
 PostgreSQL: Support routines
-PostgreSQL: Allow editing views with uppercase letters (bug #467)
-PostgreSQL: Allow now() as default value (bug #525)
+PostgreSQL: Allow editing views with uppercase letters (bug SF-467)
+PostgreSQL: Allow now() as default value (bug SF-525)
 SimpleDB: Document that allow_url_fopen is required
 Malay translation
 
 Adminer 4.5.0 (released 2018-01-24):
 Display name of the object in confirmation when dropping it
-Display newlines in column comments (bug #573)
-Support current_timestamp() as default of time fields (bug #572)
-Hide window.opener from pages opened in a new window (bug #561)
+Display newlines in column comments (bug SF-573)
+Support current_timestamp() as default of time fields (bug SF-572)
+Hide window.opener from pages opened in a new window (bug SF-561)
 Display error when getting row to edit
 Store current Adminer version server-side to avoid excessive requests
 Adminer: Fix Search data in tables (regression from 4.4.0)
 CSP: Allow any styles, images, media and fonts, disallow base-uri
-MySQL: Support geometry in MySQL 8 (bug #574)
-MySQL: Support routines with comments in parameters (bug #460)
-MariaDB: Support fulltext and spatial indexes in InnoDB (bug #583)
+MySQL: Support geometry in MySQL 8 (bug SF-574)
+MySQL: Support routines with comments in parameters (bug SF-460)
+MariaDB: Support fulltext and spatial indexes in InnoDB (bug SF-583)
 SQLite: Enable foreign key checks
 PostgreSQL: Respect NULL default value
-PostgreSQL: Display foreign tables (bug #576)
+PostgreSQL: Display foreign tables (bug SF-576)
 PostgreSQL: Do not export triggers if not requested
 PostgreSQL: Export DROP SEQUENCE if dropping table
-PostgreSQL: Display boolean values as code (bug #562)
+PostgreSQL: Display boolean values as code (bug SF-562)
 MS SQL: Support freetds
-non-MySQL: Avoid CONVERT() (bug #509)
+non-MySQL: Avoid CONVERT() (bug SF-509)
 Elasticsearch: Insert, update, delete
 MongoDB: Support mongodb PHP extension
-Editor: Fix displaying of false values in PostgreSQL (bug #568)
+Editor: Fix displaying of false values in PostgreSQL (bug SF-568)
 
 Adminer 4.4.0 (released 2018-01-17):
 Add Content Security Policy
@@ -428,7 +428,7 @@ Customization: Always send security headers
 Hebrew translation
 
 Adminer 4.3.1 (released 2017-04-14):
-Fix permanent login after logout (bug #539)
+Fix permanent login after logout (bug SF-539)
 Fix SQL command autofocus (regression from 4.0.0)
 PostgreSQL: Support JSON and JSONB data types
 PostgreSQL: Fix index size computation in PostgreSQL < 9.0 (regression from 4.3.0)
@@ -475,16 +475,16 @@ MySQL: Use utf8mb4 in export only if required
 SQLite: Use EXPLAIN QUERY PLAN in SQL query
 
 Adminer 4.2.0 (released 2015-02-07):
-Fix XSS in login form (bug #436)
+Fix XSS in login form (bug SF-436)
 Allow limiting number of displayed rows in SQL command
 Fix reading routine column collations
 Unlock session in alter database
-Make master key unreadable to others (bug #410)
+Make master key unreadable to others (bug SF-410)
 Fix edit by long non-utf8 string
 Specify encoding for PHP 5.6 with invalid default_charset
 Fix saving NULL value, bug since Adminer 4.0.3
 Send 403 for auth error
-Report offline and other AJAX errors (bug #419)
+Report offline and other AJAX errors (bug SF-419)
 Don't alter table comment if not changed
 Add links to documentation on table status page
 Fix handling of 64 bit numbers in auto_increment
@@ -492,7 +492,7 @@ Add referrer: never meta tag
 MySQL: Use utf8mb4 if available
 MySQL: Support foreign keys in NDB storage
 PostgreSQL: Materialized views
-SQLite: Support CURRENT_* default values (bug #417)
+SQLite: Support CURRENT_* default values (bug SF-417)
 Elasticsearch: Use where in select
 Firebird: Alpha version
 Danish translation
@@ -505,9 +505,9 @@ Display edit form after error in clone or multi-edit
 Trim trailing non-breaking spaces in SQL textarea
 Display time of the select command
 Print elapsed time in HTML instead of SQL command comment
-Improve gzip export ratio (bug #387)
+Improve gzip export ratio (bug SF-387)
 Use rel="noreferrer" for external links, skip adminer.org redirect in WebKit
-MySQL: Fix enum types in routines (bug #391)
+MySQL: Fix enum types in routines (bug SF-391)
 MySQL: Fix editing rows by binary values, bug since Adminer 3.7.1
 MySQL: Respect daylight saving time in dump, bug since Adminer 3.6.4
 MySQL 5.6.5+: Support ON UPDATE on datatime column
@@ -575,7 +575,7 @@ Adminer 3.7.1 (released 2013-06-29):
 Increase click target for checkboxes
 Use shadow for highlighting default button
 Don't use LIMIT 1 if inline updating unique row
-Don't check previous checkbox on added column in create table (bug #326)
+Don't check previous checkbox on added column in create table (bug SF-326)
 Order table list by name
 Verify UTF-8 encoding of CSV import
 Notify user about expired master password for permanent login
@@ -586,7 +586,7 @@ Display error on invalid alter table and view pages
 MySQL: Speed up updating rows without numeric or UTF-8 primary key
 Non-MySQL: Descending indexes
 PostgreSQL: Fix detecting oid column in PDO
-PostgreSQL: Handle timestamp types (bug #324)
+PostgreSQL: Handle timestamp types (bug SF-324)
 Korean translation
 
 Adminer 3.7.0 (released 2013-05-19):
@@ -599,17 +599,17 @@ Disable SQL export when applying functions in select
 Allow using lang() in plugins (customization)
 Remove bzip2 compression support
 Constraint memory used in TAR export
-Allow exporting views dependent on each other (bug #214)
-Fix resetting search (bug #318)
-Don't use LIMIT 1 if updating unique row (bug #320)
+Allow exporting views dependent on each other (bug SF-214)
+Fix resetting search (bug SF-318)
+Don't use LIMIT 1 if updating unique row (bug SF-320)
 Restrict editing rows without unique identifier to search results
 Display navigation below main content on mobile browsers
 Get number of rows on export page asynchronously
-Respect 'whole result' even if some rows are checked (bug #339 since Adminer 3.7.0)
+Respect 'whole result' even if some rows are checked (bug SF-339 since Adminer 3.7.0)
 MySQL: Optimize create table page and Editor navigation
 MySQL: Display bit type as binary number
 MySQL: Improve export of binary data types
-MySQL: Fix handling of POINT data type (bug #282)
+MySQL: Fix handling of POINT data type (bug SF-282)
 MySQL: Don't export binary and geometry columns twice in select
 MySQL: Fix EXPLAIN in MySQL < 5.1, bug since Adminer 3.6.4
 SQLite: Export views
@@ -624,11 +624,11 @@ Recover original view, trigger, routine if creating fails
 Do not store plain text password to history in creating user
 Selectable ON UPDATE CURRENT_TIMESTAMP field in create table
 Open database to a new window after selecting it with Ctrl
-Clear column name after resetting search (bug #296)
-Explain partitions in SQL query (bug #294)
-Allow loading more data with inline edit (bug #299)
-Stay on the same page after deleting rows (bug #301)
-Respect checked tables in export filename (bug #133)
+Clear column name after resetting search (bug SF-296)
+Explain partitions in SQL query (bug SF-294)
+Allow loading more data with inline edit (bug SF-299)
+Stay on the same page after deleting rows (bug SF-301)
+Respect checked tables in export filename (bug SF-133)
 Respect PHP configuration max_input_vars
 Fix unsetting permanent login after logout
 Disable autocapitalize in identifiers on mobile browsers
@@ -713,11 +713,11 @@ Ukrainian translation
 Bengali translation
 
 Adminer 3.3.4 (released 2012-03-07):
-Foreign keys default actions (bug #188)
+Foreign keys default actions (bug SF-188)
 SET DEFAULT foreign key action
 Fix minor parser bug in SQL command with webserver file
 Ctrl+click on button opens form to a blank window
-Trim table and column names (bug #195)
+Trim table and column names (bug SF-195)
 Error message with no response from server in AJAX
 Esc to cancel AJAX request
 Move AJAX loading indicator to the right
@@ -729,9 +729,9 @@ Ability to disable export (customization)
 Extensible list of databases (customization)
 MySQL: set autocommit after connect
 SQLite, PostgreSQL: vacuum
-SQLite, PostgreSQL: don't use LIKE for numbers (bug #202)
+SQLite, PostgreSQL: don't use LIKE for numbers (bug SF-202)
 PostgreSQL: fix alter foreign key
-PostgreSQL over PDO: connect if the eponymous database does not exist (bug #185)
+PostgreSQL over PDO: connect if the eponymous database does not exist (bug SF-185)
 Boolean search (Editor)
 Persian translation
 
@@ -759,8 +759,8 @@ Adminer 3.3.0 (released 2011-07-19):
 Use Esc to disable in-place edit
 Shortcut for database privileges
 Editable index names
-Append new index with auto index selection (bug #138)
-Preserve original timestamp value in multiple update (bug #158)
+Append new index with auto index selection (bug SF-138)
+Preserve original timestamp value in multiple update (bug SF-158)
 Bit type default value
 Display foreign key name in tooltip
 Display default column value in table overview
@@ -774,7 +774,7 @@ Display foreign keys from other schemas (PostgreSQL)
 Pagination support (Oracle)
 Autocomplete for big foreign keys (Editor)
 Display name of the referenced record in PostgreSQL (Editor)
-Prefer NULL to empty string (Editor, bug #162)
+Prefer NULL to empty string (Editor, bug SF-162)
 Display searched columns (Editor)
 Customizable favicon (customization)
 Method name can return a link (customization)
@@ -786,8 +786,8 @@ Fix AJAX history after reload
 
 Adminer 3.2.1 (released 2011-03-23):
 Ability to save expression in edit
-Respect default database collation (bug #119)
-Don't export triggers without table (bug #123)
+Respect default database collation (bug SF-119)
+Don't export triggers without table (bug SF-123)
 Esc to focus next field in Tab textarea
 Send forms by Ctrl+Enter on <select>
 Enum editor and textarea Ctrl+Enter working in IE
@@ -810,8 +810,8 @@ Get long texts and slow information by AJAX
 Most links and forms by AJAX in browsers with support for history.pushState
 Copy tables
 Ability to search by expression in select
-Export SQL command result (bug #99)
-Focus first field with insert (bug #106)
+Export SQL command result (bug SF-99)
+Focus first field with insert (bug SF-106)
 Permanent link in schema
 Display total time in show only errors mode in SQL command
 History: edit all
@@ -824,7 +824,7 @@ Utilize oids in PostgreSQL
 Homepage customization
 Use IN for search in numeric fields (Editor)
 Use password input for _md5 and _sha1 fields (Editor)
-Work without session.use_cookies (bug #107)
+Work without session.use_cookies (bug SF-107)
 Fix saving schema to cookie in Opera
 Portuguese, Slovenian and Turkish translation
 
@@ -837,10 +837,10 @@ Recognize $$ strings in SQL command (PostgreSQL)
 Highlight and edit SQL command in processlist
 Always display all drivers
 Timestamp at the end of export
-Link to refresh database cache (bug #96)
+Link to refresh database cache (bug SF-96)
 Support for virtual foreign keys
 Disable XSS "protection" of IE8
-Immunity against zend.ze1_compatibility_mode (bug #86)
+Immunity against zend.ze1_compatibility_mode (bug SF-86)
 Fix last page with empty result set
 Arabic translation and RTL support
 Dual licensing: Apache or GPL
@@ -888,7 +888,7 @@ Add Drop button to Alter pages (regression from 2.0.0)
 Link COUNT(*) result to listing
 Newlines in select query edit
 Return to referrer after edit
-Respect session.auto_start (bug #42)
+Respect session.auto_start (bug SF-42)
 
 Adminer 2.3.0 (released 2010-02-26):
 Support for permanent login (customization required)
@@ -917,7 +917,7 @@ Link URLs in select
 Display number of manipulated rows in JS confirm
 Set required memory in SQL command
 Fix removed default in ALTER
-Display whitespace in texts (bug #11)
+Display whitespace in texts (bug SF-11)
 ClickJacking protection in modern browsers
 E-mail attachments (Editor)
 Optional year in date (Editor)
@@ -936,7 +936,7 @@ Use ON DUPLICATE KEY UPDATE for CSV import
 Print ALTER export instead of executing it
 Click on row selects it
 Fix Editor date format
-Fix long SQL query crash (bug #3)
+Fix long SQL query crash (bug SF-3)
 Speed up simple alter table
 Traditional Chinese translation
 
@@ -992,7 +992,7 @@ Use \n in SQL commands
 
 phpMinAdmin 1.10.1 (released 2009-05-07):
 Highlight odd and hover rows
-Partition editing comfort (bug #12)
+Partition editing comfort (bug SF-12)
 Allow full length in limited int
 
 phpMinAdmin 1.10.0 (released 2009-04-28):
@@ -1000,7 +1000,7 @@ Partitioning (MySQL 5.1)
 CSV import
 Plus and minus functions
 Option to stop on error in SQL command
-Cross links to select and table (bug #5), link new item
+Cross links to select and table (bug SF-5), link new item
 Suhosin compatibility
 Remove max_allowed_packet from export
 Read style from phpMinAdmin.css if exists
@@ -1079,7 +1079,7 @@ phpMinAdmin 1.4.0 (released 2007-08-15):
 Privileges
 New design
 Dutch translation
-Use NULL for auto_increment (bug #1)
+Use NULL for auto_increment (bug SF-1)
 Fix dropping procedure parameters
 
 phpMinAdmin 1.3.2 (released 2007-08-06):
