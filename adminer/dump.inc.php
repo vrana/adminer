@@ -183,7 +183,7 @@ echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style,
 ?>
 </table>
 <p><input type="submit" value="<?php echo lang('Export'); ?>">
-<input type="hidden" name="token" value="<?php echo $token; ?>">
+<?php echo input_token(); ?>
 
 <table>
 <?php

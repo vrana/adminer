@@ -116,5 +116,5 @@ foreach ($row["source"] as $key => $val) {
 <?php if ($name != "") { ?>
 <input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $name)); ?>
 <?php } ?>
-<input type="hidden" name="token" value="<?php echo $token; ?>">
+<?php echo input_token(); ?>
 </form>

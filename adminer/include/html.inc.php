@@ -25,6 +25,15 @@ function nonce() {
 	return ' nonce="' . get_nonce() . '"';
 }
 
+/** Get <input type="hidden" name="token">
+* @param string token to use instead of global $token
+* @return string HTML
+*/
+function input_token($special = "") {
+	global $token;
+	return "<input type='hidden' name='token' value='" . ($special ?: $token) . "'>\n";
+}
+
 /** Get a target="_blank" attribute
 * @return string
 */
@@ -414,7 +423,7 @@ function on_help($command, $side = 0) {
 * @return null
 */
 function edit_form($table, $fields, $row, $update) {
-	global $adminer, $token, $error;
+	global $adminer, $error;
 	$table_name = $adminer->tableName(table_status1($table, true));
 	page_header(
 		($update ? lang('Edit') : lang('Insert')),
@@ -514,7 +523,7 @@ function edit_form($table, $fields, $row, $update) {
 	?>
 <input type="hidden" name="referer" value="<?php echo h(isset($_POST["referer"]) ? $_POST["referer"] : $_SERVER["HTTP_REFERER"]); ?>">
 <input type="hidden" name="save" value="1">
-<input type="hidden" name="token" value="<?php echo $token; ?>">
+<?php echo input_token(); ?>
 </form>
 <?php
 }

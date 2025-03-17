@@ -157,7 +157,7 @@ if ($adminer->homepage()) {
 				}
 				echo "<input type='hidden' name='all' value=''>"; // used by trCheck()
 				echo script("qsl('input').onclick = function () { selectCount('selected', formChecked(this, /^(tables|views)\[/));" . (support("table") ? " selectCount('selected2', formChecked(this, /^tables\[/) || $tables);" : "") . " }");
-				echo "<input type='hidden' name='token' value='$token'>\n";
+				echo input_token();
 				echo "</div></fieldset>\n";
 				echo "</div></div>\n";
 			}

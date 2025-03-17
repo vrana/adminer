@@ -38,6 +38,6 @@ if ($TYPE != "") {
 	textarea("as", $row["as"]);
 	echo "<p><input type='submit' value='" . lang('Save') . "'>\n";
 }
+echo input_token();
 ?>
-<input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

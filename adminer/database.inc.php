@@ -76,6 +76,6 @@ if (DB != "") {
 } elseif (!$_POST["add_x"] && $_GET["db"] == "") {
 	echo "<input type='image' class='icon' name='add' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>\n";
 }
+echo input_token();
 ?>
-<input type="hidden" name="token" value="<?php echo $token; ?>">
 </form>

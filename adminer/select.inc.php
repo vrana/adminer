@@ -594,7 +594,7 @@ if (!$columns && support("table")) {
 				echo "</div>";
 			}
 
-			echo "<input type='hidden' name='token' value='$token'>\n";
+			echo input_token();
 			echo "</form>\n";
 			echo (!$group && $select ? "" : script("tableCheck();"));
 		}

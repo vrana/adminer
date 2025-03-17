@@ -169,7 +169,7 @@ if (!$error && $_POST) {
 												. html_select("output", $adminer->dumpOutput(), $adminer_export["output"]) . " "
 												. html_select("format", $dump_format, $adminer_export["format"])
 												. "<input type='hidden' name='query' value='" . h($q) . "'>"
-												. " <input type='submit' name='export' value='" . lang('Export') . "'><input type='hidden' name='token' value='$token'></span>\n"
+												. " <input type='submit' name='export' value='" . lang('Export') . "'>" . input_token() . "</span>\n"
 												. "</form>\n"
 											;
 										}
@@ -258,7 +258,7 @@ if (!isset($_GET["import"])) {
 
 echo checkbox("error_stops", 1, ($_POST ? $_POST["error_stops"] : isset($_GET["import"]) || $_GET["error_stops"]), lang('Stop on error')) . "\n";
 echo checkbox("only_errors", 1, ($_POST ? $_POST["only_errors"] : isset($_GET["import"]) || $_GET["only_errors"]), lang('Show only errors')) . "\n";
-echo "<input type='hidden' name='token' value='$token'>\n";
+echo input_token();
 
 if (!isset($_GET["import"]) && $history) {
 	print_fieldset("history", lang('History'), $_GET["history"] != "");

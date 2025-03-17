@@ -182,7 +182,7 @@ function page_messages($error) {
 * @return null
 */
 function page_footer($missing = "") {
-	global $adminer, $token;
+	global $adminer;
 	?>
 </div>
 
@@ -195,7 +195,7 @@ function page_footer($missing = "") {
 <p class="logout">
 <span><?php echo h($_GET["username"]) . "\n"; ?></span>
 <input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" id="logout">
-<input type="hidden" name="token" value="<?php echo $token; ?>">
+<?php echo input_token(); ?>
 </p>
 </form>
 <?php } ?>

@@ -155,5 +155,5 @@ foreach ($row["indexes"] as $index) {
 </div>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
-<input type="hidden" name="token" value="<?php echo $token; ?>">
+<?php echo input_token(); ?>
 </form>
