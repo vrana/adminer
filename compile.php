@@ -74,7 +74,7 @@ function put_file($match) {
 					}
 				}
 			}
-			unset($functions["__construct"], $functions["__destruct"], $functions["set_charset"]);
+			unset($functions["__construct"], $functions["__destruct"], $functions["set_charset"], $functions["fetch_column"]);
 			foreach ($functions as $val) {
 				if (!strpos($return, "$val(")) {
 					fprintf(STDERR, "Missing $val in $vendor\n");
