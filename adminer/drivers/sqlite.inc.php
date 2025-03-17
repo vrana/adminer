@@ -680,7 +680,7 @@ if (isset($_GET["sqlite"])) {
 		return queries("BEGIN");
 	}
 
-	function last_id() {
+	function last_id($result) {
 		return get_val("SELECT LAST_INSERT_ROWID()");
 	}
 

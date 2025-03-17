@@ -780,7 +780,7 @@ ORDER BY SPECIFIC_NAME');
 		return idf_escape($name) . "(" . implode(", ", $return) . ")";
 	}
 
-	function last_id() {
+	function last_id($result) {
 		return 0; // there can be several sequences
 	}
 

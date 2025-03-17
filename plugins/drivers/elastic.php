@@ -570,7 +570,7 @@ if (isset($_GET["elastic"])) {
 		return $return;
 	}
 
-	function last_id() {
+	function last_id($result) {
 		return connection()->last_id;
 	}
 }

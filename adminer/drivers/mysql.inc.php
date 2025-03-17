@@ -1056,9 +1056,10 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get last auto increment ID
+	* @param Result or true
 	* @return string
 	*/
-	function last_id() {
+	function last_id($result) {
 		return get_val("SELECT LAST_INSERT_ID()"); // mysql_insert_id() truncates bigint
 	}
 

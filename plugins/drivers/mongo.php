@@ -403,7 +403,7 @@ if (isset($_GET["mongo"])) {
 		return true;
 	}
 
-	function last_id() {
+	function last_id($result) {
 		return connection()->last_id;
 	}
 
