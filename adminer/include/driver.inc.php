@@ -13,12 +13,13 @@ function add_driver($id, $name) {
 	$drivers[$id] = $name;
 }
 
-/** Get driver
-* @return Driver
+/** Get driver name
+* @param string
+* @return string
 */
-function get_driver() {
-	global $driver;
-	return $driver;
+function get_driver($id) {
+	global $drivers;
+	return $drivers[$id];
 }
 
 abstract class SqlDriver {

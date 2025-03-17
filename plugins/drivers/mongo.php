@@ -166,7 +166,7 @@ if (isset($_GET["mongo"])) {
 		}
 
 		function fields($table) {
-			$driver = get_driver();
+			$driver = driver();
 			$fields = fields_from_edit();
 			if (!$fields) {
 				$result = $driver->select($table, array("*"), null, null, array(), 10);

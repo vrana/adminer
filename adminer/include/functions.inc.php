@@ -20,6 +20,14 @@ function adminer() {
 	return $adminer;
 }
 
+/** Get Driver object
+* @return Driver
+*/
+function driver() {
+	global $driver;
+	return $driver;
+}
+
 /** Get Adminer version
 * @return string
 */
