@@ -6,6 +6,7 @@ SQL textarea: Open help on Ctrl+click
 Security: Disallow writing temporary files to symlinks (bug SF-855)
 MariaDB: Display MariaDB instead of MySQL
 CSS: Dark mode syntax highlighting
+CSS: Dark input fields in dark mode
 Designs named adminer-dark.css use dark basic style
 Plugins: Add method syntaxHighlighting()
 

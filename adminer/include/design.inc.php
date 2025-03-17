@@ -35,6 +35,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	if ($dark !== false) {
 		echo "<link rel='stylesheet'" . ($dark ? "" : " media='(prefers-color-scheme: dark)'") . " href='../adminer/static/dark.css'>\n";
 	}
+	echo "<meta name='color-scheme' content='" . ($dark !== false ? ($dark ? "" : "light ") . "dark" : "") . "'>\n";
 	// this is matched by compile.php
 	echo script_src("../adminer/static/functions.js");
 	echo script_src("static/editing.js");
@@ -45,10 +46,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	foreach ($css as $val) {
 		echo "<link rel='stylesheet'" . (preg_match('~-dark~', $val) && !$dark ? " media='(prefers-color-scheme: dark)'" : "") . " href='" . h($val) . "'>\n";
 	}
-	?>
-
-<body class="<?php echo lang('ltr'); ?> nojs">
-<?php
+	echo "\n<body class='" . lang('ltr') . " nojs'>\n";
 	$filename = get_temp_dir() . "/adminer.version";
 	if (!$_COOKIE["adminer_version"] && function_exists('openssl_verify') && file_exists($filename) && filemtime($filename) + 86400 > time()) { // 86400 - 1 day in seconds
 		$version = unserialize(file_get_contents($filename));
