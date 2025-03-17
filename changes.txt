@@ -1,3 +1,5 @@
+Adminer dev:
+
 Adminer 5.0.6 (released 2025-03-17):
 Align numbers right (bug #912)
 Display comment in title of field
