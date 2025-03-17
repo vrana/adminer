@@ -1,4 +1,8 @@
 /adminer/adminer.css
+/adminer/adminer-dark.css
+/editor/adminer.css
+/editor/adminer-dark.css
 /adminer*.php
 /editor*.php
 /vendor/
+adminer-plugins/

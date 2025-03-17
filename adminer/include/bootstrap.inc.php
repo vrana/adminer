@@ -77,7 +77,16 @@ include "../adminer/drivers/pgsql.inc.php";
 include "../adminer/drivers/oracle.inc.php";
 include "../adminer/drivers/mssql.inc.php";
 include "./include/adminer.inc.php";
-$adminer = (function_exists('adminer_object') ? adminer_object() : new Adminer);
+
+if (function_exists('adminer_object')) {
+	$adminer = adminer_object();
+} elseif (file_exists("adminer-plugins/")) {
+	include "./include/plugins.inc.php";
+	$adminer = new Plugins(null);
+} else {
+	$adminer = new Adminer;
+}
+
 // this is matched by compile.php
 include "../adminer/drivers/mysql.inc.php"; // must be included as last driver
 

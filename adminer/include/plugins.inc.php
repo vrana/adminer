@@ -1,18 +1,29 @@
 <?php
+namespace Adminer;
 
-/** Adminer customization allowing usage of plugins
-* @link https://www.adminer.org/plugins/#use
-* @author Jakub Vrana, https://www.vrana.cz/
-* @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
-* @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
-*/
-class AdminerPlugin extends Adminer\Adminer {
+class Plugins extends Adminer {
 	protected $plugins;
 
 	/** Register plugins
-	* @param array object instances
+	* @param array object instances or null to autoload plugins from adminer-plugins/
 	*/
 	function __construct($plugins) {
+		if ($plugins === null) {
+			$plugins = array();
+			foreach (glob("adminer-plugins/*.php") as $filename) {
+				$include = include_once "./$filename";
+				if (is_array($include)) { // example: return array(new AdminerLoginOtp($secret))
+					foreach ($include as $plugin) {
+						$plugins[get_class($plugin)] = $plugin;
+					}
+				}
+			}
+			foreach (get_declared_classes() as $class) {
+				if (!$plugins[$class] && preg_match('~^Adminer\w~i', $class)) {
+					$plugins[$class] = new $class; // if the constructor have some required parameters then PHP triggers an error here
+				}
+			}
+		}
 		$this->plugins = $plugins;
 	}
 

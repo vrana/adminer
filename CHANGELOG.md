@@ -5,6 +5,8 @@
 - CSS: Sticky table headers (bug #918)
 - CSS: Allow more custom styles with dark mode (bug #925)
 - IMAP: New plugin driver created for fun
+- Plugins: autoload plugins from adminer-plugins/
+- Plugins: configure plugins with adminer-plugins/config.php
 
 ## Adminer 5.0.6 (released 2025-03-17)
 - Align numbers right (bug #912)
