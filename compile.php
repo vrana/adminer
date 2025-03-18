@@ -55,17 +55,20 @@ function put_file($match) {
 			$functions = array_combine($matches[1], $matches[0]);
 			$requires = array(
 				"copy" => array("copy_tables"),
-				"database" => array("create_database", "rename_database", "drop_databases"),
+				"database" => array("create_database", "rename_database", "drop_databases", "move_tables"),
 				"dump" => array("use_sql", "create_sql", "truncate_sql", "trigger_sql"),
 				"kill" => array("kill_process", "connection_id", "max_connections"),
 				"processlist" => array("process_list"),
 				"routine" => array("routines", "routine", "routine_languages", "routine_id"),
 				"scheme" => array("schemas", "get_schema", "set_schema"),
+				"sql" => array("multi_query", "store_result", "next_result", "explain"),
 				"status" => array("show_status"),
-				"table" => array("is_view"),
+				"indexes" => array("alter_indexes"),
+				"table" => array("auto_increment"),
 				"trigger" => array("triggers", "trigger", "trigger_options", "trigger_sql"),
 				"type" => array("types", "type_values"),
 				"variables" => array("show_variables"),
+				"view" => array("drop_views", "view"),
 			);
 			foreach ($requires as $support => $fns) {
 				if (!Adminer\support($support)) {
@@ -269,7 +272,7 @@ if ($_SERVER["argv"][1]) {
 include __DIR__ . "/adminer/include/pdo.inc.php";
 include __DIR__ . "/adminer/include/driver.inc.php";
 $connection = new stdClass; // used in support()
-$features = array("check", "call" => "routine", "dump", "event", "privileges", "procedure" => "routine", "processlist", "routine", "scheme", "sequence", "status", "trigger", "type", "user" => "privileges", "variables", "view");
+$features = array("check", "call" => "routine", "dump", "event", "privileges", "procedure" => "routine", "processlist", "routine", "scheme", "sequence", "sql", "status", "trigger", "type", "user" => "privileges", "variables", "view");
 $lang_ids = array(); // global variable simplifies usage in a callback function
 $file = file_get_contents(__DIR__ . "/$project/index.php");
 $file = preg_replace('~\*/~', "* @version $VERSION\n*/", $file, 1);
