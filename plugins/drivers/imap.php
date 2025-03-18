@@ -36,8 +36,10 @@ if (isset($_GET["imap"])) {
 			}
 
 			function query($query, $unbuffered = false) {
-				preg_match('~\sFROM (\w+).*?(?:\sWHERE uid = (\d+))?.*?(?:\sLIMIT (\d+)(?:\sOFFSET (\d+))?)?~s', $query, $match);
-				list(, $table, $uid, $limit, $offset) = $match;
+				if (!preg_match('~^SELECT (.+)\sFROM (\w+)(?:\sWHERE uid = (\d+))?.*?(?:\sLIMIT (\d+)(?:\sOFFSET (\d+))?)?~s', $query, $match)) {
+					return false;
+				}
+				list(, $columns, $table, $uid, $limit, $offset) = $match;
 				if ($uid) {
 					$return = array((array) imap_fetchstructure($this->imap, $uid, FT_UID));
 				} else {
@@ -45,13 +47,16 @@ if (isset($_GET["imap"])) {
 					$check = imap_check($this->imap);
 					$range = ($offset + 1) . ":" . ($limit ? min($check->Nmsgs, $offset + $limit) : $check->Nmsgs);
 					$return = array();
+					$fields = fields($table);
+					$columns = ($columns == "*" ? $fields : array_flip(explode(", ", $columns)));
+					$empty = array_fill_keys(array_keys($fields), null);
 					foreach (imap_fetch_overview($this->imap, $range) as $row) {
 						// imap_utf8 doesn't work with some strings
 						$row->subject = iconv_mime_decode($row->subject, 2, "utf-8");
 						$row->from = iconv_mime_decode($row->from, 2, "utf-8");
 						$row->to = iconv_mime_decode($row->to, 2, "utf-8");
 						$row->udate = gmdate("Y-m-d H:i:s", $row->udate);
-						$return[] = array_merge(array_fill_keys(array_keys(fields($table)), null), (array) $row);
+						$return[] = array_intersect_key(array_merge($empty, (array) $row), $columns);
 					}
 				}
 				return new Result($return);
