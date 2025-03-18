@@ -1,6 +1,7 @@
 <?php
 /** Experimental driver for IMAP created just for fun. Features:
 * - list mailboxes with number of messages (Rows) and unread messages (Data Free)
+* - creating and dropping mailboxes work, truncate does expunge on all mailboxes
 * - list messages in each mailbox - limit and offset works but there's no search and order
 * - for each message, there's subject, from, to, date and some flags
 * - editing the message shows some other information
@@ -95,6 +96,18 @@ if (isset($_GET["imap"])) {
 					"Auto_increment" => $return->uidnext,
 					"Data_free" => $return->unseen,
 				);
+			}
+
+			function create($name) {
+				return imap_createmailbox($this->imap, $this->mailbox . $name);
+			}
+
+			function drop($name) {
+				return imap_deletemailbox($this->imap, $this->mailbox . $name);
+			}
+
+			function expunge($name) {
+				return imap_expunge($this->imap);
 			}
 		}
 
@@ -233,6 +246,33 @@ if (isset($_GET["imap"])) {
 
 	function found_rows($table_status, $where) {
 		return $table_status["Rows"];
+	}
+
+	function fk_support($table_status) {
+	}
+
+	function engines() {
+		return array();
+	}
+
+	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
+		return connection()->create($name);
+	}
+
+	function drop_tables($tables) {
+		$return = true;
+		foreach ($tables as $name) {
+			$return = $return && connection()->drop($name);
+		}
+		return $return;
+	}
+
+	function truncate_tables($tables) {
+		$return = true;
+		foreach ($tables as $name) {
+			$return = $return && connection()->expunge($name);
+		}
+		return $return;
 	}
 
 	function connect($credentials) {
