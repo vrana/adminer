@@ -7,6 +7,7 @@
 * - editing the message shows some other information
 * - deleting marks the message for deletion but doesn't expunge the mailbox
 * - inserting or updating the message does nothing
+* @link http://adminer.org/static/plugins/imap.png
 */
 
 namespace Adminer;
