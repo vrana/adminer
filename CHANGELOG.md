@@ -1,6 +1,7 @@
 ## Adminer dev
 - PostgreSQL: Display auto_increment of inserted rows
 - PostgreSQL: Display description of system variables
+- PostgreSQL: Avoid warning about crdb_version (bug #924, regression from 5.0.5)
 - CSS: Sticky table headers (bug #918)
 - IMAP: New plugin driver created for fun
 

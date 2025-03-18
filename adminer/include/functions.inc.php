@@ -128,7 +128,7 @@ function min_version($version, $maria_db = "", $connection2 = null) {
 		$server_info = $match[1];
 		$version = $maria_db;
 	}
-	return $version && version_compare($server_info, $version) >= 0;
+	return $version && version_compare(preg_replace('~^\D+~', '', $server_info), $version) >= 0;
 }
 
 /** Get connection charset

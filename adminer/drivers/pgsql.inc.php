@@ -35,8 +35,6 @@ if (isset($_GET["pgsql"])) {
 				}
 				restore_error_handler();
 				if ($this->link) {
-					$version = pg_version($this->link);
-					$this->server_info = $version["server"];
 					pg_set_client_encoding($this->link, "UTF8");
 				}
 				return (bool) $this->link;
@@ -334,8 +332,7 @@ if (isset($_GET["pgsql"])) {
 			if (min_version(9, 0, $connection)) {
 				$connection->query("SET application_name = 'Adminer'");
 			}
-			$crdb_version = $connection->result("SHOW crdb_version");
-			$connection->server_info .= ($crdb_version ? "-" . preg_replace('~ \(.*~', '', $crdb_version) : "");
+			$connection->server_info = $connection->result("SELECT version()");
 			$connection->cockroach = preg_match('~CockroachDB~', $connection->server_info);
 			if ($connection->cockroach) { // we don't use "PostgreSQL / CockroachDB" by default because it's too long
 				$drivers[DRIVER] = "CockroachDB";
