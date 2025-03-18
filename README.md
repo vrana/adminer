@@ -6,7 +6,7 @@ to the target server. **Adminer Editor** offers data manipulation for end-users.
 https://www.adminer.org/
 
 - **Supports:** MySQL, MariaDB, PostgreSQL, CockroachDB, SQLite, MS SQL, Oracle
-- **Plugins for:** Elasticsearch, SimpleDB, MongoDB, Firebird, ClickHouse
+- **Plugins for:** Elasticsearch, SimpleDB, MongoDB, Firebird, ClickHouse, IMAP
 - **Requirements:** PHP 5.3+
 
 ## Screenshot
