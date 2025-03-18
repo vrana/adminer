@@ -55,7 +55,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 			}
 		} else {
 			$result = $driver->insert($TABLE, $set);
-			$last_id = ($result ? last_id() : 0);
+			$last_id = ($result ? last_id($result) : 0);
 			queries_redirect($location, lang('Item%s has been inserted.', ($last_id ? " $last_id" : "")), $result); //! link
 		}
 	}

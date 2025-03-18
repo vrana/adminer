@@ -153,12 +153,16 @@ th, td {
 	vertical-align: top;
 }
 
-.odds tbody tr:nth-child(2n):not(.checked, :hover) th, .odds tbody tr:nth-child(2n):not(.checked, :hover) td {
+.odds tbody tr:nth-child(2n) {
 	background: #FCFAF5;
 }
 
 .js .checked th, .js .checked td {
 	background: #CEE0FC;
+}
+
+thead {
+	top: 40px;
 }
 
 thead th, thead td {

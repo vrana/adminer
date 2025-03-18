@@ -58,5 +58,5 @@ page_header(($TABLE != "" ? lang('Alter view') : lang('Create view')), $error, a
 <?php if ($TABLE != "") { ?>
 <input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $TABLE)); ?>
 <?php } ?>
-<input type="hidden" name="token" value="<?php echo $token; ?>">
+<?php echo input_token(); ?>
 </form>

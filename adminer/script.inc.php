@@ -25,7 +25,7 @@ if ($_GET["script"] == "db") {
 						$sums[$key] += ($table_status["Engine"] != "InnoDB" || $key != "Data_free" ? $table_status[$key] : 0);
 					}
 				} elseif (array_key_exists($key, $table_status)) {
-					json_row("$key-$name");
+					json_row("$key-$name", "?");
 				}
 			}
 		}

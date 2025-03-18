@@ -28,19 +28,25 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width">
 <title><?php echo $title_page; ?></title>
-<link rel="stylesheet" type="text/css" href="../adminer/static/default.css">
-<?php echo script_src("../adminer/static/functions.js"); ?>
-<?php echo script_src("static/editing.js"); ?>
-<?php if ($adminer->head()) { ?>
-<link rel="shortcut icon" type="image/x-icon" href="../adminer/static/favicon.ico">
-<link rel="apple-touch-icon" href="../adminer/static/favicon.ico">
-<?php foreach ($adminer->css() as $css) { ?>
-<link rel="stylesheet" type="text/css" href="<?php echo h($css); ?>">
-<?php } ?>
-<?php } ?>
-
-<body class="<?php echo lang('ltr'); ?> nojs">
+<link rel="stylesheet" href="../adminer/static/default.css">
 <?php
+	$css = $adminer->css();
+	$dark = (count($css) == 1 ? !!preg_match('~-dark~', $css[0]) : null);
+	if ($dark !== false) {
+		echo "<link rel='stylesheet'" . ($dark ? "" : " media='(prefers-color-scheme: dark)'") . " href='../adminer/static/dark.css'>\n";
+	}
+	echo "<meta name='color-scheme' content='" . ($dark === null ? "light dark" : ($dark ? "dark" : "light")) . "'>\n";
+	// this is matched by compile.php
+	echo script_src("../adminer/static/functions.js");
+	echo script_src("static/editing.js");
+	if ($adminer->head($dark)) {
+		echo "<link rel='shortcut icon' type='image/x-icon' href='../adminer/static/favicon.ico'>\n";
+		echo "<link rel='apple-touch-icon' href='../adminer/static/favicon.ico'>\n";
+	}
+	foreach ($css as $val) {
+		echo "<link rel='stylesheet'" . (preg_match('~-dark~', $val) && !$dark ? " media='(prefers-color-scheme: dark)'" : "") . " href='" . h($val) . "'>\n";
+	}
+	echo "\n<body class='" . lang('ltr') . " nojs'>\n";
 	$filename = get_temp_dir() . "/adminer.version";
 	if (!$_COOKIE["adminer_version"] && function_exists('openssl_verify') && file_exists($filename) && filemtime($filename) + 86400 > time()) { // 86400 - 1 day in seconds
 		$version = unserialize(file_get_contents($filename));
@@ -58,21 +64,16 @@ fQIDAQAB
 			$_COOKIE["adminer_version"] = $version["version"]; // doesn't need to send to the browser
 		}
 	}
-	?>
-<script<?php echo nonce(); ?>>
-mixin(document.body, {onkeydown: bodyKeydown, onclick: bodyClick<?php
-	echo (isset($_COOKIE["adminer_version"]) ? "" : ", onload: partial(verifyVersion, '$VERSION', '" . js_escape(ME) . "', '" . get_token() . "')"); // $token may be empty in auth.inc.php
-	?>});
+	echo script("mixin(document.body, {onkeydown: bodyKeydown, onclick: bodyClick"
+		. (isset($_COOKIE["adminer_version"]) ? "" : ", onload: partial(verifyVersion, '$VERSION', '" . js_escape(ME) . "', '" . get_token() . "')") // $token may be empty in auth.inc.php
+		. "});
 document.body.className = document.body.className.replace(/ nojs/, ' js');
-var offlineMessage = '<?php echo js_escape(lang('You are offline.')); ?>';
-var thousandsSeparator = '<?php echo js_escape(lang(',')); ?>';
-</script>
-
-<div id="help" class="jush-<?php echo JUSH; ?> jsonly hidden"></div>
-<?php echo script("mixin(qs('#help'), {onmouseover: function () { helpOpen = 1; }, onmouseout: helpMouseout});"); ?>
-
-<div id="content">
-<?php
+var offlineMessage = '" . js_escape(lang('You are offline.')) . "';
+var thousandsSeparator = '" . js_escape(lang(',')) . "';")
+	;
+	echo "<div id='help' class='jush-" . JUSH . " jsonly hidden'></div>\n";
+	echo script("mixin(qs('#help'), {onmouseover: function () { helpOpen = 1; }, onmouseout: helpMouseout});");
+	echo "<div id='content'>\n";
 	if ($breadcrumb !== null) {
 		$link = substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1);
 		echo '<p id="breadcrumb"><a href="' . h($link ?: ".") . '">' . $drivers[DRIVER] . '</a> » ';
@@ -181,7 +182,7 @@ function page_messages($error) {
 * @return null
 */
 function page_footer($missing = "") {
-	global $adminer, $token;
+	global $adminer;
 	?>
 </div>
 
@@ -194,7 +195,7 @@ function page_footer($missing = "") {
 <p class="logout">
 <span><?php echo h($_GET["username"]) . "\n"; ?></span>
 <input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" id="logout">
-<input type="hidden" name="token" value="<?php echo $token; ?>">
+<?php echo input_token(); ?>
 </p>
 </form>
 <?php } ?>

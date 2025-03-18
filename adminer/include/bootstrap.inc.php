@@ -3,6 +3,7 @@ namespace Adminer;
 
 include "../adminer/include/version.inc.php";
 include "../adminer/include/errors.inc.php";
+// this is matched by compile.php
 include "../adminer/include/coverage.inc.php";
 
 // disable filter.default
@@ -21,6 +22,7 @@ if (function_exists("mb_internal_encoding")) {
 }
 
 include "../adminer/include/functions.inc.php";
+include "../adminer/include/html.inc.php";
 
 // used only in compiled file
 if (isset($_GET["file"])) {
@@ -28,7 +30,9 @@ if (isset($_GET["file"])) {
 }
 
 if ($_GET["script"] == "version") {
-	$fp = file_open_lock(get_temp_dir() . "/adminer.version");
+	$filename = get_temp_dir() . "/adminer.version";
+	unlink($filename); // it may not be writable by us
+	$fp = file_open_lock($filename);
 	if ($fp) {
 		file_write_unlock($fp, serialize(array("signature" => $_POST["signature"], "version" => $_POST["version"])));
 	}
@@ -72,9 +76,9 @@ include "../adminer/drivers/sqlite.inc.php";
 include "../adminer/drivers/pgsql.inc.php";
 include "../adminer/drivers/oracle.inc.php";
 include "../adminer/drivers/mssql.inc.php";
-include "../adminer/drivers/mongo.inc.php";
 include "./include/adminer.inc.php";
 $adminer = (function_exists('adminer_object') ? adminer_object() : new Adminer);
+// this is matched by compile.php
 include "../adminer/drivers/mysql.inc.php"; // must be included as last driver
 
 define('Adminer\JUSH', Driver::$jush);

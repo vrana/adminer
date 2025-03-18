@@ -1,4 +1,5 @@
 /** @author Ondrej Valka, http://valka.info */
+
 body { color: #000; background: #fff; font: 90%/1.25 Verdana, Arial, Helvetica, sans-serif; margin: 0; min-width: fit-content; }
 a { color: blue; text-decoration: none; }
 a:visited { color: navy; }
@@ -10,11 +11,13 @@ h2 { font-size: 150%; margin: 0 0 20px -18px; padding: .8em 1em; border-bottom: 
 h3 { font-weight: normal; font-size: 130%; margin: 1em 0 0; }
 form { margin: 0; }
 td table { width: 100%; margin: 0; }
-table { margin: 1em 20px 0 0; border-collapse: collapse; font-size: 90%; }
-td, th { border: 1px solid #999; padding: .2em .3em; }
+table { margin: 1em 20px 0 0; font-size: 90%; border-spacing: 0; border-width: 1px 0 0 1px; }
+table, td, th { border-color: #999; border-style: solid; }
+td, th { border-width: 0 1px 1px 0; padding: .2em .3em; margin: 0; }
 th { background: #eee; text-align: left; }
+thead { position: sticky; top: 0; }
 thead th { text-align: center; padding: .2em .5em; }
-thead td, thead th { background: #ddf; } /* position: sticky; causes Firefox to lose borders */
+thead td, thead th { background: #ddf; }
 fieldset { display: inline; vertical-align: top; padding: .5em .8em; margin: .8em .5em 0 0; border: 1px solid #999; }
 p { margin: .8em 20px 0 0; }
 img { vertical-align: middle; border: 0; }
@@ -47,7 +50,7 @@ input.wayoff { left: -1000px; position: absolute; }
 .date { color: #7F007F; }
 .enum { color: #007F7F; }
 .binary { color: red; }
-.odds tbody tr:nth-child(2n):not(.checked, :hover) td { background: #F5F5F5; }
+.odds tbody tr:nth-child(2n) { background: #F5F5F5; }
 .js .checkable .checked td, .js .checkable .checked th { background: #ddf; }
 .time { color: silver; font-size: 70%; }
 .function, .number, .datetime { text-align: right; }
@@ -93,48 +96,6 @@ input.wayoff { left: -1000px; position: absolute; }
 .rtl input.wayoff { left: auto; right: -1000px; }
 .rtl #lang, .rtl #menu { left: auto; right: 0; }
 .rtl pre, .rtl code { direction: ltr; }
-
-@media (prefers-color-scheme: dark) {
-	/** @author Robert Mesaros, https://www.rmsoft.sk */
-	body { color: #829bb0; background: #002240; }
-	a { color: #517fa8; }
-	a:visited { color: #517fa8; }
-	a:link:hover, a:visited:hover { color: #9bc0e1; }
-	h1 { border-color: #1d4e78; color: #ffddbf; background: #1d4e78; }
-	h2 { border-color: #b9cbda; color: #000; background: #3c678d; }
-	td, th { border-color: #0e416d; }
-	th { background: #11385a; }
-	thead td, thead th { color: #a8b05f; background: #011d35; }
-	fieldset { border-color: #16548a; }
-	code { color: #002240; background: #81a0bc; padding: .2em .5em; }
-	tbody tr:hover td, tbody tr:hover th { background: #133553; }
-	pre.jush { background: #a7c3dc; }
-	input.default { box-shadow: 1px 1px 1px #888; }
-	input.required, input.maxlength { box-shadow: 1px 1px 1px red; }
-	.version { color: #888; }
-	.js .column { background: #011d35; }
-	.error { color: red; background: #efdada; border:1px solid #e76f6f; }
-	.error b { background: #002240; }
-	.message { color: #0b860b; background: #efe; border:1px solid #7fbd7f; }
-	.message table { color: #829bb0; background: #002240; }
-	.char { color: #ff80ff; }
-	.date { color: #80ff80; }
-	.enum { color: #ff8080; }
-	.binary { color: #9bc0e1; }
-	.odds tbody tr:nth-child(2n):not(.checked, :hover) td { background: #042541; }
-	.js .checkable .checked td, .js .checkable .checked th { background: #10395c; }
-	.icon { background-color: #062642; }
-	.icon:hover { background-color: #d1394e; }
-	.footer { border-top-color: rgba(0, 34, 64, .7); border-image-source: linear-gradient(rgba(0, 34, 64, 0.2), #002240); }
-	.footer > div { background: #002240; }
-	#menu p, #logins, #tables { border-color: #326b9c; }
-	#logins a, #tables a, #tables span { background: #002240; }
-	#breadcrumb { background: #1d4e78; }
-	#h1 { color: #ffddbf; }
-	#version { color: #d2b397; }
-	#schema .table { border-color: #093459; }
-	#help { border-color: #666; background: #c7e4fe; }
-}
 
 @media all and (max-width: 880px) {
 	.pages { left: auto; }

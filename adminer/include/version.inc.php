@@ -1,4 +1,4 @@
 <?php
 namespace Adminer;
 
-$VERSION = "5.0.5-dev";
+$VERSION = "5.0.7-dev";

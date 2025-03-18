@@ -66,6 +66,13 @@ abstract class SqlDriver {
 	function enumLength($field) {
 	}
 
+	/** Function used to convert the value inputted by user
+	* @param array
+	* @return string or null
+	*/
+	function unconvertFunction($field) {
+	}
+
 	/** Select data from table
 	* @param string
 	* @param array result of $adminer->selectColumnsProcess()[0]
@@ -132,10 +139,19 @@ abstract class SqlDriver {
 	* @return bool
 	*/
 	function insert($table, $set) {
-		return queries("INSERT INTO " . table($table) . ($set
+		return queries($this->insertSql($table, $set));
+	}
+
+	/** Get SQL query to insert data into table
+	* @param string
+	* @param array same as insert()
+	* @return string
+	*/
+	protected function insertSql($table, $set) {
+		return "INSERT INTO " . table($table) . ($set
 			? " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")"
 			: " DEFAULT VALUES"
-		));
+		);
 	}
 
 	/** Insert or update data in table

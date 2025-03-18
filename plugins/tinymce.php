@@ -17,7 +17,7 @@ class AdminerTinymce {
 		$this->path = $path;
 	}
 
-	function head() {
+	function head($dark = null) {
 		$lang = Adminer\get_lang();
 		$lang = ($lang == "zh" ? "zh-cn" : ($lang == "zh-tw" ? "zh" : $lang));
 		if (!file_exists(dirname($this->path) . "/langs/$lang.js")) {

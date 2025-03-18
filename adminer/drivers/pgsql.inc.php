@@ -241,6 +241,13 @@ if (isset($_GET["pgsql"])) {
 			$this->types[lang('User types')] = array_flip($types);
 		}
 
+		function insertSql($table, $set) {
+			$auto_increment = array_filter(fields($table), function ($field) {
+				return $field['auto_increment'];
+			});
+			return parent::insertSql($table, $set) . (count($auto_increment) == 1 ? " RETURNING " . idf_escape(key($auto_increment)) : "");
+		}
+
 		function insertUpdate($table, $rows, $primary) {
 			global $connection;
 			foreach ($rows as $set) {
@@ -321,10 +328,17 @@ if (isset($_GET["pgsql"])) {
 	}
 
 	function connect($credentials) {
+		global $drivers;
 		$connection = new Db;
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
 			if (min_version(9, 0, $connection)) {
 				$connection->query("SET application_name = 'Adminer'");
+			}
+			$crdb_version = $connection->result("SHOW crdb_version");
+			$connection->server_info .= ($crdb_version ? "-" . preg_replace('~ \(.*~', '', $crdb_version) : "");
+			$connection->cockroach = preg_match('~CockroachDB~', $connection->server_info);
+			if ($connection->cockroach) { // we don't use "PostgreSQL / CockroachDB" by default because it's too long
+				$drivers[DRIVER] = "CockroachDB";
 			}
 			return $connection;
 		}
@@ -462,7 +476,8 @@ ORDER BY a.attnum") as $row
 			}
 			$row["generated"] = ($row["attgenerated"] == "s" ? "STORED" : "");
 			$row["null"] = !$row["attnotnull"];
-			$row["auto_increment"] = $row['attidentity'] || preg_match('~^nextval\(~i', $row["default"]);
+			$row["auto_increment"] = $row['attidentity'] || preg_match('~^nextval\(~i', $row["default"])
+				|| preg_match('~^unique_rowid\(~', $row["default"]); // CockroachDB
 			$row["privileges"] = array("insert" => 1, "select" => 1, "update" => 1, "where" => 1, "order" => 1);
 			if (preg_match('~(.+)::[^,)]+(.*)~', $row["default"], $match)) {
 				$row["default"] = ($match[1] == "NULL" ? null : idf_unescape($match[1]) . $match[2]);
@@ -772,8 +787,8 @@ ORDER BY SPECIFIC_NAME');
 		return idf_escape($name) . "(" . implode(", ", $return) . ")";
 	}
 
-	function last_id() {
-		return 0; // there can be several sequences
+	function last_id($result) {
+		return (is_object($result) ? $result->fetch_column(0) : 0);
 	}
 
 	function explain($connection, $query) {
@@ -950,7 +965,11 @@ AND typelem = 0"
 	}
 
 	function support($feature) {
-		return preg_match('~^(check|database|table|columns|sql|indexes|descidx|comment|view|' . (min_version(9.3) ? 'materializedview|' : '') . 'scheme|routine|processlist|sequence|trigger|type|variables|drop_col|kill|dump)$~', $feature);
+		global $connection;
+		return preg_match('~^(check|database|table|columns|sql|indexes|descidx|comment|view|' . (min_version(9.3) ? 'materializedview|' : '') . 'scheme|routine|sequence|trigger|type|variables|drop_col'
+			. ($connection->cockroach ? '' : '|processlist') // https://github.com/cockroachdb/cockroach/issues/24745
+			. '|kill|dump)$~', $feature)
+		;
 	}
 
 	function kill_process($val) {

@@ -377,11 +377,11 @@ td{
 	border-bottom: 1px solid #777;
 }
 
-.odds tbody tr:nth-child(2n):not(.checked, :hover) th{
+.odds tbody tr:nth-child(2n) th{
 	background: #33394d;
 }
 
-.odds tbody tr:nth-child(2n):not(.checked, :hover) td{
+.odds tbody tr:nth-child(2n) td{
 	background: #33394d;
 }
 

@@ -90,7 +90,8 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 			if ($link) {
 				$val = "<a href='" . h($link) . "'" . (is_url($link) ? target_blank() : '') . ">$val</a>";
 			}
-			echo "<td>$val";
+			// https://dev.mysql.com/doc/dev/mysql-server/latest/field__types_8h.html
+			echo "<td" . ($types[$key] <= 9 || $types[$key] == 246 ? " class='number'" : "") . ">$val";
 		}
 	}
 	echo ($i ? "</table>\n</div>" : "<p class='message'>" . lang('No rows.')) . "\n";
@@ -117,31 +118,6 @@ function referencable_primary($self) {
 		}
 	}
 	return $return;
-}
-
-/** Get settings stored in a cookie
-* @return array
-*/
-function adminer_settings() {
-	parse_str($_COOKIE["adminer_settings"], $settings);
-	return $settings;
-}
-
-/** Get setting stored in a cookie
-* @param string
-* @return array
-*/
-function adminer_setting($key) {
-	$settings = adminer_settings();
-	return $settings[$key];
-}
-
-/** Store settings to a cookie
-* @param array
-* @return bool
-*/
-function set_adminer_settings($settings) {
-	return cookie("adminer_settings", http_build_query($settings + adminer_settings()));
 }
 
 /** Print SQL <textarea> tag
@@ -209,7 +185,7 @@ function json_row($key, $val = null) {
 function edit_type($key, $field, $collations, $foreign_keys = array(), $extra_types = array()) {
 	global $driver;
 	$type = $field["type"];
-	?><td><select name="<?php echo h($key); ?>[type]" class="type" aria-labelledby="label-type"><?php
+	echo "<td><select name='" . h($key) . "[type]' class='type' aria-labelledby='label-type'>";
 	if ($type && !array_key_exists($type, $driver->types()) && !isset($foreign_keys[$type]) && !in_array($type, $extra_types)) {
 		$extra_types[] = $type;
 	}
@@ -218,12 +194,11 @@ function edit_type($key, $field, $collations, $foreign_keys = array(), $extra_ty
 		$structured_types[lang('Foreign keys')] = $foreign_keys;
 	}
 	echo optionlist(array_merge($extra_types, $structured_types), $type);
-	?></select><td><input
-	name="<?php echo h($key); ?>[length]"
-	value="<?php echo h($field["length"]); ?>"
-	size="3"
-	<?php echo (!$field["length"] && preg_match('~var(char|binary)$~', $type) ? " class='required'" : ""); //! type="number" with enabled JavaScript ?>
-	aria-labelledby="label-length"><td class="options"><?php
+	echo "</select><td>";
+	echo "<input name='" . h($key) . "[length]' value='" . h($field["length"]) . "' size='3'"
+		. (!$field["length"] && preg_match('~var(char|binary)$~', $type) ? " class='required'" : "") //! type="number" with enabled JavaScript
+		. " aria-labelledby='label-length'>";
+	echo "<td class='options'>";
 	echo ($collations
 		? "<input list='collations' name='" . h($key) . "[collation]'" . (preg_match('~(char|text|enum|set)$~', $type) ? "" : " class='hidden'") . " value='" . h($field["collation"]) . "' placeholder='(" . lang('collation') . ")'>"
 		: ''
@@ -313,7 +288,7 @@ function default_value($field) {
 	$generated = $field["generated"];
 	return ($default === null ? "" : (in_array($generated, $driver->generated)
 		? (JUSH == "mssql" ? " AS ($default)" . ($generated == "VIRTUAL" ? "" : " $generated") . "" : " GENERATED ALWAYS AS ($default) $generated")
-		: " DEFAULT " . (!preg_match('~^GENERATED ~i', $default) && (preg_match('~char|binary|text|enum|set~', $field["type"]) || preg_match('~^(?![a-z])~i', $default))
+		: " DEFAULT " . (!preg_match('~^GENERATED ~i', $default) && (preg_match('~char|binary|text|json|enum|set~', $field["type"]) || preg_match('~^(?![a-z])~i', $default))
 			? (JUSH == "sql" && preg_match('~text|json~', $field["type"]) ? "(" . q($default) . ")" : q($default)) // MySQL requires () around default value of text column
 			: str_ireplace("current_timestamp()", "CURRENT_TIMESTAMP", (JUSH == "sqlite" ? "($default)" : $default))
 		)
@@ -349,54 +324,51 @@ function type_class($type) {
 function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = array()) {
 	global $driver;
 	$fields = array_values($fields);
-	$default_class = (($_POST ? $_POST["defaults"] : adminer_setting("defaults")) ? "" : " class='hidden'");
-	$comment_class = (($_POST ? $_POST["comments"] : adminer_setting("comments")) ? "" : " class='hidden'");
+	$default_class = (($_POST ? $_POST["defaults"] : get_setting("defaults")) ? "" : " class='hidden'");
+	$comment_class = (($_POST ? $_POST["comments"] : get_setting("comments")) ? "" : " class='hidden'");
 	?>
 <thead><tr>
 <?php echo ($type == "PROCEDURE" ? "<td>" : ""); ?>
 <th id="label-name"><?php echo ($type == "TABLE" ? lang('Column name') : lang('Parameter name')); ?>
 <td id="label-type"><?php echo lang('Type'); ?><textarea id="enum-edit" rows="4" cols="12" wrap="off" style="display: none;"></textarea><?php echo script("qs('#enum-edit').onblur = editingLengthBlur;"); ?>
 <td id="label-length"><?php echo lang('Length'); ?>
-<td><?php echo lang('Options'); /* no label required, options have their own label */ ?>
-<?php if ($type == "TABLE") { ?>
-<td id="label-null">NULL
-<td><input type="radio" name="auto_increment_col" value=""><abbr id="label-ai" title="<?php echo lang('Auto Increment'); ?>">AI</abbr><?php echo doc_link(array(
-	'sql' => "example-auto-increment.html",
-	'mariadb' => "auto_increment/",
-	'sqlite' => "autoinc.html",
-	'pgsql' => "datatype-numeric.html#DATATYPE-SERIAL",
-	'mssql' => "t-sql/statements/create-table-transact-sql-identity-property",
-)); ?>
-<td id="label-default"<?php echo $default_class; ?>><?php echo lang('Default value'); ?>
-<?php echo (support("comment") ? "<td id='label-comment'$comment_class>" . lang('Comment') : ""); ?>
-<?php } ?>
-<td><?php echo "<input type='image' class='icon' name='add[" . (support("move_col") ? 0 : count($fields)) . "]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>" . script("row_count = " . count($fields) . ";"); ?>
-</thead>
-<tbody>
-<?php
+<td><?php
+	echo lang('Options'); // no label required, options have their own label
+	if ($type == "TABLE") {
+		echo "<td id='label-null'>NULL\n";
+		echo "<td><input type='radio' name='auto_increment_col' value=''><abbr id='label-ai' title='" . lang('Auto Increment') . "'>AI</abbr>";
+		echo doc_link(array(
+			'sql' => "example-auto-increment.html",
+			'mariadb' => "auto_increment/",
+			'sqlite' => "autoinc.html",
+			'pgsql' => "datatype-numeric.html#DATATYPE-SERIAL",
+			'mssql' => "t-sql/statements/create-table-transact-sql-identity-property",
+		));
+		echo "<td id='label-default'$default_class>" . lang('Default value');
+		echo (support("comment") ? "<td id='label-comment'$comment_class>" . lang('Comment') : "");
+	}
+	echo "<td><input type='image' class='icon' name='add[" . (support("move_col") ? 0 : count($fields)) . "]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>" . script("row_count = " . count($fields) . ";");
+	echo "</thead>\n<tbody>\n";
 	echo script("mixin(qsl('tbody'), {onclick: editingClick, onkeydown: editingKeydown, oninput: editingInput});");
 	foreach ($fields as $i => $field) {
 		$i++;
 		$orig = $field[($_POST ? "orig" : "field")];
 		$display = (isset($_POST["add"][$i-1]) || (isset($field["field"]) && !$_POST["drop_col"][$i])) && (support("drop_col") || $orig == "");
-		?>
-<tr<?php echo ($display ? "" : " style='display: none;'"); ?>>
-<?php echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", explode("|", $driver->inout), $field["inout"]) : "") . "<th>"; ?>
-<?php if ($display) { ?>
-<input name="fields[<?php echo $i; ?>][field]" value="<?php echo h($field["field"]); ?>" data-maxlength="64" autocapitalize="off" aria-labelledby="label-name">
-<?php } ?>
-<input type="hidden" name="fields[<?php echo $i; ?>][orig]" value="<?php echo h($orig); ?>"><?php edit_type("fields[$i]", $field, $collations, $foreign_keys); ?>
-<?php
+		echo "<tr" . ($display ? "" : " style='display: none;'") . ">\n";
+		echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", explode("|", $driver->inout), $field["inout"]) : "") . "<th>";
+		if ($display) {
+			echo "<input name='fields[$i][field]' value='" . h($field["field"]) . "' data-maxlength='64' autocapitalize='off' aria-labelledby='label-name'>\n";
+		}
+		echo "<input type='hidden' name='fields[$i][orig]' value='" . h($orig) . "'>";
+		edit_type("fields[$i]", $field, $collations, $foreign_keys);
 		if ($type == "TABLE") {
-			?>
-<td><?php echo checkbox("fields[$i][null]", 1, $field["null"], "", "", "block", "label-null"); ?>
-<td><label class="block"><input type="radio" name="auto_increment_col" value="<?php echo $i; ?>"<?php echo ($field["auto_increment"] ? " checked" : ""); ?> aria-labelledby="label-ai"></label><td<?php echo $default_class; ?>><?php
-			echo ($driver->generated
+			echo "<td>" . checkbox("fields[$i][null]", 1, $field["null"], "", "", "block", "label-null");
+			echo "<td><label class='block'><input type='radio' name='auto_increment_col' value='$i'" . ($field["auto_increment"] ? " checked" : "") . " aria-labelledby='label-ai'></label>";
+			echo "<td$default_class>" . ($driver->generated
 				? html_select("fields[$i][generated]", array_merge(array("", "DEFAULT"), $driver->generated), $field["generated"]) . " "
 				: checkbox("fields[$i][generated]", 1, $field["generated"], "", "", "", "label-default")
 			);
-			?>
-<input name="fields[<?php echo $i; ?>][default]" value="<?php echo h($field["default"]); ?>" aria-labelledby="label-default"><?php
+			echo "<input name='fields[$i][default]' value='" . h($field["default"]) . "' aria-labelledby='label-default'>";
 			echo (support("comment") ? "<td$comment_class><input name='fields[$i][comment]' value='" . h($field["comment"]) . "' data-maxlength='" . (min_version(5.5) ? 1024 : 255) . "' aria-labelledby='label-comment'>" : "");
 		}
 		echo "<td>";
@@ -630,7 +602,7 @@ function doc_link($paths, $text = "<sup>?</sup>") {
 		'mssql' => "https://learn.microsoft.com/en-us/sql/",
 		'oracle' => "https://www.oracle.com/pls/topic/lookup?ctx=db" . preg_replace('~^.* (\d+)\.(\d+)\.\d+\.\d+\.\d+.*~s', '\1\2', $server_info) . "&id=",
 	);
-	if (preg_match('~MariaDB~', $server_info)) {
+	if ($connection->maria) {
 		$urls['sql'] = "https://mariadb.com/kb/en/";
 		$paths['sql'] = (isset($paths['mariadb']) ? $paths['mariadb'] : str_replace(".html", "/", $paths['sql']));
 	}

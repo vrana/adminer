@@ -665,7 +665,7 @@ function indexesAddColumn(prefix) {
 * @param string
 */
 function sqlSubmit(form, root) {
-	if (encodeURIComponent(form['query'].value).length < 2e3) {
+	if (encodeURIComponent(form['query'].value).length < 500) {
 		form.action = root
 			+ '&sql=' + encodeURIComponent(form['query'].value)
 			+ (form['limit'].value ? '&limit=' + +form['limit'].value : '')

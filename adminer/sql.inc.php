@@ -2,6 +2,7 @@
 namespace Adminer;
 
 if (!$error && $_POST["export"]) {
+	save_settings(array("output" => $_POST["output"], "format" => $_POST["format"]), "adminer_import");
 	dump_headers("sql");
 	$adminer->dumpTable("", "");
 	$adminer->dumpData("", "table", $_POST["query"]);
@@ -64,7 +65,7 @@ if (!$error && $_POST) {
 		$errors = array();
 		$parse = '[\'"' . (JUSH == "sql" ? '`#' : (JUSH == "sqlite" ? '`[' : (JUSH == "mssql" ? '[' : ''))) . ']|/\*|-- |$' . (JUSH == "pgsql" ? '|\$[^$]*\$' : '');
 		$total_start = microtime(true);
-		parse_str($_COOKIE["adminer_export"], $adminer_export);
+		$adminer_export = get_settings("adminer_import"); // this doesn't offer SQL export so we match the import/export style at select
 		$dump_format = $adminer->dumpFormat();
 		unset($dump_format["sql"]);
 
@@ -89,8 +90,8 @@ if (!$error && $_POST) {
 						$pattern = ($found == '/*' ? '\*/'
 							: ($found == '[' ? ']'
 							: (preg_match('~^-- |^#~', $found) ? "\n"
-							: preg_quote($found) . ($c_style_escapes ? "|\\\\." : "")
-						)));
+							: preg_quote($found) . ($c_style_escapes ? "|\\\\." : "")))
+						);
 
 						while (preg_match("($pattern|\$)s", $query, $match, PREG_OFFSET_CAPTURE, $offset)) {
 							$s = $match[0][0];
@@ -168,7 +169,7 @@ if (!$error && $_POST) {
 												. html_select("output", $adminer->dumpOutput(), $adminer_export["output"]) . " "
 												. html_select("format", $dump_format, $adminer_export["format"])
 												. "<input type='hidden' name='query' value='" . h($q) . "'>"
-												. " <input type='submit' name='export' value='" . lang('Export') . "'><input type='hidden' name='token' value='$token'></span>\n"
+												. " <input type='submit' name='export' value='" . lang('Export') . "'>" . input_token() . "</span>\n"
 												. "</form>\n"
 											;
 										}
@@ -257,7 +258,7 @@ if (!isset($_GET["import"])) {
 
 echo checkbox("error_stops", 1, ($_POST ? $_POST["error_stops"] : isset($_GET["import"]) || $_GET["error_stops"]), lang('Stop on error')) . "\n";
 echo checkbox("only_errors", 1, ($_POST ? $_POST["only_errors"] : isset($_GET["import"]) || $_GET["only_errors"]), lang('Show only errors')) . "\n";
-echo "<input type='hidden' name='token' value='$token'>\n";
+echo input_token();
 
 if (!isset($_GET["import"]) && $history) {
 	print_fieldset("history", lang('History'), $_GET["history"] != "");

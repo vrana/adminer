@@ -58,7 +58,7 @@ table{-moz-border-bottom-colors:none;-moz-border-left-colors:none;-moz-border-ri
 td,th{-moz-border-bottom-colors:none;-moz-border-left-colors:none;-moz-border-right-colors:none;-moz-border-top-colors:none;border-color:-moz-use-text-color #999 #999 -moz-use-text-color;border-image:none;border-style:none solid solid none;border-width:0 1px 1px 0;padding:.2em .3em}
 thead td,thead th{background:#eee;background:-moz-linear-gradient(top,#eee 0,#ccc 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#eee),color-stop(100%,#ccc));background:-webkit-linear-gradient(top,#eee 0,#ccc 100%);background:-o-linear-gradient(top,#eee 0,#ccc 100%);background:-ms-linear-gradient(top,#eee 0,#ccc 100%);background:linear-gradient(to bottom,#eee 0,#ccc 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee',endColorstr='#cccccc',GradientType=0)}
 td{background-color:#f4f8ff}
-.odds tbody tr:nth-child(2n):not(.checked, :hover) td{background-color:#fff}
+.odds tbody tr:nth-child(2n){background-color:#fff}
 tbody tr:hover td,tbody tr:hover th{background-color:#FFE}
 p.tabs{margin:0 20px 0 0}
 .jush-sql{background:0}
@@ -70,6 +70,7 @@ a:hover{color:#28c}
 #logout:hover,#logins a:hover,#tables a:hover,#breadcrumb a:hover,.logout a:hover,.tabs a:hover{color:#fff;text-decoration:none;background:#93c9ff;background:-moz-linear-gradient(top,#93c9ff 0,#79b8f7 44%,#57a2ed 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#93c9ff),color-stop(44%,#79b8f7),color-stop(100%,#57a2ed));background:-webkit-linear-gradient(top,#93c9ff 0,#79b8f7 44%,#57a2ed 100%);background:-o-linear-gradient(top,#93c9ff 0,#79b8f7 44%,#57a2ed 100%);background:-ms-linear-gradient(top,#93c9ff 0,#79b8f7 44%,#57a2ed 100%);background:linear-gradient(to bottom,#93c9ff 0,#79b8f7 44%,#57a2ed 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#93c9ff',endColorstr='#57a2ed',GradientType=0)}
 #breadcrumb a,#breadcrumb a:link{border:1px solid #246;padding:2px 6px;margin:1px auto;line-height:1.6em}
 #logins a,#tables a{background:none repeat scroll 0 0 #fff;padding:2px 6px;margin:1px 0;font-size:.8em}
+#lang{top:-4.5em;}
 a[title='Show structure'],#tables a[title='Show structure']{border:0;background:0;color:#369}
 .jush a{border:0;background:0;margin:0;padding:0}
 a.active,a.active:link,a.active:hover{text-decoration:underline}

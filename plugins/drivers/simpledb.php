@@ -395,7 +395,7 @@ if (isset($_GET["simpledb"])) {
 		return ($where ? null : $table_status["Rows"]);
 	}
 
-	function last_id() {
+	function last_id($result) {
 	}
 
 	function sdb_request($action, $params = array()) {

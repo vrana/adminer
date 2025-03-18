@@ -84,7 +84,7 @@ if (
 					. "</div></div>\n"
 				: ""
 			);
-			echo "<input type='hidden' name='token' value='$token'>\n";
+			echo input_token();
 			echo "</form>\n";
 			echo script("tableCheck();");
 		}

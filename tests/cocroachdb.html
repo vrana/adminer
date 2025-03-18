@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+	<title>Katalon CockroachDB</title>
+</head>
+<body>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Login</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/</td><td></td></tr>
+<tr><td>select</td><td>name=lang</td><td>label=English</td></tr>
+<tr><td>clickAndWait</td><td>css=#lang &gt; input[type="submit"]</td><td></td></tr>
+<tr><td>select</td><td>name=auth[driver]</td><td>label=PostgreSQL</td></tr>
+<tr><td>type</td><td>name=auth[server]</td><td>localhost:26257</td></tr>
+<tr><td>type</td><td>id=username</td><td>ODBC</td></tr>
+<tr><td>type</td><td>name=auth[password]</td><td>ODBC</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Login']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>CockroachDB</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Create table</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Create table</td><td></td></tr>
+<tr><td>type</td><td>name</td><td>interprets</td></tr>
+<tr><td>type</td><td>fields[1][field]</td><td>id</td></tr>
+<tr><td>select</td><td>fields[1][type]</td><td>label=integer</td></tr>
+<tr><td>click</td><td>//input[@name='auto_increment_col' and @value='1']</td><td></td></tr>
+<tr><td>type</td><td>fields[1.1][field]</td><td>name</td></tr>
+<tr><td>select</td><td>fields[1.1][type]</td><td>label=character varying</td></tr>
+<tr><td>type</td><td>fields[1.1][length]</td><td>50</td></tr>
+<tr><td>uncheck</td><td>name=comments</td><td></td></tr>
+<tr><td>clickAndWait</td><td>name=comments</td><td></td></tr>
+<tr><td>type</td><td>fields[1.1][comment]</td><td>Interpret</td></tr>
+<tr><td>type</td><td>Comment</td><td>Interprets</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Table has been created.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Create index</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;table=interprets</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Alter indexes</td><td></td></tr>
+<tr><td>select</td><td>indexes[2][type]</td><td>label=PRIMARY</td></tr>
+<tr><td>select</td><td>indexes[2][columns][1]</td><td>label=name</td></tr>
+<tr><td>verifyValue</td><td>name=indexes[2][name]</td><td>interprets_name</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>multiple primary keys for table "interprets" are not allowed</td><td></td></tr>
+<tr><td>select</td><td>indexes[2][type]</td><td>label=INDEX</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Indexes have been altered.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Create table 2</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;table=interprets</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Create table</td><td></td></tr>
+<tr><td>type</td><td>name</td><td>albums</td></tr>
+<tr><td>click</td><td>//input[@name='auto_increment_col' and @value='1']</td><td></td></tr>
+<tr><td>type</td><td>fields[1.1][field]</td><td>interpret</td></tr>
+<tr><td>select</td><td>fields[1.1][type]</td><td>label=integer</td></tr>
+<tr><td>type</td><td>fields[1.11][field]</td><td>title</td></tr>
+<tr><td>select</td><td>fields[1.11][type]</td><td>label=character varying</td></tr>
+<tr><td>type</td><td>fields[1.11][length]</td><td>50</td></tr>
+<tr><td>check</td><td>name=comments</td><td></td></tr>
+<tr><td>type</td><td>fields[1.1][comment]</td><td>Interpret</td></tr>
+<tr><td>type</td><td>fields[1.11][comment]</td><td>Album</td></tr>
+<tr><td>type</td><td>Comment</td><td>Albums</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Table has been created.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Foreign key</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;table=albums</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Add foreign key</td><td></td></tr>
+<tr><td>selectAndWait</td><td>table</td><td>label=interprets</td></tr>
+<tr><td>select</td><td>source[0]</td><td>label=interpret</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Foreign key has been created.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Alter table</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;table=interprets</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Alter table</td><td></td></tr>
+<tr><td>click</td><td>add[2]</td><td></td></tr>
+<tr><td>type</td><td>fields[3][field]</td><td>albums</td></tr>
+<tr><td>select</td><td>fields[3][type]</td><td>label=integer</td></tr>
+<tr><td>type</td><td>fields[3][length]</td><td></td></tr>
+<tr><td>uncheck</td><td>name=defaults</td><td></td></tr>
+<tr><td>clickAndWait</td><td>name=defaults</td><td></td></tr>
+<tr><td>type</td><td>name=fields[3][default]</td><td>0</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Table has been altered.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Check constraints</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;table=albums</td><td></td></tr>
+<tr><td>click</td><td>link=Create check</td><td></td></tr>
+<tr><td>type</td><td>name=name</td><td>albums_interpret_check</td></tr>
+<tr><td>runScript</td><td>document.querySelector('[name="clause"]').value = 'interpret > 0'</td><td></td></tr>
+<tr><td>click</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Check has been created.</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=New item</td><td></td></tr>
+<tr><td>type</td><td>fields[interpret]</td><td>0</td></tr>
+<tr><td>click</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>failed to satisfy CHECK constraint</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;check=albums&amp;name=albums_interpret_check</td><td></td></tr>
+<tr><td>verifyTextPresent<td>((interpret > 0:::INT8))</td><td></td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Drop albums_interpret_check?</td><td></td></tr>
+<tr><td>click</td><td>name=drop</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Check has been dropped.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Create view</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;view=</td><td></td></tr>
+<tr><td>runScript</td><td>document.querySelector('[name="select"]').value = 'SELECT albums.id, albums.title, interprets.name FROM albums LEFT JOIN interprets ON albums.interpret = interprets.id'</td><td></td></tr>
+<tr><td>type</td><td>name</td><td>albums_interprets</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>View has been created.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Materialized view</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;view=</td><td></td></tr>
+<tr><td>runScript</td><td>document.querySelector('[name="select"]').value = 'SELECT albums.id, albums.title, interprets.name FROM albums LEFT JOIN interprets ON albums.interpret = interprets.id'</td><td></td></tr>
+<tr><td>type</td><td>name</td><td>materialized_view</td></tr>
+<tr><td>click</td><td>materialized</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Materialized view</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Insert</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;edit=interprets</td><td></td></tr>
+<tr><td>type</td><td>fields[id]</td><td>1</td></tr>
+<tr><td>type</td><td>fields[name]</td><td>Michael Jackson</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Item has been inserted.</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;edit=albums</td><td></td></tr>
+<tr><td>type</td><td>fields[interpret]</td><td>1</td></tr>
+<tr><td>type</td><td>fields[title]</td><td>Dangerous</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Item has been inserted.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Clone</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;select=albums</td><td></td></tr>
+<tr><td>click</td><td>check[]</td><td></td></tr>
+<tr><td>clickAndWait</td><td>clone</td><td></td></tr>
+<tr><td>type</td><td>fields[id]</td><td>2</td></tr>
+<tr><td>type</td><td>fields[title]</td><td>Black and White</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>1 item has been affected.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3" data-tags="">Enum</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>http://localhost:8080/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public</td><td></td></tr>
+<tr><td>click</td><td>link=Create type</td><td></td></tr>
+<tr><td>type</td><td>name=name</td><td>alive</td></tr>
+<tr><td>runScript</td><td>document.querySelector('[name="as"]').value = "AS ENUM('alive', 'deceased')"</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>click</td><td>link=interprets</td><td></td></tr>
+<tr><td>click</td><td>link=Alter table</td><td></td></tr>
+<tr><td>click</td><td>name=add[3]</td><td></td></tr>
+<tr><td>type</td><td>name=fields[4][field]</td><td>alive</td></tr>
+<tr><td>select</td><td>name=fields[4][type]</td><td>label=alive</td></tr>
+<tr><td>click</td><td>name=fields[4][null]</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>click</td><td>link=alive</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>'alive', 'deceased'</td><td></td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Drop alive?</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Drop']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>cannot drop type</td><td></td></tr>
+<tr><td>open</td><td>http://localhost:8080/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;edit=interprets&amp;where%5Bid%5D=1</td><td></td></tr>
+<tr><td>click</td><td>//input[@value='deceased']</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>deceased</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Explain</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;select=albums</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Edit</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Execute']</td><td></td></tr>
+<tr><td>click</td><td>link=Explain</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>LIMITED SCAN</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Reference</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;select=albums</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=1</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Michael Jackson</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Update</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;edit=albums&amp;where%5Bid%5D=2</td><td></td></tr>
+<tr><td>type</td><td>fields[title]</td><td>Black or White</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Item has been updated.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Delete</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;select=albums</td><td></td></tr>
+<tr><td>click</td><td>//input[@name='check[]' and @value='where%5Bid%5D=2']</td><td></td></tr>
+<tr><td>waitForChecked</td><td>//input[@name='check[]' and @value='where%5Bid%5D=2']</td><td></td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Are you sure?</td><td></td></tr>
+<tr><td>click</td><td>delete</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>1 item has been affected.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Truncate</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;select=albums</td><td></td></tr>
+<tr><td>click</td><td>all</td><td></td></tr>
+<tr><td>waitForChecked</td><td>all</td><td></td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Are you sure?</td><td></td></tr>
+<tr><td>click</td><td>delete</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>No rows.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Export</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;dump=</td><td></td></tr>
+<tr><td>click</td><td>output</td><td></td></tr>
+<tr><td>click</td><td>format</td><td></td></tr>
+<tr><td>select</td><td>table_style</td><td>label=DROP+CREATE</td></tr>
+<tr><td>select</td><td>data_style</td><td>label=INSERT</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Export']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>CREATE TABLE "public"."interprets"</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>INSERT INTO "interprets"</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>VIEW "albums_interprets"</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Procedures</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;procedure=</td><td></td></tr>
+<tr><td>clickAndWait</td><td>add[0]</td><td></td></tr>
+<tr><td>type</td><td>fields[1][field]</td><td>interpret_name</td></tr>
+<tr><td>select</td><td>fields[1][type]</td><td>label=character varying</td></tr>
+<tr><td>type</td><td>fields[1][length]</td><td>50</td></tr>
+<tr><td>type</td><td>fields[1.1][field]</td><td>album_title</td></tr>
+<tr><td>select</td><td>fields[1.1][type]</td><td>label=character varying</td></tr>
+<tr><td>type</td><td>fields[1.1][length]</td><td>50</td></tr>
+<tr><td>runScript</td><td>document.querySelector('[name="definition"]').value = 'SELECT id FROM interprets;'</td><td></td></tr>
+<tr><td>type</td><td>name</td><td>insert_album</td></tr>
+<tr><td>select</td><td>name=language</td><td>label=sql</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Routine has been created.</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=insert_album</td><td></td></tr>
+<tr><td>type</td><td>fields[interpret_name]</td><td>Michael Jackson</td></tr>
+<tr><td>type</td><td>fields[album_title]</td><td>Dangerous</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Call']</td><td></td></tr>
+<tr><td>assertTextPresent</td><td>Routine has been called,</td><td></td></tr>
+<!-- https://github.com/cockroachdb/cockroach/issues/142886
+<tr><td>clickAndWait</td><td>link=public</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Alter</td><td></td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Drop insert_album?</td><td></td></tr>
+<tr><td>click</td><td>drop</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Routine has been dropped.</td><td></td></tr>
+-->
+<tr><td>open</td><td>/adminer/?pgsql=localhost%3A26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;sql=DROP+PROCEDURE+%22insert_album%22</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Execute']</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3" data-tags="">Generated columns</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;create=</td><td></td></tr>
+<tr><td>type</td><td>name=name</td><td>generated</td></tr>
+<tr><td>type</td><td>name=fields[1][field]</td><td>normal</td></tr>
+<tr><td>type</td><td>name=fields[1.1][field]</td><td>stored</td></tr>
+<tr><td>select</td><td>name=fields[1.1][generated]</td><td>label=STORED</td></tr>
+<tr><td>type</td><td>name=fields[1.1][default]</td><td>normal + 200</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>normal + 200</td><td></td></tr>
+<tr><td>click</td><td>link=Alter indexes</td><td></td></tr>
+<tr><td>select</td><td>name=indexes[2][columns][1]</td><td>label=stored</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Indexes have been altered.</td><td></td></tr>
+<tr><td>click</td><td>link=New item</td><td></td></tr>
+<tr><td>verifyTextNotPresent</td><td>stored</td><td></td></tr>
+<tr><td>type</td><td>name=fields[normal]</td><td>20</td></tr>
+<tr><td>click</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>220</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Drop</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public</td><td></td></tr>
+<tr><td>click</td><td>id=check-all</td><td></td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Are you sure?</td><td></td></tr>
+<tr><td>click</td><td>name=drop</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>No tables.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Variables</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;variables=</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>crdb_version</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">SQL command</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;sql=SELECT+122%2B1</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Execute']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>123</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Logout</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC</td><td></td></tr>
+<tr><td>clickAndWait</td><td>logout</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Logout successful.</td><td></td></tr>
+<tr><td>open</td><td>/coverage.php</td><td></td></tr>
+</tbody></table>
+
+</body>
+</html>

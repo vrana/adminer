@@ -94,12 +94,13 @@ class Adminer {
 	}
 
 	/** Print HTML code inside <head>
-	* @return bool true to link favicon.ico and adminer.css if exists
+	* @param bool dark CSS: false to disable, true to force, null to base on user preferences
+	* @return bool true to link favicon.ico
 	*/
-	function head() {
-		?>
-<link rel="stylesheet" type="text/css" href="../externals/jush/jush.css">
-<?php
+	function head($dark = null) {
+		// this is matched by compile.php
+		echo "<link rel='stylesheet' href='../externals/jush/jush.css'>\n";
+		echo ($dark !== false ? "<link rel='stylesheet'" . ($dark ? "" : " media='(prefers-color-scheme: dark)'") . " href='../externals/jush/jush-dark.css'>\n" : "");
 		return true;
 	}
 
@@ -108,9 +109,11 @@ class Adminer {
 	*/
 	function css() {
 		$return = array();
-		$filename = "adminer.css";
-		if (file_exists($filename)) {
-			$return[] = "$filename?v=" . crc32(file_get_contents($filename));
+		foreach (array("", "-dark") as $mode) {
+			$filename = "adminer$mode.css";
+			if (file_exists($filename)) {
+				$return[] = "$filename?v=" . crc32(file_get_contents($filename));
+			}
 		}
 		return $return;
 	}
@@ -121,8 +124,10 @@ class Adminer {
 	function loginForm() {
 		global $drivers;
 		echo "<table class='layout'>\n";
+		// this is matched by compile.php
 		echo $this->loginFormField('driver', '<tr><th>' . lang('System') . '<td>', html_select("auth[driver]", $drivers, DRIVER, "loginDriver(this);"));
 		echo $this->loginFormField('server', '<tr><th>' . lang('Server') . '<td>', '<input name="auth[server]" value="' . h(SERVER) . '" title="hostname[:port]" placeholder="localhost" autocapitalize="off">');
+		// this is matched by compile.php
 		echo $this->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', '<input name="auth[username]" id="username" autofocus value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">' . script("qs('#username').form['auth[driver]'].onchange();"));
 		echo $this->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]" autocomplete="current-password">');
 		echo $this->loginFormField('db', '<tr><th>' . lang('Database') . '<td>', '<input name="auth[db]" value="' . h($_GET["db"]) . '" autocapitalize="off">');
@@ -167,7 +172,9 @@ class Adminer {
 	* @return string HTML code, "" to ignore field
 	*/
 	function fieldName($field, $order = 0) {
-		return '<span title="' . h($field["full_type"]) . '">' . h($field["field"]) . '</span>';
+		$type = $field["full_type"];
+		$comment = $field["comment"];
+		return '<span title="' . h($type . ($comment != "" ? ($type ? ": " : "") . $comment : '')) . '">' . h($field["field"]) . '</span>';
 	}
 
 	/** Print links after select heading
@@ -289,12 +296,13 @@ class Adminer {
 	* @return string
 	*/
 	function selectVal($val, $link, $field, $original) {
-		$return = ($val === null ? "<i>NULL</i>" : (preg_match("~char|binary|boolean~", $field["type"]) && !preg_match("~var~", $field["type"]) ? "<code>$val</code>" : $val));
+		$return = ($val === null ? "<i>NULL</i>"
+			: (preg_match("~char|binary|boolean~", $field["type"]) && !preg_match("~var~", $field["type"]) ? "<code>$val</code>"
+			: (preg_match('~json~', $field["type"]) ? "<code class='jush-js'>$val</code>"
+			: $val)
+		));
 		if (preg_match('~blob|bytea|raw|file~', $field["type"]) && !is_utf8($val)) {
 			$return = "<i>" . lang('%d byte(s)', strlen($original)) . "</i>";
-		}
-		if (preg_match('~json~', $field["type"])) {
-			$return = "<code class='jush-js'>$return</code>";
 		}
 		return ($link ? "<a href='" . h($link) . "'" . (is_url($link) ? target_blank() : "") . ">$return</a>" : $return);
 	}
@@ -987,16 +995,18 @@ class Adminer {
 </span>
 </h1>
 <?php
+		// this is matched by compile.php
 		switch_lang();
 		if ($missing == "auth") {
 			$output = "";
 			foreach ((array) $_SESSION["pwds"] as $vendor => $servers) {
 				foreach ($servers as $server => $usernames) {
+					$name = h(get_setting("vendor-$server") ?: $drivers[$vendor]);
 					foreach ($usernames as $username => $password) {
 						if ($password !== null) {
 							$dbs = $_SESSION["db"][$vendor][$server][$username];
 							foreach (($dbs ? array_keys($dbs) : array("")) as $db) {
-								$output .= "<li><a href='" . h(auth_url($vendor, $server, $username, $db)) . "'>($drivers[$vendor]) " . h($username . ($server != "" ? "@" . $this->serverName($server) : "") . ($db != "" ? " - $db" : "")) . "</a>\n";
+								$output .= "<li><a href='" . h(auth_url($vendor, $server, $username, $db)) . "'>($name) " . h($username . ($server != "" ? "@" . $this->serverName($server) : "") . ($db != "" ? " - $db" : "")) . "</a>\n";
 							}
 						}
 					}
@@ -1011,31 +1021,7 @@ class Adminer {
 				$connection->select_db(DB);
 				$tables = table_status('', true);
 			}
-			echo script_src("../externals/jush/modules/jush.js");
-			echo script_src("../externals/jush/modules/jush-textarea.js");
-			echo script_src("../externals/jush/modules/jush-txt.js");
-			echo script_src("../externals/jush/modules/jush-js.js");
-			if (support("sql")) {
-				echo script_src("../externals/jush/modules/jush-" . JUSH . ".js");
-				?>
-<script<?php echo nonce(); ?>>
-<?php
-				if ($tables) {
-					$links = array();
-					foreach ($tables as $table => $type) {
-						$links[] = preg_quote($table, '/');
-					}
-					echo "var jushLinks = { " . JUSH . ": [ '" . js_escape(ME) . (support("table") ? "table=" : "select=") . "\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
-					foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
-						echo "jushLinks.$val = jushLinks." . JUSH . ";\n";
-					}
-				}
-				$server_info = $connection->server_info;
-				?>
-bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '\1', $server_info) : ""); ?>'<?php echo (preg_match('~MariaDB~', $server_info) ? ", true" : ""); ?>);
-</script>
-<?php
-			}
+			$this->syntaxHighlighting($tables);
 			$this->databasesPrint($missing);
 			$actions = array();
 			if (DB == "" || !$missing) {
@@ -1046,7 +1032,7 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 				$actions[] = "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . lang('Export') . "</a>";
 			}
 			$in_db = $_GET["ns"] !== "" && !$missing && DB != "";
-			if ($in_db) {
+			if ($in_db && support("table")) {
 				$actions[] = '<a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create table') . "</a>";
 			}
 			echo ($actions ? "<p class='links'>\n" . implode("\n", $actions) . "\n" : "");
@@ -1058,6 +1044,34 @@ bodyLoad('<?php echo (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '
 				}
 			}
 		}
+	}
+
+	/** Set up syntax highlight for code and <textarea>
+	* @param array result of table_status()
+	*/
+	function syntaxHighlighting($tables) {
+		global $connection;
+		// this is matched by compile.php
+		echo script_src("../externals/jush/modules/jush.js");
+		echo script_src("../externals/jush/modules/jush-textarea.js");
+		echo script_src("../externals/jush/modules/jush-txt.js");
+		echo script_src("../externals/jush/modules/jush-js.js");
+		if (support("sql")) {
+			echo script_src("../externals/jush/modules/jush-" . JUSH . ".js");
+			echo "<script" . nonce() . ">\n";
+			if ($tables) {
+				$links = array();
+				foreach ($tables as $table => $type) {
+					$links[] = preg_quote($table, '/');
+				}
+				echo "var jushLinks = { " . JUSH . ": [ '" . js_escape(ME) . (support("table") ? "table=" : "select=") . "\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
+				foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
+					echo "jushLinks.$val = jushLinks." . JUSH . ";\n";
+				}
+			}
+			echo "</script>\n";
+		}
+		echo script("bodyLoad('" . (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '\1', $connection->server_info) : "") . "'" . ($connection->maria ? ", true" : "") . ");");
 	}
 
 	/** Prints databases list in menu

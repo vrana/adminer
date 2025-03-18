@@ -547,7 +547,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 		;
 	}
 
-	function last_id() {
+	function last_id($result) {
 		return get_val("SELECT SCOPE_IDENTITY()"); // @@IDENTITY can return trigger INSERT
 	}
 

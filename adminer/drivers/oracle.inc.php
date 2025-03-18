@@ -495,7 +495,7 @@ AND c_src.TABLE_NAME = " . q($table);
 		return apply_queries("DROP TABLE", $tables);
 	}
 
-	function last_id() {
+	function last_id($result) {
 		return 0; //!
 	}
 

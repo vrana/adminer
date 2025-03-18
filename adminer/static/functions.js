@@ -568,7 +568,7 @@ function functionChange() {
 * @this HTMLTableCellElement
 */
 function skipOriginal(first) {
-	var fnSelect = this.previousSibling.firstChild;
+	var fnSelect = qs('select', this.previousSibling);
 	if (fnSelect.selectedIndex < first) {
 		fnSelect.selectedIndex = first;
 	}
@@ -878,16 +878,6 @@ function addEvent(el, action, handler) {
 	} else {
 		el.attachEvent('on' + action, handler);
 	}
-}
-
-/** Defer focusing element
-* @param HTMLElement
-*/
-function focus(el) {
-	setTimeout(function () {
-		// this has to be an anonymous function because Firefox passes some arguments to setTimeout callback
-		el.focus();
-	}, 0);
 }
 
 /** Clone node and setup submit highlighting

@@ -24,6 +24,7 @@ code{background:#eee;padding:2px 4px;font:16px/20px Courier,monospace}
 code a:hover{background:transparent}
 table{margin:4px 0 8px;border:1px solid #ccc;font-size:inherit}
 tbody tr:hover td,tbody tr:hover th{background:#eee}
+thead { top: 40px; }
 thead tr:hover td,thead tr:hover th{background:#ddd}
 th,td{text-align:left;padding:2px 4px;vertical-align:top;font-weight:normal;border:1px dotted #ccc;border-width:0 0 0 1px;
 margin:0;background:inherit}

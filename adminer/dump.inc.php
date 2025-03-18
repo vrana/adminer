@@ -4,11 +4,10 @@ namespace Adminer;
 $TABLE = $_GET["dump"];
 
 if ($_POST && !$error) {
-	$cookie = "";
-	foreach (array("output", "format", "db_style", "types", "routines", "events", "table_style", "auto_increment", "triggers", "data_style") as $key) {
-		$cookie .= "&$key=" . urlencode($_POST[$key]);
-	}
-	cookie("adminer_export", substr($cookie, 1));
+	save_settings(
+		array_intersect_key($_POST, array_flip(array("output", "format", "db_style", "types", "routines", "events", "table_style", "auto_increment", "triggers", "data_style"))),
+		"adminer_export"
+	);
 	$tables = array_flip((array) $_POST["tables"]) + array_flip((array) $_POST["data"]);
 	$ext = dump_headers(
 		(count($tables) == 1 ? key($tables) : DB),
@@ -156,7 +155,7 @@ $data_style = array('', 'TRUNCATE+INSERT', 'INSERT');
 if (JUSH == "sql") { //! use insertUpdate() in all drivers
 	$data_style[] = 'INSERT+UPDATE';
 }
-parse_str($_COOKIE["adminer_export"], $row);
+$row = get_settings("adminer_export");
 if (!$row) {
 	$row = array("output" => "text", "format" => "sql", "db_style" => (DB != "" ? "" : "CREATE"), "table_style" => "DROP+CREATE", "data_style" => "INSERT");
 }
@@ -184,7 +183,7 @@ echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style,
 ?>
 </table>
 <p><input type="submit" value="<?php echo lang('Export'); ?>">
-<input type="hidden" name="token" value="<?php echo $token; ?>">
+<?php echo input_token(); ?>
 
 <table>
 <?php

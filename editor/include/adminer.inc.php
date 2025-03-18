@@ -59,15 +59,17 @@ class Adminer {
 		return csp();
 	}
 
-	function head() {
+	function head($dark = null) {
 		return true;
 	}
 
 	function css() {
 		$return = array();
-		$filename = "adminer.css";
-		if (file_exists($filename)) {
-			$return[] = $filename;
+		foreach (array("", "-dark") as $mode) {
+			$filename = "adminer$mode.css";
+			if (file_exists($filename)) {
+				$return[] = "$filename?v=" . crc32(file_get_contents($filename));
+			}
 		}
 		return $return;
 	}
@@ -119,7 +121,7 @@ FROM information_schema.KEY_COLUMN_USAGE
 WHERE TABLE_SCHEMA = " . q($this->database()) . "
 AND REFERENCED_TABLE_SCHEMA = " . q($this->database()) . "
 AND REFERENCED_TABLE_NAME = " . q($table) . "
-ORDER BY ORDINAL_POSITION", null, "") as $row //! requires MySQL 5
+ORDER BY ORDINAL_POSITION", null, "") as $row
 		) {
 			$return[$row["TABLE_NAME"]]["keys"][$row["CONSTRAINT_NAME"]][$row["COLUMN_NAME"]] = $row["REFERENCED_COLUMN_NAME"];
 		}
@@ -211,9 +213,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row //! requires MySQL 5
 		if ($link) {
 			$return = "<a href='$link'" . (is_url($link) ? target_blank() : "") . ">$return</a>";
 		}
-		if (!$link && !like_bool($field) && preg_match(number_type(), $field["type"])) {
-			$return = "<div class='number'>$return</div>"; // Firefox doesn't support <colgroup>
-		} elseif (preg_match('~date~', $field["type"])) {
+		// Firefox doesn't support <colgroup>
+		if (preg_match('~date~', $field["type"])) {
 			$return = "<div class='datetime'>$return</div>";
 		}
 		return $return;
@@ -624,6 +625,9 @@ qsl('div').onclick = whisperClick;", "")
 				}
 			}
 		}
+	}
+
+	function syntaxHighlighting($tables) {
 	}
 
 	function databasesPrint($missing) {

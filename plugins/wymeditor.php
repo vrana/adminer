@@ -19,7 +19,7 @@ class AdminerWymeditor {
 		$this->options = $options;
 	}
 
-	function head() {
+	function head($dark = null) {
 		foreach ($this->scripts as $script) {
 			echo Adminer\script_src($script);
 		}

@@ -7,7 +7,7 @@ $indexes = indexes($TABLE);
 $fields = fields($TABLE);
 $foreign_keys = column_foreign_keys($TABLE);
 $oid = $table_status["Oid"];
-parse_str($_COOKIE["adminer_import"], $adminer_import);
+$adminer_import = get_settings("adminer_import");
 
 $rights = array(); // privilege => 0
 $columns = array(); // selectable columns
@@ -83,7 +83,7 @@ if ($_POST && !$error) {
 	}
 	$where_check = ($where_check ? "\nWHERE " . implode(" AND ", $where_check) : "");
 	if ($_POST["export"]) {
-		cookie("adminer_import", "output=" . urlencode($_POST["output"]) . "&format=" . urlencode($_POST["format"]));
+		save_settings(array("output" => $_POST["output"], "format" => $_POST["format"]), "adminer_import");
 		dump_headers($TABLE);
 		$adminer->dumpTable($TABLE, "");
 		$from = ($select ? implode(", ", $select) : "*")
@@ -150,7 +150,7 @@ if ($_POST && !$error) {
 			}
 			$message = lang('%d item(s) have been affected.', $affected);
 			if ($_POST["clone"] && $result && $affected == 1) {
-				$last_id = last_id();
+				$last_id = last_id($result);
 				if ($last_id) {
 					$message = lang('Item%s has been inserted.', " $last_id");
 				}
@@ -195,7 +195,7 @@ if ($_POST && !$error) {
 		} elseif (!preg_match('~~u', $file)) {
 			$error = lang('File must be in UTF-8 encoding.');
 		} else {
-			cookie("adminer_import", "output=" . urlencode($adminer_import["output"]) . "&format=" . urlencode($_POST["separator"]));
+			save_settings(array("output" => $adminer_import["output"], "format" => $_POST["separator"]), "adminer_import");
 			$result = true;
 			$cols = array_keys($fields);
 			preg_match_all('~(?>"[^"]*"|[^"\r\n]+)+~', $file, $matches);
@@ -453,7 +453,7 @@ if (!$columns && support("table")) {
 						$value = $_POST["val"][$unique_idf][bracket_escape($key)];
 						$editable = !is_array($row[$key]) && is_utf8($val) && $rows[$n][$key] == $row[$key] && !$functions[$key] && !$field["generated"];
 						$text = preg_match('~text|json|lob~', $field["type"]);
-						echo "<td id='$id'";
+						echo "<td id='$id'" . (preg_match(number_type(), $field["type"]) && is_numeric(strip_tags($val)) ? " class='number'" : "");
 						if (($_GET["modify"] && $editable) || $value !== null) {
 							$h_value = h($value !== null ? $value : $row[$key]);
 							echo ">" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>");
@@ -594,7 +594,7 @@ if (!$columns && support("table")) {
 				echo "</div>";
 			}
 
-			echo "<input type='hidden' name='token' value='$token'>\n";
+			echo input_token();
 			echo "</form>\n";
 			echo (!$group && $select ? "" : script("tableCheck();"));
 		}
