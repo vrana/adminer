@@ -25,13 +25,22 @@ function nonce() {
 	return ' nonce="' . get_nonce() . '"';
 }
 
+/** Get <input type="hidden">
+* @param string
+* @param string
+* @return string HTML
+*/
+function input_hidden($name, $value = "") {
+	return "<input type='hidden' name='" . h($name) . "' value='" . h($value) . "'>\n";
+}
+
 /** Get <input type="hidden" name="token">
 * @param string token to use instead of global $token
 * @return string HTML
 */
 function input_token($special = "") {
 	global $token;
-	return "<input type='hidden' name='token' value='" . ($special ?: $token) . "'>\n";
+	return input_hidden("token", ($special ?: $token));
 }
 
 /** Get a target="_blank" attribute
@@ -201,7 +210,7 @@ function hidden_fields($process, $ignore = array(), $prefix = '') {
 				hidden_fields($val, array(), $key);
 			} else {
 				$return = true;
-				echo '<input type="hidden" name="' . h($prefix ? $prefix . "[$key]" : $key) . '" value="' . h($val) . '">';
+				echo input_hidden(($prefix ? $prefix . "[$key]" : $key), $val);
 			}
 		}
 	}
@@ -212,9 +221,9 @@ function hidden_fields($process, $ignore = array(), $prefix = '') {
 * @return null
 */
 function hidden_fields_get() {
-	echo (sid() ? '<input type="hidden" name="' . session_name() . '" value="' . h(session_id()) . '">' : '');
-	echo (SERVER !== null ? '<input type="hidden" name="' . DRIVER . '" value="' . h(SERVER) . '">' : "");
-	echo '<input type="hidden" name="username" value="' . h($_GET["username"]) . '">';
+	echo (sid() ? input_hidden(session_name(), session_id()) : '');
+	echo (SERVER !== null ? input_hidden(DRIVER, SERVER) : "");
+	echo input_hidden("username", $_GET["username"]);
 }
 
 /** Print enum input field
@@ -520,8 +529,8 @@ function edit_form($table, $fields, $row, $update) {
 	if (isset($_GET["select"])) {
 		hidden_fields(array("check" => (array) $_POST["check"], "clone" => $_POST["clone"], "all" => $_POST["all"]));
 	}
-	echo "<input type='hidden' name='referer' value='" . h(isset($_POST["referer"]) ? $_POST["referer"] : $_SERVER["HTTP_REFERER"]) . "'>\n";
-	echo "<input type='hidden' name='save' value='1'>\n";
+	echo input_hidden("referer", (isset($_POST["referer"]) ? $_POST["referer"] : $_SERVER["HTTP_REFERER"]));
+	echo input_hidden("save", 1);
 	echo input_token();
 	echo "</form>\n";
 }

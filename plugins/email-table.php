@@ -38,7 +38,7 @@ class AdminerEmailTable {
 	el.value = '';
 	this.parentNode.appendChild(el);
 };");
-			echo "<p>" . (count($emailFields) == 1 ? '<input type="hidden" name="email_field" value="' . Adminer\h(key($emailFields)) . '">' : Adminer\html_select("email_field", $emailFields));
+			echo "<p>" . (count($emailFields) == 1 ? Adminer\input_hidden("email_field", key($emailFields)) : Adminer\html_select("email_field", $emailFields));
 			echo "<input type='submit' name='email' value='" . ('Send') . "'>" . Adminer\confirm();
 			echo "</div>\n";
 			echo "</div></fieldset>\n";

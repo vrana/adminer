@@ -76,7 +76,7 @@ class Adminer {
 
 	function loginForm() {
 		echo "<table class='layout'>\n";
-		echo $this->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', '<input type="hidden" name="auth[driver]" value="server"><input name="auth[username]" autofocus value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">');
+		echo $this->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', input_hidden("auth[driver]", "server") . '<input name="auth[username]" autofocus value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">');
 		echo $this->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]" autocomplete="current-password">');
 		echo "</table>\n";
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
@@ -245,7 +245,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 			if (preg_match("~enum~", $field["type"]) || like_bool($field)) { //! set - uses 1 << $i and FIND_IN_SET()
 				$key = $keys[$name];
 				$i--;
-				echo "<div>" . h($desc) . "<input type='hidden' name='where[$i][col]' value='" . h($name) . "'>:";
+				echo "<div>" . h($desc) . input_hidden("where[$i][col]", $name) . ":";
 				echo (like_bool($field)
 					? " <select name='where[$i][val]'>" . optionlist(array("" => "", lang('no'), lang('yes')), $where[$key]["val"], true) . "</select>"
 					: enum_input("checkbox", " name='where[$i][val][]'", $field, (array) $where[$key]["val"], ($field["null"] ? 0 : null))
@@ -258,7 +258,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 				}
 				$key = $keys[$name];
 				$i--;
-				echo "<div>" . h($desc) . "<input type='hidden' name='where[$i][col]' value='" . h($name) . "'><input type='hidden' name='where[$i][op]' value='='>: <select name='where[$i][val]'>" . optionlist($options, $where[$key]["val"], true) . "</select></div>\n";
+				echo "<div>" . h($desc) . input_hidden("where[$i][col]", $name) . input_hidden("where[$i][op]", "=") . ": <select name='where[$i][val]'>" . optionlist($options, $where[$key]["val"], true) . "</select></div>\n";
 				unset($columns[$name]);
 			}
 		}
@@ -337,7 +337,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 			echo "<p><textarea name='email_message' rows='15' cols='75'>" . h($_POST["email_message"] . ($_POST["email_append"] ? '{$' . "$_POST[email_addition]}" : "")) . "</textarea>\n";
 			echo "<p>" . script("qsl('p').onkeydown = partialArg(bodyKeydown, 'email_append');", "") . html_select("email_addition", $columns, $_POST["email_addition"]) . "<input type='submit' name='email_append' value='" . lang('Insert') . "'>\n"; //! JavaScript
 			echo "<p>" . lang('Attachments') . ": <input type='file' name='email_files[]'>" . script("qsl('input').onchange = emailFileChange;");
-			echo "<p>" . (count($emailFields) == 1 ? '<input type="hidden" name="email_field" value="' . h(key($emailFields)) . '">' : html_select("email_field", $emailFields));
+			echo "<p>" . (count($emailFields) == 1 ? input_hidden("email_field", key($emailFields)) : html_select("email_field", $emailFields));
 			echo "<input type='submit' name='email' value='" . lang('Send') . "'>" . confirm();
 			echo "</div>\n";
 			echo "</div></fieldset>\n";

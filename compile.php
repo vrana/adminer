@@ -307,7 +307,7 @@ if ($vendor) {
 		}
 	}
 	if ($project != "editor" && count($drivers) == 1) {
-		$file = str_replace('html_select("auth[driver]", $drivers, DRIVER, "loginDriver(this);")', "\"<input type='hidden' name='auth[driver]' value='" . ($vendor == "mysql" ? "server" : $vendor) . "'>" . reset($drivers) . "\"", $file, $count);
+		$file = str_replace('html_select("auth[driver]", $drivers, DRIVER, "loginDriver(this);")', 'input_hidden("auth[driver]", "' . ($vendor == "mysql" ? "server" : $vendor) . '") . "' . reset($drivers) . '"', $file, $count);
 		if (!$count) {
 			echo "auth[driver] form field not found\n";
 		}

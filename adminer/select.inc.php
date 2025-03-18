@@ -258,8 +258,8 @@ if (!$columns && support("table")) {
 	echo "<form action='' id='form'>\n";
 	echo "<div style='display: none;'>";
 	hidden_fields_get();
-	echo (DB != "" ? '<input type="hidden" name="db" value="' . h(DB) . '">' . (isset($_GET["ns"]) ? '<input type="hidden" name="ns" value="' . h($_GET["ns"]) . '">' : "") : ""); // not used in Editor
-	echo '<input type="hidden" name="select" value="' . h($TABLE) . '">';
+	echo (DB != "" ? input_hidden("db", DB) . (isset($_GET["ns"]) ? input_hidden("ns", $_GET["ns"]) : "") : ""); // not used in Editor
+	echo input_hidden("select", $TABLE);
 	echo "</div>\n";
 	$adminer->selectColumnsPrint($select, $columns);
 	$adminer->selectSearchPrint($where, $search_columns, $indexes);

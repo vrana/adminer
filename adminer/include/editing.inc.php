@@ -357,7 +357,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 		if ($display) {
 			echo "<input name='fields[$i][field]' value='" . h($field["field"]) . "' data-maxlength='64' autocapitalize='off' aria-labelledby='label-name'>\n";
 		}
-		echo "<input type='hidden' name='fields[$i][orig]' value='" . h($orig) . "'>";
+		echo input_hidden("fields[$i][orig]", $orig);
 		edit_type("fields[$i]", $field, $collations, $foreign_keys);
 		if ($type == "TABLE") {
 			echo "<td>" . checkbox("fields[$i][null]", 1, $field["null"], "", "", "block", "label-null");

@@ -78,7 +78,7 @@ if (
 			echo (support("database")
 				? "<div class='footer'><div>\n"
 					. "<fieldset><legend>" . lang('Selected') . " <span id='selected'></span></legend><div>\n"
-					. "<input type='hidden' name='all' value=''>" . script("qsl('input').onclick = function () { selectCount('selected', formChecked(this, /^db/)); };") // used by trCheck()
+					. input_hidden("all") . script("qsl('input').onclick = function () { selectCount('selected', formChecked(this, /^db/)); };") // used by trCheck()
 					. "<input type='submit' name='drop' value='" . lang('Drop') . "'>" . confirm() . "\n"
 					. "</div></fieldset>\n"
 					. "</div></div>\n"

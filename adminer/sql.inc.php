@@ -168,8 +168,8 @@ if (!$error && $_POST) {
 											echo ", <a href='#$id'>" . lang('Export') . "</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "") . "<span id='$id' class='hidden'>: "
 												. html_select("output", $adminer->dumpOutput(), $adminer_export["output"]) . " "
 												. html_select("format", $dump_format, $adminer_export["format"])
-												. "<input type='hidden' name='query' value='" . h($q) . "'>"
-												. " <input type='submit' name='export' value='" . lang('Export') . "'>" . input_token() . "</span>\n"
+												. input_hidden("query", $q)
+												. "<input type='submit' name='export' value='" . lang('Export') . "'>" . input_token() . "</span>\n"
 												. "</form>\n"
 											;
 										}

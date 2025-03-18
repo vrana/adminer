@@ -35,7 +35,7 @@ class AdminerDesigns {
 	function navigation($missing) {
 		echo "<form action='' method='post' style='position: fixed; bottom: .5em; right: .5em;'>";
 		echo Adminer\html_select("design", array("" => "(design)") + $this->designs, $_SESSION["design"], "this.form.submit();");
-		echo '<input type="hidden" name="token" value="' . Adminer\get_token() . '">';
+		echo Adminer\input_token();
 		echo "</form>\n";
 	}
 }

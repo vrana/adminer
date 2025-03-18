@@ -1097,7 +1097,7 @@ class Adminer {
 		}
 		foreach (array("import", "sql", "schema", "dump", "privileges") as $val) {
 			if (isset($_GET[$val])) {
-				echo "<input type='hidden' name='$val' value=''>";
+				echo input_hidden($val);
 				break;
 			}
 		}
