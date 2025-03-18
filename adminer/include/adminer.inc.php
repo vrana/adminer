@@ -1032,7 +1032,7 @@ class Adminer {
 				$actions[] = "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . lang('Export') . "</a>";
 			}
 			$in_db = $_GET["ns"] !== "" && !$missing && DB != "";
-			if ($in_db && support("table")) {
+			if ($in_db) {
 				$actions[] = '<a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create table') . "</a>";
 			}
 			echo ($actions ? "<p class='links'>\n" . implode("\n", $actions) . "\n" : "");
