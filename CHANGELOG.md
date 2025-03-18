@@ -1,5 +1,6 @@
 ## Adminer dev
 - PostgreSQL: Display auto_increment of inserted rows
+- PostgreSQL: Display description of system variables
 - CSS: Sticky table headers (bug #918)
 - IMAP: New plugin driver created for fun
 

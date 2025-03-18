@@ -1156,10 +1156,17 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get server variables
-	* @return array [$name => $value]
+	* @return array [[$name, $value]]
 	*/
 	function show_variables() {
-		return get_key_vals("SHOW VARIABLES");
+		return get_rows("SHOW VARIABLES");
+	}
+
+	/** Get status variables
+	* @return array [[$name, $value]]
+	*/
+	function show_status() {
+		return get_rows("SHOW STATUS");
 	}
 
 	/** Get process list
@@ -1167,13 +1174,6 @@ if (!defined('Adminer\DRIVER')) {
 	*/
 	function process_list() {
 		return get_rows("SHOW FULL PROCESSLIST");
-	}
-
-	/** Get status variables
-	* @return array [$name => $value]
-	*/
-	function show_status() {
-		return get_key_vals("SHOW STATUS");
 	}
 
 	/** Convert field in select and edit

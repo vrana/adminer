@@ -946,7 +946,7 @@ AND typelem = 0"
 	}
 
 	function show_variables() {
-		return get_key_vals("SHOW ALL");
+		return get_rows("SHOW ALL");
 	}
 
 	function process_list() {
