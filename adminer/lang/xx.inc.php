@@ -11,6 +11,7 @@ $translations = array(
 	'Login' => 'Xx',
 	'Logout' => 'Xx',
 	'Logged as: %s' => 'Xx: %s',
+	'Loaded plugins' => 'Xx',
 	'Logout successful.' => 'Xx.',
 	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Xx <a href="https://www.adminer.org/en/donation/">xx</a>.',
 	'Invalid credentials.' => 'Xx.',

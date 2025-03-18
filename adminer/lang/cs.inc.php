@@ -11,6 +11,7 @@ $translations = array(
 	'Login' => 'Přihlásit se',
 	'Logout' => 'Odhlásit',
 	'Logged as: %s' => 'Přihlášen jako: %s',
+	'Loaded plugins' => 'Nahrané pluginy',
 	'Logout successful.' => 'Odhlášení proběhlo v pořádku.',
 	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Díky za použití Admineru, <a href="https://www.adminer.org/cs/donation/">přispějte</a> na vývoj.',
 	'Invalid credentials.' => 'Neplatné přihlašovací údaje.',
