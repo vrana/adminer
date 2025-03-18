@@ -1,5 +1,6 @@
 ## Adminer dev
 - PostgreSQL: Display auto_increment of inserted rows
+- CSS: Sticky table headers (bug #918)
 
 ## Adminer 5.0.6 (released 2025-03-17)
 - Align numbers right (bug #912)

@@ -363,6 +363,10 @@ tbody tr:hover td, tbody tr:hover th {
 	background: #edf4ff
 }
 
+thead {
+	top: 34px;
+}
+
 thead td, thead th {
 	text-align: center;
 	vertical-align: middle;

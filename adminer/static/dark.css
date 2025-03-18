@@ -6,7 +6,7 @@ a:visited { color: #517fa8; }
 a:link:hover, a:visited:hover { color: #9bc0e1; }
 h1 { border-color: #5e94c1; color: #ffddbf; background: #154269; }
 h2 { border-color: #a3bdd3; color: #000; background: #3c678d; }
-td, th { border-color: #0e416d; }
+table, td, th { border-color: #0e416d; }
 th { background: #11385a; }
 thead td, thead th { color: #a8b05f; background: #011d35; }
 thead th a { color: #a8b05f; }

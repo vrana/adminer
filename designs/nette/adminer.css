@@ -161,6 +161,10 @@ th, td {
 	background: #CEE0FC;
 }
 
+thead {
+	top: 40px;
+}
+
 thead th, thead td {
 	background: #F2EEE1;
 	border-color: #D0CDC4;

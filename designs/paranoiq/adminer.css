@@ -59,6 +59,8 @@ tr:first-child td, tr:first-child th {
     border-top-width: 0; }
 td:first-child, th:first-child {
     border-left-width: 0; }
+thead {
+	top: -1px; }
 thead td, thead th {
     background-color: #EEE;
     border: none;

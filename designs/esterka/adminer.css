@@ -109,6 +109,10 @@ tbody tr:hover td,tbody tr:hover th{
 	background:#edf4ff
 }
 
+thead{
+	top: 44px;
+}
+
 thead th, thead td {
 	text-align:center;
 	vertical-align:middle;

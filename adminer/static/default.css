@@ -11,11 +11,13 @@ h2 { font-size: 150%; margin: 0 0 20px -18px; padding: .8em 1em; border-bottom: 
 h3 { font-weight: normal; font-size: 130%; margin: 1em 0 0; }
 form { margin: 0; }
 td table { width: 100%; margin: 0; }
-table { margin: 1em 20px 0 0; border-collapse: collapse; font-size: 90%; }
-td, th { border: 1px solid #999; padding: .2em .3em; }
+table { margin: 1em 20px 0 0; font-size: 90%; border-spacing: 0; border-width: 1px 0 0 1px; }
+table, td, th { border-color: #999; border-style: solid; }
+td, th { border-width: 0 1px 1px 0; padding: .2em .3em; margin: 0; }
 th { background: #eee; text-align: left; }
+thead { position: sticky; top: 0; }
 thead th { text-align: center; padding: .2em .5em; }
-thead td, thead th { background: #ddf; } /* position: sticky; causes Firefox to lose borders */
+thead td, thead th { background: #ddf; }
 fieldset { display: inline; vertical-align: top; padding: .5em .8em; margin: .8em .5em 0 0; border: 1px solid #999; }
 p { margin: .8em 20px 0 0; }
 img { vertical-align: middle; border: 0; }
