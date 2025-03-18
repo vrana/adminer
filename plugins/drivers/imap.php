@@ -21,7 +21,7 @@ if (isset($_GET["imap"])) {
 		class Db {
 			public $extension = "IMAP";
 			public $error;
-			public $server_info = "?"; // imap_mailboxmsginfo() doesn't return anything useful
+			public $server_info = "?"; // imap_mailboxmsginfo() or imap_check() don't return anything useful
 			private $mailbox;
 			private $imap;
 
@@ -51,8 +51,8 @@ if (isset($_GET["imap"])) {
 					if ($uid) {
 						$return = array((array) imap_fetchstructure($this->imap, $uid, FT_UID));
 					} else {
-						$check = imap_check($this->imap);
-						$range = ($offset + 1) . ":" . ($limit ? min($check->Nmsgs, $offset + $limit) : $check->Nmsgs);
+						$count = imap_num_msg($this->imap);
+						$range = ($offset + 1) . ":" . ($limit ? min($count, $offset + $limit) : $count);
 						$return = array();
 						$fields = fields($table);
 						$columns = ($columns == "*" ? $fields : array_flip(explode(", ", $columns)));
