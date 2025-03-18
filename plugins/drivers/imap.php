@@ -26,7 +26,7 @@ if (isset($_GET["imap"])) {
 
 			function connect($server, $username, $password) {
 				$this->mailbox = "{" . "$server:993/ssl}"; // Adminer disallows specifying privileged port in server name
-				$this->imap = @imap_open($this->mailbox, $username, $password, 0, 1);
+				$this->imap = @imap_open($this->mailbox, $username, $password, OP_HALFOPEN, 1);
 				if (!$this->imap) {
 					$this->error = imap_last_error();
 				}
@@ -46,10 +46,10 @@ if (isset($_GET["imap"])) {
 					return new Result(array(array($status["Rows"])));
 				} elseif (preg_match('~^SELECT (.+)\sFROM "(.+?)"(?:\sWHERE "uid" = (\d+))?.*?(?:\sLIMIT (\d+)(?:\sOFFSET (\d+))?)?~s', $query, $match)) {
 					list(, $columns, $table, $uid, $limit, $offset) = $match;
+					imap_reopen($this->imap, $this->mailbox . $table);
 					if ($uid) {
 						$return = array((array) imap_fetchstructure($this->imap, $uid, FT_UID));
 					} else {
-						imap_reopen($this->imap, "$this->mailbox$table");
 						$check = imap_check($this->imap);
 						$range = ($offset + 1) . ":" . ($limit ? min($check->Nmsgs, $offset + $limit) : $check->Nmsgs);
 						$return = array();
