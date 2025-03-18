@@ -159,10 +159,6 @@ if (isset($_GET["firebird"])) {
 	function db_collation($db, $collations) {
 	}
 
-	function engines() {
-		return array();
-	}
-
 	function logged_user() {
 		$adminer = adminer();
 		$credentials = $adminer->credentials();

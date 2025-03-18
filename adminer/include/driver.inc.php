@@ -253,6 +253,13 @@ abstract class SqlDriver {
 		return false;
 	}
 
+	/** Get supported engines
+	* @return array
+	*/
+	function engines() {
+		return array();
+	}
+
 	/** Check whether table supports indexes
 	* @param array result of table_status()
 	* @return bool

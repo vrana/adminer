@@ -366,10 +366,6 @@ ORDER BY datname");
 		return get_val("SELECT datcollate FROM pg_database WHERE datname = " . q($db));
 	}
 
-	function engines() {
-		return array();
-	}
-
 	function logged_user() {
 		return get_val("SELECT user");
 	}

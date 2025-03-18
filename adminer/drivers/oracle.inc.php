@@ -247,10 +247,6 @@ ORDER BY 1"
 		return get_val("SELECT value FROM nls_database_parameters WHERE parameter = 'NLS_CHARACTERSET'"); //! respect $db
 	}
 
-	function engines() {
-		return array();
-	}
-
 	function logged_user() {
 		return get_val("SELECT USER FROM DUAL");
 	}

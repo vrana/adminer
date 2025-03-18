@@ -168,7 +168,7 @@ if (!$_POST) {
 }
 
 $collations = collations();
-$engines = engines();
+$engines = $driver->engines();
 // case of engine may differ
 foreach ($engines as $engine) {
 	if (!strcasecmp($engine, $row["Engine"])) {

@@ -252,10 +252,6 @@ if (isset($_GET["imap"])) {
 	function fk_support($table_status) {
 	}
 
-	function engines() {
-		return array();
-	}
-
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
 		return connection()->create($name);
 	}

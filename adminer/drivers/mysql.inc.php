@@ -410,6 +410,16 @@ if (!defined('Adminer\DRIVER')) {
 			}
 			return $c_style;
 		}
+
+		function engines() {
+			$return = array();
+			foreach (get_rows("SHOW ENGINES") as $row) {
+				if (preg_match("~YES|DEFAULT~", $row["Support"])) {
+					$return[] = $row["Engine"];
+				}
+			}
+			return $return;
+		}
 	}
 
 
@@ -504,19 +514,6 @@ if (!defined('Adminer\DRIVER')) {
 		} elseif (preg_match('~ CHARACTER SET ([^ ]+)~', $create, $match)) {
 			// default collation
 			$return = $collations[$match[1]][-1];
-		}
-		return $return;
-	}
-
-	/** Get supported engines
-	* @return array
-	*/
-	function engines() {
-		$return = array();
-		foreach (get_rows("SHOW ENGINES") as $row) {
-			if (preg_match("~YES|DEFAULT~", $row["Support"])) {
-				$return[] = $row["Engine"];
-			}
 		}
 		return $return;
 	}

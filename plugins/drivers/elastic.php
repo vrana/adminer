@@ -348,10 +348,6 @@ if (isset($_GET["elastic"])) {
 		//
 	}
 
-	function engines() {
-		return array();
-	}
-
 	function count_tables($databases) {
 		$return = connection()->rootQuery('_aliases');
 		return array("elastic" => ($return ? count($return) : 0));

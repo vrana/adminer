@@ -309,10 +309,6 @@ if (isset($_GET["mssql"])) {
 		return get_val("SELECT collation_name FROM sys.databases WHERE name = " . q($db));
 	}
 
-	function engines() {
-		return array();
-	}
-
 	function logged_user() {
 		return get_val("SELECT SUSER_NAME()");
 	}

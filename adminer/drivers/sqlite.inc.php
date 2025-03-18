@@ -219,10 +219,6 @@ if (isset($_GET["sqlite"])) {
 		return get_val("PRAGMA encoding"); // there is no database list so $db == DB
 	}
 
-	function engines() {
-		return array();
-	}
-
 	function logged_user() {
 		return get_current_user(); // should return effective user
 	}
