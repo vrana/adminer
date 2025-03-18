@@ -1001,7 +1001,7 @@ class Adminer {
 			$output = "";
 			foreach ((array) $_SESSION["pwds"] as $vendor => $servers) {
 				foreach ($servers as $server => $usernames) {
-					$name = h(get_setting("vendor-$server") ?: $drivers[$vendor]);
+					$name = h(get_setting("vendor-$vendor-$server") ?: $drivers[$vendor]);
 					foreach ($usernames as $username => $password) {
 						if ($password !== null) {
 							$dbs = $_SESSION["db"][$vendor][$server][$username];
