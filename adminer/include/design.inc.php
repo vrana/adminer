@@ -31,7 +31,11 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <link rel="stylesheet" href="../adminer/static/default.css">
 <?php
 	$css = $adminer->css();
-	$dark = (count($css) == 1 ? !!preg_match('~-dark~', $css[0]) : null);
+	$has_dark = in_array("adminer-dark.css", $css);
+	$dark = (in_array("adminer.css", $css)
+		? ($has_dark ? null : false) // both styles - autoswitching, only adminer.css - light
+		: ($has_dark ?: null) // only adminer-dark.css - dark, neither - autoswitching
+	);
 	if ($dark !== false) {
 		echo "<link rel='stylesheet'" . ($dark ? "" : " media='(prefers-color-scheme: dark)'") . " href='../adminer/static/dark.css'>\n";
 	}
