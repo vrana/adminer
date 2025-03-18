@@ -115,10 +115,12 @@ if (isset($_GET["imap"])) {
 		class Result {
 			public $num_rows;
 			private $result;
+			private $fields;
 
 			function __construct($result) {
 				$this->result = $result;
 				$this->num_rows = count($result);
+				$this->fields = ($result ? array_keys(reset($result)) : array());
 			}
 
 			function fetch_assoc() {
@@ -130,6 +132,12 @@ if (isset($_GET["imap"])) {
 			function fetch_row() {
 				$row = $this->fetch_assoc();
 				return ($row ? array_values($row) : false);
+			}
+
+			function fetch_field() {
+				$field = current($this->fields);
+				next($this->fields);
+				return ($field != '' ? (object) array('name' => $field) : false);
 			}
 		}
 	}
