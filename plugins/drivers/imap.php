@@ -205,18 +205,16 @@ if (isset($_GET["imap"])) {
 	}
 
 	function tables_list() {
-		global $connection;
-		return $connection->tables_list();
+		return connection()->tables_list();
 	}
 
 	function table_status($name = "", $fast = false) {
-		global $connection;
 		if ($name != "") {
-			return $connection->table_status($name, $fast);
+			return connection()->table_status($name, $fast);
 		}
 		$return = array();
 		foreach (tables_list() as $table => $type) {
-			$return[$table] = $connection->table_status($table, $fast);
+			$return[$table] = connection()->table_status($table, $fast);
 		}
 		return $return;
 	}
@@ -226,8 +224,7 @@ if (isset($_GET["imap"])) {
 	}
 
 	function error() {
-		global $connection;
-		return h($connection->error);
+		return h(connection()->error);
 	}
 
 	function is_view($table_status) {
