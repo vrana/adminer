@@ -986,15 +986,10 @@ class Adminer {
 	*/
 	function navigation($missing) {
 		global $VERSION, $drivers, $connection;
-		?>
-<h1>
-<?php echo $this->name(); ?>
-<span class="version">
-<?php echo $VERSION; ?>
- <a href="https://www.adminer.org/#download"<?php echo target_blank(); ?> id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
-</span>
-</h1>
-<?php
+		echo "<h1>" . $this->name() . "<span class='version'>$VERSION";
+		$new_version = $_COOKIE["adminer_version"];
+		echo " <a href='https://www.adminer.org/#download'" . target_blank() . " id='version'>" . (version_compare($VERSION, $new_version) < 0 ? h($new_version) : "") . "</a>";
+		echo "</span></h1>\n";
 		// this is matched by compile.php
 		switch_lang();
 		if ($missing == "auth") {
@@ -1084,10 +1079,7 @@ class Adminer {
 		if (DB && $databases && !in_array(DB, $databases)) {
 			array_unshift($databases, DB);
 		}
-		?>
-<form action="">
-<p id="dbs">
-<?php
+		echo "<form action=''>\n<p id='dbs'>\n";
 		hidden_fields_get();
 		$db_events = script("mixin(qsl('select'), {onmousedown: dbMouseDown, onchange: dbChange});");
 		echo "<span title='" . lang('Database') . "'>" . lang('DB') . ":</span> " . ($databases

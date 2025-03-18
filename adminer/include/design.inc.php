@@ -183,14 +183,11 @@ function page_messages($error) {
 */
 function page_footer($missing = "") {
 	global $adminer;
-	?>
-</div>
-
-<div id="menu">
-<?php $adminer->navigation($missing); ?>
-</div>
-
-<?php if ($missing != "auth") { ?>
+	echo "</div>\n\n<div id='menu'>\n";
+	$adminer->navigation($missing);
+	echo "</div>\n\n";
+	if ($missing != "auth") {
+		?>
 <form action="" method="post">
 <p class="logout">
 <span><?php echo h($_GET["username"]) . "\n"; ?></span>
@@ -198,7 +195,7 @@ function page_footer($missing = "") {
 <?php echo input_token(); ?>
 </p>
 </form>
-<?php } ?>
 <?php
+	}
 	echo script("setupSubmitHighlight(document);");
 }

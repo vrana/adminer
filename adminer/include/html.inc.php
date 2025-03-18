@@ -520,10 +520,8 @@ function edit_form($table, $fields, $row, $update) {
 	if (isset($_GET["select"])) {
 		hidden_fields(array("check" => (array) $_POST["check"], "clone" => $_POST["clone"], "all" => $_POST["all"]));
 	}
-	?>
-<input type="hidden" name="referer" value="<?php echo h(isset($_POST["referer"]) ? $_POST["referer"] : $_SERVER["HTTP_REFERER"]); ?>">
-<input type="hidden" name="save" value="1">
-<?php echo input_token(); ?>
-</form>
-<?php
+	echo "<input type='hidden' name='referer' value='" . h(isset($_POST["referer"]) ? $_POST["referer"] : $_SERVER["HTTP_REFERER"]) . "'>\n";
+	echo "<input type='hidden' name='save' value='1'>\n";
+	echo input_token();
+	echo "</form>\n";
 }

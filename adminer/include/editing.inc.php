@@ -326,14 +326,12 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 	$fields = array_values($fields);
 	$default_class = (($_POST ? $_POST["defaults"] : get_setting("defaults")) ? "" : " class='hidden'");
 	$comment_class = (($_POST ? $_POST["comments"] : get_setting("comments")) ? "" : " class='hidden'");
-	?>
-<thead><tr>
-<?php echo ($type == "PROCEDURE" ? "<td>" : ""); ?>
-<th id="label-name"><?php echo ($type == "TABLE" ? lang('Column name') : lang('Parameter name')); ?>
-<td id="label-type"><?php echo lang('Type'); ?><textarea id="enum-edit" rows="4" cols="12" wrap="off" style="display: none;"></textarea><?php echo script("qs('#enum-edit').onblur = editingLengthBlur;"); ?>
-<td id="label-length"><?php echo lang('Length'); ?>
-<td><?php
-	echo lang('Options'); // no label required, options have their own label
+	echo "<thead><tr>\n";
+	echo ($type == "PROCEDURE" ? "<td>" : "");
+	echo "<th id='label-name'>" . ($type == "TABLE" ? lang('Column name') : lang('Parameter name'));
+	echo "<td id='label-type'>" . lang('Type') . "<textarea id='enum-edit' rows='4' cols='12' wrap='off' style='display: none;'></textarea>" . script("qs('#enum-edit').onblur = editingLengthBlur;");
+	echo "<td id='label-length'>" . lang('Length');
+	echo "<td>" . lang('Options'); // no label required, options have their own label
 	if ($type == "TABLE") {
 		echo "<td id='label-null'>NULL\n";
 		echo "<td><input type='radio' name='auto_increment_col' value=''><abbr id='label-ai' title='" . lang('Auto Increment') . "'>AI</abbr>";

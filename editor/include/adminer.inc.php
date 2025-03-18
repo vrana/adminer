@@ -590,15 +590,10 @@ qsl('div').onclick = whisperClick;", "")
 
 	function navigation($missing) {
 		global $VERSION;
-		?>
-<h1>
-<?php echo $this->name(); ?>
-<span class="version">
-<?php echo $VERSION; ?>
- <a href="https://www.adminer.org/editor/#download"<?php echo target_blank(); ?> id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
-</span>
-</h1>
-<?php
+		echo "<h1>" . $this->name() . "<span class='version'>$VERSION";
+		$new_version = $_COOKIE["adminer_version"];
+		echo " <a href='https://www.adminer.org/editor/#download'" . target_blank() . " id='version'>" . (version_compare($VERSION, $new_version) < 0 ? h($new_version) : "") . "</a>";
+		echo "</span></h1>\n";
 		switch_lang();
 		if ($missing == "auth") {
 			$first = true;
