@@ -39,7 +39,10 @@ if (isset($_GET["imap"])) {
 			function query($query, $unbuffered = false) {
 				if (preg_match('~DELETE FROM "(.+?)"~', $query)) {
 					preg_match_all('~"uid" = (\d+)~', $query, $matches);
-					imap_delete($this->imap, implode(",", $matches[1]), FT_UID);
+					return imap_delete($this->imap, implode(",", $matches[1]), FT_UID);
+				} elseif (preg_match('~^SELECT COUNT\(\*\)\sFROM "(.+?)"~s', $query, $match)) {
+					$status = table_status($match[1]);
+					return new Result(array(array($status["Rows"])));
 				} elseif (preg_match('~^SELECT (.+)\sFROM "(.+?)"(?:\sWHERE "uid" = (\d+))?.*?(?:\sLIMIT (\d+)(?:\sOFFSET (\d+))?)?~s', $query, $match)) {
 					list(, $columns, $table, $uid, $limit, $offset) = $match;
 					if ($uid) {
@@ -108,6 +111,11 @@ if (isset($_GET["imap"])) {
 				$row = current($this->result);
 				next($this->result);
 				return $row;
+			}
+
+			function fetch_row() {
+				$row = $this->fetch_assoc();
+				return ($row ? array_values($row) : false);
 			}
 		}
 	}
