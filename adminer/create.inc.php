@@ -182,7 +182,7 @@ foreach ($engines as $engine) {
 <p>
 <?php
 if (support("columns") || $TABLE == "") {
-	echo lang('Table name') . "<input name='name'" . ($TABLE == "" && !$_POST ? " autofocus" : "") . " data-maxlength='64' value='" . h($row["name"]) . "' autocapitalize='off'>\n";
+	echo lang('Table name') . ": <input name='name'" . ($TABLE == "" && !$_POST ? " autofocus" : "") . " data-maxlength='64' value='" . h($row["name"]) . "' autocapitalize='off'>\n";
 	echo ($engines ? html_select("Engine", array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) . on_help("getTarget(event).value", 1) . script("qsl('select').onchange = helpClose;") . "\n" : "");
 	if ($collations) {
 		echo "<datalist id='collations'>" . optionlist($collations) . "</datalist>";
