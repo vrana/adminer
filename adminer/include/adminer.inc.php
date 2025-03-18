@@ -172,7 +172,9 @@ class Adminer {
 	* @return string HTML code, "" to ignore field
 	*/
 	function fieldName($field, $order = 0) {
-		return '<span title="' . h($field["full_type"] . ($field["comment"] != "" ? " : $field[comment]" : '')) . '">' . h($field["field"]) . '</span>';
+		$type = $field["full_type"];
+		$comment = $field["comment"];
+		return '<span title="' . h($type . ($comment != "" ? ($type ? ": " : "") . $comment : '')) . '">' . h($field["field"]) . '</span>';
 	}
 
 	/** Print links after select heading
