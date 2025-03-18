@@ -7,7 +7,7 @@
 * - editing the message shows some other information
 * - deleting marks the message for deletion but doesn't expunge the mailbox
 * - inserting or updating the message does nothing
-* @link http://adminer.org/static/plugins/imap.png
+* @link https://www.adminer.org/static/plugins/imap.png
 */
 
 namespace Adminer;
@@ -108,8 +108,8 @@ if (isset($_GET["imap"])) {
 				return imap_deletemailbox($this->imap, $this->mailbox . $name);
 			}
 
-			function expunge($name) {
-				return imap_expunge($this->imap);
+			function expunge() {
+				return imap_expunge();
 			}
 		}
 
@@ -274,11 +274,7 @@ if (isset($_GET["imap"])) {
 	}
 
 	function truncate_tables($tables) {
-		$return = true;
-		foreach ($tables as $name) {
-			$return = $return && connection()->expunge($name);
-		}
-		return $return;
+		return connection()->expunge($name);
 	}
 
 	function connect($credentials) {
