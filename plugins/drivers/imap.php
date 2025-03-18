@@ -94,6 +94,7 @@ if (isset($_GET["imap"])) {
 					"Name" => $name,
 					"Rows" => $return->messages,
 					"Auto_increment" => $return->uidnext,
+					"Data_length" => $return->messages, // this is used on database overview
 					"Data_free" => $return->unseen,
 				);
 			}
@@ -284,6 +285,6 @@ if (isset($_GET["imap"])) {
 	}
 
 	function support($feature) {
-		return preg_match("~^()$~", $feature);
+		return false;
 	}
 }
