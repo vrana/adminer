@@ -4,7 +4,8 @@
 * - list messages in each mailbox - limit and offset works but there's no search and order
 * - for each message, there's subject, from, to, date and some flags
 * - editing the message shows some other information
-* - inserting, deleting or updating the message does nothing
+* - deleting marks the message for deletion but doesn't expunge the mailbox
+* - inserting or updating the message does nothing
 */
 
 namespace Adminer;
@@ -36,30 +37,33 @@ if (isset($_GET["imap"])) {
 			}
 
 			function query($query, $unbuffered = false) {
-				if (!preg_match('~^SELECT (.+)\sFROM (\w+)(?:\sWHERE uid = (\d+))?.*?(?:\sLIMIT (\d+)(?:\sOFFSET (\d+))?)?~s', $query, $match)) {
-					return false;
-				}
-				list(, $columns, $table, $uid, $limit, $offset) = $match;
-				if ($uid) {
-					$return = array((array) imap_fetchstructure($this->imap, $uid, FT_UID));
-				} else {
-					imap_reopen($this->imap, "$this->mailbox$table");
-					$check = imap_check($this->imap);
-					$range = ($offset + 1) . ":" . ($limit ? min($check->Nmsgs, $offset + $limit) : $check->Nmsgs);
-					$return = array();
-					$fields = fields($table);
-					$columns = ($columns == "*" ? $fields : array_flip(explode(", ", $columns)));
-					$empty = array_fill_keys(array_keys($fields), null);
-					foreach (imap_fetch_overview($this->imap, $range) as $row) {
-						// imap_utf8 doesn't work with some strings
-						$row->subject = iconv_mime_decode($row->subject, 2, "utf-8");
-						$row->from = iconv_mime_decode($row->from, 2, "utf-8");
-						$row->to = iconv_mime_decode($row->to, 2, "utf-8");
-						$row->udate = gmdate("Y-m-d H:i:s", $row->udate);
-						$return[] = array_intersect_key(array_merge($empty, (array) $row), $columns);
+				if (preg_match('~DELETE FROM "(.+?)"~', $query)) {
+					preg_match_all('~"uid" = (\d+)~', $query, $matches);
+					imap_delete($this->imap, implode(",", $matches[1]), FT_UID);
+				} elseif (preg_match('~^SELECT (.+)\sFROM "(.+?)"(?:\sWHERE "uid" = (\d+))?.*?(?:\sLIMIT (\d+)(?:\sOFFSET (\d+))?)?~s', $query, $match)) {
+					list(, $columns, $table, $uid, $limit, $offset) = $match;
+					if ($uid) {
+						$return = array((array) imap_fetchstructure($this->imap, $uid, FT_UID));
+					} else {
+						imap_reopen($this->imap, "$this->mailbox$table");
+						$check = imap_check($this->imap);
+						$range = ($offset + 1) . ":" . ($limit ? min($check->Nmsgs, $offset + $limit) : $check->Nmsgs);
+						$return = array();
+						$fields = fields($table);
+						$columns = ($columns == "*" ? $fields : array_flip(explode(", ", $columns)));
+						$empty = array_fill_keys(array_keys($fields), null);
+						foreach (imap_fetch_overview($this->imap, $range) as $row) {
+							// imap_utf8 doesn't work with some strings
+							$row->subject = iconv_mime_decode($row->subject, 2, "utf-8");
+							$row->from = iconv_mime_decode($row->from, 2, "utf-8");
+							$row->to = iconv_mime_decode($row->to, 2, "utf-8");
+							$row->udate = gmdate("Y-m-d H:i:s", $row->udate);
+							$return[] = array_intersect_key(array_merge($empty, (array) $row), $columns);
+						}
 					}
+					return new Result($return);
 				}
-				return new Result($return);
+				return false;
 			}
 
 			function quote($string) {
@@ -181,7 +185,7 @@ if (isset($_GET["imap"])) {
 	}
 
 	function idf_escape($idf) {
-		return $idf; //! maybe {}
+		return '"' . str_replace('"', '""', $idf) . '"';
 	}
 
 	function table($idf) {
