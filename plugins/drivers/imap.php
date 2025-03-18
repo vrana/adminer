@@ -35,7 +35,7 @@ if (isset($_GET["imap"])) {
 			}
 
 			function select_db($database) {
-				return ($database == "imap");
+				return ($database == "mail");
 			}
 
 			function query($query, $unbuffered = false) {
@@ -154,7 +154,7 @@ if (isset($_GET["imap"])) {
 	}
 
 	function get_databases($flush) {
-		return array("imap");
+		return array("mail");
 	}
 
 	function collations() {
