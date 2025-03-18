@@ -165,8 +165,8 @@ if ($adminer->homepage()) {
 			echo script("tableCheck();");
 		}
 
-		echo '<p class="links"><a href="' . h(ME) . 'create=">' . lang('Create table') . "</a>\n";
-		echo (support("view") ? '<a href="' . h(ME) . 'view=">' . lang('Create view') . "</a>\n" : "");
+		echo "<p class='links'>" . (support("table") ? "<a href='" . h(ME) . "create='>" . lang('Create table') . "</a>\n" : "");
+		echo (support("view") ? "<a href='" . h(ME) . "view='>" . lang('Create view') . "</a>\n" : "");
 
 		if (support("routine")) {
 			echo "<h3 id='routines'>" . lang('Routines') . "</h3>\n";
