@@ -249,7 +249,7 @@ function input($field, $value, $function, $autofocus = false) {
 	$name = h(bracket_escape($field["field"]));
 	echo "<td class='function'>";
 	if (is_array($value) && !$function) {
-		$value = json_encode($value, 128); // 128 - JSON_PRETTY_PRINT available since PHP 5.4
+		$value = json_encode($value, 128 | 64 | 256); // 128 - JSON_PRETTY_PRINT, 64 - JSON_UNESCAPED_SLASHES, 256 - JSON_UNESCAPED_UNICODE available since PHP 5.4
 		$function = "json";
 	}
 	$reset = (JUSH == "mssql" && $field["auto_increment"]);
