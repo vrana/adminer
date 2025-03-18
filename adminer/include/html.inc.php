@@ -290,6 +290,8 @@ function input($field, $value, $function, $autofocus = false) {
 			}
 		} elseif (preg_match('~blob|bytea|raw|file~', $field["type"]) && ini_bool("file_uploads")) {
 			echo "<input type='file' name='fields-$name'>";
+		} elseif ($function == "json" || preg_match('~^jsonb?$~', $field["type"])) {
+			echo "<textarea$attrs cols='50' rows='12' class='jush-js'>" . h($value) . '</textarea>';
 		} elseif (($text = preg_match('~text|lob|memo~i', $field["type"])) || preg_match("~\n~", $value)) {
 			if ($text && JUSH != "sqlite") {
 				$attrs .= " cols='50' rows='12'";
@@ -298,8 +300,6 @@ function input($field, $value, $function, $autofocus = false) {
 				$attrs .= " cols='30' rows='$rows'" . ($rows == 1 ? " style='height: 1.2em;'" : ""); // 1.2em - line-height
 			}
 			echo "<textarea$attrs>" . h($value) . '</textarea>';
-		} elseif ($function == "json" || preg_match('~^jsonb?$~', $field["type"])) {
-			echo "<textarea$attrs cols='50' rows='12' class='jush-js'>" . h($value) . '</textarea>';
 		} else {
 			// int(3) is only a display hint
 			$types = $driver->types();
