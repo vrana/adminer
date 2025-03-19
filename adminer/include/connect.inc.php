@@ -44,7 +44,7 @@ if (
 		}
 		echo "<p>" . lang('%s version: %s through PHP extension %s', $drivers[DRIVER], "<b>" . h($connection->server_info) . "</b>", "<b>$connection->extension</b>") . "\n";
 		echo "<p>" . lang('Logged as: %s', "<b>" . h(logged_user()) . "</b>") . "\n";
-		if (is_array($adminer->plugins)) {
+		if (isset($adminer->plugins) && is_array($adminer->plugins)) {
 			echo "<p>" . lang('Loaded plugins') . ": <b>" . implode("</b>, <b>", array_map('get_class', $adminer->plugins)) . "</b>\n";
 		}
 		$databases = $adminer->databases();
