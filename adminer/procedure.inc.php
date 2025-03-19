@@ -9,7 +9,7 @@ $row["fields"] = (array) $row["fields"];
 if ($_POST && !process_fields($row["fields"]) && !$error) {
 	$orig = routine($_GET["procedure"], $routine);
 	$temp_name = "$row[name]_adminer_" . uniqid();
-	foreach ((array) $row["fields"] as $key => $field) {
+	foreach ($row["fields"] as $key => $field) {
 		if ($field["field"] == "") {
 			unset($row["fields"][$key]);
 		}
@@ -31,9 +31,13 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 
 page_header(($PROCEDURE != "" ? (isset($_GET["function"]) ? lang('Alter function') : lang('Alter procedure')) . ": " . h($PROCEDURE) : (isset($_GET["function"]) ? lang('Create function') : lang('Create procedure'))), $error);
 
-if (!$_POST && $PROCEDURE != "") {
-	$row = routine($_GET["procedure"], $routine);
-	$row["name"] = $PROCEDURE;
+if (!$_POST) {
+	if ($PROCEDURE == "") {
+		$row["language"] = "sql";
+	} else {
+		$row = routine($_GET["procedure"], $routine);
+		$row["name"] = $PROCEDURE;
+	}
 }
 
 $collations = get_vals("SHOW CHARACTER SET");
