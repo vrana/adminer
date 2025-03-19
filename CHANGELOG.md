@@ -2,7 +2,6 @@
 - PostgreSQL: Display auto_increment of inserted rows
 - PostgreSQL: Display description of system variables
 - PostgreSQL: Avoid warning about crdb_version (bug #924, regression from 5.0.5)
-- CockroachDB: Fix dropping procedure with varchar (cockroachdb/cockroach#142886)
 - CSS: Sticky table headers (bug #918)
 - CSS: Allow more custom styles with dark mode (bug #925)
 - IMAP: New plugin driver created for fun
