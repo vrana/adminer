@@ -177,9 +177,7 @@ function selectCount(id, count) {
 	setHtml(id, (count === '' ? '' : '(' + (count + '').replace(/\B(?=(\d{3})+$)/g, thousandsSeparator) + ')'));
 	var el = qs('#' + id);
 	if (el) {
-		var inputs = qsa('input', el.parentNode.parentNode);
-		for (var i = 0; i < inputs.length; i++) {
-			var input = inputs[i];
+		for (const input of qsa('input', el.parentNode.parentNode)) {
 			if (input.type == 'submit') {
 				input.disabled = (count == '0');
 			}
@@ -192,11 +190,10 @@ function selectCount(id, count) {
 * @this HTMLInputElement
 */
 function formCheck(name) {
-	var elems = this.form.elements;
-	for (var i=0; i < elems.length; i++) {
-		if (name.test(elems[i].name)) {
-			elems[i].checked = this.checked;
-			trCheck(elems[i]);
+	for (const elem of this.form.elements) {
+		if (name.test(elem.name)) {
+			elem.checked = this.checked;
+			trCheck(elem);
 		}
 	}
 }
@@ -204,9 +201,8 @@ function formCheck(name) {
 /** Check all rows in <table class="checkable">
 */
 function tableCheck() {
-	var inputs = qsa('table.checkable td:first-child input');
-	for (var i=0; i < inputs.length; i++) {
-		trCheck(inputs[i]);
+	for (const input of qsa('table.checkable td:first-child input')) {
+		trCheck(input);
 	}
 }
 
@@ -224,11 +220,10 @@ function formUncheck(id) {
 * @param RegExp
 * @return number
 */
-function formChecked(el, name) {
+function formChecked(input, name) {
 	var checked = 0;
-	var elems = el.form.elements;
-	for (var i=0; i < elems.length; i++) {
-		if (name.test(elems[i].name) && elems[i].checked) {
+	for (const el of input.form.elements) {
+		if (name.test(el.name) && el.checked) {
 			checked++;
 		}
 	}
@@ -289,10 +284,8 @@ function checkboxClick(event) {
 	}
 	if (event.shiftKey && (!lastChecked || lastChecked.name == this.name)) {
 		var checked = (lastChecked ? lastChecked.checked : true);
-		var inputs = qsa('input', parentTag(this, 'table'));
 		var checking = !lastChecked;
-		for (var i=0; i < inputs.length; i++) {
-			var input = inputs[i];
+		for (const input of qsa('input', parentTag(this, 'table'))) {
 			if (input.name === this.name) {
 				if (checking) {
 					input.checked = checked;
@@ -378,19 +371,17 @@ function selectAddRow() {
 	var row = cloneNode(field.parentNode);
 	field.onchange = selectFieldChange;
 	field.onchange();
-	var selects = qsa('select', row);
-	for (var i=0; i < selects.length; i++) {
-		selects[i].name = selects[i].name.replace(/[a-z]\[\d+/, '$&1');
-		selects[i].selectedIndex = 0;
+	for (const select of qsa('select', row)) {
+		select.name = select.name.replace(/[a-z]\[\d+/, '$&1');
+		select.selectedIndex = 0;
 	}
-	var inputs = qsa('input', row);
-	for (var i=0; i < inputs.length; i++) {
-		inputs[i].name = inputs[i].name.replace(/[a-z]\[\d+/, '$&1');
-		inputs[i].className = '';
-		if (inputs[i].type == 'checkbox') {
-			inputs[i].checked = false;
+	for (const input of qsa('input', row)) {
+		input.name = input.name.replace(/[a-z]\[\d+/, '$&1');
+		input.className = '';
+		if (input.type == 'checkbox') {
+			input.checked = false;
 		} else {
-			inputs[i].value = '';
+			input.value = '';
 		}
 	}
 	field.parentNode.parentNode.appendChild(row);
@@ -423,10 +414,9 @@ function selectSearchSearch() {
 * @this HTMLElement
 */
 function columnMouse(className) {
-	var spans = qsa('span', this);
-	for (var i=0; i < spans.length; i++) {
-		if (/column/.test(spans[i].className)) {
-			spans[i].className = 'column' + (className || '');
+	for (const span of qsa('span', this)) {
+		if (/column/.test(span.className)) {
+			span.className = 'column' + (className || '');
 		}
 	}
 }
@@ -578,9 +568,8 @@ function skipOriginal(first) {
 */
 function fieldChange() {
 	var row = cloneNode(parentTag(this, 'tr'));
-	var inputs = qsa('input', row);
-	for (var i = 0; i < inputs.length; i++) {
-		inputs[i].value = '';
+	for (const input of qsa('input', row)) {
+		input.value = '';
 	}
 	// keep value in <select> (function)
 	parentTag(this, 'table').appendChild(row);
@@ -648,9 +637,7 @@ function ajaxSetHtml(url) {
 */
 function ajaxForm(form, message, button) {
 	var data = [];
-	var els = form.elements;
-	for (var i = 0; i < els.length; i++) {
-		var el = els[i];
+	for (const el of form.elements) {
 		if (el.name && !el.disabled) {
 			if (/^file$/i.test(el.type) && el.value) {
 				return false;
@@ -807,9 +794,8 @@ function eventStop(event) {
 */
 function setupSubmitHighlight(parent) {
 	for (var key in { input: 1, select: 1, textarea: 1 }) {
-		var inputs = qsa(key, parent);
-		for (var i = 0; i < inputs.length; i++) {
-			setupSubmitHighlightInput(inputs[i])
+		for (const input of qsa(key, parent)) {
+			setupSubmitHighlightInput(input);
 		}
 	}
 }
@@ -855,9 +841,7 @@ function findDefaultSubmit(el) {
 	if (!el.form) {
 		return null;
 	}
-	var inputs = qsa('input', el.form);
-	for (var i = 0; i < inputs.length; i++) {
-		var input = inputs[i];
+	for (const input of qsa('input', el.form)) {
 		if (input.type == 'submit' && !input.style.zIndex) {
 			return input;
 		}

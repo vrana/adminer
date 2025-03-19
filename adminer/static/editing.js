@@ -41,10 +41,9 @@ function syntaxHighlighting(version, vendor) {
 			jush.custom_links = jushLinks;
 		}
 		jush.highlight_tag('code', 0);
-		var tags = qsa('textarea');
-		for (var i = 0; i < tags.length; i++) {
-			if (/(^|\s)jush-/.test(tags[i].className)) {
-				var pre = jush.textarea(tags[i]);
+		for (const tag of qsa('textarea')) {
+			if (/(^|\s)jush-/.test(tag.className)) {
+				var pre = jush.textarea(tag);
 				if (pre) {
 					setupSubmitHighlightInput(pre);
 				}
@@ -81,10 +80,9 @@ function typePassword(el, disable) {
 /** Install toggle handler
 * @param [HTMLElement]
 */
-function messagesPrint(el) {
-	var els = qsa('.toggle', el);
-	for (var i = 0; i < els.length; i++) {
-		els[i].onclick = partial(toggle, els[i].getAttribute('href').substr(1));
+function messagesPrint(parent) {
+	for (const el of qsa('.toggle', parent)) {
+		el.onclick = partial(toggle, el.getAttribute('href').substr(1));
 	}
 }
 
@@ -146,18 +144,15 @@ function dbChange() {
 function selectFieldChange() {
 	var form = this.form;
 	var ok = (function () {
-		var inputs = qsa('input', form);
-		for (var i=0; i < inputs.length; i++) {
-			if (inputs[i].value && /^fulltext/.test(inputs[i].name)) {
+		for (const input of qsa('input', form)) {
+			if (input.value && /^fulltext/.test(input.name)) {
 				return true;
 			}
 		}
 		var ok = form.limit.value;
-		var selects = qsa('select', form);
 		var group = false;
 		var columns = {};
-		for (var i=0; i < selects.length; i++) {
-			var select = selects[i];
+		for (const select of qsa('select', form)) {
 			var col = selectValue(select);
 			var match = /^(where.+)col]/.exec(select.name);
 			if (match) {
@@ -224,22 +219,19 @@ function idfEscape(s) {
 /** Set up event handlers for edit_fields().
 */
 function editFields() {
-	var els = qsa('[name$="[field]"]');
-	for (var i = 0; i < els.length; i++) {
-		els[i].oninput = function () {
+	for (const el of qsa('[name$="[field]"]')) {
+		el.oninput = function () {
 			editingNameChange.call(this);
 			if (!this.defaultValue) {
 				editingAddRow.call(this);
 			}
 		}
 	}
-	els = qsa('[name$="[length]"]');
-	for (var i = 0; i < els.length; i++) {
-		mixin(els[i], {onfocus: editingLengthFocus, oninput: editingLengthChange});
+	for (const el of qsa('[name$="[length]"]')) {
+		mixin(el, {onfocus: editingLengthFocus, oninput: editingLengthChange});
 	}
-	els = qsa('[name$="[type]"]');
-	for (var i = 0; i < els.length; i++) {
-		mixin(els[i], {
+	for (const el of qsa('[name$="[type]"]')) {
+		mixin(el, {
 			onfocus: function () {
 				lastType = selectValue(this);
 			},
@@ -314,11 +306,9 @@ function editingNameChange() {
 			}
 			break;
 		}
-		var table = match[1];
+		var base = match[1];
 		var column = match[2];
-		var tables = [ table, table.replace(/s$/, ''), table.replace(/es$/, '') ];
-		for (var j=0; j < tables.length; j++) {
-			table = tables[j];
+		for (const table of [ base, base.replace(/s$/, ''), base.replace(/es$/, '') ]) {
 			if (val == column || val == table || delimiterEqual(val, table, column) || delimiterEqual(val, column, table)) {
 				if (candidate) {
 					return;
@@ -415,8 +405,7 @@ function editingTypeChange() {
 	var type = this;
 	var name = type.name.substr(0, type.name.length - 6);
 	var text = selectValue(type);
-	for (var i=0; i < type.form.elements.length; i++) {
-		var el = type.form.elements[i];
+	for (const el of type.form.elements.length) {
 		if (el.name == name + '[length]') {
 			if (!(
 				(/(char|binary)$/.test(lastType) && /(char|binary)$/.test(text))
@@ -503,9 +492,8 @@ function editingLengthBlur() {
 * @param number
 */
 function columnShow(checked, column) {
-	var trs = qsa('tr', qs('#edit-fields'));
-	for (var i=0; i < trs.length; i++) {
-		alterClass(qsa('td', trs[i])[column], 'hidden', !checked);
+	for (const tr of qsa('tr', qs('#edit-fields'))) {
+		alterClass(qsa('td', tr)[column], 'hidden', !checked);
 	}
 }
 
@@ -513,9 +501,8 @@ function columnShow(checked, column) {
 * @param boolean
 */
 function indexOptionsShow(checked) {
-	var options = qsa('.idxopts');
-	for (var i=0; i < options.length; i++) {
-		alterClass(options[i], 'hidden', !checked);
+	for (const option of qsa('.idxopts')) {
+		alterClass(option, 'hidden', !checked);
 	}
 }
 
@@ -578,10 +565,9 @@ function dumpClick(event) {
 function foreignAddRow() {
 	var row = cloneNode(parentTag(this, 'tr'));
 	this.onchange = function () { };
-	var selects = qsa('select', row);
-	for (var i=0; i < selects.length; i++) {
-		selects[i].name = selects[i].name.replace(/\d+]/, '1$&');
-		selects[i].selectedIndex = 0;
+	for (const select of qsa('select', row)) {
+		select.name = select.name.replace(/\d+]/, '1$&');
+		select.selectedIndex = 0;
 	}
 	parentTag(this, 'table').appendChild(row);
 }
@@ -594,15 +580,13 @@ function foreignAddRow() {
 function indexesAddRow() {
 	var row = cloneNode(parentTag(this, 'tr'));
 	this.onchange = function () { };
-	var selects = qsa('select', row);
-	for (var i=0; i < selects.length; i++) {
-		selects[i].name = selects[i].name.replace(/indexes\[\d+/, '$&1');
-		selects[i].selectedIndex = 0;
+	for (const select of qsa('select', row)) {
+		select.name = select.name.replace(/indexes\[\d+/, '$&1');
+		select.selectedIndex = 0;
 	}
-	var inputs = qsa('input', row);
-	for (var i=0; i < inputs.length; i++) {
-		inputs[i].name = inputs[i].name.replace(/indexes\[\d+/, '$&1');
-		inputs[i].value = '';
+	for (const input of qsa('input', row)) {
+		input.name = input.name.replace(/indexes\[\d+/, '$&1');
+		input.value = '';
 	}
 	parentTag(this, 'table').appendChild(row);
 }
@@ -614,10 +598,9 @@ function indexesAddRow() {
 function indexesChangeColumn(prefix) {
 	var names = [];
 	for (var tag in { 'select': 1, 'input': 1 }) {
-		var columns = qsa(tag, parentTag(this, 'td'));
-		for (var i=0; i < columns.length; i++) {
-			if (/\[columns]/.test(columns[i].name)) {
-				var value = selectValue(columns[i]);
+		for (const column of qsa(tag, parentTag(this, 'td'))) {
+			if (/\[columns]/.test(column.name)) {
+				var value = selectValue(column);
 				if (value) {
 					names.push(value);
 				}
@@ -641,16 +624,12 @@ function indexesAddColumn(prefix) {
 		select.onchange();
 	}
 	var column = cloneNode(field.parentNode);
-	var selects = qsa('select', column);
-	for (var i = 0; i < selects.length; i++) {
-		select = selects[i];
+	for (const select of qsa('select', column)) {
 		select.name = select.name.replace(/]\[\d+/, '$&1');
 		select.selectedIndex = 0;
 	}
 	field.onchange = partial(indexesChangeColumn, prefix);
-	var inputs = qsa('input', column);
-	for (var i = 0; i < inputs.length; i++) {
-		var input = inputs[i];
+	for (const input of qsa('input', column)) {
 		input.name = input.name.replace(/]\[\d+/, '$&1');
 		if (input.type != 'checkbox') {
 			input.value = '';
@@ -715,27 +694,26 @@ function schemaMousemove(event) {
 	if (that !== undefined) {
 		var left = (event.clientX - x) / em;
 		var top = (event.clientY - y) / em;
-		var divs = qsa('div', that);
 		var lineSet = { };
-		for (var i=0; i < divs.length; i++) {
-			if (divs[i].className == 'references') {
-				var div2 = qs('[id="' + (/^refs/.test(divs[i].id) ? 'refd' : 'refs') + divs[i].id.substr(4) + '"]');
-				var ref = (tablePos[divs[i].title] || [ div2.parentNode.offsetTop / em, 0 ]);
+		for (const div of qsa('div', that)) {
+			if (div.className == 'references') {
+				var div2 = qs('[id="' + (/^refs/.test(div.id) ? 'refd' : 'refs') + div.id.substr(4) + '"]');
+				var ref = (tablePos[div.title] || [ div2.parentNode.offsetTop / em, 0 ]);
 				var left1 = -1;
-				var id = divs[i].id.replace(/^ref.(.+)-.+/, '$1');
-				if (divs[i].parentNode != div2.parentNode) {
+				var id = div.id.replace(/^ref.(.+)-.+/, '$1');
+				if (div.parentNode != div2.parentNode) {
 					left1 = Math.min(0, ref[1] - left) - 1;
-					divs[i].style.left = left1 + 'em';
-					divs[i].querySelector('div').style.width = -left1 + 'em';
+					div.style.left = left1 + 'em';
+					div.querySelector('div').style.width = -left1 + 'em';
 					var left2 = Math.min(0, left - ref[1]) - 1;
 					div2.style.left = left2 + 'em';
 					div2.querySelector('div').style.width = -left2 + 'em';
 				}
 				if (!lineSet[id]) {
-					var line = qs('[id="' + divs[i].id.replace(/^....(.+)-.+$/, 'refl$1') + '"]');
-					var top1 = top + divs[i].offsetTop / em;
+					var line = qs('[id="' + div.id.replace(/^....(.+)-.+$/, 'refl$1') + '"]');
+					var top1 = top + div.offsetTop / em;
 					var top2 = top + div2.offsetTop / em;
-					if (divs[i].parentNode != div2.parentNode) {
+					if (div.parentNode != div2.parentNode) {
 						top2 += ref[0] - top;
 						line.querySelector('div').style.height = Math.abs(top1 - top2) + 'em';
 					}
