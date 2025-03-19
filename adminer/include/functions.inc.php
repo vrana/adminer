@@ -456,7 +456,13 @@ function set_session($key, $val) {
 */
 function auth_url($vendor, $server, $username, $db = null) {
 	global $drivers;
-	preg_match('~([^?]*)\??(.*)~', remove_from_uri(implode("|", array_keys($drivers)) . "|username|" . ($db !== null ? "db|" : "") . session_name()), $match);
+	$uri = remove_from_uri(implode("|", array_keys($drivers))
+		. "|username|"
+		. ($db !== null ? "db|" : "")
+		. ($vendor == 'mssql' || $vendor == 'pgsql' ? "" : "ns|") // we don't have access to support() here
+		. session_name())
+	;
+	preg_match('~([^?]*)\??(.*)~', $uri, $match);
 	return "$match[1]?"
 		. (sid() ? SID . "&" : "")
 		. ($vendor != "server" || $server != "" ? urlencode($vendor) . "=" . urlencode($server) . "&" : "")
