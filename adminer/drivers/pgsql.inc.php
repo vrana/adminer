@@ -332,8 +332,9 @@ if (isset($_GET["pgsql"])) {
 			if (min_version(9, 0, $connection)) {
 				$connection->query("SET application_name = 'Adminer'");
 			}
-			$connection->server_info = $connection->result("SELECT version()");
-			$connection->cockroach = preg_match('~CockroachDB~', $connection->server_info);
+			$version = $connection->result("SELECT version()");
+			$connection->cockroach = preg_match('~CockroachDB~', $version);
+			$connection->server_info = preg_replace('~^\D*([\d.]+[-\w]*).*~', '\1', $version);
 			if ($connection->cockroach) { // we don't use "PostgreSQL / CockroachDB" by default because it's too long
 				$drivers[DRIVER] = "CockroachDB";
 			}
