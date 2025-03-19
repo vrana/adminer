@@ -80,7 +80,7 @@ include "./include/adminer.inc.php";
 
 if (function_exists('adminer_object')) {
 	$adminer = adminer_object();
-} elseif (file_exists("adminer-plugins/")) {
+} elseif (is_dir("adminer-plugins") || file_exists("adminer-plugins.php")) {
 	include "./include/plugins.inc.php";
 	$adminer = new Plugins(null);
 } else {

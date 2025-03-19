@@ -10,12 +10,16 @@ class Plugins extends Adminer {
 	function __construct($plugins) {
 		if ($plugins === null) {
 			$plugins = array();
-			foreach (glob("adminer-plugins/*.php") as $filename) {
-				$include = include_once "./$filename";
-				if (is_array($include)) { // example: return array(new AdminerLoginOtp($secret))
-					foreach ($include as $plugin) {
-						$plugins[get_class($plugin)] = $plugin;
-					}
+			$basename = "adminer-plugins";
+			if (is_dir($basename)) {
+				foreach (glob("$basename/*.php") as $filename) {
+					$include = include_once "./$filename";
+				}
+			}
+			if (file_exists("$basename.php")) {
+				$include = include_once "./$basename.php"; // example: return array(new AdminerLoginOtp($secret))
+				foreach ($include as $plugin) {
+					$plugins[get_class($plugin)] = $plugin;
 				}
 			}
 			foreach (get_declared_classes() as $class) {

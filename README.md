@@ -32,19 +32,19 @@ To use a plugin, simply upload it to `adminer-plugins/` next to `adminer.php`.
 
 ```
 - adminer.php
-- adminer-plugins
-    - config.php
+- adminer-plugins/
     - dump-xml.php
     - login-password-less.php
+    - ...
+- adminer-plugins.php
 ```
 
-Some plugins require configuration. To use them, you need to create another file in `adminer-plugins/`:
+Some plugins require configuration. To use them, create file `adminer-plugins.php`. You can also specify loading order here.
 
 ```php
-<?php // config.php
-require_once __DIR__ . "/login-password-less.php";
-
+<?php // adminer-plugins.php
 return array(
     new AdminerLoginPasswordLess('$2y$07$Czp9G/aLi3AnaUqpvkF05OHO1LMizrAgMLvnaOdvQovHaRv28XDhG'),
+    // You can specify all plugins here or just the ones needing configuration.
 );
 ```
