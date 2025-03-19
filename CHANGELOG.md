@@ -3,6 +3,7 @@
 - PostgreSQL: Display auto_increment of inserted rows
 - PostgreSQL: Display description of system variables
 - PostgreSQL: Avoid warning about crdb_version (bug #924, regression from 5.0.5)
+- PostgreSQL 11: Support PROCEDURE
 - MS SQL: Fix collation issues when retrieving default values
 - CSS: Sticky table headers (bug #918)
 - CSS: Allow more custom styles with dark mode (bug #925)

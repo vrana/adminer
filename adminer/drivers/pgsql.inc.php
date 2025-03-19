@@ -961,7 +961,7 @@ AND typelem = 0"
 
 	function support($feature) {
 		global $connection;
-		return preg_match('~^(check|database|table|columns|sql|indexes|descidx|comment|view|' . (min_version(9.3) ? 'materializedview|' : '') . 'scheme|routine|sequence|trigger|type|variables|drop_col'
+		return preg_match('~^(check|database|table|columns|sql|indexes|descidx|comment|view|' . (min_version(9.3) ? 'materializedview|' : '') . 'scheme|' . (min_version(11) ? 'procedure|' : '') . 'routine|sequence|trigger|type|variables|drop_col'
 			. ($connection->cockroach ? '' : '|processlist') // https://github.com/cockroachdb/cockroach/issues/24745
 			. '|kill|dump)$~', $feature)
 		;
