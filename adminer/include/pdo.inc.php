@@ -13,7 +13,7 @@ if (extension_loaded('pdo')) {
 			$options[\PDO::ATTR_STATEMENT_CLASS] = array('Adminer\PdoDbStatement');
 			try {
 				$this->pdo = new \PDO($dsn, $username, $password, $options);
-			} catch (Exception $ex) {
+			} catch (\Exception $ex) {
 				auth_error(h($ex->getMessage()));
 			}
 			$this->server_info = @$this->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION);

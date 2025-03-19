@@ -25,7 +25,7 @@ if (isset($_GET["mongo"])) {
 			function executeDbCommand($db, $command) {
 				try {
 					return $this->_link->executeCommand($db, new \MongoDB\Driver\Command($command));
-				} catch (Exception $e) {
+				} catch (\Exception $e) {
 					$this->error = $e->getMessage();
 					return array();
 				}
@@ -36,7 +36,7 @@ if (isset($_GET["mongo"])) {
 					$results = $this->_link->executeBulkWrite($namespace, $bulk);
 					$this->affected_rows = $results->$counter();
 					return true;
-				} catch (Exception $e) {
+				} catch (\Exception $e) {
 					$this->error = $e->getMessage();
 					return false;
 				}
@@ -331,7 +331,7 @@ if (isset($_GET["mongo"])) {
 			$skip = $page * $limit;
 			try {
 				return new Result($this->conn->_link->executeQuery($this->conn->_db_name . ".$table", new \MongoDB\Driver\Query($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort))));
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				$this->conn->error = $e->getMessage();
 				return false;
 			}

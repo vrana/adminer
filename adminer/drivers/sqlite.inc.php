@@ -393,7 +393,7 @@ if (isset($_GET["sqlite"])) {
 		}
 		try {
 			$link = new SqliteDb($db);
-		} catch (Exception $ex) {
+		} catch (\Exception $ex) {
 			$connection->error = $ex->getMessage();
 			return false;
 		}
