@@ -587,7 +587,7 @@ function fieldChange() {
 * @uses offlineMessage
 */
 function ajax(url, callback, data, message) {
-	var request = (window.XMLHttpRequest ? new XMLHttpRequest() : (window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') : false));
+	var request = new XMLHttpRequest();
 	if (request) {
 		var ajaxStatus = qs('#ajaxstatus');
 		if (message) {
@@ -622,7 +622,7 @@ function ajax(url, callback, data, message) {
 */
 function ajaxSetHtml(url) {
 	return !ajax(url, function (request) {
-		var data = window.JSON ? JSON.parse(request.responseText) : eval('(' + request.responseText + ')');
+		var data = JSON.parse(request.responseText);
 		for (var key in data) {
 			setHtml(key, data[key]);
 		}
