@@ -14,6 +14,9 @@ function helpMouseover() {
 function helpMouseout() {
 }
 
+function helpClose() {
+}
+
 /** Display typeahead
 * @param string
 * @this HTMLInputElement

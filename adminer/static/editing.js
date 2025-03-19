@@ -225,7 +225,7 @@ function editFields() {
 			if (!this.defaultValue) {
 				editingAddRow.call(this);
 			}
-		}
+		};
 	}
 	for (const el of qsa('[name$="[length]"]')) {
 		mixin(el, {onfocus: editingLengthFocus, oninput: editingLengthChange});
