@@ -11,6 +11,7 @@ $translations = array(
 	'Login' => 'Zaloguj się',
 	'Logout' => 'Wyloguj się',
 	'Logged as: %s' => 'Zalogowany jako: %s',
+	'Loaded plugins' => 'Wczytane wtyczki',
 	'Logout successful.' => 'Wylogowano pomyślnie.',
 	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Dziękujemy za używanie Adminera, rozważ <a href="https://www.adminer.org/pl/donation/">dotację</a>.',
 	'Invalid credentials.' => 'Nieprawidłowe dane logowania.',
