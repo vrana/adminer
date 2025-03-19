@@ -9,6 +9,7 @@
 - Plugins: autoload plugins from adminer-plugins/
 - Plugins: configure plugins with adminer-plugins.php
 - Plugins: Display loaded plugins in server overview
+- New plugin: Allow switching light and dark mode (bug #926)
 
 ## Adminer 5.0.6 (released 2025-03-17)
 - Align numbers right (bug #912)
