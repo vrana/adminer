@@ -1066,7 +1066,9 @@ class Adminer {
 			}
 			echo "</script>\n";
 		}
-		echo script("bodyLoad('" . (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '\1', $connection->server_info) : "") . "'" . ($connection->maria ? ", true" : "") . ");");
+		echo script("syntaxHighlighting('" . (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '\1', $connection->server_info) : "") . "'"
+			. ($connection->maria ? ", 'maria'" : ($connection->cockroach ? ", 'cockroach'" : "")) . ");"
+		);
 	}
 
 	/** Prints databases list in menu
