@@ -5,10 +5,11 @@
 - MS SQL: Fix collation issues when retrieving default values
 - CSS: Sticky table headers (bug #918)
 - CSS: Allow more custom styles with dark mode (bug #925)
-- IMAP: New plugin driver created for fun
 - Plugins: autoload plugins from adminer-plugins/
 - Plugins: configure plugins with adminer-plugins.php
 - Plugins: Display loaded plugins in server overview
+- New plugin: IMAP driver created for fun
+- New plugin: Display links to tables referencing current row
 - New plugin: Allow switching light and dark mode (bug #926)
 
 ## Adminer 5.0.6 (released 2025-03-17)
@@ -23,6 +24,7 @@
 - CSS: Dark input fields in dark mode
 - Designs named adminer-dark.css use dark basic style
 - Plugins: Add method syntaxHighlighting()
+- New plugin: Use Codemirror 5 for syntax highlighting and SQL with typeahead
 
 ## Adminer 5.0.5 (released 2025-03-13)
 - MySQL: Display converting function for binary, bit or geometry fields
