@@ -318,9 +318,10 @@ class Adminer {
 
 	/** Print table structure in tabular format
 	* @param array data about individual fields
+	* @param array
 	* @return null
 	*/
-	function tableStructurePrint($fields) {
+	function tableStructurePrint($fields, $tableStatus = null) {
 		global $driver;
 		echo "<div class='scrollable'>\n";
 		echo "<table class='nowrap odds'>\n";
@@ -329,8 +330,11 @@ class Adminer {
 		foreach ($fields as $field) {
 			echo "<tr><th>" . h($field["field"]);
 			$type = h($field["full_type"]);
-			echo "<td><span title='" . h($field["collation"]) . "'>"
-				. (in_array($type, (array) $structured_types[lang('User types')]) ? "<a href='" . h(ME . 'type=' . urlencode($type)) . "'>$type</a>" : $type)
+			$collation = h($field["collation"]);
+			echo "<td><span title='$collation'>"
+				. (in_array($type, (array) $structured_types[lang('User types')])
+					? "<a href='" . h(ME . 'type=' . urlencode($type)) . "'>$type</a>"
+					: $type . ($collation && isset($tableStatus["Collation"]) && $collation != $tableStatus["Collation"] ? " $collation" : ""))
 				. "</span>"
 			;
 			echo ($field["null"] ? " <i>NULL</i>" : "");

@@ -12,7 +12,7 @@ class AdminerTableStructure {
 	* @param array data about individual fields
 	* @return bool
 	*/
-	function tableStructurePrint($fields) {
+	function tableStructurePrint($fields, $tableStatus = null) {
 		echo "<div class='scrollable'>\n";
 		echo "<table class='nowrap odds'>\n";
 		echo "<thead><tr>"

@@ -258,7 +258,7 @@ class Plugins extends Adminer {
 		return $this->applyPlugin(__FUNCTION__, $args);
 	}
 
-	function tableStructurePrint($fields) {
+	function tableStructurePrint($fields, $tableStatus = null) {
 		$args = func_get_args();
 		return $this->applyPlugin(__FUNCTION__, $args);
 	}

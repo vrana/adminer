@@ -6,7 +6,7 @@ $fields = fields($TABLE);
 if (!$fields) {
 	$error = error();
 }
-$table_status = table_status1($TABLE, true);
+$table_status = table_status1($TABLE);
 $name = $adminer->tableName($table_status);
 
 page_header(($fields && is_view($table_status) ? $table_status['Engine'] == 'materialized view' ? lang('Materialized view') : lang('View') : lang('Table')) . ": " . ($name != "" ? $name : h($TABLE)), $error);
@@ -23,7 +23,7 @@ if ($comment != "") {
 }
 
 if ($fields) {
-	$adminer->tableStructurePrint($fields);
+	$adminer->tableStructurePrint($fields, $table_status);
 }
 
 if (support("indexes") && $driver->supportsIndex($table_status)) {

@@ -1,4 +1,5 @@
 ## Adminer dev
+- Display collation at table structure if different from table
 - PostgreSQL: Display auto_increment of inserted rows
 - PostgreSQL: Display description of system variables
 - PostgreSQL: Avoid warning about crdb_version (bug #924, regression from 5.0.5)
