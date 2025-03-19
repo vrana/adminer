@@ -28,18 +28,19 @@ If downloaded from Git then run: `git submodule update --init`
 
 ## Plugins
 There are [several plugins](plugins/) distributed with Adminer and there are also many user-contributed plugins linked from https://www.adminer.org/plugins/.
-To use a plugin, simply upload it to `adminer-plugins/` next to `adminer.php`.
+To use a plugin, simply upload it to `adminer-plugins/` next to `adminer.php`. You can also upload plugins for drivers (e.g. `elastic.php`) here.
 
 ```
 - adminer.php
 - adminer-plugins/
     - dump-xml.php
     - login-password-less.php
+    - elastic.php
     - ...
 - adminer-plugins.php
 ```
 
-Some plugins require configuration. To use them, create file `adminer-plugins.php`. You can also specify loading order here.
+Some plugins require configuration. To use them, create a file `adminer-plugins.php`. You can also specify the loading order here.
 
 ```php
 <?php // adminer-plugins.php
