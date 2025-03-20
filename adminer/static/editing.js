@@ -396,7 +396,7 @@ function editingMoveRow(up){
 	return false;
 }
 
-var lastType = '';
+let lastType = '';
 
 /** Clear length and hide collation or unsigned
 * @this HTMLSelectElement

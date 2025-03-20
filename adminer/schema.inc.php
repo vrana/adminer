@@ -53,8 +53,8 @@ foreach (table_status('', true) as $table => $table_status) {
 <div id="schema" style="height: <?php echo $top; ?>em;">
 <script<?php echo nonce(); ?>>
 qs('#schema').onselectstart = function () { return false; };
-var tablePos = {<?php echo implode(",", $table_pos_js) . "\n"; ?>};
-var em = qs('#schema').offsetHeight / <?php echo $top; ?>;
+const tablePos = {<?php echo implode(",", $table_pos_js) . "\n"; ?>};
+const em = qs('#schema').offsetHeight / <?php echo $top; ?>;
 document.onmousemove = schemaMousemove;
 document.onmouseup = partialArg(schemaMouseup, '<?php echo js_escape(DB); ?>');
 </script>

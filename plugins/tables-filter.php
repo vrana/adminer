@@ -10,8 +10,8 @@ class AdminerTablesFilter {
 	function tablesPrint($tables) {
 		?>
 <script<?php echo Adminer\nonce(); ?>>
-var tablesFilterTimeout = null;
-var tablesFilterValue = '';
+let tablesFilterTimeout = null;
+let tablesFilterValue = '';
 
 function tablesFilter() {
 	const value = qs('#filter-field').value.toLowerCase();

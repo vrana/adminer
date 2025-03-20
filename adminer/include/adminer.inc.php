@@ -484,7 +484,7 @@ class Adminer {
 		echo "<input type='submit' value='" . lang('Select') . "'>";
 		echo " <span id='noindex' title='" . lang('Full table scan') . "'></span>";
 		echo "<script" . nonce() . ">\n";
-		echo "var indexColumns = ";
+		echo "const indexColumns = ";
 		$columns = array();
 		foreach ($indexes as $index) {
 			$current_key = reset($index["columns"]);
