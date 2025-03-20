@@ -107,19 +107,17 @@ function verifyVersion(current, url, token) {
 	iframe.scrolling = 'no';
 	iframe.style.width = '7ex';
 	iframe.style.height = '1.25em';
-	if (window.postMessage && window.addEventListener) {
-		iframe.style.display = 'none';
-		addEventListener('message', function (event) {
-			if (event.origin == 'https://www.adminer.org') {
-				var match = /version=(.+)/.exec(event.data);
-				if (match) {
-					cookie('adminer_version=' + match[1], 1);
-					ajax(url + 'script=version', function () {
-					}, event.data + '&token=' + token);
-				}
+	iframe.style.display = 'none';
+	addEventListener('message', function (event) {
+		if (event.origin == 'https://www.adminer.org') {
+			var match = /version=(.+)/.exec(event.data);
+			if (match) {
+				cookie('adminer_version=' + match[1], 1);
+				ajax(url + 'script=version', function () {
+				}, event.data + '&token=' + token);
 			}
-		}, false);
-	}
+		}
+	}, false);
 	qs('#version').appendChild(iframe);
 }
 
