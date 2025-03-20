@@ -31,13 +31,23 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 <link rel="stylesheet" href="../adminer/static/default.css">
 <?php
 	$css = $adminer->css();
-	$has_dark = in_array("adminer-dark.css", $css);
-	$dark = (in_array("adminer.css", $css)
+	$has_light = false;
+	$has_dark = false;
+	foreach ($css as $filename) {
+		if (strpos($filename, "adminer.css") !== false) {
+			$has_light = true;
+		}
+		if (strpos($filename, "adminer-dark.css") !== false) {
+			$has_dark = true;
+		}
+	}
+	$dark = ($has_light
 		? ($has_dark ? null : false) // both styles - autoswitching, only adminer.css - light
 		: ($has_dark ?: null) // only adminer-dark.css - dark, neither - autoswitching
 	);
+	$media = " media='(prefers-color-scheme: dark)'";
 	if ($dark !== false) {
-		echo "<link rel='stylesheet'" . ($dark ? "" : " media='(prefers-color-scheme: dark)'") . " href='../adminer/static/dark.css'>\n";
+		echo "<link rel='stylesheet'" . ($dark ? "" : $media) . " href='../adminer/static/dark.css'>\n";
 	}
 	echo "<meta name='color-scheme' content='" . ($dark === null ? "light dark" : ($dark ? "dark" : "light")) . "'>\n";
 	// this is matched by compile.php
@@ -48,7 +58,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 		echo "<link rel='apple-touch-icon' href='../adminer/static/favicon.ico'>\n";
 	}
 	foreach ($css as $val) {
-		echo "<link rel='stylesheet'" . (preg_match('~-dark~', $val) && !$dark ? " media='(prefers-color-scheme: dark)'" : "") . " href='" . h($val) . "'>\n";
+		echo "<link rel='stylesheet'" . (preg_match('~-dark~', $val) && !$dark ? $media : "") . " href='" . h($val) . "'>\n";
 	}
 	echo "\n<body class='" . lang('ltr') . " nojs'>\n";
 	$filename = get_temp_dir() . "/adminer.version";
