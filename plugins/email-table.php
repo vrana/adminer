@@ -34,7 +34,7 @@ class AdminerEmailTable {
 			echo "<p>" . ('Attachments') . ": <input type='file' name='email_files[]'>";
 			echo Adminer\script("qsl('input').onchange = function () {
 	this.onchange = function () { };
-	var el = this.cloneNode(true);
+	const el = this.cloneNode(true);
 	el.value = '';
 	this.parentNode.appendChild(el);
 };");

@@ -35,8 +35,8 @@ class AdminerSlugify {
 			if ($slug !== null) {
 				return "<input value='" . Adminer\h($value) . "' data-maxlength='$field[length]' size='40'$attrs>"
 					. Adminer\script("qsl('input').onchange = function () {
-	var find = '$this->from';
-	var repl = '$this->to';
+	const find = '$this->from';
+	const repl = '$this->to';
 	this.form['fields[$slug]'].value = this.value.toLowerCase()
 		.replace(new RegExp('[' + find + ']', 'g'), function (str) { return repl[find.indexOf(str)]; })
 		.replace(/[^a-z0-9_]+/g, '-')
