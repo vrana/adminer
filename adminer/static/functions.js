@@ -429,9 +429,10 @@ function selectSearch(name) {
 	var el = qs('#fieldset-search');
 	el.className = '';
 	var divs = qsa('div', el);
-	for (var i=0; i < divs.length; i++) {
+	var i;
+	for (i=0; i < divs.length; i++) {
 		var div = divs[i];
-		var el = qs('[name$="[col]"]', div);
+		el = qs('[name$="[col]"]', div);
 		if (el && selectValue(el) == name) {
 			break;
 		}

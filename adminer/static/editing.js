@@ -73,7 +73,7 @@ function formField(form, name) {
 function typePassword(el, disable) {
 	try {
 		el.type = (disable ? 'text' : 'password');
-	} catch (e) {
+	} catch (e) { // empty
 	}
 }
 
@@ -466,7 +466,7 @@ function enumValues(s) {
 	var result = [];
 	var offset = 0;
 	var match;
-	while (match = re.exec(s)) {
+	while ((match = re.exec(s))) {
 		if (offset != match.index) {
 			break;
 		}
