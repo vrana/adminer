@@ -263,7 +263,7 @@ function editingClick(event) {
 		} else if (/^down\[/.test(name)) {
 			editingMoveRow.call(el);
 		} else if (/^drop_col\[/.test(name)) {
-			editingRemoveRow.call(el, 'fields\$1[field]');
+			editingRemoveRow.call(el, 'fields$1[field]');
 		} else {
 			if (name == 'auto_increment_col') {
 				var field = el.form['fields[' + el.value + '][field]'];
@@ -374,7 +374,7 @@ function editingAddRow(focus) {
 * @this HTMLInputElement
 */
 function editingRemoveRow(name) {
-	var field = formField(this.form, this.name.replace(/[^\[]+(.+)/, name));
+	var field = formField(this.form, this.name.replace(/[^[]+(.+)/, name));
 	field.parentNode.removeChild(field);
 	parentTag(this, 'tr').style.display = 'none';
 	return false;
