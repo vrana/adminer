@@ -8,13 +8,13 @@ function syntaxHighlighting(version, vendor) {
 	if (window.jush) {
 		jush.create_links = ' target="_blank" rel="noreferrer noopener"';
 		if (version) {
-			for (var key in jush.urls) {
-				var obj = jush.urls;
+			for (let key in jush.urls) {
+				let obj = jush.urls;
 				if (typeof obj[key] != 'string') {
 					obj = obj[key];
 					key = 0;
 					if (vendor == 'maria') {
-						for (var i = 1; i < obj.length; i++) {
+						for (let i = 1; i < obj.length; i++) {
 							obj[i] = obj[i]
 								.replace('.html', '/')
 								.replace('-type-syntax', '-data-types')
@@ -43,7 +43,7 @@ function syntaxHighlighting(version, vendor) {
 		jush.highlight_tag('code', 0);
 		for (const tag of qsa('textarea')) {
 			if (/(^|\s)jush-/.test(tag.className)) {
-				var pre = jush.textarea(tag);
+				const pre = jush.textarea(tag);
 				if (pre) {
 					setupSubmitHighlightInput(pre);
 				}
@@ -59,7 +59,7 @@ function syntaxHighlighting(version, vendor) {
 */
 function formField(form, name) {
 	// required in IE < 8, form.elements[name] doesn't work
-	for (var i=0; i < form.length; i++) {
+	for (let i=0; i < form.length; i++) {
 		if (form[i].name == name) {
 			return form[i];
 		}
@@ -92,16 +92,16 @@ function messagesPrint(parent) {
 * @param HTMLSelectElement
 */
 function loginDriver(driver) {
-	var trs = parentTag(driver, 'table').rows;
-	var disabled = /sqlite/.test(selectValue(driver));
+	const trs = parentTag(driver, 'table').rows;
+	const disabled = /sqlite/.test(selectValue(driver));
 	alterClass(trs[1], 'hidden', disabled);	// 1 - row with server
 	trs[1].getElementsByTagName('input')[0].disabled = disabled;
 }
 
 
 
-var dbCtrl;
-var dbPrevious = {};
+let dbCtrl;
+const dbPrevious = {};
 
 /** Check if database should be opened to a new window
 * @param MouseEvent
@@ -142,22 +142,22 @@ function dbChange() {
 * @this HTMLElement
 */
 function selectFieldChange() {
-	var form = this.form;
-	var ok = (function () {
+	const form = this.form;
+	const ok = (function () {
 		for (const input of qsa('input', form)) {
 			if (input.value && /^fulltext/.test(input.name)) {
 				return true;
 			}
 		}
-		var ok = form.limit.value;
-		var group = false;
-		var columns = {};
+		let ok = form.limit.value;
+		let group = false;
+		const columns = {};
 		for (const select of qsa('select', form)) {
-			var col = selectValue(select);
-			var match = /^(where.+)col]/.exec(select.name);
+			const col = selectValue(select);
+			let match = /^(where.+)col]/.exec(select.name);
 			if (match) {
-				var op = selectValue(form[match[1] + 'op]']);
-				var val = form[match[1] + 'val]'].value;
+				const op = selectValue(form[match[1] + 'op]']);
+				const val = form[match[1] + 'val]'].value;
 				if (col in indexColumns && (!/LIKE|REGEXP/.test(op) || (op == 'LIKE' && val.charAt(0) != '%'))) {
 					return true;
 				} else if (col || val) {
@@ -168,7 +168,7 @@ function selectFieldChange() {
 				if (/^(avg|count|count distinct|group_concat|max|min|sum)$/.test(col)) {
 					group = true;
 				}
-				var val = selectValue(form[match[1] + 'col]']);
+				const val = selectValue(form[match[1] + 'col]']);
 				if (val) {
 					columns[col && col != 'count' ? '' : val] = 1;
 				}
@@ -181,7 +181,7 @@ function selectFieldChange() {
 			}
 		}
 		if (group) {
-			for (var col in columns) {
+			for (const col in columns) {
 				if (!(col in indexColumns)) {
 					ok = false;
 				}
@@ -194,7 +194,7 @@ function selectFieldChange() {
 
 
 
-var added = '.', rowCount;
+let added = '.', rowCount;
 
 /** Check if val is equal to a-delimiter-b where delimiter is '_', '' or big letter
 * @param string
@@ -249,13 +249,13 @@ function editFields() {
 * @return boolean false to cancel action
 */
 function editingClick(event) {
-	var el = getTarget(event);
+	let el = getTarget(event);
 	if (!isTag(el, 'input')) {
 		el = parentTag(el, 'label');
 		el = el && qs('input', el);
 	}
 	if (el) {
-		var name = el.name;
+		const name = el.name;
 		if (/^add\[/.test(name)) {
 			editingAddRow.call(el, 1);
 		} else if (/^up\[/.test(name)) {
@@ -266,7 +266,7 @@ function editingClick(event) {
 			editingRemoveRow.call(el, 'fields$1[field]');
 		} else {
 			if (name == 'auto_increment_col') {
-				var field = el.form['fields[' + el.value + '][field]'];
+				const field = el.form['fields[' + el.value + '][field]'];
 				if (!field.value) {
 					field.value = 'id';
 					field.oninput();
@@ -282,7 +282,7 @@ function editingClick(event) {
 * @param InputEvent
 */
 function editingInput(event) {
-	var el = getTarget(event);
+	const el = getTarget(event);
 	if (/\[default]$/.test(el.name)) {
 		 el.previousElementSibling.checked = true;
 		 el.previousElementSibling.selectedIndex = Math.max(el.previousElementSibling.selectedIndex, 1);
@@ -293,21 +293,21 @@ function editingInput(event) {
 * @this HTMLInputElement
 */
 function editingNameChange() {
-	var name = this.name.substr(0, this.name.length - 7);
-	var type = formField(this.form, name + '[type]');
-	var opts = type.options;
-	var candidate; // don't select anything with ambiguous match (like column `id`)
-	var val = this.value;
-	for (var i = opts.length; i--; ) {
-		var match = /(.+)`(.+)/.exec(opts[i].value);
+	const name = this.name.substr(0, this.name.length - 7);
+	const type = formField(this.form, name + '[type]');
+	const opts = type.options;
+	let candidate; // don't select anything with ambiguous match (like column `id`)
+	const val = this.value;
+	for (let i = opts.length; i--; ) {
+		const match = /(.+)`(.+)/.exec(opts[i].value);
 		if (!match) { // common type
 			if (candidate && i == opts.length - 2 && val == opts[candidate].value.replace(/.+`/, '') && name == 'fields[1]') { // single target table, link to column, first field - probably `id`
 				return;
 			}
 			break;
 		}
-		var base = match[1];
-		var column = match[2];
+		const base = match[1];
+		const column = match[2];
 		for (const table of [ base, base.replace(/s$/, ''), base.replace(/es$/, '') ]) {
 			if (val == column || val == table || delimiterEqual(val, table, column) || delimiterEqual(val, column, table)) {
 				if (candidate) {
@@ -330,20 +330,20 @@ function editingNameChange() {
 * @this HTMLInputElement
 */
 function editingAddRow(focus) {
-	var match = /(\d+)(\.\d+)?/.exec(this.name);
-	var x = match[0] + (match[2] ? added.substr(match[2].length) : added) + '1';
-	var row = parentTag(this, 'tr');
-	var row2 = cloneNode(row);
-	var tags = qsa('select', row);
-	var tags2 = qsa('select', row2);
-	for (var i=0; i < tags.length; i++) {
+	const match = /(\d+)(\.\d+)?/.exec(this.name);
+	const x = match[0] + (match[2] ? added.substr(match[2].length) : added) + '1';
+	const row = parentTag(this, 'tr');
+	const row2 = cloneNode(row);
+	let tags = qsa('select', row);
+	let tags2 = qsa('select', row2);
+	for (let i=0; i < tags.length; i++) {
 		tags2[i].name = tags[i].name.replace(/[0-9.]+/, x);
 		tags2[i].selectedIndex = tags[i].selectedIndex;
 	}
 	tags = qsa('input', row);
 	tags2 = qsa('input', row2);
-	var input = tags2[0]; // IE loose tags2 after insertBefore()
-	for (var i=0; i < tags.length; i++) {
+	const input = tags2[0]; // IE loose tags2 after insertBefore()
+	for (let i=0; i < tags.length; i++) {
 		if (tags[i].name == 'auto_increment_col') {
 			tags2[i].value = x;
 			tags2[i].checked = false;
@@ -374,7 +374,7 @@ function editingAddRow(focus) {
 * @this HTMLInputElement
 */
 function editingRemoveRow(name) {
-	var field = formField(this.form, this.name.replace(/[^[]+(.+)/, name));
+	const field = formField(this.form, this.name.replace(/[^[]+(.+)/, name));
 	field.parentNode.removeChild(field);
 	parentTag(this, 'tr').style.display = 'none';
 	return false;
@@ -386,7 +386,7 @@ function editingRemoveRow(name) {
 * @this HTMLInputElement
 */
 function editingMoveRow(up){
-	var row = parentTag(this, 'tr');
+	const row = parentTag(this, 'tr');
 	if (!('nextElementSibling' in row)) {
 		return true;
 	}
@@ -402,9 +402,9 @@ var lastType = '';
 * @this HTMLSelectElement
 */
 function editingTypeChange() {
-	var type = this;
-	var name = type.name.substr(0, type.name.length - 6);
-	var text = selectValue(type);
+	const type = this;
+	const name = type.name.substr(0, type.name.length - 6);
+	const text = selectValue(type);
 	for (const el of type.form.elements.length) {
 		if (el.name == name + '[length]') {
 			if (!(
@@ -446,9 +446,9 @@ function editingLengthChange() {
 * @this HTMLInputElement
 */
 function editingLengthFocus() {
-	var td = this.parentNode;
+	const td = this.parentNode;
 	if (/(enum|set)$/.test(selectValue(td.previousSibling.firstChild))) {
-		var edit = qs('#enum-edit');
+		const edit = qs('#enum-edit');
 		edit.value = enumValues(this.value);
 		td.appendChild(edit);
 		this.style.display = 'none';
@@ -462,10 +462,10 @@ function editingLengthFocus() {
 * @return string values separated by newlines
 */
 function enumValues(s) {
-	var re = /(^|,)\s*'(([^\\']|\\.|'')*)'\s*/g;
-	var result = [];
-	var offset = 0;
-	var match;
+	const re = /(^|,)\s*'(([^\\']|\\.|'')*)'\s*/g;
+	const result = [];
+	let offset = 0;
+	let match;
 	while ((match = re.exec(s))) {
 		if (offset != match.index) {
 			break;
@@ -480,8 +480,8 @@ function enumValues(s) {
 * @this HTMLTextAreaElement
 */
 function editingLengthBlur() {
-	var field = this.parentNode.firstChild;
-	var val = this.value;
+	const field = this.parentNode.firstChild;
+	const val = this.value;
 	field.value = (/^'[^\n]+'$/.test(val) ? val : val && "'" + val.replace(/\n+$/, '').replace(/'/g, "''").replace(/\\/g, '\\\\').replace(/\n/g, "','") + "'");
 	field.style.display = 'inline';
 	this.style.display = 'none';
@@ -510,7 +510,7 @@ function indexOptionsShow(checked) {
 * @this HTMLSelectElement
 */
 function partitionByChange() {
-	var partitionTable = /RANGE|LIST/.test(selectValue(this));
+	const partitionTable = /RANGE|LIST/.test(selectValue(this));
 	alterClass(this.form['partitions'], 'hidden', partitionTable || !this.selectedIndex);
 	alterClass(qs('#partition-table'), 'hidden', !partitionTable);
 	helpClose();
@@ -520,7 +520,7 @@ function partitionByChange() {
 * @this HTMLInputElement
 */
 function partitionNameChange() {
-	var row = cloneNode(parentTag(this, 'tr'));
+	const row = cloneNode(parentTag(this, 'tr'));
 	row.firstChild.firstChild.value = '';
 	parentTag(this, 'table').appendChild(row);
 	this.oninput = function () {};
@@ -531,7 +531,7 @@ function partitionNameChange() {
 * @param [boolean] whether to focus Comment if checked
 */
 function editingCommentsClick(el, focus) {
-	var comment = el.form['Comment'];
+	const comment = el.form['Comment'];
 	columnShow(el.checked, 6);
 	alterClass(comment, 'hidden', !el.checked);
 	if (focus && el.checked) {
@@ -546,10 +546,10 @@ function editingCommentsClick(el, focus) {
 * @this HTMLTableElement
 */
 function dumpClick(event) {
-	var el = parentTag(getTarget(event), 'label');
+	let el = parentTag(getTarget(event), 'label');
 	if (el) {
 		el = qs('input', el);
-		var match = /(.+)\[]$/.exec(el.name);
+		const match = /(.+)\[]$/.exec(el.name);
 		if (match) {
 			checkboxClick.call(el, event);
 			formUncheck('check-' + match[1]);
@@ -563,7 +563,7 @@ function dumpClick(event) {
 * @this HTMLSelectElement
 */
 function foreignAddRow() {
-	var row = cloneNode(parentTag(this, 'tr'));
+	const row = cloneNode(parentTag(this, 'tr'));
 	this.onchange = function () { };
 	for (const select of qsa('select', row)) {
 		select.name = select.name.replace(/\d+]/, '1$&');
@@ -578,7 +578,7 @@ function foreignAddRow() {
 * @this HTMLSelectElement
 */
 function indexesAddRow() {
-	var row = cloneNode(parentTag(this, 'tr'));
+	const row = cloneNode(parentTag(this, 'tr'));
 	this.onchange = function () { };
 	for (const select of qsa('select', row)) {
 		select.name = select.name.replace(/indexes\[\d+/, '$&1');
@@ -596,11 +596,11 @@ function indexesAddRow() {
 * @this HTMLSelectElement
 */
 function indexesChangeColumn(prefix) {
-	var names = [];
-	for (var tag in { 'select': 1, 'input': 1 }) {
+	const names = [];
+	for (const tag in { 'select': 1, 'input': 1 }) {
 		for (const column of qsa(tag, parentTag(this, 'td'))) {
 			if (/\[columns]/.test(column.name)) {
-				var value = selectValue(column);
+				const value = selectValue(column);
 				if (value) {
 					names.push(value);
 				}
@@ -615,15 +615,15 @@ function indexesChangeColumn(prefix) {
 * @this HTMLSelectElement
 */
 function indexesAddColumn(prefix) {
-	var field = this;
-	var select = field.form[field.name.replace(/].*/, '][type]')];
+	const field = this;
+	const select = field.form[field.name.replace(/].*/, '][type]')];
 	if (!select.selectedIndex) {
 		while (selectValue(select) != "INDEX" && select.selectedIndex < select.options.length) {
 			select.selectedIndex++;
 		}
 		select.onchange();
 	}
-	var column = cloneNode(field.parentNode);
+	const column = cloneNode(field.parentNode);
 	for (const select of qsa('select', column)) {
 		select.name = select.name.replace(/]\[\d+/, '$&1');
 		select.selectedIndex = 0;
@@ -664,7 +664,7 @@ function sqlSubmit(form, root) {
 * @param HTMLFormElement
 */
 function triggerChange(tableRe, table, form) {
-	var formEvent = selectValue(form['Event']);
+	const formEvent = selectValue(form['Event']);
 	if (tableRe.test(form['Trigger'].value)) {
 		form['Trigger'].value = table + '_' + (selectValue(form['Timing']).charAt(0) + formEvent.charAt(0)).toLowerCase();
 	}
@@ -673,7 +673,7 @@ function triggerChange(tableRe, table, form) {
 
 
 
-var that, x, y; // em and tablePos defined in schema.inc.php
+let that, x, y; // em and tablePos defined in schema.inc.php
 
 /** Get mouse position
 * @param MouseEvent
@@ -692,27 +692,27 @@ function schemaMousedown(event) {
 */
 function schemaMousemove(event) {
 	if (that !== undefined) {
-		var left = (event.clientX - x) / em;
-		var top = (event.clientY - y) / em;
-		var lineSet = { };
+		const left = (event.clientX - x) / em;
+		const top = (event.clientY - y) / em;
+		const lineSet = { };
 		for (const div of qsa('div', that)) {
 			if (div.className == 'references') {
-				var div2 = qs('[id="' + (/^refs/.test(div.id) ? 'refd' : 'refs') + div.id.substr(4) + '"]');
-				var ref = (tablePos[div.title] || [ div2.parentNode.offsetTop / em, 0 ]);
-				var left1 = -1;
-				var id = div.id.replace(/^ref.(.+)-.+/, '$1');
+				const div2 = qs('[id="' + (/^refs/.test(div.id) ? 'refd' : 'refs') + div.id.substr(4) + '"]');
+				const ref = (tablePos[div.title] || [ div2.parentNode.offsetTop / em, 0 ]);
+				let left1 = -1;
+				const id = div.id.replace(/^ref.(.+)-.+/, '$1');
 				if (div.parentNode != div2.parentNode) {
 					left1 = Math.min(0, ref[1] - left) - 1;
 					div.style.left = left1 + 'em';
 					div.querySelector('div').style.width = -left1 + 'em';
-					var left2 = Math.min(0, left - ref[1]) - 1;
+					const left2 = Math.min(0, left - ref[1]) - 1;
 					div2.style.left = left2 + 'em';
 					div2.querySelector('div').style.width = -left2 + 'em';
 				}
 				if (!lineSet[id]) {
-					var line = qs('[id="' + div.id.replace(/^....(.+)-.+$/, 'refl$1') + '"]');
-					var top1 = top + div.offsetTop / em;
-					var top2 = top + div2.offsetTop / em;
+					const line = qs('[id="' + div.id.replace(/^....(.+)-.+$/, 'refl$1') + '"]');
+					const top1 = top + div.offsetTop / em;
+					let top2 = top + div2.offsetTop / em;
 					if (div.parentNode != div2.parentNode) {
 						top2 += ref[0] - top;
 						line.querySelector('div').style.height = Math.abs(top1 - top2) + 'em';
@@ -736,12 +736,12 @@ function schemaMouseup(event, db) {
 	if (that !== undefined) {
 		tablePos[that.firstChild.firstChild.firstChild.data] = [ (event.clientY - y) / em, (event.clientX - x) / em ];
 		that = undefined;
-		var s = '';
-		for (var key in tablePos) {
+		let s = '';
+		for (const key in tablePos) {
 			s += '_' + key + ':' + Math.round(tablePos[key][0] * 10000) / 10000 + 'x' + Math.round(tablePos[key][1] * 10000) / 10000;
 		}
 		s = encodeURIComponent(s.substr(1));
-		var link = qs('#schema-link');
+		const link = qs('#schema-link');
 		link.href = link.href.replace(/[^=]+$/, '') + s;
 		cookie('adminer_schema-' + db + '=' + s, 30); //! special chars in db
 	}
@@ -749,7 +749,7 @@ function schemaMouseup(event, db) {
 
 
 
-var helpOpen, helpIgnore; // when mouse outs <option> then it mouse overs border of <select> - ignore it
+let helpOpen, helpIgnore; // when mouse outs <option> then it mouse overs border of <select> - ignore it
 
 /** Display help
 * @param MouseEvent
@@ -758,17 +758,17 @@ var helpOpen, helpIgnore; // when mouse outs <option> then it mouse overs border
 * @this HTMLElement
 */
 function helpMouseover(event, text, side) {
-	var target = getTarget(event);
+	const target = getTarget(event);
 	if (!text) {
 		helpClose();
 	} else if (window.jush && (!helpIgnore || this != target)) {
 		helpOpen = 1;
-		var help = qs('#help');
+		const help = qs('#help');
 		help.innerHTML = text;
 		jush.highlight_tag([ help ]);
 		alterClass(help, 'hidden');
-		var rect = target.getBoundingClientRect();
-		var body = document.documentElement;
+		const rect = target.getBoundingClientRect();
+		const body = document.documentElement;
 		help.style.top = (body.scrollTop + rect.top - (side ? (help.offsetHeight - target.offsetHeight) / 2 : help.offsetHeight)) + 'px';
 		help.style.left = (body.scrollLeft + rect.left - (side ? help.offsetWidth : (help.offsetWidth - target.offsetWidth) / 2)) + 'px';
 	}
