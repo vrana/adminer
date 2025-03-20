@@ -337,7 +337,7 @@ function input($field, $value, $function, $autofocus = false) {
 			$first++;
 		}
 		if ($first) {
-			echo script("mixin(qsl('td'), {onchange: partial(skipOriginal, $first), oninput: function () { this.onchange(); }});");
+			echo script("mixin(qsl('td'), {oninput: partial(skipOriginal, $first)});");
 		}
 	}
 }
@@ -513,6 +513,7 @@ function edit_form($table, $fields, $row, $update) {
 			;
 		}
 		echo "</table>\n";
+		echo script("setupEditChange(qsl('form'));");
 	}
 	echo "<p>\n";
 	if ($fields) {

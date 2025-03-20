@@ -575,6 +575,29 @@ function fieldChange() {
 
 
 
+let editChanged;
+
+/** Setup saving editChanged on form fields
+* @this HTMLFormElement
+*/
+function setupEditChange(form) {
+	for (const el of qsa('input, select, textarea', form)) {
+		el.addEventListener('change', () => {
+			editChanged = true;
+		});
+	}
+	form.onsubmit = () => {
+		editChanged = null; // false doesn't work in Chrome
+	}
+}
+
+onbeforeunload = () => {
+	// all modern browsers ignore string returned from here
+	return editChanged;
+};
+
+
+
 /** Create AJAX request
 * @param string
 * @param function (XMLHttpRequest)

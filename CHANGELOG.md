@@ -1,4 +1,5 @@
 ## Adminer dev
+- Confirm before exiting edited edit form
 - Display collation at table structure if different from table
 - PostgreSQL: Display auto_increment of inserted rows
 - PostgreSQL: Display description of system variables
