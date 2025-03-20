@@ -3,6 +3,7 @@ namespace Adminer;
 
 class Plugins extends Adminer {
 	public $plugins; ///< @var protected(set)
+	public $error = ''; ///< @var protected(set)
 
 	/** Register plugins
 	* @param array object instances or null to autoload plugins from adminer-plugins/
@@ -18,13 +19,23 @@ class Plugins extends Adminer {
 			}
 			if (file_exists("$basename.php")) {
 				$include = include_once "./$basename.php"; // example: return array(new AdminerLoginOtp($secret))
-				foreach ($include as $plugin) {
-					$plugins[get_class($plugin)] = $plugin;
+				if (is_array($include)) {
+					foreach ($include as $plugin) {
+						$plugins[get_class($plugin)] = $plugin;
+					}
+				} else {
+					$this->error .= lang('<b>%s</b> must return an array.', "$basename.php") . "<br>";
 				}
 			}
 			foreach (get_declared_classes() as $class) {
 				if (!$plugins[$class] && preg_match('~^Adminer\w~i', $class)) {
-					$plugins[$class] = new $class; // if the constructor have some required parameters then PHP triggers an error here
+					$reflection = new \ReflectionClass($class);
+					$constructor = $reflection->getConstructor();
+					if ($constructor && $constructor->getNumberOfRequiredParameters()) {
+						$this->error .= lang('Configure <b>%s</b> in <b>%s</b>.', $class, "$basename.php") . "<br>";
+					} else {
+						$plugins[$class] = new $class;
+					}
 				}
 			}
 		}

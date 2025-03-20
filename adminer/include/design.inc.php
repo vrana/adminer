@@ -170,6 +170,7 @@ function get_nonce() {
 * @return null
 */
 function page_messages($error) {
+	global $adminer;
 	$uri = preg_replace('~^[^?]*~', '', $_SERVER["REQUEST_URI"]);
 	$messages = $_SESSION["messages"][$uri];
 	if ($messages) {
@@ -178,6 +179,9 @@ function page_messages($error) {
 	}
 	if ($error) {
 		echo "<div class='error'>$error</div>\n";
+	}
+	if ($adminer->error) { // separate <div>
+		echo "<div class='error'>$adminer->error</div>\n";
 	}
 }
 
