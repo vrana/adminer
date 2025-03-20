@@ -505,7 +505,7 @@ function bodyClick(event) {
 
 
 
-/** Change focus by Ctrl+Up or Ctrl+Down
+/** Change focus by Ctrl+Shift+Up or Ctrl+Shift+Down
 * @param KeyboardEvent
 * @return boolean
 */
