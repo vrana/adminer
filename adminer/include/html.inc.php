@@ -323,7 +323,7 @@ function input($field, $value, $function, $autofocus = false) {
 			echo "<input"
 				. ((!$has_function || $function === "") && preg_match('~(?<!o)int(?!er)~', $field["type"]) && !preg_match('~\[\]~', $field["full_type"]) ? " type='number'" : "")
 				. " value='" . h($value) . "'" . ($maxlength ? " data-maxlength='$maxlength'" : "")
-				. (preg_match('~char|binary~', $field["type"]) && $maxlength > 20 ? " size='40'" : "")
+				. (preg_match('~char|binary~', $field["type"]) && $maxlength > 20 ? " size='" . ($maxlength > 99 ? 60 : 40) . "'" : "")
 				. "$attrs>"
 			;
 		}
