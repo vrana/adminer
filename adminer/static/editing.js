@@ -405,7 +405,7 @@ function editingTypeChange() {
 	const type = this;
 	const name = type.name.substr(0, type.name.length - 6);
 	const text = selectValue(type);
-	for (const el of type.form.elements.length) {
+	for (const el of type.form.elements) {
 		if (el.name == name + '[length]') {
 			if (!(
 				(/(char|binary)$/.test(lastType) && /(char|binary)$/.test(text))
