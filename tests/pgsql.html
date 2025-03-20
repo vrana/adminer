@@ -10,7 +10,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Login</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php</td><td></td></tr>
 <tr><td>select</td><td>name=lang</td><td>label=English</td></tr>
 <tr><td>clickAndWait</td><td>css=#lang &gt; input[type="submit"]</td><td></td></tr>
 <tr><td>select</td><td>name=auth[driver]</td><td>label=PostgreSQL</td></tr>
@@ -23,7 +23,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Create table</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Create table</td><td></td></tr>
 <tr><td>type</td><td>name</td><td>interprets</td></tr>
 <tr><td>type</td><td>fields[1][field]</td><td>id</td></tr>
@@ -43,7 +43,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Create index</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;table=interprets</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;table=interprets</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Alter indexes</td><td></td></tr>
 <tr><td>select</td><td>indexes[2][type]</td><td>label=PRIMARY</td></tr>
 <tr><td>select</td><td>indexes[2][columns][1]</td><td>label=name</td></tr>
@@ -58,7 +58,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Create table 2</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;table=interprets</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;table=interprets</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Create table</td><td></td></tr>
 <tr><td>type</td><td>name</td><td>albums</td></tr>
 <tr><td>click</td><td>//input[@name='auto_increment_col' and @value='1']</td><td></td></tr>
@@ -78,7 +78,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Foreign key</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;table=albums</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;table=albums</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Add foreign key</td><td></td></tr>
 <tr><td>selectAndWait</td><td>table</td><td>label=interprets</td></tr>
 <tr><td>select</td><td>source[0]</td><td>label=interpret</td></tr>
@@ -89,7 +89,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Alter table</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;table=interprets</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;table=interprets</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Alter table</td><td></td></tr>
 <tr><td>click</td><td>add[2]</td><td></td></tr>
 <tr><td>type</td><td>fields[3][field]</td><td>albums</td></tr>
@@ -105,7 +105,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Check constraints</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;table=albums</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;table=albums</td><td></td></tr>
 <tr><td>click</td><td>link=Create check</td><td></td></tr>
 <tr><td>type</td><td>name=name</td><td>albums_interpret_check</td></tr>
 <tr><td>runScript</td><td>document.querySelector('[name="clause"]').value = 'interpret > 0'</td><td></td></tr>
@@ -115,7 +115,7 @@
 <tr><td>type</td><td>fields[interpret]</td><td>0</td></tr>
 <tr><td>click</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>violates check constraint</td><td></td></tr>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;check=albums&amp;name=albums_interpret_check</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;check=albums&amp;name=albums_interpret_check</td><td></td></tr>
 <tr><td>verifyTextPresent<td>(interpret > 0)</td><td></td></tr>
 <tr><td>chooseOkOnNextConfirmation</td><td>Drop albums_interpret_check?</td><td></td></tr>
 <tr><td>click</td><td>name=drop</td><td></td></tr>
@@ -125,7 +125,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Create view</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;view=</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;view=</td><td></td></tr>
 <tr><td>runScript</td><td>document.querySelector('[name="select"]').value = 'SELECT albums.id, albums.title, interprets.name FROM albums LEFT JOIN interprets ON albums.interpret = interprets.id'</td><td></td></tr>
 <tr><td>type</td><td>name</td><td>albums_interprets</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
@@ -135,7 +135,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Materialized view</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;view=</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;view=</td><td></td></tr>
 <tr><td>runScript</td><td>document.querySelector('[name="select"]').value = 'SELECT albums.id, albums.title, interprets.name FROM albums LEFT JOIN interprets ON albums.interpret = interprets.id'</td><td></td></tr>
 <tr><td>type</td><td>name</td><td>materialized_view</td></tr>
 <tr><td>click</td><td>materialized</td><td></td></tr>
@@ -146,11 +146,11 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Insert</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;edit=interprets</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;edit=interprets</td><td></td></tr>
 <tr><td>type</td><td>fields[name]</td><td>Michael Jackson</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Item has been inserted.</td><td></td></tr>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;edit=albums</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;edit=albums</td><td></td></tr>
 <tr><td>type</td><td>fields[interpret]</td><td>1</td></tr>
 <tr><td>type</td><td>fields[title]</td><td>Dangerous</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
@@ -160,7 +160,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Clone</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;select=albums</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;select=albums</td><td></td></tr>
 <tr><td>click</td><td>check[]</td><td></td></tr>
 <tr><td>clickAndWait</td><td>clone</td><td></td></tr>
 <tr><td>type</td><td>fields[title]</td><td>Black and White</td></tr>
@@ -171,7 +171,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3" data-tags="">Enum</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>http://localhost:8080/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public</td><td></td></tr>
+<tr><td>open</td><td>http://localhost:8080/adminer.php?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public</td><td></td></tr>
 <tr><td>click</td><td>link=Create type</td><td></td></tr>
 <tr><td>type</td><td>name=name</td><td>alive</td></tr>
 <tr><td>runScript</td><td>document.querySelector('[name="as"]').value = "AS ENUM('alive', 'deceased')"</td><td></td></tr>
@@ -188,7 +188,7 @@
 <tr><td>chooseOkOnNextConfirmation</td><td>Drop alive?</td><td></td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Drop']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>cannot drop type</td><td></td></tr>
-<tr><td>open</td><td>http://localhost:8080/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;edit=interprets&amp;where%5Bid%5D=1</td><td></td></tr>
+<tr><td>open</td><td>http://localhost:8080/adminer.php?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;edit=interprets&amp;where%5Bid%5D=1</td><td></td></tr>
 <tr><td>click</td><td>//input[@value='deceased']</td><td></td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>deceased</td><td></td></tr>
@@ -197,7 +197,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Explain</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;select=albums</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;select=albums</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Edit</td><td></td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Execute']</td><td></td></tr>
 <tr><td>click</td><td>link=Explain</td><td></td></tr>
@@ -207,7 +207,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Reference</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;select=albums</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;select=albums</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=1</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Michael Jackson</td><td></td></tr>
 </tbody></table>
@@ -215,7 +215,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Update</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;edit=albums&amp;where%5Bid%5D=2</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;edit=albums&amp;where%5Bid%5D=2</td><td></td></tr>
 <tr><td>type</td><td>fields[title]</td><td>Black or White</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Item has been updated.</td><td></td></tr>
@@ -224,7 +224,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Delete</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;select=albums</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;select=albums</td><td></td></tr>
 <tr><td>click</td><td>//input[@name='check[]' and @value='where%5Bid%5D=2']</td><td></td></tr>
 <tr><td>waitForChecked</td><td>//input[@name='check[]' and @value='where%5Bid%5D=2']</td><td></td></tr>
 <tr><td>chooseOkOnNextConfirmation</td><td>Are you sure?</td><td></td></tr>
@@ -235,7 +235,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Truncate</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;select=albums</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;select=albums</td><td></td></tr>
 <tr><td>click</td><td>all</td><td></td></tr>
 <tr><td>waitForChecked</td><td>all</td><td></td></tr>
 <tr><td>chooseOkOnNextConfirmation</td><td>Are you sure?</td><td></td></tr>
@@ -246,14 +246,14 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Process list</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;processlist=</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;processlist=</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>pg_stat_activity</td><td></td></tr>
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Export</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;dump=</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;dump=</td><td></td></tr>
 <tr><td>click</td><td>output</td><td></td></tr>
 <tr><td>click</td><td>format</td><td></td></tr>
 <tr><td>select</td><td>table_style</td><td>label=DROP+CREATE</td></tr>
@@ -267,7 +267,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Procedures</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;procedure=</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;procedure=</td><td></td></tr>
 <tr><td>clickAndWait</td><td>add[0]</td><td></td></tr>
 <tr><td>type</td><td>fields[1][field]</td><td>interpret_name</td></tr>
 <tr><td>select</td><td>fields[1][type]</td><td>label=character varying</td></tr>
@@ -295,7 +295,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3" data-tags="">Generated columns</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;create=</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;create=</td><td></td></tr>
 <tr><td>type</td><td>name=name</td><td>generated</td></tr>
 <tr><td>type</td><td>name=fields[1][field]</td><td>normal</td></tr>
 <tr><td>type</td><td>name=fields[1.1][field]</td><td>stored</td></tr>
@@ -317,7 +317,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Drop</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public</td><td></td></tr>
 <tr><td>click</td><td>id=check-all</td><td></td></tr>
 <tr><td>chooseOkOnNextConfirmation</td><td>Are you sure?</td><td></td></tr>
 <tr><td>click</td><td>name=drop</td><td></td></tr>
@@ -327,14 +327,14 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Variables</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;variables=</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;variables=</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>autovacuum</td><td></td></tr>
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">SQL command</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;sql=SELECT+122%2B1</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC&amp;sql=SELECT+122%2B1</td><td></td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Execute']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>123</td><td></td></tr>
 </tbody></table>
@@ -342,7 +342,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Logout</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?pgsql=&amp;username=ODBC</td><td></td></tr>
 <tr><td>clickAndWait</td><td>logout</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Logout successful.</td><td></td></tr>
 <tr><td>open</td><td>/coverage.php</td><td></td></tr>
