@@ -76,7 +76,7 @@ for (const el of qsa('textarea')) {
 			}
 		});
 		cm.setSize(width, height);
-		cm.on('inputRead', function () {
+		cm.on('inputRead', () => {
 			const token = cm.getTokenAt(cm.getCursor());
 			if (/^[.`"\w]\w*$/.test(token.string)) {
 				CodeMirror.commands.autocomplete(cm);

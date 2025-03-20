@@ -61,8 +61,8 @@ tinyMCE.init({
 			return "<textarea$attrs id='fields-" . Adminer\h($field["field"]) . "' rows='12' cols='50'>" . Adminer\h($value) . "</textarea>" . Adminer\script("
 tinyMCE.remove(tinyMCE.get('fields-" . Adminer\js_escape($field["field"]) . "') || { });
 tinyMCE.EditorManager.execCommand('mceAddControl', true, 'fields-" . Adminer\js_escape($field["field"]) . "');
-qs('#form').onsubmit = function () {
-	tinyMCE.each(tinyMCE.editors, function (ed) {
+qs('#form').onsubmit = () => {
+	tinyMCE.each(tinyMCE.editors, ed => {
 		ed.remove();
 	});
 };

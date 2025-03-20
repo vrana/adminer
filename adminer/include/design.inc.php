@@ -76,7 +76,7 @@ const offlineMessage = '" . js_escape(lang('You are offline.')) . "';
 const thousandsSeparator = '" . js_escape(lang(',')) . "';")
 	;
 	echo "<div id='help' class='jush-" . JUSH . " jsonly hidden'></div>\n";
-	echo script("mixin(qs('#help'), {onmouseover: function () { helpOpen = 1; }, onmouseout: helpMouseout});");
+	echo script("mixin(qs('#help'), {onmouseover: () => { helpOpen = 1; }, onmouseout: helpMouseout});");
 	echo "<div id='content'>\n";
 	if ($breadcrumb !== null) {
 		$link = substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1);

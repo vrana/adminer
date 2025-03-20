@@ -108,13 +108,12 @@ function verifyVersion(current, url, token) {
 	iframe.style.width = '7ex';
 	iframe.style.height = '1.25em';
 	iframe.style.display = 'none';
-	addEventListener('message', function (event) {
+	addEventListener('message', event => {
 		if (event.origin == 'https://www.adminer.org') {
 			const match = /version=(.+)/.exec(event.data);
 			if (match) {
 				cookie('adminer_version=' + match[1], 1);
-				ajax(url + 'script=version', function () {
-				}, event.data + '&token=' + token);
+				ajax(url + 'script=version', () => { }, event.data + '&token=' + token);
 			}
 		}
 	}, false);
@@ -391,8 +390,7 @@ function selectAddRow() {
 */
 function selectSearchKeydown(event) {
 	if (event.keyCode == 13 || event.keyCode == 10) {
-		this.onsearch = function () {
-		};
+		this.onsearch = () => { };
 	}
 }
 
@@ -498,7 +496,7 @@ function bodyClick(event) {
 	const target = getTarget(event);
 	if ((isCtrl(event) || event.shiftKey) && target.type == 'submit' && isTag(target, 'input')) {
 		target.form.target = '_blank';
-		setTimeout(function () {
+		setTimeout(() => {
 			// if (isCtrl(event)) { focus(); } doesn't work
 			target.form.target = '';
 		}, 0);
@@ -572,7 +570,7 @@ function fieldChange() {
 	}
 	// keep value in <select> (function)
 	parentTag(this, 'table').appendChild(row);
-	this.oninput = function () { };
+	this.oninput = () => { };
 }
 
 
@@ -600,7 +598,7 @@ function ajax(url, callback, data, message) {
 			request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		}
 		request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-		request.onreadystatechange = function () {
+		request.onreadystatechange = () => {
 			if (request.readyState == 4) {
 				if (/^2/.test(request.status)) {
 					callback(request);
@@ -620,7 +618,7 @@ function ajax(url, callback, data, message) {
 * @return boolean false for success
 */
 function ajaxSetHtml(url) {
-	return !ajax(url, function (request) {
+	return !ajax(url, request => {
 		const data = JSON.parse(request.responseText);
 		for (const key in data) {
 			setHtml(key, data[key]);
@@ -653,7 +651,7 @@ function ajaxForm(form, message, button) {
 		url = url.replace(/\?.*/, '') + '?' + data;
 		data = '';
 	}
-	return ajax(url, function (request) {
+	return ajax(url, request => {
 		setHtml('ajaxstatus', request.responseText);
 		if (window.jush) {
 			jush.highlight_tag(qsa('code', qs('#ajaxstatus')), 0);
@@ -684,7 +682,7 @@ function selectClick(event, text, warning) {
 	const original = td.innerHTML;
 	text = text || /\n/.test(original);
 	const input = document.createElement(text ? 'textarea' : 'input');
-	input.onkeydown = function (event) {
+	input.onkeydown = event => {
 		if (!event) {
 			event = window.event;
 		}
@@ -702,7 +700,7 @@ function selectClick(event, text, warning) {
 
 	if (text) {
 		let rows = 1;
-		value.replace(/\n/g, function () {
+		value.replace(/\n/g, () => {
 			rows++;
 		});
 		input.rows = rows;
@@ -723,7 +721,7 @@ function selectClick(event, text, warning) {
 	setupSubmitHighlight(td);
 	input.focus();
 	if (text == 2) { // long text
-		return ajax(location.href + '&' + encodeURIComponent(td.id) + '=', function (request) {
+		return ajax(location.href + '&' + encodeURIComponent(td.id) + '=', request => {
 			if (request.responseText) {
 				input.value = request.responseText;
 				input.name = td.id;
@@ -757,16 +755,14 @@ function selectLoadMore(limit, loading) {
 	a.innerHTML = loading;
 	if (href) {
 		a.removeAttribute('href');
-		return !ajax(href, function (request) {
+		return !ajax(href, request => {
 			const tbody = document.createElement('tbody');
 			tbody.innerHTML = request.responseText;
 			qs('#table').appendChild(tbody);
 			if (tbody.children.length < limit) {
 				a.parentNode.removeChild(a);
 			} else {
-				a.href = href.replace(/\d+$/, function (page) {
-					return +page + 1;
-				});
+				a.href = href.replace(/\d+$/, page => +page + 1);
 				a.innerHTML = title;
 			}
 		});
@@ -883,7 +879,7 @@ function cloneNode(el) {
 	return el2;
 }
 
-oninput = function (event) {
+oninput = event => {
 	const target = event.target;
 	const maxLength = target.getAttribute('data-maxlength');
 	alterClass(target, 'maxlength', target.value && maxLength != null && target.value.length > maxLength); // maxLength could be 0

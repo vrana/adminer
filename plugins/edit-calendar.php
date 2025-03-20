@@ -34,7 +34,7 @@ class AdminerEditCalendar {
 			$lang = ($lang == "zh" ? "zh-CN" : ($lang == "zh-tw" ? "zh-TW" : $lang));
 			if ($lang != "en" && file_exists(sprintf($this->langPath, $lang))) {
 				echo Adminer\script_src(sprintf($this->langPath, $lang));
-				echo Adminer\script("jQuery(function () { jQuery.timepicker.setDefaults(jQuery.datepicker.regional['$lang']); });");
+				echo Adminer\script("jQuery(() => { jQuery.timepicker.setDefaults(jQuery.datepicker.regional['$lang']); });");
 			}
 		}
 	}

@@ -143,7 +143,7 @@ function dbChange() {
 */
 function selectFieldChange() {
 	const form = this.form;
-	const ok = (function () {
+	const ok = (() => {
 		for (const input of qsa('input', form)) {
 			if (input.value && /^fulltext/.test(input.name)) {
 				return true;
@@ -523,7 +523,7 @@ function partitionNameChange() {
 	const row = cloneNode(parentTag(this, 'tr'));
 	row.firstChild.firstChild.value = '';
 	parentTag(this, 'table').appendChild(row);
-	this.oninput = function () {};
+	this.oninput = () => { };
 }
 
 /** Show or hide comment fields
@@ -564,7 +564,7 @@ function dumpClick(event) {
 */
 function foreignAddRow() {
 	const row = cloneNode(parentTag(this, 'tr'));
-	this.onchange = function () { };
+	this.onchange = () => { };
 	for (const select of qsa('select', row)) {
 		select.name = select.name.replace(/\d+]/, '1$&');
 		select.selectedIndex = 0;
@@ -579,7 +579,7 @@ function foreignAddRow() {
 */
 function indexesAddRow() {
 	const row = cloneNode(parentTag(this, 'tr'));
-	this.onchange = function () { };
+	this.onchange = () => { };
 	for (const select of qsa('select', row)) {
 		select.name = select.name.replace(/indexes\[\d+/, '$&1');
 		select.selectedIndex = 0;
@@ -781,7 +781,7 @@ function helpMouseover(event, text, side) {
 function helpMouseout(event) {
 	helpOpen = 0;
 	helpIgnore = (this != getTarget(event));
-	setTimeout(function () {
+	setTimeout(() => {
 		if (!helpOpen) {
 			helpClose();
 		}

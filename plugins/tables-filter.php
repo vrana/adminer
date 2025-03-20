@@ -53,7 +53,7 @@ function tablesFilterInput() {
 	tablesFilterTimeout = window.setTimeout(tablesFilter, 200);
 }
 
-sessionStorage && document.addEventListener('DOMContentLoaded', function () {
+sessionStorage && document.addEventListener('DOMContentLoaded', () => {
 	let db = qs('#dbs').querySelector('select');
 	db = db.options[db.selectedIndex].text;
 	if (db == sessionStorage.getItem('adminer_tables_filter_db') && sessionStorage.getItem('adminer_tables_filter')){
