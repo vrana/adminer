@@ -696,7 +696,7 @@ function selectClick(event, text, warning) {
 	let value = (td.firstChild && td.firstChild.alt) || td.textContent || td.innerText;
 	const tdStyle = window.getComputedStyle(td, null);
 
-	input.style.width = Math.max(td.clientWidth - parseFloat(tdStyle.paddingLeft) - parseFloat(tdStyle.paddingRight), 20) + 'px';
+	input.style.width = Math.max(td.clientWidth - parseFloat(tdStyle.paddingLeft) - parseFloat(tdStyle.paddingRight), (text ? 200 : 20)) + 'px';
 
 	if (text) {
 		let rows = 1;
