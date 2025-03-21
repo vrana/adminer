@@ -2,8 +2,8 @@
 namespace Adminer;
 
 class Plugins extends Adminer {
-	public $plugins; ///< @var protected(set)
-	public $error = ''; ///< @var protected(set)
+	public $plugins; ///< @var protected(set) array
+	public $error = ''; ///< @var protected(set) string HTML
 
 	/** Register plugins
 	* @param array object instances or null to autoload plugins from adminer-plugins/
@@ -17,6 +17,7 @@ class Plugins extends Adminer {
 					$include = include_once "./$filename";
 				}
 			}
+			$help = " href='https://www.adminer.org/plugins/#use'" . target_blank();
 			if (file_exists("$basename.php")) {
 				$include = include_once "./$basename.php"; // example: return array(new AdminerLoginOtp($secret))
 				if (is_array($include)) {
@@ -24,7 +25,7 @@ class Plugins extends Adminer {
 						$plugins[get_class($plugin)] = $plugin;
 					}
 				} else {
-					$this->error .= lang('<b>%s</b> must return an array.', "$basename.php") . "<br>";
+					$this->error .= lang('%s must <a%s>return an array</a>.', "<b>$basename.php</b>", $help) . "<br>";
 				}
 			}
 			foreach (get_declared_classes() as $class) {
@@ -32,7 +33,7 @@ class Plugins extends Adminer {
 					$reflection = new \ReflectionClass($class);
 					$constructor = $reflection->getConstructor();
 					if ($constructor && $constructor->getNumberOfRequiredParameters()) {
-						$this->error .= lang('Configure <b>%s</b> in <b>%s</b>.', $class, "$basename.php") . "<br>";
+						$this->error .= lang('<a%s>Configure</a> %s in %s.', $help, "<b>$class</b>", "<b>$basename.php</b>") . "<br>";
 					} else {
 						$plugins[$class] = new $class;
 					}
