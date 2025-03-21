@@ -1,6 +1,7 @@
 ## Adminer dev
 - Confirm before exiting edited edit form
 - Display collation at table structure if different from table
+- Ctrl+click in select moves the cursor in modern browsers
 - PostgreSQL: Display auto_increment of inserted rows
 - PostgreSQL: Display description of system variables
 - PostgreSQL: Avoid warning about crdb_version (bug #924, regression from 5.0.5)

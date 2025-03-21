@@ -715,7 +715,7 @@ function selectClick(event, text, warning) {
 		}
 	};
 
-	let pos = event.rangeOffset;
+	const pos = getSelection().anchorOffset;
 	let value = (td.firstChild && td.firstChild.alt) || td.textContent || td.innerText;
 	const tdStyle = window.getComputedStyle(td, null);
 
@@ -730,14 +730,6 @@ function selectClick(event, text, warning) {
 	}
 	if (qsa('i', td).length) { // <i> - NULL
 		value = '';
-	}
-	if (document.selection) {
-		const range = document.selection.createRange();
-		range.moveToPoint(event.clientX, event.clientY);
-		const range2 = range.duplicate();
-		range2.moveToElementText(td);
-		range2.setEndPoint('EndToEnd', range);
-		pos = range2.text.length;
 	}
 	td.innerHTML = '';
 	td.appendChild(input);
@@ -755,11 +747,6 @@ function selectClick(event, text, warning) {
 	input.name = td.id;
 	input.selectionStart = pos;
 	input.selectionEnd = pos;
-	if (document.selection) {
-		const range = document.selection.createRange();
-		range.moveEnd('character', -input.value.length + pos);
-		range.select();
-	}
 	return true;
 }
 
