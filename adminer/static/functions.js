@@ -582,7 +582,7 @@ let editChanged;
 */
 function setupEditChange(form) {
 	for (const el of qsa('input, select, textarea', form)) {
-		el.addEventListener('change', () => {
+		addEvent(el, 'change', () => {
 			editChanged = true;
 		});
 	}
@@ -591,10 +591,8 @@ function setupEditChange(form) {
 	}
 }
 
-onbeforeunload = () => {
-	// all modern browsers ignore string returned from here
-	return editChanged;
-};
+// all modern browsers ignore string returned from here
+onbeforeunload = () => editChanged;
 
 
 
