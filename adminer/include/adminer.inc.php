@@ -387,7 +387,7 @@ class Adminer {
 				($key !== "" ? "selectFieldChange" : "selectAddRow")
 			);
 			echo "<div>" . ($driver->functions || $driver->grouping ? html_select("columns[$i][fun]", array(-1 => "") + array_filter(array(lang('Functions') => $driver->functions, lang('Aggregation') => $driver->grouping)), $val["fun"])
-				. on_help("getTarget(event).value && getTarget(event).value.replace(/ |\$/, '(') + ')'", 1)
+				. on_help("event.target.value && event.target.value.replace(/ |\$/, '(') + ')'", 1)
 				. script("qsl('select').onchange = function () { helpClose();" . ($key !== "" ? "" : " qsl('select, input', this.parentNode).onchange();") . " };", "")
 				. "($column)" : $column) . "</div>\n";
 			$i++;

@@ -237,7 +237,7 @@ function editFields() {
 			},
 			onchange: editingTypeChange,
 			onmouseover: function (event) {
-				helpMouseover.call(this, event, getTarget(event).value, 1);
+				helpMouseover.call(this, event, event.target.value, 1);
 			},
 			onmouseout: helpMouseout
 		});
@@ -249,7 +249,7 @@ function editFields() {
 * @return boolean false to cancel action
 */
 function editingClick(event) {
-	let el = getTarget(event);
+	let el = event.target;
 	if (!isTag(el, 'input')) {
 		el = parentTag(el, 'label');
 		el = el && qs('input', el);
@@ -282,7 +282,7 @@ function editingClick(event) {
 * @param InputEvent
 */
 function editingInput(event) {
-	const el = getTarget(event);
+	const el = event.target;
 	if (/\[default]$/.test(el.name)) {
 		 el.previousElementSibling.checked = true;
 		 el.previousElementSibling.selectedIndex = Math.max(el.previousElementSibling.selectedIndex, 1);
@@ -546,7 +546,7 @@ function editingCommentsClick(el, focus) {
 * @this HTMLTableElement
 */
 function dumpClick(event) {
-	let el = parentTag(getTarget(event), 'label');
+	let el = parentTag(event.target, 'label');
 	if (el) {
 		el = qs('input', el);
 		const match = /(.+)\[]$/.exec(el.name);
@@ -758,7 +758,7 @@ let helpOpen, helpIgnore; // when mouse outs <option> then it mouse overs border
 * @this HTMLElement
 */
 function helpMouseover(event, text, side) {
-	const target = getTarget(event);
+	const target = event.target;
 	if (!text) {
 		helpClose();
 	} else if (window.jush && (!helpIgnore || this != target)) {
@@ -780,7 +780,7 @@ function helpMouseover(event, text, side) {
 */
 function helpMouseout(event) {
 	helpOpen = 0;
-	helpIgnore = (this != getTarget(event));
+	helpIgnore = (this != event.target);
 	setTimeout(() => {
 		if (!helpOpen) {
 			helpClose();

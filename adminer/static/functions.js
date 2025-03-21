@@ -232,7 +232,7 @@ function formChecked(input, name) {
 * @param [boolean] force click
 */
 function tableClick(event, click) {
-	const td = parentTag(getTarget(event), 'td');
+	const td = parentTag(event.target, 'td');
 	let text;
 	if (td && (text = td.getAttribute('data-text'))) {
 		if (selectClick.call(td, event, +text, td.getAttribute('data-warning'))) {
@@ -240,7 +240,7 @@ function tableClick(event, click) {
 		}
 	}
 	click = (click || !window.getSelection || getSelection().isCollapsed);
-	let el = getTarget(event);
+	let el = event.target;
 	while (!isTag(el, 'tr')) {
 		if (isTag(el, 'table|a|input|textarea')) {
 			if (el.type != 'checkbox') {
@@ -345,7 +345,7 @@ function pageClick(href, page) {
 * @this HTMLElement
 */
 function menuOver(event) {
-	const a = getTarget(event);
+	const a = event.target;
 	if (isTag(a, 'a|span') && a.offsetLeft + a.offsetWidth > a.parentNode.offsetWidth - 15) { // 15 - ellipsis
 		this.style.overflow = 'visible';
 	}
@@ -452,14 +452,6 @@ function isCtrl(event) {
 	return (event.ctrlKey || event.metaKey) && !event.altKey; // shiftKey allowed
 }
 
-/** Return event target
-* @param Event
-* @return HTMLElement
-*/
-function getTarget(event) {
-	return event.target || event.srcElement;
-}
-
 
 
 /** Send form by Ctrl+Enter on <select> and <textarea>
@@ -469,7 +461,7 @@ function getTarget(event) {
 */
 function bodyKeydown(event, button) {
 	eventStop(event);
-	let target = getTarget(event);
+	let target = event.target;
 	if (target.jushTextarea) {
 		target = target.jushTextarea;
 	}
@@ -493,7 +485,7 @@ function bodyKeydown(event, button) {
 * @param MouseEvent
 */
 function bodyClick(event) {
-	const target = getTarget(event);
+	const target = event.target;
 	if ((isCtrl(event) || event.shiftKey) && target.type == 'submit' && isTag(target, 'input')) {
 		target.form.target = '_blank';
 		setTimeout(() => {
@@ -511,7 +503,7 @@ function bodyClick(event) {
 */
 function editingKeydown(event) {
 	if ((event.keyCode == 40 || event.keyCode == 38) && isCtrl(event)) { // 40 - Down, 38 - Up
-		const target = getTarget(event);
+		const target = event.target;
 		const sibling = (event.keyCode == 40 ? 'nextSibling' : 'previousSibling');
 		let el = target.parentNode.parentNode[sibling];
 		if (el && (isTag(el, 'tr') || (el = el[sibling])) && isTag(el, 'tr') && (el = el.childNodes[nodePosition(target.parentNode)]) && (el = el.childNodes[nodePosition(target)])) {
@@ -618,7 +610,7 @@ function ajax(url, callback, data, message) {
 		}
 		request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 		request.onreadystatechange = () => {
-			if (request.readyState == 4) { // 4 - DONE
+			if (request.readyState == 4) {
 				if (/^2/.test(request.status)) {
 					callback(request);
 				} else {
@@ -690,7 +682,7 @@ function ajaxForm(form, message, button) {
 */
 function selectClick(event, text, warning) {
 	const td = this;
-	const target = getTarget(event);
+	const target = event.target;
 	if (!isCtrl(event) || isTag(td.firstChild, 'input|textarea') || isTag(target, 'a')) {
 		return;
 	}

@@ -280,7 +280,7 @@ function input($field, $value, $function, $autofocus = false) {
 		$has_function = (in_array($function, $functions) || isset($functions[$function]));
 		echo (count($functions) > 1
 			? "<select name='function[$name]'$disabled>" . optionlist($functions, $function === null || $has_function ? $function : "") . "</select>"
-				. on_help("getTarget(event).value.replace(/^SQL\$/, '')", 1)
+				. on_help("event.target.value.replace(/^SQL\$/, '')", 1)
 				. script("qsl('select').onchange = functionChange;", "")
 			: h(reset($functions))
 		) . '<td>';
