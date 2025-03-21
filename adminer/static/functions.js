@@ -610,22 +610,20 @@ function ajax(url, callback, data, message) {
 		const ajaxStatus = qs('#ajaxstatus');
 		if (message) {
 			ajaxStatus.innerHTML = '<div class="message">' + message + '</div>';
-			ajaxStatus.className = ajaxStatus.className.replace(/ hidden/g, '');
-		} else {
-			ajaxStatus.className += ' hidden';
 		}
+		alterClass(ajaxStatus, 'hidden', !message);
 		request.open((data ? 'POST' : 'GET'), url);
 		if (data) {
 			request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		}
 		request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 		request.onreadystatechange = () => {
-			if (request.readyState == 4) {
+			if (request.readyState == 4) { // 4 - DONE
 				if (/^2/.test(request.status)) {
 					callback(request);
 				} else {
 					ajaxStatus.innerHTML = (request.status ? request.responseText : '<div class="error">' + offlineMessage + '</div>');
-					ajaxStatus.className = ajaxStatus.className.replace(/ hidden/g, '');
+					alterClass(ajaxStatus, 'hidden');
 				}
 			}
 		};
