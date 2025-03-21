@@ -706,9 +706,6 @@ function selectClick(event, text, warning) {
 	text = text || /\n/.test(original);
 	const input = document.createElement(text ? 'textarea' : 'input');
 	input.onkeydown = event => {
-		if (!event) {
-			event = window.event;
-		}
 		if (event.keyCode == 27 && !event.shiftKey && !event.altKey && !isCtrl(event)) { // 27 - Esc
 			inputBlur.apply(input);
 			td.innerHTML = original;
@@ -716,7 +713,7 @@ function selectClick(event, text, warning) {
 	};
 
 	const pos = getSelection().anchorOffset;
-	let value = (td.firstChild && td.firstChild.alt) || td.textContent || td.innerText;
+	let value = (td.firstChild && td.firstChild.alt) || td.textContent;
 	const tdStyle = window.getComputedStyle(td, null);
 
 	input.style.width = Math.max(td.clientWidth - parseFloat(tdStyle.paddingLeft) - parseFloat(tdStyle.paddingRight), (text ? 200 : 20)) + 'px';
@@ -785,11 +782,7 @@ function selectLoadMore(limit, loading) {
 * @param Event
 */
 function eventStop(event) {
-	if (event.stopPropagation) {
-		event.stopPropagation();
-	} else {
-		event.cancelBubble = true;
-	}
+	event.stopPropagation();
 }
 
 
@@ -861,11 +854,7 @@ function findDefaultSubmit(el) {
 * @param function
 */
 function addEvent(el, action, handler) {
-	if (el.addEventListener) {
-		el.addEventListener(action, handler, false);
-	} else {
-		el.attachEvent('on' + action, handler);
-	}
+	el.addEventListener(action, handler, false);
 }
 
 /** Clone node and setup submit highlighting
