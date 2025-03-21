@@ -9,6 +9,7 @@
 - CSS: Sticky table headers (bug #918)
 - CSS: Allow more custom styles with dark mode (bug #925)
 - CSS: Increase maximum width of string edit (bug #930)
+- CSS: Increase space after SQL result (bug #937)
 - Plugins: autoload plugins from adminer-plugins/
 - Plugins: configure plugins with adminer-plugins.php
 - Plugins: Display loaded plugins in server overview

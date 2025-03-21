@@ -159,7 +159,7 @@ if (!$error && $_POST) {
 										if (!$_POST["only_errors"]) {
 											echo "<form action='' method='post'>\n";
 											$num_rows = $result->num_rows;
-											echo "<p>" . ($num_rows ? ($limit && $num_rows > $limit ? lang('%d / ', $limit) : "") . lang('%d row(s)', $num_rows) : "");
+											echo "<p class='sql-footer'>" . ($num_rows ? ($limit && $num_rows > $limit ? lang('%d / ', $limit) : "") . lang('%d row(s)', $num_rows) : "");
 											echo $time;
 											if ($connection2 && preg_match("~^($space|\\()*+SELECT\\b~i", $q) && ($explain = explain($connection2, $q))) {
 												echo ", <a href='#$explain_id'>Explain</a>" . script("qsl('a').onclick = partial(toggle, '$explain_id');", "");
