@@ -47,11 +47,7 @@ if (!defined('Adminer\DRIVER')) {
 
 			function result($query, $field = 0) {
 				$result = $this->query($query);
-				if (!$result) {
-					return false;
-				}
-				$row = $result->fetch_array();
-				return $row[$field];
+				return ($result ? $result->fetch_column($field) : false);
 			}
 
 			function quote($string) {
