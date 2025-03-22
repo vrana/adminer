@@ -14,6 +14,7 @@ if (!defined('Adminer\DRIVER')) {
 				parent::init();
 			}
 
+			/** @see https://php.net/mysqli.construct */
 			function connect($server = "", $username = "", $password = "", $database = null, $port = null, $socket = null) {
 				global $adminer;
 				mysqli_report(MYSQLI_REPORT_OFF); // stays between requests, not required since PHP 5.3.4
