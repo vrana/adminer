@@ -457,7 +457,7 @@ function set_session($key, $val) {
 function auth_url($vendor, $server, $username, $db = null) {
 	global $drivers;
 	$uri = remove_from_uri(implode("|", array_keys($drivers))
-		. "|username|"
+		. "|username|ext|"
 		. ($db !== null ? "db|" : "")
 		. ($vendor == 'mssql' || $vendor == 'pgsql' ? "" : "ns|") // we don't have access to support() here
 		. session_name())
@@ -466,6 +466,7 @@ function auth_url($vendor, $server, $username, $db = null) {
 	return "$match[1]?"
 		. (sid() ? SID . "&" : "")
 		. ($vendor != "server" || $server != "" ? urlencode($vendor) . "=" . urlencode($server) . "&" : "")
+		. ($_GET["ext"] ? "ext=" . urlencode($_GET["ext"]) . "&" : "")
 		. "username=" . urlencode($username)
 		. ($db != "" ? "&db=" . urlencode($db) : "")
 		. ($match[2] ? "&$match[2]" : "")

@@ -11,7 +11,7 @@ $drivers["mssql"] = "MS SQL";
 
 if (isset($_GET["mssql"])) {
 	define('Adminer\DRIVER', "mssql");
-	if (extension_loaded("sqlsrv")) {
+	if (extension_loaded("sqlsrv") && $_GET["ext"] != "pdo") {
 		class Db {
 			public $extension = "sqlsrv", $server_info, $affected_rows, $errno, $error;
 			private $link, $result;

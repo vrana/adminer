@@ -5,7 +5,7 @@ $drivers["pgsql"] = "PostgreSQL";
 
 if (isset($_GET["pgsql"])) {
 	define('Adminer\DRIVER', "pgsql");
-	if (extension_loaded("pgsql")) {
+	if (extension_loaded("pgsql") && $_GET["ext"] != "pdo") {
 		class Db {
 			public $extension = "PgSQL", $server_info, $affected_rows, $error, $timeout;
 			private $link, $result, $string, $database = true;

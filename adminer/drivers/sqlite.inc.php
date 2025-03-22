@@ -5,7 +5,7 @@ $drivers["sqlite"] = "SQLite";
 
 if (isset($_GET["sqlite"])) {
 	define('Adminer\DRIVER', "sqlite");
-	if (class_exists("SQLite3")) {
+	if (class_exists("SQLite3") && $_GET["ext"] != "pdo") {
 
 		class SqliteDb {
 			public $extension = "SQLite3", $server_info, $affected_rows, $errno, $error;
