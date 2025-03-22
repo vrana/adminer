@@ -641,7 +641,7 @@ function indexesAddColumn(prefix) {
 
 
 
-/** Updates the form action
+/** Update the form action
 * @param HTMLFormElement
 * @param string
 */

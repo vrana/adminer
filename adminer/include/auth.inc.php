@@ -123,7 +123,7 @@ function unset_permanent() {
 	cookie("adminer_permanent", implode(" ", $permanent));
 }
 
-/** Renders an error message and a login form
+/** Render an error message and a login form
 * @param string plain text
 * @return null exits
 */

@@ -92,7 +92,7 @@ if (!defined('Adminer\DRIVER')) {
 				return (bool) $this->link;
 			}
 
-			/** Sets the client character set
+			/** Set the client character set
 			* @param string
 			* @return bool
 			*/

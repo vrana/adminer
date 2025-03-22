@@ -1,6 +1,6 @@
 <?php
 
-/** Exports one database (e.g. development) so that it can be synced with other database (e.g. production)
+/** Export one database (e.g. development) so that it can be synced with other database (e.g. production)
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0

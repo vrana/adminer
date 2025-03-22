@@ -773,7 +773,7 @@ class Adminer {
 		return unconvert_field($field, $return);
 	}
 
-	/** Returns export output options
+	/** Return export output options
 	* @return array
 	*/
 	function dumpOutput() {
@@ -784,7 +784,7 @@ class Adminer {
 		return $return;
 	}
 
-	/** Returns export format options
+	/** Return export format options
 	* @return array empty to disable export
 	*/
 	function dumpFormat() {
@@ -984,7 +984,7 @@ class Adminer {
 		return true;
 	}
 
-	/** Prints navigation after Adminer title
+	/** Print navigation after Adminer title
 	* @param string can be "auth" if there is no database connection, "db" if there is no database selected, "ns" with invalid schema
 	* @return null
 	*/
@@ -1075,7 +1075,7 @@ class Adminer {
 		);
 	}
 
-	/** Prints databases list in menu
+	/** Print databases list in menu
 	* @param string
 	* @return null
 	*/
@@ -1110,7 +1110,7 @@ class Adminer {
 		echo "</p></form>\n";
 	}
 
-	/** Prints table list in menu
+	/** Print table list in menu
 	* @param array result of table_status('', true)
 	* @return null
 	*/

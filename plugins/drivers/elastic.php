@@ -52,7 +52,7 @@ if (isset($_GET["elastic"])) {
 				return $return;
 			}
 
-			/** Performs query relative to actual selected DB
+			/** Perform query relative to actual selected DB
 			 * @param string $path
 			 * @param array|null $content
 			 * @param string $method

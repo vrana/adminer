@@ -405,7 +405,7 @@ function selectSearchSearch() {
 
 
 
-/** Toggles column context menu
+/** Toggle column context menu
 * @param [string] extra class name
 * @this HTMLElement
 */
