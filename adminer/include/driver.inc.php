@@ -139,19 +139,18 @@ abstract class SqlDriver {
 	* @return bool
 	*/
 	function insert($table, $set) {
-		return queries($this->insertSql($table, $set));
-	}
-
-	/** Get SQL query to insert data into table
-	* @param string
-	* @param array same as insert()
-	* @return string
-	*/
-	protected function insertSql($table, $set) {
-		return "INSERT INTO " . table($table) . ($set
+		return queries("INSERT INTO " . table($table) . ($set
 			? " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")"
 			: " DEFAULT VALUES"
-		);
+		) . $this->insertReturning($table));
+	}
+
+	/** Get RETURNING clause for INSERT queries, PostgreSQL specific
+	* @param string
+	* @return string
+	*/
+	function insertReturning($table) {
+		return "";
 	}
 
 	/** Insert or update data in table

@@ -125,7 +125,7 @@ if ($_POST && !$error) {
 					$result = ($_POST["delete"]
 						? $driver->delete($TABLE, $where_check)
 						: ($_POST["clone"]
-							? queries("INSERT $query$where_check")
+							? queries("INSERT $query$where_check" . $driver->insertReturning($TABLE))
 							: $driver->update($TABLE, $set, $where_check)
 						)
 					);
