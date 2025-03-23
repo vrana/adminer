@@ -34,7 +34,7 @@ if (isset($_GET["sqlite"])) {
 			function quote($string) {
 				return (is_utf8($string)
 					? "'" . $this->link->escapeString($string) . "'"
-					: "x'" . reset(unpack('H*', $string)) . "'"
+					: "x'" . first(unpack('H*', $string)) . "'"
 				);
 			}
 

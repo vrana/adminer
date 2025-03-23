@@ -847,6 +847,15 @@ function file_unlock($fp) {
 	fclose($fp);
 }
 
+/** Get first element of an array
+* @param array
+* @return mixed or false if not found
+*/
+function first($array) {
+	// reset(f()) triggers a notice
+	return reset($array);
+}
+
 /** Read password from file adminer.key in temporary directory or create one
 * @param bool
 * @return string or false if the file can not be created

@@ -876,7 +876,7 @@ AND typelem = 0"
 			// sequences for fields
 			if (preg_match('~nextval\(\'([^\']+)\'\)~', $field['default'], $matches)) {
 				$sequence_name = $matches[1];
-				$sq = reset(get_rows((min_version(10)
+				$sq = first(get_rows((min_version(10)
 					? "SELECT *, cache_size AS cache_value FROM pg_sequences WHERE schemaname = current_schema() AND sequencename = " . q(idf_unescape($sequence_name))
 					: "SELECT * FROM $sequence_name"
 				), null, "-- "));
