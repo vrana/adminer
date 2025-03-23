@@ -245,6 +245,11 @@ class Plugins extends Adminer {
 		return $this->applyPlugin(__FUNCTION__, $args);
 	}
 
+	function sqlPrintAfter() {
+		$args = func_get_args();
+		return $this->applyPlugin(__FUNCTION__, $args);
+	}
+
 	function rowDescription($table) {
 		$args = func_get_args();
 		return $this->applyPlugin(__FUNCTION__, $args);

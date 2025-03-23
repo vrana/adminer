@@ -263,6 +263,11 @@ class Adminer {
 		return shorten_utf8(trim($query), 1000);
 	}
 
+	/** Print HTML code just before the Execute button in SQL command
+	*/
+	function sqlPrintAfter() {
+	}
+
 	/** Description of a row in a table
 	* @param string
 	* @return string SQL expression, empty string for no description
