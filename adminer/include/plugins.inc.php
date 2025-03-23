@@ -47,34 +47,15 @@ class Plugins extends Adminer {
 		return call_user_func_array(array('parent', $function), $args);
 	}
 
-	private function applyPlugin($function, $args) {
+	private function applyPlugin($function, $params) {
+		$args = array();
+		foreach ($params as $key => $val) {
+			// some plugins accept params by reference - we don't need to propage it outside, just to the other plugins
+			$args[] = &$params[$key];
+		}
 		foreach ($this->plugins as $plugin) {
 			if (method_exists($plugin, $function)) {
-				switch (count($args)) { // call_user_func_array() doesn't work well with references
-					case 0:
-						$return = $plugin->$function();
-						break;
-					case 1:
-						$return = $plugin->$function($args[0]);
-						break;
-					case 2:
-						$return = $plugin->$function($args[0], $args[1]);
-						break;
-					case 3:
-						$return = $plugin->$function($args[0], $args[1], $args[2]);
-						break;
-					case 4:
-						$return = $plugin->$function($args[0], $args[1], $args[2], $args[3]);
-						break;
-					case 5:
-						$return = $plugin->$function($args[0], $args[1], $args[2], $args[3], $args[4]);
-						break;
-					case 6:
-						$return = $plugin->$function($args[0], $args[1], $args[2], $args[3], $args[4], $args[5]);
-						break;
-					default:
-						trigger_error('Too many parameters.', E_USER_WARNING);
-				}
+				$return = call_user_func_array(array($plugin, $function), $args);
 				if ($return !== null) {
 					return $return;
 				}
