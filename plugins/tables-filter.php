@@ -19,6 +19,7 @@ function tablesFilter() {
 		return;
 	}
 	tablesFilterValue = value;
+	let reg = null;
 	if (value != '') {
 		const reg = (value + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, '\\$1');
 		reg = new RegExp('('+ reg + ')', 'gi');
