@@ -663,11 +663,15 @@ function ajaxForm(form, message, button) {
 		data = '';
 	}
 	return ajax(url, request => {
+		const ajaxstatus = qs('#ajaxstatus');
 		setHtml('ajaxstatus', request.responseText);
-		if (window.jush) {
-			jush.highlight_tag(qsa('code', qs('#ajaxstatus')), 0);
+		if (qs('.message', ajaxstatus)) { // success
+			editChanged = null;
 		}
-		messagesPrint(qs('#ajaxstatus'));
+		if (window.jush) {
+			jush.highlight_tag(qsa('code', ajaxstatus), 0);
+		}
+		messagesPrint(ajaxstatus);
 	}, data, message);
 }
 
