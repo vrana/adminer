@@ -19,8 +19,9 @@ function tablesFilter() {
 		return;
 	}
 	tablesFilterValue = value;
+	let reg;
 	if (value != '') {
-		const reg = (value + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, '\\$1');
+		reg = (value + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, '\\$1');
 		reg = new RegExp('('+ reg + ')', 'gi');
 	}
 	if (sessionStorage) {
