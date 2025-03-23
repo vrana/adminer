@@ -1,17 +1,16 @@
 # Adminer
-
-**Adminer** is a full-featured database management tool written in PHP.
-It consists of a single file ready to deploy to the target server.
+**Adminer** is a full-featured database management tool written in PHP. It consists of a single file ready to deploy to the target server.
 **Adminer Editor** offers data manipulation for end-users.
 
-https://www.adminer.org/
+[Official Website](https://www.adminer.org/)
 
+## Features
 - **Supports:** MySQL, MariaDB, PostgreSQL, CockroachDB, SQLite, MS SQL, Oracle
 - **Plugins for:** Elasticsearch, SimpleDB, MongoDB, Firebird, ClickHouse, IMAP
 - **Requirements:** PHP 5.3+
 
 ## Screenshot
-![screenshot](https://www.adminer.org/static/screenshots/table.png)
+![Screenshot](https://www.adminer.org/static/screenshots/table.png)
 
 ## Installation
 If downloaded from Git then run: `git submodule update --init`
@@ -27,8 +26,8 @@ If downloaded from Git then run: `git submodule update --init`
 - `tests/*.html` - Katalon Recorder test suites
 
 ## Plugins
-There are [several plugins](plugins/) distributed with Adminer and there are also many user-contributed plugins linked from https://www.adminer.org/plugins/.
-To use a plugin, simply upload it to `adminer-plugins/` next to `adminer.php`. You can also upload plugins for drivers (e.g. `elastic.php`) here.
+There are [several plugins](/plugins/) distributed with Adminer, as well as many user-contributed plugins linked on the [Adminer Plugins page](https://www.adminer.org/plugins/).
+To use a plugin, simply upload it to the `adminer-plugins/` directory next to `adminer.php`. You can also upload plugins for drivers (e.g., `elastic.php`) in this directory.
 
 ```
 - adminer.php
@@ -40,7 +39,7 @@ To use a plugin, simply upload it to `adminer-plugins/` next to `adminer.php`. Y
 - adminer-plugins.php
 ```
 
-Some plugins require configuration. To use them, create a file `adminer-plugins.php`. You can also specify the loading order here.
+Some plugins require configuration. To use them, create a file named `adminer-plugins.php`. You can also specify the loading order in this file.
 
 ```php
 <?php // adminer-plugins.php
