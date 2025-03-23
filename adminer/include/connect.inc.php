@@ -48,8 +48,7 @@ if (
 			echo "<p>" . lang('Loaded plugins') . ":\n<ul>\n";
 			foreach ($adminer->plugins as $plugin) {
 				$reflection = new \ReflectionObject($plugin);
-				preg_match('~^/[\s*]+(.+)\n~', $reflection->getDocComment(), $match);
-				echo "<li><b>" . get_class($plugin) . "</b>" . h($match ? ": $match[1]" : "") . "\n";
+				echo "<li><b>" . get_class($plugin) . "</b>" . h(preg_match('~^/[\s*]+(.+)~', $reflection->getDocComment(), $match) ? ": $match[1]" : "") . "\n";
 			}
 			echo "</ul>\n";
 		}

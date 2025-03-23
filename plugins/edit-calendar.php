@@ -16,19 +16,17 @@ class AdminerEditCalendar {
 	* @param string path to language file, %s stands for language code
 	*/
 	function __construct($prepend = null, $langPath = "jquery-ui/i18n/jquery.ui.datepicker-%s.js") {
-		if ($prepend === null) {
-			$prepend = "<link rel='stylesheet' type='text/css' href='jquery-ui/jquery-ui.css'>\n"
-				. Adminer\script_src("jquery-ui/jquery.js")
-				. Adminer\script_src("jquery-ui/jquery-ui.js")
-				. Adminer\script_src("jquery-ui/jquery-ui-timepicker-addon.js")
-			;
-		}
 		$this->prepend = $prepend;
 		$this->langPath = $langPath;
 	}
 
 	function head($dark = null) {
-		echo $this->prepend;
+		echo ($this->prepend !== null ? $this->prepend :
+			"<link rel='stylesheet' type='text/css' href='jquery-ui/jquery-ui.css'>\n"
+			. Adminer\script_src("jquery-ui/jquery.js")
+			. Adminer\script_src("jquery-ui/jquery-ui.js")
+			. Adminer\script_src("jquery-ui/jquery-ui-timepicker-addon.js")
+		);
 		if ($this->langPath) {
 			$lang = Adminer\get_lang();
 			$lang = ($lang == "zh" ? "zh-CN" : ($lang == "zh-tw" ? "zh-TW" : $lang));
