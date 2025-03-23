@@ -160,7 +160,7 @@ Translations used to occupy a large portion of the compiled file. In the source 
 
 ## Version Check
 
-Adminer checks for new versions via [adminer.org/version/](https://www.adminer.org/version/), using a signed response to prevent MitM attacks. However, this means `adminer.org` logs the IP addresses of Adminer installations. I do not review these logs, and no one else has access to the server. A [plugin](/plugins/version-noverify.php) disables version checks, but users should verify versions by other means to ensure security updates. It should be considered to get the version info from some independent entity, e.g. GitHub.
+Adminer checks for new versions via [adminer.org/version/](https://www.adminer.org/version/), using a signed response to prevent tampering with the version file on the server where an instance of Adminer runs. However, this means that adminer.org has access to the IP addresses of Adminer installations. I do not review logs with this information, and no one else has access to the server. A [plugin](/plugins/version-noverify.php) disables version checks, but users should verify versions by other means to ensure security updates. There's also a [plugin](/plugins/version-github.php) checking for new versions [from GitHub](https://github.com/vrana/adminer/releases).
 
 ## Translations
 

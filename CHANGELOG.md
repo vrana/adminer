@@ -17,6 +17,7 @@
 - Plugins: configure plugins with adminer-plugins.php
 - Plugins: Display loaded plugins in server overview
 - New plugin: AI prompt in SQL command generating the queries with Google Gemini
+- New plugin: Verify new versions from GitHub
 - New plugin: IMAP driver created for fun
 - New plugin: Display links to tables referencing current row
 - New plugin: Allow switching light and dark mode (bug #926)

@@ -613,7 +613,7 @@ function ajax(url, callback, data, message) {
 			if (request.readyState == 4) {
 				if (/^2/.test(request.status)) {
 					callback(request);
-				} else {
+				} else if (message !== null) {
 					ajaxStatus.innerHTML = (request.status ? request.responseText : '<div class="error">' + offlineMessage + '</div>');
 					alterClass(ajaxStatus, 'hidden');
 				}
