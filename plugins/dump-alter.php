@@ -14,7 +14,7 @@ class AdminerDumpAlter {
 		}
 	}
 
-	private function database() {
+	private function dumpAlter() {
 		// drop old tables
 		$query = "SELECT TABLE_NAME, ENGINE, TABLE_COLLATION, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()";
 		echo "DELIMITER ;;
@@ -60,7 +60,7 @@ SELECT @adminer_alter;
 				$first = false;
 				echo "SET @adminer_alter = '';\n\n";
 			} else {
-				$this->database();
+				$this->dumpAlter();
 			}
 			return true;
 		}
@@ -164,7 +164,7 @@ DROP PROCEDURE adminer_alter;
 
 	function dumpFooter() {
 		if ($_POST["format"] == "sql_alter") {
-			$this->database();
+			$this->dumpAlter();
 		}
 	}
 }
