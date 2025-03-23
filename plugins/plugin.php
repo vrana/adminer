@@ -1,4 +1,5 @@
 <?php
+// this file is not used anymore and you don't need to include it; it's kept only for backwards compatibility
 
 /** Adminer customization allowing usage of plugins
 * @link https://www.adminer.org/plugins/#use
