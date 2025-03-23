@@ -23,6 +23,7 @@
 - New plugin: IMAP driver created for fun
 - New plugin: Display links to tables referencing current row
 - New plugin: Allow switching light and dark mode (bug #926)
+- Uzbek translation
 
 ## Adminer 5.0.6 (released 2025-03-17)
 - Align numbers right (bug #912)

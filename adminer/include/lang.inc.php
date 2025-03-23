@@ -45,6 +45,7 @@ $langs = array(
 	'th' => 'ภาษาไทย', // Panya Saraphi, elect.tu@gmail.com - http://www.opencart2u.com/
 	'tr' => 'Türkçe', // Bilgehan Korkmaz - turktron.com
 	'uk' => 'Українська', // Valerii Kryzhov
+	'uz' => 'Oʻzbekcha', // Junaydullaev Inoyatullokhon - https://av.uz/
 	'vi' => 'Tiếng Việt', // Giang Manh @ manhgd google mail
 	'zh' => '简体中文', // Mr. Lodar, vea - urn2.net - vea.urn2@gmail.com
 	'zh-tw' => '繁體中文', // http://tzangms.com
