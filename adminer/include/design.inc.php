@@ -82,7 +82,7 @@ fQIDAQAB
 	echo script("mixin(document.body, {onkeydown: bodyKeydown, onclick: bodyClick"
 		. (isset($_COOKIE["adminer_version"]) ? "" : ", onload: partial(verifyVersion, '$VERSION', '" . js_escape(ME) . "', '" . get_token() . "')") // $token may be empty in auth.inc.php
 		. "});
-document.body.className = document.body.className.replace(/ nojs/, ' js');
+document.body.classList.replace('nojs', 'js');
 const offlineMessage = '" . js_escape(lang('You are offline.')) . "';
 const thousandsSeparator = '" . js_escape(lang(',')) . "';")
 	;

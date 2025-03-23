@@ -696,7 +696,7 @@ function schemaMousemove(event) {
 		const top = (event.clientY - y) / em;
 		const lineSet = { };
 		for (const div of qsa('div', that)) {
-			if (div.className == 'references') {
+			if (div.classList.contains('references')) {
 				const div2 = qs('[id="' + (/^refs/.test(div.id) ? 'refd' : 'refs') + div.id.substr(4) + '"]');
 				const ref = (tablePos[div.title] || [ div2.parentNode.offsetTop / em, 0 ]);
 				let left1 = -1;

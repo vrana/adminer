@@ -32,7 +32,7 @@ function whisper(url) {
 			const a = field.nextSibling.firstChild;
 			if (a && a.firstChild.data == field.value) {
 				field.previousSibling.value = decodeURIComponent(a.href.replace(/.*=/, ''));
-				a.className = 'active';
+				a.classList.add('active');
 			}
 		}
 	});

@@ -56,7 +56,7 @@ function getCmMode(el) {
 for (const el of qsa('code')) {
 	const mode = getCmMode(el);
 	if (mode) {
-		el.className += ' cm-s-default';
+		el.classList.add('cm-s-default');
 		CodeMirror.runMode(el.textContent, mode, el);
 	}
 }

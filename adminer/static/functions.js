@@ -69,7 +69,7 @@ function mixin(target, source) {
 */
 function alterClass(el, className, enable) {
 	if (el) {
-		el.className = el.className.replace(RegExp('(^|\\s)' + className + '(\\s|$)'), '$2') + (enable ? ' ' + className : '');
+		el.classList[enable ? 'add' : 'remove'](className);
 	}
 }
 
@@ -79,7 +79,7 @@ function alterClass(el, className, enable) {
 */
 function toggle(id) {
 	const el = qs('#' + id);
-	alterClass(el, 'hidden', !/(^|\s)hidden(\s|$)/.test(el.className));
+	el && el.classList.toggle('hidden');
 	return false;
 }
 
