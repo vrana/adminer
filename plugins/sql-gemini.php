@@ -37,7 +37,7 @@ class AdminerSqlGemini {
 			)));
 			$response = json_decode(file_get_contents("https://generativelanguage.googleapis.com/v1beta/models/$this->model:generateContent?key=$this->apiKey", false, $context));
 			$text = $response->candidates[0]->content->parts[0]->text;
-			echo preg_replace('~```sql\n(.*\n)```~s', '\1', $text) . "\n";
+			echo preg_replace('~```sql\n(.*\n)```~sU', '\1', $text) . "\n";
 			exit;
 		}
 	}
