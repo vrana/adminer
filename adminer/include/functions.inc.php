@@ -411,7 +411,7 @@ function save_settings($settings, $cookie = "adminer_settings") {
 * @return null
 */
 function restart_session() {
-	if (!ini_bool("session.use_cookies")) {
+	if (!ini_bool("session.use_cookies") && (!function_exists('session_status') || session_status() == 1)) { // 1 - PHP_SESSION_NONE, session_status() available since PHP 5.4
 		session_start();
 	}
 }
