@@ -51,8 +51,10 @@ class AdminerSqlGemini {
 				const sqlarea = qs('pre.sqlarea');
 				sqlarea.textContent = req.responseText;
 				sqlarea.oninput(); // syntax highlighting
+				alterClass(qs('#ajaxstatus'), 'hidden', true);
 			},
-			'gemini=' + encodeURIComponent(this.form['gemini'].value)
+			'gemini=' + encodeURIComponent(this.form['gemini'].value),
+			'Just a sec…' // this is the phrase used by Google Gemini
 		); }");
 	}
 }
