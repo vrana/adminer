@@ -302,3 +302,5 @@ $translations = array(
 	'yes' => 'ja',
 	'no' => 'neen',
 );
+
+// run `php ../../lang.php nl` to update this file

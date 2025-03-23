@@ -312,3 +312,5 @@ $translations = array(
 	'Check has been altered.' => 'チェックを変更しました。',
 	'Check has been dropped.' => 'チェックを削除しました。',
 );
+
+// run `php ../../lang.php ja` to update this file

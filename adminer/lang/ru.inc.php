@@ -303,3 +303,5 @@ $translations = array(
 	'Database does not support password.' => 'База данных не поддерживает пароль.',
 	'Disable %s or enable %s or %s extensions.' => 'Отключите %s или включите расширения %s или %s.',
 );
+
+// run `php ../../lang.php ru` to update this file

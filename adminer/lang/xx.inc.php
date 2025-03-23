@@ -361,3 +361,5 @@ $translations = array(
 	'Check has been altered.' => 'Xx.',
 	'Check has been dropped.' => 'Xx.',
 );
+
+// run `php ../../lang.php xx` to update this file

@@ -359,3 +359,5 @@ $translations = array(
 	'Check has been altered.' => 'Kontrola byla změněna.',
 	'Check has been dropped.' => 'Kontrola byla odstraněna.',
 );
+
+// run `php ../../lang.php cs` to update this file

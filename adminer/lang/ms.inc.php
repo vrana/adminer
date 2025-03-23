@@ -339,3 +339,5 @@ $translations = array(
 	'Type has been created.' => 'Jenis telah dibuat.',
 	'Alter type' => 'Ubah jenis',
 );
+
+// run `php ../../lang.php ms` to update this file

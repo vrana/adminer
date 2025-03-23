@@ -335,3 +335,5 @@ $translations = array(
 	'Type has been created.' => 'Ο τύπος δημιουργήθηκε.',
 	'Alter type' => 'Τροποποίηση τύπου',
 );
+
+// run `php ../../lang.php el` to update this file

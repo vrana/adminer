@@ -290,3 +290,5 @@ $translations = array(
 	'yes' => 'si',
 	'no' => 'non',
 );
+
+// run `php ../../lang.php gl` to update this file

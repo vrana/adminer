@@ -302,3 +302,5 @@ $translations = array(
 	'Unknown error.' => 'Nezināma kļūda.',
 	'Database does not support password.' => 'Datubāze neatbalsta paroli.',
 );
+
+// run `php ../../lang.php lv` to update this file

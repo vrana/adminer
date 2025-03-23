@@ -267,3 +267,5 @@ $translations = array(
 	'Edit all' => 'Editează tot',
 	'HH:MM:SS' => 'HH:MM:SS',
 );
+
+// run `php ../../lang.php ro` to update this file

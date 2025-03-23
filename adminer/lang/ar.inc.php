@@ -266,3 +266,5 @@ $translations = array(
 	'Edit all' => 'تعديل الكل',
 	'HH:MM:SS' => 'HH:MM:SS',
 );
+
+// run `php ../../lang.php ar` to update this file

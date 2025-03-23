@@ -266,3 +266,5 @@ $translations = array(
 	'Edit all' => 'அனைத்தையும் தொகு',
 	'HH:MM:SS' => 'HH:MM:SS',
 );
+
+// run `php ../../lang.php ta` to update this file

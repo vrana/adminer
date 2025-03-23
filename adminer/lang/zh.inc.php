@@ -348,3 +348,5 @@ $translations = array(
 	'Type has been created.' => '已创建类型。',
 	'Alter type' => '修改类型',
 );
+
+// run `php ../../lang.php zh` to update this file

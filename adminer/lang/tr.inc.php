@@ -342,3 +342,5 @@ $translations = array(
 	'Type has been created.' => 'Tür oluşturuldu.',
 	'Alter type' => 'Türü değiştir',
 );
+
+// run `php ../../lang.php tr` to update this file

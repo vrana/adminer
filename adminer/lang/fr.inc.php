@@ -302,3 +302,5 @@ $translations = array(
 	'Database does not support password.' => 'La base de données ne support pas les mots de passe.',
 	'Disable %s or enable %s or %s extensions.' => 'Désactiver %s ou activer %s or %s extensions.',
 );
+
+// run `php ../../lang.php fr` to update this file

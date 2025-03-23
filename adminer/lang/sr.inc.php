@@ -318,3 +318,5 @@ $translations = array(
 	'Type has been created.' => 'тип је креиран.',
 	'Alter type' => 'Уреди тип',
 );
+
+// run `php ../../lang.php sr` to update this file

@@ -70,7 +70,7 @@ foreach (glob(__DIR__ . "/adminer/lang/" . ($_SESSION["lang"] ?: "*") . ".inc.ph
 			}
 		}
 	}
-	$s = "<?php\nnamespace Adminer;\n\n\$translations = array(\n$s);\n";
+	$s = "<?php\nnamespace Adminer;\n\n\$translations = array(\n$s);\n\n// run `php ../../lang.php $lang` to update this file\n";
 	if ($s != $file) {
 		file_put_contents($filename, $s);
 		echo "$filename updated.\n";

@@ -327,3 +327,5 @@ $translations = array(
 	'Type has been created.' => 'Đã tạo kiểu.',
 	'Alter type' => 'Sửa kiểu dữ liệu',
 );
+
+// run `php ../../lang.php vi` to update this file

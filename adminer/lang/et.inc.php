@@ -267,3 +267,5 @@ $translations = array(
 	'Edit all' => 'Muuda kõiki',
 	'HH:MM:SS' => 'HH:MM:SS',
 );
+
+// run `php ../../lang.php et` to update this file

@@ -297,3 +297,5 @@ $translations = array(
 	'Check has been altered.' => 'Chequeo cambiado.',
 	'Check has been dropped.' => 'Chequeo eliminado.',
 );
+
+// run `php ../../lang.php es` to update this file

@@ -335,3 +335,5 @@ $translations = array(
 	'Type has been created.' => 'Вида беше създаден.',
 	'Alter type' => 'Промяна на вид',
 );
+
+// run `php ../../lang.php bg` to update this file

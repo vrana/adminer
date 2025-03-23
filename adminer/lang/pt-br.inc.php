@@ -262,3 +262,5 @@ $translations = array(
 	'now' => 'agora',
 	'ltr' => 'ltr',
 );
+
+// run `php ../../lang.php pt-br` to update this file
