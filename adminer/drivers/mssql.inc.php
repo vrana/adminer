@@ -156,12 +156,25 @@ if (isset($_GET["mssql"])) {
 			}
 		}
 
+		function last_id($result) {
+			return get_val("SELECT SCOPE_IDENTITY()"); // @@IDENTITY can return trigger INSERT
+		}
+
 	} else {
 		class MssqlDb extends PdoDb {
 			function select_db($database) {
 				// database selection is separated from the connection so dbname in DSN can't be used
 				return $this->query(use_sql($database));
 			}
+
+			function lastInsertId() {
+				return $this->pdo->lastInsertId();
+			}
+		}
+
+		function last_id($result) {
+			global $connection;
+			return $connection->lastInsertId();
 		}
 
 		if (extension_loaded("pdo_sqlsrv")) {
@@ -541,10 +554,6 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 		return (!$index || queries("DROP INDEX " . implode(", ", $index)))
 			&& (!$drop || queries("ALTER TABLE " . table($table) . " DROP " . implode(", ", $drop)))
 		;
-	}
-
-	function last_id($result) {
-		return get_val("SELECT SCOPE_IDENTITY()"); // @@IDENTITY can return trigger INSERT
 	}
 
 	function explain($connection, $query) {

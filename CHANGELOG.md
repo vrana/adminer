@@ -10,6 +10,7 @@
 - PostgreSQL 11: Support PROCEDURE
 - SQLite PDO: Display results in SQL query
 - MS SQL: Fix collation issues when retrieving default values
+- MS SQL PDO: Display last insert ID
 - CSS: Sticky table headers (bug #918)
 - CSS: Allow more custom styles with dark mode (bug #925)
 - CSS: Increase maximum width of string edit (bug #930)
