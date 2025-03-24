@@ -1,10 +1,6 @@
 <?php
 namespace Adminer;
 
-if (!ob_get_level()) {
-	ob_start(null, 4096);
-}
-
 /** Print HTML header
 * @param string used in title, breadcrumb and heading, should be HTML escaped
 * @param string
@@ -18,6 +14,9 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	if (is_ajax() && $error) {
 		page_messages($error);
 		exit;
+	}
+	if (!ob_get_level()) {
+		ob_start(null, 4096);
 	}
 	$title_all = $title . ($title2 != "" ? ": $title2" : "");
 	$title_page = strip_tags($title_all . (SERVER != "" && SERVER != "localhost" ? h(" - " . SERVER) : "") . " - " . $adminer->name());
