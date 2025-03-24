@@ -3,6 +3,7 @@ namespace Adminer;
 
 class Adminer {
 	public $operators = array("<=", ">=");
+	public $error = '';
 	private $values = array();
 
 	function name() {

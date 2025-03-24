@@ -3,7 +3,6 @@ namespace Adminer;
 
 class Plugins extends Adminer {
 	public $plugins; ///< @var protected(set) array
-	public $error = ''; ///< @var protected(set) string HTML
 
 	/** Register plugins
 	* @param array object instances or null to autoload plugins from adminer-plugins/

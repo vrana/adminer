@@ -4,8 +4,8 @@ namespace Adminer;
 // any method change in this file should be transferred to editor/include/adminer.inc.php and plugins/plugin.php
 
 class Adminer {
-	/** @var array operators used in select, null for all operators */
-	public $operators;
+	public $operators; ///< @var array operators used in select, null for all operators
+	public $error = ''; ///< @var protected(set) string HTML
 
 	/** Name in title and navigation
 	* @return string HTML code
