@@ -70,7 +70,7 @@ if (isset($_GET["sqlite"])) {
 
 			function fetch_field() {
 				$column = $this->offset++;
-				$type = $this->result->columnType($column);
+				$type = $this->result->columnType($column); //! map to MySQL numbers
 				return (object) array(
 					"name" => $this->result->columnName($column),
 					"type" => $type,

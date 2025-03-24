@@ -140,8 +140,8 @@ if (isset($_GET["mssql"])) {
 				$field = $this->fields[$this->offset++];
 				$return = new \stdClass;
 				$return->name = $field["Name"];
-				$return->orgname = $field["Name"];
 				$return->type = ($field["Type"] == 1 ? 254 : 0);
+				$return->charsetnr = 0;
 				return $return;
 			}
 

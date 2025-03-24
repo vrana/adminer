@@ -133,12 +133,9 @@ if (isset($_GET["pgsql"])) {
 			function fetch_field() {
 				$column = $this->offset++;
 				$return = new \stdClass;
-				if (function_exists('pg_field_table')) {
-					$return->orgtable = pg_field_table($this->result, $column);
-				}
+				$return->orgtable = pg_field_table($this->result, $column);
 				$return->name = pg_field_name($this->result, $column);
-				$return->orgname = $return->name;
-				$return->type = pg_field_type($this->result, $column);
+				$return->type = pg_field_type($this->result, $column); //! map to MySQL numbers
 				$return->charsetnr = ($return->type == "bytea" ? 63 : 0); // 63 - binary
 				return $return;
 			}

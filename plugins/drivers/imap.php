@@ -139,7 +139,7 @@ if (isset($_GET["imap"])) {
 			function fetch_field() {
 				$field = current($this->fields);
 				next($this->fields);
-				return ($field != '' ? (object) array('name' => $field) : false);
+				return ($field != '' ? (object) array('name' => $field, 'type' => 0, 'charsetnr' => 0) : false);
 			}
 		}
 	}

@@ -125,8 +125,8 @@ if (isset($_GET["clickhouse"])) {
 				$return = new \stdClass;
 				if ($column < count($this->columns)) {
 					$return->name = $this->meta[$column]['name'];
-					$return->orgname = $return->name;
-					$return->type = $this->meta[$column]['type'];
+					$return->type = $this->meta[$column]['type']; //! map to MySQL numbers
+					$return->charsetnr = 0;
 				}
 				return $return;
 			}

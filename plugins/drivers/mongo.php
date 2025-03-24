@@ -112,6 +112,7 @@ if (isset($_GET["mongo"])) {
 				$name = $keys[$this->offset++];
 				return (object) array(
 					'name' => $name,
+					'type' => 0,
 					'charsetnr' => $this->charset[$name],
 				);
 			}

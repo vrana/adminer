@@ -102,9 +102,8 @@ if (isset($_GET["firebird"])) {
 				$field = ibase_field_info($this->result, $this->offset++);
 				return (object) array(
 					'name' => $field['name'],
-					'orgname' => $field['name'],
-					'type' => $field['type'],
-					'charsetnr' => $field['length'],
+					'type' => $field['type'], //! map to MySQL numbers
+					'charsetnr' => 0,
 				);
 			}
 

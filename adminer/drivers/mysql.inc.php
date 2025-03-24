@@ -219,12 +219,11 @@ if (!defined('Adminer\DRIVER')) {
 			}
 
 			/** Fetch next field
-			* @return object properties: name, type, orgtable, orgname, charsetnr
+			* @return object properties: name, type (9 for number, 254 for char), charsetnr (63 for binary); optionally: table, orgtable, orgname
 			*/
 			function fetch_field() {
 				$return = mysql_fetch_field($this->result, $this->offset++); // offset required under certain conditions
 				$return->orgtable = $return->table;
-				$return->orgname = $return->name;
 				$return->charsetnr = ($return->blob ? 63 : 0);
 				return $return;
 			}

@@ -25,12 +25,14 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 			for ($j=0; $j < count($row); $j++) {
 				$field = $result->fetch_field();
 				$name = $field->name;
-				$orgtable = $field->orgtable;
-				$orgname = $field->orgname;
-				$return[$field->table] = $orgtable;
+				$orgtable = (isset($field->orgtable) ? $field->orgtable : "");
+				$orgname = (isset($field->orgname) ? $field->orgname : $name);
 				if ($orgtables && JUSH == "sql") { // MySQL EXPLAIN
 					$links[$j] = ($name == "table" ? "table=" : ($name == "possible_keys" ? "indexes=" : null));
 				} elseif ($orgtable != "") {
+					if (isset($field->table)) {
+						$return[$field->table] = $orgtable;
+					}
 					if (!isset($indexes[$orgtable])) {
 						// find primary key in each table
 						$indexes[$orgtable] = array();
