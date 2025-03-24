@@ -50,7 +50,7 @@ I avoid `"{$var}"` because it is longer. In rare cases where `$var` cannot be us
 
 Never use `$_REQUEST`. Decide where the parameter belongs and access it accordingly.
 
-I am not entirely satisfied with the naming style. PHP global functions use `snake_case`, so I use it for functions and variables. MySQLi’s `Db` class extends `mysqli`, so it also uses `snake_case`. However, I prefer `camelCase` for method names and parameters so I use it in other classes. This inconsistency sometimes results in passing `$table_status` to a method expecting `$tableStatus`. The best approach would be to use single-word names, though this is impractical. Some pages use uppercase for main object (e.g., `$TABLE`), but I dislike this despite its visibility.
+I am not entirely satisfied with the naming style. PHP global functions use `snake_case`, so I use it for functions and variables. MySQLi’s `Db` class extends `mysqli`, so it also uses `snake_case`. However, I prefer `camelCase` for method names and parameters so I use it in other classes. This inconsistency sometimes results in passing `$table_status` to a method expecting `$tableStatus`. The best approach would be to use single-word names, though this is impractical. Some pages use uppercase for main object (e.g., `$TABLE`), but I dislike this despite its visibility. Return values of functions are usually constructed into variables named `$return`.
 
 Code within `if` statements and loops must always be wrapped in `{}` blocks. These are removed during minification. `else if` is forbidden; use `elseif` instead.
 
@@ -122,7 +122,7 @@ When constructing SQL queries, use `q()` for strings and `idf_escape()` for iden
 
 ## Minimalism
 
-Adminer is minimalist in every aspect - if something is unnecessary, it should not be included. This philosophy extends to the UI, which remains as uncluttered as possible. For example, index names are usually irrelevant compared to the columns they reference, so Adminer displays index names only in `title=""`. The same principle applies to the code; for instance, `public` visibility is the default, so it does not need to be explicitly specified.
+Adminer is minimalist in every aspect - if something is unnecessary, it should not be included. This philosophy extends to the UI, which remains as uncluttered as possible. For example, index names are usually irrelevant compared to the columns they reference, so Adminer displays index names only in `title=""`. The same principle applies to the code; for instance, `public` visibility is the default, so it does not need to be explicitly specified. Many closing HTML tags are optional (e.g., `</li>` or `</html>`) and Adminer obviously doesn't print them.
 
 If a feature can be implemented as a plugin, it is only added to the core if it benefits almost everyone. For example, [sticky table headers](https://github.com/vrana/adminer/issues/918) are useful to all users and have been included, whereas a [dark mode switcher](https://github.com/vrana/adminer/issues/926) would clutter the UI and is only useful for some, so it remains a plugin.
 
