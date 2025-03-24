@@ -8,7 +8,7 @@ if (isset($_GET["clickhouse"])) {
 
 	if (ini_bool('allow_url_fopen')) {
 		class Db {
-			public $extension = "JSON", $server_info, $errno, $error;
+			public $extension = "JSON", $flavor = '', $server_info, $errno, $error;
 			public $_db = 'default';
 			private $result, $url;
 

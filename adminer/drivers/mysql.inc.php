@@ -8,7 +8,7 @@ if (!defined('Adminer\DRIVER')) {
 	// MySQLi supports everything, MySQL doesn't support multiple result sets, PDO_MySQL doesn't support orgtable
 	if (extension_loaded("mysqli") && $_GET["ext"] != "pdo") {
 		class Db extends \MySQLi {
-			public $extension = "MySQLi";
+			public $extension = "MySQLi", $flavor = '';
 
 			function __construct() {
 				parent::init();
@@ -63,6 +63,7 @@ if (!defined('Adminer\DRIVER')) {
 		class Db {
 			public
 				$extension = "MySQL", ///< @var string extension name
+				$flavor = '', ///< @var string different vendor with the same API, e.g. MariaDB, usually stays empty
 				$server_info, ///< @var string server version
 				$affected_rows, ///< @var int number of affected rows
 				$errno, ///< @var int last error code
@@ -369,7 +370,7 @@ if (!defined('Adminer\DRIVER')) {
 
 		function slowQuery($query, $timeout) {
 			if (min_version('5.7.8', '10.1.2')) {
-				if ($this->conn->maria) {
+				if ($this->conn->flavor == 'maria') {
 					return "SET STATEMENT max_statement_time=$timeout FOR $query";
 				} elseif (preg_match('~^(SELECT\b)(.+)~is', $query, $match)) {
 					return "$match[1] /*+ MAX_EXECUTION_TIME(" . ($timeout * 1000) . ") */ $match[2]";
@@ -394,7 +395,7 @@ if (!defined('Adminer\DRIVER')) {
 		}
 
 		function tableHelp($name, $is_view = false) {
-			$maria = $this->conn->maria;
+			$maria = ($this->conn->flavor == 'maria');
 			if (information_schema(DB)) {
 				return strtolower("information-schema-" . ($maria ? "$name-table/" : str_replace("_", "-", $name) . "-table.html"));
 			}
@@ -451,8 +452,8 @@ if (!defined('Adminer\DRIVER')) {
 		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
 			$connection->set_charset(charset($connection));
 			$connection->query("SET sql_quote_show_create = 1, autocommit = 1");
-			$connection->maria = preg_match('~MariaDB~', $connection->server_info);
-			$drivers[DRIVER] = ($connection->maria ? "MariaDB" : "MySQL");
+			$connection->flavor = (preg_match('~MariaDB~', $connection->server_info) ? 'maria' : '');
+			$drivers[DRIVER] = ($connection->flavor == 'maria' ? "MariaDB" : "MySQL");
 			return $connection;
 		}
 		$return = $connection->error;
@@ -599,7 +600,7 @@ if (!defined('Adminer\DRIVER')) {
 	*/
 	function fields($table) {
 		global $connection;
-		$maria = $connection->maria;
+		$maria = ($connection->flavor == 'maria');
 		$return = array();
 		foreach (get_rows("SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = " . q($table) . " ORDER BY ORDINAL_POSITION") as $row) {
 			$field = $row["COLUMN_NAME"];
@@ -824,7 +825,7 @@ if (!defined('Adminer\DRIVER')) {
 				$default = $field[1][3];
 				if (preg_match('~ GENERATED~', $default)) {
 					// swap default and null
-					$field[1][3] = ($connection->maria ? "" : $field[1][2]); // MariaDB doesn't support NULL on virtual columns
+					$field[1][3] = ($connection->flavor == 'maria' ? "" : $field[1][2]); // MariaDB doesn't support NULL on virtual columns
 					$field[1][2] = $default;
 				}
 				$alter[] = ($table != "" ? ($field[0] != "" ? "CHANGE " . idf_escape($field[0]) : "ADD") : " ") . " " . implode($field[1]) . ($table != "" ? $field[2] : "");

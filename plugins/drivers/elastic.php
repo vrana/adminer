@@ -9,7 +9,7 @@ if (isset($_GET["elastic"])) {
 	if (ini_bool('allow_url_fopen')) {
 
 		class Db {
-			public $extension = "JSON", $server_info, $errno, $error;
+			public $extension = "JSON", $flavor = '', $server_info, $errno, $error;
 			private $url;
 
 			/**

@@ -14,6 +14,7 @@ if (isset($_GET["firebird"])) {
 		class Db {
 			public
 				$extension = "Firebird",
+				$flavor = '',
 				$server_info,
 				$affected_rows,
 				$errno,

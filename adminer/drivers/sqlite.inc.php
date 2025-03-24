@@ -100,6 +100,7 @@ if (isset($_GET["sqlite"])) {
 
 	if (class_exists('Adminer\SqliteDb')) {
 		class Db extends SqliteDb {
+			public $flavor = '';
 
 			function __construct() {
 				parent::__construct(":memory:");

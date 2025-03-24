@@ -1076,7 +1076,7 @@ class Adminer {
 			echo "</script>\n";
 		}
 		echo script("syntaxHighlighting('" . (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '\1', $connection->server_info) : "") . "'"
-			. ($connection->maria ? ", 'maria'" : ($connection->cockroach ? ", 'cockroach'" : "")) . ");"
+			. ($connection->flavor == 'maria' ? ", 'maria'" : ($connection->flavor == 'cockroach' ? ", 'cockroach'" : "")) . ");"
 		);
 	}
 

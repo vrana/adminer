@@ -8,7 +8,7 @@ if (isset($_GET["simpledb"])) {
 
 	if (class_exists('SimpleXMLElement') && ini_bool('allow_url_fopen')) {
 		class Db {
-			public $extension = "SimpleXML", $server_info = '2009-04-15', $error, $timeout, $next, $affected_rows;
+			public $extension = "SimpleXML", $flavor = '', $server_info = '2009-04-15', $error, $timeout, $next, $affected_rows;
 			private $result;
 
 			function select_db($database) {

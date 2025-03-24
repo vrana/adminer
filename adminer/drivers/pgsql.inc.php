@@ -7,7 +7,7 @@ if (isset($_GET["pgsql"])) {
 	define('Adminer\DRIVER', "pgsql");
 	if (extension_loaded("pgsql") && $_GET["ext"] != "pdo") {
 		class Db {
-			public $extension = "PgSQL", $server_info, $affected_rows, $error, $timeout;
+			public $extension = "PgSQL", $flavor = '', $server_info, $affected_rows, $error, $timeout;
 			private $link, $result, $string, $database = true;
 
 			function _error($errno, $error) {
@@ -333,9 +333,9 @@ if (isset($_GET["pgsql"])) {
 				$connection->query("SET application_name = 'Adminer'");
 			}
 			$version = $connection->result("SELECT version()");
-			$connection->cockroach = preg_match('~CockroachDB~', $version);
+			$connection->flavor = (preg_match('~CockroachDB~', $version) ? 'cockroach' : '');
 			$connection->server_info = preg_replace('~^\D*([\d.]+[-\w]*).*~', '\1', $version);
-			if ($connection->cockroach) { // we don't use "PostgreSQL / CockroachDB" by default because it's too long
+			if ($connection->flavor == 'cockroach') { // we don't use "PostgreSQL / CockroachDB" by default because it's too long
 				$drivers[DRIVER] = "CockroachDB";
 			}
 			return $connection;
@@ -962,7 +962,7 @@ AND typelem = 0"
 	function support($feature) {
 		global $connection;
 		return preg_match('~^(check|database|table|columns|sql|indexes|descidx|comment|view|' . (min_version(9.3) ? 'materializedview|' : '') . 'scheme|' . (min_version(11) ? 'procedure|' : '') . 'routine|sequence|trigger|type|variables|drop_col'
-			. ($connection->cockroach ? '' : '|processlist') // https://github.com/cockroachdb/cockroach/issues/24745
+			. ($connection->flavor == 'cockroach' ? '' : '|processlist') // https://github.com/cockroachdb/cockroach/issues/24745
 			. '|kill|dump)$~', $feature)
 		;
 	}

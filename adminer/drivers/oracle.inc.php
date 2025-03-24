@@ -7,7 +7,7 @@ if (isset($_GET["oracle"])) {
 	define('Adminer\DRIVER', "oracle");
 	if (extension_loaded("oci8") && $_GET["ext"] != "pdo") {
 		class Db {
-			public $extension = "oci8", $server_info, $affected_rows, $errno, $error;
+			public $extension = "oci8", $flavor = '', $server_info, $affected_rows, $errno, $error;
 			public $_current_db;
 			private $link, $result;
 

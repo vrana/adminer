@@ -187,7 +187,7 @@ if (isset($_GET["username"]) && is_string(get_password())) {
 		if ($adminer->operators === null) {
 			$adminer->operators = $driver->operators;
 		}
-		if (isset($connection->maria) || $connection->cockroach) {
+		if (Driver::$jush == 'sql' || $connection->flavor == 'cockroach') {
 			save_settings(array("vendor-" . DRIVER . "-" . SERVER => $drivers[DRIVER]));
 		}
 	}
