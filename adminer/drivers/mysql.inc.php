@@ -66,6 +66,7 @@ if (!defined('Adminer\DRIVER')) {
 				$flavor = '', ///< @var string different vendor with the same API, e.g. MariaDB, usually stays empty
 				$server_info, ///< @var string server version
 				$affected_rows, ///< @var int number of affected rows
+				$info, ///< @var string see https://php.net/mysql_info
 				$errno, ///< @var int last error code
 				$error ///< @var string last error message
 			;
