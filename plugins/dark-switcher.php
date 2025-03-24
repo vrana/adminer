@@ -34,8 +34,8 @@ if (saved) {
 	}
 
 	function navigation($missing) {
-		echo "<label style='position: fixed; bottom: .5em; right: .5em;'><input type='checkbox'> dark</label>"
-			. Adminer\script("if (adminerDark != null) adminerDarkSet(); mixin(qsl('input'), {onclick: adminerDarkSwitch, checked: adminerDark});") . "\n"
+		echo "<big style='position: fixed; bottom: .5em; right: .5em; cursor: pointer;'>☀</big>"
+			. Adminer\script("if (adminerDark != null) adminerDarkSet(); qsl('big').onclick = adminerDarkSwitch;") . "\n"
 		;
 	}
 }
