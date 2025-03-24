@@ -160,6 +160,13 @@ if (isset($_GET["mssql"])) {
 			return get_val("SELECT SCOPE_IDENTITY()"); // @@IDENTITY can return trigger INSERT
 		}
 
+		function explain($connection, $query) {
+			$connection->query("SET SHOWPLAN_ALL ON");
+			$return = $connection->query($query);
+			$connection->query("SET SHOWPLAN_ALL OFF"); // connection is used also for indexes
+			return $return;
+		}
+
 	} else {
 		class MssqlDb extends PdoDb {
 			function select_db($database) {
@@ -175,6 +182,9 @@ if (isset($_GET["mssql"])) {
 		function last_id($result) {
 			global $connection;
 			return $connection->lastInsertId();
+		}
+
+		function explain($connection, $query) {
 		}
 
 		if (extension_loaded("pdo_sqlsrv")) {
@@ -554,13 +564,6 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 		return (!$index || queries("DROP INDEX " . implode(", ", $index)))
 			&& (!$drop || queries("ALTER TABLE " . table($table) . " DROP " . implode(", ", $drop)))
 		;
-	}
-
-	function explain($connection, $query) {
-		$connection->query("SET SHOWPLAN_ALL ON");
-		$return = $connection->query($query);
-		$connection->query("SET SHOWPLAN_ALL OFF"); // connection is used also for indexes
-		return $return;
 	}
 
 	function found_rows($table_status, $where) {
