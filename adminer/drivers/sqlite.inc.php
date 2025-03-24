@@ -116,14 +116,6 @@ if (isset($_GET["sqlite"])) {
 				}
 				return false;
 			}
-
-			function multi_query($query) {
-				return $this->result = $this->query($query);
-			}
-
-			function next_result() {
-				return false;
-			}
 		}
 	}
 
