@@ -226,7 +226,7 @@ function hidden_fields_get() {
 	echo input_hidden("username", $_GET["username"]);
 }
 
-/** Print enum input field
+/** Print enum or set input field
 * @param string "radio"|"checkbox"
 * @param string
 * @param array

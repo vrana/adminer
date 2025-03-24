@@ -484,7 +484,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	function editInput($table, $field, $attrs, $value) {
 		if ($field["type"] == "enum") {
 			return (isset($_GET["select"]) ? "<label><input type='radio'$attrs value='-1' checked><i>" . lang('original') . "</i></label> " : "")
-				. enum_input("radio", $attrs, $field, ($value || isset($_GET["select"]) ? $value : 0), ($field["null"] ? "" : null))
+				. enum_input("radio", $attrs, $field, ($value || isset($_GET["select"]) ? $value : ""), ($field["null"] ? "" : null))
 			;
 		}
 		$options = $this->foreignKeyOptions($table, $field["field"], $value);
@@ -494,8 +494,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 				: "<input value='" . h($value) . "'$attrs class='hidden'>"
 					. "<input value='" . h($options) . "' class='jsonly'>"
 					. "<div></div>"
-					. script("qsl('input').oninput = partial(whisper, '" . ME . "script=complete&source=" . urlencode($table) . "&field=" . urlencode($field["field"]) . "&value=');
-qsl('div').onclick = whisperClick;", "")
+					. script("qsl('input').oninput = partial(whisper, '" . ME . "script=complete&source=" . urlencode($table) . "&field=" . urlencode($field["field"]) . "&value='); qsl('div').onclick = whisperClick;", "")
 			);
 		}
 		if (like_bool($field)) {
