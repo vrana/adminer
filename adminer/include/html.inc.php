@@ -336,8 +336,8 @@ function input($field, $value, $function, $autofocus = false) {
 			}
 			$first++;
 		}
-		if ($first) {
-			echo script("mixin(qsl('td'), {oninput: partial(skipOriginal, $first)});");
+		if ($first && count($functions) > 1) {
+			echo script("qsl('td').oninput = partial(skipOriginal, $first);");
 		}
 	}
 }
