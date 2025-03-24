@@ -93,8 +93,9 @@ if (extension_loaded('pdo')) {
 
 		function fetch_field() {
 			$row = (object) $this->getColumnMeta($this->_offset++);
-			$row->type = $row->pdo_type; //! map to MySQL numbers
-			$row->charsetnr = (isset($row->flags) && in_array("blob", (array) $row->flags) ? 63 : 0);
+			$type = $row->pdo_type;
+			$row->type = ($type == \PDO::PARAM_INT ? 0 : 15);
+			$row->charsetnr = ($type == \PDO::PARAM_LOB || (isset($row->flags) && in_array("blob", (array) $row->flags)) ? 63 : 0);
 			return $row;
 		}
 

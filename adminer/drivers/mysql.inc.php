@@ -219,7 +219,7 @@ if (!defined('Adminer\DRIVER')) {
 			}
 
 			/** Fetch next field
-			* @return object properties: name, type (9 for number, 254 for char), charsetnr (63 for binary); optionally: table, orgtable, orgname
+			* @return object properties: name, type (0 number, 15 varchar, 254 char), charsetnr (63 binary); optionally: table, orgtable, orgname
 			*/
 			function fetch_field() {
 				$return = mysql_fetch_field($this->result, $this->offset++); // offset required under certain conditions
