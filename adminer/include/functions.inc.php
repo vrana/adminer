@@ -761,6 +761,9 @@ function dump_headers($identifier, $multi_table = false) {
 		header("Content-Disposition: attachment; filename=" . $adminer->dumpFilename($identifier) . ".$return" . ($output != "file" && preg_match('~^[0-9a-z]+$~', $output) ? ".$output" : ""));
 	}
 	session_write_close();
+	if (!ob_get_level()) {
+		ob_start(null, 4096);
+	}
 	ob_flush();
 	flush();
 	return $return;
