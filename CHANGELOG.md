@@ -1,5 +1,4 @@
 ## Adminer dev
-- Confirm before exiting edited edit form
 - Display collation at table structure if different from table
 - Ctrl+click in select moves the cursor in modern browsers
 - URL parameter ?ext=pdo to force using PDO
@@ -23,6 +22,7 @@
 - New plugin: IMAP driver created for fun
 - New plugin: Display links to tables referencing current row
 - New plugin: Allow switching light and dark mode (bug #926)
+- New plugin: Confirm before unloading page with changed form
 - Uzbek translation
 
 ## Adminer 5.0.6 (released 2025-03-17)

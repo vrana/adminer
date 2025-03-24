@@ -513,7 +513,6 @@ function edit_form($table, $fields, $row, $update) {
 			;
 		}
 		echo "</table>\n";
-		echo script("setupEditChange(qsl('form'));");
 	}
 	echo "<p>\n";
 	if ($fields) {

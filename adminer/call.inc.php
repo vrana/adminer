@@ -81,7 +81,6 @@ if ($in) {
 		echo "\n";
 	}
 	echo "</table>\n";
-	echo script("setupEditChange(qsl('form'));");
 }
 ?>
 <p>
