@@ -81,6 +81,8 @@ All functions have doc-comments, but redundancy is avoided. For example, `Db` me
 
 Inline comments are useful for linking specifications but are generally avoided for explaining self-explanatory code. They start with a lowercase letter and do not end with a period, though I am not entirely happy with this convention.
 
+Comments starting with `//!` mean TODO.
+
 ## Error Handling
 
 Adminer strictly initializes all variables before use, which is [verified](https://github.com/vrana/php-initialized). However, Adminer relies on the default value of uninitialized array items. This approach leads to more readable code. Consider the following examples:
