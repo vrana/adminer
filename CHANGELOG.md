@@ -1,4 +1,4 @@
-## Adminer dev
+## Adminer 5.1.0 (released 2025-03-24)
 - Display collation at table structure if different from table
 - Ctrl+click in select moves the cursor in modern browsers
 - URL parameter ?ext=pdo to force using PDO
