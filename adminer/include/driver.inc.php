@@ -23,20 +23,20 @@ function get_driver($id) {
 }
 
 abstract class SqlDriver {
-	static $possibleDrivers = array(); ///< @var array of strings
+	static $possibleDrivers = array(); ///< @var list<string>
 	static $jush; ///< @var string JUSH identifier
 
 	protected $conn; ///< @var Db
-	protected $types = array(); ///< @var array [$description => [$type => $maximum_unsigned_length, ...], ...]
+	protected $types = array(); ///< @var int[][] [$group => [$type => $maximum_unsigned_length, ...], ...]
 	public $editFunctions = array(); ///< @var array of ["$type|$type2" => "$function/$function2"] functions used in editing, [0] - edit and insert, [1] - edit only
-	public $unsigned = array(); ///< @var array number variants
-	public $operators = array(); ///< @var array operators used in select
-	public $functions = array(); ///< @var array functions used in select
-	public $grouping = array(); ///< @var array grouping functions used in select
+	public $unsigned = array(); ///< @var list<string> number variants
+	public $operators = array(); ///< @var list<string> operators used in select
+	public $functions = array(); ///< @var list<string> functions used in select
+	public $grouping = array(); ///< @var list<string> grouping functions used in select
 	public $onActions = "RESTRICT|NO ACTION|CASCADE|SET NULL|SET DEFAULT"; ///< @var string used in foreign_keys()
 	public $inout = "IN|OUT|INOUT"; ///< @var string used in routines
 	public $enumLength = "'(?:''|[^'\\\\]|\\\\.)*'"; ///< @var string regular expression for parsing enum lengths
-	public $generated = array(); ///< @var array allowed types of generated columns
+	public $generated = array(); ///< @var list<string> allowed types of generated columns
 
 	/** Create object for performing database operations
 	* @param Db
