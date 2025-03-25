@@ -483,7 +483,7 @@ function is_ajax() {
 /** Send Location header and exit
 * @param string null to only set a message
 * @param string
-* @return null
+* @return never
 */
 function redirect($location, $message = null) {
 	if ($message !== null) {
@@ -552,7 +552,7 @@ function queries($query) {
 /** Apply command to all array items
 * @param string
 * @param list<string>
-* @param callback
+* @param callable(string):string
 * @return bool
 */
 function apply_queries($query, $tables, $escape = 'Adminer\table') {

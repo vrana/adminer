@@ -125,7 +125,7 @@ function unset_permanent() {
 
 /** Render an error message and a login form
 * @param string plain text
-* @return null exits
+* @return never
 */
 function auth_error($error) {
 	global $adminer, $has_token;

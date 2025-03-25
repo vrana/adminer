@@ -60,7 +60,7 @@ function get_lang() {
 }
 
 /** Translate string
-* @param string
+* @param literal-string
 * @param int
 * @return string
 */
