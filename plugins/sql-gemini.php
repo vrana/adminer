@@ -28,7 +28,8 @@ class AdminerSqlGemini {
 			foreach (Adminer\tables_list() as $table => $type) {
 				$prompt .= Adminer\create_sql($table, false, "CREATE") . ";\n\n";
 			}
-			$prompt .= "Give me this SQL query and nothing else:\n\n$_POST[gemini]";
+			$prompt .= "Prefer returning more columns including primary key.\n\n";
+			$prompt .= "Give me this SQL query and nothing else:\n\n$_POST[gemini]\n\n";
 			//~ echo $prompt; exit;
 			$context = stream_context_create(array("http" => array(
 				"method" => "POST",
