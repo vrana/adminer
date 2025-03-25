@@ -23,10 +23,10 @@ function get_driver($id) {
 }
 
 abstract class SqlDriver {
-	static $possibleDrivers = array();
+	static $possibleDrivers = array(); ///< @var array of strings
 	static $jush; ///< @var string JUSH identifier
 
-	protected $conn;
+	protected $conn; ///< @var Db
 	protected $types = array(); ///< @var array [$description => [$type => $maximum_unsigned_length, ...], ...]
 	public $editFunctions = array(); ///< @var array of ["$type|$type2" => "$function/$function2"] functions used in editing, [0] - edit and insert, [1] - edit only
 	public $unsigned = array(); ///< @var array number variants
