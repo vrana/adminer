@@ -44,17 +44,24 @@ class AdminerSqlGemini {
 
 	function sqlPrintAfter() {
 		echo "<p><textarea name='gemini' rows='5' cols='50' title='AI prompt'>" . Adminer\h($_POST["gemini"]) . "</textarea>\n";
-		echo "<p><input type='button' value='Gemini'>" . Adminer\script("qsl('input').onclick = function () { ajax(
-			'',
-			req => {
-				qs('textarea.sqlarea').value = req.responseText;
-				const sqlarea = qs('pre.sqlarea');
-				sqlarea.textContent = req.responseText;
-				sqlarea.oninput(); // syntax highlighting
-				alterClass(qs('#ajaxstatus'), 'hidden', true);
-			},
-			'gemini=' + encodeURIComponent(this.form['gemini'].value),
-			'Just a sec…' // this is the phrase used by Google Gemini
-		); }");
+		?>
+<p><input type='button' value='Gemini'>
+<script <?php echo Adminer\nonce(); ?>>
+function setSqlareaValue(value) {
+	qs('textarea.sqlarea').value = value;
+	qs('pre.sqlarea').textContent = value;
+	qs('pre.sqlarea').oninput(); // syntax highlighting
+}
+
+qsl('input').onclick = function () {
+	setSqlareaValue('-- Just a sec...'); // this is the phrase used by Google Gemini
+	ajax(
+		'',
+		req => setSqlareaValue(req.responseText),
+		'gemini=' + encodeURIComponent(this.form['gemini'].value)
+	);
+}
+</script>
+<?php
 	}
 }
