@@ -55,13 +55,15 @@ class AdminerSqlGemini {
 		?>
 <p><input type='button' value='Gemini'>
 <script <?php echo Adminer\nonce(); ?>>
+const gemini = qsl('input');
+
 function setSqlareaValue(value) {
 	qs('textarea.sqlarea').value = value;
 	qs('pre.sqlarea').textContent = value;
 	qs('pre.sqlarea').oninput(); // syntax highlighting
 }
 
-qsl('input').onclick = function () {
+gemini.onclick = () => {
 	setSqlareaValue('-- Just a sec...'); // this is the phrase used by Google Gemini
 	ajax(
 		'',
@@ -69,6 +71,13 @@ qsl('input').onclick = function () {
 		'gemini=' + encodeURIComponent(this.form['gemini'].value)
 	);
 }
+
+qsl('textarea').onkeydown = event => {
+	if (isCtrl(event) && (event.keyCode == 13 || event.keyCode == 10)) {
+		gemini.onclick();
+		event.stopPropagation();
+	}
+};
 </script>
 <?php
 	}
