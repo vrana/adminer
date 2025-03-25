@@ -24,7 +24,7 @@ class AdminerSqlGemini {
 
 	function headers() {
 		if ($_POST["gemini"] && !isset($_POST["query"])) {
-			$prompt = "I have a database with this structure:\n\n";
+			$prompt = "I have a " . Adminer\get_driver(Adminer\DRIVER) . " database with this structure:\n\n";
 			foreach (Adminer\tables_list() as $table => $type) {
 				$prompt .= Adminer\create_sql($table, false, "CREATE") . ";\n\n";
 			}
