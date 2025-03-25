@@ -202,6 +202,10 @@ if (!$translations) {
 }
 
 function minify_css($file) {
+	global $project;
+	if ($project == "editor") {
+		$file = preg_replace('~.*\.gif.*~', '', $file);
+	}
 	$file = preg_replace_callback('~url\((\w+\.(gif))\)~', function ($match) {
 		return "url(data:image/$match[2];base64," . base64_encode(file_get_contents(__DIR__ . "/adminer/static/$match[1]")) . ")";
 	}, $file);
@@ -329,7 +333,7 @@ if ($vendor) {
 }
 if ($project == "editor") {
 	$file = preg_replace('~;.\.\/externals/jush/jush(-dark)?\.css~', '', $file);
-	$file = preg_replace('~compile_file\(\'\.\./(externals/jush/modules/jush\.js|adminer/static/[^.]+\.gif)[^)]+\)~', "''", $file);
+	$file = preg_replace('~compile_file\(\'\.\./(externals/jush/modules/jush\.js)[^)]+\)~', "''", $file);
 }
 $file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
 $file = preg_replace_callback('~\b(include|require) "([^"]*\$LANG.inc.php)";~', 'put_file_lang', $file);

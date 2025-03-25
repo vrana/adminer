@@ -347,7 +347,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 		echo "<td id='label-default'$default_class>" . lang('Default value');
 		echo (support("comment") ? "<td id='label-comment'$comment_class>" . lang('Comment') : "");
 	}
-	echo "<td><input type='image' class='icon' name='add[" . (support("move_col") ? 0 : count($fields)) . "]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>" . script("row_count = " . count($fields) . ";");
+	echo "<td>" . icon("plus", "add[" . (support("move_col") ? 0 : count($fields)) . "]", "+", lang('Add next'));
 	echo "</thead>\n<tbody>\n";
 	echo script("mixin(qsl('tbody'), {onclick: editingClick, onkeydown: editingKeydown, oninput: editingInput});");
 	foreach ($fields as $i => $field) {
@@ -373,11 +373,11 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 		}
 		echo "<td>";
 		echo (support("move_col") ?
-			"<input type='image' class='icon' name='add[$i]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'> "
-			. "<input type='image' class='icon' name='up[$i]' src='../adminer/static/up.gif' alt='↑' title='" . lang('Move up') . "'> "
-			. "<input type='image' class='icon' name='down[$i]' src='../adminer/static/down.gif' alt='↓' title='" . lang('Move down') . "'> "
+			icon("plus", "add[$i]", "+", lang('Add next')) . " "
+			. icon("up", "up[$i]", "↑", lang('Move up')) . " "
+			. icon("down", "down[$i]", "↓", lang('Move down')) . " "
 		: "");
-		echo ($orig == "" || support("drop_col") ? "<input type='image' class='icon' name='drop_col[$i]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "'>" : "");
+		echo ($orig == "" || support("drop_col") ? icon("cross", "drop_col[$i]", "x", lang('Remove')) : "");
 	}
 }
 

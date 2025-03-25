@@ -534,3 +534,14 @@ function edit_form($table, $fields, $row, $update) {
 	echo input_token();
 	echo "</form>\n";
 }
+
+/** Get button with icon
+* @param string
+* @param string
+* @param string
+* @param string
+* @return string
+*/
+function icon($icon, $name, $html, $title) {
+	return "<button type='submit' name='$name' title='" . h($title) . "' class='icon icon-$icon'><span>$html</span></button>";
+}

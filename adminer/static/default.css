@@ -61,8 +61,13 @@ input.wayoff { left: -1000px; position: absolute; }
 .sqlarea { width: 98%; }
 .sql-footer { margin-bottom: 2.5em; }
 .explain table { white-space: pre; }
-.icon { width: 18px; height: 18px; background-color: navy; }
+.icon { width: 18px; height: 18px; background-color: navy; border: 0; vertical-align: middle; }
+.icon span { display: none; }
 .icon:hover { background-color: red; }
+.icon-up { background-image: url(up.gif); }
+.icon-down { background-image: url(down.gif); }
+.icon-plus { background-image: url(plus.gif); }
+.icon-cross { background-image: url(cross.gif); }
 .size { width: 7ex; }
 .help { cursor: help; }
 .footer { position: sticky; bottom: 0; margin-right: -20px; border-top: 20px solid rgba(255, 255, 255, .7); border-image: linear-gradient(rgba(255, 255, 255, .2), #fff) 100% 0; }

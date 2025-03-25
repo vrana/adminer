@@ -249,11 +249,7 @@ function editFields() {
 * @return boolean false to cancel action
 */
 function editingClick(event) {
-	let el = event.target;
-	if (!isTag(el, 'input')) {
-		el = parentTag(el, 'label');
-		el = el && qs('input', el);
-	}
+	let el = parentTag(event.target, 'button');
 	if (el) {
 		const name = el.name;
 		if (/^add\[/.test(name)) {
@@ -264,17 +260,23 @@ function editingClick(event) {
 			editingMoveRow.call(el);
 		} else if (/^drop_col\[/.test(name)) {
 			editingRemoveRow.call(el, 'fields$1[field]');
-		} else {
-			if (name == 'auto_increment_col') {
-				const field = el.form['fields[' + el.value + '][field]'];
-				if (!field.value) {
-					field.value = 'id';
-					field.oninput();
-				}
-			}
-			return;
 		}
 		return false;
+	}
+	el = event.target;
+	if (!isTag(el, 'input')) {
+		el = parentTag(el, 'label');
+		el = el && qs('input', el);
+	}
+	if (el) {
+		const name = el.name;
+		if (name == 'auto_increment_col') {
+			const field = el.form['fields[' + el.value + '][field]'];
+			if (!field.value) {
+				field.value = 'id';
+				field.oninput();
+			}
+		}
 	}
 }
 
@@ -334,11 +336,11 @@ function editingAddRow(focus) {
 	const x = match[0] + (match[2] ? added.substr(match[2].length) : added) + '1';
 	const row = parentTag(this, 'tr');
 	const row2 = cloneNode(row);
-	let tags = qsa('select', row);
-	let tags2 = qsa('select', row2);
+	let tags = qsa('select, input, button', row);
+	let tags2 = qsa('select, input, button', row2);
 	for (let i=0; i < tags.length; i++) {
 		tags2[i].name = tags[i].name.replace(/[0-9.]+/, x);
-		tags2[i].selectedIndex = tags[i].selectedIndex;
+		tags2[i].selectedIndex = (/\[(generated)/.test(tags[i].name) ? 0 : tags[i].selectedIndex);
 	}
 	tags = qsa('input', row);
 	tags2 = qsa('input', row2);
@@ -348,13 +350,11 @@ function editingAddRow(focus) {
 			tags2[i].value = x;
 			tags2[i].checked = false;
 		}
-		tags2[i].name = tags[i].name.replace(/([0-9.]+)/, x);
 		if (/\[(orig|field|comment|default)/.test(tags[i].name)) {
 			tags2[i].value = '';
 		}
 		if (/\[(generated)/.test(tags[i].name)) {
 			tags2[i].checked = false;
-			tags2[i].selectedIndex = 0;
 		}
 	}
 	tags[0].oninput = editingNameChange;

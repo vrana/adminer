@@ -359,27 +359,22 @@ tbody tr:nth-child(n):hover th {
 	background: rgba(236, 72, 18, 0.45);
 }
 .icon {
-	height: 0;
-	padding-top: 1.2em;
 	width: 1.2em;
 	background: #4c3957 center no-repeat;
 	background-size: 66%;
 }
-.icon[src*="plus.gif"] {
+.icon-plus {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' x='0px' y='0px' width='512px' height='512px' viewBox='0 0 456 456' style='enable-background:new 0 0 456 456;'%3E%3Cg%3E%3Cpolygon points='456,157.566 298.433,157.566 298.433,0 157.567,0 157.567,157.566 0,157.566 0,298.434 157.567,298.434 157.567,456 298.433,456 298.433,298.434 456,298.434' fill='%23FFFFFF'/%3E%3C/g%3E%3C/svg%3E");
 }
-.icon[src*="minus.gif"] {
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' x='0px' y='0px' width='512px' height='512px' viewBox='0 0 456 456' style='enable-background:new 0 0 456 456;'%3E%3Cg%3E%3Cpolygon points='456,157.566 0,157.566 0,298.434 456,298.434' fill='%23FFFFFF'/%3E%3C/g%3E%3C/svg%3E");
-}
 .column a[href*="&asc%5B"],
-.icon[src*="up.gif"] {
+.icon-up {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' x='0px' y='0px' viewBox='0 0 490 490' style='enable-background:new 0 0 490 490;' width='512px' height='512px'%3E%3Cg%3E%3Cpath d='M490,474.459H0L245.009,15.541L490,474.459z' fill='%23FFFFFF'/%3E%3C/g%3E%3C/svg%3E");
 }
 .column a[href*="&desc%5B"],
-.icon[src*="down.gif"] {
+.icon-down {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' x='0px' y='0px' viewBox='0 0 490 490' style='enable-background:new 0 0 490 490;' width='512px' height='512px'%3E%3Cg%3E%3Cpath d='M0,15.541h490L244.991,474.459L0,15.541z' fill='%23FFFFFF'/%3E%3C/g%3E%3C/svg%3E");
 }
-.icon[src*="cross.gif"] {
+.icon-cross {
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' x='0px' y='0px' viewBox='0 0 174.239 174.239' style='enable-background:new 0 0 174.239 174.239;' width='512px' height='512px'%3E%3Cg%3E%3Cpath d='M146.537,1.047c-1.396-1.396-3.681-1.396-5.077,0L89.658,52.849c-1.396,1.396-3.681,1.396-5.077,0L32.78,1.047 c-1.396-1.396-3.681-1.396-5.077,0L1.047,27.702c-1.396,1.396-1.396,3.681,0,5.077l51.802,51.802c1.396,1.396,1.396,3.681,0,5.077 L1.047,141.46c-1.396,1.396-1.396,3.681,0,5.077l26.655,26.655c1.396,1.396,3.681,1.396,5.077,0l51.802-51.802 c1.396-1.396,3.681-1.396,5.077,0l51.801,51.801c1.396,1.396,3.681,1.396,5.077,0l26.655-26.655c1.396-1.396,1.396-3.681,0-5.077 l-51.801-51.801c-1.396-1.396-1.396-3.681,0-5.077l51.801-51.801c1.396-1.396,1.396-3.681,0-5.077L146.537,1.047z' fill='%23FFFFFF'/%3E%3C/g%3E%3C/svg%3E");
 }
 .column a[href="#fieldset-search"] {

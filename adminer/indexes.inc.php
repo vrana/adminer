@@ -112,7 +112,7 @@ if ($lengths || support("descidx")) {
 }
 ?>
 <th id="label-name"><?php echo lang('Name'); ?>
-<th><noscript><?php echo "<input type='image' class='icon' name='add[0]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>"; ?></noscript>
+<th><noscript><?php echo icon("plus", "add[0]", "+", lang('Add next')); ?></noscript>
 </thead>
 <?php
 if ($primary) {
@@ -146,7 +146,7 @@ foreach ($row["indexes"] as $index) {
 		}
 
 		echo "<td><input name='indexes[$j][name]' value='" . h($index["name"]) . "' autocapitalize='off' aria-labelledby='label-name'>\n";
-		echo "<td><input type='image' class='icon' name='drop_col[$j]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "'>" . script("qsl('input').onclick = partial(editingRemoveRow, 'indexes\$1[type]');");
+		echo "<td>" . icon("cross", "drop_col[$j]", "x", lang('Remove')) . script("qsl('button').onclick = partial(editingRemoveRow, 'indexes\$1[type]');");
 	}
 	$j++;
 }
