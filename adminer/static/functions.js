@@ -773,7 +773,7 @@ function setupSubmitHighlight(parent) {
 * @param HTMLElement
 */
 function setupSubmitHighlightInput(input) {
-	if (!/submit|image|file/.test(input.type)) {
+	if (!/submit|button|image|file/.test(input.type)) {
 		addEvent(input, 'focus', inputFocus);
 		addEvent(input, 'blur', inputBlur);
 	}
@@ -783,6 +783,7 @@ function setupSubmitHighlightInput(input) {
 * @this HTMLInputElement
 */
 function inputFocus() {
+	console.log('functions');
 	alterClass(findDefaultSubmit(this), 'default', true);
 }
 
