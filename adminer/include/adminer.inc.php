@@ -15,14 +15,14 @@ class Adminer {
 	}
 
 	/** Connection parameters
-	* @return array [$server, $username, $password]
+	* @return array{string, string, string}
 	*/
 	function credentials() {
 		return array(SERVER, $_GET["username"], get_password());
 	}
 
 	/** Get SSL connection options
-	* @return array ["key" => filename, "cert" => filename, "ca" => filename] or null
+	* @return string[] or null
 	*/
 	function connectSsl() {
 	}
@@ -220,7 +220,7 @@ class Adminer {
 	/** Find backward keys for table
 	* @param string
 	* @param string
-	* @return array[] $return[$target_table]["keys"][$key_name][$target_column] = $source_column; $return[$target_table]["name"] = $this->tableName($target_table);
+	* @return array{keys:string[][], name:string}[]
 	*/
 	function backwardKeys($table, $tableName) {
 		return array();

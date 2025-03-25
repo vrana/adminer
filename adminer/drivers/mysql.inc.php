@@ -549,7 +549,7 @@ if (!defined('Adminer\DRIVER')) {
 	/** Get table status
 	* @param string
 	* @param bool return only "Name", "Engine" and "Comment" fields
-	* @return array[] [$name => ["Name" => , "Engine" => , "Comment" => , "Oid" => , "Rows" => , "Collation" => , "Auto_increment" => , "Data_length" => , "Index_length" => , "Data_free" => ]] or only inner array with $name
+	* @return array{Name:string, Engine:string, Comment:string, Oid:int, Rows:int, Collation:string, Auto_increment:int, Data_length:int, Index_length:int, Data_free:int}[] or only inner array with $name
 	*/
 	function table_status($name = "", $fast = false) {
 		$return = array();
@@ -596,7 +596,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get information about fields
 	* @param string
-	* @return array[] [$name => ["field" =>, "full_type" =>, "type" =>, "length" =>, "unsigned" =>, "default" =>, "null" =>, "auto_increment" =>, "on_update" =>, "collation" =>, "privileges" =>, "comment" =>, "primary" =>, "generated" =>]]
+	* @return array{field:string, full_type:string, type:string, length:int, unsigned:string, default:string, null:bool, auto_increment:bool, on_update:string, collation:string, privileges:int[], comment:string, primary:bool, generated:string}[]
 	*/
 	function fields($table) {
 		global $connection;
@@ -652,7 +652,7 @@ if (!defined('Adminer\DRIVER')) {
 	/** Get table indexes
 	* @param string
 	* @param string Db to use
-	* @return array[] [$key_name => ["type" => , "columns" => [], "lengths" => [], "descs" => []]]
+	* @return array{type:string, columns:list<string>, lengths:list<int>, descs:list<bool>}[]
 	*/
 	function indexes($table, $connection2 = null) {
 		$return = array();
@@ -668,7 +668,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get foreign keys in table
 	* @param string
-	* @return array[] [$name => ["db" => , "ns" => , "table" => , "source" => [], "target" => [], "on_delete" => , "on_update" => ]]
+	* @return array{db:string, ns:string, table:string, source:list<string>, target:list<string>, on_delete:string, on_update:string}[]
 	*/
 	function foreign_keys($table) {
 		global $driver;
@@ -700,7 +700,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get view SELECT
 	* @param string
-	* @return array ["select" => ]
+	* @return array{select:string}
 	*/
 	function view($name) {
 		return array("select" => preg_replace('~^(?:[^`]|`[^`]*`)*\s+AS\s+~isU', '', get_val("SHOW CREATE VIEW " . table($name), 1)));
@@ -959,7 +959,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get information about trigger
 	* @param string trigger name
-	* @return array ["Trigger" => , "Timing" => , "Event" => , "Of" => , "Type" => , "Statement" => ]
+	* @return array{Trigger:string, Timing:string, Event:string, Of:string, Type:string, Statement:string}
 	*/
 	function trigger($name) {
 		if ($name == "") {
@@ -971,7 +971,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get defined triggers
 	* @param string
-	* @return array[] [$name => [$timing, $event]]
+	* @return array{string, string}[]4
 	*/
 	function triggers($table) {
 		$return = array();
@@ -982,7 +982,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get trigger options
-	* @return list<string>[] ["Timing" => [], "Event" => [], "Type" => []]
+	* @return array{Timing: list<string>, Event: list<string>, Type: list<string>}
 	*/
 	function trigger_options() {
 		return array(
@@ -995,7 +995,7 @@ if (!defined('Adminer\DRIVER')) {
 	/** Get information about stored routine
 	* @param string
 	* @param string "FUNCTION" or "PROCEDURE"
-	* @return array ["fields" => ["field" => , "type" => , "length" => , "unsigned" => , "inout" => , "collation" => ], "returns" => , "definition" => , "language" => ]
+	* @return array{fields:list<array{field:string, type:string, length:string, unsigned:string, null:bool, full_type:string, inout:string, collation:string}>, comment:string, returns:array, definition:string, language:string}
 	*/
 	function routine($name, $type) {
 		global $driver;

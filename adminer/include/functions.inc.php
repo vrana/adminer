@@ -701,7 +701,7 @@ function friendly_url($val) {
 /** Get status of a single table and fall back to name on error
 * @param string
 * @param bool
-* @return array[]
+* @return array[] same as table_status()
 */
 function table_status1($table, $fast = false) {
 	$return = table_status($table, $fast);
@@ -724,7 +724,7 @@ function column_foreign_keys($table) {
 }
 
 /** Compute fields() from $_POST edit data
-* @return array[]
+* @return array[] same as fields()
 */
 function fields_from_edit() {
 	global $driver;

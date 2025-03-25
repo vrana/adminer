@@ -218,7 +218,7 @@ function edit_type($key, $field, $collations, $foreign_keys = array(), $extra_ty
 
 /** Get partition info
 * @param string
-* @return array
+* @return array{partition_by:string, partition:string, partitions:string, partition_names:list<string>, partition_values:list<string>}
 */
 function get_partitions_info($table) {
 	global $connection;
