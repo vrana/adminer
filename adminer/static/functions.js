@@ -764,10 +764,8 @@ function eventStop(event) {
 * @param HTMLElement
 */
 function setupSubmitHighlight(parent) {
-	for (const key in { input: 1, select: 1, textarea: 1 }) {
-		for (const input of qsa(key, parent)) {
-			setupSubmitHighlightInput(input);
-		}
+	for (const input of qsa('input, select, textarea', parent)) {
+		setupSubmitHighlightInput(input);
 	}
 }
 
@@ -785,20 +783,14 @@ function setupSubmitHighlightInput(input) {
 * @this HTMLInputElement
 */
 function inputFocus() {
-	const submit = findDefaultSubmit(this);
-	if (submit) {
-		alterClass(submit, 'default', true);
-	}
+	alterClass(findDefaultSubmit(this), 'default', true);
 }
 
 /** Unhighlight default submit button
 * @this HTMLInputElement
 */
 function inputBlur() {
-	const submit = findDefaultSubmit(this);
-	if (submit) {
-		alterClass(submit, 'default');
-	}
+	alterClass(findDefaultSubmit(this), 'default');
 }
 
 /** Find submit button used by Enter
