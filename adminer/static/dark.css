@@ -30,7 +30,7 @@ input.required, input.maxlength { box-shadow: 1px 1px 1px red; }
 .js .checkable .checked td, .js .checkable .checked th { background: #10395c; color: #67a4a5; }
 .js .checkable .checked:hover td, .js .checkable .checked:hover th { background: #133553; }
 .js .checkable .checked a { color: #67a4a5; }
-.icon { background-color: #062642; }
+.icon { filter: invert(1); background-color: #062642; }
 .icon:hover { background-color: #d1394e; }
 .footer { border-top-color: rgba(0, 34, 64, .7); border-image-source: linear-gradient(rgba(0, 34, 64, 0.2), #002240); }
 .footer > div { background: #002240; }

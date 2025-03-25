@@ -1,4 +1,5 @@
 ## Adminer dev
+CSS: Invert icons in dark mode
 
 ## Adminer 5.1.0 (released 2025-03-24)
 - Display collation at table structure if different from table
