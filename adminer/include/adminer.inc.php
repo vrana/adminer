@@ -60,14 +60,14 @@ class Adminer {
 
 	/** Get cached list of databases
 	* @param bool
-	* @return array
+	* @return list<string>
 	*/
 	function databases($flush = true) {
 		return get_databases($flush);
 	}
 
 	/** Get list of schemas
-	* @return array
+	* @return list<string>
 	*/
 	function schemas() {
 		return schemas();
@@ -87,7 +87,7 @@ class Adminer {
 	}
 
 	/** Get Content Security Policy headers
-	* @return array of arrays with directive name in key, allowed sources in value
+	* @return list<string[]> of arrays with directive name in key, allowed sources in value
 	*/
 	function csp() {
 		return csp();
@@ -105,7 +105,7 @@ class Adminer {
 	}
 
 	/** Get URLs of the CSS files
-	* @return array of strings
+	* @return list<string>
 	*/
 	function css() {
 		$return = array();
@@ -211,7 +211,7 @@ class Adminer {
 
 	/** Get foreign keys for table
 	* @param string
-	* @return array same format as foreign_keys()
+	* @return array[] same format as foreign_keys()
 	*/
 	function foreignKeys($table) {
 		return foreign_keys($table);
@@ -220,7 +220,7 @@ class Adminer {
 	/** Find backward keys for table
 	* @param string
 	* @param string
-	* @return array $return[$target_table]["keys"][$key_name][$target_column] = $source_column; $return[$target_table]["name"] = $this->tableName($target_table);
+	* @return array[] $return[$target_table]["keys"][$key_name][$target_column] = $source_column; $return[$target_table]["name"] = $this->tableName($target_table);
 	*/
 	function backwardKeys($table, $tableName) {
 		return array();
@@ -279,7 +279,7 @@ class Adminer {
 	/** Get descriptions of selected data
 	* @param array all data to print
 	* @param array
-	* @return array
+	* @return list<string[]>
 	*/
 	function rowDescriptions($rows, $foreignKeys) {
 		return $rows;
@@ -532,7 +532,7 @@ class Adminer {
 	/** Process columns box in select
 	* @param array selectable columns
 	* @param array
-	* @return array [[select_expressions], [group_expressions]]
+	* @return list<list<string>> [[select_expressions], [group_expressions]]
 	*/
 	function selectColumnsProcess($columns, $indexes) {
 		global $driver;
@@ -552,7 +552,7 @@ class Adminer {
 	/** Process search box in select
 	* @param array
 	* @param array
-	* @return array expressions to join by AND
+	* @return list<string> expressions to join by AND
 	*/
 	function selectSearchProcess($fields, $indexes) {
 		global $connection, $driver;
@@ -606,7 +606,7 @@ class Adminer {
 	/** Process order box in select
 	* @param array
 	* @param array
-	* @return array expressions to join by comma
+	* @return list<string> expressions to join by comma
 	*/
 	function selectOrderProcess($fields, $indexes) {
 		$return = array();
@@ -699,7 +699,7 @@ class Adminer {
 
 	/** Functions displayed in edit form
 	* @param array single field from fields()
-	* @return array
+	* @return list<string>
 	*/
 	function editFunctions($field) {
 		global $driver;
@@ -779,7 +779,7 @@ class Adminer {
 	}
 
 	/** Return export output options
-	* @return array
+	* @return string[]
 	*/
 	function dumpOutput() {
 		$return = array('text' => lang('open'), 'file' => lang('save'));
@@ -790,7 +790,7 @@ class Adminer {
 	}
 
 	/** Return export format options
-	* @return array empty to disable export
+	* @return string[] empty to disable export
 	*/
 	function dumpFormat() {
 		return (support("dump") ? array('sql' => 'SQL') : array()) + array('csv' => 'CSV,', 'csv;' => 'CSV;', 'tsv' => 'TSV');

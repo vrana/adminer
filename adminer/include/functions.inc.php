@@ -200,7 +200,7 @@ function get_val($query, $field = 0) {
 /** Get list of values from database
 * @param string
 * @param mixed
-* @return array
+* @return list<string>
 */
 function get_vals($query, $column = 0) {
 	global $connection;
@@ -218,7 +218,7 @@ function get_vals($query, $column = 0) {
 * @param string
 * @param Db
 * @param bool
-* @return array
+* @return string[]
 */
 function get_key_vals($query, $connection2 = null, $set_keys = true) {
 	global $connection;
@@ -243,7 +243,7 @@ function get_key_vals($query, $connection2 = null, $set_keys = true) {
 * @param string
 * @param Db
 * @param string
-* @return array of associative arrays
+* @return list<string[]> of associative arrays
 */
 function get_rows($query, $connection2 = null, $error = "<p class='error'>") {
 	global $connection;
@@ -263,7 +263,7 @@ function get_rows($query, $connection2 = null, $error = "<p class='error'>") {
 /** Find unique identifier of a row
 * @param array
 * @param array result of indexes()
-* @return array or null if there is no unique identifier
+* @return string[] or null if there is no unique identifier
 */
 function unique_array($row, $indexes) {
 	foreach ($indexes as $index) {
@@ -381,7 +381,7 @@ function cookie($name, $value, $lifetime = 2592000) {
 
 /** Get settings stored in a cookie
 * @param string
-* @return array
+* @return mixed[]
 */
 function get_settings($cookie) {
 	parse_str($_COOKIE[$cookie], $settings);
@@ -399,7 +399,7 @@ function get_setting($key, $cookie = "adminer_settings") {
 }
 
 /** Store settings to a cookie
-* @param array
+* @param mixed[]
 * @param string
 * @return bool
 */
@@ -701,7 +701,7 @@ function friendly_url($val) {
 /** Get status of a single table and fall back to name on error
 * @param string
 * @param bool
-* @return array
+* @return array[]
 */
 function table_status1($table, $fast = false) {
 	$return = table_status($table, $fast);
@@ -710,7 +710,7 @@ function table_status1($table, $fast = false) {
 
 /** Find out foreign keys for each column
 * @param string
-* @return array [$col => []]
+* @return list<string>[] [$col => []]
 */
 function column_foreign_keys($table) {
 	global $adminer;
@@ -724,7 +724,7 @@ function column_foreign_keys($table) {
 }
 
 /** Compute fields() from $_POST edit data
-* @return array
+* @return array[]
 */
 function fields_from_edit() {
 	global $driver;
@@ -977,7 +977,7 @@ function count_rows($table, $where, $is_group, $group) {
 
 /** Run query which can be killed by AJAX call after timing out
 * @param string
-* @return array of strings
+* @return string[]
 */
 function slow_query($query) {
 	global $adminer, $token, $driver;

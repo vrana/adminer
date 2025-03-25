@@ -46,14 +46,14 @@ abstract class SqlDriver {
 	}
 
 	/** Get all types
-	* @return array [$type => $maximum_unsigned_length, ...]
+	* @return int[] [$type => $maximum_unsigned_length, ...]
 	*/
 	function types() {
 		return call_user_func_array('array_merge', array_values($this->types));
 	}
 
 	/** Get structured types
-	* @return array [$description => [$type, ...], ...]
+	* @return list<string>[] [$description => [$type, ...], ...]
 	*/
 	function structuredTypes() {
 		return array_map('array_keys', $this->types);
@@ -253,7 +253,7 @@ abstract class SqlDriver {
 	}
 
 	/** Get supported engines
-	* @return array
+	* @return list<string>
 	*/
 	function engines() {
 		return array();
@@ -269,7 +269,7 @@ abstract class SqlDriver {
 
 	/** Get defined check constraints
 	* @param string
-	* @return array [$name => $clause]
+	* @return string[] [$name => $clause]
 	*/
 	function checkConstraints($table) {
 		// MariaDB contains CHECK_CONSTRAINTS.TABLE_NAME, MySQL and PostrgreSQL not

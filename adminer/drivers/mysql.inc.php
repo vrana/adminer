@@ -197,14 +197,14 @@ if (!defined('Adminer\DRIVER')) {
 			}
 
 			/** Fetch next row as associative array
-			* @return array
+			* @return string[]
 			*/
 			function fetch_assoc() {
 				return mysql_fetch_assoc($this->result);
 			}
 
 			/** Fetch next row as numbered array
-			* @return array
+			* @return list<string>
 			*/
 			function fetch_row() {
 				return mysql_fetch_row($this->result);
@@ -465,7 +465,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get cached list of databases
 	* @param bool
-	* @return array
+	* @return list<string>
 	*/
 	function get_databases($flush) {
 		// SHOW DATABASES can take a very long time so it is cached
@@ -528,7 +528,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get tables list
-	* @return array [$name => $type]
+	* @return string[] [$name => $type]
 	*/
 	function tables_list() {
 		return get_key_vals("SELECT TABLE_NAME, TABLE_TYPE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() ORDER BY TABLE_NAME");
@@ -536,7 +536,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Count tables in all databases
 	* @param array
-	* @return array [$db => $tables]
+	* @return int[] [$db => $tables]
 	*/
 	function count_tables($databases) {
 		$return = array();
@@ -549,7 +549,7 @@ if (!defined('Adminer\DRIVER')) {
 	/** Get table status
 	* @param string
 	* @param bool return only "Name", "Engine" and "Comment" fields
-	* @return array [$name => ["Name" => , "Engine" => , "Comment" => , "Oid" => , "Rows" => , "Collation" => , "Auto_increment" => , "Data_length" => , "Index_length" => , "Data_free" => ]] or only inner array with $name
+	* @return array[] [$name => ["Name" => , "Engine" => , "Comment" => , "Oid" => , "Rows" => , "Collation" => , "Auto_increment" => , "Data_length" => , "Index_length" => , "Data_free" => ]] or only inner array with $name
 	*/
 	function table_status($name = "", $fast = false) {
 		$return = array();
@@ -596,7 +596,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get information about fields
 	* @param string
-	* @return array [$name => ["field" =>, "full_type" =>, "type" =>, "length" =>, "unsigned" =>, "default" =>, "null" =>, "auto_increment" =>, "on_update" =>, "collation" =>, "privileges" =>, "comment" =>, "primary" =>, "generated" =>]]
+	* @return array[] [$name => ["field" =>, "full_type" =>, "type" =>, "length" =>, "unsigned" =>, "default" =>, "null" =>, "auto_increment" =>, "on_update" =>, "collation" =>, "privileges" =>, "comment" =>, "primary" =>, "generated" =>]]
 	*/
 	function fields($table) {
 		global $connection;
@@ -652,7 +652,7 @@ if (!defined('Adminer\DRIVER')) {
 	/** Get table indexes
 	* @param string
 	* @param string Db to use
-	* @return array [$key_name => ["type" => , "columns" => [], "lengths" => [], "descs" => []]]
+	* @return array[] [$key_name => ["type" => , "columns" => [], "lengths" => [], "descs" => []]]
 	*/
 	function indexes($table, $connection2 = null) {
 		$return = array();
@@ -668,7 +668,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get foreign keys in table
 	* @param string
-	* @return array [$name => ["db" => , "ns" => , "table" => , "source" => [], "target" => [], "on_delete" => , "on_update" => ]]
+	* @return array[] [$name => ["db" => , "ns" => , "table" => , "source" => [], "target" => [], "on_delete" => , "on_update" => ]]
 	*/
 	function foreign_keys($table) {
 		global $driver;
@@ -707,7 +707,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get sorted grouped list of collations
-	* @return array
+	* @return list<string>[]
 	*/
 	function collations() {
 		$return = array();
@@ -720,7 +720,7 @@ if (!defined('Adminer\DRIVER')) {
 		}
 		ksort($return);
 		foreach ($return as $key => $val) {
-			asort($return[$key]);
+			sort($return[$key]);
 		}
 		return $return;
 	}
@@ -971,7 +971,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get defined triggers
 	* @param string
-	* @return array [$name => [$timing, $event]]
+	* @return array[] [$name => [$timing, $event]]
 	*/
 	function triggers($table) {
 		$return = array();
@@ -982,7 +982,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get trigger options
-	* @return array ["Timing" => [], "Event" => [], "Type" => []]
+	* @return list<string>[] ["Timing" => [], "Event" => [], "Type" => []]
 	*/
 	function trigger_options() {
 		return array(
@@ -1032,14 +1032,14 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get list of routines
-	* @return array ["SPECIFIC_NAME" => , "ROUTINE_NAME" => , "ROUTINE_TYPE" => , "DTD_IDENTIFIER" => ]
+	* @return list<string[]> ["SPECIFIC_NAME" => , "ROUTINE_NAME" => , "ROUTINE_TYPE" => , "DTD_IDENTIFIER" => ]
 	*/
 	function routines() {
 		return get_rows("SELECT ROUTINE_NAME AS SPECIFIC_NAME, ROUTINE_NAME, ROUTINE_TYPE, DTD_IDENTIFIER FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = DATABASE()");
 	}
 
 	/** Get list of available routine languages
-	* @return array
+	* @return list<string>
 	*/
 	function routine_languages() {
 		return array(); // "SQL" not required
@@ -1082,7 +1082,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/* Not used is MySQL but checked in compile.php:
 	/** Get user defined types
-	* @return array [$id => $name]
+	* @return string[] [$id => $name]
 	function types() {
 		return array();
 	}
@@ -1095,7 +1095,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get existing schemas
-	* @return array
+	* @return list<string>
 	function schemas() {
 		return array();
 	}
@@ -1158,21 +1158,21 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get server variables
-	* @return array [[$name, $value]]
+	* @return list<string[]> [[$name, $value]]
 	*/
 	function show_variables() {
 		return get_rows("SHOW VARIABLES");
 	}
 
 	/** Get status variables
-	* @return array [[$name, $value]]
+	* @return list<string[]> [[$name, $value]]
 	*/
 	function show_status() {
 		return get_rows("SHOW STATUS");
 	}
 
 	/** Get process list
-	* @return array [$row]
+	* @return list<string[]> [$row]
 	*/
 	function process_list() {
 		return get_rows("SHOW FULL PROCESSLIST");

@@ -6,9 +6,9 @@ namespace Adminer;
 /** Print select result
 * @param Result
 * @param Db connection to examine indexes
-* @param array
+* @param string[]
 * @param int
-* @return array $orgtables
+* @return string[] $orgtables
 */
 function select($result, $connection2 = null, $orgtables = array(), $limit = 0) {
 	$links = array(); // colno => orgtable - create links from these columns
@@ -102,7 +102,7 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 
 /** Get referencable tables with single column primary key except self
 * @param string
-* @return array [$table_name => $field]
+* @return array[] [$table_name => $field]
 */
 function referencable_primary($self) {
 	$return = array(); // table_name => field
@@ -262,7 +262,7 @@ function process_type($field, $collate = "COLLATE") {
 /** Create SQL string from field
 * @param array basic field information
 * @param array information about field type
-* @return array ["field", "type", "NULL", "DEFAULT", "ON UPDATE", "COMMENT", "AUTO_INCREMENT"]
+* @return list<string> ["field", "type", "NULL", "DEFAULT", "ON UPDATE", "COMMENT", "AUTO_INCREMENT"]
 */
 function process_field($field, $type_field) {
 	// MariaDB exports CURRENT_TIMESTAMP as a function.
