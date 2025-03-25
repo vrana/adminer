@@ -50,9 +50,6 @@ if ($_GET["file"] == "favicon.ico") {
 		case "down.gif":
 			echo compile_file('../adminer/static/down.gif');
 			break;
-		case "arrow.gif":
-			echo compile_file('../adminer/static/arrow.gif');
-			break;
 	}
 }
 exit;
